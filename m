@@ -2,158 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CDF209C41
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 11:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D02209C46
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 11:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390982AbgFYJr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 05:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390052AbgFYJr2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 05:47:28 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FFF3C061573;
-        Thu, 25 Jun 2020 02:47:28 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3BE2C521;
-        Thu, 25 Jun 2020 11:47:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1593078445;
-        bh=Rd6+/EiGtZUUer4Z7+8mWfSC18i6Ms0DFb9zau1uDdM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UG8w6M3V8VNc3AN7Br+6+dNZDthnouJVTanLFWakrkvOVbZv+hJOpdJhllO8IzUhN
-         4dI05+mZo182HoEIt9uuuYB0fMPbQjOK6ZhR/Mn6RfBbwMhbrFnOCd2pjSPcgmik65
-         LqWRlwz5C32wYvyxhLxjZNP/yEHEEhBs/h1z4Sl0=
-Date:   Thu, 25 Jun 2020 12:47:24 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ramzi Ben Meftah <rbmeftah@de.adit-jv.com>
-Cc:     Jacopo Mondi <jacopo@jmondi.org>,
-        niklas soderlund <niklas.soderlund@ragnatech.se>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Steve Longerbeam <steve_longerbeam@mentor.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Michael Rodin <mrodin@de.adit-jv.com>,
-        efriedrich@de.adit-jv.com, erosca@de.adit-jv.com
-Subject: Re: [PATCH 1/3] v4l2-subdev: Add subdev ioctl support for
- ENUM/GET/SET INPUT
-Message-ID: <20200625094724.GE5865@pendragon.ideasonboard.com>
-References: <1592301619-17631-1-git-send-email-rbmeftah@de.adit-jv.com>
- <20200624075307.hl6wew7vr5ue225t@uno.localdomain>
- <20200625020138.GW5980@pendragon.ideasonboard.com>
- <20200625093046.GA91893@vmlxhi-110.adit-jv.com>
+        id S2390999AbgFYJst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 05:48:49 -0400
+Received: from mga18.intel.com ([134.134.136.126]:29041 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390400AbgFYJss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 05:48:48 -0400
+IronPort-SDR: XgNTbabQIT471Qrh4uVNpPOuq1d1Za6leSmfDkF4KoTW+EBjwIowVQnGpYgJCdIDrlcG5HBYSa
+ WjikPv1JavwQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9662"; a="132260065"
+X-IronPort-AV: E=Sophos;i="5.75,278,1589266800"; 
+   d="scan'208";a="132260065"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2020 02:48:32 -0700
+IronPort-SDR: 8wx9e1eEOOTXQ4P6r6V9Afp+8O9xPFNWGjDnwRE4Oki38F1vS47D/XmkTW0VbzhHzHbraGfje/
+ EmmjV1E6/3Jw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,278,1589266800"; 
+   d="scan'208";a="311054991"
+Received: from lkp-server01.sh.intel.com (HELO 538b5e3c8319) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 25 Jun 2020 02:48:30 -0700
+Received: from kbuild by 538b5e3c8319 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1joOUg-0001Wu-8g; Thu, 25 Jun 2020 09:48:30 +0000
+Date:   Thu, 25 Jun 2020 17:47:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/urgent] BUILD REGRESSION
+ 239341154165cec3676955bab4cc1d61852257ed
+Message-ID: <5ef472b9.5Jxxgaydszvpulxx%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200625093046.GA91893@vmlxhi-110.adit-jv.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ramzi,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/urgent
+branch HEAD: 239341154165cec3676955bab4cc1d61852257ed  rcu: Fixup noinstr warnings
 
-On Thu, Jun 25, 2020 at 11:30:46AM +0200, Ramzi Ben Meftah wrote:
-> On Thu, Jun 25, 2020 at 05:01:38AM +0300, Laurent Pinchart wrote:
-> > On Wed, Jun 24, 2020 at 09:53:07AM +0200, Jacopo Mondi wrote:
-> >> On Tue, Jun 16, 2020 at 12:00:15PM +0200, Ramzi BEN MEFTAH wrote:
-> >>> From: Steve Longerbeam <steve_longerbeam@mentor.com>
-> >> 
-> >>  +Niklas, +Laurent
-> >> 
-> >> Niklas, Laurent, how does this play with CAP_IO_MC ?
-> > 
-> > I don't think it's related to CAP_IO_MC, but I don't think it's a good
-> > idea either :-) Routing doesn't go through the subdev [gs]_input
-> > operations in MC-based drivers. It should be configured through link
-> > setup instead. This patch goes in the wrong direction, sorry Steve.
-> 
-> ENUMINPUT ioctl allow to get the input signal status. Is there an alternative
-> with Media Controller?
+Error/Warning in current branch:
 
-No there isn't at the moment. I'm not opposed to adding such a feature,
-but VIDIOC_ENUMINPUT isn't the right choice. This would have to be a
-subdev pad operation (v4l2_subdev_pad_ops), not a video operation
-(v4l2_subdev_video_ops). We also likely shouldn't call it "enum" input,
-as it would retrieve properties of the input corresponding to the pad,
-not enumerate inputs.
+kernel/rcu/tree.c:240:8: error: implicit declaration of function 'arch_atomic_add_return'; did you mean 'atomic_add_return'? [-Werror=implicit-function-declaration]
+kernel/rcu/tree.c:251:8: error: implicit declaration of function 'arch_atomic_add_return'; did you mean 'atomic_add_return'? [-Werror=implicit-function-declaration]
+kernel/rcu/tree.c:253:8: error: implicit declaration of function 'arch_atomic_add_return'; did you mean 'atomic_add_return'? [-Werror=implicit-function-declaration]
+kernel/rcu/tree.c:270:3: error: implicit declaration of function 'arch_atomic_andnot'; did you mean 'atomic_andnot'? [-Werror=implicit-function-declaration]
+kernel/rcu/tree.c:281:3: error: implicit declaration of function 'arch_atomic_andnot'; did you mean 'atomic_andnot'? [-Werror=implicit-function-declaration]
+kernel/rcu/tree.c:283:3: error: implicit declaration of function 'arch_atomic_andnot'; did you mean 'atomic_andnot'? [-Werror=implicit-function-declaration]
+kernel/rcu/tree.c:303:11: error: implicit declaration of function 'arch_atomic_read'; did you mean 'atomic_read'? [-Werror=implicit-function-declaration]
+kernel/rcu/tree.c:314:11: error: implicit declaration of function 'arch_atomic_read'; did you mean 'atomic_read'? [-Werror=implicit-function-declaration]
+kernel/rcu/tree.c:316:11: error: implicit declaration of function 'arch_atomic_read'; did you mean 'atomic_read'? [-Werror=implicit-function-declaration]
 
-> >>> This commit enables VIDIOC_ENUMINPUT, VIDIOC_G_INPUT, and VIDIOC_S_INPUT
-> >>> ioctls for use via v4l2 subdevice node.
-> >>>
-> >>> This commit should probably not be pushed upstream, because the (old)
-> >>> idea of video inputs conflicts with the newer concept of establishing
-> >>> media links between src->sink pads.
-> >>>
-> >>> However it might make sense for some subdevices to support enum/get/set
-> >>> inputs. One example would be the analog front end subdevice for the
-> >>> ADV748x. By providing these ioctls, selecting the ADV748x analog inputs
-> >>> can be done without requiring the implementation of media entities that
-> >>> would define the analog source for which to establish a media link.
-> >>>
-> >>> Signed-off-by: Steve Longerbeam <steve_longerbeam@mentor.com>
-> >>> ---
-> >>>  drivers/media/v4l2-core/v4l2-subdev.c |  9 +++++++++
-> >>>  include/media/v4l2-subdev.h           | 11 +++++++++++
-> >>>  2 files changed, 20 insertions(+)
-> >>>
-> >>> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-> >>> index 6b989fe..73fbfe9 100644
-> >>> --- a/drivers/media/v4l2-core/v4l2-subdev.c
-> >>> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-> >>> @@ -378,6 +378,15 @@ static long subdev_do_ioctl(struct file *file, unsigned int cmd, void *arg)
-> >>>  			return -ENOTTY;
-> >>>  		return v4l2_querymenu(vfh->ctrl_handler, arg);
-> >>>
-> >>> +	case VIDIOC_ENUMINPUT:
-> >>> +		return v4l2_subdev_call(sd, video, enuminput, arg);
-> >>> +
-> >>> +	case VIDIOC_G_INPUT:
-> >>> +		return v4l2_subdev_call(sd, video, g_input, arg);
-> >>> +
-> >>> +	case VIDIOC_S_INPUT:
-> >>> +		return v4l2_subdev_call(sd, video, s_input, *(u32 *)arg);
-> >>> +
-> >>>  	case VIDIOC_G_CTRL:
-> >>>  		if (!vfh->ctrl_handler)
-> >>>  			return -ENOTTY;
-> >>> diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-> >>> index f7fe78a..6e1a9cd 100644
-> >>> --- a/include/media/v4l2-subdev.h
-> >>> +++ b/include/media/v4l2-subdev.h
-> >>> @@ -383,6 +383,14 @@ struct v4l2_mbus_frame_desc {
-> >>>   * @g_input_status: get input status. Same as the status field in the
-> >>>   *	&struct &v4l2_input
-> >>>   *
-> >>> + * @enuminput: enumerate inputs. Should return the same input status as
-> >>> + *      @g_input_status if the passed input index is the currently active
-> >>> + *      input.
-> >>> + *
-> >>> + * @g_input: returns the currently active input index.
-> >>> + *
-> >>> + * @s_input: set the active input.
-> >>> + *
-> >>>   * @s_stream: used to notify the driver that a video stream will start or has
-> >>>   *	stopped.
-> >>>   *
-> >>> @@ -423,6 +431,9 @@ struct v4l2_subdev_video_ops {
-> >>>  	int (*g_tvnorms)(struct v4l2_subdev *sd, v4l2_std_id *std);
-> >>>  	int (*g_tvnorms_output)(struct v4l2_subdev *sd, v4l2_std_id *std);
-> >>>  	int (*g_input_status)(struct v4l2_subdev *sd, u32 *status);
-> >>> +	int (*enuminput)(struct v4l2_subdev *sd, struct v4l2_input *input);
-> >>> +	int (*g_input)(struct v4l2_subdev *sd, u32 *index);
-> >>> +	int (*s_input)(struct v4l2_subdev *sd, u32 index);
-> >>>  	int (*s_stream)(struct v4l2_subdev *sd, int enable);
-> >>>  	int (*g_pixelaspect)(struct v4l2_subdev *sd, struct v4l2_fract *aspect);
-> >>>  	int (*g_frame_interval)(struct v4l2_subdev *sd,
+Error/Warning ids grouped by kconfigs:
 
--- 
-Regards,
+recent_errors
+|-- arc-allyesconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- arc-defconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- arc-randconfig-c003-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- arc-randconfig-c021-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- arm-allmodconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- arm-allyesconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- arm-defconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- h8300-randconfig-r031-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- ia64-allmodconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- ia64-allnoconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- ia64-allyesconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- ia64-defconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- ia64-randconfig-c004-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- m68k-randconfig-r016-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- mips-allmodconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- mips-allyesconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- mips-loongson1b_defconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- nds32-randconfig-c022-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- openrisc-allyesconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- openrisc-randconfig-c021-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- parisc-allmodconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- parisc-allyesconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- parisc-defconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- parisc-randconfig-r003-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- parisc-randconfig-r035-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- riscv-allmodconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- riscv-allyesconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- riscv-defconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- riscv-randconfig-c023-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- riscv-randconfig-r033-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- s390-allmodconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- s390-allnoconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- s390-allyesconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- s390-defconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- s390-randconfig-r003-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- s390-randconfig-r006-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- s390-randconfig-r034-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- s390-randconfig-s031-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- s390-randconfig-s032-20200624
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- sparc-allmodconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- sparc-allyesconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- sparc64-allmodconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- sparc64-allyesconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+|-- sparc64-defconfig
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+|   |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+|   `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
+`-- xtensa-randconfig-r023-20200624
+    |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_add_return
+    |-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_andnot
+    `-- kernel-rcu-tree.c:error:implicit-declaration-of-function-arch_atomic_read
 
-Laurent Pinchart
+elapsed time: 720m
+
+configs tested: 106
+configs skipped: 3
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arc                     haps_hs_smp_defconfig
+s390                             allyesconfig
+powerpc                          g5_defconfig
+mips                        jmr3927_defconfig
+i386                             alldefconfig
+nds32                             allnoconfig
+sh                           se7724_defconfig
+mips                     loongson1b_defconfig
+parisc                            allnoconfig
+arm                            lart_defconfig
+mips                      loongson3_defconfig
+i386                              allnoconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20200624
+i386                 randconfig-a006-20200624
+i386                 randconfig-a003-20200624
+i386                 randconfig-a001-20200624
+i386                 randconfig-a005-20200624
+i386                 randconfig-a004-20200624
+x86_64               randconfig-a004-20200624
+x86_64               randconfig-a002-20200624
+x86_64               randconfig-a003-20200624
+x86_64               randconfig-a005-20200624
+x86_64               randconfig-a001-20200624
+x86_64               randconfig-a006-20200624
+i386                 randconfig-a013-20200624
+i386                 randconfig-a016-20200624
+i386                 randconfig-a012-20200624
+i386                 randconfig-a014-20200624
+i386                 randconfig-a011-20200624
+i386                 randconfig-a015-20200624
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
