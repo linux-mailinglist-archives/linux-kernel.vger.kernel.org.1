@@ -2,167 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87AB20A035
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 15:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876FD20A01F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 15:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405257AbgFYNoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 09:44:25 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:49622 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2405247AbgFYNoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 09:44:20 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 991E3A2CC515FC3F8A23;
-        Thu, 25 Jun 2020 21:44:15 +0800 (CST)
-Received: from A190218597.china.huawei.com (10.47.76.118) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 25 Jun 2020 21:44:07 +0800
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     <linux-arm-kernel@lists.infradead.org>
-CC:     <maz@kernel.org>, <will@kernel.org>, <catalin.marinas@arm.com>,
-        <christoffer.dall@arm.com>, <andre.przywara@arm.com>,
-        <james.morse@arm.com>, <mark.rutland@arm.com>,
-        <lorenzo.pieralisi@arm.com>, <sudeep.holla@arm.com>,
-        <qemu-arm@nongnu.org>, <peter.maydell@linaro.org>,
-        <richard.henderson@linaro.org>, <imammedo@redhat.com>,
-        <mst@redhat.com>, <drjones@redhat.com>, <pbonzini@redhat.com>,
-        <eric.auger@redhat.com>, <gshan@redhat.com>, <david@redhat.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <mehta.salil.lnk@gmail.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "Xiongfeng Wang" <wangxiongfeng2@huawei.com>
-Subject: [PATCH RFC 4/4] arm64: kernel: Arch specific ACPI hooks(like logical cpuid<->hwid etc.)
-Date:   Thu, 25 Jun 2020 14:37:57 +0100
-Message-ID: <20200625133757.22332-5-salil.mehta@huawei.com>
-X-Mailer: git-send-email 2.8.3
-In-Reply-To: <20200625133757.22332-1-salil.mehta@huawei.com>
-References: <20200625133757.22332-1-salil.mehta@huawei.com>
+        id S2405132AbgFYNiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 09:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404890AbgFYNit (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 09:38:49 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E54C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 06:38:48 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id l17so5615392wmj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 06:38:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=sChA7GHV4hlkfpK+ozmJjB10++7TNo/bmR1QteXGK7Y=;
+        b=VE1H4cUGZxywExFFi62qrPnBOZqKjdb+jDa5svgWaNo5vczGVwC+hGVzms75r9EN99
+         ynBiDKp6F3K2woAR15eWxxr15ZF4xdwwEPfWFym2I9DYpqJMSRDdlJrwQBX40V5l9/sL
+         flAa+jjvwqAVo6XI0piFN35fypGzChA1muKJAe6FPRiDXu887m2RCtrqeBr9WHsHd1Cy
+         FiJ+TqRXn27CTzQ/X796jPWTUk6NHVjBNuNspEzZBLz2qc9hKqj+5K7v2L5/B/4s5kzp
+         /YMUVNCytsS49H1vFyOy4yXT5ogSKEjAbGv8glKbUpAh6IE8YIbm5n6O8qdk+p2zxJlM
+         fRAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=sChA7GHV4hlkfpK+ozmJjB10++7TNo/bmR1QteXGK7Y=;
+        b=Dka8ee25DhvrLrS4LzIm72DyaWABavUbj46GKp+yA3RyT+hAhh6BH1IOm1NFrms/04
+         iYxaLAXd93MT/rRq2aTv8TbKP1ihcVQ2YVCtT8cogpmljrHg6AgHg/AY8CRCc8Lsx2u9
+         Fg4oyNrcIRgMqUyhDpo/h1vCEzrLMTzAeSqDIGaoPkNBoLoSUbzgYihJvN+BH07e46Ts
+         jbMIcj97tL2Rw2D7S1XxZpZQxr3EGXzOsHls+eHZqSXcEfFYo0ZLG7misqR8puQhgliQ
+         GZlamSjgDonDyfUThi/SrXNSUpw7bt1atPAfhQrA8fQGbtd36HLdnVyeFGAWxnTz/GY0
+         xIyw==
+X-Gm-Message-State: AOAM531jJwuNFksx9FGVDkVAQd/aJafqS/tADJiYLL8nQmtbTXKvBKaO
+        2dnC6+l0ft8jas/0tMXSvLG2Vg==
+X-Google-Smtp-Source: ABdhPJzFZQWGTBTBa4T/1hxiqe1NJvboVg4FHe1xLQbOxZguhizJ0+w360c0uCvspO0ywn5TRE8fXw==
+X-Received: by 2002:a1c:3dc3:: with SMTP id k186mr3610133wma.66.1593092327610;
+        Thu, 25 Jun 2020 06:38:47 -0700 (PDT)
+Received: from dell ([2.27.35.144])
+        by smtp.gmail.com with ESMTPSA id l14sm15255159wrn.18.2020.06.25.06.38.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jun 2020 06:38:46 -0700 (PDT)
+Date:   Thu, 25 Jun 2020 14:38:45 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [PATCH 01/10] mfd: wm8350-core: Supply description
+ wm8350_reg_{un}lock args
+Message-ID: <20200625133845.GQ954398@dell>
+References: <20200625064619.2775707-1-lee.jones@linaro.org>
+ <20200625064619.2775707-2-lee.jones@linaro.org>
+ <20200625065608.GB2789306@kroah.com>
+ <20200625071313.GM954398@dell>
+ <20200625072449.4d3e3fca@lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.47.76.118]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200625072449.4d3e3fca@lwn.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To support virtual cpu hotplug, some arch specifc hooks must be
-facilitated. These hooks are called by the generic ACPI cpu hotplug
-framework during a vcpu hot-(un)plug event handling. The changes
-required involve:
+On Thu, 25 Jun 2020, Jonathan Corbet wrote:
+> On Thu, 25 Jun 2020 08:13:13 +0100
+> Lee Jones <lee.jones@linaro.org> wrote:
+> 
+> > > Why are all of these documentation fixes for stable?  
+> > 
+> > Because they fix compiler warnings.
+> > 
+> > Not correct?
+> 
+> I am overjoyed to see people fixing docs build warnings, it is work that
+> is desperately needed.
 
-1. Allocation of the logical cpuid corresponding to the hwid/mpidr
-2. Mapping of logical cpuid to hwid/mpidr and marking present
-3. Removing vcpu from present mask during hot-unplug
-4. For arm64, all possible cpus are registered within topology_init()
-   Hence, we need to override the weak ACPI call of arch_register_cpu()
-   (which returns -ENODEV) and return success.
-5. NUMA node mapping set for this vcpu using SRAT Table info during init
-   time will be discarded as the logical cpu-ids used at that time
-   might not be correct. This mapping will be set again using the
-   proximity/node info obtained by evaluating _PXM ACPI method.
+I'll do what I can with the time that I have.
 
-Note, during hot unplug of vcpu, we do not unmap the association between
-the logical cpuid and hwid/mpidr. This remains persistent.
+The plan is to keep plodding on and seeing how far I can take it.  A
+clean W=1 build sounds like rainbows and unicorns presently, but Rome
+wasn't built in a day.
 
-Signed-off-by: Salil Mehta <salil.mehta@huawei.com>
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
----
- arch/arm64/kernel/smp.c | 80 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 80 insertions(+)
+Tell you the truth, drafting patches (again, after a break) is a
+welcome change/release from digging around and reviewing Android
+Stable patches.  It's the only thing keeping me sane. :)
 
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index 63f31ea23e55..f3315840e829 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -528,6 +528,86 @@ struct acpi_madt_generic_interrupt *acpi_cpu_get_madt_gicc(int cpu)
- 	return &cpu_madt_gicc[cpu];
- }
- 
-+#ifdef CONFIG_ACPI_HOTPLUG_CPU
-+int arch_register_cpu(int num)
-+{
-+	return 0;
-+}
-+
-+static int set_numa_node_for_cpu(acpi_handle handle, int cpu)
-+{
-+#ifdef CONFIG_ACPI_NUMA
-+	int node_id;
-+
-+	/* will evaluate _PXM */
-+	node_id = acpi_get_node(handle);
-+	if (node_id != NUMA_NO_NODE)
-+		set_cpu_numa_node(cpu, node_id);
-+#endif
-+	return 0;
-+}
-+
-+static void unset_numa_node_for_cpu(int cpu)
-+{
-+#ifdef CONFIG_ACPI_NUMA
-+	set_cpu_numa_node(cpu, NUMA_NO_NODE);
-+#endif
-+}
-+
-+static int allocate_logical_cpuid(u64 physid)
-+{
-+	int first_invalid_idx = -1;
-+	bool first = true;
-+	int i;
-+
-+	for_each_possible_cpu(i) {
-+		/*
-+		 * logical cpuid<->hwid association remains persistent once
-+		 * established
-+		 */
-+		if (cpu_logical_map(i) == physid)
-+			return i;
-+
-+		if ((cpu_logical_map(i) == INVALID_HWID) && first) {
-+			first_invalid_idx = i;
-+			first = false;
-+		}
-+	}
-+
-+	return first_invalid_idx;
-+}
-+
-+int acpi_unmap_cpu(int cpu)
-+{
-+	set_cpu_present(cpu, false);
-+	unset_numa_node_for_cpu(cpu);
-+
-+	return 0;
-+}
-+
-+int acpi_map_cpu(acpi_handle handle, phys_cpuid_t physid, u32 acpi_id,
-+		 int *cpuid)
-+{
-+	int cpu;
-+
-+	cpu = allocate_logical_cpuid(physid);
-+	if (cpu < 0) {
-+		pr_warn("Unable to map logical cpuid to physid 0x%llx\n",
-+			physid);
-+		return -ENOSPC;
-+	}
-+
-+	/* map the logical cpu id to cpu MPIDR */
-+	cpu_logical_map(cpu) = physid;
-+	set_numa_node_for_cpu(handle, cpu);
-+
-+	set_cpu_present(cpu, true);
-+	*cpuid = cpu;
-+
-+	return 0;
-+}
-+#endif
-+
- /*
-  * acpi_map_gic_cpu_interface - parse processor MADT entry
-  *
+> That said, these warning fixes are probably not
+> stable material; the problem is bigger and longer-term than that.
+
+Fair enough.
+
 -- 
-2.17.1
-
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
