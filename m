@@ -2,107 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D102C2098AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 04:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292CA2098A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 04:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389568AbgFYC57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 22:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
+        id S2389617AbgFYCyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 22:54:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388930AbgFYC56 (ORCPT
+        with ESMTP id S2389357AbgFYCyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 22:57:58 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C991C061573;
-        Wed, 24 Jun 2020 19:57:58 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49sl7Q29dtz9sRf;
-        Thu, 25 Jun 2020 12:57:54 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1593053876;
-        bh=psPe9FzujwmVzuE9PFq9+5QBvHHW8QOUloymleHrmB0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Ag48Ej54AJGxJsdBdpiEhqFZENi3qz0QyS2Oz5N/MKZcYhCrKjwBFQhLq4fvRCXZ/
-         gJyRNiAC1QSaHQTazLRNHjKM9c4oTZY9pb6h9Xdr3bPNHg673GvvRl16m0UYBPMXTV
-         EqoEbQCBfmL8tmUL865HR7jn/MyQCcs4OmnxQnUZPFOsUch5PcfUKVoJLXf+1OjteM
-         3hJoiaBPR311aFtxdk/9oyYueTvEHL25wcPYSJ/bFBIhfAJpX5Z7ZpD0R/HSr/vnel
-         nLcWrWcHQN/94vOibwgiEdlty4MOiQ+x79GURsSFmmRQGuhbJcNO2jQ5m1KEjMMm3x
-         ZJOrV+Fts3ETA==
-Date:   Thu, 25 Jun 2020 12:57:53 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: linux-next: build failure after merge of the rcu tree
-Message-ID: <20200625125753.6ec44d50@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/bJTHBuQJEM8peeNQsjWP.RA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Wed, 24 Jun 2020 22:54:52 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540D6C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 19:54:51 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id l63so2583666pge.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 19:54:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=fAhw99hSHSp4oWrS0namYNm6Go3NsuSaLTMdS2js2yg=;
+        b=tGJIN5xGsgN1is4VPvkWyDq1pQcJK/f4mEt+aWjJHg7bZ3RJcDogKlmQ0OSbuVj4dk
+         m8f1/44VpRJ3kiSvogq4WXlZ3AY6U2bU3iwIhwsi9/432OcHSqoK785PT1o24waKPk3y
+         JkpBWrh9BmojPyt6eC9QUQqiXQK5t8N4VSGy8DmuPGEt9bR/ONK3zzbAggeOqH7PR7UW
+         TlCDWeZoRDnx4wuJN4Y2p4v0QoXAKAgzmw1+ZZV1tyk93pdcs1CcjpKikxhpATOSO5Lc
+         RsNnXAUUon3g9H+ZafgA/DX3BsvOxBOIRnnzmEgwjDKYQudXSSRn33PYSWi6eyNCcZWx
+         whGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fAhw99hSHSp4oWrS0namYNm6Go3NsuSaLTMdS2js2yg=;
+        b=tImNQCHoSM+o05vGvFn1d36AP1eFAnIKe9wxDEP52yWMtzmYC3UfXptfkRDCJ79YVF
+         BPFx//nUKPXjqX00541T8l6ec7ptQTfqiug1smRWAXYvFXGgv6dBodQgLNnKZmEZwE32
+         bIes8gT0lOftiTtpSzTS0c0L6pLcpea2AD8Nc42J9k3M8RffZ0aPF1QUd1FOKporW7eD
+         C59Ym+BoyGv8FZsQtEHRlEcWPHCAhzcOHC23aZvpZ5tRoMi3pLpfrO/xVrZ9vWNncHL1
+         QIAMH4lejHevAqEkzObB41lxig55FePFGe1gnPx8Mk66AIoOH22t1UjjPcbZvEe7ucU1
+         AFuQ==
+X-Gm-Message-State: AOAM533e0elF7r7heEuHJuRPjWdRKHpLGJT76WxbmnrN2PrrTunLwkHC
+        mLE9NQnZEGKWP3Jk1/DLz9WOyovp17w=
+X-Google-Smtp-Source: ABdhPJypIwr6XPQgemt6CJF4aVOuSE9P8rFDuFGhKBDr+zcFrzEKlnZEEU3wYydNz5mYaZJaYnAkvg==
+X-Received: by 2002:a63:de18:: with SMTP id f24mr23694179pgg.415.1593053690835;
+        Wed, 24 Jun 2020 19:54:50 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.182.254.114])
+        by smtp.gmail.com with ESMTPSA id y10sm18593000pgi.54.2020.06.24.19.54.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 24 Jun 2020 19:54:50 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org
+Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Paul Durrant <xadimgnik@gmail.com>
+Subject: [PATCH 1/2] xen/privcmd: Corrected error handling path and mark pages dirty
+Date:   Thu, 25 Jun 2020 08:32:39 +0530
+Message-Id: <1593054160-12628-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/bJTHBuQJEM8peeNQsjWP.RA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Previously, if lock_pages() end up partially mapping pages, it used
+to return -ERRNO due to which unlock_pages() have to go through
+each pages[i] till *nr_pages* to validate them. This can be avoided
+by passing correct number of partially mapped pages & -ERRNO separately,
+while returning from lock_pages() due to error.
 
-Hi all,
+With this fix unlock_pages() doesn't need to validate pages[i] till
+*nr_pages* for error scenario and few condition checks can be ignored.
 
-After merging the rcu tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+As discussed, pages need to be marked as dirty before unpinned it in
+unlock_pages() which was oversight.
 
-kernel/rcu/tree.c: In function 'rcu_dynticks_eqs_enter':
-kernel/rcu/tree.c:251:8: error: implicit declaration of function 'arch_atom=
-ic_add_return'; did you mean 'atomic_add_return'? [-Werror=3Dimplicit-funct=
-ion-declaration]
-  251 |  seq =3D arch_atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dyntick=
-s);
-      |        ^~~~~~~~~~~~~~~~~~~~~~
-      |        atomic_add_return
-kernel/rcu/tree.c: In function 'rcu_dynticks_eqs_exit':
-kernel/rcu/tree.c:281:3: error: implicit declaration of function 'arch_atom=
-ic_andnot'; did you mean 'atomic_andnot'? [-Werror=3Dimplicit-function-decl=
-aration]
-  281 |   arch_atomic_andnot(RCU_DYNTICK_CTRL_MASK, &rdp->dynticks);
-      |   ^~~~~~~~~~~~~~~~~~
-      |   atomic_andnot
-kernel/rcu/tree.c: In function 'rcu_dynticks_curr_cpu_in_eqs':
-kernel/rcu/tree.c:314:11: error: implicit declaration of function 'arch_ato=
-mic_read'; did you mean 'atomic_read'? [-Werror=3Dimplicit-function-declara=
-tion]
-  314 |  return !(arch_atomic_read(&rdp->dynticks) & RCU_DYNTICK_CTRL_CTR);
-      |           ^~~~~~~~~~~~~~~~
-      |           atomic_read
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Paul Durrant <xadimgnik@gmail.com>
+---
+Hi,
 
-Caused by commit
+I'm compile tested this, but unable to run-time test, so any testing
+help is much appriciated.
 
-  d2f8491368e5 ("rcu: Fixup noinstr warnings")
+ drivers/xen/privcmd.c | 34 +++++++++++++++++++---------------
+ 1 file changed, 19 insertions(+), 15 deletions(-)
 
-I reverted that commit for today.
+diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
+index a250d11..0da417c 100644
+--- a/drivers/xen/privcmd.c
++++ b/drivers/xen/privcmd.c
+@@ -580,43 +580,44 @@ static long privcmd_ioctl_mmap_batch(
+ 
+ static int lock_pages(
+ 	struct privcmd_dm_op_buf kbufs[], unsigned int num,
+-	struct page *pages[], unsigned int nr_pages)
++	struct page *pages[], unsigned int nr_pages, int *pinned)
+ {
+ 	unsigned int i;
++	int errno = 0, page_count = 0;
+ 
+ 	for (i = 0; i < num; i++) {
+ 		unsigned int requested;
+-		int pinned;
+ 
++		*pinned += page_count;
+ 		requested = DIV_ROUND_UP(
+ 			offset_in_page(kbufs[i].uptr) + kbufs[i].size,
+ 			PAGE_SIZE);
+ 		if (requested > nr_pages)
+ 			return -ENOSPC;
+ 
+-		pinned = get_user_pages_fast(
++		page_count = get_user_pages_fast(
+ 			(unsigned long) kbufs[i].uptr,
+ 			requested, FOLL_WRITE, pages);
+-		if (pinned < 0)
+-			return pinned;
++		if (page_count < 0) {
++			errno = page_count;
++			return errno;
++		}
+ 
+-		nr_pages -= pinned;
+-		pages += pinned;
++		nr_pages -= page_count;
++		pages += page_count;
+ 	}
+ 
+-	return 0;
++	return errno;
+ }
+ 
+ static void unlock_pages(struct page *pages[], unsigned int nr_pages)
+ {
+ 	unsigned int i;
+ 
+-	if (!pages)
+-		return;
+-
+ 	for (i = 0; i < nr_pages; i++) {
+-		if (pages[i])
+-			put_page(pages[i]);
++		if (!PageDirty(page))
++			set_page_dirty_lock(page);
++		put_page(pages[i]);
+ 	}
+ }
+ 
+@@ -630,6 +631,7 @@ static long privcmd_ioctl_dm_op(struct file *file, void __user *udata)
+ 	struct xen_dm_op_buf *xbufs = NULL;
+ 	unsigned int i;
+ 	long rc;
++	int pinned = 0;
+ 
+ 	if (copy_from_user(&kdata, udata, sizeof(kdata)))
+ 		return -EFAULT;
+@@ -683,9 +685,11 @@ static long privcmd_ioctl_dm_op(struct file *file, void __user *udata)
+ 		goto out;
+ 	}
+ 
+-	rc = lock_pages(kbufs, kdata.num, pages, nr_pages);
+-	if (rc)
++	rc = lock_pages(kbufs, kdata.num, pages, nr_pages, &pinned);
++	if (rc < 0) {
++		nr_pages = pinned;
+ 		goto out;
++	}
+ 
+ 	for (i = 0; i < kdata.num; i++) {
+ 		set_xen_guest_handle(xbufs[i].h, kbufs[i].uptr);
+-- 
+1.9.1
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/bJTHBuQJEM8peeNQsjWP.RA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl70ErEACgkQAVBC80lX
-0GzaYgf9EeSnACAXZv6/pEn2jlqn/dAiRC6IBF+fsXdlu++mqbGuc05PRXyH1zK2
-1z7zAHlbU9cEM9R4723WGeyTwRBN+LV1jjO1YAe0OXisJI5HWoXcLNToEnMd4+8b
-rB9a6g3YaK9FF1SAJGgQupzgKY5jReo7dT5ueRUPGpdLILBH4BqJ+LvXXeIa+ZQW
-m/SLbON0cgHgYR1v5FEgqQqS+a/fNGe+bNGHQGenTaaUXluzdrOi1q+yYV8BNn8D
-Ux5yUhZyAAa9edwiTnhUd+FpejIKv/ojBHkudhuSRNDTpwbirf/XzXH3zTysRfQZ
-NctqjW1sM8LmQAo1WZtmJC9K3TqGoA==
-=Y+S6
------END PGP SIGNATURE-----
-
---Sig_/bJTHBuQJEM8peeNQsjWP.RA--
