@@ -2,75 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6B9209A2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 08:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B72209A3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 09:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390052AbgFYG7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 02:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389958AbgFYG7n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 02:59:43 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA2FC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 23:59:43 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id d66so2606111pfd.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 23:59:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=h3cJifZz1u8LBc/y30E1modeSB1/pxO5mM8WcMl5ag0=;
-        b=hIUgXPa7R+lsDLQ6W455cRmyzlZMJSCyD649EBCHTUfbq4cROvPHlO3utX9dP1uY6L
-         TDn6yWLvYVwItyWCrTz0symu1Hp40iPYSmNgRqySCeDHGiqiKRKOrZp/OHyNKCOwPAIv
-         cO+g0PMeDLYS3c7G/YfGzqqPoZhss325oz0+0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=h3cJifZz1u8LBc/y30E1modeSB1/pxO5mM8WcMl5ag0=;
-        b=H+Myyov+VjOhSlqGvcbTN1BWLILGWXU2HLb2qef5EzBlknzDitKNDU0D2ydBcFzU8Z
-         zdvF+ac3WXHudsVVLl16xg5+pz+PDHrxklUT6us9/08ikXojpeUaQ2Ejn+B+PHl8CwaU
-         nP7mIECTTKdbSvAH5TOgn0DSCBznqVna748qRt1x05sazkD8p9f//BeFcS00zNmZou3S
-         dScdFknkQjZATj+bZQA9CU8VPeuA43qPdjeNgIqND1CUluNQ81e4ncWfw0eif4x/Lq7D
-         YBUTKFrQxc4O0j/NcRaTnf1QbKcxjWC6tQeEd5aHfAdRC437toG7D8oxgL3vkMXvGD1U
-         ZLFA==
-X-Gm-Message-State: AOAM5331ADsq2TU99Z9Ca3A22zEdDNTXW9VJdPvvLOUbXz+pmgGhVWLJ
-        eKGoz3uLHA/tx91bzmnHutL/e5E4ZBA=
-X-Google-Smtp-Source: ABdhPJyDXfB/vfATD45LCtZwbIvnX9Ky1w2z2exmM0w4aKL5HLtHcZfvv0hqfh3i1EC7be25yqvHZA==
-X-Received: by 2002:a63:7c56:: with SMTP id l22mr24439286pgn.127.1593068382595;
-        Wed, 24 Jun 2020 23:59:42 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id 21sm4250390pgy.20.2020.06.24.23.59.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 23:59:41 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S2390074AbgFYHGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 03:06:21 -0400
+Received: from mga04.intel.com ([192.55.52.120]:43171 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726149AbgFYHGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 03:06:20 -0400
+IronPort-SDR: 71+V2pjTyziBIisxkGe8/qzdVAsv8ZmOCwquvKEit9TiJ1eGBOCUokTgLNJkGJwlVHJN4exvnp
+ fgYo+rl7wuVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9662"; a="142254431"
+X-IronPort-AV: E=Sophos;i="5.75,278,1589266800"; 
+   d="scan'208";a="142254431"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2020 00:06:17 -0700
+IronPort-SDR: X+6wiNwoM5Pvj8iBiDEXba6nwCOwEE3cuLXuMGGmOvQpMw+AUs8zcAWudSXGEyk60SVKTwhnqg
+ sI5S03gCS3Ag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,278,1589266800"; 
+   d="scan'208";a="275935389"
+Received: from lkp-server01.sh.intel.com (HELO 538b5e3c8319) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 25 Jun 2020 00:06:09 -0700
+Received: from kbuild by 538b5e3c8319 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1joLxY-0001S1-KQ; Thu, 25 Jun 2020 07:06:08 +0000
+Date:   Thu, 25 Jun 2020 15:05:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 360f28f385350da97cd144df62b875e875200e42
+Message-ID: <5ef44cad.IKRqu87N73LotbXI%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200621083315.883209-1-christophe.jaillet@wanadoo.fr>
-References: <20200621083315.883209-1-christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] kernel/cpu_pm: mark 1 function as __init to save some memory
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        bjorn.andersson@linaro.org, dianders@chromium.org,
-        gregkh@linuxfoundation.org
-Date:   Wed, 24 Jun 2020 23:59:41 -0700
-Message-ID: <159306838110.62212.10303992077632246358@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Christophe JAILLET (2020-06-21 01:33:15)
-> 'cpu_pm_init()' is only called via 'core_initcall'.
-> It can be marked as __init to save a few bytes of memory.
->=20
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: 360f28f385350da97cd144df62b875e875200e42  Merge branch 'WIP.fixes'
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+elapsed time: 722m
+
+configs tested: 100
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arc                     haps_hs_smp_defconfig
+s390                             allyesconfig
+powerpc                          g5_defconfig
+mips                        jmr3927_defconfig
+sh                           se7751_defconfig
+arm                       imx_v6_v7_defconfig
+arm                            xcep_defconfig
+arm                      pxa255-idp_defconfig
+arm                          tango4_defconfig
+arm                             pxa_defconfig
+arm                         lpc18xx_defconfig
+mips                           ip27_defconfig
+arm                     eseries_pxa_defconfig
+mips                      loongson3_defconfig
+parisc                            allnoconfig
+arm                            lart_defconfig
+i386                              allnoconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20200624
+i386                 randconfig-a006-20200624
+i386                 randconfig-a003-20200624
+i386                 randconfig-a001-20200624
+i386                 randconfig-a005-20200624
+i386                 randconfig-a004-20200624
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+um                               allmodconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
