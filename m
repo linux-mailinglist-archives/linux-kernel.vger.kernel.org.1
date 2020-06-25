@@ -2,147 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2930320A071
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 16:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FA520A094
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 16:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405278AbgFYOBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 10:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
+        id S2405273AbgFYOIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 10:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405244AbgFYOBN (ORCPT
+        with ESMTP id S2404890AbgFYOIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 10:01:13 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5111FC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 07:01:13 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id u12so4620127qth.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 07:01:13 -0700 (PDT)
+        Thu, 25 Jun 2020 10:08:19 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B53C08C5DB
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 07:08:17 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z13so5990096wrw.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 07:08:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=PkUOCHj9LFPphlCPOdfGOi9fMJfRayuqn+rFrknXVfo=;
-        b=hmNv5x9szlld8JEWZ03cdBMaku4rI3pLsqaeB8MNK/OlxUZA8CPqCjcPHY7kA/hAAG
-         0vPkM+TjO/RkE+9JWh8ZIuGRKPxqRA0dbRdc7gZLZLqdJfbS4EpbSmSCahWYsJJaA/cy
-         0TnJdn2mGusb3TWccflxCvSq5M7nPVgRzQ3c3Z3ci6fMPxXA091+LAxT7M+gMvwXuUx6
-         H0RAzgEL2f6cJcLflRTupK2HR/H3+ugUMctTff20lwkcLoJRxnLoHL5bEVAKxEQB49/0
-         JNe7b3zXfhrxlExK4wv99znqCJzo14Z35Dxth6ylMlUF0VfVn2qbvotdOW+p7DZFkH/U
-         sX5g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=atgNZ9EJInKqGvpdpvxSAKfzqEVZDOyKFFqDeCoAyPs=;
+        b=aagFeOoXCuolSaMaDqmYiuNxxH6euM5mK3NyhWSyUCk0ircDreMOtMB/8R6z5qseJA
+         h3ixeVLZZnkz/OvGmtFUQxZvENjNt6cDN/74YnAXjBO94h860DIEM/hlqs+ckRGyOIq4
+         9ujsQV9hqnwgRxirZnJKJf+61SzXJsNhQT+lVc4HESJ9nGr0fMYygO865o31OSjGm2a/
+         cCDozX00wq4Rghor4sbouwQXY3ur5BBUG/0LW+hCzS7gZvS/h1dWGQvr80kEI7Xx+B1/
+         klilOsCRVEVjKr8JGtC6EyrAAJzfwpkLOzCEFhlUD75xMaAsFjQOE1wZ+awSPVvAmpc/
+         tjew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=PkUOCHj9LFPphlCPOdfGOi9fMJfRayuqn+rFrknXVfo=;
-        b=RZty1SR8UgcDwnJfphKv3+lydlQ7Wnbv2RwClRN8IutbAklqjqO+D11JLtmElGnoko
-         L6ytWKZZE60ueFWB6zboK59uk0b9XZlBptAuJSwVsBbXUgalXQIveZNeF+FlHc+MlYzj
-         0K+3PNavgJVpCVUloQYaKK7RIySkUifVjRZJvlIF33dpUStwB+e85TFXCZfXUtn6/aU5
-         1h/JocteucUZrNytu6YMa0yn5CcyLJvk1y0ZBfMQjIaPJ24wO5tuQladduGzFAdTcl7t
-         DLDSAtIISBg9lNy34GPsA2Vmgn7jomLEUOG+WADxCBmA7DgYm2Sh0G3cQn3RmM46nT9j
-         McWQ==
-X-Gm-Message-State: AOAM530t+uu5uTrqX3I6zQzBOjl/P6mHw6SiW8ydBK3qfuK2R5/6ng07
-        2H2xDD4GnQIZDpj19S8go3g=
-X-Google-Smtp-Source: ABdhPJz0TnsQuAj2jQwYLjbicbfNVB1Hjk7FRyAAAWCBwd9Iio2s6flRsVSg3FsUXtCMMDxVSM+P5A==
-X-Received: by 2002:ac8:6d17:: with SMTP id o23mr17470321qtt.127.1593093672273;
-        Thu, 25 Jun 2020 07:01:12 -0700 (PDT)
-Received: from localhost.localdomain ([72.53.229.195])
-        by smtp.gmail.com with ESMTPSA id f4sm5337691qtv.59.2020.06.25.07.01.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 07:01:11 -0700 (PDT)
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
-To:     shawnguo@kernel.org, fugang.duan@nxp.com
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] ARM: imx6plus: enable internal routing of clk_enet_ref where possible
-Date:   Thu, 25 Jun 2020 10:01:05 -0400
-Message-Id: <20200625140105.14999-2-TheSven73@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200625140105.14999-1-TheSven73@gmail.com>
-References: <20200625140105.14999-1-TheSven73@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=atgNZ9EJInKqGvpdpvxSAKfzqEVZDOyKFFqDeCoAyPs=;
+        b=ax6/rgDrc9Ze18OYdmqoBwQG/Qm+1g9RpxO3rkAkQRZLeO2s5+Bauz/d+g/j6nTITc
+         Ge6n1IafpVft5p8fa97V1a9eLm04AzKh/913ZuqfdFQxyYBg8Y0l7vcPrYXl2d2efoYv
+         pKqbl0CoO3ee2532iYFDhi2wTXjcGVO3ty8hm+zukTUWbUInU/8LLubSoRnGByljfI7K
+         g18BCsKxQ0fBMPuAnKVAlpPEk66VhTeME37B4r875hlWdWovBT60QaKzIvkFyE7BBHU2
+         Gxs0F5ITtYpMqzFjUNjFk+y4BvWSbOvPtQNCJcNvP0cQa1XgTRZh36dBt5UfZVz/lcMb
+         pE7A==
+X-Gm-Message-State: AOAM531lvxV71GjydRyGg7j7Fxxqv++jFd2u4hnZzuOC00VhxR7+ZIvF
+        VAFMPzo1O149ZmVuDMIxQIzT8kTsQGfhzFMVpi06gw==
+X-Google-Smtp-Source: ABdhPJwE5O/Or2NpcZc/Uf3IWvEvm4q78FO4GSYIDKAWh1AA2bVElgrhkCEGLAnpMndAH9RgGn5NtZlX4iU9QCGSdy8=
+X-Received: by 2002:adf:e5d0:: with SMTP id a16mr3791909wrn.48.1593094096181;
+ Thu, 25 Jun 2020 07:08:16 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200625114718.229911-1-kjain@linux.ibm.com> <20200625114718.229911-2-kjain@linux.ibm.com>
+In-Reply-To: <20200625114718.229911-2-kjain@linux.ibm.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 25 Jun 2020 07:08:04 -0700
+Message-ID: <CAP-5=fWG9rxObKJ38dQ=VUf3_mQbNDCTzgU1kkyw=9uVfBa+qw@mail.gmail.com>
+Subject: Re: [RFC 1/3] perf jevents: Add support for parsing perchip/percore events
+To:     Kajol Jain <kjain@linux.ibm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Paul Clarke <pc@us.ibm.com>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        maddy@linux.ibm.com, Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
+        "Liang, Kan" <kan.liang@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On imx6, the ethernet reference clock (clk_enet_ref) can be generated
-by either the imx6, or an external source (e.g. an oscillator or the
-PHY). When generated by the imx6, the clock source (from ANATOP)
-must be routed to the input of clk_enet_ref via two pads on the SoC,
-typically via a dedicated track on the PCB.
+On Thu, Jun 25, 2020 at 4:47 AM Kajol Jain <kjain@linux.ibm.com> wrote:
+>
+> Set up the "PerChip" field  so that perf knows they are
+> per chip events.
+>
+> Set up the "PerCore" field  so that perf knows they are
+> per core events and add these fields to pmu_event structure.
+>
+> Similar to the way we had "PerPkg field
+> to specify perpkg events.
+>
+> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+> ---
+>  tools/perf/pmu-events/jevents.c    | 34 ++++++++++++++++++++++++------
+>  tools/perf/pmu-events/jevents.h    |  3 ++-
+>  tools/perf/pmu-events/pmu-events.h |  2 ++
+>  3 files changed, 32 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+> index fa86c5f997cc..21fd7990ded5 100644
+> --- a/tools/perf/pmu-events/jevents.c
+> +++ b/tools/perf/pmu-events/jevents.c
+> @@ -323,7 +323,8 @@ static int print_events_table_entry(void *data, char *name, char *event,
+>                                     char *pmu, char *unit, char *perpkg,
+>                                     char *metric_expr,
+>                                     char *metric_name, char *metric_group,
+> -                                   char *deprecated, char *metric_constraint)
+> +                                   char *deprecated, char *perchip, char *percore,
+> +                                   char *metric_constraint)
+>  {
+>         struct perf_entry_data *pd = data;
+>         FILE *outfp = pd->outfp;
+> @@ -357,6 +358,10 @@ static int print_events_table_entry(void *data, char *name, char *event,
+>                 fprintf(outfp, "\t.metric_group = \"%s\",\n", metric_group);
+>         if (deprecated)
+>                 fprintf(outfp, "\t.deprecated = \"%s\",\n", deprecated);
+> +       if (perchip)
+> +               fprintf(outfp, "\t.perchip = \"%s\",\n", perchip);
+> +       if (percore)
+> +               fprintf(outfp, "\t.percore = \"%s\",\n", percore);
+>         if (metric_constraint)
+>                 fprintf(outfp, "\t.metric_constraint = \"%s\",\n", metric_constraint);
+>         fprintf(outfp, "},\n");
+> @@ -378,6 +383,8 @@ struct event_struct {
+>         char *metric_group;
+>         char *deprecated;
+>         char *metric_constraint;
+> +       char *perchip;
+> +       char *percore;
+>  };
+>
+>  #define ADD_EVENT_FIELD(field) do { if (field) {               \
+> @@ -406,6 +413,8 @@ struct event_struct {
+>         op(metric_name);                                        \
+>         op(metric_group);                                       \
+>         op(deprecated);                                         \
+> +       op(perchip);                                            \
+> +       op(percore);                                            \
+>  } while (0)
+>
+>  static LIST_HEAD(arch_std_events);
+> @@ -425,7 +434,8 @@ static int save_arch_std_events(void *data, char *name, char *event,
+>                                 char *desc, char *long_desc, char *pmu,
+>                                 char *unit, char *perpkg, char *metric_expr,
+>                                 char *metric_name, char *metric_group,
+> -                               char *deprecated, char *metric_constraint)
+> +                               char *deprecated, char *perchip, char *percore,
+> +                               char *metric_constraint)
+>  {
+>         struct event_struct *es;
+>
+> @@ -489,7 +499,8 @@ try_fixup(const char *fn, char *arch_std, char **event, char **desc,
+>           char **name, char **long_desc, char **pmu, char **filter,
+>           char **perpkg, char **unit, char **metric_expr, char **metric_name,
+>           char **metric_group, unsigned long long eventcode,
+> -         char **deprecated, char **metric_constraint)
+> +         char **deprecated, char **perchip, char **percore,
+> +         char **metric_constraint)
+>  {
+>         /* try to find matching event from arch standard values */
+>         struct event_struct *es;
+> @@ -518,7 +529,8 @@ int json_events(const char *fn,
+>                       char *pmu, char *unit, char *perpkg,
+>                       char *metric_expr,
+>                       char *metric_name, char *metric_group,
+> -                     char *deprecated, char *metric_constraint),
+> +                     char *deprecated, char *perchip, char *percore,
+> +                     char *metric_constraint),
+>           void *data)
+>  {
+>         int err;
+> @@ -548,6 +560,8 @@ int json_events(const char *fn,
+>                 char *metric_name = NULL;
+>                 char *metric_group = NULL;
+>                 char *deprecated = NULL;
+> +               char *perchip = NULL;
+> +               char *percore = NULL;
+>                 char *metric_constraint = NULL;
+>                 char *arch_std = NULL;
+>                 unsigned long long eventcode = 0;
+> @@ -629,6 +643,10 @@ int json_events(const char *fn,
+>                                 addfield(map, &perpkg, "", "", val);
+>                         } else if (json_streq(map, field, "Deprecated")) {
+>                                 addfield(map, &deprecated, "", "", val);
+> +                       } else if (json_streq(map, field, "PerChip")) {
+> +                               addfield(map, &perchip, "", "", val);
+> +                       } else if (json_streq(map, field, "PerCore")) {
+> +                               addfield(map, &percore, "", "", val);
+>                         } else if (json_streq(map, field, "MetricName")) {
+>                                 addfield(map, &metric_name, "", "", val);
+>                         } else if (json_streq(map, field, "MetricGroup")) {
+> @@ -676,13 +694,15 @@ int json_events(const char *fn,
+>                                         &long_desc, &pmu, &filter, &perpkg,
+>                                         &unit, &metric_expr, &metric_name,
+>                                         &metric_group, eventcode,
+> -                                       &deprecated, &metric_constraint);
+> +                                       &deprecated, &perchip, &percore,
+> +                                       &metric_constraint);
+>                         if (err)
+>                                 goto free_strings;
+>                 }
+>                 err = func(data, name, real_event(name, event), desc, long_desc,
+>                            pmu, unit, perpkg, metric_expr, metric_name,
+> -                          metric_group, deprecated, metric_constraint);
+> +                          metric_group, deprecated, perchip, percore,
+> +                          metric_constraint);
+>  free_strings:
+>                 free(event);
+>                 free(desc);
+> @@ -693,6 +713,8 @@ int json_events(const char *fn,
+>                 free(filter);
+>                 free(perpkg);
+>                 free(deprecated);
+> +               free(perchip);
+> +               free(percore);
+>                 free(unit);
+>                 free(metric_expr);
+>                 free(metric_name);
+> diff --git a/tools/perf/pmu-events/jevents.h b/tools/perf/pmu-events/jevents.h
+> index 2afc8304529e..3c439ecdac7c 100644
+> --- a/tools/perf/pmu-events/jevents.h
+> +++ b/tools/perf/pmu-events/jevents.h
+> @@ -8,7 +8,8 @@ int json_events(const char *fn,
+>                                 char *pmu,
+>                                 char *unit, char *perpkg, char *metric_expr,
+>                                 char *metric_name, char *metric_group,
+> -                               char *deprecated, char *metric_constraint),
+> +                               char *deprecated, char *perchip, char *percore,
+> +                               char *metric_constraint),
+>                 void *data);
+>  char *get_cpu_str(void);
+>
+> diff --git a/tools/perf/pmu-events/pmu-events.h b/tools/perf/pmu-events/pmu-events.h
+> index c8f306b572f4..13d96b732963 100644
+> --- a/tools/perf/pmu-events/pmu-events.h
+> +++ b/tools/perf/pmu-events/pmu-events.h
+> @@ -19,6 +19,8 @@ struct pmu_event {
+>         const char *metric_group;
+>         const char *deprecated;
+>         const char *metric_constraint;
+> +       const char *perchip;
+> +       const char *percore;
 
-On an imx6 plus however, there is a new setting which enables this
-clock to be routed internally on the SoC, from its ANATOP clock
-source, straight to clk_enet_ref, without having to go through
-the SoC pads.
+(In general this looks good! Some nits)
+Could we document perchip and percore? Agreed that the style here is
+not to comment.
+I'm a little confused as to why these need to be const char* and can't
+just be a bool? Perhaps other variables shouldn't be const char* too.
+Is there ever a case where both perchip and percore could be true?
+Would something like an enum capture this better? I can imagine other
+cases uncore and it seems a little strange to add a new "const char*"
+each time.
 
-Board designs where the clock is generated by the imx6 should not
-be affected by routing the clock internally. Therefore on a plus,
-we can enable internal routing by default.
+I'm wondering if there needs to be a glossary of terms, so that the
+use of terms like core, chip, thread, socket, cpu, package is kept
+consistent. It's not trivially clear what the difference between a
+chip and a socket is, for example. Mapping terms to other vendors
+commonly used terms, such as "complex" would also be useful.
 
-Signed-off-by: Sven Van Asbroeck <TheSven73@gmail.com>
----
-v3 -> v4:
-  - avoid double-check for IS_ERR(gpr) by including Fabio Estevam's
-    patch.
-v2 -> v3:
-  - remove check for imx6q, which is already implied when
-    of_machine_is_compatible("fsl,imx6qp")
-v1 -> v2:
-  - Fabio Estevam: use of_machine_is_compatible() to determine if we
-    are running on an imx6 plus.
+Thanks,
+Ian
 
-To: Shawn Guo <shawnguo@kernel.org>
-To: Andy Duan <fugang.duan@nxp.com>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: NXP Linux Team <linux-imx@nxp.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-
- arch/arm/mach-imx/mach-imx6q.c              | 14 ++++++++++++++
- include/linux/mfd/syscon/imx6q-iomuxc-gpr.h |  1 +
- 2 files changed, 15 insertions(+)
-
-diff --git a/arch/arm/mach-imx/mach-imx6q.c b/arch/arm/mach-imx/mach-imx6q.c
-index ae89ad93ca83..07cfe0d349c3 100644
---- a/arch/arm/mach-imx/mach-imx6q.c
-+++ b/arch/arm/mach-imx/mach-imx6q.c
-@@ -204,6 +204,20 @@ static void __init imx6q_1588_init(void)
- 	regmap_update_bits(gpr, IOMUXC_GPR1, IMX6Q_GPR1_ENET_CLK_SEL_MASK,
- 			   clksel);
- 
-+	/*
-+	 * On imx6 plus, enet_ref from ANATOP/CCM can be internally routed to
-+	 * be the PTP clock source, instead of having to be routed through
-+	 * pads.
-+	 * Board designs which route the ANATOP/CCM clock through pads are
-+	 * unaffected when routing happens internally. So on these designs,
-+	 * route internally by default.
-+	 */
-+	if (clksel == IMX6Q_GPR1_ENET_CLK_SEL_ANATOP &&
-+			of_machine_is_compatible("fsl,imx6qp"))
-+		regmap_update_bits(gpr, IOMUXC_GPR5,
-+				IMX6Q_GPR5_ENET_TXCLK_SEL,
-+				IMX6Q_GPR5_ENET_TXCLK_SEL);
-+
- 	clk_put(enet_ref);
- put_ptp_clk:
- 	clk_put(ptp_clk);
-diff --git a/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h b/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h
-index d4b5e527a7a3..eb65d48da0df 100644
---- a/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h
-+++ b/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h
-@@ -240,6 +240,7 @@
- #define IMX6Q_GPR4_IPU_RD_CACHE_CTL		BIT(0)
- 
- #define IMX6Q_GPR5_L2_CLK_STOP			BIT(8)
-+#define IMX6Q_GPR5_ENET_TXCLK_SEL		BIT(9)
- #define IMX6Q_GPR5_SATA_SW_PD			BIT(10)
- #define IMX6Q_GPR5_SATA_SW_RST			BIT(11)
- 
--- 
-2.17.1
-
+>  };
+>
+>  /*
+> --
+> 2.26.2
+>
