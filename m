@@ -2,145 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0B220A430
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8099820A43D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406813AbgFYRmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 13:42:25 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10680 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405282AbgFYRmZ (ORCPT
+        id S2406892AbgFYRn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 13:43:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406882AbgFYRn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 13:42:25 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ef4e1a20001>; Thu, 25 Jun 2020 10:40:50 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 25 Jun 2020 10:42:24 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 25 Jun 2020 10:42:24 -0700
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 25 Jun
- 2020 17:42:24 +0000
-Subject: Re: [RESEND PATCH 2/3] nouveau: fix mixed normal and device private
- page migration
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Christoph Hellwig <hch@lst.de>, <nouveau@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, Jerome Glisse <jglisse@redhat.com>,
-        "John Hubbard" <jhubbard@nvidia.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, Bharata B Rao <bharata@linux.ibm.com>
-References: <20200622233854.10889-1-rcampbell@nvidia.com>
- <20200622233854.10889-3-rcampbell@nvidia.com> <20200624072355.GB18609@lst.de>
- <330f6a82-d01d-db97-1dec-69346f41e707@nvidia.com>
- <a9aba057-3786-8204-f782-6e8f3c290b35@nvidia.com>
- <20200625173144.GT6578@ziepe.ca>
-From:   Ralph Campbell <rcampbell@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <412b3a51-619a-4f94-da96-f4596e5eb510@nvidia.com>
-Date:   Thu, 25 Jun 2020 10:42:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Thu, 25 Jun 2020 13:43:26 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819B2C08C5C1;
+        Thu, 25 Jun 2020 10:43:26 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 4C2FD2A576A
+Message-ID: <e477f42cd537c6e6e1f707492f6ad8ab6a510e3a.camel@collabora.com>
+Subject: Re: [RFC 2/7] fixup! media: uapi: h264: update reference lists
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Date:   Thu, 25 Jun 2020 14:42:47 -0300
+In-Reply-To: <27c646c790d6b00b29f4a61c58eb761ceb56179a.camel@collabora.com>
+References: <20200623182809.1375-1-ezequiel@collabora.com>
+         <20200623182809.1375-3-ezequiel@collabora.com>
+         <27c646c790d6b00b29f4a61c58eb761ceb56179a.camel@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.0-1 
 MIME-Version: 1.0
-In-Reply-To: <20200625173144.GT6578@ziepe.ca>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593106851; bh=dVDtjOJNekdnS7jMIhDZrkR7SUVoPtPB26y7vdiQ8rc=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=C79NzfYIZ/4/7K07xyDkDyWF09cLOtFqcAGWDpgLD6fZQTPfIVTxfx1KX73YbBEX5
-         /lPoACQODhbk+hYa01hbXni4W78wr6AcXvVIyzAG0zdQlx2FtFg1fMjGGCHQ9GA8iu
-         ZhYBp+2pngMltPsi9YG3jJwCKSJmCqJAqoXHEQLTZGDGuSNkde/g66HChAung88sMa
-         Yn/fIm7hckavMnJq1E5saPfA+7u/Qkh3aGkER+w3SF8PIYoGYjuHKncp7/+hLfUWWo
-         VokvfaTAX8aR6ZKyk9Guo7o3WeVENV12wbZ5ShgD2PtP+fkIq1KpbhHNNwmfFDGww0
-         OSCwcLhSmr9Vg==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+(Adding Jernej, seems I haven't Cced him!)
 
-On 6/25/20 10:31 AM, Jason Gunthorpe wrote:
-> On Thu, Jun 25, 2020 at 10:25:38AM -0700, Ralph Campbell wrote:
->> Making sure to include linux-mm and Bharata B Rao for IBM's
->> use of migrate_vma*().
->>
->> On 6/24/20 11:10 AM, Ralph Campbell wrote:
->>>
->>> On 6/24/20 12:23 AM, Christoph Hellwig wrote:
->>>> On Mon, Jun 22, 2020 at 04:38:53PM -0700, Ralph Campbell wrote:
->>>>> The OpenCL function clEnqueueSVMMigrateMem(), without any flags, will
->>>>> migrate memory in the given address range to device private memory. T=
-he
->>>>> source pages might already have been migrated to device private memor=
-y.
->>>>> In that case, the source struct page is not checked to see if it is
->>>>> a device private page and incorrectly computes the GPU's physical
->>>>> address of local memory leading to data corruption.
->>>>> Fix this by checking the source struct page and computing the correct
->>>>> physical address.
->>>>
->>>> I'm really worried about all this delicate code to fix the mixed
->>>> ranges.=C2=A0 Can't we make it clear at the migrate_vma_* level if we =
-want
->>>> to migrate from or two device private memory, and then skip all the wo=
-rk
->>>> for regions of memory that already are in the right place?=C2=A0 This =
-might be
->>>> a little more work initially, but I think it leads to a much better
->>>> API.
->>>>
->>>
->>> The current code does encode the direction with src_owner !=3D NULL mea=
-ning
->>> device private to system memory and src_owner =3D=3D NULL meaning syste=
-m
->>> memory to device private memory. This patch would obviously defeat that
->>> so perhaps a flag could be added to the struct migrate_vma to indicate =
-the
->>> direction but I'm unclear how that makes things less delicate.
->>> Can you expand on what you are worried about?
->>>
->>> The issue with invalidations might be better addressed by letting the d=
-evice
->>> driver handle device private page TLB invalidations when migrating to
->>> system memory and changing migrate_vma_setup() to only invalidate CPU
->>> TLB entries for normal pages being migrated to device private memory.
->>> If a page isn't migrating, it seems inefficient to invalidate those TLB
->>> entries.
->>>
->>> Any other suggestions?
->>
->> After a night's sleep, I think this might work. What do others think?
->>
->> 1) Add a new MMU_NOTIFY_MIGRATE enum to mmu_notifier_event.
->>
->> 2) Change migrate_vma_collect() to use the new MMU_NOTIFY_MIGRATE event =
-type.
->>
->> 3) Modify nouveau_svmm_invalidate_range_start() to simply return (no inv=
-alidations)
->> for MMU_NOTIFY_MIGRATE mmu notifier callbacks.
->=20
-> Isn't it a bit of an assumption that migrate_vma_collect() is only
-> used by nouveau itself?
->=20
-> What if some other devices' device_private pages are being migrated?
->=20
-> Jason
->=20
+On Thu, 2020-06-25 at 10:53 -0400, Nicolas Dufresne wrote:
+> Le mardi 23 juin 2020 à 15:28 -0300, Ezequiel Garcia a écrit :
+> > Align v4l2_h264_reference to 32-bits, giving some room
+> > for future extensions.
+> > 
+> > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> > ---
+> >  .../userspace-api/media/v4l/ext-ctrls-codec.rst  |  3 +++
+> >  drivers/media/v4l2-core/v4l2-ctrls.c             | 16 ++++++++++++++++
+> >  include/media/h264-ctrls.h                       |  7 +++++--
+> >  3 files changed, 24 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> > index 6c36d298db20..7af12447a5b0 100644
+> > --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> > +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> > @@ -1943,6 +1943,9 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
+> >      * - __u8
+> >        - ``index``
+> >        -
+> > +    * - __u32
+> > +      - ``reserved``
+> > +      - Applications and drivers must set this to zero.
+> 
+> Is that really appropriate ? There was some effort to keep the controls
+> small. Also, as these are fixed size, they could be extended with
+> supplementary C arrays of the same size, set in separate control.
+> 
 
-Good point. The driver needs a way of knowing the callback is due its call
-to migrate_vma_setup() and not some other migration invalidation.
-How about adding a void pointer to struct mmu_notifier_range
-which migrate_vma_collect() can set to src_owner. If the event is
-MMU_NOTIFY_MIGRATE and the src_owner matches the void pointer, then the
-callback should be the one the driver initiated.
+That's a very valid concern.
+
+Currently, each of these v4l2_h264_reference take 64 bytes
+(32 x 2 bytes). So it's 128 bytes of references.
+
+Having the reserved field means 256 bytes instead.
+
+Without the reserved field v4l2_ctrl_h264_slice_params is 936 bytes,
+the majority of the space taken by v4l2_h264_weight_factors.
+So, the reserved field accounts for a small increment there.
+
+Another option would be to split the v4l2_h264_reference lists
+to its own control.
+
+However, given the above, it would have more impact to consider
+splitting v4l2_h264_pred_weight_table. This table
+being used or not depends on the bitstream, so there might be
+some value here.
+
+What do you think? 
+
+> Also, H264 HW is unlikely to evolve, and that covers what DXVA2 and
+> VAAPI covers already. So it is quite unlikely to ever have to be
+> extended.
+> 
+
+That may be true indeed. Perhaps we can then agree that references
+only need an index and a flag.
+
+Thanks!
+Ezequiel
+
+> >  
+> >  .. _h264_reference_flags:
+> >  
+> > diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+> > index 3f3fbcd60cc6..6abd023f10c7 100644
+> > --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+> > +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+> > @@ -1721,6 +1721,8 @@ static void std_log(const struct v4l2_ctrl *ctrl)
+> >  
+> >  #define zero_padding(s) \
+> >  	memset(&(s).padding, 0, sizeof((s).padding))
+> > +#define zero_reserved(s) \
+> > +	memset(&(s).reserved, 0, sizeof((s).reserved))
+> >  
+> >  /*
+> >   * Compound controls validation requires setting unused fields/flags to zero
+> > @@ -1731,6 +1733,7 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+> >  {
+> >  	struct v4l2_ctrl_mpeg2_slice_params *p_mpeg2_slice_params;
+> >  	struct v4l2_ctrl_vp8_frame_header *p_vp8_frame_header;
+> > +	struct v4l2_ctrl_h264_slice_params *p_h264_slice_params;
+> >  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
+> >  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
+> >  	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
+> > @@ -1790,7 +1793,20 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+> >  	case V4L2_CTRL_TYPE_H264_SPS:
+> >  	case V4L2_CTRL_TYPE_H264_PPS:
+> >  	case V4L2_CTRL_TYPE_H264_SCALING_MATRIX:
+> > +		break;
+> >  	case V4L2_CTRL_TYPE_H264_SLICE_PARAMS:
+> > +		p_h264_slice_params = p;
+> > +
+> > +		for (i = 0; i < V4L2_H264_REF_PIC_LIST_LEN; i++) {
+> > +			struct v4l2_h264_reference *ref0 =
+> > +				&p_h264_slice_params->ref_pic_list0[i];
+> > +			struct v4l2_h264_reference *ref1 =
+> > +				&p_h264_slice_params->ref_pic_list1[i];
+> > +
+> > +			zero_reserved(*ref0);
+> > +			zero_reserved(*ref1);
+> > +		}
+> > +		break;
+> >  	case V4L2_CTRL_TYPE_H264_DECODE_PARAMS:
+> >  		break;
+> >  
+> > diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+> > index 9b1cbc9bc38e..c6cbf178c1c9 100644
+> > --- a/include/media/h264-ctrls.h
+> > +++ b/include/media/h264-ctrls.h
+> > @@ -19,6 +19,8 @@
+> >   */
+> >  #define V4L2_H264_NUM_DPB_ENTRIES 16
+> >  
+> > +#define V4L2_H264_REF_PIC_LIST_LEN 32
+> > +
+> >  /* Our pixel format isn't stable at the moment */
+> >  #define V4L2_PIX_FMT_H264_SLICE v4l2_fourcc('S', '2', '6', '4') /* H264 parsed slices */
+> >  
+> > @@ -146,6 +148,7 @@ struct v4l2_h264_pred_weight_table {
+> >  struct v4l2_h264_reference {
+> >  	__u8 flags;
+> >  	__u8 index;
+> > +	__u16 reserved;
+> >  };
+> >  
+> >  struct v4l2_ctrl_h264_slice_params {
+> > @@ -190,8 +193,8 @@ struct v4l2_ctrl_h264_slice_params {
+> >  	 * Entries on each list are indices into
+> >  	 * v4l2_ctrl_h264_decode_params.dpb[].
+> >  	 */
+> > -	struct v4l2_h264_reference ref_pic_list0[32];
+> > -	struct v4l2_h264_reference ref_pic_list1[32];
+> > +	struct v4l2_h264_reference ref_pic_list0[V4L2_H264_REF_PIC_LIST_LEN];
+> > +	struct v4l2_h264_reference ref_pic_list1[V4L2_H264_REF_PIC_LIST_LEN];
+> >  
+> >  	__u32 flags;
+> >  };
+
+
