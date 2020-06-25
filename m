@@ -2,118 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCCB320A2D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F19420A2EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406094AbgFYQZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 12:25:41 -0400
-Received: from mga17.intel.com ([192.55.52.151]:57733 "EHLO mga17.intel.com"
+        id S2406127AbgFYQaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 12:30:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403774AbgFYQZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 12:25:41 -0400
-IronPort-SDR: u6XJbGrSiCBnPK2yuWidMn5K81r3e5SRQok+qCx/868SI0NqfEnl1D8L1HvtQ0BclGBaJzMhEC
- FboovSrdY8bQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="125206964"
-X-IronPort-AV: E=Sophos;i="5.75,279,1589266800"; 
-   d="scan'208";a="125206964"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2020 09:25:40 -0700
-IronPort-SDR: 1zS+rKFXbHVQPEC745baSDFiDF5jgMUXzZR8vksvauU4x2EUqzh4xrkgKCNl9SBfMX6UlBpuNR
- sTWBigkKJ+JQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,279,1589266800"; 
-   d="scan'208";a="293931084"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by orsmga002.jf.intel.com with ESMTP; 25 Jun 2020 09:25:40 -0700
-Date:   Thu, 25 Jun 2020 09:25:40 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH 1/2] KVM: X86: Move ignore_msrs handling upper the stack
-Message-ID: <20200625162540.GC3437@linux.intel.com>
-References: <20200622220442.21998-1-peterx@redhat.com>
- <20200622220442.21998-2-peterx@redhat.com>
- <20200625061544.GC2141@linux.intel.com>
- <1cebc562-89e9-3806-bb3c-771946fc64f3@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1cebc562-89e9-3806-bb3c-771946fc64f3@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S2403828AbgFYQaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 12:30:19 -0400
+Subject: Re: [GIT PULL] sound fixes for 5.8-rc3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593102619;
+        bh=iCMLWTBVBI7rIXto/eRI/o3cw8o/bskeEzLtBqAX8iE=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=MhohqDlCC1rRXojAfELhtzcJcceh/1ed9Fzj6Sl4aKiFzm1eJHmFoPCgAYo+WNdAS
+         NJRiFBgrw+lKJJVYCIfWVbk5T2b3HcW87LwTmkf2H6+pJbVvZ2QWWOqDnzBpihZIyU
+         LCRuVGIHizlr4vDYiNW4FtUk/SFbVjQC0/hQernA=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <s5hr1u3gyzr.wl-tiwai@suse.de>
+References: <s5hr1u3gyzr.wl-tiwai@suse.de>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <s5hr1u3gyzr.wl-tiwai@suse.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+ tags/sound-5.8-rc3
+X-PR-Tracked-Commit-Id: 220345e98f1cdc768eeb6e3364a0fa7ab9647fe7
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: a4d3712b510534ef2ab5b15429aa94283c233a31
+Message-Id: <159310261896.15384.12625144754835516265.pr-tracker-bot@kernel.org>
+Date:   Thu, 25 Jun 2020 16:30:18 +0000
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 10:09:13AM +0200, Paolo Bonzini wrote:
-> On 25/06/20 08:15, Sean Christopherson wrote:
-> > IMO, kvm_cpuid() is simply buggy.  If KVM attempts to access a non-existent
-> > MSR then it darn well should warn.
-> > 
-> > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> > index 8a294f9747aa..7ef7283011d6 100644
-> > --- a/arch/x86/kvm/cpuid.c
-> > +++ b/arch/x86/kvm/cpuid.c
-> > @@ -1013,7 +1013,8 @@ bool kvm_cpuid(struct kvm_vcpu *vcpu, u32 *eax, u32 *ebx,
-> >                 *ebx = entry->ebx;
-> >                 *ecx = entry->ecx;
-> >                 *edx = entry->edx;
-> > -               if (function == 7 && index == 0) {
-> > +               if (function == 7 && index == 0 && (*ebx | (F(RTM) | F(HLE))) &&
-> > +                   (vcpu->arch.arch_capabilities & ARCH_CAP_TSX_CTRL_MSR)) {
-> >                         u64 data;
-> >                         if (!__kvm_get_msr(vcpu, MSR_IA32_TSX_CTRL, &data, true) &&
-> >                             (data & TSX_CTRL_CPUID_CLEAR))
-> > 
-> 
-> That works too, but I disagree that warning is the correct behavior
-> here.  It certainly should warn as long as kvm_get_msr blindly returns
-> zero.  However, for a guest it's fine to access a potentially
-> non-existent MSR if you're ready to trap the #GP, and the point of this
-> series is to let cpuid.c or any other KVM code do the same.
+The pull request you sent on Thu, 25 Jun 2020 13:34:48 +0200:
 
-I get the "what" of the change, and even the "why" to some extent, but I
-dislike the idea of supporting/encouraging blind reads/writes to MSRs.
-Blind writes are just asking for problems, and suppressing warnings on reads
-is almost guaranteed to be suppressing a KVM bug.
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.8-rc3
 
-Case in point, looking at the TSX thing again, I actually think the fix
-should be:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/a4d3712b510534ef2ab5b15429aa94283c233a31
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 5eb618dbf211..64322446e590 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -1013,9 +1013,9 @@ bool kvm_cpuid(struct kvm_vcpu *vcpu, u32 *eax, u32 *ebx,
-                *ebx = entry->ebx;
-                *ecx = entry->ecx;
-                *edx = entry->edx;
--               if (function == 7 && index == 0) {
-+               if (function == 7 && index == 0 && (*ebx | (F(RTM) | F(HLE))) {
-                        u64 data;
--                       if (!__kvm_get_msr(vcpu, MSR_IA32_TSX_CTRL, &data, true) &&
-+                       if (!kvm_get_msr(vcpu, MSR_IA32_TSX_CTRL, &data) &&
-                            (data & TSX_CTRL_CPUID_CLEAR))
-                                *ebx &= ~(F(RTM) | F(HLE));
-                }
+Thank you!
 
-
-On VMX, MSR_IA32_TSX_CTRL will be added to the so called shared MSR array
-regardless of whether or not it is being advertised to userspace (this is
-a bug in its own right).  Using the host_initiated variant means KVM will
-incorrectly bypass VMX's ARCH_CAP_TSX_CTRL_MSR check, i.e. incorrectly
-clear the bits if userspace is being weird and stuffed MSR_IA32_TSX_CTRL
-without advertising it to the guest.
-
-In short, the whole MSR_IA32_TSX_CTRL implementation seems messy and this
-is just papering over that mess.  The correct fix is to invoke setup_msrs()
-on writes to MSR_IA32_ARCH_CAPABILITIES, filtering MSR_IA32_TSX_CTRL out of
-shared MSRs when it's not advertised, and change kvm_cpuid() to use the
-unpriveleged variant.
-
-TSC_CTRL aside, if we insist on pointing a gun at our foot at some point,
-this should be a dedicated flavor of MSR access, e.g. msr_data.kvm_initiated,
-so that it at least requires intentionally loading the gun.
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
