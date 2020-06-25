@@ -2,134 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFA3209B71
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC2E209B8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390781AbgFYIkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 04:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728725AbgFYIkp (ORCPT
+        id S2390772AbgFYIxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 04:53:18 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.23]:9901 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390330AbgFYIxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 04:40:45 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44C2C061573;
-        Thu, 25 Jun 2020 01:40:44 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id E8EE32A0267
-Subject: Re: [PATCH 7/7] arm64: dts: mt8183: Add krane-sku176 board
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, erwanaliasr1@gmail.com,
-        drinkcat@chromium.org, hsinyi@chromium.org,
-        Ben Ho <Ben.Ho@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20200619102757.1358675-1-enric.balletbo@collabora.com>
- <20200619102757.1358675-8-enric.balletbo@collabora.com>
- <fe814ab3-c237-da9c-d391-cbd0cdbe29bf@gmail.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <3700a9b7-195b-f8d6-de03-fc5a77beffee@collabora.com>
-Date:   Thu, 25 Jun 2020 10:40:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Thu, 25 Jun 2020 04:53:18 -0400
+X-Greylist: delayed 710 seconds by postgrey-1.27 at vger.kernel.org; Thu, 25 Jun 2020 04:53:16 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1593075195;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
+        Subject:Sender;
+        bh=SvsiqIbgk6cr+c3F2pDU3S39cYipI5EbMOg0nUe8u9k=;
+        b=liwBAaC7AFzEq5wyZO0ubn1FEmlmt8d9QlhtbS+JbBNAsm2zMXYlKfDmFFT0cjDgfy
+        vpo2fpzCdYEDr/L7qqTezkmCFUULCQ9mlLj0Ppccyr6P3sntfTBsujPCk4GFCRwmc7z8
+        uDlBlfOD/CbRHOgZAjCvC1RwCPC9KPxX19vtDHS6kaDOjZvchx1bCl/ESl1iSsNbaLAk
+        ilXpeTjDLAUm7OTZmrcI6Wk/sZ4b53ZeLVOXkhGB3gNtZuboK8oCMlnFM5eeOJ+tezEP
+        K7pslX25g0bzWjvUBxUcEVASFhpJ7QtaA0ygAMW8wE3X7Qq80Lu8xDajadpP2RbS0rJg
+        kl9Q==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1mfYzBGHXH7F/3/9Q=="
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+        by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
+        with ESMTPSA id V07054w5P8fE5bH
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Thu, 25 Jun 2020 10:41:14 +0200 (CEST)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org,
+        "H. Nikolaus Schaller" <hns@goldelico.com>
+Subject: [PATCH] modpost: remove use of non-standard strsep() in HOSTCC code
+Date:   Thu, 25 Jun 2020 10:41:13 +0200
+Message-Id: <11c1e65b393b4c3ca6118515c77bbf19524dab11.1593074472.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <fe814ab3-c237-da9c-d391-cbd0cdbe29bf@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
+strsep() is neither standard C nor POSIX and used outside
+the kernel code here. Using it here requires that the
+build host supports it out of the box which is e.g.
+not true for a Darwin build host and using a cross-compiler.
+This leads to:
 
-Thank you for your review.
+scripts/mod/modpost.c:145:2: warning: implicit declaration of function 'strsep' [-Wimplicit-function-declaration]
+  return strsep(stringp, "\n");
+  ^
 
-On 22/6/20 12:33, Matthias Brugger wrote:
-> 
-> 
-> On 19/06/2020 12:27, Enric Balletbo i Serra wrote:
->> Also known as the Lenovo IdeaPad Duet Chromebook.
->>
->> There are different krane boards with shared resources, hence a
->> mt8183-kukui-krane.dtsi was created for easily introduce future new
->> boards. The same happens with the baseboard codenamed kukui where
->> different variants, apart from kukui variant can take advantage of the
->> shared resources.
->>
->> Signed-off-by: Ben Ho <Ben.Ho@mediatek.com>
->> [originally created by Ben Ho but adapted and ported to mainline]
->> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->> ---
->>
->>  arch/arm64/boot/dts/mediatek/Makefile         |   1 +
->>  .../mediatek/mt8183-kukui-krane-sku176.dts    |  18 +
->>  .../boot/dts/mediatek/mt8183-kukui-krane.dtsi | 343 ++++++++
->>  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 788 ++++++++++++++++++
->>  arch/arm64/boot/dts/mediatek/mt8183.dtsi      |   1 +
->>  5 files changed, 1151 insertions(+)
->>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
->>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
->>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
->>
-> [...]
->> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
->> new file mode 100644
->> index 0000000000000..f0a070535b340
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> [...]
->> +
->> +	max98357a: codec0 {
->> +		compatible = "maxim,max98357a";
->> +		sdmode-gpios = <&pio 175 0>;
->> +	};
->> +
->> +	btsco: codec1 {
-> 
-> bt_sco_codec:
-> is more clear, I think.
-> 
+and a segfault when running MODPOST.
 
-Ok. I'll change that in next version.
+See also: https://stackoverflow.com/a/7219504
 
->> +		compatible = "linux,bt-sco";
->> +	};
->> +
->> +	wifi_pwrseq: wifi-pwrseq {
->> +		compatible = "mmc-pwrseq-simple";
->> +		pinctrl-names = "default";
->> +		pinctrl-0 = <&wifi_pins_pwrseq>;
->> +
->> +		/* Toggle WIFI_ENABLE to reset the chip. */
->> +		reset-gpios = <&pio 119 1>;
->> +	};
->> +
-> [...]> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
->> index a1576f1b5a447..689bce13e0165 100644
->> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
->> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
->> @@ -719,6 +719,7 @@ u3phy: usb-phy@11f40000 {
->>  			compatible = "mediatek,mt8183-tphy",
->>  				     "mediatek,generic-tphy-v2";
->>  			#address-cells = <1>;
->> +			#phy-cells = <1>;
-> 
-> Wrong patch?
-> 
+So let's add some lines of code separating the string at the
+next newline character instead of using strsep(). It does not
+hurt kernel size or speed since this code is run on the build host.
 
-Oh yes, this should go with the USB one. Thank you to catch this, I'll fix in
-next version.
+Fixes: ac5100f5432967 ("modpost: add read_text_file() and get_line() helpers")
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ scripts/mod/modpost.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
->>  			#size-cells = <1>;
->>  			ranges = <0 0 0x11f40000 0x1000>;
->>  			status = "okay";
->>
-> 
-> Regards,
-> Matthias
-> 
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index 6aea65c65745..8fe63989c6e1 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -138,11 +138,16 @@ char *read_text_file(const char *filename)
+ 
+ char *get_line(char **stringp)
+ {
++	char *p;
+ 	/* do not return the unwanted extra line at EOF */
+ 	if (*stringp && **stringp == '\0')
+ 		return NULL;
+ 
+-	return strsep(stringp, "\n");
++	p = *stringp;
++	while (**stringp != '\n')
++		(*stringp)++;
++	*(*stringp)++ = '\0';
++	return p;
+ }
+ 
+ /* A list of all modules we processed */
+-- 
+2.26.2
+
