@@ -2,194 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8BBF20A6D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 22:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B57920A6E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 22:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407188AbgFYUhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 16:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47436 "EHLO
+        id S2407202AbgFYUi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 16:38:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407178AbgFYUhL (ORCPT
+        with ESMTP id S2404887AbgFYUi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 16:37:11 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAC7C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 13:37:11 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id d194so498427pga.13
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 13:37:11 -0700 (PDT)
+        Thu, 25 Jun 2020 16:38:58 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298F6C08C5C1;
+        Thu, 25 Jun 2020 13:38:58 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id b7so3805970pju.0;
+        Thu, 25 Jun 2020 13:38:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BfbOYxKLeIPqE6ZPzW8hgon31KuqJHQqU6xvmcaKi7A=;
-        b=P+XqKwc+b/59wUthhc09B6vtmxG5CXTL/uoQtqWWUdzNLEnOz5dLYJovrHWXz7laXS
-         IKf1ZHNwwzSvC9TofFThIw/u0MTl26+Bz6PoFAJrY2NlRgcSAOR6dG+dw4NdWor+ZZz5
-         iPnPkSW3TRGLBFIo9fEYhaMM8QGTOZOdJzs+I=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fal5fqZa3XRJjCDuPEDO6zOzKkuAxW+azO7zrgA/xGY=;
+        b=aLT7qv2dcaqHBFn4kQfpKHtVN6sYDmcOrsDuprsoieasLVliTBRM5T7A0pMy0gAIuq
+         uvzufWdVBX/DMTjf4ECX6E6STgixlstptr4e2vkMqq18VpTcSn3n6SX9js5Om4xyiV9a
+         DYp1o9qmkI/I0JFPZ1ZsEOcWwNf0eWWiJH54+iyf/YzTO2q5UB6e5A+GF2QwIXs4sBHd
+         b1XL1CvOk3K67j/6DY0PI+3Wo0o7O6kajqv1f0evKIOwUjPwHHFN/mhXBh2WfNEsb2mV
+         bE52EFH9Miu4IddBuds+4aDN4vFcKbEYyPvEGkVQyQMfHXPS9cG06ZWTZDoXqYY49Ul1
+         nUXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BfbOYxKLeIPqE6ZPzW8hgon31KuqJHQqU6xvmcaKi7A=;
-        b=EOiphhDRJCP7UwPSKuqWVlA/cuNq+CWwuhA0sgMpMHNnZeKqHFOK+Ob7ANZBUF0e+A
-         w4wBcG1pVFwnosbeAF5pkrvZv7cTqHipu07+zz7G/PJRO1p7VCwiQoFIBJ6ixL2FOAha
-         9YpW2Ln7zRCjQFG74obo/4nJX540zCmK6+ECDplTurLW/tmPzP/Mcl579Yv6B92ahwjs
-         EZjqiS6qZzNCQ3eWX4YzUvfiUyDc5laWvt9od3KlFxUc2v7IKEFzuTcKWk+PB6tcOVJb
-         hytB6ycqW5WgPlhwGjsamiMa09KAAMgj+mkRKbcFxDnsvZ1RQdUZCo7iOd+kR+bNvFNB
-         C/7w==
-X-Gm-Message-State: AOAM530D1IF9ndtcXow58douXExCiQwQBquiiEe0YGkCRbrCVZWQix+4
-        7S0wQk5RA7O5nFR6xtKUznegHg==
-X-Google-Smtp-Source: ABdhPJzIsRSzWksqfzO2CgtSoh+UMwMb6lOLLAlaJ+X4NJEUDDhQjf2qivW77bipnhkgdfXM8HCGjw==
-X-Received: by 2002:a63:7246:: with SMTP id c6mr27896788pgn.422.1593117430937;
-        Thu, 25 Jun 2020 13:37:10 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y12sm24064569pfm.158.2020.06.25.13.37.07
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=fal5fqZa3XRJjCDuPEDO6zOzKkuAxW+azO7zrgA/xGY=;
+        b=kvHx32n84pLF9E5ZT7wsR2KyCNx3N4+ZRkfiOLdKsjQ3RDaFKKehOyzATTHTxSQwVj
+         akSAORh5ojQjbdtJtsZmKSBixsm/WlYVyYSo2u9TuWZh/c+ua+kfJMd0cDnW/Ur7UP2R
+         Acpsqkh3yVaeQDZAEc3EQOh+lj3T3brzdR+rMjbziqxCl+U6XpivxnY46+VT37Zw2c/h
+         y/igIsEEeXm2cPrLimM+35G9mOjuEqvsQMvgb+8xpsgjVemcFzOGaxPZhEkQj5HVsSc9
+         myPYjsJzOo1xDeEstCBlmHUMk11Unoda+CVvfYWF9qmffi1DoAU3hiqgu26B2H3hMWWE
+         dcTA==
+X-Gm-Message-State: AOAM533ZnfqIx4dwdrWNnQLeg3fiANm/b6WpmE1XcloGKc8F1D6i6lNX
+        hHaNJ/nYwPOM790Vm8SgA84=
+X-Google-Smtp-Source: ABdhPJwHUrhTo0VdWyqXJVodPYWb24wQPdUWi/z7ywPj+PvwIUdMoVmkl8yxs2jJOixXvCCSjCoc6w==
+X-Received: by 2002:a17:90a:a383:: with SMTP id x3mr5457506pjp.199.1593117537570;
+        Thu, 25 Jun 2020 13:38:57 -0700 (PDT)
+Received: from google.com ([2601:647:4001:3000::e690])
+        by smtp.gmail.com with ESMTPSA id y7sm9823972pjm.54.2020.06.25.13.38.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 13:37:07 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        linux-kselftest@vger.kernel.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [PATCH drivers/misc v2 4/4] lkdtm: Make arch-specific tests always available
-Date:   Thu, 25 Jun 2020 13:37:04 -0700
-Message-Id: <20200625203704.317097-5-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200625203704.317097-1-keescook@chromium.org>
-References: <20200625203704.317097-1-keescook@chromium.org>
+        Thu, 25 Jun 2020 13:38:55 -0700 (PDT)
+Date:   Thu, 25 Jun 2020 13:38:52 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     David Rientjes <rientjes@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-mm <linux-mm@kvack.org>, linux-api@vger.kernel.org,
+        oleksandr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        John Dias <joaodias@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jann Horn <jannh@google.com>,
+        alexander.h.duyck@linux.intel.com, sj38.park@gmail.com,
+        Arjun Roy <arjunroy@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Colascione <dancol@google.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        SeongJae Park <sjpark@amazon.de>, linux-man@vger.kernel.org
+Subject: Re: [PATCH v8 3/4] mm/madvise: introduce process_madvise() syscall:
+ an external memory hinting API
+Message-ID: <20200625203852.GA55572@google.com>
+References: <20200622192900.22757-1-minchan@kernel.org>
+ <20200622192900.22757-4-minchan@kernel.org>
+ <alpine.DEB.2.22.394.2006241251080.35388@chino.kir.corp.google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2006241251080.35388@chino.kir.corp.google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'd like arch-specific tests to XFAIL when on a mismatched architecture
-so that we can more easily compare test coverage across all systems.
-Lacking kernel configs or CPU features count as a FAIL, not an XFAIL.
+On Wed, Jun 24, 2020 at 01:00:14PM -0700, David Rientjes wrote:
+> On Mon, 22 Jun 2020, Minchan Kim wrote:
+> 
+> > diff --git a/mm/madvise.c b/mm/madvise.c
+> > index 551ed816eefe..23abca3f93fa 100644
+> > --- a/mm/madvise.c
+> > +++ b/mm/madvise.c
+> > @@ -17,6 +17,7 @@
+> >  #include <linux/falloc.h>
+> >  #include <linux/fadvise.h>
+> >  #include <linux/sched.h>
+> > +#include <linux/sched/mm.h>
+> >  #include <linux/ksm.h>
+> >  #include <linux/fs.h>
+> >  #include <linux/file.h>
+> > @@ -995,6 +996,18 @@ madvise_behavior_valid(int behavior)
+> >  	}
+> >  }
+> >  
+> > +static bool
+> > +process_madvise_behavior_valid(int behavior)
+> > +{
+> > +	switch (behavior) {
+> > +	case MADV_COLD:
+> > +	case MADV_PAGEOUT:
+> > +		return true;
+> > +	default:
+> > +		return false;
+> > +	}
+> > +}
+> > +
+> >  /*
+> >   * The madvise(2) system call.
+> >   *
+> > @@ -1042,6 +1055,11 @@ madvise_behavior_valid(int behavior)
+> >   *  MADV_DONTDUMP - the application wants to prevent pages in the given range
+> >   *		from being included in its core dump.
+> >   *  MADV_DODUMP - cancel MADV_DONTDUMP: no longer exclude from core dump.
+> > + *  MADV_COLD - the application is not expected to use this memory soon,
+> > + *		deactivate pages in this range so that they can be reclaimed
+> > + *		easily if memory pressure hanppens.
+> > + *  MADV_PAGEOUT - the application is not expected to use this memory soon,
+> > + *		page out the pages in this range immediately.
+> >   *
+> >   * return values:
+> >   *  zero    - success
+> > @@ -1176,3 +1194,106 @@ SYSCALL_DEFINE3(madvise, unsigned long, start, size_t, len_in, int, behavior)
+> >  {
+> >  	return do_madvise(current, current->mm, start, len_in, behavior);
+> >  }
+> > +
+> > +static int process_madvise_vec(struct task_struct *target_task,
+> > +		struct mm_struct *mm, struct iov_iter *iter, int behavior)
+> > +{
+> > +	struct iovec iovec;
+> > +	int ret = 0;
+> > +
+> > +	while (iov_iter_count(iter)) {
+> > +		iovec = iov_iter_iovec(iter);
+> > +		ret = do_madvise(target_task, mm, (unsigned long)iovec.iov_base,
+> > +					iovec.iov_len, behavior);
+> > +		if (ret < 0)
+> > +			break;
+> > +		iov_iter_advance(iter, iovec.iov_len);
+> > +	}
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static ssize_t do_process_madvise(int pidfd, struct iov_iter *iter,
+> > +				int behavior, unsigned int flags)
+> > +{
+> > +	ssize_t ret;
+> > +	struct pid *pid;
+> > +	struct task_struct *task;
+> > +	struct mm_struct *mm;
+> > +	size_t total_len = iov_iter_count(iter);
+> > +
+> > +	if (flags != 0)
+> > +		return -EINVAL;
+> > +
+> > +	pid = pidfd_get_pid(pidfd);
+> > +	if (IS_ERR(pid))
+> > +		return PTR_ERR(pid);
+> > +
+> > +	task = get_pid_task(pid, PIDTYPE_PID);
+> > +	if (!task) {
+> > +		ret = -ESRCH;
+> > +		goto put_pid;
+> > +	}
+> > +
+> > +	if (task->mm != current->mm &&
+> > +			!process_madvise_behavior_valid(behavior)) {
+> > +		ret = -EINVAL;
+> > +		goto release_task;
+> > +	}
+> > +
+> > +	mm = mm_access(task, PTRACE_MODE_ATTACH_FSCREDS);
+> > +	if (IS_ERR_OR_NULL(mm)) {
+> > +		ret = IS_ERR(mm) ? PTR_ERR(mm) : -ESRCH;
+> > +		goto release_task;
+> > +	}
+> > 
+> 
+> mm is always task->mm right?  I'm wondering if it would be better to find 
+> the mm directly in process_madvise_vec() rather than passing it into the 
+> function.  I'm not sure why we'd pass both task and mm here.
 
-Additionally fixes a build failure under 32-bit UML.
+That's because of hint Jann provided in the past version.
+https://lore.kernel.org/linux-api/CAG48ez27=pwm5m_N_988xT1huO7g7h6arTQL44zev6TD-h-7Tg@mail.gmail.com/
 
-Fixes: b09511c253e5 ("lkdtm: Add a DOUBLE_FAULT crash type on x86")
-Fixes: cea23efb4de2 ("lkdtm/bugs: Make double-fault test always available")
-Fixes: 6cb6982f42cb ("lkdtm: arm64: test kernel pointer authentication")
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/misc/lkdtm/bugs.c               | 38 ++++++++++++++-----------
- drivers/misc/lkdtm/lkdtm.h              |  2 --
- tools/testing/selftests/lkdtm/tests.txt |  1 +
- 3 files changed, 22 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
-index 08c70281c380..10338800f6be 100644
---- a/drivers/misc/lkdtm/bugs.c
-+++ b/drivers/misc/lkdtm/bugs.c
-@@ -13,7 +13,7 @@
- #include <linux/uaccess.h>
- #include <linux/slab.h>
- 
--#ifdef CONFIG_X86_32
-+#if IS_ENABLED(CONFIG_X86_32) && !IS_ENABLED(CONFIG_UML)
- #include <asm/desc.h>
- #endif
- 
-@@ -418,7 +418,7 @@ void lkdtm_UNSET_SMEP(void)
- 
- void lkdtm_DOUBLE_FAULT(void)
- {
--#ifdef CONFIG_X86_32
-+#if IS_ENABLED(CONFIG_X86_32) && !IS_ENABLED(CONFIG_UML)
- 	/*
- 	 * Trigger #DF by setting the stack limit to zero.  This clobbers
- 	 * a GDT TLS slot, which is okay because the current task will die
-@@ -453,38 +453,42 @@ void lkdtm_DOUBLE_FAULT(void)
- #endif
- }
- 
--#ifdef CONFIG_ARM64_PTR_AUTH
-+#ifdef CONFIG_ARM64
- static noinline void change_pac_parameters(void)
- {
--	/* Reset the keys of current task */
--	ptrauth_thread_init_kernel(current);
--	ptrauth_thread_switch_kernel(current);
-+	if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH)) {
-+		/* Reset the keys of current task */
-+		ptrauth_thread_init_kernel(current);
-+		ptrauth_thread_switch_kernel(current);
-+	}
- }
-+#endif
- 
--#define CORRUPT_PAC_ITERATE	10
- noinline void lkdtm_CORRUPT_PAC(void)
- {
-+#ifdef CONFIG_ARM64
-+#define CORRUPT_PAC_ITERATE	10
- 	int i;
- 
-+	if (!IS_ENABLED(CONFIG_ARM64_PTR_AUTH))
-+		pr_err("FAIL: kernel not built with CONFIG_ARM64_PTR_AUTH\n");
-+
- 	if (!system_supports_address_auth()) {
--		pr_err("FAIL: arm64 pointer authentication feature not present\n");
-+		pr_err("FAIL: CPU lacks pointer authentication feature\n");
- 		return;
- 	}
- 
--	pr_info("Change the PAC parameters to force function return failure\n");
-+	pr_info("changing PAC parameters to force function return failure...\n");
- 	/*
--	 * Pac is a hash value computed from input keys, return address and
-+	 * PAC is a hash value computed from input keys, return address and
- 	 * stack pointer. As pac has fewer bits so there is a chance of
- 	 * collision, so iterate few times to reduce the collision probability.
- 	 */
- 	for (i = 0; i < CORRUPT_PAC_ITERATE; i++)
- 		change_pac_parameters();
- 
--	pr_err("FAIL: %s test failed. Kernel may be unstable from here\n", __func__);
--}
--#else /* !CONFIG_ARM64_PTR_AUTH */
--noinline void lkdtm_CORRUPT_PAC(void)
--{
--	pr_err("FAIL: arm64 pointer authentication config disabled\n");
--}
-+	pr_err("FAIL: survived PAC changes! Kernel may be unstable from here\n");
-+#else
-+	pr_err("XFAIL: this test is arm64-only\n");
- #endif
-+}
-diff --git a/drivers/misc/lkdtm/lkdtm.h b/drivers/misc/lkdtm/lkdtm.h
-index 601a2156a0d4..8878538b2c13 100644
---- a/drivers/misc/lkdtm/lkdtm.h
-+++ b/drivers/misc/lkdtm/lkdtm.h
-@@ -31,9 +31,7 @@ void lkdtm_CORRUPT_USER_DS(void);
- void lkdtm_STACK_GUARD_PAGE_LEADING(void);
- void lkdtm_STACK_GUARD_PAGE_TRAILING(void);
- void lkdtm_UNSET_SMEP(void);
--#ifdef CONFIG_X86_32
- void lkdtm_DOUBLE_FAULT(void);
--#endif
- void lkdtm_CORRUPT_PAC(void);
- 
- /* lkdtm_heap.c */
-diff --git a/tools/testing/selftests/lkdtm/tests.txt b/tools/testing/selftests/lkdtm/tests.txt
-index 92ca32143ae5..9d266e79c6a2 100644
---- a/tools/testing/selftests/lkdtm/tests.txt
-+++ b/tools/testing/selftests/lkdtm/tests.txt
-@@ -14,6 +14,7 @@ STACK_GUARD_PAGE_LEADING
- STACK_GUARD_PAGE_TRAILING
- UNSET_SMEP CR4 bits went missing
- DOUBLE_FAULT
-+CORRUPT_PAC
- UNALIGNED_LOAD_STORE_WRITE
- #OVERWRITE_ALLOCATION Corrupts memory on failure
- #WRITE_AFTER_FREE Corrupts memory on failure
--- 
-2.25.1
-
+Thanks for the review, David.
