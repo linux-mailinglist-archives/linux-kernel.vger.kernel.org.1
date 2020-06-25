@@ -2,117 +2,465 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C38820A741
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 23:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B2920A767
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 23:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405695AbgFYVLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 17:11:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391185AbgFYVLb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 17:11:31 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85458C08C5DB
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 14:11:31 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id 18so6656043otv.6
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 14:11:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=k8OAgKU400QXnB0pfTjlnf95XjI/EzLjkKF5VofXQm4=;
-        b=PRlf6ZWNu4GPS81dC4s7MfFqIEHMhbdvPqkS1UIdPn1TWcdCK+/5IWkjTxr5vpZzYn
-         fDGX4ifgtn3Mg7dkjKUZaAHBE5vuo+/b33ePQqlhxNJphscN3/rO7uu2anraBpa/AfCr
-         hBR6SAe1FHi8J8lCGN3tzgh306U7MyhKMDKV8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k8OAgKU400QXnB0pfTjlnf95XjI/EzLjkKF5VofXQm4=;
-        b=HWiv4X/AMqK08TJLBgPmVU3BxaFTwKFw6DwqeZgGXgwexF02Uhjcs+8p4YPmZQWwxs
-         1v1cuIeuffUC0Y1tLFsCM4UY7a8KITcWQoiSHJGrMXr5hilKKripw5Xg+HbGceGNJdR0
-         HI9UuNFCslTqdafZiub8yLMkHS4VULijB4VphEoEYvRzQXu8rtnxR9sMHWRC0NB17LLV
-         ZpOtxdjBokAHkfJliSIwOqhDoKca89gTyTA6kCm0SO7aSt3zZLKfZd3Uw41EnrGLMWSg
-         CxF9I92RxbvxRjMyRcrYne1aEsJCw6iyR6WZMJJRTngps3X1+zCBHdtocK0eG9JoWZuo
-         Uv7A==
-X-Gm-Message-State: AOAM533hZUqvhGL7oMepF30STkxzyEYDr4ISfajNssptQtUr0baNHMTV
-        Rf9SeaS9RffFRFgaRgaFbVem3g==
-X-Google-Smtp-Source: ABdhPJwF5ukoGz73lxNiyFqPSchj8qJ/85yti5EHyTKNoVRangU31mzsP5hM6tq/QIL3mAzcHzGJ1A==
-X-Received: by 2002:a9d:845:: with SMTP id 63mr3844564oty.213.1593119490869;
-        Thu, 25 Jun 2020 14:11:30 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id x24sm2475115oto.31.2020.06.25.14.11.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jun 2020 14:11:30 -0700 (PDT)
-Subject: Re: [PATCH v2] usbip: tools: add in man page how to load the client's
- module
-To:     Antonio Borneo <borneo.antonio@gmail.com>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, linux-usb@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200618000831.1048255-1-borneo.antonio@gmail.com>
- <2da8fc9e34440c1fa5f9007baaa3921767cdec50.1593090874.git.borneo.antonio@gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <07af6971-b9d2-33a6-ec01-21c53050bc04@linuxfoundation.org>
-Date:   Thu, 25 Jun 2020 15:11:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <2da8fc9e34440c1fa5f9007baaa3921767cdec50.1593090874.git.borneo.antonio@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S2406208AbgFYVZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 17:25:52 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:40232 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403817AbgFYVZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 17:25:51 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5488D1A04C4;
+        Thu, 25 Jun 2020 23:25:47 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2EEB01A15B8;
+        Thu, 25 Jun 2020 23:25:39 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5C37E402A0;
+        Fri, 26 Jun 2020 05:25:29 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     catalin.marinas@arm.com, will@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        bjorn.andersson@linaro.org, leoyang.li@nxp.com, vkoul@kernel.org,
+        geert+renesas@glider.be, olof@lixom.net, peng.fan@nxp.com,
+        aisheng.dong@nxp.com, daniel.baluta@nxp.com,
+        franck.lenormand@nxp.com, arnd@arndb.de, krzk@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V3] firmware: imx: Move i.MX SCU soc driver into imx firmware folder
+Date:   Fri, 26 Jun 2020 05:14:07 +0800
+Message-Id: <1593119647-30951-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/25/20 7:17 AM, Antonio Borneo wrote:
-> While the man page usbipd.8 already informs the user on which
-> kernel module has to be used on server side, the man page usbip.8
-> does not provide any equivalent information on client side.
-> Also, it could be hard for a newbie to identify the proper usbip
-> client kernel module, due to the name "vhci-hcd" that has no
-> immediate assonance with usbip.
-> 
-> Add in usbip.8 the command to add the module vhci-hcd, similarly
-> as it's already present in usbipd.8 for usbip-host.
-> While there, rephrase the description of the command "usbip list
-> --remote=server".
-> 
-> Signed-off-by: Antonio Borneo <borneo.antonio@gmail.com>
-> --
-> 
-> v1->v2: rephrase the description of command "usbip list ..."
->          fix a typo in commit message
-> ---
->   tools/usb/usbip/doc/usbip.8 | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/usb/usbip/doc/usbip.8 b/tools/usb/usbip/doc/usbip.8
-> index a6097be25d28..a15d20063b98 100644
-> --- a/tools/usb/usbip/doc/usbip.8
-> +++ b/tools/usb/usbip/doc/usbip.8
-> @@ -83,7 +83,9 @@ List local USB devices.
->   .SH EXAMPLES
->   
->       client:# usbip list --remote=server
-> -        - List exportable usb devices on the server.
-> +        - List devices exported by remote server.
-> +
-> +    client:# modprobe vhci-hcd
->   
->       client:# usbip attach --remote=server --busid=1-2
->           - Connect the remote USB device.
-> 
-> base-commit: 48778464bb7d346b47157d21ffde2af6b2d39110
-> 
+The i.MX SCU soc driver depends on SCU firmware driver, so it has to
+use platform driver model for proper defer probe operation, since
+it has no device binding in DT file, a simple platform device is
+created together inside the platform driver. To make it more clean,
+we can just move the entire SCU soc driver into imx firmware folder
+and initialized by i.MX SCU firmware driver.
 
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+Changes since V2:
+	- remove EXPORT_SYMBOL() of imx_scu_soc_init().
+---
+ arch/arm64/configs/defconfig       |   1 -
+ drivers/firmware/imx/Makefile      |   2 +-
+ drivers/firmware/imx/imx-scu-soc.c | 138 +++++++++++++++++++++++++++++
+ drivers/firmware/imx/imx-scu.c     |   4 +
+ drivers/soc/imx/Kconfig            |   9 --
+ drivers/soc/imx/Makefile           |   1 -
+ drivers/soc/imx/soc-imx-scu.c      | 172 -------------------------------------
+ include/linux/firmware/imx/sci.h   |   1 +
+ 8 files changed, 144 insertions(+), 184 deletions(-)
+ create mode 100644 drivers/firmware/imx/imx-scu-soc.c
+ delete mode 100644 drivers/soc/imx/soc-imx-scu.c
 
-thanks,
--- Shuah
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index ae76fae..35f037f 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -854,7 +854,6 @@ CONFIG_OWL_PM_DOMAINS=y
+ CONFIG_RASPBERRYPI_POWER=y
+ CONFIG_FSL_DPAA=y
+ CONFIG_FSL_MC_DPIO=y
+-CONFIG_IMX_SCU_SOC=y
+ CONFIG_QCOM_AOSS_QMP=y
+ CONFIG_QCOM_GENI_SE=y
+ CONFIG_QCOM_RMTFS_MEM=m
+diff --git a/drivers/firmware/imx/Makefile b/drivers/firmware/imx/Makefile
+index 17ea361..b76acba 100644
+--- a/drivers/firmware/imx/Makefile
++++ b/drivers/firmware/imx/Makefile
+@@ -1,4 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-$(CONFIG_IMX_DSP)		+= imx-dsp.o
+-obj-$(CONFIG_IMX_SCU)		+= imx-scu.o misc.o imx-scu-irq.o rm.o
++obj-$(CONFIG_IMX_SCU)		+= imx-scu.o misc.o imx-scu-irq.o rm.o imx-scu-soc.o
+ obj-$(CONFIG_IMX_SCU_PD)	+= scu-pd.o
+diff --git a/drivers/firmware/imx/imx-scu-soc.c b/drivers/firmware/imx/imx-scu-soc.c
+new file mode 100644
+index 0000000..2f32353
+--- /dev/null
++++ b/drivers/firmware/imx/imx-scu-soc.c
+@@ -0,0 +1,138 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright 2019 NXP.
++ */
++
++#include <dt-bindings/firmware/imx/rsrc.h>
++#include <linux/firmware/imx/sci.h>
++#include <linux/slab.h>
++#include <linux/sys_soc.h>
++#include <linux/platform_device.h>
++#include <linux/of.h>
++
++static struct imx_sc_ipc *imx_sc_soc_ipc_handle;
++
++struct imx_sc_msg_misc_get_soc_id {
++	struct imx_sc_rpc_msg hdr;
++	union {
++		struct {
++			u32 control;
++			u16 resource;
++		} __packed req;
++		struct {
++			u32 id;
++		} resp;
++	} data;
++} __packed __aligned(4);
++
++struct imx_sc_msg_misc_get_soc_uid {
++	struct imx_sc_rpc_msg hdr;
++	u32 uid_low;
++	u32 uid_high;
++} __packed;
++
++static int imx_scu_soc_uid(u64 *soc_uid)
++{
++	struct imx_sc_msg_misc_get_soc_uid msg;
++	struct imx_sc_rpc_msg *hdr = &msg.hdr;
++	int ret;
++
++	hdr->ver = IMX_SC_RPC_VERSION;
++	hdr->svc = IMX_SC_RPC_SVC_MISC;
++	hdr->func = IMX_SC_MISC_FUNC_UNIQUE_ID;
++	hdr->size = 1;
++
++	ret = imx_scu_call_rpc(imx_sc_soc_ipc_handle, &msg, true);
++	if (ret) {
++		pr_err("%s: get soc uid failed, ret %d\n", __func__, ret);
++		return ret;
++	}
++
++	*soc_uid = msg.uid_high;
++	*soc_uid <<= 32;
++	*soc_uid |= msg.uid_low;
++
++	return 0;
++}
++
++static int imx_scu_soc_id(void)
++{
++	struct imx_sc_msg_misc_get_soc_id msg;
++	struct imx_sc_rpc_msg *hdr = &msg.hdr;
++	int ret;
++
++	hdr->ver = IMX_SC_RPC_VERSION;
++	hdr->svc = IMX_SC_RPC_SVC_MISC;
++	hdr->func = IMX_SC_MISC_FUNC_GET_CONTROL;
++	hdr->size = 3;
++
++	msg.data.req.control = IMX_SC_C_ID;
++	msg.data.req.resource = IMX_SC_R_SYSTEM;
++
++	ret = imx_scu_call_rpc(imx_sc_soc_ipc_handle, &msg, true);
++	if (ret) {
++		pr_err("%s: get soc info failed, ret %d\n", __func__, ret);
++		return ret;
++	}
++
++	return msg.data.resp.id;
++}
++
++int imx_scu_soc_init(struct device *dev)
++{
++	struct soc_device_attribute *soc_dev_attr;
++	struct soc_device *soc_dev;
++	int id, ret;
++	u64 uid = 0;
++	u32 val;
++
++	ret = imx_scu_get_handle(&imx_sc_soc_ipc_handle);
++	if (ret)
++		return ret;
++
++	soc_dev_attr = devm_kzalloc(dev, sizeof(*soc_dev_attr),
++				    GFP_KERNEL);
++	if (!soc_dev_attr)
++		return -ENOMEM;
++
++	soc_dev_attr->family = "Freescale i.MX";
++
++	ret = of_property_read_string(of_root,
++				      "model",
++				      &soc_dev_attr->machine);
++	if (ret)
++		return ret;
++
++	id = imx_scu_soc_id();
++	if (id < 0)
++		return -EINVAL;
++
++	ret = imx_scu_soc_uid(&uid);
++	if (ret < 0)
++		return -EINVAL;
++
++	/* format soc_id value passed from SCU firmware */
++	val = id & 0x1f;
++	soc_dev_attr->soc_id = devm_kasprintf(dev, GFP_KERNEL, "0x%x", val);
++	if (!soc_dev_attr->soc_id)
++		return -ENOMEM;
++
++	/* format revision value passed from SCU firmware */
++	val = (id >> 5) & 0xf;
++	val = (((val >> 2) + 1) << 4) | (val & 0x3);
++	soc_dev_attr->revision = devm_kasprintf(dev, GFP_KERNEL, "%d.%d",
++						(val >> 4) & 0xf, val & 0xf);
++	if (!soc_dev_attr->revision)
++		return -ENOMEM;
++
++	soc_dev_attr->serial_number = devm_kasprintf(dev, GFP_KERNEL,
++						     "%016llX", uid);
++	if (!soc_dev_attr->serial_number)
++		return -ENOMEM;
++
++	soc_dev = soc_device_register(soc_dev_attr);
++	if (IS_ERR(soc_dev))
++		return PTR_ERR(soc_dev);
++
++	return 0;
++}
+diff --git a/drivers/firmware/imx/imx-scu.c b/drivers/firmware/imx/imx-scu.c
+index 2ab0482..dca79ca 100644
+--- a/drivers/firmware/imx/imx-scu.c
++++ b/drivers/firmware/imx/imx-scu.c
+@@ -328,6 +328,10 @@ static int imx_scu_probe(struct platform_device *pdev)
+ 
+ 	imx_sc_ipc_handle = sc_ipc;
+ 
++	ret = imx_scu_soc_init(dev);
++	if (ret)
++		dev_warn(dev, "failed to initialize SoC info: %d\n", ret);
++
+ 	ret = imx_scu_enable_general_irq_channel(dev);
+ 	if (ret)
+ 		dev_warn(dev,
+diff --git a/drivers/soc/imx/Kconfig b/drivers/soc/imx/Kconfig
+index d515d2c..d49fa63 100644
+--- a/drivers/soc/imx/Kconfig
++++ b/drivers/soc/imx/Kconfig
+@@ -8,15 +8,6 @@ config IMX_GPCV2_PM_DOMAINS
+ 	select PM_GENERIC_DOMAINS
+ 	default y if SOC_IMX7D
+ 
+-config IMX_SCU_SOC
+-	bool "i.MX System Controller Unit SoC info support"
+-	depends on IMX_SCU
+-	select SOC_BUS
+-	help
+-	  If you say yes here you get support for the NXP i.MX System
+-	  Controller Unit SoC info module, it will provide the SoC info
+-	  like SoC family, ID and revision etc.
+-
+ config SOC_IMX8M
+ 	bool "i.MX8M SoC family support"
+ 	depends on ARCH_MXC || COMPILE_TEST
+diff --git a/drivers/soc/imx/Makefile b/drivers/soc/imx/Makefile
+index 4461432..078dc91 100644
+--- a/drivers/soc/imx/Makefile
++++ b/drivers/soc/imx/Makefile
+@@ -5,4 +5,3 @@ endif
+ obj-$(CONFIG_HAVE_IMX_GPC) += gpc.o
+ obj-$(CONFIG_IMX_GPCV2_PM_DOMAINS) += gpcv2.o
+ obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o
+-obj-$(CONFIG_IMX_SCU_SOC) += soc-imx-scu.o
+diff --git a/drivers/soc/imx/soc-imx-scu.c b/drivers/soc/imx/soc-imx-scu.c
+deleted file mode 100644
+index 92448ca..0000000
+--- a/drivers/soc/imx/soc-imx-scu.c
++++ /dev/null
+@@ -1,172 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * Copyright 2019 NXP.
+- */
+-
+-#include <dt-bindings/firmware/imx/rsrc.h>
+-#include <linux/firmware/imx/sci.h>
+-#include <linux/slab.h>
+-#include <linux/sys_soc.h>
+-#include <linux/platform_device.h>
+-#include <linux/of.h>
+-
+-#define IMX_SCU_SOC_DRIVER_NAME		"imx-scu-soc"
+-
+-static struct imx_sc_ipc *soc_ipc_handle;
+-
+-struct imx_sc_msg_misc_get_soc_id {
+-	struct imx_sc_rpc_msg hdr;
+-	union {
+-		struct {
+-			u32 control;
+-			u16 resource;
+-		} __packed req;
+-		struct {
+-			u32 id;
+-		} resp;
+-	} data;
+-} __packed __aligned(4);
+-
+-struct imx_sc_msg_misc_get_soc_uid {
+-	struct imx_sc_rpc_msg hdr;
+-	u32 uid_low;
+-	u32 uid_high;
+-} __packed;
+-
+-static int imx_scu_soc_uid(u64 *soc_uid)
+-{
+-	struct imx_sc_msg_misc_get_soc_uid msg;
+-	struct imx_sc_rpc_msg *hdr = &msg.hdr;
+-	int ret;
+-
+-	hdr->ver = IMX_SC_RPC_VERSION;
+-	hdr->svc = IMX_SC_RPC_SVC_MISC;
+-	hdr->func = IMX_SC_MISC_FUNC_UNIQUE_ID;
+-	hdr->size = 1;
+-
+-	ret = imx_scu_call_rpc(soc_ipc_handle, &msg, true);
+-	if (ret) {
+-		pr_err("%s: get soc uid failed, ret %d\n", __func__, ret);
+-		return ret;
+-	}
+-
+-	*soc_uid = msg.uid_high;
+-	*soc_uid <<= 32;
+-	*soc_uid |= msg.uid_low;
+-
+-	return 0;
+-}
+-
+-static int imx_scu_soc_id(void)
+-{
+-	struct imx_sc_msg_misc_get_soc_id msg;
+-	struct imx_sc_rpc_msg *hdr = &msg.hdr;
+-	int ret;
+-
+-	hdr->ver = IMX_SC_RPC_VERSION;
+-	hdr->svc = IMX_SC_RPC_SVC_MISC;
+-	hdr->func = IMX_SC_MISC_FUNC_GET_CONTROL;
+-	hdr->size = 3;
+-
+-	msg.data.req.control = IMX_SC_C_ID;
+-	msg.data.req.resource = IMX_SC_R_SYSTEM;
+-
+-	ret = imx_scu_call_rpc(soc_ipc_handle, &msg, true);
+-	if (ret) {
+-		pr_err("%s: get soc info failed, ret %d\n", __func__, ret);
+-		return ret;
+-	}
+-
+-	return msg.data.resp.id;
+-}
+-
+-static int imx_scu_soc_probe(struct platform_device *pdev)
+-{
+-	struct soc_device_attribute *soc_dev_attr;
+-	struct soc_device *soc_dev;
+-	int id, ret;
+-	u64 uid = 0;
+-	u32 val;
+-
+-	ret = imx_scu_get_handle(&soc_ipc_handle);
+-	if (ret)
+-		return ret;
+-
+-	soc_dev_attr = devm_kzalloc(&pdev->dev, sizeof(*soc_dev_attr),
+-				    GFP_KERNEL);
+-	if (!soc_dev_attr)
+-		return -ENOMEM;
+-
+-	soc_dev_attr->family = "Freescale i.MX";
+-
+-	ret = of_property_read_string(of_root,
+-				      "model",
+-				      &soc_dev_attr->machine);
+-	if (ret)
+-		return ret;
+-
+-	id = imx_scu_soc_id();
+-	if (id < 0)
+-		return -EINVAL;
+-
+-	ret = imx_scu_soc_uid(&uid);
+-	if (ret < 0)
+-		return -EINVAL;
+-
+-	/* format soc_id value passed from SCU firmware */
+-	val = id & 0x1f;
+-	soc_dev_attr->soc_id = devm_kasprintf(&pdev->dev, GFP_KERNEL, "0x%x", val);
+-	if (!soc_dev_attr->soc_id)
+-		return -ENOMEM;
+-
+-	/* format revision value passed from SCU firmware */
+-	val = (id >> 5) & 0xf;
+-	val = (((val >> 2) + 1) << 4) | (val & 0x3);
+-	soc_dev_attr->revision = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%d.%d",
+-						(val >> 4) & 0xf, val & 0xf);
+-	if (!soc_dev_attr->revision)
+-		return -ENOMEM;
+-
+-	soc_dev_attr->serial_number = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+-						     "%016llX", uid);
+-	if (!soc_dev_attr->serial_number)
+-		return -ENOMEM;
+-
+-	soc_dev = soc_device_register(soc_dev_attr);
+-	if (IS_ERR(soc_dev))
+-		return PTR_ERR(soc_dev);
+-
+-	return 0;
+-}
+-
+-static struct platform_driver imx_scu_soc_driver = {
+-	.driver = {
+-		.name = IMX_SCU_SOC_DRIVER_NAME,
+-	},
+-	.probe = imx_scu_soc_probe,
+-};
+-
+-static int __init imx_scu_soc_init(void)
+-{
+-	struct platform_device *pdev;
+-	struct device_node *np;
+-	int ret;
+-
+-	np = of_find_compatible_node(NULL, NULL, "fsl,imx-scu");
+-	if (!np)
+-		return -ENODEV;
+-
+-	of_node_put(np);
+-
+-	ret = platform_driver_register(&imx_scu_soc_driver);
+-	if (ret)
+-		return ret;
+-
+-	pdev = platform_device_register_simple(IMX_SCU_SOC_DRIVER_NAME,
+-					       -1, NULL, 0);
+-	if (IS_ERR(pdev))
+-		platform_driver_unregister(&imx_scu_soc_driver);
+-
+-	return PTR_ERR_OR_ZERO(pdev);
+-}
+-device_initcall(imx_scu_soc_init);
+diff --git a/include/linux/firmware/imx/sci.h b/include/linux/firmware/imx/sci.h
+index 3c459f5..22c7657 100644
+--- a/include/linux/firmware/imx/sci.h
++++ b/include/linux/firmware/imx/sci.h
+@@ -20,4 +20,5 @@ int imx_scu_enable_general_irq_channel(struct device *dev);
+ int imx_scu_irq_register_notifier(struct notifier_block *nb);
+ int imx_scu_irq_unregister_notifier(struct notifier_block *nb);
+ int imx_scu_irq_group_enable(u8 group, u32 mask, u8 enable);
++int imx_scu_soc_init(struct device *dev);
+ #endif /* _SC_SCI_H */
+-- 
+2.7.4
+
