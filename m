@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAB820A401
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79EFF20A406
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404799AbgFYR2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 13:28:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406788AbgFYR2F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 13:28:05 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AFC5C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 10:28:04 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id 145so3618722qke.9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 10:28:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=gmdzvrjKvy7zOpV1NRuITfFsyUSJo95kHGnNoBx7SWo=;
-        b=TG9W9c4fV8P6kucxRYY3WhM2fQlAiAfIIHNf+B91GL+OmpVqBJMnTwRomjo8dY9iXX
-         0oxVntm0rbHyQFyWnEM89Cp/zgkg5WR1n6V9kxDTSAIGh6lIjQ1jKao1bHnl65Q6/xqg
-         T7wvSq8GyUeJllsfC0yvy7re3wM3HR+Ry2XJqwse0iL5SQngYN6k709OssiNChYg9LYv
-         ZxERXwJiEJW+zNJB6g9HXkqQzV4X85ZMpva36rHTOcOOle3+v0ET8+tkf2xk0t7QXMIb
-         egFAEImp4Wfl7FVeAui2jZuWmFBhpeOTnutWojoevEj7dyOWn2YT29KHLHvEdvZJ0gVi
-         Tkvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=gmdzvrjKvy7zOpV1NRuITfFsyUSJo95kHGnNoBx7SWo=;
-        b=chYyHoLlAzZRcfBoWjsYX7Cws/sb8TP5QyOfn/sDW8k3d+FPS5QAwQQXscviZIrZ44
-         F/vQ8WbCLaFM437jrCtPY3KBH8hzZ8Vnvymab6vFlI1p2FUib1rVANNmct5OQCJauONe
-         svPMbA2zqdUCilUI3fQPRxgk8FZYKg7zNzSY4jGLiA0ca7Ii0HFTTnmOvhsrGa/9FiR9
-         AgSYYGmdYrJ5RYdPC/GfzzkRC6WzSOdXzCUFbgfJNb5wWk4XEvM7gV043+c0SeK6wjJl
-         klPCaGaIwnDJw8SLLPpmF9UYI2gzwJCC6/eYOZQ/+vs/uoLc3ELQG2dTgrCXW/iV/d0B
-         YHKA==
-X-Gm-Message-State: AOAM531p1ec4QzWGefaFGOtUM4Jdv1+PQ/axyN7a9a30BrbY5vbfbME+
-        kWFpLWOhCjOUfgRL6DYqZm4mQw==
-X-Google-Smtp-Source: ABdhPJycbq62BggoDK0636NrdFXplcmFZ/swXm/+3aPR05wce0Y58DlZyNHuDGwiEpqljWYajCu0Vg==
-X-Received: by 2002:a37:46ca:: with SMTP id t193mr1551563qka.293.1593106083838;
-        Thu, 25 Jun 2020 10:28:03 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id l46sm1431464qtf.7.2020.06.25.10.28.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 10:28:03 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1joVfO-00EGZI-KT; Thu, 25 Jun 2020 14:28:02 -0300
-Date:   Thu, 25 Jun 2020 14:28:02 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     Jerry Snitselaar <jsnitsel@redhat.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Enabling interrupts in QEMU TPM TIS
-Message-ID: <20200625172802.GS6578@ziepe.ca>
-References: <1ca3a53d-2b83-7522-5ce1-83d9cc2f207d@linux.ibm.com>
+        id S2406814AbgFYR2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 13:28:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406806AbgFYR2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 13:28:16 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2FBA720789;
+        Thu, 25 Jun 2020 17:28:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593106095;
+        bh=+cLEMVjTku86MUcyGtnbvMhIVdtdfpWtlg8bHe0HxS0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0cyfFj7v5iSRT89cZq8Y9xYLAAk8mLVxDviIpgkIJlZxvK4KK5OlK5huFnye9MS47
+         ZwxWovMm0Vr0C66ep/ca4Z26xPMNfPRsCZT1bXJeAK7vrFk3mU7nV2OR5gcoQnjcjC
+         MTqUm/V1aUluuVyZMdqQmTlo/Pl2/aIkXJXWWtUU=
+Date:   Thu, 25 Jun 2020 18:28:13 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/10] regulator: devres: Fix issues with kerneldoc
+ headers
+Message-ID: <20200625172813.GD5686@sirena.org.uk>
+References: <20200625163614.4001403-1-lee.jones@linaro.org>
+ <20200625163614.4001403-3-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Ycz6tD7Th1CMF4v7"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1ca3a53d-2b83-7522-5ce1-83d9cc2f207d@linux.ibm.com>
+In-Reply-To: <20200625163614.4001403-3-lee.jones@linaro.org>
+X-Cookie: One organism, one vote.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 10:56:43AM -0400, Stefan Berger wrote:
-> Hello!
-> 
->  I want to enable IRQs now in QEMU's TPM TIS device model and I need to work
-> with the following patch to Linux TIS. I am wondering whether the changes
-> there look reasonable to you? Windows works with the QEMU modifications
-> as-is, so maybe it's a bug in the TIS code (which I had not run into
-> before).
-> 
-> 
-> The point of the loop I need to introduce in the interrupt handler is that
-> while the interrupt handler is running another interrupt may occur/be posted
-> that then does NOT cause the interrupt handler to be invoked again but
-> causes a stall, unless the loop is there.
 
-That seems like a qemu bug, TPM interrupts are supposed to be level
-interrupts, not edge.
+--Ycz6tD7Th1CMF4v7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Jason
+On Thu, Jun 25, 2020 at 05:36:06PM +0100, Lee Jones wrote:
+
+>  /**
+>   * devm_regulator_register - Resource managed regulator_register()
+> + * @dev: device for regulator "consumer"
+>   * @regulator_desc: regulator to register
+>   * @config: runtime configuration for regulator
+>   *
+
+That's an odd style you're using in your "change" here - why the quotes?
+
+--Ycz6tD7Th1CMF4v7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl703qwACgkQJNaLcl1U
+h9CPzwf/f6B18e6dGjmBa+8dJyb5hUKJgu2+kk5vswg3ivYrjYrAxbcncwebfftP
+YDOydKCVr4S8SO57d8X9hHYlp3cOHt0zXkBGrPPdz54ndy7fa6nPOjlWxyR1Ry8j
+YuDJW9VgtF1oVuVrSL1nR/AXCMo31Oz67DTdGfvoAeVKsVZTJ/9EbcGT4aBQRKG8
+FapFIYQ7efRCXG5vjBsQo9NGFxwVmwYO1IvKLTvNb0AK8Lr5Ss3pWti2p4XJIr3W
+oBpWJmVW+x/1j1wJG84fCyK4XcLkaN+eOi8rUM4kBxIqBxwzf+DbDsQll7znCNVR
+0jcdkr4ZPT6f2B+bTb+aVmvcafR4ww==
+=oM5u
+-----END PGP SIGNATURE-----
+
+--Ycz6tD7Th1CMF4v7--
