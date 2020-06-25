@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75864209A0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 08:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1F22099FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 08:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390341AbgFYGrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 02:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
+        id S2390183AbgFYGqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 02:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390111AbgFYGq0 (ORCPT
+        with ESMTP id S2390141AbgFYGqa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 02:46:26 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DD6C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 23:46:26 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id g18so4626491wrm.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 23:46:26 -0700 (PDT)
+        Thu, 25 Jun 2020 02:46:30 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B99C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 23:46:28 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id h15so4597657wrq.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 23:46:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gpZUopdNGKoMuokzA38cWTWHt4qMbyx0+mhPHuM+Znc=;
-        b=L3gPi0V6eWwUbjc0a7NWVYNxvmyjxoCjIHRVwhhbx3/PgBUBX1nYVYjjVo442aXOq1
-         6X+Rxq4jGsIwLTCBZApP2Rl/SureSgHXIaYxg9LovDj+bhfSXt3hSv90MX1xjfcHLEbP
-         pizWIa2VTBVMWI6eNMnPoO4qath3LnLnEPgrrJ4dAIBvozmxRyuEBNn35Sv9RQVY/0Lg
-         hVqcXYlSA2h6mWAEMsGoEiG/cyjNbXgHy0dMkxXGJQjFqwHHP6PZSwCZU5izFBVnfokC
-         WU1eXhZiZYr6t2/pu9Ce3tAAE6tpfZME71ChHW0a72v/TfEzY4id8vKP2OrKnEGANJQQ
-         3D8Q==
+        bh=1zDIqOBuX/K9nmAOrSn0q1L2wjLhGu0LGpqC1FRybjM=;
+        b=Y8Xeawii/FenN4QcJc/IU0tymI/82VPhOUVQnNDaPq1E1ZUSPPJGiqS/MwnjdXwHqF
+         DvzQqbo+ZusoZvWe7XMRMfOASefHh3I5kfGUIJesheA46gvTr9m5Bqd+xZteU8fuyZhP
+         JSMH36/+uTAtUSckplXY/J74fUfskmrkT+h4Rhi+lPqKjkcu4Wns0XCu97A4qjsByUoy
+         jz6zZaDVI542NxSheQJrNCq2C4ZWaDr3ZAnsBJYX3DPUVqApykF4HUHAiUYbaN/9wj+i
+         v6qGmM7UjH2mb2rrDfpY33gZQo57z3084ZjyupmsBOU9C1cwoWJFWcQi9s8RezQqnSAO
+         XnhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gpZUopdNGKoMuokzA38cWTWHt4qMbyx0+mhPHuM+Znc=;
-        b=o5yv8Nouy9xCUdsGk+cLvEo8Xz/mJYDcsy2ZYk4acJiXkB7eHwW4e5yYYM4IO8TtLb
-         fjbQoJVxHcpccTaShFr7aTNPekFFOI3v2gn1jMu8NKs9pPwdDGB7ORdOJcQCTwxDlYI0
-         sXZpTBBhztB2McGBDjmwcN375aNA0Ul9FjCtz1GpFoZ3P3bNQTNllFgBDheJ8AE2iReX
-         RGHsSR5RX3lH1AkVIZoQ301AQJBa/y3jbA5uD8jrpDMw+0CBV4NXTBmlQE1N4I50UU2Z
-         b0xn3NDikAUcoMauX42LAKRQonB1L8BOV+a7zjTvtxVOwUdQGLLNhkZpguMm2SyX2TWC
-         A2vQ==
-X-Gm-Message-State: AOAM5313rJaUxUaFCCIMx9uRF3RZw4ObDbeRC4QqxEvdUOLW7rt2F3L8
-        qMbcu84qkIrbuXFNFaZOjSLvCQ==
-X-Google-Smtp-Source: ABdhPJzMnG23PTfD5iHcY4F5ksyIND4PVZ3+d2rvuDhBikSUcprsL4BwlP+KBch0OuudWQn4B9nZfA==
-X-Received: by 2002:a5d:62cd:: with SMTP id o13mr23631593wrv.272.1593067584905;
-        Wed, 24 Jun 2020 23:46:24 -0700 (PDT)
+        bh=1zDIqOBuX/K9nmAOrSn0q1L2wjLhGu0LGpqC1FRybjM=;
+        b=YXN36vcwX8t/lZWVtuSGvBVDr2cRKJwMjOhwXHLLNJtf7sKxbS+j984ZAt4uHiQo1B
+         r1/8Gf1qVQq7UnUo02gDfHt1jbLuPCqE6D1i2QF9IlFz32GKwoWynQRZiyhT25I3NvSc
+         IJVkOK91CEoKWAY90wYjhPg9ta79PxxanmK7ZnVK2+7wtfTHOBUY7aiVOwF3sYOcuCyr
+         8zzg8ZgwZkPgNv0ZMwB7rTlwMwC4dIobTE0VV+l/t92RHcaJFF5N2ITXkNsZNhiYc738
+         rUtSkC6wXFrJqW/poxWCDTKKP516huHO5X+Wmf9sqFrEjCukHNXUdAQeNjMPOVQHbl0U
+         +Pzg==
+X-Gm-Message-State: AOAM530IXurmpwNaOme2RAMARZ9XDMuEK6d2z0Sjw3oDNvZ8K4HCtiMK
+        9MvQFOxRiPLGmGPIyUk31DHI+A==
+X-Google-Smtp-Source: ABdhPJxEEnd+kP3e/yI6hTgHbHGpzO3CUk9z4hOSjDsZ9PiZZ75O0/GISD/HaIfyxC2QMquELbwWWA==
+X-Received: by 2002:adf:828b:: with SMTP id 11mr37504223wrc.58.1593067586920;
+        Wed, 24 Jun 2020 23:46:26 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id c20sm27235363wrb.65.2020.06.24.23.46.23
+        by smtp.gmail.com with ESMTPSA id c20sm27235363wrb.65.2020.06.24.23.46.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 23:46:24 -0700 (PDT)
+        Wed, 24 Jun 2020 23:46:26 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH 02/10] mfd: mfd-core: Complete kerneldoc header for devm_mfd_add_devices()
-Date:   Thu, 25 Jun 2020 07:46:11 +0100
-Message-Id: <20200625064619.2775707-3-lee.jones@linaro.org>
+        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 03/10] mfd: db8500-prcmu: Add description for 'reset_reason' in kerneldoc
+Date:   Thu, 25 Jun 2020 07:46:12 +0100
+Message-Id: <20200625064619.2775707-4-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200625064619.2775707-1-lee.jones@linaro.org>
 References: <20200625064619.2775707-1-lee.jones@linaro.org>
@@ -69,41 +69,29 @@ Each function parameter should be documented in kerneldoc format.
 
 Squashes the following W=1 warnings:
 
- drivers/mfd/mfd-core.c:326: warning: Function parameter or member 'dev' not described in 'devm_mfd_add_devices'
- drivers/mfd/mfd-core.c:326: warning: Function parameter or member 'id' not described in 'devm_mfd_add_devices'
- drivers/mfd/mfd-core.c:326: warning: Function parameter or member 'cells' not described in 'devm_mfd_add_devices'
- drivers/mfd/mfd-core.c:326: warning: Function parameter or member 'n_devs' not described in 'devm_mfd_add_devices'
- drivers/mfd/mfd-core.c:326: warning: Function parameter or member 'mem_base' not described in 'devm_mfd_add_devices'
- drivers/mfd/mfd-core.c:326: warning: Function parameter or member 'irq_base' not described in 'devm_mfd_add_devices'
- drivers/mfd/mfd-core.c:326: warning: Function parameter or member 'domain' not described in 'devm_mfd_add_devices'
+ drivers/mfd/db8500-prcmu.c:2281: warning: Function parameter or member 'reset_code' not described in 'db8500_prcmu_system_reset'
+ drivers/mfd/db8500-prcmu.c:3012: warning: Function parameter or member 'pdev' not described in 'db8500_prcmu_probe'
 
 Cc: <stable@vger.kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mfd/mfd-core.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/mfd/db8500-prcmu.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
-index f5a73af60dd40..720e5c8b1588c 100644
---- a/drivers/mfd/mfd-core.c
-+++ b/drivers/mfd/mfd-core.c
-@@ -318,6 +318,16 @@ static void devm_mfd_dev_release(struct device *dev, void *res)
-  * Returns 0 on success or an appropriate negative error number on failure.
-  * All child-devices of the MFD will automatically be removed when it gets
-  * unbinded.
+diff --git a/drivers/mfd/db8500-prcmu.c b/drivers/mfd/db8500-prcmu.c
+index 0452b43b04232..9b58b02967638 100644
+--- a/drivers/mfd/db8500-prcmu.c
++++ b/drivers/mfd/db8500-prcmu.c
+@@ -2276,6 +2276,8 @@ bool db8500_prcmu_is_ac_wake_requested(void)
+  *
+  * Saves the reset reason code and then sets the APE_SOFTRST register which
+  * fires interrupt to fw
 + *
-+ * @dev:	Pointer to parent device.
-+ * @id:		Can be PLATFORM_DEVID_AUTO to let the Platform API take care
-+ *		of device numbering, or will be added to a device's cell_id.
-+ * @cells:	Array of (struct mfd_cell)s describing child devices.
-+ * @n_devs:	Number of child devices to register.
-+ * @mem_base:	Parent register range resource for child devices.
-+ * @irq_base:	Base of the range of virtual interrupt numbers allocated for
-+ *		this MFD device. Unused if @domain is specified.
-+ * @domain:	Interrupt domain to create mappings for hardware interrupts.
++ * @reset_code: The reason for system reset
   */
- int devm_mfd_add_devices(struct device *dev, int id,
- 			 const struct mfd_cell *cells, int n_devs,
+ void db8500_prcmu_system_reset(u16 reset_code)
+ {
 -- 
 2.25.1
 
