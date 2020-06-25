@@ -2,93 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A861D20A59A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFB920A592
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406670AbgFYTRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 15:17:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
+        id S2391050AbgFYTRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 15:17:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406492AbgFYTRS (ORCPT
+        with ESMTP id S2406523AbgFYTRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 15:17:18 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E338C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:17:18 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id q5so7024753wru.6
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:17:18 -0700 (PDT)
+        Thu, 25 Jun 2020 15:17:20 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BADFC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:17:19 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id q15so6637139wmj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:17:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4/CDB2l4JpZBpeXJ5F7ZtKgNEooXeOnUoj71PMW6rrU=;
-        b=J3t8Bw937CgTO8lYSG+HhLvnS7lV0gd31rIQ4Lk/CXtSfXHWwrivgfL1x1f0otUOMT
-         cjmuYjZ2VrkY2VEjcXRp/zOcAXeugJ8Nq3E5cD5WBUIAqm4EBEI6TQbGY+fq/aut1Dji
-         hG7uosrCrRrCnDnjXAkcrzMD0IYZA8QTuym0FqwNLFLPYDnL1LXQCn3jqo+6cKL9FCxf
-         iGTX9Nt0p3Zm+5RHOCBvVDFcW4tHJyOuCEj47k0cTWSrYfXP/gLDd0mpjYgboDIA0alY
-         vjrcQr8f3ci5XKMOI9V5Y/lkf8+KSCyWe838LwaW8Ga/1JT7G3i3mjz8GGcwUoiUTV6X
-         +E6g==
+        bh=+r7WAzJKscpz2A7LfanwlEQFW/6BOounTqgY0FCqgHk=;
+        b=ChFks/XEc7bzV0CTcMWfhB7IgCRQxU/ix22NfRn6vDTUiSMVowVLaUl6yu7QMlcVVZ
+         HIpJw4xTHVybS62gdWM1VHFFBSK0dTQm5ovklGSePPlvX4kAkJhIkf4FubT+ZkZ9yhij
+         CTVZrQko7ww3J9imShFnpURQHqUoLNB/YAfvXak+Efsy+I07bcLsAD++oVv9gQA5rUe/
+         1Nm5+BIUSvod+52HYDbqpSQKJogjRpztt5k8ZN6oHSxjr2MOUuZLeddwge1f5DpitMgp
+         toasWrca/RulM3TnAxEnjBxB38zyKS1zf5HDbx2hn5aZZWbfKiCM/W50ed83S/NIjsYg
+         8+2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4/CDB2l4JpZBpeXJ5F7ZtKgNEooXeOnUoj71PMW6rrU=;
-        b=mAoAR8TkYrKc17WkF43KH9qLmbRyrYzQz3gWYeEuPf5skTWnQu56VTjMkACgMEhd9P
-         UA2UImzj/hiFCsOIamk5PuhpcxqdPn0uGPBHsmr6MdOQtpNOhdUQ/6k5ZRqn/rv3O73m
-         h9aPEB6raGPn0WlRB7oM/zTeRhlgLTyYZysVzPOi+KINu6Xb/yaRDYa2uplCm001D/el
-         A/HhXSTHlaubVlEQhX8x96PdB/I7bS6VL1/z/I5cZOKVT8KCLjcavIMU0GiuDYmmO9A1
-         hwK/4w43m8hmi7TM9qAnQ9hLnxBFKlxRANxajlkdk3IOZ9pE39v7+hPvUHWygPHRD1jQ
-         HaHA==
-X-Gm-Message-State: AOAM532rH/sRNnG5xqvIwiw9P8a/VKJLf75Y+mqoli/vi5qvbLTsh0TJ
-        m7IwNJxDGMJlS7uOreHeIB8Zfw==
-X-Google-Smtp-Source: ABdhPJyIYQF86tVFqTQfAszSkBtYqZ9soigeoM9NELkd6pzeaRIJNybLyLmMNBTmcL1wQhj+AB+qGg==
-X-Received: by 2002:a5d:6809:: with SMTP id w9mr40614001wru.182.1593112636948;
-        Thu, 25 Jun 2020 12:17:16 -0700 (PDT)
+        bh=+r7WAzJKscpz2A7LfanwlEQFW/6BOounTqgY0FCqgHk=;
+        b=cfcx5urKHm7d+cWPme6ehwnEDpgBwS8x5LN8ofC6Wj2B6R1Utx8Lx0A/a7y0jfTb3x
+         gcdRHDAuwO0ZYv1bI4RY1AKF9Jb2o9jO+Kh9LTWHr+R+B0HzOtlWwSkJCo1YITn6wQr1
+         N4+bLkMmlPk7kQT8AB4xgDolZN2CM7Qm6McNFDskgZRLSqBWV8Gjk/n+hI6Oepqsz573
+         DZRBNjhQBoKX3BarrvkVB2yB1DyyHQvtIHizXAaeeUJqwu8MxQMiTZ5ibS7yBKcsS0rz
+         AD4XkQUUSWhU3mJHp8Eb0D6ZjOnS/4mAP7g9WD1cE/LeKma4DkfyN7Ua1Hvg19TVg54C
+         Lusw==
+X-Gm-Message-State: AOAM531E3uO2dMB4JwObQT/RuZLj34B9S99MaTzSuqg+QRuhua2DQ0u2
+        cNimHuIjLE1+GFhWXSiyPPc9EeOVDu8XvQ==
+X-Google-Smtp-Source: ABdhPJxocm800/ZlJ2PBjWP1tsP9WN64x1zPnFXiyjxHxw49nomSN71rB9+UScUF2TFK7UoUqEPKzw==
+X-Received: by 2002:a7b:c348:: with SMTP id l8mr5484694wmj.54.1593112638103;
+        Thu, 25 Jun 2020 12:17:18 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id p13sm22693983wrn.0.2020.06.25.12.17.15
+        by smtp.gmail.com with ESMTPSA id p13sm22693983wrn.0.2020.06.25.12.17.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 12:17:16 -0700 (PDT)
+        Thu, 25 Jun 2020 12:17:17 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lgirdwood@gmail.com, broonie@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Rajendra Nayak <rnayak@ti.com>
-Subject: [RESEND 03/10] regulator: of_regulator: Add missing colon for rdev kerneldoc argument
-Date:   Thu, 25 Jun 2020 20:17:01 +0100
-Message-Id: <20200625191708.4014533-4-lee.jones@linaro.org>
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [RESEND 04/10] regulator: dbx500-prcmu: Remove unused function dbx500_regulator_testcase()
+Date:   Thu, 25 Jun 2020 20:17:02 +0100
+Message-Id: <20200625191708.4014533-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200625191708.4014533-1-lee.jones@linaro.org>
 References: <20200625191708.4014533-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kerneldoc validation gets confused if syntax isn't "@.*: ".
+There isn't any code present within the current kernel to
+override this 'weak' function.  Besides returning '0', which
+is never checked anyway, the whole function appears to be
+superfluous.
 
-Adding the missing colons squashes the following W=1 warnings:
+Consequently fixes W=1 warning:
 
-Cc: Rajendra Nayak <rnayak@ti.com>
+ drivers/regulator/dbx500-prcmu.c:113:27: warning: no previous prototype for ‘dbx500_regulator_testcase’ [-Wmissing-prototypes]
+ 113 | int __attribute__((weak)) dbx500_regulator_testcase(
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~
+
+Cc: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/regulator/of_regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/regulator/dbx500-prcmu.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/regulator/of_regulator.c b/drivers/regulator/of_regulator.c
-index 87637eb6bcbcb..06c0b15fe4c08 100644
---- a/drivers/regulator/of_regulator.c
-+++ b/drivers/regulator/of_regulator.c
-@@ -532,7 +532,7 @@ static bool of_coupling_find_node(struct device_node *src,
- /**
-  * of_check_coupling_data - Parse rdev's coupling properties and check data
-  *			    consistency
-- * @rdev - pointer to regulator_dev whose data is checked
-+ * @rdev: pointer to regulator_dev whose data is checked
-  *
-  * Function checks if all the following conditions are met:
-  * - rdev's max_spread is greater than 0
+diff --git a/drivers/regulator/dbx500-prcmu.c b/drivers/regulator/dbx500-prcmu.c
+index f604c8db6d0e9..c3ad6aa6b5d37 100644
+--- a/drivers/regulator/dbx500-prcmu.c
++++ b/drivers/regulator/dbx500-prcmu.c
+@@ -110,13 +110,6 @@ static int ux500_regulator_status_show(struct seq_file *s, void *p)
+ }
+ DEFINE_SHOW_ATTRIBUTE(ux500_regulator_status);
+ 
+-int __attribute__((weak)) dbx500_regulator_testcase(
+-	struct dbx500_regulator_info *regulator_info,
+-	int num_regulators)
+-{
+-	return 0;
+-}
+-
+ int
+ ux500_regulator_debug_init(struct platform_device *pdev,
+ 	struct dbx500_regulator_info *regulator_info,
+@@ -152,7 +145,6 @@ ux500_regulator_debug_init(struct platform_device *pdev,
+ 	if (!rdebug.state_after_suspend)
+ 		goto exit_free;
+ 
+-	dbx500_regulator_testcase(regulator_info, num_regulators);
+ 	return 0;
+ 
+ exit_free:
 -- 
 2.25.1
 
