@@ -2,140 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19E320A148
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 16:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78FC20A14C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 16:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405602AbgFYOw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 10:52:58 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:55953 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S2405525AbgFYOw6 (ORCPT
+        id S2405634AbgFYOxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 10:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405525AbgFYOxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 10:52:58 -0400
-Received: (qmail 258042 invoked by uid 1000); 25 Jun 2020 10:52:56 -0400
-Date:   Thu, 25 Jun 2020 10:52:56 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     Bart Van Assche <bvanassche@acm.org>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@puri.sm
-Subject: Re: [PATCH] scsi: sd: add runtime pm to open / release
-Message-ID: <20200625145256.GA257526@rowland.harvard.edu>
-References: <20200623111018.31954-1-martin.kepplinger@puri.sm>
- <ed9ae198-4c68-f82b-04fc-2299ab16df96@acm.org>
- <eccacce9-393c-ca5d-e3b3-09961340e0db@puri.sm>
+        Thu, 25 Jun 2020 10:53:09 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F11C08C5C1;
+        Thu, 25 Jun 2020 07:53:08 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: nicolas)
+        with ESMTPSA id 2B44E26040C
+Message-ID: <27c646c790d6b00b29f4a61c58eb761ceb56179a.camel@collabora.com>
+Subject: Re: [RFC 2/7] fixup! media: uapi: h264: update reference lists
+From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Reply-To: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Date:   Thu, 25 Jun 2020 10:53:02 -0400
+In-Reply-To: <20200623182809.1375-3-ezequiel@collabora.com>
+References: <20200623182809.1375-1-ezequiel@collabora.com>
+         <20200623182809.1375-3-ezequiel@collabora.com>
+Organization: Collabora
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+        boundary="=-TPth+kLpi+QmGB7uec/9"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eccacce9-393c-ca5d-e3b3-09961340e0db@puri.sm>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 10:16:06AM +0200, Martin Kepplinger wrote:
-> On 24.06.20 15:33, Bart Van Assche wrote:
-> > On 2020-06-23 04:10, Martin Kepplinger wrote:
-> >> This add a very conservative but simple implementation for runtime PM
-> >> to the sd scsi driver:
-> >> Resume when opened (mounted) and suspend when released (unmounted).
-> >>
-> >> Improvements that allow suspending while a device is "open" can
-> >> be added later, but now we save power when no filesystem is mounted
-> >> and runtime PM is enabled.
-> >>
-> >> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> >> ---
-> >>  drivers/scsi/sd.c | 6 ++++++
-> >>  1 file changed, 6 insertions(+)
-> >>
-> >> diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-> >> index d90fefffe31b..fe4cb7c50ec1 100644
-> >> --- a/drivers/scsi/sd.c
-> >> +++ b/drivers/scsi/sd.c
-> >> @@ -1372,6 +1372,7 @@ static int sd_open(struct block_device *bdev, fmode_t mode)
-> >>  	SCSI_LOG_HLQUEUE(3, sd_printk(KERN_INFO, sdkp, "sd_open\n"));
-> >>  
-> >>  	sdev = sdkp->device;
-> >> +	scsi_autopm_get_device(sdev);
-> >>  
-> >>  	/*
-> >>  	 * If the device is in error recovery, wait until it is done.
-> >> @@ -1418,6 +1419,9 @@ static int sd_open(struct block_device *bdev, fmode_t mode)
-> >>  
-> >>  error_out:
-> >>  	scsi_disk_put(sdkp);
-> >> +
-> >> +	scsi_autopm_put_device(sdev);
-> >> +
-> >>  	return retval;	
-> >>  }
-> >>  
-> >> @@ -1441,6 +1445,8 @@ static void sd_release(struct gendisk *disk, fmode_t mode)
-> >>  
-> >>  	SCSI_LOG_HLQUEUE(3, sd_printk(KERN_INFO, sdkp, "sd_release\n"));
-> >>  
-> >> +	scsi_autopm_put_device(sdev);
-> >> +
-> >>  	if (atomic_dec_return(&sdkp->openers) == 0 && sdev->removable) {
-> >>  		if (scsi_block_when_processing_errors(sdev))
-> >>  			scsi_set_medium_removal(sdev, SCSI_REMOVAL_ALLOW);
-> > 
-> > My understanding of the above patch is that it introduces a regression,
-> > namely by disabling runtime suspend as long as an sd device is held open.
-> > 
-> > Bart.
-> > 
-> > 
-> 
-> hi Bart,
-> 
-> Alan says the same (on block request, the block layer should initiate a
-> runtime resume), so merging with the thread from
-> https://lore.kernel.org/linux-usb/8738e4d3-62b1-0144-107d-ff42000ed6c6@puri.sm/T/
-> now and answer to both Bart and Alan here:]
-> 
-> I see scsi-pm.c using the blk-pm.c API but I'm not sure how the block
-> layer would itself resume the scsi device (I use it via usb_storage, so
-> that usb_stor_resume() follows in my case but I guess that doesn't
-> matter here):
 
-The block layer does this in block/blk-core.c:blk_queue_enter(), as part 
-of the condition check in the call to wait_event() near the end of the 
-function.  The blk_pm_request_resume() inline routine calls 
-pm_request_resume().
+--=-TPth+kLpi+QmGB7uec/9
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-At least, that's what is _supposed_ to happen.  See commit 0d25bd072b49 
-("block: Schedule runtime resume earlier").
+Le mardi 23 juin 2020 =C3=A0 15:28 -0300, Ezequiel Garcia a =C3=A9crit :
+> Align v4l2_h264_reference to 32-bits, giving some room
+> for future extensions.
+>=20
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+>  .../userspace-api/media/v4l/ext-ctrls-codec.rst  |  3 +++
+>  drivers/media/v4l2-core/v4l2-ctrls.c             | 16 ++++++++++++++++
+>  include/media/h264-ctrls.h                       |  7 +++++--
+>  3 files changed, 24 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/=
+Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index 6c36d298db20..7af12447a5b0 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -1943,6 +1943,9 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type =
+-
+>      * - __u8
+>        - ``index``
+>        -
+> +    * - __u32
+> +      - ``reserved``
+> +      - Applications and drivers must set this to zero.
 
-> my understanding of "sd" is: enable runtime pm in probe(), so *allow*
-> the device to be suspended (if enabled by the user), but never
-> resume(?). Also, why isn't "autopm" used in its ioctl() implementation
-> (as opposed to in "sr")?
+Is that really appropriate ? There was some effort to keep the controls
+small. Also, as these are fixed size, they could be extended with
+supplementary C arrays of the same size, set in separate control.
 
-I don't remember the reason.  It may be that the code in sr.c isn't 
-needed.
+Also, H264 HW is unlikely to evolve, and that covers what DXVA2 and
+VAAPI covers already. So it is quite unlikely to ever have to be
+extended.
 
-> here's roughly what happens when enabling runtime PM in sysfs (again,
-> because sd_probe() calls autopm_put() and thus allows it:
-> 
-> [   27.384446] sd 0:0:0:0: scsi_runtime_suspend
-> [   27.432282] blk_pre_runtime_suspend
-> [   27.435783] sd_suspend_common
-> [   27.438782] blk_post_runtime_suspend
-> [   27.442427] scsi target0:0:0: scsi_runtime_suspend
-> [   27.447303] scsi host0: scsi_runtime_suspend
-> 
-> then I "mount /dev/sda1 /mnt" and none of the resume() functions get
-> called. To me it looks like the sd driver should initiate resuming, and
-> that's not implemented.
-> 
-> what am I doing wrong or overlooking? how exactly does (or should) the
-> block layer initiate resume here?
+> =20
+>  .. _h264_reference_flags:
+> =20
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-co=
+re/v4l2-ctrls.c
+> index 3f3fbcd60cc6..6abd023f10c7 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+> @@ -1721,6 +1721,8 @@ static void std_log(const struct v4l2_ctrl *ctrl)
+> =20
+>  #define zero_padding(s) \
+>  	memset(&(s).padding, 0, sizeof((s).padding))
+> +#define zero_reserved(s) \
+> +	memset(&(s).reserved, 0, sizeof((s).reserved))
+> =20
+>  /*
+>   * Compound controls validation requires setting unused fields/flags to =
+zero
+> @@ -1731,6 +1733,7 @@ static int std_validate_compound(const struct v4l2_=
+ctrl *ctrl, u32 idx,
+>  {
+>  	struct v4l2_ctrl_mpeg2_slice_params *p_mpeg2_slice_params;
+>  	struct v4l2_ctrl_vp8_frame_header *p_vp8_frame_header;
+> +	struct v4l2_ctrl_h264_slice_params *p_h264_slice_params;
+>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
+>  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
+>  	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
+> @@ -1790,7 +1793,20 @@ static int std_validate_compound(const struct v4l2=
+_ctrl *ctrl, u32 idx,
+>  	case V4L2_CTRL_TYPE_H264_SPS:
+>  	case V4L2_CTRL_TYPE_H264_PPS:
+>  	case V4L2_CTRL_TYPE_H264_SCALING_MATRIX:
+> +		break;
+>  	case V4L2_CTRL_TYPE_H264_SLICE_PARAMS:
+> +		p_h264_slice_params =3D p;
+> +
+> +		for (i =3D 0; i < V4L2_H264_REF_PIC_LIST_LEN; i++) {
+> +			struct v4l2_h264_reference *ref0 =3D
+> +				&p_h264_slice_params->ref_pic_list0[i];
+> +			struct v4l2_h264_reference *ref1 =3D
+> +				&p_h264_slice_params->ref_pic_list1[i];
+> +
+> +			zero_reserved(*ref0);
+> +			zero_reserved(*ref1);
+> +		}
+> +		break;
+>  	case V4L2_CTRL_TYPE_H264_DECODE_PARAMS:
+>  		break;
+> =20
+> diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+> index 9b1cbc9bc38e..c6cbf178c1c9 100644
+> --- a/include/media/h264-ctrls.h
+> +++ b/include/media/h264-ctrls.h
+> @@ -19,6 +19,8 @@
+>   */
+>  #define V4L2_H264_NUM_DPB_ENTRIES 16
+> =20
+> +#define V4L2_H264_REF_PIC_LIST_LEN 32
+> +
+>  /* Our pixel format isn't stable at the moment */
+>  #define V4L2_PIX_FMT_H264_SLICE v4l2_fourcc('S', '2', '6', '4') /* H264 =
+parsed slices */
+> =20
+> @@ -146,6 +148,7 @@ struct v4l2_h264_pred_weight_table {
+>  struct v4l2_h264_reference {
+>  	__u8 flags;
+>  	__u8 index;
+> +	__u16 reserved;
+>  };
+> =20
+>  struct v4l2_ctrl_h264_slice_params {
+> @@ -190,8 +193,8 @@ struct v4l2_ctrl_h264_slice_params {
+>  	 * Entries on each list are indices into
+>  	 * v4l2_ctrl_h264_decode_params.dpb[].
+>  	 */
+> -	struct v4l2_h264_reference ref_pic_list0[32];
+> -	struct v4l2_h264_reference ref_pic_list1[32];
+> +	struct v4l2_h264_reference ref_pic_list0[V4L2_H264_REF_PIC_LIST_LEN];
+> +	struct v4l2_h264_reference ref_pic_list1[V4L2_H264_REF_PIC_LIST_LEN];
+> =20
+>  	__u32 flags;
+>  };
 
-I don't know what's going wrong.  Bart, can you look into it?  As far as I 
-can tell, you're the last person to touch the block-layer's runtime PM 
-code.
+--=-TPth+kLpi+QmGB7uec/9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Alan Stern
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSScpfJiL+hb5vvd45xUwItrAaoHAUCXvS6TgAKCRBxUwItrAao
+HEkIAJoDq1DF6ySKKzKRkiK6C4XjhqIMkwCgh0f1VFVd9L0IohzNHLu7Fq2fMLk=
+=PBfz
+-----END PGP SIGNATURE-----
+
+--=-TPth+kLpi+QmGB7uec/9--
+
