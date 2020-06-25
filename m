@@ -2,156 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB8220A0F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 16:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4D520A0EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 16:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405429AbgFYOiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 10:38:50 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:45184 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405411AbgFYOiu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 10:38:50 -0400
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 05PEcQAX008959;
-        Thu, 25 Jun 2020 23:38:27 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 05PEcQAX008959
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1593095907;
-        bh=ijPZb1cfulvfr7nl4mn4pmwbl3GKFLftlqTTQQ9OMEc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OznUSqNEqRwb9eSqLiT0Q6D+ovJNlmwc02GFYtezeKuLjq3Zl4BfDOXROeFx9tON1
-         iqmr3lKpeEos+rVdZDVXay4TD4UVgiNzFvAUTs1BGs8Rz3IYk46DXgzcqynWLhwOSZ
-         OrsNx0HahNWTZTy9eSXlZbad+a/RXhmssSP9eHOlh0+R8A2NVdFwqhXIgjDcquRXd6
-         09DKR5pTWf+f3pDkm4PIxV4IlNruY0BhnF3Q+W+R6U7C1dNB3jC7ChnBoV+XlJlxwF
-         JJYeXuVH82yC1cfbXnxlJqEOdmSrh6SLm8j+G3jEn0fZl6qc1VO2F2hstm/1U5M4P+
-         TIP02jpz6v7ug==
-X-Nifty-SrcIP: [209.85.217.54]
-Received: by mail-vs1-f54.google.com with SMTP id m25so3668741vsp.8;
-        Thu, 25 Jun 2020 07:38:27 -0700 (PDT)
-X-Gm-Message-State: AOAM5307P+XvSxbN/q+ZzGCSLLPCo+tIIvB1VgWhqsvu/GVxq5azQBsX
-        TnPnx+lPRG7zRasNs/Lw+ztxxEqah60AVWaWlHM=
-X-Google-Smtp-Source: ABdhPJyvOYDrxR1TD/0As+dJtiC0TVMxIpD2R/NeE0UMXfGRlubszQEpcdvJygsMSzOaXDMnb7MTpA0vPI/hmyAnMhA=
-X-Received: by 2002:a67:2d42:: with SMTP id t63mr26451715vst.181.1593095906216;
- Thu, 25 Jun 2020 07:38:26 -0700 (PDT)
+        id S2405402AbgFYOh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 10:37:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405340AbgFYOh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 10:37:57 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65F83206B7;
+        Thu, 25 Jun 2020 14:37:55 +0000 (UTC)
+Date:   Thu, 25 Jun 2020 10:37:53 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Yordan Karadzhov <y.karadz@gmail.com>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Jason Behmer <jbehmer@google.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Clark Williams <williams@redhat.com>,
+        bristot <bristot@redhat.com>, Daniel Wagner <wagi@monom.org>,
+        Darren Hart <dvhart@vmware.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Suresh E. Warrier" <warrier@linux.vnet.ibm.com>
+Subject: Re: [RFC][PATCH] ring-buffer: Have nested events still record
+ running time stamp
+Message-ID: <20200625103753.4ac4a9a2@oasis.local.home>
+In-Reply-To: <126813531.12266.1593093195147.JavaMail.zimbra@efficios.com>
+References: <20200625094454.732790f7@oasis.local.home>
+        <126813531.12266.1593093195147.JavaMail.zimbra@efficios.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200623114614.792648-1-yamada.masahiro@socionext.com>
- <20200623114614.792648-4-yamada.masahiro@socionext.com> <20200623122413.GA954398@dell>
- <CAK7LNAR-dm6Zbtt9MsUunn9+qqwTtRCbq4Wzb=8uKLtfaLK6TQ@mail.gmail.com> <20200624181605.GJ954398@dell>
-In-Reply-To: <20200624181605.GJ954398@dell>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 25 Jun 2020 23:37:48 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATFUX56t=wn-3qOSYLwESp63gqDWjADEVQ1g1CYrGxA3g@mail.gmail.com>
-Message-ID: <CAK7LNATFUX56t=wn-3qOSYLwESp63gqDWjADEVQ1g1CYrGxA3g@mail.gmail.com>
-Subject: Re: [PATCH 4/4] ARM: dts: uniphier: change support card to simple-mfd
- from simple-bus
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 3:16 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Thu, 25 Jun 2020, Masahiro Yamada wrote:
->
-> > On Tue, Jun 23, 2020 at 9:24 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > >
-> > > On Tue, 23 Jun 2020, Masahiro Yamada wrote:
-> > >
-> > > > 'make ARCH=arm dtbs_check' emits the following warning:
-> > > >
-> > > >   support-card@1,1f00000: $nodename:0: 'support-card@1,1f00000' does not match '^(bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
-> > > >
-> > > > Maybe, simple-mfd could be a better fit for this device.
-> > >
-> > > The two should be equivalent.
-> >
-> > Yes, I know.
-> > That's why I can change "simple-bus" to "simple-mfd"
-> > with no risk.
-> >
-> > The difference is schema-check.
-> >
-> > The node name for "simple-bus" is checked by 'make dtbs_check'.
-> >
-> > See this code:
-> > https://github.com/robherring/dt-schema/blob/v2020.05/schemas/simple-bus.yaml#L17
-> >
-> > Even if I rename the node, it does not accept the
-> > unit name '1,1f00000'
-> >
-> > > What do you mean by "maybe"?  Does this squash the warning?
-> >
-> > "maybe" means I am not quite sure
-> > which compatible is a better fit
-> > to describe this device.
-> >
-> > As mentioned above, simple-bus and simple-mfd
-> > are interchangeable from a driver point of view.
-> >
-> > This add-on board is integrated with various peripherals
-> > such as 16550a serial, smsc9115 ether etc.
-> > The address-decode is implemented in a CPLD device.
-> > It has chip selects and local addresses, which are mapped to
-> > the parent.
-> >
-> > It can be either simple-bus or simple-mfd, I think.
-> >
-> >
-> > dt-schema checks the node name of simple-bus.
-> > Currently, there is no check for simple-mfd.
-> >
-> > So, I think this patch is an easy solution
-> > to fix the warning.
->
-> Yes, looking at the documentation it seems as though 'simple-mfd'
-> would be a better fit.  Is the device a single IP with various
-> different functions?
+On Thu, 25 Jun 2020 09:53:15 -0400 (EDT)
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
+> ----- On Jun 25, 2020, at 9:44 AM, rostedt rostedt@goodmis.org wrote:
+> 
+> > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> > 
+> > [ SEVEN YEAR PROBLEM SOLVED! ]
+> > 
+> > Up until now, if an event is interrupted while it is recorded by an
+> > interrupt, and that interrupt records events, the time of those events will
+> > all be the same. This is because events only record the delta of the time
+> > since the previous event (or beginning of a page), and to handle updating
+> > the time keeping for that of nested events is extremely racy. After years of
+> > thinking about this and several failed attempts, I finally have a solution
+> > to solve this puzzle.  
+> 
+> Out of curiosity, considering that LTTng has solved this problem 10+ years ago
+> with a simpler concurrency-friendly time-stamping model, why not simply use it
+> rather than add complexity to the current ftrace timestamp scheme ?
 
-Not an IP.
+Because it requires updating all the tools that read this from user
+space.
 
-This is a small board that consists of
-a CPLD + ethernet controller + serial controller + LED, etc.
+I found a solution that works, so why change it and cause the backward
+compatibility pain now?
 
-
->
-> > Rob is in Cc. Please add comments if any.
-> >
-> > > Isn't the issue caused by the ','?
-> >
-> > Right.
-> >
-> > The node name of simple-bus
-> > must meet the regular expression:
-> > "^(bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$"
-> >
-> >
-> > Even if I rename the node
-> > "support-card@1,1f00000"
-> > to "bus@1,1f00000", the warning is still
-> > displayed due to ','
-> >
-> > "1,1f00000" means
-> > the address 0x01f00000 of chip select 1.
->
-> Is this an officially accepted format?
-
-
-I am not sure if it is official.
-
-Rob said the data fields should be separated by commas.
-https://www.spinics.net/lists/devicetree/msg201565.html
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+-- Steve
