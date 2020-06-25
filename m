@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1378420A316
+	by mail.lfdr.de (Postfix) with ESMTP id 806BD20A317
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406200AbgFYQg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 12:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38434 "EHLO
+        id S2406249AbgFYQgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 12:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406105AbgFYQg1 (ORCPT
+        with ESMTP id S2406177AbgFYQg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 12:36:27 -0400
+        Thu, 25 Jun 2020 12:36:28 -0400
 Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEBE7C08C5DB
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:36:26 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id g75so6191560wme.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:36:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1798DC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:36:28 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id o2so6616218wmh.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:36:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wrbO6xK7EoIeO1VHH2AGpfAcceEYBEVVEFHtZyqDA5M=;
-        b=U8Vp/tCRNrGE22Ur+Ex5s8u+LHfRLDxuxHW3gcrrdE8Jv+nrHRuUKAALGt5OLlttHH
-         DPDgx7URr2b94n8Z26kcbCUEEISXHVx5Jtn6hs1GPjx02z5LrKGoPkAs0lFmL5b/9ZbL
-         PL+/PHQU5LVXGL7q5yP3338Bb4AfDabXM6Tptehd6Udb5DL8b1Rl4HCE8F9dWfOrn71E
-         l+2j7aOUVBV+vI1YZn2CSRM5bLopbMyRjHejF8l8yam53WXpcRvfa47NDTJQp2zlqPyw
-         UTGRzS5ZHi5r0ReifVYTij7pRDXVphYFOpXWHj2KnqGwtxK0+opyS9ly+BVnfv1KXP+N
-         Ilcg==
+        bh=Oh0M2XxgEicv/4L6G4xS9du1OgGWivqgmfvme6DT5xQ=;
+        b=I8pv1DA7VP8oubQxBsgNdI+KcUYKxD021qWb3WnX0GN9F9PSAMbqBYJ/YqRdkDr+i+
+         2I95wk1mNvFrWPiQy1Au8GIenTEuoISlV2qYFDZL9H7fzYS7HvnDaySxgj2jXTS8Jc0l
+         uTyuMCOeYzZIrXokNQlhSODbZahqjKEjR+RP6RgNere7Lz4VGAReCjlp4iGr+bqF2DE3
+         AwbB0elZeh6pZgayQ1Qzk5spE69Kc3P/Vw40ZMeGKrbrePX71GSNnWQiyjFmjdi/JeCM
+         AUsAYl6iZ7awNTzLQs8yYhRRJmY7p6QLwTn2LcuEfdUh6neOKfuycHUAxzg1mNtji7+N
+         1iNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wrbO6xK7EoIeO1VHH2AGpfAcceEYBEVVEFHtZyqDA5M=;
-        b=C0o4veC4DxA5LZOmSdgvwhodlB4PVi2KBqu6h2A2+eEcWXlNecAwVHkXyMVdJdg775
-         YOVOueJB0ej13rAizCRvdJY/zRX15ZNUsJXgr7mOENwZc2YKj18JH6MXYIhUEzV5Hc9U
-         z+XY5k+/zaQMVs7ufaGinKpgfJfPjLE555YEQyNZwPoHrh4oleXfKy2whtpu7LfCBvcj
-         4B8v3a6BT382imLSSmjqg13CS3mJ7YIG2/i5pYPr5aa0J+5vjQg7iyHH/CZs7fzp4tzo
-         hOuw2/wxfHF258/9Nu7oELuGP8zA2Vd3u9jMNYmGZYPjEKcs6f70ORoFqBnwFpvaAkR+
-         W6dQ==
-X-Gm-Message-State: AOAM5303DaWXXQ7q2icrOqMHFDZCuSVejmD2Puri8Ax266fHWjJU2uL2
-        U0efs639s53BmUzeucf31r87NQ==
-X-Google-Smtp-Source: ABdhPJxD4VwwV7Ih+k7y/dG2h+HNygvu6V2v3Ta2fHsyVCBjxkCJcMJuTTKrkF/oSmDZGfw5o2P2Bw==
-X-Received: by 2002:a1c:c908:: with SMTP id f8mr4307260wmb.150.1593102985745;
-        Thu, 25 Jun 2020 09:36:25 -0700 (PDT)
+        bh=Oh0M2XxgEicv/4L6G4xS9du1OgGWivqgmfvme6DT5xQ=;
+        b=aSzape2qQ7XeHSvPCZ+ddvoeR3ApSlmYlTdwNZmKiYxQW6rOrqKIKtRvDM/Ng1Giax
+         ykr8sPIxrA4v/A3ah98rcvBuEN9PcRSLFwvomRMM3WRBP9GR8ivWQUB7dO2etoxa9ufz
+         APjY7i1PAem5eDgh6BWO7onfLv8eISwfHMhVHudCBuuvSGumBampVx3cF/szZIYmyhc6
+         5xyBpz9kG83l63pqNn9pjJwk+OS51gmzS1kDklWz6omTWtrfo6Krqrhk8Sk4FkTaJg2B
+         jSntMJS47qSEcyKeVh8K+CnOJDK7TmA1kUwAZaPBPtD+pOQH17051OPHc72wsYCB/eA0
+         QJsA==
+X-Gm-Message-State: AOAM531KkFW90b2k+OEiGsdNhzAmtTPaRdqxmfVsfrqwkR46bzjiFiuU
+        /O9q3sRu+dxe1WcpVYD4HmvaVA==
+X-Google-Smtp-Source: ABdhPJxSQnTa9XMAO/CZ/o9al09/awtgMaCIbfouAqjZz5Zpg5xQYQP3AY71vBaNPnpoiaKHxVlTTA==
+X-Received: by 2002:a1c:dd86:: with SMTP id u128mr4269069wmg.123.1593102986847;
+        Thu, 25 Jun 2020 09:36:26 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id a15sm36729089wrh.54.2020.06.25.09.36.24
+        by smtp.gmail.com with ESMTPSA id a15sm36729089wrh.54.2020.06.25.09.36.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 09:36:25 -0700 (PDT)
+        Thu, 25 Jun 2020 09:36:26 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lgirdwood@gmail.com, broonie@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 02/10] regulator: devres: Fix issues with kerneldoc headers
-Date:   Thu, 25 Jun 2020 17:36:06 +0100
-Message-Id: <20200625163614.4001403-3-lee.jones@linaro.org>
+Subject: [PATCH 03/10] regulator: of_regulator: Add missing colon for rdev kerneldoc argument
+Date:   Thu, 25 Jun 2020 17:36:07 +0100
+Message-Id: <20200625163614.4001403-4-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200625163614.4001403-1-lee.jones@linaro.org>
 References: <20200625163614.4001403-1-lee.jones@linaro.org>
@@ -65,43 +65,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide descriptions for some missing function args and
-rename others to match the names used.
+Kerneldoc validation gets confused if syntax isn't "@.*: ".
 
-Fixes the following W=1 warning(s):
-
- drivers/regulator/devres.c:187: warning: Function parameter or member 'dev' not described in 'devm_regulator_register'
- drivers/regulator/devres.c:226: warning: Function parameter or member 'dev' not described in 'devm_regulator_unregister'
- drivers/regulator/devres.c:226: warning: Function parameter or member 'rdev' not described in 'devm_regulator_unregister'
- drivers/regulator/devres.c:226: warning: Excess function parameter 'regulator' description in 'devm_regulator_unregister'
+Adding the missing colons squashes the following W=1 warnings:
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/regulator/devres.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/regulator/of_regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/devres.c b/drivers/regulator/devres.c
-index 3ea1c170f8402..d59009d07a57e 100644
---- a/drivers/regulator/devres.c
-+++ b/drivers/regulator/devres.c
-@@ -173,6 +173,7 @@ static void devm_rdev_release(struct device *dev, void *res)
- 
+diff --git a/drivers/regulator/of_regulator.c b/drivers/regulator/of_regulator.c
+index 87637eb6bcbcb..292e68c818ea1 100644
+--- a/drivers/regulator/of_regulator.c
++++ b/drivers/regulator/of_regulator.c
+@@ -532,7 +532,7 @@ static bool of_coupling_find_node(struct device_node *src,
  /**
-  * devm_regulator_register - Resource managed regulator_register()
-+ * @dev: device for regulator "consumer"
-  * @regulator_desc: regulator to register
-  * @config: runtime configuration for regulator
+  * of_check_coupling_data - Parse rdev's coupling properties and check data
+  *			    consistency
+- * @rdev - pointer to regulator_dev whose data is checked
++ * @rdev: - pointer to regulator_dev whose data is checked
   *
-@@ -216,7 +217,8 @@ static int devm_rdev_match(struct device *dev, void *res, void *data)
- 
- /**
-  * devm_regulator_unregister - Resource managed regulator_unregister()
-- * @regulator: regulator to free
-+ * @dev: device for regulator "consumer"
-+ * @rdev: regulator to free
-  *
-  * Unregister a regulator registered with devm_regulator_register().
-  * Normally this function will not need to be called and the resource
+  * Function checks if all the following conditions are met:
+  * - rdev's max_spread is greater than 0
 -- 
 2.25.1
 
