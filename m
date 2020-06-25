@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACA020A73D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 23:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C38820A741
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 23:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405672AbgFYVLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 17:11:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52786 "EHLO
+        id S2405695AbgFYVLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 17:11:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390087AbgFYVLM (ORCPT
+        with ESMTP id S2391185AbgFYVLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 17:11:12 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72787C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 14:11:12 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id l6so881212pjq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 14:11:12 -0700 (PDT)
+        Thu, 25 Jun 2020 17:11:31 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85458C08C5DB
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 14:11:31 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 18so6656043otv.6
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 14:11:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=X2Y5t1dKzr/SYf36lPT97sgIrFXEnQgrqfJccb62zp4=;
-        b=QcX55Q+XgMXu91WqdPsHUPMZjt7V9aPWd2V9HjPFdibFoCViwpNOJJ/VOV1j1Oy4jl
-         Wm0Q7PwLCXx2I/tp+YvmvireijJ2ZXVrHNAu8WlLkEwFaIeHwphV9Sn/vG23dCXqfg/6
-         lxWIzqOGTsOP9ACva8vlaAMTtWz7lnEkhEpEDmkcYP+gv4yDhcya4EIfyaxzco7ldWtn
-         ZK39YOeNmNRPKToukKT3l/+S1IguHFUDRGKu8gJq8IqJwS+c3jhoMBxpG7hs3EL5zzTv
-         UnpUEn6ch9Erv4Wt4tjI7QGiMvL8nVZ5+vHtT3hyG4ca1en6X/JM1ctQrA/ODrQh31FE
-         Fq6g==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=k8OAgKU400QXnB0pfTjlnf95XjI/EzLjkKF5VofXQm4=;
+        b=PRlf6ZWNu4GPS81dC4s7MfFqIEHMhbdvPqkS1UIdPn1TWcdCK+/5IWkjTxr5vpZzYn
+         fDGX4ifgtn3Mg7dkjKUZaAHBE5vuo+/b33ePQqlhxNJphscN3/rO7uu2anraBpa/AfCr
+         hBR6SAe1FHi8J8lCGN3tzgh306U7MyhKMDKV8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X2Y5t1dKzr/SYf36lPT97sgIrFXEnQgrqfJccb62zp4=;
-        b=q+dL9Ibvr0i6bY6uZW/o+FrLlFi0Rlz3L/cXsVoOpuA+EhmRPeMwFzWG44jqkVfQn+
-         1Z5b2Z3GDZicKxqnLjEoztZvBsFYoK7ykAALa6vJpitb2cCwmsLK8NiFYEazakXpgVC2
-         N5VAXi2m1EqmdiOrRkvlyQtLjPllLJ5F+vo8hKMEUb4bvUlaXbu0nqJoR3RMWAlr7sIQ
-         i+VA7sNWqf0kMsyG0s2q6oq5ezA4AggFvpzT6EdLuhfMEq5G//6TgjqcnTCEDmrgTnhE
-         zvi0hN9PdLElAo3PKPLKOdNtatxwN8DpWrAqhUM4IXPAtpojOeBN6JQ2kFmOje7C9xZH
-         Od1w==
-X-Gm-Message-State: AOAM531eBTDxmQcTYeAhXgKpTYbcj1JbfvC3ATnOan/jnQb3SjXVk172
-        zApTW+Sx7SdA8jZU5FuhZ5Y=
-X-Google-Smtp-Source: ABdhPJxhsyqnkWH+CcEUij/QFTHxVO3QgaiFu0KYrj1SmjF28Ou81cgVD2ZfeCyiw2+7ofSf13lz+w==
-X-Received: by 2002:a17:902:fe0b:: with SMTP id g11mr8928417plj.269.1593119472022;
-        Thu, 25 Jun 2020 14:11:12 -0700 (PDT)
-Received: from localhost (g2.222-224-226.ppp.wakwak.ne.jp. [222.224.226.2])
-        by smtp.gmail.com with ESMTPSA id t19sm1374874pgg.19.2020.06.25.14.11.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 14:11:11 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 06:11:08 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Cc:     Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        openrisc@lists.librecores.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] openrisc: fix __user in raw_copy_to_user()'s prototype
-Message-ID: <20200625211108.GG1401039@lianli.shorne-pla.net>
-References: <20200622121124.80398-1-luc.vanoostenryck@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=k8OAgKU400QXnB0pfTjlnf95XjI/EzLjkKF5VofXQm4=;
+        b=HWiv4X/AMqK08TJLBgPmVU3BxaFTwKFw6DwqeZgGXgwexF02Uhjcs+8p4YPmZQWwxs
+         1v1cuIeuffUC0Y1tLFsCM4UY7a8KITcWQoiSHJGrMXr5hilKKripw5Xg+HbGceGNJdR0
+         HI9UuNFCslTqdafZiub8yLMkHS4VULijB4VphEoEYvRzQXu8rtnxR9sMHWRC0NB17LLV
+         ZpOtxdjBokAHkfJliSIwOqhDoKca89gTyTA6kCm0SO7aSt3zZLKfZd3Uw41EnrGLMWSg
+         CxF9I92RxbvxRjMyRcrYne1aEsJCw6iyR6WZMJJRTngps3X1+zCBHdtocK0eG9JoWZuo
+         Uv7A==
+X-Gm-Message-State: AOAM533hZUqvhGL7oMepF30STkxzyEYDr4ISfajNssptQtUr0baNHMTV
+        Rf9SeaS9RffFRFgaRgaFbVem3g==
+X-Google-Smtp-Source: ABdhPJwF5ukoGz73lxNiyFqPSchj8qJ/85yti5EHyTKNoVRangU31mzsP5hM6tq/QIL3mAzcHzGJ1A==
+X-Received: by 2002:a9d:845:: with SMTP id 63mr3844564oty.213.1593119490869;
+        Thu, 25 Jun 2020 14:11:30 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id x24sm2475115oto.31.2020.06.25.14.11.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jun 2020 14:11:30 -0700 (PDT)
+Subject: Re: [PATCH v2] usbip: tools: add in man page how to load the client's
+ module
+To:     Antonio Borneo <borneo.antonio@gmail.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, linux-usb@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200618000831.1048255-1-borneo.antonio@gmail.com>
+ <2da8fc9e34440c1fa5f9007baaa3921767cdec50.1593090874.git.borneo.antonio@gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <07af6971-b9d2-33a6-ec01-21c53050bc04@linuxfoundation.org>
+Date:   Thu, 25 Jun 2020 15:11:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200622121124.80398-1-luc.vanoostenryck@gmail.com>
+In-Reply-To: <2da8fc9e34440c1fa5f9007baaa3921767cdec50.1593090874.git.borneo.antonio@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 02:11:24PM +0200, Luc Van Oostenryck wrote:
-> raw_copy_to_user()'s prototype seems to be a copy & paste of
-> raw_copy_from_user() and as such has the __user annotation
-> in the 'from' argument instead of the 'to'.
+On 6/25/20 7:17 AM, Antonio Borneo wrote:
+> While the man page usbipd.8 already informs the user on which
+> kernel module has to be used on server side, the man page usbip.8
+> does not provide any equivalent information on client side.
+> Also, it could be hard for a newbie to identify the proper usbip
+> client kernel module, due to the name "vhci-hcd" that has no
+> immediate assonance with usbip.
 > 
-> So, move the __user annotation in the prototype to the 'to'.
-
-Thank you,
-
-I have queued this for 5.9.  If you think its more urgent let me know.
-
--Stafford
-
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+> Add in usbip.8 the command to add the module vhci-hcd, similarly
+> as it's already present in usbipd.8 for usbip-host.
+> While there, rephrase the description of the command "usbip list
+> --remote=server".
+> 
+> Signed-off-by: Antonio Borneo <borneo.antonio@gmail.com>
+> --
+> 
+> v1->v2: rephrase the description of command "usbip list ..."
+>          fix a typo in commit message
 > ---
->  arch/openrisc/include/asm/uaccess.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   tools/usb/usbip/doc/usbip.8 | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/openrisc/include/asm/uaccess.h b/arch/openrisc/include/asm/uaccess.h
-> index 17c24f14615f..46e31bb4a9ad 100644
-> --- a/arch/openrisc/include/asm/uaccess.h
-> +++ b/arch/openrisc/include/asm/uaccess.h
-> @@ -241,7 +241,7 @@ raw_copy_from_user(void *to, const void __user *from, unsigned long size)
->  	return __copy_tofrom_user(to, (__force const void *)from, size);
->  }
->  static inline unsigned long
-> -raw_copy_to_user(void *to, const void __user *from, unsigned long size)
-> +raw_copy_to_user(void __user *to, const void *from, unsigned long size)
->  {
->  	return __copy_tofrom_user((__force void *)to, from, size);
->  }
+> diff --git a/tools/usb/usbip/doc/usbip.8 b/tools/usb/usbip/doc/usbip.8
+> index a6097be25d28..a15d20063b98 100644
+> --- a/tools/usb/usbip/doc/usbip.8
+> +++ b/tools/usb/usbip/doc/usbip.8
+> @@ -83,7 +83,9 @@ List local USB devices.
+>   .SH EXAMPLES
+>   
+>       client:# usbip list --remote=server
+> -        - List exportable usb devices on the server.
+> +        - List devices exported by remote server.
+> +
+> +    client:# modprobe vhci-hcd
+>   
+>       client:# usbip attach --remote=server --busid=1-2
+>           - Connect the remote USB device.
+> 
+> base-commit: 48778464bb7d346b47157d21ffde2af6b2d39110
+> 
+
+Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
