@@ -2,165 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5020A209EA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 14:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41CE2209EAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 14:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404727AbgFYMma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 08:42:30 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41472 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404610AbgFYMm3 (ORCPT
+        id S2404776AbgFYMmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 08:42:40 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:36587 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404765AbgFYMmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 08:42:29 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05PCXCcT014274;
-        Thu, 25 Jun 2020 08:42:27 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31uwyfx3va-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Jun 2020 08:42:26 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05PCYXPx026608;
-        Thu, 25 Jun 2020 12:42:26 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma02wdc.us.ibm.com with ESMTP id 31uus3ux2n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Jun 2020 12:42:26 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05PCgQAE52625916
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Jun 2020 12:42:26 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 05B2BAE05C;
-        Thu, 25 Jun 2020 12:42:26 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E1A84AE063;
-        Thu, 25 Jun 2020 12:42:25 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 25 Jun 2020 12:42:25 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
-To:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jarkko.sakkinen@linux.intel.com, linux-acpi@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v6 2/2] tpm: Add support for event log pointer found in TPM2 ACPI table
-Date:   Thu, 25 Jun 2020 08:42:22 -0400
-Message-Id: <20200625124222.1954580-3-stefanb@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200625124222.1954580-1-stefanb@linux.vnet.ibm.com>
-References: <20200625124222.1954580-1-stefanb@linux.vnet.ibm.com>
+        Thu, 25 Jun 2020 08:42:38 -0400
+Received: by mail-wm1-f66.google.com with SMTP id 17so5783986wmo.1;
+        Thu, 25 Jun 2020 05:42:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zqYYU+XzLTo4RZ3+vh2KfRtchjL+OjYySOUllgC9oo8=;
+        b=LzksH/QjS06oxtxtx5uT+9yAfGlHdc/hEVx539NjsuFbdjtaIhhKIeEXkL8BvwyDiu
+         S3JGcqI5iFYUxK/kDBstsrXSSk0h8ApAmSnbV8bp/P1wJD0we7OTMeVR29fam6gl8DTA
+         1VkUyBjkb1Xlh1sOnZcbIpqiDpBu3yyzPm+jIfU6C/NKnSLlrSthKltC9Toztn/GM3Qs
+         N7Tl3Z5gKbxriRKVdMajbvgrNDs0Up/Un9LYQHWqvsNqekUEbqY7LxefmiKV5/iovvsz
+         JOcTwzP98Z3dsnckKzLeer7zsI5/5h3UwILjQIkwmu7DrSM3g0J9fjNs+QTeb6xxt0N6
+         +JhQ==
+X-Gm-Message-State: AOAM5318DXRU55DawIgJJWlF4Y7ysqYB215iqa92uSUAJrGvFwLKRLWw
+        0nM8octfpneLYS6nqSomxlxGh19q
+X-Google-Smtp-Source: ABdhPJwrxoXQ+HCO1VVYYUvEmwFEOPYklBv2D67vfvs9fNB1wlADT0sE5tlgxNrUNZ128ZofveX60g==
+X-Received: by 2002:a1c:80c8:: with SMTP id b191mr3021699wmd.37.1593088956395;
+        Thu, 25 Jun 2020 05:42:36 -0700 (PDT)
+Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
+        by smtp.gmail.com with ESMTPSA id t5sm11739610wmj.37.2020.06.25.05.42.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jun 2020 05:42:35 -0700 (PDT)
+Date:   Thu, 25 Jun 2020 14:42:34 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, dm-devel@redhat.com,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>
+Subject: Re: [PATCH 1/6] mm: Replace PF_MEMALLOC_NOIO with memalloc_noio
+Message-ID: <20200625124234.GM1320@dhcp22.suse.cz>
+References: <20200625113122.7540-1-willy@infradead.org>
+ <20200625113122.7540-2-willy@infradead.org>
+ <20200625122239.GJ1320@dhcp22.suse.cz>
+ <20200625123418.GB7703@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-25_05:2020-06-25,2020-06-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- impostorscore=0 mlxlogscore=999 mlxscore=0 priorityscore=1501 phishscore=0
- malwarescore=0 cotscore=-2147483648 lowpriorityscore=0 bulkscore=0
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006250078
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200625123418.GB7703@casper.infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+On Thu 25-06-20 13:34:18, Matthew Wilcox wrote:
+> On Thu, Jun 25, 2020 at 02:22:39PM +0200, Michal Hocko wrote:
+> > On Thu 25-06-20 12:31:17, Matthew Wilcox wrote:
+> > > We're short on PF_* flags, so make memalloc_noio its own bit where we
+> > > have plenty of space.
+> > 
+> > I do not mind moving that outside of the PF_* space. Unless I
+> > misremember all flags in this space were intented to be set only on the
+> > current which rules out any RMW races and therefore they can be
+> > lockless. I am not sure this holds for the bitfield you are adding this
+> > to. At least in_memstall seem to be set on external task as well. But
+> > this would require double checking. Maybe that is not really intended or
+> > just a bug.
+> 
+> I was going from the comment:
+> 
+>         /* Unserialized, strictly 'current' */
+> (which you can't see from the context of the diff, but is above the block)
+> 
+> The situation with ->flags is a little more ambiguous:
+> 
+> /*
+>  * Only the _current_ task can read/write to tsk->flags, but other
+>  * tasks can access tsk->flags in readonly mode for example
+>  * with tsk_used_math (like during threaded core dumping).
+>  * There is however an exception to this rule during ptrace
+>  * or during fork: the ptracer task is allowed to write to the
+>  * child->flags of its traced child (same goes for fork, the parent
+>  * can write to the child->flags), because we're guaranteed the
+>  * child is not running and in turn not changing child->flags
+>  * at the same time the parent does it.
+>  */
 
-In case a TPM2 is attached, search for a TPM2 ACPI table when trying
-to get the event log from ACPI. If one is found, use it to get the
-start and length of the log area. This allows non-UEFI systems, such
-as SeaBIOS, to pass an event log when using a TPM2.
+OK, I have obviously missed that.
 
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
----
- drivers/char/tpm/eventlog/acpi.c | 59 ++++++++++++++++++++------------
- 1 file changed, 38 insertions(+), 21 deletions(-)
+> but it wasn't unsafe to use the PF_ flags in the way that you were.
+> It's just crowded.
+> 
+> If in_memstall is set on other tasks, then it should be moved to the
+> PFA flags, which there are plenty of.
+> 
+> But a quick grep shows it only being read on other tasks and always
+> set on current:
+> 
+> kernel/sched/psi.c:     *flags = current->in_memstall;
+> kernel/sched/psi.c:      * in_memstall setting & accounting needs to be atomic wrt
+> kernel/sched/psi.c:     current->in_memstall = 1;
+> kernel/sched/psi.c:      * in_memstall clearing & accounting needs to be atomic wrt
+> kernel/sched/psi.c:     current->in_memstall = 0;
+> kernel/sched/psi.c:     if (task->in_memstall)
 
-diff --git a/drivers/char/tpm/eventlog/acpi.c b/drivers/char/tpm/eventlog/acpi.c
-index 63ada5e53f13..8b9e33d57f70 100644
---- a/drivers/char/tpm/eventlog/acpi.c
-+++ b/drivers/char/tpm/eventlog/acpi.c
-@@ -49,9 +49,9 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
- 	void __iomem *virt;
- 	u64 len, start;
- 	struct tpm_bios_log *log;
--
--	if (chip->flags & TPM_CHIP_FLAG_TPM2)
--		return -ENODEV;
-+	struct acpi_table_tpm2 *tbl;
-+	struct acpi_tpm2_phy *t2phy;
-+	int format;
- 
- 	log = &chip->log;
- 
-@@ -61,23 +61,40 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
- 	if (!chip->acpi_dev_handle)
- 		return -ENODEV;
- 
--	/* Find TCPA entry in RSDT (ACPI_LOGICAL_ADDRESSING) */
--	status = acpi_get_table(ACPI_SIG_TCPA, 1,
--				(struct acpi_table_header **)&buff);
--
--	if (ACPI_FAILURE(status))
--		return -ENODEV;
--
--	switch(buff->platform_class) {
--	case BIOS_SERVER:
--		len = buff->server.log_max_len;
--		start = buff->server.log_start_addr;
--		break;
--	case BIOS_CLIENT:
--	default:
--		len = buff->client.log_max_len;
--		start = buff->client.log_start_addr;
--		break;
-+	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
-+		status = acpi_get_table("TPM2", 1,
-+					(struct acpi_table_header **)&tbl);
-+		if (ACPI_FAILURE(status))
-+			return -ENODEV;
-+		if (tbl->header.length <
-+				sizeof(*tbl) + sizeof(struct acpi_tpm2_phy))
-+			return -ENODEV;
-+		t2phy = (void *)tbl + sizeof(*tbl);
-+		len = t2phy->log_area_minimum_length;
-+		start = t2phy->log_area_start_address;
-+		if (!start || !len)
-+			return -ENODEV;
-+		format = EFI_TCG2_EVENT_LOG_FORMAT_TCG_2;
-+	} else {
-+		/* Find TCPA entry in RSDT (ACPI_LOGICAL_ADDRESSING) */
-+		status = acpi_get_table(ACPI_SIG_TCPA, 1,
-+					(struct acpi_table_header **)&buff);
-+
-+		if (ACPI_FAILURE(status))
-+			return -ENODEV;
-+
-+		switch (buff->platform_class) {
-+		case BIOS_SERVER:
-+			len = buff->server.log_max_len;
-+			start = buff->server.log_start_addr;
-+			break;
-+		case BIOS_CLIENT:
-+		default:
-+			len = buff->client.log_max_len;
-+			start = buff->client.log_start_addr;
-+			break;
-+		}
-+		format = EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2;
- 	}
- 	if (!len) {
- 		dev_warn(&chip->dev, "%s: TCPA log area empty\n", __func__);
-@@ -98,7 +115,7 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
- 	memcpy_fromio(log->bios_event_log, virt, len);
- 
- 	acpi_os_unmap_iomem(virt, len);
--	return EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2;
-+	return format;
- 
- err:
- 	kfree(log->bios_event_log);
+Have a look at cgroup_move_task. So I believe this is something to be
+fixed but independent on your change.
+
+Feel free to add
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> kernel/sched/stats.h:           if (p->in_memstall)
+> kernel/sched/stats.h:           if (p->in_memstall)
+> kernel/sched/stats.h:   if (unlikely(p->in_iowait || p->in_memstall)) {
+> kernel/sched/stats.h:           if (p->in_memstall)
+> kernel/sched/stats.h:   if (unlikely(rq->curr->in_memstall))
+> 
+> so I think everything is fine.
+
 -- 
-2.26.2
-
+Michal Hocko
+SUSE Labs
