@@ -2,100 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A299720A0F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 16:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3BE20A0FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 16:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405409AbgFYOil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 10:38:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48352 "EHLO
+        id S2405401AbgFYOmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 10:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405340AbgFYOik (ORCPT
+        with ESMTP id S2405340AbgFYOmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 10:38:40 -0400
+        Thu, 25 Jun 2020 10:42:55 -0400
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7750C08C5C1;
-        Thu, 25 Jun 2020 07:38:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7028EC08C5C1;
+        Thu, 25 Jun 2020 07:42:54 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 8A9472A557F
-Subject: Re: [RFC 0/4] futex2: Add new futex interface
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>, krisman@collabora.com,
-        Collabora kernel ML <kernel@collabora.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, pgriffais@valvesoftware.com,
-        Florian Weimer <fweimer@redhat.com>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        malteskarupke@web.de, Linux API <linux-api@vger.kernel.org>
-References: <20200612185122.327860-1-andrealmeid@collabora.com>
- <CAK8P3a1fwYX-S84ukxEWBt_DZ09MdBLbQyf4Jgrr-AeqG89jeA@mail.gmail.com>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-Message-ID: <475e8c39-7d11-f80b-3b4a-e51be5d0963d@collabora.com>
-Date:   Thu, 25 Jun 2020 11:38:29 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        (Authenticated sender: nicolas)
+        with ESMTPSA id E14B42A5073
+Message-ID: <dc584b3a4eebdf259e555200dbc4bf8467d60591.camel@collabora.com>
+Subject: Re: [RFC 0/7] media: Clean and make H264 stateless uAPI public
+From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Reply-To: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Date:   Thu, 25 Jun 2020 10:42:48 -0400
+In-Reply-To: <20200623182809.1375-1-ezequiel@collabora.com>
+References: <20200623182809.1375-1-ezequiel@collabora.com>
+Organization: Collabora
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+        boundary="=-HCoWxv4QLGgZqLc/WquU"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1fwYX-S84ukxEWBt_DZ09MdBLbQyf4Jgrr-AeqG89jeA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Arnd,
 
-On 6/25/20 3:48 AM, Arnd Bergmann wrote:
-> On Fri, Jun 12, 2020 at 8:51 PM André Almeida <andrealmeid@collabora.com> wrote:
-> 
->> - The proposed interface uses ktime_t type for absolute timeout, and I
->>   assumed that it should use values in a nsec resolution. If this is true,
->>   we have some problems with i386 ABI, please check out the
->>   COMPAT_32BIT_TIME implementation in patch 1 for more details. I
->>   haven't added a time64 implementation yet, until this is clarified.
-> 
-> ktime_t is not part of the uapi headers, and has always been considered
-> an implementation detail of the kernel so far. I would argue it should
-> stay that way. The most sensible alternatives would be to either use
-> a "__u64 *timeout" argument for a relative timeout, or a
-> "struct __kernel_timespec *timeout" for an absolute timeout.
-> 
-> old_time32_t also makes no sense for multiple reasons:
-> 
-> - It's another kernel internal type and not part of the uapi headers
-> - your time32 call has different calling conventions from your time64
->   version, not just a different type.
-> - there should be no need to add syscalls that are known to be buggy
->   when there is a replacement type that does not have that bug.
-> 
+--=-HCoWxv4QLGgZqLc/WquU
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the input. As stated by tglx at [1], "supporting relative
-timeouts is wrong to begin with", my next patch will use "struct
-__kernel_timespec *timeout" for an absolute timeout.
+Le mardi 23 juin 2020 =C3=A0 15:28 -0300, Ezequiel Garcia a =C3=A9crit :
+> The recent patch posted by Jernej (which I'm including for context),
+> encouraged me to address all the known issues in the uAPI.
+>=20
+> I hope we can finally make this uAPI interface
+> public; it would be nice to address the other codec
+> interfaces so we can move the codec drivers out of staging.
+>=20
+> It should be noted that there is already GStreamer native
+> support for this interface, which will be part of 1.18,
+> once it's released [1], as well as support in Chromium [2].
 
->> - Is expected to have a x32 ABI implementation as well? In the case of
->>   wait and wake, we could use the same as x86_64 ABI. However, for the
->>   waitv (aka wait on multiple futexes) we would need a proper x32 entry
->>   since we are dealing with 32bit pointers.
-> 
-> For new syscalls, I'd actually recommend not having a separate
-> entry point, but just checking 'if (in_compat_syscall())' inside of the
-> implementation to pick one behavior vs the other when accessing
-> the user pointers. This keeps the implementation simpler and
-> avoids assigning a new x32 syscall number that would be different
-> from all the other architectures.
-> 
+Keep in mind, no one did a MultiView and/or SVC implementation in
+userspace yet. Multiview seems to share a lot of interlacing, which
+ffmpeg implementation covers, but some validation would be nice.
 
-Cool, this will make the code cleaner.
+As for SVC, I only started looking at that this means for decoding. It
+looks like buffer "holding" mechanism is mostly what we need, I'd would
+simply like to verify, as I was told that scaling down might be
+required when SVC stream is missing (but perhaps this is optional ?)
 
->       Arnd
-> 
+>=20
+> The basic idea here is to sanitize the interface,
+> making sure the structs are aligned to 64-bit,
+> adding reserved fields for padding where suitable.
+>=20
+> These reserved fields can then be used to support future extensions,
+> in case such need appears.
+>=20
+> In addition to this, moving the slice invariant fields
+> to the per-frame control, makes the frame-mode driver
+> implementation much nicer and the interface; see patch 6/7 for details.
+>=20
+> I'm not adding a MAINTAINERS entry, but I'd like to do so,
+> so we make sure any uAPI changes are sent to those involved.
+>=20
+> Another potential change is the addition of a "Since:" tag to the
+> control specification, so we can document which kernel version
+> added the interface. This might prove useful if reserved
+> fields are then used to extend the interface.
+>=20
+> Finally, I'm sneaking here a change from Philipp Zabel
+> which apparently fell thru the cracks.
 
+Thanks a lot of working on this.
 
-Thanks,
-	André
+>=20
+> [1] https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/tree/maste=
+r/sys/v4l2codecs
+> [2] https://chromium.googlesource.com/chromium/src.git/+/refs/heads/maste=
+r/media/gpu/v4l2/
+>=20
+> Ezequiel Garcia (5):
+>   fixup! media: uapi: h264: update reference lists
+>   media: uapi: h264: increase size of fields
+>   media: uapi: h264: pad v4l2_ctrl_h264_pps to 64-bit
+>   media: uapi: h264: Clean slice invariants syntax elements
+>   media: uapi: make H264 stateless codec interface public
+>=20
+> Jernej Skrabec (1):
+>   media: uapi: h264: update reference lists
+>=20
+> Philipp Zabel (1):
+>   media: uapi: h264: clarify pic_order_cnt_bit_size field
+>=20
+>  .../media/v4l/ext-ctrls-codec.rst             | 135 ++++++++++++------
+>  drivers/media/v4l2-core/v4l2-ctrls.c          |  31 ++++
+>  drivers/media/v4l2-core/v4l2-h264.c           |   8 +-
+>  .../staging/media/hantro/hantro_g1_h264_dec.c |  21 ++-
+>  drivers/staging/media/hantro/hantro_h264.c    |   3 +-
+>  drivers/staging/media/hantro/hantro_hw.h      |   5 +-
+>  drivers/staging/media/rkvdec/rkvdec-h264.c    |   6 +-
+>  .../staging/media/sunxi/cedrus/cedrus_h264.c  |  15 +-
+>  include/media/v4l2-ctrls.h                    |   3 +-
+>  include/media/v4l2-h264.h                     |   5 +-
+>  .../linux/v4l2-h264-ctrls.h}                  |  73 ++++++----
+>  11 files changed, 194 insertions(+), 111 deletions(-)
+>  rename include/{media/h264-ctrls.h =3D> uapi/linux/v4l2-h264-ctrls.h} (8=
+8%)
+>=20
 
-[1] https://lkml.org/lkml/2019/7/31/1499
+--=-HCoWxv4QLGgZqLc/WquU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSScpfJiL+hb5vvd45xUwItrAaoHAUCXvS36AAKCRBxUwItrAao
+HI/OAKDYK//qcJ5LXqGIBBjLa+eHSxO40QCaA4bUa9ALKuqrtC3OJUKzx9Kd4zc=
+=3NNq
+-----END PGP SIGNATURE-----
+
+--=-HCoWxv4QLGgZqLc/WquU--
+
