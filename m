@@ -2,187 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2265209B4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2A0209B51
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390621AbgFYI2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 04:28:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41260 "EHLO mx2.suse.de"
+        id S2390675AbgFYIbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 04:31:16 -0400
+Received: from elvis.franken.de ([193.175.24.41]:36823 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389298AbgFYI2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 04:28:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 16114ACF1;
-        Thu, 25 Jun 2020 08:28:39 +0000 (UTC)
-Date:   Thu, 25 Jun 2020 10:28:38 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: buffer allocation: was: [PATCH v3 3/3] printk: use the lockless
- ringbuffer
-Message-ID: <20200625082838.GF6156@alley>
-References: <20200618144919.9806-1-john.ogness@linutronix.de>
- <20200618144919.9806-4-john.ogness@linutronix.de>
+        id S2389537AbgFYIbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 04:31:15 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1joNHs-0001Gi-02; Thu, 25 Jun 2020 10:31:12 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 98D3FC06F9; Thu, 25 Jun 2020 10:23:11 +0200 (CEST)
+Date:   Thu, 25 Jun 2020 10:23:11 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     =?iso-8859-1?Q?Jo=E3o_H=2E?= Spies <jhlspies@gmail.com>
+Cc:     Paul Cercueil <paul@crapouillou.net>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] MIPS: ingenic: gcw0: Fix HP detection GPIO.
+Message-ID: <20200625082311.GA6319@alpha.franken.de>
+References: <20200623211945.823-1-jhlspies@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200618144919.9806-4-john.ogness@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200623211945.823-1-jhlspies@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-06-18 16:55:19, John Ogness wrote:
-> Replace the existing ringbuffer usage and implementation with
-> lockless ringbuffer usage. Even though the new ringbuffer does not
-> require locking, all existing locking is left in place. Therefore,
-> this change is purely replacing the underlining ringbuffer.
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -1176,11 +1068,46 @@ static void __init set_percpu_data_ready(void)
->  	__printk_percpu_data_ready = true;
->  }
->  
-> +static unsigned int __init add_to_rb(struct printk_ringbuffer *rb,
-> +				     struct printk_record *r)
-> +{
-> +	struct prb_reserved_entry e;
-> +	struct printk_record dest_r;
-> +
-> +	prb_rec_init_wr(&dest_r, r->info->text_len, r->info->dict_len);
-> +
-> +	if (!prb_reserve(&e, rb, &dest_r))
-> +		return 0;
-> +
-> +	memcpy(&dest_r.text_buf[0], &r->text_buf[0], dest_r.text_buf_size);
-> +	if (dest_r.dict_buf) {
-> +		memcpy(&dest_r.dict_buf[0], &r->dict_buf[0],
-> +		       dest_r.dict_buf_size);
-> +	}
-> +	dest_r.info->facility = r->info->facility;
-> +	dest_r.info->level = r->info->level;
-> +	dest_r.info->flags = r->info->flags;
-> +	dest_r.info->ts_nsec = r->info->ts_nsec;
-> +	dest_r.info->caller_id = r->info->caller_id;
-> +
-> +	prb_commit(&e);
-> +
-> +	return prb_record_text_space(&e);
-> +}
-> +
-> +static char setup_text_buf[CONSOLE_EXT_LOG_MAX] __initdata;
-> +static char setup_dict_buf[CONSOLE_EXT_LOG_MAX] __initdata;
-> +
->  void __init setup_log_buf(int early)
->  {
-> +	struct prb_desc *new_descs;
-> +	struct printk_info info;
-> +	struct printk_record r;
->  	unsigned long flags;
-> +	char *new_dict_buf;
->  	char *new_log_buf;
->  	unsigned int free;
-> +	u64 seq;
->  
->  	/*
->  	 * Some archs call setup_log_buf() multiple times - first is very
-> @@ -1201,17 +1128,50 @@ void __init setup_log_buf(int early)
->  
->  	new_log_buf = memblock_alloc(new_log_buf_len, LOG_ALIGN);
->  	if (unlikely(!new_log_buf)) {
-> -		pr_err("log_buf_len: %lu bytes not available\n",
-> +		pr_err("log_buf_len: %lu text bytes not available\n",
->  			new_log_buf_len);
->  		return;
->  	}
->  
-> +	new_dict_buf = memblock_alloc(new_log_buf_len, LOG_ALIGN);
-> +	if (unlikely(!new_dict_buf)) {
-> +		/* dictionary failure is allowed */
-> +		pr_err("log_buf_len: %lu dict bytes not available\n",
-> +			new_log_buf_len);
-> +	}
-> +
-> +	new_descs = memblock_alloc((new_log_buf_len >> PRB_AVGBITS) *
-> +				   sizeof(struct prb_desc), LOG_ALIGN);
-> +	if (unlikely(!new_descs)) {
-> +		pr_err("log_buf_len: %lu desc bytes not available\n",
-> +			new_log_buf_len >> PRB_AVGBITS);
-> +		if (new_dict_buf)
-> +			memblock_free(__pa(new_dict_buf), new_log_buf_len);
-> +		memblock_free(__pa(new_log_buf), new_log_buf_len);
-> +		return;
-> +	}
-> +
-> +	prb_rec_init_rd(&r, &info,
-> +			&setup_text_buf[0], sizeof(setup_text_buf),
-> +			&setup_dict_buf[0], sizeof(setup_dict_buf));
-> +
->  	logbuf_lock_irqsave(flags);
-> +
-> +	prb_init(&printk_rb_dynamic,
-> +		 new_log_buf, bits_per(new_log_buf_len) - 1,
-> +		 new_dict_buf, bits_per(new_log_buf_len) - 1,
+On Tue, Jun 23, 2020 at 06:19:45PM -0300, João H. Spies wrote:
+> Previously marked as active high, but is in reality active low.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: b1bfdb660516 ("MIPS: ingenic: DTS: Update GCW0 support")
+> Signed-off-by: João H. Spies <jhlspies@gmail.com>
+> ---
+>  arch/mips/boot/dts/ingenic/gcw0.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-This does not check whether new_dict_buf was really allocated.
+applied to mips-fixes.
 
-We should reuse the static one when it was not allocated. But it might
-become tricky. We would need to preserve the sequence
-numbers of each copied messages and do not copy the dictionary.
+Thomas.
 
-I suggest to make it easy and switch to the new buffers only when
-all three could get allocated.
-
-Well, we still should try to preserve the sequence numbers. For this,
-we might need to allow storing empty messages instead of the lost ones.
-
-
-> +		 new_descs, (bits_per(new_log_buf_len) - 1) - PRB_AVGBITS);
-
-This is likely safe because new_log_buf_len is assigned only when it is
-greater than the previous one. As a result bits_per(new_log_buf_len)
-- 1) should be greater than PRB_AVGBITS.
-
-Well, I still feel a bit uneasy about these PRB_AVGBITS operations,
-including new_log_buf_len >> PRB_AVGBITS used above.
-
-A more safe design would be to add some sanity checks at the beginning of
-the function. And maybe convert new_log_buf_let to number of bits.
-Then operate with the number of bits in the rest of the function.
-It might be easier to make sure that we are on the safe side.
-
-
->  	log_buf_len = new_log_buf_len;
->  	log_buf = new_log_buf;
->  	new_log_buf_len = 0;
-> -	free = __LOG_BUF_LEN - log_next_idx;
-> -	memcpy(log_buf, __log_buf, __LOG_BUF_LEN);
-> +
-> +	free = __LOG_BUF_LEN;
-> +	prb_for_each_record(0, &printk_rb_static, seq, &r)
-> +		free -= add_to_rb(&printk_rb_dynamic, &r);
-> +
-> +	prb = &printk_rb_dynamic;
-
-This might deserve a comment that this is safe (no lost message)
-because it is called early enough when everything is still running
-on the boot CPU.
-
-> +
->  	logbuf_unlock_irqrestore(flags);
->  
->  	pr_info("log_buf_len: %u bytes\n", log_buf_len);
-
-Best Regards,
-Petr
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
