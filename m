@@ -2,114 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75E5209C11
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 11:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A7D209C60
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 11:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390982AbgFYJk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 05:40:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389532AbgFYJk4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 05:40:56 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A744C061795
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 02:40:55 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id h5so5126711wrc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 02:40:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TlmH6CUdIAxBdzHoXkJA+99qDumm1XXj1357pinG+ZI=;
-        b=YcmE+Im9XZ7cBXoYmYZkFd+TUXCQKZaFtyX9M0aBLCnTaDtwFXG10K875A7mhoZgFt
-         71yo/XAjAgPkE6om6A1NlAGHl5mT5y+rnAdDz3TI3Bz7sJi8vkncQfEH9CTwuAIpUyc0
-         fbTj0m2ZDGn7crejTzpH8uULmP6iMzU3QGX51+wJhV86k/NL3gAuPAKmhU89hYWVGoxI
-         ddnqMAc2yOq5YxlYo6U+wHMioDAziVOu84iKChzwHytbpmGwuL5s1IZt26PKbH5oM4+T
-         8rbFbtcP259jH0szLCcN2Snog/qW6IEqmYSOkq1HVbKvvLIkllftm6UYFoAOg6mchBRA
-         yk6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TlmH6CUdIAxBdzHoXkJA+99qDumm1XXj1357pinG+ZI=;
-        b=D9r9kB+gS3B3rYAbJbb2hd03lfKS/ldD6xHw7cfYhvDMgqfQyUh5TjEs+o/9iEbl04
-         agp1oF1AGNnTaHd0mGaynuC1QYPa01i7pCMQlR0P/Upg+wqbwzWozQSGdcSorVbyL2PV
-         s9n2CBakoldUc0o894UcIXJfY/65ZfOB+aeUKpPtVw2//8YXeo/QhsJ0uqi4kVQKuTUp
-         ZSTu9sOt4OY5ylskwAoDr5MpRXHytQA0gYSQ+1zpGXmc86rc0DumiAbOe5HPwQc3lqPz
-         V+PIiCUt0HTZHLzBHVTia1cM7ptjg1Yh3rmctVdTfSiNYZ76HGV8coFuyK66VfnFW+1N
-         n6QA==
-X-Gm-Message-State: AOAM530rGCL71U+5Rv7TeN0m3Ar/snNyM2D1M3cFcmR80YnCnskUuf7r
-        LM3cTI+/Sl28bxFNrbKl0bKJHWcrK44=
-X-Google-Smtp-Source: ABdhPJy87UtoAD2RwowyPkHPcmUfIwaVK7ldX8ETiKlJPlPgPIPmViUdDBSNcBx2Wk03qCIhThHFvQ==
-X-Received: by 2002:adf:b608:: with SMTP id f8mr36492832wre.363.1593078053819;
-        Thu, 25 Jun 2020 02:40:53 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id d9sm30518424wre.28.2020.06.25.02.40.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 02:40:53 -0700 (PDT)
-Date:   Thu, 25 Jun 2020 10:40:51 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     jingoohan1@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Software Engineering <sbabic@denx.de>
-Subject: Re: [PATCH 3/8] backlight: ili922x: Add missing kerneldoc
- descriptions for CHECK_FREQ_REG() args
-Message-ID: <20200625094051.u4hanl3rycczlwiy@holly.lan>
-References: <20200624145721.2590327-1-lee.jones@linaro.org>
- <20200624145721.2590327-4-lee.jones@linaro.org>
+        id S2390176AbgFYJ7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 05:59:43 -0400
+Received: from elvis.franken.de ([193.175.24.41]:37041 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388485AbgFYJ7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 05:59:43 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1joOfV-0001nc-00; Thu, 25 Jun 2020 11:59:41 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 1DCD5C0708; Thu, 25 Jun 2020 11:40:59 +0200 (CEST)
+Date:   Thu, 25 Jun 2020 11:40:59 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Paul Burton <paulburton@kernel.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH mips-next 0/3] MIPS: fix the two most annoying sparse
+ floods
+Message-ID: <20200625094059.GA7660@alpha.franken.de>
+References: <OXAnLrccR2GxIpepN5IUjppNnjyVAnjQmCIx2RmgpMLsOzOBgXMKYvmjivy4Rq0bAVf11R5V9_FwfGx-MML3dShuOOoPUtAHUHUedlVrW_g=@pm.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200624145721.2590327-4-lee.jones@linaro.org>
+In-Reply-To: <OXAnLrccR2GxIpepN5IUjppNnjyVAnjQmCIx2RmgpMLsOzOBgXMKYvmjivy4Rq0bAVf11R5V9_FwfGx-MML3dShuOOoPUtAHUHUedlVrW_g=@pm.me>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 03:57:16PM +0100, Lee Jones wrote:
-> Kerneldoc syntax is used, but not complete.  Descriptions required.
+On Sat, Jun 20, 2020 at 09:33:38AM +0000, Alexander Lobakin wrote:
+> This set addresses the two most annoying sparse floods when building the
+> tree with C={1,2}: one in asm/io.h (in several mangle-port.h actually),
+> and one in asm/checksum.h.
+> Both of these comes from lack of forced typecasting and hence harmless,
+> but complicates real bug hunting, as asm/io.h is included in almost
+> every driver, while asm/checksum.h is included in lots of networking
+> code.
 > 
-> Prevents warnings like:
+> I also fixed two wrong __mem_ioswabq() macros while was nearby.
+> Tested on Generic MIPS platform -- no more flooding in console (there's
+> one more source in mips-cm.h, but it's included in just a few files, so
+> not a real problem. It can be issued separately anyway), while objdump
+> doesn't see any difference at all.
 > 
->  drivers/video/backlight/ili922x.c:116: warning: Function parameter or member 's' not described in 'CHECK_FREQ_REG'
->  drivers/video/backlight/ili922x.c:116: warning: Function parameter or member 'x' not described in 'CHECK_FREQ_REG'
+> Alexander Lobakin (3):
+>   MIPS: generic/ip32: io: fix __mem_ioswabq()
+>   MIPS: io: fix sparse flood on asm/io.h
+>   MIPS: checksum: fix sparse flooding on asm/checksum.h
 > 
-> Cc: <stable@vger.kernel.org>
-> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> Cc: Software Engineering <sbabic@denx.de>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/video/backlight/ili922x.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/video/backlight/ili922x.c b/drivers/video/backlight/ili922x.c
-> index 9c5aa3fbb2842..8cb4b9d3c3bba 100644
-> --- a/drivers/video/backlight/ili922x.c
-> +++ b/drivers/video/backlight/ili922x.c
-> @@ -107,6 +107,8 @@
->   *	lower frequency when the registers are read/written.
->   *	The macro sets the frequency in the spi_transfer structure if
->   *	the frequency exceeds the maximum value.
-> + * @s: pointer to controller side proxy for an SPI slave device
+>  arch/mips/include/asm/checksum.h                     |  4 ++--
+>  .../include/asm/mach-cavium-octeon/mangle-port.h     | 12 +++++++++---
+>  arch/mips/include/asm/mach-generic/mangle-port.h     | 12 ++++++------
+>  arch/mips/include/asm/mach-ip27/mangle-port.h        |  6 +++---
+>  arch/mips/include/asm/mach-ip30/mangle-port.h        |  6 +++---
+>  arch/mips/include/asm/mach-ip32/mangle-port.h        |  6 +++---
+>  arch/mips/include/asm/mach-tx39xx/mangle-port.h      |  6 +++---
+>  arch/mips/include/asm/mach-tx49xx/mangle-port.h      |  6 +++---
+>  8 files changed, 32 insertions(+), 26 deletions(-)
 
-What's wrong with "a pointer to an SPI device"?
+series applied to mips-next.
 
-I am aware, having looked it up to find out what the above actually
-means, that this is how struct spi_device is described in its own kernel
-doc but quoting at that level of detail of both overkill and confusing.
+Thomas.
 
-
-Daniel.
-
-
-> + * @x: pointer to the read/write buffer pair
->   */
->  #define CHECK_FREQ_REG(s, x)	\
->  	do {			\
-> -- 
-> 2.25.1
-> 
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
