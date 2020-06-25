@@ -2,131 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78E2209DAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 13:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE28209DB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 13:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404311AbgFYLoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 07:44:46 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:45812 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728077AbgFYLoq (ORCPT
+        id S2404389AbgFYLry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 07:47:54 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43560 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404220AbgFYLrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 07:44:46 -0400
-Received: by mail-oi1-f193.google.com with SMTP id j11so2001879oiw.12;
-        Thu, 25 Jun 2020 04:44:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fhbzaom2oYWTb3uPp4imDnoJSzGngQDDOGjO9gwcXTY=;
-        b=KdGriYENCu2PWCj/vlDJxSxgZ+X40NgAssliij3lwEoiOQNKfL956akQfAtCK+RRCn
-         Mce0W3w4FTVUuweo6ao7s7jOu2ASoEsmVkTEKkuh7R5fJLGejZbgfacXNvPKjdtw28EQ
-         xC9uB+Di+tVtvuw0+LD8PpH4B2gKZJobxBr2mqFMOJUARGvuKDdUWCywxz6FJjK4NPUo
-         ts7+TMUnzj6Ss1UvImRQk2Rxsd3Rd+awpETgV0l7LLr1iQdt263E9ff0IPBV4zqm5V0w
-         iPkn4FLkkX6tAMi0CCwV8w3dAhL8MCmLrMwSjgg/fAWjUwcL/aZgADrxKk5SUZA559s7
-         V9QQ==
-X-Gm-Message-State: AOAM530ZJ6a9ioffP/h60BXBF/G8hctI+Fu7cOXx1jnCwhPe4edhPbfk
-        S7xG2907gZ+FxOMVqFnXdpEE3wOvg8JK3BKiY14=
-X-Google-Smtp-Source: ABdhPJxcGZrXWWyZIuQWJhk3RrxSQPVylSRGu51cIIXGopaqDSitWSeU603zryF35zthebkIoYQ1rZCgrLiOq60oduA=
-X-Received: by 2002:a54:4585:: with SMTP id z5mr1861850oib.110.1593085485302;
- Thu, 25 Jun 2020 04:44:45 -0700 (PDT)
+        Thu, 25 Jun 2020 07:47:53 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05PBa3cN163127;
+        Thu, 25 Jun 2020 07:47:43 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31vts0h2j3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Jun 2020 07:47:43 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05PBaUA3170434;
+        Thu, 25 Jun 2020 07:47:42 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31vts0h2gp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Jun 2020 07:47:42 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05PBkeJG003047;
+        Thu, 25 Jun 2020 11:47:39 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 31uusggugk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Jun 2020 11:47:38 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05PBlaYh44433450
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Jun 2020 11:47:36 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E649242045;
+        Thu, 25 Jun 2020 11:47:35 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BF03342041;
+        Thu, 25 Jun 2020 11:47:31 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.77.196.238])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 25 Jun 2020 11:47:31 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     acme@kernel.org
+Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, pc@us.ibm.com,
+        jolsa@redhat.com, namhyung@kernel.org, ak@linux.intel.com,
+        yao.jin@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, irogers@google.com,
+        maddy@linux.ibm.com, ravi.bangoria@linux.ibm.com,
+        anju@linux.vnet.ibm.com, kan.liang@linux.intel.com,
+        kjain@linux.ibm.com
+Subject: [RFC 0/3] powerpc/perf: Add json file support for hv_24x7 core level events
+Date:   Thu, 25 Jun 2020 17:17:15 +0530
+Message-Id: <20200625114718.229911-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200623142138.209513-1-qperret@google.com> <20200623142138.209513-3-qperret@google.com>
- <20200625113602.z2xrwebd2gngbww3@vireshk-i7>
-In-Reply-To: <20200625113602.z2xrwebd2gngbww3@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 25 Jun 2020 13:44:34 +0200
-Message-ID: <CAJZ5v0g=+2OFKVk2ZnmK-33knUwqcaOOQ+q9ZWnmeoBD9KOX9g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] cpufreq: Specify default governor on command line
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Quentin Perret <qperret@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Todd Kjos <tkjos@google.com>, adharmap@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-25_05:2020-06-25,2020-06-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 cotscore=-2147483648
+ adultscore=0 mlxscore=0 malwarescore=0 clxscore=1015 phishscore=0
+ suspectscore=1 spamscore=0 impostorscore=0 priorityscore=1501
+ mlxlogscore=999 lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006250074
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 1:36 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> After your last email (reply to my patch), I noticed a change which
-> isn't required. :)
->
-> On 23-06-20, 15:21, Quentin Perret wrote:
-> > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> > index 0128de3603df..4b1a5c0173cf 100644
-> > --- a/drivers/cpufreq/cpufreq.c
-> > +++ b/drivers/cpufreq/cpufreq.c
-> > @@ -50,6 +50,9 @@ static LIST_HEAD(cpufreq_governor_list);
-> >  #define for_each_governor(__governor)                                \
-> >       list_for_each_entry(__governor, &cpufreq_governor_list, governor_list)
-> >
-> > +static char cpufreq_param_governor[CPUFREQ_NAME_LEN];
-> > +static struct cpufreq_governor *default_governor;
-> > +
-> >  /**
-> >   * The "cpufreq driver" - the arch- or hardware-dependent low
-> >   * level driver of CPUFreq support, and its spinlock. This lock
-> > @@ -1055,7 +1058,6 @@ __weak struct cpufreq_governor *cpufreq_default_governor(void)
-> >
-> >  static int cpufreq_init_policy(struct cpufreq_policy *policy)
-> >  {
-> > -     struct cpufreq_governor *def_gov = cpufreq_default_governor();
-> >       struct cpufreq_governor *gov = NULL;
-> >       unsigned int pol = CPUFREQ_POLICY_UNKNOWN;
-> >
-> > @@ -1065,8 +1067,8 @@ static int cpufreq_init_policy(struct cpufreq_policy *policy)
-> >               if (gov) {
-> >                       pr_debug("Restoring governor %s for cpu %d\n",
-> >                                policy->governor->name, policy->cpu);
-> > -             } else if (def_gov) {
-> > -                     gov = def_gov;
-> > +             } else if (default_governor) {
-> > +                     gov = default_governor;
-> >               } else {
-> >                       return -ENODATA;
-> >               }
->
->
-> > @@ -1074,8 +1076,8 @@ static int cpufreq_init_policy(struct cpufreq_policy *policy)
-> >               /* Use the default policy if there is no last_policy. */
-> >               if (policy->last_policy) {
-> >                       pol = policy->last_policy;
-> > -             } else if (def_gov) {
-> > -                     pol = cpufreq_parse_policy(def_gov->name);
-> > +             } else if (default_governor) {
-> > +                     pol = cpufreq_parse_policy(default_governor->name);
->
-> This change is not right IMO. This part handles the set-policy case,
-> where there are no governors. Right now this code, for some reasons
-> unknown to me, forcefully uses the default governor set to indicate
-> the policy, which is not a great idea in my opinion TBH. This doesn't
-> and shouldn't care about governor modules and should only be looking
-> at strings instead of governor pointer.
+Patchset enhance current runtime parameter support. It introduces new
+fields like "PerChip" and "PerCore" similar to the field "PerPkg" which is
+used to specify perpkg events. 
 
-Sounds right.
+The "PerCore" and "PerChip" specifies whether its core or chip events.
+Based on which we can decide which runtime parameter user want to
+access. Now character  '?' can refers different parameter based on user
+requirement.
 
-> Rafael, I even think we should remove this code completely and just
-> rely on what the driver has sent to us. Using the selected governor
-> for set policy drivers is very confusing and also we shouldn't be
-> forced to compiling any governor for the set-policy case.
+Kajol Jain (3):
+  perf jevents: Add support for parsing perchip/percore events
+  perf/tools: Pass pmu_event structure as a parameter for
+    arch_get_runtimeparam
+  perf/tools/pmu_events/powerpc: Add hv_24x7 core level metric events
 
-Well, AFAICS the idea was to use the default governor as a kind of
-default policy proxy, but I agree that strings should be sufficient
-for that.
+ tools/perf/arch/powerpc/util/header.c         |  7 ++--
+ .../arch/powerpc/power9/nest_metrics.json     | 15 ++++++--
+ tools/perf/pmu-events/jevents.c               | 34 +++++++++++++++----
+ tools/perf/pmu-events/jevents.h               |  3 +-
+ tools/perf/pmu-events/pmu-events.h            |  2 ++
+ tools/perf/util/metricgroup.c                 |  5 ++-
+ tools/perf/util/metricgroup.h                 |  3 +-
+ 7 files changed, 53 insertions(+), 16 deletions(-)
 
-I'll have a look at what to do with that code.
+-- 
+2.26.2
+
