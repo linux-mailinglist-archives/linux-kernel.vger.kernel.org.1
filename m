@@ -2,152 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0722098A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 04:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D102C2098AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 04:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389597AbgFYCyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 22:54:15 -0400
-Received: from mga12.intel.com ([192.55.52.136]:6872 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389357AbgFYCyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 22:54:14 -0400
-IronPort-SDR: Of0YFrmnGS1aSqgskh2RbDeSdvhB5nXC7fbRo/4bRI7BEXBFRC3XSALcUFkWhvuuOw++7gptCp
- Aei3u5vIK4uw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9662"; a="124395282"
-X-IronPort-AV: E=Sophos;i="5.75,277,1589266800"; 
-   d="scan'208";a="124395282"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2020 19:54:13 -0700
-IronPort-SDR: Rb5biXPkkNbzdDEdfkqxz78d7vhNAIydGqFtQWeRt9iPmK2+ovWiz4OgnGER0Hl+dzipiBce6V
- 3K1J50dfjA3g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,277,1589266800"; 
-   d="scan'208";a="479491832"
-Received: from hluxenbu-mobl.ger.corp.intel.com (HELO localhost) ([10.252.36.218])
-  by fmsmga005.fm.intel.com with ESMTP; 24 Jun 2020 19:54:09 -0700
-Date:   Thu, 25 Jun 2020 05:54:08 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
-        Jiandi An <anjiandi@codeaurora.org>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-security-module@vger.kernel.org,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH v5 1/2] acpi: Extend TPM2 ACPI table with missing log
- fields
-Message-ID: <20200625025408.GD270125@linux.intel.com>
-References: <20200623120636.1453470-1-stefanb@linux.vnet.ibm.com>
- <20200623120636.1453470-2-stefanb@linux.vnet.ibm.com>
- <20200625000021.GC21758@linux.intel.com>
- <9d94c704-5774-ceeb-e4f3-010f74ffe37b@linux.ibm.com>
- <20200625023431.GB270125@linux.intel.com>
- <20200625025251.GC270125@linux.intel.com>
+        id S2389568AbgFYC57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 22:57:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388930AbgFYC56 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 22:57:58 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C991C061573;
+        Wed, 24 Jun 2020 19:57:58 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49sl7Q29dtz9sRf;
+        Thu, 25 Jun 2020 12:57:54 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1593053876;
+        bh=psPe9FzujwmVzuE9PFq9+5QBvHHW8QOUloymleHrmB0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Ag48Ej54AJGxJsdBdpiEhqFZENi3qz0QyS2Oz5N/MKZcYhCrKjwBFQhLq4fvRCXZ/
+         gJyRNiAC1QSaHQTazLRNHjKM9c4oTZY9pb6h9Xdr3bPNHg673GvvRl16m0UYBPMXTV
+         EqoEbQCBfmL8tmUL865HR7jn/MyQCcs4OmnxQnUZPFOsUch5PcfUKVoJLXf+1OjteM
+         3hJoiaBPR311aFtxdk/9oyYueTvEHL25wcPYSJ/bFBIhfAJpX5Z7ZpD0R/HSr/vnel
+         nLcWrWcHQN/94vOibwgiEdlty4MOiQ+x79GURsSFmmRQGuhbJcNO2jQ5m1KEjMMm3x
+         ZJOrV+Fts3ETA==
+Date:   Thu, 25 Jun 2020 12:57:53 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: linux-next: build failure after merge of the rcu tree
+Message-ID: <20200625125753.6ec44d50@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200625025251.GC270125@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: multipart/signed; boundary="Sig_/bJTHBuQJEM8peeNQsjWP.RA";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 05:52:56AM +0300, Jarkko Sakkinen wrote:
-> On Thu, Jun 25, 2020 at 05:34:38AM +0300, Jarkko Sakkinen wrote:
-> > On Wed, Jun 24, 2020 at 08:38:25PM -0400, Stefan Berger wrote:
-> > > On 6/24/20 8:00 PM, Jarkko Sakkinen wrote:
-> > > > On Tue, Jun 23, 2020 at 08:06:35AM -0400, Stefan Berger wrote:
-> > > > > From: Stefan Berger <stefanb@linux.ibm.com>
-> > > > > 
-> > > > > Recent extensions of the TPM2 ACPI table added 3 more fields
-> > > > > including 12 bytes of start method specific parameters and Log Area
-> > > > > Minimum Length (u32) and Log Area Start Address (u64). So, we extend
-> > > > > the existing structure with these fields to allow non-UEFI systems
-> > > > > to access the TPM2's log.
-> > > > > 
-> > > > > The specification that has the new fields is the following:
-> > > > >    TCG ACPI Specification
-> > > > >    Family "1.2" and "2.0"
-> > > > >    Version 1.2, Revision 8
-> > > > > 
-> > > > > Adapt all existing table size calculations to use
-> > > > > offsetof(struct acpi_table_tpm2, start_method_specific)
-> > > > > [where start_method_specific is a newly added field]
-> > > > > rather than sizeof(struct acpi_table_tpm2) so that the addition
-> > > > > of the new fields does not affect current systems that may not
-> > > > > have them.
-> > > > > 
-> > > > I found at least one regression from this patch. Please remove my
-> > > > reviewed-by comment form the next version.
-> > > > 
-> > > > Should have:
-> > > > 
-> > > >    Link: https://trustedcomputinggroup.org/wp-content/uploads/TCG_ACPIGeneralSpecification_v1.20_r8.pdf
-> > > > 
-> > > > Please, add this.
-> > > > 
-> > > > > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> > > > > Cc: linux-acpi@vger.kernel.org
-> > > > > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > > > Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > > > > ---
-> > > > >   drivers/char/tpm/tpm_crb.c | 13 ++++++++++---
-> > > > >   drivers/char/tpm/tpm_tis.c |  4 +++-
-> > > > >   include/acpi/actbl3.h      |  5 +++--
-> > > > >   3 files changed, 16 insertions(+), 6 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/char/tpm/tpm_crb.c b/drivers/char/tpm/tpm_crb.c
-> > > > > index a9dcf31eadd2..0565aa5482f9 100644
-> > > > > --- a/drivers/char/tpm/tpm_crb.c
-> > > > > +++ b/drivers/char/tpm/tpm_crb.c
-> > > > > @@ -669,7 +669,9 @@ static int crb_acpi_add(struct acpi_device *device)
-> > > > >   	status = acpi_get_table(ACPI_SIG_TPM2, 1,
-> > > > >   				(struct acpi_table_header **) &buf);
-> > > > > -	if (ACPI_FAILURE(status) || buf->header.length < sizeof(*buf)) {
-> > > > > +	if (ACPI_FAILURE(status) || buf->header.length <
-> > > > > +			offsetof(struct acpi_table_tpm2,
-> > > > > +				 start_method_specific)) {
-> > > > >   		dev_err(dev, FW_BUG "failed to get TPM2 ACPI table\n");
-> > > > >   		return -EINVAL;
-> > > > >   	}
-> > > > > @@ -684,14 +686,19 @@ static int crb_acpi_add(struct acpi_device *device)
-> > > > >   		return -ENOMEM;
-> > > > >   	if (sm == ACPI_TPM2_COMMAND_BUFFER_WITH_ARM_SMC) {
-> > > > > -		if (buf->header.length < (sizeof(*buf) + sizeof(*crb_smc))) {
-> > > > > +		if (buf->header.length <
-> > > > > +			(offsetof(struct acpi_table_tpm2,
-> > > > > +				  start_method_specific) +
-> > > > Should be
-> > > > 
-> > > >    offsetof(struct acpti_table_tpm2, log_area_minimum_length)
-> > > 
-> > > 
-> > > The old code had sizeof(*buf) with buf being 'struct acpi_table_tpm2' and
-> > > that was equivalent to offsetof(struct acpi_table_tpm2,
-> > > start_method_specific) since 'start_method_specific' is the first new field
-> > > that we are adding right here. Also see 3rd paragraph in the patch
-> > > description. The replacement rule described there should apply to all
-> > > sizeof() calculations on 'struct acpi_table_tpm2.'
-> > 
-> > Aren't you ignoring sizeof(*crb_smc) then?
-> 
-> Duh, it's there I see. Sorry, my mistake.
-> 
-> Please put the new fields in a separate struct:
-> 
-> struct acpi_tpm2_phy {
-> 	u8  start_method_specific[12];
-> 	u32 log_area_minimum_length;
-> 	u64 log_area_start_address;
-> };
-> 
-> This way we don't have to obfuscate all the calculations and zero out
-> the need for 1/2 in this patch set.
+--Sig_/bJTHBuQJEM8peeNQsjWP.RA
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Also remark that, if you continue the current patch, that would need
-tested-by from ARM whereas a new struct does not because the ARM code
-is intact.
+Hi all,
 
-/Jarkko
+After merging the rcu tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
+
+kernel/rcu/tree.c: In function 'rcu_dynticks_eqs_enter':
+kernel/rcu/tree.c:251:8: error: implicit declaration of function 'arch_atom=
+ic_add_return'; did you mean 'atomic_add_return'? [-Werror=3Dimplicit-funct=
+ion-declaration]
+  251 |  seq =3D arch_atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dyntick=
+s);
+      |        ^~~~~~~~~~~~~~~~~~~~~~
+      |        atomic_add_return
+kernel/rcu/tree.c: In function 'rcu_dynticks_eqs_exit':
+kernel/rcu/tree.c:281:3: error: implicit declaration of function 'arch_atom=
+ic_andnot'; did you mean 'atomic_andnot'? [-Werror=3Dimplicit-function-decl=
+aration]
+  281 |   arch_atomic_andnot(RCU_DYNTICK_CTRL_MASK, &rdp->dynticks);
+      |   ^~~~~~~~~~~~~~~~~~
+      |   atomic_andnot
+kernel/rcu/tree.c: In function 'rcu_dynticks_curr_cpu_in_eqs':
+kernel/rcu/tree.c:314:11: error: implicit declaration of function 'arch_ato=
+mic_read'; did you mean 'atomic_read'? [-Werror=3Dimplicit-function-declara=
+tion]
+  314 |  return !(arch_atomic_read(&rdp->dynticks) & RCU_DYNTICK_CTRL_CTR);
+      |           ^~~~~~~~~~~~~~~~
+      |           atomic_read
+
+Caused by commit
+
+  d2f8491368e5 ("rcu: Fixup noinstr warnings")
+
+I reverted that commit for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/bJTHBuQJEM8peeNQsjWP.RA
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl70ErEACgkQAVBC80lX
+0GzaYgf9EeSnACAXZv6/pEn2jlqn/dAiRC6IBF+fsXdlu++mqbGuc05PRXyH1zK2
+1z7zAHlbU9cEM9R4723WGeyTwRBN+LV1jjO1YAe0OXisJI5HWoXcLNToEnMd4+8b
+rB9a6g3YaK9FF1SAJGgQupzgKY5jReo7dT5ueRUPGpdLILBH4BqJ+LvXXeIa+ZQW
+m/SLbON0cgHgYR1v5FEgqQqS+a/fNGe+bNGHQGenTaaUXluzdrOi1q+yYV8BNn8D
+Ux5yUhZyAAa9edwiTnhUd+FpejIKv/ojBHkudhuSRNDTpwbirf/XzXH3zTysRfQZ
+NctqjW1sM8LmQAo1WZtmJC9K3TqGoA==
+=Y+S6
+-----END PGP SIGNATURE-----
+
+--Sig_/bJTHBuQJEM8peeNQsjWP.RA--
