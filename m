@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9864F209DDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 13:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C86209DF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 13:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404568AbgFYLyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 07:54:31 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:38249 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404309AbgFYLyZ (ORCPT
+        id S2404410AbgFYL40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 07:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404285AbgFYL4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 07:54:25 -0400
-Received: by mail-wr1-f67.google.com with SMTP id z13so5538980wrw.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 04:54:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KkyD/dCsP/NUyZaxekBryRpKElEY0AMZnqKJIyE/Nxc=;
-        b=sUqI7NK/ZR0XRHyyzmFwa5pyDam8t01P9eP0aTCYR90//sGVE5k+cW6is5834+E8ag
-         Eb88vcrLJdMZuVcgiEtUwMiiYfaw8DHS3IvGxsJ7lAsoiMciWOHF9A9SN8nmPp54SBY6
-         hanQUMuzvWdPmypuJlde4Rm8UTH90ZcLKve0EQ671jCgy/SeM2x8y9HOmK40BtktZsqK
-         aXRZRU3MwWvYWO/unAzOvHRDeEhYcRwAikgkPevVu0O3G8v9aSdd6UK37x/KXHLa9jLK
-         q7WiZNWETxzBhXBiAFgGJ1c8Rbbc/cwhGcaxW57epiDCErU4y8WNZfpFlL1insDXvxJw
-         ou4g==
-X-Gm-Message-State: AOAM5324V2Jc1PaCVkt4ktfaekQ3xoTH07W45yWvfV/9i/Olim5I4PND
-        4pBEfIiA9dc779D8NwSo2lQ=
-X-Google-Smtp-Source: ABdhPJyYLIWJ0qs3W4JrMU6uNxO0FsVfTw5Yn+cvRovv5F4hHCwbE+Gqtjc0S2QRJWZvDM7N0AXVnw==
-X-Received: by 2002:a05:6000:111:: with SMTP id o17mr11435758wrx.178.1593086063961;
-        Thu, 25 Jun 2020 04:54:23 -0700 (PDT)
-Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
-        by smtp.gmail.com with ESMTPSA id u84sm8646313wme.42.2020.06.25.04.54.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 04:54:23 -0700 (PDT)
-Date:   Thu, 25 Jun 2020 13:54:22 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     js1304@gmail.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@lge.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH v3 4/8] mm/hugetlb: make hugetlb migration callback CMA
- aware
-Message-ID: <20200625115422.GE1320@dhcp22.suse.cz>
-References: <1592892828-1934-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1592892828-1934-5-git-send-email-iamjoonsoo.kim@lge.com>
+        Thu, 25 Jun 2020 07:56:25 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412EDC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 04:56:25 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 6D12D2A50E0
+Subject: Re: [PATCH 0/4] platform/chrome: typec: Add mux support
+To:     Prashant Malani <pmalani@chromium.org>,
+        linux-kernel@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Tzung-Bi Shih <tzungbi@google.com>
+References: <20200528113607.120841-1-pmalani@chromium.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <fa79e7e4-08cd-1d9e-d8d7-71a50edcc4a2@collabora.com>
+Date:   Thu, 25 Jun 2020 13:56:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1592892828-1934-5-git-send-email-iamjoonsoo.kim@lge.com>
+In-Reply-To: <20200528113607.120841-1-pmalani@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 23-06-20 15:13:44, Joonsoo Kim wrote:
-> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Hi Prashant,
+
+On 28/5/20 13:36, Prashant Malani wrote:
+> This series adds mux control support for USB and DP alternate modes on
+> devices using the cros-ec-typec driver with Type C switch handles
+> provided by firmware bindings.
 > 
-> new_non_cma_page() in gup.c which try to allocate migration target page
-> requires to allocate the new page that is not on the CMA area.
-> new_non_cma_page() implements it by removing __GFP_MOVABLE flag. This way
-> works well for THP page or normal page but not for hugetlb page.
+> The first patch imports some recent updates to the
+> EC_CMD_USB_PD_MUX_INFO bit fields from the Chrome EC
+> code base[1], while the rest add the aforementioned functionality.
+> 
+> This series depends on the following patch :
+> https://lkml.org/lkml/2020/5/19/1219
+> 
+> [1] : https://chromium.googlesource.com/chromiumos/platform/ec/+/refs/heads/master/include/ec_commands.h
+> 
+> Prashant Malani (4):
+>   platform/chrome: cros_ec: Update mux state bits
+>   platform/chrome: typec: Register PD CTRL cmd v2
+>   platform/chrome: typec: Add USB mux control
+>   platform/chrome: typec: Support DP alt mode
+> 
+>  drivers/platform/chrome/cros_ec_typec.c       | 190 ++++++++++++++++--
+>  .../linux/platform_data/cros_ec_commands.h    |  14 +-
+>  2 files changed, 187 insertions(+), 17 deletions(-)
+> 
 
-Could you explain why? I mean why cannot you simply remove __GFP_MOVABLE
-flag when calling alloc_huge_page_nodemask and check for it in dequeue
-path?
+Tweaked a bit the subject, s/typec/cros_ec_typec/ and queued the four patches
+for 5.9.
 
-Your current calling convention doesn't allow that but as I've said in
-the reply to previous patch this should be changed and then it would
-make this one easier as well unless I am missing something.
--- 
-Michal Hocko
-SUSE Labs
+Thanks,
+ Enric
