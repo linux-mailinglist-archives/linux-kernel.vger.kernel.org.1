@@ -2,21 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6589209F47
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 15:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87737209F38
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 15:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404982AbgFYNJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 09:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404892AbgFYNIs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 09:08:48 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ECB1C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 06:08:48 -0700 (PDT)
+        id S2404966AbgFYNI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 09:08:59 -0400
+Received: from 8bytes.org ([81.169.241.247]:49352 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404740AbgFYNIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 09:08:50 -0400
 Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 2BC4960C; Thu, 25 Jun 2020 15:08:40 +0200 (CEST)
+        id 5861E60E; Thu, 25 Jun 2020 15:08:40 +0200 (CEST)
 From:   Joerg Roedel <joro@8bytes.org>
 To:     iommu@lists.linux-foundation.org
 Cc:     Russell King <linux@armlinux.org.uk>,
@@ -41,9 +37,9 @@ Cc:     Russell King <linux@armlinux.org.uk>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         intel-gfx@lists.freedesktop.org, Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 12/13] arm64: Remove dev->archdata.iommu pointer
-Date:   Thu, 25 Jun 2020 15:08:35 +0200
-Message-Id: <20200625130836.1916-13-joro@8bytes.org>
+Subject: [PATCH 13/13] powerpc/dma: Remove dev->archdata.iommu_domain
+Date:   Thu, 25 Jun 2020 15:08:36 +0200
+Message-Id: <20200625130836.1916-14-joro@8bytes.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200625130836.1916-1-joro@8bytes.org>
 References: <20200625130836.1916-1-joro@8bytes.org>
@@ -54,28 +50,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Joerg Roedel <jroedel@suse.de>
 
-There are no users left, all drivers have been converted to use the
-per-device private pointer offered by IOMMU core.
+There are no users left, so remove the pointer and save some memory.
 
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
- arch/arm64/include/asm/device.h | 3 ---
+ arch/powerpc/include/asm/device.h | 3 ---
  1 file changed, 3 deletions(-)
 
-diff --git a/arch/arm64/include/asm/device.h b/arch/arm64/include/asm/device.h
-index 12b778d55342..996498751318 100644
---- a/arch/arm64/include/asm/device.h
-+++ b/arch/arm64/include/asm/device.h
-@@ -6,9 +6,6 @@
- #define __ASM_DEVICE_H
+diff --git a/arch/powerpc/include/asm/device.h b/arch/powerpc/include/asm/device.h
+index 266542769e4b..1bc595213338 100644
+--- a/arch/powerpc/include/asm/device.h
++++ b/arch/powerpc/include/asm/device.h
+@@ -34,9 +34,6 @@ struct dev_archdata {
+ 	struct iommu_table	*iommu_table_base;
+ #endif
  
- struct dev_archdata {
 -#ifdef CONFIG_IOMMU_API
--	void *iommu;			/* private IOMMU data */
+-	void			*iommu_domain;
 -#endif
- };
- 
- struct pdev_archdata {
+ #ifdef CONFIG_PPC64
+ 	struct pci_dn		*pci_data;
+ #endif
 -- 
 2.27.0
 
