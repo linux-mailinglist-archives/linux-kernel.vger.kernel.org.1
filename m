@@ -2,74 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4398120A32F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03A520A311
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406440AbgFYQjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 12:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38920 "EHLO
+        id S2404043AbgFYQfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 12:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406424AbgFYQj1 (ORCPT
+        with ESMTP id S2390396AbgFYQfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 12:39:27 -0400
+        Thu, 25 Jun 2020 12:35:55 -0400
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB7CC08C5C1;
-        Thu, 25 Jun 2020 09:39:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41D8C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:35:54 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id B6CF02A573B
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel@collabora.com, Hans Verkuil <hverkuil@xs4all.nl>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: [PATCH 6/6] hantro: Make sure we don't use post-processor on an encoder
-Date:   Thu, 25 Jun 2020 13:35:25 -0300
-Message-Id: <20200625163525.5119-7-ezequiel@collabora.com>
-X-Mailer: git-send-email 2.26.0.rc2
-In-Reply-To: <20200625163525.5119-1-ezequiel@collabora.com>
-References: <20200625163525.5119-1-ezequiel@collabora.com>
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 539C12A572E
+Subject: Re: [PATCH 01/10] mfd: cros_ec_dev: Fix cros_feature_to_{name,cells}
+ struct descriptions
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Bill Richardson <wfrichar@chromium.org>
+References: <20200625163127.4000462-1-lee.jones@linaro.org>
+ <20200625163127.4000462-2-lee.jones@linaro.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <023445fb-370f-441f-7f3c-dad0c0695208@collabora.com>
+Date:   Thu, 25 Jun 2020 18:35:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200625163127.4000462-2-lee.jones@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 986eee3a5234f fixed hantro_needs_postproc condition,
-but missed one case. Encoders don't have any post-processor
-hardware block, so also can't be disabled.
+Hi Lee,
 
-Fix it.
+Thank you for fixing this.
 
-Fixes: 986eee3a5234f ("media: hantro: Prevent encoders from using post-processing")
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
----
- drivers/staging/media/hantro/hantro_drv.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+On 25/6/20 18:31, Lee Jones wrote:
+> Kerneldoc expects kernel structures to be prefixed with 'struct'.
+> 
+> Fixes the following W=1 level warnings:
+> 
+>  drivers/mfd/cros_ec_dev.c:32: warning: cannot understand function prototype: 'struct cros_feature_to_name '
+>  drivers/mfd/cros_ec_dev.c:44: warning: cannot understand function prototype: 'struct cros_feature_to_cells '
+> 
+> Cc: Benson Leung <bleung@chromium.org>
+> Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Cc: Guenter Roeck <groeck@chromium.org>
+> Cc: Bill Richardson <wfrichar@chromium.org>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-index 0936f0c41af9..b622bbe181c1 100644
---- a/drivers/staging/media/hantro/hantro_drv.c
-+++ b/drivers/staging/media/hantro/hantro_drv.c
-@@ -122,10 +122,12 @@ void hantro_start_prepare_run(struct hantro_ctx *ctx)
- 	v4l2_ctrl_request_setup(src_buf->vb2_buf.req_obj.req,
- 				&ctx->ctrl_handler);
- 
--	if (hantro_needs_postproc(ctx, ctx->vpu_dst_fmt))
--		hantro_postproc_enable(ctx);
--	else
--		hantro_postproc_disable(ctx);
-+	if (!hantro_is_encoder_ctx(ctx)) {
-+		if (hantro_needs_postproc(ctx, ctx->vpu_dst_fmt))
-+			hantro_postproc_enable(ctx);
-+		else
-+			hantro_postproc_disable(ctx);
-+	}
- }
- 
- void hantro_end_prepare_run(struct hantro_ctx *ctx)
--- 
-2.26.0.rc2
+Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
+> ---
+>  drivers/mfd/cros_ec_dev.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mfd/cros_ec_dev.c b/drivers/mfd/cros_ec_dev.c
+> index 32c2b912b58b2..d07b43d7c761a 100644
+> --- a/drivers/mfd/cros_ec_dev.c
+> +++ b/drivers/mfd/cros_ec_dev.c
+> @@ -24,7 +24,7 @@ static struct class cros_class = {
+>  };
+>  
+>  /**
+> - * cros_feature_to_name - CrOS feature id to name/short description.
+> + * struct cros_feature_to_name - CrOS feature id to name/short description.
+>   * @id: The feature identifier.
+>   * @name: Device name associated with the feature id.
+>   * @desc: Short name that will be displayed.
+> @@ -36,7 +36,7 @@ struct cros_feature_to_name {
+>  };
+>  
+>  /**
+> - * cros_feature_to_cells - CrOS feature id to mfd cells association.
+> + * struct cros_feature_to_cells - CrOS feature id to mfd cells association.
+>   * @id: The feature identifier.
+>   * @mfd_cells: Pointer to the array of mfd cells that needs to be added.
+>   * @num_cells: Number of mfd cells into the array.
+> 
