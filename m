@@ -2,118 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07CAD20A634
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CEA520A637
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406952AbgFYTzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 15:55:06 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:28283 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406920AbgFYTzC (ORCPT
+        id S2436520AbgFYTzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 15:55:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:52167 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2406937AbgFYTzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 25 Jun 2020 15:55:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593114901; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=tEblWqdsHbe0RoAfJnY3K950R8Ov0o8cf9KFHJa6JoE=; b=OeCsgVzAUbGHwJj1UFwNvBKhX8xuplAs0wFHvK8AVxVJ5xwjdbJVsb+1bB11NKeZbJgxXVpN
- SwfwTqcyogLslehj4alJVIojieraN5TPfQYL/sMijyyQkbWt90jKA7SslTfjCrIPV0LFtyJJ
- 5qQ7P+UdAVOBfJbU4opd+XvicOA=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n15.prod.us-east-1.postgun.com with SMTP id
- 5ef50114a3d8a44743d9af0e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Jun 2020 19:55:00
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2DD4CC433CB; Thu, 25 Jun 2020 19:54:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C4BFC433A0;
-        Thu, 25 Jun 2020 19:54:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4C4BFC433A0
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     kishon@ti.com, vkoul@kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH v3 2/2] phy: qcom-snps: Add a set mode callback
-Date:   Thu, 25 Jun 2020 12:54:44 -0700
-Message-Id: <20200625195444.15130-3-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200625195444.15130-1-wcheng@codeaurora.org>
-References: <20200625195444.15130-1-wcheng@codeaurora.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593114901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wMmWD42emjWTjisxH2mhg8ooA/tzTNuz83b0inCszAo=;
+        b=OOTJEsFiHL7qFTS9sWbEAwCUvg2YoaBg1eN+exgSZdJfJk+aoK1O/BUQHo5k1I6h1FerxR
+        1YMMZ4Z5Ti+H148Ff4jafpo5wbZmfHFQzhrfEO25cikE+grG/ahGVAIrTkS6zNjzp9jK8J
+        02EVR/9Av0gzKQT0craREic5LDwFBJw=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-28-1cBfhSU3NuWAYkvGx-KQ6g-1; Thu, 25 Jun 2020 15:54:59 -0400
+X-MC-Unique: 1cBfhSU3NuWAYkvGx-KQ6g-1
+Received: by mail-ed1-f72.google.com with SMTP id x3so5952662eds.14
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:54:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=wMmWD42emjWTjisxH2mhg8ooA/tzTNuz83b0inCszAo=;
+        b=qPy+2Ff9FDzOexVydR/b+AtK8TTltNdAYMntsunhCCblMkBqdLBeicg2hbTZl3txlo
+         7SUyvBjo53oWs2sconEiV+Cy9P6dWVqeuy7wUpgiUvkv16itItk3iVLzNh3bpVQiJ9Zb
+         IwpZkPrvM3AEZj6yW+F+CTnlqnpjUToKTkTuGUQG9CCKvvZUIieBdH7Epb3hnmXhut+E
+         RAdyordTAbjk8H/q+j5EJDAO1lqJBMmUmdewji1OWmntVy8mtqmlEnwZkL3G/UUaxFSh
+         DvJdNCDwWBNwdMTOUFi3bFDCQoJP1Cxzvv6CF85S5NSUuW+voUeW7hc44lvQDhc0Ouuy
+         UOog==
+X-Gm-Message-State: AOAM532eCf1DnZRrYDxF8DtkBvVRgEngjllIpiMudVWb2NXKpT+pV68z
+        qmF7HiJKXEgVw0JJ2ykY9tqX3kWq7SKzwZKC5Ng3l2l0nguRHP7bAI1mmQ4ra/AN+hjef8vdiEy
+        fPUZ41rCpJjSc7GMQ2EHO49/4
+X-Received: by 2002:a17:906:81d2:: with SMTP id e18mr3825023ejx.341.1593114898270;
+        Thu, 25 Jun 2020 12:54:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy5E/w1rTnVuKXZNENv7G0eGJhbp6+G0E9LkJ3uLdKtkufHLsXOdh6ZMYC+QQ77kfhoMtI4gw==
+X-Received: by 2002:a17:906:81d2:: with SMTP id e18mr3825008ejx.341.1593114898113;
+        Thu, 25 Jun 2020 12:54:58 -0700 (PDT)
+Received: from [192.168.3.122] (p4ff23f47.dip0.t-ipconnect.de. [79.242.63.71])
+        by smtp.gmail.com with ESMTPSA id d12sm12947661edx.80.2020.06.25.12.54.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jun 2020 12:54:57 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   David Hildenbrand <david@redhat.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH RFC] s390x/vmem: get rid of memory segment list
+Date:   Thu, 25 Jun 2020 21:54:56 +0200
+Message-Id: <93B4CEE2-3C8D-481F-89BC-09C931866201@redhat.com>
+References: <20200625193837.GA5050@osiris>
+Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-mm@kvack.org,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>
+In-Reply-To: <20200625193837.GA5050@osiris>
+To:     Heiko Carstens <heiko.carstens@de.ibm.com>
+X-Mailer: iPhone Mail (17F80)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The set mode handler is used to keep track of the current role of the
-device.  This is used for enabling certain resources within the PHY
-depending on if the device is behaving as a host or device.
 
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
- drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-index 152d8633f4ea..ae4bac024c7b 100644
---- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-+++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-@@ -77,6 +77,7 @@ static const char * const qcom_snps_hsphy_vreg_names[] = {
-  * @phy_reset: phy reset control
-  * @vregs: regulator supplies bulk data
-  * @phy_initialized: if PHY has been initialized correctly
-+ * @mode: contains the current mode the PHY is in
-  */
- struct qcom_snps_hsphy {
- 	struct phy *phy;
-@@ -88,6 +89,7 @@ struct qcom_snps_hsphy {
- 	struct regulator_bulk_data vregs[SNPS_HS_NUM_VREGS];
- 
- 	bool phy_initialized;
-+	enum phy_mode mode;
- };
- 
- static inline void qcom_snps_hsphy_write_mask(void __iomem *base, u32 offset,
-@@ -161,6 +163,15 @@ static int __maybe_unused qcom_snps_hsphy_runtime_resume(struct device *dev)
- 	return 0;
- }
- 
-+static int qcom_snps_hsphy_set_mode(struct phy *phy, enum phy_mode mode,
-+				    int submode)
-+{
-+	struct qcom_snps_hsphy *hsphy = phy_get_drvdata(phy);
-+
-+	hsphy->mode = mode;
-+	return 0;
-+}
-+
- static int qcom_snps_hsphy_init(struct phy *phy)
- {
- 	struct qcom_snps_hsphy *hsphy = phy_get_drvdata(phy);
-@@ -258,6 +269,7 @@ static int qcom_snps_hsphy_exit(struct phy *phy)
- static const struct phy_ops qcom_snps_hsphy_gen_ops = {
- 	.init		= qcom_snps_hsphy_init,
- 	.exit		= qcom_snps_hsphy_exit,
-+	.set_mode	= qcom_snps_hsphy_set_mode,
- 	.owner		= THIS_MODULE,
- };
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> Am 25.06.2020 um 21:38 schrieb Heiko Carstens <heiko.carstens@de.ibm.com>:=
+
+>=20
+> =EF=BB=BFOn Thu, Jun 25, 2020 at 05:00:29PM +0200, David Hildenbrand wrote=
+:
+>> This smells like a leftover from ancient times, let's get rid of it. We
+>> can now convert vmem_remove_mapping() into a void function - everybody
+>> ignored the return value already.
+>=20
+> This buys us what? Except that we get rid of a bit of code?
+
+I=E2=80=98m looking into virtio-mem support for s390x, including vmemmap/vme=
+m optimizations. Virtio-mem adds/removes memory in memory block granularity,=
+ which results in one list entry for essentially each memory section. That s=
+eems to be easy to avoid.
+
+Thanks=
 
