@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D53620A5F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC4620A5F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406669AbgFYTfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 15:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37954 "EHLO
+        id S2406694AbgFYTgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 15:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405815AbgFYTfl (ORCPT
+        with ESMTP id S2405815AbgFYTgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 15:35:41 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629F1C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:35:41 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id r12so7041050wrj.13
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:35:41 -0700 (PDT)
+        Thu, 25 Jun 2020 15:36:04 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3A0C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:36:04 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id o13so833683pgf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:36:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=338KiFmHj0j9aEP9OnwhZQhzwCpeImYEtfOmTA/bECk=;
-        b=cZx1Jl3kF6Z3T9JrekfYLiqxZZVEEyfVJwWfYCcpEu7dOn5mjB2XQbR4eZrpFUZKE7
-         FhQzgOFEXpD5Z8Ifa6k8GcVLaj61pIP/S3PrvFi29pspMw8uW3p4Q7RskTgmCh9hN924
-         vmL5PYWJfs+a0CnZKLfNob1DXN4Rpj2LvM/3zFXIhDa7Cx6IboTCUVntFxntCuUphqJv
-         KrHCVa6RvJm0YffFTkvt7fviIOH6l9iKr/zG2YNwonNvC66EO6ayWkZ8r00F0L0vbKw6
-         pYglt3O4wOUUfrEZhbpLT3kWHjBFwQsUlCIx3C4gYO3D3qMUkAz5YG+nvpHvq9fV4rpb
-         4LEg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s4GyWptTEsbmUs5nn7vZbOukBmjJMFIOBkkSnrY6WZc=;
+        b=LJ+Kn2vomVBVY/RT6eQyr/9kVYKfgF/cMX4MADV7jwj2jlyNxVxWbuAKOFovUB1Yy0
+         7Lcv7jAqkqs6UCEZGpizFTgkUn6geQI7j22ke/W6ipvIx2YfgsL+gw7Qc/ZpuejUXuwF
+         U9s7w4M/4638yVJDzrJJSEw//98T0Q3Pef/F7Zx9zbf9ARgsAjk9lRG0hPam7hJdcEPN
+         gmpN2V6KCHOuO2Xmg3KYmdP13fvgwUZVs7cs1HMg+NAOxs9YOjhIJ4g3XVGSU9fDZUKO
+         NfbaS8Goa2JC1o9mXwT1qgoAUVNd/nYqItTOBV0NNZbuVjXY7SGef7h+YBVyee0ASYFG
+         aKrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=338KiFmHj0j9aEP9OnwhZQhzwCpeImYEtfOmTA/bECk=;
-        b=aYgCVTzzAAZZcY5JOKVdJWETLCC2SksTLQF1jY4LF1Cbn4HT5FMK5XkOq3I6rDmzbJ
-         OafzaTqQ0gAQYhU8LlmfY0neMuF/pIpGoVR5iT0dqhLVYprCJ4sybINacSZLYWrRA8JW
-         KJC4ZMiN3ohVKk3hBk+mtAk+8hnRwRaJZYNajftzmREJWDNoykpbRPsJgDZggoG8GlZy
-         f1eF5tyEhpCETswLRN6b/rJiw4TF5UwlFAg3XQplSthS0Itin/s6UOszT+SNs4raTxPT
-         4cpixBZmDjUswbtrcAplEx/xrhQDS6x6W+3RkJ4tun/1h854oxxZZnIY2ZCEeZtQ5vmc
-         ZK4Q==
-X-Gm-Message-State: AOAM5332a80gMG4R6jaAfOHSOqrnx1b9VeqAEumMqYalvtj/bd8F9a0v
-        u4udlwigoxwMPX84DzVlNGdSng==
-X-Google-Smtp-Source: ABdhPJxXQCiliAoYKTeewMcMPDSdS7kEFDo4jnOWAuwf5M8B9OiUbIFbW63E/C7X/4+hYX6z+i4l8g==
-X-Received: by 2002:a5d:458a:: with SMTP id p10mr33140763wrq.184.1593113739967;
-        Thu, 25 Jun 2020 12:35:39 -0700 (PDT)
-Received: from elver.google.com ([100.105.32.75])
-        by smtp.gmail.com with ESMTPSA id t4sm7862891wmf.4.2020.06.25.12.35.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 12:35:39 -0700 (PDT)
-Date:   Thu, 25 Jun 2020 21:35:33 +0200
-From:   Marco Elver <elver@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [rcu:rcu/next 35/35] kernel/rcu/tree.c:251:8: error: implicit
- declaration of function 'arch_atomic_add_return'; did you mean
-Message-ID: <20200625193533.GA235320@elver.google.com>
-References: <202006250300.ic32FsdY%lkp@intel.com>
- <20200624203025.GJ9247@paulmck-ThinkPad-P72>
- <CANpmjNO5uBSZj0gHy0t+O2VhD+UjG58+zON0AFX8i7MNSO5a6Q@mail.gmail.com>
- <20200625112926.GO4781@hirez.programming.kicks-ass.net>
- <20200625141125.GE117543@hirez.programming.kicks-ass.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s4GyWptTEsbmUs5nn7vZbOukBmjJMFIOBkkSnrY6WZc=;
+        b=emfMDV8Gn8KFrCme7UdH/j+D67Ob4dr1jsvJ7ldBb9Yp3LiWhtD0BF7gHnyIjG6a00
+         JPKCSdV2WPAqK1JkleYgg3bw8dDw0GkzQZF48F1t0ewOp/AJnfOmxB9VDfNGiTdjCcOI
+         pUTJSnUDY8SNrns4yhZ3e2+JWyYjvyhG2fq66ebWJ3n6j7COeLQROH7dbjii2bhGzKNb
+         d03qLGxMP86ba25oDFK6Mvw0XR6/ztAfNDfnAvoq8+gGaM8Qfj4OpV4jEBK9R3dmZsK+
+         H//Qnr3JmoBclhoPH/N25BUZk0wK09O3GTll3AZYhSebW52BV9L8AkgX5Ac7o9Hw0XoH
+         z3UA==
+X-Gm-Message-State: AOAM532bZ6XhdizcFexUdTHB0sdSuR2A4k27U1yKrEU+Xrt6KVhtu3Mb
+        LxnoWdnmbVqruY7D1tg2ht2vU24Lt1KC246S9yU=
+X-Google-Smtp-Source: ABdhPJwB2B7MeuUM36quIzPe2o5X/TGGEQydyHN1dn+nCAOKcnc+OK0FlVHelf+hr5SPt7tgKR9ta/2rmBPQxU2UiNg=
+X-Received: by 2002:a62:7657:: with SMTP id r84mr7164384pfc.130.1593113763858;
+ Thu, 25 Jun 2020 12:36:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200625141125.GE117543@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.13.2 (2019-12-18)
+References: <20200625170356.225136-1-enric.balletbo@collabora.com>
+ <CAHp75VdY4TEKfZXDb-f-KC4G2XRJOdB-w4vegSWG9vULLqcUKw@mail.gmail.com>
+ <026b38ff947e338a468567dfd20fbde1419bb094.camel@perches.com> <CAHp75VcFeCf0vnk2Ea_-QdTW5gyRZvgEXwX7-VSd3rKch7pSwQ@mail.gmail.com>
+In-Reply-To: <CAHp75VcFeCf0vnk2Ea_-QdTW5gyRZvgEXwX7-VSd3rKch7pSwQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 25 Jun 2020 22:35:47 +0300
+Message-ID: <CAHp75VeZj72VDHSm48Diomz4q0+dJ6gjknqHQpfon3PU9Te5-w@mail.gmail.com>
+Subject: Re: [PATCH] platform/chrome: Clarify SPDX license with GPL-2.0-only
+To:     Joe Perches <joe@perches.com>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        groeck@chromium.org, Benson Leung <bleung@chromium.org>,
+        Dmitry Torokhov <dtor@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Bernardo Perez Priego <bernardo.perez.priego@intel.com>,
+        Daniel Campello <campello@chromium.org>,
+        Enrico Granata <egranata@chromium.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Nick Crews <ncrews@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Wen Yang <wenyang@linux.alibaba.com>,
+        Yicheng Li <yichengli@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 04:11PM +0200, Peter Zijlstra wrote:
-> On Thu, Jun 25, 2020 at 01:29:26PM +0200, Peter Zijlstra wrote:
-> > I fear the same. Let me see if I can quickly modify the atomic scripts
-> > to generate the required fallbacks.
-> 
-> Something like so ought to work, I suppose.
-> 
-> ---
-> Subject: locking/atomics: Provide the arch_atomic_ interface to generic code
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Thu Jun 25 15:55:14 CEST 2020
-> 
-> Architectures with instrumented (KASAN/KCSAN) atomic operations
-> natively provide arch_atomic_ variants that are not instrumented.
-> 
-> It turns out that some generic code also requires arch_atomic_ in
-> order to avoid instrumentation, so provide the arch_atomic_ interface
-> as a direct map into the regular atomic_ interface for
-> non-instrumented architectures.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  include/linux/atomic-fallback.h       |  236 +++++++++++++++++++++++++++++++++-
->  scripts/atomic/gen-atomic-fallback.sh |   31 ++++
->  2 files changed, 266 insertions(+), 1 deletion(-)
+On Thu, Jun 25, 2020 at 10:33 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Thu, Jun 25, 2020 at 10:29 PM Joe Perches <joe@perches.com> wrote:
+> > On Thu, 2020-06-25 at 22:06 +0300, Andy Shevchenko wrote:
+> > > On Thu, Jun 25, 2020 at 9:25 PM Enric Balletbo i Serra
+> > > <enric.balletbo@collabora.com> wrote:
+> > > > Remove the ambiguity with GPL-2.0 and use an explicit GPL-2.0-only
+> > > > tag.
+> > >
+> > > Is there any? Last time IIRC Greg told me that in the kernel the old
+> > > and new variants are okay.
+> >
+> > If there wasn't any ambiguity, the older license
+> > style wouldn't be deprecated by SPDX.org.
+>
+> They are _not_ deprecated according to kernel documentation:
+> https://elixir.bootlin.com/linux/latest/source/LICENSES/preferred/GPL-2.0
+>
+> So, fix documentation in the kernel then.
 
-Thanks, looks reasonable!
+That said, NAK to the patch as long as in-kernel documentation says it's valid.
 
-If noinstr becomes important on architectures that don't implement
-atomics using arch_ themselves, there might be a problem with
-CONFIG_TRACE_BRANCH_PROFILING, because unlikely() is used throughout
-this file. Probably not something to worry about now.
-
-Thanks,
--- Marco
+-- 
+With Best Regards,
+Andy Shevchenko
