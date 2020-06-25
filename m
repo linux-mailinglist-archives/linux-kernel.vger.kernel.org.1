@@ -2,212 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04064209A3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 09:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E37A209A46
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 09:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390013AbgFYHFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 03:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgFYHFm (ORCPT
+        id S2390178AbgFYHHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 03:07:55 -0400
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:36729 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389406AbgFYHHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 03:05:42 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A115C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 00:05:41 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id j1so2617897pfe.4
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 00:05:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=54XkrBaVyAyTSAQVsK+aaD8/kj0EXr7tvET2IMXpdPY=;
-        b=V0Qm/oHHBwPGhvkp2dEnfWtroNUDtkOfZ0oNfrfb/1XLmhnf02kwK/MxXbrwf4Z/vf
-         S0Hvz1hpi1y/BbedYGsK7UOQH5BCqKVqJOq5cczDwLu5hsGyNk1c/uIvSXnLzwHQfC+q
-         LMYakp0O0pivulqY8qRoBsKQkJZzlwr9LxL0I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=54XkrBaVyAyTSAQVsK+aaD8/kj0EXr7tvET2IMXpdPY=;
-        b=oIiiP3yNO+L8t2PDb/ZQwTdK8PXY6vlveZOsIxCUJa+xE1lEGbKdtOm6mU9SV05Jpv
-         7eux35AQQkpA4T/EXDqglketY/6vRyDuLj1HPW9kmcyCjBWp2UzeXGIMPT+RJZu8G2wG
-         DF9kpgpGONT8dZMlNtzMlYcBP91PRXY4INrv0nq/MZ2dl/khWwJt8bfswMJmiW2iAi0B
-         UmtRyC0gOJB2xXbsXi2tqlcQHRB45tcZfBaos75KXttWh39h0MrTrmNDznsTrCraBFCP
-         dUlwyygwJEzsczbciVCw18djK9+UiKzXdEC3J61X9VTc3KU4swx1hCn1Qxvu071CD20f
-         kYOA==
-X-Gm-Message-State: AOAM530Mt7irGa4K3qNDVEHBqzfeZD8PObSO06tP9tzPhscyNox0YEwl
-        0ATxODd2XfUtTlrFqiUI+DXh2Q==
-X-Google-Smtp-Source: ABdhPJwQX0D/dqpL66/VoKYKOaMgFBqlg9FWZQGW8JNr3ynXt5dt+gGgua1bavVuMlXSj5Me4+UFXg==
-X-Received: by 2002:a62:1c46:: with SMTP id c67mr32024426pfc.170.1593068740399;
-        Thu, 25 Jun 2020 00:05:40 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id s188sm21646684pfb.118.2020.06.25.00.05.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 00:05:39 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 25 Jun 2020 03:07:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1593068873; x=1624604873;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ocqbu3v4ohPkO/+6EOdwjkOngWeWUMVIVcHb+6aFSJ0=;
+  b=bDy0Te/4bjW/lj/Ipkxu+60DVy0mqpbLmg61SsbXzcfq+w511s36zY9R
+   XbFVv06bJR5bWfGFQ/kKUHWbXsHxkU2ribE2bwhJXYdK/qC4ipIGlicNT
+   yPXZgnKwE9sASs9+XVHd64kxONhckupCYqMIPhguUKrw3k4XR2mHpUTiR
+   mhYImEAnXy+L1Zjq6xGVyXCGv05hKMcDLfMPiZRzony685G0jKtogxLPh
+   Z0Vm1Mlw5TbbgosAWv8IP1OR/5xAIqRdKAJu0JOpbDG6KIU1FHN71EyEx
+   ISYbGHIJZuRuZyLpSPIo908FqHIqOkwg3JJxiGbOxuj3RcgxRh0jRagDu
+   w==;
+IronPort-SDR: Pb9+EQOcuTC16BuOiCqwqF4U/jg0NLGEYbuRye92AjTU7KYN0/a5byV11STKGWZBoweGoRkwOr
+ B9AXeAqdP9i5wtwvJPI32Zv2W7yJ+9Zl+w5J5eaigyMZ1f1/v7g830WzBijLyqGdxOH4YEO5ha
+ M8C/aromQNReQWIVeJP7PUNbBuYwWeHZNevYChm2BA8oLIiUwLmN7uKdOEuSg2iVbLSzqHmJMU
+ tLq0oFqBmmd3ELAyUEA5+t229cW7ROnZE9jit9y3NNBFtSW+dqKndwjlk7yWJ2Ew7HPOHRFyRv
+ 4co=
+X-IronPort-AV: E=Sophos;i="5.75,278,1589266800"; 
+   d="scan'208";a="80846156"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Jun 2020 00:07:52 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 25 Jun 2020 00:07:38 -0700
+Received: from soft-dev3.localdomain (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 25 Jun 2020 00:07:49 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <nikolay@cumulusnetworks.com>, <roopa@cumulusnetworks.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bridge@lists.linux-foundation.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net-next v2] bridge: mrp: Extend MRP netlink interface with IFLA_BRIDGE_MRP_CLEAR
+Date:   Thu, 25 Jun 2020 09:06:30 +0200
+Message-ID: <20200625070630.3267620-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200407082923.2001556-2-patrick.rudolph@9elements.com>
-References: <20200407082923.2001556-1-patrick.rudolph@9elements.com> <20200407082923.2001556-2-patrick.rudolph@9elements.com>
-Subject: Re: [PATCH v4 1/2] firmware: google: Expose CBMEM over sysfs
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     coreboot@coreboot.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Allison Randal <allison@lohutok.net>,
-        Julius Werner <jwerner@chromium.org>,
-        Samuel Holland <samuel@sholland.org>
-To:     linux-kernel@vger.kernel.org, patrick.rudolph@9elements.com
-Date:   Thu, 25 Jun 2020 00:05:38 -0700
-Message-ID: <159306873839.62212.9311861115757727633@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting patrick.rudolph@9elements.com (2020-04-07 01:29:06)
-> From: Patrick Rudolph <patrick.rudolph@9elements.com>
->=20
-> Make all CBMEM buffers available to userland. This is useful for tools
-> that are currently using /dev/mem.
->=20
-> Make the id, size and address available, as well as the raw table data.
->=20
-> Tools can easily scan the right CBMEM buffer by reading
-> /sys/bus/coreboot/drivers/cbmem/coreboot*/cbmem_attributes/id
-> or
-> /sys/bus/coreboot/devices/coreboot*/cbmem_attributes/id
->=20
-> The binary table data can then be read from
-> /sys/bus/coreboot/drivers/cbmem/coreboot*/cbmem_attributes/data
-> or
-> /sys/bus/coreboot/devices/coreboot*/cbmem_attributes/data
->=20
-> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> ---
+In case the userspace daemon dies, then when is restarted it doesn't
+know if there are any MRP instances in the kernel. Therefore extend the
+netlink interface to allow the daemon to clear all MRP instances when is
+started.
 
-Sorry, this fell off my radar. Looks close though so please resend.
+Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 
-> diff --git a/Documentation/ABI/stable/sysfs-bus-coreboot b/Documentation/=
-ABI/stable/sysfs-bus-coreboot
-> new file mode 100644
-> index 000000000000..6055906f41f2
-> --- /dev/null
-> +++ b/Documentation/ABI/stable/sysfs-bus-coreboot
-> @@ -0,0 +1,44 @@
-> +What:          /sys/bus/coreboot/devices/.../cbmem_attributes/id
-> +Date:          Apr 2020
-> +KernelVersion: 5.6
-> +Contact:       Patrick Rudolph <patrick.rudolph@9elements.com>
-> +Description:
-> +               coreboot device directory can contain a file named
-> +               cbmem_attributes/id if the device corresponds to a CBMEM
-> +               buffer.
-> +               The file holds an ASCII representation of the CBMEM ID in=
- hex
-> +               (e.g. 0xdeadbeef).
-> +
-> +What:          /sys/bus/coreboot/devices/.../cbmem_attributes/size
-> +Date:          Apr 2020
-> +KernelVersion: 5.6
-> +Contact:       Patrick Rudolph <patrick.rudolph@9elements.com>
-> +Description:
-> +               coreboot device directory can contain a file named
-> +               cbmem_attributes/size if the device corresponds to a CBMEM
-> +               buffer.
-> +               The file holds an representation as decimal number of the
-> +               CBMEM buffer size (e.g. 64).
-> +
-> +What:          /sys/bus/coreboot/devices/.../cbmem_attributes/address
-> +Date:          Apr 2020
-> +KernelVersion: 5.6
-> +Contact:       Patrick Rudolph <patrick.rudolph@9elements.com>
-> +Description:
-> +               coreboot device directory can contain a file named
-> +               cbmem_attributes/address if the device corresponds to a C=
-BMEM
-> +               buffer.
-> +               The file holds an ASCII representation of the physical ad=
-dress
-> +               of the CBMEM buffer in hex (e.g. 0x000000008000d000) and =
-should
-> +               be used for debugging only.
+---
+v2:
+  - use list_for_each_entry_safe instead of list_for_each_entry_rcu
+    when deleting mrp instances
+---
+ include/uapi/linux/if_bridge.h |  8 ++++++++
+ net/bridge/br_mrp.c            | 15 +++++++++++++++
+ net/bridge/br_mrp_netlink.c    | 26 ++++++++++++++++++++++++++
+ net/bridge/br_private_mrp.h    |  1 +
+ 4 files changed, 50 insertions(+)
 
-If this is for debugging purposes only perhaps it should go into
-debugfs. We try to not leak information about physical addresses to
-userspace and this would let an attacker understand where memory may be.
-That's not ideal and should be avoided.
+diff --git a/include/uapi/linux/if_bridge.h b/include/uapi/linux/if_bridge.h
+index caa6914a3e53a..2ae7d0c0d46b8 100644
+--- a/include/uapi/linux/if_bridge.h
++++ b/include/uapi/linux/if_bridge.h
+@@ -166,6 +166,7 @@ enum {
+ 	IFLA_BRIDGE_MRP_RING_STATE,
+ 	IFLA_BRIDGE_MRP_RING_ROLE,
+ 	IFLA_BRIDGE_MRP_START_TEST,
++	IFLA_BRIDGE_MRP_CLEAR,
+ 	__IFLA_BRIDGE_MRP_MAX,
+ };
+ 
+@@ -228,6 +229,13 @@ enum {
+ 
+ #define IFLA_BRIDGE_MRP_START_TEST_MAX (__IFLA_BRIDGE_MRP_START_TEST_MAX - 1)
+ 
++enum {
++	IFLA_BRIDGE_MRP_CLEAR_UNSPEC,
++	__IFLA_BRIDGE_MRP_CLEAR_MAX,
++};
++
++#define IFLA_BRIDGE_MRP_CLEAR_MAX (__IFLA_BRIDGE_MRP_CLEAR_MAX - 1)
++
+ struct br_mrp_instance {
+ 	__u32 ring_id;
+ 	__u32 p_ifindex;
+diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
+index 24986ec7d38cc..02da4e22d277a 100644
+--- a/net/bridge/br_mrp.c
++++ b/net/bridge/br_mrp.c
+@@ -372,6 +372,21 @@ int br_mrp_del(struct net_bridge *br, struct br_mrp_instance *instance)
+ 	return 0;
+ }
+ 
++/* Deletes all MRP instances on the bridge
++ * note: called under rtnl_lock
++ */
++int br_mrp_clear(struct net_bridge *br)
++{
++	struct br_mrp *mrp;
++	struct br_mrp *tmp;
++
++	list_for_each_entry_safe(mrp, tmp, &br->mrp_list, list) {
++		br_mrp_del_impl(br, mrp);
++	}
++
++	return 0;
++}
++
+ /* Set port state, port state can be forwarding, blocked or disabled
+  * note: already called with rtnl_lock
+  */
+diff --git a/net/bridge/br_mrp_netlink.c b/net/bridge/br_mrp_netlink.c
+index 34b3a8776991f..5e743538464f6 100644
+--- a/net/bridge/br_mrp_netlink.c
++++ b/net/bridge/br_mrp_netlink.c
+@@ -14,6 +14,7 @@ static const struct nla_policy br_mrp_policy[IFLA_BRIDGE_MRP_MAX + 1] = {
+ 	[IFLA_BRIDGE_MRP_RING_STATE]	= { .type = NLA_NESTED },
+ 	[IFLA_BRIDGE_MRP_RING_ROLE]	= { .type = NLA_NESTED },
+ 	[IFLA_BRIDGE_MRP_START_TEST]	= { .type = NLA_NESTED },
++	[IFLA_BRIDGE_MRP_CLEAR]		= { .type = NLA_NESTED },
+ };
+ 
+ static const struct nla_policy
+@@ -235,6 +236,25 @@ static int br_mrp_start_test_parse(struct net_bridge *br, struct nlattr *attr,
+ 	return br_mrp_start_test(br, &test);
+ }
+ 
++static const struct nla_policy
++br_mrp_clear_policy[IFLA_BRIDGE_MRP_CLEAR_MAX + 1] = {
++	[IFLA_BRIDGE_MRP_CLEAR_UNSPEC]		= { .type = NLA_REJECT },
++};
++
++static int br_mrp_clear_parse(struct net_bridge *br, struct nlattr *attr,
++			      struct netlink_ext_ack *extack)
++{
++	struct nlattr *tb[IFLA_BRIDGE_MRP_START_TEST_MAX + 1];
++	int err;
++
++	err = nla_parse_nested(tb, IFLA_BRIDGE_MRP_CLEAR_MAX, attr,
++			       br_mrp_clear_policy, extack);
++	if (err)
++		return err;
++
++	return br_mrp_clear(br);
++}
++
+ int br_mrp_parse(struct net_bridge *br, struct net_bridge_port *p,
+ 		 struct nlattr *attr, int cmd, struct netlink_ext_ack *extack)
+ {
+@@ -301,6 +321,12 @@ int br_mrp_parse(struct net_bridge *br, struct net_bridge_port *p,
+ 			return err;
+ 	}
+ 
++	if (tb[IFLA_BRIDGE_MRP_CLEAR]) {
++		err = br_mrp_clear_parse(br, tb[IFLA_BRIDGE_MRP_CLEAR], extack);
++		if (err)
++			return err;
++	}
++
+ 	return 0;
+ }
+ 
+diff --git a/net/bridge/br_private_mrp.h b/net/bridge/br_private_mrp.h
+index 33b255e38ffec..25c3b8596c25b 100644
+--- a/net/bridge/br_private_mrp.h
++++ b/net/bridge/br_private_mrp.h
+@@ -36,6 +36,7 @@ struct br_mrp {
+ /* br_mrp.c */
+ int br_mrp_add(struct net_bridge *br, struct br_mrp_instance *instance);
+ int br_mrp_del(struct net_bridge *br, struct br_mrp_instance *instance);
++int br_mrp_clear(struct net_bridge *br);
+ int br_mrp_set_port_state(struct net_bridge_port *p,
+ 			  enum br_mrp_port_state_type state);
+ int br_mrp_set_port_role(struct net_bridge_port *p,
+-- 
+2.26.2
 
-> +
-> +What:          /sys/bus/coreboot/devices/.../cbmem_attributes/data
-> +Date:          Apr 2020
-> +KernelVersion: 5.6
-> +Contact:       Patrick Rudolph <patrick.rudolph@9elements.com>
-> +Description:
-> +               coreboot device directory can contain a file named
-> +               cbmem_attributes/data if the device corresponds to a CBMEM
-> +               buffer.
-> +               The file holds a read-only binary representation of the C=
-BMEM
-> +               buffer.
-> diff --git a/drivers/firmware/google/cbmem-coreboot.c b/drivers/firmware/=
-google/cbmem-coreboot.c
-> new file mode 100644
-> index 000000000000..f76704a6eec7
-> --- /dev/null
-> +++ b/drivers/firmware/google/cbmem-coreboot.c
-> @@ -0,0 +1,128 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * cbmem-coreboot.c
-> + *
-> + * Exports CBMEM as attributes in sysfs.
-> + *
-> + * Copyright 2012-2013 David Herrmann <dh.herrmann@gmail.com>
-> + * Copyright 2017 Google Inc.
-> + * Copyright 2019 9elements Agency GmbH
-> + */
-> +
-[..]
-> +       &bin_attr_data,
-> +       NULL
-> +};
-> +
-> +static const struct attribute_group cb_mem_attr_group =3D {
-> +       .name =3D "cbmem_attributes",
-> +       .attrs =3D cb_mem_attrs,
-> +       .bin_attrs =3D cb_mem_bin_attrs,
-> +};
-> +
-> +static const struct attribute_group *attribute_groups[] =3D {
-> +       &cb_mem_attr_group,
-> +       NULL,
-
-Nitpick: Drop the comma on sentinel so nothing can come after lest a
-compile error happens.
-
-> +};
-> +
-> +static int cbmem_probe(struct coreboot_device *cdev)
-> +{
-> +       struct device *dev =3D &cdev->dev;
-> +       struct cb_priv *priv;
-> +
-> +       priv =3D devm_kmalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +       if (!priv)
-> +               return -ENOMEM;
-> +
-> +       memcpy(&priv->entry, &cdev->cbmem_entry, sizeof(priv->entry));
-> +
-> +       dev_set_drvdata(dev, priv);
-
-Agreed, avoid the memcpy().
-
-> +
-> +       return 0;
-> +}
