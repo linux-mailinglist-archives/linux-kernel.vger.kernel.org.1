@@ -2,252 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3554820A6AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 22:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8D420A6B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 22:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407117AbgFYUTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 16:19:09 -0400
-Received: from mga18.intel.com ([134.134.136.126]:20502 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436572AbgFYUSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 16:18:43 -0400
-IronPort-SDR: gXgMEl41crTKhg/T5bds6pxnkCpfTpCDuCHPknLKbHaj2ieEvRnWcnmdWydMStLtMCl0mkXnaT
- 1HPF/Y1lbrMg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="132505316"
-X-IronPort-AV: E=Sophos;i="5.75,280,1589266800"; 
-   d="scan'208";a="132505316"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2020 13:18:42 -0700
-IronPort-SDR: FFc/YcmSGfhkw1N/sTKw9822mWl9jFt7gW0xMpG7hpJJL4yAo0vU189BfNLbCKrqXPX2w3OPao
- kh17kHKJ77WA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,280,1589266800"; 
-   d="scan'208";a="453132270"
-Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
-  by orsmga005.jf.intel.com with ESMTP; 25 Jun 2020 13:18:41 -0700
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     "Thomas Gleixner" <tglx@linutronix.de>,
-        "Joerg Roedel" <joro@8bytes.org>, "Ingo Molnar" <mingo@redhat.com>,
-        "Borislav Petkov" <bp@alien8.de>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "H Peter Anvin" <hpa@zytor.com>,
-        "David Woodhouse" <dwmw2@infradead.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        "Dave Hansen" <dave.hansen@intel.com>,
-        "Tony Luck" <tony.luck@intel.com>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
-        "Christoph Hellwig" <hch@infradeed.org>,
-        "Ashok Raj" <ashok.raj@intel.com>,
-        "Jacob Jun Pan" <jacob.jun.pan@intel.com>,
-        "Dave Jiang" <dave.jiang@intel.com>,
-        "Sohil Mehta" <sohil.mehta@intel.com>,
-        "Ravi V Shankar" <ravi.v.shankar@intel.com>
-Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "x86" <x86@kernel.org>, iommu@lists.linux-foundation.org,
-        Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH v4 12/12] x86/traps: Fix up invalid PASID
-Date:   Thu, 25 Jun 2020 13:17:22 -0700
-Message-Id: <1593116242-31507-13-git-send-email-fenghua.yu@intel.com>
-X-Mailer: git-send-email 2.5.0
-In-Reply-To: <1593116242-31507-1-git-send-email-fenghua.yu@intel.com>
-References: <1593116242-31507-1-git-send-email-fenghua.yu@intel.com>
+        id S2407126AbgFYUT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 16:19:58 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:58059 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405161AbgFYUT5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 16:19:57 -0400
+Received: from localhost.localdomain ([93.22.134.133])
+        by mwinf5d69 with ME
+        id vYKo2200P2sr5ud03YKpeA; Thu, 25 Jun 2020 22:19:55 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 25 Jun 2020 22:19:55 +0200
+X-ME-IP: 93.22.134.133
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     hverkuil@xs4all.nl, kyungmin.park@samsung.com, kamil@wypas.org,
+        a.hajda@samsung.com, mchehab@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] media: s5p-g2d: Fix a memory leak in an error handling path in 'g2d_probe()'
+Date:   Thu, 25 Jun 2020 22:19:47 +0200
+Message-Id: <20200625201947.943043-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200426200631.42497-1-christophe.jaillet@wanadoo.fr>
+References: <20200426200631.42497-1-christophe.jaillet@wanadoo.fr>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A #GP fault is generated when ENQCMD instruction is executed without
-a valid PASID value programmed in the current thread's PASID MSR. The
-#GP fault handler will initialize the MSR if a PASID has been allocated
-for this process.
+Memory allocated with 'v4l2_m2m_init()' must be freed by a corresponding
+call to 'v4l2_m2m_release()'
 
-Decoding the user instruction is ugly and sets a bad architecture
-precedent. It may not function if the faulting instruction is modified
-after #GP.
+Also reorder the code at the end of the probe function so that
+'video_register_device()' is called last.
+Update the error handling path accordingly.
 
-Thomas suggested to provide a reason for the #GP caused by executing ENQCMD
-without a valid PASID value programmed. #GP error codes are 16 bits and all
-16 bits are taken. Refer to SDM Vol 3, Chapter 16.13 for details. The other
-choice was to reflect the error code in an MSR. ENQCMD can also cause #GP
-when loading from the source operand, so its not fully comprehending all
-the reasons. Rather than special case the ENQCMD, in future Intel may
-choose a different fault mechanism for such cases if recovery is needed on
-#GP.
-
-The following heuristic is used to avoid decoding the user instructions
-to determine the precise reason for the #GP fault:
-1) If the mm for the process has not been allocated a PASID, this #GP
-   cannot be fixed.
-2) If the PASID MSR is already initialized, then the #GP was for some
-   other reason
-3) Try initializing the PASID MSR and returning. If the #GP was from
-   an ENQCMD this will fix it. If not, the #GP fault will be repeated
-   and will hit case "2".
-
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
+Fixes: 5ce60d790a24 ("[media] s5p-g2d: Add DT based discovery support")
+Fixes: 918847341af0 ("[media] v4l: add G2D driver for s5p device family")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
-v4:
-- Change PASID type to u32 (Christoph)
+V2: Call 'video_register_device()' as required by Hans Verkuil <hverkuil@xs4all.nl>
 
-v3:
-- Check and set current->has_valid_pasid in fixup() (PeterZ)
-- Add fpu__pasid_write() to update the MSR (PeterZ)
-- Add ioasid_find() sanity check in fixup()
+Compile tested only.
+---
+ drivers/media/platform/s5p-g2d/g2d.c | 28 +++++++++++++++-------------
+ 1 file changed, 15 insertions(+), 13 deletions(-)
 
-v2:
-- Update the first paragraph of the commit message (Thomas)
-- Add reasons why don't decode the user instruction and don't use
-  #GP error code (Thomas)
-- Change get_task_mm() to current->mm (Thomas)
-- Add comments on why IRQ is disabled during PASID fixup (Thomas)
-- Add comment in fixup() that the function is called when #GP is from
-  user (so mm is not NULL) (Dave Hansen)
-
- arch/x86/include/asm/iommu.h |  1 +
- arch/x86/kernel/traps.c      | 14 +++++++
- drivers/iommu/intel/svm.c    | 78 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 93 insertions(+)
-
-diff --git a/arch/x86/include/asm/iommu.h b/arch/x86/include/asm/iommu.h
-index ed41259fe7ac..e9365a5d6f7d 100644
---- a/arch/x86/include/asm/iommu.h
-+++ b/arch/x86/include/asm/iommu.h
-@@ -27,5 +27,6 @@ arch_rmrr_sanity_check(struct acpi_dmar_reserved_memory *rmrr)
- }
- 
- void __free_pasid(struct mm_struct *mm);
-+bool __fixup_pasid_exception(void);
- 
- #endif /* _ASM_X86_IOMMU_H */
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index f9727b96961f..2352f3f1f7ed 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -59,6 +59,7 @@
- #include <asm/umip.h>
- #include <asm/insn.h>
- #include <asm/insn-eval.h>
-+#include <asm/iommu.h>
- 
- #ifdef CONFIG_X86_64
- #include <asm/x86_init.h>
-@@ -514,6 +515,16 @@ static enum kernel_gp_hint get_kernel_gp_address(struct pt_regs *regs,
- 	return GP_CANONICAL;
- }
- 
-+static bool fixup_pasid_exception(void)
-+{
-+	if (!IS_ENABLED(CONFIG_INTEL_IOMMU_SVM))
-+		return false;
-+	if (!static_cpu_has(X86_FEATURE_ENQCMD))
-+		return false;
+diff --git a/drivers/media/platform/s5p-g2d/g2d.c b/drivers/media/platform/s5p-g2d/g2d.c
+index 6932fd47071b..fb2e48dbabd4 100644
+--- a/drivers/media/platform/s5p-g2d/g2d.c
++++ b/drivers/media/platform/s5p-g2d/g2d.c
+@@ -695,21 +695,13 @@ static int g2d_probe(struct platform_device *pdev)
+ 	vfd->lock = &dev->mutex;
+ 	vfd->v4l2_dev = &dev->v4l2_dev;
+ 	vfd->device_caps = V4L2_CAP_VIDEO_M2M | V4L2_CAP_STREAMING;
+-	ret = video_register_device(vfd, VFL_TYPE_VIDEO, 0);
+-	if (ret) {
+-		v4l2_err(&dev->v4l2_dev, "Failed to register video device\n");
+-		goto rel_vdev;
+-	}
+-	video_set_drvdata(vfd, dev);
+-	dev->vfd = vfd;
+-	v4l2_info(&dev->v4l2_dev, "device registered as /dev/video%d\n",
+-								vfd->num);
 +
-+	return __fixup_pasid_exception();
-+}
-+
- #define GPFSTR "general protection fault"
+ 	platform_set_drvdata(pdev, dev);
+ 	dev->m2m_dev = v4l2_m2m_init(&g2d_m2m_ops);
+ 	if (IS_ERR(dev->m2m_dev)) {
+ 		v4l2_err(&dev->v4l2_dev, "Failed to init mem2mem device\n");
+ 		ret = PTR_ERR(dev->m2m_dev);
+-		goto unreg_video_dev;
++		goto rel_vdev;
+ 	}
  
- DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
-@@ -526,6 +537,9 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
+ 	def_frame.stride = (def_frame.width * def_frame.fmt->depth) >> 3;
+@@ -717,14 +709,24 @@ static int g2d_probe(struct platform_device *pdev)
+ 	of_id = of_match_node(exynos_g2d_match, pdev->dev.of_node);
+ 	if (!of_id) {
+ 		ret = -ENODEV;
+-		goto unreg_video_dev;
++		goto free_m2m;
+ 	}
+ 	dev->variant = (struct g2d_variant *)of_id->data;
  
- 	cond_local_irq_enable(regs);
- 
-+	if (user_mode(regs) && fixup_pasid_exception())
-+		goto exit;
-+
- 	if (static_cpu_has(X86_FEATURE_UMIP)) {
- 		if (user_mode(regs) && fixup_umip_exception(regs))
- 			goto exit;
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 4c788880b037..4a84c82a4f8c 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -1105,3 +1105,81 @@ void __free_pasid(struct mm_struct *mm)
- 	 */
- 	ioasid_free(pasid);
- }
-+
-+/*
-+ * Write the current task's PASID MSR/state. This is called only when PASID
-+ * is enabled.
-+ */
-+static void fpu__pasid_write(u32 pasid)
-+{
-+	u64 msr_val = pasid | MSR_IA32_PASID_VALID;
-+
-+	fpregs_lock();
-+
-+	/*
-+	 * If the MSR is active and owned by the current task's FPU, it can
-+	 * be directly written.
-+	 *
-+	 * Otherwise, write the fpstate.
-+	 */
-+	if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
-+		wrmsrl(MSR_IA32_PASID, msr_val);
-+	} else {
-+		struct ia32_pasid_state *ppasid_state;
-+
-+		ppasid_state = get_xsave_addr(&current->thread.fpu.state.xsave,
-+					      XFEATURE_PASID);
-+		/*
-+		 * ppasid_state shouldn't be NULL because XFEATURE_PASID
-+		 * is enabled.
-+		 */
-+		WARN_ON_ONCE(!ppasid_state);
-+		ppasid_state->pasid = msr_val;
++	ret = video_register_device(vfd, VFL_TYPE_VIDEO, 0);
++	if (ret) {
++		v4l2_err(&dev->v4l2_dev, "Failed to register video device\n");
++		goto free_m2m;
 +	}
-+	fpregs_unlock();
-+}
++	video_set_drvdata(vfd, dev);
++	dev->vfd = vfd;
++	v4l2_info(&dev->v4l2_dev, "device registered as /dev/video%d\n",
++								vfd->num);
 +
-+/*
-+ * Apply some heuristics to see if the #GP fault was caused by a thread
-+ * that hasn't had the IA32_PASID MSR initialized.  If it looks like that
-+ * is the problem, try initializing the IA32_PASID MSR. If the heuristic
-+ * guesses incorrectly, take one more #GP fault.
-+ */
-+bool __fixup_pasid_exception(void)
-+{
-+	struct intel_svm *svm;
-+	struct mm_struct *mm;
-+	u32 pasid;
-+
-+	/*
-+	 * If the current task already has a valid PASID in the MSR,
-+	 * the #GP must be for some other reason.
-+	 */
-+	if (current->has_valid_pasid)
-+		return false;
-+
-+	/*
-+	 * This function is called only when this #GP was triggered from user
-+	 * space. So the mm cannot be NULL.
-+	 */
-+	mm = current->mm;
-+	pasid = mm->pasid;
-+
-+	/*
-+	 * If the PASID isn't found, cannot help.
-+	 *
-+	 * Don't care if the PASID is bound to the mm here. #PF will handle the
-+	 * case that the MSR is fixed up by an unbound PASID.
-+	 */
-+	svm = ioasid_find(NULL, pasid, NULL);
-+	if (IS_ERR_OR_NULL(svm))
-+		return false;
-+
-+	/* Fix up the MSR by the PASID in the mm. */
-+	fpu__pasid_write(pasid);
-+
-+	/* Now the current task has a valid PASID in the MSR. */
-+	current->has_valid_pasid = 1;
-+
-+	return true;
-+}
+ 	return 0;
+ 
+-unreg_video_dev:
+-	video_unregister_device(dev->vfd);
++free_m2m:
++	v4l2_m2m_release(dev->m2m_dev);
+ rel_vdev:
+ 	video_device_release(vfd);
+ unreg_v4l2_dev:
 -- 
-2.19.1
+2.25.1
 
