@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4AA20A6CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 22:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 705B120A6DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 22:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407158AbgFYUgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 16:36:16 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:37160 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404952AbgFYUgQ (ORCPT
+        id S2407180AbgFYUhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 16:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405041AbgFYUhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 16:36:16 -0400
-Received: by mail-ej1-f66.google.com with SMTP id mb16so7275884ejb.4;
-        Thu, 25 Jun 2020 13:36:15 -0700 (PDT)
+        Thu, 25 Jun 2020 16:37:09 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1F7C08C5DC
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 13:37:09 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id p3so3876698pgh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 13:37:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d3GeLK+nXjwF6qopXKxu4ABEIWtd3N9QgHPk+DpZ9DQ=;
+        b=T+TvmO6fHmdSxxhmwQF6bCqwTYesZ26yWqZboO+42b4Ie4kzH6zGD3MEM6/mR+k1qo
+         3/53fF6qs1obN0PM9p7Ghgh3T59x1FbCG7HXARnuUe34xNmxM1tkRPBj2CkA0LelU/GV
+         Anxsf9KOCQ0VaVa1QhyynBigEsblv0lSlybEc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rO9wobKDdJfB6GpyJylYAIJ+kYKUiyATVCtaBeDI+fw=;
-        b=uOcxQeelA24/Lg0nZPPuLL/Vwiu4S7nffOhYaeTfohI2o7tubip6D9C0qov+2esBO3
-         XC1/Ht/PduI+y6XOc/sx1zswM093dryH2hqLkl610Mbo2pJ7ejvga5CMmpWcsuOpWiy5
-         Rl1GAA3w8bpUKbnD+/e6sY+qRg1AfsYrYxHfRj0mbhfgSiadnryFU4T7hvpE+QB7Sav9
-         Ist8iBCjuQX8isRIBQ11cbqATUgiXZMaN6hRIyZPcTNP0kMUWb2Nu2TLL3I5B3O+VTrV
-         Rfzcr+V2tvwOXzC7LGRSsa7cxM5VmA61vw3ODM2Q7ZR4BNg5LdzZcxPfXsmWJigMg0io
-         J/zA==
-X-Gm-Message-State: AOAM530xckj2lFofpjmL3fM7Gy/+N6MVVb3VhYbA+/ZLSMGX8D8xt4lJ
-        VLN/CniEQOnnVZXBAzhaHpI=
-X-Google-Smtp-Source: ABdhPJzfhS7g3k5+vRs6JczdAsbHFNdSSLshuu/AhvsQ7cPrZgwO71TfhCq9ltNkBnPaHiW49BYdog==
-X-Received: by 2002:a17:906:4f87:: with SMTP id o7mr30542289eju.233.1593117374457;
-        Thu, 25 Jun 2020 13:36:14 -0700 (PDT)
-Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
-        by smtp.gmail.com with ESMTPSA id bs18sm3790352edb.38.2020.06.25.13.36.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d3GeLK+nXjwF6qopXKxu4ABEIWtd3N9QgHPk+DpZ9DQ=;
+        b=CSgz9Y3QDsOR5dDg9E/KM48DeqATv39RjJDRVV5eFdd2U5JfUZWdQpvOjNLFfLkA5E
+         wIm5fckw98NDVUn1l9RaOVJzNkVHi6Oc2iDrXXc9C7uoTfqza9/IIdD7fxj6dFSN6TDZ
+         6Yi/1y77E2VDhaT2L9u/c9gsAyNOmiAiS7e0yX3zNfJm5I07Oyu+Z3aTcpKDAsfD2Pkm
+         aRtfP0NCDL0mT41PRQdndsUy/Uiw0QMMQ9uZH0ybfHePBgKXi1X3dbJJZDlcbqJkhc1j
+         SmaVaX5ZyhjhEWkB3puUWzSBKJ7T3T/4jdvk92iJmaD5SnkOQl4ef7eHxmVkPd0sW0Hf
+         sUhw==
+X-Gm-Message-State: AOAM532j/XyitrHq/u61iXAe0Cm7FuMvMVjLLCUlELUEDSQ7kMA0BtG1
+        UJ57sCHgMCEbTEwY5wCyXMKMyw==
+X-Google-Smtp-Source: ABdhPJxuNWPKYgd5trz2foxr85WYRx00emue48cZggJc6TgB+Btx4HxdZWfpU/cEGBgAfXWd09NKFg==
+X-Received: by 2002:a63:fe0a:: with SMTP id p10mr21957815pgh.255.1593117428713;
+        Thu, 25 Jun 2020 13:37:08 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id w10sm21295494pgm.70.2020.06.25.13.37.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 13:36:13 -0700 (PDT)
-Date:   Thu, 25 Jun 2020 22:36:11 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, dm-devel@redhat.com,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH 0/6] Overhaul memalloc_no*
-Message-ID: <20200625203611.GS1320@dhcp22.suse.cz>
-References: <20200625113122.7540-1-willy@infradead.org>
- <20200625184832.GP7606@magnolia>
+        Thu, 25 Jun 2020 13:37:07 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        linux-kselftest@vger.kernel.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: [PATCH drivers/misc v2 0/4] lkdtm: Various clean ups
+Date:   Thu, 25 Jun 2020 13:37:00 -0700
+Message-Id: <20200625203704.317097-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200625184832.GP7606@magnolia>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 25-06-20 11:48:32, Darrick J. Wong wrote:
-> On Thu, Jun 25, 2020 at 12:31:16PM +0100, Matthew Wilcox (Oracle) wrote:
-> > I want a memalloc_nowait like we have memalloc_noio and memalloc_nofs
-> > for an upcoming patch series, and Jens also wants it for non-blocking
-> > io_uring.  It turns out we already have dm-bufio which could benefit
-> > from memalloc_nowait, so it may as well go into the tree now.
-> > 
-> > The biggest problem is that we're basically out of PF_ flags, so we need
-> > to find somewhere else to store the PF_MEMALLOC_NOWAIT flag.  It turns
-> > out the PF_ flags are really supposed to be used for flags which are
-> > accessed from other tasks, and the MEMALLOC flags are only going to
-> > be used by this task.  So shuffling everything around frees up some PF
-> > flags and generally makes the world a better place.
-> 
-> So, uh, how does this intersect with the patch "xfs: reintroduce
-> PF_FSTRANS for transaction reservation recursion protection" that
-> re-adds PF_TRANS because uh I guess we lost some subtlety or another at
-> some point?
+Hi Greg,
 
-This is independent, really. It just relocates the NOFS flag. PF_TRANS
-is reintroduced for a different reason. When I have replaced the
-original PF_TRANS by PF_MEMALLOC_NOFS I didn't realized that xfs doesn't
-need only the NOFS semantic but also the transaction tracking so this
-cannot be a single bit only. So it has to be added back. But
-PF_MEMALLOC_NOFS needs to stay for the scoped NOFS semantic.
+(Since this was aleady pending, I just spun a v2, resent here.)
 
-Hope this clarifies it a bit.
+Can you please apply these patches to your drivers/misc tree for LKDTM?
+It's mostly a collection of fixes and improvements and tweaks to the
+selftest integration.
+
+Thanks!
+
+-Kees
+
+v2: - add fix for UML build failures (Randy, Richard)
+v1: https://lore.kernel.org/lkml/20200529200347.2464284-1-keescook@chromium.org/
+
+Kees Cook (4):
+  lkdtm: Avoid more compiler optimizations for bad writes
+  lkdtm/heap: Avoid edge and middle of slabs
+  selftests/lkdtm: Reset WARN_ONCE to avoid false negatives
+  lkdtm: Make arch-specific tests always available
+
+ drivers/misc/lkdtm/bugs.c               | 49 +++++++++++++------------
+ drivers/misc/lkdtm/heap.c               |  9 +++--
+ drivers/misc/lkdtm/lkdtm.h              |  2 -
+ drivers/misc/lkdtm/perms.c              | 22 +++++++----
+ drivers/misc/lkdtm/usercopy.c           |  7 +++-
+ tools/testing/selftests/lkdtm/run.sh    |  6 +++
+ tools/testing/selftests/lkdtm/tests.txt |  1 +
+ 7 files changed, 58 insertions(+), 38 deletions(-)
+
 -- 
-Michal Hocko
-SUSE Labs
+2.25.1
+
