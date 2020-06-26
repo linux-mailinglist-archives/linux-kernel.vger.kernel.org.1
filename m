@@ -2,71 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D857220AD19
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CAA20AD26
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728782AbgFZH1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 03:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728762AbgFZH1V (ORCPT
+        id S1728715AbgFZHaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 03:30:01 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:35844 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbgFZHaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 03:27:21 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C107EC08C5DB
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 00:27:21 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id z5so4586805pgb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 00:27:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:user-agent:in-reply-to:references:mime-version
-         :content-transfer-encoding:subject:to:cc:from:message-id;
-        bh=EZ4ukNPP7iVf8vF6muxB/o/Srf2rzuTl0wpGGpjxFsM=;
-        b=yNUST13hy1+EHsS2sfxk+Rj7MFVtb9pHUJ3ZuX0/lRKXQPpvZvrig6EuZfTDWJ+qke
-         mS2zGNJmWT2QfsMus14SCDaf4xdse3am1VGM0br3ydyj4Ov9vgtL86CR7fCudpTiE8ys
-         Ci+M6jhRh06570+Mo2IKvLSr9pW+x6gDTDfXoKE1n2S1L6xBMvF7jXSP2xQYl1atO0vT
-         lm3XmwkvyR4386nRWGZQg6hZGKAWdELGxM1QX8N8eHsLoA0Q13fbRTeA0iMtJg4kSBm7
-         oJBOrAqwZqKn+ptRxOV/EKR/7IOufy9I6tei+eA1AIzseW66Ha2Dp0/RPMdWOlFMypHR
-         pEow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:user-agent:in-reply-to:references
-         :mime-version:content-transfer-encoding:subject:to:cc:from
-         :message-id;
-        bh=EZ4ukNPP7iVf8vF6muxB/o/Srf2rzuTl0wpGGpjxFsM=;
-        b=esmUli/BfHbBzijbpgIhF3s+cfx9O1OhaQ7YPah+NRYelhygDhzUN/oKiQrGybSlZu
-         wbO0q7S2iCvYCvVP450HNNSCkuKYU4ar4cPigZYKS+/GX+Qt/PcPJ5Gibin5N18A9S4j
-         3BBSvhJxclsopGyjXK8AZcsFzdmPHiNIr8HPmtxBpWwVtgqcSdsUfYg1Be9mJbkIUCIZ
-         CNdFvhGjyA+ZW5xf7iRZ/u4ANx6qLrbBno6sOIjL7bIfusvFANIfQhtB2AGMyLZ7VsI1
-         AfvnSZJIlIQD2gnTAAvreOpzlGqb3Gl9Dv9aqQK7CAOW6wUo1VYBhtoRo/iKjmP1y1kH
-         SXDg==
-X-Gm-Message-State: AOAM532b/AkIJPr4YYMYgXydDQZ9KmnmrUxYJ8ZkbohRclCEnd5tXu/8
-        frRSplCVOZT8vbkk2djGcAIh
-X-Google-Smtp-Source: ABdhPJxghrZqKHyTE+bK+1pDhBG1aZE7of6Mvctp26xHfyHYrc39RS2yDT2fHkCmrHl79016pP2nsA==
-X-Received: by 2002:a63:2248:: with SMTP id t8mr1576526pgm.113.1593156441147;
-        Fri, 26 Jun 2020 00:27:21 -0700 (PDT)
-Received: from ?IPv6:2409:4072:8f:e5bc:398d:eac0:43d5:2c47? ([2409:4072:8f:e5bc:398d:eac0:43d5:2c47])
-        by smtp.gmail.com with ESMTPSA id k14sm24364377pfk.97.2020.06.26.00.27.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Jun 2020 00:27:20 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 12:57:15 +0530
-User-Agent: K-9 Mail for Android
-In-Reply-To: <d54d1fe9d8378e7c44d19e7b366b909bf5dbb7dc.1593112402.git.cristian.ciocaltea@gmail.com>
-References: <cover.1593112402.git.cristian.ciocaltea@gmail.com> <d54d1fe9d8378e7c44d19e7b366b909bf5dbb7dc.1593112402.git.cristian.ciocaltea@gmail.com>
+        Fri, 26 Jun 2020 03:30:00 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05Q7TiKO110026;
+        Fri, 26 Jun 2020 02:29:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1593156584;
+        bh=H7Sye2F6KYJGyt86hcv78Gg9uUrflv9GgwpNcNmMWqA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=qmi8KBoS3LJBml2lCLL+R4h2DzChe0sIGuMZoPXycfI9jeo8yaJtuxe5BVmJYgjh1
+         PZbDJ06D6FPBdVDAXOWcdrx7wGJdEzrQNZIv6mRUkyzyhxSvVxawabrhynKB4K8yya
+         9kmXrg5m5Jp1qmBMC9DbdyU2WsdK0LxNWSUUBbjU=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05Q7TimS099997
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 26 Jun 2020 02:29:44 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 26
+ Jun 2020 02:29:43 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 26 Jun 2020 02:29:43 -0500
+Received: from [192.168.2.10] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05Q7Tgwm111765;
+        Fri, 26 Jun 2020 02:29:42 -0500
+Subject: Re: [PATCH][next] dmaengine: ti: k3-udma: Use struct_size() in
+ kzalloc()
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200619224334.GA7857@embeddedor>
+ <20200624055535.GX2324254@vkoul-mobl>
+ <3a5514c9-d966-c332-84ba-f418c26fa74c@embeddedor.com>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+X-Pep-Version: 2.0
+Message-ID: <98426221-8bff-25df-a062-9ec1ca4e8f26@ti.com>
+Date:   Fri, 26 Jun 2020 10:30:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+In-Reply-To: <3a5514c9-d966-c332-84ba-f418c26fa74c@embeddedor.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 3/3] MAINTAINERS: Add pinctrl binding entry for Actions Semi S500
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        =?ISO-8859-1?Q?Andreas_F=E4rber?= <afaerber@suse.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-actions@lists.infradead.org
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Message-ID: <EDE29F4D-CB0B-4A24-B7B4-01E2C11179A3@linaro.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -74,36 +66,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 26 June 2020 1:46:20 AM IST, Cristian Ciocaltea <cristian=2Eciocaltea@g=
-mail=2Ecom> wrote:
->Add a pinctrl binding entry for Actions Semi S500=2E
->
->Signed-off-by: Cristian Ciocaltea <cristian=2Eciocaltea@gmail=2Ecom>
->---
-> MAINTAINERS | 1 +
-> 1 file changed, 1 insertion(+)
->
->diff --git a/MAINTAINERS b/MAINTAINERS
->index e6285c13bab0=2E=2E4b9eec04c937 100644
->--- a/MAINTAINERS
->+++ b/MAINTAINERS
->@@ -1519,6 +1519,7 @@
->F:	Documentation/devicetree/bindings/clock/actions,owl-cmu=2Etxt
-> F:	Documentation/devicetree/bindings/dma/owl-dma=2Etxt
-> F:	Documentation/devicetree/bindings/i2c/i2c-owl=2Etxt
-> F:	Documentation/devicetree/bindings/mmc/owl-mmc=2Eyaml
->+F:	Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl=2Eyaml
+On 24/06/2020 20.12, Gustavo A. R. Silva wrote:
+> Hi Vinod,
+>=20
+> On 6/24/20 00:55, Vinod Koul wrote:
+>> On 19-06-20, 17:43, Gustavo A. R. Silva wrote:
+>>> Make use of the struct_size() helper instead of an open-coded version=
 
-I think we can use wildcard now=2E
+>>> in order to avoid any potential type mistakes.
+>>>
+>>> This code was detected with the help of Coccinelle and, audited and
+>>> fixed manually.
+>>>
+>>> Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
+>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>> ---
+>>>  drivers/dma/ti/k3-udma.c | 4 ++--
+>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+>>> index 0d5fb154b8e2..411c54b86ba8 100644
+>>> --- a/drivers/dma/ti/k3-udma.c
+>>> +++ b/drivers/dma/ti/k3-udma.c
+>>> @@ -2209,7 +2209,7 @@ udma_prep_slave_sg_pkt(struct udma_chan *uc, st=
+ruct scatterlist *sgl,
+>>>  	u32 ring_id;
+>>>  	unsigned int i;
+>>> =20
+>>> -	d =3D kzalloc(sizeof(*d) + sglen * sizeof(d->hwdesc[0]), GFP_NOWAIT=
+);
+>>> +	d =3D kzalloc(struct_size(d, hwdesc, sglen), GFP_NOWAIT);
+>>
+>> struct_size() is a * b + c but here we need, a + b * c.. the trailing
+>> struct is N times here..
+>>
+>=20
+> struct_size() works exactly as expected in this case. :)
+> Please, see:
+>=20
+> include/linux/overflow.h:314:
+> 314 #define struct_size(p, member, count)                              =
+     \
+> 315         __ab_c_size(count,                                         =
+     \
+> 316                     sizeof(*(p)->member) + __must_be_array((p)->mem=
+ber),\
+> 317                     sizeof(*(p)))
 
-pinctrl/actions,*
+True, struct_size is for this sort of things.
 
-Thanks,=20
-Mani
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-> F:	Documentation/devicetree/bindings/pinctrl/actions,s900-pinctrl=2Etxt
-> F:	Documentation/devicetree/bindings/power/actions,owl-sps=2Etxt
-> F:	Documentation/devicetree/bindings/timer/actions,owl-timer=2Etxt
+While looking it up in include/linux/overflow.h I have noticed your
+commit in linux-next, which adds flex_array_size()
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+The example in the commit message contradicts with what the helper
+does imho. To be correct it should have been:
+
+struct something {
+	size_t count;
+	struct foo items[];
+};
+
+- struct something *instance;
++ struct something instance;
+
+- instance =3D kmalloc(struct_size(instance, items, count), GFP_KERNEL);
++ instance.items =3D kmalloc(struct_size(instance, items, count), GFP_KER=
+NEL);
+instance->count =3D count;
+memcpy(instance->items, src, flex_array_size(instance, items, instance->c=
+ount));
+
+If I'm not mistaken..
+
+
+>=20
+> Thanks
+> --
+> Gustavo
+>=20
+>>>  	if (!d)
+>>>  		return NULL;
+>>> =20
+>>> @@ -2525,7 +2525,7 @@ udma_prep_dma_cyclic_pkt(struct udma_chan *uc, =
+dma_addr_t buf_addr,
+>>>  	if (period_len >=3D SZ_4M)
+>>>  		return NULL;
+>>> =20
+>>> -	d =3D kzalloc(sizeof(*d) + periods * sizeof(d->hwdesc[0]), GFP_NOWA=
+IT);
+>>> +	d =3D kzalloc(struct_size(d, hwdesc, periods), GFP_NOWAIT);
+>>>  	if (!d)
+>>>  		return NULL;
+>>> =20
+>>> --=20
+>>> 2.27.0
+>>
+
+- P=C3=A9ter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/=
+Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
