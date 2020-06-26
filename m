@@ -2,113 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF9220B213
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 15:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D5F20B21A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 15:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgFZNFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 09:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
+        id S1728278AbgFZNFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 09:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgFZNFb (ORCPT
+        with ESMTP id S1727790AbgFZNFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 09:05:31 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327F1C08C5DB
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 06:05:31 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id o8so8766743wmh.4
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 06:05:31 -0700 (PDT)
+        Fri, 26 Jun 2020 09:05:33 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DECBC08C5DB
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 06:05:32 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id s10so9408017wrw.12
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 06:05:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6du7sHpmroejr9lp9ztEYkWIN/fkcg7/2Uksn80/5h0=;
-        b=UWsgLVFRaDNyhFO1xT+LBUyTFFSmoKYce1w5HR+oyOoZjlI2VIetRXHVv0ch5mYgXC
-         IqCuj/qcmtBNc/qm+riwEb3JXaPnmf3WlzoUZxMse3tMkwOUl2f9F6hAwtFxCgQYlgQu
-         /NBi05hfpZyzwTGRd5e3u6roLKEP5pr0sKjGU60X+9CJKWYbTeI6Y9Q6WHxwrUZTf4M6
-         PHIZTyaDKpc657YDC4rsn3THlGs6o2cnDeiLFGABbZTmcnQeu+a04Dov95pgGhnvLKor
-         ba62ALADZf3j6AMz9l+Xu/vmcMB4Hui9d9pWDj1pw09ld0N6+M+hEN3RpR55JEF+iFnR
-         B4zg==
+        bh=daHyuJlZ21yTucBCriQSJRjQqcObN26/yVHvenxInRk=;
+        b=HlFLionZgSOs6uB5R/XFj+QIIQ5tQl7fhImDsr1EeJhlVxOL9n404r1ANLopHwWtlY
+         zywtHNZ54HiqUqgmPyiXkVySsIX4Hdk5SWXj59y9VIkehX/2bWPlhpcP7bkThFYisB7L
+         aYoLNSR3p1LB8G0Ts1jI1ig5BPgz25+wFct97UzGfn349NuZSZqSwCDKY2W2oZlGBzV0
+         YmvLsIPf7g1dPN95thFlze08d6GIffTkmWyjaxSaff6/6ReJBYwwFa4XTK8Y5ZeTsUPA
+         dz6N/RJAHapYtB681ADXg6GWRBLyVeyCUflJ7MAVPiXKoqzUEY+U6C8hRybcrFPGTzfF
+         p12Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6du7sHpmroejr9lp9ztEYkWIN/fkcg7/2Uksn80/5h0=;
-        b=KZgXFA68eVDWkZpB2JZZUCB2Qtk3nBiSXK97EemB7XXKCnRDNXFh0dR7DE1pilTaSu
-         Qo29FzlrTjFYjADAQhcrmiFgGwhvI0BkIBY4hVSV4ag3LiUuSPEXgWi1N4sNMMkdSODz
-         hldV/kkKAFTwPdTKocx/kZb+Ys+YMxUENSznTIVKJiCMxNeNW5dCQBYvis3SB/0z4DLe
-         86XkC4k3h2FnjSrIk+k52mv29C17Atmin8kZgt/YO1FhpOIqERW41oD31kBmY2lDviyZ
-         OW2/EW2Q4pEDnLrdbBn5D8hKGjVAMgosYnJaUiQtVI8qZlSpi/Kw//YncKFc6N1A6Ple
-         9SXw==
-X-Gm-Message-State: AOAM531inZXAhwOA/t837vT0REzasYHgkLQFEApeMd/ODDMNX17rGftw
-        WiJ8xu2HfU4QwGhVwR+d4DGclQ==
-X-Google-Smtp-Source: ABdhPJyJ2n62/Y1Rl+W1QOIJetY7OS5+awAyZ6wQTR6lWI70ZzGrBOLFafJyKmyAFcSNekqG1/1E/g==
-X-Received: by 2002:a05:600c:2254:: with SMTP id a20mr3238838wmm.115.1593176729872;
-        Fri, 26 Jun 2020 06:05:29 -0700 (PDT)
+        bh=daHyuJlZ21yTucBCriQSJRjQqcObN26/yVHvenxInRk=;
+        b=jTZgGxEPhYncL4LCL2Oed8mkCZygHSQExCaS9b4PIxgCQM3hJ0VcrSgixMwATuQyv5
+         H+/4acEdQIm6mS5NsgggjkcmoQhSfDuALcjs4eJwb6SE93iPF1+VXaZ8PiVbh833geor
+         8jGlEVFnoiL/PWKVbviZmVgq5lrohXT89HbhqqnPesdZX0Cdy+fYvA05sN/FD2ER9+aI
+         IFdKsVGusEsRh9EIqbHb78u2cBm7Y4ItpMNxwq3d8oVpoJE0xfFU3KfBFEWjbghnQnNL
+         IGrr5Dpt50dOpIMai/EC+M55VtRMguWubPcXRLonqgylBfwuhfQjivFC9pnH3II5ZW8M
+         tpsw==
+X-Gm-Message-State: AOAM532TWhBk8XcvJbxJo8yC49EMlDxMNfP9w8ydPaaMqTLs8QnQtGVU
+        CYxbnljuZPMOHC+CjCsxHOwTJQ==
+X-Google-Smtp-Source: ABdhPJzdQdsAOHVLeNWM/Vp1yS4sRgT3xxrd2+IrFxsYUcMKcsL2YoQVIt2KlUvCS/9L2F4AxW13NQ==
+X-Received: by 2002:adf:e90d:: with SMTP id f13mr3565068wrm.146.1593176731129;
+        Fri, 26 Jun 2020 06:05:31 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id u20sm16746904wmc.44.2020.06.26.06.05.28
+        by smtp.gmail.com with ESMTPSA id u20sm16746904wmc.44.2020.06.26.06.05.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 06:05:29 -0700 (PDT)
+        Fri, 26 Jun 2020 06:05:30 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Rodolfo Giometti <giometti@linux.it>,
-        "Eurotech S.p.A" <info@eurotech.it>
-Subject: [PATCH 01/10] misc: c2port: core: Ensure source size does not equal destination size in strncpy()
-Date:   Fri, 26 Jun 2020 14:05:16 +0100
-Message-Id: <20200626130525.389469-2-lee.jones@linaro.org>
+        Pavan Savoy <pavan_savoy@ti.com>,
+        Naveen Jain <naveen_jain@ti.com>
+Subject: [PATCH 02/10] misc: ti-st: st_core: Tidy-up bespoke commentry
+Date:   Fri, 26 Jun 2020 14:05:17 +0100
+Message-Id: <20200626130525.389469-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200626130525.389469-1-lee.jones@linaro.org>
 References: <20200626130525.389469-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need to ensure there's a place for the NULL terminator.
+If it's still in use and worth the effort, it sure looks like
+this driver could do with a good scrub (clean).
 
-Fixes the following W=1 warning(s):
+This patch conserns itself with the non-standard comments located
+thoughout the file.
 
- In file included from include/linux/bitmap.h:9,
- from include/linux/nodemask.h:95,
- from include/linux/mmzone.h:17,
- from include/linux/gfp.h:6,
- from include/linux/umh.h:4,
- from include/linux/kmod.h:9,
- from include/linux/module.h:16,
- from drivers/misc/c2port/core.c:9:
- In function ‘strncpy’,
- inlined from ‘c2port_device_register’ at drivers/misc/c2port/core.c:926:2:
- include/linux/string.h:297:30: warning: ‘__builtin_strncpy’ specified bound 32 equals destination size [-Wstringop-truncation]
- 297 | #define __underlying_strncpy __builtin_strncpy
- | ^
- include/linux/string.h:307:9: note: in expansion of macro ‘__underlying_strncpy’
- 307 | return __underlying_strncpy(p, q, size);
- | ^~~~~~~~~~~~~~~~~~~~
+It also fixes the following W=1 warnings by demoting the kerneldoc
+function headers to standard comments, since there doesn't appear
+to be a requirement for the function args to be documented:
 
-Cc: Rodolfo Giometti <giometti@linux.it>
-Cc: "Eurotech S.p.A" <info@eurotech.it>
+ drivers/misc/ti-st/st_core.c:132: warning: Function parameter or member 'st_gdata' not described in 'st_reg_complete'
+ drivers/misc/ti-st/st_core.c:132: warning: Function parameter or member 'err' not described in 'st_reg_complete'
+ drivers/misc/ti-st/st_core.c:197: warning: Function parameter or member 'st_gdata' not described in 'st_wakeup_ack'
+ drivers/misc/ti-st/st_core.c:197: warning: Function parameter or member 'cmd' not described in 'st_wakeup_ack'
+ drivers/misc/ti-st/st_core.c:226: warning: Function parameter or member 'disc_data' not described in 'st_int_recv'
+ drivers/misc/ti-st/st_core.c:226: warning: Function parameter or member 'data' not described in 'st_int_recv'
+ drivers/misc/ti-st/st_core.c:226: warning: Function parameter or member 'count' not described in 'st_int_recv'
+ drivers/misc/ti-st/st_core.c:387: warning: Function parameter or member 'st_gdata' not described in 'st_int_dequeue'
+ drivers/misc/ti-st/st_core.c:409: warning: Function parameter or member 'st_gdata' not described in 'st_int_enqueue'
+ drivers/misc/ti-st/st_core.c:409: warning: Function parameter or member 'skb' not described in 'st_int_enqueue'
+
+Cc: Pavan Savoy <pavan_savoy@ti.com>
+Cc: Naveen Jain <naveen_jain@ti.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/c2port/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/misc/ti-st/st_core.c | 79 ++++++++++++++++++++++--------------
+ 1 file changed, 49 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
-index 33bba18022892..80d87e8a0bea9 100644
---- a/drivers/misc/c2port/core.c
-+++ b/drivers/misc/c2port/core.c
-@@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
+diff --git a/drivers/misc/ti-st/st_core.c b/drivers/misc/ti-st/st_core.c
+index 14136d2cc8f93..f4ddd1e670151 100644
+--- a/drivers/misc/ti-st/st_core.c
++++ b/drivers/misc/ti-st/st_core.c
+@@ -18,7 +18,8 @@
+ 
+ extern void st_kim_recv(void *, const unsigned char *, long);
+ void st_int_recv(void *, const unsigned char *, long);
+-/* function pointer pointing to either,
++/*
++ * function pointer pointing to either,
+  * st_kim_recv during registration to receive fw download responses
+  * st_int_recv after registration to receive proto stack responses
+  */
+@@ -60,7 +61,8 @@ int st_get_uart_wr_room(struct st_data_s *st_gdata)
+ 	return tty->ops->write_room(tty);
+ }
+ 
+-/* can be called in from
++/*
++ * can be called in from
+  * -- KIM (during fw download)
+  * -- ST Core (during st_write)
+  *
+@@ -100,7 +102,8 @@ static void st_send_frame(unsigned char chnl_id, struct st_data_s *st_gdata)
+ 		kfree_skb(st_gdata->rx_skb);
+ 		return;
  	}
- 	dev_set_drvdata(c2dev->dev, c2dev);
+-	/* this cannot fail
++	/*
++	 * this cannot fail
+ 	 * this shouldn't take long
+ 	 * - should be just skb_queue_tail for the
+ 	 *   protocol stack driver
+@@ -121,9 +124,8 @@ static void st_send_frame(unsigned char chnl_id, struct st_data_s *st_gdata)
+ 	return;
+ }
  
--	strncpy(c2dev->name, name, C2PORT_NAME_LEN);
-+	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
- 	c2dev->ops = ops;
- 	mutex_init(&c2dev->mutex);
+-/**
+- * st_reg_complete -
+- * to call registration complete callbacks
++/*
++ * st_reg_complete - to call registration complete callbacks
+  * of all protocol stack drivers
+  * This function is being called with spin lock held, protocol drivers are
+  * only expected to complete their waits and do nothing more than that.
+@@ -156,21 +158,24 @@ static inline int st_check_data_len(struct st_data_s *st_gdata,
+ 	pr_debug("len %d room %d", len, room);
  
+ 	if (!len) {
+-		/* Received packet has only packet header and
++		/*
++		 * Received packet has only packet header and
+ 		 * has zero length payload. So, ask ST CORE to
+ 		 * forward the packet to protocol driver (BT/FM/GPS)
+ 		 */
+ 		st_send_frame(chnl_id, st_gdata);
+ 
+ 	} else if (len > room) {
+-		/* Received packet's payload length is larger.
++		/*
++		 * Received packet's payload length is larger.
+ 		 * We can't accommodate it in created skb.
+ 		 */
+ 		pr_err("Data length is too large len %d room %d", len,
+ 			   room);
+ 		kfree_skb(st_gdata->rx_skb);
+ 	} else {
+-		/* Packet header has non-zero payload length and
++		/*
++		 * Packet header has non-zero payload length and
+ 		 * we have enough space in created skb. Lets read
+ 		 * payload data */
+ 		st_gdata->rx_state = ST_W4_DATA;
+@@ -178,8 +183,7 @@ static inline int st_check_data_len(struct st_data_s *st_gdata,
+ 		return len;
+ 	}
+ 
+-	/* Change ST state to continue to process next
+-	 * packet */
++	/* Change ST state to continue to process next packet */
+ 	st_gdata->rx_state = ST_W4_PACKET_TYPE;
+ 	st_gdata->rx_skb = NULL;
+ 	st_gdata->rx_count = 0;
+@@ -188,7 +192,7 @@ static inline int st_check_data_len(struct st_data_s *st_gdata,
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * st_wakeup_ack - internal function for action when wake-up ack
+  *	received
+  */
+@@ -199,7 +203,8 @@ static inline void st_wakeup_ack(struct st_data_s *st_gdata,
+ 	unsigned long flags = 0;
+ 
+ 	spin_lock_irqsave(&st_gdata->lock, flags);
+-	/* de-Q from waitQ and Q in txQ now that the
++	/*
++	 * de-Q from waitQ and Q in txQ now that the
+ 	 * chip is awake
+ 	 */
+ 	while ((waiting_skb = skb_dequeue(&st_gdata->tx_waitq)))
+@@ -213,7 +218,7 @@ static inline void st_wakeup_ack(struct st_data_s *st_gdata,
+ 	st_tx_wakeup(st_gdata);
+ }
+ 
+-/**
++/*
+  * st_int_recv - ST's internal receive function.
+  *	Decodes received RAW data and forwards to corresponding
+  *	client drivers (Bluetooth,FM,GPS..etc).
+@@ -262,8 +267,10 @@ void st_int_recv(void *disc_data,
+ 			/* Waiting for complete packet ? */
+ 			case ST_W4_DATA:
+ 				pr_debug("Complete pkt received");
+-				/* Ask ST CORE to forward
+-				 * the packet to protocol driver */
++				/*
++				 * Ask ST CORE to forward
++				 * the packet to protocol driver
++				 */
+ 				st_send_frame(st_gdata->rx_chnl, st_gdata);
+ 
+ 				st_gdata->rx_state = ST_W4_PACKET_TYPE;
+@@ -276,7 +283,7 @@ void st_int_recv(void *disc_data,
+ 				&st_gdata->rx_skb->data
+ 				[proto->offset_len_in_hdr];
+ 				pr_debug("plen pointing to %x\n", *plen);
+-				if (proto->len_size == 1)/* 1 byte len field */
++				if (proto->len_size == 1) /* 1 byte len field */
+ 					payload_len = *(unsigned char *)plen;
+ 				else if (proto->len_size == 2)
+ 					payload_len =
+@@ -294,18 +301,23 @@ void st_int_recv(void *disc_data,
+ 		}
+ 
+ 		/* end of if rx_count */
+-		/* Check first byte of packet and identify module
+-		 * owner (BT/FM/GPS) */
++
++		/*
++		 * Check first byte of packet and identify module
++		 * owner (BT/FM/GPS)
++		 */
+ 		switch (*ptr) {
+ 		case LL_SLEEP_IND:
+ 		case LL_SLEEP_ACK:
+ 		case LL_WAKE_UP_IND:
+ 			pr_debug("PM packet");
+-			/* this takes appropriate action based on
++			/*
++			 * this takes appropriate action based on
+ 			 * sleep state received --
+ 			 */
+ 			st_ll_sleep_state(st_gdata, *ptr);
+-			/* if WAKEUP_IND collides copy from waitq to txq
++			/*
++			 * if WAKEUP_IND collides copy from waitq to txq
+ 			 * and assume chip awake
+ 			 */
+ 			spin_unlock_irqrestore(&st_gdata->lock, flags);
+@@ -331,7 +343,8 @@ void st_int_recv(void *disc_data,
+ 		default:
+ 			type = *ptr;
+ 
+-			/* Default case means non-HCILL packets,
++			/*
++			 * Default case means non-HCILL packets,
+ 			 * possibilities are packets for:
+ 			 * (a) valid protocol -  Supported Protocols within
+ 			 *     the ST_MAX_CHANNELS.
+@@ -377,7 +390,7 @@ void st_int_recv(void *disc_data,
+ 	return;
+ }
+ 
+-/**
++/*
+  * st_int_dequeue - internal de-Q function.
+  *	If the previous data set was not written
+  *	completely, return that skb which has the pending data.
+@@ -396,7 +409,7 @@ static struct sk_buff *st_int_dequeue(struct st_data_s *st_gdata)
+ 	return skb_dequeue(&st_gdata->txq);
+ }
+ 
+-/**
++/*
+  * st_int_enqueue - internal Q-ing function.
+  *	Will either Q the skb to txq or the tx_waitq
+  *	depending on the ST LL state.
+@@ -561,7 +574,8 @@ long st_register(struct st_proto_s *new_proto)
+ 		/* release lock previously held - re-locked below */
+ 		spin_unlock_irqrestore(&st_gdata->lock, flags);
+ 
+-		/* this may take a while to complete
++		/*
++		 * this may take a while to complete
+ 		 * since it involves BT fw download
+ 		 */
+ 		err = st_kim_start(st_gdata->kim_data);
+@@ -583,7 +597,8 @@ long st_register(struct st_proto_s *new_proto)
+ 		clear_bit(ST_REG_IN_PROGRESS, &st_gdata->st_state);
+ 		st_recv = st_int_recv;
+ 
+-		/* this is where all pending registration
++		/*
++		 * this is where all pending registration
+ 		 * are signalled to be complete by calling callback functions
+ 		 */
+ 		if ((st_gdata->protos_registered != ST_EMPTY) &&
+@@ -593,7 +608,8 @@ long st_register(struct st_proto_s *new_proto)
+ 		}
+ 		clear_bit(ST_REG_PENDING, &st_gdata->st_state);
+ 
+-		/* check for already registered once more,
++		/*
++		 * check for already registered once more,
+ 		 * since the above check is old
+ 		 */
+ 		if (st_gdata->is_registered[new_proto->chnl_id] == true) {
+@@ -622,7 +638,8 @@ long st_register(struct st_proto_s *new_proto)
+ }
+ EXPORT_SYMBOL_GPL(st_register);
+ 
+-/* to unregister a protocol -
++/*
++ * to unregister a protocol -
+  * to be called from protocol stack driver
+  */
+ long st_unregister(struct st_proto_s *proto)
+@@ -742,7 +759,8 @@ static void st_tty_close(struct tty_struct *tty)
+ 
+ 	pr_info("%s ", __func__);
+ 
+-	/* TODO:
++	/*
++	 * TODO:
+ 	 * if a protocol has been registered & line discipline
+ 	 * un-installed for some reason - what should be done ?
+ 	 */
+@@ -795,7 +813,8 @@ static void st_tty_receive(struct tty_struct *tty, const unsigned char *data,
+ 	pr_debug("done %s", __func__);
+ }
+ 
+-/* wake-up function called in from the TTY layer
++/*
++ * wake-up function called in from the TTY layer
+  * inside the internal wakeup function will be called
+  */
+ static void st_tty_wakeup(struct tty_struct *tty)
 -- 
 2.25.1
 
