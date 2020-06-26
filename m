@@ -2,195 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA3920B716
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A620120B728
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726532AbgFZReN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 13:34:13 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:63350 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgFZReM (ORCPT
+        id S1726458AbgFZRgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 13:36:24 -0400
+Received: from outils.crapouillou.net ([89.234.176.41]:35518 "EHLO
+        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725806AbgFZRgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 13:34:12 -0400
-Received: from 89-64-83-223.dynamic.chello.pl (89.64.83.223) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id 69d62dc03bd9ee5c; Fri, 26 Jun 2020 19:34:10 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>
-Cc:     rafael.j.wysocki@intel.com, Len Brown <lenb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Ira Weiny <ira.weiny@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-nvdimm@lists.01.org, Bob Moore <robert.moore@intel.com>
-Subject: [RFT][PATCH v3 4/4] ACPI: OSL: Implement acpi_os_map_memory_fast_path()
-Date:   Fri, 26 Jun 2020 19:33:53 +0200
-Message-ID: <14649052.BMOpmyQVCI@kreacher>
-In-Reply-To: <2788992.3K7huLjdjL@kreacher>
-References: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com> <2713141.s8EVnczdoM@kreacher> <2788992.3K7huLjdjL@kreacher>
+        Fri, 26 Jun 2020 13:36:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1593192981; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q7Gk2/MvVNbeJ23s9omPDJ4FyKx8jvfy+MPVRv3ZRAU=;
+        b=dpNh35xh6edz0TF4NGaNqhL0AX6pDWk/dLxCI8uu3H344xi3wR0ABwOmo/WJ6tcLplTMmk
+        WZcpOv4RP1AFDBlRWOWBJYeOyegebjf6LDZ8V+ZmL5EQBeJDSt4GE7/+SXzR7Sae6cB9z+
+        Sn/ch/qdtFVPPDJkWQZuAlRhaTdyTSw=
+Date:   Fri, 26 Jun 2020 19:36:10 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 2/2] clk: X1000: Add support for calculat REFCLK of USB
+ PHY.
+To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sboyd@kernel.org, mturquette@baylibre.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
+Message-Id: <AKNJCQ.6UUHR0DBDE8E2@crapouillou.net>
+In-Reply-To: <20200626164844.25436-3-zhouyanjie@wanyeetech.com>
+References: <20200626164844.25436-1-zhouyanjie@wanyeetech.com>
+        <20200626164844.25436-3-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Hi Zhou,
 
-Add acpi_os_map_memory_fast_path() and set ACPI_USE_FAST_PATH_MAPPING
-to allow acpi_ex_system_memory_space_handler() to avoid unnecessary
-memory mapping and unmapping overhead by retaining all memory
-mappings created by it until the memory opregions associated with
-them go away.
+Le sam. 27 juin 2020 =C3=A0 0:48, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie)=
+=20
+<zhouyanjie@wanyeetech.com> a =C3=A9crit :
+> Add new functions to "x1000_otg_phy_ops" to calculat the rate of=20
+> REFCLK,
+> which is needed by USB PHY in the Ingenic X1000 SoC.
+>=20
+> Tested-by: =E5=91=A8=E6=AD=A3 (Zhou Zheng) <sernia.zhou@foxmail.com>
+> Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wany=
+eetech.com>
+> ---
+>  drivers/clk/ingenic/x1000-cgu.c | 113=20
+> ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 113 insertions(+)
+>=20
+> diff --git a/drivers/clk/ingenic/x1000-cgu.c=20
+> b/drivers/clk/ingenic/x1000-cgu.c
+> index 453f3323cb99..a61c16f98a11 100644
+> --- a/drivers/clk/ingenic/x1000-cgu.c
+> +++ b/drivers/clk/ingenic/x1000-cgu.c
+> @@ -48,8 +48,114 @@
+>  #define USBPCR_SIDDQ		BIT(21)
+>  #define USBPCR_OTG_DISABLE	BIT(20)
+>=20
+> +/* bits within the USBPCR1 register */
+> +#define USBPCR1_REFCLKSEL_SHIFT	26
+> +#define USBPCR1_REFCLKSEL_MASK	(0x3 << USBPCR1_REFCLKSEL_SHIFT)
+> +#define USBPCR1_REFCLKSEL_CORE	(0x2 << USBPCR1_REFCLKSEL_SHIFT)
+> +#define USBPCR1_REFCLKDIV_SHIFT	24
+> +#define USBPCR1_REFCLKDIV_MASK	(0x3 << USBPCR1_REFCLKDIV_SHIFT)
+> +#define USBPCR1_REFCLKDIV_48	(0x2 << USBPCR1_REFCLKDIV_SHIFT)
+> +#define USBPCR1_REFCLKDIV_24	(0x1 << USBPCR1_REFCLKDIV_SHIFT)
+> +#define USBPCR1_REFCLKDIV_12	(0x0 << USBPCR1_REFCLKDIV_SHIFT)
+> +
+>  static struct ingenic_cgu *cgu;
+>=20
+> +static u8 x1000_otg_phy_get_parent(struct clk_hw *hw)
+> +{
+> +	/* we only use CLKCORE, revisit if that ever changes */
+> +	return 0;
+> +}
+> +
+> +static int x1000_otg_phy_set_parent(struct clk_hw *hw, u8 idx)
+> +{
+> +	unsigned long flags;
+> +	u32 usbpcr1;
+> +
+> +	if (idx > 0)
+> +		return -EINVAL;
+> +
+> +	spin_lock_irqsave(&cgu->lock, flags);
+> +
+> +	usbpcr1 =3D readl(cgu->base + CGU_REG_USBPCR1);
+> +	usbpcr1 &=3D ~USBPCR1_REFCLKSEL_MASK;
+> +	/* we only use CLKCORE */
+> +	usbpcr1 |=3D USBPCR1_REFCLKSEL_CORE;
+> +	writel(usbpcr1, cgu->base + CGU_REG_USBPCR1);
+> +
+> +	spin_unlock_irqrestore(&cgu->lock, flags);
+> +	return 0;
+> +}
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/osl.c                | 65 +++++++++++++++++++++++--------
- include/acpi/platform/aclinux.h   |  4 ++
- include/acpi/platform/aclinuxex.h |  3 ++
- 3 files changed, 56 insertions(+), 16 deletions(-)
+If you only support one parent, maybe set that bit in the=20
+x1000_cgu_init(), then you can drop the get_parent/set_parent.
 
-diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index 749ae3e32193..b8537ce89ea2 100644
---- a/drivers/acpi/osl.c
-+++ b/drivers/acpi/osl.c
-@@ -306,21 +306,8 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
- 		iounmap(vaddr);
- }
- 
--/**
-- * acpi_os_map_iomem - Get a virtual address for a given physical address range.
-- * @phys: Start of the physical address range to map.
-- * @size: Size of the physical address range to map.
-- *
-- * Look up the given physical address range in the list of existing ACPI memory
-- * mappings.  If found, get a reference to it and return a pointer to it (its
-- * virtual address).  If not found, map it, add it to that list and return a
-- * pointer to it.
-- *
-- * During early init (when acpi_permanent_mmap has not been set yet) this
-- * routine simply calls __acpi_map_table() to get the job done.
-- */
--void __iomem __ref
--*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
-+static void __iomem __ref *__acpi_os_map_iomem(acpi_physical_address phys,
-+					       acpi_size size, bool fast_path)
- {
- 	struct acpi_ioremap *map;
- 	void __iomem *virt;
-@@ -332,8 +319,12 @@ void __iomem __ref
- 		return NULL;
- 	}
- 
--	if (!acpi_permanent_mmap)
-+	if (!acpi_permanent_mmap) {
-+		if (WARN_ON(fast_path))
-+			return NULL;
-+
- 		return __acpi_map_table((unsigned long)phys, size);
-+	}
- 
- 	mutex_lock(&acpi_ioremap_lock);
- 	/* Check if there's a suitable mapping already. */
-@@ -343,6 +334,11 @@ void __iomem __ref
- 		goto out;
- 	}
- 
-+	if (fast_path) {
-+		mutex_unlock(&acpi_ioremap_lock);
-+		return NULL;
-+	}
-+
- 	map = kzalloc(sizeof(*map), GFP_KERNEL);
- 	if (!map) {
- 		mutex_unlock(&acpi_ioremap_lock);
-@@ -370,6 +366,25 @@ void __iomem __ref
- 	mutex_unlock(&acpi_ioremap_lock);
- 	return map->virt + (phys - map->phys);
- }
-+
-+/**
-+ * acpi_os_map_iomem - Get a virtual address for a given physical address range.
-+ * @phys: Start of the physical address range to map.
-+ * @size: Size of the physical address range to map.
-+ *
-+ * Look up the given physical address range in the list of existing ACPI memory
-+ * mappings.  If found, get a reference to it and return a pointer representing
-+ * its virtual address.  If not found, map it, add it to that list and return a
-+ * pointer representing its virtual address.
-+ *
-+ * During early init (when acpi_permanent_mmap has not been set yet) call
-+ * __acpi_map_table() to obtain the mapping.
-+ */
-+void __iomem __ref *acpi_os_map_iomem(acpi_physical_address phys,
-+				      acpi_size size)
-+{
-+	return __acpi_os_map_iomem(phys, size, false);
-+}
- EXPORT_SYMBOL_GPL(acpi_os_map_iomem);
- 
- void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
-@@ -378,6 +393,24 @@ void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
- }
- EXPORT_SYMBOL_GPL(acpi_os_map_memory);
- 
-+/**
-+ * acpi_os_map_memory_fast_path - Fast-path physical-to-virtual address mapping.
-+ * @phys: Start of the physical address range to map.
-+ * @size: Size of the physical address range to map.
-+ *
-+ * Look up the given physical address range in the list of existing ACPI memory
-+ * mappings.  If found, get a reference to it and return a pointer representing
-+ * its virtual address.  If not found, return NULL.
-+ *
-+ * During early init (when acpi_permanent_mmap has not been set yet) log a
-+ * warning and return NULL.
-+ */
-+void __ref *acpi_os_map_memory_fast_path(acpi_physical_address phys,
-+					acpi_size size)
-+{
-+	return __acpi_os_map_iomem(phys, size, true);
-+}
-+
- /* Must be called with mutex_lock(&acpi_ioremap_lock) */
- static bool acpi_os_drop_map_ref(struct acpi_ioremap *map, bool defer)
- {
-diff --git a/include/acpi/platform/aclinux.h b/include/acpi/platform/aclinux.h
-index 784e294dc74c..1a5f8037e3d5 100644
---- a/include/acpi/platform/aclinux.h
-+++ b/include/acpi/platform/aclinux.h
-@@ -118,6 +118,10 @@
- 
- #define USE_NATIVE_ALLOCATE_ZEROED
- 
-+/* Use fast-path memory mapping to optimize memory opregions handling */
-+
-+#define ACPI_USE_FAST_PATH_MAPPING
-+
- /*
-  * Overrides for in-kernel ACPICA
-  */
-diff --git a/include/acpi/platform/aclinuxex.h b/include/acpi/platform/aclinuxex.h
-index ad6b905358c5..c64b836ba455 100644
---- a/include/acpi/platform/aclinuxex.h
-+++ b/include/acpi/platform/aclinuxex.h
-@@ -141,6 +141,9 @@ static inline void acpi_os_terminate_debugger(void)
-  * OSL interfaces added by Linux
-  */
- 
-+void *acpi_os_map_memory_fast_path(acpi_physical_address where,
-+				   acpi_size length);
-+
- #endif				/* __KERNEL__ */
- 
- #endif				/* __ACLINUXEX_H__ */
--- 
-2.26.2
+> +
+> +static unsigned long x1000_otg_phy_recalc_rate(struct clk_hw *hw,
+> +						unsigned long parent_rate)
+> +{
+> +	u32 usbpcr1;
+> +	unsigned refclk_div;
+> +
+> +	usbpcr1 =3D readl(cgu->base + CGU_REG_USBPCR1);
+> +	refclk_div =3D usbpcr1 & USBPCR1_REFCLKDIV_MASK;
+> +
+> +	switch (refclk_div) {
+> +	case USBPCR1_REFCLKDIV_12:
+> +		return 12000000;
+> +
+> +	case USBPCR1_REFCLKDIV_24:
+> +		return 24000000;
+> +
+> +	case USBPCR1_REFCLKDIV_48:
+> +		return 48000000;
+> +	}
 
+On your setup, what frequency is configured for the "otg" clock? Is it=20
+48 MHz?
 
+I believe CLKCORE is the OTG core's clock (aka "otg"), and I'm pretty=20
+sure that these fields only represent CLKCORE/4, CLKCORE/2, CLKCORE/1,=20
+but the doc expects CLKCORE=3D=3D48MHz.
+
+In that case the "otg_phy" should be parented to "otg", and the rate=20
+should be computed according to the parent rate and the divider=20
+configured.
+
+> +
+> +	BUG();
+
+Don't use BUG() - it pisses off Linus :)
+And it's reserved for bugs that will take the whole system down, I=20
+think. Better use WARN().
+
+Cheers,
+-Paul
+
+> +	return parent_rate;
+> +}
+> +
+> +static long x1000_otg_phy_round_rate(struct clk_hw *hw, unsigned=20
+> long req_rate,
+> +				      unsigned long *parent_rate)
+> +{
+> +	if (req_rate < 18000000)
+> +		return 12000000;
+> +
+> +	if (req_rate < 36000000)
+> +		return 24000000;
+> +
+> +	return 48000000;
+> +}
+> +
+> +static int x1000_otg_phy_set_rate(struct clk_hw *hw, unsigned long=20
+> req_rate,
+> +				   unsigned long parent_rate)
+> +{
+> +	unsigned long flags;
+> +	u32 usbpcr1, div_bits;
+> +
+> +	switch (req_rate) {
+> +	case 12000000:
+> +		div_bits =3D USBPCR1_REFCLKDIV_12;
+> +		break;
+> +
+> +	case 24000000:
+> +		div_bits =3D USBPCR1_REFCLKDIV_24;
+> +		break;
+> +
+> +	case 48000000:
+> +		div_bits =3D USBPCR1_REFCLKDIV_48;
+> +		break;
+> +
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	spin_lock_irqsave(&cgu->lock, flags);
+> +
+> +	usbpcr1 =3D readl(cgu->base + CGU_REG_USBPCR1);
+> +	usbpcr1 &=3D ~USBPCR1_REFCLKDIV_MASK;
+> +	usbpcr1 |=3D div_bits;
+> +	writel(usbpcr1, cgu->base + CGU_REG_USBPCR1);
+> +
+> +	spin_unlock_irqrestore(&cgu->lock, flags);
+> +	return 0;
+> +}
+> +
+>  static int x1000_usb_phy_enable(struct clk_hw *hw)
+>  {
+>  	void __iomem *reg_opcr		=3D cgu->base + CGU_REG_OPCR;
+> @@ -80,6 +186,13 @@ static int x1000_usb_phy_is_enabled(struct clk_hw=20
+> *hw)
+>  }
+>=20
+>  static const struct clk_ops x1000_otg_phy_ops =3D {
+> +	.get_parent =3D x1000_otg_phy_get_parent,
+> +	.set_parent =3D x1000_otg_phy_set_parent,
+> +
+> +	.recalc_rate =3D x1000_otg_phy_recalc_rate,
+> +	.round_rate =3D x1000_otg_phy_round_rate,
+> +	.set_rate =3D x1000_otg_phy_set_rate,
+> +
+>  	.enable		=3D x1000_usb_phy_enable,
+>  	.disable	=3D x1000_usb_phy_disable,
+>  	.is_enabled	=3D x1000_usb_phy_is_enabled,
+> --
+> 2.11.0
+>=20
 
 
