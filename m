@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C4820B229
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 15:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E3720B231
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 15:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728545AbgFZNHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 09:07:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58760 "EHLO mail.kernel.org"
+        id S1727845AbgFZNI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 09:08:58 -0400
+Received: from mga09.intel.com ([134.134.136.24]:59339 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728493AbgFZNHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 09:07:23 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 105DF2080C;
-        Fri, 26 Jun 2020 13:07:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593176842;
-        bh=16hSAoBgkzFDqdIECQ7sxZWZ9kzrW7zU6H3vwJLq6tc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=m1uqulmq0ck9PhOoNMR80zbtNsBuc3vZMydFHgVM30eTcDTQO3CKLyb/jUwyfJJZM
-         2exOrslcDYFlIGzMLEfeX9UpbMqiw1CrmHw13q9X7FXlbUqbuKyPcf1jM0VAYrDny4
-         oKfGjmf2Vzxb2fapvoQGZTBOm0R0qqWcjevv7yOY=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1joo4e-006dkn-Jt; Fri, 26 Jun 2020 14:07:20 +0100
+        id S1726653AbgFZNI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 09:08:58 -0400
+IronPort-SDR: Y4L9UHncDkR5Bm2HFvFOFofLcl7a8rz9rGFdGzAIVM/0gKQyZMKXULTSRIP0oTfW3Smpcjhaua
+ ZKAZN/WhvsJA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="146805450"
+X-IronPort-AV: E=Sophos;i="5.75,283,1589266800"; 
+   d="scan'208";a="146805450"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2020 06:08:57 -0700
+IronPort-SDR: BtcyJEMqxwQVNcf08kNSPR7KJbIxunml+DmDVbRr8F6d37dutN5JWYYJl/V3yC3qcMNRzs50SV
+ Pgf5xanQQICA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,283,1589266800"; 
+   d="scan'208";a="385763113"
+Received: from cgheban-mobl.ger.corp.intel.com (HELO localhost) ([10.249.40.199])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Jun 2020 06:08:52 -0700
+Date:   Fri, 26 Jun 2020 16:08:51 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     linux-integrity@vger.kernel.org,
+        Kylene Jo Hall <kjhall@us.ibm.com>,
+        "Ferry Toth :" <ferry.toth@elsinga.info>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@osdl.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] tpm_tis: Remove the HID IFX0102
+Message-ID: <20200626130851.GA7853@linux.intel.com>
+References: <20200625023111.270458-1-jarkko.sakkinen@linux.intel.com>
+ <20200625062150.idm6j3vm2neyt4sh@cantor>
+ <20200625210202.GA20341@linux.intel.com>
+ <20200625211923.2jirvix6zbrbgj6e@cantor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 26 Jun 2020 14:07:20 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Oscar Carter <oscar.carter@gmx.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Len Brown <lenb@kernel.org>,
-        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v5 0/3] drivers/acpi: Remove function callback casts
-In-Reply-To: <20200530143430.5203-1-oscar.carter@gmx.com>
-References: <20200530143430.5203-1-oscar.carter@gmx.com>
-User-Agent: Roundcube Webmail/1.4.5
-Message-ID: <07911cc62ef21900c43aeefbcbfc8d9f@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: oscar.carter@gmx.com, rjw@rjwysocki.net, keescook@chromium.org, tglx@linutronix.de, jason@lakedaemon.net, lenb@kernel.org, kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200625211923.2jirvix6zbrbgj6e@cantor>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+On Thu, Jun 25, 2020 at 02:19:23PM -0700, Jerry Snitselaar wrote:
+> On Fri Jun 26 20, Jarkko Sakkinen wrote:
+> > On Wed, Jun 24, 2020 at 11:21:50PM -0700, Jerry Snitselaar wrote:
+> > > On Thu Jun 25 20, Jarkko Sakkinen wrote:
+> > > > Acer C720 running Linux v5.3 reports this in klog:
+> > > >
+> > > > tpm_tis: 1.2 TPM (device-id 0xB, rev-id 16)
+> > > > tpm tpm0: tpm_try_transmit: send(): error -5
+> > > > tpm tpm0: A TPM error (-5) occurred attempting to determine the timeouts
+> > > > tpm_tis tpm_tis: Could not get TPM timeouts and durations
+> > > > tpm_tis 00:08: 1.2 TPM (device-id 0xB, rev-id 16)
+> > > > tpm tpm0: tpm_try_transmit: send(): error -5
+> > > > tpm tpm0: A TPM error (-5) occurred attempting to determine the timeouts
+> > > > tpm_tis 00:08: Could not get TPM timeouts and durations
+> > > > ima: No TPM chip found, activating TPM-bypass!
+> > > > tpm_inf_pnp 00:08: Found TPM with ID IFX0102
+> > > >
+> > > > % git --no-pager grep IFX0102 drivers/char/tpm
+> > > > drivers/char/tpm/tpm_infineon.c:	{"IFX0102", 0},
+> > > > drivers/char/tpm/tpm_tis.c:	{"IFX0102", 0},		/* Infineon */
+> > > >
+> > > > Obviously IFX0102 was added to the HID table for the TCG TIS driver by
+> > > > mistake.
+> > > >
+> > > > Fixes: 93e1b7d42e1e ("[PATCH] tpm: add HID module parameter")
+> > > > Link: https://bugzilla.kernel.org/show_bug.cgi?id=203877
+> > > > Cc: Kylene Jo Hall <kjhall@us.ibm.com>
+> > > > Reported-by: Ferry Toth: <ferry.toth@elsinga.info>
+> > > > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > > 
+> > > Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+> > 
+> > Bugzilla has an example of similar behavior with v4.15. I'll apply this
+> > asap.
+> > 
+> > /Jarkko
+> > 
+> 
+> Any idea what happened to git.infradead.org? It was offline the other day,
+> and at the moment not all repos from before seem to be there.
 
-On 2020-05-30 15:34, Oscar Carter wrote:
-> In an effort to enable -Wcast-function-type in the top-level Makefile 
-> to
-> support Control Flow Integrity builds, there are the need to remove all
-> the function callback casts in the acpi driver.
-> 
-> The first patch creates a macro called 
-> ACPI_DECLARE_SUBTABLE_PROBE_ENTRY
-> to initialize the acpi_probe_entry struct using the probe_subtbl field
-> instead of the probe_table field to avoid function cast mismatches.
-> 
-> The second patch modifies the IRQCHIP_ACPI_DECLARE macro to use the new
-> defined macro ACPI_DECLARE_SUBTABLE_PROBE_ENTRY instead of the macro
-> ACPI_DECLARE_PROBE_ENTRY. Also, modifies the prototype of the functions
-> used by the invocation of the IRQCHIP_ACPI_DECLARE macro to match all 
-> the
-> parameters.
-> 
-> The third patch removes the function cast in the 
-> ACPI_DECLARE_PROBE_ENTRY
-> macro to ensure that the functions passed as a last parameter to this 
-> macro
-> have the right prototype. This macro is used only in another macro
-> called "TIMER_ACPI_DECLARE". An this is used only in the file:
-> 
-> drivers/clocksource/arm_arch_timer.c
-> 
-> In this file, the function used in the last parameter of the
-> TIMER_ACPI_DECLARE macro already has the right prototype. So there is 
-> no
-> need to modify its prototype.
+Now the kernel tree is back online.
 
-I'd like to see this into 5.9. Can you please let me know if
-you are OK with the acpi.h changes? I can queue it via the irqchip
-tree.
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+/Jarkko
