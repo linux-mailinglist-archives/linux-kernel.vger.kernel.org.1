@@ -2,134 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A14720B7E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 20:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7424120B7FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 20:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgFZSQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 14:16:46 -0400
-Received: from mga11.intel.com ([192.55.52.93]:64784 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725780AbgFZSQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 14:16:45 -0400
-IronPort-SDR: l2oiloYgDf5NF7a/IY7RALemqzIFlH2c0CaSQ9XbLwxqqbgoghC6m8FTpoRzzQ23H7grnD80FX
- w5lApmuIqT+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9664"; a="143661750"
-X-IronPort-AV: E=Sophos;i="5.75,284,1589266800"; 
-   d="scan'208";a="143661750"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2020 11:16:44 -0700
-IronPort-SDR: LrvGyNnpWX6ik5OFFqZoBMW0OQOmmNpAFfodvXeT2j9bQlZKueLItipolrt/V64t2tcadV1dna
- D9NzoyBXgSJg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,284,1589266800"; 
-   d="scan'208";a="385835873"
-Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
-  by fmsmga001.fm.intel.com with ESMTP; 26 Jun 2020 11:16:44 -0700
-Date:   Fri, 26 Jun 2020 11:16:24 -0700
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradeed.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org
-Subject: Re: [PATCH v4 12/12] x86/traps: Fix up invalid PASID
-Message-ID: <20200626181624.GA32961@romley-ivt3.sc.intel.com>
-References: <1593116242-31507-1-git-send-email-fenghua.yu@intel.com>
- <1593116242-31507-13-git-send-email-fenghua.yu@intel.com>
- <20200626094450.GJ4800@hirez.programming.kicks-ass.net>
+        id S1726330AbgFZSR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 14:17:26 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:53208 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgFZSRW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 14:17:22 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05QIHBPD006447;
+        Fri, 26 Jun 2020 13:17:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1593195431;
+        bh=lT8XdTWCW5WowpSaiKVh9sxbAgiTlm+/tGMLH5F0svM=;
+        h=From:To:CC:Subject:Date;
+        b=SsA05MuHZ3KKsgm4/W0yYPEIfODLtCv303VbLm/usb6/29hwW15xJ40/RpBkRHVsK
+         8x/9R8l6+Agbc6+KNZDCodnUlsfH2UFCkMeL4F33woz1zAtWKjtIG/lsUY41iytG+3
+         vp0B2gr6/qeh+C1lQgebvcPD9zyLr+7Eu3q7APP8=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05QIHBXN004067;
+        Fri, 26 Jun 2020 13:17:11 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 26
+ Jun 2020 13:17:10 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 26 Jun 2020 13:17:10 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05QIH9xa111521;
+        Fri, 26 Jun 2020 13:17:10 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH net-next 0/6] net: ethernet: ti: am65-cpsw: update and enable sr2.0 soc
+Date:   Fri, 26 Jun 2020 21:17:03 +0300
+Message-ID: <20200626181709.22635-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200626094450.GJ4800@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Peter,
+Hi
 
-On Fri, Jun 26, 2020 at 11:44:50AM +0200, Peter Zijlstra wrote:
-> On Thu, Jun 25, 2020 at 01:17:22PM -0700, Fenghua Yu wrote:
-> 
-> > +static bool fixup_pasid_exception(void)
-> > +{
-> > +	if (!IS_ENABLED(CONFIG_INTEL_IOMMU_SVM))
-> > +		return false;
-> > +	if (!static_cpu_has(X86_FEATURE_ENQCMD))
-> > +		return false;
-> 
-> elsewhere you had another variation:
-> 
-> +       if (!IS_ENABLED(CONFIG_INTEL_IOMMU_SVM))
-> +               return;
-> +
-> +       if (!cpu_feature_enabled(X86_FEATURE_ENQCMD))
-> +               return;
-> 
-> Which is it, and why do we need the CONFIG thing when combined with the
-> enabled thing?
-> 
+This series contains set of improvements for TI AM654x/J721E CPSW2G driver and
+adds support for TI AM654x SR2.0 SoC.
 
-I will use the second one with cpu_feature_enabled() for both cases.
+Patch 1: adds vlans restoration after "if down/up"
+Patches 2-5: improvments
+Patch 6: adds support for TI AM654x SR2.0 SoC which allows to disable errata i2027 W/A.
+By default, errata i2027 W/A (TX csum offload disabled) is enabled on AM654x SoC
+for backward compatibility, unless SR2.0 SoC is identified using SOC BUS framework.
 
-The CONFIG thing is for compilation time optimization when
-CONFIG_INTEL_IOMMU_SVM is not set.
+Grygorii Strashko (6):
+  net: ethernet: ti: am65-cpsw-nuss: restore vlan configuration while
+    down/up
+  net: ethernet: ti: am65-cpsw: move to pf_p0_rx_ptype_rrobin init in
+    probe
+  net: ethernet: ti: am65-cpsw-nuss: fix ports mac sl initialization
+  net: ethernet: ti: am65-cpsw-ethtool: skip hw cfg when change
+    p0-rx-ptype-rrobin
+  net: ethernet: ti: am65-cpsw-ethtool: configured critical setting only
+    when no running netdevs
+  net: ethernet: ti: am65-cpsw-nuss: enable am65x sr2.0 support
 
-If CONFIG_INTEL_IOMMU_SVM is not set, IS_ENABLED(CONFIG_INTEL_IOMMU_SVM) 
-is "false" during compilation time. Then GCC will optimize 
-fixup_pasid_execption() to empty and will not define
-__fixup_pasid_exception() at all because no one calls it.
+ drivers/net/ethernet/ti/am65-cpsw-ethtool.c |  6 +-
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c    | 77 +++++++++++++++++----
+ drivers/net/ethernet/ti/am65-cpsw-nuss.h    |  2 +-
+ 3 files changed, 69 insertions(+), 16 deletions(-)
 
-If CONFIG_INTEL_IOMMU_SVM is set, IS_ENABLED(...) is always true.
-Depending on cpu_feature_enabled(X86_FEATURE_ENQCMD), __fixup_pasid_execption()
-will be called or not during run time.
+-- 
+2.17.1
 
-Does it make sense?
-
-Do you want me to define a helper enqcmd_enabled()?
-
-static inline bool enqcmd_enabled(void)
-{
-   if (!IS_ENABLED(CONFIG_INTEL_IOMMU_SVM))
-           return false;
-   if (!static_cpu_has(X86_FEATURE_ENQCMD))
-           return false;
-   return true;
-}
-
-Then both fixup_pasid_execption() and free_pasid() can call it.
-
-static bool fixup_pasid_exception(void)
-{
-	if (!enqcmd_enabled())
-		return false;
-	
-	return __fixup_pasid_exception();
-}
-
-statis inline void free_pasid(struct m_struct *mm)
-{
-	if (!enqcmd_enabled())
-		return;
-
-	__free_pasid(mm);
-}
-
-Please advice.
-
--Fenghua
