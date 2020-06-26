@@ -2,207 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0CC20B27B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 15:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04CB220B273
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 15:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728483AbgFZN2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 09:28:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726770AbgFZN2M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 09:28:12 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20008C03E97A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 06:28:12 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id dm12so4452070qvb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 06:28:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0EXd1vhnNtrSwXMMNlWHuNp7c+1ntiJGP1iRQU299gU=;
-        b=Mvvrj24jfH5QmISu+fVAnHEZ4UZfa5swKApGEbK0SvSLKciMZg8UOQIPPF5lg9BXB+
-         UNg37aMUhRFv/V+RNUYfpGodsz/5CCRzlIddf5u88FlP/OhxPyuQHjfaxhXXrpkAYqZR
-         RPvfxFgOj6PO/MmHalHuO+iF9GbWGT7JTaSZZRRiJAy5xpcC6tN3qj8XhCRSF9YqLPWc
-         P8FBEE5kfbOmLSGPRDNlNC/mEp4qZYcKx/Mv0jCziLbhPQoZgzba6zmt26TTY7OIGzef
-         w9rfIdPwEyk7fseZrlgSeMsahvsn8NaaRjK2antdsxLY01ZS+nS3xH4oSMnO8tV18ILE
-         XGyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0EXd1vhnNtrSwXMMNlWHuNp7c+1ntiJGP1iRQU299gU=;
-        b=I8MKfYU4UYV6hZ351+dfSPWXjs9EADOZyFSnGmix1dlFkSmPxumTKk5UX3jm3Log7E
-         jfkoqXppm4FDbV25R9UIEOWIJOekSt/0z5wk6QcrBxrK8PM8pxpkrjk0zTK2MdWpuw1S
-         Q94+8VrvEBwz8hRi2xts5dgwSd6a3GzYgudJiHt3jlhZ7irOxIWORFP25PM1kQQ37D5Y
-         JSYK1ounV/o+uIjRcb9GSFHkBujFQL37/V2AxjLIaX2NrqaDbHgcns7EqtrTawyLVOq+
-         tCrJAr0+cSAAviGPMxIO6IF5baiIFUqaEOxtnbkZ1/9soMyqg402urwAyG0+GH0OSS0k
-         LmvA==
-X-Gm-Message-State: AOAM531gyLwERJAp91Pexfu5aiCz6ZVq71o6P3ii5HnjYxAqU339mIhg
-        m7BMIfMEIVd8AQcL3JtomrRt7A==
-X-Google-Smtp-Source: ABdhPJwwOoQhWPWx/VE3yv1GabHdfJhr3DZnb0oYKrL1gpTpCsPwqMSuLOa3IL7sbsM4AbM53+K/LQ==
-X-Received: by 2002:a0c:8583:: with SMTP id o3mr446203qva.108.1593178091324;
-        Fri, 26 Jun 2020 06:28:11 -0700 (PDT)
-Received: from [192.168.1.117] (23-233-27-60.cpe.pppoe.ca. [23.233.27.60])
-        by smtp.googlemail.com with ESMTPSA id r76sm7850870qka.30.2020.06.26.06.28.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jun 2020 06:28:10 -0700 (PDT)
-Subject: Re: [v1,net-next 3/4] net: qos: police action add index for tc flower
- offloading
-To:     Po Liu <po.liu@nxp.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "idosch@idosch.org" <idosch@idosch.org>
-Cc:     "jiri@resnulli.us" <jiri@resnulli.us>,
-        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
-        "vlad@buslov.dev" <vlad@buslov.dev>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Alexandru Marginean <alexandru.marginean@nxp.com>,
-        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
-        "vishal@chelsio.com" <vishal@chelsio.com>,
-        "saeedm@mellanox.com" <saeedm@mellanox.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
-        "simon.horman@netronome.com" <simon.horman@netronome.com>,
-        "pablo@netfilter.org" <pablo@netfilter.org>,
-        "moshe@mellanox.com" <moshe@mellanox.com>,
-        "m-karicheri2@ti.com" <m-karicheri2@ti.com>,
-        "andre.guedes@linux.intel.com" <andre.guedes@linux.intel.com>,
-        "stephen@networkplumber.org" <stephen@networkplumber.org>,
-        Edward Cree <ecree@solarflare.com>
-References: <VE1PR04MB6496E5275AD00A8A65095DD192920@VE1PR04MB6496.eurprd04.prod.outlook.com>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Message-ID: <05d6df9a-4e84-0e8d-0c4c-7f04cb18bb6a@mojatatu.com>
-Date:   Fri, 26 Jun 2020 09:28:08 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728416AbgFZNYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 09:24:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728012AbgFZNYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 09:24:31 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DAD62075D;
+        Fri, 26 Jun 2020 13:24:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593177871;
+        bh=/EUxyCyPVfvVOBq8FVj7Lzb1Feg675LVd6REFNzxA2Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lUQdPr/BUuMqYXe8r9nhip2IX12AYbzTXzkUAxwJL5FE60nIhfMu2DKFa+LbyIYP7
+         ZdsFqpQ8cHDvUJMUuhBPcG5PUTvVN99Zef36yIJqeMWGkiW5D6DCNvVlxhINT+3nsg
+         HyJ3UXX2scv/Q608VIWJuTgZyM466GVNGOJXy6UE=
+Date:   Fri, 26 Jun 2020 08:29:44 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] dmaengine: ti: k3-udma: Use struct_size() in
+ kzalloc()
+Message-ID: <20200626132944.GA26003@embeddedor>
+References: <20200619224334.GA7857@embeddedor>
+ <20200624055535.GX2324254@vkoul-mobl>
+ <3a5514c9-d966-c332-84ba-f418c26fa74c@embeddedor.com>
+ <98426221-8bff-25df-a062-9ec1ca4e8f26@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <VE1PR04MB6496E5275AD00A8A65095DD192920@VE1PR04MB6496.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <98426221-8bff-25df-a062-9ec1ca4e8f26@ti.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-24 8:34 p.m., Po Liu wrote:
+Hi Peter,
+
+Please, see my comments below...
+
+On Fri, Jun 26, 2020 at 10:30:37AM +0300, Peter Ujfalusi wrote:
 > 
 > 
->> -----Original Message-----
-
->> That is the point i was trying to get to. Basically:
->> You have a counter table which is referenced by "index"
->> You also have a meter/policer table which is referenced by "index".
+> On 24/06/2020 20.12, Gustavo A. R. Silva wrote:
+> > Hi Vinod,
+> > 
+> > On 6/24/20 00:55, Vinod Koul wrote:
+> >> On 19-06-20, 17:43, Gustavo A. R. Silva wrote:
+> >>> Make use of the struct_size() helper instead of an open-coded version
+> >>> in order to avoid any potential type mistakes.
+> >>>
+> >>> This code was detected with the help of Coccinelle and, audited and
+> >>> fixed manually.
+> >>>
+> >>> Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
+> >>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> >>> ---
+> >>>  drivers/dma/ti/k3-udma.c | 4 ++--
+> >>>  1 file changed, 2 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+> >>> index 0d5fb154b8e2..411c54b86ba8 100644
+> >>> --- a/drivers/dma/ti/k3-udma.c
+> >>> +++ b/drivers/dma/ti/k3-udma.c
+> >>> @@ -2209,7 +2209,7 @@ udma_prep_slave_sg_pkt(struct udma_chan *uc, struct scatterlist *sgl,
+> >>>  	u32 ring_id;
+> >>>  	unsigned int i;
+> >>>  
+> >>> -	d = kzalloc(sizeof(*d) + sglen * sizeof(d->hwdesc[0]), GFP_NOWAIT);
+> >>> +	d = kzalloc(struct_size(d, hwdesc, sglen), GFP_NOWAIT);
+> >>
+> >> struct_size() is a * b + c but here we need, a + b * c.. the trailing
+> >> struct is N times here..
+> >>
+> > 
+> > struct_size() works exactly as expected in this case. :)
+> > Please, see:
+> > 
+> > include/linux/overflow.h:314:
+> > 314 #define struct_size(p, member, count)                                   \
+> > 315         __ab_c_size(count,                                              \
+> > 316                     sizeof(*(p)->member) + __must_be_array((p)->member),\
+> > 317                     sizeof(*(p)))
 > 
-> They should be one same group and same meaning.
+> True, struct_size is for this sort of things.
 > 
-
-Didnt follow. You mean the index is the same for both the
-stat and policer?
-
->>
->> For policers, they maintain their own stats. So when i say:
->> tc ... flower ... action police ... index 5 The index referred to is in the
->> policer table
->>
+> Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 > 
-> Sure. Means police with No. 5 entry.
+> While looking it up in include/linux/overflow.h I have noticed your
+> commit in linux-next, which adds flex_array_size()
 > 
->> But for other actions, example when i say:
->> tc ... flower ... action drop index 10
+> The example in the commit message contradicts with what the helper
+
+There is no contradiction here.
+
+> does imho. To be correct it should have been:
 > 
-> Still the question, does gact action drop could bind with index? It doesn't meanful.
-> 
-
-Depends on your hardware. From this discussion i am
-trying to understand where the constraint is for your case.
-Whether it is your h/w or the TSN spec.
-For a sample counting which is flexible see here:
-https://p4.org/p4-spec/docs/PSA.html#sec-counters
-
-That concept is not specific to P4 but rather to
-newer flow-based hardware.
-
-More context:
-The assumption these days is we can have a _lot_ of flows with a lot
-of actions.
-Then you want to be able to collect the stats separately, possibly one
-counter entry for each action of interest.
-Why is this important?f For analytics uses cases,
-when you are retrieving the stats you want to reduce the amount of
-data being retrieved. Typically these stats are polled every X seconds.
-For starters, you dont dump filters (which in your case seems to be
-the only way to get the stats).
-In current tc, you dump the actions. But that could be improved so
-you can just dump the stats. The mapping of stats index to actions
-is known to the entity doing the dump.
-
-Does that make sense?
-
->> The index is in the counter/stats table.
->> It is not exactly "10" in hardware, the driver magically hides it from the
->> user - so it could be hw counter index 1234
-> 
-> Not exactly. Current flower offloading stats means get the chain index for that flow filter. The other actions should bind to that chain index.
- >
-
-So if i read correctly: You have an index per filter pointing to the
-counter table.
-Is this something _you_ decided to do in software or is it how the
-hardware works? (note i referred to this as "legacy ACL" approach
-earlier. It worked like that in old hardware because the main use
-case was to have one action on a match (drop/accept kind).
-
->Like IEEE802.1Qci, what I am doing is bind gate action to filter chain(mandatory). And also police action as optional.
-
-I cant seem to find this spec online. Is it freely available?
-Also, if i understand you correctly you are saying according to this
-spec you can only have the following type of policy:
-tc .. filter match-spec-here .. \
-action gate gate-action-attributes \
-action police ...
-
-That "action gate" MUST always be present
-but "action police" is optional?
-
-> There is stream counter table which summary the counters pass gate action entry and police action entry for that chain index(there is a bit different if two chain sharing same action list).
-> One chain counter which tc show stats get counter source:
-> struct psfp_streamfilter_counters {
->          u64 matching_frames_count;
->          u64 passing_frames_count;
->          u64 not_passing_frames_count;
->          u64 passing_sdu_count;
->          u64 not_passing_sdu_count;
->          u64 red_frames_count;
+> struct something {
+> 	size_t count;
+> 	struct foo items[];
 > };
->
+> 
+> - struct something *instance;
+> + struct something instance;
+> 
+> - instance = kmalloc(struct_size(instance, items, count), GFP_KERNEL);
+> + instance.items = kmalloc(struct_size(instance, items, count), GFP_KERNEL);
+> instance->count = count;
+> memcpy(instance->items, src, flex_array_size(instance, items, instance->count));
+> 
 
-Assuming psfp is something defined in IEEE802.1Qci and the spec will
-describe these?
-Is the filter  "index" pointing to one of those in some counter table?
+This is all wrong. Please, double check how struct_size() works.
 
+Thanks
+--
+Gustavo
 
-> When pass to the user space, summarize as:
->          stats.pkts = counters.matching_frames_count +  counters.not_passing_sdu_count - filter->stats.pkts;
- >
->          stats.drops = counters.not_passing_frames_count + counters.not_passing_sdu_count +   counters.red_frames_count - filter->stats.drops;
->
-
-Thanks for the explanation.
-What is filter->stats?
-The rest of those counters seem related to the gate action.
-How do you account for policing actions?
-
-cheers,
-jamal
-
+> >>>  	if (!d)
+> >>>  		return NULL;
+> >>>  
+> >>> @@ -2525,7 +2525,7 @@ udma_prep_dma_cyclic_pkt(struct udma_chan *uc, dma_addr_t buf_addr,
+> >>>  	if (period_len >= SZ_4M)
+> >>>  		return NULL;
+> >>>  
+> >>> -	d = kzalloc(sizeof(*d) + periods * sizeof(d->hwdesc[0]), GFP_NOWAIT);
+> >>> +	d = kzalloc(struct_size(d, hwdesc, periods), GFP_NOWAIT);
+> >>>  	if (!d)
+> >>>  		return NULL;
+> >>>  
+> >>> -- 
+> >>> 2.27.0
+> >>
+> 
+> - Péter
+> 
+> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+> 
