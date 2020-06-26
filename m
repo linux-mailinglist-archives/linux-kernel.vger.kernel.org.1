@@ -2,201 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49B420B329
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 16:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FDE20B336
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 16:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729091AbgFZOFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 10:05:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50148 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729035AbgFZOFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 10:05:04 -0400
-Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 28B1F20FC3;
-        Fri, 26 Jun 2020 14:05:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593180302;
-        bh=Nta2BxP6aG9z1osM6RBO32EL32u6t4phuluIvxKvVpo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FTF6iT6Vr/90E4f7jqYFu0x+qdo3ORNF0K1pcoADWKWAetju2Lod+n6gv1Zbr7dQX
-         MaPc2CJ/mkdyNpqddgYqAmuvh9uwCIXGasT9oHcV3dmSm1zyaeFCZqKCG0ZJCIwNQW
-         yTQxZ3MulpvCkwPRx4fM9ak9fLo67DkhznAn+tTA=
-Received: from mchehab by mail.kernel.org with local (Exim 4.93)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jooyS-00HKwU-7X; Fri, 26 Jun 2020 16:05:00 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] media: atomisp: place all gpio parsing together
-Date:   Fri, 26 Jun 2020 16:04:59 +0200
-Message-Id: <37dd6017652bc201e8e8789d20e9052862a1e4d1.1593180146.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1593180146.git.mchehab+huawei@kernel.org>
-References: <cover.1593180146.git.mchehab+huawei@kernel.org>
+        id S1729164AbgFZOGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 10:06:14 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:48993 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728751AbgFZOGO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 10:06:14 -0400
+Received: from mail-qt1-f180.google.com ([209.85.160.180]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MgNtR-1jCDeN2fbL-00hsyO for <linux-kernel@vger.kernel.org>; Fri, 26 Jun
+ 2020 16:06:12 +0200
+Received: by mail-qt1-f180.google.com with SMTP id u17so7539876qtq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 07:06:12 -0700 (PDT)
+X-Gm-Message-State: AOAM531nnFjSP65XdBVG2C/cCtTWSkUr0NiSWSxbvnevLIk93ykEqleD
+        5Tt63ulMNzUnNxLUelbuCEELMeezNvP0Ty10ExA=
+X-Google-Smtp-Source: ABdhPJxNL7ZazavjDlpdOSqlMFRRcUi8X1RMq/i9YLK2M8N8CjIt4xWMpy7m2sYmwKmLBSKB/GNp1CrJHGh+Kx8dMys=
+X-Received: by 2002:ac8:4507:: with SMTP id q7mr2917940qtn.142.1593180371532;
+ Fri, 26 Jun 2020 07:06:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200626130525.389469-1-lee.jones@linaro.org> <20200626130525.389469-3-lee.jones@linaro.org>
+In-Reply-To: <20200626130525.389469-3-lee.jones@linaro.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 26 Jun 2020 16:05:55 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2dTo5G=rSGHgPjAeV=uGPQJAaZCreQA0pTUzqYJ88_Jw@mail.gmail.com>
+Message-ID: <CAK8P3a2dTo5G=rSGHgPjAeV=uGPQJAaZCreQA0pTUzqYJ88_Jw@mail.gmail.com>
+Subject: Re: [PATCH 02/10] misc: ti-st: st_core: Tidy-up bespoke commentry
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     gregkh <gregkh@linuxfoundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Pavan Savoy <pavan_savoy@ti.com>,
+        Naveen Jain <naveen_jain@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:sTG9Wus44eU+jqq+GzFKjBXZCCbTHuOnHMK2qqCQVZH88Phw7NL
+ xagmw1EvAA3u6nTnY8H3YaJYKRekwRUKomo9idbmdLbswkzoKFCptMi2D20WcgsqdYbNr1R
+ rjOt8WO/L2AjTrGJjf8UOROLVvncw0hQ3cEGPwaqNAzzwUaiECNqRKPSQUilydOr+pOSVk4
+ e4JVvm1Shm1nWcULLDvZw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Iozp8SeTswA=:Q5e30KZiXE04Nn7Rui6eQg
+ GUnlIAU2QOZY3TyCdMWt1MKIPLU10SlaoIrLP3dLYS6m3o6q9/ruiSTbxkaZXxtld3X3aziGv
+ boeyqrCvc8zbeD6mz3K2gZGrniDAyWM0kU5HgJtzC0nUkABGiZis7buhto/zscFzNkRLPypWt
+ lempBaqe57icDwh3SHBgvLtuX5WyxCypwWrL7b0HEgsAHU/wQrlWMkiUFwK7ouFte2Port6/F
+ j2JoKPjBWE39xBFQNj4Kq+9ySnMz8PZcdFslgmAq5XFe63yTuwsOKbH24zuvbaLpBPEgcyt6/
+ 0vzeMChy3tf6vlHeUG9D6kgIFU+nZdfD5cuJJ0xaXuECgFb6FOrhOswahPZuJvu8lDruWg0/8
+ WsbtdJ94ejmgl9L2Wp81LoaxSe+7YvtTSHuNMT6AcCTLOc7U8n245NBaqUzCDV+mN/ZKeTYDq
+ 5HgwT3HWwUlAyMUfhydbcwj/uEijctO8Fuj/Ue0RyiPBtPz39HiDDjPR1SiOSEoQ1K0pvcfbU
+ ofE7YqEgmVJy6LI5PGxHR6to8FxzGXuf9l1/hGYYKxen7PbGLqpxUBYMm9amF7/8WrZxdWCr2
+ yj9zqZVMr0tgcp69xfaz7gH6Ar8FzuNVpIXuNkutVRsgwiEe2DgPptOH1YJoAttJl8xS/xmdf
+ fSWwWJc4kkqZKouNfb1WZvDQMsby8jmmaz5lwmfZ+RHDe6FG/emE21qrJGl7Kxh1UywszJBh6
+ xgRZ+9nBEQ1cTmfLwxt22Dde+/sOmKXoWl44En/EUHSxPo2BAz0por1rTIDw+8SpJ3hiIB3xX
+ BuQ8FFE/xcOkZ7dpO7YiknCSWA8GicYlY0iXS/qRdKBdH5QBZ4=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of parsing GPIO for two exceptions inside the logic
-which would be trying to use the GPIO, move the init code
-to the routine which adds a new gmin device.
+On Fri, Jun 26, 2020 at 3:05 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> If it's still in use and worth the effort, it sure looks like
+> this driver could do with a good scrub (clean).
+>
+> This patch conserns itself with the non-standard comments located
+> thoughout the file.
+>
+> It also fixes the following W=1 warnings by demoting the kerneldoc
+> function headers to standard comments, since there doesn't appear
+> to be a requirement for the function args to be documented:
+>
+>  drivers/misc/ti-st/st_core.c:132: warning: Function parameter or member 'st_gdata' not described in 'st_reg_complete'
+>  drivers/misc/ti-st/st_core.c:132: warning: Function parameter or member 'err' not described in 'st_reg_complete'
+>  drivers/misc/ti-st/st_core.c:197: warning: Function parameter or member 'st_gdata' not described in 'st_wakeup_ack'
+>  drivers/misc/ti-st/st_core.c:197: warning: Function parameter or member 'cmd' not described in 'st_wakeup_ack'
+>  drivers/misc/ti-st/st_core.c:226: warning: Function parameter or member 'disc_data' not described in 'st_int_recv'
+>  drivers/misc/ti-st/st_core.c:226: warning: Function parameter or member 'data' not described in 'st_int_recv'
+>  drivers/misc/ti-st/st_core.c:226: warning: Function parameter or member 'count' not described in 'st_int_recv'
+>  drivers/misc/ti-st/st_core.c:387: warning: Function parameter or member 'st_gdata' not described in 'st_int_dequeue'
+>  drivers/misc/ti-st/st_core.c:409: warning: Function parameter or member 'st_gdata' not described in 'st_int_enqueue'
+>  drivers/misc/ti-st/st_core.c:409: warning: Function parameter or member 'skb' not described in 'st_int_enqueue'
+>
+> Cc: Pavan Savoy <pavan_savoy@ti.com>
+> Cc: Naveen Jain <naveen_jain@ti.com>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Move the notes to it too, as this helps to identify where
-those two GPIO settings are used, explaining why they're
-defaulting to -1 when not found.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../media/atomisp/pci/atomisp_gmin_platform.c | 86 +++++++++----------
- 1 file changed, 40 insertions(+), 46 deletions(-)
-
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c b/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
-index 3136759bf96f..1a1a6a9ee8a3 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
-@@ -83,6 +83,9 @@ struct gmin_subdev {
- 	bool v1p2_on;
- 	bool v2p8_vcm_on;
- 
-+	int v1p8_gpio;
-+	int v2p8_gpio;
-+
- 	u8 pwm_i2c_addr;
- 
- 	/* For PMIC AXP */
-@@ -122,24 +125,6 @@ static const struct atomisp_platform_data pdata = {
- 	.subdevs = pdata_subdevs,
- };
- 
--/*
-- * Something of a hack.  The ECS E7 board drives camera 2.8v from an
-- * external regulator instead of the PMIC.  There's a gmin_CamV2P8
-- * config variable that specifies the GPIO to handle this particular
-- * case, but this needs a broader architecture for handling camera
-- * power.
-- */
--enum { V2P8_GPIO_UNSET = -2, V2P8_GPIO_NONE = -1 };
--static int v2p8_gpio = V2P8_GPIO_UNSET;
--
--/*
-- * Something of a hack. The CHT RVP board drives camera 1.8v from an
-- * external regulator instead of the PMIC just like ECS E7 board, see the
-- * comments above.
-- */
--enum { V1P8_GPIO_UNSET = -2, V1P8_GPIO_NONE = -1 };
--static int v1p8_gpio = V1P8_GPIO_UNSET;
--
- static LIST_HEAD(vcm_devices);
- static DEFINE_MUTEX(vcm_lock);
- 
-@@ -561,6 +546,23 @@ static struct gmin_subdev *gmin_subdev_add(struct v4l2_subdev *subdev)
- 	else
- 		dev_info(dev, "will handle gpio1 via ACPI\n");
- 
-+	/*
-+	 * Those are used only when there is an external regulator apart
-+	 * from the PMIC that would be providing power supply, like on the
-+	 * two cases below:
-+	 *
-+	 * The ECS E7 board drives camera 2.8v from an external regulator
-+	 * instead of the PMIC.  There's a gmin_CamV2P8 config variable
-+	 * that specifies the GPIO to handle this particular case,
-+	 * but this needs a broader architecture for handling camera power.
-+	 *
-+	 * The CHT RVP board drives camera 1.8v from an* external regulator
-+	 * instead of the PMIC just like ECS E7 board.
-+	 */
-+
-+	gs->v1p8_gpio = gmin_get_var_int(dev, true, "V1P8GPIO", -1);
-+	gs->v2p8_gpio = gmin_get_var_int(dev, true, "V2P8GPIO", -1);
-+
- 	/*
- 	 * FIXME:
- 	 *
-@@ -843,26 +845,22 @@ static int gmin_v1p8_ctrl(struct v4l2_subdev *subdev, int on)
- 
- 	dev = &client->dev;
- 
--	if (v1p8_gpio == V1P8_GPIO_UNSET) {
--		v1p8_gpio = gmin_get_var_int(dev, true,
--					     "V1P8GPIO", V1P8_GPIO_NONE);
--		if (v1p8_gpio != V1P8_GPIO_NONE) {
--			pr_info("atomisp_gmin_platform: 1.8v power on GPIO %d\n",
--				v1p8_gpio);
--			ret = gpio_request(v1p8_gpio, "camera_v1p8_en");
--			if (!ret)
--				ret = gpio_direction_output(v1p8_gpio, 0);
--			if (ret)
--				pr_err("V1P8 GPIO initialization failed\n");
--		}
-+	if (gs->v1p8_gpio >= 0) {
-+		pr_info("atomisp_gmin_platform: 1.8v power on GPIO %d\n",
-+			gs->v1p8_gpio);
-+		ret = gpio_request(gs->v1p8_gpio, "camera_v1p8_en");
-+		if (!ret)
-+			ret = gpio_direction_output(gs->v1p8_gpio, 0);
-+		if (ret)
-+			pr_err("V1P8 GPIO initialization failed\n");
- 	}
- 
- 	if (!gs || gs->v1p8_on == on)
- 		return 0;
- 	gs->v1p8_on = on;
- 
--	if (v1p8_gpio >= 0)
--		gpio_set_value(v1p8_gpio, on);
-+	if (gs->v1p8_gpio >= 0)
-+		gpio_set_value(gs->v1p8_gpio, on);
- 
- 	if (gs->v1p8_reg) {
- 		regulator_set_voltage(gs->v1p8_reg, 1800000, 1800000);
-@@ -905,26 +903,22 @@ static int gmin_v2p8_ctrl(struct v4l2_subdev *subdev, int on)
- 
- 	dev = &client->dev;
- 
--	if (v2p8_gpio == V2P8_GPIO_UNSET) {
--		v2p8_gpio = gmin_get_var_int(dev, true,
--					     "V2P8GPIO", V2P8_GPIO_NONE);
--		if (v2p8_gpio != V2P8_GPIO_NONE) {
--			pr_info("atomisp_gmin_platform: 2.8v power on GPIO %d\n",
--				v2p8_gpio);
--			ret = gpio_request(v2p8_gpio, "camera_v2p8");
--			if (!ret)
--				ret = gpio_direction_output(v2p8_gpio, 0);
--			if (ret)
--				pr_err("V2P8 GPIO initialization failed\n");
--		}
-+	if (gs->v2p8_gpio >= 0) {
-+		pr_info("atomisp_gmin_platform: 2.8v power on GPIO %d\n",
-+			gs->v2p8_gpio);
-+		ret = gpio_request(gs->v2p8_gpio, "camera_v2p8");
-+		if (!ret)
-+			ret = gpio_direction_output(gs->v2p8_gpio, 0);
-+		if (ret)
-+			pr_err("V2P8 GPIO initialization failed\n");
- 	}
- 
- 	if (!gs || gs->v2p8_on == on)
- 		return 0;
- 	gs->v2p8_on = on;
- 
--	if (v2p8_gpio >= 0)
--		gpio_set_value(v2p8_gpio, on);
-+	if (gs->v2p8_gpio >= 0)
-+		gpio_set_value(gs->v2p8_gpio, on);
- 
- 	if (gs->v2p8_reg) {
- 		regulator_set_voltage(gs->v2p8_reg, 2900000, 2900000);
--- 
-2.26.2
-
+Acked-by: Arnd Bergmann <arnd@arndb.de>
