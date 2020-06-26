@@ -2,80 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB0C20AAD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 05:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C8920AAC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 05:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728437AbgFZDlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 23:41:10 -0400
-Received: from alpha.anastas.io ([104.248.188.109]:53829 "EHLO
-        alpha.anastas.io" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgFZDlK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 23:41:10 -0400
-Received: from authenticated-user (alpha.anastas.io [104.248.188.109])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        id S1728397AbgFZDf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 23:35:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725830AbgFZDf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 23:35:56 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by alpha.anastas.io (Postfix) with ESMTPSA id 28E347EC0F;
-        Thu, 25 Jun 2020 22:30:36 -0500 (CDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=anastas.io; s=mail;
-        t=1593142236; bh=02YN1ayW2X/zW5QiWWQyey8muOEEWO2Xr33scSYqXdo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cxl/qzcfdPj5oFVlBe2QdykR5DmahHEunE4aX/K3GMARuuOqeVuG1MPjA6VYd3O8+
-         QzIsx5aXKgqADTJ8Gr3l8HLEIyGVxdDZabdO8UMqb2MFcwmjAy2OaQOAAeWrxB0+kq
-         gmlSY6iTsCHuUhw6SWqN0ZUqtKM/IwtBOTipkJHPQKLipR+JovID0UYC6BDLB1WeL8
-         JdEk+SBkFtFVd1G98iJHQbDCDnnI7hAAjAjqbl+D5yOK3vsBsIDcRyoc0Q3xI10OWX
-         qCFO+sHaztOdB/BpQYFUfodzzVneSmN3mW6ES0A7cfm4oL2tX3nw8d2Ntmm2qxljDQ
-         XI+W42dcLbcdA==
-From:   Shawn Anastasio <shawn@anastas.io>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org, a.hajda@samsung.com,
-        narmstrong@baylibre.com, airlied@linux.ie, daniel@ffwll.ch
-Subject: [PATCH 1/1] drm/bridge: analogix_dp: Add enable_psr param
-Date:   Thu, 25 Jun 2020 22:30:23 -0500
-Message-Id: <20200626033023.24214-2-shawn@anastas.io>
-In-Reply-To: <20200626033023.24214-1-shawn@anastas.io>
-References: <20200626033023.24214-1-shawn@anastas.io>
+        by mail.kernel.org (Postfix) with ESMTPSA id 05A3E20709;
+        Fri, 26 Jun 2020 03:35:53 +0000 (UTC)
+Date:   Thu, 25 Jun 2020 23:35:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Yordan Karadzhov <y.karadz@gmail.com>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Jason Behmer <jbehmer@google.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Clark Williams <williams@redhat.com>,
+        bristot <bristot@redhat.com>, Daniel Wagner <wagi@monom.org>,
+        Darren Hart <dvhart@vmware.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Suresh E. Warrier" <warrier@linux.vnet.ibm.com>
+Subject: Re: [RFC][PATCH] ring-buffer: Have nested events still record
+ running time stamp
+Message-ID: <20200625233552.2c8a0d1e@oasis.local.home>
+In-Reply-To: <20200625223611.1dbb3b35@oasis.local.home>
+References: <20200625094454.732790f7@oasis.local.home>
+        <1548518134.13177.1593107707149.JavaMail.zimbra@efficios.com>
+        <20200625143525.2f3a2902@oasis.local.home>
+        <79426976.13417.1593113702719.JavaMail.zimbra@efficios.com>
+        <20200625223611.1dbb3b35@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a toggle to enable/disable PSR from the kernel commandline.
-This is useful in situations where PSR is supported by the hardware
-but is not desired by the user. One such use case is working around
-hardware errata.
+On Thu, 25 Jun 2020 22:36:11 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Signed-off-by: Shawn Anastasio <shawn@anastas.io>
----
- drivers/gpu/drm/bridge/analogix/analogix_dp_core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+> +static void rb_time_set(rb_time_t *t, u64 val)
+> +{
+> +	struct rb_time_read r;
+> +
+> +	rb_time_read_set(&r, val);
+> +
+> +	do {
+> +		r.start_cnt = local_inc_return(&t->start_cnt);
+> +		local_set(&t->top, r.top);
+> +		local_set(&t->bottom, r.bottom);
+> +		local_set(&t->end_cnt, r.start_cnt);
+> +	} while (r.start_cnt != local_read(&t->start_cnt));
+> +}
+> +
+> +static bool rb_time_read_cmpxchg(local_t *l, unsigned long expect, unsigned long set)
+> +{
+> +	unsigned long ret;
+> +
+> +	ret = local_cmpxchg(l, expect, set);
+> +	return ret == expect;
+> +}
+> +
+> +static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
+> +{
+> +	struct rb_time_read e, s;
+> +
+> +	rb_time_read_set(&e, expect);
+> +	rb_time_read_set(&s, set);
+> +
+> +	e.start_cnt = local_read(&t->start_cnt);
+> +	e.end_cnt = local_read(&t->end_cnt);
+> +
+> +	s.start_cnt = e.start_cnt + 1;
+> +	s.end_cnt = e.start_cnt;
+> +
+> +	if (!rb_time_read_cmpxchg(&t->start_cnt, e.start_cnt, s.start_cnt))
+> +		return false;
+> +	if (!rb_time_read_cmpxchg(&t->top, e.top, s.top))
+> +		return false;
+> +	if (!rb_time_read_cmpxchg(&t->bottom, e.bottom, s.bottom))
+> +		return false;
+> +	return rb_time_read_cmpxchg(&t->end_cnt, e.end_cnt, s.end_cnt);
+> +}
+> +
 
-diff --git a/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c b/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
-index 76736fb8ed94..9735ab71fca7 100644
---- a/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
-+++ b/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
-@@ -35,6 +35,10 @@
- 
- static const bool verify_fast_training;
- 
-+static bool enable_psr = true;
-+module_param(enable_psr, bool, 0644);
-+MODULE_PARM_DESC(enable_psr, "PSR support (1 = enabled (default), 0 = disabled)");
-+
- struct bridge_init {
- 	struct i2c_client *client;
- 	struct device_node *node;
-@@ -979,7 +983,7 @@ static int analogix_dp_commit(struct analogix_dp_device *dp)
- 	if (ret)
- 		return ret;
- 
--	if (analogix_dp_detect_sink_psr(dp)) {
-+	if (enable_psr && analogix_dp_detect_sink_psr(dp)) {
- 		ret = analogix_dp_enable_sink_psr(dp);
- 		if (ret)
- 			return ret;
--- 
-2.26.2
+I have to think about this more, as I think there's a flaw in this
+cmpxchg algorithm.
+
+-- Steve
 
