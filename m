@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DC220B6ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD72220B721
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726936AbgFZR0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 13:26:41 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9996 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgFZR0l (ORCPT
+        id S1727079AbgFZRe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 13:34:27 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:56028 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726789AbgFZReS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 13:26:41 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ef62fc40000>; Fri, 26 Jun 2020 10:26:28 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 26 Jun 2020 10:26:41 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Fri, 26 Jun 2020 10:26:41 -0700
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 26 Jun
- 2020 17:26:31 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Fri, 26 Jun 2020 17:26:31 +0000
-Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ef62fc60001>; Fri, 26 Jun 2020 10:26:30 -0700
-From:   Ralph Campbell <rcampbell@nvidia.com>
-To:     <nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        "Ben Skeggs" <bskeggs@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>
-Subject: [PATCH] nouveau: fix page fault on device private memory
-Date:   Fri, 26 Jun 2020 10:26:26 -0700
-Message-ID: <20200626172626.19207-1-rcampbell@nvidia.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 26 Jun 2020 13:34:18 -0400
+Received: from 89-64-83-223.dynamic.chello.pl (89.64.83.223) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id aea2085616e28395; Fri, 26 Jun 2020 19:34:16 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Cc:     rafael.j.wysocki@intel.com, Len Brown <lenb@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Ira Weiny <ira.weiny@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-nvdimm@lists.01.org, Bob Moore <robert.moore@intel.com>
+Subject: [RFT][PATCH v3 0/4] ACPI: ACPICA / OSL: Avoid unmapping ACPI memory inside of the AML interpreter
+Date:   Fri, 26 Jun 2020 19:28:27 +0200
+Message-ID: <2788992.3K7huLjdjL@kreacher>
+In-Reply-To: <2713141.s8EVnczdoM@kreacher>
+References: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com> <2713141.s8EVnczdoM@kreacher>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593192388; bh=+jL8198tCi4VPutVCs4yXHE2/yX1fXK0+ZzD5egdp4w=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
-         Content-Type;
-        b=dSKhZ+J1Nn3Eb0LX95a8mp/H26NjdofgeBJOetygGbQkKjHzbZyrwmqEC8ErmvCS1
-         eUA99lTXoBFGkmL6xDJtRRF94rW9DzYwnDhvi4TFwLxXXyAzWwALy8yhk4EGhbY3Bb
-         dM9eAML6m8QPXetN/JpnNXJ3EIjbnTy2qTQJLk6Ka8GKBkmNtDgc4SYKdvITcbD4X4
-         27HWfqCOadM0ADG566k+W7W+V9Cn9hKHfOc1FjWdWzTJhJHZ6EnyT9phhQSJ/zhc8c
-         UgmzTQaANl52Mx1odNDsQazX9USnqk2tgx9XzVzMHFfoy9dyAoo6ZojlUjoPAGFykl
-         zbNqgCRLeM0Yw==
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If system memory is migrated to device private memory and no GPU MMU
-page table entry exists, the GPU will fault and call hmm_range_fault()
-to get the PFN for the page. Since the .dev_private_owner pointer in
-struct hmm_range is not set, hmm_range_fault returns an error which
-results in the GPU program stopping with a fatal fault.
-Fix this by setting .dev_private_owner appropriately.
+Hi All,
 
-Fixes: 08ddddda667b ("mm/hmm: check the device private page owner in hmm_ra=
-nge_fault()")
-Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
----
+On Monday, June 22, 2020 3:50:42 PM CEST Rafael J. Wysocki wrote:
+> Hi All,
+> 
+> This series is to address the problem with RCU synchronization occurring,
+> possibly relatively often, inside of acpi_ex_system_memory_space_handler(),
+> when the namespace and interpreter mutexes are held.
+> 
+> Like I said before, I had decided to change the approach used in the previous
+> iteration of this series and to allow the unmap operations carried out by 
+> acpi_ex_system_memory_space_handler() to be deferred in the first place,
+> which is done in patches [1-2/4].
 
-This is based on Linux-5.8.0-rc2 and is for Ben Skeggs nouveau tree.
-It doesn't depend on any of the other nouveau/HMM changes I have
-recently posted.
+In the meantime I realized that calling syncrhonize_rcu_expedited() under the
+"tables" mutex within ACPICA is not quite a good idea too and that there is no
+reason for any users of acpi_os_unmap_memory() in the tree to use the "sync"
+variant of unmapping.
 
- drivers/gpu/drm/nouveau/nouveau_svm.c | 1 +
- 1 file changed, 1 insertion(+)
+So, unless I'm missing something, acpi_os_unmap_memory() can be changed to
+always defer the final unmapping and the only ACPICA change needed to support
+that is the addition of the acpi_os_release_unused_mappings() call to get rid
+of the unused mappings when leaving the interpreter (module the extra call in
+the debug code for consistency).
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouvea=
-u/nouveau_svm.c
-index ba9f9359c30e..6586d9d39874 100644
---- a/drivers/gpu/drm/nouveau/nouveau_svm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
-@@ -562,6 +562,7 @@ static int nouveau_range_fault(struct nouveau_svmm *svm=
-m,
- 		.end =3D notifier->notifier.interval_tree.last + 1,
- 		.pfn_flags_mask =3D HMM_PFN_REQ_FAULT | HMM_PFN_REQ_WRITE,
- 		.hmm_pfns =3D hmm_pfns,
-+		.dev_private_owner =3D drm->dev,
- 	};
- 	struct mm_struct *mm =3D notifier->notifier.mm;
- 	int ret;
---=20
-2.20.1
+So patches [1-2/4] have been changed accordingly.
+
+> However, it turns out that the "fast-path" mapping is still useful on top of
+> the above to reduce the number of ioremap-iounmap cycles for the same address
+> range and so it is introduced by patches [3-4/4].
+
+Patches [3-4/4] still do what they did, but they have been simplified a bit
+after rebasing on top of the new [1-2/4].
+
+The below information is still valid, but it applies to the v3, of course.
+
+> For details, please refer to the patch changelogs.
+> 
+> The series is available from the git branch at
+> 
+>  git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+>  acpica-osl
+> 
+> for easier testing.
+
+Also the series have been tested locally.
+
+Thanks,
+Rafael
+
+
 
