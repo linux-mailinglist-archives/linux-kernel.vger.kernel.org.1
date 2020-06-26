@@ -2,132 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A845520AD3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD96420AD64
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728856AbgFZHeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 03:34:25 -0400
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:21154 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725855AbgFZHeV (ORCPT
+        id S1728808AbgFZHi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 03:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726128AbgFZHiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 03:34:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1593156860; x=1624692860;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ktC/WMzsfhnbYLgEgocNih4foHKvTW3bujJiIveKFWo=;
-  b=WpwsHypJXOGerIfQ+4yCgQMzRd59zWYt8iqDNrnBZ24lC1vpK8wcguKd
-   OT4FKMNm4f44LHRNgCC69E/+UhN6CVw6JFr/KDZtpUyeZInohAD5/ZBEc
-   RwhNGw+ucSrPIil+77vz9a7dtfEhR+WRFDfR8DNJA7QY2RAPNVqLkGoYG
-   C78Tg7nbOfGLaQpNDcHHsIZ90eBdaC0cjBiRaJRWe8zERMrrPt3Eykur1
-   a3cSeUtAdG+K/b1KG3OFnRWlimLRNvEEvv6tuxdhOi4c2NyME+6Zktt2R
-   FNyZeZ6qnE8hOmGmGaEL0XKWKmN/yD46/ZbQm8sxUT7lA0TsV3Jp9Btg2
-   Q==;
-IronPort-SDR: b0DJq7b6Y6H8xE85QaF8pjRcRXa0PNuIFIIVsqi5CQC4WBsgO4z6lgQFu2Wu0b4m5FJpsdxHAE
- bTHg/On42scuCX+Y7bfJ7tQ2V2cn+vmv9yZt4bpM6h9VyKSAoYlA9+60Bk2Qw+0EXeRWnfdYYw
- f3lTbw03I+b3j1slyvB0SDSql+TJDugFl8yQU+IiouPjq4LjfeesTjAU8X5yFQ/avVPiyiinPL
- N5AA3RL7KifpxuV254Arufgos1qDx2qwBC/BT/K1+Qhaa6gsB7qDpbTXSAcECDbQUOkLuaJQ7w
- 7Lo=
-X-IronPort-AV: E=Sophos;i="5.75,282,1589266800"; 
-   d="scan'208";a="85185625"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jun 2020 00:34:17 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 26 Jun 2020 00:34:03 -0700
-Received: from soft-dev3.localdomain (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 26 Jun 2020 00:34:14 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <nikolay@cumulusnetworks.com>, <roopa@cumulusnetworks.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bridge@lists.linux-foundation.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH net-next v3 2/2] bridge: mrp: Fix endian conversion and some other warnings
-Date:   Fri, 26 Jun 2020 09:33:49 +0200
-Message-ID: <20200626073349.3495526-3-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200626073349.3495526-1-horatiu.vultur@microchip.com>
-References: <20200626073349.3495526-1-horatiu.vultur@microchip.com>
+        Fri, 26 Jun 2020 03:38:25 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37016C08C5DB
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 00:38:25 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id cm23so4591015pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 00:38:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=P3HL5+bSChK1YtwRIrhkmDTjksyjt+eZyM2LoDS34Jk=;
+        b=rqkhCcfl7RyFVUyQ8T/iCG+2fY8N0dOORfCDXaN/rvOYsxyUu6yQee3gMM4g/dV/dt
+         nviMPmNkvc0oOElLtWQktqpv5kMEEiYty4bXvj35yd48mLXzEXBSWPUdResExmMv1W5k
+         khBNFBT65vXYfs+ZVVcwlN4/BjsPvJjXdxFlyV1wnoi1Yl9C2JnVrV0Oq3pdxR2bS/4c
+         IAPSVtwOeF1DwLzqP8aCnhzVZSWifQYTr2D7Yf495A0OqPD0NBnYb7h7iD64JRrdUHci
+         MmhDKi8c/NXpEbnwRD9Zn7ifZSGMxTlc3GxdsNwPVbPGQNHPpEApGWQ6EijzY/dIhEo1
+         DHMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P3HL5+bSChK1YtwRIrhkmDTjksyjt+eZyM2LoDS34Jk=;
+        b=iBSZGnUJemdQHx0WYqO8jrcfivrFiF3u/vtSprfeo3GdFickAAQo+ja1ZWg8ls1Ww+
+         xZ5eRO7gPtpswdzNJKXsVREejZaRzbxKzzHL6eUbl+HdyIe2CVFcEWKjD981YxeyJOXu
+         sYlDPW/o8yNoLXHFgoRznImJdtB4EdTjVm/w/D6ZjqG88ZeXg0nPvIO5/JGNj9M7QYQz
+         B+43xAYpjM4O4ZIpDDgQAk4cDG+2QcvvhN/hiWGer0Ju7W0ZCTPmFy3c4JmJZek8oREe
+         fpVehOndRqueypX6RpDD/CUti+qMDlTQXpPtM+nUOLKb1MHi18/9jUv/T8jpDRXVXW1K
+         e0JQ==
+X-Gm-Message-State: AOAM532u3GNq/iw/nSDZC92ZNVtp+QrBKBE1TkrOBEKiPvh/nsxqq9SS
+        C5uOnzGmzc6zwBzVO43A3ELVxQ==
+X-Google-Smtp-Source: ABdhPJwwl2YCNeE48VOOQP8qv+DejczBn8DQaqwRxififM6P2ju4Tw8qxSjRPjolft1L+6F+QSuqOA==
+X-Received: by 2002:a17:90a:39ce:: with SMTP id k14mr2010039pjf.39.1593157104483;
+        Fri, 26 Jun 2020 00:38:24 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id q16sm25071934pfg.49.2020.06.26.00.38.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jun 2020 00:38:23 -0700 (PDT)
+Date:   Fri, 26 Jun 2020 00:35:45 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        "open list:GENERIC PHY FRAMEWORK" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] phy: qcom-qmp: Allow different values for second lane
+Message-ID: <20200626073545.GE388985@builder.lan>
+References: <20200524021416.17049-1-jonathan@marek.ca>
+ <20200524021416.17049-2-jonathan@marek.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200524021416.17049-2-jonathan@marek.ca>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following sparse warnings are fixed:
-net/bridge/br_mrp.c:106:18: warning: incorrect type in assignment (different base types)
-net/bridge/br_mrp.c:106:18:    expected unsigned short [usertype]
-net/bridge/br_mrp.c:106:18:    got restricted __be16 [usertype]
-net/bridge/br_mrp.c:281:23: warning: incorrect type in argument 1 (different modifiers)
-net/bridge/br_mrp.c:281:23:    expected struct list_head *entry
-net/bridge/br_mrp.c:281:23:    got struct list_head [noderef] *
-net/bridge/br_mrp.c:332:28: warning: incorrect type in argument 1 (different modifiers)
-net/bridge/br_mrp.c:332:28:    expected struct list_head *new
-net/bridge/br_mrp.c:332:28:    got struct list_head [noderef] *
-net/bridge/br_mrp.c:332:40: warning: incorrect type in argument 2 (different modifiers)
-net/bridge/br_mrp.c:332:40:    expected struct list_head *head
-net/bridge/br_mrp.c:332:40:    got struct list_head [noderef] *
-net/bridge/br_mrp.c:691:29: warning: incorrect type in argument 1 (different modifiers)
-net/bridge/br_mrp.c:691:29:    expected struct list_head const *head
-net/bridge/br_mrp.c:691:29:    got struct list_head [noderef] *
-net/bridge/br_mrp.c:383:9: sparse: sparse: dereference of noderef expression
-net/bridge/br_mrp.c:383:9: sparse: sparse: dereference of noderef expression
-net/bridge/br_mrp.c:383:9: sparse: sparse: dereference of noderef expression
+On Sat 23 May 19:14 PDT 2020, Jonathan Marek wrote:
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- net/bridge/br_mrp.c         | 2 +-
- net/bridge/br_private.h     | 2 +-
- net/bridge/br_private_mrp.h | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+> The primary USB PHY on sm8250 sets some values differently for the second
+> lane. This makes it possible to represent that.
+> 
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qmp.c | 52 ++++++++++++++++++++++-------
+>  1 file changed, 40 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
+> index e91040af3394..b3e07afca3ca 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+> @@ -82,20 +82,34 @@ struct qmp_phy_init_tbl {
+>  	 * register part of layout ?
+>  	 * if yes, then offset gives index in the reg-layout
+>  	 */
+> -	int in_layout;
+> +	bool in_layout;
+> +	/*
+> +	 * mask of lanes for which this register is written
+> +	 * for cases when second lane needs different values
+> +	 */
+> +	u8 lane_mask;
+>  };
+>  
+>  #define QMP_PHY_INIT_CFG(o, v)		\
+>  	{				\
+>  		.offset = o,		\
+>  		.val = v,		\
+> +		.lane_mask = 0xff,	\
+>  	}
+>  
+>  #define QMP_PHY_INIT_CFG_L(o, v)	\
+>  	{				\
+>  		.offset = o,		\
+>  		.val = v,		\
+> -		.in_layout = 1,		\
+> +		.in_layout = true,	\
+> +		.lane_mask = 0xff,	\
+> +	}
+> +
+> +#define QMP_PHY_INIT_CFG_LANE(o, v, l)	\
+> +	{				\
+> +		.offset = o,		\
+> +		.val = v,		\
+> +		.lane_mask = l,		\
+>  	}
+>  
+>  /* set of registers with offsets different per-PHY */
+> @@ -1986,10 +2000,11 @@ static const struct qmp_phy_cfg sm8150_usb3phy_cfg = {
+>  	.is_dual_lane_phy	= true,
+>  };
+>  
+> -static void qcom_qmp_phy_configure(void __iomem *base,
+> -				   const unsigned int *regs,
+> -				   const struct qmp_phy_init_tbl tbl[],
+> -				   int num)
+> +static void qcom_qmp_phy_configure_lane(void __iomem *base,
+> +					const unsigned int *regs,
+> +					const struct qmp_phy_init_tbl tbl[],
+> +					int num,
+> +					u8 lane_mask)
+>  {
+>  	int i;
+>  	const struct qmp_phy_init_tbl *t = tbl;
+> @@ -1998,6 +2013,9 @@ static void qcom_qmp_phy_configure(void __iomem *base,
+>  		return;
+>  
+>  	for (i = 0; i < num; i++, t++) {
+> +		if (!(t->lane_mask & lane_mask))
+> +			continue;
+> +
+>  		if (t->in_layout)
+>  			writel(t->val, base + regs[t->offset]);
+>  		else
+> @@ -2005,6 +2023,14 @@ static void qcom_qmp_phy_configure(void __iomem *base,
+>  	}
+>  }
+>  
+> +static void qcom_qmp_phy_configure(void __iomem *base,
+> +				   const unsigned int *regs,
+> +				   const struct qmp_phy_init_tbl tbl[],
+> +				   int num)
+> +{
+> +	qcom_qmp_phy_configure_lane(base, regs, tbl, num, 0xff);
+> +}
+> +
+>  static int qcom_qmp_phy_com_init(struct qmp_phy *qphy)
+>  {
+>  	struct qcom_qmp *qmp = qphy->qmp;
+> @@ -2219,16 +2245,18 @@ static int qcom_qmp_phy_enable(struct phy *phy)
+>  	}
+>  
+>  	/* Tx, Rx, and PCS configurations */
+> -	qcom_qmp_phy_configure(tx, cfg->regs, cfg->tx_tbl, cfg->tx_tbl_num);
+> +	qcom_qmp_phy_configure_lane(tx, cfg->regs,
+> +				    cfg->tx_tbl, cfg->tx_tbl_num, 1);
 
-diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
-index dcbf21b91313d..7541482898642 100644
---- a/net/bridge/br_mrp.c
-+++ b/net/bridge/br_mrp.c
-@@ -86,7 +86,7 @@ static struct sk_buff *br_mrp_skb_alloc(struct net_bridge_port *p,
- {
- 	struct ethhdr *eth_hdr;
- 	struct sk_buff *skb;
--	u16 *version;
-+	__be16 *version;
- 
- 	skb = dev_alloc_skb(MRP_MAX_FRAME_LENGTH);
- 	if (!skb)
-diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
-index 6a7d8e218ae7e..bbffbaac1beb6 100644
---- a/net/bridge/br_private.h
-+++ b/net/bridge/br_private.h
-@@ -434,7 +434,7 @@ struct net_bridge {
- 	struct hlist_head		fdb_list;
- 
- #if IS_ENABLED(CONFIG_BRIDGE_MRP)
--	struct list_head		__rcu mrp_list;
-+	struct list_head		mrp_list;
- #endif
- };
- 
-diff --git a/net/bridge/br_private_mrp.h b/net/bridge/br_private_mrp.h
-index 25c3b8596c25b..3243a2cc3a729 100644
---- a/net/bridge/br_private_mrp.h
-+++ b/net/bridge/br_private_mrp.h
-@@ -8,7 +8,7 @@
- 
- struct br_mrp {
- 	/* list of mrp instances */
--	struct list_head		__rcu list;
-+	struct list_head		list;
- 
- 	struct net_bridge_port __rcu	*p_port;
- 	struct net_bridge_port __rcu	*s_port;
--- 
-2.26.2
+Please ignore the 80-char suggestion and keep this on one line.
 
+With that...
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+>  	/* Configuration for other LANE for USB-DP combo PHY */
+>  	if (cfg->is_dual_lane_phy)
+> -		qcom_qmp_phy_configure(qphy->tx2, cfg->regs,
+> -				       cfg->tx_tbl, cfg->tx_tbl_num);
+> +		qcom_qmp_phy_configure_lane(qphy->tx2, cfg->regs,
+> +					    cfg->tx_tbl, cfg->tx_tbl_num, 2);
+>  
+> -	qcom_qmp_phy_configure(rx, cfg->regs, cfg->rx_tbl, cfg->rx_tbl_num);
+> +	qcom_qmp_phy_configure_lane(rx, cfg->regs,
+> +				    cfg->rx_tbl, cfg->rx_tbl_num, 1);
+>  	if (cfg->is_dual_lane_phy)
+> -		qcom_qmp_phy_configure(qphy->rx2, cfg->regs,
+> -				       cfg->rx_tbl, cfg->rx_tbl_num);
+> +		qcom_qmp_phy_configure_lane(qphy->rx2, cfg->regs,
+> +					    cfg->rx_tbl, cfg->rx_tbl_num, 2);
+>  
+>  	qcom_qmp_phy_configure(pcs, cfg->regs, cfg->pcs_tbl, cfg->pcs_tbl_num);
+>  	ret = reset_control_deassert(qmp->ufs_reset);
+> -- 
+> 2.26.1
+> 
