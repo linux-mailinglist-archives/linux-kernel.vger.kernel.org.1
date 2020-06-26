@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A715920B6D0
+	by mail.lfdr.de (Postfix) with ESMTP id 3A03F20B6CF
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727104AbgFZRVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 13:21:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39778 "EHLO mail.kernel.org"
+        id S1728424AbgFZRVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 13:21:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726910AbgFZRVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 13:21:21 -0400
+        id S1726924AbgFZRVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 13:21:22 -0400
 Received: from localhost (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0862B2065F;
-        Fri, 26 Jun 2020 17:21:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D074E2089D;
+        Fri, 26 Jun 2020 17:21:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593192081;
-        bh=1KnbXwE+bmAZRBzxpU4AIX//ta8YBFUr+H6enwpmo9A=;
+        s=default; t=1593192082;
+        bh=IsZUG4DWzvA5uLxr8FPqPjPY/G30t4PJ9fenQs+LjGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zLgIg9+Kc6v2O/9rzSj9PMRNASXVTteANa5UrP1pa3D6xKpUGJrJgsrg3u9RsU/Gi
-         EMFFLPqZSQmIsek8lb+Hef3NdDSwrvAEga/juhjxV7fIC0RPMTVcwkJ/1fL34mO7Bh
-         eKX99ueb+yhOuuCpUSMcKUvTUlekKgK4DSwHizUU=
+        b=YNevlYfKxY6uu/Gi8TBzCE+XdVn7T4ndq5e8PG6MZ1JZcGyH+KFUJidzhoRiEFFyA
+         1FTh6R0hLZFEDWjIodr7Gi7GPhdVRkX6rW/ZkwkQQpcldZroFSZy4bdbKaLxN0V/tt
+         PRMvw9o6LitoJQo3F5w2IZMseo9jF5Nv/gz7qhrk=
 From:   Andy Lutomirski <luto@kernel.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Andrew Cooper <andrew.cooper3@citrix.com>,
         Juergen Gross <jgross@suse.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH 2/6] x86/entry: Move SYSENTER's regs->sp and regs->flags fixups into C
-Date:   Fri, 26 Jun 2020 10:21:12 -0700
-Message-Id: <fe62bef67eda7fac75b8f3dbafccf571dc4ece6b.1593191971.git.luto@kernel.org>
+        Andy Lutomirski <luto@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org
+Subject: [PATCH 3/6] x86/entry/64/compat: Fix Xen PV SYSENTER frame setup
+Date:   Fri, 26 Jun 2020 10:21:13 -0700
+Message-Id: <947880c41ade688ff4836f665d0c9fcaa9bd1201.1593191971.git.luto@kernel.org>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1593191971.git.luto@kernel.org>
 References: <cover.1593191971.git.luto@kernel.org>
@@ -42,101 +45,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SYSENTER asm (32-bit and compat) contains fixups for regs->sp
-and regs->flags.  Move the fixups into C and fix some comments while
-we're at it.
+The SYSENTER frame setup was nonsense.  It worked by accident
+because the normal code into which the Xen asm jumped
+(entry_SYSENTER_32/compat) threw away SP without touching the stack.
+entry_SYSENTER_compat was recently modified such that it relied on
+having a valid stack pointer, so now the Xen asm needs to invoke it
+with a valid stack.
 
-IMO this is a valid cleanup all by itself, and it also simplifies
-the subsequent patch that will fix Xen PV SYSENTER.
+Fix it up like SYSCALL: use the Xen-provided frame and skip the bare
+metal prologue.
 
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Juergen Gross <jgross@suse.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>
+Cc: xen-devel@lists.xenproject.org
+Fixes: 1c3e5d3f60e2 ("x86/entry: Make entry_64_compat.S objtool clean")
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 ---
- arch/x86/entry/common.c          | 12 ++++++++++++
- arch/x86/entry/entry_32.S        |  5 ++---
- arch/x86/entry/entry_64_compat.S | 11 +++++------
- 3 files changed, 19 insertions(+), 9 deletions(-)
+ arch/x86/entry/entry_64_compat.S |  1 +
+ arch/x86/xen/xen-asm_64.S        | 20 ++++++++++++++++----
+ 2 files changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index ed8ccc820995..f392a8bcd1c3 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -522,6 +522,18 @@ __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
- 		(regs->flags & (X86_EFLAGS_RF | X86_EFLAGS_TF | X86_EFLAGS_VM)) == 0;
- #endif
- }
-+
-+/* Returns 0 to return using IRET or 1 to return using SYSEXIT/SYSRETL. */
-+__visible noinstr long do_SYSENTER_32(struct pt_regs *regs)
-+{
-+	/* SYSENTER loses RSP, but the vDSO saved it in RBP. */
-+	regs->sp = regs->bp;
-+
-+	/* SYSENTER clobbers EFLAGS.IF.  Assume it was set in usermode. */
-+	regs->flags |= X86_EFLAGS_IF;
-+
-+	return do_fast_syscall_32(regs);
-+}
- #endif
- 
- SYSCALL_DEFINE0(ni_syscall)
-diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
-index 024d7d276cd4..2d0bd5d5f032 100644
---- a/arch/x86/entry/entry_32.S
-+++ b/arch/x86/entry/entry_32.S
-@@ -933,9 +933,8 @@ SYM_FUNC_START(entry_SYSENTER_32)
- 
- .Lsysenter_past_esp:
- 	pushl	$__USER_DS		/* pt_regs->ss */
--	pushl	%ebp			/* pt_regs->sp (stashed in bp) */
-+	pushl	$0			/* pt_regs->sp (placeholder) */
- 	pushfl				/* pt_regs->flags (except IF = 0) */
--	orl	$X86_EFLAGS_IF, (%esp)	/* Fix IF */
- 	pushl	$__USER_CS		/* pt_regs->cs */
- 	pushl	$0			/* pt_regs->ip = 0 (placeholder) */
- 	pushl	%eax			/* pt_regs->orig_ax */
-@@ -965,7 +964,7 @@ SYM_FUNC_START(entry_SYSENTER_32)
- .Lsysenter_flags_fixed:
- 
- 	movl	%esp, %eax
--	call	do_fast_syscall_32
-+	call	do_SYSENTER_32
- 	/* XEN PV guests always use IRET path */
- 	ALTERNATIVE "testl %eax, %eax; jz .Lsyscall_32_done", \
- 		    "jmp .Lsyscall_32_done", X86_FEATURE_XENPV
 diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
-index 0f974ae01e62..7b9d8150f652 100644
+index 7b9d8150f652..381a6de7de9c 100644
 --- a/arch/x86/entry/entry_64_compat.S
 +++ b/arch/x86/entry/entry_64_compat.S
-@@ -68,16 +68,15 @@ SYM_CODE_START(entry_SYSENTER_compat)
- 
- 	/* Construct struct pt_regs on stack */
- 	pushq	$__USER32_DS		/* pt_regs->ss */
--	pushq	%rbp			/* pt_regs->sp (stashed in bp) */
-+	pushq	$0			/* pt_regs->sp = 0 (placeholder) */
- 
- 	/*
- 	 * Push flags.  This is nasty.  First, interrupts are currently
--	 * off, but we need pt_regs->flags to have IF set.  Second, even
--	 * if TF was set when SYSENTER started, it's clear by now.  We fix
--	 * that later using TIF_SINGLESTEP.
-+	 * off, but we need pt_regs->flags to have IF set.  Second, if TS
-+	 * was set in usermode, it's still set, and we're singlestepping
-+	 * through this code.  do_SYSENTER_32() will fix up IF.
- 	 */
+@@ -79,6 +79,7 @@ SYM_CODE_START(entry_SYSENTER_compat)
  	pushfq				/* pt_regs->flags (except IF = 0) */
--	orl	$X86_EFLAGS_IF, (%rsp)	/* Fix saved flags */
  	pushq	$__USER32_CS		/* pt_regs->cs */
  	pushq	$0			/* pt_regs->ip = 0 (placeholder) */
++SYM_INNER_LABEL(entry_SYSENTER_compat_after_hwframe, SYM_L_GLOBAL)
  	pushq	%rax			/* pt_regs->orig_ax */
-@@ -135,7 +134,7 @@ SYM_CODE_START(entry_SYSENTER_compat)
- .Lsysenter_flags_fixed:
+ 	pushq	%rdi			/* pt_regs->di */
+ 	pushq	%rsi			/* pt_regs->si */
+diff --git a/arch/x86/xen/xen-asm_64.S b/arch/x86/xen/xen-asm_64.S
+index 5d252aaeade8..e1e1c7eafa60 100644
+--- a/arch/x86/xen/xen-asm_64.S
++++ b/arch/x86/xen/xen-asm_64.S
+@@ -161,10 +161,22 @@ SYM_FUNC_END(xen_syscall32_target)
  
- 	movq	%rsp, %rdi
--	call	do_fast_syscall_32
-+	call	do_SYSENTER_32
- 	/* XEN PV guests always use IRET path */
- 	ALTERNATIVE "testl %eax, %eax; jz swapgs_restore_regs_and_return_to_usermode", \
- 		    "jmp swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
+ /* 32-bit compat sysenter target */
+ SYM_FUNC_START(xen_sysenter_target)
+-	mov 0*8(%rsp), %rcx
+-	mov 1*8(%rsp), %r11
+-	mov 5*8(%rsp), %rsp
+-	jmp entry_SYSENTER_compat
++	/*
++	 * NB: Xen is polite and clears TF from EFLAGS for us.  This means
++	 * that we don't need to guard against single step exceptions here.
++	 */
++	popq %rcx
++	popq %r11
++
++	/*
++	 * Neither Xen nor the kernel really knows what the old SS and
++	 * CS were.  The kernel expects __USER32_DS and __USER32_CS, so
++	 * report those values even though Xen will guess its own values.
++	 */
++	movq $__USER32_DS, 4*8(%rsp)
++	movq $__USER32_CS, 1*8(%rsp)
++
++	jmp entry_SYSENTER_compat_after_hwframe
+ SYM_FUNC_END(xen_sysenter_target)
+ 
+ #else /* !CONFIG_IA32_EMULATION */
 -- 
 2.25.4
 
