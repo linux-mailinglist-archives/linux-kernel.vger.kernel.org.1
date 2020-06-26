@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B9620AE13
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 10:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD7420ADE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 10:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729187AbgFZIF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 04:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40714 "EHLO
+        id S1729209AbgFZIGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 04:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729160AbgFZIF4 (ORCPT
+        with ESMTP id S1729183AbgFZIF7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 04:05:56 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5CFC08C5C1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 01:05:56 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id r18so4618813pgk.11
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 01:05:56 -0700 (PDT)
+        Fri, 26 Jun 2020 04:05:59 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 805B6C08C5DB
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 01:05:59 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id f9so4339181pfn.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 01:05:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nNwEzWipSSz2vd4pkUc1DMaHvpQvQj+NbszKHo/2YLs=;
-        b=RHg9Dgp1ggVhlqYSJDRUT2dau1OUPfz/FXjf2pt27uOy/W6ONc7WnGbc/0XGJbOcyd
-         SWY/owF6lII0qNEXDIqNVkda5D09wHn8vUWjUc/O1NKTb94LaeBEbqyr4NzLubmAkK5V
-         1n7jgw+DidjDUHHAZFLU21HT2TII00JvGgS8E=
+        bh=+EK21azx3U+MX6plvAOsvSL8DWdtKiCwgYO42rwHtnU=;
+        b=l2EBCVQRTZ1GvNRGorRxQ6hXJXjOjoDGYnvKhzHO+DLJU7s+7wLVA9NsIXmu6asZzH
+         13vUknQpNnorfz87qepVpXQWBbbuLj6lQ7DY+7mES6wDd+PKKguz+rNMBemGCHtczyDV
+         /KHM1hjyoTXOmFIO5dl3tV+SR6IWtz608dIx4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nNwEzWipSSz2vd4pkUc1DMaHvpQvQj+NbszKHo/2YLs=;
-        b=C4sljrFUfUnrhXrGTZk7I8Bw54T5LwhOVkggnH63LudU5q/6KTZbXXE4hip97nMu5R
-         sqtw+RZRl27XOUXNmRuWB8U1Tek3jYa2IOPRzGiLM4sg379omSWfcbm+aUb25SizR2rx
-         JDWNloAkknCkMUOYmWHxQgXxMGL453cty63mieyNdCQWugVy0bW93N3orDdP9L0HO0Hv
-         vKeGO58svMAovJQYSCEKhTHgMqRkUu2UhshyT0+7DEttImFnvSIbatBH0bJt8RDfbmi9
-         CCtcbEuw4Imw+Ie/1NxEtNogxhUtiSeGopWwDVwt+u6EEfg5Y/TQorW11JV1j6/M/V3Y
-         ndOQ==
-X-Gm-Message-State: AOAM5333TeN9PLyMSFQJu3CR9dkJv2gPslFkDcGHJdDiGKxsna17bd2z
-        sJN0/XrnN9Sbip2tDxylOCCHLQ==
-X-Google-Smtp-Source: ABdhPJxVxy+TcRiUnQ2Y6bbJtc+2IY2rhhdtmkNKrhVuoI5PJYt+s5qOfWmaSqZKimV2x8zZ4qzRhA==
-X-Received: by 2002:a65:46c9:: with SMTP id n9mr1608943pgr.89.1593158756043;
-        Fri, 26 Jun 2020 01:05:56 -0700 (PDT)
+        bh=+EK21azx3U+MX6plvAOsvSL8DWdtKiCwgYO42rwHtnU=;
+        b=io36caIjcNxjP962wkMXT0JbkvkSMA905OZV7U1hetkK78/HvRkeCCWjImqUF46cU8
+         g3ByI/e/0PgOP6xKXM7xW9zuuA7M4zBGotaRRrkX/IT/P6mVrz/j780Y0KZnwSHaOxEe
+         r+a9H4lODIvTmIXpBiH1wNcT0FLCA3ia91yh7qUV808glSQtUsccu04UfDsdZPG1eP4D
+         MTMRYA47SZUmQzhJDlY0ruGYrh+wPjFMvByHDBx0npCTKghHQBPDTsyBA9fCi7pBnMNx
+         to3QQnJkCBLvWEyOgWYy0ZjYCYdl5gn38zEB0/cW78YekK2XgM5JKwAeU5X3up2HR2Am
+         NGwg==
+X-Gm-Message-State: AOAM531C1wnLEKetHZQMkxsENNARVJgZ9wnXlbUlQ0tpn+RSIdGnzcqQ
+        nBb7xmxRCKVlANutRqTZKoPUmQ==
+X-Google-Smtp-Source: ABdhPJwcsLeI2i7wvAzzhzjrDVGLxbJKSHWqgsBFUOzN0435v6V6qxxM741pfFYX5NEcBlUADnWc4Q==
+X-Received: by 2002:a63:f1a:: with SMTP id e26mr1742157pgl.80.1593158759096;
+        Fri, 26 Jun 2020 01:05:59 -0700 (PDT)
 Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:93d9:de4d:e834:3086])
-        by smtp.gmail.com with ESMTPSA id 137sm21809843pgg.72.2020.06.26.01.05.53
+        by smtp.gmail.com with ESMTPSA id 137sm21809843pgg.72.2020.06.26.01.05.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 01:05:55 -0700 (PDT)
+        Fri, 26 Jun 2020 01:05:58 -0700 (PDT)
 From:   Alexandre Courbot <acourbot@chromium.org>
 To:     Tiffany Lin <tiffany.lin@mediatek.com>,
         Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
@@ -55,9 +55,9 @@ To:     Tiffany Lin <tiffany.lin@mediatek.com>,
 Cc:     linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
         linux-kernel@vger.kernel.org,
         Alexandre Courbot <acourbot@chromium.org>
-Subject: [PATCH v2 08/18] media: dt-bindings: mtk-vcodec: specify SCP node
-Date:   Fri, 26 Jun 2020 17:04:32 +0900
-Message-Id: <20200626080442.292309-9-acourbot@chromium.org>
+Subject: [PATCH v2 09/18] media: dt-bindings: mtk-vcodec: document mediatek,mt8183-vcodec-enc
+Date:   Fri, 26 Jun 2020 17:04:33 +0900
+Message-Id: <20200626080442.292309-10-acourbot@chromium.org>
 X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
 In-Reply-To: <20200626080442.292309-1-acourbot@chromium.org>
 References: <20200626080442.292309-1-acourbot@chromium.org>
@@ -68,30 +68,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mediatek codecs can use either the VPU or the SCP as their interface
-to firmware. Reflect this in the DT bindings.
+Support for the MT8183 encoder has been added, document the
+corresponding DT bindings.
 
 Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-Acked-by: Tiffany Lin <tiffany.lin@mediatek.com>
 ---
- Documentation/devicetree/bindings/media/mediatek-vcodec.txt | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/media/mediatek-vcodec.txt | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-index b6b5dde6abd8..7aef0a4fe207 100644
+index 7aef0a4fe207..8093335afecb 100644
 --- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
 +++ b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-@@ -19,7 +19,9 @@ Required properties:
- - iommus : should point to the respective IOMMU block with master port as
-   argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
-   for details.
--- mediatek,vpu : the node of video processor unit
-+One of the two following nodes:
-+- mediatek,vpu : the node of the video processor unit, if using VPU.
-+- mediatek,scp : the noode of the SCP unit, if using SCP.
+@@ -4,8 +4,9 @@ Mediatek Video Codec is the video codec hw present in Mediatek SoCs which
+ supports high resolution encoding and decoding functionalities.
  
- 
- Example:
+ Required properties:
+-- compatible : "mediatek,mt8173-vcodec-enc" for encoder
+-  "mediatek,mt8173-vcodec-dec" for decoder.
++- compatible : "mediatek,mt8173-vcodec-enc" for MT8173 encoder
++  "mediatek,mt8183-vcodec-enc" for MT8183 encoder.
++  "mediatek,mt8173-vcodec-dec" for MT8173 decoder.
+ - reg : Physical base address of the video codec registers and length of
+   memory mapped region.
+ - interrupts : interrupt number to the cpu.
 -- 
 2.27.0.212.ge8ba1cc988-goog
 
