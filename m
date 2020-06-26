@@ -2,385 +2,435 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88EB620ACD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C381120ACCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728253AbgFZHK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 03:10:58 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6828 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728145AbgFZHK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 03:10:58 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id C3743B90A9A25EF6118C;
-        Fri, 26 Jun 2020 15:10:54 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.200.84) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 26 Jun 2020 15:10:43 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>,
-        "Luis Claudio R . Goncalves" <lgoncalv@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Mahipal Challa <mahipalreddy2006@gmail.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Colin Ian King <colin.king@canonical.com>
-Subject: [PATCH v3] mm/zswap: move to use crypto_acomp API for hardware acceleration
-Date:   Fri, 26 Jun 2020 19:09:03 +1200
-Message-ID: <20200626070903.27988-1-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S1728180AbgFZHJv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Jun 2020 03:09:51 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:42253 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbgFZHJu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 03:09:50 -0400
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 628BE1C0004;
+        Fri, 26 Jun 2020 07:09:41 +0000 (UTC)
+Date:   Fri, 26 Jun 2020 09:09:40 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, richard@nod.at, vigneshr@ti.com,
+        arnd@arndb.de, brendanhiggins@google.com, tglx@linutronix.de,
+        boris.brezillon@collabora.com, anders.roxell@linaro.org,
+        masonccyang@mxic.com.tw, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
+        andriy.shevchenko@intel.com, qi-ming.wu@intel.com,
+        cheol.yong.kim@intel.com
+Subject: Re: [RESEND, v11 2/2] mtd: rawnand: Add NAND controller support on
+ Intel LGM SoC
+Message-ID: <20200626090940.4d55bf9d@xps13>
+In-Reply-To: <20200616093332.53927-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+References: <20200616093332.53927-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <20200616093332.53927-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.200.84]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-right now, all new ZIP drivers are using crypto_acomp APIs rather than
-legacy crypto_comp APIs. But zswap.c is still using the old APIs. That
-means zswap won't be able to use any new zip drivers in kernel.
+Hello,
 
-This patch moves to use cryto_acomp APIs to fix the problem. On the
-other hand, tradiontal compressors like lz4,lzo etc have been wrapped
-into acomp via scomp backend. So platforms without async compressors
-can fallback to use acomp via scomp backend.
+"Ramuthevar,Vadivel MuruganX"
+<vadivel.muruganx.ramuthevar@linux.intel.com> wrote on Tue, 16 Jun 2020
+17:33:32 +0800:
 
-Cc: Luis Claudio R. Goncalves <lgoncalv@redhat.com>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Mahipal Challa <mahipalreddy2006@gmail.com>
-Cc: Seth Jennings <sjenning@redhat.com>
-Cc: Dan Streetman <ddstreet@ieee.org>
-Cc: Vitaly Wool <vitaly.wool@konsulko.com>
-Cc: Zhou Wang <wangzhou1@hisilicon.com>
-Cc: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- -v3: fix resource leak in error handle path;
- remove redundant assignment according to Colin King, thanks!
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> 
+> This patch adds the new IP of Nand Flash Controller(NFC) support
+> on Intel's Lightning Mountain(LGM) SoC.
+> 
+> DMA is used for burst data transfer operation, also DMA HW supports
+> aligned 32bit memory address and aligned data access by default.
+> DMA burst of 8 supported. Data register used to support the read/write
+> operation from/to device.
+> 
+> NAND controller driver implements ->exec_op() to replace legacy hooks,
+> these specific call-back method to execute NAND operations.
+> 
+> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> ---
 
- mm/zswap.c | 160 +++++++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 117 insertions(+), 43 deletions(-)
+[...]
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index fbb782924ccc..d170ef06c693 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -24,8 +24,10 @@
- #include <linux/rbtree.h>
- #include <linux/swap.h>
- #include <linux/crypto.h>
-+#include <linux/scatterlist.h>
- #include <linux/mempool.h>
- #include <linux/zpool.h>
-+#include <crypto/acompress.h>
- 
- #include <linux/mm_types.h>
- #include <linux/page-flags.h>
-@@ -127,9 +129,17 @@ module_param_named(same_filled_pages_enabled, zswap_same_filled_pages_enabled,
- * data structures
- **********************************/
- 
-+struct crypto_acomp_ctx {
-+	struct crypto_acomp *acomp;
-+	struct acomp_req *req;
-+	struct crypto_wait wait;
-+	u8 *dstmem;
-+	struct mutex mutex;
-+};
-+
- struct zswap_pool {
- 	struct zpool *zpool;
--	struct crypto_comp * __percpu *tfm;
-+	struct crypto_acomp_ctx * __percpu *acomp_ctx;
- 	struct kref kref;
- 	struct list_head list;
- 	struct work_struct release_work;
-@@ -415,30 +425,68 @@ static int zswap_dstmem_dead(unsigned int cpu)
- static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
- {
- 	struct zswap_pool *pool = hlist_entry(node, struct zswap_pool, node);
--	struct crypto_comp *tfm;
-+	struct crypto_acomp *acomp;
-+	struct acomp_req *req;
-+	struct crypto_acomp_ctx *acomp_ctx;
-+	int ret;
- 
--	if (WARN_ON(*per_cpu_ptr(pool->tfm, cpu)))
-+	if (WARN_ON(*per_cpu_ptr(pool->acomp_ctx, cpu)))
- 		return 0;
- 
--	tfm = crypto_alloc_comp(pool->tfm_name, 0, 0);
--	if (IS_ERR_OR_NULL(tfm)) {
--		pr_err("could not alloc crypto comp %s : %ld\n",
--		       pool->tfm_name, PTR_ERR(tfm));
-+	acomp_ctx = kzalloc(sizeof(*acomp_ctx), GFP_KERNEL);
-+	if (!acomp_ctx)
- 		return -ENOMEM;
-+
-+	acomp = crypto_alloc_acomp(pool->tfm_name, 0, 0);
-+	if (IS_ERR(acomp)) {
-+		pr_err("could not alloc crypto acomp %s : %ld\n",
-+				pool->tfm_name, PTR_ERR(acomp));
-+		ret = PTR_ERR(acomp);
-+		goto free_ctx;
-+	}
-+	acomp_ctx->acomp = acomp;
-+
-+	req = acomp_request_alloc(acomp_ctx->acomp);
-+	if (!req) {
-+		pr_err("could not alloc crypto acomp_request %s\n",
-+		       pool->tfm_name);
-+		ret = -ENOMEM;
-+		goto free_acomp;
- 	}
--	*per_cpu_ptr(pool->tfm, cpu) = tfm;
-+	acomp_ctx->req = req;
-+
-+	mutex_init(&acomp_ctx->mutex);
-+	crypto_init_wait(&acomp_ctx->wait);
-+	acomp_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG,
-+				   crypto_req_done, &acomp_ctx->wait);
-+
-+	acomp_ctx->dstmem = per_cpu(zswap_dstmem, cpu);
-+	*per_cpu_ptr(pool->acomp_ctx, cpu) = acomp_ctx;
-+
- 	return 0;
-+
-+free_acomp:
-+	crypto_free_acomp(acomp_ctx->acomp);
-+free_ctx:
-+	kfree(acomp_ctx);
-+	return ret;
- }
- 
- static int zswap_cpu_comp_dead(unsigned int cpu, struct hlist_node *node)
- {
- 	struct zswap_pool *pool = hlist_entry(node, struct zswap_pool, node);
--	struct crypto_comp *tfm;
-+	struct crypto_acomp_ctx *acomp_ctx;
-+
-+	acomp_ctx = *per_cpu_ptr(pool->acomp_ctx, cpu);
-+	if (!IS_ERR_OR_NULL(acomp_ctx)) {
-+		if (!IS_ERR_OR_NULL(acomp_ctx->req))
-+			acomp_request_free(acomp_ctx->req);
-+		if (!IS_ERR_OR_NULL(acomp_ctx->acomp))
-+			crypto_free_acomp(acomp_ctx->acomp);
-+		kfree(acomp_ctx);
-+	}
-+	*per_cpu_ptr(pool->acomp_ctx, cpu) = NULL;
- 
--	tfm = *per_cpu_ptr(pool->tfm, cpu);
--	if (!IS_ERR_OR_NULL(tfm))
--		crypto_free_comp(tfm);
--	*per_cpu_ptr(pool->tfm, cpu) = NULL;
- 	return 0;
- }
- 
-@@ -561,8 +609,9 @@ static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
- 	pr_debug("using %s zpool\n", zpool_get_type(pool->zpool));
- 
- 	strlcpy(pool->tfm_name, compressor, sizeof(pool->tfm_name));
--	pool->tfm = alloc_percpu(struct crypto_comp *);
--	if (!pool->tfm) {
-+
-+	pool->acomp_ctx = alloc_percpu(struct crypto_acomp_ctx *);
-+	if (!pool->acomp_ctx) {
- 		pr_err("percpu alloc failed\n");
- 		goto error;
- 	}
-@@ -585,7 +634,7 @@ static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
- 	return pool;
- 
- error:
--	free_percpu(pool->tfm);
-+	free_percpu(pool->acomp_ctx);
- 	if (pool->zpool)
- 		zpool_destroy_pool(pool->zpool);
- 	kfree(pool);
-@@ -596,14 +645,14 @@ static __init struct zswap_pool *__zswap_pool_create_fallback(void)
- {
- 	bool has_comp, has_zpool;
- 
--	has_comp = crypto_has_comp(zswap_compressor, 0, 0);
-+	has_comp = crypto_has_acomp(zswap_compressor, 0, 0);
- 	if (!has_comp && strcmp(zswap_compressor,
- 				CONFIG_ZSWAP_COMPRESSOR_DEFAULT)) {
- 		pr_err("compressor %s not available, using default %s\n",
- 		       zswap_compressor, CONFIG_ZSWAP_COMPRESSOR_DEFAULT);
- 		param_free_charp(&zswap_compressor);
- 		zswap_compressor = CONFIG_ZSWAP_COMPRESSOR_DEFAULT;
--		has_comp = crypto_has_comp(zswap_compressor, 0, 0);
-+		has_comp = crypto_has_acomp(zswap_compressor, 0, 0);
- 	}
- 	if (!has_comp) {
- 		pr_err("default compressor %s not available\n",
-@@ -639,7 +688,7 @@ static void zswap_pool_destroy(struct zswap_pool *pool)
- 	zswap_pool_debug("destroying", pool);
- 
- 	cpuhp_state_remove_instance(CPUHP_MM_ZSWP_POOL_PREPARE, &pool->node);
--	free_percpu(pool->tfm);
-+	free_percpu(pool->acomp_ctx);
- 	zpool_destroy_pool(pool->zpool);
- 	kfree(pool);
- }
-@@ -723,7 +772,7 @@ static int __zswap_param_set(const char *val, const struct kernel_param *kp,
- 		}
- 		type = s;
- 	} else if (!compressor) {
--		if (!crypto_has_comp(s, 0, 0)) {
-+		if (!crypto_has_acomp(s, 0, 0)) {
- 			pr_err("compressor %s not available\n", s);
- 			return -ENOENT;
- 		}
-@@ -774,7 +823,7 @@ static int __zswap_param_set(const char *val, const struct kernel_param *kp,
- 		 * failed, maybe both compressor and zpool params were bad.
- 		 * Allow changing this param, so pool creation will succeed
- 		 * when the other param is changed. We already verified this
--		 * param is ok in the zpool_has_pool() or crypto_has_comp()
-+		 * param is ok in the zpool_has_pool() or crypto_has_acomp()
- 		 * checks above.
- 		 */
- 		ret = param_set_charp(s, kp);
-@@ -876,7 +925,9 @@ static int zswap_writeback_entry(struct zpool *pool, unsigned long handle)
- 	pgoff_t offset;
- 	struct zswap_entry *entry;
- 	struct page *page;
--	struct crypto_comp *tfm;
-+	struct scatterlist input, output;
-+	struct crypto_acomp_ctx *acomp_ctx;
-+
- 	u8 *src, *dst;
- 	unsigned int dlen;
- 	int ret;
-@@ -916,14 +967,21 @@ static int zswap_writeback_entry(struct zpool *pool, unsigned long handle)
- 
- 	case ZSWAP_SWAPCACHE_NEW: /* page is locked */
- 		/* decompress */
-+		acomp_ctx = *this_cpu_ptr(entry->pool->acomp_ctx);
-+
- 		dlen = PAGE_SIZE;
- 		src = (u8 *)zhdr + sizeof(struct zswap_header);
--		dst = kmap_atomic(page);
--		tfm = *get_cpu_ptr(entry->pool->tfm);
--		ret = crypto_comp_decompress(tfm, src, entry->length,
--					     dst, &dlen);
--		put_cpu_ptr(entry->pool->tfm);
--		kunmap_atomic(dst);
-+		dst = kmap(page);
-+
-+		mutex_lock(&acomp_ctx->mutex);
-+		sg_init_one(&input, src, entry->length);
-+		sg_init_one(&output, dst, dlen);
-+		acomp_request_set_params(acomp_ctx->req, &input, &output, entry->length, dlen);
-+		ret = crypto_wait_req(crypto_acomp_decompress(acomp_ctx->req), &acomp_ctx->wait);
-+		dlen = acomp_ctx->req->dlen;
-+		mutex_unlock(&acomp_ctx->mutex);
-+
-+		kunmap(page);
- 		BUG_ON(ret);
- 		BUG_ON(dlen != PAGE_SIZE);
- 
-@@ -1004,7 +1062,8 @@ static int zswap_frontswap_store(unsigned type, pgoff_t offset,
- {
- 	struct zswap_tree *tree = zswap_trees[type];
- 	struct zswap_entry *entry, *dupentry;
--	struct crypto_comp *tfm;
-+	struct scatterlist input, output;
-+	struct crypto_acomp_ctx *acomp_ctx;
- 	int ret;
- 	unsigned int hlen, dlen = PAGE_SIZE;
- 	unsigned long handle, value;
-@@ -1074,12 +1133,20 @@ static int zswap_frontswap_store(unsigned type, pgoff_t offset,
- 	}
- 
- 	/* compress */
--	dst = get_cpu_var(zswap_dstmem);
--	tfm = *get_cpu_ptr(entry->pool->tfm);
--	src = kmap_atomic(page);
--	ret = crypto_comp_compress(tfm, src, PAGE_SIZE, dst, &dlen);
--	kunmap_atomic(src);
--	put_cpu_ptr(entry->pool->tfm);
-+	acomp_ctx = *this_cpu_ptr(entry->pool->acomp_ctx);
-+
-+	mutex_lock(&acomp_ctx->mutex);
-+
-+	src = kmap(page);
-+	dst = acomp_ctx->dstmem;
-+	sg_init_one(&input, src, PAGE_SIZE);
-+	/* zswap_dstmem is of size (PAGE_SIZE * 2). Reflect same in sg_list */
-+	sg_init_one(&output, dst, PAGE_SIZE * 2);
-+	acomp_request_set_params(acomp_ctx->req, &input, &output, PAGE_SIZE, dlen);
-+	ret = crypto_wait_req(crypto_acomp_compress(acomp_ctx->req), &acomp_ctx->wait);
-+	dlen = acomp_ctx->req->dlen;
-+	kunmap(page);
-+
- 	if (ret) {
- 		ret = -EINVAL;
- 		goto put_dstmem;
-@@ -1103,7 +1170,7 @@ static int zswap_frontswap_store(unsigned type, pgoff_t offset,
- 	memcpy(buf, &zhdr, hlen);
- 	memcpy(buf + hlen, dst, dlen);
- 	zpool_unmap_handle(entry->pool->zpool, handle);
--	put_cpu_var(zswap_dstmem);
-+	mutex_unlock(&acomp_ctx->mutex);
- 
- 	/* populate entry */
- 	entry->offset = offset;
-@@ -1131,7 +1198,7 @@ static int zswap_frontswap_store(unsigned type, pgoff_t offset,
- 	return 0;
- 
- put_dstmem:
--	put_cpu_var(zswap_dstmem);
-+	mutex_unlock(&acomp_ctx->mutex);
- 	zswap_pool_put(entry->pool);
- freepage:
- 	zswap_entry_cache_free(entry);
-@@ -1148,7 +1215,8 @@ static int zswap_frontswap_load(unsigned type, pgoff_t offset,
- {
- 	struct zswap_tree *tree = zswap_trees[type];
- 	struct zswap_entry *entry;
--	struct crypto_comp *tfm;
-+	struct scatterlist input, output;
-+	struct crypto_acomp_ctx *acomp_ctx;
- 	u8 *src, *dst;
- 	unsigned int dlen;
- 	int ret;
-@@ -1175,11 +1243,17 @@ static int zswap_frontswap_load(unsigned type, pgoff_t offset,
- 	src = zpool_map_handle(entry->pool->zpool, entry->handle, ZPOOL_MM_RO);
- 	if (zpool_evictable(entry->pool->zpool))
- 		src += sizeof(struct zswap_header);
--	dst = kmap_atomic(page);
--	tfm = *get_cpu_ptr(entry->pool->tfm);
--	ret = crypto_comp_decompress(tfm, src, entry->length, dst, &dlen);
--	put_cpu_ptr(entry->pool->tfm);
--	kunmap_atomic(dst);
-+	dst = kmap(page);
-+
-+	acomp_ctx = *this_cpu_ptr(entry->pool->acomp_ctx);
-+	mutex_lock(&acomp_ctx->mutex);
-+	sg_init_one(&input, src, entry->length);
-+	sg_init_one(&output, dst, dlen);
-+	acomp_request_set_params(acomp_ctx->req, &input, &output, entry->length, dlen);
-+	ret = crypto_wait_req(crypto_acomp_decompress(acomp_ctx->req), &acomp_ctx->wait);
-+	mutex_unlock(&acomp_ctx->mutex);
-+
-+	kunmap(page);
- 	zpool_unmap_handle(entry->pool->zpool, entry->handle);
- 	BUG_ON(ret);
- 
--- 
-2.27.0
+> +static int ebu_nand_write_page_hwecc(struct nand_chip *chip, const u8 *buf,
+> +				     int oob_required, int page)
+> +{
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +	struct ebu_nand_controller *ebu_host = nand_get_controller_data(chip);
+> +	void __iomem *int_sta = ebu_host->hsnand + HSNAND_INT_STA;
+> +	int ret, val, x;
+> +	u32 reg;
+> +
+> +	ebu_nand_trigger(ebu_host, page, NAND_CMD_SEQIN);
+> +
+> +	ret = ebu_dma_start(ebu_host, DMA_MEM_TO_DEV, buf, mtd->writesize);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (oob_required) {
+> +		reg = (chip->oob_poi[3] << 24) | (chip->oob_poi[2] << 16) |
+> +			(chip->oob_poi[1] << 8) | chip->oob_poi[0];
+> +
+> +		writel(reg, ebu_host->hsnand + HSNAND_CMSG_0);
+> +
+> +		reg = (chip->oob_poi[7] << 24) | (chip->oob_poi[6] << 16) |
+> +			(chip->oob_poi[5] << 8) | chip->oob_poi[4];
+> +
+> +		writel(reg, ebu_host->hsnand + HSNAND_CMSG_1);
+> +	}
+> +
+> +	ret = readl_poll_timeout_atomic(int_sta, val,
+> +					!(val & HSNAND_INT_STA_WR_C), 10, 1000);
+> +	if (ret)
+> +		return -EIO;
+> +
+> +	x = readl(ebu_host->hsnand + HSNAND_CTL);
+> +	x &= ~HSNAND_CTL_GO;
+> +	writel(x, ebu_host->hsnand + HSNAND_CTL);
+> +
+> +	return 0;
+> +}
+> +
+> +static const u8 ecc_strength[] = { 1, 1, 4, 8, 24, 32, 40, 60, };
+> +
+> +static int ebu_nand_attach_chip(struct nand_chip *chip)
+> +{
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +	struct ebu_nand_controller *ebu_host = nand_get_controller_data(chip);
+> +	u32 eccsize, eccsteps, eccbytes, ecctotal, pagesize, pg_per_blk;
+> +	u32 eccstrength = chip->ecc.strength;
+> +	u32 writesize = mtd->writesize;
+> +	u32 blocksize = mtd->erasesize;
+> +	int start, val, i;
+> +
+> +	if (chip->ecc.mode != NAND_ECC_HW)
+> +		return 0;
+> +
+> +	/* Check whether eccsize is 0x0 or wrong. assign eccsize = 512 if YES */
+
+	/* Default to an ECC size of 512 */
+
+> +	if (!chip->ecc.size)
+> +		chip->ecc.size = 512;
+> +	eccsize = chip->ecc.size;
+> +
+> +	switch (eccsize) {
+> +	case 512:
+> +		start = 1;
+> +		if (!eccstrength)
+> +			eccstrength = 4;
+> +		break;
+> +	case 1024:
+> +		start = 4;
+> +		if (!eccstrength)
+
+You might want to look at other drivers and check the ecc_strength_ds
+property.
+
+> +			eccstrength = 32;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	i = round_up(start + 1, 4);
+> +	for (val = start; val < i; val++) {
+> +		if (eccstrength == ecc_strength[val])
+> +			break;
+> +	}
+
+A comment to explain what is this would be nice.
+
+Also "i" is not meaningful at all.
+
+> +	if (val == i)
+> +		return -EINVAL;
+> +
+> +	if (eccstrength == 8)
+> +		eccbytes = 14;
+> +	else
+> +		eccbytes = DIV_ROUND_UP(eccstrength * fls(8 * eccsize), 8);
+
+Does this formula works for eccstrength == 8 too?
+
+> +
+> +	eccsteps = writesize / eccsize;
+> +	ecctotal = eccsteps * eccbytes;
+> +	if ((ecctotal + 8) > mtd->oobsize)
+> +		return -ERANGE;
+> +
+> +	chip->ecc.total = ecctotal;
+> +	pagesize = fls(writesize >> 11);
+> +	if (pagesize > HSNAND_PARA0_PAGE_V8192)
+> +		return -ERANGE;
+> +
+> +	pg_per_blk = fls((blocksize / writesize) >> 6) << 4;
+> +	if (pg_per_blk > HSNAND_PARA0_PIB_V256)
+> +		return -ERANGE;
+> +
+> +	ebu_host->nd_para0 = pagesize | pg_per_blk | HSNAND_PARA0_BYP_EN_NP |
+> +			     HSNAND_PARA0_BYP_DEC_NP | HSNAND_PARA0_ADEP_EN |
+> +			     HSNAND_PARA0_TYPE_ONFI | (val << 29);
+> +
+> +	mtd_set_ooblayout(mtd, &ebu_nand_ooblayout_ops);
+> +	chip->ecc.read_page = ebu_nand_read_page_hwecc;
+> +	chip->ecc.write_page = ebu_nand_write_page_hwecc;
+> +
+> +	return 0;
+> +}
+> +
+> +static int ebu_nand_exec_op(struct nand_chip *chip,
+> +			    const struct nand_operation *op, bool check_only)
+
+You don't handle the check_only parameter. This will fail with recent
+versions of the core.
+
+> +{
+> +	struct ebu_nand_controller *ctrl = nand_to_ebu(chip);
+> +	const struct nand_op_instr *instr = NULL;
+> +	unsigned int op_id;
+> +	int i, time_out, ret = 0;
+> +	u32 stat;
+> +
+> +	ebu_select_chip(chip);
+> +
+> +	for (op_id = 0; op_id < op->ninstrs; op_id++) {
+> +		instr = &op->instrs[op_id];
+> +
+> +		switch (instr->type) {
+> +		case NAND_OP_CMD_INSTR:
+> +			ebu_nand_writeb(chip, HSNAND_CLE_OFFS | HSNAND_CS_OFFS,
+> +					instr->ctx.cmd.opcode);
+> +			break;
+> +
+> +		case NAND_OP_ADDR_INSTR:
+> +			for (i = 0; i < instr->ctx.addr.naddrs; i++)
+> +				ebu_nand_writeb(chip,
+> +						HSNAND_ALE_OFFS | HSNAND_CS_OFFS,
+> +						instr->ctx.addr.addrs[i]);
+> +			break;
+> +
+> +		case NAND_OP_DATA_IN_INSTR:
+> +			ebu_read_buf(chip, instr->ctx.data.buf.in,
+> +				     instr->ctx.data.len);
+> +			break;
+> +
+> +		case NAND_OP_DATA_OUT_INSTR:
+> +			ebu_write_buf(chip, instr->ctx.data.buf.out,
+> +				      instr->ctx.data.len);
+> +			break;
+> +
+> +		case NAND_OP_WAITRDY_INSTR:
+> +			time_out = instr->ctx.waitrdy.timeout_ms * 1000;
+> +			ret = readl_poll_timeout(ctrl->ebu + EBU_WAIT,
+> +						 stat, stat & EBU_WAIT_RDBY,
+> +						 20, time_out);
+> +			break;
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct nand_controller_ops ebu_nand_controller_ops = {
+> +	.attach_chip = ebu_nand_attach_chip,
+> +	.exec_op = ebu_nand_exec_op,
+> +	.setup_data_interface = ebu_nand_setup_data_interface,
+> +};
+> +
+> +static void ebu_dma_cleanup(struct ebu_nand_controller *ebu_host)
+> +{
+> +	if (ebu_host->dma_rx)
+> +		dma_release_channel(ebu_host->dma_rx);
+> +
+> +	if (ebu_host->dma_tx)
+> +		dma_release_channel(ebu_host->dma_tx);
+> +}
+> +
+> +static int ebu_nand_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct ebu_nand_controller *ebu_host;
+> +	struct nand_chip *nand;
+> +	struct mtd_info *mtd;
+> +	struct resource *res;
+> +	char *resname;
+> +	int ret, i;
+> +	u32 reg;
+> +
+> +	ebu_host = devm_kzalloc(dev, sizeof(*ebu_host), GFP_KERNEL);
+> +	if (!ebu_host)
+> +		return -ENOMEM;
+> +
+> +	ebu_host->dev = dev;
+> +	nand_controller_init(&ebu_host->controller);
+> +
+> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ebunand");
+> +	ebu_host->ebu = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(ebu_host->ebu))
+> +		return PTR_ERR(ebu_host->ebu);
+> +
+> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hsnand");
+> +	ebu_host->hsnand = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(ebu_host->hsnand))
+> +		return PTR_ERR(ebu_host->hsnand);
+> +
+> +	ret = device_property_read_u32(dev, "nand,cs", &reg);
+> +	if (ret) {
+> +		dev_err(dev, "failed to get chip select: %d\n", ret);
+> +		return ret;
+> +	}
+> +	ebu_host->cs_num = reg;
+> +
+> +	for (i = 0; i < MAX_CS; i++) {
+> +		resname = devm_kasprintf(dev, GFP_KERNEL, "nand_cs%d", i);
+> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+> +						   resname);
+> +		if (!res)
+> +			return -EINVAL;
+> +		ebu_host->cs[i].chipaddr = devm_ioremap_resource(dev, res);
+> +		ebu_host->cs[i].nand_pa = res->start;
+> +		if (IS_ERR(ebu_host->cs[i].chipaddr))
+> +			return PTR_ERR(ebu_host->cs[i].chipaddr);
+> +	}
+> +
+> +	ebu_host->clk = devm_clk_get(dev, NULL);
+> +	if (IS_ERR(ebu_host->clk)) {
+> +		ret = PTR_ERR(ebu_host->clk);
+> +		dev_err(dev, "failed to get clock: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = clk_prepare_enable(ebu_host->clk);
+> +	if (ret) {
+> +		dev_err(dev, "failed to enable clock: %d\n", ret);
+> +		return ret;
+> +	}
+> +	ebu_host->clk_rate = clk_get_rate(ebu_host->clk);
+> +
+> +	ebu_host->dma_tx = dma_request_chan(dev, "tx");
+> +	if (IS_ERR(ebu_host->dma_tx)) {
+> +		ret = PTR_ERR(ebu_host->dma_tx);
+> +		dev_err(dev, "DMA tx channel request fail!.\n");
+> +		goto err_cleanup_dma;
+> +	}
+> +
+> +	ebu_host->dma_rx = dma_request_chan(dev, "rx");
+> +	if (IS_ERR(ebu_host->dma_rx)) {
+> +		ret = PTR_ERR(ebu_host->dma_rx);
+> +		dev_err(dev, "DMA rx channel request fail!.\n");
+> +		goto err_cleanup_dma;
+> +	}
+> +
+> +	for (i = 0; i < MAX_CS; i++) {
+> +		resname = devm_kasprintf(dev, GFP_KERNEL, "addr_sel%d", i);
+> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+> +						   resname);
+> +		if (!res)
+> +			return -EINVAL;
+
+New line
+
+> +		ebu_host->cs[i].addr_sel = res->start;
+> +		writel(ebu_host->cs[i].addr_sel | EBU_ADDR_MASK(5) |
+> +		       EBU_ADDR_SEL_REGEN, ebu_host->ebu + EBU_ADDR_SEL(i));
+> +	}
+> +
+> +	nand_set_flash_node(&ebu_host->chip, dev->of_node);
+
+You probably want to verify that mtd->name is set after
+nand_set_flash_node, to validate the presence of the mandatory 'label'
+DT property.
+
+> +	mtd = nand_to_mtd(&ebu_host->chip);
+> +	mtd->dev.parent = dev;
+> +	ebu_host->dev = dev;
+> +
+> +	platform_set_drvdata(pdev, ebu_host);
+> +	nand_set_controller_data(&ebu_host->chip, ebu_host);
+> +
+> +	nand = &ebu_host->chip;
+> +	nand->controller = &ebu_host->controller;
+> +	nand->controller->ops = &ebu_nand_controller_ops;
+> +
+> +	/* Scan to find existence of the device */
+> +	ret = nand_scan(&ebu_host->chip, 1);
+> +	if (ret)
+> +		goto err_cleanup_dma;
+> +
+> +	ret = mtd_device_register(mtd, NULL, 0);
+> +	if (ret)
+> +		goto err_clean_nand;
+> +
+> +	return 0;
+> +
+> +err_clean_nand:
+> +	nand_cleanup(&ebu_host->chip);
+> +err_cleanup_dma:
+> +	ebu_dma_cleanup(ebu_host);
+> +	clk_disable_unprepare(ebu_host->clk);
+> +
+> +	return ret;
+> +}
+> +
+> +static int ebu_nand_remove(struct platform_device *pdev)
+> +{
+> +	struct ebu_nand_controller *ebu_host = platform_get_drvdata(pdev);
+> +
+> +	mtd_device_unregister(nand_to_mtd(&ebu_host->chip));
+
+ret = mtd_device...
+WARN_ON(ret);
+
+> +	nand_cleanup(&ebu_host->chip);
+> +	ebu_nand_disable(&ebu_host->chip);
+> +	ebu_dma_cleanup(ebu_host);
+> +	clk_disable_unprepare(ebu_host->clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id ebu_nand_match[] = {
+> +	{ .compatible = "intel,nand-controller", },
+
+Any version to append to the compatible?
+
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, ebu_nand_match);
+> +
+> +static struct platform_driver ebu_nand_driver = {
+> +	.probe = ebu_nand_probe,
+> +	.remove = ebu_nand_remove,
+> +	.driver = {
+> +		.name = "intel-nand-controller",
+> +		.of_match_table = ebu_nand_match,
+> +	},
+> +
+> +};
+> +module_platform_driver(ebu_nand_driver);
+> +
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_AUTHOR("Vadivel Murugan R <vadivel.muruganx.ramuthevar@intel.com>");
+> +MODULE_DESCRIPTION("Intel's LGM External Bus NAND Controller driver");
 
 
+Thanks,
+Miquèl
