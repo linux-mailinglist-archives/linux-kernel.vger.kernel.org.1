@@ -2,87 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8444420B3B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 16:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4477320B3B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 16:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729286AbgFZOhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 10:37:43 -0400
-Received: from sonic302-20.consmr.mail.ir2.yahoo.com ([87.248.110.83]:41097
-        "EHLO sonic302-20.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725970AbgFZOhn (ORCPT
+        id S1729296AbgFZOh6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Jun 2020 10:37:58 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:37499 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgFZOh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 10:37:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1593182260; bh=AIANIItPD3HSZqQg1A8+qKlShcdqanJrJKT1smNj1sU=; h=Date:From:Reply-To:Subject:References:From:Subject; b=A9Lsj1p7o8qfmPYZ2fuZhk0hvH48tR57l4glVSyq+o4KD4Y07sYbSRJFrWpzOLFSVrbf7arsvzHW0ZVE4qpoeXd4iBpkHATKt6B4C3Jg+saZlDIApiUtZtZwi6Nbm9eCBsq6awX6tmWRGu2IJm1PW04wHMYkfvO9RtTMlXpQ29z5axo9NokrPJLSuLI5f7j1eM1LUftWWX9ZQ/9D8DcU/kk9VSkAvWOw+QRLjtmE5SMJ3PeaUi3f38C1QmdgpZTnMxoJevx7UzSjbyWEhTv0iWgkbHAk3ceLwVStyvfxFdZecxp1Wnk6dKr/zAMNJNwMiCzVcj17fF8TVCeEqVAiNQ==
-X-YMail-OSG: s8hPQ9UVM1kXVMxo0Hv8eGc9lSGYuyPNHWbA2a0Iuz_C36smySYW498lVmBmZZ.
- cohVIJmFfAHBVTwfhCse01eqVhGQpvdSgMgKrX4kWhquBE5GQj3aD9XwHc4ZsyIJHzObCikXeG5O
- TDNFC7K4vno_yErPwIBcSXRK_4e6gJiZK7KD0q64PyA1z5OxIYcfkat1usVCy8OIY6HKnbSJfMjo
- 9uf6iBEXEuTUj4HKmsVycHGQkn4QMTg6pgO4yzRbz2x_GB2WxY.IEiPexMDgL0OnM2HRBtQcX2z6
- NSGn_KQ2XMqZ26oZGDSYMrgEm.BXmVQcoTUiGXBjktbew2bLtfeYxaMEpNYy8USUi_m_1zVn1Q6Z
- o9SpXnrqZBKASitnAxqhkl4uJ8FRlBAKAzCLEK78JVe0D3oj_MjIOXRW1sPMKmUxG83YFotdKMsl
- .nzOzzjgeeDBVGKocsbJMCTIxv09qbDX8TjjjS..Lq8gZCWkeSyy1x1LEOEnUFhkWQRqB0edsqHG
- WKNTv9sJMHAtxZg8urV3JsXEBMqi69gs_j4RtO9PrIZuMnjvrjLwacc2j2USofJOBWCaXPT6tUl0
- F9sEjuHQuyKq9prrSCPOWrkxx2MuCUOkymgvHli02L5WEoCA5TC2FkMnqT9uRfIFIgvnxJY6E77R
- weoQYPC_1RrfCZ0pYCSXBF68YX9cv2Xz078Rt0zYkqOlsbmNjLHEi7bYCoAeyzO86wZIrE8l6okA
- 08LryvBAzJ2gYg1WM4j4gJF3vkytLeqU0QkZecr8KrfLqp2oConzSC9hlzP0y3gYOQU_akGdH3yK
- qrbcXTEf5shiR7Sm0pSITB2N_1DFY43JCGUJas1BK3MLhuwLHfLnC.MYJKM69CMX_3gIG2ywJcQK
- IExewQj20Avz.vTDolLH1ZV1aoXjlmY.6NuX1eBunVangAwxWbrXsViY.ircqEoXCSq4zPMaScPw
- FBFcAT5b5ARUu.fCcsBNqYH8SVoe4Z36AQgh1aesjFsZ8mt61fN7i.DEeZ61D23YBwVSEPUusz4Q
- H7MQiAnXBg9gtQvsS4msE5zULeQ1Ywo8CiQkza03r68L1RuuP0VOVcRvps5hSCUWFjcJaGXCw35Q
- C_7wMsbM67NYFomOLBbgbhbGo7WZSmhomDgw8Yx0LDErGlUhptyOm6BMbsyZG9hSnUBYaVcxu.kk
- V00dcZRXvgTPYH44aToHPS5jkZCtH26o1hXeo3A2rBh3hWvV3lHY9DqypHGOgDlK.chyBEJdyGQY
- Q8I8KnqdyMp7SeBvxecH_HD5eaFk4bSQfX74ttyqiO2z1PP3wH0FvI5k4GG5QXb0sSoR5ZpYdg02
- uvFWsPA--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ir2.yahoo.com with HTTP; Fri, 26 Jun 2020 14:37:40 +0000
-Date:   Fri, 26 Jun 2020 14:37:35 +0000 (UTC)
-From:   Theresa Han <serena@lantermo.it>
-Reply-To: han.theresa2017@gmail.com
-Message-ID: <694971252.7445405.1593182255347@mail.yahoo.com>
-Subject: =?UTF-8?Q?Ich_gr=C3=BC=C3=9Fe_dich_im_Namen_des_Herrn?=
+        Fri, 26 Jun 2020 10:37:57 -0400
+Received: from mail-qv1-f42.google.com ([209.85.219.42]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MzTCy-1itrBk1WDo-00vL9G for <linux-kernel@vger.kernel.org>; Fri, 26 Jun
+ 2020 16:37:56 +0200
+Received: by mail-qv1-f42.google.com with SMTP id g11so4585886qvs.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 07:37:56 -0700 (PDT)
+X-Gm-Message-State: AOAM531EVzHfX5WdPmL4qSLTyKtNAqGEgYv5bQjAx/D9gLdCkpIVCXZE
+        RlgBnCf34o8d1/CJLFk45QqHE2ZrnXGjj2cR1Ok=
+X-Google-Smtp-Source: ABdhPJyfuQEYBa5MgOiBy8bbX63hjSU2tNfkceBKI1Vd8sPd8rCYB1PvDeCJCf2TLn2908S5iDQx2pZ/HBZU9pmuKJE=
+X-Received: by 2002:a0c:f385:: with SMTP id i5mr3580097qvk.4.1593182275276;
+ Fri, 26 Jun 2020 07:37:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <694971252.7445405.1593182255347.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16138 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200626130525.389469-1-lee.jones@linaro.org> <20200626130525.389469-6-lee.jones@linaro.org>
+In-Reply-To: <20200626130525.389469-6-lee.jones@linaro.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 26 Jun 2020 16:37:39 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0f1mojUw3jwuZWYcVRB7u9THt62vHe-jS2P3L=PKTV=g@mail.gmail.com>
+Message-ID: <CAK8P3a0f1mojUw3jwuZWYcVRB7u9THt62vHe-jS2P3L=PKTV=g@mail.gmail.com>
+Subject: Re: [PATCH 05/10] misc: lkdtm: Always provide prototype for lkdtm_DOUBLE_FAULT()
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     gregkh <gregkh@linuxfoundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:Wohm3fhlLguIrcTt0zsqN5SZMg7n/fBN7rHkHv2J09vid5ngTJM
+ ebubAYVS2+8i6Qa4owdKoiS49QRI3JxPyXRcZqmdS3Rv0ZfHVbon3G8XjRA1etJ3uzCsxPs
+ Hkh9rxapRRunXmeeSmeZgD9iai2Z7tcBgKzHnjS7w1akoZwzPJp+nCnmSjmd9825hOPEIsK
+ qK5BiQzxKFeBfNmqb7CHg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:I6PBN6WgPis=:pXet1GDyFEoFIKskEWLZQv
+ cwfd3iZxRiGt4xDoF351ie+7fX/gApz3VGTKh8+ZDAeW0ahgeGEWf7NicRSsb38feLmzYHKES
+ 8Kx3MJ/c8UrBUiQkYxiOm1Br2IAu3z20Cw0SGs/+etorQMch6vNc/yVxGIkBQ6bNE6eeZddzj
+ dP7OHERVK21C7NMpMbwYcxX931tF0eZzCABaI8BTB4SXd2SKaobIQpr1u9TNy2mRhndHrfEOs
+ Yi/86erWFbO0KlZYGV5a/KLIbDuZf4+NtUmUh8gYh3OD+zNY7DSM/ywTcNYTbjNWNlWn5uzz4
+ gUrWODyjOE9VaiE74rUn6gOsJrIWCrskKUrDqOE2+krmLdPJ8iaO/4Ahjq/jmJJJahL/pi4jB
+ 61WR6xyzW5E5R9EV/ZFmD77nyP7uTcbutbhavU8SqXxJq5MHMSNyzkNat4vdyEsVntYadnjDb
+ rBMOWiRdstPFY0ibwUl32jY9o04sW74sq/YkXt3JmI9MAyvSyGfSjyaE8GfLA8kV52vjDcK4u
+ 57eou5dpQ4qFZTKA+fdtVX9pVcQXqVWrSvRI54l+GIPvhDCOHlUAqlKBB5sjRRLgwQ6Cm/K9q
+ lSe6kgu+twL3m4lqqtgolRmnif3I/Vk93C3D2Zz9VrRuJ3UXbeqWzo2os7AgMT/lcBhMbb550
+ ujLvChPDI8Gy7pVGUMb5Y76WrVgPDUPW1twlyBDUlJhvWdmMyzpbG/63GOfD/yoNb2Isi3KiF
+ gpAV4BcMCHiuC14UPfQeyLVd1nIDeH3SlV72aMdqLMKh1K7Vpm9U0a6l4Os4ZbP2Kg7+UJ2EP
+ HLp9xH0u86sNSiP2F1erriJH/gMsMJL0cJ6DRfDb6LT7MQCpSk=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lieber geliebter,
-=20
-Ich gr=C3=BC=C3=9Fe dich im Namen des Herrn
+On Fri, Jun 26, 2020 at 3:05 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> lkdtm_DOUBLE_FAULT() already has internal logic to handle
+> !CONFIG_X86_32.  Compiling out the prototype actually prevents
+> that logic from being useful.
+>
+> Fixes the following W=1 warning:
+>
+>  drivers/misc/lkdtm/bugs.c: At top level:
+>  drivers/misc/lkdtm/bugs.c:420:6: warning: no previous prototype for ‘lkdtm_DOUBLE_FAULT’ [-Wmissing-prototypes]
+>  420 | void lkdtm_DOUBLE_FAULT(void)
+>  | ^~~~~~~~~~~~~~~~~~
+>
+> Cc: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Ich kann mir nicht vorstellen wie du dich f=C3=BChlen wirst Sie einen pl=C3=
-=B6tzlichen Brief aus einem abgelegenen Land in der fernen Elfenbeink=C3=BC=
-ste erhalten werden und wahrscheinlich von jemandem, mit dem Sie nicht gut =
-verwandt sind. Ich appelliere an Sie, etwas Geduld zu =C3=BCben und meinen =
-Brief zu lesen Umgang mit Ihnen in dieser wichtigen Transaktion
-=20
-Ich bin Frau Theresa Han, 65 Jahre alt, in der Elfenbeink=C3=BCste, an Kreb=
-sleiden leidend. Ich war mit Herrn Johnson Han verheiratet, der bei der Reg=
-ierung von Elfenbeink=C3=BCste als Auftragnehmer t=C3=A4tig war, bevor er n=
-ach einigen Tagen im Krankenhaus starb
-=20
-Mein verstorbener Ehemann hat die Summe von US$2,5 Millionen (zwei Millione=
-n f=C3=BCnfhunderttausend USD) bei einer Bank in der Elfenbeink=C3=BCste hi=
-nterlegt. Ich habe an Krebs gelitten. K=C3=BCrzlich sagte mir mein Arzt, da=
-ss ich aufgrund der Krebserkrankungen, an denen ich leide, nur noch begrenz=
-te Lebenstage habe. Ich m=C3=B6chte wissen, ob ich Ihnen vertrauen kann, di=
-ese Mittel f=C3=BCr Wohlt=C3=A4tigkeit / Waisenhaus zu verwenden, und 20 Pr=
-ozent werden f=C3=BCr Sie als Entsch=C3=A4digung sein
-=20
-Ich habe diese Entscheidung getroffen, weil ich kein Kind habe, das dieses =
-Geld erben w=C3=BCrde, und mein Ehemann Verwandte sind b=C3=BCrgerliche und=
- sehr wohlhabende Personen und ich m=C3=B6chte nicht, dass mein Ehemann har=
-t verdientes Geld missbraucht wird
-=20
-Bitte nehmen Sie Kontakt mit mir auf, damit ich Ihnen weitere Einzelheiten =
-mitteilen kann und jede Verz=C3=B6gerung Ihrer Antwort mir Raum geben wird,=
- eine weitere gute Person f=C3=BCr diesen Zweck zu gewinnen
-=20
-Warten auf Ihre dringende Antwort Mit Gott sind alle Dinge m=C3=B6glich
-=20
-Deine Schwester in Christus
-=20
-Frau Theresa Han
+Acked-by: Arnd Bergmann <arnd@arndb.de>
