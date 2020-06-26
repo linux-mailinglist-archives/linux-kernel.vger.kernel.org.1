@@ -2,153 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4F220B6BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7880E20B6C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728239AbgFZRTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 13:19:32 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:39418 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgFZRTT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 13:19:19 -0400
-Received: by mail-il1-f197.google.com with SMTP id f66so1354670ilh.6
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 10:19:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=/kUK10ieELCUi5nx8WSCdTJbL7ZCzD7ZpVCtC/bhIJ0=;
-        b=gXw2Pp4aJgp9KTro0r4bDgmQGuOOVyhJmG3UsddpXqfg1indtKRGWTTP12vHaiAoNN
-         Xbl0jy/dJ3+D/I0RlWAGNlyF0xsUv/Zgk0G2F6Y+vKmQcWaydSckWuwmTs1ctPa0iQom
-         NKhKJfS77dYkxtNztY6LgIizZASMFn9YeikSlDsqF1C0IyINdQkiYE0rIHL0RFXYgf/p
-         41jgYGgqQIc4TkzTvzkrDJ2gONpBcqrTY5noxHzAGKImxQ79C8tt2xLhiujiw0cna7UE
-         iAGzxizcLkdMF0/8X2fpUsnvJ9QD1Pglq0Kk1YFsXfGnhyyvCoYYj7TAElS5b7y+Fs5o
-         qE0Q==
-X-Gm-Message-State: AOAM533g1aaF/A4nwhtjFeug+ksbciZK6V23T80he2psLr5r6i8q2xKu
-        xToh5QZwJoWeMx+x6V6HG0xVBxO8AxdtyC9K+d1NzLrfcLce
-X-Google-Smtp-Source: ABdhPJx3Z2RgDpnNjyz+jrFVunjC87B5X8/RuJd9TmZjzYqyDn/8qFBU12ccoeZ9iQhD/5cwbp0Xzsc5vyQzg6m6riOo4oq79tdS
+        id S1726660AbgFZRUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 13:20:07 -0400
+Received: from ms.lwn.net ([45.79.88.28]:35772 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725832AbgFZRUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 13:20:06 -0400
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id B79207DB;
+        Fri, 26 Jun 2020 17:20:04 +0000 (UTC)
+Date:   Fri, 26 Jun 2020 11:20:03 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Tony Fischetti <tony.fischetti@gmail.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@suse.de>, Will Deacon <will@kernel.org>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Joe Perches <joe@perches.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jacob Huisman <jacobhuisman@kernelthusiast.com>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Jonathan =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] Replace HTTP links with HTTPS ones:
+ Documentation/process
+Message-ID: <20200626112003.50788c9b@lwn.net>
+In-Reply-To: <20200621133630.46435-1-grandmaster@al2klimov.de>
+References: <20200621133630.46435-1-grandmaster@al2klimov.de>
+Organization: LWN.net
 MIME-Version: 1.0
-X-Received: by 2002:a92:9f5c:: with SMTP id u89mr4072216ili.262.1593191958242;
- Fri, 26 Jun 2020 10:19:18 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 10:19:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000baea3505a8ffe8bc@google.com>
-Subject: possible deadlock in team_device_event
-From:   syzbot <syzbot+e12b58247a69da14ecd2@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jiri@resnulli.us, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun, 21 Jun 2020 15:36:30 +0200
+"Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
 
-syzbot found the following crash on:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+> 
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+>           If both the HTTP and HTTPS versions
+>           return 200 OK and serve the same content:
+>             Replace HTTP with HTTPS.
+> 
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> ---
+>  Documentation/process/2.Process.rst           | 12 ++++----
+>  Documentation/process/4.Coding.rst            |  4 +--
+>  Documentation/process/botching-up-ioctls.rst  |  2 +-
+>  Documentation/process/changes.rst             |  6 ++--
+>  Documentation/process/clang-format.rst        |  2 +-
+>  Documentation/process/coding-style.rst        |  2 +-
+>  Documentation/process/howto.rst               |  2 +-
+>  Documentation/process/kernel-docs.rst         | 28 +++++++++----------
+>  .../process/maintainer-pgp-guide.rst          |  2 +-
+>  Documentation/process/submitting-drivers.rst  | 22 +++++++--------
+>  Documentation/process/submitting-patches.rst  |  4 +--
+>  11 files changed, 43 insertions(+), 43 deletions(-)
 
-HEAD commit:    7a64135f libbpf: Adjust SEC short cut for expected attach ..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=16ed6439100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dcc6334acae363d4
-dashboard link: https://syzkaller.appspot.com/bug?extid=e12b58247a69da14ecd2
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+I've applied this, thanks.
 
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+e12b58247a69da14ecd2@syzkaller.appspotmail.com
-
-============================================
-WARNING: possible recursive locking detected
-5.8.0-rc1-syzkaller #0 Not tainted
---------------------------------------------
-syz-executor.1/17372 is trying to acquire lock:
-ffff888096a2ac38 (team->team_lock_key#4){+.+.}-{3:3}, at: team_port_change_check drivers/net/team/team.c:2969 [inline]
-ffff888096a2ac38 (team->team_lock_key#4){+.+.}-{3:3}, at: team_device_event+0x372/0xab6 drivers/net/team/team.c:2995
-
-but task is already holding lock:
-ffff888096a2ac38 (team->team_lock_key#4){+.+.}-{3:3}, at: team_add_slave+0x9f/0x1960 drivers/net/team/team.c:1966
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(team->team_lock_key#4);
-  lock(team->team_lock_key#4);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-2 locks held by syz-executor.1/17372:
- #0: ffffffff8a7afda8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8a7afda8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5457
- #1: ffff888096a2ac38 (team->team_lock_key#4){+.+.}-{3:3}, at: team_add_slave+0x9f/0x1960 drivers/net/team/team.c:1966
-
-stack backtrace:
-CPU: 1 PID: 17372 Comm: syz-executor.1 Not tainted 5.8.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- print_deadlock_bug kernel/locking/lockdep.c:2391 [inline]
- check_deadlock kernel/locking/lockdep.c:2432 [inline]
- validate_chain kernel/locking/lockdep.c:3202 [inline]
- __lock_acquire.cold+0x178/0x3f8 kernel/locking/lockdep.c:4380
- lock_acquire+0x1f1/0xad0 kernel/locking/lockdep.c:4959
- __mutex_lock_common kernel/locking/mutex.c:956 [inline]
- __mutex_lock+0x134/0x10d0 kernel/locking/mutex.c:1103
- team_port_change_check drivers/net/team/team.c:2969 [inline]
- team_device_event+0x372/0xab6 drivers/net/team/team.c:2995
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2027
- call_netdevice_notifiers_extack net/core/dev.c:2039 [inline]
- call_netdevice_notifiers net/core/dev.c:2053 [inline]
- dev_close_many+0x30b/0x650 net/core/dev.c:1628
- vlan_device_event+0x8ef/0x2010 net/8021q/vlan.c:450
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2027
- call_netdevice_notifiers_extack net/core/dev.c:2039 [inline]
- call_netdevice_notifiers net/core/dev.c:2053 [inline]
- dev_close_many+0x30b/0x650 net/core/dev.c:1628
- dev_close net/core/dev.c:1650 [inline]
- dev_close+0x173/0x220 net/core/dev.c:1644
- team_port_add drivers/net/team/team.c:1305 [inline]
- team_add_slave+0xf45/0x1960 drivers/net/team/team.c:1967
- do_set_master+0x1c8/0x220 net/core/rtnetlink.c:2476
- do_setlink+0x903/0x35c0 net/core/rtnetlink.c:2611
- __rtnl_newlink+0xc21/0x1730 net/core/rtnetlink.c:3272
- rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3397
- rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5460
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2469
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45cb19
-Code: Bad RIP value.
-RSP: 002b:00007fb1de059c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000502400 RCX: 000000000045cb19
-RDX: 0000000000000000 RSI: 00000000200001c0 RDI: 0000000000000003
-RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 0000000000000a38 R14: 00000000004cd1fc R15: 00007fb1de05a6d4
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+jon
