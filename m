@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3641B20B547
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EFF20B546
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730026AbgFZPv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 11:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56072 "EHLO
+        id S1729988AbgFZPvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 11:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728355AbgFZPvz (ORCPT
+        with ESMTP id S1728355AbgFZPvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 11:51:55 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB567C03E979
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:51:55 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id h22so3691675lji.9
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:51:55 -0700 (PDT)
+        Fri, 26 Jun 2020 11:51:51 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0ACC03E97A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:51:52 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id a127so4793325pfa.12
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:51:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+yupIHVEaUHp73cP5u6LnV/onGU7SFzXKN5zVmkGo+I=;
-        b=zxJAPt+Bo7TqbvoBsBFLqKt4FY+2bwmP64zownTOMXf2auVPTSSkEBJY+4CQjQQXRb
-         4HfDTEymX2IFUu+djhQVPJnRDcrshLS1fwcN4uf227PbkFmsrQMfxQdRAIGEbY/LH5Rf
-         eJWPDh+7PyXvPyCaHfTotY+q26ZlrIlvKy2ZmqQyRNyBsFjfjHA59TL7E8WUNgJCAbGs
-         ZBW3QanS7AONurGOwIeJu/owe9ftPyqY0a+X04KfI9gHvrKgTT8nKRvX+29VTthCDBXd
-         cR5pCbhuaCX7NkJKNA+HP9/ZSkIICrjNrh5nxZPr4WRkBprfHMEpsVmwlJszwZhOgFbv
-         Pw3A==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XAxlC1MAkBAl6Z9ZbNMiLt1VhH78ZvXLCa8bmENOOcs=;
+        b=Hsi4QtrreOzY11ynHwkL0CMdjf/kIrwyxTM6xXX9TKIkZe5aas5YoAu9yDDGRTra83
+         E4Qxo7UkvrawXS1edP2eBcCdP4v5vSKoVUitveMH5MTrmjyK51Vz0zJiMkBq0SxPpbSW
+         9jfdfcgnHoKxZHlN6aa6EzaB3mNEsSO+vs7no=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+yupIHVEaUHp73cP5u6LnV/onGU7SFzXKN5zVmkGo+I=;
-        b=ZYvgnsZHyE1KmfS4kF5ZehkvQFW9MxoKLrADezxhNA0uLHtIA9ztMEJZYmk12TESQq
-         BiKkXo6MjHAKcS/Ta/UoDldNGpYdne47nSM+lRLHRhNMvkrTH74LEu0mawrqghHj/E06
-         GtMOa6/CfGwaNApgFSk87uJumY/u2kfF2GgPQMuobSsxvWompKK0Om2RvPneLga2GO8Y
-         WyFd8eJ2xobRvDfWjdfB1rQoHYpFSsitGR9Ld0z6PlFTssOeF+ev3bg+ot9ML7wU63TB
-         BFGeFXcHjX6KsUjFshIyKSRz08399uVi5szuN56NjC88xrm9NREcakg3srtScekoz6v3
-         qssA==
-X-Gm-Message-State: AOAM530UKvqaGgcfTNpXqZyiaB2hqftIuCyTjM/ecq7ElvJOnaAljn5N
-        Xa176/AjqJi4T312wTGTrnQFg57TM8VCfkOGB0MonA==
-X-Google-Smtp-Source: ABdhPJxmkkp3usLIm5u4dle+yZV5eFkwmahS1cqkdQ0mKaBAD+cHmI1d8UneTI4Bokhft+LY8vPWRH/p+HH4IB2yzYM=
-X-Received: by 2002:a2e:9ed0:: with SMTP id h16mr1901309ljk.366.1593186714266;
- Fri, 26 Jun 2020 08:51:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XAxlC1MAkBAl6Z9ZbNMiLt1VhH78ZvXLCa8bmENOOcs=;
+        b=LipUYNq5WMlqxkNoP/Nt/Udh79kzY7ddhDTTj/bGr2v0lDPxenoNA4gIucZeBNVMTZ
+         z8S34Qhr8R3e/shAkUE7Mg4NKXZVHn9TmIhMziZrAg81tw53tIxXCU0RXcOmcoXj4vmV
+         s8esEKt/SBYq9FYKi7tRbzxCTC/WvUxRIdFEZSjwrY91scxr4R2mHuRZT6DVhrTIxr4U
+         YR4z25AzBHqV1zy0s0/Uehyh6kbaBP0Fgg54hd1BQkRcg1G2GiDnnoGxK/15yMQaPel2
+         EwNEd2B7u+T5tnAQXWNLNQ5z5i2Qlp0mGs5TQs2BBp2OQnh4711QaGg7OLaJwo1KW990
+         NDCw==
+X-Gm-Message-State: AOAM531AbEFbRKDvTPomoRdpLnoZeB1H0THP0zR3YDhl2/uS4Ug0Bo0x
+        7VROCcIeBmWsAxWiM4xSmj2xog==
+X-Google-Smtp-Source: ABdhPJxxMrSdC93H7GSRthDs7Y7l+SXjp35zY5C7tsx6GG0Ns2ZijUO8dbB453QZ+m0OiNq12pTr9g==
+X-Received: by 2002:a62:3041:: with SMTP id w62mr3279272pfw.205.1593186711847;
+        Fri, 26 Jun 2020 08:51:51 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f15sm7768157pfk.58.2020.06.26.08.51.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jun 2020 08:51:51 -0700 (PDT)
+Date:   Fri, 26 Jun 2020 08:51:50 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        rjw@rjwysocki.net, viresh.kumar@linaro.org, lenb@kernel.org,
+        dsmythies@telus.net, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org, jic23@cam.ac.uk,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH] lib: Extend kstrtobool() to accept "true"/"false"
+Message-ID: <202006260845.B573D53@keescook>
+References: <20200625224931.1468150-1-srinivas.pandruvada@linux.intel.com>
+ <20200626084903.GA27151@zn.tnic>
+ <20200626102255.GZ4817@hirez.programming.kicks-ass.net>
+ <20200626104442.GF117543@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20200508065356.2493343-1-mpe@ellerman.id.au> <CA+G9fYtHP+Gg+BrR_GkBMxu2oOi-_e9pATtpb6TVRswv1G1r1Q@mail.gmail.com>
- <c5b77970-ecaf-24ad-c34d-134acc1a6063@redhat.com> <20200624083955.GF8444@alley>
- <20200624201247.GA25319@redhat.com> <20200626080252.GL8444@alley> <762d9ca5-82f3-588c-b147-b0954a764ea7@redhat.com>
-In-Reply-To: <762d9ca5-82f3-588c-b147-b0954a764ea7@redhat.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 26 Jun 2020 21:21:42 +0530
-Message-ID: <CA+G9fYt8XEWDTrUJX6hpEGiTwHuYFv3UmMw-ND8KRCxu18fznA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] selftests/lkdtm: Don't clear dmesg when running tests
-To:     Joe Lawrence <joe.lawrence@redhat.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>,
-        Justin Cook <justin.cook@linaro.org>,
-        lkft-triage@lists.linaro.org, Miroslav Benes <mbenes@suse.cz>,
-        Shuah Khan <shuah@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200626104442.GF117543@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Well, what about using "comm" as proposed by Michael in the other
-> > mail? It seems to be part of coreutils and should be everywhere.
-> >
-> > I guess that many people, including me, are not fluent in awk.
-> > So, I am slightly in favor of the "comm" approach ;-)
-> >
->
-> comm is definitely simpler and for some reason I forgot about the
-> leading timestamps (again!) dismissing it thinking that the inputs
-> weren't sorted.  But luckily they are and if Naresh or anyone can
-> confirm that comm is well supported in the BusyBox testing environment,
-> then using that is fine w/me.
+On Fri, Jun 26, 2020 at 12:44:42PM +0200, Peter Zijlstra wrote:
+> On Fri, Jun 26, 2020 at 12:22:55PM +0200, Peter Zijlstra wrote:
+> 
+> > > This is too lax - it will be enabled for any !0 value. Please accept
+> > > only 0 and 1.
+> > 
+> > kstrtobool() ftw
+> 
+> And looking at that, I find it really strange it does not in fact accept
+> "true" / "false", so how about this?
+> 
+> ---
+> Subject: lib: Extend kstrtobool() to accept "true"/"false"
+> 
+> Extend the strings recognised by kstrtobool() to cover:
+> 
+>   - 1/0
+>   - y/n
+>   - yes/no	(new)
+>   - t/f		(new)
+>   - true/false  (new)
+>   - on/off
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-"comm" works in our environment.
+There were some worries about dealing with unterminated strings when I
+did the original conversion[1], but I think those all got fixed.
 
-- Naresh
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+[1] https://lore.kernel.org/lkml/CAGXu5jJrFv5Y8Q_i3yFYBDmT0+pO05dS3ijB0gOn-huasxZWmA@mail.gmail.com/
+
+-- 
+Kees Cook
