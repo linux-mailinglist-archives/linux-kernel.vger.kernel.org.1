@@ -2,159 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3653D20B664
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 18:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C107820B672
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 18:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728157AbgFZQ4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 12:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728115AbgFZQ4A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 12:56:00 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6402C03E97B
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 09:55:59 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id h15so10145284wrq.8
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 09:55:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sza+GT2lqcd6jmiOYegQQQLgqoPbDI9CeS4XhKI3V1o=;
-        b=KoEiu9OdEBcBWWP+UosBbqAfR1V47vQAzO8kl+t1wgf0SG1vI7+YdJmA7Wys11RMex
-         ZMXx+mBH/viOzmxJj160qrt0OrYr92gNS4xmUzOC0X2/dr2qeiQ9Ece18Tbq0Z5Vk1id
-         nR2RNxEZXUeZerlrtFotgtBYWJ8eEaiSmCMBwCfcc1ATLbcrhsZ8bpf7kr8CyoZUNofo
-         Fi7UswHyjnS7p4q/0aqVUk7v6CvzEAoU6wozvFuFBFvguMxBvB/zm+AhU0+cgp15Uxj/
-         qtstFFn3hZZFA0q7vM3b0/m5UxZcjGWJk6ec5oB+LU1JDjH1Nszdn/6NnI6Zu21L7NUw
-         P3pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sza+GT2lqcd6jmiOYegQQQLgqoPbDI9CeS4XhKI3V1o=;
-        b=hidGd6+n0fzTOm2LOloQgNsdM8CdNSa8d0X+GBp5nOMcjD1qosPG/UZ/JiWAlm/Hiz
-         QMUUwuymKso6YafoZuDGDI2nCSIVi5REHKqJoh4UkiWIk/offaLXUIjybpj16t58YRCO
-         34aQNSsE55xqJNL6mwIpEeGAW9kVYFKHCej3q6nkK29+7/WpUVFRb17d2KgItDo0IP14
-         X1dz6j7Zl7yhjec4HcVRHKGneuvxqusSiUCl3Gz5r2ajksCl5rCCDbV7aD8wGqmwHmwL
-         LO55HCFGaZrwgbUwFWDYMsg5tuQ/msGuPmmNMphCVk25xnWCBd1SbVkUr2vYCS76T2S1
-         cq7A==
-X-Gm-Message-State: AOAM533TuWdW5MRwt1z5rSdtWiAaFlVFajuTrzrKvJBbhfbEagNGGDsh
-        REoLnJR5WO+nEGSWUMaabJYFMg==
-X-Google-Smtp-Source: ABdhPJzCV6/MN+xqvykEQMSCCNNo3cu4VV3JYPC+A7Y7onUQZRBgd+j3p7NkVTzX64hm46KgPbdFjA==
-X-Received: by 2002:adf:a49c:: with SMTP id g28mr5051129wrb.118.1593190558547;
-        Fri, 26 Jun 2020 09:55:58 -0700 (PDT)
-Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id x5sm18654706wmg.2.2020.06.26.09.55.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 09:55:58 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 5/5] hwmon: pmbus: use more devres helpers
-Date:   Fri, 26 Jun 2020 18:55:35 +0200
-Message-Id: <20200626165535.7662-6-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200626165535.7662-1-brgl@bgdev.pl>
-References: <20200626165535.7662-1-brgl@bgdev.pl>
+        id S1728206AbgFZQ5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 12:57:42 -0400
+Received: from mga14.intel.com ([192.55.52.115]:11154 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728095AbgFZQ5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 12:57:40 -0400
+IronPort-SDR: S0k3uqtix7DeFZIwaYg+EiR/rccN00r1gZsAmdqX2i+HWlsNg+kwitxGWLdOzSEzPc5+FKbEWQ
+ VgoUXQ7FlIpw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9664"; a="144490917"
+X-IronPort-AV: E=Sophos;i="5.75,284,1589266800"; 
+   d="scan'208";a="144490917"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2020 09:57:37 -0700
+IronPort-SDR: b6Kqd4b1rtP2W3+kQHKvz3++u3tGPJ0VriMt1eFR5Jp0nVobVv1mP9OJ8s1VCH1vM4q6poyXVS
+ odNnHiMUySeg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,284,1589266800"; 
+   d="scan'208";a="294252209"
+Received: from lkp-server01.sh.intel.com (HELO 538b5e3c8319) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 26 Jun 2020 09:57:36 -0700
+Received: from kbuild by 538b5e3c8319 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jorfU-0002MC-9r; Fri, 26 Jun 2020 16:57:36 +0000
+Date:   Sat, 27 Jun 2020 00:56:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.06.25a] BUILD SUCCESS
+ 50483f050f03ddbc8ba7a292c1d123a6a3c1723c
+Message-ID: <5ef628d2.Gv3PcLXIZS0sLm6K%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.06.25a
+branch HEAD: 50483f050f03ddbc8ba7a292c1d123a6a3c1723c  scftorture: Implement weighted primitive selection
 
-Shrink pmbus code by using devm_hwmon_device_register_with_groups()
-and devm_krealloc() instead of their non-managed variants.
+elapsed time: 721m
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+configs tested: 97
+configs skipped: 5
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arc                     haps_hs_smp_defconfig
+s390                             allyesconfig
+powerpc                          g5_defconfig
+mips                        jmr3927_defconfig
+sh                           se7751_defconfig
+arm                       imx_v6_v7_defconfig
+arm                            xcep_defconfig
+arm                      pxa255-idp_defconfig
+arm                          tango4_defconfig
+arm                             pxa_defconfig
+arm                         lpc18xx_defconfig
+mips                           ip27_defconfig
+arm                     eseries_pxa_defconfig
+mips                      loongson3_defconfig
+i386                             alldefconfig
+sh                           se7724_defconfig
+mips                     loongson1b_defconfig
+nds32                             allnoconfig
+parisc                            allnoconfig
+arm                            lart_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allyesconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+
 ---
- drivers/hwmon/pmbus/pmbus_core.c | 27 +++++++++------------------
- 1 file changed, 9 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
-index a420877ba533..af74504647b8 100644
---- a/drivers/hwmon/pmbus/pmbus_core.c
-+++ b/drivers/hwmon/pmbus/pmbus_core.c
-@@ -1022,9 +1022,9 @@ static int pmbus_add_attribute(struct pmbus_data *data, struct attribute *attr)
- {
- 	if (data->num_attributes >= data->max_attributes - 1) {
- 		int new_max_attrs = data->max_attributes + PMBUS_ATTR_ALLOC_SIZE;
--		void *new_attrs = krealloc(data->group.attrs,
--					   new_max_attrs * sizeof(void *),
--					   GFP_KERNEL);
-+		void *new_attrs = devm_krealloc(data->dev, data->group.attrs,
-+						new_max_attrs * sizeof(void *),
-+						GFP_KERNEL);
- 		if (!new_attrs)
- 			return -ENOMEM;
- 		data->group.attrs = new_attrs;
-@@ -2538,7 +2538,7 @@ int pmbus_do_probe(struct i2c_client *client, const struct i2c_device_id *id,
- 
- 	ret = pmbus_find_attributes(client, data);
- 	if (ret)
--		goto out_kfree;
-+		return ret;
- 
- 	/*
- 	 * If there are no attributes, something is wrong.
-@@ -2546,35 +2546,27 @@ int pmbus_do_probe(struct i2c_client *client, const struct i2c_device_id *id,
- 	 */
- 	if (!data->num_attributes) {
- 		dev_err(dev, "No attributes found\n");
--		ret = -ENODEV;
--		goto out_kfree;
-+		return -ENODEV;
- 	}
- 
- 	data->groups[0] = &data->group;
- 	memcpy(data->groups + 1, info->groups, sizeof(void *) * groups_num);
--	data->hwmon_dev = hwmon_device_register_with_groups(dev, client->name,
--							    data, data->groups);
-+	data->hwmon_dev = devm_hwmon_device_register_with_groups(dev,
-+					client->name, data, data->groups);
- 	if (IS_ERR(data->hwmon_dev)) {
--		ret = PTR_ERR(data->hwmon_dev);
- 		dev_err(dev, "Failed to register hwmon device\n");
--		goto out_kfree;
-+		return PTR_ERR(data->hwmon_dev);
- 	}
- 
- 	ret = pmbus_regulator_register(data);
- 	if (ret)
--		goto out_unregister;
-+		return ret;
- 
- 	ret = pmbus_init_debugfs(client, data);
- 	if (ret)
- 		dev_warn(dev, "Failed to register debugfs\n");
- 
- 	return 0;
--
--out_unregister:
--	hwmon_device_unregister(data->hwmon_dev);
--out_kfree:
--	kfree(data->group.attrs);
--	return ret;
- }
- EXPORT_SYMBOL_GPL(pmbus_do_probe);
- 
-@@ -2585,7 +2577,6 @@ int pmbus_do_remove(struct i2c_client *client)
- 	debugfs_remove_recursive(data->debugfs);
- 
- 	hwmon_device_unregister(data->hwmon_dev);
--	kfree(data->group.attrs);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(pmbus_do_remove);
--- 
-2.26.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
