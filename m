@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A46320AD14
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D857220AD19
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728755AbgFZH1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 03:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
+        id S1728782AbgFZH1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 03:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728720AbgFZH1J (ORCPT
+        with ESMTP id S1728762AbgFZH1V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 03:27:09 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A03FC08C5C1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 00:27:09 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id d6so4582895pjs.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 00:27:09 -0700 (PDT)
+        Fri, 26 Jun 2020 03:27:21 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C107EC08C5DB
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 00:27:21 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id z5so4586805pgb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 00:27:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=rVE2gGMcdBTrZylPbNiSgsk7HUdCF2EQnvGkDTn3LJ4=;
-        b=StgvoN4F8FU5QTAnNsQGhYge/1G6HeXMbO3EDr/y8YcUT/7iIRgkYkr2LS8QBA0+TE
-         aJwJQv38n1h859JcK+L/dM1GkWzwdB4cWujivrbEAJohF3f6qy9RifDqB6igGuyw/80j
-         nrjyxLykAs8ADjUkxPYD3Ye+qol0g0rNMpV7c=
+        d=linaro.org; s=google;
+        h=date:user-agent:in-reply-to:references:mime-version
+         :content-transfer-encoding:subject:to:cc:from:message-id;
+        bh=EZ4ukNPP7iVf8vF6muxB/o/Srf2rzuTl0wpGGpjxFsM=;
+        b=yNUST13hy1+EHsS2sfxk+Rj7MFVtb9pHUJ3ZuX0/lRKXQPpvZvrig6EuZfTDWJ+qke
+         mS2zGNJmWT2QfsMus14SCDaf4xdse3am1VGM0br3ydyj4Ov9vgtL86CR7fCudpTiE8ys
+         Ci+M6jhRh06570+Mo2IKvLSr9pW+x6gDTDfXoKE1n2S1L6xBMvF7jXSP2xQYl1atO0vT
+         lm3XmwkvyR4386nRWGZQg6hZGKAWdELGxM1QX8N8eHsLoA0Q13fbRTeA0iMtJg4kSBm7
+         oJBOrAqwZqKn+ptRxOV/EKR/7IOufy9I6tei+eA1AIzseW66Ha2Dp0/RPMdWOlFMypHR
+         pEow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=rVE2gGMcdBTrZylPbNiSgsk7HUdCF2EQnvGkDTn3LJ4=;
-        b=HqRJhRWYEr+O0ADAlgvtUBRus4BTA1M/eiGIxxQMSXS0gwbrYnbk6v8LI8gBSRb1ve
-         2KasfNDGdYmJxf8shdjtjDRjyuOYgdR3xlVU4LXrupYb3UfRjx6A4ZNp6iGXJt0rQM7U
-         dc65dSlMJxfnatuix04f3gWAJc0M96l3oWPh6B8ygaHrvhCqX1yzTYx/va2kDeg5JykJ
-         Pct7/FucWWFT4DCm452sV55Zt9GMAzb/qmIApB1L8mkd/UkJUJPpvKt0IPBovbIjh4zh
-         4HQJ0YAjVeYW7juxKztITXsm1l1uON0OIeudOOpB/+Mb5nmqFKHkEYR7pkmZ8jyoUBnf
-         zDCw==
-X-Gm-Message-State: AOAM5331Y3cHQAgtGyS74XjgkKLC9GA+3Qca6Mgc//I3GlUGol3+59S8
-        UIoOFzVxlP20KYEeZokYYAiogE00yig=
-X-Google-Smtp-Source: ABdhPJy3QTnrjHmytYSAo2vMdiB1gRFjkDXC77YICclekAoyNkjxmCy06GCMeccAjXJbVOuLBh7q8A==
-X-Received: by 2002:a17:902:8b82:: with SMTP id ay2mr1438095plb.185.1593156428885;
-        Fri, 26 Jun 2020 00:27:08 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id n12sm21216319pgr.88.2020.06.26.00.27.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 00:27:08 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:date:user-agent:in-reply-to:references
+         :mime-version:content-transfer-encoding:subject:to:cc:from
+         :message-id;
+        bh=EZ4ukNPP7iVf8vF6muxB/o/Srf2rzuTl0wpGGpjxFsM=;
+        b=esmUli/BfHbBzijbpgIhF3s+cfx9O1OhaQ7YPah+NRYelhygDhzUN/oKiQrGybSlZu
+         wbO0q7S2iCvYCvVP450HNNSCkuKYU4ar4cPigZYKS+/GX+Qt/PcPJ5Gibin5N18A9S4j
+         3BBSvhJxclsopGyjXK8AZcsFzdmPHiNIr8HPmtxBpWwVtgqcSdsUfYg1Be9mJbkIUCIZ
+         CNdFvhGjyA+ZW5xf7iRZ/u4ANx6qLrbBno6sOIjL7bIfusvFANIfQhtB2AGMyLZ7VsI1
+         AfvnSZJIlIQD2gnTAAvreOpzlGqb3Gl9Dv9aqQK7CAOW6wUo1VYBhtoRo/iKjmP1y1kH
+         SXDg==
+X-Gm-Message-State: AOAM532b/AkIJPr4YYMYgXydDQZ9KmnmrUxYJ8ZkbohRclCEnd5tXu/8
+        frRSplCVOZT8vbkk2djGcAIh
+X-Google-Smtp-Source: ABdhPJxghrZqKHyTE+bK+1pDhBG1aZE7of6Mvctp26xHfyHYrc39RS2yDT2fHkCmrHl79016pP2nsA==
+X-Received: by 2002:a63:2248:: with SMTP id t8mr1576526pgm.113.1593156441147;
+        Fri, 26 Jun 2020 00:27:21 -0700 (PDT)
+Received: from ?IPv6:2409:4072:8f:e5bc:398d:eac0:43d5:2c47? ([2409:4072:8f:e5bc:398d:eac0:43d5:2c47])
+        by smtp.gmail.com with ESMTPSA id k14sm24364377pfk.97.2020.06.26.00.27.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 26 Jun 2020 00:27:20 -0700 (PDT)
+Date:   Fri, 26 Jun 2020 12:57:15 +0530
+User-Agent: K-9 Mail for Android
+In-Reply-To: <d54d1fe9d8378e7c44d19e7b366b909bf5dbb7dc.1593112402.git.cristian.ciocaltea@gmail.com>
+References: <cover.1593112402.git.cristian.ciocaltea@gmail.com> <d54d1fe9d8378e7c44d19e7b366b909bf5dbb7dc.1593112402.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAODwPW9Gp+sjt7hdTrDmU-KnfpbXNkuQL52+v_FxwSzSSTH_yg@mail.gmail.com>
-References: <20200407082923.2001556-1-patrick.rudolph@9elements.com> <20200407082923.2001556-2-patrick.rudolph@9elements.com> <159306873839.62212.9311861115757727633@swboyd.mtv.corp.google.com> <CAODwPW9Gp+sjt7hdTrDmU-KnfpbXNkuQL52+v_FxwSzSSTH_yg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] firmware: google: Expose CBMEM over sysfs
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Coreboot <coreboot@coreboot.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Allison Randal <allison@lohutok.net>,
-        Julius Werner <jwerner@chromium.org>,
-        Samuel Holland <samuel@sholland.org>
-To:     Julius Werner <jwerner@chromium.org>
-Date:   Fri, 26 Jun 2020 00:27:07 -0700
-Message-ID: <159315642733.62212.13203844825360378214@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Subject: Re: [PATCH 3/3] MAINTAINERS: Add pinctrl binding entry for Actions Semi S500
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        =?ISO-8859-1?Q?Andreas_F=E4rber?= <afaerber@suse.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-actions@lists.infradead.org
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Message-ID: <EDE29F4D-CB0B-4A24-B7B4-01E2C11179A3@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Julius Werner (2020-06-25 13:51:34)
-> > > +What:          /sys/bus/coreboot/devices/.../cbmem_attributes/address
-> > > +Date:          Apr 2020
-> > > +KernelVersion: 5.6
-> > > +Contact:       Patrick Rudolph <patrick.rudolph@9elements.com>
-> > > +Description:
-> > > +               coreboot device directory can contain a file named
-> > > +               cbmem_attributes/address if the device corresponds to=
- a CBMEM
-> > > +               buffer.
-> > > +               The file holds an ASCII representation of the physica=
-l address
-> > > +               of the CBMEM buffer in hex (e.g. 0x000000008000d000) =
-and should
-> > > +               be used for debugging only.
-> >
-> > If this is for debugging purposes only perhaps it should go into
-> > debugfs. We try to not leak information about physical addresses to
-> > userspace and this would let an attacker understand where memory may be.
-> > That's not ideal and should be avoided.
->=20
-> This is memory allocated by firmware and not subject to (k)ASLR, so
-> nothing valuable can be leaked here. The same addresses could already
-> be parsed out of /sys/firmware/log. Before this interface we usually
-> accessed this stuff via /dev/mem (and tools that want to remain
-> backwards-compatible will probably want to keep doing that), so having
-> a quick shorthand to grab physical addresses can be convenient.
 
-Ok. Regardless of the concern of the physical address is there any usage
-of this attribute by userspace? The description makes it sound like it's
-a pure debug feature, which implies that it should be in debugfs and not
-in sysfs.
+
+On 26 June 2020 1:46:20 AM IST, Cristian Ciocaltea <cristian=2Eciocaltea@g=
+mail=2Ecom> wrote:
+>Add a pinctrl binding entry for Actions Semi S500=2E
+>
+>Signed-off-by: Cristian Ciocaltea <cristian=2Eciocaltea@gmail=2Ecom>
+>---
+> MAINTAINERS | 1 +
+> 1 file changed, 1 insertion(+)
+>
+>diff --git a/MAINTAINERS b/MAINTAINERS
+>index e6285c13bab0=2E=2E4b9eec04c937 100644
+>--- a/MAINTAINERS
+>+++ b/MAINTAINERS
+>@@ -1519,6 +1519,7 @@
+>F:	Documentation/devicetree/bindings/clock/actions,owl-cmu=2Etxt
+> F:	Documentation/devicetree/bindings/dma/owl-dma=2Etxt
+> F:	Documentation/devicetree/bindings/i2c/i2c-owl=2Etxt
+> F:	Documentation/devicetree/bindings/mmc/owl-mmc=2Eyaml
+>+F:	Documentation/devicetree/bindings/pinctrl/actions,s500-pinctrl=2Eyaml
+
+I think we can use wildcard now=2E
+
+pinctrl/actions,*
+
+Thanks,=20
+Mani
+
+> F:	Documentation/devicetree/bindings/pinctrl/actions,s900-pinctrl=2Etxt
+> F:	Documentation/devicetree/bindings/power/actions,owl-sps=2Etxt
+> F:	Documentation/devicetree/bindings/timer/actions,owl-timer=2Etxt
+
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
