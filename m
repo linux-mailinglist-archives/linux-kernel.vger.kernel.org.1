@@ -2,105 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EFF20B546
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9907E20B549
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729988AbgFZPvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 11:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728355AbgFZPvv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 11:51:51 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0ACC03E97A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:51:52 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id a127so4793325pfa.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:51:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XAxlC1MAkBAl6Z9ZbNMiLt1VhH78ZvXLCa8bmENOOcs=;
-        b=Hsi4QtrreOzY11ynHwkL0CMdjf/kIrwyxTM6xXX9TKIkZe5aas5YoAu9yDDGRTra83
-         E4Qxo7UkvrawXS1edP2eBcCdP4v5vSKoVUitveMH5MTrmjyK51Vz0zJiMkBq0SxPpbSW
-         9jfdfcgnHoKxZHlN6aa6EzaB3mNEsSO+vs7no=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XAxlC1MAkBAl6Z9ZbNMiLt1VhH78ZvXLCa8bmENOOcs=;
-        b=LipUYNq5WMlqxkNoP/Nt/Udh79kzY7ddhDTTj/bGr2v0lDPxenoNA4gIucZeBNVMTZ
-         z8S34Qhr8R3e/shAkUE7Mg4NKXZVHn9TmIhMziZrAg81tw53tIxXCU0RXcOmcoXj4vmV
-         s8esEKt/SBYq9FYKi7tRbzxCTC/WvUxRIdFEZSjwrY91scxr4R2mHuRZT6DVhrTIxr4U
-         YR4z25AzBHqV1zy0s0/Uehyh6kbaBP0Fgg54hd1BQkRcg1G2GiDnnoGxK/15yMQaPel2
-         EwNEd2B7u+T5tnAQXWNLNQ5z5i2Qlp0mGs5TQs2BBp2OQnh4711QaGg7OLaJwo1KW990
-         NDCw==
-X-Gm-Message-State: AOAM531AbEFbRKDvTPomoRdpLnoZeB1H0THP0zR3YDhl2/uS4Ug0Bo0x
-        7VROCcIeBmWsAxWiM4xSmj2xog==
-X-Google-Smtp-Source: ABdhPJxxMrSdC93H7GSRthDs7Y7l+SXjp35zY5C7tsx6GG0Ns2ZijUO8dbB453QZ+m0OiNq12pTr9g==
-X-Received: by 2002:a62:3041:: with SMTP id w62mr3279272pfw.205.1593186711847;
-        Fri, 26 Jun 2020 08:51:51 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f15sm7768157pfk.58.2020.06.26.08.51.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 08:51:51 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 08:51:50 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        rjw@rjwysocki.net, viresh.kumar@linaro.org, lenb@kernel.org,
-        dsmythies@telus.net, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org, jic23@cam.ac.uk,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH] lib: Extend kstrtobool() to accept "true"/"false"
-Message-ID: <202006260845.B573D53@keescook>
-References: <20200625224931.1468150-1-srinivas.pandruvada@linux.intel.com>
- <20200626084903.GA27151@zn.tnic>
- <20200626102255.GZ4817@hirez.programming.kicks-ass.net>
- <20200626104442.GF117543@hirez.programming.kicks-ass.net>
+        id S1730037AbgFZPwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 11:52:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728355AbgFZPwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 11:52:21 -0400
+Received: from coco.lan (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B87020702;
+        Fri, 26 Jun 2020 15:52:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593186741;
+        bh=eQ/gqvaPGuNwhaaseFP3g+9qc6WdZn+I0SkmtvJtzVk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=zMxTt5DgSj+wSUx53bzzYetueSNvKZYhfDM6vNemQpzFLMrLsa3P+XHyrpMXNKhhx
+         xOsCiol1sHByjvwwq95RdEuWCEPS1EwHBogXpKIk6C9e7M1r7uTwuEN08EYsTM90pE
+         mfe/SYDVaCR2S1HWGpVrEABH77f9ktmOHElC25WU=
+Date:   Fri, 26 Jun 2020 17:52:16 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 0/7] Some atomisp fixes and improvements
+Message-ID: <20200626175216.7955c374@coco.lan>
+In-Reply-To: <20200626150021.GY3703480@smile.fi.intel.com>
+References: <cover.1593180146.git.mchehab+huawei@kernel.org>
+        <20200626150021.GY3703480@smile.fi.intel.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200626104442.GF117543@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 12:44:42PM +0200, Peter Zijlstra wrote:
-> On Fri, Jun 26, 2020 at 12:22:55PM +0200, Peter Zijlstra wrote:
-> 
-> > > This is too lax - it will be enabled for any !0 value. Please accept
-> > > only 0 and 1.
+Em Fri, 26 Jun 2020 18:00:21 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> escreveu:
+
+> On Fri, Jun 26, 2020 at 04:04:52PM +0200, Mauro Carvalho Chehab wrote:
+> > Those patches are meant to improve device detection by the atomisp driver,
+> > relying on ACPI bios when possible.
 > > 
-> > kstrtobool() ftw
+> > It also adds a basis for using ACPI PM, but only if the DSDT tables have
+> > a description about how to turn on the resources needed by the cameras.
+> > 
+> > At least on the device I'm using for tests, this is not the case.  
 > 
-> And looking at that, I find it really strange it does not in fact accept
-> "true" / "false", so how about this?
-> 
-> ---
-> Subject: lib: Extend kstrtobool() to accept "true"/"false"
-> 
-> Extend the strings recognised by kstrtobool() to cover:
-> 
->   - 1/0
->   - y/n
->   - yes/no	(new)
->   - t/f		(new)
->   - true/false  (new)
->   - on/off
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Is this in your experimental tree? 
 
-There were some worries about dealing with unterminated strings when I
-did the original conversion[1], but I think those all got fixed.
+Yes. 
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> I'll rebase mine on top and test.
+> After I will send the rest from my series and give a tag to this.
 
-[1] https://lore.kernel.org/lkml/CAGXu5jJrFv5Y8Q_i3yFYBDmT0+pO05dS3ijB0gOn-huasxZWmA@mail.gmail.com/
+It would be helpful if you could test removing the DMI match table from
+your board. If your device has a DSDT table close to the one I have, the
+new code may be able to get everything from DSDT.
 
--- 
-Kees Cook
+> 
+> > 
+> > Mauro Carvalho Chehab (7):
+> >   media: atomisp: reorganize the code under gmin_subdev_add()
+> >   media: atomisp: Prepare sensor support for ACPI PM
+> >   media: atomisp: properly parse CLK PMIC on newer devices
+> >   media: atomisp: fix call to g_frame_interval
+> >   media: atomisp: print info if gpio0 and gpio2 were detected
+> >   media: atomisp: split add from find subdev
+> >   media: atomisp: place all gpio parsing together
+> > 
+> >  .../staging/media/atomisp/pci/atomisp_cmd.c   |   2 +-
+> >  .../media/atomisp/pci/atomisp_gmin_platform.c | 393 ++++++++++++------
+> >  2 files changed, 267 insertions(+), 128 deletions(-)
+> > 
+> > -- 
+> > 2.26.2
+> > 
+> >   
+> 
+
+
+
+Thanks,
+Mauro
