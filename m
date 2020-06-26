@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7D020B695
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EE320B693
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728280AbgFZRJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 13:09:19 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:33085 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727897AbgFZRJQ (ORCPT
+        id S1728248AbgFZRJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 13:09:17 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:54533 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727088AbgFZRJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Jun 2020 13:09:16 -0400
-Received: by mail-il1-f199.google.com with SMTP id c11so6898007ilq.0
+Received: by mail-il1-f198.google.com with SMTP id d18so6885232ill.21
         for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 10:09:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=UJwYwmK89yxunKp2bcHoekLYQkO+BCKTNGonzhoLxuY=;
-        b=jk3n2akO32QpU8egfk75MWoQqUPnfyOnlunnDEjUzEPQUhaM/K2faNxPW1IWRVOGls
-         2t/d9yXEKsq2+ELhOt01cQ/rjc3yWrO9DnkU+/YoLVFH3WIUYp36Qhjmouh2WuPEOoTp
-         8ZmbNhrwiSlR7IgvS1e3cPH6pG5xU6TJ+j1hwTvIYS/dFA1gQnRKy4Ua6uFzdVMnjPP5
-         Af2AHlGEw8eczOUa3rPMFKINPprIxUdg+t+mrksExW4kQKUaceKODg73U1gZlWR8Mv+c
-         +8V+ylBuPgUIJxbKPZi7S89MH4pX8XC3A2AOVUNEfh6vy1lD9hoYvxQcU/sXAkzEdhEh
-         GdAQ==
-X-Gm-Message-State: AOAM532bU3Gahp57cSChQJS3UxypzeySqdYVr9jRigXAjsK7sF8q7qBw
-        cbMVZSh4c+qatZvDFSHxSSy1kzPSAH7xYSZVNCWV3p8TQdOW
-X-Google-Smtp-Source: ABdhPJwp1lBfebX04LkygcJHpJUSckhU/8A+t5yFT0sx4CQNGOFhvLxO0JSes1fhhpp7wu98khShfMLUoWIq93tjFAieFQb/ESYr
+        bh=tltGYsgQUKf9DV4wiRpq3i9PnnU4cL2cQ+SYqK6BGYs=;
+        b=hHeJhtLvQ8BnPWibiu4T/oYqWl1Oek/jKLnji3/yjIm1Lcs33/D2alep+bLoS5YL23
+         ae6df0yodpNVN61gtK0088Vv3zCkoW7EK0sD3z/0HCH83nWcUo1tuhuJgYSeJP3Yz5Js
+         lP/+8+SNpZ/6WGo06rDGBQgQf16Ry2ZgYq+ZEY8GNghRgZAMb9HFho7YxDz7MaJcqtAQ
+         Ta8EvM+kBSWG3podJKus82DLkntNXhxFDE0EdfNZNa7ABSgb0r3k2eNYLJdf5zsQFVzC
+         abUD3opChJ1opDYr9Soemi7401yAF+FAQuFc31B4ntTX2MU7FQ7G8Y3pgh0FPhdu4gV9
+         0Y0Q==
+X-Gm-Message-State: AOAM532GK4oZcWn/Zdm2Dkjo8dEWd9x7bq7ENGmR+rvOJTfqBAmBopi8
+        7JDaBuOS34Jv1I5MgykE7Sc1kqUBw+hSiU9Xf+/BrUqByFWh
+X-Google-Smtp-Source: ABdhPJz0Z0RwMYxsFUYGJEv8frP3yRdS7U08CQ2tZ8K2sswACm1qgpk1fjMvXmD5gQt/iKgC/FMc8AYzH/m+iG3Chdv3On4J/ioX
 MIME-Version: 1.0
-X-Received: by 2002:a02:662d:: with SMTP id k45mr4483248jac.127.1593191355375;
+X-Received: by 2002:a6b:ba8b:: with SMTP id k133mr4468020iof.204.1593191355078;
  Fri, 26 Jun 2020 10:09:15 -0700 (PDT)
 Date:   Fri, 26 Jun 2020 10:09:15 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cbef4a05a8ffc4ef@google.com>
-Subject: BUG: using smp_processor_id() in preemptible code in tipc_crypto_xmit
-From:   syzbot <syzbot+263f8c0d007dc09b2dda@syzkaller.appspotmail.com>
+Message-ID: <000000000000c760af05a8ffc49a@google.com>
+Subject: KASAN: vmalloc-out-of-bounds Read in tipc_nl_publ_dump
+From:   syzbot <syzbot+24902249a963936dfe80@syzkaller.appspotmail.com>
 To:     davem@davemloft.net, jmaloy@redhat.com, kuba@kernel.org,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         syzkaller-bugs@googlegroups.com,
@@ -50,38 +50,41 @@ Hello,
 
 syzbot found the following crash on:
 
-HEAD commit:    f4926d51 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+HEAD commit:    b835a71e usbnet: smsc95xx: Fix use-after-free after removal
 git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=137a899b100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14aa2576100000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=dcc6334acae363d4
-dashboard link: https://syzkaller.appspot.com/bug?extid=263f8c0d007dc09b2dda
+dashboard link: https://syzkaller.appspot.com/bug?extid=24902249a963936dfe80
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this crash yet.
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126ff61d100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=148dc3a5100000
 
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+263f8c0d007dc09b2dda@syzkaller.appspotmail.com
+Reported-by: syzbot+24902249a963936dfe80@syzkaller.appspotmail.com
 
-BUG: using smp_processor_id() in preemptible [00000000] code: syz-executor.1/23385
-caller is tipc_aead_tfm_next net/tipc/crypto.c:402 [inline]
-caller is tipc_aead_encrypt net/tipc/crypto.c:639 [inline]
-caller is tipc_crypto_xmit+0x80a/0x2790 net/tipc/crypto.c:1605
-CPU: 1 PID: 23385 Comm: syz-executor.1 Not tainted 5.8.0-rc1-syzkaller #0
+==================================================================
+BUG: KASAN: vmalloc-out-of-bounds in nla_len include/net/netlink.h:1135 [inline]
+BUG: KASAN: vmalloc-out-of-bounds in nla_parse_nested_deprecated include/net/netlink.h:1218 [inline]
+BUG: KASAN: vmalloc-out-of-bounds in tipc_nl_publ_dump+0xae0/0xce0 net/tipc/socket.c:3766
+Read of size 2 at addr ffffc90004de5014 by task syz-executor205/6873
+
+CPU: 1 PID: 6873 Comm: syz-executor205 Not tainted 5.8.0-rc1-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
  dump_stack+0x18f/0x20d lib/dump_stack.c:118
- check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
- tipc_aead_tfm_next net/tipc/crypto.c:402 [inline]
- tipc_aead_encrypt net/tipc/crypto.c:639 [inline]
- tipc_crypto_xmit+0x80a/0x2790 net/tipc/crypto.c:1605
- tipc_bearer_xmit_skb+0x180/0x3f0 net/tipc/bearer.c:523
- tipc_enable_bearer+0xb1d/0xdc0 net/tipc/bearer.c:331
- __tipc_nl_bearer_enable+0x2bf/0x390 net/tipc/bearer.c:995
- tipc_nl_bearer_enable+0x1e/0x30 net/tipc/bearer.c:1003
- genl_family_rcv_msg_doit net/netlink/genetlink.c:691 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:736 [inline]
- genl_rcv_msg+0x61d/0x9e0 net/netlink/genetlink.c:753
+ print_address_description.constprop.0.cold+0x5/0x436 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ nla_len include/net/netlink.h:1135 [inline]
+ nla_parse_nested_deprecated include/net/netlink.h:1218 [inline]
+ tipc_nl_publ_dump+0xae0/0xce0 net/tipc/socket.c:3766
+ genl_lock_dumpit+0x7f/0xb0 net/netlink/genetlink.c:575
+ netlink_dump+0x4cd/0xf60 net/netlink/af_netlink.c:2245
+ __netlink_dump_start+0x643/0x900 net/netlink/af_netlink.c:2353
+ genl_family_rcv_msg_dumpit+0x2ac/0x310 net/netlink/genetlink.c:638
+ genl_family_rcv_msg net/netlink/genetlink.c:733 [inline]
+ genl_rcv_msg+0x797/0x9e0 net/netlink/genetlink.c:753
  netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2469
  genl_rcv+0x24/0x40 net/netlink/genetlink.c:764
  netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
@@ -94,15 +97,24 @@ Call Trace:
  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
  do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45cb19
+RIP: 0033:0x441319
 Code: Bad RIP value.
-RSP: 002b:00007fa3c4dc1c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000501c40 RCX: 000000000045cb19
-RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000003
-RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 0000000000000a19 R14: 00000000004ccf82 R15: 00007fa3c4dc26d4
-tipc: Enabled bearer <eth:vlan1>, priority 10
+RSP: 002b:00007ffcbfda8448 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000441319
+RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 000000000000ee24 R08: 00000000004002c8 R09: 00000000004002c8
+R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000402090
+R13: 0000000000402120 R14: 0000000000000000 R15: 0000000000000000
+
+
+Memory state around the buggy address:
+ ffffc90004de4f00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+ ffffc90004de4f80: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+>ffffc90004de5000: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+                         ^
+ ffffc90004de5080: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+ ffffc90004de5100: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+==================================================================
 
 
 ---
@@ -112,3 +124,5 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this bug report. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
