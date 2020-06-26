@@ -2,137 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A4220B0A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 13:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FCB20B0BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 13:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728743AbgFZLkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 07:40:13 -0400
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:36155 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgFZLkM (ORCPT
+        id S1728828AbgFZLlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 07:41:37 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:45386 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725836AbgFZLlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 07:40:12 -0400
-Received: by mail-pj1-f65.google.com with SMTP id h22so4842773pjf.1;
-        Fri, 26 Jun 2020 04:40:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wnn5CPE1OQI5MbFdoVeNzug5Y/E4qNsr7nm00pkYjsg=;
-        b=VX/NDcK3cWNkOqEznH+rHxPMCVA2ZZ/Yvsv5Pm52vlgMQQ74cnifJ+D2ecxcODvC5v
-         Fkj0Ci8vYYONLziSJeMqSFs3iyyMmvPCpJ1EgAy903rYYZcU3UdyoOY9DYzxAqPeAQsD
-         EtGEK2MZLpqSWV8tbU76mZlCdMRoypUI2oXIk3zIbS+rNZVLk5oN+cm61AB6JpBywBa0
-         H3uTZOGfHH6UChsodjhDBVoO9Kpy9AXbPrk/skrhYCeoS2gPH/ueg5Ra4ru5ykZNcETW
-         RR4+qA4tDYjy1xf+Y6ancZ2HEmH/Jn+Z+Rn6fFtNH4qNA3sBtvtqt+96vlM5zSDn7Cgq
-         P+5w==
-X-Gm-Message-State: AOAM531ObMrp6gfRCJ5JWKX5yKbh/Y/o9UELnjHWNBw9Re530u4XL29W
-        4RdpomuWlplHgMJy4xzgkQo=
-X-Google-Smtp-Source: ABdhPJwGnA6i8X9De1IIY6uo4WMjc9fcRybYmtI1FEyCJ5SkbsL4wzndlVbt12ryEpm7GBivRrC8Cw==
-X-Received: by 2002:a17:90b:1292:: with SMTP id fw18mr2901992pjb.183.1593171610835;
-        Fri, 26 Jun 2020 04:40:10 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id g21sm25348911pfh.134.2020.06.26.04.40.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 04:40:09 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 8D0D340B24; Fri, 26 Jun 2020 11:40:08 +0000 (UTC)
-Date:   Fri, 26 Jun 2020 11:40:08 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>, ast@kernel.org,
-        axboe@kernel.dk, bfields@fieldses.org,
-        bridge@lists.linux-foundation.org, chainsaw@gentoo.org,
-        christian.brauner@ubuntu.com, chuck.lever@oracle.com,
-        davem@davemloft.net, dhowells@redhat.com,
-        gregkh@linuxfoundation.org, jarkko.sakkinen@linux.intel.com,
-        jmorris@namei.org, josh@joshtriplett.org, keescook@chromium.org,
-        keyrings@vger.kernel.org, kuba@kernel.org,
-        lars.ellenberg@linbit.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org, nikolay@cumulusnetworks.com,
-        philipp.reisner@linbit.com, ravenexp@gmail.com,
-        roopa@cumulusnetworks.com, serge@hallyn.com, slyfox@gentoo.org,
-        viro@zeniv.linux.org.uk, yangtiezhu@loongson.cn,
-        netdev@vger.kernel.org, markward@linux.ibm.com,
-        linux-s390 <linux-s390@vger.kernel.org>
-Subject: Re: linux-next: umh: fix processed error when UMH_WAIT_PROC is used
- seems to break linux bridge on s390x (bisected)
-Message-ID: <20200626114008.GK4332@42.do-not-panic.com>
-References: <20200624144311.GA5839@infradead.org>
- <9e767819-9bbe-2181-521e-4d8ca28ca4f7@de.ibm.com>
- <20200624160953.GH4332@42.do-not-panic.com>
- <ea41e2a9-61f7-aec1-79e5-7b08b6dd5119@de.ibm.com>
- <4e27098e-ac8d-98f0-3a9a-ea25242e24ec@de.ibm.com>
- <4d8fbcea-a892-3453-091f-d57c03f9aa90@de.ibm.com>
- <1263e370-7cee-24d8-b98c-117bf7c90a83@de.ibm.com>
- <20200626025410.GJ4332@42.do-not-panic.com>
- <feb6a8c4-2b94-3f95-6637-679e089a71ca@de.ibm.com>
- <20200626090001.GA30103@infradead.org>
+        Fri, 26 Jun 2020 07:41:35 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05QBcaLg154439;
+        Fri, 26 Jun 2020 11:41:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=PNI0Jua3x5q2I8Nlxm//VVHUGpNd4BRRAAm+pfIrA4c=;
+ b=yPARac3qPia0iakKOb8Q+t8Smaf2bfuyV5Sy4XtC1c9rDmD5dUOca6eyqh9l5AU6XaOC
+ vDZA1WKyCwOcLsCflUZQhbbZuQcHVfqcFWTb1fqE0jeS9kUeHT1cUmipz4nmNKaSEZd1
+ uhFswiUJd7Hhs39GXgDcRuU/m85GuOuAtv2D9AitjiISQPHPgsx/p1jb7eX4j68bOcXO
+ Xio+D9WGnNjUSi9wQYbwOg684Lda7n2Bqlo0iOo8BImjWiIoqxrBIaZ+abNy1byToqh7
+ 20A+k8x5FmZwltj8juaoWphve9YYPNhPyMG52ed9In5l0aby+Pj83LYjcIoaYhhiYwzD 3g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 31wg3bg1x3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 26 Jun 2020 11:41:11 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05QBcZvt037295;
+        Fri, 26 Jun 2020 11:41:11 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 31uuraj4um-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Jun 2020 11:41:11 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05QBf7LN026222;
+        Fri, 26 Jun 2020 11:41:08 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 26 Jun 2020 11:41:06 +0000
+Date:   Fri, 26 Jun 2020 14:40:58 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Pawel Laszczak <pawell@cadence.com>
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        balbi@kernel.org, devicetree@vger.kernel.org,
+        ben.dooks@codethink.co.uk, colin.king@canonical.com, rogerq@ti.com,
+        peter.chen@nxp.com, weiyongjun1@huawei.com, jpawar@cadence.com,
+        kurahul@cadene.com, sparmar@cadence.com
+Subject: Re: [PATCH RFC 2/5] usb:cdns3: Add pci to platform driver wrapper
+Message-ID: <20200626114057.GD2571@kadam>
+References: <20200626045450.10205-1-pawell@cadence.com>
+ <20200626045450.10205-3-pawell@cadence.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200626090001.GA30103@infradead.org>
+In-Reply-To: <20200626045450.10205-3-pawell@cadence.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9663 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 malwarescore=0
+ suspectscore=2 mlxlogscore=858 adultscore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006260084
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9663 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=2 phishscore=0
+ malwarescore=0 cotscore=-2147483648 adultscore=0 lowpriorityscore=0
+ impostorscore=0 clxscore=1011 mlxscore=0 mlxlogscore=872 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006260084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 10:00:01AM +0100, Christoph Hellwig wrote:
-> On Fri, Jun 26, 2020 at 07:22:34AM +0200, Christian Borntraeger wrote:
-> > 
-> > 
-> > On 26.06.20 04:54, Luis Chamberlain wrote:
-> > > On Wed, Jun 24, 2020 at 08:37:55PM +0200, Christian Borntraeger wrote:
-> > >>
-> > >>
-> > >> On 24.06.20 20:32, Christian Borntraeger wrote:
-> > >> [...]> 
-> > >>> So the translations look correct. But your change is actually a sematic change
-> > >>> if(ret) will only trigger if there is an error
-> > >>> if (KWIFEXITED(ret)) will always trigger when the process ends. So we will always overwrite -ECHILD
-> > >>> and we did not do it before. 
-> > >>>
-> > >>
-> > >> So the right fix is
-> > >>
-> > >> diff --git a/kernel/umh.c b/kernel/umh.c
-> > >> index f81e8698e36e..a3a3196e84d1 100644
-> > >> --- a/kernel/umh.c
-> > >> +++ b/kernel/umh.c
-> > >> @@ -154,7 +154,7 @@ static void call_usermodehelper_exec_sync(struct subprocess_info *sub_info)
-> > >>                  * the real error code is already in sub_info->retval or
-> > >>                  * sub_info->retval is 0 anyway, so don't mess with it then.
-> > >>                  */
-> > >> -               if (KWIFEXITED(ret))
-> > >> +               if (KWEXITSTATUS(ret))
-> > >>                         sub_info->retval = KWEXITSTATUS(ret);
-> > >>         }
-> > >>  
-> > >> I think.
-> > > 
-> > > Nope, the right form is to check for WIFEXITED() before using WEXITSTATUS().
-> > 
-> > But this IS a change over the previous code, no?
-> > I will test next week as I am travelling right now. 
-> 
-> I'm all for reverting back to the previous behavior.  If someone wants
-> a behavior change it should be a separate patch.  And out of pure self
-> interest I'd like to see that change after my addition of the
-> kernel_wait helper to replace the kernel_wait4 abuse :)
+On Fri, Jun 26, 2020 at 06:54:47AM +0200, Pawel Laszczak wrote:
+> +static struct pci_dev *cdnsp_get_second_fun(struct pci_dev *pdev)
+> +{
+> +	struct pci_dev *func;
+> +
+> +	/*
+> +	 * Gets the second function.
+> +	 * It's little tricky, but this platform has two function.
+> +	 * The fist keeps resources for Host/Device while the second
+> +	 * keeps resources for DRD/OTG.
+> +	 */
+> +	func = pci_get_device(pdev->vendor, pdev->device, NULL);
+> +	if (unlikely(!func))
 
-Yeah sure, this will be *slightly* cleaner after that. Today we
-implicitly return -ECHLD as well under the assumption the kernel_wait4()
-call failed.
+Delete all likely/unlikely annotations.  Likely and unlikely annotations
+make the code less readable.  We are willing to sacrifice readability on
+fast paths.
 
-Andrew, can you please revert these two for now:
+They're only supposed to be used where they're supported by benchmarking.
+Probably it's pretty tricky to benchmark probe.  The other rule of thumb
+is don't add them to drivers.  Another thing to consider is that this
+error path is probably obvious enough for the compiler to figure out
+without help.
 
-selftests: simplify kmod failure value
-umh: fix processed error when UMH_WAIT_PROC is used
+> +		return NULL;
+> +
+> +	if (func->devfn == pdev->devfn) {
+> +		func = pci_get_device(pdev->vendor, pdev->device, func);
+> +		if (unlikely(!func))
+> +			return NULL;
+> +	}
+> +
+> +	return func;
+> +}
+> +
+> +static int cdnsp_pci_probe(struct pci_dev *pdev,
+> +			   const struct pci_device_id *id)
+> +{
+> +	struct platform_device_info plat_info;
+> +	struct cdnsp_wrap *wrap;
+> +	struct resource *res;
+> +	struct pci_dev *func;
+> +	int err;
+> +
+> +	/*
+> +	 * For GADGET/HOST PCI (devfn) function number is 0,
+> +	 * for OTG PCI (devfn) function number is 1.
+> +	 */
+> +	if (!id || (pdev->devfn != PCI_DEV_FN_HOST_DEVICE &&
+> +		    pdev->devfn != PCI_DEV_FN_OTG))
+> +		return -EINVAL;
+> +
+> +	func = cdnsp_get_second_fun(pdev);
+> +	if (unlikely(!func))
+> +		return -EINVAL;
+> +
+> +	if (func->class == PCI_CLASS_SERIAL_USB_XHCI ||
+> +	    pdev->class == PCI_CLASS_SERIAL_USB_XHCI)
+> +		return -EINVAL;
 
-Later, we'll add Christoph's simplier kernel wait, and make the change
-directly there to catpure the right error. That still won't fix this reported
-issue, but it will be cleaner and will go tested by Christian Borntraeger
-before.
 
-  Luis
+Do we need call pci_put_device(func) before returning?
+
+		ret = -EINVAL;
+		goto put_pci;
+
+> +
+> +	err = pcim_enable_device(pdev);
+> +	if (err) {
+> +		dev_err(&pdev->dev, "Enabling PCI device has failed %d\n", err);
+> +		return err;
+
+		goto put_pci;
+
+> +	}
+> +
+> +	pci_set_master(pdev);
+> +
+> +	if (pci_is_enabled(func)) {
+> +		wrap = pci_get_drvdata(func);
+> +	} else {
+> +		wrap = kzalloc(sizeof(*wrap), GFP_KERNEL);
+> +		if (!wrap) {
+> +			pci_disable_device(pdev);
+> +			return -ENOMEM;
+
+goto disable_pci;
+
+> +		}
+> +	}
+> +
+> +	res = wrap->dev_res;
+> +
+> +	/* For GADGET device function number is 0. */
+> +	if (pdev->devfn == 0) {
+> +		/* Function 0: host(BAR_0) + device(BAR_1).*/
+> +		dev_dbg(&pdev->dev, "Initialize Device resources\n");
+> +		res[RES_DEV_ID].start = pci_resource_start(pdev, PCI_BAR_DEV);
+> +		res[RES_DEV_ID].end =   pci_resource_end(pdev, PCI_BAR_DEV);
+> +		res[RES_DEV_ID].name = "dev";
+> +		res[RES_DEV_ID].flags = IORESOURCE_MEM;
+> +		dev_dbg(&pdev->dev, "USBSS-DEV physical base addr: %pa\n",
+> +			&res[RES_DEV_ID].start);
+> +
+> +		res[RES_HOST_ID].start = pci_resource_start(pdev, PCI_BAR_HOST);
+> +		res[RES_HOST_ID].end = pci_resource_end(pdev, PCI_BAR_HOST);
+> +		res[RES_HOST_ID].name = "xhci";
+> +		res[RES_HOST_ID].flags = IORESOURCE_MEM;
+> +		dev_dbg(&pdev->dev, "USBSS-XHCI physical base addr: %pa\n",
+> +			&res[RES_HOST_ID].start);
+> +
+> +		/* Interrupt for XHCI, */
+> +		wrap->dev_res[RES_IRQ_HOST_ID].start = pdev->irq;
+> +		wrap->dev_res[RES_IRQ_HOST_ID].name = "host";
+> +		wrap->dev_res[RES_IRQ_HOST_ID].flags = IORESOURCE_IRQ;
+> +
+> +		/* Interrupt device. It's the same as for HOST. */
+> +		wrap->dev_res[RES_IRQ_PERIPHERAL_ID].start = pdev->irq;
+> +		wrap->dev_res[RES_IRQ_PERIPHERAL_ID].name = "peripheral";
+> +		wrap->dev_res[RES_IRQ_PERIPHERAL_ID].flags = IORESOURCE_IRQ;
+> +	} else {
+> +		res[RES_DRD_ID].start = pci_resource_start(pdev, PCI_BAR_OTG);
+> +		res[RES_DRD_ID].end =   pci_resource_end(pdev, PCI_BAR_OTG);
+> +		res[RES_DRD_ID].name = "otg";
+> +		res[RES_DRD_ID].flags = IORESOURCE_MEM;
+> +		dev_dbg(&pdev->dev, "CDNSP-DRD physical base addr: %pa\n",
+> +			&res[RES_DRD_ID].start);
+> +
+> +		/* Interrupt for OTG/DRD. */
+> +		wrap->dev_res[RES_IRQ_OTG_ID].start = pdev->irq;
+> +		wrap->dev_res[RES_IRQ_OTG_ID].name = "otg";
+> +		wrap->dev_res[RES_IRQ_OTG_ID].flags = IORESOURCE_IRQ;
+> +	}
+> +
+> +	if (pci_is_enabled(func)) {
+> +		/* Set up platform device info. */
+> +		memset(&plat_info, 0, sizeof(plat_info));
+> +		plat_info.parent = &pdev->dev;
+> +		plat_info.fwnode = pdev->dev.fwnode;
+> +		plat_info.name = PLAT_DRIVER_NAME;
+> +		plat_info.id = pdev->devfn;
+> +		wrap->devfn  = pdev->devfn;
+> +		plat_info.res = wrap->dev_res;
+> +		plat_info.num_res = ARRAY_SIZE(wrap->dev_res);
+> +		plat_info.dma_mask = pdev->dma_mask;
+> +		/* Register platform device. */
+> +		wrap->plat_dev = platform_device_register_full(&plat_info);
+> +		if (IS_ERR(wrap->plat_dev)) {
+> +			pci_disable_device(pdev);
+> +			err = PTR_ERR(wrap->plat_dev);
+> +			kfree(wrap);
+
+		err = PTR_ERR(wrap->plat_dev);
+		goto free_wrap;
+
+Except, do we really want to kfree(wrap)?  It looks like it came from
+pci_get_drvdata().
+
+> +			return err;
+> +		}
+> +	}
+> +
+> +	pci_set_drvdata(pdev, wrap);
+> +	return err;
+
+free_wrap:
+	if (!pci_is_enabled(func))
+		kfree(wrap);
+disable_pci:
+	pci_disable_device(pdev);
+put_pci:
+	pci_put_device(func);
+
+> +}
+> +
+> +static void cdnsp_pci_remove(struct pci_dev *pdev)
+> +{
+> +	struct cdnsp_wrap *wrap;
+> +	struct pci_dev *func;
+> +
+> +	func = cdnsp_get_second_fun(pdev);
+> +
+> +	wrap = (struct cdnsp_wrap *)pci_get_drvdata(pdev);
+> +	if (wrap->devfn == pdev->devfn)
+> +		platform_device_unregister(wrap->plat_dev);
+> +
+> +	if (!pci_is_enabled(func))
+> +		kfree(wrap);
+
+pci_put_device(func);
+
+> +}
+> +
+
+regards,
+dan carpenter
+
