@@ -2,218 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E49820B902
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 21:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D6A20B8F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 21:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726007AbgFZTFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 15:05:33 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:41698 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgFZTFb (ORCPT
+        id S1725831AbgFZTE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 15:04:57 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17844 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725275AbgFZTE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 15:05:31 -0400
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 05QJ5Bip001776;
-        Sat, 27 Jun 2020 04:05:11 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 05QJ5Bip001776
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1593198312;
-        bh=56uNI+amkxePd1oit1BuTaMQPk7veFhZ8oX0g6cWc6Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GMlgw70eMLMCBgd/FVf6YhiClp9Tl3CLevUmuIFiE5hP2UeFGL7sihY5W4uD0Ghj1
-         fbfkImEjRTZNnSt0xhVg8rRS3uo3zYF2ajHOtoGFT5Uo0wyy3IgI+dWbB6ylnn2DqO
-         5rZXoH9hm5aOQ6VAPlsr0SYLMZmNghIb0E4mUdqpU9KNR5LOEW9Cz7Ef/8nkaj5tSd
-         4WL2xymdotP7L5EvE0dqWwnrYFjyxliCjTtiIFvIGu28RHbZkulgfikO8YtqWYVy56
-         sXy4IpnDHzMNpmnOcnAHXmjAuk0c5m+UF3pqEdinA2TJhhJ1hj+Spwq8Ogv1XRXK/M
-         OrtUILxnNNyUA==
-X-Nifty-SrcIP: [209.85.217.54]
-Received: by mail-vs1-f54.google.com with SMTP id r5so6019911vso.11;
-        Fri, 26 Jun 2020 12:05:11 -0700 (PDT)
-X-Gm-Message-State: AOAM533GPgZOBPuvcYnUHV38HKd9erlK5eh+2l3JEcf2u9MQFppfN89Y
-        aPLivs9JRv+A5gmyuuBuNvc0uX7bmsAk904V9Ek=
-X-Google-Smtp-Source: ABdhPJxQsvEQ2+kZUIoBlFDRQKYf5TC7MP3yoZBVPXCf3DtOPUFccoI+9TTG4uDicXTgW8fLfGDFB3N9PSq+2Rv1goA=
-X-Received: by 2002:a67:6c84:: with SMTP id h126mr2316194vsc.181.1593198310376;
- Fri, 26 Jun 2020 12:05:10 -0700 (PDT)
+        Fri, 26 Jun 2020 15:04:56 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05QJ3LYT042837;
+        Fri, 26 Jun 2020 15:04:43 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31wjekr456-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Jun 2020 15:04:43 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05QJ3Q82043212;
+        Fri, 26 Jun 2020 15:04:43 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31wjekr442-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Jun 2020 15:04:42 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05QJ0iJp013024;
+        Fri, 26 Jun 2020 19:04:40 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 31uus53cgt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Jun 2020 19:04:40 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05QJ3Ib565339788
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Jun 2020 19:03:18 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CD17BA405C;
+        Fri, 26 Jun 2020 19:04:37 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A91AAA4054;
+        Fri, 26 Jun 2020 19:04:34 +0000 (GMT)
+Received: from hbathini.in.ibm.com (unknown [9.102.0.159])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 26 Jun 2020 19:04:34 +0000 (GMT)
+Subject: [PATCH 00/11] ppc64: enable kdump support for kexec_file_load
+ syscall
+From:   Hari Bathini <hbathini@linux.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Pingfan Liu <piliu@redhat.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+Date:   Sat, 27 Jun 2020 00:34:33 +0530
+Message-ID: <159319825403.16351.7253978047621755765.stgit@hbathini.in.ibm.com>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-References: <202006221201.3641ED037E@keescook> <CAK7LNAQL=XF+xvsRNTEGXtY7J-fx5FJKpMuScoxLt8SDKGB3_Q@mail.gmail.com>
- <202006222234.FBCEAD7F@keescook>
-In-Reply-To: <202006222234.FBCEAD7F@keescook>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 27 Jun 2020 04:04:33 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARRU7j_aSgZreuR-jyFYAipaJwZjUwzmE9RcohgKJvS8w@mail.gmail.com>
-Message-ID: <CAK7LNARRU7j_aSgZreuR-jyFYAipaJwZjUwzmE9RcohgKJvS8w@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Provide way to actually disable stack protector
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-26_10:2020-06-26,2020-06-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 bulkscore=0
+ cotscore=-2147483648 mlxscore=0 clxscore=1011 lowpriorityscore=0
+ suspectscore=0 spamscore=0 mlxlogscore=999 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006260134
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 2:37 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Tue, Jun 23, 2020 at 11:33:53AM +0900, Masahiro Yamada wrote:
-> > On Tue, Jun 23, 2020 at 4:02 AM Kees Cook <keescook@chromium.org> wrote:
-> > >
-> > > Some builds of GCC enable stack protector by default. Simply removing
-> > > the arguments is not sufficient to disable stack protector, as the stack
-> > > protector for those GCC builds must be explicitly disabled. (Removing the
-> > > arguments is left as-is just to be sure there are no ordering problems. If
-> > > -fno-stack-protector ended up _before_ -fstack-protector, it would not
-> > > disable it: GCC uses whichever -f... comes last on the command line.)
-> > >
-> > > Fixes: 20355e5f73a7 ("x86/entry: Exclude low level entry code from sanitizing")
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > >  Makefile                          | 4 +++-
-> > >  arch/Kconfig                      | 3 ---
-> > >  arch/arm/boot/compressed/Makefile | 4 ++--
-> > >  arch/x86/entry/Makefile           | 3 +++
-> > >  4 files changed, 8 insertions(+), 6 deletions(-)
-> > >
-> > > diff --git a/Makefile b/Makefile
-> > > index ac2c61c37a73..b46e91bf0b0e 100644
-> > > --- a/Makefile
-> > > +++ b/Makefile
-> > > @@ -762,7 +762,9 @@ ifneq ($(CONFIG_FRAME_WARN),0)
-> > >  KBUILD_CFLAGS += -Wframe-larger-than=$(CONFIG_FRAME_WARN)
-> > >  endif
-> > >
-> > > -stackp-flags-$(CONFIG_CC_HAS_STACKPROTECTOR_NONE) := -fno-stack-protector
-> > > +DISABLE_STACKPROTECTOR := $(call cc-option,-fno-stack-protector)
-> > > +export DISABLE_STACKPROTECTOR
-> > > +stackp-flags-y                                    := $(DISABLE_STACKPROTECTOR)
-> > >  stackp-flags-$(CONFIG_STACKPROTECTOR)             := -fstack-protector
-> > >  stackp-flags-$(CONFIG_STACKPROTECTOR_STRONG)      := -fstack-protector-strong
-> > >
-> > > diff --git a/arch/Kconfig b/arch/Kconfig
-> > > index 8cc35dc556c7..1ea61290900a 100644
-> > > --- a/arch/Kconfig
-> > > +++ b/arch/Kconfig
-> > > @@ -478,9 +478,6 @@ config HAVE_STACKPROTECTOR
-> > >           An arch should select this symbol if:
-> > >           - it has implemented a stack canary (e.g. __stack_chk_guard)
-> > >
-> > > -config CC_HAS_STACKPROTECTOR_NONE
-> > > -       def_bool $(cc-option,-fno-stack-protector)
-> > > -
-> > >  config STACKPROTECTOR
-> > >         bool "Stack Protector buffer overflow detection"
-> > >         depends on HAVE_STACKPROTECTOR
-> > > diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
-> > > index 00602a6fba04..3693bac525d2 100644
-> > > --- a/arch/arm/boot/compressed/Makefile
-> > > +++ b/arch/arm/boot/compressed/Makefile
-> > > @@ -84,9 +84,9 @@ endif
-> > >
-> > >  # -fstack-protector-strong triggers protection checks in this code,
-> > >  # but it is being used too early to link to meaningful stack_chk logic.
-> > > -nossp-flags-$(CONFIG_CC_HAS_STACKPROTECTOR_NONE) := -fno-stack-protector
-> > >  $(foreach o, $(libfdt_objs) atags_to_fdt.o, \
-> > > -       $(eval CFLAGS_$(o) := -I $(srctree)/scripts/dtc/libfdt $(nossp-flags-y)))
-> > > +       $(eval CFLAGS_$(o) := -I $(srctree)/scripts/dtc/libfdt \
-> > > +                             $(DISABLE_STACKPROTECTOR)))
-> > >
-> > >  # These were previously generated C files. When you are building the kernel
-> > >  # with O=, make sure to remove the stale files in the output tree. Otherwise,
-> > > diff --git a/arch/x86/entry/Makefile b/arch/x86/entry/Makefile
-> > > index b7a5790d8d63..79902decc3d1 100644
-> > > --- a/arch/x86/entry/Makefile
-> > > +++ b/arch/x86/entry/Makefile
-> > > @@ -10,6 +10,9 @@ KCOV_INSTRUMENT := n
-> > >  CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
-> > >  CFLAGS_REMOVE_syscall_32.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
-> > >  CFLAGS_REMOVE_syscall_64.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
-> > > +CFLAGS_common.o += $(DISABLE_STACKPROTECTOR)
-> > > +CFLAGS_syscall_32.o += $(DISABLE_STACKPROTECTOR)
-> > > +CFLAGS_syscall_64.o += $(DISABLE_STACKPROTECTOR)
-> >
-> > There is one more c file in this directory.
-> >
-> > Is it OK to not patch syscall_x32.c ?
->
-> Good question. Peter? (It seems all the syscall_*.c files are just a
-> table, not code -- why do they need any instrumentation changes?)
->
-> >
-> >
-> > >
-> > >  CFLAGS_syscall_64.o            += $(call cc-option,-Wno-override-init,)
-> > >  CFLAGS_syscall_32.o            += $(call cc-option,-Wno-override-init,)
-> >
-> >
-> >
-> >
-> > This patch is ugly.
-> >
-> > I'd rather want to fix this by one-liner.
->
-> Why not a global export to assist? This isn't the only place it's needed
-> (see the arm64 chunk...)
+This patch series enables kdump support for kexec_file_load system
+call (kexec -s -p) on PPC64. The changes are inspired from kexec-tools
+code but heavily modified for kernel consumption. There is scope to
+expand purgatory to verify sha digest but tried to keep purgatory
+changes minimal in the interest of this series.
+
+The first patch adds a weak arch_kexec_add_buffer function to override
+locate memory hole logic suiting arch needs. There are some special
+regions in ppc64 which should be avoided while loading buffer & there
+are multiple callers to kexec_add_buffer making it too complicated to
+maintain range sanity and using generic lookup at the same time.
+
+The second patch marks ppc64 specific code within arch/powerpc/kexec
+and arch/powerpc/purgatory to make the subsequent code changes easy
+to understand.
+
+The next patch adds helper function to setup different memory ranges
+needed for loading kdump kernel, booting into it and exporting the
+crashing kernel's elfcore.
+
+The fourth patch overrides arch_kexec_add_buffer to locate memory
+hole for kdump segments by accounting for the special memory regions,
+referred to as excluded memory ranges, and calls __kexec_add_buffer
+with kbuf->mem set to skip the generic locate memory hole lookup.
+
+The fifth patch moves walk_drmem_lmbs() out of .init section with
+a few changes to reuse it for setting up kdump kernel's usable memory
+ranges. The next patch uses walk_drmem_lmbs() to look up the LMBs
+and set linux,drconf-usable-memory & linux,usable-memory properties
+in order to restrict kdump kernel's memory usage.
+
+The seventh patch adds relocation support for the purgatory. Patch 8
+helps setup the stack for the purgatory. The next patch setups up
+backup region as a segment while loading kdump kernel and teaches
+purgatory to copy it from source to destination.
+
+Patch 10 builds the elfcore header for the running kernel & passes
+the info to kdump kernel via "elfcorehdr=" parameter to export as
+/proc/vmcore file. The last patch sets up the memory reserve map
+for the kexec kernel and also claims kdump support as all the
+necessary changes are added.
+
+Tested the changes successfully on P8, P9 lpars & an OpenPOWER box.
+
+---
+
+Hari Bathini (11):
+      kexec_file: allow archs to handle special regions while locating memory hole
+      powerpc/kexec_file: mark PPC64 specific code
+      powerpc/kexec_file: add helper functions for getting memory ranges
+      ppc64/kexec_file: avoid stomping memory used by special regions
+      powerpc/drmem: make lmb walk a bit more flexible
+      ppc64/kexec_file: restrict memory usage of kdump kernel
+      ppc64/kexec_file: add support to relocate purgatory
+      ppc64/kexec_file: setup the stack for purgatory
+      ppc64/kexec_file: setup backup region for kdump kernel
+      ppc64/kexec_file: prepare elfcore header for crashing kernel
+      ppc64/kexec_file: add appropriate regions for memory reserve map
 
 
-Is it useful when we know
-DISABLE_STACKPROTECTOR = -fno-stack-protector  ?
+ arch/powerpc/include/asm/crashdump-ppc64.h |   15 
+ arch/powerpc/include/asm/drmem.h           |    9 
+ arch/powerpc/include/asm/kexec.h           |   35 +
+ arch/powerpc/include/asm/kexec_ranges.h    |   18 
+ arch/powerpc/kernel/prom.c                 |   13 
+ arch/powerpc/kexec/Makefile                |    2 
+ arch/powerpc/kexec/elf_64.c                |   35 +
+ arch/powerpc/kexec/file_load.c             |   78 +
+ arch/powerpc/kexec/file_load_64.c          | 1461 ++++++++++++++++++++++++++++
+ arch/powerpc/kexec/ranges.c                |  387 +++++++
+ arch/powerpc/mm/drmem.c                    |   87 +-
+ arch/powerpc/mm/numa.c                     |   13 
+ arch/powerpc/purgatory/Makefile            |   28 -
+ arch/powerpc/purgatory/purgatory_64.c      |   35 +
+ arch/powerpc/purgatory/trampoline.S        |  117 --
+ arch/powerpc/purgatory/trampoline_64.S     |  153 +++
+ include/linux/kexec.h                      |    5 
+ kernel/kexec_file.c                        |   37 +
+ 18 files changed, 2327 insertions(+), 201 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/crashdump-ppc64.h
+ create mode 100644 arch/powerpc/include/asm/kexec_ranges.h
+ create mode 100644 arch/powerpc/kexec/file_load_64.c
+ create mode 100644 arch/powerpc/kexec/ranges.c
+ create mode 100644 arch/powerpc/purgatory/purgatory_64.c
+ delete mode 100644 arch/powerpc/purgatory/trampoline.S
+ create mode 100644 arch/powerpc/purgatory/trampoline_64.S
 
-
-
-I'd rather want to apply this patch
-https://patchwork.kernel.org/patch/11628493/
-and hard-code -fno-stack-protector where necessary.
-
-
-
-
->
-> >
-> >
-> >
-> >
-> > diff --git a/arch/x86/entry/Makefile b/arch/x86/entry/Makefile
-> > index b7a5790d8d63..0d41eb91aaea 100644
-> > --- a/arch/x86/entry/Makefile
-> > +++ b/arch/x86/entry/Makefile
-> > @@ -11,6 +11,8 @@ CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRACE)
-> > -fstack-protector -fstack-protector-
-> >  CFLAGS_REMOVE_syscall_32.o = $(CC_FLAGS_FTRACE) -fstack-protector
-> > -fstack-protector-strong
-> >  CFLAGS_REMOVE_syscall_64.o = $(CC_FLAGS_FTRACE) -fstack-protector
-> > -fstack-protector-strong
-> >
-> > +ccflags-$(CONFIG_CC_HAS_STACKPROTECTOR_NONE) += -fno-stack-protector
-> > +
->
-> Order matters here -- when is ccflags-y applied?
-
-
-cc-flags-y comes after KBUILD_CFLAGS
-so that -fno-stack-protector can negate -fstack-protector(-strong)
-
-
-
->
-> >  CFLAGS_syscall_64.o            += $(call cc-option,-Wno-override-init,)
-> >  CFLAGS_syscall_32.o            += $(call cc-option,-Wno-override-init,)
-> >  obj-y                          := entry_$(BITS).o thunk_$(BITS).o
-> > syscall_$(BITS).o
-> >
-> >
-> >
-> >
-> > --
-> > Best Regards
-> > Masahiro Yamada
->
-> --
-> Kees Cook
-
-
-
--- 
-Best Regards
-Masahiro Yamada
