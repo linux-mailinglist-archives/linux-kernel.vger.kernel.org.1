@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035E820B4F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88AA020B4DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729838AbgFZPk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 11:40:26 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:34856 "EHLO ale.deltatee.com"
+        id S1729805AbgFZPj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 11:39:57 -0400
+Received: from ale.deltatee.com ([207.54.116.67]:34850 "EHLO ale.deltatee.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729714AbgFZPjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729712AbgFZPjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Jun 2020 11:39:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:MIME-Version:
@@ -17,20 +17,20 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=0P+V/GA6kjnmOazXS4i5E7J/ATNToBo60mTEbmyeGr4=; b=A27IIaLXnyNF8UdImF34dOisAD
-        x9pkO7HyLOHEDFoGFKlfYZ+2APXPAkFEDxvdw2KKLpAVHbbcullx51P6C4uixlDQCyVsefvOPHkLr
-        LssN7jKTRz/0HSqTAVQkx6w3FV4lkTlHpaEXUQeIYx/VVb3jdxqxhcDOEo63ya96HbAYuuur3sgSe
-        Z3RS4+99DneUgj+mu8vYhQBrMYRNHKhCK4UVCCrg1s27cbUHGo1vmZmmagq1PY663ucw+mijd22RB
-        jy5P6svwJ8m6tVxfj9T2UijyhS1xqYl+pXh4u52bitU5QrAIKIOO1cpU2crl/VFQQgWNC4vJnt6Jo
-        qTrBV8ow==;
+        bh=L7cWSfK/Iv8UF6YZL4ZPTnIiXT+AsLVh6DlV/q1XyNs=; b=Z2XS58E2UK2OcuqEnmLfq0FyLx
+        wkHmOmo3jllETwpdt7onXH7FzVEa+kRUl9DXS8rYZpXzWDzk6ZGSiXpRWilsCWm0Q8DLcQm0S4R9z
+        hhOzjpp61rZsGYEOFZ7QbALr/IDJTI3v58qSj8SgQOVlYn/Yym7OYVYom8MxMMQmH+HjutKrqG58B
+        Xj04k3zVREctgA/v0IapglJ18M+T9xkegPlKlrvSGpPiFaLsRmSYJUyX5ZqtvMWIvylR7kMPQMCuA
+        47fufThGqRTDVLQvdhx2Ea14FEsUkZJX6Y2jhinS1arUP0F22nBiP/2bobvm1RlylATzmZtLPjbri
+        yrk8PrWw==;
 Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
         by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <gunthorp@deltatee.com>)
-        id 1joqRu-0000oS-43; Fri, 26 Jun 2020 09:39:34 -0600
+        id 1joqRu-0000oT-4A; Fri, 26 Jun 2020 09:39:34 -0600
 Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
         (envelope-from <gunthorp@deltatee.com>)
-        id 1joqRn-0007HZ-92; Fri, 26 Jun 2020 09:39:23 -0600
+        id 1joqRn-0007Hc-Cx; Fri, 26 Jun 2020 09:39:23 -0600
 From:   Logan Gunthorpe <logang@deltatee.com>
 To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org
 Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
@@ -38,23 +38,24 @@ Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
         Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
         Max Gurtovoy <maxg@mellanox.com>,
         Stephen Bates <sbates@raithlin.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-Date:   Fri, 26 Jun 2020 09:39:14 -0600
-Message-Id: <20200626153918.27929-6-logang@deltatee.com>
+        Logan Gunthorpe <logang@deltatee.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Date:   Fri, 26 Jun 2020 09:39:15 -0600
+Message-Id: <20200626153918.27929-7-logang@deltatee.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200626153918.27929-1-logang@deltatee.com>
 References: <20200626153918.27929-1-logang@deltatee.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org, hch@lst.de, sagi@grimberg.me, kbusch@kernel.org, axboe@fb.com, Chaitanya.Kulkarni@wdc.com, maxg@mellanox.com, sbates@raithlin.com, logang@deltatee.com
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org, hch@lst.de, sagi@grimberg.me, kbusch@kernel.org, axboe@fb.com, maxg@mellanox.com, sbates@raithlin.com, logang@deltatee.com, Chaitanya.Kulkarni@wdc.com, chaitanya.kulkarni@wdc.com
 X-SA-Exim-Mail-From: gunthorp@deltatee.com
 X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        MYRULES_NO_TEXT,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.2
-Subject: [PATCH v14 5/9] nvme-core: Introduce nvme_ctrl_get_by_path()
+X-Spam-Status: No, score=-6.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        MYRULES_FREE,MYRULES_NO_TEXT,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.2
+Subject: [PATCH v14 6/9] nvme: Export existing nvme core functions
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-kernel-owner@vger.kernel.org
@@ -62,78 +63,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nvme_ctrl_get_by_path() is analagous to blkdev_get_by_path() except it
-gets a struct nvme_ctrl from the path to its char dev (/dev/nvme0).
-It makes use of filp_open() to open the file and uses the private
-data to obtain a pointer to the struct nvme_ctrl. If the fops of the
-file do not match, -EINVAL is returned.
+Export nvme_put_ns(), nvme_command_effects(), nvme_execute_passthru_rq()
+and nvme_find_get_ns() for use in the nvmet passthru code.
 
-The purpose of this function is to support NVMe-OF target passthru.
+The exports are conditional on CONFIG_NVME_TARGET_PASSTHRU.
 
+Based-on-a-patch-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
 Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
 ---
- drivers/nvme/host/core.c | 31 +++++++++++++++++++++++++++++++
- drivers/nvme/host/nvme.h |  6 ++++++
- 2 files changed, 37 insertions(+)
+ drivers/nvme/host/core.c | 14 +++++++++-----
+ drivers/nvme/host/nvme.h |  5 +++++
+ 2 files changed, 14 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 4171e07f1fc9..acd5af305f4b 100644
+index acd5af305f4b..7c35583ef9ca 100644
 --- a/drivers/nvme/host/core.c
 +++ b/drivers/nvme/host/core.c
-@@ -4361,6 +4361,37 @@ void nvme_sync_queues(struct nvme_ctrl *ctrl)
+@@ -450,7 +450,7 @@ static void nvme_free_ns(struct kref *kref)
+ 	kfree(ns);
  }
- EXPORT_SYMBOL_GPL(nvme_sync_queues);
  
-+#ifdef CONFIG_NVME_TARGET_PASSTHRU
-+/*
-+ * The exports that follow within this ifdef are only for
-+ * use by the nvmet-passthru and should not be used for
-+ * other things.
-+ */
-+
-+struct nvme_ctrl *nvme_ctrl_get_by_path(const char *path)
-+{
-+	struct nvme_ctrl *ctrl;
-+	struct file *f;
-+
-+	f = filp_open(path, O_RDWR, 0);
-+	if (IS_ERR(f))
-+		return ERR_CAST(f);
-+
-+	if (f->f_op != &nvme_dev_fops) {
-+		ctrl = ERR_PTR(-EINVAL);
-+		goto out_close;
-+	}
-+
-+	ctrl = f->private_data;
-+	nvme_get_ctrl(ctrl);
-+
-+out_close:
-+	filp_close(f, NULL);
-+	return ctrl;
-+}
-+EXPORT_SYMBOL_GPL(nvme_ctrl_get_by_path);
-+#endif /* CONFIG_NVME_TARGET_PASSTHRU */
-+
- /*
-  * Check we didn't inadvertently grow the command structure sizes:
+-static void nvme_put_ns(struct nvme_ns *ns)
++void nvme_put_ns(struct nvme_ns *ns)
+ {
+ 	kref_put(&ns->kref, nvme_free_ns);
+ }
+@@ -886,8 +886,8 @@ static void *nvme_add_user_metadata(struct bio *bio, void __user *ubuf,
+ 	return ERR_PTR(ret);
+ }
+ 
+-static u32 nvme_command_effects(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
+-				u8 opcode)
++u32 nvme_command_effects(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
++			 u8 opcode)
+ {
+ 	u32 effects = 0;
+ 
+@@ -974,7 +974,7 @@ static void nvme_passthru_end(struct nvme_ctrl *ctrl, u32 effects)
+ 	}
+ }
+ 
+-static void nvme_execute_passthru_rq(struct request *rq)
++void nvme_execute_passthru_rq(struct request *rq)
+ {
+ 	struct nvme_command *cmd = nvme_req(rq)->cmd;
+ 	struct nvme_ctrl *ctrl = nvme_req(rq)->ctrl;
+@@ -3606,7 +3606,7 @@ static int ns_cmp(void *priv, struct list_head *a, struct list_head *b)
+ 	return nsa->head->ns_id - nsb->head->ns_id;
+ }
+ 
+-static struct nvme_ns *nvme_find_get_ns(struct nvme_ctrl *ctrl, unsigned nsid)
++struct nvme_ns *nvme_find_get_ns(struct nvme_ctrl *ctrl, unsigned nsid)
+ {
+ 	struct nvme_ns *ns, *ret = NULL;
+ 
+@@ -4367,6 +4367,10 @@ EXPORT_SYMBOL_GPL(nvme_sync_queues);
+  * use by the nvmet-passthru and should not be used for
+  * other things.
   */
++EXPORT_SYMBOL_GPL(nvme_put_ns);
++EXPORT_SYMBOL_GPL(nvme_command_effects);
++EXPORT_SYMBOL_GPL(nvme_execute_passthru_rq);
++EXPORT_SYMBOL_GPL(nvme_find_get_ns);
+ 
+ struct nvme_ctrl *nvme_ctrl_get_by_path(const char *path)
+ {
 diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index 2ef8d501e2a8..e7074afadb5f 100644
+index e7074afadb5f..5bab4dff1516 100644
 --- a/drivers/nvme/host/nvme.h
 +++ b/drivers/nvme/host/nvme.h
-@@ -712,4 +712,10 @@ void nvme_hwmon_init(struct nvme_ctrl *ctrl);
- static inline void nvme_hwmon_init(struct nvme_ctrl *ctrl) { }
- #endif
+@@ -716,6 +716,11 @@ static inline void nvme_hwmon_init(struct nvme_ctrl *ctrl) { }
+  * These functions are only for use by nvmet-passthru and are only exported
+  * if CONFIG_NVME_TARGET_PASSTHRU is set.
+  */
++void nvme_put_ns(struct nvme_ns *ns);
++u32 nvme_command_effects(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
++			 u8 opcode);
++void nvme_execute_passthru_rq(struct request *rq);
++struct nvme_ns *nvme_find_get_ns(struct nvme_ctrl *ctrl, unsigned int nsid);
+ struct nvme_ctrl *nvme_ctrl_get_by_path(const char *path);
  
-+/*
-+ * These functions are only for use by nvmet-passthru and are only exported
-+ * if CONFIG_NVME_TARGET_PASSTHRU is set.
-+ */
-+struct nvme_ctrl *nvme_ctrl_get_by_path(const char *path);
-+
  #endif /* _NVME_H */
 -- 
 2.20.1
