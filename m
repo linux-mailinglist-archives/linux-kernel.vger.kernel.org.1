@@ -2,75 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAD920AC2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 08:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F4B20AC34
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 08:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728314AbgFZGRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 02:17:14 -0400
-Received: from sonic312-22.consmr.mail.bf2.yahoo.com ([74.6.128.84]:41599 "EHLO
-        sonic312-22.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728233AbgFZGRN (ORCPT
+        id S1728338AbgFZGTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 02:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726451AbgFZGTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 02:17:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1593152232; bh=OulVYBDqCxFN0HMpT2i1Q2OUBxNivCJ6FEqc8tDI1Kg=; h=Date:From:Reply-To:Subject:References:From:Subject; b=YH8yv/W+/iI0m5sNDTJYd8pwe5zjt6ehEP17INktrkus02OuD1Yw6nil2v4dFtZsVnNIh0InJWC6/iJtXzf0uabfMy4QKYl4VeLX5B4C+97j16LYZzwP7GxcDAvx2zbXdhKPfTRyXrEr1c4F+k23/e4u5mwEIws2KLnw5b0zPgBspX1G4yfehBEV8NQTkAUJ6o/VyQEm2wKyOgsmhhLic7AmPxhcXCwXPj9SR1XGWZVb/o9TiXovL9/cR4DtxSionSe0Jdk5XGdGJJ8kXk4A/EuPEdUlrpHBFIihW8ZpgxAb+Ku6VM4I4y9ESLq/KGaTDDfQ+5Yiafnxgd2zpEKQhQ==
-X-YMail-OSG: ATWejB8VM1nDvzNUVyQpMUu5EJiYYdDrzk7.nc3_H.5JKbrvpiMAOpLnZM9sOBg
- CAf.Tme90Ome4VeKiGtZGPNfMVWBoK9HjLQbzkcGQtBpnmJCFSm7fPBsUszgAmKuj3unzwhrfVLA
- qtktE2xrEU.drxOGosljTIhilDAsJFPOywJDSey1TWRIzRHgkkleQLBGMddic5yApVhPn5x8qnMr
- cBDdsr6qPNasmQTSttXupjUDC6KrdH0Z47zTFBI04stLtyC5Bqn3_YQ7qL5zNW_7uOIXoYsficK9
- vcpGtBKc0c5NJKrDDP_sHk905peKownjP5OGrn_60W4AW_Y.eSc02AdynhAjeEkYz8gYJLNuNHXb
- n.QmUMSlsh9W3PklYJavEw6OmntugP.FHuR35tArQFhTEbz.B45SEaO_2Cbg82asPxi5ZhWGtKSV
- Ja2HI_a09ztV9WE0nwFAYwBqRmzCHdsyCBSeTu7L9yqQO9NCSRjkp53a3BhEJ.ezjc7l6MKehOIZ
- zPo0JbgADtvlDGi_gHR25iuIXQkbB9m.6ee_qBNeNR3M6GBENa9Y0C3SB.mPvOQ0HUAq4NR1RnJn
- mwYOipv0NeKnwxGxbXaxy1nQQQPeh1AnmytbOaPYsiZ3_oiSbF2yrEg9KXgFIiugAhbWCU2PnUHJ
- MNivcIxwEbzW935ntYkX.ic_.tbDpRsOFkb8JmRkWPof0z63cRJb9iKjed.ijGuY7HHljk2xhl6k
- lWhiyBfuEV2fNndT10IdAzxS__pqvtjennfNgv5lvxiEOdTCmYwnBVcPswbtKzLLKrzuVaeDOLh9
- Y.z7A384_8gMjtlHL7dY3cP36F8wx3uKdmSM.aoJFcPnC.qyhyiT5OXOO5WIkGIPjscUdWthTI.6
- IjtU94ar7NNJiTVBvITR1uiVCL_I2QH.0sE9ZsUM8isZvP07nSn2Gw6vynWHSHj5nxZfXpF.ygq5
- Ij6yjFsAAyS1STcSI4vOfPrDfgPVjt7Dhj7czGfrCPmvac8lXUiSFZ2wMUZcqbd2UzVEK.wmkPnb
- aK1B7c7ojTTvDabVkbOIpbjABY_HJ4UPsykDcIHmVPHiS1mr6QFTwtJoz1eF6c5A4DiDeOYbZJW2
- TLl2MP_zGYTDjTACDyCXNIxe2L4najZKWe4zHPy9tU_ATLsK.d5WLjyHuVR7sRlrWIGOKudNAc93
- 6kyRVrANlunW.72Gow2DtrGw34mpzDnJs4Wl_ncSjW8Zi1ds3RRmOWO6tYSP8A3bes41WPGQXpy7
- xxRx8YVrM4lB1ZVkNVKX8TLMXdSk.w..qbGzEcqByD6DgK_S5TaAkBUe4hEu8_8uu
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Fri, 26 Jun 2020 06:17:12 +0000
-Date:   Fri, 26 Jun 2020 06:17:09 +0000 (UTC)
-From:   FRANK <frank_nack_2020@aol.com>
-Reply-To: frank_nack_2020@yahoo.com
-Message-ID: <1513752212.2819432.1593152229939@mail.yahoo.com>
-Subject: URGENT,
+        Fri, 26 Jun 2020 02:19:10 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C096C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 23:19:10 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1johhR-0001r4-L1; Fri, 26 Jun 2020 08:18:57 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1johhN-00015J-AA; Fri, 26 Jun 2020 08:18:53 +0200
+Date:   Fri, 26 Jun 2020 08:18:53 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Roy Im <roy.im.opensource@diasemi.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Brian Masney <masneyb@onstation.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>, Luca Weiss <luca@z3ntu.xyz>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Pascal PAILLET-LME <p.paillet@st.com>,
+        Rob Herring <robh@kernel.org>,
+        Samuel Ortiz <sameo@linux.intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Support Opensource <support.opensource@diasemi.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v14 3/3] Input: new da7280 haptic driver
+Message-ID: <20200626061853.hyb7dwta6ths2qo2@taurus.defre.kleine-koenig.org>
+References: <cover.1593017969.git.Roy.Im@diasemi.com>
+ <8b05f5bd46eac415c628e965f59b2b57aff86bbe.1593017969.git.Roy.Im@diasemi.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <1513752212.2819432.1593152229939.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16138 YMailNodin Mozilla/5.0 (Windows NT 5.1; rv:52.0) Gecko/20100101 Firefox/52.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="l5lbv7flvyngebwk"
+Content-Disposition: inline
+In-Reply-To: <8b05f5bd46eac415c628e965f59b2b57aff86bbe.1593017969.git.Roy.Im@diasemi.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--l5lbv7flvyngebwk
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Dear Friend,
+Hello,
 
-How are you today with your family, Hope fine? Please, it=E2=80=99s my grea=
-t pleasure to contact you today. I am Mr. Frank Nack a banker by profession=
- from Burkina Faso. Please, I want our bank management to transfer an aband=
-oned sum of (US$7.5M) into your bank account. This business is 100% risk fr=
-ee.
+=66rom the PWM POV I'm happy now. Just a few minor comments that I noticed
+while checking the PWM details.
 
-Your share will be 40% while 60% for me. More details will be forwarded to =
-you with copy of my bank working ID card, photos and direct phone number im=
-mediately I receive your urgent response indicating your interest to handle=
- the business transaction with me.
+On Thu, Jun 25, 2020 at 01:59:29AM +0900, Roy Im wrote:
+> +		val =3D haptics->ps_seq_id << DA7280_PS_SEQ_ID_SHIFT |
+> +			haptics->ps_seq_loop << DA7280_PS_SEQ_LOOP_SHIFT;
 
-1) Your Full Name.......................
-2) Your Private Telephone Number........
-3) Your Receiving Country............
+If you write this as:
 
-Do reply me urgent with this email address (frank_nack_2020@yahoo.com), (OR=
- +226 51 81 51 94,) for quick spend
+	val =3D FIELD_PREP(DA7280_PS_SEQ_ID_MASK, haptics->ps_seq_id) |
+		FIELD_PREP(DA7280_PS_SEQ_LOOP_MASK, haptics->ps_seq_loop);
 
-Yours Sincerely,
-Best Regard.
-Mr. Frank Nack
-Tell; +226 51 81 51 94,
+you get some additional checks for free and can drop all defines for ..._SH=
+IFT .
+
+> +static u8 da7280_haptic_of_gpi_pol_str(struct device *dev,
+> +				       const char *str)
+> +{
+> +	if (!strcmp(str, "Rising-edge"))
+> +		return 0;
+> +	else if (!strcmp(str, "Falling-edge"))
+> +		return 1;
+> +	else if (!strcmp(str, "Both-edge"))
+> +		return 2;
+> +
+> +	dev_warn(dev, "Invalid string - set to default\n");
+
+Maybe mention "Rising-edge" being the default?
+
+> +	return 0;
+> +}
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--l5lbv7flvyngebwk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl71k0oACgkQwfwUeK3K
+7AkjFwgAldH3KRBxt3eudCHkipnw7VuyQf7SQOeIBpqehW+F0UEblbR8l96xgv/G
+8wzR4sL28wQuPpDxs7zvvqaN3H6JakX+BIL/9yIAtBh1LCGca01s8peLC9EhuYac
+zFtc97/+fEmhjqjMmeyThz8s+uy3C7mO3rjaQODNsW9ZhD8XmmFuvwyI4//0uF55
+uVEn36SrwI7Osmy16vKWluKpuk+d1b8otenjJq9uLJW6ACSQrCv+YTZzrmVBqTyY
+OCPVLOXtYhSUlQLNkwa95ENVA4h/ZzRG5qs139nfo9H3aqDaz62dJ5iYbdrdri0U
+0B/l+NTYigDURR4k4KErR4u3aQfMVw==
+=zSqA
+-----END PGP SIGNATURE-----
+
+--l5lbv7flvyngebwk--
