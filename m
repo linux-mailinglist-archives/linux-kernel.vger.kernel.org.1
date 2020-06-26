@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3350C20B339
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 16:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE9320B342
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 16:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729183AbgFZOGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 10:06:55 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:49683 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728751AbgFZOGy (ORCPT
+        id S1729051AbgFZOJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 10:09:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728920AbgFZOJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 10:06:54 -0400
-Received: from mail-qk1-f181.google.com ([209.85.222.181]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1My3In-1iuglu0PZ1-00zYPy for <linux-kernel@vger.kernel.org>; Fri, 26 Jun
- 2020 16:06:53 +0200
-Received: by mail-qk1-f181.google.com with SMTP id l6so8839468qkc.6
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 07:06:52 -0700 (PDT)
-X-Gm-Message-State: AOAM533bjI4Zeox2P8E6bTXl3rqGGonr2ZmGaNZc6pnhkIu4nDup+wzQ
-        7oFUbbiHq6xL+/2fdUt8DUuYTP+pszpCI5a7Mlk=
-X-Google-Smtp-Source: ABdhPJzYcCAMbalkC4bEmdc6PI3qYo752wn5aOmuAao8QvJg/qIdGTqeLRGG60lgw22Pe/M5Pc/in9SVUk7XZJcoJHc=
-X-Received: by 2002:a37:a282:: with SMTP id l124mr2729098qke.3.1593180412026;
- Fri, 26 Jun 2020 07:06:52 -0700 (PDT)
+        Fri, 26 Jun 2020 10:09:26 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 287C6C03E979;
+        Fri, 26 Jun 2020 07:09:26 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id x8so3426759plm.10;
+        Fri, 26 Jun 2020 07:09:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nVcE6JZwaiOpCfvw6QaISNFoFXQ9vpyfQxkKFtpxiO8=;
+        b=ffgz/EKAhIoZtQe8N/0D1lqGXGbAsbyaCVw3ZpHgmelpr+8gITxZFC3lbbeUOr6KBG
+         PefAdZxl571J9LzZ/3pciLZkIX9dGehHSGAJ2sZKzzdBI0GLTb1ObZ1blBOoMgsWLQws
+         u8tgY8DC8eSLOqj5aa7vGR52VT5VeTpzVmDLT3sYuG3f+eB6dqexQBwgSeiUGuWoLhyA
+         pz9XnlPL3RtbfQZjsOE391pTetqfX6tw4bPteve039ub00BGm3wRa0/jjTHERToZC8WV
+         4wGywfJFGTHIl3mgLDQfXMd5vRqamN5TAL2prs+9vJKLEt4Ye60SA13YFlATatLgD8tA
+         ymiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nVcE6JZwaiOpCfvw6QaISNFoFXQ9vpyfQxkKFtpxiO8=;
+        b=b2lnFS5+zcGnWFckxl4WS5LlIVZjYt0YV0dwY/YhZtcROxd+LRgNHxLOXPt3xuGCQV
+         JagKU8nz4zwl+RlvZbUi7yA7+AuSfUNyqMeX4gemZCtwe5q3+I8Ttf+jgppLJWV65lI/
+         jw7YM4f2Wv7bhwV37UZzqEJl01Yi/+QO4kVsVB5GuFUUYI+KE2QZ7tMkMRcn9JoS++bZ
+         ym8SJWMJuvh/a5CyZtfrhYQ6zet2ngnc6fNI5H5E1zr8JRgbbW9ac7LV1Iv6+4t9knqI
+         ThrKjuSUkXvluUDTuLYHsEy1ZLiLCG7zMseBBLXE8Bp6hw5HwcE5sXCz522IapW0pv1n
+         HFGw==
+X-Gm-Message-State: AOAM530pWq0wNcKE0KEaAKVhPonDWk6zz+tMwzmaJyNYzhoDjPybVWwc
+        aOzWh4erQB1iM74kaBKKgoUwbRumEXPH69IxFHg=
+X-Google-Smtp-Source: ABdhPJxOcrGuBrjFXG3Y82onEudQH4jwuXE0m2thhCpRMKDr2i7mImfOitw8ws6EFZQqF17S/O2k0uErcLUJsYNyygY=
+X-Received: by 2002:a17:90a:220f:: with SMTP id c15mr3869185pje.129.1593180565616;
+ Fri, 26 Jun 2020 07:09:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200626130525.389469-1-lee.jones@linaro.org> <20200626130525.389469-4-lee.jones@linaro.org>
-In-Reply-To: <20200626130525.389469-4-lee.jones@linaro.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 26 Jun 2020 16:06:36 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a19M5pW8R01Y-AKEikHfPV1_CFc6em3Sy=Z0FuSHwT9Hg@mail.gmail.com>
-Message-ID: <CAK8P3a19M5pW8R01Y-AKEikHfPV1_CFc6em3Sy=Z0FuSHwT9Hg@mail.gmail.com>
-Subject: Re: [PATCH 03/10] misc: ti-st: st_kim: Tidy-up bespoke commentry
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     gregkh <gregkh@linuxfoundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Pavan Savoy <pavan_savoy@ti.com>
+References: <20200625202807.b630829d6fa55388148bee7d@linux-foundation.org>
+ <20200626032946._LJ_E6G66%akpm@linux-foundation.org> <CAHk-=wiZrhVUq3N17=GVzMQNQUKi65x=-djTM2A+fz8UdQxgEg@mail.gmail.com>
+ <CADRDgG6SXwngT5gS2EY1Y0xnPdYth-FicQyTnPyqiwpmw52eQg@mail.gmail.com>
+ <CAHp75Ve2x9dEqaHSue5UAftsJw+U3n8K9YEXBy5QFGJHgkQ3DA@mail.gmail.com> <CAK8P3a3doveL3DxjcyiAqxNve07WfXYNTXK77Pbm70Dvyowg2w@mail.gmail.com>
+In-Reply-To: <CAK8P3a3doveL3DxjcyiAqxNve07WfXYNTXK77Pbm70Dvyowg2w@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 26 Jun 2020 17:09:12 +0300
+Message-ID: <CAHp75Vfr8sFydbH=G7U+wXoUftT9RnsfSSLi4RXNyR-3sApR3w@mail.gmail.com>
+Subject: Re: [patch 10/32] linux/bits.h: fix unsigned less than zero warnings
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Emil Velikov <emil.l.velikov@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel test robot <lkp@intel.com>,
+        mm-commits@vger.kernel.org,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:bmboruplK8qERrunEgryuKkwy3mRrBIlnAxwDgVowii3l6L9/60
- Mj31nPNITIgVl30WcdZG83elpNU9J60ELha+vKIiXPWx1O9VnkZj2rIJSaXx7R0V/Hkwv/d
- lB9GDCnzzny0vyggsltFDpe0SNx+5VSuYNkFA8X4Z5luPzMEIJY4I8CYPu7SZ7Flk9Cq9xc
- jmns3seSrnz4FlLicR91Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0fzR1ge7tEg=:CvTJPfDIBpfxQ+eb9Fmb46
- YtjZqUza5aNSSvGnD8yruA+gN8vsxIR+IXaAC+t+f76QWKR2EHSk8aKVFgQXNF157/gc+Fyg4
- kihs6z0EiQTH6ihFOMQxp2cQjOq65wnNDkzUNKo1SAr2eW8/Y+PZoBJFv6m6YJMZSQ8BnICok
- bg5ru5T/X/P2riHPz+X27EvwWlFHJUE2OdA9DWVC/BuVnOWS7zfd8/ttqlAIpoJcP/XREXBbu
- XftpSbWBHtWbt1Iw+ZfDzYEcJHb7Hyz6T783+VKdbvCbnuDw8G3F+cjVXUaXyQ1Mo+Mj12072
- WlsqnyJMshmgbEyaNNiRimhCGCw/G38DJxSGdA6/4DgL/ebAbr3+FEh+idDUuQ7sfllwsikpg
- CTN5w1rpwfs3EXs4k+GwjJLo1A9qDx0uvqaCFNtGgMpMFJFSicy6FFcDBj8dScbuDN+MavGoA
- Gcjinpj1BjrnL6hwiJtp9On45s+VJpXu/xrWJfQ66LIrtIC/RsXsBLokWilwji3Te38CmWaQ0
- 5M5uC1OtAnuWIvygLTfBCou6lIUXsuoaweHk8MUtQxPKRj63u6/TcUNpyqR95Edi8/rZn3erE
- StZnXiHNZ7GP2G+tyLO3FGJvVTqGk86ZsPHZCbzGCDabi02DUnAeHyBxHPNyNTSf1/Yy6z5Mg
- Zkv+R6Y8nZXkuTnjsiEuC7OzHM0ta0j4RH3FLkoiK3UQTVppD9vXUU1zUuz6v/c16g0xKo55x
- 2eNPEDZhWPk0+Lbix3AkRc/28N70eTEMWcNCnwiA9FZBKcpFj7UKApULETWfJVpoQPPlxCveE
- WWkUpzcB+3hoRvXolJdTKMWFNsRolYOzo6E/3jPW07TIAdX0ZA=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 3:05 PM Lee Jones <lee.jones@linaro.org> wrote:
+On Fri, Jun 26, 2020 at 5:03 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Fri, Jun 26, 2020 at 3:24 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Fri, Jun 26, 2020 at 2:37 PM Rikard Falkeborn
+> > <rikard.falkeborn@gmail.com> wrote:
+> > > Den fre 26 juni 2020 08:32Linus Torvalds <torvalds@linux-foundation.org> skrev:
+> >
+> > ...
+> >
+> > > I'll just say no and point to this email next time someone complains instead.
+> >
+> > "No" is not constructive here. People can be annoyed with warning
+> > messages, but the real issue here are the various CI systems which
+> > send a lot of spam because of that. As a maintainer I would need to
+> > drop CI in order to see a good patch. If Linus considers that warning
+> > useless, then probably you can change your patch to do what he
+> > proposed.
 >
-> If it's still in use and worth the effort, it sure looks like
-> this driver could do with a good scrub (clean).
->
-> This patch conserns itself with the non-standard comments located
-> thoughout the file.
->
-> It also fixes the following W=1 warnings by demoting the kerneldoc
-> function headers to standard comments, since there doesn't appear
-> to be a requirement for the function args to be documented:
->
->  /drivers/misc/ti-st/st_kim.c:42: warning: Function parameter or member 'id' not described in 'st_get_plat_device'
->  /drivers/misc/ti-st/st_kim.c:53: warning: Function parameter or member 'kim_gdata' not described in 'validate_firmware_response'
->  /drivers/misc/ti-st/st_kim.c:126: warning: Function parameter or member 'kim_gdata' not described in 'kim_int_recv'
->  /drivers/misc/ti-st/st_kim.c:126: warning: Function parameter or member 'data' not described in 'kim_int_recv'
->  /drivers/misc/ti-st/st_kim.c:126: warning: Function parameter or member 'count' not described in 'kim_int_recv'
->  /drivers/misc/ti-st/st_kim.c:272: warning: Function parameter or member 'kim_gdata' not described in 'download_firmware'
->  /drivers/misc/ti-st/st_kim.c:445: warning: Function parameter or member 'kim_data' not described in 'st_kim_start'
->  /drivers/misc/ti-st/st_kim.c:509: warning: Function parameter or member 'kim_data' not described in 'st_kim_stop'
->  /drivers/misc/ti-st/st_kim.c:661: warning: Function parameter or member 'core_data' not described in 'st_kim_ref'
->  /drivers/misc/ti-st/st_kim.c:661: warning: Function parameter or member 'id' not described in 'st_kim_ref'
->
-> Cc: Pavan Savoy <pavan_savoy@ti.com>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> How about moving that warning from W=1 to W=2? Generally speaking
+> I'd expect W=1 warnings to be in a category of "it's generally better to
+> address this in the code, but we can't turn it on by default because the
+> output gets too noisy", as opposed to W=2 meaning "this sometimes
+> finds a real problem, but fixing the warning often makes code worse."
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+It would work for me if it had been
+a) documented (I didn't check if it had been already done, though);
+b) understood by all CIs in the same way (see a) as well :-).
+
+That said, I like any compromise that will reduce unneeded spam for
+submitted patches from CIs and, as a bonus, get rid of warnings in my
+local compilations (yes, I usually do W=1).
+
+-- 
+With Best Regards,
+Andy Shevchenko
