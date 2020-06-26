@@ -2,65 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E612420ADFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 10:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3397B20AE15
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 10:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729369AbgFZIG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 04:06:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729115AbgFZIGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 04:06:55 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.235])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED82520836;
-        Fri, 26 Jun 2020 08:06:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593158815;
-        bh=bPwCaiRUHtIB4Vkkq8BcydU1A3dIjpEtHR80BgnI2mI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FRlwNmMDI/vIG0jsge053G/9EjuUAMRyoAyJcPFwn0la4LbHhSs/8AbiSPt4c5YHj
-         /NUbY4Om/u//SuVaCIi1ndX1c+K8U3qZv1DLGCm8QrljpaH7kzjF/MbSZQGpMD2xXU
-         d7kbpOcS3JYVNHf843o0T0cBij1L4FhVF4Jd896E=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH] ARM: dts: am: Align L2 cache-controller nodename with dtschema
-Date:   Fri, 26 Jun 2020 10:06:51 +0200
-Message-Id: <20200626080651.4355-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1729442AbgFZIHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 04:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728938AbgFZIHi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 04:07:38 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E3FC08C5C1;
+        Fri, 26 Jun 2020 01:07:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=9mvz1gMkyoGTE/uYkR0YFesaWUHN2JLoZ84hifwq/lw=; b=XrsF4PUOiNc1/K70Sby6ULuuPl
+        D69FsD9p3dOeXatDf+wL1o0s61FBVwayNyPukRevjXKRSdiPN5fKDsDYxG3IA4Q1qZAguM71tLMUW
+        7uBuYKKd/mOFCl9Urp/0pRpnikmuNwGVC4kfU1ChIugfkINn8H3cQJZ1ZmhcfODK7D8FtGtvEBYka
+        zBSkHePCl4ccNzClschPrGj/QawszWGQSWz1X7xXHf8G0EV487d4s8GGR2fEiYoKWHjdcGTsszpKd
+        pKqekbzYpGTSnqYbGnqIPZ2F97F7qAU0TUmOyFUtBMPwcE4RQrbBpuRTCB3WU17EwkANINQQ2H2pY
+        RLAN+e2A==;
+Received: from [2001:4bb8:184:76e3:2b32:1123:bea8:6121] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jojOI-0007sx-5g; Fri, 26 Jun 2020 08:07:18 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>
+Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: ioremap and dma cleanups and fixes for superh (resend)
+Date:   Fri, 26 Jun 2020 10:07:07 +0200
+Message-Id: <20200626080717.1999041-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix dtschema validator warnings like:
-    l2-cache-controller@48242000: $nodename:0: 'l2-cache-controller@48242000'
-        does not match '^(cache-controller|cpu)(@[0-9a-f,]+)*$'
+Hi Yoshinori and Rich,
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm/boot/dts/am4372.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/am4372.dtsi b/arch/arm/boot/dts/am4372.dtsi
-index 51ad9e881a62..73737af49f48 100644
---- a/arch/arm/boot/dts/am4372.dtsi
-+++ b/arch/arm/boot/dts/am4372.dtsi
-@@ -153,7 +153,7 @@
- 		clocks = <&mpu_periphclk>;
- 	};
- 
--	l2-cache-controller@48242000 {
-+	cache-controller@48242000 {
- 		compatible = "arm,pl310-cache";
- 		reg = <0x48242000 0x1000>;
- 		cache-unified;
--- 
-2.17.1
-
+can you take a look and possibly pick up the series below that untangles
+and sorts out minor issues with the sh ioremap and dma code?
