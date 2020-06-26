@@ -2,131 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9267420AE42
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 10:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5159520AE5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 10:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729113AbgFZINf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 04:13:35 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54748 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728817AbgFZINe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 04:13:34 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05Q89UrY054383;
-        Fri, 26 Jun 2020 04:13:16 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31vxqkyb28-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Jun 2020 04:13:15 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05Q89XJu054597;
-        Fri, 26 Jun 2020 04:13:15 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31vxqkyb1c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Jun 2020 04:13:15 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05Q8Bmio024767;
-        Fri, 26 Jun 2020 08:13:13 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 31uusjjp7s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Jun 2020 08:13:12 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05Q8DAGX34537708
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Jun 2020 08:13:10 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CCD9D42042;
-        Fri, 26 Jun 2020 08:13:10 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EB02742049;
-        Fri, 26 Jun 2020 08:13:07 +0000 (GMT)
-Received: from [9.199.51.116] (unknown [9.199.51.116])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 26 Jun 2020 08:13:07 +0000 (GMT)
-Subject: Re: [PATCH 2/3] mm/huge_memory.c: update tlb entry if pmd is changed
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Bibo Mao <maobibo@loongson.cn>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Daniel Silsby <dansilsby@gmail.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <1592990792-1923-1-git-send-email-maobibo@loongson.cn>
- <1592990792-1923-2-git-send-email-maobibo@loongson.cn>
- <07f78e99-6e59-0bce-8ac0-50d7c7600461@oracle.com>
- <87lfkbl5gz.fsf@linux.ibm.com>
- <6071df89-1438-1a25-136d-228b8863364e@oracle.com>
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Message-ID: <ad67e08e-9da8-6123-2c14-c197d22ee27a@linux.ibm.com>
-Date:   Fri, 26 Jun 2020 13:43:06 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <6071df89-1438-1a25-136d-228b8863364e@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1726384AbgFZIWS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Jun 2020 04:22:18 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:51156 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725945AbgFZIWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 04:22:17 -0400
+Received: from dggemi406-hub.china.huawei.com (unknown [172.30.72.55])
+        by Forcepoint Email with ESMTP id 930681BD52C6200B705D;
+        Fri, 26 Jun 2020 16:22:09 +0800 (CST)
+Received: from DGGEMI525-MBS.china.huawei.com ([169.254.6.126]) by
+ dggemi406-hub.china.huawei.com ([10.3.17.144]) with mapi id 14.03.0487.000;
+ Fri, 26 Jun 2020 16:22:00 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        "Luis Claudio R . Goncalves" <lgoncalv@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Mahipal Challa" <mahipalreddy2006@gmail.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        "Dan Streetman" <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
+        Colin Ian King <colin.king@canonical.com>
+Subject: RE: [PATCH v3] mm/zswap: move to use crypto_acomp API for hardware
+ acceleration
+Thread-Topic: [PATCH v3] mm/zswap: move to use crypto_acomp API for hardware
+ acceleration
+Thread-Index: AQHWS4ju6iURsG9yIk+EgvuPOVc69qjp91mAgACMbECAAAjt4A==
+Date:   Fri, 26 Jun 2020 08:22:00 +0000
+Message-ID: <B926444035E5E2439431908E3842AFD252473C@DGGEMI525-MBS.china.huawei.com>
+References: <20200626070903.27988-1-song.bao.hua@hisilicon.com>
+ <20200626072027.GA6153@gondor.apana.org.au> 
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-26_04:2020-06-26,2020-06-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- bulkscore=0 phishscore=0 clxscore=1015 lowpriorityscore=0 mlxlogscore=999
- malwarescore=0 impostorscore=0 priorityscore=1501 cotscore=-2147483648
- spamscore=0 suspectscore=8 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006260058
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.84]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/25/20 10:16 PM, Mike Kravetz wrote:
-> On 6/25/20 5:01 AM, Aneesh Kumar K.V wrote:
->> Mike Kravetz <mike.kravetz@oracle.com> writes:
->>
->>> On 6/24/20 2:26 AM, Bibo Mao wrote:
->>>> When set_pmd_at is called in function do_huge_pmd_anonymous_page,
->>>> new tlb entry can be added by software on MIPS platform.
->>>>
->>>> Here add update_mmu_cache_pmd when pmd entry is set, and
->>>> update_mmu_cache_pmd is defined as empty excepts arc/mips platform.
->>>> This patch has no negative effect on other platforms except arc/mips
->>>> system.
->>>
->>> I am confused by this comment.  It appears that update_mmu_cache_pmd
->>> is defined as non-empty on arc, mips, powerpc and sparc architectures.
->>> Am I missing something?
->>>
->>> If those architectures do provide update_mmu_cache_pmd, then the previous
->>> patch and this one now call update_mmu_cache_pmd with the actual faulting
->>> address instead of the huge page aligned address.  This was intentional
->>> for mips.  However, are there any potential issues on the other architectures?
->>> I am no expert in any of those architectures.  arc looks like it could be
->>> problematic as update_mmu_cache_pmd calls update_mmu_cache and then
->>> operates on (address & PAGE_MASK).  That could now be different.
->>>
->>
->> Also we added update_mmu_cache_pmd to update a THP entry. That could be
->> different from a hugetlb entry on some architectures. If we need to do
->> hugetlb equivalent for update_mmu_cache, we should add a different
->> function.
+> > -----Original Message-----
+> > From: linux-kernel-owner@vger.kernel.org
+> > [mailto:linux-kernel-owner@vger.kernel.org] On Behalf Of Herbert Xu
+> > Sent: Friday, June 26, 2020 7:20 PM
+> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > Cc: akpm@linux-foundation.org; linux-mm@kvack.org;
+> > linux-kernel@vger.kernel.org; Linuxarm <linuxarm@huawei.com>; Luis
+> > Claudio R . Goncalves <lgoncalv@redhat.com>; Sebastian Andrzej Siewior
+> > <bigeasy@linutronix.de>; David S . Miller <davem@davemloft.net>;
+> > Mahipal Challa <mahipalreddy2006@gmail.com>; Seth Jennings
+> > <sjenning@redhat.com>; Dan Streetman <ddstreet@ieee.org>; Vitaly Wool
+> > <vitaly.wool@konsulko.com>; Wangzhou (B) <wangzhou1@hisilicon.com>;
+> > Colin Ian King <colin.king@canonical.com>
+> > Subject: Re: [PATCH v3] mm/zswap: move to use crypto_acomp API for
+> > hardware acceleration
+> >
+> > On Fri, Jun 26, 2020 at 07:09:03PM +1200, Barry Song wrote:
+> > >
+> > > +	mutex_lock(&acomp_ctx->mutex);
+> > > +
+> > > +	src = kmap(page);
+> > > +	dst = acomp_ctx->dstmem;
+> > > +	sg_init_one(&input, src, PAGE_SIZE);
+> > > +	/* zswap_dstmem is of size (PAGE_SIZE * 2). Reflect same in sg_list */
+> > > +	sg_init_one(&output, dst, PAGE_SIZE * 2);
+> > > +	acomp_request_set_params(acomp_ctx->req, &input, &output,
+> > PAGE_SIZE, dlen);
+> > > +	ret = crypto_wait_req(crypto_acomp_compress(acomp_ctx->req),
+> > &acomp_ctx->wait);
+> > > +	dlen = acomp_ctx->req->dlen;
+> > > +	kunmap(page);
+> >
+> > Waiting on an async request like this is just silly.  This defeats the
+> > whole purpose of having a fallback.
 > 
-> I do not know the mips architecture well enough or if the motivation for
-> this patch was based on THP or hugetlb pages.  However, it will change
-> the address passed to update_mmu_cache_pmd from huge page aligned to the
-> actual faulting address.  Will such a change in the passed address impact
-> the powerpc update_mmu_cache_pmd routine?
+> For this zswap case and for this moment, it is probably not.
+> As for this case, there are no two parallel (de)compressions which can be done
+> in parallel in a single (de)compressor instance.
+> The original zswap code is doing all compression/decompression in atomic
+> context.
+> Right now, to use acomp api, the patch has moved to sleep-able context.
 > 
+> However, compression/decompression can be done in parallel in different
+> instances of acomp, also different cpus.
+> 
+> If we want to do multiple (de)compressions simultaneously in one acomp
+> instance by callbacks, it will ask a large changes in zswap.c not only using the
+> new APIs. I think we can only achieve the ideal goal step by step.
 
-Right now powerpc update_mmu_cache_pmd() is a dummy function. But I 
-agree we should audit arch to make sure such a change can work with 
-architectures. My comment was related to the fact that mmu cache update 
-w.r.t THP and hugetlb can be different on some platforms. So we may
-want to avoid using the same function for both.
+On the other hand, I also don't think mm/frontswap.c supports async store. It is pretty much
+a sync operation to call store callback of frontswap for every single page:
 
--aneesh
+int __frontswap_store(struct page *page)
+{
+	...
+	/* Try to store in each implementation, until one succeeds. */
+	for_each_frontswap_ops(ops) {
+		ret = ops->store(type, offset, page);
+		if (!ret) /* successful store */
+			break;
+	}
+	...
+	if (frontswap_writethrough_enabled)
+		/* report failure so swap also writes to swap device */
+		ret = -1;
+	return ret;
+}
+
+If we don't want to execute a sync wait in zswap, a lot of things need changes, not only zswap.
+
+> 
+> >
+> > Cheers,
+> > --
+> > Email: Herbert Xu <herbert@gondor.apana.org.au> Home Page:
+> > http://gondor.apana.org.au/~herbert/
+> > PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> 
+> -barry
+
+Thanks
+Barry
+
