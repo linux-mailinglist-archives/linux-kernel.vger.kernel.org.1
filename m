@@ -2,107 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE49020AFFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 12:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB5620AFFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 12:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728098AbgFZKpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 06:45:19 -0400
-Received: from mga05.intel.com ([192.55.52.43]:61254 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728023AbgFZKpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 06:45:19 -0400
-IronPort-SDR: n0ojoOkY7TbVwJEO9W5XoEADSGnZt9ZaBkEU+5CiIwLu+BAUlNN4bManESOzT4Afd4Kg8LeSXG
- k+WQrRj0MxCQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="230053509"
-X-IronPort-AV: E=Sophos;i="5.75,283,1589266800"; 
-   d="scan'208";a="230053509"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2020 03:45:18 -0700
-IronPort-SDR: RA/ZNeU+CVrYx6dmKm5sZlO3kE+98yXe7qJHBl1eLlfxEx/8rO3MHpJhAgh3/CaaPQQN8Tty/Q
- GjJryRrU6/IQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,283,1589266800"; 
-   d="scan'208";a="424040522"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004.jf.intel.com with ESMTP; 26 Jun 2020 03:45:13 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1jolr7-00G4At-VC; Fri, 26 Jun 2020 13:45:13 +0300
-Date:   Fri, 26 Jun 2020 13:45:13 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        groeck@chromium.org, Benson Leung <bleung@chromium.org>,
-        Dmitry Torokhov <dtor@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Bernardo Perez Priego <bernardo.perez.priego@intel.com>,
-        Daniel Campello <campello@chromium.org>,
-        Enrico Granata <egranata@chromium.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Nick Crews <ncrews@chromium.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Wen Yang <wenyang@linux.alibaba.com>,
-        Yicheng Li <yichengli@chromium.org>
-Subject: Re: [PATCH] platform/chrome: Clarify SPDX license with GPL-2.0-only
-Message-ID: <20200626104513.GQ3703480@smile.fi.intel.com>
-References: <20200625170356.225136-1-enric.balletbo@collabora.com>
- <CAHp75VdY4TEKfZXDb-f-KC4G2XRJOdB-w4vegSWG9vULLqcUKw@mail.gmail.com>
- <026b38ff947e338a468567dfd20fbde1419bb094.camel@perches.com>
- <CAHp75VcFeCf0vnk2Ea_-QdTW5gyRZvgEXwX7-VSd3rKch7pSwQ@mail.gmail.com>
- <CAHp75VeZj72VDHSm48Diomz4q0+dJ6gjknqHQpfon3PU9Te5-w@mail.gmail.com>
- <43e55eb146d8e66ba1aaf057b807e6bd6ed16d78.camel@perches.com>
+        id S1728130AbgFZKqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 06:46:07 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:46774 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728023AbgFZKqG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 06:46:06 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05QAcXan005493;
+        Fri, 26 Jun 2020 05:45:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=yuqVxib/OfeKhWvQNRZsWQpeJuc2MCZD82snGcZPbvY=;
+ b=TKKXIlNZhrtCtrvcPLS2cTAD7q+rVFd+GWHM0kAfDLc7UwW4e86BKpn63LAJeT27dbnc
+ k5ZDgpdRHHvfebakcOLVhcfz9xjHzFCzmRAMircnpCg8PKo3eeMoNHSgEtZ0zwGw7Q+9
+ x5E1hQBcEEwa8sCWwCq+wK4q7UXOFnQsXQMHFLIVEKBj9L6SumY2TY3mbcqE0/dJ3mlc
+ 7+2psNNivT7ldMeNIF0H4BY3nOZFwKF5uj7fVPqhtf9btUYY8RKMDhOgfvyBzWi0M8RI
+ oQr4wh+Q8d//Bk30lch0Cw9OPvq7fk+6JUJFZ2WmPcAxSIpwrB+pYf88rMr6v0vxuazs mA== 
+Authentication-Results: ppops.net;
+        spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 31uus3c4ah-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 26 Jun 2020 05:45:21 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 26 Jun
+ 2020 11:45:19 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Fri, 26 Jun 2020 11:45:19 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CAF212C5;
+        Fri, 26 Jun 2020 10:45:19 +0000 (UTC)
+Date:   Fri, 26 Jun 2020 10:45:19 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/3] ALSA: compress: document the compress audio state
+ machine
+Message-ID: <20200626104519.GD71940@ediswmail.ad.cirrus.com>
+References: <20200625154651.99758-1-vkoul@kernel.org>
+ <20200625154651.99758-2-vkoul@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <43e55eb146d8e66ba1aaf057b807e6bd6ed16d78.camel@perches.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200625154651.99758-2-vkoul@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-SPF-Result: fail
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com include:spf.protection.outlook.com
+ ip4:5.172.152.52 -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
+ mlxscore=0 mlxlogscore=999 phishscore=0 spamscore=0 cotscore=-2147483648
+ impostorscore=0 priorityscore=1501 bulkscore=0 adultscore=0 suspectscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006260077
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 12:52:21PM -0700, Joe Perches wrote:
-> On Thu, 2020-06-25 at 22:35 +0300, Andy Shevchenko wrote:
-> > On Thu, Jun 25, 2020 at 10:33 PM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> > > On Thu, Jun 25, 2020 at 10:29 PM Joe Perches <joe@perches.com> wrote:
-> > > > On Thu, 2020-06-25 at 22:06 +0300, Andy Shevchenko wrote:
-> > > > > On Thu, Jun 25, 2020 at 9:25 PM Enric Balletbo i Serra
-> > > > > <enric.balletbo@collabora.com> wrote:
-> > > > > > Remove the ambiguity with GPL-2.0 and use an explicit GPL-2.0-only
-> > > > > > tag.
-> > > > > 
-> > > > > Is there any? Last time IIRC Greg told me that in the kernel the old
-> > > > > and new variants are okay.
-> > > > 
-> > > > If there wasn't any ambiguity, the older license
-> > > > style wouldn't be deprecated by SPDX.org.
-> > > 
-> > > They are _not_ deprecated according to kernel documentation:
-> > > https://elixir.bootlin.com/linux/latest/source/LICENSES/preferred/GPL-2.0
-> > > 
-> > > So, fix documentation in the kernel then.
-> > 
-> > That said, NAK to the patch as long as in-kernel documentation says it's valid.
+On Thu, Jun 25, 2020 at 09:16:49PM +0530, Vinod Koul wrote:
+> So we had some discussions of the stream states, so I thought it is a
+> good idea to document the state transitions, so add it documentation
 > 
-> Maintainers and authors should get to chose whatever
-> license text they prefer with the assent of the licensors.
-> 
-> A NAK here by you doesn't make much sense to me.
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
 
-Yes, it's a private opinion from a PDx86 maintainer.
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Charles
