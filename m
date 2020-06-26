@@ -2,107 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1926D20AC9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 08:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7753220ACA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 08:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgFZG6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 02:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728633AbgFZG5y (ORCPT
+        id S1728711AbgFZG61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 02:58:27 -0400
+Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:41249 "EHLO
+        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728590AbgFZG6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 02:57:54 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE58EC08C5DD
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 23:57:53 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id f18so8307781wml.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 23:57:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LPP/UO1S0fFlAO//S91M0USmj0hNvysUxqLwY/EHMpU=;
-        b=o4qPuOSqulK9KuVSnsgC92nheOHo5sPkiZnIT04OlBWs0kqtIAb1N4z9yQia5M2icA
-         guTWlRhrkyCoWzC3edxywWhCMB3kYYXx9d8LTrmQCGfjb/QaOR6ps5jq6FstBy2QKQJb
-         plyMLcEJmAyltVcNPygxskIaJ7VzzxZD4OsFPUEhxq4+1VRKnED8SBVFGi4HWn9pUxx+
-         tLSKSQgUHmlCfWhnt7UMwcLy7gfDfBLZbhv5ML1APO4aygCLEAPPS0iKzMTl7AMxCCSl
-         d7BR7Lw8RUp82W2CZ80jxbfRBZ1g1YuuLsfxPW4NCtWVmtct5JlmAwZ+yoIeeDj7kiuO
-         Werg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LPP/UO1S0fFlAO//S91M0USmj0hNvysUxqLwY/EHMpU=;
-        b=Ehg9INHn+2bE7HPB9vASCfane/A+CoWrsgOT9urGbQP4pMugXNoKCrSw561FYgoY4S
-         fR3EPw7Yqwi1VwgeUlMpcwQZDd3ilDXZkgiShzsQNODYvSqujR4Q0ZBmzwrueO/kT/qx
-         L764cRinE5elcRL9IFcb2fmwT1rTb4ARp4tZzC/RoHOvZxZ6wYcm6oQ+POzNMGNseljl
-         cIv4nuFOinQTiMslbiD97rigN4ez77KsY6z/cd3OSnJR2IosxNUbxsJNrD5Oo0nTEvx5
-         ZsGZv34naSg5LVEBM+aE2CW5OtkN2qjPbd5TXrIgYMs7FprfOcBmmyuFhc8VjCZG6k7f
-         75Lg==
-X-Gm-Message-State: AOAM533Ut2MjuqSDhGdnrzcEMjs+xvr8uC8DDkQHtkDSjPvVjeYmI4aL
-        ppH2StsJMv/vQ2Tl2o+SHsMKog==
-X-Google-Smtp-Source: ABdhPJx/RXJWJ6f3locg3j1C1CnDGokvk4hRTKSjAebqtaEGNZhKkk9x/cjUDtFriHU5yMFzH+64dQ==
-X-Received: by 2002:a1c:1bc4:: with SMTP id b187mr1906640wmb.105.1593154672520;
-        Thu, 25 Jun 2020 23:57:52 -0700 (PDT)
-Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id x18sm15355269wmi.35.2020.06.25.23.57.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 23:57:51 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     broonie@kernel.org, lgirdwood@gmail.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH 9/9] regulator: qcom_smd-regulator: Remove unused 'struct regulator_desc pmi8994_boost'
-Date:   Fri, 26 Jun 2020 07:57:38 +0100
-Message-Id: <20200626065738.93412-10-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200626065738.93412-1-lee.jones@linaro.org>
-References: <20200626065738.93412-1-lee.jones@linaro.org>
+        Fri, 26 Jun 2020 02:58:25 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id oiJVjZpLgxmkVoiJZjgaTI; Fri, 26 Jun 2020 08:58:22 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1593154702; bh=R6Ir/Bz75ZuOudF6KyzPGOEaxClJeiHyCzSqQo5MsMQ=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=VUQyqp4fpNHEEBJ7tqRiL6kX8TE90+9Ueif61BuvbZCy335uBrqwDpy6hnA7wSFFW
+         J16jrFXDlILKoJdBsY2yN47tkOiMReQoY0F9eUGHdr1BBYdyfpUEEJ0l5FZQq3R8mU
+         dZaxFJt67FA+oz0STAsyQ9j+XHa4oKTiz0cVb/nOjZ+41WXSH3WOZi10lwxzr5BlVW
+         XvClmBSB155wsE+FanYyqcfI7QM0IL5Zoz9vxiH3zPH8qPOALzIxToaJXOpD47zME6
+         KKT1CEufKEM0jJxNgJt3dJkQXIzaOpNtvwX04WYx9+SZREE+0T8x1GAyzM+hk/zV07
+         FKyaaUxM77IAA==
+Subject: Re: [PATCH v2 0/4] Tegra Video Decoder driver power management
+ corrections
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20200624150847.22672-1-digetx@gmail.com>
+ <90323aa6-38b5-0a45-69a7-ccf380690a78@xs4all.nl>
+ <23cbaa18-9461-8f72-3d43-aa14cd0c1095@gmail.com>
+ <0e14df05-8299-52d6-df8f-0dd476f4109d@gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <e41ff660-6c6c-d603-c767-34e7f4b4a23d@xs4all.nl>
+Date:   Fri, 26 Jun 2020 08:58:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <0e14df05-8299-52d6-df8f-0dd476f4109d@gmail.com>
 Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfPLvU4k9HoHcsriBfUKOvb1jI4bhwxiauTAC9rGOgP28MbgwWKOlxenX5oo62ZWwMWqckA5P6RtdkVpGxhVm/RgmH3edVm1o86fl/r+1N8w+Ohwly0ZA
+ +bnnPZohhYlepqoQUcBy4KrNDAloZOAclQ9KJYO6vae8dXFpzf1BAGJ5bMcik5bIvmqu5GGRZq5Ng/NdoDk8ZlmdDYJNFMC5Pc5jg0Jd91X2T5B1iAqzpz1I
+ fruTlmbflCZy3U/dKwB9pK02fZ0adpyGBRnMRzR6VgXzOvMnhXviimkwcrv8p3e5vPlGBmMOFmUEOHyalREmtKst3yKT103wlYG9sgkfU61Ns3l19BDuIjwQ
+ 5gJAb+9dP2ZvKSa4nfvxNuaV/rl2tiQYFANyPf8tfOmK3ifqIKsb9e58EadMV6iL6RDR6/rR
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was an upstreaming error.  Remove it as it's not to be used.
+On 26/06/2020 02:17, Dmitry Osipenko wrote:
+> 24.06.2020 18:23, Dmitry Osipenko пишет:
+>> 24.06.2020 18:16, Hans Verkuil пишет:
+>>> On 24/06/2020 17:08, Dmitry Osipenko wrote:
+>>>> Hello,
+>>>>
+>>>> This small series addresses a Runtime PM issue that was discovered during
+>>>> of Tegra VI driver reviewing by balancing RPM usage count on RPM resume
+>>>> failure. Secondly it fixes reboot on some Tegra devices due to bootloader
+>>>> expecting VDE power partition to be ON at the boot time, which wasn't
+>>>> happening in case of a warm re-booting (i.e. by PMC resetting).
+>>>
+>>> Can you rebase this on top of the media_tree master branch? I think a variant
+>>> of patch 1 has already been applied. I found a mail today where you mentioned
+>>> that you preferred your version (it looks like I missed that) so you'll need to
+>>> rework patch 1.
+>>
+>> Hello Hans,
+>>
+>> I'll take a look at what patches has been applied, my bad for sending
+>> the v2 too late. Thank you for the heads up!
+>>
+> 
+> I tested the already-applied variant of the patch 1 and it has the same
+> behaviour as my variant, so it's okay.
+> 
+> Would you want me to send a v3 without the conflicting patch 1 or you
+> could apply the patches 2-4 from this series?
+> 
 
-Fixes the following W=1 kernel build warning:
+I'll mark 1/4 as superseded and will apply patches 2-4. No need for you
+to do anything.
 
- drivers/regulator/qcom_smd-regulator.c:477:36: warning: ‘pmi8994_boost’ defined but not used [-Wunused-const-variable=]
+Regards,
 
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/regulator/qcom_smd-regulator.c | 9 ---------
- 1 file changed, 9 deletions(-)
-
-diff --git a/drivers/regulator/qcom_smd-regulator.c b/drivers/regulator/qcom_smd-regulator.c
-index 53a64d856926f..4c0a469d8a115 100644
---- a/drivers/regulator/qcom_smd-regulator.c
-+++ b/drivers/regulator/qcom_smd-regulator.c
-@@ -474,15 +474,6 @@ static const struct regulator_desc pmi8994_bby = {
- 	.ops = &rpm_bob_ops,
- };
- 
--static const struct regulator_desc pmi8994_boost = {
--	.linear_ranges = (struct linear_range[]) {
--		REGULATOR_LINEAR_RANGE(4000000, 0, 30, 50000),
--	},
--	.n_linear_ranges = 1,
--	.n_voltages = 31,
--	.ops = &rpm_smps_ldo_ops,
--};
--
- static const struct regulator_desc pm8998_ftsmps = {
- 	.linear_ranges = (struct linear_range[]) {
- 		REGULATOR_LINEAR_RANGE(320000, 0, 258, 4000),
--- 
-2.25.1
-
+	Hans
