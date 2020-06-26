@@ -2,198 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B5120B50C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E336420B4FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729889AbgFZPnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 11:43:37 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:48326 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729850AbgFZPng (ORCPT
+        id S1728233AbgFZPmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 11:42:11 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:46893 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726361AbgFZPmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 11:43:36 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05QFgo7B046621;
-        Fri, 26 Jun 2020 10:42:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1593186171;
-        bh=k5QXD9rLVHVE83qsFkalFRHulnjUdzuUDG+p/Omjzzg=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=F7UD2TYb5XodiKoO+u7kg4dnE+GVqnJ0vJ9Jq5R3bQFKq9AcfuMnszX/NPc6JxEgX
-         GW5XSxD/fiOy9KsVlB0dWSsVUuenHonq6KThWpzLt0LQMotoGxXZDV1DEGDL6fCTg7
-         7D7tX1YSmArCrMmpFeJoZByx271FDhKYaLVbYVJE=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05QFgoZ7040681
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 26 Jun 2020 10:42:50 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 26
- Jun 2020 10:42:50 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 26 Jun 2020 10:42:50 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05QFgoNQ059554;
-        Fri, 26 Jun 2020 10:42:50 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <robh@kernel.org>, <devicetree@vger.kernel.org>,
-        Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH 4/4] dt-bindings: tas2562: Convert the tas2562 binding to yaml
-Date:   Fri, 26 Jun 2020 10:41:43 -0500
-Message-ID: <20200626154143.20351-4-dmurphy@ti.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200626154143.20351-1-dmurphy@ti.com>
-References: <20200626154143.20351-1-dmurphy@ti.com>
+        Fri, 26 Jun 2020 11:42:10 -0400
+Received: by mail-ot1-f68.google.com with SMTP id n24so6765942otr.13
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:42:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9ude1bR8RU8qUzK94voP4g4TNkMR22P61Cfio3xgn+s=;
+        b=JfJ35XuYTQfpdK1OeS9kdKUHfkmTc6Bw2/HqCozQm06jw4x6bsK/jjzYAJudf+PAIV
+         9UAbL7O0AvgQziDkCm+YdvDNPR1xOvsVP2zRrb9rtCzPypZU+5paUdU3gtAoO/kEf8y3
+         B07FqNnxxq17tpYus4hdF7lpgubxptghqTVEQHsi1rsNX94WScoc/cy0pDBAl7S5XRIr
+         8RCFczK+n7tiuamXbyn8aceQDzrt8In6M9RuUBoglDE4kIaBjdFapVLk1tOkiPSPMd3O
+         o2HxitBHnL2/T0DyJMN5LUwjk3FPoNxVgef0YXQ1H5PON3wHdNS6+v8NHtuh8GNmVGEY
+         CBWA==
+X-Gm-Message-State: AOAM5316TyXS0PQXLdBG2hM6Jf7LZ3SQgljSKfCrZtpsKmQRo77v/+t4
+        2Yr/nlpLvafiKZcWfuxbZHQdyxjtrM/iFkKiuzy0sQ==
+X-Google-Smtp-Source: ABdhPJwykW8CrxuR35IBI3mVnWYSs2LHk0wtbO4rVQPPGyV2Q2g7uhLmf3ZijDe7l5lciP0dn5HkBGfAKNH4nhjtUaE=
+X-Received: by 2002:a9d:7d15:: with SMTP id v21mr2867799otn.118.1593186130046;
+ Fri, 26 Jun 2020 08:42:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <CGME20200626100109eucas1p25331652d017cd17d21c0ae60541d1f73@eucas1p2.samsung.com>
+ <20200626100103.18879-1-a.hajda@samsung.com> <20200626100103.18879-2-a.hajda@samsung.com>
+In-Reply-To: <20200626100103.18879-2-a.hajda@samsung.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 26 Jun 2020 17:41:59 +0200
+Message-ID: <CAJZ5v0hDNvop_HCEqrwtDCPbNKSvayKUgdQzpi3UkLyZTTykwQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/4] driver core: add device probe log helper
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the TAS2562 text file to yaml format.
+On Fri, Jun 26, 2020 at 12:01 PM Andrzej Hajda <a.hajda@samsung.com> wrote:
+>
+> During probe every time driver gets resource it should usually check for
+> error printk some message if it is not -EPROBE_DEFER and return the error.
+> This pattern is simple but requires adding few lines after any resource
+> acquisition code, as a result it is often omitted or implemented only
+> partially.
+> dev_err_probe helps to replace such code sequences with simple call,
+> so code:
+>         if (err != -EPROBE_DEFER)
+>                 dev_err(dev, ...);
+>         return err;
+> becomes:
+>         return probe_err(dev, err, ...);
+>
+> Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- .../devicetree/bindings/sound/tas2562.txt     | 37 ---------
- .../devicetree/bindings/sound/tas2562.yaml    | 77 +++++++++++++++++++
- 2 files changed, 77 insertions(+), 37 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/tas2562.txt
- create mode 100644 Documentation/devicetree/bindings/sound/tas2562.yaml
+Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
 
-diff --git a/Documentation/devicetree/bindings/sound/tas2562.txt b/Documentation/devicetree/bindings/sound/tas2562.txt
-deleted file mode 100644
-index dc6d7362ded7..000000000000
---- a/Documentation/devicetree/bindings/sound/tas2562.txt
-+++ /dev/null
-@@ -1,37 +0,0 @@
--Texas Instruments TAS2562 Smart PA
--
--The TAS2562 is a mono, digital input Class-D audio amplifier optimized for
--efficiently driving high peak power into small loudspeakers.
--Integrated speaker voltage and current sense provides for
--real time monitoring of loudspeaker behavior.
--
--Required properties:
-- - #address-cells  - Should be <1>.
-- - #size-cells     - Should be <0>.
-- - compatible:	   - Should contain "ti,tas2562", "ti,tas2563".
-- - reg:		   - The i2c address. Should be 0x4c, 0x4d, 0x4e or 0x4f.
-- - ti,imon-slot-no:- TDM TX current sense time slot.
-- - ti,vmon-slot-no:- TDM TX voltage sense time slot. This slot must always be
--		     greater then ti,imon-slot-no.
--
--Optional properties:
--- interrupt-parent: phandle to the interrupt controller which provides
--                    the interrupt.
--- interrupts: (GPIO) interrupt to which the chip is connected.
--- shut-down-gpio: GPIO used to control the state of the device.
--
--Examples:
--tas2562@4c {
--        #address-cells = <1>;
--        #size-cells = <0>;
--        compatible = "ti,tas2562";
--        reg = <0x4c>;
--
--        interrupt-parent = <&gpio1>;
--        interrupts = <14>;
--
--	shut-down-gpio = <&gpio1 15 0>;
--        ti,imon-slot-no = <0>;
--        ti,vmon-slot-no = <1>;
--};
--
-diff --git a/Documentation/devicetree/bindings/sound/tas2562.yaml b/Documentation/devicetree/bindings/sound/tas2562.yaml
-new file mode 100644
-index 000000000000..1fb467e14d4c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tas2562.yaml
-@@ -0,0 +1,77 @@
-+# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
-+# Copyright (C) 2019 Texas Instruments Incorporated
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/sound/tas2562.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Texas Instruments TAS2562 Smart PA
-+
-+maintainers:
-+  - Dan Murphy <dmurphy@ti.com>
-+
-+description: |
-+  The TAS2562 is a mono, digital input Class-D audio amplifier optimized for
-+  efficiently driving high peak power into small loudspeakers.
-+  Integrated speaker voltage and current sense provides for
-+  real time monitoring of loudspeaker behavior.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ti,tas2562
-+      - ti,tas2563
-+
-+  reg:
-+    maxItems: 1
-+    description: |
-+       I2C address of the device can be one of these 0x4c, 0x4d, 0x4e or 0x4f
-+
-+  shut-down-gpio:
-+    description: GPIO used to control the state of the device.
-+    deprecated: true
-+
-+  shutdown-gpio:
-+    description: GPIO used to control the state of the device.
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  ti,imon-slot-no:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: TDM TX current sense time slot.
-+
-+  ti,vmon-slot-no:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      TDM TX voltage sense time slot.  This slot must always be greater then
-+      ti,imon-slot-no.
-+
-+  '#sound-dai-cells':
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+   #include <dt-bindings/gpio/gpio.h>
-+   i2c0 {
-+     #address-cells = <1>;
-+     #size-cells = <0>;
-+     codec: codec@4c {
-+       compatible = "ti,tas2562";
-+       reg = <0x4c>;
-+       #sound-dai-cells = <1>;
-+       interrupt-parent = <&gpio1>;
-+       interrupts = <14>;
-+       shutdown-gpio = <&gpio1 15 0>;
-+       ti,imon-slot-no = <0>;
-+       ti,vmon-slot-no = <2>;
-+     };
-+   };
-+
-+...
--- 
-2.26.2
-
+> ---
+>  drivers/base/core.c    | 42 ++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/device.h |  3 +++
+>  2 files changed, 45 insertions(+)
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 67d39a90b45c..3a827c82933f 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -3953,6 +3953,48 @@ define_dev_printk_level(_dev_info, KERN_INFO);
+>
+>  #endif
+>
+> +/**
+> + * dev_err_probe - probe error check and log helper
+> + * @dev: the pointer to the struct device
+> + * @err: error value to test
+> + * @fmt: printf-style format string
+> + * @...: arguments as specified in the format string
+> + *
+> + * This helper implements common pattern present in probe functions for error
+> + * checking: print debug or error message depending if the error value is
+> + * -EPROBE_DEFER and propagate error upwards.
+> + * It replaces code sequence:
+> + *     if (err != -EPROBE_DEFER)
+> + *             dev_err(dev, ...);
+> + *     else
+> + *             dev_dbg(dev, ...);
+> + *     return err;
+> + * with
+> + *     return dev_err_probe(dev, err, ...);
+> + *
+> + * Returns @err.
+> + *
+> + */
+> +int dev_err_probe(const struct device *dev, int err, const char *fmt, ...)
+> +{
+> +       struct va_format vaf;
+> +       va_list args;
+> +
+> +       va_start(args, fmt);
+> +       vaf.fmt = fmt;
+> +       vaf.va = &args;
+> +
+> +       if (err != -EPROBE_DEFER)
+> +               dev_err(dev, "error %d: %pV", err, &vaf);
+> +       else
+> +               dev_dbg(dev, "error %d: %pV", err, &vaf);
+> +
+> +       va_end(args);
+> +
+> +       return err;
+> +}
+> +EXPORT_SYMBOL_GPL(dev_err_probe);
+> +
+>  static inline bool fwnode_is_primary(struct fwnode_handle *fwnode)
+>  {
+>         return fwnode && !IS_ERR(fwnode->secondary);
+> diff --git a/include/linux/device.h b/include/linux/device.h
+> index 15460a5ac024..6b2272ae9af8 100644
+> --- a/include/linux/device.h
+> +++ b/include/linux/device.h
+> @@ -964,6 +964,9 @@ void device_link_remove(void *consumer, struct device *supplier);
+>  void device_links_supplier_sync_state_pause(void);
+>  void device_links_supplier_sync_state_resume(void);
+>
+> +extern __printf(3, 4)
+> +int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
+> +
+>  /* Create alias, so I can be autoloaded. */
+>  #define MODULE_ALIAS_CHARDEV(major,minor) \
+>         MODULE_ALIAS("char-major-" __stringify(major) "-" __stringify(minor))
+> --
+> 2.17.1
+>
