@@ -2,76 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27FD20B033
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 13:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F0F20B039
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 13:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728314AbgFZLHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 07:07:46 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48404 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728232AbgFZLHp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 07:07:45 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id A0FB72A5A67
-Subject: Re: [PATCH] tty/sysrq: Add alternative SysRq key
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Slaby <jslaby@suse.com>, kernel@collabora.com
-References: <20200511180145.GU89269@dtor-ws>
- <20200619162819.715-1-andrzej.p@collabora.com> <20200621212106.GB22512@amd>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Message-ID: <8836da2c-b38d-7779-bef0-857ead18b557@collabora.com>
-Date:   Fri, 26 Jun 2020 13:07:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728347AbgFZLKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 07:10:36 -0400
+Received: from mga06.intel.com ([134.134.136.31]:56609 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728232AbgFZLKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 07:10:33 -0400
+IronPort-SDR: ORHEVgrLOqtf0S73KEDcfKToelhaZ7/UYbm1H30uy/XSkPcjyMIYnu4DZJirKYagikl6Uk1X5s
+ sWqQx8Qe/3/A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="206798107"
+X-IronPort-AV: E=Sophos;i="5.75,283,1589266800"; 
+   d="scan'208";a="206798107"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2020 04:10:33 -0700
+IronPort-SDR: K4BpJTLQFjvUecyfJ59jAZx3IUS4nvdGOF0MMcryn8g4hpfmGRZG5EyttPZBQWEmsfe7cMKLp5
+ Lw/u3v7QRMNA==
+X-IronPort-AV: E=Sophos;i="5.75,283,1589266800"; 
+   d="scan'208";a="280117272"
+Received: from spandruv-mobl.amr.corp.intel.com ([10.252.133.102])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2020 04:10:32 -0700
+Message-ID: <3924b9356476fd78a563ff9296c88a6f716ba4e1.camel@linux.intel.com>
+Subject: Re: [PATCH] lib: Extend kstrtobool() to accept "true"/"false"
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org, lenb@kernel.org,
+        dsmythies@telus.net, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org, jic23@cam.ac.uk,
+        keescook@chromium.org, akpm@linux-foundation.org
+Date:   Fri, 26 Jun 2020 04:10:32 -0700
+In-Reply-To: <20200626104442.GF117543@hirez.programming.kicks-ass.net>
+References: <20200625224931.1468150-1-srinivas.pandruvada@linux.intel.com>
+         <20200626084903.GA27151@zn.tnic>
+         <20200626102255.GZ4817@hirez.programming.kicks-ass.net>
+         <20200626104442.GF117543@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <20200621212106.GB22512@amd>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
-
-W dniu 21.06.2020 o 23:21, Pavel Machek pisze:
-> Hi!
+On Fri, 2020-06-26 at 12:44 +0200, Peter Zijlstra wrote:
+> On Fri, Jun 26, 2020 at 12:22:55PM +0200, Peter Zijlstra wrote:
 > 
->> There exist machines which don't have SysRq key at all, e.g. chromebooks.
->>
->> This patch allows configuring an alternative key to act as SysRq. Devices
->> which declare KEY_SYSRQ in their 'keybit' bitmap continue using KEY_SYSRQ,
->> but other devices use the alternative SysRq key instead, by default F10.
->> Which key is actually used can be modified with sysrq's module parameter.
->>
->> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+> > > This is too lax - it will be enabled for any !0 value. Please
+> > > accept
+> > > only 0 and 1.
+> > 
+> > kstrtobool() ftw
 > 
-> So... SysRq was selected because you are not going to press
-> Alt-Printscreen-X by default.
+> And looking at that, I find it really strange it does not in fact
+> accept
+> "true" / "false", so how about this?
+looks good.
 
-This patch does not change the Alt-PrintScreen/SysRq-something sequence.
-What it does instead is making the 'PrintScreen/SysRq' component of the
-sequence configurable for input devices which don't declare KEY_SYSRQ in
-their 'keybit' bitmap, so the sequence becomes:
+Thanks,
+Srinvas
 
-Alt-<alternative sysrq key>-something
+> 
+> ---
+> Subject: lib: Extend kstrtobool() to accept "true"/"false"
+> 
+> Extend the strings recognised by kstrtobool() to cover:
+> 
+>   - 1/0
+>   - y/n
+>   - yes/no	(new)
+>   - t/f		(new)
+>   - true/false  (new)
+>   - on/off
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  lib/kstrtox.c | 60 ++++++++++++++++++++++++++++++++++++++++++++-----
+> ----------
+>  1 file changed, 45 insertions(+), 15 deletions(-)
+> 
+> diff --git a/lib/kstrtox.c b/lib/kstrtox.c
+> index 1006bf70bf74..b8b950325097 100644
+> --- a/lib/kstrtox.c
+> +++ b/lib/kstrtox.c
+> @@ -325,9 +325,17 @@ EXPORT_SYMBOL(kstrtos8);
+>   * @s: input string
+>   * @res: result
+>   *
+> - * This routine returns 0 iff the first character is one of
+> 'Yy1Nn0', or
+> - * [oO][NnFf] for "on" and "off". Otherwise it will return
+> -EINVAL.  Value
+> - * pointed to by res is updated upon finding a match.
+> + * This return return 0 on success, otherwise it will return
+> -EINVAL.
+> + * It will accept (case invariant):
+> + *
+> + *  - 1/0
+> + *  - y/n
+> + *  - yes/no
+> + *  - t/f
+> + *  - true/false
+> + *  - on/off
+> + *
+> + * and set @*res to either true/false respectively.
+>   */
+>  int kstrtobool(const char *s, bool *res)
+>  {
+> @@ -335,30 +343,52 @@ int kstrtobool(const char *s, bool *res)
+>  		return -EINVAL;
+>  
+>  	switch (s[0]) {
+> +	case 't':
+> +	case 'T':
+> +		if (!s[1] || !strcasecmp(s, "true"))
+> +			goto have_true;
+> +
+> +		break;
+> +
+>  	case 'y':
+>  	case 'Y':
+> +		if (!s[1] || !strcasecmp(s, "yes"))
+> +			goto have_true;
+> +
+> +		break;
+> +
+>  	case '1':
+> +have_true:
+>  		*res = true;
+>  		return 0;
+> +
+> +	case 'f':
+> +	case 'F':
+> +		if (!s[1] || !strcasecmp(s, "false"))
+> +			goto have_false;
+> +
+> +		break;
+>  	case 'n':
+>  	case 'N':
+> +		if (!s[1] || !strcasecmp(s, "no"))
+> +			goto have_false;
+> +
+> +		break;
+>  	case '0':
+> +have_false:
+>  		*res = false;
+>  		return 0;
+> +
+>  	case 'o':
+>  	case 'O':
+> -		switch (s[1]) {
+> -		case 'n':
+> -		case 'N':
+> -			*res = true;
+> -			return 0;
+> -		case 'f':
+> -		case 'F':
+> -			*res = false;
+> -			return 0;
+> -		default:
+> -			break;
+> -		}
+> +		if (!strcasecmp(s, "on"))
+> +			goto have_true;
+> +
+> +		if (!strcasecmp(s, "off"))
+> +			goto have_false;
+> +
+> +		break;
+> +
+>  	default:
+>  		break;
+>  	}
 
-If the alternative sysrq key is used (i.e. the input device in question
-does not declare KEY_SYSRQ), it is F10 by default and _that_ can be changed
-with the module parameter.
-
-To summarize:
-
-- devices which do declare KEY_SYSRQ must use Alt-PrintScreen/SysRq-something
-- devices which don't declare KEY_SYSRQ must use Alt-F10-something, but F10
-can be changed with a module parameter to something else
-
-Regards,
-
-Andrzej
