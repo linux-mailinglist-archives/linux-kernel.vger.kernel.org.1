@@ -2,53 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2919C20BD20
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 01:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9112120BD29
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 01:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbgFZX1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 19:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41796 "EHLO
+        id S1726438AbgFZXdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 19:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725883AbgFZX1J (ORCPT
+        with ESMTP id S1725883AbgFZXdR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 19:27:09 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9301BC03E979;
-        Fri, 26 Jun 2020 16:27:09 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 284C912758908;
-        Fri, 26 Jun 2020 16:27:09 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 16:27:08 -0700 (PDT)
-Message-Id: <20200626.162708.1730579125273999226.davem@davemloft.net>
-To:     rppt@kernel.org
-Cc:     akpm@linux-foundation.org, torvalds@linux-foundation.org,
-        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rppt@linux.ibm.com
-Subject: Re: [PATCH 0/2] sparc32: srmmu: improve type safety of
- __nocache_fix()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200626181713.GA3547368@kernel.org>
-References: <20200524162151.3493-1-rppt@kernel.org>
-        <20200626181713.GA3547368@kernel.org>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 26 Jun 2020 16:27:09 -0700 (PDT)
+        Fri, 26 Jun 2020 19:33:17 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE40C03E979;
+        Fri, 26 Jun 2020 16:33:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=FFnZ2DH3BBsvpUYqMMKOpb6IQpnDbi/NHQDeFMlmgCk=; b=XPUXN5CIj90hvXjTh5U83Qdt8J
+        9fbINVs58U//tuC00nBGBIzosle9QqNlYwGDoskhdG41WvFeW0PDP/eCckQs3w4fWOHfvWQkcp884
+        ojXcggAVFQknGn0HthlbRVGIrqf6o6UkEuOW9ur/ZJ6m5MoNS6zqBJ56FaVL5t89+kD5dPIjg0QYF
+        WLrU/LVXIpEz7uO646A9a7kTvcgLwAcsrzSrUrmv1xuAT0C+SURafIK+Ej73Ww0frbSRWEegIm5W1
+        C1ylsja6bWhTsqLejDDYpljK0+/F09sLlbaNfL9vnPc3LQN7nf2jgjw9ClK+q+3oYczOxc71NPSB/
+        GoKRLQ3A==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1joxq3-0008I6-If; Fri, 26 Jun 2020 23:32:59 +0000
+To:     LKML <linux-kernel@vger.kernel.org>, axboe <axboe@kernel.dk>,
+        io-uring@vger.kernel.org
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] io_uring: fix function args for !CONFIG_NET
+Message-ID: <c3db950b-9062-11bd-97e4-afe7c9bf2f27@infradead.org>
+Date:   Fri, 26 Jun 2020 16:32:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@kernel.org>
-Date: Fri, 26 Jun 2020 21:17:13 +0300
+From: Randy Dunlap <rdunlap@infradead.org>
 
-> Any comments on this?
+Fix build errors when CONFIG_NET is not set/enabled:
 
-Sorry I didn't see this in my patchwork queue, could you please just resubmit
-it to sparclinux@vger.kernel.org
+../fs/io_uring.c:5472:10: error: too many arguments to function ‘io_sendmsg’
+../fs/io_uring.c:5474:10: error: too many arguments to function ‘io_send’
+../fs/io_uring.c:5484:10: error: too many arguments to function ‘io_recvmsg’
+../fs/io_uring.c:5486:10: error: too many arguments to function ‘io_recv’
+../fs/io_uring.c:5510:9: error: too many arguments to function ‘io_accept’
+../fs/io_uring.c:5518:9: error: too many arguments to function ‘io_connect’
 
-Thank you.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: io-uring@vger.kernel.org
+---
+ fs/io_uring.c |   18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+--- mmotm-2020-0625-2036.orig/fs/io_uring.c
++++ mmotm-2020-0625-2036/fs/io_uring.c
+@@ -4315,12 +4315,14 @@ static int io_sendmsg_prep(struct io_kio
+ 	return -EOPNOTSUPP;
+ }
+ 
+-static int io_sendmsg(struct io_kiocb *req, bool force_nonblock)
++static int io_sendmsg(struct io_kiocb *req, bool force_nonblock,
++		      struct io_comp_state *cs)
+ {
+ 	return -EOPNOTSUPP;
+ }
+ 
+-static int io_send(struct io_kiocb *req, bool force_nonblock)
++static int io_send(struct io_kiocb *req, bool force_nonblock,
++		   struct io_comp_state *cs)
+ {
+ 	return -EOPNOTSUPP;
+ }
+@@ -4331,12 +4333,14 @@ static int io_recvmsg_prep(struct io_kio
+ 	return -EOPNOTSUPP;
+ }
+ 
+-static int io_recvmsg(struct io_kiocb *req, bool force_nonblock)
++static int io_recvmsg(struct io_kiocb *req, bool force_nonblock,
++		      struct io_comp_state *cs)
+ {
+ 	return -EOPNOTSUPP;
+ }
+ 
+-static int io_recv(struct io_kiocb *req, bool force_nonblock)
++static int io_recv(struct io_kiocb *req, bool force_nonblock,
++		   struct io_comp_state *cs)
+ {
+ 	return -EOPNOTSUPP;
+ }
+@@ -4346,7 +4350,8 @@ static int io_accept_prep(struct io_kioc
+ 	return -EOPNOTSUPP;
+ }
+ 
+-static int io_accept(struct io_kiocb *req, bool force_nonblock)
++static int io_accept(struct io_kiocb *req, bool force_nonblock,
++		     struct io_comp_state *cs)
+ {
+ 	return -EOPNOTSUPP;
+ }
+@@ -4356,7 +4361,8 @@ static int io_connect_prep(struct io_kio
+ 	return -EOPNOTSUPP;
+ }
+ 
+-static int io_connect(struct io_kiocb *req, bool force_nonblock)
++static int io_connect(struct io_kiocb *req, bool force_nonblock,
++		      struct io_comp_state *cs)
+ {
+ 	return -EOPNOTSUPP;
+ }
+
