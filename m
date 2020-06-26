@@ -2,118 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768AD20BA5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 22:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5FF20BA61
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 22:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725836AbgFZUe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 16:34:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43220 "EHLO
+        id S1725921AbgFZUhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 16:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgFZUe2 (ORCPT
+        with ESMTP id S1725828AbgFZUhC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 16:34:28 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FEDC03E979
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 13:34:28 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id b92so5395195pjc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 13:34:27 -0700 (PDT)
+        Fri, 26 Jun 2020 16:37:02 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD75C03E97A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 13:37:02 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id q90so4645081pjh.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 13:37:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=BIox9/QXM98eZxjkWVOWgYUVhYwZS0Exqz5rkKqCo9o=;
-        b=V1+QvbzD6RsSp7YX1TrReV0/M3cz6EXYAUBl9ZOtIvRJKuAnG+NemgbbMbRcIJL7l3
-         Aux+V79eMCvM8uN98nIn66sTit5+PMbxgUuaT+E4kSaB7BbuvrN5JAtcHguv8uzZOWf6
-         RwJzz4vexyIEDaM2DLCiCAU/c0yawzxUWw9lU=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nt/218p7v20WGusEjZTRWNofL1UTU7wXJpxnIwWbqck=;
+        b=LasIkQVyh7YOVLhmmWjNknLdRMiIhvmSIsX6upZZEv19wZkBLTDXThFG+IoJtTQ1DK
+         zcl6LQej91z8gS9IaBIyAs1OvHj/0GDMvNCjRsmmphnLs25aUBJeB2/1LelcaqiXTaN0
+         pdUtgwESOtklxyeVHayu+6UmjFTjibUVnEUdE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=BIox9/QXM98eZxjkWVOWgYUVhYwZS0Exqz5rkKqCo9o=;
-        b=Ftf0xZb7U3VN+2lNCZYNtxyP+ad1m1D/k6eAAyviGzEjYI3SqWRFGjFxUzKHKjzCcD
-         /d/FMzj65n74Nb17+LY/Ol0ntJOyNRr6JqlhVaOI1QIIU3OiC2FplBwluQUtR09aq6UY
-         jxjE7++laW60Jfu8k/bkT+xOHR3AqJhgQcGd2vXWYqWmNo2GVam0czR1f8JF85l+6GV6
-         7HK2dUL5cd5dcx0AfxOnmUtvvnNwJbb3409lZGJPOdU38jFV9eatfGnebgNHJSbQAiT3
-         sJ5n15f6b790qBubdpDa9WGgdEufkzuKvlldcPlN7xT99zXzNzTCvG3sXZx8ll15J4oJ
-         6v6w==
-X-Gm-Message-State: AOAM533SDboGzOzZnuBWq5VAQkJwWmeuERgoqL4lw47VP7hkKrrb8+Mi
-        2cSIhDqjHQcbkWYHTTM4ENQ6NQs+xqk=
-X-Google-Smtp-Source: ABdhPJxOGRtzLC8iSOTv73ksZgqpMB2QfKhEIDFraskWuwRPaqcPMcajZ1bUrXxTo3KsPhsmEU5K4w==
-X-Received: by 2002:a17:902:aa92:: with SMTP id d18mr4092904plr.210.1593203667481;
-        Fri, 26 Jun 2020 13:34:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nt/218p7v20WGusEjZTRWNofL1UTU7wXJpxnIwWbqck=;
+        b=J90vN3ekmXcZblDtBDdYoKht/MCnHheoMxZd15/8sMSMuEPgg0snjXssQaPJb8QWOj
+         YFb3v1ECCbGqE4RtIFtQ6sFVSlpoo6i1/hxPO83/6qOH0k+WGGHfS3znM681vL5w4+Lj
+         ylq/CT6vCMgFmKpsDdaNP5BgbBGvOMywyKqBusHAe23E6ppBrOHK46sv4qilGRFEmZSu
+         Gp0ksvc76ZOiczpNyAl01RMNyGaDQkG9gGqIKPJnKRiCOX3naX4EOlNCd8wEhalHqqyi
+         129+0qxwve7BYm9/pOAOd7eUn9kCqic1f84wI415RfpZWp5wvwZyxRoTrUOCExuZPZQO
+         JI+A==
+X-Gm-Message-State: AOAM533nhbLf+5ivh6RJ5Tr3syq7MuC3Kly+4QC1DcpAvQKNTfDAe7Q/
+        GCvNRGu0B9is06T3Rxuo+zO2ZQ==
+X-Google-Smtp-Source: ABdhPJzRjBzSEkMCU+0/yeMZIBtu9OcMQa8md9tY/FMmEyvlXIZhD94nhAwv0QyEtFY0fbb9xk24ng==
+X-Received: by 2002:a17:902:7896:: with SMTP id q22mr3972740pll.338.1593203822398;
+        Fri, 26 Jun 2020 13:37:02 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i3sm23649403pgj.52.2020.06.26.13.34.26
+        by smtp.gmail.com with ESMTPSA id r8sm27166377pfq.16.2020.06.26.13.37.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 13:34:26 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 13:34:25 -0700
+        Fri, 26 Jun 2020 13:37:01 -0700 (PDT)
+Date:   Fri, 26 Jun 2020 13:37:00 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/asm/entry: Actually disable stack protector
-Message-ID: <202006261333.585319CA6B@keescook>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] kbuild: remove cc-option test of -fno-stack-protector
+Message-ID: <202006261331.3A94DB7@keescook>
+References: <20200626185913.92890-1-masahiroy@kernel.org>
+ <CAKwvOd=V_M43CP7G87K3TqSsxua2NcXPz6BnDt-z6167O2WAzQ@mail.gmail.com>
+ <202006261319.F130204@keescook>
+ <CAKwvOdmFpgSGow3X4AhEC1B-xWNORTgAFBXgYPQHLGyhgefddw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CAKwvOdmFpgSGow3X4AhEC1B-xWNORTgAFBXgYPQHLGyhgefddw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some builds of GCC enable stack protector by default. Simply removing
-the arguments is not sufficient to disable stack protector, as the stack
-protector for those GCC builds must be explicitly disabled. Remove the
-argument removals and add -fno-stack-protector. Additionally include
-missed x32 argument updates, and adjust whitespace for readability.
+On Fri, Jun 26, 2020 at 01:25:27PM -0700, Nick Desaulniers wrote:
+> Ah, right. Thanks for pointing that out.  I'm still curious if the
+> CFLAGS_<file>.o rules get appended or overwrite all flags for that
+> translation unit?
 
-Fixes: 20355e5f73a7 ("x86/entry: Exclude low level entry code from sanitizing")
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-RESEND (missed lkml)...
----
- arch/x86/entry/Makefile | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+CFLAGS_file.o gets appended to the CFLAGS. For example, after my updated
+patch[1], the command line for syscall_64.o looks like this:
 
-diff --git a/arch/x86/entry/Makefile b/arch/x86/entry/Makefile
-index b7a5790d8d63..08bf95dbc911 100644
---- a/arch/x86/entry/Makefile
-+++ b/arch/x86/entry/Makefile
-@@ -7,12 +7,20 @@ KASAN_SANITIZE := n
- UBSAN_SANITIZE := n
- KCOV_INSTRUMENT := n
- 
--CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
--CFLAGS_REMOVE_syscall_32.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
--CFLAGS_REMOVE_syscall_64.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
-+CFLAGS_REMOVE_common.o		= $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_syscall_64.o	= $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_syscall_32.o	= $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_syscall_x32.o	= $(CC_FLAGS_FTRACE)
-+
-+CFLAGS_common.o			+= -fno-stack-protector
-+CFLAGS_syscall_64.o		+= -fno-stack-protector
-+CFLAGS_syscall_32.o		+= -fno-stack-protector
-+CFLAGS_syscall_x32.o		+= -fno-stack-protector
- 
- CFLAGS_syscall_64.o		+= $(call cc-option,-Wno-override-init,)
- CFLAGS_syscall_32.o		+= $(call cc-option,-Wno-override-init,)
-+CFLAGS_syscall_x32.o		+= $(call cc-option,-Wno-override-init,)
-+
- obj-y				:= entry_$(BITS).o thunk_$(BITS).o syscall_$(BITS).o
- obj-y				+= common.o
- 
--- 
-2.25.1
+gcc -Wp,-MMD,arch/x86/entry/.syscall_64.o.d  -nostdinc -isystem \
+...
+-Wframe-larger-than=2048 -fstack-protector-strong \
+...
+-fno-stack-protector -Wno-override-init \
+-DKBUILD_MODFILE='"arch/x86/entry/syscall_64"' \
+-DKBUILD_BASENAME='"syscall_64"' \
+-DKBUILD_MODNAME='"syscall_64"' \
+-c -o arch/x86/entry/syscall_64.o \
+arch/x86/entry/syscall_64.c
 
+-Kees
+
+[1] https://lore.kernel.org/lkml/202006261333.585319CA6B@keescook/
 
 -- 
 Kees Cook
