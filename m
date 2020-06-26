@@ -2,47 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6A020AB6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 06:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524B620AB6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 06:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727004AbgFZEp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 00:45:59 -0400
-Received: from ozlabs.org ([203.11.71.1]:43233 "EHLO ozlabs.org"
+        id S1727020AbgFZEqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 00:46:01 -0400
+Received: from ozlabs.org ([203.11.71.1]:41671 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725306AbgFZEp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 00:45:56 -0400
+        id S1726984AbgFZEp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 00:45:58 -0400
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 49tPTZ5hYkz9sT8; Fri, 26 Jun 2020 14:45:53 +1000 (AEST)
+        id 49tPTc04WXz9sTC; Fri, 26 Jun 2020 14:45:55 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Paul Mackerras <paulus@samba.org>, Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+To:     Paul Mackerras <paulus@samba.org>,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Albert Herranz <albert_herranz@yahoo.es>,
         Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <9f2df6621fcaf9eba15fadc61c169d0c8e2fb849.1592481938.git.christophe.leroy@csgroup.eu>
-References: <9f2df6621fcaf9eba15fadc61c169d0c8e2fb849.1592481938.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH] powerpc/8xx: Modify ptep_get()
-Message-Id: <159314672826.1150869.11989654987721504305.b4-ty@ellerman.id.au>
-Date:   Fri, 26 Jun 2020 14:45:53 +1000 (AEST)
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <ca8c9f8249f523b1fab873e67b81b11989d46553.1592207216.git.christophe.leroy@csgroup.eu>
+References: <ca8c9f8249f523b1fab873e67b81b11989d46553.1592207216.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/fixmap: Fix FIX_EARLY_DEBUG_BASE when page size is 256k
+Message-Id: <159314672762.1150869.11958650760523739309.b4-ty@ellerman.id.au>
+Date:   Fri, 26 Jun 2020 14:45:55 +1000 (AEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Jun 2020 12:07:46 +0000 (UTC), Christophe Leroy wrote:
-> Move ptep_get() close to pte_update(), in an ifdef section already
-> dedicated to powerpc 8xx. This section contains explanation about
-> the layout of page table entries.
+On Mon, 15 Jun 2020 07:48:25 +0000 (UTC), Christophe Leroy wrote:
+> FIX_EARLY_DEBUG_BASE reserves a 128k area for debuging.
 > 
-> Also modify it to return 4 times the pte value instead of padding
-> with zeroes.
+> When page size is 256k, the calculation results in a 0 number of
+> pages, leading to the following failure:
+> 
+>   CC      arch/powerpc/kernel/asm-offsets.s
+> In file included from ./arch/powerpc/include/asm/nohash/32/pgtable.h:77:0,
+>                  from ./arch/powerpc/include/asm/nohash/pgtable.h:8,
+>                  from ./arch/powerpc/include/asm/pgtable.h:20,
+>                  from ./include/linux/pgtable.h:6,
+>                  from ./arch/powerpc/include/asm/kup.h:42,
+>                  from ./arch/powerpc/include/asm/uaccess.h:9,
+>                  from ./include/linux/uaccess.h:11,
+>                  from ./include/linux/crypto.h:21,
+>                  from ./include/crypto/hash.h:11,
+>                  from ./include/linux/uio.h:10,
+>                  from ./include/linux/socket.h:8,
+>                  from ./include/linux/compat.h:15,
+>                  from arch/powerpc/kernel/asm-offsets.c:14:
+> ./arch/powerpc/include/asm/fixmap.h:75:2: error: overflow in enumeration values
+>   __end_of_permanent_fixed_addresses,
+>   ^
+> make[2]: *** [arch/powerpc/kernel/asm-offsets.s] Error 1
+> 
+> [...]
 
 Applied to powerpc/next.
 
-[1/1] powerpc/8xx: Modify ptep_get()
-      https://git.kernel.org/powerpc/c/105fb38124a490f38e9c1e23bb4c4a0b6ba12fdb
+[1/1] powerpc/fixmap: Fix FIX_EARLY_DEBUG_BASE when page size is 256k
+      https://git.kernel.org/powerpc/c/03fd42d458fb9cb69e712600bd69ff77ff3a45a8
 
 cheers
