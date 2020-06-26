@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD7420ADE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 10:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F67620AE11
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 10:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729209AbgFZIGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 04:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
+        id S1729416AbgFZIHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 04:07:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729183AbgFZIF7 (ORCPT
+        with ESMTP id S1729201AbgFZIGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 04:05:59 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 805B6C08C5DB
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 01:05:59 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id f9so4339181pfn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 01:05:59 -0700 (PDT)
+        Fri, 26 Jun 2020 04:06:02 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4C2C08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 01:06:02 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id e18so4625701pgn.7
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 01:06:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+EK21azx3U+MX6plvAOsvSL8DWdtKiCwgYO42rwHtnU=;
-        b=l2EBCVQRTZ1GvNRGorRxQ6hXJXjOjoDGYnvKhzHO+DLJU7s+7wLVA9NsIXmu6asZzH
-         13vUknQpNnorfz87qepVpXQWBbbuLj6lQ7DY+7mES6wDd+PKKguz+rNMBemGCHtczyDV
-         /KHM1hjyoTXOmFIO5dl3tV+SR6IWtz608dIx4=
+        bh=R5vXuXwwtIZUfF4BfG9q9gkBaSVJwvlyD2fg0DvyG/o=;
+        b=SZIoVTB2bUsJPcvPGht36M0kNPya2OtypIUm6R/kU5idf+jHwGcKBDebxUMontdwE3
+         ucu8ImAhdYwNMIGhZBU/ejFM6SA8aC6xrI2AQao5qFzDp/WSgwiTK0sOKxLJb7WLOiGX
+         0c7g+j1jwesG3xBx+UbJku56d/hrsWmoLjKkg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+EK21azx3U+MX6plvAOsvSL8DWdtKiCwgYO42rwHtnU=;
-        b=io36caIjcNxjP962wkMXT0JbkvkSMA905OZV7U1hetkK78/HvRkeCCWjImqUF46cU8
-         g3ByI/e/0PgOP6xKXM7xW9zuuA7M4zBGotaRRrkX/IT/P6mVrz/j780Y0KZnwSHaOxEe
-         r+a9H4lODIvTmIXpBiH1wNcT0FLCA3ia91yh7qUV808glSQtUsccu04UfDsdZPG1eP4D
-         MTMRYA47SZUmQzhJDlY0ruGYrh+wPjFMvByHDBx0npCTKghHQBPDTsyBA9fCi7pBnMNx
-         to3QQnJkCBLvWEyOgWYy0ZjYCYdl5gn38zEB0/cW78YekK2XgM5JKwAeU5X3up2HR2Am
-         NGwg==
-X-Gm-Message-State: AOAM531C1wnLEKetHZQMkxsENNARVJgZ9wnXlbUlQ0tpn+RSIdGnzcqQ
-        nBb7xmxRCKVlANutRqTZKoPUmQ==
-X-Google-Smtp-Source: ABdhPJwcsLeI2i7wvAzzhzjrDVGLxbJKSHWqgsBFUOzN0435v6V6qxxM741pfFYX5NEcBlUADnWc4Q==
-X-Received: by 2002:a63:f1a:: with SMTP id e26mr1742157pgl.80.1593158759096;
-        Fri, 26 Jun 2020 01:05:59 -0700 (PDT)
+        bh=R5vXuXwwtIZUfF4BfG9q9gkBaSVJwvlyD2fg0DvyG/o=;
+        b=L8blh/YThcIgAH11UfBKNHu3EGfDtbKCBsL2NUfbuJH15Vj8zW45UU3oOB5XzFdxA7
+         X6EWGMquMuIp7Rb3mU8jQvNIPTyyCxSQ6IQSrDF96U46rX572xyiK3R91sVaIDdp2qZG
+         m9th0AN/8tyczzKzCk0NBbW3C5xf9MG+aID98H+w2YIfNJJtseIG53dVpCxXyZc6WKNo
+         F15VkcJzZH77wNdfyTofFjcILjlERLMd0fd8MDBVP9pxbRQV38KzSxpf5KbERkgjNT14
+         YTCqiM8TXiBirDAppcXAu33m4lTSrxD8VkgdWg+VuUNPXXaIqtOJLH6Es1vsmm/0nH+n
+         OYyw==
+X-Gm-Message-State: AOAM5321i8LuR4SOJA1JR//gAUYbpL4nx4OHe8xiuIJgsDbT40fkSQpa
+        tknCCfeZVY9vuJz3mikjAowcAg==
+X-Google-Smtp-Source: ABdhPJwsPYMFNn4UtISOFCd1oyh+Vgmf6qCPkOU+H1OcttLDf70TTxwBOBUiqZwXjwu/ORDB1zroQw==
+X-Received: by 2002:a63:c58:: with SMTP id 24mr1611333pgm.343.1593158762125;
+        Fri, 26 Jun 2020 01:06:02 -0700 (PDT)
 Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:93d9:de4d:e834:3086])
-        by smtp.gmail.com with ESMTPSA id 137sm21809843pgg.72.2020.06.26.01.05.56
+        by smtp.gmail.com with ESMTPSA id 137sm21809843pgg.72.2020.06.26.01.05.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 01:05:58 -0700 (PDT)
+        Fri, 26 Jun 2020 01:06:01 -0700 (PDT)
 From:   Alexandre Courbot <acourbot@chromium.org>
 To:     Tiffany Lin <tiffany.lin@mediatek.com>,
         Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
@@ -55,9 +55,9 @@ To:     Tiffany Lin <tiffany.lin@mediatek.com>,
 Cc:     linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
         linux-kernel@vger.kernel.org,
         Alexandre Courbot <acourbot@chromium.org>
-Subject: [PATCH v2 09/18] media: dt-bindings: mtk-vcodec: document mediatek,mt8183-vcodec-enc
-Date:   Fri, 26 Jun 2020 17:04:33 +0900
-Message-Id: <20200626080442.292309-10-acourbot@chromium.org>
+Subject: [PATCH v2 10/18] Revert "media: mtk-vcodec: Remove extra area allocation in an input buffer on encoding"
+Date:   Fri, 26 Jun 2020 17:04:34 +0900
+Message-Id: <20200626080442.292309-11-acourbot@chromium.org>
 X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
 In-Reply-To: <20200626080442.292309-1-acourbot@chromium.org>
 References: <20200626080442.292309-1-acourbot@chromium.org>
@@ -68,30 +68,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support for the MT8183 encoder has been added, document the
-corresponding DT bindings.
+This reverts commit 81735ecb62f882853a37a8c157407ec4aed44fd0.
+
+The hardware needs data to follow the previous alignment, so this extra
+space was not superfluous after all. Besides, this also made
+v4l2-compliance's G_FMT and S_FMT tests regress.
 
 Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 ---
- Documentation/devicetree/bindings/media/mediatek-vcodec.txt | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-index 7aef0a4fe207..8093335afecb 100644
---- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-+++ b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-@@ -4,8 +4,9 @@ Mediatek Video Codec is the video codec hw present in Mediatek SoCs which
- supports high resolution encoding and decoding functionalities.
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+index 05743a745a11..f2ba19c32400 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+@@ -299,12 +299,14 @@ static int vidioc_try_fmt(struct v4l2_format *f,
  
- Required properties:
--- compatible : "mediatek,mt8173-vcodec-enc" for encoder
--  "mediatek,mt8173-vcodec-dec" for decoder.
-+- compatible : "mediatek,mt8173-vcodec-enc" for MT8173 encoder
-+  "mediatek,mt8183-vcodec-enc" for MT8183 encoder.
-+  "mediatek,mt8173-vcodec-dec" for MT8173 decoder.
- - reg : Physical base address of the video codec registers and length of
-   memory mapped region.
- - interrupts : interrupt number to the cpu.
+ 		pix_fmt_mp->num_planes = fmt->num_planes;
+ 		pix_fmt_mp->plane_fmt[0].sizeimage =
+-			pix_fmt_mp->width * pix_fmt_mp->height;
++				pix_fmt_mp->width * pix_fmt_mp->height +
++				((ALIGN(pix_fmt_mp->width, 16) * 2) * 16);
+ 		pix_fmt_mp->plane_fmt[0].bytesperline = pix_fmt_mp->width;
+ 
+ 		if (pix_fmt_mp->num_planes == 2) {
+ 			pix_fmt_mp->plane_fmt[1].sizeimage =
+-				(pix_fmt_mp->width * pix_fmt_mp->height) / 2;
++				(pix_fmt_mp->width * pix_fmt_mp->height) / 2 +
++				(ALIGN(pix_fmt_mp->width, 16) * 16);
+ 			pix_fmt_mp->plane_fmt[2].sizeimage = 0;
+ 			pix_fmt_mp->plane_fmt[1].bytesperline =
+ 							pix_fmt_mp->width;
+@@ -312,7 +314,8 @@ static int vidioc_try_fmt(struct v4l2_format *f,
+ 		} else if (pix_fmt_mp->num_planes == 3) {
+ 			pix_fmt_mp->plane_fmt[1].sizeimage =
+ 			pix_fmt_mp->plane_fmt[2].sizeimage =
+-				(pix_fmt_mp->width * pix_fmt_mp->height) / 4;
++				(pix_fmt_mp->width * pix_fmt_mp->height) / 4 +
++				((ALIGN(pix_fmt_mp->width, 16) / 2) * 16);
+ 			pix_fmt_mp->plane_fmt[1].bytesperline =
+ 				pix_fmt_mp->plane_fmt[2].bytesperline =
+ 				pix_fmt_mp->width / 2;
 -- 
 2.27.0.212.ge8ba1cc988-goog
 
