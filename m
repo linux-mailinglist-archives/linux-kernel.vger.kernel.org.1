@@ -2,140 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8238C20B6E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CD120B6E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbgFZRYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 13:24:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:40306 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725793AbgFZRYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 13:24:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 93FDB1FB;
-        Fri, 26 Jun 2020 10:24:38 -0700 (PDT)
-Received: from [192.168.0.14] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F35653F71E;
-        Fri, 26 Jun 2020 10:24:36 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/2] MTE support for KVM guest
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Maydell <Peter.Maydell@linaro.org>
-References: <20200617123844.29960-1-steven.price@arm.com>
- <20200623174807.GD5180@gaia> <e04696b6-63de-1e25-f6f3-1da63f791754@arm.com>
- <20200624142131.GA27945@gaia> <66ed0732-17ee-8f5a-44af-31ab768d845f@arm.com>
- <20200624161954.GC27945@gaia>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <bac439b7-c560-7597-8937-4a5bb66aeca4@arm.com>
-Date:   Fri, 26 Jun 2020 18:24:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1727904AbgFZRZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 13:25:07 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:35040 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725833AbgFZRZF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 13:25:05 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05QHMYvR009908;
+        Fri, 26 Jun 2020 17:24:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=ftdr6mHim54L1C0LjxRdGjksokmlNmltTbluVqJWzgg=;
+ b=ff+AldsaEEavTREY/UndN4fxK9RRCxWg6o7vMnL9Jr+465fnvPdA8INlJTr9fdoROhcn
+ eonn5wv+4p1LxIVUTknAE2AVQTpTwZ6/dhkF0EB0CB2fsjIZqlzXrfVaEH5yGV8bMq5N
+ pJ+IbL1tVs9GSsRSRPdKD7X3MidA+wnWohu1dW2cfXcmqzb5CrNg918MkZWy14LkVGPt
+ o56EddzV2FsiSc9AIFmGJm8LWeFrF1jFEfIgMnww7SNvNK30WqS+mmVctGJY31XjW/XI
+ Jj5D580JHjA/IdzgaOpK89Dw3GE9EmRA+75YJN0P+VbK7lupWuERZvkjQjWGUSkpZG2i Wg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 31uusu79b4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 26 Jun 2020 17:24:33 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05QHMM9v098753;
+        Fri, 26 Jun 2020 17:24:33 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 31uurctv1w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Jun 2020 17:24:32 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05QHORRU016433;
+        Fri, 26 Jun 2020 17:24:27 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 26 Jun 2020 17:24:20 +0000
+Date:   Fri, 26 Jun 2020 20:24:11 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Pawel Laszczak <pawell@cadence.com>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "ben.dooks@codethink.co.uk" <ben.dooks@codethink.co.uk>,
+        "colin.king@canonical.com" <colin.king@canonical.com>,
+        "rogerq@ti.com" <rogerq@ti.com>,
+        "peter.chen@nxp.com" <peter.chen@nxp.com>,
+        "weiyongjun1@huawei.com" <weiyongjun1@huawei.com>,
+        Jayshri Dajiram Pawar <jpawar@cadence.com>,
+        Rahul Kumar <kurahul@cadence.com>,
+        Sanket Parmar <sparmar@cadence.com>
+Subject: Re: [PATCH RFC 2/5] usb:cdns3: Add pci to platform driver wrapper
+Message-ID: <20200626172411.GE2571@kadam>
+References: <20200626045450.10205-1-pawell@cadence.com>
+ <20200626045450.10205-3-pawell@cadence.com>
+ <20200626114057.GD2571@kadam>
+ <DM6PR07MB5529E239FBA41BDDB52CAFC4DD930@DM6PR07MB5529.namprd07.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20200624161954.GC27945@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR07MB5529E239FBA41BDDB52CAFC4DD930@DM6PR07MB5529.namprd07.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9664 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 adultscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006260122
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9664 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ cotscore=-2147483648 malwarescore=0 mlxscore=0 clxscore=1011
+ lowpriorityscore=0 mlxlogscore=999 phishscore=0 priorityscore=1501
+ spamscore=0 impostorscore=0 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006260122
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi guys,
-
-On 24/06/2020 17:24, Catalin Marinas wrote:
-> On Wed, Jun 24, 2020 at 03:59:35PM +0100, Steven Price wrote:
->> On 24/06/2020 15:21, Catalin Marinas wrote:
->>> On Wed, Jun 24, 2020 at 12:16:28PM +0100, Steven Price wrote:
->>>> On 23/06/2020 18:48, Catalin Marinas wrote:
->>>>> This causes potential issues since we can't guarantee that all the
->>>>> Cacheable memory slots allocated by the VMM support MTE. If they do not,
->>>>> the arch behaviour is "unpredictable". We also can't trust the guest to
->>>>> not enable MTE on such Cacheable mappings.
->>>>
->>>> Architecturally it seems dodgy to export any address that isn't "normal
->>>> memory" (i.e. with tag storage) to the guest as Normal Cacheable. Although
->>>> I'm a bit worried this might cause a regression in some existing case.
->>>
->>> What I had in mind is some persistent memory that may be given to the
->>> guest for direct access. This is allowed to be cacheable (write-back)
->>> but may not have tag storage.
->>
->> At the moment we don't have a good idea what would happen if/when the guest
->> (or host) attempts to use that memory as tagged. If we have a relatively
->> safe hardware behaviour (e.g. the tags are silently dropped/read-as-zero)
->> then that's not a big issue. But if the accesses cause some form of abort
->> then we need to understand how that would be handled.
+On Fri, Jun 26, 2020 at 03:10:32PM +0000, Pawel Laszczak wrote:
+> >> +static int cdnsp_pci_probe(struct pci_dev *pdev,
+> >> +			   const struct pci_device_id *id)
+> >> +{
+> >> +	struct platform_device_info plat_info;
+> >> +	struct cdnsp_wrap *wrap;
+> >> +	struct resource *res;
+> >> +	struct pci_dev *func;
+> >> +	int err;
+> >> +
+> >> +	/*
+> >> +	 * For GADGET/HOST PCI (devfn) function number is 0,
+> >> +	 * for OTG PCI (devfn) function number is 1.
+> >> +	 */
+> >> +	if (!id || (pdev->devfn != PCI_DEV_FN_HOST_DEVICE &&
+> >> +		    pdev->devfn != PCI_DEV_FN_OTG))
+> >> +		return -EINVAL;
+> >> +
+> >> +	func = cdnsp_get_second_fun(pdev);
+> >> +	if (unlikely(!func))
+> >> +		return -EINVAL;
+> >> +
+> >> +	if (func->class == PCI_CLASS_SERIAL_USB_XHCI ||
+> >> +	    pdev->class == PCI_CLASS_SERIAL_USB_XHCI)
+> >> +		return -EINVAL;
+> >
+> >
+> >Do we need call pci_put_device(func) before returning?
 > 
-> The architecture is not prescriptive here, the behaviour is
-> "unpredictable". It could mean tags read-as-zero/write-ignored or an
-> SError.
+> We don't need.
+> Such function doesn't exist.
+> 
 
-This surely is the same as treating a VFIO device as memory and performing some
-unsupported operation on it.
+I meant pci_dev_put().  I'm pretty sure that we do need it to match the
+pci_get_device() in cdnsp_get_second_fun().
 
-I thought the DT 'which memory ranges' description for MTE was removed. Wouldn't the rules
-for a guest be the same? If you enable MTE, everything described as memory must support
-MTE. Something like persistent memory then can't be described as memory, ... we have the
-same problem on the host.
+regards,
+dan carpenter
 
-
->>>>> 1. As in your current patches, assume any Cacheable at Stage 2 can have
->>>>>      MTE enabled at Stage 1. In addition, we need to check whether the
->>>>>      physical memory supports MTE and it could be something simple like
->>>>>      pfn_valid(). Is there a way to reject a memory slot passed by the
->>>>>      VMM?
->>>>
->>>> Yes pfn_valid() should have been in there. At the moment pfn_to_page() is
->>>> called without any checks.
->>>>
->>>> The problem with attempting to reject a memory slot is that the memory
->>>> backing that slot can change. So checking at the time the slot is created
->>>> isn't enough (although it might be a useful error checking feature).
->>>
->>> But isn't the slot changed as a result of another VMM call? So we could
->>> always have such check in place.
->>
->> Once you have created a memslot the guest's view of memory follows the user
->> space's address space. This is the KVM_CAP_SYNC_MMU capability. So there's
->> nothing stopping a VMM adding a memslot backed with perfectly reasonable
->> memory then mmap()ing over the top of it some memory which isn't MTE
->> compatible. KVM gets told the memory is being removed (via mmu notifiers)
->> but I think it waits for the next fault before (re)creating the stage 2
->> entries.
-
-(indeed, stage2 is pretty lazy)
-
-
-> OK, so that's where we could kill the guest if the VMM doesn't play
-> nicely. It means that we need the check when setting up the stage 2
-> entry. I guess it's fine if we only have the check at that point and
-> ignore it on KVM_SET_USER_MEMORY_REGION. It would be nice if we returned
-> on error on slot setup but
-
-> we may not know (yet) whether the VMM intends to enable MTE for the guest.
-
-We don't. Memory slots take the VM-fd, whereas the easy-to-add feature bits are per-vcpu.
-Packing features into the 'type' that create-vm takes is a problem once we run out,
-although the existing user is the IPA space size, and MTE is a property of the memory system.
-
-
-The meaning of the flag is then "I described this as memory, only let the guest access
-memory through this range that is MTE capable". What do we do when that is violated? Tell
-the VMM is the nicest, but its not something we ever expect to happen. I guess an abort is
-what real hardware would do, (if firmware magically turned off MTE while it was in use).
-
-This would need to be kvm's inject_abt64(), as otherwise the vcpu may take the stage2
-fault again, forever. For kvm_set_spte_hva() we can't inject an abort (which vcpu?), so
-not mapping the page and waiting for the guest to access it is the only option...
-
-
-Thanks,
-
-James
