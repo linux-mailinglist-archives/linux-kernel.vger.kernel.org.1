@@ -2,105 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD1320BAE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C18620BAEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgFZVEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 17:04:00 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:40659 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgFZVEA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 17:04:00 -0400
-X-Originating-IP: 86.202.110.81
-Received: from localhost (lfbn-lyo-1-15-81.w86-202.abo.wanadoo.fr [86.202.110.81])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 4CC30FF804;
-        Fri, 26 Jun 2020 21:03:57 +0000 (UTC)
-Date:   Fri, 26 Jun 2020 23:03:57 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org,
-        nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
-        linux-kernel@vger.kernel.org, mturquette@linaro.org,
-        bbrezillon@kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/2] clk: at91: main: do not continue if oscillators
- already prepared
-Message-ID: <20200626210357.GX131826@piout.net>
-References: <1593079768-9349-1-git-send-email-claudiu.beznea@microchip.com>
- <1593079768-9349-2-git-send-email-claudiu.beznea@microchip.com>
+        id S1725998AbgFZVFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 17:05:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49410 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725781AbgFZVFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 17:05:06 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43B7920720;
+        Fri, 26 Jun 2020 21:05:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593205506;
+        bh=bcnEDY2baADluA2OfBYZhXvSSPnVEiJFwVXnomA4i0o=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=TdkF652cvhtJnzyzi3Cm98ECt/CSWSN92xiu4XFPBKfoFc+UTfHkwn0sHbgF4ByJ1
+         GLPT13ntMa1Fn6UluhoM7etb4gVWrRPJ5RtHhR4MQv5+45utfFIHDnX+Poi2lXtfw0
+         FJvfY3QNGWoi6kY8r1m2dzjbKK2cU8H+xdChs5AQ=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 2A6E535230EC; Fri, 26 Jun 2020 14:05:06 -0700 (PDT)
+Date:   Fri, 26 Jun 2020 14:05:06 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, luto@kernel.org, kernel-team@fb.com
+Subject: [PATCH tick-sched] Clarify "NOHZ: local_softirq_pending" warning
+Message-ID: <20200626210506.GA27189@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1593079768-9349-2-git-send-email-claudiu.beznea@microchip.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/06/2020 13:09:28+0300, Claudiu Beznea wrote:
-> Return in clk_main_osc_prepare()/clk_main_rc_osc_prepare() if
-> oscillators are already enabled.
-> 
-> Fixes: 27cb1c2083373 ("clk: at91: rework main clk implementation")
-> Fixes: 1bdf02326b71e ("clk: at91: make use of syscon/regmap internally")
+Currently, can_stop_idle_tick() prints "NOHZ: local_softirq_pending HH"
+(where "HH" is the hexadecimal softirq vector number) when one or more
+non-RCU softirq handlers are still enablded when checking to stop the
+scheduler-tick interrupt.  This message is not as enlightening as one
+might hope, so this commit changes it to "NOHZ tick-stop error: Non-RCU
+local softirq work is pending, handler #HH.
 
-Is this really a fix? What is the observed issue?
+Reported-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> ---
->  drivers/clk/at91/clk-main.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/clk/at91/clk-main.c b/drivers/clk/at91/clk-main.c
-> index 37c22667e831..46b4d2131989 100644
-> --- a/drivers/clk/at91/clk-main.c
-> +++ b/drivers/clk/at91/clk-main.c
-> @@ -74,13 +74,11 @@ static int clk_main_osc_prepare(struct clk_hw *hw)
->  	regmap_read(regmap, AT91_CKGR_MOR, &tmp);
->  	tmp &= ~MOR_KEY_MASK;
->  
-> -	if (tmp & AT91_PMC_OSCBYPASS)
-> +	if (tmp & (AT91_PMC_OSCBYPASS | AT91_PMC_MOSCEN))
->  		return 0;
+---
 
-While this seems like a good optimization, it is also not correct.
-Having AT91_PMC_MOSCEN set doesn't mean that the clock is ready, you
-need to at least check MOSCS once.
+ tick-sched.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->  
-> -	if (!(tmp & AT91_PMC_MOSCEN)) {
-> -		tmp |= AT91_PMC_MOSCEN | AT91_PMC_KEY;
-> -		regmap_write(regmap, AT91_CKGR_MOR, tmp);
-> -	}
-> +	tmp |= AT91_PMC_MOSCEN | AT91_PMC_KEY;
-> +	regmap_write(regmap, AT91_CKGR_MOR, tmp);
->  
->  	while (!clk_main_osc_ready(regmap))
->  		cpu_relax();
-> @@ -186,10 +184,12 @@ static int clk_main_rc_osc_prepare(struct clk_hw *hw)
->  
->  	regmap_read(regmap, AT91_CKGR_MOR, &mor);
->  
-> -	if (!(mor & AT91_PMC_MOSCRCEN))
-> -		regmap_update_bits(regmap, AT91_CKGR_MOR,
-> -				   MOR_KEY_MASK | AT91_PMC_MOSCRCEN,
-> -				   AT91_PMC_MOSCRCEN | AT91_PMC_KEY);
-> +	if (mor & AT91_PMC_MOSCRCEN)
-> +		return 0;
-> +
-> +	regmap_update_bits(regmap, AT91_CKGR_MOR,
-> +			   MOR_KEY_MASK | AT91_PMC_MOSCRCEN,
-> +			   AT91_PMC_MOSCRCEN | AT91_PMC_KEY);
->  
->  	while (!clk_main_rc_osc_ready(regmap))
->  		cpu_relax();
-> -- 
-> 2.7.4
-> 
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index f0199a4..349a25a 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -927,7 +927,7 @@ static bool can_stop_idle_tick(int cpu, struct tick_sched *ts)
+ 
+ 		if (ratelimit < 10 &&
+ 		    (local_softirq_pending() & SOFTIRQ_STOP_IDLE_MASK)) {
+-			pr_warn("NOHZ: local_softirq_pending %02x\n",
++			pr_warn("NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #%02x\n",
+ 				(unsigned int) local_softirq_pending());
+ 			ratelimit++;
+ 		}
