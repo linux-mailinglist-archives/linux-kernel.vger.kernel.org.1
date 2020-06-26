@@ -2,79 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E6820B2C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 15:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB18820B2CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 15:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728847AbgFZNpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 09:45:11 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:38994 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgFZNpL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 09:45:11 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id AC7A91C0BD2; Fri, 26 Jun 2020 15:45:09 +0200 (CEST)
-Date:   Fri, 26 Jun 2020 15:45:09 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Jayshri Pawar <jpawar@cadence.com>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.7 264/477] usb: gadget: Fix issue with
- config_ep_by_speed function
-Message-ID: <20200626134509.GB29985@duo.ucw.cz>
-References: <20200623195407.572062007@linuxfoundation.org>
- <20200623195420.044538801@linuxfoundation.org>
+        id S1728888AbgFZNpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 09:45:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725864AbgFZNph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 09:45:37 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 087CB207D8;
+        Fri, 26 Jun 2020 13:45:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593179137;
+        bh=iE3tzCAvbGL1rbktPt6yEr1J1jW46XJSCh5A37dUpCQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tjaOP2S48N4PiUtwTGuhQhSBT2SRLmd2NQBOGgleCQdl6+zShGXD9byTyziBJC/PR
+         FUhDK1WY01BmAh1vNQr3bRVRZjeE2CwH3G9RROahCxUpk07Yqjm6uLex+r2YMf95mb
+         J1Cnh579al409RgfizJSvV9RBEauGw4JCP6OMCgo=
+Date:   Fri, 26 Jun 2020 15:45:32 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+Cc:     linux-clk@vger.kernel.org, sboyd@kernel.org, robh+dt@kernel.org,
+        shubhrajyoti.datta@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, michals@xilinx.com
+Subject: Re: [PATCH v4 8/8] staging: clocking-wizard: Delete the driver from
+ the staging
+Message-ID: <20200626134532.GA4095392@kroah.com>
+References: <1593175304-4876-1-git-send-email-shubhrajyoti.datta@xilinx.com>
+ <1593175304-4876-9-git-send-email-shubhrajyoti.datta@xilinx.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="A6N2fC+uXW/VQSAv"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200623195420.044538801@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1593175304-4876-9-git-send-email-shubhrajyoti.datta@xilinx.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 26, 2020 at 06:11:44PM +0530, Shubhrajyoti Datta wrote:
+> Delete the driver from the staging as it is in drivers/clk.
+> 
+> Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
 
---A6N2fC+uXW/VQSAv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> [ Upstream commit 5d363120aa548ba52d58907a295eee25f8207ed2 ]
->=20
-> This patch adds new config_ep_by_speed_and_alt function which
-> extends the config_ep_by_speed about alt parameter.
-> This additional parameter allows to find proper
-> usb_ss_ep_comp_descriptor.
-
->  drivers/usb/gadget/composite.c | 78 ++++++++++++++++++++++++++--------
->  include/linux/usb/composite.h  |  3 ++
-
-It seems that (at least for 4.19) we applied rather big patch to
-merge unused function.
-
-Best regards,
-								Pavel
-							=09
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---A6N2fC+uXW/VQSAv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXvX75QAKCRAw5/Bqldv6
-8l4tAJ90ZvmlqbKOPmyWc0P8KUx2TrY6BgCgrI7VEggekYipeiTim9DYbpxDx24=
-=dcLE
------END PGP SIGNATURE-----
-
---A6N2fC+uXW/VQSAv--
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
