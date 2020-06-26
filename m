@@ -2,122 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C479020BAC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 22:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1BB20BAC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 22:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726036AbgFZU4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 16:56:30 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:38071 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbgFZU4a (ORCPT
+        id S1726110AbgFZU5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 16:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbgFZU5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 16:56:30 -0400
-X-Originating-IP: 86.202.110.81
-Received: from localhost (lfbn-lyo-1-15-81.w86-202.abo.wanadoo.fr [86.202.110.81])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 69A9D20002;
-        Fri, 26 Jun 2020 20:56:27 +0000 (UTC)
-Date:   Fri, 26 Jun 2020 22:56:27 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH 08/10] mfd: atmel-smc: Silence comparison of unsigned
- expression < 0 is always false warning (W=1)
-Message-ID: <20200626205627.GU131826@piout.net>
-References: <20200625064619.2775707-1-lee.jones@linaro.org>
- <20200625064619.2775707-9-lee.jones@linaro.org>
+        Fri, 26 Jun 2020 16:57:17 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB0FC03E979;
+        Fri, 26 Jun 2020 13:57:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=/j1J3VNoc3X3k3mp9U8TxyNrfgAwisW2njcwJM52V4Q=; b=h4grfjDq/NXOFrzYJ8Q9SYUaVM
+        hpTYkJPtCel8/BPsyPaXQ1uGcjQKq8GagRfM5oJ8kF/noKfuwo9KTWtyTQcnjuaLRmH/gNmknta55
+        imKlS0xVZTeIm1JUf4F4zWPkONPx/1TwCRfQk+Q/JvexALVRJ7j5tG1RQpowHmAoNtL8mgj0n+kdE
+        IhZXaAcFVRdtkA21ALxvzNry1AuLo92nKVzsmS1tFOw57xmhGTd44FQyLxzzJaP86QFGa4hveOCdN
+        1rJR7mvidfJnrpqg0R7l4WLdbbH6Zi+vt/m1Z0R2bfa5jVpT1f6Zel9A1eB+iTlR+LPRXIU+qDsD9
+        7OWn8Ghg==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jovP2-0002Ub-TT; Fri, 26 Jun 2020 20:56:57 +0000
+Subject: Re: [PATCH] slab: Fix misplaced __free_one()
+To:     Kees Cook <keescook@chromium.org>, akpm@linux-foundation.org
+Cc:     broonie@kernel.org, mhocko@suse.cz, sfr@canb.auug.org.au,
+        linux-next@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        mm-commits@vger.kernel.org
+References: <202006261306.0D82A2B@keescook>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1de6b098-a759-dd96-df5d-9a282b2a991b@infradead.org>
+Date:   Fri, 26 Jun 2020 13:56:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <202006261306.0D82A2B@keescook>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200625064619.2775707-9-lee.jones@linaro.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 6/26/20 1:07 PM, Kees Cook wrote:
+> The implementation of __free_one() was accidentally placed inside a
+> CONFIG_NUMA #ifdef. Move it above.
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Link: https://lore.kernel.org/lkml/7ff248c7-d447-340c-a8e2-8c02972aca70@infradead.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-On 25/06/2020 07:46:17+0100, Lee Jones wrote:
-> GENMASK and it's callees conduct checking to ensure the passed
-> parameters are valid.  One of those checks is for '< 0'.  So if an
-> unsigned value is passed, in an invalid comparison takes place.
-> 
-> Judging from the current code, it looks as though 'unsigned int'
-> is the correct type to use, so simply cast these small values
-> with no chance of being false negative to signed int for
-> comparison/error checking purposes.
-> 
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-I've been thinking about that one but shouldn't the proper fix be in
-GENMASK? My understanding is that this happens because l is 0 and I
-don't think GENMASK would ever expect negative number. What about simply
-checking that h != l when l is 0?
+Thanks.
 
-> Squashes the following W=1 warnings:
-> 
->  In file included from /home/lee/projects/linux/kernel/include/linux/bits.h:23,
->  from /home/lee/projects/linux/kernel/include/linux/bitops.h:5,
->  from /home/lee/projects/linux/kernel/include/linux/kernel.h:12,
->  from /home/lee/projects/linux/kernel/include/linux/mfd/syscon/atmel-smc.h:14,
->  from /home/lee/projects/linux/kernel/drivers/mfd/atmel-smc.c:11:
->  /home/lee/projects/linux/kernel/drivers/mfd/atmel-smc.c: In function ‘atmel_smc_cs_encode_ncycles’:
->  /home/lee/projects/linux/kernel/include/linux/bits.h:26:28: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
->  26 | __builtin_constant_p((l) > (h)), (l) > (h), 0)))
->  | ^
->  /home/lee/projects/linux/kernel/include/linux/build_bug.h:16:62: note: in definition of macro ‘BUILD_BUG_ON_ZERO’
->  16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
->  | ^
->  /home/lee/projects/linux/kernel/include/linux/bits.h:39:3: note: in expansion of macro ‘GENMASK_INPUT_CHECK’
->  39 | (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
->  | ^~~~~~~~~~~~~~~~~~~
->  /home/lee/projects/linux/kernel/drivers/mfd/atmel-smc.c:49:25: note: in expansion of macro ‘GENMASK’
->  49 | unsigned int lsbmask = GENMASK(msbpos - 1, 0);
->  | ^~~~~~~
->  /home/lee/projects/linux/kernel/include/linux/bits.h:26:40: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
->  26 | __builtin_constant_p((l) > (h)), (l) > (h), 0)))
->  | ^
->  /home/lee/projects/linux/kernel/include/linux/build_bug.h:16:62: note: in definition of macro ‘BUILD_BUG_ON_ZERO’
->  16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
->  | ^
->  /home/lee/projects/linux/kernel/include/linux/bits.h:39:3: note: in expansion of macro ‘GENMASK_INPUT_CHECK’
->  39 | (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
->  | ^~~~~~~~~~~~~~~~~~~
-> 
-> Cc: <stable@vger.kernel.org>
-> Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  drivers/mfd/atmel-smc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> This a fix for slab-add-naive-detection-of-double-free.patch
+> ---
+>  mm/slab.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/mfd/atmel-smc.c b/drivers/mfd/atmel-smc.c
-> index 1fa2ec950e7df..17bbe9d1fa740 100644
-> --- a/drivers/mfd/atmel-smc.c
-> +++ b/drivers/mfd/atmel-smc.c
-> @@ -46,8 +46,8 @@ static int atmel_smc_cs_encode_ncycles(unsigned int ncycles,
->  				       unsigned int msbfactor,
->  				       unsigned int *encodedval)
->  {
-> -	unsigned int lsbmask = GENMASK(msbpos - 1, 0);
-> -	unsigned int msbmask = GENMASK(msbwidth - 1, 0);
-> +	unsigned int lsbmask = GENMASK((int)msbpos - 1, 0);
-> +	unsigned int msbmask = GENMASK((int)msbwidth - 1, 0);
->  	unsigned int msb, lsb;
->  	int ret = 0;
+> diff --git a/mm/slab.c b/mm/slab.c
+> index bbff6705ab2b..5ccb151a6e8f 100644
+> --- a/mm/slab.c
+> +++ b/mm/slab.c
+> @@ -588,6 +588,16 @@ static int transfer_objects(struct array_cache *to,
+>  	return nr;
+>  }
 >  
-> -- 
-> 2.25.1
+> +/* &alien->lock must be held by alien callers. */
+> +static __always_inline void __free_one(struct array_cache *ac, void *objp)
+> +{
+> +	/* Avoid trivial double-free. */
+> +	if (IS_ENABLED(CONFIG_SLAB_FREELIST_HARDENED) &&
+> +	    WARN_ON_ONCE(ac->avail > 0 && ac->entry[ac->avail - 1] == objp))
+> +		return;
+> +	ac->entry[ac->avail++] = objp;
+> +}
+> +
+>  #ifndef CONFIG_NUMA
+>  
+>  #define drain_alien_cache(cachep, alien) do { } while (0)
+> @@ -749,16 +759,6 @@ static void drain_alien_cache(struct kmem_cache *cachep,
+>  	}
+>  }
+>  
+> -/* &alien->lock must be held by alien callers. */
+> -static __always_inline void __free_one(struct array_cache *ac, void *objp)
+> -{
+> -	/* Avoid trivial double-free. */
+> -	if (IS_ENABLED(CONFIG_SLAB_FREELIST_HARDENED) &&
+> -	    WARN_ON_ONCE(ac->avail > 0 && ac->entry[ac->avail - 1] == objp))
+> -		return;
+> -	ac->entry[ac->avail++] = objp;
+> -}
+> -
+>  static int __cache_free_alien(struct kmem_cache *cachep, void *objp,
+>  				int node, int page_node)
+>  {
 > 
+
 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+~Randy
