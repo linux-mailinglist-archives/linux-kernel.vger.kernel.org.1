@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E766220B187
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 14:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A576820B196
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 14:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728551AbgFZMmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 08:42:09 -0400
-Received: from mail-eopbgr680053.outbound.protection.outlook.com ([40.107.68.53]:29774
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        id S1728708AbgFZMmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 08:42:35 -0400
+Received: from mail-mw2nam12on2085.outbound.protection.outlook.com ([40.107.244.85]:13452
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728485AbgFZMmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 08:42:08 -0400
+        id S1728576AbgFZMmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 08:42:19 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c1QVS1HF1JIil9TNBEB9kGSEchXroAo6ApXTeWdx/cFtIGUz0tlMkSVwa/RWEeztjbIH1vzTpjidImTk90GMYFAIeYsk+dmT7t2wZYz9gVbUW/dxzdUqfAsUSXjD9dPYu3w6cnLFi0jozDAnyFCJcZpYvklEYyDdM4x97UHBD3sEsXo4416DZZah6bVMYX1XUmKZJp7wJR9h/Hs+4IwzcBvNWTc6lEMWv8UQ6lmMTEAjbYMETyaM8nrgshsC3qYY+OdYELs3shjfEwZkOcimig8eDfd2O8mDR6bze9HL3gVWD94bvCPrjOl+olSPRP/pf7SNluvuaICvu8oRYat9eg==
+ b=UUqLE4CkE3RhCfz46X5jFeIP8k340yRC0y4R0Iv/1/PERoi8+eDw/i2NIHnK/yWYi4HDQhwgt10mZVga+JSj529xS6pxSI+aDk2pZHYopZJHr3bGYBjUU2ylXA0y+1WkZ/BM0Zc/fUyExHzMgV+4AWi+Wf0pml+h3w9u+SjrnUCrVfCbE1VLmKsJUWc2ph48ZEwulRI5Vx4BoBnJNykZWPzi/xfri3GSLtojDxtyH/Fm2Fir/68y0n9fa4GDLqVaxifGcsnMt51g2q2M023EUUZWX015qZjlfAu2PU7ZQIMy5lAl8LV/jpTbNYcWBwmgkIAOSiqQWaoHxyTVIE9drQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QAgPAMvG1k9Jse38eh3gYsIT9SQTY5QRjDjio5rLxtw=;
- b=ixPMHwC1+Wbi5zsMhU1efcsF/MQemmp+AmgmQYbLjd4w8JfevPkPPN+PgmXBG9LM4662SuwkpxhqrF/4dG+ZrTrSGb0dHwS/tUS5iuZYFYFkh+dYQmnxJoSiE3sMB5giyiYjQMg4BwNJH4J4yu5fg5cbrhMceRer1eKAo0ppHmceTztU+ltenNVU2poVlRAYQ1cBnAOXjGh2nFsVtzGBOsHdbzYIe6eXNHB8almShwIhYowTsLs9L9DziHum9wLe2wWWenvuNuRNsoXI7rBYASuKEdbTJnOdssksfF1Ux7zZc1qxRafnEZXFHgz1pwmECktMv/1JorskeQQB2EnpCA==
+ bh=UolGFI8IXw2m2imelmgb/VriH+a4TKk96ZgqCicx94s=;
+ b=OIbDB1WhnWhMcz2EsNkQuKTyfk0rU4GM9Aa305gTsrLS8ZDLB6Qmur00jhZ4qEJJssEdu0v9zUiSXm3VhsUo+/wlELoPGKQ11nG/4WsFvGVFf/1LrBeWjFlOZj4nPW0dwQMyyr4/OpWBpvROxFA6//pqTLEJWh/h69vDjcn0zIHqwBBv5sFjQuIKXIxWVBtBUiJMLZ5TNvGZ3MuWIpHxQonJXJefUEog5+KdCms+4InkTDD5OiT0yHjMCZ7ahcTy9Bc7eJETp2n0QnhcKoZT0cEj26XHJOWoyByP8O0XrqyWHA+FABbEArep7zRz35jx/Ia7jzGh4t9ZVuUjerKxfQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  149.199.60.83) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
  dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
@@ -26,18 +26,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QAgPAMvG1k9Jse38eh3gYsIT9SQTY5QRjDjio5rLxtw=;
- b=aBeIiyMvGg45RkYABQ/VhYINyVySTmXxl0YoRzWmvpSSSgocxYdVnjc6KU7ZLU0Rwy+jpHZHmg1Cls15RIcm9h/D5avIUzwjbkmwv5JzVzdpqDgO6Jkksw3HpPSVzc0oB/5QrhwVj2Qc9j5G3DJ8yiLOmkjy01niKsSJDQfgvm4=
-Received: from SA9PR03CA0029.namprd03.prod.outlook.com (2603:10b6:806:20::34)
- by MN2PR02MB5952.namprd02.prod.outlook.com (2603:10b6:208:11d::16) with
+ bh=UolGFI8IXw2m2imelmgb/VriH+a4TKk96ZgqCicx94s=;
+ b=pTjd9caUE/9hLjqj0uZyxX67qDJqGo7I0I+skh8EF84UvwQF7Bu+2ENk1SArCviQ8ZVQ+j1+xO8zvdB270DMQKnvFU0/Z+IMpZ5/hNG9ppxbx74i+7/vci4CzoYHwVLLUXGhmGOFgNy8nyZhyyGJcB0iJ/WITwCM9mXrrLElOEs=
+Received: from DM5PR19CA0004.namprd19.prod.outlook.com (2603:10b6:3:151::14)
+ by MN2PR02MB6606.namprd02.prod.outlook.com (2603:10b6:208:1db::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21; Fri, 26 Jun
- 2020 12:42:05 +0000
-Received: from SN1NAM02FT008.eop-nam02.prod.protection.outlook.com
- (2603:10b6:806:20:cafe::b) by SA9PR03CA0029.outlook.office365.com
- (2603:10b6:806:20::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.23 via Frontend
- Transport; Fri, 26 Jun 2020 12:42:05 +0000
+ 2020 12:42:15 +0000
+Received: from CY1NAM02FT010.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:3:151:cafe::fa) by DM5PR19CA0004.outlook.office365.com
+ (2603:10b6:3:151::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21 via Frontend
+ Transport; Fri, 26 Jun 2020 12:42:15 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
  smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
@@ -46,33 +46,34 @@ Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
  149.199.60.83 as permitted sender) receiver=protection.outlook.com;
  client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
 Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- SN1NAM02FT008.mail.protection.outlook.com (10.152.72.119) with Microsoft SMTP
- Server id 15.20.3131.20 via Frontend Transport; Fri, 26 Jun 2020 12:42:04
+ CY1NAM02FT010.mail.protection.outlook.com (10.152.75.50) with Microsoft SMTP
+ Server id 15.20.3131.20 via Frontend Transport; Fri, 26 Jun 2020 12:42:15
  +0000
-Received: from [149.199.38.66] (port=38669 helo=xsj-pvapsmtp01)
+Received: from [149.199.38.66] (port=38874 helo=xsj-pvapsmtp01)
         by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
         (envelope-from <shubhrajyoti.datta@xilinx.com>)
-        id 1jonex-0003Jg-RH; Fri, 26 Jun 2020 05:40:47 -0700
+        id 1jonf8-0003KD-5C; Fri, 26 Jun 2020 05:40:58 -0700
 Received: from [127.0.0.1] (helo=localhost)
         by xsj-pvapsmtp01 with smtp (Exim 4.63)
         (envelope-from <shubhrajyoti.datta@xilinx.com>)
-        id 1jongC-0001bv-Fa; Fri, 26 Jun 2020 05:42:04 -0700
-Received: from xsj-pvapsmtp01 (xsj-smtp1.xilinx.com [149.199.38.66])
-        by xsj-smtp-dlp1.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 05QCfwvs028981;
-        Fri, 26 Jun 2020 05:41:58 -0700
+        id 1jongM-0001e6-PO; Fri, 26 Jun 2020 05:42:14 -0700
+Received: from xsj-pvapsmtp01 (xsj-pvapsmtp01.xilinx.com [149.199.38.66])
+        by xsj-smtp-dlp2.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 05QCg1HV029241;
+        Fri, 26 Jun 2020 05:42:01 -0700
 Received: from [10.140.6.59] (helo=xhdshubhraj40.xilinx.com)
         by xsj-pvapsmtp01 with esmtp (Exim 4.63)
         (envelope-from <shubhrajyoti.datta@xilinx.com>)
-        id 1jong5-0001Wm-PM; Fri, 26 Jun 2020 05:41:58 -0700
+        id 1jong9-0001Wm-5t; Fri, 26 Jun 2020 05:42:01 -0700
 From:   Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
 To:     linux-clk@vger.kernel.org
 Cc:     sboyd@kernel.org, robh+dt@kernel.org, gregkh@linuxfoundation.org,
         shubhrajyoti.datta@gmail.com, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, michals@xilinx.com,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
-Subject: [PATCH v4 3/8] clk: clock-wizard: Fix kernel-doc warning
-Date:   Fri, 26 Jun 2020 18:11:39 +0530
-Message-Id: <1593175304-4876-4-git-send-email-shubhrajyoti.datta@xilinx.com>
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Chirag Parekh <chirag.parekh@xilinx.com>
+Subject: [PATCH v4 4/8] clk: clock-wizard: Add support for dynamic reconfiguration
+Date:   Fri, 26 Jun 2020 18:11:40 +0530
+Message-Id: <1593175304-4876-5-git-send-email-shubhrajyoti.datta@xilinx.com>
 X-Mailer: git-send-email 2.1.1
 In-Reply-To: <1593175304-4876-1-git-send-email-shubhrajyoti.datta@xilinx.com>
 References: <1593175304-4876-1-git-send-email-shubhrajyoti.datta@xilinx.com>
@@ -81,55 +82,300 @@ X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
 X-TM-AS-User-Approved-Sender: Yes;Yes
 X-EOPAttributedMessage: 0
 X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(376002)(346002)(396003)(136003)(39860400002)(46966005)(82740400003)(7696005)(316002)(356005)(6666004)(36756003)(81166007)(478600001)(107886003)(6916009)(26005)(70206006)(9786002)(70586007)(4744005)(186003)(4326008)(5660300002)(82310400002)(8676002)(336012)(44832011)(47076004)(2616005)(426003)(8936002)(2906002)(83380400001);DIR:OUT;SFP:1101;
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(396003)(39860400002)(136003)(376002)(346002)(46966005)(82740400003)(478600001)(7696005)(4326008)(47076004)(6666004)(2906002)(70586007)(70206006)(316002)(6916009)(81166007)(336012)(54906003)(5660300002)(2616005)(426003)(36756003)(82310400002)(8676002)(356005)(8936002)(83380400001)(26005)(44832011)(107886003)(9786002)(186003);DIR:OUT;SFP:1101;
 X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 06067dd3-8632-43c3-04db-08d819ce54b3
-X-MS-TrafficTypeDiagnostic: MN2PR02MB5952:
-X-Microsoft-Antispam-PRVS: <MN2PR02MB59521629FDC57A4B88C7B705AA930@MN2PR02MB5952.namprd02.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 5a261d12-5db9-4b59-4c29-08d819ce5ad0
+X-MS-TrafficTypeDiagnostic: MN2PR02MB6606:
+X-Microsoft-Antispam-PRVS: <MN2PR02MB66061B89D6EC4E1FE5D81068AA930@MN2PR02MB6606.namprd02.prod.outlook.com>
 X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
+X-MS-Oob-TLC-OOBClassifiers: OLM:1201;
 X-Forefront-PRVS: 0446F0FCE1
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RxgCTOy4fAetHjL4ZKXtVa3u++tSYV/0bWS+vDQov8wIUAhe/v9TO4LgIPRfD+8hsO6tVJzDUwad3LEJkVKaE7d5M/nJC6oEBtsr8n++a96dRprwpK6ax1COyi9Mz/slF+QY1NIQh5efBxLeU5/3mOE2vVFtIAcfWp8+RfPeQGMG90gec3tF2CAYKi0DPs4JuzaQmEmBn5x2qkD2fG61g+m0bGnZgNxvoLKSEkQpfjbzuj/Mg0dZazPAuHlDD0TuFMPakSpILyVUBKPn71tCGxUurp+PolWq+ouWq3eO1uBZYTTNeXMSe08g1zwutPZD4qivT/chvOX+seKbuh0paCHTzPYfS2q3H0AfhERvvA7lmKqA0l78uWNnaXNQDdlLjjX4prbAMt/nSE16FXn/MQ==
+X-Microsoft-Antispam-Message-Info: O0KG6iDgW12FyaSEHQRF7RCmIDVoxxVz8C0oQNycmZJwEVBmyo1uqQN8W9VMED7ZtfiFjvHIcnrZKLSjzz5CATMoV6Bsp1WGj1t19O+bgDrvON//uzze2trQADi9rqUn2FSJ8OgHGMFbchoUauHHUfKbFKDpR0AzQHozwC8w+WeA++u+RSeo8evUK1NdUCMdv8DMbNvlk1Vn5CzdivG/0ypFvmodNzP5Db45dRVcjaF+4qyF108JtGMSJUJrqxuHp9+NH6rZaiwXSdLE6pMjQFXX3kdqTZrUkVBoTA8GU4qKZ13WTbMJlXFaSzX81aq7V/CKqO+oqpx/+VhFzIcXsMzKpkPwuPUpjgIpobxh2zDzKDd0SYn8rLevsTwlhpPfcShUEe0oY1CoQRWESNYNQA==
 X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2020 12:42:04.7800
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2020 12:42:15.0383
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 06067dd3-8632-43c3-04db-08d819ce54b3
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a261d12-5db9-4b59-4c29-08d819ce5ad0
 X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT008.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT010.eop-nam02.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR02MB5952
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR02MB6606
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update description for the clocking wizard structure
+The patch adds support for dynamic reconfiguration of clock output rate.
+Output clocks are registered as dividers and set rate callback function
+is used for dynamic reconfiguration.
 
+Based on the initial work from Chirag.
+
+Signed-off-by: Chirag Parekh <chirag.parekh@xilinx.com>
 Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
 ---
- drivers/clk/clk-xlnx-clock-wizard.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+
+ drivers/clk/clk-xlnx-clock-wizard.c | 212 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 206 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/clk/clk-xlnx-clock-wizard.c b/drivers/clk/clk-xlnx-clock-wizard.c
-index b31524a..d6577c8 100644
+index d6577c8..4b563f3 100644
 --- a/drivers/clk/clk-xlnx-clock-wizard.c
 +++ b/drivers/clk/clk-xlnx-clock-wizard.c
-@@ -40,7 +40,8 @@ enum clk_wzrd_int_clks {
+@@ -31,8 +31,23 @@
+ #define WZRD_DIVCLK_DIVIDE_SHIFT	0
+ #define WZRD_DIVCLK_DIVIDE_MASK		(0xff << WZRD_DIVCLK_DIVIDE_SHIFT)
+ #define WZRD_CLKOUT_DIVIDE_SHIFT	0
++#define WZRD_CLKOUT_DIVIDE_WIDTH	8
+ #define WZRD_CLKOUT_DIVIDE_MASK		(0xff << WZRD_DIVCLK_DIVIDE_SHIFT)
+ 
++#define WZRD_DR_MAX_INT_DIV_VALUE	255
++#define WZRD_DR_NUM_RETRIES		10000
++#define WZRD_DR_STATUS_REG_OFFSET	0x04
++#define WZRD_DR_LOCK_BIT_MASK		0x00000001
++#define WZRD_DR_INIT_REG_OFFSET		0x25C
++#define WZRD_DR_DIV_TO_PHASE_OFFSET	4
++#define WZRD_DR_BEGIN_DYNA_RECONF	0x03
++
++/* Get the mask from width */
++#define div_mask(width)			((1 << (width)) - 1)
++
++/* Extract divider instance from clock hardware instance */
++#define to_clk_wzrd_divider(_hw) container_of(_hw, struct clk_wzrd_divider, hw)
++
+ enum clk_wzrd_int_clks {
+ 	wzrd_clk_mul,
+ 	wzrd_clk_mul_div,
+@@ -64,6 +79,29 @@ struct clk_wzrd {
+ 	bool suspended;
  };
  
- /**
-- * struct clk_wzrd:
-+ * struct clk_wzrd - Clock wizard private data structure
++/**
++ * struct clk_wzrd_divider - clock divider specific to clk_wzrd
 + *
-  * @clk_data:		Clock data
-  * @nb:			Notifier block
-  * @base:		Memory base
++ * @hw:		handle between common and hardware-specific interfaces
++ * @base:	base address of register containing the divider
++ * @offset:	offset address of register containing the divider
++ * @shift:	shift to the divider bit field
++ * @width:	width of the divider bit field
++ * @flags:	clk_wzrd divider flags
++ * @table:	array of value/divider pairs, last entry should have div = 0
++ * @lock:	register lock
++ */
++struct clk_wzrd_divider {
++	struct clk_hw hw;
++	void __iomem *base;
++	u16 offset;
++	u8 shift;
++	u8 width;
++	u8 flags;
++	const struct clk_div_table *table;
++	spinlock_t *lock;  /* divider lock */
++};
++
+ #define to_clk_wzrd(_nb) container_of(_nb, struct clk_wzrd, nb)
+ 
+ /* maximum frequencies for input/output clocks per speed grade */
+@@ -73,6 +111,164 @@ static const unsigned long clk_wzrd_max_freq[] = {
+ 	1066000000UL
+ };
+ 
++/* spin lock variable for clk_wzrd */
++static DEFINE_SPINLOCK(clkwzrd_lock);
++
++static unsigned long clk_wzrd_recalc_rate(struct clk_hw *hw,
++					  unsigned long parent_rate)
++{
++	struct clk_wzrd_divider *divider = to_clk_wzrd_divider(hw);
++	void __iomem *div_addr =
++			(void __iomem *)((u64)divider->base + divider->offset);
++	unsigned int val;
++
++	val = readl(div_addr) >> divider->shift;
++	val &= div_mask(divider->width);
++
++	return divider_recalc_rate(hw, parent_rate, val, divider->table,
++			divider->flags);
++}
++
++static int clk_wzrd_dynamic_reconfig(struct clk_hw *hw, unsigned long rate,
++				     unsigned long parent_rate)
++{
++	int err = 0;
++	u16 retries;
++	u32 value;
++	unsigned long flags = 0;
++	struct clk_wzrd_divider *divider = to_clk_wzrd_divider(hw);
++	void __iomem *div_addr =
++			(void __iomem *)((u64)divider->base + divider->offset);
++
++	if (divider->lock)
++		spin_lock_irqsave(divider->lock, flags);
++	else
++		__acquire(divider->lock);
++
++	value = DIV_ROUND_CLOSEST(parent_rate, rate);
++
++	/* Cap the value to max */
++	if (value > WZRD_DR_MAX_INT_DIV_VALUE)
++		value = WZRD_DR_MAX_INT_DIV_VALUE;
++
++	/* Set divisor and clear phase offset */
++	writel(value, div_addr);
++	writel(0x00, div_addr + WZRD_DR_DIV_TO_PHASE_OFFSET);
++
++	/* Check status register */
++	retries = WZRD_DR_NUM_RETRIES;
++	while (retries--) {
++		if (readl(divider->base + WZRD_DR_STATUS_REG_OFFSET) &
++							WZRD_DR_LOCK_BIT_MASK)
++			break;
++	}
++
++	if (retries == 0) {
++		err = -ETIMEDOUT;
++		goto err_reconfig;
++	}
++
++	/* Initiate reconfiguration */
++	writel(WZRD_DR_BEGIN_DYNA_RECONF,
++	       divider->base + WZRD_DR_INIT_REG_OFFSET);
++
++	/* Check status register */
++	retries = WZRD_DR_NUM_RETRIES;
++	while (retries--) {
++		if (readl(divider->base + WZRD_DR_STATUS_REG_OFFSET) &
++							WZRD_DR_LOCK_BIT_MASK)
++			break;
++	}
++
++	if (retries == 0)
++		err = -ETIMEDOUT;
++
++err_reconfig:
++	if (divider->lock)
++		spin_unlock_irqrestore(divider->lock, flags);
++	else
++		__release(divider->lock);
++
++	return err;
++}
++
++static long clk_wzrd_round_rate(struct clk_hw *hw, unsigned long rate,
++				unsigned long *prate)
++{
++	u8 div;
++
++	/*
++	 * since we donot change parent rate we just round rate to closest
++	 * achievable
++	 */
++	div = DIV_ROUND_CLOSEST(*prate, rate);
++
++	return (*prate / div);
++}
++
++static const struct clk_ops clk_wzrd_clk_divider_ops = {
++	.round_rate = clk_wzrd_round_rate,
++	.set_rate = clk_wzrd_dynamic_reconfig,
++	.recalc_rate = clk_wzrd_recalc_rate,
++};
++
++static struct clk *clk_wzrd_register_divider(struct device *dev,
++					     const char *name,
++					     const char *parent_name,
++					     unsigned long flags,
++					     void __iomem *base, u16 offset,
++					     u8 shift, u8 width,
++					     u8 clk_divider_flags,
++					     const struct clk_div_table *table,
++					     spinlock_t *lock)
++{
++	struct clk_wzrd_divider *div;
++	struct clk_hw *hw;
++	struct clk_init_data init;
++	int ret;
++
++	if (clk_divider_flags & CLK_DIVIDER_HIWORD_MASK) {
++		if (width + shift > 16) {
++			pr_warn("divider value exceeds LOWORD field\n");
++			return ERR_PTR(-EINVAL);
++		}
++	}
++
++	/* allocate the divider */
++	div = kzalloc(sizeof(*div), GFP_KERNEL);
++	if (!div)
++		return ERR_PTR(-ENOMEM);
++
++	init.name = name;
++	if (clk_divider_flags & CLK_DIVIDER_READ_ONLY)
++		init.ops = &clk_divider_ro_ops;
++	else
++		init.ops = &clk_wzrd_clk_divider_ops;
++	init.flags = flags | CLK_IS_BASIC;
++	init.parent_names = (parent_name ? &parent_name : NULL);
++	init.num_parents = (parent_name ? 1 : 0);
++
++	/* struct clk_divider assignments */
++	div->base = base;
++	div->offset = offset;
++	div->shift = shift;
++	div->width = width;
++	div->flags = clk_divider_flags;
++	div->lock = lock;
++	div->hw.init = &init;
++	div->table = table;
++
++	/* register the clock */
++	hw = &div->hw;
++	ret = clk_hw_register(dev, hw);
++	if (ret) {
++		kfree(div);
++		hw = ERR_PTR(ret);
++	}
++
++	return hw->clk;
++}
++
+ static int clk_wzrd_clk_notifier(struct notifier_block *nb, unsigned long event,
+ 				 void *data)
+ {
+@@ -225,7 +421,8 @@ static int clk_wzrd_probe(struct platform_device *pdev)
+ 	clk_wzrd->clks_internal[wzrd_clk_mul_div] = clk_register_fixed_factor
+ 			(&pdev->dev, clk_name,
+ 			 __clk_get_name(clk_wzrd->clks_internal[wzrd_clk_mul]),
+-			 0, 1, reg);
++			flags, ctrl_reg, 0, 8, CLK_DIVIDER_ONE_BASED |
++			CLK_DIVIDER_ALLOW_ZERO, &clkwzrd_lock);
+ 	if (IS_ERR(clk_wzrd->clks_internal[wzrd_clk_mul_div])) {
+ 		dev_err(&pdev->dev, "unable to register divider clock\n");
+ 		ret = PTR_ERR(clk_wzrd->clks_internal[wzrd_clk_mul_div]);
+@@ -243,11 +440,14 @@ static int clk_wzrd_probe(struct platform_device *pdev)
+ 			ret = -EINVAL;
+ 			goto err_rm_int_clks;
+ 		}
+-		reg = readl(clk_wzrd->base + WZRD_CLK_CFG_REG(2) + i * 12);
+-		reg &= WZRD_CLKOUT_DIVIDE_MASK;
+-		reg >>= WZRD_CLKOUT_DIVIDE_SHIFT;
+-		clk_wzrd->clkout[i] = clk_register_fixed_factor
+-			(&pdev->dev, clkout_name, clk_name, 0, 1, reg);
++		clk_wzrd->clkout[i] = clk_wzrd_register_divider(&pdev->dev,
++								clkout_name,
++				clk_name, 0,
++				clk_wzrd->base, (WZRD_CLK_CFG_REG(2) + i * 12),
++				WZRD_CLKOUT_DIVIDE_SHIFT,
++				WZRD_CLKOUT_DIVIDE_WIDTH,
++				CLK_DIVIDER_ONE_BASED | CLK_DIVIDER_ALLOW_ZERO,
++				NULL, &clkwzrd_lock);
+ 		if (IS_ERR(clk_wzrd->clkout[i])) {
+ 			int j;
+ 
 -- 
 2.1.1
 
