@@ -2,137 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC8620B36D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 16:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A430320B373
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 16:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729131AbgFZOT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 10:19:56 -0400
-Received: from o1.b.az.sendgrid.net ([208.117.55.133]:1079 "EHLO
-        o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728489AbgFZOTz (ORCPT
+        id S1729171AbgFZOU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 10:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728489AbgFZOU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 10:19:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
-        h=subject:references:from:mime-version:in-reply-to:to:cc:content-type:
-        content-transfer-encoding;
-        s=001; bh=FEGBRfIR1s0iOSC2ksl+oI8rZYqeM0zR23Uk0jXoKPc=;
-        b=jvWP7omtX/XrEkbtoiUz8aVRP7W6fn2S5YZgNCGD1+yYGeGNnWtDNA3Z/c8OtxpI9Sq2
-        IkSwSqRj6OMw8PeYGYci25iHhPU0N0BmjB1f96fw1MgFsmFJtwckyFNJBYvQ1JCJsgSubt
-        DeZkN7J3QfX6dZ7ZJ8N49vxrQJKC4/FYI=
-Received: by filterdrecv-p3las1-7754f7d4cc-h4ckv with SMTP id filterdrecv-p3las1-7754f7d4cc-h4ckv-20-5EF60409-55
-        2020-06-26 14:19:53.796366727 +0000 UTC m=+72377.440658206
-Received: from [10.13.72.114] (unknown)
-        by ismtpd0007p1lon1.sendgrid.net (SG) with ESMTP
-        id zPf15BMQRF-Lidn4m7Cubg
-        Fri, 26 Jun 2020 14:19:53.332 +0000 (UTC)
-Subject: Re: [PATCH 1/2] drm: drm_fourcc: add NV20 YUV
- =?UTF-8?B?Zm9ybWF044CQ6K+35rOo5oSP77yM6YKu5Lu255SxbGludXgtcm9ja2NoaXAtYm91bmNlcytzYQ==?=
- =?us-ascii?Q?ndy=2Ehuang=3Drock-chips=2Ecom=40lists=2Einfradea?=
- =?UTF-8?B?ZC5vcmfku6Plj5HjgJE=?=
-References: <20200607202521.18438-1-jonas@kwiboo.se>
- <20200607202521.18438-2-jonas@kwiboo.se>
- <d503eed1-571f-3e37-858b-b5de04cb79f7@rock-chips.com>
-From:   Jonas Karlman <jonas@kwiboo.se>
-Message-ID: <f5c46547-3278-2226-e194-929fbfa95864@kwiboo.se>
-Date:   Fri, 26 Jun 2020 14:19:53 +0000 (UTC)
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Fri, 26 Jun 2020 10:20:27 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076FAC03E979;
+        Fri, 26 Jun 2020 07:20:27 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d1400a54547ceb629f080.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1400:a545:47ce:b629:f080])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 20E321EC030F;
+        Fri, 26 Jun 2020 16:20:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1593181225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=vmj+04bFDkf6c7vKbF08257n3LmOF6+ZWPH64rT2gqg=;
+        b=g2x5K1KZhGeWx7TL+fAXs7iOxbPve1ne4R+9ZE+/tGPuLXt8GcdjlvOzd35VHUkgXxmV3G
+        VhWibE2jR939faBICh3YbLwz1LDw4yITMw7pz4Wzk71PniuZD9kiUwvhkIeGuk2UEMJ6WF
+        WzVVwQ+U8dKbm9NOZ8VlXHHP3rqlO/0=
+Date:   Fri, 26 Jun 2020 16:20:19 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v33 11/21] x86/sgx: Linux Enclave Driver
+Message-ID: <20200626142019.GD27151@zn.tnic>
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+ <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
+ <20200626091419.GB27151@zn.tnic>
+ <20200626141627.GA6583@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <d503eed1-571f-3e37-858b-b5de04cb79f7@rock-chips.com>
-X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0hy6P=2FSOgwow3R0Z8y?=
- =?us-ascii?Q?W1KoHyhm09b7AooB6A2o7db6A8+5y6zT2UI+303?=
- =?us-ascii?Q?MS9NESYX+3Km3PkmWA=2FsT9auOwL7KKEVMpd=2Fdez?=
- =?us-ascii?Q?aC3EZOaq2lSpjg41F=2FbXYR7VxcxjWEnrdlePDgi?=
- =?us-ascii?Q?HdT6YrlXCS7eSHQ5wOQOqkkDqeLi7TxvYuGawMv?=
- =?us-ascii?Q?+e5TVzZ0uVapU857oi+Tw=3D=3D?=
-To:     Huang Jiachai <hjc@rock-chips.com>,
-        Heiko =?iso-8859-1?q?St=FCbner?= <heiko@sntech.de>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        linux-rockchip@lists.infradead.org,
-        dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?b?6Zer5a2d5Yab?= <andy.yan@rock-chips.com>,
-        Brian Starkey <brian.starkey@arm.com>,
-        Ben Davis <ben.davis@arm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: sv
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <20200626141627.GA6583@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-17 14:07, Huang Jiachai wrote:
-> Hi Jonas Karlman,
-> 
->      Is there an another yuv 10bit format with 4:4:4 sub-simpling but 
-> has no padding?
-> 
->   Maybe we can call it DRM_FORMAT_NV30:
-> 
-> { .format = DRM_FORMAT_NV30,		.depth = 0,
->    .num_planes = 2, .char_per_block = { 5, 5, 0 },
->    .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 1,
->    .vsub = 1, .is_yuv = true },
-> 
-> this format can supported by rockchip rk3288/rk3399... platform, can you 
-> add this format at this series patches?
+On Fri, Jun 26, 2020 at 07:16:27AM -0700, Sean Christopherson wrote:
+> That being said, I agree that it would be safer to move sgx_calc_ssaframesize()
+> inside sgx_validate_secs() and only compute encl_size after the secs is
+> validated.
 
-I will send a v2 including this 4:4:4 format later this weekend.
+Yap, that would be the right thing to do.
 
-Is there any hw block on rk3288/rk3399 that can produce a buffer in such format?
-If I am not mistaken rkvdec only support 10-bit h264 in 4:2:0/4:2:2 and
-hevc 4:2:0 10-bit, those are the formats I have been able to test so far.
+-- 
+Regards/Gruss,
+    Boris.
 
-Regards,
-Jonas
-
-> 
-> 在 2020/6/8 4:25, Jonas Karlman 写道:
->> DRM_FORMAT_NV20 is a 2 plane format suitable for linear memory layout.
->> The format is similar to P210 with 4:2:2 sub-sampling but has no padding
->> between components. Instead, luminance and chrominance samples are grouped
->> into 4s so that each group is packed into an integer number of bytes:
->>
->> YYYY = UVUV = 4 * 10 bits = 40 bits = 5 bytes
->>
->> The '20' suffix refers to the optimum effective bits per pixel which is
->> achieved when the total number of luminance samples is a multiple of 4.
->>
->> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
->> ---
->>   drivers/gpu/drm/drm_fourcc.c  | 4 ++++
->>   include/uapi/drm/drm_fourcc.h | 1 +
->>   2 files changed, 5 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
->> index 722c7ebe4e88..2a9c8ae719ed 100644
->> --- a/drivers/gpu/drm/drm_fourcc.c
->> +++ b/drivers/gpu/drm/drm_fourcc.c
->> @@ -278,6 +278,10 @@ const struct drm_format_info *__drm_format_info(u32 format)
->>   		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
->>   		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
->>   		  .vsub = 2, .is_yuv = true },
->> +		{ .format = DRM_FORMAT_NV20,		.depth = 0,
->> +		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
->> +		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
->> +		  .vsub = 1, .is_yuv = true },
->>   		{ .format = DRM_FORMAT_Q410,		.depth = 0,
->>   		  .num_planes = 3, .char_per_block = { 2, 2, 2 },
->>   		  .block_w = { 1, 1, 1 }, .block_h = { 1, 1, 1 }, .hsub = 0,
->> diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
->> index b5bf1c0e630e..244d32433a67 100644
->> --- a/include/uapi/drm/drm_fourcc.h
->> +++ b/include/uapi/drm/drm_fourcc.h
->> @@ -242,6 +242,7 @@ extern "C" {
->>    * index 1 = Cr:Cb plane, [39:0] Cr1:Cb1:Cr0:Cb0 little endian
->>    */
->>   #define DRM_FORMAT_NV15		fourcc_code('N', 'V', '1', '5') /* 2x2 subsampled Cr:Cb plane */
->> +#define DRM_FORMAT_NV20		fourcc_code('N', 'V', '2', '0') /* 2x1 subsampled Cr:Cb plane */
->>   
->>   /*
->>    * 2 plane YCbCr MSB aligned
-> 
+https://people.kernel.org/tglx/notes-about-netiquette
