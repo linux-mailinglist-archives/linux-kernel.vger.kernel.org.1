@@ -2,124 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14B320AD6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7CC20AD73
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728847AbgFZHm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 03:42:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37114 "EHLO
+        id S1728871AbgFZHni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 03:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728809AbgFZHm5 (ORCPT
+        with ESMTP id S1728341AbgFZHnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 03:42:57 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E33C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 00:42:57 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id b7so4331383pju.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 00:42:57 -0700 (PDT)
+        Fri, 26 Jun 2020 03:43:37 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90BC6C08C5C1;
+        Fri, 26 Jun 2020 00:43:37 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id l12so8384995ejn.10;
+        Fri, 26 Jun 2020 00:43:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=OJIUC4k1mJAJPg8NhZJ50NxPEO+zBVx140Q/CxvWNvw=;
-        b=JuHGdSRcBQGE3Lde78F313PsAZcPMsnhx/4TiHSLZEfd0kKmZO8VUORbl2ywLlLNYP
-         SybuYbIXipyAqOoCEFVzfX+cyu1u//qdxZmUFkk1BZIbhZiDVvkT+r3ys2yo80bHbGon
-         SsdxDCae+9fy02JYCpW6exl43BLdPHw76Jn1k=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3yJ82f9BPEQUN7JLYmeqgANkQ0MjK9DvwvjuJ/fNfPo=;
+        b=Nn06aiq83iYmWi0EkxFhcC3cdp2tRFj4IjGqSjmF/POte6PFnDxFYoVA+u/jzpBNq3
+         UD23kLfqwMAICTvv4tZojnM2RyCqLIrKbqLwacwTFLlKUo5sBPvRfvg3Lhho5o/IM+cE
+         YDtGs6gE0vEkPPfnscsF6KcmZVlgbLy6E7kb7fM/4ll7pJEOo4bhdBISPSWBXM2ywmSl
+         j1UHerRv65FPRKqE1I8PaTCl8ZZd7I1G5LVXMom3o4cY0YQzPlhQJd1N71mZsDg20Bdj
+         NDu/ucYreZCIlqr2oBj1cOL1DElEgYbmAmvDsTGe1tBEDc+1omKF3nKXWBkhkz9z1nvh
+         q1aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=OJIUC4k1mJAJPg8NhZJ50NxPEO+zBVx140Q/CxvWNvw=;
-        b=nRyYRDFDELi5ImQdQn0Mpd7lXcNYLizPjgBnmsX0vGmaKLN1ET6THM4ATbjN1avVMf
-         xubh6MpafhkMthvbyFHalu8H7jyk6DwTFORaFINF6CI0jXqwSqHE0MIx30SUkzqcdYkr
-         6gKhOUfPSnidpZIr6iRkgPt0fLmIft03aOL1FhAKVJG22/m9m3pV5MzqgJ6eOKGnhtQG
-         nQOJoA49A5GNLw1TeDnLFySmPrVPf5koCGNiduNiZpAdEWtw5W0Pjzk4SjLgewMaZtfT
-         oT9EDttuyYezXVABbTrToVjM1uFjhpINk8kUpo4S3aHCOM135nDx2SoaLJp4Qh6Vlpkk
-         q+Gg==
-X-Gm-Message-State: AOAM533uA40NTB0YAkwHelpI0uEhwPmkwnNyv076r+umdhPFH3e6N9tD
-        lyOqS8b+eCtiD4Oewl0IcgnnHA==
-X-Google-Smtp-Source: ABdhPJxJiBdKBJCg9hkKXPvaAZ1SMFSV7dxt8ZkrJwCH6KsPe6VyOeT252b+sGAmU5335uuNU45W2w==
-X-Received: by 2002:a17:90a:1546:: with SMTP id y6mr2153667pja.92.1593157376534;
-        Fri, 26 Jun 2020 00:42:56 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id jz23sm10479542pjb.2.2020.06.26.00.42.55
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3yJ82f9BPEQUN7JLYmeqgANkQ0MjK9DvwvjuJ/fNfPo=;
+        b=RfuNE0mti/RWVEkJaVhyIqdqNlTLXivkqUw2ljgLu8EVtuMKPxEwMzDsMbOsr6QIYY
+         R2hVcMZdcm3i02XwHjRQR5Dfw4QtgKD2VmtSZOlGNhluce3tJhdjbtyxUuC4SDCOEcfv
+         wRgHNVXtxPaxdqN2ADrTeSPr02aDSWLw1ksoIZkAhnJzBzocHBqAVMV5O8phA+VHaTkD
+         2Oy85j9TQm+d8G4Vq3GtOjgJGwokzN6vp+QSwR+1oJhBtEufdhdfm9O0EW4OtGiDWYOc
+         V6FYpftPI9cNK7QI/fs/TIUSy9IGG/TKs5OMc6LRU28DAbgQXE9rUXtpnMzyQvEXPpOY
+         jSMQ==
+X-Gm-Message-State: AOAM530YbuFOikeai+/ZLZntQ6sIrxSL6EVE1EbkeG2QO1Z5uPbXYtHF
+        m0iYCg4jSGuM62pgfrZYMrc=
+X-Google-Smtp-Source: ABdhPJyMuYQbZiFGkRDmBWgsi5klIv7Zbl33i2Thb5I4DzbIWId5Oe4mx8pFBA08+4iCtQfnQi044g==
+X-Received: by 2002:a17:906:4f13:: with SMTP id t19mr1373989eju.269.1593157416369;
+        Fri, 26 Jun 2020 00:43:36 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id g25sm20051925edq.34.2020.06.26.00.43.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 00:42:56 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 26 Jun 2020 00:43:34 -0700 (PDT)
+Date:   Fri, 26 Jun 2020 09:43:33 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        linux-tegra@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] media: staging: tegra-vde: Turn ON power domain
+ on shutdown
+Message-ID: <20200626074333.GB3109062@ulmo>
+References: <20200624150847.22672-1-digetx@gmail.com>
+ <20200624150847.22672-4-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200625001039.56174-4-john.stultz@linaro.org>
-References: <20200625001039.56174-1-john.stultz@linaro.org> <20200625001039.56174-4-john.stultz@linaro.org>
-Subject: Re: [PATCH v2 3/5] irqchip: Allow QCOM_PDC to be loadable as a permanent module
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-gpio@vger.kernel.org
-To:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Date:   Fri, 26 Jun 2020 00:42:55 -0700
-Message-ID: <159315737502.62212.16093934831673347066@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="+pHx0qQiF2pBVqBT"
+Content-Disposition: inline
+In-Reply-To: <20200624150847.22672-4-digetx@gmail.com>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting John Stultz (2020-06-24 17:10:37)
-> diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
-> index 6ae9e1f0819d..3fee8b655da1 100644
-> --- a/drivers/irqchip/qcom-pdc.c
-> +++ b/drivers/irqchip/qcom-pdc.c
-> @@ -430,4 +432,33 @@ static int qcom_pdc_init(struct device_node *node, s=
-truct device_node *parent)
->         return ret;
->  }
-> =20
-> +#ifdef MODULE
-> +static int qcom_pdc_probe(struct platform_device *pdev)
-> +{
-> +       struct device_node *np =3D pdev->dev.of_node;
-> +       struct device_node *parent =3D of_irq_find_parent(np);
-> +
-> +       return qcom_pdc_init(np, parent);
-> +}
-> +
-> +static const struct of_device_id qcom_pdc_match_table[] =3D {
-> +       { .compatible =3D "qcom,pdc" },
-> +       {}
-> +};
-> +MODULE_DEVICE_TABLE(of, qcom_pdc_match_table);
-> +
-> +static struct platform_driver qcom_pdc_driver =3D {
-> +       .probe =3D qcom_pdc_probe,
-> +       .driver =3D {
-> +               .name =3D "qcom-pdc",
-> +               .of_match_table =3D qcom_pdc_match_table,
-> +               .suppress_bind_attrs =3D true,
-> +       },
-> +};
-> +module_platform_driver(qcom_pdc_driver);
-> +#else
->  IRQCHIP_DECLARE(qcom_pdc, "qcom,pdc", qcom_pdc_init);
 
-Is there any reason to use IRQCHIP_DECLARE if this can work as a
-platform device driver?
+--+pHx0qQiF2pBVqBT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +#endif
-> +
-> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. Power Domain Controller"=
-);
-> +MODULE_LICENSE("GPL v2");
+On Wed, Jun 24, 2020 at 06:08:46PM +0300, Dmitry Osipenko wrote:
+> On some devices bootloader isn't ready to a clamped VDE power, and thus,
+> machine hangs on a warm reboot (CPU reset). The VDE power partition is
+> turned ON by default on a cold boot, hence VDE driver should keep power
+> partition enabled on system's reboot too. This fixes hang on a warm reboot
+> on a Tegra20 Acer A500 device, which is handy if Embedded Controller
+> driver is unavailable, i.e. cold reboot can't be performed.
+>=20
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/staging/media/tegra-vde/vde.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+
+Unfortunate that we have to do this, but looks fine:
+
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+--+pHx0qQiF2pBVqBT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl71pyUACgkQ3SOs138+
+s6F5dw/8CW7nKPapQO4CpytXDxMMoCTTtQyWgDFYQ/xU3ylzovRIiKhI+LeVqVTn
+Rdi4QA5q5nZPPASa5H9gKccbKel0rgoZFmRt0Lfsz49e/vM7VsoN0+STNG0/cLP8
+cn2+ZKSNi1Pdp+kjoHdet3Lep5X3u3wRWlYP18r6D2zRC40WQnV9xzREOwoLZbi2
+6MqN1AgbJoLJuKjSFLTqWmegx+J0UtpNhU7SMzPT4BzyGSbssdsu4dkBzDsknq9X
+tXGCHE5yYwNZ8L4qqZJHs5Z9B5Xgt4S8hoV3fLHBPHiULPsPbqRrCu/Olto1z2br
+wNfzo3idaet4Rpt1LeaIQf4XFikpOyJzFAmWk05rrcdOV98lGDS/wYiffwl0VF9C
+FaYtJpoQBKLWAlAGtDyYOUCdpRsRnTYr2D8fQU5li5E+NixhF0MmIAkKmBty8w9l
+3sO3na4DMbOmVv6TyT41jpWyYQBgENBeQm1CyxifcgdvTcnuXlW3LAShO3BlVuRi
+pEOKovKDd0o/BDnjrcJCBuXebZjFs9tdJMNFnvWcGFcgmW48Q1NNrn+8uJhCEjej
+8dX50tDvBKvGgD7rhQ5XhV/UxSU9pi5WjHBWzWuPoQo3M0prZzktl6aLRZCMT6Wo
+NIxCf/cuXOtvwQrGeVse3gFZijVOJdNs0OdVbIsCCAEmOthIDl0=
+=jvXi
+-----END PGP SIGNATURE-----
+
+--+pHx0qQiF2pBVqBT--
