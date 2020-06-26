@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36BBF20BBE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35E520BBE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725780AbgFZVwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 17:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55400 "EHLO
+        id S1726002AbgFZVwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 17:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgFZVwE (ORCPT
+        with ESMTP id S1725824AbgFZVwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 17:52:04 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F63BC03E97B
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:52:03 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id g14so3498826ual.11
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:52:03 -0700 (PDT)
+        Fri, 26 Jun 2020 17:52:44 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A04C03E979
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:52:44 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id x62so8634631qtd.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:52:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=riZ5KZW8CnykJm5xJns3L+VFLhknSVFyzPeTPn61H9E=;
-        b=c4KyRcxKQ8HHOw9yC6I3ScWIYuHciIrlf0+XT0VzOXz6siBITRjttc97VYU4pGtrcW
-         QpZj0LQbq2BKoMXRc5i/2YcGBxHA9sydrxQMLbqm6/eU15jtxLRkteDj9x6Bi1nlvOrK
-         YApd5NYLX10WeZu/BvqXLcywGJnEOZovFjXMQ=
+        bh=unTEhFHTPIbe69CpCLwt1ix5Kgyr/d1f6HtKXpl1zVQ=;
+        b=bNJ3J2626dcj69quM6yIyJ6MDt61F5nRnomPfXI/9wvRiEcIh5VGqtrUwOfPHmh39Q
+         wm59l3bU1u+8zjjCjnZ+tyhqA/gzflvF0Hp73htdfyq7i02qplu2MRwWENZJ9i5r1AQy
+         ttj9Pe+eDkjFUa+AxZ4WwkVaN/bHsJo6fFmx0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=riZ5KZW8CnykJm5xJns3L+VFLhknSVFyzPeTPn61H9E=;
-        b=ne0Xi4y8lyA3m988VUw9ai1YCUfrkYW7iMXQ1FBHykraKZbwCVLweAaFjVYfF5/X5h
-         P2/xM/Sg8OBy5fQDRf4iZha/SrPu0YmVnT8agOWlPZ/7P3ZyIi/N/7PeUx9zrPp8ssi2
-         A/vIrblESjFoY9yeAuG8yGpE2dqM1OSJjTtYesosfE5izgKwQLqKf1PSBM9hmgsCCSHg
-         Few2A4xasN0EC28KunJSJqv4AyIdvX0lP3km+SXE912yn8VmzB8nR05eaLzRlxUX7zRo
-         Z7jligStvPu6Jntf7rpMUuOvbPmuvjZPu9A/BnrkY6Ultx9qqcQEafgULJsztoMJ2nyo
-         hVtA==
-X-Gm-Message-State: AOAM532wQj+cJFhVre91PQoU2uZV3VvTxNKufwNWYKyGxS9WKg8aHPiF
-        AqQeKsxSL9gMHTL+ohKsC+/Y8u81EU4=
-X-Google-Smtp-Source: ABdhPJwnPEpaUoGwsw5Z03L6vgRhMnscc6JMP4LNkQ4aoDFox9ICLPNyGrcsxEEBwaMQHRHnA8+Xsg==
-X-Received: by 2002:ab0:614a:: with SMTP id w10mr4072412uan.35.1593208322126;
-        Fri, 26 Jun 2020 14:52:02 -0700 (PDT)
-Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com. [209.85.221.174])
-        by smtp.gmail.com with ESMTPSA id o73sm4349511vke.5.2020.06.26.14.52.00
+        bh=unTEhFHTPIbe69CpCLwt1ix5Kgyr/d1f6HtKXpl1zVQ=;
+        b=CwRVVD+jrlTOZixIsoWJux9tW+RlZFDl+ylmbsXRUbt5Dd+TCCJrbdqcMv5pG3pGqJ
+         yUi3D98nZ9+yD4DbBVj7uielLBPUXuRKsdx+tM7g+VvPzfjUdKZ1HdLTT/FZ02/Gqxed
+         Fwky4EKo6TNPuGFJ/IBHZ9rKSCmmb3pcqlWnynR0hjiLXnmyvXcGB+mnnCFcM8wFq3GU
+         uu3TgUoKPImYTDkR6DZK0wwHT/eK5yAaLewnzrhZXUVmGZJbF/tNr5ne1hw93zhlgnFq
+         4GaTDfoUU0UsDsJ1OotIoow2eiZT6Xz4rEL8gmMXXLowVunamsjDz0qLc/v3PCkve/9Q
+         ERwg==
+X-Gm-Message-State: AOAM5310zol+1M/zKPyUGGIXqcsvioglXogH12ggtlMbu26RjSa/vz9g
+        myGSt53s3Xny2a7z4S3FCpM6WOKqmDc=
+X-Google-Smtp-Source: ABdhPJzm2a05RamXN0bugHImbObHv4RG5DrOtHctxrHQxgSZrgdPUeH/oKwBm7RIT7SaDI9eBLaMxQ==
+X-Received: by 2002:ac8:408c:: with SMTP id p12mr4862739qtl.332.1593208363258;
+        Fri, 26 Jun 2020 14:52:43 -0700 (PDT)
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com. [209.85.219.50])
+        by smtp.gmail.com with ESMTPSA id i10sm11564152qkn.126.2020.06.26.14.52.42
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jun 2020 14:52:01 -0700 (PDT)
-Received: by mail-vk1-f174.google.com with SMTP id d64so2538671vke.4
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:52:00 -0700 (PDT)
-X-Received: by 2002:a1f:eec1:: with SMTP id m184mr3812706vkh.34.1593208320514;
- Fri, 26 Jun 2020 14:52:00 -0700 (PDT)
+        Fri, 26 Jun 2020 14:52:42 -0700 (PDT)
+Received: by mail-qv1-f50.google.com with SMTP id d12so5190761qvn.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:52:42 -0700 (PDT)
+X-Received: by 2002:a0c:c607:: with SMTP id v7mr5210062qvi.84.1593208361576;
+ Fri, 26 Jun 2020 14:52:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <1593194502-13164-1-git-send-email-pillair@codeaurora.org> <1593194502-13164-3-git-send-email-pillair@codeaurora.org>
-In-Reply-To: <1593194502-13164-3-git-send-email-pillair@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 26 Jun 2020 14:51:49 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=V1C2Lu31n8xQ8HPf21fNo_Da2SLtZAeStFBEou9+geEA@mail.gmail.com>
-Message-ID: <CAD=FV=V1C2Lu31n8xQ8HPf21fNo_Da2SLtZAeStFBEou9+geEA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ath10k: Add support for chain1 regulator supply voting
-To:     Rakesh Pillai <pillair@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     ath10k@lists.infradead.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
+References: <1593193967-29897-1-git-send-email-pillair@codeaurora.org>
+ <CAD=FV=V_ynwukeR92nbJXkuQ7OAW4mLaTjxko7fXt5aEfDUNhA@mail.gmail.com> <CAD=FV=XJDmGbEJQ1U-VDuN2p0+V+uRm_1=DwBnDPmPQsXqS4ZA@mail.gmail.com>
+In-Reply-To: <CAD=FV=XJDmGbEJQ1U-VDuN2p0+V+uRm_1=DwBnDPmPQsXqS4ZA@mail.gmail.com>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Fri, 26 Jun 2020 14:52:30 -0700
+X-Gmail-Original-Message-ID: <CA+ASDXNOCFZhdNMDk9XTuC2H+owQ0+wHipDbkJAGnU9q7BXz_w@mail.gmail.com>
+Message-ID: <CA+ASDXNOCFZhdNMDk9XTuC2H+owQ0+wHipDbkJAGnU9q7BXz_w@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Add interrupt summary based CE processing
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Rakesh Pillai <pillair@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        ath10k <ath10k@lists.infradead.org>,
         linux-wireless <linux-wireless@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -71,34 +71,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Jun 26, 2020 at 2:49 PM Doug Anderson <dianders@chromium.org> wrote:
+> I should also note that, while I'm not terribly familiar with Kalle's
+> workflow, I would have expected to see him in the "To:" list.  I've
+> added him, but it's possible he'll need you to repost the patch with
+> him in the "To:" list.
 
-On Fri, Jun 26, 2020 at 11:02 AM Rakesh Pillai <pillair@codeaurora.org> wrote:
->
-> Add support to vote for chain-1 voltage regulator
-> in WCN3990.
->
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
->
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath10k/snoc.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-> index 645ed5f..407a074 100644
-> --- a/drivers/net/wireless/ath/ath10k/snoc.c
-> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-> @@ -45,6 +45,7 @@ static const char * const ath10k_regulators[] = {
->         "vdd-1.8-xo",
->         "vdd-1.3-rfa",
->         "vdd-3.3-ch0",
-> +       "vdd-3.3-ch1",
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#who_to_address
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Patchwork is his patch queue, so I don't think you need to address him directly.
 
-...with the slight nit that ${SUBJECT} and description should probably
-call it "chan1" and not "chain1".  Presumably the maintainer can fix
-when applying.
-
--Doug
+Brian
