@@ -2,91 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF9A20AA13
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 03:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB3720AA19
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 03:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726978AbgFZBGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 21:06:09 -0400
-Received: from mga05.intel.com ([192.55.52.43]:16108 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726252AbgFZBGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 21:06:07 -0400
-IronPort-SDR: 0Q0q3AHZ6qQoFR8dX8iIc4le0fORJy5OYbglYfgAwPgVT9s53L1A+QfHHxl4kKmASs8hXEZ6W3
- OYH0unDkrRJA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="229884387"
-X-IronPort-AV: E=Sophos;i="5.75,281,1589266800"; 
-   d="scan'208";a="229884387"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2020 18:06:05 -0700
-IronPort-SDR: eMKqNd7ps268Mv92AG3KCTkH6vtUFOk49SDyQWHAbB/uppL/oaiRtt2HIbyLiDwH/3dsDLMDpN
- 4EJi8PbqEPSA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,281,1589266800"; 
-   d="scan'208";a="311272783"
-Received: from lkp-server01.sh.intel.com (HELO 538b5e3c8319) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 25 Jun 2020 18:06:04 -0700
-Received: from kbuild by 538b5e3c8319 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jocoe-0001vU-9x; Fri, 26 Jun 2020 01:06:04 +0000
-Date:   Fri, 26 Jun 2020 09:05:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Antoine Tenart <antoine.tenart@bootlin.com>
-Cc:     kbuild-all@lists.01.org,
-        Quentin Schulz <quentin.schulz@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: phy: mscc: fix ptr_ret.cocci warnings
-Message-ID: <20200626010518.GA6037@890dc296aae1>
-References: <202006260959.QkSmCdSE%lkp@intel.com>
+        id S1727000AbgFZBNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 21:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726252AbgFZBNO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 21:13:14 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D16C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 18:13:12 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id y13so4241625lfe.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 18:13:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=awA+aJfmww2/ao85b7H7RA9mG8f4CnoPqX5UUEk/kak=;
+        b=hCTUZM6Ox/OvQ/JlyZz8Suae/jeQnSvAiK8yyi8MhvucZxipYA1+1KVp9Z4H28F5r/
+         oFI7lN/vhXdgyScwRCqTZTX5p9QjEcai4GEW009ru/kVfwEVvZby1d1/rbTsC4JvkgIG
+         AAUWxi2snR0VIT41gDC/cSVmrV1LvEpce5IzQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=awA+aJfmww2/ao85b7H7RA9mG8f4CnoPqX5UUEk/kak=;
+        b=H1XQ9O2CoeQP6/C+Pdz8Lrn+0OXt7RRmzQ9xyooOcJoihavj1DEyk3ico72xibUF7c
+         y76v9Nt+ijjj/EakW85+JHAUBQvzteHj4NkGM5sFESypXgUQftQlhY2EjDe/uJ2ToWiO
+         F/i5zelYPCHlNMYSgA1UzrnrNLfMEoBFnB6j4txWsH7jMcaTwwBD1N6TS43FjGEJeZaV
+         AwT71fNcJ8GWVPFOL8OMntlI/H8P3AE7Ge8dL1z9ZrNZ8cX+4kQfBaDBoJ+YkPJFafWg
+         OF71D0kxHrL8vFufYo2IOgei+GPRgWPR24E6uJjsz5xMXTOx/XJA8H7HezDaV28JAUYg
+         7B+A==
+X-Gm-Message-State: AOAM530McwV5D2Cg7dv2Rv0UnQQhX9caFfBqnDQYUCwQXGtoVm4yrIxp
+        PZDyYDMipmcpo78mO+4BAqowLEVw9Cgd/zvrlhC20w==
+X-Google-Smtp-Source: ABdhPJwZCTMBJV8xuYwi09a06rapO6vlykG3STqzwWAy7jky+t7DKQ1dMepMyJh5nLNleaSot9l2JcmKUk7gcBd9bAg=
+X-Received: by 2002:a05:6512:328d:: with SMTP id p13mr383775lfe.139.1593133990435;
+ Thu, 25 Jun 2020 18:13:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202006260959.QkSmCdSE%lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200612164632.25648-1-nsaenzjulienne@suse.de>
+ <20200612164632.25648-5-nsaenzjulienne@suse.de> <CAPnjgZ2jarQArKN=0h0mNnxE7gAL0juvGhMxMF4a0CehqxWcRw@mail.gmail.com>
+ <d3346d7cb9655eb111b4126d72a08499c6254fef.camel@suse.de> <CAPnjgZ3PwTWBQ2Vi4=Sc7JB699TrSxr=PAJupL_3POhJ00qSsA@mail.gmail.com>
+ <954083bf13bd7c24c31c9673269ea0eedb925f43.camel@suse.de>
+In-Reply-To: <954083bf13bd7c24c31c9673269ea0eedb925f43.camel@suse.de>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Thu, 25 Jun 2020 19:12:02 -0600
+Message-ID: <CAPnjgZ3CuidKZpTzBiH_F5WhEO3RzEcmHGMyJN9ynu2eOirkUQ@mail.gmail.com>
+Subject: Re: [PATCH v4 4/5] dm: pci: Assign controller device node to root bridge
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Matthias Brugger <mbrugger@suse.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Bin Meng <bmeng.cn@gmail.com>, Marek Vasut <marex@denx.de>,
+        lk <linux-kernel@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+Hi Nicolas,
 
-drivers/net/phy/mscc/mscc_ptp.c:1496:1-3: WARNING: PTR_ERR_OR_ZERO can be used
+On Wed, 17 Jun 2020 at 13:15, Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> On Tue, 2020-06-16 at 17:31 -0600, Simon Glass wrote:
+> > Hi Nicolas,
+> >
+> > On Tue, 16 Jun 2020 at 08:09, Nicolas Saenz Julienne
+> > <nsaenzjulienne@suse.de> wrote:
+> > > On Tue, 2020-06-16 at 07:43 -0600, Simon Glass wrote:
+> > > > Hi Nicolas,
+> > > >
+> > > > On Fri, 12 Jun 2020 at 10:47, Nicolas Saenz Julienne
+> > > > <nsaenzjulienne@suse.de> wrote:
+> > > > > There is no distinction in DT between the PCI controller device and the
+> > > > > root bridge, whereas such distinction exists from dm's perspective. Make
+> > > > > sure the root bridge ofnode is assigned to the controller's platform
+> > > > > device node.
+> > > > >
+> > > > > This permits setups like this to work correctly:
+> > > > >
+> > > > >         pcie {
+> > > > >                 compatible = "...";
+> > > > >                 ...
+> > > > >                 dev {
+> > > > >                         reg = <0 0 0 0 0>;
+> > > > >                         ...
+> > > > >                 };
+> > > > >         };
+> > > > >
+> > > > > Without this the dev node is assigned to the root bridge and the
+> > > > > actual device search starts one level lower than expected.
+> > > > >
+> > > > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > > > > ---
+> > > > >  drivers/pci/pci-uclass.c | 15 ++++++++++++++-
+> > > > >  1 file changed, 14 insertions(+), 1 deletion(-)
+> > > >
+> > > > Can you update the tests to handle this case please?
+> > >
+> > > I'd be glad to, but I'm not familiar with the test FW in u-booy, coud give
+> > > me
+> > > some pointers on where/how to test this?
+> > >
+> >
+> > Yes it is at test/dm/pci.c and the device tree is test.dts
+> >
+> > 'make qcheck' to run all tests. To run one test, build for sandbox and
+> > then something like
+> >
+> > u-boot -T -c "ut dm pci_swapcase"
+> >
+> > for example.
+> >
+> > You can perhaps use an existing PCI controller in test.dts but feel
+> > free to add one more if you need it for your test. Make sure that you
+> > don't break other tests.
+>
+> Thanks for the info.
+>
+> Actually adding the tests made me doubleguess myself, and now I'm pretty sure
+> that what I shoudl've done in DT is the following:
+>
+>         &pcie0 {
+>                pci@0 {
+>                        #address-cells = <3>;
+>                        #size-cells = <2>;
+>                        ranges;
+>
+>                        reg = <0 0 0 0 0>;
+>
+>                        usb@1,0 {
+>                                reg = <0x10000 0 0 0 0>;
+>                                resets = <&reset RASPBERRYPI_FIRMWARE_RESET_ID_USB>;
+>                        };
+>                };
+>         };
+>
+>
+> (with "lspci -tv": [0000:00]---00.0-[01]----00.0  VIA Technologies, Inc. VL805 USB 3.0 Host Controller)
+>
+> With this the patch above isn't needed, which is great.
+>
+> I'll send this to upstream Linux just to get a confirmation this is correct,
+> although if you have any comments it'll be appreciated.
 
+Yes it looks OK to me. U-Boot allows PCI and USB devices to be
+represented in the device tree.
 
- Use PTR_ERR_OR_ZERO rather than if(IS_ERR(...)) + PTR_ERR
-
-Generated by: scripts/coccinelle/api/ptr_ret.cocci
-
-Fixes: 7d272e63e097 ("net: phy: mscc: timestamping and PHC support")
-CC: Antoine Tenart <antoine.tenart@bootlin.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-head:   3f9437c6234d95d96967f1b438a4fb71b6be254d
-commit: 7d272e63e0979d38a6256108adbe462d621c26c5 [3775/3988] net: phy: mscc: timestamping and PHC support
-
- mscc_ptp.c |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
---- a/drivers/net/phy/mscc/mscc_ptp.c
-+++ b/drivers/net/phy/mscc/mscc_ptp.c
-@@ -1493,10 +1493,7 @@ static int __vsc8584_init_ptp(struct phy
- 
- 	vsc8531->ptp->ptp_clock = ptp_clock_register(&vsc8531->ptp->caps,
- 						     &phydev->mdio.dev);
--	if (IS_ERR(vsc8531->ptp->ptp_clock))
--		return PTR_ERR(vsc8531->ptp->ptp_clock);
--
--	return 0;
-+	return PTR_ERR_OR_ZERO(vsc8531->ptp->ptp_clock);
- }
- 
- void vsc8584_config_ts_intr(struct phy_device *phydev)
+Regards,
+Simon
