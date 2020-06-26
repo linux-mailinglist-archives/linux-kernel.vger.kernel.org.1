@@ -2,104 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE64920B782
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9304720B788
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726532AbgFZRq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 13:46:59 -0400
-Received: from mga05.intel.com ([192.55.52.43]:36360 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725806AbgFZRq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 13:46:58 -0400
-IronPort-SDR: fjVVEEmjpsaycc64h2hBVENdASby/JvVgeeqLUQ6rdmerqu35+yveRNKS+HeyNpxavrzVBDI+S
- sGOspIFVQR/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9664"; a="230187434"
-X-IronPort-AV: E=Sophos;i="5.75,284,1589266800"; 
-   d="scan'208";a="230187434"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2020 10:46:57 -0700
-IronPort-SDR: dnPWY4aOQAmu8Y6pAJbPOH/Hk96PNW7P7QOcQa0yYdaa6APHNk53F15krq6a+lPzZyPMkZT+fG
- QTxKxYtipmfA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,284,1589266800"; 
-   d="scan'208";a="312385857"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by fmsmga002.fm.intel.com with ESMTP; 26 Jun 2020 10:46:57 -0700
-Date:   Fri, 26 Jun 2020 10:46:57 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH 1/2] KVM: X86: Move ignore_msrs handling upper the stack
-Message-ID: <20200626174657.GF6583@linux.intel.com>
-References: <20200622220442.21998-1-peterx@redhat.com>
- <20200622220442.21998-2-peterx@redhat.com>
- <20200625061544.GC2141@linux.intel.com>
- <1cebc562-89e9-3806-bb3c-771946fc64f3@redhat.com>
- <20200625162540.GC3437@linux.intel.com>
- <df859fb0-a665-a82a-0cf1-8db95179cb74@redhat.com>
- <20200626155657.GC6583@linux.intel.com>
- <20200626173750.GA175520@xz-x1>
+        id S1726824AbgFZRsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 13:48:06 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:57234 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726506AbgFZRsG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 13:48:06 -0400
+Received: by linux.microsoft.com (Postfix, from userid 1041)
+        id F13E520B4901; Fri, 26 Jun 2020 10:48:05 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F13E520B4901
+From:   Joseph Salisbury <joseph.salisbury@microsoft.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        sashal@kernel.org, wei.liu@kernel.org, mikelley@microsoft.com
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH] Drivers: hv: Change flag to write log level in panic msg to false
+Date:   Fri, 26 Jun 2020 10:48:05 -0700
+Message-Id: <1593193685-74615-1-git-send-email-joseph.salisbury@microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200626173750.GA175520@xz-x1>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Reply-To: joseph.salisbury@microsoft.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 01:37:50PM -0400, Peter Xu wrote:
-> On Fri, Jun 26, 2020 at 08:56:57AM -0700, Sean Christopherson wrote:
-> > Not really?  It's solving a problem that doesn't exist in the current code
-> > base (assuming TSC_CTRL is fixed), and IMO solving it in an ugly fashion.
-> > 
-> > I would much prefer that, _if_ we want to support blind KVM-internal MSR
-> > accesses, we end up with code like:
-> > 
-> > 	if (msr_info->kvm_internal) {
-> > 		return 1;
-> > 	} else if (!ignore_msrs) {
-> > 		vcpu_debug_ratelimited(vcpu, "unhandled wrmsr: 0x%x data 0x%llx\n",
-> > 			    msr, data);
-> > 		return 1;
-> > 	} else {
-> > 		if (report_ignored_msrs)
-> > 			vcpu_unimpl(vcpu,
-> > 				"ignored wrmsr: 0x%x data 0x%llx\n",
-> > 				msr, data);
-> > 		break;
-> > 	}
-> > 
-> > But I'm still not convinced that there is a legimiate scenario for setting
-> > kvm_internal=true.
-> 
-> Actually this really looks like my initial version when I was discussing this
-> with Paolo before this version, but Paolo suggested what I implemented last.  I
-> think I agree with Paolo that it's an improvement to have a way to get/set real
-> msr value so that we don't need to further think about effects being taken with
-> the two tricky msr knobs (report_ignored_msrs, ignore_msrs).  These knobs are
-> even trickier to me when they're hidden deep, because they are not easily
-> expected when seeing the name of the functions (e.g. __kvm_set_msr, rather than
-> __kvm_set_msr_retval_fixed).
+When the kernel panics, one page worth of kmsg data is written to an allocated
+page.  The Hypervisor is notified of the page address trough the MSR.  This
+panic information is collected on the host.  Since we are only collecting one
+page of data, the full panic message may not be collected.
 
-My argument is that it's a KVM bug if we ever encounter do the wrong thing
-based on a KVM-internal MSR access.  The proposed change would actually make
-it _harder_ to find the bug that prompted this patch, as the bogus
-__kvm_get_msr() in kvm_cpuid() would silently fail.
+Each line of the panic message is prefixed with the log level of that
+particular message in the form <N>, where N is the log level.   The typical
+4 Kbytes contains anywhere from 50 to 100 lines with that log level prefix.
 
-If anything, I would argue for something like:
+hv_dmsg_dump() makes a call to kmsg_dump_get_buffer().  The second argument in
+the call is a bool described as: ‘@syslog: include the “<4>” Prefixes’.
 
-	if (WARN_ON_ONCE(msr_info->kvm_internal)) {
-		return 1;
-	} else if (!ignore_msrs) {
-		...
-	} else {
-		...
-	}
+With this change, we will not write the log level to the allocated page.  This
+will provide additional room in the allocated page for more informative panic
+information.
 
-I.e. KVM-internal accesses should always pre-validate the existence of the
-MSR, if not the validity of the MSR from the guest's perspective.
+Requesting in stable kernels, since many kernels running in production are 
+stable releases.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Joseph Salisbury <joseph.salisbury@microsoft.com>
+---
+ drivers/hv/vmbus_drv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+index 9147ee9d5f7d..d69f4efa3719 100644
+--- a/drivers/hv/vmbus_drv.c
++++ b/drivers/hv/vmbus_drv.c
+@@ -1368,7 +1368,7 @@ static void hv_kmsg_dump(struct kmsg_dumper *dumper,
+ 	 * Write dump contents to the page. No need to synchronize; panic should
+ 	 * be single-threaded.
+ 	 */
+-	kmsg_dump_get_buffer(dumper, true, hv_panic_page, HV_HYP_PAGE_SIZE,
++	kmsg_dump_get_buffer(dumper, false, hv_panic_page, HV_HYP_PAGE_SIZE,
+ 			     &bytes_written);
+ 	if (bytes_written)
+ 		hyperv_report_panic_msg(panic_pa, bytes_written);
+-- 
+2.17.1
+
