@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6BF20B056
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 13:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB9D20B021
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 13:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728427AbgFZLUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 07:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
+        id S1728263AbgFZLBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 07:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728186AbgFZLUK (ORCPT
+        with ESMTP id S1728130AbgFZLBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 07:20:10 -0400
-X-Greylist: delayed 1794 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 26 Jun 2020 04:20:10 PDT
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971D9C08C5C1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 04:20:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ztn9cU3Hz2nUeJeffgVLOKOqTt8Y22EoCeHKPw3nA7M=; b=y2PbgC9AK/8gwjBOptepXhQ+Wt
-        flrfgX+VsuRaQIdQ/06ForJdZDN7TrzpavdW4gWv9E7wOZDOoFcoUT5iQX+aOG+ltkrF6EwGERbRn
-        G5MXUbPi2VvrBm1c1QozGt/WdMwnInTUmMhn2ysU2jdWaAbB1K2066nP6BnZPqjfkbjcJ19I+dQXm
-        ZpClBlaSEPOh3fb0ADmasgDkLfDpB32zK9XC9Esq/bdGYFcy4vvoNHfSojk04sr4cwVxXP0QiJ6X4
-        9mN8JKMF1Z1VYo+g5DQeef9RYbSNYqZmpkSw0eqg0U0siKsCpTL08hcmZiwh7jgXIaWV8yAyvLfgt
-        /sHYh5Xw==;
-Received: from dsl-hkibng22-54faab-65.dhcp.inet.fi ([84.250.171.65] helo=[192.168.1.10])
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <cyndis@kapsi.fi>)
-        id 1jolvx-00074N-NM; Fri, 26 Jun 2020 13:50:13 +0300
-Subject: Re: [PATCH] soc/tegra: Add Tegra Soc Version support
-To:     Sandipan Patra <spatra@nvidia.com>, treding@nvidia.com,
-        jonathanh@nvidia.com
-Cc:     bbasu@nvidia.com, kyarlagadda@nvidia.com,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1593167369-25901-1-git-send-email-spatra@nvidia.com>
-From:   Mikko Perttunen <cyndis@kapsi.fi>
-Message-ID: <64d65736-62c2-de17-5657-389475fff6e2@kapsi.fi>
-Date:   Fri, 26 Jun 2020 13:50:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 26 Jun 2020 07:01:14 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07385C08C5C1;
+        Fri, 26 Jun 2020 04:01:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yIua4md0cM89ux/q6VciAse47KIrRNpMAh8h5H0zSh8=; b=f9MSj6Q/rF3jSca9cRGwsnADUm
+        wJ/Uj46JkwvR6ptbyIwdQgYTUe+i/B619nkSKsjD2CLaHg+AnwlHtfHD+Kew2+6HY8EMYrHK0OAnr
+        0qf2QYmvEHXpQoXjFjdth90ycNbza0ZMEGwtH9Ve/MIX50o+9obpJwkHMCrxpcMRpbx8RdEjpFe1+
+        ivgJvC63B+/OlwoFG9mn1xWOEMeWN/gOQLy0HD6Xrb0OIJQvUaJ+L1JBlkdVqlJR9ng3y1rdgUOVc
+        B5xamG3XS8hpX/wQ50ybgTO8MOYXLSST5/hw5wmGGF2EbV7ydJYKu+db6uKsqhtOkXJjtORGSqD75
+        TJyk3dtg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jom6B-0004zJ-EE; Fri, 26 Jun 2020 11:00:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A6B9A301DFC;
+        Fri, 26 Jun 2020 13:00:46 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9A71829C4228A; Fri, 26 Jun 2020 13:00:46 +0200 (CEST)
+Date:   Fri, 26 Jun 2020 13:00:46 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org
+Subject: Re: [PATCH v2 bpf-next 1/4] perf: export get/put_chain_entry()
+Message-ID: <20200626110046.GB4817@hirez.programming.kicks-ass.net>
+References: <20200626001332.1554603-1-songliubraving@fb.com>
+ <20200626001332.1554603-2-songliubraving@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <1593167369-25901-1-git-send-email-spatra@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 84.250.171.65
-X-SA-Exim-Mail-From: cyndis@kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200626001332.1554603-2-songliubraving@fb.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/26/20 1:29 PM, Sandipan Patra wrote:
-> Add the chip IDs for NVIDIA Tegra186, Tegra194 and Tegra234
-> SoC family.
+On Thu, Jun 25, 2020 at 05:13:29PM -0700, Song Liu wrote:
+> This would be used by bpf stack mapo.
 
-families
+Would it make sense to sanitize the API a little before exposing it?
 
-> 
-> Signed-off-by: Sandipan Patra <spatra@nvidia.com>
-> ---
->   include/soc/tegra/fuse.h | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/soc/tegra/fuse.h b/include/soc/tegra/fuse.h
-> index 252ea20..4a5236b 100644
-> --- a/include/soc/tegra/fuse.h
-> +++ b/include/soc/tegra/fuse.h
-> @@ -1,6 +1,6 @@
->   /* SPDX-License-Identifier: GPL-2.0-only */
->   /*
-> - * Copyright (c) 2012, NVIDIA CORPORATION.  All rights reserved.
-> + * Copyright (c) 2012-2020, NVIDIA CORPORATION.  All rights reserved.
->    */
->   
->   #ifndef __SOC_TEGRA_FUSE_H__
-> @@ -12,6 +12,9 @@
->   #define TEGRA124	0x40
->   #define TEGRA132	0x13
->   #define TEGRA210	0x21
-> +#define TEGRA186	0x18
-> +#define TEGRA194	0x19
-> +#define TEGRA234	0x23
->   
->   #define TEGRA_FUSE_SKU_CALIB_0	0xf0
->   #define TEGRA30_FUSE_SATA_CALIB	0x124
-> 
-
-Also, can you make the commit message something like "soc/tegra: Add 
-defines for Tegra186+ chip IDs"?
-
-thanks,
-Mikko
+diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
+index 334d48b16c36..016894b0d2c2 100644
+--- a/kernel/events/callchain.c
++++ b/kernel/events/callchain.c
+@@ -159,8 +159,10 @@ static struct perf_callchain_entry *get_callchain_entry(int *rctx)
+ 		return NULL;
+ 
+ 	entries = rcu_dereference(callchain_cpus_entries);
+-	if (!entries)
++	if (!entries) {
++		put_recursion_context(this_cpu_ptr(callchain_recursion), rctx);
+ 		return NULL;
++	}
+ 
+ 	cpu = smp_processor_id();
+ 
+@@ -183,12 +185,9 @@ get_perf_callchain(struct pt_regs *regs, u32 init_nr, bool kernel, bool user,
+ 	int rctx;
+ 
+ 	entry = get_callchain_entry(&rctx);
+-	if (rctx == -1)
++	if (!entry || rctx == -1)
+ 		return NULL;
+ 
+-	if (!entry)
+-		goto exit_put;
+-
+ 	ctx.entry     = entry;
+ 	ctx.max_stack = max_stack;
+ 	ctx.nr	      = entry->nr = init_nr;
