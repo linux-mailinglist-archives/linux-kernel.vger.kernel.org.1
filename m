@@ -2,73 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43C3A20AB6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 06:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6A020AB6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 06:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbgFZEpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 00:45:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgFZEpy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 00:45:54 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5225AC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 21:45:54 -0700 (PDT)
+        id S1727004AbgFZEp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 00:45:59 -0400
+Received: from ozlabs.org ([203.11.71.1]:43233 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725306AbgFZEp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 00:45:56 -0400
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 49tPTX1xB3z9sT6; Fri, 26 Jun 2020 14:45:51 +1000 (AEST)
+        id 49tPTZ5hYkz9sT8; Fri, 26 Jun 2020 14:45:53 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     benh@kernel.crashing.org, paulus@samba.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        christophe.leroy@c-s.fr, mpe@ellerman.id.au
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20200611224220.25066-1-chris.packham@alliedtelesis.co.nz>
-References: <20200611224220.25066-1-chris.packham@alliedtelesis.co.nz>
-Subject: Re: [PATCH v3 0/2] powerpc: CMDLINE config cleanup
-Message-Id: <159314672616.1150869.14723126983856405829.b4-ty@ellerman.id.au>
-Date:   Fri, 26 Jun 2020 14:45:51 +1000 (AEST)
+To:     Paul Mackerras <paulus@samba.org>, Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <9f2df6621fcaf9eba15fadc61c169d0c8e2fb849.1592481938.git.christophe.leroy@csgroup.eu>
+References: <9f2df6621fcaf9eba15fadc61c169d0c8e2fb849.1592481938.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/8xx: Modify ptep_get()
+Message-Id: <159314672826.1150869.11989654987721504305.b4-ty@ellerman.id.au>
+Date:   Fri, 26 Jun 2020 14:45:53 +1000 (AEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Jun 2020 10:42:18 +1200, Chris Packham wrote:
-> This series cleans up the config options related to the boot command line.
+On Thu, 18 Jun 2020 12:07:46 +0000 (UTC), Christophe Leroy wrote:
+> Move ptep_get() close to pte_update(), in an ifdef section already
+> dedicated to powerpc 8xx. This section contains explanation about
+> the layout of page table entries.
 > 
-> Chris Packham (2):
->   powerpc: Remove inaccessible CMDLINE default
->   powerpc: configs: remove CMDLINE_BOOL
-> 
->  arch/powerpc/Kconfig                           | 6 +-----
->  arch/powerpc/configs/44x/akebono_defconfig     | 2 --
->  arch/powerpc/configs/44x/arches_defconfig      | 2 --
->  arch/powerpc/configs/44x/bamboo_defconfig      | 2 --
->  arch/powerpc/configs/44x/bluestone_defconfig   | 2 --
->  arch/powerpc/configs/44x/canyonlands_defconfig | 2 --
->  arch/powerpc/configs/44x/currituck_defconfig   | 2 --
->  arch/powerpc/configs/44x/eiger_defconfig       | 2 --
->  arch/powerpc/configs/44x/fsp2_defconfig        | 1 -
->  arch/powerpc/configs/44x/icon_defconfig        | 2 --
->  arch/powerpc/configs/44x/iss476-smp_defconfig  | 1 -
->  arch/powerpc/configs/44x/katmai_defconfig      | 2 --
->  arch/powerpc/configs/44x/rainier_defconfig     | 2 --
->  arch/powerpc/configs/44x/redwood_defconfig     | 2 --
->  arch/powerpc/configs/44x/sam440ep_defconfig    | 2 --
->  arch/powerpc/configs/44x/sequoia_defconfig     | 2 --
->  arch/powerpc/configs/44x/taishan_defconfig     | 2 --
->  arch/powerpc/configs/44x/warp_defconfig        | 1 -
->  arch/powerpc/configs/holly_defconfig           | 1 -
->  arch/powerpc/configs/mvme5100_defconfig        | 3 +--
->  arch/powerpc/configs/ps3_defconfig             | 2 --
->  arch/powerpc/configs/skiroot_defconfig         | 1 -
->  arch/powerpc/configs/storcenter_defconfig      | 1 -
->  23 files changed, 2 insertions(+), 43 deletions(-)
+> Also modify it to return 4 times the pte value instead of padding
+> with zeroes.
 
 Applied to powerpc/next.
 
-[1/2] powerpc: Remove inaccessible CMDLINE default
-      https://git.kernel.org/powerpc/c/f134a7cef1d7de45fab028a945b7f34c615718e1
-[2/2] powerpc/configs: Remove CMDLINE_BOOL
-      https://git.kernel.org/powerpc/c/0488d32530ecff973c40f2592a6eab2907d0a5cc
+[1/1] powerpc/8xx: Modify ptep_get()
+      https://git.kernel.org/powerpc/c/105fb38124a490f38e9c1e23bb4c4a0b6ba12fdb
 
 cheers
