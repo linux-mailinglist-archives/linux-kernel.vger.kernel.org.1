@@ -2,343 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159EA20AD72
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC6F20AD6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728854AbgFZHna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 03:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728341AbgFZHn3 (ORCPT
+        id S1728786AbgFZHmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 03:42:05 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:36538 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726128AbgFZHmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 03:43:29 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACAA1C08C5DB
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 00:43:29 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id k6so3963606pll.9
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 00:43:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=y1yY4MQRIlexaM+ULNHIj5vWqC76TO5WRW3/WnGS5Uc=;
-        b=T41xv3G7wjt+BYZQqniKrrGjjI4z283z/Cqo2BsWAsKkYYvjN3JSH7KMBWiot8+oJ8
-         tJG3gGDyghxjs3dMmjtB8fxan/E7V+M27zaP0YTvKerMbNFTpyXCEDmfG4rj7gcoALcE
-         6QjPaaYkuxdMO1dkW/nRopJxPQE+D8BEEgYso89SLnaehwpzgnlKQUozb76r8Nm1LblK
-         X0ZjeuHU0suxnA7s4f7+VbXm01jTm/8uqqwylfxKjnVdKZ1eFNPcIDXtzX/+D695WRZn
-         igKkF6BOxnXzG58u4hkMUI5y2fDhW5V7Taz1c2u9KcbXLWOmwoawV5WFr+P4LhM1TRyx
-         7QTA==
+        Fri, 26 Jun 2020 03:42:04 -0400
+Received: by mail-lf1-f68.google.com with SMTP id c21so4623319lfb.3;
+        Fri, 26 Jun 2020 00:42:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=y1yY4MQRIlexaM+ULNHIj5vWqC76TO5WRW3/WnGS5Uc=;
-        b=ixeDEsYXx/VOFlU6EOT584u5K462mKHXVR6JLbKGXHMHy2Eq29MqFZqpy5+6IzJKBt
-         TgDLdV5z08f9UzhMFCszapefy9zCrqYWTOrKw5qqaLxHhM46lS0DGwZXYHKqpKOx1L6d
-         lDC/UlRBtpjbA2okDzahYShYpLcaj1RUu5vYhiOl9EgZngGSugFs1hjzGKemNdkJhCbm
-         IG6aDE/zRO1xQ/lPVyONAI6YJ9TrrpyLZGVgF9Q5L5uqVphq/aFwLwZrM2PLosLdKSXK
-         WJ4uJplea46udVfxxQUWIA04Vj2zZjcuvUsJUbG7L+eIJNS/UUyX86zj/j9k2E+mkrX5
-         /DgQ==
-X-Gm-Message-State: AOAM530wkyfZNxEuCRm6lM6bvMw79D0ULZ3QShbvTv9+oXtdZmJIjYFp
-        qTHu+l3ptT86d3NhdKSJBu7SCg==
-X-Google-Smtp-Source: ABdhPJwDwdHvPFQpV6S6b8Iz6FkDbQEXqWBP4tT7F4jaRBexr1hqFVDLrrOqpeSHKrtUq7raShQrJw==
-X-Received: by 2002:a17:902:7788:: with SMTP id o8mr1636408pll.166.1593157409089;
-        Fri, 26 Jun 2020 00:43:29 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id gp4sm10243764pjb.26.2020.06.26.00.43.27
+        bh=mz/Q5xHbOmwCEIDYAnNtu1WbEvpEmmozdU6zt7tewjs=;
+        b=ansPmfnjjY1i73OVPV6EwXdBi3KQsHqUFi84Flid0QgrqegXAYPLplcG+SI9oaFHFI
+         GwjZL4w+VMtE4dgKiIQu8Ei6WF//mjPGRLD0+cRbr1b3WsFVF0wD46jWhH6k1KMtlUDn
+         qHR8Da3dxtyhrAlvGVfgz/WkbLQfTkfILddMYlkLiQ/07SGmM2wGDqhHRnp+R+OFaNDs
+         k0SIzyHV/znoMyN8fQLZmbfWGt+V3p+DIJ2XpGrK9nMWQ/FsE/Q2R8/ZMFmYMEkYlkRI
+         nMo1mdpRw/JlZEKiOMqxvWErjZmfQX5GHinfDLsILiEiw9ErWu7CjJtuLdtVWW2lo8Tt
+         jYXQ==
+X-Gm-Message-State: AOAM530I/mtRWvM2xfSqaZt+4l7LUOYIjnLzrKeG+xfu0NaHoYv5+3b8
+        9Yn5NUQ9jfeb3NVJ91ge700=
+X-Google-Smtp-Source: ABdhPJx/Mub6cbZBQRh5pmIf6JDa6VYSNKLrybxnpwjY7gIu4zfOWe0CddowQEbi5MIfNPpapsnt/Q==
+X-Received: by 2002:a19:c744:: with SMTP id x65mr1133435lff.133.1593157322338;
+        Fri, 26 Jun 2020 00:42:02 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id f24sm5312749ljk.125.2020.06.26.00.42.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 00:43:28 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 00:40:50 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        "open list:GENERIC PHY FRAMEWORK" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] phy: qcom-qmp: Add QMP V4 USB3 PHY support for sm8250
-Message-ID: <20200626074050.GG388985@builder.lan>
-References: <20200524021416.17049-1-jonathan@marek.ca>
- <20200524021416.17049-4-jonathan@marek.ca>
+        Fri, 26 Jun 2020 00:42:01 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1joizu-0005Fh-Rj; Fri, 26 Jun 2020 09:42:06 +0200
+Date:   Fri, 26 Jun 2020 09:42:06 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Phu Luu <Phu.Luu@silabs.com>
+Cc:     "johan@kernel.org" <johan@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Brant Merryman <Brant.Merryman@silabs.com>,
+        Richard Hendricks <Richard.Hendricks@silabs.com>,
+        =?utf-8?B?UGjDuiBMxrB1?= An <luuanphu@gmail.com>,
+        "hungnd3@fsoft.com.vn" <hungnd3@fsoft.com.vn>
+Subject: Re: [PATCH v3 2/2] USB: serial: cp210x: Proper RTS control when
+ buffers fill
+Message-ID: <20200626074206.GP3334@localhost>
+References: <ECCF8E73-91F3-4080-BE17-1714BC8818FB@silabs.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200524021416.17049-4-jonathan@marek.ca>
+In-Reply-To: <ECCF8E73-91F3-4080-BE17-1714BC8818FB@silabs.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 23 May 19:14 PDT 2020, Jonathan Marek wrote:
-
-> Add both the DP and UNI PHY for primary/secondary usb controllers.
+On Fri, Jun 26, 2020 at 04:24:20AM +0000, Phu Luu wrote:
+> From: Brant Merryman <brant.merryman@silabs.com>
 > 
-> The tables are very similar to sm8150 (serdes_tbl is identical), but there
-> are some differences.
+> CP210x hardware disables auto-RTS but leaves auto-CTS when
+> in hardware flow control mode and UART on cp210x hardware
+> is disabled. This allows data to flow out, but new data
+> will not come into the port. When re-opening the port, if
+> auto-CTS is enabled on the cp210x, then auto-RTS must be
+> re-enabled in the driver.
 > 
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> Signed-off-by: Phu Luu <phu.luu@silabs.com>
+> Signed-off-by: Brant Merryman <brant.merryman@silabs.com>
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
+Please revisit these tags as well.
 
 > ---
->  drivers/phy/qualcomm/phy-qcom-qmp.c | 206 ++++++++++++++++++++++++++++
->  drivers/phy/qualcomm/phy-qcom-qmp.h |   2 +
->  2 files changed, 208 insertions(+)
+> 06/09/2020: Patch v3 2/2 Modified based on feedback from Johan Hovold <johan@kernel.org>
+> 12/18/2019: Patch v2 Broken into two patches and modified based on feedback from Johan Hovold <johan@kernel.org>
+> 12/09/2019: Initial submission of patch "Proper RTS control when buffers fill"
 > 
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
-> index 9367f8f793b5..8a597cedfebe 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
-> @@ -1532,6 +1532,142 @@ static const struct qmp_phy_init_tbl sm8150_usb3_uniphy_pcs_tbl[] = {
->  	QMP_PHY_INIT_CFG(QPHY_V4_PCS_PCS_TX_RX_CONFIG, 0x0c),
->  };
->  
-> +static const struct qmp_phy_init_tbl sm8250_usb3_tx_tbl[] = {
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_RES_CODE_LANE_TX, 0x60),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_RES_CODE_LANE_RX, 0x60),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_RES_CODE_LANE_OFFSET_TX, 0x11),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_RES_CODE_LANE_OFFSET_RX, 0x02),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_LANE_MODE_1, 0xd5),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_RCV_DETECT_LVL_2, 0x12),
-> +	QMP_PHY_INIT_CFG_LANE(QSERDES_V4_TX_PI_QEC_CTRL, 0x40, 1),
-> +	QMP_PHY_INIT_CFG_LANE(QSERDES_V4_TX_PI_QEC_CTRL, 0x54, 2),
-> +};
-> +
-> +static const struct qmp_phy_init_tbl sm8250_usb3_rx_tbl[] = {
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SO_GAIN, 0x06),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_FASTLOCK_FO_GAIN, 0x2f),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SO_SATURATION_AND_ENABLE, 0x7f),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_FASTLOCK_COUNT_LOW, 0xff),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_FASTLOCK_COUNT_HIGH, 0x0f),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_PI_CONTROLS, 0x99),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SB2_THRESH1, 0x04),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SB2_THRESH2, 0x08),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SB2_GAIN1, 0x05),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SB2_GAIN2, 0x05),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_VGA_CAL_CNTRL1, 0x54),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_VGA_CAL_CNTRL2, 0x0c),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL2, 0x0f),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL3, 0x4a),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL4, 0x0a),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_IDAC_TSETTLE_LOW, 0xc0),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_IDAC_TSETTLE_HIGH, 0x00),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQ_OFFSET_ADAPTOR_CNTRL1, 0x77),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_SIGDET_CNTRL, 0x04),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_SIGDET_DEGLITCH_CNTRL, 0x0e),
-> +	QMP_PHY_INIT_CFG_LANE(QSERDES_V4_RX_RX_MODE_00_LOW, 0xff, 1),
-> +	QMP_PHY_INIT_CFG_LANE(QSERDES_V4_RX_RX_MODE_00_LOW, 0x7f, 2),
-> +	QMP_PHY_INIT_CFG_LANE(QSERDES_V4_RX_RX_MODE_00_HIGH, 0x7f, 1),
-> +	QMP_PHY_INIT_CFG_LANE(QSERDES_V4_RX_RX_MODE_00_HIGH, 0xff, 2),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH2, 0x7f),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH3, 0x7f),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH4, 0x97),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_LOW, 0xdc),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH, 0xdc),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH2, 0x5c),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH3, 0x7b),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH4, 0xb4),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_DFE_EN_TIMER, 0x04),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_DFE_CTLE_POST_CAL_OFFSET, 0x38),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_AUX_DATA_TCOARSE_TFINE, 0xa0),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_DCC_CTRL1, 0x0c),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_GM_CAL, 0x1f),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_VTH_CODE, 0x10),
-> +};
-> +
-> +static const struct qmp_phy_init_tbl sm8250_usb3_pcs_tbl[] = {
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_LOCK_DETECT_CONFIG1, 0xd0),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_LOCK_DETECT_CONFIG2, 0x07),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_LOCK_DETECT_CONFIG3, 0x20),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_LOCK_DETECT_CONFIG6, 0x13),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_REFGEN_REQ_CONFIG1, 0x21),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_RX_SIGDET_LVL, 0xa9),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_CDR_RESET_TIME, 0x0a),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_ALIGN_DETECT_CONFIG1, 0x88),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_ALIGN_DETECT_CONFIG2, 0x13),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_PCS_TX_RX_CONFIG, 0x0c),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_EQ_CONFIG1, 0x4b),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_EQ_CONFIG5, 0x10),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL, 0xf8),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_USB3_RXEQTRAINING_DFE_TIME_S2, 0x07),
-> +};
-> +
-> +static const struct qmp_phy_init_tbl sm8250_usb3_uniphy_tx_tbl[] = {
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_RCV_DETECT_LVL_2, 0x12),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_LANE_MODE_1, 0xd5),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_LANE_MODE_2, 0x82),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_PI_QEC_CTRL, 0x40),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_RES_CODE_LANE_OFFSET_TX, 0x11),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_RES_CODE_LANE_OFFSET_RX, 0x02),
-> +};
-> +
-> +static const struct qmp_phy_init_tbl sm8250_usb3_uniphy_rx_tbl[] = {
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH4, 0xb8),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH3, 0xff),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH2, 0xbf),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH, 0x7f),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_LOW, 0x7f),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH4, 0xb4),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH3, 0x7b),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH2, 0x5c),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH, 0xdc),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_LOW, 0xdc),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_PI_CONTROLS, 0x99),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SB2_THRESH1, 0x04),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SB2_THRESH2, 0x08),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SB2_GAIN1, 0x05),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SB2_GAIN2, 0x05),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_FASTLOCK_FO_GAIN, 0x2f),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_FASTLOCK_COUNT_LOW, 0xff),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_FASTLOCK_COUNT_HIGH, 0x0f),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SO_SATURATION_AND_ENABLE, 0x7f),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_FO_GAIN, 0x0a),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_VGA_CAL_CNTRL1, 0x54),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_VGA_CAL_CNTRL2, 0x0c),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL2, 0x0f),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL3, 0x4a),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL4, 0x0a),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_DFE_EN_TIMER, 0x04),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQ_OFFSET_ADAPTOR_CNTRL1, 0x47),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_OFFSET_ADAPTOR_CNTRL2, 0x80),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_SIGDET_CNTRL, 0x04),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_SIGDET_DEGLITCH_CNTRL, 0x0e),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_IDAC_TSETTLE_HIGH, 0x00),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_IDAC_TSETTLE_LOW, 0xc0),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_DFE_CTLE_POST_CAL_OFFSET, 0x38),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SO_GAIN, 0x06),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_DCC_CTRL1, 0x0c),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_GM_CAL, 0x1f),
-> +};
-> +
-> +static const struct qmp_phy_init_tbl sm8250_usb3_uniphy_pcs_tbl[] = {
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_LOCK_DETECT_CONFIG1, 0xd0),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_LOCK_DETECT_CONFIG2, 0x07),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_LOCK_DETECT_CONFIG3, 0x20),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_LOCK_DETECT_CONFIG6, 0x13),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_RCVR_DTCT_DLY_P1U2_L, 0xe7),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_RCVR_DTCT_DLY_P1U2_H, 0x03),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_RX_SIGDET_LVL, 0xa9),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_PCS_TX_RX_CONFIG, 0x0c),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_USB3_UNI_RXEQTRAINING_DFE_TIME_S2, 0x07),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_USB3_UNI_LFPS_DET_HIGH_COUNT_VAL, 0xf8),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_CDR_RESET_TIME, 0x0a),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_ALIGN_DETECT_CONFIG1, 0x88),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_ALIGN_DETECT_CONFIG2, 0x13),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_EQ_CONFIG1, 0x4b),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_EQ_CONFIG5, 0x10),
-> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_REFGEN_REQ_CONFIG1, 0x21),
-> +};
-> +
->  /* struct qmp_phy_cfg - per-PHY initialization config */
->  struct qmp_phy_cfg {
->  	/* phy-type - PCIE/UFS/USB */
-> @@ -1700,6 +1836,11 @@ static const char * const qmp_v4_phy_clk_l[] = {
->  	"aux", "ref_clk_src", "ref", "com_aux",
->  };
->  
-> +/* the primary usb3 phy on sm8250 doesn't have a ref clock */
-> +static const char * const qmp_v4_sm8250_usbphy_clk_l[] = {
-> +	"aux", "ref_clk_src", "com_aux"
-> +};
-> +
->  static const char * const sdm845_ufs_phy_clk_l[] = {
->  	"ref", "ref_aux",
->  };
-> @@ -2147,6 +2288,65 @@ static const struct qmp_phy_cfg sm8150_usb3_uniphy_cfg = {
->  	.pwrdn_delay_max	= POWER_DOWN_DELAY_US_MAX,
->  };
->  
-> +static const struct qmp_phy_cfg sm8250_usb3phy_cfg = {
-> +	.type			= PHY_TYPE_USB3,
-> +	.nlanes			= 1,
-> +
-> +	.serdes_tbl		= sm8150_usb3_serdes_tbl,
-> +	.serdes_tbl_num		= ARRAY_SIZE(sm8150_usb3_serdes_tbl),
-> +	.tx_tbl			= sm8250_usb3_tx_tbl,
-> +	.tx_tbl_num		= ARRAY_SIZE(sm8250_usb3_tx_tbl),
-> +	.rx_tbl			= sm8250_usb3_rx_tbl,
-> +	.rx_tbl_num		= ARRAY_SIZE(sm8250_usb3_rx_tbl),
-> +	.pcs_tbl		= sm8250_usb3_pcs_tbl,
-> +	.pcs_tbl_num		= ARRAY_SIZE(sm8250_usb3_pcs_tbl),
-> +	.clk_list		= qmp_v4_sm8250_usbphy_clk_l,
-> +	.num_clks		= ARRAY_SIZE(qmp_v4_sm8250_usbphy_clk_l),
-> +	.reset_list		= msm8996_usb3phy_reset_l,
-> +	.num_resets		= ARRAY_SIZE(msm8996_usb3phy_reset_l),
-> +	.vreg_list		= qmp_phy_vreg_l,
-> +	.num_vregs		= ARRAY_SIZE(qmp_phy_vreg_l),
-> +	.regs			= qmp_v4_usb3phy_regs_layout,
-> +
-> +	.start_ctrl		= SERDES_START | PCS_START,
-> +	.pwrdn_ctrl		= SW_PWRDN,
-> +
-> +	.has_pwrdn_delay	= true,
-> +	.pwrdn_delay_min	= POWER_DOWN_DELAY_US_MIN,
-> +	.pwrdn_delay_max	= POWER_DOWN_DELAY_US_MAX,
-> +
-> +	.has_phy_dp_com_ctrl	= true,
-> +	.is_dual_lane_phy	= true,
-> +};
-> +
-> +static const struct qmp_phy_cfg sm8250_usb3_uniphy_cfg = {
-> +	.type			= PHY_TYPE_USB3,
-> +	.nlanes			= 1,
-> +
-> +	.serdes_tbl		= sm8150_usb3_uniphy_serdes_tbl,
-> +	.serdes_tbl_num		= ARRAY_SIZE(sm8150_usb3_uniphy_serdes_tbl),
-> +	.tx_tbl			= sm8250_usb3_uniphy_tx_tbl,
-> +	.tx_tbl_num		= ARRAY_SIZE(sm8250_usb3_uniphy_tx_tbl),
-> +	.rx_tbl			= sm8250_usb3_uniphy_rx_tbl,
-> +	.rx_tbl_num		= ARRAY_SIZE(sm8250_usb3_uniphy_rx_tbl),
-> +	.pcs_tbl		= sm8250_usb3_uniphy_pcs_tbl,
-> +	.pcs_tbl_num		= ARRAY_SIZE(sm8250_usb3_uniphy_pcs_tbl),
-> +	.clk_list		= qmp_v4_phy_clk_l,
-> +	.num_clks		= ARRAY_SIZE(qmp_v4_phy_clk_l),
-> +	.reset_list		= msm8996_usb3phy_reset_l,
-> +	.num_resets		= ARRAY_SIZE(msm8996_usb3phy_reset_l),
-> +	.vreg_list		= qmp_phy_vreg_l,
-> +	.num_vregs		= ARRAY_SIZE(qmp_phy_vreg_l),
-> +	.regs			= qmp_v4_usb3_uniphy_regs_layout,
-> +
-> +	.start_ctrl		= SERDES_START | PCS_START,
-> +	.pwrdn_ctrl		= SW_PWRDN,
-> +
-> +	.has_pwrdn_delay	= true,
-> +	.pwrdn_delay_min	= POWER_DOWN_DELAY_US_MIN,
-> +	.pwrdn_delay_max	= POWER_DOWN_DELAY_US_MAX,
-> +};
-> +
->  static void qcom_qmp_phy_configure_lane(void __iomem *base,
->  					const unsigned int *regs,
->  					const struct qmp_phy_init_tbl tbl[],
-> @@ -2924,6 +3124,12 @@ static const struct of_device_id qcom_qmp_phy_of_match_table[] = {
->  	}, {
->  		.compatible = "qcom,sm8150-qmp-usb3-uni-phy",
->  		.data = &sm8150_usb3_uniphy_cfg,
-> +	}, {
-> +		.compatible = "qcom,sm8250-qmp-usb3-phy",
-> +		.data = &sm8250_usb3phy_cfg,
-> +	}, {
-> +		.compatible = "qcom,sm8250-qmp-usb3-uni-phy",
-> +		.data = &sm8250_usb3_uniphy_cfg,
->  	},
->  	{ },
->  };
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.h b/drivers/phy/qualcomm/phy-qcom-qmp.h
-> index f39f7a968228..4277f592684b 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp.h
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.h
-> @@ -364,7 +364,9 @@
->  #define QSERDES_V4_TX_RES_CODE_LANE_TX			0x34
->  #define QSERDES_V4_TX_RES_CODE_LANE_RX			0x38
->  #define QSERDES_V4_TX_RES_CODE_LANE_OFFSET_TX 		0x3c
-> +#define QSERDES_V4_TX_RES_CODE_LANE_OFFSET_RX 		0x40
->  #define QSERDES_V4_TX_LANE_MODE_1			0x84
-> +#define QSERDES_V4_TX_LANE_MODE_2			0x88
->  #define QSERDES_V4_TX_RCV_DETECT_LVL_2			0x9c
->  #define QSERDES_V4_TX_PWM_GEAR_1_DIVIDER_BAND0_1	0xd8
->  #define QSERDES_V4_TX_PWM_GEAR_2_DIVIDER_BAND0_1	0xdC
-> -- 
-> 2.26.1
+>  drivers/usb/serial/cp210x.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 > 
+> diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+> index bcceb4ad8be0..091441b1c5b9 100644
+> --- a/drivers/usb/serial/cp210x.c
+> +++ b/drivers/usb/serial/cp210x.c
+> @@ -917,6 +917,7 @@ static void cp210x_get_termios_port(struct usb_serial_port *port,
+>  	u32 baud;
+>  	u16 bits;
+>  	u32 ctl_hs;
+> +	u32 flow_repl;
+>  
+>  	cp210x_read_u32_reg(port, CP210X_GET_BAUDRATE, &baud);
+>  
+> @@ -1017,6 +1018,23 @@ static void cp210x_get_termios_port(struct usb_serial_port *port,
+>  	ctl_hs = le32_to_cpu(flow_ctl.ulControlHandshake);
+>  	if (ctl_hs & CP210X_SERIAL_CTS_HANDSHAKE) {
+>  		dev_dbg(dev, "%s - flow control = CRTSCTS\n", __func__);
+> +		/*
+> +		 * When the port is closed, the CP210x hardware disables
+> +		 * auto-RTS and RTS is deasserted but it leaves auto-CTS when
+> +		 * in hardware flow control mode. This prevents new data from
+> +		 * being received by the port. When re-opening the port, if
+> +		 * auto-CTS is enabled on the cp210x, then auto-RTS must be
+> +		 * re-enabled in the driver.
+> +		 */
+
+I already asked this of Brant, but could you please be more specific
+about which state the RTS-line end up in when disabling the UART (e.g.
+0x00: statically inactive)?
+
+The reason I ask is that after open() returns, the tty layer would raise
+RTS, which should again allow data to flow in in contrast to what the
+comment and changelog text claims.
+
+We still want to enable auto-RTS of course so the patch is otherwise
+correct.
+
+> +		flow_repl = le32_to_cpu(flow_ctl.ulFlowReplace);
+> +		flow_repl &= ~CP210X_SERIAL_RTS_MASK;
+> +		flow_repl |= CP210X_SERIAL_RTS_SHIFT(CP210X_SERIAL_RTS_FLOW_CTL);
+> +		flow_ctl.ulFlowReplace = cpu_to_le32(flow_repl);
+> +		cp210x_write_reg_block(port,
+> +				CP210X_SET_FLOW,
+> +				&flow_ctl,
+> +				sizeof(flow_ctl));
+> +
+>  		cflag |= CRTSCTS;
+>  	} else {
+>  		dev_dbg(dev, "%s - flow control = NONE\n", __func__);
+
+Johan
