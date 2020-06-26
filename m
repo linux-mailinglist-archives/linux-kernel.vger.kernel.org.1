@@ -2,243 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED57520B059
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 13:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9110320B068
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 13:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728440AbgFZLWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 07:22:44 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:57380 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728397AbgFZLWn (ORCPT
+        id S1728483AbgFZL1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 07:27:30 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:44101 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728381AbgFZL1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 07:22:43 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200626112241euoutp013ef3ded67574a01d46bfd6b0ef0ed524~cFC86AEaL1131711317euoutp01T
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 11:22:41 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200626112241euoutp013ef3ded67574a01d46bfd6b0ef0ed524~cFC86AEaL1131711317euoutp01T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593170561;
-        bh=oYAxSME9rGr+KdmCubJZndLweXdUns26lunyy7YRftc=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=S4PDTMbjPkbp5Zkm8uVkE0wUDlSRG15QWfidONIFSUCoeWYB/dPRoAPqTxBvZyfDz
-         E786sB8o6yDUd1i4xet+Ogss9lP2PQIkl7G44VRjVTGGsnC1ZRcHEx5Tu1PD2DjUyt
-         lZZWQsNXyeFBvo3OlA4q2NpBJT0f0U7jc/VbWPwE=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200626112240eucas1p223ac51a4c3c2d2d7abc6dbdd9f8cb921~cFC8lkAZp1651616516eucas1p2h;
-        Fri, 26 Jun 2020 11:22:40 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 6A.98.06318.08AD5FE5; Fri, 26
-        Jun 2020 12:22:40 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200626112240eucas1p137a7bda25922a02faec6ee6f3c5b5c4f~cFC8NmtFs1960819608eucas1p1g;
-        Fri, 26 Jun 2020 11:22:40 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200626112240eusmtrp1c2d7840e1fc2b85a059df1d67667114f~cFC8MyUO71855018550eusmtrp1i;
-        Fri, 26 Jun 2020 11:22:40 +0000 (GMT)
-X-AuditID: cbfec7f5-371ff700000018ae-18-5ef5da806ee3
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 86.F1.06017.08AD5FE5; Fri, 26
-        Jun 2020 12:22:40 +0100 (BST)
-Received: from [106.120.51.71] (unknown [106.120.51.71]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200626112239eusmtip1541fce56f819f0cfa8cd94a4a9d15e6b~cFC7qffwH1044410444eusmtip1K;
-        Fri, 26 Jun 2020 11:22:39 +0000 (GMT)
-Subject: Re: brocken devfreq simple_ondemand for Odroid XU3/4?
-To:     Lukasz Luba <lukasz.luba@arm.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     Kamil Konieczny <k.konieczny@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Willy Wolff <willy.mh.wolff.ml@gmail.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>, linux-pm@vger.kernel.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Message-ID: <ad4e1a73-6de3-68ee-e3b3-b30bc315bd31@samsung.com>
-Date:   Fri, 26 Jun 2020 13:22:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.8.0
+        Fri, 26 Jun 2020 07:27:30 -0400
+Received: by mail-ot1-f68.google.com with SMTP id 5so6274475oty.11
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 04:27:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VJM2YZ8FuB0rwJc0eaWFy+gB1ZVxh+nnW2v11JuJigs=;
+        b=sOcVLSYwgwsINQR8L3YmWn/K7P/tH95/Au1zVIT/uEJjfzTQCPjNA1pryh75eR7EZE
+         U27fUqUf2JlXgj5YPFk3uTYBdGxXGxYiW6XnWmxXrQAjqjxiXENt++ZqmKrGgzbMrmHG
+         UQmfUhesvfXN0qz3cDWwI038+80IXYs05Iu+LXGsYQvoIU87Ou7uj1C30zH+9/fnbfDq
+         NLG2x79w+QnJUdR8qDhBtsSaq49Qv2hzlRP4zdmCKwwGIucZu/YixVDf8h//m4V7JL0I
+         HOJHObxeDFcdUa5B9f7Z6RYjhs01HAT2ueu/OLNzFe//HdEr1omVuF8lm1leyFHsFj7z
+         9cUA==
+X-Gm-Message-State: AOAM531ZrA2MFQTkXXJBnhZbAYSQOEwd+JglZ7/M59wMKKNA2kdyoPMp
+        G7HzmSDdIV6wZ1lgAZYRLSfopTc0ULmUWSYB9Pw=
+X-Google-Smtp-Source: ABdhPJxDX1lu2+r+a+EBqy+HFWSZUNRAf+shnClf9EZMJDFqYdcyEOdpgXKlQUcakicgERZrpzUaZymkhyeV3g4kfNA=
+X-Received: by 2002:a4a:3e48:: with SMTP id t69mr2012267oot.38.1593170848703;
+ Fri, 26 Jun 2020 04:27:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ee2e4acb-3986-3227-da1f-177d2756d194@samsung.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SfSyUcRzf756753nI6XHId3rbbmXrjYq1ZzTRoptq+aeojbryhLzuzkuy
-        SjQkClfhJm8zL5dhl3mrLjs5IW8zMrQJJXIxR9RkuXtY/vt8ft/P5/P9frYfiQm6eNZkYGgE
-        IwkVBwtxY26t5nfXobihRd/D43MO9KeFSR5dMJ/No5+M/8Do7u5qgu6MnyFo5fgAj+5rzMVp
-        Xdp7RGd3qzh0YfwDgh6+X4bTzTNJPPrXhzHkwhdV5FUgUYP8MyFSKh7iolfF90SPaxRIpFPu
-        8sQvGx/3Y4IDoxiJnfNV4wD10ggRPm97ayIjDcUhlU0KMiKBcoDy+iyUgoxJAVWGIHm6EWPJ
-        AoKcF73rRIdgsvQlZ8PSK1sm2EEpgsTB1xyWaBG0ZrcQepU55Qz5A408PbagzsAjdZzBgVE6
-        DHSFzYYonHKEjCQF0mP+mkHWXIvrMZfaC1+etxmCLClvmB9t5rEaM2jLmeDqsRF1AlQNRQY9
-        RlnB0EQ+h8W7oU6ba7gbqCkCNB39a0HkGjkFb/JM2ArmMN1aQ7B4B3TIUrmsvhLB3+Tv6+Y6
-        BKWyVZxVOcFI1x9cH4RR+6Cq0Y59dgWtZgZj801hUGvG3mAKmbVZ6898SE4UsGobqC6pxjfW
-        pjSUY+lIKN/UTL6pjXxTG/n/vQWIq0BWTKQ0xJ+R2ocy0bZScYg0MtTf9npYiBKt/bKO1dbF
-        eqRauaZGFImEJvymjAVfAU8cJY0JUSMgMaEF/2Rnh6+A7yeOuc1Iwq5IIoMZqRptJ7lCK759
-        0ZSPgPIXRzBBDBPOSDamHNLIOg65cCsL7t7oaYem9lEji1SnQa3lMMeuWDOr8TrfM58gc9y5
-        7LNV9q3KY0vJWbuWFOG5oFzvgZ/RfZfczKxFS+61gqKvBxXiO5E3LQLcZ98+uyDnS7a92zPn
-        mreYrmkZE2bn1lUXj3AyV5aPeczVlHgeFXklzD09MNF/MdatO/a0/0chVxogPrIfk0jF/wBc
-        eMSgYQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPIsWRmVeSWpSXmKPExsVy+t/xu7oNt77GGZy4IWNx/ctzVosFn2aw
-        WvQ/fs1scf78BnaLs01v2C02Pb7GanF51xw2i8+9RxgtZpzfx2SxsKmF3eJ24wo2i8Nv2lkt
-        vp14xOjA67Fm3hpGj52z7rJ7bFrVyeaxeUm9R9+WVYwenzfJBbBF6dkU5ZeWpCpk5BeX2CpF
-        G1oY6RlaWugZmVjqGRqbx1oZmSrp29mkpOZklqUW6dsl6GUc+n6HveCTXsWTib2MDYz71LoY
-        OTkkBEwkLk7+wd7FyMUhJLCUUeLzi2NADgdQQkbi+PoyiBphiT/Xutggal4zSuw/eY8FJCEs
-        YCcx/9ouVhBbRMBbovtQA9ggZoGfzBKf585jBkkICaxhkfjzqR7EZhOwkpjYvooRxOYFap58
-        eBsbiM0ioCrxcNpJdhBbVCBC4vCOWVA1ghInZz4BW8YpYC+xb+cisHpmAXWJP/MuMUPY4hK3
-        nsxngrDlJba/ncM8gVFoFpL2WUhaZiFpmYWkZQEjyypGkdTS4tz03GIjveLE3OLSvHS95Pzc
-        TYzAyN127OeWHYxd74IPMQpwMCrx8B6Y+CVOiDWxrLgy9xCjBAezkgiv09nTcUK8KYmVValF
-        +fFFpTmpxYcYTYGem8gsJZqcD0wqeSXxhqaG5haWhubG5sZmFkrivB0CB2OEBNITS1KzU1ML
-        Uotg+pg4OKUaGIVrvjLt95z1asGc1nQn71ierkOTbD5Uh3G+Y64x+Pdx88+SRYv8HzMvzC5Z
-        K+ekwhJ4sej5Uw3lHDuuwvWPP579lP/vs4jenA1sZdXlatN3iEovXbfk5bmjEr4ljseWWn9m
-        2rZazjRAX0xS6ayHOX/lbrmy40JG7nf0rFoKT698ZLr/NY/nJiWW4oxEQy3mouJEAE/eSVvy
-        AgAA
-X-CMS-MailID: 20200626112240eucas1p137a7bda25922a02faec6ee6f3c5b5c4f
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200624103308eucas1p188a5fe3cee1916d9430c9971c2dab3a3
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200624103308eucas1p188a5fe3cee1916d9430c9971c2dab3a3
-References: <20200623164733.qbhua7b6cg2umafj@macmini.local>
-        <CAJKOXPeLuq81NC2xZh3y32EB-_APbDAchZD4OW_eCgQKKO+p8w@mail.gmail.com>
-        <20200623191129.GA4171@kozik-lap>
-        <CGME20200624103308eucas1p188a5fe3cee1916d9430c9971c2dab3a3@eucas1p1.samsung.com>
-        <85f5a8c0-7d48-f2cd-3385-c56d662f2c88@arm.com>
-        <ef5184ed-00ff-4226-5ece-b0fc8eb16fb6@samsung.com>
-        <4a72fcab-e8da-8323-1fbe-98a6a4b3e0f1@arm.com>
-        <4c3b01af-2337-1eba-4675-6488105144c8@samsung.com>
-        <6f8b1119-62b1-942d-cfde-6f1e9a28c40c@arm.com>
-        <ee2e4acb-3986-3227-da1f-177d2756d194@samsung.com>
+References: <20200625032430.152447-1-saravanak@google.com> <CAJZ5v0h1JHLK2PA45ZfNBeQrRoH+UkEi6-vRR-=HLz7AAnC1vA@mail.gmail.com>
+ <CAGETcx8AQPZ92vKKwq6-U8fbToCWtHvu4OT4hXzOGiCUst15fw@mail.gmail.com>
+ <CAJZ5v0i=riYAA1wnuDBhBLfWQiGnaRW8fxkCU5X-3=noqSEhrQ@mail.gmail.com>
+ <CAGETcx8J5fs42_HMVyYvbX1=gqGTnavEuDOH+LHprZYRbXvUzw@mail.gmail.com>
+ <CAJZ5v0i-ySdNmToh=ExT9H_88bhHVeUNfTNWxXG1SzaP8a5j-w@mail.gmail.com>
+ <CAGETcx9iLH8fBEA0a9=iPsObzaePg9Zj0A9T_7NSKH6KSq3vFg@mail.gmail.com>
+ <CAJZ5v0iONFBX00NqzUaZ9kNWr6yLBNtLnA+sF-Ge-QNtY9qSug@mail.gmail.com> <CAGETcx-YqJDnc6fNu5dncc=DSHwS_=-uOMHvR8V=b-QQJ7HOcA@mail.gmail.com>
+In-Reply-To: <CAGETcx-YqJDnc6fNu5dncc=DSHwS_=-uOMHvR8V=b-QQJ7HOcA@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 26 Jun 2020 13:27:16 +0200
+Message-ID: <CAJZ5v0ju58LxvRckv2T=H0D=aDooGUoGfqFze5zWQ1ARAAJcag@mail.gmail.com>
+Subject: Re: [PATCH v1] driver core: Fix suspend/resume order issue with
+ deferred probe
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 25, 2020 at 7:52 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Thu, Jun 25, 2020 at 10:47 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Thu, Jun 25, 2020 at 7:09 PM Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > On Thu, Jun 25, 2020 at 10:03 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > >
+> > > > On Thu, Jun 25, 2020 at 7:01 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > > >
+> > > > > On Thu, Jun 25, 2020 at 9:58 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > >
+> > > > > > On Thu, Jun 25, 2020 at 6:49 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > > > > >
+> > > > > > > Dropping Feng Kan <fkan@apm.com> and Toan Le <toanle@apm.com> because
+> > > > > > > their mails are bouncing.
+> > > > > > >
+> > > > > > > On Thu, Jun 25, 2020 at 8:19 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > > > >
+> > > > > > > > On Thu, Jun 25, 2020 at 5:24 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > > > > > > >
+> > > > > > > > > Under the following conditions:
+> > > > > > > > > - driver A is built in and can probe device-A
+> > > > > > > > > - driver B is a module and can probe device-B
+> > > > > > > > > - device-A is supplier of device-B
+> > > > > > > > >
+> > > > > > > > > Without this patch:
+> > > > > > > > > 1. device-A is added.
+> > > > > > > > > 2. device-B is added.
+> > > > > > > > > 3. dpm_list is now [device-A, device-B].
+> > > > > > > > > 4. driver-A defers probe of device-A.
+> > > > > > > > > 5. deferred probe of device-A is reattempted
+> > > > > > > > > 6. device-A is moved to end of dpm_list.
+> > > > > > > > > 6. dpm_list is now [device-B, device-A].
+> > > > > > > > > 7. driver-B is loaded and probes device-B.
+> > > > > > > > > 8. dpm_list stays as [device-B, device-A].
+> > > > > > > > >
+> > > > > > > > > Suspend (which goes in the reverse order of dpm_list) fails because
+> > > > > > > > > device-A (supplier) is suspended before device-B (consumer).
+> > > > > > > > >
+> > > > > > > > > With this patch:
+> > > > > > > > > 1. device-A is added.
+> > > > > > > > > 2. device-B is added.
+> > > > > > > > > 3. dpm_list is now [device-A, device-B].
+> > > > > > > > > 4. driver-A defers probe of device-A.
+> > > > > > > > > 5. deferred probe of device-A is reattempted later.
+> > > > > > > > > 6. dpm_list is now [device-B, device-A].
+> > > > > > > > > 7. driver-B is loaded and probes device-B.
+> > > > > > > > > 8. dpm_list is now [device-A, device-B].
+> > > > > > > > >
+> > > > > > > > > Suspend works because device-B (consumer) is suspended before device-A
+> > > > > > > > > (supplier).
+> > > > > > > > >
+> > > > > > > > > Fixes: 494fd7b7ad10 ("PM / core: fix deferred probe breaking suspend resume order")
+> > > > > > > > > Fixes: 716a7a259690 ("driver core: fw_devlink: Add support for batching fwnode parsing")
+> > > > > > > > > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > > > > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > > > > > > ---
+> > > > > > > > >  drivers/base/dd.c | 16 ++++++++++++++++
+> > > > > > > > >  1 file changed, 16 insertions(+)
+> > > > > > > > >
+> > > > > > > > > diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+> > > > > > > > > index 9a1d940342ac..52b2148c7983 100644
+> > > > > > > > > --- a/drivers/base/dd.c
+> > > > > > > > > +++ b/drivers/base/dd.c
+> > > > > > > > > @@ -109,6 +109,8 @@ static void deferred_probe_work_func(struct work_struct *work)
+> > > > > > > > >                  * probe makes that very unsafe.
+> > > > > > > > >                  */
+> > > > > > > > >                 device_pm_move_to_tail(dev);
+> > > > > > > > > +               /* Greg/Rafael: SHOULD I DELETE THIS? ^^ I think I should, but
+> > > > > > > > > +                * I'm worried if it'll have some unintended consequeneces. */
+> > > > > > > >
+> > > > > > > > Yes, this needs to go away if you make the other change.
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > >                 dev_dbg(dev, "Retrying from deferred list\n");
+> > > > > > > > >                 bus_probe_device(dev);
+> > > > > > > > > @@ -557,6 +559,20 @@ static int really_probe(struct device *dev, struct device_driver *drv)
+> > > > > > > > >                 goto re_probe;
+> > > > > > > > >         }
+> > > > > > > > >
+> > > > > > > > > +       /*
+> > > > > > > > > +        * The devices are added to the dpm_list (resume/suspend (reverse
+> > > > > > > > > +        * order) list) as they are registered with the driver core. But the
+> > > > > > > > > +        * order the devices are added doesn't necessarily match the real
+> > > > > > > > > +        * dependency order.
+> > > > > > > > > +        *
+> > > > > > > > > +        * The successful probe order is a much better signal. If a device just
+> > > > > > > > > +        * probed successfully, then we know for sure that all the devices that
+> > > > > > > > > +        * probed before it don't depend on the device. So, we can safely move
+> > > > > > > > > +        * the device to the end of the dpm_list. As more devices probe,
+> > > > > > > > > +        * they'll automatically get ordered correctly.
+> > > > > > > > > +        */
+> > > > > > > > > +       device_pm_move_to_tail(dev);
+> > > > > > > >
+> > > > > > > > But it would be good to somehow limit this to the devices affected by
+> > > > > > > > deferred probing or we'll end up reordering dpm_list unnecessarily for
+> > > > > > > > many times in the actual majority of cases.
+> > > > > > >
+> > > > > > > Yes, lots of unnecessary reordering, but doing it only for deferred
+> > > > > > > probes IS the problem. In the example I gave, the consumer is never
+> > > > > > > deferred probe because the supplier happens to finish probing before
+> > > > > > > the consumer probe is even attempted.
+> > > > > >
+> > > > > > But why would the supplier be moved to the end of dpm_list without
+> > > > > > moving the consumer along with it?
+> > > > >
+> > > > > There is no device link between the supplier/consumer in this case.
+> > > >
+> > > > So this is the real problem, isn't it?
+> > > >
+> > > > > Sadly there are plenty of cases where device links aren't present to
+> > > > > capture supplier/consumer dependencies.
+> > > >
+> > > > And so that's why you want to add a ton of overhead to driver probing
+> > > > in all of the cases in which that is not an issue?
+> > >
+> > > Well, until all/most of the frameworks add device links or
+> > > fw_devlink=on by default, it doesn't hurt to have suspend/resume work
+> > > in more platforms.
+> >
+> > In the presence of deferred probing, that is.
+> >
+> > Note that deferred probing gets in the way here and so the problem is
+> > related to it.
+>
+> I mean, we officially support deferred probing. Shouldn't we fix it so
+> that it doesn't break suspend/resume?
 
-On 6/25/20 2:12 PM, Kamil Konieczny wrote:
-> On 25.06.2020 14:02, Lukasz Luba wrote:
->>
->>
->> On 6/25/20 12:30 PM, Kamil Konieczny wrote:
->>> Hi Lukasz,
->>>
->>> On 25.06.2020 12:02, Lukasz Luba wrote:
->>>> Hi Sylwester,
->>>>
->>>> On 6/24/20 4:11 PM, Sylwester Nawrocki wrote:
->>>>> Hi All,
->>>>>
->>>>> On 24.06.2020 12:32, Lukasz Luba wrote:
->>>>>> I had issues with devfreq governor which wasn't called by devfreq
->>>>>> workqueue. The old DELAYED vs DEFERRED work discussions and my patches
->>>>>> for it [1]. If the CPU which scheduled the next work went idle, the
->>>>>> devfreq workqueue will not be kicked and devfreq governor won't check
->>>>>> DMC status and will not decide to decrease the frequency based on low
->>>>>> busy_time.
->>>>>> The same applies for going up with the frequency. They both are
->>>>>> done by the governor but the workqueue must be scheduled periodically.
->>>>>
->>>>> As I have been working on resolving the video mixer IOMMU fault issue
->>>>> described here: https://patchwork.kernel.org/patch/10861757
->>>>> I did some investigation of the devfreq operation, mostly on Odroid U3.
->>>>>
->>>>> My conclusions are similar to what Lukasz says above. I would like to add
->>>>> that broken scheduling of the performance counters read and the devfreq
->>>>> updates seems to have one more serious implication. In each call, which
->>>>> normally should happen periodically with fixed interval we stop the counters,
->>>>> read counter values and start the counters again. But if period between
->>>>> calls becomes long enough to let any of the counters overflow, we will
->>>>> get wrong performance measurement results. My observations are that
->>>>> the workqueue job can be suspended for several seconds and conditions for
->>>>> the counter overflow occur sooner or later, depending among others
->>>>> on the CPUs load.
->>>>> Wrong bus load measurement can lead to setting too low interconnect bus
->>>>> clock frequency and then bad things happen in peripheral devices.
->>>>>
->>>>> I agree the workqueue issue needs to be fixed. I have some WIP code to use
->>>>> the performance counters overflow interrupts instead of SW polling and with
->>>>> that the interconnect bus clock control seems to work much better.
->>>>>
->>>>
->>>> Thank you for sharing your use case and investigation results. I think
->>>> we are reaching a decent number of developers to maybe address this
->>>> issue: 'workqueue issue needs to be fixed'.
->>>> I have been facing this devfreq workqueue issue ~5 times in different
->>>> platforms.
->>>>
->>>> Regarding the 'performance counters overflow interrupts' there is one
->>>> thing worth to keep in mind: variable utilization and frequency.
->>>> For example, in order to make a conclusion in algorithm deciding that
->>>> the device should increase or decrease the frequency, we fix the period
->>>> of observation, i.e. to 500ms. That can cause the long delay if the
->>>> utilization of the device suddenly drops. For example we set an
->>>> overflow threshold to value i.e. 1000 and we know that at 1000MHz
->>>> and full utilization (100%) the counter will reach that threshold
->>>> after 500ms (which we want, because we don't want too many interrupts
->>>> per sec). What if suddenly utilization drops to 2% (i.e. from 5GB/s
->>>> to 250MB/s (what if it drops to 25MB/s?!)), the counter will reach the
->>>> threshold after 50*500ms = 25s. It is impossible just for the counters
->>>> to predict next utilization and adjust the threshold. [...]
->>>
->>> irq triggers for underflow and overflow, so driver can adjust freq
->>>
->>
->> Probably possible on some platforms, depends on how many PMU registers
->> are available, what information can be can assign to them and type of
->> interrupt. A lot of hassle and still - platform and device specific.
->> Also, drivers should not adjust the freq, governors (different types
->> of them with different settings that they can handle) should do it.
->>
->> What the framework can do is to take this responsibility and provide
->> generic way to monitor the devices (or stop if they are suspended).
->> That should work nicely with the governors, which try to predict the
->> next best frequency. From my experience the more fluctuating intervals
->> the governors are called, the more odd decisions they make.
->> That's why I think having a predictable interval i.e. 100ms is something
->> desirable. Tuning the governors is easier in this case, statistics
->> are easier to trace and interpret, solution is not to platform specific,
->> etc.
->>
->> Kamil do you have plans to refresh and push your next version of the
->> workqueue solution?
-> 
-> I do not, as Bartek takes over my work,
-> +CC Bartek
+Yes, we should fix deferred probing.
 
-Hi Lukasz,
+> Also, it's pretty easy to have
+> cases where one module probes multiple device instances and loading it
+> in one order would break dpm_list order for one device and loading it
+> in another order would break it for another device. And there would be
+> no "proper" order to load modules (because module order != device
+> order).
 
-As you remember in January Chanwoo has proposed another idea (to allow
-selecting workqueue type by devfreq device driver):
+I'm not saying that the current code is perfect.  I'm saying that the
+fix as proposed adds too much cost for everybody who may not care IMO.
 
-"I'm developing the RFC patch and then I'll send it as soon as possible."
-(https://lore.kernel.org/linux-pm/6107fa2b-81ad-060d-89a2-d8941ac4d17e@samsung.com/)
+>
+> > > What about the option of not adding to dpm_list until a device is
+> > > probed? Is it DOA?
+> >
+> > Yes, it is, I'm afraid.  There are devices without drivers. :-)
+>
+> Devices that still suspend/resume without drivers?! I didn't know that
+> was possible.
 
-"After posting my suggestion, we can discuss it"
-(https://lore.kernel.org/linux-pm/f5c5cd64-b72c-2802-f6ea-ab3d28483260@samsung.com/)
+There are "class" devices, "type" devices and devices that simply have
+no drivers, but the bus type code may still want to touch them during
+system-wide suspend/resume.
 
-so we have been waiting on the patch to be posted..
-
-Similarly we have been waiting on (any) feedback for exynos-bus/nocp
-fixes for Exynos5422 support (which have been posted by Kamil also in
-January):
-
-https://lore.kernel.org/linux-pm/8f82d8d5-927b-afb4-272f-45c16b5a23b9@samsung.com/
-
-Considering the above and how hard it has been to push the changes
-through review/merge process last year we are near giving up when it
-comes to upstream devfreq contributions. Sylwester is still working on
-exynos-bus & interconnect integration (continuation of Artur Swigon's
-work from last year) & related issues (IRQ support for PPMU)  but
-I'm seriously considering putting it all on-hold..
-
-Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
+Modules may still not be loaded when the system is suspended for the
+first time etc.
