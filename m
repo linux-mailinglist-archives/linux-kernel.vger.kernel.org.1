@@ -2,105 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817CA20B266
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 15:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5CC20B24E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 15:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgFZNXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 09:23:05 -0400
-Received: from smtpcmd02101.aruba.it ([62.149.158.101]:45381 "EHLO
-        smtpcmd02101.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgFZNXE (ORCPT
+        id S1728056AbgFZNRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 09:17:22 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:46707 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726165AbgFZNRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 09:23:04 -0400
-X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Jun 2020 09:23:03 EDT
-Received: from [192.168.1.129] ([93.146.66.165])
-        by smtpcmd02.ad.aruba.it with bizsmtp
-        id vpFk2200D3Zw7e501pFldb; Fri, 26 Jun 2020 15:15:51 +0200
-Subject: Re: [PATCH 01/10] misc: c2port: core: Ensure source size does not
- equal destination size in strncpy()
-To:     Lee Jones <lee.jones@linaro.org>, arnd@arndb.de,
-        gregkh@linuxfoundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rodolfo Giometti <giometti@linux.it>,
-        "Eurotech S.p.A" <info@eurotech.it>
-References: <20200626130525.389469-1-lee.jones@linaro.org>
- <20200626130525.389469-2-lee.jones@linaro.org>
-From:   Rodolfo Giometti <giometti@enneenne.com>
-Message-ID: <7d8996e9-74d3-ca47-cae8-a457c9a4baab@enneenne.com>
-Date:   Fri, 26 Jun 2020 15:15:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 26 Jun 2020 09:17:20 -0400
+Received: by mail-ot1-f68.google.com with SMTP id n24so6317125otr.13;
+        Fri, 26 Jun 2020 06:17:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TEpxwyqxU/CXnVQNUqgC4JtnG+1gAIg8SLvP9r7YDQs=;
+        b=HKmaPajkrDo5tPSSTGjN7fAIkTCVnt5zPTmWWJ+ermiHCZS39jkBMy+Wq41x8/BvVF
+         Gtq2apva5IncZzozTpoD+tUq3nacjHdb0rOHgMOw5oM72eZ1zCTzbWCh5zGLiJKqGfhh
+         jdflkCrk9JxzA/8gFcTmXjcCfosL7iS889UuL7zcrcrJbyJkf3g8gJMuPKEVXor+O+i+
+         seg21xp9mstWxGRFoqgHbT1WSbBAA/8UjCKuQumocyl2wY04v9WC8kWLcMaz7bCKvJYP
+         DKiLODz3jcl3QvEWlYNwM9cpSsB+e/K4UZT8ANqIiulHMU8iW7bR8h54aqDQnJeRzAi9
+         zuhA==
+X-Gm-Message-State: AOAM532Zfp/GMeLSl1MY7VXMzeNCzR9qswgT3kUFK4GtiNDYXBsY0SRe
+        9Y1BmSiDPDeb2NiJ8P+QxNQGizuwrZ8pEU9dIGDBDg==
+X-Google-Smtp-Source: ABdhPJyMDD4C50COKuuFiVYxSlLVuYKRyZWoBsls7kAHGP6D2L4tgrB28JwOI/k3pEfxBKTMMOieqO23bboqAtM/1iI=
+X-Received: by 2002:a05:6830:10ca:: with SMTP id z10mr2243614oto.167.1593177439501;
+ Fri, 26 Jun 2020 06:17:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200626130525.389469-2-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aruba.it; s=a1;
-        t=1593177351; bh=tjoxSQWjytk5PnjXa46BXRfkKzFN75tkC7pTAZu4Kk0=;
-        h=Subject:To:From:Date:MIME-Version:Content-Type;
-        b=K7j7VQvWWR4cwXC2jbkjy/WF6kq1IwGqR4gre2cjOj66WtuBXYtjkMLNBTkrG88+N
-         TYDHKVZsKlNlx17RZtR1kZzJUd2F89URbl2Pm7rS3f9zAR995MDVKD2kdpYVf0pAk0
-         JAsSZoY8piIbjdbvf3mXUoMHetCdoPdDAa+HLJBnFkUzL3B1SzK23rx64IW+y+2gxa
-         iF3NyxkP7WSzHtIfE7XoUtwLsNHzhilNwJrz6xHMXxiaMc5hh2saSWdVWAZCNLIS5G
-         JqCZIwr/WHsz7gUQz/PsIw4g1QK5d0XwFPjYzzLq77Y9fCmc0Fdlj4gDD2VT4Jtjdf
-         Ku1We2atPoaog==
+References: <20200530143430.5203-1-oscar.carter@gmx.com> <07911cc62ef21900c43aeefbcbfc8d9f@kernel.org>
+In-Reply-To: <07911cc62ef21900c43aeefbcbfc8d9f@kernel.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 26 Jun 2020 15:17:08 +0200
+Message-ID: <CAJZ5v0gJJsLyWokpVT8Cy-h+GE5nyqGip_Log1L9i5z+x+nTwg@mail.gmail.com>
+Subject: Re: [PATCH v5 0/3] drivers/acpi: Remove function callback casts
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Oscar Carter <oscar.carter@gmx.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Len Brown <lenb@kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/06/2020 15:05, Lee Jones wrote:
-> We need to ensure there's a place for the NULL terminator.
-> 
-> Fixes the following W=1 warning(s):
-> 
->  In file included from include/linux/bitmap.h:9,
->  from include/linux/nodemask.h:95,
->  from include/linux/mmzone.h:17,
->  from include/linux/gfp.h:6,
->  from include/linux/umh.h:4,
->  from include/linux/kmod.h:9,
->  from include/linux/module.h:16,
->  from drivers/misc/c2port/core.c:9:
->  In function ‘strncpy’,
->  inlined from ‘c2port_device_register’ at drivers/misc/c2port/core.c:926:2:
->  include/linux/string.h:297:30: warning: ‘__builtin_strncpy’ specified bound 32 equals destination size [-Wstringop-truncation]
->  297 | #define __underlying_strncpy __builtin_strncpy
->  | ^
->  include/linux/string.h:307:9: note: in expansion of macro ‘__underlying_strncpy’
->  307 | return __underlying_strncpy(p, q, size);
->  | ^~~~~~~~~~~~~~~~~~~~
-> 
-> Cc: Rodolfo Giometti <giometti@linux.it>
-> Cc: "Eurotech S.p.A" <info@eurotech.it>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/misc/c2port/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
-> index 33bba18022892..80d87e8a0bea9 100644
-> --- a/drivers/misc/c2port/core.c
-> +++ b/drivers/misc/c2port/core.c
-> @@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
->  	}
->  	dev_set_drvdata(c2dev->dev, c2dev);
->  
-> -	strncpy(c2dev->name, name, C2PORT_NAME_LEN);
-> +	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
->  	c2dev->ops = ops;
->  	mutex_init(&c2dev->mutex);
->  
+Hi,
 
-Acked-by: Rodolfo Giometti <giometti@enneenne.com>
+On Fri, Jun 26, 2020 at 3:07 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> Hi Rafael,
+>
+> On 2020-05-30 15:34, Oscar Carter wrote:
+> > In an effort to enable -Wcast-function-type in the top-level Makefile
+> > to
+> > support Control Flow Integrity builds, there are the need to remove all
+> > the function callback casts in the acpi driver.
+> >
+> > The first patch creates a macro called
+> > ACPI_DECLARE_SUBTABLE_PROBE_ENTRY
+> > to initialize the acpi_probe_entry struct using the probe_subtbl field
+> > instead of the probe_table field to avoid function cast mismatches.
+> >
+> > The second patch modifies the IRQCHIP_ACPI_DECLARE macro to use the new
+> > defined macro ACPI_DECLARE_SUBTABLE_PROBE_ENTRY instead of the macro
+> > ACPI_DECLARE_PROBE_ENTRY. Also, modifies the prototype of the functions
+> > used by the invocation of the IRQCHIP_ACPI_DECLARE macro to match all
+> > the
+> > parameters.
+> >
+> > The third patch removes the function cast in the
+> > ACPI_DECLARE_PROBE_ENTRY
+> > macro to ensure that the functions passed as a last parameter to this
+> > macro
+> > have the right prototype. This macro is used only in another macro
+> > called "TIMER_ACPI_DECLARE". An this is used only in the file:
+> >
+> > drivers/clocksource/arm_arch_timer.c
+> >
+> > In this file, the function used in the last parameter of the
+> > TIMER_ACPI_DECLARE macro already has the right prototype. So there is
+> > no
+> > need to modify its prototype.
+>
+> I'd like to see this into 5.9. Can you please let me know if
+> you are OK with the acpi.h changes?
 
-Note that giometti@linux.it is just an alias. My main e-mail address is
-giometti@enneenne.com
+Yes, I am.
 
-Rodolfo Giometti
+> I can queue it via the irqchip tree.
 
--- 
-GNU/Linux Solutions                  e-mail: giometti@enneenne.com
-Linux Device Driver                          giometti@linux.it
-Embedded Systems                     phone:  +39 349 2432127
-UNIX programming                     skype:  rodolfo.giometti
+Please do!  Also please feel free to add
+
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+to the patches.
+
+Thanks!
