@@ -2,80 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B47020B7EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 20:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D3620B800
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 20:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726206AbgFZSRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 14:17:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34570 "EHLO mail.kernel.org"
+        id S1726429AbgFZSS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 14:18:29 -0400
+Received: from mga02.intel.com ([134.134.136.20]:56435 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725780AbgFZSRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 14:17:19 -0400
-Received: from kernel.org (unknown [87.71.40.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC37B207D8;
-        Fri, 26 Jun 2020 18:17:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593195439;
-        bh=6cO14MahD2eqoTeBaK7We6L4gJrj2k+b/ftJFyuTMmM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jhr6fkibh+hp57t83vdQu2PSEEfVz2VsqS8Ffs1G0+2Kb2hGIZovYf+KpPD7blVjH
-         xMrpEboqbKgaCucHmEksLcAIUJvEbDePA15oWs/L//aJoUMmg4HBPVJ4jJjCewjYR9
-         SQov2Tb6PmGKynLwadAV2ktVQqo3ePRESlUwZgOY=
-Date:   Fri, 26 Jun 2020 21:17:13 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH 0/2] sparc32: srmmu: improve type safety of
- __nocache_fix()
-Message-ID: <20200626181713.GA3547368@kernel.org>
-References: <20200524162151.3493-1-rppt@kernel.org>
+        id S1725913AbgFZSS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 14:18:28 -0400
+IronPort-SDR: xMmZJhzWXjmxOCDj5+N2sUOJAylcQiaC1d+0UyHtsg9bLczcZgEukUfbJhf2RFO0pMOKFojWPV
+ zcX2AchrG+1A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9664"; a="133807647"
+X-IronPort-AV: E=Sophos;i="5.75,284,1589266800"; 
+   d="scan'208";a="133807647"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2020 11:18:21 -0700
+IronPort-SDR: zt3o9bkoY2+2CVGUSRNpYgXOxP/x4EH7zmKj1n+lLxhmxrtVehX/6N5gbuv7BcmeTMBznrePPY
+ yMz62I503MXg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,284,1589266800"; 
+   d="scan'208";a="424152589"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by orsmga004.jf.intel.com with ESMTP; 26 Jun 2020 11:18:20 -0700
+Date:   Fri, 26 Jun 2020 11:18:20 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH 1/2] KVM: X86: Move ignore_msrs handling upper the stack
+Message-ID: <20200626181820.GG6583@linux.intel.com>
+References: <20200622220442.21998-1-peterx@redhat.com>
+ <20200622220442.21998-2-peterx@redhat.com>
+ <20200625061544.GC2141@linux.intel.com>
+ <1cebc562-89e9-3806-bb3c-771946fc64f3@redhat.com>
+ <20200625162540.GC3437@linux.intel.com>
+ <20200626180732.GB175520@xz-x1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200524162151.3493-1-rppt@kernel.org>
+In-Reply-To: <20200626180732.GB175520@xz-x1>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Any comments on this?
+On Fri, Jun 26, 2020 at 02:07:32PM -0400, Peter Xu wrote:
+> On Thu, Jun 25, 2020 at 09:25:40AM -0700, Sean Christopherson wrote:
+> > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> > index 5eb618dbf211..64322446e590 100644
+> > --- a/arch/x86/kvm/cpuid.c
+> > +++ b/arch/x86/kvm/cpuid.c
+> > @@ -1013,9 +1013,9 @@ bool kvm_cpuid(struct kvm_vcpu *vcpu, u32 *eax, u32 *ebx,
+> >                 *ebx = entry->ebx;
+> >                 *ecx = entry->ecx;
+> >                 *edx = entry->edx;
+> > -               if (function == 7 && index == 0) {
+> > +               if (function == 7 && index == 0 && (*ebx | (F(RTM) | F(HLE))) {
+> >                         u64 data;
+> > -                       if (!__kvm_get_msr(vcpu, MSR_IA32_TSX_CTRL, &data, true) &&
+> > +                       if (!kvm_get_msr(vcpu, MSR_IA32_TSX_CTRL, &data) &&
+> >                             (data & TSX_CTRL_CPUID_CLEAR))
+> >                                 *ebx &= ~(F(RTM) | F(HLE));
+> >                 }
+> > 
+> > 
+> > On VMX, MSR_IA32_TSX_CTRL will be added to the so called shared MSR array
+> > regardless of whether or not it is being advertised to userspace (this is
+> > a bug in its own right).  Using the host_initiated variant means KVM will
+> > incorrectly bypass VMX's ARCH_CAP_TSX_CTRL_MSR check, i.e. incorrectly
+> > clear the bits if userspace is being weird and stuffed MSR_IA32_TSX_CTRL
+> > without advertising it to the guest.
+> 
+> Btw, would it be more staightforward to check "vcpu->arch.arch_capabilities &
+> ARCH_CAP_TSX_CTRL_MSR" rather than "*ebx | (F(RTM) | F(HLE))" even if we want
+> to have such a fix?
 
-On Sun, May 24, 2020 at 07:21:49PM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Hi,
-> 
-> As discussed at [1] the __nocache_fix() macro in sparc's SRMMU can be made
-> type safe and so the compiler will yell anout misuse of pXd pointers for
-> which the __nocache_fix() is primarily used.
-> 
-> The first patch is an fix of such misuse that I've discovered after adding
-> type cast to __nocache_fix(), but to avoid breaking bisection I've made it
-> the first commit.
-> 
-> --
-> Sincerely yours,
-> Mike.
-> 
-> [1] https://lkml.kernel.org/r/CAHk-=wisORTa7QVPnFqNw9pFs62UiwgsD4C4d=MtYy1o4JPyGQ@mail.gmail.com
-> 
-> Mike Rapoport (2):
->   sparc32: use PUD rather than PGD to get PMD in srmmu_inherit_prom_mappings()
->   sparc32: srmmu: improve type safety of __nocache_fix()
-> 
->  arch/sparc/include/asm/pgtsrmmu.h |  2 +-
->  arch/sparc/mm/srmmu.c             | 18 +++++++++---------
->  2 files changed, 10 insertions(+), 10 deletions(-)
-> 
-> -- 
-> 2.26.2
-> 
+Not really, That ends up duplicating the check in vmx_get_msr().  From an
+emulation perspective, this really is a "guest" access to the MSR, in the
+sense that it the virtual CPU is in the guest domain, i.e. not a god-like
+entity that gets to break the rules of emulation.
 
--- 
-Sincerely yours,
-Mike.
+The other thing to consider is that SVM doesn't have any knowledge of any
+of this, so arguably the "ignored msr" crud should get logged for SVM as
+it's effectively a userspace bug if they've configured the VM to have RTM
+or HLE on a system that can't possibly support either.
