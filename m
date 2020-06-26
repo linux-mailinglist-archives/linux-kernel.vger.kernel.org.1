@@ -2,60 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEE920B369
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 16:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD7A20B36E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 16:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729049AbgFZOTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 10:19:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58340 "EHLO mail.kernel.org"
+        id S1729163AbgFZOT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 10:19:59 -0400
+Received: from mga17.intel.com ([192.55.52.151]:43793 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728489AbgFZOTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 10:19:38 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E848F208C9;
-        Fri, 26 Jun 2020 14:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593181177;
-        bh=xGvMhYdL0SsIxlp6493J5SH2f1tkLzZPbB6DcFRR/Co=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0C0kKj/2XZdz9AYwQRO/gF40TOgr9vGcgeorNTOKAxS0spCnbQ7L2AZDVz564hjjC
-         FIa0OrEAe6k+xkWRUrtWHFDdXedZRQtqQrZyJNeWvAy6T4tsnom5I/yP/4v2vpuGC4
-         GZQqIm8GJ6oiSCu4DrEt5SUH885r/3zoomHi9WS4=
-Date:   Fri, 26 Jun 2020 16:19:32 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        kgdb-bugreport@lists.sourceforge.net, jason.wessel@windriver.com,
-        dianders@chromium.org, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, jslaby@suse.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 4/4] kdb: Switch to use safer dbg_io_ops over console
- APIs
-Message-ID: <20200626141932.GC4141629@kroah.com>
-References: <1591264879-25920-1-git-send-email-sumit.garg@linaro.org>
- <1591264879-25920-5-git-send-email-sumit.garg@linaro.org>
- <20200626121348.eeutt4py34f2yg3y@holly.lan>
+        id S1728489AbgFZOT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 10:19:57 -0400
+IronPort-SDR: 2hNThCcDOiVRxgR1oOA+ooSiKTszLnw0dNkSqsKw3hfWmKOa7vjlt5DzCvy7wOlM28yrB7RDU2
+ uLJqH0oa8iXQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="125539943"
+X-IronPort-AV: E=Sophos;i="5.75,283,1589266800"; 
+   d="scan'208";a="125539943"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2020 07:19:56 -0700
+IronPort-SDR: 7KVUSL9c3jS1SzTl7agv6L9IQ8NJCyF5vADzpoDpcQH0XLAoZqj/qLV9uL4jS/U4NvVV7P03wB
+ OH3ciBZmhnwg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,283,1589266800"; 
+   d="scan'208";a="479841368"
+Received: from cgheban-mobl.ger.corp.intel.com (HELO localhost) ([10.249.40.199])
+  by fmsmga006.fm.intel.com with ESMTP; 26 Jun 2020 07:19:38 -0700
+Date:   Fri, 26 Jun 2020 17:19:36 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v33 11/21] x86/sgx: Linux Enclave Driver
+Message-ID: <20200626141936.GC390691@linux.intel.com>
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+ <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
+ <20200625172319.GJ20319@zn.tnic>
+ <20200625183448.GG3437@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200626121348.eeutt4py34f2yg3y@holly.lan>
+In-Reply-To: <20200625183448.GG3437@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 01:13:48PM +0100, Daniel Thompson wrote:
-> Hi Greg
+On Thu, Jun 25, 2020 at 11:34:48AM -0700, Sean Christopherson wrote:
+> On Thu, Jun 25, 2020 at 07:23:19PM +0200, Borislav Petkov wrote:
+> > Also, you had all patches until now split nice and logically doing one
+> > thing only.
+> > 
+> > But this one is huge. Why?
+> > 
+> > Why can't you split out the facilities which the driver uses: encl.[ch]
+> > into a patch, then ioctl.c into a separate one and then the driver into
+> > a third one? Or do they all belong together inseparably?
+> > 
+> > I guess I'll find out eventually but it would've been nice if they were
+> > split out...
 > 
-> This patch touches some kgdb related code in both serial and usb trees.
+> Hmm, I think the most reasonable way to break up this beast would be to
+> incrementally introduce functionality.  E.g. four or so patches, one for
+> each ioctl() of ENCLAVE_CREATE, ENCLAVE_ADD_PAGES, ENCLAVE_INIT and
+> ENCLAVE_SET_ATTRIBUTE, in that order.
 > 
-> Any objections to my queuing this via the kgdb tree?
+> Splitting up by file probably wouldn't work very well.  The split is
+> pretty arbitrary, e.g. encl.[ch] isn't simply a pure representation of an
+> enclave, there is a lot of the driver details/dependencies in there, i.e.
+> the functionality between encl/ioctl/driver is all pretty intertwined.
 > 
-> After testing I've concluded that this, and its friends (which only
-> touch kgdb), fix enough problems that I plan to queue it for v5.8.
+> But I think serially introducing each ioctl() would be fairly clean, and
+> would help readers/reviewers better understand SGX as the patches would
+> naturally document the process of building an enclave, e.g. CREATE the
+> enclave, then ADD_PAGES, then INIT the enclave.  SET_ATTRIBUTE is a bit
+> of an outlier in that it would be chronologically out of order with
+> respect to building the enclave, but I think that's ok. 
+> 
+> Jarkko, thoughts?
 
-No objections at all:
+I proposed the same before I go this email so I guess we have a
+consensus here.
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+/Jarkko
