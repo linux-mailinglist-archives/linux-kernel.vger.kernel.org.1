@@ -2,127 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4593B20B44E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAFD20B45E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729353AbgFZPSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 11:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
+        id S1729475AbgFZPVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 11:21:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726657AbgFZPSD (ORCPT
+        with ESMTP id S1725821AbgFZPVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 11:18:03 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F1CFC03E97A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:18:03 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id z63so9054534qkb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:18:03 -0700 (PDT)
+        Fri, 26 Jun 2020 11:21:03 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25227C03E979
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:21:03 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id u185so2749087pfu.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:21:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0S3+/lb8kTzTF7FG+GaZo7TfixBDNtLBveukGJJz1OA=;
-        b=pxn6ZawdwN+2yWmx04djJWqqXdCzmPwgL9uoMrdcjCFQHtH0kzj7+OCDwo0NOmsffI
-         9MOHjqXADtuM6Eonqp4mO8OVha8dQsqVFHr/fsbKSPzfb4VeCRa4Y/AvLZD/8V0uU5i/
-         rv7kDng9weKxmLnpPFfwzd+LfObFbsB8K1spR8cRZCUarMngFTeSX5Ld3FXEvhPHGkUk
-         LU2sSRqEKa84G2P38oJ3kPczTjj+h65ZLaeQKCHPmv2RIhcv8wLQ4cFpausDgh4rvWK3
-         Xu76inpSAyo5OgQIz5cRPF4yA2kxbxvNbAD9bugtRDyE8P2IpIUbA7E40aEAZewiExcE
-         yOzg==
+         :content-disposition:in-reply-to;
+        bh=W43mPve1K1gecItiKfJ5kp3y0K64xEFGn1/0oe3m2A0=;
+        b=Y/biJ5zRJLKjtaCxmUuQIFAfdTuoyUR6C9crenAiB8bgr3xcyFbAE1UfpTnKvvqOck
+         0Z5BQvjGcNgv9SDcThrahKUxunQmKEqexcKXSp51S7oCTvQ8UsqFJWnMyLowvEewYqG2
+         TbxyC7R14trZYvKBFS/g++xVREkyW5wEdiK4Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0S3+/lb8kTzTF7FG+GaZo7TfixBDNtLBveukGJJz1OA=;
-        b=g8j9HO15oyfDw7dDUU+KiUTmZgJ8svvunMlzMBAUfwjfZBH9B10O7PXYiHWxj5hBep
-         pAxW+xGI8NZ5ABOcp/627dUuQZb2/ytCvfYT81hvxVMSCWPYjQ/71TmkHg4KVvRT+f1M
-         A3J7tQjrOu03+taukhTrek9zmmEvP02lohk0x5GesDfm9Hacw3ooPzwKnbvLSdcS+JgB
-         ySLnQ1iol8n3BkawdJqW939ZAG9fOnd7UMnck6i5dFmunY3Wyh/mzW4iJACrtLfVh5zq
-         yr7SC8+IK8QQLND5LK7QbHWSYuGKsxHFxoJ7e6VNpFPoY4m2OjVOZ4iK0uSS8hycVsfL
-         8X1g==
-X-Gm-Message-State: AOAM530i2N8SrpM0zQKQpAQNIoSpQER2SOYICRrAD6FZzc04bfCK+r5V
-        hXVUK5a9+5vnGW0p1U4Ne2DPMA==
-X-Google-Smtp-Source: ABdhPJyxJJEEnnxsuDhIU/toh+dHV3q9cCmOXXFJqgFN0cKJYvcOuPUsKnfNvqaMB58IcRJE4TEmhg==
-X-Received: by 2002:a37:7683:: with SMTP id r125mr1013064qkc.39.1593184682285;
-        Fri, 26 Jun 2020 08:18:02 -0700 (PDT)
-Received: from localhost (rfs.netwinder.org. [206.248.184.2])
-        by smtp.gmail.com with ESMTPSA id 79sm173640qkd.134.2020.06.26.08.18.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 26 Jun 2020 08:18:01 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 11:18:00 -0400
-From:   Ralph Siemsen <ralph.siemsen@linaro.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 182/267] spi: dw: Return any value retrieved from
- the dma_transfer callback
-Message-ID: <20200626151800.GA22242@maple.netwinder.org>
-References: <20200619141648.840376470@linuxfoundation.org>
- <20200619141657.498868116@linuxfoundation.org>
- <20200619210719.GB12233@amd>
- <20200622205121.4xuki7guyj6u5yul@mobilestation>
+         :mime-version:content-disposition:in-reply-to;
+        bh=W43mPve1K1gecItiKfJ5kp3y0K64xEFGn1/0oe3m2A0=;
+        b=j3y6RoBJiM1+gD0D9IIVr6cUAOC/hMA80NovYOEStkQ5JuEeZI/+CwcmA9efD3OAxk
+         9ggn8vTF92d8AjLG8n1JYeEaROqqtSdeOpNjBqzBdSOCdYgg7XRLEShOzO2bUj3FTFLp
+         H2CiNqleQve6Et3cx49to24YtdZV/HVneTdXG0Whg9lGF2O3ABmrh8ej3JGaAN43y9En
+         ldP8Asx/WDUG25AHn5mL4KXuhryW63PEKZgPHdGobJ0a+nGX48EZoxgH086bIVPheWkS
+         1mAQpaeAowVK50ru/Da6ONs5y7EbZ/mrTUqVckrjeaKaXtsDrNZXaCZidiDnWJdo+pun
+         8+PQ==
+X-Gm-Message-State: AOAM532od9trfiKiEoRb9kIduOb3aXx8skjEfigR8JiYsl8KaeO2eIGw
+        kO12pzqhagbr5Q2eOxUhGhvsNA==
+X-Google-Smtp-Source: ABdhPJyaAo/gRdwYJkkzveaMBXTdLm+06FbadeCuW1eS2WfwpnqRLb/QtItwCB6MelWrvMPpZxMV2g==
+X-Received: by 2002:a63:1f11:: with SMTP id f17mr3090183pgf.217.1593184862710;
+        Fri, 26 Jun 2020 08:21:02 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i63sm11489726pfc.22.2020.06.26.08.21.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jun 2020 08:21:01 -0700 (PDT)
+Date:   Fri, 26 Jun 2020 08:21:00 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Emil Velikov <emil.l.velikov@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel test robot <lkp@intel.com>,
+        mm-commits@vger.kernel.org,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [patch 10/32] linux/bits.h: fix unsigned less than zero warnings
+Message-ID: <202006260817.25D0459@keescook>
+References: <20200625202807.b630829d6fa55388148bee7d@linux-foundation.org>
+ <20200626032946._LJ_E6G66%akpm@linux-foundation.org>
+ <CAHk-=wiZrhVUq3N17=GVzMQNQUKi65x=-djTM2A+fz8UdQxgEg@mail.gmail.com>
+ <CADRDgG6SXwngT5gS2EY1Y0xnPdYth-FicQyTnPyqiwpmw52eQg@mail.gmail.com>
+ <CAHp75Ve2x9dEqaHSue5UAftsJw+U3n8K9YEXBy5QFGJHgkQ3DA@mail.gmail.com>
+ <CAK8P3a3doveL3DxjcyiAqxNve07WfXYNTXK77Pbm70Dvyowg2w@mail.gmail.com>
+ <CAHp75Vfr8sFydbH=G7U+wXoUftT9RnsfSSLi4RXNyR-3sApR3w@mail.gmail.com>
+ <CAK8P3a2bCyO6xV+tCynjVXpgH-wkQ7=N5pfa8oax9BKWL+a7ig@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200622205121.4xuki7guyj6u5yul@mobilestation>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAK8P3a2bCyO6xV+tCynjVXpgH-wkQ7=N5pfa8oax9BKWL+a7ig@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Serge, Pavel, Greg,
+On Fri, Jun 26, 2020 at 04:43:36PM +0200, Arnd Bergmann wrote:
+> On Fri, Jun 26, 2020 at 4:09 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> >
+> > On Fri, Jun 26, 2020 at 5:03 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > It would work for me if it had been
+> > a) documented (I didn't check if it had been already done, though);
+> > b) understood by all CIs in the same way (see a) as well :-).
+> 
+> I checked the 'make help' output, which describes them as
+> 
+> make W=n   [targets] Enable extra build checks, n=1,2,3 where
+>    1: warnings which may be relevant and do not occur too often
+>    2: warnings which occur quite often but may still be relevant
+>    3: more obscure warnings, can most likely be ignored
+>    Multiple levels can be combined with W=12 or W=123
+> 
+> which is less specific than the interpretation I had in mind but
+> I think still fits a).
 
-On Mon, Jun 22, 2020 at 11:51:21PM +0300, Serge Semin wrote:
->Hello Pavel
->
->On Fri, Jun 19, 2020 at 11:07:19PM +0200, Pavel Machek wrote:
->
->> Mainline patch simply changes return value, but code is different in
->> v4.19, and poll_transfer will now be avoided when dws->dma_mapped. Is
->> that a problem?
->
->Actually no.) In that old 4.19 context it's even better to return straight away
->no matter what value is returned by the dma_transfer() callback.
+How about tweaking this as:
 
-This patch changes the return dma_transfer return value from 0 to 1, 
-however it was only done in spi-dw-mid.c func mid_spi_dma_transfer().
+make W=n   [targets] Enable extra build checks, n=1,2,3 where
+   1: warnings which may be relevant and do not occur too often
+      and can normally be fixed in code. (Reasonable for CIs to
+      use without generating too much spam.)
+   2: warnings which occur quite often but may still be relevant
+      to developers looking for ways to improve compilers or
+      looking for very special cases. (Not usually a good idea
+      for automated systems.)
+   3: more obscure warnings, can most likely be ignored but have
+      value to some very narrow areas of code/compiler analysis.
+      Very noisy!
 
-There is an identical function in spi-dw-mmio.c that needs the same 
-treatment, otherwise access to the SPI device becomes erratic and even 
-causes kernel to hang. Guess how I found this ;-)
 
-So the following patch is needed as well, at least in 4.9 and 4.19, I 
-did not check/test other versions. Mainline does not need this, since 
-the code seems to have been refactored to avoid the duplication.
 
-Regards,
--Ralph
-
-diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
-index c563c2815093..99641c485288 100644
---- a/drivers/spi/spi-dw-mmio.c
-+++ b/drivers/spi/spi-dw-mmio.c
-@@ -358,7 +358,7 @@ static int mmio_spi_dma_transfer(struct dw_spi *dws, struct spi_transfer *xfer)
- 		dma_async_issue_pending(dws->txchan);
- 	}
- 
--	return 0;
-+	return 1;
- }
- 
- static void mmio_spi_dma_stop(struct dw_spi *dws)
 -- 
-2.17.1
-
+Kees Cook
