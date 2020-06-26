@@ -2,149 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BCAB20B472
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2433920B47A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729511AbgFZPY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 11:24:57 -0400
-Received: from mail.efficios.com ([167.114.26.124]:59664 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbgFZPY4 (ORCPT
+        id S1728037AbgFZP0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 11:26:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbgFZP0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 11:24:56 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 192E52D42AC;
-        Fri, 26 Jun 2020 11:24:55 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id grby5fTKR4lp; Fri, 26 Jun 2020 11:24:54 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id BECF82D4167;
-        Fri, 26 Jun 2020 11:24:54 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com BECF82D4167
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1593185094;
-        bh=ILoOKMJ0HLWoZQ0SlDq/HWBiD80XSi4+j4ffedAs92M=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=NpvKk4KCrbtpG5U23+PYLC6Mfj3U7b8gmzFxtFG8tXQSu2OdmGw79BlUh1RVl4zP0
-         SelHLW7x0a8D8iZNwYqxlWeymC0BBOQBnWDb1M/S4+xWmpZZtDxAS/x3oDbEZBjxso
-         PUz0gUW+YZnYIpqwCScH9nGQ3Dy4/fohf601Gt9Z33BfRAE+0bsKUJVkFI96jLR5yM
-         wH6a6U1nTt6upaQNvMNFU708jAAr650A688KEeN56TJr/rQgna3CEQe4lSY+nJOXWS
-         FJcULNn2R02SMj5fIYMy5ur43hNN7xu2zoiLfTVpB/f7Lk/gG9+mrLWbxmK53KdnSd
-         sVQX36M1WRymg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Xx9DgTLid4es; Fri, 26 Jun 2020 11:24:54 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id A955D2D415E;
-        Fri, 26 Jun 2020 11:24:54 -0400 (EDT)
-Date:   Fri, 26 Jun 2020 11:24:54 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joel Fernandes <joelaf@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        rostedt <rostedt@goodmis.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        paulmck <paulmck@kernel.org>, Julien Desfossez <ju@klipix.org>
-Message-ID: <150431492.14312.1593185094592.JavaMail.zimbra@efficios.com>
-In-Reply-To: <1747476740.14310.1593184577574.JavaMail.zimbra@efficios.com>
-References: <20200619202516.7109-1-mathieu.desnoyers@efficios.com> <20200624121136.GF4800@hirez.programming.kicks-ass.net> <269292405.11607.1593023493676.JavaMail.zimbra@efficios.com> <20200624195030.GG4800@hirez.programming.kicks-ass.net> <1115572712.12427.1593096995446.JavaMail.zimbra@efficios.com> <489418873.12472.1593102891027.JavaMail.zimbra@efficios.com> <1747476740.14310.1593184577574.JavaMail.zimbra@efficios.com>
-Subject: Re: [RFC PATCH v2] sched_pair_cpu: Introduce scheduler task pairing
- system call
+        Fri, 26 Jun 2020 11:26:33 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732BEC03E979
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:26:33 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id l63so5072928pge.12
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:26:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=SGbBcZmi7JWYkcmSuZuMkDkOvcG69EpOPP88SAzNvdw=;
+        b=OV2MEBsVbbgFRgkfsg3gKcIyAxzhOi9e+yhzWHyd2zWOkn+XiOwkOJNz/2sSZiG2kh
+         W3cMGtcu+UuLnsjvQFu1OYF2TJKX8Ziw751JowQOGuMZM8+sq8293ctqbMzYo9oiPBpd
+         GQ7RVsECGWGMaD7YzKmvcbZr6A5ALg98qHxhQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=SGbBcZmi7JWYkcmSuZuMkDkOvcG69EpOPP88SAzNvdw=;
+        b=d1+ttXqrqK4VRlcylDCei2F54U/1ncBIj+6KLT/gsSZ+tRgN45NMcF3/2jSZEYNgPa
+         xsdHb6pjoCf+JPUu6IxkpLKmCwKIHtHP2QIvhfj+y4PJIelSCsbZgovvIqd5ZC38RcAw
+         JUHH3pPxzdL2hiOLkWfQXBBkKWXBItJO0Je3mjJDvxeoAteVpPy3JBcaRNKR0LegBuhI
+         FGrw6JPt9zmIbmeaVCym/w8AcxBAge2zYeKS+nvvQXNTcJfJQ7tHxfa15ngp9jAB5zZB
+         k3HPDtZeImrv5wLCs8vhnc0IUvrJt/Kfoq6UAW2XEovKqncpycTmsendZKaoLZEJDrtt
+         8T6A==
+X-Gm-Message-State: AOAM532gtLl2VVwpcfPianIhbXSU/Cfhvdz2MrJwvZj5hQNyKedI/zjQ
+        kWZk5V6a61ofLpTZ3v1hqrh3jw==
+X-Google-Smtp-Source: ABdhPJxLbmD5CwIezukq172Xja4wW7yqyiCldoMg6FYFakPoVpwRnS+OWs2h0At9c0wzp83W2w2szQ==
+X-Received: by 2002:a63:5013:: with SMTP id e19mr3254551pgb.68.1593185193063;
+        Fri, 26 Jun 2020 08:26:33 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h17sm21791916pgv.41.2020.06.26.08.26.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jun 2020 08:26:32 -0700 (PDT)
+Date:   Fri, 26 Jun 2020 08:26:31 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/10] misc: lkdtm: bugs: At least try to use popuated
+ variable
+Message-ID: <202006260825.F530851198@keescook>
+References: <20200626130525.389469-1-lee.jones@linaro.org>
+ <20200626130525.389469-5-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3945 (ZimbraWebClient - FF77 (Linux)/8.8.15_GA_3928)
-Thread-Topic: sched_pair_cpu: Introduce scheduler task pairing system call
-Thread-Index: KKF2EJ/UOyY4CnhVA6NZtcIQEi8jPD1z4gT9UfinMbYU+XsliA==
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200626130525.389469-5-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 26, 2020 at 02:05:19PM +0100, Lee Jones wrote:
+> The result may not be intereresting, but not using a set variable
+> is bad form and causes W=1 kernel builds to complain.
+> 
+> Fixes the following W=1 warning(s):
+> 
+>  drivers/misc/lkdtm/bugs.c: In function ‘lkdtm_STACK_GUARD_PAGE_LEADING’:
+>  drivers/misc/lkdtm/bugs.c:331:25: warning: variable ‘byte’ set but not used [-Wunused-but-set-variable]
+>  331 | volatile unsigned char byte;
+>  | ^~~~
+>  drivers/misc/lkdtm/bugs.c: In function ‘lkdtm_STACK_GUARD_PAGE_TRAILING’:
+>  drivers/misc/lkdtm/bugs.c:345:25: warning: variable ‘byte’ set but not used [-Wunused-but-set-variable]
+>  345 | volatile unsigned char byte;
+>  | ^~~~
+> 
+> Cc: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
+Ah yeah, this looks like a reasonable way to deal with it. Thanks!
 
------ On Jun 26, 2020, at 11:16 AM, Mathieu Desnoyers mathieu.desnoyers@efficios.com wrote:
-
-> ----- On Jun 25, 2020, at 12:34 PM, Mathieu Desnoyers
-> mathieu.desnoyers@efficios.com wrote:
-> 
->> ----- On Jun 25, 2020, at 10:56 AM, Mathieu Desnoyers
->> mathieu.desnoyers@efficios.com wrote:
->> 
->>> ----- On Jun 24, 2020, at 3:50 PM, Peter Zijlstra peterz@infradead.org wrote:
->>> 
->>>> On Wed, Jun 24, 2020 at 02:31:33PM -0400, Mathieu Desnoyers wrote:
->>>> 
->>> [...]
->>>> The other alternative is using a preempt_notifier for the worker I
->>>> suppose.
->>> 
->> [...]
->>>> 
->>>> preempt_notifier could work here too I suppose, install it on yourself
->>>> when you do the pear syscall and take it away again when you're finished
->>>> with it.
->> 
->> The issue I currently have with preempt notifiers is that I need to
->> send an IPI from a sched_out notifier, which has interrupts off and
->> hold the rq lock. smp_call_function_single() warns due to irq off, and
->> indeed it triggers deadlocks.
->> 
->> Before using preempt notifiers, I was touching the "prev" task after
->> irqs were reenabled and rq lock was released, which allowed me to
->> send an IPI from that context.
->> 
->> Any thoughts on how to best solve this ?
-> 
-> I think I may have found a way out of this: I may not need to use
-> smp_call_function_single() at all.
-> 
-> When preempting a paired task, I think we can rely on memory barrier at the
-> beginning of scheduling of the paired task to match the memory barrier at
-> the end of scheduling of the kworker thread to provide memory ordering.
-> Therefore,
-> the IPI is not needed at all in this case.
-> 
-> When preempting the kworker thread, things are a bit trickier. AFAIU I can
-> simply
-> queue task work on the paired task directly without an IPI, and then use
-> kick_process() on the paired task.
-> 
-> The remaining concern is whether kick_process() (and thus smp_send_reschedule())
-> is sufficient to guarantee a memory barrier before smp_send_reschedule returns ?
-> I suspect not, because it only raises the IPI, and does not appear to wait for
-> its handler to complete. In that case I need a release on the paired task and
-> an acquire in sched_out of the kworker. The memory barrier at the end of
-> schedule
-> fulfills the acquire, but I don't see how the acquire is done on the paired
-> task,
-> because execution of its scheduler does not necessarily happen immediately when
-> the IPI is raised.
-
-Hrm, smp_cond_load_acquire(&running_task->on_cpu, !VAL); is probably all I need
-after that kick_process.
-
-Thanks,
-
-Mathieu
-
-> 
-> Thanks,
-> 
-> Mathieu
-> 
-> --
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> http://www.efficios.com
+Acked-by: Kees Cook <keescook@chromium.org>
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Kees Cook
