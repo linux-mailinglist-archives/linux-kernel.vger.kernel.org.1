@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BA720AD1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7218F20AD1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728796AbgFZH2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 03:28:10 -0400
-Received: from mailout2n.rrzn.uni-hannover.de ([130.75.2.113]:37570 "EHLO
+        id S1728812AbgFZH2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 03:28:35 -0400
+Received: from mailout2n.rrzn.uni-hannover.de ([130.75.2.113]:37597 "EHLO
         mailout2n.rrzn.uni-hannover.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727879AbgFZH2K (ORCPT
+        by vger.kernel.org with ESMTP id S1728341AbgFZH2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 03:28:10 -0400
+        Fri, 26 Jun 2020 03:28:35 -0400
 Received: from ytterbium.maphy.uni-hannover.de (ytterbium.maphy.uni-hannover.de [130.75.75.70])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mailout2n.rrzn.uni-hannover.de (Postfix) with ESMTPSA id 58D9A1F568;
-        Fri, 26 Jun 2020 09:23:03 +0200 (CEST)
-Received: by ytterbium.maphy.uni-hannover.de (sSMTP sendmail emulation); Fri, 26 Jun 2020 09:23:03 +0200
-Date:   Fri, 26 Jun 2020 09:23:03 +0200
+        by mailout2n.rrzn.uni-hannover.de (Postfix) with ESMTPSA id D3FB21F56A;
+        Fri, 26 Jun 2020 09:23:18 +0200 (CEST)
+Received: by ytterbium.maphy.uni-hannover.de (sSMTP sendmail emulation); Fri, 26 Jun 2020 09:23:18 +0200
+Date:   Fri, 26 Jun 2020 09:23:18 +0200
 From:   Tammo Block <tammo.block@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jslaby@suse.com>
-Subject: [PATCH v0 4/5] Add support for SRG report output format
-Message-ID: <f703a17a02475251e50071354977dca8544f969a.1593155911.git.tammo.block@gmail.com>
+Subject: [PATCH v0 5/5] Add Documentation for console mouse reporting
+Message-ID: <1eb8c1220ad8315a05ed55a54c54e163029467f1.1593155911.git.tammo.block@gmail.com>
 References: <cover.1593155911.git.tammo.block@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -35,55 +35,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SRG ("1005") style mouse reports. Always use them to create a report to
-userspace if they are available because they may contain more information
-(e.g. scroll wheel events).
-
-Do not send reports at all if report information is not sufficient.
+This patch adds a description of the kernel interface(s) used for mouse
+reporting and compares the old and new bitmask layout.
 
 Signed-off-by: Tammo Block <tammo.block@gmail.com>
 ---
- drivers/tty/vt/vt.c | 26 +++++++++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
+ .../admin-guide/console-mouse-reporting.rst   | 82 +++++++++++++++++++
+ Documentation/admin-guide/index.rst           |  1 +
+ 2 files changed, 83 insertions(+)
+ create mode 100644 Documentation/admin-guide/console-mouse-reporting.rst
 
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 5c9c449dc150..af0c58a9b108 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -1835,10 +1835,30 @@ static inline void respond_ID(struct tty_struct *tty)
- 
- void mouse_report(struct tty_struct *tty, int butt, int mrx, int mry)
- {
--	char buf[8];
-+	char buf[20];
-+	char rel;
- 
--	sprintf(buf, "\033[M%c%c%c", (char)(' ' + (butt & TIOCL_SELBUTTONMASK)),
--		(char)('!' + mrx), (char)('!' + mry));
-+	if (butt & TIOCL_SELSRGREPORT) {
-+		rel = (butt & TIOCL_SELSRGRELEASE) ? 1 : 0;
-+		butt = butt >> 8;
+diff --git a/Documentation/admin-guide/console-mouse-reporting.rst b/Documentation/admin-guide/console-mouse-reporting.rst
+new file mode 100644
+index 000000000000..799288295655
+--- /dev/null
++++ b/Documentation/admin-guide/console-mouse-reporting.rst
+@@ -0,0 +1,82 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+		if (vc_cons[fg_console].d->vc_proto_mouse) {
-+			sprintf(buf, "\033[<%d;%d;%d%c", butt, mrx + 1, mry + 1, rel ? 'm' : 'M');
-+		} else {
-+			if (rel)
-+				butt = (3 | butt);
-+			sprintf(buf, "\033[M%c%c%c", (char)(' ' + butt),
-+				(char)('!' + mrx), (char)('!' + mry));
-+		}
-+	} else {
-+		/* Compatibility for older protocol */
-+		if (vc_cons[fg_console].d->vc_proto_mouse)
-+			return;
-+		if (vc_cons[fg_console].d->vc_report_mouse > 2)
-+			return;
-+		sprintf(buf, "\033[M%c%c%c", (char)(' ' + (butt & TIOCL_SELBUTTONMASK)),
-+			(char)('!' + mrx), (char)('!' + mry));
-+	}
- 	respond_string(buf, tty->port);
- }
- 
++=======================
++Console Mouse Reporting
++=======================
++
++A terminal may send escape sequences to enable applications to react on mouse
++input. As the kernel does not know when to emit these events a mouse daemon
++is needed to react on mouse movements and signal the kernel accordingly. The
++kernel will then send an escape sequence to the application. This is called
++mouse reporting and several types and protocols have been developed over time.
++
++See tiocl.h, the :manpage:`ioctl_console(2)` and :manpage:`console_codes(4)`
++man pages and the xterm [1]_ or terminalguide [2]_ home pages for a detailed
++list and description of the various protocols, their bit layout as well as
++their limitations.
++
++You can check which mouse events are requested *clients* via the TIOCLINUX
++ioctl, using the TIOCL_GETMOUSEREPORTING subcall. The values of these event
++classes (9, 1000, 1002, 1003, 1005) are described in tiocl.h.
++
++Report layout
++-------------
++
++A report is send by a mouse *daemon* to the kernel via the TIOCLINUX ioctl,
++using the TIOCL_SETSEL subcall. The coordinates are encoded zero based in
++xs and ys, with 0,0 as upper left corner, but see note below.
++
++The bits of the sel_mode are used the following way:
++
++X10/X11 like protocol
+++++++++++++++++++++++
++
++For the X10/X11 like protocol (if DECSET 1005 is *not* set), the lower 5 bits
++of the sel_mode are used like this:
++
++- 1,2  : Encode Buttons (see notes below) / TIOCL_SELBUTTONMASK
++- 3,4  : Modifier keys (Shift, Alt) / TIOCL_SELBUTTONMASK
++- 5    : Always 1, identifies X10 protocol / TIOCL_SELMOUSEREPORT
++
++SRG protocol
++++++++++++++
++
++For the SRG style protocol (xterm style, DECSET 1005 *is* set) the upper 11
++bits of sel_mode are used like this:
++
++- 6    : Always 1, identifies SRG protocol / TIOCL_SELSRGREPORT
++- 7    : Unused, should be 0. Ignored by kernel (future extensions)
++- 8    : Set on button release events / TIOCL_SELSRGRELEASE
++- 9-16 : The SRG byte, send to userspace as is / TIOCL_SELSRGMASK
++
++The SRG (upper) byte
++++++++++++++++++++++
++
++The layout of the *upper byte* ("SRG") is identical to the SRG data layout,
++for protocol "1005", as described in detail in the xterm [1]_ or
++terminalguide [2]_ home pages. Short summary:
++
++ - 1,2 : Buttons, lower bits (see notes below)
++ - 3-5 : Modifier keys (Shift, Alt and Ctrl)
++ - 6   : Mouse movement only, no button status change
++ - 7-8 : Buttons, upper bits (for buttons 4-15)
++
++Notes
+++++++
++
++Button numbers are encoded like this:
++
++- 0-2  : Left, middle and right button
++- 3    : No button pressed / Button release
++- 4-15 : More buttons, e.g. 4 and 5 are scroll wheel
++
++Please note that button releases should only be reported for buttons 0-2.
++
++Also note that coordinates (xs,ys,xe,ye) are zero based for the TIOCL_SETSEL
++syscall but one based for the escape sequences send by the kernel, so the
++kernel will increase all coordinates by one.
++
++.. [1] https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h2-Mouse-Tracking
++.. [2] https://terminalguide.namepad.de/mouse/
++
++
+diff --git a/Documentation/admin-guide/index.rst b/Documentation/admin-guide/index.rst
+index 58c7f9fc2396..c535902f3851 100644
+--- a/Documentation/admin-guide/index.rst
++++ b/Documentation/admin-guide/index.rst
+@@ -71,6 +71,7 @@ configure specific aspects of kernel behavior to your liking.
+    cgroup-v2
+    cifs/index
+    clearing-warn-once
++   console-mouse-reporting
+    cpu-load
+    cputopology
+    dell_rbu
 -- 
 2.27.0
 
