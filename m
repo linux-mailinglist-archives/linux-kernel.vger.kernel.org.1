@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F2320ADF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 10:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C362D20AE05
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 10:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729300AbgFZIG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 04:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40806 "EHLO
+        id S1729387AbgFZIHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 04:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729272AbgFZIGU (ORCPT
+        with ESMTP id S1729285AbgFZIGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 04:06:20 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2788BC08C5C1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 01:06:21 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id d12so4009279ply.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 01:06:21 -0700 (PDT)
+        Fri, 26 Jun 2020 04:06:23 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A680C08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 01:06:24 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id w2so3823153pgg.10
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 01:06:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=F6U2kLLRCj0NVNw/QlFArT2QiCEFka/0C4bkaDQjPqM=;
-        b=gM1di/XSYvnZe1PpTYoZ7dmbK5xqrvIjVpb6pD0IL5cxvE1X4a2CDs8/pYofq+9/FG
-         LpTplu9ZcMLWF3PXIw80f93CwQ69vPwn6p3MSIq9DuYOx3mi+eH8P8SstoyjxNZE4Y5z
-         Yu5WMC7PyeIDZZwUyWbUsiarYd9a84UU0zX9Q=
+        bh=e/SQkaIkQYThWAWodZ31ujagTBZlI1iDzzrB4vJVM6s=;
+        b=AeFZoIN/fr4cIMvuYSHhq5dGMtYtBpPIl51KTcus8jLUWyrsd3bW/QasAwLiUnyKVY
+         XZpKXuglmID8LOTPDjHjFNu2TwHeN1HZkNaV3zQfD9hr5pTYjtzScffE2nRLKxx6ik91
+         TzRISkAX1ZMMqV6aGLGPlhHGNAFPFkw14UNIE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=F6U2kLLRCj0NVNw/QlFArT2QiCEFka/0C4bkaDQjPqM=;
-        b=XVVgH63RvcQDL+GgJXuIASYGY2LKwaZAIsmFjZSPqsgeTu0NwEkDejlV78/GnY+NQZ
-         OIkg1C1BK732fN88lNO/r4TOPQN2+fLrDfsANgzxysuRUyIFB3yl/4LVTHtroqIrvUYC
-         iaR0AdZuS/cgTOg2PNnYsJfMHuutokRu8dwDJ4dlwwTjhgc5098iRi5MvvabbcdKWO+O
-         ZyzF319sQJvf2IZRRA5ipjoQoePE9rCB8oDR06AswyUyHm9n+54Go3gb5Ety7+olJ1xT
-         SLiNYsZ//RwPNnScKN89kZKibagwjY96K2OHvpitcxpns7wTv2TRf/92K69yAGJKV332
-         sSxA==
-X-Gm-Message-State: AOAM530WPfs41nl0UqKy1KsvAgtetpvatObBMcngkTDnLUifmYOG7/vL
-        4q6919gLEa/LDwOi4y725EM8Lg==
-X-Google-Smtp-Source: ABdhPJyG5OutRcLxxs/czs3n6d1rqJf8k0E9DH0hoHXoW2R21CXvKW4LIRQcUAye8Aeh/mDbigVRRQ==
-X-Received: by 2002:a17:90a:5c85:: with SMTP id r5mr2188895pji.40.1593158780782;
-        Fri, 26 Jun 2020 01:06:20 -0700 (PDT)
+        bh=e/SQkaIkQYThWAWodZ31ujagTBZlI1iDzzrB4vJVM6s=;
+        b=nUHcuC9BXn2ZW/o9VoVj3lrBtNptKhmqn34EbNzt0fKnl40dDlFHNtDzeD7it6j4Mx
+         FH2rk0+TmtRrgJeQdVngLllaP2GqbAHxBSUG03vceTN5e64kZ3W9xpXMEwBpbrim3d9C
+         AtlrsmwXVqwhvnj1qHDRRkh4C+Qgp8nzJVbnDP22l8jXYkCvDkDmuC03kvuraoz0P8aT
+         4ifI1sosO/9G9MDTugUb8P9jhJbxAOWXJvznKYF8v9ODgtcC8SzgepB2Dbebt9JmibOY
+         065gc329mMeyCmzKNnAJJYEnJuTI9aqmoxldfXb4QFmdYo5mZmuy09gTHzTL1xPdCbbS
+         XtSQ==
+X-Gm-Message-State: AOAM532EZoyzvbqHyG2qrIwOzUqwXOgQ95ErMNYH/4N6NaapGb5aT/4A
+        kKCOb28KwqTiWWvf2Do37FygnQ==
+X-Google-Smtp-Source: ABdhPJzcGcfKhOrU39qKlXLmxNs5YJdjrelLysgC2xeVATizxK3iWSsOEOtEmDWKAZT2UkkJEJdMbA==
+X-Received: by 2002:a63:9246:: with SMTP id s6mr1658143pgn.22.1593158783791;
+        Fri, 26 Jun 2020 01:06:23 -0700 (PDT)
 Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:93d9:de4d:e834:3086])
-        by smtp.gmail.com with ESMTPSA id 137sm21809843pgg.72.2020.06.26.01.06.17
+        by smtp.gmail.com with ESMTPSA id 137sm21809843pgg.72.2020.06.26.01.06.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 01:06:20 -0700 (PDT)
+        Fri, 26 Jun 2020 01:06:23 -0700 (PDT)
 From:   Alexandre Courbot <acourbot@chromium.org>
 To:     Tiffany Lin <tiffany.lin@mediatek.com>,
         Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
@@ -55,9 +55,9 @@ To:     Tiffany Lin <tiffany.lin@mediatek.com>,
 Cc:     linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
         linux-kernel@vger.kernel.org,
         Alexandre Courbot <acourbot@chromium.org>
-Subject: [PATCH v2 16/18] media: mtk-vcodec: venc: make S_PARM return -ENOTTY for CAPTURE queue
-Date:   Fri, 26 Jun 2020 17:04:40 +0900
-Message-Id: <20200626080442.292309-17-acourbot@chromium.org>
+Subject: [PATCH v2 17/18] media: mtk-vcodec: venc: set default time per frame
+Date:   Fri, 26 Jun 2020 17:04:41 +0900
+Message-Id: <20200626080442.292309-18-acourbot@chromium.org>
 X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
 In-Reply-To: <20200626080442.292309-1-acourbot@chromium.org>
 References: <20200626080442.292309-1-acourbot@chromium.org>
@@ -68,27 +68,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v4l2-compliance expects ENOTTY to be returned when a given queue does
-not support S_PARM.
+The time per frame was left initialized to 0/0, which make the driver
+fail v4l2-compliance, and also leaves it potentially exposed to doing a
+division by zero.
 
 Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 ---
- drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
-index aae610e6d4e8..346a33c6869d 100644
+index 346a33c6869d..c9756a4748ef 100644
 --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
 +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
-@@ -200,7 +200,7 @@ static int vidioc_venc_s_parm(struct file *file, void *priv,
- 	struct mtk_vcodec_ctx *ctx = fh_to_ctx(priv);
+@@ -24,6 +24,9 @@
+ #define DFT_CFG_HEIGHT	MTK_VENC_MIN_H
+ #define MTK_MAX_CTRLS_HINT	20
  
- 	if (a->type != V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
--		return -EINVAL;
-+		return -ENOTTY;
++#define MTK_DEFAULT_FRAMERATE_NUM 1001
++#define MTK_DEFAULT_FRAMERATE_DENOM 30000
++
+ static void mtk_venc_worker(struct work_struct *work);
  
- 	ctx->enc_params.framerate_num =
- 			a->parm.output.timeperframe.denominator;
+ static const struct v4l2_frmsize_stepwise mtk_venc_framesizes = {
+@@ -1199,6 +1202,8 @@ void mtk_vcodec_enc_set_default_params(struct mtk_vcodec_ctx *ctx)
+ 		DFT_CFG_WIDTH * DFT_CFG_HEIGHT;
+ 	ctx->q_data[MTK_Q_DATA_DST].bytesperline[0] = 0;
+ 
++	ctx->enc_params.framerate_num = MTK_DEFAULT_FRAMERATE_NUM;
++	ctx->enc_params.framerate_denom = MTK_DEFAULT_FRAMERATE_DENOM;
+ }
+ 
+ int mtk_vcodec_enc_ctrls_setup(struct mtk_vcodec_ctx *ctx)
 -- 
 2.27.0.212.ge8ba1cc988-goog
 
