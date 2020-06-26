@@ -2,212 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B20020B4DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E9D20B4EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729774AbgFZPjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 11:39:43 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:34862 "EHLO ale.deltatee.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729727AbgFZPji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 11:39:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=KLNaO9lK6UgdCJIP+OQpXj9iPqUBFHQpBytP4QLFdz4=; b=QPKPApRdBNqLnOOW23PkxiYhQA
-        gdPltLzslki/rL0C+g/nFzRXXTrWsz7mVQh8mP+aP35iAzyBWGGcR8Ckd7lVcE/DTPC3g3PKC+B8K
-        WyMTG62WZaBvHMeBJ4o60PH0bbJ/rLyQ6VFed3Uxg3soywER4008KbvmgJvhZGKZQjcGTn+4j9OHv
-        lcAmqZxZVhwhxXbKGOba5C6bbkoq3ohpQor2GI9eKiMTCBGH/BS2fhG34yVggouKqdz/aFPJGR5BE
-        yPIOvoDFEfGnEwHIOQm3M9LBOhdBlrrAHCygJNLWqslxc4PUIgXFsFiKbNE09CDPQXdKn+0iUslzC
-        NDxZCJEA==;
-Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
-        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1joqRu-0000oX-43; Fri, 26 Jun 2020 09:39:35 -0600
-Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1joqRn-0007Hl-OA; Fri, 26 Jun 2020 09:39:23 -0600
-From:   Logan Gunthorpe <logang@deltatee.com>
-To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org
-Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Stephen Bates <sbates@raithlin.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-Date:   Fri, 26 Jun 2020 09:39:18 -0600
-Message-Id: <20200626153918.27929-10-logang@deltatee.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200626153918.27929-1-logang@deltatee.com>
-References: <20200626153918.27929-1-logang@deltatee.com>
+        id S1729831AbgFZPkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 11:40:08 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62622 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729807AbgFZPj6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 11:39:58 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05QFcRFq180282;
+        Fri, 26 Jun 2020 11:39:52 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31wkbg8u3k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Jun 2020 11:39:52 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05QFaGV0007822;
+        Fri, 26 Jun 2020 15:39:51 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma05wdc.us.ibm.com with ESMTP id 31uus1mwmr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Jun 2020 15:39:51 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05QFdoZS46858732
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Jun 2020 15:39:50 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3AE0FBE053;
+        Fri, 26 Jun 2020 15:39:50 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B24B7BE051;
+        Fri, 26 Jun 2020 15:39:49 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 26 Jun 2020 15:39:49 +0000 (GMT)
+From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
+To:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jarkko.sakkinen@linux.intel.com, linux-acpi@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Cc:     Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v8 0/2] tpm2: Make TPM2 logs accessible for non-UEFI firmware
+Date:   Fri, 26 Jun 2020 11:39:46 -0400
+Message-Id: <20200626153948.2059251-1-stefanb@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org, hch@lst.de, sagi@grimberg.me, kbusch@kernel.org, axboe@fb.com, Chaitanya.Kulkarni@wdc.com, maxg@mellanox.com, sbates@raithlin.com, logang@deltatee.com
-X-SA-Exim-Mail-From: gunthorp@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        MYRULES_FREE,MYRULES_NO_TEXT,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.2
-Subject: [PATCH v14 9/9] nvmet-configfs: Introduce passthru configfs interface
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-26_08:2020-06-26,2020-06-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ phishscore=0 suspectscore=0 spamscore=0 mlxlogscore=639 impostorscore=0
+ cotscore=-2147483648 clxscore=1015 malwarescore=0 adultscore=0
+ lowpriorityscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006260106
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_NVME_TARGET_PASSTHRU as 'passthru' directory will
-be added to each subsystem. The directory is similar to a namespace
-and has two attributes: device_path and enable. The user must set the
-path to the nvme controller's char device and write '1' to enable the
-subsystem to use passthru.
+From: Stefan Berger <stefanb@linux.ibm.com>
 
-Any given subsystem is prevented from enabling both a regular namespace
-and the passthru device. If one is enabled, enabling the other will
-produce an error.
+This series of patches adds an optional extensions for the TPM2 ACPI table
+with additional fields found in the TPM2 TCG ACPI specification (reference
+is in the patch) that allow access to the log's address and its size. We
+then modify the code that so far only enables access to a TPM 1.2's log for
+a TPM2 as well. This then enables access to the TPM2's log on non-UEFI
+system that for example run SeaBIOS.
 
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
----
- drivers/nvme/target/configfs.c | 99 ++++++++++++++++++++++++++++++++++
- drivers/nvme/target/nvmet.h    |  1 +
- 2 files changed, 100 insertions(+)
+   Stefan
 
-diff --git a/drivers/nvme/target/configfs.c b/drivers/nvme/target/configfs.c
-index 61c258dea88a..74b2b61c773b 100644
---- a/drivers/nvme/target/configfs.c
-+++ b/drivers/nvme/target/configfs.c
-@@ -666,6 +666,103 @@ static const struct config_item_type nvmet_namespaces_type = {
- 	.ct_owner		= THIS_MODULE,
- };
- 
-+#ifdef CONFIG_NVME_TARGET_PASSTHRU
-+
-+static ssize_t nvmet_passthru_device_path_show(struct config_item *item,
-+		char *page)
-+{
-+	struct nvmet_subsys *subsys = to_subsys(item->ci_parent);
-+
-+	return snprintf(page, PAGE_SIZE, "%s\n", subsys->passthru_ctrl_path);
-+}
-+
-+static ssize_t nvmet_passthru_device_path_store(struct config_item *item,
-+		const char *page, size_t count)
-+{
-+	struct nvmet_subsys *subsys = to_subsys(item->ci_parent);
-+	size_t len;
-+	int ret;
-+
-+	mutex_lock(&subsys->lock);
-+
-+	ret = -EBUSY;
-+	if (subsys->passthru_ctrl)
-+		goto out_unlock;
-+
-+	ret = -EINVAL;
-+	len = strcspn(page, "\n");
-+	if (!len)
-+		goto out_unlock;
-+
-+	kfree(subsys->passthru_ctrl_path);
-+	ret = -ENOMEM;
-+	subsys->passthru_ctrl_path = kstrndup(page, len, GFP_KERNEL);
-+	if (!subsys->passthru_ctrl_path)
-+		goto out_unlock;
-+
-+	mutex_unlock(&subsys->lock);
-+
-+	return count;
-+out_unlock:
-+	mutex_unlock(&subsys->lock);
-+	return ret;
-+}
-+CONFIGFS_ATTR(nvmet_passthru_, device_path);
-+
-+static ssize_t nvmet_passthru_enable_show(struct config_item *item,
-+		char *page)
-+{
-+	struct nvmet_subsys *subsys = to_subsys(item->ci_parent);
-+
-+	return sprintf(page, "%d\n", subsys->passthru_ctrl ? 1 : 0);
-+}
-+
-+static ssize_t nvmet_passthru_enable_store(struct config_item *item,
-+		const char *page, size_t count)
-+{
-+	struct nvmet_subsys *subsys = to_subsys(item->ci_parent);
-+	bool enable;
-+	int ret = 0;
-+
-+	if (strtobool(page, &enable))
-+		return -EINVAL;
-+
-+	if (enable)
-+		ret = nvmet_passthru_ctrl_enable(subsys);
-+	else
-+		nvmet_passthru_ctrl_disable(subsys);
-+
-+	return ret ? ret : count;
-+}
-+CONFIGFS_ATTR(nvmet_passthru_, enable);
-+
-+static struct configfs_attribute *nvmet_passthru_attrs[] = {
-+	&nvmet_passthru_attr_device_path,
-+	&nvmet_passthru_attr_enable,
-+	NULL,
-+};
-+
-+static const struct config_item_type nvmet_passthru_type = {
-+	.ct_attrs		= nvmet_passthru_attrs,
-+	.ct_owner		= THIS_MODULE,
-+};
-+
-+static void nvmet_add_passthru_group(struct nvmet_subsys *subsys)
-+{
-+	config_group_init_type_name(&subsys->passthru_group,
-+				    "passthru", &nvmet_passthru_type);
-+	configfs_add_default_group(&subsys->passthru_group,
-+				   &subsys->group);
-+}
-+
-+#else /* CONFIG_NVME_TARGET_PASSTHRU */
-+
-+static void nvmet_add_passthru_group(struct nvmet_subsys *subsys)
-+{
-+}
-+
-+#endif /* CONFIG_NVME_TARGET_PASSTHRU */
-+
- static int nvmet_port_subsys_allow_link(struct config_item *parent,
- 		struct config_item *target)
- {
-@@ -1125,6 +1222,8 @@ static struct config_group *nvmet_subsys_make(struct config_group *group,
- 	configfs_add_default_group(&subsys->allowed_hosts_group,
- 			&subsys->group);
- 
-+	nvmet_add_passthru_group(subsys);
-+
- 	return &subsys->group;
- }
- 
-diff --git a/drivers/nvme/target/nvmet.h b/drivers/nvme/target/nvmet.h
-index d8689744e0f7..deb3c52aae6d 100644
---- a/drivers/nvme/target/nvmet.h
-+++ b/drivers/nvme/target/nvmet.h
-@@ -249,6 +249,7 @@ struct nvmet_subsys {
- #ifdef CONFIG_NVME_TARGET_PASSTHRU
- 	struct nvme_ctrl	*passthru_ctrl;
- 	char			*passthru_ctrl_path;
-+	struct config_group	passthru_group;
- #endif /* CONFIG_NVME_TARGET_PASSTHRU */
- };
- 
+v7->v8:
+ - Added empty line.
+
+v6->v7:
+ - Added empty lines and R-b.
+
+v5->v6:
+ - Moved extensions of TPM2 table into acpi_tpm2_phy.
+
+v4->v5:
+ - Added R-bs and A-bs.
+
+v3->v4:
+  - Repost as one series
+
+v2->v3:
+  - Split the series into two separate patches
+  - Added comments to ACPI table fields
+  - Added check for null pointer to log area and zero log size
+
+v1->v2:
+  - Repost of the series
+
+
+Stefan Berger (2):
+  acpi: Extend TPM2 ACPI table with missing log fields
+  tpm: Add support for event log pointer found in TPM2 ACPI table
+
+ drivers/char/tpm/eventlog/acpi.c | 63 +++++++++++++++++++++-----------
+ include/acpi/actbl3.h            |  7 ++++
+ 2 files changed, 49 insertions(+), 21 deletions(-)
+
 -- 
-2.20.1
+2.26.2
 
