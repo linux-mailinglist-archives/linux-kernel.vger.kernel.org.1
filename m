@@ -2,112 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B43120BC63
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 00:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF4520BC11
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 00:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726080AbgFZWUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 18:20:51 -0400
-Received: from mga06.intel.com ([134.134.136.31]:46061 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725852AbgFZWUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 18:20:51 -0400
-IronPort-SDR: jQuPlaECrNA3bIteYV6oN5kYssEgq/b2bTZlx6atXOXS3CDblyzDPOvzXglLcINDHpVcW5BfbO
- gs0lBW4B80dQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9664"; a="207009036"
-X-IronPort-AV: E=Sophos;i="5.75,285,1589266800"; 
-   d="scan'208";a="207009036"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2020 15:20:50 -0700
-IronPort-SDR: ZRK/Scww/abTcQTZCtwAphfFzhtSJkBRgtZAxUb2dx6iS2Om0bFchbahkgMl53kPUpZvPDt6/8
- HI26odnZzifw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,285,1589266800"; 
-   d="scan'208";a="480143426"
-Received: from skl-02.jf.intel.com ([10.54.74.28])
-  by fmsmga005.fm.intel.com with ESMTP; 26 Jun 2020 15:20:50 -0700
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Vladimir Davydov <vdavydov@virtuozzo.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.cz>
-Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
+        id S1725882AbgFZWBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 18:01:35 -0400
+Received: from smtprelay0204.hostedemail.com ([216.40.44.204]:42576 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725803AbgFZWBf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 18:01:35 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id E4384837F24A;
+        Fri, 26 Jun 2020 22:01:33 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:116:355:379:599:800:901:960:967:968:973:988:989:1260:1263:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2687:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3657:3865:3866:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4037:4250:4321:5007:6117:7875:7901:8599:9025:9388:10004:10400:10848:10967:11232:11658:11854:11914:12043:12297:12555:12679:12740:12760:12776:12895:12986:13069:13161:13229:13311:13357:13439:13845:14094:14096:14181:14651:14659:14721:14764:21080:21627:21881:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
+X-HE-Tag: silk04_4e0f1b526e58
+X-Filterd-Recvd-Size: 2139
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf09.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 26 Jun 2020 22:01:32 +0000 (UTC)
+Message-ID: <58f25e61b285362ab28d14ac55d1cd632c460fa8.camel@perches.com>
+Subject: Re: [PATCH v2] Replace HTTP links with HTTPS ones: Documentation/arm
+From:   Joe Perches <joe@perches.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     mchehab+samsung@kernel.org, alexandre.belloni@bootlin.com,
+        nicolas.ferre@microchip.com, robh@kernel.org,
+        j.neuschaefer@gmx.net, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [Patch] mm: Increase pagevec size on large system
-Date:   Fri, 26 Jun 2020 14:23:03 -0700
-Message-Id: <d1cc9f12a8ad6c2a52cb600d93b06b064f2bbc57.1593205965.git.tim.c.chen@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
+Date:   Fri, 26 Jun 2020 15:01:31 -0700
+In-Reply-To: <20200626150911.3d4f9ca7@lwn.net>
+References: <20200626194408.61245-1-grandmaster@al2klimov.de>
+         <20200626150911.3d4f9ca7@lwn.net>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pages to be added to a LRU are first cached in pagevec before being
-added to LRU in a batch via pagevec_lru_move_fn.  By adding the pages
-in a batch with pagevec, the contention on LRU lock is mitigated.
-Currently the pagevec size is defined to be 15.
+On Fri, 2020-06-26 at 15:09 -0600, Jonathan Corbet wrote:
+> On Fri, 26 Jun 2020 21:44:08 +0200
+> "Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
+> 
+> > Rationale:
+> > Reduces attack surface on kernel devs opening the links for MITM
+> > as HTTPS traffic is much harder to manipulate.
+[]
+> >  Changes in v2:
+> >  Undone all handhelds.org changes and 0 of 0 wearablegroup.org changes.
+> 
+> I wasn't asking that the changes be undone, I was asking that those links
+> simply be removed.  They are actively harmful - much more so than any http:
+> links - and shouldn't be there.  *Sigh*.  I guess I'll just do that.
 
-We found during testing on a large SMT system with 2 sockets, 48 cores
-and 96 CPU threads, the pagevec size of 15 is too small for workload
-that caused frequent page additions to LRU.
+One argument to mark old/invalid links differently somehow is
+that the wayback machine at archive.org may still have them.
 
-With pmbench, 8.9% of the CPU cycles are spent contending
-for the LRU lock.
+But when the domain has been transferred to a 3rd party, it is
+possibly harmful.
 
-   12.92%  pmbench          [kernel.kallsyms]         [k] queued_spin_lock_slowpath
-            |
-             --12.92%--0x5555555582f2
-                       |
-                        --12.92%--page_fault
-                                  do_page_fault
-                                  __do_page_fault
-                                  handle_mm_fault
-                                  __handle_mm_fault
-                                  |
-                                  |--8.90%--__lru_cache_add
-                                  |          pagevec_lru_move_fn
-                                  |          |
-                                  |           --8.90%--_raw_spin_lock_irqsave
-                                  |                     queued_spin_lock_slowpat
+Another option might be to grab any archive.org content and
+put it into a Documentation/archived/outdated directory or
+the like.
 
-Enlarge the pagevec size to 31 to reduce LRU lock contention for
-large systems.
+For instance:
 
-The LRU lock contention is reduced from 8.9% of total CPU cycles
-to 2.2% of CPU cyles.  And the pmbench throughput increases
-from 88.8 Mpages/sec to 95.1 Mpages/sec.
+https://web.archive.org/web/20090423133742/http://www.handhelds.org/projects/h1940.html
 
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
----
- include/linux/pagevec.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/include/linux/pagevec.h b/include/linux/pagevec.h
-index 081d934eda64..466ebcdd190d 100644
---- a/include/linux/pagevec.h
-+++ b/include/linux/pagevec.h
-@@ -11,8 +11,16 @@
- 
- #include <linux/xarray.h>
- 
-+#if CONFIG_NR_CPUS > 64
-+/*
-+ * Use larger size to reduce lru lock contention on large system.
-+ * 31 pointers + header align the pagevec structure to a power of two
-+ */
-+#define PAGEVEC_SIZE	31
-+#else
- /* 15 pointers + header align the pagevec structure to a power of two */
- #define PAGEVEC_SIZE	15
-+#endif
- 
- struct page;
- struct address_space;
--- 
-2.20.1
+Then gain, this might as well be prehistoric content.
 
