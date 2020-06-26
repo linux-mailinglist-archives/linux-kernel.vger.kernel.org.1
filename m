@@ -2,314 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDE120B6CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2025820B6D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727059AbgFZRVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 13:21:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727020AbgFZRVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 13:21:25 -0400
-Received: from localhost (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 417EB2088E;
-        Fri, 26 Jun 2020 17:21:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593192084;
-        bh=0KwVrB5+YxkjHmsd7hVC3maB/s6RvbQqHOXJg0RYmMI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LxhaUmfUqHUyo1vrt2PKppNXpURYkC2hO8fY5LSyUKJuz2GjVTs3aj5/y9Ca1BJF4
-         Gq18t52t4XkUwmyeeRvlTO2HJwRclsWkBrtj8qK02PQDzFhVBrMf0f670UwM0qZIR3
-         uuSHLdAYGW8sUjLrgfO/NPNiS4Iv8BLxlbAeHiZU=
-From:   Andy Lutomirski <luto@kernel.org>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Juergen Gross <jgross@suse.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH 6/6] selftests/x86: Consolidate and fix get/set_eflags() helpers
-Date:   Fri, 26 Jun 2020 10:21:16 -0700
-Message-Id: <982ce58ae8dea2f1e57093ee894760e35267e751.1593191971.git.luto@kernel.org>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <cover.1593191971.git.luto@kernel.org>
-References: <cover.1593191971.git.luto@kernel.org>
+        id S1726429AbgFZRXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 13:23:04 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15400 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725793AbgFZRXE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 13:23:04 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05QH2ASY046541;
+        Fri, 26 Jun 2020 13:23:01 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31wkbgbjhc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Jun 2020 13:23:01 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05QH3V6t054082;
+        Fri, 26 Jun 2020 13:23:00 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31wkbgbjgp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Jun 2020 13:23:00 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05QHLgt5030416;
+        Fri, 26 Jun 2020 17:22:58 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 31uusjk676-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Jun 2020 17:22:58 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05QHMt1D55902410
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Jun 2020 17:22:55 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 997AFAE056;
+        Fri, 26 Jun 2020 17:22:55 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3472DAE053;
+        Fri, 26 Jun 2020 17:22:55 +0000 (GMT)
+Received: from thinkpad (unknown [9.171.60.45])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Fri, 26 Jun 2020 17:22:55 +0000 (GMT)
+Date:   Fri, 26 Jun 2020 19:22:53 +0200
+From:   Gerald Schaefer <gerald.schaefer@de.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-mm@kvack.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH RFC] s390x/vmem: get rid of memory segment list
+Message-ID: <20200626192253.2281d95d@thinkpad>
+In-Reply-To: <20200625150029.45019-1-david@redhat.com>
+References: <20200625150029.45019-1-david@redhat.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-26_08:2020-06-26,2020-06-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ phishscore=0 suspectscore=0 spamscore=0 mlxlogscore=922 impostorscore=0
+ cotscore=-2147483648 clxscore=1015 malwarescore=0 adultscore=0
+ lowpriorityscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006260116
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We had several copies of get_eflags() and set_eflags() and they were
-all buggy.  Consolidate them and fix them.  The fixes are:
+On Thu, 25 Jun 2020 17:00:29 +0200
+David Hildenbrand <david@redhat.com> wrote:
 
-Add memory clobbers.  These are probably unnecessary but they make
-sure sure that the compiler doesn't move something past one of these
-calls when it shouldn't.
+> I can't come up with a satisfying reason why we still need the memory
+> segment list. We used to represent in the list:
+> - boot memory
+> - standby memory added via add_memory()
+> - loaded dcss segments
+> 
+> When loading/unloading dcss segments, we already track them in a
+> separate list and check for overlaps
+> (arch/s390/mm/extmem.c:segment_overlaps_others()) when loading segments.
+> 
+> The overlap check was introduced for some segments in
+> commit b2300b9efe1b ("[S390] dcssblk: add >2G DCSSs support and stacked
+> contiguous DCSSs support.")
+> and was extended to cover all dcss segments in
+> commit ca57114609d1 ("s390/extmem: remove code for 31 bit addressing
+> mode").
+> 
+> Although I doubt that overlaps with boot memory and standby memory
+> are relevant, let's reshuffle the checks in load_segment() to request
+> the resource first. This will bail out in case we have overlaps with
+> other resources (esp. boot memory and standby memory). The order
+> is now different compared to segment_unload() and segment_unload(), but
+> that should not matter.
 
-Respect the redzone on x86_64.  I haven't seen a failure related to
-this, but it's definitely a bug.
+You are right that this is ancient, but I think "overlaps with boot
+memory and standby memory" were very relevant, that might actually
+have been the initial reason for this in ancient times (but I do not
+really remember).
 
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
----
- tools/testing/selftests/x86/Makefile          |  4 +-
- tools/testing/selftests/x86/helpers.h         | 41 +++++++++++++++++++
- .../selftests/x86/single_step_syscall.c       | 17 +-------
- .../testing/selftests/x86/syscall_arg_fault.c | 21 +---------
- tools/testing/selftests/x86/syscall_nt.c      | 20 +--------
- tools/testing/selftests/x86/test_vsyscall.c   | 15 +------
- tools/testing/selftests/x86/unwind_vdso.c     | 23 +----------
- 7 files changed, 51 insertions(+), 90 deletions(-)
- create mode 100644 tools/testing/selftests/x86/helpers.h
+With DCSS you can define a fixed start address where the segment will
+be loaded into guest address space. The current code queries this address
+and directly gives it to vmem_add_mapping(), at least if there is no
+overlap with other DCSS segments. If there would be an overlap with
+boot memory, and not checked / rejected in vmem_add_mapping(), the
+following dcss_diag() would probably fail because AFAIR z/VM will
+not allow loading a DCSS with guest memory overlap. So far, so good,
+but the vmem_remove_mapping() on the exit path would then remove
+(part of) boot memory.
 
-diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
-index 3ff94575d02d..6703c7906b71 100644
---- a/tools/testing/selftests/x86/Makefile
-+++ b/tools/testing/selftests/x86/Makefile
-@@ -70,10 +70,10 @@ all_64: $(BINARIES_64)
- 
- EXTRA_CLEAN := $(BINARIES_32) $(BINARIES_64)
- 
--$(BINARIES_32): $(OUTPUT)/%_32: %.c
-+$(BINARIES_32): $(OUTPUT)/%_32: %.c helpers.h
- 	$(CC) -m32 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $^ -lrt -ldl -lm
- 
--$(BINARIES_64): $(OUTPUT)/%_64: %.c
-+$(BINARIES_64): $(OUTPUT)/%_64: %.c helpers.h
- 	$(CC) -m64 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $^ -lrt -ldl
- 
- # x86_64 users should be encouraged to install 32-bit libraries
-diff --git a/tools/testing/selftests/x86/helpers.h b/tools/testing/selftests/x86/helpers.h
-new file mode 100644
-index 000000000000..f5ff2a2615df
---- /dev/null
-+++ b/tools/testing/selftests/x86/helpers.h
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#ifndef __SELFTESTS_X86_HELPERS_H
-+#define __SELFTESTS_X86_HELPERS_H
-+
-+#include <asm/processor-flags.h>
-+
-+static inline unsigned long get_eflags(void)
-+{
-+	unsigned long eflags;
-+
-+	asm volatile (
-+#ifdef __x86_64__
-+		"subq $128, %%rsp\n\t"
-+		"pushfq\n\t"
-+		"popq %0\n\t"
-+		"addq $128, %%rsp"
-+#else
-+		"pushfl\n\t"
-+		"popl %0"
-+#endif
-+		: "=r" (eflags) :: "memory");
-+
-+	return eflags;
-+}
-+
-+static inline void set_eflags(unsigned long eflags)
-+{
-+	asm volatile (
-+#ifdef __x86_64__
-+		"subq $128, %%rsp\n\t"
-+		"pushq %0\n\t"
-+		"popfq\n\t"
-+		"addq $128, %%rsp"
-+#else
-+		"pushl %0\n\t"
-+		"popfl"
-+#endif
-+		:: "r" (eflags) : "flags", "memory");
-+}
-+
-+#endif /* __SELFTESTS_X86_HELPERS_H */
-diff --git a/tools/testing/selftests/x86/single_step_syscall.c b/tools/testing/selftests/x86/single_step_syscall.c
-index 1063328e275c..120ac741fe44 100644
---- a/tools/testing/selftests/x86/single_step_syscall.c
-+++ b/tools/testing/selftests/x86/single_step_syscall.c
-@@ -31,6 +31,8 @@
- #include <sys/ptrace.h>
- #include <sys/user.h>
- 
-+#include "helpers.h"
-+
- static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
- 		       int flags)
- {
-@@ -67,21 +69,6 @@ static unsigned char altstack_data[SIGSTKSZ];
- # define INT80_CLOBBERS
- #endif
- 
--static unsigned long get_eflags(void)
--{
--	unsigned long eflags;
--	asm volatile ("pushf" WIDTH "\n\tpop" WIDTH " %0" : "=rm" (eflags));
--	return eflags;
--}
--
--static void set_eflags(unsigned long eflags)
--{
--	asm volatile ("push" WIDTH " %0\n\tpopf" WIDTH
--		      : : "rm" (eflags) : "flags");
--}
--
--#define X86_EFLAGS_TF (1UL << 8)
--
- static void sigtrap(int sig, siginfo_t *info, void *ctx_void)
- {
- 	ucontext_t *ctx = (ucontext_t*)ctx_void;
-diff --git a/tools/testing/selftests/x86/syscall_arg_fault.c b/tools/testing/selftests/x86/syscall_arg_fault.c
-index bc0ecc2e862e..5b7abebbcbb9 100644
---- a/tools/testing/selftests/x86/syscall_arg_fault.c
-+++ b/tools/testing/selftests/x86/syscall_arg_fault.c
-@@ -15,30 +15,11 @@
- #include <setjmp.h>
- #include <errno.h>
- 
--#ifdef __x86_64__
--# define WIDTH "q"
--#else
--# define WIDTH "l"
--#endif
-+#include "helpers.h"
- 
- /* Our sigaltstack scratch space. */
- static unsigned char altstack_data[SIGSTKSZ];
- 
--static unsigned long get_eflags(void)
--{
--	unsigned long eflags;
--	asm volatile ("pushf" WIDTH "\n\tpop" WIDTH " %0" : "=rm" (eflags));
--	return eflags;
--}
--
--static void set_eflags(unsigned long eflags)
--{
--	asm volatile ("push" WIDTH " %0\n\tpopf" WIDTH
--		      : : "rm" (eflags) : "flags");
--}
--
--#define X86_EFLAGS_TF (1UL << 8)
--
- static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
- 		       int flags)
- {
-diff --git a/tools/testing/selftests/x86/syscall_nt.c b/tools/testing/selftests/x86/syscall_nt.c
-index 5fc82b9cebed..970e5e14d96d 100644
---- a/tools/testing/selftests/x86/syscall_nt.c
-+++ b/tools/testing/selftests/x86/syscall_nt.c
-@@ -13,29 +13,11 @@
- #include <signal.h>
- #include <err.h>
- #include <sys/syscall.h>
--#include <asm/processor-flags.h>
- 
--#ifdef __x86_64__
--# define WIDTH "q"
--#else
--# define WIDTH "l"
--#endif
-+#include "helpers.h"
- 
- static unsigned int nerrs;
- 
--static unsigned long get_eflags(void)
--{
--	unsigned long eflags;
--	asm volatile ("pushf" WIDTH "\n\tpop" WIDTH " %0" : "=rm" (eflags));
--	return eflags;
--}
--
--static void set_eflags(unsigned long eflags)
--{
--	asm volatile ("push" WIDTH " %0\n\tpopf" WIDTH
--		      : : "rm" (eflags) : "flags");
--}
--
- static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
- 		       int flags)
- {
-diff --git a/tools/testing/selftests/x86/test_vsyscall.c b/tools/testing/selftests/x86/test_vsyscall.c
-index a4f4d4cf22c3..c41f24b517f4 100644
---- a/tools/testing/selftests/x86/test_vsyscall.c
-+++ b/tools/testing/selftests/x86/test_vsyscall.c
-@@ -20,6 +20,8 @@
- #include <setjmp.h>
- #include <sys/uio.h>
- 
-+#include "helpers.h"
-+
- #ifdef __x86_64__
- # define VSYS(x) (x)
- #else
-@@ -493,21 +495,8 @@ static int test_process_vm_readv(void)
- }
- 
- #ifdef __x86_64__
--#define X86_EFLAGS_TF (1UL << 8)
- static volatile sig_atomic_t num_vsyscall_traps;
- 
--static unsigned long get_eflags(void)
--{
--	unsigned long eflags;
--	asm volatile ("pushfq\n\tpopq %0" : "=rm" (eflags));
--	return eflags;
--}
--
--static void set_eflags(unsigned long eflags)
--{
--	asm volatile ("pushq %0\n\tpopfq" : : "rm" (eflags) : "flags");
--}
--
- static void sigtrap(int sig, siginfo_t *info, void *ctx_void)
- {
- 	ucontext_t *ctx = (ucontext_t *)ctx_void;
-diff --git a/tools/testing/selftests/x86/unwind_vdso.c b/tools/testing/selftests/x86/unwind_vdso.c
-index 0075ccd65407..4c311e1af4c7 100644
---- a/tools/testing/selftests/x86/unwind_vdso.c
-+++ b/tools/testing/selftests/x86/unwind_vdso.c
-@@ -11,6 +11,8 @@
- #include <features.h>
- #include <stdio.h>
- 
-+#include "helpers.h"
-+
- #if defined(__GLIBC__) && __GLIBC__ == 2 && __GLIBC_MINOR__ < 16
- 
- int main()
-@@ -53,27 +55,6 @@ static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
- 		err(1, "sigaction");
- }
- 
--#ifdef __x86_64__
--# define WIDTH "q"
--#else
--# define WIDTH "l"
--#endif
--
--static unsigned long get_eflags(void)
--{
--	unsigned long eflags;
--	asm volatile ("pushf" WIDTH "\n\tpop" WIDTH " %0" : "=rm" (eflags));
--	return eflags;
--}
--
--static void set_eflags(unsigned long eflags)
--{
--	asm volatile ("push" WIDTH " %0\n\tpopf" WIDTH
--		      : : "rm" (eflags) : "flags");
--}
--
--#define X86_EFLAGS_TF (1UL << 8)
--
- static volatile sig_atomic_t nerrs;
- static unsigned long sysinfo;
- static bool got_sysinfo = false;
--- 
-2.25.4
+That being said, I think your patch prevents this by moving
+request_resource() up, so we should not call vmem_add_mapping()
+for such overlaps. I still want to give it some test, but need
+to find / setup systems with that ancient technology first :-)
 
+One change introduced by this patch is that we no longer
+see -ENOSPC and the corresponding error message from extmem code:
+"DCSS %s overlaps with used storage and cannot be loaded"
+
+Instead, now we would see -EBUSY and this message:
+"%s needs used memory resources and cannot be loaded or queried"
+
+That should be OK, as it is also the same message that we already
+see for overlaps with other DCSSs. But you probably also should
+remove that case from the segment_warning() function for
+completeness.
+
+Regards,
+Gerald
