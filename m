@@ -2,126 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393C020A984
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 02:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A24920A9BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 02:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725951AbgFZAFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 20:05:33 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:56115 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725767AbgFZAFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 20:05:33 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49tHG21Khhz9sQt;
-        Fri, 26 Jun 2020 10:05:29 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1593129931;
-        bh=1/NpNWSRYiuRWHY1OaZc1T1Yqf2ZVowm/dB1HXxkKjc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=J5yt0phjrDQhLtXHDFTgmRLJ1RWOhMw2rjH8Ggtn5bNqEx+omYjBKxFKNUzq/Ksp8
-         xZQV4Qu9j+lc4IrmrjVidJv3E+z/RpSLooEDoKKMKdpxJWlKhx04wJoIjXss7Ilfig
-         flA0X7KUabWPehZjAWB49ClBXi65maql1Tlr8BEO5MRNQbCThrj6uaKRe4qCll5XCD
-         DNbC4J2RAhVsB7yxA+dbNrQzdtmGp6KwuBLbGdVpyKpCtNagGBMVdup5JLBkctQsVC
-         +NOZkM5Rht2Wr+3CAhO4yNgSWhUjx6lWma+oOCyiBIM7LI8Aj9GXZaJXTWgC832xdI
-         SbjailGCKR3Nw==
-Date:   Fri, 26 Jun 2020 10:05:27 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>
-Subject: linux-next: manual merge of the bpf-next tree with the bpf tree
-Message-ID: <20200626100527.4dad8695@canb.auug.org.au>
+        id S1726118AbgFZANz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 20:13:55 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:18004 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725867AbgFZANw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 20:13:52 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05Q09Nfn030446
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 17:13:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=L+G+5ICmD+hXddYJtcmy5XMdUPoBv6VGsfT8fpChsDI=;
+ b=CJGYCOcsr6tdSepWqrREDfcoW7d9YzW3EzwEREokPhgduifDZ/zm2a4vVBDGx4nI7JSy
+ 1osPEHkEfTL4Zq84p7kvGg6f+ztmESU1PiM9nVZrQNcEAIWkPEKweQF6g0k7eLlogyh8
+ wKCS/sqAW5dQt0ROEMHYTTT5TYftokvBr2k= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 31ux0u2u69-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 17:13:50 -0700
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 25 Jun 2020 17:13:50 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 2DDAD62E4FA9; Thu, 25 Jun 2020 17:13:39 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Song Liu <songliubraving@fb.com>
+Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <peterz@infradead.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <kernel-team@fb.com>, <john.fastabend@gmail.com>,
+        <kpsingh@chromium.org>, Song Liu <songliubraving@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next 0/4] bpf: introduce bpf_get_task_stack()
+Date:   Thu, 25 Jun 2020 17:13:28 -0700
+Message-ID: <20200626001332.1554603-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/WG=8.S1mSbgElhtsPHXXGa2";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-25_19:2020-06-25,2020-06-25 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ priorityscore=1501 adultscore=0 spamscore=0 impostorscore=0
+ cotscore=-2147483648 mlxlogscore=999 lowpriorityscore=0 clxscore=1015
+ mlxscore=0 bulkscore=0 phishscore=0 suspectscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006250142
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/WG=8.S1mSbgElhtsPHXXGa2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This set introduces a new helper bpf_get_task_stack(). The primary use ca=
+se
+is to dump all /proc/*/stack to seq_file via bpf_iter__task.
 
-Hi all,
+A few different approaches have been explored and compared:
 
-Today's linux-next merge of the bpf-next tree got a conflict in:
+  1. A simple wrapper around stack_trace_save_tsk(), as v1 [1].
 
-  tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
+     This approach introduces new syntax, which is different to existing
+     helper bpf_get_stack(). Therefore, this is not ideal.
 
-between commits:
+  2. Extend get_perf_callchain() to support "task" as argument.
 
-  9c82a63cf370 ("libbpf: Fix CO-RE relocs against .text section")
-  647b502e3d54 ("selftests/bpf: Refactor some net macros to bpf_tracing_net=
-.h")
+     This approach reuses most of bpf_get_stack(). However, extending
+     get_perf_callchain() requires non-trivial changes to architecture
+     specific code. Which is error prone.
 
-from the bpf tree and commit:
+  3. Current (v2) approach, leverages most of existing bpf_get_stack(), a=
+nd
+     uses stack_trace_save_tsk() to handle architecture specific logic.
 
-  84544f5637ff ("selftests/bpf: Move newer bpf_iter_* type redefining to a =
-new header file")
+[1] https://lore.kernel.org/netdev/20200623070802.2310018-1-songliubravin=
+g@fb.com/
 
-from the bpf-next tree.
+Changes v1 =3D> v2:
+1. Reuse most of bpf_get_stack() logic. (Andrii)
+2. Fix unsigned long vs. u64 mismatch for 32-bit systems. (Yonghong)
+3. Add %pB support in bpf_trace_printk(). (Daniel)
+4. Fix buffer size to bytes.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+Song Liu (4):
+  perf: export get/put_chain_entry()
+  bpf: introduce helper bpf_get_task_stak()
+  bpf: allow %pB in bpf_seq_printf() and bpf_trace_printk()
+  selftests/bpf: add bpf_iter test with bpf_get_task_stack_trace()
 
---=20
-Cheers,
-Stephen Rothwell
+ include/linux/bpf.h                           |  1 +
+ include/linux/perf_event.h                    |  2 +
+ include/uapi/linux/bpf.h                      | 35 +++++++-
+ kernel/bpf/stackmap.c                         | 79 ++++++++++++++++++-
+ kernel/events/callchain.c                     |  4 +-
+ kernel/trace/bpf_trace.c                      | 14 +++-
+ scripts/bpf_helpers_doc.py                    |  2 +
+ tools/include/uapi/linux/bpf.h                | 35 +++++++-
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 17 ++++
+ .../selftests/bpf/progs/bpf_iter_task_stack.c | 60 ++++++++++++++
+ 10 files changed, 239 insertions(+), 10 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_stack=
+.c
 
-diff --cc tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
-index 75ecf956a2df,cec82a419800..000000000000
---- a/tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
-@@@ -11,21 -7,7 +7,7 @@@
- =20
-  char _license[] SEC("license") =3D "GPL";
- =20
-- #define sk_rmem_alloc	sk_backlog.rmem_alloc
-- #define sk_refcnt	__sk_common.skc_refcnt
--=20
-- struct bpf_iter_meta {
-- 	struct seq_file *seq;
-- 	__u64 session_id;
-- 	__u64 seq_num;
-- } __attribute__((preserve_access_index));
--=20
-- struct bpf_iter__netlink {
-- 	struct bpf_iter_meta *meta;
-- 	struct netlink_sock *sk;
-- } __attribute__((preserve_access_index));
--=20
- -static inline struct inode *SOCK_INODE(struct socket *socket)
- +static __attribute__((noinline)) struct inode *SOCK_INODE(struct socket *=
-socket)
-  {
-  	return &container_of(socket, struct socket_alloc, socket)->vfs_inode;
-  }
-
---Sig_/WG=8.S1mSbgElhtsPHXXGa2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl71O8cACgkQAVBC80lX
-0GzFHgf9GX71ZbtDGNbranQUQJZc/0K9s1lhhuoezD/QXpocFtHTWi9car8A5AjJ
-nJaRR1B4SkzrRnca/dOsxzhMEGhK9hvkipIR9mxKARGcE5Zd8Pa6ng1pxHasiJSp
-kAAbg3UcCfZ0wwbWskSROHvc7UHHXnIeL20hLy92Dl+9YqaivpElhEnb3UO7KUTi
-mhAa3tss/aW4mXWe+u88S0Capv/No9OCP2kLlvADq2GVidpO74vzBE6lTcHMnVJ+
-BFokVFwIL5k3f1oeu4KQayqnynj8y9kkA+4ZeJ/ELW14oLeH5KT1+RFA54jfK2Ey
-C/5QO/iVPc99U2hgssUA6MzRbCYWog==
-=LMGA
------END PGP SIGNATURE-----
-
---Sig_/WG=8.S1mSbgElhtsPHXXGa2--
+--
+2.24.1
