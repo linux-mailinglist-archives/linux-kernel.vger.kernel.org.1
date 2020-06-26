@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939F120BB85
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91ADE20BB83
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbgFZV0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726446AbgFZV0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 26 Jun 2020 17:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51420 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725916AbgFZV0g (ORCPT
+        with ESMTP id S1726070AbgFZV0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Jun 2020 17:26:36 -0400
 Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7F3C03E97A
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F16C03E979
         for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:26:36 -0700 (PDT)
 Received: from zyt.lan (unknown [IPv6:2a02:169:3df5::564])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id 9165A5C0678;
+        by mail.kmu-office.ch (Postfix) with ESMTPSA id BE16A5C0BE1;
         Fri, 26 Jun 2020 23:26:33 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
         t=1593206793;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:in-reply-to:
-         references; bh=BliWbyHUANX2JI8zF8nLMmP2MWt1fyzsPb8MhtX5XuI=;
-        b=sipHPhUV8+3lkIgsDOcn1yjFoI/OI6Wq3d3g+xC+T09FCYzYp6yyk6eLfqFCkwwqd7FXMU
-        tD+6GNxBuhOhegup5OlUpgJAbX31uVpzJ5EQD+4boDmw9i8AfDqe9e+JU0Dc6GmQG7V05d
-        3BkkSMKHc0ACp0Au92vQCTXFTmtjnjk=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rrgEIaMes3SsxRNSEef/3EhHYFOOr5xPASjOXFx7QFY=;
+        b=GOXQcNz5v0TpMSpD/kFg7eAyd1Fh05Oyza0RRHsGaucQD5OxzWO3cI3CyeqT7HNdztHN+Q
+        eNfVmTcfqchrpmcGFv8wYYKPbpO0VykPeBXNYWCOM5D1nETSW1LzXIPLFkdhl2rJtK78lV
+        on+0dqCkANespKIIWyezccUgBQNIUY8=
 From:   Stefan Agner <stefan@agner.ch>
 To:     linux@armlinux.org.uk
 Cc:     arnd@arndb.de, ard.biesheuvel@linaro.org, robin.murphy@arm.com,
@@ -34,10 +35,12 @@ Cc:     arnd@arndb.de, ard.biesheuvel@linaro.org, robin.murphy@arm.com,
         manojgupta@google.com, jiancai@google.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         clang-built-linux@googlegroups.com, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH v3 0/3] ARM: make use of UAL VFP mnemonics when possible
-Date:   Fri, 26 Jun 2020 23:26:10 +0200
-Message-Id: <cover.1593205699.git.stefan@agner.ch>
+Subject: [PATCH v3 1/3] ARM: use .fpu assembler directives instead of assembler arguments
+Date:   Fri, 26 Jun 2020 23:26:11 +0200
+Message-Id: <4c3dcb42ba9e3823a2051c9fed48a7cdd17edf95.1593205699.git.stefan@agner.ch>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <cover.1593205699.git.stefan@agner.ch>
+References: <cover.1593205699.git.stefan@agner.ch>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -45,51 +48,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To build the kernel with the integrated assembler of Clang 10 and earlier
-the VFP code needs to make use of the unified assembler language (UAL)
-VFP mnemonics.
+Explicit FPU selection has been introduced in commit 1a6be26d5b1a
+("[ARM] Enable VFP to be built when non-VFP capable CPUs are selected")
+to make use of assembler mnemonics for VFP instructions.
 
-As pointed out by Russell, even for ARMv7 blocking VFP access through
-MCR/MRC is not correct. This has been addressed in upstream Clang and
-VFP access will be possible through MCR/MRC (see [0]).
+However, clang currently does not support passing assembler flags
+like this and errors out with:
+clang-10: error: the clang compiler does not support '-Wa,-mfpu=softvfp+vfp'
 
-At first I tried to replace all co-processor instructions to access the
-floating point unit along with the macros. However, due to missing
-FPINST/FPINST2 argument support in older binutils versions we have to
-keep them around. Once we drop support for binutils 2.24 and older, the
-move to UAL VFP mnemonics will be straight forward with this changes
-applied.
+Make use of the .fpu assembler directives to select the floating point
+hardware selectively. Also use the new unified assembler language
+mnemonics. This allows to build these procedures with Clang.
 
-Tested using Clang with integrated assembler as well as external
-(binutils assembler), various gcc/binutils version down to 4.7/2.23.
-Disassembled and compared the object files in arch/arm/vfp/ to make
-sure this changes leads to the same code. Besides different inlining
-behavior I was not able to spot a difference.
+Link: https://github.com/ClangBuiltLinux/linux/issues/762
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+Changes in V3:
+- Drop unnecessary comma
+- Add .fpu directive also in single precision macros to avoid Clang error
+  error: instruction requires: fp registers
 
-In v2 the check for FPINST argument support is now made in Kconfig.
+Changes in v2:
+- Add link in commit message
 
-In v3 reworded commit message and addressed review feedback in patch 1.
+ arch/arm/vfp/Makefile |  2 --
+ arch/arm/vfp/vfphw.S  | 30 ++++++++++++++++++++----------
+ 2 files changed, 20 insertions(+), 12 deletions(-)
 
---
-Stefan
-
-[0] https://reviews.llvm.org/D59733
-
-Stefan Agner (3):
-  ARM: use .fpu assembler directives instead of assembler arguments
-  ARM: use VFP assembler mnemonics in register load/store macros
-  ARM: use VFP assembler mnemonics if available
-
- arch/arm/Kconfig                 |  2 ++
- arch/arm/Kconfig.assembler       |  6 ++++++
- arch/arm/include/asm/vfp.h       |  2 ++
- arch/arm/include/asm/vfpmacros.h | 31 ++++++++++++++++++++++---------
- arch/arm/vfp/Makefile            |  2 --
- arch/arm/vfp/vfphw.S             | 31 +++++++++++++++++++++----------
- arch/arm/vfp/vfpinstr.h          | 23 +++++++++++++++++++----
- 7 files changed, 72 insertions(+), 25 deletions(-)
- create mode 100644 arch/arm/Kconfig.assembler
-
+diff --git a/arch/arm/vfp/Makefile b/arch/arm/vfp/Makefile
+index 9975b63ac3b0..749901a72d6d 100644
+--- a/arch/arm/vfp/Makefile
++++ b/arch/arm/vfp/Makefile
+@@ -8,6 +8,4 @@
+ # ccflags-y := -DDEBUG
+ # asflags-y := -DDEBUG
+ 
+-KBUILD_AFLAGS	:=$(KBUILD_AFLAGS:-msoft-float=-Wa,-mfpu=softvfp+vfp -mfloat-abi=soft)
+-
+ obj-y		+= vfpmodule.o entry.o vfphw.o vfpsingle.o vfpdouble.o
+diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/vfphw.S
+index b2e560290860..29ed36b99d1d 100644
+--- a/arch/arm/vfp/vfphw.S
++++ b/arch/arm/vfp/vfphw.S
+@@ -258,11 +258,14 @@ vfp_current_hw_state_address:
+ 
+ ENTRY(vfp_get_float)
+ 	tbl_branch r0, r3, #3
++	.fpu	vfpv2
+ 	.irp	dr,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+-1:	mrc	p10, 0, r0, c\dr, c0, 0	@ fmrs	r0, s0
++1:	vmov	r0, s\dr
+ 	ret	lr
+ 	.org	1b + 8
+-1:	mrc	p10, 0, r0, c\dr, c0, 4	@ fmrs	r0, s1
++	.endr
++	.irp	dr,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
++1:	vmov	r0, s\dr
+ 	ret	lr
+ 	.org	1b + 8
+ 	.endr
+@@ -270,11 +273,14 @@ ENDPROC(vfp_get_float)
+ 
+ ENTRY(vfp_put_float)
+ 	tbl_branch r1, r3, #3
++	.fpu	vfpv2
+ 	.irp	dr,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+-1:	mcr	p10, 0, r0, c\dr, c0, 0	@ fmsr	r0, s0
++1:	vmov	s\dr, r0
+ 	ret	lr
+ 	.org	1b + 8
+-1:	mcr	p10, 0, r0, c\dr, c0, 4	@ fmsr	r0, s1
++	.endr
++	.irp	dr,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
++1:	vmov	s\dr, r0
+ 	ret	lr
+ 	.org	1b + 8
+ 	.endr
+@@ -282,15 +288,17 @@ ENDPROC(vfp_put_float)
+ 
+ ENTRY(vfp_get_double)
+ 	tbl_branch r0, r3, #3
++	.fpu	vfpv2
+ 	.irp	dr,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+-1:	fmrrd	r0, r1, d\dr
++1:	vmov	r0, r1, d\dr
+ 	ret	lr
+ 	.org	1b + 8
+ 	.endr
+ #ifdef CONFIG_VFPv3
+ 	@ d16 - d31 registers
+-	.irp	dr,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+-1:	mrrc	p11, 3, r0, r1, c\dr	@ fmrrd	r0, r1, d\dr
++	.fpu	vfpv3
++	.irp	dr,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
++1:	vmov	r0, r1, d\dr
+ 	ret	lr
+ 	.org	1b + 8
+ 	.endr
+@@ -304,15 +312,17 @@ ENDPROC(vfp_get_double)
+ 
+ ENTRY(vfp_put_double)
+ 	tbl_branch r2, r3, #3
++	.fpu	vfpv2
+ 	.irp	dr,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+-1:	fmdrr	d\dr, r0, r1
++1:	vmov	d\dr, r0, r1
+ 	ret	lr
+ 	.org	1b + 8
+ 	.endr
+ #ifdef CONFIG_VFPv3
++	.fpu	vfpv3
+ 	@ d16 - d31 registers
+-	.irp	dr,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+-1:	mcrr	p11, 3, r0, r1, c\dr	@ fmdrr	r0, r1, d\dr
++	.irp	dr,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
++1:	vmov	d\dr, r0, r1
+ 	ret	lr
+ 	.org	1b + 8
+ 	.endr
 -- 
 2.27.0
 
