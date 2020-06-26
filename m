@@ -2,67 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BCCF20BB69
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 939F120BB85
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgFZVZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 17:25:25 -0400
-Received: from mga11.intel.com ([192.55.52.93]:16227 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725793AbgFZVZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 17:25:24 -0400
-IronPort-SDR: Id6tboUeVENaONH1yWA0QrxL/HOb+H1ahk48vjUq2QibOdOEW6CDMveC8iLWMPqYtGSKo7Rt3x
- 93L2dz17T5nA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9664"; a="143707224"
-X-IronPort-AV: E=Sophos;i="5.75,285,1589266800"; 
-   d="scan'208";a="143707224"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2020 14:25:23 -0700
-IronPort-SDR: xHcxh5gqImhpjYC8RI6bSw8oeHyOx36iaJIWK9DXgbkSE/zRIqIQ3PFb+CA9tE/yo6tyNXIVr0
- b7SAG03MGm/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,285,1589266800"; 
-   d="scan'208";a="479948560"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
-  by fmsmga006.fm.intel.com with ESMTP; 26 Jun 2020 14:25:22 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id D2E91301B9F; Fri, 26 Jun 2020 14:25:22 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 14:25:22 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [RFC 00/10] perf tools: Add support to reuse metric
-Message-ID: <20200626212522.GF818054@tassilo.jf.intel.com>
-References: <20200626194720.2915044-1-jolsa@kernel.org>
+        id S1726430AbgFZV0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 17:26:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725916AbgFZV0g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 17:26:36 -0400
+Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7F3C03E97A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:26:36 -0700 (PDT)
+Received: from zyt.lan (unknown [IPv6:2a02:169:3df5::564])
+        by mail.kmu-office.ch (Postfix) with ESMTPSA id 9165A5C0678;
+        Fri, 26 Jun 2020 23:26:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
+        t=1593206793;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=BliWbyHUANX2JI8zF8nLMmP2MWt1fyzsPb8MhtX5XuI=;
+        b=sipHPhUV8+3lkIgsDOcn1yjFoI/OI6Wq3d3g+xC+T09FCYzYp6yyk6eLfqFCkwwqd7FXMU
+        tD+6GNxBuhOhegup5OlUpgJAbX31uVpzJ5EQD+4boDmw9i8AfDqe9e+JU0Dc6GmQG7V05d
+        3BkkSMKHc0ACp0Au92vQCTXFTmtjnjk=
+From:   Stefan Agner <stefan@agner.ch>
+To:     linux@armlinux.org.uk
+Cc:     arnd@arndb.de, ard.biesheuvel@linaro.org, robin.murphy@arm.com,
+        yamada.masahiro@socionext.com, ndesaulniers@google.com,
+        manojgupta@google.com, jiancai@google.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, Stefan Agner <stefan@agner.ch>
+Subject: [PATCH v3 0/3] ARM: make use of UAL VFP mnemonics when possible
+Date:   Fri, 26 Jun 2020 23:26:10 +0200
+Message-Id: <cover.1593205699.git.stefan@agner.ch>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200626194720.2915044-1-jolsa@kernel.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 09:47:10PM +0200, Jiri Olsa wrote:
-> hi,
-> this patchset is adding the support to reused metric in another 
-> metric. The metric needs to be referenced by 'metric:' prefix.
+To build the kernel with the integrated assembler of Clang 10 and earlier
+the VFP code needs to make use of the unified assembler language (UAL)
+VFP mnemonics.
 
-Why is the prefix needed? 
+As pointed out by Russell, even for ARMv7 blocking VFP access through
+MCR/MRC is not correct. This has been addressed in upstream Clang and
+VFP access will be possible through MCR/MRC (see [0]).
 
-Could just look it up without prefix.
+At first I tried to replace all co-processor instructions to access the
+floating point unit along with the macros. However, due to missing
+FPINST/FPINST2 argument support in older binutils versions we have to
+keep them around. Once we drop support for binutils 2.24 and older, the
+move to UAL VFP mnemonics will be straight forward with this changes
+applied.
 
--Andi
+Tested using Clang with integrated assembler as well as external
+(binutils assembler), various gcc/binutils version down to 4.7/2.23.
+Disassembled and compared the object files in arch/arm/vfp/ to make
+sure this changes leads to the same code. Besides different inlining
+behavior I was not able to spot a difference.
+
+In v2 the check for FPINST argument support is now made in Kconfig.
+
+In v3 reworded commit message and addressed review feedback in patch 1.
+
+--
+Stefan
+
+[0] https://reviews.llvm.org/D59733
+
+Stefan Agner (3):
+  ARM: use .fpu assembler directives instead of assembler arguments
+  ARM: use VFP assembler mnemonics in register load/store macros
+  ARM: use VFP assembler mnemonics if available
+
+ arch/arm/Kconfig                 |  2 ++
+ arch/arm/Kconfig.assembler       |  6 ++++++
+ arch/arm/include/asm/vfp.h       |  2 ++
+ arch/arm/include/asm/vfpmacros.h | 31 ++++++++++++++++++++++---------
+ arch/arm/vfp/Makefile            |  2 --
+ arch/arm/vfp/vfphw.S             | 31 +++++++++++++++++++++----------
+ arch/arm/vfp/vfpinstr.h          | 23 +++++++++++++++++++----
+ 7 files changed, 72 insertions(+), 25 deletions(-)
+ create mode 100644 arch/arm/Kconfig.assembler
+
+-- 
+2.27.0
+
