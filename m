@@ -2,155 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88BCB20B3DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 16:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B4F20B3F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 16:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729339AbgFZOqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 10:46:45 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:37578 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725792AbgFZOqp (ORCPT
+        id S1729451AbgFZOrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 10:47:40 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:39967 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729365AbgFZOrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 10:46:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593182803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9/4yQ9wzdMYlIWsH7godn+Od1tjRMVkquLG0kHXWsUc=;
-        b=DvUWczyo2Jm2NpCthl9SK32fBmcEbDy+6WdC8wzDv77+tvIBMniWknow8iqpdicLbfz+z8
-        DkPQ2Ne/mP/E9bHR3uMb7Sh7EIICe0m2Y/94n+hpJPcpTXhgpBO7bKVYAd3yrVSiq9u6wE
-        vMh9zfY9AEPPksOCyMPHkSo8p2nzXuY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-199-cCaW3d4sPHaV1pZ_8ts9ag-1; Fri, 26 Jun 2020 10:46:34 -0400
-X-MC-Unique: cCaW3d4sPHaV1pZ_8ts9ag-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 26 Jun 2020 10:47:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593182840; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=40ZfmuZsHITt52aRQkvovH3nQD28PXyaeAQtAwwWdqo=; b=Cq8Pmimh7RzrLO3owWfKGH8WVu+pHdeifZaETln4EiE+qh0sAMsc1yhTg+OryrXfnqKwTwb5
+ SmZIPoapMmVMfszkS7/V7JvXAWn7wQWZGU0ggxdXGp0Hnvv6M0wlw0cwBf3VCOAGuxfY1Bf9
+ GQ9hvx90tf4hwslNSnRSdqGOMoY=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n17.prod.us-east-1.postgun.com with SMTP id
+ 5ef60a71356bcc26ab20903c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Jun 2020 14:47:13
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4BFCBC43391; Fri, 26 Jun 2020 14:47:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from deesin-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4894B804006;
-        Fri, 26 Jun 2020 14:46:33 +0000 (UTC)
-Received: from localhost (ovpn-116-153.gru2.redhat.com [10.97.116.153])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CDD331002395;
-        Fri, 26 Jun 2020 14:46:32 +0000 (UTC)
-Date:   Fri, 26 Jun 2020 11:46:31 -0300
-From:   Bruno Meneguele <bmeneg@redhat.com>
-To:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     zohar@linux.ibm.com, erichte@linux.ibm.com, nayna@linux.ibm.com
-Subject: Re: [PATCH v3 0/2] ima: make appraisal state runtime dependent on
- secure boot
-Message-ID: <20200626144631.GC2702@glitch>
-References: <20200623202640.4936-1-bmeneg@redhat.com>
-MIME-Version: 1.0
-In-Reply-To: <20200623202640.4936-1-bmeneg@redhat.com>
-X-PGP-Key: http://keys.gnupg.net/pks/lookup?op=get&search=0x3823031E4660608D
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lCAWRPmW1mITcIfM"
-Content-Disposition: inline
+        (Authenticated sender: deesin)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3D616C433C6;
+        Fri, 26 Jun 2020 14:47:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3D616C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=deesin@codeaurora.org
+From:   Deepak Kumar Singh <deesin@codeaurora.org>
+To:     bjorn.andersson@linaro.org, clew@codeaurora.org,
+        mathieu.poirier@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Deepak Kumar Singh <deesin@codeaurora.org>
+Subject: [PATCH V5 0/4] Signaling api support in glink/rpmsg clients
+Date:   Fri, 26 Jun 2020 20:16:55 +0530
+Message-Id: <1593182819-30747-1-git-send-email-deesin@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---lCAWRPmW1mITcIfM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Change from version 5
+[V5,4/4] rpmsg: char: Add signal callback and POLLPRI support
+Updated for sparse warning. Replaced POLLPRI => EPOLLPRI to fix
+warning.
 
-Gentle ping for review.
+Change from version 4
+I am taking over these patches from aneela@codeaurora.org
+Fixed all the trivial review comments.
 
-I also forgot to add the changelog for the patch, please see below.
+Signal conversion to and from native signal as done in patch V4,2/4
+is intentional.
 
-On Tue, Jun 23, 2020 at 05:26:38PM -0300, Bruno Meneguele wrote:
-> To switch APPRAISE_BOOTPARAM and ARCH_POLICY dependency from compile time=
- to
-> run time the secure boot checking code (specific to each arch) had to be
-> slightly modified to include, in the PowerPC arch, the Trusted Boot state=
-,
-> which is also relevant to the arch policy choice and also required the
-> ima_appraise to be enforced.=20
->=20
-> With that I changed the checking order: instead of first check the
-> arch_policy and then the secure/trusted boot state, now we first check th=
-e
-> boot state, set ima_appraise to be enforced and then the existence of arc=
-h
-> policy. In other words, whenever secure/trusted boot is enabled,
-> (ima_appraise & IMA_APPRAISE_ENFORCE) =3D=3D true.
->=20
-> I've tested these patches in a x86_64 platform with and without secure bo=
-ot
-> enabled and in a PowerPC without secure boot enabled:
->=20
-> 1) with secure boot enabled (x86_64) and ima_policy=3Dappraise_tcb, the
-> ima_appraise=3D options were completly ignored and the boot always failed=
- with
-> "missing-hash" for /sbin/init, which is the expected result;
->=20
-> 2) with secure boot enabled (x86_64), but no ima_policy:
->=20
-> [    1.396111] ima: Allocated hash algorithm: sha256
-> [    1.424025] ima: setting IMA appraisal to enforced
-> [    1.424039] audit: type=3D1807 audit(1592927955.557:2): action=3Dmeasu=
-re func=3DKEXEC_KERNEL_CHECK res=3D1
-> [    1.424040] audit: type=3D1807 audit(1592927955.557:3): action=3Dmeasu=
-re func=3DMODULE_CHECK res=3D1
->=20
-> 3) with secure boot disabled (PowerPC and x86_64) and
-> "ima_policy=3Dappraise_tcb ima_appraise=3Dfix", audit messages were trigg=
-ered
-> with "op=3Dappraisal_data cause=3Dmissing-hash" but the system worked fin=
-e due
-> to "fix".
+Arun Kumar Neelakantam (3):
+  rpmsg: glink: Add support to handle signals command
+  rpmsg: char: Add TIOCMGET/TIOCMSET ioctl support
+  rpmsg: char: Add signal callback and POLLPRI support
 
-Changelog:
+Deepak Kumar Singh (1):
+  rpmsg: core: Add signal API support
 
-v2:
-  - pr_info() message prefix correction
-v3:
-  - extend secure boot arch checker to also consider trusted boot
-  - enforce IMA appraisal when secure boot is effectively enabled (Nayna)
-  - fix ima_appraise flag assignment by or'ing it (Mimi)
+ drivers/rpmsg/qcom_glink_native.c | 125 ++++++++++++++++++++++++++++++++++++++
+ drivers/rpmsg/rpmsg_char.c        |  76 ++++++++++++++++++++++-
+ drivers/rpmsg/rpmsg_core.c        |  40 ++++++++++++
+ drivers/rpmsg/rpmsg_internal.h    |   5 ++
+ include/linux/rpmsg.h             |  27 ++++++++
+ 5 files changed, 270 insertions(+), 3 deletions(-)
 
->=20
-> Bruno Meneguele (2):
->   arch/ima: extend secure boot check to include trusted boot
->   ima: move APPRAISE_BOOTPARAM dependency on ARCH_POLICY to runtime
->=20
->  arch/powerpc/kernel/ima_arch.c      |  5 +++--
->  arch/s390/kernel/ima_arch.c         |  2 +-
->  arch/x86/kernel/ima_arch.c          |  4 ++--
->  include/linux/ima.h                 |  4 ++--
->  security/integrity/ima/Kconfig      |  2 +-
->  security/integrity/ima/ima_main.c   |  2 +-
->  security/integrity/ima/ima_policy.c | 20 ++++++++++++++------
->  7 files changed, 24 insertions(+), 15 deletions(-)
->=20
-> --=20
-> 2.26.2
->=20
-
---=20
-bmeneg=20
-PGP Key: http://bmeneg.com/pubkey.txt
-
---lCAWRPmW1mITcIfM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEdWo6nTbnZdbDmXutYdRkFR+RokMFAl72CkcACgkQYdRkFR+R
-okOBfAgAxpegp05PIswZixkunEPtvXqxm1Zxc0cVJOm6gsrj1kXj6RoQZBMdJYPb
-EL3uajD23pHhZuTR9A3vPMcsHrEuB0PQsMtD3mfBjdf0QNvbOWT4uLqaDlMYeMTm
-QFVcpxXjZ905/3f8dEsi0k6DqfGVj+OPIm/j2qauEMwvYvpNBo7z3UMrkm2RuZQW
-BfVncYCPcDCT6ahedthkNjshBwK5WVZKJ7DaH92U+lNH7wF61AAPTPs/AanrXgpu
-xT6lx/s0aZojzA7W+nhzC/6k7rhQJoZKxRX1wQYmtcxuabK85VHeWxRe1R+qfiNH
-fcE9qfW+aG4xKC5ZSlsWbMVTzxZFwQ==
-=HW86
------END PGP SIGNATURE-----
-
---lCAWRPmW1mITcIfM--
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
