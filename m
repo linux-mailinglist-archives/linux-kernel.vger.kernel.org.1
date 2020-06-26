@@ -2,104 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7F620AFF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 12:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DBB20AFFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 12:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbgFZKn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 06:43:26 -0400
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:43579 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728060AbgFZKnZ (ORCPT
+        id S1728114AbgFZKpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 06:45:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728023AbgFZKpd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 06:43:25 -0400
-Received: by mail-ej1-f68.google.com with SMTP id l12so8859738ejn.10
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 03:43:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fBCNpYHArbaIvTCXoaDbzGjMNkwy0xtfnskWd/C/q3A=;
-        b=sM2tJF/q3uHToD+jVU60OJod6A/yTiDiLhxD4mFJHI1w9iz8lcv09cqlbb57lIDmQD
-         eY1Fc42OMFvKZTGsTuMUCmVdsbzOnvc91tVa3UwCraYZzkvfNUKbOyR271Gq3RW3XJyk
-         9OgHWjrgQKLl0YydiZe66r7Elwblyosdcpe0eCz59inBL7NX/utBzH07YDF7cFpAnB5P
-         HQMcgC+HJtZ/kfVKzPSX3bBMOnqqAfJ1O/fW4HptXQ+gxgOEHEScDsPLB2e3jz1Cktsy
-         H3ieMLbROI7b9zxFX34qq79ChfErp6IRQpUrpFuktQzgWU53nhcUqr/8O/qzb05emR0L
-         0xDQ==
-X-Gm-Message-State: AOAM530JLlwe+qfS/1ogTN0o+EWw0jayQQkgNC/ZA7RRxNgaunZOBlCn
-        azPfrUVPjnXVGrEyzAbABik=
-X-Google-Smtp-Source: ABdhPJyiHsevGDn5YCuwfV4gTq8a/llFmGbZYHpYjbX+BcuWGLpbKjaWLTOx1YR/g62BphtS0UOL8w==
-X-Received: by 2002:a17:906:d79c:: with SMTP id pj28mr1858400ejb.397.1593168203408;
-        Fri, 26 Jun 2020 03:43:23 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id 23sm14333552edw.63.2020.06.26.03.43.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jun 2020 03:43:22 -0700 (PDT)
-Subject: Re: [PATCH v0 2/5] Make it possible to enable/disable SRG mouse
- reporting
-To:     Tammo Block <tammo.block@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <cover.1593155911.git.tammo.block@gmail.com>
- <d0951dcf5fb4cf8bfa19940953bce55ad0ee0510.1593155911.git.tammo.block@gmail.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <8e75c573-c66d-f79b-ad09-bbac280a5c91@kernel.org>
-Date:   Fri, 26 Jun 2020 12:43:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Fri, 26 Jun 2020 06:45:33 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68097C08C5C1;
+        Fri, 26 Jun 2020 03:45:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QevtFY5/fU0gz6JXyEA/JwvKh73ONa/vbnOzBREqNno=; b=voVg1Z74JA9zQSFyYsBqBErK3/
+        eNPaVDvEtjc6B0kKMdbhupAg/k14KecsHOuiMIpQ90cNhZv3AGkFeu4jL58gsVCAON52P8FLlMtt4
+        wgN7sahP4rf4N6CXInQPr9p58er2qRuNmAM4wFXbfr3wNrIdNfxg66VTPkV+pJVN9oPeQKoPEM/3y
+        dXcjqG6caa380q5Qdmz0FIGuoyl9U0z2fpd3gvbdyOKBwYsj8Ma6VVHi0T9NODZbRZSnu8j6VHwKp
+        mLRgZP5Jd6VqDDB7n2Qsg5dPL9UZuel+KB1YovP8Q4j5LOgThA3J6Wfy4AGNEYE6k10oxw4UG1wu4
+        KM7Cmm2g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jolqf-0003ff-Oa; Fri, 26 Jun 2020 10:44:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5D39C301A32;
+        Fri, 26 Jun 2020 12:44:42 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4AAE720BEAD9B; Fri, 26 Jun 2020 12:44:42 +0200 (CEST)
+Date:   Fri, 26 Jun 2020 12:44:42 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        rjw@rjwysocki.net, viresh.kumar@linaro.org, lenb@kernel.org,
+        dsmythies@telus.net, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org, jic23@cam.ac.uk,
+        keescook@chromium.org, akpm@linux-foundation.org
+Subject: [PATCH] lib: Extend kstrtobool() to accept "true"/"false"
+Message-ID: <20200626104442.GF117543@hirez.programming.kicks-ass.net>
+References: <20200625224931.1468150-1-srinivas.pandruvada@linux.intel.com>
+ <20200626084903.GA27151@zn.tnic>
+ <20200626102255.GZ4817@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <d0951dcf5fb4cf8bfa19940953bce55ad0ee0510.1593155911.git.tammo.block@gmail.com>
-Content-Type: text/plain; charset=iso-8859-2
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200626102255.GZ4817@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26. 06. 20, 9:22, Tammo Block wrote:
-> The report protocol stored in vc_report_mouse is not a bitmask, the
-> protocols are mutually exclusive, last one wins. Values are chosen to
-> maximize compatibility.
+On Fri, Jun 26, 2020 at 12:22:55PM +0200, Peter Zijlstra wrote:
+
+> > This is too lax - it will be enabled for any !0 value. Please accept
+> > only 0 and 1.
 > 
-> Signed-off-by: Tammo Block <tammo.block@gmail.com>
-> ---
->  drivers/tty/vt/vt.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-> index 48a8199f7845..d52ac57034e0 100644
-> --- a/drivers/tty/vt/vt.c
-> +++ b/drivers/tty/vt/vt.c
-> @@ -1890,13 +1890,22 @@ static void set_mode(struct vc_data *vc, int on_off)
->  					clr_kbd(vc, decarm);
->  				break;
->  			case 9:
-> -				vc->vc_report_mouse = on_off ? 1 : 0;
-> +				vc->vc_report_mouse = on_off ? TIOCL_REPORTBTNPRESS : 0;
->  				break;
->  			case 25:		/* Cursor on/off */
->  				vc->vc_deccm = on_off;
->  				break;
->  			case 1000:
-> -				vc->vc_report_mouse = on_off ? 2 : 0;
-> +				vc->vc_report_mouse = on_off ? TIOCL_REPORTRELEASE : 0;
-> +				break;
-> +			case 1002:
-> +				vc->vc_report_mouse = on_off ? TIOCL_REPORTDRAG : 0;
-> +				break;
-> +			case 1003:
-> +				vc->vc_report_mouse = on_off ? TIOCL_REPORTANYMOVE : 0;
-> +				break;
-> +			case 1006:
-> +				vc->vc_proto_mouse = on_off ? 1 : 0;
+> kstrtobool() ftw
 
-So simply:
-vc->vc_proto_mouse = on_off;
+And looking at that, I find it really strange it does not in fact accept
+"true" / "false", so how about this?
 
-The others could be "on_off * TIOCL_XXX", but I don't think it would
-improve anything.
+---
+Subject: lib: Extend kstrtobool() to accept "true"/"false"
 
-thanks,
--- 
-js
-suse labs
+Extend the strings recognised by kstrtobool() to cover:
+
+  - 1/0
+  - y/n
+  - yes/no	(new)
+  - t/f		(new)
+  - true/false  (new)
+  - on/off
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ lib/kstrtox.c | 60 ++++++++++++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 45 insertions(+), 15 deletions(-)
+
+diff --git a/lib/kstrtox.c b/lib/kstrtox.c
+index 1006bf70bf74..b8b950325097 100644
+--- a/lib/kstrtox.c
++++ b/lib/kstrtox.c
+@@ -325,9 +325,17 @@ EXPORT_SYMBOL(kstrtos8);
+  * @s: input string
+  * @res: result
+  *
+- * This routine returns 0 iff the first character is one of 'Yy1Nn0', or
+- * [oO][NnFf] for "on" and "off". Otherwise it will return -EINVAL.  Value
+- * pointed to by res is updated upon finding a match.
++ * This return return 0 on success, otherwise it will return -EINVAL.
++ * It will accept (case invariant):
++ *
++ *  - 1/0
++ *  - y/n
++ *  - yes/no
++ *  - t/f
++ *  - true/false
++ *  - on/off
++ *
++ * and set @*res to either true/false respectively.
+  */
+ int kstrtobool(const char *s, bool *res)
+ {
+@@ -335,30 +343,52 @@ int kstrtobool(const char *s, bool *res)
+ 		return -EINVAL;
+ 
+ 	switch (s[0]) {
++	case 't':
++	case 'T':
++		if (!s[1] || !strcasecmp(s, "true"))
++			goto have_true;
++
++		break;
++
+ 	case 'y':
+ 	case 'Y':
++		if (!s[1] || !strcasecmp(s, "yes"))
++			goto have_true;
++
++		break;
++
+ 	case '1':
++have_true:
+ 		*res = true;
+ 		return 0;
++
++	case 'f':
++	case 'F':
++		if (!s[1] || !strcasecmp(s, "false"))
++			goto have_false;
++
++		break;
+ 	case 'n':
+ 	case 'N':
++		if (!s[1] || !strcasecmp(s, "no"))
++			goto have_false;
++
++		break;
+ 	case '0':
++have_false:
+ 		*res = false;
+ 		return 0;
++
+ 	case 'o':
+ 	case 'O':
+-		switch (s[1]) {
+-		case 'n':
+-		case 'N':
+-			*res = true;
+-			return 0;
+-		case 'f':
+-		case 'F':
+-			*res = false;
+-			return 0;
+-		default:
+-			break;
+-		}
++		if (!strcasecmp(s, "on"))
++			goto have_true;
++
++		if (!strcasecmp(s, "off"))
++			goto have_false;
++
++		break;
++
+ 	default:
+ 		break;
+ 	}
