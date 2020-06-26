@@ -2,205 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C6720B802
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 20:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE0420B812
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 20:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgFZSSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 14:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726073AbgFZSSq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 14:18:46 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33ADC03E979
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 11:18:45 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id ev7so4514679pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 11:18:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=36N04TxzlXqQd75WUAHX0Ml1yIpSCa6SZWR1zFDNcKI=;
-        b=VrTDatHX5KPH/5Ib+DwzQwS9K62nCL8DXbQ9TCdD3baJM1Bw1mrgYHLZynls3U0ZVZ
-         aUfeP1M/f7UDcBqiRGZE66rOKIA43o7kXoQlJR5qwA2EcE3mvKMERnAvUmuKEYs3hKUv
-         NK+2YzYDvubULdSpBHbv27AsWTPd47koCc72QBnoVbdepZwtxOZ/LlBFMEH9nXxnDIbu
-         SUAvoxn4oBBZjC3LTFtsw8n5LQCaNPR/9LshWoO7O8KKGXn+u8PVZ9P3cXCF1Zw5yZAQ
-         sMZVt82+4nz5vxU/UONdL2+84otYOxGsVsHlurZ36GfYq+nAkD9DcXeIn2SRBqnCwNqu
-         YLMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=36N04TxzlXqQd75WUAHX0Ml1yIpSCa6SZWR1zFDNcKI=;
-        b=nIlKLLPBXM+trSwWeOBu+sWPJZ5+d579ugum1R5j78roQvTnTa09VDoFwcf4WSg6S8
-         maCE1lOMfs9EqPchmEiIQwshQ1nEGjwiW4QrE+NtvyPUBqIrD78bV/HqJOmMWH1xS8JJ
-         mOv8Ws9NSmwFCUjp5rzTHfw4mo9N4NEyEd/MJk7sUtY/C6lVLH18HLqZLsR7TarFjoqz
-         FF5phh12SB1vyWBOhBbazM2o/tYNHhueM1mn+yUDqzwPFfr+IY6eQZqIeHVneHzIi2q0
-         OIF5rHQWiVoonYdF0mgWG/2F3hDL/R8BNifxZnLKNojh6UHwqAvEH7+xbRhrbUBLFXst
-         Jupw==
-X-Gm-Message-State: AOAM530NscAl7Xim3fMBmLBUa5cNaH7c0LGzZCLOxl9upSFUu41S7VfB
-        /HAI0eUvvjefExbjEvBZzyyHcN0199II+lWK1w5GFA==
-X-Google-Smtp-Source: ABdhPJzCzlwf5+hIj/AHmVbCJbm/ZzQCl2PTNNBAfPyDA3GR4+VckJCpDiSv5Bk1XxdgWA4b6Ark/Voa1hwNMjOXOuI=
-X-Received: by 2002:a17:90a:1e:: with SMTP id 30mr4474021pja.25.1593195525198;
- Fri, 26 Jun 2020 11:18:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200324220830.110002-1-ndesaulniers@google.com>
- <20200403231611.81444-1-ndesaulniers@google.com> <20200404160100.GB26298@redhat.com>
- <20200404170604.GN23230@ZenIV.linux.org.uk>
-In-Reply-To: <20200404170604.GN23230@ZenIV.linux.org.uk>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 26 Jun 2020 11:18:34 -0700
-Message-ID: <CAKwvOdkpxUkYT_oaNhtbNb2GW7omPjfJcV5xJ9Hc5Xaxn4VcFg@mail.gmail.com>
-Subject: Re: [PATCH v2] x86: signal: move save_altstack_ex out of generic headers
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Marco Elver <elver@google.com>,
-        Brian Gerst <brgerst@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1725866AbgFZSXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 14:23:30 -0400
+Received: from mga07.intel.com ([134.134.136.100]:59760 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725768AbgFZSX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 14:23:29 -0400
+IronPort-SDR: QTL+hahqgQfsnssYZyMoFGCYy/BZuPShi/JHbMtYK0BZ8uqoMNxDXtzcsg6xSOCInvrNQp5lHT
+ BRSYE7ZNGg5A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9664"; a="210512872"
+X-IronPort-AV: E=Sophos;i="5.75,284,1589266800"; 
+   d="scan'208";a="210512872"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2020 11:23:28 -0700
+IronPort-SDR: lBbdVeGeJkEp2nERUHJNUTqjwvWPZfZOjN2EUfGWVQFC4Ci1Sr9z2rMW0DyP9EMMHiHfF33vMF
+ 5jXJ8IrKmFDQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,284,1589266800"; 
+   d="scan'208";a="424153793"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
+  by orsmga004.jf.intel.com with ESMTP; 26 Jun 2020 11:23:28 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        tglx@linutronix.de, bp@alien8.de, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, dave.hansen@intel.com,
+        yu-cheng.yu@intel.com, bigeasy@linutronix.de, gorcunov@gmail.com,
+        hpa@zytor.com, alexey.budankov@linux.intel.com, eranian@google.com,
+        ak@linux.intel.com, like.xu@linux.intel.com,
+        yao.jin@linux.intel.com, wei.w.wang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V2 00/23] Support Architectural LBR
+Date:   Fri, 26 Jun 2020 11:19:57 -0700
+Message-Id: <1593195620-116988-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 4, 2020 at 10:06 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> On Sat, Apr 04, 2020 at 06:01:00PM +0200, Oleg Nesterov wrote:
-> > On 04/03, Nick Desaulniers wrote:
-> > >
-> > > --- a/arch/x86/kernel/signal.c
-> > > +++ b/arch/x86/kernel/signal.c
-> > > @@ -416,6 +416,7 @@ static int __setup_rt_frame(int sig, struct ksignal *ksig,
-> > >     return 0;
-> > >  Efault:
-> > >     user_access_end();
-> > > +   reset_altstack();
-> > >     return -EFAULT;
-> > >  }
-> > >  #else /* !CONFIG_X86_32 */
-> > > @@ -507,6 +508,7 @@ static int __setup_rt_frame(int sig, struct ksignal *ksig,
-> > >
-> > >  Efault:
-> > >     user_access_end();
-> > > +   reset_altstack();
-> > >     return -EFAULT;
-> > >  }
-> >
-> > I must have missed something, but this looks just wrong.
-> >
-> > reset_altstack() should be called when __setup_rt_frame() (and
-> > unsafe_save_altstack() in particular) succeeds, not when it fails.
-> >
-> > Nevermind, Al has already suggested to use signal_delivered()...
->
-> FWIW, I propose to do is the patch below (against the current mainline);
-> objections?
->
-> Don't do sas_ss_reset() until we are certain that sigframe won't be abandoned
->
-> Currently we handle SS_AUTODISARM as soon as we have stored the
-> altstack settings into sigframe - that's the point when we have
-> set the things up for eventual sigreturn to restore the old settings.
-> And if we manage to set the sigframe up (we are not done with that
-> yet), everything's fine.  However, in case of failure we end up
-> with sigframe-to-be abandoned and SIGSEGV force-delivered.  And
-> in that case we end up with inconsistent rules - late failures
-> have altstack reset, early ones do not.
->
-> It's trivial to get consistent behaviour - just handle SS_AUTODISARM
-> once we have set the sigframe up and are committed to entering
-> the handler, i.e. in signal_delivered().
->
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Hi Al,
-Have you had time to wrap this up as its own commit and send?  I was
-doing a bug scrub of our KernelCI warnings and noticed this is still
-an issue.  Looks like everyone was happy with your approach.  Let me
-know if you're too busy, and I'll collect all of the tags and send for
-you.  I appreciate you taking the time to help us fix this.
+Changes since V1:
+- Move the union for CPUID enumeration bits to asm/perf_event.h
+- Union the lbr_ctl_map and lbr_sel_map
+- Rename ARCH_LBR_INFO_* to LBR_INFO_*
+- Remove the function pointers of lbr_enable/disable. Architectural
+  LBR and the model-specific LBR share the same functions for
+  lbr_enable/disable now.
+- Factor out common codes for lbr_read, lbr_save and lbr_restore to
+  reduce the duplicate codes.
+- Export copy_fpregs_to_fpstate instead of xfeatures_mask_all
+- Add a padding to guarantee the required alignment
+- Simplify the intel_pmu_arch_lbr_read_xsave()
 
-> ---
-> diff --git a/include/linux/compat.h b/include/linux/compat.h
-> index 0480ba4db592..f614967374f5 100644
-> --- a/include/linux/compat.h
-> +++ b/include/linux/compat.h
-> @@ -461,8 +461,6 @@ int __compat_save_altstack(compat_stack_t __user *, unsigned long);
->                         &__uss->ss_sp, label); \
->         unsafe_put_user(t->sas_ss_flags, &__uss->ss_flags, label); \
->         unsafe_put_user(t->sas_ss_size, &__uss->ss_size, label); \
-> -       if (t->sas_ss_flags & SS_AUTODISARM) \
-> -               sas_ss_reset(t); \
->  } while (0);
->
->  /*
-> diff --git a/include/linux/signal.h b/include/linux/signal.h
-> index 05bacd2ab135..28fe9cc134f7 100644
-> --- a/include/linux/signal.h
-> +++ b/include/linux/signal.h
-> @@ -450,8 +450,6 @@ int __save_altstack(stack_t __user *, unsigned long);
->         unsafe_put_user((void __user *)t->sas_ss_sp, &__uss->ss_sp, label); \
->         unsafe_put_user(t->sas_ss_flags, &__uss->ss_flags, label); \
->         unsafe_put_user(t->sas_ss_size, &__uss->ss_size, label); \
-> -       if (t->sas_ss_flags & SS_AUTODISARM) \
-> -               sas_ss_reset(t); \
->  } while (0);
->
->  #ifdef CONFIG_PROC_FS
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index e58a6c619824..4cfe0b9af588 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -2769,6 +2769,8 @@ static void signal_delivered(struct ksignal *ksig, int stepping)
->         if (!(ksig->ka.sa.sa_flags & SA_NODEFER))
->                 sigaddset(&blocked, ksig->sig);
->         set_current_blocked(&blocked);
-> +       if (current->sas_ss_flags & SS_AUTODISARM)
-> +               sas_ss_reset(current);
->         tracehook_signal_handler(stepping);
->  }
->
-> @@ -4070,11 +4072,7 @@ int __save_altstack(stack_t __user *uss, unsigned long sp)
->         int err = __put_user((void __user *)t->sas_ss_sp, &uss->ss_sp) |
->                 __put_user(t->sas_ss_flags, &uss->ss_flags) |
->                 __put_user(t->sas_ss_size, &uss->ss_size);
-> -       if (err)
-> -               return err;
-> -       if (t->sas_ss_flags & SS_AUTODISARM)
-> -               sas_ss_reset(t);
-> -       return 0;
-> +       return err;
->  }
->
->  #ifdef CONFIG_COMPAT
-> @@ -4129,11 +4127,7 @@ int __compat_save_altstack(compat_stack_t __user *uss, unsigned long sp)
->                          &uss->ss_sp) |
->                 __put_user(t->sas_ss_flags, &uss->ss_flags) |
->                 __put_user(t->sas_ss_size, &uss->ss_size);
-> -       if (err)
-> -               return err;
-> -       if (t->sas_ss_flags & SS_AUTODISARM)
-> -               sas_ss_reset(t);
-> -       return 0;
-> +       return err;
->  }
->  #endif
->
+LBR (Last Branch Records) enables recording of software path history
+by logging taken branches and other control flows within architectural
+registers. Intel CPUs have had model-specific LBRs for quite some time
+but this evolves them into an architectural feature now.
 
+The main advantages for the users are:
+- Faster context switching due to XSAVES support and faster reset of
+  LBR MSRs via the new DEPTH MSR
+- Faster LBR read for a non-PEBS event due to XSAVES support, which
+  lowers the overhead of the NMI handler. (For a PEBS event, the LBR
+  information is recorded in the PEBS records. There is no impact on
+  the PEBS event.)
+- Linux kernel can support the LBR features without knowing the model
+  number of the current CPU.
+- Clean exposure of LBRs to guests without relying on model-specific
+  features. (An improvement for KVM. Not included in this patch series.)
+- Supports for running with a smaller number of LBRs than the full 32,
+  to lower overhead (currently not exposed, however)
+
+The key improvements for the perf kernel in this patch series include,
+- Doesn't require a model check. The capabilities of Architectural LBR
+  can be enumerated by CPUID.
+- Each LBR record or entry is still comprised of three MSRs,
+  IA32_LBR_x_FROM_IP, IA32_LBR_x_TO_IP and IA32_LBR_x_TO_IP, but they
+  become architectural MSRs.
+- Architectural LBR is stack-like now. Entry 0 is always the youngest
+  branch, entry 1 the next youngest... The TOS MSR has been removed.
+- A new IA32_LBR_CTL MSR is introduced to enable and configure LBRs,
+  which replaces the IA32_DEBUGCTL[bit 0] and the LBR_SELECT MSR.
+- The possible LBR depth can be retrieved from CPUID enumeration. The
+  max value is written to the new MSR_ARCH_LBR_DEPTH as the number of
+  LBR entries.
+- Faster LBR MSRs reset via the new DEPTH MSR, which avoids touching
+  potentially nearly a hundred MSRs.
+- XSAVES and XRSTORS are used to read, save/restore LBR related MSRs
+- Faster direct reporting of the branch type with the LBR without needing
+  access to the code
+
+The existing LBR capabilities, such as CPL filtering, Branch filtering,
+Call stack, Mispredict information, cycles information, Branch Type
+information, are still kept for Architectural LBRs.
+
+XSAVES and XRSTORS improvements:
+
+In perf with call stack mode, LBR information is used to reconstruct
+a call stack. To get a complete call stack, perf has to save and restore
+all LBR registers during a context switch. However, the number of LBR
+registers is huge. To reduce the overhead, LBR state component is
+introduced with architectural LBR. Perf subsystem will use XSAVES/XRSTORS
+to save/restore LBRs during a context switch.
+
+LBR call stack mode is not always enabled. Perf subsystem only needs to
+save/restore an LBR state on demand. To avoid unnecessary save/restore of
+the LBR state at a context switch, a software concept, dynamic supervisor
+state, is introduced, which
+- does not allocate a buffer in each task->fpu;
+- does not save/restore a state component at each context switch;
+- sets the bit corresponding to a dynamic supervisor feature in
+  IA32_XSS at boot time, and avoids setting it at run time;
+- dynamically allocates a specific buffer for a state component
+  on demand, e.g. only allocate a LBR-specific XSAVE buffer when LBR is
+  enabled in perf. (Note: The buffer has to include the LBR state
+  component, legacy region and XSAVE header.)
+- saves/restores a state component on demand, e.g. manually invoke
+  the XSAVES/XRSTORS instruction to save/restore the LBR state
+  to/from the buffer when perf is active and a call stack is required.
+
+The specification of Architectural LBR can be found in the latest Intel
+Architecture Instruction Set Extensions and Future Features Programming
+Reference, 319433-038.
+
+Kan Liang (23):
+  x86/cpufeatures: Add Architectural LBRs feature bit
+  perf/x86/intel/lbr: Add a function pointer for LBR reset
+  perf/x86/intel/lbr: Add a function pointer for LBR read
+  perf/x86/intel/lbr: Add the function pointers for LBR save and restore
+  perf/x86/intel/lbr: Factor out a new struct for generic optimization
+  perf/x86/intel/lbr: Use dynamic data structure for task_ctx
+  x86/msr-index: Add bunch of MSRs for Arch LBR
+  perf/x86: Expose CPUID enumeration bits for arch LBR
+  perf/x86/intel: Check Arch LBR MSRs
+  perf/x86/intel/lbr: Support LBR_CTL
+  perf/x86/intel/lbr: Unify the stored format of LBR information
+  perf/x86/intel/lbr: Factor out rdlbr_all() and wrlbr_all()
+  perf/x86/intel/lbr: Factor out intel_pmu_store_lbr
+  perf/x86/intel/lbr: Support Architectural LBR
+  perf/core: Factor out functions to allocate/free the task_ctx_data
+  perf/core: Use kmem_cache to allocate the PMU specific data
+  perf/x86/intel/lbr: Create kmem_cache for the LBR context data
+  perf/x86: Remove task_ctx_size
+  x86/fpu: Use proper mask to replace full instruction mask
+  x86/fpu/xstate: Support dynamic supervisor feature for LBR
+  x86/fpu/xstate: Add helpers for LBR dynamic supervisor feature
+  perf/x86/intel/lbr: Support XSAVES/XRSTORS for LBR context switch
+  perf/x86/intel/lbr: Support XSAVES for arch LBR read
+
+ arch/x86/events/core.c              |   2 +-
+ arch/x86/events/intel/core.c        |  42 ++-
+ arch/x86/events/intel/ds.c          |   4 +-
+ arch/x86/events/intel/lbr.c         | 656 ++++++++++++++++++++++++++++++------
+ arch/x86/events/perf_event.h        | 117 ++++++-
+ arch/x86/include/asm/cpufeatures.h  |   1 +
+ arch/x86/include/asm/fpu/internal.h |  47 +--
+ arch/x86/include/asm/fpu/types.h    |  27 ++
+ arch/x86/include/asm/fpu/xstate.h   |  36 ++
+ arch/x86/include/asm/msr-index.h    |  16 +
+ arch/x86/include/asm/perf_event.h   |  46 ++-
+ arch/x86/kernel/fpu/core.c          |  39 +++
+ arch/x86/kernel/fpu/xstate.c        |  89 ++++-
+ include/linux/perf_event.h          |   5 +-
+ kernel/events/core.c                |  25 +-
+ 15 files changed, 968 insertions(+), 184 deletions(-)
 
 -- 
-Thanks,
-~Nick Desaulniers
+2.7.4
+
