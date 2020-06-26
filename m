@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE6C20B6C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A715920B6D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 19:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgFZRVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 13:21:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39736 "EHLO mail.kernel.org"
+        id S1727104AbgFZRVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 13:21:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725957AbgFZRVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 13:21:20 -0400
+        id S1726910AbgFZRVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 13:21:21 -0400
 Received: from localhost (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 231C720823;
+        by mail.kernel.org (Postfix) with ESMTPSA id 0862B2065F;
         Fri, 26 Jun 2020 17:21:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593192080;
-        bh=ITdNEEY+ZHKHsjx3oMsm/9Nbn6kiG/EkZjcuFwym5no=;
+        s=default; t=1593192081;
+        bh=1KnbXwE+bmAZRBzxpU4AIX//ta8YBFUr+H6enwpmo9A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mPPamoIx+AvB5/BkRh8J+OwzXuhJ6XadVUjCoHniecDZyTU/JCZlkEWcZvTHr9esU
-         wMUZw0TVkIWnHOKXyiaCmLxKf6bOf/nO7xElHnQmqpB533lzQEoxN8rXAfgnncVryd
-         NA1Y6aknx9bEQXsiyRC0QY0PPJI/BNRvau6p4m7U=
+        b=zLgIg9+Kc6v2O/9rzSj9PMRNASXVTteANa5UrP1pa3D6xKpUGJrJgsrg3u9RsU/Gi
+         EMFFLPqZSQmIsek8lb+Hef3NdDSwrvAEga/juhjxV7fIC0RPMTVcwkJ/1fL34mO7Bh
+         eKX99ueb+yhOuuCpUSMcKUvTUlekKgK4DSwHizUU=
 From:   Andy Lutomirski <luto@kernel.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Andrew Cooper <andrew.cooper3@citrix.com>,
         Juergen Gross <jgross@suse.com>,
         Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH 1/6] x86/entry: Assert that syscalls are on the right stack
-Date:   Fri, 26 Jun 2020 10:21:11 -0700
-Message-Id: <52059e42bb0ab8551153d012d68f7be18d72ff8e.1593191971.git.luto@kernel.org>
+Subject: [PATCH 2/6] x86/entry: Move SYSENTER's regs->sp and regs->flags fixups into C
+Date:   Fri, 26 Jun 2020 10:21:12 -0700
+Message-Id: <fe62bef67eda7fac75b8f3dbafccf571dc4ece6b.1593191971.git.luto@kernel.org>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1593191971.git.luto@kernel.org>
 References: <cover.1593191971.git.luto@kernel.org>
@@ -42,74 +42,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the entry stack is a full page, it's too easy to regress
-the system call entry code and end up on the wrong stack without
-noticing.  Assert that all system calls (SYSCALL64, SYSCALL32,
-SYSENTER, and INT80) are on the right stack and have pt_regs in the
-right place.
+The SYSENTER asm (32-bit and compat) contains fixups for regs->sp
+and regs->flags.  Move the fixups into C and fix some comments while
+we're at it.
+
+IMO this is a valid cleanup all by itself, and it also simplifies
+the subsequent patch that will fix Xen PV SYSENTER.
 
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 ---
- arch/x86/entry/common.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ arch/x86/entry/common.c          | 12 ++++++++++++
+ arch/x86/entry/entry_32.S        |  5 ++---
+ arch/x86/entry/entry_64_compat.S | 11 +++++------
+ 3 files changed, 19 insertions(+), 9 deletions(-)
 
 diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index bd3f14175193..ed8ccc820995 100644
+index ed8ccc820995..f392a8bcd1c3 100644
 --- a/arch/x86/entry/common.c
 +++ b/arch/x86/entry/common.c
-@@ -45,6 +45,15 @@
- #define CREATE_TRACE_POINTS
- #include <trace/events/syscalls.h>
- 
-+/* Check that the stack and regs on entry from user mode are sane. */
-+static void check_user_regs(struct pt_regs *regs)
+@@ -522,6 +522,18 @@ __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
+ 		(regs->flags & (X86_EFLAGS_RF | X86_EFLAGS_TF | X86_EFLAGS_VM)) == 0;
+ #endif
+ }
++
++/* Returns 0 to return using IRET or 1 to return using SYSEXIT/SYSRETL. */
++__visible noinstr long do_SYSENTER_32(struct pt_regs *regs)
 +{
-+	if (IS_ENABLED(CONFIG_DEBUG_ENTRY)) {
-+		WARN_ON_ONCE(!on_thread_stack());
-+		WARN_ON_ONCE(regs != task_pt_regs(current));
-+	}
++	/* SYSENTER loses RSP, but the vDSO saved it in RBP. */
++	regs->sp = regs->bp;
++
++	/* SYSENTER clobbers EFLAGS.IF.  Assume it was set in usermode. */
++	regs->flags |= X86_EFLAGS_IF;
++
++	return do_fast_syscall_32(regs);
 +}
-+
- #ifdef CONFIG_CONTEXT_TRACKING
- /**
-  * enter_from_user_mode - Establish state when coming from user mode
-@@ -127,9 +136,6 @@ static long syscall_trace_enter(struct pt_regs *regs)
- 	unsigned long ret = 0;
- 	u32 work;
+ #endif
  
--	if (IS_ENABLED(CONFIG_DEBUG_ENTRY))
--		BUG_ON(regs != task_pt_regs(current));
--
- 	work = READ_ONCE(ti->flags);
+ SYSCALL_DEFINE0(ni_syscall)
+diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
+index 024d7d276cd4..2d0bd5d5f032 100644
+--- a/arch/x86/entry/entry_32.S
++++ b/arch/x86/entry/entry_32.S
+@@ -933,9 +933,8 @@ SYM_FUNC_START(entry_SYSENTER_32)
  
- 	if (work & (_TIF_SYSCALL_TRACE | _TIF_SYSCALL_EMU)) {
-@@ -346,6 +352,8 @@ __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
- {
- 	struct thread_info *ti;
+ .Lsysenter_past_esp:
+ 	pushl	$__USER_DS		/* pt_regs->ss */
+-	pushl	%ebp			/* pt_regs->sp (stashed in bp) */
++	pushl	$0			/* pt_regs->sp (placeholder) */
+ 	pushfl				/* pt_regs->flags (except IF = 0) */
+-	orl	$X86_EFLAGS_IF, (%esp)	/* Fix IF */
+ 	pushl	$__USER_CS		/* pt_regs->cs */
+ 	pushl	$0			/* pt_regs->ip = 0 (placeholder) */
+ 	pushl	%eax			/* pt_regs->orig_ax */
+@@ -965,7 +964,7 @@ SYM_FUNC_START(entry_SYSENTER_32)
+ .Lsysenter_flags_fixed:
  
-+	check_user_regs(regs);
-+
- 	enter_from_user_mode();
- 	instrumentation_begin();
+ 	movl	%esp, %eax
+-	call	do_fast_syscall_32
++	call	do_SYSENTER_32
+ 	/* XEN PV guests always use IRET path */
+ 	ALTERNATIVE "testl %eax, %eax; jz .Lsyscall_32_done", \
+ 		    "jmp .Lsyscall_32_done", X86_FEATURE_XENPV
+diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
+index 0f974ae01e62..7b9d8150f652 100644
+--- a/arch/x86/entry/entry_64_compat.S
++++ b/arch/x86/entry/entry_64_compat.S
+@@ -68,16 +68,15 @@ SYM_CODE_START(entry_SYSENTER_compat)
  
-@@ -409,6 +417,8 @@ static void do_syscall_32_irqs_on(struct pt_regs *regs)
- /* Handles int $0x80 */
- __visible noinstr void do_int80_syscall_32(struct pt_regs *regs)
- {
-+	check_user_regs(regs);
-+
- 	enter_from_user_mode();
- 	instrumentation_begin();
+ 	/* Construct struct pt_regs on stack */
+ 	pushq	$__USER32_DS		/* pt_regs->ss */
+-	pushq	%rbp			/* pt_regs->sp (stashed in bp) */
++	pushq	$0			/* pt_regs->sp = 0 (placeholder) */
  
-@@ -460,6 +470,8 @@ __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
- 					vdso_image_32.sym_int80_landing_pad;
- 	bool success;
- 
-+	check_user_regs(regs);
-+
  	/*
- 	 * SYSENTER loses EIP, and even SYSCALL32 needs us to skip forward
- 	 * so that 'regs->ip -= 2' lands back on an int $0x80 instruction.
+ 	 * Push flags.  This is nasty.  First, interrupts are currently
+-	 * off, but we need pt_regs->flags to have IF set.  Second, even
+-	 * if TF was set when SYSENTER started, it's clear by now.  We fix
+-	 * that later using TIF_SINGLESTEP.
++	 * off, but we need pt_regs->flags to have IF set.  Second, if TS
++	 * was set in usermode, it's still set, and we're singlestepping
++	 * through this code.  do_SYSENTER_32() will fix up IF.
+ 	 */
+ 	pushfq				/* pt_regs->flags (except IF = 0) */
+-	orl	$X86_EFLAGS_IF, (%rsp)	/* Fix saved flags */
+ 	pushq	$__USER32_CS		/* pt_regs->cs */
+ 	pushq	$0			/* pt_regs->ip = 0 (placeholder) */
+ 	pushq	%rax			/* pt_regs->orig_ax */
+@@ -135,7 +134,7 @@ SYM_CODE_START(entry_SYSENTER_compat)
+ .Lsysenter_flags_fixed:
+ 
+ 	movq	%rsp, %rdi
+-	call	do_fast_syscall_32
++	call	do_SYSENTER_32
+ 	/* XEN PV guests always use IRET path */
+ 	ALTERNATIVE "testl %eax, %eax; jz swapgs_restore_regs_and_return_to_usermode", \
+ 		    "jmp swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
 -- 
 2.25.4
 
