@@ -2,75 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A723820B034
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 13:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B27FD20B033
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 13:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728328AbgFZLIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 07:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728232AbgFZLIP (ORCPT
+        id S1728314AbgFZLHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 07:07:46 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:48404 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728232AbgFZLHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 07:08:15 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26518C08C5C1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 04:08:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ePLLvn3g4STvMdY6WpJ5BftJMQVL6KUjzTUZoL0oc+M=; b=RUL1JawBO+l23qmfT02FPmoWAp
-        tMzPzy2tHXhTaqOnBNg5PoGPK8XREfCJmYdDYFvM07zI8LwTH1D/O2z2q02Orb3dMyVbUDhAZeiQf
-        l+6uG231lJ4rrYmo7LXFbc3/YiNwTnO/r2pXEmVkJKuu73pGDiyoFYBVI6qH1LKBFPIWU4y5HJado
-        iAQWXtINr/7dHNys57uXxDXGeCqjgRMtNAHQ8qA05+a5dTbBkqpbwncx48E0nvWffbIjiacHr1Vhs
-        6DXBiG49zvHSYa5TSxffiERcgqTiNp6BzI8bpU0dAcJhHQvw8yIvOFSGDSg4rnJmoCCf9TyUl1sme
-        tRaKkZ9g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jomCi-0005mc-8q; Fri, 26 Jun 2020 11:07:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7D7513007CD;
-        Fri, 26 Jun 2020 13:07:31 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 69B8029C4228B; Fri, 26 Jun 2020 13:07:31 +0200 (CEST)
-Date:   Fri, 26 Jun 2020 13:07:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, hpa@zytor.com,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH] x86/mm: Pre-allocate p4d/pud pages for vmalloc area
-Message-ID: <20200626110731.GC4817@hirez.programming.kicks-ass.net>
-References: <20200626093450.27741-1-joro@8bytes.org>
+        Fri, 26 Jun 2020 07:07:45 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id A0FB72A5A67
+Subject: Re: [PATCH] tty/sysrq: Add alternative SysRq key
+To:     Pavel Machek <pavel@denx.de>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Slaby <jslaby@suse.com>, kernel@collabora.com
+References: <20200511180145.GU89269@dtor-ws>
+ <20200619162819.715-1-andrzej.p@collabora.com> <20200621212106.GB22512@amd>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Message-ID: <8836da2c-b38d-7779-bef0-857ead18b557@collabora.com>
+Date:   Fri, 26 Jun 2020 13:07:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200626093450.27741-1-joro@8bytes.org>
+In-Reply-To: <20200621212106.GB22512@amd>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 11:34:50AM +0200, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
-> 
-> Pre-allocate the page-table pages for the vmalloc area at the level
-> which needs synchronization on x86. This is P4D for 5-level and PUD
-> for 4-level paging.
-> 
-> Doing this at boot makes sure all page-tables in the system have these
-> pages already and do not need to be synchronized at runtime. The
-> runtime synchronizatin takes the pgd_lock and iterates over all
-> page-tables in the system, so it can take quite long and is better
-> avoided.
-> 
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
+Hi Pavel,
 
-Can't we now remove arch_sync_kernel_mappings() from this same file?
+W dniu 21.06.2020 o 23:21, Pavel Machek pisze:
+> Hi!
+> 
+>> There exist machines which don't have SysRq key at all, e.g. chromebooks.
+>>
+>> This patch allows configuring an alternative key to act as SysRq. Devices
+>> which declare KEY_SYSRQ in their 'keybit' bitmap continue using KEY_SYSRQ,
+>> but other devices use the alternative SysRq key instead, by default F10.
+>> Which key is actually used can be modified with sysrq's module parameter.
+>>
+>> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+> 
+> So... SysRq was selected because you are not going to press
+> Alt-Printscreen-X by default.
+
+This patch does not change the Alt-PrintScreen/SysRq-something sequence.
+What it does instead is making the 'PrintScreen/SysRq' component of the
+sequence configurable for input devices which don't declare KEY_SYSRQ in
+their 'keybit' bitmap, so the sequence becomes:
+
+Alt-<alternative sysrq key>-something
+
+If the alternative sysrq key is used (i.e. the input device in question
+does not declare KEY_SYSRQ), it is F10 by default and _that_ can be changed
+with the module parameter.
+
+To summarize:
+
+- devices which do declare KEY_SYSRQ must use Alt-PrintScreen/SysRq-something
+- devices which don't declare KEY_SYSRQ must use Alt-F10-something, but F10
+can be changed with a module parameter to something else
+
+Regards,
+
+Andrzej
