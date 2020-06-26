@@ -2,90 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0EC20AE31
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 10:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CC920ADE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 10:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729561AbgFZIIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 04:08:34 -0400
-Received: from 8bytes.org ([81.169.241.247]:50198 "EHLO theia.8bytes.org"
+        id S1729197AbgFZIGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 04:06:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729146AbgFZIFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 04:05:49 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 904D945B; Fri, 26 Jun 2020 10:05:48 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Qian Cai <cai@lca.pw>, Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH v2 2/2] iommu/amd: Use 'unsigned long' for domain->pt_root
-Date:   Fri, 26 Jun 2020 10:05:47 +0200
-Message-Id: <20200626080547.24865-3-joro@8bytes.org>
+        id S1729174AbgFZIF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 04:05:56 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.235])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A83E2082E;
+        Fri, 26 Jun 2020 08:05:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593158756;
+        bh=gmkim/r0nxh4WfZmg5wugI0xjsg1UmiR9dvIH/UOImU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ytbmvAwBpwC7IDmgiTxkutp4QIl0DH5YUlHkFvjkpd8WtYGVNTs/vnSYOtvaX3DpD
+         d+ODcLAvwbVqiF04gG+hPACWkp4w4k7LbxNe+RyBLVJUBfDTOemAhFBLdUeD8dOcjk
+         vQKfiCiZ5oUCRed8jPYL0JBaPt1Yw2sCY1UVwGzM=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: [PATCH] ARM: dts: ste: Align L2 cache-controller nodename with dtschema
+Date:   Fri, 26 Jun 2020 10:05:52 +0200
+Message-Id: <20200626080552.3627-1-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200626080547.24865-1-joro@8bytes.org>
-References: <20200626080547.24865-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+Fix dtschema validator warnings like:
+    l2-cache: $nodename:0: 'l2-cache' does not match '^(cache-controller|cpu)(@[0-9a-f,]+)*$'
 
-Using atomic64_t can be quite expensive, so use unsigned long instead.
-This is safe because the write becomes visible atomically.
-
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/iommu/amd/amd_iommu_types.h |  2 +-
- drivers/iommu/amd/iommu.c           | 15 +++++++++++++--
- 2 files changed, 14 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/ste-dbx5x0.dtsi          | 2 +-
+ arch/arm/boot/dts/ste-nomadik-stn8815.dtsi | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iommu/amd/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
-index 30a5d412255a..f6f102282dda 100644
---- a/drivers/iommu/amd/amd_iommu_types.h
-+++ b/drivers/iommu/amd/amd_iommu_types.h
-@@ -468,7 +468,7 @@ struct protection_domain {
- 				       iommu core code */
- 	spinlock_t lock;	/* mostly used to lock the page table*/
- 	u16 id;			/* the domain id written to the device table */
--	atomic64_t pt_root;	/* pgtable root and pgtable mode */
-+	unsigned long pt_root;	/* pgtable root and pgtable mode */
- 	int glx;		/* Number of levels for GCR3 table */
- 	u64 *gcr3_tbl;		/* Guest CR3 table */
- 	unsigned long flags;	/* flags to find out type of domain */
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 5286ddcfc2f9..aec585f47646 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -156,7 +156,12 @@ static struct protection_domain *to_pdomain(struct iommu_domain *dom)
- static void amd_iommu_domain_get_pgtable(struct protection_domain *domain,
- 					 struct domain_pgtable *pgtable)
- {
--	u64 pt_root = atomic64_read(&domain->pt_root);
-+	unsigned long pt_root;
-+
-+	/* Match the barrier in amd_iommu_domain_set_pt_root() */
-+	smp_rmb();
-+
-+	pt_root = READ_ONCE(domain->pt_root);
+diff --git a/arch/arm/boot/dts/ste-dbx5x0.dtsi b/arch/arm/boot/dts/ste-dbx5x0.dtsi
+index 3e10da3f8fd3..05fd544b06c1 100644
+--- a/arch/arm/boot/dts/ste-dbx5x0.dtsi
++++ b/arch/arm/boot/dts/ste-dbx5x0.dtsi
+@@ -260,7 +260,7 @@
+ 			reg = <0x80150000 0x2000>;
+ 		};
  
- 	pgtable->root = (u64 *)(pt_root & PAGE_MASK);
- 	pgtable->mode = pt_root & 7; /* lowest 3 bits encode pgtable mode */
-@@ -164,7 +169,13 @@ static void amd_iommu_domain_get_pgtable(struct protection_domain *domain,
+-		L2: l2-cache {
++		L2: cache-controller {
+ 			compatible = "arm,pl310-cache";
+ 			reg = <0xa0412000 0x1000>;
+ 			interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm/boot/dts/ste-nomadik-stn8815.dtsi b/arch/arm/boot/dts/ste-nomadik-stn8815.dtsi
+index f78b4eabd68c..4f38aeecadb3 100644
+--- a/arch/arm/boot/dts/ste-nomadik-stn8815.dtsi
++++ b/arch/arm/boot/dts/ste-nomadik-stn8815.dtsi
+@@ -15,7 +15,7 @@
+ 		    <0x08000000 0x04000000>;
+ 	};
  
- static void amd_iommu_domain_set_pt_root(struct protection_domain *domain, u64 root)
- {
--	atomic64_set(&domain->pt_root, root);
-+	WRITE_ONCE(domain->pt_root, root);
-+
-+	/*
-+	 * The new value needs to be gobally visible in case pt_root gets
-+	 * cleared, so that the page-table can be safely freed.
-+	 */
-+	smp_wmb();
- }
- 
- static void amd_iommu_domain_clr_pt_root(struct protection_domain *domain)
+-	L2: l2-cache {
++	L2: cache-controller {
+ 		compatible = "arm,l210-cache";
+ 		reg = <0x10210000 0x1000>;
+ 		interrupt-parent = <&vica>;
 -- 
-2.27.0
+2.17.1
 
