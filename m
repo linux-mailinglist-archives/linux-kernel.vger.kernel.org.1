@@ -2,161 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8656120BC4C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 00:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBDFA20BC5C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 00:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726036AbgFZWP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 18:15:57 -0400
-Received: from mail-dm6nam11on2114.outbound.protection.outlook.com ([40.107.223.114]:64225
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725852AbgFZWP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 18:15:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q9q77+2ycOMpe2cy7S2C0gwvodZGL2ub1RkUqzF0fjxBJU7Z70s03tN0hAbzcN7YI9HptZsAAadkoGcFLI5YpVJ8x+GJhF5dqWOO6HedHnrQj4SS+VWKw70QELv+/UOwP0K7p2sGLF4AuCwrgjcA1WtXzK6cbbH8/RuKmGWiar2jFaWJiWQOdLJ8++AMiNkBKVEJh3VLhmpnljDM2LXmaPdfry3NK3aAJG8f2vnmudf7aAKHCNOQ/vGGs71Aw4hLSge68oeFgKMdNtFRNuY3o+AfZIdEb/txR8WsWwDQ5u+LP7cJId+8/nt3zD1pXGqpYTPHbcPvxL568QddXz3kBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MAnq3IpSHW3SwZWnhiug4xjVskgvhfvaWMwYleFaDCM=;
- b=Z9Lx5Z0kK0JX1KGFbcOHZKPI4L1WBZ6HrNB1GhvMeqz12CeoXlZiYC8o0JNccrQDwiePBAjYrObNSOBBghgVBs+/lX+++TKcO6WcnUG9ANeP39vhWR5h6oQUxm/iDiNP2G6bPa1uPwKjPmoyyM4yc06wgXcJPcyxZ5TlVCxTFa4JVIW8UZvCv3pAdb0a6eUfIKPWT/CUtlWOVWfiJZK3aWvnZTkN81EtDVgmGVocyyUsjmH720no7uXqn8q7z5gNajN/bFaygfDE/EdBIVlpVkIXGpiZRNIvu2kwJxraMm3u+bFWiBVj3x9Cqel/AjbUDlmqRHx//Z8gEs8S/CxdUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MAnq3IpSHW3SwZWnhiug4xjVskgvhfvaWMwYleFaDCM=;
- b=ar+jluGs0GQ2S3zPC194hHzVPBOXHNGHcWbZ0pI2Wt7TUJSftRxkhH15ZLT8qmqObd5FkG5UwQ6K7whtyIntRYvcx3Z/jr+6EFsNq+kYbultizxDSfyDvGFQzESX8wyam4tWb5HYdwtx7PXDhbtnxwAKME1QfgFeDTsFj0bMXZg=
-Received: from MN2PR21MB1453.namprd21.prod.outlook.com (2603:10b6:208:1f7::10)
- by BL0PR2101MB1331.namprd21.prod.outlook.com (2603:10b6:208:92::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.3; Fri, 26 Jun
- 2020 22:15:53 +0000
-Received: from MN2PR21MB1453.namprd21.prod.outlook.com
- ([fe80::90ec:f75d:5e4a:cb26]) by MN2PR21MB1453.namprd21.prod.outlook.com
- ([fe80::90ec:f75d:5e4a:cb26%8]) with mapi id 15.20.3153.014; Fri, 26 Jun 2020
- 22:15:53 +0000
-From:   Joseph Salisbury <Joseph.Salisbury@microsoft.com>
-To:     Michael Kelley <mikelley@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH] Drivers: hv: Change flag to write log level in panic msg
- to false
-Thread-Topic: [PATCH] Drivers: hv: Change flag to write log level in panic msg
- to false
-Thread-Index: AQHWS+HzVTYTKiLVr0O7dTomrubg4KjrWqJQgAAa/lA=
-Date:   Fri, 26 Jun 2020 22:15:53 +0000
-Message-ID: <MN2PR21MB1453A27BD0EBE78E7ECA49C99C930@MN2PR21MB1453.namprd21.prod.outlook.com>
-References: <1593193685-74615-1-git-send-email-joseph.salisbury@microsoft.com>
- <MW2PR2101MB10520D5E1FDE45C5DF03D073D7930@MW2PR2101MB1052.namprd21.prod.outlook.com>
-In-Reply-To: <MW2PR2101MB10520D5E1FDE45C5DF03D073D7930@MW2PR2101MB1052.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-06-26T20:53:23Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=a4721757-2579-4dc7-adb6-85c2b12895f0;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: microsoft.com; dkim=none (message not signed)
- header.d=none;microsoft.com; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [2600:1000:b023:153d:f8cf:5fe1:3d:9387]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 5e21e407-92bd-4a97-3dfe-08d81a1e7dbf
-x-ms-traffictypediagnostic: BL0PR2101MB1331:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BL0PR2101MB13311899F55B72F6C8B82EE79C930@BL0PR2101MB1331.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:949;
-x-forefront-prvs: 0446F0FCE1
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Jk/WCZ/aNLvmj+NP3PSiyCEl0NlOuX8CZYO7vYhGhNzszjQhImm9v/MAlS7MMQaQERcFhkq9C6bz3EuOyFBH4y5at53b9AjUfDN9lGc9Fj1NoLdHCjr0TdAYhpzwzaI8W25jorelhDAWry6Zz4tMAswea3kQJtz9DZQM76GJp8eRHoGdB0TOnv9Z2Su5noGs9PMUetx1/1bJwlt0pUpHVsimgupfiF2evp6KL30zScqb+SX2oRZidcVCuyKMhIYFvGVWKSAhIcPeaxq8fb8WTWY6no3f9qFt6GudeC4o5QWYjFIbEuPYLMqfxuOa4sWq9WUwLhKzvQ1no4iC2VUHIg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR21MB1453.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(396003)(376002)(346002)(136003)(39860400002)(9686003)(53546011)(6506007)(86362001)(186003)(7696005)(4326008)(10290500003)(8990500004)(2906002)(478600001)(55016002)(8676002)(83380400001)(5660300002)(33656002)(71200400001)(66446008)(66946007)(64756008)(82960400001)(76116006)(52536014)(66476007)(66556008)(110136005)(54906003)(8936002)(82950400001)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: p66881FTGKRhi+tl14nVgY/p1Iib1ov6thOYlTHhNm6FUHEyrxxTl1KiAyfS0bI+sZfSLp/Do1DPAxHc4d6EVd10PxLtoXNQu8AEuwMY8q7N0l4t8DHQUqII0lcQZ810jz8nABC3kSwfuRYAgIEdZkIpnP57V48SplQPcppMId4ZJulndBRDcOylz3hnRxCpWuH+Aiyb+5S30CggpGwcrhTUEXyvyzugOc9IdGu/KVqw5Isc7Ihfbs6Op7hTDvCrqGganin/9VOResfHDMmVh2gM4eEB8kMX3cCy0zSy9BACA+gJVtjvw2OtslmcDlVew0bnTxP6P+POwEGcUAA1IHUMCo9cQDAsrItyXYvcDGqSHN1QmhJIjUQ9KHfBFqNMljS+Kmadx5mEIVreXXpwPXJOOTmPQ7oaXqdjdQc+BmDWwN42y4XjJL3fjXYuEleb51G0J2Ou3LZ46BQ9qUPBgBJnVo2TWDcHq8A6rokGJQ6lUxHKBex9TPLyP+5V5FFB6Wehh0Mem6HDjSBX5Vqmei2b9CR8ZBwNnuwX4jGM+H4=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726034AbgFZWTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 18:19:34 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:44595 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725852AbgFZWTe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 18:19:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593209972;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wZy6wt4+sFWRrsHtnDCcmHRr975ohOzcLpYeu8y/cI4=;
+        b=jDZ9poKAP/7oZOR+a9WNRQRBPCi6O6HTux2iF9lINEn9rL6CGUdHcjrpUvyZ9tfQcPniGZ
+        N0qspjoPdS683zeJGGEVQBcvoqGLM9DlrF2dDvQQAknmr9OW3lYL1DFX6JtRZDI92Qv5fQ
+        tbEFWflyterwlvnxbwBh0BeA94RZs8o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-38-_vAwD5n_NquHhVgvzgh0JQ-1; Fri, 26 Jun 2020 18:19:29 -0400
+X-MC-Unique: _vAwD5n_NquHhVgvzgh0JQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE6811800D4A;
+        Fri, 26 Jun 2020 22:19:27 +0000 (UTC)
+Received: from w520.home (ovpn-112-156.phx2.redhat.com [10.3.112.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7A7C75D9CC;
+        Fri, 26 Jun 2020 22:19:23 +0000 (UTC)
+Date:   Fri, 26 Jun 2020 16:19:23 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v3 1/5] docs: IOMMU user API
+Message-ID: <20200626161923.339e17a6@w520.home>
+In-Reply-To: <1592931837-58223-2-git-send-email-jacob.jun.pan@linux.intel.com>
+References: <1592931837-58223-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1592931837-58223-2-git-send-email-jacob.jun.pan@linux.intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR21MB1453.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5e21e407-92bd-4a97-3dfe-08d81a1e7dbf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jun 2020 22:15:53.2537
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DJAMXuwh/LywVNmcGOA5msGZUpeuEV7qr+zP6Oq3WWp7vOrQlR0gycbgEV3oY4kWX8Qs28fyBJQ39Gq9yAZ1XA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR2101MB1331
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmtzIGZvciB0aGUgZmVlZGJhY2ssIE1pY2hhZWwuICBJJ2xsIHNlbmQgYSB2Mi4NCg0KVGhh
-bmtzLA0KDQpKb2UNCg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogTWljaGFl
-bCBLZWxsZXkgPG1pa2VsbGV5QG1pY3Jvc29mdC5jb20+IA0KU2VudDogRnJpZGF5LCBKdW5lIDI2
-LCAyMDIwIDQ6NTMgUE0NClRvOiBKb3NlcGggU2FsaXNidXJ5IDxKb3NlcGguU2FsaXNidXJ5QG1p
-Y3Jvc29mdC5jb20+OyBLWSBTcmluaXZhc2FuIDxreXNAbWljcm9zb2Z0LmNvbT47IEhhaXlhbmcg
-WmhhbmcgPGhhaXlhbmd6QG1pY3Jvc29mdC5jb20+OyBTdGVwaGVuIEhlbW1pbmdlciA8c3RoZW1t
-aW5AbWljcm9zb2Z0LmNvbT47IHNhc2hhbEBrZXJuZWwub3JnOyB3ZWkubGl1QGtlcm5lbC5vcmcN
-CkNjOiBsaW51eC1oeXBlcnZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJu
-ZWwub3JnOyBzdGFibGVAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0OiBSRTogW1BBVENIXSBEcml2
-ZXJzOiBodjogQ2hhbmdlIGZsYWcgdG8gd3JpdGUgbG9nIGxldmVsIGluIHBhbmljIG1zZyB0byBm
-YWxzZQ0KDQpGcm9tOiBKb3NlcGggU2FsaXNidXJ5IDxqb3NlcGguc2FsaXNidXJ5QG1pY3Jvc29m
-dC5jb20+IFNlbnQ6IEZyaWRheSwgSnVuZSAyNiwgMjAyMCAxMDo0OCBBTQ0KPiANCj4gV2hlbiB0
-aGUga2VybmVsIHBhbmljcywgb25lIHBhZ2Ugd29ydGggb2Yga21zZyBkYXRhIGlzIHdyaXR0ZW4g
-dG8gYW4gDQo+IGFsbG9jYXRlZCBwYWdlLiAgVGhlIEh5cGVydmlzb3IgaXMgbm90aWZpZWQgb2Yg
-dGhlIHBhZ2UgYWRkcmVzcyB0cm91Z2ggDQo+IHRoZSBNU1IuICBUaGlzIHBhbmljIGluZm9ybWF0
-aW9uIGlzIGNvbGxlY3RlZCBvbiB0aGUgaG9zdC4gIFNpbmNlIHdlIA0KPiBhcmUgb25seSBjb2xs
-ZWN0aW5nIG9uZSBwYWdlIG9mIGRhdGEsIHRoZSBmdWxsIHBhbmljIG1lc3NhZ2UgbWF5IG5vdCBi
-ZSBjb2xsZWN0ZWQuDQo+IA0KPiBFYWNoIGxpbmUgb2YgdGhlIHBhbmljIG1lc3NhZ2UgaXMgcHJl
-Zml4ZWQgd2l0aCB0aGUgbG9nIGxldmVsIG9mIHRoYXQNCj4gcGFydGljdWxhciBtZXNzYWdlIGlu
-IHRoZSBmb3JtIDxOPiwgd2hlcmUgTiBpcyB0aGUgbG9nIGxldmVsLiAgIFRoZSB0eXBpY2FsDQo+
-IDQgS2J5dGVzIGNvbnRhaW5zIGFueXdoZXJlIGZyb20gNTAgdG8gMTAwIGxpbmVzIHdpdGggdGhh
-dCBsb2cgbGV2ZWwgcHJlZml4Lg0KPiANCj4gaHZfZG1zZ19kdW1wKCkgbWFrZXMgYSBjYWxsIHRv
-IGttc2dfZHVtcF9nZXRfYnVmZmVyKCkuICBUaGUgc2Vjb25kIA0KPiBhcmd1bWVudCBpbiB0aGUg
-Y2FsbCBpcyBhIGJvb2wgZGVzY3JpYmVkIGFzOiDigJhAc3lzbG9nOiBpbmNsdWRlIHRoZSDigJw8
-ND7igJ0gUHJlZml4ZXPigJkuDQo+IA0KPiBXaXRoIHRoaXMgY2hhbmdlLCB3ZSB3aWxsIG5vdCB3
-cml0ZSB0aGUgbG9nIGxldmVsIHRvIHRoZSBhbGxvY2F0ZWQgDQo+IHBhZ2UuICBUaGlzIHdpbGwg
-cHJvdmlkZSBhZGRpdGlvbmFsIHJvb20gaW4gdGhlIGFsbG9jYXRlZCBwYWdlIGZvciANCj4gbW9y
-ZSBpbmZvcm1hdGl2ZSBwYW5pYyBpbmZvcm1hdGlvbi4NCg0KTGV0IG1lIHN1Z2dlc3QgdGlnaHRl
-bmluZyB0aGUgY29tbWl0IG1lc3NhZ2UgYSBiaXQsIHdpdGggZm9jdXMgb24gdGhlICJ3aGF0Ig0K
-YW5kICJ3aHkiIHJhdGhlciB0aGFuIHRoZSBkZXRhaWxzIG9mIHRoZSBjb2RlIGNoYW5nZS4gIEFs
-c28gdXNlIGltcGVyYXRpdmUgdm9pY2UgcGVyIHRoZSBMaW51eCBrZXJuZWwgZ3VpZGVsaW5lczoN
-Cg0KV2hlbiB0aGUga2VybmVsIHBhbmljcywgb25lIHBhZ2Ugb2Yga21zZyBkYXRhIG1heSBiZSBj
-b2xsZWN0ZWQgYW5kIHNlbnQgdG8gSHlwZXItViB0byBhaWQgaW4gZGlhZ25vc2luZyB0aGUgZmFp
-bHVyZS4gIFRoZSBjb2xsZWN0ZWQga21zZyBkYXRhIHR5cGljYWxseSBjb250YWlucyA1MCB0byAx
-MDAgbGluZXMsIGVhY2ggb2Ygd2hpY2ggaGFzIGEgbG9nIGxldmVsIHByZWZpeCB0aGF0IGlzbid0
-IHZlcnkgdXNlZnVsIGZyb20gYSBkaWFnbm9zdGljIHN0YW5kcG9pbnQuICBTbyB0ZWxsIGttc2df
-ZHVtcF9nZXRfYnVmZmVyKCkgdG8gbm90IGluY2x1ZGUgdGhlIGxvZyBsZXZlbCwgZW5hYmxpbmcg
-bW9yZSBpbmZvcm1hdGlvbiB0aGF0ICppcyogdXNlZnVsIHRvIGZpdCBpbiB0aGUgcGFnZS4NCg0K
-PiANCj4gUmVxdWVzdGluZyBpbiBzdGFibGUga2VybmVscywgc2luY2UgbWFueSBrZXJuZWxzIHJ1
-bm5pbmcgaW4gcHJvZHVjdGlvbiANCj4gYXJlIHN0YWJsZSByZWxlYXNlcy4NCj4gDQo+IENjOiBz
-dGFibGVAdmdlci5rZXJuZWwub3JnDQo+IFNpZ25lZC1vZmYtYnk6IEpvc2VwaCBTYWxpc2J1cnkg
-PGpvc2VwaC5zYWxpc2J1cnlAbWljcm9zb2Z0LmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL2h2L3Zt
-YnVzX2Rydi5jIHwgMiArLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRl
-bGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9odi92bWJ1c19kcnYuYyBiL2Ry
-aXZlcnMvaHYvdm1idXNfZHJ2LmMgaW5kZXggDQo+IDkxNDdlZTlkNWY3ZC4uZDY5ZjRlZmEzNzE5
-IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2h2L3ZtYnVzX2Rydi5jDQo+ICsrKyBiL2RyaXZlcnMv
-aHYvdm1idXNfZHJ2LmMNCj4gQEAgLTEzNjgsNyArMTM2OCw3IEBAIHN0YXRpYyB2b2lkIGh2X2tt
-c2dfZHVtcChzdHJ1Y3Qga21zZ19kdW1wZXIgKmR1bXBlciwNCj4gIAkgKiBXcml0ZSBkdW1wIGNv
-bnRlbnRzIHRvIHRoZSBwYWdlLiBObyBuZWVkIHRvIHN5bmNocm9uaXplOyBwYW5pYyBzaG91bGQN
-Cj4gIAkgKiBiZSBzaW5nbGUtdGhyZWFkZWQuDQo+ICAJICovDQo+IC0Ja21zZ19kdW1wX2dldF9i
-dWZmZXIoZHVtcGVyLCB0cnVlLCBodl9wYW5pY19wYWdlLCBIVl9IWVBfUEFHRV9TSVpFLA0KPiAr
-CWttc2dfZHVtcF9nZXRfYnVmZmVyKGR1bXBlciwgZmFsc2UsIGh2X3BhbmljX3BhZ2UsIEhWX0hZ
-UF9QQUdFX1NJWkUsDQo+ICAJCQkgICAgICZieXRlc193cml0dGVuKTsNCj4gIAlpZiAoYnl0ZXNf
-d3JpdHRlbikNCj4gIAkJaHlwZXJ2X3JlcG9ydF9wYW5pY19tc2cocGFuaWNfcGEsIGJ5dGVzX3dy
-aXR0ZW4pOw0KPiAtLQ0KPiAyLjE3LjENCg0KV2l0aCB0aGUgY29tbWl0IG1lc3NhZ2UgY2hhbmdl
-cywNCg0KUmV2aWV3ZWQtYnk6IE1pY2hhZWwgS2VsbGV5IDxtaWtlbGxleUBtaWNyb3NvZnQuY29t
-Pg0K
+On Tue, 23 Jun 2020 10:03:53 -0700
+Jacob Pan <jacob.jun.pan@linux.intel.com> wrote:
+
+> IOMMU UAPI is newly introduced to support communications between guest
+> virtual IOMMU and host IOMMU. There has been lots of discussions on how
+> it should work with VFIO UAPI and userspace in general.
+> 
+> This document is indended to clarify the UAPI design and usage. The
+> mechenics of how future extensions should be achieved are also covered
+> in this documentation.
+> 
+> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> ---
+>  Documentation/userspace-api/iommu.rst | 244 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 244 insertions(+)
+>  create mode 100644 Documentation/userspace-api/iommu.rst
+> 
+> diff --git a/Documentation/userspace-api/iommu.rst b/Documentation/userspace-api/iommu.rst
+> new file mode 100644
+> index 000000000000..f9e4ed90a413
+> --- /dev/null
+> +++ b/Documentation/userspace-api/iommu.rst
+> @@ -0,0 +1,244 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +.. iommu:
+> +
+> +=====================================
+> +IOMMU Userspace API
+> +=====================================
+> +
+> +IOMMU UAPI is used for virtualization cases where communications are
+> +needed between physical and virtual IOMMU drivers. For native
+> +usage, IOMMU is a system device which does not need to communicate
+> +with user space directly.
+> +
+> +The primary use cases are guest Shared Virtual Address (SVA) and
+> +guest IO virtual address (IOVA), wherein a virtual IOMMU (vIOMMU) is
+> +required to communicate with the physical IOMMU in the host.
+> +
+> +.. contents:: :local:
+> +
+> +Functionalities
+> +===============
+> +Communications of user and kernel involve both directions. The
+> +supported user-kernel APIs are as follows:
+> +
+> +1. Alloc/Free PASID
+> +2. Bind/unbind guest PASID (e.g. Intel VT-d)
+> +3. Bind/unbind guest PASID table (e.g. ARM sMMU)
+> +4. Invalidate IOMMU caches
+> +5. Service page requests
+> +
+> +Requirements
+> +============
+> +The IOMMU UAPIs are generic and extensible to meet the following
+> +requirements:
+> +
+> +1. Emulated and para-virtualised vIOMMUs
+> +2. Multiple vendors (Intel VT-d, ARM sMMU, etc.)
+> +3. Extensions to the UAPI shall not break existing user space
+> +
+> +Interfaces
+> +==========
+> +Although the data structures defined in IOMMU UAPI are self-contained,
+> +there is no user API functions introduced. Instead, IOMMU UAPI is
+> +designed to work with existing user driver frameworks such as VFIO.
+> +
+> +Extension Rules & Precautions
+> +-----------------------------
+> +When IOMMU UAPI gets extended, the data structures can *only* be
+> +modified in two ways:
+> +
+> +1. Adding new fields by re-purposing the padding[] field. No size change.
+> +2. Adding new union members at the end. May increase in size.
+> +
+> +No new fields can be added *after* the variable sized union in that it
+> +will break backward compatibility when offset moves. In both cases, a
+> +new flag must be accompanied with a new field such that the IOMMU
+> +driver can process the data based on the new flag. Version field is
+> +only reserved for the unlikely event of UAPI upgrade at its entirety.
+> +
+> +It's *always* the caller's responsibility to indicate the size of the
+> +structure passed by setting argsz appropriately.
+> +Though at the same time, argsz is user provided data which is not
+> +trusted. The argsz field allows the user to indicate how much data
+> +they're providing, it's still the kernel's responsibility to validate
+> +whether it's correct and sufficient for the requested operation.
+> +
+> +Compatibility Checking
+> +----------------------
+> +When IOMMU UAPI extension results in size increase, user such as VFIO
+> +has to handle the following cases:
+> +
+> +1. User and kernel has exact size match
+> +2. An older user with older kernel header (smaller UAPI size) running on a
+> +   newer kernel (larger UAPI size)
+> +3. A newer user with newer kernel header (larger UAPI size) running
+> +   on an older kernel.
+> +4. A malicious/misbehaving user pass illegal/invalid size but within
+> +   range. The data may contain garbage.
+
+What exactly does vfio need to do to handle these?
+
+> +
+> +Feature Checking
+> +----------------
+> +While launching a guest with vIOMMU, it is important to ensure that host
+> +can support the UAPI data structures to be used for vIOMMU-pIOMMU
+> +communications. Without upfront compatibility checking, future faults
+> +are difficult to report even in normal conditions. For example, TLB
+> +invalidations should always succeed. There is no architectural way to
+> +report back to the vIOMMU if the UAPI data is incompatible. If that
+> +happens, in order to protect IOMMU iosolation guarantee, we have to
+> +resort to not giving completion status in vIOMMU. This may result in
+> +VM hang.
+> +
+> +For this reason the following IOMMU UAPIs cannot fail:
+> +
+> +1. Free PASID
+> +2. Unbind guest PASID
+> +3. Unbind guest PASID table (SMMU)
+> +4. Cache invalidate
+> +
+> +User applications such as QEMU is expected to import kernel UAPI
+> +headers. Backward compatibility is supported per feature flags.
+> +For example, an older QEMU (with older kernel header) can run on newer
+> +kernel. Newer QEMU (with new kernel header) may refuse to initialize
+> +on an older kernel if new feature flags are not supported by older
+> +kernel. Simply recompile existing code with newer kernel header should
+> +not be an issue in that only existing flags are used.
+> +
+> +IOMMU vendor driver should report the below features to IOMMU UAPI
+> +consumers (e.g. via VFIO).
+> +
+> +1. IOMMU_NESTING_FEAT_SYSWIDE_PASID
+> +2. IOMMU_NESTING_FEAT_BIND_PGTBL
+> +3. IOMMU_NESTING_FEAT_BIND_PASID_TABLE
+> +4. IOMMU_NESTING_FEAT_CACHE_INVLD
+> +5. IOMMU_NESTING_FEAT_PAGE_REQUEST
+> +
+> +Take VFIO as example, upon request from VFIO user space (e.g. QEMU),
+> +VFIO kernel code shall query IOMMU vendor driver for the support of
+> +the above features. Query result can then be reported back to the
+> +user-space caller. Details can be found in
+> +Documentation/driver-api/vfio.rst.
+> +
+> +
+> +Data Passing Example with VFIO
+> +------------------------------
+> +As the ubiquitous userspace driver framework, VFIO is already IOMMU
+> +aware and share many key concepts such as device model, group, and
+> +protection domain. Other user driver frameworks can also be extended
+> +to support IOMMU UAPI but it is outside the scope of this document.
+> +
+> +In this tight-knit VFIO-IOMMU interface, the ultimate consumer of the
+> +IOMMU UAPI data is the host IOMMU driver. VFIO facilitates user-kernel
+> +transport, capability checking, security, and life cycle management of
+> +process address space ID (PASID).
+> +
+> +Unlike normal user data passed via VFIO UAPI IOTCL, IOMMU driver is the
+> +ultimate consumer of its UAPI data. At VFIO layer, the IOMMU UAPI data
+> +is wrapped in a VFIO UAPI data. It follows the
+> +pattern below::
+> +
+> +   struct {
+> +	__u32 argsz;
+> +	__u32 flags;
+> +	__u8  data[];
+> +   };
+> +
+> +Here data[] contains the IOMMU UAPI data structures. VFIO has the
+> +freedom to bundle the data as well as parse data size based on its own flags.
+> +
+> +In order to determine the size and feature set of the user data, argsz
+> +and flags are also embedded in the IOMMU UAPI data structures.
+> +A "__u32 argsz" field is *always* at the beginning of each structure.
+> +
+> +For example:
+> +::
+> +
+> +   struct iommu_cache_invalidate_info {
+> +	__u32	argsz;
+> +	#define IOMMU_CACHE_INVALIDATE_INFO_VERSION_1 1
+> +	__u32	version;
+> +	/* IOMMU paging structure cache */
+> +	#define IOMMU_CACHE_INV_TYPE_IOTLB	(1 << 0) /* IOMMU IOTLB */
+> +	#define IOMMU_CACHE_INV_TYPE_DEV_IOTLB	(1 << 1) /* Device IOTLB */
+> +	#define IOMMU_CACHE_INV_TYPE_PASID	(1 << 2) /* PASID cache */
+> +	#define IOMMU_CACHE_INV_TYPE_NR		(3)
+> +	__u8	cache;
+> +	__u8	granularity;
+> +	__u8	padding[2];
+> +	union {
+> +		struct iommu_inv_pasid_info pasid_info;
+> +		struct iommu_inv_addr_info addr_info;
+> +	} granu;
+> +   };
+> +
+> +VFIO is responsible for checking its own argsz and flags then invokes
+> +appropriate IOMMU UAPI functions. User pointer is passed to IOMMU
+> +layer for further processing. The responsibilities are divided as
+> +follows:
+> +
+> +- Generic IOMMU layer checks argsz range and override out-of-range
+> +  value. If the exact argsz is based on generic flags, they are checked
+> +  here as well.
+> +
+> +- Vendor IOMMU driver checks argsz based on vendor flags, UAPI data
+> +  is consumed based on flags
+> +
+> +Once again, use guest TLB invalidation as an example, argsz is based
+> +on generic flags in the invalidation information. IOMMU generic code
+> +shall process the UAPI data as the following:
+> +
+> +::
+> +
+> + int iommu_cache_invalidate(struct iommu_domain *domain, struct device *dev,
+> +			void __user *uinfo)
+> + {
+> +	/* Current kernel data size is the max to be copied from user */
+> +	maxsz = sizeof(struct iommu_cache_invalidate_info);
+> +	memset((void *)&inv_info, 0, maxsz);
+> +
+> +	/*
+> +	 * No new spaces can be added before the variable sized union, the
+> +	 * minimum size is the offset to the union.
+> +	 */
+> +	minsz = offsetof(struct iommu_cache_invalidate_info, granu);
+> +
+> +	/* Copy minsz from user to get flags and argsz */
+> +	if (copy_from_user(&inv_info, uinfo, minsz))
+> +		return -EFAULT;
+> +
+> +	/* Fields before variable size union is mandatory */
+> +	if (inv_info.argsz < minsz)
+> +		return -EINVAL;
+> +	/*
+> +	 * User might be using a newer UAPI header which has a larger data
+> +	 * size, we shall support the existing flags within the current
+> +	 * size.
+> +	 */
+> +	if (inv_info.argsz > maxsz)
+> +		inv_info.argsz = maxsz;
+> +
+> +	/* Checking the exact argsz based on generic flags */
+> +	if (inv_info.granularity == IOMMU_INV_GRANU_ADDR &&
+> +		inv_info.argsz != offsetofend(struct iommu_cache_invalidate_info,
+> +					granu.addr_info))
+
+Is it really reasonable to expect the user to specify argsz to the
+exact union element for the callback?  I'd certainly expect users to
+simply use sizeof(struct iommu_cache_invalidate_info) and it should
+therefore be sufficient to test >= here rather than jump through hoops
+with an exact size.  We're already changing inv_info.argsz above to fit
+our known structure, it's inconsistent to then expect it to be some
+exact value.
+ 
+> +		return -EINVAL;
+> +
+> +	if (inv_info.granularity == IOMMU_INV_GRANU_PASID &&
+> +		inv_info.argsz != offsetofend(struct
+> iommu_cache_invalidate_info,
+> +					granu.pasid_info))
+> +		return -EINVAL;
+> +
+> +	/* Copy the remaining user data _after_ minsz */
+> +	if (copy_from_user((void *)&inv_info + minsz, uinfo + minsz,
+> +				inv_info.argsz - minsz))
+> +		return -EFAULT;
+> +
+> +	return domain->ops->cache_invalidate(domain, dev, &inv_info);
+> + }
+> + Add a wrapper
+> +   __iommu_unbind_( kernel data, same user data, kernel copy)
+> +
+> +Notice that in this example, since union size is determined by
+> generic +flags, all checking to argsz is validated in the generic
+> IOMMU layer, +vendor driver does not need to check argsz. However, if
+> union size is +based on vendor data, such as iommu_sva_bind_gpasid(),
+> it will be +vendor driver's responsibility to validate the exact
+> argsz.
+
+struct iommu_cache_invalidate_info is a good example because it
+explicitly states a table of type vs granularity validity.  When the
+cache_invalidate() callback is used by an internal user we can consider
+it a bug in the caller if its usage falls outside of these prescribed
+valid combinations, ie. iommu_ops callbacks may assume a trusted caller
+that isn't trying to exploit any loophole.  But here we've done nothing
+more than validated the supplied size to pass it through to a non-user
+hardened callback.  We didn't check the version, we didn't check that
+any of the undefined bits in cache or granularity or padding were set,
+we don't know what flags might be set in the union elements.  For
+example, if a user is able to set a flag that gets ignored now, that
+means we can never use that flag without potentially breaking that user
+in the future.  If a user can pass in version 3141592654 now, then we
+can never use version for validation.  I see that
+intel_iommu_sva_invalidate() does test the version, but has no obvious
+other hardening.  I'm afraid we're being far to lax about accepting a
+data structure provided by a user, we should not assume good faith.
+Thanks,
+
+Alex
+
