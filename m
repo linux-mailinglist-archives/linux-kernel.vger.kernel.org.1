@@ -2,98 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BDB20BBE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3717220BBED
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725959AbgFZVwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 17:52:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725824AbgFZVwk (ORCPT
+        id S1725994AbgFZVxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 17:53:55 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23767 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725803AbgFZVxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 17:52:40 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25518C03E979
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:52:40 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id f3so5525654pgr.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:52:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q757IDXyRukGvX5SZOHlJdoHJ/1n6S14vTGyo4zvXBQ=;
-        b=VIGOIHNEEU9j/QBCfkBjGdBcqAkDVMSPH2V6E9pYYKa7w0oI1NtGdugkcB6s2J7djs
-         DSZ85QWa+gMBeGdBreMiRKvPJcdHicHe0ZZZe3JPNlhdZodj/p1tvl8Xip3Cc2IPrr+s
-         lsiie+VLCThaSSaloZS5eYhO67RiKTuNXrYns=
+        Fri, 26 Jun 2020 17:53:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593208432;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FV8Bsjn54kOoJliJlKrbcRPo+jc1JY+WRfUoqlGGQhU=;
+        b=LnosIQ6ZSA/O6f2itGGEN5Ien24a0SHb4iSatUJB4Ct4MBY4QOtJzIHAWyMyragbpKojuz
+        vGYMuIwxJijAOpipsFyd+o3DZyuHIs5WoZy7QW/tCp4oLGE6B+hFrI1gmhUyJjJcFtTu/G
+        aVbnqajyBjEzT6Hn/Q/azRxw7+aldFM=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-160-H7YqQVZnPmmNQzLlK81uXw-1; Fri, 26 Jun 2020 17:53:50 -0400
+X-MC-Unique: H7YqQVZnPmmNQzLlK81uXw-1
+Received: by mail-qv1-f72.google.com with SMTP id j18so7330703qvk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:53:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Q757IDXyRukGvX5SZOHlJdoHJ/1n6S14vTGyo4zvXBQ=;
-        b=iv6TgftpAGOzxp/muGXTsV3bAy/c+ScABRT/313NdMFLWLJJZGcLk1Bl7gKIB9rDRt
-         VFUcloR7n0LRf3b+JObVCKCEGnp/4LZ4rray274YOo5Tz1cM4sOPU59STMwVDObc3CRg
-         sq8oO2T2cUDSw0YQKe9kqq/TZPZvlWAOnuNOjBA55hPJyfIf+xwZGLCNfwBtgzQw0lSp
-         RVCI6/fpPD7QZ7D6VJMwKSPuONtWCAqzn4K8mkBkEJ1J1k2bADAA2piCxXD+GFLzyzgc
-         GqWz7vWqYe5EBFHfRzy4rBNRd1belOkJq/ctqkJlB+xeLOGitRId9eUtnfDkj1gwmLus
-         5LNQ==
-X-Gm-Message-State: AOAM531Unu+3Um/Pv+tO9EQ73OxRj5hlttXs/wCUb71Qfwev3tL1CeD/
-        +gFLZiyU2v3A33N6P5TILv3wqg==
-X-Google-Smtp-Source: ABdhPJxjew6vuVd8xK7z4Or0D8mu7tCMflIKF0q/SKBZ2je3Uo1yszhe7quUG/VVVAWRTDES/M5wNg==
-X-Received: by 2002:a62:ea0b:: with SMTP id t11mr4824646pfh.276.1593208359728;
-        Fri, 26 Jun 2020 14:52:39 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o16sm23597011pgg.57.2020.06.26.14.52.38
+        bh=FV8Bsjn54kOoJliJlKrbcRPo+jc1JY+WRfUoqlGGQhU=;
+        b=S4/n/9ZxBDAPIfJHtOnyf9Rhjoo/3aKHJLB5eClVp6YY1/8vITgqu3a0oiSstfTdDH
+         xo0HuqD3C+mGM6CqTdiakzf6BI/46d8KzknT/HTed/z9o2OP4Lu2mIxm99v0f08jR0qj
+         Er/0g6eIIkffRGX3jRgVxAJvCI8Bz+YwryDx44aP/vR/Z1RU15qI59GtecRuCgy3s3tL
+         GmlZWrQ2ReJVgU3QltiA7TxaB0tEAmoU/gY98MiBnzuZE2PaOcqsDysm0EOyVkfET3LT
+         vmB3FsynxLMBMKNfzimTHLib6e4e7yjzfHNTxlY4xFmIAboCQS3ovoXGXjO1iSBQvywr
+         I87A==
+X-Gm-Message-State: AOAM533DQbnsfcbbIFk9jmB0Ej4zxwC+tdEMMMG2ppGeURoUdbqeqhRQ
+        LMOjgUR7jgM7dSJjtyPIiSUWodkhmbR4Vli7tOuA/Xly7RvXDbdCMa5BJ8y+Ym91Zu5Xeo8FYs4
+        sRz9QKMj/ZNG5gJNS+gUdzbs8
+X-Received: by 2002:a05:620a:2050:: with SMTP id d16mr5094863qka.215.1593208429870;
+        Fri, 26 Jun 2020 14:53:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzkOQYx4uI8uZYLEy+pRDdcczh+I4pfBIpILOimX9az7o45fXQBXY+UDqXHB+0u+UMO7CpWOA==
+X-Received: by 2002:a05:620a:2050:: with SMTP id d16mr5094832qka.215.1593208429427;
+        Fri, 26 Jun 2020 14:53:49 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id g16sm11470330qko.5.2020.06.26.14.53.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 14:52:38 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 14:52:37 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Brendan Higgins <brendanhiggins@google.com>
-Cc:     jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
-        arnd@arndb.de, skhan@linuxfoundation.org, alan.maguire@oracle.com,
-        yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org,
-        rppt@linux.ibm.com, frowand.list@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, monstr@monstr.eu,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        chris@zankel.net, jcmvbkbc@gmail.com, gregkh@linuxfoundation.org,
-        sboyd@kernel.org, logang@deltatee.com, mcgrof@kernel.org,
-        linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH v5 00/12] kunit: create a centralized executor to
- dispatch all KUnit tests
-Message-ID: <202006261442.5C245709@keescook>
-References: <20200626210917.358969-1-brendanhiggins@google.com>
+        Fri, 26 Jun 2020 14:53:48 -0700 (PDT)
+Date:   Fri, 26 Jun 2020 17:53:46 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Gerald Schaefer <gerald.schaefer@de.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 01/26] mm: Do page fault accounting in handle_mm_fault
+Message-ID: <20200626215346.GE175520@xz-x1>
+References: <20200619160538.8641-1-peterx@redhat.com>
+ <20200619160538.8641-2-peterx@redhat.com>
+ <20200624204903.097a5a58@thinkpad>
+ <20200624203412.GB64004@xz-x1>
+ <20200626215424.581d6077@thinkpad>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200626210917.358969-1-brendanhiggins@google.com>
+In-Reply-To: <20200626215424.581d6077@thinkpad>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 02:09:05PM -0700, Brendan Higgins wrote:
-> This patchset adds a centralized executor to dispatch tests rather than
-> relying on late_initcall to schedule each test suite separately along
-> with a couple of new features that depend on it.
+On Fri, Jun 26, 2020 at 09:54:24PM +0200, Gerald Schaefer wrote:
+> On Wed, 24 Jun 2020 16:34:12 -0400
+> Peter Xu <peterx@redhat.com> wrote:
+> 
+> > On Wed, Jun 24, 2020 at 08:49:03PM +0200, Gerald Schaefer wrote:
+> > > On Fri, 19 Jun 2020 12:05:13 -0400
+> > > Peter Xu <peterx@redhat.com> wrote:
+> > > 
+> > > [...]
+> > > 
+> > > > @@ -4393,6 +4425,38 @@ vm_fault_t handle_mm_fault(struct vm_area_struct *vma, unsigned long address,
+> > > >  			mem_cgroup_oom_synchronize(false);
+> > > >  	}
+> > > > 
+> > > > +	if (ret & VM_FAULT_RETRY)
+> > > > +		return ret;
+> > > 
+> > > I'm wondering if this also needs a check and exit for VM_FAULT_ERROR.
+> > > In arch code (s390 and all others I briefly checked), the accounting
+> > > was skipped for VM_FAULT_ERROR case.
+> > 
+> > Yes. I didn't explicitly add the check because I thought it's still OK to count
+> > the error cases, especially after we've discussed about
+> > PERF_COUNT_SW_PAGE_FAULTS in v1.  So far, the major reason (iiuc) to have
+> > PERF_COUNT_SW_PAGE_FAULTS still in per-arch handlers is to also cover these
+> > corner cases like VM_FAULT_ERROR.  So to me it makes sense too to also count
+> > them in here.  But I agree it changes the old counting on most archs.
+> 
+> Having PERF_COUNT_SW_PAGE_FAULTS count everything including VM_FAULT_ERROR
+> is OK. Just major/minor accounting should be only about successes, IIRC from
+> v1 discussion.
+> 
+> The "new rules" also say
+> 
+> +	 *  - faults that never even got here (because the address
+> +	 *    wasn't valid). That includes arch_vma_access_permitted()
+> +	 *    failing above.
+> 
+> VM_FAULT_ERROR, and also the arch-specific VM_FAULT_BADxxx, qualify
+> as "address wasn't valid" I think, so they should not be counted as
+> major/minor.
+> 
+> IIRC from v1, and we want to only count success as major/minor, maybe
+> the rule could also be made more clear about that, e.g. like
+> 
+> +	 *  - unsuccessful faults (because the address wasn't valid)
+> +	 *    do not count. That includes arch_vma_access_permitted()
+> +	 *    failing above.
 
-So, the new section looks fine to me (modulo the INIT_DATA change). The
-plumbing to start the tests, though, I think is redundant. Why not just
-add a sysctl that starts all known tests?
+Sure.
 
-That way you don't need the plumbing into init/main.c, and you can have
-a mode where builtin tests can be started on a fully booted system too.
+> 
+> > 
+> > Again, I don't have strong opinion either on this, just like the same to
+> > PERF_COUNT_SW_PAGE_FAULTS...  But if no one disagree, I will change this to:
+> > 
+> >   if (ret & (VM_FAULT_RETRY | VM_FAULT_ERROR))
+> >       return ret;
+> > 
+> > So we try our best to follow the past.
+> 
+> Sounds good to me, and VM_FAULT_BADxxx should never show up here.
+> 
+> > 
+> > Btw, note that there will still be some even more special corner cases. E.g.,
+> > for ARM64 it's also not accounted for some ARM64 specific fault errors
+> > (VM_FAULT_BADMAP, VM_FAULT_BADACCESS).  So even if we don't count
+> > VM_FAULT_ERROR, we might still count these for ARM64.  We can try to redefine
+> > VM_FAULT_ERROR in ARM64 to cover all the arch-specific errors, however that
+> > seems an overkill to me sololy for fault accountings, so hopefully I can ignore
+> > that difference.
+> 
+> Hmm, arm64 already does not count the VM_FAULT_BADxxx, but also does not
+> call handle_mm_fault() for those, so no change with this patch. arm (and
+> also unicore32) do count those, but also not call handle_mm_fault(), so
+> there would be the change that they lose accounting, IIUC.
 
-i.e. boot with "sysctl.kernel.kunit=start" or when fully booted with
-"echo start > /proc/sys/kernel/kunit"
+Oh you are right...  I just noticed that VM_FAULT_BADMAP and VM_FAULT_BADACCESS
+can never returned in handle_mm_fault() itself.
 
-And instead of the kunit-specific halt/reboot stuff, how about moving
-/proc/sysrq-trigger into /proc/sys instead? Then you (or anything) could
-do:
+> 
+> I agree that this probably can be ignored. The code in arm64 also looks
+> more recent, so it's probably just a left-over in arm/unicore32 code.
 
-sysctl.kernel.kunit=start sysctl.kernel.sysrq-trigger=b
+Anyway, glad to know that we've reached consensus so that we can accept these
+differences.
+
+Since this patch seems to be the only one that needs a new post so far, I'll
+repost this patch only by replying to itself with v2.1.  Hopefully that can
+avoid some unecessary mail bombs.
+
+Thanks for the very detailed review!
 
 -- 
-Kees Cook
+Peter Xu
+
