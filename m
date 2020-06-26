@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE3220B564
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDDFD20B55A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730179AbgFZPyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 11:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
+        id S1730117AbgFZPxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 11:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730084AbgFZPxr (ORCPT
+        with ESMTP id S1730093AbgFZPxs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 11:53:47 -0400
+        Fri, 26 Jun 2020 11:53:48 -0400
 Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51221C03E97A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:53:47 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 22so9283371wmg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:53:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 686DBC03E979
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:53:48 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l2so8339157wmf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:53:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OHAzuFTcnXjRnCecFfdtoCttWR6EYSo9VB+Mynb0BCU=;
-        b=MKa56Wr4oR9+OTmtV3S9SJ1MLBBE5u0EgzITpr0eYOyeblpLCSaAipT23Hb/rw5iHi
-         JvyREVrUh1mArBn8SKWzt9gk/B5CsqVFdGtJ3B6JHISYoY5iiRuKEbRx8XNkjVXerqgu
-         fW5XluGma4IBAnSC3CB97Vx1wJLfyGWpHpgvPnhhq6w1K0bWOZwUlfoXRAnwsq7/hQ0p
-         vRz+nLEajgMbAGZ3XsjgRUKiYGU5nDZUYSS2wy2DYHfcp3vxcMSkSJ2WoF9Xun1lR27g
-         aBIesvER+HSb4xUd9GNs1HDmoSH34Or8HSjDPeqBULN157iwyUlsLXeCrQqCIsa1Ufoc
-         VOAw==
+        bh=4HpTeBheR2Max3bhies4A06Ktq37O/EquFsiIja/0Us=;
+        b=JAecZ0nqvo8AmnXIX2it/8IMyi2bxnGgFQInkwWVdB1gyEwzvTZguf53OiXpKjDr6y
+         XP2eAnAw1phsaoewWx9UM711SHyjGGQdeq5cZ1l7dm/CVkG+gffP/GiO44aTIYXu9Sj7
+         SoiPsJ/Iewa8R6x8q+8xHp7Q9YsYONLEXHs5N6HdHwJzMkr52uE192l7JFB9sfFE96Cj
+         sRzv2MhjjKl9+QiKr320vkzzqyZWP7HUMGB9t47/01awDQxXSONb/BI5McCjkKDOOLz/
+         EQt3qTjgN9QXIhz6OcSfMNLFxrS0hNrzzgfa4n23U8vG5+uhGcLtkHuXGYGJ7oFPqf7A
+         wmVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OHAzuFTcnXjRnCecFfdtoCttWR6EYSo9VB+Mynb0BCU=;
-        b=k6hR4Prfl975NjB9bm9zcRnPH79tyr/H28M2GxuS4vLA7P3ySX3voEfhUUar14lt2/
-         TOf5ev8AOT4+mSxO2NvVUVkpm4KCiyWXEdSW/1PRL4o2przz8MKdU1XQx7nT4EgtMh/g
-         e1cbjF4S7rG+gfwN7k8UtQP1jJS/PJjDwhOC/bxn8UHvV4UL3XKh1zdZymDK30Xhvyq/
-         D3ATdjjgeASKDRrvV35neckML5o5k8skJuNf/ZW4u+Or6sNI8XMSYAVQz7zh69e6aiL3
-         aT/nJhlqXZS94SHY+qB775hcM11gzBRlKbWdj1DtRFFElJMlSOlY62PCIEnMTdOv10Iy
-         HKwg==
-X-Gm-Message-State: AOAM531POD6+NNEPTKouMshZRWv3lsdDHwfq9XdmBqpk91UJtHSdyKdt
-        CERSeZTnYwwlBxsIzqzBBJiSb9pN6n4=
-X-Google-Smtp-Source: ABdhPJwwituQPOEL46rDs7SCGfIEASNzMaGomeXCnYCrU332v5ZNWT//XKF7nCnUdV0jddo1iNWX+w==
-X-Received: by 2002:a1c:23d0:: with SMTP id j199mr3349659wmj.12.1593186826030;
-        Fri, 26 Jun 2020 08:53:46 -0700 (PDT)
+        bh=4HpTeBheR2Max3bhies4A06Ktq37O/EquFsiIja/0Us=;
+        b=NUVOQ7EqFMuwkpYK1WJZNtkEr4kh7vY/F/T4g6ixoH9vpzNyky/zC5KcUYdGbMUjUG
+         pUvWYCmi20kpP4dEMtTDak/7qJ/KvWFBEIiqfhdhBMeDWzVfyH3yiCPwSi8TAmBuO65F
+         8XCcR7yzofBdWr1IbmDfbF9y/e3Bdrwaq45yOFLTK1oL4ASXcThOFchYGh6u/HDSlaRF
+         R9iSZXgXHAIn/NeGhLjGoQTJT9CztYEnqPf9XlEAcrfKI4jSpG7L+ne10E4L1CylEe3N
+         l96XMBYN+1VZinFm2ttCtHf9ZufPMS4WI7QB/mkSIr3nyz4YriWZDYQOlZzh+5y704Z4
+         Nv4A==
+X-Gm-Message-State: AOAM532e7XBbrH4Z55IOt13/jJQFeorMUK/uhiscc35mkYm0R5U2QaE9
+        c7MuuvwaOvSC9IkSj8rvU/+Ltw==
+X-Google-Smtp-Source: ABdhPJy3y+RszAJGTbdP/01nZi0Y5pYeHN3bFnyQygRzQP1z4vAf5Ce19XLI9TY8keSgctRUay0Xjg==
+X-Received: by 2002:a1c:5583:: with SMTP id j125mr4342157wmb.189.1593186827220;
+        Fri, 26 Jun 2020 08:53:47 -0700 (PDT)
 Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id h142sm8242791wme.3.2020.06.26.08.53.44
+        by smtp.gmail.com with ESMTPSA id h142sm8242791wme.3.2020.06.26.08.53.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 08:53:45 -0700 (PDT)
+        Fri, 26 Jun 2020 08:53:46 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Florian Fainelli <f.fainelli@gmail.com>,
@@ -58,9 +58,9 @@ To:     Andrew Lunn <andrew@lunn.ch>,
         Philipp Zabel <p.zabel@pengutronix.de>
 Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 2/6] net: phy: arrange headers in mdio_device.c alphabetically
-Date:   Fri, 26 Jun 2020 17:53:21 +0200
-Message-Id: <20200626155325.7021-3-brgl@bgdev.pl>
+Subject: [PATCH 3/6] net: phy: arrange headers in phy_device.c alphabetically
+Date:   Fri, 26 Jun 2020 17:53:22 +0200
+Message-Id: <20200626155325.7021-4-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200626155325.7021-1-brgl@bgdev.pl>
 References: <20200626155325.7021-1-brgl@bgdev.pl>
@@ -80,29 +80,56 @@ Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- drivers/net/phy/mdio_device.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/phy/phy_device.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/phy/mdio_device.c b/drivers/net/phy/mdio_device.c
-index c1d345c3cab3..f60443e48622 100644
---- a/drivers/net/phy/mdio_device.c
-+++ b/drivers/net/phy/mdio_device.c
-@@ -6,6 +6,7 @@
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 04946de74fa0..1b4df12c70ad 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -9,28 +9,28 @@
  
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
-+#include <linux/delay.h>
- #include <linux/errno.h>
- #include <linux/gpio.h>
- #include <linux/gpio/consumer.h>
-@@ -20,7 +21,6 @@
- #include <linux/slab.h>
- #include <linux/string.h>
- #include <linux/unistd.h>
--#include <linux/delay.h>
+-#include <linux/kernel.h>
+-#include <linux/string.h>
+-#include <linux/errno.h>
+-#include <linux/unistd.h>
+-#include <linux/slab.h>
+-#include <linux/interrupt.h>
+-#include <linux/init.h>
++#include <linux/bitmap.h>
+ #include <linux/delay.h>
+-#include <linux/netdevice.h>
++#include <linux/errno.h>
+ #include <linux/etherdevice.h>
+-#include <linux/skbuff.h>
++#include <linux/ethtool.h>
++#include <linux/init.h>
++#include <linux/interrupt.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/mdio.h>
++#include <linux/mii.h>
+ #include <linux/mm.h>
+ #include <linux/module.h>
+-#include <linux/mii.h>
+-#include <linux/ethtool.h>
+-#include <linux/bitmap.h>
++#include <linux/netdevice.h>
+ #include <linux/phy.h>
+ #include <linux/phy_led_triggers.h>
+ #include <linux/sfp.h>
+-#include <linux/mdio.h>
+-#include <linux/io.h>
++#include <linux/skbuff.h>
++#include <linux/slab.h>
++#include <linux/string.h>
+ #include <linux/uaccess.h>
++#include <linux/unistd.h>
  
- void mdio_device_free(struct mdio_device *mdiodev)
- {
+ MODULE_DESCRIPTION("PHY library");
+ MODULE_AUTHOR("Andy Fleming");
 -- 
 2.26.1
 
