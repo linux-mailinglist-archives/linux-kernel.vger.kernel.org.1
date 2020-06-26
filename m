@@ -2,95 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C7220B9C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 22:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 800DF20B9E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 22:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725970AbgFZUC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 16:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgFZUC4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 16:02:56 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926D5C03E97E
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 13:02:56 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id k1so4651735pls.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 13:02:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=HuJILZmXLURp/yn0oSueJPx2COyMJVkAtdj3c8sCa2A=;
-        b=Oh/RiiCDnbp34CVdzAILpR378u4/AQdViDFg7C7oW5dt1jDbyEeAjP90KAvvKhIr97
-         KwI71vJclhWb7o4mSkhCh2NOFbTtfJgpS+vox3O7+FvJkCsMl4urremmWYspWh28A0+Z
-         sV5HTCY7Nn86R70arsfIYUzY6CqZUi43QquRo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=HuJILZmXLURp/yn0oSueJPx2COyMJVkAtdj3c8sCa2A=;
-        b=NZUqldZgERhQfmnZtCjWUujusRi465ZrHve5mikItlVF6q/LbGNWoRFxTQ/MAqS9YZ
-         q96m39z+4OkW22CQDvMHmc2WED1IgE0YZ6qU8BzMPWIshaF9JlvkqRrkxrQRDSLGGsBQ
-         pVwU08NsutX+vgUiS0wym4i/aD+H1FJMAWg7aP/ndtAxYP/+pfxgKlPmCyJWL1Sjj8e6
-         2/iIOcclo/TLxI5UR/qIVABz/sE5YDkyUjgdHF58bH+bR8Y8S1/p8zs7Oj40QRc/RIiz
-         svQ8H/Dji4b/8Fm+VFifbWkADAloxAxpcWTbpEJFRXB5XwqXcx8Y6WaXHWC3MZQoeD/m
-         JR5Q==
-X-Gm-Message-State: AOAM530L5klsXX3OH4JSLrl+ZTm+aY4toZ1mZepE+VC+Wbxvaf6D/gAB
-        BfNVXQdlwZcQADladl/UL0hhzQ==
-X-Google-Smtp-Source: ABdhPJw11xKQt6MwLhidUJ9gydREFfdw80oPEr/XN3WYlxPPeC/ryrLDoithYT16cWqdMGMaKZA/Bw==
-X-Received: by 2002:a17:90a:8a8e:: with SMTP id x14mr4810785pjn.169.1593201776002;
-        Fri, 26 Jun 2020 13:02:56 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b14sm8925970pfb.186.2020.06.26.13.02.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 13:02:55 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 13:02:54 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     akpm@linux-foundation.org, broonie@kernel.org, mhocko@suse.cz,
-        sfr@canb.auug.org.au, linux-next@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, mm-commits@vger.kernel.org
-Subject: Re: mmotm 2020-06-25-20-36 uploaded (mm/slab.c)
-Message-ID: <202006261302.13BB6AB703@keescook>
-References: <20200626033744.URfGO%akpm@linux-foundation.org>
- <7ff248c7-d447-340c-a8e2-8c02972aca70@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7ff248c7-d447-340c-a8e2-8c02972aca70@infradead.org>
+        id S1726087AbgFZUFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 16:05:07 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:22653 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725900AbgFZUEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 16:04:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593201889; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Y52DfZmPsADiviryLIjbB10Q7p9PKIz9PJgeiGWZpfo=; b=wUMG3K2IT5uMh1JelpYcCj+VNbQVuMs18C/vYOIRoHCnJnW4VuhjUsAecMt+rCZQcyOH0C5F
+ ke6VuC9HRIn+4QMQdeFfi48oVY4xdrC1hKsi8CnGcnJaYvgdfyQ7Ivv4aSqvwtuStHuLurlt
+ 40CKYNln0FuJ0K9WFTNA3LzdhYE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5ef654c7c4bb4f886d84d6af (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Jun 2020 20:04:23
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 563DEC4344B; Fri, 26 Jun 2020 20:04:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jordan-laptop.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B0451C433C6;
+        Fri, 26 Jun 2020 20:04:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B0451C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        iommu@lists.linux-foundation.org,
+        John Stultz <john.stultz@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Eric Anholt <eric@anholt.net>, Joerg Roedel <joro@8bytes.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Rob Clark <robdclark@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Will Deacon <will@kernel.org>, Yong Wu <yong.wu@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/6] iommu-arm-smmu: Add auxiliary domains and per-instance pagetables
+Date:   Fri, 26 Jun 2020 14:04:08 -0600
+Message-Id: <20200626200414.14382-1-jcrouse@codeaurora.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 09:28:36AM -0700, Randy Dunlap wrote:
-> On 6/25/20 8:37 PM, akpm@linux-foundation.org wrote:
-> > The mm-of-the-moment snapshot 2020-06-25-20-36 has been uploaded to
-> > 
-> >    http://www.ozlabs.org/~akpm/mmotm/
-> > 
-> > mmotm-readme.txt says
-> > 
-> > README for mm-of-the-moment:
-> > 
-> > http://www.ozlabs.org/~akpm/mmotm/
-> > 
-> > This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-> > more than once a week.
-> 
-> 
-> when CONFIG_NUMA is not set/enabled:
-> 
-> ../mm/slab.c: In function ‘___cache_free’:
-> ../mm/slab.c:3471:2: error: implicit declaration of function ‘__free_one’; did you mean ‘__free_page’? [-Werror=implicit-function-declaration]
->   __free_one(ac, objp);
->   ^~~~~~~~~~
 
-Eek! Thanks for catching that. I will send a fix patch.
+This is a new refresh of support for auxiliary domains for arm-smmu-v2
+and per-instance pagetables for drm/msm. The big change here from past
+efforts is that outside of creating a single aux-domain to enable TTBR0
+all of the per-instance pagetables are created and managed exclusively
+in drm/msm without involving the arm-smmu driver. This fits in with the
+suggested model of letting the GPU hardware do what it needs and leave the
+arm-smmu driver blissfully unaware.
+
+Almost. In order to set up the io-pgtable properly in drm/msm we need to
+query the pagetable configuration from the current active domain and we need to
+rely on the iommu API to flush TLBs after a unmap. In the future we can optimize
+this in the drm/msm driver to track the state of the TLBs but for now the big
+hammer lets us get off the ground.
+
+This series is built on the split pagetable support [1].
+
+[1] https://patchwork.kernel.org/patch/11628543/
+
+v2: Remove unneeded cruft in the a6xx page switch sequence
+
+Jordan Crouse (6):
+  iommu/arm-smmu: Add auxiliary domain support for arm-smmuv2
+  iommu/io-pgtable: Allow a pgtable implementation to skip TLB
+    operations
+  iommu/arm-smmu: Add a domain attribute to pass the pagetable config
+  drm/msm: Add support to create a local pagetable
+  drm/msm: Add support for address space instances
+  drm/msm/a6xx: Add support for per-instance pagetables
+
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c |  43 +++++
+ drivers/gpu/drm/msm/msm_drv.c         |  15 +-
+ drivers/gpu/drm/msm/msm_drv.h         |   4 +
+ drivers/gpu/drm/msm/msm_gem_vma.c     |   9 +
+ drivers/gpu/drm/msm/msm_gpu.c         |  17 ++
+ drivers/gpu/drm/msm/msm_gpu.h         |   5 +
+ drivers/gpu/drm/msm/msm_gpummu.c      |   2 +-
+ drivers/gpu/drm/msm/msm_iommu.c       | 180 +++++++++++++++++++-
+ drivers/gpu/drm/msm/msm_mmu.h         |  16 +-
+ drivers/gpu/drm/msm/msm_ringbuffer.h  |   1 +
+ drivers/iommu/arm-smmu.c              | 231 ++++++++++++++++++++++++--
+ drivers/iommu/arm-smmu.h              |   1 +
+ include/linux/io-pgtable.h            |  11 +-
+ include/linux/iommu.h                 |   1 +
+ 14 files changed, 507 insertions(+), 29 deletions(-)
 
 -- 
-Kees Cook
+2.17.1
+
