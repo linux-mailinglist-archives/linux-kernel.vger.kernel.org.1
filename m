@@ -2,149 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE02520AF1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 11:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A24620AF27
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 11:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbgFZJhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 05:37:54 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:57496 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725280AbgFZJhy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 05:37:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593164272;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mIo8l5VfRJsWL8p3RKk3Ay5PZgeekc+3GNjG0us+Ooc=;
-        b=ILs95nAVhRQH7ELpHIkTND5ogcGK4pcmiVQnQuFBVyVrYM16qWjj0kdnPkXr83BkmqN6Ho
-        HkFK8K4T50ADI6tIIvk+g5nruXJuVdXxtJ/loNaAVIYUzphg1e3Rvrwvq+M/tayJ8aol81
-        q9tuoPNVxKQtBjeTTo7PplF+2NjKpHo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-4-6j3q-ILdMjyG6UIQWFjEOw-1; Fri, 26 Jun 2020 05:37:49 -0400
-X-MC-Unique: 6j3q-ILdMjyG6UIQWFjEOw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E3FB8800C64;
-        Fri, 26 Jun 2020 09:37:47 +0000 (UTC)
-Received: from krava (unknown [10.40.193.90])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 235AD60E1C;
-        Fri, 26 Jun 2020 09:37:45 +0000 (UTC)
-Date:   Fri, 26 Jun 2020 11:37:45 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 01/13] tools/libperf: avoid moving of fds at
- fdarray__filter() call
-Message-ID: <20200626093745.GM2719003@krava>
-References: <0781a077-aa82-5b4a-273e-c17372a72b93@linux.intel.com>
- <3d36dc7a-4249-096c-7554-80e6d290eac5@linux.intel.com>
- <fada6325-2e6a-0de4-918f-0bc7d1410c52@linux.intel.com>
- <20200625171405.GL2719003@krava>
- <688910f3-289e-d63e-79e3-0a17a6df0e9e@linux.intel.com>
+        id S1726426AbgFZJlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 05:41:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:58308 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725275AbgFZJlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 05:41:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 004CB1FB;
+        Fri, 26 Jun 2020 02:41:00 -0700 (PDT)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 49D623F71E;
+        Fri, 26 Jun 2020 02:40:58 -0700 (PDT)
+Subject: Re: [PATCH 2/2] irqchip/gic-v3: Support pseudo-NMIs when SCR_EL3.FIQ
+ == 0
+To:     kernel test robot <lkp@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        maz@kernel.org, tglx@linutronix.de, jason@lakedaemon.net,
+        yuzenghui@huawei.com, julien.thierry.kdev@gmail.com,
+        will@kernel.org, catalin.marinas@arm.com
+References: <20200625150026.867727-3-alexandru.elisei@arm.com>
+ <202006260902.snscFOg0%lkp@intel.com>
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+Message-ID: <31059bad-54e1-58a7-6531-14e473950bc9@arm.com>
+Date:   Fri, 26 Jun 2020 10:41:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <688910f3-289e-d63e-79e3-0a17a6df0e9e@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <202006260902.snscFOg0%lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 10:32:29PM +0300, Alexey Budankov wrote:
-> 
-> On 25.06.2020 20:14, Jiri Olsa wrote:
-> > On Wed, Jun 24, 2020 at 08:19:32PM +0300, Alexey Budankov wrote:
-> >>
-> >> On 17.06.2020 11:35, Alexey Budankov wrote:
-> >>>
-> >>> Skip fds with zeroed revents field from count and avoid fds moving
-> >>> at fdarray__filter() call so fds indices returned by fdarray__add()
-> >>> call stay the same and can be used for direct access and processing
-> >>> of fd revents status field at entries array of struct fdarray object.
-> >>>
-> >>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
-> >>> ---
-> >>>  tools/lib/api/fd/array.c   | 11 +++++------
-> >>>  tools/perf/tests/fdarray.c | 20 ++------------------
-> >>>  2 files changed, 7 insertions(+), 24 deletions(-)
-> >>>
-> >>> diff --git a/tools/lib/api/fd/array.c b/tools/lib/api/fd/array.c
-> >>> index 58d44d5eee31..97843a837370 100644
-> >>> --- a/tools/lib/api/fd/array.c
-> >>> +++ b/tools/lib/api/fd/array.c
-> >>> @@ -93,22 +93,21 @@ int fdarray__filter(struct fdarray *fda, short revents,
-> >>>  		return 0;
-> >>>  
-> >>>  	for (fd = 0; fd < fda->nr; ++fd) {
-> >>> +		if (!fda->entries[fd].revents)
-> >>> +			continue;
-> >>> +
-> >>
-> >> So it looks like this condition also filters out non signaling events fds, not only
-> >> control and others fds, and this should be somehow avoided so such event related fds
-> >> would be counted. Several options have been proposed so far:
-> >>
-> >> 1) Explicit typing of fds via API extension and filtering based on the types:
-> >>    a) with separate fdarray__add_stat() call
-> >>    b) with type arg of existing fdarray__add() call
-> >>    c) various memory management design is possible
-> >>
-> >> 2) Playing tricks with fd positions inside entries and assumptions on fdarray API calls ordering
-> >>    - looks more like a hack than a designed solution
-> >>
-> >> 3) Rewrite of fdarray class to allocate separate object for every added fds
-> >>    - can be replaced with nonscrewing of fds by __filter()
-> >>
-> >> 4) Distinct between fds types at fdarray__filter() using .revents == 0 condition
-> >>    - seems to have corner cases and thus not applicable
-> >>
-> >> 5) Extension of fdarray__poll(, *arg_ptr, arg_size) with arg of fds array to atomically poll
-> >>    on fdarray_add()-ed fds and external arg fds and then external arg fds processing
-> >>
-> >> 6) Rewrite of fdarray class on epoll() call basis
-> >>    - introduces new scalability restrictions for Perf tool
-> > 
-> > hum, how many fds for polling do you expect in your workloads?
-> 
-> Currently it is several hundreds so default of 1K is easily hit and 
-> "Profile a Large Number of PMU Events on Multi-Core Systems" section [1]
-> recommends:
-> 
-> soft nofile 65535
-> hard nofile 65535
+Hi,
 
-I'm confused, are you talking about file descriptors limit now?
-this wont be affected by epoll change.. what do I miss?
+On 6/26/20 2:51 AM, kernel test robot wrote:
+> Hi Alexandru,
+>
+> Thank you for the patch! Perhaps something to improve:
+>
+> [auto build test WARNING on arm64/for-next/core]
+> [also build test WARNING on tip/irq/core v5.8-rc2 next-20200625]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use  as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/Alexandru-Elisei/irqchip-gic-v3-Support-pseudo-NMIs-when-SCR_EL3-FIQ-0/20200625-230144
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+> config: arm64-randconfig-r025-20200624 (attached as .config)
+> compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project 8911a35180c6777188fefe0954a2451a2b91deaf)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install arm64 cross compiling tool for clang build
+>         # apt-get install binutils-aarch64-linux-gnu
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64 
 
-I thought your concern was fs.epoll.max_user_watches, which has
-default value that seems to be enough:
+My mistake, I'll start compiling the kernel with clang too.
 
-	$ cat /proc/sys/fs/epoll/max_user_watches
-	3169996
+The register width for ICC_PMR_EL1 in the kernel is rather inconsistent: in
+arch_gicv3.h, the accessors use 32 bits for the PMR value which gets casted to 64
+bit by the {read,write}_sysreg_s macros anyway, in struct pt_regs the register is
+64-bit, in __cpu_do_idle_irqprio it's declared as an unsigned long,
+arch_local_irqs_{disable,enable} declares it as u32 and casts it to an unsigned
+long when used by the inline assembly, the gicv3 irqchip driver uses it as a 32
+bit variable.
 
-jirka
+I think the confusion stems from the fact that originally it was a 32 bit
+register, but was changed to 64 bits in Arm IHI 0069E (January 2019).
 
+I could cast it to an unsigned long in the inline assembly, but IMO that looks a
+bit awkward. Before sending the patches I was considering changing it everywhere
+to 64 bits, but Mark Rutland had a different idea. Mark, would you mind explaining
+why keeping it 32 bit wide makes more sense?
 
-> 
-> for for /etc/security/limits.conf settings.
-> 
-> ~Alexey
-> 
-> [1] https://software.intel.com/content/www/us/en/develop/documentation/vtune-cookbook/top/configuration-recipes/profiling-hardware-without-sampling-drivers.html
-> 
-> > 
-> > jirka
-> > 
-> 
-
+Thanks,
+Alex
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>):
+>
+>    In file included from arch/arm64/kernel/asm-offsets.c:10:
+>    In file included from include/linux/arm_sdei.h:8:
+>    In file included from include/acpi/ghes.h:5:
+>    In file included from include/acpi/apei.h:9:
+>    In file included from include/linux/acpi.h:13:
+>    In file included from include/linux/irqdomain.h:35:
+>    In file included from include/linux/of.h:17:
+>    In file included from include/linux/kobject.h:20:
+>    In file included from include/linux/sysfs.h:16:
+>    In file included from include/linux/kernfs.h:13:
+>    In file included from include/linux/idr.h:15:
+>    In file included from include/linux/radix-tree.h:15:
+>    In file included from include/linux/rcupdate.h:26:
+>    In file included from include/linux/irqflags.h:16:
+>>> arch/arm64/include/asm/irqflags.h:45:10: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+>                    : "r" (pmr_irqon)
+>                           ^
+>    arch/arm64/include/asm/irqflags.h:42:29: note: use constraint modifier "w"
+>                    __msr_s(SYS_ICC_PMR_EL1, "%0"),
+>                                              ^
+>    arch/arm64/include/asm/irqflags.h:67:10: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+>                    : "r" (pmr_irqoff)
+>                           ^
+>    arch/arm64/include/asm/irqflags.h:64:29: note: use constraint modifier "w"
+>                    __msr_s(SYS_ICC_PMR_EL1, "%0"),
+>                                              ^
+>    2 warnings generated.
+> --
+>    In file included from drivers/power/supply/ltc2941-battery-gauge.c:12:
+>    In file included from include/linux/module.h:13:
+>    In file included from include/linux/stat.h:6:
+>    In file included from arch/arm64/include/asm/stat.h:12:
+>    In file included from include/linux/time.h:6:
+>    In file included from include/linux/seqlock.h:36:
+>    In file included from include/linux/spinlock.h:54:
+>    In file included from include/linux/irqflags.h:16:
+>>> arch/arm64/include/asm/irqflags.h:45:10: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+>                    : "r" (pmr_irqon)
+>                           ^
+>    arch/arm64/include/asm/irqflags.h:42:29: note: use constraint modifier "w"
+>                    __msr_s(SYS_ICC_PMR_EL1, "%0"),
+>                                              ^
+>    arch/arm64/include/asm/irqflags.h:67:10: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+>                    : "r" (pmr_irqoff)
+>                           ^
+>    arch/arm64/include/asm/irqflags.h:64:29: note: use constraint modifier "w"
+>                    __msr_s(SYS_ICC_PMR_EL1, "%0"),
+>                                              ^
+>    drivers/power/supply/ltc2941-battery-gauge.c:476:13: warning: cast to smaller integer type 'enum ltc294x_id' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+>            info->id = (enum ltc294x_id)of_device_get_match_data(&client->dev);
+>                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    3 warnings generated.
+> --
+>    In file included from drivers/power/supply/goldfish_battery.c:11:
+>    In file included from include/linux/module.h:13:
+>    In file included from include/linux/stat.h:6:
+>    In file included from arch/arm64/include/asm/stat.h:12:
+>    In file included from include/linux/time.h:6:
+>    In file included from include/linux/seqlock.h:36:
+>    In file included from include/linux/spinlock.h:54:
+>    In file included from include/linux/irqflags.h:16:
+>>> arch/arm64/include/asm/irqflags.h:45:10: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+>                    : "r" (pmr_irqon)
+>                           ^
+>    arch/arm64/include/asm/irqflags.h:42:29: note: use constraint modifier "w"
+>                    __msr_s(SYS_ICC_PMR_EL1, "%0"),
+>                                              ^
+>    arch/arm64/include/asm/irqflags.h:67:10: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+>                    : "r" (pmr_irqoff)
+>                           ^
+>    arch/arm64/include/asm/irqflags.h:64:29: note: use constraint modifier "w"
+>                    __msr_s(SYS_ICC_PMR_EL1, "%0"),
+>                                              ^
+>    drivers/power/supply/goldfish_battery.c:269:36: warning: unused variable 'goldfish_battery_acpi_match' [-Wunused-const-variable]
+>    static const struct acpi_device_id goldfish_battery_acpi_match[] = {
+>                                       ^
+>    3 warnings generated.
+> --
+>    In file included from drivers/power/supply/bq25890_charger.c:8:
+>    In file included from include/linux/module.h:13:
+>    In file included from include/linux/stat.h:6:
+>    In file included from arch/arm64/include/asm/stat.h:12:
+>    In file included from include/linux/time.h:6:
+>    In file included from include/linux/seqlock.h:36:
+>    In file included from include/linux/spinlock.h:54:
+>    In file included from include/linux/irqflags.h:16:
+>>> arch/arm64/include/asm/irqflags.h:45:10: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+>                    : "r" (pmr_irqon)
+>                           ^
+>    arch/arm64/include/asm/irqflags.h:42:29: note: use constraint modifier "w"
+>                    __msr_s(SYS_ICC_PMR_EL1, "%0"),
+>                                              ^
+>    arch/arm64/include/asm/irqflags.h:67:10: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+>                    : "r" (pmr_irqoff)
+>                           ^
+>    arch/arm64/include/asm/irqflags.h:64:29: note: use constraint modifier "w"
+>                    __msr_s(SYS_ICC_PMR_EL1, "%0"),
+>                                              ^
+>    drivers/power/supply/bq25890_charger.c:1060:36: warning: unused variable 'bq25890_acpi_match' [-Wunused-const-variable]
+>    static const struct acpi_device_id bq25890_acpi_match[] = {
+>                                       ^
+>    3 warnings generated.
+> --
+>    In file included from drivers/power/reset/vexpress-poweroff.c:8:
+>    In file included from include/linux/notifier.h:15:
+>    In file included from include/linux/rwsem.h:16:
+>    In file included from include/linux/spinlock.h:54:
+>    In file included from include/linux/irqflags.h:16:
+>>> arch/arm64/include/asm/irqflags.h:45:10: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+>                    : "r" (pmr_irqon)
+>                           ^
+>    arch/arm64/include/asm/irqflags.h:42:29: note: use constraint modifier "w"
+>                    __msr_s(SYS_ICC_PMR_EL1, "%0"),
+>                                              ^
+>    arch/arm64/include/asm/irqflags.h:67:10: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+>                    : "r" (pmr_irqoff)
+>                           ^
+>    arch/arm64/include/asm/irqflags.h:64:29: note: use constraint modifier "w"
+>                    __msr_s(SYS_ICC_PMR_EL1, "%0"),
+>                                              ^
+>    drivers/power/reset/vexpress-poweroff.c:124:10: warning: cast to smaller integer type 'enum vexpress_reset_func' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+>            switch ((enum vexpress_reset_func)match->data) {
+>                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    3 warnings generated.
+> --
+>    In file included from arch/arm64/kernel/asm-offsets.c:10:
+>    In file included from include/linux/arm_sdei.h:8:
+>    In file included from include/acpi/ghes.h:5:
+>    In file included from include/acpi/apei.h:9:
+>    In file included from include/linux/acpi.h:13:
+>    In file included from include/linux/irqdomain.h:35:
+>    In file included from include/linux/of.h:17:
+>    In file included from include/linux/kobject.h:20:
+>    In file included from include/linux/sysfs.h:16:
+>    In file included from include/linux/kernfs.h:13:
+>    In file included from include/linux/idr.h:15:
+>    In file included from include/linux/radix-tree.h:15:
+>    In file included from include/linux/rcupdate.h:26:
+>    In file included from include/linux/irqflags.h:16:
+>>> arch/arm64/include/asm/irqflags.h:45:10: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+>                    : "r" (pmr_irqon)
+>                           ^
+>    arch/arm64/include/asm/irqflags.h:42:29: note: use constraint modifier "w"
+>                    __msr_s(SYS_ICC_PMR_EL1, "%0"),
+>                                              ^
+>    arch/arm64/include/asm/irqflags.h:67:10: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+>                    : "r" (pmr_irqoff)
+>                           ^
+>    arch/arm64/include/asm/irqflags.h:64:29: note: use constraint modifier "w"
+>                    __msr_s(SYS_ICC_PMR_EL1, "%0"),
+>                                              ^
+>    2 warnings generated.
+>    arch/arm64/kernel/vdso/vgettimeofday.c:9:5: warning: no previous prototype for function '__kernel_clock_gettime' [-Wmissing-prototypes]
+>    int __kernel_clock_gettime(clockid_t clock,
+>        ^
+>    arch/arm64/kernel/vdso/vgettimeofday.c:9:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+>    int __kernel_clock_gettime(clockid_t clock,
+>    ^
+>    static 
+>    arch/arm64/kernel/vdso/vgettimeofday.c:15:5: warning: no previous prototype for function '__kernel_gettimeofday' [-Wmissing-prototypes]
+>    int __kernel_gettimeofday(struct __kernel_old_timeval *tv,
+>        ^
+>    arch/arm64/kernel/vdso/vgettimeofday.c:15:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+>    int __kernel_gettimeofday(struct __kernel_old_timeval *tv,
+>    ^
+>    static 
+>    arch/arm64/kernel/vdso/vgettimeofday.c:21:5: warning: no previous prototype for function '__kernel_clock_getres' [-Wmissing-prototypes]
+>    int __kernel_clock_getres(clockid_t clock_id,
+>        ^
+>    arch/arm64/kernel/vdso/vgettimeofday.c:21:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+>    int __kernel_clock_getres(clockid_t clock_id,
+>    ^
+>    static 
+>    3 warnings generated.
+>
+> vim +45 arch/arm64/include/asm/irqflags.h
+>
+>     12	
+>     13	/*
+>     14	 * Aarch64 has flags for masking: Debug, Asynchronous (serror), Interrupts and
+>     15	 * FIQ exceptions, in the 'daif' register. We mask and unmask them in 'dai'
+>     16	 * order:
+>     17	 * Masking debug exceptions causes all other exceptions to be masked too/
+>     18	 * Masking SError masks irq, but not debug exceptions. Masking irqs has no
+>     19	 * side effects for other flags. Keeping to this order makes it easier for
+>     20	 * entry.S to know which exceptions should be unmasked.
+>     21	 *
+>     22	 * FIQ is never expected, but we mask it when we disable debug exceptions, and
+>     23	 * unmask it at all other times.
+>     24	 */
+>     25	
+>     26	/*
+>     27	 * CPU interrupt mask handling.
+>     28	 */
+>     29	static inline void arch_local_irq_enable(void)
+>     30	{
+>     31		u32 pmr_irqon = GIC_PRIO_IRQON;
+>     32	
+>     33		if (system_has_prio_mask_debugging()) {
+>     34			u32 pmr = read_sysreg_s(SYS_ICC_PMR_EL1);
+>     35			u32 pmr_irqoff = gic_prio_irqoff();
+>     36	
+>     37			WARN_ON_ONCE(pmr != pmr_irqon && pmr != pmr_irqoff);
+>     38		}
+>     39	
+>     40		asm volatile(ALTERNATIVE(
+>     41			"msr	daifclr, #2		// arch_local_irq_enable",
+>     42			__msr_s(SYS_ICC_PMR_EL1, "%0"),
+>     43			ARM64_HAS_IRQ_PRIO_MASKING)
+>     44			:
+>   > 45			: "r" (pmr_irqon)
+>     46			: "memory");
+>     47	
+>     48		pmr_sync();
+>     49	}
+>     50	
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
