@@ -2,129 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610F320B8EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 21:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2D420B8F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 21:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725977AbgFZTAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 15:00:38 -0400
-Received: from mail-dm6nam11on2078.outbound.protection.outlook.com ([40.107.223.78]:34913
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725768AbgFZTAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 15:00:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BOiji3QZx9IaCsBhfez67maP0khl+fql/NlXbAYb2hbqCmGML37UUBK9LqiYfbL9qrb3YpOCLuId0IC40tYITAxkI6ifXeWkW3PJmkYYk2J3J56vtVzF3T19lAlp281zeEqruZg08HKWzAVMvd5MoFiaiFhKIEGjBxhdXGS/r61NxC3WwARDMZh1ILvf2sr4061Bg8CVmPSXLCypFUTKvJ+0UlfLb2IXxHbpwyRC2Vd61YQJpt4p6Yr7qssrYQxxhBTASZ93wzsJ6CdU9Tf/wxAhKAIoRwjWxnBSMApPHJZV2UaIeNX2eS7QSkZTBoMCrY4PxgjV2TluhDl4VMhULQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xZd4qOgqFfPFh886Hz9FIcWDPG7i5kJik6Ww/d5pXL0=;
- b=mvWhrkM20t+VOOa1Byj8tlTPpfDZG/6Bjr9yL9FVzWd3vL9reXDSv8E3VaGznvHAifaXXnlnQZSYQ0zGW3nwpgGJcA2bZn3gX5txzVtJ8aNc1ETruTaHAFpIEjyahJ3CSvdn97wSGX9kP8DdZCuDMLeI3I9e2jGXw5BFbs88v756uX8tkveNbyRkqDzNhGGUyW1S++PEBMRcFuDSDv6JXrbJOPQhcvbcqDxoUx43WYffFytjCETbDJ7Q+IBoXNkXD6wZ8R61YDmBHAnj2AcJf2WL2ZkmZqDP24utfItdI5e+0SmnLcg/2ySl6PMXjn7pt8fx0BfHN2WwhAThGaiooQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1725983AbgFZTCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 15:02:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725935AbgFZTCP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 15:02:15 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9107C03E97A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 12:02:14 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id h19so11391771ljg.13
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 12:02:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xZd4qOgqFfPFh886Hz9FIcWDPG7i5kJik6Ww/d5pXL0=;
- b=NncnRHoRYoyTPR40BZCxjuE67HmEpAmjQiN5FzWfwzxtB92BEs2umei3TSVcmaqAFZ+bVnwWiCkjSnrnruPbkVrHjOVUDUDSMJBwsOcoS4sPjPp1BdzYgM/yOC5n43vILynu8P5vraU2ea8grhNZfs6vZah3O+N+h5Ry6zhl48w=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from CY4PR12MB1352.namprd12.prod.outlook.com (2603:10b6:903:3a::13)
- by CY4PR12MB1302.namprd12.prod.outlook.com (2603:10b6:903:38::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.25; Fri, 26 Jun
- 2020 19:00:32 +0000
-Received: from CY4PR12MB1352.namprd12.prod.outlook.com
- ([fe80::135:b45b:bf4c:e3]) by CY4PR12MB1352.namprd12.prod.outlook.com
- ([fe80::135:b45b:bf4c:e3%10]) with mapi id 15.20.3131.025; Fri, 26 Jun 2020
- 19:00:32 +0000
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-To:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        David Miller <davem@davemloft.net>,
-        John Allen <john.allen@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: [PATCH] crypto: ccp - Update CCP driver maintainer information
-Date:   Fri, 26 Jun 2020 14:00:17 -0500
-Message-Id: <10d21bb66593de4ab9b07bd4fa053b5cbe2d9278.1593198017.git.thomas.lendacky@amd.com>
-X-Mailer: git-send-email 2.27.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR11CA0013.namprd11.prod.outlook.com
- (2603:10b6:5:190::26) To CY4PR12MB1352.namprd12.prod.outlook.com
- (2603:10b6:903:3a::13)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CupTv356WOheWFFcn47AA78Bc8xE85sorZq/DL/d5ow=;
+        b=PljCG4p1Fw8CHLh+rUo2wSWaKZbvtTK+SH69StUSy72aY4d1OYyiZUq/AaW6a5d1MI
+         mq7+P723mcxuKFZJ5YT7j2sJC2nDwAp1KAMuq5VMYdluPT75VMQ3W97a14UhUtX4a1Q2
+         Y7Br1N0WDugVyuoC8lYZ/SyVf6EN373Kqez82pnoO4DMI2ZgGgU2GH+Ppuhy6J6g/YUt
+         1XpiIuatKtMKTEm14jT7CRjJOtuvbAALQKYB80RhD2Byety+zKHXncWQo4dJsh1SQeMA
+         nSqGNi15sCpqApCXfW8JO5PL/hkt8la90/o6M5m9jJhBWq0yG5p6KMs8op0c3aNYsphn
+         8wzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CupTv356WOheWFFcn47AA78Bc8xE85sorZq/DL/d5ow=;
+        b=RkH2SD2RLDw4jKkcw3+6GH14J7QZO0e59vfb5l2TbSQXbS7hAy1/NiAWXxjJlrlK0U
+         OfZpXB2Wp/ZKyfTmUlpZjY9eZrGMCC+czrf26FFnZnobuswbVbyjJuphMp+CLI5LUhWl
+         /K3tC4xoxHM5lppnkh546SV8fTV+O+sliMDUkrfKoAKCMn1+YjaBsGR3RUrFMmvOu62m
+         YboNkft1M/XVLyR7SlLahrls/Dcs2ovQr/kRoMFKZ9GQZdSKZwf/bQ5s1ouv0MpsnRP8
+         I4bwD42DcEfYkZL/OJojrLtTLaQP13CAmd1ShHFEnsd1JjPtJDQYBapj2COc/CbNsNUb
+         k+YQ==
+X-Gm-Message-State: AOAM533z1GTRClFmAQaQe7NvRMEsz1l0OTIRCEAY7rp1fv6CcgacWlw3
+        JFTSt9WOTLWuQH2okm5U2ICdMQULi6TKgCavua4OCA==
+X-Google-Smtp-Source: ABdhPJwXqAgY35bZFXo6/B0G8JpMwZbJM19I1mNnWaLF8LNBfGwBsVegK/WyraehTX79S8Hc7skGI2IKEUUkez0pahs=
+X-Received: by 2002:a2e:92cf:: with SMTP id k15mr2200496ljh.333.1593198132811;
+ Fri, 26 Jun 2020 12:02:12 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from tlendack-t1.amd.com (165.204.77.1) by DM6PR11CA0013.namprd11.prod.outlook.com (2603:10b6:5:190::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20 via Frontend Transport; Fri, 26 Jun 2020 19:00:31 +0000
-X-Mailer: git-send-email 2.27.0
-X-Originating-IP: [165.204.77.1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: fc45b24c-730c-40f0-2dbf-08d81a033320
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1302:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR12MB1302F3B5BD9DEFCCA02FC8C7EC930@CY4PR12MB1302.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:813;
-X-Forefront-PRVS: 0446F0FCE1
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FScbUCbkvLC2UO1WgxGN+lX4OfCBK2KjYqfqGMbFxxGmLffPJ/bfVB/aIeQQJw1oc2Nu4RQbXkj3CKsRLpV0pmUFnlvkS1BXLbsIqM+A5ufWLqGR8++8VEw2ExzOTrnTPrpEunaPvQvJZwkcVckBCNNtHwb7qxPgf3afDihR77gcZaPMYtm1v0DtHk/j9RnPseNGmXjD/O14SWIbKYtezOtnglb518+ON0seG7TotrPjkl0wVRVnxX5Yro794+p0eAa9dselYyENcJm9PzWgBt85YxKaT0JsGPzVH+x05NQTsRBjhcv0pUlVwwkGKruhWepzzDa5DqRuPjMGiy/QS+hiWch9Fjzl1Y0POwcEYGnA/lTd5bBI2jDjdcglkokb
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1352.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(366004)(396003)(39860400002)(376002)(346002)(2616005)(956004)(5660300002)(66946007)(66556008)(66476007)(8676002)(6666004)(52116002)(7696005)(316002)(4326008)(16526019)(54906003)(36756003)(478600001)(6486002)(186003)(8936002)(2906002)(86362001)(26005)(136400200001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: rie2l6QE4y2D41zHODhQAzantBecRnR7DoG4ze8m++fc985hNybNiNxS5NO1cRg6JiiNRK2zJafg5kmHpMGP67TjUInnOkklfuJTKNe36pWt4YQpwjrU/3J3RSbjnFwxX5ntbkeOMFcpWXFW7B/MvwIO499tOIQJmFdf9NE0+dXrTWTQMuO4rODI1EoB102a2dyVWklDIKd1zrXpZ5t7gctxmaiUHROmuc/OO1nZj0blfwdJvZeNMF95t+rwbcntjnDFwewOaM9mTpCKCzeeE5R3AolOdYSOfMblNbBUz2W0aaRZUT/aX0f0e4u9nedT/ZOndTZKcPm57xCxEHVQOOH2NHtlVl3F3rEYSL6wMj0zrr9qb3xrO0cMMkbmN3A2FcYyIe1Fqj/SJLRO4s3BziqkKamzi0SiJa+8v2Yr07MtisZfTigAB42dUFNGHpwiyTngT7ksYVaYOqGWMLk/QhPG6x46l8SVI/BGNVB2IQo=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc45b24c-730c-40f0-2dbf-08d81a033320
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1352.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2020 19:00:32.0215
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Rv2xBwT4J03rEz505rbKqYUnxaEADqNBXkb5VZ2ENbdu9Ce4aQLfO5qhIvscf/3LqcxTdQDP7mep46gnH8VgQg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1302
+References: <20200626002710.110200-1-rajatja@google.com> <20200626153906.GA2897118@bjorn-Precision-5520>
+In-Reply-To: <20200626153906.GA2897118@bjorn-Precision-5520>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Fri, 26 Jun 2020 12:01:36 -0700
+Message-ID: <CACK8Z6G7Pau3LTt2LYx=pezLcwxO5kKaM18_yis0w-UGYd675w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] pci: Add pci device even if the driver failed to attach
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, iommu@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Prashant Malani <pmalani@google.com>,
+        Benson Leung <bleung@google.com>,
+        Todd Broch <tbroch@google.com>,
+        Alex Levin <levinale@google.com>,
+        Mattias Nissler <mnissler@google.com>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Bernie Keany <bernie.keany@intel.com>,
+        Aaron Durbin <adurbin@google.com>,
+        Diego Rivas <diegorivas@google.com>,
+        Duncan Laurie <dlaurie@google.com>,
+        Furquan Shaikh <furquan@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Christian Kellner <christian@kellner.me>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Lendacky <thomas.lendacky@amd.com>
+On Fri, Jun 26, 2020 at 8:39 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> Nit: when you update these patches, can you run "git log --oneline
+> drivers/pci/bus.c" and make your subject lines match the convention?
 
-Add John Allen as a new CCP driver maintainer. Additionally, break out
-the driver SEV support and create a new maintainer entry, with Brijesh
-Singh and Tom Lendacky as maintainers.
+Sorry, will do.
 
-Cc: John Allen <john.allen@amd.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
----
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+> E.g.,
+>
+>   PCI: Add device even if driver attach failed
+>
+> On Thu, Jun 25, 2020 at 05:27:09PM -0700, Rajat Jain wrote:
+> > device_attach() returning failure indicates a driver error
+> > while trying to probe the device. In such a scenario, the PCI
+> > device should still be added in the system and be visible to
+> > the user.
+>
+> Nit: please wrap logs to fill 75 characters.  "git log" adds 4 spaces
+> at the beginning, so 75+4 still fits nicely in 80 columns without
+> wrapping.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 68f21d46614c..8af94aea20fd 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -830,11 +830,20 @@ F:	include/uapi/rdma/efa-abi.h
- 
- AMD CRYPTOGRAPHIC COPROCESSOR (CCP) DRIVER
- M:	Tom Lendacky <thomas.lendacky@amd.com>
-+M:	John Allen <john.allen@amd.com>
- L:	linux-crypto@vger.kernel.org
- S:	Supported
- F:	drivers/crypto/ccp/
- F:	include/linux/ccp.h
- 
-+AMD CRYPTOGRAPHIC COPROCESSOR (CCP) DRIVER - SEV SUPPORT
-+M:	Brijesh Singh <brijeshkumar.singh@amd.com>
-+M:	Tom Lendacky <thomas.lendacky@amd.com>
-+L:	linux-crypto@vger.kernel.org
-+S:	Supported
-+F:	drivers/crypto/ccp/sev*
-+F:	include/uapi/linux/psp-sev.h
-+
- AMD DISPLAY CORE
- M:	Harry Wentland <harry.wentland@amd.com>
- M:	Leo Li <sunpeng.li@amd.com>
--- 
-2.27.0
+Sorry, will do.
 
+>
+> > This patch partially reverts:
+> > commit ab1a187bba5c ("PCI: Check device_attach() return value always")
+> >
+> > Signed-off-by: Rajat Jain <rajatja@google.com>
+> > ---
+> >  drivers/pci/bus.c | 6 +-----
+> >  1 file changed, 1 insertion(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
+> > index 8e40b3e6da77d..3cef835b375fd 100644
+> > --- a/drivers/pci/bus.c
+> > +++ b/drivers/pci/bus.c
+> > @@ -322,12 +322,8 @@ void pci_bus_add_device(struct pci_dev *dev)
+> >
+> >       dev->match_driver = true;
+> >       retval = device_attach(&dev->dev);
+> > -     if (retval < 0 && retval != -EPROBE_DEFER) {
+> > +     if (retval < 0 && retval != -EPROBE_DEFER)
+> >               pci_warn(dev, "device attach failed (%d)\n", retval);
+> > -             pci_proc_detach_device(dev);
+> > -             pci_remove_sysfs_dev_files(dev);
+>
+> Thanks for catching my bug!
+>
+> > -             return;
+> > -     }
+> >
+> >       pci_dev_assign_added(dev, true);
+> >  }
+> > --
+> > 2.27.0.212.ge8ba1cc988-goog
+> >
