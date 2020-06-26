@@ -2,68 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102B320B137
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 14:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCFA20B14E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 14:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728257AbgFZMRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 08:17:06 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:46007 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727977AbgFZMRE (ORCPT
+        id S1728397AbgFZMVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 08:21:54 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:13983 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728338AbgFZMVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 08:17:04 -0400
-Received: by mail-pf1-f193.google.com with SMTP id a127so4555835pfa.12;
-        Fri, 26 Jun 2020 05:17:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DsE2wAMRmQbvTNE8N6VxmuoaI9A47onJe1cGAUDjN50=;
-        b=HhhowDwsKIIIB4cM298MMBZ03ELMfv5rYV6GfanmTor+HVEuB3ikE605OF39RUQacL
-         4hyBcC6UF3rPZHQBzzLkOOwKoGCGhwFsyEU0fme476xqWF7kUogPCt/7yotHfkslHyIu
-         ySOkkstmJnM06zzfcav0k1gMX/7LqanBB+ft6gRB1i8bb6/mju8qb/rXK24OJZ9l+YBf
-         qC47iIy42IZbp3O7cgCknAW3VqYlA+WI86O37+9m+WslI8lphryG3OWjqKD/34nImx/B
-         2nNJlE6xC3D5TpmNmj9GVFqrJYBkegHv4y/HEACJ99DyVRxP67bcnk8ZG9+680N83Mng
-         s1fA==
-X-Gm-Message-State: AOAM530aVTluKHeYcRVHS32nvt+U9VblsnIS4V4mniO53M5XtTJPLk2q
-        gyy2ndYH3DzjDcqYqPhAsKo=
-X-Google-Smtp-Source: ABdhPJwKPCfOPErb9QfKR/PTVjk9VWTUGqdxZW5FaJYMAQDflzqzSbvwxBnY0csptyJYBMj1ntPOtg==
-X-Received: by 2002:a63:7313:: with SMTP id o19mr2540204pgc.307.1593173824266;
-        Fri, 26 Jun 2020 05:17:04 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id 204sm1332367pfc.18.2020.06.26.05.17.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 05:17:02 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 0897040B24; Fri, 26 Jun 2020 12:17:02 +0000 (UTC)
-Date:   Fri, 26 Jun 2020 12:17:01 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 6/9] sysctl: Call sysctl_head_finish on error
-Message-ID: <20200626121701.GM4332@42.do-not-panic.com>
-References: <20200626075836.1998185-1-hch@lst.de>
- <20200626075836.1998185-7-hch@lst.de>
+        Fri, 26 Jun 2020 08:21:53 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ef5e8020000>; Fri, 26 Jun 2020 05:20:18 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 26 Jun 2020 05:21:53 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 26 Jun 2020 05:21:53 -0700
+Received: from [10.26.73.157] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 26 Jun
+ 2020 12:21:51 +0000
+Subject: Re: [PATCH V2] soc/tegra: Add defines for Tegra186+ chip IDs
+To:     Sandipan Patra <spatra@nvidia.com>, <treding@nvidia.com>
+CC:     <bbasu@nvidia.com>, <kyarlagadda@nvidia.com>, <snikam@nvidia.com>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1593171922-30632-1-git-send-email-spatra@nvidia.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <bb9ae015-4fe8-59d4-48fd-6a99a7ae8bc9@nvidia.com>
+Date:   Fri, 26 Jun 2020 13:21:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200626075836.1998185-7-hch@lst.de>
+In-Reply-To: <1593171922-30632-1-git-send-email-spatra@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1593174018; bh=lcR1OuqUE4nBsR2lUB4yD8hOU88qdEHQbzDUa07kZ0I=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=dkALFZOi+Gi3URC2kHiaKd/E0I/zUk4h1OMbfdTirb0oR4iQalfQncXsG867be7V2
+         ViZkE8oSSlsbExwojcyDacHv0it5i11VMdeLes2xIeCI6RwXoPy32LCA9f9JdgpU01
+         /kKK2qKGa7VIgRuPy4oZEL70T30D4q6gdiTus2BpEpVvh7zA88yCjZ12bXk3Qggxs3
+         z8yoDhXGaQZJXZkkwJrxMrBWh2B2ZbvqRo+0rYYrevcw80w5yX9hIQSdCT7znT4gt4
+         AiqOs0zFLos1l7vrSENe6tlJufu9XeiPde2LI67f/M9Yu1x7EPOh0BGWDlReI10FyQ
+         2TxcDyX2/7AKg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 09:58:33AM +0200, Christoph Hellwig wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+
+On 26/06/2020 12:45, Sandipan Patra wrote:
+> Add the chip IDs for NVIDIA Tegra186, Tegra194 and Tegra234
+> SoC families.
 > 
-> This error path returned directly instead of calling sysctl_head_finish().
+> Signed-off-by: Sandipan Patra <spatra@nvidia.com>
+> ---
+> V2:
+>   - Precise commit message
+> 
+>  include/soc/tegra/fuse.h | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/soc/tegra/fuse.h b/include/soc/tegra/fuse.h
+> index 252ea20..4a5236b 100644
+> --- a/include/soc/tegra/fuse.h
+> +++ b/include/soc/tegra/fuse.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0-only */
+>  /*
+> - * Copyright (c) 2012, NVIDIA CORPORATION.  All rights reserved.
+> + * Copyright (c) 2012-2020, NVIDIA CORPORATION.  All rights reserved.
+>   */
+>  
+>  #ifndef __SOC_TEGRA_FUSE_H__
+> @@ -12,6 +12,9 @@
+>  #define TEGRA124	0x40
+>  #define TEGRA132	0x13
+>  #define TEGRA210	0x21
+> +#define TEGRA186	0x18
+> +#define TEGRA194	0x19
+> +#define TEGRA234	0x23
+>  
+>  #define TEGRA_FUSE_SKU_CALIB_0	0xf0
+>  #define TEGRA30_FUSE_SATA_CALIB	0x124
 
-And if the commit log can say why this was bad. Found through code
-inspection from what I recall right?
 
-  Luis
+Thanks. Looks good to me.
+
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+
+Jon
+
+-- 
+nvpublic
