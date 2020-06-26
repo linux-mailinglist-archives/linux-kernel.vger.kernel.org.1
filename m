@@ -2,104 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508CE20AD9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE5520ADA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728942AbgFZH7E convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Jun 2020 03:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728898AbgFZH7A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 03:59:00 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0837FC08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 00:59:00 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1jojGD-0004Vx-5t; Fri, 26 Jun 2020 09:58:57 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1jojGC-0005Dc-MH; Fri, 26 Jun 2020 09:58:56 +0200
-Message-ID: <5d18057b7bc686eeb470810acd3ab63f9b4bf224.camel@pengutronix.de>
-Subject: Re: [PATCH 3/6] hantro: Rework how encoder and decoder are
- identified
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel@collabora.com, Hans Verkuil <hverkuil@xs4all.nl>
-Date:   Fri, 26 Jun 2020 09:58:56 +0200
-In-Reply-To: <20200625163525.5119-4-ezequiel@collabora.com>
-References: <20200625163525.5119-1-ezequiel@collabora.com>
-         <20200625163525.5119-4-ezequiel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S1729033AbgFZH73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 03:59:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33634 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728949AbgFZH7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 03:59:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 87026AE25;
+        Fri, 26 Jun 2020 07:59:19 +0000 (UTC)
+Date:   Fri, 26 Jun 2020 09:59:18 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        ben.widawsky@intel.com, alex.shi@linux.alibaba.com,
+        tobin@kernel.org, cl@linux.com, akpm@linux-foundation.org,
+        stable@kernel.org
+Subject: Re: [PATCH] mm/vmscan: restore zone_reclaim_mode ABI
+Message-ID: <20200626075918.dj6ioaon5iuhtg6k@beryllium.lan>
+References: <20200626003459.D8E015CA@viggo.jf.intel.com>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200626003459.D8E015CA@viggo.jf.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ezequiel,
+Hi Dave
 
-On Thu, 2020-06-25 at 13:35 -0300, Ezequiel Garcia wrote:
-> So far we've been using the .buf_finish hook to distinguish
-> decoder from encoder. This is unnecessarily obfuscated.
+On Thu, Jun 25, 2020 at 05:34:59PM -0700, Dave Hansen wrote:
 > 
-> Moreover, we want to move the buf_finish, so use a cleaner
-> scheme to distinguish the driver decoder/encoder type.
+> From: Dave Hansen <dave.hansen@linux.intel.com>
 > 
-> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> I went to go add a new RECLAIM_* mode for the zone_reclaim_mode
+> sysctl.  Like a good kernel developer, I also went to go update the
+> documentation.  I noticed that the bits in the documentation didn't
+> match the bits in the #defines.
+
+Drop the this paragraph from the commit message. It doesn't add
+any necessart information.
+
+Please have a look at
+
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
+
+> The VM evidently stopped caring about RECLAIM_ZONE at some point (or
+> never cared) and the #define itself was later removed as a cleanup.
+> Those things by themselves are fine.
+> 
+> But, the _other_ bit locations also got changed.  That's not OK because
+> the bit values are documented to mean one specific thing and users
+> surely rely on them meaning that one thing and not changing from
+> kernel to kernel.  The end result is that if someone had a script
+> that did:
+> 
+> 	sysctl vm.zone_reclaim_mode=1
+> 
+> That script went from doing nothing to writing out pages during
+> node reclaim after the commit in question.  That's not great.
+> 
+> Put the bits back the way they were and add a comment so something
+> like this is a bit harder to do again.  Update the documentation to
+> make it clear that the first bit is ignored.
+> 
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Fixes: commit 648b5cf368e0 ("mm/vmscan: remove unused RECLAIM_OFF/RECLAIM_ZONE")
+> Acked-by: Ben Widawsky <ben.widawsky@intel.com>
+> Cc: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Daniel Wagner <dwagner@suse.de>
+> Cc: "Tobin C. Harding" <tobin@kernel.org>
+> Cc: Christoph Lameter <cl@linux.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: stable@kernel.org
 > ---
->  drivers/staging/media/hantro/hantro.h     | 2 ++
->  drivers/staging/media/hantro/hantro_drv.c | 4 +++-
->  2 files changed, 5 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
-> index 3005207fc6fb..028b788ad50f 100644
-> --- a/drivers/staging/media/hantro/hantro.h
-> +++ b/drivers/staging/media/hantro/hantro.h
-> @@ -199,6 +199,7 @@ struct hantro_dev {
->   *
->   * @dev:		VPU driver data to which the context belongs.
->   * @fh:			V4L2 file handler.
-> + * @is_encoder:		Decoder or encoder context?
->   *
->   * @sequence_cap:       Sequence counter for capture queue
->   * @sequence_out:       Sequence counter for output queue
-> @@ -223,6 +224,7 @@ struct hantro_dev {
->  struct hantro_ctx {
->  	struct hantro_dev *dev;
->  	struct v4l2_fh fh;
-> +	bool is_encoder;
+>  b/Documentation/admin-guide/sysctl/vm.rst |   12 ++++++------
+>  b/mm/vmscan.c                             |    9 +++++++--
+>  2 files changed, 13 insertions(+), 8 deletions(-)
+> 
+> diff -puN mm/vmscan.c~mm-vmscan-restore-old-zone_reclaim_mode-abi mm/vmscan.c
+> --- a/mm/vmscan.c~mm-vmscan-restore-old-zone_reclaim_mode-abi	2020-06-25 17:32:11.559165912 -0700
+> +++ b/mm/vmscan.c	2020-06-25 17:32:11.572165912 -0700
+> @@ -4090,8 +4090,13 @@ module_init(kswapd_init)
+>   */
+>  int node_reclaim_mode __read_mostly;
 >  
->  	u32 sequence_cap;
->  	u32 sequence_out;
-> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> index 0db8ad455160..112ed556eb90 100644
-> --- a/drivers/staging/media/hantro/hantro_drv.c
-> +++ b/drivers/staging/media/hantro/hantro_drv.c
-> @@ -197,7 +197,7 @@ static void device_run(void *priv)
+> -#define RECLAIM_WRITE (1<<0)	/* Writeout pages during reclaim */
+> -#define RECLAIM_UNMAP (1<<1)	/* Unmap pages during reclaim */
+> +/*
+> + * These bit locations are exposed in the vm.zone_reclaim_mode sysctl
+> + * ABI.  New bits are OK, but existing bits can never change.
+> + */
+> +#define RECLAIM_RSVD  (1<<0)	/* (currently ignored/unused) */
+> +#define RECLAIM_WRITE (1<<1)	/* Writeout pages during reclaim */
+> +#define RECLAIM_UNMAP (1<<2)	/* Unmap pages during reclaim */
 >  
->  bool hantro_is_encoder_ctx(const struct hantro_ctx *ctx)
->  {
-> -	return ctx->buf_finish == hantro_enc_buf_finish;
-> +	return ctx->is_encoder;
->  }
+>  /*
+>   * Priority for NODE_RECLAIM. This determines the fraction of pages
+> diff -puN Documentation/admin-guide/sysctl/vm.rst~mm-vmscan-restore-old-zone_reclaim_mode-abi Documentation/admin-guide/sysctl/vm.rst
+> --- a/Documentation/admin-guide/sysctl/vm.rst~mm-vmscan-restore-old-zone_reclaim_mode-abi	2020-06-25 17:32:11.562165912 -0700
+> +++ b/Documentation/admin-guide/sysctl/vm.rst	2020-06-25 17:32:11.572165912 -0700
+> @@ -938,7 +938,7 @@ in the system.
+>  This is value OR'ed together of
+>  
+>  =	===================================
+> -1	Zone reclaim on
+> +1	(bit currently ignored)
+>  2	Zone reclaim writes dirty pages out
+>  4	Zone reclaim swaps pages
+>  =	===================================
+> @@ -948,11 +948,11 @@ that benefit from having their data cach
+>  left disabled as the caching effect is likely to be more important than
+>  data locality.
+>  
+> -zone_reclaim may be enabled if it's known that the workload is partitioned
+> -such that each partition fits within a NUMA node and that accessing remote
+> -memory would cause a measurable performance reduction.  The page allocator
+> -will then reclaim easily reusable pages (those page cache pages that are
+> -currently not used) before allocating off node pages.
+> +Consider enabling one or more zone_reclaim mode bits if it's known that the
+> +workload is partitioned such that each partition fits within a NUMA node
+> +and that accessing remote memory would cause a measurable performance
+> +reduction.  The page allocator will take additional actions before
+> +allocating off node pages.
 
-Now this function feels a little superfluous. Why not replace
-  hantro_is_encoder_ctx(ctx)
-with
-  ctx->is_encoder
-everywhere?
+I think the documentation update should not be part of this patch.
+This makes the back porting to stable more difficult.
 
-regards
-Philipp
+Thanks,
+Daniel
