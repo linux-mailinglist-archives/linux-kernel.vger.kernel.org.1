@@ -2,100 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38CBA20BB11
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E2120BB2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgFZVJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 17:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48766 "EHLO
+        id S1726552AbgFZVKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 17:10:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726453AbgFZVJr (ORCPT
+        with ESMTP id S1725880AbgFZVKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 17:09:47 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E8BC03E97E
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:09:47 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id o15so7470767pgn.15
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:09:47 -0700 (PDT)
+        Fri, 26 Jun 2020 17:10:40 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F52AC03E97A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:10:40 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id v1so7235569qvx.8
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:10:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=/YfJhHqk1scz1aBXF0mupkQea8lbBQgP2jeC+IACUDE=;
-        b=ZVmC9pMZrVunA2Fe2R9SmfDjSh6jHe61Xaa87YaHusNTBjJf/LeLbaReVAu2j9TGqG
-         DxFNyk3GpI7sLmWMCSdQD7bvz9rONUgJGdF7uQgwV9+yZ/fSaQQKgZ4gmTg7ATax4Vk1
-         oV5uEEY5wckV5kA6VI1hcndIeFh/iBm6by2153y7uZEUrlPNuhJOGVBqtgu612iYSDS5
-         kqjVhZYud4bB1XAnEHsKMzN8i0QHS6lt4v2+aUunA9LQhB4hkvgOKdZy4uYW9e9c4Pee
-         JZVonLmRJ7SKlMenwZofGiFcAJe3AeZZuDV2tMMxx47AoxweQmK1o1oVFzbg31I8w3zR
-         nK+A==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=SqHQ9DZWlxsE7qIqsV85VvjMJJNMgqXueRXxvJ29fgI=;
+        b=nM6YJHrx8LdaSjUWSkIKwhAbVqGDbNri4NlhGXkImmnI6EUEOZO82ZVoGm8q/XELDm
+         bnNAzmNAhVPBIi0bVifIvUYvTS9zfYQfH2U/PU8U69Guzkxl10Tnjk06C3s4cW1NXqB4
+         Hh1g0qte6QgyiiXCKmxejoA2zfSAr76RNnDRQ58CCe7rmhv8oiwtfOuU0rb/0gg8Iitj
+         SNRupPbGmkO6jtdA/qNCs9wlmnQICBkZhbK2/+RZbA7EC3bAFwn3WrpjgKQ3Vc4K5W6c
+         1WWDqAc8BGw8QPd8UxZixp75Fvc3/xaI1GHAvRz+FlqtCZ0+uXv/dMuv2ctKZmdYc858
+         XnDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=/YfJhHqk1scz1aBXF0mupkQea8lbBQgP2jeC+IACUDE=;
-        b=IGyyFrlDv2xwdahl5L2bV3TNNp7JZ0hj+QKdGl6CF8uVR+UvAhN7V6EfhI64At0KWt
-         6VZt4sPPSbpVYjl2YKYayE/hETL/esZWa9J/MGLtZidAP6pdY1HCXj6/mOm8g7jeGJct
-         orFCCFoEJsdNbKMpcataRbZDzYIDgQyG4b2fKWdrRwrVOoqv2q6MKFReqDw84EcEKeCj
-         OtKFq/5w0JCZYOu0phZ5Vm8fVMugcLJQOq2RDKaMjdl3t9r8vgHvI/389m+mwKtu4c4w
-         X0Yn40McCWDD+PFwkY2uvHHEy5eYcdT0lcg+8i61MF31++shkqLm3YeEggsCm93lMWln
-         0NQg==
-X-Gm-Message-State: AOAM531+OJB//Zk2C8/JCTSeuFaeE78eTNyNt2h6PAf8fv5BK/SSdJ/L
-        yKEHvc2ouDU9GpUNSWab2LSSxs7i1GxcalydgAJ67Q==
-X-Google-Smtp-Source: ABdhPJyHSEr0Zmc7EVSRsW7eDiy4Wfh57qQNf0udG5ob/OtFkSC+pCfiBpVQAOifQwHuQ/h0kM0ynYxDTAXmSlHhH6715Q==
-X-Received: by 2002:a65:6707:: with SMTP id u7mr567899pgf.233.1593205786593;
- Fri, 26 Jun 2020 14:09:46 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 14:09:17 -0700
-In-Reply-To: <20200626210917.358969-1-brendanhiggins@google.com>
-Message-Id: <20200626210917.358969-13-brendanhiggins@google.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=SqHQ9DZWlxsE7qIqsV85VvjMJJNMgqXueRXxvJ29fgI=;
+        b=YEV0KR+7M+yof0wjZa06zu6F/1OdzAVqyvchYEFgW9HFrcMU9AtWGdbdCoj7YxNWIh
+         5aa9CQl+yhKWNsK3DUGF/w2ahjoVXgrSujgjF3yOuhw7B9ALItN8DHshXUx5lxQJxSNP
+         uJjn6sAessNVzX3waJb4Ba+WmqPlAjua35ee7ba6cU5Re1WQ2Wu/2vx9zqzynihQfQop
+         vUIuONFICq36anclA94mRrSRyQQ6YuUoQTYfNs9LbmZq4rF7hs/JBzLLVNO6tDWjJ4Oo
+         HHJAiHdCw35GlLSVoTQ7rFT99DossXCbOoKI1DjZYDsFromxotKZlPbGsMM+/vOS22t+
+         HwkA==
+X-Gm-Message-State: AOAM533jacS0cl7jg3v4fXvSv5tMHg2qCk3498V3JYPlx6BZsst4NkQw
+        e8yJoMinbaSRQKyMKFrDuM2+KBUX96kS
+X-Google-Smtp-Source: ABdhPJyeof3yYlB1yKI2mHu0xqNJs5O2CtfyPkQJNcaGC0exq/y2fajFvLM4uo+3CPWRUrsqOFT5/mmqDJbS
+X-Received: by 2002:a0c:bf47:: with SMTP id b7mr4962051qvj.167.1593205839758;
+ Fri, 26 Jun 2020 14:10:39 -0700 (PDT)
+Date:   Fri, 26 Jun 2020 14:10:26 -0700
+Message-Id: <20200626211026.513520-1-furquan@google.com>
 Mime-Version: 1.0
-References: <20200626210917.358969-1-brendanhiggins@google.com>
 X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
-Subject: [PATCH v5 12/12] Documentation: kunit: add a brief blurb about kunit_test_suite
-From:   Brendan Higgins <brendanhiggins@google.com>
-To:     jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
-        arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org,
-        alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com,
-        akpm@linux-foundation.org, rppt@linux.ibm.com,
-        frowand.list@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        monstr@monstr.eu, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, chris@zankel.net, jcmvbkbc@gmail.com
-Cc:     gregkh@linuxfoundation.org, sboyd@kernel.org, logang@deltatee.com,
-        mcgrof@kernel.org, linux-um@lists.infradead.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org,
-        Brendan Higgins <brendanhiggins@google.com>
+Subject: [PATCH] pinctrl: amd: Honor IRQ trigger type requested by the caller
+From:   Furquan Shaikh <furquan@google.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shyam-sundar.S-k@amd.com, akshu.agrawal@amd.com,
+        adurbin@google.com, dtor@google.com,
+        Furquan Shaikh <furquan@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a brief blurb saying how and when the kunit_test_suite() macro
-works to the usage documentation.
+This change drops the override in `amd_gpio_irq_set_type()` that
+ignores the IRQ trigger type settings from the caller. The device
+driver (caller) is in a better position to identify the right trigger
+type for the device based on the usage as well as the information
+exposed by the BIOS. There are instances where the device driver might
+want to configure the trigger type differently in different modes. An
+example of this is gpio-keys driver which configures IRQ type as
+trigger on both edges (to identify assert and deassert events) when in
+S0 and reconfigures the trigger type using the information provided by
+the BIOS when going into suspend to ensure that the wake happens on
+the required edge.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+This override in `amd_gpio_irq_set_type()` prevents the caller from
+being able to reconfigure trigger type once it is set either based on
+ACPI information or the type used by the first caller for IRQ on a
+given GPIO line.
+
+Without this change, pen-insert gpio key (used by garaged stylus on a
+Chromebook) works fine in S0 (i.e. insert and eject events are
+correctly identified), however, BIOS configuration for wake on only
+pen eject i.e. only-rising edge or only-falling edge is not honored.
+
+With this change, it was verified that pen-insert gpio key behavior is
+correct in both S0 and for wakeup from S3.
+
+Signed-off-by: Furquan Shaikh <furquan@google.com>
 ---
- Documentation/dev-tools/kunit/usage.rst | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/pinctrl/pinctrl-amd.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
-index 3c3fe8b5feccf..961d3ea3ca19a 100644
---- a/Documentation/dev-tools/kunit/usage.rst
-+++ b/Documentation/dev-tools/kunit/usage.rst
-@@ -211,6 +211,11 @@ KUnit test framework.
- .. note::
-    A test case will only be run if it is associated with a test suite.
+diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
+index 1fe62a35bb12..c34e6a950b3f 100644
+--- a/drivers/pinctrl/pinctrl-amd.c
++++ b/drivers/pinctrl/pinctrl-amd.c
+@@ -417,22 +417,13 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+ {
+ 	int ret = 0;
+ 	u32 pin_reg, pin_reg_irq_en, mask;
+-	unsigned long flags, irq_flags;
++	unsigned long flags;
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+ 	struct amd_gpio *gpio_dev = gpiochip_get_data(gc);
  
-+``kunit_test_suite(...)`` is a macro which tells the linker to put the specified
-+test suite in a special linker section so that it can be run by KUnit either
-+after late_init, or when the test module is loaded (depending on whether the
-+test was built in or not).
-+
- For more information on these types of things see the :doc:`api/test`.
+ 	raw_spin_lock_irqsave(&gpio_dev->lock, flags);
+ 	pin_reg = readl(gpio_dev->base + (d->hwirq)*4);
  
- Isolating Behavior
+-	/* Ignore the settings coming from the client and
+-	 * read the values from the ACPI tables
+-	 * while setting the trigger type
+-	 */
+-
+-	irq_flags = irq_get_trigger_type(d->irq);
+-	if (irq_flags != IRQ_TYPE_NONE)
+-		type = irq_flags;
+-
+ 	switch (type & IRQ_TYPE_SENSE_MASK) {
+ 	case IRQ_TYPE_EDGE_RISING:
+ 		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
 -- 
 2.27.0.212.ge8ba1cc988-goog
 
