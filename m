@@ -2,137 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5817520B5DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 18:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E323520B5EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 18:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726987AbgFZQ2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 12:28:44 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:38973 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726252AbgFZQ2o (ORCPT
+        id S1727059AbgFZQcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 12:32:24 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28976 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726252AbgFZQcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 12:28:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=guoren@linux.alibaba.com;NM=1;PH=DW;RN=7;SR=0;TI=alimail_imapd_guoren@linux.alibaba.com-10.182.158.86-3463-1593186994_a783821e-1e9e-43b0-9a18-bda5c32d1b6e;
-Received: from WS-web (guoren@linux.alibaba.com[alimail_imapd_guoren@linux.alibaba.com-10.182.158.86-3463-1593186994_a783821e-1e9e-43b0-9a18-bda5c32d1b6e]) by e01f04389.eu6 at Sat, 27 Jun 2020 00:28:38 +0800
-Date:   Sat, 27 Jun 2020 00:28:38 +0800
-From:   "guoren" <guoren@linux.alibaba.com>
-To:     "Greentime Hu" <greentime.hu@sifive.com>,
-        "linux-riscv" <linux-riscv@lists.infradead.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "aou" <aou@eecs.berkeley.edu>, "palmer" <palmer@dabbelt.com>,
-        "paul.walmsley" <paul.walmsley@sifive.com>,
-        "guoren" <guoren@linux.alibaba.com>
-Reply-To: "guoren" <guoren@linux.alibaba.com>
-Message-ID: <c0b15ad6-4385-41bb-82a6-a43107c0e0a1.guoren@linux.alibaba.com>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCAyLzJdIHJpc2N2OiBFbmFibGUgY29udGV4dCB0cmFja2luZw==?=
-X-Mailer: [Alimail-Mailagent][W4_5899425][DEFAULT][Chrome]
+        Fri, 26 Jun 2020 12:32:23 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05QGVjY1157814;
+        Fri, 26 Jun 2020 12:32:21 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31wd7c716b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Jun 2020 12:32:21 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05QGWLs8159717;
+        Fri, 26 Jun 2020 12:32:21 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31wd7c714y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Jun 2020 12:32:21 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05QGVrfR026468;
+        Fri, 26 Jun 2020 16:32:19 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 31uusjk54q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Jun 2020 16:32:19 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05QGWG2S64094598
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Jun 2020 16:32:16 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D106652054;
+        Fri, 26 Jun 2020 16:32:16 +0000 (GMT)
+Received: from osiris (unknown [9.171.12.243])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 7125452052;
+        Fri, 26 Jun 2020 16:32:16 +0000 (GMT)
+Date:   Fri, 26 Jun 2020 18:32:15 +0200
+From:   Heiko Carstens <heiko.carstens@de.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-s390@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Philipp Rudo <prudo@linux.ibm.com>,
+        Michael Holzheu <holzheu@linux.vnet.ibm.com>
+Subject: Re: [PATCH RFC 2/2] s390/mm: don't set ARCH_KEEP_MEMBLOCK
+Message-ID: <20200626163215.GA4268@osiris>
+References: <20200417150151.17239-1-david@redhat.com>
+ <20200417150151.17239-3-david@redhat.com>
 MIME-Version: 1.0
-x-aliyun-mail-creator: W4_5899425_DEFAULT_M3LTW96aWxsYS81LjAgKE1hY2ludG9zaDsgSW50ZWwgTWFjIE9TIFggMTBfMTRfNikgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzgzLjAuNDEwMy4xMDYgU2FmYXJpLzUzNy4zNg==vN
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417150151.17239-3-david@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-26_08:2020-06-26,2020-06-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ suspectscore=1 mlxlogscore=957 cotscore=-2147483648 clxscore=1015
+ adultscore=0 malwarescore=0 impostorscore=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006260112
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgR3JlZW50aW1lLAoKT24gMjAyMC82LzIzIDk6Mjgg5LiL5Y2ILCBHcmVlbnRpbWUgSHUgd3Jv
-dGU6Cj4gVGhpcyBwYXRjaCBpbXBsZW1lbnRzIGFuZCBlbmFibGVzIGNvbnRleHQgdHJhY2tpbmcg
-Zm9yIHJpc2N2ICh3aGljaCBpcyBhCj4gcHJlcmVxdWlzaXRlIGZvciBDT05GSUdfTk9fSFpfRlVM
-TCBzdXBwb3J0KQo+Cj4gSXQgYWRkcyBjaGVja2luZyBmb3IgcHJldmlvdXMgc3RhdGUgaW4gdGhl
-IGVudHJ5IHRoYXQgYWxsIGV4Y2VwdHRpb25zIGFuZAo+IGludGVycnVwdHMgZ29lcyB0byBhbmQg
-Y2FsbHMgY29udGV4dF90cmFja2luZ191c2VyX2V4aXQoKSBpZiBpdCBjb21lcyBmcm9tCj4gdXNl
-ciBzcGFjZS4gSXQgYWxzbyBjYWxscyBjb250ZXh0X3RyYWNraW5nX3VzZXJfZW50ZXIoKSBpZiBp
-dCB3aWxsIHJldHVybgo+IHRvIHVzZXIgc3BhY2UgYmVmb3JlIHJlc3RvcmVfYWxsLgo+Cj4gVGhp
-cyBwYXRjaCBpcyB0ZXN0ZWQgd2l0aCB0aGUgZHludGlja3MtdGVzdGluZyB0ZXN0Y2FzZSBpbgo+
-IHFlbXUtc3lzdGVtLXJpc2N2NjQgdmlydCBtYWNoaW5lIGFuZCBVbmxlYXNoZWQgYm9hcmQuCj4g
-Z2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2ZyZWRlcmljL2R5
-bnRpY2tzLXRlc3RpbmcuZ2l0Cj4KPiBXZSBjYW4gc2VlIHRoZSBsb2cgaGVyZS4gVGhlIHRpY2sg
-Z290IG1vc3RseSBzdG9wcGVkIGR1cmluZyB0aGUgZXhlY3V0aW9uCj4gb2YgdGhlIHVzZXIgbG9v
-cC4KPgo+ICAgICAgICAgICAgICAgICAgICAgICAgICBfLS0tLS09PiBpcnFzLW9mZgo+ICAgICAg
-ICAgICAgICAgICAgICAgICAgIC8gXy0tLS09PiBuZWVkLXJlc2NoZWQKPiAgICAgICAgICAgICAg
-ICAgICAgICAgIHwgLyBfLS0tPT4gaGFyZGlycS9zb2Z0aXJxCj4gICAgICAgICAgICAgICAgICAg
-ICAgICB8fCAvIF8tLT0+IHByZWVtcHQtZGVwdGgKPiAgICAgICAgICAgICAgICAgICAgICAgIHx8
-fCAvICAgICBkZWxheQo+ICAgICAgIFRBU0stUElEICAgQ1BVIyAgfHx8fCAgICBUSU1FU1RBTVAg
-IEZVTkNUSU9OCj4gICAgICAgICAgfCB8ICAgICAgIHwgICB8fHx8ICAgICAgIHwgICAgICAgICB8
-Cj4gICAgIDxpZGxlPi0wICAgICBbMDAxXSBkLi4yICAgNjA0LjE4MzUxMjogc2NoZWRfc3dpdGNo
-OiBwcmV2X2NvbW09c3dhcHBlci8xIHByZXZfcGlkPTAgcHJldl9wcmlvPTEyMCBwcmV2X3N0YXRl
-PVIgPT0+IG5leHRfY29tbT10YXNrc2V0IG5leHRfcGlkPTI3MyBuZXh0X3ByaW89MTIwCj4gdXNl
-cl9sb29wLTI3MyAgIFswMDFdIGQuaDEgICA2MDQuMTg0Nzg4OiBocnRpbWVyX2V4cGlyZV9lbnRy
-eTogaHJ0aW1lcj0wMDAwMDAwMDJlZGE1ZmFiIGZ1bmN0aW9uPXRpY2tfc2NoZWRfdGltZXIgbm93
-PTYwNDE3NjA5NjMwMAo+IHVzZXJfbG9vcC0yNzMgICBbMDAxXSBkLnMyICAgNjA0LjE4NDg5Nzog
-d29ya3F1ZXVlX3F1ZXVlX3dvcms6IHdvcmsgc3RydWN0PTAwMDAwMDAwMzgzNDAyYzIgZnVuY3Rp
-b249dm1zdGF0X3VwZGF0ZSB3b3JrcXVldWU9MDAwMDAwMDBmMzZkMzVkNCByZXFfY3B1PTEgY3B1
-PTEKPiB1c2VyX2xvb3AtMjczICAgWzAwMV0gZG5zMiAgIDYwNC4xODUwMzk6IHRpY2tfc3RvcDog
-c3VjY2Vzcz0wIGRlcGVuZGVuY3k9U0NIRUQKPiB1c2VyX2xvb3AtMjczICAgWzAwMV0gZG4uMSAg
-IDYwNC4xODUxMDM6IHRpY2tfc3RvcDogc3VjY2Vzcz0wIGRlcGVuZGVuY3k9U0NIRUQKPiB1c2Vy
-X2xvb3AtMjczICAgWzAwMV0gZC4uMiAgIDYwNC4xODUxNTQ6IHNjaGVkX3N3aXRjaDogcHJldl9j
-b21tPXRhc2tzZXQgcHJldl9waWQ9MjczIHByZXZfcHJpbz0xMjAgcHJldl9zdGF0ZT1SKyA9PT4g
-bmV4dF9jb21tPWt3b3JrZXIvMToxIG5leHRfcGlkPTQ2IG5leHRfcHJpbz0xMjAKPiAgICAgIDwu
-Li4+LTQ2ICAgIFswMDFdIC4uLi4gICA2MDQuMTg1MTk0OiB3b3JrcXVldWVfZXhlY3V0ZV9zdGFy
-dDogd29yayBzdHJ1Y3QgMDAwMDAwMDAzODM0MDJjMjogZnVuY3Rpb24gdm1zdGF0X3VwZGF0ZQo+
-ICAgICAgPC4uLj4tNDYgICAgWzAwMV0gZC4uMiAgIDYwNC4xODUyNjY6IHNjaGVkX3N3aXRjaDog
-cHJldl9jb21tPWt3b3JrZXIvMToxIHByZXZfcGlkPTQ2IHByZXZfcHJpbz0xMjAgcHJldl9zdGF0
-ZT1JID09PiBuZXh0X2NvbW09dGFza3NldCBuZXh0X3BpZD0yNzMgbmV4dF9wcmlvPTEyMAo+IHVz
-ZXJfbG9vcC0yNzMgICBbMDAxXSBkLmgxICAgNjA0LjE4ODgxMjogaHJ0aW1lcl9leHBpcmVfZW50
-cnk6IGhydGltZXI9MDAwMDAwMDAyZWRhNWZhYiBmdW5jdGlvbj10aWNrX3NjaGVkX3RpbWVyIG5v
-dz02MDQxODAxMzM0MDAKPiB1c2VyX2xvb3AtMjczICAgWzAwMV0gZC4uMSAgIDYwNC4xODkwNTA6
-IHRpY2tfc3RvcDogc3VjY2Vzcz0xIGRlcGVuZGVuY3k9Tk9ORQo+IHVzZXJfbG9vcC0yNzMgICBb
-MDAxXSBkLi4yICAgNjE0LjI1MTM4Njogc2NoZWRfc3dpdGNoOiBwcmV2X2NvbW09dXNlcl9sb29w
-IHByZXZfcGlkPTI3MyBwcmV2X3ByaW89MTIwIHByZXZfc3RhdGU9WCA9PT4gbmV4dF9jb21tPXN3
-YXBwZXIvMSBuZXh0X3BpZD0wIG5leHRfcHJpbz0xMjAKPiAgICAgPGlkbGU+LTAgICAgIFswMDFd
-IGQuLjIgICA2MTQuMzE1MzkxOiBzY2hlZF9zd2l0Y2g6IHByZXZfY29tbT1zd2FwcGVyLzEgcHJl
-dl9waWQ9MCBwcmV2X3ByaW89MTIwIHByZXZfc3RhdGU9UiA9PT4gbmV4dF9jb21tPXRhc2tzZXQg
-bmV4dF9waWQ9Mjc2IG5leHRfcHJpbz0xMjAKPgo+IFNpZ25lZC1vZmYtYnk6IEdyZWVudGltZSBI
-dTxncmVlbnRpbWUuaHVAc2lmaXZlLmNvbT4KPiAtLS0KPiAgIGFyY2gvcmlzY3YvS2NvbmZpZyAg
-ICAgICAgfCAgMSArCj4gICBhcmNoL3Jpc2N2L2tlcm5lbC9lbnRyeS5TIHwgMjMgKysrKysrKysr
-KysrKysrKysrKysrKysKPiAgIDIgZmlsZXMgY2hhbmdlZCwgMjQgaW5zZXJ0aW9ucygrKQo+Cj4g
-ZGlmZiAtLWdpdCBhL2FyY2gvcmlzY3YvS2NvbmZpZyBiL2FyY2gvcmlzY3YvS2NvbmZpZwo+IGlu
-ZGV4IDEyODE5MmUxNGZmMi4uMTc1MjBlMTE4MTViIDEwMDY0NAo+IC0tLSBhL2FyY2gvcmlzY3Yv
-S2NvbmZpZwo+ICsrKyBiL2FyY2gvcmlzY3YvS2NvbmZpZwo+IEBAIC01Miw2ICs1Miw3IEBAIGNv
-bmZpZyBSSVNDVgo+ICAgCXNlbGVjdCBIQVZFX0FSQ0hfU0VDQ09NUF9GSUxURVIKPiAgIAlzZWxl
-Y3QgSEFWRV9BUkNIX1RSQUNFSE9PSwo+ICAgCXNlbGVjdCBIQVZFX0FTTV9NT0RWRVJTSU9OUwo+
-ICsJc2VsZWN0IEhBVkVfQ09OVEVYVF9UUkFDS0lORwo+ICAgCXNlbGVjdCBIQVZFX0NPUFlfVEhS
-RUFEX1RMUwo+ICAgCXNlbGVjdCBIQVZFX0RNQV9DT05USUdVT1VTIGlmIE1NVQo+ICAgCXNlbGVj
-dCBIQVZFX0VCUEZfSklUIGlmIE1NVQo+IGRpZmYgLS1naXQgYS9hcmNoL3Jpc2N2L2tlcm5lbC9l
-bnRyeS5TIGIvYXJjaC9yaXNjdi9rZXJuZWwvZW50cnkuUwo+IGluZGV4IGNhZTdlNmQ0YzdlZi4u
-NmVkNTc5ZmMxMDczIDEwMDY0NAo+IC0tLSBhL2FyY2gvcmlzY3Yva2VybmVsL2VudHJ5LlMKPiAr
-KysgYi9hcmNoL3Jpc2N2L2tlcm5lbC9lbnRyeS5TCj4gQEAgLTk3LDYgKzk3LDE0IEBAIF9zYXZl
-X2NvbnRleHQ6Cj4gICAJbGEgZ3AsIF9fZ2xvYmFsX3BvaW50ZXIkCj4gICAub3B0aW9uIHBvcAo+
-ICAgCj4gKyNpZmRlZiBDT05GSUdfQ09OVEVYVF9UUkFDS0lORwo+ICsJLyogSWYgcHJldmlvdXMg
-c3RhdGUgaXMgaW4gdXNlciBtb2RlLCBjYWxsIGNvbnRleHRfdHJhY2tpbmdfdXNlcl9leGl0LiAq
-Lwo+ICsJYW5kaSBhMCwgczEsIFNSX1NQUAo+ICsJYm5leiBhMCwgc2tpcF9jb250ZXh0X3RyYWNr
-aW5nCj4gKwljYWxsIGNvbnRleHRfdHJhY2tpbmdfdXNlcl9leGl0CgpJdCB3aWxsIGRlc3Ryb3kg
-czEtczUgd2hpY2ggYXJlIHVzZWQgaW4gZW50cnkuUyBsaWtlIHRoZXNlOgoKIMKgwqDCoMKgwqDC
-oMKgIFJFR19TIHMwLCBQVF9TUChzcCkKIMKgwqDCoMKgwqDCoMKgIFJFR19TIHMxLCBQVF9TVEFU
-VVMoc3ApCiDCoMKgwqDCoMKgwqDCoCBSRUdfUyBzMiwgUFRfRVBDKHNwKQogwqDCoMKgwqDCoMKg
-wqAgUkVHX1MgczMsIFBUX0JBREFERFIoc3ApCiDCoMKgwqDCoMKgwqDCoCBSRUdfUyBzNCwgUFRf
-Q0FVU0Uoc3ApCiDCoMKgwqDCoMKgwqDCoCBSRUdfUyBzNSwgUFRfVFAoc3ApCi4uLgogwqDCoMKg
-wqDCoMKgwqAgLyoKIMKgwqDCoMKgwqDCoMKgwqAgKiBNU0Igb2YgY2F1c2UgZGlmZmVyZW50aWF0
-ZXMgYmV0d2VlbgogwqDCoMKgwqDCoMKgwqDCoCAqIGludGVycnVwdHMgYW5kIGV4Y2VwdGlvbnMK
-IMKgwqDCoMKgwqDCoMKgwqAgKi8KIMKgwqDCoMKgwqDCoMKgIGJnZSBzNCwgemVybywgMWYKCi4u
-LgoKIMKgwqDCoMKgwqDCoMKgIC8qCiDCoMKgwqDCoMKgwqDCoMKgICogRXhjZXB0aW9ucyBydW4g
-d2l0aCBpbnRlcnJ1cHRzIGVuYWJsZWQgb3IgZGlzYWJsZWQgZGVwZW5kaW5nIApvbiB0aGUKIMKg
-wqDCoMKgwqDCoMKgwqAgKiBzdGF0ZSBvZiBTUl9QSUUgaW4gbS9zc3RhdHVzLgogwqDCoMKgwqDC
-oMKgwqDCoCAqLwogwqDCoMKgwqDCoMKgwqAgYW5kaSB0MCwgczEsIFNSX1BJRQoKLi4uCgogwqDC
-oMKgwqDCoMKgwqAgLyogSGFuZGxlIHN5c2NhbGxzICovCiDCoMKgwqDCoMKgwqDCoCBsaSB0MCwg
-RVhDX1NZU0NBTEwKIMKgwqDCoMKgwqDCoMKgIGJlcSBzNCwgdDAsIGhhbmRsZV9zeXNjYWxsCgou
-Li4KCkkgYWxzbyBzb2x2ZWQgaXQgaW4gbXkgbG9ja2RlcCBwYXRjaGVzLCBwbGVhc2UgaGF2ZSBh
-IGxvb2s6Cmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LXJpc2N2LzE1OTIzMjMwMjEtOTg1
-NDEtNC1naXQtc2VuZC1lbWFpbC1ndW9yZW5Aa2VybmVsLm9yZy9ULyN1CgoKQmVzdCBSZWdhcmRz
-CgogwqBHdW8gUmVuCgo+ICsKPiArc2tpcF9jb250ZXh0X3RyYWNraW5nOgo+ICsjZW5kaWYKPiAg
-IAlsYSByYSwgcmV0X2Zyb21fZXhjZXB0aW9uCj4gICAJLyoKPiAgIAkgKiBNU0Igb2YgY2F1c2Ug
-ZGlmZmVyZW50aWF0ZXMgYmV0d2Vlbgo+IEBAIC0xMzcsNiArMTQ1LDE3IEBAIF9zYXZlX2NvbnRl
-eHQ6Cj4gICAJdGFpbCBkb190cmFwX3Vua25vd24KPiAgIAo+ICAgaGFuZGxlX3N5c2NhbGw6Cj4g
-KyNpZmRlZiBDT05GSUdfQ09OVEVYVF9UUkFDS0lORwo+ICsJLyogUmVjb3ZlciBhMCAtIGE3IGZv
-ciBzeXN0ZW0gY2FsbHMgKi8KPiArCVJFR19MIHgxMCwgUFRfQTAoc3ApCj4gKwlSRUdfTCB4MTEs
-IFBUX0ExKHNwKQo+ICsJUkVHX0wgeDEyLCBQVF9BMihzcCkKPiArCVJFR19MIHgxMywgUFRfQTMo
-c3ApCj4gKwlSRUdfTCB4MTQsIFBUX0E0KHNwKQo+ICsJUkVHX0wgeDE1LCBQVF9BNShzcCkKPiAr
-CVJFR19MIHgxNiwgUFRfQTYoc3ApCj4gKwlSRUdfTCB4MTcsIFBUX0E3KHNwKQo+ICsjZW5kaWYK
-PiAgIAkgLyogc2F2ZSB0aGUgaW5pdGlhbCBBMCB2YWx1ZSAobmVlZGVkIGluIHNpZ25hbCBoYW5k
-bGVycykgKi8KPiAgIAlSRUdfUyBhMCwgUFRfT1JJR19BMChzcCkKPiAgIAkvKgo+IEBAIC0yMDUs
-NiArMjI0LDEwIEBAIHJlc3VtZV91c2Vyc3BhY2U6Cj4gICAJYW5kaSBzMSwgczAsIF9USUZfV09S
-S19NQVNLCj4gICAJYm5leiBzMSwgd29ya19wZW5kaW5nCj4gICAKPiArI2lmZGVmIENPTkZJR19D
-T05URVhUX1RSQUNLSU5HCj4gKwljYWxsIGNvbnRleHRfdHJhY2tpbmdfdXNlcl9lbnRlcgo+ICsj
-ZW5kaWYKPiArCj4gICAJLyogU2F2ZSB1bndvdW5kIGtlcm5lbCBzdGFjayBwb2ludGVyIGluIHRo
-cmVhZF9pbmZvICovCj4gICAJYWRkaSBzMCwgc3AsIFBUX1NJWkVfT05fU1RBQ0sKPiAgIAlSRUdf
-UyBzMCwgVEFTS19USV9LRVJORUxfU1AodHAp
+On Fri, Apr 17, 2020 at 05:01:51PM +0200, David Hildenbrand wrote:
+> Commit 50be63450728 ("s390/mm: Convert bootmem to memblock") mentions
+> 	"The original bootmem allocator is getting replaced by memblock. To
+> 	cover the needs of the s390 kdump implementation the physical
+> 	memory list is used."
+> 
+> zcore was converted to use resources instead of memblocks.
+> memblock_discard() will *not* mess with "physmem", only with "memory" and
+> "reserved" memblocks. So, that data will stay after early boot, to be
+> used in arch/s390/kernel/crash_dump.c to create the ELF header from
+> inside the 2nd (a.k.a. dumping) kernel.
+> 
+> We no longer need ARCH_KEEP_MEMBLOCK.
+> 
+> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: Philipp Rudo <prudo@linux.ibm.com>
+> Cc: Michael Holzheu <holzheu@linux.vnet.ibm.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  arch/s390/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
+
+Applied, thanks!
