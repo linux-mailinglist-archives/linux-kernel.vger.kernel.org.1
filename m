@@ -2,198 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4645220B2FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 15:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A4820B33F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 16:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728847AbgFZN6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 09:58:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725864AbgFZN6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 09:58:08 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FB31207E8;
-        Fri, 26 Jun 2020 13:58:03 +0000 (UTC)
-Date:   Fri, 26 Jun 2020 09:58:01 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Yordan Karadzhov <y.karadz@gmail.com>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Jason Behmer <jbehmer@google.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Clark Williams <williams@redhat.com>,
-        bristot <bristot@redhat.com>, Daniel Wagner <wagi@monom.org>,
-        Darren Hart <dvhart@vmware.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Suresh E. Warrier" <warrier@linux.vnet.ibm.com>
-Subject: Re: [RFC][PATCH] ring-buffer: Have nested events still record
- running time stamp
-Message-ID: <20200626095801.14cfa8a3@oasis.local.home>
-In-Reply-To: <20200625233552.2c8a0d1e@oasis.local.home>
-References: <20200625094454.732790f7@oasis.local.home>
-        <1548518134.13177.1593107707149.JavaMail.zimbra@efficios.com>
-        <20200625143525.2f3a2902@oasis.local.home>
-        <79426976.13417.1593113702719.JavaMail.zimbra@efficios.com>
-        <20200625223611.1dbb3b35@oasis.local.home>
-        <20200625233552.2c8a0d1e@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728970AbgFZOIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 10:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728091AbgFZOIo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 10:08:44 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F62C03E979;
+        Fri, 26 Jun 2020 07:08:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1qE/CSYkKSIWa0HVHRGcdwYVNEuJa/ioLXid/J3lIeA=; b=WeijIFhX9wsKr5Z62w5VWa8dgx
+        T5wYl8+U2un526zVn0flr6qRFw1v4aaXnSiq8IsEa6DaqjdAbcc3tHIWYGkkjxq/UbwkqxqW5XDuh
+        /lt9srZLTtrq8WPPxtrizNlcXYRACYSZx/fqlrEBnHqhlhS6PWzXZXzeIiiB8ueBl02tSRXARJWhd
+        6gpt+Oyx/u4ZIB/m8B2Zvy82PsGJfFMdiR9YP2zqF6xvgxtRCSDcRhxaTOYL8gcyQnQKGxihCgNcv
+        j1oESnGKpy0GaXpi4phx0/3SqhNZyRYZ3CtqjzdGkNH6V+ZHozT5gIvA/8PpvVqd0Wr0J/883vpNh
+        LnbJYWkg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1joolf-0007WT-GY; Fri, 26 Jun 2020 13:51:47 +0000
+Date:   Fri, 26 Jun 2020 14:51:47 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 8/9] fs: don't allow kernel reads and writes without iter
+ ops
+Message-ID: <20200626135147.GB25039@casper.infradead.org>
+References: <20200626075836.1998185-1-hch@lst.de>
+ <20200626075836.1998185-9-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200626075836.1998185-9-hch@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Jun 2020 23:35:52 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Fri, Jun 26, 2020 at 09:58:35AM +0200, Christoph Hellwig wrote:
+> +static void warn_unsupported(struct file *file, const char *op)
+> +{
+> +	char pathname[128], *path;
+> +
+> +	path = file_path(file, pathname, sizeof(pathname));
+> +	if (IS_ERR(path))
+> +		path = "(unknown)";
+> +	pr_warn_ratelimited(
+> +		"kernel %s not supported for file %s (pid: %d comm: %.20s)\n",
+> +		op, path, current->pid, current->comm);
+> +}
+> +
 
-> I have to think about this more, as I think there's a flaw in this
-> cmpxchg algorithm.
+how about just:
 
-Bah, that was all wrong. I need to incorporate the seq counter into the
-time stamp. Luckily I only use 59 bits for a full time stamp (gives me
-18 years of nanoseconds), which gives me 5 bits to pay with, and all I
-need is 4 (2 for top and 2 for bottom). Now I can make the timestamp 60
-bits with 30 bits from the top and 30 from the bottom, and using two
-bits in each of those as a sequence counter.
+	pr_warn_ratelimited(
+		"kernel %s not supported for file %pD4 (pid: %d comm: %.20s)\n",
+			op, file, current->pid, current->comm);
 
-If after reading top and bottom, if the seq bits match, then the two
-match and can be put together as a valid number. Now I have this:
-
-
-struct rb_time_struct {
-	local_t		cnt;
-	local_t		top;
-	local_t		bottom;
-};
-
-typedef struct rb_time_struct rb_time_t;
-	
-#define RB_TIME_SHIFT	30
-#define RB_TIME_VAL_MASK ((1 << RB_TIME_SHIFT) - 1)
-
-static int rb_time_cnt(unsigned long val)
-{
-	return (val >> RB_TIME_SHIFT) & 3;
-}
-
-static u64 rb_time_val(unsigned long top, unsigned long bottom)
-{
-	u64 val;
-
-	val = top & RB_TIME_VAL_MASK;
-	val <<= RB_TIME_SHIFT;
-	val |= bottom & RB_TIME_VAL_MASK;
-
-	return val;
-}
-
-static inline bool __rb_time_read(rb_time_t *t, u64 *ret, unsigned long *cnt)
-{
-	unsigned long top, bottom;
-
-	top = local_read(&t->top);
-	bottom = local_read(&t->bottom);
-
-	*cnt = rb_time_cnt(top);
-
-	if (*cnt != rb_time_cnt(bottom))
-		return false;
-
-	*ret = rb_time_val(top, bottom);
-	return true;
-}
-
-static bool rb_time_read(rb_time_t *t, u64 *ret)
-{
-	unsigned long cnt;
-
-	return __rb_time_read(t, ret, &cnt);
-}
-
-static inline unsigned long rb_time_val_cnt(unsigned long val, unsigned long cnt)
-{
-	return (val & RB_TIME_VAL_MASK) | ((cnt & 3) << RB_TIME_SHIFT);
-}
-
-static inline void rb_time_split(u64 val, unsigned long *top, unsigned long *bottom)
-{
-	*top = (unsigned long)((val >> RB_TIME_SHIFT) & RB_TIME_VAL_MASK);
-	*bottom = (unsigned long)(val & RB_TIME_VAL_MASK);
-}
-
-static void rb_time_val_set(local_t *t, unsigned long val, unsigned long cnt)
-{
-	val = rb_time_val_cnt(val, cnt);
-	local_set(t, val);
-}
-
-static void rb_time_set(rb_time_t *t, u64 val)
-{
-	unsigned long cnt, top, bottom;
-
-	rb_time_split(val, &top, &bottom);
-	do {
-		cnt = local_inc_return(&t->cnt);
-		rb_time_val_set(&t->top, top, cnt);
-		rb_time_val_set(&t->bottom, bottom, cnt);
-	} while (cnt != local_read(&t->cnt));
-}
-
-static bool rb_time_read_cmpxchg(local_t *l, unsigned long expect, unsigned long set)
-{
-	unsigned long ret;
-
-	ret = local_cmpxchg(l, expect, set);
-	return ret == expect;
-}
-
-static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
-{
-	unsigned long cnt, top, bottom;
-	unsigned long cnt2, top2, bottom2;
-	u64 val;
-
-	 if (!__rb_time_read(t, &val, &cnt))
-		 return false;
-
-	 if (val != expect)
-		 return false;
-
-	 cnt2 = local_read(&t->cnt);
-	 if (cnt2 != cnt)
-		 return false;
-	 cnt2++;
-
-	 rb_time_split(val, &top, &bottom);
-	 top = rb_time_val_cnt(top, cnt);
-	 bottom = rb_time_val_cnt(bottom, cnt);
-
-	 rb_time_split(set, &top2, &bottom2);
-	 top = rb_time_val_cnt(top2, cnt2);
-	 bottom = rb_time_val_cnt(bottom2, cnt2);
-	 
-	if (!rb_time_read_cmpxchg(&t->cnt, cnt, cnt2))
-		return false;
-	if (!rb_time_read_cmpxchg(&t->top, top, top2))
-		return false;
-	if (!rb_time_read_cmpxchg(&t->bottom, bottom, bottom2))
-		return false;
-	return true;
-}
-
-Maybe I might implement this for BITS_FOR_LONG == 32.
-
--- Steve
+also, is the pid really that interesting?
