@@ -2,141 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BC220B3FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 16:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2EE20B40B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 16:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbgFZOtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 10:49:42 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:32952 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbgFZOtl (ORCPT
+        id S1727899AbgFZOzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 10:55:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgFZOzB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 10:49:41 -0400
-Received: by mail-ej1-f67.google.com with SMTP id n24so9679325ejd.0;
-        Fri, 26 Jun 2020 07:49:40 -0700 (PDT)
+        Fri, 26 Jun 2020 10:55:01 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5011FC03E979
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 07:55:01 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id h15so9782109wrq.8
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 07:55:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=HR4bEOxs7v9kCssDbScsWg1pJoSGN7JebNfZuKn5wuo=;
+        b=Mt9ekr0ofSNl/CmAF2rA2LbmjOQBfb9ws/Pnfxn+BB5oVzuL8VW1Yu181JEl6/RtZh
+         PYK0XUBI+FrHNLDlLfUfPZV3AbnIxwMi0m+JdqjIsT3JFSvga2Tc7PDdIjPklKxxuzuI
+         6VY1XWXMIiVLlID7Qdg9drCZcEf+z54TxT7h+st9tTeQ7lzB6z1nf+UWXWutfNx+aWrH
+         p6JOpyivN5SvkBnWPSEGq29iXARyLim8Yww7eP+uE7Hirrowhsr65kfasi1I+ztawaaG
+         zHovhC88tQD+EGr0RooWpilSFr4ZmqEmtSXUQOQk715ytwkH/LDKbBnetby8lnhRzrS3
+         DTAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sXNXgq00NlKTHNcOwWfxYSdR88eik0/rKaR9cxhKl6A=;
-        b=lukWAH9vgHdZgEGAHpY0MsbYav2IAXU8aEYRIBG+7saQjzhuwm3h/BWn25lsMWsnfh
-         enrAqDMlA2MxamAY3R1cSXOKoSaeizvHvcI85a4S9C+K4mvRxDPxUafwj/8cILKm2qP7
-         SoVLeKgBdinVA5EfLKLWANfLNRw1C52LNYva6O83P8w25485jlF9o9MWDFZUZexWVyn5
-         X4HwghAsso+o4JCmUW2Hydkj40N0pvmdEyxKrfuWShrubtCDFFm4sMrHundWQdo5zOWO
-         FrvFAeB7CuqrgrXlLYS0AHTgCVV7/6f9Hm24B1i0elWMh3aXerh+tP0RjhLfD+aLJZ0Y
-         lFiQ==
-X-Gm-Message-State: AOAM530DtBTIKgA2J32qM3GBND4Yt4KJy1BEz81hiqXFMp6w8E7g4j+P
-        RpjUixWIQRFDjB2jIO5aNpFHDG8I
-X-Google-Smtp-Source: ABdhPJwJZYqF5Lx4BzajVu7rgPO/aoYF7E4BurVBbIjzIUDyjYjrP5rSp6ikLtIBKeMC4o53xdhUaA==
-X-Received: by 2002:a17:906:8294:: with SMTP id h20mr2755432ejx.17.1593182979774;
-        Fri, 26 Jun 2020 07:49:39 -0700 (PDT)
-Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
-        by smtp.gmail.com with ESMTPSA id gr15sm6130129ejb.84.2020.06.26.07.49.38
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=HR4bEOxs7v9kCssDbScsWg1pJoSGN7JebNfZuKn5wuo=;
+        b=oBEn/mEE79OlVRZsnoYjZyoT7vp+naohmzSjUqMshd4GKPfLCvU5D2sbVip2yOjagM
+         mDcAypBMBPQZp3PQ69woDDt2EeWyM5vCow0iQFJGiW+LUe1Rk3RENTDT5ZinjDhvq1qT
+         M9avC0hQ+N/OixRGSx8Ac02w5qa4fsZBzHXwKscV9NzlxneORqr9fIcqFvRzarAMwQTE
+         wXlt/+Op1IeoRYtCmsw44UqCwhfFAu+BLnKCqxxzNdxuPZXcXQPS55f9BNYkQ4Mu2KIv
+         lm1f1PvyaEE5b4ovRnRwABkHl7ML45q/YetgYVLzWhytR7BUnm5ZgFGsHmGvvqC9+unR
+         9onA==
+X-Gm-Message-State: AOAM531VbXsjX/LrY02QtQ6frYduIYjEIXDiZSrgd9JIMYIbYFa2ssw6
+        2kwj+2Hp0mQCNcK6mJMVZETQSA==
+X-Google-Smtp-Source: ABdhPJz18vi8NywzCOBzXPEd4bC5AhA1zgXAV5rZwuNNwHhP4b2oVhim5+ynEc3xCY2m2H0V4NdKAg==
+X-Received: by 2002:adf:f08b:: with SMTP id n11mr4127634wro.312.1593183300019;
+        Fri, 26 Jun 2020 07:55:00 -0700 (PDT)
+Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id u186sm18273745wmu.10.2020.06.26.07.54.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 07:49:38 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 16:49:37 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH] docs/core-api: memory-allocation: describe reclaim
- behaviour
-Message-ID: <20200626144937.GB1320@dhcp22.suse.cz>
-References: <20200626142950.135184-1-rppt@kernel.org>
+        Fri, 26 Jun 2020 07:54:59 -0700 (PDT)
+Date:   Fri, 26 Jun 2020 15:54:57 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>
+Subject: [GIT PULL] kgdb changes for v5.8-rc3
+Message-ID: <20200626145457.5weza5ow3hrm7kum@holly.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200626142950.135184-1-rppt@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 26-06-20 17:29:50, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Changelog of commit dcda9b04713c ("mm, tree wide: replace __GFP_REPEAT by
-> __GFP_RETRY_MAYFAIL with more useful semantic") has very nice description
-> of GFP flags that affect reclaim behaviour of the page allocator.
-> 
-> It would be pity to keep this description buried in the log so let's expose
-> it in the Documentation/ as well.
-> 
-> Cc: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Hi Linus
 
-Thanks for making that into the documentation.
-Acked-by: Michal Hocko <mhocko@suse.com>
+The following changes since commit 48778464bb7d346b47157d21ffde2af6b2d39110:
 
-> ---
-> Hi,
-> 
-> I've been looking for something completely unrealated and found this
-> really nice piece of documentation.
-> 
-> Thanks Michal! ;-)
-> 
->  Documentation/core-api/memory-allocation.rst | 44 ++++++++++++++++++++
->  1 file changed, 44 insertions(+)
-> 
-> diff --git a/Documentation/core-api/memory-allocation.rst b/Documentation/core-api/memory-allocation.rst
-> index 4aa82ddd01b8..4446a1ac36cc 100644
-> --- a/Documentation/core-api/memory-allocation.rst
-> +++ b/Documentation/core-api/memory-allocation.rst
-> @@ -84,6 +84,50 @@ driver for a device with such restrictions, avoid using these flags.
->  And even with hardware with restrictions it is preferable to use
->  `dma_alloc*` APIs.
->  
-> +GFP flags and reclaim behavior
-> +------------------------------
-> +Memory allocations may trigger direct or background reclaim and it is
-> +useful to understand how hard the page allocator will try to satisfy that
-> +or another request.
-> +
-> +  * ``GFP_KERNEL & ~__GFP_RECLAIM`` - optimistic allocation without _any_
-> +    attempt to free memory at all. The most light weight mode which even
-> +    doesn't kick the background reclaim. Should be used carefully because it
-> +    might deplete the memory and the next user might hit the more aggressive
-> +    reclaim.
-> +
-> +  * ``GFP_KERNEL & ~__GFP_DIRECT_RECLAIM`` (or ``GFP_NOWAIT``)- optimistic
-> +    allocation without any attempt to free memory from the current
-> +    context but can wake kswapd to reclaim memory if the zone is below
-> +    the low watermark. Can be used from either atomic contexts or when
-> +    the request is a performance optimization and there is another
-> +    fallback for a slow path.
-> +
-> +  * ``(GFP_KERNEL|__GFP_HIGH) & ~__GFP_DIRECT_RECLAIM`` (aka ``GFP_ATOMIC``) -
-> +    non sleeping allocation with an expensive fallback so it can access
-> +    some portion of memory reserves. Usually used from interrupt/bottom-half
-> +    context with an expensive slow path fallback.
-> +
-> +  * ``GFP_KERNEL`` - both background and direct reclaim are allowed and the
-> +    **default** page allocator behavior is used. That means that not costly
-> +    allocation requests are basically no-fail but there is no guarantee of
-> +    that behavior so failures have to be checked properly by callers
-> +    (e.g. OOM killer victim is allowed to fail currently).
-> +
-> +  * ``GFP_KERNEL | __GFP_NORETRY`` - overrides the default allocator behavior
-> +    and all allocation requests fail early rather than cause disruptive
-> +    reclaim (one round of reclaim in this implementation). The OOM killer
-> +    is not invoked.
-> +
-> +  * ``GFP_KERNEL | __GFP_RETRY_MAYFAIL`` - overrides the default allocator
-> +    behavior and all allocation requests try really hard. The request
-> +    will fail if the reclaim cannot make any progress. The OOM killer
-> +    won't be triggered.
-> +
-> +  * ``GFP_KERNEL | __GFP_NOFAIL`` - overrides the default allocator behavior
-> +    and all allocation requests will loop endlessly until they succeed.
-> +    This might be really dangerous especially for larger orders.
-> +
->  Selecting memory allocator
->  ==========================
->  
-> -- 
-> 2.25.4
+  Linux 5.8-rc2 (2020-06-21 15:45:29 -0700)
 
--- 
-Michal Hocko
-SUSE Labs
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/danielt/linux.git/ tags/kgdb-5.8-rc3
+
+for you to fetch changes up to 440ab9e10e2e6e5fd677473ee6f9e3af0f6904d6:
+
+  kgdb: Avoid suspicious RCU usage warning (2020-06-26 15:41:40 +0100)
+
+----------------------------------------------------------------
+kgdb patches for 5.8-rc3
+
+The main change here is a fix for a number of unsafe interactions
+between kdb and the console system. The fixes are specific to kdb (pure
+kgdb debugging does not use the console system at all). On systems with
+an NMI then kdb, if it is enabled, must get messages to the user despite
+potentially running from some "difficult" calling contexts. These fixes
+avoid using the console system where we have been provided an
+alternative (safer) way to interact with the user and, if using the
+console system in unavoidable, use oops_in_progress for deadlock
+avoidance. These fixes also ensure kdb honours the console enable flag.
+
+Also included is a fix that wraps kgdb trap handling in an RCU read lock
+to avoids triggering diagnostic warnings. This is a wide lock scope but
+this is OK because kgdb is a stop-the-world debugger. When we stop the
+world we put all the CPUs into holding pens and this inhibits RCU update
+anyway.
+
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+
+----------------------------------------------------------------
+Douglas Anderson (1):
+      kgdb: Avoid suspicious RCU usage warning
+
+Sumit Garg (4):
+      kdb: Re-factor kdb_printf() message write code
+      kdb: Check status of console prior to invoking handlers
+      kdb: Make kdb_printf() console handling more robust
+      kdb: Switch to use safer dbg_io_ops over console APIs
+
+ drivers/tty/serial/kgdb_nmi.c |  2 +-
+ drivers/tty/serial/kgdboc.c   | 32 +++++++++----------
+ drivers/usb/early/ehci-dbgp.c |  3 +-
+ include/linux/kgdb.h          |  5 ++-
+ kernel/debug/debug_core.c     |  4 +++
+ kernel/debug/kdb/kdb_io.c     | 72 ++++++++++++++++++++++++++-----------------
+ 6 files changed, 68 insertions(+), 50 deletions(-)
