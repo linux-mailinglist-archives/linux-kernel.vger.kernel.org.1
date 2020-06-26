@@ -2,233 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA9D20BB84
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA73D20BB91
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgFZV0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 17:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51424 "EHLO
+        id S1726146AbgFZV30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 17:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726082AbgFZV0g (ORCPT
+        with ESMTP id S1726022AbgFZV3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 17:26:36 -0400
-Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF36C03E97B
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:26:36 -0700 (PDT)
-Received: from zyt.lan (unknown [IPv6:2a02:169:3df5::564])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id EE48B5C2468;
-        Fri, 26 Jun 2020 23:26:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1593206794;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aEOAk1ETAJhOXzZ5wDBRQL7ILtsSbq9e4n7G/DYV2tY=;
-        b=F439n836WN6KfvvttAOmcKDj6xCl16KWRxJYkzpiilkRuS7gHA33EusA3X7kXQXHqMMX/R
-        gOfadD7Evgdib7av3Fh3Ag1gjieELPOWYEEeHyzzk2OhkHKu+giVEph99F8+hlqn35d0nz
-        smDDOMzP/8D3PtQ5AvIVVuTK2sHT07c=
-From:   Stefan Agner <stefan@agner.ch>
-To:     linux@armlinux.org.uk
-Cc:     arnd@arndb.de, ard.biesheuvel@linaro.org, robin.murphy@arm.com,
-        yamada.masahiro@socionext.com, ndesaulniers@google.com,
-        manojgupta@google.com, jiancai@google.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH v3 3/3] ARM: use VFP assembler mnemonics if available
-Date:   Fri, 26 Jun 2020 23:26:13 +0200
-Message-Id: <31a2320b7a5a27345b01bea2ecf4134f688c3c16.1593205699.git.stefan@agner.ch>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1593205699.git.stefan@agner.ch>
-References: <cover.1593205699.git.stefan@agner.ch>
+        Fri, 26 Jun 2020 17:29:25 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157C7C03E97B
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:29:25 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id b7so4792304pju.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:29:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/Ga8k3mofod9gwPX4Z/kRgYwjmzbSSQT5mPWQ+iRr00=;
+        b=ZHuV3n4N2UyL/uEYmg3j+3S3u+0QqpFCQhDYVKkZw9LuOjYP1YSNslr8dnNrsBn9Dh
+         We7UamS+FEowQ2lOAMqm20z8L9ypztLNs429NEWOoxO6J0/qlK/WaTSFp6sTA+5zXJXt
+         QK39ZARTjmUwV0eEr/JQyzmixIHGUEqhvzyh0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/Ga8k3mofod9gwPX4Z/kRgYwjmzbSSQT5mPWQ+iRr00=;
+        b=j5qwgFpbDA4md4hNRsY3GTdQLpjPhNQNDcVq2Gcb86M0JANWwTUg5X5Ak3rpI5xDwj
+         uTgDdljJP2a9H0MvH6fZXFF4goy15VInEQU7I94O/8nYGv6XUCTQhlcn2h26A8YJCyGn
+         a5/w6sFxCH2XiNhK9suDIEwwO6NDTzhS8GnwDe9wo0mWqp9Qw0qYYu2NYwHdav972U1o
+         r4IUdgmr1cjDZvJ2ho4oBH3jeK5hNo5kPNzUCM3tCI0Hsmb+vgfY6j7d4bMbbSp+9liU
+         rI5gdSY6drSfFXYrWA0tnyaYgj5v87S1oPDm4w8YY+iTRHXAHp1Ipjlzpm9c61hJaE91
+         UcpA==
+X-Gm-Message-State: AOAM530uO+2Le1Z6GbfPDCjFgCd9EOMuXHnfzOTjMH3ItY7FSfinL2Cx
+        vkMDWjTr2LpPxGr6FV1O0Eji4A==
+X-Google-Smtp-Source: ABdhPJwxwunBg3ErYOqng8+maceCSdLikNLQ8Egfp/C6bLTULFH4Wp7/OynACw0oVHkVmKrSUGo10g==
+X-Received: by 2002:a17:90a:4a6:: with SMTP id g35mr5538400pjg.155.1593206964538;
+        Fri, 26 Jun 2020 14:29:24 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j19sm5623223pjy.40.2020.06.26.14.29.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jun 2020 14:29:23 -0700 (PDT)
+Date:   Fri, 26 Jun 2020 14:29:22 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
+        arnd@arndb.de, skhan@linuxfoundation.org, alan.maguire@oracle.com,
+        yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org,
+        rppt@linux.ibm.com, frowand.list@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, monstr@monstr.eu,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        chris@zankel.net, jcmvbkbc@gmail.com, gregkh@linuxfoundation.org,
+        sboyd@kernel.org, logang@deltatee.com, mcgrof@kernel.org,
+        linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org
+Subject: Re: [PATCH v5 07/12] kunit: test: create a single centralized
+ executor for all tests
+Message-ID: <202006261423.0BC9D830@keescook>
+References: <20200626210917.358969-1-brendanhiggins@google.com>
+ <20200626210917.358969-8-brendanhiggins@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200626210917.358969-8-brendanhiggins@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The integrated assembler of Clang 10 and earlier do not allow to access
-the VFP registers through the coprocessor load/store instructions:
-arch/arm/vfp/vfpmodule.c:342:2: error: invalid operand for instruction
-        fmxr(FPEXC, fpexc & ~(FPEXC_EX|FPEXC_DEX|FPEXC_FP2V|FPEXC_VV|FPEXC_TRAP_MASK));
-        ^
-arch/arm/vfp/vfpinstr.h:79:6: note: expanded from macro 'fmxr'
-        asm("mcr p10, 7, %0, " vfpreg(_vfp_) ", cr0, 0 @ fmxr   " #_vfp_ ", %0" \
-            ^
-<inline asm>:1:6: note: instantiated into assembly here
-        mcr p10, 7, r0, cr8, cr0, 0 @ fmxr      FPEXC, r0
-            ^
+On Fri, Jun 26, 2020 at 02:09:12PM -0700, Brendan Higgins wrote:
+> From: Alan Maguire <alan.maguire@oracle.com>
+> 
+> Add a centralized executor to dispatch tests rather than relying on
+> late_initcall to schedule each test suite separately. Centralized
+> execution is for built-in tests only; modules will execute tests when
+> loaded.
+> 
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> Co-developed-by: Iurii Zaikin <yzaikin@google.com>
+> Signed-off-by: Iurii Zaikin <yzaikin@google.com>
+> Co-developed-by: Brendan Higgins <brendanhiggins@google.com>
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+> ---
+>  include/kunit/test.h | 67 +++++++++++++++++++++++++++++---------------
+>  lib/kunit/Makefile   |  3 +-
+>  lib/kunit/executor.c | 28 ++++++++++++++++++
+>  lib/kunit/test.c     |  2 +-
+>  4 files changed, 76 insertions(+), 24 deletions(-)
+>  create mode 100644 lib/kunit/executor.c
+> 
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index 47e61e1d53370..f3e86c3953a2b 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -224,7 +224,7 @@ size_t kunit_suite_num_test_cases(struct kunit_suite *suite);
+>  unsigned int kunit_test_case_num(struct kunit_suite *suite,
+>  				 struct kunit_case *test_case);
+>  
+> -int __kunit_test_suites_init(struct kunit_suite **suites);
+> +int __kunit_test_suites_init(struct kunit_suite * const * const suites);
+>  
+>  void __kunit_test_suites_exit(struct kunit_suite **suites);
+>  
+> @@ -237,34 +237,57 @@ void __kunit_test_suites_exit(struct kunit_suite **suites);
+>   * Registers @suites_list with the test framework. See &struct kunit_suite for
+>   * more information.
+>   *
+> - * When builtin, KUnit tests are all run as late_initcalls; this means
+> - * that they cannot test anything where tests must run at a different init
+> - * phase. One significant restriction resulting from this is that KUnit
+> - * cannot reliably test anything that is initialize in the late_init phase;
+> - * another is that KUnit is useless to test things that need to be run in
+> - * an earlier init phase.
+> - *
+> - * An alternative is to build the tests as a module.  Because modules
+> - * do not support multiple late_initcall()s, we need to initialize an
+> - * array of suites for a module.
+> - *
+> - * TODO(brendanhiggins@google.com): Don't run all KUnit tests as
+> - * late_initcalls.  I have some future work planned to dispatch all KUnit
+> - * tests from the same place, and at the very least to do so after
+> - * everything else is definitely initialized.
+> + * If a test suite is built-in, module_init() gets translated into
+> + * an initcall which we don't want as the idea is that for builtins
+> + * the executor will manage execution.  So ensure we do not define
+> + * module_{init|exit} functions for the builtin case when registering
+> + * suites via kunit_test_suites() below.
+>   */
+> -#define kunit_test_suites(suites_list...)				\
+> -	static struct kunit_suite *suites[] = {suites_list, NULL};	\
+> -	static int kunit_test_suites_init(void)				\
+> +#ifdef MODULE
+> +#define kunit_test_suites_for_module(__suites)				\
+> +	static int __init kunit_test_suites_init(void)			\
+>  	{								\
+> -		return __kunit_test_suites_init(suites);		\
+> +		return __kunit_test_suites_init(__suites);		\
+>  	}								\
+> -	late_initcall(kunit_test_suites_init);				\
+> +	module_init(kunit_test_suites_init);				\
+> +									\
+>  	static void __exit kunit_test_suites_exit(void)			\
+>  	{								\
+> -		return __kunit_test_suites_exit(suites);		\
+> +		return __kunit_test_suites_exit(__suites);		\
+>  	}								\
+>  	module_exit(kunit_test_suites_exit)
+> +#else
+> +#define kunit_test_suites_for_module(__suites)
+> +#endif /* MODULE */
+> +
+> +#define __kunit_test_suites(unique_array, unique_suites, ...)		       \
+> +	static struct kunit_suite *unique_array[] = { __VA_ARGS__, NULL };     \
+> +	kunit_test_suites_for_module(unique_array);			       \
+> +	static struct kunit_suite **unique_suites			       \
+> +	__used __section(.kunit_test_suites) = unique_array
+> +
+> +/**
+> + * kunit_test_suites() - used to register one or more &struct kunit_suite
+> + *			 with KUnit.
+> + *
+> + * @suites: a statically allocated list of &struct kunit_suite.
+> + *
+> + * Registers @suites with the test framework. See &struct kunit_suite for
+> + * more information.
+> + *
+> + * When builtin,  KUnit tests are all run via executor; this is done
+> + * by placing the array of struct kunit_suite * in the .kunit_test_suites
+> + * ELF section.
+> + *
+> + * An alternative is to build the tests as a module.  Because modules do not
+> + * support multiple initcall()s, we need to initialize an array of suites for a
+> + * module.
+> + *
+> + */
+> +#define kunit_test_suites(...)						\
+> +	__kunit_test_suites(__UNIQUE_ID(array),				\
+> +			    __UNIQUE_ID(suites),			\
+> +			    __VA_ARGS__)
+>  
+>  #define kunit_test_suite(suite)	kunit_test_suites(&suite)
+>  
+> diff --git a/lib/kunit/Makefile b/lib/kunit/Makefile
+> index 724b94311ca36..c49f4ffb6273a 100644
+> --- a/lib/kunit/Makefile
+> +++ b/lib/kunit/Makefile
+> @@ -3,7 +3,8 @@ obj-$(CONFIG_KUNIT) +=			kunit.o
+>  kunit-objs +=				test.o \
+>  					string-stream.o \
+>  					assert.o \
+> -					try-catch.o
+> +					try-catch.o \
+> +					executor.o
+>  
+>  ifeq ($(CONFIG_KUNIT_DEBUGFS),y)
+>  kunit-objs +=				debugfs.o
+> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> new file mode 100644
+> index 0000000000000..7015e7328dce7
+> --- /dev/null
+> +++ b/lib/kunit/executor.c
+> @@ -0,0 +1,28 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <kunit/test.h>
+> +
+> +/*
+> + * These symbols point to the .kunit_test_suites section and are defined in
+> + * include/asm-generic/vmlinux.lds.h, and consequently must be extern.
+> + */
+> +extern struct kunit_suite * const * const __kunit_suites_start[];
+> +extern struct kunit_suite * const * const __kunit_suites_end[];
 
-This has been addressed with Clang 11 [0]. However, to support earlier
-versions of Clang and for better readability use of VFP assembler
-mnemonics still is preferred.
+I would expect these to be in include/asm-generic/sections.h but I guess
+it's not required.
 
-Ideally we would replace this code with the unified assembler language
-mnemonics vmrs/vmsr on call sites along with .fpu assembler directives.
-The GNU assembler supports the .fpu directive at least since 2.17 (when
-documentation has been added). Since Linux requires binutils 2.21 it is
-safe to use .fpu directive. However, binutils does not allow to use
-FPINST or FPINST2 as an argument to vmrs/vmsr instructions up to
-binutils 2.24 (see binutils commit 16d02dc907c5):
-arch/arm/vfp/vfphw.S: Assembler messages:
-arch/arm/vfp/vfphw.S:162: Error: operand 0 must be FPSID or FPSCR pr FPEXC -- `vmsr FPINST,r6'
-arch/arm/vfp/vfphw.S:165: Error: operand 0 must be FPSID or FPSCR pr FPEXC -- `vmsr FPINST2,r8'
-arch/arm/vfp/vfphw.S:235: Error: operand 1 must be a VFP extension System Register -- `vmrs r3,FPINST'
-arch/arm/vfp/vfphw.S:238: Error: operand 1 must be a VFP extension System Register -- `vmrs r12,FPINST2'
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Use as-instr in Kconfig to check if FPINST/FPINST2 can be used. If they
-can be used make use of .fpu directives and UAL VFP mnemonics for
-register access.
-
-This allows to build vfpmodule.c with Clang and its integrated assembler.
-
-[0] https://reviews.llvm.org/D59733
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/905
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
-Changes in v3:
-- Reworded commit message, adding hint that Clang 11 won't have this
-  restriction any longer
-
-Changes in v2:
-- Check assembler capabilities in Kconfig instead of Makefile
-
- arch/arm/Kconfig                 |  2 ++
- arch/arm/Kconfig.assembler       |  6 ++++++
- arch/arm/include/asm/vfp.h       |  2 ++
- arch/arm/include/asm/vfpmacros.h | 12 +++++++++++-
- arch/arm/vfp/vfphw.S             |  1 +
- arch/arm/vfp/vfpinstr.h          | 23 +++++++++++++++++++----
- 6 files changed, 41 insertions(+), 5 deletions(-)
- create mode 100644 arch/arm/Kconfig.assembler
-
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 2ac74904a3ce..911f55a11c63 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -2097,3 +2097,5 @@ source "drivers/firmware/Kconfig"
- if CRYPTO
- source "arch/arm/crypto/Kconfig"
- endif
-+
-+source "arch/arm/Kconfig.assembler"
-diff --git a/arch/arm/Kconfig.assembler b/arch/arm/Kconfig.assembler
-new file mode 100644
-index 000000000000..5cb31aae1188
---- /dev/null
-+++ b/arch/arm/Kconfig.assembler
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+config AS_VFP_VMRS_FPINST
-+	def_bool $(as-instr,.fpu vfpv2\nvmrs r0$(comma)FPINST)
-+	help
-+	  Supported by binutils >= 2.24 and LLVM integrated assembler.
-diff --git a/arch/arm/include/asm/vfp.h b/arch/arm/include/asm/vfp.h
-index 7157d2a30a49..19928bfb4f9c 100644
---- a/arch/arm/include/asm/vfp.h
-+++ b/arch/arm/include/asm/vfp.h
-@@ -9,6 +9,7 @@
- #ifndef __ASM_VFP_H
- #define __ASM_VFP_H
- 
-+#ifndef CONFIG_AS_VFP_VMRS_FPINST
- #define FPSID			cr0
- #define FPSCR			cr1
- #define MVFR1			cr6
-@@ -16,6 +17,7 @@
- #define FPEXC			cr8
- #define FPINST			cr9
- #define FPINST2			cr10
-+#endif
- 
- /* FPSID bits */
- #define FPSID_IMPLEMENTER_BIT	(24)
-diff --git a/arch/arm/include/asm/vfpmacros.h b/arch/arm/include/asm/vfpmacros.h
-index 947ee5395e1f..ba0d4cb5377e 100644
---- a/arch/arm/include/asm/vfpmacros.h
-+++ b/arch/arm/include/asm/vfpmacros.h
-@@ -8,7 +8,16 @@
- 
- #include <asm/vfp.h>
- 
--@ Macros to allow building with old toolkits (with no VFP support)
-+#ifdef CONFIG_AS_VFP_VMRS_FPINST
-+	.macro	VFPFMRX, rd, sysreg, cond
-+	vmrs\cond	\rd, \sysreg
-+	.endm
-+
-+	.macro	VFPFMXR, sysreg, rd, cond
-+	vmsr\cond	\sysreg, \rd
-+	.endm
-+#else
-+	@ Macros to allow building with old toolkits (with no VFP support)
- 	.macro	VFPFMRX, rd, sysreg, cond
- 	MRC\cond	p10, 7, \rd, \sysreg, cr0, 0	@ FMRX	\rd, \sysreg
- 	.endm
-@@ -16,6 +25,7 @@
- 	.macro	VFPFMXR, sysreg, rd, cond
- 	MCR\cond	p10, 7, \rd, \sysreg, cr0, 0	@ FMXR	\sysreg, \rd
- 	.endm
-+#endif
- 
- 	@ read all the working registers back into the VFP
- 	.macro	VFPFLDMIA, base, tmp
-diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/vfphw.S
-index 29ed36b99d1d..4fcff9f59947 100644
---- a/arch/arm/vfp/vfphw.S
-+++ b/arch/arm/vfp/vfphw.S
-@@ -78,6 +78,7 @@
- ENTRY(vfp_support_entry)
- 	DBGSTR3	"instr %08x pc %08x state %p", r0, r2, r10
- 
-+	.fpu	vfpv2
- 	ldr	r3, [sp, #S_PSR]	@ Neither lazy restore nor FP exceptions
- 	and	r3, r3, #MODE_MASK	@ are supported in kernel mode
- 	teq	r3, #USR_MODE
-diff --git a/arch/arm/vfp/vfpinstr.h b/arch/arm/vfp/vfpinstr.h
-index 38dc154e39ff..3c7938fd40aa 100644
---- a/arch/arm/vfp/vfpinstr.h
-+++ b/arch/arm/vfp/vfpinstr.h
-@@ -62,10 +62,23 @@
- #define FPSCR_C (1 << 29)
- #define FPSCR_V	(1 << 28)
- 
--/*
-- * Since we aren't building with -mfpu=vfp, we need to code
-- * these instructions using their MRC/MCR equivalents.
-- */
-+#ifdef CONFIG_AS_VFP_VMRS_FPINST
-+
-+#define fmrx(_vfp_) ({			\
-+	u32 __v;			\
-+	asm(".fpu	vfpv2\n"	\
-+	    "vmrs	%0, " #_vfp_	\
-+	    : "=r" (__v) : : "cc");	\
-+	__v;				\
-+ })
-+
-+#define fmxr(_vfp_,_var_)		\
-+	asm(".fpu	vfpv2\n"	\
-+	    "vmsr	" #_vfp_ ", %0"	\
-+	   : : "r" (_var_) : "cc")
-+
-+#else
-+
- #define vfpreg(_vfp_) #_vfp_
- 
- #define fmrx(_vfp_) ({			\
-@@ -79,6 +92,8 @@
- 	asm("mcr p10, 7, %0, " vfpreg(_vfp_) ", cr0, 0 @ fmxr	" #_vfp_ ", %0"	\
- 	   : : "r" (_var_) : "cc")
- 
-+#endif
-+
- u32 vfp_single_cpdo(u32 inst, u32 fpscr);
- u32 vfp_single_cprt(u32 inst, u32 fpscr, struct pt_regs *regs);
- 
 -- 
-2.27.0
-
+Kees Cook
