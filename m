@@ -2,133 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534C020A9E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 02:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FD220A9E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 02:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726457AbgFZAiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 20:38:09 -0400
-Received: from mga11.intel.com ([192.55.52.93]:41253 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725800AbgFZAiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 20:38:08 -0400
-IronPort-SDR: /DPq3q6v1/UWBlEuXpnVA23qiIEgZsByYhddzv21rYzadC8RXxAZd6+REbpjqNG7hd0Ri/o913
- W+20rBmN9CCQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="143363204"
-X-IronPort-AV: E=Sophos;i="5.75,281,1589266800"; 
-   d="scan'208";a="143363204"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2020 17:38:08 -0700
-IronPort-SDR: sAP5VUivnXsTTcI+6gTAZIS2F0vRRKKHU0BVhJDSs+qZCrma/ZaGP0LFz0fRePUEXpMwS1f1qW
- 4giRs2NaQudA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,281,1589266800"; 
-   d="scan'208";a="276205584"
-Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by orsmga003.jf.intel.com with ESMTP; 25 Jun 2020 17:38:07 -0700
-Subject: [PATCH] mm/vmscan: restore zone_reclaim_mode ABI
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        ben.widawsky@intel.com, alex.shi@linux.alibaba.com,
-        dwagner@suse.de, tobin@kernel.org, cl@linux.com,
-        akpm@linux-foundation.org, stable@kernel.org
-From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Thu, 25 Jun 2020 17:34:59 -0700
-Message-Id: <20200626003459.D8E015CA@viggo.jf.intel.com>
+        id S1726403AbgFZAh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 20:37:26 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:33845 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725800AbgFZAhZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 20:37:25 -0400
+Received: by mail-pf1-f196.google.com with SMTP id u185so1837561pfu.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 17:37:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hy4bKbQAyIT6xPIEHhucZ2hBlDFLteKHmkcc1hLnsOU=;
+        b=dsxs28Ohf0nKmHjGSgDdguDfyq8vzWcxfJvkpyXzLpan2AIQNwD2Rl/mCLCmIPWy02
+         MhsdjaIHHV4J8dHwQAzX6ou6aM1dn8rngvUuh4xmGauFKYYcghkr0TLMOs7t4MLR5CSO
+         MTZujF8BkBVapJC+9WlptBx/FOI+8tGSSu1b+EBFQww/WEIhvE+iac9sZ485hpZNMjAT
+         9yHeT3kqeD8UUNdL/3qMieNo5ybkBUjx7HoEB9ULZ5Q8/RdvkH7MGlDITb61SUcKleAA
+         NmLTzLuDVld66EazF6vslStgaJQIleHFN1eFBnN8ZasPBhgcib0YLy8vJuQOOTSqANuA
+         qeXA==
+X-Gm-Message-State: AOAM5314RwOSRUYFZDXI8Ja73/Yg6sbCb52+pKZ8g6t0I24si1FevH1I
+        9ZMapBFpGCiMwSeRpi6aivU=
+X-Google-Smtp-Source: ABdhPJwbW/Wpb/CEH1pkDAJWNkYhXkyIY0z8C/ygJRWod/Z0Wrh/K+QvD0qZY5nvbqD3UI9BFirzKQ==
+X-Received: by 2002:a63:ab02:: with SMTP id p2mr463454pgf.416.1593131844433;
+        Thu, 25 Jun 2020 17:37:24 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id n189sm24458611pfn.108.2020.06.25.17.37.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jun 2020 17:37:23 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 363B640430; Fri, 26 Jun 2020 00:37:22 +0000 (UTC)
+Date:   Fri, 26 Jun 2020 00:37:22 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH] firmware: improve description of firmware_request_nowarn
+Message-ID: <20200626003722.GI4332@42.do-not-panic.com>
+References: <20200625200221.18219-1-wsa+renesas@sang-engineering.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200625200221.18219-1-wsa+renesas@sang-engineering.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 25, 2020 at 10:02:21PM +0200, Wolfram Sang wrote:
+> The doubled 'however' is confusing. Simplify the comment a little and
+> reformat the paragraph.
+> 
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
 
-I went to go add a new RECLAIM_* mode for the zone_reclaim_mode
-sysctl.  Like a good kernel developer, I also went to go update the
-documentation.  I noticed that the bits in the documentation didn't
-match the bits in the #defines.
-
-The VM evidently stopped caring about RECLAIM_ZONE at some point (or
-never cared) and the #define itself was later removed as a cleanup.
-Those things by themselves are fine.
-
-But, the _other_ bit locations also got changed.  That's not OK because
-the bit values are documented to mean one specific thing and users
-surely rely on them meaning that one thing and not changing from
-kernel to kernel.  The end result is that if someone had a script
-that did:
-
-	sysctl vm.zone_reclaim_mode=1
-
-That script went from doing nothing to writing out pages during
-node reclaim after the commit in question.  That's not great.
-
-Put the bits back the way they were and add a comment so something
-like this is a bit harder to do again.  Update the documentation to
-make it clear that the first bit is ignored.
-
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Fixes: commit 648b5cf368e0 ("mm/vmscan: remove unused RECLAIM_OFF/RECLAIM_ZONE")
-Acked-by: Ben Widawsky <ben.widawsky@intel.com>
-Cc: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Daniel Wagner <dwagner@suse.de>
-Cc: "Tobin C. Harding" <tobin@kernel.org>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: stable@kernel.org
----
-
- b/Documentation/admin-guide/sysctl/vm.rst |   12 ++++++------
- b/mm/vmscan.c                             |    9 +++++++--
- 2 files changed, 13 insertions(+), 8 deletions(-)
-
-diff -puN mm/vmscan.c~mm-vmscan-restore-old-zone_reclaim_mode-abi mm/vmscan.c
---- a/mm/vmscan.c~mm-vmscan-restore-old-zone_reclaim_mode-abi	2020-06-25 17:32:11.559165912 -0700
-+++ b/mm/vmscan.c	2020-06-25 17:32:11.572165912 -0700
-@@ -4090,8 +4090,13 @@ module_init(kswapd_init)
-  */
- int node_reclaim_mode __read_mostly;
- 
--#define RECLAIM_WRITE (1<<0)	/* Writeout pages during reclaim */
--#define RECLAIM_UNMAP (1<<1)	/* Unmap pages during reclaim */
-+/*
-+ * These bit locations are exposed in the vm.zone_reclaim_mode sysctl
-+ * ABI.  New bits are OK, but existing bits can never change.
-+ */
-+#define RECLAIM_RSVD  (1<<0)	/* (currently ignored/unused) */
-+#define RECLAIM_WRITE (1<<1)	/* Writeout pages during reclaim */
-+#define RECLAIM_UNMAP (1<<2)	/* Unmap pages during reclaim */
- 
- /*
-  * Priority for NODE_RECLAIM. This determines the fraction of pages
-diff -puN Documentation/admin-guide/sysctl/vm.rst~mm-vmscan-restore-old-zone_reclaim_mode-abi Documentation/admin-guide/sysctl/vm.rst
---- a/Documentation/admin-guide/sysctl/vm.rst~mm-vmscan-restore-old-zone_reclaim_mode-abi	2020-06-25 17:32:11.562165912 -0700
-+++ b/Documentation/admin-guide/sysctl/vm.rst	2020-06-25 17:32:11.572165912 -0700
-@@ -938,7 +938,7 @@ in the system.
- This is value OR'ed together of
- 
- =	===================================
--1	Zone reclaim on
-+1	(bit currently ignored)
- 2	Zone reclaim writes dirty pages out
- 4	Zone reclaim swaps pages
- =	===================================
-@@ -948,11 +948,11 @@ that benefit from having their data cach
- left disabled as the caching effect is likely to be more important than
- data locality.
- 
--zone_reclaim may be enabled if it's known that the workload is partitioned
--such that each partition fits within a NUMA node and that accessing remote
--memory would cause a measurable performance reduction.  The page allocator
--will then reclaim easily reusable pages (those page cache pages that are
--currently not used) before allocating off node pages.
-+Consider enabling one or more zone_reclaim mode bits if it's known that the
-+workload is partitioned such that each partition fits within a NUMA node
-+and that accessing remote memory would cause a measurable performance
-+reduction.  The page allocator will take additional actions before
-+allocating off node pages.
- 
- Allowing zone reclaim to write out pages stops processes that are
- writing large amounts of data from dirtying pages on other nodes. Zone
-_
+  Luis
