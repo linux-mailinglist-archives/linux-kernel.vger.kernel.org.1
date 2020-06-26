@@ -2,149 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7218F20AD1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C957720ACF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 09:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728812AbgFZH2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 03:28:35 -0400
-Received: from mailout2n.rrzn.uni-hannover.de ([130.75.2.113]:37597 "EHLO
-        mailout2n.rrzn.uni-hannover.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728341AbgFZH2f (ORCPT
+        id S1728636AbgFZHX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 03:23:29 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:39290 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728556AbgFZHX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 03:28:35 -0400
-Received: from ytterbium.maphy.uni-hannover.de (ytterbium.maphy.uni-hannover.de [130.75.75.70])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailout2n.rrzn.uni-hannover.de (Postfix) with ESMTPSA id D3FB21F56A;
-        Fri, 26 Jun 2020 09:23:18 +0200 (CEST)
-Received: by ytterbium.maphy.uni-hannover.de (sSMTP sendmail emulation); Fri, 26 Jun 2020 09:23:18 +0200
-Date:   Fri, 26 Jun 2020 09:23:18 +0200
-From:   Tammo Block <tammo.block@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>
-Subject: [PATCH v0 5/5] Add Documentation for console mouse reporting
-Message-ID: <1eb8c1220ad8315a05ed55a54c54e163029467f1.1593155911.git.tammo.block@gmail.com>
-References: <cover.1593155911.git.tammo.block@gmail.com>
+        Fri, 26 Jun 2020 03:23:29 -0400
+Received: by mail-ed1-f68.google.com with SMTP id d18so483910edv.6
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 00:23:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=QEbKXP8FUgYuXuT6takZ5c8rrVZ/DcOt9hyzMr4EANc=;
+        b=nvVV0MJP64/SG+lyHDgDeWLgI4R/SMNY2NydzDFVtqcQq04DL7LYLVOdOKc7jyfNuj
+         IvJuekRKiXLopxNZ5S9nePfpmvufhirKq0xl9vmsAa/eRMZRbfC1UzxRjl3/Ub5G583r
+         W7FtBGtskGnebeWLF/0x+PDN9O1yR1uKfWnieFPXfm+2RDat5xNQRwoX9iXYxufe9VWa
+         009oztXRnuuWFKcM/3Ejo7G4+Y39FJ/5rd/07jSEHAeXV6tsGiPAtq0sk17SuRqZDsEs
+         uzBl2fqAE+H9Wo1ooeF6uzKI6R0E1xH+8cMEnocfHcvyUiFHgdnsOfIVNWPnl7Ojxq2g
+         PizQ==
+X-Gm-Message-State: AOAM530yo1DvAOKp6pXuHPEx/rI3K+LSjlvAlimKm9NSmzF97g/Uod9o
+        EyU48bbtZAmEbQsOyB0/aO8=
+X-Google-Smtp-Source: ABdhPJwVwkw4iKVEaU0es39MMKnKwPM9vSwQC0Z4BjvkXK/ajy/GR7r3yl+tcX7xw9YuzXumF7gmMQ==
+X-Received: by 2002:a50:e8c8:: with SMTP id l8mr2050076edn.386.1593156207272;
+        Fri, 26 Jun 2020 00:23:27 -0700 (PDT)
+Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
+        by smtp.gmail.com with ESMTPSA id a2sm8817292ejg.76.2020.06.26.00.23.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jun 2020 00:23:26 -0700 (PDT)
+Date:   Fri, 26 Jun 2020 09:23:24 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Joonsoo Kim <js1304@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Hellwig <hch@infradead.org>,
+        Roman Gushchin <guro@fb.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCH v3 4/8] mm/hugetlb: make hugetlb migration callback CMA
+ aware
+Message-ID: <20200626072324.GT1320@dhcp22.suse.cz>
+References: <1592892828-1934-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1592892828-1934-5-git-send-email-iamjoonsoo.kim@lge.com>
+ <20200625115422.GE1320@dhcp22.suse.cz>
+ <CAAmzW4MHuRhNqVXMntLAc_x4kJgkgQ-pD5GfFxRxJRchrEFr9g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cover.1593155911.git.tammo.block@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAmzW4MHuRhNqVXMntLAc_x4kJgkgQ-pD5GfFxRxJRchrEFr9g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a description of the kernel interface(s) used for mouse
-reporting and compares the old and new bitmask layout.
+On Fri 26-06-20 13:49:15, Joonsoo Kim wrote:
+> 2020년 6월 25일 (목) 오후 8:54, Michal Hocko <mhocko@kernel.org>님이 작성:
+> >
+> > On Tue 23-06-20 15:13:44, Joonsoo Kim wrote:
+> > > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> > >
+> > > new_non_cma_page() in gup.c which try to allocate migration target page
+> > > requires to allocate the new page that is not on the CMA area.
+> > > new_non_cma_page() implements it by removing __GFP_MOVABLE flag. This way
+> > > works well for THP page or normal page but not for hugetlb page.
+> >
+> > Could you explain why? I mean why cannot you simply remove __GFP_MOVABLE
+> > flag when calling alloc_huge_page_nodemask and check for it in dequeue
+> > path?
+> 
+> If we remove __GFP_MOVABLE when calling alloc_huge_page_nodemask, we cannot
+> use the page in ZONE_MOVABLE on dequeing.
+> 
+> __GFP_MOVABLE is not only used for CMA selector but also used for zone
+> selector.  If we clear it, we cannot use the page in the ZONE_MOVABLE
+> even if it's not CMA pages.  For THP page or normal page allocation,
+> there is no way to avoid this weakness without introducing another
+> flag or argument. For me, introducing another flag or argument for
+> these functions looks over-engineering so I don't change them and
+> leave them as they are (removing __GFP_MOVABLE).
+> 
+> But, for alloc_huge_page_nodemask(), introducing a new argument
+> doesn't seem to be a problem since it is not a general function but
+> just a migration target allocation function.
 
-Signed-off-by: Tammo Block <tammo.block@gmail.com>
----
- .../admin-guide/console-mouse-reporting.rst   | 82 +++++++++++++++++++
- Documentation/admin-guide/index.rst           |  1 +
- 2 files changed, 83 insertions(+)
- create mode 100644 Documentation/admin-guide/console-mouse-reporting.rst
-
-diff --git a/Documentation/admin-guide/console-mouse-reporting.rst b/Documentation/admin-guide/console-mouse-reporting.rst
-new file mode 100644
-index 000000000000..799288295655
---- /dev/null
-+++ b/Documentation/admin-guide/console-mouse-reporting.rst
-@@ -0,0 +1,82 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=======================
-+Console Mouse Reporting
-+=======================
-+
-+A terminal may send escape sequences to enable applications to react on mouse
-+input. As the kernel does not know when to emit these events a mouse daemon
-+is needed to react on mouse movements and signal the kernel accordingly. The
-+kernel will then send an escape sequence to the application. This is called
-+mouse reporting and several types and protocols have been developed over time.
-+
-+See tiocl.h, the :manpage:`ioctl_console(2)` and :manpage:`console_codes(4)`
-+man pages and the xterm [1]_ or terminalguide [2]_ home pages for a detailed
-+list and description of the various protocols, their bit layout as well as
-+their limitations.
-+
-+You can check which mouse events are requested *clients* via the TIOCLINUX
-+ioctl, using the TIOCL_GETMOUSEREPORTING subcall. The values of these event
-+classes (9, 1000, 1002, 1003, 1005) are described in tiocl.h.
-+
-+Report layout
-+-------------
-+
-+A report is send by a mouse *daemon* to the kernel via the TIOCLINUX ioctl,
-+using the TIOCL_SETSEL subcall. The coordinates are encoded zero based in
-+xs and ys, with 0,0 as upper left corner, but see note below.
-+
-+The bits of the sel_mode are used the following way:
-+
-+X10/X11 like protocol
-++++++++++++++++++++++
-+
-+For the X10/X11 like protocol (if DECSET 1005 is *not* set), the lower 5 bits
-+of the sel_mode are used like this:
-+
-+- 1,2  : Encode Buttons (see notes below) / TIOCL_SELBUTTONMASK
-+- 3,4  : Modifier keys (Shift, Alt) / TIOCL_SELBUTTONMASK
-+- 5    : Always 1, identifies X10 protocol / TIOCL_SELMOUSEREPORT
-+
-+SRG protocol
-+++++++++++++
-+
-+For the SRG style protocol (xterm style, DECSET 1005 *is* set) the upper 11
-+bits of sel_mode are used like this:
-+
-+- 6    : Always 1, identifies SRG protocol / TIOCL_SELSRGREPORT
-+- 7    : Unused, should be 0. Ignored by kernel (future extensions)
-+- 8    : Set on button release events / TIOCL_SELSRGRELEASE
-+- 9-16 : The SRG byte, send to userspace as is / TIOCL_SELSRGMASK
-+
-+The SRG (upper) byte
-+++++++++++++++++++++
-+
-+The layout of the *upper byte* ("SRG") is identical to the SRG data layout,
-+for protocol "1005", as described in detail in the xterm [1]_ or
-+terminalguide [2]_ home pages. Short summary:
-+
-+ - 1,2 : Buttons, lower bits (see notes below)
-+ - 3-5 : Modifier keys (Shift, Alt and Ctrl)
-+ - 6   : Mouse movement only, no button status change
-+ - 7-8 : Buttons, upper bits (for buttons 4-15)
-+
-+Notes
-++++++
-+
-+Button numbers are encoded like this:
-+
-+- 0-2  : Left, middle and right button
-+- 3    : No button pressed / Button release
-+- 4-15 : More buttons, e.g. 4 and 5 are scroll wheel
-+
-+Please note that button releases should only be reported for buttons 0-2.
-+
-+Also note that coordinates (xs,ys,xe,ye) are zero based for the TIOCL_SETSEL
-+syscall but one based for the escape sequences send by the kernel, so the
-+kernel will increase all coordinates by one.
-+
-+.. [1] https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h2-Mouse-Tracking
-+.. [2] https://terminalguide.namepad.de/mouse/
-+
-+
-diff --git a/Documentation/admin-guide/index.rst b/Documentation/admin-guide/index.rst
-index 58c7f9fc2396..c535902f3851 100644
---- a/Documentation/admin-guide/index.rst
-+++ b/Documentation/admin-guide/index.rst
-@@ -71,6 +71,7 @@ configure specific aspects of kernel behavior to your liking.
-    cgroup-v2
-    cifs/index
-    clearing-warn-once
-+   console-mouse-reporting
-    cpu-load
-    cputopology
-    dell_rbu
+I really do not see why hugetlb and only the dequeing part should be
+special. This just leads to a confusion. From the code point of view it
+makes perfect sense to opt out CMA regions for !__GFP_MOVABLE when
+dequeing. So I would rather see a consistent behavior than a special
+case deep in the hugetlb allocator layer.
 -- 
-2.27.0
-
+Michal Hocko
+SUSE Labs
