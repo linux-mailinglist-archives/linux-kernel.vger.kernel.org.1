@@ -2,124 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7AE20B01F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 13:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6BF20B056
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 13:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728247AbgFZLAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 07:00:05 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:38116 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728215AbgFZLAE (ORCPT
+        id S1728427AbgFZLUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 07:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728186AbgFZLUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 07:00:04 -0400
-Received: by mail-ej1-f67.google.com with SMTP id w16so8943908ejj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 04:00:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=18aTf3KZmsRbEv2hKvnfZvOhTd+7S+HPU3hrOMCQTuE=;
-        b=KXmVHJEP5iB9y1QlXvw6xhMF9EBaMGou0C6uLbEhxlsRMRiUnPwmasWXQ7X9IbeJ3+
-         u5Qb134I9A7HO2AwdPBZVqmivLCwF0prZVxjvPlUdF8MuMQkJZ6u013G0qTxXGuPai8Y
-         /UxTg2JP8TsOlkF5I1cK0yxgI0jP5LZb6sNh6jAZRz/zG0YUQOLRVxuDUSIRjMKtuhX/
-         d8NCSFFPHfKPTPffW/YrNBoh3xqxTHUnmXGpZgJf5NrIr4P2Lp+9T+eR6+XNlrdwu+jc
-         mMgmK9p8WFx+E1np+RK3SnMCdLVCKkeyHanpI3iyjEf6EDpzg+UgDMQlBTtyuoVSUQ+S
-         uehw==
-X-Gm-Message-State: AOAM532Ym+Wjd8pynU0s6N9BdX2t4PErk+CwSoQ80FufzHbUntLniVX/
-        jXNYxLlYtFxqNYquJRoEN+oHA/Udn/4=
-X-Google-Smtp-Source: ABdhPJwcW4Hr4hmup9134Rg45L/IsR6JWotS/43dXtQHWjlls093+z752ZyemDZNCTkJglg5d3arhA==
-X-Received: by 2002:a17:906:7a46:: with SMTP id i6mr1922010ejo.475.1593169202670;
-        Fri, 26 Jun 2020 04:00:02 -0700 (PDT)
-Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id y2sm2524766eda.85.2020.06.26.04.00.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jun 2020 04:00:01 -0700 (PDT)
-Subject: Re: [PATCH v0 5/5] Add Documentation for console mouse reporting
-To:     Tammo Block <tammo.block@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <cover.1593155911.git.tammo.block@gmail.com>
- <1eb8c1220ad8315a05ed55a54c54e163029467f1.1593155911.git.tammo.block@gmail.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <e315288d-0940-14fc-0de1-a827bf8aa3bd@kernel.org>
-Date:   Fri, 26 Jun 2020 13:00:00 +0200
+        Fri, 26 Jun 2020 07:20:10 -0400
+X-Greylist: delayed 1794 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 26 Jun 2020 04:20:10 PDT
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971D9C08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 04:20:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ztn9cU3Hz2nUeJeffgVLOKOqTt8Y22EoCeHKPw3nA7M=; b=y2PbgC9AK/8gwjBOptepXhQ+Wt
+        flrfgX+VsuRaQIdQ/06ForJdZDN7TrzpavdW4gWv9E7wOZDOoFcoUT5iQX+aOG+ltkrF6EwGERbRn
+        G5MXUbPi2VvrBm1c1QozGt/WdMwnInTUmMhn2ysU2jdWaAbB1K2066nP6BnZPqjfkbjcJ19I+dQXm
+        ZpClBlaSEPOh3fb0ADmasgDkLfDpB32zK9XC9Esq/bdGYFcy4vvoNHfSojk04sr4cwVxXP0QiJ6X4
+        9mN8JKMF1Z1VYo+g5DQeef9RYbSNYqZmpkSw0eqg0U0siKsCpTL08hcmZiwh7jgXIaWV8yAyvLfgt
+        /sHYh5Xw==;
+Received: from dsl-hkibng22-54faab-65.dhcp.inet.fi ([84.250.171.65] helo=[192.168.1.10])
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <cyndis@kapsi.fi>)
+        id 1jolvx-00074N-NM; Fri, 26 Jun 2020 13:50:13 +0300
+Subject: Re: [PATCH] soc/tegra: Add Tegra Soc Version support
+To:     Sandipan Patra <spatra@nvidia.com>, treding@nvidia.com,
+        jonathanh@nvidia.com
+Cc:     bbasu@nvidia.com, kyarlagadda@nvidia.com,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1593167369-25901-1-git-send-email-spatra@nvidia.com>
+From:   Mikko Perttunen <cyndis@kapsi.fi>
+Message-ID: <64d65736-62c2-de17-5657-389475fff6e2@kapsi.fi>
+Date:   Fri, 26 Jun 2020 13:50:13 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <1eb8c1220ad8315a05ed55a54c54e163029467f1.1593155911.git.tammo.block@gmail.com>
-Content-Type: text/plain; charset=iso-8859-2
+In-Reply-To: <1593167369-25901-1-git-send-email-spatra@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 84.250.171.65
+X-SA-Exim-Mail-From: cyndis@kapsi.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26. 06. 20, 9:23, Tammo Block wrote:
-> This patch adds a description of the kernel interface(s) used for mouse
-> reporting and compares the old and new bitmask layout.
+On 6/26/20 1:29 PM, Sandipan Patra wrote:
+> Add the chip IDs for NVIDIA Tegra186, Tegra194 and Tegra234
+> SoC family.
 
-<irony>
-Documentation for the vt code? Phew.
-</irony>
+families
 
-Thanks for doing this.
-
-> Signed-off-by: Tammo Block <tammo.block@gmail.com>
-> ---
->  .../admin-guide/console-mouse-reporting.rst   | 82 +++++++++++++++++++
->  Documentation/admin-guide/index.rst           |  1 +
->  2 files changed, 83 insertions(+)
->  create mode 100644 Documentation/admin-guide/console-mouse-reporting.rst
 > 
-> diff --git a/Documentation/admin-guide/console-mouse-reporting.rst b/Documentation/admin-guide/console-mouse-reporting.rst
-> new file mode 100644
-> index 000000000000..799288295655
-> --- /dev/null
-> +++ b/Documentation/admin-guide/console-mouse-reporting.rst
-...
-> +SRG protocol
-> +++++++++++++
-> +
-> +For the SRG style protocol (xterm style, DECSET 1005 *is* set) the upper 11
-> +bits of sel_mode are used like this:
-> +
-> +- 6    : Always 1, identifies SRG protocol / TIOCL_SELSRGREPORT
-> +- 7    : Unused, should be 0. Ignored by kernel (future extensions)
-> +- 8    : Set on button release events / TIOCL_SELSRGRELEASE
-> +- 9-16 : The SRG byte, send to userspace as is / TIOCL_SELSRGMASK
+> Signed-off-by: Sandipan Patra <spatra@nvidia.com>
+> ---
+>   include/soc/tegra/fuse.h | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/soc/tegra/fuse.h b/include/soc/tegra/fuse.h
+> index 252ea20..4a5236b 100644
+> --- a/include/soc/tegra/fuse.h
+> +++ b/include/soc/tegra/fuse.h
+> @@ -1,6 +1,6 @@
+>   /* SPDX-License-Identifier: GPL-2.0-only */
+>   /*
+> - * Copyright (c) 2012, NVIDIA CORPORATION.  All rights reserved.
+> + * Copyright (c) 2012-2020, NVIDIA CORPORATION.  All rights reserved.
+>    */
+>   
+>   #ifndef __SOC_TEGRA_FUSE_H__
+> @@ -12,6 +12,9 @@
+>   #define TEGRA124	0x40
+>   #define TEGRA132	0x13
+>   #define TEGRA210	0x21
+> +#define TEGRA186	0x18
+> +#define TEGRA194	0x19
+> +#define TEGRA234	0x23
+>   
+>   #define TEGRA_FUSE_SKU_CALIB_0	0xf0
+>   #define TEGRA30_FUSE_SATA_CALIB	0x124
+> 
 
-To me -- a non-native -- it looks like s/send/sent/?
-
-> +The SRG (upper) byte
-> +++++++++++++++++++++
-> +
-> +The layout of the *upper byte* ("SRG") is identical to the SRG data layout,
-> +for protocol "1005", as described in detail in the xterm [1]_ or
-> +terminalguide [2]_ home pages. Short summary:
-> +
-> + - 1,2 : Buttons, lower bits (see notes below)
-> + - 3-5 : Modifier keys (Shift, Alt and Ctrl)
-> + - 6   : Mouse movement only, no button status change
-> + - 7-8 : Buttons, upper bits (for buttons 4-15)
-> +
-> +Notes
-> ++++++
-> +
-> +Button numbers are encoded like this:
-> +
-> +- 0-2  : Left, middle and right button
-> +- 3    : No button pressed / Button release
-> +- 4-15 : More buttons, e.g. 4 and 5 are scroll wheel
-> +
-> +Please note that button releases should only be reported for buttons 0-2.
-> +
-> +Also note that coordinates (xs,ys,xe,ye) are zero based for the TIOCL_SETSEL
-> +syscall but one based for the escape sequences send by the kernel, so the
-
-again "sent".
+Also, can you make the commit message something like "soc/tegra: Add 
+defines for Tegra186+ chip IDs"?
 
 thanks,
--- 
-js
-suse labs
+Mikko
