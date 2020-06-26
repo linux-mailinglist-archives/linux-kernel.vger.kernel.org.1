@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3651920B55D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FDA820B567
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 17:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730128AbgFZPx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 11:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730093AbgFZPxy (ORCPT
+        id S1729980AbgFZPy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 11:54:56 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:26540 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725833AbgFZPyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 11:53:54 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126EEC03E979
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:53:55 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id i3so10876350ljg.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 08:53:54 -0700 (PDT)
+        Fri, 26 Jun 2020 11:54:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1593186895; x=1624722895;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=frhNObIC0EKlqjW1yj5MK9ugwW3ivQZeP+XXHdMEw4c29FhlT99La/HM
+   n4HkYykHd/DBdA+KJ638xK6gD5XvzOOyFfHPqzfYUZE6aeUAeqHIkCY7t
+   KtRpIPAarhsiQypVlRVWZArPVwdZv7EXp/6puqCDgAjLY2Ti+uRZk3iNI
+   rDfFjCiEjAoqwywNH4uwuA/CSwcs33BQIkOgkLBiL75ugVJQjiHQMWmjW
+   OR/w5d9Fb7b8HBql0U55FTbl967wPS5PyQGRm2eFu9guxNQBUoe7yCEY6
+   FMhJFVp0lUdRuRnQP0MyDrkfavhCMpht7mRlWtS4B/46xys3fj4qzplLW
+   w==;
+IronPort-SDR: zEAJA50IeuOeaij23ephmgYqR66L5tGV4KhjElkEulvvlkq6tZHsXrzRNC0A/oaWxD8fNPoGMV
+ PQvsgRzG/mhIgY2ek8IZZgO5skOVuaXP4japjTfeE4bu4IN+smgy210W6prPP2blBtfyYfo4vm
+ XEOWQktST81EZQyF3YWYuthuFlH4FCrLyz3keRZmYwLOT4EZ3+3ozwWTfgfsw0UssBNB+AhTL0
+ SE5TafHmrwV4V05JGrLBs8Mgmz5RnE7PdoOqh5EYq6HOASmbEEx1Kd775VwBdZIWc+rWr9/0AO
+ lrw=
+X-IronPort-AV: E=Sophos;i="5.75,284,1589212800"; 
+   d="scan'208";a="142376042"
+Received: from mail-co1nam11lp2170.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.170])
+  by ob1.hgst.iphmx.com with ESMTP; 26 Jun 2020 23:54:54 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QDb+HtJnyxrK9TxEHdoG/+8LUqXbZI0EQr72r4iajpJl7fR+Cl7hnbP/kb56/goJ109prHCiF+5elBRZSQQaCEe5Gi0zdTdTFznuaGPDFQD1U6o89NofhLaKOxf6fMIne8mNBfRkWYdWGehH7l0lT0smf0zPMyRvnBRg7ac/CAiF9XkwQOnBVDf2tlTec58BgueelHCqvfV7vymbDLsK0MxoGjyJxRaYX6iGzhGalg0C2w3Qzqcgt/lNBFA311Ylep1qCDH6DnUOrIwDpe/ocl8q4sQCRtJGhtnQ5dSyxxX1pVJoO/pNqv9yOdghh3H63Ze0YrIE1MOFjd0+t0uYbw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=GAQG2pNkHZhht+qO6QAU6HSdJXLEqbCo5CQcKz6Wdsu/phMmqFI0H9aOdqMrp2eahPodJVbreClEn513kWdAlRkBZlpx8ZXTFxrK/mKY+gA9StGU75ik/nqkv3KgL8oNVgWpw1Lbc2Iq9ZkIR9k6OsQWKnD5EYx9AGMwDhKZ+QgupIVGtImhRBQIG52ofpmC1L5/sRqBg5he124wH0xx0NgyQ4eKk3aENWHWtakEZbDbtAunmTmneSuVadqb3Hxk9NGpbBNHQHVZRlQ4m+FyXWEoRI6Io3OD+5AmTZqOmw2stkME7Cm2+oYZxeWnA5GrDN7RUykTFqbh9TMkTiscKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wS3ZoLwVxMYE5aOSMJlL4wxZx5NfasIcwsCreNsKCHg=;
-        b=aXUNBRHApb/d4chCFqPEAPBCerd3HA1AvzgBAtxqWUNfOP2ounPi0BGuHU/6m1fMLy
-         iZUgVzdo4eoyvRyCiukLyt5m7teU8Bt/nXESIblqrPBS8siY3NlycbomLgD6F4O97yVX
-         Yc6EqjHlhno2UoZfMpghdRCPxOK8hvq8MMShIZpLFyWt+ICmU5qANsip6istpwh2ATbS
-         7TJoAXNg7C+bWwqwIZ2bFiKsNqC4/dosBpHgjQKhtBrYHYNiUoePWmDXvonUWiz36CvB
-         SBybpbeMe/pSr54YHQuY0qFNbrQn5/1Pu5ViKf1lJa4+hB4rJnGLh5593rzpjFuoFwXO
-         B5Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=wS3ZoLwVxMYE5aOSMJlL4wxZx5NfasIcwsCreNsKCHg=;
-        b=gCFPI/6Jje0yMk8CmM75+D9jCOMVui/Rag7077yNtaTkkMywoZR1ZhYLWZnkWWin6o
-         A1OBTQkZ85nU557bYJOHeyPItlN/t/GpUDbk9lrRhQya+b/RyBwpea4bRrtspxyL4yhH
-         2lcHWZbc/dhbb0WFW8vVXuZA3eQTIdi8yDbmZ9uLxMKwFBy8AFL/1vNNTrFjK650YYfU
-         7m+o/M+EJbQvEoBR59Ju0AmdzUWCj9T+rX1kvNt4/f1htjxJyuIiBdyYCvdu2wrVhxM/
-         JO8BXY84XXfZrsAw7/pWtWA+xg5dtAglJ05pWsdnXEZuF7tGg1l66yLYCkdgp1xmtgSI
-         uMSA==
-X-Gm-Message-State: AOAM530okmvnGMcDuF/8KE8ALT6pTHLdKAhdNOC+7luawwd+D8Dge07b
-        +Hu6CoizJVkhkMbSBuUK3yeNXg==
-X-Google-Smtp-Source: ABdhPJxVanab6IRVSKzmHEyKsqu6Hh1aLxUPDUAS04E63YfmDijCpVv/qdoDyztglfWI0L3Z931Ieg==
-X-Received: by 2002:a2e:a548:: with SMTP id e8mr1822890ljn.76.1593186833518;
-        Fri, 26 Jun 2020 08:53:53 -0700 (PDT)
-Received: from wasted.cogentembedded.com ([2a00:1fa0:4807:b213:5663:e485:3cf8:764f])
-        by smtp.gmail.com with ESMTPSA id d6sm2733412lja.77.2020.06.26.08.53.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Jun 2020 08:53:52 -0700 (PDT)
-Subject: Re: [PATCH/RFC v4 3/4] mmc: core: Call mmc_poweroff_nofity() if
- regulators are disabled
-To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        ulf.hansson@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
-        geert+renesas@glider.be, magnus.damm@gmail.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-References: <1593163942-5087-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <1593163942-5087-4-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Organization: Cogent Embedded
-Message-ID: <059bced3-00d3-cf2e-6628-a8c9f1544909@cogentembedded.com>
-Date:   Fri, 26 Jun 2020 18:53:51 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=Sxu0U2tqMwW51ufIFAvvdbyfJVuOUoff0Aljc2Be1jTT4EV0YK6e7TtywL0xShUnUTrZdit5uwdlnMRmOkFdp6PB2XC6VIanGLWRkQ/yj/5IupV8nW0sqSWYIZGNwAJ77WEcXEK148blWsB1LMbkv7Lm9qdjYPICgu7q15K6YU4=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB3966.namprd04.prod.outlook.com
+ (2603:10b6:805:48::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21; Fri, 26 Jun
+ 2020 15:54:53 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3131.021; Fri, 26 Jun 2020
+ 15:54:53 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, "axboe@kernel.dk" <axboe@kernel.dk>
+CC:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/7] dcssblk: don't set bd_block_size in ->open
+Thread-Topic: [PATCH 2/7] dcssblk: don't set bd_block_size in ->open
+Thread-Index: AQHWS5Aw6MffRNiiV0aembZZomRl8A==
+Date:   Fri, 26 Jun 2020 15:54:52 +0000
+Message-ID: <SN4PR0401MB3598F2694FB33E1CCA757E009B930@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200626080158.1998621-1-hch@lst.de>
+ <20200626080158.1998621-3-hch@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:1515:bd01:a471:867c:4e70:8019]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c39efb53-81a4-4c64-26fd-08d819e943ef
+x-ms-traffictypediagnostic: SN6PR04MB3966:
+x-microsoft-antispam-prvs: <SN6PR04MB396653CAD8B05AC141A60D3D9B930@SN6PR04MB3966.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 0446F0FCE1
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oVrw+oh6YwcnR8vndu5sAr7a/P5pXRjJnCLlbuV7QN43KLNHV4TitzeUPavlrO9BTdxnO65N7xtOkuGTuvYk+o+5KxJYEkQukrWUbR3qbuixjz3surpv4L2BKBT1dYGqFvzYyQ9cO8GVKFSGP8OA0b3/8/dRcz+CjdEX7rVIn2n/+/Uikyr+I3AGQMuslkULNm6GmQGsIq9ynDWJnH7AWQCUCZwL6yTHg/ZdMykG3cllpiy76mBqq2a7XIWMWf+zhbMi6W2GU1gMvioKZAUbflDky00i/sA6wunYW7Q5SWPYLhqaQmp8XvSWWDmY8MZFfx408hz3sfHrDcnVActT+w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(366004)(346002)(376002)(396003)(91956017)(76116006)(55016002)(9686003)(66476007)(6506007)(316002)(8936002)(33656002)(4326008)(2906002)(186003)(4270600006)(71200400001)(54906003)(110136005)(66556008)(66446008)(64756008)(7696005)(52536014)(66946007)(86362001)(558084003)(19618925003)(8676002)(478600001)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: E17hV2YJQMSbqICwbPxWptm0P6IISmwMH8m7wNw+yUd2G8Jw4eDqIxPLe3jxRK3/3/MAo0Q5AOJdnGPe7ebPQf3DkQ2CdF41FVPWgTJrMrpN5KIv2TqVq8x2Tdkp3yLJshO30HDUsnvfkUmSMmHhMczMkUwyqSdeYfGPWw3A5T6wUUORQOyPV2Ed071dsdJbBj05SIznsWKyU8Y+Xs+AuVcrqd700J5A0LAteAtNNojwbF7N9Z0Ddjw0ojxBw3UOmTVuZVNNi/pTvIHRL1tDQKttg42fqS+O6nH4VJx17/3zyqNkPLJWKpQ/tqGGkBSUx4xcEWK1hZ3OL+HUtufab6KWiGkn5sU5LdgfTESEKeu4Etfjv7wJstYH487a8hbbP+oRP5PDccFOSyGSjdl7cPT8gGle+y7g88MJFxlePaNXt3CGYBpnUub9XPXMp30MBC8TL4H63dcbrRxRcq8/aC2uwdRnMEbWaRXMnCe4gZ34K8VYpYuxlzChdmnuGE1pZAbHoQSqWjN27EnbJaYpVEikROzTOG7OCh1YRiKlCax0ystZ971mpofXt4d1los3
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <1593163942-5087-4-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-MW
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c39efb53-81a4-4c64-26fd-08d819e943ef
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jun 2020 15:54:52.8827
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /ocP3S6vKJxtoFOyegwzQJde0A156KdJYdWuoBQMIpuDfR4SKxXYXJIL+H/3zpyvLq08ZdztTH+nANaLB2UFDpNPG1vU9ORTqlIC0UaNpBo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB3966
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 06/26/2020 12:32 PM, Yoshihiro Shimoda wrote:
-
-> If regulator_is_enabled() of both vmmc and vqmmc returns false,
-> _mmc_suspend() should call mmc_poweroff_nofity() instead of
-                                          ^^^^^^
-  That hard word again. :-)        
-
-> mmc_sleep().
-> 
-> Note that this is possible to happen when the regulator-fixed driver
-> turns the vmmc and vqmmc off by firmware like PSCI while the system
-> is suspended.
-> 
-> Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-[...]
-
-MBR, Sergei
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
