@@ -2,86 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF64A20B164
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 14:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED6720B1B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 14:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728440AbgFZMaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 08:30:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53142 "EHLO
+        id S1727852AbgFZMse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 08:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgFZMaY (ORCPT
+        with ESMTP id S1725283AbgFZMsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 08:30:24 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01011C08C5DB
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 05:30:24 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id dp10so4359789qvb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 05:30:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=S0udzLIXNsb1pKVpquCqjhEjdkaBQJ9k9wIcZym0NIY=;
-        b=b5WY5hmnBkDE3y2XYtD/XNpCJ64rCr6ywqQ0bplXtpcbBuu1NpQ0Trxyg8UIEeb6qP
-         lUYQmRe+baCZRuv8dJ6XPXMBDpzyvPsqfIlGPyC0J7bH+oebIxSOOH/+rHSLPlB3NGlT
-         racuLirYwlt4f5Ryxila0pI30g1Bp6xBsAPqJFqYsKmpM3trQt68IZATbehlz607I+dv
-         IoIfHdROxwuq/JBedny89gA/ttl9oSi3f9BTG92t88Ymt/1dwKgLKoB5jf3GTWYE5g7s
-         S88ARLcPPw0prcPSqlkbkn8s/m9gj383nzG5OyxtU7w7RdgRXU3OoTO8x1VxfoKjoBsD
-         oMVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=S0udzLIXNsb1pKVpquCqjhEjdkaBQJ9k9wIcZym0NIY=;
-        b=MF3KYwdkNX7wXjq7+qWnz86ZH6gmpZKQRG6BPExdpPuca3MqBpAFrW31bHOJCAucgH
-         iEH6VofalJjCDCTBr3tvS6RjDKMwIVqqKuFbDcyVeQALTjoHAUWOeBkgloQd+Dy+DQMk
-         D9CLLRt7hV90Cw8D1OBjYbLhDcurEWqLD14LifNcfcDkikyY+IFfsrjVo90I7XSyNm+c
-         4BJNeujhv/FsjncLrKoKXgrjWx2eD2Vyv2TdxX7R4taEhdQLozSlvxEYK3X25iBsNw40
-         Qv7jT2P29F8gd7ocTAG+/TSXtxetmzds4VcF7xrRKa6x1X1dF/nkRHQn7G3WxHymmBfv
-         0usQ==
-X-Gm-Message-State: AOAM532SK+Vw7gHJgkwpWDu5bqm4vX2PgIKjjZuTQVerDkdrb8C9am9P
-        mh4pbbakI6Kp5qV8gHGmvOwN2Q==
-X-Google-Smtp-Source: ABdhPJzluXudaRNW5mQfKaLZBkHXd8Fo5a1PihnTT29QwORZ08On9+BQlkXaNj4UJJUksc7io6PA9w==
-X-Received: by 2002:ad4:5a46:: with SMTP id ej6mr2895574qvb.52.1593174623247;
-        Fri, 26 Jun 2020 05:30:23 -0700 (PDT)
-Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id l3sm8723087qtn.69.2020.06.26.05.30.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jun 2020 05:30:22 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Qian Cai <cai@lca.pw>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 0/2] iommu/amd: Don't use atomic64_t for domain->pt_root
-Date:   Fri, 26 Jun 2020 08:30:21 -0400
-Message-Id: <63D91069-6A2E-4C05-8409-76A56D1E0FCA@lca.pw>
-References: <20200626080547.24865-1-joro@8bytes.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Joerg Roedel <jroedel@suse.de>
-In-Reply-To: <20200626080547.24865-1-joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>
-X-Mailer: iPhone Mail (17F80)
+        Fri, 26 Jun 2020 08:48:33 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B820CC08C5DB;
+        Fri, 26 Jun 2020 05:48:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+40x5yR6xPYbcwqoWM0biH3squaIsHabGxmwaNuoCGw=; b=nrkb5+mece4M7+1eYiN4csS8eg
+        iKRDSAkUbEoffe6SeE5BRFmaE1V7S+kUEPSXpBsIqhk9U8Jq2whlDUEzaVdPiXXafbLBUvOb3W+gP
+        VGcgWSz4jLlN/XpZSEIfkW18V7LjhMpJLkFarDhCIPeXy0/xIjznpt+rjvKrXLr5tYZyfqEk51I+8
+        dP7LOfBhra11C1sgRvTMv+jzhaTsmEoelHDEOV0f9daau9WNruU88Ujy6hpubnStsxuWLU3z791lM
+        Fe373xh9eMxnsyZC7PCcoUgQbzrMW9LJRJSKSWlTx96umV8b94hFWzU2OGthjYWxabxw59oekeCsU
+        6eTj2+cA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jonRq-0003Uu-FZ; Fri, 26 Jun 2020 12:27:15 +0000
+Date:   Fri, 26 Jun 2020 13:27:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 6/9] sysctl: Call sysctl_head_finish on error
+Message-ID: <20200626122713.GA25039@casper.infradead.org>
+References: <20200626075836.1998185-1-hch@lst.de>
+ <20200626075836.1998185-7-hch@lst.de>
+ <20200626121701.GM4332@42.do-not-panic.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200626121701.GM4332@42.do-not-panic.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 26, 2020 at 12:17:01PM +0000, Luis Chamberlain wrote:
+> On Fri, Jun 26, 2020 at 09:58:33AM +0200, Christoph Hellwig wrote:
+> > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> > 
+> > This error path returned directly instead of calling sysctl_head_finish().
+> 
+> And if the commit log can say why this was bad. Found through code
+> inspection from what I recall right?
 
-
-> On Jun 26, 2020, at 4:05 AM, Joerg Roedel <joro@8bytes.org> wrote:
->=20
-> a previous discussion pointed out that using atomic64_t for that
-> purpose is a bit of overkill. This patch-set replaces it with unsigned
-> long and introduces some helpers first to make the change more easy.
-
-BTW, from the previous discussion, Linus mentioned,
-=20
-=E2=80=9C
-The thing is, the 64-bit atomic reads/writes are very expensive on
-32-bit x86. If it was just a native pointer, it would be much cheaper
-than an "atomic64_t".
-=E2=80=9C
-
-However, here we have AMD_IOMMU depend on x86_64, so I am wondering if it ma=
-kes any sense to run this code on 32-bit x86 at all?=
+I don't know why it's bad, it's just different from every other exit
+path from this function, and it's user-triggerable, so it just needs to
+get fixed.
