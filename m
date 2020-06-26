@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD7C20BB05
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CBA20BB11
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 23:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbgFZVJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 17:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48746 "EHLO
+        id S1726485AbgFZVJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 17:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726430AbgFZVJp (ORCPT
+        with ESMTP id S1726453AbgFZVJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 17:09:45 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BB1C08C5DD
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:09:45 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id f16so11187706ybp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:09:45 -0700 (PDT)
+        Fri, 26 Jun 2020 17:09:47 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E8BC03E97E
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:09:47 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id o15so7470767pgn.15
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 14:09:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=ZQcLA3WWQzWhDh7XNic/G9qqCkpVYvgILX+rlRl11MM=;
-        b=hXaHccpsp6kZobMdGnxlDV/X7Kry+BeRbEJjo6PSv+TzhSxzNCAbiEQxcpvIu0jQ8L
-         aIB48XrQDZ+QiNiXbv0Tr0hmWU0EQYlwTua6pAg7QhnNvNSxDK0ocJXkRunQ2sD015bM
-         oWId+r5Af1n9pl4fkKr5IibcQmAmR4apAJ4uZIU8WR1sYqDviwkes3rwyCeWthb9zehf
-         XV/5kHzyY6hTubQkZzHttS+P5N1PNpPDj/TZK4Qtvt0SowvIJbhPF2AgJuVdUA0ZlY6e
-         4wzcP9dl+iDa2j5rL0VHxTcew55IqQf2LoFk8FR/CBkw5YHjzH7caV82jF3Q9TVQuEgb
-         +SDg==
+        bh=/YfJhHqk1scz1aBXF0mupkQea8lbBQgP2jeC+IACUDE=;
+        b=ZVmC9pMZrVunA2Fe2R9SmfDjSh6jHe61Xaa87YaHusNTBjJf/LeLbaReVAu2j9TGqG
+         DxFNyk3GpI7sLmWMCSdQD7bvz9rONUgJGdF7uQgwV9+yZ/fSaQQKgZ4gmTg7ATax4Vk1
+         oV5uEEY5wckV5kA6VI1hcndIeFh/iBm6by2153y7uZEUrlPNuhJOGVBqtgu612iYSDS5
+         kqjVhZYud4bB1XAnEHsKMzN8i0QHS6lt4v2+aUunA9LQhB4hkvgOKdZy4uYW9e9c4Pee
+         JZVonLmRJ7SKlMenwZofGiFcAJe3AeZZuDV2tMMxx47AoxweQmK1o1oVFzbg31I8w3zR
+         nK+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=ZQcLA3WWQzWhDh7XNic/G9qqCkpVYvgILX+rlRl11MM=;
-        b=DBx4aUfB/hV3scIAldqFNE/QdH96E/6ZpMabAEjyvF1HkuOZs09Io7j2pkSJa3rleW
-         4mXLdkuLedInrGyAI4o5QTbAQevh1glLJykprn0c8N3CQFQALOW+VLBFQrwbVs42QDvK
-         Pg9Vf8v95IV6P6yq3sPwxJzJNOaxZmaSp1XpQcnf43/29Pzfv9cu0Pphs98ib2i2ATBB
-         A9QA4aFotJzWqC05qKt+5WHPMVf5UyDivP56IgULxmKTwz/8tdhTstXuFWdMtconTP9r
-         7oQIcLT7iQnkCKSF346reizo4g/DbarPnjFQMVTHOookH3fLeCD1noTGXaq5b+gPv9tF
-         GCcA==
-X-Gm-Message-State: AOAM5319jvxtnmHzvw+3saYN6BU+ivPdj+USCHjziP7XTtAtbCupl4G/
-        /MtJnh0RuIZN/13zyd5DCVyep5ndBfcn/qzH9VUMhQ==
-X-Google-Smtp-Source: ABdhPJzEx7RjdPZqzXf9CzhVsQsR591I98jh+msGVdJdnK9Tt6s9k9B5//bn8b4L1M37+n0TvUsc2u0v5Nr7S59GV+16hQ==
-X-Received: by 2002:a25:c5c3:: with SMTP id v186mr7751497ybe.233.1593205784533;
- Fri, 26 Jun 2020 14:09:44 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 14:09:16 -0700
+        bh=/YfJhHqk1scz1aBXF0mupkQea8lbBQgP2jeC+IACUDE=;
+        b=IGyyFrlDv2xwdahl5L2bV3TNNp7JZ0hj+QKdGl6CF8uVR+UvAhN7V6EfhI64At0KWt
+         6VZt4sPPSbpVYjl2YKYayE/hETL/esZWa9J/MGLtZidAP6pdY1HCXj6/mOm8g7jeGJct
+         orFCCFoEJsdNbKMpcataRbZDzYIDgQyG4b2fKWdrRwrVOoqv2q6MKFReqDw84EcEKeCj
+         OtKFq/5w0JCZYOu0phZ5Vm8fVMugcLJQOq2RDKaMjdl3t9r8vgHvI/389m+mwKtu4c4w
+         X0Yn40McCWDD+PFwkY2uvHHEy5eYcdT0lcg+8i61MF31++shkqLm3YeEggsCm93lMWln
+         0NQg==
+X-Gm-Message-State: AOAM531+OJB//Zk2C8/JCTSeuFaeE78eTNyNt2h6PAf8fv5BK/SSdJ/L
+        yKEHvc2ouDU9GpUNSWab2LSSxs7i1GxcalydgAJ67Q==
+X-Google-Smtp-Source: ABdhPJyHSEr0Zmc7EVSRsW7eDiy4Wfh57qQNf0udG5ob/OtFkSC+pCfiBpVQAOifQwHuQ/h0kM0ynYxDTAXmSlHhH6715Q==
+X-Received: by 2002:a65:6707:: with SMTP id u7mr567899pgf.233.1593205786593;
+ Fri, 26 Jun 2020 14:09:46 -0700 (PDT)
+Date:   Fri, 26 Jun 2020 14:09:17 -0700
 In-Reply-To: <20200626210917.358969-1-brendanhiggins@google.com>
-Message-Id: <20200626210917.358969-12-brendanhiggins@google.com>
+Message-Id: <20200626210917.358969-13-brendanhiggins@google.com>
 Mime-Version: 1.0
 References: <20200626210917.358969-1-brendanhiggins@google.com>
 X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
-Subject: [PATCH v5 11/12] Documentation: Add kunit_shutdown to kernel-parameters.txt
+Subject: [PATCH v5 12/12] Documentation: kunit: add a brief blurb about kunit_test_suite
 From:   Brendan Higgins <brendanhiggins@google.com>
 To:     jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
         arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org,
@@ -72,34 +72,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add kunit_shutdown, an option to specify that the kernel shutsdown after
-running KUnit tests, to the kernel-parameters.txt documentation.
+Add a brief blurb saying how and when the kunit_test_suite() macro
+works to the usage documentation.
 
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ Documentation/dev-tools/kunit/usage.rst | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index fb95fad81c79a..e7d5eb7249e7f 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2183,6 +2183,14 @@
- 			0: force disabled
- 			1: force enabled
+diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
+index 3c3fe8b5feccf..961d3ea3ca19a 100644
+--- a/Documentation/dev-tools/kunit/usage.rst
++++ b/Documentation/dev-tools/kunit/usage.rst
+@@ -211,6 +211,11 @@ KUnit test framework.
+ .. note::
+    A test case will only be run if it is associated with a test suite.
  
-+	kunit_shutdown=[KERNEL UNIT TESTING FRAMEWORK] Shutdown kernel after
-+			running built-in tests. Tests configured as modules will
-+			not be run.
-+			Default:	(flag not present) don't shutdown
-+			poweroff:	poweroff the kernel after running tests
-+			halt:		halt the kernel after running tests
-+			reboot:		reboot the kernel after running tests
++``kunit_test_suite(...)`` is a macro which tells the linker to put the specified
++test suite in a special linker section so that it can be run by KUnit either
++after late_init, or when the test module is loaded (depending on whether the
++test was built in or not).
 +
- 	kvm.ignore_msrs=[KVM] Ignore guest accesses to unhandled MSRs.
- 			Default is 0 (don't ignore, but inject #GP)
+ For more information on these types of things see the :doc:`api/test`.
  
+ Isolating Behavior
 -- 
 2.27.0.212.ge8ba1cc988-goog
 
