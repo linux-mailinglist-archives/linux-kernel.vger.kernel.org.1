@@ -2,63 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 909CA20BAA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 22:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F42520BA80
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 22:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbgFZUvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 16:51:35 -0400
-Received: from smtp3.emailarray.com ([65.39.216.17]:54100 "EHLO
-        smtp3.emailarray.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725803AbgFZUve (ORCPT
+        id S1725854AbgFZUqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 16:46:36 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:39095 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725803AbgFZUqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 16:51:34 -0400
-Received: (qmail 90924 invoked by uid 89); 26 Jun 2020 20:44:53 -0000
-Received: from unknown (HELO localhost) (amxlbW9uQGZsdWdzdmFtcC5jb21AMTYzLjExNC4xMzIuMw==) (POLARISLOCAL)  
-  by smtp3.emailarray.com with SMTP; 26 Jun 2020 20:44:53 -0000
-Date:   Fri, 26 Jun 2020 13:44:48 -0700
-From:   Jonathan Lemon <jonathan.lemon@gmail.com>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     netdev@vger.kernel.org,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        hch@lst.de, davem@davemloft.net, konrad.wilk@oracle.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, maximmi@mellanox.com,
-        magnus.karlsson@intel.com
-Subject: Re: [PATCH net] xsk: remove cheap_dma optimization
-Message-ID: <20200626204448.bxvr35qaxkfj6chs@bsd-mbp>
-References: <20200626134358.90122-1-bjorn.topel@gmail.com>
+        Fri, 26 Jun 2020 16:46:36 -0400
+Received: from localhost (lfbn-lyo-1-15-81.w86-202.abo.wanadoo.fr [86.202.110.81])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 07608100004;
+        Fri, 26 Jun 2020 20:46:32 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     linux-kernel@vger.kernel.org,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>, krzk@kernel.org,
+        linux@armlinux.org.uk, olof@lixom.net, sudeep.holla@arm.com,
+        ludovic.desroches@microchip.com
+Subject: Re: [PATCH] ARM: configs: at91: sama5: Enable CLASSD
+Date:   Fri, 26 Jun 2020 22:46:32 +0200
+Message-Id: <159320438192.1518713.7066726725417998350.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200618154147.687878-1-codrin.ciubotariu@microchip.com>
+References: <20200618154147.687878-1-codrin.ciubotariu@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200626134358.90122-1-bjorn.topel@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 03:43:58PM +0200, Björn Töpel wrote:
-> From: Björn Töpel <bjorn.topel@intel.com>
-> 
-> When the AF_XDP buffer allocation API was introduced it had an
-> optimization, "cheap_dma". The idea was that when the umem was DMA
-> mapped, the pool also checked whether the mapping required a
-> synchronization (CPU to device, and vice versa). If not, it would be
-> marked as "cheap_dma" and the synchronization would be elided.
-> 
-> In [1] Christoph points out that the optimization above breaks the DMA
-> API abstraction, and should be removed. Further, Christoph points out
-> that optimizations like this should be done within the DMA mapping
-> core, and not elsewhere.
-> 
-> Unfortunately this has implications for the packet rate
-> performance. The AF_XDP rxdrop scenario shows a 9% decrease in packets
-> per second.
-> 
-> [1] https://lore.kernel.org/netdev/20200626074725.GA21790@lst.de/
-> 
-> Cc: Christoph Hellwig <hch@lst.de>
-> Fixes: 2b43470add8c ("xsk: Introduce AF_XDP buffer allocation API")
-> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+On Thu, 18 Jun 2020 18:41:47 +0300, Codrin Ciubotariu wrote:
+> CLASSD is present on SAMA5d2 SoCs.
 
-Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
+Applied, thanks!
+
+[1/1] ARM: configs: at91: sama5: Enable CLASSD
+      commit: 7651d824125c7a1819e5700246dbb5582ba85c98
+
+Best regards,
+-- 
+Alexandre Belloni <alexandre.belloni@bootlin.com>
