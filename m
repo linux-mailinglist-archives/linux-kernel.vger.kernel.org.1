@@ -2,71 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1495920B092
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 13:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6860420B0EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 13:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728711AbgFZLcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 07:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728701AbgFZLcr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 07:32:47 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368D8C08C5C1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 04:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9F5sFgP9Bn8cXiYViW8jd6fQuEsP0WlFlPFHdqj9h4w=; b=tIuW0RUDKUL0tHC3tOR/EvjGtb
-        EvACl84kLjv98Gf3yBaaYcFik7AgLAnDjSC8JECnwfVhnsyoY1jWNEC45cBf08vvItZgktkTmk1qH
-        aamaQMyYgdtU7VgxtH/AU6DTD0ALcgQnMSlmnFTspApQsFOKJUUcldcnT5s9Kkrs3XEvt4QJzKXFM
-        z8FmeM549x+GwIrmP6S3hljAC8FvkxacFXNryIH4qPTXL/xSgWgfhJ9hIm7IZ9lvG55ECzdtzGNJe
-        XFh+uhZ9mP1unuTJOMEEVIR4bPJV+uSDsC2GFLkwC4sKR0HoWhKPewoERWd6h+nbmASoB+qri9Co/
-        W0DgtV6w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jomad-00085b-Oh; Fri, 26 Jun 2020 11:32:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4A6F0301DFC;
-        Fri, 26 Jun 2020 13:32:15 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3C13729C4228A; Fri, 26 Jun 2020 13:32:15 +0200 (CEST)
-Date:   Fri, 26 Jun 2020 13:32:15 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org, hpa@zytor.com,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] x86/mm: Pre-allocate p4d/pud pages for vmalloc area
-Message-ID: <20200626113215.GG117543@hirez.programming.kicks-ass.net>
-References: <20200626093450.27741-1-joro@8bytes.org>
- <20200626110731.GC4817@hirez.programming.kicks-ass.net>
- <20200626111711.GO14101@suse.de>
- <20200626113101.GG4817@hirez.programming.kicks-ass.net>
+        id S1728882AbgFZLvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 07:51:16 -0400
+Received: from m136.mail.163.com ([220.181.13.6]:16818 "EHLO m136.mail.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725884AbgFZLvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 07:51:15 -0400
+X-Greylist: delayed 907 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Jun 2020 07:51:13 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=eHsSH
+        9qDfcW5toF8Yd4HT2Ucml9LISECE/7HtQhEokw=; b=jBfFnFETF0ZAP8lpTJxrX
+        b+usPUH/hhMFdPoINua7/1h+JEd854/2zTCmPhaknEN2fI3VjfB/yzqRpvfP77UM
+        qSrolEHUIYB7yTfem5FHFMclphVUy9e1zk6f9djI7nybVCudflztUsnDpKSSVGP1
+        4Xnq9OQUZpRXRZ9ZT+8H5w=
+Received: from lxgrxd$163.com ( [113.104.190.184] ) by ajax-webmail-wmsvr6
+ (Coremail) ; Fri, 26 Jun 2020 19:35:51 +0800 (CST)
+X-Originating-IP: [113.104.190.184]
+Date:   Fri, 26 Jun 2020 19:35:51 +0800 (CST)
+From:   =?GBK?B?wubQobjV?= <lxgrxd@163.com>
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     chuck.lever@oracle.com, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re:Re: [PATCH] nfsd: fix kernel crash when load nfsd in docker
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190724(ac680a23)
+ Copyright (c) 2002-2020 www.mailtech.cn 163com
+In-Reply-To: <20200624012901.GC18460@fieldses.org>
+References: <20200615071211.31326-1-lxgrxd@163.com>
+ <20200624012901.GC18460@fieldses.org>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200626113101.GG4817@hirez.programming.kicks-ass.net>
+Message-ID: <335d1aa4.27f0.172f06997c2.Coremail.lxgrxd@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: BsGowADXVHGX3fVeQRZKAA--.51030W
+X-CM-SenderInfo: ho0j25rg6rljoofrz/xtbBEBJPUVUMSHAzBAABsL
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 01:31:01PM +0200, Peter Zijlstra wrote:
-> On Fri, Jun 26, 2020 at 01:17:11PM +0200, Joerg Roedel wrote:
-> > On Fri, Jun 26, 2020 at 01:07:31PM +0200, Peter Zijlstra wrote:
-> > > Can't we now remove arch_sync_kernel_mappings() from this same file?
-> > 
-> > Only if we panic on allocation failure.
-> 
-> I think we do that in plenty places already, so sure ;-)
-
-That is, this is boot time only, right? clone() would return -ENOMEM, as
-it's part of the normal page-table copy.
+Thanks for reply. Very well, the two patches you provided solved this problem.
