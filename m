@@ -2,167 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C92220AA17
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 03:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D6420AA1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 03:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbgFZBM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 21:12:56 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:46868 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726252AbgFZBM4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 21:12:56 -0400
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 13A1D595;
-        Fri, 26 Jun 2020 03:12:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1593133973;
-        bh=OGnn3Du3CGaosILghe0jhZN8MxKh5aDNKLaqOQFHkps=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=grSCHd6GQJkQiVjtsiow7VRDaWX/2mg+YJHmhO/Csv4kPpErwiM+AktRcwgZ3cd0g
-         jXSdHvuy6gISYKdgEueXpt1KLlyWRJuroN3lkRP6oOKevlD4Y6ZtQRlvJNtKNzSebq
-         e0ecGJsBTkMQqVxxKmFvlSyIZlCRAAtlJFu+QIDc=
-Date:   Fri, 26 Jun 2020 04:12:51 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Steve Longerbeam <steve_longerbeam@mentor.com>
-Cc:     Jacopo Mondi <jacopo@jmondi.org>,
-        Ramzi BEN MEFTAH <rbmeftah@de.adit-jv.com>,
-        niklas soderlund <niklas.soderlund@ragnatech.se>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Michael Rodin <mrodin@de.adit-jv.com>,
-        efriedrich@de.adit-jv.com, erosca@de.adit-jv.com
-Subject: Re: [PATCH 1/3] v4l2-subdev: Add subdev ioctl support for
- ENUM/GET/SET INPUT
-Message-ID: <20200626011251.GP5865@pendragon.ideasonboard.com>
-References: <1592301619-17631-1-git-send-email-rbmeftah@de.adit-jv.com>
- <20200624075307.hl6wew7vr5ue225t@uno.localdomain>
- <20200625020138.GW5980@pendragon.ideasonboard.com>
- <c57d416d-14d4-6d5d-a281-ddbf3183395a@mentor.com>
+        id S1727012AbgFZBOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 21:14:24 -0400
+Received: from mga02.intel.com ([134.134.136.20]:36657 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726971AbgFZBOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 21:14:23 -0400
+IronPort-SDR: TK1kaDWzE3gvlF7lkTDpReWfU1YkQmty8+AJGyGy3VJvVHSQYFe6um7q1JBaKopl3gcjUhFwXc
+ MCavHLBRibkA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="133555691"
+X-IronPort-AV: E=Sophos;i="5.75,281,1589266800"; 
+   d="scan'208";a="133555691"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2020 18:14:23 -0700
+IronPort-SDR: 55HZYR1RCQG97/JMJ/shb9Vxs8ptbAtPjU7r1uxpVAth+m1W/L1ou9OG0tyKHWXHM+tw1MAJGk
+ u2IrnMiqR5Qw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,281,1589266800"; 
+   d="scan'208";a="385632895"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.249.172.117]) ([10.249.172.117])
+  by fmsmga001.fm.intel.com with ESMTP; 25 Jun 2020 18:14:18 -0700
+Cc:     baolu.lu@linux.intel.com,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org
+Subject: Re: [PATCH v4 02/12] iommu/vt-d: Change flags type to unsigned int in
+ binding mm
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        H Peter Anvin <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Christoph Hellwig <hch@infradeed.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>
+References: <1593116242-31507-1-git-send-email-fenghua.yu@intel.com>
+ <1593116242-31507-3-git-send-email-fenghua.yu@intel.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <888dc4b1-663e-3c62-c5dd-34167382aec1@linux.intel.com>
+Date:   Fri, 26 Jun 2020 09:14:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c57d416d-14d4-6d5d-a281-ddbf3183395a@mentor.com>
+In-Reply-To: <1593116242-31507-3-git-send-email-fenghua.yu@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
+Hi Fenghua,
 
-On Thu, Jun 25, 2020 at 10:41:09AM -0700, Steve Longerbeam wrote:
-> On 6/24/20 7:01 PM, Laurent Pinchart wrote:
-> > On Wed, Jun 24, 2020 at 09:53:07AM +0200, Jacopo Mondi wrote:
-> >> On Tue, Jun 16, 2020 at 12:00:15PM +0200, Ramzi BEN MEFTAH wrote:
-> >>> From: Steve Longerbeam <steve_longerbeam@mentor.com>
-> >>   +Niklas, +Laurent
-> >>
-> >> Niklas, Laurent, how does this play with CAP_IO_MC ?
-> > I don't think it's related to CAP_IO_MC, but I don't think it's a good
-> > idea either :-) Routing doesn't go through the subdev [gs]_input
-> > operations in MC-based drivers. It should be configured through link
-> > setup instead. This patch goes in the wrong direction, sorry Steve.
+On 2020/6/26 4:17, Fenghua Yu wrote:
+> "flags" passed to intel_svm_bind_mm() is a bit mask and should be
+> defined as "unsigned int" instead of "int".
 > 
-> That's OK! :) I didn't submit this patch, and as stated in the commit 
-> header, I never recommended this patch be submitted to upstream in the 
-> first place.
+> Change its type to "unsigned int".
+
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+
+Best regards,
+baolu
+
 > 
-> Selecting inputs at a subdev should normally make use of media link 
-> setup. But for selecting analog signal inputs, such as the ADV748x AFE 
-> standard definition inputs, that would  mean there would need to exist 
-> source "analog" subdevs that connect to the AFE inputs, if only for the 
-> purpose of selecting those inputs, which seems silly IMHO. The ADV748x 
-> AFE subdev defines these inputs as media pads, but have no connections, 
-> so link setup API can't be used to select those inputs.
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> ---
+> v2:
+> - Add this new patch per Thomas' comment.
 > 
-> So a new subdev pad API is clearly needed, not just to get input status 
-> at a subdev pad, but to select/make active such analog inputs without 
-> requiring link setup API.
-
-There was an attempt to create a subdev ioctl to configure internal
-routing. See "[PATCH v4 19/31] media: Documentation: Add GS_ROUTING
-documentation" ([1]) and the related patches in the series.
-
-[1] https://lore.kernel.org/linux-media/20190328200608.9463-20-jacopo+renesas@jmondi.org/
-
-> >>> This commit enables VIDIOC_ENUMINPUT, VIDIOC_G_INPUT, and VIDIOC_S_INPUT
-> >>> ioctls for use via v4l2 subdevice node.
-> >>>
-> >>> This commit should probably not be pushed upstream, because the (old)
-> >>> idea of video inputs conflicts with the newer concept of establishing
-> >>> media links between src->sink pads.
-> >>>
-> >>> However it might make sense for some subdevices to support enum/get/set
-> >>> inputs. One example would be the analog front end subdevice for the
-> >>> ADV748x. By providing these ioctls, selecting the ADV748x analog inputs
-> >>> can be done without requiring the implementation of media entities that
-> >>> would define the analog source for which to establish a media link.
-> >>>
-> >>> Signed-off-by: Steve Longerbeam <steve_longerbeam@mentor.com>
-> >>> ---
-> >>>   drivers/media/v4l2-core/v4l2-subdev.c |  9 +++++++++
-> >>>   include/media/v4l2-subdev.h           | 11 +++++++++++
-> >>>   2 files changed, 20 insertions(+)
-> >>>
-> >>> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-> >>> index 6b989fe..73fbfe9 100644
-> >>> --- a/drivers/media/v4l2-core/v4l2-subdev.c
-> >>> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-> >>> @@ -378,6 +378,15 @@ static long subdev_do_ioctl(struct file *file, unsigned int cmd, void *arg)
-> >>>   			return -ENOTTY;
-> >>>   		return v4l2_querymenu(vfh->ctrl_handler, arg);
-> >>>
-> >>> +	case VIDIOC_ENUMINPUT:
-> >>> +		return v4l2_subdev_call(sd, video, enuminput, arg);
-> >>> +
-> >>> +	case VIDIOC_G_INPUT:
-> >>> +		return v4l2_subdev_call(sd, video, g_input, arg);
-> >>> +
-> >>> +	case VIDIOC_S_INPUT:
-> >>> +		return v4l2_subdev_call(sd, video, s_input, *(u32 *)arg);
-> >>> +
-> >>>   	case VIDIOC_G_CTRL:
-> >>>   		if (!vfh->ctrl_handler)
-> >>>   			return -ENOTTY;
-> >>> diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-> >>> index f7fe78a..6e1a9cd 100644
-> >>> --- a/include/media/v4l2-subdev.h
-> >>> +++ b/include/media/v4l2-subdev.h
-> >>> @@ -383,6 +383,14 @@ struct v4l2_mbus_frame_desc {
-> >>>    * @g_input_status: get input status. Same as the status field in the
-> >>>    *	&struct &v4l2_input
-> >>>    *
-> >>> + * @enuminput: enumerate inputs. Should return the same input status as
-> >>> + *      @g_input_status if the passed input index is the currently active
-> >>> + *      input.
-> >>> + *
-> >>> + * @g_input: returns the currently active input index.
-> >>> + *
-> >>> + * @s_input: set the active input.
-> >>> + *
-> >>>    * @s_stream: used to notify the driver that a video stream will start or has
-> >>>    *	stopped.
-> >>>    *
-> >>> @@ -423,6 +431,9 @@ struct v4l2_subdev_video_ops {
-> >>>   	int (*g_tvnorms)(struct v4l2_subdev *sd, v4l2_std_id *std);
-> >>>   	int (*g_tvnorms_output)(struct v4l2_subdev *sd, v4l2_std_id *std);
-> >>>   	int (*g_input_status)(struct v4l2_subdev *sd, u32 *status);
-> >>> +	int (*enuminput)(struct v4l2_subdev *sd, struct v4l2_input *input);
-> >>> +	int (*g_input)(struct v4l2_subdev *sd, u32 *index);
-> >>> +	int (*s_input)(struct v4l2_subdev *sd, u32 index);
-> >>>   	int (*s_stream)(struct v4l2_subdev *sd, int enable);
-> >>>   	int (*g_pixelaspect)(struct v4l2_subdev *sd, struct v4l2_fract *aspect);
-> >>>   	int (*g_frame_interval)(struct v4l2_subdev *sd,
+>   drivers/iommu/intel/svm.c   | 7 ++++---
+>   include/linux/intel-iommu.h | 2 +-
+>   2 files changed, 5 insertions(+), 4 deletions(-)
 > 
-
--- 
-Regards,
-
-Laurent Pinchart
+> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+> index 778089d198eb..8a0cf2f0dd54 100644
+> --- a/drivers/iommu/intel/svm.c
+> +++ b/drivers/iommu/intel/svm.c
+> @@ -427,7 +427,8 @@ int intel_svm_unbind_gpasid(struct device *dev, u32 pasid)
+>   
+>   /* Caller must hold pasid_mutex, mm reference */
+>   static int
+> -intel_svm_bind_mm(struct device *dev, int flags, struct svm_dev_ops *ops,
+> +intel_svm_bind_mm(struct device *dev, unsigned int flags,
+> +		  struct svm_dev_ops *ops,
+>   		  struct mm_struct *mm, struct intel_svm_dev **sd)
+>   {
+>   	struct intel_iommu *iommu = intel_svm_device_to_iommu(dev);
+> @@ -954,7 +955,7 @@ intel_svm_bind(struct device *dev, struct mm_struct *mm, void *drvdata)
+>   {
+>   	struct iommu_sva *sva = ERR_PTR(-EINVAL);
+>   	struct intel_svm_dev *sdev = NULL;
+> -	int flags = 0;
+> +	unsigned int flags = 0;
+>   	int ret;
+>   
+>   	/*
+> @@ -963,7 +964,7 @@ intel_svm_bind(struct device *dev, struct mm_struct *mm, void *drvdata)
+>   	 * and intel_svm etc.
+>   	 */
+>   	if (drvdata)
+> -		flags = *(int *)drvdata;
+> +		flags = *(unsigned int *)drvdata;
+>   	mutex_lock(&pasid_mutex);
+>   	ret = intel_svm_bind_mm(dev, flags, NULL, mm, &sdev);
+>   	if (ret)
+> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+> index 314a95870e47..4d20f93a5e2d 100644
+> --- a/include/linux/intel-iommu.h
+> +++ b/include/linux/intel-iommu.h
+> @@ -759,7 +759,7 @@ struct intel_svm {
+>   	struct mm_struct *mm;
+>   
+>   	struct intel_iommu *iommu;
+> -	int flags;
+> +	unsigned int flags;
+>   	u32 pasid;
+>   	int gpasid; /* In case that guest PASID is different from host PASID */
+>   	struct list_head devs;
+> 
