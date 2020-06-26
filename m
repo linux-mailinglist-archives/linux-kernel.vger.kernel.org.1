@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D5F20B21A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 15:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA8220B218
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 15:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728278AbgFZNFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 09:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58578 "EHLO
+        id S1728245AbgFZNFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 09:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727790AbgFZNFd (ORCPT
+        with ESMTP id S1727838AbgFZNFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 09:05:33 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DECBC08C5DB
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 06:05:32 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id s10so9408017wrw.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 06:05:32 -0700 (PDT)
+        Fri, 26 Jun 2020 09:05:34 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE839C08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 06:05:33 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id o11so9428581wrv.9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 06:05:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=daHyuJlZ21yTucBCriQSJRjQqcObN26/yVHvenxInRk=;
-        b=HlFLionZgSOs6uB5R/XFj+QIIQ5tQl7fhImDsr1EeJhlVxOL9n404r1ANLopHwWtlY
-         zywtHNZ54HiqUqgmPyiXkVySsIX4Hdk5SWXj59y9VIkehX/2bWPlhpcP7bkThFYisB7L
-         aYoLNSR3p1LB8G0Ts1jI1ig5BPgz25+wFct97UzGfn349NuZSZqSwCDKY2W2oZlGBzV0
-         YmvLsIPf7g1dPN95thFlze08d6GIffTkmWyjaxSaff6/6ReJBYwwFa4XTK8Y5ZeTsUPA
-         dz6N/RJAHapYtB681ADXg6GWRBLyVeyCUflJ7MAVPiXKoqzUEY+U6C8hRybcrFPGTzfF
-         p12Q==
+        bh=2h3Gz11K9lz1GWwD6l+glaQop1qQtS3m0z/WOqzfDhk=;
+        b=lnCjdUGVWFd64dqs1Pxf1ilLYbrTGBJ6/SubvmW15xt/YFyLhtakePLjr0ysjDZJ6+
+         Njj3gSu/JxXkPOFptelL0qEKUuoyL8RLE5TCr7RJrTM8ayJwJIS6Z0ZLv3QGViB/kQo4
+         c793ZcLpZEnEEy7QerSJvgMa4N6IYxLOv6670a6u5FR8TR/3nNB+bMe37MjoXrORCZR5
+         +kQnpkWYNOVBcLbsLVYz6AqJpI7Rmt8Vd+yyDJtfcoTnE/WnEspWMCBQL9FipWxeO582
+         g36+a9+dT2iRl63/Tf+eR3ANQ7A9y30+4Q7N3e0WxvogO7OZ/oqDH24MMYLZYFz1A3p8
+         Y+Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=daHyuJlZ21yTucBCriQSJRjQqcObN26/yVHvenxInRk=;
-        b=jTZgGxEPhYncL4LCL2Oed8mkCZygHSQExCaS9b4PIxgCQM3hJ0VcrSgixMwATuQyv5
-         H+/4acEdQIm6mS5NsgggjkcmoQhSfDuALcjs4eJwb6SE93iPF1+VXaZ8PiVbh833geor
-         8jGlEVFnoiL/PWKVbviZmVgq5lrohXT89HbhqqnPesdZX0Cdy+fYvA05sN/FD2ER9+aI
-         IFdKsVGusEsRh9EIqbHb78u2cBm7Y4ItpMNxwq3d8oVpoJE0xfFU3KfBFEWjbghnQnNL
-         IGrr5Dpt50dOpIMai/EC+M55VtRMguWubPcXRLonqgylBfwuhfQjivFC9pnH3II5ZW8M
-         tpsw==
-X-Gm-Message-State: AOAM532TWhBk8XcvJbxJo8yC49EMlDxMNfP9w8ydPaaMqTLs8QnQtGVU
-        CYxbnljuZPMOHC+CjCsxHOwTJQ==
-X-Google-Smtp-Source: ABdhPJzdQdsAOHVLeNWM/Vp1yS4sRgT3xxrd2+IrFxsYUcMKcsL2YoQVIt2KlUvCS/9L2F4AxW13NQ==
-X-Received: by 2002:adf:e90d:: with SMTP id f13mr3565068wrm.146.1593176731129;
-        Fri, 26 Jun 2020 06:05:31 -0700 (PDT)
+        bh=2h3Gz11K9lz1GWwD6l+glaQop1qQtS3m0z/WOqzfDhk=;
+        b=ibRrJLXCwhrGKXGssmEUD8KiaHbBa3MvhFD6wVdDFcrseacbxtwlx3n0BMN03ywTBG
+         VnV330lf9Izd8ee7Lh5q8NhNer6dsyr4xwuEKFWWZc5sluk12RQ3r5BEVcZGMrEMJ4nc
+         +FVGK0vXqKQtNX2sOrl/BMAbZDqVr4x9vUrdi+jFHnG4095nSEBj5qJZd2CB3feMHR2b
+         8G9anR7J8npiOExLf1AGM344rFCZ6d48OTZPEOmnZR4u1ngtM5AIg3l5od9JD4ZOqxhd
+         DNUkvtcCX82QbY2uTLTx7i/jzD0IswtUJaSraSAzLmKbP4zKJ1dnZqho5PwYElL/kX9F
+         CzUw==
+X-Gm-Message-State: AOAM5318uxZoqKWLtJOu2TxEjxf2MHZ58hfx/yUMcife7cNpNLeZe3BK
+        REBfDZsN1zXloRXlJCNoVG8CgA==
+X-Google-Smtp-Source: ABdhPJxK+YkmbDwzyiNATXYFOhK+8lW4MBKB9U+eFI0+bnZxV5GzvY/YoYYTr1RXZgYTUlzXxu0XIQ==
+X-Received: by 2002:adf:b312:: with SMTP id j18mr3472991wrd.195.1593176732336;
+        Fri, 26 Jun 2020 06:05:32 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id u20sm16746904wmc.44.2020.06.26.06.05.29
+        by smtp.gmail.com with ESMTPSA id u20sm16746904wmc.44.2020.06.26.06.05.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 06:05:30 -0700 (PDT)
+        Fri, 26 Jun 2020 06:05:31 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Pavan Savoy <pavan_savoy@ti.com>,
-        Naveen Jain <naveen_jain@ti.com>
-Subject: [PATCH 02/10] misc: ti-st: st_core: Tidy-up bespoke commentry
-Date:   Fri, 26 Jun 2020 14:05:17 +0100
-Message-Id: <20200626130525.389469-3-lee.jones@linaro.org>
+        Pavan Savoy <pavan_savoy@ti.com>
+Subject: [PATCH 03/10] misc: ti-st: st_kim: Tidy-up bespoke commentry
+Date:   Fri, 26 Jun 2020 14:05:18 +0100
+Message-Id: <20200626130525.389469-4-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200626130525.389469-1-lee.jones@linaro.org>
 References: <20200626130525.389469-1-lee.jones@linaro.org>
@@ -77,82 +76,68 @@ It also fixes the following W=1 warnings by demoting the kerneldoc
 function headers to standard comments, since there doesn't appear
 to be a requirement for the function args to be documented:
 
- drivers/misc/ti-st/st_core.c:132: warning: Function parameter or member 'st_gdata' not described in 'st_reg_complete'
- drivers/misc/ti-st/st_core.c:132: warning: Function parameter or member 'err' not described in 'st_reg_complete'
- drivers/misc/ti-st/st_core.c:197: warning: Function parameter or member 'st_gdata' not described in 'st_wakeup_ack'
- drivers/misc/ti-st/st_core.c:197: warning: Function parameter or member 'cmd' not described in 'st_wakeup_ack'
- drivers/misc/ti-st/st_core.c:226: warning: Function parameter or member 'disc_data' not described in 'st_int_recv'
- drivers/misc/ti-st/st_core.c:226: warning: Function parameter or member 'data' not described in 'st_int_recv'
- drivers/misc/ti-st/st_core.c:226: warning: Function parameter or member 'count' not described in 'st_int_recv'
- drivers/misc/ti-st/st_core.c:387: warning: Function parameter or member 'st_gdata' not described in 'st_int_dequeue'
- drivers/misc/ti-st/st_core.c:409: warning: Function parameter or member 'st_gdata' not described in 'st_int_enqueue'
- drivers/misc/ti-st/st_core.c:409: warning: Function parameter or member 'skb' not described in 'st_int_enqueue'
+ /drivers/misc/ti-st/st_kim.c:42: warning: Function parameter or member 'id' not described in 'st_get_plat_device'
+ /drivers/misc/ti-st/st_kim.c:53: warning: Function parameter or member 'kim_gdata' not described in 'validate_firmware_response'
+ /drivers/misc/ti-st/st_kim.c:126: warning: Function parameter or member 'kim_gdata' not described in 'kim_int_recv'
+ /drivers/misc/ti-st/st_kim.c:126: warning: Function parameter or member 'data' not described in 'kim_int_recv'
+ /drivers/misc/ti-st/st_kim.c:126: warning: Function parameter or member 'count' not described in 'kim_int_recv'
+ /drivers/misc/ti-st/st_kim.c:272: warning: Function parameter or member 'kim_gdata' not described in 'download_firmware'
+ /drivers/misc/ti-st/st_kim.c:445: warning: Function parameter or member 'kim_data' not described in 'st_kim_start'
+ /drivers/misc/ti-st/st_kim.c:509: warning: Function parameter or member 'kim_data' not described in 'st_kim_stop'
+ /drivers/misc/ti-st/st_kim.c:661: warning: Function parameter or member 'core_data' not described in 'st_kim_ref'
+ /drivers/misc/ti-st/st_kim.c:661: warning: Function parameter or member 'id' not described in 'st_kim_ref'
 
 Cc: Pavan Savoy <pavan_savoy@ti.com>
-Cc: Naveen Jain <naveen_jain@ti.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/ti-st/st_core.c | 79 ++++++++++++++++++++++--------------
- 1 file changed, 49 insertions(+), 30 deletions(-)
+ drivers/misc/ti-st/st_kim.c | 71 +++++++++++++++++++++++--------------
+ 1 file changed, 44 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/misc/ti-st/st_core.c b/drivers/misc/ti-st/st_core.c
-index 14136d2cc8f93..f4ddd1e670151 100644
---- a/drivers/misc/ti-st/st_core.c
-+++ b/drivers/misc/ti-st/st_core.c
-@@ -18,7 +18,8 @@
+diff --git a/drivers/misc/ti-st/st_kim.c b/drivers/misc/ti-st/st_kim.c
+index a36ed1ff5967f..f2f6cab97c086 100644
+--- a/drivers/misc/ti-st/st_kim.c
++++ b/drivers/misc/ti-st/st_kim.c
+@@ -30,7 +30,7 @@ static struct platform_device *st_kim_devices[MAX_ST_DEVICES];
+ /**********************************************************************/
+ /* internal functions */
  
- extern void st_kim_recv(void *, const unsigned char *, long);
- void st_int_recv(void *, const unsigned char *, long);
--/* function pointer pointing to either,
+-/**
 +/*
-+ * function pointer pointing to either,
-  * st_kim_recv during registration to receive fw download responses
-  * st_int_recv after registration to receive proto stack responses
-  */
-@@ -60,7 +61,8 @@ int st_get_uart_wr_room(struct st_data_s *st_gdata)
- 	return tty->ops->write_room(tty);
- }
- 
--/* can be called in from
-+/*
-+ * can be called in from
-  * -- KIM (during fw download)
-  * -- ST Core (during st_write)
-  *
-@@ -100,7 +102,8 @@ static void st_send_frame(unsigned char chnl_id, struct st_data_s *st_gdata)
- 		kfree_skb(st_gdata->rx_skb);
- 		return;
- 	}
--	/* this cannot fail
-+	/*
-+	 * this cannot fail
- 	 * this shouldn't take long
- 	 * - should be just skb_queue_tail for the
- 	 *   protocol stack driver
-@@ -121,9 +124,8 @@ static void st_send_frame(unsigned char chnl_id, struct st_data_s *st_gdata)
- 	return;
+  * st_get_plat_device -
+  *	function which returns the reference to the platform device
+  *	requested by id. As of now only 1 such device exists (id=0)
+@@ -43,7 +43,7 @@ static struct platform_device *st_get_plat_device(int id)
+ 	return st_kim_devices[id];
  }
  
 -/**
-- * st_reg_complete -
-- * to call registration complete callbacks
 +/*
-+ * st_reg_complete - to call registration complete callbacks
-  * of all protocol stack drivers
-  * This function is being called with spin lock held, protocol drivers are
-  * only expected to complete their waits and do nothing more than that.
-@@ -156,21 +158,24 @@ static inline int st_check_data_len(struct st_data_s *st_gdata,
- 	pr_debug("len %d room %d", len, room);
+  * validate_firmware_response -
+  *	function to return whether the firmware response was proper
+  *	in case of error don't complete so that waiting for proper
+@@ -55,7 +55,8 @@ static void validate_firmware_response(struct kim_data_s *kim_gdata)
+ 	if (!skb)
+ 		return;
  
+-	/* these magic numbers are the position in the response buffer which
++	/*
++	 * these magic numbers are the position in the response buffer which
+ 	 * allows us to distinguish whether the response is for the read
+ 	 * version info. command
+ 	 */
+@@ -79,7 +80,8 @@ static void validate_firmware_response(struct kim_data_s *kim_gdata)
+ 	kfree_skb(skb);
+ }
+ 
+-/* check for data len received inside kim_int_recv
++/*
++ * check for data len received inside kim_int_recv
+  * most often hit the last case to update state to waiting for data
+  */
+ static inline int kim_check_data_len(struct kim_data_s *kim_gdata, int len)
+@@ -91,14 +93,16 @@ static inline int kim_check_data_len(struct kim_data_s *kim_gdata, int len)
  	if (!len) {
--		/* Received packet has only packet header and
-+		/*
-+		 * Received packet has only packet header and
- 		 * has zero length payload. So, ask ST CORE to
- 		 * forward the packet to protocol driver (BT/FM/GPS)
- 		 */
- 		st_send_frame(chnl_id, st_gdata);
- 
+ 		validate_firmware_response(kim_gdata);
  	} else if (len > room) {
 -		/* Received packet's payload length is larger.
 +		/*
@@ -161,190 +146,180 @@ index 14136d2cc8f93..f4ddd1e670151 100644
  		 */
  		pr_err("Data length is too large len %d room %d", len,
  			   room);
- 		kfree_skb(st_gdata->rx_skb);
+ 		kfree_skb(kim_gdata->rx_skb);
  	} else {
 -		/* Packet header has non-zero payload length and
 +		/*
 +		 * Packet header has non-zero payload length and
  		 * we have enough space in created skb. Lets read
  		 * payload data */
- 		st_gdata->rx_state = ST_W4_DATA;
-@@ -178,8 +183,7 @@ static inline int st_check_data_len(struct st_data_s *st_gdata,
+ 		kim_gdata->rx_state = ST_W4_DATA;
+@@ -106,8 +110,10 @@ static inline int kim_check_data_len(struct kim_data_s *kim_gdata, int len)
  		return len;
  	}
  
--	/* Change ST state to continue to process next
+-	/* Change ST LL state to continue to process next
 -	 * packet */
-+	/* Change ST state to continue to process next packet */
- 	st_gdata->rx_state = ST_W4_PACKET_TYPE;
- 	st_gdata->rx_skb = NULL;
- 	st_gdata->rx_count = 0;
-@@ -188,7 +192,7 @@ static inline int st_check_data_len(struct st_data_s *st_gdata,
++	/*
++	 * Change ST LL state to continue to process next
++	 * packet
++	 */
+ 	kim_gdata->rx_state = ST_W4_PACKET_TYPE;
+ 	kim_gdata->rx_skb = NULL;
+ 	kim_gdata->rx_count = 0;
+@@ -115,7 +121,7 @@ static inline int kim_check_data_len(struct kim_data_s *kim_gdata, int len)
  	return 0;
  }
  
 -/**
 +/*
-  * st_wakeup_ack - internal function for action when wake-up ack
-  *	received
-  */
-@@ -199,7 +203,8 @@ static inline void st_wakeup_ack(struct st_data_s *st_gdata,
- 	unsigned long flags = 0;
- 
- 	spin_lock_irqsave(&st_gdata->lock, flags);
--	/* de-Q from waitQ and Q in txQ now that the
+  * kim_int_recv - receive function called during firmware download
+  *	firmware download responses on different UART drivers
+  *	have been observed to come in bursts of different
+@@ -216,7 +222,8 @@ static long read_local_version(struct kim_data_s *kim_gdata, char *bts_scr_name)
+ 		return timeout ? -ERESTARTSYS : -ETIMEDOUT;
+ 	}
+ 	reinit_completion(&kim_gdata->kim_rcvd);
+-	/* the positions 12 & 13 in the response buffer provide with the
 +	/*
-+	 * de-Q from waitQ and Q in txQ now that the
- 	 * chip is awake
++	 * the positions 12 & 13 in the response buffer provide with the
+ 	 * chip, major & minor numbers
  	 */
- 	while ((waiting_skb = skb_dequeue(&st_gdata->tx_waitq)))
-@@ -213,7 +218,7 @@ static inline void st_wakeup_ack(struct st_data_s *st_gdata,
- 	st_tx_wakeup(st_gdata);
+ 
+@@ -263,7 +270,7 @@ static void skip_change_remote_baud(unsigned char **ptr, long *len)
+ 	}
  }
  
 -/**
 +/*
-  * st_int_recv - ST's internal receive function.
-  *	Decodes received RAW data and forwards to corresponding
-  *	client drivers (Bluetooth,FM,GPS..etc).
-@@ -262,8 +267,10 @@ void st_int_recv(void *disc_data,
- 			/* Waiting for complete packet ? */
- 			case ST_W4_DATA:
- 				pr_debug("Complete pkt received");
--				/* Ask ST CORE to forward
--				 * the packet to protocol driver */
+  * download_firmware -
+  *	internal function which parses through the .bts firmware
+  *	script file intreprets SEND, DELAY actions only as of now
+@@ -295,7 +302,8 @@ static long download_firmware(struct kim_data_s *kim_gdata)
+ 	}
+ 	ptr = (void *)kim_gdata->fw_entry->data;
+ 	len = kim_gdata->fw_entry->size;
+-	/* bts_header to remove out magic number and
++	/*
++	 * bts_header to remove out magic number and
+ 	 * version
+ 	 */
+ 	ptr += sizeof(struct bts_header);
+@@ -313,8 +321,10 @@ static long download_firmware(struct kim_data_s *kim_gdata)
+ 			if (unlikely
+ 			    (((struct hci_command *)action_ptr)->opcode ==
+ 			     0xFF36)) {
+-				/* ignore remote change
+-				 * baud rate HCI VS command */
 +				/*
-+				 * Ask ST CORE to forward
-+				 * the packet to protocol driver
++				 * ignore remote change
++				 * baud rate HCI VS command
 +				 */
- 				st_send_frame(st_gdata->rx_chnl, st_gdata);
- 
- 				st_gdata->rx_state = ST_W4_PACKET_TYPE;
-@@ -276,7 +283,7 @@ void st_int_recv(void *disc_data,
- 				&st_gdata->rx_skb->data
- 				[proto->offset_len_in_hdr];
- 				pr_debug("plen pointing to %x\n", *plen);
--				if (proto->len_size == 1)/* 1 byte len field */
-+				if (proto->len_size == 1) /* 1 byte len field */
- 					payload_len = *(unsigned char *)plen;
- 				else if (proto->len_size == 2)
- 					payload_len =
-@@ -294,18 +301,23 @@ void st_int_recv(void *disc_data,
- 		}
- 
- 		/* end of if rx_count */
--		/* Check first byte of packet and identify module
--		 * owner (BT/FM/GPS) */
-+
-+		/*
-+		 * Check first byte of packet and identify module
-+		 * owner (BT/FM/GPS)
-+		 */
- 		switch (*ptr) {
- 		case LL_SLEEP_IND:
- 		case LL_SLEEP_ACK:
- 		case LL_WAKE_UP_IND:
- 			pr_debug("PM packet");
--			/* this takes appropriate action based on
+ 				pr_warn("change remote baud"
+ 				    " rate command in firmware");
+ 				skip_change_remote_baud(&ptr, &len);
+@@ -346,7 +356,8 @@ static long download_firmware(struct kim_data_s *kim_gdata)
+ 				release_firmware(kim_gdata->fw_entry);
+ 				return -ETIMEDOUT;
+ 			}
+-			/* reinit completion before sending for the
 +			/*
-+			 * this takes appropriate action based on
- 			 * sleep state received --
++			 * reinit completion before sending for the
+ 			 * relevant wait
  			 */
- 			st_ll_sleep_state(st_gdata, *ptr);
--			/* if WAKEUP_IND collides copy from waitq to txq
-+			/*
-+			 * if WAKEUP_IND collides copy from waitq to txq
- 			 * and assume chip awake
- 			 */
- 			spin_unlock_irqrestore(&st_gdata->lock, flags);
-@@ -331,7 +343,8 @@ void st_int_recv(void *disc_data,
- 		default:
- 			type = *ptr;
+ 			reinit_completion(&kim_gdata->kim_rcvd);
+@@ -418,14 +429,16 @@ void st_kim_recv(void *disc_data, const unsigned char *data, long count)
+ 	struct st_data_s	*st_gdata = (struct st_data_s *)disc_data;
+ 	struct kim_data_s	*kim_gdata = st_gdata->kim_data;
  
--			/* Default case means non-HCILL packets,
-+			/*
-+			 * Default case means non-HCILL packets,
- 			 * possibilities are packets for:
- 			 * (a) valid protocol -  Supported Protocols within
- 			 *     the ST_MAX_CHANNELS.
-@@ -377,7 +390,7 @@ void st_int_recv(void *disc_data,
+-	/* proceed to gather all data and distinguish read fw version response
++	/*
++	 * proceed to gather all data and distinguish read fw version response
+ 	 * from other fw responses when data gathering is complete
+ 	 */
+ 	kim_int_recv(kim_gdata, data, count);
  	return;
  }
  
--/**
+-/* to signal completion of line discipline installation
 +/*
-  * st_int_dequeue - internal de-Q function.
-  *	If the previous data set was not written
-  *	completely, return that skb which has the pending data.
-@@ -396,7 +409,7 @@ static struct sk_buff *st_int_dequeue(struct st_data_s *st_gdata)
- 	return skb_dequeue(&st_gdata->txq);
- }
- 
--/**
-+/*
-  * st_int_enqueue - internal Q-ing function.
-  *	Will either Q the skb to txq or the tx_waitq
-  *	depending on the ST LL state.
-@@ -561,7 +574,8 @@ long st_register(struct st_proto_s *new_proto)
- 		/* release lock previously held - re-locked below */
- 		spin_unlock_irqrestore(&st_gdata->lock, flags);
- 
--		/* this may take a while to complete
-+		/*
-+		 * this may take a while to complete
- 		 * since it involves BT fw download
- 		 */
- 		err = st_kim_start(st_gdata->kim_data);
-@@ -583,7 +597,8 @@ long st_register(struct st_proto_s *new_proto)
- 		clear_bit(ST_REG_IN_PROGRESS, &st_gdata->st_state);
- 		st_recv = st_int_recv;
- 
--		/* this is where all pending registration
-+		/*
-+		 * this is where all pending registration
- 		 * are signalled to be complete by calling callback functions
- 		 */
- 		if ((st_gdata->protos_registered != ST_EMPTY) &&
-@@ -593,7 +608,8 @@ long st_register(struct st_proto_s *new_proto)
- 		}
- 		clear_bit(ST_REG_PENDING, &st_gdata->st_state);
- 
--		/* check for already registered once more,
-+		/*
-+		 * check for already registered once more,
- 		 * since the above check is old
- 		 */
- 		if (st_gdata->is_registered[new_proto->chnl_id] == true) {
-@@ -622,7 +638,8 @@ long st_register(struct st_proto_s *new_proto)
- }
- EXPORT_SYMBOL_GPL(st_register);
- 
--/* to unregister a protocol -
-+/*
-+ * to unregister a protocol -
-  * to be called from protocol stack driver
++ * to signal completion of line discipline installation
+  * called from ST Core, upon tty_open
   */
- long st_unregister(struct st_proto_s *proto)
-@@ -742,7 +759,8 @@ static void st_tty_close(struct tty_struct *tty)
+ void st_kim_complete(void *kim_data)
+@@ -434,7 +447,7 @@ void st_kim_complete(void *kim_data)
+ 	complete(&kim_gdata->ldisc_installed);
+ }
  
- 	pr_info("%s ", __func__);
+-/**
++/*
+  * st_kim_start - called from ST Core upon 1st registration
+  *	This involves toggling the chip enable gpio, reading
+  *	the firmware version from chip, forming the fw file name
+@@ -472,8 +485,10 @@ long st_kim_start(void *kim_data)
+ 		err = wait_for_completion_interruptible_timeout(
+ 			&kim_gdata->ldisc_installed, msecs_to_jiffies(LDISC_TIME));
+ 		if (!err) {
+-			/* ldisc installation timeout,
+-			 * flush uart, power cycle BT_EN */
++			/*
++			 * ldisc installation timeout,
++			 * flush uart, power cycle BT_EN
++			 */
+ 			pr_err("ldisc installation timeout");
+ 			err = st_kim_stop(kim_gdata);
+ 			continue;
+@@ -482,8 +497,10 @@ long st_kim_start(void *kim_data)
+ 			pr_info("line discipline installed");
+ 			err = download_firmware(kim_gdata);
+ 			if (err != 0) {
+-				/* ldisc installed but fw download failed,
+-				 * flush uart & power cycle BT_EN */
++				/*
++				 * ldisc installed but fw download failed,
++				 * flush uart & power cycle BT_EN
++				 */
+ 				pr_err("download firmware failed");
+ 				err = st_kim_stop(kim_gdata);
+ 				continue;
+@@ -495,7 +512,7 @@ long st_kim_start(void *kim_data)
+ 	return err;
+ }
  
--	/* TODO:
+-/**
++/*
+  * st_kim_stop - stop communication with chip.
+  *	This can be called from ST Core/KIM, on the-
+  *	(a) last un-register when chip need not be powered there-after,
+@@ -650,7 +667,7 @@ static const struct attribute_group uim_attr_grp = {
+ 	.attrs = uim_attrs,
+ };
+ 
+-/**
++/*
+  * st_kim_ref - reference the core's data
+  *	This references the per-ST platform device in the arch/xx/
+  *	board-xx.c file.
+@@ -729,8 +746,7 @@ static int kim_probe(struct platform_device *pdev)
+ 		pr_err(" unable to configure gpio %d", kim_gdata->nshutdown);
+ 		goto err_sysfs_group;
+ 	}
+-	/* get reference of pdev for request_firmware
+-	 */
++	/* get reference of pdev for request_firmware */
+ 	kim_gdata->kim_pdev = pdev;
+ 	init_completion(&kim_gdata->kim_rcvd);
+ 	init_completion(&kim_gdata->ldisc_installed);
+@@ -772,7 +788,8 @@ static int kim_remove(struct platform_device *pdev)
+ 
+ 	kim_gdata = platform_get_drvdata(pdev);
+ 
+-	/* Free the Bluetooth/FM/GPIO
 +	/*
-+	 * TODO:
- 	 * if a protocol has been registered & line discipline
- 	 * un-installed for some reason - what should be done ?
++	 * Free the Bluetooth/FM/GPIO
+ 	 * nShutdown gpio from the system
  	 */
-@@ -795,7 +813,8 @@ static void st_tty_receive(struct tty_struct *tty, const unsigned char *data,
- 	pr_debug("done %s", __func__);
- }
- 
--/* wake-up function called in from the TTY layer
-+/*
-+ * wake-up function called in from the TTY layer
-  * inside the internal wakeup function will be called
-  */
- static void st_tty_wakeup(struct tty_struct *tty)
+ 	gpio_free(pdata->nshutdown_gpio);
 -- 
 2.25.1
 
