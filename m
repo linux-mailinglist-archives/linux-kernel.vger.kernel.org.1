@@ -2,102 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6DD20AC95
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 08:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826BF20ACA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 08:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728581AbgFZG5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 02:57:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58294 "EHLO
+        id S1728595AbgFZG5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 02:57:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726311AbgFZG5n (ORCPT
+        with ESMTP id S1726311AbgFZG5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 02:57:43 -0400
+        Fri, 26 Jun 2020 02:57:44 -0400
 Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7159AC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 23:57:43 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z13so8366200wrw.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 23:57:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA63C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 23:57:44 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a6so8367524wrm.4
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 23:57:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+mfkXUaLpnMxZlSEJdhFVt18d74h2IL60WdheI/gMRo=;
-        b=FT+pN0bkkgDMaHY7DJ+MXjf93gjIOsUROc7aOAachwo6+12RkYqupo/vU6pOwk/dsQ
-         SgYuWK3OmXcItQ98arjhHHbbbR+kdQwb+/SYjVusLM/EEcY9daFkmKixB3TVFVtYvxgo
-         2ppRghXjInlJ6u5/PiUkGk5xHM9PZb0fIpcBoB1bMbMaRYI9OL8fkNcXbZcF2F6V07uy
-         Xp53o3taL9z4xFguPGZSn6UHrcQINsXSdNwq39Qi7ieJzZf8fzb4JHk5x3BYV0PckFvu
-         zlg9ab9MYPeWxoZyZ1W5RJgkOEcddk48zit1NCaYe1sIuUqhA1TaycrXQt8bhra3Zgrd
-         cyxg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/E1PdVn/9jzzc34D3D+WNExjRWlGVi1N3dWKjpxsWKE=;
+        b=a68o20Gmmh0AyVgl/PpKk+tsY9DfLFWxKbSXt+qf+QeHv9ryx9N2GLgLxgdpcME+oz
+         n5CBJu8CJXJt6rWJBLxQ5rt2eGIOlPfgo+mLNsgXG9GfZLRbjdBgOz6oGuH++cBqasbF
+         je/seh5XPcrMsHgXv1ANElfefrnnY6nPilIuMB4Tjk0++4C0Dwf2iBnNTr9pvI2DtdNv
+         FYKKhpUxGrDfAOjuIkTfWcgJRArbRgC5fugLbAEwoDNWN1bCvH6cdkWnopB4uEyTKcR0
+         /osZUZ2sKKtLEVnIU4he/yg07D0715OWbL2KosASZvI/k/lGiD5JTUi7q6XmeV4ft1kH
+         HQNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+mfkXUaLpnMxZlSEJdhFVt18d74h2IL60WdheI/gMRo=;
-        b=mLFJxdrrKJKlBQ3NzC10U01O87rzv/4hAel2JcVOPFhqFFs9yIgZ6TTNenObI0e0+D
-         yDCOx74qCgoCqpA9+xXSivm1j7RyMhhhcFS68ol2hnALyt3dGB5CUD97ZgzM8wPTfiCT
-         XFMEsUUNkHY6S59cdpUX74zOt9jcrWUvKioEFatlY0RQ+ks1Miy3XtFF404/WzqYakRq
-         CJD89LdTKyx1gtGir80vMggmjAprywtO2YhlyMcLAsBik9ZX+zq9wpWKhqqj2LZgK9wF
-         rDNEA2T8QtzG933VrxkHFd9y+S2BgHYgN5/sL/EirCiFtvix0XiGGcX1Ngn5YAQxG8Hh
-         mZkw==
-X-Gm-Message-State: AOAM532j381Yh5VnpziSsmyt9n1djE6rvfTLuwrAlYwsSutkBtfs6At7
-        X+uArXZI75ZVHo5dhibNXQxtGyYZAZc=
-X-Google-Smtp-Source: ABdhPJxXjV8tT8YeYETkVZp0Bc43hTtJEwNUZt5QnIbtRGl0/YHTgVlfuDnAK7znArNXHffmpTN8KQ==
-X-Received: by 2002:a05:6000:1006:: with SMTP id a6mr2009870wrx.332.1593154662112;
-        Thu, 25 Jun 2020 23:57:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/E1PdVn/9jzzc34D3D+WNExjRWlGVi1N3dWKjpxsWKE=;
+        b=YY8eXqeZTIkWXOJW1jYzD/WMkwpfCJL9ABLHiWLXd2c8CZcyzcHlPESQYiZ1mV1NTt
+         35kUQe2iSybfxUPFgxOGpBjVXFZ6rj3QN9F/GarwEMH6XasI2oUHDXJristelbkboOup
+         XJaoSv0ce8XZ1EgFZByy4Wf7c4ClfWHhky2E6ySZFZpW8XwbPDO8/SSjXdCLKVL3yzEi
+         81OZx6gS7y5rO50hGBLewym0p6z8IQ5toJUol9pI7WtHhAT7dDQXMZBEE1VyhnjRGsTz
+         GULQvBa37xYBFIZaKtQiG2ZXOIxueYBGXRXwBMLOVm8we1ZLri6MMtyw8/T8koaPe/bY
+         Js6A==
+X-Gm-Message-State: AOAM532B3y6k99nFcr3BHbP7toze/p6cbuj4A/MLhuiGIgzAvWWv8lmw
+        WCNZkrVfVNs2StqiPcXUxifBiA==
+X-Google-Smtp-Source: ABdhPJzlrUVwS/s+z+kPaLN7mMZ6TH290vDO8qERoSmz8o7Sm04wV5mFHDvFboop/xRMB+UYBri1Yw==
+X-Received: by 2002:adf:f504:: with SMTP id q4mr2075095wro.163.1593154663208;
+        Thu, 25 Jun 2020 23:57:43 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id x18sm15355269wmi.35.2020.06.25.23.57.41
+        by smtp.gmail.com with ESMTPSA id x18sm15355269wmi.35.2020.06.25.23.57.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 23:57:41 -0700 (PDT)
+        Thu, 25 Jun 2020 23:57:42 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org, lgirdwood@gmail.com
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 0/9] Fix a bunch more W=1 warnings in Regulator
-Date:   Fri, 26 Jun 2020 07:57:29 +0100
-Message-Id: <20200626065738.93412-1-lee.jones@linaro.org>
+        Lee Jones <lee.jones@linaro.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [PATCH 1/9] regulator: max8998: Staticify internal function max8998_get_current_limit()
+Date:   Fri, 26 Jun 2020 07:57:30 +0100
+Message-Id: <20200626065738.93412-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200626065738.93412-1-lee.jones@linaro.org>
+References: <20200626065738.93412-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attempting to clean-up W=1 kernel builds, which are currently
-overwhelmingly riddled with niggly little warnings.
+max8998_get_current_limit() is only used via the .get_current_limit,
+so it doesn't need to be publicly supported, or to have its own
+external prototype.  Instead, we'll make it static.
 
-This is the last of them.  Once applied, drivers/regulator will
-be clean of W=1 warnings.
+Fixes the following W=1 warning:
 
-Lee Jones (9):
-  regulator: max8998: Staticify internal function
-    max8998_get_current_limit()
-  regulator: qcom-rpmh-regulator: Repair dodgy kerneldoc header
-    formatting
-  regulator: pwm-regulator: Demote kerneldoc header to standard comment
-  regulator: stpmic1_regulator: Properly document 'struct
-    stpmic1_regulator_cfg'
-  regulator: tps65217-regulator: Remove pointless 'is unsigned int <0'
-    check
-  regulator: tps65217-regulator: Use the returned value of
-    tps65217_reg_read()
-  regulator: tps65218-regulator: Remove pointless 'is unsigned int <0'
-    check
-  regulator: wm8400-regulator: Repair dodgy kerneldoc header formatting
-  regulator: qcom_smd-regulator: Remove unused 'struct regulator_desc
-    pmi8994_boost'
+ drivers/regulator/max8998.c:418:5: warning: no previous prototype for ‘max8998_get_current_limit’ [-Wmissing-prototypes]
+ 418 | int max8998_get_current_limit(struct regulator_dev *rdev)
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~
 
- drivers/regulator/max8998.c             |  2 +-
- drivers/regulator/pwm-regulator.c       |  2 +-
- drivers/regulator/qcom-rpmh-regulator.c | 14 +++++++-------
- drivers/regulator/qcom_smd-regulator.c  |  9 ---------
- drivers/regulator/stpmic1_regulator.c   |  2 +-
- drivers/regulator/tps65217-regulator.c  |  7 +++++--
- drivers/regulator/tps65218-regulator.c  |  4 ++--
- drivers/regulator/wm8400-regulator.c    |  6 +++---
- 8 files changed, 20 insertions(+), 26 deletions(-)
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/regulator/max8998.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/regulator/max8998.c b/drivers/regulator/max8998.c
+index 340413bba0c5f..ac69bdd398cb3 100644
+--- a/drivers/regulator/max8998.c
++++ b/drivers/regulator/max8998.c
+@@ -415,7 +415,7 @@ static int max8998_set_current_limit(struct regulator_dev *rdev,
+ 				  sel, rdev->desc->csel_mask);
+ }
+ 
+-int max8998_get_current_limit(struct regulator_dev *rdev)
++static int max8998_get_current_limit(struct regulator_dev *rdev)
+ {
+ 	struct max8998_data *max8998 = rdev_get_drvdata(rdev);
+ 	struct i2c_client *i2c = max8998->iodev->i2c;
 -- 
 2.25.1
 
