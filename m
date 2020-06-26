@@ -2,189 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B6020B7F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 20:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B47020B7EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 20:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbgFZSRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 14:17:40 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:48620 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726416AbgFZSRe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 14:17:34 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05QIHLZ1002436;
-        Fri, 26 Jun 2020 13:17:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1593195441;
-        bh=BNg+DQH/3TSrqnuqngB8EXZIV8fz3RCqpdutiE3KweQ=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=igXLvPGbyjxH+HFjg2vIA5Gby6uJ8R/ukJ4qN28rnhHe4QQNNPEVKscRbnLXLOrAa
-         GX2hlYKwGhINjUajwP3/VEemWYQVRRUHRGz7n8e/WbpJvowoxSECg14RVoFLZo73At
-         rIqsxgOD2O2Mosipsy5tfFsz2/tRGlSoPubpEj/c=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05QIHLhW004381;
-        Fri, 26 Jun 2020 13:17:21 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 26
- Jun 2020 13:17:21 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 26 Jun 2020 13:17:21 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05QIHKcE081657;
-        Fri, 26 Jun 2020 13:17:21 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH net-next 6/6] net: ethernet: ti: am65-cpsw-nuss: enable am65x sr2.0 support
-Date:   Fri, 26 Jun 2020 21:17:09 +0300
-Message-ID: <20200626181709.22635-7-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200626181709.22635-1-grygorii.strashko@ti.com>
-References: <20200626181709.22635-1-grygorii.strashko@ti.com>
+        id S1726206AbgFZSRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 14:17:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725780AbgFZSRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 14:17:19 -0400
+Received: from kernel.org (unknown [87.71.40.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC37B207D8;
+        Fri, 26 Jun 2020 18:17:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593195439;
+        bh=6cO14MahD2eqoTeBaK7We6L4gJrj2k+b/ftJFyuTMmM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jhr6fkibh+hp57t83vdQu2PSEEfVz2VsqS8Ffs1G0+2Kb2hGIZovYf+KpPD7blVjH
+         xMrpEboqbKgaCucHmEksLcAIUJvEbDePA15oWs/L//aJoUMmg4HBPVJ4jJjCewjYR9
+         SQov2Tb6PmGKynLwadAV2ktVQqo3ePRESlUwZgOY=
+Date:   Fri, 26 Jun 2020 21:17:13 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH 0/2] sparc32: srmmu: improve type safety of
+ __nocache_fix()
+Message-ID: <20200626181713.GA3547368@kernel.org>
+References: <20200524162151.3493-1-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200524162151.3493-1-rppt@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AM65x SR2.0 MCU CPSW has fixed errata i2027 "CPSW: CPSW Does Not
-Support CPPI Receive Checksum (Host to Ethernet) Offload Feature". This
-errata also fixed for J271E SoC.
+Any comments on this?
 
-Use SOC bus data for K3 SoC identification and apply i2027 errata w/a only
-for the AM65x SR1.0 SoC.
+On Sun, May 24, 2020 at 07:21:49PM +0300, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Hi,
+> 
+> As discussed at [1] the __nocache_fix() macro in sparc's SRMMU can be made
+> type safe and so the compiler will yell anout misuse of pXd pointers for
+> which the __nocache_fix() is primarily used.
+> 
+> The first patch is an fix of such misuse that I've discovered after adding
+> type cast to __nocache_fix(), but to avoid breaking bisection I've made it
+> the first commit.
+> 
+> --
+> Sincerely yours,
+> Mike.
+> 
+> [1] https://lkml.kernel.org/r/CAHk-=wisORTa7QVPnFqNw9pFs62UiwgsD4C4d=MtYy1o4JPyGQ@mail.gmail.com
+> 
+> Mike Rapoport (2):
+>   sparc32: use PUD rather than PGD to get PMD in srmmu_inherit_prom_mappings()
+>   sparc32: srmmu: improve type safety of __nocache_fix()
+> 
+>  arch/sparc/include/asm/pgtsrmmu.h |  2 +-
+>  arch/sparc/mm/srmmu.c             | 18 +++++++++---------
+>  2 files changed, 10 insertions(+), 10 deletions(-)
+> 
+> -- 
+> 2.26.2
+> 
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 47 ++++++++++++++++++++----
- drivers/net/ethernet/ti/am65-cpsw-nuss.h |  2 +-
- 2 files changed, 41 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 7a921a480f29..9fdcd90e8323 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -23,6 +23,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/mfd/syscon.h>
-+#include <linux/sys_soc.h>
- #include <linux/dma/ti-cppi5.h>
- #include <linux/dma/k3-udma-glue.h>
- 
-@@ -148,10 +149,11 @@ static void am65_cpsw_nuss_get_ver(struct am65_cpsw_common *common)
- 	common->nuss_ver = readl(common->ss_base);
- 	common->cpsw_ver = readl(common->cpsw_base);
- 	dev_info(common->dev,
--		 "initializing am65 cpsw nuss version 0x%08X, cpsw version 0x%08X Ports: %u\n",
-+		 "initializing am65 cpsw nuss version 0x%08X, cpsw version 0x%08X Ports: %u quirks:%08x\n",
- 		common->nuss_ver,
- 		common->cpsw_ver,
--		common->port_num + 1);
-+		common->port_num + 1,
-+		common->pdata.quirks);
- }
- 
- void am65_cpsw_nuss_adjust_link(struct net_device *ndev)
-@@ -1877,7 +1879,7 @@ static int am65_cpsw_nuss_init_ndev_2g(struct am65_cpsw_common *common)
- 	port->ndev->ethtool_ops = &am65_cpsw_ethtool_ops_slave;
- 
- 	/* Disable TX checksum offload by default due to HW bug */
--	if (common->pdata->quirks & AM65_CPSW_QUIRK_I2027_NO_TX_CSUM)
-+	if (common->pdata.quirks & AM65_CPSW_QUIRK_I2027_NO_TX_CSUM)
- 		port->ndev->features &= ~NETIF_F_HW_CSUM;
- 
- 	ndev_priv->stats = netdev_alloc_pcpu_stats(struct am65_cpsw_ndev_stats);
-@@ -1981,21 +1983,50 @@ static void am65_cpsw_nuss_cleanup_ndev(struct am65_cpsw_common *common)
- 	}
- }
- 
-+struct am65_cpsw_soc_pdata {
-+	u32	quirks_dis;
-+};
-+
-+static const struct am65_cpsw_soc_pdata am65x_soc_sr2_0 = {
-+	.quirks_dis = AM65_CPSW_QUIRK_I2027_NO_TX_CSUM,
-+};
-+
-+static const struct soc_device_attribute am65_cpsw_socinfo[] = {
-+	{ .family = "AM65X",
-+	  .revision = "SR2.0",
-+	  .data = &am65x_soc_sr2_0
-+	},
-+	{/* sentinel */}
-+};
-+
- static const struct am65_cpsw_pdata am65x_sr1_0 = {
- 	.quirks = AM65_CPSW_QUIRK_I2027_NO_TX_CSUM,
- };
- 
--static const struct am65_cpsw_pdata j721e_sr1_0 = {
-+static const struct am65_cpsw_pdata j721e_pdata = {
- 	.quirks = 0,
- };
- 
- static const struct of_device_id am65_cpsw_nuss_of_mtable[] = {
--	{ .compatible = "ti,am654-cpsw-nuss", .data = &am65x_sr1_0 },
--	{ .compatible = "ti,j721e-cpsw-nuss", .data = &j721e_sr1_0 },
-+	{ .compatible = "ti,am654-cpsw-nuss", .data = &am65x_sr1_0},
-+	{ .compatible = "ti,j721e-cpsw-nuss", .data = &j721e_pdata},
- 	{ /* sentinel */ },
- };
- MODULE_DEVICE_TABLE(of, am65_cpsw_nuss_of_mtable);
- 
-+static void am65_cpsw_nuss_apply_socinfo(struct am65_cpsw_common *common)
-+{
-+	const struct soc_device_attribute *soc;
-+
-+	soc = soc_device_match(am65_cpsw_socinfo);
-+	if (soc && soc->data) {
-+		const struct am65_cpsw_soc_pdata *socdata = soc->data;
-+
-+		/* disable quirks */
-+		common->pdata.quirks &= ~socdata->quirks_dis;
-+	}
-+}
-+
- static int am65_cpsw_nuss_probe(struct platform_device *pdev)
- {
- 	struct cpsw_ale_params ale_params = { 0 };
-@@ -2014,7 +2045,9 @@ static int am65_cpsw_nuss_probe(struct platform_device *pdev)
- 	of_id = of_match_device(am65_cpsw_nuss_of_mtable, dev);
- 	if (!of_id)
- 		return -EINVAL;
--	common->pdata = of_id->data;
-+	common->pdata = *(const struct am65_cpsw_pdata *)of_id->data;
-+
-+	am65_cpsw_nuss_apply_socinfo(common);
- 
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cpsw_nuss");
- 	common->ss_base = devm_ioremap_resource(&pdev->dev, res);
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.h b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-index 9faf4fb1409b..94f666ea0e53 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-@@ -82,7 +82,7 @@ struct am65_cpsw_pdata {
- struct am65_cpsw_common {
- 	struct device		*dev;
- 	struct device		*mdio_dev;
--	const struct am65_cpsw_pdata *pdata;
-+	struct am65_cpsw_pdata	pdata;
- 
- 	void __iomem		*ss_base;
- 	void __iomem		*cpsw_base;
 -- 
-2.17.1
-
+Sincerely yours,
+Mike.
