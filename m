@@ -2,42 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCB620AB74
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 06:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE34520AB7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 06:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727969AbgFZEqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Jun 2020 00:46:14 -0400
-Received: from ozlabs.org ([203.11.71.1]:42021 "EHLO ozlabs.org"
+        id S1728013AbgFZEqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Jun 2020 00:46:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727885AbgFZEqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Jun 2020 00:46:07 -0400
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 49tPTn068Jz9sTV; Fri, 26 Jun 2020 14:46:04 +1000 (AEST)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     linuxppc-dev@lists.ozlabs.org,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-Cc:     Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20200612142953.135408-1-sathnaga@linux.vnet.ibm.com>
-References: <20200612142953.135408-1-sathnaga@linux.vnet.ibm.com>
-Subject: Re: [PATCH V2] powerpc/pseries/svm: Drop unused align argument in alloc_shared_lppaca() function
-Message-Id: <159314672679.1150869.345529163412866656.b4-ty@ellerman.id.au>
-Date:   Fri, 26 Jun 2020 14:46:04 +1000 (AEST)
+        id S1725768AbgFZEqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Jun 2020 00:46:42 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75CAB2078D;
+        Fri, 26 Jun 2020 04:46:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593146802;
+        bh=sYXojlFL6sCFl3kYEgJC5h64bcZLjgtXUZGxEjWBECc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sBYXjOulw0KUPwGyeCBx0vFkeiT4sa/XocCqGN4/2VrbdXdymhwIjU0ModQyNVWYm
+         L8yGUItrvVLNVGIPVoi3AyVOmWPjtpwg34/e6biRNOR23p+dKBSnpWCwdhJ3NJ8I5q
+         ObOeFjcxHfUH/6dBi5hcuvACbwA6/9+I+1BcL/FI=
+Date:   Fri, 26 Jun 2020 06:46:39 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Rajat Jain <rajatja@google.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, Raj Ashok <ashok.raj@intel.com>,
+        lalithambika.krishnakumar@intel.com,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Prashant Malani <pmalani@google.com>,
+        Benson Leung <bleung@google.com>,
+        Todd Broch <tbroch@google.com>,
+        Alex Levin <levinale@google.com>,
+        Mattias Nissler <mnissler@google.com>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Bernie Keany <bernie.keany@intel.com>,
+        Aaron Durbin <adurbin@google.com>,
+        Diego Rivas <diegorivas@google.com>,
+        Duncan Laurie <dlaurie@google.com>,
+        Furquan Shaikh <furquan@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Christian Kellner <christian@kellner.me>,
+        Alex Williamson <alex.williamson@redhat.com>, oohall@gmail.com
+Subject: Re: [PATCH 2/2] pci: Add parameter to disable attaching untrusted
+ devices
+Message-ID: <20200626044639.GA201124@kroah.com>
+References: <20200626002710.110200-1-rajatja@google.com>
+ <20200626002710.110200-2-rajatja@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200626002710.110200-2-rajatja@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Jun 2020 19:59:53 +0530, Satheesh Rajendran wrote:
-> Argument "align" in alloc_shared_lppaca() was unused inside the
-> function. Let's drop it and update code comment for page alignment.
+On Thu, Jun 25, 2020 at 05:27:10PM -0700, Rajat Jain wrote:
+> Introduce a PCI parameter that disables the automatic attachment of
+> untrusted devices to their drivers.
 
-Applied to powerpc/next.
-
-[1/1] powerpc/pseries/svm: Drop unused align argument in alloc_shared_lppaca() function
-      https://git.kernel.org/powerpc/c/178748b6d14946f080d49bc7dcc47b7cc4437e4d
-
-cheers
+You didn't document this new api anywhere :(
