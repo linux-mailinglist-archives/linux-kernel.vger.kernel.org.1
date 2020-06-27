@@ -2,298 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B1F20C1B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 15:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE94F20C1C0
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 15:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgF0NYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 09:24:02 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23005 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726960AbgF0NX7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 09:23:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593264237;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:in-reply-to:
-         references:references:references;
-        bh=Vbsz74jx639O45NZJ//E5urMuCAJMJoLkV3YW2Jxk5M=;
-        b=QwkEoKOXI14Cyj4uSi8GimqBkq1i3GmtiInD1DVMVfk+Ult6ic9GeXidl5OGHOjuU/KgOh
-        W6IPWToESRCk8vNdYdMWf0WXo3iT8ZomQsj9zDk0ffTMzrFVp5eIMEXSUO0HM44P+1gHUs
-        LgYF6HEGay7ISkbmurYV05rhu+pb9vQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-300-C3L9deshP0OUCzQ5IpSj0Q-1; Sat, 27 Jun 2020 09:23:55 -0400
-X-MC-Unique: C3L9deshP0OUCzQ5IpSj0Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726616AbgF0N3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 09:29:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725850AbgF0N3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 09:29:37 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8D191A0BD7;
-        Sat, 27 Jun 2020 13:23:53 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5A07D8205F;
-        Sat, 27 Jun 2020 13:23:43 +0000 (UTC)
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
-Cc:     Paul Moore <paul@paul-moore.com>, sgrubb@redhat.com,
-        omosnace@redhat.com, dhowells@redhat.com, simo@redhat.com,
-        eparis@parisplace.org, serge@hallyn.com, ebiederm@xmission.com,
-        nhorman@tuxdriver.com, dwalsh@redhat.com, mpatel@redhat.com,
-        Richard Guy Briggs <rgb@redhat.com>
-Subject: [PATCH ghak90 V9 13/13] audit: add capcontid to set contid outside init_user_ns
-Date:   Sat, 27 Jun 2020 09:20:46 -0400
-Message-Id: <b6cb5500cfd7e8686ac2a7758103688c2da7f4ce.1593198710.git.rgb@redhat.com>
-In-Reply-To: <cover.1593198710.git.rgb@redhat.com>
-References: <cover.1593198710.git.rgb@redhat.com>
-In-Reply-To: <cover.1593198710.git.rgb@redhat.com>
-References: <cover.1593198710.git.rgb@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        by mail.kernel.org (Postfix) with ESMTPSA id D837B20885;
+        Sat, 27 Jun 2020 13:29:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593264576;
+        bh=bYRgBNnkNpkhq+5KsbmZ23kTjQ4YEcihVz5msz6QX6s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ISLsKv7lswwBX0YXGOxRlv6mx3SzMEnQNIm4PXazGlt5GVbGFdmHPNJ+RR2M5Fhip
+         CzufdX98ZclkKj8hh0YCgpzadpiNnz2vW/r59/ZMILWkmyfxX5Vyzo37Pj3tYzy02G
+         pSIGHWb6G3X3XpUAG+qnyvfIiXF6qOPHthQw8sHg=
+Date:   Sat, 27 Jun 2020 14:29:31 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
+Cc:     robh+dt@kernel.org, robh@kernel.org, mchehab+huawei@kernel.org,
+        davem@davemloft.net, gregkh@linuxfoundation.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 00/13] iio: imu: new inv_icm42600 driver
+Message-ID: <20200627142931.4a522c6e@archlinux>
+In-Reply-To: <20200622153729.12702-1-jmaneyrol@invensense.com>
+References: <20200622153729.12702-1-jmaneyrol@invensense.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide a mechanism similar to CAP_AUDIT_CONTROL to explicitly give a
-process in a non-init user namespace the capability to set audit
-container identifiers of individual children.
+On Mon, 22 Jun 2020 17:37:16 +0200
+Jean-Baptiste Maneyrol <jmaneyrol@invensense.com> wrote:
 
-Provide the /proc/$PID/audit_capcontid interface to capcontid.
-Valid values are: 1==enabled, 0==disabled
+Looks good to me.  Whole series applied (picking up Rob's ack
+for the DT binding docs patch) to the togreg branch of iio.git and pushed
+out as testing for the various autobuilders to poke at it.
 
-Writing a "1" to this special file for the target process $PID will
-enable the target process to set audit container identifiers of its
-descendants.
+Thanks,
 
-A process must already have CAP_AUDIT_CONTROL in the initial user
-namespace or have had audit_capcontid enabled by a previous use of this
-feature by its parent on this process in order to be able to enable it
-for another process.  The target process must be a descendant of the
-calling process.
+Jonathan
 
-Report this action in new message type AUDIT_SET_CAPCONTID 1022 with
-fields opid= capcontid= old-capcontid=
-
-Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
----
- fs/proc/base.c             | 57 +++++++++++++++++++++++++++++++++++++++++++++-
- include/linux/audit.h      | 14 ++++++++++++
- include/uapi/linux/audit.h |  1 +
- kernel/audit.c             | 38 ++++++++++++++++++++++++++++++-
- 4 files changed, 108 insertions(+), 2 deletions(-)
-
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 794474cd8f35..1083db2ce345 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -1329,7 +1329,7 @@ static ssize_t proc_contid_read(struct file *file, char __user *buf,
- 	if (!task)
- 		return -ESRCH;
- 	/* if we don't have caps, reject */
--	if (!capable(CAP_AUDIT_CONTROL))
-+	if (!capable(CAP_AUDIT_CONTROL) && !audit_get_capcontid(current))
- 		return -EPERM;
- 	length = scnprintf(tmpbuf, TMPBUFLEN, "%llu", audit_get_contid(task));
- 	put_task_struct(task);
-@@ -1370,6 +1370,59 @@ static ssize_t proc_contid_write(struct file *file, const char __user *buf,
- 	.write		= proc_contid_write,
- 	.llseek		= generic_file_llseek,
- };
-+
-+static ssize_t proc_capcontid_read(struct file *file, char __user *buf,
-+				  size_t count, loff_t *ppos)
-+{
-+	struct inode *inode = file_inode(file);
-+	struct task_struct *task = get_proc_task(inode);
-+	ssize_t length;
-+	char tmpbuf[TMPBUFLEN];
-+
-+	if (!task)
-+		return -ESRCH;
-+	/* if we don't have caps, reject */
-+	if (!capable(CAP_AUDIT_CONTROL) && !audit_get_capcontid(current))
-+		return -EPERM;
-+	length = scnprintf(tmpbuf, TMPBUFLEN, "%u", audit_get_capcontid(task));
-+	put_task_struct(task);
-+	return simple_read_from_buffer(buf, count, ppos, tmpbuf, length);
-+}
-+
-+static ssize_t proc_capcontid_write(struct file *file, const char __user *buf,
-+				   size_t count, loff_t *ppos)
-+{
-+	struct inode *inode = file_inode(file);
-+	u32 capcontid;
-+	int rv;
-+	struct task_struct *task = get_proc_task(inode);
-+
-+	if (!task)
-+		return -ESRCH;
-+	if (*ppos != 0) {
-+		/* No partial writes. */
-+		put_task_struct(task);
-+		return -EINVAL;
-+	}
-+
-+	rv = kstrtou32_from_user(buf, count, 10, &capcontid);
-+	if (rv < 0) {
-+		put_task_struct(task);
-+		return rv;
-+	}
-+
-+	rv = audit_set_capcontid(task, capcontid);
-+	put_task_struct(task);
-+	if (rv < 0)
-+		return rv;
-+	return count;
-+}
-+
-+static const struct file_operations proc_capcontid_operations = {
-+	.read		= proc_capcontid_read,
-+	.write		= proc_capcontid_write,
-+	.llseek		= generic_file_llseek,
-+};
- #endif
- 
- #ifdef CONFIG_FAULT_INJECTION
-@@ -3273,6 +3326,7 @@ static int proc_stack_depth(struct seq_file *m, struct pid_namespace *ns,
- 	REG("loginuid",   S_IWUSR|S_IRUGO, proc_loginuid_operations),
- 	REG("sessionid",  S_IRUGO, proc_sessionid_operations),
- 	REG("audit_containerid", S_IWUSR|S_IRUSR, proc_contid_operations),
-+	REG("audit_capcontainerid", S_IWUSR|S_IRUSR, proc_capcontid_operations),
- #endif
- #ifdef CONFIG_FAULT_INJECTION
- 	REG("make-it-fail", S_IRUGO|S_IWUSR, proc_fault_inject_operations),
-@@ -3613,6 +3667,7 @@ static int proc_tid_comm_permission(struct inode *inode, int mask)
- 	REG("loginuid",  S_IWUSR|S_IRUGO, proc_loginuid_operations),
- 	REG("sessionid",  S_IRUGO, proc_sessionid_operations),
- 	REG("audit_containerid", S_IWUSR|S_IRUSR, proc_contid_operations),
-+	REG("audit_capcontainerid", S_IWUSR|S_IRUSR, proc_capcontid_operations),
- #endif
- #ifdef CONFIG_FAULT_INJECTION
- 	REG("make-it-fail", S_IRUGO|S_IWUSR, proc_fault_inject_operations),
-diff --git a/include/linux/audit.h b/include/linux/audit.h
-index 025b52ae8422..2b3a2b6020ed 100644
---- a/include/linux/audit.h
-+++ b/include/linux/audit.h
-@@ -122,6 +122,7 @@ struct audit_task_info {
- 	kuid_t			loginuid;
- 	unsigned int		sessionid;
- 	struct audit_contobj	*cont;
-+	u32			capcontid;
- #ifdef CONFIG_AUDITSYSCALL
- 	struct audit_context	*ctx;
- #endif
-@@ -230,6 +231,14 @@ static inline unsigned int audit_get_sessionid(struct task_struct *tsk)
- 	return tsk->audit->sessionid;
- }
- 
-+static inline u32 audit_get_capcontid(struct task_struct *tsk)
-+{
-+	if (!tsk->audit)
-+		return 0;
-+	return tsk->audit->capcontid;
-+}
-+
-+extern int audit_set_capcontid(struct task_struct *tsk, u32 enable);
- extern int audit_set_contid(struct task_struct *tsk, u64 contid);
- 
- static inline u64 audit_get_contid(struct task_struct *tsk)
-@@ -311,6 +320,11 @@ static inline unsigned int audit_get_sessionid(struct task_struct *tsk)
- 	return AUDIT_SID_UNSET;
- }
- 
-+static inline u32 audit_get_capcontid(struct task_struct *tsk)
-+{
-+	return 0;
-+}
-+
- static inline u64 audit_get_contid(struct task_struct *tsk)
- {
- 	return AUDIT_CID_UNSET;
-diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
-index 831c12bdd235..5e30f4c95dc2 100644
---- a/include/uapi/linux/audit.h
-+++ b/include/uapi/linux/audit.h
-@@ -73,6 +73,7 @@
- #define AUDIT_GET_FEATURE	1019	/* Get which features are enabled */
- #define AUDIT_CONTAINER_OP	1020	/* Define the container id and info */
- #define AUDIT_SIGNAL_INFO2	1021	/* Get info auditd signal sender */
-+#define AUDIT_SET_CAPCONTID	1022	/* Set cap_contid of a task */
- 
- #define AUDIT_FIRST_USER_MSG	1100	/* Userspace messages mostly uninteresting to kernel */
- #define AUDIT_USER_AVC		1107	/* We filter this differently */
-diff --git a/kernel/audit.c b/kernel/audit.c
-index aaf74702e993..454473f2e193 100644
---- a/kernel/audit.c
-+++ b/kernel/audit.c
-@@ -307,6 +307,7 @@ int audit_alloc(struct task_struct *tsk)
- 	rcu_read_lock();
- 	info->cont = _audit_contobj_get(current);
- 	rcu_read_unlock();
-+	info->capcontid = 0;
- 	tsk->audit = info;
- 
- 	ret = audit_alloc_syscall(tsk);
-@@ -322,6 +323,7 @@ struct audit_task_info init_struct_audit = {
- 	.loginuid = INVALID_UID,
- 	.sessionid = AUDIT_SID_UNSET,
- 	.cont = NULL,
-+	.capcontid = 0,
- #ifdef CONFIG_AUDITSYSCALL
- 	.ctx = NULL,
- #endif
-@@ -2763,6 +2765,40 @@ static bool audit_contid_isnesting(struct task_struct *tsk)
- 	return !isowner && ownerisparent;
- }
- 
-+int audit_set_capcontid(struct task_struct *task, u32 enable)
-+{
-+	u32 oldcapcontid;
-+	int rc = 0;
-+	struct audit_buffer *ab;
-+
-+	if (!task->audit)
-+		return -ENOPROTOOPT;
-+	oldcapcontid = audit_get_capcontid(task);
-+	/* if task is not descendant, block */
-+	if (task == current || !task_is_descendant(current, task))
-+		rc = -EXDEV;
-+	else if (current_user_ns() == &init_user_ns) {
-+		if (!capable(CAP_AUDIT_CONTROL) &&
-+		    !audit_get_capcontid(current))
-+			rc = -EPERM;
-+	}
-+	if (!rc)
-+		task->audit->capcontid = enable;
-+
-+	if (!audit_enabled)
-+		return rc;
-+
-+	ab = audit_log_start(audit_context(), GFP_KERNEL, AUDIT_SET_CAPCONTID);
-+	if (!ab)
-+		return rc;
-+
-+	audit_log_format(ab,
-+			 "opid=%d capcontid=%u old-capcontid=%u",
-+			 task_tgid_nr(task), enable, oldcapcontid);
-+	audit_log_end(ab);
-+	return rc;
-+}
-+
- /*
-  * audit_set_contid - set current task's audit contid
-  * @task: target task
-@@ -2795,7 +2831,7 @@ int audit_set_contid(struct task_struct *task, u64 contid)
- 		goto unlock;
- 	}
- 	/* if we don't have caps, reject */
--	if (!capable(CAP_AUDIT_CONTROL)) {
-+	if (!capable(CAP_AUDIT_CONTROL) && !audit_get_capcontid(current)) {
- 		rc = -EPERM;
- 		goto unlock;
- 	}
--- 
-1.8.3.1
+> Changelog
+> v1
+>   -initial patch submission
+> v2
+>   - formatting reworks, missing headers, code cleanup ...
+>   - delete all debug traces
+>   - add commentaries for better explanation of suspend/resume, timestamp, ...
+>   - delete i2c/spi table ids keeping only of, and use I2C probe_new function
+>   - switch calibbias to SI units and add calibias_available attribute
+>   - use DMA-safe buffer for all regmap_bulk_* calls
+>   - delete iio trigger usage and setup/handle interrupt in core module
+>   - add open-drain interrupt support
+>   - add FIFO on reference counter and buffer postenable/predisable to replace
+>     iio trigger usage
+>   - check that temperature data is present before copying in buffer
+>   - add temperature sensor off when fifo is turned off
+>   - delete timestamp channel reading
+>   - move timestamp state in IIO device private data
+>   - allow only 1 ODR change in a batch of data
+>   - add driver-open-drain in devicetree YAML and delete spi options
+> v3
+>   - delete const pointer cast for iio_device_get_drvdata
+>   - change gyro and accel init to return the allocated iio_dev structure
+>   - delete manual parent device assignment
+>   - correct style and improve readability
+>   - add commentaries about IIO buffer and watermark complex computation
+>   - add timestamp alignment in IIO buffer structure
+>   - wrap lines 80 columns for dt bindings
+>   - add ABI documentation for calibbias values in SI units
+> v4
+>   - return high resolution 16 bits temperature as raw data when polled with the
+>     corresponding scale and offset.
+>   - for data buffer return temperature in the same 16 bits using the same
+>     scale and offset. Convert low resolution temperature FIFO data to high
+>     resolution format.
+>   - explicitely zero out data buffer before copying to iio buffer.
+> 
+> This series add a new driver for managing InvenSense ICM-426xx 6-axis IMUs.
+> This next generation of chips includes new generations of 3-axis gyroscope
+> and 3-axis accelerometer, support of I3C in addition to I2C and SPI, and
+> intelligent MotionTracking features like pedometer, tilt detection, and
+> tap detection.
+> 
+> This series is delivering a driver supporting gyroscope, accelerometer and
+> temperature data, with polling and buffering using hwfifo and watermark,
+> on I2C and SPI busses.
+> 
+> Gyroscope and accelerometer sensors are completely independent and can have
+> different ODRs. Since there is only a single FIFO a specific value is used to
+> mark invalid data. For keeping the device standard we are de-multiplexing data
+> from the FIFO to 2 IIO devices with 2 buffers, 1 for the accelerometer and 1
+> for the gyroscope. This architecture also enables to easily turn each sensor
+> on/off without impacting the other. The device interrupt is used to read the
+> FIFO and launch parsing of accelerometer and gyroscope data. A complex
+> timestamping mechanism is added to handle correctly FIFO watermark and dynamic
+> changes of settings.
+> 
+> 
+> 
+> Jean-Baptiste Maneyrol (13):
+>   iio: imu: inv_icm42600: add core of new inv_icm42600 driver
+>   iio: imu: inv_icm42600: add I2C driver for inv_icm42600 driver
+>   iio: imu: inv_icm42600: add SPI driver for inv_icm42600 driver
+>   iio: imu: inv_icm42600: add gyroscope IIO device
+>   iio: imu: inv_icm42600: add accelerometer IIO device
+>   iio: imu: inv_icm42600: add temperature sensor support
+>   iio: imu: add Kconfig and Makefile for inv_icm42600 driver
+>   Documentation: ABI: add specific icm42600 documentation
+>   iio: imu: inv_icm42600: add device interrupt
+>   iio: imu: inv_icm42600: add buffer support in iio devices
+>   iio: imu: inv_icm42600: add accurate timestamping
+>   dt-bindings: iio: imu: Add inv_icm42600 documentation
+>   MAINTAINERS: add entry for inv_icm42600 6-axis imu sensor
+> 
+>  .../ABI/testing/sysfs-bus-iio-icm42600        |  20 +
+>  .../bindings/iio/imu/invensense,icm42600.yaml |  90 ++
+>  MAINTAINERS                                   |   8 +
+>  drivers/iio/imu/Kconfig                       |   1 +
+>  drivers/iio/imu/Makefile                      |   1 +
+>  drivers/iio/imu/inv_icm42600/Kconfig          |  29 +
+>  drivers/iio/imu/inv_icm42600/Makefile         |  15 +
+>  drivers/iio/imu/inv_icm42600/inv_icm42600.h   | 395 +++++++++
+>  .../iio/imu/inv_icm42600/inv_icm42600_accel.c | 787 +++++++++++++++++
+>  .../imu/inv_icm42600/inv_icm42600_buffer.c    | 601 +++++++++++++
+>  .../imu/inv_icm42600/inv_icm42600_buffer.h    |  98 +++
+>  .../iio/imu/inv_icm42600/inv_icm42600_core.c  | 786 +++++++++++++++++
+>  .../iio/imu/inv_icm42600/inv_icm42600_gyro.c  | 798 ++++++++++++++++++
+>  .../iio/imu/inv_icm42600/inv_icm42600_i2c.c   | 101 +++
+>  .../iio/imu/inv_icm42600/inv_icm42600_spi.c   | 100 +++
+>  .../iio/imu/inv_icm42600/inv_icm42600_temp.c  |  84 ++
+>  .../iio/imu/inv_icm42600/inv_icm42600_temp.h  |  30 +
+>  .../imu/inv_icm42600/inv_icm42600_timestamp.c | 195 +++++
+>  .../imu/inv_icm42600/inv_icm42600_timestamp.h |  85 ++
+>  19 files changed, 4224 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-icm42600
+>  create mode 100644 Documentation/devicetree/bindings/iio/imu/invensense,icm42600.yaml
+>  create mode 100644 drivers/iio/imu/inv_icm42600/Kconfig
+>  create mode 100644 drivers/iio/imu/inv_icm42600/Makefile
+>  create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600.h
+>  create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c
+>  create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_buffer.c
+>  create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_buffer.h
+>  create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_core.c
+>  create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_gyro.c
+>  create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_i2c.c
+>  create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_spi.c
+>  create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_temp.c
+>  create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_temp.h
+>  create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_timestamp.c
+>  create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_timestamp.h
+> 
 
