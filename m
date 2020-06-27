@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C53020C1CB
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 15:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2981C20C1CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 15:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbgF0Nh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 09:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
+        id S1726759AbgF0NiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 09:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725850AbgF0Nh5 (ORCPT
+        with ESMTP id S1725850AbgF0NiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 09:37:57 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5706FC061794
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 06:37:57 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id cm23so6105474pjb.5
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 06:37:57 -0700 (PDT)
+        Sat, 27 Jun 2020 09:38:06 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AACDC061794
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 06:38:03 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id x11so5342458plo.7
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 06:38:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Z8U8QQeB2xh99Uvze0W7N2KmS9G7zWA6hvxg6QUWa5s=;
-        b=iCd5j4BQSWCqrMLkwU06DLK6P7V3G6/bb5WeVtYz0zUCBBpD9sgsUGTo0kyiGqtQcu
-         0X7613NXQgxQlRf44yxLrww8yoaUVbF95261GsvSbMLdiApxPfgI4pA1xqILCxHP2Urm
-         THwkn8rvxTu0+/co+1xKwiJDF+dE6yP7rF1vxVX5jmpjs27k8EWq2wX/cXSUXCeHlhIs
-         CQanKP+9vhG6Qz+hyvqg7Oxi51EyTlDkmOSyWl83BBWodVazZG1zvd3KLgyLXTXGfiqX
-         9kLFKO9/jbmrOQR1mTpTuc7gvIdEClzblGpal6AJBODOfUESt2pCD6Qr0rCGNgOGJ2z/
-         lkIg==
+        bh=1fJeC/w38J3A4p3KBZWDeZ2QkmjVYo2OE3plCtum5zE=;
+        b=q05+HZ9Z1Ds2LzF5saLPmP5/fZdUYeRVD4iHHWkhV3i+qnFYnnEcNWs+c48SI161Va
+         N/ZU8yetNgq55umIMLe4iQf95m3OAxRdzjJ/kCZTfJtz29EjTjaCJgWdIL+H+rE53BTe
+         Pl0avN59lYdcKZDtUCCWqQE9B69BI2IzdL7K8DkNpFgtK7V2+kuz5jmOi7PA0aUAwuQP
+         6Q6Ww+5X3ZnzAHdLjhLj3xFNY8J5AueK2jsZ4RaTKjHdBEyZS+G7EdGRRwxdf0Kaw5Vc
+         v8B8ZyBF/Ic97fyOv2JF7fF5pGy66k8Y7PvNAufOjddheAkxgnzvynOOjk6Br7htWmfk
+         Lv5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Z8U8QQeB2xh99Uvze0W7N2KmS9G7zWA6hvxg6QUWa5s=;
-        b=Su5WUo1Te7vDsIdK8SaV0UNeB+ywJBjkhAcLZisommaEcW2WjJbsv0cACa3IhAgiyu
-         KrjzuTc9Z8vHyKJ4PksLgKTs704x9OV30SGAf6SBUlaV+nCtxtq1wIyVuhLTCg/M/Ono
-         mWfqxtezGGy0kxLfx4cf9c29Pe25hhJWqSqwyeV0U5gJ8LIJjrz/3tkkY1sDRBI9p1KO
-         lJwZUEKvd4WLtokYXoMdFiQt2x+Q1OViCykFVUyY7jVbdcr+7qXriVi+6Ct+HThF4KbO
-         p9K5u6PQUThznymqTggD1WO7BYf2k7M0VBZ3emhFhL5dD2017EZa6By95f92OF+HQvVL
-         SN/w==
-X-Gm-Message-State: AOAM5331nkyh3MT3Dc2iBpjDR/PPpIZ1cqe2rNN42rBa2o1pe6ZvMCT0
-        6xircLLYu7MkZHDGqo2cPyU=
-X-Google-Smtp-Source: ABdhPJzmSNoP/U2yyWhTZGU4JUxiBlxoCKHf9xHK885nWG6IH2FxNmtfF1i+NHC31Bl1NZCptT3H7Q==
-X-Received: by 2002:a17:90a:364e:: with SMTP id s72mr8815630pjb.226.1593265076933;
-        Sat, 27 Jun 2020 06:37:56 -0700 (PDT)
+        bh=1fJeC/w38J3A4p3KBZWDeZ2QkmjVYo2OE3plCtum5zE=;
+        b=Er/5JfjEc7KwPB94gaY3UKp21d9/zZzNA5NxqvYMeqhhSlP/3yZvl0EkLtX2imQ9P/
+         r1sElVB0+wPBjGbfuW+Yu8WhAdiaRmv9ibGfh7KCGCLpqUGEbhAkffrvvgQl7tlYTS6d
+         fo5fYCt4C9IfySiZDe477wPuu+dcbHpEGckfPTQ71kWrl5wo7QnHOJnn4g8ql/yWUO/g
+         utljZSO0TXeoKRInQdwJ5LukvuWucRhu1k9CHgu1eD8nXFGnL7C6rgU3yG91sj7t/RqC
+         OBo6k006cffVL839dhxrVTH2+14+CRS55dD1VGehTmta/OtAdWvz0TWRK3RbkBpS4BSK
+         3CVw==
+X-Gm-Message-State: AOAM530+nC5GxbOb/0gtdF7RwBI0j9cqrNbZJUgY+4FFPosyTcKkGjWu
+        eqTsy/eFIVSDAwfsJPtUPuo=
+X-Google-Smtp-Source: ABdhPJwOK+wjWEZiT4nP+1HSpAD6gSarjA4DpHWte1IOqNuUhiJYgp5vfYWk2GLZ94wqu0F2ZGEpeg==
+X-Received: by 2002:a17:902:c082:: with SMTP id j2mr6651648pld.175.1593265082232;
+        Sat, 27 Jun 2020 06:38:02 -0700 (PDT)
 Received: from vultr.guest ([149.248.10.52])
-        by smtp.gmail.com with ESMTPSA id x8sm15060086pje.31.2020.06.27.06.37.52
+        by smtp.gmail.com with ESMTPSA id x8sm15060086pje.31.2020.06.27.06.37.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jun 2020 06:37:56 -0700 (PDT)
+        Sat, 27 Jun 2020 06:38:01 -0700 (PDT)
 From:   Changbin Du <changbin.du@gmail.com>
 To:     Jiri Olsa <jolsa@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>
@@ -56,9 +56,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH v2 04/15] perf ftrace: add option -d/--delay to delay tracing
-Date:   Sat, 27 Jun 2020 21:36:43 +0800
-Message-Id: <20200627133654.64863-5-changbin.du@gmail.com>
+Subject: [PATCH v2 05/15] perf ftrace: factor out function write_tracing_file_int()
+Date:   Sat, 27 Jun 2020 21:36:44 +0800
+Message-Id: <20200627133654.64863-6-changbin.du@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200627133654.64863-1-changbin.du@gmail.com>
 References: <20200627133654.64863-1-changbin.du@gmail.com>
@@ -69,78 +69,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds an option '-d/--delay' to allow us to start tracing some
-times later after workload is launched.
+We will reuse this function later.
 
 Signed-off-by: Changbin Du <changbin.du@gmail.com>
 ---
- tools/perf/Documentation/perf-ftrace.txt |  4 ++++
- tools/perf/builtin-ftrace.c              | 19 ++++++++++++++++---
- 2 files changed, 20 insertions(+), 3 deletions(-)
+ tools/perf/builtin-ftrace.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
-index e204bf6d50d8..fd1776deebd7 100644
---- a/tools/perf/Documentation/perf-ftrace.txt
-+++ b/tools/perf/Documentation/perf-ftrace.txt
-@@ -42,6 +42,10 @@ OPTIONS
- --tid=::
- 	Trace on existing thread id (comma separated list).
- 
-+-d::
-+--delay::
-+	Time (ms) to wait before starting tracing after program start.
-+
- -a::
- --all-cpus::
- 	Force system-wide collection.  Scripts run without a <command>
 diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-index b427ab3977ad..dceae70c3a22 100644
+index dceae70c3a22..003efa756322 100644
 --- a/tools/perf/builtin-ftrace.c
 +++ b/tools/perf/builtin-ftrace.c
-@@ -38,6 +38,7 @@ struct perf_ftrace {
- 	struct list_head	graph_funcs;
- 	struct list_head	nograph_funcs;
- 	int			graph_depth;
-+	unsigned		initial_delay;
- };
+@@ -166,6 +166,17 @@ static int read_tracing_file_to_stdout(const char *name)
+ 	return ret;
+ }
  
- struct filter_entry {
-@@ -402,13 +403,23 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
- 	fcntl(trace_fd, F_SETFL, O_NONBLOCK);
- 	pollfd.fd = trace_fd;
++static int write_tracing_file_int(const char *name, int value)
++{
++	char buf[16];
++
++	snprintf(buf, sizeof(buf), "%d", value);
++	if (write_tracing_file(name, buf) < 0)
++		return -1;
++
++	return 0;
++}
++
+ static int reset_tracing_cpu(void);
+ static void reset_tracing_filters(void);
  
--	if (write_tracing_file("tracing_on", "1") < 0) {
--		pr_err("can't enable tracing\n");
--		goto out_close_fd;
-+	if (!ftrace->initial_delay) {
-+		if (write_tracing_file("tracing_on", "1") < 0) {
-+			pr_err("can't enable tracing\n");
-+			goto out_close_fd;
-+		}
+@@ -296,8 +307,6 @@ static void reset_tracing_filters(void)
+ 
+ static int set_tracing_depth(struct perf_ftrace *ftrace)
+ {
+-	char buf[16];
+-
+ 	if (ftrace->graph_depth == 0)
+ 		return 0;
+ 
+@@ -306,9 +315,7 @@ static int set_tracing_depth(struct perf_ftrace *ftrace)
+ 		return -1;
  	}
  
- 	perf_evlist__start_workload(ftrace->evlist);
+-	snprintf(buf, sizeof(buf), "%d", ftrace->graph_depth);
+-
+-	if (write_tracing_file("max_graph_depth", buf) < 0)
++	if (write_tracing_file_int("max_graph_depth", ftrace->graph_depth) < 0)
+ 		return -1;
  
-+	if (ftrace->initial_delay) {
-+		usleep(ftrace->initial_delay * 1000);
-+		if (write_tracing_file("tracing_on", "1") < 0) {
-+			pr_err("can't enable tracing\n");
-+			goto out_close_fd;
-+		}
-+	}
-+
- 	while (!done) {
- 		if (poll(&pollfd, 1, -1) < 0)
- 			break;
-@@ -535,6 +546,8 @@ int cmd_ftrace(int argc, const char **argv)
- 		     "Set nograph filter on given functions", parse_filter_func),
- 	OPT_INTEGER('D', "graph-depth", &ftrace.graph_depth,
- 		    "Max depth for function graph tracer"),
-+	OPT_UINTEGER('d', "delay", &ftrace.initial_delay,
-+		     "ms to wait before starting tracing after program start"),
- 	OPT_END()
- 	};
- 
+ 	return 0;
 -- 
 2.25.1
 
