@@ -2,82 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9323620C0F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 13:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 116C020C105
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 13:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgF0LIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 07:08:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726457AbgF0LI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 07:08:26 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFAB621532;
-        Sat, 27 Jun 2020 11:08:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593256105;
-        bh=IvkYD8vvMsO8UUZWc8OESQ8D1oIdB2bt3FlKlWN+/PM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YlWD9hqR3pco/94yNhfdc/ExIZvtqMLuXkBsjsGDuOB+CytlR2Y2D/RTGXPi/DaAg
-         WWn8z8v/DgGvTE6nTAWVKx2+K9USPwkPqDEJZcOaVGLeDgMvXGSZfs61chB7hrEmVz
-         b9FTMA/c2JF/K5qX2Ug0Y0zoeA4oTbAREutVMAFk=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jp8h6-006s0z-8F; Sat, 27 Jun 2020 12:08:24 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Jason Cooper <jason@lakedaemon.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Tero Kristo <t-kristo@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>, Nishanth Menon <nm@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>
-Cc:     Andrew Perepech <andrew.perepech@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Stephane Le Provost <stephane.leprovost@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Pedro Tsai <pedro.tsai@mediatek.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH 1/3] irqchip/ti-sci-inta: Remove dead code in ti_sci_inta_set_type()
-Date:   Sat, 27 Jun 2020 12:08:06 +0100
-Message-Id: <159325548742.93134.4456384570058657240.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <1591437017-5295-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1591437017-5295-1-git-send-email-yangtiezhu@loongson.cn>
+        id S1726534AbgF0LUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 07:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726335AbgF0LUQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 07:20:16 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AE0C03E979;
+        Sat, 27 Jun 2020 04:20:16 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id 22so11074195wmg.1;
+        Sat, 27 Jun 2020 04:20:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QjDZjymuy3ugRyrNl6Xh5+cjgHB5aBUVNsgkwThPlf4=;
+        b=fLDou4PaoO+qn6V2vY1QBc1kbb7l2GIZfZUMj+JPnHlAjl4aY8EefOZ2NAgUzyUL5Q
+         rLO7ftF5sjLciKRr+Y37Gmr4e/SHCJxWoKrawfeLN7WKJum+h9D6K4003Jp+uHo4kLOR
+         cdPgEe7jzEBxF9RO5W8YDeb/SDFjLbL35+31K/Ss9JuAz8tnd38j9RaAIXdlmY47+DBG
+         wfxw6xDBUoO6pvpLj91Lt0Ep58NlnpQ5++UaPIl2Ttq89eumsqIm/PWxfRv03+fx3XRb
+         C6KxBosdvlKHSFPFAJ+zqoFNKR3EKCSsrNjgHm/s53zoCR2thR5hcZfcU9/x6IoGpzjk
+         bz3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=QjDZjymuy3ugRyrNl6Xh5+cjgHB5aBUVNsgkwThPlf4=;
+        b=tSQ0QRnvsKYtot+ut5sBumt3vkOiPg9Xe4Lolz4etr5XbX1rNWFJHKA9++J9+TyKQj
+         luB2EmBBvwhvRFy2heyIsGUHEEuTOw+u3YCOWBrjbZBNazZULvcQVz4maRU+UlT4yZxQ
+         DGag+8fg/Ss2HntNkifWcHqJtgE2rEMWxH68Q8GcsnkuFQlJJ0XYH9kzq4MzGJ2OzpA1
+         3rO1s9kLbxTVbzWtBfPD5xkpaPMcf4EHroBFAUwNYQsYbK/6dkGdoW1+FrqDGi3eIiP2
+         yaapAlE1RxQ/9So0+vCqNTFJYkfGdKWvF/7Olg4GcBV3WoaMnOG1Aa6Wi/DLpxq+nD0j
+         dk4Q==
+X-Gm-Message-State: AOAM531p6EDYBO0zCohTRtfBjOQzOr2Jvu4CXkzBaNPY8OLK2WbV20J5
+        3WjpHQ/HmA6TJSevd2e85BERPm6z
+X-Google-Smtp-Source: ABdhPJwwIfN9OwWVSzFPmqNOmW86MHpva/L8qaRGgLCjOpwtNmvJOPT4LM1UHeTZXjz2gp1QdIKfsA==
+X-Received: by 2002:a1c:2e0e:: with SMTP id u14mr7848382wmu.55.1593256814711;
+        Sat, 27 Jun 2020 04:20:14 -0700 (PDT)
+Received: from [192.168.43.84] ([5.100.193.85])
+        by smtp.gmail.com with ESMTPSA id a22sm21155997wmj.9.2020.06.27.04.20.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Jun 2020 04:20:14 -0700 (PDT)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200627090740.683308fd@canb.auug.org.au>
+ <6920f023-5909-6ebf-606c-dbf467a31c7c@kernel.dk>
+ <20200627015605.goc2btyq6z3wwb5z@chatter.i7.local>
+ <20200627150153.331c66e7@canb.auug.org.au>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Subject: Re: linux-next: Fixes tag needs some work in the block tree
+Message-ID: <918e3d02-8478-e647-5e16-1f1cb256ea36@gmail.com>
+Date:   Sat, 27 Jun 2020 14:18:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
+In-Reply-To: <20200627150153.331c66e7@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: jason@lakedaemon.net, matthias.bgg@gmail.com, brgl@bgdev.pl, tglx@linutronix.de, yangtiezhu@loongson.cn, t-kristo@ti.com, lokeshvutla@ti.com, nm@ti.com, ssantosh@kernel.org, andrew.perepech@mediatek.com, linux-mediatek@lists.infradead.org, stephane.leprovost@mediatek.com, linux-arm-kernel@lists.infradead.org, pedro.tsai@mediatek.com, bgolaszewski@baylibre.com, fparent@baylibre.com, linux-kernel@vger.kernel.org, lixuefeng@loongson.cn
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 6 Jun 2020 17:50:15 +0800, Tiezhu Yang wrote:
-> In the function ti_sci_inta_set_type(), the statement "return -EINVAL;"
-> out of switch case is dead code, remove it.
+On 27/06/2020 08:01, Stephen Rothwell wrote:
+> Hi Konstantin,
+> 
+> On Fri, 26 Jun 2020 21:56:05 -0400 Konstantin Ryabitsev <konstantin@linuxfoundation.org> wrote:
+>>
+>> On Fri, Jun 26, 2020 at 07:32:15PM -0600, Jens Axboe wrote:
+>>> On 6/26/20 5:07 PM, Stephen Rothwell wrote:  
+>>>> Hi all,
+>>>>
+>>>> In commit
+>>>>
+>>>>   cd664b0e35cb ("io_uring: fix hanging iopoll in case of -EAGAIN")
+>>>>
+>>>> Fixes tag
+>>>>
+>>>>   Fixes: bbde017a32b3 ("io_uring: add memory barrier to synchronize
+>>>>
+>>>> has these problem(s):
+>>>>
+>>>>   - Subject has leading but no trailing parentheses
+>>>>   - Subject has leading but no trailing quotes
+>>>>
+>>>> Please do not split Fixes tags over more than one line.  
+>>>
+>>> Gah, that's b4 messing it up. I've actually seen this before, but
+>>> I caught it. If you look at the actual commit, this is what the b4
+>>> output ends up being for the fixes line:
+>>>
+>>> [snip]
+>>> io_kiocb's result and iopoll_completed")
+>>>
+>>> Fixes: bbde017a32b3 ("io_uring: add memory barrier to synchronize
+>>>
+>>> even though it's correct in the email. I'm guessing some issue having to
+>>> do with the longer line?  
+>>
+>> Yeah, I'll try to see if there's something I can do here, but it's going 
+>> to be largely guesswork. Here's the original email:
+>>
+>> https://lore.kernel.org/lkml/22111b29e298f5f606130fcf4307bda99dbec089.1593077359.git.asml.silence@gmail.com/raw
+>>
+>> The Fixes: footer really does get split into two. It's not that hard to 
+>> add logic just for the Fixes tag (since it conveniently follows a set 
+>> pattern), but finding a universal fix for split footers will be more 
+>> difficult.
+>>
+>> I'll see what I can do.
+> 
+> But (what am I missing?) the Fixes: tag has been split over 2 lines in
+> the original message ... on lore and my copy.  There is nothing for b4
+> to do here, the author needs to do this right.
 
-Applied to irq/irqchip-5.9:
+Yes, it was split from the beginning. It's really a shame it can't handle
+multi-line tags, but well, I'll keep that in mind.
 
-[1/3] irqchip/ti-sci-inta: Remove dead code in ti_sci_inta_set_type()
-      commit: 3d21f0b4126650a92f2df531a5f3a2d27aa9a09f
-[2/3] irqchip/ti-sci-inta: Fix return value about devm_ioremap_resource()
-      commit: 4b127a14cb1385dd355c7673d975258d5d668922
-[3/3] irqchip/ti-sci-inta: Fix typo about MODULE_AUTHOR
-      commit: ef6b0bf43be5c17790a14a8ed806d7d8fe0a25be
+Though, it's curious how
 
-Thanks,
+```
+Fixes ("line1
+line2")
+```
 
-	M.
+became 
+```
+line2")
+
+Fixes ("line1
+```
+
+And that's what the rest of the thread is about.
+
 -- 
-Without deviation from the norm, progress is not possible.
-
+Pavel Begunkov
