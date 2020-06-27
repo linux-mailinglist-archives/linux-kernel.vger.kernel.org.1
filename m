@@ -2,125 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BFB20C14E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 14:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44F620C150
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 14:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgF0MyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 08:54:18 -0400
-Received: from mail-mw2nam10on2055.outbound.protection.outlook.com ([40.107.94.55]:8459
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726581AbgF0MyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 08:54:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AYeqhgmaEK3c7zov848SefAOrEK8UrFAEgaTRYnLMkKXYhZ7zh7yucDUh0O5IywWF+7CMbvPCTaNCWt7obHf4JBEG+mTBLIAML/cBhAFVWGuMq6wyG/SAywxr1OjXoF9ZAqq0FmOJEhYVJr2abo0XaWjAX0J2LT+thA9iTQ8ugObosxWeFRftvVdwnzwtQRkoyGeYduRbiZIWFDnnBl1NRQW1fxq+8HaR91c3JLDeCVh49nGhPgGDMVtJaDoqs+CxB1Pf1x5TUjONieHrVaaK2J9xDgzVoeLRvvk6KfDknnHoZsd1QZKNrkLi4g/Qabj9B89Y0TMCdSYlCtDib6y+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hvb888lPufvBjnXd1dKyR5YYnRb3W8cLir63ZDgVNik=;
- b=jDN4gym5FaugoYOflTk8eHifq1fewse/F9wjoDEZ8QRuW6IzS5Y5xCtF/i5S4DYYe/6IS20N4d6zfSRyQ2PbaA0Wk4tOSi0PvPfvBgvS7FnSciZlD5R+DAu24Z5UBYERPFfjf/UZoMnjSczlmaTKLdbDcDjsLOZkC2x6SLFAqKBrbVzxkBcdyAneNBoRl33hMTKAsh6xNp0lCS8vGeVsVi3mzlcfalLYuEi/kJSFJ2/fHBlGMjFGKYgS6bdeO42yOpFbmIg8TiqPhZx5FP7H8KaIX1xtrItxrFvJWRtuF4ayRXT2/Oj7ZTnS0eWO8EoezmZV3DBf0fhapHjY5geg3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hvb888lPufvBjnXd1dKyR5YYnRb3W8cLir63ZDgVNik=;
- b=iJzXaN2+3zOsfzwGUgozdceStgnkSiDbUNs1kEui2b3LqpJo0NGxPm/7UuhiEQvkiQ8NeqokDKqVznBDnvtVfdRze9zS1aiFeFteiwksd5eqlcgklxkRUADFKNLU1H0DvxzD8t1UW5mH4dfpXmr2squF+AlMrOlvHuuwuBt7iqM=
-Received: from SN6PR11MB3392.namprd11.prod.outlook.com (2603:10b6:805:c5::26)
- by SN6PR11MB2623.namprd11.prod.outlook.com (2603:10b6:805:5d::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20; Sat, 27 Jun
- 2020 12:54:14 +0000
-Received: from SN6PR11MB3392.namprd11.prod.outlook.com
- ([fe80::a42e:1202:130f:db92]) by SN6PR11MB3392.namprd11.prod.outlook.com
- ([fe80::a42e:1202:130f:db92%7]) with mapi id 15.20.3131.026; Sat, 27 Jun 2020
- 12:54:14 +0000
-From:   "Meng, Bin" <Bin.Meng@windriver.com>
-To:     Bin Meng <bmeng.cn@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] arm: Drop CONFIG_MTD_M25P80 in various defconfig files
-Thread-Topic: [PATCH v2] arm: Drop CONFIG_MTD_M25P80 in various defconfig
- files
-Thread-Index: AQHWIG7ht9muB4xY+U6WlPxfBFESE6jswqNQ
-Date:   Sat, 27 Jun 2020 12:54:14 +0000
-Message-ID: <SN6PR11MB3392B3F7A5EBF24B7FB75E3491900@SN6PR11MB3392.namprd11.prod.outlook.com>
-References: <1588416347-30217-1-git-send-email-bmeng.cn@gmail.com>
-In-Reply-To: <1588416347-30217-1-git-send-email-bmeng.cn@gmail.com>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
-x-originating-ip: [60.247.85.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: da2a019e-0c55-41f6-24a5-08d81a993244
-x-ms-traffictypediagnostic: SN6PR11MB2623:
-x-microsoft-antispam-prvs: <SN6PR11MB262377B2154CC01CC774ECE891900@SN6PR11MB2623.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:230;
-x-forefront-prvs: 0447DB1C71
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: V/seN78h2CcQDg3oOdfYsk4SA+Re1iyw4XV1FtyM0gh7DzprPCOUEMknGTK60tqmyBeW0i8DoLdcJYV70sZBFpvhTZ3xM6GGyyO3YFZEcpWKnSlOLBWMDLsZ16K/v8CVXNGhvIE7A4zn9JKzPgrPB5sSSd8/8fQ2/jumOEc4D5cH8jKQbRMncuXhJs6Q/RsK56Hg/KonozOupVwsDrzUtH47Uwjg/kgpdjiUXmXltvpG9ZiYOcIAIIxMflhLuYKX0i00jP7Fb5IEdV2xKpA334vgdAvMJgVwp5CR/Z1+zwZCmpXeeid2yINO43Nx6H2cZ0elu6OHn/sB0zZK9cDe7Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(346002)(366004)(39850400004)(396003)(136003)(83380400001)(33656002)(478600001)(76116006)(5660300002)(71200400001)(316002)(2906002)(66476007)(66946007)(110136005)(9686003)(7696005)(66556008)(86362001)(6506007)(8676002)(53546011)(26005)(8936002)(52536014)(66446008)(55016002)(64756008)(186003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 2ihpLi7CUTzqUoq9wKxrRzK7VKZbO7LHCTt4SNO1Rv14xCGfegfHcKOC5L7SjVYv71jaMHmeQ7h0bTZ2jmBZydeI20KkMFKcuso1n/QX8KFwf3hS7SPc2fNJ6vu06eAFcZoAmE5c1GW4TPV8MxsJIxd6PpxAUeiuq1KyR6/D5DLXQRvO6I/R+kcZPBLdpydsTNy17mxgKy026LJtNH5RltqgYpq2YxtwiGBO6JVhIzF0hfx3nhGUOPCvyGHaQNmZJzWroAA2lVZEuqmzbQ4fP5N+NsB7oB11BFzSQeBreZngMoThTu8uu4rFOfTo4idR43Hb4Tr/rxJiCUgUNN35TfMM2UpmDgaNEb3V3ff3Qzfxw5azZEqyU2/UZ5kzk1I7qLZZDbrg5ZlrNbn0x+HbdYkQ7mumyqY3TcFi2ZnMKLEzVTHd8QXx0ICnUauL7lrNJOMVyi0NzizAJYE0sIa6LWpSY8QfWNq0REo9c6c5HNw=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726654AbgF0MzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 08:55:09 -0400
+Received: from mout.gmx.net ([212.227.17.22]:52029 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726589AbgF0MzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 08:55:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1593262492;
+        bh=OZFz73ODcG4HFVet5IxLP7LoD5Tul3KsEAIISgKqlEA=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=cMqLOo14qDy43kwqRC5RunQ9/8+1rZmrsf0EuKYO6Mm+jhcMb74jiRjlsSJu0NbWJ
+         j9xto0rcAQ/usNU4tZMeNS5pJUoGyssE19JrqoLbJuYX4UwasjtPv+05JXMffVlMJX
+         XEFSGlXuHddcgz7xuYOC5hL1aLL4vGG5x+zoci4E=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.73.70]) by mail.gmx.com
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1N3siG-1ipfml3n96-00zoC5; Sat, 27 Jun 2020 14:54:52 +0200
+From:   Oscar Carter <oscar.carter@gmx.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     kernel-hardening@lists.openwall.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Oscar Carter <oscar.carter@gmx.com>
+Subject: [PATCH] drivers/s390/char/tty3270: Remove function callback casts
+Date:   Sat, 27 Jun 2020 14:54:17 +0200
+Message-Id: <20200627125417.18887-1-oscar.carter@gmx.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3392.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: da2a019e-0c55-41f6-24a5-08d81a993244
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jun 2020 12:54:14.6331
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kvq+BQPUmHnJdq1kHSpX012iTP////FsfVgirnlgbwPX6weSJncfm2lMw4RWxzJvfaXstcb+nkpOWYmDGiwUeg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2623
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:WuLVlRTrugTdMXef4+/XXVnc8C9knOmuEp8gUSwkWy9Toq23Y5B
+ MyN5hAU4IiecdUDVIvl+O1g8No+219xwL53VlaOGWjTVLPgWWpIzZ7kaoJvi/BdIrDmhNq2
+ zjh0RnLOgL1kUHJy1cXOEJtsSGnIwBtBIgnoQ0jmyeeyWRTav0zTNhYDOLih8KfHTDf858h
+ bn0dcKhtppCqNkjsUwTZw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HUfvtbJHxCU=:wVnHHWAAYZzyqtb6vmVCxL
+ woNLDkTI0KAiNyG/mbSv1JTsnjv09BojAkwDuw/ytyOYrjDteKWh6gmRnOQWTv+SqCFveXZTG
+ vZcsBYf6lR5pvngUEiamQYCHj+f6t2HgyUKFV8RlGIuRkh2EVhLflig21KSC8GYX+HBTORehW
+ Twxwm8ppmQ7Shjv7tAniEhhy9ZC2dzA4tiEFaRwfZ8PgqFWzHMcxDDSG7KB5Mbco8NB8/1/ei
+ 0laH8IvM2AtcFCLMtlU0ZCc+zmbq9gDdybmjwfIroi4lhi0RV5LLi0b1dG6SF6U9NxtryRw5O
+ hYE+luzPT58uie5fdVd0RBfDV0wqQDmGxmycCRD1BQJMrqjrXfhGikWD7FGrxMsR90WolEoXL
+ PkzuFNxh9xFVrGKJPWvqs5U0PGT1UlChCmlZ3qWnhYJQubNe9T1hIk57hvk9cdDxxSsW7NCxQ
+ fSXr2O/GR0TLX1uSSoPmZkiTl5O6KzgQh1ib4i6omTOrXI3u2f8qBZ/UQ85usA1qat2abnmez
+ vYkCZYobxnRJNgPeDFq5mLn7TEtAU5h4fX3ttu+N8EDDblCg/7fFEKgKcAs3EzFNnlAdMg3tm
+ g0Tg7RQpxP8k/JTGv7h/2ijofU7NEBRNr4QaQAuKKl7yjKcE7InawrIjghaRRhMB0KR7Svyt/
+ /+HJcs6gnbkPEsykDU+7FnDcjXu5J1zs3Uij6QOcZ1Ms07rLHX7ZXI1dhN9iWer/jhoNfiTKG
+ yp5QqTdCt8EgzbBn59h66Hxr0EWYepfURo/pv3yIT3G28yF5tghjsFsJgMdfxD6+XPnsSflwH
+ jpb26ZOx6bPcQsIFk7fYin8dlRJtf11J72vDFa/NjES2p6FFwptPRf1oNTjJNHZPAww9f1XST
+ 8ssOWMRWLGdq5whMhYt7XJqTqmAeQFV4DyCiN4J/uHXrtZ0nlVK3y+0p2Ayz6kBZ4HYClSMrP
+ UpvkMzdFb4KmkSDuySzuKD9F3uAec/fBYk1j6Bdbxf5zRFEji4mmolm0QDDFYMuGEmTrLexmc
+ 9pWJZWkYbdnI+c9McaavZYduNGXOpLVi8RTgxlP4oON8fMkkD17cwYLpup56Yg/2REgXPC1TH
+ 5NvZF6vkVIsx/Jpwrhf0VL2PO1+6fbJpTIa/B1+0YqHxlnRO/IQdL/rX/NcBQojl3MNHnnsBK
+ zGopnAW8+Br3XkJ+90uUI1jDU+j9oLlDYp1AlcI1/vb0bzI7B1PUCazzogYgEXJWqBSU19xff
+ EwfePvX23zwtVPKOO
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------Original Message-----
-> From: Bin Meng <bmeng.cn@gmail.com>=20
-> Sent: Saturday, May 2, 2020 6:46 PM
-> To: linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org
-> Cc: Meng, Bin <Bin.Meng@windriver.com>
-> Subject: [PATCH v2] arm: Drop CONFIG_MTD_M25P80 in various defconfig file=
-s
->
-> From: Bin Meng <bin.meng@windriver.com>
->
-> Drop CONFIG_MTD_M25P80 that was removed in commit b35b9a10362d ("mtd: spi=
--nor: Move m25p80 code in spi-nor.c")
->
-> Signed-off-by: Bin Meng <bin.meng@windriver.com>
->
-> ---
->
-> Changes in v2:
-> - add CONFIG_MTD_SPI_NOR=3Dy in axm55xx_defconfig
->
->  arch/arm/configs/axm55xx_defconfig     | 2 +-
->  arch/arm/configs/davinci_all_defconfig | 1 -
->  arch/arm/configs/dove_defconfig        | 1 -
->  arch/arm/configs/imx_v6_v7_defconfig   | 1 -
->  arch/arm/configs/keystone_defconfig    | 1 -
->  arch/arm/configs/mvebu_v5_defconfig    | 1 -
->  arch/arm/configs/mvebu_v7_defconfig    | 1 -
->  arch/arm/configs/mxs_defconfig         | 1 -
->  arch/arm/configs/pxa_defconfig         | 1 -
->  arch/arm/configs/qcom_defconfig        | 1 -
->  arch/arm/configs/sama5_defconfig       | 1 -
->  arch/arm/configs/socfpga_defconfig     | 1 -
->  arch/arm/configs/tegra_defconfig       | 1 -
->  13 files changed, 1 insertion(+), 13 deletions(-)
+In an effort to enable -Wcast-function-type in the top-level Makefile to
+support Control Flow Integrity builds, remove all the function callback
+casts.
 
-It seems this patch isn't applied anywhere. Ping?
+To do this modify the function prototypes accordingly.
+
+Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
+=2D--
+ drivers/s390/char/tty3270.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/s390/char/tty3270.c b/drivers/s390/char/tty3270.c
+index 98d7fc152e32..aec996de44d9 100644
+=2D-- a/drivers/s390/char/tty3270.c
++++ b/drivers/s390/char/tty3270.c
+@@ -556,8 +556,9 @@ tty3270_scroll_backward(struct kbd_data *kbd)
+  * Pass input line to tty.
+  */
+ static void
+-tty3270_read_tasklet(struct raw3270_request *rrq)
++tty3270_read_tasklet(unsigned long data)
+ {
++	struct raw3270_request *rrq =3D (struct raw3270_request *)data;
+ 	static char kreset_data =3D TW_KR;
+ 	struct tty3270 *tp =3D container_of(rrq->view, struct tty3270, view);
+ 	char *input;
+@@ -652,8 +653,9 @@ tty3270_issue_read(struct tty3270 *tp, int lock)
+  * Hang up the tty
+  */
+ static void
+-tty3270_hangup_tasklet(struct tty3270 *tp)
++tty3270_hangup_tasklet(unsigned long data)
+ {
++	struct tty3270 *tp =3D (struct tty3270 *)data;
+ 	tty_port_tty_hangup(&tp->port, true);
+ 	raw3270_put_view(&tp->view);
+ }
+@@ -752,11 +754,9 @@ tty3270_alloc_view(void)
+
+ 	tty_port_init(&tp->port);
+ 	timer_setup(&tp->timer, tty3270_update, 0);
+-	tasklet_init(&tp->readlet,
+-		     (void (*)(unsigned long)) tty3270_read_tasklet,
++	tasklet_init(&tp->readlet, tty3270_read_tasklet,
+ 		     (unsigned long) tp->read);
+-	tasklet_init(&tp->hanglet,
+-		     (void (*)(unsigned long)) tty3270_hangup_tasklet,
++	tasklet_init(&tp->hanglet, tty3270_hangup_tasklet,
+ 		     (unsigned long) tp);
+ 	INIT_WORK(&tp->resize_work, tty3270_resize_work);
+
+=2D-
+2.20.1
+
