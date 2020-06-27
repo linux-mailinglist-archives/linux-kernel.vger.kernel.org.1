@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91CF20C409
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 22:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4575C20C411
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 22:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726700AbgF0UZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 16:25:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40216 "EHLO mail.kernel.org"
+        id S1726925AbgF0UZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 16:25:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbgF0UZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 16:25:13 -0400
-Subject: Re: [GIT PULL] dma-mapping fixes for 5.8
+        id S1726721AbgF0UZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 16:25:14 -0400
+Subject: Re: [GIT PULL] Staging driver fixes for 5.8-rc3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593289513;
-        bh=9J040E0WnnbQGma5xN3YBHaW/r21PdJwI/TPcLGUJ0k=;
+        s=default; t=1593289514;
+        bh=bF0MtdmpQF/t40sBWytv8dtkhLEA7AEsr1VpV701bD4=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=EasVfYhXqGsLNA/0DLHWXBkODWqVUoRomVJK3r61hPPMbNxBlLF/J6YrljHyc0cWm
-         gofyPVLAFXvKmELbnHZmTKRxovKAgICDCfY/beCVnQyxUcLrCMKbjXhpqXg1Fc98en
-         6xgtwDd4DvuK3oDHZZtw/O4+xoLdq8b45ZrA0r6E=
+        b=DNhMQGVpSymEh4Jqp7TChQjT5P8myU0egOknx3LITc4VfJPIdYmKQxyUAvjvhVvTS
+         BM4Zn5GxBimhtOSDWNu1Q6cF1AIfrhA+VxYitHFKAmB1TxiMcFvP0DvAfOF5O/SutW
+         aCiqe6vq3vD56eIIxEOMFiAXCLpAWkhYU5xJUQeU=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200627074902.GA2447682@infradead.org>
-References: <20200627074902.GA2447682@infradead.org>
+In-Reply-To: <20200627114037.GA1637063@kroah.com>
+References: <20200627114037.GA1637063@kroah.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200627074902.GA2447682@infradead.org>
-X-PR-Tracked-Remote: git://git.infradead.org/users/hch/dma-mapping.git
- tags/dma-mapping-5.8-4
-X-PR-Tracked-Commit-Id: 8e36baf97b252cdcafa53589e8227cbb1e85f0b0
+X-PR-Tracked-Message-Id: <20200627114037.GA1637063@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git
+ tags/staging-5.8-rc3
+X-PR-Tracked-Commit-Id: b65a2d8c8614386f7e8d38ea150749f8a862f431
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f05baa066d0f6a38f0624c28008fb2f53cd00e17
-Message-Id: <159328951331.11719.13949831114777019739.pr-tracker-bot@kernel.org>
-Date:   Sat, 27 Jun 2020 20:25:13 +0000
-To:     Christoph Hellwig <hch@infradead.org>
+X-PR-Merge-Commit-Id: 42afe7d1c6ef77212250af3459e549d1a944cc8a
+Message-Id: <159328951455.11719.6313373142847470095.pr-tracker-bot@kernel.org>
+Date:   Sat, 27 Jun 2020 20:25:14 +0000
+To:     Greg KH <gregkh@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        devel@linuxdriverproject.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 27 Jun 2020 09:49:02 +0200:
+The pull request you sent on Sat, 27 Jun 2020 13:40:37 +0200:
 
-> git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.8-4
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.8-rc3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f05baa066d0f6a38f0624c28008fb2f53cd00e17
+https://git.kernel.org/torvalds/c/42afe7d1c6ef77212250af3459e549d1a944cc8a
 
 Thank you!
 
