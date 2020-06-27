@@ -2,58 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D1E20C4ED
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 01:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC4F20C4E1
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 01:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726790AbgF0X60 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 27 Jun 2020 19:58:26 -0400
-Received: from mx1.uwb.edu.pl ([212.33.71.231]:47334 "EHLO mx1.uwb.edu.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726695AbgF0X60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 19:58:26 -0400
-X-Greylist: delayed 537 seconds by postgrey-1.27 at vger.kernel.org; Sat, 27 Jun 2020 19:58:25 EDT
-Received: from sun.uwb.edu.pl (sun.uwb.edu.pl [212.33.71.69])
-        by mx1.uwb.edu.pl (Postfix) with ESMTP id A8BDF301011;
-        Sun, 28 Jun 2020 01:48:55 +0200 (CEST)
-Received: from sun.uwb.edu.pl (localhost [127.0.0.1])
-        by sun.uwb.edu.pl (Postfix) with ESMTP id 6BE06240099;
-        Sun, 28 Jun 2020 01:48:55 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at sun.uwb.edu.pl
-Received: from sun.uwb.edu.pl ([127.0.0.1])
-        by sun.uwb.edu.pl (sun.uwb.edu.pl [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Vn1CzvhBBQLt; Sun, 28 Jun 2020 01:48:55 +0200 (CEST)
-Received: from [100.120.128.60] (unknown [45.87.184.74])
-        by sun.uwb.edu.pl (Postfix) with ESMTPSA id 7C215240107;
-        Sun, 28 Jun 2020 01:48:42 +0200 (CEST)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726776AbgF0Xts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 19:49:48 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:39490 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726101AbgF0Xts (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 19:49:48 -0400
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4CC9020B4901;
+        Sat, 27 Jun 2020 16:49:47 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4CC9020B4901
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1593301787;
+        bh=1+BfB0kaqs85yBKZRHGZmmaia9PwxbpWHcmeSuerz4o=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=o+b6i4CJMLl8qkkQu/vzSl9WvZbpDzY9sX8aGMyC/vIXaBduJ1uuA2f5b+MKpMAzr
+         23I+TpBaHMraAkBhcRT8P5TVtkq8mvhlR6FLab5LMzXdoYJIEpHv4cHVjHGtGCOtVX
+         zPQebNGXbjFTyRxDoFhvEWPBFRecP5Fn9So7WzCU=
+Subject: Re: [PATCH v2 09/11] ima: Move validation of the keyrings conditional
+ into ima_validate_rule()
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Prakhar Srivastava <prsriva02@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+References: <20200626223900.253615-1-tyhicks@linux.microsoft.com>
+ <20200626223900.253615-10-tyhicks@linux.microsoft.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <0e7012e7-e1df-466d-9d51-a691f779570a@linux.microsoft.com>
+Date:   Sat, 27 Jun 2020 16:49:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Dringende Antwort
-To:     Recipients <adaniluk@uwb.edu.pl>
-From:   "William Yun" <adaniluk@uwb.edu.pl>
-Date:   Sun, 28 Jun 2020 02:48:27 +0300
-Reply-To: williamyun11@gmail.com
-X-Antivirus: Avast (VPS 200627-8, 06/27/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-Id: <20200627234855.6BE06240099@sun.uwb.edu.pl>
-X-UwB_mx1-MailScanner-Information: Please contact the ISP for more information
-X-UwB_mx1-MailScanner-ID: A8BDF301011.A2FD1
-X-UwB_mx1-MailScanner: Found to be clean
-X-UwB_mx1-MailScanner-From: adaniluk@uwb.edu.pl
-X-Spam-Status: No
+In-Reply-To: <20200626223900.253615-10-tyhicks@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo, ich habe ein Geschäft von 24,5 Mio. USD, das ich mit Ihnen teilen kann. Wenn Sie interessiert sind? Bitte schreibe zurück und ich werde dir mehr Details geben.
+On 6/26/20 3:38 PM, Tyler Hicks wrote:
 
-Grüße,
+> Use ima_validate_rule() to ensure that the combination of a hook
+> function and the keyrings conditional is valid and that the keyrings
+> conditional is not specified without an explicit KEY_CHECK func
+> conditional. This is a code cleanup and has no user-facing change.
 
-William.
+In addition to checking for func=KEY_CHECK and the keyrings conditional, 
+the patch also validates the flags for other IMA hooks (such as 
+KEXEC_KERNEL_CHECK, POLICY_CHECK, etc.) Would be good to mention that in 
+the patch description.
 
--- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+  -lakshmi
+
+> 
+> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> ---
+> 
+> * v2
+>    - Allowed IMA_DIGSIG_REQUIRED, IMA_PERMIT_DIRECTIO,
+>      IMA_MODSIG_ALLOWED, and IMA_CHECK_BLACKLIST conditionals to be
+>      present in the rule entry flags for non-buffer hook functions.
+> 
+>   security/integrity/ima/ima_policy.c | 13 +++++++++++--
+>   1 file changed, 11 insertions(+), 2 deletions(-)
+> 
+> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> index 8cdca2399d59..43d49ad958fb 100644
+> --- a/security/integrity/ima/ima_policy.c
+> +++ b/security/integrity/ima/ima_policy.c
+> @@ -1000,6 +1000,15 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+>   		case KEXEC_KERNEL_CHECK:
+>   		case KEXEC_INITRAMFS_CHECK:
+>   		case POLICY_CHECK:
+> +			if (entry->flags & ~(IMA_FUNC | IMA_MASK | IMA_FSMAGIC |
+> +					     IMA_UID | IMA_FOWNER | IMA_FSUUID |
+> +					     IMA_INMASK | IMA_EUID | IMA_PCR |
+> +					     IMA_FSNAME | IMA_DIGSIG_REQUIRED |
+> +					     IMA_PERMIT_DIRECTIO |
+> +					     IMA_MODSIG_ALLOWED |
+> +					     IMA_CHECK_BLACKLIST))
+> +				return false;
+> +
+>   			break;
+>   		case KEXEC_CMDLINE:
+>   			if (entry->action & ~(MEASURE | DONT_MEASURE))
+> @@ -1027,7 +1036,8 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+>   		default:
+>   			return false;
+>   		}
+> -	}
+> +	} else if (entry->flags & IMA_KEYRINGS)
+> +		return false;
+>   
+>   	return true;
+>   }
+> @@ -1209,7 +1219,6 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+>   			keyrings_len = strlen(args[0].from) + 1;
+>   
+>   			if ((entry->keyrings) ||
+> -			    (entry->func != KEY_CHECK) ||
+>   			    (keyrings_len < 2)) {
+>   				result = -EINVAL;
+>   				break;
+> 
 
