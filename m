@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9754220C4BE
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 00:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70A020C4BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 00:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgF0WpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 18:45:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43170 "EHLO mail.kernel.org"
+        id S1726831AbgF0WpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 18:45:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726789AbgF0WpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726750AbgF0WpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 27 Jun 2020 18:45:13 -0400
-Subject: Re: [GIT PULL] SMB3 Fixes
+Subject: Re: [PULL REQUEST] i2c for 5.8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1593297913;
-        bh=O/YiF5uN7AprGzsXhnqP7AWeZIx0x4rNY/xL3gq71U0=;
+        bh=ViFmLMs9O+kdtRW4Dmq4NpDIt1mT/Qc9N9/aABRBQIs=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=l1zUStkJP1ApIJPZ5oI5sCbJCmo+urQP4p9lHkPzHdKLHMsGxHyNB5zVVg5+p6GCp
-         iQ23KhBbpsp+cYMDEjG4rA3KZ/3f+h4h7+K0fzwfBXN5CdB0IJXPWFHxt7qzyQKvCm
-         Xy7NUjtdqx8IIuHJmMqRn7kpDpv50aGZwUgOsMy4=
+        b=CYfNNHpNxppmBGgqWrdmvDonN/QdgN1Xe82P0SAzgGV2TeARH4mKJR08N42hnKkkm
+         3xifYinWcB0DaEg5+qDYrTpINuJ5CLoMR9AuPUb+3yIuqP92eJl81DeGJ5q6CbXDV2
+         zFF5vH61D4lliZPffzRjPBAg+mVYR3oXMRW3YZQs=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAH2r5mseacQ-UN7HB8U3KWcJFO5yciGMFPBYLw2GwqhWRD43Xg@mail.gmail.com>
-References: <CAH2r5mseacQ-UN7HB8U3KWcJFO5yciGMFPBYLw2GwqhWRD43Xg@mail.gmail.com>
+In-Reply-To: <20200627182057.GA4356@kunai>
+References: <20200627182057.GA4356@kunai>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAH2r5mseacQ-UN7HB8U3KWcJFO5yciGMFPBYLw2GwqhWRD43Xg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git
- tags/5.8-rc2-smb3-fixes
-X-PR-Tracked-Commit-Id: bf1028a41eaf0ce39518cbdda34cdb717f16364a
+X-PR-Tracked-Message-Id: <20200627182057.GA4356@kunai>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-next
+X-PR-Tracked-Commit-Id: 40e05200593af06633f64ab0effff052eee6f076
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 916a3b0fc1206f7e7ae8d00a21a3114b1dc67794
-Message-Id: <159329791342.3578.17783629478391524621.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 8bf9865187f6c3130b5c748a3212d591c9d563de
+Message-Id: <159329791311.3578.13019801677364668328.pr-tracker-bot@kernel.org>
 Date:   Sat, 27 Jun 2020 22:45:13 +0000
-To:     Steve French <smfrench@gmail.com>
+To:     Wolfram Sang <wsa@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 27 Jun 2020 15:11:00 -0500:
+The pull request you sent on Sat, 27 Jun 2020 20:20:57 +0200:
 
-> git://git.samba.org/sfrench/cifs-2.6.git tags/5.8-rc2-smb3-fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-next
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/916a3b0fc1206f7e7ae8d00a21a3114b1dc67794
+https://git.kernel.org/torvalds/c/8bf9865187f6c3130b5c748a3212d591c9d563de
 
 Thank you!
 
