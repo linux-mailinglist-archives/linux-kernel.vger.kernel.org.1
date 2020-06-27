@@ -2,102 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE8E20BE88
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 06:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08E020BEA6
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 06:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgF0EzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 00:55:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
+        id S1725936AbgF0E6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 00:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgF0EzR (ORCPT
+        with ESMTP id S1725770AbgF0E6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 00:55:17 -0400
+        Sat, 27 Jun 2020 00:58:47 -0400
 Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B18C03E979
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 21:55:17 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id f6so1769552pjq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 21:55:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7AE6C03E979
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 21:58:47 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id cm23so5788945pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 21:58:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=+gA6TTWkMdHm5W4oJu5q0X2lUIi1w6v+kFfwKgYQFdw=;
-        b=gsThSYYldvqlflGoCnyy6zhApgX1N1u4QndX5Ni5Ms9mflGFUYO7UxSjcngrtpUogE
-         J0AOVFtzY1BYqTfXflC1HZBj2Gins8ECuvRTjVm3TcTy0KiiJnSliEF6E5bPN/WxTFTO
-         icLy4DOWwVq8Dz6CJCYJum7AbZUs25BigtbQKmwIm+F7lEhWl3liPLkv4pR1w8mmlBQ8
-         NcPiRSr3Wot1j4JQ2BWXYRLtEurhVrSz6w5SYxdnS0EHf7lW7gSqCI0aLGlgT8TfFbcz
-         GBMm44neagmza+5UMkSC+kE0szE5T6SZsV8f82olXxckz04SFelkGHnkDT3790KSlk14
-         J+rw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tTXhqZ7TnzTvvD3MCRFk7Xtz6d7PKf4CLgE6fbNTgI0=;
+        b=ZEPxRX1etLBNp9y8gpc6fC9lFfoALnqIbJ+RBxe3qCnzTIm4DGe/AAK94uu7pqBZ/u
+         7KxbqQfv08JLP7Bzrn+/unGnDhPdBQsFf9ESatMwoSBgqzIKmo+o1HIM6sb3eamEg0yk
+         0Pm8DqMmWI6gbTc03SvTwUUMyoA1G/Dgu3W1k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=+gA6TTWkMdHm5W4oJu5q0X2lUIi1w6v+kFfwKgYQFdw=;
-        b=TVhhjqS2KVcMxNTWPvIVNGXWeSd/FlVp1Pc4Y1FB8wCOgmnTvZFiddi7rrkiveEKnp
-         +sGx2pt8b28S1pnxk8G26fZWJsASTqDIHnnfYx/C+Lw/Q/ewwfwnxPm1KsrtQsEEdtDi
-         MTHNWvy70VzWRjkn25krmuZBa5cHSdl+7DeQtkM1wCQn4i8z7cBkpegGE6KNlJ+zIudp
-         T0plvqz/1+7IegLZ3rcbHdRHb5qx1JGO18MTHdJhPhDXMaO73hO0MJZaujuVh97Ojofx
-         wSlZWhRrGpg5lCjJuhoixGYenjaA7i8FpCh8ebEP87dXHxfMhtXFaRWSggPRO3XxIegr
-         jTGg==
-X-Gm-Message-State: AOAM532g1wO9gAZ8yUzZrlSYD5lwMKbotjMZ2hnUPCwr3mWmdpIsLxcw
-        H5GWXjDd4smt2EJ2WELDieI=
-X-Google-Smtp-Source: ABdhPJx3mWKJGR86Eb7qOI9bQqp5l2FYg+gm5648darG2hlNHr2XfBF/bQlTYhbohm1zrtiHXTBoXA==
-X-Received: by 2002:a17:902:9a89:: with SMTP id w9mr5518433plp.30.1593233716796;
-        Fri, 26 Jun 2020 21:55:16 -0700 (PDT)
-Received: from localhost ([144.34.187.180])
-        by smtp.gmail.com with ESMTPSA id u8sm26859976pfh.215.2020.06.26.21.55.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 26 Jun 2020 21:55:16 -0700 (PDT)
-Date:   Sat, 27 Jun 2020 04:55:07 +0000
-From:   Long Li <lonuxli.64@gmail.com>
-To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] mm:free unused pages in kmalloc_order
-Message-ID: <20200627045507.GA57675@lilong>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tTXhqZ7TnzTvvD3MCRFk7Xtz6d7PKf4CLgE6fbNTgI0=;
+        b=rnohsbpHQ47E38m+zCf6b+KtrRpty1FcE9qx2b3cR1tWUjF7QasIPov9nozBwS9DPK
+         97D//4zETX18ueBJMllP9AD8U5fpL+LPAeQgNzC+z/c4ZTl0inPLgFN4FVuVLTUVd9Yj
+         NSosok7JfARBzWhtkBovi88Z2xZw5bKIkRqUTW7b8IjlO8htdI7+0ShHr4mNuPNCwg3l
+         BQ5i2594HDluzhUZ93Ul+zTu0BMcNAnD9aTGJGcYpLwJaS33xRo9ICwtH7hLwNWGwhak
+         PXbYP0WYhQK68TjJ/y0CVESxxwi6d4YcYUhEPja/mNBygwz1z1jtyvQPPNwGtWyAkdMP
+         8eLw==
+X-Gm-Message-State: AOAM531SAif12bba0eSUcUbbFowI0JNUFsXk/R77WxNYKlV6vjQRApNX
+        LA6Vt4HW/+ArvXqVtKGwBXAypC2TNB4=
+X-Google-Smtp-Source: ABdhPJytEzOhayAeT4MyIb691roE7NPXZD6jU5xTOudCguT/4ZRmsPqMDxd3GWIL4roDGlYtNGyglA==
+X-Received: by 2002:a17:90a:f0cb:: with SMTP id fa11mr6662805pjb.113.1593233926875;
+        Fri, 26 Jun 2020 21:58:46 -0700 (PDT)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:476b:691:abc3:38db])
+        by smtp.gmail.com with ESMTPSA id a33sm16123185pgl.75.2020.06.26.21.58.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jun 2020 21:58:46 -0700 (PDT)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com,
+        Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH 1/2] platform/chrome: cros_ec_typec: Use workqueue for port update
+Date:   Fri, 26 Jun 2020 21:58:39 -0700
+Message-Id: <20200627045840.1314019-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Environment using the slub allocator, 1G memory in my ARM32.
-kmalloc(1024, GFP_HIGHUSER) can allocate memory normally,
-kmalloc(64*1024, GFP_HIGHUSER) will cause a memory leak, because
-alloc_pages returns highmem physical pages, but it cannot be directly
-converted into a virtual address and return NULL, the pages has not
-been released. Usually driver developers will not use the
-GFP_HIGHUSER flag to allocate memory in kmalloc, but I think this
-memory leak is not perfect, it is best to be fixed. This is the
-first time I have posted a patch, there may be something wrong.
+Use a work queue to call the port update routines, instead of doing it
+directly in the PD notifier callback. This will prevent other drivers
+with PD notifier callbacks from being blocked on the port update routine
+completing.
 
-Signed-off-by: Long Li <lonuxli.64@gmail.com>
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
 ---
- mm/slab_common.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/platform/chrome/cros_ec_typec.c | 28 ++++++++++++++++++++-----
+ 1 file changed, 23 insertions(+), 5 deletions(-)
 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index a143a8c8f874..d2c53b980ab3 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -819,8 +819,12 @@ void *kmalloc_order(size_t size, gfp_t flags, unsigned int order)
- 	page = alloc_pages(flags, order);
- 	if (likely(page)) {
- 		ret = page_address(page);
--		mod_node_page_state(page_pgdat(page), NR_SLAB_UNRECLAIMABLE_B,
--				    PAGE_SIZE << order);
-+		if (ret)
-+			mod_node_page_state(page_pgdat(page),
-+					NR_SLAB_UNRECLAIMABLE_B,
-+					PAGE_SIZE << order);
-+		else
-+			__free_pages(page, order);
+diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+index 0c041b79cbba..630170fb2cbe 100644
+--- a/drivers/platform/chrome/cros_ec_typec.c
++++ b/drivers/platform/chrome/cros_ec_typec.c
+@@ -58,6 +58,7 @@ struct cros_typec_data {
+ 	/* Array of ports, indexed by port number. */
+ 	struct cros_typec_port *ports[EC_USB_PD_MAX_PORTS];
+ 	struct notifier_block nb;
++	struct work_struct port_work;
+ };
+ 
+ static int cros_typec_parse_port_props(struct typec_capability *cap,
+@@ -619,18 +620,29 @@ static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
+ 	return 0;
+ }
+ 
+-static int cros_ec_typec_event(struct notifier_block *nb,
+-			       unsigned long host_event, void *_notify)
++static void cros_typec_port_work(struct work_struct *work)
+ {
+-	struct cros_typec_data *typec = container_of(nb, struct cros_typec_data,
+-						     nb);
+-	int ret, i;
++	struct cros_typec_data *typec = container_of(work,
++						     struct cros_typec_data,
++						     port_work);
++	int ret;
++	int i;
+ 
+ 	for (i = 0; i < typec->num_ports; i++) {
+ 		ret = cros_typec_port_update(typec, i);
+ 		if (ret < 0)
+ 			dev_warn(typec->dev, "Update failed for port: %d\n", i);
  	}
- 	ret = kasan_kmalloc_large(ret, size, flags);
- 	/* As ret might get tagged, call kmemleak hook after KASAN. */
++}
++
++
++static int cros_ec_typec_event(struct notifier_block *nb,
++			       unsigned long host_event, void *_notify)
++{
++	struct cros_typec_data *typec = container_of(nb, struct cros_typec_data,
++						     nb);
++
++	schedule_work(&typec->port_work);
+ 
+ 	return NOTIFY_OK;
+ }
+@@ -689,6 +701,12 @@ static int cros_typec_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	INIT_WORK(&typec->port_work, cros_typec_port_work);
++
++	/*
++	 * Safe to call port update here, since we haven't registered the
++	 * PD notifier yet.
++	 */
+ 	for (i = 0; i < typec->num_ports; i++) {
+ 		ret = cros_typec_port_update(typec, i);
+ 		if (ret < 0)
 -- 
-2.17.1
+2.27.0.212.ge8ba1cc988-goog
 
