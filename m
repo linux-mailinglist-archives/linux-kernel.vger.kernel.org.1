@@ -2,57 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19AE20C405
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 22:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C7C20C40F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 22:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbgF0UTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 16:19:42 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:40990 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgF0UTm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 16:19:42 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 5B062807FA;
-        Sat, 27 Jun 2020 22:19:39 +0200 (CEST)
-Date:   Sat, 27 Jun 2020 22:19:38 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/2] Improve descriptions of a few simple-panels
-Message-ID: <20200627201938.GA80066@ravnborg.org>
-References: <20200621222742.25695-1-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200621222742.25695-1-digetx@gmail.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=aP3eV41m c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=voM4FWlXAAAA:8 a=pGLkceISAAAA:8
-        a=Qkpp-YoNu5Q0VIUAnfEA:9 a=CjuIK1q_8ugA:10 a=IC2XNlieTeVoXbcui8wp:22
+        id S1726897AbgF0UZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 16:25:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725975AbgF0UZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 16:25:14 -0400
+Subject: Re: [GIT PULL] EDAC urgent for 5.8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593289513;
+        bh=4ZVFImtbaCKd0Np4tmJJBMCy0Tek++XCgT1Ml2ZJ58o=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=XF0TTRWVKcxQVKy9PRFvVilaIIIt5ERquPMGDf22xNAgPSW0UdMc2V2b8EDdy3B9r
+         VFuLlXHWgra8se6gw/tUFuOvyd99dJ6AOwQSyz6ze5EgJ3zi6s9Z9146K1FQair54U
+         yMPgUBbZvUn/1gfITnd9OZiNFwXSyahcpJdLFPcI=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200627105918.GD18956@zn.tnic>
+References: <20200627105918.GD18956@zn.tnic>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200627105918.GD18956@zn.tnic>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git
+ tags/edac_urgent_for_5.8
+X-PR-Tracked-Commit-Id: ee470bb25d0dcdf126f586ec0ae6dca66cb340a4
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 42f8f9bc5cb7c35ca04a6867cc01c24538d59f7f
+Message-Id: <159328951364.11719.14509799335240723936.pr-tracker-bot@kernel.org>
+Date:   Sat, 27 Jun 2020 20:25:13 +0000
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-edac <linux-edac@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 01:27:40AM +0300, Dmitry Osipenko wrote:
-> Hello,
-> 
-> This is a follow up to [1], which was already applied to drm-misc and then
-> Laurent Pinchart spotted some problems. This series addresses those problems.
-> 
-> [1] https://patchwork.ozlabs.org/project/linux-tegra/patch/20200617222703.17080-8-digetx@gmail.com/
-> 
-> Dmitry Osipenko (2):
->   drm/panel-simple: Correct EDT ET057090DHU connector type
->   drm/panel-simple: Add missing BUS descriptions for some panels
+The pull request you sent on Sat, 27 Jun 2020 12:59:18 +0200:
 
-Thanks for the quick fixes, both are now applied to drm-misc-next.
+> git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_urgent_for_5.8
 
-	Sam
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/42f8f9bc5cb7c35ca04a6867cc01c24538d59f7f
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
