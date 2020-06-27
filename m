@@ -2,50 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F000020C020
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 10:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7D720C02A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 10:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgF0I0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 04:26:33 -0400
-Received: from mga04.intel.com ([192.55.52.120]:42774 "EHLO mga04.intel.com"
+        id S1726464AbgF0I2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 04:28:39 -0400
+Received: from mga02.intel.com ([134.134.136.20]:59672 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726086AbgF0I0c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 04:26:32 -0400
-IronPort-SDR: UdAeleCPUYqsGzqxFtnsjttLbD8DJcfetDArnFK6us6ev6DSKS871kdLuBBI325KP8bmdiGsoK
- GeAljMXpfGxg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9664"; a="143116421"
+        id S1725980AbgF0I2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 04:28:38 -0400
+IronPort-SDR: eCq12wd+1/lGqz8BK7i393j53pmkQadUltYLrZjFaE+Pb8uBjjypKQCEUJ9ZLPuVMZMEUSvytR
+ Ht2iEdFWNxEw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9664"; a="133954585"
 X-IronPort-AV: E=Sophos;i="5.75,287,1589266800"; 
-   d="yaml'?scan'208";a="143116421"
+   d="xz'?scan'208";a="133954585"
 X-Amp-Result: UNKNOWN
 X-Amp-Original-Verdict: FILE UNKNOWN
 X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2020 01:25:51 -0700
-IronPort-SDR: 198I3Ta61jYTM0g5SfQfF8AqZ8nircztZIotvIsrOQdPPJRZ75nntklqsbcCmUPcNPLO1o1wib
- UNDEfO4ZQ+EA==
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2020 01:26:48 -0700
+IronPort-SDR: fy3eU06MfRwNla5K/Yx1BOPPf1MIUVNsPuwJ+ZNehrJt8nff8+GpUbbHlKU4bsgCxP/zzoTb8F
+ Cg7sXsQqpH5A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,287,1589266800"; 
-   d="yaml'?scan'208";a="265803994"
+   d="xz'?scan'208";a="480240261"
 Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.3])
-  by fmsmga008.fm.intel.com with ESMTP; 27 Jun 2020 01:25:47 -0700
-Date:   Sat, 27 Jun 2020 16:25:22 +0800
+  by fmsmga005.fm.intel.com with ESMTP; 27 Jun 2020 01:26:45 -0700
+Date:   Sat, 27 Jun 2020 16:26:20 +0800
 From:   kernel test robot <rong.a.chen@intel.com>
-To:     David Rientjes <rientjes@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Michal Hocko <mhocko@suse.com>, Mel Gorman <mgorman@suse.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Stefan Priebe - Profihost AG <s.priebe@profihost.ag>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-Subject: [mm, page_alloc] b39d0ee263: vm-scalability.throughput 26.4%
- improvement
-Message-ID: <20200627082522.GJ5535@shao2-debian>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        ltp@lists.linux.it
+Subject: [crypto] f3c802a1f3: ltp.af_alg02.fail
+Message-ID: <20200627082620.GK5535@shao2-debian>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="3iqGNvuhWAyawlAA"
+Content-Type: multipart/mixed; boundary="o9mtL5OVI48+DSkO"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -53,921 +45,99 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---3iqGNvuhWAyawlAA
+--o9mtL5OVI48+DSkO
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 
 Greeting,
 
-FYI, we noticed a 26.4% improvement of vm-scalability.throughput due to commit:
+FYI, we noticed the following commit (built with gcc-9):
 
+commit: f3c802a1f30013f8f723b62d7fa49eb9e991da23 ("crypto: algif_aead - Only wake up when ctx->more is zero")
+https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
 
-commit: b39d0ee2632d2f4fb180e8e4eba33736283f23de ("mm, page_alloc: avoid expensive reclaim when compaction may not succeed")
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-
-in testcase: vm-scalability
-on test machine: 72 threads Intel(R) Xeon(R) Gold 6139 CPU @ 2.30GHz with 128G memory
+in testcase: ltp
 with following parameters:
 
-	runtime: 300
-	thp_enabled: always
-	thp_defrag: always
-	nr_task: 8
-	nr_ssd: 1
-	test: swap-w-rand-mt
-	cpufreq_governor: performance
-	ucode: 0x2000065
+	test: crypto
 
-test-description: The motivation behind this suite is to exercise functions and regions of the mm/ of the Linux kernel which are of interest to us.
-test-url: https://git.kernel.org/cgit/linux/kernel/git/wfg/vm-scalability.git/
+test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
+test-url: http://linux-test-project.github.io/
+
+
+on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+
+caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
 
 
 
 
+If you fix the issue, kindly add following tag
+Reported-by: kernel test robot <rong.a.chen@intel.com>
 
-Details are as below:
--------------------------------------------------------------------------------------------------->
+<<<test_start>>>
+tag=af_alg02 stime=1593184046
+cmdline="af_alg02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 00m 20s
+af_alg02.c:52: BROK: Timed out while reading from request socket.
+
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=10 termination_type=exited termination_id=2 corefile=no
+cutime=7 cstime=10
+<<<test_end>>>
+
+
 
 
 To reproduce:
 
+        # build kernel
+	cd linux
+	cp config-5.8.0-rc1-00012-gf3c802a1f30013 .config
+	make HOSTCC=gcc-9 CC=gcc-9 ARCH=x86_64 olddefconfig prepare modules_prepare bzImage modules
+	make HOSTCC=gcc-9 CC=gcc-9 ARCH=x86_64 INSTALL_MOD_PATH=<mod-install-dir> modules_install
+	cd <mod-install-dir>
+	find lib/ | cpio -o -H newc --quiet | gzip > modules.cgz
+
+
         git clone https://github.com/intel/lkp-tests.git
         cd lkp-tests
-        bin/lkp install job.yaml  # job file is attached in this email
-        bin/lkp run     job.yaml
+        bin/lkp qemu -k <bzImage> -m modules.cgz job-script # job-script is attached in this email
 
-=========================================================================================
-compiler/cpufreq_governor/kconfig/nr_ssd/nr_task/rootfs/runtime/tbox_group/test/testcase/thp_defrag/thp_enabled/ucode:
-  gcc-9/performance/x86_64-rhel-7.6/1/8/debian-x86_64-20191114.cgz/300/lkp-skl-2sp7/swap-w-rand-mt/vm-scalability/always/always/0x2000065
-
-commit: 
-  19deb7695e ("Revert "Revert "Revert "mm, thp: consolidate THP gfp handling into alloc_hugepage_direct_gfpmask""")
-  b39d0ee263 ("mm, page_alloc: avoid expensive reclaim when compaction may not succeed")
-
-19deb7695e072dea b39d0ee2632d2f4fb180e8e4eba 
----------------- --------------------------- 
-       fail:runs  %reproduction    fail:runs
-           |             |             |    
-           :4           50%           2:4     dmesg.page_allocation_failure:order:#,mode:#(GFP_KERNEL|__GFP_COMP),nodemask=(null),cpuset=/,mems_allowed=
-           :4          144%           5:4     perf-profile.calltrace.cycles-pp.error_entry.do_access
-           :4          162%           6:4     perf-profile.children.cycles-pp.error_entry
-           :4           80%           3:4     perf-profile.self.cycles-pp.error_entry
-         %stddev     %change         %stddev
-             \          |                \  
-      0.85 ±  4%    +141.8%       2.06 ±  6%  vm-scalability.free_time
-     12854 ±  4%     +27.6%      16402        vm-scalability.median
-    103213 ±  5%     +26.4%     130433        vm-scalability.throughput
-    390.27 ±  4%     -20.1%     311.66        vm-scalability.time.elapsed_time
-    390.27 ±  4%     -20.1%     311.66        vm-scalability.time.elapsed_time.max
-   1282856 ±  3%   +2142.7%   28770194 ±  3%  vm-scalability.time.file_system_inputs
-     55840 ± 24%     -75.6%      13642 ± 24%  vm-scalability.time.involuntary_context_switches
-    159970 ±  3%   +2147.8%    3595842 ±  3%  vm-scalability.time.major_page_faults
-    167684 ±  2%   +9973.1%   16891007 ±  5%  vm-scalability.time.minor_page_faults
-     27.75 ± 11%     +38.7%      38.50        vm-scalability.time.percent_of_cpu_this_job_got
-    177871 ±  2%   +1929.7%    3610223 ±  3%  vm-scalability.time.voluntary_context_switches
-      1487            +1.4%       1507        boot-time.idle
-  73888352 ±139%    +982.4%  7.998e+08 ± 65%  cpuidle.C1.time
-   1138951 ±143%    +795.5%   10199057 ± 45%  cpuidle.C1.usage
-   3121797 ±146%    +924.7%   31989104 ± 81%  cpuidle.POLL.time
-    127036 ± 75%   +1269.3%    1739536 ± 72%  cpuidle.POLL.usage
-     11.90 ±  7%      -2.0        9.94        mpstat.cpu.all.iowait%
-      0.03 ± 75%      +0.1        0.16 ±  5%  mpstat.cpu.all.soft%
-      0.45 ± 10%      +0.3        0.71 ±  3%  mpstat.cpu.all.sys%
-      0.05 ±  3%      +0.0        0.10 ±  3%  mpstat.cpu.all.usr%
- 1.227e+08 ±  4%     -23.3%   94052436 ±  6%  meminfo.AnonHugePages
-    397617 ±  4%     +48.5%     590655        meminfo.PageTables
-     84313 ± 14%     -36.4%      53604        meminfo.SwapCached
- 2.153e+08           +13.9%  2.452e+08        meminfo.SwapFree
-     59.00 ± 30%  +14510.2%       8620 ±  5%  meminfo.Writeback
-    336353 ±  4%     +26.4%     425057        meminfo.max_used_kB
-      1771 ±  2%   +2492.1%      45912 ±  3%  vmstat.io.bi
-    399107           -25.9%     295684        vmstat.io.bo
-  77396038 ±  4%     -39.1%   47170548 ±  2%  vmstat.memory.swpd
-      1765 ±  2%   +2499.7%      45905 ±  3%  vmstat.swap.si
-    399102           -25.9%     295678        vmstat.swap.so
-      3974 ±  2%    +865.7%      38376 ±  3%  vmstat.system.cs
-  62763223           -21.0%   49591522 ±  4%  numa-meminfo.node0.AnonHugePages
-    634545 ±  2%      -8.5%     580694        numa-meminfo.node0.FilePages
-   1522483 ± 22%     +39.0%    2115718 ±  7%  numa-meminfo.node0.MemFree
-    201764 ± 11%     +75.5%     354185 ± 25%  numa-meminfo.node0.PageTables
-     66.75 ± 16%   +5839.3%       3964 ±  9%  numa-meminfo.node0.Writeback
-     11185           +15.8%      12956 ± 11%  numa-meminfo.node1.Mapped
-     59245 ±  6%     +14.3%      67731        numa-meminfo.node1.SUnreclaim
-     14.50 ± 62%  +21572.4%       3142 ±  7%  numa-meminfo.node1.Writeback
-    588490 ± 14%   +1444.9%    9091320        numa-numastat.node0.local_node
-    486779 ± 21%   +1991.9%   10183025 ± 14%  numa-numastat.node0.numa_foreign
-    597887 ± 13%   +1421.7%    9098331        numa-numastat.node0.numa_hit
-      4033 ±113%  +28572.6%    1156365 ± 68%  numa-numastat.node0.numa_miss
-     13436 ± 83%   +8558.4%    1163385 ± 69%  numa-numastat.node0.other_node
-    287398 ± 15%    +268.4%    1058708 ± 16%  numa-numastat.node1.local_node
-      4033 ±113%  +28572.6%    1156365 ± 68%  numa-numastat.node1.numa_foreign
-    301422 ± 17%    +256.6%    1074938 ± 17%  numa-numastat.node1.numa_hit
-    486779 ± 21%   +1991.9%   10183025 ± 14%  numa-numastat.node1.numa_miss
-    500805 ± 19%   +1936.6%   10199261 ± 14%  numa-numastat.node1.other_node
-     87.61            +1.7%      89.13        iostat.cpu.idle
-     11.85 ±  7%     -16.5%       9.89        iostat.cpu.iowait
-     15.40 ±173%    -100.0%       0.00        iostat.sdb.avgqu-sz.max
-     35.02 ±173%    -100.0%       0.00        iostat.sdb.await.max
-     25.69 ±173%    -100.0%       0.00        iostat.sdb.r_await.max
-      0.27 ±173%    -100.0%       0.00        iostat.sdb.svctm.max
-     35.93 ±173%    -100.0%       0.00        iostat.sdb.w_await.max
-    205.50 ±100%   +5477.0%      11460 ±  3%  iostat.sdc.r/s
-    866.22 ±100%   +5199.5%      45905 ±  3%  iostat.sdc.rkB/s
-     22.69 ±100%    +185.9%      64.86 ±  2%  iostat.sdc.util
-    196.91 ±100%    +110.0%     413.53 ±  2%  iostat.sdc.w/s
-     82.54 ±102%  +37097.0%      30704 ±  8%  iostat.sdc.wrqm/s
-     15.30 ±173%    -100.0%       0.00        iostat.sdd.avgqu-sz.max
-     37.20 ±173%    -100.0%       0.00        iostat.sdd.await.max
-     26.39 ±173%    -100.0%       0.00        iostat.sdd.r_await.max
-      0.27 ±173%    -100.0%       0.00        iostat.sdd.svctm.max
-     37.46 ±173%    -100.0%       0.00        iostat.sdd.w_await.max
-    467.00 ± 15%    +168.0%       1251        slabinfo.biovec-128.active_objs
-    467.00 ± 15%    +169.3%       1257        slabinfo.biovec-128.num_objs
-    234.00 ± 20%    +215.6%     738.50        slabinfo.biovec-max.active_objs
-    234.00 ± 20%    +226.9%     765.00        slabinfo.biovec-max.num_objs
-      1979 ±  9%     +18.5%       2345 ±  2%  slabinfo.blkdev_ioc.active_objs
-      1979 ±  9%     +18.5%       2345 ±  2%  slabinfo.blkdev_ioc.num_objs
-      6539 ± 33%    +248.9%      22817        slabinfo.dmaengine-unmap-16.active_objs
-    159.50 ± 32%    +248.9%     556.50        slabinfo.dmaengine-unmap-16.active_slabs
-      6722 ± 32%    +243.6%      23099        slabinfo.dmaengine-unmap-16.num_objs
-    159.50 ± 32%    +248.9%     556.50        slabinfo.dmaengine-unmap-16.num_slabs
-    904.50 ±  6%     +15.5%       1044 ±  7%  slabinfo.mnt_cache.active_objs
-    904.50 ±  6%     +15.5%       1044 ±  7%  slabinfo.mnt_cache.num_objs
-      1462 ± 15%     +36.0%       1988        slabinfo.pool_workqueue.active_objs
-      1462 ± 15%     +36.0%       1989        slabinfo.pool_workqueue.num_objs
-     25317 ± 14%     +29.3%      32743        slabinfo.radix_tree_node.active_objs
-     25564 ± 14%     +29.0%      32976        slabinfo.radix_tree_node.num_objs
-    541.25 ±  9%     +19.7%     648.00 ±  7%  slabinfo.skbuff_ext_cache.active_objs
-    306.25 ± 10%     -35.3%     198.00 ±  2%  slabinfo.xfrm_state.active_objs
-    306.25 ± 10%     -35.3%     198.00 ±  2%  slabinfo.xfrm_state.num_objs
-     30636           -20.8%      24248 ±  4%  numa-vmstat.node0.nr_anon_transparent_hugepages
-    158653 ±  2%      -8.6%     145086        numa-vmstat.node0.nr_file_pages
-    383593 ± 21%     +31.6%     504920 ±  7%  numa-vmstat.node0.nr_free_pages
-      1197 ± 11%     -79.1%     250.50 ± 38%  numa-vmstat.node0.nr_isolated_anon
-     50443 ± 11%     +75.9%      88719 ± 25%  numa-vmstat.node0.nr_page_table_pages
-     67929 ± 15%   +2664.4%    1877847 ±  5%  numa-vmstat.node0.nr_vmscan_write
-     15.75 ± 14%   +6417.5%       1026 ± 17%  numa-vmstat.node0.nr_writeback
-     67991 ± 15%   +2660.4%    1876858 ±  5%  numa-vmstat.node0.nr_written
-     16.25 ± 18%   +6229.2%       1028 ± 17%  numa-vmstat.node0.nr_zone_write_pending
-    176809 ± 38%   +3070.4%    5605565 ± 28%  numa-vmstat.node0.numa_foreign
-    955047 ± 10%    +405.1%    4823783        numa-vmstat.node0.numa_hit
-    945568 ± 11%    +409.4%    4816358        numa-vmstat.node0.numa_local
-      3222 ±120%  +34593.4%    1118081 ± 70%  numa-vmstat.node0.numa_miss
-     12701 ± 86%   +8761.2%    1125506 ± 70%  numa-vmstat.node0.numa_other
-      2832 ±  3%     +18.8%       3364 ± 10%  numa-vmstat.node1.nr_mapped
-     14811 ±  6%     +14.4%      16941        numa-vmstat.node1.nr_slab_unreclaimable
-     28441 ± 86%   +5081.8%    1473792 ± 18%  numa-vmstat.node1.nr_vmscan_write
-      3.00 ± 62%  +32716.7%     984.50 ± 14%  numa-vmstat.node1.nr_writeback
-     28466 ± 86%   +5073.9%    1472846 ± 18%  numa-vmstat.node1.nr_written
-      4.75 ± 40%  +20205.3%     964.50 ± 14%  numa-vmstat.node1.nr_zone_write_pending
-      3222 ±120%  +34593.6%    1118089 ± 70%  numa-vmstat.node1.numa_foreign
-    632865 ±  8%    +122.0%    1405129 ± 18%  numa-vmstat.node1.numa_hit
-    456935 ± 12%    +168.6%    1227541 ± 20%  numa-vmstat.node1.numa_local
-    176892 ± 38%   +3069.0%    5605676 ± 28%  numa-vmstat.node1.numa_miss
-    352822 ± 17%   +1539.1%    5783265 ± 28%  numa-vmstat.node1.numa_other
- 2.165e+08 ±  8%     +85.0%  4.005e+08        perf-stat.i.branch-instructions
-   3905237 ± 12%     +16.5%    4550517        perf-stat.i.cache-misses
-      3962 ±  2%    +874.2%      38608 ±  3%  perf-stat.i.context-switches
-      3.43 ± 20%     -22.4%       2.66        perf-stat.i.cpi
- 3.301e+09 ± 12%     +45.8%  4.813e+09        perf-stat.i.cpu-cycles
-     75.62           +18.6%      89.65        perf-stat.i.cpu-migrations
-      1066 ±  7%     +15.9%       1236        perf-stat.i.cycles-between-cache-misses
- 2.573e+08 ±  6%     +96.6%   5.06e+08 ±  2%  perf-stat.i.dTLB-loads
- 1.371e+08 ±  5%    +101.6%  2.765e+08 ±  2%  perf-stat.i.dTLB-stores
-    153829 ± 76%    +118.3%     335876 ±  4%  perf-stat.i.iTLB-load-misses
-    834267 ± 27%     +34.6%    1122801 ±  6%  perf-stat.i.iTLB-loads
- 1.043e+09 ±  7%     +87.4%  1.954e+09        perf-stat.i.instructions
-      0.31 ± 19%     +28.3%       0.40        perf-stat.i.ipc
-    421.94 ±  6%   +2632.8%      11530 ±  3%  perf-stat.i.major-faults
-      0.05 ± 12%     +46.8%       0.07        perf-stat.i.metric.GHz
-      0.73 ± 20%    +110.3%       1.53 ±  2%  perf-stat.i.metric.K/sec
-      2997         +1789.4%      56632 ±  5%  perf-stat.i.minor-faults
-     38.29 ± 11%     +12.3       50.61 ± 11%  perf-stat.i.node-load-miss-rate%
-     10.29 ± 13%     +35.1       45.35 ±  4%  perf-stat.i.node-store-miss-rate%
-     46487 ± 11%    +462.8%     261642 ±  3%  perf-stat.i.node-store-misses
-    638374 ±  5%      -7.2%     592659        perf-stat.i.node-stores
-      3419         +1893.5%      68163 ±  3%  perf-stat.i.page-faults
-      3.19 ± 17%     -22.7%       2.46        perf-stat.overall.cpi
-    852.81 ± 14%     +24.0%       1057 ±  2%  perf-stat.overall.cycles-between-cache-misses
-      0.32 ± 17%     +25.4%       0.41        perf-stat.overall.ipc
-      6.72 ± 12%     +23.8       30.53 ±  2%  perf-stat.overall.node-store-miss-rate%
-     10361 ±  8%     +47.9%      15326        perf-stat.overall.path-length
- 2.175e+08 ±  8%     +83.8%  3.999e+08        perf-stat.ps.branch-instructions
-   3921204 ± 13%     +15.9%    4546434        perf-stat.ps.cache-misses
-      3946 ±  2%    +876.2%      38525 ±  3%  perf-stat.ps.context-switches
- 3.302e+09 ± 12%     +45.5%  4.806e+09        perf-stat.ps.cpu-cycles
-     75.32           +18.8%      89.49        perf-stat.ps.cpu-migrations
-  2.58e+08 ±  6%     +95.8%  5.052e+08        perf-stat.ps.dTLB-loads
- 1.371e+08 ±  5%    +101.3%   2.76e+08 ±  2%  perf-stat.ps.dTLB-stores
-    152980 ± 76%    +119.1%     335236 ±  3%  perf-stat.ps.iTLB-load-misses
-    831526 ± 27%     +34.8%    1120567 ±  5%  perf-stat.ps.iTLB-loads
- 1.047e+09 ±  7%     +86.3%  1.951e+09        perf-stat.ps.instructions
-    419.56 ±  6%   +2642.3%      11505 ±  3%  perf-stat.ps.major-faults
-      2994         +1787.6%      56525 ±  5%  perf-stat.ps.minor-faults
-     46508 ± 11%    +461.5%     261135 ±  3%  perf-stat.ps.node-store-misses
-    646522 ±  5%      -8.1%     593906        perf-stat.ps.node-stores
-      3414         +1892.7%      68031 ±  3%  perf-stat.ps.page-faults
- 4.098e+11 ±  8%     +48.9%  6.104e+11        perf-stat.total.instructions
-     28571 ± 16%     -94.0%       1725 ± 79%  proc-vmstat.allocstall_movable
-     29775 ± 17%    +189.5%      86205        proc-vmstat.compact_fail
-    239845 ± 86%     -91.6%      20116 ± 41%  proc-vmstat.compact_migrate_scanned
-     30325 ± 17%    +184.3%      86207        proc-vmstat.compact_stall
-    550.00 ± 69%     -99.7%       1.50 ± 33%  proc-vmstat.compact_success
-     48.50 ± 34%   +2025.8%       1031 ± 15%  proc-vmstat.kswapd_high_wmark_hit_quickly
-     59881 ±  4%     -23.3%      45914 ±  6%  proc-vmstat.nr_anon_transparent_hugepages
-    306441            -2.5%     298732        proc-vmstat.nr_file_pages
-      1416 ± 14%     -56.7%     613.00 ± 53%  proc-vmstat.nr_isolated_anon
-     13021            +2.0%      13286        proc-vmstat.nr_kernel_stack
-     99385 ±  4%     +48.6%     147700        proc-vmstat.nr_page_table_pages
-     16444            +5.0%      17266        proc-vmstat.nr_slab_reclaimable
-     33077            +6.4%      35194        proc-vmstat.nr_slab_unreclaimable
-     96333 ± 16%   +3377.2%    3349689 ± 11%  proc-vmstat.nr_vmscan_write
-     21.25 ± 22%  +10325.9%       2215 ±  5%  proc-vmstat.nr_writeback
-    146006 ± 11%   +6584.0%    9759132 ±  8%  proc-vmstat.nr_written
-     22.50 ± 17%   +9651.1%       2194 ±  5%  proc-vmstat.nr_zone_write_pending
-    490812 ± 21%   +2210.3%   11339390 ±  6%  proc-vmstat.numa_foreign
-     12546 ± 27%    +143.1%      30504 ± 21%  proc-vmstat.numa_hint_faults
-      5408 ± 69%    +175.4%      14895 ±  9%  proc-vmstat.numa_hint_faults_local
-    924107 ± 13%   +1003.6%   10198682        proc-vmstat.numa_hit
-    900674 ± 13%   +1029.8%   10175421        proc-vmstat.numa_local
-    490812 ± 21%   +2210.3%   11339390 ±  6%  proc-vmstat.numa_miss
-    514246 ± 20%   +2109.6%   11362651 ±  6%  proc-vmstat.numa_other
-    114.75 ± 42%   +1264.7%       1566        proc-vmstat.pageoutrun
-   2024276 ± 13%   +2098.0%   44494248 ± 17%  proc-vmstat.pgactivate
-   1114631 ±  4%     -60.9%     435525 ±  7%  proc-vmstat.pgalloc_dma32
-  77470327           -26.6%   56867854        proc-vmstat.pgalloc_normal
-  42466243 ±  3%     +54.1%   65450796 ± 11%  proc-vmstat.pgdeactivate
-   1375277 ±  3%   +1449.6%   21311829 ±  3%  proc-vmstat.pgfault
-  77941011           -27.1%   56789463        proc-vmstat.pgfree
-    164760 ±  2%   +2084.4%    3598976 ±  3%  proc-vmstat.pgmajfault
-    691015 ±  2%   +1984.9%   14406909 ±  3%  proc-vmstat.pgpgin
- 1.569e+08 ±  3%     -40.7%   92993810        proc-vmstat.pgpgout
-  42466243 ±  3%     +54.1%   65450796 ± 11%  proc-vmstat.pgrefill
-    145620 ± 11%   +6601.3%    9758473 ±  8%  proc-vmstat.pgrotated
-  61188098 ±  6%     -88.6%    6974537 ± 89%  proc-vmstat.pgscan_direct
-  19257098 ± 35%    +335.0%   83761134 ± 16%  proc-vmstat.pgscan_kswapd
-  30237264 ±  6%     -89.6%    3143011 ± 89%  proc-vmstat.pgsteal_direct
-   8970033 ± 36%    +124.0%   20096453 ± 13%  proc-vmstat.pgsteal_kswapd
-    172208 ±  2%   +1991.2%    3601181 ±  3%  proc-vmstat.pswpin
-  39224926 ±  3%     -40.7%   23247940        proc-vmstat.pswpout
-    149697           -54.1%      68756        proc-vmstat.thp_deferred_split_page
-    148067           -53.8%      68408        proc-vmstat.thp_fault_alloc
-      1200 ± 28%   +7069.7%      86072        proc-vmstat.thp_fault_fallback
-     76475 ±  3%     -65.5%      26397 ±  7%  proc-vmstat.thp_split_pmd
-     76475 ±  3%     -65.5%      26397 ±  7%  proc-vmstat.thp_swpout
-      1397 ± 11%     +33.6%       1866 ±  2%  sched_debug.cfs_rq:/.exec_clock.avg
-      1843 ± 19%     +26.5%       2331 ± 18%  sched_debug.cfs_rq:/.exec_clock.stddev
-     35761 ± 11%   +1065.8%     416897 ±  5%  sched_debug.cfs_rq:/.load.avg
-    642939 ± 10%   +2330.3%   15625051        sched_debug.cfs_rq:/.load.max
-    130599 ±  7%   +1793.1%    2472308 ±  3%  sched_debug.cfs_rq:/.load.stddev
-     47.82 ±  9%    +321.8%     201.69 ± 34%  sched_debug.cfs_rq:/.load_avg.avg
-    725.18 ±  8%     +63.3%       1184 ± 17%  sched_debug.cfs_rq:/.load_avg.max
-    148.72 ±  8%    +151.4%     373.90 ± 22%  sched_debug.cfs_rq:/.load_avg.stddev
-      8846 ± 12%     +26.7%      11208 ±  9%  sched_debug.cfs_rq:/.min_vruntime.stddev
-      0.24 ± 25%     -33.4%       0.16 ±  3%  sched_debug.cfs_rq:/.nr_spread_over.avg
-     11.10 ± 26%     +46.9%      16.32 ± 14%  sched_debug.cfs_rq:/.removed.load_avg.avg
-    146.29           +16.7%     170.67        sched_debug.cfs_rq:/.removed.load_avg.max
-     38.24 ± 11%     +29.6%      49.57 ±  6%  sched_debug.cfs_rq:/.removed.load_avg.stddev
-    511.35 ± 26%     +47.2%     752.48 ± 14%  sched_debug.cfs_rq:/.removed.runnable_sum.avg
-      6799           +15.7%       7866        sched_debug.cfs_rq:/.removed.runnable_sum.max
-      1761 ± 11%     +29.8%       2285 ±  6%  sched_debug.cfs_rq:/.removed.runnable_sum.stddev
-      4.48 ± 33%     +52.5%       6.83 ± 11%  sched_debug.cfs_rq:/.removed.util_avg.avg
-     74.36           +17.5%      87.33        sched_debug.cfs_rq:/.removed.util_avg.max
-     15.80 ± 17%     +35.5%      21.41 ±  3%  sched_debug.cfs_rq:/.removed.util_avg.stddev
-      8847 ± 12%     +26.7%      11209 ±  9%  sched_debug.cfs_rq:/.spread0.stddev
-     81.12 ±  4%     +30.4%     105.82 ± 12%  sched_debug.cfs_rq:/.util_avg.avg
-    120956 ±  8%     +81.3%     219238 ±  8%  sched_debug.cpu.avg_idle.stddev
-    211729           -14.4%     181159        sched_debug.cpu.clock.avg
-    211819           -14.4%     181220        sched_debug.cpu.clock.max
-    211444           -14.4%     180985        sched_debug.cpu.clock.min
-    211729           -14.4%     181159        sched_debug.cpu.clock_task.avg
-    211819           -14.4%     181220        sched_debug.cpu.clock_task.max
-    211444           -14.4%     180985        sched_debug.cpu.clock_task.min
-      6474           -12.4%       5672        sched_debug.cpu.curr->pid.max
-      9875 ±  3%    +490.8%      58346 ±  3%  sched_debug.cpu.nr_switches.avg
-    139078 ±  7%    +226.5%     454101 ±  4%  sched_debug.cpu.nr_switches.max
-     17645 ±  7%    +597.5%     123074 ±  6%  sched_debug.cpu.nr_switches.stddev
-      8498 ±  3%    +570.4%      56972 ±  3%  sched_debug.cpu.sched_count.avg
-    137026 ±  7%    +230.1%     452307 ±  4%  sched_debug.cpu.sched_count.max
-     17489 ±  7%    +603.6%     123061 ±  6%  sched_debug.cpu.sched_count.stddev
-      3369          +498.1%      20150 ±  3%  sched_debug.cpu.sched_goidle.avg
-     61893 ±  8%    +153.4%     156853 ±  4%  sched_debug.cpu.sched_goidle.max
-      7830 ±  6%    +446.0%      42754 ±  6%  sched_debug.cpu.sched_goidle.stddev
-      4252 ±  4%    +749.8%      36135 ±  4%  sched_debug.cpu.ttwu_count.avg
-    103569 ± 10%   +1200.0%    1346433 ±  4%  sched_debug.cpu.ttwu_count.max
-     12410 ± 10%   +1189.6%     160043 ±  4%  sched_debug.cpu.ttwu_count.stddev
-      2757 ±  4%    +586.9%      18940 ±  4%  sched_debug.cpu.ttwu_local.avg
-     70698 ±  7%    +145.2%     173350        sched_debug.cpu.ttwu_local.max
-      8437 ±  8%    +399.3%      42134 ±  5%  sched_debug.cpu.ttwu_local.stddev
-    211432           -14.4%     180953        sched_debug.cpu_clk
-    208718           -14.6%     178237        sched_debug.ktime
-    211799           -14.4%     181322        sched_debug.sched_clk
-    156536 ±  2%   +1083.0%    1851838 ±  3%  softirqs.BLOCK
-    102222 ±  5%     -14.6%      87282        softirqs.CPU0.RCU
-     55553 ±  4%     -17.5%      45844 ±  2%  softirqs.CPU0.SCHED
-    141539 ±  8%     -23.0%     109045        softirqs.CPU0.TIMER
-     53374 ±  6%     -20.9%      42228        softirqs.CPU1.SCHED
-    139918 ± 10%     -20.9%     110719 ±  2%  softirqs.CPU1.TIMER
-    103294 ±  4%     -20.9%      81695 ± 14%  softirqs.CPU10.RCU
-     51338 ±  5%     -19.9%      41102        softirqs.CPU10.SCHED
-    140253 ±  9%     -26.6%     102901 ±  2%  softirqs.CPU10.TIMER
-    102504 ±  4%     -12.9%      89311        softirqs.CPU11.RCU
-     51376 ±  5%     -20.0%      41118        softirqs.CPU11.SCHED
-    137637 ±  5%     -19.9%     110297 ±  3%  softirqs.CPU11.TIMER
-     51108 ±  5%     -20.5%      40635        softirqs.CPU12.SCHED
-    139873 ±  8%     -22.3%     108727        softirqs.CPU12.TIMER
-     51393 ±  5%     -19.8%      41208        softirqs.CPU13.SCHED
-    142556 ± 11%     -22.0%     111168        softirqs.CPU13.TIMER
-    100079 ±  4%     -12.7%      87403 ±  2%  softirqs.CPU14.RCU
-     51099 ±  5%     -20.7%      40529        softirqs.CPU14.SCHED
-    138927 ± 10%     -23.2%     106759        softirqs.CPU14.TIMER
-     82560 ± 13%     -17.1%      68451 ±  3%  softirqs.CPU15.RCU
-     51881 ±  5%     -20.1%      41433        softirqs.CPU15.SCHED
-    143407 ± 13%     -24.2%     108766        softirqs.CPU15.TIMER
-     86319 ± 11%     -33.1%      57723 ±  5%  softirqs.CPU16.RCU
-     52245 ±  5%     -20.5%      41518        softirqs.CPU16.SCHED
-    139770 ±  8%     -21.7%     109469        softirqs.CPU16.TIMER
-     51865 ±  5%     -19.0%      42013        softirqs.CPU17.SCHED
-    143175 ±  9%     -20.4%     114025        softirqs.CPU17.TIMER
-     52987 ±  3%     -18.2%      43330        softirqs.CPU18.SCHED
-     51954 ±  4%     -17.9%      42654        softirqs.CPU19.SCHED
-     51747 ±  4%     -20.3%      41226        softirqs.CPU2.SCHED
-    140583 ±  6%     -18.1%     115164        softirqs.CPU2.TIMER
-     51928 ±  4%     -18.2%      42474        softirqs.CPU20.SCHED
-     51952 ±  4%     -18.1%      42558        softirqs.CPU21.SCHED
-     52112 ±  4%     -16.4%      43552 ±  3%  softirqs.CPU22.SCHED
-     51993 ±  3%     -18.4%      42448        softirqs.CPU23.SCHED
-     52401 ±  3%     -18.5%      42729        softirqs.CPU24.SCHED
-     52279 ±  4%     -18.5%      42583        softirqs.CPU25.SCHED
-     51980 ±  4%     -18.2%      42509        softirqs.CPU26.SCHED
-     52662 ±  2%     -19.3%      42472        softirqs.CPU27.SCHED
-     51995 ±  4%     -17.9%      42675        softirqs.CPU28.SCHED
-     51705 ±  4%     -17.4%      42732        softirqs.CPU29.SCHED
-     51470 ±  5%     -20.2%      41058        softirqs.CPU3.SCHED
-    138346 ±  6%     -17.6%     114050        softirqs.CPU3.TIMER
-     51955 ±  4%     -18.3%      42429        softirqs.CPU30.SCHED
-     52295 ±  4%     -18.3%      42750        softirqs.CPU31.SCHED
-     51864 ±  3%     -18.4%      42321        softirqs.CPU32.SCHED
-     51934 ±  3%     -18.0%      42560        softirqs.CPU33.SCHED
-     52111 ±  4%     -18.0%      42722        softirqs.CPU34.SCHED
-     52007 ±  4%     -18.6%      42355        softirqs.CPU35.SCHED
-     99121 ±  9%     -22.4%      76875 ±  7%  softirqs.CPU36.RCU
-     51253 ±  5%     -18.9%      41587        softirqs.CPU36.SCHED
-    138261 ±  8%     -20.9%     109345 ±  2%  softirqs.CPU36.TIMER
-     99050 ±  8%     -17.8%      81385 ±  2%  softirqs.CPU37.RCU
-     51526 ±  4%     -20.4%      41018        softirqs.CPU37.SCHED
-    136647 ± 11%     -21.5%     107205        softirqs.CPU37.TIMER
-    100099 ± 11%     -18.2%      81883 ±  4%  softirqs.CPU38.RCU
-     52577 ±  6%     -22.6%      40688        softirqs.CPU38.SCHED
-    159405 ± 21%     -31.6%     109016        softirqs.CPU38.TIMER
-    100876 ±  5%     -17.8%      82904 ±  4%  softirqs.CPU39.RCU
-     51601 ±  5%     -21.6%      40444        softirqs.CPU39.SCHED
-    133824 ±  7%     -18.5%     109026 ±  3%  softirqs.CPU39.TIMER
-    104778 ±  2%     -15.7%      88356 ±  4%  softirqs.CPU4.RCU
-     52528 ±  4%     -21.2%      41394        softirqs.CPU4.SCHED
-    137599 ±  6%     -17.2%     113874        softirqs.CPU4.TIMER
-    101451 ±  4%     -19.3%      81896 ±  6%  softirqs.CPU40.RCU
-     51366 ±  5%     -19.8%      41181        softirqs.CPU40.SCHED
-    133313 ±  7%     -16.0%     111972        softirqs.CPU40.TIMER
-      0.00       +8.8e+107%     881255 ± 99%  softirqs.CPU41.BLOCK
-    102088 ±  7%     -20.9%      80735 ±  6%  softirqs.CPU41.RCU
-     51312 ±  5%     -19.9%      41080        softirqs.CPU41.SCHED
-    134722 ±  7%     -21.1%     106350 ±  2%  softirqs.CPU41.TIMER
-     51478 ±  5%     -19.9%      41216        softirqs.CPU42.SCHED
-    138281 ±  9%     -28.0%      99510 ±  4%  softirqs.CPU42.TIMER
-     51696 ±  4%     -20.6%      41061        softirqs.CPU43.SCHED
-    139944 ± 10%     -24.8%     105188        softirqs.CPU43.TIMER
-     51827 ±  4%     -20.7%      41091        softirqs.CPU44.SCHED
-    138316 ± 10%     -25.0%     103736        softirqs.CPU44.TIMER
-     51317 ±  4%     -19.3%      41436        softirqs.CPU45.SCHED
-    142804 ± 16%     -28.4%     102247        softirqs.CPU45.TIMER
-     51655 ±  4%     -17.7%      42518 ±  3%  softirqs.CPU46.SCHED
-     51218 ±  4%     -17.7%      42129        softirqs.CPU47.SCHED
-    134090 ±  5%     -19.2%     108284 ±  4%  softirqs.CPU47.TIMER
-     51373 ±  4%     -19.7%      41277        softirqs.CPU48.SCHED
-    135851 ±  9%     -22.7%     104947        softirqs.CPU48.TIMER
-     51371 ±  5%     -19.4%      41406        softirqs.CPU49.SCHED
-    140209 ± 11%     -23.3%     107509        softirqs.CPU49.TIMER
-    104700 ±  3%     -17.6%      86271 ±  3%  softirqs.CPU5.RCU
-     52052 ±  6%     -18.4%      42478        softirqs.CPU5.SCHED
-    138397 ±  6%     -19.6%     111330        softirqs.CPU5.TIMER
-     50639 ±  4%     -20.2%      40398        softirqs.CPU50.SCHED
-    136318 ± 10%     -23.7%     104045 ±  2%  softirqs.CPU50.TIMER
-     51040 ±  5%     -19.0%      41319        softirqs.CPU51.SCHED
-    137581 ± 10%     -22.6%     106506        softirqs.CPU51.TIMER
-     98661 ±  8%     -17.1%      81797        softirqs.CPU52.RCU
-     51505 ±  5%     -20.6%      40900        softirqs.CPU52.SCHED
-    135498 ±  7%     -20.7%     107393        softirqs.CPU52.TIMER
-     51498 ±  5%     -19.0%      41734        softirqs.CPU53.SCHED
-    141340 ±  9%     -21.4%     111145        softirqs.CPU53.TIMER
-     52978 ±  4%     -19.7%      42558        softirqs.CPU54.SCHED
-     51962 ±  4%     -18.2%      42507        softirqs.CPU55.SCHED
-     51861 ±  4%     -17.4%      42854        softirqs.CPU56.SCHED
-     52026 ±  4%     -18.1%      42607        softirqs.CPU57.SCHED
-     52154 ±  4%     -18.3%      42606        softirqs.CPU58.SCHED
-     51825 ±  4%     -17.6%      42686        softirqs.CPU59.SCHED
-    100094 ±  7%     -13.7%      86334        softirqs.CPU6.RCU
-     51390 ±  5%     -19.0%      41641        softirqs.CPU6.SCHED
-     52000 ±  4%     -18.4%      42438        softirqs.CPU60.SCHED
-     51774 ±  4%     -17.4%      42763 ±  2%  softirqs.CPU61.SCHED
-     51526 ±  4%     -17.6%      42474        softirqs.CPU62.SCHED
-     51551 ±  3%     -18.0%      42252        softirqs.CPU63.SCHED
-     51502 ±  4%     -17.7%      42411        softirqs.CPU64.SCHED
-     51836 ±  4%     -17.8%      42591        softirqs.CPU65.SCHED
-     51240 ±  4%     -16.8%      42616        softirqs.CPU66.SCHED
-     51759 ±  4%     -17.5%      42686        softirqs.CPU67.SCHED
-     51062 ±  4%     -16.7%      42535        softirqs.CPU68.SCHED
-     51486 ±  4%     -17.0%      42726        softirqs.CPU69.SCHED
-    102056 ±  5%     -11.4%      90459        softirqs.CPU7.RCU
-     51293 ±  5%     -20.1%      40970        softirqs.CPU7.SCHED
-    141933 ±  9%     -22.9%     109469 ±  2%  softirqs.CPU7.TIMER
-     51697 ±  4%     -17.5%      42646        softirqs.CPU70.SCHED
-     52802 ±  4%     -19.2%      42681        softirqs.CPU71.SCHED
-    103043 ±  4%     -12.4%      90276        softirqs.CPU8.RCU
-     51558 ±  5%     -20.5%      40984        softirqs.CPU8.SCHED
-    141932 ±  9%     -23.0%     109242 ±  2%  softirqs.CPU8.TIMER
-     50960 ±  4%     -20.3%      40601        softirqs.CPU9.SCHED
-    135507 ±  5%     -22.2%     105468        softirqs.CPU9.TIMER
-   3731680 ±  4%     -18.9%    3024994        softirqs.SCHED
-    319585 ±  2%   +1066.4%    3727738 ±  3%  interrupts.272:PCI-MSI.376832-edge.ahci[0000:00:17.0]
-    356.00 ± 12%     -28.4%     255.00        interrupts.35:PCI-MSI.31981568-edge.i40e-0000:3d:00.0:misc
-     39.25 ±167%    +452.9%     217.00 ± 98%  interrupts.40:PCI-MSI.31981573-edge.i40e-eth0-TxRx-4
-      1.75 ±116%   +4357.1%      78.00 ± 93%  interrupts.51:PCI-MSI.31981584-edge.i40e-eth0-TxRx-15
-      0.75 ±173%  +26300.0%     198.00 ± 96%  interrupts.52:PCI-MSI.31981585-edge.i40e-eth0-TxRx-16
-    784.00 ±  4%     -20.0%     627.00        interrupts.9:IO-APIC.9-fasteoi.acpi
-    414069 ±  5%     -24.5%     312769 ±  7%  interrupts.CAL:Function_call_interrupts
-    753730 ±  7%     -19.9%     603714 ±  3%  interrupts.CPU0.LOC:Local_timer_interrupts
-    159.50 ± 30%     +39.8%     223.00 ±  8%  interrupts.CPU0.NMI:Non-maskable_interrupts
-    159.50 ± 30%     +39.8%     223.00 ±  8%  interrupts.CPU0.PMI:Performance_monitoring_interrupts
-    784.00 ±  4%     -20.0%     627.00        interrupts.CPU1.9:IO-APIC.9-fasteoi.acpi
-    768703 ±  5%     -22.2%     598135 ±  4%  interrupts.CPU1.LOC:Local_timer_interrupts
-      1845 ±137%    +760.7%      15883 ± 97%  interrupts.CPU10.CAL:Function_call_interrupts
-    768528 ±  5%     -20.9%     607622 ±  2%  interrupts.CPU10.LOC:Local_timer_interrupts
-    172.25 ± 19%    +161.5%     450.50 ± 49%  interrupts.CPU10.NMI:Non-maskable_interrupts
-    172.25 ± 19%    +161.5%     450.50 ± 49%  interrupts.CPU10.PMI:Performance_monitoring_interrupts
-      2133 ±172%    +640.2%      15788 ± 99%  interrupts.CPU10.TLB:TLB_shootdowns
-    767666 ±  5%     -19.7%     616680        interrupts.CPU11.LOC:Local_timer_interrupts
-    156.00 ± 35%    +136.9%     369.50 ±  6%  interrupts.CPU11.NMI:Non-maskable_interrupts
-    156.00 ± 35%    +136.9%     369.50 ±  6%  interrupts.CPU11.PMI:Performance_monitoring_interrupts
-    755252 ±  7%     -18.0%     619541        interrupts.CPU12.LOC:Local_timer_interrupts
-    137.50 ± 29%    +109.1%     287.50 ± 26%  interrupts.CPU12.NMI:Non-maskable_interrupts
-    137.50 ± 29%    +109.1%     287.50 ± 26%  interrupts.CPU12.PMI:Performance_monitoring_interrupts
-    758516 ±  6%     -20.4%     603684 ±  3%  interrupts.CPU13.LOC:Local_timer_interrupts
-    134.50 ± 36%     +46.8%     197.50 ±  3%  interrupts.CPU13.NMI:Non-maskable_interrupts
-    134.50 ± 36%     +46.8%     197.50 ±  3%  interrupts.CPU13.PMI:Performance_monitoring_interrupts
-    544.00 ± 64%     -98.5%       8.00 ± 12%  interrupts.CPU13.RES:Rescheduling_interrupts
-    752379 ±  7%     -18.2%     615329        interrupts.CPU14.LOC:Local_timer_interrupts
-    138.00 ± 22%    +110.9%     291.00 ± 42%  interrupts.CPU14.NMI:Non-maskable_interrupts
-    138.00 ± 22%    +110.9%     291.00 ± 42%  interrupts.CPU14.PMI:Performance_monitoring_interrupts
-      1.50 ±110%   +5100.0%      78.00 ± 93%  interrupts.CPU15.51:PCI-MSI.31981584-edge.i40e-eth0-TxRx-15
-    752754 ±  7%     -20.5%     598798 ±  4%  interrupts.CPU15.LOC:Local_timer_interrupts
-      0.75 ±173%  +26166.7%     197.00 ± 96%  interrupts.CPU16.52:PCI-MSI.31981585-edge.i40e-eth0-TxRx-16
-    780971 ±  4%     -23.1%     600487 ±  4%  interrupts.CPU16.LOC:Local_timer_interrupts
-    762160 ±  5%     -21.9%     595108 ±  5%  interrupts.CPU17.LOC:Local_timer_interrupts
-    162.00 ± 20%     +69.4%     274.50 ± 10%  interrupts.CPU18.NMI:Non-maskable_interrupts
-    162.00 ± 20%     +69.4%     274.50 ± 10%  interrupts.CPU18.PMI:Performance_monitoring_interrupts
-     37.25 ± 55%    +302.7%     150.00 ± 68%  interrupts.CPU18.RES:Rescheduling_interrupts
-    145.50 ± 34%     +75.9%     256.00 ± 12%  interrupts.CPU19.NMI:Non-maskable_interrupts
-    145.50 ± 34%     +75.9%     256.00 ± 12%  interrupts.CPU19.PMI:Performance_monitoring_interrupts
-    780589 ±  4%     -21.6%     612163 ±  2%  interrupts.CPU2.LOC:Local_timer_interrupts
-    143.50 ± 41%     +58.2%     227.00        interrupts.CPU20.NMI:Non-maskable_interrupts
-    143.50 ± 41%     +58.2%     227.00        interrupts.CPU20.PMI:Performance_monitoring_interrupts
-      2421 ± 34%     -78.2%     528.00 ± 75%  interrupts.CPU21.TLB:TLB_shootdowns
-    154.25 ± 47%     +68.9%     260.50 ±  4%  interrupts.CPU22.NMI:Non-maskable_interrupts
-    154.25 ± 47%     +68.9%     260.50 ±  4%  interrupts.CPU22.PMI:Performance_monitoring_interrupts
-      2288 ± 45%     -78.7%     487.50        interrupts.CPU22.TLB:TLB_shootdowns
-      2110 ± 48%     +99.5%       4211 ± 15%  interrupts.CPU23.CAL:Function_call_interrupts
-    139.00 ± 43%     +79.1%     249.00 ±  9%  interrupts.CPU23.NMI:Non-maskable_interrupts
-    139.00 ± 43%     +79.1%     249.00 ±  9%  interrupts.CPU23.PMI:Performance_monitoring_interrupts
-      1431 ± 75%    +113.1%       3049 ± 20%  interrupts.CPU24.CAL:Function_call_interrupts
-    142.00 ± 42%     +57.7%     224.00 ±  8%  interrupts.CPU24.NMI:Non-maskable_interrupts
-    142.00 ± 42%     +57.7%     224.00 ±  8%  interrupts.CPU24.PMI:Performance_monitoring_interrupts
-    147.75 ± 36%     +89.5%     280.00 ± 16%  interrupts.CPU25.NMI:Non-maskable_interrupts
-    147.75 ± 36%     +89.5%     280.00 ± 16%  interrupts.CPU25.PMI:Performance_monitoring_interrupts
-      1653 ± 53%     -95.1%      81.00 ± 93%  interrupts.CPU25.TLB:TLB_shootdowns
-    158.25 ± 30%     +51.3%     239.50 ±  3%  interrupts.CPU26.NMI:Non-maskable_interrupts
-    158.25 ± 30%     +51.3%     239.50 ±  3%  interrupts.CPU26.PMI:Performance_monitoring_interrupts
-    150.75 ± 34%     +75.1%     264.00 ±  7%  interrupts.CPU27.NMI:Non-maskable_interrupts
-    150.75 ± 34%     +75.1%     264.00 ±  7%  interrupts.CPU27.PMI:Performance_monitoring_interrupts
-    143.75 ± 42%     +66.3%     239.00 ± 10%  interrupts.CPU28.NMI:Non-maskable_interrupts
-    143.75 ± 42%     +66.3%     239.00 ± 10%  interrupts.CPU28.PMI:Performance_monitoring_interrupts
-      1095 ± 76%     -81.8%     199.00 ± 38%  interrupts.CPU28.TLB:TLB_shootdowns
-    780942 ±  4%     -21.9%     609615 ±  2%  interrupts.CPU3.LOC:Local_timer_interrupts
-    144.75 ± 37%     +72.4%     249.50 ± 15%  interrupts.CPU30.NMI:Non-maskable_interrupts
-    144.75 ± 37%     +72.4%     249.50 ± 15%  interrupts.CPU30.PMI:Performance_monitoring_interrupts
-      1940 ± 90%    -100.0%       0.50 ±100%  interrupts.CPU30.TLB:TLB_shootdowns
-    146.75 ± 45%     +71.0%     251.00 ±  5%  interrupts.CPU31.NMI:Non-maskable_interrupts
-    146.75 ± 45%     +71.0%     251.00 ±  5%  interrupts.CPU31.PMI:Performance_monitoring_interrupts
-    140.00 ± 43%     +73.6%     243.00 ±  6%  interrupts.CPU33.NMI:Non-maskable_interrupts
-    140.00 ± 43%     +73.6%     243.00 ±  6%  interrupts.CPU33.PMI:Performance_monitoring_interrupts
-    124.00 ± 50%    +103.6%     252.50 ±  9%  interrupts.CPU34.NMI:Non-maskable_interrupts
-    124.00 ± 50%    +103.6%     252.50 ±  9%  interrupts.CPU34.PMI:Performance_monitoring_interrupts
-    121.75 ± 50%    +146.0%     299.50        interrupts.CPU35.NMI:Non-maskable_interrupts
-    121.75 ± 50%    +146.0%     299.50        interrupts.CPU35.PMI:Performance_monitoring_interrupts
-    753066 ±  7%     -19.9%     603509 ±  3%  interrupts.CPU36.LOC:Local_timer_interrupts
-    770217 ±  4%     -22.3%     598102 ±  4%  interrupts.CPU37.LOC:Local_timer_interrupts
-    154.25 ± 22%     +35.5%     209.00 ± 11%  interrupts.CPU37.NMI:Non-maskable_interrupts
-    154.25 ± 22%     +35.5%     209.00 ± 11%  interrupts.CPU37.PMI:Performance_monitoring_interrupts
-     25858 ± 19%     -77.0%       5934 ± 93%  interrupts.CPU38.CAL:Function_call_interrupts
-    780482 ±  4%     -21.6%     612137 ±  2%  interrupts.CPU38.LOC:Local_timer_interrupts
-     40918 ± 20%     -83.1%       6897 ± 99%  interrupts.CPU38.TLB:TLB_shootdowns
-     16002 ± 73%     -91.3%       1393 ± 71%  interrupts.CPU39.CAL:Function_call_interrupts
-    780803 ±  4%     -21.9%     610067 ±  2%  interrupts.CPU39.LOC:Local_timer_interrupts
-     26028 ± 80%     -95.1%       1266 ± 99%  interrupts.CPU39.TLB:TLB_shootdowns
-     38.75 ±170%    +457.4%     216.00 ± 99%  interrupts.CPU4.40:PCI-MSI.31981573-edge.i40e-eth0-TxRx-4
-    775413 ±  4%     -23.2%     595390 ±  5%  interrupts.CPU4.LOC:Local_timer_interrupts
-    775403 ±  4%     -23.2%     595381 ±  5%  interrupts.CPU40.LOC:Local_timer_interrupts
-    224.50 ± 66%     -99.3%       1.50 ±100%  interrupts.CPU40.RES:Rescheduling_interrupts
-    767824 ±  5%     -20.4%     611248 ±  2%  interrupts.CPU41.LOC:Local_timer_interrupts
-    761919 ±  5%     -17.9%     625594        interrupts.CPU42.LOC:Local_timer_interrupts
-    148.75 ± 39%    +218.0%     473.00 ± 20%  interrupts.CPU42.NMI:Non-maskable_interrupts
-    148.75 ± 39%    +218.0%     473.00 ± 20%  interrupts.CPU42.PMI:Performance_monitoring_interrupts
-     91.25 ± 76%   +1514.2%       1473 ± 92%  interrupts.CPU42.RES:Rescheduling_interrupts
-    769048 ±  5%     -18.9%     623787        interrupts.CPU43.LOC:Local_timer_interrupts
-    178.75 ± 62%    +160.4%     465.50 ± 36%  interrupts.CPU43.NMI:Non-maskable_interrupts
-    178.75 ± 62%    +160.4%     465.50 ± 36%  interrupts.CPU43.PMI:Performance_monitoring_interrupts
-    334.25 ± 71%    +772.0%       2914 ±  6%  interrupts.CPU43.RES:Rescheduling_interrupts
-    762037 ±  5%     -18.2%     623633        interrupts.CPU44.LOC:Local_timer_interrupts
-    145.00 ± 30%    +193.4%     425.50 ± 45%  interrupts.CPU44.NMI:Non-maskable_interrupts
-    145.00 ± 30%    +193.4%     425.50 ± 45%  interrupts.CPU44.PMI:Performance_monitoring_interrupts
-    768845 ±  5%     -19.1%     621650        interrupts.CPU45.LOC:Local_timer_interrupts
-    160.50 ± 39%    +164.5%     424.50 ± 40%  interrupts.CPU45.NMI:Non-maskable_interrupts
-    160.50 ± 39%    +164.5%     424.50 ± 40%  interrupts.CPU45.PMI:Performance_monitoring_interrupts
-    258.00 ± 93%   +1022.9%       2897 ± 10%  interrupts.CPU45.RES:Rescheduling_interrupts
-    768253 ±  5%     -20.9%     607606 ±  2%  interrupts.CPU46.LOC:Local_timer_interrupts
-    484.75 ± 46%    +446.0%       2646 ± 10%  interrupts.CPU46.RES:Rescheduling_interrupts
-    767745 ±  5%     -19.7%     616701        interrupts.CPU47.LOC:Local_timer_interrupts
-    151.25 ± 25%    +175.7%     417.00 ± 10%  interrupts.CPU47.NMI:Non-maskable_interrupts
-    151.25 ± 25%    +175.7%     417.00 ± 10%  interrupts.CPU47.PMI:Performance_monitoring_interrupts
-    217.25 ± 82%   +1163.3%       2744 ± 36%  interrupts.CPU47.RES:Rescheduling_interrupts
-    755309 ±  7%     -18.0%     619516        interrupts.CPU48.LOC:Local_timer_interrupts
-    141.50 ± 29%    +224.7%     459.50        interrupts.CPU48.NMI:Non-maskable_interrupts
-    141.50 ± 29%    +224.7%     459.50        interrupts.CPU48.PMI:Performance_monitoring_interrupts
-    381.75 ±129%    +563.4%       2532 ±  8%  interrupts.CPU48.RES:Rescheduling_interrupts
-    758326 ±  6%     -20.4%     603715 ±  3%  interrupts.CPU49.LOC:Local_timer_interrupts
-    216.75 ±118%    +754.2%       1851 ± 32%  interrupts.CPU49.RES:Rescheduling_interrupts
-    768460 ±  5%     -20.5%     611077 ±  2%  interrupts.CPU5.LOC:Local_timer_interrupts
-    752177 ±  7%     -18.2%     615565        interrupts.CPU50.LOC:Local_timer_interrupts
-    138.25 ±104%    +830.9%       1287 ±  3%  interrupts.CPU50.RES:Rescheduling_interrupts
-    651.00 ± 40%    +334.1%       2826 ± 61%  interrupts.CPU51.CAL:Function_call_interrupts
-    753755 ±  7%     -20.5%     598892 ±  4%  interrupts.CPU51.LOC:Local_timer_interrupts
-    200.50 ±163%    +244.4%     690.50 ± 77%  interrupts.CPU51.RES:Rescheduling_interrupts
-    452.00 ±127%    +545.9%       2919 ± 75%  interrupts.CPU51.TLB:TLB_shootdowns
-    781089 ±  4%     -23.1%     600485 ±  4%  interrupts.CPU52.LOC:Local_timer_interrupts
-    762214 ±  5%     -21.9%     595108 ±  5%  interrupts.CPU53.LOC:Local_timer_interrupts
-    137.50 ±131%    +425.1%     722.00 ± 75%  interrupts.CPU53.RES:Rescheduling_interrupts
-      1444 ± 57%     +62.3%       2344 ± 25%  interrupts.CPU55.CAL:Function_call_interrupts
-    148.75 ± 40%     +56.6%     233.00 ±  2%  interrupts.CPU55.NMI:Non-maskable_interrupts
-    148.75 ± 40%     +56.6%     233.00 ±  2%  interrupts.CPU55.PMI:Performance_monitoring_interrupts
-    152.50 ± 36%     +41.3%     215.50 ±  8%  interrupts.CPU56.NMI:Non-maskable_interrupts
-    152.50 ± 36%     +41.3%     215.50 ±  8%  interrupts.CPU56.PMI:Performance_monitoring_interrupts
-      1412 ± 72%    +137.7%       3356 ± 25%  interrupts.CPU57.CAL:Function_call_interrupts
-    119.00 ± 47%     +95.4%     232.50 ±  4%  interrupts.CPU57.NMI:Non-maskable_interrupts
-    119.00 ± 47%     +95.4%     232.50 ±  4%  interrupts.CPU57.PMI:Performance_monitoring_interrupts
-    974.75 ± 49%    +190.8%       2834 ± 26%  interrupts.CPU58.CAL:Function_call_interrupts
-    149.00 ± 42%     +60.1%     238.50 ±  2%  interrupts.CPU58.NMI:Non-maskable_interrupts
-    149.00 ± 42%     +60.1%     238.50 ±  2%  interrupts.CPU58.PMI:Performance_monitoring_interrupts
-    424.75 ± 21%    +243.5%       1459 ± 65%  interrupts.CPU6.CAL:Function_call_interrupts
-    761736 ±  6%     -17.9%     625621        interrupts.CPU6.LOC:Local_timer_interrupts
-    131.50 ± 63%    +282.9%     503.50 ± 18%  interrupts.CPU6.NMI:Non-maskable_interrupts
-    131.50 ± 63%    +282.9%     503.50 ± 18%  interrupts.CPU6.PMI:Performance_monitoring_interrupts
-     57.50 ±165%   +1915.7%       1159 ± 89%  interrupts.CPU6.TLB:TLB_shootdowns
-    934.00 ± 65%    +173.0%       2549 ± 22%  interrupts.CPU61.CAL:Function_call_interrupts
-    151.50 ± 43%     +54.1%     233.50 ± 10%  interrupts.CPU61.NMI:Non-maskable_interrupts
-    151.50 ± 43%     +54.1%     233.50 ± 10%  interrupts.CPU61.PMI:Performance_monitoring_interrupts
-    957.25 ± 87%    +205.5%       2924 ± 38%  interrupts.CPU62.CAL:Function_call_interrupts
-    160.25 ± 33%     +46.0%     234.00        interrupts.CPU62.NMI:Non-maskable_interrupts
-    160.25 ± 33%     +46.0%     234.00        interrupts.CPU62.PMI:Performance_monitoring_interrupts
-    157.75 ± 32%     +36.6%     215.50 ±  5%  interrupts.CPU63.NMI:Non-maskable_interrupts
-    157.75 ± 32%     +36.6%     215.50 ±  5%  interrupts.CPU63.PMI:Performance_monitoring_interrupts
-    142.75 ± 45%     +60.8%     229.50        interrupts.CPU64.NMI:Non-maskable_interrupts
-    142.75 ± 45%     +60.8%     229.50        interrupts.CPU64.PMI:Performance_monitoring_interrupts
-    168.50 ± 37%     +42.4%     240.00 ± 11%  interrupts.CPU66.NMI:Non-maskable_interrupts
-    168.50 ± 37%     +42.4%     240.00 ± 11%  interrupts.CPU66.PMI:Performance_monitoring_interrupts
-     19.00 ±112%    +389.5%      93.00 ± 86%  interrupts.CPU66.RES:Rescheduling_interrupts
-      1019 ± 74%    +207.4%       3133 ± 58%  interrupts.CPU67.CAL:Function_call_interrupts
-     21.25 ±105%    +229.4%      70.00 ± 78%  interrupts.CPU67.RES:Rescheduling_interrupts
-      1670 ±100%    +158.0%       4308 ± 45%  interrupts.CPU68.CAL:Function_call_interrupts
-    139.00 ± 42%     +70.1%     236.50 ±  7%  interrupts.CPU68.NMI:Non-maskable_interrupts
-    139.00 ± 42%     +70.1%     236.50 ±  7%  interrupts.CPU68.PMI:Performance_monitoring_interrupts
-    151.50 ± 42%     +54.1%     233.50 ±  3%  interrupts.CPU69.NMI:Non-maskable_interrupts
-    151.50 ± 42%     +54.1%     233.50 ±  3%  interrupts.CPU69.PMI:Performance_monitoring_interrupts
-    356.00 ± 12%     -28.4%     255.00        interrupts.CPU7.35:PCI-MSI.31981568-edge.i40e-0000:3d:00.0:misc
-    471.00 ± 35%   +1325.9%       6716 ± 91%  interrupts.CPU7.CAL:Function_call_interrupts
-    768670 ±  5%     -18.9%     623623        interrupts.CPU7.LOC:Local_timer_interrupts
-    124.75 ± 42%    +189.0%     360.50 ± 28%  interrupts.CPU7.NMI:Non-maskable_interrupts
-    124.75 ± 42%    +189.0%     360.50 ± 28%  interrupts.CPU7.PMI:Performance_monitoring_interrupts
-    240.00 ±171%   +2702.3%       6725 ± 95%  interrupts.CPU7.TLB:TLB_shootdowns
-    143.25 ± 43%     +88.8%     270.50 ±  8%  interrupts.CPU71.NMI:Non-maskable_interrupts
-    143.25 ± 43%     +88.8%     270.50 ±  8%  interrupts.CPU71.PMI:Performance_monitoring_interrupts
-    403.00 ± 13%     +43.7%     579.00 ± 31%  interrupts.CPU8.CAL:Function_call_interrupts
-    762534 ±  5%     -18.2%     623692        interrupts.CPU8.LOC:Local_timer_interrupts
-    116.75 ± 36%    +210.5%     362.50 ± 20%  interrupts.CPU8.NMI:Non-maskable_interrupts
-    116.75 ± 36%    +210.5%     362.50 ± 20%  interrupts.CPU8.PMI:Performance_monitoring_interrupts
-     58.25 ±165%    +381.5%     280.50 ± 97%  interrupts.CPU8.TLB:TLB_shootdowns
-    517.25 ± 47%    +164.3%       1367 ± 27%  interrupts.CPU9.CAL:Function_call_interrupts
-    769145 ±  4%     -19.2%     621669        interrupts.CPU9.LOC:Local_timer_interrupts
-    133.25 ± 29%    +163.4%     351.00 ± 30%  interrupts.CPU9.NMI:Non-maskable_interrupts
-    133.25 ± 29%    +163.4%     351.00 ± 30%  interrupts.CPU9.PMI:Performance_monitoring_interrupts
-    213.75 ±170%    +385.8%       1038 ± 34%  interrupts.CPU9.TLB:TLB_shootdowns
-     11245 ± 24%     +71.2%      19256 ±  2%  interrupts.NMI:Non-maskable_interrupts
-     11245 ± 24%     +71.2%      19256 ±  2%  interrupts.PMI:Performance_monitoring_interrupts
-    552885 ±  8%     -52.3%     263920 ±  4%  interrupts.TLB:TLB_shootdowns
-      9.93 ± 52%      -8.6        1.34 ± 41%  perf-profile.calltrace.cycles-pp.do_huge_pmd_anonymous_page.__handle_mm_fault.handle_mm_fault.do_user_addr_fault.do_page_fault
-     28.49 ± 13%      -7.5       21.01 ±  4%  perf-profile.calltrace.cycles-pp.apic_timer_interrupt.cpuidle_enter_state.cpuidle_enter.do_idle.cpu_startup_entry
-     24.12 ± 14%      -6.2       17.91 ±  6%  perf-profile.calltrace.cycles-pp.smp_apic_timer_interrupt.apic_timer_interrupt.cpuidle_enter_state.cpuidle_enter.do_idle
-     15.20 ± 17%      -4.4       10.78 ±  3%  perf-profile.calltrace.cycles-pp.hrtimer_interrupt.smp_apic_timer_interrupt.apic_timer_interrupt.cpuidle_enter_state.cpuidle_enter
-      5.40 ± 21%      -4.1        1.30 ± 40%  perf-profile.calltrace.cycles-pp.clear_huge_page.do_huge_pmd_anonymous_page.__handle_mm_fault.handle_mm_fault.do_user_addr_fault
-      5.25 ± 21%      -4.0        1.27 ± 40%  perf-profile.calltrace.cycles-pp.clear_subpage.clear_huge_page.do_huge_pmd_anonymous_page.__handle_mm_fault.handle_mm_fault
-      4.47 ± 21%      -3.4        1.03 ± 40%  perf-profile.calltrace.cycles-pp.clear_page_erms.clear_subpage.clear_huge_page.do_huge_pmd_anonymous_page.__handle_mm_fault
-      8.39 ±  8%      -2.2        6.23        perf-profile.calltrace.cycles-pp.__hrtimer_run_queues.hrtimer_interrupt.smp_apic_timer_interrupt.apic_timer_interrupt.cpuidle_enter_state
-      5.29 ± 15%      -1.8        3.50 ±  3%  perf-profile.calltrace.cycles-pp.tick_sched_timer.__hrtimer_run_queues.hrtimer_interrupt.smp_apic_timer_interrupt.apic_timer_interrupt
-      4.25 ± 15%      -1.5        2.74 ±  4%  perf-profile.calltrace.cycles-pp.update_process_times.tick_sched_handle.tick_sched_timer.__hrtimer_run_queues.hrtimer_interrupt
-      4.48 ± 12%      -1.5        2.98 ±  2%  perf-profile.calltrace.cycles-pp.tick_sched_handle.tick_sched_timer.__hrtimer_run_queues.hrtimer_interrupt.smp_apic_timer_interrupt
-      8.97 ±  2%      -1.3        7.64 ±  3%  perf-profile.calltrace.cycles-pp.menu_select.do_idle.cpu_startup_entry.start_secondary.secondary_startup_64
-      4.86 ±  5%      -0.7        4.12        perf-profile.calltrace.cycles-pp.tick_nohz_get_sleep_length.menu_select.do_idle.cpu_startup_entry.start_secondary
-      3.81 ±  5%      -0.6        3.18 ±  2%  perf-profile.calltrace.cycles-pp.tick_nohz_next_event.tick_nohz_get_sleep_length.menu_select.do_idle.cpu_startup_entry
-      1.38 ±  8%      -0.5        0.84 ± 10%  perf-profile.calltrace.cycles-pp.scheduler_tick.update_process_times.tick_sched_handle.tick_sched_timer.__hrtimer_run_queues
-      1.64 ± 17%      -0.5        1.17 ±  8%  perf-profile.calltrace.cycles-pp.lapic_next_deadline.clockevents_program_event.hrtimer_interrupt.smp_apic_timer_interrupt.apic_timer_interrupt
-      2.84 ±  2%      -0.5        2.39        perf-profile.calltrace.cycles-pp.get_next_timer_interrupt.tick_nohz_next_event.tick_nohz_get_sleep_length.menu_select.do_idle
-      1.01 ± 39%      -0.4        0.59 ±  3%  perf-profile.calltrace.cycles-pp.tick_nohz_irq_exit.irq_exit.smp_apic_timer_interrupt.apic_timer_interrupt.cpuidle_enter_state
-      1.27 ± 19%      -0.4        0.91 ±  6%  perf-profile.calltrace.cycles-pp.native_write_msr.lapic_next_deadline.clockevents_program_event.hrtimer_interrupt.smp_apic_timer_interrupt
-      1.09 ± 11%      -0.3        0.82 ± 10%  perf-profile.calltrace.cycles-pp.rcu_sched_clock_irq.update_process_times.tick_sched_handle.tick_sched_timer.__hrtimer_run_queues
-      1.82 ±  5%      -0.3        1.56 ±  2%  perf-profile.calltrace.cycles-pp.__next_timer_interrupt.get_next_timer_interrupt.tick_nohz_next_event.tick_nohz_get_sleep_length.menu_select
-      1.38 ±  5%      -0.2        1.21        perf-profile.calltrace.cycles-pp.perf_mux_hrtimer_handler.__hrtimer_run_queues.hrtimer_interrupt.smp_apic_timer_interrupt.apic_timer_interrupt
-      0.99 ±  3%      -0.1        0.87 ±  5%  perf-profile.calltrace.cycles-pp.find_next_bit.__next_timer_interrupt.get_next_timer_interrupt.tick_nohz_next_event.tick_nohz_get_sleep_length
-      0.43 ± 59%      +0.4        0.78 ± 19%  perf-profile.calltrace.cycles-pp.worker_thread.kthread.ret_from_fork
-      0.00            +0.6        0.59 ± 12%  perf-profile.calltrace.cycles-pp.clear_page_erms.prep_new_page.get_page_from_freelist.__alloc_pages_nodemask.alloc_pages_vma
-      0.00            +0.8        0.77 ± 10%  perf-profile.calltrace.cycles-pp.mem_cgroup_try_charge.mem_cgroup_try_charge_delay.do_anonymous_page.__handle_mm_fault.handle_mm_fault
-      0.00            +0.9        0.88 ± 13%  perf-profile.calltrace.cycles-pp.mem_cgroup_try_charge_delay.do_anonymous_page.__handle_mm_fault.handle_mm_fault.do_user_addr_fault
-      0.00            +0.9        0.90 ± 15%  perf-profile.calltrace.cycles-pp.prep_new_page.get_page_from_freelist.__alloc_pages_nodemask.alloc_pages_vma.do_anonymous_page
-      0.00            +0.9        0.94 ± 34%  perf-profile.calltrace.cycles-pp.do_swap_page.__handle_mm_fault.handle_mm_fault.do_user_addr_fault.do_page_fault
-      0.00            +1.2        1.16 ± 37%  perf-profile.calltrace.cycles-pp.do_IRQ.ret_from_intr.cpuidle_enter_state.cpuidle_enter.do_idle
-      0.00            +1.2        1.22 ± 34%  perf-profile.calltrace.cycles-pp.ret_from_intr.cpuidle_enter_state.cpuidle_enter.do_idle.cpu_startup_entry
-      0.00            +1.3        1.25 ± 13%  perf-profile.calltrace.cycles-pp.get_page_from_freelist.__alloc_pages_nodemask.alloc_pages_vma.do_anonymous_page.__handle_mm_fault
-      0.00            +1.3        1.29 ± 13%  perf-profile.calltrace.cycles-pp.__alloc_pages_nodemask.alloc_pages_vma.do_anonymous_page.__handle_mm_fault.handle_mm_fault
-      0.00            +1.3        1.33 ± 12%  perf-profile.calltrace.cycles-pp.alloc_pages_vma.do_anonymous_page.__handle_mm_fault.handle_mm_fault.do_user_addr_fault
-      0.00            +1.4        1.36 ±  9%  perf-profile.calltrace.cycles-pp._raw_spin_lock.do_anonymous_page.__handle_mm_fault.handle_mm_fault.do_user_addr_fault
-      0.47 ± 62%      +1.5        2.02 ± 18%  perf-profile.calltrace.cycles-pp.shrink_page_list.shrink_inactive_list.shrink_node_memcg.shrink_node.balance_pgdat
-      0.48 ± 62%      +1.6        2.10 ± 20%  perf-profile.calltrace.cycles-pp.shrink_inactive_list.shrink_node_memcg.shrink_node.balance_pgdat.kswapd
-      0.52 ± 61%      +2.2        2.69 ± 23%  perf-profile.calltrace.cycles-pp.shrink_node_memcg.shrink_node.balance_pgdat.kswapd.kthread
-      0.52 ± 61%      +2.2        2.69 ± 23%  perf-profile.calltrace.cycles-pp.shrink_node.balance_pgdat.kswapd.kthread.ret_from_fork
-      0.52 ± 61%      +2.2        2.75 ± 21%  perf-profile.calltrace.cycles-pp.kswapd.kthread.ret_from_fork
-      0.52 ± 61%      +2.2        2.75 ± 21%  perf-profile.calltrace.cycles-pp.balance_pgdat.kswapd.kthread.ret_from_fork
-      1.25 ± 21%      +2.4        3.64 ± 20%  perf-profile.calltrace.cycles-pp.kthread.ret_from_fork
-      1.25 ± 21%      +2.4        3.64 ± 20%  perf-profile.calltrace.cycles-pp.ret_from_fork
-      0.00            +4.2        4.15 ±  3%  perf-profile.calltrace.cycles-pp.do_anonymous_page.__handle_mm_fault.handle_mm_fault.do_user_addr_fault.do_page_fault
-      9.93 ± 52%      -8.6        1.34 ± 41%  perf-profile.children.cycles-pp.do_huge_pmd_anonymous_page
-     26.97 ± 13%      -6.5       20.47 ±  5%  perf-profile.children.cycles-pp.apic_timer_interrupt
-      5.43 ± 21%      -4.1        1.31 ± 41%  perf-profile.children.cycles-pp.clear_huge_page
-     15.57 ± 16%      -4.1       11.46 ±  4%  perf-profile.children.cycles-pp.hrtimer_interrupt
-      5.27 ± 21%      -4.0        1.27 ± 40%  perf-profile.children.cycles-pp.clear_subpage
-      4.54 ± 21%      -2.8        1.69 ± 19%  perf-profile.children.cycles-pp.clear_page_erms
-      8.62 ±  7%      -1.9        6.71        perf-profile.children.cycles-pp.__hrtimer_run_queues
-      5.43 ± 13%      -1.6        3.86 ±  2%  perf-profile.children.cycles-pp.tick_sched_timer
-      9.15 ±  3%      -1.3        7.80 ±  3%  perf-profile.children.cycles-pp.menu_select
-      4.60 ± 10%      -1.3        3.33        perf-profile.children.cycles-pp.tick_sched_handle
-      4.39 ± 12%      -1.3        3.13 ±  3%  perf-profile.children.cycles-pp.update_process_times
-      4.93 ±  5%      -0.7        4.19        perf-profile.children.cycles-pp.tick_nohz_get_sleep_length
-      3.89 ±  5%      -0.6        3.25 ±  2%  perf-profile.children.cycles-pp.tick_nohz_next_event
-      1.17 ± 15%      -0.6        0.60 ±  9%  perf-profile.children.cycles-pp.try_to_unmap_one
-      1.18 ± 15%      -0.5        0.64 ±  5%  perf-profile.children.cycles-pp.try_to_unmap
-      1.42 ±  9%      -0.5        0.90 ±  9%  perf-profile.children.cycles-pp.scheduler_tick
-      2.88 ±  2%      -0.4        2.44        perf-profile.children.cycles-pp.get_next_timer_interrupt
-      1.75 ± 14%      -0.4        1.30 ±  5%  perf-profile.children.cycles-pp.native_write_msr
-      1.25 ± 20%      -0.4        0.81        perf-profile.children.cycles-pp._raw_spin_lock_irqsave
-      1.67 ± 15%      -0.4        1.23 ±  4%  perf-profile.children.cycles-pp.lapic_next_deadline
-      1.03 ± 38%      -0.4        0.60        perf-profile.children.cycles-pp.tick_nohz_irq_exit
-      0.55 ± 42%      -0.3        0.24 ± 16%  perf-profile.children.cycles-pp.calc_global_load_tick
-      2.01 ±  4%      -0.3        1.71 ±  3%  perf-profile.children.cycles-pp.__next_timer_interrupt
-      1.13 ± 11%      -0.3        0.86 ± 11%  perf-profile.children.cycles-pp.rcu_sched_clock_irq
-      0.89 ±  7%      -0.2        0.65        perf-profile.children.cycles-pp.sched_clock_cpu
-      0.78 ±  8%      -0.2        0.56        perf-profile.children.cycles-pp.sched_clock
-      0.75 ±  9%      -0.2        0.54        perf-profile.children.cycles-pp.native_sched_clock
-      1.43 ±  5%      -0.2        1.27        perf-profile.children.cycles-pp.perf_mux_hrtimer_handler
-      0.14 ± 38%      -0.1        0.04 ±100%  perf-profile.children.cycles-pp.do_fault
-      0.40 ±  3%      -0.1        0.30 ±  9%  perf-profile.children.cycles-pp.__intel_pmu_enable_all
-      0.12 ± 44%      -0.1        0.03 ±100%  perf-profile.children.cycles-pp.filemap_map_pages
-      0.13 ± 23%      -0.1        0.07 ±  7%  perf-profile.children.cycles-pp.__x64_sys_execve
-      0.12 ± 19%      -0.1        0.06        perf-profile.children.cycles-pp.execve
-      0.12 ± 26%      -0.1        0.07 ±  7%  perf-profile.children.cycles-pp.__do_execve_file
-      0.18 ±  9%      -0.0        0.14 ± 11%  perf-profile.children.cycles-pp.call_cpuidle
-      0.11 ± 15%      -0.0        0.07 ±  7%  perf-profile.children.cycles-pp.page_remove_rmap
-      0.00            +0.1        0.05        perf-profile.children.cycles-pp.vmacache_find
-      0.00            +0.1        0.05        perf-profile.children.cycles-pp.ata_scsi_qc_complete
-      0.00            +0.1        0.05        perf-profile.children.cycles-pp.__mod_node_page_state
-      0.00            +0.1        0.05        perf-profile.children.cycles-pp.xas_create_range
-      0.00            +0.1        0.06        perf-profile.children.cycles-pp.find_vma
-      0.00            +0.1        0.06 ± 16%  perf-profile.children.cycles-pp.xas_create
-      0.01 ±173%      +0.1        0.08 ± 33%  perf-profile.children.cycles-pp.ata_scsi_translate
-      0.17 ± 28%      +0.1        0.23 ±  2%  perf-profile.children.cycles-pp.account_process_tick
-      0.00            +0.1        0.07 ± 28%  perf-profile.children.cycles-pp.xas_load
-      0.18 ± 27%      +0.1        0.25 ±  8%  perf-profile.children.cycles-pp.__delete_from_swap_cache
-      0.00            +0.1        0.08 ±  6%  perf-profile.children.cycles-pp.ata_qc_complete_multiple
-      0.00            +0.1        0.08 ± 33%  perf-profile.children.cycles-pp.__mod_lruvec_state
-      0.00            +0.1        0.08 ± 12%  perf-profile.children.cycles-pp.down_read_trylock
-      0.00            +0.1        0.08 ± 12%  perf-profile.children.cycles-pp.get_mem_cgroup_from_mm
-      0.00            +0.1        0.08 ±  5%  perf-profile.children.cycles-pp.delete_from_swap_cache
-      0.01 ±173%      +0.1        0.10 ± 30%  perf-profile.children.cycles-pp.io_schedule
-      0.02 ±173%      +0.1        0.11 ± 33%  perf-profile.children.cycles-pp.unwind_next_frame
-      0.00            +0.1        0.09 ± 11%  perf-profile.children.cycles-pp.reuse_swap_page
-      0.01 ±173%      +0.1        0.11 ± 52%  perf-profile.children.cycles-pp.ata_scsi_queuecmd
-      0.10 ± 24%      +0.1        0.19 ±  5%  perf-profile.children.cycles-pp.add_to_swap
-      0.09 ± 20%      +0.1        0.18 ± 13%  perf-profile.children.cycles-pp.add_to_swap_cache
-      0.00            +0.1        0.10 ± 19%  perf-profile.children.cycles-pp.mem_cgroup_throttle_swaprate
-      0.00            +0.1        0.11 ± 52%  perf-profile.children.cycles-pp.get_swap_bio
-      0.05 ± 61%      +0.1        0.16 ± 25%  perf-profile.children.cycles-pp.schedule_idle
-      0.00            +0.1        0.11 ± 27%  perf-profile.children.cycles-pp.___perf_sw_event
-      0.06 ± 59%      +0.1        0.17 ± 23%  perf-profile.children.cycles-pp.__queue_work
-      0.00            +0.1        0.12 ± 21%  perf-profile.children.cycles-pp.__list_del_entry_valid
-      0.10 ± 81%      +0.1        0.21 ±  4%  perf-profile.children.cycles-pp.on_each_cpu_cond_mask
-      0.05 ± 62%      +0.1        0.17 ± 33%  perf-profile.children.cycles-pp.arch_stack_walk
-      0.00            +0.1        0.12 ± 50%  perf-profile.children.cycles-pp.__slab_free
-      0.09 ± 42%      +0.1        0.22 ± 30%  perf-profile.children.cycles-pp.inactive_list_is_low
-      0.00            +0.1        0.12 ± 28%  perf-profile.children.cycles-pp.__perf_sw_event
-      0.00            +0.1        0.13 ± 15%  perf-profile.children.cycles-pp.lru_cache_add_active_or_unevictable
-      0.00            +0.1        0.13 ± 15%  perf-profile.children.cycles-pp.ahci_scr_read
-      0.00            +0.1        0.13 ± 15%  perf-profile.children.cycles-pp.sata_async_notification
-      0.03 ±100%      +0.1        0.16 ± 50%  perf-profile.children.cycles-pp.kmem_cache_free
-      0.00            +0.1        0.14 ± 28%  perf-profile.children.cycles-pp.arch_tlbbatch_flush
-      0.00            +0.1        0.14 ± 28%  perf-profile.children.cycles-pp.try_to_unmap_flush_dirty
-      0.05 ± 67%      +0.1        0.20 ± 35%  perf-profile.children.cycles-pp.stack_trace_save_tsk
-      0.00            +0.2        0.15 ± 53%  perf-profile.children.cycles-pp.end_page_writeback
-      0.00            +0.2        0.15 ± 54%  perf-profile.children.cycles-pp.end_swap_bio_write
-      0.00            +0.2        0.16 ± 37%  perf-profile.children.cycles-pp.__read_swap_cache_async
-      0.04 ±113%      +0.2        0.20 ± 46%  perf-profile.children.cycles-pp.scsi_queue_rq
-      0.08 ± 61%      +0.2        0.25 ± 19%  perf-profile.children.cycles-pp.blk_mq_run_hw_queue
-      0.05 ± 67%      +0.2        0.23 ± 20%  perf-profile.children.cycles-pp.kblockd_mod_delayed_work_on
-      0.05 ± 67%      +0.2        0.23 ± 20%  perf-profile.children.cycles-pp.mod_delayed_work_on
-      0.30 ± 19%      +0.2        0.47 ± 19%  perf-profile.children.cycles-pp.__sched_text_start
-      0.07 ± 29%      +0.2        0.26 ± 34%  perf-profile.children.cycles-pp.__account_scheduler_latency
-      0.05 ±106%      +0.2        0.23 ± 53%  perf-profile.children.cycles-pp.blk_mq_dispatch_rq_list
-      0.09 ± 20%      +0.2        0.29 ± 57%  perf-profile.children.cycles-pp.__swap_writepage
-      0.00            +0.2        0.20 ± 10%  perf-profile.children.cycles-pp.rmqueue_bulk
-      0.00            +0.2        0.20 ± 40%  perf-profile.children.cycles-pp.blk_mq_sched_insert_request
-      0.08 ± 38%      +0.2        0.28 ± 43%  perf-profile.children.cycles-pp.blk_mq_do_dispatch_sched
-      0.09 ± 39%      +0.2        0.29 ± 42%  perf-profile.children.cycles-pp.__blk_mq_run_hw_queue
-      0.08 ± 38%      +0.2        0.29 ± 44%  perf-profile.children.cycles-pp.blk_mq_sched_dispatch_requests
-      0.00            +0.2        0.21 ±  9%  perf-profile.children.cycles-pp.__pagevec_lru_add_fn
-      0.38 ± 12%      +0.2        0.61 ± 19%  perf-profile.children.cycles-pp.process_one_work
-      0.04 ± 57%      +0.2        0.28 ± 14%  perf-profile.children.cycles-pp.ahci_handle_port_interrupt
-      0.10 ± 18%      +0.2        0.34 ± 55%  perf-profile.children.cycles-pp.pageout
-      0.54 ± 17%      +0.2        0.78 ± 19%  perf-profile.children.cycles-pp.worker_thread
-      0.00            +0.3        0.26 ± 23%  perf-profile.children.cycles-pp.sync_regs
-      0.12 ± 18%      +0.3        0.39 ± 35%  perf-profile.children.cycles-pp.ttwu_do_activate
-      0.12 ± 16%      +0.3        0.39 ± 35%  perf-profile.children.cycles-pp.activate_task
-      0.04 ±102%      +0.3        0.31 ± 11%  perf-profile.children.cycles-pp.rmqueue
-      0.12 ± 17%      +0.3        0.39 ± 33%  perf-profile.children.cycles-pp.enqueue_task_fair
-      0.00            +0.3        0.28 ± 14%  perf-profile.children.cycles-pp.__lru_cache_add
-      0.10 ± 30%      +0.3        0.39 ± 35%  perf-profile.children.cycles-pp.enqueue_entity
-      0.06 ± 65%      +0.3        0.34 ± 47%  perf-profile.children.cycles-pp.page_vma_mapped_walk
-      0.11 ± 28%      +0.3        0.40 ± 39%  perf-profile.children.cycles-pp.blk_mq_make_request
-      0.00            +0.3        0.30 ± 18%  perf-profile.children.cycles-pp.try_charge
-      0.00            +0.3        0.31 ± 16%  perf-profile.children.cycles-pp.pagevec_lru_move_fn
-      0.07 ± 35%      +0.3        0.41 ± 21%  perf-profile.children.cycles-pp.shrink_active_list
-      0.11 ± 32%      +0.3        0.46 ± 40%  perf-profile.children.cycles-pp.generic_make_request
-      0.11 ± 32%      +0.3        0.46 ± 41%  perf-profile.children.cycles-pp.submit_bio
-      0.00            +0.4        0.35 ± 43%  perf-profile.children.cycles-pp.end_swap_bio_read
-      0.06 ± 13%      +0.4        0.43 ± 19%  perf-profile.children.cycles-pp.ahci_handle_port_intr
-      0.16 ±  5%      +0.4        0.53 ± 35%  perf-profile.children.cycles-pp.try_to_wake_up
-      0.01 ±173%      +0.4        0.42 ± 30%  perf-profile.children.cycles-pp.page_referenced_one
-      0.02 ±173%      +0.5        0.48 ± 31%  perf-profile.children.cycles-pp.swap_readpage
-      0.09 ± 14%      +0.5        0.56 ± 25%  perf-profile.children.cycles-pp.handle_irq_event_percpu
-      0.08 ± 19%      +0.5        0.55 ± 25%  perf-profile.children.cycles-pp.ahci_single_level_irq_intr
-      0.08 ± 17%      +0.5        0.55 ± 26%  perf-profile.children.cycles-pp.__handle_irq_event_percpu
-      0.00            +0.5        0.48 ± 33%  perf-profile.children.cycles-pp.prepare_exit_to_usermode
-      0.14 ± 27%      +0.5        0.62 ± 28%  perf-profile.children.cycles-pp.page_referenced
-      0.09 ±  8%      +0.5        0.59 ± 25%  perf-profile.children.cycles-pp.handle_irq_event
-      0.09 ± 11%      +0.5        0.61 ± 24%  perf-profile.children.cycles-pp.handle_edge_irq
-      0.10 ± 11%      +0.5        0.61 ± 25%  perf-profile.children.cycles-pp.handle_irq
-      0.04 ± 58%      +0.5        0.57 ± 47%  perf-profile.children.cycles-pp.blk_update_request
-      0.13 ± 20%      +0.6        0.70 ± 38%  perf-profile.children.cycles-pp.scsi_end_request
-      0.13 ± 20%      +0.6        0.70 ± 39%  perf-profile.children.cycles-pp.scsi_io_completion
-      0.15 ± 21%      +0.6        0.73 ± 39%  perf-profile.children.cycles-pp.blk_done_softirq
-      0.02 ±173%      +0.6        0.64 ± 32%  perf-profile.children.cycles-pp.swapin_readahead
-      0.02 ±173%      +0.6        0.64 ± 32%  perf-profile.children.cycles-pp.read_swap_cache_async
-      0.03 ±102%      +0.6        0.67 ± 27%  perf-profile.children.cycles-pp.swapgs_restore_regs_and_return_to_usermode
-      0.00            +0.8        0.85 ± 12%  perf-profile.children.cycles-pp.mem_cgroup_try_charge
-      0.04 ±110%      +0.9        0.94 ± 34%  perf-profile.children.cycles-pp.do_swap_page
-      0.02 ±173%      +0.9        0.94 ± 14%  perf-profile.children.cycles-pp.prep_new_page
-      0.00            +1.0        0.98 ± 15%  perf-profile.children.cycles-pp.mem_cgroup_try_charge_delay
-      0.22 ± 19%      +1.0        1.25 ± 36%  perf-profile.children.cycles-pp.do_IRQ
-      0.28 ± 22%      +1.0        1.31 ± 32%  perf-profile.children.cycles-pp.ret_from_intr
-      0.06 ±103%      +1.3        1.32 ± 11%  perf-profile.children.cycles-pp.get_page_from_freelist
-      0.00            +1.4        1.38 ± 12%  perf-profile.children.cycles-pp.alloc_pages_vma
-      0.72 ±  8%      +1.4        2.16 ±  5%  perf-profile.children.cycles-pp._raw_spin_lock
-      0.59 ± 32%      +2.2        2.75 ± 21%  perf-profile.children.cycles-pp.kswapd
-      0.59 ± 32%      +2.2        2.75 ± 21%  perf-profile.children.cycles-pp.balance_pgdat
-      1.25 ± 21%      +2.4        3.64 ± 20%  perf-profile.children.cycles-pp.kthread
-      1.25 ± 21%      +2.4        3.65 ± 20%  perf-profile.children.cycles-pp.ret_from_fork
-      0.17 ±156%      +2.6        2.75 ± 92%  perf-profile.children.cycles-pp.poll_idle
-      0.00            +4.2        4.18 ±  3%  perf-profile.children.cycles-pp.do_anonymous_page
-      4.34 ± 21%      -2.7        1.67 ± 19%  perf-profile.self.cycles-pp.clear_page_erms
-      2.99 ±  5%      -0.8        2.23 ±  7%  perf-profile.self.cycles-pp.cpuidle_enter_state
-      0.73 ± 20%      -0.5        0.21 ± 52%  perf-profile.self.cycles-pp.clear_subpage
-      1.74 ± 14%      -0.4        1.30 ±  5%  perf-profile.self.cycles-pp.native_write_msr
-      1.48 ± 20%      -0.4        1.11        perf-profile.self.cycles-pp.read_tsc
-      0.54 ± 42%      -0.3        0.23 ± 20%  perf-profile.self.cycles-pp.calc_global_load_tick
-      0.96 ± 14%      -0.3        0.66 ±  9%  perf-profile.self.cycles-pp.rcu_sched_clock_irq
-      0.90 ± 14%      -0.3        0.63 ±  4%  perf-profile.self.cycles-pp._raw_spin_lock_irqsave
-      0.72 ± 10%      -0.2        0.49        perf-profile.self.cycles-pp.native_sched_clock
-      0.93 ±  3%      -0.2        0.71 ±  7%  perf-profile.self.cycles-pp.__next_timer_interrupt
-      0.41 ± 17%      -0.2        0.23 ± 13%  perf-profile.self.cycles-pp.try_to_unmap_one
-      0.30 ± 19%      -0.1        0.16 ±  6%  perf-profile.self.cycles-pp.menu_reflect
-      0.43 ± 12%      -0.1        0.31 ±  3%  perf-profile.self.cycles-pp.hrtimer_interrupt
-      0.68 ±  8%      -0.1        0.56 ±  2%  perf-profile.self.cycles-pp.do_idle
-      0.18 ± 16%      -0.1        0.11        perf-profile.self.cycles-pp.clockevents_program_event
-      0.12 ± 24%      -0.1        0.06        perf-profile.self.cycles-pp.task_tick_idle
-      0.04 ± 60%      +0.0        0.08 ± 29%  perf-profile.self.cycles-pp.retint_kernel
-      0.00            +0.1        0.05        perf-profile.self.cycles-pp.vmacache_find
-      0.00            +0.1        0.05        perf-profile.self.cycles-pp.__mod_node_page_state
-      0.00            +0.1        0.07 ±  7%  perf-profile.self.cycles-pp.get_page_from_freelist
-      0.00            +0.1        0.07 ±  7%  perf-profile.self.cycles-pp.get_mem_cgroup_from_mm
-      0.16 ± 32%      +0.1        0.23 ±  4%  perf-profile.self.cycles-pp.account_process_tick
-      0.00            +0.1        0.07 ± 28%  perf-profile.self.cycles-pp.mem_cgroup_try_charge_delay
-      0.00            +0.1        0.07        perf-profile.self.cycles-pp.handle_mm_fault
-      0.00            +0.1        0.07 ± 20%  perf-profile.self.cycles-pp.ahci_handle_port_interrupt
-      0.00            +0.1        0.08 ±  6%  perf-profile.self.cycles-pp.do_anonymous_page
-      0.00            +0.1        0.08 ± 12%  perf-profile.self.cycles-pp.down_read_trylock
-      0.00            +0.1        0.08 ± 12%  perf-profile.self.cycles-pp.mem_cgroup_throttle_swaprate
-      0.00            +0.1        0.09 ± 22%  perf-profile.self.cycles-pp.___perf_sw_event
-      0.00            +0.1        0.11 ± 18%  perf-profile.self.cycles-pp.__list_del_entry_valid
-      0.00            +0.1        0.12 ± 39%  perf-profile.self.cycles-pp.ahci_single_level_irq_intr
-      0.00            +0.1        0.12 ± 50%  perf-profile.self.cycles-pp.__slab_free
-      0.00            +0.1        0.12 ± 12%  perf-profile.self.cycles-pp.lru_cache_add_active_or_unevictable
-      0.00            +0.1        0.12 ± 19%  perf-profile.self.cycles-pp.ahci_scr_read
-      0.00            +0.1        0.13 ± 23%  perf-profile.self.cycles-pp.rmqueue_bulk
-      0.00            +0.1        0.15 ± 10%  perf-profile.self.cycles-pp.__pagevec_lru_add_fn
-      0.00            +0.1        0.15 ± 31%  perf-profile.self.cycles-pp.ahci_handle_port_intr
-      0.01 ±173%      +0.2        0.18 ± 13%  perf-profile.self.cycles-pp.swapgs_restore_regs_and_return_to_usermode
-      0.00            +0.2        0.21 ±  4%  perf-profile.self.cycles-pp.__handle_mm_fault
-      0.00            +0.3        0.26 ± 25%  perf-profile.self.cycles-pp.sync_regs
-      0.01 ±173%      +0.3        0.28 ± 49%  perf-profile.self.cycles-pp.page_vma_mapped_walk
-      0.00            +0.3        0.29 ± 17%  perf-profile.self.cycles-pp.prep_new_page
-      0.00            +0.3        0.30 ± 15%  perf-profile.self.cycles-pp.try_charge
-      0.00            +0.4        0.39 ±  6%  perf-profile.self.cycles-pp.mem_cgroup_try_charge
-      0.00            +0.5        0.46 ± 33%  perf-profile.self.cycles-pp.prepare_exit_to_usermode
-      0.00            +0.9        0.89 ±  5%  perf-profile.self.cycles-pp.do_access
-      0.70 ±  8%      +1.4        2.06 ±  4%  perf-profile.self.cycles-pp._raw_spin_lock
-      0.16 ±155%      +2.4        2.56 ± 93%  perf-profile.self.cycles-pp.poll_idle
-
-
-                                                                                
-                              vm-scalability.throughput                         
-                                                                                
-  140000 +------------------------------------------------------------------+   
-         |    O  O O  O O  O  O O  O O  O    O    O    O     O              |   
-  120000 |-+                                                                |   
-         |                                                            .+.   |   
-  100000 |-+         .+.+..+..+.  .+.                              .+.   +..|   
-         |..+.+..+.+.           +.   +..+..+.+..+.+..+.+..+..+.+..+         |   
-   80000 |-+                                                                |   
-         |                                                                  |   
-   60000 |-+                                                                |   
-         |                                                                  |   
-   40000 |-+                                                                |   
-         |                                                                  |   
-   20000 |-+                                                                |   
-         |                                                                  |   
-       0 +------------------------------------------------------------------+   
-                                                                                
-                                                                                
-[*] bisect-good sample
-[O] bisect-bad  sample
-
-
-
-Disclaimer:
-Results have been estimated based on internal Intel analysis and are provided
-for informational purposes only. Any difference in system hardware or software
-design or configuration may affect actual performance.
 
 
 Thanks,
 Rong Chen
 
 
---3iqGNvuhWAyawlAA
+--o9mtL5OVI48+DSkO
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="config-5.3.0-00003-gb39d0ee2632d2"
+Content-Disposition: attachment; filename="config-5.8.0-rc1-00012-gf3c802a1f30013"
 
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/x86_64 5.3.0 Kernel Configuration
+# Linux/x86_64 5.8.0-rc1 Kernel Configuration
 #
-
-#
-# Compiler: gcc-9 (Debian 9.3.0-13) 9.3.0
-#
+CONFIG_CC_VERSION_TEXT="gcc-9 (Debian 9.3.0-13) 9.3.0"
 CONFIG_CC_IS_GCC=y
 CONFIG_GCC_VERSION=90300
+CONFIG_LD_VERSION=234000000
 CONFIG_CLANG_VERSION=0
 CONFIG_CC_CAN_LINK=y
+CONFIG_CC_CAN_LINK_STATIC=y
 CONFIG_CC_HAS_ASM_GOTO=y
-CONFIG_CC_HAS_WARN_MAYBE_UNINITIALIZED=y
+CONFIG_CC_HAS_ASM_INLINE=y
 CONFIG_IRQ_WORK=y
-CONFIG_BUILDTIME_EXTABLE_SORT=y
+CONFIG_BUILDTIME_TABLE_SORT=y
 CONFIG_THREAD_INFO_IN_TASK=y
 
 #
@@ -975,7 +145,6 @@ CONFIG_THREAD_INFO_IN_TASK=y
 #
 CONFIG_INIT_ENV_ARG_LIMIT=32
 # CONFIG_COMPILE_TEST is not set
-# CONFIG_HEADER_TEST is not set
 CONFIG_LOCALVERSION=""
 CONFIG_LOCALVERSION_AUTO=y
 CONFIG_BUILD_SALT=""
@@ -991,12 +160,14 @@ CONFIG_KERNEL_GZIP=y
 # CONFIG_KERNEL_XZ is not set
 # CONFIG_KERNEL_LZO is not set
 # CONFIG_KERNEL_LZ4 is not set
+CONFIG_DEFAULT_INIT=""
 CONFIG_DEFAULT_HOSTNAME="(none)"
 CONFIG_SWAP=y
 CONFIG_SYSVIPC=y
 CONFIG_SYSVIPC_SYSCTL=y
 CONFIG_POSIX_MQUEUE=y
 CONFIG_POSIX_MQUEUE_SYSCTL=y
+# CONFIG_WATCH_QUEUE is not set
 CONFIG_CROSS_MEMORY_ATTACH=y
 CONFIG_USELIB=y
 CONFIG_AUDIT=y
@@ -1011,10 +182,13 @@ CONFIG_GENERIC_IRQ_SHOW=y
 CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK=y
 CONFIG_GENERIC_PENDING_IRQ=y
 CONFIG_GENERIC_IRQ_MIGRATION=y
+CONFIG_GENERIC_IRQ_INJECTION=y
+CONFIG_HARDIRQS_SW_RESEND=y
 CONFIG_IRQ_DOMAIN=y
 CONFIG_IRQ_DOMAIN_HIERARCHY=y
 CONFIG_GENERIC_MSI_IRQ=y
 CONFIG_GENERIC_MSI_IRQ_DOMAIN=y
+CONFIG_IRQ_MSI_IOMMU=y
 CONFIG_GENERIC_IRQ_MATRIX_ALLOCATOR=y
 CONFIG_GENERIC_IRQ_RESERVATION_MODE=y
 CONFIG_IRQ_FORCED_THREADING=y
@@ -1023,7 +197,6 @@ CONFIG_SPARSE_IRQ=y
 # end of IRQ subsystem
 
 CONFIG_CLOCKSOURCE_WATCHDOG=y
-CONFIG_ARCH_CLOCKSOURCE_DATA=y
 CONFIG_ARCH_CLOCKSOURCE_INIT=y
 CONFIG_CLOCKSOURCE_VALIDATE_LAST_CYCLE=y
 CONFIG_GENERIC_TIME_VSYSCALL=y
@@ -1058,6 +231,7 @@ CONFIG_VIRT_CPU_ACCOUNTING=y
 CONFIG_VIRT_CPU_ACCOUNTING_GEN=y
 # CONFIG_IRQ_TIME_ACCOUNTING is not set
 CONFIG_HAVE_SCHED_AVG_IRQ=y
+# CONFIG_SCHED_THERMAL_PRESSURE is not set
 CONFIG_BSD_PROCESS_ACCT=y
 CONFIG_BSD_PROCESS_ACCT_V3=y
 CONFIG_TASKSTATS=y
@@ -1076,7 +250,10 @@ CONFIG_TREE_RCU=y
 # CONFIG_RCU_EXPERT is not set
 CONFIG_SRCU=y
 CONFIG_TREE_SRCU=y
+CONFIG_TASKS_RCU_GENERIC=y
 CONFIG_TASKS_RCU=y
+CONFIG_TASKS_RUDE_RCU=y
+CONFIG_TASKS_TRACE_RCU=y
 CONFIG_RCU_STALL_COMMON=y
 CONFIG_RCU_NEED_SEGCBLIST=y
 CONFIG_RCU_NOCB_CPU=y
@@ -1094,10 +271,12 @@ CONFIG_HAVE_UNSTABLE_SCHED_CLOCK=y
 #
 # Scheduler features
 #
+# CONFIG_UCLAMP_TASK is not set
 # end of Scheduler features
 
 CONFIG_ARCH_SUPPORTS_NUMA_BALANCING=y
 CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH=y
+CONFIG_CC_HAS_INT128=y
 CONFIG_ARCH_SUPPORTS_INT128=y
 CONFIG_NUMA_BALANCING=y
 CONFIG_NUMA_BALANCING_DEFAULT_ENABLED=y
@@ -1105,7 +284,6 @@ CONFIG_CGROUPS=y
 CONFIG_PAGE_COUNTER=y
 CONFIG_MEMCG=y
 CONFIG_MEMCG_SWAP=y
-CONFIG_MEMCG_SWAP_ENABLED=y
 CONFIG_MEMCG_KMEM=y
 CONFIG_BLK_CGROUP=y
 CONFIG_CGROUP_WRITEBACK=y
@@ -1127,6 +305,7 @@ CONFIG_CGROUP_PERF=y
 CONFIG_SOCK_CGROUP_DATA=y
 CONFIG_NAMESPACES=y
 CONFIG_UTS_NS=y
+CONFIG_TIME_NS=y
 CONFIG_IPC_NS=y
 CONFIG_USER_NS=y
 CONFIG_PID_NS=y
@@ -1143,6 +322,7 @@ CONFIG_RD_LZMA=y
 CONFIG_RD_XZ=y
 CONFIG_RD_LZO=y
 CONFIG_RD_LZ4=y
+# CONFIG_BOOT_CONFIG is not set
 CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y
 # CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
 CONFIG_SYSCTL=y
@@ -1173,13 +353,17 @@ CONFIG_SHMEM=y
 CONFIG_AIO=y
 CONFIG_IO_URING=y
 CONFIG_ADVISE_SYSCALLS=y
+CONFIG_HAVE_ARCH_USERFAULTFD_WP=y
 CONFIG_MEMBARRIER=y
 CONFIG_KALLSYMS=y
 CONFIG_KALLSYMS_ALL=y
 CONFIG_KALLSYMS_ABSOLUTE_PERCPU=y
 CONFIG_KALLSYMS_BASE_RELATIVE=y
+# CONFIG_BPF_LSM is not set
 CONFIG_BPF_SYSCALL=y
+CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
 CONFIG_BPF_JIT_ALWAYS_ON=y
+CONFIG_BPF_JIT_DEFAULT_ON=y
 CONFIG_USERFAULTFD=y
 CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE=y
 CONFIG_RSEQ=y
@@ -1213,7 +397,6 @@ CONFIG_X86_64=y
 CONFIG_X86=y
 CONFIG_INSTRUCTION_DECODER=y
 CONFIG_OUTPUT_FORMAT="elf64-x86-64"
-CONFIG_ARCH_DEFCONFIG="arch/x86/configs/x86_64_defconfig"
 CONFIG_LOCKDEP_SUPPORT=y
 CONFIG_STACKTRACE_SUPPORT=y
 CONFIG_MMU=y
@@ -1286,8 +469,8 @@ CONFIG_XEN_SAVE_RESTORE=y
 # CONFIG_XEN_DEBUG_FS is not set
 # CONFIG_XEN_PVH is not set
 CONFIG_KVM_GUEST=y
+CONFIG_ARCH_CPUIDLE_HALTPOLL=y
 # CONFIG_PVH is not set
-# CONFIG_KVM_DEBUG_FS is not set
 CONFIG_PARAVIRT_TIME_ACCOUNTING=y
 CONFIG_PARAVIRT_CLOCK=y
 # CONFIG_JAILHOUSE_GUEST is not set
@@ -1304,6 +487,8 @@ CONFIG_X86_CMPXCHG64=y
 CONFIG_X86_CMOV=y
 CONFIG_X86_MINIMUM_CPU_FAMILY=64
 CONFIG_X86_DEBUGCTLMSR=y
+CONFIG_IA32_FEAT_CTL=y
+CONFIG_X86_VMX_FEATURE_NAMES=y
 CONFIG_CPU_SUP_INTEL=y
 CONFIG_CPU_SUP_AMD=y
 CONFIG_CPU_SUP_HYGON=y
@@ -1313,7 +498,6 @@ CONFIG_HPET_TIMER=y
 CONFIG_HPET_EMULATE_RTC=y
 CONFIG_DMI=y
 CONFIG_GART_IOMMU=y
-# CONFIG_CALGARY_IOMMU is not set
 CONFIG_MAXSMP=y
 CONFIG_NR_CPUS_RANGE_BEGIN=8192
 CONFIG_NR_CPUS_RANGE_END=8192
@@ -1345,6 +529,7 @@ CONFIG_PERF_EVENTS_INTEL_CSTATE=y
 CONFIG_X86_16BIT=y
 CONFIG_X86_ESPFIX64=y
 CONFIG_X86_VSYSCALL_EMULATION=y
+CONFIG_X86_IOPL_IOPERM=y
 CONFIG_I8K=m
 CONFIG_MICROCODE=y
 CONFIG_MICROCODE_INTEL=y
@@ -1355,13 +540,11 @@ CONFIG_X86_CPUID=y
 CONFIG_X86_5LEVEL=y
 CONFIG_X86_DIRECT_GBPAGES=y
 # CONFIG_X86_CPA_STATISTICS is not set
-CONFIG_ARCH_HAS_MEM_ENCRYPT=y
 CONFIG_AMD_MEM_ENCRYPT=y
 # CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT is not set
 CONFIG_NUMA=y
 CONFIG_AMD_NUMA=y
 CONFIG_X86_64_ACPI_NUMA=y
-CONFIG_NODES_SPAN_OTHER_NODES=y
 CONFIG_NUMA_EMU=y
 CONFIG_NODES_SHIFT=10
 CONFIG_ARCH_SPARSEMEM_ENABLE=y
@@ -1383,9 +566,11 @@ CONFIG_X86_PAT=y
 CONFIG_ARCH_USES_PG_UNCACHED=y
 CONFIG_ARCH_RANDOM=y
 CONFIG_X86_SMAP=y
-CONFIG_X86_INTEL_UMIP=y
-CONFIG_X86_INTEL_MPX=y
+CONFIG_X86_UMIP=y
 CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS=y
+CONFIG_X86_INTEL_TSX_MODE_OFF=y
+# CONFIG_X86_INTEL_TSX_MODE_ON is not set
+# CONFIG_X86_INTEL_TSX_MODE_AUTO is not set
 CONFIG_EFI=y
 CONFIG_EFI_STUB=y
 CONFIG_EFI_MIXED=y
@@ -1399,8 +584,7 @@ CONFIG_SCHED_HRTICK=y
 CONFIG_KEXEC=y
 CONFIG_KEXEC_FILE=y
 CONFIG_ARCH_HAS_KEXEC_PURGATORY=y
-CONFIG_KEXEC_VERIFY_SIG=y
-CONFIG_KEXEC_BZIMAGE_VERIFY_SIG=y
+# CONFIG_KEXEC_SIG is not set
 CONFIG_CRASH_DUMP=y
 CONFIG_KEXEC_JUMP=y
 CONFIG_PHYSICAL_START=0x1000000
@@ -1440,6 +624,7 @@ CONFIG_SUSPEND=y
 CONFIG_SUSPEND_FREEZER=y
 CONFIG_HIBERNATE_CALLBACKS=y
 CONFIG_HIBERNATION=y
+CONFIG_HIBERNATION_SNAPSHOT_DEV=y
 CONFIG_PM_STD_PARTITION=""
 CONFIG_PM_SLEEP=y
 CONFIG_PM_SLEEP_SMP=y
@@ -1483,7 +668,6 @@ CONFIG_ACPI_IPMI=m
 CONFIG_ACPI_HOTPLUG_CPU=y
 CONFIG_ACPI_PROCESSOR_AGGREGATOR=m
 CONFIG_ACPI_THERMAL=y
-CONFIG_ACPI_NUMA=y
 CONFIG_ARCH_HAS_ACPI_TABLE_UPGRADE=y
 CONFIG_ACPI_TABLE_UPGRADE=y
 # CONFIG_ACPI_DEBUG is not set
@@ -1497,6 +681,7 @@ CONFIG_ACPI_CUSTOM_METHOD=m
 CONFIG_ACPI_BGRT=y
 CONFIG_ACPI_NFIT=m
 # CONFIG_NFIT_SECURITY_DEBUG is not set
+CONFIG_ACPI_NUMA=y
 # CONFIG_ACPI_HMAT is not set
 CONFIG_HAVE_ACPI_APEI=y
 CONFIG_HAVE_ACPI_APEI_NMI=y
@@ -1533,7 +718,7 @@ CONFIG_CPU_FREQ_GOV_POWERSAVE=y
 CONFIG_CPU_FREQ_GOV_USERSPACE=y
 CONFIG_CPU_FREQ_GOV_ONDEMAND=y
 CONFIG_CPU_FREQ_GOV_CONSERVATIVE=y
-# CONFIG_CPU_FREQ_GOV_SCHEDUTIL is not set
+CONFIG_CPU_FREQ_GOV_SCHEDUTIL=y
 
 #
 # CPU frequency scaling drivers
@@ -1560,6 +745,8 @@ CONFIG_CPU_IDLE=y
 # CONFIG_CPU_IDLE_GOV_LADDER is not set
 CONFIG_CPU_IDLE_GOV_MENU=y
 # CONFIG_CPU_IDLE_GOV_TEO is not set
+# CONFIG_CPU_IDLE_GOV_HALTPOLL is not set
+CONFIG_HALTPOLL_CPUIDLE=y
 # end of CPU Idle
 
 CONFIG_INTEL_IDLE=y
@@ -1588,8 +775,6 @@ CONFIG_COMPAT_FOR_U64_ALIGNMENT=y
 CONFIG_SYSVIPC_COMPAT=y
 # end of Binary Emulations
 
-CONFIG_X86_DEV_DMA_OPS=y
-
 #
 # Firmware Drivers
 #
@@ -1615,11 +800,14 @@ CONFIG_EFI_VARS_PSTORE_DEFAULT_DISABLE=y
 CONFIG_EFI_RUNTIME_MAP=y
 # CONFIG_EFI_FAKE_MEMMAP is not set
 CONFIG_EFI_RUNTIME_WRAPPERS=y
+CONFIG_EFI_GENERIC_STUB_INITRD_CMDLINE_LOADER=y
 # CONFIG_EFI_BOOTLOADER_CONTROL is not set
 # CONFIG_EFI_CAPSULE_LOADER is not set
 # CONFIG_EFI_TEST is not set
 CONFIG_APPLE_PROPERTIES=y
 # CONFIG_RESET_ATTACK_MITIGATION is not set
+# CONFIG_EFI_RCI2_TABLE is not set
+# CONFIG_EFI_DISABLE_PCI_DMA is not set
 # end of EFI (Extensible Firmware Interface) Support
 
 CONFIG_UEFI_CPER=y
@@ -1653,11 +841,10 @@ CONFIG_KVM_INTEL=m
 CONFIG_KVM_AMD=m
 CONFIG_KVM_AMD_SEV=y
 CONFIG_KVM_MMU_AUDIT=y
-CONFIG_VHOST_NET=m
-# CONFIG_VHOST_SCSI is not set
-CONFIG_VHOST_VSOCK=m
-CONFIG_VHOST=m
-# CONFIG_VHOST_CROSS_ENDIAN_LEGACY is not set
+CONFIG_AS_AVX512=y
+CONFIG_AS_SHA1_NI=y
+CONFIG_AS_SHA256_NI=y
+CONFIG_AS_TPAUSE=y
 
 #
 # General architecture-dependent options
@@ -1694,10 +881,10 @@ CONFIG_ARCH_HAS_SET_MEMORY=y
 CONFIG_ARCH_HAS_SET_DIRECT_MAP=y
 CONFIG_HAVE_ARCH_THREAD_STRUCT_WHITELIST=y
 CONFIG_ARCH_WANTS_DYNAMIC_TASK_STRUCT=y
+CONFIG_HAVE_ASM_MODVERSIONS=y
 CONFIG_HAVE_REGS_AND_STACK_ACCESS_API=y
 CONFIG_HAVE_RSEQ=y
 CONFIG_HAVE_FUNCTION_ARG_ACCESS_API=y
-CONFIG_HAVE_CLK=y
 CONFIG_HAVE_HW_BREAKPOINT=y
 CONFIG_HAVE_MIXED_BREAKPOINTS_REGS=y
 CONFIG_HAVE_USER_RETURN_NOTIFIER=y
@@ -1707,7 +894,8 @@ CONFIG_HAVE_PERF_REGS=y
 CONFIG_HAVE_PERF_USER_STACK_DUMP=y
 CONFIG_HAVE_ARCH_JUMP_LABEL=y
 CONFIG_HAVE_ARCH_JUMP_LABEL_RELATIVE=y
-CONFIG_HAVE_RCU_TABLE_FREE=y
+CONFIG_MMU_GATHER_TABLE_FREE=y
+CONFIG_MMU_GATHER_RCU_TABLE_FREE=y
 CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG=y
 CONFIG_HAVE_ALIGNED_STRUCT_PAGE=y
 CONFIG_HAVE_CMPXCHG_LOCAL=y
@@ -1733,7 +921,6 @@ CONFIG_ARCH_WANT_HUGE_PMD_SHARE=y
 CONFIG_HAVE_ARCH_SOFT_DIRTY=y
 CONFIG_HAVE_MOD_ARCH_SPECIFIC=y
 CONFIG_MODULES_USE_ELF_RELA=y
-CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK=y
 CONFIG_ARCH_HAS_ELF_RANDOMIZE=y
 CONFIG_HAVE_ARCH_MMAP_RND_BITS=y
 CONFIG_HAVE_EXIT_THREAD=y
@@ -1746,7 +933,6 @@ CONFIG_HAVE_STACK_VALIDATION=y
 CONFIG_HAVE_RELIABLE_STACKTRACE=y
 CONFIG_OLD_SIGSUSPEND3=y
 CONFIG_COMPAT_OLD_SIGACTION=y
-CONFIG_64BIT_TIME=y
 CONFIG_COMPAT_32BIT_TIME=y
 CONFIG_HAVE_ARCH_VMAP_STACK=y
 CONFIG_VMAP_STACK=y
@@ -1754,11 +940,10 @@ CONFIG_ARCH_HAS_STRICT_KERNEL_RWX=y
 CONFIG_STRICT_KERNEL_RWX=y
 CONFIG_ARCH_HAS_STRICT_MODULE_RWX=y
 CONFIG_STRICT_MODULE_RWX=y
-CONFIG_ARCH_HAS_REFCOUNT=y
-# CONFIG_REFCOUNT_FULL is not set
 CONFIG_HAVE_ARCH_PREL32_RELOCATIONS=y
 CONFIG_ARCH_USE_MEMREMAP_PROT=y
 # CONFIG_LOCK_EVENT_COUNTS is not set
+CONFIG_ARCH_HAS_MEM_ENCRYPT=y
 
 #
 # GCOV-based kernel profiling
@@ -1767,12 +952,12 @@ CONFIG_ARCH_USE_MEMREMAP_PROT=y
 CONFIG_ARCH_HAS_GCOV_PROFILE_ALL=y
 # end of GCOV-based kernel profiling
 
-CONFIG_PLUGIN_HOSTCC=""
 CONFIG_HAVE_GCC_PLUGINS=y
 # end of General architecture-dependent options
 
 CONFIG_RT_MUTEXES=y
 CONFIG_BASE_SMALL=0
+CONFIG_MODULE_SIG_FORMAT=y
 CONFIG_MODULES=y
 CONFIG_MODULE_FORCE_LOAD=y
 CONFIG_MODULE_UNLOAD=y
@@ -1789,22 +974,28 @@ CONFIG_MODULE_SIG_SHA256=y
 # CONFIG_MODULE_SIG_SHA512 is not set
 CONFIG_MODULE_SIG_HASH="sha256"
 # CONFIG_MODULE_COMPRESS is not set
+# CONFIG_MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS is not set
+# CONFIG_UNUSED_SYMBOLS is not set
 # CONFIG_TRIM_UNUSED_KSYMS is not set
 CONFIG_MODULES_TREE_LOOKUP=y
 CONFIG_BLOCK=y
 CONFIG_BLK_SCSI_REQUEST=y
+CONFIG_BLK_CGROUP_RWSTAT=y
 CONFIG_BLK_DEV_BSG=y
 CONFIG_BLK_DEV_BSGLIB=y
 CONFIG_BLK_DEV_INTEGRITY=y
+CONFIG_BLK_DEV_INTEGRITY_T10=m
 CONFIG_BLK_DEV_ZONED=y
 CONFIG_BLK_DEV_THROTTLING=y
 # CONFIG_BLK_DEV_THROTTLING_LOW is not set
 # CONFIG_BLK_CMDLINE_PARSER is not set
 # CONFIG_BLK_WBT is not set
 # CONFIG_BLK_CGROUP_IOLATENCY is not set
+# CONFIG_BLK_CGROUP_IOCOST is not set
 CONFIG_BLK_DEBUG_FS=y
 CONFIG_BLK_DEBUG_FS_ZONED=y
 # CONFIG_BLK_SED_OPAL is not set
+# CONFIG_BLK_INLINE_ENCRYPTION is not set
 
 #
 # Partition Types
@@ -1861,6 +1052,7 @@ CONFIG_ARCH_USE_QUEUED_SPINLOCKS=y
 CONFIG_QUEUED_SPINLOCKS=y
 CONFIG_ARCH_USE_QUEUED_RWLOCKS=y
 CONFIG_QUEUED_RWLOCKS=y
+CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE=y
 CONFIG_ARCH_HAS_SYNC_CORE_BEFORE_USERMODE=y
 CONFIG_ARCH_HAS_SYSCALL_WRAPPER=y
 CONFIG_FREEZER=y
@@ -1888,8 +1080,8 @@ CONFIG_HAVE_MEMORY_PRESENT=y
 CONFIG_SPARSEMEM_EXTREME=y
 CONFIG_SPARSEMEM_VMEMMAP_ENABLE=y
 CONFIG_SPARSEMEM_VMEMMAP=y
-CONFIG_HAVE_MEMBLOCK_NODE_MAP=y
 CONFIG_HAVE_FAST_GUP=y
+CONFIG_NUMA_KEEP_MEMINFO=y
 CONFIG_MEMORY_ISOLATION=y
 CONFIG_HAVE_BOOTMEM_INFO_NODE=y
 CONFIG_MEMORY_HOTPLUG=y
@@ -1900,6 +1092,7 @@ CONFIG_SPLIT_PTLOCK_CPUS=4
 CONFIG_MEMORY_BALLOON=y
 CONFIG_BALLOON_COMPACTION=y
 CONFIG_COMPACTION=y
+CONFIG_PAGE_REPORTING=y
 CONFIG_MIGRATION=y
 CONFIG_CONTIG_ALLOC=y
 CONFIG_PHYS_ADDR_T_64BIT=y
@@ -1916,7 +1109,6 @@ CONFIG_TRANSPARENT_HUGEPAGE_ALWAYS=y
 # CONFIG_TRANSPARENT_HUGEPAGE_MADVISE is not set
 CONFIG_ARCH_WANTS_THP_SWAP=y
 CONFIG_THP_SWAP=y
-CONFIG_TRANSPARENT_HUGE_PAGECACHE=y
 CONFIG_CLEANCACHE=y
 CONFIG_FRONTSWAP=y
 CONFIG_CMA=y
@@ -1925,11 +1117,23 @@ CONFIG_CMA=y
 CONFIG_CMA_AREAS=7
 CONFIG_MEM_SOFT_DIRTY=y
 CONFIG_ZSWAP=y
+# CONFIG_ZSWAP_COMPRESSOR_DEFAULT_DEFLATE is not set
+CONFIG_ZSWAP_COMPRESSOR_DEFAULT_LZO=y
+# CONFIG_ZSWAP_COMPRESSOR_DEFAULT_842 is not set
+# CONFIG_ZSWAP_COMPRESSOR_DEFAULT_LZ4 is not set
+# CONFIG_ZSWAP_COMPRESSOR_DEFAULT_LZ4HC is not set
+# CONFIG_ZSWAP_COMPRESSOR_DEFAULT_ZSTD is not set
+CONFIG_ZSWAP_COMPRESSOR_DEFAULT="lzo"
+CONFIG_ZSWAP_ZPOOL_DEFAULT_ZBUD=y
+# CONFIG_ZSWAP_ZPOOL_DEFAULT_Z3FOLD is not set
+# CONFIG_ZSWAP_ZPOOL_DEFAULT_ZSMALLOC is not set
+CONFIG_ZSWAP_ZPOOL_DEFAULT="zbud"
+# CONFIG_ZSWAP_DEFAULT_ON is not set
 CONFIG_ZPOOL=y
 CONFIG_ZBUD=y
 # CONFIG_Z3FOLD is not set
 CONFIG_ZSMALLOC=y
-# CONFIG_PGTABLE_MAPPING is not set
+# CONFIG_ZSMALLOC_PGTABLE_MAPPING is not set
 # CONFIG_ZSMALLOC_STAT is not set
 CONFIG_GENERIC_EARLY_IOREMAP=y
 CONFIG_DEFERRED_STRUCT_PAGE_INIT=y
@@ -1937,20 +1141,22 @@ CONFIG_IDLE_PAGE_TRACKING=y
 CONFIG_ARCH_HAS_PTE_DEVMAP=y
 CONFIG_ZONE_DEVICE=y
 CONFIG_DEV_PAGEMAP_OPS=y
-CONFIG_HMM_MIRROR=y
 # CONFIG_DEVICE_PRIVATE is not set
 CONFIG_FRAME_VECTOR=y
 CONFIG_ARCH_USES_HIGH_VMA_FLAGS=y
 CONFIG_ARCH_HAS_PKEYS=y
 # CONFIG_PERCPU_STATS is not set
 # CONFIG_GUP_BENCHMARK is not set
+# CONFIG_READ_ONLY_THP_FOR_FS is not set
 CONFIG_ARCH_HAS_PTE_SPECIAL=y
+CONFIG_MAPPING_DIRTY_HELPERS=y
 # end of Memory Management options
 
 CONFIG_NET=y
 CONFIG_COMPAT_NETLINK_MESSAGES=y
 CONFIG_NET_INGRESS=y
 CONFIG_NET_EGRESS=y
+CONFIG_NET_REDIRECT=y
 CONFIG_SKB_EXTENSIONS=y
 
 #
@@ -2004,6 +1210,7 @@ CONFIG_NET_UDP_TUNNEL=m
 CONFIG_INET_AH=m
 CONFIG_INET_ESP=m
 # CONFIG_INET_ESP_OFFLOAD is not set
+# CONFIG_INET_ESPINTCP is not set
 CONFIG_INET_IPCOMP=m
 CONFIG_INET_XFRM_TUNNEL=m
 CONFIG_INET_TUNNEL=m
@@ -2040,6 +1247,7 @@ CONFIG_IPV6_OPTIMISTIC_DAD=y
 CONFIG_INET6_AH=m
 CONFIG_INET6_ESP=m
 # CONFIG_INET6_ESP_OFFLOAD is not set
+# CONFIG_INET6_ESPINTCP is not set
 CONFIG_INET6_IPCOMP=m
 CONFIG_IPV6_MIP6=m
 # CONFIG_IPV6_ILA is not set
@@ -2058,7 +1266,9 @@ CONFIG_IPV6_MROUTE_MULTIPLE_TABLES=y
 CONFIG_IPV6_PIMSM_V2=y
 # CONFIG_IPV6_SEG6_LWTUNNEL is not set
 # CONFIG_IPV6_SEG6_HMAC is not set
+# CONFIG_IPV6_RPL_LWTUNNEL is not set
 CONFIG_NETLABEL=y
+# CONFIG_MPTCP is not set
 CONFIG_NETWORK_SECMARK=y
 CONFIG_NET_PTP_CLASSIFY=y
 CONFIG_NETWORK_PHY_TIMESTAMPING=y
@@ -2117,7 +1327,6 @@ CONFIG_NF_NAT_REDIRECT=y
 CONFIG_NF_NAT_MASQUERADE=y
 CONFIG_NETFILTER_SYNPROXY=m
 CONFIG_NF_TABLES=m
-# CONFIG_NF_TABLES_SET is not set
 # CONFIG_NF_TABLES_INET is not set
 # CONFIG_NF_TABLES_NETDEV is not set
 # CONFIG_NFT_NUMGEN is not set
@@ -2440,6 +1649,7 @@ CONFIG_MRP=m
 CONFIG_BRIDGE=m
 CONFIG_BRIDGE_IGMP_SNOOPING=y
 CONFIG_BRIDGE_VLAN_FILTERING=y
+# CONFIG_BRIDGE_MRP is not set
 CONFIG_HAVE_NET_DSA=y
 # CONFIG_NET_DSA is not set
 CONFIG_VLAN_8021Q=m
@@ -2508,6 +1718,7 @@ CONFIG_NET_SCH_FQ=m
 # CONFIG_NET_SCH_PIE is not set
 CONFIG_NET_SCH_INGRESS=m
 CONFIG_NET_SCH_PLUG=m
+# CONFIG_NET_SCH_ETS is not set
 # CONFIG_NET_SCH_DEFAULT is not set
 
 #
@@ -2558,7 +1769,8 @@ CONFIG_NET_ACT_CONNMARK=m
 CONFIG_NET_ACT_SKBMOD=m
 # CONFIG_NET_ACT_IFE is not set
 CONFIG_NET_ACT_TUNNEL_KEY=m
-# CONFIG_NET_ACT_CT is not set
+# CONFIG_NET_ACT_GATE is not set
+# CONFIG_NET_TC_SKB_EXT is not set
 CONFIG_NET_SCH_FIFO=y
 CONFIG_DCB=y
 CONFIG_DNS_RESOLVER=m
@@ -2569,6 +1781,7 @@ CONFIG_OPENVSWITCH_VXLAN=m
 CONFIG_OPENVSWITCH_GENEVE=m
 CONFIG_VSOCKETS=m
 CONFIG_VSOCKETS_DIAG=m
+CONFIG_VSOCKETS_LOOPBACK=m
 CONFIG_VMWARE_VMCI_VSOCKETS=m
 CONFIG_VIRTIO_VSOCKETS=m
 CONFIG_VIRTIO_VSOCKETS_COMMON=m
@@ -2581,6 +1794,7 @@ CONFIG_NET_NSH=m
 # CONFIG_HSR is not set
 CONFIG_NET_SWITCHDEV=y
 # CONFIG_NET_L3_MASTER_DEV is not set
+# CONFIG_QRTR is not set
 # CONFIG_NET_NCSI is not set
 CONFIG_RPS=y
 CONFIG_RFS_ACCEL=y
@@ -2605,6 +1819,7 @@ CONFIG_CAN=m
 CONFIG_CAN_RAW=m
 CONFIG_CAN_BCM=m
 CONFIG_CAN_GW=m
+# CONFIG_CAN_J1939 is not set
 
 #
 # CAN Device Drivers
@@ -2614,6 +1829,7 @@ CONFIG_CAN_VCAN=m
 CONFIG_CAN_SLCAN=m
 CONFIG_CAN_DEV=m
 CONFIG_CAN_CALC_BITTIMING=y
+# CONFIG_CAN_KVASER_PCIEFD is not set
 CONFIG_CAN_C_CAN=m
 CONFIG_CAN_C_CAN_PLATFORM=m
 CONFIG_CAN_C_CAN_PCI=m
@@ -2624,13 +1840,14 @@ CONFIG_CAN_CC770_PLATFORM=m
 # CONFIG_CAN_M_CAN is not set
 # CONFIG_CAN_PEAK_PCIEFD is not set
 CONFIG_CAN_SJA1000=m
-# CONFIG_CAN_SJA1000_ISA is not set
-CONFIG_CAN_SJA1000_PLATFORM=m
 CONFIG_CAN_EMS_PCI=m
+# CONFIG_CAN_F81601 is not set
+CONFIG_CAN_KVASER_PCI=m
 CONFIG_CAN_PEAK_PCI=m
 CONFIG_CAN_PEAK_PCIEC=y
-CONFIG_CAN_KVASER_PCI=m
 CONFIG_CAN_PLX_PCI=m
+# CONFIG_CAN_SJA1000_ISA is not set
+CONFIG_CAN_SJA1000_PLATFORM=m
 CONFIG_CAN_SOFTING=m
 
 #
@@ -2669,8 +1886,9 @@ CONFIG_BT_HS=y
 CONFIG_BT_LE=y
 # CONFIG_BT_6LOWPAN is not set
 # CONFIG_BT_LEDS is not set
-# CONFIG_BT_SELFTEST is not set
+# CONFIG_BT_MSFTEXT is not set
 CONFIG_BT_DEBUGFS=y
+# CONFIG_BT_SELFTEST is not set
 
 #
 # Bluetooth device drivers
@@ -2754,6 +1972,7 @@ CONFIG_GRO_CELLS=y
 CONFIG_NET_DEVLINK=y
 CONFIG_PAGE_POOL=y
 CONFIG_FAILOVER=m
+CONFIG_ETHTOOL_NETLINK=y
 CONFIG_HAVE_EBPF_JIT=y
 
 #
@@ -2770,7 +1989,6 @@ CONFIG_PCIEAER=y
 CONFIG_PCIEAER_INJECT=m
 CONFIG_PCIE_ECRC=y
 CONFIG_PCIEASPM=y
-# CONFIG_PCIEASPM_DEBUG is not set
 CONFIG_PCIEASPM_DEFAULT=y
 # CONFIG_PCIEASPM_POWERSAVE is not set
 # CONFIG_PCIEASPM_POWER_SUPERSAVE is not set
@@ -2804,13 +2022,8 @@ CONFIG_HOTPLUG_PCI_SHPC=y
 #
 # PCI controller drivers
 #
-
-#
-# Cadence PCIe controllers support
-#
-# end of Cadence PCIe controllers support
-
 CONFIG_VMD=y
+CONFIG_PCI_HYPERV_INTERFACE=m
 
 #
 # DesignWare PCI Core Support
@@ -2818,6 +2031,16 @@ CONFIG_VMD=y
 # CONFIG_PCIE_DW_PLAT_HOST is not set
 # CONFIG_PCI_MESON is not set
 # end of DesignWare PCI Core Support
+
+#
+# Mobiveil PCIe Core Support
+#
+# end of Mobiveil PCIe Core Support
+
+#
+# Cadence PCIe controllers support
+#
+# end of Cadence PCIe controllers support
 # end of PCI controller drivers
 
 #
@@ -2866,6 +2089,7 @@ CONFIG_EXTRA_FIRMWARE=""
 CONFIG_FW_LOADER_USER_HELPER=y
 # CONFIG_FW_LOADER_USER_HELPER_FALLBACK is not set
 # CONFIG_FW_LOADER_COMPRESS is not set
+CONFIG_FW_CACHE=y
 # end of Firmware loader
 
 CONFIG_WANT_DEV_COREDUMP=y
@@ -2874,13 +2098,15 @@ CONFIG_DEV_COREDUMP=y
 # CONFIG_DEBUG_DRIVER is not set
 # CONFIG_DEBUG_DEVRES is not set
 # CONFIG_DEBUG_TEST_DRIVER_REMOVE is not set
+# CONFIG_PM_QOS_KUNIT_TEST is not set
 # CONFIG_TEST_ASYNC_DRIVER_PROBE is not set
+CONFIG_KUNIT_DRIVER_PE_TEST=y
 CONFIG_SYS_HYPERVISOR=y
 CONFIG_GENERIC_CPU_AUTOPROBE=y
 CONFIG_GENERIC_CPU_VULNERABILITIES=y
 CONFIG_REGMAP=y
-CONFIG_REGMAP_I2C=y
-CONFIG_REGMAP_SPI=y
+CONFIG_REGMAP_I2C=m
+CONFIG_REGMAP_SPI=m
 CONFIG_REGMAP_IRQ=y
 CONFIG_DMA_SHARED_BUFFER=y
 # CONFIG_DMA_FENCE_TRACE is not set
@@ -2889,6 +2115,7 @@ CONFIG_DMA_SHARED_BUFFER=y
 #
 # Bus devices
 #
+# CONFIG_MHI_BUS is not set
 # end of Bus devices
 
 CONFIG_CONNECTOR=y
@@ -2896,12 +2123,12 @@ CONFIG_PROC_EVENTS=y
 # CONFIG_GNSS is not set
 CONFIG_MTD=m
 # CONFIG_MTD_TESTS is not set
-# CONFIG_MTD_CMDLINE_PARTS is not set
-# CONFIG_MTD_AR7_PARTS is not set
 
 #
 # Partition parsers
 #
+# CONFIG_MTD_AR7_PARTS is not set
+# CONFIG_MTD_CMDLINE_PARTS is not set
 # CONFIG_MTD_REDBOOT_PARTS is not set
 # end of Partition parsers
 
@@ -3022,7 +2249,6 @@ CONFIG_CDROM_PKTCDVD_BUFFERS=8
 CONFIG_ATA_OVER_ETH=m
 CONFIG_XEN_BLKDEV_FRONTEND=m
 CONFIG_VIRTIO_BLK=y
-# CONFIG_VIRTIO_BLK_SCSI is not set
 CONFIG_BLK_DEV_RBD=m
 # CONFIG_BLK_DEV_RSXX is not set
 
@@ -3032,6 +2258,7 @@ CONFIG_BLK_DEV_RBD=m
 CONFIG_NVME_CORE=m
 CONFIG_BLK_DEV_NVME=m
 CONFIG_NVME_MULTIPATH=y
+# CONFIG_NVME_HWMON is not set
 CONFIG_NVME_FABRICS=m
 # CONFIG_NVME_RDMA is not set
 CONFIG_NVME_FC=m
@@ -3052,7 +2279,6 @@ CONFIG_SENSORS_LIS3LV02D=m
 # CONFIG_DUMMY_IRQ is not set
 # CONFIG_IBM_ASM is not set
 # CONFIG_PHANTOM is not set
-CONFIG_SGI_IOC4=m
 CONFIG_TIFM_CORE=m
 CONFIG_TIFM_7XX1=m
 # CONFIG_ICS932S401 is not set
@@ -3111,41 +2337,9 @@ CONFIG_VMWARE_VMCI=m
 #
 # Intel MIC & related support
 #
-
-#
-# Intel MIC Bus Driver
-#
 # CONFIG_INTEL_MIC_BUS is not set
-
-#
-# SCIF Bus Driver
-#
 # CONFIG_SCIF_BUS is not set
-
-#
-# VOP Bus Driver
-#
 # CONFIG_VOP_BUS is not set
-
-#
-# Intel MIC Host Driver
-#
-
-#
-# Intel MIC Card Driver
-#
-
-#
-# SCIF Driver
-#
-
-#
-# Intel MIC Coprocessor State Management (COSM) Drivers
-#
-
-#
-# VOP Driver
-#
 # end of Intel MIC & related support
 
 # CONFIG_GENWQE is not set
@@ -3154,6 +2348,7 @@ CONFIG_VMWARE_VMCI=m
 # CONFIG_MISC_RTSX_PCI is not set
 # CONFIG_MISC_RTSX_USB is not set
 # CONFIG_HABANA_AI is not set
+# CONFIG_UACCE is not set
 # end of Misc devices
 
 CONFIG_HAVE_IDE=y
@@ -3175,7 +2370,6 @@ CONFIG_SCSI_PROC_FS=y
 CONFIG_BLK_DEV_SD=m
 CONFIG_CHR_DEV_ST=m
 CONFIG_BLK_DEV_SR=m
-CONFIG_BLK_DEV_SR_VENDOR=y
 CONFIG_CHR_DEV_SG=m
 CONFIG_CHR_DEV_SCH=m
 CONFIG_SCSI_ENCLOSURE=m
@@ -3288,7 +2482,10 @@ CONFIG_SCSI_DH_ALUA=y
 # end of SCSI device support
 
 CONFIG_ATA=m
+CONFIG_SATA_HOST=y
+CONFIG_PATA_TIMINGS=y
 CONFIG_ATA_VERBOSE_ERROR=y
+CONFIG_ATA_FORCE=y
 CONFIG_ATA_ACPI=y
 # CONFIG_SATA_ZPODD is not set
 CONFIG_SATA_PMP=y
@@ -3406,7 +2603,9 @@ CONFIG_DM_THIN_PROVISIONING=m
 CONFIG_DM_CACHE=m
 CONFIG_DM_CACHE_SMQ=m
 # CONFIG_DM_WRITECACHE is not set
+# CONFIG_DM_EBS is not set
 CONFIG_DM_ERA=m
+# CONFIG_DM_CLONE is not set
 CONFIG_DM_MIRROR=m
 CONFIG_DM_LOG_USERSPACE=m
 CONFIG_DM_RAID=m
@@ -3414,11 +2613,13 @@ CONFIG_DM_ZERO=m
 CONFIG_DM_MULTIPATH=m
 CONFIG_DM_MULTIPATH_QL=m
 CONFIG_DM_MULTIPATH_ST=m
+# CONFIG_DM_MULTIPATH_HST is not set
 CONFIG_DM_DELAY=m
 # CONFIG_DM_DUST is not set
 CONFIG_DM_UEVENT=y
 CONFIG_DM_FLAKEY=m
 CONFIG_DM_VERITY=m
+# CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG is not set
 # CONFIG_DM_VERITY_FEC is not set
 CONFIG_DM_SWITCH=m
 CONFIG_DM_LOG_WRITES=m
@@ -3459,6 +2660,7 @@ CONFIG_MII=y
 CONFIG_NET_CORE=y
 CONFIG_BONDING=m
 CONFIG_DUMMY=m
+# CONFIG_WIREGUARD is not set
 # CONFIG_EQUALIZER is not set
 CONFIG_NET_FC=y
 CONFIG_IFB=m
@@ -3473,6 +2675,7 @@ CONFIG_MACVTAP=m
 # CONFIG_IPVLAN is not set
 CONFIG_VXLAN=m
 CONFIG_GENEVE=m
+# CONFIG_BAREUDP is not set
 # CONFIG_GTP is not set
 CONFIG_MACSEC=m
 CONFIG_NETCONSOLE=m
@@ -3489,10 +2692,6 @@ CONFIG_NLMON=m
 CONFIG_VSOCKMON=m
 # CONFIG_ARCNET is not set
 # CONFIG_ATM_DRIVERS is not set
-
-#
-# CAIF transport drivers
-#
 
 #
 # Distributed Switch Architecture drivers
@@ -3596,7 +2795,6 @@ CONFIG_BE2NET_SKYHAWK=y
 CONFIG_NET_VENDOR_EZCHIP=y
 CONFIG_NET_VENDOR_GOOGLE=y
 # CONFIG_GVE is not set
-# CONFIG_NET_VENDOR_HP is not set
 CONFIG_NET_VENDOR_HUAWEI=y
 # CONFIG_HINIC is not set
 # CONFIG_NET_VENDOR_I825XX is not set
@@ -3662,13 +2860,14 @@ CONFIG_ETHOC=m
 CONFIG_NET_VENDOR_PACKET_ENGINES=y
 # CONFIG_HAMACHI is not set
 CONFIG_YELLOWFIN=m
+CONFIG_NET_VENDOR_PENSANDO=y
+# CONFIG_IONIC is not set
 CONFIG_NET_VENDOR_QLOGIC=y
 CONFIG_QLA3XXX=m
 CONFIG_QLCNIC=m
 CONFIG_QLCNIC_SRIOV=y
 CONFIG_QLCNIC_DCB=y
 CONFIG_QLCNIC_HWMON=y
-CONFIG_QLGE=m
 CONFIG_NETXEN_NIC=m
 CONFIG_QED=m
 CONFIG_QED_SRIOV=y
@@ -3729,7 +2928,10 @@ CONFIG_MDIO_BUS=y
 CONFIG_MDIO_BITBANG=m
 # CONFIG_MDIO_GPIO is not set
 # CONFIG_MDIO_MSCC_MIIM is not set
+# CONFIG_MDIO_MVUSB is not set
 # CONFIG_MDIO_THUNDER is not set
+# CONFIG_MDIO_XPCS is not set
+CONFIG_PHYLINK=m
 CONFIG_PHYLIB=y
 CONFIG_SWPHY=y
 # CONFIG_LED_TRIGGER_PHY is not set
@@ -3737,14 +2939,17 @@ CONFIG_SWPHY=y
 #
 # MII PHY device drivers
 #
+# CONFIG_SFP is not set
+# CONFIG_ADIN_PHY is not set
 CONFIG_AMD_PHY=m
 # CONFIG_AQUANTIA_PHY is not set
 # CONFIG_AX88796B_PHY is not set
-CONFIG_AT803X_PHY=m
 # CONFIG_BCM7XXX_PHY is not set
 CONFIG_BCM87XX_PHY=m
 CONFIG_BCM_NET_PHYLIB=m
 CONFIG_BROADCOM_PHY=m
+# CONFIG_BCM54140_PHY is not set
+# CONFIG_BCM84881_PHY is not set
 CONFIG_CICADA_PHY=m
 # CONFIG_CORTINA_PHY is not set
 CONFIG_DAVICOM_PHY=m
@@ -3752,6 +2957,7 @@ CONFIG_DAVICOM_PHY=m
 # CONFIG_DP83TC811_PHY is not set
 # CONFIG_DP83848_PHY is not set
 # CONFIG_DP83867_PHY is not set
+# CONFIG_DP83869_PHY is not set
 CONFIG_FIXED_PHY=y
 CONFIG_ICPLUS_PHY=m
 # CONFIG_INTEL_XWAY_PHY is not set
@@ -3914,6 +3120,8 @@ CONFIG_WLAN_VENDOR_MEDIATEK=y
 # CONFIG_MT76x2U is not set
 # CONFIG_MT7603E is not set
 # CONFIG_MT7615E is not set
+# CONFIG_MT7663U is not set
+# CONFIG_MT7915E is not set
 CONFIG_WLAN_VENDOR_RALINK=y
 # CONFIG_RT2X00 is not set
 CONFIG_WLAN_VENDOR_REALTEK=y
@@ -3959,7 +3167,6 @@ CONFIG_HDLC_PPP=m
 # CONFIG_WANXL is not set
 # CONFIG_PC300TOO is not set
 # CONFIG_FARSYNC is not set
-# CONFIG_DSCC4 is not set
 CONFIG_DLCI=m
 CONFIG_DLCI_MAX=8
 # CONFIG_SBNI is not set
@@ -3976,14 +3183,12 @@ CONFIG_IEEE802154_FAKELB=m
 CONFIG_XEN_NETDEV_FRONTEND=m
 CONFIG_VMXNET3=m
 CONFIG_FUJITSU_ES=m
-CONFIG_THUNDERBOLT_NET=m
 CONFIG_HYPERV_NET=m
 CONFIG_NETDEVSIM=m
 CONFIG_NET_FAILOVER=m
 CONFIG_ISDN=y
-CONFIG_ISDN_CAPI=m
-# CONFIG_CAPI_TRACE is not set
-CONFIG_ISDN_CAPI_CAPI20=m
+CONFIG_ISDN_CAPI=y
+CONFIG_CAPI_TRACE=y
 CONFIG_ISDN_CAPI_MIDDLEWARE=y
 CONFIG_MISDN=m
 CONFIG_MISDN_DSP=m
@@ -4104,6 +3309,7 @@ CONFIG_TOUCHSCREEN_PROPERTIES=y
 # CONFIG_TOUCHSCREEN_BU21013 is not set
 # CONFIG_TOUCHSCREEN_BU21029 is not set
 # CONFIG_TOUCHSCREEN_CHIPONE_ICN8505 is not set
+# CONFIG_TOUCHSCREEN_CY8CTMA140 is not set
 # CONFIG_TOUCHSCREEN_CY8CTMG110 is not set
 # CONFIG_TOUCHSCREEN_CYTTSP_CORE is not set
 # CONFIG_TOUCHSCREEN_CYTTSP4_CORE is not set
@@ -4160,11 +3366,9 @@ CONFIG_INPUT_MISC=y
 # CONFIG_INPUT_AD714X is not set
 # CONFIG_INPUT_BMA150 is not set
 # CONFIG_INPUT_E3X0_BUTTON is not set
-# CONFIG_INPUT_MSM_VIBRATOR is not set
 CONFIG_INPUT_PCSPKR=m
 # CONFIG_INPUT_MMA8450 is not set
 CONFIG_INPUT_APANEL=m
-CONFIG_INPUT_GP2A=m
 # CONFIG_INPUT_GPIO_BEEPER is not set
 # CONFIG_INPUT_GPIO_DECODER is not set
 # CONFIG_INPUT_GPIO_VIBRA is not set
@@ -4182,6 +3386,7 @@ CONFIG_INPUT_UINPUT=m
 CONFIG_INPUT_GPIO_ROTARY_ENCODER=m
 # CONFIG_INPUT_ADXL34X is not set
 # CONFIG_INPUT_IMS_PCU is not set
+# CONFIG_INPUT_IQS269A is not set
 # CONFIG_INPUT_CMA3000 is not set
 CONFIG_INPUT_XEN_KBDDEV_FRONTEND=m
 # CONFIG_INPUT_IDEAPAD_SLIDEBAR is not set
@@ -4236,24 +3441,7 @@ CONFIG_HW_CONSOLE=y
 CONFIG_VT_HW_CONSOLE_BINDING=y
 CONFIG_UNIX98_PTYS=y
 # CONFIG_LEGACY_PTYS is not set
-CONFIG_SERIAL_NONSTANDARD=y
-# CONFIG_ROCKETPORT is not set
-CONFIG_CYCLADES=m
-# CONFIG_CYZ_INTR is not set
-# CONFIG_MOXA_INTELLIO is not set
-# CONFIG_MOXA_SMARTIO is not set
-CONFIG_SYNCLINK=m
-CONFIG_SYNCLINKMP=m
-CONFIG_SYNCLINK_GT=m
-CONFIG_NOZOMI=m
-# CONFIG_ISI is not set
-CONFIG_N_HDLC=m
-CONFIG_N_GSM=m
-# CONFIG_TRACE_SINK is not set
-# CONFIG_NULL_TTY is not set
 CONFIG_LDISC_AUTOLOAD=y
-CONFIG_DEVMEM=y
-# CONFIG_DEVKMEM is not set
 
 #
 # Serial drivers
@@ -4262,6 +3450,7 @@ CONFIG_SERIAL_EARLYCON=y
 CONFIG_SERIAL_8250=y
 # CONFIG_SERIAL_8250_DEPRECATED_OPTIONS is not set
 CONFIG_SERIAL_8250_PNP=y
+# CONFIG_SERIAL_8250_16550A_VARIANTS is not set
 # CONFIG_SERIAL_8250_FINTEK is not set
 CONFIG_SERIAL_8250_CONSOLE=y
 CONFIG_SERIAL_8250_DMA=y
@@ -4274,11 +3463,11 @@ CONFIG_SERIAL_8250_MANY_PORTS=y
 CONFIG_SERIAL_8250_SHARE_IRQ=y
 # CONFIG_SERIAL_8250_DETECT_IRQ is not set
 CONFIG_SERIAL_8250_RSA=y
+CONFIG_SERIAL_8250_DWLIB=y
 CONFIG_SERIAL_8250_DW=y
 # CONFIG_SERIAL_8250_RT288X is not set
 CONFIG_SERIAL_8250_LPSS=y
 CONFIG_SERIAL_8250_MID=y
-# CONFIG_SERIAL_8250_MOXA is not set
 
 #
 # Non-8250 serial port support
@@ -4289,6 +3478,7 @@ CONFIG_SERIAL_8250_MID=y
 CONFIG_SERIAL_CORE=y
 CONFIG_SERIAL_CORE_CONSOLE=y
 CONFIG_SERIAL_JSM=m
+# CONFIG_SERIAL_LANTIQ is not set
 # CONFIG_SERIAL_SCCNXP is not set
 # CONFIG_SERIAL_SC16IS7XX is not set
 # CONFIG_SERIAL_ALTERA_JTAGUART is not set
@@ -4298,17 +3488,34 @@ CONFIG_SERIAL_ARC=m
 CONFIG_SERIAL_ARC_NR_PORTS=1
 # CONFIG_SERIAL_RP2 is not set
 # CONFIG_SERIAL_FSL_LPUART is not set
+# CONFIG_SERIAL_FSL_LINFLEXUART is not set
+# CONFIG_SERIAL_SPRD is not set
 # end of Serial drivers
 
 CONFIG_SERIAL_MCTRL_GPIO=y
-# CONFIG_SERIAL_DEV_BUS is not set
-CONFIG_PRINTER=m
-# CONFIG_LP_CONSOLE is not set
-CONFIG_PPDEV=m
+CONFIG_SERIAL_NONSTANDARD=y
+# CONFIG_ROCKETPORT is not set
+CONFIG_CYCLADES=m
+# CONFIG_CYZ_INTR is not set
+# CONFIG_MOXA_INTELLIO is not set
+# CONFIG_MOXA_SMARTIO is not set
+CONFIG_SYNCLINK=m
+CONFIG_SYNCLINKMP=m
+CONFIG_SYNCLINK_GT=m
+# CONFIG_ISI is not set
+CONFIG_N_HDLC=m
+CONFIG_N_GSM=m
+CONFIG_NOZOMI=m
+# CONFIG_NULL_TTY is not set
+# CONFIG_TRACE_SINK is not set
 CONFIG_HVC_DRIVER=y
 CONFIG_HVC_IRQ=y
 CONFIG_HVC_XEN=y
 CONFIG_HVC_XEN_FRONTEND=y
+# CONFIG_SERIAL_DEV_BUS is not set
+CONFIG_PRINTER=m
+# CONFIG_LP_CONSOLE is not set
+CONFIG_PPDEV=m
 CONFIG_VIRTIO_CONSOLE=y
 CONFIG_IPMI_HANDLER=m
 CONFIG_IPMI_DMI_DECODE=y
@@ -4325,11 +3532,14 @@ CONFIG_HW_RANDOM_INTEL=m
 CONFIG_HW_RANDOM_AMD=m
 CONFIG_HW_RANDOM_VIA=m
 CONFIG_HW_RANDOM_VIRTIO=y
-CONFIG_NVRAM=y
 # CONFIG_APPLICOM is not set
 # CONFIG_MWAVE is not set
+CONFIG_DEVMEM=y
+# CONFIG_DEVKMEM is not set
+CONFIG_NVRAM=y
 CONFIG_RAW_DRIVER=y
 CONFIG_MAX_RAW_DEVS=8192
+CONFIG_DEVPORT=y
 CONFIG_HPET=y
 CONFIG_HPET_MMAP=y
 # CONFIG_HPET_MMAP_DEFAULT is not set
@@ -4353,11 +3563,11 @@ CONFIG_TCG_TIS_ST33ZP24=m
 CONFIG_TCG_TIS_ST33ZP24_I2C=m
 # CONFIG_TCG_TIS_ST33ZP24_SPI is not set
 CONFIG_TELCLOCK=m
-CONFIG_DEVPORT=y
 # CONFIG_XILLYBUS is not set
 # end of Character devices
 
 # CONFIG_RANDOM_TRUST_CPU is not set
+# CONFIG_RANDOM_TRUST_BOOTLOADER is not set
 
 #
 # I2C support
@@ -4422,10 +3632,10 @@ CONFIG_I2C_SCMI=m
 #
 # CONFIG_I2C_CBUS_GPIO is not set
 CONFIG_I2C_DESIGNWARE_CORE=m
-CONFIG_I2C_DESIGNWARE_PLATFORM=m
 # CONFIG_I2C_DESIGNWARE_SLAVE is not set
-# CONFIG_I2C_DESIGNWARE_PCI is not set
+CONFIG_I2C_DESIGNWARE_PLATFORM=m
 # CONFIG_I2C_DESIGNWARE_BAYTRAIL is not set
+# CONFIG_I2C_DESIGNWARE_PCI is not set
 # CONFIG_I2C_EMEV2 is not set
 # CONFIG_I2C_GPIO is not set
 # CONFIG_I2C_OCORES is not set
@@ -4438,7 +3648,6 @@ CONFIG_I2C_SIMTEC=m
 #
 CONFIG_I2C_DIOLAN_U2C=m
 CONFIG_I2C_PARPORT=m
-CONFIG_I2C_PARPORT_LIGHT=m
 # CONFIG_I2C_ROBOTFUZZ_OSIF is not set
 # CONFIG_I2C_TAOS_EVM is not set
 CONFIG_I2C_TINY_USB=m
@@ -4476,7 +3685,8 @@ CONFIG_SPI_MASTER=y
 # CONFIG_SPI_GPIO is not set
 # CONFIG_SPI_LM70_LLP is not set
 # CONFIG_SPI_OC_TINY is not set
-# CONFIG_SPI_PXA2XX is not set
+CONFIG_SPI_PXA2XX=m
+CONFIG_SPI_PXA2XX_PCI=m
 # CONFIG_SPI_ROCKCHIP is not set
 # CONFIG_SPI_SC18IS602 is not set
 # CONFIG_SPI_SIFIVE is not set
@@ -4484,6 +3694,12 @@ CONFIG_SPI_MASTER=y
 # CONFIG_SPI_XCOMM is not set
 # CONFIG_SPI_XILINX is not set
 # CONFIG_SPI_ZYNQMP_GQSPI is not set
+# CONFIG_SPI_AMD is not set
+
+#
+# SPI Multiplexer support
+#
+# CONFIG_SPI_MUX is not set
 
 #
 # SPI Protocol Masters
@@ -4514,7 +3730,11 @@ CONFIG_PPS_CLIENT_GPIO=m
 #
 CONFIG_PTP_1588_CLOCK=y
 CONFIG_DP83640_PHY=m
+# CONFIG_PTP_1588_CLOCK_INES is not set
 CONFIG_PTP_1588_CLOCK_KVM=m
+# CONFIG_PTP_1588_CLOCK_IDT82P33 is not set
+# CONFIG_PTP_1588_CLOCK_IDTCM is not set
+# CONFIG_PTP_1588_CLOCK_VMW is not set
 # end of PTP clock support
 
 CONFIG_PINCTRL=y
@@ -4527,6 +3747,7 @@ CONFIG_PINCTRL_AMD=m
 # CONFIG_PINCTRL_SX150X is not set
 CONFIG_PINCTRL_BAYTRAIL=y
 # CONFIG_PINCTRL_CHERRYVIEW is not set
+# CONFIG_PINCTRL_LYNXPOINT is not set
 CONFIG_PINCTRL_INTEL=m
 # CONFIG_PINCTRL_BROXTON is not set
 CONFIG_PINCTRL_CANNONLAKE=m
@@ -4534,8 +3755,10 @@ CONFIG_PINCTRL_CANNONLAKE=m
 CONFIG_PINCTRL_DENVERTON=m
 CONFIG_PINCTRL_GEMINILAKE=m
 # CONFIG_PINCTRL_ICELAKE is not set
+# CONFIG_PINCTRL_JASPERLAKE is not set
 CONFIG_PINCTRL_LEWISBURG=m
 CONFIG_PINCTRL_SUNRISEPOINT=m
+# CONFIG_PINCTRL_TIGERLAKE is not set
 CONFIG_GPIOLIB=y
 CONFIG_GPIOLIB_FASTPATH_LIMIT=512
 CONFIG_GPIO_ACPI=y
@@ -4552,7 +3775,6 @@ CONFIG_GPIO_AMDPT=m
 # CONFIG_GPIO_EXAR is not set
 # CONFIG_GPIO_GENERIC_PLATFORM is not set
 CONFIG_GPIO_ICH=m
-# CONFIG_GPIO_LYNXPOINT is not set
 # CONFIG_GPIO_MB86S7X is not set
 # CONFIG_GPIO_VX855 is not set
 # CONFIG_GPIO_XILINX is not set
@@ -4612,6 +3834,7 @@ CONFIG_GPIO_ICH=m
 CONFIG_GPIO_VIPERBOARD=m
 # end of USB GPIO expanders
 
+# CONFIG_GPIO_AGGREGATOR is not set
 # CONFIG_GPIO_MOCKUP is not set
 # CONFIG_W1 is not set
 # CONFIG_POWER_AVS is not set
@@ -4624,6 +3847,7 @@ CONFIG_POWER_SUPPLY_HWMON=y
 # CONFIG_GENERIC_ADC_BATTERY is not set
 # CONFIG_TEST_POWER is not set
 # CONFIG_CHARGER_ADP5061 is not set
+# CONFIG_BATTERY_CW2015 is not set
 # CONFIG_BATTERY_DS2780 is not set
 # CONFIG_BATTERY_DS2781 is not set
 # CONFIG_BATTERY_DS2782 is not set
@@ -4644,6 +3868,7 @@ CONFIG_POWER_SUPPLY_HWMON=y
 CONFIG_CHARGER_SMB347=m
 # CONFIG_BATTERY_GAUGE_LTC2941 is not set
 # CONFIG_CHARGER_RT9455 is not set
+# CONFIG_CHARGER_BD99954 is not set
 CONFIG_HWMON=y
 CONFIG_HWMON_VID=m
 # CONFIG_HWMON_DEBUG_CHIP is not set
@@ -4661,6 +3886,7 @@ CONFIG_SENSORS_ADM1025=m
 CONFIG_SENSORS_ADM1026=m
 CONFIG_SENSORS_ADM1029=m
 CONFIG_SENSORS_ADM1031=m
+# CONFIG_SENSORS_ADM1177 is not set
 CONFIG_SENSORS_ADM9240=m
 CONFIG_SENSORS_ADT7X10=m
 # CONFIG_SENSORS_ADT7310 is not set
@@ -4669,14 +3895,18 @@ CONFIG_SENSORS_ADT7411=m
 CONFIG_SENSORS_ADT7462=m
 CONFIG_SENSORS_ADT7470=m
 CONFIG_SENSORS_ADT7475=m
+# CONFIG_SENSORS_AS370 is not set
 CONFIG_SENSORS_ASC7621=m
+# CONFIG_SENSORS_AXI_FAN_CONTROL is not set
 CONFIG_SENSORS_K8TEMP=m
 CONFIG_SENSORS_K10TEMP=m
 CONFIG_SENSORS_FAM15H_POWER=m
+# CONFIG_SENSORS_AMD_ENERGY is not set
 CONFIG_SENSORS_APPLESMC=m
 CONFIG_SENSORS_ASB100=m
 # CONFIG_SENSORS_ASPEED is not set
 CONFIG_SENSORS_ATXP1=m
+# CONFIG_SENSORS_DRIVETEMP is not set
 CONFIG_SENSORS_DS620=m
 CONFIG_SENSORS_DS1621=m
 CONFIG_SENSORS_DELL_SMM=m
@@ -4701,6 +3931,8 @@ CONFIG_SENSORS_JC42=m
 # CONFIG_SENSORS_POWR1220 is not set
 CONFIG_SENSORS_LINEAGE=m
 # CONFIG_SENSORS_LTC2945 is not set
+# CONFIG_SENSORS_LTC2947_I2C is not set
+# CONFIG_SENSORS_LTC2947_SPI is not set
 # CONFIG_SENSORS_LTC2990 is not set
 CONFIG_SENSORS_LTC4151=m
 CONFIG_SENSORS_LTC4215=m
@@ -4714,6 +3946,7 @@ CONFIG_SENSORS_MAX1619=m
 CONFIG_SENSORS_MAX1668=m
 CONFIG_SENSORS_MAX197=m
 # CONFIG_SENSORS_MAX31722 is not set
+# CONFIG_SENSORS_MAX31730 is not set
 # CONFIG_SENSORS_MAX6621 is not set
 CONFIG_SENSORS_MAX6639=m
 CONFIG_SENSORS_MAX6642=m
@@ -4751,7 +3984,9 @@ CONFIG_SENSORS_PCF8591=m
 CONFIG_PMBUS=m
 CONFIG_SENSORS_PMBUS=m
 CONFIG_SENSORS_ADM1275=m
+# CONFIG_SENSORS_BEL_PFE is not set
 # CONFIG_SENSORS_IBM_CFFPS is not set
+# CONFIG_SENSORS_INSPUR_IPSPS is not set
 # CONFIG_SENSORS_IR35221 is not set
 # CONFIG_SENSORS_IR38064 is not set
 # CONFIG_SENSORS_IRPS5401 is not set
@@ -4760,6 +3995,8 @@ CONFIG_SENSORS_LM25066=m
 CONFIG_SENSORS_LTC2978=m
 # CONFIG_SENSORS_LTC3815 is not set
 CONFIG_SENSORS_MAX16064=m
+# CONFIG_SENSORS_MAX16601 is not set
+# CONFIG_SENSORS_MAX20730 is not set
 # CONFIG_SENSORS_MAX20751 is not set
 # CONFIG_SENSORS_MAX31785 is not set
 CONFIG_SENSORS_MAX34440=m
@@ -4769,6 +4006,7 @@ CONFIG_SENSORS_MAX8688=m
 # CONFIG_SENSORS_TPS53679 is not set
 CONFIG_SENSORS_UCD9000=m
 CONFIG_SENSORS_UCD9200=m
+# CONFIG_SENSORS_XDPE122 is not set
 CONFIG_SENSORS_ZL6100=m
 CONFIG_SENSORS_SHT15=m
 CONFIG_SENSORS_SHT21=m
@@ -4788,7 +4026,6 @@ CONFIG_SENSORS_SCH5636=m
 # CONFIG_SENSORS_STTS751 is not set
 # CONFIG_SENSORS_SMM665 is not set
 # CONFIG_SENSORS_ADC128D818 is not set
-CONFIG_SENSORS_ADS1015=m
 CONFIG_SENSORS_ADS7828=m
 # CONFIG_SENSORS_ADS7871 is not set
 CONFIG_SENSORS_AMC6821=m
@@ -4802,6 +4039,7 @@ CONFIG_SENSORS_TMP102=m
 # CONFIG_SENSORS_TMP108 is not set
 CONFIG_SENSORS_TMP401=m
 CONFIG_SENSORS_TMP421=m
+# CONFIG_SENSORS_TMP513 is not set
 CONFIG_SENSORS_VIA_CPUTEMP=m
 CONFIG_SENSORS_VIA686A=m
 CONFIG_SENSORS_VT1211=m
@@ -4832,12 +4070,10 @@ CONFIG_THERMAL_WRITABLE_TRIPS=y
 CONFIG_THERMAL_DEFAULT_GOV_STEP_WISE=y
 # CONFIG_THERMAL_DEFAULT_GOV_FAIR_SHARE is not set
 # CONFIG_THERMAL_DEFAULT_GOV_USER_SPACE is not set
-# CONFIG_THERMAL_DEFAULT_GOV_POWER_ALLOCATOR is not set
 CONFIG_THERMAL_GOV_FAIR_SHARE=y
 CONFIG_THERMAL_GOV_STEP_WISE=y
 CONFIG_THERMAL_GOV_BANG_BANG=y
 CONFIG_THERMAL_GOV_USER_SPACE=y
-# CONFIG_THERMAL_GOV_POWER_ALLOCATOR is not set
 # CONFIG_CLOCK_THERMAL is not set
 # CONFIG_DEVFREQ_THERMAL is not set
 # CONFIG_THERMAL_EMULATION is not set
@@ -4965,7 +4201,6 @@ CONFIG_MFD_CORE=y
 # CONFIG_MFD_BCM590XX is not set
 # CONFIG_MFD_BD9571MWV is not set
 # CONFIG_MFD_AXP20X_I2C is not set
-# CONFIG_MFD_CROS_EC is not set
 # CONFIG_MFD_MADERA is not set
 # CONFIG_PMIC_DA903X is not set
 # CONFIG_MFD_DA9052_SPI is not set
@@ -4977,6 +4212,7 @@ CONFIG_MFD_CORE=y
 # CONFIG_MFD_DLN2 is not set
 # CONFIG_MFD_MC13XXX_SPI is not set
 # CONFIG_MFD_MC13XXX_I2C is not set
+# CONFIG_MFD_MP2629 is not set
 # CONFIG_HTC_PASIC3 is not set
 # CONFIG_HTC_I2CPLD is not set
 # CONFIG_MFD_INTEL_QUARK_I2C_GPIO is not set
@@ -4986,6 +4222,8 @@ CONFIG_LPC_SCH=m
 CONFIG_MFD_INTEL_LPSS=y
 CONFIG_MFD_INTEL_LPSS_ACPI=y
 CONFIG_MFD_INTEL_LPSS_PCI=y
+# CONFIG_MFD_INTEL_PMC_BXT is not set
+# CONFIG_MFD_IQS62X is not set
 # CONFIG_MFD_JANZ_CMODIO is not set
 # CONFIG_MFD_KEMPLD is not set
 # CONFIG_MFD_88PM800 is not set
@@ -4998,6 +4236,7 @@ CONFIG_MFD_INTEL_LPSS_PCI=y
 # CONFIG_MFD_MAX8925 is not set
 # CONFIG_MFD_MAX8997 is not set
 # CONFIG_MFD_MAX8998 is not set
+# CONFIG_MFD_MT6360 is not set
 # CONFIG_MFD_MT6397 is not set
 # CONFIG_MFD_MENF21BMC is not set
 # CONFIG_EZX_PCAP is not set
@@ -5082,40 +4321,66 @@ CONFIG_IR_TTUSBIR=m
 # CONFIG_IR_SERIAL is not set
 # CONFIG_IR_SIR is not set
 # CONFIG_RC_XBOX_DVD is not set
+# CONFIG_MEDIA_CEC_SUPPORT is not set
 CONFIG_MEDIA_SUPPORT=m
+CONFIG_MEDIA_SUPPORT_FILTER=y
+CONFIG_MEDIA_SUBDRV_AUTOSELECT=y
 
 #
-# Multimedia core support
+# Media device types
 #
 CONFIG_MEDIA_CAMERA_SUPPORT=y
 CONFIG_MEDIA_ANALOG_TV_SUPPORT=y
 CONFIG_MEDIA_DIGITAL_TV_SUPPORT=y
 CONFIG_MEDIA_RADIO_SUPPORT=y
 # CONFIG_MEDIA_SDR_SUPPORT is not set
-# CONFIG_MEDIA_CEC_SUPPORT is not set
-CONFIG_MEDIA_CONTROLLER=y
-CONFIG_MEDIA_CONTROLLER_DVB=y
+# CONFIG_MEDIA_PLATFORM_SUPPORT is not set
+# CONFIG_MEDIA_TEST_SUPPORT is not set
+# end of Media device types
+
 CONFIG_VIDEO_DEV=m
-# CONFIG_VIDEO_V4L2_SUBDEV_API is not set
+CONFIG_MEDIA_CONTROLLER=y
+CONFIG_DVB_CORE=m
+
+#
+# Video4Linux options
+#
 CONFIG_VIDEO_V4L2=m
+CONFIG_VIDEO_V4L2_I2C=y
+# CONFIG_VIDEO_V4L2_SUBDEV_API is not set
 # CONFIG_VIDEO_ADV_DEBUG is not set
 # CONFIG_VIDEO_FIXED_MINOR_RANGES is not set
 CONFIG_VIDEO_TUNER=m
 CONFIG_VIDEOBUF_GEN=m
 CONFIG_VIDEOBUF_DMA_SG=m
 CONFIG_VIDEOBUF_VMALLOC=m
-CONFIG_DVB_CORE=m
+# end of Video4Linux options
+
+#
+# Media controller options
+#
+CONFIG_MEDIA_CONTROLLER_DVB=y
+# end of Media controller options
+
+#
+# Digital TV options
+#
 # CONFIG_DVB_MMAP is not set
 CONFIG_DVB_NET=y
-CONFIG_TTPCI_EEPROM=m
 CONFIG_DVB_MAX_ADAPTERS=8
 CONFIG_DVB_DYNAMIC_MINORS=y
 # CONFIG_DVB_DEMUX_SECTION_LOSS_LOG is not set
 # CONFIG_DVB_ULE_DEBUG is not set
+# end of Digital TV options
 
 #
 # Media drivers
 #
+
+#
+# Drivers filtered as selected at 'Filter media drivers'
+#
+CONFIG_TTPCI_EEPROM=m
 CONFIG_MEDIA_USB_SUPPORT=y
 
 #
@@ -5190,7 +4455,6 @@ CONFIG_VIDEO_PVRUSB2_SYSFS=y
 CONFIG_VIDEO_PVRUSB2_DVB=y
 # CONFIG_VIDEO_PVRUSB2_DEBUGIFC is not set
 CONFIG_VIDEO_HDPVR=m
-CONFIG_VIDEO_USBVISION=m
 # CONFIG_VIDEO_STK1160_COMMON is not set
 # CONFIG_VIDEO_GO7007 is not set
 
@@ -5340,15 +4604,7 @@ CONFIG_DVB_DDBRIDGE=m
 # CONFIG_DVB_DDBRIDGE_MSIENABLE is not set
 # CONFIG_DVB_SMIPCIE is not set
 # CONFIG_DVB_NETUP_UNIDVB is not set
-# CONFIG_V4L_PLATFORM_DRIVERS is not set
-# CONFIG_V4L_MEM2MEM_DRIVERS is not set
-# CONFIG_V4L_TEST_DRIVERS is not set
-# CONFIG_DVB_PLATFORM_DRIVERS is not set
-
-#
-# Supported MMC/SDIO adapters
-#
-CONFIG_SMS_SDIO_DRV=m
+# CONFIG_VIDEO_IPU3_CIO2 is not set
 CONFIG_RADIO_ADAPTERS=y
 CONFIG_RADIO_TEA575X=m
 # CONFIG_RADIO_SI470X is not set
@@ -5365,17 +4621,6 @@ CONFIG_RADIO_TEA575X=m
 # CONFIG_RADIO_SAA7706H is not set
 # CONFIG_RADIO_TEF6862 is not set
 # CONFIG_RADIO_WL1273 is not set
-
-#
-# Texas Instruments WL128x FM driver (ST based)
-#
-# end of Texas Instruments WL128x FM driver (ST based)
-
-#
-# Supported FireWire (IEEE 1394) Adapters
-#
-CONFIG_DVB_FIREDTV=m
-CONFIG_DVB_FIREDTV_INPUT=y
 CONFIG_MEDIA_COMMON_OPTIONS=y
 
 #
@@ -5395,17 +4640,28 @@ CONFIG_VIDEO_SAA7146=m
 CONFIG_VIDEO_SAA7146_VV=m
 CONFIG_SMS_SIANO_MDTV=m
 CONFIG_SMS_SIANO_RC=y
-# CONFIG_SMS_SIANO_DEBUGFS is not set
 
 #
-# Media ancillary drivers (tuners, sensors, i2c, spi, frontends)
+# FireWire (IEEE 1394) Adapters
 #
-CONFIG_MEDIA_SUBDRV_AUTOSELECT=y
+CONFIG_DVB_FIREDTV=m
+CONFIG_DVB_FIREDTV_INPUT=y
+# end of Media drivers
+
+CONFIG_MEDIA_HIDE_ANCILLARY_SUBDRV=y
+
+#
+# Media ancillary drivers
+#
 CONFIG_MEDIA_ATTACH=y
+
+#
+# IR I2C driver auto-selected by 'Autoselect ancillary drivers'
+#
 CONFIG_VIDEO_IR_I2C=m
 
 #
-# Audio decoders, processors and mixers
+# audio, video and radio I2C drivers auto-selected by 'Autoselect ancillary drivers'
 #
 CONFIG_VIDEO_TVAUDIO=m
 CONFIG_VIDEO_TDA7432=m
@@ -5416,15 +4672,7 @@ CONFIG_VIDEO_CS53L32A=m
 CONFIG_VIDEO_WM8775=m
 CONFIG_VIDEO_WM8739=m
 CONFIG_VIDEO_VP27SMPX=m
-
-#
-# RDS decoders
-#
 CONFIG_VIDEO_SAA6588=m
-
-#
-# Video decoders
-#
 CONFIG_VIDEO_SAA711X=m
 
 #
@@ -5432,43 +4680,84 @@ CONFIG_VIDEO_SAA711X=m
 #
 CONFIG_VIDEO_SAA717X=m
 CONFIG_VIDEO_CX25840=m
-
-#
-# Video encoders
-#
 CONFIG_VIDEO_SAA7127=m
+CONFIG_VIDEO_UPD64031A=m
+CONFIG_VIDEO_UPD64083=m
+CONFIG_VIDEO_SAA6752HS=m
+CONFIG_VIDEO_M52790=m
 
 #
 # Camera sensor devices
 #
+# CONFIG_VIDEO_HI556 is not set
+# CONFIG_VIDEO_IMX219 is not set
+# CONFIG_VIDEO_IMX258 is not set
+# CONFIG_VIDEO_IMX274 is not set
+# CONFIG_VIDEO_IMX290 is not set
+# CONFIG_VIDEO_IMX319 is not set
+# CONFIG_VIDEO_IMX355 is not set
+# CONFIG_VIDEO_OV2640 is not set
+# CONFIG_VIDEO_OV2659 is not set
+# CONFIG_VIDEO_OV2680 is not set
+# CONFIG_VIDEO_OV2685 is not set
+# CONFIG_VIDEO_OV2740 is not set
+# CONFIG_VIDEO_OV5647 is not set
+# CONFIG_VIDEO_OV6650 is not set
+# CONFIG_VIDEO_OV5670 is not set
+# CONFIG_VIDEO_OV5675 is not set
+# CONFIG_VIDEO_OV5695 is not set
+# CONFIG_VIDEO_OV7251 is not set
+# CONFIG_VIDEO_OV772X is not set
+# CONFIG_VIDEO_OV7640 is not set
+# CONFIG_VIDEO_OV7670 is not set
+# CONFIG_VIDEO_OV7740 is not set
+# CONFIG_VIDEO_OV8856 is not set
+# CONFIG_VIDEO_OV9640 is not set
+# CONFIG_VIDEO_OV9650 is not set
+# CONFIG_VIDEO_OV13858 is not set
+# CONFIG_VIDEO_VS6624 is not set
+# CONFIG_VIDEO_MT9M001 is not set
+# CONFIG_VIDEO_MT9M032 is not set
+# CONFIG_VIDEO_MT9M111 is not set
+# CONFIG_VIDEO_MT9P031 is not set
+# CONFIG_VIDEO_MT9T001 is not set
+# CONFIG_VIDEO_MT9T112 is not set
+# CONFIG_VIDEO_MT9V011 is not set
+# CONFIG_VIDEO_MT9V032 is not set
+# CONFIG_VIDEO_MT9V111 is not set
+# CONFIG_VIDEO_SR030PC30 is not set
+# CONFIG_VIDEO_NOON010PC30 is not set
+# CONFIG_VIDEO_M5MOLS is not set
+# CONFIG_VIDEO_RJ54N1 is not set
+# CONFIG_VIDEO_S5K6AA is not set
+# CONFIG_VIDEO_S5K6A3 is not set
+# CONFIG_VIDEO_S5K4ECGX is not set
+# CONFIG_VIDEO_S5K5BAF is not set
+# CONFIG_VIDEO_SMIAPP is not set
+# CONFIG_VIDEO_ET8EK8 is not set
+# CONFIG_VIDEO_S5C73M3 is not set
+# end of Camera sensor devices
 
 #
 # Lens drivers
 #
+# CONFIG_VIDEO_AD5820 is not set
+# CONFIG_VIDEO_AK7375 is not set
+# CONFIG_VIDEO_DW9714 is not set
+# CONFIG_VIDEO_DW9807_VCM is not set
+# end of Lens drivers
 
 #
 # Flash devices
 #
+# CONFIG_VIDEO_ADP1653 is not set
+# CONFIG_VIDEO_LM3560 is not set
+# CONFIG_VIDEO_LM3646 is not set
+# end of Flash devices
 
 #
-# Video improvement chips
+# SPI I2C drivers auto-selected by 'Autoselect ancillary drivers'
 #
-CONFIG_VIDEO_UPD64031A=m
-CONFIG_VIDEO_UPD64083=m
-
-#
-# Audio/Video compression chips
-#
-CONFIG_VIDEO_SAA6752HS=m
-
-#
-# SDR tuner chips
-#
-
-#
-# Miscellaneous helper chips
-#
-CONFIG_VIDEO_M52790=m
 
 #
 # Media SPI Adapters
@@ -5477,6 +4766,10 @@ CONFIG_VIDEO_M52790=m
 # end of Media SPI Adapters
 
 CONFIG_MEDIA_TUNER=m
+
+#
+# Tuner drivers auto-selected by 'Autoselect ancillary drivers'
+#
 CONFIG_MEDIA_TUNER_SIMPLE=m
 CONFIG_MEDIA_TUNER_TDA18250=m
 CONFIG_MEDIA_TUNER_TDA8290=m
@@ -5512,6 +4805,10 @@ CONFIG_MEDIA_TUNER_IT913X=m
 CONFIG_MEDIA_TUNER_R820T=m
 CONFIG_MEDIA_TUNER_QM1D1C0042=m
 CONFIG_MEDIA_TUNER_QM1D1B0004=m
+
+#
+# DVB Frontend drivers auto-selected by 'Autoselect ancillary drivers'
+#
 
 #
 # Multistandard (satellite) frontends
@@ -5659,11 +4956,7 @@ CONFIG_DVB_AF9033=m
 # Common Interface (EN50221) controller drivers
 #
 CONFIG_DVB_CXD2099=m
-
-#
-# Tools to develop new frontends
-#
-CONFIG_DVB_DUMMY_FE=m
+# end of Media ancillary drivers
 
 #
 # Graphics support
@@ -5688,7 +4981,9 @@ CONFIG_DRM_FBDEV_OVERALLOC=100
 CONFIG_DRM_LOAD_EDID_FIRMWARE=y
 # CONFIG_DRM_DP_CEC is not set
 CONFIG_DRM_TTM=m
+CONFIG_DRM_TTM_DMA_PAGE_POOL=y
 CONFIG_DRM_VRAM_HELPER=m
+CONFIG_DRM_TTM_HELPER=m
 CONFIG_DRM_GEM_SHMEM_HELPER=y
 
 #
@@ -5707,23 +5002,21 @@ CONFIG_DRM_I2C_SIL164=m
 
 # CONFIG_DRM_RADEON is not set
 # CONFIG_DRM_AMDGPU is not set
-
-#
-# ACP (Audio CoProcessor) Configuration
-#
-# end of ACP (Audio CoProcessor) Configuration
-
 # CONFIG_DRM_NOUVEAU is not set
 CONFIG_DRM_I915=m
-# CONFIG_DRM_I915_ALPHA_SUPPORT is not set
 CONFIG_DRM_I915_FORCE_PROBE=""
 CONFIG_DRM_I915_CAPTURE_ERROR=y
 CONFIG_DRM_I915_COMPRESS_ERROR=y
 CONFIG_DRM_I915_USERPTR=y
 CONFIG_DRM_I915_GVT=y
 CONFIG_DRM_I915_GVT_KVMGT=m
+CONFIG_DRM_I915_FENCE_TIMEOUT=10000
 CONFIG_DRM_I915_USERFAULT_AUTOSUSPEND=250
-CONFIG_DRM_I915_SPIN_REQUEST=5
+CONFIG_DRM_I915_HEARTBEAT_INTERVAL=2500
+CONFIG_DRM_I915_PREEMPT_TIMEOUT=640
+CONFIG_DRM_I915_MAX_REQUEST_BUSYWAIT=8000
+CONFIG_DRM_I915_STOP_TIMEOUT=100
+CONFIG_DRM_I915_TIMESLICE_DURATION=1
 CONFIG_DRM_VGEM=m
 # CONFIG_DRM_VKMS is not set
 CONFIG_DRM_VMWGFX=m
@@ -5734,7 +5027,6 @@ CONFIG_DRM_GMA3600=y
 CONFIG_DRM_UDL=m
 CONFIG_DRM_AST=m
 CONFIG_DRM_MGAG200=m
-CONFIG_DRM_CIRRUS_QEMU=m
 CONFIG_DRM_QXL=m
 CONFIG_DRM_BOCHS=m
 CONFIG_DRM_VIRTIO_GPU=m
@@ -5756,8 +5048,16 @@ CONFIG_DRM_PANEL_BRIDGE=y
 # end of Display Interface Bridges
 
 # CONFIG_DRM_ETNAVIV is not set
-# CONFIG_DRM_HISI_HIBMC is not set
-# CONFIG_DRM_TINYDRM is not set
+CONFIG_DRM_CIRRUS_QEMU=m
+# CONFIG_DRM_GM12U320 is not set
+# CONFIG_TINYDRM_HX8357D is not set
+# CONFIG_TINYDRM_ILI9225 is not set
+# CONFIG_TINYDRM_ILI9341 is not set
+# CONFIG_TINYDRM_ILI9486 is not set
+# CONFIG_TINYDRM_MI0283QT is not set
+# CONFIG_TINYDRM_REPAPER is not set
+# CONFIG_TINYDRM_ST7586 is not set
+# CONFIG_TINYDRM_ST7735R is not set
 # CONFIG_DRM_XEN is not set
 # CONFIG_DRM_VBOXVIDEO is not set
 # CONFIG_DRM_LEGACY is not set
@@ -5854,7 +5154,7 @@ CONFIG_BACKLIGHT_CLASS_DEVICE=y
 # CONFIG_BACKLIGHT_GENERIC is not set
 # CONFIG_BACKLIGHT_PWM is not set
 CONFIG_BACKLIGHT_APPLE=m
-# CONFIG_BACKLIGHT_PM8941_WLED is not set
+# CONFIG_BACKLIGHT_QCOM_WLED is not set
 # CONFIG_BACKLIGHT_SAHARA is not set
 # CONFIG_BACKLIGHT_ADP8860 is not set
 # CONFIG_BACKLIGHT_ADP8870 is not set
@@ -6048,6 +5348,8 @@ CONFIG_SND_HDA_COMPONENT=y
 CONFIG_SND_HDA_I915=y
 CONFIG_SND_HDA_EXT_CORE=m
 CONFIG_SND_HDA_PREALLOC_SIZE=512
+CONFIG_SND_INTEL_NHLT=y
+CONFIG_SND_INTEL_DSP_CONFIG=m
 # CONFIG_SND_SPI is not set
 CONFIG_SND_USB=y
 CONFIG_SND_USB_AUDIO=m
@@ -6082,7 +5384,9 @@ CONFIG_SND_SOC_TOPOLOGY=y
 CONFIG_SND_SOC_ACPI=m
 # CONFIG_SND_SOC_AMD_ACP is not set
 # CONFIG_SND_SOC_AMD_ACP3x is not set
+# CONFIG_SND_SOC_AMD_RENOIR is not set
 # CONFIG_SND_ATMEL_SOC is not set
+# CONFIG_SND_BCM63XX_I2S_WHISTLER is not set
 # CONFIG_SND_DESIGNWARE_I2S is not set
 
 #
@@ -6129,7 +5433,9 @@ CONFIG_SND_SOC_INTEL_SKYLAKE_SSP_CLK=m
 CONFIG_SND_SOC_INTEL_SKYLAKE_COMMON=m
 CONFIG_SND_SOC_ACPI_INTEL_MATCH=m
 CONFIG_SND_SOC_INTEL_MACH=y
+# CONFIG_SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES is not set
 CONFIG_SND_SOC_INTEL_HASWELL_MACH=m
+# CONFIG_SND_SOC_INTEL_BDW_RT5650_MACH is not set
 CONFIG_SND_SOC_INTEL_BDW_RT5677_MACH=m
 CONFIG_SND_SOC_INTEL_BROADWELL_MACH=m
 CONFIG_SND_SOC_INTEL_BYTCR_RT5640_MACH=m
@@ -6145,6 +5451,8 @@ CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH=m
 CONFIG_SND_SOC_INTEL_SKL_RT286_MACH=m
 CONFIG_SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH=m
 CONFIG_SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH=m
+CONFIG_SND_SOC_INTEL_DA7219_MAX98357A_GENERIC=m
+CONFIG_SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON=m
 CONFIG_SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH=m
 CONFIG_SND_SOC_INTEL_BXT_RT298_MACH=m
 CONFIG_SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH=m
@@ -6152,7 +5460,6 @@ CONFIG_SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH=m
 # CONFIG_SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH is not set
 # CONFIG_SND_SOC_INTEL_KBL_DA7219_MAX98927_MACH is not set
 # CONFIG_SND_SOC_INTEL_KBL_RT5660_MACH is not set
-# CONFIG_SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH is not set
 # CONFIG_SND_SOC_MTK_BTCVSD is not set
 # CONFIG_SND_SOC_SOF_TOPLEVEL is not set
 
@@ -6176,6 +5483,8 @@ CONFIG_SND_SOC_I2C_AND_SPI=m
 # CONFIG_SND_SOC_ADAU1761_I2C is not set
 # CONFIG_SND_SOC_ADAU1761_SPI is not set
 # CONFIG_SND_SOC_ADAU7002 is not set
+# CONFIG_SND_SOC_ADAU7118_HW is not set
+# CONFIG_SND_SOC_ADAU7118_I2C is not set
 # CONFIG_SND_SOC_AK4104 is not set
 # CONFIG_SND_SOC_AK4118 is not set
 # CONFIG_SND_SOC_AK4458 is not set
@@ -6225,6 +5534,7 @@ CONFIG_SND_SOC_MAX98357A=m
 # CONFIG_SND_SOC_MAX9867 is not set
 CONFIG_SND_SOC_MAX98927=m
 # CONFIG_SND_SOC_MAX98373 is not set
+# CONFIG_SND_SOC_MAX98390 is not set
 # CONFIG_SND_SOC_MAX9860 is not set
 # CONFIG_SND_SOC_MSM8916_WCD_DIGITAL is not set
 # CONFIG_SND_SOC_PCM1681 is not set
@@ -6267,6 +5577,8 @@ CONFIG_SND_SOC_SSM4567=m
 # CONFIG_SND_SOC_STA350 is not set
 # CONFIG_SND_SOC_STI_SAS is not set
 # CONFIG_SND_SOC_TAS2552 is not set
+# CONFIG_SND_SOC_TAS2562 is not set
+# CONFIG_SND_SOC_TAS2770 is not set
 # CONFIG_SND_SOC_TAS5086 is not set
 # CONFIG_SND_SOC_TAS571X is not set
 # CONFIG_SND_SOC_TAS5720 is not set
@@ -6279,9 +5591,11 @@ CONFIG_SND_SOC_SSM4567=m
 # CONFIG_SND_SOC_TLV320AIC32X4_I2C is not set
 # CONFIG_SND_SOC_TLV320AIC32X4_SPI is not set
 # CONFIG_SND_SOC_TLV320AIC3X is not set
+# CONFIG_SND_SOC_TLV320ADCX140 is not set
 CONFIG_SND_SOC_TS3A227E=m
 # CONFIG_SND_SOC_TSCS42XX is not set
 # CONFIG_SND_SOC_TSCS454 is not set
+# CONFIG_SND_SOC_UDA1334 is not set
 # CONFIG_SND_SOC_WM8510 is not set
 # CONFIG_SND_SOC_WM8523 is not set
 # CONFIG_SND_SOC_WM8524 is not set
@@ -6305,10 +5619,12 @@ CONFIG_SND_SOC_TS3A227E=m
 # CONFIG_SND_SOC_WM8974 is not set
 # CONFIG_SND_SOC_WM8978 is not set
 # CONFIG_SND_SOC_WM8985 is not set
+# CONFIG_SND_SOC_ZL38060 is not set
 # CONFIG_SND_SOC_ZX_AUD96P22 is not set
 # CONFIG_SND_SOC_MAX9759 is not set
 # CONFIG_SND_SOC_MT6351 is not set
 # CONFIG_SND_SOC_MT6358 is not set
+# CONFIG_SND_SOC_MT6660 is not set
 # CONFIG_SND_SOC_NAU8540 is not set
 # CONFIG_SND_SOC_NAU8810 is not set
 # CONFIG_SND_SOC_NAU8822 is not set
@@ -6355,6 +5671,7 @@ CONFIG_HID_CHICONY=y
 CONFIG_HID_PRODIKEYS=m
 # CONFIG_HID_CMEDIA is not set
 # CONFIG_HID_CP2112 is not set
+# CONFIG_HID_CREATIVE_SB0540 is not set
 CONFIG_HID_CYPRESS=y
 CONFIG_HID_DRAGONRISE=m
 # CONFIG_DRAGONRISE_FF is not set
@@ -6365,6 +5682,7 @@ CONFIG_HID_ELECOM=m
 CONFIG_HID_EZKEY=y
 # CONFIG_HID_GEMBIRD is not set
 # CONFIG_HID_GFRM is not set
+# CONFIG_HID_GLORIOUS is not set
 CONFIG_HID_HOLTEK=m
 # CONFIG_HOLTEK_FF is not set
 # CONFIG_HID_GT683R is not set
@@ -6443,6 +5761,7 @@ CONFIG_HID_ZYDACRON=m
 CONFIG_HID_SENSOR_HUB=m
 CONFIG_HID_SENSOR_CUSTOM_SENSOR=m
 CONFIG_HID_ALPS=m
+# CONFIG_HID_MCP2221 is not set
 # end of Special HID drivers
 
 #
@@ -6470,6 +5789,9 @@ CONFIG_INTEL_ISH_HID=y
 CONFIG_USB_OHCI_LITTLE_ENDIAN=y
 CONFIG_USB_SUPPORT=y
 CONFIG_USB_COMMON=y
+# CONFIG_USB_LED_TRIG is not set
+# CONFIG_USB_ULPI_BUS is not set
+# CONFIG_USB_CONN_GPIO is not set
 CONFIG_USB_ARCH_HAS_HCD=y
 CONFIG_USB=y
 CONFIG_USB_PCI=y
@@ -6485,9 +5807,6 @@ CONFIG_USB_DEFAULT_PERSIST=y
 CONFIG_USB_LEDS_TRIGGER_USBPORT=m
 CONFIG_USB_AUTOSUSPEND_DELAY=2
 CONFIG_USB_MON=y
-CONFIG_USB_WUSB=m
-CONFIG_USB_WUSB_CBAF=m
-# CONFIG_USB_WUSB_CBAF_DEBUG is not set
 
 #
 # USB Host Controller Drivers
@@ -6496,6 +5815,7 @@ CONFIG_USB_WUSB_CBAF=m
 CONFIG_USB_XHCI_HCD=y
 # CONFIG_USB_XHCI_DBGCAP is not set
 CONFIG_USB_XHCI_PCI=y
+# CONFIG_USB_XHCI_PCI_RENESAS is not set
 # CONFIG_USB_XHCI_PLATFORM is not set
 CONFIG_USB_EHCI_HCD=y
 CONFIG_USB_EHCI_ROOT_HUB_TT=y
@@ -6514,8 +5834,6 @@ CONFIG_USB_UHCI_HCD=y
 # CONFIG_USB_U132_HCD is not set
 # CONFIG_USB_SL811_HCD is not set
 # CONFIG_USB_R8A66597_HCD is not set
-# CONFIG_USB_WHCI_HCD is not set
-CONFIG_USB_HWA_HCD=m
 # CONFIG_USB_HCD_BCMA is not set
 # CONFIG_USB_HCD_SSB is not set
 # CONFIG_USB_HCD_TEST_MODE is not set
@@ -6562,6 +5880,7 @@ CONFIG_USBIP_CORE=m
 # CONFIG_USBIP_VHCI_HCD is not set
 # CONFIG_USBIP_HOST is not set
 # CONFIG_USBIP_DEBUG is not set
+# CONFIG_USB_CDNS3 is not set
 # CONFIG_USB_MUSB_HDRC is not set
 # CONFIG_USB_DWC3 is not set
 # CONFIG_USB_DWC2 is not set
@@ -6637,7 +5956,6 @@ CONFIG_USB_EMI62=m
 CONFIG_USB_EMI26=m
 CONFIG_USB_ADUTUX=m
 CONFIG_USB_SEVSEG=m
-# CONFIG_USB_RIO500 is not set
 CONFIG_USB_LEGOTOWER=m
 CONFIG_USB_LCD=m
 # CONFIG_USB_CYPRESS_CY7C63 is not set
@@ -6645,6 +5963,7 @@ CONFIG_USB_LCD=m
 CONFIG_USB_IDMOUSE=m
 CONFIG_USB_FTDI_ELAN=m
 CONFIG_USB_APPLEDISPLAY=m
+# CONFIG_APPLE_MFI_FASTCHARGE is not set
 CONFIG_USB_SISUSBVGA=m
 CONFIG_USB_SISUSBVGA_CON=y
 CONFIG_USB_LD=m
@@ -6695,12 +6014,6 @@ CONFIG_UCSI_ACPI=y
 # end of USB Type-C Alternate Mode drivers
 
 # CONFIG_USB_ROLE_SWITCH is not set
-# CONFIG_USB_LED_TRIG is not set
-# CONFIG_USB_ULPI_BUS is not set
-CONFIG_UWB=m
-CONFIG_UWB_HWA=m
-CONFIG_UWB_WHCI=m
-CONFIG_UWB_I1480U=m
 CONFIG_MMC=m
 CONFIG_MMC_BLOCK=m
 CONFIG_MMC_BLOCK_MINORS=8
@@ -6712,6 +6025,7 @@ CONFIG_SDIO_UART=m
 #
 # CONFIG_MMC_DEBUG is not set
 CONFIG_MMC_SDHCI=m
+CONFIG_MMC_SDHCI_IO_ACCESSORS=y
 CONFIG_MMC_SDHCI_PCI=m
 CONFIG_MMC_RICOH_MMC=y
 CONFIG_MMC_SDHCI_ACPI=m
@@ -6726,6 +6040,7 @@ CONFIG_MMC_VUB300=m
 CONFIG_MMC_USHC=m
 # CONFIG_MMC_USDHI6ROL0 is not set
 CONFIG_MMC_CQHCI=m
+# CONFIG_MMC_HSQ is not set
 # CONFIG_MMC_TOSHIBA_PCI is not set
 # CONFIG_MMC_MTK is not set
 # CONFIG_MMC_SDHCI_XENON is not set
@@ -6821,7 +6136,6 @@ CONFIG_INFINIBAND_ON_DEMAND_PAGING=y
 CONFIG_INFINIBAND_ADDR_TRANS=y
 CONFIG_INFINIBAND_ADDR_TRANS_CONFIGFS=y
 # CONFIG_INFINIBAND_MTHCA is not set
-# CONFIG_INFINIBAND_CXGB3 is not set
 # CONFIG_INFINIBAND_CXGB4 is not set
 # CONFIG_INFINIBAND_EFA is not set
 # CONFIG_INFINIBAND_I40IW is not set
@@ -6842,6 +6156,8 @@ CONFIG_INFINIBAND_SRP=m
 CONFIG_INFINIBAND_SRPT=m
 # CONFIG_INFINIBAND_ISER is not set
 # CONFIG_INFINIBAND_ISERT is not set
+# CONFIG_INFINIBAND_RTRS_CLIENT is not set
+# CONFIG_INFINIBAND_RTRS_SERVER is not set
 # CONFIG_INFINIBAND_OPA_VNIC is not set
 CONFIG_EDAC_ATOMIC_SCRUB=y
 CONFIG_EDAC_SUPPORT=y
@@ -6908,7 +6224,6 @@ CONFIG_RTC_DRV_PCF8563=m
 CONFIG_RTC_DRV_PCF8583=m
 CONFIG_RTC_DRV_M41T80=m
 CONFIG_RTC_DRV_M41T80_WDT=y
-# CONFIG_RTC_DRV_BD70528 is not set
 CONFIG_RTC_DRV_BQ32K=m
 # CONFIG_RTC_DRV_S35390A is not set
 CONFIG_RTC_DRV_FM3130=m
@@ -6988,7 +6303,9 @@ CONFIG_DMA_VIRTUAL_CHANNELS=y
 CONFIG_DMA_ACPI=y
 # CONFIG_ALTERA_MSGDMA is not set
 # CONFIG_INTEL_IDMA64 is not set
+# CONFIG_INTEL_IDXD is not set
 CONFIG_INTEL_IOATDMA=m
+# CONFIG_PLX_DMA is not set
 # CONFIG_QCOM_HIDMA_MGMT is not set
 # CONFIG_QCOM_HIDMA is not set
 CONFIG_DW_DMAC_CORE=y
@@ -6997,6 +6314,7 @@ CONFIG_DW_DMAC_PCI=y
 # CONFIG_DW_EDMA is not set
 # CONFIG_DW_EDMA_PCIE is not set
 CONFIG_HSU_DMA=y
+# CONFIG_SF_PDMA is not set
 
 #
 # DMA Clients
@@ -7011,6 +6329,9 @@ CONFIG_DMA_ENGINE_RAID=y
 CONFIG_SYNC_FILE=y
 # CONFIG_SW_SYNC is not set
 # CONFIG_UDMABUF is not set
+# CONFIG_DMABUF_MOVE_NOTIFY is not set
+# CONFIG_DMABUF_SELFTESTS is not set
+# CONFIG_DMABUF_HEAPS is not set
 # end of DMABUF options
 
 CONFIG_DCA=m
@@ -7057,15 +6378,23 @@ CONFIG_VIRTIO_PCI=y
 CONFIG_VIRTIO_PCI_LEGACY=y
 # CONFIG_VIRTIO_PMEM is not set
 CONFIG_VIRTIO_BALLOON=y
+CONFIG_VIRTIO_MEM=m
 CONFIG_VIRTIO_INPUT=m
 # CONFIG_VIRTIO_MMIO is not set
+# CONFIG_VDPA is not set
+CONFIG_VHOST_IOTLB=m
+CONFIG_VHOST=m
+CONFIG_VHOST_MENU=y
+CONFIG_VHOST_NET=m
+# CONFIG_VHOST_SCSI is not set
+CONFIG_VHOST_VSOCK=m
+# CONFIG_VHOST_CROSS_ENDIAN_LEGACY is not set
 
 #
 # Microsoft Hyper-V guest support
 #
 CONFIG_HYPERV=m
 CONFIG_HYPERV_TIMER=y
-CONFIG_HYPERV_TSCPAGE=y
 CONFIG_HYPERV_UTILS=m
 CONFIG_HYPERV_BALLOON=m
 # end of Microsoft Hyper-V guest support
@@ -7095,6 +6424,7 @@ CONFIG_XEN_ACPI=y
 CONFIG_XEN_HAVE_VPMU=y
 # end of Xen driver support
 
+# CONFIG_GREYBUS is not set
 CONFIG_STAGING=y
 # CONFIG_PRISM2_USB is not set
 # CONFIG_COMEDI is not set
@@ -7126,7 +6456,6 @@ CONFIG_R8712U=m
 # Analog to digital converters
 #
 # CONFIG_AD7816 is not set
-# CONFIG_AD7192 is not set
 # CONFIG_AD7280 is not set
 # end of Analog to digital converters
 
@@ -7193,9 +6522,7 @@ CONFIG_FWTTY_MAX_CARD_PORTS=32
 # CONFIG_FB_TFT is not set
 # CONFIG_WILC1000_SDIO is not set
 # CONFIG_WILC1000_SPI is not set
-# CONFIG_MOST is not set
 # CONFIG_KS7010 is not set
-# CONFIG_GREYBUS is not set
 # CONFIG_PI433 is not set
 
 #
@@ -7204,61 +6531,52 @@ CONFIG_FWTTY_MAX_CARD_PORTS=32
 # CONFIG_STAGING_GASKET_FRAMEWORK is not set
 # end of Gasket devices
 
-# CONFIG_EROFS_FS is not set
 # CONFIG_FIELDBUS_DEV is not set
 # CONFIG_KPC2000 is not set
-
-#
-# ISDN CAPI drivers
-#
-CONFIG_CAPI_AVM=y
-CONFIG_ISDN_DRV_AVMB1_B1PCI=m
-CONFIG_ISDN_DRV_AVMB1_B1PCIV4=y
-CONFIG_ISDN_DRV_AVMB1_T1PCI=m
-CONFIG_ISDN_DRV_AVMB1_C4=m
-CONFIG_ISDN_DRV_GIGASET=m
-CONFIG_GIGASET_CAPI=y
-CONFIG_GIGASET_BASE=m
-CONFIG_GIGASET_M105=m
-CONFIG_GIGASET_M101=m
-# CONFIG_GIGASET_DEBUG is not set
-CONFIG_HYSDN=m
-CONFIG_HYSDN_CAPI=y
-# end of ISDN CAPI drivers
-
+CONFIG_QLGE=m
+# CONFIG_WFX is not set
 CONFIG_X86_PLATFORM_DEVICES=y
-CONFIG_ACER_WMI=m
-# CONFIG_ACER_WIRELESS is not set
-CONFIG_ACERHDF=m
+CONFIG_ACPI_WMI=m
+CONFIG_WMI_BMOF=m
 # CONFIG_ALIENWARE_WMI is not set
+# CONFIG_HUAWEI_WMI is not set
+# CONFIG_INTEL_WMI_SBL_FW_UPDATE is not set
+CONFIG_INTEL_WMI_THUNDERBOLT=m
+CONFIG_MXM_WMI=m
+# CONFIG_PEAQ_WMI is not set
+# CONFIG_XIAOMI_WMI is not set
+CONFIG_ACERHDF=m
+# CONFIG_ACER_WIRELESS is not set
+CONFIG_ACER_WMI=m
+CONFIG_APPLE_GMUX=m
 CONFIG_ASUS_LAPTOP=m
+# CONFIG_ASUS_WIRELESS is not set
+CONFIG_ASUS_WMI=m
+CONFIG_ASUS_NB_WMI=m
+CONFIG_EEEPC_LAPTOP=m
+CONFIG_EEEPC_WMI=m
 CONFIG_DCDBAS=m
 CONFIG_DELL_SMBIOS=m
 CONFIG_DELL_SMBIOS_WMI=y
 CONFIG_DELL_SMBIOS_SMM=y
 CONFIG_DELL_LAPTOP=m
+CONFIG_DELL_RBTN=m
+CONFIG_DELL_RBU=m
+CONFIG_DELL_SMO8800=m
 CONFIG_DELL_WMI=m
 CONFIG_DELL_WMI_DESCRIPTOR=m
 CONFIG_DELL_WMI_AIO=m
 # CONFIG_DELL_WMI_LED is not set
-CONFIG_DELL_SMO8800=m
-CONFIG_DELL_RBTN=m
-CONFIG_DELL_RBU=m
+CONFIG_AMILO_RFKILL=m
 CONFIG_FUJITSU_LAPTOP=m
 CONFIG_FUJITSU_TABLET=m
-CONFIG_AMILO_RFKILL=m
 # CONFIG_GPD_POCKET_FAN is not set
 CONFIG_HP_ACCEL=m
 CONFIG_HP_WIRELESS=m
 CONFIG_HP_WMI=m
-# CONFIG_LG_LAPTOP is not set
-CONFIG_MSI_LAPTOP=m
-CONFIG_PANASONIC_LAPTOP=m
-CONFIG_COMPAL_LAPTOP=m
-CONFIG_SONY_LAPTOP=m
-CONFIG_SONYPI_COMPAT=y
+# CONFIG_IBM_RTL is not set
 CONFIG_IDEAPAD_LAPTOP=m
-# CONFIG_SURFACE3_WMI is not set
+CONFIG_SENSORS_HDAPS=m
 CONFIG_THINKPAD_ACPI=m
 CONFIG_THINKPAD_ACPI_ALSA_SUPPORT=y
 # CONFIG_THINKPAD_ACPI_DEBUGFACILITIES is not set
@@ -7266,47 +6584,37 @@ CONFIG_THINKPAD_ACPI_ALSA_SUPPORT=y
 # CONFIG_THINKPAD_ACPI_UNSAFE_LEDS is not set
 CONFIG_THINKPAD_ACPI_VIDEO=y
 CONFIG_THINKPAD_ACPI_HOTKEY_POLL=y
-CONFIG_SENSORS_HDAPS=m
+# CONFIG_INTEL_ATOMISP2_PM is not set
+CONFIG_INTEL_HID_EVENT=m
+# CONFIG_INTEL_INT0002_VGPIO is not set
 # CONFIG_INTEL_MENLOW is not set
-CONFIG_EEEPC_LAPTOP=m
-CONFIG_ASUS_WMI=m
-CONFIG_ASUS_NB_WMI=m
-CONFIG_EEEPC_WMI=m
-# CONFIG_ASUS_WIRELESS is not set
-CONFIG_ACPI_WMI=m
-CONFIG_WMI_BMOF=m
-CONFIG_INTEL_WMI_THUNDERBOLT=m
-# CONFIG_XIAOMI_WMI is not set
+CONFIG_INTEL_OAKTRAIL=m
+CONFIG_INTEL_VBTN=m
+# CONFIG_SURFACE3_WMI is not set
+# CONFIG_SURFACE_3_POWER_OPREGION is not set
+# CONFIG_SURFACE_PRO3_BUTTON is not set
+CONFIG_MSI_LAPTOP=m
 CONFIG_MSI_WMI=m
-# CONFIG_PEAQ_WMI is not set
-CONFIG_TOPSTAR_LAPTOP=m
+# CONFIG_PCENGINES_APU2 is not set
+CONFIG_SAMSUNG_LAPTOP=m
+CONFIG_SAMSUNG_Q10=m
 CONFIG_ACPI_TOSHIBA=m
 CONFIG_TOSHIBA_BT_RFKILL=m
 # CONFIG_TOSHIBA_HAPS is not set
 # CONFIG_TOSHIBA_WMI is not set
 CONFIG_ACPI_CMPC=m
-# CONFIG_INTEL_INT0002_VGPIO is not set
-CONFIG_INTEL_HID_EVENT=m
-CONFIG_INTEL_VBTN=m
+CONFIG_COMPAL_LAPTOP=m
+# CONFIG_LG_LAPTOP is not set
+CONFIG_PANASONIC_LAPTOP=m
+CONFIG_SONY_LAPTOP=m
+CONFIG_SONYPI_COMPAT=y
+# CONFIG_SYSTEM76_ACPI is not set
+CONFIG_TOPSTAR_LAPTOP=m
+# CONFIG_I2C_MULTI_INSTANTIATE is not set
+# CONFIG_MLX_PLATFORM is not set
 CONFIG_INTEL_IPS=m
-CONFIG_INTEL_PMC_CORE=m
-# CONFIG_IBM_RTL is not set
-CONFIG_SAMSUNG_LAPTOP=m
-CONFIG_MXM_WMI=m
-CONFIG_INTEL_OAKTRAIL=m
-CONFIG_SAMSUNG_Q10=m
-CONFIG_APPLE_GMUX=m
 # CONFIG_INTEL_RST is not set
 # CONFIG_INTEL_SMARTCONNECT is not set
-# CONFIG_INTEL_PMC_IPC is not set
-# CONFIG_SURFACE_PRO3_BUTTON is not set
-# CONFIG_INTEL_PUNIT_IPC is not set
-# CONFIG_MLX_PLATFORM is not set
-# CONFIG_INTEL_TURBO_MAX_3 is not set
-# CONFIG_I2C_MULTI_INSTANTIATE is not set
-# CONFIG_INTEL_ATOMISP2_PM is not set
-# CONFIG_HUAWEI_WMI is not set
-# CONFIG_PCENGINES_APU2 is not set
 
 #
 # Intel Speed Select Technology interface support
@@ -7314,16 +6622,20 @@ CONFIG_APPLE_GMUX=m
 # CONFIG_INTEL_SPEED_SELECT_INTERFACE is not set
 # end of Intel Speed Select Technology interface support
 
+# CONFIG_INTEL_TURBO_MAX_3 is not set
+# CONFIG_INTEL_UNCORE_FREQ_CONTROL is not set
+CONFIG_INTEL_PMC_CORE=m
+# CONFIG_INTEL_PUNIT_IPC is not set
+# CONFIG_INTEL_SCU_PCI is not set
+# CONFIG_INTEL_SCU_PLATFORM is not set
 CONFIG_PMC_ATOM=y
+# CONFIG_MFD_CROS_EC is not set
 # CONFIG_CHROME_PLATFORMS is not set
 # CONFIG_MELLANOX_PLATFORM is not set
+CONFIG_HAVE_CLK=y
 CONFIG_CLKDEV_LOOKUP=y
 CONFIG_HAVE_CLK_PREPARE=y
 CONFIG_COMMON_CLK=y
-
-#
-# Common Clock Framework
-#
 # CONFIG_COMMON_CLK_MAX9485 is not set
 # CONFIG_COMMON_CLK_SI5341 is not set
 # CONFIG_COMMON_CLK_SI5351 is not set
@@ -7331,8 +6643,6 @@ CONFIG_COMMON_CLK=y
 # CONFIG_COMMON_CLK_CDCE706 is not set
 # CONFIG_COMMON_CLK_CS2000_CP is not set
 # CONFIG_COMMON_CLK_PWM is not set
-# end of Common Clock Framework
-
 # CONFIG_HWSPINLOCK is not set
 
 #
@@ -7347,6 +6657,7 @@ CONFIG_MAILBOX=y
 CONFIG_PCC=y
 # CONFIG_ALTERA_MBOX is not set
 CONFIG_IOMMU_IOVA=y
+CONFIG_IOASID=y
 CONFIG_IOMMU_API=y
 CONFIG_IOMMU_SUPPORT=y
 
@@ -7357,6 +6668,7 @@ CONFIG_IOMMU_SUPPORT=y
 
 # CONFIG_IOMMU_DEBUGFS is not set
 # CONFIG_IOMMU_DEFAULT_PASSTHROUGH is not set
+CONFIG_IOMMU_DMA=y
 CONFIG_AMD_IOMMU=y
 CONFIG_AMD_IOMMU_V2=m
 CONFIG_DMAR_TABLE=y
@@ -7364,6 +6676,7 @@ CONFIG_INTEL_IOMMU=y
 # CONFIG_INTEL_IOMMU_SVM is not set
 # CONFIG_INTEL_IOMMU_DEFAULT_ON is not set
 CONFIG_INTEL_IOMMU_FLOPPY_WA=y
+# CONFIG_INTEL_IOMMU_SCALABLE_MODE_DEFAULT_ON is not set
 CONFIG_IRQ_REMAP=y
 CONFIG_HYPERV_IOMMU=y
 
@@ -7465,13 +6778,13 @@ CONFIG_IIO_CONSUMERS_PER_TRIGGER=2
 # CONFIG_ADXL372_I2C is not set
 # CONFIG_BMA180 is not set
 # CONFIG_BMA220 is not set
+# CONFIG_BMA400 is not set
 # CONFIG_BMC150_ACCEL is not set
 # CONFIG_DA280 is not set
 # CONFIG_DA311 is not set
 # CONFIG_DMARD09 is not set
 # CONFIG_DMARD10 is not set
 CONFIG_HID_SENSOR_ACCEL_3D=m
-# CONFIG_IIO_CROS_EC_ACCEL_LEGACY is not set
 # CONFIG_IIO_ST_ACCEL_3AXIS is not set
 # CONFIG_KXSD9 is not set
 # CONFIG_KXCJK1013 is not set
@@ -7492,9 +6805,12 @@ CONFIG_HID_SENSOR_ACCEL_3D=m
 #
 # Analog to digital converters
 #
+# CONFIG_AD7091R5 is not set
 # CONFIG_AD7124 is not set
+# CONFIG_AD7192 is not set
 # CONFIG_AD7266 is not set
 # CONFIG_AD7291 is not set
+# CONFIG_AD7292 is not set
 # CONFIG_AD7298 is not set
 # CONFIG_AD7476 is not set
 # CONFIG_AD7606_IFACE_PARALLEL is not set
@@ -7508,15 +6824,19 @@ CONFIG_HID_SENSOR_ACCEL_3D=m
 # CONFIG_AD7923 is not set
 # CONFIG_AD7949 is not set
 # CONFIG_AD799X is not set
+# CONFIG_AD9467 is not set
+# CONFIG_ADI_AXI_ADC is not set
 # CONFIG_HI8435 is not set
 # CONFIG_HX711 is not set
 # CONFIG_INA2XX_ADC is not set
 # CONFIG_LTC2471 is not set
 # CONFIG_LTC2485 is not set
+# CONFIG_LTC2496 is not set
 # CONFIG_LTC2497 is not set
 # CONFIG_MAX1027 is not set
 # CONFIG_MAX11100 is not set
 # CONFIG_MAX1118 is not set
+# CONFIG_MAX1241 is not set
 # CONFIG_MAX1363 is not set
 # CONFIG_MAX9611 is not set
 # CONFIG_MCP320X is not set
@@ -7546,12 +6866,14 @@ CONFIG_HID_SENSOR_ACCEL_3D=m
 # Amplifiers
 #
 # CONFIG_AD8366 is not set
+# CONFIG_HMC425 is not set
 # end of Amplifiers
 
 #
 # Chemical Sensors
 #
 # CONFIG_ATLAS_PH_SENSOR is not set
+# CONFIG_ATLAS_EZO_SENSOR is not set
 # CONFIG_BME680 is not set
 # CONFIG_CCS811 is not set
 # CONFIG_IAQCORE is not set
@@ -7586,18 +6908,19 @@ CONFIG_HID_SENSOR_IIO_TRIGGER=m
 # CONFIG_AD5593R is not set
 # CONFIG_AD5504 is not set
 # CONFIG_AD5624R_SPI is not set
-# CONFIG_LTC1660 is not set
-# CONFIG_LTC2632 is not set
 # CONFIG_AD5686_SPI is not set
 # CONFIG_AD5696_I2C is not set
 # CONFIG_AD5755 is not set
 # CONFIG_AD5758 is not set
 # CONFIG_AD5761 is not set
 # CONFIG_AD5764 is not set
+# CONFIG_AD5770R is not set
 # CONFIG_AD5791 is not set
 # CONFIG_AD7303 is not set
 # CONFIG_AD8801 is not set
 # CONFIG_DS4424 is not set
+# CONFIG_LTC1660 is not set
+# CONFIG_LTC2632 is not set
 # CONFIG_M62332 is not set
 # CONFIG_MAX517 is not set
 # CONFIG_MCP4725 is not set
@@ -7678,9 +7001,13 @@ CONFIG_HID_SENSOR_GYRO_3D=m
 # Inertial measurement units
 #
 # CONFIG_ADIS16400 is not set
+# CONFIG_ADIS16460 is not set
+# CONFIG_ADIS16475 is not set
 # CONFIG_ADIS16480 is not set
 # CONFIG_BMI160_I2C is not set
 # CONFIG_BMI160_SPI is not set
+# CONFIG_FXOS8700_I2C is not set
+# CONFIG_FXOS8700_SPI is not set
 # CONFIG_KMX61 is not set
 # CONFIG_INV_MPU6050_I2C is not set
 # CONFIG_INV_MPU6050_SPI is not set
@@ -7692,6 +7019,8 @@ CONFIG_HID_SENSOR_GYRO_3D=m
 #
 # CONFIG_ACPI_ALS is not set
 # CONFIG_ADJD_S311 is not set
+# CONFIG_ADUX1020 is not set
+# CONFIG_AL3010 is not set
 # CONFIG_AL3320A is not set
 # CONFIG_APDS9300 is not set
 # CONFIG_APDS9960 is not set
@@ -7701,6 +7030,7 @@ CONFIG_HID_SENSOR_GYRO_3D=m
 # CONFIG_CM3232 is not set
 # CONFIG_CM3323 is not set
 # CONFIG_CM36651 is not set
+# CONFIG_GP2AP002 is not set
 # CONFIG_GP2AP020A00F is not set
 # CONFIG_SENSORS_ISL29018 is not set
 # CONFIG_SENSORS_ISL29028 is not set
@@ -7713,6 +7043,7 @@ CONFIG_HID_SENSOR_PROX=m
 # CONFIG_LV0104CS is not set
 # CONFIG_MAX44000 is not set
 # CONFIG_MAX44009 is not set
+# CONFIG_NOA1305 is not set
 # CONFIG_OPT3001 is not set
 # CONFIG_PA12203001 is not set
 # CONFIG_SI1133 is not set
@@ -7728,6 +7059,7 @@ CONFIG_HID_SENSOR_PROX=m
 # CONFIG_US5182D is not set
 # CONFIG_VCNL4000 is not set
 # CONFIG_VCNL4035 is not set
+# CONFIG_VEML6030 is not set
 # CONFIG_VEML6070 is not set
 # CONFIG_VL6180 is not set
 # CONFIG_ZOPT2201 is not set
@@ -7770,10 +7102,16 @@ CONFIG_HID_SENSOR_DEVICE_ROTATION=m
 # end of Triggers - standalone
 
 #
+# Linear and angular position sensors
+#
+# end of Linear and angular position sensors
+
+#
 # Digital potentiometers
 #
 # CONFIG_AD5272 is not set
 # CONFIG_DS1803 is not set
+# CONFIG_MAX5432 is not set
 # CONFIG_MAX5481 is not set
 # CONFIG_MAX5487 is not set
 # CONFIG_MCP4018 is not set
@@ -7794,9 +7132,11 @@ CONFIG_HID_SENSOR_DEVICE_ROTATION=m
 #
 # CONFIG_ABP060MG is not set
 # CONFIG_BMP280 is not set
+# CONFIG_DLHL60D is not set
 # CONFIG_DPS310 is not set
 CONFIG_HID_SENSOR_PRESS=m
 # CONFIG_HP03 is not set
+# CONFIG_ICP10100 is not set
 # CONFIG_MPL115_I2C is not set
 # CONFIG_MPL115_SPI is not set
 # CONFIG_MPL3115 is not set
@@ -7820,10 +7160,13 @@ CONFIG_HID_SENSOR_PRESS=m
 # CONFIG_ISL29501 is not set
 # CONFIG_LIDAR_LITE_V2 is not set
 # CONFIG_MB1232 is not set
+# CONFIG_PING is not set
 # CONFIG_RFD77402 is not set
 # CONFIG_SRF04 is not set
+# CONFIG_SX9310 is not set
 # CONFIG_SX9500 is not set
 # CONFIG_SRF08 is not set
+# CONFIG_VCNL3020 is not set
 # CONFIG_VL53L0X_I2C is not set
 # end of Proximity and distance sensors
 
@@ -7837,6 +7180,7 @@ CONFIG_HID_SENSOR_PRESS=m
 #
 # Temperature sensors
 #
+# CONFIG_LTC2983 is not set
 # CONFIG_MAXIM_THERMOCOUPLE is not set
 # CONFIG_HID_SENSOR_TEMP is not set
 # CONFIG_MLX90614 is not set
@@ -7861,6 +7205,7 @@ CONFIG_NTB_TRANSPORT=m
 # CONFIG_VME_BUS is not set
 CONFIG_PWM=y
 CONFIG_PWM_SYSFS=y
+# CONFIG_PWM_DEBUG is not set
 # CONFIG_PWM_LPSS_PCI is not set
 # CONFIG_PWM_LPSS_PLATFORM is not set
 # CONFIG_PWM_PCA9685 is not set
@@ -7881,6 +7226,7 @@ CONFIG_GENERIC_PHY=y
 # CONFIG_PHY_PXA_28NM_HSIC is not set
 # CONFIG_PHY_PXA_28NM_USB2 is not set
 # CONFIG_PHY_CPCAP_USB is not set
+# CONFIG_PHY_INTEL_EMMC is not set
 # end of PHY Subsystem
 
 CONFIG_POWERCAP=y
@@ -7896,7 +7242,7 @@ CONFIG_INTEL_RAPL=m
 
 CONFIG_RAS=y
 # CONFIG_RAS_CEC is not set
-CONFIG_THUNDERBOLT=y
+# CONFIG_USB4 is not set
 
 #
 # Android
@@ -7931,12 +7277,14 @@ CONFIG_NVMEM_SYSFS=y
 # end of HW tracing support
 
 # CONFIG_FPGA is not set
+# CONFIG_TEE is not set
 CONFIG_PM_OPP=y
 # CONFIG_UNISYS_VISORBUS is not set
 # CONFIG_SIOX is not set
 # CONFIG_SLIMBUS is not set
 # CONFIG_INTERCONNECT is not set
 # CONFIG_COUNTER is not set
+# CONFIG_MOST is not set
 # end of Device Drivers
 
 #
@@ -7952,6 +7300,7 @@ CONFIG_EXT4_USE_FOR_EXT2=y
 CONFIG_EXT4_FS_POSIX_ACL=y
 CONFIG_EXT4_FS_SECURITY=y
 # CONFIG_EXT4_DEBUG is not set
+CONFIG_EXT4_KUNIT_TESTS=m
 CONFIG_JBD2=m
 # CONFIG_JBD2_DEBUG is not set
 CONFIG_FS_MBCACHE=m
@@ -7989,6 +7338,8 @@ CONFIG_F2FS_FS_SECURITY=y
 # CONFIG_F2FS_CHECK_FS is not set
 # CONFIG_F2FS_IO_TRACE is not set
 # CONFIG_F2FS_FAULT_INJECTION is not set
+# CONFIG_F2FS_FS_COMPRESSION is not set
+# CONFIG_ZONEFS_FS is not set
 CONFIG_FS_DAX=y
 CONFIG_FS_DAX_PMD=y
 CONFIG_FS_POSIX_ACL=y
@@ -7997,6 +7348,8 @@ CONFIG_EXPORTFS_BLOCK_OPS=y
 CONFIG_FILE_LOCKING=y
 CONFIG_MANDATORY_FILE_LOCKING=y
 CONFIG_FS_ENCRYPTION=y
+CONFIG_FS_ENCRYPTION_ALGS=m
+# CONFIG_FS_VERITY is not set
 CONFIG_FSNOTIFY=y
 CONFIG_DNOTIFY=y
 CONFIG_INOTIFY_USER=y
@@ -8015,6 +7368,7 @@ CONFIG_AUTOFS4_FS=y
 CONFIG_AUTOFS_FS=y
 CONFIG_FUSE_FS=m
 CONFIG_CUSE=m
+# CONFIG_VIRTIO_FS is not set
 CONFIG_OVERLAY_FS=m
 # CONFIG_OVERLAY_FS_REDIRECT_DIR is not set
 # CONFIG_OVERLAY_FS_REDIRECT_ALWAYS_FOLLOW is not set
@@ -8045,7 +7399,7 @@ CONFIG_UDF_FS=m
 # end of CD-ROM/DVD Filesystems
 
 #
-# DOS/FAT/NT Filesystems
+# DOS/FAT/EXFAT/NT Filesystems
 #
 CONFIG_FAT_FS=m
 CONFIG_MSDOS_FS=m
@@ -8053,8 +7407,9 @@ CONFIG_VFAT_FS=m
 CONFIG_FAT_DEFAULT_CODEPAGE=437
 CONFIG_FAT_DEFAULT_IOCHARSET="ascii"
 # CONFIG_FAT_DEFAULT_UTF8 is not set
+# CONFIG_EXFAT_FS is not set
 # CONFIG_NTFS_FS is not set
-# end of DOS/FAT/NT Filesystems
+# end of DOS/FAT/EXFAT/NT Filesystems
 
 #
 # Pseudo filesystems
@@ -8067,6 +7422,7 @@ CONFIG_PROC_SYSCTL=y
 CONFIG_PROC_PAGE_MONITOR=y
 CONFIG_PROC_CHILDREN=y
 CONFIG_PROC_PID_ARCH_STATUS=y
+CONFIG_PROC_CPU_RESCTRL=y
 CONFIG_KERNFS=y
 CONFIG_SYSFS=y
 CONFIG_TMPFS=y
@@ -8131,8 +7487,10 @@ CONFIG_PSTORE_COMPRESS_DEFAULT="deflate"
 # CONFIG_PSTORE_PMSG is not set
 # CONFIG_PSTORE_FTRACE is not set
 CONFIG_PSTORE_RAM=m
+# CONFIG_PSTORE_BLK is not set
 # CONFIG_SYSV_FS is not set
 # CONFIG_UFS_FS is not set
+# CONFIG_EROFS_FS is not set
 CONFIG_NETWORK_FILESYSTEMS=y
 CONFIG_NFS_FS=y
 # CONFIG_NFS_V2 is not set
@@ -8152,6 +7510,7 @@ CONFIG_ROOT_NFS=y
 # CONFIG_NFS_USE_LEGACY_DNS is not set
 CONFIG_NFS_USE_KERNEL_DNS=y
 CONFIG_NFS_DEBUG=y
+CONFIG_NFS_DISABLE_UDP_SUPPORT=y
 CONFIG_NFSD=m
 CONFIG_NFSD_V2_ACL=y
 CONFIG_NFSD_V3=y
@@ -8161,8 +7520,8 @@ CONFIG_NFSD_PNFS=y
 # CONFIG_NFSD_BLOCKLAYOUT is not set
 CONFIG_NFSD_SCSILAYOUT=y
 # CONFIG_NFSD_FLEXFILELAYOUT is not set
+# CONFIG_NFSD_V4_2_INTER_SSC is not set
 CONFIG_NFSD_V4_SECURITY_LABEL=y
-# CONFIG_NFSD_FAULT_INJECTION is not set
 CONFIG_GRACE_PERIOD=y
 CONFIG_LOCKD=y
 CONFIG_LOCKD_V4=y
@@ -8251,16 +7610,15 @@ CONFIG_NLS_UTF8=m
 CONFIG_DLM=m
 CONFIG_DLM_DEBUG=y
 # CONFIG_UNICODE is not set
+CONFIG_IO_WQ=y
 # end of File systems
 
 #
 # Security options
 #
 CONFIG_KEYS=y
-CONFIG_KEYS_COMPAT=y
 # CONFIG_KEYS_REQUEST_CACHE is not set
 CONFIG_PERSISTENT_KEYRINGS=y
-CONFIG_BIG_KEYS=y
 CONFIG_TRUSTED_KEYS=y
 CONFIG_ENCRYPTED_KEYS=y
 # CONFIG_KEY_DH_OPERATIONS is not set
@@ -8285,15 +7643,19 @@ CONFIG_SECURITY_SELINUX_BOOTPARAM=y
 CONFIG_SECURITY_SELINUX_DEVELOP=y
 CONFIG_SECURITY_SELINUX_AVC_STATS=y
 CONFIG_SECURITY_SELINUX_CHECKREQPROT_VALUE=1
+CONFIG_SECURITY_SELINUX_SIDTAB_HASH_BITS=9
+CONFIG_SECURITY_SELINUX_SID2STR_CACHE_SIZE=256
 # CONFIG_SECURITY_SMACK is not set
 # CONFIG_SECURITY_TOMOYO is not set
 CONFIG_SECURITY_APPARMOR=y
 CONFIG_SECURITY_APPARMOR_HASH=y
 CONFIG_SECURITY_APPARMOR_HASH_DEFAULT=y
 # CONFIG_SECURITY_APPARMOR_DEBUG is not set
+# CONFIG_SECURITY_APPARMOR_KUNIT_TEST is not set
 # CONFIG_SECURITY_LOADPIN is not set
 CONFIG_SECURITY_YAMA=y
 # CONFIG_SECURITY_SAFESETID is not set
+# CONFIG_SECURITY_LOCKDOWN_LSM is not set
 CONFIG_INTEGRITY=y
 CONFIG_INTEGRITY_SIGNATURE=y
 CONFIG_INTEGRITY_ASYMMETRIC_KEYS=y
@@ -8316,9 +7678,13 @@ CONFIG_IMA_APPRAISE=y
 # CONFIG_IMA_ARCH_POLICY is not set
 # CONFIG_IMA_APPRAISE_BUILD_POLICY is not set
 CONFIG_IMA_APPRAISE_BOOTPARAM=y
+# CONFIG_IMA_APPRAISE_MODSIG is not set
 CONFIG_IMA_TRUSTED_KEYRING=y
 # CONFIG_IMA_BLACKLIST_KEYRING is not set
 # CONFIG_IMA_LOAD_X509 is not set
+CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS=y
+CONFIG_IMA_QUEUE_EARLY_BOOT_KEYS=y
+# CONFIG_IMA_SECURE_AND_OR_TRUSTED_BOOT is not set
 CONFIG_EVM=y
 CONFIG_EVM_ATTR_FSUUID=y
 # CONFIG_EVM_ADD_XATTRS is not set
@@ -8326,7 +7692,7 @@ CONFIG_EVM_ATTR_FSUUID=y
 CONFIG_DEFAULT_SECURITY_SELINUX=y
 # CONFIG_DEFAULT_SECURITY_APPARMOR is not set
 # CONFIG_DEFAULT_SECURITY_DAC is not set
-CONFIG_LSM="yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor"
+CONFIG_LSM="lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf"
 
 #
 # Kernel hardening options
@@ -8357,8 +7723,8 @@ CONFIG_CRYPTO_ALGAPI=y
 CONFIG_CRYPTO_ALGAPI2=y
 CONFIG_CRYPTO_AEAD=y
 CONFIG_CRYPTO_AEAD2=y
-CONFIG_CRYPTO_BLKCIPHER=y
-CONFIG_CRYPTO_BLKCIPHER2=y
+CONFIG_CRYPTO_SKCIPHER=y
+CONFIG_CRYPTO_SKCIPHER2=y
 CONFIG_CRYPTO_HASH=y
 CONFIG_CRYPTO_HASH2=y
 CONFIG_CRYPTO_RNG=y
@@ -8392,6 +7758,8 @@ CONFIG_CRYPTO_DH=m
 CONFIG_CRYPTO_ECC=m
 CONFIG_CRYPTO_ECDH=m
 # CONFIG_CRYPTO_ECRDSA is not set
+# CONFIG_CRYPTO_CURVE25519 is not set
+# CONFIG_CRYPTO_CURVE25519_X86 is not set
 
 #
 # Authenticated Encryption with Associated Data
@@ -8400,16 +7768,7 @@ CONFIG_CRYPTO_CCM=m
 CONFIG_CRYPTO_GCM=y
 # CONFIG_CRYPTO_CHACHA20POLY1305 is not set
 # CONFIG_CRYPTO_AEGIS128 is not set
-# CONFIG_CRYPTO_AEGIS128L is not set
-# CONFIG_CRYPTO_AEGIS256 is not set
 # CONFIG_CRYPTO_AEGIS128_AESNI_SSE2 is not set
-# CONFIG_CRYPTO_AEGIS128L_AESNI_SSE2 is not set
-# CONFIG_CRYPTO_AEGIS256_AESNI_SSE2 is not set
-# CONFIG_CRYPTO_MORUS640 is not set
-# CONFIG_CRYPTO_MORUS640_SSE2 is not set
-# CONFIG_CRYPTO_MORUS1280 is not set
-# CONFIG_CRYPTO_MORUS1280_SSE2 is not set
-# CONFIG_CRYPTO_MORUS1280_AVX2 is not set
 CONFIG_CRYPTO_SEQIV=y
 CONFIG_CRYPTO_ECHAINIV=m
 
@@ -8419,16 +7778,17 @@ CONFIG_CRYPTO_ECHAINIV=m
 CONFIG_CRYPTO_CBC=y
 # CONFIG_CRYPTO_CFB is not set
 CONFIG_CRYPTO_CTR=y
-CONFIG_CRYPTO_CTS=y
+CONFIG_CRYPTO_CTS=m
 CONFIG_CRYPTO_ECB=y
 CONFIG_CRYPTO_LRW=m
 # CONFIG_CRYPTO_OFB is not set
 CONFIG_CRYPTO_PCBC=m
-CONFIG_CRYPTO_XTS=y
+CONFIG_CRYPTO_XTS=m
 # CONFIG_CRYPTO_KEYWRAP is not set
 # CONFIG_CRYPTO_NHPOLY1305_SSE2 is not set
 # CONFIG_CRYPTO_NHPOLY1305_AVX2 is not set
 # CONFIG_CRYPTO_ADIANTUM is not set
+CONFIG_CRYPTO_ESSIV=m
 
 #
 # Hash modes
@@ -8445,7 +7805,10 @@ CONFIG_CRYPTO_CRC32C=y
 CONFIG_CRYPTO_CRC32C_INTEL=m
 CONFIG_CRYPTO_CRC32=m
 CONFIG_CRYPTO_CRC32_PCLMUL=m
-# CONFIG_CRYPTO_XXHASH is not set
+CONFIG_CRYPTO_XXHASH=m
+CONFIG_CRYPTO_BLAKE2B=m
+# CONFIG_CRYPTO_BLAKE2S is not set
+# CONFIG_CRYPTO_BLAKE2S_X86 is not set
 CONFIG_CRYPTO_CRCT10DIF=y
 CONFIG_CRYPTO_CRCT10DIF_PCLMUL=m
 CONFIG_CRYPTO_GHASH=y
@@ -8476,10 +7839,8 @@ CONFIG_CRYPTO_GHASH_CLMUL_NI_INTEL=m
 #
 CONFIG_CRYPTO_AES=y
 # CONFIG_CRYPTO_AES_TI is not set
-CONFIG_CRYPTO_AES_X86_64=y
 CONFIG_CRYPTO_AES_NI_INTEL=m
 CONFIG_CRYPTO_ANUBIS=m
-CONFIG_CRYPTO_LIB_ARC4=m
 CONFIG_CRYPTO_ARC4=m
 CONFIG_CRYPTO_BLOWFISH=m
 CONFIG_CRYPTO_BLOWFISH_COMMON=m
@@ -8540,6 +7901,20 @@ CONFIG_CRYPTO_USER_API_RNG=m
 # CONFIG_CRYPTO_USER_API_AEAD is not set
 # CONFIG_CRYPTO_STATS is not set
 CONFIG_CRYPTO_HASH_INFO=y
+
+#
+# Crypto library routines
+#
+CONFIG_CRYPTO_LIB_AES=y
+CONFIG_CRYPTO_LIB_ARC4=m
+# CONFIG_CRYPTO_LIB_BLAKE2S is not set
+# CONFIG_CRYPTO_LIB_CHACHA is not set
+# CONFIG_CRYPTO_LIB_CURVE25519 is not set
+CONFIG_CRYPTO_LIB_DES=m
+CONFIG_CRYPTO_LIB_POLY1305_RSIZE=11
+# CONFIG_CRYPTO_LIB_POLY1305 is not set
+# CONFIG_CRYPTO_LIB_CHACHA20POLY1305 is not set
+CONFIG_CRYPTO_LIB_SHA256=y
 CONFIG_CRYPTO_HW=y
 CONFIG_CRYPTO_DEV_PADLOCK=m
 CONFIG_CRYPTO_DEV_PADLOCK_AES=m
@@ -8551,6 +7926,7 @@ CONFIG_CRYPTO_DEV_CCP_DD=y
 CONFIG_CRYPTO_DEV_SP_CCP=y
 CONFIG_CRYPTO_DEV_CCP_CRYPTO=m
 CONFIG_CRYPTO_DEV_SP_PSP=y
+# CONFIG_CRYPTO_DEV_CCP_DEBUGFS is not set
 CONFIG_CRYPTO_DEV_QAT=m
 CONFIG_CRYPTO_DEV_QAT_DH895xCC=m
 CONFIG_CRYPTO_DEV_QAT_C3XXX=m
@@ -8561,6 +7937,8 @@ CONFIG_CRYPTO_DEV_QAT_C62XVF=m
 # CONFIG_CRYPTO_DEV_NITROX_CNN55XX is not set
 CONFIG_CRYPTO_DEV_CHELSIO=m
 CONFIG_CRYPTO_DEV_VIRTIO=m
+# CONFIG_CRYPTO_DEV_SAFEXCEL is not set
+# CONFIG_CRYPTO_DEV_AMLOGIC_GXL is not set
 CONFIG_ASYMMETRIC_KEY_TYPE=y
 CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE=y
 # CONFIG_ASYMMETRIC_TPM_KEY_SUBTYPE is not set
@@ -8596,11 +7974,13 @@ CONFIG_GENERIC_STRNLEN_USER=y
 CONFIG_GENERIC_NET_UTILS=y
 CONFIG_GENERIC_FIND_FIRST_BIT=y
 CONFIG_CORDIC=m
+# CONFIG_PRIME_NUMBERS is not set
 CONFIG_RATIONAL=y
 CONFIG_GENERIC_PCI_IOMAP=y
 CONFIG_GENERIC_IOMAP=y
 CONFIG_ARCH_USE_CMPXCHG_LOCKREF=y
 CONFIG_ARCH_HAS_FAST_MULTIPLIER=y
+CONFIG_ARCH_USE_SYM_ANNOTATIONS=y
 CONFIG_CRC_CCITT=y
 CONFIG_CRC16=y
 CONFIG_CRC_T10DIF=y
@@ -8658,10 +8038,12 @@ CONFIG_HAS_DMA=y
 CONFIG_NEED_SG_DMA_LENGTH=y
 CONFIG_NEED_DMA_MAP_STATE=y
 CONFIG_ARCH_DMA_ADDR_T_64BIT=y
-CONFIG_DMA_DECLARE_COHERENT=y
 CONFIG_ARCH_HAS_FORCE_DMA_UNENCRYPTED=y
 CONFIG_DMA_VIRT_OPS=y
 CONFIG_SWIOTLB=y
+CONFIG_DMA_NONCOHERENT_MMAP=y
+CONFIG_DMA_REMAP=y
+CONFIG_DMA_COHERENT_POOL=y
 CONFIG_DMA_CMA=y
 
 #
@@ -8692,12 +8074,14 @@ CONFIG_OID_REGISTRY=y
 CONFIG_UCS2_STRING=y
 CONFIG_HAVE_GENERIC_VDSO=y
 CONFIG_GENERIC_GETTIMEOFDAY=y
+CONFIG_GENERIC_VDSO_TIME_NS=y
 CONFIG_FONT_SUPPORT=y
 # CONFIG_FONTS is not set
 CONFIG_FONT_8x8=y
 CONFIG_FONT_8x16=y
 CONFIG_SG_POOL=y
 CONFIG_ARCH_HAS_PMEM_API=y
+CONFIG_MEMREGION=y
 CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE=y
 CONFIG_ARCH_HAS_UACCESS_MCSAFE=y
 CONFIG_ARCH_STACKWALK=y
@@ -8719,6 +8103,9 @@ CONFIG_CONSOLE_LOGLEVEL_QUIET=4
 CONFIG_MESSAGE_LOGLEVEL_DEFAULT=4
 CONFIG_BOOT_PRINTK_DELAY=y
 CONFIG_DYNAMIC_DEBUG=y
+CONFIG_DYNAMIC_DEBUG_CORE=y
+CONFIG_SYMBOLIC_ERRNAME=y
+CONFIG_DEBUG_BUGVERBOSE=y
 # end of printk and dmesg options
 
 #
@@ -8726,27 +8113,35 @@ CONFIG_DYNAMIC_DEBUG=y
 #
 CONFIG_DEBUG_INFO=y
 CONFIG_DEBUG_INFO_REDUCED=y
+# CONFIG_DEBUG_INFO_COMPRESSED is not set
 # CONFIG_DEBUG_INFO_SPLIT is not set
 # CONFIG_DEBUG_INFO_DWARF4 is not set
-# CONFIG_DEBUG_INFO_BTF is not set
 # CONFIG_GDB_SCRIPTS is not set
 CONFIG_ENABLE_MUST_CHECK=y
 CONFIG_FRAME_WARN=2048
 CONFIG_STRIP_ASM_SYMS=y
 # CONFIG_READABLE_ASM is not set
-# CONFIG_UNUSED_SYMBOLS is not set
-CONFIG_DEBUG_FS=y
 # CONFIG_HEADERS_INSTALL is not set
-CONFIG_OPTIMIZE_INLINING=y
 CONFIG_DEBUG_SECTION_MISMATCH=y
 CONFIG_SECTION_MISMATCH_WARN_ONLY=y
 CONFIG_STACK_VALIDATION=y
 # CONFIG_DEBUG_FORCE_WEAK_PER_CPU is not set
 # end of Compile-time checks and compiler options
 
+#
+# Generic Kernel Debugging Instruments
+#
 CONFIG_MAGIC_SYSRQ=y
 CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE=0x1
 CONFIG_MAGIC_SYSRQ_SERIAL=y
+CONFIG_MAGIC_SYSRQ_SERIAL_SEQUENCE=""
+CONFIG_DEBUG_FS=y
+CONFIG_HAVE_ARCH_KGDB=y
+# CONFIG_KGDB is not set
+CONFIG_ARCH_HAS_UBSAN_SANITIZE_ALL=y
+# CONFIG_UBSAN is not set
+# end of Generic Kernel Debugging Instruments
+
 CONFIG_DEBUG_KERNEL=y
 CONFIG_DEBUG_MISC=y
 
@@ -8759,31 +8154,39 @@ CONFIG_DEBUG_MISC=y
 # CONFIG_PAGE_POISONING is not set
 # CONFIG_DEBUG_PAGE_REF is not set
 CONFIG_DEBUG_RODATA_TEST=y
+CONFIG_ARCH_HAS_DEBUG_WX=y
+# CONFIG_DEBUG_WX is not set
+CONFIG_GENERIC_PTDUMP=y
+# CONFIG_PTDUMP_DEBUGFS is not set
 # CONFIG_DEBUG_OBJECTS is not set
 # CONFIG_SLUB_DEBUG_ON is not set
 # CONFIG_SLUB_STATS is not set
 CONFIG_HAVE_DEBUG_KMEMLEAK=y
 # CONFIG_DEBUG_KMEMLEAK is not set
 # CONFIG_DEBUG_STACK_USAGE is not set
+# CONFIG_SCHED_STACK_END_CHECK is not set
+CONFIG_ARCH_HAS_DEBUG_VM_PGTABLE=y
 # CONFIG_DEBUG_VM is not set
+# CONFIG_DEBUG_VM_PGTABLE is not set
 CONFIG_ARCH_HAS_DEBUG_VIRTUAL=y
 # CONFIG_DEBUG_VIRTUAL is not set
 CONFIG_DEBUG_MEMORY_INIT=y
 # CONFIG_DEBUG_PER_CPU_MAPS is not set
 CONFIG_HAVE_ARCH_KASAN=y
+CONFIG_HAVE_ARCH_KASAN_VMALLOC=y
 CONFIG_CC_HAS_KASAN_GENERIC=y
 # CONFIG_KASAN is not set
 CONFIG_KASAN_STACK=1
 # end of Memory Debugging
 
-CONFIG_ARCH_HAS_KCOV=y
-CONFIG_CC_HAS_SANCOV_TRACE_PC=y
-# CONFIG_KCOV is not set
 CONFIG_DEBUG_SHIRQ=y
 
 #
-# Debug Lockups and Hangs
+# Debug Oops, Lockups and Hangs
 #
+CONFIG_PANIC_ON_OOPS=y
+CONFIG_PANIC_ON_OOPS_VALUE=1
+CONFIG_PANIC_TIMEOUT=0
 CONFIG_LOCKUP_DETECTOR=y
 CONFIG_SOFTLOCKUP_DETECTOR=y
 # CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC is not set
@@ -8795,15 +8198,17 @@ CONFIG_BOOTPARAM_HARDLOCKUP_PANIC=y
 CONFIG_BOOTPARAM_HARDLOCKUP_PANIC_VALUE=1
 # CONFIG_DETECT_HUNG_TASK is not set
 # CONFIG_WQ_WATCHDOG is not set
-# end of Debug Lockups and Hangs
+# CONFIG_TEST_LOCKUP is not set
+# end of Debug Oops, Lockups and Hangs
 
-CONFIG_PANIC_ON_OOPS=y
-CONFIG_PANIC_ON_OOPS_VALUE=1
-CONFIG_PANIC_TIMEOUT=0
+#
+# Scheduler Debugging
+#
 CONFIG_SCHED_DEBUG=y
 CONFIG_SCHED_INFO=y
 CONFIG_SCHEDSTATS=y
-# CONFIG_SCHED_STACK_END_CHECK is not set
+# end of Scheduler Debugging
+
 # CONFIG_DEBUG_TIMEKEEPING is not set
 
 #
@@ -8827,11 +8232,17 @@ CONFIG_LOCK_TORTURE_TEST=m
 CONFIG_STACKTRACE=y
 # CONFIG_WARN_ALL_UNSEEDED_RANDOM is not set
 # CONFIG_DEBUG_KOBJECT is not set
-CONFIG_DEBUG_BUGVERBOSE=y
+
+#
+# Debug kernel data structures
+#
 CONFIG_DEBUG_LIST=y
 # CONFIG_DEBUG_PLIST is not set
 # CONFIG_DEBUG_SG is not set
 # CONFIG_DEBUG_NOTIFIERS is not set
+# CONFIG_BUG_ON_DATA_CORRUPTION is not set
+# end of Debug kernel data structures
+
 # CONFIG_DEBUG_CREDENTIALS is not set
 
 #
@@ -8848,17 +8259,6 @@ CONFIG_RCU_CPU_STALL_TIMEOUT=60
 # CONFIG_DEBUG_WQ_FORCE_RR_CPU is not set
 # CONFIG_DEBUG_BLOCK_EXT_DEVT is not set
 # CONFIG_CPU_HOTPLUG_STATE_CONTROL is not set
-# CONFIG_NOTIFIER_ERROR_INJECTION is not set
-CONFIG_FUNCTION_ERROR_INJECTION=y
-CONFIG_FAULT_INJECTION=y
-# CONFIG_FAILSLAB is not set
-# CONFIG_FAIL_PAGE_ALLOC is not set
-CONFIG_FAIL_MAKE_REQUEST=y
-# CONFIG_FAIL_IO_TIMEOUT is not set
-# CONFIG_FAIL_FUTEX is not set
-CONFIG_FAULT_INJECTION_DEBUG_FS=y
-# CONFIG_FAIL_FUNCTION is not set
-# CONFIG_FAIL_MMC_REQUEST is not set
 CONFIG_LATENCYTOP=y
 CONFIG_USER_STACKTRACE_SUPPORT=y
 CONFIG_NOP_TRACER=y
@@ -8866,6 +8266,7 @@ CONFIG_HAVE_FUNCTION_TRACER=y
 CONFIG_HAVE_FUNCTION_GRAPH_TRACER=y
 CONFIG_HAVE_DYNAMIC_FTRACE=y
 CONFIG_HAVE_DYNAMIC_FTRACE_WITH_REGS=y
+CONFIG_HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS=y
 CONFIG_HAVE_FTRACE_MCOUNT_RECORD=y
 CONFIG_HAVE_SYSCALL_TRACEPOINTS=y
 CONFIG_HAVE_FENTRY=y
@@ -8880,19 +8281,24 @@ CONFIG_TRACING=y
 CONFIG_GENERIC_TRACER=y
 CONFIG_TRACING_SUPPORT=y
 CONFIG_FTRACE=y
+# CONFIG_BOOTTIME_TRACING is not set
 CONFIG_FUNCTION_TRACER=y
 CONFIG_FUNCTION_GRAPH_TRACER=y
-# CONFIG_PREEMPTIRQ_EVENTS is not set
+CONFIG_DYNAMIC_FTRACE=y
+CONFIG_DYNAMIC_FTRACE_WITH_REGS=y
+CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS=y
+CONFIG_FUNCTION_PROFILER=y
+CONFIG_STACK_TRACER=y
 # CONFIG_IRQSOFF_TRACER is not set
 CONFIG_SCHED_TRACER=y
 CONFIG_HWLAT_TRACER=y
+# CONFIG_MMIOTRACE is not set
 CONFIG_FTRACE_SYSCALLS=y
 CONFIG_TRACER_SNAPSHOT=y
 # CONFIG_TRACER_SNAPSHOT_PER_CPU_SWAP is not set
 CONFIG_BRANCH_PROFILE_NONE=y
 # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
 # CONFIG_PROFILE_ALL_BRANCHES is not set
-CONFIG_STACK_TRACER=y
 CONFIG_BLK_DEV_IO_TRACE=y
 CONFIG_KPROBE_EVENTS=y
 # CONFIG_KPROBE_EVENTS_ON_NOTRACE is not set
@@ -8900,24 +8306,82 @@ CONFIG_UPROBE_EVENTS=y
 CONFIG_BPF_EVENTS=y
 CONFIG_DYNAMIC_EVENTS=y
 CONFIG_PROBE_EVENTS=y
-CONFIG_DYNAMIC_FTRACE=y
-CONFIG_DYNAMIC_FTRACE_WITH_REGS=y
-CONFIG_FUNCTION_PROFILER=y
 # CONFIG_BPF_KPROBE_OVERRIDE is not set
 CONFIG_FTRACE_MCOUNT_RECORD=y
-# CONFIG_FTRACE_STARTUP_TEST is not set
-# CONFIG_MMIOTRACE is not set
 CONFIG_TRACING_MAP=y
+CONFIG_SYNTH_EVENTS=y
 CONFIG_HIST_TRIGGERS=y
+# CONFIG_TRACE_EVENT_INJECT is not set
 # CONFIG_TRACEPOINT_BENCHMARK is not set
 CONFIG_RING_BUFFER_BENCHMARK=m
+# CONFIG_TRACE_EVAL_MAP_FILE is not set
+# CONFIG_FTRACE_STARTUP_TEST is not set
 # CONFIG_RING_BUFFER_STARTUP_TEST is not set
 # CONFIG_PREEMPTIRQ_DELAY_TEST is not set
-# CONFIG_TRACE_EVAL_MAP_FILE is not set
+# CONFIG_SYNTH_EVENT_GEN_TEST is not set
+# CONFIG_KPROBE_EVENT_GEN_TEST is not set
+# CONFIG_HIST_TRIGGERS_DEBUG is not set
 CONFIG_PROVIDE_OHCI1394_DMA_INIT=y
+# CONFIG_SAMPLES is not set
+CONFIG_HAVE_ARCH_KCSAN=y
+CONFIG_ARCH_HAS_DEVMEM_IS_ALLOWED=y
+CONFIG_STRICT_DEVMEM=y
+# CONFIG_IO_STRICT_DEVMEM is not set
+
+#
+# x86 Debugging
+#
+CONFIG_TRACE_IRQFLAGS_SUPPORT=y
+CONFIG_EARLY_PRINTK_USB=y
+CONFIG_X86_VERBOSE_BOOTUP=y
+CONFIG_EARLY_PRINTK=y
+CONFIG_EARLY_PRINTK_DBGP=y
+# CONFIG_EARLY_PRINTK_USB_XDBC is not set
+# CONFIG_EFI_PGT_DUMP is not set
+# CONFIG_DEBUG_TLBFLUSH is not set
+# CONFIG_IOMMU_DEBUG is not set
+CONFIG_HAVE_MMIOTRACE_SUPPORT=y
+CONFIG_X86_DECODER_SELFTEST=y
+CONFIG_IO_DELAY_0X80=y
+# CONFIG_IO_DELAY_0XED is not set
+# CONFIG_IO_DELAY_UDELAY is not set
+# CONFIG_IO_DELAY_NONE is not set
+CONFIG_DEBUG_BOOT_PARAMS=y
+# CONFIG_CPA_DEBUG is not set
+# CONFIG_DEBUG_ENTRY is not set
+# CONFIG_DEBUG_NMI_SELFTEST is not set
+CONFIG_X86_DEBUG_FPU=y
+# CONFIG_PUNIT_ATOM_DEBUG is not set
+CONFIG_UNWINDER_ORC=y
+# CONFIG_UNWINDER_FRAME_POINTER is not set
+# end of x86 Debugging
+
+#
+# Kernel Testing and Coverage
+#
+CONFIG_KUNIT=y
+# CONFIG_KUNIT_DEBUGFS is not set
+CONFIG_KUNIT_TEST=m
+CONFIG_KUNIT_EXAMPLE_TEST=m
+# CONFIG_KUNIT_ALL_TESTS is not set
+# CONFIG_NOTIFIER_ERROR_INJECTION is not set
+CONFIG_FUNCTION_ERROR_INJECTION=y
+CONFIG_FAULT_INJECTION=y
+# CONFIG_FAILSLAB is not set
+# CONFIG_FAIL_PAGE_ALLOC is not set
+CONFIG_FAIL_MAKE_REQUEST=y
+# CONFIG_FAIL_IO_TIMEOUT is not set
+# CONFIG_FAIL_FUTEX is not set
+CONFIG_FAULT_INJECTION_DEBUG_FS=y
+# CONFIG_FAIL_FUNCTION is not set
+# CONFIG_FAIL_MMC_REQUEST is not set
+CONFIG_ARCH_HAS_KCOV=y
+CONFIG_CC_HAS_SANCOV_TRACE_PC=y
+# CONFIG_KCOV is not set
 CONFIG_RUNTIME_TESTING_MENU=y
 # CONFIG_LKDTM is not set
 # CONFIG_TEST_LIST_SORT is not set
+# CONFIG_TEST_MIN_HEAP is not set
 # CONFIG_TEST_SORT is not set
 # CONFIG_KPROBES_SANITY_TEST is not set
 # CONFIG_BACKTRACE_SELF_TEST is not set
@@ -8941,6 +8405,7 @@ CONFIG_ATOMIC64_SELFTEST=y
 # CONFIG_TEST_HASH is not set
 # CONFIG_TEST_IDA is not set
 # CONFIG_TEST_LKM is not set
+# CONFIG_TEST_BITOPS is not set
 # CONFIG_TEST_VMALLOC is not set
 # CONFIG_TEST_USER_COPY is not set
 CONFIG_TEST_BPF=m
@@ -8948,6 +8413,9 @@ CONFIG_TEST_BPF=m
 # CONFIG_FIND_BIT_BENCHMARK is not set
 # CONFIG_TEST_FIRMWARE is not set
 # CONFIG_TEST_SYSCTL is not set
+CONFIG_SYSCTL_KUNIT_TEST=m
+CONFIG_LIST_KUNIT_TEST=m
+# CONFIG_LINEAR_RANGES_TEST is not set
 # CONFIG_TEST_UDELAY is not set
 # CONFIG_TEST_STATIC_KEYS is not set
 # CONFIG_TEST_KMOD is not set
@@ -8956,45 +8424,11 @@ CONFIG_TEST_BPF=m
 # CONFIG_TEST_STACKINIT is not set
 # CONFIG_TEST_MEMINIT is not set
 # CONFIG_MEMTEST is not set
-# CONFIG_BUG_ON_DATA_CORRUPTION is not set
-# CONFIG_SAMPLES is not set
-CONFIG_HAVE_ARCH_KGDB=y
-# CONFIG_KGDB is not set
-CONFIG_ARCH_HAS_UBSAN_SANITIZE_ALL=y
-# CONFIG_UBSAN is not set
-CONFIG_UBSAN_ALIGNMENT=y
-CONFIG_ARCH_HAS_DEVMEM_IS_ALLOWED=y
-CONFIG_STRICT_DEVMEM=y
-# CONFIG_IO_STRICT_DEVMEM is not set
-CONFIG_TRACE_IRQFLAGS_SUPPORT=y
-CONFIG_EARLY_PRINTK_USB=y
-CONFIG_X86_VERBOSE_BOOTUP=y
-CONFIG_EARLY_PRINTK=y
-CONFIG_EARLY_PRINTK_DBGP=y
-# CONFIG_EARLY_PRINTK_USB_XDBC is not set
-# CONFIG_X86_PTDUMP is not set
-# CONFIG_EFI_PGT_DUMP is not set
-# CONFIG_DEBUG_WX is not set
-CONFIG_DOUBLEFAULT=y
-# CONFIG_DEBUG_TLBFLUSH is not set
-# CONFIG_IOMMU_DEBUG is not set
-CONFIG_HAVE_MMIOTRACE_SUPPORT=y
-CONFIG_X86_DECODER_SELFTEST=y
-CONFIG_IO_DELAY_0X80=y
-# CONFIG_IO_DELAY_0XED is not set
-# CONFIG_IO_DELAY_UDELAY is not set
-# CONFIG_IO_DELAY_NONE is not set
-CONFIG_DEBUG_BOOT_PARAMS=y
-# CONFIG_CPA_DEBUG is not set
-# CONFIG_DEBUG_ENTRY is not set
-# CONFIG_DEBUG_NMI_SELFTEST is not set
-CONFIG_X86_DEBUG_FPU=y
-# CONFIG_PUNIT_ATOM_DEBUG is not set
-CONFIG_UNWINDER_ORC=y
-# CONFIG_UNWINDER_FRAME_POINTER is not set
+# CONFIG_HYPERV_TESTING is not set
+# end of Kernel Testing and Coverage
 # end of Kernel hacking
 
---3iqGNvuhWAyawlAA
+--o9mtL5OVI48+DSkO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: attachment; filename=job-script
 
@@ -9002,75 +8436,64 @@ Content-Disposition: attachment; filename=job-script
 
 export_top_env()
 {
-	export suite='vm-scalability'
-	export testcase='vm-scalability'
-	export category='benchmark'
-	export runtime=300
-	export nr_task=8
-	export job_origin='/lkp/lkp/.src-20200606-204116/allot/cyclic:p1:linux-devel:devel-hourly/lkp-skl-2sp7/vm-scalability-swap-1ssd.yaml'
+	export suite='ltp'
+	export testcase='ltp'
+	export category='functional'
+	export need_modules=true
+	export need_memory='3G'
+	export job_origin='/lkp-src/allot/cyclic:p1:linux-devel:devel-hourly/vm-snb/ltp.yaml'
 	export queue_cmdline_keys='branch
 commit
 queue_at_least_once'
 	export queue='validate'
-	export testbox='lkp-skl-2sp7'
-	export tbox_group='lkp-skl-2sp7'
-	export submit_id='5ef47c2de936d117de154cdf'
-	export job_file='/lkp/jobs/scheduled/lkp-skl-2sp7/vm-scalability-performance-1-8-300-swap-w-rand-mt-always-always-ucode=0x2000065-debian-x86_64-20191114.cgz-b39d0ee2632d2f4fb180e-20200625-6110-cfplu9-3.yaml'
-	export id='ca34af8bcf4156a7decc91023806d5df4e176958'
-	export queuer_version='/lkp-src'
-	export model='Skylake-SP'
-	export nr_node=2
-	export nr_cpu=72
-	export memory='128G'
-	export nr_ssd_partitions=4
-	export ssd_partitions='/dev/disk/by-id/ata-INTEL_SSDSC2BG012T4_BTHC428202321P2OGN-part*'
-	export rootfs_partition='/dev/disk/by-id/ata-INTEL_SSDSC2BB800G4_CVWL34260041800RGN-part1'
-	export kernel_cmdline_hw='acpi_rsdp=0x6c030014'
-	export brand='Intel(R) Xeon(R) Gold 6139 CPU @ 2.30GHz'
-	export need_kconfig='CONFIG_BLK_DEV_SD
-CONFIG_SCSI
-CONFIG_BLOCK=y
-CONFIG_SATA_AHCI
-CONFIG_SATA_AHCI_PLATFORM
-CONFIG_ATA
-CONFIG_PCI=y
-CONFIG_SWAP
-CONFIG_MMU
-CONFIG_BLOCK
-CONFIG_BLK_DEV_LOOP'
-	export commit='b39d0ee2632d2f4fb180e8e4eba33736283f23de'
-	export ucode='0x2000065'
-	export need_kconfig_hw='CONFIG_I40E=y
-CONFIG_SATA_AHCI'
+	export testbox='vm-snb-49'
+	export tbox_group='vm-snb'
 	export kconfig='x86_64-rhel-7.6'
-	export compiler='gcc-9'
-	export enqueue_time='2020-06-25 18:27:57 +0800'
-	export _id='5ef47c31e936d117de154ce0'
-	export _rt='/result/vm-scalability/performance-1-8-300-swap-w-rand-mt-always-always-ucode=0x2000065/lkp-skl-2sp7/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/b39d0ee2632d2f4fb180e8e4eba33736283f23de'
+	export nr_vm=64
+	export submit_id='5ef60ed06b37832cece8c743'
+	export job_file='/lkp/jobs/scheduled/vm-snb-49/ltp-crypto-debian-x86_64-20191114.cgz-f3c802a1f30013f8f723b62d7fa49eb9e991da23-20200626-11500-1igjdse-3.yaml'
+	export id='56badd3b1a1b7142b0439dea1c3412f1ae5ba4ae'
+	export queuer_version='/lkp-src'
+	export model='qemu-system-x86_64 -enable-kvm -cpu SandyBridge'
+	export nr_cpu=2
+	export memory='16G'
+	export hdd_partitions='/dev/vda /dev/vdb /dev/vdc /dev/vdd /dev/vde /dev/vdf'
+	export swap_partitions='/dev/vdg'
+	export need_kconfig='CONFIG_BLK_DEV_LOOP
+CONFIG_CAN=m
+CONFIG_CAN_RAW=m
+CONFIG_CAN_VCAN=m
+CONFIG_IPV6_VTI=m
+CONFIG_MINIX_FS=m
+CONFIG_KVM_GUEST=y'
+	export commit='f3c802a1f30013f8f723b62d7fa49eb9e991da23'
+	export ssh_base_port=23032
+	export enqueue_time='2020-06-26 23:05:52 +0800'
+	export _id='5ef60ed66b37832cece8c744'
+	export _rt='/result/ltp/crypto/vm-snb/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/f3c802a1f30013f8f723b62d7fa49eb9e991da23'
 	export user='lkp'
-	export head_commit='871fcc4728a136f516a74d9a8ade1248ed612e77'
-	export base_commit='3d77e6a8804abcc0504c904bd6e5cdf3a5cf8162'
-	export branch='linus/master'
+	export compiler='gcc-9'
+	export head_commit='143b8c6586e3f40fc98a58417f8008a30137fadf'
+	export base_commit='48778464bb7d346b47157d21ffde2af6b2d39110'
+	export branch='linux-devel/devel-hourly-2020062612'
 	export rootfs='debian-x86_64-20191114.cgz'
-	export result_root='/result/vm-scalability/performance-1-8-300-swap-w-rand-mt-always-always-ucode=0x2000065/lkp-skl-2sp7/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/b39d0ee2632d2f4fb180e8e4eba33736283f23de/3'
+	export result_root='/result/ltp/crypto/vm-snb/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/f3c802a1f30013f8f723b62d7fa49eb9e991da23/3'
 	export scheduler_version='/lkp/lkp/.src-20200624-221724'
 	export LKP_SERVER='inn'
 	export arch='x86_64'
-	export max_uptime=1500
+	export max_uptime=3600
 	export initrd='/osimage/debian/debian-x86_64-20191114.cgz'
 	export bootloader_append='root=/dev/ram0
 user=lkp
-job=/lkp/jobs/scheduled/lkp-skl-2sp7/vm-scalability-performance-1-8-300-swap-w-rand-mt-always-always-ucode=0x2000065-debian-x86_64-20191114.cgz-b39d0ee2632d2f4fb180e-20200625-6110-cfplu9-3.yaml
+job=/lkp/jobs/scheduled/vm-snb-49/ltp-crypto-debian-x86_64-20191114.cgz-f3c802a1f30013f8f723b62d7fa49eb9e991da23-20200626-11500-1igjdse-3.yaml
 ARCH=x86_64
 kconfig=x86_64-rhel-7.6
-branch=linus/master
-commit=b39d0ee2632d2f4fb180e8e4eba33736283f23de
-BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-9/b39d0ee2632d2f4fb180e8e4eba33736283f23de/vmlinuz-5.3.0-00003-gb39d0ee2632d2
-acpi_rsdp=0x6c030014
-max_uptime=1500
-RESULT_ROOT=/result/vm-scalability/performance-1-8-300-swap-w-rand-mt-always-always-ucode=0x2000065/lkp-skl-2sp7/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/b39d0ee2632d2f4fb180e8e4eba33736283f23de/3
+branch=linux-devel/devel-hourly-2020062612
+commit=f3c802a1f30013f8f723b62d7fa49eb9e991da23
+BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-9/f3c802a1f30013f8f723b62d7fa49eb9e991da23/vmlinuz-5.8.0-rc1-00012-gf3c802a1f30013
+max_uptime=3600
+RESULT_ROOT=/result/ltp/crypto/vm-snb/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/f3c802a1f30013f8f723b62d7fa49eb9e991da23/3
 LKP_SERVER=inn
-nokaslr
 selinux=0
 debug
 apic=debug
@@ -9092,20 +8515,18 @@ earlyprintk=ttyS0,115200
 console=ttyS0,115200
 vga=normal
 rw'
-	export modules_initrd='/pkg/linux/x86_64-rhel-7.6/gcc-9/b39d0ee2632d2f4fb180e8e4eba33736283f23de/modules.cgz'
-	export bm_initrd='/osimage/deps/debian-x86_64-20180403.cgz/run-ipconfig_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/lkp_2019-08-05.cgz,/osimage/deps/debian-x86_64-20180403.cgz/rsync-rootfs_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/perf_20200325.cgz,/osimage/pkg/debian-x86_64-20180403.cgz/perf-x86_64-3e08a95294a4-1_20200624.cgz,/osimage/deps/debian-x86_64-20180403.cgz/vm-scalability_2020-01-07.cgz,/osimage/pkg/debian-x86_64-20180403.cgz/vm-scalability-x86_64-1.0-0_2020-01-07.cgz,/osimage/pkg/common/vm-scalability-x86_64.cgz,/osimage/deps/debian-x86_64-20180403.cgz/mpstat_2020-01-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/vmstat_2020-01-07.cgz,/osimage/pkg/debian-x86_64-20180403.cgz/sar-x86_64-e011d97-1_2020-01-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/hw_2020-01-02.cgz'
-	export ucode_initrd='/osimage/ucode/intel-ucode-20191114.cgz'
+	export modules_initrd='/pkg/linux/x86_64-rhel-7.6/gcc-9/f3c802a1f30013f8f723b62d7fa49eb9e991da23/modules.cgz'
+	export bm_initrd='/osimage/deps/debian-x86_64-20180403.cgz/run-ipconfig_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/lkp_2019-08-05.cgz,/osimage/deps/debian-x86_64-20180403.cgz/rsync-rootfs_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/ltp_20200528.cgz,/osimage/pkg/debian-x86_64-20180403.cgz/ltp-x86_64-14c1f76-1_20200618.cgz'
 	export lkp_initrd='/osimage/user/lkp/lkp-x86_64.cgz'
 	export site='inn'
 	export LKP_CGI_PORT=80
 	export LKP_CIFS_PORT=139
-	export last_kernel='5.7.0'
 	export repeat_to=4
 	export schedule_notify_address=
 	export queue_at_least_once=1
-	export kernel='/pkg/linux/x86_64-rhel-7.6/gcc-9/b39d0ee2632d2f4fb180e8e4eba33736283f23de/vmlinuz-5.3.0-00003-gb39d0ee2632d2'
-	export dequeue_time='2020-06-25 18:38:44 +0800'
-	export job_initrd='/lkp/jobs/scheduled/lkp-skl-2sp7/vm-scalability-performance-1-8-300-swap-w-rand-mt-always-always-ucode=0x2000065-debian-x86_64-20191114.cgz-b39d0ee2632d2f4fb180e-20200625-6110-cfplu9-3.cgz'
+	export kernel='/pkg/linux/x86_64-rhel-7.6/gcc-9/f3c802a1f30013f8f723b62d7fa49eb9e991da23/vmlinuz-5.8.0-rc1-00012-gf3c802a1f30013'
+	export dequeue_time='2020-06-26 23:06:25 +0800'
+	export job_initrd='/lkp/jobs/scheduled/vm-snb-49/ltp-crypto-debian-x86_64-20191114.cgz-f3c802a1f30013f8f723b62d7fa49eb9e991da23-20200626-11500-1igjdse-3.cgz'
 
 	[ -n "$LKP_SRC" ] ||
 	export LKP_SRC=/lkp/${user:-lkp}/src
@@ -9121,43 +8542,13 @@ run_job()
 
 	export_top_env
 
-	run_setup thp_enabled='always' thp_defrag='always' $LKP_SRC/setup/transparent_hugepage
-
-	run_setup nr_ssd=1 $LKP_SRC/setup/disk
-
-	run_setup $LKP_SRC/setup/swap
-
-	run_setup $LKP_SRC/setup/cpufreq_governor 'performance'
-
-	run_monitor delay=90 $LKP_SRC/monitors/no-stdout/wrapper perf-profile
 	run_monitor $LKP_SRC/monitors/wrapper kmsg
-	run_monitor $LKP_SRC/monitors/no-stdout/wrapper boot-time
-	run_monitor $LKP_SRC/monitors/wrapper iostat
 	run_monitor $LKP_SRC/monitors/wrapper heartbeat
-	run_monitor $LKP_SRC/monitors/wrapper vmstat
-	run_monitor $LKP_SRC/monitors/wrapper numa-numastat
-	run_monitor $LKP_SRC/monitors/wrapper numa-vmstat
-	run_monitor $LKP_SRC/monitors/wrapper numa-meminfo
-	run_monitor $LKP_SRC/monitors/wrapper proc-vmstat
-	run_monitor $LKP_SRC/monitors/wrapper proc-stat
 	run_monitor $LKP_SRC/monitors/wrapper meminfo
-	run_monitor $LKP_SRC/monitors/wrapper slabinfo
-	run_monitor $LKP_SRC/monitors/wrapper interrupts
-	run_monitor $LKP_SRC/monitors/wrapper lock_stat
-	run_monitor $LKP_SRC/monitors/wrapper latency_stats
-	run_monitor $LKP_SRC/monitors/wrapper softirqs
-	run_monitor $LKP_SRC/monitors/one-shot/wrapper bdi_dev_mapping
-	run_monitor $LKP_SRC/monitors/wrapper diskstats
-	run_monitor $LKP_SRC/monitors/wrapper nfsstat
-	run_monitor $LKP_SRC/monitors/wrapper cpuidle
-	run_monitor $LKP_SRC/monitors/wrapper cpufreq-stats
-	run_monitor $LKP_SRC/monitors/wrapper sched_debug
-	run_monitor $LKP_SRC/monitors/wrapper perf-stat
-	run_monitor $LKP_SRC/monitors/wrapper mpstat
 	run_monitor $LKP_SRC/monitors/wrapper oom-killer
 	run_monitor $LKP_SRC/monitors/plain/watchdog
 
-	run_test test='swap-w-rand-mt' $LKP_SRC/tests/wrapper vm-scalability
+	run_test test='crypto' $LKP_SRC/tests/wrapper ltp
 }
 
 extract_stats()
@@ -9165,30 +8556,11 @@ extract_stats()
 	export stats_part_begin=
 	export stats_part_end=
 
-	$LKP_SRC/stats/wrapper perf-profile
-	$LKP_SRC/stats/wrapper vm-scalability
+	$LKP_SRC/stats/wrapper ltp
 	$LKP_SRC/stats/wrapper kmsg
-	$LKP_SRC/stats/wrapper boot-time
-	$LKP_SRC/stats/wrapper iostat
-	$LKP_SRC/stats/wrapper vmstat
-	$LKP_SRC/stats/wrapper numa-numastat
-	$LKP_SRC/stats/wrapper numa-vmstat
-	$LKP_SRC/stats/wrapper numa-meminfo
-	$LKP_SRC/stats/wrapper proc-vmstat
 	$LKP_SRC/stats/wrapper meminfo
-	$LKP_SRC/stats/wrapper slabinfo
-	$LKP_SRC/stats/wrapper interrupts
-	$LKP_SRC/stats/wrapper lock_stat
-	$LKP_SRC/stats/wrapper latency_stats
-	$LKP_SRC/stats/wrapper softirqs
-	$LKP_SRC/stats/wrapper diskstats
-	$LKP_SRC/stats/wrapper nfsstat
-	$LKP_SRC/stats/wrapper cpuidle
-	$LKP_SRC/stats/wrapper sched_debug
-	$LKP_SRC/stats/wrapper perf-stat
-	$LKP_SRC/stats/wrapper mpstat
 
-	$LKP_SRC/stats/wrapper time vm-scalability.time
+	$LKP_SRC/stats/wrapper time ltp.time
 	$LKP_SRC/stats/wrapper dmesg
 	$LKP_SRC/stats/wrapper kmsg
 	$LKP_SRC/stats/wrapper last_state
@@ -9198,223 +8570,732 @@ extract_stats()
 
 "$@"
 
---3iqGNvuhWAyawlAA
+--o9mtL5OVI48+DSkO
+Content-Type: application/x-xz
+Content-Disposition: attachment; filename="dmesg.xz"
+Content-Transfer-Encoding: base64
+
+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
+AAAABFla
+
+--o9mtL5OVI48+DSkO
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="job.yaml"
+Content-Disposition: attachment; filename=ltp
 
----
+2020-06-26 23:07:25 ln -sf /usr/bin/genisoimage /usr/bin/mkisofs
+2020-06-26 23:07:25 ./runltp -f crypto
+INFO: creating /lkp/benchmarks/ltp/output directory
+INFO: creating /lkp/benchmarks/ltp/results directory
+Checking for required user/group ids
 
-#! jobs/vm-scalability-swap-1ssd.yaml
-suite: vm-scalability
-testcase: vm-scalability
-category: benchmark
-runtime: 300
-transparent_hugepage:
-  thp_enabled: always
-  thp_defrag: always
-nr_task: 8
-disk:
-  nr_ssd: 1
-swap: 
-perf-profile:
-  delay: 90
-vm-scalability:
-  test: swap-w-rand-mt
-job_origin: "/lkp/lkp/.src-20200606-204116/allot/cyclic:p1:linux-devel:devel-hourly/lkp-skl-2sp7/vm-scalability-swap-1ssd.yaml"
+'nobody' user id and group found.
+'bin' user id and group found.
+'daemon' user id and group found.
+Users group found.
+Sys group found.
+Required users/groups exist.
+If some fields are empty or look unusual you may have an old version.
+Compare to the current minimal requirements in Documentation/Changes.
 
-#! queue options
-queue_cmdline_keys:
-- branch
-- commit
-- queue_at_least_once
-queue: bisect
-testbox: lkp-skl-2sp7
-tbox_group: lkp-skl-2sp7
-submit_id: 5ef46ebee936d116f2619c2f
-job_file: "/lkp/jobs/scheduled/lkp-skl-2sp7/vm-scalability-performance-1-8-300-swap-w-rand-mt-always-always-ucode=0x2000065-debian-x86_64-20191114.cgz-b39d0ee2632d2f4fb180e-20200625-5874-1hzb52z-0.yaml"
-id: a8f0ef9a44e523a5fa387cef1082cc549587ee21
-queuer_version: "/lkp-src"
+/etc/os-release
+PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
+NAME="Debian GNU/Linux"
+VERSION_ID="9"
+VERSION="9 (stretch)"
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
 
-#! hosts/lkp-skl-2sp7
-model: Skylake-SP
-nr_node: 2
-nr_cpu: 72
-memory: 128G
-nr_ssd_partitions: 4
-ssd_partitions: "/dev/disk/by-id/ata-INTEL_SSDSC2BG012T4_BTHC428202321P2OGN-part*"
-rootfs_partition: "/dev/disk/by-id/ata-INTEL_SSDSC2BB800G4_CVWL34260041800RGN-part1"
-kernel_cmdline_hw: acpi_rsdp=0x6c030014
-brand: Intel(R) Xeon(R) Gold 6139 CPU @ 2.30GHz
+uname:
+Linux vm-snb-49 5.8.0-rc1-00012-gf3c802a1f30013 #1 SMP Fri Jun 26 22:38:35 CST 2020 x86_64 GNU/Linux
 
-#! include/category/benchmark
-kmsg: 
-boot-time: 
-iostat: 
-heartbeat: 
-vmstat: 
-numa-numastat: 
-numa-vmstat: 
-numa-meminfo: 
-proc-vmstat: 
-proc-stat: 
-meminfo: 
-slabinfo: 
-interrupts: 
-lock_stat: 
-latency_stats: 
-softirqs: 
-bdi_dev_mapping: 
-diskstats: 
-nfsstat: 
-cpuidle: 
-cpufreq-stats: 
-sched_debug: 
-perf-stat: 
-mpstat: 
+/proc/cmdline
+ip=::::vm-snb-49::dhcp root=/dev/ram0 user=lkp job=/lkp/jobs/scheduled/vm-snb-49/ltp-crypto-debian-x86_64-20191114.cgz-f3c802a1f30013f8f723b62d7fa49eb9e991da23-20200626-11500-1igjdse-3.yaml ARCH=x86_64 kconfig=x86_64-rhel-7.6 branch=linux-devel/devel-hourly-2020062612 commit=f3c802a1f30013f8f723b62d7fa49eb9e991da23 BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-9/f3c802a1f30013f8f723b62d7fa49eb9e991da23/vmlinuz-5.8.0-rc1-00012-gf3c802a1f30013 max_uptime=3600 RESULT_ROOT=/result/ltp/crypto/vm-snb/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/f3c802a1f30013f8f723b62d7fa49eb9e991da23/3 LKP_SERVER=inn selinux=0 debug apic=debug sysrq_always_enabled rcupdate.rcu_cpu_stall_timeout=100 net.ifnames=0 printk.devkmsg=on panic=-1 softlockup_panic=1 nmi_watchdog=panic oops=panic load_ramdisk=2 prompt_ramdisk=0 drbd.minor_count=8 systemd.log_level=err ignore_loglevel console=tty0 earlyprintk=ttyS0,115200 console=ttyS0,115200 vga=normal rw rcuperf.shutdown=0 watchdog_thresh=60
 
-#! include/category/ALL
-cpufreq_governor: performance
+Gnu C                  gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516
+Clang                 
+Gnu make               4.1
+util-linux             2.29.2
+mount                  linux 2.29.2 (libmount 2.29.2: selinux, btrfs, assert, debug)
+modutils               23
+e2fsprogs              1.43.4
+Linux C Library        > libc.2.24
+Dynamic linker (ldd)   2.24
+Procps                 3.3.12
+Net-tools              2.10-alpha
+iproute2               iproute2-ss161212
+iputils                iputils-s20161105
+ethtool                4.8
+Kbd                    119:
+Sh-utils               8.26
+Modules Loaded         bochs_drm drm_vram_helper drm_ttm_helper intel_rapl_msr ttm intel_rapl_common crct10dif_pclmul crc32_pclmul crc32c_intel drm_kms_helper ghash_clmulni_intel snd_pcm snd_timer sr_mod cdrom syscopyarea sg snd sysfillrect ppdev sysimgblt ata_generic pata_acpi fb_sys_fops soundcore aesni_intel crypto_simd cryptd glue_helper pcspkr joydev serio_raw ata_piix drm libata i2c_piix4 parport_pc parport floppy ip_tables
 
-#! include/disk/nr_ssd
-need_kconfig:
-- CONFIG_BLK_DEV_SD
-- CONFIG_SCSI
-- CONFIG_BLOCK=y
-- CONFIG_SATA_AHCI
-- CONFIG_SATA_AHCI_PLATFORM
-- CONFIG_ATA
-- CONFIG_PCI=y
-- CONFIG_SWAP
-- CONFIG_MMU
-- CONFIG_BLOCK
-- CONFIG_BLK_DEV_LOOP
+free reports:
+              total        used        free      shared  buff/cache   available
+Mem:        8149036      272072     5475768       11660     2401196     5365236
+Swap:             0           0           0
 
-#! include/swap
+cpuinfo:
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                2
+On-line CPU(s) list:   0,1
+Thread(s) per core:    1
+Core(s) per socket:    1
+Socket(s):             2
+NUMA node(s):          1
+Vendor ID:             GenuineIntel
+CPU family:            6
+Model:                 42
+Model name:            Intel Xeon E312xx (Sandy Bridge)
+Stepping:              1
+CPU MHz:               2693.508
+BogoMIPS:              5387.01
+Hypervisor vendor:     KVM
+Virtualization type:   full
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              4096K
+L3 cache:              16384K
+NUMA node0 CPU(s):     0,1
+Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx rdtscp lm constant_tsc rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq ssse3 cx16 sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx hypervisor lahf_lm cpuid_fault pti xsaveopt arat
 
-#! include/vm-scalability
+AppArmor enabled
 
-#! include/queue/cyclic
-commit: b39d0ee2632d2f4fb180e8e4eba33736283f23de
+SELinux mode: unknown
+no big block device was specified on commandline.
+Tests which require a big block device are disabled.
+You can specify it with option -z
+COMMAND:    /lkp/benchmarks/ltp/bin/ltp-pan   -e -S   -a 2105     -n 2105 -p -f /tmp/ltp-BazDPrdVV0/alltests -l /lkp/benchmarks/ltp/results/LTP_RUN_ON-2020_06_26-23h_07m_25s.log  -C /lkp/benchmarks/ltp/output/LTP_RUN_ON-2020_06_26-23h_07m_25s.failed -T /lkp/benchmarks/ltp/output/LTP_RUN_ON-2020_06_26-23h_07m_25s.tconf
+LOG File: /lkp/benchmarks/ltp/results/LTP_RUN_ON-2020_06_26-23h_07m_25s.log
+FAILED COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2020_06_26-23h_07m_25s.failed
+TCONF COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2020_06_26-23h_07m_25s.tconf
+Running tests.......
+<<<test_start>>>
+tag=af_alg01 stime=1593184046
+cmdline="af_alg01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+af_alg01.c:57: PASS: couldn't instantiate nested hmac algorithm ('hmac(hmac(md5))')
+af_alg01.c:57: PASS: couldn't instantiate nested hmac algorithm ('hmac(hmac(md5-generic))')
+af_alg01.c:57: PASS: couldn't instantiate nested hmac algorithm ('hmac(hmac(sha1))')
+af_alg01.c:57: PASS: couldn't instantiate nested hmac algorithm ('hmac(hmac(sha1-generic))')
+af_alg01.c:57: PASS: couldn't instantiate nested hmac algorithm ('hmac(hmac(sha224))')
+af_alg01.c:57: PASS: couldn't instantiate nested hmac algorithm ('hmac(hmac(sha224-generic))')
+af_alg01.c:57: PASS: couldn't instantiate nested hmac algorithm ('hmac(hmac(sha256))')
+af_alg01.c:57: PASS: couldn't instantiate nested hmac algorithm ('hmac(hmac(sha256-generic))')
+af_alg01.c:26: CONF: kernel doesn't have hash algorithm 'sha3-256'
+af_alg01.c:26: CONF: kernel doesn't have hash algorithm 'sha3-256-generic'
+af_alg01.c:26: CONF: kernel doesn't have hash algorithm 'sha3-512'
+af_alg01.c:26: CONF: kernel doesn't have hash algorithm 'sha3-512-generic'
 
-#! include/testbox/lkp-skl-2sp7
-ucode: '0x2000065'
-need_kconfig_hw:
-- CONFIG_I40E=y
-- CONFIG_SATA_AHCI
+Summary:
+passed   8
+failed   0
+skipped  4
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=af_alg02 stime=1593184046
+cmdline="af_alg02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 00m 20s
+af_alg02.c:52: BROK: Timed out while reading from request socket.
 
-#! default params
-kconfig: x86_64-rhel-7.6
-compiler: gcc-9
-enqueue_time: 2020-06-25 17:30:38.700662679 +08:00
-_id: 5ef46ebee936d116f2619c2f
-_rt: "/result/vm-scalability/performance-1-8-300-swap-w-rand-mt-always-always-ucode=0x2000065/lkp-skl-2sp7/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/b39d0ee2632d2f4fb180e8e4eba33736283f23de"
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=10 termination_type=exited termination_id=2 corefile=no
+cutime=7 cstime=10
+<<<test_end>>>
+<<<test_start>>>
+tag=af_alg03 stime=1593184056
+cmdline="af_alg03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_af_alg.c:32: CONF: kernel doesn't support aead algorithm 'rfc7539(chacha20,poly1305)'
 
-#! schedule options
-user: lkp
-head_commit: 871fcc4728a136f516a74d9a8ade1248ed612e77
-base_commit: 3d77e6a8804abcc0504c904bd6e5cdf3a5cf8162
-branch: linus/master
-rootfs: debian-x86_64-20191114.cgz
-result_root: "/result/vm-scalability/performance-1-8-300-swap-w-rand-mt-always-always-ucode=0x2000065/lkp-skl-2sp7/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/b39d0ee2632d2f4fb180e8e4eba33736283f23de/0"
-scheduler_version: "/lkp/lkp/.src-20200624-221724"
-LKP_SERVER: inn
-arch: x86_64
-max_uptime: 1500
-initrd: "/osimage/debian/debian-x86_64-20191114.cgz"
-bootloader_append:
-- root=/dev/ram0
-- user=lkp
-- job=/lkp/jobs/scheduled/lkp-skl-2sp7/vm-scalability-performance-1-8-300-swap-w-rand-mt-always-always-ucode=0x2000065-debian-x86_64-20191114.cgz-b39d0ee2632d2f4fb180e-20200625-5874-1hzb52z-0.yaml
-- ARCH=x86_64
-- kconfig=x86_64-rhel-7.6
-- branch=linus/master
-- commit=b39d0ee2632d2f4fb180e8e4eba33736283f23de
-- BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-9/b39d0ee2632d2f4fb180e8e4eba33736283f23de/vmlinuz-5.3.0-00003-gb39d0ee2632d2
-- acpi_rsdp=0x6c030014
-- max_uptime=1500
-- RESULT_ROOT=/result/vm-scalability/performance-1-8-300-swap-w-rand-mt-always-always-ucode=0x2000065/lkp-skl-2sp7/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/b39d0ee2632d2f4fb180e8e4eba33736283f23de/0
-- LKP_SERVER=inn
-- nokaslr
-- selinux=0
-- debug
-- apic=debug
-- sysrq_always_enabled
-- rcupdate.rcu_cpu_stall_timeout=100
-- net.ifnames=0
-- printk.devkmsg=on
-- panic=-1
-- softlockup_panic=1
-- nmi_watchdog=panic
-- oops=panic
-- load_ramdisk=2
-- prompt_ramdisk=0
-- drbd.minor_count=8
-- systemd.log_level=err
-- ignore_loglevel
-- console=tty0
-- earlyprintk=ttyS0,115200
-- console=ttyS0,115200
-- vga=normal
-- rw
-modules_initrd: "/pkg/linux/x86_64-rhel-7.6/gcc-9/b39d0ee2632d2f4fb180e8e4eba33736283f23de/modules.cgz"
-bm_initrd: "/osimage/deps/debian-x86_64-20180403.cgz/run-ipconfig_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/lkp_2019-08-05.cgz,/osimage/deps/debian-x86_64-20180403.cgz/rsync-rootfs_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/perf_20200325.cgz,/osimage/pkg/debian-x86_64-20180403.cgz/perf-x86_64-3e08a95294a4-1_20200624.cgz,/osimage/deps/debian-x86_64-20180403.cgz/vm-scalability_2020-01-07.cgz,/osimage/pkg/debian-x86_64-20180403.cgz/vm-scalability-x86_64-1.0-0_2020-01-07.cgz,/osimage/pkg/common/vm-scalability-x86_64.cgz,/osimage/deps/debian-x86_64-20180403.cgz/mpstat_2020-01-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/vmstat_2020-01-07.cgz,/osimage/pkg/debian-x86_64-20180403.cgz/sar-x86_64-e011d97-1_2020-01-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/hw_2020-01-02.cgz"
-ucode_initrd: "/osimage/ucode/intel-ucode-20191114.cgz"
-lkp_initrd: "/osimage/user/lkp/lkp-x86_64.cgz"
-site: inn
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=1 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=af_alg04 stime=1593184056
+cmdline="af_alg04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+af_alg04.c:31: INFO: Starting vmac hashing test.  May crash buggy kernels.
+af_alg04.c:45: PASS: didn't crash
 
-#! /lkp/lkp/.src-20200608-181348/include/site/inn
-LKP_CGI_PORT: 80
-LKP_CIFS_PORT: 139
-oom-killer: 
-watchdog: 
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=2 termination_type=exited termination_id=0 corefile=no
+cutime=44 cstime=187
+<<<test_end>>>
+<<<test_start>>>
+tag=af_alg05 stime=1593184058
+cmdline="af_alg05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+Test timeouted, sending SIGKILL!
+tst_test.c:1287: INFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+tst_test.c:1288: BROK: Test killed! (timeout?)
 
-#! runtime status
-last_kernel: 4.20.0
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=300 termination_type=exited termination_id=2 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=af_alg06 stime=1593184358
+cmdline="af_alg06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_af_alg.c:32: CONF: kernel doesn't support aead algorithm 'authenc(hmac(sha256),cbc(aes))'
 
-#! /lkp/lkp/.src-20200609-235012/include/site/inn
-repeat_to: 2
-schedule_notify_address: 
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=pcrypt_aead01 stime=1593184358
+cmdline="pcrypt_aead01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+pcrypt_aead01.c:65: PASS: Nothing bad appears to have happened
 
-#! user overrides
-queue_at_least_once: 0
-kernel: "/pkg/linux/x86_64-rhel-7.6/gcc-9/b39d0ee2632d2f4fb180e8e4eba33736283f23de/vmlinuz-5.3.0-00003-gb39d0ee2632d2"
-dequeue_time: 2020-06-25 18:06:17.144744537 +08:00
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=2 termination_type=exited termination_id=0 corefile=no
+cutime=4 cstime=43
+<<<test_end>>>
+<<<test_start>>>
+tag=crypto_user01 stime=1593184360
+cmdline="crypto_user01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+crypto_user01.c:183: PASS: No information leaks found
 
-#! /lkp/lkp/.src-20200624-221724/include/site/inn
-job_state: OOM
-loadavg: 10.80 3.66 1.30 1/701 3393
-start_time: '1593079622'
-end_time: '1593079686'
-version: "/lkp/lkp/.src-20200624-221758:2538e288:35bee5160"
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=crypto_user02 stime=1593184360
+cmdline="crypto_user02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+crypto_user02.c:59: INFO: Starting crypto_user larval deletion test.  May crash buggy kernels.
+crypto_user02.c:94: PASS: didn't crash
 
---3iqGNvuhWAyawlAA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=reproduce
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+incrementing stop
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=9 cstime=23
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: 20200515-54-ga6607b81b
 
-echo 'always' > /sys/kernel/mm/transparent_hugepage/enabled
-echo 'always' > /sys/kernel/mm/transparent_hugepage/defrag
-swapoff -a
-mkswap /dev/sdc1
-swapon /dev/sdc1
+       ###############################################################
 
-for cpu_dir in /sys/devices/system/cpu/cpu[0-9]*
-do
-	online_file="$cpu_dir"/online
-	[ -f "$online_file" ] && [ "$(cat "$online_file")" -eq 0 ] && continue
+            Done executing testcases.
+            LTP Version:  20200515-54-ga6607b81b
+       ###############################################################
 
-	file="$cpu_dir"/cpufreq/scaling_governor
-	[ -f "$file" ] && echo "performance" > "$file"
-done
 
-cd /lkp/benchmarks/vm-scalability
- mount -t tmpfs -o size=100% vm-scalability-tmp /tmp/vm-scalability-tmp
- truncate -s 134853681152 /tmp/vm-scalability-tmp/vm-scalability.img
- mkfs.xfs -q /tmp/vm-scalability-tmp/vm-scalability.img
- mount -o loop /tmp/vm-scalability-tmp/vm-scalability.img /tmp/vm-scalability-tmp/vm-scalability
- ./case-swap-w-rand-mt
- ./usemem --runtime 300 -t 8 --random 40497387264
- umount /tmp/vm-scalability-tmp/vm-scalability
- rm /tmp/vm-scalability-tmp/vm-scalability.img
- umount /tmp/vm-scalability-tmp
-
---3iqGNvuhWAyawlAA--
+--o9mtL5OVI48+DSkO--
