@@ -2,201 +2,535 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211E020BF4C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 09:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7BF20BF53
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 09:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726322AbgF0HSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 03:18:15 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:49640 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726131AbgF0HSN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 03:18:13 -0400
-Received: by mail-io1-f72.google.com with SMTP id d20so7786676iom.16
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 00:18:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=11Wf+73coqv1W4WTS3Nhb3hN1AVynvw9VaW2mbtvR5g=;
-        b=Kicka2yogebS7uhYPXzADl/GkO/Rvhku1yhGAgJehHqHEtqdC8kRalkKuHAYkbJbD4
-         rGvrfI2GBd55KaNEzlqisZeZPoiOc/GJl6Mwm6qXZd4aiInHcSxijVe6HKQ0zquU5+8/
-         xlzioN2vj5ak9IxfaYbgNpUxoLqlGrSYJwmQhfd2acOTSNbPzD1YqOtLZEkzwAf+fEZP
-         Z/5oCT+GN6ZYmHD+W8yZ3JqAAboUVdm6S8fTibz4Ppef/iLk6a3vn0BVyFg/e4o2lfZO
-         HjdP2NYCQKIs3Clyl/8O2nCB1Qs+VrMizK3ZeE/PAL+AoX92LjOKvRHV3eeE6RcPfa/M
-         tw3w==
-X-Gm-Message-State: AOAM5301S3UNnPEB5fm0lRjbLAFnxrQifMex+N9AMHuCANkt9wPcw8LX
-        iYrjVNWUv6GEUrgrDcvU7MnYZGEAIDBexNUFaREGovS8rCtG
-X-Google-Smtp-Source: ABdhPJw5LSGIq4ROdhLXaoi25yTEnEa+GdURV6shHXHe1YuOnW9XRvai8vx9j21UMI9BLbYmJHUyNMPijBorUpHRR70e19n0hk+i
+        id S1726345AbgF0HTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 03:19:13 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:59605 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725926AbgF0HTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 03:19:12 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49v4qS6JbBz9tyWF;
+        Sat, 27 Jun 2020 09:18:44 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id R0Xe0WEpH3V0; Sat, 27 Jun 2020 09:18:44 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49v4qS4vSnz9tyWD;
+        Sat, 27 Jun 2020 09:18:44 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E336F8B772;
+        Sat, 27 Jun 2020 09:18:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id t5lVUH5_v1hK; Sat, 27 Jun 2020 09:18:45 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 483478B75B;
+        Sat, 27 Jun 2020 09:18:43 +0200 (CEST)
+Subject: Re: [PATCH V3 2/4] mm/debug_vm_pgtable: Add tests validating advanced
+ arch page table helpers
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     christophe.leroy@c-s.fr, ziy@nvidia.com,
+        gerald.schaefer@de.ibm.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1592192277-8421-1-git-send-email-anshuman.khandual@arm.com>
+ <1592192277-8421-3-git-send-email-anshuman.khandual@arm.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <6da177e6-9219-9ccf-a402-f4293c7564f7@csgroup.eu>
+Date:   Sat, 27 Jun 2020 09:18:41 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:6c0f:: with SMTP id h15mr6805940ilc.210.1593242292532;
- Sat, 27 Jun 2020 00:18:12 -0700 (PDT)
-Date:   Sat, 27 Jun 2020 00:18:12 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e33c8905a90ba06f@google.com>
-Subject: KASAN: slab-out-of-bounds Read in decode_session6
-From:   syzbot <syzbot+2bcc71839223ec82f056@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1592192277-8421-3-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    b835a71e usbnet: smsc95xx: Fix use-after-free after removal
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=1565a5fd100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dcc6334acae363d4
-dashboard link: https://syzkaller.appspot.com/bug?extid=2bcc71839223ec82f056
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+2bcc71839223ec82f056@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-out-of-bounds in decode_session6+0xe7c/0x1580 net/xfrm/xfrm_policy.c:3389
-Read of size 1 at addr ffff88809edddd50 by task syz-executor.5/2845
-
-CPU: 1 PID: 2845 Comm: syz-executor.5 Not tainted 5.8.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x436 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- decode_session6+0xe7c/0x1580 net/xfrm/xfrm_policy.c:3389
- __xfrm_decode_session+0x50/0xb0 net/xfrm/xfrm_policy.c:3481
- xfrm_decode_session_reverse include/net/xfrm.h:1141 [inline]
- icmpv6_route_lookup+0x304/0x470 net/ipv6/icmp.c:388
- icmp6_send+0x1327/0x26b0 net/ipv6/icmp.c:588
- icmpv6_send+0xde/0x210 net/ipv6/ip6_icmp.c:43
- ip6_link_failure+0x26/0x500 net/ipv6/route.c:2665
- dst_link_failure include/net/dst.h:418 [inline]
- ipip6_tunnel_xmit net/ipv6/sit.c:1042 [inline]
- sit_tunnel_xmit+0x1919/0x29d0 net/ipv6/sit.c:1079
- __netdev_start_xmit include/linux/netdevice.h:4611 [inline]
- netdev_start_xmit include/linux/netdevice.h:4625 [inline]
- xmit_one net/core/dev.c:3556 [inline]
- dev_hard_start_xmit+0x193/0x950 net/core/dev.c:3572
- sch_direct_xmit+0x2ea/0xc00 net/sched/sch_generic.c:313
- qdisc_restart net/sched/sch_generic.c:376 [inline]
- __qdisc_run+0x4b9/0x1630 net/sched/sch_generic.c:384
- __dev_xmit_skb net/core/dev.c:3795 [inline]
- __dev_queue_xmit+0x1995/0x2d60 net/core/dev.c:4100
- neigh_output include/net/neighbour.h:509 [inline]
- ip6_finish_output2+0x8b6/0x17b0 net/ipv6/ip6_output.c:117
- __ip6_finish_output net/ipv6/ip6_output.c:143 [inline]
- __ip6_finish_output+0x447/0xab0 net/ipv6/ip6_output.c:128
- ip6_finish_output+0x34/0x1f0 net/ipv6/ip6_output.c:153
- NF_HOOK_COND include/linux/netfilter.h:296 [inline]
- ip6_output+0x1db/0x520 net/ipv6/ip6_output.c:176
- dst_output include/net/dst.h:435 [inline]
- NF_HOOK include/linux/netfilter.h:307 [inline]
- NF_HOOK include/linux/netfilter.h:301 [inline]
- ip6_xmit+0x1258/0x1e80 net/ipv6/ip6_output.c:280
- sctp_v6_xmit+0x339/0x650 net/sctp/ipv6.c:217
- sctp_packet_transmit+0x20d7/0x3240 net/sctp/output.c:629
- sctp_packet_singleton net/sctp/outqueue.c:773 [inline]
- sctp_outq_flush_ctrl.constprop.0+0x6d3/0xc40 net/sctp/outqueue.c:904
- sctp_outq_flush+0xfb/0x2380 net/sctp/outqueue.c:1186
- sctp_cmd_interpreter net/sctp/sm_sideeffect.c:1801 [inline]
- sctp_side_effects net/sctp/sm_sideeffect.c:1185 [inline]
- sctp_do_sm+0x4d0/0x4d80 net/sctp/sm_sideeffect.c:1156
- sctp_primitive_ASSOCIATE+0x98/0xc0 net/sctp/primitive.c:73
- sctp_sendmsg_to_asoc+0xb44/0x2090 net/sctp/socket.c:1848
- sctp_sendmsg+0x1025/0x1cf0 net/sctp/socket.c:2038
- inet_sendmsg+0x99/0xe0 net/ipv4/af_inet.c:814
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x331/0x810 net/socket.c:2352
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
- __sys_sendmmsg+0x195/0x480 net/socket.c:2496
- __do_sys_sendmmsg net/socket.c:2525 [inline]
- __se_sys_sendmmsg net/socket.c:2522 [inline]
- __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2522
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45ca59
-Code: Bad RIP value.
-RSP: 002b:00007f677b566c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 00000000004fd400 RCX: 000000000045ca59
-RDX: 0000000000000001 RSI: 00000000200006c0 RDI: 0000000000000003
-RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 0000000000000902 R14: 00000000004cbd15 R15: 00007f677b5676d4
-
-Allocated by task 7426:
- save_stack+0x1b/0x40 mm/kasan/common.c:48
- set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:494
- kmalloc_node include/linux/slab.h:578 [inline]
- kvmalloc_node+0x61/0xf0 mm/util.c:574
- kvmalloc include/linux/mm.h:753 [inline]
- xt_alloc_table_info+0x3c/0xa0 net/netfilter/x_tables.c:1176
- do_replace net/ipv6/netfilter/ip6_tables.c:1142 [inline]
- do_ip6t_set_ctl+0x226/0x460 net/ipv6/netfilter/ip6_tables.c:1681
- nf_sockopt net/netfilter/nf_sockopt.c:106 [inline]
- nf_setsockopt+0x6f/0xc0 net/netfilter/nf_sockopt.c:115
- ipv6_setsockopt+0x10c/0x170 net/ipv6/ipv6_sockglue.c:905
- tcp_setsockopt+0x86/0xd0 net/ipv4/tcp.c:3334
- __sys_setsockopt+0x24a/0x480 net/socket.c:2127
- __do_sys_setsockopt net/socket.c:2143 [inline]
- __se_sys_setsockopt net/socket.c:2140 [inline]
- __x64_sys_setsockopt+0xba/0x150 net/socket.c:2140
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 7135:
- save_stack+0x1b/0x40 mm/kasan/common.c:48
- set_track mm/kasan/common.c:56 [inline]
- kasan_set_free_info mm/kasan/common.c:316 [inline]
- __kasan_slab_free+0xf5/0x140 mm/kasan/common.c:455
- __cache_free mm/slab.c:3426 [inline]
- kfree+0x103/0x2c0 mm/slab.c:3757
- sk_prot_free net/core/sock.c:1730 [inline]
- __sk_destruct+0x63b/0x860 net/core/sock.c:1814
- sk_destruct+0xbd/0xe0 net/core/sock.c:1829
- __sk_free+0xef/0x3d0 net/core/sock.c:1840
- sk_free+0x78/0xa0 net/core/sock.c:1851
- deferred_put_nlk_sk+0x151/0x2e0 net/netlink/af_netlink.c:729
- rcu_do_batch kernel/rcu/tree.c:2396 [inline]
- rcu_core+0x5c7/0x1160 kernel/rcu/tree.c:2623
- __do_softirq+0x34c/0xa60 kernel/softirq.c:292
-
-The buggy address belongs to the object at ffff88809eddd000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 1360 bytes to the right of
- 2048-byte region [ffff88809eddd000, ffff88809eddd800)
-The buggy address belongs to the page:
-page:ffffea00027b7740 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea0002566d88 ffffea00026a7188 ffff8880aa000e00
-raw: 0000000000000000 ffff88809eddd000 0000000100000001 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88809edddc00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88809edddc80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff88809edddd00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                                                 ^
- ffff88809edddd80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88809eddde00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Le 15/06/2020 à 05:37, Anshuman Khandual a écrit :
+> This adds new tests validating for these following arch advanced page table
+> helpers. These tests create and test specific mapping types at various page
+> table levels.
+> 
+> 1. pxxp_set_wrprotect()
+> 2. pxxp_get_and_clear()
+> 3. pxxp_set_access_flags()
+> 4. pxxp_get_and_clear_full()
+> 5. pxxp_test_and_clear_young()
+> 6. pxx_leaf()
+> 7. pxx_set_huge()
+> 8. pxx_(clear|mk)_savedwrite()
+> 9. huge_pxxp_xxx()
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: Vineet Gupta <vgupta@synopsys.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Kirill A. Shutemov <kirill@shutemov.name>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: linux-snps-arc@lists.infradead.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-s390@vger.kernel.org
+> Cc: linux-riscv@lists.infradead.org
+> Cc: x86@kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-arch@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>   mm/debug_vm_pgtable.c | 306 ++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 306 insertions(+)
+> 
+> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+> index ffa163d4c63c..e3f9f8317a98 100644
+> --- a/mm/debug_vm_pgtable.c
+> +++ b/mm/debug_vm_pgtable.c
+> @@ -21,6 +21,7 @@
+>   #include <linux/module.h>
+>   #include <linux/pfn_t.h>
+>   #include <linux/printk.h>
+> +#include <linux/pgtable.h>
+>   #include <linux/random.h>
+>   #include <linux/spinlock.h>
+>   #include <linux/swap.h>
+> @@ -28,6 +29,7 @@
+>   #include <linux/start_kernel.h>
+>   #include <linux/sched/mm.h>
+>   #include <asm/pgalloc.h>
+> +#include <asm/tlbflush.h>
+>   
+>   #define VMFLAGS	(VM_READ|VM_WRITE|VM_EXEC)
+>   
+> @@ -55,6 +57,54 @@ static void __init pte_basic_tests(unsigned long pfn, pgprot_t prot)
+>   	WARN_ON(pte_write(pte_wrprotect(pte_mkwrite(pte))));
+>   }
+>   
+> +static void __init pte_advanced_tests(struct mm_struct *mm,
+> +			struct vm_area_struct *vma, pte_t *ptep,
+> +			unsigned long pfn, unsigned long vaddr, pgprot_t prot)
+> +{
+> +	pte_t pte = pfn_pte(pfn, prot);
+> +
+> +	pte = pfn_pte(pfn, prot);
+> +	set_pte_at(mm, vaddr, ptep, pte);
+> +	ptep_set_wrprotect(mm, vaddr, ptep);
+> +	pte = READ_ONCE(*ptep);
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+same
+
+> +	WARN_ON(pte_write(pte));
+> +
+> +	pte = pfn_pte(pfn, prot);
+> +	set_pte_at(mm, vaddr, ptep, pte);
+> +	ptep_get_and_clear(mm, vaddr, ptep);
+> +	pte = READ_ONCE(*ptep);
+
+same
+
+> +	WARN_ON(!pte_none(pte));
+> +
+> +	pte = pfn_pte(pfn, prot);
+> +	pte = pte_wrprotect(pte);
+> +	pte = pte_mkclean(pte);
+> +	set_pte_at(mm, vaddr, ptep, pte);
+> +	pte = pte_mkwrite(pte);
+> +	pte = pte_mkdirty(pte);
+> +	ptep_set_access_flags(vma, vaddr, ptep, pte, 1);
+> +	pte = READ_ONCE(*ptep);
+
+same
+
+> +	WARN_ON(!(pte_write(pte) && pte_dirty(pte)));
+> +
+> +	pte = pfn_pte(pfn, prot);
+> +	set_pte_at(mm, vaddr, ptep, pte);
+> +	ptep_get_and_clear_full(mm, vaddr, ptep, 1);
+> +	pte = READ_ONCE(*ptep);
+
+same
+
+> +	WARN_ON(!pte_none(pte));
+> +
+> +	pte = pte_mkyoung(pte);
+> +	set_pte_at(mm, vaddr, ptep, pte);
+> +	ptep_test_and_clear_young(vma, vaddr, ptep);
+> +	pte = READ_ONCE(*ptep);
+
+same
+
+> +	WARN_ON(pte_young(pte));
+> +}
+> +
+> +static void __init pte_savedwrite_tests(unsigned long pfn, pgprot_t prot)
+> +{
+> +	pte_t pte = pfn_pte(pfn, prot);
+> +
+> +	WARN_ON(!pte_savedwrite(pte_mk_savedwrite(pte_clear_savedwrite(pte))));
+> +	WARN_ON(pte_savedwrite(pte_clear_savedwrite(pte_mk_savedwrite(pte))));
+> +}
+>   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>   static void __init pmd_basic_tests(unsigned long pfn, pgprot_t prot)
+>   {
+> @@ -77,6 +127,89 @@ static void __init pmd_basic_tests(unsigned long pfn, pgprot_t prot)
+>   	WARN_ON(!pmd_bad(pmd_mkhuge(pmd)));
+>   }
+>   
+> +static void __init pmd_advanced_tests(struct mm_struct *mm,
+> +		struct vm_area_struct *vma, pmd_t *pmdp,
+> +		unsigned long pfn, unsigned long vaddr, pgprot_t prot)
+> +{
+> +	pmd_t pmd = pfn_pmd(pfn, prot);
+> +
+> +	if (!has_transparent_hugepage())
+> +		return;
+> +
+> +	/* Align the address wrt HPAGE_PMD_SIZE */
+> +	vaddr = (vaddr & HPAGE_PMD_MASK) + HPAGE_PMD_SIZE;
+> +
+> +	pmd = pfn_pmd(pfn, prot);
+> +	set_pmd_at(mm, vaddr, pmdp, pmd);
+> +	pmdp_set_wrprotect(mm, vaddr, pmdp);
+> +	pmd = READ_ONCE(*pmdp);
+> +	WARN_ON(pmd_write(pmd));
+> +
+> +	pmd = pfn_pmd(pfn, prot);
+> +	set_pmd_at(mm, vaddr, pmdp, pmd);
+> +	pmdp_huge_get_and_clear(mm, vaddr, pmdp);
+> +	pmd = READ_ONCE(*pmdp);
+> +	WARN_ON(!pmd_none(pmd));
+> +
+> +	pmd = pfn_pmd(pfn, prot);
+> +	pmd = pmd_wrprotect(pmd);
+> +	pmd = pmd_mkclean(pmd);
+> +	set_pmd_at(mm, vaddr, pmdp, pmd);
+> +	pmd = pmd_mkwrite(pmd);
+> +	pmd = pmd_mkdirty(pmd);
+> +	pmdp_set_access_flags(vma, vaddr, pmdp, pmd, 1);
+> +	pmd = READ_ONCE(*pmdp);
+> +	WARN_ON(!(pmd_write(pmd) && pmd_dirty(pmd)));
+> +
+> +	pmd = pmd_mkhuge(pfn_pmd(pfn, prot));
+> +	set_pmd_at(mm, vaddr, pmdp, pmd);
+> +	pmdp_huge_get_and_clear_full(vma, vaddr, pmdp, 1);
+> +	pmd = READ_ONCE(*pmdp);
+> +	WARN_ON(!pmd_none(pmd));
+> +
+> +	pmd = pmd_mkyoung(pmd);
+> +	set_pmd_at(mm, vaddr, pmdp, pmd);
+> +	pmdp_test_and_clear_young(vma, vaddr, pmdp);
+> +	pmd = READ_ONCE(*pmdp);
+> +	WARN_ON(pmd_young(pmd));
+> +}
+> +
+> +static void __init pmd_leaf_tests(unsigned long pfn, pgprot_t prot)
+> +{
+> +	pmd_t pmd = pfn_pmd(pfn, prot);
+> +
+> +	/*
+> +	 * PMD based THP is a leaf entry.
+> +	 */
+> +	pmd = pmd_mkhuge(pmd);
+> +	WARN_ON(!pmd_leaf(pmd));
+> +}
+> +
+> +static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot)
+> +{
+> +	pmd_t pmd;
+> +
+> +	if (!IS_ENABLED(CONFIG_HAVE_ARCH_HUGE_VMAP))
+> +		return;
+> +	/*
+> +	 * X86 defined pmd_set_huge() verifies that the given
+> +	 * PMD is not a populated non-leaf entry.
+> +	 */
+> +	WRITE_ONCE(*pmdp, __pmd(0));
+> +	WARN_ON(!pmd_set_huge(pmdp, __pfn_to_phys(pfn), prot));
+> +	WARN_ON(!pmd_clear_huge(pmdp));
+> +	pmd = READ_ONCE(*pmdp);
+> +	WARN_ON(!pmd_none(pmd));
+> +}
+> +
+> +static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot)
+> +{
+> +	pmd_t pmd = pfn_pmd(pfn, prot);
+> +
+> +	WARN_ON(!pmd_savedwrite(pmd_mk_savedwrite(pmd_clear_savedwrite(pmd))));
+> +	WARN_ON(pmd_savedwrite(pmd_clear_savedwrite(pmd_mk_savedwrite(pmd))));
+> +}
+> +
+>   #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+>   static void __init pud_basic_tests(unsigned long pfn, pgprot_t prot)
+>   {
+> @@ -100,12 +233,115 @@ static void __init pud_basic_tests(unsigned long pfn, pgprot_t prot)
+>   	 */
+>   	WARN_ON(!pud_bad(pud_mkhuge(pud)));
+>   }
+> +
+> +static void pud_advanced_tests(struct mm_struct *mm,
+> +		struct vm_area_struct *vma, pud_t *pudp,
+> +		unsigned long pfn, unsigned long vaddr, pgprot_t prot)
+> +{
+> +	pud_t pud = pfn_pud(pfn, prot);
+> +
+> +	if (!has_transparent_hugepage())
+> +		return;
+> +
+> +	/* Align the address wrt HPAGE_PUD_SIZE */
+> +	vaddr = (vaddr & HPAGE_PUD_MASK) + HPAGE_PUD_SIZE;
+> +
+> +	set_pud_at(mm, vaddr, pudp, pud);
+> +	pudp_set_wrprotect(mm, vaddr, pudp);
+> +	pud = READ_ONCE(*pudp);
+> +	WARN_ON(pud_write(pud));
+> +
+> +#ifndef __PAGETABLE_PMD_FOLDED
+> +	pud = pfn_pud(pfn, prot);
+> +	set_pud_at(mm, vaddr, pudp, pud);
+> +	pudp_huge_get_and_clear(mm, vaddr, pudp);
+> +	pud = READ_ONCE(*pudp);
+> +	WARN_ON(!pud_none(pud));
+> +
+> +	pud = pfn_pud(pfn, prot);
+> +	set_pud_at(mm, vaddr, pudp, pud);
+> +	pudp_huge_get_and_clear_full(mm, vaddr, pudp, 1);
+> +	pud = READ_ONCE(*pudp);
+> +	WARN_ON(!pud_none(pud));
+> +#endif /* __PAGETABLE_PMD_FOLDED */
+> +	pud = pfn_pud(pfn, prot);
+> +	pud = pud_wrprotect(pud);
+> +	pud = pud_mkclean(pud);
+> +	set_pud_at(mm, vaddr, pudp, pud);
+> +	pud = pud_mkwrite(pud);
+> +	pud = pud_mkdirty(pud);
+> +	pudp_set_access_flags(vma, vaddr, pudp, pud, 1);
+> +	pud = READ_ONCE(*pudp);
+> +	WARN_ON(!(pud_write(pud) && pud_dirty(pud)));
+> +
+> +	pud = pud_mkyoung(pud);
+> +	set_pud_at(mm, vaddr, pudp, pud);
+> +	pudp_test_and_clear_young(vma, vaddr, pudp);
+> +	pud = READ_ONCE(*pudp);
+> +	WARN_ON(pud_young(pud));
+> +}
+> +
+> +static void __init pud_leaf_tests(unsigned long pfn, pgprot_t prot)
+> +{
+> +	pud_t pud = pfn_pud(pfn, prot);
+> +
+> +	/*
+> +	 * PUD based THP is a leaf entry.
+> +	 */
+> +	pud = pud_mkhuge(pud);
+> +	WARN_ON(!pud_leaf(pud));
+> +}
+> +
+> +static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
+> +{
+> +	pud_t pud;
+> +
+> +	if (!IS_ENABLED(CONFIG_HAVE_ARCH_HUGE_VMAP))
+> +		return;
+> +	/*
+> +	 * X86 defined pud_set_huge() verifies that the given
+> +	 * PUD is not a populated non-leaf entry.
+> +	 */
+> +	WRITE_ONCE(*pudp, __pud(0));
+> +	WARN_ON(!pud_set_huge(pudp, __pfn_to_phys(pfn), prot));
+> +	WARN_ON(!pud_clear_huge(pudp));
+> +	pud = READ_ONCE(*pudp);
+> +	WARN_ON(!pud_none(pud));
+> +}
+>   #else  /* !CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+>   static void __init pud_basic_tests(unsigned long pfn, pgprot_t prot) { }
+> +static void pud_advanced_tests(struct mm_struct *mm,
+> +		struct vm_area_struct *vma, pud_t *pudp,
+> +		unsigned long pfn, unsigned long vaddr, pgprot_t prot)
+> +{
+> +}
+> +static void __init pud_leaf_tests(unsigned long pfn, pgprot_t prot) { }
+> +static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
+> +{
+> +}
+>   #endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+>   #else  /* !CONFIG_TRANSPARENT_HUGEPAGE */
+>   static void __init pmd_basic_tests(unsigned long pfn, pgprot_t prot) { }
+>   static void __init pud_basic_tests(unsigned long pfn, pgprot_t prot) { }
+> +static void __init pmd_advanced_tests(struct mm_struct *mm,
+> +		struct vm_area_struct *vma, pmd_t *pmdp,
+> +		unsigned long pfn, unsigned long vaddr, pgprot_t prot)
+> +{
+> +}
+> +static void __init pud_advanced_tests(struct mm_struct *mm,
+> +		struct vm_area_struct *vma, pud_t *pudp,
+> +		unsigned long pfn, unsigned long vaddr, pgprot_t prot)
+> +{
+> +}
+> +static void __init pmd_leaf_tests(unsigned long pfn, pgprot_t prot) { }
+> +static void __init pud_leaf_tests(unsigned long pfn, pgprot_t prot) { }
+> +static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot)
+> +{
+> +}
+> +static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
+> +{
+> +}
+> +static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot) { }
+>   #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>   
+>   static void __init p4d_basic_tests(unsigned long pfn, pgprot_t prot)
+> @@ -495,8 +731,56 @@ static void __init hugetlb_basic_tests(unsigned long pfn, pgprot_t prot)
+>   	WARN_ON(!pte_huge(pte_mkhuge(pte)));
+>   #endif /* CONFIG_ARCH_WANT_GENERAL_HUGETLB */
+>   }
+> +
+> +static void __init hugetlb_advanced_tests(struct mm_struct *mm,
+> +					  struct vm_area_struct *vma,
+> +					  pte_t *ptep, unsigned long pfn,
+> +					  unsigned long vaddr, pgprot_t prot)
+> +{
+> +	struct page *page = pfn_to_page(pfn);
+> +	pte_t pte = READ_ONCE(*ptep);
+
+Remplace with ptep_get() to avoid build failure on powerpc 8xx.
+
+> +	unsigned long paddr = (__pfn_to_phys(pfn) | RANDOM_ORVALUE) & PMD_MASK;
+> +
+> +	pte = pte_mkhuge(mk_pte(pfn_to_page(PHYS_PFN(paddr)), prot));
+> +	set_huge_pte_at(mm, vaddr, ptep, pte);
+> +	barrier();
+> +	WARN_ON(!pte_same(pte, huge_ptep_get(ptep)));
+> +	huge_pte_clear(mm, vaddr, ptep, PMD_SIZE);
+> +	pte = huge_ptep_get(ptep);
+> +	WARN_ON(!huge_pte_none(pte));
+> +
+> +	pte = mk_huge_pte(page, prot);
+> +	set_huge_pte_at(mm, vaddr, ptep, pte);
+> +	barrier();
+> +	huge_ptep_set_wrprotect(mm, vaddr, ptep);
+> +	pte = huge_ptep_get(ptep);
+> +	WARN_ON(huge_pte_write(pte));
+> +
+> +	pte = mk_huge_pte(page, prot);
+> +	set_huge_pte_at(mm, vaddr, ptep, pte);
+> +	barrier();
+> +	huge_ptep_get_and_clear(mm, vaddr, ptep);
+> +	pte = huge_ptep_get(ptep);
+> +	WARN_ON(!huge_pte_none(pte));
+> +
+> +	pte = mk_huge_pte(page, prot);
+> +	pte = huge_pte_wrprotect(pte);
+> +	set_huge_pte_at(mm, vaddr, ptep, pte);
+> +	barrier();
+> +	pte = huge_pte_mkwrite(pte);
+> +	pte = huge_pte_mkdirty(pte);
+> +	huge_ptep_set_access_flags(vma, vaddr, ptep, pte, 1);
+> +	pte = huge_ptep_get(ptep);
+> +	WARN_ON(!(huge_pte_write(pte) && huge_pte_dirty(pte)));
+> +}
+>   #else  /* !CONFIG_HUGETLB_PAGE */
+>   static void __init hugetlb_basic_tests(unsigned long pfn, pgprot_t prot) { }
+> +static void __init hugetlb_advanced_tests(struct mm_struct *mm,
+> +					  struct vm_area_struct *vma,
+> +					  pte_t *ptep, unsigned long pfn,
+> +					  unsigned long vaddr, pgprot_t prot)
+> +{
+> +}
+>   #endif /* CONFIG_HUGETLB_PAGE */
+>   
+>   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> @@ -568,6 +852,7 @@ static unsigned long __init get_random_vaddr(void)
+>   
+>   static int __init debug_vm_pgtable(void)
+>   {
+> +	struct vm_area_struct *vma;
+>   	struct mm_struct *mm;
+>   	pgd_t *pgdp;
+>   	p4d_t *p4dp, *saved_p4dp;
+> @@ -596,6 +881,12 @@ static int __init debug_vm_pgtable(void)
+>   	 */
+>   	protnone = __P000;
+>   
+> +	vma = vm_area_alloc(mm);
+> +	if (!vma) {
+> +		pr_err("vma allocation failed\n");
+> +		return 1;
+> +	}
+> +
+>   	/*
+>   	 * PFN for mapping at PTE level is determined from a standard kernel
+>   	 * text symbol. But pfns for higher page table levels are derived by
+> @@ -644,6 +935,20 @@ static int __init debug_vm_pgtable(void)
+>   	p4d_clear_tests(mm, p4dp);
+>   	pgd_clear_tests(mm, pgdp);
+>   
+> +	pte_advanced_tests(mm, vma, ptep, pte_aligned, vaddr, prot);
+> +	pmd_advanced_tests(mm, vma, pmdp, pmd_aligned, vaddr, prot);
+> +	pud_advanced_tests(mm, vma, pudp, pud_aligned, vaddr, prot);
+> +	hugetlb_advanced_tests(mm, vma, ptep, pte_aligned, vaddr, prot);
+> +
+> +	pmd_leaf_tests(pmd_aligned, prot);
+> +	pud_leaf_tests(pud_aligned, prot);
+> +
+> +	pmd_huge_tests(pmdp, pmd_aligned, prot);
+> +	pud_huge_tests(pudp, pud_aligned, prot);
+> +
+> +	pte_savedwrite_tests(pte_aligned, prot);
+> +	pmd_savedwrite_tests(pmd_aligned, prot);
+> +
+>   	pte_unmap_unlock(ptep, ptl);
+>   
+>   	pmd_populate_tests(mm, pmdp, saved_ptep);
+> @@ -678,6 +983,7 @@ static int __init debug_vm_pgtable(void)
+>   	pmd_free(mm, saved_pmdp);
+>   	pte_free(mm, saved_ptep);
+>   
+> +	vm_area_free(vma);
+>   	mm_dec_nr_puds(mm);
+>   	mm_dec_nr_pmds(mm);
+>   	mm_dec_nr_ptes(mm);
+> 
+
+Christophe
