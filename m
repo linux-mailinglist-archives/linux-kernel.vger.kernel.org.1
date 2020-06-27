@@ -2,84 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFF220C417
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 22:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB0B20C41D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 22:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725975AbgF0Ue6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 16:34:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgF0Ue5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 16:34:57 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894D5C061794;
-        Sat, 27 Jun 2020 13:34:57 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id q198so12036721qka.2;
-        Sat, 27 Jun 2020 13:34:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LElBDHTTMn9qMHSwEfjlESwGT7fS/VgY0FD9zMzhcSk=;
-        b=RH/DZm6xtX+1UNWqgY1c5FaBHHY0EVnaxmswqO9z51psOntUVnVXc/0irlzyCvoFZJ
-         DCLfXoTwDh8h+iBIA6uDfRR+mq6oApI59ViCHTl51MkBVcMDsKF0vEGZEyezXbZ/MvWB
-         FsjJIfCPYR2E4wEjsnTuU8UxtCHmy8/tHaRsuxkKB6m4xJqey8SyyrCJj5ckvOSbxiGB
-         DUFw5Aa6mpk56+0Fa7dS4Uh+OboySFTS4jbzrDuHVw19vRSYtkUsJlYsvFck7RjBnO+C
-         0+sGGIoLx6I1UAFXr46o4+yR5OHA5oqjhD7EZQGnWe48srbyBmnwoZIsTa66jKnxIa6O
-         Ixbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LElBDHTTMn9qMHSwEfjlESwGT7fS/VgY0FD9zMzhcSk=;
-        b=TQmC9i48AmAbUg2KqWs6b55LdyqXd/ccn9lKEdEumXxjsHahYm6ceO1KP4Q8okvKgt
-         bYX/WWPigwwmie7VfJlpq2SXBl/xDD4oM42Q6ZdD+ltO5es6rR1JZqLAU5riicKxwoUS
-         KBPlssYyYKXs+0miEilAWVLy84o3VduidsrlKEmqNCicF5S9SLylfWhIPJCspAMTj8zN
-         e8JUcAlkPLoERWAa4FqVrOhF1gyBtVIE6ThyB6gfzdVIxI9b9jWR4Uf7HZ0xAPmkty9P
-         iwzfAGhyo7YUET/4Jj9gPi+uHxkXFABQ1nZ2fETKX1e04Df60ZunwASrHSVhLn0TR5cm
-         z4GQ==
-X-Gm-Message-State: AOAM533qEF6jAIyJLaMTmVUvfsSVRkaFCcKx6011hI+adURrlq8Wy7Nm
-        A7cc0irWiyNqpLoeYzBZ29E4bxyTf6A+JAF30jM=
-X-Google-Smtp-Source: ABdhPJyFGUc8Z40kzre8jYY3WlNjjmI/QX4JNYy0m+bh8RCzhC0CKvD5TnPIoSIuZpH6LznyoBbcT33pxdq40MaaCck=
-X-Received: by 2002:a37:270e:: with SMTP id n14mr7945083qkn.92.1593290096799;
- Sat, 27 Jun 2020 13:34:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200627002609.3222870-1-songliubraving@fb.com> <20200627002609.3222870-2-songliubraving@fb.com>
-In-Reply-To: <20200627002609.3222870-2-songliubraving@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 27 Jun 2020 13:34:45 -0700
-Message-ID: <CAEf4BzY0CbYK=C_wxU8xw=jm8CSpHddfyi7ccPKe2gxJeN6gAA@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/4] perf: expose get/put_callchain_entry()
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1725838AbgF0Ukr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 16:40:47 -0400
+Received: from mail.sgpilsen.cz ([212.27.212.141]:58318 "EHLO mail.sgpilsen.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725792AbgF0Ukq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 16:40:46 -0400
+X-Greylist: delayed 398 seconds by postgrey-1.27 at vger.kernel.org; Sat, 27 Jun 2020 16:40:46 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=sgpilsen.cz; h=
+        message-id:date:from:reply-to:mime-version:subject:from
+        :content-type; s=default; bh=sHiXKRsXh5DkiymGRFp9iYVVBHptUEFSm25
+        SAr99p6g=; b=HxZ8Hgnt/UrwDLFeLa6kZ895G0n8tYMaUfnfeR7gSppIuqy3L9d
+        GI3telwBpFHsWqpJ6pSs+U4YgVZTZjupKM7J/qq9b45aXVXTsF6dwpCVYsi3IXSJ
+        p2te0Jmf0qo9eoONhhDxUtykqtTEZRfINk2hhbhDheHk4bAwBCdLvhKg=
+Received: (qmail 50580 invoked from network); 27 Jun 2020 22:34:04 +0200
+Received: from host-195.242.233.158.c3.net.pl (HELO mail.sgpilsen.cz) (krebsova@sgpilsen.cz@195.242.233.158)
+  by mail.sgpilsen.cz with SMTP; 27 Jun 2020 22:34:04 +0200
+From:   "james.leitch" <james.leitch@sgpilsen.cz>
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (1.0)
+Subject: 
+Message-Id: <ABE873BC-E90C-4EF1-FB3F-BC9928895FFA@sgpilsen.cz>
+Date:   Sat, 27 Jun 2020 23:35:48 +0300
+To:     "linux kernel" <linux-kernel@vger.kernel.org>
+Reply-To: "james.leitch" <james.leitchr@sky.com>
+X-Mailer: iPhone Mail (17D50)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 5:26 PM Song Liu <songliubraving@fb.com> wrote:
->
-> Sanitize and expose get/put_callchain_entry(). This would be used by bpf
-> stack map.
->
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  include/linux/perf_event.h |  2 ++
->  kernel/events/callchain.c  | 13 ++++++-------
->  2 files changed, 8 insertions(+), 7 deletions(-)
->
-
-[...]
+Linux  http://ujeb.se/Wi22M  james.leitch
