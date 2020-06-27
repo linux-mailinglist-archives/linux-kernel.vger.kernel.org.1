@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461F320C305
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 18:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C9920C30C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 18:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726668AbgF0QVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 12:21:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725864AbgF0QVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 12:21:05 -0400
-Received: from localhost.localdomain (unknown [89.208.247.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 315E220720;
-        Sat, 27 Jun 2020 16:21:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593274865;
-        bh=Xk8MgSMAWg+6GPcCp7ny9qf8M1piZpQfBkx7+eVVJJc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=IV+6FPCBPulGj+ZXnqXoKcI4g3Sc/sUC2/CrFbxiKWF0IYt7hqKOUX/Y1h4k8IUMf
-         TpIeeHk6iRG7noRyfYxxa4SfErUKjl+m0aA4f9w0le7KHIDReHpdHCdIjzwFglM1MU
-         zrMIPXhpkZbeGimEgHPweh2dNDWnWkcCdLb3jh6A=
-From:   guoren@kernel.org
-To:     palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        anup@brainfault.org, greentime.hu@sifive.com, zong.li@sifive.com
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH] riscv: Fixup compile error BUILD_BUG_ON failed
-Date:   Sat, 27 Jun 2020 16:20:02 +0000
-Message-Id: <1593274802-46332-1-git-send-email-guoren@kernel.org>
-X-Mailer: git-send-email 2.7.4
+        id S1726782AbgF0QVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 12:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbgF0QVt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 12:21:49 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64992C061794
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 09:21:49 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id a11so2758142ilk.0
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 09:21:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d2nGKnDNsfGo+T6bDiJUevR3z7PJsbSGEM8ozMY3Q1c=;
+        b=NFwcnfh/hEGQUYaebr5ifTcevv4BMj/OUSW0MFghU+HbUWf6KpGale9QHb5RwDiaBx
+         aJAMQm43iK9a0We+F+fOwGtm09RZi99VihP6XW8Vt7QCFtXFA3WqRg2S4p5M2jHdUTBr
+         tCwv0tvLARFVswsztggS3t1TgS7+ic/u0PK8A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d2nGKnDNsfGo+T6bDiJUevR3z7PJsbSGEM8ozMY3Q1c=;
+        b=GNp9xJrg8MdEP/R0JVdUtYNsP4vRrJE76AZcZExVmq89HItnLhnuMQZXSVvPWRubcQ
+         TtcDnvlVqN1DIAY2pSrhALirauSs72B+p0tY0biOIyFMwtCpsIMSbIga/zuTQEFc+OGk
+         PAqCdPtXGF3995BVIY4HDbY88gVGadSKrGth/XCGo8M/ck2FnsnwbeyJc4U5ReYjn39D
+         3qONoIypLBCH3AbGLyEpUarGxPmc8Rj9N4FRi4BmrUGiSN8cE/8Q19Tkn+S1d7P2575/
+         Vxe2nPf6d+VrbGcvzQGck60bxNeiOK7Tlv1ELftS93h4qhoaRvQozKPNS3Jm4Ngyl/ZK
+         5HOg==
+X-Gm-Message-State: AOAM533ytOFkfh9H+vX2JZXDc7QIBDlDEiDkHCVqPWBGtwjvSE8cvqDP
+        YL09viBcWB8hps6qjz8wct2QWhYW7ttmLGxnj0GWpw==
+X-Google-Smtp-Source: ABdhPJxaWQLg4tRKtkxU81Tpb7DsYNug/vR/dvA/QKhF6vaTkhjoouSApXIBfA+R3SUWPzgTTuRolvI1CkoS2seTfQc=
+X-Received: by 2002:a92:c0c8:: with SMTP id t8mr8832465ilf.176.1593274908687;
+ Sat, 27 Jun 2020 09:21:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <cover.1583332764.git.vpillai@digitalocean.com>
+ <CANaguZBQMarzMb-iXBEx8wJqkTYtRskTL+xQnShuAW7hP9UdqA@mail.gmail.com>
+ <CAEXW_YSU5=ZUf-4j55av9Q8b+PRiM2DCKydM9Bv__mzL2MWx4g@mail.gmail.com>
+ <CANaguZCi7Gj5TSUfU5AZ5w1v=EEz23rdgUsSg1NVb3DBM+F6bA@mail.gmail.com> <20200626151028.GA538235@google.com>
+In-Reply-To: <20200626151028.GA538235@google.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sat, 27 Jun 2020 12:21:36 -0400
+Message-ID: <CAEXW_YTv4fuBAoUdMiUCHz2aCSfRSd__Ri1x8jdhD3m+=m4P-w@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/13] Core scheduling v5
+To:     Vineeth Remanan Pillai <vpillai@digitalocean.com>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        "Li, Aubrey" <aubrey.li@linux.intel.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Paul Turner <pjt@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+On Fri, Jun 26, 2020 at 11:10 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+> [..]
+> > What do you think about having a separate cgroup for coresched?
+> > Both coresched cgroup and prctl() could co-exist where prctl could
+> > be used to isolate individual process or task and coresched cgroup
+> > to group trusted processes.
+>
+> This sounds like a fine idea to me. I wonder how Tejun and Peter feel about
+> having a new attribute-less CGroup controller for core-scheduling and just
+> use that for tagging. (No need to even have a tag file, just adding/removing
+> to/from CGroup will tag).
 
-Unfortunately, the current code couldn't be compiled, because
-BUILD_BUG_ON needs a static defined value, not a dynamic
-variable with a0 regs. Just use it inline as a solution.
+Unless there are any major objections to this idea, or better ideas
+for CGroup users, we will consider proposing a new CGroup controller
+for this. The issue with CPU controller CGroups being they may be
+configured in a way that is incompatible with tagging.
 
-  CC      arch/riscv/kernel/patch.o
-In file included from ./include/linux/kernel.h:11,
-                 from ./include/linux/list.h:9,
-                 from ./include/linux/preempt.h:11,
-                 from ./include/linux/spinlock.h:51,
-                 from arch/riscv/kernel/patch.c:6:
-In function ‘fix_to_virt’,
-    inlined from ‘patch_map’ at arch/riscv/kernel/patch.c:37:17:
-./include/linux/compiler.h:392:38: error: call to ‘__compiletime_assert_205’ declared with attribute error: BUILD_BUG_ON failed: idx >= __end_of_fixed_addresses
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-                                      ^
-./include/linux/compiler.h:373:4: note: in definition of macro ‘__compiletime_assert’
-    prefix ## suffix();    \
-    ^~~~~~
-./include/linux/compiler.h:392:2: note: in expansion of macro ‘_compiletime_assert’
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-  ^~~~~~~~~~~~~~~~~~~
-./include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
- #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-                                     ^~~~~~~~~~~~~~~~~~
-./include/linux/build_bug.h:50:2: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
-  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-  ^~~~~~~~~~~~~~~~
-./include/asm-generic/fixmap.h:32:2: note: in expansion of macro ‘BUILD_BUG_ON’
-  BUILD_BUG_ON(idx >= __end_of_fixed_addresses);
-  ^~~~~~~~~~~~
+And I was also thinking of a new clone flag CLONE_CORE (which allows a
+child to share a parent's core). This is because the fork-semantics
+are not clear and it may be better to leave the behavior of fork to
+userspace IMHO than hard-coding policy in the kernel.
 
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Zong Li <zong.li@sifive.com>
----
- arch/riscv/kernel/patch.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Perhaps we can also discuss this at the scheduler MC at Plumbers.
 
-diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-index d4a64df..f8e84f2 100644
---- a/arch/riscv/kernel/patch.c
-+++ b/arch/riscv/kernel/patch.c
-@@ -20,7 +20,7 @@ struct patch_insn {
- };
- 
- #ifdef CONFIG_MMU
--static void *patch_map(void *addr, int fixmap)
-+static inline void *patch_map(void *addr, int fixmap)
- {
- 	uintptr_t uintaddr = (uintptr_t) addr;
- 	struct page *page;
-@@ -37,7 +37,6 @@ static void *patch_map(void *addr, int fixmap)
- 	return (void *)set_fixmap_offset(fixmap, page_to_phys(page) +
- 					 (uintaddr & ~PAGE_MASK));
- }
--NOKPROBE_SYMBOL(patch_map);
- 
- static void patch_unmap(int fixmap)
- {
--- 
-2.7.4
+Any other thoughts?
 
+ - Joel
