@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CF820BF48
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 09:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26ECE20BF4E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 09:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbgF0HRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 03:17:16 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:46492 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgF0HRN (ORCPT
+        id S1726209AbgF0HSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 03:18:15 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:50792 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgF0HSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 03:17:13 -0400
-Received: by mail-io1-f70.google.com with SMTP id z65so6352986iof.13
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 00:17:12 -0700 (PDT)
+        Sat, 27 Jun 2020 03:18:13 -0400
+Received: by mail-il1-f198.google.com with SMTP id l17so8052203ilj.17
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 00:18:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=IsMH+mXeozfn9dfFmwoLPcz9puu1DMjtE0f+O1IgldQ=;
-        b=KTzrfj6cUCTqKrjwy9eXsGDHKOsHPxa7khp/kplL0PQicyw2WUELvjH6SCrZKML+WV
-         Md9zU2PCAM+fAtHqDsyFj1DjeC7quzOqlShVWkmsP4EtHBE3aTdWE3KP6MTe4/YfD36u
-         ZbOOhZcQq5Bep2PWRfcSttduheJESR/tYfrX6YoNoY091KW9fof8C8PWgRunutWN+Rv3
-         megjRkTmRwyaXIcLr3hrHFtZYzOQXONrUFeA6BMJD90tnY1zWzgbVUMfJG32jn4zzPTS
-         Qib7xNm/yGDBcIabIywxVuRG7FOGDt+JsWeQQ3SfmnK/Fnw/4WRNdwXQL4hDySzz5AJI
-         hV1g==
-X-Gm-Message-State: AOAM530PgeYcAV2Mo6Ld42vOrJYCJlK6CmDAIcHTVFv3nCP/xtq4NsVF
-        XDw/2jw6FBViiLoA4LBW2DUAw/YeHNilM+AZxzJW+nFIpavb
-X-Google-Smtp-Source: ABdhPJwKhI2xCErDjvcakGLd7G8m7X+MVGs3aP4wfTV4QSW0Zb2ZKsqysJOEwh4Ny9JtbJzQb/K8+ZiLzqGktDLG29BrbwbwWQG0
+        bh=NpmgWhWDWqZRxtggc0PGsmPYy4RDj6z7UbjPEip7q2k=;
+        b=ivJLGCXaY7P/tiE9tb9kMufaDqOB751X0Ha/NDeudoscYV/XaConDTABTEdH0vmcPr
+         p2xEHc+41P6Qb/8oO9vbmP/D5cs3MG3nDBLV2KXJUB1y/50mlSn8zOk6GFnCHBh6sJYt
+         v7qab5f7AJQPMXupfKVtIGW+5b66UKob7gmYuMwN3FaYWmVZ3hm6DtuVp51/bqvZKBXP
+         jNZ8+6BdviQeKKE7LvhdzOMiszQ6bvCKWaaqEVwxvnpm9JE/MoSTHweLvYYWw4b+ZpdN
+         9CRjZbtbAS1vOTDWAtatjAem+yX9teKbT3b0CxCnj2u95srd0Z/WB0GCXHZ6r7lyXM5C
+         G1JA==
+X-Gm-Message-State: AOAM533s3TINVy5RdVBwwf1VlUmtgNcl61ddVlTtXuJIxtXfPmGMblRx
+        c0A8FqTuOOscQkD6+n+LEQSQvm1XwmOw/ccbownnth1XNyu+
+X-Google-Smtp-Source: ABdhPJyt0CkYD6D8p3fNcZlUQDSfjIc2RD6ROx5N5e2wDLBdOwEDZZhWqPTxSFdYB/M7bXHPT0TyDmK5HEYdN//DwZBNTMdknH/X
 MIME-Version: 1.0
-X-Received: by 2002:a5d:8516:: with SMTP id q22mr7332943ion.130.1593242232128;
- Sat, 27 Jun 2020 00:17:12 -0700 (PDT)
-Date:   Sat, 27 Jun 2020 00:17:12 -0700
+X-Received: by 2002:a6b:8f09:: with SMTP id r9mr7251035iod.168.1593242292311;
+ Sat, 27 Jun 2020 00:18:12 -0700 (PDT)
+Date:   Sat, 27 Jun 2020 00:18:12 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000498aa905a90b9dd0@google.com>
-Subject: KASAN: vmalloc-out-of-bounds Read in __cfg8NUM_wpan_dev_from_attrs
-From:   syzbot <syzbot+b108a9b0cf438a20f4f8@syzkaller.appspotmail.com>
-To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, stefan@datenfreihafen.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000dfdbe905a90ba06d@google.com>
+Subject: KASAN: vmalloc-out-of-bounds Read in __nla_validate_parse
+From:   syzbot <syzbot+314cd606fbedf9d5d0b2@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jmaloy@redhat.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        tipc-discussion@lists.sourceforge.net, ying.xue@windriver.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -50,25 +50,25 @@ Hello,
 
 syzbot found the following crash on:
 
-HEAD commit:    7a64135f libbpf: Adjust SEC short cut for expected attach ..
+HEAD commit:    4e15507f libbpf: Forward-declare bpf_stats_type for system..
 git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=1365a5c5100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12805f53100000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=dcc6334acae363d4
-dashboard link: https://syzkaller.appspot.com/bug?extid=b108a9b0cf438a20f4f8
+dashboard link: https://syzkaller.appspot.com/bug?extid=314cd606fbedf9d5d0b2
 compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this crash yet.
 
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+b108a9b0cf438a20f4f8@syzkaller.appspotmail.com
+Reported-by: syzbot+314cd606fbedf9d5d0b2@syzkaller.appspotmail.com
 
-netlink: 26 bytes leftover after parsing attributes in process `syz-executor.5'.
+netlink: 'syz-executor.3': attribute type 2 has an invalid length.
 ==================================================================
-BUG: KASAN: vmalloc-out-of-bounds in nla_get_u32 include/net/netlink.h:1541 [inline]
-BUG: KASAN: vmalloc-out-of-bounds in __cfg802154_wpan_dev_from_attrs+0x4b4/0x510 net/ieee802154/nl802154.c:53
-Read of size 4 at addr ffffc90001ad9018 by task syz-executor.5/31529
+BUG: KASAN: vmalloc-out-of-bounds in nla_next include/net/netlink.h:1160 [inline]
+BUG: KASAN: vmalloc-out-of-bounds in __nla_validate_parse+0x1ebc/0x21a0 lib/nlattr.c:521
+Read of size 2 at addr ffffc900019f9018 by task syz-executor.3/6260
 
-CPU: 1 PID: 31529 Comm: syz-executor.5 Not tainted 5.8.0-rc1-syzkaller #0
+CPU: 0 PID: 6260 Comm: syz-executor.3 Not tainted 5.8.0-rc1-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
@@ -76,10 +76,11 @@ Call Trace:
  print_address_description.constprop.0.cold+0x5/0x436 mm/kasan/report.c:383
  __kasan_report mm/kasan/report.c:513 [inline]
  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- nla_get_u32 include/net/netlink.h:1541 [inline]
- __cfg802154_wpan_dev_from_attrs+0x4b4/0x510 net/ieee802154/nl802154.c:53
- nl802154_prepare_wpan_dev_dump.constprop.0+0xf9/0x490 net/ieee802154/nl802154.c:245
- nl802154_dump_llsec_dev+0xc0/0xb10 net/ieee802154/nl802154.c:1655
+ nla_next include/net/netlink.h:1160 [inline]
+ __nla_validate_parse+0x1ebc/0x21a0 lib/nlattr.c:521
+ __nla_parse+0x3d/0x4a lib/nlattr.c:630
+ nla_parse_nested_deprecated include/net/netlink.h:1218 [inline]
+ tipc_nl_publ_dump+0x239/0xce0 net/tipc/socket.c:3766
  genl_lock_dumpit+0x7f/0xb0 net/netlink/genetlink.c:575
  netlink_dump+0x4cd/0xf60 net/netlink/af_netlink.c:2245
  __netlink_dump_start+0x643/0x900 net/netlink/af_netlink.c:2353
@@ -98,23 +99,23 @@ Call Trace:
  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
  do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45cb19
+RIP: 0033:0x45ca59
 Code: Bad RIP value.
-RSP: 002b:00007ff9558abc78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000502400 RCX: 000000000045cb19
-RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000004
-RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
+RSP: 002b:00007f14b9253c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000501e40 RCX: 000000000045ca59
+RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 000000000078bfa0 R08: 0000000000000000 R09: 0000000000000000
 R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 0000000000000a38 R14: 00000000004cd1fc R15: 00007ff9558ac6d4
+R13: 0000000000000a2b R14: 00000000004cd0f1 R15: 00007f14b92546d4
 
 
 Memory state around the buggy address:
- ffffc90001ad8f00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
- ffffc90001ad8f80: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
->ffffc90001ad9000: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+ ffffc900019f8f00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+ ffffc900019f8f80: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+>ffffc900019f9000: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
                             ^
- ffffc90001ad9080: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
- ffffc90001ad9100: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+ ffffc900019f9080: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+ ffffc900019f9100: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
 ==================================================================
 
 
