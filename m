@@ -2,54 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70A020C4BC
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 00:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD1720C4CA
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 01:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbgF0WpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 18:45:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43156 "EHLO mail.kernel.org"
+        id S1726749AbgF0XKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 19:10:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726750AbgF0WpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 18:45:13 -0400
-Subject: Re: [PULL REQUEST] i2c for 5.8
+        id S1726057AbgF0XKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 19:10:16 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3917820707;
+        Sat, 27 Jun 2020 23:10:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593297913;
-        bh=ViFmLMs9O+kdtRW4Dmq4NpDIt1mT/Qc9N9/aABRBQIs=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=CYfNNHpNxppmBGgqWrdmvDonN/QdgN1Xe82P0SAzgGV2TeARH4mKJR08N42hnKkkm
-         3xifYinWcB0DaEg5+qDYrTpINuJ5CLoMR9AuPUb+3yIuqP92eJl81DeGJ5q6CbXDV2
-         zFF5vH61D4lliZPffzRjPBAg+mVYR3oXMRW3YZQs=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200627182057.GA4356@kunai>
-References: <20200627182057.GA4356@kunai>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200627182057.GA4356@kunai>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-next
-X-PR-Tracked-Commit-Id: 40e05200593af06633f64ab0effff052eee6f076
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8bf9865187f6c3130b5c748a3212d591c9d563de
-Message-Id: <159329791311.3578.13019801677364668328.pr-tracker-bot@kernel.org>
-Date:   Sat, 27 Jun 2020 22:45:13 +0000
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+        s=default; t=1593299415;
+        bh=/ft0gEdXgdrpBXeR5hwd2mEJMfyWjzRx7hEcjdZ+TNk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WoDOyld9MuOVGH4iJuZ+iBHgjZH9PZxkzlfM86zFy/I0J99jZTg6FG73e9bRd11gT
+         aPDyr/lstgl6eteNtDc09aOcMozcGW1T0F8qhIbOVL7ACUiUKzJehNz0thD1rA4uKw
+         bVaTg0Wa/hclcMQ9rr5hV9X5IAyHZsYK9VjeO/ds=
+Date:   Sat, 27 Jun 2020 16:10:13 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+95bccd805a4aa06a4b0d@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        linux-mm@kvack.org
+Subject: Re: linux-next boot error: WARNING in kmem_cache_free
+Message-ID: <20200627231013.GM7065@sol.localdomain>
+References: <CACT4Y+ZcbA=9L2XPC_rRG-FdwOoH6XteOoGHg7jfvd+1CH2M+w@mail.gmail.com>
+ <121C0D57-C9E6-406B-A280-A67E773EA9D0@lca.pw>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <121C0D57-C9E6-406B-A280-A67E773EA9D0@lca.pw>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 27 Jun 2020 20:20:57 +0200:
+[+Cc linux-mm; +Bcc linux-fsdevel]
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-next
+On Mon, Jun 22, 2020 at 03:28:09AM -0400, Qian Cai wrote:
+> 
+> 
+> > On Jun 22, 2020, at 2:42 AM, Dmitry Vyukov <dvyukov@google.com> wrote:
+> > 
+> > There is a reason, it's still important for us.
+> > But also it's not our strategy to deal with bugs by not testing
+> > configurations and closing eyes on bugs, right? If it's an official
+> > config in the kernel, it needs to be tested. If SLAB is in the state
+> > that we don't care about any bugs in it, then we need to drop it. It
+> > will automatically remove it from all testing systems out there. Or at
+> > least make it "depends on BROKEN" to slowly phase it out during
+> > several releases.
+> 
+> Do you mind sharing what’s your use cases with CONFIG_SLAB? The only thing prevents it from being purged early is that it might perform better with a certain type of networking workloads where syzbot should have nothing to gain from it.
+> 
+> I am more of thinking about the testing coverage that we could use for syzbot to test SLUB instead of SLAB. Also, I have no objection for syzbot to test SLAB, but then from my experience, you are probably on your own to debug further with those testing failures. Until you are able to figure out the buggy patch or patchset introduced the regression, I am afraid not many people would be able to spend much time on SLAB. The developers are pretty much already half-hearted on it by only fixing SLAB here and there without runtime testing it.
+> 
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8bf9865187f6c3130b5c748a3212d591c9d563de
+This bug also got reported 2 days later by the kernel test robot
+(https://lore.kernel.org/lkml/20200623090213.GW5535@shao2-debian/).
+Then it was fixed by commit 437edcaafbe3, so telling syzbot:
 
-Thank you!
+#syz fix: mm, slab/slub: improve error reporting and overhead of cache_from_obj()-fix
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+If CONFIG_SLAB is no longer useful and supported then it needs to be removed
+from the kernel.  Otherwise, it needs to be tested just like all other options.
+
+- Eric
