@@ -2,134 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6963B20C2AA
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 17:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDB220C2B8
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 17:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726411AbgF0PSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 11:18:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgF0PSY (ORCPT
+        id S1726737AbgF0PTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 11:19:06 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:21993 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725975AbgF0PS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 11:18:24 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E305C061794
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 08:18:24 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id k6so12275514wrn.3
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 08:18:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NU9KLKmGGGJvPp19RkXwDYHc15SB6HnPK2Xb5FuPPA4=;
-        b=XH43tNwpFGVVg3khLEQCBEjs5TPlPP9gLywPjk21fGzPdo08pV/4IsbQ3xbnt6zguI
-         34/BM7kHcr83thA+8JeKs2tZwUcf7RpuRWltaQ/d+MXOtCth+luDRGg2kliElojRGebs
-         AGtG30W/wLSG7gIbidZ9MjgqxGIFREqrSvAd9l3EvzrK1mChlQeera9mahWjvkJwe9lA
-         htYb7UzQz27bWO/RT2bzisDOFZYPAqyfAT2mhtSkAAcxGEZvK0eQhVnS6DjoaDId6Rtb
-         Er6ODEGGwoCPRNMl8/kWoD7pGufUexrNcMX18xvsuaTv6wsdxXDtEyLZv7dIvVtPoyOI
-         pSQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NU9KLKmGGGJvPp19RkXwDYHc15SB6HnPK2Xb5FuPPA4=;
-        b=bpSmr1TZez0D1QX7Rxrk012gIMyqKzv2IZWR1c46Tlq7+29gvhGmnUxU+9RrcgspTY
-         q+K6Q59e0AXYypgPD1ElFot9spe9Y4y+eHrRIC8Rocm5QF3dKZuq6emO9vc3JKsBN74f
-         LS9gHXjn28S/g4YwBDgCpyL5CivwZmNWjV1kXKtdNh8kfgn4Ji2zyCFLfEI4Y1A9Q/vA
-         wW1fCsK+6lHzxW07gmQUTakMYrvt9ww8pa6kJIestX1I/ZX1P1m9D+WUDoZDc8ERmLMS
-         hLurMG4ypbWY/0mxO0tSYWDFEr1Fs6my8hCwrv66cxaG4uLjxxfcBRoWyfvED8eQ5G1t
-         K07g==
-X-Gm-Message-State: AOAM5328wegl5pWN78IFPMRMFOYFvEJS9I7BNY5TkjX1Kk4iw+c5S3xZ
-        1zcE7Bjxo+OS7uOl9JRpwuc=
-X-Google-Smtp-Source: ABdhPJwHF8Cc75NiCoqdWLrfa/FPxGFh0JpjLi0WPGU7UIEedQzFzmb0A4CuVxua7FvyHzOO96fVKQ==
-X-Received: by 2002:adf:9062:: with SMTP id h89mr8288825wrh.285.1593271102040;
-        Sat, 27 Jun 2020 08:18:22 -0700 (PDT)
-Received: from localhost.localdomain (dslb-178-006-252-175.178.006.pools.vodafone-ip.de. [178.6.252.175])
-        by smtp.gmail.com with ESMTPSA id o7sm20454932wmb.9.2020.06.27.08.18.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jun 2020 08:18:21 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: rtl8188eu: remove unnecessary comments in hal8188e_phy_cfg.h
-Date:   Sat, 27 Jun 2020 17:15:44 +0200
-Message-Id: <20200627151544.11251-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sat, 27 Jun 2020 11:18:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593271135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=C4M0Ba5Ra4A0tyskw/Kq90KeC+eoL17StqPFkLGa6W0=;
+        b=HHH614oJtN1LzLjzdLGMVPnVIBYAzbJlklZmogBezw3grRaaYG+bKh46N4ifh/i3UK7BOq
+        HdawCNa8tWULqmc7IvfjXpqXlc1mazpkdJsQID4+/tAXLQ1mW1wikRUiCs+uSfYvwpHMNn
+        Ou4ZCOhaOV5iXqBQK1Lgz4OUuyzat3M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-454-Xi90i6W4NjuFum5_IEyvSg-1; Sat, 27 Jun 2020 11:18:51 -0400
+X-MC-Unique: Xi90i6W4NjuFum5_IEyvSg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5AB0E107ACCA;
+        Sat, 27 Jun 2020 15:18:44 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.28])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 886DA60BF4;
+        Sat, 27 Jun 2020 15:18:36 +0000 (UTC)
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     containers@lists.linux-foundation.org,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     eparis@parisplace.org, Steve Grubb <sgrubb@redhat.com>,
+        omosnace@redhat.com, Paul Moore <paul@paul-moore.com>,
+        nhorman@redhat.com, dwalsh@redhat.com, mpatel@redhat.com,
+        Richard Guy Briggs <rgb@redhat.com>
+Subject: [PATCH ghau51/ghau40 v9 00/11] add support for audit container identifier
+Date:   Sat, 27 Jun 2020 11:18:00 -0400
+Message-Id: <1593271091-30188-1-git-send-email-rgb@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecessary comments in hal8188e_phy_cfg.h to improve
-readability and clear multiple blank lines checkpatch issues.
+Add support for audit kernel container identifiers to userspace tools.
 
-CHECK: Please don't use multiple blank lines
+The first and second add new record types.  The third adds filter
+support.  The fourth and 5th start to add search support.
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- .../rtl8188eu/include/hal8188e_phy_cfg.h      | 23 -------------------
- 1 file changed, 23 deletions(-)
+The 6th is to read the calling process' audit container identifier from
+the /proc filesystem matching the kernel /proc read patch.
 
-diff --git a/drivers/staging/rtl8188eu/include/hal8188e_phy_cfg.h b/drivers/staging/rtl8188eu/include/hal8188e_phy_cfg.h
-index 0c5b2b0948f5..78b44bf55f28 100644
---- a/drivers/staging/rtl8188eu/include/hal8188e_phy_cfg.h
-+++ b/drivers/staging/rtl8188eu/include/hal8188e_phy_cfg.h
-@@ -7,8 +7,6 @@
- #ifndef __INC_HAL8188EPHYCFG_H__
- #define __INC_HAL8188EPHYCFG_H__
- 
--
--/*--------------------------Define Parameters-------------------------------*/
- #define LOOP_LIMIT			5
- #define MAX_STALL_TIME			50		/* us */
- #define AntennaDiversityValue		0x80
-@@ -17,11 +15,6 @@
- 
- #define MAX_AGGR_NUM			0x07
- 
--
--/*--------------------------Define Parameters-------------------------------*/
--
--
--/*------------------------------Define structure----------------------------*/
- enum sw_chnl_cmd_id {
- 	CmdID_End,
- 	CmdID_SetTxPowerLevel,
-@@ -145,21 +138,7 @@ struct bb_reg_def {
- 				 */
- };
- 
--/*------------------------------Define structure----------------------------*/
--
--
--/*------------------------Export global variable----------------------------*/
--/*------------------------Export global variable----------------------------*/
--
--
--/*------------------------Export Marco Definition---------------------------*/
--/*------------------------Export Marco Definition---------------------------*/
--
--
--/*--------------------------Exported Function prototype---------------------*/
--/*  */
- /*  BB and RF register read/write */
--/*  */
- 
- /* Read initi reg value for tx power setting. */
- void rtl8192c_PHY_GetHWRegOriginalValue(struct adapter *adapter);
-@@ -181,8 +160,6 @@ void PHY_EnableHostClkReq(struct adapter *adapter);
- 
- bool SetAntennaConfig92C(struct adapter *adapter, u8 defaultant);
- 
--/*--------------------------Exported Function prototype---------------------*/
--
- #define PHY_SetMacReg	PHY_SetBBReg
- 
- #define	SIC_HW_SUPPORT			0
+The 7th is to fix signal support and the 8th is to learn the audit
+container identifier of the process that signals the audit daemon.
+
+The 9th is a touch up to allow the contid field to be interpreted as a
+CSV list.
+
+The 10th adds audit contid list support to ausearch.
+
+The last adds audit library support to allow a process to give
+permission to a container orchestrator in a non-init user namespace via
+audit netlink messages.
+
+See: https://github.com/linux-audit/audit-userspace/issues/51
+See: https://github.com/linux-audit/audit-userspace/issues/40
+See: https://github.com/linux-audit/audit-kernel/issues/90
+See: https://github.com/linux-audit/audit-kernel/issues/91
+See: https://github.com/linux-audit/audit-testsuite/issues/64
+  https://githu.com/linux-audit/audit-testsuite/pull/91
+  https://github.com/rgbriggs/audit-testsuite/tree/ghat64-contid
+See: https://github.com/linux-audit/audit-kernel/wiki/RFE-Audit-Container-ID
+
+A repo of the code is here:
+  git@github.com:rgbriggs/audit-userspace.git ghau40-containerid-filter.v9
+And test rpms built from it are here:
+  people.redhat.com/~rbriggs/ghak90/git-8277e93-fc32
+
+Changelog:
+v9
+- accept a contid list for sig_info2
+- bump AUDIT_CONTAINER_ID to 1336 to accommodate AUDIT_EVENT_LISTENER
+- fix logical result reversal in audit_signal_info_has_ctx()
+- fix event_contid clist declaration, fix comment about CONTAINER_OP/ID old-/contid CSV
+- add SET_CAPCONTID to lib/netlink.c adjust_reply() and check_events()
+- rebase on ghak28 parser
+- rebase on ghak25 parser
+- rebase on ghau86 fix
+- in auparse/interpret.c:print_contid() also detect "-1"
+- remove patches to limit nesting depth and netns count
+- whitespace fixes
+- squash clist into slist
+- simplify audit_[sg]et_capcontid()
+
+v8
+- renumber contid records and drop netlink contid set/get support
+- remove subject attributes from parse_container_op()
+- fix audit_request_signal_info.3 manpage
+- add manpage for audit_set_capcontid()
+- implement clist for contid list search
+- rebase on audit_bpf patches (bump CONTAINER_ID to 1335)
+- implement control for audit container identifier nesting depth limit with manpage
+- implent control for audit container identifier netns count limit with manpage
+
+v7
+- rebase on ghau90 and touchup
+- rebase on ghak10 support (change AUDIT_CONTAINER_ID to 1334)
+- render type contid as a CSV
+- switch from /proc to audit netlink to set/get contid, auid/sessionid
+- add support for capcontid
+
+v6
+- auditd signaller tracking was moved to a new AUDIT_SIGNAL_INFO2
+  request and record
+- swap CONTAINER_OP contid/old-contid to ease parsing
+- add to auparse
+
+v5
+- updated aux record from AUDIT_CONTAINER to AUDIT_CONTAINER_ID
+- add AUDIT_CONTAINER_ID to normalization
+- rebase on AUDIT_ANOM_LINK and AUDIT_MAC_CALIPSO_ADD
+
+v4
+- change from AUDIT_CONTAINER_ID to AUDIT_CONTAINER_OP
+- change from AUDIT_FEATURE_BITMAP_CONTAINERID_FILTER to
+  AUDIT_FEATURE_BITMAP_CONTAINERID
+- change from event_container_id to event_contid internally
+- change from container_id to contid and event_container_id to
+  event_contid internally
+- change command line option from --container-id to --contid
+
+v3
+- change from AUDIT_CONTAINER to AUDIT_CONTAINER_ID
+- change from AUDIT_CONTAINER_INFO to AUDIT_CONTAINER
+- change from AUDIT_CONTAINERID to AUDIT_CONTID
+- update github issue refs
+- add audit_get_containerid
+- change event_container_id default value
+- add --containerid to ausearch options help text
+- update ausearch parser and error codes
+
+v2
+- rebase on UINT_MAX patch
+- add patches for AUDIT_CONTAINER, AUDIT_CONTAINER_INFO, ausearch,
+  normalization
+
+Richard Guy Briggs (11):
+  AUDIT_CONTAINER_OP message type basic support
+  AUDIT_CONTAINER_ID message type basic support
+  auditctl: add support for AUDIT_CONTID filter
+  add ausearch containerid support
+  start normalization containerid support
+  libaudit: add support to get the task audit container identifier
+  signal_info: only print context if it is available.
+  add support for audit_signal_info2
+  contid: interpret correctly CONTAINER_ID contid field csv
+  ausearch: convert contid to comma-sep/carrat-mod cnode/clist
+  libaudit: add support to get and set capcontid on a task
+
+ auparse/auditd-config.c          |   1 +
+ auparse/auparse-defs.h           |   3 +-
+ auparse/interpret.c              |  10 +++
+ auparse/normalize.c              |   1 +
+ auparse/normalize_record_map.h   |   3 +
+ auparse/typetab.h                |   2 +
+ bindings/python/auparse_python.c |   1 +
+ docs/Makefile.am                 |   3 +-
+ docs/audit_get_capcontid.3       |  25 ++++++
+ docs/audit_get_containerid.3     |  25 ++++++
+ docs/audit_request_signal_info.3 |  15 +++-
+ docs/audit_set_capcontid.3       |  24 +++++
+ docs/auditctl.8                  |   3 +
+ lib/fieldtab.h                   |   1 +
+ lib/libaudit.c                   | 188 +++++++++++++++++++++++++++++++++++++--
+ lib/libaudit.h                   |  36 +++++++-
+ lib/msg_typetab.h                |   4 +
+ lib/netlink.c                    |   6 ++
+ src/Makefile.am                  |   6 +-
+ src/auditctl-listing.c           |  21 +++++
+ src/auditd-config.c              |   1 +
+ src/auditd-config.h              |   1 +
+ src/auditd-event.c               |  28 ++++--
+ src/auditd-reconfig.c            |  27 ++++--
+ src/auditd.c                     |   4 +-
+ src/aureport-options.c           |   2 +
+ src/ausearch-contid.c            | 172 +++++++++++++++++++++++++++++++++++
+ src/ausearch-contid.h            |  60 +++++++++++++
+ src/ausearch-llist.c             |   6 ++
+ src/ausearch-llist.h             |   2 +
+ src/ausearch-lol.c               |   4 +
+ src/ausearch-match.c             |  35 ++++++++
+ src/ausearch-options.c           |  78 +++++++++++++++-
+ src/ausearch-options.h           |   2 +
+ src/ausearch-parse.c             | 124 ++++++++++++++++++++++++++
+ src/ausearch-report.c            |   6 +-
+ 36 files changed, 898 insertions(+), 32 deletions(-)
+ create mode 100644 docs/audit_get_capcontid.3
+ create mode 100644 docs/audit_get_containerid.3
+ create mode 100644 docs/audit_set_capcontid.3
+ create mode 100644 src/ausearch-contid.c
+ create mode 100644 src/ausearch-contid.h
+
 -- 
-2.27.0
+1.8.3.1
 
