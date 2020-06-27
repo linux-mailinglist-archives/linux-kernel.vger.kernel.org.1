@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0634220C35B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 19:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE34820C365
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 19:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbgF0RnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 13:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgF0RnG (ORCPT
+        id S1726635AbgF0R5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 13:57:13 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:48948 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725932AbgF0R5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 13:43:06 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4104AC061794
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 10:43:03 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id h22so6410457lji.9
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 10:43:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gSgvKoi8G4VJMQGHrpyGDqm81BfA5NfOfyYIB+GxuOo=;
-        b=Yd3FcI+TF5ttPlgmz/FVconDLMEluWECcFaIwIr6L1Ca4/JG/AksUsC1fI4s2bdVJt
-         iDjEqDVoGdGqorZxxvYJ7xgwW74pqPN5sngf9Lwgt7uYnveqnzjacO8AEfMAm39k52jW
-         pH20hC3xsnt6htLc19XkWX+55CCJcfSg0QlpBQS5cBAA4yWxIWiCVG+oJ7gDmo05Ov8b
-         /uyYZ1PWy7GO7Vj6JjUV1KRMhNoU4zOuydsILBp6xZugVe9q3SeLIpGtE5XhOIjeWa7b
-         rd8rjGYPBXf6QAD0buLMpbXg2XwxZTqH8l7UlJpPPDl6JinekU9WsDXGXbJG9mXOfe17
-         ZuBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gSgvKoi8G4VJMQGHrpyGDqm81BfA5NfOfyYIB+GxuOo=;
-        b=G1uVC8UMnowA1wASsB/LE8E4F9sLywdrHrYXjWZn+iPS6izgfl3XwhRUbnFnhM0NI3
-         pNpuqP79DUbQ3aUnqOMHimLOKjKNo/ZwQWXprEzaaPXZYYy1NIa0nyWJNptA+ewn0ABu
-         2N729jo1ZM6YFQrKVypAV7o97DUDeisTSYTDdxuDaGfz+gZknWv6hgI3XqnbPwX9KKWZ
-         /pwp/sKWVHpLUjkLSpY5LmvYSM0ZnpfLqNaluVKTC/BbbNn8b1a7+meVFVtBReAa/WPd
-         etfbeuGqVHx2MTWJk+hx99OFwDffRjUkbTLm21Da3P/Qr5VNUS5tFFH6F14ufRUfi0sq
-         mvXQ==
-X-Gm-Message-State: AOAM531+VkleZc5oHYGJWz2J8S0q+IXUp+b1BtAEMJVkLPVuxj9aOLr6
-        ferBCTHXtQwtlezQhAFrFSr2QN/q+oh0mA1rQNA=
-X-Google-Smtp-Source: ABdhPJx6hBa/cu1yII7uuXIyp5aFYbUQXzbHOLF6Z5trZh+dtVFSW/dDyPy8xJl2UMyiIyGWV8YoF5FQrzwFRIRIoUs=
-X-Received: by 2002:a2e:50b:: with SMTP id 11mr3470506ljf.458.1593279781666;
- Sat, 27 Jun 2020 10:43:01 -0700 (PDT)
+        Sat, 27 Jun 2020 13:57:12 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05RHo6ln064903;
+        Sat, 27 Jun 2020 17:56:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=HLOz9kDIzLCFVGuef2bWdtwPRWQv/R1O3VG3deV5rYo=;
+ b=aWxjc7xAxaKRoF23k/UL92NwiTbHNf38/b5EdWI4wbgb9X0K+UvPmdLifd18X+sRopce
+ UeIA2I7Z65c6bcm6kdop95ydVT4rdbQwjt3Juo1KSycDb3wEA2Geq87NYQM9neZMVEUS
+ cwP22BzoI+99E1yIvfoIh9kFvCbgAwiKh43HCVLBIFT/m3C/0x9lFs8cQKlui1LgN4Ik
+ PiEogSoQ30/Sy5vF9/vNkE83yeqY/ZO1jd2PG3FUMSA2JCEn1giAKIkY9BKymuM7KayU
+ 1QlDl1FYf0nnfB7ApUqhbNmAWP0sTyebYQbulMOVoP0DMkmy2y9AZaWJgSs42T0r/wE2 +w== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 31wxrmsb72-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 27 Jun 2020 17:56:58 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05RHsOfs026954;
+        Sat, 27 Jun 2020 17:54:57 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 31wwehp5nb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 27 Jun 2020 17:54:57 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05RHstx8019373;
+        Sat, 27 Jun 2020 17:54:55 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 27 Jun 2020 17:54:55 +0000
+Date:   Sat, 27 Jun 2020 20:54:45 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Alim Akhtar <alim.akhtar@samsung.com>
+Cc:     "'Avri Altman'" <avri.altman@wdc.com>,
+        "'James E.J. Bottomley'" <jejb@linux.ibm.com>,
+        "'Martin K. Petersen'" <martin.petersen@oracle.com>,
+        "'Kukjin Kim'" <kgene@kernel.org>,
+        "'Krzysztof Kozlowski'" <krzk@kernel.org>,
+        "'Kiwoong Kim'" <kwmad.kim@samsung.com>,
+        "'Wei Yongjun'" <weiyongjun1@huawei.com>,
+        linux-scsi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] scsi: ufs: ufs-exynos: Remove an unnecessary NULL check
+Message-ID: <20200627175445.GG2571@kadam>
+References: <CGME20200626105156epcas5p191d18d66af6bd09a10635559461c0bc0@epcas5p1.samsung.com>
+ <20200626105133.GF314359@mwanda>
+ <041701d64ca7$70bafb80$5230f280$@samsung.com>
 MIME-Version: 1.0
-References: <1592360843-3440-1-git-send-email-jrdr.linux@gmail.com> <1592360843-3440-3-git-send-email-jrdr.linux@gmail.com>
-In-Reply-To: <1592360843-3440-3-git-send-email-jrdr.linux@gmail.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Sat, 27 Jun 2020 23:21:18 +0530
-Message-ID: <CAFqt6zZgrBkwB8ZVn4Lescnvy0kspVoWgaA4oAHkdG1YA90ZzA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] staging: kpc2000: kpc_dma: Convert set_page_dirty()
- --> set_page_dirty_lock()
-To:     Greg KH <gregkh@linuxfoundation.org>, jane.pnx9@gmail.com,
-        pakki001@umn.edu, ldufour@linux.ibm.com, harshjain32@gmail.com,
-        =?UTF-8?Q?Simon_Sandstr=C3=B6m?= <simon@nikanor.nu>,
-        Michel Lespinasse <walken@google.com>
-Cc:     "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Bharath Vedartham <linux.bhar@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <041701d64ca7$70bafb80$5230f280$@samsung.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9665 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0
+ malwarescore=0 adultscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006270130
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9665 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
+ priorityscore=1501 impostorscore=0 bulkscore=0 clxscore=1015
+ malwarescore=0 phishscore=0 adultscore=0 cotscore=-2147483648
+ lowpriorityscore=0 suspectscore=0 spamscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006270129
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 7:50 AM Souptick Joarder <jrdr.linux@gmail.com> wrote:
->
-> First, convert set_page_dirty() to set_page_dirty_lock()
->
-> Second, there is an interval in there after set_page_dirty() and
-> before put_page(), in which the device could be running and setting
-> pages dirty. Moving set_page_dirty_lock() after dma_unmap_sg().
->
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> Suggested-by: John Hubbard <jhubbard@nvidia.com>
-> Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> Cc: Bharath Vedartham <linux.bhar@gmail.com>
-> ---
->  drivers/staging/kpc2000/kpc_dma/fileops.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/staging/kpc2000/kpc_dma/fileops.c b/drivers/staging/kpc2000/kpc_dma/fileops.c
-> index b136353..bcce86c 100644
-> --- a/drivers/staging/kpc2000/kpc_dma/fileops.c
-> +++ b/drivers/staging/kpc2000/kpc_dma/fileops.c
-> @@ -214,13 +214,13 @@ void  transfer_complete_cb(struct aio_cb_data *acd, size_t xfr_count, u32 flags)
->         BUG_ON(!acd->ldev);
->         BUG_ON(!acd->ldev->pldev);
->
-> +       dma_unmap_sg(&acd->ldev->pldev->dev, acd->sgt.sgl, acd->sgt.nents, acd->ldev->dir);
-> +
->         for (i = 0 ; i < acd->page_count ; i++) {
->                 if (!PageReserved(acd->user_pages[i]))
+On Sat, Jun 27, 2020 at 10:51:44PM +0530, Alim Akhtar wrote:
+> Hi Dan
+> 
+> > -----Original Message-----
+> > The "head" pointer can't be NULL because it points to an address in the
+> middle
+> > of a ufs_hba struct.  Looking at this code, probably someone would wonder
+> if
+> > the intent was to check whether "hba" is NULL, but "hba"
+> > isn't NULL and the check can just be removed.
+> > 
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > ---
+> Please add Fixes: tag
+> With that
+> Acked-by: Alim Akhtar <alim.akhtar@samsung.com>
 
-Question -> is PageReserved() used with specific purpose not PageDirty() ??
+It's not a bug fix it's just a cleanup.
 
-> -                       set_page_dirty(acd->user_pages[i]);
-> +                       set_page_dirty_lock(acd->user_pages[i]);
->         }
->
-> -       dma_unmap_sg(&acd->ldev->pldev->dev, acd->sgt.sgl, acd->sgt.nents, acd->ldev->dir);
-> -
->         for (i = 0 ; i < acd->page_count ; i++)
->                 put_page(acd->user_pages[i]);
->
-> --
-> 1.9.1
->
+regards,
+dan carpenter
+
