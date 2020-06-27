@@ -2,94 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4DE20C1D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 15:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB5E20C1E0
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 15:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726639AbgF0NoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 09:44:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725850AbgF0NoE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 09:44:04 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E060E21655;
-        Sat, 27 Jun 2020 13:44:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593265444;
-        bh=zNHHbv8yZG7Tr/13VLMjcj16QvLBa4eunXcfuBB0iI8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SngmTcfUOfo9kUTKtkZ3J4MycHrDGJ5ImkJB9EBQ1IrspYuPSHyFVfzkJ3On5wm2v
-         cN8vJFfFXl+/+5eNmJNgyeZE06A6wTAqihdNYv9CEHKUIEpP0B7rZk9c82D5a8eTHV
-         SpLGbuzqidSTTuAGnUL39HkoyzQO5VkbhWlQW7a8=
-Date:   Sat, 27 Jun 2020 14:43:59 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: bmc150_magn: Document and fix
- missing compatibles
-Message-ID: <20200627144359.1ae30bb0@archlinux>
-In-Reply-To: <20200622060110.23192-1-krzk@kernel.org>
-References: <20200622060110.23192-1-krzk@kernel.org>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726665AbgF0Nzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 09:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726177AbgF0Nzy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 09:55:54 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9377BC061794
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 06:55:53 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id e15so9055721edr.2
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 06:55:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hoSrfN6BUR4s2KxWgiwxUSDxg2CiKyhfKscI1191oiA=;
+        b=T8sLRMvw/GozyjPIwBVAuof7TWZV5UE+xRUqLg5JJVUQV/qh8ABpO+NdDWOEOl7In3
+         3500XHgq2minPL+o2DBa/QDRLeY4TU+A/XsjL0LRaRr7b5ZdBj6MW2SOysKirBN4UZdW
+         9sxehSPrLAFe100eH49YKmxBEazdwIU6WfX0ouKm4v7dwM+3bKbNoytUSSwoDhhb8Rmn
+         EXv33BYFX8Etmck3DZxXkKer4ZRM8sleFnVNf9Qzmrk56vh6Qx27uoOxSop58Rw0CYBm
+         O6CzoQ+wScSN57FdDSHJ2Uk64fFluScupS0tEEQLyvgP8iMsmBSwDbG+etGnrVxS4W4P
+         ZbVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hoSrfN6BUR4s2KxWgiwxUSDxg2CiKyhfKscI1191oiA=;
+        b=C8+uOoAo+DuefjIXcBGiwzMdNicuYvAfYsv3xi2kiPQ8XMM/Jtssuhk/v8T+Z/vKu/
+         GL3IKrzP614Mk2OQDTubMrTOO+1j2cIfoAklkFTC3/NxVXIqgnblYCwitmCGl03XZOb4
+         Owoi4Bp61xWBnMBuf4yw2HPcbCAue2BEFdU+rgAf++KDuiwY/EToDQQbep4qhjfx2Grt
+         exnkbdfZAFvBF0/sO8tR40mO3ugqp59vb3eN0B0GhxcnpgpZnmF6c4iz5KiU6ER6V/6D
+         XdU+7ZIs49KxDXgJotQCWESvTLuEBIvaRjBGX1Joe5j3OGnWUwbbhsAeFYSha1tP3fY0
+         novQ==
+X-Gm-Message-State: AOAM533wpWThEBEnh8VAGb9DLuhGYkdlT4t4hygDBAz4Qib0mFdDvnHu
+        L3hDimKQKCgX2l03D9+aKCbxDw==
+X-Google-Smtp-Source: ABdhPJyQ9Nm7pcD7I8ZuGmTzvTdIQKbVgRckXBQakwSnqr+vyREZjumQpmx23E0PMKrU7of3rXTC8g==
+X-Received: by 2002:aa7:c305:: with SMTP id l5mr2571618edq.163.1593266152157;
+        Sat, 27 Jun 2020 06:55:52 -0700 (PDT)
+Received: from localhost.localdomain ([2001:16b8:5c8f:5b01:3446:ed90:fece:8da5])
+        by smtp.gmail.com with ESMTPSA id bc23sm5665335edb.90.2020.06.27.06.55.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Jun 2020 06:55:51 -0700 (PDT)
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
+        bcousson@baylibre.com, linux-omap@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        linux-gpio@vger.kernel.org
+Cc:     Drew Fustini <drew@beagleboard.org>
+Subject: [PATCH] Add default mux for pins that a free GPIO lines on the PocketBeagle
+Date:   Sat, 27 Jun 2020 15:55:38 +0200
+Message-Id: <20200627135538.194179-1-drew@beagleboard.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Jun 2020 08:01:09 +0200
-Krzysztof Kozlowski <krzk@kernel.org> wrote:
+These pins on the PocketBeagle P1 and P2 headers are connected to AM3358
+balls with gpio lines, and these pins are not used for any other
+peripherals by default. These GPIO lines are unclaimed and could be used
+by userspace program through the gpiod ABI. However, no driver will have
+set mux mode for the pins.
 
-> The driver supports also BMC156B and BMM150B but these compatibles had
-> redundant suffix "_magn".  Add existing compatibles marking them
-> deprecated along with adding a new, proper one for this family of
-> devices.
-Thanks for tidying this up.
+This patch adds a "default" state in the am33xx_pinmux node and sets the
+pins to gpio output mux mode.
 
-The BMC156B is a dual magnetometer and accelerometer chip
-so for that one the _magn postfix probably is needed.
+Signed-off-by: Drew Fustini <drew@beagleboard.org>
+---
+ arch/arm/boot/dts/am335x-pocketbeagle.dts | 98 +++++++++++++++++++++++
+ 1 file changed, 98 insertions(+)
 
-Or am I missing something?
-
-The way this does SPI is rather odd but seems to be the same as the bmc150
-(two chips with non overlapping register maps).
-
-Jonathan
-
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
-> 
-> Changes since v1:
-> 1. Mark old compatibles as deprecated, add new one.
-> ---
->  .../devicetree/bindings/iio/magnetometer/bmc150_magn.txt    | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/magnetometer/bmc150_magn.txt b/Documentation/devicetree/bindings/iio/magnetometer/bmc150_magn.txt
-> index fd5fca90fb39..efeda055be6a 100644
-> --- a/Documentation/devicetree/bindings/iio/magnetometer/bmc150_magn.txt
-> +++ b/Documentation/devicetree/bindings/iio/magnetometer/bmc150_magn.txt
-> @@ -4,7 +4,11 @@ http://ae-bst.resource.bosch.com/media/products/dokumente/bmc150/BST-BMC150-DS00
->  
->  Required properties:
->  
-> -  - compatible : should be "bosch,bmc150_magn"
-> +  - compatible : should be one of:
-> +                 "bosch,bmc150_magn"
-> +                 "bosch,bmc156"
-> +                 "bosch,bmc156_magn" (DEPRECATED, use bosch,bmc156)
-> +                 "bosch,bmm150_magn" (DEPRECATED, use bosch,bmc156)
->    - reg : the I2C address of the magnetometer
->  
->  Optional properties:
+diff --git a/arch/arm/boot/dts/am335x-pocketbeagle.dts b/arch/arm/boot/dts/am335x-pocketbeagle.dts
+index f0b222201b86..900dc6558701 100644
+--- a/arch/arm/boot/dts/am335x-pocketbeagle.dts
++++ b/arch/arm/boot/dts/am335x-pocketbeagle.dts
+@@ -60,6 +60,104 @@ vmmcsd_fixed: fixedregulator0 {
+ };
+ 
+ &am33xx_pinmux {
++
++	pinctrl-names = "default";
++	pinctrl-0 =   <	&P2_03_gpio &P1_34_gpio &P2_19_gpio &P2_24_gpio
++			&P2_33_gpio &P2_22_gpio &P2_18_gpio &P2_10_gpio
++			&P2_06_gpio &P2_04_gpio &P2_02_gpio &P2_08_gpio
++			&P2_17_gpio >;
++
++	/* P2_03 (ZCZ ball T10) gpio0_23 0x824 */
++	P2_03_gpio: pinmux_P2_03_gpio {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(AM335X_PIN_GPMC_AD9, PIN_OUTPUT, MUX_MODE7)
++		>;
++	};
++
++	/* P1_34 (ZCZ ball T11) gpio0_26 0x828 */
++	P1_34_gpio: pinmux_P1_34_gpio {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(AM335X_PIN_GPMC_AD10, PIN_OUTPUT, MUX_MODE7)
++		>;
++	};
++
++		/* P2_19 (ZCZ ball U12) gpio0_27 0x82c */
++	P2_19_gpio: pinmux_P2_19_gpio {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(AM335X_PIN_GPMC_AD11, PIN_OUTPUT, MUX_MODE7)
++		>;
++	};
++
++	/* P2_24 (ZCZ ball T12) gpio1_12 0x830 */
++	P2_24_gpio: pinmux_P2_24_gpio {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(AM335X_PIN_GPMC_AD12, PIN_OUTPUT, MUX_MODE7)
++		>;
++	};
++
++	/* P2_33 (ZCZ ball R12) gpio1_13 0x834 */
++	P2_33_gpio: pinmux_P2_33_gpio {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(AM335X_PIN_GPMC_AD13, PIN_OUTPUT, MUX_MODE7)
++		>;
++	};
++
++	/* P2_22 (ZCZ ball V13) gpio1_14 0x838 */
++	P2_22_gpio: pinmux_P2_22_gpio {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(AM335X_PIN_GPMC_AD14, PIN_OUTPUT, MUX_MODE7)
++		>;
++	};
++
++	/* P2_18 (ZCZ ball U13) gpio1_15 0x83c */
++	P2_18_gpio: pinmux_P2_18_gpio {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(AM335X_PIN_GPMC_AD15, PIN_OUTPUT, MUX_MODE7)
++		>;
++	};
++
++	/* P2_10 (ZCZ ball R14) gpio1_20 0x850 */
++	P2_10_gpio: pinmux_P2_10_gpio {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(AM335X_PIN_GPMC_A4, PIN_OUTPUT, MUX_MODE7)
++		>;
++	};
++
++	/* P2_06 (ZCZ ball U16) gpio1_25 0x864 */
++	P2_06_gpio: pinmux_P2_06_gpio {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(AM335X_PIN_GPMC_A9, PIN_OUTPUT, MUX_MODE7)
++		>;
++	};
++
++	/* P2_04 (ZCZ ball T16) gpio1_26 0x868 */
++	P2_04_gpio: pinmux_P2_04_gpio {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(AM335X_PIN_GPMC_A10, PIN_OUTPUT, MUX_MODE7)
++		>;
++	};
++
++	/* P2_02 (ZCZ ball V17) gpio1_27 0x86c */
++	P2_02_gpio: pinmux_P2_02_gpio {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(AM335X_PIN_GPMC_A11, PIN_OUTPUT, MUX_MODE7)
++		>;
++	};
++
++	/* P2_08 (ZCZ ball U18) gpio1_28 0x878 */
++	P2_08_gpio: pinmux_P2_08_gpio {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(AM335X_PIN_GPMC_BEN1, PIN_OUTPUT, MUX_MODE7)
++		>;
++	};
++
++	/* P2_17 (ZCZ ball V12) gpio2_1 0x88c */
++	P2_17_gpio: pinmux_P2_17_gpio {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(AM335X_PIN_GPMC_CLK, PIN_OUTPUT, MUX_MODE7)
++		>;
++	};
++
+ 	i2c2_pins: pinmux-i2c2-pins {
+ 		pinctrl-single,pins = <
+ 			AM33XX_PADCONF(AM335X_PIN_UART1_RTSN, PIN_INPUT_PULLUP, MUX_MODE3)	/* (D17) uart1_rtsn.I2C2_SCL */
+-- 
+2.25.1
 
