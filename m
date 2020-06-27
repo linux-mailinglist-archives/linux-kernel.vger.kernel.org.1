@@ -2,82 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C727220C4DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 01:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D1E20C4ED
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 01:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbgF0Xod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 19:44:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56602 "EHLO mail.kernel.org"
+        id S1726790AbgF0X60 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 27 Jun 2020 19:58:26 -0400
+Received: from mx1.uwb.edu.pl ([212.33.71.231]:47334 "EHLO mx1.uwb.edu.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbgF0Xoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 19:44:32 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1360420702;
-        Sat, 27 Jun 2020 23:44:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593301472;
-        bh=d04eqpCgpXgxOLYZqH/WyKrVLxH+G/xevPPndAeOyCQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SUPaGrT5PNtnqRh5VEM3mQlc29OZd9/jo+jc6MwU3uw+MjCN/hCVWLA8q+/RBI169
-         O5d2BDWUNXGvW9DtPVryJRtAb4fuY5+Vj0Yeyti1kmPPiBF9dDC+9iaVuW89pC0zGE
-         GGWJsjkHzLFSQLi9q12QOcfmiiWKH2VaXkR7oiJA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id F2F82352308E; Sat, 27 Jun 2020 16:44:31 -0700 (PDT)
-Date:   Sat, 27 Jun 2020 16:44:31 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <Kernel-team@fb.com>
-Subject: Re: [PATCH tick-sched] Clarify "NOHZ: local_softirq_pending" warning
-Message-ID: <20200627234431.GJ9247@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200627214629.GH9247@paulmck-ThinkPad-P72>
- <83B12EF8-3792-4943-A548-5DB0C6FC71D1@amacapital.net>
+        id S1726695AbgF0X60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 19:58:26 -0400
+X-Greylist: delayed 537 seconds by postgrey-1.27 at vger.kernel.org; Sat, 27 Jun 2020 19:58:25 EDT
+Received: from sun.uwb.edu.pl (sun.uwb.edu.pl [212.33.71.69])
+        by mx1.uwb.edu.pl (Postfix) with ESMTP id A8BDF301011;
+        Sun, 28 Jun 2020 01:48:55 +0200 (CEST)
+Received: from sun.uwb.edu.pl (localhost [127.0.0.1])
+        by sun.uwb.edu.pl (Postfix) with ESMTP id 6BE06240099;
+        Sun, 28 Jun 2020 01:48:55 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at sun.uwb.edu.pl
+Received: from sun.uwb.edu.pl ([127.0.0.1])
+        by sun.uwb.edu.pl (sun.uwb.edu.pl [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Vn1CzvhBBQLt; Sun, 28 Jun 2020 01:48:55 +0200 (CEST)
+Received: from [100.120.128.60] (unknown [45.87.184.74])
+        by sun.uwb.edu.pl (Postfix) with ESMTPSA id 7C215240107;
+        Sun, 28 Jun 2020 01:48:42 +0200 (CEST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <83B12EF8-3792-4943-A548-5DB0C6FC71D1@amacapital.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Dringende Antwort
+To:     Recipients <adaniluk@uwb.edu.pl>
+From:   "William Yun" <adaniluk@uwb.edu.pl>
+Date:   Sun, 28 Jun 2020 02:48:27 +0300
+Reply-To: williamyun11@gmail.com
+X-Antivirus: Avast (VPS 200627-8, 06/27/2020), Outbound message
+X-Antivirus-Status: Clean
+Message-Id: <20200627234855.6BE06240099@sun.uwb.edu.pl>
+X-UwB_mx1-MailScanner-Information: Please contact the ISP for more information
+X-UwB_mx1-MailScanner-ID: A8BDF301011.A2FD1
+X-UwB_mx1-MailScanner: Found to be clean
+X-UwB_mx1-MailScanner-From: adaniluk@uwb.edu.pl
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 27, 2020 at 03:14:14PM -0700, Andy Lutomirski wrote:
-> 
-> > On Jun 27, 2020, at 2:46 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > 
-> > ï»¿On Sat, Jun 27, 2020 at 02:02:15PM -0700, Andy Lutomirski wrote:
-> >>> On Fri, Jun 26, 2020 at 2:05 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >>> 
-> >>> Currently, can_stop_idle_tick() prints "NOHZ: local_softirq_pending HH"
-> >>> (where "HH" is the hexadecimal softirq vector number) when one or more
-> >>> non-RCU softirq handlers are still enablded when checking to stop the
-> >>> scheduler-tick interrupt.  This message is not as enlightening as one
-> >>> might hope, so this commit changes it to "NOHZ tick-stop error: Non-RCU
-> >>> local softirq work is pending, handler #HH.
-> >> 
-> >> Thank you!  It would be even better if it would explain *why* the
-> >> problem happened, but I suppose this code doesn't actually know.
-> > 
-> > Glad to help!
-> > 
-> > To your point, is it possible to bisect the appearance of this message,
-> > or is it as usual non-reproducible?  (Hey, had to ask!)
-> > 
-> >                            
-> 
-> In this particular case, I tracked it down by good old fashioned sleuthing for bugs, but itâ€™s still unclear to me precisely how NOHZ gets involved. The bug is that we were entering the kernel from usermode, doing nmi_enter(), turning on interrupts, maybe getting a page fault, raising a signal, turning off interrupts, nmi_exit(), and back to usermode, with the signal still queued and undelivered.  This is all kinds of bad, but I still donâ€™t understand what softirqs or idle have to do with it.
-> 
-> But I have the bug fixed now!
+Hallo, ich habe ein Geschäft von 24,5 Mio. USD, das ich mit Ihnen teilen kann. Wenn Sie interessiert sind? Bitte schreibe zurück und ich werde dir mehr Details geben.
 
-Glad you found it!
+Grüße,
 
-							Thanx, Paul
+William.
+
+-- 
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
+
