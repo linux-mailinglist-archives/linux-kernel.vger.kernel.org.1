@@ -2,77 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555F520C0AA
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 12:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65A220C09C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 12:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgF0KUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 06:20:11 -0400
-Received: from rin.romanrm.net ([51.158.148.128]:54094 "EHLO rin.romanrm.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726175AbgF0KUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 06:20:06 -0400
-X-Greylist: delayed 392 seconds by postgrey-1.27 at vger.kernel.org; Sat, 27 Jun 2020 06:20:03 EDT
-Received: from natsu (unknown [IPv6:fd39::e99e:8f1b:cfc9:ccb8])
-        by rin.romanrm.net (Postfix) with SMTP id 91C8E42D;
-        Sat, 27 Jun 2020 10:13:28 +0000 (UTC)
-Date:   Sat, 27 Jun 2020 15:13:28 +0500
-From:   Roman Mamedov <rm@romanrm.net>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Gabriel C <nix.or.die@googlemail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        stable <stable@vger.kernel.org>, lwn@lwn.net,
-        angrypenguinpoland@gmail.com, Qiujun Huang <hqjagain@gmail.com>,
-        ath9k-devel@qca.qualcomm.com,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
-Subject: Re: ath9k broken [was: Linux 5.7.3]
-Message-ID: <20200627151328.1611acbc@natsu>
-In-Reply-To: <b7993e83-1df7-0c93-f6dd-dba9dc10e27a@kernel.org>
-References: <1592410366125160@kroah.com>
-        <CAEJqkgjV8p6LtBV8YUGbNb0vYzKOQt4-AMAvYw5mzFr3eicyTg@mail.gmail.com>
-        <b7993e83-1df7-0c93-f6dd-dba9dc10e27a@kernel.org>
+        id S1726465AbgF0KPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 06:15:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726356AbgF0KPB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 06:15:01 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631BAC03E979;
+        Sat, 27 Jun 2020 03:15:01 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id 207so5574233pfu.3;
+        Sat, 27 Jun 2020 03:15:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zvZtbrDBRF/tkY1XUgsUhw4qRWkNkbAOPkZ951cjMrY=;
+        b=lWBq5lH1N4RNQEpfj4eXQ3XAEunPzNYAXDbCI/Z/KigFjM8fvvqV3Qm+vX+BkkPExK
+         hU4P+VxxMziUIdO+NoiUCj8SqFfyncwHiayLHNKJlwI51ZLM2Tcw9A50g006FLTrgkOu
+         BDp90GoE2TC7lRPJkHHDoiPDN7w1udpQu5t15fmrmu7Z0ZiS81gdIkeuy2Wmob6+geNm
+         Zgk4Jr+pyqnhpUjx9J2/WDknrPyXfxtWVWzu0ZnJeeLAUdsUI17uE7E97HA3nOadOs9O
+         M3q++pGSOyT+jZhbZ/iI646vq8k6ThRjFFGqgU8oBKdXA4sQoTzOmsXzZuJ/h77or8cD
+         h+Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zvZtbrDBRF/tkY1XUgsUhw4qRWkNkbAOPkZ951cjMrY=;
+        b=HncR8d8aYn95GeQKubftsfZTNcB0YwY0DhQitAW2h4YU3l9g/4tO5Ua/zPL7D3QSx1
+         9rb6UZ9Uuon81MpW/5tsYzASNQltmQIVPefKzlbc8Co0uLFoKx49etPRVmvbsrglhiYm
+         PUcmOfE4Sv+Ngv6HCA3G0V7mBP34rT4L7EA4IsXq4JtudF7QpwJzSaohviL3qpt0G63T
+         amyFwDEgTzV/UXhPMi18MlkK9MtUmkKDoQ9NnVUQjZpH2fYu2DBr91ldemXRZeUvjKU2
+         gVhKewsqI5H/W1+p9KESbDuHvBJvzcKSmQH/J4N3lu7qzlSrno1oH661hX2AUbTdI7rh
+         /HRg==
+X-Gm-Message-State: AOAM531DLR+4bXBV31cU7miJ9wWxayfPvEje+NmBNA7spvg+wkc9Dlan
+        J4nEBTgNtzUaeru3pOVOCkg=
+X-Google-Smtp-Source: ABdhPJxwFvGhZ5/vaZU76/wPRYf7RJ85weAZ+H1vcEX5LZNHMLFX8MVMfbdlW3uRtOwZ1QUWNyclhw==
+X-Received: by 2002:a62:fc4c:: with SMTP id e73mr1580773pfh.308.1593252900940;
+        Sat, 27 Jun 2020 03:15:00 -0700 (PDT)
+Received: from localhost ([2001:e42:102:1532:160:16:113:140])
+        by smtp.gmail.com with ESMTPSA id f15sm9624849pfk.58.2020.06.27.03.14.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Jun 2020 03:15:00 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+To:     devel@driverdev.osuosl.org
+Cc:     joe@perches.com, dan.carpenter@oracle.com,
+        Manish Chopra <manishc@marvell.com>,
+        GR-Linux-NIC-Dev@marvell.com (supporter:QLOGIC QLGE 10Gb ETHERNET
+        DRIVER), Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org (open list:QLOGIC QLGE 10Gb ETHERNET DRIVER),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/4] fix trailing */ in block comment
+Date:   Sat, 27 Jun 2020 18:14:44 +0800
+Message-Id: <20200627101447.167370-2-coiby.xu@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200627101447.167370-1-coiby.xu@gmail.com>
+References: <20200627101447.167370-1-coiby.xu@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Jun 2020 06:57:13 +0200
-Jiri Slaby <jirislaby@kernel.org> wrote:
+Remove trailing "*/" in block comments.
 
-> I fail to see how the commit could cause an issue like this. Is this
-> really reproducibly broken with the commit and irreproducible without
-> it? As it looks like a USB/wiring problem:
-> usb 1-2: USB disconnect, device number 2
-> ath: phy0: Reading Magic # failed
-> ath: phy0: Unable to initialize hardware; initialization status: -5
-> ...
-> usb 1-2: device descriptor read/64, error -110
-> usb 1-2: device descriptor read/64, error -71
-> 
-> Ccing ath9k maintainers too.
+Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+---
+ drivers/staging/qlge/qlge_main.c |  3 ++-
+ drivers/staging/qlge/qlge_mpi.c  | 10 ++++++----
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
-Note that this has been previously reported in:
-https://bugzilla.kernel.org/show_bug.cgi?id=208251
-and confirmed by several people on various stable series and the mainline that
-the referenced commit is indeed causing the problem.
-
-I don't get the "device descriptor read" errors though, my dmesg is posted on
-the bug report, it just says "ath9k_htc: Failed to initialize the device".
-
-> > I don't have so much info about the HW, besides a dmesg showing the
-> > phy breaking.
-> > I also added the reporter to CC too.
-> > 
-> > https://gist.github.com/AngryPenguinPL/1e545f0da3c2339e443b9e5044fcccea
-> > 
-> > If you need more info, please let me know and I'll try my best to get
-> > it as fast as possible for you.
-
+diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
+index 1650de13842f..aaecf2b0f9a1 100644
+--- a/drivers/staging/qlge/qlge_main.c
++++ b/drivers/staging/qlge/qlge_main.c
+@@ -3244,7 +3244,8 @@ static void ql_set_irq_mask(struct ql_adapter *qdev, struct intr_context *ctx)
+ 		 */
+ 		ctx->irq_mask = (1 << qdev->rx_ring[vect].cq_id);
+ 		/* Add the TX ring(s) serviced by this vector
+-		 * to the mask. */
++		 * to the mask.
++		 */
+ 		for (j = 0; j < tx_rings_per_vector; j++) {
+ 			ctx->irq_mask |=
+ 			(1 << qdev->rx_ring[qdev->rss_ring_count +
+diff --git a/drivers/staging/qlge/qlge_mpi.c b/drivers/staging/qlge/qlge_mpi.c
+index 60c08d9cc034..3bb08d290525 100644
+--- a/drivers/staging/qlge/qlge_mpi.c
++++ b/drivers/staging/qlge/qlge_mpi.c
+@@ -389,7 +389,8 @@ static void ql_init_fw_done(struct ql_adapter *qdev, struct mbox_params *mbcp)
+  *  This can get called iteratively from the mpi_work thread
+  *  when events arrive via an interrupt.
+  *  It also gets called when a mailbox command is polling for
+- *  it's completion. */
++ *  it's completion.
++ */
+ static int ql_mpi_handler(struct ql_adapter *qdev, struct mbox_params *mbcp)
+ {
+ 	int status;
+@@ -520,7 +521,7 @@ static int ql_mpi_handler(struct ql_adapter *qdev, struct mbox_params *mbcp)
+ 	 * changed when a mailbox command is waiting
+ 	 * for a response and an AEN arrives and
+ 	 * is handled.
+-	 * */
++	 */
+ 	mbcp->out_count = orig_count;
+ 	return status;
+ }
+@@ -555,7 +556,8 @@ static int ql_mailbox_command(struct ql_adapter *qdev, struct mbox_params *mbcp)
+ 	 * here because some AEN might arrive while
+ 	 * we're waiting for the mailbox command to
+ 	 * complete. If more than 5 seconds expire we can
+-	 * assume something is wrong. */
++	 * assume something is wrong.
++	 */
+ 	count = jiffies + HZ * MAILBOX_TIMEOUT;
+ 	do {
+ 		/* Wait for the interrupt to come in. */
+@@ -1178,7 +1180,7 @@ void ql_mpi_idc_work(struct work_struct *work)
+ 		/* Signal the resulting link up AEN
+ 		 * that the frame routing and mac addr
+ 		 * needs to be set.
+-		 * */
++		 */
+ 		set_bit(QL_CAM_RT_SET, &qdev->flags);
+ 		/* Do ACK if required */
+ 		if (timeout) {
 -- 
-With respect,
-Roman
+2.27.0
+
