@@ -2,316 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4B820BEA1
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 06:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE8E20BE88
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 06:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726570AbgF0E40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 00:56:26 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:17453 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgF0E4X (ORCPT
+        id S1726385AbgF0EzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 00:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725904AbgF0EzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 00:56:23 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ef6d1680000>; Fri, 26 Jun 2020 21:56:09 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Fri, 26 Jun 2020 21:56:21 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Fri, 26 Jun 2020 21:56:21 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 27 Jun
- 2020 04:56:21 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Sat, 27 Jun 2020 04:56:21 +0000
-Received: from audio.nvidia.com (Not Verified[10.24.34.185]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ef6d1700001>; Fri, 26 Jun 2020 21:56:20 -0700
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
-        <kuninori.morimoto.gx@renesas.com>, <robh+dt@kernel.org>,
-        <lgirdwood@gmail.com>
-CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <digetx@gmail.com>, <alsa-devel@alsa-project.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
-        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
-        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
-        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
-        <nicoleotsuka@gmail.com>, Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH v4 23/23] arm64: tegra: Add support for APE sound card on Jetson Nano and TX1
-Date:   Sat, 27 Jun 2020 10:23:45 +0530
-Message-ID: <1593233625-14961-24-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
-References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
+        Sat, 27 Jun 2020 00:55:17 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B18C03E979
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 21:55:17 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id f6so1769552pjq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Jun 2020 21:55:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=+gA6TTWkMdHm5W4oJu5q0X2lUIi1w6v+kFfwKgYQFdw=;
+        b=gsThSYYldvqlflGoCnyy6zhApgX1N1u4QndX5Ni5Ms9mflGFUYO7UxSjcngrtpUogE
+         J0AOVFtzY1BYqTfXflC1HZBj2Gins8ECuvRTjVm3TcTy0KiiJnSliEF6E5bPN/WxTFTO
+         icLy4DOWwVq8Dz6CJCYJum7AbZUs25BigtbQKmwIm+F7lEhWl3liPLkv4pR1w8mmlBQ8
+         NcPiRSr3Wot1j4JQ2BWXYRLtEurhVrSz6w5SYxdnS0EHf7lW7gSqCI0aLGlgT8TfFbcz
+         GBMm44neagmza+5UMkSC+kE0szE5T6SZsV8f82olXxckz04SFelkGHnkDT3790KSlk14
+         J+rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=+gA6TTWkMdHm5W4oJu5q0X2lUIi1w6v+kFfwKgYQFdw=;
+        b=TVhhjqS2KVcMxNTWPvIVNGXWeSd/FlVp1Pc4Y1FB8wCOgmnTvZFiddi7rrkiveEKnp
+         +sGx2pt8b28S1pnxk8G26fZWJsASTqDIHnnfYx/C+Lw/Q/ewwfwnxPm1KsrtQsEEdtDi
+         MTHNWvy70VzWRjkn25krmuZBa5cHSdl+7DeQtkM1wCQn4i8z7cBkpegGE6KNlJ+zIudp
+         T0plvqz/1+7IegLZ3rcbHdRHb5qx1JGO18MTHdJhPhDXMaO73hO0MJZaujuVh97Ojofx
+         wSlZWhRrGpg5lCjJuhoixGYenjaA7i8FpCh8ebEP87dXHxfMhtXFaRWSggPRO3XxIegr
+         jTGg==
+X-Gm-Message-State: AOAM532g1wO9gAZ8yUzZrlSYD5lwMKbotjMZ2hnUPCwr3mWmdpIsLxcw
+        H5GWXjDd4smt2EJ2WELDieI=
+X-Google-Smtp-Source: ABdhPJx3mWKJGR86Eb7qOI9bQqp5l2FYg+gm5648darG2hlNHr2XfBF/bQlTYhbohm1zrtiHXTBoXA==
+X-Received: by 2002:a17:902:9a89:: with SMTP id w9mr5518433plp.30.1593233716796;
+        Fri, 26 Jun 2020 21:55:16 -0700 (PDT)
+Received: from localhost ([144.34.187.180])
+        by smtp.gmail.com with ESMTPSA id u8sm26859976pfh.215.2020.06.26.21.55.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 26 Jun 2020 21:55:16 -0700 (PDT)
+Date:   Sat, 27 Jun 2020 04:55:07 +0000
+From:   Long Li <lonuxli.64@gmail.com>
+To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] mm:free unused pages in kmalloc_order
+Message-ID: <20200627045507.GA57675@lilong>
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593233769; bh=taGJx4bnloUgV2sDI2d4cd/qcV9qYym60K4y+pWho+I=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:Content-Type;
-        b=ddLfQ6ZqgcJjKddkhaXM+i6RtbI0Dj80XmVHjRcUwn0osUbF1Cu38zjubnmUFsLH2
-         uEiAeafhsLn3CkzUVJB69CHPogvF7dMtAa5e4qCg84Y8kB0x19mr/lerMbRfCQJXaX
-         7BOLLueVWOH/vnWTwd2FCySGciMOD4n63HOPUMVVk1Qw0sLkvw2fXvKBc7Kkc2UJTc
-         NM0nuWCVNxLDz8QUS7LE0FFo3/QxfmXFphZdpgHlknF8xpl8vIFpUuJqnFQ5PHw0AB
-         qTGDZuiN5RqpEHLO3x+m6kYy/wgFz46gHrSX3UXYmRtskm+VlJuUPsPtw3JJhOG+Tl
-         6Bagn6CFRAwbQ==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds APE sound card support on Jetson Nano and TX1 which is based
-on simple-card driver. Earlier in the series simple-card driver is
-enhanced to work with multiple ASoC components. Based on board design
-required I/O interfaces are exposed for I2S and DMIC. More complicated
-audio paths will be added going forward.
+Environment using the slub allocator, 1G memory in my ARM32.
+kmalloc(1024, GFP_HIGHUSER) can allocate memory normally,
+kmalloc(64*1024, GFP_HIGHUSER) will cause a memory leak, because
+alloc_pages returns highmem physical pages, but it cannot be directly
+converted into a virtual address and return NULL, the pages has not
+been released. Usually driver developers will not use the
+GFP_HIGHUSER flag to allocate memory in kmalloc, but I think this
+memory leak is not perfect, it is best to be fixed. This is the
+first time I have posted a patch, there may be something wrong.
 
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+Signed-off-by: Long Li <lonuxli.64@gmail.com>
 ---
- arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts | 94 ++++++++++++++++++++++
- arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts | 49 +++++++++++
- arch/arm64/boot/dts/nvidia/tegra210.dtsi           | 67 +++++++++++++++
- 3 files changed, 210 insertions(+)
+ mm/slab_common.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts b/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-index 3c21137..7c4b521 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-@@ -166,4 +166,98 @@
- 			};
- 		};
- 	};
-+
-+	tegra_sound {
-+		status = "okay";
-+
-+		simple-audio-card,name = "jetson-tx1-ape";
-+
-+		simple-audio-card,widgets =
-+			"Microphone",   "MIC",
-+			"Speaker",	"SPK";
-+
-+		simple-audio-card,routing =
-+			"SPK",		  "I2S1 Playback",
-+			"SPK",		  "I2S2 Playback",
-+			"SPK",		  "I2S3 Playback",
-+			"SPK",		  "I2S4 Playback",
-+			"SPK",		  "I2S5 Playback",
-+			"I2S1 Capture",   "MIC",
-+			"I2S2 Capture",   "MIC",
-+			"I2S3 Capture",   "MIC",
-+			"I2S4 Capture",   "MIC",
-+			"I2S5 Capture",   "MIC",
-+			"DMIC1 Capture",  "MIC",
-+			"DMIC2 Capture",  "MIC",
-+			"DMIC3 Capture",  "MIC";
-+
-+		/* BE links */
-+		simple-audio-card,dai-link@1 {
-+			format = "i2s";
-+			bitclock-master = <&cpu_i2s1>;
-+			frame-master = <&cpu_i2s1>;
-+
-+			cpu_i2s1: cpu@0 {
-+				sound-dai = <&tegra_i2s1 0>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@2 {
-+			format = "i2s";
-+			bitclock-master = <&cpu_i2s2>;
-+			frame-master = <&cpu_i2s2>;
-+
-+			cpu_i2s2: cpu@0 {
-+				sound-dai = <&tegra_i2s2 0>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@3 {
-+			format = "i2s";
-+			bitclock-master = <&cpu_i2s3>;
-+			frame-master = <&cpu_i2s3>;
-+
-+			cpu_i2s3: cpu@0 {
-+				sound-dai = <&tegra_i2s3 0>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@4 {
-+			format = "i2s";
-+			bitclock-master = <&cpu_i2s4>;
-+			frame-master = <&cpu_i2s4>;
-+
-+			cpu_i2s4: cpu@0 {
-+				sound-dai = <&tegra_i2s4 0>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@5 {
-+			format = "i2s";
-+			bitclock-master = <&cpu_i2s5>;
-+			frame-master = <&cpu_i2s5>;
-+
-+			cpu_i2s5: cpu@0 {
-+				sound-dai = <&tegra_i2s5 0>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@6 {
-+			cpu@0 {
-+				sound-dai = <&tegra_dmic1 0>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@7 {
-+			cpu@0 {
-+				sound-dai = <&tegra_dmic2 0>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@8 {
-+			cpu@0 {
-+				sound-dai = <&tegra_dmic3 0>;
-+			};
-+		};
-+	};
- };
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-index 721f66c..31994f6 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-@@ -842,4 +842,53 @@
- 			};
- 		};
- 	};
-+
-+	tegra_sound {
-+		status = "okay";
-+
-+		simple-audio-card,name = "jetson-nano-ape";
-+		simple-audio-card,widgets =
-+			"Microphone",   "MIC",
-+			"Speaker",	"SPK";
-+		simple-audio-card,routing =
-+			"SPK",		  "I2S3 Playback",
-+			"SPK",		  "I2S4 Playback",
-+			"I2S3 Capture",   "MIC",
-+			"I2S4 Capture",   "MIC",
-+			"DMIC1 Capture",  "MIC",
-+			"DMIC2 Capture",  "MIC";
-+
-+		/* BE links */
-+		simple-audio-card,dai-link@1 {
-+			format = "i2s";
-+			bitclock-master = <&cpu_i2s1>;
-+			frame-master = <&cpu_i2s1>;
-+
-+			cpu_i2s1: cpu@0 {
-+				sound-dai = <&tegra_i2s3 0>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@2 {
-+			format = "i2s";
-+			bitclock-master = <&cpu_i2s2>;
-+			frame-master = <&cpu_i2s2>;
-+
-+			cpu_i2s2: cpu@0 {
-+				sound-dai = <&tegra_i2s4 0>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@3 {
-+			cpu@0 {
-+				sound-dai = <&tegra_dmic1 0>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@4 {
-+			cpu@0 {
-+				sound-dai = <&tegra_dmic2 0>;
-+			};
-+		};
-+	};
- };
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210.dtsi b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-index 73ae58f..f1925f1 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-@@ -1841,4 +1841,71 @@
- 			};
- 		};
- 	};
-+
-+	tegra_sound {
-+		status = "disabled";
-+
-+		compatible = "simple-cc-audio-card";
-+
-+		clocks = <&tegra_car TEGRA210_CLK_PLL_A>,
-+			 <&tegra_car TEGRA210_CLK_PLL_A_OUT0>,
-+			 <&tegra_car TEGRA210_CLK_EXTERN1>;
-+		clock-names = "pll_a", "plla_out0", "aud_mclk";
-+		assigned-clocks = <&tegra_car TEGRA210_CLK_PLL_A>,
-+				  <&tegra_car TEGRA210_CLK_PLL_A_OUT0>,
-+				  <&tegra_car TEGRA210_CLK_EXTERN1>;
-+		assigned-clock-parents = <0>, <0>, <&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
-+		assigned-clock-rates = <368640000>, <49152000>, <12288000>;
-+
-+		simple-audio-card,aux-devs = <&tegra_ahub>;
-+
-+		/* FE links */
-+		simple-audio-card,dai-link@0 {
-+			cpu@0 {
-+				sound-dai = <&tegra_admaif 0>;
-+			};
-+
-+			cpu@1 {
-+				sound-dai = <&tegra_admaif 1>;
-+			};
-+
-+			cpu@2 {
-+				sound-dai = <&tegra_admaif 2>;
-+			};
-+
-+			cpu@3 {
-+				sound-dai = <&tegra_admaif 3>;
-+			};
-+
-+			cpu@4 {
-+				sound-dai = <&tegra_admaif 4>;
-+			};
-+
-+			cpu@5 {
-+				sound-dai = <&tegra_admaif 5>;
-+			};
-+
-+			cpu@6 {
-+				sound-dai = <&tegra_admaif 6>;
-+			};
-+
-+			cpu@7 {
-+				sound-dai = <&tegra_admaif 7>;
-+			};
-+
-+			cpu@8 {
-+				sound-dai = <&tegra_admaif 8>;
-+			};
-+
-+			cpu@9 {
-+				sound-dai = <&tegra_admaif 9>;
-+			};
-+
-+			/*
-+			 * Empty codec list.
-+			 * Router MUX controls take care of audio path by
-+			 * connecting multiple components.
-+			 */
-+		};
-+	};
- };
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index a143a8c8f874..d2c53b980ab3 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -819,8 +819,12 @@ void *kmalloc_order(size_t size, gfp_t flags, unsigned int order)
+ 	page = alloc_pages(flags, order);
+ 	if (likely(page)) {
+ 		ret = page_address(page);
+-		mod_node_page_state(page_pgdat(page), NR_SLAB_UNRECLAIMABLE_B,
+-				    PAGE_SIZE << order);
++		if (ret)
++			mod_node_page_state(page_pgdat(page),
++					NR_SLAB_UNRECLAIMABLE_B,
++					PAGE_SIZE << order);
++		else
++			__free_pages(page, order);
+ 	}
+ 	ret = kasan_kmalloc_large(ret, size, flags);
+ 	/* As ret might get tagged, call kmemleak hook after KASAN. */
 -- 
-2.7.4
+2.17.1
 
