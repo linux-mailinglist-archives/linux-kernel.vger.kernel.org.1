@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB4520C1D6
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 15:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC6020C1C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 15:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbgF0Niy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 09:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726576AbgF0Nix (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 09:38:53 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8CCC061794
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 06:38:53 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id f2so5339915plr.8
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Jun 2020 06:38:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CJNHqa8gvcLLhfALNMkMRlCHFKoxj8TZvfmU4UMdGP0=;
-        b=HD+NUZboFHju7L3cLkxvtPxs7weFWcnAISy5wk3hqIj4pUdGsKZLNLODE+32CU7pQd
-         rPqyaaoWt+BhroPoapGsv9dGU9hrMp5y90nbF1v3lrDpCSXXx7KmjNjKfxeuWFv77n//
-         TjGIU2CqPwwJxqgdnBSc1BJ05xn765SwejklRMHgcJ1gCHEK7zvG5tEeheXMK1RJx8WA
-         fcZO7ZanVcVYELGCUYKGWaSbIz5eGys4D90ZTFoDCedRkmW2yYm/K7hW9l3qmXjbZAl/
-         pgVV2vrQT483Py/vm0OTp9XM+fxzkx2SwZ7awY6ld6cDKY/TsBSlCqNgBO/XTh054liM
-         UrUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CJNHqa8gvcLLhfALNMkMRlCHFKoxj8TZvfmU4UMdGP0=;
-        b=MZ1CnZtJFIncV7Thfd4BTFL0f4v8ZV1jbxhiZHYx5V97RrES29B7D31ITMt+Y/WGfb
-         RadBHW8Aas9CKxfk9P6jhsHZS7C5vNlZ9WO6mPiCYZJ0PeKyl7NTK/xW5oLCSfmtb3Fe
-         MglyPqV8RzqUM/M17qb7RZs6dxf74ca6ZaSCjAVGaFZQxsMMYxvaT4W38AreznnrBnU7
-         meAqWxifWIweg4FfsFXGKXeEoZxmDerpfQDMepSBjCbieUxHlNfpvyWS+oMvfph3pEuW
-         BX8nim0H3j1xxUm1SpMGFOCkgHH0jheZqjg8yvXne056oqbqLAN/zB8qIjLIlbjerbn4
-         3big==
-X-Gm-Message-State: AOAM532/OJ2xL4EQPy/Pv+rwiJigWPZlo0fWY7e+0xluuyOjgvIp6Uys
-        I1dDKNgi6/0AQqmVe3isRz8=
-X-Google-Smtp-Source: ABdhPJwVFRaTxXhMwPo5Xgv2yRikW8rqSlbwTtdcRs6qtcjsAlkmA6lRcFB+12Fn3RFj5FA2vU07Xg==
-X-Received: by 2002:a17:902:9889:: with SMTP id s9mr6113812plp.299.1593265132982;
-        Sat, 27 Jun 2020 06:38:52 -0700 (PDT)
-Received: from vultr.guest ([149.248.10.52])
-        by smtp.gmail.com with ESMTPSA id x8sm15060086pje.31.2020.06.27.06.38.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jun 2020 06:38:52 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH v2 15/15] perf ftrace: add change log
-Date:   Sat, 27 Jun 2020 21:36:54 +0800
-Message-Id: <20200627133654.64863-16-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200627133654.64863-1-changbin.du@gmail.com>
-References: <20200627133654.64863-1-changbin.du@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726682AbgF0NhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 09:37:23 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:52281 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725850AbgF0NhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 09:37:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593265042; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=ni3BJ474kch8TFSTELYpL+py28qnDTI1OMQGcY7Okg4=; b=tJl0ITCEZYlaAUoa5oLc0aP6yoHYzWMj0lOUjBFafLHoRF/RpHZJXluTg91a6xav9L7ZD3AZ
+ Hj3thKnplgyFz6Vm7MwtD3uBkiOWHX4Sturd+Hhe7v8MocgePcIfU7ewKCNujYOP0V6YPl2h
+ vseaSdmcfEvmVBVpSXwD+BxEUcw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n14.prod.us-west-2.postgun.com with SMTP id
+ 5ef74b913a8a8b20b8eac24f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 27 Jun 2020 13:37:21
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 37B34C433A1; Sat, 27 Jun 2020 13:37:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from rohkumar-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rohitkr)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 270FBC433C6;
+        Sat, 27 Jun 2020 13:37:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 270FBC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rohitkr@codeaurora.org
+From:   Rohit kumar <rohitkr@codeaurora.org>
+To:     plai@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Cc:     Rohit kumar <rohitkr@codeaurora.org>
+Subject: [PATCH] asoc: Update supported rate and format for dummy dai
+Date:   Sat, 27 Jun 2020 19:07:10 +0530
+Message-Id: <1593265030-1451-1-git-send-email-rohitkr@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a change log after previous enhancements.
+Add support for 384KHz sample rate and S24_3LE
+bitwidth for dummy dai.
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
 ---
- tools/perf/builtin-ftrace.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/soc-utils.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-index 0f8716ea0da4..3d73809150c8 100644
---- a/tools/perf/builtin-ftrace.c
-+++ b/tools/perf/builtin-ftrace.c
-@@ -3,6 +3,7 @@
-  * builtin-ftrace.c
-  *
-  * Copyright (c) 2013  LG Electronics,  Namhyung Kim <namhyung@kernel.org>
-+ * Copyright (c) 2020  Changbin Du <changbin.du@gmail.com>, significant enhancement.
-  */
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index 922eac9..364b248 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -86,12 +86,13 @@ static const struct snd_soc_component_driver dummy_codec = {
+ 	.non_legacy_dai_naming	= 1,
+ };
  
- #include "builtin.h"
+-#define STUB_RATES	SNDRV_PCM_RATE_8000_192000
++#define STUB_RATES	SNDRV_PCM_RATE_8000_384000
+ #define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S8 | \
+ 			SNDRV_PCM_FMTBIT_U8 | \
+ 			SNDRV_PCM_FMTBIT_S16_LE | \
+ 			SNDRV_PCM_FMTBIT_U16_LE | \
+ 			SNDRV_PCM_FMTBIT_S24_LE | \
++			SNDRV_PCM_FMTBIT_S24_3LE | \
+ 			SNDRV_PCM_FMTBIT_U24_LE | \
+ 			SNDRV_PCM_FMTBIT_S32_LE | \
+ 			SNDRV_PCM_FMTBIT_U32_LE | \
 -- 
-2.25.1
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
