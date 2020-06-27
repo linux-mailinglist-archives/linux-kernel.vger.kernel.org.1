@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9793720C4C0
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 00:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9754220C4BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 00:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726900AbgF0Wp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 18:45:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43134 "EHLO mail.kernel.org"
+        id S1726832AbgF0WpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 18:45:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726704AbgF0WpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726789AbgF0WpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 27 Jun 2020 18:45:13 -0400
-Subject: Re: [GIT PULL] SCSI fixes for 5.8-rc2
+Subject: Re: [GIT PULL] SMB3 Fixes
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593297912;
-        bh=o9UuCkRLPFbMKQpe1QrrxuO8Y/Zb0DeBd/BWE4u8gSE=;
+        s=default; t=1593297913;
+        bh=O/YiF5uN7AprGzsXhnqP7AWeZIx0x4rNY/xL3gq71U0=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=REXfEGP701Q+wAQDhnZdZwpDqexq5QD0LDUjTC5uA//xDe6lc9w1GK7oEAZhl2FvB
-         BbS/+xujuGEI+RItudt6/BvO0X3ZQ3Do5lCFtuIH5s22z5/XrFZdwUSagxADoE4Eou
-         iTxPYtH7cwp1gjIXvGM+J6qeU9UTBNGZ0Uef0IG8=
+        b=l1zUStkJP1ApIJPZ5oI5sCbJCmo+urQP4p9lHkPzHdKLHMsGxHyNB5zVVg5+p6GCp
+         iQ23KhBbpsp+cYMDEjG4rA3KZ/3f+h4h7+K0fzwfBXN5CdB0IJXPWFHxt7qzyQKvCm
+         Xy7NUjtdqx8IIuHJmMqRn7kpDpv50aGZwUgOsMy4=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <1593279324.11424.5.camel@HansenPartnership.com>
-References: <1593279324.11424.5.camel@HansenPartnership.com>
+In-Reply-To: <CAH2r5mseacQ-UN7HB8U3KWcJFO5yciGMFPBYLw2GwqhWRD43Xg@mail.gmail.com>
+References: <CAH2r5mseacQ-UN7HB8U3KWcJFO5yciGMFPBYLw2GwqhWRD43Xg@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <1593279324.11424.5.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: afe89f115e84edbc76d316759e206580a06c6973
+X-PR-Tracked-Message-Id: <CAH2r5mseacQ-UN7HB8U3KWcJFO5yciGMFPBYLw2GwqhWRD43Xg@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git
+ tags/5.8-rc2-smb3-fixes
+X-PR-Tracked-Commit-Id: bf1028a41eaf0ce39518cbdda34cdb717f16364a
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3cd1c5d582f42fead949947a6e3c8f51797580c9
-Message-Id: <159329791282.3578.16906356220652861162.pr-tracker-bot@kernel.org>
-Date:   Sat, 27 Jun 2020 22:45:12 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: 916a3b0fc1206f7e7ae8d00a21a3114b1dc67794
+Message-Id: <159329791342.3578.17783629478391524621.pr-tracker-bot@kernel.org>
+Date:   Sat, 27 Jun 2020 22:45:13 +0000
+To:     Steve French <smfrench@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 27 Jun 2020 10:35:24 -0700:
+The pull request you sent on Sat, 27 Jun 2020 15:11:00 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> git://git.samba.org/sfrench/cifs-2.6.git tags/5.8-rc2-smb3-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3cd1c5d582f42fead949947a6e3c8f51797580c9
+https://git.kernel.org/torvalds/c/916a3b0fc1206f7e7ae8d00a21a3114b1dc67794
 
 Thank you!
 
