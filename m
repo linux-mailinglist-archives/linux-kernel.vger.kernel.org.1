@@ -2,70 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC0D20BECC
+	by mail.lfdr.de (Postfix) with ESMTP id BAFA220BECD
 	for <lists+linux-kernel@lfdr.de>; Sat, 27 Jun 2020 07:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726005AbgF0FMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 01:12:39 -0400
-Received: from smtprelay0182.hostedemail.com ([216.40.44.182]:44184 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725840AbgF0FMi (ORCPT
+        id S1726027AbgF0FMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 01:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725840AbgF0FMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 01:12:38 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id B8318180A7FE8;
-        Sat, 27 Jun 2020 05:12:37 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:1801:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3868:3870:3872:3873:3874:4321:4605:5007:7903:7904:9149:10004:10400:10848:11026:11232:11658:11914:12043:12048:12297:12438:12555:12740:12760:12895:12986:13019:13069:13101:13311:13357:13439:14659:14721:21080:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: glue64_4900af226e5b
-X-Filterd-Recvd-Size: 1995
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 27 Jun 2020 05:12:36 +0000 (UTC)
-Message-ID: <82612d7cc05d1a8f178a71be25884ec8ac5ef6cc.camel@perches.com>
-Subject: Re: [PATCH] fbtft-bus.c: Removing that prohibited space before ')'
-From:   Joe Perches <joe@perches.com>
-To:     B K Karthik <bkkarthik@pesu.pes.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jan Sebastian =?ISO-8859-1?Q?G=F6tte?= <linux@jaseg.net>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Date:   Fri, 26 Jun 2020 22:12:35 -0700
-In-Reply-To: <20200627045150.ysqvd47o52f4a6rc@pesu-pes-edu>
-References: <20200627045150.ysqvd47o52f4a6rc@pesu-pes-edu>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Sat, 27 Jun 2020 01:12:40 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B9AC03E979;
+        Fri, 26 Jun 2020 22:12:40 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49v21y2JxKz9sQt;
+        Sat, 27 Jun 2020 15:12:38 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1593234758;
+        bh=hcSzOMIAPmFAWY+WVzxKymSCEik0c4vpPaJPDe1y4hM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TfSWUrRXkUznmwqJiiWC0J+1Mgfroe9ybvV49Io89jNp9Oj7j0MtoItoD8LSKXdoC
+         x8G48WRAurT3x/MbjuncOJojiW9n0sDttYBiaEZxWYVXvvlEjjqa0JWTgghl7R7Fly
+         fdVAyHRXlHRdnGjq0d1u21YF93uIwUDOg1kyCitbIHBcAm2sDq0KDerWdZLry+m1iA
+         8CZig6UxI0PJgtF8eKXG6OvcPI8WarB5jfE/uY9D8NLfS6Wtr3mjj9RJKYc8H7ttpO
+         46uaz+XVfJMhQhhZQstjrypsCkhxH53yOSKSXmP/esuSOLuuyg5bsbFW9ERWDShyKL
+         pIvGpkTbNaMbQ==
+Date:   Sat, 27 Jun 2020 15:12:37 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the block tree
+Message-ID: <20200627151237.72b68e8b@canb.auug.org.au>
+In-Reply-To: <425cdd05-4123-c1ec-ad82-990eceae0b5a@kernel.dk>
+References: <20200627090740.683308fd@canb.auug.org.au>
+        <6920f023-5909-6ebf-606c-dbf467a31c7c@kernel.dk>
+        <20200627015605.goc2btyq6z3wwb5z@chatter.i7.local>
+        <425cdd05-4123-c1ec-ad82-990eceae0b5a@kernel.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/dqhu0tSoUDHNttd/0/2C4=_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-06-27 at 00:51 -0400, B K Karthik wrote:
-> fbtft-bus.c:
-> 
-> fixing ERROR: space prohibited before that close parenthesis ')' by removing that space and ',' in line 65 and 67.
-[]
-> diff --git a/drivers/staging/fbtft/fbtft-bus.c b/drivers/staging/fbtft/fbtft-bus.c
-> index 63c65dd67b17..847cbfbbd766 100644
-> --- a/drivers/staging/fbtft/fbtft-bus.c
-> +++ b/drivers/staging/fbtft/fbtft-bus.c
-> @@ -62,9 +62,9 @@ out:									      \
->  }                                                                             \
->  EXPORT_SYMBOL(func);
->  
-> -define_fbtft_write_reg(fbtft_write_reg8_bus8, u8, u8, )
-> +define_fbtft_write_reg(fbtft_write_reg8_bus8, u8, u8)
->  define_fbtft_write_reg(fbtft_write_reg16_bus8, __be16, u16, cpu_to_be16)
-> -define_fbtft_write_reg(fbtft_write_reg16_bus16, u16, u16, )
-> +define_fbtft_write_reg(fbtft_write_reg16_bus16, u16, u16)
+--Sig_/dqhu0tSoUDHNttd/0/2C4=_
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Q: Did you compile the files modified by this patch
-   before you submitted it?
-A: No
+Hi Jens,
 
+On Fri, 26 Jun 2020 20:25:31 -0600 Jens Axboe <axboe@kernel.dk> wrote:
+>
+> Right, but that's what git format-patch does when the line is long.
 
+I just tested, and "git format-patch" (for me) does *not* split those lines.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/dqhu0tSoUDHNttd/0/2C4=_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl721UUACgkQAVBC80lX
+0GxI6wf9EazoolfjFxW11dNaNq6xTCKpRGxAaUf6B6tIDPWpPCxhT1dEVS0vAUYM
+M0Z5yekWVdP6wlgE8vqruTIN8QCaOWK/K/NgGfBKdmRcFPLjOHeAOftnKo6pXs4P
+WYakgeN2feDYCBm/G1XLiUMcVyZxWwrVhFULslkJr43V/lc6h/D/ZeGcZNEY8+Jf
+YRrafjBjfwe0kG7//yeobWk+lUyEBDK1LjL6h/mJLNN6qZiX8FRK6kJK/gnd9AFV
+BaSqbmMKBl0XIw8Tb5opXX2N8F2ERiTAPdRLTjr5lOUPMF5wkPaQv9JIvDYd728X
+IgWLaplpQK0JGPrJ6LShz5yNMRnlOA==
+=mGJ7
+-----END PGP SIGNATURE-----
+
+--Sig_/dqhu0tSoUDHNttd/0/2C4=_--
