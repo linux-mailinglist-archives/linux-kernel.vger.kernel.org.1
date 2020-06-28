@@ -2,66 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D513C20C71E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 10:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 489EA20C72A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 10:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726194AbgF1IuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 04:50:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36504 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726038AbgF1IuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 04:50:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 554A2B133;
-        Sun, 28 Jun 2020 08:50:12 +0000 (UTC)
-Subject: Re: [PATCH] efi: avoid error message when booting under Xen
-To:     xen-devel@lists.xenproject.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Peter Jones <pjones@redhat.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-References: <20200610141052.13258-1-jgross@suse.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <094be567-2c82-7d5b-e432-288286c6c3fb@suse.com>
-Date:   Sun, 28 Jun 2020 10:50:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726226AbgF1Ixf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 04:53:35 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:48532 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726055AbgF1Ixe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Jun 2020 04:53:34 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 38AD8200EC;
+        Sun, 28 Jun 2020 10:53:32 +0200 (CEST)
+Date:   Sun, 28 Jun 2020 10:53:30 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] drm/panel-simple: Add missing BUS descriptions
+ for some panels
+Message-ID: <20200628085330.GA132428@ravnborg.org>
+References: <20200621222742.25695-1-digetx@gmail.com>
+ <20200621222742.25695-3-digetx@gmail.com>
+ <20200627204338.GL5966@pendragon.ideasonboard.com>
+ <dd1c5972-bbac-c2d8-76e8-08997b951e52@gmail.com>
+ <20200628070745.GC6954@pendragon.ideasonboard.com>
+ <20200628075245.GA128039@ravnborg.org>
+ <20200628080253.GD6954@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-In-Reply-To: <20200610141052.13258-1-jgross@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200628080253.GD6954@pendragon.ideasonboard.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=f+hm+t6M c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=P1BnusSwAAAA:8 a=XPbHadcwz-P33w-j3eAA:9
+        a=CjuIK1q_8ugA:10 a=D0XLA9XvdZm18NrgonBM:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping?
+On Sun, Jun 28, 2020 at 11:02:53AM +0300, Laurent Pinchart wrote:
+> Hi Sam,
+> 
+> > We should also clean up all the DRM_BUS_FLAG_* one day.
+> > No need for the deprecated values, so a few files needs an update.
+> > And we could document what flags makes sense for LVDS etc.
+> 
+> Where would you add that documentation ? The hardest part is to find a
+> place that will be noticed by developers :-)
+I will try to extend drm_bus_flags documentation in drm_connector.h
+And then add a few comments in panel-simple as well.
 
-On 10.06.20 16:10, Juergen Gross wrote:
-> efifb_probe() will issue an error message in case the kernel is booted
-> as Xen dom0 from UEFI as EFI_MEMMAP won't be set in this case. Avoid
-> that message by calling efi_mem_desc_lookup() only if EFI_PARAVIRT
-> isn't set.
+	Sam
 > 
-> Fixes: 38ac0287b7f4 ("fbdev/efifb: Honour UEFI memory map attributes when mapping the FB")
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> ---
->   drivers/video/fbdev/efifb.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/video/fbdev/efifb.c b/drivers/video/fbdev/efifb.c
-> index 65491ae74808..f5eccd1373e9 100644
-> --- a/drivers/video/fbdev/efifb.c
-> +++ b/drivers/video/fbdev/efifb.c
-> @@ -453,7 +453,7 @@ static int efifb_probe(struct platform_device *dev)
->   	info->apertures->ranges[0].base = efifb_fix.smem_start;
->   	info->apertures->ranges[0].size = size_remap;
->   
-> -	if (efi_enabled(EFI_BOOT) &&
-> +	if (efi_enabled(EFI_BOOT) && !efi_enabled(EFI_PARAVIRT) &&
->   	    !efi_mem_desc_lookup(efifb_fix.smem_start, &md)) {
->   		if ((efifb_fix.smem_start + efifb_fix.smem_len) >
->   		    (md.phys_addr + (md.num_pages << EFI_PAGE_SHIFT))) {
-> 
+> I've just submitted a patch that adds a WARN_ON to catch similar issues
+> in the panel-simple driver. It's not ideal as we really shouldn't have
+> such code in the kernel, this is something that should be caught as part
+> of the integration process.
 
+> 
+> > On the TODO list...
+> >
+> > >>> The rest looks good, except the Samsung panel for which I haven't been
+> > >>> able to locate a datasheet.
+> > >>> 
+> > >>> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> 
+> -- 
+> Regards,
+> 
+> Laurent Pinchart
