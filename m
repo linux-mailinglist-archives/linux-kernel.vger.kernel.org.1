@@ -2,121 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C68920C922
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 19:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E71820C92C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 19:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgF1RJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 13:09:20 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:39078 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726059AbgF1RJT (ORCPT
+        id S1726639AbgF1RSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 13:18:18 -0400
+Received: from out28-221.mail.aliyun.com ([115.124.28.221]:58010 "EHLO
+        out28-221.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726059AbgF1RSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 13:09:19 -0400
-Received: by mail-ot1-f66.google.com with SMTP id 18so13355758otv.6;
-        Sun, 28 Jun 2020 10:09:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aHBo9wbaRoVXLY9NDJVIGwtnv5GehbPHBWMQ1wY/EhI=;
-        b=fItJCqm4myUgd2+LuL/Q9OFRg+1GmcR5hcKD4e++SFrvLEDXb3WUD2GyKUDqf4qYHs
-         9KeeNyxv2Vk2kUuW9f6/mtxIvEZLOuqy2+ups2AbpSc4JImtBSa842fb4g0Cotn/OcRg
-         5ohhvfubaXMRyF+x9y6ewbnwpRzvKOGNUyiV/lG95dmceSGZVtucj5I8Q/tPYRM9xXGI
-         HJMpbkl3FMRzJ1XTZhKgQNbr5v0iJ6FD5KJNUUJPUHxBU+agSIqeVdj9oR7ghOuEdxCR
-         ayss1uwj9xnrqTDhWfKgVLQrBULYa9vYeZGG9iDJsLB96FYaZa4z3W4et1yMTQtggJKa
-         qwTg==
-X-Gm-Message-State: AOAM532aN7+1CLPympg6Yn8fB4QPAZn+W9g7qawXNtU8q5E3etxdk3az
-        65Kg7rLidxl329AWgZq2AMTBBy4WdfdkeDyibxY=
-X-Google-Smtp-Source: ABdhPJwaNxLa9utWgL4ulKbbgtv/kdZW4Bdg8bFZ+HQwwb00UUCEe4sYvKeUlGn7UPuAH99xcAgVC20KCp9+4PA8z0M=
-X-Received: by 2002:a9d:7d15:: with SMTP id v21mr10130090otn.118.1593364158371;
- Sun, 28 Jun 2020 10:09:18 -0700 (PDT)
+        Sun, 28 Jun 2020 13:18:17 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.4525175|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0220848-0.000517743-0.977398;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03307;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.Hu3fckw_1593364687;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Hu3fckw_1593364687)
+          by smtp.aliyun-inc.com(10.147.42.197);
+          Mon, 29 Jun 2020 01:18:13 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     linux-clk@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, sboyd@kernel.org,
+        paul@crapouillou.net, mturquette@baylibre.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
+Subject: [PATCH v2 0/3] Add functions to operate USB PHY related clock.
+Date:   Mon, 29 Jun 2020 01:15:40 +0800
+Message-Id: <20200628171543.51478-1-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-References: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com>
- <2713141.s8EVnczdoM@kreacher> <2788992.3K7huLjdjL@kreacher> <CAPcyv4hXkzpTr3bif7zyVx5EqoWTwLgYrt87Aj2=gVMo+jtUyg@mail.gmail.com>
-In-Reply-To: <CAPcyv4hXkzpTr3bif7zyVx5EqoWTwLgYrt87Aj2=gVMo+jtUyg@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Sun, 28 Jun 2020 19:09:07 +0200
-Message-ID: <CAJZ5v0h4Hj4ax1mmMJn3z3VGtVWkoXzO0kOQ7CYnFKJV2cUGzw@mail.gmail.com>
-Subject: Re: [RFT][PATCH v3 0/4] ACPI: ACPICA / OSL: Avoid unmapping ACPI
- memory inside of the AML interpreter
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Rafael J Wysocki <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Ira Weiny <ira.weiny@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Bob Moore <robert.moore@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 8:41 PM Dan Williams <dan.j.williams@intel.com> wrote:
->
-> On Fri, Jun 26, 2020 at 10:34 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> >
-> > Hi All,
-> >
-> > On Monday, June 22, 2020 3:50:42 PM CEST Rafael J. Wysocki wrote:
-> > > Hi All,
-> > >
-> > > This series is to address the problem with RCU synchronization occurring,
-> > > possibly relatively often, inside of acpi_ex_system_memory_space_handler(),
-> > > when the namespace and interpreter mutexes are held.
-> > >
-> > > Like I said before, I had decided to change the approach used in the previous
-> > > iteration of this series and to allow the unmap operations carried out by
-> > > acpi_ex_system_memory_space_handler() to be deferred in the first place,
-> > > which is done in patches [1-2/4].
-> >
-> > In the meantime I realized that calling syncrhonize_rcu_expedited() under the
-> > "tables" mutex within ACPICA is not quite a good idea too and that there is no
-> > reason for any users of acpi_os_unmap_memory() in the tree to use the "sync"
-> > variant of unmapping.
-> >
-> > So, unless I'm missing something, acpi_os_unmap_memory() can be changed to
-> > always defer the final unmapping and the only ACPICA change needed to support
-> > that is the addition of the acpi_os_release_unused_mappings() call to get rid
-> > of the unused mappings when leaving the interpreter (module the extra call in
-> > the debug code for consistency).
-> >
-> > So patches [1-2/4] have been changed accordingly.
-> >
-> > > However, it turns out that the "fast-path" mapping is still useful on top of
-> > > the above to reduce the number of ioremap-iounmap cycles for the same address
-> > > range and so it is introduced by patches [3-4/4].
-> >
-> > Patches [3-4/4] still do what they did, but they have been simplified a bit
-> > after rebasing on top of the new [1-2/4].
-> >
-> > The below information is still valid, but it applies to the v3, of course.
-> >
-> > > For details, please refer to the patch changelogs.
-> > >
-> > > The series is available from the git branch at
-> > >
-> > >  git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
-> > >  acpica-osl
-> > >
-> > > for easier testing.
-> >
-> > Also the series have been tested locally.
->
-> Ok, I'm still trying to get the original reporter to confirm this
-> reduces the execution time for ASL routines with a lot of OpRegion
-> touches. Shall I rebuild that test kernel with these changes, or are
-> the results from the original RFT still interesting?
+v1->v2:
+1.Use "WARN()" instead "BUG()".
+2.Move the reformat part ot the new patch.
+3.Remove unnecessary get_parent/set_parent functions.
 
-I'm mostly interested in the results with the v3 applied.
+周琰杰 (Zhou Yanjie) (3):
+  clk: JZ4780: Add functions for enable and disable USB PHY.
+  clk: JZ4780: Reformat the code to align it.
+  clk: X1000: Add support for calculat REFCLK of USB PHY.
 
-Also it would be good to check the impact of the first two patches
-alone relative to all four.
+ drivers/clk/ingenic/jz4780-cgu.c | 155 ++++++++++++++++++++-------------------
+ drivers/clk/ingenic/x1000-cgu.c  |  85 ++++++++++++++++++++-
+ 2 files changed, 165 insertions(+), 75 deletions(-)
 
-Thanks!
+-- 
+2.11.0
+
+
