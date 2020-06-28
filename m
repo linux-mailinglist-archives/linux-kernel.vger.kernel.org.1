@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161D320CADC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 00:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBD620CADE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 00:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726675AbgF1WFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 18:05:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43324 "EHLO mail.kernel.org"
+        id S1726770AbgF1WFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 18:05:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726080AbgF1WFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 18:05:13 -0400
-Subject: Re: [GIT PULL] EFI fixes
+        id S1726080AbgF1WFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Jun 2020 18:05:15 -0400
+Subject: Re: [GIT PULL] perf fix
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593381913;
-        bh=iqhRGEiW9ARDnsPMCySIHAspKXou38uBnThGjdeAoNA=;
+        s=default; t=1593381914;
+        bh=cawQOtmyuk51sj6DP9MmBQhH8A8uaxRQZAQti52v2HM=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=M4uZ5DILBsxxF3RBEnfWy65zZTzqfHg7evVl1LAcY4bDgpok9Y8mtaV3Wc+c23eJG
-         WiZqZqF3xTzZXGD14abnEZG/k3SqVAJKsHZKBvMOUNfW5a3PA+uMVdWzr0p6DoZWeZ
-         hE4yTRv1atd9l3hAsvwUuIohwi4E0OlbZJfuBQqU=
+        b=kiySRo9szAbQRDZ1SZlk0JGGoy4Zd09QqqXf6trw9ZxwaJYOYB+6t9sncOiECBtz1
+         b53uy/QrsSoTppo5mCw4l66powXPY14Cvls1BAS2dFu+o3qSaaKxjQwx2CLMpFaGOX
+         BFdZtkb9eAOESmjivx4HYBlTKFvp4x0L7TY5iiGw=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200628182601.GA84577@gmail.com>
-References: <20200628182601.GA84577@gmail.com>
+In-Reply-To: <20200628183323.GA127831@gmail.com>
+References: <20200628183323.GA127831@gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200628182601.GA84577@gmail.com>
+X-PR-Tracked-Message-Id: <20200628183323.GA127831@gmail.com>
 X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
- efi-urgent-2020-06-28
-X-PR-Tracked-Commit-Id: 2a55280a3675203496d302463b941834228b9875
+ perf-urgent-2020-06-28
+X-PR-Tracked-Commit-Id: 16accae3d97f97d7f61c4ee5d0002bccdef59088
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bc53f67d247a38d43e081faa7e63690a1279f5c7
-Message-Id: <159338191320.4690.3507772829588857989.pr-tracker-bot@kernel.org>
-Date:   Sun, 28 Jun 2020 22:05:13 +0000
+X-PR-Merge-Commit-Id: ae71d4bf0074a81cc04255c96e3de0a49b1d95fa
+Message-Id: <159338191470.4690.3078221347882632930.pr-tracker-bot@kernel.org>
+Date:   Sun, 28 Jun 2020 22:05:14 +0000
 To:     Ingo Molnar <mingo@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
+        linux-kernel@vger.kernel.org,
         Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        linux-efi@vger.kernel.org
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 28 Jun 2020 20:26:01 +0200:
+The pull request you sent on Sun, 28 Jun 2020 20:33:23 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi-urgent-2020-06-28
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-urgent-2020-06-28
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bc53f67d247a38d43e081faa7e63690a1279f5c7
+https://git.kernel.org/torvalds/c/ae71d4bf0074a81cc04255c96e3de0a49b1d95fa
 
 Thank you!
 
