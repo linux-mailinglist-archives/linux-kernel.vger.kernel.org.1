@@ -2,107 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5DC20C65E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 08:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8F320C66C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 08:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726126AbgF1GKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 02:10:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42012 "EHLO mail.kernel.org"
+        id S1726127AbgF1GMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 02:12:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726074AbgF1GKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 02:10:37 -0400
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        id S1725913AbgF1GMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Jun 2020 02:12:21 -0400
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 409EA21473;
-        Sun, 28 Jun 2020 06:10:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DFA68212CC;
+        Sun, 28 Jun 2020 06:12:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593324636;
-        bh=gRgayTRJ5OsbWbGZUwN7yGHPV5KREu495tZWeMC74TA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zf0XYX/yluiK6jnfRAwQTfK0H6Q/6R2ffPmSOEqjlG0KTZ7XikFpBgOouRaKWwO6i
-         XMhEE0gcSCUXQ9+9acAe/3ttDf2giYHf5KOP12rC8Sz/6rauwJf0ZBfFohn8Lemhhk
-         Y51kAoRxecVoGjttLOVq15oMRncgrccHp5JJ/EuA=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>
-Subject: [PATCH 6/6] fs/minix: remove expected error message in block_to_path()
-Date:   Sat, 27 Jun 2020 23:08:45 -0700
-Message-Id: <20200628060846.682158-7-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200628060846.682158-1-ebiggers@kernel.org>
-References: <20200628060846.682158-1-ebiggers@kernel.org>
+        s=default; t=1593324741;
+        bh=MaEKsg6egy9Wkdm/kWLie4m5P0W1BsCSneDgGcQBAgA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=2pCwUgIshw5Jtg7FSTHrUAsO6kRgUWtBjQnrG4PHqZuG209tR0M/HEl7lJy/l3bZn
+         b6mh9um0+gZZzDvvMxA4eYO//saa3RTb4+A25vpywXFvYVqR8kPYzdNykzu9swHTQO
+         gAdy5TY3BWaypBMHp8CoRz+uA68e5rSHkljZb0R8=
+Received: by mail-lj1-f172.google.com with SMTP id h22so7258124lji.9;
+        Sat, 27 Jun 2020 23:12:20 -0700 (PDT)
+X-Gm-Message-State: AOAM5326eutAI0+DU9/rI++ZPbN2fZA+gIksqTst3roZmGAZ8Q+TdMS5
+        nYQUdktYzxPsRlVKlZqqZl0I1a7jr7pbfp/OxMQ=
+X-Google-Smtp-Source: ABdhPJwOLXYcVriN4WTovhjiJ8y+DUyBj9KfGoziRBbU0PTHaerO/enEPu+Wtu+nCnBa4bct3gK+/AmZ+XdmTiuWaZ4=
+X-Received: by 2002:a2e:2a42:: with SMTP id q63mr5541912ljq.265.1593324739220;
+ Sat, 27 Jun 2020 23:12:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1593274802-46332-1-git-send-email-guoren@kernel.org> <20200628115945.335b92c517cb8a8fa87be759@kernel.org>
+In-Reply-To: <20200628115945.335b92c517cb8a8fa87be759@kernel.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sun, 28 Jun 2020 14:12:07 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTCHMHp-+RoG8DoDhbJStzmOf5AK=Z3K26FUmd_hbgR=g@mail.gmail.com>
+Message-ID: <CAJF2gTTCHMHp-+RoG8DoDhbJStzmOf5AK=Z3K26FUmd_hbgR=g@mail.gmail.com>
+Subject: Re: [PATCH] riscv: Fixup compile error BUILD_BUG_ON failed
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <anup@brainfault.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Zong Li <zong.li@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Sun, Jun 28, 2020 at 10:59 AM Masami Hiramatsu <mhiramat@kernel.org> wro=
+te:
+>
+> On Sat, 27 Jun 2020 16:20:02 +0000
+> guoren@kernel.org wrote:
+>
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > Unfortunately, the current code couldn't be compiled, because
+> > BUILD_BUG_ON needs a static defined value, not a dynamic
+> > variable with a0 regs. Just use it inline as a solution.
+> >
+> >   CC      arch/riscv/kernel/patch.o
+> > In file included from ./include/linux/kernel.h:11,
+> >                  from ./include/linux/list.h:9,
+> >                  from ./include/linux/preempt.h:11,
+> >                  from ./include/linux/spinlock.h:51,
+> >                  from arch/riscv/kernel/patch.c:6:
+> > In function =E2=80=98fix_to_virt=E2=80=99,
+> >     inlined from =E2=80=98patch_map=E2=80=99 at arch/riscv/kernel/patch=
+.c:37:17:
+> > ./include/linux/compiler.h:392:38: error: call to =E2=80=98__compiletim=
+e_assert_205=E2=80=99 declared with attribute error: BUILD_BUG_ON failed: i=
+dx >=3D __end_of_fixed_addresses
+> >   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER_=
+_)
+> >                                       ^
+> > ./include/linux/compiler.h:373:4: note: in definition of macro =E2=80=
+=98__compiletime_assert=E2=80=99
+> >     prefix ## suffix();    \
+> >     ^~~~~~
+> > ./include/linux/compiler.h:392:2: note: in expansion of macro =E2=80=98=
+_compiletime_assert=E2=80=99
+> >   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER_=
+_)
+> >   ^~~~~~~~~~~~~~~~~~~
+> > ./include/linux/build_bug.h:39:37: note: in expansion of macro =E2=80=
+=98compiletime_assert=E2=80=99
+> >  #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+> >                                      ^~~~~~~~~~~~~~~~~~
+> > ./include/linux/build_bug.h:50:2: note: in expansion of macro =E2=80=98=
+BUILD_BUG_ON_MSG=E2=80=99
+> >   BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+> >   ^~~~~~~~~~~~~~~~
+> > ./include/asm-generic/fixmap.h:32:2: note: in expansion of macro =E2=80=
+=98BUILD_BUG_ON=E2=80=99
+> >   BUILD_BUG_ON(idx >=3D __end_of_fixed_addresses);
+> >   ^~~~~~~~~~~~
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > Cc: Zong Li <zong.li@sifive.com>
+> > ---
+> >  arch/riscv/kernel/patch.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> >
+> > diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
+> > index d4a64df..f8e84f2 100644
+> > --- a/arch/riscv/kernel/patch.c
+> > +++ b/arch/riscv/kernel/patch.c
+> > @@ -20,7 +20,7 @@ struct patch_insn {
+> >  };
+> >
+> >  #ifdef CONFIG_MMU
+> > -static void *patch_map(void *addr, int fixmap)
+> > +static inline void *patch_map(void *addr, int fixmap)
+>
+> Would we be better to use "__always_inline" as same as fix_to_virt?
+Ok
 
-When truncating a file to a size within the last allowed logical block,
-block_to_path() is called with the *next* block.  This exceeds the
-limit, causing the "block %ld too big" error message to be printed.
+> And also, could you add a comment why we need to make it inline?
+I've mentioned in comment:
+> > BUILD_BUG_ON needs a static defined value, not a dynamic
+> > variable with a0 regs.
 
-This case isn't actually an error; there are just no more blocks past
-that point.  So, remove this error message.
+idx must be a const unsigned int or it will cause compile error with
+BUILD_BUG_ON.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/minix/itree_v1.c | 12 ++++++------
- fs/minix/itree_v2.c | 12 ++++++------
- 2 files changed, 12 insertions(+), 12 deletions(-)
+/*
+ * 'index to address' translation. If anyone tries to use the idx
+ * directly without translation, we catch the bug with a NULL-deference
+ * kernel oops. Illegal ranges of incoming indices are caught too.
+ */
+static __always_inline unsigned long fix_to_virt(const unsigned int idx)
+{
+        BUILD_BUG_ON(idx >=3D __end_of_fixed_addresses);
+        return __fix_to_virt(idx);
+}
 
-diff --git a/fs/minix/itree_v1.c b/fs/minix/itree_v1.c
-index 405573a79aab..1fed906042aa 100644
---- a/fs/minix/itree_v1.c
-+++ b/fs/minix/itree_v1.c
-@@ -29,12 +29,12 @@ static int block_to_path(struct inode * inode, long block, int offsets[DEPTH])
- 	if (block < 0) {
- 		printk("MINIX-fs: block_to_path: block %ld < 0 on dev %pg\n",
- 			block, inode->i_sb->s_bdev);
--	} else if ((u64)block * BLOCK_SIZE >= inode->i_sb->s_maxbytes) {
--		if (printk_ratelimit())
--			printk("MINIX-fs: block_to_path: "
--			       "block %ld too big on dev %pg\n",
--				block, inode->i_sb->s_bdev);
--	} else if (block < 7) {
-+		return 0;
-+	}
-+	if ((u64)block * BLOCK_SIZE >= inode->i_sb->s_maxbytes)
-+		return 0;
-+
-+	if (block < 7) {
- 		offsets[n++] = block;
- 	} else if ((block -= 7) < 512) {
- 		offsets[n++] = 7;
-diff --git a/fs/minix/itree_v2.c b/fs/minix/itree_v2.c
-index ee8af2f9e282..9d00f31a2d9d 100644
---- a/fs/minix/itree_v2.c
-+++ b/fs/minix/itree_v2.c
-@@ -32,12 +32,12 @@ static int block_to_path(struct inode * inode, long block, int offsets[DEPTH])
- 	if (block < 0) {
- 		printk("MINIX-fs: block_to_path: block %ld < 0 on dev %pg\n",
- 			block, sb->s_bdev);
--	} else if ((u64)block * (u64)sb->s_blocksize >= sb->s_maxbytes) {
--		if (printk_ratelimit())
--			printk("MINIX-fs: block_to_path: "
--			       "block %ld too big on dev %pg\n",
--				block, sb->s_bdev);
--	} else if (block < DIRCOUNT) {
-+		return 0;
-+	}
-+	if ((u64)block * (u64)sb->s_blocksize >= sb->s_maxbytes)
-+		return 0;
-+
-+	if (block < DIRCOUNT) {
- 		offsets[n++] = block;
- 	} else if ((block -= DIRCOUNT) < INDIRCOUNT(sb)) {
- 		offsets[n++] = DIRCOUNT;
--- 
-2.27.0
+--=20
+Best Regards
+ Guo Ren
 
+ML: https://lore.kernel.org/linux-csky/
