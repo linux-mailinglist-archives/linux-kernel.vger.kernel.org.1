@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6CA20C5ED
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 06:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C047D20C5E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 06:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgF1Ec0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 00:32:26 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:34188 "EHLO
+        id S1726080AbgF1Ebq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 00:31:46 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:34264 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726035AbgF1Ebq (ORCPT
+        with ESMTP id S1725999AbgF1Ebq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 28 Jun 2020 00:31:46 -0400
 Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 62DBC2967C; Sun, 28 Jun 2020 00:31:43 -0400 (EDT)
+        id 4625629708; Sun, 28 Jun 2020 00:31:44 -0400 (EDT)
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
 Cc:     Joshua Thompson <funaho@jurai.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -21,51 +21,151 @@ Cc:     Joshua Thompson <funaho@jurai.org>,
         Laurent Vivier <lvivier@redhat.com>,
         Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>,
         linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Message-Id: <5952dd8a9bc9de90f1acc4790c51dd42b4c98065.1593318192.git.fthain@telegraphics.com.au>
+Message-Id: <0253194363af4426f9788796811a6a29fb87c713.1593318192.git.fthain@telegraphics.com.au>
 In-Reply-To: <cover.1593318192.git.fthain@telegraphics.com.au>
 References: <cover.1593318192.git.fthain@telegraphics.com.au>
 From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 1/9] macintosh/via-macii: Access autopoll_devs when inside
- lock
+Subject: [PATCH 4/9] macintosh/via-macii: Remove read_done state
 Date:   Sun, 28 Jun 2020 14:23:12 +1000
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The interrupt handler should be excluded when accessing the autopoll_devs
-variable.
+The driver state machine may enter the 'read_done' state when leaving the
+'idle' or 'reading' state. This transition is pointless, as is the extra
+interrupt it requires. The interrupt is produced by the transceiver
+(even when it has no data to send) because an extra EVEN/ODD toggle
+was signalled by the driver. Drop the extra state to simplify the code.
 
-Fixes: d95fd5fce88f0 ("m68k: Mac II ADB fixes") # v5.0+
+Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2") # v5.0+
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/macintosh/via-macii.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/macintosh/via-macii.c | 70 ++++++++++++++---------------------
+ 1 file changed, 28 insertions(+), 42 deletions(-)
 
 diff --git a/drivers/macintosh/via-macii.c b/drivers/macintosh/via-macii.c
-index ac824d7b2dcfc..6aa903529570d 100644
+index 6a5cd7de05baf..d29c87943ca46 100644
 --- a/drivers/macintosh/via-macii.c
 +++ b/drivers/macintosh/via-macii.c
-@@ -270,15 +270,12 @@ static int macii_autopoll(int devs)
- 	unsigned long flags;
- 	int err = 0;
+@@ -110,7 +110,6 @@ static enum macii_state {
+ 	idle,
+ 	sending,
+ 	reading,
+-	read_done,
+ } macii_state;
  
-+	local_irq_save(flags);
+ static struct adb_request *current_req; /* first request struct in the queue */
+@@ -411,8 +410,8 @@ static irqreturn_t macii_interrupt(int irq, void *arg)
+ 			reply_len = 1;
+ 		} else {
+ 			/* bus timeout */
+-			macii_state = read_done;
+ 			reply_len = 0;
++			break;
+ 		}
+ 
+ 		/* set ADB state = even for first data byte */
+@@ -471,20 +470,6 @@ static irqreturn_t macii_interrupt(int irq, void *arg)
+ 				current_req = req->next;
+ 				if (req->done)
+ 					(*req->done)(req);
+-
+-				if (!current_req)
+-					macii_queue_poll();
+-
+-				if (current_req && macii_state == idle)
+-					macii_start();
+-
+-				if (macii_state == idle) {
+-					/* reset to shift in */
+-					via[ACR] &= ~SR_OUT;
+-					x = via[SR];
+-					/* set ADB state idle - might get SRQ */
+-					via[B] = (via[B] & ~ST_MASK) | ST_IDLE;
+-				}
+ 				break;
+ 			}
+ 		} else {
+@@ -511,12 +496,28 @@ static irqreturn_t macii_interrupt(int irq, void *arg)
+ 			} else if (status == ST_ODD && reply_len == 2) {
+ 				srq_asserted = true;
+ 			} else {
+-				macii_state = read_done;
++				macii_state = idle;
 +
- 	/* bit 1 == device 1, and so on. */
- 	autopoll_devs = devs & 0xFFFE;
++				if (bus_timeout)
++					reply_len = 0;
++
++				if (reading_reply) {
++					struct adb_request *req = current_req;
++
++					req->reply_len = reply_len;
++
++					req->complete = 1;
++					current_req = req->next;
++					if (req->done)
++						(*req->done)(req);
++				} else if (reply_len && autopoll_devs) {
++					adb_input(reply_buf, reply_len, 0);
++				}
++				break;
+ 			}
+ 		}
  
--	if (!autopoll_devs)
--		return 0;
+-		if (macii_state == reading &&
+-		    reply_len < ARRAY_SIZE(reply_buf)) {
++		if (reply_len < ARRAY_SIZE(reply_buf)) {
+ 			reply_ptr++;
+ 			*reply_ptr = x;
+ 			reply_len++;
+@@ -526,37 +527,22 @@ static irqreturn_t macii_interrupt(int irq, void *arg)
+ 		via[B] ^= ST_MASK;
+ 		break;
+ 
+-	case read_done:
+-		x = via[SR];
 -
--	local_irq_save(flags);
+-		if (bus_timeout)
+-			reply_len = 0;
 -
--	if (current_req == NULL) {
-+	if (autopoll_devs && !current_req) {
- 		/* Send a Talk Reg 0. The controller will repeatedly transmit
- 		 * this as long as it is idle.
- 		 */
+-		if (reading_reply) {
+-			reading_reply = 0;
+-			req = current_req;
+-			req->reply_len = reply_len;
+-			req->complete = 1;
+-			current_req = req->next;
+-			if (req->done)
+-				(*req->done)(req);
+-		} else if (reply_len && autopoll_devs)
+-			adb_input(reply_buf, reply_len, 0);
+-
+-		macii_state = idle;
++	default:
++		break;
++	}
+ 
++	if (macii_state == idle) {
+ 		if (!current_req)
+ 			macii_queue_poll();
+ 
+ 		if (current_req)
+ 			macii_start();
+ 
+-		if (macii_state == idle)
++		if (macii_state == idle) {
++			via[ACR] &= ~SR_OUT;
++			x = via[SR];
+ 			via[B] = (via[B] & ~ST_MASK) | ST_IDLE;
+-		break;
+-
+-	default:
+-		break;
++		}
+ 	}
+ 
+ 	local_irq_restore(flags);
 -- 
 2.26.2
 
