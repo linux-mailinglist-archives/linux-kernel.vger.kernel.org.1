@@ -2,164 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04BC20C545
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 03:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E34DE20C54D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 03:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726818AbgF1Bvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 21:51:43 -0400
-Received: from regular1.263xmail.com ([211.150.70.197]:50748 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726378AbgF1Bvm (ORCPT
+        id S1726895AbgF1B4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 21:56:39 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:16314 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726678AbgF1B4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 21:51:42 -0400
-Received: from localhost (unknown [192.168.167.69])
-        by regular1.263xmail.com (Postfix) with ESMTP id E9D49B2B;
-        Sun, 28 Jun 2020 09:51:31 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from [172.16.12.76] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P15430T140188661573376S1593309088919980_;
-        Sun, 28 Jun 2020 09:51:30 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <dfb966992b97e608fb76880cf6eb5680>
-X-RL-SENDER: hjc@rock-chips.com
-X-SENDER: hjc@rock-chips.com
-X-LOGIN-NAME: hjc@rock-chips.com
-X-FST-TO: hjc@rock-chips.com
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-From:   Huang Jiachai <hjc@rock-chips.com>
-Subject: =?UTF-8?Q?Re=3a_=5bPATCH_1/2=5d_drm=3a_drm=5ffourcc=3a_add_NV20_YUV?=
- =?UTF-8?B?IGZvcm1hdOOAkOivt+azqOaEj++8jOmCruS7tueUsWxpbnV4LXJvY2tjaGlwLWJv?=
- =?UTF-8?Q?unces+sandy=2ehuang=3drock-chips=2ecom=40lists=2einfradead=2eorg?=
- =?UTF-8?B?5Luj5Y+R44CR?=
-To:     Jonas Karlman <jonas@kwiboo.se>,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        linux-rockchip@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?B?6Zer5a2d5Yab?= <andy.yan@rock-chips.com>,
-        Brian Starkey <brian.starkey@arm.com>,
-        Ben Davis <ben.davis@arm.com>,
-        =?UTF-8?B?5p2o5Yev?= <kever.yang@rock-chips.com>,
-        Tao Huang <huangtao@rock-chips.com>
-References: <20200607202521.18438-1-jonas@kwiboo.se>
- <20200607202521.18438-2-jonas@kwiboo.se>
- <d503eed1-571f-3e37-858b-b5de04cb79f7@rock-chips.com>
- <f5c46547-3278-2226-e194-929fbfa95864@kwiboo.se>
-Message-ID: <bee64956-8ab0-c358-9762-63c5a5b97b6a@rock-chips.com>
-Date:   Sun, 28 Jun 2020 09:51:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Sat, 27 Jun 2020 21:56:39 -0400
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200628015636epoutp043c20dc9deeaab2047cc2682b48415067~cknRJIOvk2973529735epoutp04H
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 01:56:36 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200628015636epoutp043c20dc9deeaab2047cc2682b48415067~cknRJIOvk2973529735epoutp04H
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593309396;
+        bh=6+zZ2sOipA1Lg8Fb+N3C/N+HBDK1ASbTTeVIKAsigmM=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=n79FeKi9YFx2ssBYhXdiv3j5t0QwwlRX4xsbLMzmX2Ugek6XjcQhBBMyX77VfaH7P
+         YD4WnJYS0Mn9un2H8HNbKC2Pwu9313dAVZSSk2OLgyIvDzb1S4r0nzhqEX+2IEF0hK
+         XEs0HPbZbcG62oV8dDG2EFpYl1ilTfqqs5Ty3b/c=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20200628015634epcas5p1072d65e95e6f99584082dff66745c1ba~cknP5wup72537825378epcas5p1a;
+        Sun, 28 Jun 2020 01:56:34 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        DE.35.09475.2D8F7FE5; Sun, 28 Jun 2020 10:56:34 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200628015634epcas5p476e8084c7e2d36c5d26d97e71802793e~cknPaB3tq0123901239epcas5p4I;
+        Sun, 28 Jun 2020 01:56:34 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200628015634epsmtrp22e8e3256357e1f0dc6be877392fbb983~cknPZNQpH1319613196epsmtrp2H;
+        Sun, 28 Jun 2020 01:56:34 +0000 (GMT)
+X-AuditID: b6c32a4b-39fff70000002503-06-5ef7f8d2e0d8
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        36.8A.08303.2D8F7FE5; Sun, 28 Jun 2020 10:56:34 +0900 (KST)
+Received: from alimakhtar02 (unknown [107.108.234.165]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200628015631epsmtip257e47784d63f8acc7c02fc76717745ca~cknMRkwAA0088400884epsmtip2u;
+        Sun, 28 Jun 2020 01:56:30 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Dan Carpenter'" <dan.carpenter@oracle.com>
+Cc:     "'Avri Altman'" <avri.altman@wdc.com>,
+        "'James E.J. Bottomley'" <jejb@linux.ibm.com>,
+        "'Martin K. Petersen'" <martin.petersen@oracle.com>,
+        "'Kukjin Kim'" <kgene@kernel.org>,
+        "'Krzysztof Kozlowski'" <krzk@kernel.org>,
+        "'Kiwoong Kim'" <kwmad.kim@samsung.com>,
+        "'Wei Yongjun'" <weiyongjun1@huawei.com>,
+        <linux-scsi@vger.kernel.org>, <linux-samsung-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+In-Reply-To: <20200627175445.GG2571@kadam>
+Subject: RE: [PATCH] scsi: ufs: ufs-exynos: Remove an unnecessary NULL check
+Date:   Sun, 28 Jun 2020 07:26:29 +0530
+Message-ID: <041e01d64cef$5a166480$0e432d80$@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <f5c46547-3278-2226-e194-929fbfa95864@kwiboo.se>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-in
+Thread-Index: AQJZTJzG6GPUwl4om2Vud+BKbvKiigG4ppPqAkqZIKgCOdI8zqe1XE8A
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrIKsWRmVeSWpSXmKPExsWy7bCmlu6lH9/jDDbftbB4+fMqm8Xrf9NZ
+        LBbd2MZksfWWtEX/49fMFufPb2C3uLnlKIvF5V1z2CxmnN/HZNF9fQebxfLj/5gsDn/ZxebA
+        49Fy5C2rx6ZVnWweExYdYPT4+PQWi0ffllWMHp83yXm0H+hmCmCP4rJJSc3JLEst0rdL4Mr4
+        f38Xa8Futordq+cxNTD+Zeli5OSQEDCRaDvTxgRiCwnsZpQ4tzeui5ELyP7EKLF+91F2COcz
+        o8SVT18ZYToe/tzFCpHYxSixcMd5NgjnDaPEnrmPmEGq2AR0JXYsbmMDsUUEDCTunXzBAlLE
+        LHCAWeJm/2OwIk4BLYlDZ2eBHSIs4CPRth/iKBYBVYm+k1fZQWxeAUuJiyfms0LYghInZz4B
+        q2EWkJfY/nYOM8RJChI/ny5jhYiLSxz92cMMsdhNonfua7DFEgInOCR2zXvBDtHgIrHjyzOo
+        f4QlXh3fAhWXkvj8bi/Q1RxAdrZEzy5jiHCNxNJ5x6ABZi9x4MocFpASZgFNifW79CHW8kn0
+        /n7CBNHJK9HRJgRRrSrR/O4qVKe0xMTublYI20PixuP3rBMYFWcheWwWksdmIXlmFsKyBYws
+        qxglUwuKc9NTi00LjPNSy/WKE3OLS/PS9ZLzczcxglOZlvcOxkcPPugdYmTiYDzEKMHBrCTC
+        +9n6W5wQb0piZVVqUX58UWlOavEhRmkOFiVxXqUfZ+KEBNITS1KzU1MLUotgskwcnFINTMoa
+        dlxbOZf+6938+NnOtKzzmteXlneaukglXfaRWjmpzn8OR4+HXxV7VMLajRnzCrTk/Lt6+kIX
+        rwuPSHj03nzDrJsrN7vm2ncnzfTYM3fn/ZC6zWf/PGRO1eK32hzOuXjCsnMiVw7qtny8YcQu
+        rfBkU5W3kde+KotfbpKp3ROPCMZvrj3RHXgoKPCYGHfJYsvsskgfwdCo5S+K07hX9NoGHv15
+        WnBWhLsZTyXjyu0dL8R2Zsx40iwhzBJ5J+jv403J1jwS2+1Zz0ad77RJevrje8f+KSbs9d8c
+        Jn+eIj3h9snFQbuWnu6Z53T51LNdDxydvr2REsmS2eywjPl686TFlQvXvY0T+VGcU+EYqsRS
+        nJFoqMVcVJwIAKf3uLPUAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrKIsWRmVeSWpSXmKPExsWy7bCSvO6lH9/jDJbeFbV4+fMqm8Xrf9NZ
+        LBbd2MZksfWWtEX/49fMFufPb2C3uLnlKIvF5V1z2CxmnN/HZNF9fQebxfLj/5gsDn/ZxebA
+        49Fy5C2rx6ZVnWweExYdYPT4+PQWi0ffllWMHp83yXm0H+hmCmCP4rJJSc3JLEst0rdL4Mr4
+        f38Xa8Futordq+cxNTD+Zeli5OSQEDCRePhzF2sXIxeHkMAORol1kzayQySkJa5vnABlC0us
+        /PecHaLoFaPE202NbCAJNgFdiR2L28BsEQEDiXsnX7CAFDELnGCW+PlgGRNExylGiedTToPt
+        4xTQkjh0dhaYLSzgI9G2H+IOFgFVib6TV8HW8QpYSlw8MZ8VwhaUODnzCVANB9BUPYm2jYwg
+        YWYBeYntb+cwQ1ynIPHz6TJWiLi4xNGfPcwQB7lJ9M59zTKBUXgWkkmzECbNQjJpFpLuBYws
+        qxglUwuKc9Nziw0LjPJSy/WKE3OLS/PS9ZLzczcxgmNSS2sH455VH/QOMTJxMB5ilOBgVhLh
+        /Wz9LU6INyWxsiq1KD++qDQntfgQozQHi5I479dZC+OEBNITS1KzU1MLUotgskwcnFINTCyf
+        94qaZap7G0rM0ZH1eLw2bv+2tLNyF2obom3NPj3OZb7Rlz+L2SMucdruhYrSJTv/OTjkNETF
+        Sb5/qrupqvcEy3SDAE1Hac8zh4Pc3Bm9zp/MYej5PmvxMi6uYw/WJCUnBhhV3BHQvZ34eW0r
+        I//NiEM3z80QWXAj94N1YFClSd6M7mBGlQ6vbxwxGuJrV5dY1JZKvmjgnyqxs6VyVaW92fxl
+        N+6YbHFu1l9dvLnF4bTkm6M3ig2kUj0P6llO655/7vfnFPXpvrPjCiv6xQVsdp1K2VcuqLhG
+        dK935SV35VNb3211Zm/i0LVven2vbflC9nsSctk5/w+ta+lmXT794I9LbA4TjU+XfZRRYinO
+        SDTUYi4qTgQAjsnVYjgDAAA=
+X-CMS-MailID: 20200628015634epcas5p476e8084c7e2d36c5d26d97e71802793e
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200626105156epcas5p191d18d66af6bd09a10635559461c0bc0
+References: <CGME20200626105156epcas5p191d18d66af6bd09a10635559461c0bc0@epcas5p1.samsung.com>
+        <20200626105133.GF314359@mwanda>
+        <041701d64ca7$70bafb80$5230f280$@samsung.com> <20200627175445.GG2571@kadam>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonas Karlman,
+Hi Dan,
 
-在 2020/6/26 22:19, Jonas Karlman 写道:
-> On 2020-06-17 14:07, Huang Jiachai wrote:
->> Hi Jonas Karlman,
->>
->>       Is there an another yuv 10bit format with 4:4:4 sub-simpling but
->> has no padding?
->>
->>    Maybe we can call it DRM_FORMAT_NV30:
->>
->> { .format = DRM_FORMAT_NV30,		.depth = 0,
->>     .num_planes = 2, .char_per_block = { 5, 5, 0 },
->>     .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 1,
->>     .vsub = 1, .is_yuv = true },
->>
->> this format can supported by rockchip rk3288/rk3399... platform, can you
->> add this format at this series patches?
-> I will send a v2 including this 4:4:4 format later this weekend.
->
-> Is there any hw block on rk3288/rk3399 that can produce a buffer in such format?
-> If I am not mistaken rkvdec only support 10-bit h264 in 4:2:0/4:2:2 and
-> hevc 4:2:0 10-bit, those are the formats I have been able to test so far.
->
-> Regards,
-> Jonas
+> -----Original Message-----
+> From: Dan Carpenter <dan.carpenter@oracle.com>
+> On Sat, Jun 27, 2020 at 10:51:44PM +0530, Alim Akhtar wrote:
+> > Hi Dan
+> >
+> > > -----Original Message-----
+> > > The "head" pointer can't be NULL because it points to an address in
+the
+> > middle
+> > > of a ufs_hba struct.  Looking at this code, probably someone would
+wonder
+> > if
+> > > the intent was to check whether "hba" is NULL, but "hba"
+> > > isn't NULL and the check can just be removed.
+> > >
+> > > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > > ---
+> > Please add Fixes: tag
+> > With that
+> > Acked-by: Alim Akhtar <alim.akhtar@samsung.com>
+> 
+> It's not a bug fix it's just a cleanup.
+> 
+Acked-by: Alim Akhtar <alim.akhtar@samsung.com>
 
-yes,rockchip platform hw video decoder 10-bit yuv format only can 
-support 4:2:0/4:2:2 so far, but the software decoder path maybe output 
-4:4:4-10 format to VOP.
+Thanks!
 
->
->> 在 2020/6/8 4:25, Jonas Karlman 写道:
->>> DRM_FORMAT_NV20 is a 2 plane format suitable for linear memory layout.
->>> The format is similar to P210 with 4:2:2 sub-sampling but has no padding
->>> between components. Instead, luminance and chrominance samples are grouped
->>> into 4s so that each group is packed into an integer number of bytes:
->>>
->>> YYYY = UVUV = 4 * 10 bits = 40 bits = 5 bytes
->>>
->>> The '20' suffix refers to the optimum effective bits per pixel which is
->>> achieved when the total number of luminance samples is a multiple of 4.
->>>
->>> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
->>> ---
->>>    drivers/gpu/drm/drm_fourcc.c  | 4 ++++
->>>    include/uapi/drm/drm_fourcc.h | 1 +
->>>    2 files changed, 5 insertions(+)
->>>
->>> diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
->>> index 722c7ebe4e88..2a9c8ae719ed 100644
->>> --- a/drivers/gpu/drm/drm_fourcc.c
->>> +++ b/drivers/gpu/drm/drm_fourcc.c
->>> @@ -278,6 +278,10 @@ const struct drm_format_info *__drm_format_info(u32 format)
->>>    		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
->>>    		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
->>>    		  .vsub = 2, .is_yuv = true },
->>> +		{ .format = DRM_FORMAT_NV20,		.depth = 0,
->>> +		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
->>> +		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
->>> +		  .vsub = 1, .is_yuv = true },
->>>    		{ .format = DRM_FORMAT_Q410,		.depth = 0,
->>>    		  .num_planes = 3, .char_per_block = { 2, 2, 2 },
->>>    		  .block_w = { 1, 1, 1 }, .block_h = { 1, 1, 1 }, .hsub = 0,
->>> diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
->>> index b5bf1c0e630e..244d32433a67 100644
->>> --- a/include/uapi/drm/drm_fourcc.h
->>> +++ b/include/uapi/drm/drm_fourcc.h
->>> @@ -242,6 +242,7 @@ extern "C" {
->>>     * index 1 = Cr:Cb plane, [39:0] Cr1:Cb1:Cr0:Cb0 little endian
->>>     */
->>>    #define DRM_FORMAT_NV15		fourcc_code('N', 'V', '1', '5') /* 2x2 subsampled Cr:Cb plane */
->>> +#define DRM_FORMAT_NV20		fourcc_code('N', 'V', '2', '0') /* 2x1 subsampled Cr:Cb plane */
->>>    
->>>    /*
->>>     * 2 plane YCbCr MSB aligned
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
-
--- 
-Best Regard
-
-黄家钗
-Sandy Huang
-Addr: 福州市鼓楼区铜盘路软件大道89号福州软件园A区21号楼(350003)
-       No. 21 Building, A District, No.89,software Boulevard 
-Fuzhou,Fujian,PRC
-Tel：+86 0591-87884919  8690
-E-mail：hjc@rock-chips.com
-
+> regards,
+> dan carpenter
 
 
