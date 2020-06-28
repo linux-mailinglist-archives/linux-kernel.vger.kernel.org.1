@@ -2,173 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F19320C6BE
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 09:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C3220C6C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 09:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726177AbgF1HV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 03:21:28 -0400
-Received: from mga11.intel.com ([192.55.52.93]:16741 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725958AbgF1HV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 03:21:28 -0400
-IronPort-SDR: kmO6Uh3ymV3gzcDKEmidtOoWqX8TmG725XF5jAknHKccrRcQ7/aDxsMgay35A9iyR6gIxfheWq
- lN/owuReXDXw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9665"; a="143994229"
-X-IronPort-AV: E=Sophos;i="5.75,290,1589266800"; 
-   d="scan'208";a="143994229"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2020 00:21:27 -0700
-IronPort-SDR: IcFOAvl6KFZkyrCzbo9qhkmaBVy5GW1j76+vdXmUpRGhKVQrl+AmyKS5HfWVPRs9CELwIZvvWr
- t4FrXxeATvsA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,290,1589266800"; 
-   d="scan'208";a="276770866"
-Received: from lkp-server02.sh.intel.com (HELO 1f25e51baad6) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 28 Jun 2020 00:21:25 -0700
-Received: from kbuild by 1f25e51baad6 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jpRcx-00003t-0J; Sun, 28 Jun 2020 07:21:23 +0000
-Date:   Sun, 28 Jun 2020 15:21:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- deda15a7ef44d5dab81aa6bf140a98feefef4e00
-Message-ID: <5ef844f1.hAzZynZTuczUXuBY%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726146AbgF1HYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 03:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725958AbgF1HYw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Jun 2020 03:24:52 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1261C061794;
+        Sun, 28 Jun 2020 00:24:52 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 502244FB;
+        Sun, 28 Jun 2020 09:24:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1593329087;
+        bh=lDJLYgo5DAMTz/2ZdYYg0U6WeJE3NuS2/RgMKA97/9A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D82vwPQig11JOHMRyv/yZYP6lyVm8zSHDNpAs0wCDRKTXvpE+c5DucVv1Cv2X83RT
+         TJdPfYkU6pAuRhBrNqmysO/eOdeFqpg8qR6JQGz95C83P5RHew9bWDMGhXDQrmpLhs
+         vMoSUdCBnQvqz1GD8hajRAHRr79ryIsz/3AvgwTk=
+Date:   Sun, 28 Jun 2020 10:24:44 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v5 2/2] drm/panel: simple: Add Satoz SAT050AT40H12R2
+ panel support
+Message-ID: <20200628072444.GA8391@pendragon.ideasonboard.com>
+References: <20200109184037.9091-1-miquel.raynal@bootlin.com>
+ <20200109184037.9091-2-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200109184037.9091-2-miquel.raynal@bootlin.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-branch HEAD: deda15a7ef44d5dab81aa6bf140a98feefef4e00  Merge branch 'linus'
+Hi Miquel,
 
-elapsed time: 724m
+On Thu, Jan 09, 2020 at 07:40:37PM +0100, Miquel Raynal wrote:
+> Add support for the Satoz SAT050AT40H12R2 panel.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+> 
+> Changes since v4:
+> * None.
+> 
+> Changes since v3:
+> * Added connector type.
+> 
+> Changes since v2:
+> * Dropped two uneeded lines which would fail the build.
+> 
+> Changes since v1:
+> * Switched to display_timing's instead of display_mode.
+> 
+>  drivers/gpu/drm/panel/panel-simple.c | 27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+> index aaa08beac13c..1aa6622abc49 100644
+> --- a/drivers/gpu/drm/panel/panel-simple.c
+> +++ b/drivers/gpu/drm/panel/panel-simple.c
+> @@ -2577,6 +2577,30 @@ static const struct panel_desc samsung_ltn140at29_301 = {
+>  	},
+>  };
+>  
+> +static const struct display_timing satoz_sat050at40h12r2_timing = {
+> +	.pixelclock = {33300000, 33300000, 50000000},
+> +	.hactive = {800, 800, 800},
+> +	.hfront_porch = {16, 210, 354},
+> +	.hback_porch = {46, 46, 46},
+> +	.hsync_len = {1, 1, 40},
+> +	.vactive = {480, 480, 480},
+> +	.vfront_porch = {7, 22, 147},
+> +	.vback_porch = {23, 23, 23},
+> +	.vsync_len = {1, 1, 20},
+> +};
+> +
+> +static const struct panel_desc satoz_sat050at40h12r2 = {
+> +	.timings = &satoz_sat050at40h12r2_timing,
+> +	.num_timings = 1,
+> +	.bpc = 8,
+> +	.size = {
+> +		.width = 108,
+> +		.height = 65,
+> +	},
+> +	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
+> +	.connector_type = DRM_MODE_CONNECTOR_LVDS,
 
-configs tested: 111
-configs skipped: 1
+I'm trying to fix inconsistencies in the panel-simple driver, and this
+caught my eyes. MEDIA_BUS_FMT_RGB888_1X24 isn't a correct format for
+LVDS panels. MEDIA_BUS_FMT_RGB666_1X7X3_SPWG,
+MEDIA_BUS_FMT_RGB888_1X7X4_SPWG or MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA
+should be used instead. As I couldn't find documentation for the panel,
+I can't tell which format is correct. Could you please help ?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> +};
+> +
+>  static const struct drm_display_mode sharp_ld_d5116z01b_mode = {
+>  	.clock = 168480,
+>  	.hdisplay = 1920,
+> @@ -3377,6 +3401,9 @@ static const struct of_device_id platform_of_match[] = {
+>  	}, {
+>  		.compatible = "samsung,ltn140at29-301",
+>  		.data = &samsung_ltn140at29_301,
+> +	}, {
+> +		.compatible = "satoz,sat050at40h12r2",
+> +		.data = &satoz_sat050at40h12r2,
+>  	}, {
+>  		.compatible = "sharp,ld-d5116z01b",
+>  		.data = &sharp_ld_d5116z01b,
 
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-powerpc                     mpc5200_defconfig
-m68k                            q40_defconfig
-arm                           tegra_defconfig
-mips                        vocore2_defconfig
-arm                          simpad_defconfig
-arm                         cm_x300_defconfig
-sh                         microdev_defconfig
-m68k                             allmodconfig
-powerpc                       ppc64_defconfig
-m68k                             alldefconfig
-nios2                         10m50_defconfig
-mips                     decstation_defconfig
-arm                       versatile_defconfig
-mips                          ath25_defconfig
-mips                        nlm_xlp_defconfig
-sparc                            allyesconfig
-arm                       netwinder_defconfig
-mips                    maltaup_xpa_defconfig
-powerpc                    gamecube_defconfig
-powerpc                      pasemi_defconfig
-riscv                             allnoconfig
-h8300                    h8300h-sim_defconfig
-nds32                             allnoconfig
-sparc64                          allmodconfig
-h8300                       h8s-sim_defconfig
-sh                          landisk_defconfig
-sh                          kfr2r09_defconfig
-mips                  maltasmvp_eva_defconfig
-sh                         apsh4a3a_defconfig
-openrisc                    or1ksim_defconfig
-mips                           jazz_defconfig
-x86_64                           alldefconfig
-arm                         s3c2410_defconfig
-powerpc                     mpc512x_defconfig
-openrisc                 simple_smp_defconfig
-sh                           cayman_defconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                              allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-um                                allnoconfig
-um                                  defconfig
-um                               allmodconfig
-um                               allyesconfig
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
+-- 
+Regards,
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Laurent Pinchart
