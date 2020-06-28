@@ -2,169 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4F020C932
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 19:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F58920C927
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 19:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbgF1RS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 13:18:28 -0400
-Received: from out28-51.mail.aliyun.com ([115.124.28.51]:53264 "EHLO
-        out28-51.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726438AbgF1RSU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 13:18:20 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.06436677|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.098955-0.0108374-0.890207;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03294;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.Hu3fckw_1593364687;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Hu3fckw_1593364687)
-          by smtp.aliyun-inc.com(10.147.42.197);
-          Mon, 29 Jun 2020 01:18:16 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     linux-clk@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, sboyd@kernel.org,
-        paul@crapouillou.net, mturquette@baylibre.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: [PATCH v2 3/3] clk: X1000: Add support for calculat REFCLK of USB PHY.
-Date:   Mon, 29 Jun 2020 01:15:43 +0800
-Message-Id: <20200628171543.51478-4-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200628171543.51478-1-zhouyanjie@wanyeetech.com>
-References: <20200628171543.51478-1-zhouyanjie@wanyeetech.com>
+        id S1726618AbgF1RQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 13:16:40 -0400
+Received: from mga02.intel.com ([134.134.136.20]:15923 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726059AbgF1RQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Jun 2020 13:16:40 -0400
+IronPort-SDR: Tc5u38z0Rg0j4+DX+3gFuSTzd5U6V9JP54N5FQEAG/70xmUqDw67VZyEIF49FSxZgLXLrdKOpy
+ Epyqpz9iB+2g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="134173291"
+X-IronPort-AV: E=Sophos;i="5.75,291,1589266800"; 
+   d="scan'208";a="134173291"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2020 10:16:38 -0700
+IronPort-SDR: s/CaFswzkV9uLr+zFxqweD+BHz4N478o0Avg93xSnrVl+Mvwb54GAnFPN8KiQhUTMFnXdTGpBB
+ 1JKO8wlMnqdA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,291,1589266800"; 
+   d="scan'208";a="453934416"
+Received: from unknown (HELO btopel-mobl.ger.intel.com) ([10.252.54.42])
+  by orsmga005.jf.intel.com with ESMTP; 28 Jun 2020 10:16:34 -0700
+Subject: Re: [PATCH net] xsk: remove cheap_dma optimization
+To:     Christoph Hellwig <hch@lst.de>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        netdev@vger.kernel.org, davem@davemloft.net,
+        konrad.wilk@oracle.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        maximmi@mellanox.com, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com
+References: <20200626134358.90122-1-bjorn.topel@gmail.com>
+ <c60dfb5a-2bf3-20bd-74b3-6b5e215f73f8@iogearbox.net>
+ <20200627070406.GB11854@lst.de>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <88d27e1b-dbda-301c-64ba-2391092e3236@intel.com>
+Date:   Sun, 28 Jun 2020 19:16:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20200627070406.GB11854@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add functions for calculat the rate of REFCLK, which is needed by
-USB PHY in Ingenic X1000 SoC.
 
-Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
+On 2020-06-27 09:04, Christoph Hellwig wrote:
+> On Sat, Jun 27, 2020 at 01:00:19AM +0200, Daniel Borkmann wrote:
+>> Given there is roughly a ~5 weeks window at max where this removal could
+>> still be applied in the worst case, could we come up with a fix / proposal
+>> first that moves this into the DMA mapping core? If there is something that
+>> can be agreed upon by all parties, then we could avoid re-adding the 9%
+>> slowdown. :/
+> 
+> I'd rather turn it upside down - this abuse of the internals blocks work
+> that has basically just missed the previous window and I'm not going
+> to wait weeks to sort out the API misuse.  But we can add optimizations
+> back later if we find a sane way.
+>
 
-Notes:
-    v1->v2:
-    1.Use "WARN()" instead "BUG()".
-    2.Remove unnecessary get_parent/set_parent functions.
+I'm not super excited about the performance loss, but I do get
+Christoph's frustration about gutting the DMA API making it harder for
+DMA people to get work done. Lets try to solve this properly using
+proper DMA APIs.
 
- drivers/clk/ingenic/x1000-cgu.c | 85 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 84 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/ingenic/x1000-cgu.c b/drivers/clk/ingenic/x1000-cgu.c
-index 453f3323cb99..aa043f3cf11f 100644
---- a/drivers/clk/ingenic/x1000-cgu.c
-+++ b/drivers/clk/ingenic/x1000-cgu.c
-@@ -48,8 +48,88 @@
- #define USBPCR_SIDDQ		BIT(21)
- #define USBPCR_OTG_DISABLE	BIT(20)
- 
-+/* bits within the USBPCR1 register */
-+#define USBPCR1_REFCLKSEL_SHIFT	26
-+#define USBPCR1_REFCLKSEL_MASK	(0x3 << USBPCR1_REFCLKSEL_SHIFT)
-+#define USBPCR1_REFCLKSEL_CORE	(0x2 << USBPCR1_REFCLKSEL_SHIFT)
-+#define USBPCR1_REFCLKDIV_SHIFT	24
-+#define USBPCR1_REFCLKDIV_MASK	(0x3 << USBPCR1_REFCLKDIV_SHIFT)
-+#define USBPCR1_REFCLKDIV_48	(0x2 << USBPCR1_REFCLKDIV_SHIFT)
-+#define USBPCR1_REFCLKDIV_24	(0x1 << USBPCR1_REFCLKDIV_SHIFT)
-+#define USBPCR1_REFCLKDIV_12	(0x0 << USBPCR1_REFCLKDIV_SHIFT)
-+
- static struct ingenic_cgu *cgu;
- 
-+static unsigned long x1000_otg_phy_recalc_rate(struct clk_hw *hw,
-+						unsigned long parent_rate)
-+{
-+	u32 usbpcr1;
-+	unsigned refclk_div;
-+
-+	usbpcr1 = readl(cgu->base + CGU_REG_USBPCR1);
-+	refclk_div = usbpcr1 & USBPCR1_REFCLKDIV_MASK;
-+
-+	switch (refclk_div) {
-+	case USBPCR1_REFCLKDIV_12:
-+		return 12000000;
-+
-+	case USBPCR1_REFCLKDIV_24:
-+		return 48000000;
-+
-+	case USBPCR1_REFCLKDIV_48:
-+		return 48000000;
-+	}
-+
-+	WARN();
-+	return parent_rate;
-+}
-+
-+static long x1000_otg_phy_round_rate(struct clk_hw *hw, unsigned long req_rate,
-+				      unsigned long *parent_rate)
-+{
-+	if (req_rate < 18000000)
-+		return 12000000;
-+
-+	if (req_rate < 36000000)
-+		return 24000000;
-+
-+	return 48000000;
-+}
-+
-+static int x1000_otg_phy_set_rate(struct clk_hw *hw, unsigned long req_rate,
-+				   unsigned long parent_rate)
-+{
-+	unsigned long flags;
-+	u32 usbpcr1, div_bits;
-+
-+	switch (req_rate) {
-+	case 18000000:
-+		div_bits = USBPCR1_REFCLKDIV_12;
-+		break;
-+
-+	case 24000000:
-+		div_bits = USBPCR1_REFCLKDIV_24;
-+		break;
-+
-+	case 48000000:
-+		div_bits = USBPCR1_REFCLKDIV_48;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	spin_lock_irqsave(&cgu->lock, flags);
-+
-+	usbpcr1 = readl(cgu->base + CGU_REG_USBPCR1);
-+	usbpcr1 &= ~USBPCR1_REFCLKDIV_MASK;
-+	usbpcr1 |= div_bits;
-+	writel(usbpcr1, cgu->base + CGU_REG_USBPCR1);
-+
-+	spin_unlock_irqrestore(&cgu->lock, flags);
-+	return 0;
-+}
-+
- static int x1000_usb_phy_enable(struct clk_hw *hw)
- {
- 	void __iomem *reg_opcr		= cgu->base + CGU_REG_OPCR;
-@@ -80,6 +160,10 @@ static int x1000_usb_phy_is_enabled(struct clk_hw *hw)
- }
- 
- static const struct clk_ops x1000_otg_phy_ops = {
-+	.recalc_rate = x1000_otg_phy_recalc_rate,
-+	.round_rate = x1000_otg_phy_round_rate,
-+	.set_rate = x1000_otg_phy_set_rate,
-+
- 	.enable		= x1000_usb_phy_enable,
- 	.disable	= x1000_usb_phy_disable,
- 	.is_enabled	= x1000_usb_phy_is_enabled,
-@@ -144,7 +228,6 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 		},
- 	},
- 
--
- 	/* Custom (SoC-specific) OTG PHY */
- 
- 	[X1000_CLK_OTGPHY] = {
--- 
-2.11.0
+> That being said I really can't see how this would make so much of a
+> difference.  What architecture and what dma_ops are you using for
+> those measurements?  What is the workload?
+> 
+
+The 9% is for an AF_XDP (Fast raw Ethernet socket. Think AF_PACKET, but 
+faster.) benchmark: receive the packet from the NIC, and drop it. The 
+DMA syncs stand out in the perf top:
+
+   28.63%  [kernel]                   [k] i40e_clean_rx_irq_zc
+   17.12%  [kernel]                   [k] xp_alloc
+    8.80%  [kernel]                   [k] __xsk_rcv_zc
+    7.69%  [kernel]                   [k] xdp_do_redirect
+    5.35%  bpf_prog_992d9ddc835e5629  [k] bpf_prog_992d9ddc835e5629
+    4.77%  [kernel]                   [k] xsk_rcv.part.0
+    4.07%  [kernel]                   [k] __xsk_map_redirect
+    3.80%  [kernel]                   [k] dma_direct_sync_single_for_cpu
+    3.03%  [kernel]                   [k] dma_direct_sync_single_for_device
+    2.76%  [kernel]                   [k] i40e_alloc_rx_buffers_zc
+    1.83%  [kernel]                   [k] xsk_flush
+...
+
+For this benchmark the dma_ops are NULL (dma_is_direct() == true), and
+the main issue is that SWIOTLB is now unconditionally enabled [1] for
+x86, and for each sync we have to check that if is_swiotlb_buffer()
+which involves a some costly indirection.
+
+That was pretty much what my hack avoided. Instead we did all the checks
+upfront, since AF_XDP has long-term DMA mappings, and just set a flag
+for that.
+
+Avoiding the whole "is this address swiotlb" in
+dma_direct_sync_single_for_{cpu, device]() per-packet
+would help a lot.
+
+Somewhat related to the DMA API; It would have performance benefits for
+AF_XDP if the DMA range of the mapped memory was linear, i.e. by IOMMU
+utilization. I've started hacking a thing a little bit, but it would be
+nice if such API was part of the mapping core.
+
+Input: array of pages Output: array of dma addrs (and obviously dev,
+flags and such)
+
+For non-IOMMU len(array of pages) == len(array of dma addrs)
+For best-case IOMMU len(array of dma addrs) == 1 (large linear space)
+
+But that's for later. :-)
+
+
+Björn
+
+
+[1] commit: 09230cbc1bab ("swiotlb: move the SWIOTLB config symbol to 
+lib/Kconfig")
 
