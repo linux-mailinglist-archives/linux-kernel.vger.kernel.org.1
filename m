@@ -2,109 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA40720CA1F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 21:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9323720CA46
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 22:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727040AbgF1TyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 15:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726981AbgF1TyD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 15:54:03 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B041DC03E979;
-        Sun, 28 Jun 2020 12:54:02 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id dp18so14519539ejc.8;
-        Sun, 28 Jun 2020 12:54:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IecnikxrmKwKRsrCTW9kdHFofcFntdDjZkZFdGb3EQE=;
-        b=htM9hGW3cBrcBx5OGriOoZ2Q7qb2kQCN4jBJM4mOX8cRyj2Fvt1fFBwLpHtarriC4Q
-         FLclMgfMwZb2vt5V0WuH3YNZf6Ac9JxXRbN2DE/pqISuwewWSA4ZzIqpKRWCDgdB4gGJ
-         W41F8SsLnxtkInh1/0RjcMDxWFkPqVi7kXDyZyPl/A6ZXSfaachwpt322k7R6ypgxW8F
-         NdApUcsygtNPKTm66vQo5pInfspM76rA3tsFgggFOgZFVRGGi+17G5SzlUIhhrPGw6Yq
-         F7XV6xpJa1pQWR8ugjJRm1e6Sd9ZbpxskMF/BYcrBJVfrlvMcxXzuWB8FALsLfXktnMB
-         gNew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IecnikxrmKwKRsrCTW9kdHFofcFntdDjZkZFdGb3EQE=;
-        b=dM/FUaqe8z77+KXmSWUbh0NdeCl9nCY4YlaA28cJE6BNOnljosJW0hebEFNyLacA6N
-         v4f8n1XwyCTrJk9Qc9O3+nexwlq8attafnCmAlHiJrZUmsy8gtT+DTdFWedcH0MR27br
-         qNfHu185agbY/n2gtbMcC1371z6DlkWBMOOBuJ1gqjhRae7EzU2e8YusfbRpnX4297s0
-         pcUN1ASBo1ZdMaA9hGxTmnlLssDvy5v4Liqom7s8yanC534zxrIDiwIU8mxHXPForKo0
-         uAcCBxL4mNqR0hr+f+U8IWGI5qFPq1NzUGxEDQodTz+mYS8uaORjDoeVW/OvjPJOJKBA
-         PI/g==
-X-Gm-Message-State: AOAM533GIsNOQSeT+TJTq5Ju02NorX3Eq4jmp5TaT02bG40SvvmhPQkj
-        7qJ3jG3MDNLGJbclfBzW9E0=
-X-Google-Smtp-Source: ABdhPJwS6a+/f3aFAtr06rNEF0lhYkFRfGEM+tY+SaUPjEqw/nfHIiS2VxdQx+1Az4I0Kf670fZiaw==
-X-Received: by 2002:a17:906:2e83:: with SMTP id o3mr7653587eji.261.1593374041507;
-        Sun, 28 Jun 2020 12:54:01 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:a03f:b7f9:7600:f145:9a83:6418:5a5c])
-        by smtp.gmail.com with ESMTPSA id z8sm15669531eju.106.2020.06.28.12.54.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jun 2020 12:54:01 -0700 (PDT)
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     "David S . Miller" <davem@davemloft.net>
-Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        oss-drivers@netronome.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: [PATCH 15/15] cxgb4vf: fix t4vf_eth_xmit()'s return type
-Date:   Sun, 28 Jun 2020 21:53:37 +0200
-Message-Id: <20200628195337.75889-16-luc.vanoostenryck@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200628195337.75889-1-luc.vanoostenryck@gmail.com>
-References: <20200628195337.75889-1-luc.vanoostenryck@gmail.com>
+        id S1726775AbgF1UAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 16:00:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726675AbgF1UAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Jun 2020 16:00:24 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7C85206C3;
+        Sun, 28 Jun 2020 20:00:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593374424;
+        bh=VVxMX2lDV09g2mF+EVY4UZ5ddjynnYgTOdUT9eAi10I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QUMvF0tURaxVQa9M353t/xbidOoVXPl6CjgsU6D5iLImfp0x89UQmOYQzZ0Zgstl0
+         H9URve8x7WBzNjbVCz1wqWMWKAkNbX2HzaQgJ60pni/5OabVf+Wb12gNf3EGAeBRnT
+         YAAO6JSCqEW9HqrHYt/f4zZTRZxE5x+7yuwrPuPk=
+Date:   Sun, 28 Jun 2020 13:00:22 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Mike Snitzer <msnitzer@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Zaibo Xu <xuzaibo@huawei.com>, linux-kernel@vger.kernel.org,
+        Wei Xu <xuwei5@hisilicon.com>, dm-devel@redhat.com,
+        George Cherian <gcherian@marvell.com>,
+        linux-crypto@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Milan Broz <mbroz@redhat.com>
+Subject: Re: [dm-devel] [PATCH 1/3 v2] crypto: introduce the flag
+ CRYPTO_ALG_ALLOCATES_MEMORY
+Message-ID: <20200628200022.GE11197@sol.localdomain>
+References: <alpine.LRH.2.02.2006161101080.28052@file01.intranet.prod.int.rdu2.redhat.com>
+ <20200616173620.GA207319@gmail.com>
+ <alpine.LRH.2.02.2006171107220.18714@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2006171108440.18714@file01.intranet.prod.int.rdu2.redhat.com>
+ <20200626044534.GA2870@gondor.apana.org.au>
+ <alpine.LRH.2.02.2006261109520.11899@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2006261215480.13882@file01.intranet.prod.int.rdu2.redhat.com>
+ <20200626164617.GA211634@gmail.com>
+ <20200626170039.GB211634@gmail.com>
+ <alpine.LRH.2.02.2006281505530.347@file01.intranet.prod.int.rdu2.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LRH.2.02.2006281505530.347@file01.intranet.prod.int.rdu2.redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The method ndo_start_xmit() is defined as returning an 'netdev_tx_t',
-which is a typedef for an enum type, but the implementation in this
-driver returns an 'int'.
+On Sun, Jun 28, 2020 at 03:07:49PM -0400, Mikulas Patocka wrote:
+> > 
+> > cryptd_create_skcipher(), cryptd_create_hash(), cryptd_create_aead(), and
+> > crypto_rfc4309_create() are also missing setting the mask.
+> > 
+> > pcrypt_create_aead() is missing both setting the mask and inheriting the flags.
+> 
+> I added CRYPTO_ALG_ALLOCATES_MEMORY there.
 
-Fix this by returning 'netdev_tx_t' in this driver too.
+I don't see where the cryptd request processing functions allocate memory.
 
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
----
- drivers/net/ethernet/chelsio/cxgb4vf/adapter.h | 2 +-
- drivers/net/ethernet/chelsio/cxgb4vf/sge.c     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+It seems that cryptd should just inherit the flag, like most other templates.
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4vf/adapter.h b/drivers/net/ethernet/chelsio/cxgb4vf/adapter.h
-index 3782e48dada2..f55105a4112f 100644
---- a/drivers/net/ethernet/chelsio/cxgb4vf/adapter.h
-+++ b/drivers/net/ethernet/chelsio/cxgb4vf/adapter.h
-@@ -562,7 +562,7 @@ int t4vf_sge_alloc_eth_txq(struct adapter *, struct sge_eth_txq *,
- 			   unsigned int);
- void t4vf_free_sge_resources(struct adapter *);
- 
--int t4vf_eth_xmit(struct sk_buff *, struct net_device *);
-+netdev_tx_t t4vf_eth_xmit(struct sk_buff *, struct net_device *);
- int t4vf_ethrx_handler(struct sge_rspq *, const __be64 *,
- 		       const struct pkt_gl *);
- 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4vf/sge.c b/drivers/net/ethernet/chelsio/cxgb4vf/sge.c
-index f71c973398ec..46e50e25dbba 100644
---- a/drivers/net/ethernet/chelsio/cxgb4vf/sge.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4vf/sge.c
-@@ -1154,7 +1154,7 @@ static inline void txq_advance(struct sge_txq *tq, unsigned int n)
-  *
-  *	Add a packet to an SGE Ethernet TX queue.  Runs with softirqs disabled.
-  */
--int t4vf_eth_xmit(struct sk_buff *skb, struct net_device *dev)
-+netdev_tx_t t4vf_eth_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	u32 wr_mid;
- 	u64 cntrl, *end;
--- 
-2.27.0
+Likewise for pcrypt.
 
+And also likewise for rfc4309.
+
+Where are you seeing the memory allocations that would require
+CRYPTO_ALG_ALLOCATES_MEMORY to always be enabled for these?
+
+- Eric
