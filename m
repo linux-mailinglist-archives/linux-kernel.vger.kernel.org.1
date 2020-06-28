@@ -2,114 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4E220C53B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 03:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8481E20C548
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 03:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgF1Bod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Jun 2020 21:44:33 -0400
-Received: from mail-db8eur05on2085.outbound.protection.outlook.com ([40.107.20.85]:6160
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726378AbgF1Boc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Jun 2020 21:44:32 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fkNi6TruPU09TMXUo0T/w1G4k9P48q0Udt33KnuMPKfFbmpSexUX0m2F3ZLiN6qaOhn7TqHi/GCWofZLMHXc6+dwPwvuxqffxSQ9K5rvs7cCVECwnMst2waz8EbmGbdq9OGeXeWDXYFnvOH8Fx+p4dpGPBPVTDN1leNGfO4Fw4T2qDJWFCkicyJBx4g4MRFVf/KJY0o4Ds3LBsJTl3FGxfgUHZvhWYxMUVEJVT5zn+l3Gds0vEQK+DNPVelijZpLvBCLDVfP72NfeWNwOJ4/K4BO9iV6osvo3qOvXWevgr7z4+Oh/SYnB5s6AQXgRCvlcjPeEe2aIIRkW68Xte6stg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kWe4grM1QFndulPu96VHnqFZOhhIifQyZYMyDZuUvp4=;
- b=V3kClsy5VRw6906w6kzjDB0tYrEd5FFMDQxuOCxa4fimZQVuq6ve3qhnB5NgYlUPzojj8oiOy86HqUaPgAdECV+PiPNcnab7Nk0fSonQFUyHB+tMImUDoD+ZWYB6dio7ejP1uyaTMfJdj0TJRM2/XWwmMT7t8sQ3HoJgj0phsHzx2gYhGGehuDYjHxlWyDOAejqlAGiUeS3m+8FPR84t2Zb6i5iLoLFlGgjwJaux90Z9qEA05wWWIO+7yp6znQbv78R4D71SharLJzZ+O1DSdIdQTOf0eNEaO+cWjbpNVZbRNp89dFSXinMUNJe25QwRu6A1Jgb4cG6wMqKx59GAUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kWe4grM1QFndulPu96VHnqFZOhhIifQyZYMyDZuUvp4=;
- b=UPySdSgb3hn6vUGM1j9Mcj/Mgj9nnl0WKiNGNsKg+QTAdLwwUiTpIq8e6AnV1PmIJMfNqzyAd0heQitt7vSmdVqNf3V+zfIcEW+r4PWxKsOQvlC7t2/qipAlasfzGCs6wKJ7n/e97hyFF5cmlnVE9pIP5SuwLYH5Vpn3Gt28vIg=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-Received: from VE1PR04MB6496.eurprd04.prod.outlook.com (2603:10a6:803:11c::29)
- by VI1PR04MB6029.eurprd04.prod.outlook.com (2603:10a6:803:101::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20; Sun, 28 Jun
- 2020 01:44:28 +0000
-Received: from VE1PR04MB6496.eurprd04.prod.outlook.com
- ([fe80::c1ea:5943:40e8:58f1]) by VE1PR04MB6496.eurprd04.prod.outlook.com
- ([fe80::c1ea:5943:40e8:58f1%3]) with mapi id 15.20.3131.026; Sun, 28 Jun 2020
- 01:44:28 +0000
-From:   Po Liu <po.liu@nxp.com>
-To:     dsahern@gmail.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     stephen@networkplumber.org, davem@davemloft.net, jhs@mojatatu.com,
-        vlad@buslov.dev, po.liu@nxp.com, claudiu.manoil@nxp.com,
-        vladimir.oltean@nxp.com, alexandru.marginean@nxp.com
-Subject: [iproute2-next] action police: make 'mtu' could be set independently in police action
-Date:   Sun, 28 Jun 2020 09:46:02 +0800
-Message-Id: <20200628014602.13002-1-po.liu@nxp.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR06CA0097.apcprd06.prod.outlook.com
- (2603:1096:3:14::23) To VE1PR04MB6496.eurprd04.prod.outlook.com
- (2603:10a6:803:11c::29)
+        id S1726858AbgF1ByR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Jun 2020 21:54:17 -0400
+Received: from conuserg-09.nifty.com ([210.131.2.76]:50055 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726530AbgF1ByQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Jun 2020 21:54:16 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 05S1oixP004742;
+        Sun, 28 Jun 2020 10:50:44 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 05S1oixP004742
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1593309045;
+        bh=hkY77VUGXSYac7YbrIkUecBgq7WORaGieZmySJIL5UA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ahJ3uto2fhcnzsnIdLNU74S4vUyrlAQ4RsoPaFq9zt9MQ9rNbQLVQSS7jxeu5Q8si
+         hZ34tVZRnliSC5lwB2mp+XhuUvw+20+ogpJbv2SrSVGwLunHSwliobc980NNYxgtNV
+         7KoTg5pXNDlDue+Qw95dB65tKTenO+yJoYpKMjA+pouECDFfbNgi/Gl3GphBAEx2jt
+         JIId1nbEsdrcgnMp1nLu2y0LwNlkZ7F/kd88h+53l3Wy2U7beVZi9x+0lCqdPuAiyn
+         xq4P1+iR/S7vXT/ZdlGa6TQaScQErK5xw4F96tYA3UgjBxvfSj1llEDfgf/+ZBEQh9
+         WQo1lz/K7CrLw==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Paul Mackerras <paulus@samba.org>,
+        Rich Felker <dalias@libc.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] kbuild: introduce ccflags-remove-y and asflags-remove-y
+Date:   Sun, 28 Jun 2020 10:50:41 +0900
+Message-Id: <20200628015041.1000002-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from tsn.ap.freescale.net (119.31.174.73) by SG2PR06CA0097.apcprd06.prod.outlook.com (2603:1096:3:14::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21 via Frontend Transport; Sun, 28 Jun 2020 01:44:25 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [119.31.174.73]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e9874d3f-3dd2-4ae4-8e7b-08d81b04cba6
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6029:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB6029F11922DE2DE56B3F9C0892910@VI1PR04MB6029.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-Forefront-PRVS: 0448A97BF2
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dr9L0/v3t5hGYP9Sg+kezGFuFeyNKHMo7A7fP2Z3K5LFxqQ+SnVWngWI7hUgKZlhtm5b+XrpIITmgMJXY0iSVuU6mOVuTh6JQpVJQQYg94HbDWsd1QGQGSbajjISVhIgsxX1VciHFqULPbze4Arlxy4XD+q0o3M3GxancULSWiWPkq5cehuZVjMu1nqLmHrFJocHtZw4LClU9BqDEEhLrenf2m7lxyATRl98rn3ryw9CMrPyGj1yEfc6UVR7KZJW7FJ2D6mjyGT/X903mjhJMRpNXNO93Z2BEQZOritar9Dtzd5C5FMiUSU0/Zb9BzbjM3b3ss0Qm9QmBDsK09Vmrg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6496.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39850400004)(376002)(136003)(366004)(346002)(2906002)(83380400001)(316002)(2616005)(6486002)(5660300002)(186003)(16526019)(8676002)(26005)(8936002)(478600001)(86362001)(66476007)(36756003)(44832011)(4326008)(4744005)(52116002)(1076003)(956004)(6512007)(6506007)(66556008)(66946007)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: gpRVF2GvxnhPWuND3QA+N4w9KUr9CRj7kKDytjyjuxQVuRpge8KDxIUvqmH2KD6EqVDOd0X8d1C6XYYcwHa5u6+v0UXYOdHIPw4hcoy1uLlSXRzHv9a3PYGeINF+bWhPXXxd38XPD/CcB1ZUS9qxM5riqvEgreHbsBVTCzKrkaNmMRHw04sOzuOQSyCptAoB9sy8rJ1hHjFrOgJ/+XKUnNF0PX83xf8pj2qmDmUTMixeaxDVS3RvWJWWFaV/osUjc8zQKa7DLPOC7yctowHx31blFfuCaXRKSRyDJKNqYvfs8ngKCqetGWCuijLGnqGFcojsySuxmcUak0nLJYITguVssxImSBZGFKLTj8RRoHIer1MFjsW5BaR2IDv2BjOWFbbP+R3+VcreaXxjesvCgXceGg9Jz62ZwclG/+pE2lo4zZ2bZXNRpq9W0FWP2TPg8UIU0Swzyvc8e5ccQmT7kPjFMQbbL7Y2LEFf3wp48fo=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9874d3f-3dd2-4ae4-8e7b-08d81b04cba6
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6496.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2020 01:44:28.6902
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mgnzdYLrlOqz6W6+rZ3ZI97fWgw4NiaqmxD+B8rMZN4Pz/nc73wTCRE7amVxJMv3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6029
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current police action must set 'rate' and 'burst'. 'mtu' parameter
-set the max frame size and could be set alone without 'rate' and 'burst'
-in some situation. Offloading to hardware for example, 'mtu' could limit
-the flow max frame size.
+CFLAGS_REMOVE_<file>.o works per object, that is, there is no
+convenient way to filter out flags for every object in a directory.
 
-Signed-off-by: Po Liu <po.liu@nxp.com>
+Add ccflags-remove-y and asflags-remove-y to make it easily.
+
+Use ccflags-remove-y to clean up some Makefiles.
+
+Suggested-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- tc/m_police.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tc/m_police.c b/tc/m_police.c
-index a5bc20c0..89497f67 100644
---- a/tc/m_police.c
-+++ b/tc/m_police.c
-@@ -161,8 +161,8 @@ action_ctrl_ok:
- 		return -1;
+ arch/arm/boot/compressed/Makefile | 6 +-----
+ arch/powerpc/xmon/Makefile        | 3 +--
+ arch/sh/boot/compressed/Makefile  | 5 +----
+ kernel/trace/Makefile             | 4 ++--
+ lib/Makefile                      | 5 +----
+ scripts/Makefile.lib              | 4 ++--
+ 6 files changed, 8 insertions(+), 19 deletions(-)
+
+diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
+index 00602a6fba04..3d5691b23951 100644
+--- a/arch/arm/boot/compressed/Makefile
++++ b/arch/arm/boot/compressed/Makefile
+@@ -103,13 +103,9 @@ clean-files += piggy_data lib1funcs.S ashldi3.S bswapsdi2.S hyp-stub.S
  
- 	/* Must at least do late binding, use TB or ewma policing */
--	if (!rate64 && !avrate && !p.index) {
--		fprintf(stderr, "\"rate\" or \"avrate\" MUST be specified.\n");
-+	if (!rate64 && !avrate && !p.index && !mtu) {
-+		fprintf(stderr, "\"rate\" or \"avrate\" or \"mtu\"MUST be specified.\n");
- 		return -1;
- 	}
+ KBUILD_CFLAGS += -DDISABLE_BRANCH_PROFILING
  
+-ifeq ($(CONFIG_FUNCTION_TRACER),y)
+-ORIG_CFLAGS := $(KBUILD_CFLAGS)
+-KBUILD_CFLAGS = $(subst -pg, , $(ORIG_CFLAGS))
+-endif
+-
+ ccflags-y := -fpic $(call cc-option,-mno-single-pic-base,) -fno-builtin \
+ 	     -I$(obj) $(DISABLE_ARM_SSP_PER_TASK_PLUGIN)
++ccflags-remove-$(CONFIG_FUNCTION_TRACER) += -pg
+ asflags-y := -DZIMAGE
+ 
+ # Supply kernel BSS size to the decompressor via a linker symbol.
+diff --git a/arch/powerpc/xmon/Makefile b/arch/powerpc/xmon/Makefile
+index 89c76ca35640..55cbcdd88ac0 100644
+--- a/arch/powerpc/xmon/Makefile
++++ b/arch/powerpc/xmon/Makefile
+@@ -7,8 +7,7 @@ UBSAN_SANITIZE := n
+ KASAN_SANITIZE := n
+ 
+ # Disable ftrace for the entire directory
+-ORIG_CFLAGS := $(KBUILD_CFLAGS)
+-KBUILD_CFLAGS = $(subst $(CC_FLAGS_FTRACE),,$(ORIG_CFLAGS))
++ccflags-remove-y += $(CC_FLAGS_FTRACE)
+ 
+ ifdef CONFIG_CC_IS_CLANG
+ # clang stores addresses on the stack causing the frame size to blow
+diff --git a/arch/sh/boot/compressed/Makefile b/arch/sh/boot/compressed/Makefile
+index ad0e2403e56f..589d2d8a573d 100644
+--- a/arch/sh/boot/compressed/Makefile
++++ b/arch/sh/boot/compressed/Makefile
+@@ -28,10 +28,7 @@ IMAGE_OFFSET	:= $(shell /bin/bash -c 'printf "0x%08x" \
+ 			$(CONFIG_BOOT_LINK_OFFSET)]')
+ endif
+ 
+-ifeq ($(CONFIG_MCOUNT),y)
+-ORIG_CFLAGS := $(KBUILD_CFLAGS)
+-KBUILD_CFLAGS = $(subst -pg, , $(ORIG_CFLAGS))
+-endif
++ccflags-remove-$(CONFIG_MCOUNT) += -pg
+ 
+ LDFLAGS_vmlinux := --oformat $(ld-bfd) -Ttext $(IMAGE_OFFSET) -e startup \
+ 		   -T $(obj)/../../kernel/vmlinux.lds
+diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
+index 6575bb0a0434..7492844a8b1b 100644
+--- a/kernel/trace/Makefile
++++ b/kernel/trace/Makefile
+@@ -2,9 +2,9 @@
+ 
+ # Do not instrument the tracer itself:
+ 
++ccflags-remove-$(CONFIG_FUNCTION_TRACER) += $(CC_FLAGS_FTRACE)
++
+ ifdef CONFIG_FUNCTION_TRACER
+-ORIG_CFLAGS := $(KBUILD_CFLAGS)
+-KBUILD_CFLAGS = $(subst $(CC_FLAGS_FTRACE),,$(ORIG_CFLAGS))
+ 
+ # Avoid recursion due to instrumentation.
+ KCSAN_SANITIZE := n
+diff --git a/lib/Makefile b/lib/Makefile
+index b1c42c10073b..b2ed4beddd68 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -3,10 +3,7 @@
+ # Makefile for some libs needed in the kernel.
+ #
+ 
+-ifdef CONFIG_FUNCTION_TRACER
+-ORIG_CFLAGS := $(KBUILD_CFLAGS)
+-KBUILD_CFLAGS = $(subst $(CC_FLAGS_FTRACE),,$(ORIG_CFLAGS))
+-endif
++ccflags-remove-$(CONFIG_FUNCTION_TRACER) += $(CC_FLAGS_FTRACE)
+ 
+ # These files are disabled because they produce lots of non-interesting and/or
+ # flaky coverage that is not a function of syscall inputs. For example,
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 99ac59c59826..5da420f13f9b 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -113,10 +113,10 @@ modfile_flags  = -DKBUILD_MODFILE=$(call stringify,$(modfile))
+ 
+ orig_c_flags   = $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) \
+                  $(ccflags-y) $(CFLAGS_$(target-stem).o)
+-_c_flags       = $(filter-out $(CFLAGS_REMOVE_$(target-stem).o), $(orig_c_flags))
++_c_flags       = $(filter-out $(ccflags-remove-y) $(CFLAGS_REMOVE_$(target-stem).o), $(orig_c_flags))
+ orig_a_flags   = $(KBUILD_CPPFLAGS) $(KBUILD_AFLAGS) \
+                  $(asflags-y) $(AFLAGS_$(target-stem).o)
+-_a_flags       = $(filter-out $(AFLAGS_REMOVE_$(target-stem).o), $(orig_a_flags))
++_a_flags       = $(filter-out $(asflags-remove-y) $(AFLAGS_REMOVE_$(target-stem).o), $(orig_a_flags))
+ _cpp_flags     = $(KBUILD_CPPFLAGS) $(cppflags-y) $(CPPFLAGS_$(target-stem).lds)
+ 
+ #
 -- 
-2.17.1
+2.25.1
 
