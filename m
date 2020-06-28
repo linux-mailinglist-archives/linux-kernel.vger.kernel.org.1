@@ -2,61 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7702920C823
+	by mail.lfdr.de (Postfix) with ESMTP id 07BD020C820
 	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 15:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726500AbgF1M7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 08:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726316AbgF1M7c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 08:59:32 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F49C061794
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 05:59:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Rrwfl0iTqVy+GBEOBXXSk8AEg1CD80HI2UW6MMNNX8I=; b=XgwxCP8qWDCMmIcBPUnvErQP91
-        2nziAxk/ZxHdFpgJdvtHj4XagRIAhLv27Qv1q+ax5PdP17cP6KfTZcAjn93b5mgVP8tHzROXQZzXC
-        c7z9PhRmf3Cxh3ChKCprG0si9Icp6/0r5C6uDNWB/Eve0yTdirw2qCcpcZJshEgk7Ki4rFciSj87U
-        V7OuFAXKtc7KMN4SmMo8H/evQKO5gchbxidNFzfv6HwsNEohbc4jE2mmmW+AfjKyaUaxilXwSdamv
-        LraUcouO8DbPQxzcZaZMBz8XFitWQ6tM5IrIIHkCC1p83DLbTJS/ZeU1tbL5EcTvOy8qX1hvYkP51
-        mbA9AYog==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jpWtW-0006yN-VM; Sun, 28 Jun 2020 12:58:52 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 226E4302753;
-        Sun, 28 Jun 2020 14:58:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 006A3233E0188; Sun, 28 Jun 2020 14:58:44 +0200 (CEST)
-Date:   Sun, 28 Jun 2020 14:58:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] sched: fix build with GCC_PLUGIN_RANDSTRUCT
-Message-ID: <20200628125844.GL4817@hirez.programming.kicks-ass.net>
-References: <20200628072702.1249815-1-rppt@kernel.org>
+        id S1726430AbgF1M7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 08:59:05 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:59820 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726316AbgF1M7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Jun 2020 08:59:05 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 71F73490504BFFE6F6BC;
+        Sun, 28 Jun 2020 20:59:03 +0800 (CST)
+Received: from [10.65.58.147] (10.65.58.147) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Sun, 28 Jun 2020
+ 20:58:59 +0800
+Subject: Re: [PATCH v2 1/2] PCI/ERR: Fix fatal error recovery for non-hotplug
+ capable devices
+To:     Jay Vosburgh <jay.vosburgh@canonical.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <ce417fbf81a8a46a89535f44b9224ee9fbb55a29.1591307288.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <25283.1591332444@famine> <3400.1593024778@famine>
+CC:     <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <ashok.raj@intel.com>
+From:   Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <25d4ec0f-71a3-a3d8-a4e8-b44ea4326e82@hisilicon.com>
+Date:   Sun, 28 Jun 2020 20:59:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200628072702.1249815-1-rppt@kernel.org>
+In-Reply-To: <3400.1593024778@famine>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.65.58.147]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jay,
 
-There's patches in tip/sched/urgent for this...
+I've tested the patches on my board, and they work well.
+
+Thanks,
+Yicong
+
+
+On 2020/6/25 2:52, Jay Vosburgh wrote:
+> Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
+>
+>> sathyanarayanan.kuppuswamy@linux.intel.com wrote:
+>>
+>> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>>> Fatal (DPC) error recovery is currently broken for non-hotplug
+>>> capable devices. With current implementation, after successful
+>>> fatal error recovery, non-hotplug capable device state won't be
+>>> restored properly. You can find related issues in following links.
+>>>
+>>> https://lkml.org/lkml/2020/5/27/290
+>>> https://lore.kernel.org/linux-pci/12115.1588207324@famine/
+>>> https://lkml.org/lkml/2020/3/28/328
+>>>
+>>> Current fatal error recovery implementation relies on hotplug handler
+>>> for detaching/re-enumerating the affected devices/drivers on DLLSC
+>>> state changes. So when dealing with non-hotplug capable devices,
+>>> recovery code does not restore the state of the affected devices
+>>> correctly. Correct implementation should call report_slot_reset()
+>>> function after resetting the link to restore the state of the
+>>> device/driver.
+>>>
+>>> So use PCI_ERS_RESULT_NEED_RESET as error status for successful
+>>> reset_link() operation and use PCI_ERS_RESULT_DISCONNECT for failure
+>>> case. PCI_ERS_RESULT_NEED_RESET error state will ensure slot_reset()
+>>> is called after reset link operation which will also fix the above
+>>> mentioned issue.
+>>>
+>>> [original patch is from jay.vosburgh@canonical.com]
+>>> [original patch link https://lore.kernel.org/linux-pci/12115.1588207324@famine/]
+>>> Fixes: 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
+>>> Signed-off-by: Jay Vosburgh <jay.vosburgh@canonical.com>
+>>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>> 	I've tested this patch set on one of our test machines, and it
+>> resolves the issue.  I plan to test with other systems tomorrow.
+> 	I've done testing on two different systems that exhibit the
+> original issue and this patch set appears to behave as expected.
+>
+> 	Has anyone else (Yicong?) had an opportunity to test this?
+>
+> 	Can this be considered for acceptance, or is additional feedback
+> or review needed?
+>
+> 	-J
+>
+>>> ---
+>>> drivers/pci/pcie/err.c | 24 ++++++++++++++++++++++--
+>>> 1 file changed, 22 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+>>> index 14bb8f54723e..5fe8561c7185 100644
+>>> --- a/drivers/pci/pcie/err.c
+>>> +++ b/drivers/pci/pcie/err.c
+>>> @@ -165,8 +165,28 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>>> 	pci_dbg(dev, "broadcast error_detected message\n");
+>>> 	if (state == pci_channel_io_frozen) {
+>>> 		pci_walk_bus(bus, report_frozen_detected, &status);
+>>> -		status = reset_link(dev);
+>>> -		if (status != PCI_ERS_RESULT_RECOVERED) {
+>>> +		/*
+>>> +		 * After resetting the link using reset_link() call, the
+>>> +		 * possible value of error status is either
+>>> +		 * PCI_ERS_RESULT_DISCONNECT (failure case) or
+>>> +		 * PCI_ERS_RESULT_NEED_RESET (success case).
+>>> +		 * So ignore the return value of report_error_detected()
+>>> +		 * call for fatal errors. Instead use
+>>> +		 * PCI_ERS_RESULT_NEED_RESET as initial status value.
+>>> +		 *
+>>> +		 * Ignoring the status return value of report_error_detected()
+>>> +		 * call will also help in case of EDR mode based error
+>>> +		 * recovery. In EDR mode AER and DPC Capabilities are owned by
+>>> +		 * firmware and hence report_error_detected() call will possibly
+>>> +		 * return PCI_ERS_RESULT_NO_AER_DRIVER. So if we don't ignore
+>>> +		 * the return value of report_error_detected() then
+>>> +		 * pcie_do_recovery() would report incorrect status after
+>>> +		 * successful recovery. Ignoring PCI_ERS_RESULT_NO_AER_DRIVER
+>>> +		 * in non EDR case should not have any functional impact.
+>>> +		 */
+>>> +		status = PCI_ERS_RESULT_NEED_RESET;
+>>> +		if (reset_link(dev) != PCI_ERS_RESULT_RECOVERED) {
+>>> +			status = PCI_ERS_RESULT_DISCONNECT;
+>>> 			pci_warn(dev, "link reset failed\n");
+>>> 			goto failed;
+>>> 		}
+>>> -- 
+>>> 2.17.1
+> ---
+> 	-Jay Vosburgh, jay.vosburgh@canonical.com
+> .
+>
+
