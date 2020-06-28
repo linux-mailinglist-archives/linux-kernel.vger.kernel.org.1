@@ -2,62 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA4920C6C2
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 09:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 541B720C6C5
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 09:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726122AbgF1HYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 03:24:50 -0400
-Received: from verein.lst.de ([213.95.11.211]:55606 "EHLO verein.lst.de"
+        id S1726116AbgF1H1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 03:27:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725958AbgF1HYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 03:24:50 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 1D36368AFE; Sun, 28 Jun 2020 09:24:47 +0200 (CEST)
-Date:   Sun, 28 Jun 2020 09:24:46 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Rob Landley <rob@landley.net>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        id S1725933AbgF1H1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Jun 2020 03:27:17 -0400
+Received: from hump.s81c.com (unknown [87.71.40.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4EFE420768;
+        Sun, 28 Jun 2020 07:27:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593329237;
+        bh=dUqBBxgnP5eS6BruCJpKa8f5WXAIBflVt4Sm1RNBnwA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eGKjm/8Spg2HXSxSoNvLXNgD5QW5W5kh022avLDwpc2rN+s9U8bLBT3kA3XMxoUFh
+         9tvSF+ENB444laMXd8nyL6gn5cIRn8wAwF6RRDnbqgco3wuy8EgtrgnbLqz8ku9Jwg
+         aQrWddyKY3yRzPJdc+beVndSmoknDG5HkGvCEVhs=
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/10] sh: don't allow non-coherent DMA for NOMMU
-Message-ID: <20200628072446.GB16344@lst.de>
-References: <20200626080717.1999041-1-hch@lst.de> <20200626080717.1999041-10-hch@lst.de> <e908f620-62b8-f106-a1a8-9887f50216fd@landley.net>
+Subject: [PATCH v2] sched: fix build with GCC_PLUGIN_RANDSTRUCT
+Date:   Sun, 28 Jun 2020 10:27:02 +0300
+Message-Id: <20200628072702.1249815-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e908f620-62b8-f106-a1a8-9887f50216fd@landley.net>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 27, 2020 at 08:01:17PM -0500, Rob Landley wrote:
-> On 6/26/20 3:07 AM, Christoph Hellwig wrote:
-> > The code handling non-coherent DMA depends on being able to remap code
-> > as non-cached.  But that can't be done without an MMU, so using this
-> > option on NOMMU builds is broken.
-> 
-> I'm working on a nommu j-core board that's doing DMA behind the OS's back at the
-> moment, which I have a todo item to teach the kernel about. The DMA does not go
-> through the cache, there's currently a cache flush before looking at the result
-> instead.
-> 
-> How should this be wired up after your patch?
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-The problem with nommu and non-coherent dma is the dma_alloc_coherent
-calls.  Most platforms with an mmu set a nocache bit through the page
-tables (including sh), but that option obviously doesn't exist for
-nommu.  Some hardware has an uncached window where access is uncached
-automatically if access through specific kernel virtual addresses,
-for that the architecture needs to impement the arch_dma_set_uncached
-helper and select CONFIG_ARCH_HAS_DMA_SET_UNCACHED.  If that also
-doesn't exist you'll need some sort of pool of always uncached
-memory (set by the firmware or early startup code).  That currently
-doesn't exist in generic code, but we have a bunch of architectures
-implementing that in arch_dma_alloc.  I plan to have a common
-implementation of the pool soon hopefully.
+Since the commit a148866489fb ("sched: Replace rq::wake_list")
+task_struct and CSD_TYPE_TTWU objects can be on the same queue and this
+requires that have layout similar enough.
 
-Streaming DMA just works if you reuse the existing
-arch_sync_dma_for_device implementation.
+This assumption is broken when CONFIG_GCC_PLUGIN_RANDSTRUCT is enabled:
+
+  CHK     include/generated/compile.h
+  CC      kernel/smp.o
+In file included from arch/x86/include/asm/atomic.h:5,
+                 from include/linux/atomic.h:7,
+                 from include/linux/llist.h:51,
+                 from include/linux/irq_work.h:5,
+                 from kernel/smp.c:10:
+kernel/smp.c: In function ‘smp_init’:
+include/linux/compiler.h:392:38: error: call to ‘__compiletime_assert_157’ declared with attribute error: BUILD_BUG_ON failed: offsetof(struct task_struct, wake_entry_type) - offsetof(struct task_struct, wake_entry) != offsetof(struct __call_single_data, flags) - offsetof(struct __call_single_data, llist)
+  392 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+      |                                      ^
+include/linux/compiler.h:373:4: note: in definition of macro ‘__compiletime_assert’
+  373 |    prefix ## suffix();    \
+      |    ^~~~~~
+include/linux/compiler.h:392:2: note: in expansion of macro ‘_compiletime_assert’
+  392 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+      |  ^~~~~~~~~~~~~~~~~~~
+include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
+   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+      |                                     ^~~~~~~~~~~~~~~~~~
+include/linux/build_bug.h:50:2: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
+   50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+      |  ^~~~~~~~~~~~~~~~
+kernel/smp.c:687:2: note: in expansion of macro ‘BUILD_BUG_ON’
+  687 |  BUILD_BUG_ON(offsetof(struct task_struct, wake_entry_type) - offsetof(struct task_struct, wake_entry) !=
+      |  ^~~~~~~~~~~~
+
+Wrap 'wake_entry' and 'wake_entry_type' fiels of task_struct in an
+anonymous struct to keep their relative layout intact during
+randomization.
+
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+
+v2: use anonymous struct as Steven suggested.
+
+ include/linux/sched.h | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index b62e6aaf28f0..7e30a09df616 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -654,8 +654,15 @@ struct task_struct {
+ 	unsigned int			ptrace;
+ 
+ #ifdef CONFIG_SMP
+-	struct llist_node		wake_entry;
+-	unsigned int			wake_entry_type;
++       /*
++        * The layout of these fields must match the layout of CSD_TYPE_TTWU
++        * so they can be on the same @call_single_queue
++        */
++	struct {
++		struct llist_node		wake_entry;
++		unsigned int			wake_entry_type;
++	};
++
+ 	int				on_cpu;
+ #ifdef CONFIG_THREAD_INFO_IN_TASK
+ 	/* Current CPU: */
+-- 
+2.25.4
+
