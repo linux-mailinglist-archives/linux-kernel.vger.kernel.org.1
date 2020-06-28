@@ -2,95 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24B520C749
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 11:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E28A20C758
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 11:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726206AbgF1Jum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 05:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725928AbgF1Jul (ORCPT
+        id S1726182AbgF1J7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 05:59:08 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:51565 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725928AbgF1J7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 05:50:41 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8FFC061794;
-        Sun, 28 Jun 2020 02:50:41 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id dp18so13361871ejc.8;
-        Sun, 28 Jun 2020 02:50:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bfr2aGGQYCi1OBcYJwYVyRR0s+ow2RNYRbf369d5eIM=;
-        b=USs1td2Ju7+gYidHoQNcqMMzmJ6RgRroMs0GEn1BoBqWpMHzT+o7bALH696lXDro3J
-         M9anXAQEa3I97vT/oN/yLZSck0hkAGtQt7YlLwbD4eDoOChldaFzKAkXi+Ra2cqH+xMk
-         zEwfwu6dXZjYqHPyTGuJdnFWKFw83wsZ0owAvaRu+E+FpHRH6Zs0vfV6oa0t+OHrX/KI
-         nei9fHxeu0hgRbGtwzypG3pE8vdChSl4lTJhO5QAgUrEHUbUrs01Q8zRXOZSRE+CGyv/
-         IgkrkNAfFgQ02svtR2pEhbeFrYNxK3mHa1ASi3GSZJ//I8WQzD6A1lgWkRkgGmhkeUIX
-         9Bag==
+        Sun, 28 Jun 2020 05:59:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593338344;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VmSihHJRj6X8vfWMwTG8/icIb3ExyfDOJEc1XTXVyYA=;
+        b=erTO9IV+fF8kBcqhliFfERL9LHKY8UvWLqR3TrMcv8HNPnLT/I35jjiWNAaOXYlG7eTzUs
+        cntyRfXVgJZN0zKTYFqsJP21gO6/L3VbVaG+2JzyHlQVct5/ACKYwWVxQmIVp9KST+0hte
+        SjXpS+oJURQZ2TJUBj37DerkqB6sRkU=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-234-b77BTOqfO6Ge68v2gG8nZg-1; Sun, 28 Jun 2020 05:58:28 -0400
+X-MC-Unique: b77BTOqfO6Ge68v2gG8nZg-1
+Received: by mail-wm1-f69.google.com with SMTP id g187so16085009wme.0
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 02:58:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bfr2aGGQYCi1OBcYJwYVyRR0s+ow2RNYRbf369d5eIM=;
-        b=HbrSwwApPpOymNaLQiVHvQhbWK5DeVSL8F13vKaizFeHKItX1Obz0CUHPmu1dLd598
-         2P02kjzCCOaED2oGedxeJGSys7epU1H/B9d/JvX5kf5oBArpGgohThxURa8LbHUqQhWS
-         5XnaOtriKY1PWRrlrgASyvJSL1IwaKwX1GR1j5mua50U+leUUifWOTeWjvY95UtGpzbW
-         WmPmbgDkECpUGnwx+KCTSWOzs1VdPCXGiNAAFXPv7PWDIlLnUEyCWSce/FOMwWERAnRd
-         AtDtqtH1iAT/dxk9QKLFvgn84dq0SLMGk49APajvBnJGYPevCkWpPoj0cZXnyyFwomRa
-         r60Q==
-X-Gm-Message-State: AOAM5329816ts2FaD7wZLr+KmyNzOg8QO4l5XUX1aoizvMsy4AYwxeQC
-        /T08C+Oep4/GhcWxiAJ9Wdo=
-X-Google-Smtp-Source: ABdhPJwGhhv5So5Hz7j9nfv2pcFu2L2HkphZe/Oww+j5SM8cnSXf5iXUrD2FWhSiOJ+9z1VaQzdqlw==
-X-Received: by 2002:a17:906:c285:: with SMTP id r5mr9332627ejz.153.1593337839901;
-        Sun, 28 Jun 2020 02:50:39 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:a03f:b7f9:7600:f51f:7c31:2fc7:f95b])
-        by smtp.gmail.com with ESMTPSA id s21sm2327055edw.37.2020.06.28.02.50.39
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VmSihHJRj6X8vfWMwTG8/icIb3ExyfDOJEc1XTXVyYA=;
+        b=QyfcdoArFbQdUPmHcOTn88rNP9TFTppppJMe4V1EVgwjG69TaawW+82gzmcBNEw15H
+         07blzYFIZ5YZ1baSbv2/0a8vvLGLPaDZ8CcH+UWnPVJFK3CDrFV1xrvsfbjOG9CeGwn5
+         b65gnw7Xh4EwGi6taW0fk+V+M0rL/84IBW55fem9ytGlAXhwjJ+TZ2hsfmASp2VA3g5E
+         XBxdXyEjDW2boCa8dGoQ/gKDKWul3hEZH/uWCYtPc+7sK4Hh39EmckS1OqUj6duGzQCM
+         /yOzZCmzUi4GfgQTbig5cNT+FDvRY8ZeY1g3Se2S26y6GCnBCgVYwMiK4VP8KknYitl9
+         9CEQ==
+X-Gm-Message-State: AOAM532DhtzHBPOqfnT4J+MBQizgS33eGeUBDvuVRCjv2+anrb62H73e
+        Moo21+1L1cQNlKzmWi48x5AvM2yb2xoVUqtqjgSXJbL8zG5upDI8TvEk2OsoiqUFN8BrXy8V2WX
+        yxUNU9AC2HQpNUP+bO8H6ipuf
+X-Received: by 2002:adf:ecce:: with SMTP id s14mr12293771wro.154.1593338306924;
+        Sun, 28 Jun 2020 02:58:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy9zm7MNbBULJ/q06u6nf6JrJYcvmC9jXJrOUZHqizqHorPmWVxe68u5oIzlPaBHTjmt4L6Kw==
+X-Received: by 2002:adf:ecce:: with SMTP id s14mr12293754wro.154.1593338306643;
+        Sun, 28 Jun 2020 02:58:26 -0700 (PDT)
+Received: from redhat.com (bzq-79-182-31-92.red.bezeqint.net. [79.182.31.92])
+        by smtp.gmail.com with ESMTPSA id f2sm23259420wmj.39.2020.06.28.02.58.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jun 2020 02:50:39 -0700 (PDT)
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: [PATCH] doc: add link to sparse's home page/internal docs
-Date:   Sun, 28 Jun 2020 11:50:34 +0200
-Message-Id: <20200628095034.69520-1-luc.vanoostenryck@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200626112349.1292a654@lwn.net>
-References: <20200626112349.1292a654@lwn.net>
+        Sun, 28 Jun 2020 02:58:25 -0700 (PDT)
+Date:   Sun, 28 Jun 2020 05:58:22 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, lulu@redhat.com,
+        shahafs@mellanox.com, hanand@xilinx.com, mhabets@solarflare.com,
+        gdawar@xilinx.com, saugatm@xilinx.com, vmireyno@marvell.com,
+        zhangweining@ruijie.com.cn, eli@mellanox.com
+Subject: Re: [PATCH RFC 4/5] vhost-vdpa: support IOTLB batching hints
+Message-ID: <20200628054940-mutt-send-email-mst@kernel.org>
+References: <20200618055626.25660-1-jasowang@redhat.com>
+ <20200618055626.25660-5-jasowang@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200618055626.25660-5-jasowang@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sparse's home page used to be a wiki (sparse.wiki.kernel.org)
-but this wiki only contained a short intro and the release notes.
-But nowadays, sparse's main page is sparse.docs.kernel.org,
-which contains all what was in the wiki but also other documentation,
-mainly oriented about sparse's internals.
+On Thu, Jun 18, 2020 at 01:56:25PM +0800, Jason Wang wrote:
+> This patches extend the vhost IOTLB API to accept batch updating hints
+> form userspace. When userspace wants update the device IOTLB in a
+> batch, it may do:
+> 
+> 1) Write vhost_iotlb_msg with VHOST_IOTLB_BATCH_BEGIN flag
+> 2) Perform a batch of IOTLB updating via VHOST_IOTLB_UPDATE/INVALIDATE
+> 3) Write vhost_iotlb_msg with VHOST_IOTLB_BATCH_END flag
 
-So, add a link to this in the kernel documentation.
+As long as we are extending the interface,
+is there some way we could cut down the number of system calls needed
+here?
 
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
----
- Documentation/dev-tools/sparse.rst | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/dev-tools/sparse.rst b/Documentation/dev-tools/sparse.rst
-index 6f4870528226..e20b8b8b78ed 100644
---- a/Documentation/dev-tools/sparse.rst
-+++ b/Documentation/dev-tools/sparse.rst
-@@ -9,6 +9,8 @@ Sparse is a semantic checker for C programs; it can be used to find a
- number of potential problems with kernel code.  See
- https://lwn.net/Articles/689907/ for an overview of sparse; this document
- contains some kernel-specific sparse information.
-+More information on sparse, mainly about its internals, can be found in
-+its official pages at https://sparse.docs.kernl.org.
- 
- 
- Using sparse for typechecking
--- 
-2.27.0
+> 
+> Vhost-vdpa may decide to batch the IOMMU/IOTLB updating in step 3 when
+> vDPA device support set_map() ops. This is useful for the vDPA device
+> that want to know all the mappings to tweak their own DMA translation
+> logic.
+> 
+> For vDPA device that doesn't require set_map(), no behavior changes.
+> 
+> This capability is advertised via VHOST_BACKEND_F_IOTLB_BATCH capability.
+> 
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> ---
+>  drivers/vhost/vdpa.c             | 30 +++++++++++++++++++++++-------
+>  include/uapi/linux/vhost.h       |  2 ++
+>  include/uapi/linux/vhost_types.h |  7 +++++++
+>  3 files changed, 32 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index 453057421f80..8f624bbafee7 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -56,7 +56,9 @@ enum {
+>  };
+>  
+>  enum {
+> -	VHOST_VDPA_BACKEND_FEATURES = (1ULL << VHOST_BACKEND_F_IOTLB_MSG_V2)
+> +	VHOST_VDPA_BACKEND_FEATURES =
+> +	(1ULL << VHOST_BACKEND_F_IOTLB_MSG_V2) |
+> +	(1ULL << VHOST_BACKEND_F_IOTLB_BATCH),
+>  };
+>  
+>  /* Currently, only network backend w/o multiqueue is supported. */
+> @@ -77,6 +79,7 @@ struct vhost_vdpa {
+>  	int virtio_id;
+>  	int minor;
+>  	struct eventfd_ctx *config_ctx;
+> +	int in_batch;
+>  };
+>  
+>  static DEFINE_IDA(vhost_vdpa_ida);
+> @@ -125,6 +128,7 @@ static void vhost_vdpa_reset(struct vhost_vdpa *v)
+>  	const struct vdpa_config_ops *ops = vdpa->config;
+>  
+>  	ops->set_status(vdpa, 0);
+> +	v->in_batch = 0;
+>  }
+>  
+>  static long vhost_vdpa_get_device_id(struct vhost_vdpa *v, u8 __user *argp)
+> @@ -540,9 +544,10 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
+>  
+>  	if (ops->dma_map)
+>  		r = ops->dma_map(vdpa, iova, size, pa, perm);
+> -	else if (ops->set_map)
+> -		r = ops->set_map(vdpa, dev->iotlb);
+> -	else
+> +	else if (ops->set_map) {
+> +		if (!v->in_batch)
+> +			r = ops->set_map(vdpa, dev->iotlb);
+> +	} else
+>  		r = iommu_map(v->domain, iova, pa, size,
+>  			      perm_to_iommu_flags(perm));
+>  
+> @@ -559,9 +564,10 @@ static void vhost_vdpa_unmap(struct vhost_vdpa *v, u64 iova, u64 size)
+>  
+>  	if (ops->dma_map)
+>  		ops->dma_unmap(vdpa, iova, size);
+> -	else if (ops->set_map)
+> -		ops->set_map(vdpa, dev->iotlb);
+> -	else
+> +	else if (ops->set_map) {
+> +		if (!v->in_batch)
+> +			ops->set_map(vdpa, dev->iotlb);
+> +	} else
+>  		iommu_unmap(v->domain, iova, size);
+>  }
+>  
+> @@ -655,6 +661,8 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev,
+>  					struct vhost_iotlb_msg *msg)
+>  {
+>  	struct vhost_vdpa *v = container_of(dev, struct vhost_vdpa, vdev);
+> +	struct vdpa_device *vdpa = v->vdpa;
+> +	const struct vdpa_config_ops *ops = vdpa->config;
+>  	int r = 0;
+>  
+>  	r = vhost_dev_check_owner(dev);
+> @@ -668,6 +676,14 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev,
+>  	case VHOST_IOTLB_INVALIDATE:
+>  		vhost_vdpa_unmap(v, msg->iova, msg->size);
+>  		break;
+> +	case VHOST_IOTLB_BATCH_BEGIN:
+> +		v->in_batch = true;
+> +		break;
+> +	case VHOST_IOTLB_BATCH_END:
+> +		if (v->in_batch && ops->set_map)
+> +			ops->set_map(vdpa, dev->iotlb);
+> +		v->in_batch = false;
+> +		break;
+>  	default:
+>  		r = -EINVAL;
+>  		break;
+> diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
+> index 0c2349612e77..565da96f55d5 100644
+> --- a/include/uapi/linux/vhost.h
+> +++ b/include/uapi/linux/vhost.h
+> @@ -91,6 +91,8 @@
+>  
+>  /* Use message type V2 */
+>  #define VHOST_BACKEND_F_IOTLB_MSG_V2 0x1
+> +/* IOTLB can accpet batching hints */
+
+typo
+
+> +#define VHOST_BACKEND_F_IOTLB_BATCH  0x2
+>  
+>  #define VHOST_SET_BACKEND_FEATURES _IOW(VHOST_VIRTIO, 0x25, __u64)
+>  #define VHOST_GET_BACKEND_FEATURES _IOR(VHOST_VIRTIO, 0x26, __u64)
+> diff --git a/include/uapi/linux/vhost_types.h b/include/uapi/linux/vhost_types.h
+> index 669457ce5c48..5c12faffdde9 100644
+> --- a/include/uapi/linux/vhost_types.h
+> +++ b/include/uapi/linux/vhost_types.h
+> @@ -60,6 +60,13 @@ struct vhost_iotlb_msg {
+>  #define VHOST_IOTLB_UPDATE         2
+>  #define VHOST_IOTLB_INVALIDATE     3
+>  #define VHOST_IOTLB_ACCESS_FAIL    4
+> +/* VHOST_IOTLB_BATCH_BEGIN is a hint that userspace will update
+> + * several mappings afterwards. VHOST_IOTLB_BATCH_END is a hint that
+> + * userspace had finished the mapping updating.
+
+
+Well not just hints - in fact updates do not take place
+until _END.
+
+How about:
+
+/* VHOST_IOTLB_BATCH_BEGIN and VHOST_IOTLB_BATCH_END allow modifying
+ * multiple mappings in one go: beginning with
+ * VHOST_IOTLB_BATCH_BEGIN, followed by any number of
+   VHOST_IOTLB_UPDATE messages, and ending with VHOST_IOTLB_BATCH_END.
+ */
+
+
+> When those two flags
+> + * were set, kernel will ignore the rest fileds of the IOTLB message.
+
+how about:
+
+when one of these two values is used as the message type, the
+rest of the fields in the message are ignored.
+
+> + */
+> +#define VHOST_IOTLB_BATCH_BEGIN    5
+> +#define VHOST_IOTLB_BATCH_END      6
+>  	__u8 type;
+>  };
+>  
+> -- 
+> 2.20.1
 
