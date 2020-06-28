@@ -2,103 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7FA220C90E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 18:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0AD220C914
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 18:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgF1QzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 12:55:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726040AbgF1QzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 12:55:03 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88217204EC;
-        Sun, 28 Jun 2020 16:55:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593363302;
-        bh=yxqhXE99ff5R6TDvotiqw5qjZJmLlpF8TJ7Vm4dLUHc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YxfnixxAFeN62jCrUcOAkR9jjpjYI4/uZmVV754G60smxHetVwGhaQ1A2zAcITK+1
-         EHKWgn7ODQPs0JMTlYjf1dx+msC9GQGOOXV8mkMEHYPZ7MINVO98gzDp+JosskZI8R
-         4xZvJxUbix9OZ7XaIsWP/QlslOn7sPjlPgehhPso=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jpaa4-0079D0-SX; Sun, 28 Jun 2020 17:55:01 +0100
+        id S1726615AbgF1Q5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 12:57:25 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:22233 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726040AbgF1Q5W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Jun 2020 12:57:22 -0400
+Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com [209.85.222.42]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 05SGuuHv026311;
+        Mon, 29 Jun 2020 01:56:57 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 05SGuuHv026311
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1593363417;
+        bh=dzgWJCQRhelJ3hJ0whBHzpzDiUuuI9JauHMlySTBPIU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pQVYjDhzrsJA6M7XpxbJqHnruHm5X7g3n1Kzkw5zIgfgjDRo+j3deI8xW2don1xHR
+         SO+SQYBUZEyFCUrGc50KFSaD6YGpHcgOKivDLJFzcFvMcZFDoPh826AnzwDJ/dTlcZ
+         XEHXkbH3vze9eTTjPhA7py9Zff0qRrVUxiwkXyF0tIgZ4rdkeQox0ibMhHZYMY/erK
+         zHU1NLw3Y18syCdL5Ik0bFu8+9v5P2RWmtIFa7ICyZ8tDEiHkIvajb/YAroj4VMm13
+         gNClWmaKr+LUcfv6+gze80dpCl/cxi0AKBoUjJ4gBkf7NT1SlwUhJRo1YxZ8+yAd8X
+         G4UFTF0GMf0Qw==
+X-Nifty-SrcIP: [209.85.222.42]
+Received: by mail-ua1-f42.google.com with SMTP id o10so374528uab.10;
+        Sun, 28 Jun 2020 09:56:57 -0700 (PDT)
+X-Gm-Message-State: AOAM530M0gL/cGHD+qFco4QjHNHeXqLM+pwpTCnTFUJj+eP/29AOPQzM
+        PgCSfeT8L/bB+FReC4Apl2fb8JZE7VSr0Xzy4+M=
+X-Google-Smtp-Source: ABdhPJyMuCHcA0fUYMlHXkn2vrcpvctKNxRD41GXgGVOqeU3V4PpT9PTQAU55moKry8aIAY4mBAqmLgVOy+XRSWLbeg=
+X-Received: by 2002:ab0:156d:: with SMTP id p42mr8396563uae.121.1593363415963;
+ Sun, 28 Jun 2020 09:56:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Sun, 28 Jun 2020 17:55:00 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
+References: <20200624203200.78870-1-samitolvanen@google.com>
+In-Reply-To: <20200624203200.78870-1-samitolvanen@google.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 29 Jun 2020 01:56:19 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASvb0UDJ0U5wkYYRzTAdnEs64HjXpEUL7d=V0CXiAXcNw@mail.gmail.com>
+Message-ID: <CAK7LNASvb0UDJ0U5wkYYRzTAdnEs64HjXpEUL7d=V0CXiAXcNw@mail.gmail.com>
+Subject: Re: [PATCH 00/22] add support for Clang LTO
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH v3 00/14 RESEND] irqchip: Fix potential resource leaks
-In-Reply-To: <CAHiYmc778AYK1UzOUnrU2VCyUExT3Zhu5nCSqeQOTZK2LbmFUg@mail.gmail.com>
-References: <1592984711-3130-1-git-send-email-yangtiezhu@loongson.cn>
- <e419a2acea6c1977eaef5d049d607749@kernel.org>
- <CAHiYmc6wmgHYm688pTFEAoyzD+nE68SPeJgCOcZLb2yRRgwGRg@mail.gmail.com>
- <80132dff49a64d238f775aa0bafe29e1@kernel.org>
- <CAHiYmc778AYK1UzOUnrU2VCyUExT3Zhu5nCSqeQOTZK2LbmFUg@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.5
-Message-ID: <e1c8747d684dbdf0f6acc2eea2025139@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: aleksandar.qemu.devel@gmail.com, yangtiezhu@loongson.cn, tglx@linutronix.de, jason@lakedaemon.net, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, lixuefeng@loongson.cn
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        linux-pci@vger.kernel.org, X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-28 13:48, Aleksandar Markovic wrote:
-> нед, 28. јун 2020. у 14:06 Marc Zyngier <maz@kernel.org> је написао/ла:
->> 
->> On 2020-06-28 12:25, Aleksandar Markovic wrote:
->> > сре, 24. јун 2020. у 10:40 Marc Zyngier <maz@kernel.org> је написао/ла:
->> >>
->> >> On 2020-06-24 08:44, Tiezhu Yang wrote:
->> >> > [git send-email failed due to too many commands,
->> >> >  so only cc the major related email and resend it,
->> >> >  sorry for that]
->> >>
->> >> This is becoming majorly annoying.
->> >
->> > I don't think this is the right vocabulary to welcome newcomers,
->> > however "terrible" thinks they did.
->> >
->> > Rather, patience, calmness and clear and detailed explanations would
->> > work much better - and certainly be much more helpful and useful to
->> > the community in the long run.
->> 
->> Pray tell how you would have handled this. I expressed *my* personal
->> frustration at a SNR hovering below the 25% mark. I have only 
->> indicated
->> that the current course of action was becoming a problem.
->> 
->> And instead of taking the moral high ground, maybe you could actually
->> share your wisdom with Teizhu and help him becoming a better
->> contributor?
->> 
-> 
-> He will improve. This initial clumsiness is normal. It could have been
-> avoided, true - for example, if he had had someone more experienced at
-> hand, preferably a co-worker. He obviously acts alone. It will be
-> better.
+On Thu, Jun 25, 2020 at 5:32 AM 'Sami Tolvanen' via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
+>
+> This patch series adds support for building x86_64 and arm64 kernels
+> with Clang's Link Time Optimization (LTO).
+>
+> In addition to performance, the primary motivation for LTO is to allow
+> Clang's Control-Flow Integrity (CFI) to be used in the kernel. Google's
+> Pixel devices have shipped with LTO+CFI kernels since 2018.
+>
+> Most of the patches are build system changes for handling LLVM bitcode,
+> which Clang produces with LTO instead of ELF object files, postponing
+> ELF processing until a later stage, and ensuring initcall ordering.
+>
+> Note that first objtool patch in the series is already in linux-next,
+> but as it's needed with LTO, I'm including it also here to make testing
+> easier.
 
-I thank you for imparting your insight on us. You clearly have helped
-things moving forward, and I am sure Teizhu now knows a lot more about
-what he should have done.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+I put this series on a testing branch,
+and 0-day bot started reporting some issues.
+
+(but 0-day bot is quieter than I expected.
+Perhaps, 0-day bot does not turn on LLVM=1 ?)
+
+
+
+I also got an error for
+ARCH=arm64 allyesconfig + CONFIG_LTO_CLANG=y
+
+
+
+$ make ARCH=arm64 LLVM=1 LLVM_IAS=1
+CROSS_COMPILE=~/tools/aarch64-linaro-7.5/bin/aarch64-linux-gnu-
+-j24
+
+  ...
+
+  GEN     .version
+  CHK     include/generated/compile.h
+  UPD     include/generated/compile.h
+  CC      init/version.o
+  AR      init/built-in.a
+  GEN     .tmp_initcalls.lds
+  GEN     .tmp_symversions.lds
+  LTO     vmlinux.o
+  MODPOST vmlinux.symvers
+  MODINFO modules.builtin.modinfo
+  GEN     modules.builtin
+  LD      .tmp_vmlinux.kallsyms1
+ld.lld: error: undefined symbol: __compiletime_assert_905
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(jeq_imm)
+make: *** [Makefile:1161: vmlinux] Error 1
+
+
+
+
+
+
+
+
+> Sami Tolvanen (22):
+>   objtool: use sh_info to find the base for .rela sections
+>   kbuild: add support for Clang LTO
+>   kbuild: lto: fix module versioning
+>   kbuild: lto: fix recordmcount
+>   kbuild: lto: postpone objtool
+>   kbuild: lto: limit inlining
+>   kbuild: lto: merge module sections
+>   kbuild: lto: remove duplicate dependencies from .mod files
+>   init: lto: ensure initcall ordering
+>   init: lto: fix PREL32 relocations
+>   pci: lto: fix PREL32 relocations
+>   modpost: lto: strip .lto from module names
+>   scripts/mod: disable LTO for empty.c
+>   efi/libstub: disable LTO
+>   drivers/misc/lkdtm: disable LTO for rodata.o
+>   arm64: export CC_USING_PATCHABLE_FUNCTION_ENTRY
+>   arm64: vdso: disable LTO
+>   arm64: allow LTO_CLANG and THINLTO to be selected
+>   x86, vdso: disable LTO only for vDSO
+>   x86, ftrace: disable recordmcount for ftrace_make_nop
+>   x86, relocs: Ignore L4_PAGE_OFFSET relocations
+>   x86, build: allow LTO_CLANG and THINLTO to be selected
+>
+>  .gitignore                            |   1 +
+>  Makefile                              |  27 ++-
+>  arch/Kconfig                          |  65 +++++++
+>  arch/arm64/Kconfig                    |   2 +
+>  arch/arm64/Makefile                   |   1 +
+>  arch/arm64/kernel/vdso/Makefile       |   4 +-
+>  arch/x86/Kconfig                      |   2 +
+>  arch/x86/Makefile                     |   5 +
+>  arch/x86/entry/vdso/Makefile          |   5 +-
+>  arch/x86/kernel/ftrace.c              |   1 +
+>  arch/x86/tools/relocs.c               |   1 +
+>  drivers/firmware/efi/libstub/Makefile |   2 +
+>  drivers/misc/lkdtm/Makefile           |   1 +
+>  include/asm-generic/vmlinux.lds.h     |  12 +-
+>  include/linux/compiler-clang.h        |   4 +
+>  include/linux/compiler.h              |   2 +-
+>  include/linux/compiler_types.h        |   4 +
+>  include/linux/init.h                  |  78 +++++++-
+>  include/linux/pci.h                   |  15 +-
+>  kernel/trace/ftrace.c                 |   1 +
+>  lib/Kconfig.debug                     |   2 +-
+>  scripts/Makefile.build                |  55 +++++-
+>  scripts/Makefile.lib                  |   6 +-
+>  scripts/Makefile.modfinal             |  40 +++-
+>  scripts/Makefile.modpost              |  26 ++-
+>  scripts/generate_initcall_order.pl    | 270 ++++++++++++++++++++++++++
+>  scripts/link-vmlinux.sh               | 100 +++++++++-
+>  scripts/mod/Makefile                  |   1 +
+>  scripts/mod/modpost.c                 |  16 +-
+>  scripts/mod/modpost.h                 |   9 +
+>  scripts/mod/sumversion.c              |   6 +-
+>  scripts/module-lto.lds                |  26 +++
+>  scripts/recordmcount.c                |   3 +-
+>  tools/objtool/elf.c                   |   2 +-
+>  34 files changed, 737 insertions(+), 58 deletions(-)
+>  create mode 100755 scripts/generate_initcall_order.pl
+>  create mode 100644 scripts/module-lto.lds
+>
+>
+> base-commit: 26e122e97a3d0390ebec389347f64f3730fdf48f
+> --
+> 2.27.0.212.ge8ba1cc988-goog
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200624203200.78870-1-samitolvanen%40google.com.
+
+
+
+--
+Best Regards
+Masahiro Yamada
