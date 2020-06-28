@@ -2,133 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A0D20C706
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 10:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 185E120C70F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 10:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbgF1Iaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 04:30:52 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:59026 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726202AbgF1Iat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 04:30:49 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 25BDD937DB0F724DA0A4;
-        Sun, 28 Jun 2020 16:30:45 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Sun, 28 Jun 2020 16:30:37 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <dyoung@redhat.com>,
-        <bhe@redhat.com>, <catalin.marinas@arm.com>, <will@kernel.org>,
-        <james.morse@arm.com>, <robh+dt@kernel.org>, <arnd@arndb.de>,
-        <John.P.donnelly@oracle.com>, <prabhakar.pkin@gmail.com>,
-        <nsaenzjulienne@suse.de>, <corbet@lwn.net>, <bhsharma@redhat.com>,
-        <horms@verge.net.au>
-CC:     <guohanjun@huawei.com>, <xiexiuqi@huawei.com>,
-        <huawei.libin@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kexec@lists.infradead.org>, <linux-doc@vger.kernel.org>,
-        <chenzhou10@huawei.com>
-Subject: [PATCH v9 5/5] kdump: update Documentation about crashkernel on arm64
-Date:   Sun, 28 Jun 2020 16:34:58 +0800
-Message-ID: <20200628083458.40066-6-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200628083458.40066-1-chenzhou10@huawei.com>
-References: <20200628083458.40066-1-chenzhou10@huawei.com>
+        id S1726179AbgF1IhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 04:37:16 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:29652 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726038AbgF1IhP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Jun 2020 04:37:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593333433;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mtkdcnfZsJvvv4MSXCrcyUM0NAmX9lvoPnQHqE8ITmU=;
+        b=NXekxstXkeAU8WmerAGLaG8rQlKZWtNUaQAx14afEVxKKJuf2j2KMHZbxxI4I+ARua7J8N
+        p2OQn8YQfhAy+6Wzk2X0dqhNOodudlpIP7Y6FPRjlMf0tHvxI09fJbDxDmRu2DmjcXj9wa
+        /GlxAhfYkZA1+nEgVfhm5TD/FL4RFnM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-369-snKXPAUnMEOEmJGT610pNA-1; Sun, 28 Jun 2020 04:37:12 -0400
+X-MC-Unique: snKXPAUnMEOEmJGT610pNA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7676E1800D42;
+        Sun, 28 Jun 2020 08:37:10 +0000 (UTC)
+Received: from starship (unknown [10.35.206.208])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9C43F19D71;
+        Sun, 28 Jun 2020 08:37:09 +0000 (UTC)
+Message-ID: <2d536ba419ffe76e031bd65375e5af6a401faec0.camel@redhat.com>
+Subject: Re: Search function in xconfig is partially broken after recent
+ changes
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Date:   Sun, 28 Jun 2020 11:37:08 +0300
+In-Reply-To: <20200625170546.270cf5fc@coco.lan>
+References: <a98b0f0ebe0c23615a76f1d23f25fd0c84835e6b.camel@redhat.com>
+         <20200625125906.6b7688eb@coco.lan> <20200625131758.52dbdab7@coco.lan>
+         <855fea60f47c1a0dbcf0395a4cdbe5d9c57592c1.camel@redhat.com>
+         <20200625170546.270cf5fc@coco.lan>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now we support crashkernel=X,[low] on arm64, update the Documentation.
-We could use parameters "crashkernel=X crashkernel=Y,low" to reserve
-memory above 4G.
+On Thu, 2020-06-25 at 17:05 +0200, Mauro Carvalho Chehab wrote:
+> Em Thu, 25 Jun 2020 15:53:46 +0300
+> Maxim Levitsky <mlevitsk@redhat.com> escreveu:
+> 
+> > On Thu, 2020-06-25 at 13:17 +0200, Mauro Carvalho Chehab wrote:
+> > > Em Thu, 25 Jun 2020 12:59:15 +0200
+> > > Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+> > >   
+> > > > Hi Maxim,
+> > > > 
+> > > > Em Thu, 25 Jun 2020 12:25:10 +0300
+> > > > Maxim Levitsky <mlevitsk@redhat.com> escreveu:
+> > > >   
+> > > > > Hi!
+> > > > > 
+> > > > > I noticed that on recent kernels the search function in xconfig is partially broken.
+> > > > > This means that when you select a found entry, it is not selected in the main window,
+> > > > > something that I often do to find some entry near the area I would like to modify,
+> > > > > and then use main window to navigate/explore that area.
+> > > > > 
+> > > > > Reverting these commits helps restore the original behavier:
+> > > > > 
+> > > > > b311142fcfd37b58dfec72e040ed04949eb1ac86 - kconfig: qconf: fix support for the split view mode
+> > > > > cce1faba82645fee899ccef5b7d3050fed3a3d10 - kconfig: qconf: fix the content of the main widget
+> > > > > 
+> > > > > I have Qt5 5.13.2 from fedora 31 (5.13.2-1.fc31)
+> > > > > 
+> > > > > Could you explain what these commits are supposed to fix?
+> > > > > I mostly use the split view mode too and it does appear to work for me with these commits reverted as well.
+> > > > >   
+> > > > 
+> > > > There are three view modes for qconf:
+> > > > 
+> > > > 	- Single
+> > > > 	- Split
+> > > > 	- Full
+> > > > 
+> > > > those got broken when gconf was converted to use Qt5, back on Kernel 3.14.
+> > > > Those patches restore the original behavior.  
+> > You mean xconfig/qconf? (gconf is another program that is GTK based as far as I know).
+> 
+> Yeah, I meant the Qt one (qconfig).
+> 
+> > Could you expalin though what was broken? What exactly didn't work?
+> 
+> Try to switch between the several modes and switch back. There used to
+> have several broken things there, because the Qt5 port was incomplete.
+> 
+> One of the things that got fixed on the Qt5 fixup series is the helper
+> window at the bottom. It should now have the same behavior as with the
+> old Qt3/Qt4 version.
+> 
+> Basically, on split mode, it should have 3 screen areas:
+> 
+> 	+------------+-------+
+> 	|            |       |
+> 	| Config     |  menu |
+> 	|            |       |
+> 	+------------+-------+
+> 	|                    |
+> 	| Config description +
+> 	|                    |
+> 	+--------------------+
+> 
+> The contents of the config description should follow up any changes at 
+> the "menu" part of the split mode, when an item is selected from "menu",
+> or follow what's selected at "config", when the active window is "config".
 
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-Tested-by: John Donnelly <John.p.donnelly@oracle.com>
-Tested-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
----
- Documentation/admin-guide/kdump/kdump.rst       | 13 +++++++++++--
- Documentation/admin-guide/kernel-parameters.txt | 17 +++++++++++++++--
- 2 files changed, 26 insertions(+), 4 deletions(-)
+Dunno. with the 2 b311142fcfd37b58dfec72e040ed04949eb1ac86 and cce1faba82645fee899ccef5b7d3050fed3a3d10,
+in split view, I wasn't able to make the 'config description' show anything wrong,
+in regard to currently selected item in 'config' and in 'menu'
+At that point this is mostly an academic interset for me since,
+the patch that you sent fixes search. Thank you very much!
 
-diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-index 2da65fef2a1c..6ba294d425c9 100644
---- a/Documentation/admin-guide/kdump/kdump.rst
-+++ b/Documentation/admin-guide/kdump/kdump.rst
-@@ -299,7 +299,13 @@ Boot into System Kernel
-    "crashkernel=64M@16M" tells the system kernel to reserve 64 MB of memory
-    starting at physical address 0x01000000 (16MB) for the dump-capture kernel.
- 
--   On x86 and x86_64, use "crashkernel=64M@16M".
-+   On x86 use "crashkernel=64M@16M".
-+
-+   On x86_64, use "crashkernel=Y[@X]" to select a region under 4G first, and
-+   fall back to reserve region above 4G when '@offset' hasn't been specified.
-+   We can also use "crashkernel=X,high" to select a region above 4G, which
-+   also tries to allocate at least 256M below 4G automatically and
-+   "crashkernel=Y,low" can be used to allocate specified size low memory.
- 
-    On ppc64, use "crashkernel=128M@32M".
- 
-@@ -316,8 +322,11 @@ Boot into System Kernel
-    kernel will automatically locate the crash kernel image within the
-    first 512MB of RAM if X is not given.
- 
--   On arm64, use "crashkernel=Y[@X]".  Note that the start address of
-+   On arm64, use "crashkernel=Y[@X]". Note that the start address of
-    the kernel, X if explicitly specified, must be aligned to 2MiB (0x200000).
-+   If crashkernel=Z,low is specified simultaneously, reserve spcified size
-+   low memory for crash kdump kernel devices firstly and then reserve memory
-+   above 4G.
- 
- Load the Dump-capture Kernel
- ============================
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index fb95fad81c79..335431a351c0 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -722,6 +722,9 @@
- 			[KNL, x86_64] select a region under 4G first, and
- 			fall back to reserve region above 4G when '@offset'
- 			hasn't been specified.
-+			[KNL, arm64] If crashkernel=X,low is specified, reserve
-+			spcified size low memory for crash kdump kernel devices
-+			firstly, and then reserve memory above 4G.
- 			See Documentation/admin-guide/kdump/kdump.rst for further details.
- 
- 	crashkernel=range1:size1[,range2:size2,...][@offset]
-@@ -746,13 +749,23 @@
- 			requires at least 64M+32K low memory, also enough extra
- 			low memory is needed to make sure DMA buffers for 32-bit
- 			devices won't run out. Kernel would try to allocate at
--			at least 256M below 4G automatically.
-+			least 256M below 4G automatically.
- 			This one let user to specify own low range under 4G
- 			for second kernel instead.
- 			0: to disable low allocation.
- 			It will be ignored when crashkernel=X,high is not used
- 			or memory reserved is below 4G.
--
-+			[KNL, arm64] range under 4G.
-+			This one let user to specify own low range under 4G
-+			for crash dump kernel instead.
-+			Different with x86_64, kernel allocates specified size
-+			physical memory region only when this parameter is specified
-+			instead of trying to allocate at least 256M below 4G
-+			automatically.
-+			This parameter is used along with crashkernel=X when we
-+			want to reserve crashkernel above 4G. If there are devices
-+			need to use ZONE_DMA in crash dump kernel, it is also
-+			a good choice.
- 	cryptomgr.notests
- 			[KNL] Disable crypto self-tests
- 
--- 
-2.20.1
+BTW, I re-discovered another bug (I have seen it already but it didn't bother me that much),
+while trying to break the version with these commits reverted (but it happens 
+with them not reverted as well):
+
+When I enable 'show debug info' to understand why I can't enable/disable some config
+option, the hyperlinks in the config description don't work - they make the config
+window to be empty.
+
+Best regards and thanks again,
+	Maxim Levitsky
+
+> 
+> The Kernel 3.14 conversion broke the "config description", and caused
+> several other issues.
+> 
+> When the config description area got fixed, I had to fix each of the
+> modes, for all of them to update the right area at the screen, as they
+> were pointing to the wrong places on several parts of the code.
+> 
+> > I do seem to be able to select menus on the left and the config items to the right,
+> > change the config item values, etc, in the split mode at least with these commits reverted.
+> 
+> You should also be able to see the helper window at the bottom changing
+> as modes change.
+> 
+> Anyway, the patch I just sent should fix it.
+> 
+> > Could you check that you also have the issue with search in qconf/xconfig?
+> 
+> Yeah, before that patch, search was working only on the two other
+> modes.
+> 
+> Btw, I'm also using Fedora here (Fedora 32). So, I should have a
+> result close to what you would be experiencing.
+> 
+> Thanks,
+> Mauro
+> 
+
 
