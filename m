@@ -2,82 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76DA20C85E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 16:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C96B20C864
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 16:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726581AbgF1ONu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 10:13:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39334 "EHLO mail.kernel.org"
+        id S1726535AbgF1OTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 10:19:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726344AbgF1ONu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 10:13:50 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726397AbgF1OTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Jun 2020 10:19:44 -0400
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2CA7C20738;
-        Sun, 28 Jun 2020 14:13:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B71832081A
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 14:19:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593353629;
-        bh=OTTxMpZn8TmaQ8zXr5LHkWm2vtIRAznfc6VzcZ+x1mQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kj5Hnv6sJj8ZSCJoCrR6BdWZvmhfGavB0Eaiwuky4hp0lri57atYbE9abOnN2xMBD
-         OCr1gVmwvnffHxWerERzGr7lrKmC9jvt/pzUGGkpk/4E0lL4J0zG2eMmrPrLI554+C
-         sqBIfeAegL2MKzz4K2nHAFy3q34XKE8O6P8ly/qo=
-Date:   Sun, 28 Jun 2020 16:13:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     Zhang Qiang <qiang.zhang@windriver.com>, linux-usb@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Felipe Balbi <felipe.balbi@linux.intel.com>
-Subject: Re: [PATCH] usb: gadget: function: printer: The device interface is
- reset and should return error code
-Message-ID: <20200628141339.GA3131191@kroah.com>
-References: <37bf94a0-92a0-ca4e-a4e4-5dd44aef2b88@web.de>
+        s=default; t=1593353984;
+        bh=FM4B6O890rOp11oQrSU4ptT/qfDOHTlolMOEiV7c7eg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ferf/tRhh+Cyjnbgp3+HUzWJL7BG8wJdiusxjhIetWjKuYQLl1NXBXPjmBnr3vCvh
+         dWv/o8RrX2s86NOIEDgsogfylbi+64Vl0yWbnZnSa9GCWp6fP+GaPtakZlExoeSwaZ
+         Bbc5g+ADqv3U4MT/VcWtmh/WHRGkU0jlflrDU7+E=
+Received: by mail-ej1-f44.google.com with SMTP id mb16so14041817ejb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 07:19:43 -0700 (PDT)
+X-Gm-Message-State: AOAM5302gPL5/6bOqdbkoLxl5/k5KOulRPzERFyHWcB/+mlj21GouXuD
+        IvMiz4huo/jlxNBBgLonga3S78K9mOaZUnGBQg==
+X-Google-Smtp-Source: ABdhPJyBxW8NlX1UpfAJTQrr9ECyVfuVuXvUNgqMd8hviZLwctZBgwiwnmX4TCg6/5R7MfpzaqzdROaukyvUmvcYUqY=
+X-Received: by 2002:a17:906:5fc4:: with SMTP id k4mr10157244ejv.94.1593353982337;
+ Sun, 28 Jun 2020 07:19:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <37bf94a0-92a0-ca4e-a4e4-5dd44aef2b88@web.de>
+References: <20200616065102.15756-1-bernard@vivo.com>
+In-Reply-To: <20200616065102.15756-1-bernard@vivo.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sun, 28 Jun 2020 22:19:31 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-yTjG7xW6MZ6NFYUDaeKCkASPP4JQPD1WTLUmOCG3muA@mail.gmail.com>
+Message-ID: <CAAOTY_-yTjG7xW6MZ6NFYUDaeKCkASPP4JQPD1WTLUmOCG3muA@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/mediatek: remove unnecessary conversion to bool
+To:     Bernard Zhao <bernard@vivo.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        opensource.kernel@vivo.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 28, 2020 at 03:43:10PM +0200, Markus Elfring wrote:
-> I suggest to choose a more succinct patch subject.
-> 
-> 
-> > After the device is disconnected from the host side, the interface of
-> > the device is reset. If the userspace operates the device again,
-> > an error code should be returned.
-> 
-> Please use an imperative wording for the commit message.
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=719fdd32921fb7e3208db8832d32ae1c2d68900f#n151
-> 
-> 
-> > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-> 
-> Did you really specify your real name here?
-> 
-> Regards,
-> Markus
+Hi, Bernard:
 
-Hi,
+Bernard Zhao <bernard@vivo.com> =E6=96=BC 2020=E5=B9=B46=E6=9C=8816=E6=97=
+=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=882:51=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> In function mtk_dsi_clk_hs_state, remove unnecessary conversion
+> to bool return, this change is to make the code a bit readable.
 
-This is the semi-friendly patch-bot of Greg Kroah-Hartman.
+Applied to mediatek-drm-fixes [1], thanks.
 
-Markus, you seem to have sent a nonsensical or otherwise pointless
-review comment to a patch submission on a Linux kernel developer mailing
-list.  I strongly suggest that you not do this anymore.  Please do not
-bother developers who are actively working to produce patches and
-features with comments that, in the end, are a waste of time.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-fixes
 
-Patch submitter, please ignore Markus's suggestion; you do not need to
-follow it at all.  The person/bot/AI that sent it is being ignored by
-almost all Linux kernel maintainers for having a persistent pattern of
-behavior of producing distracting and pointless commentary, and
-inability to adapt to feedback.  Please feel free to also ignore emails
-from them.
+Regards,
+Chun-Kuang.
 
-thanks,
-
-greg k-h's patch email bot
+>
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> ---
+> Changes since V1:
+> *optimize to make the code a bit more clear.
+>
+> Link for V1:
+> *https://lore.kernel.org/patchwork/patch/1255327/
+> ---
+>  drivers/gpu/drm/mediatek/mtk_dsi.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
+k/mtk_dsi.c
+> index 4491e64b3f06..840cc9b9efc8 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -316,10 +316,7 @@ static void mtk_dsi_lane0_ulp_mode_leave(struct mtk_=
+dsi *dsi)
+>
+>  static bool mtk_dsi_clk_hs_state(struct mtk_dsi *dsi)
+>  {
+> -       u32 tmp_reg1;
+> -
+> -       tmp_reg1 =3D readl(dsi->regs + DSI_PHY_LCCON);
+> -       return ((tmp_reg1 & LC_HS_TX_EN) =3D=3D 1);
+> +       return (readl(dsi->regs + DSI_PHY_LCCON) & LC_HS_TX_EN);
+>  }
+>
+>  static void mtk_dsi_clk_hs_mode(struct mtk_dsi *dsi, bool enter)
+> --
+> 2.17.1
+>
