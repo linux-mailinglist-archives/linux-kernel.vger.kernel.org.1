@@ -2,86 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D1E20C81B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 14:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7702920C823
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 15:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbgF1M5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 08:57:09 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6325 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726316AbgF1M5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 08:57:09 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 93E6FCA98DCAF57D9E6B;
-        Sun, 28 Jun 2020 20:57:06 +0800 (CST)
-Received: from [10.65.58.147] (10.65.58.147) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Sun, 28 Jun 2020
- 20:57:04 +0800
-Subject: Re: [PATCH v2 2/2] PCI/ERR: Add reset support for non fatal errors
-To:     <sathyanarayanan.kuppuswamy@linux.intel.com>, <bhelgaas@google.com>
-References: <ce417fbf81a8a46a89535f44b9224ee9fbb55a29.1591307288.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <18ab6cc7b34dab7630978195248ea031540ba9f1.1591307288.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <ashok.raj@intel.com>
-From:   Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <75280d1a-da68-10b8-de20-615e9243390e@hisilicon.com>
-Date:   Sun, 28 Jun 2020 20:57:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1726500AbgF1M7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 08:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726316AbgF1M7c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Jun 2020 08:59:32 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F49C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 05:59:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Rrwfl0iTqVy+GBEOBXXSk8AEg1CD80HI2UW6MMNNX8I=; b=XgwxCP8qWDCMmIcBPUnvErQP91
+        2nziAxk/ZxHdFpgJdvtHj4XagRIAhLv27Qv1q+ax5PdP17cP6KfTZcAjn93b5mgVP8tHzROXQZzXC
+        c7z9PhRmf3Cxh3ChKCprG0si9Icp6/0r5C6uDNWB/Eve0yTdirw2qCcpcZJshEgk7Ki4rFciSj87U
+        V7OuFAXKtc7KMN4SmMo8H/evQKO5gchbxidNFzfv6HwsNEohbc4jE2mmmW+AfjKyaUaxilXwSdamv
+        LraUcouO8DbPQxzcZaZMBz8XFitWQ6tM5IrIIHkCC1p83DLbTJS/ZeU1tbL5EcTvOy8qX1hvYkP51
+        mbA9AYog==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jpWtW-0006yN-VM; Sun, 28 Jun 2020 12:58:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 226E4302753;
+        Sun, 28 Jun 2020 14:58:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 006A3233E0188; Sun, 28 Jun 2020 14:58:44 +0200 (CEST)
+Date:   Sun, 28 Jun 2020 14:58:44 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] sched: fix build with GCC_PLUGIN_RANDSTRUCT
+Message-ID: <20200628125844.GL4817@hirez.programming.kicks-ass.net>
+References: <20200628072702.1249815-1-rppt@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <18ab6cc7b34dab7630978195248ea031540ba9f1.1591307288.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.65.58.147]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200628072702.1249815-1-rppt@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sathy,
 
-one minor comments below.
-
-On 2020/6/5 5:50, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
-> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->
-> PCI_ERS_RESULT_NEED_RESET error status implies the device is
-> requesting a slot reset and a notification about slot reset
-> completion via ->slot_reset() callback.
->
-> But in non-fatal errors case, if report_error_detected() or
-> report_mmio_enabled() functions requests PCI_ERS_RESULT_NEED_RESET
-> then current pcie_do_recovery() implementation does not do the
-> requested explicit slot reset, instead just calls the ->slot_reset()
-> callback on all affected devices. Notifying about the slot reset
-> completion without resetting it incorrect. So add this support.
->
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> ---
->  drivers/pci/pcie/err.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index 5fe8561c7185..94d1c2ff7b40 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -206,6 +206,9 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  		 * functions to reset slot before calling
->  		 * drivers' slot_reset callbacks?
->  		 */
-> +		if (state != pci_channel_io_frozen)
-> +			pci_reset_bus(dev);
-> +
-
-If it's the implementation to reset the slot, should we remove the TODO comments?
-JYI.
-
-Thanks,
-Yicong
-
-
->  		status = PCI_ERS_RESULT_RECOVERED;
->  		pci_dbg(dev, "broadcast slot_reset message\n");
->  		pci_walk_bus(bus, report_slot_reset, &status);
-
+There's patches in tip/sched/urgent for this...
