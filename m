@@ -2,89 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5993120C828
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 15:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2862020C829
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 15:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbgF1NLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 09:11:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726342AbgF1NLG (ORCPT
+        id S1726459AbgF1NOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 09:14:52 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28747 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726316AbgF1NOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 09:11:06 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD61C061794
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 06:11:06 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id 72so13046290otc.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 06:11:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=arLJjw4ajAn6LC2XU3pN5oUvvehh5rZnK18PYWOQ1S8=;
-        b=r+z3f0e1gY/BgqZo9JWNa8vFADUu9kZhWlCe+HRFBg/BsoaeiUyQ7DmlASW8ytao1e
-         pIFxiqeySm6ai7g1dMRENATtcoq8FUpijel43s4ESoMsdQsunBDknRaDonDZVxBi9pFV
-         KwUybRocY2z6Qdm/44IZmHiEOtZN3m2k4lL73hPuHGA2VS76aH+DMQGUmPcnkO5pQF8S
-         uBMmCFVzFk65GYMlhe3K9WSN5Qtr7YOvtXG9lbJWy6FBmNLoaxv9ifQezUNedkLugxa8
-         Sey/hRTdToYRNy6dC0bxGDaIrjXYWprtwed5n4TVrFyxpjfZ8T/Ibgoiv3s+JJ4bGzsh
-         v80g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=arLJjw4ajAn6LC2XU3pN5oUvvehh5rZnK18PYWOQ1S8=;
-        b=hnmEX84RH+kvbsT8kDB7THHOMqdOohnG3u5PW43QfewvxFF8UzQRz3Wlx03jdphR2Y
-         qA82PfGNX5juCXGp+EuKA3+2V1qFuh6CvFD/2uu6TW24B1YwqvIT0Dk7zXgpy3XE5rTH
-         uoCN2IoaZYXYvtyNGYr1O0gHbmye840E4nncQasyU1ZGgi0QRjRSgbX32ajrlz+SZhHd
-         LmFINAZSXFabI4hThA1gQUD5ITclsSXXPJIglR5Cl6hDuW4EryC7Pl9lCYJNoVGOhkUr
-         d5wz5PI92z2FtHZ2U28enblhDB32zjmgvfda0jFhxdqWbI22vgZO7iJ9WFeg6oiodQkJ
-         hMHg==
-X-Gm-Message-State: AOAM532xDS+SiRyfxMUfNjxoDz8LGdCAvGDRkJGv/CFqDHqHfvR4icgJ
-        WVXkgav9ahQzhj02/2099jK2Cxb5eik/A/KZpnQ=
-X-Google-Smtp-Source: ABdhPJzkcLtiA6d9RxpwBKa4CBSg43vuOmCgtQf2YOddm2pCWpSOVjoLSLu/dKMMS/sRaxQK4tzCHRDISepGX6+kHgw=
-X-Received: by 2002:a05:6830:1083:: with SMTP id y3mr9508498oto.59.1593349865894;
- Sun, 28 Jun 2020 06:11:05 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a05:6839:1668:0:0:0:0 with HTTP; Sun, 28 Jun 2020 06:11:05
- -0700 (PDT)
-Reply-To: elizabethhedw@gmail.com
-From:   "Mrs. Elizabeth Edward" <gisharbiie@gmail.com>
-Date:   Sun, 28 Jun 2020 14:11:05 +0100
-Message-ID: <CANZkQ=RnzE+4h6-_PrvF+dX+Z6wA-C0PbGF1iWdcZNZ3ATk+CQ@mail.gmail.com>
-Subject: REPLY ME URGENTLY
-To:     undisclosed-recipients:;
+        Sun, 28 Jun 2020 09:14:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593350088;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D80MHniFvVdP34Lif7QfAUEYjZEaAApyLQyjZ2F/dKc=;
+        b=O3guhNgq3U5Agz0zbukWwyionDizyGgAUsJPVT8UEPyLyZRclOp5a/5Rbaf8LfNQkPzB1J
+        jJlyEbKqneQRBpeulLUSOHD8fxC/gA5xhIVXW2ldOTRVgALOtw6UHfSyq998MuQY1ozQr/
+        EpBYDhocR9h/TKIHJoYZ5ejLjIIs9Lo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-319-chsEpeSbMFqmUuSsxSLDtQ-1; Sun, 28 Jun 2020 09:14:44 -0400
+X-MC-Unique: chsEpeSbMFqmUuSsxSLDtQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8348CBFC0;
+        Sun, 28 Jun 2020 13:14:42 +0000 (UTC)
+Received: from starship (unknown [10.35.206.197])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5ABBB94B40;
+        Sun, 28 Jun 2020 13:14:40 +0000 (UTC)
+Message-ID: <bffe8da0944fad97c60bbd4e73dc970ee3a7a2c0.camel@redhat.com>
+Subject: Re: Commit 'fs: Do not check if there is a fsnotify watcher on
+ pseudo inodes' breaks chromium here
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 28 Jun 2020 16:14:39 +0300
+In-Reply-To: <CAOQ4uxg8E-im=B6L0PQNaTTKdtxVAO=MSJki7kxq875ME4hOLw@mail.gmail.com>
+References: <7b4aa1e985007c6d582fffe5e8435f8153e28e0f.camel@redhat.com>
+         <CAOQ4uxg8E-im=B6L0PQNaTTKdtxVAO=MSJki7kxq875ME4hOLw@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greeting
+On Sun, 2020-06-28 at 15:53 +0300, Amir Goldstein wrote:
+> On Sun, Jun 28, 2020 at 2:14 PM Maxim Levitsky <mlevitsk@redhat.com> wrote:
+> > Hi,
+> > 
+> > I just did usual kernel update and now chromium crashes on startup.
+> > It happens both in a KVM's VM (with virtio-gpu if that matters) and natively with amdgpu driver.
+> > Most likely not GPU related although I initially suspected that it is.
+> > 
+> > Chromium starts as a white rectangle, shows few white rectangles
+> > that resemble its notifications and then crashes.
+> > 
+> > The stdout output from chromium:
+> > 
+> [...]
+> 
+> > Received signal 6
+> > #0 0x55f6da0120d9 base::debug::CollectStackTrace()
+> > #1 0x55f6d9f75246 base::debug::StackTrace::StackTrace()
+> > #2 0x55f6da01170a base::debug::(anonymous namespace)::StackDumpSignalHandler()
+> > #3 0x55f6da011cfe base::debug::(anonymous namespace)::StackDumpSignalHandler()
+> > #4 0x7ff46643ab20 (/usr/lib64/libpthread-2.30.so+0x14b1f)
+> > #5 0x7ff462d87625 __GI_raise
+> > #6 0x7ff462d708d9 __GI_abort
+> > #7 0x55f6da0112d5 base::debug::BreakDebugger()
+> > #8 0x55f6d9f86405 logging::LogMessage::~LogMessage()
+> > #9 0x55f6d7ed5488 content::(anonymous namespace)::IntentionallyCrashBrowserForUnusableGpuProcess()
+> > #10 0x55f6d7ed8479 content::GpuDataManagerImplPrivate::FallBackToNextGpuMode()
+> > #11 0x55f6d7ed4eef content::GpuDataManagerImpl::FallBackToNextGpuMode()
+> > #12 0x55f6d7ee0f41 content::GpuProcessHost::RecordProcessCrash()
+> > #13 0x55f6d7ee105d content::GpuProcessHost::OnProcessCrashed()
+> > #14 0x55f6d7cbe308 content::BrowserChildProcessHostImpl::OnChildDisconnected()
+> > #15 0x55f6da8b511a IPC::ChannelMojo::OnPipeError()
+> > #16 0x55f6da13cd62 mojo::InterfaceEndpointClient::NotifyError()
+> > #17 0x55f6da8c1f9d IPC::(anonymous namespace)::ChannelAssociatedGroupController::OnPipeError()
+> > #18 0x55f6da138968 mojo::Connector::HandleError()
+> > #19 0x55f6da15bce7 mojo::SimpleWatcher::OnHandleReady()
+> > #20 0x55f6da15c0fb mojo::SimpleWatcher::Context::CallNotify()
+> > #21 0x55f6d78eaa73 mojo::core::WatcherDispatcher::InvokeWatchCallback()
+> > #22 0x55f6d78ea38f mojo::core::Watch::InvokeCallback()
+> > #23 0x55f6d78e6efa mojo::core::RequestContext::~RequestContext()
+> > #24 0x55f6d78db76a mojo::core::NodeChannel::OnChannelError()
+> > #25 0x55f6d78f232a mojo::core::(anonymous namespace)::ChannelPosix::OnFileCanReadWithoutBlocking()
+> > #26 0x55f6da03345e base::MessagePumpLibevent::OnLibeventNotification()
+> > #27 0x55f6da0f9b2d event_base_loop
+> > #28 0x55f6da03316d base::MessagePumpLibevent::Run()
+> > #29 0x55f6d9fd79c9 base::sequence_manager::internal::ThreadControllerWithMessagePumpImpl::Run()
+> > #30 0x55f6d9fada7a base::RunLoop::Run()
+> > #31 0x55f6d7ce6324 content::BrowserProcessSubThread::IOThreadRun()
+> > #32 0x55f6d9fe0cb8 base::Thread::ThreadMain()
+> > #33 0x55f6da024705 base::(anonymous namespace)::ThreadFunc()
+> > #34 0x7ff46642f4e2 start_thread
+> > #35 0x7ff462e4c6a3 __GI___clone
+> >   r8: 0000000000000000  r9: 00007ff44e6a58d0 r10: 0000000000000008 r11: 0000000000000246
+> >  r12: 00007ff44e6a6b40 r13: 00007ff44e6a6d00 r14: 000000000000006d r15: 00007ff44e6a6b30
+> >   di: 0000000000000002  si: 00007ff44e6a58d0  bp: 00007ff44e6a5b20  bx: 00007ff44e6a9700
+> >   dx: 0000000000000000  ax: 0000000000000000  cx: 00007ff462d87625  sp: 00007ff44e6a58d0
+> >   ip: 00007ff462d87625 efl: 0000000000000246 cgf: 002b000000000033 erf: 0000000000000000
+> >  trp: 0000000000000000 msk: 0000000000000000 cr2: 0000000000000000
+> > [end of stack trace]
+> > Calling _exit(1). Core file will not be generated.
+> > 
+> > 
+> 
+> I guess this answers our question whether we could disable fsnoitfy
+> watches on pseudo inodes....
+> 
+> From comments like these in chromium code:
+> https://chromium.googlesource.com/chromium/src/+/master/mojo/core/watcher_dispatcher.cc#77
+> https://chromium.googlesource.com/chromium/src/+/master/base/files/file_descriptor_watcher_posix.cc#176
+> https://chromium.googlesource.com/chromium/src/+/master/ipc/ipc_channel_mojo.cc#240
+> 
+> I am taking a wild guess that the missing FS_CLOSE event on anonymous pipes is
+> the cause for regression.
+> 
+> The motivation for the patch "fs: Do not check if there is a fsnotify
+> watcher on pseudo inodes"
+> was performance, but actually, FS_CLOSE and FS_OPEN events probably do
+> not impact
+> performance as FS_MODIFY and FS_ACCESS.
+> 
+> Mel,
+> 
+> Do your perf results support the claim above?
+> 
+> Jan/Linus,
+> 
+> Do you agree that dropping FS_MODIFY/FS_ACCESS events for FMODE_STREAM
+> files as a general rule should be safe?
+> 
+> Maxim, can you try if the attached patch fixes the chromium regression.
+> It is expected to leave the FS_OPEN/FS_CLOSE events on anonymous pipes
+> but drop the FS_MODIFY/FS_ACCESS events.
+Tested this (in the VM this time) and it works.
 
-Please forgive me for stressing you with my predicaments and I sorry
-to approach you through this media it is because it serves the fastest
-means of communication. I came across your E-mail from my personal
-search and I decided to contact you believing you will be honest to
-fulfill my final wish before I die.
+Best regards,
+	Maxim Levitsky
 
-I am Mrs. Elizabeth Edward, 63 years, from USA, I am childless and I
-am suffering from a pro-long critical cancer, my doctors confirmed I
-may not live beyond two months from now as my ill health has defiled
-all forms of medical treatment.
+> 
+> Thanks,
+> Amir.
 
-Since my days are numbered, I=E2=80=99ve decided willingly to fulfill my
-long-time promise to donate you the sum ($5.000.000.00) million
-dollars I inherited from my late husband Mr. Edward Herbart, foreign
-bank account over years. I need a very honest person who can assist in
-transfer of this money to his or her account and use the funds for
-charities work of God while you use 50% for yourself. I want you to
-know there are no risk involved, it is 100% hitch free & safe. If you
-will be interesting to assist in getting this fund into your account
-for charity project to fulfill my promise before I die please let me
-know immediately. I will appreciate your utmost confidentiality as I
-wait for your reply.
 
-Best Regards
-
-Mrs. Elizabeth Edward
