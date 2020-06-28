@@ -2,141 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF23520C94C
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 19:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBB120C95D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 19:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbgF1RqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 13:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33214 "EHLO
+        id S1726679AbgF1Rqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 13:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726059AbgF1RqM (ORCPT
+        with ESMTP id S1726622AbgF1RqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 13:46:12 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78795C03E979;
-        Sun, 28 Jun 2020 10:46:12 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id z17so10969387edr.9;
-        Sun, 28 Jun 2020 10:46:12 -0700 (PDT)
+        Sun, 28 Jun 2020 13:46:17 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F61FC03E97E
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 10:46:17 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id 18so13407326otv.6
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 10:46:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=R4NV7ZXUyGxQT+NbkPwPy+JARllPu6O11kPu6TTALnk=;
-        b=JEbamC6/5d34z41avnGchuvb/He/2xsnrG6xzmvifbDHhoDRIEfWrSjJ/pc0tC+r0q
-         x/cq1S3heyeIphZOUZ/sOiSFULZFO0eq18Ih7oKyAHykE/qZjsHE87PSIiHREVy9QxPo
-         V3nCty1jmZbgwrcpDjbLMUFX7UHMFFFq0xKCXy+5Pf3AMAnnsxNpxyt8St6aTpDI0pMY
-         MFQTi8qIhCZDwV47GjDiVYanPFzt57gaazsexxRIBr2H+7ixrUuqnbKaK+TQKWiOQcc9
-         xGbCfiZaZ/6WRShQCaZ9PXiCeI9LbeD4cWDZbi7qIwyA2XXWuy2oSwZQ2XosYBXRvIUZ
-         XBAA==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/bJJuAbxLOI8ZB5kWrg6GnM3H9CKnk3zJ1in7nW69lY=;
+        b=YUBq+VgNMjlk38u14axPL08DzqARV0dHwd7VsntceEuDODm7tXtyIQiPnBEqwTqorM
+         FLgKk/WWEbN669NPAWBs5Q5Gn/Gw86s5KbgPWdKneNmtH17uT3bYx80xwgMEDbop8BVT
+         4AlOoyISrzqCwJLvSN+nVH9lFdx700mtRrJmEbhJzdpPADkw25XlX9qIwrm0L5lPQrGt
+         sHpMYC76UUuOqEIhiYHo/SrZyArNzUc5xWQzQJVjCCoL1o6dPw+1muYQhIpwYqVaKQyH
+         7il99UsBp0LEis5jgVygo+cs3PrEwvki/U9tgVDWLPcHxPjGhom7KOAMAeqfYI2Bq0H2
+         dL/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=R4NV7ZXUyGxQT+NbkPwPy+JARllPu6O11kPu6TTALnk=;
-        b=dW2X8Hxv63S91zHSfqV7Bjw54TNDHg1W7OeQo9cX2rBS3HTuxdODjJKe8d6QhXill2
-         R0EKoBoWHGPMU6IrMvP2tjNNPsJOroMRrvJq7GUVyJvBdGkGmyc0suj2TdJwgH6OshHR
-         DPxHWtoRcTVEqmzUDMqTgiKbtwln0ZLd0MzB4x0u/AhEq2l3Eq3rbYVWoaIk7Wc8wHC6
-         Cn0lF+brssOgkZx563akO8r9zkiKgs+qFmrB3c8R7zxrxeoIobMka0285SH0t+aZkSFi
-         xF6V4FupbsbkgQ36LvYtZlDzElq+kszADVgzBT/uNdImYrJJDH362VNY0Sxm6/l58kiu
-         H41g==
-X-Gm-Message-State: AOAM532GWJMyppGRF786QFPk4/sbM8asO+UYl1IjSuwZvU79MxP/rtdh
-        vTD4RB7EZS5P6F9QaTGPXVeWhMr+8sc=
-X-Google-Smtp-Source: ABdhPJzAodcx4cnaOgTt2nCuM+DLcNI6Yju9NJx5mlCpxdlC74zw/l+TDTqJUVM7eUV3e0oJgnxULQ==
-X-Received: by 2002:a50:d78f:: with SMTP id w15mr14258228edi.245.1593366371211;
-        Sun, 28 Jun 2020 10:46:11 -0700 (PDT)
-Received: from dumbo (tor-exit-16.zbau.f3netze.de. [2a0b:f4c0:16c:16::1])
-        by smtp.gmail.com with ESMTPSA id v11sm12707549eja.113.2020.06.28.10.46.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jun 2020 10:46:10 -0700 (PDT)
-Received: from cavok by dumbo with local (Exim 4.92)
-        (envelope-from <cavok@dumbo>)
-        id 1jpbNW-0005Ls-2V; Sun, 28 Jun 2020 19:46:06 +0200
-Date:   Sun, 28 Jun 2020 19:46:06 +0200
-From:   Domenico Andreoli <domenico.andreoli@linux.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Will Deacon <will.deacon@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH v2] kbuild: buildtar: add arm64 dtbs support
-Message-ID: <20200628174606.GA19923@dumbo>
-References: <5ef50e52.1c69fb81.b6cbd.bd8e@mx.google.com>
- <CAK7LNASta=UfbK-C=6R+tT2nug8_MYyr9515J4CN8odWCh0CpA@mail.gmail.com>
- <20200626214026.GB25753@dumbo>
- <CAK7LNASRL6jaaxZreFK+iDmFHuw6QLSS0n08gZNkyhcsNunAnw@mail.gmail.com>
- <20200627212112.GA18721@dumbo>
- <CAK7LNARhsyo0OoS+fibCn3tt4J7_iwfsSn8TvzjxZ4K_bwreUA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/bJJuAbxLOI8ZB5kWrg6GnM3H9CKnk3zJ1in7nW69lY=;
+        b=AtVEQ23gctsVaqfLnFNwxi/USVdn0b8Rgd3v9/KwzV0C2athG3Trf+YcWKWd8HO8lt
+         BC2jHlLjNhVoIPPnwov0aHtidYd5T/PceCs5LWNfUxdXF4/inpxmSASqF7d+xG2rDZk1
+         Zgj4nE9rictNjZrZY4C6KjgCkFR+JCIVsZX65v3KEHPjUMdJY5KHRysueSXh9IwhdfsY
+         usOe30ZA3OXUf+8PMpnybHQpCGOD9mtnNOOpNn2JyhXfo5ZOaUmXJO8Ii4/rh84qEB3F
+         QUt7kGf9W0+2krF4aQqo7cXIww61AQTVs0OtAUHvQBUzFSlNnYWdZPVU0kO2e6tdPrFO
+         zj0w==
+X-Gm-Message-State: AOAM530jc1P+05VMDVrq6oMpLoP3J9VDF4e7sQhDHjI5KQJsZW2ez4Yh
+        /dPzYMnk+WB5jysaJzUOTfLzu8dAgNRyE7Cfrzg=
+X-Google-Smtp-Source: ABdhPJy3Gj0bD4+GZ16fIU6y/MzUrvVfW0UiVZl9y/IjQee69OJiPuEA8c3wMHv+p8mmb1g6c9ot9wDO/UA+LL3ZfeY=
+X-Received: by 2002:a05:6830:610:: with SMTP id w16mr10586414oti.165.1593366376804;
+ Sun, 28 Jun 2020 10:46:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNARhsyo0OoS+fibCn3tt4J7_iwfsSn8TvzjxZ4K_bwreUA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:ac9:27ee:0:0:0:0:0 with HTTP; Sun, 28 Jun 2020 10:46:15
+ -0700 (PDT)
+Reply-To: mrjohnscottyounger35@gmail.com
+From:   John Scott Younger <mrszahraalkami@gmail.com>
+Date:   Sun, 28 Jun 2020 18:46:15 +0100
+Message-ID: <CALQpPg30nAHHtUyi_G5mCvJ6ntraDa3A=oR7H3f5LumSg+StqA@mail.gmail.com>
+Subject: Your attention to this news update.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 28, 2020 at 12:46:28PM +0900, Masahiro Yamada wrote:
-> On Sun, Jun 28, 2020 at 6:21 AM Domenico Andreoli
-> <domenico.andreoli@linux.com> wrote:
-> >
-> > On Sat, Jun 27, 2020 at 09:02:52PM +0900, Masahiro Yamada wrote:
-> > > On Sat, Jun 27, 2020 at 6:40 AM Domenico Andreoli <domenico.andreoli@linux.com> wrote:
-> > > > On Fri, Jun 26, 2020 at 03:16:58PM +0900, Masahiro Yamada wrote:
-> > > > > On Fri, Jun 26, 2020 at 5:51 AM Domenico Andreoli <domenico.andreoli@linux.com> wrote:
-> >
-> > [...]
-> >
-> > > > > >
-> > > > > > +       arm64)
-> > > > > > +               make ARCH="${ARCH}" -f ${srctree}/Makefile INSTALL_DTBS_PATH="${tmpdir}/boot/dtbs/${KERNELRELEASE}" dtbs_install
-> > > > > > +               ;;
-> > > > > > +esac
-> > > > > > +
-> > > > >
-> > > > >
-> > > > > Or, you can use INSTALL_PATH="${tmpdir}/boot"
-> > > > > to make it shorter.
-> > > >
-> > > > This does not work, INSTALL_DTBS_PATH gets somehow defined along the
-> > > > twisted path to buildtar and therefore needs to be explicitly specified
-> > > > for the new destination.
-> > >
-> > > It works.
-> > >
-> > > See line 1002 of the top Makefile
-> > >
-> > > export INSTALL_DTBS_PATH ?= $(INSTALL_PATH)/dtbs/$(KERNELRELEASE)
-> >
-> > Exactly. INSTALL_DTBS_PATH is _exported_ in the top Makefile.
-> >
-> >
-> > This is what it seems to happen, in the order:
-> >
-> > 1. outer 'make dir-pkg'
-> >    INSTALL_DTBS_PATH is exported with some content
-> >
-> > 2. control arrives to buildtar
-> >    INSTALL_DTBS_PATH is there as environment variable
-> >
-> > 3. inner 'make INSTALL_PATH=${tmpdir}/boot dtbs_install'
-> >    INSTALL_DTBS_PATH is already set, therefore it is not modified
-> 
-> Sorry, I was wrong.
-> Your analysis is definitely right.
-> 
-> 
-> I will apply v4.
-> 
-> Thanks.
-> 
-
-Thanks to you!
-
-Domenico
-
 -- 
-rsa4096: 3B10 0CA1 8674 ACBA B4FE  FCD2 CE5B CF17 9960 DE13
-ed25519: FFB4 0CC3 7F2E 091D F7DA  356E CC79 2832 ED38 CB05
+Your attention to this news update.
+
+The report / analysis received from our correspondence shows that you
+have NOT received your PAYMENT, due to administrative injustice from
+unpatriotic and uncivil payment officials. Following the resolution of
+the U.S Department of State, you are mandated to kindly reinstate your
+fund acquisition details for accreditation.
+
+Sequel to the joint /collaborative effort by United Nations and US
+Department of State, to review, nullify and release all STOP ORDER on
+beneficiary transferred sum and consignment HELD at custom port
+authorities. At this juncture, you are advised to forward information
+of agencies that has put a HOLD on your consignment or STOP ORDER on
+your transferred sum.
+
+This office is commission to investigate/rectify ISSUES affecting
+beneficiaries whose payment is HELD/STOP unjustly with the intent of
+demanding un-official fees/levies. Be informed that all administrative
+injustice imposed on beneficiaries by some dubious person(s) has come
+to the knowledge of oversight committee of United Nations and US
+Department of State.
+
+Thus our objective is to resolve all challenges facing release of your
+payment. Therefore get back to my office with the required information
+for assessment.
+
+Our in service,
+
+John Scott Younger
+Human Right Activist
+Tel:- + 44 770 002 8251
