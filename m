@@ -2,91 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F138420C890
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 16:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CA820C895
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Jun 2020 16:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgF1OuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 10:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726426AbgF1OuG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 10:50:06 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D2DC03E979;
-        Sun, 28 Jun 2020 07:50:05 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id o18so9621692eje.7;
-        Sun, 28 Jun 2020 07:50:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i1zigYgRRO0ONYXURNqrQgGhLyNX6ERoSrFBybbOwfo=;
-        b=nEhlXiHrnPi4V+nRv+KfSN0zz+t0kobmoVztNqOuEcqjB0YXMoCl4YvSWMXwPdGl6i
-         yPUpIpSEKcY/8VnhpN/hfEmphkSeDqRsYayaFW1T75UgjfGPmS6MjSLYueBCVsvxba5p
-         GTdfa66dYHoOC3pmmfKuxJQyDTAZPl2BTl7f7nHC0crQ0QF68OUlmLjFttVxO4akMS2L
-         R7RWnQJLeok2CoN5du4eCArkihMxwe+U10fy4L2+99fbZKRzY5awlIm+gG52BwD9ctVT
-         jyziXCK+kXpY5YI3YGpbt7XMGR1CMB0JVMrGRDzX6JORv8foEbl09SFFcrxLu8s3taT4
-         2T5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i1zigYgRRO0ONYXURNqrQgGhLyNX6ERoSrFBybbOwfo=;
-        b=Zlq6aETGMWKsaJq9kSM/Nx+75gIDmfUepyJlDHBeRFNXgBF3nR3xevA8KvX4U1jn+a
-         Qgn6+uz3slkNzcgHtqu+4ylcbYM5z9bZFuv09PQ4/QmqaTQSMv4APgMd0LCieupu6ukO
-         vWIx8emsZuL9zG+NZuWEbIEviGCn4CYWg7iy86vhDTvkTjgl22OjC0wZ1KtiWrgLiq6g
-         QT2z8xkQRHkjoWklTdYjbeSEr83gCHcTBTff829CmPJShi+6ry2lvq2jLqVL9mbIKIv7
-         X9oD7PfW6gavsZjDp7V7DS0CKYwVyKdnoDky8PiPBSCdyGoxwYTCq7IOj8FjpXaJX1Iu
-         3Buw==
-X-Gm-Message-State: AOAM5309FSh1ckO6qAPihAB6hnmauW87HD0re9gFsi6olW3o9j9f8w3K
-        80tDONl31DgO/21ptO2tBzLskaZa
-X-Google-Smtp-Source: ABdhPJyhbKCsNh6t45fFwW3y8KDtdmQRNureOQv/4kYFR7sVB4xgCZel1lwDUkEMYtfHoiohspnBNQ==
-X-Received: by 2002:a17:906:1db1:: with SMTP id u17mr4994044ejh.72.1593355804429;
-        Sun, 28 Jun 2020 07:50:04 -0700 (PDT)
-Received: from localhost.localdomain ([188.26.56.128])
-        by smtp.gmail.com with ESMTPSA id qc16sm6859768ejb.33.2020.06.28.07.50.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jun 2020 07:50:03 -0700 (PDT)
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     davem@davemloft.net, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH net] lib: packing: add documentation for pbuflen argument
-Date:   Sun, 28 Jun 2020 17:49:35 +0300
-Message-Id: <20200628144935.700891-1-olteanv@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
+        id S1726574AbgF1Owd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 10:52:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726027AbgF1Owd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Jun 2020 10:52:33 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 959D920771;
+        Sun, 28 Jun 2020 14:52:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593355952;
+        bh=1A1LBF13tY4/QGYiqzjje0lY23s+iMcEMxhBw/Upx94=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NAQOE0iLfVVPbmiHJhNZeDkjlMGjFMmyGvHcSiHX3U6BiFyDySmTEdggHrg0r+1Rh
+         BPpQhMrZE2V3Zo4q0MC1MrTBd9Zdc1Tu0P5UITmL5w/H0yyican7fyTRsKF7e1S0PV
+         XtmNgigG+8kaWltXzltG2BnK8s23k2h/h6rgaTpQ=
+Date:   Sun, 28 Jun 2020 23:52:26 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <anup@brainfault.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Zong Li <zong.li@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: [PATCH] riscv: Fixup compile error BUILD_BUG_ON failed
+Message-Id: <20200628235226.dbbe2256ea6e846abfb63feb@kernel.org>
+In-Reply-To: <CAJF2gTTCHMHp-+RoG8DoDhbJStzmOf5AK=Z3K26FUmd_hbgR=g@mail.gmail.com>
+References: <1593274802-46332-1-git-send-email-guoren@kernel.org>
+        <20200628115945.335b92c517cb8a8fa87be759@kernel.org>
+        <CAJF2gTTCHMHp-+RoG8DoDhbJStzmOf5AK=Z3K26FUmd_hbgR=g@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes sparse warning:
+On Sun, 28 Jun 2020 14:12:07 +0800
+Guo Ren <guoren@kernel.org> wrote:
 
-Function parameter or member 'pbuflen' not described in 'packing'
+> On Sun, Jun 28, 2020 at 10:59 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > On Sat, 27 Jun 2020 16:20:02 +0000
+> > guoren@kernel.org wrote:
+> >
+> > > From: Guo Ren <guoren@linux.alibaba.com>
+> > >
+> > > Unfortunately, the current code couldn't be compiled, because
+> > > BUILD_BUG_ON needs a static defined value, not a dynamic
+> > > variable with a0 regs. Just use it inline as a solution.
+> > >
+> > >   CC      arch/riscv/kernel/patch.o
+> > > In file included from ./include/linux/kernel.h:11,
+> > >                  from ./include/linux/list.h:9,
+> > >                  from ./include/linux/preempt.h:11,
+> > >                  from ./include/linux/spinlock.h:51,
+> > >                  from arch/riscv/kernel/patch.c:6:
+> > > In function ‘fix_to_virt’,
+> > >     inlined from ‘patch_map’ at arch/riscv/kernel/patch.c:37:17:
+> > > ./include/linux/compiler.h:392:38: error: call to ‘__compiletime_assert_205’ declared with attribute error: BUILD_BUG_ON failed: idx >= __end_of_fixed_addresses
+> > >   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+> > >                                       ^
+> > > ./include/linux/compiler.h:373:4: note: in definition of macro ‘__compiletime_assert’
+> > >     prefix ## suffix();    \
+> > >     ^~~~~~
+> > > ./include/linux/compiler.h:392:2: note: in expansion of macro ‘_compiletime_assert’
+> > >   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+> > >   ^~~~~~~~~~~~~~~~~~~
+> > > ./include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
+> > >  #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+> > >                                      ^~~~~~~~~~~~~~~~~~
+> > > ./include/linux/build_bug.h:50:2: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
+> > >   BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+> > >   ^~~~~~~~~~~~~~~~
+> > > ./include/asm-generic/fixmap.h:32:2: note: in expansion of macro ‘BUILD_BUG_ON’
+> > >   BUILD_BUG_ON(idx >= __end_of_fixed_addresses);
+> > >   ^~~~~~~~~~~~
+> > >
+> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > > Cc: Zong Li <zong.li@sifive.com>
+> > > ---
+> > >  arch/riscv/kernel/patch.c | 3 +--
+> > >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > >
+> > > diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
+> > > index d4a64df..f8e84f2 100644
+> > > --- a/arch/riscv/kernel/patch.c
+> > > +++ b/arch/riscv/kernel/patch.c
+> > > @@ -20,7 +20,7 @@ struct patch_insn {
+> > >  };
+> > >
+> > >  #ifdef CONFIG_MMU
+> > > -static void *patch_map(void *addr, int fixmap)
+> > > +static inline void *patch_map(void *addr, int fixmap)
+> >
+> > Would we be better to use "__always_inline" as same as fix_to_virt?
+> Ok
+> 
+> > And also, could you add a comment why we need to make it inline?
+> I've mentioned in comment:
+> > > BUILD_BUG_ON needs a static defined value, not a dynamic
+> > > variable with a0 regs.
+> 
+> idx must be a const unsigned int or it will cause compile error with
+> BUILD_BUG_ON.
 
-Fixes: 554aae35007e ("lib: Add support for generic packing operations")
-Signed-off-by: Vladimir Oltean <olteanv@gmail.com>
----
-Hi David, since the original "packing" submission went in through your
-tree, could you please take this patch as well?
+Ah, sorry for the confusion. I meant the comment line in the code.
+BTW, can we also use "const unsigned int" for the fixmap index so that
+no one miss it anymore?
 
- lib/packing.c | 1 +
- 1 file changed, 1 insertion(+)
+Thank you,
 
-diff --git a/lib/packing.c b/lib/packing.c
-index 50d1e9f2f5a7..6ed72dccfdb5 100644
---- a/lib/packing.c
-+++ b/lib/packing.c
-@@ -73,6 +73,7 @@ static void adjust_for_msb_right_quirk(u64 *to_write, int *box_start_bit,
-  * @endbit: The index (in logical notation, compensated for quirks) where
-  *	    the packed value ends within pbuf. Must be smaller than, or equal
-  *	    to, startbit.
-+ * @pbuflen: The length in bytes of the packed buffer pointed to by @pbuf.
-  * @op: If PACK, then uval will be treated as const pointer and copied (packed)
-  *	into pbuf, between startbit and endbit.
-  *	If UNPACK, then pbuf will be treated as const pointer and the logical
+> 
+> /*
+>  * 'index to address' translation. If anyone tries to use the idx
+>  * directly without translation, we catch the bug with a NULL-deference
+>  * kernel oops. Illegal ranges of incoming indices are caught too.
+>  */
+> static __always_inline unsigned long fix_to_virt(const unsigned int idx)
+> {
+>         BUILD_BUG_ON(idx >= __end_of_fixed_addresses);
+>         return __fix_to_virt(idx);
+> }
+> 
+> -- 
+> Best Regards
+>  Guo Ren
+> 
+> ML: https://lore.kernel.org/linux-csky/
+
+
 -- 
-2.25.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
