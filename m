@@ -2,259 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4AD620D854
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B06D20D667
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732290AbgF2TiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:38:20 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:47322 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387471AbgF2Thy (ORCPT
+        id S1728178AbgF2TTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:19:44 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:35783 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732063AbgF2TTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:37:54 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200629075143euoutp025789f18123a28e6957d954d1f54aa46f~c9GnrIcsW0637906379euoutp02B
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:51:43 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200629075143euoutp025789f18123a28e6957d954d1f54aa46f~c9GnrIcsW0637906379euoutp02B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593417103;
-        bh=dQ9Doz3UBs0xgD6IFLX1j1JQ9wXrq3erbykFtgNQuDY=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=s6EBXoymUWh9R+b1KtkNXgxwspIJxNs1VFHDgdhYWFeOHzFCRC8u46/Zm6PSfE90Y
-         GVJDflUobNNHFng+q6WlyYuTXrfESnjJb0irk0vdcPQ6X3kBEjS8+QLq/0HUrfTobM
-         LcGKLwYcnQ9Mz40qqpfl6izB0v8nAVKZbT4P161E=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200629075143eucas1p118ab028a0335d12e8906b9ce64d4253e~c9GnHwKVj3253332533eucas1p1t;
-        Mon, 29 Jun 2020 07:51:43 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 91.C1.06456.F8D99FE5; Mon, 29
-        Jun 2020 08:51:43 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200629075142eucas1p1d1cf615c77342a874310bfc853b3ed5d~c9GmlEi_T3259232592eucas1p1t;
-        Mon, 29 Jun 2020 07:51:42 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200629075142eusmtrp1fb024f39aa4ea00e14ad66a0ec1cc68c~c9GmkFrfa2414324143eusmtrp17;
-        Mon, 29 Jun 2020 07:51:42 +0000 (GMT)
-X-AuditID: cbfec7f2-809ff70000001938-4c-5ef99d8f1bb6
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id CB.6A.06314.E8D99FE5; Mon, 29
-        Jun 2020 08:51:42 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200629075141eusmtip1660c2664e074b9ed3be926930118c382~c9GlPVr7z1159711597eusmtip1P;
-        Mon, 29 Jun 2020 07:51:41 +0000 (GMT)
-Subject: Re: [PATCH 01/13] iommu/exynos: Use dev_iommu_priv_get/set()
-To:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, x86@kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        intel-gfx@lists.freedesktop.org, Joerg Roedel <jroedel@suse.de>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <f69cc934-1fcc-c311-7bc0-22472befa796@samsung.com>
-Date:   Mon, 29 Jun 2020 09:51:41 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200625130836.1916-2-joro@8bytes.org>
-Content-Transfer-Encoding: 7bit
+        Mon, 29 Jun 2020 15:19:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1593458380; x=1624994380;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=YRxFko49T/RkTyYo5LydKE3gdEuk4o7OwqcKxxEnhm4=;
+  b=sj72FVZl10q6JC3nj4s8qAiEsujwx499LiePVteA/kXuCBIkilSLol4h
+   fG/Av8h+nXXZmiUR7L+0WlYbwDiiFu6IIslyUjA9N8vTX8pjppvuuiIYK
+   leNL81HpEFFDVUgZpYo3QPqIaCpDR6g+eg5PauQvF5cmUjcDOPOgFdWJr
+   N3J1/BfSqDyr8g84PIc8QqNzuO0u/5U5ezxx2lrHHlQRaFmiUFH8A1lJ5
+   AecWotLnPx5NzEH55yE9kxo/ebytmO1YR3OrkAlVjq5m8O7V7IdtNOI7s
+   JA4N0bReFinxytWjAv8GIhIPy3AQUfkxG86hQWvmS1+Z6X9yl+amia8FP
+   g==;
+IronPort-SDR: KimqwOEICyCQsndK3x2OUhXf5pbJPm2F6UnHTRODQQVfS7xU8PBwQrQm0Znt9xsjd6Y0N9CdHi
+ 67oOmV7Jzwpm4R5t0wePftcohW1D2MW2apsNCdgtUXV9ye9QAqS3TS7H9X+hpVx2X2K+qjzVrR
+ iFoMnqVZs+k+28O3P40JckZkpRmTUqcqhoh1I9huUYFb//pElmFL3DzWCyLXwq8Oz11RXycAMI
+ 32ilmqlWxsj2p1UzVr6ax74yV+wdm0PlzG8Nl81R4wrqpg5nmbZqOZifh0cTEuHNvbhHYFb/3+
+ 11A=
+X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
+   d="scan'208";a="80042894"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Jun 2020 00:58:12 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 29 Jun 2020 00:57:54 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Mon, 29 Jun 2020 00:57:55 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oGYPx51bqXylkdw/3pS+7vHtblY3Yf/fLPAJixEIhzyyuozt9G8LAT0VlMldHERPdilBLS+ZhafJsQ8t5Z1I/IESzf8TLUNzu6YhrJwtpapEs/R+R+GmApuz7bRbUKPko1WIaSHfzullgV7U1kJDGMwROGBKBh47h64xXRK+f15iSBP3Yzz6vpJgC16AbuKFwCM/Mg60k6tdW0IIoTdVmMDLJgr6Vs2PwO/+PK89t6oDK6ROZcgFrSYU54k6l6T8QjBO7xeZEqIyxSaSjFhIXh+AaIZr2htIJXR4XCX61UC8TVojNfbm4mbC9YooRLJEIdsb+lgS3hg0RVnI0hw/wA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xg3yeOWd2KZKnrbwXZ1HFczYIm/VMiEqtO92m6zu8Q8=;
+ b=RC0jy44JbUpA/aFz4Qe7Cv1THCekhHuv7s6CVRIwv2SM9HsTVQQoHvOhBbCOXo6oFKzo1R6xvU7pIUmvEieiaEkDgh+UGHvi0IuGNEqD/9T/Ny76mYiKBJ+5Kq24Xh/KDakJfDMUYmNAW/xxdqUDXN0Rsu6rFgGOLLCx8mDofhtLT8kFmAYgzE9uaTPtH6WRtF6xXybUUQvFVFBMGpONaEw/pdwatKF9pkDQsOVCG1O8mfrJ9Vzg6wZEEjqKRSIA9QJ67rUgG31uuvK/p2YXuxs7MxkUEppXYFzCVaTXF8gZI+CIrYd0F2Yhmkdjv6pqbxzInu+JKwni+oLnzAyz7Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xg3yeOWd2KZKnrbwXZ1HFczYIm/VMiEqtO92m6zu8Q8=;
+ b=R3sHFEMciqcbghEgOCGyWbU0E5e23SQt2LqlKQNlQz2hFFTXsS8uOFemUbqH0mUszNz0hzgtqL+c0JedOnq2LUmCYJ2Lcsjm4MNX1X0LTxMfS26x1t/Gop9klKqVjy5alDCWv1bkLylo32F9jhXjWqSoo2JK6nYaoMEqaV5u/fc=
+Received: from MWHPR11MB0061.namprd11.prod.outlook.com (2603:10b6:301:65::37)
+ by MWHPR1101MB2205.namprd11.prod.outlook.com (2603:10b6:301:59::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21; Mon, 29 Jun
+ 2020 07:58:10 +0000
+Received: from MWHPR11MB0061.namprd11.prod.outlook.com
+ ([fe80::839:6dcc:f6ca:c110]) by MWHPR11MB0061.namprd11.prod.outlook.com
+ ([fe80::839:6dcc:f6ca:c110%5]) with mapi id 15.20.3131.026; Mon, 29 Jun 2020
+ 07:58:09 +0000
+From:   <Nicolas.Ferre@microchip.com>
+To:     <luc.vanoostenryck@gmail.com>, <adham.abozaeid@microchip.com>,
+        <Ajay.Kathat@microchip.com>, <gregkh@linuxfoundation.org>,
+        <kvalo@codeaurora.org>
+CC:     <linux-wireless@vger.kernel.org>, <devel@driverdev.osuosl.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] staging/wilc1000: let wilc_mac_xmit() to NETDEV_TX_OK
+Thread-Topic: [PATCH] staging/wilc1000: let wilc_mac_xmit() to NETDEV_TX_OK
+Thread-Index: AQHWTesHl2p6IKflZUGXS90sZNaWRg==
+Date:   Mon, 29 Jun 2020 07:58:09 +0000
+Message-ID: <8a2f50dc-2cbe-64e4-438c-4320bb574f4f@microchip.com>
+References: <20200628183237.74749-1-luc.vanoostenryck@gmail.com>
+In-Reply-To: <20200628183237.74749-1-luc.vanoostenryck@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa1CMYRid97vtt7HNZ0WPywyzLjM0SbnM6zImt5nXH6N/BsXim0KF/eQ+
-        SrJYK2UH2a215VKapRSbbSQt2qmUtDMrJkIxomhCinFp+0L/znPOeeY5Z+bhaXUFN5rfFL9D
-        1MVrYzWcH+Oo7K0LPpnVGzXd2OaPT9RVUbg4/SaHO5MP0/jTZSPCvx3pNE6/YqKx/sxC/Pv1
-        BxZb0oopbCufh3M9BQiXZVP4mKVQgU3VWRQuavGyuPPoRxZ7SjM57DpdhvCPb79YnJwyA99I
-        cnHYfv+CApebvQrcW2plcHv9CwanNM3CPYUtbPgY0lphpYjdakfE431Mk5y2JIaUddsY4jQ/
-        V5DivKnkwu02ihjbU1hSlH+MIyXdL1lirYogzcfdFCm+mEhMjbmIPMrIRisCVvnN3yjGbtop
-        6kIWrPOL6bxvobcdDNpt0bdQSShtggEpeRBmQm2ngzMgP14t5CHIrzpIycMXBOXJhQPKZwT2
-        5mzF35XUslRWFnIROHK6kTx8QnDdeYT1uYYLS6G05CTlwwHCEnjS41H4TLSQp4Bq6x3kEzgh
-        FAwdBs6HVcICeJdS348ZYRK8zahlfHiEEAmpl2wDnmFQda61n1f2xbja1NJ/jBbGQUlHJi3j
-        QHjWer6/BAhHlNBcUcnKuZdAdoMXyXg4vHffGOgzFmpMRkZeOITgVd1VhTwYEXiSMwY25kFT
-        3fe+GHzfiSlQUBoi0wtB//A946NB8IfGjmFyCH845ThLy7QKjurVsnsymN3X/p2tqG+g05DG
-        PKiaeVAd86A65v93bYjJR4FighQXLUqh8eKuaZI2TkqIj562YWtcEep77Jpf7q5b6GvDehcS
-        eKQZqgp/3BOlZrU7pT1xLgQ8rQlQLaqtiVKrNmr37BV1W9fqEmJFyYXG8IwmUDUjpy1SLURr
-        d4hbRHGbqPurUrxydBK6Fbbvdm3UxyzT9g32598b17zq8VpCEsUTy7AmyKC03A0OCD/zqHrm
-        3NUrl77l7mb9GH8vZooeZr85UDlq/37n4tc5EY6Rc9CVUzZdr2p+cFrY2hE/nxS8GzqnXZ04
-        yT2kqKv6+HJ+NnnZ+hVNfBC2MjPykvNB0GbJGTzZG7L56Z3QLg0jxWhDp9I6SfsHQHazEtQD
-        AAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTcRTH+d3HHtbiNpV+WGAsemB17c5sP/OBlcGvqCiCiB7q0ouLnIvd
-        KdkfukRFrcwlmU1d2ssMeznTUpc4e7DCUgfrgZmlhFGmGU1F0Zwa+N+Hc76fwzlwJKTcSftJ
-        jicZeH2SOlEh8qJeT778tD6/bCx6Q9f9AHT+jYNAVtMjERrKyCLR4K1zAE3VmUhkqiokUXbR
-        FjT19QeNSgqsBCpvDkWVzvsA2SoIlFvyQIwKX5URqKbXRaOhnF80cjaUipD9kg2g8ZFJGmVk
-        BqFao12Eqp9dF6Nms0uMxhosFPrZ3k2hzK5gNPqgl45civtaLASutlQD7HR1kPjadyOFbe5y
-        Cj8xfxJj6+0AfL3pO4HP/cykcc2dXBGud/fQ2OLYhz+ffUlg6410XPi+EuC3xRVgr88hNkyv
-        SzbwyzU6wRCuOMwhJcuFIFa5MYTlglRHNyuDFYERYfF84vEUXh8YEctqhp6VkCfPrD1Vkt1L
-        GEHBijwglUBmI8y35dN5wEsiZ24CaP57QTzbWAYdRUZ6lr3hhCtPNBsaAHBgeBB4Gt7MdthQ
-        f4HwsA8TBd+NOsWeEMlUi2F7f+Wc8RDAP7WTM4aI4WDegGeUVCJjImB/ZvsMU8xK+K24jfKw
-        L3MUurtr5zKLoeNK30xdOr3r3a7emZVIZhO0WL+Qs+wP6wdK53gJ/Nh3lSgAcvM83TxPMc9T
-        zPOUckDdAT58sqBN0AocK6i1QnJSAhun09aA6YeqezFmfQw6H+63A0YCFAtlkR2j0XJanSKk
-        au0ASkiFj2xr2+touSxenXqa1+ti9MmJvGAHwdPHmUg/3zjd9HsmGWK4YE6FQjhVkCpoE1Is
-        keUwLUfkTILawJ/g+ZO8/r9HSKR+RnAxbFfjsYvbNNHxu9urfD+sZsMrUsZVS/vTmka0Jz7a
-        XPee35CvKftc725tdQ92p6c2h6w76K98bvIuim3p2UcXb3EsWomlX7L6Dvjv0IgWRLW4OidS
-        OrOVByOz7OyiU1FVO28nXN6ZMf60oOhFG8GuKvyNGtPWgtCePTEVqcOWOAUlaNRcAKkX1P8A
-        S4B8M2YDAAA=
-X-CMS-MailID: 20200629075142eucas1p1d1cf615c77342a874310bfc853b3ed5d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200625130845eucas1p2e7715cbd0b8ad95d5f5bc86728c3aabe
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200625130845eucas1p2e7715cbd0b8ad95d5f5bc86728c3aabe
-References: <20200625130836.1916-1-joro@8bytes.org>
-        <CGME20200625130845eucas1p2e7715cbd0b8ad95d5f5bc86728c3aabe@eucas1p2.samsung.com>
-        <20200625130836.1916-2-joro@8bytes.org>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [2a01:cb1c:8c:b200:48f4:f3d1:160f:9dcb]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0f0df8e5-d09f-47d3-e92a-08d81c022a4c
+x-ms-traffictypediagnostic: MWHPR1101MB2205:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR1101MB2205BDBFAE52AE9858248379E06E0@MWHPR1101MB2205.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 044968D9E1
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: EE/i1N9M8uVwlBptaOofCPXXkdtdLh26Wz4rR56eU3MDW2mNndNPLi2P+KszUyzGoS5RytWuZNYOY3I8kDs3ctst8zvJVlcRnXVPzy8kEIml8ubnPJriba4H5Cok2JvVi0nI4rnojspRFCtzb+i+yHtgjHy1nvZoGgNDC8ldkoifIjbo5bAgUnszsf7w5EFKk12vOeg1Y930gnAz3J4l+iYDvUr+StjbDnyRSOOgywbqAYMH34W9FbFXMTnkoPB2KriJpe3pent6Aq8eH7DjjLYTtMo24bZe8RwNaTvA5kMccBjMFqAIly1ScwrWJ40DrOdmd/mXQCnsUP91iNchXplgf7nwDQYZY40PNxQ3ffslA+awog0Q/QBx1b9uMDF/
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB0061.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(136003)(39860400002)(376002)(396003)(346002)(6506007)(86362001)(53546011)(2616005)(6512007)(31696002)(83380400001)(71200400001)(54906003)(478600001)(2906002)(6486002)(4326008)(31686004)(186003)(8676002)(66476007)(66446008)(5660300002)(66556008)(76116006)(36756003)(316002)(8936002)(110136005)(66946007)(91956017)(64756008)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: uRP9mmhXKgFaO6Pfs1kcUlAD7BuE0zPYa8rNbFLlWKTMx9+xvAXwHSPnmAUGUm+Sv8+HHGNmlxJ82Qn8Q+o4VNmRmROLH6VKSn2AzasuR6zBIbGrX3Jo3l6nRVNlzxDcYLiZJ2gcpOn5mz4/FtEzyU8VhH4kPg4u0agSWb6f4KoImNp1qg5vsPxul/rxt/Un3V16e61Fx2cQ2X8S2uUKqW5AHK2D8sDnQmA1K9JuUVf9RjN8l+pRYOfHlBJObsj71JbVje4411pzmPsIOW5zYlEwoPFScXvHJpv29Uay75KNxbe2D1nSB8iKXYQ9sEl0LkJTjIktt+HH4hqI3hTxWvRKTN2ynugaCLb9HKKZbHKneIoA31SfaegPCOGgrPjlX4Ig1b89/FzR5yFCbJQu8FPvlYXju95O5SLYCy4FL0Q/PbEDPx3C/wkV+oPd45bVzeHVBgIWe7WSKeyDT00b1D3/AZuJIV5Vc+LUMznf9nlwUZkRe6HhAXWiymMrgJzzRcELiFsqxn/GgonkD1aif+pkkC+Wdr8AjJyqckSeUhM=
+Content-Type: text/plain; charset="Windows-1252"
+Content-ID: <0937E8E2F395B749BB5BB95C20BC8D24@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB0061.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f0df8e5-d09f-47d3-e92a-08d81c022a4c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2020 07:58:09.5942
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IzzZAPdFENlras2QwTFl+rgA0DAJZjVnlkN4VC05SsOdB8iJ5I4+EsCInall0/yB7Ab01OTPDShfwq5k6b/efmFeKLvE6HahH1SZOFdvtzc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2205
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.06.2020 15:08, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
->
-> Remove the use of dev->archdata.iommu and use the private per-device
-> pointer provided by IOMMU core code instead.
->
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Luc,
+
+Thanks for your patch...
+
+On 28/06/2020 at 20:32, Luc Van Oostenryck wrote:
+> The method ndo_start_xmit() is defined as returning an 'netdev_tx_t',
+> which is a typedef for an enum type defining 'NETDEV_TX_OK' but this
+> driver returns '0' instead of 'NETDEV_TX_OK'.
+>=20
+> Fix this by returning ''NETDEV_TX_OK' instead of 0.
+>=20
+> Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
 > ---
->   drivers/iommu/exynos-iommu.c                  | 20 +++++++++----------
->   .../media/platform/s5p-mfc/s5p_mfc_iommu.h    |  4 +++-
->   2 files changed, 13 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/iommu/exynos-iommu.c b/drivers/iommu/exynos-iommu.c
-> index 60c8a56e4a3f..6a9b67302369 100644
-> --- a/drivers/iommu/exynos-iommu.c
-> +++ b/drivers/iommu/exynos-iommu.c
-> @@ -173,7 +173,7 @@ static u32 lv2ent_offset(sysmmu_iova_t iova)
->   #define REG_V5_FAULT_AR_VA	0x070
->   #define REG_V5_FAULT_AW_VA	0x080
->   
-> -#define has_sysmmu(dev)		(dev->archdata.iommu != NULL)
-> +#define has_sysmmu(dev)		(dev_iommu_priv_get(dev) != NULL)
->   
->   static struct device *dma_dev;
->   static struct kmem_cache *lv2table_kmem_cache;
-> @@ -226,7 +226,7 @@ static const struct sysmmu_fault_info sysmmu_v5_faults[] = {
->   };
->   
->   /*
-> - * This structure is attached to dev.archdata.iommu of the master device
-> + * This structure is attached to dev->iommu->priv of the master device
->    * on device add, contains a list of SYSMMU controllers defined by device tree,
->    * which are bound to given master device. It is usually referenced by 'owner'
->    * pointer.
-> @@ -670,7 +670,7 @@ static int __maybe_unused exynos_sysmmu_suspend(struct device *dev)
->   	struct device *master = data->master;
->   
->   	if (master) {
-> -		struct exynos_iommu_owner *owner = master->archdata.iommu;
-> +		struct exynos_iommu_owner *owner = dev_iommu_priv_get(master);
->   
->   		mutex_lock(&owner->rpm_lock);
->   		if (data->domain) {
-> @@ -688,7 +688,7 @@ static int __maybe_unused exynos_sysmmu_resume(struct device *dev)
->   	struct device *master = data->master;
->   
->   	if (master) {
-> -		struct exynos_iommu_owner *owner = master->archdata.iommu;
-> +		struct exynos_iommu_owner *owner = dev_iommu_priv_get(master);
->   
->   		mutex_lock(&owner->rpm_lock);
->   		if (data->domain) {
-> @@ -837,8 +837,8 @@ static void exynos_iommu_domain_free(struct iommu_domain *iommu_domain)
->   static void exynos_iommu_detach_device(struct iommu_domain *iommu_domain,
->   				    struct device *dev)
->   {
-> -	struct exynos_iommu_owner *owner = dev->archdata.iommu;
->   	struct exynos_iommu_domain *domain = to_exynos_domain(iommu_domain);
-> +	struct exynos_iommu_owner *owner = dev_iommu_priv_get(dev);
->   	phys_addr_t pagetable = virt_to_phys(domain->pgtable);
->   	struct sysmmu_drvdata *data, *next;
->   	unsigned long flags;
-> @@ -875,8 +875,8 @@ static void exynos_iommu_detach_device(struct iommu_domain *iommu_domain,
->   static int exynos_iommu_attach_device(struct iommu_domain *iommu_domain,
->   				   struct device *dev)
->   {
-> -	struct exynos_iommu_owner *owner = dev->archdata.iommu;
->   	struct exynos_iommu_domain *domain = to_exynos_domain(iommu_domain);
-> +	struct exynos_iommu_owner *owner = dev_iommu_priv_get(dev);
->   	struct sysmmu_drvdata *data;
->   	phys_addr_t pagetable = virt_to_phys(domain->pgtable);
->   	unsigned long flags;
-> @@ -1237,7 +1237,7 @@ static phys_addr_t exynos_iommu_iova_to_phys(struct iommu_domain *iommu_domain,
->   
->   static struct iommu_device *exynos_iommu_probe_device(struct device *dev)
->   {
-> -	struct exynos_iommu_owner *owner = dev->archdata.iommu;
-> +	struct exynos_iommu_owner *owner = dev_iommu_priv_get(dev);
->   	struct sysmmu_drvdata *data;
->   
->   	if (!has_sysmmu(dev))
-> @@ -1263,7 +1263,7 @@ static struct iommu_device *exynos_iommu_probe_device(struct device *dev)
->   
->   static void exynos_iommu_release_device(struct device *dev)
->   {
-> -	struct exynos_iommu_owner *owner = dev->archdata.iommu;
-> +	struct exynos_iommu_owner *owner = dev_iommu_priv_get(dev);
->   	struct sysmmu_drvdata *data;
->   
->   	if (!has_sysmmu(dev))
-> @@ -1287,8 +1287,8 @@ static void exynos_iommu_release_device(struct device *dev)
->   static int exynos_iommu_of_xlate(struct device *dev,
->   				 struct of_phandle_args *spec)
->   {
-> -	struct exynos_iommu_owner *owner = dev->archdata.iommu;
->   	struct platform_device *sysmmu = of_find_device_by_node(spec->np);
-> +	struct exynos_iommu_owner *owner = dev_iommu_priv_get(dev);
->   	struct sysmmu_drvdata *data, *entry;
->   
->   	if (!sysmmu)
-> @@ -1305,7 +1305,7 @@ static int exynos_iommu_of_xlate(struct device *dev,
->   
->   		INIT_LIST_HEAD(&owner->controllers);
->   		mutex_init(&owner->rpm_lock);
-> -		dev->archdata.iommu = owner;
-> +		dev_iommu_priv_set(dev, owner);
->   	}
->   
->   	list_for_each_entry(entry, &owner->controllers, owner_node)
-> diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc_iommu.h b/drivers/media/platform/s5p-mfc/s5p_mfc_iommu.h
-> index 152a713fff78..1a32266b7ddc 100644
-> --- a/drivers/media/platform/s5p-mfc/s5p_mfc_iommu.h
-> +++ b/drivers/media/platform/s5p-mfc/s5p_mfc_iommu.h
-> @@ -9,9 +9,11 @@
->   
->   #if defined(CONFIG_EXYNOS_IOMMU)
->   
-> +#include <linux/iommu.h>
-> +
->   static inline bool exynos_is_iommu_available(struct device *dev)
->   {
-> -	return dev->archdata.iommu != NULL;
-> +	return dev_iommu_priv_get(dev) != NULL;
+>   drivers/staging/wilc1000/netdev.c | 6 +++---
+
+... would it be possible that you re-spin it so that it applies to the=20
+new location of this driver:
+drivers/net/wireless/microchip/wilc1000/netdev.c
+
+You can rebase your patch on the wireless-driver-next tree with=20
+wilc1000-move-out-of-staging branch:
+
+tree:=20
+git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next.g=
+it
+branch: wilc1000-move-out-of-staging
+
+(Then you can also review the subject line of your patch, BTW)
+
+Thanks for your help. Best regards,
+   Nicolas
+
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/staging/wilc1000/netdev.c b/drivers/staging/wilc1000=
+/netdev.c
+> index fda0ab97b02c..be3ae5486f44 100644
+> --- a/drivers/staging/wilc1000/netdev.c
+> +++ b/drivers/staging/wilc1000/netdev.c
+> @@ -678,14 +678,14 @@ netdev_tx_t wilc_mac_xmit(struct sk_buff *skb, stru=
+ct net_device *ndev)
+>=20
+>          if (skb->dev !=3D ndev) {
+>                  netdev_err(ndev, "Packet not destined to this device\n")=
+;
+> -               return 0;
+> +               return NETDEV_TX_OK;
+>          }
+>=20
+>          tx_data =3D kmalloc(sizeof(*tx_data), GFP_ATOMIC);
+>          if (!tx_data) {
+>                  dev_kfree_skb(skb);
+>                  netif_wake_queue(ndev);
+> -               return 0;
+> +               return NETDEV_TX_OK;
+>          }
+>=20
+>          tx_data->buff =3D skb->data;
+> @@ -710,7 +710,7 @@ netdev_tx_t wilc_mac_xmit(struct sk_buff *skb, struct=
+ net_device *ndev)
+>                  srcu_read_unlock(&wilc->srcu, srcu_idx);
+>          }
+>=20
+> -       return 0;
+> +       return NETDEV_TX_OK;
 >   }
->   
->   #else
+>=20
+>   static int wilc_mac_close(struct net_device *ndev)
+> --
+> 2.27.0
+>=20
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
 
+--=20
+Nicolas Ferre
