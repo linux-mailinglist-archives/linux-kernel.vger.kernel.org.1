@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC7D20D16D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7525F20D130
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729054AbgF2Sly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:41:54 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:37612 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726990AbgF2Sls (ORCPT
+        id S1728102AbgF2SjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:39:25 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:32568 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726120AbgF2SjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:41:48 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TB5rnp011065;
-        Mon, 29 Jun 2020 04:06:14 -0700
+        Mon, 29 Jun 2020 14:39:16 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TB5ghl029788;
+        Mon, 29 Jun 2020 04:06:20 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=pfpt0818;
- bh=E5tA5Jj509A0j/xJfq0Z42Wn1QKuKSifS2wgZV6zkvg=;
- b=MlX1BXGehq3B/Cq6ifarvN6+FSrT7+FFSjLXRi9VVannJ2UA5GGTFZodLwKIRwHBL8wi
- YtLoz2tj6x8Kdc/PqPxKtilGeRP3MnNNuveXbUAz1/o+LAkBCXuqyzqhl2DJtD56SnpQ
- 2yGNFE2xOlJTsAiHTKjhEyLPx5Ar7/+FXFI1+0PU7zH1Cf/x87EdFqGzc7n5x443qSVP
- JMdZrL/eW93e3O6GIaHK/SxlU1mdXs7qWYqLKH4FFh0tamg3A1U8j/LiE1l/hBmHJTrf
- LKN4E5IMekT+VnHpCR/wNbQ9YwcGXCRUPLiBnkqIN2zwLMWJUQS4eIqBlHcO+lpEmxAM yA== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0b-0016f401.pphosted.com with ESMTP id 31x5mnek8r-2
+ bh=NtX0T5CFmELPfbKTe7Qime63AOwMwqjGySKmn+kwvHc=;
+ b=ppw5zcIiv9W6p4ZDPDrlZW4dtW+EDq0/v9pGFoEmYdZOyVS2Ulei8NjEC2yPCOp5oWjs
+ bx7RCv8IaW8gdoZUomUXostcTG/8SL5crg7+kv2OlVgKb3kY85Uhf4rrjccL3Hv2qH8z
+ bBqQ/XuFrfLaQGu/n9dai9C1br3CPh8XRNTcKPTCexVmTiF2RXF11zyfvMUTwirEj/cb
+ 7x4uQbzXJlzjOg6awPYxsOPvEh3S+rXR62o2PzJEFrkVaqtmo4ySRhkDc1EfvKONYEwu
+ vY2mfXk2lSPcLfPS3sXLXAckYEZoyWFoj6vSo5PcDAlHT4xjv1aWF+g29+46mv2cIMq+ vQ== 
+Received: from sc-exch04.marvell.com ([199.233.58.184])
+        by mx0a-0016f401.pphosted.com with ESMTP id 31y0wrtg06-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 04:06:14 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Jun
- 2020 04:06:12 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Jun
- 2020 04:06:12 -0700
+        Mon, 29 Jun 2020 04:06:20 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Jun
+ 2020 04:06:19 -0700
 Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
  (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 29 Jun 2020 04:06:12 -0700
+ Transport; Mon, 29 Jun 2020 04:06:19 -0700
 Received: from NN-LT0049.marvell.com (NN-LT0049.marvell.com [10.193.54.6])
-        by maili.marvell.com (Postfix) with ESMTP id 39FEB3F7040;
-        Mon, 29 Jun 2020 04:06:08 -0700 (PDT)
+        by maili.marvell.com (Postfix) with ESMTP id 0E41B3F703F;
+        Mon, 29 Jun 2020 04:06:15 -0700 (PDT)
 From:   Alexander Lobakin <alobakin@marvell.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>
@@ -49,9 +46,9 @@ CC:     Igor Russkikh <irusskikh@marvell.com>,
         "Alexander Lobakin" <alobakin@marvell.com>,
         <GR-everest-linux-l2@marvell.com>, <netdev@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next 4/6] net: qede: correct existing SPDX tags
-Date:   Mon, 29 Jun 2020 14:05:10 +0300
-Message-ID: <20200629110512.1812-5-alobakin@marvell.com>
+Subject: [PATCH net-next 6/6] net: qede: update copyright years
+Date:   Mon, 29 Jun 2020 14:05:12 +0300
+Message-ID: <20200629110512.1812-7-alobakin@marvell.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629110512.1812-1-alobakin@marvell.com>
 References: <20200629110512.1812-1-alobakin@marvell.com>
@@ -65,39 +62,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QLogic QED drivers source code is dual licensed under
-GPL-2.0/BSD-3-Clause.
-Correct already existing but wrong SPDX tags to match the actual
-license.
+Set the actual copyright holder and years in all qede source files.
 
 Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
 Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
 ---
- drivers/net/ethernet/qlogic/qede/Makefile     | 3 ++-
- drivers/net/ethernet/qlogic/qede/qede_dcbnl.c | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/qlogic/qede/Makefile       | 1 +
+ drivers/net/ethernet/qlogic/qede/qede.h         | 1 +
+ drivers/net/ethernet/qlogic/qede/qede_dcbnl.c   | 5 +++--
+ drivers/net/ethernet/qlogic/qede/qede_ethtool.c | 1 +
+ drivers/net/ethernet/qlogic/qede/qede_filter.c  | 1 +
+ drivers/net/ethernet/qlogic/qede/qede_fp.c      | 1 +
+ drivers/net/ethernet/qlogic/qede/qede_main.c    | 1 +
+ drivers/net/ethernet/qlogic/qede/qede_ptp.c     | 1 +
+ drivers/net/ethernet/qlogic/qede/qede_ptp.h     | 1 +
+ drivers/net/ethernet/qlogic/qede/qede_rdma.c    | 1 +
+ 10 files changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ethernet/qlogic/qede/Makefile b/drivers/net/ethernet/qlogic/qede/Makefile
-index 3fc91d12413f..1d26ffc82290 100644
+index 1d26ffc82290..a6e8d9fc8832 100644
 --- a/drivers/net/ethernet/qlogic/qede/Makefile
 +++ b/drivers/net/ethernet/qlogic/qede/Makefile
 @@ -1,4 +1,5 @@
--# SPDX-License-Identifier: GPL-2.0-only
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
-+
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
++# Copyright (c) 2019-2020 Marvell International Ltd.
+ 
  obj-$(CONFIG_QEDE) := qede.o
  
- qede-y := qede_main.o qede_fp.o qede_filter.o qede_ethtool.o qede_ptp.o
+diff --git a/drivers/net/ethernet/qlogic/qede/qede.h b/drivers/net/ethernet/qlogic/qede/qede.h
+index 8567f295a12f..591dd4051d06 100644
+--- a/drivers/net/ethernet/qlogic/qede/qede.h
++++ b/drivers/net/ethernet/qlogic/qede/qede.h
+@@ -1,6 +1,7 @@
+ /* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qede NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
++ * Copyright (c) 2019-2020 Marvell International Ltd.
+  */
+ 
+ #ifndef _QEDE_H_
 diff --git a/drivers/net/ethernet/qlogic/qede/qede_dcbnl.c b/drivers/net/ethernet/qlogic/qede/qede_dcbnl.c
-index e6e844a8cbc7..f6b7ee51e056 100644
+index f6b7ee51e056..2763369bbc61 100644
 --- a/drivers/net/ethernet/qlogic/qede/qede_dcbnl.c
 +++ b/drivers/net/ethernet/qlogic/qede/qede_dcbnl.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: GPL-2.0-only
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+@@ -1,7 +1,8 @@
+ // SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
  /* QLogic qede NIC Driver
- * Copyright (c) 2015 QLogic Corporation
- */
+-* Copyright (c) 2015 QLogic Corporation
+-*/
++ * Copyright (c) 2015 QLogic Corporation
++ * Copyright (c) 2019-2020 Marvell International Ltd.
++ */
+ 
+ #include <linux/types.h>
+ #include <linux/netdevice.h>
+diff --git a/drivers/net/ethernet/qlogic/qede/qede_ethtool.c b/drivers/net/ethernet/qlogic/qede/qede_ethtool.c
+index 26acfb380dc3..d3fc7403d095 100644
+--- a/drivers/net/ethernet/qlogic/qede/qede_ethtool.c
++++ b/drivers/net/ethernet/qlogic/qede/qede_ethtool.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qede NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
++ * Copyright (c) 2019-2020 Marvell International Ltd.
+  */
+ 
+ #include <linux/version.h>
+diff --git a/drivers/net/ethernet/qlogic/qede/qede_filter.c b/drivers/net/ethernet/qlogic/qede/qede_filter.c
+index e03d6a957ceb..db17a675bd02 100644
+--- a/drivers/net/ethernet/qlogic/qede/qede_filter.c
++++ b/drivers/net/ethernet/qlogic/qede/qede_filter.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qede NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
++ * Copyright (c) 2019-2020 Marvell International Ltd.
+  */
+ 
+ #include <linux/netdevice.h>
+diff --git a/drivers/net/ethernet/qlogic/qede/qede_fp.c b/drivers/net/ethernet/qlogic/qede/qede_fp.c
+index c21d4c53121b..1c4ece0713f8 100644
+--- a/drivers/net/ethernet/qlogic/qede/qede_fp.c
++++ b/drivers/net/ethernet/qlogic/qede/qede_fp.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qede NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
++ * Copyright (c) 2019-2020 Marvell International Ltd.
+  */
+ 
+ #include <linux/netdevice.h>
+diff --git a/drivers/net/ethernet/qlogic/qede/qede_main.c b/drivers/net/ethernet/qlogic/qede/qede_main.c
+index 01c20b2d81e2..8cd27f8f1b3a 100644
+--- a/drivers/net/ethernet/qlogic/qede/qede_main.c
++++ b/drivers/net/ethernet/qlogic/qede/qede_main.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qede NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
++ * Copyright (c) 2019-2020 Marvell International Ltd.
+  */
+ 
+ #include <linux/crash_dump.h>
+diff --git a/drivers/net/ethernet/qlogic/qede/qede_ptp.c b/drivers/net/ethernet/qlogic/qede/qede_ptp.c
+index 797ce187d683..60a29a937a94 100644
+--- a/drivers/net/ethernet/qlogic/qede/qede_ptp.c
++++ b/drivers/net/ethernet/qlogic/qede/qede_ptp.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qede NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
++ * Copyright (c) 2019-2020 Marvell International Ltd.
+  */
+ 
+ #include "qede_ptp.h"
+diff --git a/drivers/net/ethernet/qlogic/qede/qede_ptp.h b/drivers/net/ethernet/qlogic/qede/qede_ptp.h
+index 00ff981efa66..1db0f021c645 100644
+--- a/drivers/net/ethernet/qlogic/qede/qede_ptp.h
++++ b/drivers/net/ethernet/qlogic/qede/qede_ptp.h
+@@ -1,6 +1,7 @@
+ /* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qede NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
++ * Copyright (c) 2019-2020 Marvell International Ltd.
+  */
+ 
+ #ifndef _QEDE_PTP_H_
+diff --git a/drivers/net/ethernet/qlogic/qede/qede_rdma.c b/drivers/net/ethernet/qlogic/qede/qede_rdma.c
+index 2228f1d1166f..769ec2f4d0b7 100644
+--- a/drivers/net/ethernet/qlogic/qede/qede_rdma.c
++++ b/drivers/net/ethernet/qlogic/qede/qede_rdma.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qedr NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
++ * Copyright (c) 2019-2020 Marvell International Ltd.
+  */
+ 
+ #include <linux/pci.h>
 -- 
 2.25.1
 
