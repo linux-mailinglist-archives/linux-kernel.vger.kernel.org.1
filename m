@@ -2,66 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 095C420D664
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8D620D753
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731960AbgF2TTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:19:35 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:59760 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730700AbgF2TT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:19:29 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jpoHV-0003h7-On; Mon, 29 Jun 2020 17:32:46 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 29 Jun 2020 17:32:45 +1000
-Date:   Mon, 29 Jun 2020 17:32:45 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] lockdep: Move list.h inclusion into lockdep.h
-Message-ID: <20200629073245.GA30001@gondor.apana.org.au>
-References: <20200621131554.5a662afe@canb.auug.org.au>
- <20200623102655.6d16e610@canb.auug.org.au>
- <20200623121637.GA8444@alley>
- <20200623121937.GA9671@gondor.apana.org.au>
- <20200623142858.GB8444@alley>
- <20200624124212.GA17350@gondor.apana.org.au>
- <20200625101119.GG8444@alley>
+        id S1730104AbgF2T2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:28:54 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:37784 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731269AbgF2T2k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:28:40 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 2F01920021;
+        Mon, 29 Jun 2020 09:39:33 +0200 (CEST)
+Date:   Mon, 29 Jun 2020 09:39:31 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     shawnguo@kernel.org, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/zte: remove unneeded semicolon
+Message-ID: <20200629073931.GA227119@ravnborg.org>
+References: <20200504113230.40588-1-yanaijie@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200625101119.GG8444@alley>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200504113230.40588-1-yanaijie@huawei.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=f+hm+t6M c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=i0EeH86SAAAA:8 a=e5mUnYsNAAAA:8
+        a=08u2UhFWmFwjV6_hJKUA:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 12:11:19PM +0200, Petr Mladek wrote:
->
-> It works with allmodconfig here, so feel free to use:
+On Mon, May 04, 2020 at 07:32:30PM +0800, Jason Yan wrote:
+> Fix the following coccicheck warning:
 > 
-> Tested-by: Petr Mladek <pmladek@suse.com>
+> drivers/gpu/drm/zte/zx_vga.c:158:2-3: Unneeded semicolon
+> drivers/gpu/drm/zte/zx_vga.c:171:2-3: Unneeded semicolon
+> drivers/gpu/drm/zte/zx_vga.c:179:2-3: Unneeded semicolon
 > 
-> Of course, it does not have much value. There might still be another
-> configuration or architecture that does not work but I would leave
-> this for test bots.
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 
-Thanks Petr!
+Applied to drm-misc-next.
 
-Peter Z, could you please apply this patch on top of the existing
-one in tip/locking/header?
+	Sam
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> ---
+>  drivers/gpu/drm/zte/zx_vga.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/zte/zx_vga.c b/drivers/gpu/drm/zte/zx_vga.c
+> index a7ed7f5ca837..0f9bbb7e3b8d 100644
+> --- a/drivers/gpu/drm/zte/zx_vga.c
+> +++ b/drivers/gpu/drm/zte/zx_vga.c
+> @@ -155,7 +155,7 @@ static int zx_vga_register(struct drm_device *drm, struct zx_vga *vga)
+>  	if (ret) {
+>  		DRM_DEV_ERROR(dev, "failed to init encoder: %d\n", ret);
+>  		return ret;
+> -	};
+> +	}
+>  
+>  	drm_encoder_helper_add(encoder, &zx_vga_encoder_helper_funcs);
+>  
+> @@ -168,7 +168,7 @@ static int zx_vga_register(struct drm_device *drm, struct zx_vga *vga)
+>  	if (ret) {
+>  		DRM_DEV_ERROR(dev, "failed to init connector: %d\n", ret);
+>  		goto clean_encoder;
+> -	};
+> +	}
+>  
+>  	drm_connector_helper_add(connector, &zx_vga_connector_helper_funcs);
+>  
+> @@ -176,7 +176,7 @@ static int zx_vga_register(struct drm_device *drm, struct zx_vga *vga)
+>  	if (ret) {
+>  		DRM_DEV_ERROR(dev, "failed to attach encoder: %d\n", ret);
+>  		goto clean_connector;
+> -	};
+> +	}
+>  
+>  	return 0;
+>  
+> -- 
+> 2.21.1
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
