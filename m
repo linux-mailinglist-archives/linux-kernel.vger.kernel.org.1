@@ -2,288 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9E020D2AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970DE20D292
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729161AbgF2Svu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:51:50 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:35733 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726831AbgF2Sva (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:51:30 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 14CE6580597;
-        Mon, 29 Jun 2020 11:21:17 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 29 Jun 2020 11:21:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=krUOveEdR6vT0SBK3qtfa5n706o
-        ryNuDtBLGwOel0Fo=; b=VEtU5b+EqJvRVoGcecDwOgK9INc1igaqGpNTrbyWjp7
-        t4GknrXv7tKctUi5JWrH2p6O6uYYIDpxpq2pM/8mTaxmakYjDGs2EQutbHreQYwd
-        fJv+kZaW3ewSRuY8FVsI1HEbFNUwl4erX42gfLwEeTg1ns00ICau45mAoNseOhbC
-        8kD0h8BGjs8fPp3YjhpxkYlwLEC/2n2D77Szii/1UwuSkmfTTqEGQnnsoyY3GpIl
-        EHBhoY9KmtyUnCsveKv0MW5JG2xy2qCB6TaqQxf0mcFwx0IB64WHhkgiQN6O0lpn
-        DT8q0Ta5pesXagJSN5DYMMpMFpbUCjfwZIr1JA4Z/0w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=krUOve
-        EdR6vT0SBK3qtfa5n706oryNuDtBLGwOel0Fo=; b=L6DQtBRbaLn4l3ffIzF0Bw
-        bJfxa6fVOnQh9qO0p0mJrmSfuq9FDhIP89CuSO4gemX0ANlp8rukEIP6+d25PuP6
-        a3QSGPxF/k+Xcx7uqFlMQ2P4OF4kTh9ELsXnA5re3hD2MOlpZgMYXre6ehH5kS4a
-        cCxOeIagn8x5pSEn1VwUNGpbyjjxxHPsAy6Hdca09MtGrRJpAf6loosOhXjVBlR3
-        Ny+o5D6hqOsFi534Rc4VwRjOE/iQBXI0yjAY/wmsvZwTjr3/tXfURRfYZhIh+Mk8
-        hd14z5Ml3RtHtEw0mRB/nAAy5xb04b4c9LOIvEKkmyqZj/VrfLGJuhd6ky+jhXhA
-        ==
-X-ME-Sender: <xms:6Qb6Xs5A65jiVMk-TBJ7E6MWYyS4QOEbvSnIUioCEO_-3JMTBBRYfA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudelledgudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:6Qb6Xt7HQSIAah0eJg07s37QLKiq_njkDArZ0GZNou-AaxfXfxeVWA>
-    <xmx:6Qb6Xrflm2twAlFg4vyHYS5sN91S-uNRTR0cQNey4cTSqfSaVfk9JA>
-    <xmx:6Qb6XhKlWp2txSt5ptrbZvHChxtJtnYggh9FY3iKjY9qUnbEHvLN1w>
-    <xmx:7Qb6Xg7aRoYgPeksuOqXA0bw-zrOHrTGsRA0vVtbBGtdnNedV-Vj5g>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 83B73328005E;
-        Mon, 29 Jun 2020 11:21:13 -0400 (EDT)
-Date:   Mon, 29 Jun 2020 17:21:12 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Frank Lee <frank@allwinnertech.com>
-Cc:     robh+dt@kernel.org, wens@csie.org, mturquette@baylibre.com,
-        sboyd@kernel.org, srinivas.kandagatla@linaro.org,
-        linus.walleij@linaro.org, anarsoul@gmail.com,
-        tiny.windzz@gmail.com, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, amit.kucheria@verdurent.com,
-        p.zabel@pengutronix.de, clabbe@baylibre.com, icenowy@aosc.io,
-        megous@megous.com, karlp@tweak.net.au, bage@linutronix.de,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
-        huangshuosheng@allwinnertech.com, liyong@allwinnertech.com
-Subject: Re: [PATCH v2 09/11] arm64: allwinner: A100: add the basical
- Allwinner A100 DTSI file
-Message-ID: <20200629152112.fo3kgcztlutj66hc@gilmour.lan>
-References: <20200622025907.32574-1-frank@allwinnertech.com>
- <20200622025907.32574-10-frank@allwinnertech.com>
+        id S1729541AbgF2Sub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:50:31 -0400
+Received: from mga06.intel.com ([134.134.136.31]:65036 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728989AbgF2Su3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:50:29 -0400
+IronPort-SDR: 3HsAtCcAK206/0dLM5Y5p9QJWiqL9Mqqy0uFotOEhnjUVyWY1GwetYl/z8ZXmdZhUgkRBjhvdA
+ QwlWfvvtM6KA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="207497668"
+X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
+   d="scan'208";a="207497668"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 08:35:25 -0700
+IronPort-SDR: pUypuiC+OyJPqwDrCxOgRJO5xsFjlcTMhcZ2ZIIjmeac+XqYlbQiMUEWHK8+4HTA8kW4ZtW2eT
+ Jtxl6HzIG9EQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
+   d="scan'208";a="264863710"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by fmsmga007.fm.intel.com with ESMTP; 29 Jun 2020 08:35:25 -0700
+Date:   Mon, 29 Jun 2020 08:35:24 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        syzbot <syzbot+e0240f9c36530bda7130@syzkaller.appspotmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>, joro@8bytes.org,
+        KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>, vkuznets@redhat.com,
+        wanpengli@tencent.com, the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: KASAN: out-of-bounds Read in kvm_arch_hardware_setup
+Message-ID: <20200629153524.GB12312@linux.intel.com>
+References: <000000000000a0784a05a916495e@google.com>
+ <04786ba2-4934-c544-63d1-4d5d36dc5822@redhat.com>
+ <CAAeHK+yPbp_e9_DfRP4ikvfyMcfaveTwoVUyA+2=K3g+MvW-fA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lbejoaecuizw4km4"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200622025907.32574-10-frank@allwinnertech.com>
+In-Reply-To: <CAAeHK+yPbp_e9_DfRP4ikvfyMcfaveTwoVUyA+2=K3g+MvW-fA@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 29, 2020 at 05:29:56PM +0200, Andrey Konovalov wrote:
+> On Mon, Jun 29, 2020 at 5:25 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+> >
+> > The reproducer has nothing to do with KVM:
+> >
+> >         # https://syzkaller.appspot.com/bug?id=c356395d480ca736b00443ad89cd76fd7d209013
+> >         # See https://goo.gl/kgGztJ for information about syzkaller reproducers.
+> >         #{"repeat":true,"procs":1,"sandbox":"","fault_call":-1,"close_fds":false,"segv":true}
+> >         r0 = openat$fb0(0xffffffffffffff9c, &(0x7f0000000180)='/dev/fb0\x00', 0x0, 0x0)
+> >         ioctl$FBIOPUT_VSCREENINFO(r0, 0x4601, &(0x7f0000000000)={0x0, 0x80, 0xc80, 0x0, 0x2, 0x1, 0x4, 0x0, {0x0, 0x0, 0x1}, {0x0, 0x0, 0xfffffffc}, {}, {}, 0x0, 0x40})
+> >
+> > but the stack trace does.  On the other hand, the address seems okay:
+> >
+> >         kvm_cpu_caps+0x24/0x50
+> >
+> > and there are tons of other kvm_cpu_cap_get calls that aren't causing
+> > KASAN to complain.  The variable is initialized from
+> >
+> >         kvm_arch_hardware_setup
+> >           hardware_setup (in arch/x86/kvm/vmx/vmx.c)
+> >             vmx_set_cpu_caps
+> >               kvm_set_cpu_caps
+> >
+> > with a simple memcpy that writes the entire array.  Does anyone understand
+> > what is going on here?
+> 
+> Most likely a bug in /dev/fb handlers caused a memory corruption in
+> kvm related memory.
 
---lbejoaecuizw4km4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That's my assumption as well.  There's another syzbot failure[*] that points
+at KVM but whose reproducer is a single FBIOPUT_VSCREENINFO.  In that case,
+the pointer from "&cpu_data(smp_processor_id())" is NULL, i.e. highly unlikely
+to be a KVM bug.
 
-Hi,
+[*] https://lkml.kernel.org/r/000000000000077a6505a8bf57b2@google.com
 
-On Mon, Jun 22, 2020 at 10:59:05AM +0800, Frank Lee wrote:
-> Allwinner A100 is a new SoC with Cortex-A53 cores, this commit adds
-> the basical DTSI file of it, including the clock, i2c, pins, sid, ths,
-> and UART support.
->=20
-> Signed-off-by: Frank Lee <frank@allwinnertech.com>
-> ---
->  arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi | 337 +++++++++++++++++++=
-++++++
->  1 file changed, 337 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
->=20
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi b/arch/arm64/=
-boot/dts/allwinner/sun50i-a100.dtsi
-> new file mode 100644
-> index 0000000..5133897
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
-> @@ -0,0 +1,337 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-> +/*
-> + * Copyright (c) 2020 Frank Lee <frank@allwinnertech.com>
-> + */
-> +
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +#include <dt-bindings/clock/sun50i-a100-ccu.h>
-> +#include <dt-bindings/clock/sun50i-a100-r-ccu.h>
-> +#include <dt-bindings/reset/sun50i-a100-ccu.h>
-> +#include <dt-bindings/reset/sun50i-a100-r-ccu.h>
-> +
-> +/ {
-> +	interrupt-parent =3D <&gic>;
-> +	#address-cells =3D <2>;
-> +	#size-cells =3D <2>;
-> +
-> +	cpus {
-> +		#address-cells =3D <1>;
-> +		#size-cells =3D <0>;
-> +
-> +		cpu0: cpu@0 {
-> +			compatible =3D "arm,armv8";
-> +			device_type =3D "cpu";
-> +			reg =3D <0x0>;
-> +			enable-method =3D "psci";
-> +		};
-> +
-> +		cpu@1 {
-> +			compatible =3D "arm,armv8";
-> +			device_type =3D "cpu";
-> +			reg =3D <0x1>;
-> +			enable-method =3D "psci";
-> +		};
-> +
-> +		cpu@2 {
-> +			compatible =3D "arm,armv8";
-> +			device_type =3D "cpu";
-> +			reg =3D <0x2>;
-> +			enable-method =3D "psci";
-> +		};
-> +
-> +		cpu@3 {
-> +			compatible =3D "arm,armv8";
-> +			device_type =3D "cpu";
-> +			reg =3D <0x3>;
-> +			enable-method =3D "psci";
-> +		};
-> +	};
-> +
-> +	psci {
-> +		compatible =3D "arm,psci-1.0";
-> +		method =3D "smc";
-> +	};
-> +
-> +	iosc: internal-osc-clk {
-> +		compatible =3D "fixed-clock";
-> +		clock-frequency =3D <16000000>;
-> +		clock-accuracy =3D <300000000>;
-> +		clock-output-names =3D "iosc";
-> +		#clock-cells =3D <0>;
-> +	};
-> +
-> +	dcxo24M: dcxo24M_clk {
-
-You shouldn't have underscores in the node names.
-
-> +		compatible =3D "fixed-clock";
-> +		clock-frequency =3D <24000000>;
-> +		clock-output-names =3D "dcxo24M";
-> +		#clock-cells =3D <0>;
-> +	};
-> +
-> +	osc32k: osc32k_clk {
-
-Same thing here
-
-Also, ordering by node name here would be nice
-
-> +		compatible =3D "fixed-clock";
-> +		clock-frequency =3D <32768>;
-> +		clock-output-names =3D "osc32k";
-> +		#clock-cells =3D <0>;
-> +	};
-> +
-> +	timer {
-> +		compatible =3D "arm,armv8-timer";
-> +		interrupts =3D <GIC_PPI 13
-> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
-> +			     <GIC_PPI 14
-> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
-> +			     <GIC_PPI 11
-> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
-> +			     <GIC_PPI 10
-> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
-> +	};
-
-Does it suffer from the same time instability than the one in the A64?
-If so, you probably want to enable the workaround too.
-
-> +	soc: soc {
-
-Do you really need a label for that node?
-
-> +		compatible =3D "simple-bus";
-> +		#address-cells =3D <2>;
-> +		#size-cells =3D <2>;
-
-Why do you need cells with 2 items here? You don't seem to be using
-them.
-
-> +		r_i2c0: i2c@7081400 {
-> +			compatible =3D "allwinner,sun6i-a31-i2c";
-> +			reg =3D <0x0 0x07081400 0x0 0x400>;
-> +			interrupts =3D <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks =3D <&ccu CLK_BUS_I2C0>;
-> +			resets =3D <&ccu RST_BUS_I2C0>;
-> +			pinctrl-names =3D "default";
-> +			pinctrl-0 =3D <&r_i2c0_pins>;
-> +			status =3D "disabled";
-> +			#address-cells =3D <1>;
-> +			#size-cells =3D <0>;
-> +		};
-> +
-> +		r_i2c1: i2c@7081800 {
-> +			compatible =3D "allwinner,sun6i-a31-i2c";
-> +			reg =3D <0x0 0x07081800 0x0 0x400>;
-> +			interrupts =3D <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks =3D <&ccu CLK_BUS_I2C1>;
-> +			resets =3D <&ccu RST_BUS_I2C1>;
-> +			pinctrl-names =3D "default";
-> +			pinctrl-0 =3D <&r_i2c1_pins>;
-> +			status =3D "disabled";
-> +			#address-cells =3D <1>;
-> +			#size-cells =3D <0>;
-> +		};
-> +	};
-
-The clocks and resets phandles and IDs don't look right
-
-> +	thermal-zones {
-> +		cpu_thermal_zone {
-> +			polling-delay-passive =3D <0>;
-> +			polling-delay =3D <0>;
-> +			thermal-sensors =3D <&ths 0>;
-> +		};
-
-Please add a new line here
-
-> +		gpu_thermal_zone{
-
-You should have a space here    ^=20
-
-> +			polling-delay-passive =3D <0>;
-> +			polling-delay =3D <0>;
-> +			thermal-sensors =3D <&ths 1>;
-> +		};
-
-newline
-
-> +		ddr_thermal_zone{
-
-space                           ^=20
-
-Thanks!
-Maxime
-
---lbejoaecuizw4km4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXvoG6AAKCRDj7w1vZxhR
-xRRCAQCSyQ9nHql6TEykxi9l3Cj8dRiNVK0CnZJ3fTQSc1l2AAD/fJV1R7VkbxZi
-OFU2QxjJ1CZU81YE8OkmeFr/wMlCsw8=
-=kgim
------END PGP SIGNATURE-----
-
---lbejoaecuizw4km4--
+> > Paolo
+> >
+> > On 27/06/20 22:01, syzbot wrote:
+> > > BUG: KASAN: out-of-bounds in kvm_cpu_cap_get arch/x86/kvm/cpuid.h:292 [inline]
+> > > BUG: KASAN: out-of-bounds in kvm_cpu_cap_has arch/x86/kvm/cpuid.h:297 [inline]
+> > > BUG: KASAN: out-of-bounds in kvm_init_msr_list arch/x86/kvm/x86.c:5362 [inline]
+> > > BUG: KASAN: out-of-bounds in kvm_arch_hardware_setup+0xb05/0xf40 arch/x86/kvm/x86.c:9802
+> > > Read of size 4 at addr ffffffff896c3134 by task syz-executor614/6786
+> > >
+> > > CPU: 1 PID: 6786 Comm: syz-executor614 Not tainted 5.7.0-syzkaller #0
+> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > > Call Trace:
+> > >  <IRQ>
+> > >  __dump_stack lib/dump_stack.c:77 [inline]
+> > >  dump_stack+0x1e9/0x30e lib/dump_stack.c:118
+> > >  print_address_description+0x66/0x5a0 mm/kasan/report.c:383
+> > >  __kasan_report mm/kasan/report.c:513 [inline]
+> > >  kasan_report+0x132/0x1d0 mm/kasan/report.c:530
+> > >  kvm_cpu_cap_get arch/x86/kvm/cpuid.h:292 [inline]
+> > >  kvm_cpu_cap_has arch/x86/kvm/cpuid.h:297 [inline]
+> > >  kvm_init_msr_list arch/x86/kvm/x86.c:5362 [inline]
+> > >  kvm_arch_hardware_setup+0xb05/0xf40 arch/x86/kvm/x86.c:9802
+> > >  </IRQ>
+> > >
+> > > The buggy address belongs to the variable:
+> > >  kvm_cpu_caps+0x24/0x50
+> > >
+> > > Memory state around the buggy address:
+> > >  ffffffff896c3000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > >  ffffffff896c3080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > >> ffffffff896c3100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > >                                         ^
+> > >  ffffffff896c3180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > >  ffffffff896c3200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > > ==================================================================
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/04786ba2-4934-c544-63d1-4d5d36dc5822%40redhat.com.
