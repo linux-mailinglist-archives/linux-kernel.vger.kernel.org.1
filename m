@@ -2,51 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9497C20E19E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23EC20E05F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730074AbgF2U5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
+        id S1732496AbgF2Upm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731259AbgF2TNG (ORCPT
+        with ESMTP id S1731571AbgF2TN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:06 -0400
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CD5C008621
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 03:42:25 -0700 (PDT)
-Received: by mail-wr1-x44a.google.com with SMTP id j16so11057490wrw.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 03:42:24 -0700 (PDT)
+        Mon, 29 Jun 2020 15:13:57 -0400
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C37C008623
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 03:42:27 -0700 (PDT)
+Received: by mail-wm1-x34a.google.com with SMTP id f68so8291821wmf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 03:42:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=cd/DuDkUFEfbY/EbJHKe01td49IpW+ZHgFOrWbd6mno=;
-        b=EOmizTnmdW1stEhyikixAOAJYGNG4JoVNWc2K1UIoT2JVQHjKWidyg6GyKAfxeutDo
-         Izz6Jb9AabLjANhiyZ1a51F4CzD6c9LtAZ/GOpx6AfFdiW8D7phD7bDT+tXG0Lo5Ouc/
-         Lb/RgLaaYJmf5aDyZk+27Eom2mSnHL1jztE/Fn308ky7gMOfKxFlWWr8GG3JLQcPHCte
-         a9ibrJCVH/AtS6TnRrPA8ECia7qZhTlL3vsVK6eBhl+oanmtWmzattunVuJq3HeY+w4/
-         XHIgMgHxvNAAzqoE5KXLAvT/LsTMdnBVfj8vaIEGnh/ZHVZgl4wyhueBOaWoqg5RlBxs
-         zOvA==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=YyMZU7GxNPbypFBfmDC57uoWU5tN/2mz7Tk7sznQPgo=;
+        b=nAWQ987yfOBPOOEYeLfBpTKXjHDjRk++j9AZflXKZXWLCMXVvd7yIsAChgHiHkG1Sb
+         Ro38pXUoJKYD0KZynPUgyFkyXcggBZGtHKERFokBWq0fCQ+qKUB3HKLP7JCPiKvS2DDU
+         1utkIHtk9qixo7oMbkagnHxUtzaR/8DJlPuCsGHhKo5gp92ooPOwjZo0VDpbtmLWlIP7
+         flby1Y3JacGPnRjvosmrKnWbZ8lxhinI0u/YB/CamcoduNbgp/eZQuK398sUFUxKl5hY
+         D5luhsAxu540KejG7TSErFAVenWrZqEs+zkoMYCh436eVyjx/ikSt4cxCc35SUYPGzAa
+         HCIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=cd/DuDkUFEfbY/EbJHKe01td49IpW+ZHgFOrWbd6mno=;
-        b=m2sCY1+cqgarumhJ2yxTgsjiarm337jdil0Gkk/SkQ4THwoXAz9j+SYXaGrJloUCJL
-         Jy88YpDyS/fGoSqVC3mpHoba9DsX0BimsxXk2A3JrCXzk1+4KuMuqpAaA7wwaoh1ViFl
-         24WMy7McQQOKwj2j2bdIjGWWcr3PoH3FZuQwq5IA2clwAqrgV4dMEbBBPp+BhRqdKX3c
-         1v+w5KB3/ZF1at0VmLHFLtCIC3KiK4u2R2+UVWs1Z9DkWpGQhVezzltslSOT4epyiPJ6
-         Kd14acKY7cYKcpgoTjS1u9EVo+gYl2ORrh/6gBTOtkL9sZ0ewNYEFRMCaICKSzIbxYsh
-         mBNA==
-X-Gm-Message-State: AOAM5335s44Rwi73AFM9JhqjJf+GHdDw4KfqavDfS6fsM09QzYl3QS2+
-        oLkIEVibpA2y17SJOoF0eRtd6CqzNg==
-X-Google-Smtp-Source: ABdhPJwcer+5LT1CvjxBJy31tjF/CKb14qtGBiWuvjYtpLPhyBTlm1yqEYg+TmCM21m65nLocFTZVkZDPg==
-X-Received: by 2002:a7b:ce87:: with SMTP id q7mr16866593wmj.39.1593427343578;
- Mon, 29 Jun 2020 03:42:23 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 12:41:56 +0200
-Message-Id: <20200629104157.3242503-1-elver@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=YyMZU7GxNPbypFBfmDC57uoWU5tN/2mz7Tk7sznQPgo=;
+        b=nsSkhaElOtKxUeAnr8SbIdH+1gEqmLS1nLYk6H4wKq7jvL+PX6AxGXJv+JK3nqyBet
+         ElKzEj54T7HE/Esi9joh5kd0XshhJQOWONAb0VxxpQKQ5a8BezTbRqaIxR3dFxAreT7M
+         NKhcjdO0Su2Dkxl/Lxxti4a74qQk+Qi3UCyNLtv0x1mfx/yQAZLfb6miBkTr1xHkhPSA
+         X5w1AZ9AbBSmwrpMOW8d30reMupxmqk1VUoKwuBaBEy2tk+L7NtbNOgivGbKQOCl/CYm
+         GZ2xA6HWDgjrkwA3bq5c9RV06PtxaP6EFO+kp6r0SNZJdaELornH2FVo96F5EgZvGHKq
+         Pn+Q==
+X-Gm-Message-State: AOAM531PLzVjrcy02xf2K5S6g9lcZQxiL+olGVSmtjSh4/uqDi/IWgNK
+        NkwXauvJTx2X70GycX/MPu1YF2Ec7Q==
+X-Google-Smtp-Source: ABdhPJyMWL2D57ylMog0xr3NH7coG2BEQ8Z7wiwp0oZ1Ynp0EmpoOKeBp65JMLFjr+o/s1Uhc9XWJsZreA==
+X-Received: by 2002:a1c:1b90:: with SMTP id b138mr15963963wmb.21.1593427346060;
+ Mon, 29 Jun 2020 03:42:26 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 12:41:57 +0200
+In-Reply-To: <20200629104157.3242503-1-elver@google.com>
+Message-Id: <20200629104157.3242503-2-elver@google.com>
 Mime-Version: 1.0
+References: <20200629104157.3242503-1-elver@google.com>
 X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
-Subject: [PATCH 1/2] kasan: Improve and simplify Kconfig.kasan
+Subject: [PATCH 2/2] kasan: Update required compiler versions in documentation
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, akpm@linux-foundation.org
 Cc:     dvyukov@google.com, glider@google.com, andreyknvl@google.com,
@@ -60,86 +64,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Turn 'KASAN' into a menuconfig, to avoid cluttering its parent menu with
-the suboptions if enabled. Use 'if KASAN ... endif' instead of having
-to 'depend on KASAN' for each entry.
+Updates the recently changed compiler requirements for KASAN. In
+particular, we require GCC >= 8.3.0, and add a note that Clang 11
+supports OOB detection of globals.
 
+Fixes: 7b861a53e46b ("kasan: Bump required compiler version")
+Fixes: acf7b0bf7dcf ("kasan: Fix required compiler version")
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- lib/Kconfig.kasan | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ Documentation/dev-tools/kasan.rst |  7 ++-----
+ lib/Kconfig.kasan                 | 24 +++++++++++++++---------
+ 2 files changed, 17 insertions(+), 14 deletions(-)
 
+diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+index c652d740735d..15a2a53e77b0 100644
+--- a/Documentation/dev-tools/kasan.rst
++++ b/Documentation/dev-tools/kasan.rst
+@@ -13,11 +13,8 @@ KASAN uses compile-time instrumentation to insert validity checks before every
+ memory access, and therefore requires a compiler version that supports that.
+ 
+ Generic KASAN is supported in both GCC and Clang. With GCC it requires version
+-4.9.2 or later for basic support and version 5.0 or later for detection of
+-out-of-bounds accesses for stack and global variables and for inline
+-instrumentation mode (see the Usage section). With Clang it requires version
+-7.0.0 or later and it doesn't support detection of out-of-bounds accesses for
+-global variables yet.
++8.3.0 or later. With Clang it requires version 7.0.0 or later, but detection of
++out-of-bounds accesses for global variables is only supported since Clang 11.
+ 
+ Tag-based KASAN is only supported in Clang and requires version 7.0.0 or later.
+ 
 diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-index 34b84bcbd3d9..89053defc0d9 100644
+index 89053defc0d9..047b53dbfd58 100644
 --- a/lib/Kconfig.kasan
 +++ b/lib/Kconfig.kasan
-@@ -18,7 +18,7 @@ config CC_HAS_KASAN_SW_TAGS
- config CC_HAS_WORKING_NOSANITIZE_ADDRESS
- 	def_bool !CC_IS_GCC || GCC_VERSION >= 80300
- 
--config KASAN
-+menuconfig KASAN
- 	bool "KASAN: runtime memory debugger"
- 	depends on (HAVE_ARCH_KASAN && CC_HAS_KASAN_GENERIC) || \
- 		   (HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS)
-@@ -29,9 +29,10 @@ config KASAN
- 	  designed to find out-of-bounds accesses and use-after-free bugs.
- 	  See Documentation/dev-tools/kasan.rst for details.
- 
-+if KASAN
+@@ -40,6 +40,7 @@ choice
+ 	  software tag-based KASAN (a version based on software memory
+ 	  tagging, arm64 only, similar to userspace HWASan, enabled with
+ 	  CONFIG_KASAN_SW_TAGS).
 +
- choice
- 	prompt "KASAN mode"
--	depends on KASAN
- 	default KASAN_GENERIC
+ 	  Both generic and tag-based KASAN are strictly debugging features.
+ 
+ config KASAN_GENERIC
+@@ -51,16 +52,18 @@ config KASAN_GENERIC
+ 	select STACKDEPOT
  	help
- 	  KASAN has two modes: generic KASAN (similar to userspace ASan,
-@@ -88,7 +89,6 @@ endchoice
- 
- choice
- 	prompt "Instrumentation type"
--	depends on KASAN
- 	default KASAN_OUTLINE
- 
- config KASAN_OUTLINE
-@@ -113,7 +113,6 @@ endchoice
- 
- config KASAN_STACK_ENABLE
- 	bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
--	depends on KASAN
- 	help
- 	  The LLVM stack address sanitizer has a know problem that
- 	  causes excessive stack usage in a lot of functions, see
-@@ -134,7 +133,7 @@ config KASAN_STACK
- 
- config KASAN_S390_4_LEVEL_PAGING
- 	bool "KASan: use 4-level paging"
--	depends on KASAN && S390
-+	depends on S390
- 	help
- 	  Compiling the kernel with KASan disables automatic 3-level vs
- 	  4-level paging selection. 3-level paging is used by default (up
-@@ -151,7 +150,7 @@ config KASAN_SW_TAGS_IDENTIFY
- 
- config KASAN_VMALLOC
- 	bool "Back mappings in vmalloc space with real shadow memory"
--	depends on KASAN && HAVE_ARCH_KASAN_VMALLOC
-+	depends on HAVE_ARCH_KASAN_VMALLOC
- 	help
- 	  By default, the shadow region for vmalloc space is the read-only
- 	  zero page. This means that KASAN cannot detect errors involving
-@@ -164,8 +163,10 @@ config KASAN_VMALLOC
- 
- config TEST_KASAN
- 	tristate "Module for testing KASAN for bug detection"
--	depends on m && KASAN
-+	depends on m
- 	help
- 	  This is a test module doing various nasty things like
- 	  out of bounds accesses, use after free. It is useful for testing
- 	  kernel debugging features like KASAN.
+ 	  Enables generic KASAN mode.
+-	  Supported in both GCC and Clang. With GCC it requires version 4.9.2
+-	  or later for basic support and version 5.0 or later for detection of
+-	  out-of-bounds accesses for stack and global variables and for inline
+-	  instrumentation mode (CONFIG_KASAN_INLINE). With Clang it requires
+-	  version 3.7.0 or later and it doesn't support detection of
+-	  out-of-bounds accesses for global variables yet.
 +
-+endif # KASAN
++	  This mode is supported in both GCC and Clang. With GCC it requires
++	  version 8.3.0 or later. With Clang it requires version 7.0.0 or
++	  later, but detection of out-of-bounds accesses for global variables
++	  is supported only since Clang 11.
++
+ 	  This mode consumes about 1/8th of available memory at kernel start
+ 	  and introduces an overhead of ~x1.5 for the rest of the allocations.
+ 	  The performance slowdown is ~x3.
++
+ 	  For better error detection enable CONFIG_STACKTRACE.
++
+ 	  Currently CONFIG_KASAN_GENERIC doesn't work with CONFIG_DEBUG_SLAB
+ 	  (the resulting kernel does not boot).
+ 
+@@ -73,15 +76,19 @@ config KASAN_SW_TAGS
+ 	select STACKDEPOT
+ 	help
+ 	  Enables software tag-based KASAN mode.
++
+ 	  This mode requires Top Byte Ignore support by the CPU and therefore
+-	  is only supported for arm64.
+-	  This mode requires Clang version 7.0.0 or later.
++	  is only supported for arm64. This mode requires Clang version 7.0.0
++	  or later.
++
+ 	  This mode consumes about 1/16th of available memory at kernel start
+ 	  and introduces an overhead of ~20% for the rest of the allocations.
+ 	  This mode may potentially introduce problems relating to pointer
+ 	  casting and comparison, as it embeds tags into the top byte of each
+ 	  pointer.
++
+ 	  For better error detection enable CONFIG_STACKTRACE.
++
+ 	  Currently CONFIG_KASAN_SW_TAGS doesn't work with CONFIG_DEBUG_SLAB
+ 	  (the resulting kernel does not boot).
+ 
+@@ -107,7 +114,6 @@ config KASAN_INLINE
+ 	  memory accesses. This is faster than outline (in some workloads
+ 	  it gives about x2 boost over outline instrumentation), but
+ 	  make kernel's .text size much bigger.
+-	  For CONFIG_KASAN_GENERIC this requires GCC 5.0 or later.
+ 
+ endchoice
+ 
 -- 
 2.27.0.212.ge8ba1cc988-goog
 
