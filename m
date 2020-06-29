@@ -2,133 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB26120DDAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552B420DDC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733265AbgF2UR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:17:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45646 "EHLO
+        id S1733305AbgF2USy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:18:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732647AbgF2TZl (ORCPT
+        with ESMTP id S2388538AbgF2USj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:25:41 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C0AC061755;
-        Mon, 29 Jun 2020 12:25:41 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id w73so3661687ila.11;
-        Mon, 29 Jun 2020 12:25:41 -0700 (PDT)
+        Mon, 29 Jun 2020 16:18:39 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8720EC061755;
+        Mon, 29 Jun 2020 13:18:38 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id b25so16139293ljp.6;
+        Mon, 29 Jun 2020 13:18:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=awRqujOiMrDdEv/OOzJOIKIzdh+u8WQaaIXpTu/mSk0=;
-        b=SQQbB8OZtY8KVolOJ6QYhRlc/DURbUQ07ItMEpjAbF+W+aNVxTkluJqoo1+6a6daKx
-         ZEbfRLv9nmOVSirZ8lGn8Dav3wQCKjRCKzUoLt+tl5+9c/W+tlNYG8h/0Ib48YKCzfuu
-         lLS1MbHrqAK0VfOAEI9AO4kw3kcJ/1D8Q8X3bJ5n07fzpreXbbHU/SV6YdK3KSHl/W3a
-         /J2MYTo+x5fduZAUyqHx1tPp7RHthfbJ2VavWzQsWG5KIuozx+5d0TTh3faKtwbHhWxz
-         xGIIyN4M0G9RTV9irrAdM1B757qpwPeTGtOFc8lG+CkT0Co1yiIaUc4+fAtKCq21udCy
-         NTmg==
+        h=from:to:cc:subject:date:message-id;
+        bh=8KS8I9Q3x2kXGfX+XyyK1sOmdPbnTRSOpvvTvwkAeTs=;
+        b=kKlzs4sb6gvS9zYIlKdtNO9qZQptM0LCZ/5tTmz0g8zeAuvX6L7DG9YSQv5O6J8o0t
+         +CfV51o+Z9H4vt+N0eAH1ce3eZwBa+rTl+XL8Hf1acezphKbNdejOR7/uTqpvIv9SfQA
+         2KWUGHa9aRo43YP5EqG7Hx9mGJwieKRlykPLqMKejsyZIky6Rpy0C0LZHNa3HINiVxpa
+         MEuoN5HtplNVLYZFprLtWZFMPJ3H2GbFy+unFlOKGfRMW6Tbn6F2doUdsuu+6jTP+uWQ
+         nvvaoXQQPTxy7YodFAQgWWGj5w3UiZCX3Y67jQeJz9wcdsDAK+XaohzCuEGB9fN7piJ+
+         ahYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=awRqujOiMrDdEv/OOzJOIKIzdh+u8WQaaIXpTu/mSk0=;
-        b=GRqeNNSKLvLg9jMvN0hb6JI9i6s9MMC3MX7vjelROZ8l3ny/r5VzWI0X829PxciUBQ
-         DgobQgnG8HsLLX2hTbrnsBOT/ZFDkjjRMl9N0thAVNvj8PajFd47Lx7UG/sHCprZ3zYa
-         LF2jkf7/l7R9/3CrxefTxrrB8Gs8XsQiT87MDQ0JUXXx5z48VkE5QHgKL4U9RAkPC74H
-         xHpDfWRS99PYzSMecPxLytRVHymudgVaCBglIEbLTRW7SJHwKCKduIVr6+VFFZ5fLGx5
-         Ve4WX+VR8cQQGRUvqyCmfH4hKv8rluVTKGGilHl/3Nz8fWLnG4JUzo/657+J7o9kXrnj
-         Ldmw==
-X-Gm-Message-State: AOAM5328MFXXMM26V997rIxJTHatqCWAfJ7RxJ0gv+RntUZ/c4rm3O0o
-        jHO+Y77T7UWN8x44DsxvSMCQAgE33teKO8pDhW8=
-X-Google-Smtp-Source: ABdhPJw/Lp5J7VJZzWUMpKXFLNVSc2m8IqqQPvYMNlTYwBZMTO4BHXQsap8uE9Ir128HGPXlXy8p6kDi/w+RvplAavs=
-X-Received: by 2002:a92:6b05:: with SMTP id g5mr16679410ilc.120.1593458741165;
- Mon, 29 Jun 2020 12:25:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200629055530.3244342-1-songliubraving@fb.com>
-In-Reply-To: <20200629055530.3244342-1-songliubraving@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 29 Jun 2020 12:25:29 -0700
-Message-ID: <CAEf4BzbUh-Q=7a0cyxWm+=DA9hhovpLRcBGsq2ocXoCWpC2SUA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 0/4] bpf: introduce bpf_get_task_stack()
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8KS8I9Q3x2kXGfX+XyyK1sOmdPbnTRSOpvvTvwkAeTs=;
+        b=KsE/W+rfDYRWXsZsV0vEPeO4m2I8BnQfISLxWwOGtmoFlB9ZXp3T7ukjSXuPLDlj7/
+         Lf4xy7+4cL01mKYGweluUT0/2ONBfOzLFso/UimyzlhQCa1Z/jjKXTtEKxrrYW9V9f/K
+         1JJYYrPeAGlqEyVGgHYMFuHWRXfgIJUeqz+tVMOQrhpWgdjrfEjXZwSswOWuQrJ7uedy
+         lfl4PBR7oCb90Q4khyrBbGkvpMaT8fWyUfoP68v02RraaIfdpNOtc5DbiReY8mw3+fao
+         8ncno4+QxpzC6L6c9eBVxjtykwjCKunDZ2AMqFoD/z6twJA89jhbTuLkt+iGT4iVVS6a
+         oEIg==
+X-Gm-Message-State: AOAM531wiCNvQQWz9dUIZ6HnAPli7IyRKMfwpbbDRPVNhcEX/U3YUmyN
+        P5Dk4rTmfYYNPpvTM4KSaqk=
+X-Google-Smtp-Source: ABdhPJxxtuESaMskdjQR3zZ4lP77PTmYj17q1RARRdk3vtTHJODW8Xdzzd0fpl4TxUPk/wOQ6/FF6w==
+X-Received: by 2002:a2e:b88e:: with SMTP id r14mr8307120ljp.197.1593461917004;
+        Mon, 29 Jun 2020 13:18:37 -0700 (PDT)
+Received: from localhost ([80.64.86.170])
+        by smtp.gmail.com with ESMTPSA id x64sm154660lff.14.2020.06.29.13.18.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 29 Jun 2020 13:18:36 -0700 (PDT)
+From:   Ruslan Bilovol <ruslan.bilovol@gmail.com>
+To:     balbi@kernel.org
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] usb: gadget: epautoconf: claim smallest endpoints first
+Date:   Mon, 29 Jun 2020 23:18:45 +0300
+Message-Id: <20200629201845.28138-1-ruslan.bilovol@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 11:54 AM Song Liu <songliubraving@fb.com> wrote:
->
-> This set introduces a new helper bpf_get_task_stack(). The primary use case
-> is to dump all /proc/*/stack to seq_file via bpf_iter__task.
->
-> A few different approaches have been explored and compared:
->
->   1. A simple wrapper around stack_trace_save_tsk(), as v1 [1].
->
->      This approach introduces new syntax, which is different to existing
->      helper bpf_get_stack(). Therefore, this is not ideal.
->
->   2. Extend get_perf_callchain() to support "task" as argument.
->
->      This approach reuses most of bpf_get_stack(). However, extending
->      get_perf_callchain() requires non-trivial changes to architecture
->      specific code. Which is error prone.
->
->   3. Current (v2) approach, leverages most of existing bpf_get_stack(), and
->      uses stack_trace_save_tsk() to handle architecture specific logic.
->
-> [1] https://lore.kernel.org/netdev/20200623070802.2310018-1-songliubraving@fb.com/
->
-> Changes v3 => v4:
-> 1. Simplify the selftests with bpf_iter.h. (Yonghong)
-> 2. Add example output to commit log of 4/4. (Yonghong)
->
-> Changes v2 => v3:
-> 1. Rebase on top of bpf-next. (Yonghong)
-> 2. Sanitize get_callchain_entry(). (Peter)
-> 3. Use has_callchain_buf for bpf_get_task_stack. (Andrii)
-> 4. Other small clean up. (Yonghong, Andrii).
->
-> Changes v1 => v2:
-> 1. Reuse most of bpf_get_stack() logic. (Andrii)
-> 2. Fix unsigned long vs. u64 mismatch for 32-bit systems. (Yonghong)
-> 3. Add %pB support in bpf_trace_printk(). (Daniel)
-> 4. Fix buffer size to bytes.
->
-> Song Liu (4):
->   perf: expose get/put_callchain_entry()
->   bpf: introduce helper bpf_get_task_stack()
->   bpf: allow %pB in bpf_seq_printf() and bpf_trace_printk()
->   selftests/bpf: add bpf_iter test with bpf_get_task_stack()
->
->  include/linux/bpf.h                           |  1 +
->  include/linux/perf_event.h                    |  2 +
->  include/uapi/linux/bpf.h                      | 36 ++++++++-
->  kernel/bpf/stackmap.c                         | 75 ++++++++++++++++++-
->  kernel/bpf/verifier.c                         |  4 +-
->  kernel/events/callchain.c                     | 13 ++--
->  kernel/trace/bpf_trace.c                      | 12 ++-
->  scripts/bpf_helpers_doc.py                    |  2 +
->  tools/include/uapi/linux/bpf.h                | 36 ++++++++-
->  .../selftests/bpf/prog_tests/bpf_iter.c       | 17 +++++
->  .../selftests/bpf/progs/bpf_iter_task_stack.c | 37 +++++++++
->  11 files changed, 220 insertions(+), 15 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
->
-> --
-> 2.24.1
+UDC hardware may have endpoints with different maxpacket
+size. Current endpoint matching code takes first matching
+endpoint from the list.
 
-Thanks for working on this! This will enable a whole new set of tools
-and applications.
+It's always possible that gadget allocates endpoints for
+small transfers (maxpacket size) first, then larger ones.
+That works fine if all matching UDC endpoints have same
+maxpacket size or are big enough to serve that allocation.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+However, some UDCs have first endpoints in the list with
+bigger maxpacket size, whereas last endpoints are much
+smaller. In this case endpoint allocation will fail for
+the gadget (which allocates smaller endpoints first) on
+final endpoint allocations.
+
+To make endpoint allocation fair, pick up smallest
+matching endpoints first, leaving bigger ones for
+heavier applications.
+
+Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+---
+
+v2: rebased onto latest balbi/next branch
+
+ drivers/usb/gadget/epautoconf.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/usb/gadget/epautoconf.c b/drivers/usb/gadget/epautoconf.c
+index 1eb4fa2e623f..6c453b5d87bb 100644
+--- a/drivers/usb/gadget/epautoconf.c
++++ b/drivers/usb/gadget/epautoconf.c
+@@ -66,7 +66,7 @@ struct usb_ep *usb_ep_autoconfig_ss(
+ 	struct usb_ss_ep_comp_descriptor *ep_comp
+ )
+ {
+-	struct usb_ep	*ep;
++	struct usb_ep	*ep, *ep_min = NULL;
+ 
+ 	if (gadget->ops->match_ep) {
+ 		ep = gadget->ops->match_ep(gadget, desc, ep_comp);
+@@ -74,14 +74,27 @@ struct usb_ep *usb_ep_autoconfig_ss(
+ 			goto found_ep;
+ 	}
+ 
+-	/* Second, look at endpoints until an unclaimed one looks usable */
++	/*
++	 * Second, look at endpoints until an unclaimed one looks usable.
++	 * Try to find one with smallest maxpacket limit, leaving larger
++	 * endpoints for heavier applications
++	 */
+ 	list_for_each_entry (ep, &gadget->ep_list, ep_list) {
+-		if (usb_gadget_ep_match_desc(gadget, ep, desc, ep_comp))
+-			goto found_ep;
++		if (usb_gadget_ep_match_desc(gadget, ep, desc, ep_comp)) {
++			if (desc->wMaxPacketSize == 0)
++				goto found_ep;
++			else if (!ep_min)
++				ep_min = ep;
++			else if (ep->maxpacket_limit < ep_min->maxpacket_limit)
++				ep_min = ep;
++		}
+ 	}
+ 
+ 	/* Fail */
+-	return NULL;
++	if (!ep_min)
++		return NULL;
++
++	ep = ep_min;
+ found_ep:
+ 
+ 	/*
+-- 
+2.17.1
+
