@@ -2,144 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED3320D357
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9169B20D3F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730218AbgF2S6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:58:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40916 "EHLO
+        id S1730587AbgF2TD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730144AbgF2S5o (ORCPT
+        with ESMTP id S1730413AbgF2TCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:57:44 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0FFC02E2E0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:09:33 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id x62so12905359qtd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:09:33 -0700 (PDT)
+        Mon, 29 Jun 2020 15:02:43 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600B1C02E2E7;
+        Mon, 29 Jun 2020 07:15:51 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id w17so7769603otl.4;
+        Mon, 29 Jun 2020 07:15:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tEZERuD4U9x45d3XL5Tb2EKEgqxOltAsxA1Ga9THj/Q=;
-        b=kN62gCu1h1hmiwF5cULW4dme5DEZe6ff82I0RoZQQQecmAJdU0HankVMWbaRz8ad2E
-         54H+tr8eUi+jr6HRFqt3uop0WkF86gl6xL9H+tXhbUd0plogLpGWr4vHprlphSzN/R47
-         FPVahVX55X/dzsLbK1EqypoRri1yF7/PnZaGNq4LxSMY4oyhpvcQDQS5lvzyelBxrUJZ
-         kF6co4HOmwRHu+1Wk9JjN6gZqVhffePr5xgi0ZKab4Ryr2PS+uRSoW36yUUYv3lBIgBg
-         7cnnBAb1BAxogdjt+n8Xy7mPF+15DNUwhLuHsssFYhuwfYgaXMOdBwrODlKqkJvl7m3k
-         y1TA==
-X-Gm-Message-State: AOAM533n56sjJ4zQftf3+4wj7MQtNOSyyxuAEucep3pkzBcxf5foqaCi
-        73Efj91s8Rvn2Q+u8/ixBvw=
-X-Google-Smtp-Source: ABdhPJxKVYmAwxmHAwz6aSqzYJnqE6ZSLC25nGL860MCT/f/BlRph9L2xC5X8TXsetqrzvLN3xx9eQ==
-X-Received: by 2002:ac8:7284:: with SMTP id v4mr16251160qto.267.1593439772367;
-        Mon, 29 Jun 2020 07:09:32 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id i26sm10741461qkh.14.2020.06.29.07.09.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 07:09:32 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        clang-built-linux@googlegroups.com,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/7] x86/boot/compressed: Force hidden visibility for all symbol references
-Date:   Mon, 29 Jun 2020 10:09:23 -0400
-Message-Id: <20200629140928.858507-3-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200629140928.858507-1-nivedita@alum.mit.edu>
-References: <20200629140928.858507-1-nivedita@alum.mit.edu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=leTe6xkmfV5KnrwHpQkBH2Ot1AVMzXutDXCiCMkdL0s=;
+        b=D5bxn+vX+hJkiQ6u1hDgpe9Ubh1O0+/hI/a0YTh2p5W53gAiGr+TsqHj3R0KJjllPD
+         lAQkiUzVr7Ks2MMGvmDtt/201TPW6DPQgtEN0ILCj6hby+Haqn/hos9zgYrqHdDF6frO
+         s7ishahv4ICygo1rBBFyA21At4caf5OHAj0cqU1yVsipK1XhO+vC2gaFScs8VH3z3Gso
+         +xRQ/2qN1ZaYpTxB5Hwk45i4UZz7g3HSw8g89fC9oiINa6SzVeM7gB45FXmaKwdOopf0
+         eHkaWWOtWkxGNELgMqUROit391OAo0TnzJ8aXhREK1fdHQ7PG5VojgsdiIi9hLtDYubU
+         Fhpg==
+X-Gm-Message-State: AOAM530eVcbRLWoVhdQU8uXJztWyMEgLA6znS4rKeWlMY5YVVZhKqdVc
+        YLpC9K/bF4uBYX7CG6nVOP1RjquYytZ4pCG+MFNtp+oI
+X-Google-Smtp-Source: ABdhPJwF+ox3rAUQ3Gu09b9KiRz1EEaQAg3j/GWpph6pRu+ljyWkQE4GLirKio8p4W53YNrwzMy+Qjdw3v8DIct2tQc=
+X-Received: by 2002:a4a:b804:: with SMTP id g4mr14026744oop.40.1593440150627;
+ Mon, 29 Jun 2020 07:15:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1593163942-5087-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <1593163942-5087-3-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <20200626143914.GE5289@sirena.org.uk> <TY2PR01MB3692A3B12CEF7F9708A8A59CD86E0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+ <20200629125756.GC5499@sirena.org.uk> <20200629134011.GA23284@bogus>
+In-Reply-To: <20200629134011.GA23284@bogus>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 29 Jun 2020 16:15:39 +0200
+Message-ID: <CAMuHMdU81-EAve+jHhL8+ohCd5YXrgLWpMgaCvgXFDLO7p17pQ@mail.gmail.com>
+Subject: Re: [PATCH/RFC v4 2/4] regulator: fixed: add regulator_ops members
+ for suspend/resume
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+Hi Sudeep,
 
-Eliminate all GOT entries in the decompressor binary, by forcing hidden
-visibility for all symbol references, which informs the compiler that
-such references will be resolved at link time without the need for
-allocating GOT entries.
+On Mon, Jun 29, 2020 at 3:40 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> On Mon, Jun 29, 2020 at 01:57:56PM +0100, Mark Brown wrote:
+> > On Mon, Jun 29, 2020 at 02:42:26AM +0000, Yoshihiro Shimoda wrote:
+> > > > From: Mark Brown, Sent: Friday, June 26, 2020 11:39 PM
+> > > > According to the changelog this is all about reflecting changes in the
+> > > > system state done by firmware but there's no interaction with firmware
+> > > > here which means this will be at best fragile.  If we need to reflect
+> > > > changes in firmware configuration I'd expect there to be some
+> > > > interaction with firmware about how it is configured, or at least that
+> > > > the configuration would come from the same source.
+>
+> I agree.
+>
+> > > I should have described background of previous patch series though,
+> > > according to previous discussion [1] the firmware side (like PSCI) is
+> > > also fragile unfortunately... So, I thought using regulator-off-in-suspend
+> > > in a regulator was better.
+>
+> Please fix the firmware. You might have bigger problem than this if the
+> PSCI firmware is fragile as you state. Better to disable power management
+> on the platform if the firmware can't be fixed.
 
-To ensure that no GOT entries will creep back in, add an assertion to
-the decompressor linker script that will fire if the .got section has
-a non-zero size.
+Saying the implementation is "fragile" might be bad wording.
+The issue is more with the specification being vague (see more below).
 
-[Arvind: fixup -include hidden.h to -include $(srctree)/$(src)/hidden.h]
+> > > On other hand, Ulf is talking about either adding a property (perhaps like
+> > > regulator-off-in-suspend) into a regulator or just adding a new property
+> > > into MMC [2]. What do you think about Ulf' comment? I'm thinking
+> > > adding a new property "full-pwr-cycle-in-suspend" is the best solution.
+> > > This is because using a regulator property and reflecting a state of regulator without
+> > > firmware is fragile, as you said.
+>
+> I haven't followed all the threads, but if it related to the policy you
+> want in the Linux, then may be use DT property or something. I don't know.
+> But if this is to indicate something based on firmware runtime/configuration,
+> then NACK for any approaches unconditionally.
 
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Acked-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-From: Ard Biesheuvel <ardb@kernel.org>
-Link: https://lore.kernel.org/r/20200523120021.34996-3-ardb@kernel.org
----
- arch/x86/boot/compressed/Makefile      |  1 +
- arch/x86/boot/compressed/hidden.h      | 19 +++++++++++++++++++
- arch/x86/boot/compressed/vmlinux.lds.S |  1 +
- 3 files changed, 21 insertions(+)
- create mode 100644 arch/x86/boot/compressed/hidden.h
+Like "arm,psci-system-suspend-is-power-down"[1]?
 
-diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-index 7619742f91c9..b01c8aed0f23 100644
---- a/arch/x86/boot/compressed/Makefile
-+++ b/arch/x86/boot/compressed/Makefile
-@@ -42,6 +42,7 @@ KBUILD_CFLAGS += $(call cc-disable-warning, gnu)
- KBUILD_CFLAGS += -Wno-pointer-sign
- KBUILD_CFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
- KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
-+KBUILD_CFLAGS += -include $(srctree)/$(src)/hidden.h
- 
- KBUILD_AFLAGS  := $(KBUILD_CFLAGS) -D__ASSEMBLY__
- GCOV_PROFILE := n
-diff --git a/arch/x86/boot/compressed/hidden.h b/arch/x86/boot/compressed/hidden.h
-new file mode 100644
-index 000000000000..49a17b6b5962
---- /dev/null
-+++ b/arch/x86/boot/compressed/hidden.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * When building position independent code with GCC using the -fPIC option,
-+ * (or even the -fPIE one on older versions), it will assume that we are
-+ * building a dynamic object (either a shared library or an executable) that
-+ * may have symbol references that can only be resolved at load time. For a
-+ * variety of reasons (ELF symbol preemption, the CoW footprint of the section
-+ * that is modified by the loader), this results in all references to symbols
-+ * with external linkage to go via entries in the Global Offset Table (GOT),
-+ * which carries absolute addresses which need to be fixed up when the
-+ * executable image is loaded at an offset which is different from its link
-+ * time offset.
-+ *
-+ * Fortunately, there is a way to inform the compiler that such symbol
-+ * references will be satisfied at link time rather than at load time, by
-+ * giving them 'hidden' visibility.
-+ */
-+
-+#pragma GCC visibility push(hidden)
-diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-index b17d218ccdf9..4bcc943842ab 100644
---- a/arch/x86/boot/compressed/vmlinux.lds.S
-+++ b/arch/x86/boot/compressed/vmlinux.lds.S
-@@ -81,6 +81,7 @@ SECTIONS
- 	DISCARDS
- }
- 
-+ASSERT(SIZEOF(.got) == 0, "Unexpected GOT entries detected!")
- #ifdef CONFIG_X86_64
- ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18, "Unexpected GOT/PLT entries detected!")
- #else
+> > TBH I worry about a property drifting out of sync with the firmware on
+> > systems where the firmware can be updated.  Personally my default
+> > assumption would always be that we're going to loose power for anything
+
+OK, so that's the "safe" way to handle this: assume power is lost.
+
+> > except the RAM and whatever is needed for wake sources during suspend so
+
+Oh, even wake-up sources may become unpowered[2] ;-)
+And thus stop working ;-(
+
+> > I find the discussion a bit surprising but in any case that seems like a
+> > better option than trying to shoehorn things in the way the series here
+> > did.  Like I said in my earlier replies if this is done through the
+> > regulator API I'd expect it to be via the suspend interface.
+>
+> +1. If this platform needs Linux to keep some state on for users in the
+> firmware or anything outside Linux, it must resume back in the same state
+> as we entered the suspend state from the kernel.
+
+I think you're misunderstanding the issue: this is not related at all
+to Linux keeping state for non-Linux users.
+
+This is all about how to know what exactly PSCI is powering down during
+SYSTEM_SUSPEND.  In this specific case, it is about knowing if the eMMC
+is powered down or not, as Linux should follow a specific procedure to
+prepare the eMMC for that, and Linux should not if that isn't the case.
+
+I had a quick look at the latest revision of the PSCI specification, and
+it doesn't look like anything has changed in that area since my old patch
+series from 2017.  So it still boils down to: we don't know what a
+specific PSCI implementation will do, as basically anything is
+compliant, so the only safe thing is to assume the worst.
+
+Or am I missing something?
+Thanks!
+
+[1] "[PATCH/RFC 4/6] drivers: firmware: psci: Fix non-PMIC wake-up if
+    SYSTEM_SUSPEND cuts power"
+    https://lore.kernel.org/linux-arm-kernel/1487622809-25127-5-git-send-email-geert+renesas@glider.be/
+
+[2] [PATCH/RFC 0/6] PSCI: Fix non-PMIC wake-up if SYSTEM_SUSPEND cuts
+    power
+    https://lore.kernel.org/linux-arm-kernel/1487622809-25127-1-git-send-email-geert+renesas@glider.be/
+
+[3] https://developer.arm.com/architectures/system-architectures/software-standards/psci
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.26.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
