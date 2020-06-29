@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C660020D6AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F88C20D641
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732219AbgF2TWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:22:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59522 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729822AbgF2TVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:21:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0F304B16E;
-        Mon, 29 Jun 2020 13:09:16 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id D87851E12E7; Mon, 29 Jun 2020 15:09:15 +0200 (CEST)
-Date:   Mon, 29 Jun 2020 15:09:15 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jan Kara <jack@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: Commit 'fs: Do not check if there is a fsnotify watcher on
- pseudo inodes' breaks chromium here
-Message-ID: <20200629130915.GF26507@quack2.suse.cz>
-References: <7b4aa1e985007c6d582fffe5e8435f8153e28e0f.camel@redhat.com>
- <CAOQ4uxg8E-im=B6L0PQNaTTKdtxVAO=MSJki7kxq875ME4hOLw@mail.gmail.com>
+        id S1732029AbgF2TSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:18:31 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:58440 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732015AbgF2TSY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:18:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593458302;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C+A60OaYSKQfoFPbCowvu2GaNu7uEQw80AdN699By4g=;
+        b=JW1oBc1wFcVC+uf1flpa+W22pyWP04j2WVCtRQp8y8PXlJ7dZKE2IYW9VtXUI+S6ITmeq0
+        3H3m9v23sl0+ZhUzDEXqNla+MKOwUzo6BVJ/4D2d/qClBlMrcdK5egQOnxOLqieBcAzWxv
+        7EIYjmqo1ZgmebG0xeAX2UlgjiajXqs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-454-R5iFLdihOc-M61CgFCZKcg-1; Mon, 29 Jun 2020 09:17:15 -0400
+X-MC-Unique: R5iFLdihOc-M61CgFCZKcg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3640518FF662;
+        Mon, 29 Jun 2020 13:17:14 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 062BD2B47C;
+        Mon, 29 Jun 2020 13:17:09 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 05TDH9li012066;
+        Mon, 29 Jun 2020 09:17:09 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 05TDH8JV012062;
+        Mon, 29 Jun 2020 09:17:08 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Mon, 29 Jun 2020 09:17:08 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Eric Biggers <ebiggers@kernel.org>
+cc:     Mike Snitzer <msnitzer@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Zaibo Xu <xuzaibo@huawei.com>, linux-kernel@vger.kernel.org,
+        Wei Xu <xuwei5@hisilicon.com>, dm-devel@redhat.com,
+        George Cherian <gcherian@marvell.com>,
+        linux-crypto@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Milan Broz <mbroz@redhat.com>
+Subject: Re: [dm-devel] [PATCH 1/3 v2] crypto: introduce the flag
+ CRYPTO_ALG_ALLOCATES_MEMORY
+In-Reply-To: <20200628200022.GE11197@sol.localdomain>
+Message-ID: <alpine.LRH.2.02.2006290905340.11293@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2006161101080.28052@file01.intranet.prod.int.rdu2.redhat.com> <20200616173620.GA207319@gmail.com> <alpine.LRH.2.02.2006171107220.18714@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2006171108440.18714@file01.intranet.prod.int.rdu2.redhat.com>
+ <20200626044534.GA2870@gondor.apana.org.au> <alpine.LRH.2.02.2006261109520.11899@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2006261215480.13882@file01.intranet.prod.int.rdu2.redhat.com> <20200626164617.GA211634@gmail.com>
+ <20200626170039.GB211634@gmail.com> <alpine.LRH.2.02.2006281505530.347@file01.intranet.prod.int.rdu2.redhat.com> <20200628200022.GE11197@sol.localdomain>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxg8E-im=B6L0PQNaTTKdtxVAO=MSJki7kxq875ME4hOLw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 28-06-20 15:53:51, Amir Goldstein wrote:
-> On Sun, Jun 28, 2020 at 2:14 PM Maxim Levitsky <mlevitsk@redhat.com> wrote:
-> >
-> > Hi,
-> >
-> > I just did usual kernel update and now chromium crashes on startup.
-> > It happens both in a KVM's VM (with virtio-gpu if that matters) and natively with amdgpu driver.
-> > Most likely not GPU related although I initially suspected that it is.
-> >
-> > Chromium starts as a white rectangle, shows few white rectangles
-> > that resemble its notifications and then crashes.
-> >
-> > The stdout output from chromium:
+
+
+On Sun, 28 Jun 2020, Eric Biggers wrote:
+
+> On Sun, Jun 28, 2020 at 03:07:49PM -0400, Mikulas Patocka wrote:
+> > > 
+> > > cryptd_create_skcipher(), cryptd_create_hash(), cryptd_create_aead(), and
+> > > crypto_rfc4309_create() are also missing setting the mask.
+> > > 
+> > > pcrypt_create_aead() is missing both setting the mask and inheriting the flags.
+> > 
+> > I added CRYPTO_ALG_ALLOCATES_MEMORY there.
 > 
-> I guess this answers our question whether we could disable fsnoitfy
-> watches on pseudo inodes....
-
-Right :-|
-
-> From comments like these in chromium code:
-> https://chromium.googlesource.com/chromium/src/+/master/mojo/core/watcher_dispatcher.cc#77
-> https://chromium.googlesource.com/chromium/src/+/master/base/files/file_descriptor_watcher_posix.cc#176
-> https://chromium.googlesource.com/chromium/src/+/master/ipc/ipc_channel_mojo.cc#240
+> I don't see where the cryptd request processing functions allocate memory.
 > 
-> I am taking a wild guess that the missing FS_CLOSE event on anonymous pipes is
-> the cause for regression.
+> It seems that cryptd should just inherit the flag, like most other templates.
+> 
+> Likewise for pcrypt.
+> 
+> And also likewise for rfc4309.
+> 
+> Where are you seeing the memory allocations that would require
+> CRYPTO_ALG_ALLOCATES_MEMORY to always be enabled for these?
+> 
+> - Eric
 
-I was checking the Chromium code for some time. It uses inotify in
-base/files/file_path_watcher_linux.cc and watches IN_CLOSE_WRITE event
-(among other ones) but I was unable to track down how the class gets
-connected to the mojo class that crashes. I'd be somewhat curious how they
-place inotify watches on pipe inodes - probably they have to utilize proc
-magic links but I'd like to be sure. Anyway your guess appears to be
-correct :)
+This was some misunderstanding. You said "cryptd_create_skcipher ... is 
+missing both setting the mask and inheriting the flags.", so I understood 
+it so that it should inherit CRYPTO_ALG_INHERITED_FLAGS and set 
+CRYPTO_ALG_ALLOCATES_MEMORY unconditionally.
 
-> The motivation for the patch "fs: Do not check if there is a fsnotify
-> watcher on pseudo inodes"
-> was performance, but actually, FS_CLOSE and FS_OPEN events probably do
-> not impact performance as FS_MODIFY and FS_ACCESS.
+Mikulas
 
-Correct.
-
-> Do you agree that dropping FS_MODIFY/FS_ACCESS events for FMODE_STREAM
-> files as a general rule should be safe?
-
-Hum, so your patch drops FS_MODIFY/FS_ACCESS events also for named pipes
-compared to the original patch AFAIU and for those fsnotify works fine
-so far. So I'm not sure we won't regress someone else with this.
-
-I've also tested inotify on a sample pipe like: cat /dev/stdin | tee
-and watched /proc/<tee pid>/fd/0 and it actually generated IN_MODIFY |
-IN_ACCESS when data arrived to a pipe and tee(1) read it and then
-IN_CLOSE_WRITE | IN_CLOSE_NOWRITE when the pipe got closed (I thought you
-mentioned modify and access events didn't get properly generated?).
-
-So as much as I agree that some fsnotify events on FMODE_STREAM files are
-dubious, they could get used (possibly accidentally) and so after this
-Chromium experience I think we just have to revert the change and live with
-generating notification events for pipes to avoid userspace regressions.
-
-Thoughts?
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
