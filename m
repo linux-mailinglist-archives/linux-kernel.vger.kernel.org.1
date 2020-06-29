@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5D320E5EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B7720E4CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391411AbgF2VnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37596 "EHLO
+        id S1729509AbgF2V3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727882AbgF2Shx (ORCPT
+        with ESMTP id S1729022AbgF2Smm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:53 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B03C02F035
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:02:06 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id n5so15826917otj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:02:06 -0700 (PDT)
+        Mon, 29 Jun 2020 14:42:42 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D49C02F037
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:02:52 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 72so15801915otc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:02:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1rA5138g73IgTvkP7mopL0WHcrbS6bYnkDgAhMEKZNg=;
-        b=nm8nNzEBeU/HUKWuqmuIjlS3zM5djhEybNPdmwWe4JBEyPwbk37rbc3imTXCHv5O2H
-         LlQmSUOM2k7r9VEwjPCTT4rDHfURp+Mi4QW/TcYSGsBmIvC6eHB5CdgzrZrCOUB38ajr
-         uzpngJVt2pxPoYZzLRsyDMdjCRakT0A3+7hs3UQBXSPJpQo4mYaebGrBgdUwZUIsRQzq
-         Ih9pgl5V+z+1xQ2tGaxcGLjHGXMMxSf5xU8zFn4sOSiZoakaxemDckZn43Ke0XtUVOXC
-         MoDGRxKzD6Z9bMQ61Ofuw7qR1AeR7z2JwsqjZJeWcGAxkFFB4VwvKZTHLAFrM15KMbI1
-         Rdog==
+        bh=L+1Xz44ar6Uipm1PA8hKU1mmGQISJNR16huXvQBXU6I=;
+        b=FHOaKahNgiBqalW/HJ7xU6Lci0yyJ1W3j5q7NdKCfei0LGFhxNl66FqNvW578NF/Tp
+         Xwon/3JNQgjYAGlkDbo5kfqW3ti/ewtur0uxwVKM5NUQ57dHFpKpn6a7HF0CB4Bi/OaU
+         qVX6wx33PATZj2rAQJ6T4gGTP27jbxsH9w4fkPFzbhGgMIX2J4AsQDuBrS2UEUnctgT3
+         o63jtCu8cDpkUIsx1jddZM1JCLhG20iDpgn6jTJfjDW1oT5PA/o3Eag38rj3CH8aMoTH
+         yMoSN+6rCfEqZb/o59YTB46ceXfNkidS6um7I2w92F0bYK6XQhq9oCVJtrYVXoj71s2E
+         mNwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1rA5138g73IgTvkP7mopL0WHcrbS6bYnkDgAhMEKZNg=;
-        b=j1Oh8t5PuonT5TNRkIXZYrav1kO0UPFm2u6LNaGR7v/siI1b+SPwrN6qLY2XZ9/adS
-         ieTl3YUsUHa4+a4QjZqsZY51nmzO0B4N7LEdPxN22GxacJI6vMtHN8jF1JXQJzEom7Gz
-         NiTphX0nL/FC9PYQWCyvgaglW5KVyn20adv7A1UDP/lQU6gywP/T6yP8vuuAGk9rRlg1
-         QRyXkvM0svIhG8z7dp/m1hhYNbrNhzBO3m0tP6IlFwleRk++KEPhj9wFwpHKJxj+sqhw
-         hJ/oZOLNrC3f3AKNEf1KfVfxSkHYQz+oWYYK5OiK+n8nqq8+3u1+PAjrBeL3jnpiiDD1
-         xR9w==
-X-Gm-Message-State: AOAM530CN4ORhsFCr0lwNnqC1lmzkIEpRGCILOZRaI7bg7dFQksOrDod
-        EE+hkclMlyGlNLtijKeF2N/QRT8ObPccFBcnZN8=
-X-Google-Smtp-Source: ABdhPJzk+3BAdTU8SeCGVQKhyttqR4bui+UeoUg70gTk9OlGkl4ZOWEjtc4BoUMl6w4yo7cKdQWTybbgKMv9kS2YHLY=
-X-Received: by 2002:a9d:6254:: with SMTP id i20mr13648498otk.145.1593442925827;
- Mon, 29 Jun 2020 08:02:05 -0700 (PDT)
+        bh=L+1Xz44ar6Uipm1PA8hKU1mmGQISJNR16huXvQBXU6I=;
+        b=DGCNbrnJ+JgA+9VCBg2rKCuXEm28DFd3ygjje7Kz6+zA1dEvMgqAXKhDdLpF+bDk15
+         t2rbqG5nVDQjoD0JPvVyCdOvi2KyMnRC4Zj0whzBrohe4801iqeY98ShV07BCCXAsSDu
+         d5bUhefgFAhKqw2YskulkekjqoW4MYs9eP+7GsgPb0fkJH8DBI7ewxyBvFF8duEazguJ
+         Q7hihXwFIu4q7Y9ptxWU8aNr8vxBkjjgSiVDDWYu/XZb6Ooz1LU5qDzYByZURG2Gl2wm
+         g6003rYIjzgqD6SPHAKlR4aWhB39SaRl+HZunI41rcC6BhdfwPByfXZscNQvHXM0NRb0
+         87Pg==
+X-Gm-Message-State: AOAM531sf1WPfTjlJFBUv83Jfx0tQLMJOPSSbdrGVnF0Kq17jyH/DY0L
+        vDxrl8JCmQhfmpL0q4C1azMIJmv5B+Py+sxUtB8=
+X-Google-Smtp-Source: ABdhPJxAv3nNA07e6BnrRu3LBTJ+LyIE2q/QM8cY6s6i/AdfdMV0lBURqFifSBhRLBv25JuF3dX27RCSg/1khsAd2mw=
+X-Received: by 2002:a05:6830:3151:: with SMTP id c17mr14283505ots.143.1593442971967;
+ Mon, 29 Jun 2020 08:02:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200629140442.1043957-1-lee.jones@linaro.org> <20200629140442.1043957-10-lee.jones@linaro.org>
-In-Reply-To: <20200629140442.1043957-10-lee.jones@linaro.org>
+References: <20200629140442.1043957-1-lee.jones@linaro.org> <20200629140442.1043957-11-lee.jones@linaro.org>
+In-Reply-To: <20200629140442.1043957-11-lee.jones@linaro.org>
 From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Mon, 29 Jun 2020 18:01:37 +0300
-Message-ID: <CAFCwf11Tmw4cGr2UMY=dnJFPj6d+PLG2F1ThExvA8bM7wVNb=g@mail.gmail.com>
-Subject: Re: [PATCH 09/20] misc: habanalabs: gaudi: Remove ill placed asterisk
- from kerneldoc header
+Date:   Mon, 29 Jun 2020 18:02:24 +0300
+Message-ID: <CAFCwf11L35U4u-C+rKijJbPNc9VowFOaKWKzx=ZNY4cN=EkyBg@mail.gmail.com>
+Subject: Re: [PATCH 10/20] misc: habanalabs: gaudi: gaudi_security: Repair
+ incorrectly named function arg
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -66,38 +66,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, Jun 29, 2020 at 5:04 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> W=1 kernel builds report a lack of description of gaudi_set_asic_funcs()'s
-> 'hdev' argument.  In reality it is documented, but the formatting
-> was not as expected '@.*:'.  Instead, there was a misplaced asterisk
-> which was confusing the kerneldoc validator.
+> audi_pb_set_block()'s argument 'base' was incorrectly named 'block' in
+gaudi_pb_set_block()'s
+
+> its function header.
 >
-> Squashes the following W=1 warning:
+> Fixes the following W=1 kernel build warning(s):
 >
->  drivers/misc/habanalabs/gaudi/gaudi.c:6746: warning: Function parameter or member 'hdev' not described in 'gaudi_set_asic_funcs'
+>  drivers/misc/habanalabs/gaudi/gaudi_security.c:454: warning: Function parameter or member 'base' not described in 'gaudi_pb_set_block'
+>  drivers/misc/habanalabs/gaudi/gaudi_security.c:454: warning: Excess function parameter 'block' description in 'gaudi_pb_set_block'
 >
 > Cc: Oded Gabbay <oded.gabbay@gmail.com>
 > Cc: Tomer Tayar <ttayar@habana.ai>
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  drivers/misc/habanalabs/gaudi/gaudi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/misc/habanalabs/gaudi/gaudi_security.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
-> diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-> index 61f88e9884ce9..bdb9c0080c464 100644
-> --- a/drivers/misc/habanalabs/gaudi/gaudi.c
-> +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-> @@ -6739,7 +6739,7 @@ static const struct hl_asic_funcs gaudi_funcs = {
->  /**
->   * gaudi_set_asic_funcs - set GAUDI function pointers
+> diff --git a/drivers/misc/habanalabs/gaudi/gaudi_security.c b/drivers/misc/habanalabs/gaudi/gaudi_security.c
+> index 6a351e31fa6af..abdd5ed8f2cf6 100644
+> --- a/drivers/misc/habanalabs/gaudi/gaudi_security.c
+> +++ b/drivers/misc/habanalabs/gaudi/gaudi_security.c
+> @@ -447,8 +447,7 @@ static u64 gaudi_rr_hbw_mask_high_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+>   * gaudi_set_block_as_protected - set the given block as protected
 >   *
-> - * @*hdev: pointer to hl_device structure
-> + * @hdev: pointer to hl_device structure
->   *
+>   * @hdev: pointer to hl_device structure
+> - * @block: block base address
+> - *
+> + * @base: block base address
 >   */
->  void gaudi_set_asic_funcs(struct hl_device *hdev)
+>  static void gaudi_pb_set_block(struct hl_device *hdev, u64 base)
+>  {
 > --
 > 2.25.1
 >
-
-This patch is:
+With the above fix, This patch is:
 Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
