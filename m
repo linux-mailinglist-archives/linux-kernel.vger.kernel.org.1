@@ -2,34 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7F620E3BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E4D20E56A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390755AbgF2VRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:17:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:36810 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729478AbgF2Sy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:54:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E64061042;
-        Mon, 29 Jun 2020 03:37:58 -0700 (PDT)
-Received: from [10.37.12.90] (unknown [10.37.12.90])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4DCCC3F71E;
-        Mon, 29 Jun 2020 03:37:57 -0700 (PDT)
-Subject: Re: [PATCH] arm64/cpufeature: Validate feature bits spacing in
- arm64_ftr_regs[]
-To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, broonie@kernel.org,
-        mark.rutland@arm.com, linux-kernel@vger.kernel.org
-References: <1592274331-19006-1-git-send-email-anshuman.khandual@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <ec04ed20-1ad8-6130-ebd9-0157e5753ef6@arm.com>
-Date:   Mon, 29 Jun 2020 11:42:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S2391352AbgF2Vgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:36:48 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:12468 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728407AbgF2Skk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:40:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593456040; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=2UyrXWkOMOMhSQo6t9EmNJzuHREHp5h9gbpKc9GpJzw=; b=jCQ39LoakAohhbZ1y9Vj7lPWwOf4QkjpOVUCgGwnUKaUMKEBc6GsY3pWFX/4ElehWxiVwGJa
+ 5llSilGz2fd658iBERViKgJMOVjkmqTwUTJrCIIZtEn9vG/+D4YaJXwDVVhTvxC0P6fsJ6q9
+ Uyr8ifkGp4ceV6w2K80/T0q5qBA=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n12.prod.us-west-2.postgun.com with SMTP id
+ 5ef9c72cad153efa34b15da6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 10:49:16
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DCD1BC433CA; Mon, 29 Jun 2020 10:49:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.50.61.98] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 33980C433C6;
+        Mon, 29 Jun 2020 10:49:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 33980C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v6 5/6] media: venus: core: Add support for opp
+ tables/perf voting
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        bjorn.andersson@linaro.org, agross@kernel.org, robdclark@gmail.com,
+        robdclark@chromium.org
+Cc:     viresh.kumar@linaro.org, sboyd@kernel.org, mka@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+References: <1592222564-13556-1-git-send-email-rnayak@codeaurora.org>
+ <1592222564-13556-6-git-send-email-rnayak@codeaurora.org>
+ <e0f856ec-e391-9b1d-baa3-7dda20cb853a@linaro.org>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <fbb3bdd7-523b-a5fa-cde1-c61e7691e7f9@codeaurora.org>
+Date:   Mon, 29 Jun 2020 16:19:08 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <1592274331-19006-1-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <e0f856ec-e391-9b1d-baa3-7dda20cb853a@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -38,97 +68,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/16/2020 03:25 AM, Anshuman Khandual wrote:
-> arm64_feature_bits for a register in arm64_ftr_regs[] are in a descending
-> order as per their shift values. Validate that these features bits are
-> defined correctly and do not overlap with each other. This check protects
-> against any inadvertent erroneous changes to the register definitions.
+
+
+On 6/18/2020 8:24 PM, Stanimir Varbanov wrote:
+> Hi Rajendra,
 > 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> Applies on 5.8-rc1.
+> On 6/15/20 3:02 PM, Rajendra Nayak wrote:
+>> Add support to add OPP tables and perf voting on the OPP powerdomain.
+>> This is needed so venus votes on the corresponding performance state
+>> for the OPP powerdomain along with setting the core clock rate.
+>>
+>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+>> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+>> Cc: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>> Cc: linux-media@vger.kernel.org
+>> ---
+>> No functional change in v6, rebased over 5.8-rc1
+>> Bindings update to add optional PD https://lore.kernel.org/patchwork/patch/1241077/
+>>
+>>   drivers/media/platform/qcom/venus/core.c       | 43 +++++++++++++++++---
+>>   drivers/media/platform/qcom/venus/core.h       |  5 +++
+>>   drivers/media/platform/qcom/venus/pm_helpers.c | 54 ++++++++++++++++++++++++--
+>>   3 files changed, 92 insertions(+), 10 deletions(-)
+>>
 > 
->   arch/arm64/kernel/cpufeature.c | 45 +++++++++++++++++++++++++++++++---
->   1 file changed, 42 insertions(+), 3 deletions(-)
+> <cut>
 > 
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index 4ae41670c2e6..2270eda9a7fb 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -697,11 +697,50 @@ static s64 arm64_ftr_safe_value(const struct arm64_ftr_bits *ftrp, s64 new,
->   
->   static void __init sort_ftr_regs(void)
->   {
-> -	int i;
-> +	const struct arm64_ftr_reg *ftr_reg;
-> +	const struct arm64_ftr_bits *ftr_bits;
-> +	unsigned int i, j, width, shift, prev_shift;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(arm64_ftr_regs); i++) {
-> +		/*
-> +		 * Features here must be sorted in descending order with respect
-> +		 * to their shift values and should not overlap with each other.
-> +		 */
-> +		ftr_reg = arm64_ftr_regs[i].reg;
-> +		for (ftr_bits = ftr_reg->ftr_bits, j = 0;
-> +				ftr_bits->width != 0; ftr_bits++, j++) {
-> +			if (WARN_ON(ftr_bits->shift  + ftr_bits->width > 64))
-> +				pr_err("%s has invalid feature at shift %d\n",
-> +					ftr_reg->name, ftr_bits->shift);
+>>   
+>> @@ -740,13 +740,16 @@ static int venc_power_v4(struct device *dev, int on)
+>>   
+>>   static int vcodec_domains_get(struct device *dev)
+>>   {
+>> +	int ret;
+>> +	struct opp_table *opp_table;
+>> +	struct device **opp_virt_dev;
+>>   	struct venus_core *core = dev_get_drvdata(dev);
+>>   	const struct venus_resources *res = core->res;
+>>   	struct device *pd;
+>>   	unsigned int i;
+>>   
+>>   	if (!res->vcodec_pmdomains_num)
+>> -		return -ENODEV;
+>> +		goto skip_pmdomains;
+>>   
+>>   	for (i = 0; i < res->vcodec_pmdomains_num; i++) {
+>>   		pd = dev_pm_domain_attach_by_name(dev,
+>> @@ -763,7 +766,41 @@ static int vcodec_domains_get(struct device *dev)
+>>   	if (!core->pd_dl_venus)
+>>   		return -ENODEV;
+>>   
+>> +skip_pmdomains:
+>> +	if (!core->has_opp_table)
+>> +		return 0;
+>> +
+>> +	/* Attach the power domain for setting performance state */
+>> +	opp_table = dev_pm_opp_attach_genpd(dev, res->opp_pmdomain, &opp_virt_dev);
+>> +	if (IS_ERR(opp_table)) {
+>> +		ret = PTR_ERR(opp_table);
+>> +		goto opp_attach_err;
+>> +	}
+>> +
+>> +	core->opp_pmdomain = *opp_virt_dev;
+>> +	core->opp_dl_venus = device_link_add(dev, core->opp_pmdomain,
+>> +					     DL_FLAG_RPM_ACTIVE |
+>> +					     DL_FLAG_PM_RUNTIME |
+>> +					     DL_FLAG_STATELESS);
+>> +	if (!core->opp_dl_venus) {
+>> +		ret = -ENODEV;
+>> +		goto opp_dl_add_err;
+>> +	}
+>> +
+>>   	return 0;
+>> +
+>> +opp_dl_add_err:
+>> +	dev_pm_domain_detach(core->opp_pmdomain, true);
+>> +opp_attach_err:
+>> +	if (core->pd_dl_venus) {
+>> +		device_link_del(core->pd_dl_venus);
+>> +		for (i = 0; i < res->vcodec_pmdomains_num; i++) {
+>> +			if (IS_ERR_OR_NULL(core->pmdomains[i]))
+>> +				continue;
+>> +			dev_pm_domain_detach(core->pmdomains[i], true);
+>> +		}
+>> +	}
+>> +	return ret;
+>>   }
+>>   
+>>   static void vcodec_domains_put(struct device *dev)
+>> @@ -773,7 +810,7 @@ static void vcodec_domains_put(struct device *dev)
+>>   	unsigned int i;
+>>   
+>>   	if (!res->vcodec_pmdomains_num)
+>> -		return;
+>> +		goto skip_pmdomains;
+>>   
+>>   	if (core->pd_dl_venus)
+>>   		device_link_del(core->pd_dl_venus);
+>> @@ -783,6 +820,15 @@ static void vcodec_domains_put(struct device *dev)
+>>   			continue;
+>>   		dev_pm_domain_detach(core->pmdomains[i], true);
+>>   	}
+>> +
+>> +skip_pmdomains:
+>> +	if (!res->opp_pmdomain)
+>> +		return;
+>> +
+>> +	if (core->opp_dl_venus)
+>> +		device_link_del(core->opp_dl_venus);
+>> +
+>> +	dev_pm_domain_detach(core->opp_pmdomain, true);
+> 
+> Without corresponding changes in venus DT node we call pm_domain_detach
+> with core->opp_pmdomain = NULL which triggers NULL pointer dereference.
+> 
+> I guess you should check:
+> 
+> 	if (core->has_opp_table)
+> 		dev_pm_domain_detach(core->opp_pmdomain, true);
+> 
+> or
+> 
+> 	if (core->opp_pmdomain)
+> 		dev_pm_domain_detach(core->opp_pmdomain, true);
+> 
+> 
+> ... not sure which one is more appropriate or both are.
 
-nit:
+Thanks, I'll fix that up when I repost. Sorry I was out for a while so
+haven't been able to reproduce the rpmh timeout issue you reported.
+Will spend some time on it this week and see if I can reproduce it.
 
-			WARN((ftr_bits->shift + ftr_bits->width) > 64,
-				"%s......);?
 
-> +
-> +			/*
-> +			 * Skip the first feature. There is nothing to
-> +			 * compare against for now.
-> +			 */
-> +			if (j == 0)
-> +				continue;
-> +
-> +			prev_shift = ftr_reg->ftr_bits[j - 1].shift;
-> +			width = ftr_reg->ftr_bits[j].width;
-> +			shift = ftr_reg->ftr_bits[j].shift;
-> +			if (WARN_ON(prev_shift < shift + width))
-> +				pr_err("%s has feature overlap at shift %d\n",
-> +					ftr_reg->name, ftr_bits->shift);
-
-same as above ?
-
-> +		}
->   
-> -	/* Check that the array is sorted so that we can do the binary search */
-> -	for (i = 1; i < ARRAY_SIZE(arm64_ftr_regs); i++)
-> +		/*
-> +		 * Skip the first register. There is nothing to
-> +		 * compare against for now.
-> +		 */
-> +		if (i == 0)
-> +			continue;
-
-You are starting at 1 already, so you may skip this check.
-
-> +		/*
-> +		 * Registers here must be sorted in ascending order with respect
-> +		 * to sys_id for subsequent binary search in get_arm64_ftr_reg()
-> +		 * to work correctly.
-> +		 */
->   		BUG_ON(arm64_ftr_regs[i].sys_id < arm64_ftr_regs[i - 1].sys_id);
-> +	}
->   }
->   
->   /*
-
-Otherwise looks good to me.
-
-Suzuki
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
