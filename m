@@ -2,159 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9169B20D3F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DF620D417
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730587AbgF2TD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730413AbgF2TCn (ORCPT
+        id S1730449AbgF2TE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:04:58 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:48704 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730681AbgF2TEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:02:43 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600B1C02E2E7;
-        Mon, 29 Jun 2020 07:15:51 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id w17so7769603otl.4;
-        Mon, 29 Jun 2020 07:15:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=leTe6xkmfV5KnrwHpQkBH2Ot1AVMzXutDXCiCMkdL0s=;
-        b=D5bxn+vX+hJkiQ6u1hDgpe9Ubh1O0+/hI/a0YTh2p5W53gAiGr+TsqHj3R0KJjllPD
-         lAQkiUzVr7Ks2MMGvmDtt/201TPW6DPQgtEN0ILCj6hby+Haqn/hos9zgYrqHdDF6frO
-         s7ishahv4ICygo1rBBFyA21At4caf5OHAj0cqU1yVsipK1XhO+vC2gaFScs8VH3z3Gso
-         +xRQ/2qN1ZaYpTxB5Hwk45i4UZz7g3HSw8g89fC9oiINa6SzVeM7gB45FXmaKwdOopf0
-         eHkaWWOtWkxGNELgMqUROit391OAo0TnzJ8aXhREK1fdHQ7PG5VojgsdiIi9hLtDYubU
-         Fhpg==
-X-Gm-Message-State: AOAM530eVcbRLWoVhdQU8uXJztWyMEgLA6znS4rKeWlMY5YVVZhKqdVc
-        YLpC9K/bF4uBYX7CG6nVOP1RjquYytZ4pCG+MFNtp+oI
-X-Google-Smtp-Source: ABdhPJwF+ox3rAUQ3Gu09b9KiRz1EEaQAg3j/GWpph6pRu+ljyWkQE4GLirKio8p4W53YNrwzMy+Qjdw3v8DIct2tQc=
-X-Received: by 2002:a4a:b804:: with SMTP id g4mr14026744oop.40.1593440150627;
- Mon, 29 Jun 2020 07:15:50 -0700 (PDT)
+        Mon, 29 Jun 2020 15:04:54 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id AEAE920B4901;
+        Mon, 29 Jun 2020 07:16:16 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AEAE920B4901
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1593440177;
+        bh=v+wyGBDonImB9MBWCw9EMxRuWEDmYg128Fe9bnY0g6c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eVgVYnscENhuNhNQTyhZbFymcwHwtaCB1JVO/5//WlJM4Nv5RhfXHxEmzNS8HBHRk
+         p5XfObD9Ymg9erl91qvwxM3XsQMB/o/hLnkyCgNzIHXK+B6Dg2Bykqevr0UVq7cUGd
+         ArzJcUXJf0dxujES9z46s7zXvQxC856nBBvZzEaE=
+Date:   Mon, 29 Jun 2020 09:16:14 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Prakhar Srivastava <prsriva02@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v2 09/11] ima: Move validation of the keyrings
+ conditional into ima_validate_rule()
+Message-ID: <20200629141614.GD4694@sequoia>
+References: <20200626223900.253615-1-tyhicks@linux.microsoft.com>
+ <20200626223900.253615-10-tyhicks@linux.microsoft.com>
+ <0e7012e7-e1df-466d-9d51-a691f779570a@linux.microsoft.com>
 MIME-Version: 1.0
-References: <1593163942-5087-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <1593163942-5087-3-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <20200626143914.GE5289@sirena.org.uk> <TY2PR01MB3692A3B12CEF7F9708A8A59CD86E0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
- <20200629125756.GC5499@sirena.org.uk> <20200629134011.GA23284@bogus>
-In-Reply-To: <20200629134011.GA23284@bogus>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 29 Jun 2020 16:15:39 +0200
-Message-ID: <CAMuHMdU81-EAve+jHhL8+ohCd5YXrgLWpMgaCvgXFDLO7p17pQ@mail.gmail.com>
-Subject: Re: [PATCH/RFC v4 2/4] regulator: fixed: add regulator_ops members
- for suspend/resume
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0e7012e7-e1df-466d-9d51-a691f779570a@linux.microsoft.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sudeep,
+On 2020-06-27 16:49:46, Lakshmi Ramasubramanian wrote:
+> On 6/26/20 3:38 PM, Tyler Hicks wrote:
+> 
+> > Use ima_validate_rule() to ensure that the combination of a hook
+> > function and the keyrings conditional is valid and that the keyrings
+> > conditional is not specified without an explicit KEY_CHECK func
+> > conditional. This is a code cleanup and has no user-facing change.
+> 
+> In addition to checking for func=KEY_CHECK and the keyrings conditional, the
+> patch also validates the flags for other IMA hooks (such as
+> KEXEC_KERNEL_CHECK, POLICY_CHECK, etc.) Would be good to mention that in the
+> patch description.
 
-On Mon, Jun 29, 2020 at 3:40 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> On Mon, Jun 29, 2020 at 01:57:56PM +0100, Mark Brown wrote:
-> > On Mon, Jun 29, 2020 at 02:42:26AM +0000, Yoshihiro Shimoda wrote:
-> > > > From: Mark Brown, Sent: Friday, June 26, 2020 11:39 PM
-> > > > According to the changelog this is all about reflecting changes in the
-> > > > system state done by firmware but there's no interaction with firmware
-> > > > here which means this will be at best fragile.  If we need to reflect
-> > > > changes in firmware configuration I'd expect there to be some
-> > > > interaction with firmware about how it is configured, or at least that
-> > > > the configuration would come from the same source.
->
-> I agree.
->
-> > > I should have described background of previous patch series though,
-> > > according to previous discussion [1] the firmware side (like PSCI) is
-> > > also fragile unfortunately... So, I thought using regulator-off-in-suspend
-> > > in a regulator was better.
->
-> Please fix the firmware. You might have bigger problem than this if the
-> PSCI firmware is fragile as you state. Better to disable power management
-> on the platform if the firmware can't be fixed.
+It actually doesn't do any additional validation of other IMA hooks at
+this time. That check on entry->flags is an allowlist of every possible
+conditional flag except IMA_KEYRINGS. The ima_parse_rule() function is
+already validating all of these conditional flags.
 
-Saying the implementation is "fragile" might be bad wording.
-The issue is more with the specification being vague (see more below).
+Tyler
 
-> > > On other hand, Ulf is talking about either adding a property (perhaps like
-> > > regulator-off-in-suspend) into a regulator or just adding a new property
-> > > into MMC [2]. What do you think about Ulf' comment? I'm thinking
-> > > adding a new property "full-pwr-cycle-in-suspend" is the best solution.
-> > > This is because using a regulator property and reflecting a state of regulator without
-> > > firmware is fragile, as you said.
->
-> I haven't followed all the threads, but if it related to the policy you
-> want in the Linux, then may be use DT property or something. I don't know.
-> But if this is to indicate something based on firmware runtime/configuration,
-> then NACK for any approaches unconditionally.
-
-Like "arm,psci-system-suspend-is-power-down"[1]?
-
-> > TBH I worry about a property drifting out of sync with the firmware on
-> > systems where the firmware can be updated.  Personally my default
-> > assumption would always be that we're going to loose power for anything
-
-OK, so that's the "safe" way to handle this: assume power is lost.
-
-> > except the RAM and whatever is needed for wake sources during suspend so
-
-Oh, even wake-up sources may become unpowered[2] ;-)
-And thus stop working ;-(
-
-> > I find the discussion a bit surprising but in any case that seems like a
-> > better option than trying to shoehorn things in the way the series here
-> > did.  Like I said in my earlier replies if this is done through the
-> > regulator API I'd expect it to be via the suspend interface.
->
-> +1. If this platform needs Linux to keep some state on for users in the
-> firmware or anything outside Linux, it must resume back in the same state
-> as we entered the suspend state from the kernel.
-
-I think you're misunderstanding the issue: this is not related at all
-to Linux keeping state for non-Linux users.
-
-This is all about how to know what exactly PSCI is powering down during
-SYSTEM_SUSPEND.  In this specific case, it is about knowing if the eMMC
-is powered down or not, as Linux should follow a specific procedure to
-prepare the eMMC for that, and Linux should not if that isn't the case.
-
-I had a quick look at the latest revision of the PSCI specification, and
-it doesn't look like anything has changed in that area since my old patch
-series from 2017.  So it still boils down to: we don't know what a
-specific PSCI implementation will do, as basically anything is
-compliant, so the only safe thing is to assume the worst.
-
-Or am I missing something?
-Thanks!
-
-[1] "[PATCH/RFC 4/6] drivers: firmware: psci: Fix non-PMIC wake-up if
-    SYSTEM_SUSPEND cuts power"
-    https://lore.kernel.org/linux-arm-kernel/1487622809-25127-5-git-send-email-geert+renesas@glider.be/
-
-[2] [PATCH/RFC 0/6] PSCI: Fix non-PMIC wake-up if SYSTEM_SUSPEND cuts
-    power
-    https://lore.kernel.org/linux-arm-kernel/1487622809-25127-1-git-send-email-geert+renesas@glider.be/
-
-[3] https://developer.arm.com/architectures/system-architectures/software-standards/psci
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> 
+>  -lakshmi
+> 
+> > 
+> > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > ---
+> > 
+> > * v2
+> >    - Allowed IMA_DIGSIG_REQUIRED, IMA_PERMIT_DIRECTIO,
+> >      IMA_MODSIG_ALLOWED, and IMA_CHECK_BLACKLIST conditionals to be
+> >      present in the rule entry flags for non-buffer hook functions.
+> > 
+> >   security/integrity/ima/ima_policy.c | 13 +++++++++++--
+> >   1 file changed, 11 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> > index 8cdca2399d59..43d49ad958fb 100644
+> > --- a/security/integrity/ima/ima_policy.c
+> > +++ b/security/integrity/ima/ima_policy.c
+> > @@ -1000,6 +1000,15 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+> >   		case KEXEC_KERNEL_CHECK:
+> >   		case KEXEC_INITRAMFS_CHECK:
+> >   		case POLICY_CHECK:
+> > +			if (entry->flags & ~(IMA_FUNC | IMA_MASK | IMA_FSMAGIC |
+> > +					     IMA_UID | IMA_FOWNER | IMA_FSUUID |
+> > +					     IMA_INMASK | IMA_EUID | IMA_PCR |
+> > +					     IMA_FSNAME | IMA_DIGSIG_REQUIRED |
+> > +					     IMA_PERMIT_DIRECTIO |
+> > +					     IMA_MODSIG_ALLOWED |
+> > +					     IMA_CHECK_BLACKLIST))
+> > +				return false;
+> > +
+> >   			break;
+> >   		case KEXEC_CMDLINE:
+> >   			if (entry->action & ~(MEASURE | DONT_MEASURE))
+> > @@ -1027,7 +1036,8 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+> >   		default:
+> >   			return false;
+> >   		}
+> > -	}
+> > +	} else if (entry->flags & IMA_KEYRINGS)
+> > +		return false;
+> >   	return true;
+> >   }
+> > @@ -1209,7 +1219,6 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+> >   			keyrings_len = strlen(args[0].from) + 1;
+> >   			if ((entry->keyrings) ||
+> > -			    (entry->func != KEY_CHECK) ||
+> >   			    (keyrings_len < 2)) {
+> >   				result = -EINVAL;
+> >   				break;
+> > 
