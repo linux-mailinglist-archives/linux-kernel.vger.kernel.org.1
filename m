@@ -2,129 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B5820E00C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E59DF20E189
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389639AbgF2UmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:42:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43356 "EHLO
+        id S2388130AbgF2U4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731629AbgF2TOF (ORCPT
+        with ESMTP id S1731275AbgF2TNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:14:05 -0400
+        Mon, 29 Jun 2020 15:13:09 -0400
 Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F154C00877C;
-        Mon, 29 Jun 2020 02:24:52 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id j18so14678585wmi.3;
-        Mon, 29 Jun 2020 02:24:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FBBC00877E;
+        Mon, 29 Jun 2020 02:28:15 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id f139so15389994wmf.5;
+        Mon, 29 Jun 2020 02:28:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ld9UvqUlCnaDa6Nr3mgdlVma1GzBMI5TiJRPCMQofBE=;
-        b=nwiUy9yd09ET9XzcpcuXez3fMHQncNtE8g7djjkGgNt2GR+i//HlDlD37trW1/VkEv
-         816mnzjBNfxUnnGthrCdGeibMQDDOYLZh2pTjsf38WtAXbWqWCsP0eAGT8SSXiNlX35y
-         H8dYrWISxUff+AHAT3X2ZCH+jBq0N9R15IY8Xa95ER+hDlDDOEhMdSWaaCG5z1rpkQRL
-         kzHTatKOeVnb+VeXWALxLiJ3TozcMod7N2rqSrV9IiZJD9vhAaan8CWoKiESTNpeTXTt
-         VZPYjg9GrERjBs0f2V6Bb+u4jSAzsd9Lwvg8x3x1Mj7Rd8DXQY06jouGdiyjp3Xx16tX
-         hBFA==
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9jmh23NxVmiVZOqhxXccfhvhQo9rjgclPgRNTIzM2Zg=;
+        b=k6MxZu2f01F6wvw8Bu3KdsneTj+n1+HnKemOQAS4gmb1oFSwM1nXdZKLoLfeUhFPJ8
+         R/eMqcTPAFKwTymDGPhu9wAxgNQQptN6Ci9Z6p8r1wW0fAZGiYjJ7AbMyORbH50eBfnq
+         LiofUnQTr+nvCsy0iybwxhuCSxvD+qv/Ciyf3y/Jd8FepQ7Gf+KZFEsJxOFNbUQFadoU
+         Ns7Cm4L97IdwSjtQX2OG7ev867t6bE+ecyRgn+oxn8Mg6ASk4RqSR1i00ASPhx4MPB6U
+         8zFJSADjDdfgSA3Q9WcJFObnO7sabdda4OfbknzFtUbs+D9v4YMSCcG2RXSl+FGEz15j
+         2XoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ld9UvqUlCnaDa6Nr3mgdlVma1GzBMI5TiJRPCMQofBE=;
-        b=hVVIlbEM1Lykw6X7OLdITW+mu+ovzirOiLFcFx5luMpjwLzR7FNL+HV2W6h21MVMic
-         sSk1kX7no7M0YC4jVliTdrvWtMweiFFKD6JYbeYJxePerc7BSKrj0y6TdxfHMY7Gpuna
-         cNjb3qgcuiHSkHUlI3JRiwftGsbj8ZZBtiEZcHJ0yo2KbMbU3XaTQRt72oMkmZ3HhjM6
-         LN0T23UiZ0mS2/pqNZyvLxZm/sit+3FdWAOHuJrNNtpbfkVwMkJBx4GJ7CNO4LEtwN13
-         qKMxk2fxxWn7I962cfLrmOnaPFyxmoFqtKoNHf+ZEAdiIHVHXj2sAvM/wmD7hPWOnoaO
-         VdOQ==
-X-Gm-Message-State: AOAM530aCK40ceLLgZGP6Uj2+gMZSFoS8YvzP/oO7tEDJRsO0iY2T1Qn
-        uJ2ASlct/p6bn089KN2X5JY=
-X-Google-Smtp-Source: ABdhPJw2RkUG8Z0dPKHKb4TAjtfyGZ1T5JajSYZC/wPGfYi1xn86DVsJzfXAObmKns0fDMcS6MpByg==
-X-Received: by 2002:a1c:e285:: with SMTP id z127mr15922880wmg.162.1593422691054;
-        Mon, 29 Jun 2020 02:24:51 -0700 (PDT)
-Received: from localhost ([51.15.41.238])
-        by smtp.gmail.com with ESMTPSA id w2sm38771557wrs.77.2020.06.29.02.24.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 02:24:50 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 10:24:48 +0100
-From:   Stefan Hajnoczi <stefanha@gmail.com>
-To:     Liu Yi L <yi.l.liu@intel.com>
-Cc:     alex.williamson@redhat.com, eric.auger@redhat.com,
-        baolu.lu@linux.intel.com, joro@8bytes.org, kevin.tian@intel.com,
-        jacob.jun.pan@linux.intel.com, ashok.raj@intel.com,
-        jun.j.tian@intel.com, yi.y.sun@intel.com, jean-philippe@linaro.org,
-        peterx@redhat.com, hao.wu@intel.com,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 02/14] iommu: Report domain nesting info
-Message-ID: <20200629092448.GB31392@stefanha-x1.localdomain>
-References: <1592988927-48009-1-git-send-email-yi.l.liu@intel.com>
- <1592988927-48009-3-git-send-email-yi.l.liu@intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=9jmh23NxVmiVZOqhxXccfhvhQo9rjgclPgRNTIzM2Zg=;
+        b=GyNZB3imTFSLBfefTqRgwe5GeSQbKSIAEHFFEDOCAjdaSVMW1iAMW6PGWAWVXSJZ16
+         jNMc1k1JizXw3YHMYIzIbDieZAwVAx1oUqPqXQn0gQAEm+i3ZiYzyCnkmZ56nwKxfOaT
+         88lLHpxz/BS2ANY5iB5E3VyiAeZFcM/D0d+EjM8lu9pb2TsbcWnZO///iV8a95KHM/s/
+         mkI2SZGzRBwTJI1M4S1CdeJXZNNhJGUvuV6BZPzip5FvB3toLs3PRep4TkTBFbOPHxeY
+         FXCP5w6t1MdX46KvmyluF/hGOGUDlkub6BeV7plQIIWxTvQmCNA6cDyYMg7f1m6tGzg0
+         cMHg==
+X-Gm-Message-State: AOAM533rJeOpjGEq7jnCELTPz3pyesmPkxtGbjkP5SAQxR1C0dQ5VJUk
+        sLOmrDEPUcCGQqZb/StF4FE=
+X-Google-Smtp-Source: ABdhPJyxakvTjKvhXrUjZdv5uU0wefUAY9WB+AxW53yrtV07bI2wre2l4kHjIN0nalMYbmr+3Tgvwg==
+X-Received: by 2002:a1c:98cc:: with SMTP id a195mr15642943wme.89.1593422893715;
+        Mon, 29 Jun 2020 02:28:13 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.114.138])
+        by smtp.gmail.com with ESMTPSA id n8sm45044488wrj.44.2020.06.29.02.28.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jun 2020 02:28:12 -0700 (PDT)
+Subject: Re: [PATCH v5 04/10] iommu/mediatek: Setting MISC_CTRL register
+To:     Chao Hao <chao.hao@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Yong Wu <yong.wu@mediatek.com>, Evan Green <evgreen@chromium.org>,
+        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
+        FY Yang <fy.yang@mediatek.com>
+References: <20200629071310.1557-1-chao.hao@mediatek.com>
+ <20200629071310.1557-5-chao.hao@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Autocrypt: addr=matthias.bgg@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <0e9ceba8-0cc4-44a1-148c-1c9a6b3844ce@gmail.com>
+Date:   Mon, 29 Jun 2020 11:28:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="O5XBE6gyVG5Rl6Rj"
-Content-Disposition: inline
-In-Reply-To: <1592988927-48009-3-git-send-email-yi.l.liu@intel.com>
+In-Reply-To: <20200629071310.1557-5-chao.hao@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---O5XBE6gyVG5Rl6Rj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, Jun 24, 2020 at 01:55:15AM -0700, Liu Yi L wrote:
-> +/*
-> + * struct iommu_nesting_info - Information for nesting-capable IOMMU.
-> + *				user space should check it before using
-> + *				nesting capability.
-> + *
-> + * @size:	size of the whole structure
-> + * @format:	PASID table entry format, the same definition with
-> + *		@format of struct iommu_gpasid_bind_data.
-> + * @features:	supported nesting features.
-> + * @flags:	currently reserved for future extension.
-> + * @data:	vendor specific cap info.
-> + *
-> + * +---------------+----------------------------------------------------+
-> + * | feature       |  Notes                                             |
-> + * +===============+====================================================+
-> + * | SYSWIDE_PASID |  Kernel manages PASID in system wide, PASIDs used  |
-> + * |               |  in the system should be allocated by host kernel  |
-> + * +---------------+----------------------------------------------------+
-> + * | BIND_PGTBL    |  bind page tables to host PASID, the PASID could   |
-> + * |               |  either be a host PASID passed in bind request or  |
-> + * |               |  default PASIDs (e.g. default PASID of aux-domain) |
-> + * +---------------+----------------------------------------------------+
-> + * | CACHE_INVLD   |  mandatory feature for nesting capable IOMMU       |
-> + * +---------------+----------------------------------------------------+
+On 29/06/2020 09:13, Chao Hao wrote:
+> Add F_MMU_IN_ORDER_WR_EN and F_MMU_STANDARD_AXI_MODE_BIT definition
+> in MISC_CTRL register.
+> F_MMU_STANDARD_AXI_MODE_BIT:
+>   If we set F_MMU_STANDARD_AXI_MODE_BIT(bit[3][19] = 0, not follow
+> standard AXI protocol), iommu will send urgent read command firstly
+> compare with normal read command to improve performance.
 
-This feature description is vague about what CACHE_INVLD does and how to
-use it. If I understand correctly, the presence of this feature means
-that VFIO_IOMMU_NESTING_OP_CACHE_INVLD must be used?
+Can you please help me to understand the phrase. Sorry I'm not a AXI specialist.
+Does this mean that you will send a 'urgent read command' which is not described
+in the specifications instead of a normal read command?
 
-The same kind of clarification could be done for SYSWIDE_PASID and
-BIND_PGTBL too.
+> F_MMU_IN_ORDER_WR_EN:
+>   If we set F_MMU_IN_ORDER_WR_EN(bit[1][17] = 0, out-of-order write), iommu
+> will re-order write command and send more higher priority write command
+> instead of sending write command in order. The feature be controlled
+> by OUT_ORDER_EN macro definition.
+> 
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Suggested-by: Yong Wu <yong.wu@mediatek.com>
+> Signed-off-by: Chao Hao <chao.hao@mediatek.com>
+> ---
+>  drivers/iommu/mtk_iommu.c | 12 +++++++++++-
+>  drivers/iommu/mtk_iommu.h |  1 +
+>  2 files changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+> index 8f81df6cbe51..67b46b5d83d9 100644
+> --- a/drivers/iommu/mtk_iommu.c
+> +++ b/drivers/iommu/mtk_iommu.c
+> @@ -42,6 +42,9 @@
+>  #define F_INVLD_EN1				BIT(1)
+>  
+>  #define REG_MMU_MISC_CTRL			0x048
+> +#define F_MMU_IN_ORDER_WR_EN			(BIT(1) | BIT(17))
+> +#define F_MMU_STANDARD_AXI_MODE_BIT		(BIT(3) | BIT(19))
 
-Stefan
+Wouldn't it make more sense to name it F_MMU_STANDARD_AXI_MODE_EN?
 
---O5XBE6gyVG5Rl6Rj
-Content-Type: application/pgp-signature; name="signature.asc"
+> +
+>  #define REG_MMU_DCM_DIS				0x050
+>  
+>  #define REG_MMU_CTRL_REG			0x110
+> @@ -574,10 +577,17 @@ static int mtk_iommu_hw_init(const struct mtk_iommu_data *data)
+>  	}
+>  	writel_relaxed(0, data->base + REG_MMU_DCM_DIS);
+>  
+> +	regval = readl_relaxed(data->base + REG_MMU_MISC_CTRL);
 
------BEGIN PGP SIGNATURE-----
+We only need to read regval in the else branch.
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl75s2AACgkQnKSrs4Gr
-c8hGZgf/S6BmV5BJlZFL4v96V8MqJ1UApXYPiFhSWcTAi3F2d7D1PHEMnb2lik58
-p5STu+PaKGaPqTdgbYN9HuBnxDICBJeK15QlUiYiqUZ4fJWyoji1YKex99TBArJv
-d+aM8KEhWqQAmX6XC98rBa22CpE2o2KGopAAeHYebRuB7HLeaPbP0382nABszqQt
-JpkAcSMTXRXiwM82Bkt9wajLDQt90FksLcZl3mdMqYCn1sqKmOxLeCwJ4T4EuJMz
-/zH426rvbLkJeLWNgeI3+5fMdvqfAkbflq34AI6MQITTkhjKtfEs0WOH7Sn8EBA/
-SdAw3quTGbPopTw9cv2jtd+owKiL8w==
-=IfDH
------END PGP SIGNATURE-----
+>  	if (MTK_IOMMU_HAS_FLAG(data->plat_data, RESET_AXI)) {
+>  		/* The register is called STANDARD_AXI_MODE in this case */
+> -		writel_relaxed(0, data->base + REG_MMU_MISC_CTRL);
+> +		regval = 0;
+> +	} else {
+> +		/* For mm_iommu, it can improve performance by the setting */
+> +		regval &= ~F_MMU_STANDARD_AXI_MODE_BIT;
+> +		if (MTK_IOMMU_HAS_FLAG(data->plat_data, OUT_ORDER_EN))
+> +			regval &= ~F_MMU_IN_ORDER_WR_EN;
+>  	}
+> +	writel_relaxed(regval, data->base + REG_MMU_MISC_CTRL);
+>  
+>  	if (devm_request_irq(data->dev, data->irq, mtk_iommu_isr, 0,
+>  			     dev_name(data->dev), (void *)data)) {
+> diff --git a/drivers/iommu/mtk_iommu.h b/drivers/iommu/mtk_iommu.h
+> index 7cc39f729263..4b780b651ef4 100644
+> --- a/drivers/iommu/mtk_iommu.h
+> +++ b/drivers/iommu/mtk_iommu.h
+> @@ -22,6 +22,7 @@
+>  #define HAS_BCLK			BIT(1)
+>  #define HAS_VLD_PA_RNG			BIT(2)
+>  #define RESET_AXI			BIT(3)
+> +#define OUT_ORDER_EN			BIT(4)
 
---O5XBE6gyVG5Rl6Rj--
+Maybe something like OUT_ORDER_WR_EN, to make clear that it's about the the
+write path.
+
+>  
+>  #define MTK_IOMMU_HAS_FLAG(pdata, _x) \
+>  		((((pdata)->flags) & (_x)) == (_x))
+> 
