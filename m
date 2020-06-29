@@ -2,148 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8ECB20D38B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE8320D471
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730290AbgF2S77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:59:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:37358 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728460AbgF2S74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:59:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3DF96150C;
-        Mon, 29 Jun 2020 10:42:56 -0700 (PDT)
-Received: from bogus (unknown [10.37.8.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F079E3F71E;
-        Mon, 29 Jun 2020 10:42:52 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 18:42:46 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH/RFC v4 2/4] regulator: fixed: add regulator_ops members
- for suspend/resume
-Message-ID: <20200629174220.GA4188@bogus>
-References: <1593163942-5087-3-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <20200626143914.GE5289@sirena.org.uk>
- <TY2PR01MB3692A3B12CEF7F9708A8A59CD86E0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
- <20200629125756.GC5499@sirena.org.uk>
- <20200629134011.GA23284@bogus>
- <CAMuHMdU81-EAve+jHhL8+ohCd5YXrgLWpMgaCvgXFDLO7p17pQ@mail.gmail.com>
- <20200629150728.GA27911@bogus>
- <20200629161450.GE5499@sirena.org.uk>
- <20200629164207.GB27911@bogus>
- <20200629172651.GG5499@sirena.org.uk>
+        id S1729244AbgF2TIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:08:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729229AbgF2TCn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:02:43 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9E3C031C5D;
+        Mon, 29 Jun 2020 10:43:32 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id 35so7387270ple.0;
+        Mon, 29 Jun 2020 10:43:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wwO/+1x3ujsY+tBQxjynuoHG+S+oW8bGQ0JEGfkKl18=;
+        b=q6VTKnjrIQ9GZwtHp6W8lnaBCt0D7cnVX6zRR8zbRsgPRvWzkckmhVQnxhqhf2SztQ
+         +rk54A5VZ9T4y8tgIPDQb2TK0x30Gc2bxIHNeCV0+k/5JB2Qr8S31+9nzkZBv4H8B1dZ
+         S7Nx4knFUO5IYs75LGDNQGVYwC5/HUd+5nFVLyNwxvBUTDWBLKcOMr+cfrw2308dlldI
+         WrqpGGQ1IqKJYywRAR3S7h1nqCGSB1qKSb+phXXH60lUsIejGQpbomdqL9cK9Pvyslbk
+         Bs7T7ZU5e11Xcs+YQNk7qBcKT8bG04FCbxH16bkFyZa/Mw58JAhLh7JMcLNIom4umbOz
+         8tYg==
+X-Gm-Message-State: AOAM531FeqTpQdRePUJND4B+dv1KI7Dv6qrhGRy6ZmJ4M4L9UEoNnusq
+        4lvR0Io1hgJZb7GOeKItGzSoD7l6
+X-Google-Smtp-Source: ABdhPJwBT8x6FA0IDZEkNk2enlT2SeUgMHnfKY6ICLSCwyeYI5Ca9yC95pTwUTqHMsvKBPHYnrf8pw==
+X-Received: by 2002:a17:90a:70c6:: with SMTP id a6mr16987836pjm.16.1593452612181;
+        Mon, 29 Jun 2020 10:43:32 -0700 (PDT)
+Received: from sultan-box.localdomain ([89.46.114.241])
+        by smtp.gmail.com with ESMTPSA id m14sm353976pgn.83.2020.06.29.10.43.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 10:43:31 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 10:43:28 -0700
+From:   Sultan Alsawaf <sultan@kerneltoast.com>
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc:     aaron.ma@canonical.com, admin@kryma.net,
+        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
+        hdegoede@redhat.com, hn.chen@weidahitech.com, jikos@kernel.org,
+        kai.heng.feng@canonical.com, linux-i2c@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com,
+        wsa@kernel.org
+Subject: Re: [PATCH v2] HID: i2c-hid: Use block reads when possible to save
+ power
+Message-ID: <20200629174328.GB1646@sultan-box.localdomain>
+References: <c4373272-e656-773c-dfd2-0efc4c53c92d@linux.intel.com>
+ <20200616154951.3050-1-sultan@kerneltoast.com>
+ <37ceaf7a-3421-e305-4355-a6b40ae54843@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200629172651.GG5499@sirena.org.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <37ceaf7a-3421-e305-4355-a6b40ae54843@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 06:26:51PM +0100, Mark Brown wrote:
-> On Mon, Jun 29, 2020 at 05:42:07PM +0100, Sudeep Holla wrote:
-> > On Mon, Jun 29, 2020 at 05:14:50PM +0100, Mark Brown wrote:
-> > > On Mon, Jun 29, 2020 at 04:07:28PM +0100, Sudeep Holla wrote:
-> > >
-> > > > The specification states clearly:
-> > > > "... all devices in the system must be in a state that is compatible
-> > > > with entry into the system state. These preconditions are beyond the scope
-> > > > of this specification and are therefore not described here."
-> > > > "Prior to the call, the OS must disable all sources of wakeup other than
-> > > > those it needs to support for its implementation of suspend to RAM."
->
-> > > This gets a bit circular for a generic OS since the OS needs some way to
-> > > figure out what it's supposed to do on a given platform - for example
-> > > the OS may be happy to use wakeup sources that the firmware is just
-> > > going to cut power on.
->
-> > While I understand the sentiments here, PSCI is targeted to address CPU
-> > power state management mainly and system states like suspend/reset and
-> > poweroff which involves last CPU. This is one of the reason it is out of
-> > the scope of the specification.
->
-> Sure, but as soon as we start talking about the last CPU stuff we're
-> inevitably talking about the system as a whole.
->
-> > Here is my understanding. DT specifies all the wakeup sources. Linux
-> > can configure those and user may choose to enable a subset of them is
-> > wakeup. As stated in the spec and also based on what we already do in
-> > the kernel, we disable all other wakeup sources.
->
-> > The PSCI firmware can then either read those from the interrupt controller
-> > or based on static platform understanding, must not disable those wakeup
-> > sources.
->
-> That bit about static platform understanding isn't super helpful for the
-> OS, so long as the firmware might do that the OS is pretty much out of
-> luck.
->
+On Wed, Jun 17, 2020 at 02:17:19PM +0300, Jarkko Nikula wrote:
+> On 6/16/20 6:49 PM, Sultan Alsawaf wrote:
+> > From: Sultan Alsawaf <sultan@kerneltoast.com>
+> > 
+> > We have no way of knowing how large an incoming payload is going to be,
+> > so the only strategy available up until now has been to always retrieve
+> > the maximum possible report length over i2c, which can be quite
+> > inefficient. For devices that send reports in block read format, the i2c
+> > controller driver can read the payload length on the fly and terminate
+> > the i2c transaction early, resulting in considerable power savings.
+> > 
+> > On a Dell Precision 15 5540 with an i9-9880H, resting my finger on the
+> > touchpad causes psys power readings to go up by about 4W and hover there
+> > until I remove my finger. With this patch, my psys readings go from 4.7W
+> > down to 3.1W, yielding about 1.6W in savings. This is because my
+> > touchpad's max report length is 60 bytes, but all of the regular reports
+> > it sends for touch events are only 32 bytes, so the i2c transfer is
+> > roughly halved for the common case.
+> > 
+> > Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+> > ---
+> > Jarkko, could you try this?
+> >   drivers/hid/i2c-hid/i2c-hid-core.c | 5 ++++-
+> >   1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+> > index 294c84e136d7..739dccfc57e1 100644
+> > --- a/drivers/hid/i2c-hid/i2c-hid-core.c
+> > +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+> > @@ -472,11 +472,14 @@ static void i2c_hid_get_input(struct i2c_hid *ihid)
+> >   	int ret;
+> >   	u32 ret_size;
+> >   	int size = le16_to_cpu(ihid->hdesc.wMaxInputLength);
+> > +	u16 flags;
+> >   	if (size > ihid->bufsize)
+> >   		size = ihid->bufsize;
+> > -	ret = i2c_master_recv(ihid->client, ihid->inbuf, size);
+> > +	/* Try to do a block read if the size fits in one byte */
+> > +	flags = size > 255 ? I2C_M_RD : I2C_M_RD | I2C_M_RECV_LEN;
+> > +	ret = i2c_transfer_buffer_flags(ihid->client, ihid->inbuf, size, flags);
+> >   	if (ret != size) {
+> >   		if (ret < 0)
+> >   			return;
+> 
+> This still causes a regression for me.
 
-I don't disagree. That's one of the reason I wanted to gather requirement
-few years back when PSCI system suspend was introduced. I couldn't
-convince PSCI spec authors myself.
+Hmm, for some reason in 5.8 I get the same problem, but 5.7 is fine. Could you
+try this on 5.7 and see if it works?
 
-> > > > I see nothing has been fixed in the firmware too and we are still
-> > > > discussing the same after 3 years 😄. Clearly we should start trusting
-> > > > firmware and built capability to fix and replace it if there are bugs
-> > > > just like kernel and stop hacking around in the kernel to deal with
-> > > > just broken platform/psci firmware.
->
-> > > This isn't just an issue of buggy firmware as far as I can see, it's
-> > > also a lack of ability for the OS and firmware to communicate
-> > > information about their intentions to each other.  As things stand you'd
-> > > need to put static information in the DT.
->
-> > It is easy for DT to get out of sync with firmware unless it is generated
-> > by the same firmware. That's the reason why I am against such multiple
->
-> The ability for things to get out of sync also concerns me as I said
-> further back in the thread but I'm not sure we have much alternative,
-> realistically we're going to need some facility to work around firmware
-> that isn't ideal.
->
+In the meantime I'll bisect 5.8 to see why it's causing problems for me...
 
-I understand and I agree. That's the main reason I want to understand this
-better and provide a generic solution. The current pm_suspend_via_firmware
-seem to have different intentions(at-least that's what I grasped quickly
-reading through the document)
-
-> > sources of information. I understand ACPI has more flexibility and I did
->
-> ACPI has a much stronger idea of what the system looks like which helps
-> it a lot here.
->
-
-Yes, I wanted something similar initially but didn't get good response
-both from community and PSCI spec authors.
-
-> > Each device or platform having its specific property in DT is not scalable.
-> > Not sure if it is a generic problem. If it is, I would like to understand
-> > more details on such lack of ability for communtication between OS and
-> > firmware.
->
-> It seems like a generic issue from where I'm sitting.
-
-I can't disagree with that. The description of the issue and the solution
-in the thread is. We need make it more generic and provide generic solution,.
-I already see 2-3 threads addressing this in isolation as specific issue.
-Also we need to check with DT maintainers if there are fine with the idea
-of binding to address this issue.
-
---
-Regards,
-Sudeep
+Sultan
