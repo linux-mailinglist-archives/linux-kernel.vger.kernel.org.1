@@ -2,99 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9005320E435
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD1620E406
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390631AbgF2VW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40014 "EHLO
+        id S2390897AbgF2VUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729528AbgF2Swl (ORCPT
+        with ESMTP id S1729784AbgF2Swt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:41 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7099C00F818
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:23 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id 22so15207038wmg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:23 -0700 (PDT)
+        Mon, 29 Jun 2020 14:52:49 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA59C00F81A
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:25 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id k6so16377198wrn.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CmcV70ImeDYyJH0D86nMAPNtLmoBDPn40YdPz8GKRXM=;
-        b=PLNdPqDKMGgcPUcP/wj6XHcodfWWaUwahn0fM8Nis0Z3g+IGDBQuQgfwhl+tvscw66
-         0bWgg6XdXtXwj55wGKpPWE+CustOveiTYiE53BAPkQbfbUaak384QEuw3hTxZ0NTFH4e
-         sUo6fniQ1atpO9eouosuvMdnPlGHmhCwHjmlrMt7uYm6ES9Kl/4oIlOaR9X+8svJhfai
-         1XGu3s+iyX/dGMIHx1IM6fPCrW+YgvcUW9QGvkpS5zMlClxPVVl0cGmF4Mu3xsL8wtHN
-         JqHNNRW6XasBi59uDasZ1MFEoJ7O1UEgOnyCUBjWfkvGYS/iSqIOALVNIP89ar/AU1dv
-         RxeQ==
+        bh=VyXQmg8USJyJo46Hf1mqBSUzSZO5Ztqa3oyrhxOKqoA=;
+        b=hkUBYgGWzJ3wgzTRVRr20Elco1H4dzi9VN2RKURSWYuKkKgyk9iD2TGo9o3LJilNJd
+         oKWVnEgFKFJgkE70is9cdKHOQ9Kmmh5+z5QsNB6rt/iBsk3m/MU/hxHKsfeqRBF982be
+         d80dF+ITFQGq2O3F4TcZS083DYvtlZboB4Qs9gtcSBsXfEa1kBvGgyg6YRwHXFglSOfy
+         AjhsMGe/SvFcOYl5E81A0YHSTLyTTSvWjgFgAe4lwFh+plb++/W3/Oxt454ApXOrR5tQ
+         N7p1Hw+HCC0A5AYcOHahDveUf73sgEqmLn7N0zG3bxoU+gE8RQK5NnW7BeWu8yR++Na8
+         wW7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CmcV70ImeDYyJH0D86nMAPNtLmoBDPn40YdPz8GKRXM=;
-        b=dpxk/2tjfBOxVWeQWGXOqRW2gMN4IYpDlrzXWASYixfPa5av/7QDXSTVNFPO1IPxqD
-         bo3dkSsHumK7TuObl682k3YQJ5HKZOhGDFXsMygtyUmrMEj6qQbT0pUlD9ueHFQm69Qm
-         A2RXkqWWUs9ti8Gd2+uxMRUH/V/+mh2QbCPBBjEEzwzePq3BOUwh7hRBRytWA39ch8RB
-         xIgdi4B6BrrjwhHiqRS6kX9kMGOG3rSdiZ546x5tBtTpIlEKKEAab0cdcJIOUvntFd2g
-         Z8k1DuMCxnJ2Pt3JvRG4HY+YOndreNBtJpzPUcergWT59nDenvT+fPFqKX+GGHdeDmtq
-         NWJQ==
-X-Gm-Message-State: AOAM533v6DIjw0Bm2QyiU/ZzhS1sZZVpGr7ndpVH95G3TUFRD/QmVTww
-        wMdQBI+VS3P45VWR+ShNTnr+DQ==
-X-Google-Smtp-Source: ABdhPJwt4s91RdM3HeV0ZjKpyywC+1yJrTUvPF1DKQrW4lw5NbJj9Mco8JDQ6isSDIY1/hJbYjX7fQ==
-X-Received: by 2002:a1c:e18a:: with SMTP id y132mr16196622wmg.27.1593433942722;
-        Mon, 29 Jun 2020 05:32:22 -0700 (PDT)
+        bh=VyXQmg8USJyJo46Hf1mqBSUzSZO5Ztqa3oyrhxOKqoA=;
+        b=qY8x1BB5F2Yv0bv+4xpXcmIUgqpGoPJNZIMmkL09FSFnu6s86X/JuegAb/bV8Hf4Fh
+         Bty82VQ9LoLCgNQynOCvLsiT3xs4rnptQ6iyc4ta/I65evVaeyrsLXT0ajToThMlrz4B
+         OprBrFinrGcTQw4qN6fjL887doYADYpvQWL8pbRjH9KcQTRYwhfJfadM3q6BkjaZPmdz
+         uJoiBAGhrXQlr2/Va900a5FREf4IeUDw8gknu/uOpCVZn0WiOn8OdKSMC1Senwec2tQW
+         MkdpUtnsiGHAJuEJKD/Nc0v5k09IL97QkeJMAneNTbs67ejkg+sRM5k4FCJzLndj+MLC
+         f9xQ==
+X-Gm-Message-State: AOAM531vgSdPKoYJlRnykvDdg4uIk5IYGCl2KbWKtkM7jfhUkfjNO15F
+        18orgiW4UseGAVz2SWy59ClHuQ==
+X-Google-Smtp-Source: ABdhPJwVE4Hv20bxRXzoNoNnH4NM4GaBNTD55z+C/B8dFoPUP776MXDFvUHix/xRQUgvls2z0lNAlg==
+X-Received: by 2002:adf:de8d:: with SMTP id w13mr16612235wrl.129.1593433944677;
+        Mon, 29 Jun 2020 05:32:24 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id d201sm28064111wmd.34.2020.06.29.05.32.21
+        by smtp.gmail.com with ESMTPSA id d201sm28064111wmd.34.2020.06.29.05.32.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 05:32:21 -0700 (PDT)
+        Mon, 29 Jun 2020 05:32:24 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andrey Vostrikov <andrey.vostrikov@cogentembedded.com>,
-        Nikita Yushchenko <nikita.yoush@cogentembedded.com>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>
-Subject: [PATCH 3/5] mfd: rave-sp: Fix mistake in 'struct rave_sp_deframer's kerneldoc
-Date:   Mon, 29 Jun 2020 13:32:13 +0100
-Message-Id: <20200629123215.1014747-4-lee.jones@linaro.org>
+        Chen-Yu Tsai <wens@csie.org>, Carlo Caione <carlo@caione.org>
+Subject: [PATCH 5/5] mfd: axp20x-i2c: Do not define 'struct acpi_device_id' when !CONFIG_ACPI
+Date:   Mon, 29 Jun 2020 13:32:15 +0100
+Message-Id: <20200629123215.1014747-6-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629123215.1014747-1-lee.jones@linaro.org>
 References: <20200629123215.1014747-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Argument 'received' was incorrectly named by its struct type 'completion'
-instead of its name.
+Since ACPI_PTR() is used to NULLify the value when !CONFIG_ACPI,
+struct axp20x_i2c_acpi_match becomes defined by unused.
 
-Fixes the following W=1 warning:
+This squashes the current W=1 kernel builds warning:
 
- drivers/mfd/rave-sp.c:107: warning: Function parameter or member 'received' not described in 'rave_sp_reply'
+ drivers/mfd/axp20x-i2c.c:82:36: warning: ‘axp20x_i2c_acpi_match’ defined but not used [-Wunused-const-variable=]
 
-Cc: Andrey Vostrikov <andrey.vostrikov@cogentembedded.com>
-Cc: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc: Andrey Smirnov <andrew.smirnov@gmail.com>
+Cc: Chen-Yu Tsai <wens@csie.org>
+Cc: Carlo Caione <carlo@caione.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mfd/rave-sp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mfd/axp20x-i2c.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mfd/rave-sp.c b/drivers/mfd/rave-sp.c
-index 26c7b63e008a8..abaab541df19d 100644
---- a/drivers/mfd/rave-sp.c
-+++ b/drivers/mfd/rave-sp.c
-@@ -96,7 +96,7 @@ struct rave_sp_deframer {
-  * @data:	Buffer to store reply payload in
-  * @code:	Expected reply code
-  * @ackid:	Expected reply ACK ID
-- * @completion: Successful reply reception completion
-+ * @received:   Successful reply reception completion
-  */
- struct rave_sp_reply {
- 	size_t length;
+diff --git a/drivers/mfd/axp20x-i2c.c b/drivers/mfd/axp20x-i2c.c
+index 14f9df74f855c..3dd650125c239 100644
+--- a/drivers/mfd/axp20x-i2c.c
++++ b/drivers/mfd/axp20x-i2c.c
+@@ -79,6 +79,7 @@ static const struct i2c_device_id axp20x_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, axp20x_i2c_id);
+ 
++#if IS_ENABLED(CONFIG_ACPI)
+ static const struct acpi_device_id axp20x_i2c_acpi_match[] = {
+ 	{
+ 		.id = "INT33F4",
+@@ -87,6 +88,7 @@ static const struct acpi_device_id axp20x_i2c_acpi_match[] = {
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(acpi, axp20x_i2c_acpi_match);
++#endif
+ 
+ static struct i2c_driver axp20x_i2c_driver = {
+ 	.driver = {
 -- 
 2.25.1
 
