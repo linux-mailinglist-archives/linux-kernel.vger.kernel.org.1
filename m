@@ -2,135 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B53520E55F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361D720E39D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403799AbgF2VgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:36:16 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:33481 "EHLO m43-7.mailgun.net"
+        id S2390669AbgF2VPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:15:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726869AbgF2Skn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:43 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593456043; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=MMgpD5DCLQ6JjRpMGo318xv/+oipR7QB8aPXFQoSC2I=; b=VCAl77z4c2Yw0uwrj5anPBR+fJRd3a3E+5q6FwIM5E2fWRS1Gy9hiN/hxk6B25cr2+JwZCAt
- yiWl6XGml7FpdjxrV/VhdqZLPO1qvnyRqc92RPVMJkO7QJmPTPqFwOxort9kxJzTNVgv8MT0
- u0ax27SW84XAkU3yNN2hEljfVlM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5efa0e694c9690533a5f0fc1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 15:53:13
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8BDA9C433B1; Mon, 29 Jun 2020 15:53:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1729951AbgF2SzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:55:16 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 467E3C433CA;
-        Mon, 29 Jun 2020 15:53:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 467E3C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv3 0/7] System Cache support for GPU and required SMMU support
-Date:   Mon, 29 Jun 2020 21:22:43 +0530
-Message-Id: <cover.1593344119.git.saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 7ACB225299;
+        Mon, 29 Jun 2020 15:55:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593446119;
+        bh=S08nYrekJmBOyeiTsbZtC3oLsNMFUCdDZY8lMIQKECY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=tg8c7WLq1bbc5FuszN/URA+GWyDvgdjF3cPTUUZLbNlQKhAN/W6zbQ0Zo8kNbhfXU
+         1qYl+Tsi2dDl28Kqp/2Myu3xUGBJ7p+XK2AusV/OLWzqDlvun14XmKISR/MdU0GVOB
+         74F8c0YCmOzdMmFMrdebH0Rs8aNOZQaZ0ZLIEJdg=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Pavel Shilovsky <pshilov@microsoft.com>,
+        Steve French <stfrench@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 110/135] cifs/smb3: Fix data inconsistent when zero file range
+Date:   Mon, 29 Jun 2020 11:52:44 -0400
+Message-Id: <20200629155309.2495516-111-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200629155309.2495516-1-sashal@kernel.org>
+References: <20200629155309.2495516-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.229-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.4.229-rc1
+X-KernelTest-Deadline: 2020-07-01T15:53+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some hardware variants contain a system cache or the last level
-cache(llc). This cache is typically a large block which is shared
-by multiple clients on the SOC. GPU uses the system cache to cache
-both the GPU data buffers(like textures) as well the SMMU pagetables.
-This helps with improved render performance as well as lower power
-consumption by reducing the bus traffic to the system memory.
+From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 
-The system cache architecture allows the cache to be split into slices
-which then be used by multiple SOC clients. This patch series is an
-effort to enable and use two of those slices perallocated for the GPU,
-one for the GPU data buffers and another for the GPU SMMU hardware
-pagetables.
+[ Upstream commit 6b69040247e14b43419a520f841f2b3052833df9 ]
 
-Patch 1 adds a init_context_bank implementation hook to set SCTLR.HUPCF.
-Patch 2,3,6,7 adds system cache support in SMMU and GPU driver.
-Patch 4 and 5 are minor cleanups for arm-smmu impl.
+CIFS implements the fallocate(FALLOC_FL_ZERO_RANGE) with send SMB
+ioctl(FSCTL_SET_ZERO_DATA) to server. It just set the range of the
+remote file to zero, but local page cache not update, then the data
+inconsistent with server, which leads the xfstest generic/008 failed.
 
-Changes in v3:
- * Fix domain attribute setting to before iommu_attach_device()
- * Fix few code style and checkpatch warnings
- * Rebase on top of Jordan's latest split pagetables and per-instance
-   pagetables support [1][2]
+So we need to remove the local page caches before send SMB
+ioctl(FSCTL_SET_ZERO_DATA) to server. After next read, it will
+re-cache it.
 
-Changes in v2:
- * Addressed review comments and rebased on top of Jordan's split
-   pagetables series
+Fixes: 30175628bf7f5 ("[SMB3] Enable fallocate -z support for SMB3 mounts")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
+Cc: stable@vger.kernel.org # v3.17
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/cifs/smb2ops.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-[1] https://lore.kernel.org/patchwork/cover/1264446/
-[2] https://lore.kernel.org/patchwork/cover/1264460/
-
-Jordan Crouse (1):
-  iommu/arm-smmu: Add a init_context_bank implementation hook
-
-Sai Prakash Ranjan (4):
-  iommu/io-pgtable-arm: Add support to use system cache
-  iommu/arm-smmu: Add domain attribute for system cache
-  iommu: arm-smmu-impl: Remove unwanted extra blank lines
-  iommu: arm-smmu-impl: Convert to use of_match_node() for qcom impl
-
-Sharat Masetty (2):
-  drm/msm: rearrange the gpu_rmw() function
-  drm/msm/a6xx: Add support for using system cache(LLC)
-
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 82 +++++++++++++++++++++++++
- drivers/gpu/drm/msm/adreno/a6xx_gpu.h   |  3 +
- drivers/gpu/drm/msm/adreno/adreno_gpu.c | 23 ++++++-
- drivers/gpu/drm/msm/msm_drv.c           |  8 +++
- drivers/gpu/drm/msm/msm_drv.h           |  1 +
- drivers/gpu/drm/msm/msm_gpu.h           |  5 +-
- drivers/gpu/drm/msm/msm_iommu.c         |  3 +
- drivers/gpu/drm/msm/msm_mmu.h           |  4 ++
- drivers/iommu/arm-smmu-impl.c           | 13 ++--
- drivers/iommu/arm-smmu-qcom.c           | 13 ++++
- drivers/iommu/arm-smmu.c                | 46 +++++++++-----
- drivers/iommu/arm-smmu.h                | 13 ++++
- drivers/iommu/io-pgtable-arm.c          |  7 ++-
- include/linux/io-pgtable.h              |  4 ++
- include/linux/iommu.h                   |  1 +
- 15 files changed, 198 insertions(+), 28 deletions(-)
-
+diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
+index 870b7e763bab9..087261ca6d463 100644
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -1145,6 +1145,12 @@ static long smb3_zero_range(struct file *file, struct cifs_tcon *tcon,
+ 	inode = d_inode(cfile->dentry);
+ 	cifsi = CIFS_I(inode);
+ 
++	/*
++	 * We zero the range through ioctl, so we need remove the page caches
++	 * first, otherwise the data may be inconsistent with the server.
++	 */
++	truncate_pagecache_range(inode, offset, offset + len - 1);
++
+ 	/* if file not oplocked can't be sure whether asking to extend size */
+ 	if (!CIFS_CACHE_READ(cifsi))
+ 		if (keep_size == false)
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.25.1
 
