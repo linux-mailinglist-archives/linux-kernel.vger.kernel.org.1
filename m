@@ -2,167 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A0120D7ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B4F20D689
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733281AbgF2TeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:34:04 -0400
-Received: from comms.puri.sm ([159.203.221.185]:43922 "EHLO comms.puri.sm"
+        id S1732051AbgF2TVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:21:03 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:52283 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730497AbgF2Td7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:33:59 -0400
+        id S1729752AbgF2TU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:20:58 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49wJ7Z2bG8z9tvr7;
+        Mon, 29 Jun 2020 08:51:54 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Ql3tDOZ5HUJp; Mon, 29 Jun 2020 08:51:54 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49wJ7Z1fPrz9tvr5;
+        Mon, 29 Jun 2020 08:51:54 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 32B8FE00E1;
-        Sun, 28 Jun 2020 23:36:42 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id rUhZomYSJLbQ; Sun, 28 Jun 2020 23:36:41 -0700 (PDT)
-Subject: Re: [PATCH v3 1/2] arm64: dts: Add a device tree for the Librem 5
- phone
-To:     robh@kernel.org, kernel@puri.sm, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, mchehab@kernel.org, Anson.Huang@nxp.com,
-        agx@sigxcpu.org, angus@akkea.ca, broonie@kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Daniel Baluta <daniel.baluta@nxp.com>
-References: <20200617073821.16737-1-martin.kepplinger@puri.sm>
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-Autocrypt: addr=martin.kepplinger@puri.sm; keydata=
- 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
- ekMtxgNYb/8oDry09UFHbGHLsWn6oBo=
-Message-ID: <1731775c-b94a-043a-c09e-8cca6ad8a8b0@puri.sm>
-Date:   Mon, 29 Jun 2020 08:36:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3C2088B784;
+        Mon, 29 Jun 2020 08:52:00 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id lj7dlNmcEfXw; Mon, 29 Jun 2020 08:52:00 +0200 (CEST)
+Received: from [172.25.230.105] (po15451.idsi0.si.c-s.fr [172.25.230.105])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B57FB8B75B;
+        Mon, 29 Jun 2020 08:51:59 +0200 (CEST)
+Subject: Re: [PATCH v2] powerpc/uaccess: Use flexible addressing with
+ __put_user()/__get_user()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
+        segher@kernel.crashing.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <c2addbd9d76212242d3d8554a2f7ff849fb08b85.1587040754.git.christophe.leroy@c-s.fr>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <7b916759-1683-b4df-0d4b-b04b3fcd9a02@csgroup.eu>
+Date:   Mon, 29 Jun 2020 08:52:00 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
-In-Reply-To: <20200617073821.16737-1-martin.kepplinger@puri.sm>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+MIME-Version: 1.0
+In-Reply-To: <c2addbd9d76212242d3d8554a2f7ff849fb08b85.1587040754.git.christophe.leroy@c-s.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.06.20 09:38, Martin Kepplinger wrote:
-> From: "Angus Ainslie (Purism)" <angus@akkea.ca>
+Hi Michael,
+
+I see this patch is marked as "defered" in patchwork, but I can't see 
+any related discussion. Is it normal ?
+
+Christophe
+
+Le 16/04/2020 à 14:39, Christophe Leroy a écrit :
+> At the time being, __put_user()/__get_user() and friends only use
+> D-form addressing, with 0 offset. Ex:
 > 
-> Add a devicetree description for the Librem 5 phone. The early batches
-> that have been sold are supported as well as the mass-produced device
-> available later this year, see https://puri.sm/products/librem-5/
+> 	lwz	reg1, 0(reg2)
 > 
-> This boots to a working console with working WWAN modem, wifi usdhc,
-> IMU sensor device, proximity sensor, haptic motor, gpio keys, GNSS and LEDs.
+> Give the compiler the opportunity to use other adressing modes
+> whenever possible, to get more optimised code.
 > 
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> Signed-off-by: Angus Ainslie (Purism) <angus@akkea.ca>
-> Signed-off-by: Guido Günther <agx@sigxcpu.org>
-> For audio related part:
-> Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+> Hereunder is a small exemple:
+> 
+> struct test {
+> 	u32 item1;
+> 	u16 item2;
+> 	u8 item3;
+> 	u64 item4;
+> };
+> 
+> int set_test_user(struct test __user *from, struct test __user *to)
+> {
+> 	int err;
+> 	u32 item1;
+> 	u16 item2;
+> 	u8 item3;
+> 	u64 item4;
+> 
+> 	err = __get_user(item1, &from->item1);
+> 	err |= __get_user(item2, &from->item2);
+> 	err |= __get_user(item3, &from->item3);
+> 	err |= __get_user(item4, &from->item4);
+> 
+> 	err |= __put_user(item1, &to->item1);
+> 	err |= __put_user(item2, &to->item2);
+> 	err |= __put_user(item3, &to->item3);
+> 	err |= __put_user(item4, &to->item4);
+> 
+> 	return err;
+> }
+> 
+> Before the patch:
+> 
+> 00000df0 <set_test_user>:
+>   df0:	94 21 ff f0 	stwu    r1,-16(r1)
+>   df4:	39 40 00 00 	li      r10,0
+>   df8:	93 c1 00 08 	stw     r30,8(r1)
+>   dfc:	93 e1 00 0c 	stw     r31,12(r1)
+>   e00:	7d 49 53 78 	mr      r9,r10
+>   e04:	80 a3 00 00 	lwz     r5,0(r3)
+>   e08:	38 e3 00 04 	addi    r7,r3,4
+>   e0c:	7d 46 53 78 	mr      r6,r10
+>   e10:	a0 e7 00 00 	lhz     r7,0(r7)
+>   e14:	7d 29 33 78 	or      r9,r9,r6
+>   e18:	39 03 00 06 	addi    r8,r3,6
+>   e1c:	7d 46 53 78 	mr      r6,r10
+>   e20:	89 08 00 00 	lbz     r8,0(r8)
+>   e24:	7d 29 33 78 	or      r9,r9,r6
+>   e28:	38 63 00 08 	addi    r3,r3,8
+>   e2c:	7d 46 53 78 	mr      r6,r10
+>   e30:	83 c3 00 00 	lwz     r30,0(r3)
+>   e34:	83 e3 00 04 	lwz     r31,4(r3)
+>   e38:	7d 29 33 78 	or      r9,r9,r6
+>   e3c:	7d 43 53 78 	mr      r3,r10
+>   e40:	90 a4 00 00 	stw     r5,0(r4)
+>   e44:	7d 29 1b 78 	or      r9,r9,r3
+>   e48:	38 c4 00 04 	addi    r6,r4,4
+>   e4c:	7d 43 53 78 	mr      r3,r10
+>   e50:	b0 e6 00 00 	sth     r7,0(r6)
+>   e54:	7d 29 1b 78 	or      r9,r9,r3
+>   e58:	38 e4 00 06 	addi    r7,r4,6
+>   e5c:	7d 43 53 78 	mr      r3,r10
+>   e60:	99 07 00 00 	stb     r8,0(r7)
+>   e64:	7d 23 1b 78 	or      r3,r9,r3
+>   e68:	38 84 00 08 	addi    r4,r4,8
+>   e6c:	93 c4 00 00 	stw     r30,0(r4)
+>   e70:	93 e4 00 04 	stw     r31,4(r4)
+>   e74:	7c 63 53 78 	or      r3,r3,r10
+>   e78:	83 c1 00 08 	lwz     r30,8(r1)
+>   e7c:	83 e1 00 0c 	lwz     r31,12(r1)
+>   e80:	38 21 00 10 	addi    r1,r1,16
+>   e84:	4e 80 00 20 	blr
+> 
+> After the patch:
+> 
+> 00000dbc <set_test_user>:
+>   dbc:	39 40 00 00 	li      r10,0
+>   dc0:	7d 49 53 78 	mr      r9,r10
+>   dc4:	80 03 00 00 	lwz     r0,0(r3)
+>   dc8:	7d 48 53 78 	mr      r8,r10
+>   dcc:	a1 63 00 04 	lhz     r11,4(r3)
+>   dd0:	7d 29 43 78 	or      r9,r9,r8
+>   dd4:	7d 48 53 78 	mr      r8,r10
+>   dd8:	88 a3 00 06 	lbz     r5,6(r3)
+>   ddc:	7d 29 43 78 	or      r9,r9,r8
+>   de0:	7d 48 53 78 	mr      r8,r10
+>   de4:	80 c3 00 08 	lwz     r6,8(r3)
+>   de8:	80 e3 00 0c 	lwz     r7,12(r3)
+>   dec:	7d 29 43 78 	or      r9,r9,r8
+>   df0:	7d 43 53 78 	mr      r3,r10
+>   df4:	90 04 00 00 	stw     r0,0(r4)
+>   df8:	7d 29 1b 78 	or      r9,r9,r3
+>   dfc:	7d 43 53 78 	mr      r3,r10
+>   e00:	b1 64 00 04 	sth     r11,4(r4)
+>   e04:	7d 29 1b 78 	or      r9,r9,r3
+>   e08:	7d 43 53 78 	mr      r3,r10
+>   e0c:	98 a4 00 06 	stb     r5,6(r4)
+>   e10:	7d 23 1b 78 	or      r3,r9,r3
+>   e14:	90 c4 00 08 	stw     r6,8(r4)
+>   e18:	90 e4 00 0c 	stw     r7,12(r4)
+>   e1c:	7c 63 53 78 	or      r3,r3,r10
+>   e20:	4e 80 00 20 	blr
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+> Reviewed-by: Segher Boessenkool <segher@kernel.crashing.org>
 > ---
-> 
-> revision history
-> ----------------
-> v3:
-> thanks a lot Mark for reviewing! changes since v2:
->  * nicer audio cards names
->  * squash unneeded audio_pwr regulator
->  * remove the unneeded susphy_quirk from dwc3_1 after more testing
->  * add usdhc2 card detect via gpio
->  * add headphone detect for audio card
-> 
 > v2:
-> thanks a lot Marco, Daniel and Pavel for reviewing. changes since v1:
->  * alphabetical sortings / more consistent node names
->  * remove unused regulator and pinctrl descriptions
->  * generic labels for leds, backlight, flash and torch
->  * audio clk settings moved to sai2 node
-> https://lore.kernel.org/linux-arm-kernel/20200604084756.586-1-martin.kepplinger@puri.sm/T/
+> - Added <> modifier in __put_user_asm() and __get_user_asm()
+> - Removed %U2 in __put_user_asm2() and __get_user_asm2()
+> - Reworded the commit log
+> ---
+>   arch/powerpc/include/asm/uaccess.h | 28 ++++++++++++++--------------
+>   1 file changed, 14 insertions(+), 14 deletions(-)
 > 
-> v1:
-> https://lore.kernel.org/linux-arm-kernel/20200514155737.12160-1-martin.kepplinger@puri.sm/
+> diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
+> index 7c811442b607..9365b59495a2 100644
+> --- a/arch/powerpc/include/asm/uaccess.h
+> +++ b/arch/powerpc/include/asm/uaccess.h
+> @@ -114,7 +114,7 @@ extern long __put_user_bad(void);
+>    */
+>   #define __put_user_asm(x, addr, err, op)			\
+>   	__asm__ __volatile__(					\
+> -		"1:	" op " %1,0(%2)	# put_user\n"		\
+> +		"1:	" op "%U2%X2 %1,%2	# put_user\n"	\
+>   		"2:\n"						\
+>   		".section .fixup,\"ax\"\n"			\
+>   		"3:	li %0,%3\n"				\
+> @@ -122,7 +122,7 @@ extern long __put_user_bad(void);
+>   		".previous\n"					\
+>   		EX_TABLE(1b, 3b)				\
+>   		: "=r" (err)					\
+> -		: "r" (x), "b" (addr), "i" (-EFAULT), "0" (err))
+> +		: "r" (x), "m<>" (*addr), "i" (-EFAULT), "0" (err))
+>   
+>   #ifdef __powerpc64__
+>   #define __put_user_asm2(x, ptr, retval)				\
+> @@ -130,8 +130,8 @@ extern long __put_user_bad(void);
+>   #else /* __powerpc64__ */
+>   #define __put_user_asm2(x, addr, err)				\
+>   	__asm__ __volatile__(					\
+> -		"1:	stw %1,0(%2)\n"				\
+> -		"2:	stw %1+1,4(%2)\n"			\
+> +		"1:	stw%X2 %1,%2\n"			\
+> +		"2:	stw%X2 %L1,%L2\n"			\
+>   		"3:\n"						\
+>   		".section .fixup,\"ax\"\n"			\
+>   		"4:	li %0,%3\n"				\
+> @@ -140,7 +140,7 @@ extern long __put_user_bad(void);
+>   		EX_TABLE(1b, 4b)				\
+>   		EX_TABLE(2b, 4b)				\
+>   		: "=r" (err)					\
+> -		: "r" (x), "b" (addr), "i" (-EFAULT), "0" (err))
+> +		: "r" (x), "m" (*addr), "i" (-EFAULT), "0" (err))
+>   #endif /* __powerpc64__ */
+>   
+>   #define __put_user_size_allowed(x, ptr, size, retval)		\
+> @@ -260,7 +260,7 @@ extern long __get_user_bad(void);
+>   
+>   #define __get_user_asm(x, addr, err, op)		\
+>   	__asm__ __volatile__(				\
+> -		"1:	"op" %1,0(%2)	# get_user\n"	\
+> +		"1:	"op"%U2%X2 %1, %2	# get_user\n"	\
+>   		"2:\n"					\
+>   		".section .fixup,\"ax\"\n"		\
+>   		"3:	li %0,%3\n"			\
+> @@ -269,7 +269,7 @@ extern long __get_user_bad(void);
+>   		".previous\n"				\
+>   		EX_TABLE(1b, 3b)			\
+>   		: "=r" (err), "=r" (x)			\
+> -		: "b" (addr), "i" (-EFAULT), "0" (err))
+> +		: "m<>" (*addr), "i" (-EFAULT), "0" (err))
+>   
+>   #ifdef __powerpc64__
+>   #define __get_user_asm2(x, addr, err)			\
+> @@ -277,8 +277,8 @@ extern long __get_user_bad(void);
+>   #else /* __powerpc64__ */
+>   #define __get_user_asm2(x, addr, err)			\
+>   	__asm__ __volatile__(				\
+> -		"1:	lwz %1,0(%2)\n"			\
+> -		"2:	lwz %1+1,4(%2)\n"		\
+> +		"1:	lwz%X2 %1, %2\n"			\
+> +		"2:	lwz%X2 %L1, %L2\n"		\
+>   		"3:\n"					\
+>   		".section .fixup,\"ax\"\n"		\
+>   		"4:	li %0,%3\n"			\
+> @@ -289,7 +289,7 @@ extern long __get_user_bad(void);
+>   		EX_TABLE(1b, 4b)			\
+>   		EX_TABLE(2b, 4b)			\
+>   		: "=r" (err), "=&r" (x)			\
+> -		: "b" (addr), "i" (-EFAULT), "0" (err))
+> +		: "m" (*addr), "i" (-EFAULT), "0" (err))
+>   #endif /* __powerpc64__ */
+>   
+>   #define __get_user_size_allowed(x, ptr, size, retval)		\
+> @@ -299,10 +299,10 @@ do {								\
+>   	if (size > sizeof(x))					\
+>   		(x) = __get_user_bad();				\
+>   	switch (size) {						\
+> -	case 1: __get_user_asm(x, ptr, retval, "lbz"); break;	\
+> -	case 2: __get_user_asm(x, ptr, retval, "lhz"); break;	\
+> -	case 4: __get_user_asm(x, ptr, retval, "lwz"); break;	\
+> -	case 8: __get_user_asm2(x, ptr, retval);  break;	\
+> +	case 1: __get_user_asm(x, (u8 __user *)ptr, retval, "lbz"); break;	\
+> +	case 2: __get_user_asm(x, (u16 __user *)ptr, retval, "lhz"); break;	\
+> +	case 4: __get_user_asm(x, (u32 __user *)ptr, retval, "lwz"); break;	\
+> +	case 8: __get_user_asm2(x, (u64 __user *)ptr, retval);  break;	\
+>   	default: (x) = __get_user_bad();			\
+>   	}							\
+>   } while (0)
 > 
-> 
-> 
->  arch/arm64/boot/dts/freescale/Makefile        |    1 +
->  .../boot/dts/freescale/imx8mq-librem5.dts     | 1137 +++++++++++++++++
->  2 files changed, 1138 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-librem5.dts
-> 
-
-again thanks for reviewing so far. do you have any other objections or
-thoughts on this addition?
-
-                            martin
-
