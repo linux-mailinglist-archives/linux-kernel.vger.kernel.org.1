@@ -2,133 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D84320D658
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C39120D68F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731948AbgF2TTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:19:13 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:10297 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726965AbgF2TS6 (ORCPT
+        id S1731955AbgF2TVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:21:19 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:26142 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731293AbgF2TVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:18:58 -0400
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200629110342epoutp046f1a3d2da5700b2819c41541f978e1d4~c-uPQ-tb30737007370epoutp04G
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:03:42 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200629110342epoutp046f1a3d2da5700b2819c41541f978e1d4~c-uPQ-tb30737007370epoutp04G
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593428622;
-        bh=Zyhj8gV47zhrcYl9w/BuVya5Auwt/6potpNwZISDEnE=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=Iro6T0LA0FEeaP/a8LPbggWk77srCTly29D+WXVAxyML5kWMeLte5u0zk9m5MPnUH
-         +wC6SRs0/XORL/2ZnJYqPCFgqJVTB5eFV2ifJDY1rCW9uJrlcEIkcAJ81cP/oRhYnT
-         maKQQFpM15jcOHjvDs2LZr8g2R7O0v5KUZ/Tf/QM=
-Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20200629110342epcas5p255b8fe6e43fbfe29d7491d2dc5027e35~c-uPB55B80897608976epcas5p2S;
-        Mon, 29 Jun 2020 11:03:42 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B2.FB.09703.E8AC9FE5; Mon, 29 Jun 2020 20:03:42 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200629110320epcas5p34ccccc7c293f077b34b350935c328215~c-t6zDjsu1432714327epcas5p3j;
-        Mon, 29 Jun 2020 11:03:20 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200629110320epsmtrp1aae6e1dd9b08a88f838b831ddc11168a~c-t6ybuB01726217262epsmtrp1Q;
-        Mon, 29 Jun 2020 11:03:20 +0000 (GMT)
-X-AuditID: b6c32a4a-4cbff700000025e7-d2-5ef9ca8e95c1
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2C.A3.08382.87AC9FE5; Mon, 29 Jun 2020 20:03:20 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.109.224.135]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200629110319epsmtip2ee4f361c0e6349cad43a0b25433b5b4e~c-t50fakG0135001350epsmtip2C;
-        Mon, 29 Jun 2020 11:03:19 +0000 (GMT)
-From:   Anupam Aggarwal <anupam.al@samsung.com>
-To:     hirofumi@mail.parknet.co.jp
-Cc:     linux-kernel@vger.kernel.org, a.sahrawat@samsung.com,
-        Anupam Aggarwal <anupam.al@samsung.com>
-Subject: [PATCH] fs: fat: add check for dir size in fat_calc_dir_size
-Date:   Mon, 29 Jun 2020 16:32:39 +0530
-Message-Id: <1593428559-13920-1-git-send-email-anupam.al@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHIsWRmVeSWpSXmKPExsWy7bCmpm7fqZ9xBmte81pc3J1q8b7hCrvF
-        9LkbWCwu75rD5sDicf9tokffllWMHp83yQUwR3HZpKTmZJalFunbJXBlLLh3nLFgJ1fF8tUP
-        WRoYj3J0MXJySAiYSBx808bexcjFISSwm1GiZ9lvRgjnE6NE2+xPzBDON0aJgwtfsMG0rL1w
-        mQUisZdR4u61d1D9X4FaFp4Fq2IT0JWY+2I2K4gtIiAvcenQdSYQm1kgWaLn6WuwGmEBV4mH
-        m56A2SwCqhL/fzUC1XBw8ALFZy+QgVgmJ3HzXCfYFRIC7ewSL7e/AquREHCRWH87CaJGWOLV
-        8S3sELaUxMt+iH8kBPoZJbqWXWCFcGYwShzZs40Fospe4nVzA9ggZgFNifW79CHCshJTT62D
-        upNPovf3EyaIOK/EjnkwtrLE1GuvWSFsSYnHna3MELaHxOTNU8GOEBKIlXg4bRL7BEbZWQgb
-        FjAyrmKUTC0ozk1PLTYtMMpLLdcrTswtLs1L10vOz93ECI5iLa8djA8ffNA7xMjEwXiIUYKD
-        WUmE97P1tzgh3pTEyqrUovz4otKc1OJDjNIcLErivEo/zsQJCaQnlqRmp6YWpBbBZJk4OKUa
-        mKyrjkiuF1M4Wu1kGhzZXBLzy+GCzKFPwnlPs9KjP5Y9/fnNZTt3UqPQ9KU6fP5v98RHb16k
-        8sXlwMUtpvNdlMTl35xIsndV/WW4RNq4lr187tI9P+9rsq1YIvfBKHr3oc1brylt+SQ7j6eS
-        a+pOppVLRbv3FCb+VW37b5sYpHdjrqqQoJrqkX1BhvfPzPx7pbDchXHj1hqzG59EvrTr6T49
-        eEYkpCCi/aCpz+n3F592z2n9VfaeX/SWidyD9XUc83csigotVO3fJGIyo3LBvJN8OmGGmyc/
-        7LxYuq/648+ptd/DdV9qSKxkm7jwdfFRpzeuFxdel76lHbNSyun/m0kSArHpvjKWf3nLYs/c
-        e63EUpyRaKjFXFScCAD5REVjUQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMJMWRmVeSWpSXmKPExsWy7bCSvG7FqZ9xBhcXyFlc3J1q8b7hCrvF
-        9LkbWCwu75rD5sDicf9tokffllWMHp83yQUwR3HZpKTmZJalFunbJXBlLLh3nLFgJ1fF8tUP
-        WRoYj3J0MXJySAiYSKy9cJmli5GLQ0hgN6PEsou9rBAJSYmm1xsYIWxhiZX/nrNDFH1mlLh6
-        bTYLSIJNQFdi7ovZYA0iAvISlw5dZwKxmQVSJbbe+scGYgsLuEo83PQEzGYRUJX4/6sRqIaD
-        gxcoPnuBDMR8OYmb5zqZJzDyLGBkWMUomVpQnJueW2xYYJiXWq5XnJhbXJqXrpecn7uJERwO
-        Wpo7GLev+qB3iJGJg/EQowQHs5II72frb3FCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeW8ULowT
-        EkhPLEnNTk0tSC2CyTJxcEo1MNldmjT1XsOEomtVisHMyS9ZZ81YM+uq8sbnwhb/mr35VZOF
-        Pssf8En8yvv4XIq161GnTX3JLPtLVzfa7LttdW67z+RjhnciLLpSFM6cu7+TefnWBffu1DT2
-        8+1Vyei0+OjoK6ytN+OOI++bZdPu/2E+mHtAs2nz9ScTJPr81exOdnEvFxN8Zb9crO9wttmq
-        N/pPjrdf4l7/asKVrzXNu3MWtaTfbvzxpfrQUoPsHbkHfsZuX+J4f3uQScbRL3cLJ05juvTl
-        xyX9POk6nqUmXLvyTy67fPKwSOQ7LZXHQny2xqbyfEJhnRrdZ/kTzBf3dPPcneub87pj4neZ
-        qXKTnk4rTFlwYDMHS4U9x/1wtlQlluKMREMt5qLiRADtARSPdgIAAA==
-X-CMS-MailID: 20200629110320epcas5p34ccccc7c293f077b34b350935c328215
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200629110320epcas5p34ccccc7c293f077b34b350935c328215
-References: <CGME20200629110320epcas5p34ccccc7c293f077b34b350935c328215@epcas5p3.samsung.com>
+        Mon, 29 Jun 2020 15:21:08 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TB5X2X029757;
+        Mon, 29 Jun 2020 04:06:03 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=pfpt0818;
+ bh=3aOA3OUjBLYvL08USywN1kGPx4VsQhFs8Gld/FjshXY=;
+ b=wJxsuJFvM40bUiApi3gsZ9gfiLXxlQW6SaJ8qRgQVDeFPpTtCnK8TwQMZpnuMbgkNDw2
+ vW4U8xOENP50bJuQtpKTU/9u7SoVng7mPQVsmM6NMqoNlsKwbbxEjB8mtOrhoIf3VJoE
+ DxbQauoqBj5wumJd5GxeAp+8Nn7PBz1Dug8eEj+xZXuotXb7qP0KaaLKi5yEb2D1i+P1
+ yxkiVPztZFXVpaahna9VbEy7Kgbj95sDQiiXoZUoq8RR1y25lR8+dz0TkZ0PtAeZho2v
+ HReRZnkMmwnkt01pMsxcVdCsf2TsFfAWSLZKnZABtdGOPds0nuhZbUe44ngfSmcQ5yAM mA== 
+Received: from sc-exch04.marvell.com ([199.233.58.184])
+        by mx0a-0016f401.pphosted.com with ESMTP id 31y0wrtfxp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 04:06:03 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Jun
+ 2020 04:06:02 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 29 Jun 2020 04:06:02 -0700
+Received: from NN-LT0049.marvell.com (NN-LT0049.marvell.com [10.193.54.6])
+        by maili.marvell.com (Postfix) with ESMTP id D9A3E3F703F;
+        Mon, 29 Jun 2020 04:05:58 -0700 (PDT)
+From:   Alexander Lobakin <alobakin@marvell.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Igor Russkikh <irusskikh@marvell.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        "Alexander Lobakin" <alobakin@marvell.com>,
+        <GR-everest-linux-l2@marvell.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next 1/6] net: qed: correct existing SPDX tags
+Date:   Mon, 29 Jun 2020 14:05:07 +0300
+Message-ID: <20200629110512.1812-2-alobakin@marvell.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200629110512.1812-1-alobakin@marvell.com>
+References: <20200629110512.1812-1-alobakin@marvell.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-29_11:2020-06-29,2020-06-29 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Max directory size of FAT filesystem is FAT_MAX_DIR_SIZE(2097152 bytes)
-It is possible that, due to corruption, directory size calculated in
-fat_calc_dir_size() can be greater than FAT_MAX_DIR_SIZE, i.e.
-can be in GBs, hence directory traversal can take long time.
-for example when command "ls -lR" is executed on corrupted FAT
-formatted USB, fat_search_long() function will lookup for a filename from
-position 0 till end of corrupted directory size, multiple such lookups
-will lead to long directory traversal
+QLogic QED drivers source code is dual licensed under
+GPL-2.0/BSD-3-Clause.
+Correct already existing but wrong SPDX tags to match the actual
+license.
 
-Added sanity check for directory size fat_calc_dir_size(),
-and return EIO error, which will prevent lookup in corrupted directory
-
-Signed-off-by: Anupam Aggarwal <anupam.al@samsung.com>
-Signed-off-by: Amit Sahrawat <a.sahrawat@samsung.com>
+Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
+Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
 ---
- fs/fat/inode.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/ethernet/qlogic/qed/Makefile       | 3 ++-
+ drivers/net/ethernet/qlogic/qed/qed_debug.c    | 2 +-
+ drivers/net/ethernet/qlogic/qed/qed_debug.h    | 2 +-
+ drivers/net/ethernet/qlogic/qed/qed_mng_tlv.c  | 3 ++-
+ drivers/net/ethernet/qlogic/qed/qed_selftest.h | 3 ++-
+ include/linux/qed/fcoe_common.h                | 2 +-
+ include/linux/qed/qed_fcoe_if.h                | 3 ++-
+ 7 files changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/fs/fat/inode.c b/fs/fat/inode.c
-index a0cf99d..9b2e81e 100644
---- a/fs/fat/inode.c
-+++ b/fs/fat/inode.c
-@@ -490,6 +490,13 @@ static int fat_calc_dir_size(struct inode *inode)
- 		return ret;
- 	inode->i_size = (fclus + 1) << sbi->cluster_bits;
- 
-+	if (i_size_read(inode) > FAT_MAX_DIR_SIZE) {
-+		fat_fs_error(inode->i_sb,
-+			     "%s corrupted directory (invalid size %lld)\n",
-+			     __func__, i_size_read(inode));
-+		return -EIO;
-+	}
+diff --git a/drivers/net/ethernet/qlogic/qed/Makefile b/drivers/net/ethernet/qlogic/qed/Makefile
+index a0acb94d65f0..cee566faba2f 100644
+--- a/drivers/net/ethernet/qlogic/qed/Makefile
++++ b/drivers/net/ethernet/qlogic/qed/Makefile
+@@ -1,4 +1,5 @@
+-# SPDX-License-Identifier: GPL-2.0
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
 +
- 	return 0;
- }
+ obj-$(CONFIG_QED) := qed.o
  
+ qed-y := qed_cxt.o qed_dev.o qed_hw.o qed_init_fw_funcs.o qed_init_ops.o \
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_debug.c b/drivers/net/ethernet/qlogic/qed/qed_debug.c
+index 81e8fbe4a05b..8b14e6852daf 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_debug.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_debug.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0-only
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015 QLogic Corporation
+  */
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_debug.h b/drivers/net/ethernet/qlogic/qed/qed_debug.h
+index edf99d296bd1..685696878ec2 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_debug.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_debug.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015 QLogic Corporation
+  */
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_mng_tlv.c b/drivers/net/ethernet/qlogic/qed/qed_mng_tlv.c
+index 6c16158d8090..56b7567d7a60 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_mng_tlv.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_mng_tlv.c
+@@ -1,4 +1,5 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
++
+ #include <linux/types.h>
+ #include <asm/byteorder.h>
+ #include <linux/bug.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_selftest.h b/drivers/net/ethernet/qlogic/qed/qed_selftest.h
+index ad00d082fec8..d8121fd39bc1 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_selftest.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_selftest.h
+@@ -1,4 +1,5 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
++
+ #ifndef _QED_SELFTEST_API_H
+ #define _QED_SELFTEST_API_H
+ #include <linux/types.h>
+diff --git a/include/linux/qed/fcoe_common.h b/include/linux/qed/fcoe_common.h
+index 98cfc195abe2..a669d7d84284 100644
+--- a/include/linux/qed/fcoe_common.h
++++ b/include/linux/qed/fcoe_common.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015 QLogic Corporation
+  */
+diff --git a/include/linux/qed/qed_fcoe_if.h b/include/linux/qed/qed_fcoe_if.h
+index 46082480a2c3..65d0317ef67e 100644
+--- a/include/linux/qed/qed_fcoe_if.h
++++ b/include/linux/qed/qed_fcoe_if.h
+@@ -1,4 +1,5 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
++
+ #ifndef _QED_FCOE_IF_H
+ #define _QED_FCOE_IF_H
+ #include <linux/types.h>
 -- 
-1.9.1
+2.25.1
 
