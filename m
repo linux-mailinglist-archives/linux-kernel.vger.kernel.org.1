@@ -2,103 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00B620DD3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8C620E21A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbgF2Shq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:37:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56780 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726792AbgF2Sfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:35:50 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6F792474B;
-        Mon, 29 Jun 2020 15:21:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593444067;
-        bh=nxQPReT5CsxhTe9XvxHds6kja+wQYf7gUZh3P42/gH8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vTTdXl187cHTHEBzMIv5Bt/Wu29uBMTKeXM8wB0+YiDAW75iQveNjGszAGEca65WF
-         yln9EnQnTmoyTc+LIj4KOGbUQimI752ygXP/NfzY6lX253nJTNg92e1OmLc+0qrnma
-         w3t0us216QmYJn3w2Ac3tHttXQ6Og4eARpTIuXZU=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Harish <harish@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 176/265] selftests/powerpc: Fix build failure in ebb tests
-Date:   Mon, 29 Jun 2020 11:16:49 -0400
-Message-Id: <20200629151818.2493727-177-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629151818.2493727-1-sashal@kernel.org>
-References: <20200629151818.2493727-1-sashal@kernel.org>
+        id S2390181AbgF2VCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731176AbgF2TMu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:12:50 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98232C03079A
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:32:57 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id i4so8182942pjd.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:32:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4t61qDcD9t0KKwIOWrgMLHqw6luF403ud9+USbhr5Do=;
+        b=f1Zw2us9o49Eu71aJrlGHo04ZRY7QZzbRup9cDhXPrdys5NCbtrwwZ9pEbrgIAcFDV
+         eM2fom5cdkPTZmiR9/3k2DDYeAe7mz0pGBRrmu9J1eZQ5+pU8OQPFma2kxCA8YoEYT6/
+         QNTls6pHGfC4NzMoKRE9KfVtOP3HYkGtLvqY0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4t61qDcD9t0KKwIOWrgMLHqw6luF403ud9+USbhr5Do=;
+        b=cVE18yf2oqtJPIMSy7Rnbp1GGyPNS3APSZN9CCSxlCNlyiAZ5B/L/Z9IQhbC9KKTDb
+         YvlFhG5+QfZCxZydmMftihq7O4X0xaOlNKn8RsoPMzw1EFZ4EYh1N+E0pNWjdt88B/0n
+         47Dm31snvufPyml9kCnGoRpZbZ3gnderpZTj3hdtX2oNoX/Y8Xq2d+o0HnaWE3Hr+C02
+         hYnysXjWIKXIde0KLItaJNN7CXGa1cC+PJM3W1uV1/ELLlJuvnIjqI1FVyK8ABjt+Sn1
+         3bQlrjzBy8VFJdNLqADTvNcf1fUTNzoLGSp05SfqCkinbivh2edlbbAkfklo4iIFJHDM
+         0wZQ==
+X-Gm-Message-State: AOAM530WrrvPydG49qZvpsR7S9m8WBES/cLapxqhNsXyOoeooPyCtIjZ
+        LGg/cDJuyztZD1oQvX4b5CKRjg==
+X-Google-Smtp-Source: ABdhPJzcj9ClCuDDBM/Zy5UtPW75kM74Sk8AWoUEmrvlZaKFndJT7HdEDX9CcTWtQPZhETha0qm7rw==
+X-Received: by 2002:a17:90a:2a04:: with SMTP id i4mr17890051pjd.91.1593444777172;
+        Mon, 29 Jun 2020 08:32:57 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id n189sm122007pfn.108.2020.06.29.08.32.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 08:32:56 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 08:32:55 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Martin Steigerwald <martin@lichtvoll.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [REGRESSION] 5.8-rc3: seccomp crash with Chromium, QtWebEngine
+ and related browsers: seccomp-bpf failure in syscall 0072
+Message-ID: <202006290831.E9E695450@keescook>
+References: <2293324.KF7j4Pszzj@merkaba>
+ <202006290739.8AB49B15@keescook>
+ <20200629150807.GB3183@techsingularity.net>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.7-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.7.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.7.7-rc1
-X-KernelTest-Deadline: 2020-07-01T15:14+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629150807.GB3183@techsingularity.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harish <harish@linux.ibm.com>
+On Mon, Jun 29, 2020 at 04:08:07PM +0100, Mel Gorman wrote:
+> On Mon, Jun 29, 2020 at 07:41:56AM -0700, Kees Cook wrote:
+> > On Mon, Jun 29, 2020 at 11:08:10AM +0200, Martin Steigerwald wrote:
+> > > Dear Andy, Kees, Will, dear kernel community,
+> > > 
+> > > With 5.8-rc3 there is a seccomp related crash which prevents Chromium and
+> > > QtWebEngine from starting:
+> > > 
+> > > Bug 208369 - seccomp crash with Chromium, QtWebEngine and related browsers: seccomp-bpf failure in syscall 0072
+> > > 
+> > > https://bugzilla.kernel.org/show_bug.cgi?id=208369
+> > > 
+> > > Reverting to 5.8-rc2 fixes the issue.
+> > 
+> > Hi,
+> > 
+> > It looks like this is from e9c15badbb7b ("fs: Do not check if there is a
+> > fsnotify watcher on pseudo inodes")
+> > 
+> > Currently being discussed here:
+> > https://lore.kernel.org/lkml/7b4aa1e985007c6d582fffe5e8435f8153e28e0f.camel@redhat.com/#r
+> > 
+> 
+> It's a definite problem. I've sent a revert but it hasn't hit lkml yet
+> for whatever reason.
 
-[ Upstream commit 896066aa0685af3434637998b76218c2045142a8 ]
+Okay, thanks! (Yeah, I think vger might be stuck?)
 
-We use OUTPUT directory as TMPOUT for checking no-pie option.
-
-Since commit f2f02ebd8f38 ("kbuild: improve cc-option to clean up all
-temporary files") when building powerpc/ from selftests directory, the
-OUTPUT directory points to powerpc/pmu/ebb/ and gets removed when
-checking for -no-pie option in try-run routine, subsequently build
-fails with the following:
-
-  $ make -C powerpc
-  ...
-  TARGET=ebb; BUILD_TARGET=$OUTPUT/$TARGET; mkdir -p $BUILD_TARGET; make OUTPUT=$BUILD_TARGET -k -C $TARGET all
-  make[2]: Entering directory '/home/linux-master/tools/testing/selftests/powerpc/pmu/ebb'
-  make[2]: *** No rule to make target 'Makefile'.
-  make[2]: Failed to remake makefile 'Makefile'.
-  make[2]: *** No rule to make target 'ebb.c', needed by '/home/linux-master/tools/testing/selftests/powerpc/pmu/ebb/reg_access_test'.
-  make[2]: *** No rule to make target 'ebb_handler.S', needed by '/home/linux-master/tools/testing/selftests/powerpc/pmu/ebb/reg_access_test'.
-  make[2]: *** No rule to make target 'trace.c', needed by '/home/linux-master/tools/testing/selftests/powerpc/pmu/ebb/reg_access_test'.
-  make[2]: *** No rule to make target 'busy_loop.S', needed by '/home/linux-master/tools/testing/selftests/powerpc/pmu/ebb/reg_access_test'.
-  make[2]: Target 'all' not remade because of errors.
-
-Fix this by adding a suffix to the OUTPUT directory so that the
-failure is avoided.
-
-Fixes: 9686813f6e9d ("selftests/powerpc: Fix try-run when source tree is not writable")
-Signed-off-by: Harish <harish@linux.ibm.com>
-[mpe: Mention that commit that triggered the breakage]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200625165721.264904-1-harish@linux.ibm.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/testing/selftests/powerpc/pmu/ebb/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/powerpc/pmu/ebb/Makefile b/tools/testing/selftests/powerpc/pmu/ebb/Makefile
-index ca35dd8848b0a..af3df79d8163f 100644
---- a/tools/testing/selftests/powerpc/pmu/ebb/Makefile
-+++ b/tools/testing/selftests/powerpc/pmu/ebb/Makefile
-@@ -7,7 +7,7 @@ noarg:
- # The EBB handler is 64-bit code and everything links against it
- CFLAGS += -m64
- 
--TMPOUT = $(OUTPUT)/
-+TMPOUT = $(OUTPUT)/TMPDIR/
- # Toolchains may build PIE by default which breaks the assembly
- no-pie-option := $(call try-run, echo 'int main() { return 0; }' | \
-         $(CC) -Werror $(KBUILD_CPPFLAGS) $(CC_OPTION_CFLAGS) -no-pie -x c - -o "$$TMP", -no-pie)
 -- 
-2.25.1
-
+Kees Cook
