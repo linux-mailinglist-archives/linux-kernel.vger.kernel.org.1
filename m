@@ -2,263 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4EBA20DED6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F18220DEDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732679AbgF2U3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:29:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55896 "EHLO
+        id S2389044AbgF2U3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:29:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389032AbgF2U33 (ORCPT
+        with ESMTP id S2387905AbgF2U3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:29:29 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 231C9C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:29:29 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id j4so7541656plk.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:29:29 -0700 (PDT)
+        Mon, 29 Jun 2020 16:29:50 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCDFC03E97A
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:29:50 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id u185so6350138pfu.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:29:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=u03RiaGtlqzYCD4RuvVKRMMObH9Mbbvja6DS7CirGAE=;
-        b=PpQ1P+ha/DYO3jk489n3VBpVZbntveZSxgs/hRGIO6pnEGbH52FyTZ7HjQSx8XZAfw
-         XrUjaFKIZJHoimmQ629sshjfkTbMPQBjQX+3d+XPcL6TgaVXWRvVcc3e4Pi7HUhLStaE
-         EJ5e0Tfuhs/ADOSQ9dwzsBZN0UIfmT2OiDdMZhD6oLeigELT9CWRToldqH94VxjVy3cE
-         HNfykk6NY/xa8HO0zyQB1dHKegOAH8YOnvhgRgQ3e8PLQJceXwIU2TVkhXfR+8+6KVTD
-         QbmKLPX2PI9MHwqVbsgG//nxJywoxUU7SyAXv53FUpYz7fc7QX5bM17ZGRTYZAGNutM/
-         l4og==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1nXbjmGuO9YghPzUiSigrzs5/9GT5Q6NNhUBnZ5BL6o=;
+        b=eQJ4C1Og5DxGMyP8fWLcdR8Z3CwksZFnIGnuQop7YqAIDkKSYG4ONb22hCetVI2dMa
+         XlTHs1YnKZwKbNTsc1vYgLQApn6CEsy11cVvAH0W8MA9tpog/jILDFawLHvAbnz6wbLc
+         MOr/DpyFN5amUZuAcTF6xCkw3l5ZA5IZ2aVkLt4pQ4hbAulAODM2O4kjrlBTBDFdFrsk
+         HN+QhWO3ClmIpA86xpuWF6l/Rt/cKlJGag5/A6V0kEXZvqbq1uaiEQ7D74BMh9YiBgqt
+         uN/F18cFPt8yiVVK3bgo2KkS/XgGaS4veeK+BkZYPP8LfdLBnFFHKYruXHYXkltdQrqW
+         5tFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=u03RiaGtlqzYCD4RuvVKRMMObH9Mbbvja6DS7CirGAE=;
-        b=uW6DNeTAQlYBDIZQ/nsFerwVf2SRglKU04XJ9lWiZ8uMWPLFMaWgfOlbz9wfcl/xyn
-         cEBLXPZFXNP9BfgzR8zrLeJF8qEjYoE7kooFsn3CvqM+fzXi5wWVwAgbOhr+SwkZku4J
-         B4eFr4s62sTzBeje4E96ssNGgKZG0Hb8+sTwy/ZsuJUbQpYYXsOq0TEEMbaurhPs5cek
-         q2bkgxZrKR2CxJ/Im2emCCfUueARYIHI4IcdRxuj49XHEzZx5j1izc6PvYrLSM1/bYmM
-         3mlW7Ut6YMsknQ1UWqeq+nRkPoVWEhkAP//qJ/E4XodEVaMLV/LGIAaZNFRJvKc2KFK7
-         j1FA==
-X-Gm-Message-State: AOAM533Xvhaet1JhGdJGGVZAOF1dAiyksBR+poG1WDzcsR608/pTRdUU
-        U9wN3NoilywAwv7j5oFfOf5Qmw==
-X-Google-Smtp-Source: ABdhPJyaDP2H6/oFfrrkpIQLa1e0rC9OCatRY+xr96oYLf9cmMyb+D8UkvrIOyu6IecgCJSqb2JbrQ==
-X-Received: by 2002:a17:90b:94f:: with SMTP id dw15mr6834764pjb.209.1593462568590;
-        Mon, 29 Jun 2020 13:29:28 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id a17sm333021pjh.31.2020.06.29.13.29.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 13:29:28 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 14:29:26 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Mike Leach <mike.leach@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH v2] coresight: cti: Fix error handling in probe
-Message-ID: <20200629202926.GA3732655@xps15>
-References: <CAJ9a7Vjn-1gvOY0h5eiffXgqiNu4rz=Z18hgV33WExGnLEV-nA@mail.gmail.com>
- <20200617171549.GA9686@kadam>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1nXbjmGuO9YghPzUiSigrzs5/9GT5Q6NNhUBnZ5BL6o=;
+        b=Fe0DXu6p1WpErcLp99u1NZhZt71zpMSjb2NvQs28bLgXMnelvA0V6pfOR2laDjF26U
+         T9TTgnNtqlklDb2H+9At+zwWcNcYSI9cQxLlhGHqi5fF4YgC06JHVrPyEr8MKUakQXvd
+         Nl5TJ3wuRjOt70b4OYJ9P4UGEE2DfO9EabQPrXFs64Hi4zq05NbKynu/6NE2Oqmz8hkL
+         60AShmyDFySJvhriPpoBt3EGA86+JwWvYMdFv+U9k1gezjGCUVb/ZgWyzrjLfrxxu6Ez
+         fCanxEzqfxahRU9cywXaNJFDhtCExM9nb35fExyaR1OZ70+I4knW3u9/fINsw9zQYc9O
+         6N2Q==
+X-Gm-Message-State: AOAM5320RHY7h67cs1A4LKrWwV66tNlpKLchrAo+GEW5EgecqJKhhdvm
+        7D0USNzeKNrGFh2MdL81jloppSDTmVTfv+70ebYdBA==
+X-Google-Smtp-Source: ABdhPJwv6SUxAiJU3OMeQLtrnFcvI/h1iY82pIlt6qbyAGsh50kqhWEDWLaUBKiAJzLF7/INflMcJGpqQT2M4cbcb6s=
+X-Received: by 2002:a05:6a00:15ca:: with SMTP id o10mr16122175pfu.169.1593462589513;
+ Mon, 29 Jun 2020 13:29:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617171549.GA9686@kadam>
+References: <20200629061840.4065483-1-keescook@chromium.org>
+ <20200629061840.4065483-9-keescook@chromium.org> <CAKwvOd=r6bsBfSZxVYrnbm1Utq==ApWBDjx+0Fxsm90Aq3Jghw@mail.gmail.com>
+ <9b7f9c3aed7223e49def6e775d3b250aa780e562.camel@perches.com>
+In-Reply-To: <9b7f9c3aed7223e49def6e775d3b250aa780e562.camel@perches.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 29 Jun 2020 13:29:38 -0700
+Message-ID: <CAKwvOdnOCEZ8LUEY6+gVcTcNuaabRnj4hXG6-pcb_6fcQJsr6w@mail.gmail.com>
+Subject: Re: [PATCH v4 08/17] arm64/mm: Remove needless section quotes
+To:     Joe Perches <joe@perches.com>
+Cc:     Kees Cook <keescook@chromium.org>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 08:15:50PM +0300, Dan Carpenter wrote:
-> There were a couple problems with error handling in the probe function:
-> 1)  If the "drvdata" allocation failed then it lead to a NULL
->     dereference.
-> 2)  On several error paths we decremented "nr_cti_cpu" before it was
->     incremented which lead to a reference counting bug.
-> 
-> There were also some parts of the error handling which were not bugs but
-> were messy.  The error handling was confusing to read.  It printed some
-> unnecessary error messages.
-> 
-> The simplest way to fix these problems was to create a cti_pm_setup()
-> function that did all the power management setup in one go.  That way
-> when we call cti_pm_release() we don't have to deal with the
-> complications of a partially configured power management config.
-> 
-> I reversed the "if (drvdata->ctidev.cpu >= 0)" condition in cti_pm_release()
-> so that it mirros the new cti_pm_setup() function.
-> 
-> Fixes: 6a0953ce7de9 ("coresight: cti: Add CPU idle pm notifer to CTI devices")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
-> v2: I accidentally introduced a bug in cti_pm_release() in v1.
+On Mon, Jun 29, 2020 at 1:03 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Mon, 2020-06-29 at 12:53 -0700, Nick Desaulniers wrote:
+> > On Sun, Jun 28, 2020 at 11:18 PM Kees Cook <keescook@chromium.org> wrote:
+> > > Fix a case of needless quotes in __section(), which Clang doesn't like.
+> > >
+> > > Acked-by: Will Deacon <will@kernel.org>
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> >
+> > Yep, I remember bugs from this.  Probably should scan the kernel for
+> > other instances of this.  +Joe for checkpatch.pl validation.
+> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+>
+> $ git grep -P -n '__section\s*\(\s*\"'
+> arch/arm64/mm/mmu.c:45:u64 __section(".mmuoff.data.write") vabits_actual;
+> include/linux/compiler.h:211:   __section("___kentry" "+" #sym )                        \
+> include/linux/export.h:133:     static int __ksym_marker_##sym[0] __section(".discard.ksym") __used
+> include/linux/srcutree.h:127:           __section("___srcu_struct_ptrs") = &name
+>
+> My recollection is I submitted a patch
+> to _add_ quotes
+>
+> https://lore.kernel.org/patchwork/patch/1125785/
 
-Thanks for the cleanup.  I'll send this to Greg for a 5.8 fixup.
+Hey, yeah!  Did you end up sending v2?
 
-Regards,
-Mathieu
-
-> 
->  drivers/hwtracing/coresight/coresight-cti.c | 96 ++++++++++++---------
->  1 file changed, 54 insertions(+), 42 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-cti.c b/drivers/hwtracing/coresight/coresight-cti.c
-> index 40387d58c8e7..d2da5bf9f552 100644
-> --- a/drivers/hwtracing/coresight/coresight-cti.c
-> +++ b/drivers/hwtracing/coresight/coresight-cti.c
-> @@ -747,17 +747,50 @@ static int cti_dying_cpu(unsigned int cpu)
->  	return 0;
->  }
->  
-> +static int cti_pm_setup(struct cti_drvdata *drvdata)
-> +{
-> +	int ret;
-> +
-> +	if (drvdata->ctidev.cpu == -1)
-> +		return 0;
-> +
-> +	if (nr_cti_cpu)
-> +		goto done;
-> +
-> +	cpus_read_lock();
-> +	ret = cpuhp_setup_state_nocalls_cpuslocked(
-> +			CPUHP_AP_ARM_CORESIGHT_CTI_STARTING,
-> +			"arm/coresight_cti:starting",
-> +			cti_starting_cpu, cti_dying_cpu);
-> +	if (ret) {
-> +		cpus_read_unlock();
-> +		return ret;
-> +	}
-> +
-> +	ret = cpu_pm_register_notifier(&cti_cpu_pm_nb);
-> +	cpus_read_unlock();
-> +	if (ret) {
-> +		cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_CTI_STARTING);
-> +		return ret;
-> +	}
-> +
-> +done:
-> +	nr_cti_cpu++;
-> +	cti_cpu_drvdata[drvdata->ctidev.cpu] = drvdata;
-> +
-> +	return 0;
-> +}
-> +
->  /* release PM registrations */
->  static void cti_pm_release(struct cti_drvdata *drvdata)
->  {
-> -	if (drvdata->ctidev.cpu >= 0) {
-> -		if (--nr_cti_cpu == 0) {
-> -			cpu_pm_unregister_notifier(&cti_cpu_pm_nb);
-> +	if (drvdata->ctidev.cpu == -1)
-> +		return;
->  
-> -			cpuhp_remove_state_nocalls(
-> -				CPUHP_AP_ARM_CORESIGHT_CTI_STARTING);
-> -		}
-> -		cti_cpu_drvdata[drvdata->ctidev.cpu] = NULL;
-> +	cti_cpu_drvdata[drvdata->ctidev.cpu] = NULL;
-> +	if (--nr_cti_cpu == 0) {
-> +		cpu_pm_unregister_notifier(&cti_cpu_pm_nb);
-> +		cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_CTI_STARTING);
->  	}
->  }
->  
-> @@ -823,19 +856,14 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
->  
->  	/* driver data*/
->  	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
-> -	if (!drvdata) {
-> -		ret = -ENOMEM;
-> -		dev_info(dev, "%s, mem err\n", __func__);
-> -		goto err_out;
-> -	}
-> +	if (!drvdata)
-> +		return -ENOMEM;
->  
->  	/* Validity for the resource is already checked by the AMBA core */
->  	base = devm_ioremap_resource(dev, res);
-> -	if (IS_ERR(base)) {
-> -		ret = PTR_ERR(base);
-> -		dev_err(dev, "%s, remap err\n", __func__);
-> -		goto err_out;
-> -	}
-> +	if (IS_ERR(base))
-> +		return PTR_ERR(base);
-> +
->  	drvdata->base = base;
->  
->  	dev_set_drvdata(dev, drvdata);
-> @@ -854,8 +882,7 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
->  	pdata = coresight_cti_get_platform_data(dev);
->  	if (IS_ERR(pdata)) {
->  		dev_err(dev, "coresight_cti_get_platform_data err\n");
-> -		ret =  PTR_ERR(pdata);
-> -		goto err_out;
-> +		return  PTR_ERR(pdata);
->  	}
->  
->  	/* default to powered - could change on PM notifications */
-> @@ -867,35 +894,20 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
->  					       drvdata->ctidev.cpu);
->  	else
->  		cti_desc.name = coresight_alloc_device_name(&cti_sys_devs, dev);
-> -	if (!cti_desc.name) {
-> -		ret = -ENOMEM;
-> -		goto err_out;
-> -	}
-> +	if (!cti_desc.name)
-> +		return -ENOMEM;
->  
->  	/* setup CPU power management handling for CPU bound CTI devices. */
-> -	if (drvdata->ctidev.cpu >= 0) {
-> -		cti_cpu_drvdata[drvdata->ctidev.cpu] = drvdata;
-> -		if (!nr_cti_cpu++) {
-> -			cpus_read_lock();
-> -			ret = cpuhp_setup_state_nocalls_cpuslocked(
-> -				CPUHP_AP_ARM_CORESIGHT_CTI_STARTING,
-> -				"arm/coresight_cti:starting",
-> -				cti_starting_cpu, cti_dying_cpu);
-> -
-> -			if (!ret)
-> -				ret = cpu_pm_register_notifier(&cti_cpu_pm_nb);
-> -			cpus_read_unlock();
-> -			if (ret)
-> -				goto err_out;
-> -		}
-> -	}
-> +	ret = cti_pm_setup(drvdata);
-> +	if (ret)
-> +		return ret;
->  
->  	/* create dynamic attributes for connections */
->  	ret = cti_create_cons_sysfs(dev, drvdata);
->  	if (ret) {
->  		dev_err(dev, "%s: create dynamic sysfs entries failed\n",
->  			cti_desc.name);
-> -		goto err_out;
-> +		goto pm_release;
->  	}
->  
->  	/* set up coresight component description */
-> @@ -908,7 +920,7 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
->  	drvdata->csdev = coresight_register(&cti_desc);
->  	if (IS_ERR(drvdata->csdev)) {
->  		ret = PTR_ERR(drvdata->csdev);
-> -		goto err_out;
-> +		goto pm_release;
->  	}
->  
->  	/* add to list of CTI devices */
-> @@ -927,7 +939,7 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
->  	dev_info(&drvdata->csdev->dev, "CTI initialized\n");
->  	return 0;
->  
-> -err_out:
-> +pm_release:
->  	cti_pm_release(drvdata);
->  	return ret;
->  }
-> -- 
-> 2.27.0
+-- 
+Thanks,
+~Nick Desaulniers
