@@ -2,31 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE55E20D6AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BB120D6AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732141AbgF2TWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:22:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59452 "EHLO mx2.suse.de"
+        id S1732289AbgF2TWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:22:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59502 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732197AbgF2TVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732210AbgF2TVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Jun 2020 15:21:34 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5EB98AF2C;
-        Mon, 29 Jun 2020 15:09:54 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id CAC9BAF5B;
+        Mon, 29 Jun 2020 15:09:55 +0000 (UTC)
 From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 To:     gregkh@linuxfoundation.org
 Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
         linux-rpi-kernel@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.org>,
+        devel@driverdev.osuosl.org, Naushir Patuck <naush@raspberrypi.com>,
         Jacopo Mondi <jacopo@jmondi.org>,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [PATCH v2 04/47] staging: mmal-vchiq: Fix client_component for 64 bit kernel
-Date:   Mon, 29 Jun 2020 17:09:02 +0200
-Message-Id: <20200629150945.10720-5-nsaenzjulienne@suse.de>
+Subject: [PATCH v2 07/47] staging: mmal-vchiq: Fix formatting errors in mmal_parameters.h
+Date:   Mon, 29 Jun 2020 17:09:05 +0200
+Message-Id: <20200629150945.10720-8-nsaenzjulienne@suse.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200629150945.10720-1-nsaenzjulienne@suse.de>
 References: <20200629150945.10720-1-nsaenzjulienne@suse.de>
@@ -37,64 +36,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Stevenson <dave.stevenson@raspberrypi.org>
+From: Naushir Patuck <naush@raspberrypi.com>
 
-The MMAL client_component field is used with the event
-mechanism to allow the client to identify the component for
-which the event is generated.
-The field is only 32bits in size, therefore we can't use a
-pointer to the component in a 64 bit kernel.
+No functional changes in this commit.
 
-Component handles are already held in an array per VCHI
-instance, so use the array index as the client_component handle
-to avoid having to create a new IDR for this purpose.
+- Remove erroneous whitespace.
+- Remove _t postfix label on structs and enums.
 
-Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.org>
+Signed-off-by: Naushir Patuck <naush@raspberrypi.com>
 Signed-off-by: Jacopo Mondi <jacopo@jmondi.org>
 Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 ---
- drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c | 8 +++++++-
- drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h | 1 +
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ .../bcm2835-camera/bcm2835-camera.c           |  2 +-
+ .../vchiq-mmal/mmal-parameters.h              | 32 +++++++++----------
+ 2 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-index 6404d4e60350..3bc04f2ea53a 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-+++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-@@ -943,7 +943,7 @@ static int create_component(struct vchiq_mmal_instance *instance,
+diff --git a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
+index 73b2354a6bb7..df90c1f9d148 100644
+--- a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
++++ b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
+@@ -1497,7 +1497,7 @@ static int get_num_cameras(struct vchiq_mmal_instance *instance,
+ {
+ 	int ret;
+ 	struct vchiq_mmal_component  *cam_info_component;
+-	struct mmal_parameter_camera_info_t cam_info = {0};
++	struct mmal_parameter_camera_info cam_info = {0};
+ 	u32 param_size = sizeof(cam_info);
+ 	int i;
  
- 	/* build component create message */
- 	m.h.type = MMAL_MSG_TYPE_COMPONENT_CREATE;
--	m.u.component_create.client_component = (u32)(unsigned long)component;
-+	m.u.component_create.client_component = component->client_component;
- 	strncpy(m.u.component_create.name, name,
- 		sizeof(m.u.component_create.name));
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-parameters.h b/drivers/staging/vc04_services/vchiq-mmal/mmal-parameters.h
+index f4ac5a6149ea..a1e39b1b1701 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-parameters.h
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-parameters.h
+@@ -23,21 +23,21 @@
+ #define MMAL_PARAMETERS_H
  
-@@ -1662,6 +1662,12 @@ int vchiq_mmal_component_init(struct vchiq_mmal_instance *instance,
- 		goto unlock;
- 	}
+ /** Common parameter ID group, used with many types of component. */
+-#define MMAL_PARAMETER_GROUP_COMMON            (0 << 16)
++#define MMAL_PARAMETER_GROUP_COMMON		(0 << 16)
+ /** Camera-specific parameter ID group. */
+-#define MMAL_PARAMETER_GROUP_CAMERA            (1 << 16)
++#define MMAL_PARAMETER_GROUP_CAMERA		(1 << 16)
+ /** Video-specific parameter ID group. */
+-#define MMAL_PARAMETER_GROUP_VIDEO             (2 << 16)
++#define MMAL_PARAMETER_GROUP_VIDEO		(2 << 16)
+ /** Audio-specific parameter ID group. */
+-#define MMAL_PARAMETER_GROUP_AUDIO             (3 << 16)
++#define MMAL_PARAMETER_GROUP_AUDIO		(3 << 16)
+ /** Clock-specific parameter ID group. */
+-#define MMAL_PARAMETER_GROUP_CLOCK             (4 << 16)
++#define MMAL_PARAMETER_GROUP_CLOCK		(4 << 16)
+ /** Miracast-specific parameter ID group. */
+-#define MMAL_PARAMETER_GROUP_MIRACAST       (5 << 16)
++#define MMAL_PARAMETER_GROUP_MIRACAST		(5 << 16)
  
-+	/* We need a handle to reference back to our component structure.
-+	 * Use the array index in instance->component rather than rolling
-+	 * another IDR.
-+	 */
-+	component->client_component = idx;
-+
- 	ret = create_component(instance, component, name);
- 	if (ret < 0) {
- 		pr_err("%s: failed to create component %d (Not enough GPU mem?)\n",
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
-index df608585063b..1dc81ecf9268 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
-+++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
-@@ -92,6 +92,7 @@ struct vchiq_mmal_component {
- 	struct vchiq_mmal_port input[MAX_PORT_COUNT]; /* input ports */
- 	struct vchiq_mmal_port output[MAX_PORT_COUNT]; /* output ports */
- 	struct vchiq_mmal_port clock[MAX_PORT_COUNT]; /* clock ports */
-+	u32 client_component;	/* Used to ref back to client struct */
+ /* Common parameters */
+ enum mmal_parameter_common_type {
+-		/**< Never a valid parameter ID */
++	/**< Never a valid parameter ID */
+ 	MMAL_PARAMETER_UNUSED = MMAL_PARAMETER_GROUP_COMMON,
+ 
+ 		/**< MMAL_PARAMETER_ENCODING_T */
+@@ -341,7 +341,7 @@ enum mmal_parameter_imagefx {
+ 	MMAL_PARAM_IMAGEFX_CARTOON,
  };
  
- int vchiq_mmal_init(struct vchiq_mmal_instance **out_instance);
+-enum MMAL_PARAM_FLICKERAVOID_T {
++enum MMAL_PARAM_FLICKERAVOID {
+ 	MMAL_PARAM_FLICKERAVOID_OFF,
+ 	MMAL_PARAM_FLICKERAVOID_AUTO,
+ 	MMAL_PARAM_FLICKERAVOID_50HZ,
+@@ -723,7 +723,7 @@ struct mmal_parameter_imagefx_parameters {
+ #define MMAL_PARAMETER_CAMERA_INFO_MAX_FLASHES 2
+ #define MMAL_PARAMETER_CAMERA_INFO_MAX_STR_LEN 16
+ 
+-struct mmal_parameter_camera_info_camera_t {
++struct mmal_parameter_camera_info_camera {
+ 	u32 port_id;
+ 	u32 max_width;
+ 	u32 max_height;
+@@ -731,7 +731,7 @@ struct mmal_parameter_camera_info_camera_t {
+ 	u8 camera_name[MMAL_PARAMETER_CAMERA_INFO_MAX_STR_LEN];
+ };
+ 
+-enum mmal_parameter_camera_info_flash_type_t {
++enum mmal_parameter_camera_info_flash_type {
+ 	/* Make values explicit to ensure they match values in config ini */
+ 	MMAL_PARAMETER_CAMERA_INFO_FLASH_TYPE_XENON = 0,
+ 	MMAL_PARAMETER_CAMERA_INFO_FLASH_TYPE_LED   = 1,
+@@ -739,16 +739,16 @@ enum mmal_parameter_camera_info_flash_type_t {
+ 	MMAL_PARAMETER_CAMERA_INFO_FLASH_TYPE_MAX = 0x7FFFFFFF
+ };
+ 
+-struct mmal_parameter_camera_info_flash_t {
+-	enum mmal_parameter_camera_info_flash_type_t flash_type;
++struct mmal_parameter_camera_info_flash {
++	enum mmal_parameter_camera_info_flash_type flash_type;
+ };
+ 
+-struct mmal_parameter_camera_info_t {
++struct mmal_parameter_camera_info {
+ 	u32 num_cameras;
+ 	u32 num_flashes;
+-	struct mmal_parameter_camera_info_camera_t
+-				cameras[MMAL_PARAMETER_CAMERA_INFO_MAX_CAMERAS];
+-	struct mmal_parameter_camera_info_flash_t
++	struct mmal_parameter_camera_info_camera
++		cameras[MMAL_PARAMETER_CAMERA_INFO_MAX_CAMERAS];
++	struct mmal_parameter_camera_info_flash
+ 				flashes[MMAL_PARAMETER_CAMERA_INFO_MAX_FLASHES];
+ };
+ 
 -- 
 2.27.0
 
