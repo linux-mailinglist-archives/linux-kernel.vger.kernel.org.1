@@ -2,146 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A82E20D3FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE2E20D43D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730621AbgF2TD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:03:59 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:51093 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730619AbgF2TDz (ORCPT
+        id S1730755AbgF2TGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:06:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730525AbgF2TCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:03:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593457433;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=tafezFPVKisxFrViNoe9kf9bq7boE8cZG7BjLLxVJOo=;
-        b=A0IQmMlJPzSy6qDFK405nzj82PqX0Qw11AON9g14wLbv0KoVXTPZA1bLpeeQDzIoENSBPi
-        PjxqZNQGIf3bzVX81WvSzv7UTQCbUoV5XWZJ19Rq9pC4hHIhDPFtA/DsUNn9V0i5qA5Azw
-        /c1mT1BssOoueaK1mHaqUoSnM4xx5uE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-139-gUkfve_3M3qoeuyEa2k3FA-1; Mon, 29 Jun 2020 09:02:38 -0400
-X-MC-Unique: gUkfve_3M3qoeuyEa2k3FA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C13B1017E01;
-        Mon, 29 Jun 2020 13:02:36 +0000 (UTC)
-Received: from [10.36.114.157] (ovpn-114-157.ams2.redhat.com [10.36.114.157])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CCB009CFF2;
-        Mon, 29 Jun 2020 13:02:32 +0000 (UTC)
-Subject: Re: [PATCH RFC 2/2] s390/mm: don't set ARCH_KEEP_MEMBLOCK
-To:     Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-s390@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Philipp Rudo <prudo@linux.ibm.com>,
-        Michael Holzheu <holzheu@linux.vnet.ibm.com>
-References: <20200417150151.17239-1-david@redhat.com>
- <20200417150151.17239-3-david@redhat.com> <20200626163215.GA4268@osiris>
- <20200629124432.GE4468@osiris>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
-Organization: Red Hat GmbH
-Message-ID: <1d9b431a-58cb-8b5f-cb3f-5656a3032e34@redhat.com>
-Date:   Mon, 29 Jun 2020 15:02:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 29 Jun 2020 15:02:43 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E39C02A54F;
+        Mon, 29 Jun 2020 06:02:47 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id n5so15423190otj.1;
+        Mon, 29 Jun 2020 06:02:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7nlhWJJwNwhWkeMdSwXObsiOh2VHz3Q74vTd3L4F/E4=;
+        b=lGDfCfLqwyum+wheMtxLdsXH0kBg80MIs9SllgK3dlDn7I2Hoo8MoBDen1jtsdaAvs
+         pgcCEGXBUBtaIS6g5b1tZsw1sk0+/ATD9U+Yn1qMJ/E4dEi+kWcpGAZyTI/JCnzP0cRc
+         XR1RnL5PwpnVI7ezWGLTCFlRRzWZclbns1W2vNzY+EP0VjlwitiMDDLlxdivoa8i0ER4
+         6fJSfzPNOkaJ6CxzpdQQAlnd1Om2Z3fow1qjzQTqJvV6fOSfdPaajcdM/LKIi0B9Givj
+         X8Oa2kuKHAVLgvMMjsQS+2h+GiQD98GFYQEt2luBeMjlm1Ig8eQ18hWVa+eQhJIquOVd
+         eX6g==
+X-Gm-Message-State: AOAM530NYrlYHf+0nzK8xQoU7g74mUSKAppZEL68Ilkrfzdmrhh+AgcC
+        hHg4kOWniClj8vs4n6w9L/BXIw/RG7uE20dyiIBJUwjf
+X-Google-Smtp-Source: ABdhPJzIQwbdDVQsoe/mDFdG+UuqRokNsn9twuQiuHEM1ZLnII4nXYOarqbPDTLCqJLyUEpbS+m1QKmIfJ6D/m1WVN0=
+X-Received: by 2002:a9d:7d15:: with SMTP id v21mr12817982otn.118.1593435766462;
+ Mon, 29 Jun 2020 06:02:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200629124432.GE4468@osiris>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <2713141.s8EVnczdoM@kreacher> <13749323.0m2ImmhSHx@kreacher> <MWHPR11MB1599FBA57730E5C74B9B4588F0930@MWHPR11MB1599.namprd11.prod.outlook.com>
+In-Reply-To: <MWHPR11MB1599FBA57730E5C74B9B4588F0930@MWHPR11MB1599.namprd11.prod.outlook.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 29 Jun 2020 15:02:31 +0200
+Message-ID: <CAJZ5v0iXzYVb6RAR9p2mH=RjSjo4c9g39T7uaccXMm6uoLWDzw@mail.gmail.com>
+Subject: Re: [RFT][PATCH v2 3/4] ACPICA: Preserve memory opregion mappings if
+ supported by OS
+To:     "Kaneda, Erik" <erik.kaneda@intel.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Moore, Robert" <robert.moore@intel.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.06.20 14:44, Heiko Carstens wrote:
-> On Fri, Jun 26, 2020 at 06:32:15PM +0200, Heiko Carstens wrote:
->> On Fri, Apr 17, 2020 at 05:01:51PM +0200, David Hildenbrand wrote:
->>> Commit 50be63450728 ("s390/mm: Convert bootmem to memblock") mentions
->>> 	"The original bootmem allocator is getting replaced by memblock. To
->>> 	cover the needs of the s390 kdump implementation the physical
->>> 	memory list is used."
->>>
->>> zcore was converted to use resources instead of memblocks.
->>> memblock_discard() will *not* mess with "physmem", only with "memory" and
->>> "reserved" memblocks. So, that data will stay after early boot, to be
->>> used in arch/s390/kernel/crash_dump.c to create the ELF header from
->>> inside the 2nd (a.k.a. dumping) kernel.
->>>
->>> We no longer need ARCH_KEEP_MEMBLOCK.
->>>
->>> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
->>> Cc: Vasily Gorbik <gor@linux.ibm.com>
->>> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
->>> Cc: Philipp Rudo <prudo@linux.ibm.com>
->>> Cc: Michael Holzheu <holzheu@linux.vnet.ibm.com>
->>> Signed-off-by: David Hildenbrand <david@redhat.com>
->>> ---
->>>  arch/s390/Kconfig | 1 -
->>>  1 file changed, 1 deletion(-)
->>
->> Applied, thanks!
-> 
-> Hmm, this triggers:
+On Sat, Jun 27, 2020 at 12:53 AM Kaneda, Erik <erik.kaneda@intel.com> wrote:
+>
+>
+>
+> > -----Original Message-----
+> > From: Rafael J. Wysocki <rjw@rjwysocki.net>
+> > Sent: Monday, June 22, 2020 7:02 AM
+> > To: Williams, Dan J <dan.j.williams@intel.com>; Kaneda, Erik
+> > <erik.kaneda@intel.com>
+> > Cc: Wysocki, Rafael J <rafael.j.wysocki@intel.com>; Len Brown
+> > <lenb@kernel.org>; Borislav Petkov <bp@alien8.de>; Weiny, Ira
+> > <ira.weiny@intel.com>; James Morse <james.morse@arm.com>; Myron
+> > Stowe <myron.stowe@redhat.com>; Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com>; linux-kernel@vger.kernel.org; linux-
+> > acpi@vger.kernel.org; linux-nvdimm@lists.01.org; Moore, Robert
+> > <robert.moore@intel.com>
+> > Subject: [RFT][PATCH v2 3/4] ACPICA: Preserve memory opregion mappings
+> > if supported by OS
+> >
+> > From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> >
+> > The ACPICA's strategy with respect to the handling of memory mappings
+> > associated with memory operation regions is to avoid mapping the
+> > entire region at once which may be problematic at least in principle
+> > (for example, it may lead to conflicts with overlapping mappings
+> > having different attributes created by drivers).  It may also be
+> > wasteful, because memory opregions on some systems take up vast
+> > chunks of address space while the fields in those regions actually
+> > accessed by AML are sparsely distributed.
+> >
+> > For this reason, a one-page "window" is mapped for a given opregion
+> > on the first memory access through it and if that "window" does not
+> > cover an address range accessed through that opregion subsequently,
+> > it is unmapped and a new "window" is mapped to replace it.  Next,
+> > if the new "window" is not sufficient to access memory through the
+> > opregion in question in the future, it will be replaced with yet
+> > another "window" and so on.  That may lead to a suboptimal sequence
+> > of memory mapping and unmapping operations, for example if two fields
+> > in one opregion separated from each other by a sufficiently wide
+> > chunk of unused address space are accessed in an alternating pattern.
+> >
+> > The situation may still be suboptimal if the deferred unmapping
+> > introduced previously is supported by the OS layer.  For instance,
+> > the alternating memory access pattern mentioned above may produce
+> > a relatively long list of mappings to release with substantial
+> > duplication among the entries in it, which could be avoided if
+> > acpi_ex_system_memory_space_handler() did not release the mapping
+> > used by it previously as soon as the current access was not covered
+> > by it.
+> >
+> > In order to improve that, modify acpi_ex_system_memory_space_handler()
+> > to take advantage of the memory mappings reference counting at the OS
+> > level if a suitable interface is provided.
+> >
+> Hi,
+>
+> > Namely, if ACPI_USE_FAST_PATH_MAPPING is set, the OS is expected to
+> > implement acpi_os_map_memory_fast_path() that will return NULL if
+> > there is no mapping covering the given address range known to it.
+> > If such a mapping is there, however, its reference counter will be
+> > incremented and a pointer representing the requested virtual address
+> > will be returned right away without any additional consequences.
+>
+> I do not fully understand why this is under a #ifdef. Is this to support operating systems that might not want to add support for this behavior?
 
-Ah, I see, will have a look. Weird I didn't notice that ...
+Yes, and to protect the ones that have not added support for it just yet.
 
-Thanks!
+Without the "fast-path" mapping support, ACPICA has no way to obtain
+additional references to known-existing mappings and the new code
+won't work as expected without it, so it is better to avoid building
+that code at all in those cases IMO.
 
+> Also, instead of using the terminology fast_path, I think it would be easier to use terminology that describes the mechanism..
+> It might be easier for other Operating systems to understand something like acpi_os_map_preserved_memory or acpi_os_map_sysmem_opregion_memory.
 
+Well, the naming is not particularly important to me to be honest, but
+this is mostly about being able to get a new reference to a
+known-existing memory mapping.
 
--- 
-Thanks,
+So something like acpi_os_ref_memory_map() perhaps?
 
-David / dhildenb
+But I'm thinking that this can be implemented without the "fast-path"
+mapping support too, let me try to do that.
 
+Cheers!
