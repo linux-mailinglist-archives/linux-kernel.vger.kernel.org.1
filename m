@@ -2,73 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E525920E0D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7664220E0EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732292AbgF2UuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:50:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731473AbgF2UuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:50:08 -0400
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4DEE020720;
-        Mon, 29 Jun 2020 20:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593463807;
-        bh=bf1gx6HwyAGL1lgUaDDu+79hOVdRZJ+m+V17HLQNqP8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=13bkz6rT88bW5ozmcTVlIDpLKBOZ9RXp5Dr9YU/HxouH/lD3TjAXms857cHHw2KkV
-         /2ixNXRUdyyGI63P/xu6opcacLXslGJGqcQJutmchqqO/13Dp1GMejsr+c+vg2puDb
-         qanzweqYc6g3z+fdluowc8Z2mlJoZ+ONrT0Cw5pw=
-Received: by mail-ot1-f45.google.com with SMTP id d4so16724576otk.2;
-        Mon, 29 Jun 2020 13:50:07 -0700 (PDT)
-X-Gm-Message-State: AOAM530enl5d2ZGClclltXDXi9w2bAcDslvSppaGQZUxrk+FJUEOQVwb
-        E3C8G1nI7fIl4noVO/zSJ+k5EZMzh9Tx4SgQlg==
-X-Google-Smtp-Source: ABdhPJzzF4kN7KDy2z2NmYmJxIweiy6VO0KsRTtdXWY9U7ErrDy0wmMgtxFXM1W9UJjV4JYyi44/uK+KLXtRv6Qmytk=
-X-Received: by 2002:a9d:2646:: with SMTP id a64mr14052433otb.107.1593463806654;
- Mon, 29 Jun 2020 13:50:06 -0700 (PDT)
+        id S2389412AbgF2Uu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:50:58 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:42333 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387763AbgF2Uuu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 16:50:50 -0400
+Received: from localhost.localdomain (unknown [176.88.144.104])
+        (Authenticated sender: cengiz@kernel.wtf)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 8516C24000E;
+        Mon, 29 Jun 2020 20:50:45 +0000 (UTC)
+From:   Cengiz Can <cengiz@kernel.wtf>
+To:     daniel.thompson@linaro.org
+Cc:     andriy.shevchenko@linux.intel.com, cengiz@kernel.wtf,
+        dianders@chromium.org, jason.wessel@windriver.com,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        pmladek@suse.com, sumit.garg@linaro.org
+Subject: [PATCH v2] kdb: remove unnecessary null check of dbg_io_ops
+Date:   Mon, 29 Jun 2020 23:50:13 +0300
+Message-Id: <20200629205012.3263-1-cengiz@kernel.wtf>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200629153756.cxg74nec3repa4lu@holly.lan>
+References: <20200629153756.cxg74nec3repa4lu@holly.lan>
 MIME-Version: 1.0
-References: <20200625170434.635114-1-masahiroy@kernel.org> <20200625170434.635114-5-masahiroy@kernel.org>
-In-Reply-To: <20200625170434.635114-5-masahiroy@kernel.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 29 Jun 2020 14:49:55 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqL4pTFK_pSNn1cSvjzwdg71dVzM3P06BYYEwDj2t+swPA@mail.gmail.com>
-Message-ID: <CAL_JsqL4pTFK_pSNn1cSvjzwdg71dVzM3P06BYYEwDj2t+swPA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] dt-bindings: split DT schema check rules
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 11:05 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> When building %.dt.yaml from %.dts, two things happen in a row:
->
->  [1] Run DTC to convert %.dts into %.dt.yaml
->
->  [2] Run dt-validate against %.dt.yaml
->
-> Currently, when any .yaml schema file is updated, processed-schema.yaml
-> is regenerated, then both [1] and [2] are rerun for all .dts files.
->
-> Actually, we do not need to rerun [1] since the original .dts is not
-> updated.
+`kdb_msg_write` operates on a global `struct kgdb_io *` called
+`dbg_io_ops`.
 
-I have plans (and an intern working on it) to integrate the schema
-checks into dtc. That's going to make turning on the schema checks
-just a flag to dtc. I'm not sure if adding the complexity here is
-worth it as I'd expect much of this patch to go away again.
+It's initialized in `debug_core.c` and checked throughout the debug
+flow.
 
-Is there any negative impact on the absolute clean build time? I'm
-more concerned about that than optimizing rerunning.
+There's a null check in `kdb_msg_write` which triggers static analyzers
+and gives the (almost entirely wrong) impression that it can be null.
 
-Rob
+Coverity scanner caught this as CID 1465042.
+
+I have removed the unnecessary null check and eliminated false-positive
+forward null dereference warning.
+
+Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
+---
+ kernel/debug/kdb/kdb_io.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
+index 683a799618ad..4ac59a4fbeec 100644
+--- a/kernel/debug/kdb/kdb_io.c
++++ b/kernel/debug/kdb/kdb_io.c
+@@ -549,14 +549,12 @@ static void kdb_msg_write(const char *msg, int msg_len)
+ 	if (msg_len == 0)
+ 		return;
+ 
+-	if (dbg_io_ops) {
+-		const char *cp = msg;
+-		int len = msg_len;
++	const char *cp = msg;
++	int len = msg_len;
+ 
+-		while (len--) {
+-			dbg_io_ops->write_char(*cp);
+-			cp++;
+-		}
++	while (len--) {
++		dbg_io_ops->write_char(*cp);
++		cp++;
+ 	}
+ 
+ 	for_each_console(c) {
+-- 
+2.27.0
+
