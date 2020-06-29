@@ -2,112 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE3820E336
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D363520E420
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388414AbgF2VMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40900 "EHLO
+        id S1730545AbgF2VVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:21:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730152AbgF2S5o (ORCPT
+        with ESMTP id S1729769AbgF2Swn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:57:44 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D97C00F802
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:29:03 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id p20so16333159ejd.13
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:29:03 -0700 (PDT)
+        Mon, 29 Jun 2020 14:52:43 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC19C00F815
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:20 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z13so16365729wrw.5
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nLPL88OfKWPjoDgMrUq7HX0bJ21PFQyFVAStT19x/30=;
-        b=PSx0WywEstp6kzCgrb2T780nS7vnNFzJS+U+DK53C0PhGN6LZvYDc2EFvOEAdEmhEj
-         RUqqwUYHPI+moJOm1Lu+qDnTY8k7w4i1ZmDLAcEGCt5/VfkthQIciG4scNhgkF7qBZsF
-         vapojTxZMy6hzLbJ19FtwmOG4LeFbtDfvu2hGXI5r15prpIVDn5Q6Ex36/ORxBC8HOMu
-         p8sNi03zdwEm4JKaNFhsJFwkK43/7a69OrK8KLs3I2Jj3FUWqdHQLOJ+ViEJxwPsy3tk
-         RJ+tPHTitdFJ/MPwm7Oci+jsb+VVt/S6RIkCjMGIh8K6vN3UA3j4206+/RBfGp3XCb1e
-         Wcrw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f4yvmeMrYth7vqHMwVBhUCXZW5p/DEPphxbozS+jA6U=;
+        b=lnvjLc1bBFbqMU2TfxeyZvdJzgXPTGJDHyapuZIjb+oS4LFvMB8r2/fUcVYnBE5OaE
+         w9KYpFZkwCEcTu4keVTFajpMTRIffqCYl/qZLCgMO/dbVRTIPkq2USh0W3X2/5mxnK4X
+         hZCO597boD94CSEq0XihDCgRuOuksUoaEsV+k9qFre9ZvmEnKzcuFoaKqLSjMdW/qGAt
+         7ocgBiTYsr6oqRJStWX9Xj6X4gJHXy6LW5YeCjA1nEywFtcBOqtuIAGWYyzyS78biusE
+         wh4RLszlwl3rhrENusI8biXNYHp9PWU2CiYuIQmq8OD1h6z8FvQG/uwtTJ8d3tXU0RIQ
+         sdwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nLPL88OfKWPjoDgMrUq7HX0bJ21PFQyFVAStT19x/30=;
-        b=na+EoObF9ajzqcgmxD+WyurO+6Mx7BQLDM0DYtGJEV+ukuHqAjHM2RVWXNJHPN5xco
-         6F41g6EcMlkF143NzbbxP2iuX/TQJjVlalqUPGFLp9wDrEMPBZ90gilt8iK9jAS089Bb
-         YFY1mF+KO57n5/k3g2RuZseh1V0fXuDuygUV6/AvCUyoBY5f2E2ROFwn71HZtYqrswPm
-         e/n+Nz43xZQ+HIutNFKbzQBVG/yaWdm1TuAj1iJcpWkiHrNfyCFbvFghBR2OE8iBoBt5
-         L/bV4vto16rmdj7d43Ss/jam1Udy11AwLGwQbfiTgDjbVZhDcVTyIcjxfJ8RlEJBDuPL
-         sBSg==
-X-Gm-Message-State: AOAM532EH19XuItOfE26cQXLpdEOT5R777vgsw4voUYYKydgxjlw6piQ
-        nDbwtHaN0R1Tom4ZfVdQwNJnsw==
-X-Google-Smtp-Source: ABdhPJysnXFWJwpJ6uF9IEbsegahi3Y1+BUPbpahxlycTv66BVhVh2m/VMBwbtCgMcpWhDDWY9vklw==
-X-Received: by 2002:a17:906:fa15:: with SMTP id lo21mr14416147ejb.156.1593433742019;
-        Mon, 29 Jun 2020 05:29:02 -0700 (PDT)
-Received: from x1 (i59F66838.versanet.de. [89.246.104.56])
-        by smtp.gmail.com with ESMTPSA id a1sm18278094ejk.125.2020.06.29.05.29.00
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f4yvmeMrYth7vqHMwVBhUCXZW5p/DEPphxbozS+jA6U=;
+        b=ADrUTn6svdJnc7Z9Gpnq/hXROzq42xE739j1LnERyXLW1PaVu2FWbfFUFfKs3whzh6
+         SFo5pqFYbfKN8/rNfbsSAl4J/lrtW6dTg8g5Oe37SWspSY4AUW0vu76zdziu0aKh37Z4
+         Qf5RNPNBen8yOhK+663YPtNQ7cota5SwRdIO8qM+b4d9w2yOYjynZGxotFgKTWPlpP0i
+         R9PHFoGE8q1CKRUn82CqvWkO1DkqHPgb+aX/mOMO/j3UT8WpaSNoJGnBqeRR8b8b9cNa
+         JYybGh+ajd7aqcuBPmPfEUoQQ6wzuLDY9IQHsuOko1jIqk7/qNRxthR6s2Svl8Op+8IU
+         5HIA==
+X-Gm-Message-State: AOAM533oMSC3OnsD/5Y4V+gAVZkO6XSo0JPKj6Gj1zYGZB26Wh2SFVzu
+        fAX0Tb8MAaOtixehc79Er/x7zg==
+X-Google-Smtp-Source: ABdhPJy/09sSLknOKduOER2VRtpSYW/RiFyA61OtJ1cUqDxEZ65G6LFMODiDvN0649LK6VhfkXsznQ==
+X-Received: by 2002:a5d:4b4f:: with SMTP id w15mr16564174wrs.84.1593433938785;
+        Mon, 29 Jun 2020 05:32:18 -0700 (PDT)
+Received: from localhost.localdomain ([2.27.35.144])
+        by smtp.gmail.com with ESMTPSA id d201sm28064111wmd.34.2020.06.29.05.32.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 05:29:01 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 14:28:58 +0200
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        devicetree@vger.kernel.org, bcousson@baylibre.com,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>
-Subject: Re: [PATCH v3 0/3] pinctrl: single: support #pinctrl-cells = 2
-Message-ID: <20200629122858.GA506802@x1>
-References: <20200622172951.524306-1-drew@beagleboard.org>
+        Mon, 29 Jun 2020 05:32:18 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] Last batch of W=1 warning fixes in MFD
+Date:   Mon, 29 Jun 2020 13:32:10 +0100
+Message-Id: <20200629123215.1014747-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200622172951.524306-1-drew@beagleboard.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 07:29:48PM +0200, Drew Fustini wrote:
-> Currently, pinctrl-single only allows #pinctrl-cells = 1.
-> 
-> This series will allow pinctrl-single to also support #pinctrl-cells = 2
-> 
-> If "pinctrl-single,pins" has 3 arguments (offset, conf, mux) then
-> pcs_parse_one_pinctrl_entry() does an OR operation on to get the
-> value to store in the register.
->     
-> To take advantage of #pinctrl-cells = 2, the AM33XX_PADCONF macro in
-> omap.h is modified to keep pin conf and pin mux values separate.
-> 
-> change log:
-> - v3: change order of patches to make sure the pinctrl-single.c patch
->   does not break anything without the dts patches
-> 
-> - v2: remove outer parentheses from AM33XX_PADCONF macro as it causes a
->   compile error in dtc.  I had added it per suggestion from checkpatch
->   about having parentheses around complex values.
-> 
-> Drew Fustini (3):
->   pinctrl: single: parse #pinctrl-cells = 2
->   ARM: dts: change AM33XX_PADCONF macro separate conf and mux
->   ARM: dts: am33xx-l4: change #pinctrl-cells from 1 to 2
-> 
->  arch/arm/boot/dts/am33xx-l4.dtsi   |  2 +-
->  drivers/pinctrl/pinctrl-single.c   | 11 +++++++++--
->  include/dt-bindings/pinctrl/omap.h |  2 +-
->  3 files changed, 11 insertions(+), 4 deletions(-)
-> 
-> -- 
-> 2.25.1
-> 
+Attempting to clean-up W=1 kernel builds, which are currently
+overwhelmingly riddled with niggly little warnings.
 
-Hi Tony - do you think this series is useful as-is?
+Lee Jones (5):
+  mfd: si476x-cmd: Add missing documentation for
+    si476x_cmd_fm_rds_status()'s arg 'report'
+  mfd: lm3533-ctrlbank: Cap BRIGHTNESS_MAX to 127 since API uses u8 as
+    carrier
+  mfd: rave-sp: Fix mistake in 'struct rave_sp_deframer's kerneldoc
+  mfd: sprd-sc27xx-spi: Fix divide by zero when allocating register
+    offset/mask
+  mfd: axp20x-i2c: Do not define 'struct acpi_device_id' when
+    !CONFIG_ACPI
 
-Or do you want to see some usage of the seperate conf and mux values
-first?
+ drivers/mfd/axp20x-i2c.c      | 2 ++
+ drivers/mfd/lm3533-ctrlbank.c | 2 +-
+ drivers/mfd/rave-sp.c         | 2 +-
+ drivers/mfd/si476x-cmd.c      | 2 ++
+ drivers/mfd/sprd-sc27xx-spi.c | 2 +-
+ 5 files changed, 7 insertions(+), 3 deletions(-)
 
-thanks,
-drew
+-- 
+2.25.1
+
