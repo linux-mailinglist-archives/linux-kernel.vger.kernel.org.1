@@ -2,108 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C0820E0F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EF220E02E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732595AbgF2UvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:51:07 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:15315 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731417AbgF2TNd (ORCPT
+        id S1731554AbgF2Unc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731627AbgF2TOC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:33 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200629061802epoutp03403f48bc14b855ab0209e810b66aec8d~c700rrV3S0876208762epoutp038
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:18:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200629061802epoutp03403f48bc14b855ab0209e810b66aec8d~c700rrV3S0876208762epoutp038
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593411482;
-        bh=sl56te2E5w+y7+MVKmFRXqGfvxaXPtWrxS7ZTJ1zL70=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=ZJ5WGy4r6qpkd52JqIUHik7f+OrNJmAR6ZXmCcfqNjspxNyfGQKJdlWJoMKAZUtmN
-         EfUS+ZLrTdvsmErApCqtdFoeBEJ4dvFt4cFnDhqp5T+LFOC0IybmNVqPgChPomkVyX
-         4H5TP9DerJ1UGkQL8xCjkDPcY2eb+tIYPMmDlCnI=
-Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p3.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200629061802epcas1p373384546ae4abaa322ad435d0652c1a1~c700LLWgk2623326233epcas1p3-;
-        Mon, 29 Jun 2020 06:18:02 +0000 (GMT)
-Mime-Version: 1.0
-Subject: Re: [RFC PATCH v3 0/5] scsi: ufs: Add Host Performance Booster
- Support
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Bean Huo <huobean@gmail.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <948f573d136b39410f7d610e5019aafc9c04fe62.camel@gmail.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <336371513.41593411482259.JavaMail.epsvc@epcpadp2>
-Date:   Mon, 29 Jun 2020 15:15:46 +0900
-X-CMS-MailID: 20200629061546epcms2p32cd92ff4570d6afb50bf9ee56623a53c
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200623010201epcms2p11aebdf1fbc719b409968cba997507114
-References: <948f573d136b39410f7d610e5019aafc9c04fe62.camel@gmail.com>
-        <963815509.21592879582091.JavaMail.epsvc@epcpadp2>
-        <CGME20200623010201epcms2p11aebdf1fbc719b409968cba997507114@epcms2p3>
+        Mon, 29 Jun 2020 15:14:02 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A770BC08EACE
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:17:45 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id cv18so2796085pjb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:17:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/iWF9Aktns6tjUCoIAHOc+DKzNhTAu9vb8oX3epUC60=;
+        b=blY5505ygN1qt1Y8DSpy0SiYhbAhUtlzOYCJQL61xLBe5ORTR3pWGY2BSrDFUf/frY
+         D2KvctYi0X9Ru4JBVk6rpW0KJGoE6oLqz2VhAUynepoFHbJ2tVw3/pYv2ujjSLBKo+cZ
+         xJsCdaCDR1eK+PCnlmrpDahrh6/Q/7Ls9G6cjc2mnEoLxWf8SRWVkadedQsCIsOXQcog
+         QbspxLbknbwM3pgGBz+VC2c9ai4fqnMqPyOi2JVK+m+Y8+R7SofQf6PYyPWFqo4q/6Lg
+         9DW1LM6RJ/DvVtF9/5oFhneRt9RQoGxAXSwjuwZVCv7KOp0aPb2jd6ycudIjnuVJqhNz
+         l6AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/iWF9Aktns6tjUCoIAHOc+DKzNhTAu9vb8oX3epUC60=;
+        b=eRerBKukFFrgdfvMCrigclj/Dry8hh4JB0GvOGx9PCzuFWHoyLeZV3IScLiOlFXEw4
+         pd7eqqX6AIXovovFQr3W2Pk1i0+prXpSvfxpFpclZmSnlaFU0LgGN8FpqT+itkusLX3c
+         NZy8gUZPVhV93zYgn87ZT/sWpb1tJx4AKjI9Ztn7m+JFzkOzJz9Es/K3Ysm15tPgn3fO
+         N4hg7fCata2cq5To+tgDW1F/VbMgFW2VrgZftIwb1Ocr5aWK70+oYV8vZ8mTpR1hiwtw
+         qX3NCAbX/PaRCmVMQnjossPobza3HK79rUP7O4WrF2a/2ZhMSIku0ERniq2NCCDtzQMZ
+         o7/Q==
+X-Gm-Message-State: AOAM5334WZLc1sxwf6r3eRcXlIfCC+qG/Ti2nQh0RqGtQCCu6EemDlIV
+        V1J9Ixc8hx1xrosemKbxqX8Www==
+X-Google-Smtp-Source: ABdhPJwTKfFVHzwQAGzguT3A58qTDtSwnwdELyYHjDiWd5nJqHRq6K6pp1+oar1iZXy/qT8C+R3bhQ==
+X-Received: by 2002:a17:902:201:: with SMTP id 1mr12567598plc.195.1593411464987;
+        Sun, 28 Jun 2020 23:17:44 -0700 (PDT)
+Received: from localhost ([122.172.127.76])
+        by smtp.gmail.com with ESMTPSA id t184sm3828984pfd.49.2020.06.28.23.17.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 28 Jun 2020 23:17:44 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 11:47:42 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sumit Gupta <sumitg@nvidia.com>
+Cc:     rjw@rjwysocki.net, catalin.marinas@arm.com, will@kernel.org,
+        thierry.reding@gmail.com, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, jonathanh@nvidia.com, talho@nvidia.com,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bbasu@nvidia.com, mperttunen@nvidia.com
+Subject: Re: [TEGRA194_CPUFREQ PATCH v4 4/4] arm64: defconfig: Enable
+ CONFIG_ARM_TEGRA194_CPUFREQ
+Message-ID: <20200629061742.26pd4rzswlb5wegx@vireshk-i7>
+References: <1593186236-12760-1-git-send-email-sumitg@nvidia.com>
+ <1593186236-12760-5-git-send-email-sumitg@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1593186236-12760-5-git-send-email-sumitg@nvidia.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Seems you intentionally ignored to give you comments on my suggestion.
-> let me provide the reason.
-Sorry! I replied to your comment (https://lkml.org/lkml/2020/6/15/1492),
-but you didn't reply on that. I thought you agreed because you didn't send
-any more comments.
+On 26-06-20, 21:13, Sumit Gupta wrote:
+> Enable Tegra194 CPU frequency scaling support by default.
+> 
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> ---
+>  arch/arm64/configs/defconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index f9d378d..385bd35 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -91,6 +91,7 @@ CONFIG_ARM_QCOM_CPUFREQ_NVMEM=y
+>  CONFIG_ARM_QCOM_CPUFREQ_HW=y
+>  CONFIG_ARM_RASPBERRYPI_CPUFREQ=m
+>  CONFIG_ARM_TEGRA186_CPUFREQ=y
+> +CONFIG_ARM_TEGRA194_CPUFREQ=y
+>  CONFIG_QORIQ_CPUFREQ=y
+>  CONFIG_ARM_SCPI_PROTOCOL=y
+>  CONFIG_RASPBERRYPI_FIRMWARE=y
 
+Instead of this, maybe you can rather add a default y thing in the
+Kconfig itself as this is a single platform driver.
 
-> Before submitting your next version patch, please check your L2P
-> mapping HPB reqeust submission logical algorithem. I have did
-We are also reviewing the code that you submitted before.
-It seems to be a performance improvement as it sends a map request directly.
-
-> performance comparison testing on 4KB, there are about 13% performance
-> drop. Also the hit count is lower. I don't know if this is related to
-It is interesting that there is actually a performance improvement. 
-Could you share the test environment, please? However, I think stability is
-important to HPB driver. We have tested our method with the real products and
-the HPB 1.0 driver is based on that.
-After this patch, your approach can be done as an incremental patch? I would
-like to test the patch that you submitted and verify it.
-
-> your current work queue scheduling, since you didn't add the timer for
-> each HPB request.
-There was Bart's comment that it was not good add an arbitrary timeout value
-to the request. (please refer to: https://lkml.org/lkml/2020/6/11/1043)
-When no timer is added to the request, the SD timout will be set as default
-timeout at the block layer.
-
-Thanks,
-Daejun
+-- 
+viresh
