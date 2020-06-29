@@ -2,144 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E232120E447
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8381320E48B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387580AbgF2VXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:23:17 -0400
-Received: from mga03.intel.com ([134.134.136.65]:63961 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729585AbgF2SvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:51:24 -0400
-IronPort-SDR: fiVoY/wcKy4M3E25MyPpNox6plOE2qe1BsdHAm+XjIYycGaV4iuN97q2Ka4wEkrqiljNvkZNFi
- QE+Sj1wXYCzQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="146025480"
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="146025480"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 11:36:01 -0700
-IronPort-SDR: J8TtCQ2KE3lFgd0aaHp/VMcLQkTJMLLFgiMlIjEU7vyztLiuNuvzz3ZCwnY1v43gOhOWetqw17
- BQdy7/Ir83cA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="424906847"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga004.jf.intel.com with ESMTP; 29 Jun 2020 11:36:01 -0700
-Received: from [10.251.5.114] (kliang2-mobl.ccr.corp.intel.com [10.251.5.114])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id BB0A8580107;
-        Mon, 29 Jun 2020 11:35:58 -0700 (PDT)
-Subject: Re: [PATCH V2 01/23] x86/cpufeatures: Add Architectural LBRs feature
- bit
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, dave.hansen@intel.com,
-        yu-cheng.yu@intel.com, bigeasy@linutronix.de, gorcunov@gmail.com,
-        hpa@zytor.com, alexey.budankov@linux.intel.com, eranian@google.com,
-        ak@linux.intel.com, like.xu@linux.intel.com,
-        yao.jin@linux.intel.com, wei.w.wang@intel.com
-References: <1593195620-116988-1-git-send-email-kan.liang@linux.intel.com>
- <1593195620-116988-2-git-send-email-kan.liang@linux.intel.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <be786c01-8010-2add-bec3-18f4045f682e@linux.intel.com>
-Date:   Mon, 29 Jun 2020 14:35:57 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S2391081AbgF2V0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:26:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729096AbgF2Smr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:42:47 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E368C033C3E
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:37:18 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id d6so8388668pjs.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:37:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mHYFnEmrPBB0EoPbZgrylZKEYeUJ7dEY2zbQRVE/TE0=;
+        b=Q8HPwYcPpk6cvqNepdjj7GzG1i+hF0OU2K7lY/4cN3hqsYfjspAjYrh+e2x1oQ7izt
+         iGyhkr4NRFSf1YHoPA7GUZuTdUCb2hwxF7gz7vNnMwVjF3WqMxXPlRNOJMDLab1+merl
+         8ySrtV3vm5xm4BTKo0/QkZC1k/74EuL1hVQtU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mHYFnEmrPBB0EoPbZgrylZKEYeUJ7dEY2zbQRVE/TE0=;
+        b=KvW5uzXjFp+h+ZQIjPu14FhHCVN15rTX9r/Az0LKSuLxBFFnznBXdIwatwaT5e6bHI
+         D5A/K4XxpvRc9suclUjZoJWVNajAZMBC1xdI4PvdNFk5SY6egjglHq1k/CDIZ17mTTVP
+         GOL5q8Hint/Ek+Z71UkKANZFdLAlwEtkeq3Rwc+q0FiH3k53ivIdKwtDo8hlAN7mvOUR
+         iH4KYnDJepPurME6RK9YIDvUbEblOkEO8kfiY5HdFa3ZRic9FsFJPNKePA4ACAZli/UO
+         2nlk53Um9HcY5V3yemuHdkoI/Zyo1KGvblPpqqLPU/k3orDXOpVQdlEwvAZAwZ2P1Cfk
+         2qFg==
+X-Gm-Message-State: AOAM533AYDmMEjJaCUqBlXHeW+VHabM39sDu7oqTKMaPW4QZtl5IySbw
+        xR+OQe0GU2shob1xwArfwza/8A==
+X-Google-Smtp-Source: ABdhPJyO5LBgTD5AtbVt3yk/cj+JfeKTEZLWvpJPG/3xUjAxL4UTeU1IkJQNAdsLcqAC0lW924PkIQ==
+X-Received: by 2002:a17:90a:e884:: with SMTP id h4mr9418062pjy.229.1593455837971;
+        Mon, 29 Jun 2020 11:37:17 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id n15sm457229pgs.25.2020.06.29.11.37.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 11:37:17 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 11:37:16 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Will Deacon <will@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, X86 ML <x86@kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Kiss <daniel.kiss@arm.com>
+Subject: Re: [PATCH v4 05/17] ctype: Work around Clang
+ -mbranch-protection=none bug
+Message-ID: <202006291136.E6DF8242@keescook>
+References: <20200629061840.4065483-1-keescook@chromium.org>
+ <20200629061840.4065483-6-keescook@chromium.org>
+ <CAMj1kXE+toCd=Bx-zw7D9bvDRNB2aPn5-_7CY7MOKcVGA-azVg@mail.gmail.com>
+ <202006290806.3BDE2A8@keescook>
+ <CAKwvOd=DMfmvfiEX7KDPLs75SbNz+LAGSwC3V_=LgGH3kjtE=g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1593195620-116988-2-git-send-email-kan.liang@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOd=DMfmvfiEX7KDPLs75SbNz+LAGSwC3V_=LgGH3kjtE=g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/26/2020 2:19 PM, kan.liang@linux.intel.com wrote:
-> From: Kan Liang <kan.liang@linux.intel.com>
+On Mon, Jun 29, 2020 at 11:02:51AM -0700, Nick Desaulniers wrote:
+> This is definitely better than the empty function.  Though a patch is
+> posted for fixing this in LLVM. Assuming that lands before this, we
+> might not actually need this workaround?
 > 
-> CPUID.(EAX=07H, ECX=0):EDX[19] indicates whether Intel CPU support
-> Architectural LBRs.
+> arch/arm64/Kconfig
+> 1625 config ARM64_BTI_KERNEL
+> ...
+> 1633   # https://reviews.llvm.org/rGb8ae3fdfa579dbf366b1bb1cbfdbf8c51db7fa55
+> 1634   depends on !CC_IS_CLANG || CLANG_VERSION >= 100001
 > 
-> The Architectural Last Branch Records (LBR) feature enables recording
-> of software path history by logging taken branches and other control
-> flows. The feature will be supported in the perf_events subsystem.
-> 
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> ---
->   arch/x86/include/asm/cpufeatures.h | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index 02dabc9..72ba4c5 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -366,6 +366,7 @@
->   #define X86_FEATURE_MD_CLEAR		(18*32+10) /* VERW clears CPU buffers */
->   #define X86_FEATURE_TSX_FORCE_ABORT	(18*32+13) /* "" TSX_FORCE_ABORT */
->   #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
-> +#define X86_FEATURE_ARCH_LBR		(18*32+19) /* Intel ARCH LBR */
->   #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* "" Speculation Control (IBRS + IBPB) */
->   #define X86_FEATURE_INTEL_STIBP		(18*32+27) /* "" Single Thread Indirect Branch Predictors */
->   #define X86_FEATURE_FLUSH_L1D		(18*32+28) /* Flush L1D cache */
-> 
+> So if Daniel's patch lands AND is backported into the clang 10.0.1
+> release, then we might not need to carry this workaround?  Either way,
 
-The "Reviewed-by" tag from Dave Hansen was missing in the previous patch.
-The patch below adds the tag and applies minor updates to the commit 
-message. Please use the new one instead.
+True, though as I mentioned in the review, I don't think it's quite
+right -- the warning getting removed is actually quite valuable.
 
-Please let me know if I need to resend the whole patch set for the update.
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Thanks,
-Kan
+Thanks!
 
- From ed05798e52377f85cd93193838648d1c151ca0a4 Mon Sep 17 00:00:00 2001
-From: Kan Liang <kan.liang@linux.intel.com>
-Date: Tue, 12 Nov 2019 09:09:14 -0800
-Subject: [PATCH V2 01/23] x86/cpufeatures: Add Architectural LBRs 
-feature bit
-
-CPUID.(EAX=07H, ECX=0):EDX[19] indicates whether an Intel CPU supports
-Architectural LBRs.
-
-The "X86_FEATURE_..., word 18" is already mirrored from CPUID
-"0x00000007:0 (EDX)". Add X86_FEATURE_ARCH_LBR under the "word 18"
-section.
-
-The feature will appear as "arch_lbr" in /proc/cpuinfo.
-
-The Architectural Last Branch Records (LBR) feature enables recording
-of software path history by logging taken branches and other control
-flows. The feature will be supported in the perf_events subsystem.
-
-Reviewed-by: Dave Hansen <dave.hansen@intel.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
-  arch/x86/include/asm/cpufeatures.h | 1 +
-  1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/include/asm/cpufeatures.h 
-b/arch/x86/include/asm/cpufeatures.h
-index 02dabc9..72ba4c5 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -366,6 +366,7 @@
-  #define X86_FEATURE_MD_CLEAR		(18*32+10) /* VERW clears CPU buffers */
-  #define X86_FEATURE_TSX_FORCE_ABORT	(18*32+13) /* "" TSX_FORCE_ABORT */
-  #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
-+#define X86_FEATURE_ARCH_LBR		(18*32+19) /* Intel ARCH LBR */
-  #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* "" Speculation Control 
-(IBRS + IBPB) */
-  #define X86_FEATURE_INTEL_STIBP		(18*32+27) /* "" Single Thread 
-Indirect Branch Predictors */
-  #define X86_FEATURE_FLUSH_L1D		(18*32+28) /* Flush L1D cache */
 -- 
-2.7.4
-
+Kees Cook
