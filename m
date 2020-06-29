@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C8620E81F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA97220E866
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391736AbgF2WDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 18:03:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56796 "EHLO mail.kernel.org"
+        id S2404846AbgF2WGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 18:06:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726183AbgF2SfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:35:22 -0400
+        id S1726121AbgF2SfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:35:15 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1B0424680;
-        Mon, 29 Jun 2020 15:19:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98B6E24685;
+        Mon, 29 Jun 2020 15:19:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593443981;
-        bh=Lf6jb8z4iIF/Glg9uv3XNjE9mqcTEL/2yKtxJnHNVOI=;
+        s=default; t=1593443983;
+        bh=RYfkEx+K0eqsbULCE1FHocr7/0rtrtEm/3kjazqQxlI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N9KOxRM9E2xGZuZ0BuT+KZlPHSQVqvKu9ysiBVzAzTH7fEkATmmFMeddlSr3jX0d0
-         OfGV2t6vzBgi9LzuUrV2+cR0ioUkOj3pyWPhcHMYELXNz5nf2py2pWJA7VSRrO28fn
-         e9lQEkbDvSJOcyeO7GlJTmqC8XdfOnwDJpMy3klI=
+        b=Ig1KAs8m84ZWVWEw2fwDLT6PsWXXRW8Jqh6IyA4Ld7+8peKFiMYXbAhNU8iU0oryZ
+         5Z1JgcCcQFhzJafQfNb3z+vHn1R6ubOs8iRbCcNynNRRByxVDLacK3XSZrHs9Bfh7m
+         RPdv4kyJrAJQLZnDfoXyI1uShUav7h+53/YvmqNs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>,
-        Pavel Shilovsky <pshilov@microsoft.com>,
-        Steve French <stfrench@microsoft.com>,
+Cc:     Al Cooper <alcooperx@gmail.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.7 085/265] cifs/smb3: Fix data inconsistent when zero file range
-Date:   Mon, 29 Jun 2020 11:15:18 -0400
-Message-Id: <20200629151818.2493727-86-sashal@kernel.org>
+Subject: [PATCH 5.7 087/265] xhci: Fix enumeration issue when setting max packet size for FS devices.
+Date:   Mon, 29 Jun 2020 11:15:20 -0400
+Message-Id: <20200629151818.2493727-88-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629151818.2493727-1-sashal@kernel.org>
 References: <20200629151818.2493727-1-sashal@kernel.org>
@@ -51,46 +49,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+From: Al Cooper <alcooperx@gmail.com>
 
-commit 6b69040247e14b43419a520f841f2b3052833df9 upstream.
+commit a73d9d9cfc3cfceabd91fb0b0c13e4062b6dbcd7 upstream.
 
-CIFS implements the fallocate(FALLOC_FL_ZERO_RANGE) with send SMB
-ioctl(FSCTL_SET_ZERO_DATA) to server. It just set the range of the
-remote file to zero, but local page cache not update, then the data
-inconsistent with server, which leads the xfstest generic/008 failed.
+Unable to complete the enumeration of a USB TV Tuner device.
 
-So we need to remove the local page caches before send SMB
-ioctl(FSCTL_SET_ZERO_DATA) to server. After next read, it will
-re-cache it.
+Per XHCI spec (4.6.5), the EP state field of the input context shall
+be cleared for a set address command. In the special case of an FS
+device that has "MaxPacketSize0 = 8", the Linux XHCI driver does
+not do this before evaluating the context. With an XHCI controller
+that checks the EP state field for parameter context error this
+causes a problem in cases such as the device getting reset again
+after enumeration.
 
-Fixes: 30175628bf7f5 ("[SMB3] Enable fallocate -z support for SMB3 mounts")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
-Cc: stable@vger.kernel.org # v3.17
-Signed-off-by: Steve French <stfrench@microsoft.com>
+When that field is cleared, the problem does not occur.
+
+This was found and fixed by Sasi Kumar.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Al Cooper <alcooperx@gmail.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20200624135949.22611-3-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/cifs/smb2ops.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/host/xhci.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
-index 3de9113eb8e35..6fc69c3b2749d 100644
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -3145,6 +3145,11 @@ static long smb3_zero_range(struct file *file, struct cifs_tcon *tcon,
- 	trace_smb3_zero_enter(xid, cfile->fid.persistent_fid, tcon->tid,
- 			      ses->Suid, offset, len);
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 10d76205a79ca..dcc987e1d57b0 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -1430,6 +1430,7 @@ static int xhci_check_maxpacket(struct xhci_hcd *xhci, unsigned int slot_id,
+ 				xhci->devs[slot_id]->out_ctx, ep_index);
  
-+	/*
-+	 * We zero the range through ioctl, so we need remove the page caches
-+	 * first, otherwise the data may be inconsistent with the server.
-+	 */
-+	truncate_pagecache_range(inode, offset, offset + len - 1);
+ 		ep_ctx = xhci_get_ep_ctx(xhci, command->in_ctx, ep_index);
++		ep_ctx->ep_info &= cpu_to_le32(~EP_STATE_MASK);/* must clear */
+ 		ep_ctx->ep_info2 &= cpu_to_le32(~MAX_PACKET_MASK);
+ 		ep_ctx->ep_info2 |= cpu_to_le32(MAX_PACKET(max_packet_size));
  
- 	/* if file not oplocked can't be sure whether asking to extend size */
- 	if (!CIFS_CACHE_READ(cifsi))
 -- 
 2.25.1
 
