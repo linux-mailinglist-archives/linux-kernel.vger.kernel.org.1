@@ -2,147 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F5D20D3D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80EDC20D3F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730245AbgF2TCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:02:19 -0400
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:10069 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730487AbgF2TCN (ORCPT
+        id S1730592AbgF2TDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730247AbgF2TD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:02:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1593457333; x=1624993333;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=k5/mTpV8mqqbD032ShqsXWdbTmkf7e+9W83qiEoYNfg=;
-  b=KVfQkolVhoqYMdd/l1T9uYzvpIUgevyisRbeCl/5R5vZMqwy2gXjjdE0
-   xUosM++Q1cIGzbTNicKit2KCejTvi1opbQ041oV3yqkhZNMPcW2Kojcx8
-   X0vo6zCgi35RhjBIbe0N7neD9fYPlz4xdAtI35hKI4M7dAyYj0FtHRm04
-   IDfj5XXDN/jEN9H+FsWkSUMwQ13jZFzGeJyMo5Do1JHmlJHRplEf6H9po
-   u6gdZqLDJIo+XV8+L20LL/CZokMcZrVD7ZjM5MS8JD5/OnUFuzToyKFtK
-   LFtHlJT2CVlCLgNsvSxdeu38l5dtILW8kUGJ90OSzk0TXl+gWkV8CIKx8
-   Q==;
-IronPort-SDR: AGKdxt9FV/e6mDEdYSaPGMeZYC4Mc0fMPKUuDcu3yj7s1vOLTmxKUGhsBiAXxGqyB763CX149p
- bk5yfS4N0Ruq9ztdAooSSM+V4rqgpnodFwS/4HL3qDHqgJcH1JaxP2tCBoyeJL3c5tK7S5KgDj
- nxE0vFzebblmw+ruDk2xNmbwS9N7hzUPGevXcMlXBXD16Tnd7EeNjW0T5XZB+ZYTSX+sM0ZxV+
- Zs3kZ4HQx+kR6mwubdF2UOcFH6ilMhxBMU5FpGHIg4nFgC5IdrKWS7kBhEHvwvOk2w6INFTyCI
- +C4=
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="85533574"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Jun 2020 12:01:57 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 29 Jun 2020 12:01:54 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Mon, 29 Jun 2020 12:01:36 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C7WVAxEoaaWcVelEQBi68ZNxTa0RSEwO2rTqtbaOCxXtNI5PuC2bBjOrHBuWeghnQZ18dc8yFQ1TKvSGnBlylIPZhE24GmO6uOckQ62LGIuCx/OfmiFDBqf95h0oAXW/mFYJsW7zFkUl+5fG39QiLXX1kpi/cP6C4zX89vkyfU2x7a+YHa67WObI8cT251Sbv2Z8GGvkn0UGmUJVv0SKT/UhgaFzbtzieNFOexTV2V1tCkphfnEkvZwoByExNQaAD35KvGCL+QdFaMlUYx3JyYGedaclCl2JGeRk6svrcv5GiTEKo/kw/uiFFT0gsFwBqh+V+bBN1WsfMJOXrNTy3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k5/mTpV8mqqbD032ShqsXWdbTmkf7e+9W83qiEoYNfg=;
- b=hs1WVuZJFyjijI+JPH8YNrJJYhjbMU1YA7IATMVGzLvs8hQDpzPGrrz/oH9veNn7tnqrD45IHUfXP2HdCrmRXoYyO8RhEQ8X2syew+q9Gx5ueI7ffF6/U0Gm2gDuFcVOp6Wd73vQJ3PgaQkjERPVahBM6gF6CKoAgVhBNpsBWRLGzmo3hfSC/tsth5DhvjmW7hwSRfWNgcjP7NbSAJmX0F0MCtVLG7e8Jk5UEHTqsp2leQBzrmfIPrZQYuHRwwF6by/Gk0uW5L5eRibgGgZs9yVcYX4YRg6lqh0GPr6tJVDbYqRUUVRAm4Pu4NjSJ+VjFkaDQqn1FpmfaVTsMYgRaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k5/mTpV8mqqbD032ShqsXWdbTmkf7e+9W83qiEoYNfg=;
- b=pVnJiqmZNmAJB478wPoUEK1KwVJRbNvgsUv9xTJqiYf0+I75cYIgBCv1174J5OqnONVMXQ/LjmCY2cQYT0kR3ecktgSSzniopcs63quQMi8H0kj9xda3Ipi/enqq3Mggyy6Ug5p0CYJR5JR3S3jtRasNZhwymCBmkOSPlKlJ2bk=
-Received: from BYAPR11MB2856.namprd11.prod.outlook.com (2603:10b6:a02:bd::11)
- by BY5PR11MB4054.namprd11.prod.outlook.com (2603:10b6:a03:189::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.23; Mon, 29 Jun
- 2020 19:01:51 +0000
-Received: from BYAPR11MB2856.namprd11.prod.outlook.com
- ([fe80::f1d5:60ca:d163:c1b3]) by BYAPR11MB2856.namprd11.prod.outlook.com
- ([fe80::f1d5:60ca:d163:c1b3%3]) with mapi id 15.20.3131.027; Mon, 29 Jun 2020
- 19:01:51 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <thesven73@gmail.com>
-CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] mtd: spi-nor: Add support for Winbond w25q64jv spi
- flash
-Thread-Topic: [PATCH v1] mtd: spi-nor: Add support for Winbond w25q64jv spi
- flash
-Thread-Index: AQHWThPSolCxrzN8IU2HXo+YK1EHpg==
-Date:   Mon, 29 Jun 2020 19:01:51 +0000
-Message-ID: <f3859642-1830-15a9-0773-0a8a2a77dfb6@microchip.com>
-References: <20200613235331.24678-1-TheSven73@gmail.com>
- <4b0f2a2d-66be-4cdd-8384-a80f6b729d74@microchip.com>
- <CAGngYiUFh8XexBZK1U2bHcsvHS2LFAXONgLG7HhY7CDQ=LayWg@mail.gmail.com>
-In-Reply-To: <CAGngYiUFh8XexBZK1U2bHcsvHS2LFAXONgLG7HhY7CDQ=LayWg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [86.127.52.34]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c726b767-114a-482a-23ef-08d81c5ee1e2
-x-ms-traffictypediagnostic: BY5PR11MB4054:
-x-microsoft-antispam-prvs: <BY5PR11MB4054B09090E316D200F450C9F06E0@BY5PR11MB4054.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 044968D9E1
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HaM3+BnqB0UkWQSlCY8Z4hkPqFEnto01F44t2Q7xTodw40vAhwQTsZ+qpXXpiLsYOwYeXZ0vXHKJE26zBiz4sjXlm5Dbpb7zYitmkaj0sGNYEpApGCjr2IeM2cno1sYje3avC9TsY1NFGqCS/vOVW3/q7kZxRofIhMXkdBdg6lIDO8V0AoRK7ALf5QFpZLtrXuQ2dCWxctgsIJb+WNui8IXIrU5sCY1ZETkGGaiqJ1BSn040IQsLAeVbC4ABgXmrVb/jARJP5lrv9fDbBP2IITxPDy08UVaGzASoCYUaF4wu0rftJu5wPOIpnQv4V0zduK4SBuDzEzneY0EXdY8Bnxpgx0j4kRGdO/dC6tHWYKKvrCskM2qFEB7EDNcuAcsiXwCVtFHDXWTiZ2yDWZTAO8055koZoYrN3tPc4Iw3j6UuHYqif+VeanHdJ1+aacRCF9qJn9bU0c3220+uJhXtHw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2856.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(366004)(136003)(346002)(376002)(39860400002)(478600001)(8676002)(31686004)(6486002)(2616005)(5660300002)(36756003)(186003)(53546011)(966005)(26005)(6506007)(8936002)(316002)(2906002)(66946007)(76116006)(71200400001)(91956017)(31696002)(66556008)(4326008)(66476007)(83380400001)(66446008)(6512007)(86362001)(64756008)(54906003)(6916009)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: Th14CAK57r6T4RBUwencSAiyGaDSzUxSvXdpzkZ+h1oZVcXTdafbfsBhR++0urzZIBCB7plScHpoief6tQRRo8YeuxyxBzb6Pi8hoHA/82tmPK1HSjKNtuVDAbIhn/9C9i3fycisjvHUVhLnS55fN+NURE1F1EITsqKoOTiclLMJNxD86FUw2FCxVZgTFjqCpDLgzKVs8s/U8qdLWlfmM+0VgqkGWJPqbZZ6Y3llsGxBuRqvIxAWGy2xqqqpmMRiTULkDx1e5D/B2JSO+9o0AaZkz2Z7f5W7j74nZ7zVF9fsSBXm3maxwLBorEdqCq9LrxpcnTiKV0SDJc+tm7cgGbsNgX1lV1Uj2TL8sV3sMGBYLfTXAsJXQRGbuxsojItj1ae/ZoydEs+J8tR/qkuES+XWxKjz9ToJ+50BOyhSUmQoLagKMIytylkljL0SITMeBLyELTfVgg4CM0XuTwAZY18flG1VBDARQzRF8ZoB+LI=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8C05CA36435E134D92168DEDBF077CE0@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 29 Jun 2020 15:03:26 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94700C031C40;
+        Mon, 29 Jun 2020 12:03:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=+IitMUk+eOYapugNWdcU2qNl/SJeRY/e+GCy2zsMLo8=; b=N+rbp9GAXyeaJr2JEOHz+UXKi
+        RsSRxVTngHhTRvU12HFs410qqK0KgYvJnLV4c+gxMbCoh3lnabXdW68dUe+tiDxwUQf835ZcIukvO
+        nP+iLDAsjH6047RD10Y8a3A+vLOoAIdwFz5UwQ2vjB/iPjCPwyjp8PTOsP1erptR/bqeZGFkElxUE
+        YTaLVJEib0JGcCyLbw2ccxW1Y35fnPlTX4rz1m2859yaEtnKzdu6gF39mRrYiZLlsKQEKRCiINLWl
+        z0QldW6EbOGfQyx1S0HxtBSebUfIaVLEDFaPlc4HlkrZS+WwFMrEEJcwTNdvYY2LcRWZaTe5c6mzz
+        zvLOSXRqA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33208)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jpz3m-00088W-9q; Mon, 29 Jun 2020 20:03:18 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jpz3k-0007MT-Qr; Mon, 29 Jun 2020 20:03:16 +0100
+Date:   Mon, 29 Jun 2020 20:03:16 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Kees Cook <keescook@chromium.org>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 14/17] arm/build: Warn on orphan section placement
+Message-ID: <20200629190316.GY1551@shell.armlinux.org.uk>
+References: <20200629061840.4065483-1-keescook@chromium.org>
+ <20200629061840.4065483-15-keescook@chromium.org>
+ <20200629155401.GB900899@rani.riverdale.lan>
+ <20200629180703.GX1551@shell.armlinux.org.uk>
+ <20200629181514.GA1046442@rani.riverdale.lan>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2856.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c726b767-114a-482a-23ef-08d81c5ee1e2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2020 19:01:51.4143
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mTQ9PUnjoPLd2Fl6cC8aldNn7c9DgoblRVOZsEjLzK2sPygyaazzNPEw7lDwUxekYwRSZdlae7dCw4gxQ07iLVZOBb/IvWQ9bSxpvNu8kuM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4054
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629181514.GA1046442@rani.riverdale.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gNi8yOS8yMCA1OjUzIFBNLCBTdmVuIFZhbiBBc2Jyb2VjayB3cm90ZToNCj4gRVhURVJOQUwg
-RU1BSUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Ug
-a25vdyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBIaSBUdWRvciwNCj4gDQo+IE9uIE1vbiwg
-SnVuIDI5LCAyMDIwIGF0IDg6NTAgQU0gPFR1ZG9yLkFtYmFydXNAbWljcm9jaGlwLmNvbT4gd3Jv
-dGU6DQo+Pg0KPj4gSSdtIHJlYWRpbmcgdGhlIGZvbGxvd2luZyBkYXRhc2hlZXQ6DQo+PiBodHRw
-czovL3d3dy53aW5ib25kLmNvbS9yZXNvdXJjZS1maWxlcy93MjVxNjRqdiUyMHJldmolMjAwMzI3
-MjAxOCUyMHBsdXMucGRmDQo+Pg0KPj4gdzI1cTY0anZtICgweGVmNzAxNykgY29tZXMgd2l0aCBR
-RSBiaXQgc2V0IHRvIGEgMCBzdGF0ZSwgYnV0IGNhbiBiZQ0KPj4gc2V0IHRvIDEsIHNvIFF1YWQg
-bW9kZSBjYW4gYmUgc3VwcG9ydGVkLiBXb3VsZCB5b3UgcGxlYXNlIHNldCBTUElfTk9SX0RVQUxf
-UkVBRA0KPj4gYW5kIFNQSV9OT1JfUVVBRF9SRUFEIGZsYWdzIGFuZCB0ZXN0IGFuZCBzZWUgaWYg
-UXVhZCB3b3Jrcz8gSWYgYWxsIGdvb2QsDQo+PiBwbGVhc2Ugc3BlY2lmeSBpbiB0aGUgY29tbWl0
-IG1lc3NhZ2Ugd2l0aCB3aGljaCBjb250cm9sbGVyIHlvdSBkaWQgdGhlIHRlc3RzLg0KPj4NCj4g
-DQo+IEdvb2QgcG9pbnQgIQ0KPiANCj4gVW5mb3J0dW5hdGVseSBJJ20gdXNpbmcgdGhlIHNwaSBj
-b250cm9sbGVyIG9uIGFuIGlteDYgKCJmc2wsaW14NTEtZWNzcGkiKSB3aGljaA0KPiBkb2VzIG5v
-dCBzdXBwb3J0IGR1YWwgb3IgcXVhZCBtb2RlLiBTbyBJIGNhbm5vdCBwb3NzaWJseSB0ZXN0IHRo
-aXMgOikNCj4gDQo+IEhvdyB3b3VsZCB5b3UgbGlrZSB0byBwcm9jZWVkPyBTaG91bGQgSSBrZWVw
-IHRoaXMgYXMgYSBwcml2YXRlIHBhdGNoLCBhbmQNCj4gd2FpdCB1bnRpbCBzb21lb25lIGNvbWVz
-IGFsb25nIHdobyBjYW4gdGVzdCB0aGlzIG9uIG1vcmUgY2FwYWJsZQ0KPiBjb250cm9sbGVyIGgv
-dyA/DQo+IA0KPiBPciBzaG91bGQgSSByZS1zcGluIHRoZSBwYXRjaCB3aXRob3V0IHRoZSBmbGFn
-cz8NCj4gDQoNClJlLXNwaW4gdGhlIHBhdGNoIHdpdGhvdXQgdGhlIGZsYWdzLiBXZSBjYW4gYWRk
-IHRoZW0gbGF0ZXIgb24sIHdoZW4gc29tZW9uZSBjYW4NCnRlc3QgdGhlbS4NCg0KQ2hlZXJzLA0K
-dGENCg0K
+On Mon, Jun 29, 2020 at 02:15:14PM -0400, Arvind Sankar wrote:
+> On Mon, Jun 29, 2020 at 07:07:04PM +0100, Russell King - ARM Linux admin wrote:
+> > On Mon, Jun 29, 2020 at 11:54:01AM -0400, Arvind Sankar wrote:
+> > > On Sun, Jun 28, 2020 at 11:18:37PM -0700, Kees Cook wrote:
+> > > > We don't want to depend on the linker's orphan section placement
+> > > > heuristics as these can vary between linkers, and may change between
+> > > > versions. All sections need to be explicitly named in the linker
+> > > > script.
+> > > > 
+> > > > Specifically, this would have made a recently fixed bug very obvious:
+> > > > 
+> > > > ld: warning: orphan section `.fixup' from `arch/arm/lib/copy_from_user.o' being placed in section `.fixup'
+> > > > 
+> > > > Discard unneeded sections .iplt, .rel.iplt, .igot.plt, and .modinfo.
+> > > > 
+> > > > Add missing text stub sections .vfp11_veneer and .v4_bx.
+> > > > 
+> > > > Add debug sections explicitly.
+> > > > 
+> > > > Finally enable orphan section warning.
+> > > 
+> > > This is unrelated to this patch as such, but I noticed that ARM32/64 places
+> > > the .got section inside .text -- is that expected on ARM?
+> > 
+> > Do you mean in general, in the kernel vmlinux, in the decompressor
+> > vmlinux or ... ?
+> > 
+> 
+> Sorry, in the kernel vmlinux. ARM_TEXT includes *(.got) for 32-bit, and
+> the 64-bit vmlinux.lds.S includes it in .text as well. The decompressor
+> for 32-bit keeps it separate for non-EFI stub kernel and puts it inside
+> .data for EFI stub.
+
+The main 32-bit kernel image doesn't use the .got - I don't think it
+actually even exists.
+
+The decompressor (non-EFI) uses the .got as a way of getting position
+independence, and that must be part of the binary image at a fixed
+offset from the .text section.  The decompressor self-fixes up the
+GOT entries.
+
+In the case of the decompressor being flashed and executed from NOR
+flash, the decompressor must be built for the specific address(es)
+that it will reside (which does away with the .got table.)
+
+For EFI, it needs to be in the .data section (which is in that case
+always a fixed offset from .text) so that it can be written to so the
+fix-ups work.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
