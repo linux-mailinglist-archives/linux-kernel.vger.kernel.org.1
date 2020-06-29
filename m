@@ -2,183 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952B720E0DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A591020E0A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387970AbgF2Uub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
+        id S2389565AbgF2UsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731452AbgF2TNf (ORCPT
+        with ESMTP id S1731524AbgF2TNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:35 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE7CC08EB30
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:36:07 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id l63so13478109oih.13
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:36:07 -0700 (PDT)
+        Mon, 29 Jun 2020 15:13:50 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AD4C08EB40
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:42:08 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id 80so14342590qko.7
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:42:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+6Di78aul04vs2kyIJtsqSNPWqTVlpseLwhNlVPJlCw=;
-        b=jB71Ljjq1eBRRMow3ePRUvEUQNwMfHAqv9mcp0yegcgOVA2UsvNwiMG2zLfZ8JVZ/r
-         f0CHXYLQ/yer0HIXZkBafxzwQhkWzsoZUNmApVOMiciGG2kr8AqjAF5JDOb0sNFgonkH
-         BJqaXq71xyAFuJyeF2Ifg3SFLTBmmkI3SAgMT4b6kGScWcc5PZ0PukTdyhON7/07MRvf
-         HlZdVMdh24gdrmnmh4Zp9VPjAVtiCbD7GN26cDy9LTiwY/F7ioVTN9UWztx+kQo0RyJn
-         jY5SpKDwmkn2uWBOYXWmPbFka+EA1mC1mklgB62+SF12rIHoOQpCQRmNdKK9aup8EwJW
-         fEUQ==
+         :cc:content-transfer-encoding;
+        bh=v2cUY6dn/8hM5Fe6/vgpIOBYGaKKOrNbvFVWUTgCzZQ=;
+        b=Vs7YwODtzdw0nnL5dB4Bd0RIlci2u3B6noXOgRab6ppKE6A7jRezT7TVbcrQUOLYRY
+         mSYHQ9313VtfFpaqCJUqSOmM3NyAk4uOeGSqtTmP6loy9QRx94fliMk2r7+UKJK26jQk
+         MzBme0vl0WF1haS0FMA8EQHF13IyO//f7brDudNRT/3PLrvJ8xn6sn9aI8kmHud3GmlU
+         waSMIXTzUMlD/BwM5BY2YW0IZAOcYacRRBtm5gR8hUEmFmD23EA8VB6yZqkc18X09o1H
+         JUjqtBpZTlw/XJFzBvxgumP78wbUDw2mMOo1InHOcQfdteWj4NAwzTKEO5IA/Do6JFrW
+         cbTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+6Di78aul04vs2kyIJtsqSNPWqTVlpseLwhNlVPJlCw=;
-        b=QsCPh6lYVenA4umKwEKvPkMYiF4parbZxtXoiakKGBu50TFDmSC6qVRHBaG0y5h9+y
-         jDrg09UsnwRl9RDfmwKziGB/cMHTeKRvau/gut2F06OZGo5lO8NhgC4huxgUv37vPwHu
-         DG3TySz9JRm173xfqCcOmDTVfMRg3NPfHblwCQUjQ1rc1jYLySOfiV50lVyW9eGyljC7
-         NmTOXxs/Sxbo2eKJ0xK8dDZhZqZf6066lD9f1b35NUb8CQRBkJBaSEQJ/euFhI1FhVhi
-         TVxZ9D5UrsWnJCyt8Nk4NCurxa4FeR6AcB2wkVqmYrpyTDbJqMs9jUq9kvuHwiCfpR/p
-         61zg==
-X-Gm-Message-State: AOAM532Qj136b8YFf6ir2aHb3awtqhMWOKpglaMGH1C9VFFR0YTUzYU4
-        /dSQxF9qATu4r7cHVy68uRq416NxKawjC+BWwwTWzg==
-X-Google-Smtp-Source: ABdhPJzIbZs7+pk8YdVbf5qeEsUHVykEwUvO7k68qMKB1IWotZJ8TOn/8j6yCa6Xn3TcRl1sAP8SWOGWhzF9MrmH88c=
-X-Received: by 2002:a05:6808:919:: with SMTP id w25mr11077804oih.91.1593412566656;
- Sun, 28 Jun 2020 23:36:06 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=v2cUY6dn/8hM5Fe6/vgpIOBYGaKKOrNbvFVWUTgCzZQ=;
+        b=PpuuRTkwFsMsNUVwIA2N8xgQuXePH+1DlEq5hziSSC7O4Pok/4HRKSuOXr8TIkABBj
+         idtnXHYbqG8NNEGXvj9QprKXL1AnOILcDA7ydq7KlCnpNEv8LXNoYlBhtRREXyah5vYW
+         W54CgO2L3uaxX+bHqjdQY85NnONKoASWScxVLTMXv57SHkY8i3+BP5KyLDBAPxraVZg0
+         z5+6R5zv2CjTFBQqooI1KxWCXqoi7AyjQR6zLC5p87F41kLTRWdcam8dVDm/Hjhp2MNp
+         geQIWpWvIZXeus2pTr4098bcObfpksZ7e/OQAPxqAgseairrfeN8AZWejILz9u1iW14g
+         MVvQ==
+X-Gm-Message-State: AOAM533jcbTieKSCAzkeGC35XW2Qsh2Z9DDXI589lE4620Waf25+94e1
+        xBZQGJ/aTo8TUfPgETihbMudxeq4t/PeslFxxBM=
+X-Google-Smtp-Source: ABdhPJy06spvE0O/+QHN1s639aC0ijZEMrz9WuEYm1H8fxF5KAdsz+aO5ojKo1uKVsFR2ceSNLKEWZswC0rNB1kK1sI=
+X-Received: by 2002:ae9:e20c:: with SMTP id c12mr12959301qkc.187.1593412927403;
+ Sun, 28 Jun 2020 23:42:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1593397455.git.zong.li@sifive.com> <3de3a480517d167a3faae086aa8ab0c0c7141d99.1593397455.git.zong.li@sifive.com>
- <CAAhSdy3VBUTMg_b2tO12cTYuvHYtH=4dj9-qT-at35Whf3w_7w@mail.gmail.com>
- <CANXhq0pV87oSzyAt80ySoXGRXp26bCnahPW0r27J+wjj5yc=nw@mail.gmail.com> <CAAhSdy3BUfPCS+LUWp9GKdnf960N-UkxtUtRArgkVd-1cGZxhQ@mail.gmail.com>
-In-Reply-To: <CAAhSdy3BUfPCS+LUWp9GKdnf960N-UkxtUtRArgkVd-1cGZxhQ@mail.gmail.com>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Mon, 29 Jun 2020 14:35:55 +0800
-Message-ID: <CANXhq0rvjJ6yAcOq=bc7O_rYGDcbRfp7DJhcM0RBQ8q2x7xH0A@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/6] dt-bindings: riscv: Add YAML documentation for PMU
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+References: <1592892828-1934-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1592892828-1934-6-git-send-email-iamjoonsoo.kim@lge.com> <20200625120550.GF1320@dhcp22.suse.cz>
+ <CAAmzW4ObN=GAzCLw8betLftTeCEsLs4OihfNXvtg4CaWyWiBCw@mail.gmail.com> <20200626073342.GU1320@dhcp22.suse.cz>
+In-Reply-To: <20200626073342.GU1320@dhcp22.suse.cz>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Mon, 29 Jun 2020 15:41:37 +0900
+Message-ID: <CAAmzW4PT+M8mUwXMPhQSKLhz9nkPATivL5D-yLyyfC9SOwPnYQ@mail.gmail.com>
+Subject: Re: [PATCH v3 5/8] mm/migrate: make a standard migration target
+ allocation function
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Hellwig <hch@infradead.org>,
+        Roman Gushchin <guro@fb.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 12:38 PM Anup Patel <anup@brainfault.org> wrote:
+2020=EB=85=84 6=EC=9B=94 26=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 4:33, M=
+ichal Hocko <mhocko@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
 >
-> On Mon, Jun 29, 2020 at 9:58 AM Zong Li <zong.li@sifive.com> wrote:
+> On Fri 26-06-20 14:02:49, Joonsoo Kim wrote:
+> > 2020=EB=85=84 6=EC=9B=94 25=EC=9D=BC (=EB=AA=A9) =EC=98=A4=ED=9B=84 9:0=
+5, Michal Hocko <mhocko@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+> > >
+> > > On Tue 23-06-20 15:13:45, Joonsoo Kim wrote:
+> [...]
+> > > > -struct page *new_page_nodemask(struct page *page,
+> > > > -                             int preferred_nid, nodemask_t *nodema=
+sk)
+> > > > +struct page *alloc_migration_target(struct page *page, unsigned lo=
+ng private)
+> > > >  {
+> > > > -     gfp_t gfp_mask =3D GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAY=
+FAIL;
+> > > > +     struct migration_target_control *mtc;
+> > > > +     gfp_t gfp_mask;
+> > > >       unsigned int order =3D 0;
+> > > >       struct page *new_page =3D NULL;
+> > > > +     int zidx;
+> > > > +
+> > > > +     mtc =3D (struct migration_target_control *)private;
+> > > > +     gfp_mask =3D mtc->gfp_mask;
+> > > >
+> > > >       if (PageHuge(page)) {
+> > > >               return alloc_huge_page_nodemask(
+> > > > -                             page_hstate(compound_head(page)),
+> > > > -                             preferred_nid, nodemask, 0, false);
+> > > > +                             page_hstate(compound_head(page)), mtc=
+->nid,
+> > > > +                             mtc->nmask, gfp_mask, false);
+> > > >       }
+> > > >
+> > > >       if (PageTransHuge(page)) {
+> > > > +             gfp_mask &=3D ~__GFP_RECLAIM;
+> > >
+> > > What's up with this gfp_mask modification?
 > >
-> > On Mon, Jun 29, 2020 at 12:09 PM Anup Patel <anup@brainfault.org> wrote:
-> > >
-> > > On Mon, Jun 29, 2020 at 8:49 AM Zong Li <zong.li@sifive.com> wrote:
-> > > >
-> > > > Add device tree bindings for performance monitor unit. And it passes the
-> > > > dt_binding_check verification.
-> > > >
-> > > > Signed-off-by: Zong Li <zong.li@sifive.com>
-> > > > ---
-> > > >  .../devicetree/bindings/riscv/pmu.yaml        | 59 +++++++++++++++++++
-> > > >  1 file changed, 59 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/riscv/pmu.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/riscv/pmu.yaml b/Documentation/devicetree/bindings/riscv/pmu.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..f55ccbc6c685
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/riscv/pmu.yaml
-> > > > @@ -0,0 +1,59 @@
-> > > > +# SPDX-License-Identifier: GPL-2.0
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/riscv/pmu.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: RISC-V Performance Monitor Units
-> > > > +
-> > > > +maintainers:
-> > > > +  - Zong Li <zong.li@sifive.com>
-> > > > +  - Paul Walmsley <paul.walmsley@sifive.com>
-> > > > +  - Palmer Dabbelt <palmer@dabbelt.com>
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    items:
-> > > > +      - const: riscv,pmu
-> > > > +
-> > > > +  riscv,width-base-cntr:
-> > > > +    description: The width of cycle and instret CSRs.
-> > > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > > +
-> > > > +  riscv,width-event-cntr:
-> > > > +    description: The width of hpmcounter CSRs.
-> > > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > >
-> > > The terms "base" and "event" is confusing because
-> > > we only have counters with no interrupt associated with it.
-> > >
-> > > The RISC-V spec defines 3 counters and rest are all
-> > > implementation specific counters.
-> >
-> > As I know, there are 2 counters of spec definition: cycle and instret.
-> > What is the 3rd counter you mentioned?
+> > THP page allocation uses a standard gfp masks, GFP_TRANSHUGE_LIGHT and
+> > GFP_TRANHUGE. __GFP_RECLAIM flags is a big part of this standard mask d=
+esign.
+> > So, I clear it here so as not to disrupt the THP gfp mask.
 >
-> TIME is a counter CSR.
->
-> >
-> > >
-> > > I suggest using the terms "spec counters" and "impl counters"
-> > > instead of "base counters" and "event counters".
-> >
-> > OK, they are good to me. Let me change it.
-> >
-> >
-> > >
-> > > Further, "riscv,width" properties are redundant because
-> > > RISC-V spec clearly tells that counters are 64bit for both
-> > > RV32 and RV64.
-> > >
+> Why this wasn't really needed before? I guess I must be missing
+> something here. This patch should be mostly mechanical convergence of
+> existing migration callbacks but this change adds a new behavior AFAICS.
 
-Sorry for the lost replying. The maximum length of counters is 64, but
-it doesn't require to implement all bits. A real case is that
-unleashed board only implements 40 bit for mhpmcounters.
+Before this patch, a user cannot specify a gfp_mask and THP allocation
+uses GFP_TRANSHUGE
+statically. After this patch, a user can specify a gfp_mask and it
+could conflict with GFP_TRANSHUGE.
+This code tries to avoid this conflict.
 
-> > > > +
-> > > > +  riscv,n-event-cntr:
-> > > > +    description: The number of hpmcounter CSRs.
-> > > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > > +
-> > > > +  riscv,hw-event-map:
-> > > > +    description: The mapping of generic hardware events. Default is no mapping.
-> > > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > > > +
-> > > > +  riscv,hw-cache-event-map:
-> > > > +    description: The mapping of generic hardware cache events.
-> > > > +      Default is no mapping.
-> > > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > > > +
-> > > > +required:
-> > > > +  - compatible
-> > > > +  - riscv,width-base-cntr
-> > > > +  - riscv,width-event-cntr
-> > > > +  - riscv,n-event-cntr
-> > > > +
-> > > > +additionalProperties: false
-> > > > +
-> > > > +examples:
-> > > > +  - |
-> > > > +    pmu {
-> > > > +      compatible = "riscv,pmu";
-> > > > +      riscv,width-base-cntr = <64>;
-> > > > +      riscv,width-event-cntr = <40>;
-> > > > +      riscv,n-event-cntr = <2>;
-> > > > +      riscv,hw-event-map = <0x0 0x0 0x1 0x1 0x3 0x0202 0x4 0x4000>;
-> > > > +      riscv,hw-cache-event-map = <0x010201 0x0102 0x010204 0x0802>;
-> > > > +    };
-> > > > +
-> > > > +...
-> > > > --
-> > > > 2.27.0
-> > > >
-> > >
-> > > Regards,
-> > > Anup
+> It would effectively drop __GFP_RETRY_MAYFAIL and __GFP_KSWAPD_RECLAIM
+
+__GFP_RETRY_MAYFAIL isn't dropped. __GFP_RECLAIM is
+"___GFP_DIRECT_RECLAIM|___GFP_KSWAPD_RECLAIM".
+So, __GFP_KSWAPD_RECLAIM would be dropped for THP allocation.
+IIUC, THP allocation doesn't use __GFP_KSWAPD_RECLAIM since it's overhead i=
+s
+too large and this overhead should be given to the caller rather than
+system thread (kswapd)
+and so on.
+
+Thanks.
