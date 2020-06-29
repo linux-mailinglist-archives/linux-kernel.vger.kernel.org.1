@@ -2,206 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EDC020D456
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DEBE20D2E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730536AbgF2TH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:07:28 -0400
-Received: from mout.web.de ([212.227.15.3]:52165 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730566AbgF2THI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:07:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1593457625;
-        bh=pioBlt+k9nGWRixLbuXdhL4vSY3ibRE8urYPEMcMLig=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=OBqLHdtE1RTar2bsiaZaWgq/6EYTwnn5RQtTlze2QaWdv48jee1h7YJzgtZ9zBf98
-         VFHC4j1pZkSDRnZ2QNy+/o6n6ShMa9jomfj+EUxpHjEECBuQsB9ilP+dZOk+tpJvEu
-         iSQS77lq3MMNLQImBizVbLxsoW3SRpwp6Zkv+kFQ=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.131.123.16]) by smtp.web.de (mrweb002
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0LoHKz-1jAY8k26Ab-00gF4W; Mon, 29
- Jun 2020 18:19:43 +0200
-Subject: Re: Searching for initialisation of variables by function calls
- before null pointer checks
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Coccinelle <cocci@systeme.lip6.fr>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Colin Ian King <colin.king@canonical.com>
-References: <1593410434-19406-1-git-send-email-chunfeng.yun@mediatek.com>
- <1593410434-19406-2-git-send-email-chunfeng.yun@mediatek.com>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <5b693ee0-0cb1-7ff3-b562-bac6bcb6aae8@web.de>
-Date:   Mon, 29 Jun 2020 18:19:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1729401AbgF2SxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729815AbgF2Swx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:52:53 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F53C030F11
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:23:08 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id h5so17131070wrc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:23:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GhKSHECLDuFeHJY8vUxPBROqM29u71f3iQHAAqV4ZeY=;
+        b=d3XCi9ErPfjZZzGOiKoVTEWivLclilU9WU3x/dULSKBtcJ3tlUJJK4dHTl/jod/9Nx
+         O1J2D14q/YJPMiGSQsBbaoCaELq/33G9TlKwnK6d5LBOGJBcbXGKW/cTN2oUqz5RkZKn
+         vAe/EkNmNDgua2s7ldZ+DAQ80A5lYy8+cx9JFaLQA9cUpnZZSwWe89DhahBzl9BaeMva
+         +e36O+bGvEXiQr5XNt++BX2FklqKdT00Ri4oCk8ETu1u1KJgqx9pqjVu3H66J3hd8US5
+         SeNgHr7I8alG3lPR/NYaB1N55TucU5OgBfktCsfMWP05pR9B8+iIQTf1NCeMi/cpn3lQ
+         5csg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GhKSHECLDuFeHJY8vUxPBROqM29u71f3iQHAAqV4ZeY=;
+        b=nP2EGYFOkCSg1GciqtN4y2y7UjfRsFeIB0sfZMuwAskgpZExi72cpXIRAgHEMt9ZHT
+         YZfjVqJN+QpIxIcdIYP8B2NB0dPTKtONwaAsp06+jiEUOqYCTX6pOHjO+JRxVDtxUWTV
+         7Pm28DX+rOpVe5u61V9YeoGJLxsH7MxuGkiFXwUgq8YIyzfGHRBkg9C8fWYnTvRho0ml
+         G9wZPohdzPICx1MUk7mGVGOF0yRbE3gz/KrRb5v3/ipkzhCwptQ0d1tLsvnw1L+huAJ5
+         uxE9BDJVF3M1zEEaejNufMX8qGdREKPNb9GEjfa701AatBaJ6dr6ON5UfuPLxT+caDZG
+         Aw3A==
+X-Gm-Message-State: AOAM532bnxgqLADBGLGwrp/oh9ujznODBNkzYI6ZY+GIqfA7AR5ENpYr
+        rgJBihCAr05uvFajNqsbcBlksw==
+X-Google-Smtp-Source: ABdhPJwIXtf8QRvxw7IwfMYFGqBphTHsT2nT6uRKhubaqAyi6CSQlkSGha+yuQjosPu2CJSDsO/DaA==
+X-Received: by 2002:adf:f751:: with SMTP id z17mr18557010wrp.114.1593447787420;
+        Mon, 29 Jun 2020 09:23:07 -0700 (PDT)
+Received: from dell ([2.27.35.144])
+        by smtp.gmail.com with ESMTPSA id f17sm359690wrq.3.2020.06.29.09.23.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 09:23:06 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 17:23:04 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        Tomer Tayar <ttayar@habana.ai>
+Subject: [PATCH v2 10/20] misc: habanalabs: gaudi: gaudi_security: Repair
+ incorrectly named function arg
+Message-ID: <20200629162304.GO177734@dell>
+References: <20200629140442.1043957-1-lee.jones@linaro.org>
+ <20200629140442.1043957-11-lee.jones@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <1593410434-19406-2-git-send-email-chunfeng.yun@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:MvjbbF8fHz31+atifBksu7NbJVe858VtHtK/6+a8RB2HWH7I2/5
- /x3sQNu8leNfSxDz6S5bcsx/2Z4QtVMIrtB3828HXtbFXJ1PILSSqnTUmycZgQBvGIeuz9s
- aZEUCtPMg3y/HViGEUOqNNA0OU5Z6Jekbq3Mcs8APDnc+aVdI71H8okJT3oH2ZMEDXASYJq
- /OpNfKLL7rR6h9GlJbwtQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JjwsdSR3taY=:wMZMDpPnrmBGUZVysW0oMu
- 7E8MM7c+GBWZ39RhcWfhbb59uTpWp94ckpTzZHLEw5Gl3L0paITeL6LvtfWCYBx3sR6G7jl+X
- JcZzZqGCdiyDeeiiJY6YWsqYUl+asTOe6Vh/HYX3jIZhb0/+UXPioEuNfzWuUC+CzBNvRiNkW
- nFbRQnGdLMA/ntMezCHDigsYWgkXVphJP8oULrf2KqvFAWZ8P8Dhp37LexEyE0YNGY08U49f2
- JxYkCxFAbJgG6aMwJmTiNjd9PXbf6Krah+LbYrB2xl8CvIzN1EYWfPx70zloyc2JJqSCTr+36
- ht/kG5+26mb4PH6dzYup/cSg/ykHH0qoVSDR6aNsf5X3ocCn//PA9hdmJBAG8PgT6ObrrM4jg
- EBhydM2CmQmoeqg08RWPpZFa7CU4t2eRLTOYrJhOK7QdN9cyRS1fJJKtRi3Vw7jBuWUFOC9il
- x/iRisHbfmawZk05t04AKPQqiRh257I/M0Jv/RpinSrQU62JSxsmEMPX7bwYDOdsZJbYfaJuW
- rWHZM376J6eIC3vOM8V+NXwVvOczk+ofK1rIhVn+drsJCGACEVdlT2Mww5vXHRxROG5oQLyUv
- p+ESYQ8hGQ+n4qeOtXTE22ILcMf/1IV7dNszc7zAlEFhLxAzJYIhOfOZ8UUky9k0CrVWBAzBI
- khUJm7OJ3SVr6NUbelm1YSwdWJ6WsMF4CZxzUAFgi92NVNIUNZPTa58envLcgIbnOmZLpKtXJ
- 0LHrBASYhG+pi+kN16/HUfpSKGhx/OAqsOiN7znlOwptTkuhnU1BbT5bXOwfiVsSwf2jjw23j
- Ny/2wbtaKBv+k4IW2vOs6ntCehiqLZrkfzwMbOeCjjsk9rWwha8SD17NN6WNho41pvMCQPAqF
- zOa9VumaVkYuj4U9VsOhw0qj9NqPJr/pimTVOXZWr3g6d/hMnyBtFDEOYKJjvH0+eqIAgnNWS
- b7f3ajQlZSQEMeMDQuzxmtDvcur4EXxHbniXhVUBwwW9TPjXPWdNjbqdjIiMW0s/2f0cGMubf
- D3b+544FchJYBFM0QShKBsW0/qqTIH0H+VIsMIHVzUVV+Ezu21omFhhyivJcUr6RwqfNAyfw9
- XaKEUY7/hNvSWF2XtLXTaoIdmK8EFsVsqx5KEQdIM1zeo42LxkfcOqAlgrYH/C7mAO8tu9cRz
- 6hH3QwWXhydckdRRdvx452yRMYGwiHMIRK9IuTg7OGRgoDEyqFCeqAKIO7XiBFn2KRJrRP94b
- H+Oi/O0eTp4WGpREp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629140442.1043957-11-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Some pointers are dereferenced before successful checks.
+misc: habanalabs: gaudi: gaudi_security: Repair incorrectly named function arg
 
-A source code place can be pointed out in an acceptable time frame for
-a single file by the following script variant for the semantic patch langu=
-age.
+gaudi_pb_set_block()'s argument 'base' was incorrectly named 'block' in
+its function header.
 
+Fixes the following W=1 kernel build warning(s):
 
-@display@
-expression action1, action2;
-expression* pointer1, pointer2;
-identifier result1, result2;
-statement is, es;
-type t1, t2;
-@@
- t1 result1 =3D <+...
-*             action1(..., pointer1, ...)
-              ...+>;
- ... when any
-     when !=3D pointer1
- t2 result2 =3D <+...
-*             action2(..., pointer2, ...)
-              ...+>;
- ... when any
-     when !=3D pointer1
-     when !=3D pointer2
-*if (!pointer1 || !pointer2 || ...)
-    is
- else
-    es
+ drivers/misc/habanalabs/gaudi/gaudi_security.c:454: warning: Function parameter or member 'base' not described in 'gaudi_pb_set_block'
+ drivers/misc/habanalabs/gaudi/gaudi_security.c:454: warning: Excess function parameter 'block' description in 'gaudi_pb_set_block'
 
+Cc: Tomer Tayar <ttayar@habana.ai>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
 
-elfring@Sonne:~/Projekte/Linux/next-patched> time spatch --profile --no-lo=
-ops drivers/usb/mtu3/mtu3_gadget.c ~/Projekte/Coccinelle/janitor/show_poin=
-ter_usage_before_null_check11.cocci
-=E2=80=A6
-@@ -332,14 +332,11 @@ error:
-
- static int mtu3_gadget_dequeue(struct usb_ep *ep, struct usb_request *req=
-)
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi_security.c b/drivers/misc/habanalabs/gaudi/gaudi_security.c
+index 6a351e31fa6af..abdd5ed8f2cf6 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi_security.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi_security.c
+@@ -447,8 +447,7 @@ static u64 gaudi_rr_hbw_mask_high_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+  * gaudi_set_block_as_protected - set the given block as protected
+  *
+  * @hdev: pointer to hl_device structure
+- * @block: block base address
+- *
++ * @base: block base address
+  */
+ static void gaudi_pb_set_block(struct hl_device *hdev, u64 base)
  {
--	struct mtu3_ep *mep =3D to_mtu3_ep(ep);
--	struct mtu3_request *mreq =3D to_mtu3_request(req);
- 	struct mtu3_request *r;
- 	unsigned long flags;
- 	int ret =3D 0;
- 	struct mtu3 *mtu =3D mep->mtu;
-
--	if (!ep || !req || mreq->mep !=3D mep)
- 		return -EINVAL;
-
- 	dev_dbg(mtu->dev, "%s : req=3D%p\n", __func__, req);
-=2D--------------------
-profiling result
-=2D--------------------
-Main total                               : 2.030205 sec          1 count
-Main.outfiles computation                : 1.648542 sec          1 count
-=E2=80=A6
-real	0m2,122s
-user	0m1,977s
-sys	0m0,037s
-
-
-I have tried this analysis approach out also for source files from
-the software =E2=80=9CLinux next-20200626=E2=80=9D.
-
-elfring@Sonne:~/Projekte/Linux/next-patched> XX=3D$(date) && spatch --no-l=
-oops --timeout 12 -j 4 --chunksize 1 -dir ~/Projekte/Linux/next-patched ~/=
-Projekte/Coccinelle/janitor/show_pointer_usage_before_null_check11.cocci >=
- ~/Projekte/Bau/Linux/scripts/Coccinelle/null/next/20200626/show_pointer_u=
-sage_before_null_check11.diff 2> ~/Projekte/Bau/Linux/scripts/Coccinelle/n=
-ull/next/20200626/show_pointer_usage_before_null_check11-errors.txt; YY=3D=
-$(date) && echo "$XX | $YY"
-Mo 29. Jun 13:54:54 CEST 2020 | Mo 29. Jun 17:22:37 CEST 2020
-
-
-Unfortunately, a lot of =E2=80=9Cexceptional=E2=80=9D data processing resu=
-lts were logged then.
-
-elfring@Sonne:~/Projekte/Bau/Linux/scripts/Coccinelle/null/next/20200626> =
-grep 'EXN: Coccinelle_modules.Common.Timeout' show_pointer_usage_before_nu=
-ll_check11-errors.txt | wc -l
-454
-
-
-Will such a test run trigger any further development considerations?
-
-Regards,
-Markus
