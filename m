@@ -2,94 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEF420D71C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0426920D75B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730215AbgF2T1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:27:06 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:43097 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730220AbgF2T1D (ORCPT
+        id S1732775AbgF2T3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732436AbgF2T2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:27:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593458822;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ULeTr0SB55lWnRLDf1wo07nelEQfKeugCaPGmgEHj60=;
-        b=YZh8en+ZhpdmZcyVTkuLHT53oPyVb6e0qFsRSK4A6d/+9ANkYc/8kIgYOThCEXpzytkyr1
-        lgz+NSuvDH+wjYsl7DrytbWsToP169YbD2GFpZwPP+FfaPjtbkGp9zP+Utyw83b5pz3XJQ
-        ZY7kxJeTuL9YBe+L/M6z8K/BHHIaIoE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-18-5TlJu8U2Nl6yNclv8OYdGQ-1; Mon, 29 Jun 2020 15:27:00 -0400
-X-MC-Unique: 5TlJu8U2Nl6yNclv8OYdGQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6FFDBA0C01;
-        Mon, 29 Jun 2020 19:26:59 +0000 (UTC)
-Received: from prarit.bos.redhat.com (prarit-guest.7a2m.lab.eng.bos.redhat.com [10.16.222.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EC68C19C71;
-        Mon, 29 Jun 2020 19:26:58 +0000 (UTC)
-From:   Prarit Bhargava <prarit@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Prarit Bhargava <prarit@redhat.com>, Len Brown <lenb@kernel.org>,
-        linux-pm@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH] turbostat: Use sched_getcpu() instead of hardcoded cpu 0
-Date:   Mon, 29 Jun 2020 15:26:57 -0400
-Message-Id: <20200629192657.34045-1-prarit@redhat.com>
+        Mon, 29 Jun 2020 15:28:46 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD1D3C061755;
+        Mon, 29 Jun 2020 12:28:45 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id f5so3647930ljj.10;
+        Mon, 29 Jun 2020 12:28:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RBInpL/Za49/XjwUK8A/HWIZmWUwGYyRxdCJnIDd3Ig=;
+        b=A3C7JMKeEB3sJoq3A6GeNMPUsRgZSUY3/rVmrmegxNpUcrjl6D8Z/ibLjrxtUVuxKS
+         nKCOQh3RRYwaLrzSozk96EKdww8+fYCAPdwH8QJGWtFSqVjj8IqlAXWIuUetgdtyywKx
+         qzGS+jLA9afBu8dOfYcfwCww2q+LpI5uIb/LdGn/27F4N0jaEetuIyJRJgXAYDdTblVS
+         5XZvw+LkVbxktg8T1629GWo79XwHOgfbUh/ZY8OHlACaZ3P0ydhIaqfToNFUR+mq7qMM
+         SmUpFmZO5zUjvYMafKFhvwNwR4miilhO63RuAgYds5e70IC7NWAbiV14XOP/RDvNTjmt
+         g9XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RBInpL/Za49/XjwUK8A/HWIZmWUwGYyRxdCJnIDd3Ig=;
+        b=rvCUNbLfVbo9QYXbdPizkDcbW+7bPlJjdUHJLAbFHjh1oZpWmUjtukpe7vwd5zTgMB
+         defk3uzDeKnbhBGsTkDFkJ4xpBozxaMil4EHoS3vFLJUcZ+XXTI+TvYoTxvU0Lr5dD34
+         l44U489NkV3ElC7qJ7nuOo/q/Ie9qFWxsa76NxInY2p/Srpd3QWdqyByfEXAcvg06g9B
+         +6jViRxe2aPAaERH3SgM/kZAyBH+KAf+bfDWg9BT4+zhZhJyazBMGdPWyDDvvHs9/MD9
+         0+VTUioVkaP8qEfRqNiFJ8c1+CyboMj9mLIzXkEYQxTX7dgGKlHGTc29mX2dzcyEVSGP
+         S5YA==
+X-Gm-Message-State: AOAM532sNcrsZ0TG367EtSKdUKZOw9zRRnlizzYkevhcnOM7lrUfVhF5
+        2doseLtJd4nNX8QbAndJkjPREUn5aOW7gjViYmw=
+X-Google-Smtp-Source: ABdhPJzZJVxmTnAMNUQ40iw0js01vP110xyPx2ui71LxJnZcifaQu49DgbDPTsaYRsoVL+/z5PNnEpbP+zqyYZJFTCo=
+X-Received: by 2002:a05:651c:544:: with SMTP id q4mr9390835ljp.310.1593458923219;
+ Mon, 29 Jun 2020 12:28:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20200602183354.39707-1-zhouyanjie@wanyeetech.com>
+ <20200602183354.39707-2-zhouyanjie@wanyeetech.com> <20200619110524.GA9391@alpha.franken.de>
+In-Reply-To: <20200619110524.GA9391@alpha.franken.de>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 29 Jun 2020 16:28:31 -0300
+Message-ID: <CAOMZO5CuxzMm+XFX6-mh55mcw5jgf5iYs-ej5NqjCsD6hSnr7Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] dt-bindings: MIPS: Document Ingenic SoCs binding.
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>, linux-mips@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        paul@crapouillou.net, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disabling cpu 0 results in an error
+On Fri, Jun 19, 2020 at 9:48 AM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> On Wed, Jun 03, 2020 at 02:33:54AM +0800, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zh=
+ou Yanjie) wrote:
+> > Document the available properties for the SoC root node and the
+> > CPU nodes of the devicetree for the Ingenic XBurst SoCs.
+> >
+> > Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
+> > Tested-by: Paul Boddie <paul@boddie.org.uk>
+> > Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wa=
+nyeetech.com>
+> > ---
+> >
+> > Notes:
+> >     v1->v2:
+> >     1.Remove unnecessary "items".
+> >     2.Add "clocks" as suggested by Paul Cercueil.
+> >
+> >  .../bindings/mips/ingenic/ingenic,cpu.yaml         | 67 ++++++++++++++=
+++++++++
+> >  1 file changed, 67 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mips/ingenic/inge=
+nic,cpu.yaml
+>
+> applied to mips-next.
 
-turbostat: /sys/devices/system/cpu/cpu0/topology/thread_siblings: open failed: No such file or directory
+This causes 'make dt_binding_check' to fail:
 
-Use sched_getcpu() instead of a hardcoded cpu 0 to get the max cpu number.
-
-Signed-off-by: Prarit Bhargava <prarit@redhat.com>
-Cc: Len Brown <lenb@kernel.org>
-Cc: linux-pm@vger.kernel.org
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
- tools/power/x86/turbostat/turbostat.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index 33b370865d16..2d3a3012f2f8 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -2769,12 +2769,19 @@ void re_initialize(void)
- void set_max_cpu_num(void)
- {
- 	FILE *filep;
-+	int base_cpu;
- 	unsigned long dummy;
-+	char pathname[64];
- 
-+	base_cpu = sched_getcpu();
-+	if (base_cpu < 0)
-+		err(1, "cannot find calling cpu ID");
-+	sprintf(pathname,
-+		"/sys/devices/system/cpu/cpu%d/topology/thread_siblings",
-+		base_cpu);
-+
-+	filep = fopen_or_die(pathname, "r");
- 	topo.max_cpu_num = 0;
--	filep = fopen_or_die(
--			"/sys/devices/system/cpu/cpu0/topology/thread_siblings",
--			"r");
- 	while (fscanf(filep, "%lx,", &dummy) == 1)
- 		topo.max_cpu_num += BITMASK_SIZE;
- 	fclose(filep);
--- 
-2.21.3
-
+$ make dt_binding_check
+  CHKDT   Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.yaml
+Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.yaml:
+while scanning a block scalar
+  in "<unicode string>", line 42, column 5
+found a tab character where an indentation space is expected
+  in "<unicode string>", line 46, column 1
+Documentation/devicetree/bindings/Makefile:20: recipe for target
+'Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.example.dts'
+failed
+make[1]: *** [Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.ex=
+ample.dts]
+Error 1
+Makefile:1343: recipe for target 'dt_binding_check' failed
+make: *** [dt_binding_check] Error 2
