@@ -2,177 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3943D20D40C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 855FC20D2CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729240AbgF2TEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730395AbgF2TCn (ORCPT
+        id S1729749AbgF2SwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:52:19 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40828 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727854AbgF2SwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:02:43 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719FAC030795
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:26:36 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id z5so8452266pgb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xYRvEczki6SokBOpOA5suBGpzozsRhEF1obfHkhFJwc=;
-        b=Qf7Kj9RQv2Uwgg5IXZW1Z7ZfH0OInb0ASxj+6NzLv4hmT0NJVcFX9iJOO0oOEu15Ef
-         SphtZYxc7EsMJfoytGYMsSi/ueoMdBH1bH92bWNG0FmvX1qEepQFMcxHcidFvOiT/M5V
-         7aBjFjdvSCQQAHxG+pQZg1QtMuLQDlQPe9A6Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xYRvEczki6SokBOpOA5suBGpzozsRhEF1obfHkhFJwc=;
-        b=rCMEp+ca2KhwSPkKi8Q3elOa79lGCqxE1zS/buK2IwgtFmbSKy7hB7D65u7nk5om1z
-         JG9+HQrdv5g+n4SwzpQbZPa8mS5O3ZTv8ZwMbzHpmt6HP0owj8RVbxo9gq4obgQN7Bqx
-         GzDiELv5gDhKtiSciIWEtWcJabIENBt0anNetn6Ce2nKY1YyjXFzobK2rtBVwhtV9dhZ
-         EzWGxany21o0WJ6j3uqfrEIF1q4FPT+A/uSdMCzgwHZf0+pQv+RQKg/MuWEUUjZeAg1j
-         ljNx9xzXIkG8Tfvsl5PybNCyctV8AbBynT3PBXtB4H2XFfoOf7G8gQgO7ybzt2k0T4xz
-         0UHg==
-X-Gm-Message-State: AOAM531DPOwUmabauzC/lvlbICd2Vrssr95kBblHmVolQsAEmPv18v/l
-        oSta+ACyt51muKoSq0LguDOt4eW+9tA=
-X-Google-Smtp-Source: ABdhPJz3+oy3gajcG8dAQMMSbTkeXIAtNo/xWVhFTQQwhHjceydnACPNN409qxnfp1AYBd1saiZa5w==
-X-Received: by 2002:a65:63d4:: with SMTP id n20mr11219744pgv.213.1593444395814;
-        Mon, 29 Jun 2020 08:26:35 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id p8sm174642pgs.29.2020.06.29.08.26.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 08:26:34 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 08:26:34 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Marco Elver <elver@google.com>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [PATCH v3 4/9] x86/build: Warn on orphan section placement
-Message-ID: <202006290819.955CF6743@keescook>
-References: <20200624014940.1204448-5-keescook@chromium.org>
- <202006250240.J1VuMKoC%lkp@intel.com>
- <202006270840.E0BC752A72@keescook>
- <CANpmjNMtFbc_jQU6iNfNx-4wwQF4DY3uaOB1dCPZ3dMqXx6smg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNMtFbc_jQU6iNfNx-4wwQF4DY3uaOB1dCPZ3dMqXx6smg@mail.gmail.com>
+        Mon, 29 Jun 2020 14:52:15 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TF3Y9n183022;
+        Mon, 29 Jun 2020 11:27:19 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31ycj95mkv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 11:27:18 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05TFG1Mf006442;
+        Mon, 29 Jun 2020 15:27:17 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma02fra.de.ibm.com with ESMTP id 31wwr7s67s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 15:27:16 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05TFRE9647186124
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Jun 2020 15:27:14 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BEEE7A4055;
+        Mon, 29 Jun 2020 15:27:14 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 07673A4040;
+        Mon, 29 Jun 2020 15:27:14 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.137.220])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 29 Jun 2020 15:27:13 +0000 (GMT)
+Message-ID: <1593444433.5085.15.camel@linux.ibm.com>
+Subject: [GIT PULL] integrity additional change v5.8 (#2)
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Maurizio Drocco <maurizio.drocco@ibm.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+Date:   Mon, 29 Jun 2020 11:27:13 -0400
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-06-29_15:2020-06-29,2020-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ priorityscore=1501 phishscore=0 suspectscore=0 adultscore=0
+ cotscore=-2147483648 bulkscore=0 clxscore=1011 mlxscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006290103
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 04:54:13PM +0200, Marco Elver wrote:
-> On Sat, 27 Jun 2020 at 17:44, Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Thu, Jun 25, 2020 at 02:36:27AM +0800, kernel test robot wrote:
-> > > I love your patch! Perhaps something to improve:
-> > > [...]
-> > > config: x86_64-randconfig-a012-20200624 (attached as .config)
-> >
-> > CONFIG_KCSAN=y
-> >
-> > > compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project 1d4c87335d5236ea1f35937e1014980ba961ae34)
-> > > [...]
-> > > All warnings (new ones prefixed by >>):
-> > >
-> > >    ld.lld: warning: drivers/built-in.a(mfd/mt6397-irq.o):(.init_array.0) is being placed in '.init_array.0'
-> >
-> > As far as I can tell, this is a Clang bug. But I don't know the
-> > internals here, so I've opened:
-> > https://bugs.llvm.org/show_bug.cgi?id=46478
-> >
-> > and created a work-around patch for the kernel:
-> 
-> Thanks, minor comments below.
-> 
-> With KCSAN this is:
-> 
-> Tested-by: Marco Elver <elver@google.com>
+Hi Linus,
 
-Thanks!
+Prior to Linux 5.8 the SHA1 "boot_aggregate" value was padded with 0's
+and extended into the other TPM 2.0 banks.  Included in the Linux 5.8
+open window, TPM 2.0 PCR bank specific "boot_aggregate" values (PCRs 0
+- 7) are calculated and extended into the TPM banks.
 
-> 
-> 
-> > commit 915f2c343e59a14f00c68f4d7afcfdc621de0674
-> > Author: Kees Cook <keescook@chromium.org>
-> > Date:   Sat Jun 27 08:07:54 2020 -0700
-> >
-> >     vmlinux.lds.h: Avoid KCSAN's unwanted sections
-> 
-> Since you found that it's also KASAN, this probably wants updating.
+Distro releases are now shipping grub2 with TPM support, which extend
+PCRs 8 & 9.  I'd like for PCRs 8 & 9 to be included in the new
+"boot_aggregate" calculations.  For backwards compatibility, PCRs 8 &
+9 are not included in the SHA1 TPM bank "boot_aggregate" calculation.
 
-Yeah, I found that while testing the v4 series and updated the patch
-there.
+I'd appreciate your merging this additional change.
 
-> >     KCSAN (-fsanitize=thread) produces unwanted[1] .eh_frame and .init_array.*
-> >     sections. Add them to DISCARDS, except with CONFIG_CONSTRUCTORS, which
-> >     wants to keep .init_array.* sections.
-> >
-> >     [1] https://bugs.llvm.org/show_bug.cgi?id=46478
-> >
-> >     Signed-off-by: Kees Cook <keescook@chromium.org>
-> >
-> > diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> > index f8a5b2333729..41c8c73de6c4 100644
-> > --- a/arch/x86/Makefile
-> > +++ b/arch/x86/Makefile
-> > @@ -195,7 +195,9 @@ endif
-> >  # Workaround for a gcc prelease that unfortunately was shipped in a suse release
-> >  KBUILD_CFLAGS += -Wno-sign-compare
-> >  #
-> > -KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
-> > +KBUILD_AFLAGS += -fno-asynchronous-unwind-tables -fno-unwind-tables
-> > +KBUILD_CFLAGS += -fno-asynchronous-unwind-tables -fno-unwind-tables
-> > +KBUILD_LDFLAGS += $(call ld-option,--no-ld-generated-unwind-info)
-> 
-> Why are they needed? They are not mentioned in the commit message.
+thanks,
 
-This was a mis-applied chunk (I also noticed this in the v4).
+Mimi
 
-> > +/*
-> > + * Clang's -fsanitize=thread produces unwanted sections (.eh_frame
-> > + * and .init_array.*), but CONFIG_CONSTRUCTORS wants to keep any
-> > + * .init_array.* sections.
-> > + * https://bugs.llvm.org/show_bug.cgi?id=46478
-> > + */
-> > +#if defined(CONFIG_KCSAN) && !defined(CONFIG_CONSTRUCTORS)
-> 
-> CONFIG_KASAN as well?
-> 
-> > +#define KCSAN_DISCARDS                                                 \
-> > +       *(.init_array) *(.init_array.*)                                 \
-> > +       *(.eh_frame)
-> > +#elif defined(CONFIG_KCSAN) && defined(CONFIG_CONSTRUCTORS)
-> > +#define KCSAN_DISCARDS                                                 \
-> > +       *(.eh_frame)
-> > +#else
-> > +#define KCSAN_DISCARDS
-> > +#endif
-> > +
-> >  #define DISCARDS                                                       \
-> >         /DISCARD/ : {                                                   \
-> >         EXIT_DISCARDS                                                   \
-> >         EXIT_CALL                                                       \
-> > +       KCSAN_DISCARDS                                                  \
-> 
-> Maybe just 'SANITIZER_DISCARDS'?
+The following changes since commit 48778464bb7d346b47157d21ffde2af6b2d39110:
 
-Sure! I will rename it.
+  Linux 5.8-rc2 (2020-06-21 15:45:29 -0700)
 
-> 
-> >         *(.discard)                                                     \
-> >         *(.discard.*)                                                   \
-> >         *(.modinfo)                                                     \
-> >
-> > --
-> > Kees Cook
+are available in the git repository at:
 
--- 
-Kees Cook
+  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.8-fix-2
+
+for you to fetch changes up to 20c59ce010f84300f6c655d32db2610d3433f85c:
+
+  ima: extend boot_aggregate with kernel measurements (2020-06-24 20:47:24 -0400)
+
+----------------------------------------------------------------
+Include PCRs 8 & 9 in per TPM 2.0 bank boot_aggregate calculation
+
+----------------------------------------------------------------
+Maurizio Drocco (1):
+      ima: extend boot_aggregate with kernel measurements
+
+ security/integrity/ima/ima.h        |  2 +-
+ security/integrity/ima/ima_crypto.c | 15 ++++++++++++++-
+ 2 files changed, 15 insertions(+), 2 deletions(-)
