@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36ED020E73A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8791820E73D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391579AbgF2Vze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:55:34 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:45504 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391553AbgF2VzY (ORCPT
+        id S2391585AbgF2Vzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:55:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391558AbgF2Vz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:55:24 -0400
-Received: by mail-il1-f194.google.com with SMTP id l9so15864742ilq.12;
-        Mon, 29 Jun 2020 14:55:23 -0700 (PDT)
+        Mon, 29 Jun 2020 17:55:26 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA957C03E979
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:55:26 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id w73so4028565ila.11
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:55:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H9u5EsjGLPEPDvUYGsAHJToD2oE+5JpanjVzeW0Wj+U=;
+        b=lhqNs3GAXrIZjDtSneiDuNkZXasiD3BYohOiGRdLPEhmj0v6fK1XGeq7Nujg6ictRc
+         pwZfzeTqvI86p0Gk9VZ+6gBrWqTnIozJsD/FZED2Zx6HAGKdmSzOheVaEU4r9UID/DSY
+         XNyEJerhr0HJ+mYq6hlK4cvgM/B7eEC1swxRTC6KvgcWjYonUlKH1eBevDYSyB2YkRqf
+         DiYcTHpaTitkwdHuYLKcM3tWb7ev795IMDZ6exg8ZcaoBoYrlWm3DrNOCbOykjALRACC
+         aG+lPKcazbO/vwcKm+2rL31NYSVXJ2ovdVFiz5v1NESTKJEBI48fn/ZS8KP/l1N3WFgj
+         QWyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=z06gzP1D2QcJaBResbDn25dzkFa7czoMHbRABLK66e4=;
-        b=cidmVQoGlvZsu7yNTl5fFl8waOzFhwhgnxCTmm2w2tLvbo51oEEK0IDYE+nIwaBWe5
-         +Y+lySu7hJ8jBHkHANyAPraBQckilytV5WU7xO/d/D7EE/BPHLwbPhTm4ijaKt3FGz9q
-         X8WzhJCHttAfRuYCzxOu7RGu52ZDGvdMq1d+60X+y++QSoQurfFIaFhYqmBaaajOML08
-         fPF8CxGu9zYGH52XIvhiRnEbPxhbLIYyBmlLSQhW6K9OFcx0H9Ldf77tEMDSvg6HCcEE
-         pBUKvn3qbTAlo+k7fVYI3t7VFTbzz5+Un0UjhPIg/MKNsS7fG1bxqVLwBp6xjd0LjZXP
-         UKSg==
-X-Gm-Message-State: AOAM531DVd3P0AAp1Gjsjr4mDnNMJVWltK/+IyXQDdhtL6Frex1gNxIm
-        o+zRnySHTGQdRC/BNQtu8g==
-X-Google-Smtp-Source: ABdhPJwKg65QGLzlMM3KQdjO48s4QdfD6Lc3M0zgovxzCYpjPdp4mi+repNQ1psb8xWSS+aFBfPUfg==
-X-Received: by 2002:a92:8e41:: with SMTP id k1mr11387622ilh.250.1593467723506;
-        Mon, 29 Jun 2020 14:55:23 -0700 (PDT)
-Received: from xps15 ([64.188.179.255])
-        by smtp.gmail.com with ESMTPSA id w10sm619584ilo.10.2020.06.29.14.55.21
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H9u5EsjGLPEPDvUYGsAHJToD2oE+5JpanjVzeW0Wj+U=;
+        b=BAA+XEfI2OK1XS+NvJrk4lj3a219b9cWiF+4L5Tu16MqaPvNjCBfsgXmm6/gbHLkQT
+         GgUU0RYO71dFuPv3grifTJm7/uuUynN8M2PDwBlgT65vQhbrrOPR/f8snV+LrvHymJIC
+         ZEJ2j2MKzOiQOy8vGQLtqaz1s7RVIOQXmbo1NTxqiqDdM4VI9fJ7V6Vl8EvxvCwiTgs/
+         5UTQLnIwPeo99FWwYWIL9mwI/UYDO0cmP/18SYfH6PR0Or8l0Jx4GjOjUtfImAQXNcjt
+         HlV+f+cuDEf1C8PUob1HT4kP/mHAGAr6QgYOr58t+S83h+5zx/v+rFb7cpQ84f8G984G
+         kTxw==
+X-Gm-Message-State: AOAM530mxoebO4ArkhDVakWC+zNqNJMoomZECNIjJP24iWxLa/StoSbe
+        jXlYBfuivOvuueSMck4t1SEYfQ==
+X-Google-Smtp-Source: ABdhPJyAR3Ravl+6q9AlqAsDMDA2+UgpelD8cpML3OShTfC5xlDGv5qKeVc6I5uaKbFlVKzyt/PBlw==
+X-Received: by 2002:a92:cf42:: with SMTP id c2mr18802507ilr.13.1593467726103;
+        Mon, 29 Jun 2020 14:55:26 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id a187sm543221iog.2.2020.06.29.14.55.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 14:55:22 -0700 (PDT)
-Received: (nullmailer pid 2999258 invoked by uid 1000);
-        Mon, 29 Jun 2020 21:55:20 -0000
-Date:   Mon, 29 Jun 2020 15:55:20 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Cc:     Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: Re: [PATCH 1/2] dt-bindings: phy: Add UniPhier AHCI PHY description
-Message-ID: <20200629215520.GA2998145@bogus>
-References: <1592534207-13550-1-git-send-email-hayashi.kunihiko@socionext.com>
- <1592534207-13550-2-git-send-email-hayashi.kunihiko@socionext.com>
+        Mon, 29 Jun 2020 14:55:25 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/3] net: ipa: simple refactorizations
+Date:   Mon, 29 Jun 2020 16:55:20 -0500
+Message-Id: <20200629215523.1196263-1-elder@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1592534207-13550-2-git-send-email-hayashi.kunihiko@socionext.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Jun 2020 11:36:46 +0900, Kunihiko Hayashi wrote:
-> Add DT bindings for PHY interface built into ahci controller implemented
-> in UniPhier SoCs.
-> 
-> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-> ---
->  .../bindings/phy/socionext,uniphier-ahci-phy.yaml  | 76 ++++++++++++++++++++++
->  1 file changed, 76 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.yaml
-> 
+This series makes three small changes to some endpoint configuration
+code.  The first uses a constant to represent the frequency of an
+internal clock used for timers in the IPA.  The second modifies a
+limit used so it matches Qualcomm's internal code.  And the third
+reworks a few lines of code, eliminating a multi-line function call.
 
+					-Alex
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Alex Elder (3):
+  net: ipa: rework ipa_aggr_granularity_val()
+  net: ipa: reduce aggregation time limit
+  net: ipa: reuse a local variable in ipa_endpoint_init_aggr()
 
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.yaml: properties:reset-names: [{'items': [{'const': 'link'}, {'const': 'phy'}]}] is not of type 'object', 'boolean'
-Documentation/devicetree/bindings/Makefile:20: recipe for target 'Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.example.dts' failed
-make[1]: *** [Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-Makefile:1347: recipe for target 'dt_binding_check' failed
-make: *** [dt_binding_check] Error 2
+ drivers/net/ipa/ipa_endpoint.c | 17 ++++++++++-------
+ drivers/net/ipa/ipa_main.c     |  5 +++++
+ drivers/net/ipa/ipa_reg.h      | 17 ++++++++---------
+ 3 files changed, 23 insertions(+), 16 deletions(-)
 
-
-See https://patchwork.ozlabs.org/patch/1312535
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
+-- 
+2.25.1
 
