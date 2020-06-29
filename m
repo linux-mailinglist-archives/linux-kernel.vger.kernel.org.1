@@ -2,157 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F10C20DF5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C7A20E0BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388978AbgF2UfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:35:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59512 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732207AbgF2TVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:21:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 63211ADB5;
-        Mon, 29 Jun 2020 14:04:46 +0000 (UTC)
-Date:   Mon, 29 Jun 2020 16:04:45 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: buffer allocation: was: [PATCH v3 3/3] printk: use the lockless
- ringbuffer
-Message-ID: <20200629140445.GK6156@alley>
-References: <20200618144919.9806-1-john.ogness@linutronix.de>
- <20200618144919.9806-4-john.ogness@linutronix.de>
- <20200625082838.GF6156@alley>
- <87sgeh3m5j.fsf@jogness.linutronix.de>
+        id S1730605AbgF2Usz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731514AbgF2TNs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:13:48 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64727C02E2ED
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:25:34 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id g11so7706228qvs.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:25:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rA9epWFsG5fbaq7o7Q/6VMPdIfht3K/e6mhw2OtNl9U=;
+        b=hzAE1YatrpkZQ7jnLFTXC8QY7HnN+hfZ399QqsJj7tLxfrFjf06NFKvZC3HpmfReQp
+         krbHWZ2eodd+i28Exn1eMViNZl5pZF8YjqxUIdxufGNDPnYmPT0wjM7iRV2Vhj9glwiT
+         mue+E8bAcJT9UOHzRlon78YuZHExdmyPWuszUPv5VOhRcXZB8AcNSnN8ZOQWOG4zwIdf
+         YyoKPksd/nqs+8RjLK6vO7rmQPQ1QbcuvqXHYuv3nmyXJfYQ1PnQ8Ogx3tE/dTldtFPy
+         YtLYEPzGwTasDiDtR6fgVB38skKLMGn4YAcPaGeU9yLKq1l6hS7+xyNMpYGTttxgUvqu
+         jy4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rA9epWFsG5fbaq7o7Q/6VMPdIfht3K/e6mhw2OtNl9U=;
+        b=kf220Or4WqhRXfkjiLDf/umKJV43ad0JzPBY+Roo3/0VRbRhDAUNw+veKsslTjEtGc
+         d7IoeVQEg0BdNhgm+2/k1JMZJuM8muy4HHjc8hMwUk4159Jkpf329h6VK1TKgDFkXGDx
+         gdzVH9fOENxgYH0PfhGLIhPAy8yTJ2KrmOtUxFe6qJ+cANUvOoq9j7sHbd9C9s/rP+nl
+         SjjJutGh2x3AQ3+WMKDNBXJhk/+RUjiPNPSvjCUfZ2OC3rFa8kU1xILVCDy3tzrOPE7I
+         UxEzoRjcBV/V+wjvUmbBUkNgvoFXhLiJfwU1HsspUZZj4JxN1f4puGdUn+LOsVUwyli0
+         hE8Q==
+X-Gm-Message-State: AOAM530GIh1ul2SQyfyk5jzXqnM4NLxPlgn5kMUCJ1mhmbdT6tJv5uUR
+        LGTG20uADoSk00SLgL/K38IE5qxAO3KLX2jtBmH+cQ==
+X-Google-Smtp-Source: ABdhPJySGZ/xP3qtD93JKEbk3jl1yLhggXL/YUW0iBOECJJHNZns1BmCY8SVCiQh2hnzho0g5QR6PDjvW7UHi0vQJWU=
+X-Received: by 2002:a0c:ec04:: with SMTP id y4mr12044188qvo.148.1593440733466;
+ Mon, 29 Jun 2020 07:25:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sgeh3m5j.fsf@jogness.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200623040107.22270-1-warthog618@gmail.com> <20200623040107.22270-15-warthog618@gmail.com>
+In-Reply-To: <20200623040107.22270-15-warthog618@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 29 Jun 2020 16:25:22 +0200
+Message-ID: <CAMpxmJVQmo2S6AQgcPACHH8ziSQNUvAhkUJ3eW_YsLkbyGzm=Q@mail.gmail.com>
+Subject: Re: [PATCH 14/22] gpiolib: make cdev a build option
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-06-26 17:02:48, John Ogness wrote:
-> On 2020-06-25, Petr Mladek <pmladek@suse.com> wrote:
-> >> --- a/kernel/printk/printk.c
-> >> +++ b/kernel/printk/printk.c
-> >> +	free = __LOG_BUF_LEN;
-> >> +	prb_for_each_record(0, &printk_rb_static, seq, &r)
-> >> +		free -= add_to_rb(&printk_rb_dynamic, &r);
-> >> +
-> >> +	prb = &printk_rb_dynamic;
-> >
-> > This might deserve a comment that this is safe (no lost message)
-> > because it is called early enough when everything is still running
-> > on the boot CPU.
-> 
-> I will add a comment and an extra check to make sure.
-> 
-> Once everything is lockless, new messages could appear (for example, due
-> to NMI messages). The simple check should probably change to a loop. But
-> let us not worry about that at this point.
-
-Yup.
-
-> Below is a new version of the relevant patch snippets against mainline
-> just to show you how I plan to make it look for the next version.
-> 
-> John Ogness
-> 
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ @@
-> +#define PRB_AVGBITS 5	/* 32 character average length */
+On Tue, Jun 23, 2020 at 6:02 AM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> Make the gpiolib-cdev module a build option.  This allows the CDEV
+> interface to be removed from the kernel to reduce kernel size in
+> applications where is it not required, and provides the parent for
+> other other CDEV interface specific build options to follow.
+>
+> Suggested-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Signed-off-by: Kent Gibson <warthog618@gmail.com>
+>
+> ---
+>  drivers/gpio/Kconfig        | 16 ++++++++++++++--
+>  drivers/gpio/Makefile       |  2 +-
+>  drivers/gpio/gpiolib-cdev.h | 15 +++++++++++++++
+>  3 files changed, 30 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+> index c6b5c65c8405..affc1524bc2c 100644
+> --- a/drivers/gpio/Kconfig
+> +++ b/drivers/gpio/Kconfig
+> @@ -66,8 +66,20 @@ config GPIO_SYSFS
+>
+>           This ABI is deprecated. If you want to use GPIO from userspace,
+>           use the character device /dev/gpiochipN with the appropriate
+> -         ioctl() operations instead. The character device is always
+> -         available.
+> +         ioctl() operations instead.
 > +
-> +#if CONFIG_LOG_BUF_SHIFT <= PRB_AVGBITS
-> +#error CONFIG_LOG_BUF_SHIFT value too small.
-> +#endif
-> +_DEFINE_PRINTKRB(printk_rb_static, CONFIG_LOG_BUF_SHIFT - PRB_AVGBITS,
-> +		 PRB_AVGBITS, PRB_AVGBITS, &__log_buf[0]);
+> +config GPIO_CDEV
+> +       bool "/dev/gpiochipN (character device interface)"
+> +       default y
+> +       help
+> +         Say Y here to add the character device /dev/gpiochipN interface
+> +         for GPIOs. The character device allows userspace to control GPIOs
+> +         using ioctl() operations.
 > +
-> @@ @@
->  void __init setup_log_buf(int early)
->  {
-> +	unsigned int new_descs_count;
-> +	struct prb_desc *new_descs;
-> +	struct printk_info info;
-> +	struct printk_record r;
-> +	size_t new_descs_size;
->  	unsigned long flags;
-> +	char *new_dict_buf;
->  	char *new_log_buf;
->  	unsigned int free;
-> +	u64 seq;
->  
->  	/*
->  	 * Some archs call setup_log_buf() multiple times - first is very
-> @@ @@ void __init setup_log_buf(int early)
->  	if (!new_log_buf_len)
->  		return;
->  
-> +	new_descs_count = new_log_buf_len >> PRB_AVGBITS;
-> +	if (new_descs_count == 0) {
-> +		pr_err("new_log_buf_len: %lu too small\n", new_log_buf_len);
-> +		return;
-> +	}
+> +         Only say N is you are sure that the GPIO character device is not
+> +         required.
 > +
->  	new_log_buf = memblock_alloc(new_log_buf_len, LOG_ALIGN);
->  	if (unlikely(!new_log_buf)) {
-> -		pr_err("log_buf_len: %lu bytes not available\n",
-> -			new_log_buf_len);
-> +		pr_err("log_buf_len: %lu text bytes not available\n",
-> +		       new_log_buf_len);
-> +		return;
-> +	}
+> +         If unsure, say Y.
+>
+>  config GPIO_GENERIC
+>         depends on HAS_IOMEM # Only for IOMEM drivers
+> diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+> index ef666cfef9d0..45eb09808d12 100644
+> --- a/drivers/gpio/Makefile
+> +++ b/drivers/gpio/Makefile
+> @@ -7,8 +7,8 @@ obj-$(CONFIG_GPIOLIB)           += gpiolib.o
+>  obj-$(CONFIG_GPIOLIB)          += gpiolib-devres.o
+>  obj-$(CONFIG_GPIOLIB)          += gpiolib-legacy.o
+>  obj-$(CONFIG_GPIOLIB)          += gpiolib-devprop.o
+> -obj-$(CONFIG_GPIOLIB)          += gpiolib-cdev.o
+>  obj-$(CONFIG_OF_GPIO)          += gpiolib-of.o
+> +obj-$(CONFIG_GPIO_CDEV)                += gpiolib-cdev.o
+>  obj-$(CONFIG_GPIO_SYSFS)       += gpiolib-sysfs.o
+>  obj-$(CONFIG_GPIO_ACPI)                += gpiolib-acpi.o
+>
+> diff --git a/drivers/gpio/gpiolib-cdev.h b/drivers/gpio/gpiolib-cdev.h
+> index 973578e7ad10..19a4e3d57120 100644
+> --- a/drivers/gpio/gpiolib-cdev.h
+> +++ b/drivers/gpio/gpiolib-cdev.h
+> @@ -5,7 +5,22 @@
+>
+>  #include <linux/device.h>
+>
+> +#ifdef CONFIG_GPIO_CDEV
 > +
-> +	new_dict_buf = memblock_alloc(new_log_buf_len, LOG_ALIGN);
-> +	if (unlikely(!new_dict_buf)) {
-> +		pr_err("log_buf_len: %lu dict bytes not available\n",
-> +		       new_log_buf_len);
-> +		memblock_free(__pa(new_log_buf), new_log_buf_len);
->  		return;
->  	}
->  
-> +	new_descs_size = new_descs_count * sizeof(struct prb_desc);
-> +	new_descs = memblock_alloc(new_descs_size, LOG_ALIGN);
-> +	if (unlikely(!new_descs)) {
-> +		pr_err("log_buf_len: %lu desc bytes not available\n",
-> +		       new_descs_size);
-> +		memblock_free(__pa(new_dict_buf), new_log_buf_len);
-> +		memblock_free(__pa(new_log_buf), new_log_buf_len);
-> +		return;
-> +	}
+>  int gpiolib_cdev_register(struct gpio_device *gdev, dev_t devt);
+>  void gpiolib_cdev_unregister(struct gpio_device *gdev);
+>
+> +#else
 > +
-> +	prb_rec_init_rd(&r, &info,
-> +			&setup_text_buf[0], sizeof(setup_text_buf),
-> +			&setup_dict_buf[0], sizeof(setup_dict_buf));
+> +static inline int gpiolib_cdev_register(struct gpio_device *gdev, dev_t devt)
+> +{
+> +       return 0;
+> +}
 > +
-> +	prb_init(&printk_rb_dynamic,
-> +		 new_log_buf, order_base_2(new_log_buf_len),
-> +		 new_dict_buf, order_base_2(new_log_buf_len),
-> +		 new_descs, order_base_2(new_descs_count));
+> +static inline void gpiolib_cdev_unregister(struct gpio_device *gdev)
+> +{
+> +}
+> +
+> +#endif /* CONFIG_GPIO_CDEV */
+> +
+>  #endif /* GPIOLIB_CDEV_H */
+> --
+> 2.27.0
+>
 
-order_base_2() is safe. But the result might be tat some allocated
-space is not used.
+I know Linus doesn't like this, but I'm personally in favor of adding
+this as long as it's enabled by default.
 
-I would prefer to make sure that new_log_buf_len is rounded, e.g.
-by roundup_pow_of_two(), at the beginning of the function. Then we
-could use ilog2() here.
-
-Otherwise, it looks fine to me.
-
-Best Regards,
-Petr
+Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
