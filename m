@@ -2,115 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4551420D53D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C5020D4F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731703AbgF2TP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
+        id S1730747AbgF2TNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:13:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731777AbgF2TOW (ORCPT
+        with ESMTP id S1731271AbgF2TNI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:14:22 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26D8C08EAC8
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:16:42 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t6so7836176pgq.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:16:42 -0700 (PDT)
+        Mon, 29 Jun 2020 15:13:08 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 071FDC08EB22
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:27:31 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id k71so4114248pje.0
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:27:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4irVPvy6SLfIHJxFGOTl27eLkGNjnPf7i0OL+P/LA5k=;
-        b=gvy6L2gNxq9EwuQLge3KvNqHHwK00gDANooUZvO4v6O5WkSzyTrdIQh/0aKfX2EltN
-         BC+F/sMOwIeTzytYh6C+biD3Z0k6ukqbdDxfzaddghnTjVpA5NWIn66UJGhUQht65PyZ
-         UeQC58uEadA2EDA5nxAwZTOmY1XiiRXMAqh4qZqk5F0ktgOQ4Giv/rDvhNJX+IvYgcRF
-         uyUIijuxIyKFEY98uEPgkKkWVz1lx7Yn194BvXvE9VqaqfoT3h524c71kZLvLyv0Y3xD
-         Y9evO5z8oHOrC+f8Jlfh91dni7AyjZR5XVxyL1Ss6Xooxx2IhT7B1txyR0AIA+/7u5mi
-         FGzQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=EO3sRskvzqVrSi/8WlTJ+nKIw1S19eoepjwOuVzqC+k=;
+        b=KCQ5YzkONWOo65CEsckxdgEZDidmsxzkUPEN/UJBCW/qObWNXMfEoB9r0/E7rvaRmO
+         xlnRluaPTdkLMjWOJpH+yUIspSAOF0HgZkzvSgs47FWa+/kG7rzViG86wdee3s9jODiH
+         uu4zTKxTboSZHSRTNaUsgRAj4+LH6Z0yJ6Lok=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4irVPvy6SLfIHJxFGOTl27eLkGNjnPf7i0OL+P/LA5k=;
-        b=msXr0nHsQGlhIJl8LFNq/n8ETtu9nIaPgemG++ywxtHX3VGe+v0hG/seBd5vXoqoXd
-         2MBLUobclwwtMZW1LL9nTmhs6S8CT5zL8DY9w5aKXpSwzA14t+9nX3R37hHzRfmi5+oc
-         WdHu4s3s9kMfwQY3b64b50m750Sju4xpwwE7pzOJkcL6nDvab2lgI2jax6KsiLi4bHzO
-         CTUDU3Gnll0HtOSmQL04BS0SH2RalUL+I2UhPCVwXzY5VHJauM0u3vi0WFR3NtkUQhoW
-         nLQ10y6pI97EgeHQlJ/aZ+KS5+ov+UdOXn/0n8A1Ft5vPoIzgV6Z/bzXFUJzB2tUxfSW
-         vTPQ==
-X-Gm-Message-State: AOAM531llzO5SXAfoe911zzs9WCuBOGnYbSTp2NhHC5cPIYw9o+XZDMx
-        ugO6LpiVN3j6CTOYvvIqjBxh4g==
-X-Google-Smtp-Source: ABdhPJyWU8GRq0w0MyNAiW2bszj3RcxuYIa7V3PZhOEGRHvN2Ts53LH/NqZxHeCX7T8Kw8KhW0DfLg==
-X-Received: by 2002:a63:182:: with SMTP id 124mr8482105pgb.288.1593411402221;
-        Sun, 28 Jun 2020 23:16:42 -0700 (PDT)
-Received: from localhost ([122.172.127.76])
-        by smtp.gmail.com with ESMTPSA id m20sm34111505pfk.52.2020.06.28.23.16.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 28 Jun 2020 23:16:41 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 11:46:39 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Sumit Gupta <sumitg@nvidia.com>
-Cc:     rjw@rjwysocki.net, catalin.marinas@arm.com, will@kernel.org,
-        thierry.reding@gmail.com, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, jonathanh@nvidia.com, talho@nvidia.com,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bbasu@nvidia.com, mperttunen@nvidia.com
-Subject: Re: [TEGRA194_CPUFREQ PATCH v4 3/4] cpufreq: Add Tegra194 cpufreq
- driver
-Message-ID: <20200629061639.7cwxfi64drkof6yu@vireshk-i7>
-References: <1593186236-12760-1-git-send-email-sumitg@nvidia.com>
- <1593186236-12760-4-git-send-email-sumitg@nvidia.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=EO3sRskvzqVrSi/8WlTJ+nKIw1S19eoepjwOuVzqC+k=;
+        b=th95Gpdxt/6aN9BwilCk8D6wCp3abZOnS68uG0VcKBDTNrX2L2z57b3m9cb1Tc3tfN
+         6K+BRS4hTX/gI96Xq7eCpuiNLYEw4xLcXZfXwUJI4XwTineoMsgRGNbVfXoYIiZ6LjK9
+         zx4aA4+4o2xuWXn3yRZPi4pFTGuNnEa2ryj43dxk8pSPRp1LG7nJ7+5O1OCB7uHclZC7
+         sLmRu0KT/m8C0CTRSYQB4FOFvRSyIPkr8loaCG7H1g2h4KiqvGBGtrmSOu0DTvr3RngV
+         9GZglLAEbkT44/LOux/hc3HSzRr7O1BYrFjqvHknJhBDJwqROj7ttiuH97rQzhPkDRMf
+         4G1A==
+X-Gm-Message-State: AOAM532rAP8jJ7/B35c0b1tmU7x+hpRZCJNl+9JRa0qxRMaO8f5WcM9B
+        6eduIduRiwDJHdZ0cXgWMFGAPw==
+X-Google-Smtp-Source: ABdhPJxsnK2AsNvKawVoNrn3+ksDPrZ4SCYduO82/RDQuADusHJqjvhs/5ikZAbuEc8CjzSaMNuCrA==
+X-Received: by 2002:a17:90b:4d10:: with SMTP id mw16mr15789032pjb.143.1593412050567;
+        Sun, 28 Jun 2020 23:27:30 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h3sm19838700pje.28.2020.06.28.23.27.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jun 2020 23:27:28 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 17/17] x86/boot: Warn on orphan section placement
+Date:   Sun, 28 Jun 2020 23:18:40 -0700
+Message-Id: <20200629061840.4065483-18-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200629061840.4065483-1-keescook@chromium.org>
+References: <20200629061840.4065483-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1593186236-12760-4-git-send-email-sumitg@nvidia.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-06-20, 21:13, Sumit Gupta wrote:
-> +static int tegra194_cpufreq_probe(struct platform_device *pdev)
-> +{
-> +	struct tegra194_cpufreq_data *data;
-> +	struct tegra_bpmp *bpmp;
-> +	int err, i;
-> +
-> +	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	data->num_clusters = MAX_CLUSTERS;
-> +	data->tables = devm_kcalloc(&pdev->dev, data->num_clusters,
-> +				    sizeof(*data->tables), GFP_KERNEL);
-> +	if (!data->tables)
-> +		return -ENOMEM;
-> +
-> +	platform_set_drvdata(pdev, data);
-> +
-> +	bpmp = tegra_bpmp_get(&pdev->dev);
-> +	if (IS_ERR(bpmp))
-> +		return PTR_ERR(bpmp);
-> +
-> +	read_counters_wq = alloc_workqueue("read_counters_wq", __WQ_LEGACY, 1);
-> +	if (!read_counters_wq) {
-> +		dev_err(&pdev->dev, "fail to create_workqueue\n");
-> +		err = -EINVAL;
-> +		goto put_bpmp;
+We don't want to depend on the linker's orphan section placement
+heuristics as these can vary between linkers, and may change between
+versions. All sections need to be explicitly named in the linker
+script.
 
-This will call destroy_workqueue() eventually and it will crash your
-kernel.
+Add the common debugging sections. Discard the unused note, rel, plt,
+dyn, and hash sections that are not needed in the compressed vmlinux.
+Disable .eh_frame generation in the linker and enable orphan section
+warnings.
 
-Apart from this, this stuff looks okay. Don't resend the patch just
-yet (and if required, send only this patch using --in-reply-to flag
-for git send email). Lets wait for an Ack from Rob for the first two
-patches.
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ arch/x86/boot/compressed/Makefile      |  3 ++-
+ arch/x86/boot/compressed/vmlinux.lds.S | 10 ++++++++++
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-> +	}
-> +
-
+diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+index 7619742f91c9..646720a05f89 100644
+--- a/arch/x86/boot/compressed/Makefile
++++ b/arch/x86/boot/compressed/Makefile
+@@ -48,6 +48,7 @@ GCOV_PROFILE := n
+ UBSAN_SANITIZE :=n
+ 
+ KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
++KBUILD_LDFLAGS += $(call ld-option,--no-ld-generated-unwind-info)
+ # Compressed kernel should be built as PIE since it may be loaded at any
+ # address by the bootloader.
+ ifeq ($(CONFIG_X86_32),y)
+@@ -59,7 +60,7 @@ else
+ KBUILD_LDFLAGS += $(shell $(LD) --help 2>&1 | grep -q "\-z noreloc-overflow" \
+ 	&& echo "-z noreloc-overflow -pie --no-dynamic-linker")
+ endif
+-LDFLAGS_vmlinux := -T
++LDFLAGS_vmlinux := --orphan-handling=warn -T
+ 
+ hostprogs	:= mkpiggy
+ HOST_EXTRACFLAGS += -I$(srctree)/tools/include
+diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
+index d88612e3091f..9afb8737896f 100644
+--- a/arch/x86/boot/compressed/vmlinux.lds.S
++++ b/arch/x86/boot/compressed/vmlinux.lds.S
+@@ -75,7 +75,17 @@ SECTIONS
+ 	. = ALIGN(PAGE_SIZE);	/* keep ZO size page aligned */
+ 	_end = .;
+ 
++	STABS_DEBUG
++	DWARF_DEBUG
+ 	ELF_DETAILS
+ 
+ 	DISCARDS
++	/DISCARD/ : {
++		*(.note.*)
++		*(.rela.*) *(.rela_*)
++		*(.rel.*) *(.rel_*)
++		*(.plt) *(.plt.*)
++		*(.dyn*)
++		*(.hash) *(.gnu.hash)
++	}
+ }
 -- 
-viresh
+2.25.1
+
