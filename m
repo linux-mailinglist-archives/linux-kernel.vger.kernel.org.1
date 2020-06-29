@@ -2,112 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A827E20D86F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B903320D60B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387516AbgF2TjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387439AbgF2Thn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:37:43 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489BFC0307B3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:58:01 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id e4so18623184ljn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:58:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=zMZEixiFTF5mevY+VAYJknP06+KYN1owPnfYBfA5mxY=;
-        b=fgIP8sWCkgrxJ+mLPRUsnOUtmnT8rWOcMr5mr81MZdDyY8rho2NuX5xFE2H3wesszQ
-         mcd1dx0F7G+izOpy6l1Q/1cxspZ9URShXtjWxPEXMgQNHqHh2baD4Zc8YGtdXnmJoGTl
-         e0AhQuG8+eQlDwRxuPr/F7eDzV6euJu6nu1qMPZmhw1eGLMdGLg1ivo6v1RuuieZ0k9t
-         jo/5HyLQ5hbOEViAErngn2fWTJ/buTp2J3IVsw7h9BqdCYXQfWPBQJbqc+Y4hayqRv8q
-         FXjEYb18omFR0bm9d9fNMziFFh/tFowXdaPBVYNfNKDkPgX35VjGEcu/2ojH+eVtcP5J
-         5MFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=zMZEixiFTF5mevY+VAYJknP06+KYN1owPnfYBfA5mxY=;
-        b=WyZFZxuH6EJgWHcwNq5eK2dNLwnnkguWBHGwaQDTFwMGGnAQc7qGPi3lkXolxbB1sM
-         n2gH1M2rAQ7036Op/SDEFzNKI0apbaoBqeoiEZqAzQzvhhVAruUU46pIv+D06OXeeThN
-         63+VXGYkjM0v+2eJJ4Yci1KPpzTHqzJqEL+vHmIp4DfcXUqQPuMoMDgJrFHMB0djUy2d
-         MgP2y/SN6OZVUBW4CG7eAYPQJVLXSmIWZB1Ejs4XHTlSTeENnpLUnmBfp4kdUNnfhIDR
-         1E0oV+P5LZKHC2v6E37N44rQexPILLkNXssaPkd24LFIqkJ4Zt4eWR1iG+S6YTfx3nIi
-         QHkw==
-X-Gm-Message-State: AOAM5323ujswx8Cdol2wdXqxNH1NhKxUYxk2gZnFsM/R5LukZ34zWF99
-        y4bZGdQgbAjULvw9XE84kjFM7uxjI7Bv6Gulv+/BhUgj3Kw=
-X-Google-Smtp-Source: ABdhPJyJa1uJ8nWPgBY1njmJFVf8+PrABb1P8QVxFmDEpUU06Og534cpetWQyyaLbYaEtBrKco73a0FNHHfFhqvuMS8=
-X-Received: by 2002:a2e:7a03:: with SMTP id v3mr2178955ljc.141.1593446279815;
- Mon, 29 Jun 2020 08:57:59 -0700 (PDT)
+        id S1731958AbgF2TRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:17:05 -0400
+Received: from mga01.intel.com ([192.55.52.88]:63722 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731875AbgF2TQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:16:54 -0400
+IronPort-SDR: 1g8gEhSaaWiUI1v1Uj2zOLNMhhc3kPsTv3XBqhH2vfek7peBzKv0XyXfL6s2+Sg4Gg8HcfV24m
+ Ve8VWme8/MnA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="164006926"
+X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
+   d="scan'208";a="164006926"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 08:58:33 -0700
+IronPort-SDR: sRLBBEXcVtjT9ztSBkn97HUnJU4v7w2EpoAjB7RkdorPP1Dv7J6ov4LWKt+waJNKQWCdtFzuhr
+ UWEhP3mubGKg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
+   d="scan'208";a="480838700"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by fmsmga005.fm.intel.com with ESMTP; 29 Jun 2020 08:58:33 -0700
+Date:   Mon, 29 Jun 2020 08:58:33 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     =?utf-8?B?5aec6L+O?= <jiangying8582@126.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: fix direct I/O read error
+Message-ID: <20200629155832.GE2454695@iweiny-DESK2.sc.intel.com>
+References: <7925c422.4205.172f9ae864d.Coremail.jiangying8582@126.com>
 MIME-Version: 1.0
-From:   microcai <microcaicai@gmail.com>
-Date:   Mon, 29 Jun 2020 23:57:48 +0800
-Message-ID: <CAMgqO2y9MYDj6antOaWLBRKU8vGEwqCB-Y1TkXTSWsmsed+W6A@mail.gmail.com>
-Subject: [PATCH] spi-nor: Add support for xt25f32b/xt25f128b
-To:     tudor.ambarus@microchip.com
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7925c422.4205.172f9ae864d.Coremail.jiangying8582@126.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From 5e308ec7332d01e84a3a5233f4cb8bd5a00026cf Mon Sep 17 00:00:00 2001
-From: microcai <microcaicai@gmail.com>
-Date: Mon, 29 Jun 2020 23:36:40 +0800
-Subject: [PATCH] spi-nor: Add support for xt25f32b/xt25f128b
+On Sun, Jun 28, 2020 at 02:47:43PM +0800, 姜迎 wrote:
+> From: jiangying8582 <jiangying8582@126.com>
+> Date: Wed, 24 Jun 2020 19:02:34 +0800
+> Subject: [PATCH] ext4: fix direct I/O read error
+> 
+> This patch is used to fix ext4 direct I/O read error when
+> the read size is not alignment with block size. Compare the
+> size between read offset with file size, if read offset is
+> greater than file size, then return 0.
+> 
+> Then, I will use a test to explain the error.
+> (1) Make the file that is not alignment wiht block size:
+>         $dd if=/dev/zero of=./test.jar bs=1000 count=3
+> 
+> (2) I wrote a test script named "direct_io_read_file.c" s following:
+> 
+>         #include <stdio.h>
+>         #include <stdlib.h>
+>         #include <unistd.h>
+>         #include <sys/file.h>
+>         #include <sys/types.h>
+>         #include <sys/stat.h>
+>         #include <string.h>
+>         #define BUF_SIZE 1024
+> 
+>         int main()
+>         {
+>                 int fd;
+>                 int ret;
+> 
+>                 unsigned char *buf;
+>                 ret = posix_memalign((void **)&buf, 512, BUF_SIZE);
+>                 if (ret) {
+>                         perror("posix_memalign failed");
+>                         exit(1);
+>                 }
+>                 fd = open("./test.jar", O_RDONLY | O_DIRECT, 0755);
+>                 if (fd < 0){
+>                         perror("open ./test.jar failed");
+>                         exit(1);
+>                 }
+> 
+>                 do {
+>                         ret = read(fd, buf, BUF_SIZE);
+>                         printf("ret=%d\n",ret);
+>                         if (ret < 0) {
+>                                 perror("write test.jar failed");
+>                         }
+> 
+>                 } while (ret > 0);
+> 
+>                 free(buf);
+>                 close(fd);
+>         }
+> 
+> (3) Compiling the script:
+>         $gcc direct_io_read_file.c -D_GNU_SOURCE
+> 
+> (4) Exec the script:
+>         $./a.out
+> 
+>     The result is as following:
+>         ret=1024
+>         ret=1024
+>         ret=952
+>         ret=-1
+>         write rts-segmenter-0.3.7.2.jar failed: Invalid argument
+> 
+> I have tested this script on XFS filesystem, XFS does not have
+> this problem, because XFS use iomap_dio_rw() to do direct I/O
+> read. And the comparing between read offset and file size is done
+> is iomap_dio_rw(), the code is as following:
+>         if (pos < size) {
+>                 retval = filemap_write_and_wait_range(mapping, pos,
+>                                         pos + iov_length(iov, nr_segs) - 1);
+>                 if (!retval) {
+>                         retval = mapping->a_ops->direct_IO(READ, iocb,
+>                                                 iov, pos, nr_segs);
+>                 }
+>                 ...
+>         }
+> Only when "pos < size", direct I/O can be done, or 0 will be return.
+> 
+> I have tested my fix patch, it is up to the mustard of EINVAL in
+> man2(read) as following:
+>         #include <unistd.h>
+>         ssize_t read(int fd, void *buf, size_t count);
+> 
+>         EINVAL
+>                 fd is attached to an object which is unsuitable for reading;
+>                 or the file was opened with the O_DIRECT flag, and either the
+>                 address specified in buf, the value specified in count, or the
+>                 current file offset is not suitably aligned.
+> So I think this patch can be applied to fix ext4 direct I/O problem.
+> 
+> Why this problem can happen? I think
+> commit <9fe55eea7e4b> ("Fix race when checking i_size on direct i/o read")
+> caused.
 
-The RockPi4b dev board ship with xt25f32b solded. add these ids so the
-board's spi flash can be accessed within linux.
+Looks like you need a 'Fixes' tag added.
 
-Signed-off-by: microcai <microcaicai@gmail.com>
----
- drivers/mtd/spi-nor/Makefile |  1 +
- drivers/mtd/spi-nor/xtx.c    | 21 +++++++++++++++++++++
- 2 files changed, 22 insertions(+)
- create mode 100644 drivers/mtd/spi-nor/xtx.c
+> 
+> However Ext4 introduces direct I/O read using iomap infrastructure
+> on kernel 5.5, the patch is commit <b1b4705d54ab>
+> ("ext4: introduce direct I/O read using iomap infrastructure"),
+> then Ext4 will be the same as XFS, they all use iomap_dio_rw() to do direct
+> I/O read. So this problem does not exist on kernel 5.5 for Ext4.
+> 
+> From above description, we can see this problem exists on all the kernel
+> versions between kernel 3.14 and kernel 5.4. Please apply this patch
+> on these kernel versions, or please use the method on kernel 5.5 to fix
+> this problem. Thanks.
 
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 653923896205..3f7a52d7fa0b 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -17,6 +17,7 @@ spi-nor-objs += sst.o
- spi-nor-objs += winbond.o
- spi-nor-objs += xilinx.o
- spi-nor-objs += xmc.o
-+spi-nor-objs += xtx.o
- obj-$(CONFIG_MTD_SPI_NOR) += spi-nor.o
+And looks like you need this marked stable as well.
 
- obj-$(CONFIG_MTD_SPI_NOR) += controllers/
-diff --git a/drivers/mtd/spi-nor/xtx.c b/drivers/mtd/spi-nor/xtx.c
-new file mode 100644
-index 000000000000..05f2d69401b2
---- /dev/null
-+++ b/drivers/mtd/spi-nor/xtx.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2005, Intec Automation Inc.
-+ * Copyright (C) 2014, Freescale Semiconductor, Inc.
-+ */
-+
-+#include <linux/mtd/spi-nor.h>
-+
-+#include "core.h"
-+
-+static const struct flash_info xtx_parts[] = {
-+ /* XTX (Shenzhen Xin Tian Xia Tech) */
-+ { "xt25f32b", INFO(0x0b4016, 0, 64 * 1024, 64, SECT_4K) },
-+ { "xt25f128b", INFO(0x0b4018, 0, 64 * 1024, 256, SECT_4K) },
-+};
-+
-+const struct spi_nor_manufacturer spi_nor_xtx = {
-+ .name = "xtx",
-+ .parts = xtx_parts,
-+ .nparts = ARRAY_SIZE(xtx_parts),
-+};
--- 
-2.26.2
+Ira
+
+> 
+> Signed-off-by: jiangying8582 <jiangying8582@126.com>
+> ---
+>  fs/ext4/inode.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 516faa2..d514ff5 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3821,6 +3821,12 @@ static ssize_t ext4_direct_IO_read(struct kiocb *iocb, struct iov_iter *iter)
+>         struct inode *inode = mapping->host;
+>         size_t count = iov_iter_count(iter);
+>         ssize_t ret;
+> +       loff_t offset = iocb->ki_pos;
+> +       loff_t size;
+> +
+> +       size = i_size_read(inode);
+> +       if (offset >= size)
+> +               return 0;
+> 
+>         /*
+>          * Shared inode_lock is enough for us - it protects against concurrent
+> -- 
+> 1.8.3.1
+> 
