@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8FC20D7CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A827E20D86F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732695AbgF2Tcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
+        id S2387516AbgF2TjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:39:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733238AbgF2Tcp (ORCPT
+        with ESMTP id S2387439AbgF2Thn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:32:45 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5771FC0307B0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:55:55 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id u8so7934844pje.4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:55:55 -0700 (PDT)
+        Mon, 29 Jun 2020 15:37:43 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489BFC0307B3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:58:01 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id e4so18623184ljn.4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:58:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8FZDkBiuioOBRxwHsKCkUje2d5GjB8iXiN+bbHKyAe0=;
-        b=oRUZOeRabJBXny6lhg7jbx/B/9od7jh1hwhJ7VRIVhMP5M1PLzRZkVyb74w2D+gcLF
-         ZmLL8lPCnYn10ztmqHqkWeL9I3t7mGQs/FnV1NY0WJc+WKBbt2domMXgRUDMaDZK9CFC
-         Z7LgAO/XRYdSRj6w5ca0Dpu9Fj0Ogxx6wWP60=
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=zMZEixiFTF5mevY+VAYJknP06+KYN1owPnfYBfA5mxY=;
+        b=fgIP8sWCkgrxJ+mLPRUsnOUtmnT8rWOcMr5mr81MZdDyY8rho2NuX5xFE2H3wesszQ
+         mcd1dx0F7G+izOpy6l1Q/1cxspZ9URShXtjWxPEXMgQNHqHh2baD4Zc8YGtdXnmJoGTl
+         e0AhQuG8+eQlDwRxuPr/F7eDzV6euJu6nu1qMPZmhw1eGLMdGLg1ivo6v1RuuieZ0k9t
+         jo/5HyLQ5hbOEViAErngn2fWTJ/buTp2J3IVsw7h9BqdCYXQfWPBQJbqc+Y4hayqRv8q
+         FXjEYb18omFR0bm9d9fNMziFFh/tFowXdaPBVYNfNKDkPgX35VjGEcu/2ojH+eVtcP5J
+         5MFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8FZDkBiuioOBRxwHsKCkUje2d5GjB8iXiN+bbHKyAe0=;
-        b=TgFwO5jHbLkvv5CE9FZgTmUybypCU5Zi4W4eYnEfynBBDC98+AqXy3qzSD+b47W2wj
-         8jXDrKzRNsOr+EOiRwJofom46hSstnjXbzyUd9jA4llxPTrCPHrVHhEFaBzSKbZPXJep
-         dNss5NRQ0Un7QJY8unyFQouuTAuNEU1ppfoSKXYdrs3HRin4oVWTckWDJoTOYX4s814J
-         5iOO/lV97OBLVacXeJxwCczsS/qnWe5df6jUpeftUnMeel2gb2yMFN/mXhs7M2kXoNZ1
-         ocPwlbHn54FQTNLglgUg23ldFtOhSyKDVxJegvJqPDy83HkonxYtef/KPVO2HahoTjya
-         KvNg==
-X-Gm-Message-State: AOAM530CkZ6ZoIkek09tzr/HtoterRm8LMBnabIFOxiQ4NrK6Vbd4Y+M
-        SQqQhzDcH7+qAk69yfhdi1hqKQ==
-X-Google-Smtp-Source: ABdhPJz02X0iAnH1VWJyzrKsMKGwrhNEnyTt5WGDZBvjx3l7kWinsKTAPbnA4h5q/ePh1BH8ckh24g==
-X-Received: by 2002:a17:902:b414:: with SMTP id x20mr4523246plr.143.1593446154911;
-        Mon, 29 Jun 2020 08:55:54 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id r17sm167810pfg.62.2020.06.29.08.55.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 08:55:54 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 08:55:53 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        clang-built-linux@googlegroups.com,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/7] x86/boot: Add .text.* to setup.ld
-Message-ID: <202006290854.CCFE11C@keescook>
-References: <20200629140928.858507-1-nivedita@alum.mit.edu>
- <20200629140928.858507-5-nivedita@alum.mit.edu>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=zMZEixiFTF5mevY+VAYJknP06+KYN1owPnfYBfA5mxY=;
+        b=WyZFZxuH6EJgWHcwNq5eK2dNLwnnkguWBHGwaQDTFwMGGnAQc7qGPi3lkXolxbB1sM
+         n2gH1M2rAQ7036Op/SDEFzNKI0apbaoBqeoiEZqAzQzvhhVAruUU46pIv+D06OXeeThN
+         63+VXGYkjM0v+2eJJ4Yci1KPpzTHqzJqEL+vHmIp4DfcXUqQPuMoMDgJrFHMB0djUy2d
+         MgP2y/SN6OZVUBW4CG7eAYPQJVLXSmIWZB1Ejs4XHTlSTeENnpLUnmBfp4kdUNnfhIDR
+         1E0oV+P5LZKHC2v6E37N44rQexPILLkNXssaPkd24LFIqkJ4Zt4eWR1iG+S6YTfx3nIi
+         QHkw==
+X-Gm-Message-State: AOAM5323ujswx8Cdol2wdXqxNH1NhKxUYxk2gZnFsM/R5LukZ34zWF99
+        y4bZGdQgbAjULvw9XE84kjFM7uxjI7Bv6Gulv+/BhUgj3Kw=
+X-Google-Smtp-Source: ABdhPJyJa1uJ8nWPgBY1njmJFVf8+PrABb1P8QVxFmDEpUU06Og534cpetWQyyaLbYaEtBrKco73a0FNHHfFhqvuMS8=
+X-Received: by 2002:a2e:7a03:: with SMTP id v3mr2178955ljc.141.1593446279815;
+ Mon, 29 Jun 2020 08:57:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629140928.858507-5-nivedita@alum.mit.edu>
+From:   microcai <microcaicai@gmail.com>
+Date:   Mon, 29 Jun 2020 23:57:48 +0800
+Message-ID: <CAMgqO2y9MYDj6antOaWLBRKU8vGEwqCB-Y1TkXTSWsmsed+W6A@mail.gmail.com>
+Subject: [PATCH] spi-nor: Add support for xt25f32b/xt25f128b
+To:     tudor.ambarus@microchip.com
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 10:09:25AM -0400, Arvind Sankar wrote:
-> gcc puts the main function into .text.startup when compiled with -Os (or
-> -O2). This results in arch/x86/boot/main.c having a .text.startup
-> section which is currently not included explicitly in the linker script
-> setup.ld in the same directory.
-> 
-> The BFD linker places this orphan section immediately after .text, so
-> this still works. However, LLD git, since [1], is choosing to place it
-> immediately after the .bstext section instead (this is the first code
-> section). This plays havoc with the section layout that setup.elf
-> requires to create the setup header, for eg on 64-bit:
+From 5e308ec7332d01e84a3a5233f4cb8bd5a00026cf Mon Sep 17 00:00:00 2001
+From: microcai <microcaicai@gmail.com>
+Date: Mon, 29 Jun 2020 23:36:40 +0800
+Subject: [PATCH] spi-nor: Add support for xt25f32b/xt25f128b
 
-Eep! I guess this was a linking case I missed for adding
---orphan-handling=warn to my orphan handling series. (I will add that.)
+The RockPi4b dev board ship with xt25f32b solded. add these ids so the
+board's spi flash can be accessed within linux.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: microcai <microcaicai@gmail.com>
+---
+ drivers/mtd/spi-nor/Makefile |  1 +
+ drivers/mtd/spi-nor/xtx.c    | 21 +++++++++++++++++++++
+ 2 files changed, 22 insertions(+)
+ create mode 100644 drivers/mtd/spi-nor/xtx.c
 
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 653923896205..3f7a52d7fa0b 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -17,6 +17,7 @@ spi-nor-objs += sst.o
+ spi-nor-objs += winbond.o
+ spi-nor-objs += xilinx.o
+ spi-nor-objs += xmc.o
++spi-nor-objs += xtx.o
+ obj-$(CONFIG_MTD_SPI_NOR) += spi-nor.o
+
+ obj-$(CONFIG_MTD_SPI_NOR) += controllers/
+diff --git a/drivers/mtd/spi-nor/xtx.c b/drivers/mtd/spi-nor/xtx.c
+new file mode 100644
+index 000000000000..05f2d69401b2
+--- /dev/null
++++ b/drivers/mtd/spi-nor/xtx.c
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2005, Intec Automation Inc.
++ * Copyright (C) 2014, Freescale Semiconductor, Inc.
++ */
++
++#include <linux/mtd/spi-nor.h>
++
++#include "core.h"
++
++static const struct flash_info xtx_parts[] = {
++ /* XTX (Shenzhen Xin Tian Xia Tech) */
++ { "xt25f32b", INFO(0x0b4016, 0, 64 * 1024, 64, SECT_4K) },
++ { "xt25f128b", INFO(0x0b4018, 0, 64 * 1024, 256, SECT_4K) },
++};
++
++const struct spi_nor_manufacturer spi_nor_xtx = {
++ .name = "xtx",
++ .parts = xtx_parts,
++ .nparts = ARRAY_SIZE(xtx_parts),
++};
 -- 
-Kees Cook
+2.26.2
