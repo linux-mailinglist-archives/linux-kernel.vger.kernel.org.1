@@ -2,107 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 855FC20D2CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2124320D37D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729749AbgF2SwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:52:19 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40828 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727854AbgF2SwP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:15 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TF3Y9n183022;
-        Mon, 29 Jun 2020 11:27:19 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31ycj95mkv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 11:27:18 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05TFG1Mf006442;
-        Mon, 29 Jun 2020 15:27:17 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma02fra.de.ibm.com with ESMTP id 31wwr7s67s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 15:27:16 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05TFRE9647186124
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Jun 2020 15:27:14 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BEEE7A4055;
-        Mon, 29 Jun 2020 15:27:14 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 07673A4040;
-        Mon, 29 Jun 2020 15:27:14 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.137.220])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 29 Jun 2020 15:27:13 +0000 (GMT)
-Message-ID: <1593444433.5085.15.camel@linux.ibm.com>
-Subject: [GIT PULL] integrity additional change v5.8 (#2)
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Maurizio Drocco <maurizio.drocco@ibm.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-Date:   Mon, 29 Jun 2020 11:27:13 -0400
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-06-29_15:2020-06-29,2020-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
- priorityscore=1501 phishscore=0 suspectscore=0 adultscore=0
- cotscore=-2147483648 bulkscore=0 clxscore=1011 mlxscore=0 classifier=spam
- adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006290103
+        id S1730270AbgF2S7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:59:20 -0400
+Received: from mga09.intel.com ([134.134.136.24]:65096 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730167AbgF2S6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:58:54 -0400
+IronPort-SDR: RWeeJ/8RlA8iam6h8rbkXQySlJPKg8Z8etXIA2PTHkj4OQbn5OXZrrwy1WPNeaYMZIpLnY12r3
+ SoN2lGVZg+wg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="147540174"
+X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
+   d="scan'208";a="147540174"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 08:27:19 -0700
+IronPort-SDR: rGBMpfACiG1z4qkmaDQmtluftmaItl/SFgyVE8IlcTxjEYsTQkMzUpPHkLlLoyg+bUyRjEZRro
+ RXKZLVmhfq9w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
+   d="scan'208";a="318245592"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by orsmga007.jf.intel.com with ESMTP; 29 Jun 2020 08:27:19 -0700
+Date:   Mon, 29 Jun 2020 08:27:19 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v33 11/21] x86/sgx: Linux Enclave Driver
+Message-ID: <20200629152718.GA12312@linux.intel.com>
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+ <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
+ <20200627174335.GC15585@zn.tnic>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200627174335.GC15585@zn.tnic>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sat, Jun 27, 2020 at 07:43:35PM +0200, Borislav Petkov wrote:
+> On Thu, Jun 18, 2020 at 01:08:33AM +0300, Jarkko Sakkinen wrote:
+> > +static int sgx_encl_init(struct sgx_encl *encl, struct sgx_sigstruct *sigstruct,
+> > +			 void *token)
+> > +{
+> > +	u64 mrsigner[4];
+> > +	int ret;
+> > +	int i;
+> > +	int j;
+> > +
+> > +	/* Check that the required attributes have been authorized. */
+> > +	if (encl->secs_attributes & ~encl->allowed_attributes)
+> > +		return -EACCES;
+> > +
+> > +	ret = sgx_get_key_hash(sigstruct->modulus, mrsigner);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	mutex_lock(&encl->lock);
+> > +
+> > +	if (atomic_read(&encl->flags) & SGX_ENCL_INITIALIZED) {
+> > +		ret = -EFAULT;
+> > +		goto err_out;
+> > +	}
+> 
+> That test should be the first thing this function or its caller does.
 
-Prior to Linux 5.8 the SHA1 "boot_aggregate" value was padded with 0's
-and extended into the other TPM 2.0 banks.  Included in the Linux 5.8
-open window, TPM 2.0 PCR bank specific "boot_aggregate" values (PCRs 0
-- 7) are calculated and extended into the TPM banks.
+Hmm, I was going to say that SGX_ENCL_INITIALIZED can't be checked until
+encl->lock is held, but that's not true for this path as mutual exclusion
+is provided by the SGX_ENCL_IOCTL flag.  So yeah, this can be checked at
+the same time as SGX_ENCL_CREATED in sgx_ioc_enclave_init().
 
-Distro releases are now shipping grub2 with TPM support, which extend
-PCRs 8 & 9.  I'd like for PCRs 8 & 9 to be included in the new
-"boot_aggregate" calculations.  For backwards compatibility, PCRs 8 &
-9 are not included in the SHA1 TPM bank "boot_aggregate" calculation.
+> > +	for (i = 0; i < SGX_EINIT_SLEEP_COUNT; i++) {
+> > +		for (j = 0; j < SGX_EINIT_SPIN_COUNT; j++) {
+> 
+> Ew, what's that double-loop for?
+> 
+> It tries to init an enclave a bunch of times. Why does it need to init
+> more than once?
 
-I'd appreciate your merging this additional change.
+ENCLS[EINIT] is interruptible because it has such a high latency, e.g. 50k+
+cycles on success.  If an IRQ/NMI/SMI becomes pending, EINIT may fail with
+SGX_UNMASKED_EVENT so that the event can be serviced.
 
-thanks,
+The idea behind the double loop is to try EINIT in a tight loop, then back
+off and sleep for a while before retrying that tight inner loop.
 
-Mimi
+> > +			ret = sgx_einit(sigstruct, token, encl->secs.epc_page,
+> > +					mrsigner);
+> > +			if (ret == SGX_UNMASKED_EVENT)
+> > +				continue;
+> > +			else
+> > +				break;
+> > +		}
+> > +
+> > +		if (ret != SGX_UNMASKED_EVENT)
+> > +			break;
+> > +
+> > +		msleep_interruptible(SGX_EINIT_SLEEP_TIME);
+> > +
+> > +		if (signal_pending(current)) {
+> > +			ret = -ERESTARTSYS;
+> > +			goto err_out;
+> > +		}
+> > +	}
+> > +
+> > +	if (ret & ENCLS_FAULT_FLAG) {
+> > +		if (encls_failed(ret))
+> > +			ENCLS_WARN(ret, "EINIT");
+> > +
+> > +		sgx_encl_destroy(encl);
+> > +		ret = -EFAULT;
+> > +	} else if (ret) {
+> > +		pr_debug("EINIT returned %d\n", ret);
+> > +		ret = -EPERM;
+> > +	} else {
+> > +		atomic_or(SGX_ENCL_INITIALIZED, &encl->flags);
+> > +	}
+> > +
+> > +err_out:
+> > +	mutex_unlock(&encl->lock);
+> > +	return ret;
+> > +}
+> > +
+> > +/**
+> > + * sgx_ioc_enclave_init - handler for %SGX_IOC_ENCLAVE_INIT
+> > + *
+> > + * @filep:	open file to /dev/sgx
+> 
+> @encl:       pointer to an enclave instance (via ioctl() file pointer)
+> 
+> > + * @arg:	userspace pointer to a struct sgx_enclave_init instance
+> > + *
+> > + * Flush any outstanding enqueued EADD operations and perform EINIT.  The
+> > + * Launch Enclave Public Key Hash MSRs are rewritten as necessary to match
+> > + * the enclave's MRSIGNER, which is caculated from the provided sigstruct.
+> > + *
+> > + * Return:
+> > + *   0 on success,
+> > + *   SGX error code on EINIT failure,
+> > + *   -errno otherwise
+> > + */
+> > +static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
+> > +{
+> > +	struct sgx_sigstruct *sigstruct;
+> > +	struct sgx_enclave_init einit;
+> > +	struct page *initp_page;
+> > +	void *token;
+> > +	int ret;
+> > +
+> > +	if (!(atomic_read(&encl->flags) & SGX_ENCL_CREATED))
+> 
+> Might just as well check the other flags: doing EINIT on an already
+> initialized enclave - SGX_ENCL_INITIALIZED - is perhaps a nono or
+> similarly on a SGX_ENCL_DEAD enclave.
+> 
+> And you could do similar sanity checks in the other ioctl functions.
 
-The following changes since commit 48778464bb7d346b47157d21ffde2af6b2d39110:
+Ya, as above, SGX_ENCL_INITIALIZED can be checked here.
 
-  Linux 5.8-rc2 (2020-06-21 15:45:29 -0700)
+SGX_ENCL_DEAD is actually already checked in in the top level sgx_ioctl(),
+i.e. the check in sgx_encl_add_page() can technically be flat out dropped.
 
-are available in the git repository at:
+I say "technically" because I'm a bit torn over SGX_ENCL_DEAD; encl->lock
+must be held to SGX_ENCL_DEAD (the page fault and reclaim flows rely on
+this), but as it stands today only ioctl() paths (guarded by SGX_ENCL_IOCTL)
+and sgx_release() (makes the ioctls() unreachable) set SGX_ENCL_DEAD.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.8-fix-2
+So it's safe to check SGX_ENCL_DEAD from ioctl() context without holding
+encl->lock, at least in the current code base, but it feels weird/sketchy.
 
-for you to fetch changes up to 20c59ce010f84300f6c655d32db2610d3433f85c:
-
-  ima: extend boot_aggregate with kernel measurements (2020-06-24 20:47:24 -0400)
-
-----------------------------------------------------------------
-Include PCRs 8 & 9 in per TPM 2.0 bank boot_aggregate calculation
-
-----------------------------------------------------------------
-Maurizio Drocco (1):
-      ima: extend boot_aggregate with kernel measurements
-
- security/integrity/ima/ima.h        |  2 +-
- security/integrity/ima/ima_crypto.c | 15 ++++++++++++++-
- 2 files changed, 15 insertions(+), 2 deletions(-)
+In the end I don't think I have a strong opinion.  Removing the technically
+unnecessary DEAD check in sgx_encl_add_page() is the simplest change, so it
+may make sense to do that and nothing more for initial upstreaming.  Long
+term, I fully expect we'll add paths that set SGX_ENCL_DEAD outside of
+ioctl() context, e.g. to handle EPC OOM, but it wouldn't be a bad thing to
+have a standalone commit in a future series to add DEAD checks (under
+encl->lock) in the ADD and INIT flows.
