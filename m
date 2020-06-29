@@ -2,30 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0368B20DF6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C826B20DF5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389464AbgF2UgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:36:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59450 "EHLO mx2.suse.de"
+        id S2389398AbgF2Ue6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:34:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59506 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732172AbgF2TVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:21:30 -0400
+        id S1732208AbgF2TVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:21:34 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A0D01AED7;
-        Mon, 29 Jun 2020 15:09:52 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 3513DAF0B;
+        Mon, 29 Jun 2020 15:09:53 +0000 (UTC)
 From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 To:     gregkh@linuxfoundation.org
 Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
         linux-rpi-kernel@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         devel@driverdev.osuosl.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.org>,
+        Jacopo Mondi <jacopo@jmondi.org>,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [PATCH v2 00/47] staging: vchiq: Getting rid of the vchi/vchiq split
-Date:   Mon, 29 Jun 2020 17:08:58 +0200
-Message-Id: <20200629150945.10720-1-nsaenzjulienne@suse.de>
+Subject: [PATCH v2 02/47] staging: mmal-vchiq: Make a mmal_buf struct for passing parameters
+Date:   Mon, 29 Jun 2020 17:09:00 +0200
+Message-Id: <20200629150945.10720-3-nsaenzjulienne@suse.de>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200629150945.10720-1-nsaenzjulienne@suse.de>
+References: <20200629150945.10720-1-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -33,142 +37,291 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vchi acts as a mid layer between vchiq and its kernel services, while
-arguably providing little to no benefit: half of the functions exposed
-are a 1:1 copy of vchiq's, and the rest provide some functionality which
-can be easly integrated into vchiq without all the churn. Moreover it
-has been found in the past as a blockage to further fixes in vchiq as
-every change needed its vchi counterpart, if even possible.
+From: Dave Stevenson <dave.stevenson@raspberrypi.org>
 
-Hence this series, which merges all vchi functionality into vchiq and
-provies a simpler and more concise API to services.
+The callback from vchi_mmal to the client was growing lots of extra
+parameters. Consolidate them into a single struct instead of
+growing the list further.
+The struct is associated with the client buffer, therefore there
+are various changes to setup various containers for the struct,
+and pass the appropriate members.
 
-I'm aware that kernel's vchi API tries to mimic its userspace
-counterpart (or vice versa). Obviously this breaks the parity, but I
-don't think it's a sane goal to have. There is little sense or gain from
-it, and adds impossible constraints to upstreaming the driver.
-
-Overall this fall short of removing 1100 lines of code, which is pretty
-neat on itself.
-
-So far it has been tested trough bcm2835-camera, audio and vchiq-test. I
-can't do much about vc-sm-cma for now as it's only available downstream,
-but I made sure not to break anything and will provide some patches for
-the RPi devs to pick-up, so as to make their life easier.
-
-Note that in order to keep the divergence between the downstream and
-upstream versions of this as small as possible I picked up some
-mmal-vchiq patches that might not be absolutely necessary to the goal of
-the series.
-
-Regards,
-Nicolas
-
-Previous versions:
- v1: https://www.spinics.net/lists/arm-kernel/msg816310.html
- RFC: https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2174964.html
-
-Changes since v1:
- - Remove "staging: mmal-vchiq: Avoid use of bool in structures"
- - Fix issue pointed out by Dan Carpenter
- - Fix unwarranted include in "staging: vchiq: Move vchiq.h into include directory"
-
+Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.org>
+Signed-off-by: Jacopo Mondi <jacopo@jmondi.org>
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 ---
+ .../bcm2835-camera/bcm2835-camera.c           | 64 +++++++++++--------
+ .../vc04_services/vchiq-mmal/mmal-common.h    |  5 ++
+ .../vc04_services/vchiq-mmal/mmal-vchiq.c     | 29 ++++++---
+ .../vc04_services/vchiq-mmal/mmal-vchiq.h     |  3 +-
+ 4 files changed, 65 insertions(+), 36 deletions(-)
 
-Dave Stevenson (6):
-  staging: mmal-vchiq: Make timeout a defined parameter
-  staging: mmal-vchiq: Make a mmal_buf struct for passing parameters
-  staging: mmal-vchiq: Fixup vchiq-mmal include ordering
-  staging: mmal-vchiq: Fix client_component for 64 bit kernel
-  staging: mmal-vchiq: Always return the param size from param_get
-  staging: mmal-vchiq: If the VPU returns an error, don't negate it
-
-Naushir Patuck (1):
-  staging: mmal-vchiq: Fix formatting errors in mmal_parameters.h
-
-Nicolas Saenz Julienne (39):
-  staging: vchi: Get rid of all useless callback reasons
-  staging: vchi: Get rid of vchi_msg_peek()
-  staging: vchi: Get rid of struct vchi_instance_handle
-  staging: vchi: Unify struct shim_service and struct
-    vchi_service_handle
-  staging: vc04_services: bcm2835-audio: Use vchi_msg_hold()
-  staging: vchi: Get rid of vchi_msg_dequeue()
-  staging: vchi_common: Get rid of all unused definitions
-  staging: vchi: Get rid of unnecessary defines
-  staging: vc04_services: Get rid of vchi_cfg.h
-  staging: vchi: Get rid of flags argument in vchi_msg_hold()
-  staging: vchi: Use enum vchiq_bulk_mode instead of vchi's transmission
-    flags
-  staging: vchi: Use vchiq's enum vchiq_reason
-  staging: vchi: Get rid of effect less expression
-  staging: vchiq: Introduce vchiq_validate_params()
-  staging: vchiq: Move message queue into struct vchiq_service
-  staging: vchiq: Get rid of vchiq_util.h
-  staging: vchi: Expose struct vchi_service
-  staging: vchiq: Export vchiq_get_service_userdata()
-  staging: vchiq: Export vchiq_msg_queue_push
-  staging: vchi: Get rid of vchiq_shim's message callback
-  staging: vchiq: Don't use a typedef for vchiq_callback
-  staging: vchi: Use struct vchiq_service_params
-  staging: vchi: Get rid of struct vchi_service
-  staging: vchiq: Pass vchiq's message when holding a message
-  staging: vchi: Rework vchi_msg_hold() to match vchiq_msg_hold()
-  staging: vchiq: Unify fourcc definition mechanisms
-  staging: vchi: Get rid of struct vchiq_instance forward declaration
-  staging: vchi: Don't include vchiq_core.h
-  staging: vchiq: Get rid of unnecessary definitions in vchiq_if.h
-  staging: vchiq: Make vchiq_add_service() local
-  staging: vchiq: Move definitions only used by core into core header
-  staging: vchi: Get rid of vchi_bulk_queue_receive()
-  staging: vchi: Get rid of vchi_bulk_queue_transmit()
-  staging: vchi: Move vchi_queue_kernel_message() into vchiq
-  staging: vchiq: Get rid of vchi
-  staging: vchiq: Move conditional barrier definition into vchiq_core.h
-  staging: vchiq: Use vchiq.h as the main header file for services
-  staging: vchiq: Move defines into core header
-  staging: vchiq: Move vchiq.h into include directory
-
-Phil Elwell (1):
-  staging: vchiq_arm: Add a matching unregister call
-
- drivers/staging/vc04_services/Makefile        |   4 +-
- .../vc04_services/bcm2835-audio/Makefile      |   2 +-
- .../bcm2835-audio/bcm2835-vchiq.c             | 100 ++-
- .../vc04_services/bcm2835-audio/bcm2835.h     |   4 +-
- .../bcm2835-audio/vc_vchi_audioserv_defs.h    |   5 +-
- .../bcm2835-camera/bcm2835-camera.c           |  66 +-
- .../linux/raspberrypi/vchiq.h}                |  67 +-
- .../vc04_services/interface/{vchi => }/TODO   |   0
- .../vc04_services/interface/vchi/vchi.h       | 159 -----
- .../vc04_services/interface/vchi/vchi_cfg.h   | 238 -------
- .../interface/vchi/vchi_common.h              | 138 ----
- .../vc04_services/interface/vchiq_arm/vchiq.h |  21 -
- .../interface/vchiq_arm/vchiq_2835_arm.c      |   1 +
- .../interface/vchiq_arm/vchiq_arm.c           |  88 ++-
- .../interface/vchiq_arm/vchiq_core.c          |  97 ++-
- .../interface/vchiq_arm/vchiq_core.h          |  46 +-
- .../interface/vchiq_arm/vchiq_ioctl.h         |   2 +-
- .../interface/vchiq_arm/vchiq_shim.c          | 617 ------------------
- .../interface/vchiq_arm/vchiq_util.c          |  85 ---
- .../interface/vchiq_arm/vchiq_util.h          |  50 --
- .../staging/vc04_services/vchiq-mmal/Makefile |   1 +
- .../vc04_services/vchiq-mmal/mmal-common.h    |   5 +
- .../vc04_services/vchiq-mmal/mmal-msg.h       |   2 +-
- .../vchiq-mmal/mmal-parameters.h              |  32 +-
- .../vc04_services/vchiq-mmal/mmal-vchiq.c     | 228 ++++---
- .../vc04_services/vchiq-mmal/mmal-vchiq.h     |   5 +-
- 26 files changed, 458 insertions(+), 1605 deletions(-)
- rename drivers/staging/vc04_services/{interface/vchiq_arm/vchiq_if.h => include/linux/raspberrypi/vchiq.h} (56%)
- rename drivers/staging/vc04_services/interface/{vchi => }/TODO (100%)
- delete mode 100644 drivers/staging/vc04_services/interface/vchi/vchi.h
- delete mode 100644 drivers/staging/vc04_services/interface/vchi/vchi_cfg.h
- delete mode 100644 drivers/staging/vc04_services/interface/vchi/vchi_common.h
- delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h
- delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
- delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.c
- delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.h
-
+diff --git a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
+index 4f1adddb804f..73b2354a6bb7 100644
+--- a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
++++ b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
+@@ -75,6 +75,12 @@ static const struct v4l2_fract
+ 	tpf_max     = {.numerator = 1,	        .denominator = FPS_MIN},
+ 	tpf_default = {.numerator = 1000,	.denominator = 30000};
+ 
++/* Container for MMAL and VB2 buffers*/
++struct vb2_mmal_buffer {
++	struct vb2_v4l2_buffer	vb;
++	struct mmal_buffer	mmal;
++};
++
+ /* video formats */
+ static struct mmal_fmt formats[] = {
+ 	{
+@@ -261,14 +267,15 @@ static int buffer_init(struct vb2_buffer *vb)
+ {
+ 	struct bm2835_mmal_dev *dev = vb2_get_drv_priv(vb->vb2_queue);
+ 	struct vb2_v4l2_buffer *vb2 = to_vb2_v4l2_buffer(vb);
+-	struct mmal_buffer *buf = container_of(vb2, struct mmal_buffer, vb);
++	struct vb2_mmal_buffer *buf =
++				container_of(vb2, struct vb2_mmal_buffer, vb);
+ 
+ 	v4l2_dbg(1, bcm2835_v4l2_debug, &dev->v4l2_dev, "%s: dev:%p, vb %p\n",
+ 		 __func__, dev, vb);
+-	buf->buffer = vb2_plane_vaddr(&buf->vb.vb2_buf, 0);
+-	buf->buffer_size = vb2_plane_size(&buf->vb.vb2_buf, 0);
++	buf->mmal.buffer = vb2_plane_vaddr(&buf->vb.vb2_buf, 0);
++	buf->mmal.buffer_size = vb2_plane_size(&buf->vb.vb2_buf, 0);
+ 
+-	return mmal_vchi_buffer_init(dev->instance, buf);
++	return mmal_vchi_buffer_init(dev->instance, &buf->mmal);
+ }
+ 
+ static int buffer_prepare(struct vb2_buffer *vb)
+@@ -297,11 +304,13 @@ static void buffer_cleanup(struct vb2_buffer *vb)
+ {
+ 	struct bm2835_mmal_dev *dev = vb2_get_drv_priv(vb->vb2_queue);
+ 	struct vb2_v4l2_buffer *vb2 = to_vb2_v4l2_buffer(vb);
+-	struct mmal_buffer *buf = container_of(vb2, struct mmal_buffer, vb);
++	struct vb2_mmal_buffer *buf =
++				container_of(vb2, struct vb2_mmal_buffer, vb);
+ 
+ 	v4l2_dbg(1, bcm2835_v4l2_debug, &dev->v4l2_dev, "%s: dev:%p, vb %p\n",
+ 		 __func__, dev, vb);
+-	mmal_vchi_buffer_cleanup(buf);
++
++	mmal_vchi_buffer_cleanup(&buf->mmal);
+ }
+ 
+ static inline bool is_capturing(struct bm2835_mmal_dev *dev)
+@@ -313,14 +322,16 @@ static inline bool is_capturing(struct bm2835_mmal_dev *dev)
+ static void buffer_cb(struct vchiq_mmal_instance *instance,
+ 		      struct vchiq_mmal_port *port,
+ 		      int status,
+-		      struct mmal_buffer *buf,
+-		      unsigned long length, u32 mmal_flags, s64 dts, s64 pts)
++		      struct mmal_buffer *mmal_buf)
+ {
+ 	struct bm2835_mmal_dev *dev = port->cb_ctx;
++	struct vb2_mmal_buffer *buf =
++			container_of(mmal_buf, struct vb2_mmal_buffer, mmal);
+ 
+ 	v4l2_dbg(1, bcm2835_v4l2_debug, &dev->v4l2_dev,
+ 		 "%s: status:%d, buf:%p, length:%lu, flags %u, pts %lld\n",
+-		 __func__, status, buf, length, mmal_flags, pts);
++		 __func__, status, buf, mmal_buf->length, mmal_buf->mmal_flags,
++		 mmal_buf->pts);
+ 
+ 	if (status) {
+ 		/* error in transfer */
+@@ -331,7 +342,7 @@ static void buffer_cb(struct vchiq_mmal_instance *instance,
+ 		return;
+ 	}
+ 
+-	if (length == 0) {
++	if (mmal_buf->length == 0) {
+ 		/* stream ended */
+ 		if (dev->capture.frame_count) {
+ 			/* empty buffer whilst capturing - expected to be an
+@@ -347,7 +358,8 @@ static void buffer_cb(struct vchiq_mmal_instance *instance,
+ 					&dev->capture.frame_count,
+ 					sizeof(dev->capture.frame_count));
+ 			}
+-			if (vchiq_mmal_submit_buffer(instance, port, buf))
++			if (vchiq_mmal_submit_buffer(instance, port,
++						     &buf->mmal))
+ 				v4l2_dbg(1, bcm2835_v4l2_debug, &dev->v4l2_dev,
+ 					 "Failed to return EOS buffer");
+ 		} else {
+@@ -367,16 +379,16 @@ static void buffer_cb(struct vchiq_mmal_instance *instance,
+ 		return;
+ 	}
+ 
+-	if (dev->capture.vc_start_timestamp != -1 && pts) {
++	if (dev->capture.vc_start_timestamp != -1 && mmal_buf->pts) {
+ 		ktime_t timestamp;
+-		s64 runtime_us = pts - dev->capture.vc_start_timestamp;
+-
++		s64 runtime_us = mmal_buf->pts -
++		    dev->capture.vc_start_timestamp;
+ 		timestamp = ktime_add_us(dev->capture.kernel_start_ts,
+ 					 runtime_us);
+ 		v4l2_dbg(1, bcm2835_v4l2_debug, &dev->v4l2_dev,
+ 			 "Convert start time %llu and %llu with offset %llu to %llu\n",
+ 			 ktime_to_ns(dev->capture.kernel_start_ts),
+-			 dev->capture.vc_start_timestamp, pts,
++			 dev->capture.vc_start_timestamp, mmal_buf->pts,
+ 			 ktime_to_ns(timestamp));
+ 		buf->vb.vb2_buf.timestamp = ktime_to_ns(timestamp);
+ 	} else {
+@@ -385,13 +397,13 @@ static void buffer_cb(struct vchiq_mmal_instance *instance,
+ 	buf->vb.sequence = dev->capture.sequence++;
+ 	buf->vb.field = V4L2_FIELD_NONE;
+ 
+-	vb2_set_plane_payload(&buf->vb.vb2_buf, 0, length);
+-	if (mmal_flags & MMAL_BUFFER_HEADER_FLAG_KEYFRAME)
++	vb2_set_plane_payload(&buf->vb.vb2_buf, 0, mmal_buf->length);
++	if (mmal_buf->mmal_flags & MMAL_BUFFER_HEADER_FLAG_KEYFRAME)
+ 		buf->vb.flags |= V4L2_BUF_FLAG_KEYFRAME;
+ 
+ 	vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
+ 
+-	if (mmal_flags & MMAL_BUFFER_HEADER_FLAG_EOS &&
++	if (mmal_buf->mmal_flags & MMAL_BUFFER_HEADER_FLAG_EOS &&
+ 	    is_capturing(dev)) {
+ 		v4l2_dbg(1, bcm2835_v4l2_debug, &dev->v4l2_dev,
+ 			 "Grab another frame as buffer has EOS");
+@@ -472,14 +484,16 @@ static void buffer_queue(struct vb2_buffer *vb)
+ {
+ 	struct bm2835_mmal_dev *dev = vb2_get_drv_priv(vb->vb2_queue);
+ 	struct vb2_v4l2_buffer *vb2 = to_vb2_v4l2_buffer(vb);
+-	struct mmal_buffer *buf = container_of(vb2, struct mmal_buffer, vb);
++	struct vb2_mmal_buffer *buf =
++				container_of(vb2, struct vb2_mmal_buffer, vb);
+ 	int ret;
+ 
+ 	v4l2_dbg(1, bcm2835_v4l2_debug, &dev->v4l2_dev,
+ 		 "%s: dev:%p buf:%p, idx %u\n",
+ 		 __func__, dev, buf, vb2->vb2_buf.index);
+ 
+-	ret = vchiq_mmal_submit_buffer(dev->instance, dev->capture.port, buf);
++	ret = vchiq_mmal_submit_buffer(dev->instance, dev->capture.port,
++				       &buf->mmal);
+ 	if (ret < 0)
+ 		v4l2_err(&dev->v4l2_dev, "%s: error submitting buffer\n",
+ 			 __func__);
+@@ -592,7 +606,7 @@ static void stop_streaming(struct vb2_queue *vq)
+ 	dev->capture.frame_count = 0;
+ 
+ 	/* ensure a format has actually been set */
+-	if (!dev->capture.port) {
++	if (!port) {
+ 		v4l2_err(&dev->v4l2_dev,
+ 			 "no capture port - stream not started?\n");
+ 		return;
+@@ -612,11 +626,11 @@ static void stop_streaming(struct vb2_queue *vq)
+ 
+ 	/* disable the connection from camera to encoder */
+ 	ret = vchiq_mmal_port_disable(dev->instance, dev->capture.camera_port);
+-	if (!ret && dev->capture.camera_port != dev->capture.port) {
++	if (!ret && dev->capture.camera_port != port) {
+ 		v4l2_dbg(1, bcm2835_v4l2_debug, &dev->v4l2_dev,
+ 			 "disabling port\n");
+-		ret = vchiq_mmal_port_disable(dev->instance, dev->capture.port);
+-	} else if (dev->capture.camera_port != dev->capture.port) {
++		ret = vchiq_mmal_port_disable(dev->instance, port);
++	} else if (dev->capture.camera_port != port) {
+ 		v4l2_err(&dev->v4l2_dev, "port_disable failed, error %d\n",
+ 			 ret);
+ 	}
+@@ -1916,7 +1930,7 @@ static int bcm2835_mmal_probe(struct platform_device *pdev)
+ 		q->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+ 		q->io_modes = VB2_MMAP | VB2_USERPTR | VB2_READ;
+ 		q->drv_priv = dev;
+-		q->buf_struct_size = sizeof(struct mmal_buffer);
++		q->buf_struct_size = sizeof(struct vb2_mmal_buffer);
+ 		q->ops = &bm2835_mmal_video_qops;
+ 		q->mem_ops = &vb2_vmalloc_memops;
+ 		q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-common.h b/drivers/staging/vc04_services/vchiq-mmal/mmal-common.h
+index ce88fac7c24b..5bd7410a034a 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-common.h
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-common.h
+@@ -49,6 +49,11 @@ struct mmal_buffer {
+ 	unsigned long buffer_size; /* size of allocated buffer */
+ 
+ 	struct mmal_msg_context *msg_context;
++
++	unsigned long length;
++	u32 mmal_flags;
++	s64 dts;
++	s64 pts;
+ };
+ 
+ /* */
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+index ebe7fb078830..6404d4e60350 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+@@ -253,17 +253,25 @@ static void buffer_work_cb(struct work_struct *work)
+ {
+ 	struct mmal_msg_context *msg_context =
+ 		container_of(work, struct mmal_msg_context, u.bulk.work);
++	struct mmal_buffer *buffer = msg_context->u.bulk.buffer;
++
++	if (!buffer) {
++		pr_err("%s: ctx: %p, No mmal buffer to pass details\n",
++		       __func__, msg_context);
++		return;
++	}
++
++	buffer->length = msg_context->u.bulk.buffer_used;
++	buffer->mmal_flags = msg_context->u.bulk.mmal_flags;
++	buffer->dts = msg_context->u.bulk.dts;
++	buffer->pts = msg_context->u.bulk.pts;
+ 
+ 	atomic_dec(&msg_context->u.bulk.port->buffers_with_vpu);
+ 
+ 	msg_context->u.bulk.port->buffer_cb(msg_context->u.bulk.instance,
+ 					    msg_context->u.bulk.port,
+ 					    msg_context->u.bulk.status,
+-					    msg_context->u.bulk.buffer,
+-					    msg_context->u.bulk.buffer_used,
+-					    msg_context->u.bulk.mmal_flags,
+-					    msg_context->u.bulk.dts,
+-					    msg_context->u.bulk.pts);
++					    msg_context->u.bulk.buffer);
+ }
+ 
+ /* workqueue scheduled callback to handle receiving buffers
+@@ -1321,11 +1329,14 @@ static int port_disable(struct vchiq_mmal_instance *instance,
+ 			mmalbuf = list_entry(buf_head, struct mmal_buffer,
+ 					     list);
+ 			list_del(buf_head);
+-			if (port->buffer_cb)
++			if (port->buffer_cb) {
++				mmalbuf->length = 0;
++				mmalbuf->mmal_flags = 0;
++				mmalbuf->dts = MMAL_TIME_UNKNOWN;
++				mmalbuf->pts = MMAL_TIME_UNKNOWN;
+ 				port->buffer_cb(instance,
+-						port, 0, mmalbuf, 0, 0,
+-						MMAL_TIME_UNKNOWN,
+-						MMAL_TIME_UNKNOWN);
++						port, 0, mmalbuf);
++			}
+ 		}
+ 
+ 		spin_unlock_irqrestore(&port->slock, flags);
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
+index 4e34728d87e5..cca7289761c2 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
+@@ -44,8 +44,7 @@ struct vchiq_mmal_port;
+ typedef void (*vchiq_mmal_buffer_cb)(
+ 		struct vchiq_mmal_instance  *instance,
+ 		struct vchiq_mmal_port *port,
+-		int status, struct mmal_buffer *buffer,
+-		unsigned long length, u32 mmal_flags, s64 dts, s64 pts);
++		int status, struct mmal_buffer *buffer);
+ 
+ struct vchiq_mmal_port {
+ 	u32 enabled:1;
 -- 
 2.27.0
 
