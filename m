@@ -2,125 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F030A20E1FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B138A20DEA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732615AbgF2VBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731193AbgF2TM5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:12:57 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A84BC008627
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 03:51:26 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 06A662A1309
-Subject: Re: [PATCH 2/2] platform/chrome: cros_ec_typec: Add PM support
-To:     Prashant Malani <pmalani@chromium.org>,
-        linux-kernel@vger.kernel.org
-Cc:     heikki.krogerus@linux.intel.com,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>
-References: <20200627045840.1314019-1-pmalani@chromium.org>
- <20200627045840.1314019-2-pmalani@chromium.org>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <cf26168d-bc97-7e35-6f86-a769a36fcc4a@collabora.com>
-Date:   Mon, 29 Jun 2020 12:51:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1729875AbgF2U1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:27:38 -0400
+Received: from mga04.intel.com ([192.55.52.120]:36333 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732517AbgF2TZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:25:24 -0400
+IronPort-SDR: GVMgacdmGUkbW+ffhO2gdvKlvkWPQ2O3fzLe5ZUGIVWDmmTXdMANqnNA13P2RYS23XFd8aCO4Z
+ 4GzpZCMrxMmA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="143475983"
+X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
+   d="scan'208";a="143475983"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 09:24:53 -0700
+IronPort-SDR: 62afR1hi7+NIlYXmM50Jcl16b+Vm/woAty1FR5P9n+HqfEBNErhKyZ64sGMTbgA/bZkvchdUeW
+ WVP1tG8ShNyg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
+   d="scan'208";a="264877717"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga007.fm.intel.com with ESMTP; 29 Jun 2020 09:24:51 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jprOg-00Gdw6-TX; Mon, 29 Jun 2020 13:52:22 +0300
+Date:   Mon, 29 Jun 2020 13:52:22 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 0/7] Some atomisp fixes and improvements
+Message-ID: <20200629105222.GF3703480@smile.fi.intel.com>
+References: <cover.1593180146.git.mchehab+huawei@kernel.org>
+ <20200626150021.GY3703480@smile.fi.intel.com>
+ <20200626175216.7955c374@coco.lan>
 MIME-Version: 1.0
-In-Reply-To: <20200627045840.1314019-2-pmalani@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200626175216.7955c374@coco.lan>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prashant,
-
-Thank you for the patch.
-
-On 27/6/20 6:58, Prashant Malani wrote:
-> Define basic suspend resume functions for cros-ec-typec. On suspend, we
-> simply ensure that any pending port update work is completed, and on
-> resume, we re-poll the port state to account for any
-> changes/disconnections that might have occurred during suspend.
+On Fri, Jun 26, 2020 at 05:52:16PM +0200, Mauro Carvalho Chehab wrote:
+> Em Fri, 26 Jun 2020 18:00:21 +0300
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> escreveu:
 > 
-> Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> ---
->  drivers/platform/chrome/cros_ec_typec.c | 34 +++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
+> > On Fri, Jun 26, 2020 at 04:04:52PM +0200, Mauro Carvalho Chehab wrote:
+> > > Those patches are meant to improve device detection by the atomisp driver,
+> > > relying on ACPI bios when possible.
+> > > 
+> > > It also adds a basis for using ACPI PM, but only if the DSDT tables have
+> > > a description about how to turn on the resources needed by the cameras.
+> > > 
+> > > At least on the device I'm using for tests, this is not the case.  
+> > 
+> > Is this in your experimental tree? 
 > 
-> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> index 630170fb2cbe..68f15a47450c 100644
-> --- a/drivers/platform/chrome/cros_ec_typec.c
-> +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -725,11 +725,45 @@ static int cros_typec_probe(struct platform_device *pdev)
->  	return ret;
->  }
->  
-> +#ifdef CONFIG_PM_SLEEP
-> +
-> +static int cros_typec_suspend(struct device *dev)
-
-I'd prefer if you can mark these function as __maybe_unused (to avoid the
-compiler warning) rather than wrapping it in a preprocessor conditional, it
-makes the code a bit more simple.
-
-> +{
-> +	struct cros_typec_data *typec = dev_get_drvdata(dev);
-> +
-> +	cancel_work_sync(&typec->port_work);
-> +
-> +	return 0;
-> +}
-> +
-> +static int cros_typec_resume(struct device *dev)
-
-__maybe_unused ?
-
-> +{
-> +	struct cros_typec_data *typec = dev_get_drvdata(dev);
-> +
-> +	/* Refresh port state. */
-> +	schedule_work(&typec->port_work);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct dev_pm_ops cros_typec_pm_ops = {
-> +	SET_SYSTEM_SLEEP_PM_OPS(cros_typec_suspend, cros_typec_resume)
-> +};
-> +
-> +#define DEV_PM_OPS	(&cros_typec_pm_ops)
-> +
-> +#else
-> +
-> +#define DEV_PM_OPS	NULL
-> +
-> +#endif /* CONFIG_PM_SLEEP */
-
-and remove the ifdefy
-
-> +
->  static struct platform_driver cros_typec_driver = {
->  	.driver	= {
->  		.name = DRV_NAME,
->  		.acpi_match_table = ACPI_PTR(cros_typec_acpi_id),
->  		.of_match_table = of_match_ptr(cros_typec_of_match),
-> +		.pm = DEV_PM_OPS,
-
-		.pm = &cros_typec_pm_ops,
-
->  	},
->  	.probe = cros_typec_probe,
->  };
+> Yes. 
 > 
+> > I'll rebase mine on top and test.
+> > After I will send the rest from my series and give a tag to this.
+> 
+> It would be helpful if you could test removing the DMI match table from
+> your board. If your device has a DSDT table close to the one I have, the
+> new code may be able to get everything from DSDT.
 
-Thanks,
- Enric
+I have checked the atomisp_v5 branch and it doesn't bring any regression to my
+case. So, feel free to add
+Tested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+I'll send rebased patches soon.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
