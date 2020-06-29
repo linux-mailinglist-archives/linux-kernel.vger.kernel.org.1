@@ -2,120 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBB120D973
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0466D20D9C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731008AbgF2Try (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388133AbgF2TrZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:47:25 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E399FC08C5DB
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:47:17 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jpzkK-0008PU-2x; Mon, 29 Jun 2020 21:47:16 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jpzkJ-0005Sp-1p; Mon, 29 Jun 2020 21:47:15 +0200
-Date:   Mon, 29 Jun 2020 21:47:14 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     thierry.reding@gmail.com, linux-pwm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        John Crispin <blogic@openwrt.org>,
-        Zhi Mao <zhi.mao@mediatek.com>,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 3/4] pwm: mediatek: Provide missing kerneldoc description
- for 'soc' arg
-Message-ID: <20200629194714.ghbxzwoi3mtahqvz@pengutronix.de>
-References: <20200629124752.1018358-1-lee.jones@linaro.org>
- <20200629124752.1018358-4-lee.jones@linaro.org>
+        id S2388245AbgF2Tud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:50:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388075AbgF2Tub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:50:31 -0400
+Received: from [192.168.0.50] (89-70-52-201.dynamic.chello.pl [89.70.52.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E796920702;
+        Mon, 29 Jun 2020 19:50:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593460231;
+        bh=Gv9PLMZnlHIBTdk8O+vpWP9KP6QOJHRkkviInyIDGFY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=pRE1DYgdoC+D7zeA7XuI7g0EKUwKzDggaCcFUh8Yez80tWfqrygUio+UBwLy+RI4C
+         /Dy2ktTmVZ24qt23e64C7C1Cv6wAwcKUrJdZNscvrAidcoSOZjDvoageMG4p8YrVXC
+         5qvJmj+i6DG306rIUjaJRse+BMv8Y+J6eyP4Oga4=
+Subject: Re: [PATCH 1/3] ARM: dts: exynos: Fix missing empty reg/ranges
+ property regulators on Trats
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Pankaj Dubey <pankaj.dubey@samsung.com>
+References: <20200629193338.29540-1-krzk@kernel.org>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <03a23289-1188-db77-6c38-a7dddeac183c@kernel.org>
+Date:   Mon, 29 Jun 2020 21:50:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7c7d6dluu6fljbvj"
-Content-Disposition: inline
-In-Reply-To: <20200629124752.1018358-4-lee.jones@linaro.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20200629193338.29540-1-krzk@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Krzysztof,
 
---7c7d6dluu6fljbvj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello Lee,
-
-On Mon, Jun 29, 2020 at 01:47:51PM +0100, Lee Jones wrote:
-> Kerneldoc syntax is used, but not complete.
->=20
-> Descriptions are required for all arguments.
->=20
-> Fixes the following W=3D1 build warning:
->=20
->  drivers/pwm/pwm-mediatek.c:57: warning: Function parameter or member 'so=
-c' not described in 'pwm_mediatek_chip'
->=20
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Cc: John Crispin <blogic@openwrt.org>
-> Cc: Zhi Mao <zhi.mao@mediatek.com>
-> Cc: linux-pwm@vger.kernel.org
-> Cc: linux-mediatek@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On 6/29/20 21:33, Krzysztof Kozlowski wrote:
+> Remove the simple-bus compatible from a regulators node because its
+> children do not have any unit addresses.  This fixes DTC warning:
+> 
+>      Warning (simple_bus_reg): /regulators/regulator-0: missing or empty reg/ranges property
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > ---
->  drivers/pwm/pwm-mediatek.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/pwm/pwm-mediatek.c b/drivers/pwm/pwm-mediatek.c
-> index b94e0d09c300f..ab001ce55178e 100644
-> --- a/drivers/pwm/pwm-mediatek.c
-> +++ b/drivers/pwm/pwm-mediatek.c
-> @@ -46,6 +46,7 @@ struct pwm_mediatek_of_data {
->   * @clk_main: the clock used by PWM core
->   * @clk_pwms: the clock used by each PWM channel
->   * @clk_freq: the fix clock frequency of legacy MIPS SoC
-> + * @soc: pointer to chip's platform data
->   */
->  struct pwm_mediatek_chip {
->  	struct pwm_chip chip;
+>   arch/arm/boot/dts/exynos4210-trats.dts | 2 --
+>   1 file changed, 2 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/exynos4210-trats.dts b/arch/arm/boot/dts/exynos4210-trats.dts
+> index 3d791db6095c..cec413ee4490 100644
+> --- a/arch/arm/boot/dts/exynos4210-trats.dts
+> +++ b/arch/arm/boot/dts/exynos4210-trats.dts
+> @@ -31,8 +31,6 @@
+>   	};
+>   
+>   	regulators {
+> -		compatible = "simple-bus";
 
-LGTM:
+I think you would also need to remove the 'regulators' node altogether, 
+otherwise with your change the subnodes below won't get parsed and the 
+regulators will not get registered.
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+>   		vemmc_reg: regulator-0 {
+>   			compatible = "regulator-fixed";
+>   			regulator-name = "VMEM_VDD_2.8V";
+> 
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---7c7d6dluu6fljbvj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl76RUAACgkQwfwUeK3K
-7An+ngf+Jlga9AaJKTihcMBmxrJi1R1xaaZaF6OJdVgbcu6obgMcHv4WGJ0GPLcL
-287z0rdXVRztAM0GZfSZwCY3E/+OIw9kn9OoUsj9qovBhDw1aUp2xNvHtZ9pZ+r2
-BJJbdZgr8fshM6pEDGw/pWaDI427REXKOAyR1Fwwq6uYPCLpn4vIrwu0m/cIlv83
-EDqGaa94CeJkzospKoh0ClsFcDnWKtM4psI2FHaum8knktvMyKpx8PzYIPTkzg4W
-1UW7qItd+KkU8yDrURYnlOvdHb6PeeL9NaEBuw7+CTAK27ap3wiafzyUJlHSHbkA
-WQD60Tq7dOh3eI7Er8VGNxImjFs/BQ==
-=BMmT
------END PGP SIGNATURE-----
-
---7c7d6dluu6fljbvj--
+--
+Thanks,
+Sylwester
