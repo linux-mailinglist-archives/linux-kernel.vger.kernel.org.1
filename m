@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D65F720E6AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E0D20E6BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404406AbgF2Vtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404387AbgF2Vt2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:49:28 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5B8C03E97B
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:49:28 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id i25so18911370iog.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:49:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=x3WsjEvMX2jVlQmLpoImtSBZfw4ruLu125L1QjdLE6c=;
-        b=IPdS1l8btarTTx8Pg20WcJKVz5lv3iSeocJNQG5d9q3bXMuLLd80FQTDLn63bBoLEP
-         klo0qXxUSVg47JUWi0J2CeJR334hWulsGF71rXX1n8zc+ffWwd7aigAElQ58vXLK/Mru
-         4BYlHXde0ZEBJiWEKcxdhR/tLsFYVU4AR3XLOeK6sfe3MO/5l32SUA5w++fyy4HtFLhe
-         F8o5vqDYNl7KvkVOXY7f4dtLmeiw+erStlxo2D3xhX1YH3A7ZAHBfAKBIdoDdmbP0dU0
-         SrnhiFsnTbfC5vAe3t3UDcOMiPHvr4PJKcQ3axIaFI13/Mciu3bvJGK/ZadCt7oaGPLq
-         Wd0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=x3WsjEvMX2jVlQmLpoImtSBZfw4ruLu125L1QjdLE6c=;
-        b=Y8YZ0Gf69FKBqqOFGR2PkBK/aDzeAJi0gauwMhdurXCzw6X8/oBkNPHQ6mYHRx/sqc
-         ZPFm6O+1pCVQQtkMIdgaxlTSuYpbjD35QYuIBZMB/dT3FrUoZK2gxHkSCOfm82GpcxU7
-         0951Eu2JE3f/as9fuC58LIxni8hm+oetB3gu/CY7Gjlk7YMOfLBnP01B5iFHPYnwWGFT
-         SVW+dk8PDsedtwbAyNPXDE0X/mjH7yDQuxw3KnMKDOcmLo+3nysh7lLmjwEPnZpdG12v
-         udWbTdTpJv1YjA/6IrynHxremJ2kfCzv6NceK+8nuyUtQ9yUkirMvO75IUgqZf562HZP
-         GbvQ==
-X-Gm-Message-State: AOAM5320tc6biAsbPJ5Ro8lPv6mGhlL3jfAydnv1+88prPjNWqumrOCs
-        rsYlJPLCM6rzfH1Aia+x78H37g==
-X-Google-Smtp-Source: ABdhPJxxvMhyvmL6ew9qDBRpHAYYfqbOaQ6QxeQQeIxiwl2aOGKijf6q6PROkEkBA8+tu2Nvld/aVQ==
-X-Received: by 2002:a05:6638:d05:: with SMTP id q5mr19477503jaj.2.1593467368176;
-        Mon, 29 Jun 2020 14:49:28 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id u10sm555500iow.38.2020.06.29.14.49.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 14:49:27 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 5/5] net: ipa: HOL_BLOCK_EN_FMASK is a 1-bit mask
-Date:   Mon, 29 Jun 2020 16:49:19 -0500
-Message-Id: <20200629214919.1196017-6-elder@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629214919.1196017-1-elder@linaro.org>
-References: <20200629214919.1196017-1-elder@linaro.org>
+        id S2404444AbgF2VuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:50:15 -0400
+Received: from mga12.intel.com ([192.55.52.136]:23956 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404115AbgF2Vt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 17:49:56 -0400
+IronPort-SDR: V6lqV12aAH74JgUsFf4SpQB0zciaXKzj+WXZIa648OUc9LJ72UI9ocTuQPYJH/HmtQ6noFeMu6
+ UI+yoYe7A49Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="125718592"
+X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
+   d="scan'208";a="125718592"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 14:49:56 -0700
+IronPort-SDR: 78RHerYZoP3QP/al+zc+OsHhaZkObvuUJwM7sUcT8D9eygdH4F+OKnTEPJZ2uKtcbx3HMh+BZE
+ jkLEswkdwuNg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
+   d="scan'208";a="264946140"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by fmsmga007.fm.intel.com with ESMTP; 29 Jun 2020 14:49:56 -0700
+Date:   Mon, 29 Jun 2020 14:49:56 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     "David P. Reed" <dpreed@deepplum.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Allison Randal <allison@lohutok.net>,
+        Enrico Weigelt <info@metux.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Martin Molnar <martin.molnar.programming@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Jann Horn <jannh@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] Fix undefined operation VMXOFF during reboot and crash
+Message-ID: <20200629214956.GA12962@linux.intel.com>
+References: <1593464072.34968499@apps.rackspace.com>
+ <0AFABBBA-18B7-4E2F-BCE7-D69889CC0F79@amacapital.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <0AFABBBA-18B7-4E2F-BCE7-D69889CC0F79@amacapital.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The convention throughout the IPA driver is to directly use
-single-bit field mask values, rather than using (for example)
-u32_encode_bits() to set or clear them.
+On Mon, Jun 29, 2020 at 02:22:45PM -0700, Andy Lutomirski wrote:
+> 
+> 
+> > On Jun 29, 2020, at 1:54 PM, David P. Reed <dpreed@deepplum.com> wrote:
+> > 
+> > ﻿Simple question for those on the To: and CC: list here. Should I
+> > abandon any hope of this patch being accepted? It's been a long time.
+> > 
+> > The non-response after I acknowledged that this was discovered by when
+> > working on a personal, non-commercial research project - which is
+> > "out-of-tree" (apparently dirty words on LKML) has me thinking my
+> > contribution is unwanted. That's fine, I suppose. I can maintain this patch
+> > out-of-tree as well.  I did incorporate all the helpful suggestions I
+> > received in this second patch, and given some encouragement, will happily
+> > submit a revised v3 if there is any likelihood of acceptance. I'm wary of
+> > doing more radical changes (like combining emergency and normal paths).
+> > 
+> 
+> Sorry about being slow and less actively encouraging than we should be. We
+> absolutely welcome personal contributions. The actual problem is that
+> everyone is worked and we’re all slow. Also, you may be hitting a corner case
+> in the process: is this a KVM patch or an x86 patch?
 
-Fix the one place that doesn't follow that convention, which sets
-HOL_BLOCK_EN_FMASK in ipa_endpoint_init_hol_block_enable().
+It's an x86 patch as it's not KVM specific, e.g. this code also helps play
+nice with out of tree hypervisors.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_endpoint.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The code change is mostly good, but it needs to be split up as there are
+three separate fixes:
 
-diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index ee8fc22c3abc..447dafab8f18 100644
---- a/drivers/net/ipa/ipa_endpoint.c
-+++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -679,7 +679,7 @@ ipa_endpoint_init_hol_block_enable(struct ipa_endpoint *endpoint, bool enable)
- 
- 	/* assert(!endpoint->toward_ipa); */
- 
--	val = u32_encode_bits(enable ? 1 : 0, HOL_BLOCK_EN_FMASK);
-+	val = enable ? HOL_BLOCK_EN_FMASK : 0;
- 	offset = IPA_REG_ENDP_INIT_HOL_BLOCK_EN_N_OFFSET(endpoint_id);
- 	iowrite32(val, endpoint->ipa->reg_virt + offset);
- }
--- 
-2.25.1
+  1. Handle #UD on VMXON due to a race.
+  2. Mark memory and flags as clobbered by VMXON.
+  3. Change emergency_vmx_disable_all() to not manually check cpu_vmx_enabled().
 
+Yes, the changes are tiny, but if for example #3 introduces a bug then we
+don't have to revert #1 and #2.  Or perhaps older kernels are only subject
+to the #1 and #2 and thus dumping all three changes into a single patch makes
+it all harder to backport.  In other words, all the usual "one change per
+patch" reasons.
