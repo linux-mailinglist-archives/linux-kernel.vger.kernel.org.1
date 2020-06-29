@@ -2,110 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3C420E587
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AFE20E59F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732091AbgF2ViE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:38:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730288AbgF2Vhq (ORCPT
+        id S2388191AbgF2Vjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:39:43 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:37988 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728585AbgF2Vj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:37:46 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE78C03E979
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:37:46 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id i4so18783748iov.11
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:37:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eLTQ/BXwwpfHpVShbhLkZS+cPuKECaCCqq8B2X4LXh4=;
-        b=ejhcrD4Y89kBPVJsFpjT/RoUICQrZFfy643iMMYadxxh7gcn8SjEwassGmdFdFqEbi
-         tKyy5z7sC9594m9pJDVbfu9kIGgUewkXyPt+UGhiaB7miUhvFjF6/C0NEccVDOJScyco
-         yJdb/WJREk3+LhhHnUe2u80siBc1lRe7O2EzoW4fu0X9sPvPn9asBTb+dC75LeU9vUR5
-         K5wDGd45/297qxbyqqHv4yYGX70ZfvIRLWRddqMVgMcTQ1eOGmfIHP7VaKOWxAF30B4Q
-         yRoBD81nT2teZO3GsVnL9U+ynfwztL4Xzn8IeL/yKciha8neTxsLgiTV8aQbaJCfb/hq
-         58IA==
+        Mon, 29 Jun 2020 17:39:27 -0400
+Received: by mail-ot1-f66.google.com with SMTP id t18so4012679otq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:39:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eLTQ/BXwwpfHpVShbhLkZS+cPuKECaCCqq8B2X4LXh4=;
-        b=GPKTY5Yu++t5DOTQ7l+3gisRbgL7Gi6pcODUasmuzdjR8S/vKpkV3Uur9YLVfsMdHv
-         p7BUjY2QCPhRxG1YJhDvuyHtBXeu/kr01QtH7bp/C0M9ErmsbmbMjNpY1YSEiEDX2K7A
-         QAdP4r1O0EgrWfVHvYqeijbyVB4wNf2p/O7ZVr2Z1pu4RRdN+VM2jbdwW6AySOx7VqUz
-         l9qkufXT97Ur2/Ww4Lc2OOQ1k2u7Z+cbO7zsziGtSEzX0T8eorxzyT7bSWu2Bz4DVybY
-         ZpM1cfzm4S7+UQK262vr9zLuGc6NmbgRuXlAUyFb+KvmMLexlQi6/TixLRuAnFqXDavl
-         J7xg==
-X-Gm-Message-State: AOAM532gJcUwkgqlv5TK6cHKmy34bvy56axv4qp11waK9ZDAwIFtXnqz
-        REzom9e7ub2CeXNrBriT2oxCWQ==
-X-Google-Smtp-Source: ABdhPJy4AtJafFmJl5e85TTe/atf6cKo9tyPof0+mKPn8YE2AwhWzryOwRkRPweMcAkulCAEeDIQIQ==
-X-Received: by 2002:a05:6602:22c5:: with SMTP id e5mr19273885ioe.9.1593466665582;
-        Mon, 29 Jun 2020 14:37:45 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id u6sm571353ilg.32.2020.06.29.14.37.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 14:37:45 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 3/3] net: ipa: kill IPA_MEM_UC_OFFSET
-Date:   Mon, 29 Jun 2020 16:37:38 -0500
-Message-Id: <20200629213738.1180618-4-elder@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629213738.1180618-1-elder@linaro.org>
-References: <20200629213738.1180618-1-elder@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zBbJxAzHeFyLdRCFi71uGQynNKf0vLXIcN1SXOmKrT8=;
+        b=bMGlmGXzjenIRxiHnOnDbGL2xu/NrevWJ6SsG6z1ODtO8BtzyUVNoladPLcNzdxYRK
+         n3yQRNCn9QkocJD2O3lUSSrTgddvlV6eOTg//Etv/K615BOC4abSLHYPkb9TEe2+o/3F
+         iUUpIDp2rsnm8zntu0Xpfp4gFNUvck+fOQXjdUMZF0Ee6aKIOlbEumihG80ccPoNUeiC
+         pPL7zsBc9A+QsIi3s11M/cqDp8Eg9O7HUGvuoEM7EjRnCXEFiS4Vtcj5BlKGtl883Zcf
+         wVdN7Np2V0OV/gN/ZMe0Ue5+o6UoDIoOqx5FCS8dT/KB83FDZJWtNaIiM+ivN5j8T+80
+         3E/g==
+X-Gm-Message-State: AOAM532X99p0pbKqiI0MjuqOS96FXemnp/eYQkOan+1TnP8wBRCSBBwo
+        8AVQ8tjNgdPH92cfT4plDvssBmZrTNJ91MQbVJOtLntx
+X-Google-Smtp-Source: ABdhPJz6OhN5KSx5Kp+XvyEP7Va5vy1Fq+Axch0lFYKWJrYB344O97OtuAZIJgD6Icc0ZowIhsZA16Hh4uG0BzkcxuE=
+X-Received: by 2002:a05:6830:1451:: with SMTP id w17mr2546318otp.250.1593466766769;
+ Mon, 29 Jun 2020 14:39:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1590880333.git.fthain@telegraphics.com.au> <CAMuHMdVb2C7asip_-_zbc3JP+nqn6siKqmikOK98tM5=2BYqcQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdVb2C7asip_-_zbc3JP+nqn6siKqmikOK98tM5=2BYqcQ@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 29 Jun 2020 23:39:14 +0200
+Message-ID: <CAMuHMdVOPFF-9QMYnbxDeWQVFBVVbDVxeYKV8z=cUNxL_dFOLg@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Mac IOP driver fixes
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     Joshua Thompson <funaho@jurai.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The microcontroller shared memory area is at the beginning of the
-IPA resident memory.  IPA_MEM_UC_OFFSET was defined as the offset
-within that region where it's found, but it's 0, and it's never
-actually used.  Just get rid of the definition, and move some of the
-description it had to be above the definition of the ipa_uc_mem_area
-structure.
+On Sun, May 31, 2020 at 10:41 AM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Sun, May 31, 2020 at 1:16 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> > This patch series has several bug fixes for the IOP driver and some
+> > improvements to the debug level log messages.
+>
+> Thanks for your series!
+>
+> > Geert, please consider pushing these fixes for v5.8, if not the
+> > whole series.
+>
+> I'm afraid it's a bit too late for that, as I expect the v5.8 merge window
+> to open tonight.  Unless the fix is for a regression in v5.7.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_uc.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+Queued in the m68k for-v5.9 branch.
 
-diff --git a/drivers/net/ipa/ipa_uc.c b/drivers/net/ipa/ipa_uc.c
-index a1f8db00d55a..9f9980ec2ed3 100644
---- a/drivers/net/ipa/ipa_uc.c
-+++ b/drivers/net/ipa/ipa_uc.c
-@@ -35,12 +35,6 @@
-  */
- /* Supports hardware interface version 0x2000 */
- 
--/* Offset relative to the base of the IPA shared address space of the
-- * shared region used for communication with the microcontroller.  The
-- * region is 128 bytes in size, but only the first 40 bytes are used.
-- */
--#define IPA_MEM_UC_OFFSET	0x0000
--
- /* Delay to allow a the microcontroller to save state when crashing */
- #define IPA_SEND_DELAY		100	/* microseconds */
- 
-@@ -60,6 +54,10 @@
-  * @hw_state:		state of hardware (including error type information)
-  * @warning_counter:	counter of non-fatal hardware errors
-  * @interface_version:	hardware-reported interface version
-+ *
-+ * A shared memory area at the base of IPA resident memory is used for
-+ * communication with the microcontroller.  The region is 128 bytes in
-+ * size, but only the first 40 bytes (structured this way) are used.
-  */
- struct ipa_uc_mem_area {
- 	u8 command;		/* enum ipa_uc_command */
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
