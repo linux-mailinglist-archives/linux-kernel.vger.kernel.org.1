@@ -2,159 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42ED120E271
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0546A20E59D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732056AbgF2VFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730964AbgF2TMn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:12:43 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA116C08C5E0
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 21:09:37 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id h5so15067864wrc.7
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 21:09:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jqfpvi3iYp3AoWQd6MSO7doKcVpn2TJcLUHhv2lCYnI=;
-        b=P+epqYZloSbYG+AbCi/vnUslABKw6dTGUxMtmqk70qo8e+GHDnz6Dbj5BXuIthZXlr
-         0CUpkny20y3Yi7lcLdxO2389kQqc1CTuKFzUqM8HFZl6leu+QHNMNupx6coQ9Xamlt8J
-         UrVTd09fowebynpt5CnTRX6sTrUk3AEUOWSufL5JBNhUQc3w+a8ju9ea9wskW6zcwJIV
-         Nk9jFaS8B2u61i4nClqxT+s5PbGTbUnE59r5ZZC+wzzFr3EQ1+J4+KrFqIXMj1UJ8dko
-         PHGqVkikH/7/UHJnsmnU0RCBkuyeJOQlXlvXwZG8auj4EAlsUCItoyML8iPmiC3N6of5
-         oQXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jqfpvi3iYp3AoWQd6MSO7doKcVpn2TJcLUHhv2lCYnI=;
-        b=juKw5KT5U3FgKGuix7FmYB/VbmAMYzUW6YttjE5ZHA9q9Bo0qMVKLY9VNShciq1iN7
-         wcq2YcCrjMvfA79uxcXBJtGZYFO7dcCbiWF5B4zUwpVLB8g4Hvm9ncku1FHCx1/5fpxR
-         SIF9/kmkK1PUA0D7XGcojUC7zkHtMmpire0Bi6ZmRKTnIBRM0hbUCo+vuN7mvNsocs7e
-         nZwUq/cNVJxXJkW+bby1Yo7yeSX4H1LQ25rxh7gP1MD6EL4f3xkyrBkXlV8KxxjuCjJB
-         RK3J9sVkWpxntDKiEnyEPZF7TyhRE1TriDTOaTV34saiQOLwSARlCNfQ/6Qi1MPGFJ+v
-         GGkw==
-X-Gm-Message-State: AOAM5312paaV0/wKEU+M3QnAfUaLHnCeFsVZvNhorVVsn27TNM5xWZQk
-        6bTK+jREf3MnzHgQecGjh8mQWfxjcwjJlqQtooVOVxI2
-X-Google-Smtp-Source: ABdhPJwx1knjHefqrB+oeWQ3YcqzAY6RsgARQklwQOrsgV4BeAw50AB+MKIpRinxVhKDLYaH38jdH075e1ij93+pORY=
-X-Received: by 2002:adf:ff87:: with SMTP id j7mr9282883wrr.128.1593403776321;
- Sun, 28 Jun 2020 21:09:36 -0700 (PDT)
+        id S1731931AbgF2Vja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:39:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728324AbgF2Skb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:40:31 -0400
+Received: from kernel.org (unknown [87.71.40.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C5E4206C3;
+        Mon, 29 Jun 2020 04:15:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593404104;
+        bh=EBDtinNOva015/ML4sKnL+2OBnBOq3SojlUKZ6fF8Xs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vCSTzeVaasExtW6XX2YsOlizrbTNMNGOW8n2P6rB7m/n0T8zkZZEHLjHelmv+dTNB
+         NHSs4NtNSmojBJBpDyU/1orfLrycrtGONbdWi0H3vjUL21r9cLuiO8S07AEp2Bek5z
+         ROwsE9Gi9enoFY2lNVZp8e9FLlfajMCx6sWG6xy4=
+Date:   Mon, 29 Jun 2020 07:14:59 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH 1/2] m68k: nommu: register start of the memory with
+ memblock
+Message-ID: <20200629041459.GA1492837@kernel.org>
+References: <20200617065341.32160-1-rppt@kernel.org>
+ <20200617065341.32160-2-rppt@kernel.org>
+ <45cb9ecf-44c2-d307-4342-e66851ef67a7@linux-m68k.org>
+ <4a988de6-b194-5831-9eec-3dd7417bc3c7@linux-m68k.org>
 MIME-Version: 1.0
-References: <cover.1593397455.git.zong.li@sifive.com> <3de3a480517d167a3faae086aa8ab0c0c7141d99.1593397455.git.zong.li@sifive.com>
-In-Reply-To: <3de3a480517d167a3faae086aa8ab0c0c7141d99.1593397455.git.zong.li@sifive.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Mon, 29 Jun 2020 09:39:24 +0530
-Message-ID: <CAAhSdy3VBUTMg_b2tO12cTYuvHYtH=4dj9-qT-at35Whf3w_7w@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/6] dt-bindings: riscv: Add YAML documentation for PMU
-To:     Zong Li <zong.li@sifive.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4a988de6-b194-5831-9eec-3dd7417bc3c7@linux-m68k.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 8:49 AM Zong Li <zong.li@sifive.com> wrote:
->
-> Add device tree bindings for performance monitor unit. And it passes the
-> dt_binding_check verification.
->
-> Signed-off-by: Zong Li <zong.li@sifive.com>
-> ---
->  .../devicetree/bindings/riscv/pmu.yaml        | 59 +++++++++++++++++++
->  1 file changed, 59 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/riscv/pmu.yaml
->
-> diff --git a/Documentation/devicetree/bindings/riscv/pmu.yaml b/Documentation/devicetree/bindings/riscv/pmu.yaml
-> new file mode 100644
-> index 000000000000..f55ccbc6c685
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/riscv/pmu.yaml
-> @@ -0,0 +1,59 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/riscv/pmu.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: RISC-V Performance Monitor Units
-> +
-> +maintainers:
-> +  - Zong Li <zong.li@sifive.com>
-> +  - Paul Walmsley <paul.walmsley@sifive.com>
-> +  - Palmer Dabbelt <palmer@dabbelt.com>
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: riscv,pmu
-> +
-> +  riscv,width-base-cntr:
-> +    description: The width of cycle and instret CSRs.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +  riscv,width-event-cntr:
-> +    description: The width of hpmcounter CSRs.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
+Hi Greg,
 
-The terms "base" and "event" is confusing because
-we only have counters with no interrupt associated with it.
+On Mon, Jun 29, 2020 at 11:10:16AM +1000, Greg Ungerer wrote:
+> Hi Mike,
+> 
+> On 17/6/20 10:33 pm, Greg Ungerer wrote:
+> > Hi Mike,
+> > 
+> > On 17/6/20 4:53 pm, Mike Rapoport wrote:
+> > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > 
+> > > The m68k nommu setup code didn't register the beginning of the physical
+> > > memory with memblock because it was anyway occupied by the kernel. However,
+> > > commit fa3354e4ea39 ("mm: free_area_init: use maximal zone PFNs rather than
+> > > zone sizes") changed zones initialization to use memblock.memory to detect
+> > > the zone extents and this caused inconsistency between zone PFNs and the
+> > > actual PFNs:
+> > > 
+> > > BUG: Bad page state in process swapper  pfn:20165
+> > > page:41fe0ca0 refcount:0 mapcount:1 mapping:00000000 index:0x0 flags: 0x0()
+> > > raw: 00000000 00000100 00000122 00000000 00000000 00000000 00000000 00000000
+> > > page dumped because: nonzero mapcount
+> > > CPU: 0 PID: 1 Comm: swapper Not tainted 5.8.0-rc1-00001-g3a38f8a60c65-dirty #1
+> > > Stack from 404c9ebc:
+> > >          404c9ebc 4029ab28 4029ab28 40088470 41fe0ca0 40299e21 40299df1 404ba2a4
+> > >          00020165 00000000 41fd2c10 402c7ba0 41fd2c04 40088504 41fe0ca0 40299e21
+> > >          00000000 40088a12 41fe0ca0 41fe0ca4 0000020a 00000000 00000001 402ca000
+> > >          00000000 41fe0ca0 41fd2c10 41fd2c10 00000000 00000000 402b2388 00000001
+> > >          400a0934 40091056 404c9f44 404c9f44 40088db4 402c7ba0 00000001 41fd2c04
+> > >          41fe0ca0 41fd2000 41fe0ca0 40089e02 4026ecf4 40089e4e 41fe0ca0 ffffffff
+> > > Call Trace:
+> > >          [<40088470>] 0x40088470
+> > >   [<40088504>] 0x40088504
+> > >   [<40088a12>] 0x40088a12
+> > >   [<402ca000>] 0x402ca000
+> > >   [<400a0934>] 0x400a0934
+> > > 
+> > > Adjust the memory registration with memblock to include the beginning of
+> > > the physical memory and make sure that the area occupied by the kernel is
+> > > marked as reserved.
+> > > 
+> > > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+> 
+> What path do you anticipate this taking into mainline?
+> I see it is still broken in 5.8-rc3.
 
-The RISC-V spec defines 3 counters and rest are all
-implementation specific counters.
+I thought it will go through m68k tree.
 
-I suggest using the terms "spec counters" and "impl counters"
-instead of "base counters" and "event counters".
+> Regards
+> Greg
+> 
+> 
+> 
+> > > ---
+> > >   arch/m68k/kernel/setup_no.c | 3 ++-
+> > >   1 file changed, 2 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
+> > > index e779b19e0193..f66f4b1d062e 100644
+> > > --- a/arch/m68k/kernel/setup_no.c
+> > > +++ b/arch/m68k/kernel/setup_no.c
+> > > @@ -138,7 +138,8 @@ void __init setup_arch(char **cmdline_p)
+> > >       pr_debug("MEMORY -> ROMFS=0x%p-0x%06lx MEM=0x%06lx-0x%06lx\n ",
+> > >            __bss_stop, memory_start, memory_start, memory_end);
+> > > -    memblock_add(memory_start, memory_end - memory_start);
+> > > +    memblock_add(_rambase, memory_end - _rambase);
+> > > +    memblock_reserve(_rambase, memory_start - _rambase);
+> > >       /* Keep a copy of command line */
+> > >       *cmdline_p = &command_line[0];
+> > > 
 
-Further, "riscv,width" properties are redundant because
-RISC-V spec clearly tells that counters are 64bit for both
-RV32 and RV64.
-
-> +
-> +  riscv,n-event-cntr:
-> +    description: The number of hpmcounter CSRs.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +  riscv,hw-event-map:
-> +    description: The mapping of generic hardware events. Default is no mapping.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +
-> +  riscv,hw-cache-event-map:
-> +    description: The mapping of generic hardware cache events.
-> +      Default is no mapping.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +
-> +required:
-> +  - compatible
-> +  - riscv,width-base-cntr
-> +  - riscv,width-event-cntr
-> +  - riscv,n-event-cntr
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    pmu {
-> +      compatible = "riscv,pmu";
-> +      riscv,width-base-cntr = <64>;
-> +      riscv,width-event-cntr = <40>;
-> +      riscv,n-event-cntr = <2>;
-> +      riscv,hw-event-map = <0x0 0x0 0x1 0x1 0x3 0x0202 0x4 0x4000>;
-> +      riscv,hw-cache-event-map = <0x010201 0x0102 0x010204 0x0802>;
-> +    };
-> +
-> +...
-> --
-> 2.27.0
->
-
-Regards,
-Anup
+-- 
+Sincerely yours,
+Mike.
