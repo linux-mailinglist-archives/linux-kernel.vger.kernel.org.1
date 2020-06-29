@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6B720D4B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3251320D4F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731016AbgF2TKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:10:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53724 "EHLO mail.kernel.org"
+        id S1731261AbgF2TNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:13:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730978AbgF2TKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:10:19 -0400
+        id S1730960AbgF2TKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:10:18 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF3AE2549A;
-        Mon, 29 Jun 2020 15:53:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B19BF2545F;
+        Mon, 29 Jun 2020 15:53:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593445992;
-        bh=0TIgXh0UJBp6NZVUlhYfT7EIO63h8jLGw0n+lEZnSD8=;
+        s=default; t=1593445997;
+        bh=NBYooCxBz9DLx51kVAfojPfrpaJKY1fDyyxiKGfm8rs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mizO200FF6uAbE4UmJgAqfppqS6rtj1urLBVDHK9G1qL0Eb+RiuJu+ekMaGgvvQwA
-         JpGjriEb+lWlpFi4Hmqep/7ltRDLTXmyJM7pG0eiCAIBX6FuAxx9nYuT5Y2Lcx5jsQ
-         rmQ/Hdp7k2jljTKa2l9BibGFDgCzckR2HC9hdi3A=
+        b=YzpYXpxA36uY64e3qR4E4VbNysSBWu2m2fnS1dZrkHOT+xJYkZA4aTrdP+W7AfF1m
+         tN6VoiiPfUko8rCSaAwU8zkua4TWdUO6LO8mh8WEPaXcWbsE7wW9myJVGWYaydYhyK
+         uMevMFPSHyo6eU4+14M9mFG33PVMM9o6EAn4UwFQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Dmitry V. Levin" <ldv@altlinux.org>,
-        Elvira Khabirova <lineprinter@altlinux.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.4 001/135] s390: fix syscall_get_error for compat processes
-Date:   Mon, 29 Jun 2020 11:50:55 -0400
-Message-Id: <20200629155309.2495516-2-sashal@kernel.org>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 005/135] ALSA: isa/wavefront: prevent out of bounds write in ioctl
+Date:   Mon, 29 Jun 2020 11:50:59 -0400
+Message-Id: <20200629155309.2495516-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629155309.2495516-1-sashal@kernel.org>
 References: <20200629155309.2495516-1-sashal@kernel.org>
@@ -51,58 +48,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Dmitry V. Levin" <ldv@altlinux.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit b3583fca5fb654af2cfc1c08259abb9728272538 upstream.
+[ Upstream commit 7f0d5053c5a9d23fe5c2d337495a9d79038d267b ]
 
-If both the tracer and the tracee are compat processes, and gprs[2]
-is assigned a value by __poke_user_compat, then the higher 32 bits
-of gprs[2] are cleared, IS_ERR_VALUE() always returns false, and
-syscall_get_error() always returns 0.
+The "header->number" comes from the ioctl and it needs to be clamped to
+prevent out of bounds writes.
 
-Fix the implementation by sign-extending the value for compat processes
-the same way as x86 implementation does.
-
-The bug was exposed to user space by commit 201766a20e30f ("ptrace: add
-PTRACE_GET_SYSCALL_INFO request") and detected by strace test suite.
-
-This change fixes strace syscall tampering on s390.
-
-Link: https://lkml.kernel.org/r/20200602180051.GA2427@altlinux.org
-Fixes: 753c4dd6a2fa2 ("[S390] ptrace changes")
-Cc: Elvira Khabirova <lineprinter@altlinux.org>
-Cc: stable@vger.kernel.org # v2.6.28+
-Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
-Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20200501094011.GA960082@mwanda
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/include/asm/syscall.h | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ sound/isa/wavefront/wavefront_synth.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/include/asm/syscall.h b/arch/s390/include/asm/syscall.h
-index 6bc941be69217..166fbd74e316c 100644
---- a/arch/s390/include/asm/syscall.h
-+++ b/arch/s390/include/asm/syscall.h
-@@ -41,7 +41,17 @@ static inline void syscall_rollback(struct task_struct *task,
- static inline long syscall_get_error(struct task_struct *task,
- 				     struct pt_regs *regs)
- {
--	return IS_ERR_VALUE(regs->gprs[2]) ? regs->gprs[2] : 0;
-+	unsigned long error = regs->gprs[2];
-+#ifdef CONFIG_COMPAT
-+	if (test_tsk_thread_flag(task, TIF_31BIT)) {
-+		/*
-+		 * Sign-extend the value so (int)-EFOO becomes (long)-EFOO
-+		 * and will match correctly in comparisons.
-+		 */
-+		error = (long)(int)error;
-+	}
-+#endif
-+	return IS_ERR_VALUE(error) ? error : 0;
- }
+diff --git a/sound/isa/wavefront/wavefront_synth.c b/sound/isa/wavefront/wavefront_synth.c
+index 718d5e3b7806f..6c06d06457796 100644
+--- a/sound/isa/wavefront/wavefront_synth.c
++++ b/sound/isa/wavefront/wavefront_synth.c
+@@ -1174,7 +1174,10 @@ wavefront_send_alias (snd_wavefront_t *dev, wavefront_patch_info *header)
+ 				      "alias for %d\n",
+ 				      header->number,
+ 				      header->hdr.a.OriginalSample);
+-    
++
++	if (header->number >= WF_MAX_SAMPLE)
++		return -EINVAL;
++
+ 	munge_int32 (header->number, &alias_hdr[0], 2);
+ 	munge_int32 (header->hdr.a.OriginalSample, &alias_hdr[2], 2);
+ 	munge_int32 (*((unsigned int *)&header->hdr.a.sampleStartOffset),
+@@ -1205,6 +1208,9 @@ wavefront_send_multisample (snd_wavefront_t *dev, wavefront_patch_info *header)
+ 	int num_samples;
+ 	unsigned char *msample_hdr;
  
- static inline long syscall_get_return_value(struct task_struct *task,
++	if (header->number >= WF_MAX_SAMPLE)
++		return -EINVAL;
++
+ 	msample_hdr = kmalloc(WF_MSAMPLE_BYTES, GFP_KERNEL);
+ 	if (! msample_hdr)
+ 		return -ENOMEM;
 -- 
 2.25.1
 
