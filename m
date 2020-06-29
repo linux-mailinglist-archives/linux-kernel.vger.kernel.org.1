@@ -2,192 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A5F20DB7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB1220DB12
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388702AbgF2UHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:07:05 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:36126 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732757AbgF2UHB (ORCPT
+        id S2388747AbgF2UDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388726AbgF2UDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:07:01 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jq03P-0003QP-La; Mon, 29 Jun 2020 14:06:59 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jq03O-00044y-HS; Mon, 29 Jun 2020 14:06:59 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     <linux-kernel@vger.kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20200625095725.GA3303921@kroah.com>
-        <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
-        <20200625120725.GA3493334@kroah.com>
-        <20200625.123437.2219826613137938086.davem@davemloft.net>
-        <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
-        <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
-        <87y2oac50p.fsf@x220.int.ebiederm.org>
-        <87bll17ili.fsf_-_@x220.int.ebiederm.org>
-Date:   Mon, 29 Jun 2020 15:02:27 -0500
-In-Reply-To: <87bll17ili.fsf_-_@x220.int.ebiederm.org> (Eric W. Biederman's
-        message of "Mon, 29 Jun 2020 14:55:05 -0500")
-Message-ID: <87366d63os.fsf_-_@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 29 Jun 2020 16:03:01 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F77FC061755;
+        Mon, 29 Jun 2020 13:03:01 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id g67so7901092pgc.8;
+        Mon, 29 Jun 2020 13:03:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:reply-to:content-transfer-encoding;
+        bh=/gsLg2vrEv9v1DomZy+Al4WDSR7fwp7hS7EGj3MRF9E=;
+        b=OINhy7XmDGVCP+SCSbzALvV19PfCB1+fzui8uoh5RLBtHAbSruN0EHWC9b/6uIbRm1
+         L+FVanMWZn1CEAUoXFVDKdrBbbE9XrBHhkFyHRfo5GNJRDFlVHC1Mvtg6VxOQgTfBJKC
+         q8HKvfKEJNuCC/3M7yJcIME8PpytDnGvkhVy41csb0zX19TonjbGt569EEFGPJW3RkLR
+         FGccVh73zZBCSDuHtVuQeP7hKwZkT43hb34fsyXZET/MwMrjfVd1H9XZzi6ZzSX9cs2F
+         Cg7ZWHIj21mOZJJ01NpjDnByRY0zVlpPjpqx1lX22Vw9HORZOErV1JheyjkilTRf1P6e
+         rtbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:reply-to:content-transfer-encoding;
+        bh=/gsLg2vrEv9v1DomZy+Al4WDSR7fwp7hS7EGj3MRF9E=;
+        b=iwBPdSjfllY/70MaxHAxopCmmx1A2S5inXV+03QGzw287McKEM7yPLh/aK+ny9b+bd
+         13pwi3ShIEqsTCUxL4Jrs9kyrsPiyLKVrFPCZsUwrMF6VGBy01lPP0GjH1GyLN5RMcec
+         XvXP6BbdkC49pPs7+kPI1YlIgweT+CaD9EeRdd3n6EW28oMkIKt1B+JNks5bsbP2hJgP
+         VWZi7wZICh2A4PKsXp/uutwt/kY1jvm3tP00MydWceCjqxaDRPFGtqW1DfhsQ3nodOdm
+         pnIFgoUjWolN/QwzNcoTVwcKWgR7/RGb/q25kOjz8XZYh1+SVHBYEpo61ZEvst9Pi7BF
+         7mTA==
+X-Gm-Message-State: AOAM532P6ohkQuVJ0szkESq2835k5l2xc+2RiN4I4qQws+butbD1w9gD
+        c7YkaUHIpAzMp9mbp1/Frhc=
+X-Google-Smtp-Source: ABdhPJw10/Z46CoL3/bysljxRW4wxA98a7qm+xk5KD8WGDK3bO0ynrD6ip2gqGuMQzxANBrCH+9h6g==
+X-Received: by 2002:a63:c34e:: with SMTP id e14mr11367248pgd.55.1593460980873;
+        Mon, 29 Jun 2020 13:03:00 -0700 (PDT)
+Received: from localhost.localdomain ([131.107.160.194])
+        by smtp.gmail.com with ESMTPSA id j10sm531558pgh.28.2020.06.29.13.03.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 13:03:00 -0700 (PDT)
+From:   Andres Beltran <lkmlabelt@gmail.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mikelley@microsoft.com, parri.andrea@gmail.com,
+        Andres Beltran <lkmlabelt@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH v2 3/3] hv_netvsc: Use vmbus_requestor to generate transaction IDs for VMBus hardening
+Date:   Mon, 29 Jun 2020 16:02:27 -0400
+Message-Id: <20200629200227.1518784-4-lkmlabelt@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200629200227.1518784-1-lkmlabelt@gmail.com>
+References: <20200629200227.1518784-1-lkmlabelt@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jq03O-00044y-HS;;;mid=<87366d63os.fsf_-_@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19gwZGq9LfYG7qMeJVaSLTCNUd+z0ghDAE=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4999]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa04 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: ; sa04 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;<linux-kernel@vger.kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 752 ms - load_scoreonly_sql: 0.13 (0.0%),
-        signal_user_changed: 13 (1.7%), b_tie_ro: 11 (1.4%), parse: 2.4 (0.3%),
-         extract_message_metadata: 26 (3.4%), get_uri_detail_list: 4.6 (0.6%),
-        tests_pri_-1000: 21 (2.8%), tests_pri_-950: 1.05 (0.1%),
-        tests_pri_-900: 0.93 (0.1%), tests_pri_-90: 317 (42.1%), check_bayes:
-        314 (41.8%), b_tokenize: 10 (1.3%), b_tok_get_all: 9 (1.2%),
-        b_comp_prob: 2.5 (0.3%), b_tok_touch_all: 288 (38.3%), b_finish: 1.43
-        (0.2%), tests_pri_0: 349 (46.4%), check_dkim_signature: 0.92 (0.1%),
-        check_dkim_adsp: 2.2 (0.3%), poll_dns_idle: 0.37 (0.0%), tests_pri_10:
-        4.4 (0.6%), tests_pri_500: 13 (1.7%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH v2 07/15] umd: Rename umd_info.cmdline umd_info.driver_name
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Reply-To: t-mabelt@microsoft.com
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently, pointers to guest memory are passed to Hyper-V as
+transaction IDs in netvsc. In the face of errors or malicious
+behavior in Hyper-V, netvsc should not expose or trust the transaction
+IDs returned by Hyper-V to be valid guest memory addresses. Instead,
+use small integers generated by vmbus_requestor as requests
+(transaction) IDs.
 
-The only thing supplied in the cmdline today is the driver name so
-rename the field to clarify the code.
-
-As this value is always supplied stop trying to handle the case of
-a NULL cmdline.
-
-Additionally since we now have a name we can count on use the
-driver_name any place where the code is looking for a name
-of the binary.
-
-Link: https://lkml.kernel.org/r/87imfef0k3.fsf_-_@x220.int.ebiederm.org
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org
+Signed-off-by: Andres Beltran <lkmlabelt@gmail.com>
 ---
- include/linux/umd.h         |  2 +-
- kernel/umd.c                | 11 ++++-------
- net/ipv4/bpfilter/sockopt.c |  2 +-
- 3 files changed, 6 insertions(+), 9 deletions(-)
+Changes in v2:
+	- Add casts to unsigned long to fix warnings on 32bit.
+	- Use an inline function to get the requestor size.
 
-diff --git a/include/linux/umd.h b/include/linux/umd.h
-index 58a9c603c78d..d827fb038d00 100644
---- a/include/linux/umd.h
-+++ b/include/linux/umd.h
-@@ -18,7 +18,7 @@ static inline void exit_umh(struct task_struct *tsk)
- #endif
+ drivers/net/hyperv/hyperv_net.h   | 13 +++++
+ drivers/net/hyperv/netvsc.c       | 79 +++++++++++++++++++++++++------
+ drivers/net/hyperv/rndis_filter.c |  1 +
+ include/linux/hyperv.h            |  1 +
+ 4 files changed, 80 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/net/hyperv/hyperv_net.h b/drivers/net/hyperv/hyperv_net.h
+index abda736e7c7d..f43b614f2345 100644
+--- a/drivers/net/hyperv/hyperv_net.h
++++ b/drivers/net/hyperv/hyperv_net.h
+@@ -847,6 +847,19 @@ struct nvsp_message {
  
- struct umd_info {
--	const char *cmdline;
-+	const char *driver_name;
- 	struct file *pipe_to_umh;
- 	struct file *pipe_from_umh;
- 	struct list_head list;
-diff --git a/kernel/umd.c b/kernel/umd.c
-index f7dacb19c705..7fe08a8eb231 100644
---- a/kernel/umd.c
-+++ b/kernel/umd.c
-@@ -67,9 +67,6 @@ static void umd_cleanup(struct subprocess_info *info)
-  * @len: length of the blob
-  * @info: information about usermode process (shouldn't be NULL)
-  *
-- * If info->cmdline is set it will be used as command line for the
-- * user process, else "usermodehelper" is used.
-- *
-  * Returns either negative error or zero which indicates success
-  * in executing a blob of bytes as a usermode process. In such
-  * case 'struct umd_info *info' is populated with two pipes
-@@ -79,7 +76,6 @@ static void umd_cleanup(struct subprocess_info *info)
-  */
- int fork_usermode_blob(void *data, size_t len, struct umd_info *info)
+ #define NETVSC_XDP_HDRM 256
+ 
++#define NETVSC_MIN_OUT_MSG_SIZE (sizeof(struct vmpacket_descriptor) + \
++				 sizeof(struct nvsp_message))
++#define NETVSC_MIN_IN_MSG_SIZE sizeof(struct vmpacket_descriptor)
++
++/* Estimated requestor size:
++ * out_ring_size/min_out_msg_size + in_ring_size/min_in_msg_size
++ */
++static inline u32 netvsc_rqstor_size(unsigned long ringbytes)
++{
++	return ringbytes / NETVSC_MIN_OUT_MSG_SIZE +
++	       ringbytes / NETVSC_MIN_IN_MSG_SIZE;
++}
++
+ struct multi_send_data {
+ 	struct sk_buff *skb; /* skb containing the pkt */
+ 	struct hv_netvsc_packet *pkt; /* netvsc pkt pending */
+diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
+index 41f5cf0bb997..79b907a29433 100644
+--- a/drivers/net/hyperv/netvsc.c
++++ b/drivers/net/hyperv/netvsc.c
+@@ -50,7 +50,7 @@ void netvsc_switch_datapath(struct net_device *ndev, bool vf)
+ 
+ 	vmbus_sendpacket(dev->channel, init_pkt,
+ 			       sizeof(struct nvsp_message),
+-			       (unsigned long)init_pkt,
++			       VMBUS_RQST_ID_NO_RESPONSE,
+ 			       VM_PKT_DATA_INBAND, 0);
+ }
+ 
+@@ -163,7 +163,7 @@ static void netvsc_revoke_recv_buf(struct hv_device *device,
+ 		ret = vmbus_sendpacket(device->channel,
+ 				       revoke_packet,
+ 				       sizeof(struct nvsp_message),
+-				       (unsigned long)revoke_packet,
++				       VMBUS_RQST_ID_NO_RESPONSE,
+ 				       VM_PKT_DATA_INBAND, 0);
+ 		/* If the failure is because the channel is rescinded;
+ 		 * ignore the failure since we cannot send on a rescinded
+@@ -213,7 +213,7 @@ static void netvsc_revoke_send_buf(struct hv_device *device,
+ 		ret = vmbus_sendpacket(device->channel,
+ 				       revoke_packet,
+ 				       sizeof(struct nvsp_message),
+-				       (unsigned long)revoke_packet,
++				       VMBUS_RQST_ID_NO_RESPONSE,
+ 				       VM_PKT_DATA_INBAND, 0);
+ 
+ 		/* If the failure is because the channel is rescinded;
+@@ -304,6 +304,7 @@ static int netvsc_init_buf(struct hv_device *device,
+ 	unsigned int buf_size;
+ 	size_t map_words;
+ 	int ret = 0;
++	u64 rqst_id;
+ 
+ 	/* Get receive buffer area. */
+ 	buf_size = device_info->recv_sections * device_info->recv_section_size;
+@@ -350,13 +351,22 @@ static int netvsc_init_buf(struct hv_device *device,
+ 
+ 	trace_nvsp_send(ndev, init_packet);
+ 
++	rqst_id = vmbus_next_request_id(&device->channel->requestor,
++					(unsigned long)init_packet);
++	if (rqst_id == VMBUS_RQST_ERROR) {
++		netdev_err(ndev, "No request id available\n");
++		goto cleanup;
++	}
++
+ 	/* Send the gpadl notification request */
+ 	ret = vmbus_sendpacket(device->channel, init_packet,
+ 			       sizeof(struct nvsp_message),
+-			       (unsigned long)init_packet,
++			       rqst_id,
+ 			       VM_PKT_DATA_INBAND,
+ 			       VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED);
+ 	if (ret != 0) {
++		/* Reclaim request ID to avoid leak of IDs */
++		vmbus_request_addr(&device->channel->requestor, rqst_id);
+ 		netdev_err(ndev,
+ 			"unable to send receive buffer's gpadl to netvsp\n");
+ 		goto cleanup;
+@@ -432,13 +442,22 @@ static int netvsc_init_buf(struct hv_device *device,
+ 
+ 	trace_nvsp_send(ndev, init_packet);
+ 
++	rqst_id = vmbus_next_request_id(&device->channel->requestor,
++					(unsigned long)init_packet);
++	if (rqst_id == VMBUS_RQST_ERROR) {
++		netdev_err(ndev, "No request id available\n");
++		goto cleanup;
++	}
++
+ 	/* Send the gpadl notification request */
+ 	ret = vmbus_sendpacket(device->channel, init_packet,
+ 			       sizeof(struct nvsp_message),
+-			       (unsigned long)init_packet,
++			       rqst_id,
+ 			       VM_PKT_DATA_INBAND,
+ 			       VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED);
+ 	if (ret != 0) {
++		/* Reclaim request ID to avoid leak of IDs */
++		vmbus_request_addr(&device->channel->requestor, rqst_id);
+ 		netdev_err(ndev,
+ 			   "unable to send send buffer's gpadl to netvsp\n");
+ 		goto cleanup;
+@@ -496,6 +515,7 @@ static int negotiate_nvsp_ver(struct hv_device *device,
  {
--	const char *cmdline = (info->cmdline) ? info->cmdline : "usermodehelper";
- 	struct subprocess_info *sub_info;
- 	char **argv = NULL;
- 	struct file *file;
-@@ -87,7 +83,7 @@ int fork_usermode_blob(void *data, size_t len, struct umd_info *info)
- 	loff_t pos = 0;
- 	int err;
+ 	struct net_device *ndev = hv_get_drvdata(device);
+ 	int ret;
++	u64 rqst_id;
  
--	file = shmem_kernel_file_setup("", len, 0);
-+	file = shmem_kernel_file_setup(info->driver_name, len, 0);
- 	if (IS_ERR(file))
- 		return PTR_ERR(file);
+ 	memset(init_packet, 0, sizeof(struct nvsp_message));
+ 	init_packet->hdr.msg_type = NVSP_MSG_TYPE_INIT;
+@@ -503,15 +523,25 @@ static int negotiate_nvsp_ver(struct hv_device *device,
+ 	init_packet->msg.init_msg.init.max_protocol_ver = nvsp_ver;
+ 	trace_nvsp_send(ndev, init_packet);
  
-@@ -100,11 +96,12 @@ int fork_usermode_blob(void *data, size_t len, struct umd_info *info)
++	rqst_id = vmbus_next_request_id(&device->channel->requestor,
++					(unsigned long)init_packet);
++	if (rqst_id == VMBUS_RQST_ERROR) {
++		netdev_err(ndev, "No request id available\n");
++		return -EAGAIN;
++	}
++
+ 	/* Send the init request */
+ 	ret = vmbus_sendpacket(device->channel, init_packet,
+ 			       sizeof(struct nvsp_message),
+-			       (unsigned long)init_packet,
++			       rqst_id,
+ 			       VM_PKT_DATA_INBAND,
+ 			       VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED);
+ 
+-	if (ret != 0)
++	if (ret != 0) {
++		/* Reclaim request ID to avoid leak of IDs */
++		vmbus_request_addr(&device->channel->requestor, rqst_id);
+ 		return ret;
++	}
+ 
+ 	wait_for_completion(&net_device->channel_init_wait);
+ 
+@@ -542,7 +572,7 @@ static int negotiate_nvsp_ver(struct hv_device *device,
+ 
+ 	ret = vmbus_sendpacket(device->channel, init_packet,
+ 				sizeof(struct nvsp_message),
+-				(unsigned long)init_packet,
++				VMBUS_RQST_ID_NO_RESPONSE,
+ 				VM_PKT_DATA_INBAND, 0);
+ 
+ 	return ret;
+@@ -599,7 +629,7 @@ static int netvsc_connect_vsp(struct hv_device *device,
+ 	/* Send the init request */
+ 	ret = vmbus_sendpacket(device->channel, init_packet,
+ 				sizeof(struct nvsp_message),
+-				(unsigned long)init_packet,
++				VMBUS_RQST_ID_NO_RESPONSE,
+ 				VM_PKT_DATA_INBAND, 0);
+ 	if (ret != 0)
+ 		goto cleanup;
+@@ -680,10 +710,19 @@ static void netvsc_send_tx_complete(struct net_device *ndev,
+ 				    const struct vmpacket_descriptor *desc,
+ 				    int budget)
+ {
+-	struct sk_buff *skb = (struct sk_buff *)(unsigned long)desc->trans_id;
++	struct sk_buff *skb;
+ 	struct net_device_context *ndev_ctx = netdev_priv(ndev);
+ 	u16 q_idx = 0;
+ 	int queue_sends;
++	u64 cmd_rqst;
++
++	cmd_rqst = vmbus_request_addr(&channel->requestor, (u64)desc->trans_id);
++	if (cmd_rqst == VMBUS_RQST_ERROR) {
++		netdev_err(ndev, "Incorrect transaction id\n");
++		return;
++	}
++
++	skb = (struct sk_buff *)(unsigned long)cmd_rqst;
+ 
+ 	/* Notify the layer above us */
+ 	if (likely(skb)) {
+@@ -822,7 +861,7 @@ static inline int netvsc_send_pkt(
+ 	struct net_device *ndev = hv_get_drvdata(device);
+ 	struct net_device_context *ndev_ctx = netdev_priv(ndev);
+ 	struct netdev_queue *txq = netdev_get_tx_queue(ndev, packet->q_idx);
+-	u64 req_id;
++	u64 rqst_id;
+ 	int ret;
+ 	u32 ring_avail = hv_get_avail_to_write_percent(&out_channel->outbound);
+ 
+@@ -838,13 +877,19 @@ static inline int netvsc_send_pkt(
+ 	else
+ 		rpkt->send_buf_section_size = packet->total_data_buflen;
+ 
+-	req_id = (ulong)skb;
+ 
+ 	if (out_channel->rescind)
+ 		return -ENODEV;
+ 
+ 	trace_nvsp_send_pkt(ndev, out_channel, rpkt);
+ 
++	rqst_id = vmbus_next_request_id(&out_channel->requestor,
++					(unsigned long)skb);
++	if (rqst_id == VMBUS_RQST_ERROR) {
++		ret = -EAGAIN;
++		goto ret_check;
++	}
++
+ 	if (packet->page_buf_cnt) {
+ 		if (packet->cp_partial)
+ 			pb += packet->rmsg_pgcnt;
+@@ -852,14 +897,15 @@ static inline int netvsc_send_pkt(
+ 		ret = vmbus_sendpacket_pagebuffer(out_channel,
+ 						  pb, packet->page_buf_cnt,
+ 						  &nvmsg, sizeof(nvmsg),
+-						  req_id);
++						  rqst_id);
+ 	} else {
+ 		ret = vmbus_sendpacket(out_channel,
+ 				       &nvmsg, sizeof(nvmsg),
+-				       req_id, VM_PKT_DATA_INBAND,
++				       rqst_id, VM_PKT_DATA_INBAND,
+ 				       VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED);
  	}
  
- 	err = -ENOMEM;
--	argv = argv_split(GFP_KERNEL, cmdline, NULL);
-+	argv = argv_split(GFP_KERNEL, info->driver_name, NULL);
- 	if (!argv)
- 		goto out;
++ret_check:
+ 	if (ret == 0) {
+ 		atomic_inc_return(&nvchan->queue_sends);
  
--	sub_info = call_usermodehelper_setup("none", argv, NULL, GFP_KERNEL,
-+	sub_info = call_usermodehelper_setup(info->driver_name, argv, NULL,
-+					     GFP_KERNEL,
- 					     umd_setup, umd_cleanup, info);
- 	if (!sub_info)
- 		goto out;
-diff --git a/net/ipv4/bpfilter/sockopt.c b/net/ipv4/bpfilter/sockopt.c
-index c0dbcc86fcdb..5050de28333d 100644
---- a/net/ipv4/bpfilter/sockopt.c
-+++ b/net/ipv4/bpfilter/sockopt.c
-@@ -70,7 +70,7 @@ static int __init bpfilter_sockopt_init(void)
- {
- 	mutex_init(&bpfilter_ops.lock);
- 	bpfilter_ops.stop = true;
--	bpfilter_ops.info.cmdline = "bpfilter_umh";
-+	bpfilter_ops.info.driver_name = "bpfilter_umh";
- 	bpfilter_ops.info.cleanup = &bpfilter_umh_cleanup;
+@@ -868,9 +914,13 @@ static inline int netvsc_send_pkt(
+ 			ndev_ctx->eth_stats.stop_queue++;
+ 		}
+ 	} else if (ret == -EAGAIN) {
++		/* Reclaim request ID to avoid leak of IDs */
++		vmbus_request_addr(&out_channel->requestor, rqst_id);
+ 		netif_tx_stop_queue(txq);
+ 		ndev_ctx->eth_stats.stop_queue++;
+ 	} else {
++		/* Reclaim request ID to avoid leak of IDs */
++		vmbus_request_addr(&out_channel->requestor, rqst_id);
+ 		netdev_err(ndev,
+ 			   "Unable to send packet pages %u len %u, ret %d\n",
+ 			   packet->page_buf_cnt, packet->total_data_buflen,
+@@ -1422,6 +1472,7 @@ struct netvsc_device *netvsc_device_add(struct hv_device *device,
+ 		       netvsc_poll, NAPI_POLL_WEIGHT);
  
- 	return 0;
+ 	/* Open the channel */
++	device->channel->rqstor_size = netvsc_rqstor_size(netvsc_ring_bytes);
+ 	ret = vmbus_open(device->channel, netvsc_ring_bytes,
+ 			 netvsc_ring_bytes,  NULL, 0,
+ 			 netvsc_channel_cb, net_device->chan_table);
+diff --git a/drivers/net/hyperv/rndis_filter.c b/drivers/net/hyperv/rndis_filter.c
+index b81ceba38218..10489ba44a09 100644
+--- a/drivers/net/hyperv/rndis_filter.c
++++ b/drivers/net/hyperv/rndis_filter.c
+@@ -1114,6 +1114,7 @@ static void netvsc_sc_open(struct vmbus_channel *new_sc)
+ 	/* Set the channel before opening.*/
+ 	nvchan->channel = new_sc;
+ 
++	new_sc->rqstor_size = netvsc_rqstor_size(netvsc_ring_bytes);
+ 	ret = vmbus_open(new_sc, netvsc_ring_bytes,
+ 			 netvsc_ring_bytes, NULL, 0,
+ 			 netvsc_channel_cb, nvchan);
+diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+index c509d20ab7db..d8194924983d 100644
+--- a/include/linux/hyperv.h
++++ b/include/linux/hyperv.h
+@@ -730,6 +730,7 @@ struct vmbus_requestor {
+ };
+ 
+ #define VMBUS_RQST_ERROR U64_MAX
++#define VMBUS_RQST_ID_NO_RESPONSE (U64_MAX - 1)
+ 
+ struct vmbus_device {
+ 	u16  dev_type;
 -- 
-2.25.0
+2.25.1
 
