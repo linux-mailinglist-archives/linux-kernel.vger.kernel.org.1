@@ -2,125 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C2620E961
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 01:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B1E20E965
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 01:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgF2Xay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 19:30:54 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26274 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726317AbgF2Xay (ORCPT
+        id S1726888AbgF2XeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 19:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726072AbgF2XeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 19:30:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593473452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J4yvYvAixEsOBHxzNK+u9dCnbkwzUtROOEW2TKDDrHo=;
-        b=FaQBXdVwDofc0Gy7q03QDxPh6SOxNC2py8ZrZXf2MefRJ8VmDEnomnzax7ajn4x8t1LsFX
-        umSUWg55Z30Do4DSoGrQNqDni80oCkQKOvSTlxDCFQiTL65xHPm9zv7YfMCNDdU+RePFyd
-        wAPtDU/GKOTHkOgVajkD8iwvfIlcpUQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-463-kG66Rb4yN2SGdD26cHNb3A-1; Mon, 29 Jun 2020 19:30:48 -0400
-X-MC-Unique: kG66Rb4yN2SGdD26cHNb3A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C8443107ACCA;
-        Mon, 29 Jun 2020 23:30:46 +0000 (UTC)
-Received: from localhost (ovpn-12-47.pek2.redhat.com [10.72.12.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1019D5D9D7;
-        Mon, 29 Jun 2020 23:30:45 +0000 (UTC)
-Date:   Tue, 30 Jun 2020 07:30:43 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        ben.widawsky@intel.com, alex.shi@linux.alibaba.com,
-        dwagner@suse.de, tobin@kernel.org, cl@linux.com,
-        akpm@linux-foundation.org, stable@kernel.org
-Subject: Re: [PATCH] mm/vmscan: restore zone_reclaim_mode ABI
-Message-ID: <20200629233043.GK3346@MiWiFi-R3L-srv>
-References: <20200626003459.D8E015CA@viggo.jf.intel.com>
- <20200629065203.GJ3346@MiWiFi-R3L-srv>
- <3ba94f19-3b18-9d52-a070-f652620c88e6@intel.com>
+        Mon, 29 Jun 2020 19:34:11 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2BFC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 16:34:11 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id j1so8570334pfe.4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 16:34:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5f9mb9YPg6OjmB0FalT+YWZSWHeNIR0BJDsRMM1Osec=;
+        b=O8CsQx6qD+q+i2lCb4Lm+fVOjUs/zhm/FLSGZ8kwuEg6A7849JLvQaOHIl0VClYNeG
+         bQXr4hJswTks8L6pZKLEg6mgNgUXTucmcMiVZNNBOw5WOXauG12mA9/qcJU286yci8dR
+         Zfz5KpRx3WH7ajFJW3YR8Oa+YuhlQw5D5FO3DXQioWuMDvO2pwMhmjiC2BH2wsovBHRn
+         C1HHUYqVV38wwJXnhBlm423GkzRAAPcrzC+k4FivpNMeYvNcfjOr8hZsnDRJywpJLeR+
+         gRg9+gXUhMjS/ib9G/6EXc6+ywvSrlWu3Tt5v2deOampxw4oC+7VTtcqEJYoYUoiD6v5
+         pNLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5f9mb9YPg6OjmB0FalT+YWZSWHeNIR0BJDsRMM1Osec=;
+        b=jMArUqwURBCOModdnc8UK9y6LF2zClwMJp+t7gZwIVZfI622YgWfd0pFZHrsUzz6mm
+         HVqVyrRHswz5Ar48IP/KtsEbFfmwMOnRfnJagbbAu2AdWV7Wzr2WO08tGan2GxvXECX9
+         Bs4kq6qUC1tqjLEFm8mQtlpxdlwQnfMCtGtsC6tgTJr14nzBXyDTELWrVwzbhgAWg5BZ
+         PZN+fKk8On/fjNPNXIRpEZuQqNFSjx+M8sL5DTS7wuQZo49GkeQvOkA1RH3h1rINBbqY
+         lVsG9HLHIWH1CvXeTxskgZREs6XiqF99IBdAcEC7BgH0RAu0s+yHq3z/dNc5tc/3LqvT
+         Uhxg==
+X-Gm-Message-State: AOAM533ozLUtPYDOuYVDOXAPG/4edC4if7AAVd3LUCzu22K7nu0+t4Ar
+        v6xtHzN9ye7yIwFkr+hOhMBFsg==
+X-Google-Smtp-Source: ABdhPJwUURP0vqFZmSab8huvpJnEKa1COgKGuzm6PJGDvlTnrrCaSMtwXTEJUhaQ5jKPvemdtE+wOA==
+X-Received: by 2002:a63:5a17:: with SMTP id o23mr12507469pgb.218.1593473650486;
+        Mon, 29 Jun 2020 16:34:10 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:0:9efe:9f1:9267:2b27])
+        by smtp.gmail.com with ESMTPSA id d16sm645765pfo.156.2020.06.29.16.34.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 16:34:09 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 16:34:05 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H . J . Lu" <hjl@sourceware.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 7/7] x86/boot: Check that there are no runtime
+ relocations
+Message-ID: <20200629233405.n56yb4xwlgxrt3fn@google.com>
+References: <20200629140928.858507-1-nivedita@alum.mit.edu>
+ <20200629140928.858507-8-nivedita@alum.mit.edu>
+ <202006290907.E5EF18A@keescook>
+ <CAMj1kXFge5aWL2BY8Y1=m1TonB+SrDq6p7TQWuO5JkzcR2dhjQ@mail.gmail.com>
+ <202006290919.93C759C62@keescook>
+ <20200629165603.GD900899@rani.riverdale.lan>
+ <20200629173735.l3ssrj7m3q5swfup@google.com>
+ <CAMj1kXHaXzYFkW_H=w36vMb1qPpuZXsnTd_giq4vsh0bw3S3eA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <3ba94f19-3b18-9d52-a070-f652620c88e6@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <CAMj1kXHaXzYFkW_H=w36vMb1qPpuZXsnTd_giq4vsh0bw3S3eA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/29/20 at 07:27am, Dave Hansen wrote:
-> On 6/28/20 11:52 PM, Baoquan He wrote:
-> > On 06/25/20 at 05:34pm, Dave Hansen wrote:
-> >>
-> >> From: Dave Hansen <dave.hansen@linux.intel.com>
-> >>
-> >> I went to go add a new RECLAIM_* mode for the zone_reclaim_mode
-> >> sysctl.  Like a good kernel developer, I also went to go update the
-> >> documentation.  I noticed that the bits in the documentation didn't
-> >> match the bits in the #defines.
-> >>
-> >> The VM evidently stopped caring about RECLAIM_ZONE at some point (or
-> >> never cared) and the #define itself was later removed as a cleanup.
-> > 
-> >>From git history, it seems to never care about the RECLAIM_ZONE bit.
-> > 
-> > I think this patch is justified. I have one question about adding back
-> > the RECLAIM_ZONE bit. Since we introduced RECLAIM_ZONE in the first
-> > place, but never use it, removing it truly may fail some existing
-> > script, does it mean we will never have chance to fix/clean up this kind
-> > of mess?
-> 
-> Our #1 rule is "don't break userspace".  We only break userspace when we
-> have no other choice.
-> 
-> This case a bit fuzzier because we don't know if anyone is depending on
-> the ignored bit to do anything.  But, it *was* documented.  To me, that
-> means it might have been used, even though it would have been a
-> "placebo" bit.
-> 
-> > Do we have possibility to remove it in mainline tree, let distos or
-> > stable kernel maintainer take care of the back porting? Like this, any
-> > stable kernel after 5.8, or any distrols which chooses post v5.8 kenrel
-> > as base won't have this confusion. I am not objecting this patch, just
-> > be curious if we have a way to fix/clean up for this type of issue.
-> 
-> The only way I can plausibly think of "cleaning up" the RECLAIM_ZONE bit
-> would be to raise our confidence that it is truly unused.  That takes
-> time, and probably a warning if we see it being set.  If we don't run
-> into anybody setting it or depending on it being set in a few years, we
-> can remove it.
+On 2020-06-29, Ard Biesheuvel wrote:
+>On Mon, 29 Jun 2020 at 19:37, Fangrui Song <maskray@google.com> wrote:
+>>
+>> On 2020-06-29, Arvind Sankar wrote:
+>> >On Mon, Jun 29, 2020 at 09:20:31AM -0700, Kees Cook wrote:
+>> >> On Mon, Jun 29, 2020 at 06:11:59PM +0200, Ard Biesheuvel wrote:
+>> >> > On Mon, 29 Jun 2020 at 18:09, Kees Cook <keescook@chromium.org> wrote:
+>> >> > >
+>> >> > > On Mon, Jun 29, 2020 at 10:09:28AM -0400, Arvind Sankar wrote:
+>> >> > > > Add a linker script check that there are no runtime relocations, and
+>> >> > > > remove the old one that tries to check via looking for specially-named
+>> >> > > > sections in the object files.
+>> >> > > >
+>> >> > > > Drop the tests for -fPIE compiler option and -pie linker option, as they
+>> >> > > > are available in all supported gcc and binutils versions (as well as
+>> >> > > > clang and lld).
+>> >> > > >
+>> >> > > > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+>> >> > > > Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+>> >> > > > Reviewed-by: Fangrui Song <maskray@google.com>
+>> >> > > > ---
+>> >> > > >  arch/x86/boot/compressed/Makefile      | 28 +++-----------------------
+>> >> > > >  arch/x86/boot/compressed/vmlinux.lds.S |  8 ++++++++
+>> >> > > >  2 files changed, 11 insertions(+), 25 deletions(-)
+>> >> > >
+>> >> > > Reviewed-by: Kees Cook <keescook@chromium.org>
+>> >> > >
+>> >> > > question below ...
+>> >> > >
+>> >> > > > diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
+>> >> > > > index a4a4a59a2628..a78510046eec 100644
+>> >> > > > --- a/arch/x86/boot/compressed/vmlinux.lds.S
+>> >> > > > +++ b/arch/x86/boot/compressed/vmlinux.lds.S
+>> >> > > > @@ -42,6 +42,12 @@ SECTIONS
+>> >> > > >               *(.rodata.*)
+>> >> > > >               _erodata = . ;
+>> >> > > >       }
+>> >> > > > +     .rel.dyn : {
+>> >> > > > +             *(.rel.*)
+>> >> > > > +     }
+>> >> > > > +     .rela.dyn : {
+>> >> > > > +             *(.rela.*)
+>> >> > > > +     }
+>> >> > > >       .got : {
+>> >> > > >               *(.got)
+>> >> > > >       }
+>> >> > >
+>> >> > > Should these be marked (INFO) as well?
+>> >> > >
+>> >> >
+>> >> > Given that sections marked as (INFO) will still be emitted into the
+>> >> > ELF image, it does not really make a difference to do this for zero
+>> >> > sized sections.
+>> >>
+>> >> Oh, I misunderstood -- I though they were _not_ emitted; I see now what
+>> >> you said was not allocated. So, disk space used for the .got.plt case,
+>> >> but not memory space used. Sorry for the confusion!
+>> >>
+>> >> -Kees
+>>
+>> About output section type (INFO):
+>> https://sourceware.org/binutils/docs/ld/Output-Section-Type.html#Output-Section-Type
+>> says "These type names are supported for backward compatibility, and are
+>> rarely used."
+>>
+>> If all input section don't have the SHF_ALLOC flag, the output section
+>> will not have this flag as well. This type is not useful...
+>>
+>> If .got and .got.plt were used, they should be considered dynamic
+>> relocations which should be part of the loadable image. So they should
+>> have the SHF_ALLOC flag. (INFO) will not be applicable anyway.
+>>
+>
+>I don't care deeply either way, but Kees indicated that he would like
+>to get rid of the 24 bytes of .got.plt magic entries that we have no
+>need for.
+>
+>In fact, a lot of this mangling is caused by the fact that the linker
+>is creating a relocatable binary, and assumes that it is a hosted
+>binary that is loaded by a dynamic loader. It would actually be much
+>better if the compiler and linker would take -ffreestanding into
+>account, and suppress GOT entries, PLTs, dynamic program headers for
+>shared libraries altogether.
 
-So adding the old bit back for compatibility looks good, thanks.
+Linkers (GNU ld and LLD) don't create .got or .got.plt just because the linker
+command line has -pie or -shared.  They create .got or .got.plt if there are
+specific needs.
 
-Then we have to be very careful when adding and reviewing new
-interface introducing, should not leave one which might be used
-in the future.
+For .got.plt, if there is (1) any .plt/.iplt entry, (2) any .got.plt based
+relocation (e.g. R_X86_64_GOTPC32 on x86-64), or (3) if _GLOBAL_OFFSET_TABLE_ is
+referenced, .got.plt will be created (both GNU ld and LLD) with usually 3
+entries (for ld.so purposes).
 
-In fact, RECLAIM_ZONE is not completely useless. At least, when the old
-bit 0 is set, it may enter into node_reclaim() in get_page_from_freelist(),
-that makes it like a switch.
+If (1) is not satisfied, the created .got.plt is just served as an anchor for
+things that want to reference (the distance from GOT base to some point). The
+linker will still reserve 3 words but the words are likely not needed.
 
-get_page_from_freelist {
-
-	...
-                        if (node_reclaim_mode == 0 ||                                                                                             
-                            !zone_allows_reclaim(ac->preferred_zoneref->zone, zone))
-                                continue;
-	...
-}
-
-
-> 
-> Backporting a _warning_ into the -stable trees might be an interesting
-> way to find users of older kernels mucking with it.
-> 
-
+I don't think there is a specific need for another option to teach the linker
+(GNU ld or LLD) that this is a kernel link.  For -ffreestanding builds, cc
+-static (ld -no-pie))/-static-pie (-pie) already work quite well.
