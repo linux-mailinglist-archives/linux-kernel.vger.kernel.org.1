@@ -2,168 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 797E720D380
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C21320D512
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729231AbgF2S7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:59:30 -0400
-Received: from mga09.intel.com ([134.134.136.24]:65096 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729580AbgF2S6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:58:53 -0400
-IronPort-SDR: XY9UMfX/hneGulcR8bC1PWmfEBgLLgbZ9iiaXxXXkwuyx9IhOXxMiLYWrczpHSD8MoLh1QN6Ip
- 8POW4h6I9lHQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="147481331"
-X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
-   d="scan'208";a="147481331"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 02:24:54 -0700
-IronPort-SDR: tI5Ohju9i3K+OadxL2HBTr9fOzcCn+beT76uV7xRaQYyW9I/YuorN5TKT8sBqVJzVUD+8/TSqU
- KHRjoSN9A8Jw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
-   d="scan'208";a="266156684"
-Received: from orsmsx110.amr.corp.intel.com ([10.22.240.8])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Jun 2020 02:24:53 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX110.amr.corp.intel.com (10.22.240.8) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Mon, 29 Jun 2020 02:24:53 -0700
-Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 29 Jun 2020 02:24:52 -0700
-Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
- orsmsx609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 29 Jun 2020 02:24:52 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Mon, 29 Jun 2020 02:24:52 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CzOkKJDar7ZVVw4EZ4o11kfys8JauxTJrk1vHIfASW0gAzrxmbl6khyzhdin+iqw509eK3ZeP9twrmfn1KdRMMUi82EpdscYFd2iNUu85ePzmHTypUt/mM+wA8wbUoOr2Fm7LmmTmZW52QDsBKk2lTRGFJoSqLBnpj2/1b6rIdjXLC6dfywV8qgw1KLrrB+gPtlf3FG0O6Jo+TKaIN+2WvPBGI794f0oinQiQca/ZkVYDR4MQ+eKijnyJXtwtOJGecCili0hnQvdLCqkyqJ5do9/X1FWO0MgvlGeoABQG9+An0zH04PooH/baG6bXXvSgsWQ9pGzkUaFpga4LVEaHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jRk8u28uye2ch7b4Wxc0y7sbq3f/DByKJkO9iEZUIDk=;
- b=A5B+LeROEw4ByHjoNPKS7TKtA63cJruW5DokNIc/PyxK3cCuFpYIJIeG8SrUyu/RA57YJXhVRaWzH6FLPYJxJyQZsHjBB8BOWlhR6HFBwwtsNASvV2nxZmQyQfIGmF+Ngi4MhRtLdOP9qIAFKVDLNpc/GrYqo7wAEOrXahN3YR8YMc58R77knZWrVjZGG3bxbMKkkP1sSRqOkaMJeYQsgk28ODH0E9sMBc+pZs7SD7x7fwXyaIl16ySMzP95LqVUcZMNdolBLzvvagNmdpLVQgA4MjoHwEANXSsGsboASVryuYo6mkfM0s6yXPDuHQy8owyGrrwJPR5c2tSjVuXErA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jRk8u28uye2ch7b4Wxc0y7sbq3f/DByKJkO9iEZUIDk=;
- b=rESw7DDbmfDGzqHa0JuKbp8EcJD4Tb0WkR7NmDJRzoVSQRfY0ZRxGKF75mHJHVDr8G6tQY+6Z5ESelx46EI7z2dtnrCg6unp0X8iLpVFSQ0BPiIYDFHCt1AAk/zf+Lc/CaJZqX+2VAIsSSWphlngsURB4VZ76oF6en/O+R7LUoM=
-Received: from CY4PR11MB1432.namprd11.prod.outlook.com (2603:10b6:910:5::22)
- by CY4PR11MB1574.namprd11.prod.outlook.com (2603:10b6:910:f::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.25; Mon, 29 Jun
- 2020 09:24:51 +0000
-Received: from CY4PR11MB1432.namprd11.prod.outlook.com
- ([fe80::b46e:9dcb:b46b:884a]) by CY4PR11MB1432.namprd11.prod.outlook.com
- ([fe80::b46e:9dcb:b46b:884a%4]) with mapi id 15.20.3131.026; Mon, 29 Jun 2020
- 09:24:51 +0000
-From:   "Liu, Yi L" <yi.l.liu@intel.com>
-To:     Stefan Hajnoczi <stefanha@gmail.com>
-CC:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>,
-        "Sun, Yi Y" <yi.y.sun@intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "Wu, Hao" <hao.wu@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 13/14] vfio: Document dual stage control
-Thread-Topic: [PATCH v3 13/14] vfio: Document dual stage control
-Thread-Index: AQHWSgRSM+uqgdGjpEOT7nvP3+zeDKjvWVIAgAAAwoA=
-Date:   Mon, 29 Jun 2020 09:24:50 +0000
-Message-ID: <CY4PR11MB14322E99A64BC0B2E06CD33CC36E0@CY4PR11MB1432.namprd11.prod.outlook.com>
-References: <1592988927-48009-1-git-send-email-yi.l.liu@intel.com>
- <1592988927-48009-14-git-send-email-yi.l.liu@intel.com>
- <20200629092132.GA31392@stefanha-x1.localdomain>
-In-Reply-To: <20200629092132.GA31392@stefanha-x1.localdomain>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-dlp-product: dlpe-windows
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.198.147.219]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cea3d932-ea3b-480e-c016-08d81c0e4677
-x-ms-traffictypediagnostic: CY4PR11MB1574:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR11MB157442D535B74B1AAC0C281FC36E0@CY4PR11MB1574.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-forefront-prvs: 044968D9E1
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AmcsE1Cv0tmD0bWGatIpr6AXEY+73/1COSqlXY8LFVZdV9vioG4VjIzR+GZWMZQN9dp7Xavf2jqzB3uzH3l4CrdNMSFUi9G4bU9gw7P76S3751vX5+OlVh6FrKHCenfGUbT7U/SWd4MOciFIeRVTjz1J99P3981RW5tkb+cc9Btm5YWsMiHXL4cTxs/8QLDcvgJjsi50nc2ynCM4kU6/2LXcgrxVJkESAtjJw9kpH6uy3YQ7Xy5RQMmDtmy7ZjWnItIT83ZTnABbVDFAcPm5P43ZHkBlXED4rwuKbZtw36VXfCPSugVhcUweYfUAEAwl
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB1432.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(346002)(376002)(136003)(366004)(396003)(6506007)(9686003)(7416002)(33656002)(55016002)(2906002)(6916009)(66446008)(64756008)(66476007)(66946007)(66556008)(76116006)(4326008)(54906003)(8936002)(26005)(71200400001)(8676002)(86362001)(5660300002)(52536014)(186003)(478600001)(7696005)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: ot80ypviLdqi2cWASLCsQLRJOskY5BSGNYBIRehnxaz+VA90nybLJQMHEDTlbmVH622PIJ6mnO7byc0+AkhZzShX6q60jyb8beZjuOvYxSKtzl974TPblF8yi/OY6XF3hhQeLWr+oECK6yY4luNVwApm7LMh3IXr5GUXIcl7K94ZsTg4xhvFimehTvMVKwz69dwE38E7XpaY5dc6UbWUBdG6rifhu2PKxIqDd0XtliJ3HNetY+//kuxAmcoBVUehZgDNkhh/IsspT9PloJUxIJw9Lr3OZc19InhlzrYCkQViKOzhE38CId4xDGy+C8dp5LzdzbWOKnxAux4VrJJ7yscLey0a1byYSHpI3R4Ln3P5t575VGWosSdYwzckjod0lLWkWE40QkXO9ul5opPHbu2+hcPQL+9MnuG9aKq0z3+3OL7GBM9/SnQqkRr0/MpktvggWPZ0js7g0Pmg4lqi8CQloN7xTH92OwHajKyYWpbXm2nD/XpsfvfDJ7gldLlA
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1731812AbgF2TO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:14:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731042AbgF2TOU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:14:20 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9F8C0086DC;
+        Mon, 29 Jun 2020 02:31:33 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id q17so7653368pfu.8;
+        Mon, 29 Jun 2020 02:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qe4WDxIQGl3f8nl5SssfB8C9vc9ueXmXwiDJGu9bR+U=;
+        b=gxKy2bwoStooFIbHMuvcV/ySW4DhExicwX6eDsJRMPKxT3EtXkkzy4XkPZ7XaBAXuL
+         dsCi0E0ZbCRPX9CA6lrQU0ga29adgeFdIRgXJjtuyloMTQnZ4IHAvGO42VKD1JSQtqx4
+         gLo9Ntqaqf1FDwUsl/4tvEBRQlNzQMViHgdFBu8rAY3E++k+ZFaYqfAy29nBtRRXcHPV
+         eudann+dY92ttd2o47kcoebTGocwMq5sNRKo9W31Bk+/Q/c5dQpujD1vq1Y+paMDOxPo
+         1pFGRPKNa+4nosY5izWIrVe17jk+JELQxI3GZoy1zTCNDM6Vc96RYfSi1wTwKKcqirt2
+         Nmug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qe4WDxIQGl3f8nl5SssfB8C9vc9ueXmXwiDJGu9bR+U=;
+        b=rHhUylfB0+RPFZiSSjJmQBIxNr5lywH5JSo4IVv6MZFeiqFkigZ/62CUL1CYBxdqeu
+         8jMuvKiW6ze/90NmNUv1Teqo3jRFj+fU2h5rsCMQAmuQXUPbu9iiDk9D97sU6GmsdUer
+         vTfAw94IuwYRXjCkJplRFKdqQ7NcNKzEbxOWvsge3jgzZF6SZQJHchAbAaOXfxUCCBo7
+         ndRl5w4tPZN0Usmm88+r9Q2jlsFPkrze8FWHjhB3tI75KePkCOO0Qm9X+h601TdTYG1a
+         IBFSm4BfgExY31zBfFValD7pd4CAyctnWhnQ/MyU+a1h5o6Ua7PZqg9vNHnVkiHWmxcO
+         LdSw==
+X-Gm-Message-State: AOAM531ZbAD+NsaYYOo5YjMXhYXECfHGt3i1xwl4aoIc26uDkNPIAWav
+        fLzTT83Am3sEqR/aAFNv+XDmGkLpRK8=
+X-Google-Smtp-Source: ABdhPJzc/HXeM2Z10CROTyp/Ia6gJiD+wH9o2SbtefVvniYcFcPJgHQUf/d2M3s4RdRVXyc6lOCjcA==
+X-Received: by 2002:a63:1e60:: with SMTP id p32mr9294309pgm.172.1593423093298;
+        Mon, 29 Jun 2020 02:31:33 -0700 (PDT)
+Received: from varodek.localdomain ([106.210.40.90])
+        by smtp.gmail.com with ESMTPSA id q20sm2921286pfn.111.2020.06.29.02.31.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 02:31:32 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org
+Subject: [PATCH v1 3/5] ixgbe: use generic power management
+Date:   Mon, 29 Jun 2020 14:59:41 +0530
+Message-Id: <20200629092943.227910-4-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200629092943.227910-1-vaibhavgupta40@gmail.com>
+References: <20200629092943.227910-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB1432.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cea3d932-ea3b-480e-c016-08d81c0e4677
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2020 09:24:50.8738
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kaMH13DW3Uvu2QUbZdgwyXwcjj5R7CJMtVaDu10oI76uIjyyWqK5YOfhR10xp9HjjZNjFKjfFfiTdiVCYjSANw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1574
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Stefan Hajnoczi <stefanha@gmail.com>
-> Sent: Monday, June 29, 2020 5:22 PM
->=20
-> On Wed, Jun 24, 2020 at 01:55:26AM -0700, Liu Yi L wrote:
-> > +Details can be found in Documentation/userspace-api/iommu.rst. For
-> > +Intel VT-d, each stage 1 page table is bound to host by:
-> > +
-> > +    nesting_op->flags =3D VFIO_IOMMU_NESTING_OP_BIND_PGTBL;
-> > +    memcpy(&nesting_op->data, &bind_data, sizeof(bind_data));
-> > +    ioctl(container->fd, VFIO_IOMMU_NESTING_OP, nesting_op);
-> > +
-> > +As mentioned above, guest OS may use stage 1 for GIOVA->GPA or GVA->GP=
-A.
-> > +GVA->GPA page tables are available when PASID (Process Address Space
-> > +GVA->ID)
-> > +is exposed to guest. e.g. guest with PASID-capable devices assigned.
-> > +For such page table binding, the bind_data should include PASID info,
-> > +which is allocated by guest itself or by host. This depends on
-> > +hardware vendor e.g. Intel VT-d requires to allocate PASID from host.
-> > +This requirement is defined by the Virtual Command Support in VT-d
-> > +3.0 spec, guest software running on VT-d should allocate PASID from
-> > +host kernel. To allocate PASID from host, user space should +check
-> > +the IOMMU_NESTING_FEAT_SYSWIDE_PASID
->=20
-> s/+check/check/g
+With legacy PM hooks, it was the responsibility of a driver to manage PCI
+states and also the device's power state. The generic approach is to let
+PCI core handle the work.
 
-got it.
+ixgbe_suspend() calls __ixgbe_shutdown() to perform intermediate tasks.
+__ixgbe_shutdown() modifies the value of "wake" (device should be wakeup
+enabled or not), responsible for controlling the flow of legacy PM.
 
-> Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+Since, PCI core has no idea about the value of "wake", new code for generic
+PM may produce unexpected results. Thus, use "device_set_wakeup_enable()"
+to wakeup-enable the device accordingly.
 
-thanks :-)
+Compile-tested only.
 
-Regards,
-Yi Liu
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 61 +++++--------------
+ 1 file changed, 15 insertions(+), 46 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 97a423ecf808..145296825e64 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -6861,32 +6861,20 @@ int ixgbe_close(struct net_device *netdev)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM
+-static int ixgbe_resume(struct pci_dev *pdev)
++static int __maybe_unused ixgbe_resume(struct device *dev_d)
+ {
++	struct pci_dev *pdev = to_pci_dev(dev_d);
+ 	struct ixgbe_adapter *adapter = pci_get_drvdata(pdev);
+ 	struct net_device *netdev = adapter->netdev;
+ 	u32 err;
+ 
+ 	adapter->hw.hw_addr = adapter->io_addr;
+-	pci_set_power_state(pdev, PCI_D0);
+-	pci_restore_state(pdev);
+-	/*
+-	 * pci_restore_state clears dev->state_saved so call
+-	 * pci_save_state to restore it.
+-	 */
+-	pci_save_state(pdev);
+ 
+-	err = pci_enable_device_mem(pdev);
+-	if (err) {
+-		e_dev_err("Cannot enable PCI device from suspend\n");
+-		return err;
+-	}
+ 	smp_mb__before_atomic();
+ 	clear_bit(__IXGBE_DISABLED, &adapter->state);
+ 	pci_set_master(pdev);
+ 
+-	pci_wake_from_d3(pdev, false);
++	device_wakeup_disable(dev_d);
+ 
+ 	ixgbe_reset(adapter);
+ 
+@@ -6904,7 +6892,6 @@ static int ixgbe_resume(struct pci_dev *pdev)
+ 
+ 	return err;
+ }
+-#endif /* CONFIG_PM */
+ 
+ static int __ixgbe_shutdown(struct pci_dev *pdev, bool *enable_wake)
+ {
+@@ -6913,9 +6900,6 @@ static int __ixgbe_shutdown(struct pci_dev *pdev, bool *enable_wake)
+ 	struct ixgbe_hw *hw = &adapter->hw;
+ 	u32 ctrl;
+ 	u32 wufc = adapter->wol;
+-#ifdef CONFIG_PM
+-	int retval = 0;
+-#endif
+ 
+ 	rtnl_lock();
+ 	netif_device_detach(netdev);
+@@ -6926,12 +6910,6 @@ static int __ixgbe_shutdown(struct pci_dev *pdev, bool *enable_wake)
+ 	ixgbe_clear_interrupt_scheme(adapter);
+ 	rtnl_unlock();
+ 
+-#ifdef CONFIG_PM
+-	retval = pci_save_state(pdev);
+-	if (retval)
+-		return retval;
+-
+-#endif
+ 	if (hw->mac.ops.stop_link_on_d3)
+ 		hw->mac.ops.stop_link_on_d3(hw);
+ 
+@@ -6986,26 +6964,18 @@ static int __ixgbe_shutdown(struct pci_dev *pdev, bool *enable_wake)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM
+-static int ixgbe_suspend(struct pci_dev *pdev, pm_message_t state)
++static int __maybe_unused ixgbe_suspend(struct device *dev_d)
+ {
++	struct pci_dev *pdev = to_pci_dev(dev_d);
+ 	int retval;
+ 	bool wake;
+ 
+ 	retval = __ixgbe_shutdown(pdev, &wake);
+-	if (retval)
+-		return retval;
+ 
+-	if (wake) {
+-		pci_prepare_to_sleep(pdev);
+-	} else {
+-		pci_wake_from_d3(pdev, false);
+-		pci_set_power_state(pdev, PCI_D3hot);
+-	}
++	device_set_wakeup_enable(dev_d, wake);
+ 
+-	return 0;
++	return retval;
+ }
+-#endif /* CONFIG_PM */
+ 
+ static void ixgbe_shutdown(struct pci_dev *pdev)
+ {
+@@ -11489,16 +11459,15 @@ static const struct pci_error_handlers ixgbe_err_handler = {
+ 	.resume = ixgbe_io_resume,
+ };
+ 
++static SIMPLE_DEV_PM_OPS(ixgbe_pm_ops, ixgbe_suspend, ixgbe_resume);
++
+ static struct pci_driver ixgbe_driver = {
+-	.name     = ixgbe_driver_name,
+-	.id_table = ixgbe_pci_tbl,
+-	.probe    = ixgbe_probe,
+-	.remove   = ixgbe_remove,
+-#ifdef CONFIG_PM
+-	.suspend  = ixgbe_suspend,
+-	.resume   = ixgbe_resume,
+-#endif
+-	.shutdown = ixgbe_shutdown,
++	.name      = ixgbe_driver_name,
++	.id_table  = ixgbe_pci_tbl,
++	.probe     = ixgbe_probe,
++	.remove    = ixgbe_remove,
++	.driver.pm = &ixgbe_pm_ops,
++	.shutdown  = ixgbe_shutdown,
+ 	.sriov_configure = ixgbe_pci_sriov_configure,
+ 	.err_handler = &ixgbe_err_handler
+ };
+-- 
+2.27.0
+
