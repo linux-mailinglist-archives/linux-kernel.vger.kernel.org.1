@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C17920D0BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1130D20D0C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgF2Sfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:35:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56762 "EHLO mail.kernel.org"
+        id S1726838AbgF2Sf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:35:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726107AbgF2SfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:35:18 -0400
+        id S1726260AbgF2SfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:35:24 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 936FE2478B;
-        Mon, 29 Jun 2020 15:21:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EF162478E;
+        Mon, 29 Jun 2020 15:21:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593444096;
-        bh=VdLNrCbuwMYCY9QDHYOlAwoBGMDQ4WJP7+Rn3wVFuD4=;
+        s=default; t=1593444099;
+        bh=uHwno3Ld8wXdlBKVMBd9bJucUtSHlJ/IkWB1iABEIdo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vSWB0TwhwjFkK5NmiLpXHSxT4yExyjAhniJ+MF+kmXjyq1h/x488Ljg22ek08dH5w
-         cwVhQg/WbQaCCJpRnDHCme1CY4A0Cq5Ts14ZuUIhSzy5sOsam8b8JmzF/Ymp1bqgMA
-         PU28FRR1kjfZFZiRSk5RDDeLBr6HbtbV+Wq7EKhc=
+        b=DSmdIZJV1dxHgnj9oRK5gV+MRlHIYgdk5b6s1AqzpMcTV5hPP/LF8lGvcYOaJO+aS
+         Wqg6xbXQ+7RUwiCHmrhM+y5YA+Basn8l2p8YlOO3ArOjdsTeHWIBfdHh/ExbdZkuw1
+         jIhaJ2r4cJMnqWipXz4fsFlVsOIa+cB/WHWAPzPI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Weiping Zhang <zhangweiping@didiglobal.com>,
-        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 206/265] block: update hctx map when use multiple maps
-Date:   Mon, 29 Jun 2020 11:17:19 -0400
-Message-Id: <20200629151818.2493727-207-sashal@kernel.org>
+Cc:     Aaron Plattner <aplattner@nvidia.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 5.7 209/265] ALSA: hda: Add NVIDIA codec IDs 9a & 9d through a0 to patch table
+Date:   Mon, 29 Jun 2020 11:17:22 -0400
+Message-Id: <20200629151818.2493727-210-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629151818.2493727-1-sashal@kernel.org>
 References: <20200629151818.2493727-1-sashal@kernel.org>
@@ -49,57 +49,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Weiping Zhang <zhangweiping@didiglobal.com>
+From: Aaron Plattner <aplattner@nvidia.com>
 
-[ Upstream commit fe35ec58f0d339221643287bbb7cee15c93a5389 ]
+commit adb36a8203831e40494a92095dacd566b2ad4a69 upstream.
 
-There is an issue when tune the number for read and write queues,
-if the total queue count was not changed. The hctx->type cannot
-be updated, since __blk_mq_update_nr_hw_queues will return directly
-if the total queue count has not been changed.
+These IDs are for upcoming NVIDIA chips with audio functions that are largely
+similar to the existing ones.
 
-Reproduce:
-
-dmesg | grep "default/read/poll"
-[    2.607459] nvme nvme0: 48/0/0 default/read/poll queues
-cat /sys/kernel/debug/block/nvme0n1/hctx*/type | sort | uniq -c
-     48 default
-
-tune the write queues to 24:
-echo 24 > /sys/module/nvme/parameters/write_queues
-echo 1 > /sys/block/nvme0n1/device/reset_controller
-
-dmesg | grep "default/read/poll"
-[  433.547235] nvme nvme0: 24/24/0 default/read/poll queues
-
-cat /sys/kernel/debug/block/nvme0n1/hctx*/type | sort | uniq -c
-     48 default
-
-The driver's hardware queue mapping is not same as block layer.
-
-Signed-off-by: Weiping Zhang <zhangweiping@didiglobal.com>
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Aaron Plattner <aplattner@nvidia.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200611180845.39942-1-aplattner@nvidia.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-mq.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_hdmi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 98a702761e2cc..8f580e66691b9 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -3328,7 +3328,9 @@ static void __blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set,
- 
- 	if (set->nr_maps == 1 && nr_hw_queues > nr_cpu_ids)
- 		nr_hw_queues = nr_cpu_ids;
--	if (nr_hw_queues < 1 || nr_hw_queues == set->nr_hw_queues)
-+	if (nr_hw_queues < 1)
-+		return;
-+	if (set->nr_maps == 1 && nr_hw_queues == set->nr_hw_queues)
- 		return;
- 
- 	list_for_each_entry(q, &set->tag_list, tag_set_list)
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 93760a3564cfa..137d655fed8f8 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -4145,6 +4145,11 @@ HDA_CODEC_ENTRY(0x10de0095, "GPU 95 HDMI/DP",	patch_nvhdmi),
+ HDA_CODEC_ENTRY(0x10de0097, "GPU 97 HDMI/DP",	patch_nvhdmi),
+ HDA_CODEC_ENTRY(0x10de0098, "GPU 98 HDMI/DP",	patch_nvhdmi),
+ HDA_CODEC_ENTRY(0x10de0099, "GPU 99 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de009a, "GPU 9a HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de009d, "GPU 9d HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de009e, "GPU 9e HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de009f, "GPU 9f HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de00a0, "GPU a0 HDMI/DP",	patch_nvhdmi),
+ HDA_CODEC_ENTRY(0x10de8001, "MCP73 HDMI",	patch_nvhdmi_2ch),
+ HDA_CODEC_ENTRY(0x10de8067, "MCP67/68 HDMI",	patch_nvhdmi_2ch),
+ HDA_CODEC_ENTRY(0x11069f80, "VX900 HDMI/DP",	patch_via_hdmi),
 -- 
 2.25.1
 
