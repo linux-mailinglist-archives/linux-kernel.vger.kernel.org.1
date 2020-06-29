@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB18E20E81C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B86BD20E65B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391665AbgF2WDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 18:03:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56890 "EHLO mail.kernel.org"
+        id S2403962AbgF2Vql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:46:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726236AbgF2SfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:35:23 -0400
+        id S1726765AbgF2Sft (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:35:49 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C94A025599;
-        Mon, 29 Jun 2020 18:15:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E9520255CB;
+        Mon, 29 Jun 2020 18:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593454519;
-        bh=HME3jm5v+kI3YX0e1z9z2PFpSji4Pm/di2GGIvU+mpM=;
+        s=default; t=1593454524;
+        bh=PRzEUjCwFdEbb2h7LthoNz2Fd8Gh9/Q8utmKomXm5U8=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=pqTxBMQQ7VvDugyQK5aqKCae+tDtwremB2oe11I/J6sXrgwhq/Q0XqQLNhuX2KBdW
-         RJm+2Bg0tIzcZeRo+V6/Bxo56MsCI22ceSzjrC4OXFpxcA/oPBE79FSBezP5486YaP
-         5ZduXoLhipDZghr8b07IILTLCqqlCy55LSMj29SQ=
-Date:   Mon, 29 Jun 2020 19:15:17 +0100
+        b=Cjie/f2sybCATA4dkTGFcdf59jIZLIWBY4SBWEoNDYh68xvujTFZ817yIvQtB6lI+
+         +9A/rMEaV7xPEijchgYYTDVRYRuTK28yEMdGLgZwWY15w/4gCz9kTkEzy03QVGT4ZI
+         JDzvQ3bLdUv9oA55zVyE9o5Mvdwp5zqxSnqSsIaI=
+Date:   Mon, 29 Jun 2020 19:15:22 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, perex@perex.cz, plai@codeaurora.org,
-        alsa-devel@alsa-project.org, tiwai@suse.com,
-        linux-kernel@vger.kernel.org, Rohit kumar <rohitkr@codeaurora.org>
-In-Reply-To: <1593265030-1451-1-git-send-email-rohitkr@codeaurora.org>
-References: <1593265030-1451-1-git-send-email-rohitkr@codeaurora.org>
-Subject: Re: [PATCH] asoc: Update supported rate and format for dummy dai
-Message-Id: <159345450675.54191.18376967903850938054.b4-ty@kernel.org>
+To:     Dan Murphy <dmurphy@ti.com>, perex@perex.cz, tiwai@suse.com,
+        lgirdwood@gmail.com
+Cc:     robh@kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20200626154143.20351-1-dmurphy@ti.com>
+References: <20200626154143.20351-1-dmurphy@ti.com>
+Subject: Re: [PATCH 1/4] ASoC: tas2562: Add right and left channel slot programming
+Message-Id: <159345450675.54191.5281354512647747070.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 27 Jun 2020 19:07:10 +0530, Rohit kumar wrote:
-> Add support for 384KHz sample rate and S24_3LE
-> bitwidth for dummy dai.
+On Fri, 26 Jun 2020 10:41:40 -0500, Dan Murphy wrote:
+> Add programming for the tdm slots for the right and left. This also
+> requires configuring the RX/TX offsets for the DAI format type.
 
 Applied to
 
@@ -47,8 +48,12 @@ Applied to
 
 Thanks!
 
-[1/1] asoc: Update supported rate and format for dummy dai
-      commit: abc17b2974d634c17d25be7f4472890c8533a005
+[1/3] ASoC: tas2562: Add right and left channel slot programming
+      commit: d7bd40ae55ce339a3c9be7fc2087c671d3d80894
+[2/3] ASoC: tas2562: Add voltage sense slot property
+      commit: f10b6c99c08433861d1ed62267fa57ced7dbdf50
+[3/3] ASoC: tas2562: Add voltage sense slot configuration
+      commit: 09ed395b05feb7d0f77ab52c48d2f77c1b44d2ab
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
