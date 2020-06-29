@@ -2,98 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3991420E183
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A4D20DF88
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389899AbgF2U4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:56:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731278AbgF2TNJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:09 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00429C030F2E;
-        Mon, 29 Jun 2020 09:45:36 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id f7so14214215wrw.1;
-        Mon, 29 Jun 2020 09:45:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Y9LuaHpAJp7j99mylhwwTrgsG7QR6yXOEQqHPjHK9qA=;
-        b=YG1iZpScR2fnD/Dg0q0W5hkPvmMrLbNo9xlP1cqrwH2mupcSdQTr4LZR+9nZIKBkhS
-         vNxlDaGanRq87QIVN4EIae1EoO1LKEPYH5/TT7VqNi3dm09PLW5A18bwk8y2bP0I19Dp
-         7amp7MNjaIvmjbUVxgBphis8bQqS+Cgq4t+mDKgU46afrmUTLt1XhOjJSJj9RnUaBGVS
-         ygj++98OzqCSrPQ3NwRlILzhK+xS+zrrGXYuf8xJehhPVJI6DErMknEW/s2CXDG+9jUJ
-         FK73oiZ8EUmGLsRotn44ygJAd1jKxyLIhwh73uooLRa7ZgXTWD0Som4EYsuGKhwxeaUL
-         wFDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Y9LuaHpAJp7j99mylhwwTrgsG7QR6yXOEQqHPjHK9qA=;
-        b=jvQILgQd4+Bg1f5MIOHkaUezSJ/cEF1Jb1IsWjjj74YDRGEmmKnuz9MCRz0IJpKA3B
-         Nrv/Y24LXxUvQB6vfp+fDPRO56slUNxKh9KwbDfZf7DUJXjadGJZ3IVrcwP4cVOhcd4n
-         mS0kCrLhrbpytwAUd8IMqwpleIehufaFba5nE7RSHBVbqsZ/fg07muBMht9IrRzuv+vW
-         87ovKFgueySPTAQpGaOwG7hR9iIqN7YvsCms/LTqmMuBngnDgJhA/bQXSjxGt68EG1/3
-         4PxhzpyUhQy77+2l0UKEvNpH4hcVdR15VeX4rgSFA5jde5mtq+AVE+SbUY4YA9VEHdGI
-         G8cQ==
-X-Gm-Message-State: AOAM532CkdQ9p1Gb1YN0cQTpvVenWFCJ/1pqAly4fHdYhSKcRu2DnS+u
-        udO4w6rj/7v0k8yOND92aZM=
-X-Google-Smtp-Source: ABdhPJyO9Vl/0aowtNg2HaFwebZPM9zO5kDm6GzEIHIzbBOeZOCT+P6YXcPb6Z5tEMB0sRox55sZ8g==
-X-Received: by 2002:adf:e8ce:: with SMTP id k14mr17120164wrn.93.1593449135758;
-        Mon, 29 Jun 2020 09:45:35 -0700 (PDT)
-Received: from [10.230.30.107] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id x11sm371016wmc.26.2020.06.29.09.45.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jun 2020 09:45:35 -0700 (PDT)
-Subject: Re: [PATCH 2/4] pwm: bcm-kona: Remove impossible comparison when
- validating duty cycle
-To:     Lee Jones <lee.jones@linaro.org>, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com
-References: <20200629124752.1018358-1-lee.jones@linaro.org>
- <20200629124752.1018358-3-lee.jones@linaro.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <0db8ebc7-b75b-a74c-8852-b235daedaf82@gmail.com>
-Date:   Mon, 29 Jun 2020 09:45:31 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.9.0
+        id S2389513AbgF2Uhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:37:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732095AbgF2TUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:20:15 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6738C25511;
+        Mon, 29 Jun 2020 16:50:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593449416;
+        bh=fixPM011IXmV72KayBjsTcKueDK/xQBWs4YyvLISZOc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VS/WIVM4nxT0BS2eahmSB3tmX3H1+D4UhP993lN9x/5qDz6hB/TqPP6O4zB2S0Vvy
+         tIpwpM5pdGqgybGvXIqCjExLWwzzKA5FAzAZQlt0Q0TOq4uUB+q7kSkfwPPbmnJVAZ
+         NIW29k8ysfe/gv8mW85SS2idLgTXLzNN8+r1Bzxg=
+Date:   Mon, 29 Jun 2020 09:50:14 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] vfs: don't unnecessarily clone write access for
+ writable fds
+Message-ID: <20200629165014.GA20492@sol.localdomain>
+References: <20200611160534.55042-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200629124752.1018358-3-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200611160534.55042-1-ebiggers@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/29/2020 5:47 AM, Lee Jones wrote:
-> 'dc' here is an unsigned long, thus checking for <0 will always
-> evaluate to false.
+On Thu, Jun 11, 2020 at 09:05:34AM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Fixes the following W=1 warning:
+> There's no need for mnt_want_write_file() to increment mnt_writers when
+> the file is already open for writing, provided that
+> mnt_drop_write_file() is changed to conditionally decrement it.
 > 
->  drivers/pwm/pwm-bcm-kona.c:141:35: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
+> We seem to have ended up in the current situation because
+> mnt_want_write_file() used to be paired with mnt_drop_write(), due to
+> mnt_drop_write_file() not having been added yet.  So originally
+> mnt_want_write_file() had to always increment mnt_writers.
 > 
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: Ray Jui <rjui@broadcom.com>
-> Cc: Scott Branden <sbranden@broadcom.com>
-> Cc: bcm-kernel-feedback-list@broadcom.com
-> Cc: linux-pwm@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> But later mnt_drop_write_file() was added, and all callers of
+> mnt_want_write_file() were paired with it.  This makes the compatibility
+> between mnt_want_write_file() and mnt_drop_write() no longer necessary.
+> 
+> Therefore, make __mnt_want_write_file() and __mnt_drop_write_file() skip
+> incrementing mnt_writers on files already open for writing.  This
+> removes the only caller of mnt_clone_write(), so remove that too.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-And similar to patch #1, DUTY_CYCLE_HIGH_MIN now gets unused, so if you
-remove it as well, you can add:
+Al, any thoughts on this patch?
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+- Eric
