@@ -2,126 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A194320D43C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63AA020D3E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730744AbgF2TG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41742 "EHLO
+        id S1730555AbgF2TCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730523AbgF2TCn (ORCPT
+        with ESMTP id S1730511AbgF2TCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:02:43 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40136C030F23
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:36:52 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id h19so18712789ljg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:36:52 -0700 (PDT)
+        Mon, 29 Jun 2020 15:02:42 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93AF3C030F24
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:36:56 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id h4so1216127plt.9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:36:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tI71Ydu+pOwgXlMgU1oRf0sUNNr5tt035+vZPAuuAlc=;
-        b=aUdFRUhudS+xPjPDQJSELxYOf4pJLDIm4+/ROEP7p1wsB51Uh2J9psit34O0WmSaxJ
-         OYVP5cGLT9NFbqYH97fpKyzYqtetDtgEQMyQ95b1c8KZXih8pZxMfCuFO6cesNCcfyUh
-         MZ+KwA8V96MowogGQxiP9Tmg7PvYg8Xa4kdsA=
+        bh=cP6iQsVZnZL9cfv3sLl/5r6hzqX0rVayprzDZmD8fls=;
+        b=q5EC2OafxVTf2u/iQVD0g8yJF3Y1bDOuicqD7IHdDsvf5/fGCEdbx9n3vhiYTT2qiC
+         fXBtNHHkfMBVzxvHYFkKG4rc+UqQ1k+C6Zc1++iOwPtLEWdKwxKR0b4Hexnp5badz2e9
+         Emob2Nui7WvtyIQWV2bepfCdG5Z+H4LQOzS6+qE7Mk/UpmWlaayYsRadT8JfLDeJuF7b
+         ekEIDf7quMaUYxhU8LTapw6ta8ft2Dnmm1EFyyS+Va4/NSNILgilR0dN32QjzYEyHoPS
+         cVvD1LHMsN1bihCtlFjyMsdBqea389T0XZ7BeI/GjaXKXlZmPjNU8WYzYSUbXsvl1n2F
+         1iIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tI71Ydu+pOwgXlMgU1oRf0sUNNr5tt035+vZPAuuAlc=;
-        b=kh0Vcv1FifW2nMOWChn+SO/tdMR6fD35t4jqa9lTxydmEtNzaKLGkp/WVx5D2N7Cgb
-         lbPxGCqWVbz0jo3HGFKqMqKiH0itzRcrhlnF3rkBnRDr4RrzObTfOSs7cngY6a23orkX
-         gnEid/7eSrEts3hk8dXWqOmucl2lbweVUxpz5MnhA+gVcEditBTXJtMLfjjv4LHPXXQY
-         tG6ySvOLteprJ1zT8KT2oiGCP48EzrKZruqQy2PSHOIGFry/Ndvlgcf6wyad/xSa3Wsg
-         PKvJ48QgPUK74J98thEZPoyUgxSjA3X98YlWMfwWvI+hREGXgT1L58VzHS/R19l3WiYu
-         oK8Q==
-X-Gm-Message-State: AOAM533ojN0Pn37p54TSWuXd23xxu7lktKVmHfdAsy3xj4I7upf5z+Wb
-        GwQUaXqgu6MdtbagjveUD7dZ1GgbZkQ=
-X-Google-Smtp-Source: ABdhPJxgB18vHifK/fLWhdVGFdE+3JqppPYalnPYumYqYevAlih/Og2IBuVHZgf4eYqIbN5uQuaxjg==
-X-Received: by 2002:a2e:99c6:: with SMTP id l6mr1064609ljj.220.1593448610367;
-        Mon, 29 Jun 2020 09:36:50 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id w24sm42617lfl.17.2020.06.29.09.36.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jun 2020 09:36:49 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id n23so18773020ljh.7
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:36:49 -0700 (PDT)
-X-Received: by 2002:a2e:991:: with SMTP id 139mr8131159ljj.314.1593448608820;
- Mon, 29 Jun 2020 09:36:48 -0700 (PDT)
+        bh=cP6iQsVZnZL9cfv3sLl/5r6hzqX0rVayprzDZmD8fls=;
+        b=F2C4riixD9Z5TSuzIybSFFwZRMlZWYkfnbkM/fplv9AMTUYrdRGsDFhUf/t8NcZ6E5
+         sP7xxFqDbjilSQvXQcZfbT3OYdWFYdBKP1pTYk9hvEjdIEEob2lLuqRyegottENC8i/N
+         D8GLb8AJTI+9M8xrPvwkEnWG8p6CWykqSvX0X+AJW8Z2i8RBgkF85GidGgzzjbgwSo7/
+         d2kVZuVYG9Kpjas0gL7UuSLWlu/wpPqPoQtCb2YtCaL5MJ/Tr4asLwRsGF9t9ehUZRF5
+         NQgseuPuCxsDXF6Gfh5pX1y2HjhNc+8avM2Usj/04imC2NsIJ7JrGMyf4VcUuTRGIzv4
+         slaQ==
+X-Gm-Message-State: AOAM530epQgLGYyxnzxGTovaUmj6dTdx3T9kTUfW9Gxfzlns3b0ZFBWy
+        dkx8QkRzCdlnr5A2AfvJXdsp5jUjuKf7ZxwKhy8=
+X-Google-Smtp-Source: ABdhPJxY0TieHGnK37IC/NZ8PHvS+nU0xr2yP6SeSbn2otyH5MinztJSPrmwBVJET9OWG4mysZKu95H1GtfccfKlpyw=
+X-Received: by 2002:a17:90a:b30d:: with SMTP id d13mr18146343pjr.181.1593448616001;
+ Mon, 29 Jun 2020 09:36:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200624161142.GA12184@redhat.com> <20200624162042.GA12238@redhat.com>
- <CAHk-=wjJA2Z3kUFb-5s=6+n0qbTs8ELqKFt9B3pH85a8fGD73w@mail.gmail.com>
- <20200626154313.GI4817@hirez.programming.kicks-ass.net> <CAHk-=whvVWNXPJq1k566zn4SfXAifXtiA7T+7JFweR3rQ0nc9A@mail.gmail.com>
- <1593396958.ydiznwsuu8.astroid@bobo.none> <1593436373.x8otyji40u.astroid@bobo.none>
-In-Reply-To: <1593436373.x8otyji40u.astroid@bobo.none>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 29 Jun 2020 09:36:32 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjJKicPgmvf7atx=h6Li7ez9nFrpJdgTSRm5aUEnuVH6w@mail.gmail.com>
-Message-ID: <CAHk-=wjJKicPgmvf7atx=h6Li7ez9nFrpJdgTSRm5aUEnuVH6w@mail.gmail.com>
-Subject: Re: wait_on_page_bit_common(TASK_KILLABLE, EXCLUSIVE) can miss wakeup?
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Davidlohr Bueso <dave@stgolabs.net>, Jan Kara <jack@suse.cz>,
-        Lukas Czerner <lczerner@redhat.com>,
+References: <CGME20200629112249eucas1p160b845444f8fbad96bdec41e9d3938da@eucas1p1.samsung.com>
+ <20200629112242.18380-1-a.hajda@samsung.com> <20200629112242.18380-3-a.hajda@samsung.com>
+In-Reply-To: <20200629112242.18380-3-a.hajda@samsung.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 29 Jun 2020 19:36:42 +0300
+Message-ID: <CAHp75VdS_u8h4qfBxsQRUp1-2SL_hq20=dQkpteXH7Xg7epArQ@mail.gmail.com>
+Subject: Re: [PATCH v7 2/4] driver core: add deferring probe reason to
+ devices_deferred property
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Oleg Nesterov <oleg@redhat.com>
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Mark Brown <broonie@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 6:16 AM Nicholas Piggin <npiggin@gmail.com> wrote:
+On Mon, Jun 29, 2020 at 2:22 PM Andrzej Hajda <a.hajda@samsung.com> wrote:
 >
-> No, ignore this part (which you explained well it was just a thinko,
-> and your patch of course would not have worked if this was the case):
-> the exclusive wake up doesn't get lost if schedule() was called because
-> state goes back to running regardless of what woke it.
+> /sys/kernel/debug/devices_deferred property contains list of deferred devices.
+> This list does not contain reason why the driver deferred probe, the patch
+> improves it.
+> The natural place to set the reason is dev_err_probe function introduced recently,
+> ie. if dev_err_probe will be called with -EPROBE_DEFER instead of printk the message
+> will be attached to deferred device and printed when user read devices_deferred
 
-Right.
+to a deferred
 
-The normal pattern for a wait-loop is
+reads
 
- - add yourself to the wait-queue and set yourself "sleeping" with a
-memory barrier.
+> property.
 
- - test for the condition, exit if ok
+...
 
- - go to sleep
+> @@ -3984,10 +3986,12 @@ int dev_err_probe(const struct device *dev, int err, const char *fmt, ...)
+>         vaf.fmt = fmt;
+>         vaf.va = &args;
+>
+> -       if (err != -EPROBE_DEFER)
 
-and that pattern doesn't have the race.
+> +       if (err != -EPROBE_DEFER) {
 
-The other common pattern is to check for the "do I need to sleep at
-all" at the *top* of the function, long before you bother with any
-wait-queues at all. This code does that odd "let's check in the middle
-if we need to sleep" instead, which then caused the bug.
+Why not positive conditional? (Okay, I'm fine with either in this case)
 
-So we had an odd setup because of three different wait conditions that
-had different rules for what they could/should do before sleeping, and
-then not sleeping reliably at all.
+>                 dev_err(dev, "error %d: %pV", err, &vaf);
+> -       else
+> +       } else {
+> +               device_set_deferred_probe_reson(dev, &vaf);
+>                 dev_dbg(dev, "error %d: %pV", err, &vaf);
+> +       }
 
-We could also fix it by just splitting out the three cases into their
-own wait routines that match the normal pattern. The bug really
-happened because that wait-loop is doing things such an odd way due to
-all the different cases..
+To reduce churn, you may move {} addition to the first patch.
 
-I actually think it would be a lot more readable if it was three
-different cases instead of trying to be one "common" routine.
+...
 
-The *common* parts is the special PG_locked logic at the top, and the
-thrashing/delayacct code at the bottom.
+>         list_for_each_entry(curr, &deferred_probe_pending_list, deferred_probe)
+> -               seq_printf(s, "%s\n", dev_name(curr->device));
+> +               seq_printf(s, "%s\t%s", dev_name(curr->device),
+> +                          curr->device->p->deferred_probe_reason ?: "\n");
 
-And *that* could be a true common helper, but the wait loop (which
-isn't even a loop for the DROP case) are fundamentally different and
-probably should be separate functions.
+Hmm... "\t" will be dangling in the latter case.
 
-So I think my "one-liner" fixes the problem, but I'd certainly be open
-to somebody cleaning this up properly.
-
-Anybody?
-
-             Linus
+-- 
+With Best Regards,
+Andy Shevchenko
