@@ -2,139 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8176020D6C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F6220DC39
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732336AbgF2TX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732234AbgF2TWm (ORCPT
+        id S1732863AbgF2TaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:30:19 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:25701 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732807AbgF2TaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:22:42 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22C1C02A569
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:25:10 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id l17so15392522wmj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:25:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=zUEJkh5HHxVcYkydyDedgROg8kiF7ZTbhK+enqqtuzI=;
-        b=I7PLcuk/NyfRTBDPzUHE5RTErXEBuYX5DVcAzkSE7wPRYhjM8vuGJxxS9ej05E/Bm5
-         pfOPk2nwxVNerwaCGroT6e/7x7DyAtr5AS9p30EFl0FjeW/axT06t4M4I1NQVZOLfss5
-         kHJpu/dOS6vz2BrQOnXcFzp2PflpVG7raeIMOVpA4m/x8bpPxoxip+4iNYKBnz07ERhb
-         DEi56ZS9zJicNlF4bC1pXDaKuG8SwbU48R6jsYUJAivX7YGO/596ld84p2fwxMLcW7qg
-         RH9X5bWbU6gLSCid1vmkx9/nrp1DvZnJWoT2tx/OTJlcjVRIpmaLefhbq/+HczJZZoQj
-         z5Gg==
+        Mon, 29 Jun 2020 15:30:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593459007;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/rozIRZd2Z+z5ejQC/EdCJboYjDdy+vJEupYT4pSKo0=;
+        b=V/hTM7XB50m9Kuc7AcgnYYNGh4Ng3MgmS/LaBBEh0+2dFG8O4oS1UeRcsITjTRKqc4qeTt
+        eHeB033RqlUURYiw4myCfNGX/VNPBxa5FfRHQOflni2f1hLK+cxi3nvwKTMCR0Q+5sDAO9
+        EMoYa5r0TO1dKQtqMLIvZ9PpozT7iNY=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-292-msZzHqchMRycRMFTAle1qQ-1; Mon, 29 Jun 2020 09:28:07 -0400
+X-MC-Unique: msZzHqchMRycRMFTAle1qQ-1
+Received: by mail-qv1-f70.google.com with SMTP id a12so6120174qvt.22
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:28:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zUEJkh5HHxVcYkydyDedgROg8kiF7ZTbhK+enqqtuzI=;
-        b=jxOTNi/X3tDirD/2Px7dXD+F/T+xSYwq/Nxo/1+ndYni68GXzHcQMHTmcUrIeWEBdQ
-         3SEp3O+Fd75EsR3kJB99wwJqEMQF1E1etXAfI3aGED7V6bVn9Bh3StRdT3s1UoKQTZoP
-         IgUOgWdHdI2vgWKSE3/hqsMBZGSe2b2wUsDo42JCG6dNLGkCjp1g21tQQC8FlhEuDQXh
-         kEdvZfyT5ZPe8vUx9J4/D6/4sBMhBlkPJRITb+fVPx2fzWhy+g9W98yyb0MFqb2YFbHi
-         aCOY9+ePUvJEqauYK8aiEm+8dtL0gP/0K+3XW+U2HcRNEs+Qv4FKnsyqZPiKOVQctkSS
-         Tw0Q==
-X-Gm-Message-State: AOAM533MGMf6C6rcb96iYBcnOXKyD6iU2afAsDLDQqr90i9O4p+0BmVc
-        pbB5YYSirlGpbjUT9WnHsTDtUg==
-X-Google-Smtp-Source: ABdhPJw2RBOaOy5Q3WIZr7vVnxJYhhctpyTg/SYgmN3r9pNAxEnEbAtMxeOwkfhFlEEdm1Pl23RCPQ==
-X-Received: by 2002:a1c:9802:: with SMTP id a2mr15856350wme.64.1593437109494;
-        Mon, 29 Jun 2020 06:25:09 -0700 (PDT)
-Received: from dell ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id x14sm48402443wrt.60.2020.06.29.06.25.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 06:25:08 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 14:25:06 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <jhovold@gmail.com>
-Subject: Re: [PATCH 2/5] mfd: lm3533-ctrlbank: Cap BRIGHTNESS_MAX to 127
- since API uses u8 as carrier
-Message-ID: <20200629132506.GJ177734@dell>
-References: <20200629123215.1014747-1-lee.jones@linaro.org>
- <20200629123215.1014747-3-lee.jones@linaro.org>
- <20200629125102.GT3334@localhost>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=/rozIRZd2Z+z5ejQC/EdCJboYjDdy+vJEupYT4pSKo0=;
+        b=SI6zwWqwO7Lxip1jAvaO1GlOZNk30zQE1O/mTeED+mvw0TIYUSrewuoxrxQ8xnhToW
+         PR14BLDDa+dDBbl1GUP8s88brzZYV3HdK1WeEyl0ydCspaipn6vM1Gu4Z2UHyvmXRD2F
+         Epust4ksYJ54wWx4NqtsBHCgqbNTbb2DHKRbDsAInlHSA7TDn/JbB3URB0opOFUPH5za
+         BKQtIb6moDjNojLl8rRZRaO2XwthTYJjqLRpLo5SdfPz8CVCeFIR1PV+7EuzG4eysXBr
+         61BtujSuInBMNfXrlvUqed6J/fWJSmfZ/ZNZ04pqRkRgqVEZMVRMRtcUjXSCuEV442pb
+         dOwA==
+X-Gm-Message-State: AOAM531arp6/thp9Wb4saSiVuFXHfEOBwXAjpVE51HLLcl6z+0LpnKAP
+        RbxJ7ktWEjHBUBZp//KFAD8UCLfyS+LqF5jSYEXZjCy0bnotX7sl4LW9HzMwfUHjzHmQ8QlMnwn
+        OC79xKQ0V+h1JK3JdPULlHeeH
+X-Received: by 2002:a0c:b246:: with SMTP id k6mr15065267qve.146.1593437287342;
+        Mon, 29 Jun 2020 06:28:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwms1o8tyqQwrkXCJ8cIREd5x9uNk+bPTzS0ou0s1jv5IQbRinAHtIoLnXqHLMHBn8uHQRMvg==
+X-Received: by 2002:a0c:b246:: with SMTP id k6mr15065252qve.146.1593437287140;
+        Mon, 29 Jun 2020 06:28:07 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id x13sm17008095qts.57.2020.06.29.06.28.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jun 2020 06:28:06 -0700 (PDT)
+Subject: Re: [PATCH] fpga: dfl: improve configuration of dfl pci devices
+To:     "Wu, Hao" <hao.wu@intel.com>, "Xu, Yilun" <yilun.xu@intel.com>
+Cc:     "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "matthew.gerlach@linux.intel.com" <matthew.gerlach@linux.intel.com>
+References: <20200628151813.7679-1-trix@redhat.com>
+ <20200629021924.GB2620@yilunxu-OptiPlex-7050>
+ <DM6PR11MB38196ED29A3E0BBAD7B246C1856E0@DM6PR11MB3819.namprd11.prod.outlook.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <26b7c920-7b9f-b753-4a49-258e09b771fa@redhat.com>
+Date:   Mon, 29 Jun 2020 06:28:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <DM6PR11MB38196ED29A3E0BBAD7B246C1856E0@DM6PR11MB3819.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200629125102.GT3334@localhost>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Jun 2020, Johan Hovold wrote:
 
-> On Mon, Jun 29, 2020 at 01:32:12PM +0100, Lee Jones wrote:
-> > Since its conception in 2012 brightness has been artificially capped
-> > at 127 since the variable carrying the value is u8.  We could go to
-> > the trouble of changing the whole API (crossing 3 different subsystems),
-> > but clearly this hasn't bothered anyone in the best part of a decade.
-> > 
-> > Simply, cap BRIGHTNESS_MAX to 127 instead (for now at least).
-> 
-> Hmm. This patch is clearly broken and would contrary to the claim be
-> introducing an artificial cap at half brightness. u8 can hold the max
-> brightness value 255 just fine.
+On 6/28/20 8:12 PM, Wu, Hao wrote:
+>> -----Original Message-----
+>> From: linux-fpga-owner@vger.kernel.org <linux-fpga-owner@vger.kernel.org>
+>> On Behalf Of Xu Yilun
+>> Sent: Monday, June 29, 2020 10:19 AM
+>> To: trix@redhat.com
+>> Cc: mdf@kernel.org; linux-fpga@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; Wu, Hao <hao.wu@intel.com>;
+>> matthew.gerlach@linux.intel.com
+>> Subject: Re: [PATCH] fpga: dfl: improve configuration of dfl pci devices
+>>
+>> I think maybe we don't have to select them all. It is now possible for
+>> FPGA DFL boards to work without FME or AFU, providing limited
+>> functionality. It is possible designers trim the bitstream for their
+>> purpose, and also need a smaller driver set.
+>>
+> Yes, we hope that this dfl-pci could be a common module shared by
+> different cards. Some device doesn't have FME, e.g. some VF device
+> with AFU only, some device has FME, but no PR support, and in the
+> future, it's possible to add new modules, or something replacing AFU
+> or FME, so we don't have to select all here.
+>
+>> I think we may add "default FPGA_DFL" for FPGA_DFL_FME,
+>> FPGA_DFL_FME_MGR and others to make life easier.
+> It's hard to say it's easier for everybody, e.g. I am a user of N3000, but
+> I have to unselect the PR modules, as they are default Yes as proposed?
+> Maybe it's better to let user select what they want, unless we find
+> something really common needed under DFL framework.
 
-Yes, of course it can.  Senior moment on my account.
+I get your point about n3000, but that card is not currently supported in the public. Currently there is really only pac10, the 0x9c4 device.  Once n3000 (and d5005) is out, it will have several sub devices that will also so need to be manually configured.  While a developer of the n3000 will know which subdevices are needed, someone just building the kernel will not.  So would expect there to be something like
 
-> > Fixes the following W=1 warning(s):
-> > 
-> >  drivers/mfd/lm3533-ctrlbank.c: In function ‘lm3533_ctrlbank_set_brightness’:
-> >  drivers/mfd/lm3533-ctrlbank.c:98:10: warning: comparison is always false due to limited range of data type [-Wtype-limits]
-> >  98 | if (val > LM3533_##_NAME##_MAX) | ^
-> >  drivers/mfd/lm3533-ctrlbank.c:125:1: note: in expansion of macro ‘lm3533_ctrlbank_set’
-> >  125 | lm3533_ctrlbank_set(brightness, BRIGHTNESS);
-> >  | ^~~~~~~~~~~~~~~~~~~
-> 
-> This warning is benign. The same macro is used to defined two function
-> where in one case the max value coincides with U8_MAX so that the sanity
-> check becomes redundant.
+CONFIG_FPGA_DFL_N3000
 
-A benign warning, as most W=1 warnings are, is still a warning.
+select CONFIG_DFL_PCI
 
-So how do you propose we fix it?
+select CONFIG_DFL_SUBDEV_1
 
-Is 255 a valid and used brightness level?
+..
 
-If so, how do you feel about:
+On PF vs FP, yes only afu parts are needed.  But i doubt anyone builds a VF specific kernel. And if folks wanted to not use the fme parts they would not have to load it's module at run time.
 
-  /* Avoid 'always false' check '(u8) > 255' */
-  if (LM3533_##_NAME##_MAX != 0xff && val > LM3533_##_NAME##_MAX)
-          return -EINVAL;        
+I would like a top level config what auto selects all of the submodules needed based on the card. I think maybe that is CONFIG_FPGA_DFL_PAC10. so we will be ready for CONFIG_FPGA_DFL_N3000 and CONFIG_FPGA_DFL_D5005 and what ever comes later.
 
-> > Cc: Johan Hovold <jhovold@gmail.com>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/mfd/lm3533-ctrlbank.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mfd/lm3533-ctrlbank.c b/drivers/mfd/lm3533-ctrlbank.c
-> > index 34fba06ec7057..348ce67453092 100644
-> > --- a/drivers/mfd/lm3533-ctrlbank.c
-> > +++ b/drivers/mfd/lm3533-ctrlbank.c
-> > @@ -17,7 +17,7 @@
-> >  #define LM3533_MAX_CURRENT_MAX		29800
-> >  #define LM3533_MAX_CURRENT_STEP		800
-> >  
-> > -#define LM3533_BRIGHTNESS_MAX		255
-> > +#define LM3533_BRIGHTNESS_MAX		127  /* Capped by API - could be up to 255 */
-> >  #define LM3533_PWM_MAX			0x3f
-> >  
-> >  #define LM3533_REG_PWM_BASE		0x14
-> 
-> Johan
+Tom
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> Hao
+>
+
