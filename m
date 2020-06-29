@@ -2,91 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1391D20D5F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5DC20D66F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729321AbgF2TQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:16:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731778AbgF2TOW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:14:22 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F037EC0D941A
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:01:03 -0700 (PDT)
-Received: from pendragon.bb.dnainternet.fi (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 71B32299;
-        Mon, 29 Jun 2020 14:01:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1593432061;
-        bh=yIy9K+7ClpA1ADDfcNgfiybjcgQ2b9XnHSux5FHyNrg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=R6hORFB6IlYoIM6WiTxrcE+/H9GvEpPxjoMUP0ua7h/6mnge6hZ2aPLlOhX3rVRVg
-         UurJeXX44wOVhT/nJ5bJFxTN1FOOV432pdw6xeFsGbnTuvc4CDBc//PfZprh0F9EJH
-         qRMMc7B+lmBtYUMZSpFQoR9C8JrgAxidElBx2boA=
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH v9 0/3] phy: zynqmp: Add PHY driver for the Xilinx ZynqMP Gigabit Transceiver
-Date:   Mon, 29 Jun 2020 15:00:51 +0300
-Message-Id: <20200629120054.29338-1-laurent.pinchart@ideasonboard.com>
-X-Mailer: git-send-email 2.27.0
+        id S1732092AbgF2TUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:20:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:39572 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730507AbgF2TT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:19:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D324D1478;
+        Mon, 29 Jun 2020 05:12:44 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EECB93F73C;
+        Mon, 29 Jun 2020 05:12:42 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 13:12:40 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Patrick Bellasi <patrick.bellasi@matbug.net>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Chris Redpath <chris.redpath@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] sched/uclamp: Fix initialization of struct
+ uclamp_rq
+Message-ID: <20200629121240.pxec7mvoum6xp2z4@e107158-lin.cambridge.arm.com>
+References: <20200625154352.24767-1-qais.yousef@arm.com>
+ <20200625154352.24767-2-qais.yousef@arm.com>
+ <87eeq2nh1k.derkling@matbug.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87eeq2nh1k.derkling@matbug.net>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Patrick
 
-The patch series adds a PHY driver for the Xilinx ZynqMP gigabit serial
-transceivers (PS-GTR). The PS-GTR is a set of 4 PHYs that can be used by
-the PCIe, USB 3.0, DisplayPort, SATA and Ethernet controllers that are
-part of the Serial I/O Unit (SIOU).
+On 06/26/20 14:32, Patrick Bellasi wrote:
+> 
+> On Thu, Jun 25, 2020 at 17:43:51 +0200, Qais Yousef <qais.yousef@arm.com> wrote...
+> 
+> > struct uclamp_rq was zeroed out entirely in assumption that in the first
+> > call to uclamp_rq_inc() they'd be initialized correctly in accordance to
+> > default settings.
+> 
+> Perhaps I was not clear in my previous comment:
+> 
+>    https://lore.kernel.org/lkml/87sgekorfq.derkling@matbug.net/
+> 
+> when I did say:
+> 
+>    Does not this means the problem is more likely with
+>    uclamp_rq_util_with(), which should be guarded?
+> 
+> I did not mean that we have to guard the calls to that function but
+> instead that we should just make that function aware of uclamp being
+> opted in or not.
+> 
+> > But when next patch introduces a static key to skip
+> > uclamp_rq_{inc,dec}() until userspace opts in to use uclamp, schedutil
+> > will fail to perform any frequency changes because the
+> > rq->uclamp[UCLAMP_MAX].value is zeroed at init and stays as such. Which
+> > means all rqs are capped to 0 by default.
+> 
+> The initialization you wants to do here it's needed because with the
+> current approach you keep calling the same uclamp_rq_util_with() and
+> keep doing min/max aggregations even when uclamp is not opted in.
+> But this means also that we have min/max aggregation _when not really
+> required_.
+> 
+> > Fix it by making sure we do proper initialization at init without
+> > relying on uclamp_rq_inc() doing it later.
+> 
+> My proposal was as simple as:
+> 
+> ---8<---
+>   static __always_inline
+>   unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
+>   				  struct task_struct *p)
+>   {
+>   	unsigned long min_util = READ_ONCE(rq->uclamp[UCLAMP_MIN].value);
+>   	unsigned long max_util = READ_ONCE(rq->uclamp[UCLAMP_MAX].value);
+>   
+> +       if (!static_branch_unlikely(&sched_uclamp_used))
+> +               return rt_task(p) ? uclamp_none(UCLAMP_MAX) : util 
 
-The code is based on a previous version sent by Anurag Kumar Vulisha and
-available at [1]. The DT bindings have been converted to YAML, and both
-the bindings and the driver have been considerably reworked (and
-simplified). The most notable changes is the removal of manual handling
-of the reset lines of the PHY users (which belongs to the PHY users
-themselves), and moving to the standard PHY .power_on() and .configure()
-operations to replace functions that were previously exported by the
-driver. Please see individual patches for a more detailed changelog.
+This the same mistake I've done.
 
-Compared to v8, the series has been rebased on phy/next, and a minor
-issue in MAINTAINERS has been fixed.
+schedutil_cpu_util() is called by sugov_get_util() passing p as NULL.
 
-[1] https://patchwork.kernel.org/cover/10735681/
+292 static unsigned long sugov_get_util(struct sugov_cpu *sg_cpu)                                                                                                                                               
+293 {                                                                               
+294         struct rq *rq = cpu_rq(sg_cpu->cpu);                                    
+295         unsigned long util = cpu_util_cfs(rq);                                  
+296         unsigned long max = arch_scale_cpu_capacity(sg_cpu->cpu);               
+297                                                                                 
+298         sg_cpu->max = max;                                                      
+299         sg_cpu->bw_dl = cpu_bw_dl(rq);                                          
+300                                                                                 
+301         return schedutil_cpu_util(sg_cpu->cpu, util, max, FREQUENCY_UTIL, NULL);
+302 }
 
-Anurag Kumar Vulisha (2):
-  dt-bindings: phy: Add DT bindings for Xilinx ZynqMP PSGTR PHY
-  phy: zynqmp: Add PHY driver for the Xilinx ZynqMP Gigabit Transceiver
+So this will not fix the problem with RT tasks and we have to do the check
+at schedutil which is the right abstraction layer anyway. I don't think calling
+rq_rt_is_runnable() is right here and is unnecessary duplication since
+schedutil will still have to do that anyway.
 
-Laurent Pinchart (1):
-  arm64: dts: zynqmp: Add GTR transceivers
+When p is not NULL then the function will work correctly in regards to
+uclamp_eff_get() returning the right value, including the default settings.
+Which is important when my patch to introduce sysctl for default RT boosting
+comes into play.
 
- .../bindings/phy/xlnx,zynqmp-psgtr.yaml       | 105 ++
- MAINTAINERS                                   |   9 +
- arch/arm64/boot/dts/xilinx/zynqmp.dtsi        |  10 +
- drivers/phy/Kconfig                           |   1 +
- drivers/phy/Makefile                          |   3 +-
- drivers/phy/xilinx/Kconfig                    |  13 +
- drivers/phy/xilinx/Makefile                   |   3 +
- drivers/phy/xilinx/phy-zynqmp.c               | 995 ++++++++++++++++++
- include/dt-bindings/phy/phy.h                 |   1 +
- 9 files changed, 1139 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
- create mode 100644 drivers/phy/xilinx/Kconfig
- create mode 100644 drivers/phy/xilinx/Makefile
- create mode 100644 drivers/phy/xilinx/phy-zynqmp.c
+The function deserves a comment for sure though so that users are aware that
+the function will not be useful if the static key is disabled. There's no
+aggregation done at rq level and this can certainly catch people out.
 
--- 
-Regards,
+We can add a static key to return util directly too. I might just do this since
+it might help with readability.
 
-Laurent Pinchart
+Please shout if I missed something.
 
+>   
+>   	if (p) {
+>   		min_util = max(min_util, uclamp_eff_value(p, UCLAMP_MIN));
+>   		max_util = max(max_util, uclamp_eff_value(p, UCLAMP_MAX));
+>   	}
+>   
+>   	/*
+>   	 * Since CPU's {min,max}_util clamps are MAX aggregated considering
+>   	 * RUNNABLE tasks with _different_ clamps, we can end up with an
+>   	 * inversion. Fix it now when the clamps are applied.
+>   	 */
+>   	if (unlikely(min_util >= max_util))
+>   		return min_util;
+>   
+>   	return clamp(util, min_util, max_util);
+>   }
+> ---8<---
+> 
+> Such small change is more self-contained IMHO and does not remove
+> an existing optimizations like this lazy RQ's initialization at first
+
+IMHO this is a bug not an optimization. We have to write to these struct
+anyway, so why not write the right value to start with? This already caught me
+out and wasted over half a day trying to chase it.
+
+Beside what are we optimizing for here? I think correctness dictates we start
+with correct initial values if we can, no? How are you expecting this to slow
+down sched_init()?
+
+Thanks
+
+--
+Qais Yousef
+
+> usage.
+> 
+> Moreover, it can folded in the following patch, with all the other
+> static keys shortcuts.
+> 
