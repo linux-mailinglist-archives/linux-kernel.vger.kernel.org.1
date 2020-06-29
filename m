@@ -2,118 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B215320E212
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA2E20E219
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390168AbgF2VCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:02:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43376 "EHLO
+        id S2390056AbgF2VCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730965AbgF2TMw (ORCPT
+        with ESMTP id S1731169AbgF2TMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:12:52 -0400
-Received: from mail-io1-xd46.google.com (mail-io1-xd46.google.com [IPv6:2607:f8b0:4864:20::d46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC8DC08E6DC
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 21:56:16 -0700 (PDT)
-Received: by mail-io1-xd46.google.com with SMTP id i5so1458875iow.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 21:56:16 -0700 (PDT)
+        Mon, 29 Jun 2020 15:12:50 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91DE2C08E763
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 22:14:29 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x11so6626792plo.7
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 22:14:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=Puo6oGVYHZcL7bpuZStnbvjW4QMJ406YmIdwoEcmz2s=;
+        b=FezAnxPg6kxSnBrxKsnGU68s4r8atyxN55OQYgfBgbFEE7sgO3+vCdRDiiFG6yEOK2
+         jDl8EWMZOjlhwS+zz0tmgUgnZ4Ye2FqNGvPeDXceFowvoaCvmPJmBEa0s9ehTe/mjmU1
+         i/PclRbXTa7cWHXIHkrsQIsLEcTLsDzSJC9mE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=7UR4veMVO94msNsRyMPSIg+uNPusi34riys9/+FERgY=;
-        b=VZhPmg8jqDG5M8N3/MB5JLBV0kClow3VV9DoU5jNh7Gn+tPuPBN5uvjfwcf97gD4nB
-         U2xNejSsRHy40pMomq6GB6tQ8nSfKmZ8lvj6h6rY1lLUHeBq8d4+TdBEwJJk9UCeC5Ww
-         pCbaBRBo7IXHTzq5mW1m53c8hp+nbHZ39H/uJtTwfqGf5yfMRD9/Rh6FCFL6S7IWymUH
-         MDM54geImed+MEDR2aNxq50Hcsj1+fkZ65DuEWB3PncbQkDqA3gQ1/nqOHmnFJp1x/34
-         J6ZZNng5gqKP6Hel7vs1/5eugmfTBQtfDjVC2nDR+SY76k4IbmnRiiRDfNqKNjVM3fRz
-         ThmQ==
-X-Gm-Message-State: AOAM533uLAcxgLz3wD841EbZRa4qyrlZvmj6SABIjsQ0nh71igWRkEyj
-        o8gJpKADJl+mYi+IE0RUzlQEPrqC/QaYts40ST8dtGzkYc4V
-X-Google-Smtp-Source: ABdhPJxcCO85VG9jOjxVOCCibWirWcudltftil7cwcErqtjR0I74qEPPMjqadEUKLw5tmalZI83D6VWFASuSqo7TOlDHTTfabJgb
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=Puo6oGVYHZcL7bpuZStnbvjW4QMJ406YmIdwoEcmz2s=;
+        b=GmDo8/I4TI+obTHZPp2RrB0fsIsC9aKPfZtOhdeJecCMTK3UavabKRrpANhnX7MKQO
+         AwGQzMjQPAK9/hpMY2cIYFb27mtS9gHmzHU5Z4hu5HR+rYmGXyysQbpArvZzJ/449sPd
+         EGbt+6l4V16z/znjUmf5/JB96Hsdlp+PsrCbXXkT9sT05QhTY63KjdRe4P60XAB576W6
+         Z/cmS3fAKil32aG09VpLnvAUnUcfO1czeBPY/cvSX51hu8tTe3hdwmtWIskyMvDjfY1p
+         l3/oq20YlxdsQhjhjDd4gNGxZCNoHCYaWKBwCuv94Gdx9ixAc0phSl9nvSYE6vNbi9Al
+         mjMQ==
+X-Gm-Message-State: AOAM53108OxI5qG/m2OUynIzHk7a1UXEPD7t9nP5qa9nXCwX0DZ1XWRc
+        xMXUIgdjyXbxBlnZM2KSevBgSg==
+X-Google-Smtp-Source: ABdhPJw0X3SUMS7q/5WaXoOuRXANudjostovb3WS0vzYoHrr8zMtespLNSVO9+YtCwnfUlKK1K/kGQ==
+X-Received: by 2002:a17:90a:ac03:: with SMTP id o3mr15760654pjq.214.1593407669056;
+        Sun, 28 Jun 2020 22:14:29 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u8sm31432022pfh.215.2020.06.28.22.14.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jun 2020 22:14:27 -0700 (PDT)
+Date:   Sun, 28 Jun 2020 22:14:26 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] samples/vfs: Avoid warning in statx override
+Message-ID: <202006282213.C516EA6@keescook>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c0c8:: with SMTP id t8mr3168667ilf.229.1593406576031;
- Sun, 28 Jun 2020 21:56:16 -0700 (PDT)
-Date:   Sun, 28 Jun 2020 21:56:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f27eba05a931e09d@google.com>
-Subject: KASAN: user-memory-access Read in do_con_write (2)
-From:   syzbot <syzbot+63ca998c125cfe13c6a5@syzkaller.appspotmail.com>
-To:     ebiggers@google.com, gregkh@linuxfoundation.org, jslaby@suse.com,
-        linux-kernel@vger.kernel.org, nico@fluxnic.net, sam@ravnborg.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Something changed recently to uncover this warning:
 
-syzbot found the following crash on:
+samples/vfs/test-statx.c:24:15: warning: ‘struct foo’ declared inside parameter list will not be visible outside of this definition or declaration
+   24 | #define statx foo
+      |               ^~~
 
-HEAD commit:    4e99b321 Merge tag 'nfs-for-5.8-2' of git://git.linux-nfs...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14747dc5100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bf3aec367b9ab569
-dashboard link: https://syzkaller.appspot.com/bug?extid=63ca998c125cfe13c6a5
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+Which is due the use of "struct statx" (here, "struct foo") in a function
+prototype argument list before it has been defined:
 
-Unfortunately, I don't have any reproducer for this crash yet.
+ int
+ # 56 "/usr/include/x86_64-linux-gnu/bits/statx-generic.h"
+    foo
+ # 56 "/usr/include/x86_64-linux-gnu/bits/statx-generic.h" 3 4
+          (int __dirfd, const char *__restrict __path, int __flags,
+            unsigned int __mask, struct
+ # 57 "/usr/include/x86_64-linux-gnu/bits/statx-generic.h"
+                                       foo
+ # 57 "/usr/include/x86_64-linux-gnu/bits/statx-generic.h" 3 4
+                                             *__restrict __buf)
+   __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (2, 5)));
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+63ca998c125cfe13c6a5@syzkaller.appspotmail.com
+Add explicit struct before #include to avoid warning.
 
-==================================================================
-BUG: KASAN: user-memory-access in memcpy include/linux/string.h:406 [inline]
-BUG: KASAN: user-memory-access in scr_memcpyw include/linux/vt_buffer.h:49 [inline]
-BUG: KASAN: user-memory-access in delete_char drivers/tty/vt/vt.c:858 [inline]
-BUG: KASAN: user-memory-access in csi_P drivers/tty/vt/vt.c:2013 [inline]
-BUG: KASAN: user-memory-access in do_con_trol drivers/tty/vt/vt.c:2407 [inline]
-BUG: KASAN: user-memory-access in do_con_write+0x6f90/0x7400 drivers/tty/vt/vt.c:2823
-Read of size 118 at addr 00000000ffffff9a by task syz-executor.4/10580
-
-CPU: 0 PID: 10580 Comm: syz-executor.4 Not tainted 5.8.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- __kasan_report mm/kasan/report.c:517 [inline]
- kasan_report.cold+0x5/0x37 mm/kasan/report.c:530
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- memcpy+0x20/0x60 mm/kasan/common.c:105
- memcpy include/linux/string.h:406 [inline]
- scr_memcpyw include/linux/vt_buffer.h:49 [inline]
- delete_char drivers/tty/vt/vt.c:858 [inline]
- csi_P drivers/tty/vt/vt.c:2013 [inline]
- do_con_trol drivers/tty/vt/vt.c:2407 [inline]
- do_con_write+0x6f90/0x7400 drivers/tty/vt/vt.c:2823
- con_write+0x22/0xb0 drivers/tty/vt/vt.c:3159
- process_output_block drivers/tty/n_tty.c:595 [inline]
- n_tty_write+0x3ce/0xf80 drivers/tty/n_tty.c:2333
- do_tty_write drivers/tty/tty_io.c:962 [inline]
- tty_write+0x4d9/0x870 drivers/tty/tty_io.c:1046
- __vfs_write+0x76/0x100 fs/read_write.c:495
- vfs_write+0x268/0x5d0 fs/read_write.c:559
- ksys_write+0x12d/0x250 fs/read_write.c:612
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45cb19
-Code: Bad RIP value.
-RSP: 002b:00007fcc7ee74c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000000000050e080 RCX: 000000000045cb19
-RDX: 0000000000000320 RSI: 00000000200001c0 RDI: 0000000000000007
-RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 0000000000000d2a R14: 00000000004cf845 R15: 00007fcc7ee756d4
-==================================================================
-
-
+Fixes: f1b5618e013a ("vfs: Add a sample program for the new mount API")
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ samples/vfs/test-statx.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/samples/vfs/test-statx.c b/samples/vfs/test-statx.c
+index 76c577ea4fd8..49c7a46cee07 100644
+--- a/samples/vfs/test-statx.c
++++ b/samples/vfs/test-statx.c
+@@ -23,6 +23,8 @@
+ #include <linux/fcntl.h>
+ #define statx foo
+ #define statx_timestamp foo_timestamp
++struct statx;
++struct statx_timestamp;
+ #include <sys/stat.h>
+ #undef statx
+ #undef statx_timestamp
+-- 
+2.25.1
+
+
+-- 
+Kees Cook
