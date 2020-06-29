@@ -2,168 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC3720CB7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 03:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A6520CB91
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 03:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726813AbgF2BlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 21:41:16 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:37578 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgF2BlP (ORCPT
+        id S1726783AbgF2Bw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 21:52:26 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3165 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbgF2BwZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 21:41:15 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200629014111epoutp0351806aa0ada22405c9d150ec32a6302e~c4DGc1XKK1870418704epoutp03K
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:41:11 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200629014111epoutp0351806aa0ada22405c9d150ec32a6302e~c4DGc1XKK1870418704epoutp03K
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593394871;
-        bh=GBtYJ99sK8P3Saiy9sz/V5dmySEOt6so4nPOpaxOd1E=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=UUj8WJahrsDuezDABul+O8SWNVUMowOPFSORL06gANElWMIOTg7PY+xWUmRbxvG2k
-         QZjBa+GawFmQcomkI3Pd7lKksyGozWhFfsxhy4oJ+6+I3h+cu2oisoTKcUCk7/dMtm
-         KSxVtyd8mExScWxfqw7hz8b+SiDDsz6ItXGrmiJ0=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200629014110epcas1p23d5fd74dc3d119a8b3d762064f2f410c~c4DFUz-rO0780107801epcas1p20;
-        Mon, 29 Jun 2020 01:41:10 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.155]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 49w9Dy0rdbzMqYkj; Mon, 29 Jun
-        2020 01:41:06 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        FD.19.29173.1B649FE5; Mon, 29 Jun 2020 10:41:05 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200629014105epcas1p4250936a7acd173c58c1b9d46ea80ca42~c4DAVz6v41819118191epcas1p45;
-        Mon, 29 Jun 2020 01:41:05 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200629014105epsmtrp1be4d84a978b4ca06b5cf07daeb95fa91~c4DAVCA5y0344703447epsmtrp1i;
-        Mon, 29 Jun 2020 01:41:05 +0000 (GMT)
-X-AuditID: b6c32a37-9b7ff700000071f5-1a-5ef946b17701
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        71.AF.08303.1B649FE5; Mon, 29 Jun 2020 10:41:05 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200629014105epsmtip18c8499fe2aa0957f7e901300ddd9a1d3~c4DAHua4z0859808598epsmtip1D;
-        Mon, 29 Jun 2020 01:41:05 +0000 (GMT)
-Subject: Re: brocken devfreq simple_ondemand for Odroid XU3/4?
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Willy Wolff <willy.mh.wolff.ml@gmail.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>, linux-pm@vger.kernel.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <d66c7aba-c335-db12-5bb6-2b560422a3f7@samsung.com>
-Date:   Mon, 29 Jun 2020 10:52:17 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Sun, 28 Jun 2020 21:52:25 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ef9494c0000>; Sun, 28 Jun 2020 18:52:13 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Sun, 28 Jun 2020 18:52:25 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Sun, 28 Jun 2020 18:52:25 -0700
+Received: from [10.2.63.78] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 29 Jun
+ 2020 01:52:25 +0000
+Subject: Re: [PATCH 01/26] mm: Do page fault accounting in handle_mm_fault
+To:     Peter Xu <peterx@redhat.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+References: <20200626223130.199227-1-peterx@redhat.com>
+ <20200626223130.199227-2-peterx@redhat.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <370e06f7-a93b-21c9-c58e-57ad6ed8f8a8@nvidia.com>
+Date:   Sun, 28 Jun 2020 18:52:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <ef5184ed-00ff-4226-5ece-b0fc8eb16fb6@samsung.com>
+In-Reply-To: <20200626223130.199227-2-peterx@redhat.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMJsWRmVeSWpSXmKPExsWy7bCmru5Gt59xBlMu2Fj0P37NbHH+/AZ2
-        i7NNb9gtNj2+xmpxedccNovPvUcYLWac38dksbCphd3iduMKNovDb9pZLb6deMTowO2xZt4a
-        Ro+ds+6ye2xa1cnmsXlJvUffllWMHp83yQWwRWXbZKQmpqQWKaTmJeenZOal2yp5B8c7x5ua
-        GRjqGlpamCsp5CXmptoqufgE6Lpl5gCdp6RQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUot
-        SMkpsCzQK07MLS7NS9dLzs+1MjQwMDIFKkzIzpjw7SBrQatAxaIJS5gaGD/wdDFyckgImEjM
-        nNnE3sXIxSEksINRYsrs+UwQzidGiRt3rrFAOJ8ZJZq/7GKEaTm+/y1UYhejxLGtE6D63zNK
-        LLlxkhmkSljATmL+tV2sIAkRgRWMEm9OLWIEcZgFjjJJ7Go6xgJSxSagJbH/xQ02EJtfQFHi
-        6o/HYDt4gbq3POlmBbFZBFQlLnYtBZsqKhAmcXJbC1SNoMTJmU/A5nAK2EvMbN0JVsMsIC5x
-        6wnIFyC2vMT2t3OYQRZLCBzhkPh28BELxBMuEnNaGqAeEpZ4dXwLO4QtJfGyvw3KrpZYefII
-        G0RzB6PElv0XWCESxhL7l04G2sABtEFTYv0ufYiwosTO33MZIRbzSbz72sMKUiIhwCvR0SYE
-        UaIscfnBXSYIW1JicXsn2wRGpVlI3pmF5IVZSF6YhbBsASPLKkax1ILi3PTUYsMCY+QI38QI
-        Tr1a5jsYp739oHeIkYmD8RCjBAezkgjvZ+tvcUK8KYmVValF+fFFpTmpxYcYTYEBPJFZSjQ5
-        H5j880riDU2NjI2NLUwMzUwNDZXEeX2tLsQJCaQnlqRmp6YWpBbB9DFxcEo1MBVfyV/Pqh2m
-        ZqI52zIucfu6CZrmln17l3tPFG3UmtbpHtTUMLGF4VRc5tcn/xOMGt91/4pM8voWNvVWxb5r
-        i4U/210847vgbo/ohS8XChY9v/Y/vKglLeY/70LBmh9Wbx9rT0u/F7N0hcA1+86EjpZ8N4Zj
-        Mp/nW3vc/XtbxuHVwuOxctmXFrFy89xU2cR6sGC/T+bD03bLb/KbN7JlPGFuf/+muWKadtQ/
-        78bgLce+97Vut9ZUFHtzsjsvwUrjoMeyH48N9mpVNV9+eko+edbhpB9O/4IkX32YduWw+os7
-        O+54eb+qnsPw7tT0W8EGZusOfy5piv9xd/0Zg3n8aSnz5Ao23NqXv4glw7l9z3clluKMREMt
-        5qLiRADlueccRgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsWy7bCSnO5Gt59xBtd/8Fn0P37NbHH+/AZ2
-        i7NNb9gtNj2+xmpxedccNovPvUcYLWac38dksbCphd3iduMKNovDb9pZLb6deMTowO2xZt4a
-        Ro+ds+6ye2xa1cnmsXlJvUffllWMHp83yQWwRXHZpKTmZJalFunbJXBlTPh2kLWgVaBi0YQl
-        TA2MH3i6GDk5JARMJI7vf8vSxcjFISSwg1Hi9PJn7BAJSYlpF48ydzFyANnCEocPF0PUvGWU
-        mND9hwmkRljATmL+tV2sIAkRgRWMErc2/gZzmAWOM0msfb+BGaLlAZPE1nV7wVrYBLQk9r+4
-        wQZi8wsoSlz98ZgRxOYFGrXlSTcriM0ioCpxsWspM4gtKhAmsXPJYyaIGkGJkzOfsIDYnAL2
-        EjNbd4LVMAuoS/yZdwnKFpe49WQ+E4QtL7H97RzmCYzCs5C0z0LSMgtJyywkLQsYWVYxSqYW
-        FOem5xYbFhjlpZbrFSfmFpfmpesl5+duYgTHoJbWDsY9qz7oHWJk4mA8xCjBwawkwvvZ+luc
-        EG9KYmVValF+fFFpTmrxIUZpDhYlcd6vsxbGCQmkJ5akZqemFqQWwWSZODilGpjs9ZW2PJ0j
-        JDCh9ZYj44KQm3ZcJ3pjveb82B8nahx+cIlBo6DQIsW7OzmUdoduYFR+lVaTyXeozHLnhXnz
-        5VI43n5NWv52bePh9U8+6e4zu8UTnPlS9PrfT3HOHcrNuu/zrA1emi9bNTdq+eS3S/fcjNCX
-        PXKQ6ey5GUtus11Lu8X9V1lip+EqflPjsDaLxYZZsmb997K8Pvz9ldw97ciOoJs9DAmWfq7C
-        ueV8rhcbt/zc+FNuw8qq2SdvLdsRHys6MZh3BU995t9cuYbmI745Nw5MWH9giY7kCQbWRqt3
-        5c/37zsfuGDJ0XWsRlr5S+6fXMdSbexr9S+GK6si53CpnPKS4y5yN+LD4/aHXPyoxFKckWio
-        xVxUnAgAV5adLjADAAA=
-X-CMS-MailID: 20200629014105epcas1p4250936a7acd173c58c1b9d46ea80ca42
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200624103308eucas1p188a5fe3cee1916d9430c9971c2dab3a3
-References: <20200623164733.qbhua7b6cg2umafj@macmini.local>
-        <CAJKOXPeLuq81NC2xZh3y32EB-_APbDAchZD4OW_eCgQKKO+p8w@mail.gmail.com>
-        <20200623191129.GA4171@kozik-lap>
-        <CGME20200624103308eucas1p188a5fe3cee1916d9430c9971c2dab3a3@eucas1p1.samsung.com>
-        <85f5a8c0-7d48-f2cd-3385-c56d662f2c88@arm.com>
-        <ef5184ed-00ff-4226-5ece-b0fc8eb16fb6@samsung.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1593395533; bh=Rz1nE12V3N62BhR2rCZZnTzF6cf3LlLcyVGD3/T8LPE=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=aA8eGYCqH+nGNEmB4YVnq2xfMsd9UzR0xpNbBXfmv0hvRMnLHgonBkV9++25ouP1O
+         /FRu8P+J+X5rpwfshoiCZSBKaUiwRBSBtf62jDvak58zsnROrGlDKSFvhU+ahZdrq0
+         FgVl67tBeVJnESSRdsyYAYNwEicOUSxGStu5nrYQ6RaLIoakVz839NCXMTHMb69gtA
+         s0d8y22uEpKcbMt0lEVAjEd1cAR6FcOJwY0YgIVZ/+cgJLVPSc7JeY0IXxM+t4a4L8
+         hoY0Z1jnuSPSVgmp1+dPWzVkBncVyTnrg41T5NGQkrQBRiBAWsOA5YMUxKwb4o6IIV
+         d9G91loChpsBQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sylwester,
+On 2020-06-26 15:31, Peter Xu wrote:
+> This is a preparation patch to move page fault accountings into the general
+> code in handle_mm_fault().  This includes both the per task flt_maj/flt_min
+> counters, and the major/minor page fault perf events.  To do this, the pt_regs
+> pointer is passed into handle_mm_fault().
+> 
+> PERF_COUNT_SW_PAGE_FAULTS should still be kept in per-arch page fault handlers.
+> 
+> So far, all the pt_regs pointer that passed into handle_mm_fault() is NULL,
+> which means this patch should have no intented functional change.
+> 
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>   arch/alpha/mm/fault.c         |  2 +-
+>   arch/arc/mm/fault.c           |  2 +-
+>   arch/arm/mm/fault.c           |  2 +-
+>   arch/arm64/mm/fault.c         |  2 +-
+>   arch/csky/mm/fault.c          |  3 +-
+>   arch/hexagon/mm/vm_fault.c    |  2 +-
+>   arch/ia64/mm/fault.c          |  2 +-
+>   arch/m68k/mm/fault.c          |  2 +-
+>   arch/microblaze/mm/fault.c    |  2 +-
+>   arch/mips/mm/fault.c          |  2 +-
+>   arch/nds32/mm/fault.c         |  2 +-
+>   arch/nios2/mm/fault.c         |  2 +-
+>   arch/openrisc/mm/fault.c      |  2 +-
+>   arch/parisc/mm/fault.c        |  2 +-
+>   arch/powerpc/mm/copro_fault.c |  2 +-
+>   arch/powerpc/mm/fault.c       |  2 +-
+>   arch/riscv/mm/fault.c         |  2 +-
+>   arch/s390/mm/fault.c          |  2 +-
+>   arch/sh/mm/fault.c            |  2 +-
+>   arch/sparc/mm/fault_32.c      |  4 +--
+>   arch/sparc/mm/fault_64.c      |  2 +-
+>   arch/um/kernel/trap.c         |  2 +-
+>   arch/unicore32/mm/fault.c     |  2 +-
+>   arch/x86/mm/fault.c           |  2 +-
+>   arch/xtensa/mm/fault.c        |  2 +-
+>   drivers/iommu/amd_iommu_v2.c  |  2 +-
 
-On 6/25/20 12:11 AM, Sylwester Nawrocki wrote:
-> Hi All,
-> 
-> On 24.06.2020 12:32, Lukasz Luba wrote:
->> I had issues with devfreq governor which wasn't called by devfreq
->> workqueue. The old DELAYED vs DEFERRED work discussions and my patches
->> for it [1]. If the CPU which scheduled the next work went idle, the
->> devfreq workqueue will not be kicked and devfreq governor won't check
->> DMC status and will not decide to decrease the frequency based on low
->> busy_time.
->> The same applies for going up with the frequency. They both are
->> done by the governor but the workqueue must be scheduled periodically.
-> 
-> As I have been working on resolving the video mixer IOMMU fault issue
-> described here: https://patchwork.kernel.org/patch/10861757
-> I did some investigation of the devfreq operation, mostly on Odroid U3.
-> 
-> My conclusions are similar to what Lukasz says above. I would like to add
-> that broken scheduling of the performance counters read and the devfreq 
-> updates seems to have one more serious implication. In each call, which
-> normally should happen periodically with fixed interval we stop the counters, 
-> read counter values and start the counters again. But if period between 
-> calls becomes long enough to let any of the counters overflow, we will
-> get wrong performance measurement results. My observations are that 
-> the workqueue job can be suspended for several seconds and conditions for 
-> the counter overflow occur sooner or later, depending among others 
-> on the CPUs load.
-> Wrong bus load measurement can lead to setting too low interconnect bus 
-> clock frequency and then bad things happen in peripheral devices.
-> 
-> I agree the workqueue issue needs to be fixed. I have some WIP code to use
-> the performance counters overflow interrupts instead of SW polling and with 
+The above file is renamed, as of a couple weeks ago, via
+commit ad8694bac410 ("iommu/amd: Move AMD IOMMU driver into
+subdirectory").
 
-It is good way to resolve the overflow issue.
+Also there are a number of changes to mm/gup.c (not a concern for this
+patch, but it is for the overall series). So I'm hoping you're going to
+post a version that is rebased against 5.8-rc*.
 
-> that the interconnect bus clock control seems to work much better.
->
+thanks,
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+John Hubbard
+NVIDIA
