@@ -2,117 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F123B20E054
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BA020DF5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732793AbgF2UpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731546AbgF2TN7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:59 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70612C00864C
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 03:04:45 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id o22so2763032pjw.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 03:04:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ly6GQY518rugBZBKaypUfjaHtOs18Gvlz/xTQcFP+uo=;
-        b=FwlutL/Q/eEKYRihTTqlzWcZE7NzatpA+2aRZl4vnE+PQ+Ig5lMtw6ZACAqglZLEfo
-         yuSIol4GzaOVt6nQHLF+YD63riXx/XSOQIrc68BaP0Cw9GDXvs/1/072SiY/Mbv+WIG7
-         6ED9NmAMHgEzeBjHu2WzoZYxF6I/QKzrgiFapmGeIgP5UTs17yv0rEDiliHlkQLqDhen
-         fLrb6m/PGZD87Yiw5zsGWeyZfeW11GjUaK/4QedXpAeknQRRdB7gfHi6NyaQmOXa0e/t
-         7xpM8idGeiC4zW2IWrvgnrXun960Lkyd/5OgqGfu/0iUjZHRNyvbtFXO0RVv5BxHJCMl
-         iM7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ly6GQY518rugBZBKaypUfjaHtOs18Gvlz/xTQcFP+uo=;
-        b=FwSFFdUmu43LfXk1h08tBHIgnDAB/x1uo8ctwQchUKrH2A/LLUnbGd4/ugrqtTqss4
-         +1fcfpWewxWckXx3iHzWwVEi3JBw2q7lFuXk+OAPbO7RgnIGNs4FRuvQkKf148cttaix
-         /YidEB2o8/j7BtS0TPSjtMqi6T97fSAT4w90p2Nb7mIo9UKNWElz3We6Xifnjr4rk27o
-         YM0XxXkZnhBBLpVEe52sl/63hgOWBvUwAAgzOmStqnq4ZeH8gJE9zEmh/SedJ/KUMKLc
-         oBjmza+dAitA1JBo6cVSUDZO5hVPHcO1aZ/s4/xvyYVRpADBa7W7dHsE8EhdddbT51Bw
-         MJnQ==
-X-Gm-Message-State: AOAM5336PkKoa7Bvb7XRsSLqBZbxHP50MX6vzTYPFlm7d0hg7Tya2t+z
-        cJLAbrklJEzf6QgssqNzOzyBDw==
-X-Google-Smtp-Source: ABdhPJzxTl5fVMfp7OZOK/Cxx7y/SkzGumBhYNEPOdMQyPBf1+rzq55IntET0rwpKp6rrizLK7fToA==
-X-Received: by 2002:a17:902:7483:: with SMTP id h3mr9067587pll.114.1593425084898;
-        Mon, 29 Jun 2020 03:04:44 -0700 (PDT)
-Received: from localhost ([122.172.127.76])
-        by smtp.gmail.com with ESMTPSA id z9sm25088302pgh.94.2020.06.29.03.04.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Jun 2020 03:04:44 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Quentin Perret <qperret@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] cpufreq: Remove the weakly defined cpufreq_default_governor()
-Date:   Mon, 29 Jun 2020 15:34:40 +0530
-Message-Id: <2f00a5847708547a57920e24a2ec5e76b265cde9.1593425047.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        id S2389409AbgF2UfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:35:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59488 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732206AbgF2TVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:21:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C8EFAAF38;
+        Mon, 29 Jun 2020 10:10:54 +0000 (UTC)
+Subject: Re: [PATCH for v5.8 1/3] mm: workingset: age nonresident information
+ alongside anonymous pages
+To:     js1304@gmail.com, Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan.kim@gmail.com>,
+        Michal Hocko <mhocko@suse.com>, kernel-team@lge.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+References: <1592288204-27734-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1592288204-27734-2-git-send-email-iamjoonsoo.kim@lge.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <8bdd9612-389e-c3db-8cfa-36a0ec262b94@suse.cz>
+Date:   Mon, 29 Jun 2020 12:10:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1592288204-27734-2-git-send-email-iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default cpufreq governor is chosen with the help of a "choice"
-option in the Kconfig which will always end up selecting one of the
-governors and so the weakly defined definition of
-cpufreq_default_governor() will never get called.
+On 6/16/20 8:16 AM, js1304@gmail.com wrote:
+> From: Johannes Weiner <hannes@cmpxchg.org>
+> 
+> After ("mm: workingset: let cache workingset challenge anon fix"), we
 
-Moreover, this makes us skip the checking of the return value of that
-routine as it will always be non NULL.
+This could now be updated to:
+After commit 34e58cac6d8f ("mm: workingset: let cache workingset challenge
+anon"), we ...
 
-If the Kconfig option changes in future, then we will start getting a
-link error instead (and it won't go unnoticed as in the case of the weak
-definition).
+> compare refault distances to active_file + anon. But age of the
+> non-resident information is only driven by the file LRU. As a result,
+> we may overestimate the recency of any incoming refaults and activate
+> them too eagerly, causing unnecessary LRU churn in certain situations.
+> 
+> Make anon aging drive nonresident age as well to address that.
 
-Suggested-by: Quentin Perret <qperret@google.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
-Based over the following series:
-- [PATCH V4 0/3] cpufreq: Allow default governor on cmdline and fix
-  locking issues
+Fixes: 34e58cac6d8f ("mm: workingset: let cache workingset challenge anon")
 
- drivers/cpufreq/cpufreq.c | 7 -------
- 1 file changed, 7 deletions(-)
+> Reported-by: Joonsoo Kim <js1304@gmail.com>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index ad94b1d47ddb..036f4cc42ede 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -1056,11 +1056,6 @@ static int cpufreq_add_dev_interface(struct cpufreq_policy *policy)
- 	return 0;
- }
- 
--__weak struct cpufreq_governor *cpufreq_default_governor(void)
--{
--	return NULL;
--}
--
- static int cpufreq_init_policy(struct cpufreq_policy *policy)
- {
- 	struct cpufreq_governor *gov = NULL;
-@@ -1079,8 +1074,6 @@ static int cpufreq_init_policy(struct cpufreq_policy *policy)
- 
- 		if (!gov) {
- 			gov = cpufreq_default_governor();
--			if (!gov)
--				return -ENODATA;
- 			__module_get(gov->owner);
- 		}
- 
--- 
-2.25.0.rc1.19.g042ed3e048af
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+> ---
+>  include/linux/mmzone.h |  4 ++--
+>  include/linux/swap.h   |  1 +
+>  mm/vmscan.c            |  3 +++
+>  mm/workingset.c        | 46 +++++++++++++++++++++++++++-------------------
+>  4 files changed, 33 insertions(+), 21 deletions(-)
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index c4c37fd..f6f8849 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -257,8 +257,8 @@ struct lruvec {
+>  	 */
+>  	unsigned long			anon_cost;
+>  	unsigned long			file_cost;
+> -	/* Evictions & activations on the inactive file list */
+> -	atomic_long_t			inactive_age;
+> +	/* Non-resident age, driven by LRU movement */
+> +	atomic_long_t			nonresident_age;
+>  	/* Refaults at the time of last reclaim cycle */
+>  	unsigned long			refaults;
+>  	/* Various lruvec state flags (enum lruvec_flags) */
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index 4c5974b..5b3216b 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -313,6 +313,7 @@ struct vma_swap_readahead {
+>  };
+>  
+>  /* linux/mm/workingset.c */
+> +void workingset_age_nonresident(struct lruvec *lruvec, unsigned long nr_pages);
+>  void *workingset_eviction(struct page *page, struct mem_cgroup *target_memcg);
+>  void workingset_refault(struct page *page, void *shadow);
+>  void workingset_activation(struct page *page);
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index b6d8432..749d239 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -904,6 +904,7 @@ static int __remove_mapping(struct address_space *mapping, struct page *page,
+>  		__delete_from_swap_cache(page, swap);
+>  		xa_unlock_irqrestore(&mapping->i_pages, flags);
+>  		put_swap_page(page, swap);
+> +		workingset_eviction(page, target_memcg);
+>  	} else {
+>  		void (*freepage)(struct page *);
+>  		void *shadow = NULL;
+> @@ -1884,6 +1885,8 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
+>  				list_add(&page->lru, &pages_to_free);
+>  		} else {
+>  			nr_moved += nr_pages;
+> +			if (PageActive(page))
+> +				workingset_age_nonresident(lruvec, nr_pages);
+>  		}
+>  	}
+>  
+> diff --git a/mm/workingset.c b/mm/workingset.c
+> index d481ea4..50b7937 100644
+> --- a/mm/workingset.c
+> +++ b/mm/workingset.c
+> @@ -156,8 +156,8 @@
+>   *
+>   *		Implementation
+>   *
+> - * For each node's file LRU lists, a counter for inactive evictions
+> - * and activations is maintained (node->inactive_age).
+> + * For each node's LRU lists, a counter for inactive evictions and
+> + * activations is maintained (node->nonresident_age).
+>   *
+>   * On eviction, a snapshot of this counter (along with some bits to
+>   * identify the node) is stored in the now empty page cache
+> @@ -213,7 +213,17 @@ static void unpack_shadow(void *shadow, int *memcgidp, pg_data_t **pgdat,
+>  	*workingsetp = workingset;
+>  }
+>  
+> -static void advance_inactive_age(struct mem_cgroup *memcg, pg_data_t *pgdat)
+> +/**
+> + * workingset_age_nonresident - age non-resident entries as LRU ages
+> + * @memcg: the lruvec that was aged
+> + * @nr_pages: the number of pages to count
+> + *
+> + * As in-memory pages are aged, non-resident pages need to be aged as
+> + * well, in order for the refault distances later on to be comparable
+> + * to the in-memory dimensions. This function allows reclaim and LRU
+> + * operations to drive the non-resident aging along in parallel.
+> + */
+> +void workingset_age_nonresident(struct lruvec *lruvec, unsigned long nr_pages)
+>  {
+>  	/*
+>  	 * Reclaiming a cgroup means reclaiming all its children in a
+> @@ -227,11 +237,8 @@ static void advance_inactive_age(struct mem_cgroup *memcg, pg_data_t *pgdat)
+>  	 * the root cgroup's, age as well.
+>  	 */
+>  	do {
+> -		struct lruvec *lruvec;
+> -
+> -		lruvec = mem_cgroup_lruvec(memcg, pgdat);
+> -		atomic_long_inc(&lruvec->inactive_age);
+> -	} while (memcg && (memcg = parent_mem_cgroup(memcg)));
+> +		atomic_long_add(nr_pages, &lruvec->nonresident_age);
+> +	} while ((lruvec = parent_lruvec(lruvec)));
+>  }
+>  
+>  /**
+> @@ -254,12 +261,11 @@ void *workingset_eviction(struct page *page, struct mem_cgroup *target_memcg)
+>  	VM_BUG_ON_PAGE(page_count(page), page);
+>  	VM_BUG_ON_PAGE(!PageLocked(page), page);
+>  
+> -	advance_inactive_age(page_memcg(page), pgdat);
+> -
+>  	lruvec = mem_cgroup_lruvec(target_memcg, pgdat);
+> +	workingset_age_nonresident(lruvec, hpage_nr_pages(page));
+>  	/* XXX: target_memcg can be NULL, go through lruvec */
+>  	memcgid = mem_cgroup_id(lruvec_memcg(lruvec));
+> -	eviction = atomic_long_read(&lruvec->inactive_age);
+> +	eviction = atomic_long_read(&lruvec->nonresident_age);
+>  	return pack_shadow(memcgid, pgdat, eviction, PageWorkingset(page));
+>  }
+>  
+> @@ -309,20 +315,20 @@ void workingset_refault(struct page *page, void *shadow)
+>  	if (!mem_cgroup_disabled() && !eviction_memcg)
+>  		goto out;
+>  	eviction_lruvec = mem_cgroup_lruvec(eviction_memcg, pgdat);
+> -	refault = atomic_long_read(&eviction_lruvec->inactive_age);
+> +	refault = atomic_long_read(&eviction_lruvec->nonresident_age);
+>  
+>  	/*
+>  	 * Calculate the refault distance
+>  	 *
+>  	 * The unsigned subtraction here gives an accurate distance
+> -	 * across inactive_age overflows in most cases. There is a
+> +	 * across nonresident_age overflows in most cases. There is a
+>  	 * special case: usually, shadow entries have a short lifetime
+>  	 * and are either refaulted or reclaimed along with the inode
+>  	 * before they get too old.  But it is not impossible for the
+> -	 * inactive_age to lap a shadow entry in the field, which can
+> -	 * then result in a false small refault distance, leading to a
+> -	 * false activation should this old entry actually refault
+> -	 * again.  However, earlier kernels used to deactivate
+> +	 * nonresident_age to lap a shadow entry in the field, which
+> +	 * can then result in a false small refault distance, leading
+> +	 * to a false activation should this old entry actually
+> +	 * refault again.  However, earlier kernels used to deactivate
+>  	 * unconditionally with *every* reclaim invocation for the
+>  	 * longest time, so the occasional inappropriate activation
+>  	 * leading to pressure on the active list is not a problem.
+> @@ -359,7 +365,7 @@ void workingset_refault(struct page *page, void *shadow)
+>  		goto out;
+>  
+>  	SetPageActive(page);
+> -	advance_inactive_age(memcg, pgdat);
+> +	workingset_age_nonresident(lruvec, hpage_nr_pages(page));
+>  	inc_lruvec_state(lruvec, WORKINGSET_ACTIVATE);
+>  
+>  	/* Page was active prior to eviction */
+> @@ -382,6 +388,7 @@ void workingset_refault(struct page *page, void *shadow)
+>  void workingset_activation(struct page *page)
+>  {
+>  	struct mem_cgroup *memcg;
+> +	struct lruvec *lruvec;
+>  
+>  	rcu_read_lock();
+>  	/*
+> @@ -394,7 +401,8 @@ void workingset_activation(struct page *page)
+>  	memcg = page_memcg_rcu(page);
+>  	if (!mem_cgroup_disabled() && !memcg)
+>  		goto out;
+> -	advance_inactive_age(memcg, page_pgdat(page));
+> +	lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
+> +	workingset_age_nonresident(lruvec, hpage_nr_pages(page));
+>  out:
+>  	rcu_read_unlock();
+>  }
+> 
 
