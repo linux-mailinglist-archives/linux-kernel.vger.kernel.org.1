@@ -2,105 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A0720E432
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A687320E84D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390964AbgF2VWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:22:20 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:52597 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730572AbgF2VWL (ORCPT
+        id S2404713AbgF2WFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 18:05:45 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31230 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726146AbgF2SfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:22:11 -0400
-Received: from mail-qk1-f172.google.com ([209.85.222.172]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MDv1A-1jiCrd0EKK-00A1GE for <linux-kernel@vger.kernel.org>; Mon, 29 Jun
- 2020 13:54:01 +0200
-Received: by mail-qk1-f172.google.com with SMTP id e11so14934554qkm.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:54:00 -0700 (PDT)
-X-Gm-Message-State: AOAM530VGvvB5fkMRMjDUeJj9aDLE47Y+6lLHa+oUn8CFAkbksOym1Er
-        76fNb0cx8XAOeXkQ+4a8n+NcRl4669mfr8rlViU=
-X-Google-Smtp-Source: ABdhPJwtBbHqFdSpCDwcXLaF0RSEsXGs33hzlBafcTQfeX/aXKD8IfSc9Jxe9Akfl5VitHcd5Y1zZ6gLJV9ZpAZ843A=
-X-Received: by 2002:a37:9dd6:: with SMTP id g205mr15063847qke.352.1593431639955;
- Mon, 29 Jun 2020 04:53:59 -0700 (PDT)
+        Mon, 29 Jun 2020 14:35:19 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TBZdHO132225;
+        Mon, 29 Jun 2020 07:56:33 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ydk8w3p2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 07:56:32 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05TBaD7B135261;
+        Mon, 29 Jun 2020 07:56:32 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ydk8w3mh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 07:56:32 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05TBpvef012283;
+        Mon, 29 Jun 2020 11:56:30 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 31wwch25f9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 11:56:29 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05TBt7MH63045990
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Jun 2020 11:55:07 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 25FDAAE04D;
+        Mon, 29 Jun 2020 11:56:27 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B7209AE055;
+        Mon, 29 Jun 2020 11:56:24 +0000 (GMT)
+Received: from [9.102.22.29] (unknown [9.102.22.29])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 29 Jun 2020 11:56:24 +0000 (GMT)
+Subject: Re: [PATCH 01/11] kexec_file: allow archs to handle special regions
+ while locating memory hole
+To:     Petr Tesarik <ptesarik@suse.cz>
+Cc:     Pingfan Liu <piliu@redhat.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Young <dyoung@redhat.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Eric Biederman <ebiederm@xmission.com>
+References: <159319825403.16351.7253978047621755765.stgit@hbathini.in.ibm.com>
+ <159319828304.16351.6990340111766605842.stgit@hbathini.in.ibm.com>
+ <20200629133933.0787f562@ezekiel.suse.cz>
+From:   Hari Bathini <hbathini@linux.ibm.com>
+Message-ID: <7981ae61-26c6-000c-9ee4-382dab3eecab@linux.ibm.com>
+Date:   Mon, 29 Jun 2020 17:26:23 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <1593425623-31810-1-git-send-email-Anson.Huang@nxp.com>
- <1593425623-31810-2-git-send-email-Anson.Huang@nxp.com> <CAK8P3a31coESQTssW1mndGuZ1pvxXSRRpY=XT1ZO+pkj9aabxg@mail.gmail.com>
- <DB3PR0402MB3916987E13C37013ACF59EB1F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-In-Reply-To: <DB3PR0402MB3916987E13C37013ACF59EB1F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 29 Jun 2020 13:53:44 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3Ar3TnSuxpUUMj4NjCK0Qb0pD9cVbcFUcdeGa85m2fUQ@mail.gmail.com>
-Message-ID: <CAK8P3a3Ar3TnSuxpUUMj4NjCK0Qb0pD9cVbcFUcdeGa85m2fUQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] arm64: defconfig: Select CONFIG_RESET_IMX7 by default
-To:     Anson Huang <anson.huang@nxp.com>
-Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Stefan Agner <stefan.agner@toradex.com>,
-        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Olof Johansson <olof@lixom.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:NIOSdfESoXFSE8b/DuYR3KL4+W+WZjWDOStjhIIYEq3ceB+isZb
- Eiq1GkmUNJPAj68nWgC7PYKycit+ZrxUAdM/2CKx1wrGKhXDtCi6zlwSOl69jUHNXsEmCe7
- R25isb36HglKPLXxIIzWGVRSKQXj2BzB1KA0dkVL9LmYThRrK0f0MkdH8tQhHMOvxffyHVI
- blL85jSVrgafEUnJ8rSFQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:GIwaNzaF97M=:6INQF6qF6yeJQlhCQ4O+W1
- +AHvlspnFmowebU86qfyDbkZ3+rGbzf1hIIOQUxo49v8CbDRRcVGEqZpM17VzHrP7ID4cHCXA
- Hhghh+z8FrdvEXG9YGWWFbOdww6AFpaFfDNPq2GwT47CSz6K6/bnN7d2DgwhW3IBpdYAoERiB
- foAW/29+wgSomKuLULrWbqMtT2djCiZ44/iZmypUCa/9V7m0R8FEkbEGOIO81RyV10BemSiS7
- TnhUoOgzXQb/JXVtnIwW7y7UsOt99CjwOvuD4sxxcgiQT29TfBDb/V3ysGyZ2sLOl/XwtnR8d
- vMB7UDoHf1Cs5bBzXePg5LP7KOElbG2R++/PNPoV+BXNGfgvLt5VZVZCL104qcN481OfREmDb
- i97qTfbSDR6Qey35DA+8DfGf5mf/sjImXRnmgAWUVerilm6W5jeSq5lynyResp5wMp60zI/2g
- 7BW6OUpXwdP4lT9CLeYdYSD+yKPA5txOE2TevkFd0f7ohBv8/k6B4oIUgqHsv6kjhSCoFGTlX
- 9FpE2liUP0jkUBOi/kNf5n7VWi/rdgCVkcAT7vzaPlWm9ImUPLj10PrbqIhGi5Wxc+OHzjnbx
- z4kaRn+qbeCgNNOkCW+m5IogeP90bvOraYqWoP1eccXrmkxcwpO/g2y9iF120MrwAEnGLu0fv
- xmTmYqwnpFnyXnIInkPj1kRP2QDn6aBoeV2GEHMVlmlmVgNwgEGsOj4/nhqDIWSeyUnta2OqQ
- vWbJIXF5ucYKAMckXSgGTrTKj+3KUqLT5NzBw8QeaULfxh8ooMSewdgyiVZTkgUOygEjZBgDk
- Io2XUNYzZZckSiQKw6LIi7JAVQNebpxSl4/g1+tWe6FrwZ061k=
+In-Reply-To: <20200629133933.0787f562@ezekiel.suse.cz>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-29_11:2020-06-29,2020-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ suspectscore=0 adultscore=0 mlxlogscore=859 lowpriorityscore=0
+ clxscore=1015 bulkscore=0 malwarescore=0 cotscore=-2147483648
+ impostorscore=0 spamscore=0 priorityscore=1501 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006290079
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 1:34 PM Anson Huang <anson.huang@nxp.com> wrote:
-> > Subject: Re: [PATCH 2/3] arm64: defconfig: Select CONFIG_RESET_IMX7 by
-> > default
-> >
-> > On Mon, Jun 29, 2020 at 12:25 PM Anson Huang <Anson.Huang@nxp.com>
-> > wrote:
-> > >
-> > > i.MX7 reset driver now supports module build, it is no longer built in
-> > > by default, need to select it explicitly.
-> > >
-> > > Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> >
-> > Why not make it =m now that this is possible?
->
-> It is because some drivers depends on this reset driver to work, such as PCIe,
-> If by default make it =m, it may impact PCIe's function, adding module support
-> at this point is try to provide function of loadable module for Android, but don't
-> want to impact any function which is working previously.
+Hi Petr,
 
-It sounds like your patch 1/3 is not ready to be merged then.
+On 29/06/20 5:09 pm, Petr Tesarik wrote:
+> Hi Hari,
+> 
+> is there any good reason to add two more functions with a very similar
+> name to an existing function? AFAICS all you need is a way to call a
+> PPC64-specific function from within kexec_add_buffer (PATCH 4/11), so
+> you could add something like this:
+> 
+> int __weak arch_kexec_locate_mem_hole(struct kexec_buf *kbuf)
+> {
+> 	return 0;
+> }
+> 
+> Call this function from kexec_add_buffer where appropriate and then
+> override it for PPC64 (it roughly corresponds to your
+> kexec_locate_mem_hole_ppc64() from PATCH 4/11).
+> 
+> FWIW it would make it easier for me to follow the resulting code.
 
-Please make sure that loading it later does not break other drivers
-that depend on it. Other drivers don't have to be able to deal with
-missing dependencies if this one is never loaded or disabled at
-compile-time. However before you make it possible to turn this into
-a loadable module, anything that depends on it must be able to
-deal with the modules getting loaded in a random order first.
+Right, Petr.
 
-       Arnd
+I was trying out a few things before I ended up with what I sent here.
+Bu yeah.. I did realize arch_kexec_locate_mem_hole() would have been better
+after sending out v1. Will take care of that in v2.
+
+Thanks
+Hari
