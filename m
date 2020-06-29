@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B84820E1A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F070820E141
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389750AbgF2U6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:58:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43358 "EHLO
+        id S1731328AbgF2Uxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:53:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730795AbgF2TNE (ORCPT
+        with ESMTP id S1731271AbgF2TNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:04 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27941C00861B;
-        Mon, 29 Jun 2020 03:32:26 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f7so13005273wrw.1;
-        Mon, 29 Jun 2020 03:32:26 -0700 (PDT)
+        Mon, 29 Jun 2020 15:13:21 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B96C00861F;
+        Mon, 29 Jun 2020 03:40:14 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id z17so12390218edr.9;
+        Mon, 29 Jun 2020 03:40:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=FW5uuzpZIcFHloIfRx2mV3Q4O9gtnLF6GA6PBU0vnk8=;
+        b=iqGHhWSblMuDs6IMzv34bSi1zEjJ+bzX0WJoEVJdZL4cCExAUrdJjmtPtPjfoCRhO+
+         r4WLmmBS6fP4qQMezE4KKoQGS1BCY08B+N4uAKG0wt0+obJAlOiH7XkWYl74x3/se2dN
+         j1IHtoex6TmCkFXVORpDTrZNKYq7FaT+Bn8CtE2ZJrf08o4PXmCF6i9Trb9zlGY4EQdQ
+         beq9WOFKSogv7rPW2Vbv5qVwPDadUzb4xojHrRZ1pFPrSAF2ZEIP99a/q5VnR4JdUBw2
+         qFp8+l24efMen96u3viwb+IkkbLw1hEirYZmLCugHle5XZOb80DHb4JbOmLlv/RQ+ycF
+         c8og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=uA93shaS3ROaZO1F/Theu2W+pMXUv937OHVYLQtQpJc=;
-        b=QK9tK1GHNBE7aDAP8tGPnrwMHTwrspXJNSldTfaw2XfVBowb4ndW3UB1CXE+lCXLiD
-         oZ3dwZ/LQQflwvqsBUPoydEzXLNhTeBeNUdbt1ugJZ2DwoylZp8MXRE4OInh8OKgUNZU
-         1W6IFepl8kW12d6/MYgcGQA+X+1d7L/Q05ntTPVWi2kgbPkiAsbfY1CmNyx/263kVp1u
-         5zP8ISuN6/7XyZ2oRH/ZkTBitJEFi6zWEgTnFnNRQ6JWhCdl/lAW62OS/gS7YnzoG/zy
-         f8wWRGRPVY/9ko9g4VMsV/UdbkPiQjAoWA8g/WdkqDBeppBUz+sCQVoUA2iSDbi2FrBF
-         pGPw==
-X-Gm-Message-State: AOAM530lsHdL+EFmCZzaqvdxSTzXEJ8hPA9m4vTuZ3Ev3foTsiIM6fnN
-        7SnYhW46nm9CqbKW3aUKe54=
-X-Google-Smtp-Source: ABdhPJyQVyWd7PiCVN+PqIz3jcQ5yfRgoN5qX/9YK1HLjlJOQ0zbG0Eh8/SqLuvv2dP6GWVZw170OA==
-X-Received: by 2002:adf:ee05:: with SMTP id y5mr16955076wrn.185.1593426744827;
-        Mon, 29 Jun 2020 03:32:24 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id r1sm14814942wrw.24.2020.06.29.03.32.24
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=FW5uuzpZIcFHloIfRx2mV3Q4O9gtnLF6GA6PBU0vnk8=;
+        b=t5fxUeHHGT5x5pBkrmiSjKdPPxePhiID9SFTtZ5SGWTVpS2qYmMsr1NB8GkOVWo6/i
+         MRs4QIoXmcif1jvAilHdsHBqOrjDIg19Yv9T5g+mEfgtbP+LQnlGLyBo9zM03Kd1R3IA
+         8AWSvFW64n1Tz8v/kDCoW9ygbS07os77WgYkChTdFEc5R3cdCXGN3cBUw44s3+XrQlI+
+         zNt2o4DV++dMJ7eTeCH+OWYbk7J4pvqeezsxP4mxuQxmb+h8L/B+j1K+jbZW/Q6iT6qs
+         R9p9b+W5v68GOAZnKHdMruCU4DIlkHwwHLSKG0GXxD2gkACvVEwmzT7CMGNRRGxPC6j4
+         0Kvw==
+X-Gm-Message-State: AOAM533eLOEMCHnIH99mFq3ZWnktCCgnsExn7QmjiHQU1W+uRZpPUjzA
+        cqN8t+cCTjyzmW4jNXysHbk=
+X-Google-Smtp-Source: ABdhPJx8yG3u2DN7M9KoPEgDVF3CYbC6iiicJVoUyynOlTfr2a28mbHZ6/emmMLVQyv6VCGIT8aO0w==
+X-Received: by 2002:aa7:db4f:: with SMTP id n15mr1292645edt.193.1593427213599;
+        Mon, 29 Jun 2020 03:40:13 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:a03f:b7f9:7600:cb8:1ada:8c2d:413])
+        by smtp.gmail.com with ESMTPSA id l4sm7443503edw.10.2020.06.29.03.40.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 03:32:24 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 10:32:23 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Joseph Salisbury <joseph.salisbury@microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        sashal@kernel.org, wei.liu@kernel.org, mikelley@microsoft.com,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH][v2] Drivers: hv: Change flag to write log level in panic
- msg to false
-Message-ID: <20200629103223.ft7l76vbr45eec6x@liuwe-devbox-debian-v2>
-References: <1593210497-114310-1-git-send-email-joseph.salisbury@microsoft.com>
+        Mon, 29 Jun 2020 03:40:13 -0700 (PDT)
+From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+To:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Adham Abozaeid <adham.abozaeid@microchip.com>,
+        Ajay Singh <ajay.kathat@microchip.com>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: [PATCH] wilc1000: let wilc_mac_xmit() return NETDEV_TX_OK
+Date:   Mon, 29 Jun 2020 12:40:09 +0200
+Message-Id: <20200629104009.84077-1-luc.vanoostenryck@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <8a2f50dc-2cbe-64e4-438c-4320bb574f4f@microchip.com>
+References: <8a2f50dc-2cbe-64e4-438c-4320bb574f4f@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1593210497-114310-1-git-send-email-joseph.salisbury@microsoft.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 03:28:17PM -0700, Joseph Salisbury wrote:
-> When the kernel panics, one page of kmsg data may be collected and sent to
-> Hyper-V to aid in diagnosing the failure.  The collected kmsg data typically
->  contains 50 to 100 lines, each of which has a log level prefix that isn't
-> very useful from a diagnostic standpoint.  So tell kmsg_dump_get_buffer()
-> to not include the log level, enabling more information that *is* useful to
-> fit in the page.
-> 
-> Requesting in stable kernels, since many kernels running in production are
-> stable releases.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Joseph Salisbury <joseph.salisbury@microsoft.com>
+The method ndo_start_xmit() is defined as returning an 'netdev_tx_t',
+which is a typedef for an enum type defining 'NETDEV_TX_OK' but this
+driver returns '0' instead of 'NETDEV_TX_OK'.
 
-Applied to hyperv-fixes with Michael's review from v1. Thanks.
+Fix this by returning 'NETDEV_TX_OK' instead of '0'.
 
-> ---
->  drivers/hv/vmbus_drv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-> index 9147ee9d5f7d..d69f4efa3719 100644
-> --- a/drivers/hv/vmbus_drv.c
-> +++ b/drivers/hv/vmbus_drv.c
-> @@ -1368,7 +1368,7 @@ static void hv_kmsg_dump(struct kmsg_dumper *dumper,
->  	 * Write dump contents to the page. No need to synchronize; panic should
->  	 * be single-threaded.
->  	 */
-> -	kmsg_dump_get_buffer(dumper, true, hv_panic_page, HV_HYP_PAGE_SIZE,
-> +	kmsg_dump_get_buffer(dumper, false, hv_panic_page, HV_HYP_PAGE_SIZE,
->  			     &bytes_written);
->  	if (bytes_written)
->  		hyperv_report_panic_msg(panic_pa, bytes_written);
-> -- 
-> 2.17.1
-> 
+Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+---
+ drivers/net/wireless/microchip/wilc1000/netdev.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/microchip/wilc1000/netdev.c b/drivers/net/wireless/microchip/wilc1000/netdev.c
+index fda0ab97b02c..be3ae5486f44 100644
+--- a/drivers/net/wireless/microchip/wilc1000/netdev.c
++++ b/drivers/net/wireless/microchip/wilc1000/netdev.c
+@@ -678,14 +678,14 @@ netdev_tx_t wilc_mac_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 
+ 	if (skb->dev != ndev) {
+ 		netdev_err(ndev, "Packet not destined to this device\n");
+-		return 0;
++		return NETDEV_TX_OK;
+ 	}
+ 
+ 	tx_data = kmalloc(sizeof(*tx_data), GFP_ATOMIC);
+ 	if (!tx_data) {
+ 		dev_kfree_skb(skb);
+ 		netif_wake_queue(ndev);
+-		return 0;
++		return NETDEV_TX_OK;
+ 	}
+ 
+ 	tx_data->buff = skb->data;
+@@ -710,7 +710,7 @@ netdev_tx_t wilc_mac_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 		srcu_read_unlock(&wilc->srcu, srcu_idx);
+ 	}
+ 
+-	return 0;
++	return NETDEV_TX_OK;
+ }
+ 
+ static int wilc_mac_close(struct net_device *ndev)
+-- 
+2.27.0
+
