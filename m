@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F7720DDE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C5A20DF0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731045AbgF2UUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:20:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37022 "EHLO mail.kernel.org"
+        id S2389227AbgF2Ubs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:31:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732607AbgF2TZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:25:39 -0400
+        id S1732476AbgF2TZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:25:19 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B502825444;
-        Mon, 29 Jun 2020 15:43:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F4FC2544A;
+        Mon, 29 Jun 2020 15:43:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593445395;
-        bh=GGxbJOfbtAE6e03+LO15Vu7dDc/n1vkzpcClBCmxWjM=;
+        s=default; t=1593445397;
+        bh=C4pLqg9guNpwTOM939XRXDfQJWlayJHsoVrefLXAvhI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e6JstPm1+ayriWKp21pgJJz14qxUqwNdo+ID1iCGRo13hZ7mF4ObgIb603x+1eYWu
-         JOSF6S79efW3EoxockqrnKxsURBYa8fQsTEyouV8s/l4cf3FCymSliCby7iR6z/yYH
-         Ey775wzScawAtqyJf6aFV289BXvEcg5qXIXNrZ28=
+        b=Ruj4C4Wof3bOyExsX3JnN6Kd1TJitdIf8BIoI88L2xbZYu7Wc48vwsFEmvc+3GVBX
+         oR1yP8lzTvkAJjJUU9sK4nZ1YMjgiZj0oKVEdQQ+9bJSI/bZimM7MqQK0cVwvPlbJF
+         171equJJ8gpi+XueIfPOsIkxDi0XGMJxy0im/1mY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Tomasz=20Meresi=C5=84ski?= <tomasz@meresinski.eu>,
+Cc:     Tang Bin <tangbin@cmss.chinamobile.com>,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.9 148/191] usb: add USB_QUIRK_DELAY_INIT for Logitech C922
-Date:   Mon, 29 Jun 2020 11:39:24 -0400
-Message-Id: <20200629154007.2495120-149-sashal@kernel.org>
+Subject: [PATCH 4.9 150/191] usb: host: ehci-exynos: Fix error check in exynos_ehci_probe()
+Date:   Mon, 29 Jun 2020 11:39:26 -0400
+Message-Id: <20200629154007.2495120-151-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629154007.2495120-1-sashal@kernel.org>
 References: <20200629154007.2495120-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.229-rc1.gz
 X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
 X-KernelTest-Branch: linux-4.9.y
@@ -49,40 +49,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomasz Meresiński <tomasz@meresinski.eu>
+From: Tang Bin <tangbin@cmss.chinamobile.com>
 
-commit 5d8021923e8a8cc37a421a64e27c7221f0fee33c upstream.
+commit 44ed240d62736ad29943ec01e41e194b96f7c5e9 upstream.
 
-The Logitech C922, just like other Logitech webcams,
-needs the USB_QUIRK_DELAY_INIT or it will randomly
-not respond after device connection
+If the function platform_get_irq() failed, the negative value
+returned will not be detected here. So fix error handling in
+exynos_ehci_probe(). And when get irq failed, the function
+platform_get_irq() logs an error message, so remove redundant
+message here.
 
-Signed-off-by: Tomasz Meresiński <tomasz@meresinski.eu>
+Fixes: 1bcc5aa87f04 ("USB: Add initial S5P EHCI driver")
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200603203347.7792-1-tomasz@meresinski.eu
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+Link: https://lore.kernel.org/r/20200602114708.28620-1-tangbin@cmss.chinamobile.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/core/quirks.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/host/ehci-exynos.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-index 27d05f0134de8..e6e0f786547bf 100644
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -73,11 +73,12 @@ static const struct usb_device_id usb_quirk_list[] = {
- 	/* Logitech HD Webcam C270 */
- 	{ USB_DEVICE(0x046d, 0x0825), .driver_info = USB_QUIRK_RESET_RESUME },
+diff --git a/drivers/usb/host/ehci-exynos.c b/drivers/usb/host/ehci-exynos.c
+index 7a603f66a9bc5..44b7c3e780f67 100644
+--- a/drivers/usb/host/ehci-exynos.c
++++ b/drivers/usb/host/ehci-exynos.c
+@@ -199,9 +199,8 @@ static int exynos_ehci_probe(struct platform_device *pdev)
+ 	hcd->rsrc_len = resource_size(res);
  
--	/* Logitech HD Pro Webcams C920, C920-C, C925e and C930e */
-+	/* Logitech HD Pro Webcams C920, C920-C, C922, C925e and C930e */
- 	{ USB_DEVICE(0x046d, 0x082d), .driver_info = USB_QUIRK_DELAY_INIT },
- 	{ USB_DEVICE(0x046d, 0x0841), .driver_info = USB_QUIRK_DELAY_INIT },
- 	{ USB_DEVICE(0x046d, 0x0843), .driver_info = USB_QUIRK_DELAY_INIT },
- 	{ USB_DEVICE(0x046d, 0x085b), .driver_info = USB_QUIRK_DELAY_INIT },
-+	{ USB_DEVICE(0x046d, 0x085c), .driver_info = USB_QUIRK_DELAY_INIT },
+ 	irq = platform_get_irq(pdev, 0);
+-	if (!irq) {
+-		dev_err(&pdev->dev, "Failed to get IRQ\n");
+-		err = -ENODEV;
++	if (irq < 0) {
++		err = irq;
+ 		goto fail_io;
+ 	}
  
- 	/* Logitech ConferenceCam CC3000e */
- 	{ USB_DEVICE(0x046d, 0x0847), .driver_info = USB_QUIRK_DELAY_INIT },
 -- 
 2.25.1
 
