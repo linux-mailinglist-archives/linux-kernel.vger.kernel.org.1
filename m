@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3F820D509
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CC220D400
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731617AbgF2TOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731554AbgF2TNx (ORCPT
+        id S1730631AbgF2TED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:04:03 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:34729 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730618AbgF2TDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:53 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69110C0D941E
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:02:05 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EF217299;
-        Mon, 29 Jun 2020 14:02:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1593432124;
-        bh=eQbJn3vb0K78NPoXf+o0lEl+wgzeznRoWZwwR/EyWX4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nA0sQtL16b7El+YqlTorIQEubvJwfP0WNhDTIvMI7hI5RnECeVA3SaemFBxEFAoaa
-         Ud/pXw0EzF6DQZZVKVvUvMM/YHS4AfQP9kea3JNHeKFL7grT8arzlR07Zp31pf2jk4
-         zcqz3zgeTDKOgvyAMoEeXWLpje6TeVfZTozo8IuY=
-Date:   Mon, 29 Jun 2020 15:02:00 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH v8 0/3] phy: zynqmp: Add PHY driver for the Xilinx ZynqMP
- Gigabit Transceiver
-Message-ID: <20200629120200.GA10648@pendragon.ideasonboard.com>
-References: <20200513172239.26444-1-laurent.pinchart@ideasonboard.com>
- <20200629093943.GB2599@vkoul-mobl>
+        Mon, 29 Jun 2020 15:03:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593457433;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FWDtF1fQ/mXJTKG1mwwIfkBgzU8jxhcN0FwqgicX+To=;
+        b=M/jvES4G3CoUZJddXdRBmRJ0jT5g9ZJs0WmaPGVizDc/+bgoJWeAZ9lYLBuJ1zD5kvxRKo
+        9E3t1zAnj0wNYWuwlBPrDZrE5IgR5rmsqimHVdD2LCdV+puzf/HCeVJJUH89wbyIdgT+2J
+        jeif31mEmTPbTDTJH7iwhDPg6QmXX7g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-84-lK8K4gwJN_moy10V8QBKFw-1; Mon, 29 Jun 2020 08:02:23 -0400
+X-MC-Unique: lK8K4gwJN_moy10V8QBKFw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C07480401D;
+        Mon, 29 Jun 2020 12:02:21 +0000 (UTC)
+Received: from Diego (unknown [10.40.208.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 96CFC7CAC5;
+        Mon, 29 Jun 2020 12:02:17 +0000 (UTC)
+Date:   Mon, 29 Jun 2020 14:02:04 +0200 (CEST)
+From:   Michael Petlan <mpetlan@redhat.com>
+X-X-Sender: Michael@Diego
+To:     Andi Kleen <ak@linux.intel.com>
+cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A. Clarke" <pc@us.ibm.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [RFC 00/10] perf tools: Add support to reuse metric
+In-Reply-To: <20200626215759.GG818054@tassilo.jf.intel.com>
+Message-ID: <alpine.LRH.2.20.2006291344440.4075@Diego>
+References: <20200626194720.2915044-1-jolsa@kernel.org> <20200626212522.GF818054@tassilo.jf.intel.com> <CAP-5=fVMs4Ok3=gYmzheNTzbBUGGHbCr0cpJSm9TV45aeZb4Ng@mail.gmail.com> <20200626215759.GG818054@tassilo.jf.intel.com>
+User-Agent: Alpine 2.20 (LRH 67 2015-01-07)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200629093943.GB2599@vkoul-mobl>
+Content-Type: text/plain; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
-
-On Mon, Jun 29, 2020 at 03:09:43PM +0530, Vinod Koul wrote:
-> On 13-05-20, 20:22, Laurent Pinchart wrote:
-> > Hello,
-> > 
-> > The patch series adds a PHY driver for the Xilinx ZynqMP gigabit serial
-> > transceivers (PS-GTR). The PS-GTR is a set of 4 PHYs that can be used by
-> > the PCIe, USB 3.0, DisplayPort, SATA and Ethernet controllers that are
-> > part of the Serial I/O Unit (SIOU).
-> > 
-> > The code is based on a previous version sent by Anurag Kumar Vulisha and
-> > available at [1]. The DT bindings have been converted to YAML, and both
-> > the bindings and the driver have been considerably reworked (and
-> > simplified). The most notable changes is the removal of manual handling
-> > of the reset lines of the PHY users (which belongs to the PHY users
-> > themselves), and moving to the standard PHY .power_on() and .configure()
-> > operations to replace functions that were previously exported by the
-> > driver. Please see individual patches for a more detailed changelog.
-> > 
-> > Compared to v7, review comments on the PHY driver have been taken into
-> > account, and the DT bindings have switched to the GPL-2.0-only OR
-> > BSD-2-Clause license
-> > 
-> > The code is based on v5.6 and has been tested with DisplayPort on the
-> > Xilinx ZC106 board.
+On Fri, 26 Jun 2020, Andi Kleen wrote:
+> > The name could be a metric or an event, the logic for each is quite
 > 
-> This (dt patch and 8.1 update) fails to apply for me, can you please
-> rebased on phy-next and resend. Also I saw this while trying to apply:
+> I would say collisions are unlikely. Event names follow quite structured
+> patterns.
+
+But across various architectures? I guess event names can be arbitrary.
+In perftool-testsuite, I use the following regexp to match event names:
+[\w\-\:\/_=,]+
+
 > 
-> WARNING: Misordered MAINTAINERS entry - list 'S:' before 'T:'
-> #403: FILE: MAINTAINERS:18605:
-> +T:	git https://github.com/Xilinx/linux-xlnx.git
-> +S:	Supported
+> > different. You could look up an event and when it fails assume it was
+> > a metric, but I like the simplicity of this approach.
+> 
+> I don't think it's simpler for the user.
+>
+I think it should be clear at the user level whether they're using an event
+or a metric (basically a couple of events together). I don't hiding too
+much of details from users is any good.
 
-Rebased, fixed and resent.
+> > Maybe this
+> > change could be adopted more widely with something like "perf stat -e
+> > metric:IPC -a -I 1000" rather than the current "perf stat -M IPC -a -I
+> > 1000".
+> 
+> I thought about just adding metrics to -e, without metric: of course.
+> 
+> -Andi
+> 
+> 
 
--- 
-Regards,
-
-Laurent Pinchart
