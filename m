@@ -2,124 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932A020E576
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C4A20E54D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388554AbgF2VhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:37:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60596 "EHLO mail.kernel.org"
+        id S2391312AbgF2VfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:35:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728425AbgF2Skj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:39 -0400
-Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        id S1728536AbgF2Skv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:40:51 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D543F233F9;
-        Mon, 29 Jun 2020 09:35:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2CCC23341;
+        Mon, 29 Jun 2020 09:37:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593423343;
-        bh=JxS7qG1TBN6E09S+KrZbuW/QoJaZC8vZAevnWONK0Vo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yap008obp4KXXBTi7vzlQ84ybSpi0OZY1NOtylkU/7C4HW0pvvZ8SNDpKlW3/DYzu
-         p6unDyDIPAtgfVloBtlGC2t1HarckC+bgB1MNZiDt6rkPEKR1uiDcd3iYuHZLCZPS1
-         745yr1hXLGK2ih1KsHSEd2AhJRSF9ENhLhBX4Dc4=
-Received: from mchehab by mail.kernel.org with local (Exim 4.93)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jpqCS-006cAV-Jc; Mon, 29 Jun 2020 11:35:40 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] kconfig: qconf: navigate menus on hyperlinks
-Date:   Mon, 29 Jun 2020 11:35:39 +0200
-Message-Id: <45fa5ad583de1766de6169366df1df5837c5dc7c.1593423060.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1593423060.git.mchehab+huawei@kernel.org>
-References: <cover.1593423060.git.mchehab+huawei@kernel.org>
+        s=default; t=1593423463;
+        bh=aUlW1jN73vdOSZpkpkucX5DY39QfgpzaB4OVxaLyNwg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fQhAJAY2GQWzjXCHbIzBM0WcizWlyLgsusUesRD5/mJLqWfstu9qc2Z4O5NWMc3AI
+         xWohK04BBHDh0YjLNX+w47tv7DpEXNO4+hLXXkD3QEmjwCPtmLCKy0Dqu1JhGBVGtA
+         Uayx7idGwLNExpoi3uR2z6+tmpozhbSFMRLNUGhk=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jpqEP-007I8r-Eo; Mon, 29 Jun 2020 10:37:41 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 29 Jun 2020 10:37:41 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, kernel-team@android.com
+Subject: Re: [PATCH v2 04/17] ARM: Allow IPIs to be handled as normal
+ interrupts
+In-Reply-To: <jhjk0zvgfz7.mognet@arm.com>
+References: <20200624195811.435857-1-maz@kernel.org>
+ <20200624195811.435857-5-maz@kernel.org> <jhjk0zvgfz7.mognet@arm.com>
+User-Agent: Roundcube Webmail/1.4.5
+Message-ID: <abca3a7e3f019b0f07ab2ec42894001b@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, linux@arm.linux.org.uk, tglx@linutronix.de, jason@lakedaemon.net, sumit.garg@linaro.org, f.fainelli@gmail.com, gregory.clement@bootlin.com, andrew@lunn.ch, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of just changing the helper window to show a
-dependency, also navigate to it at the config and menu
-widgets.
+On 2020-06-25 19:25, Valentin Schneider wrote:
+> On 24/06/20 20:57, Marc Zyngier wrote:
+>> @@ -696,9 +696,76 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
+>> 
+>>       if ((unsigned)ipinr < NR_IPI)
+>>               trace_ipi_exit_rcuidle(ipi_types[ipinr]);
+>> +}
+>> +
+>> +/* Legacy version, should go away once all irqchips have been 
+>> converted */
+>> +void handle_IPI(int ipinr, struct pt_regs *regs)
+>> +{
+>> +	struct pt_regs *old_regs = set_irq_regs(regs);
+>> +
+>> +	irq_enter();
+>> +	do_handle_IPI(ipinr);
+>> +	irq_exit();
+>> +
+>>       set_irq_regs(old_regs);
+>>  }
+>> 
+>> +static irqreturn_t ipi_handler(int irq, void *data)
+>> +{
+>> +	do_handle_IPI(irq - ipi_irq_base);
+>> +	return IRQ_HANDLED;
+>> +}
+>> +
+>> +static void ipi_send(const struct cpumask *target, unsigned int ipi)
+>> +{
+>> +	__ipi_send_mask(ipi_desc[ipi], target);
+>> +}
+>> +
+>> +static void ipi_setup(int cpu)
+>> +{
+>> +	if (ipi_irq_base) {
+>> +		int i;
+>> +
+>> +		for (i = 0; i < nr_ipi; i++)
+>> +			enable_percpu_irq(ipi_irq_base + i, 0);
+>> +	}
+>> +}
+>> +
+>> +static void ipi_teardown(int cpu)
+>> +{
+>> +	if (ipi_irq_base) {
+>> +		int i;
+>> +
+>> +		for (i = 0; i < nr_ipi; i++)
+>> +			disable_percpu_irq(ipi_irq_base + i);
+>> +	}
+>> +}
+>> +
+>> +void __init set_smp_ipi_range(int ipi_base, int n)
+>> +{
+>> +	int i;
+>> +
+>> +	WARN_ON(n < MAX_IPI);
+>> +	nr_ipi = min(n, MAX_IPI);
+> 
+> 
+> I got confused by that backtrace thing and NR_IPI vs MAX_IPI.
+> I think I got it now : we don't want to call trace_ipi_raise() for
+> IPI_CPU_BACKTRACE *but* we still need to alloc the desc and route it
+> through the generic IPI layers.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- scripts/kconfig/qconf.cc | 24 +++++-------------------
- 1 file changed, 5 insertions(+), 19 deletions(-)
+Indeed, and I didn't want to have a bizarre "+ 1" hanging about.
 
-diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
-index 49f0688fceb8..d8870b15a178 100644
---- a/scripts/kconfig/qconf.cc
-+++ b/scripts/kconfig/qconf.cc
-@@ -1232,7 +1232,6 @@ void ConfigInfoView::clicked(const QUrl &url)
- 	char *data = new char[count + 1];
- 	struct symbol **result;
- 	struct menu *m = NULL;
--	char type;
- 
- 	if (count < 1) {
- 		qInfo() << "Clicked link is empty";
-@@ -1242,7 +1241,6 @@ void ConfigInfoView::clicked(const QUrl &url)
- 
- 	memcpy(data, str.constData(), count);
- 	data[count] = '\0';
--	type = data[0];
- 
- 	/* Seek for exact match */
- 	data[0] = '^';
-@@ -1255,15 +1253,8 @@ void ConfigInfoView::clicked(const QUrl &url)
- 	}
- 
- 	sym = *result;
--	if (type == 's') {
--		symbolInfo();
--		emit showDebugChanged(true);
--		free(result);
--		delete data;
--		return;
--	}
- 
--	/* URL is a menu */
-+	/* Seek for the menu which holds the symbol */
- 	for (struct property *prop = sym->prop; prop; prop = prop->next) {
- 		    if (prop->type != P_PROMPT && prop->type != P_MENU)
- 			    continue;
-@@ -1271,17 +1262,11 @@ void ConfigInfoView::clicked(const QUrl &url)
- 		    break;
- 	}
- 
--	if (!m) {
-+	if (!m)
- 		qInfo() << "Clicked menu is invalid:" << data;
--		free(result);
--		delete data;
--		return;
--	}
-+	else
-+		emit menuSelected(m);
- 
--	_menu = m;
--	menuInfo();
--
--	emit showDebugChanged(true);
- 	free(result);
- 	delete data;
- }
-@@ -1750,6 +1735,7 @@ void ConfigMainWindow::setMenuLink(struct menu *menu)
- 			item->setSelected(true);
- 			list->scrollToItem(item);
- 			list->setFocus();
-+			helpText->setInfo(menu);
- 		}
- 	}
- }
+> The only difference I can tell is that now we will get some trace 
+> events
+> for it via the handler entry/exit tracepoints - that shouldn't cause 
+> any
+> issue.
+
+I hope so. I don't see how you can avoid all tracepoints anyway (if that
+was the intention).
+
+Thanks,
+
+         M.
 -- 
-2.26.2
-
+Jazz is not dead. It just smells funny...
