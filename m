@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F72320DF74
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20BAD20DF6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389316AbgF2Ugi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:36:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59488 "EHLO mx2.suse.de"
+        id S2389143AbgF2UgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:36:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59454 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732170AbgF2TV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:21:28 -0400
+        id S1732179AbgF2TVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:21:30 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A6990AF63;
-        Mon, 29 Jun 2020 15:09:56 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 172EBAF67;
+        Mon, 29 Jun 2020 15:09:57 +0000 (UTC)
 From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 To:     gregkh@linuxfoundation.org
 Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
@@ -22,9 +22,9 @@ Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         devel@driverdev.osuosl.org,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [PATCH v2 09/47] staging: vchi: Get rid of all useless callback reasons
-Date:   Mon, 29 Jun 2020 17:09:07 +0200
-Message-Id: <20200629150945.10720-10-nsaenzjulienne@suse.de>
+Subject: [PATCH v2 10/47] staging: vchi: Get rid of vchi_msg_peek()
+Date:   Mon, 29 Jun 2020 17:09:08 +0200
+Message-Id: <20200629150945.10720-11-nsaenzjulienne@suse.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200629150945.10720-1-nsaenzjulienne@suse.de>
 References: <20200629150945.10720-1-nsaenzjulienne@suse.de>
@@ -35,74 +35,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-They are neither produced nor expected, so just delete them.
+There already is a function that covers most of the functionality
+vchi_msg_peek() provides: vchi_msg_hold(). The main difference being
+that the later removes the message from vchu's queue while the other
+does it later on, while releasing the message.
+
+There are no users of this function that can't be trivially converted to
+vchi_msg_hold(). So, for the sake of removing duplicate code, get rid of
+vchi_msg_peek().
+
+Note that the opposite change could be performed as well. But
+vchi_msg_peek()'s implementation was deemed less robust as messages have
+to be released in order.
 
 Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 ---
- .../interface/vchi/vchi_common.h              | 40 ++-----------------
- 1 file changed, 3 insertions(+), 37 deletions(-)
+ .../vc04_services/interface/vchi/vchi.h       | 12 ----
+ .../interface/vchiq_arm/vchiq_shim.c          | 64 -------------------
+ .../interface/vchiq_arm/vchiq_util.c          | 12 ----
+ .../interface/vchiq_arm/vchiq_util.h          |  1 -
+ 4 files changed, 89 deletions(-)
 
-diff --git a/drivers/staging/vc04_services/interface/vchi/vchi_common.h b/drivers/staging/vc04_services/interface/vchi/vchi_common.h
-index 7fc04e38936d..0f79bea4757d 100644
---- a/drivers/staging/vc04_services/interface/vchi/vchi_common.h
-+++ b/drivers/staging/vc04_services/interface/vchi/vchi_common.h
-@@ -31,8 +31,6 @@ enum vchi_crc_control {
+diff --git a/drivers/staging/vc04_services/interface/vchi/vchi.h b/drivers/staging/vc04_services/interface/vchi/vchi.h
+index 1a981e98e82b..1daef5ad70f1 100644
+--- a/drivers/staging/vc04_services/interface/vchi/vchi.h
++++ b/drivers/staging/vc04_services/interface/vchi/vchi.h
+@@ -103,18 +103,6 @@ extern int32_t vchi_msg_dequeue(struct vchi_service_handle *handle,
+ 				uint32_t *actual_msg_size,
+ 				enum vchi_flags flags);
  
- //callback reasons when an event occurs on a service
- enum vchi_callback_reason {
--	VCHI_CALLBACK_REASON_MIN,
+-// Routine to look at a message in place.
+-// The message is not dequeued, so a subsequent call to peek or dequeue
+-// will return the same message.
+-extern int32_t vchi_msg_peek(struct vchi_service_handle *handle,
+-			     void **data,
+-			     uint32_t *msg_size,
+-			     enum vchi_flags flags);
 -
- 	/*
- 	 * This indicates that there is data available handle is the msg id that
- 	 * was transmitted with the data
-@@ -41,44 +39,12 @@ enum vchi_callback_reason {
- 	 * Tasks get kicked by the callback, reset their event and try and read
- 	 * from the fifo until it fails
- 	 */
-+	VCHI_CALLBACK_SERVICE_CLOSED,
- 	VCHI_CALLBACK_MSG_AVAILABLE,
--	VCHI_CALLBACK_MSG_SENT,
--	VCHI_CALLBACK_MSG_SPACE_AVAILABLE, // XXX not yet implemented
+-// Routine to remove a message after it has been read in place with peek
+-// The first message on the queue is dequeued.
+-extern int32_t vchi_msg_remove(struct vchi_service_handle *handle);
 -
--	// This indicates that a transfer from the other side has completed
--	VCHI_CALLBACK_BULK_RECEIVED,
--	//This indicates that data queued up to be sent has now gone
--	//handle is the msg id that was used when sending the data
- 	VCHI_CALLBACK_BULK_SENT,
--	VCHI_CALLBACK_BULK_RX_SPACE_AVAILABLE, // XXX not yet implemented
--	VCHI_CALLBACK_BULK_TX_SPACE_AVAILABLE, // XXX not yet implemented
--
--	VCHI_CALLBACK_SERVICE_CLOSED,
--
--	/*
--	 * this side has sent XOFF to peer due to lack of data consumption by
--	 * service (suggests the service may need to take some recovery action
--	 * if it has been deliberately holding off consuming data)
--	 */
--	VCHI_CALLBACK_SENT_XOFF,
--	VCHI_CALLBACK_SENT_XON,
--
--	// indicates that a bulk transfer has finished reading the source buffer
--	VCHI_CALLBACK_BULK_DATA_READ,
--
--	// power notification events (currently host side only)
--	VCHI_CALLBACK_PEER_OFF,
--	VCHI_CALLBACK_PEER_SUSPENDED,
--	VCHI_CALLBACK_PEER_ON,
--	VCHI_CALLBACK_PEER_RESUMED,
--	VCHI_CALLBACK_FORCED_POWER_OFF,
--
--	// some extra notifications provided by vchiq_arm
--	VCHI_CALLBACK_SERVICE_OPENED,
--	VCHI_CALLBACK_BULK_RECEIVE_ABORTED,
-+	VCHI_CALLBACK_BULK_RECEIVED,
- 	VCHI_CALLBACK_BULK_TRANSMIT_ABORTED,
--
--	VCHI_CALLBACK_REASON_MAX
-+	VCHI_CALLBACK_BULK_RECEIVE_ABORTED,
+ // Routine to look at a message in place.
+ // The message is dequeued, so the caller is left holding it; the descriptor is
+ // filled in and must be released when the user has finished with the message.
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
+index 75d87b6992c4..54c2492b7c83 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
+@@ -18,70 +18,6 @@ struct shim_service {
+ 	void *callback_param;
  };
  
- // service control options
+-/***********************************************************
+- * Name: vchi_msg_peek
+- *
+- * Arguments:  struct vchi_service_handle *handle,
+- *             void **data,
+- *             uint32_t *msg_size,
+-
+- *             enum vchi_flags flags
+- *
+- * Description: Routine to return a pointer to the current message (to allow in
+- *              place processing). The message can be removed using
+- *              vchi_msg_remove when you're finished
+- *
+- * Returns: int32_t - success == 0
+- *
+- ***********************************************************/
+-int32_t vchi_msg_peek(struct vchi_service_handle *handle,
+-		      void **data,
+-		      uint32_t *msg_size,
+-		      enum vchi_flags flags)
+-{
+-	struct shim_service *service = (struct shim_service *)handle;
+-	struct vchiq_header *header;
+-
+-	WARN_ON((flags != VCHI_FLAGS_NONE) &&
+-		(flags != VCHI_FLAGS_BLOCK_UNTIL_OP_COMPLETE));
+-
+-	if (flags == VCHI_FLAGS_NONE)
+-		if (vchiu_queue_is_empty(&service->queue))
+-			return -1;
+-
+-	header = vchiu_queue_peek(&service->queue);
+-
+-	*data = header->data;
+-	*msg_size = header->size;
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(vchi_msg_peek);
+-
+-/***********************************************************
+- * Name: vchi_msg_remove
+- *
+- * Arguments:  struct vchi_service_handle *handle,
+- *
+- * Description: Routine to remove a message (after it has been read with
+- *              vchi_msg_peek)
+- *
+- * Returns: int32_t - success == 0
+- *
+- ***********************************************************/
+-int32_t vchi_msg_remove(struct vchi_service_handle *handle)
+-{
+-	struct shim_service *service = (struct shim_service *)handle;
+-	struct vchiq_header *header;
+-
+-	header = vchiu_queue_pop(&service->queue);
+-
+-	vchiq_release_message(service->handle, header);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(vchi_msg_remove);
+-
+ int vchi_queue_kernel_message(struct vchi_service_handle *handle, void *data,
+ 			       unsigned int size)
+ {
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.c
+index 644844d88fed..c1c81f9ab9e6 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.c
+@@ -55,18 +55,6 @@ void vchiu_queue_push(struct vchiu_queue *queue, struct vchiq_header *header)
+ 	complete(&queue->push);
+ }
+ 
+-struct vchiq_header *vchiu_queue_peek(struct vchiu_queue *queue)
+-{
+-	while (queue->write == queue->read) {
+-		if (wait_for_completion_interruptible(&queue->push))
+-			flush_signals(current);
+-	}
+-
+-	complete(&queue->push); // We haven't removed anything from the queue.
+-
+-	return queue->storage[queue->read & (queue->size - 1)];
+-}
+-
+ struct vchiq_header *vchiu_queue_pop(struct vchiu_queue *queue)
+ {
+ 	struct vchiq_header *header;
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.h
+index f03a4250de0d..1c90a8da1a92 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.h
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.h
+@@ -44,7 +44,6 @@ extern int vchiu_queue_is_empty(struct vchiu_queue *queue);
+ extern void vchiu_queue_push(struct vchiu_queue *queue,
+ 			     struct vchiq_header *header);
+ 
+-extern struct vchiq_header *vchiu_queue_peek(struct vchiu_queue *queue);
+ extern struct vchiq_header *vchiu_queue_pop(struct vchiu_queue *queue);
+ 
+ #endif
 -- 
 2.27.0
 
