@@ -2,130 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C39B20E441
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E048720E553
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390986AbgF2VWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:22:52 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:58681 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729596AbgF2Sv1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:51:27 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 805C058035E;
-        Mon, 29 Jun 2020 11:07:50 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 29 Jun 2020 11:07:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=WE1PSDJ6UR5jIFS55riBxt9LPeJ
-        Xh4U7NigTPnNX65A=; b=l8oEpc8ou0b31MaSG3xJyMa7ni1mk3WLjAf0+QKHhjs
-        AVpZBfZIOMlIwpRfzUZ14GCy22hl/ny7wF6EPd/RmE10onf4Ip8tNfeqRwOPe/KF
-        gPA9Mojv1xbR1GKjCgVa8zHPvuXzX/L9FcWYOtdSddgGtn8h1eG9jBxj75YJbHTK
-        AANJop2cVs8dOOdN/3CdbzUDXLfYiXtQNsQYaSDjYw02qjx1HRJeF5WHzMmAyjXS
-        3KhOuwB1qhHBpETNlNr2Wcj3pOWH0N/xGG6lycaJauSm7B8zbUUSEZMMBd+GhU53
-        6JgTxPN4HoKR9TklVbYstBJUuXqO1J9mbgHbuVlFbiA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=WE1PSD
-        J6UR5jIFS55riBxt9LPeJXh4U7NigTPnNX65A=; b=jvAnAfyGaqUn/08ZHsSqLO
-        uW19B9zLVT4SoApSBBkRM437Kkyd5+RLGxYcTd9L/oNbS6MJbqab7VsM98DbsCWO
-        4d+n8RBYK/BF0fHr9iBnrIaiiVmQvnFV3zkFgHUJ5uXQbG6usHTFF8bzNilFUc7u
-        VHSM1KJiVUTLlVmNRTKoIFa+4KuOnlVlYMVDSkofqAXPutOIj/pnE21k7/gu3pBQ
-        daqivTY5w3AmuBudK+2x1qoXFuOwCBazHChG9faFssJKqFPAI7ckWQyHm9tFFwxU
-        pbbe+PLQsGexmH8opjSu/KNzsplx1vR5KknkeXSlJ597pWOeC+sjwaFee54Bzuew
-        ==
-X-ME-Sender: <xms:wwP6XqWvknOfJkcPQBXZIqW8UorMwaNBI5C1ODdyBwTlMY09xUHPxw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudelledguddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:wwP6XmkjVUmeiEdlJgUfigxWgJQVaqJmvthVxhwDQFDiMykoEnTrdA>
-    <xmx:wwP6XubBPGGFyYHtXHWC-1pZWDOV_FPhqmC25ASqd2-PXgI2_RfGwg>
-    <xmx:wwP6XhWf_nU3-9dDRfPGYtrX-iylRBw_6x4z_SVVOUOMQWduDd8qGA>
-    <xmx:xgP6XmWAWQwhFI3MhZjhHXi92Prz-GT5C9njmChD_WUolvvNS1KtFw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 0E01A3280060;
-        Mon, 29 Jun 2020 11:07:47 -0400 (EDT)
-Date:   Mon, 29 Jun 2020 17:07:45 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Frank Lee <frank@allwinnertech.com>
-Cc:     robh+dt@kernel.org, wens@csie.org, mturquette@baylibre.com,
-        sboyd@kernel.org, srinivas.kandagatla@linaro.org,
-        linus.walleij@linaro.org, anarsoul@gmail.com,
-        tiny.windzz@gmail.com, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, amit.kucheria@verdurent.com,
-        p.zabel@pengutronix.de, clabbe@baylibre.com, icenowy@aosc.io,
-        megous@megous.com, karlp@tweak.net.au, bage@linutronix.de,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
-        huangshuosheng@allwinnertech.com, liyong@allwinnertech.com
-Subject: Re: [PATCH v2 06/11] nvmem: sunxi-sid: add support for A100's SID
- controller
-Message-ID: <20200629150745.ettjdggv55gfxs5s@gilmour.lan>
-References: <20200622025907.32574-1-frank@allwinnertech.com>
- <20200622025907.32574-7-frank@allwinnertech.com>
+        id S2391123AbgF2Vfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:35:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728509AbgF2Skr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:40:47 -0400
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 764FD23EB4;
+        Mon, 29 Jun 2020 15:08:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593443295;
+        bh=qBdL3tlBX+scLgBAFOGB5TLlWji+GPtg13a4shdBzo0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CqbNccPLqUPqB9hiyKYsfFMqH3nDDzIujQlexZjYfgmKPuDRzFqITwjtLc4SEaPIT
+         NX7+dkrumDzJth6HVgXUB7tIDxo+mOubkRrfP1ERFvFBgCZFiSuWvu5Ekl28nVWyl3
+         BT+iYJ8vFGrLyBjgUdifq4hbovppZjc7Z52B/uGQ=
+Received: by mail-oi1-f176.google.com with SMTP id e4so6522842oib.1;
+        Mon, 29 Jun 2020 08:08:15 -0700 (PDT)
+X-Gm-Message-State: AOAM5300557Le6CeZWQf0nLdoir8lOGrRYPQOS2xzVsy9qYXMKVLFCeD
+        W52XoAHDZ4guK0byG5tbY6Ka9j0v6UaCx2W0CPE=
+X-Google-Smtp-Source: ABdhPJwTia/C2SAyWRf7uRxGpRTQZVHRS1vjtLhx+E/b1Dt+tcSaaYv2NWdpuTJRHdljFla/pOrxnXThmPE1qfnRksI=
+X-Received: by 2002:aca:b241:: with SMTP id b62mr11815740oif.47.1593443294721;
+ Mon, 29 Jun 2020 08:08:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qt3qjbwfvcqzuc6s"
-Content-Disposition: inline
-In-Reply-To: <20200622025907.32574-7-frank@allwinnertech.com>
+References: <20200629061840.4065483-1-keescook@chromium.org>
+ <20200629061840.4065483-6-keescook@chromium.org> <CAMj1kXE+toCd=Bx-zw7D9bvDRNB2aPn5-_7CY7MOKcVGA-azVg@mail.gmail.com>
+ <202006290806.3BDE2A8@keescook>
+In-Reply-To: <202006290806.3BDE2A8@keescook>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 29 Jun 2020 17:08:03 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHij8M5_kvh6EDaFa8ksbDBxqdaWGtR=-QnXhF7YosK6g@mail.gmail.com>
+Message-ID: <CAMj1kXHij8M5_kvh6EDaFa8ksbDBxqdaWGtR=-QnXhF7YosK6g@mail.gmail.com>
+Subject: Re: [PATCH v4 05/17] ctype: Work around Clang -mbranch-protection=none
+ bug
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Will Deacon <will@kernel.org>, Dave Martin <Dave.Martin@arm.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, X86 ML <x86@kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---qt3qjbwfvcqzuc6s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jun 22, 2020 at 10:59:02AM +0800, Frank Lee wrote:
-> Add support for A100's SID controller.
->=20
-> Signed-off-by: Frank Lee <frank@allwinnertech.com>
-> ---
->  drivers/nvmem/sunxi_sid.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->=20
-> diff --git a/drivers/nvmem/sunxi_sid.c b/drivers/nvmem/sunxi_sid.c
-> index e26ef1b..8ac074b 100644
-> --- a/drivers/nvmem/sunxi_sid.c
-> +++ b/drivers/nvmem/sunxi_sid.c
-> @@ -189,6 +189,11 @@ static int sunxi_sid_probe(struct platform_device *p=
-dev)
->  	.need_register_readout =3D true,
->  };
-> =20
-> +static const struct sunxi_sid_cfg sun50i_a100_cfg =3D {
-> +	.value_offset =3D 0x200,
-> +	.size =3D 0x100,
-> +};
+On Mon, 29 Jun 2020 at 17:06, Kees Cook <keescook@chromium.org> wrote:
+>
+> On Mon, Jun 29, 2020 at 10:15:47AM +0200, Ard Biesheuvel wrote:
+> > On Mon, 29 Jun 2020 at 08:18, Kees Cook <keescook@chromium.org> wrote:
+> > >
+> > > In preparation for building efi/libstub with -mbranch-protection=none
+> > > (EFI does not support branch protection features[1]), add no-op code
+> > > to work around a Clang bug that emits an unwanted .note.gnu.property
+> > > section for object files without code[2].
+> > >
+> > > [1] https://lore.kernel.org/lkml/CAMj1kXHck12juGi=E=P4hWP_8vQhQ+-x3vBMc3TGeRWdQ-XkxQ@mail.gmail.com
+> > > [2] https://bugs.llvm.org/show_bug.cgi?id=46480
+> > >
+> > > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > > Cc: Will Deacon <will@kernel.org>
+> > > Cc: Dave Martin <Dave.Martin@arm.com>
+> > > Cc: clang-built-linux@googlegroups.com
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > ---
+> > >  lib/ctype.c | 10 ++++++++++
+> > >  1 file changed, 10 insertions(+)
+> > >
+> > > diff --git a/lib/ctype.c b/lib/ctype.c
+> > > index c819fe269eb2..21245ed57d90 100644
+> > > --- a/lib/ctype.c
+> > > +++ b/lib/ctype.c
+> > > @@ -36,3 +36,13 @@ _L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,     /* 224-239 */
+> > >  _L,_L,_L,_L,_L,_L,_L,_P,_L,_L,_L,_L,_L,_L,_L,_L};      /* 240-255 */
+> > >
+> > >  EXPORT_SYMBOL(_ctype);
+> > > +
+> > > +/*
+> > > + * Clang will generate .note.gnu.property sections for object files
+> > > + * without code, even in the presence of -mbranch-protection=none.
+> > > + * To work around this, define an unused static function.
+> > > + * https://bugs.llvm.org/show_bug.cgi?id=46480
+> > > + */
+> > > +#ifdef CONFIG_CC_IS_CLANG
+> > > +void __maybe_unused __clang_needs_code_here(void) { }
+> > > +#endif
+> > > --
+> > > 2.25.1
+> > >
+> >
+> > I take it we don't need this horrible hack if we build the EFI stub
+> > with branch protections and filter out the .note.gnu.property section
+> > explicitly?
+> >
+> > Sorry to backpedal, but that is probably a better approach after all,
+> > given that the instructions don't hurt, and we will hopefully be able
+> > to arm them once UEFI (as well as PE/COFF) gets around to describing
+> > this in a way that both the firmware and the OS can consume.
+>
+> How does this look?
+>
+>
+> commit 051ef0b75a386c3fe2f216d16246468147a48c5b
+> Author: Kees Cook <keescook@chromium.org>
+> Date:   Tue Jun 23 18:02:56 2020 -0700
+>
+>     efi/libstub: Disable -mbranch-protection
+>
+>     In preparation for adding --orphan-handling=warn to more architectures,
+>     disable -mbranch-protection, as EFI does not yet support it[1].  This was
+>     noticed due to it producing unwanted .note.gnu.property sections (prefixed
+>     with .init due to the objcopy build step).
+>
+>     However, we must also work around a bug in Clang where the section is
+>     still emitted for code-less object files[2], so also remove the section
+>     during the objcopy.
+>
+>     [1] https://lore.kernel.org/lkml/CAMj1kXHck12juGi=E=P4hWP_8vQhQ+-x3vBMc3TGeRWdQ-XkxQ@mail.gmail.com
+>     [2] https://bugs.llvm.org/show_bug.cgi?id=46480
+>
+>     Cc: Ard Biesheuvel <ardb@kernel.org>
+>     Cc: Arvind Sankar <nivedita@alum.mit.edu>
+>     Cc: Atish Patra <atish.patra@wdc.com>
+>     Cc: linux-efi@vger.kernel.org
+>     Signed-off-by: Kees Cook <keescook@chromium.org>
+>
+> diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
+> index 75daaf20374e..f9f1922f8f28 100644
+> --- a/drivers/firmware/efi/libstub/Makefile
+> +++ b/drivers/firmware/efi/libstub/Makefile
+> @@ -18,7 +18,8 @@ cflags-$(CONFIG_X86)          += -m$(BITS) -D__KERNEL__ \
+>  # arm64 uses the full KBUILD_CFLAGS so it's necessary to explicitly
+>  # disable the stackleak plugin
+>  cflags-$(CONFIG_ARM64)         := $(subst $(CC_FLAGS_FTRACE),,$(KBUILD_CFLAGS)) \
+> -                                  -fpie $(DISABLE_STACKLEAK_PLUGIN)
+> +                                  -fpie $(DISABLE_STACKLEAK_PLUGIN) \
+> +                                  $(call cc-option,-mbranch-protection=none)
+>  cflags-$(CONFIG_ARM)           := $(subst $(CC_FLAGS_FTRACE),,$(KBUILD_CFLAGS)) \
+>                                    -fno-builtin -fpic \
+>                                    $(call cc-option,-mno-single-pic-base)
+> @@ -66,6 +67,12 @@ lib-$(CONFIG_X86)            += x86-stub.o
+>  CFLAGS_arm32-stub.o            := -DTEXT_OFFSET=$(TEXT_OFFSET)
+>  CFLAGS_arm64-stub.o            := -DTEXT_OFFSET=$(TEXT_OFFSET)
+>
+> +# Even when -mbranch-protection=none is set, Clang will generate a
+> +# .note.gnu.property for code-less object files (like lib/ctype.c),
+> +# so work around this by explicitly removing the unwanted section.
+> +# https://bugs.llvm.org/show_bug.cgi?id=46480
+> +STUBCOPY_FLAGS-y               += --remove-section=.note.gnu.property
 > +
+>  #
+>  # For x86, bootloaders like systemd-boot or grub-efi do not zero-initialize the
+>  # .bss section, so the .bss section of the EFI stub needs to be included in the
+>
 
-It looks like it's the same tha nthe H3 / A64 then?
 
-If so, you can just reuse their compatible as fallback
+Looks fine
 
-Maxime
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
---qt3qjbwfvcqzuc6s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXvoDwQAKCRDj7w1vZxhR
-xR1+AQDUmJ2eKxkSAKY8N3oAYv2RkDrEZNTRivNZeW/rTDtt1gD/fIJbT8KdkTtN
-Oq4B49fJoiJYQc72b1d+sdbscb9XAw4=
-=7lp0
------END PGP SIGNATURE-----
-
---qt3qjbwfvcqzuc6s--
+if you want to keep it with the set, or I can take it as a EFI fix.
