@@ -2,212 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4188620E11E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 066E320E084
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389875AbgF2UwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
+        id S2389760AbgF2Uq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731375AbgF2TN1 (ORCPT
+        with ESMTP id S1731525AbgF2TNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:27 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D435CC0068FB
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:45:04 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id b6so16191824wrs.11
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:45:04 -0700 (PDT)
+        Mon, 29 Jun 2020 15:13:52 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D1DFC0068BA;
+        Mon, 29 Jun 2020 04:49:32 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id e22so12548169edq.8;
+        Mon, 29 Jun 2020 04:49:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XGw/iLKNRAiVkZjoBpYpVGlTMGowb6J/RzcIqE9oUnc=;
-        b=rS5h5EDVXcM6nddGacPz/Nj3KgrOPH0q0nYOztg+J1s+b0tDo9soLUxF+5ac5OLI08
-         4pj4d8PGVhb2QpuWHGjPLdHrKX0AJKO5kd4h+mlDscVYvZ+wmgjgPcaGK+I6f94mzM4l
-         fb7mw0e8YVatfs/UV5KEfnEtOEVMtAaikz8UK4gdg/86d82CkVVrazsC2z8uZG7CUXUZ
-         niM55Y4S1aOeUjTWaFRV7epBvRNNInwxRoJNp/+oJDa1DqvxWLK+V7ia1o54br2dUWjk
-         r2bBnqELUcWJVWzHCzsw9/yfgbDJJaiY6No8zpA3wSx7ZRHXQyrZbqiOr9LQIvxuxb/V
-         Q9Pw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2uPO3vckqsooDcWfKZuORVgJvTI2dPV4QqBlpSlJ+WY=;
+        b=eDtph5pcsYHKVqyYe7AqdGWv7pSMpgITQFZvs/tZftfHXbon6dnQcD4JpPZjxHQ4F4
+         6Qi0Gxx6aAe54M7RXwfq7FsQrd54aX60+g3cBZ9COLWkFBcN2f+8NZmPYZ0/NGnAPacK
+         C44sHkNGCrA6E9leq32IEneHBWGF1XpmCsGzBiIjN9Nt+POJcFADpVYSffVo6ejOLTah
+         lE4W5B0yghA//VCbi493fDcVq892KnnCwZFJdO0XA0oZwD5H0YCL/dZnW/UYyPVeWWDt
+         YkyOJsSrGo/btZkZU7JP76om4gRGwk6XgIEgVb5wQxDaZOxxJ9kme+A4fhgZQXnYyF4i
+         pStA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XGw/iLKNRAiVkZjoBpYpVGlTMGowb6J/RzcIqE9oUnc=;
-        b=sLpBb/NcFJyu4MVOEuDEQuGyCVFEVFJ0+6cz/c/QH7QU+jO1TiZgZzDita3lmPMoF4
-         jV+uUt+yP3ed/8PtN/tBkZ6IfJUvytNmhHZ6bOrm3G50v+lKgA8aEWbAKRZq95qoLmmE
-         MGL/oe7asTiH9zC3VUrJbGwzQBAtzH1HL8RJPOsxsK53f2BBiNUjeat2cgXZXlL969m4
-         j1goZkGTxP3uxhYqxZqhfKssUWqHfig7iuxVJKN87EfGDPfqD2NpjDU4qfvzd5wdrE6l
-         fR0dxSYLbh+R/R/dqpfHY2GNJ2VCMAsg9f8HoPUWuSiQDRjC08qOXCkPxie/zYGsJ2N7
-         Uqwg==
-X-Gm-Message-State: AOAM531i5EOShdklP+JnzxbJf19cSChu3XAmTvgqPVsDfe41rHJPdlJP
-        UBcLoNYg5ZizR39UFj/7Jeb/1Q==
-X-Google-Smtp-Source: ABdhPJxOJjSafM1OFUfqJURXwD3lrGdaznzf+9LM4EAUq/q+VGG6z+FfLqPpw2iGsX1ac9JHkVsJXw==
-X-Received: by 2002:adf:c142:: with SMTP id w2mr15839442wre.337.1593431103458;
-        Mon, 29 Jun 2020 04:45:03 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id s10sm17859915wme.31.2020.06.29.04.45.02
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2uPO3vckqsooDcWfKZuORVgJvTI2dPV4QqBlpSlJ+WY=;
+        b=YlGUEDK0rFZAS0NnsaEFxmEFv0dfMIXMmiqP+MFrQP/yk6LWuw+w8j7i75+8eyejrC
+         NM6fRRnjocCKIXcHjzv1Cebk3NTLaoyQBn4BvJZ+l81kvnDTCgZrcN0V1CV1Ken62tfb
+         pUfMNKA/fqNNGE1zo7bSO+5yZjBHlHfWilnRaEvl1iyl63TCUj2x0EKOqC6a5oxRxFEF
+         9eMY1845hMtGTuUM2bTaZNjHRTm6iaYw6II3YDLcoeWCwnInf93ANESZEpqyyJ0iamKm
+         lqBv+Hagx1aIP56Q5zs6HKaxPbuX3nCv+iUQYJ6VMO3MzBZfxKT7nazrCZ3gx6RLB0mm
+         ZZbQ==
+X-Gm-Message-State: AOAM53292xZoNRIXG5spEQp/w5uultxPiA5zP56Afqwp4L+OSoj3HVNs
+        WWPFmAVoGK4lP5ySkmAqgqSQgQIkvTM=
+X-Google-Smtp-Source: ABdhPJxX3ZkbA575LdtUr7ABCDWqwZSDSB4e/xyVQw9NjMO+OlKeImrqaZVJLNLDkt+5mICUb79hhw==
+X-Received: by 2002:a50:e1c5:: with SMTP id m5mr17248608edl.47.1593431370952;
+        Mon, 29 Jun 2020 04:49:30 -0700 (PDT)
+Received: from xps13.lan (3e6b1cc1.rev.stofanet.dk. [62.107.28.193])
+        by smtp.googlemail.com with ESMTPSA id z20sm9818006edq.97.2020.06.29.04.49.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 04:45:02 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 12:45:01 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Jiri Slaby <jslaby@suse.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/7] kgdb: Add request_nmi() to the io ops table for
- kgdboc
-Message-ID: <20200629114501.7aq547dzo6o2abrt@holly.lan>
-References: <1592835984-28613-1-git-send-email-sumit.garg@linaro.org>
- <1592835984-28613-4-git-send-email-sumit.garg@linaro.org>
- <20200622160300.avgfhnfkpqzqqtsr@holly.lan>
- <CAFA6WYOmQT-OQvjpy1pVPq2mx5S264bJPd-XfwnDY2BjeoWekg@mail.gmail.com>
- <20200623105934.wvyidi3xgqgd35af@holly.lan>
- <CAD=FV=XHZT9ud0Ze1pDvz-kQy7FMFzd9T6+jM5URt1k5BwQ15g@mail.gmail.com>
+        Mon, 29 Jun 2020 04:49:30 -0700 (PDT)
+From:   Bruno Thomsen <bruno.thomsen@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>, bth@kamstrup.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Bruno Thomsen <bruno.thomsen@gmail.com>
+Subject: [PATCH 1/3] dt-bindings: ARM: imx: add kamstrup flex concentrator to schema
+Date:   Mon, 29 Jun 2020 13:49:25 +0200
+Message-Id: <20200629114927.17379-1-bruno.thomsen@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=XHZT9ud0Ze1pDvz-kQy7FMFzd9T6+jM5URt1k5BwQ15g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 12:44:15PM -0700, Doug Anderson wrote:
-> Hi,
-> 
-> On Tue, Jun 23, 2020 at 3:59 AM Daniel Thompson
-> <daniel.thompson@linaro.org> wrote:
-> >
-> > On Tue, Jun 23, 2020 at 02:07:47PM +0530, Sumit Garg wrote:
-> > > On Mon, 22 Jun 2020 at 21:33, Daniel Thompson
-> > > <daniel.thompson@linaro.org> wrote:
-> > > > > +     irq_set_status_flags(irq, IRQ_NOAUTOEN);
-> > > > > +     res = request_nmi(irq, fn, IRQF_PERCPU, "kgdboc", dev_id);
-> > > >
-> > > > Why do we need IRQF_PERCPU here. A UART interrupt is not normally
-> > > > per-cpu?
-> > > >
-> > >
-> > > Have a look at this comment [1] and corresponding check in
-> > > request_nmi(). So essentially yes UART interrupt is not normally
-> > > per-cpu but in order to make it an NMI, we need to request it in
-> > > per-cpu mode.
-> > >
-> > > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/irq/manage.c#n2112
-> >
-> > Thanks! This is clear.
-> >
-> > > > > +     if (res) {
-> > > > > +             res = request_irq(irq, fn, IRQF_SHARED, "kgdboc", dev_id);
-> > > >
-> > > > IRQF_SHARED?
-> > > >
-> > > > Currrently there is nothing that prevents concurrent activation of
-> > > > ttyNMI0 and the underlying serial driver. Using IRQF_SHARED means it
-> > > > becomes possible for both drivers to try to service the same interrupt.
-> > > > That risks some rather "interesting" problems.
-> > > >
-> > >
-> > > Could you elaborate more on "interesting" problems?
-> >
-> > Er... one of the serial drivers we have allowed the userspace to open
-> > will, at best, be stone dead and not passing any characters.
-> >
-> >
-> > > BTW, I noticed one more problem with this patch that is IRQF_SHARED
-> > > doesn't go well with IRQ_NOAUTOEN status flag. Earlier I tested it
-> > > with auto enable set.
-> > >
-> > > But if we agree that both shouldn't be active at the same time due to
-> > > some real problems(?) then I can rid of IRQF_SHARED as well. Also, I
-> > > think we should unregister underlying tty driver (eg. /dev/ttyAMA0) as
-> > > well as otherwise it would provide a broken interface to user-space.
-> >
-> > I don't have a particular strong opinion on whether IRQF_SHARED is
-> > correct or not correct since I think that misses the point.
-> >
-> > Firstly, using IRQF_SHARED shows us that there is no interlocking
-> > between kgdb_nmi and the underlying serial driver. That probably tells
-> > us about the importance of the interlock than about IRQF_SHARED.
-> >
-> > To some extent I'm also unsure that kgdb_nmi could ever actually know
-> > the correct flags to use in all cases (that was another reason for the
-> > TODO comment about poll_get_irq() being a bogus API).
-> 
-> I do wonder a little bit if the architecture of the "kgdb_nmi_console"
-> should change.  I remember looking at it in the past and thinking it a
-> little weird that if I wanted to get it to work I'd need to change my
-> "console=" command line to go through this new driver and (I guess)
-> change the agetty I have running on my serial port to point to
-> ttyNMI0.  Is that how it's supposed to work?  Then if I want to do a
-> build without kgdb then I need to go in and change my agetty to point
-> back at my normal serial port?
-> 
-> It kinda feels like a better way to much of what the driver does would be to:
-> 
-> 1. Allow kgdb to sniff incoming serial bytes on a port and look for
-> its characters.  We already have this feature in the kernel to a small
-> extent for sniffing a break / sysrq character.
-> 
-> 2. If userspace doesn't happen to have the serial port open then
-> ideally we could open the port (using all the standard APIs that
-> already exist) from in the kernel and just throw away all the bytes
-> (since we already sniffed them).  As soon as userspace tried to open
-> the port when it would get ownership and if userspace ever closed the
-> port then we'd start reading / throwing away bytes again.
-> 
-> If we had a solution like that:
-> 
-> a) No serial drivers would need to change.
-> 
-> b) No kernel command line parameters would need to change.
-> 
-> Obviously that solution wouldn't magically get you an NMI, though.
-> For that I'd presume the right answer would be to add a parameter for
-> each serial driver that can support it to run its rx interrupt in NMI
-> mode.
+Add Kamstrup flex concentrator compatibles to the schema so we can
+make use of them for the validation.
 
-... or allow modal changes to the uart driver when kgdboc comes up?
+Signed-off-by: Bruno Thomsen <bruno.thomsen@gmail.com>
+---
+ Documentation/devicetree/bindings/arm/fsl.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-We already allow UART drivers to de-optimize themselves and use
-different code paths when polling is enabled so its not totally crazy
-;-).
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 05906e291e38..66627b272e40 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -299,6 +299,8 @@ properties:
+           - enum:
+               - fsl,imx7d-sdb             # i.MX7 SabreSD Board
+               - fsl,imx7d-sdb-reva        # i.MX7 SabreSD Rev-A Board
++              - kam,imx7d-flex-concentrator       # Kamstrup OMNIA Flex Concentrator
++              - kam,imx7d-flex-concentrator-mfg   # Kamstrup OMNIA Flex Concentrator in manufacturing mode
+               - novtech,imx7d-meerkat96   # i.MX7 Meerkat96 Board
+               - technexion,imx7d-pico-dwarf   # TechNexion i.MX7D Pico-Dwarf
+               - technexion,imx7d-pico-hobbit  # TechNexion i.MX7D Pico-Hobbit
 
+base-commit: 9ebcfadb0610322ac537dd7aa5d9cbc2b2894c68
+-- 
+2.26.2
 
-> Of course, perhaps I'm just confused and crazy and the above is a
-> really bad idea.
-
-Thanks for bringing this up.
-
-Sumit and I were chatting last week and our discussion went in a similar
-direction (I think not exactly the same which is why it is good to
-see your thoughts too).
-
-Personally I think it comes down to how intrusive adding NMI support is
-to serial drivers. kgdb_nmi is rather hacky and feels a bit odd to
-enable. It is clearly intended to avoid almost all changes to the UART
-driver. On our side we have been wondering whether the serial core can
-add helpers to make it easy for a serial driver to implement an simple,
-safe but not optimal NMI implementation. Making it easy to have
-safety-first might make NMI more palatable.
-
-
-> Speaking of confused: is there actually any way to use the existing
-> kgdb NMI driver (CONFIG_SERIAL_KGDB_NMI) in mainline without out of
-> tree patches?  When I looked before I assumed it was just me that was
-> outta luck because I didn't have NMI at the time, but I just did some
-> grepping and I can't find anyplace in mainline where
-> "arch_kgdb_ops.enable_nmi" would not be NULL.  Did I miss it, or do we
-> need out-of-tree patches to enable this?
-
-Out-of-tree...
-
-If, after looking at other approaches, we do all agree to nuke kgdb_nmi
-then there shouldn't be much impediment (nor that many tears).
-
-
-Daniel.
