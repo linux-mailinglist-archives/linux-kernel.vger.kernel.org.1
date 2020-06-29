@@ -2,100 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FCF20E610
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 631B920E5F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391430AbgF2VoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37588 "EHLO
+        id S2403974AbgF2VnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:43:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727835AbgF2Shr (ORCPT
+        with ESMTP id S1726779AbgF2Shv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:47 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4C8C0307BE
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:10:06 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id x3so2568698pfo.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:10:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VLeKruvw8xS/1C0BGsgxQCKuNobKaryrVDfkNcFoTKw=;
-        b=i+9UP96BeuDUndvXAn5oRwVUqCxKPUqo5jb9FpFAkevibF4fOIyewm6LBAtkZLrBzP
-         /7U3H02kF4xz1/F9l3P0SJ2jj2PFznh1x5HDxhs16XUY+e7OWMJgLhbNHwJYVT8KWpee
-         TodpFVlf7IKIfvaTS8QPjZFYeI1/hHcL3q4bY=
+        Mon, 29 Jun 2020 14:37:51 -0400
+Received: from mail-il1-x148.google.com (mail-il1-x148.google.com [IPv6:2607:f8b0:4864:20::148])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DB5C030F02
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:11:17 -0700 (PDT)
+Received: by mail-il1-x148.google.com with SMTP id o4so12652716ilc.15
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:11:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VLeKruvw8xS/1C0BGsgxQCKuNobKaryrVDfkNcFoTKw=;
-        b=Q440k/y6E7c3jBG0LIB6b9Gr0mSHBjQw3bzPBiLt4T9k9ESmvAG/HdqayEVJjUwuGc
-         fh4d4U1LEZJOb5nvecMBDGUWMdr4GGiWQ1RHftgtu7QatRcilGbDOxAdnzArhCJj7aIB
-         x7xhCflg66T0F+3pJC71HBg1faVZE5MTsGM5lNWwpc2GDuYt42K1DB/2eio24LYfDxjH
-         iyBCxWYGuPlQjVgGE/jSzMJGX9m7TRFbfs6q7XisClhpzeo0B2u5CkaHYokz5qfkHk9H
-         BK3673eJa1oeQ/hnLeTglh6ddlCYHGNonmONPBg6JBeCEwzyp4ZB7yYMI29PyiCYFmTu
-         VCOQ==
-X-Gm-Message-State: AOAM530SFj0+XxykKDZxSy3GpNztGZWFBjnXOVGg6UbsqqyBl94ep3Qm
-        a9ABZ2JjZXlAqy9cI0HDfew19w==
-X-Google-Smtp-Source: ABdhPJxiXdS02g2kg/C3e7NIZ+hRQZoFSkyCVmAnS41BhXLKFEBoQYo+oIuHHOwfsIe186IoCXJYwg==
-X-Received: by 2002:a65:5649:: with SMTP id m9mr10671287pgs.279.1593447006373;
-        Mon, 29 Jun 2020 09:10:06 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j21sm176656pfa.133.2020.06.29.09.10.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 09:10:05 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 09:10:04 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/7] x86/boot/compressed: Move .got.plt entries out of
- the .got section
-Message-ID: <202006290909.F79ED275C@keescook>
-References: <20200629140928.858507-1-nivedita@alum.mit.edu>
- <20200629140928.858507-2-nivedita@alum.mit.edu>
- <202006290846.5A5C76A4D7@keescook>
- <20200629155011.GA900899@rani.riverdale.lan>
- <CAMj1kXH1Fx3c4fZRVgNPeXnPFbHWVhgywU0Jvu65=wBaR_5yjA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=GaRDhX7cOPGC7KOMXOAFCs/7Rjn+jmhfg9ZC0k5r71U=;
+        b=dOthf3zS9Iyl0OdnGv77ASXPBEmDoupfR6ltRXLd93ddhTitgrTJiGsFvdfxy8hXLG
+         Yw7TzFD9cMlgCakmEwAjAMts8xSCNyRPHGSvFMpE1oMtfoo0O1nWsADqwQAJ9dtvjKDW
+         WM0iQxbZcSfsptMlnd2vrpsmWYlngQHG5qweF4YzAINrb/3Oh/kd+PA/xjT0kLntYWaC
+         XznFwOCmTombilM3ae0KrnqzXMzQK69Sh1s/I0IlnB1PGg0Qoa7DFnSsusHgN6LuTjtc
+         3eLwH8LT2gkVj4wqUvKf70sXu1wmiCqHxFbk/WSrcvQxtFQKVBuesvbzC3w+wvfjmqry
+         AKkg==
+X-Gm-Message-State: AOAM532DWk+aiHDtRTiznvi8lfYTCtchi/8XnZ00VROFrWwS73zsDzVi
+        TNYXKB6xPvIA5phJjyBkyPsjNZJgUrm39743/XtlzCceUh10
+X-Google-Smtp-Source: ABdhPJw3z2t1uM0GJaA/Osa2SsZoIxIS7OgCF3fDdFOVi6vY4GhZg/Hf0xiq2OUimUiGtPWglLDG9mSqk6Zl/leZAjbX/wyNWmbr
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXH1Fx3c4fZRVgNPeXnPFbHWVhgywU0Jvu65=wBaR_5yjA@mail.gmail.com>
+X-Received: by 2002:a02:5d49:: with SMTP id w70mr18854000jaa.16.1593447076495;
+ Mon, 29 Jun 2020 09:11:16 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 09:11:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f6883a05a93b4e6d@google.com>
+Subject: KASAN: use-after-free Read in tipc_nl_publ_dump (2)
+From:   syzbot <syzbot+6db30c775c0fb130e335@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jmaloy@redhat.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        tipc-discussion@lists.sourceforge.net, ying.xue@windriver.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 05:51:00PM +0200, Ard Biesheuvel wrote:
-> On Mon, 29 Jun 2020 at 17:50, Arvind Sankar <nivedita@alum.mit.edu> wrote:
-> >
-> > On Mon, Jun 29, 2020 at 08:48:05AM -0700, Kees Cook wrote:
-> > > On Mon, Jun 29, 2020 at 10:09:22AM -0400, Arvind Sankar wrote:
-> > >
-> > > This is also being done on arm64, and the section was specified slightly
-> > > differently (with INFO) which maybe should be done here too?
-> >
-> > I was actually just about to email you to ask what that INFO is for :)
-> > What does it do?
-> >
-> 
-> It makes the section non-allocatable, so it is dropped from the final image
+Hello,
 
-i.e. takes no disk space, but the ASSERT can still be done.
+syzbot found the following crash on:
 
--- 
-Kees Cook
+HEAD commit:    4e99b321 Merge tag 'nfs-for-5.8-2' of git://git.linux-nfs...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=122afae3100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bf3aec367b9ab569
+dashboard link: https://syzkaller.appspot.com/bug?extid=6db30c775c0fb130e335
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=158718cd100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=131b33c5100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+6db30c775c0fb130e335@syzkaller.appspotmail.com
+
+netlink: 8 bytes leftover after parsing attributes in process `syz-executor007'.
+==================================================================
+BUG: KASAN: use-after-free in nla_len include/net/netlink.h:1135 [inline]
+BUG: KASAN: use-after-free in nla_parse_nested_deprecated include/net/netlink.h:1218 [inline]
+BUG: KASAN: use-after-free in tipc_nl_publ_dump+0xae0/0xce0 net/tipc/socket.c:3766
+Read of size 2 at addr ffff8880a7ee0284 by task syz-executor007/6830
+
+CPU: 0 PID: 6830 Comm: syz-executor007 Not tainted 5.8.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x436 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ nla_len include/net/netlink.h:1135 [inline]
+ nla_parse_nested_deprecated include/net/netlink.h:1218 [inline]
+ tipc_nl_publ_dump+0xae0/0xce0 net/tipc/socket.c:3766
+ genl_lock_dumpit+0x7f/0xb0 net/netlink/genetlink.c:575
+ netlink_dump+0x4cd/0xf60 net/netlink/af_netlink.c:2245
+ __netlink_dump_start+0x643/0x900 net/netlink/af_netlink.c:2353
+ genl_family_rcv_msg_dumpit+0x2ac/0x310 net/netlink/genetlink.c:638
+ genl_family_rcv_msg net/netlink/genetlink.c:733 [inline]
+ genl_rcv_msg+0x797/0x9e0 net/netlink/genetlink.c:753
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2469
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:764
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x445f09
+Code: Bad RIP value.
+RSP: 002b:00007fffb147d488 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000445f09
+RDX: 0000000000000000 RSI: 0000000020000500 RDI: 0000000000000004
+RBP: 00000000006d0018 R08: 0000000000000000 R09: 00000000004002e0
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004030a0
+R13: 0000000000403130 R14: 0000000000000000 R15: 0000000000000000
+
+Allocated by task 6828:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:494
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ __alloc_skb+0xae/0x550 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1083 [inline]
+ netlink_alloc_large_skb net/netlink/af_netlink.c:1175 [inline]
+ netlink_sendmsg+0x94f/0xd90 net/netlink/af_netlink.c:1893
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 6828:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ kasan_set_free_info mm/kasan/common.c:316 [inline]
+ __kasan_slab_free+0xf5/0x140 mm/kasan/common.c:455
+ __cache_free mm/slab.c:3426 [inline]
+ kfree+0x103/0x2c0 mm/slab.c:3757
+ skb_free_head net/core/skbuff.c:590 [inline]
+ skb_release_data+0x6d9/0x910 net/core/skbuff.c:610
+ skb_release_all net/core/skbuff.c:664 [inline]
+ __kfree_skb net/core/skbuff.c:678 [inline]
+ consume_skb net/core/skbuff.c:837 [inline]
+ consume_skb+0xc2/0x160 net/core/skbuff.c:831
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x53b/0x7d0 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff8880a7ee0000
+ which belongs to the cache kmalloc-1k of size 1024
+The buggy address is located 644 bytes inside of
+ 1024-byte region [ffff8880a7ee0000, ffff8880a7ee0400)
+The buggy address belongs to the page:
+page:ffffea00029fb800 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea000278a308 ffffea00025273c8 ffff8880aa000c40
+raw: 0000000000000000 ffff8880a7ee0000 0000000100000002 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880a7ee0180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880a7ee0200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff8880a7ee0280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff8880a7ee0300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880a7ee0380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
