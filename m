@@ -2,57 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD6620D0DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEAE20D230
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727057AbgF2Sg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:36:59 -0400
-Received: from ms.lwn.net ([45.79.88.28]:46808 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726087AbgF2Sg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:36:56 -0400
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 959E92B7;
-        Mon, 29 Jun 2020 18:36:55 +0000 (UTC)
-Date:   Mon, 29 Jun 2020 12:36:54 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     mchehab+samsung@kernel.org, alexandre.belloni@bootlin.com,
-        nicolas.ferre@microchip.com, robh@kernel.org,
-        j.neuschaefer@gmx.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Replace HTTP links with HTTPS ones:
- Documentation/arm
-Message-ID: <20200629123654.1d1b62ce@lwn.net>
-In-Reply-To: <c5d49d66-7765-d6e3-003a-c17bdef1c6b0@al2klimov.de>
-References: <20200626194408.61245-1-grandmaster@al2klimov.de>
-        <20200626150911.3d4f9ca7@lwn.net>
-        <c5d49d66-7765-d6e3-003a-c17bdef1c6b0@al2klimov.de>
-Organization: LWN.net
+        id S1729165AbgF2SrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729132AbgF2Smw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:42:52 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F86C033C3B
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:37:16 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id i14so17713836ejr.9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:37:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iwjexUe6g3MgBE57x0AwTJYB+Tm1mR4Xc5V3Hpfp0Q0=;
+        b=BPMNbr2saZvodqadONafw08F2hySjig25hblzKcpl4Dn0xdeMuAJDob+Hj8/e26XnW
+         DcsrasfTyHgT8KAkwUeolszGnixcmMnYIE8upwFFBx3ce9FSI6+4bF66uZlIeO/IYnfR
+         nKG6W1gtUsCNuWXnXti67445rUxPidn7R2448rSS8fOhA6OPz9hTN+9JZ1bGkvKjvOET
+         f/Of69MzWFDlYi0WAMar+2iMf+Vf9KeLGwI7hmgPshMBgwV9SN3pybBp7tN/RZCinBap
+         xt0HZrWg0pNjOJCFPyFfAmVzUL7cyakhsBGU59PquHibfr0OHjgGhkDaijqPOVeIGj/+
+         uBMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iwjexUe6g3MgBE57x0AwTJYB+Tm1mR4Xc5V3Hpfp0Q0=;
+        b=c3PV9D1DtUthse7Pa55WczsmWXzkxAjFdcQ2mTzRIbdTxqOazLTSmo0QgtJ5erWdtp
+         AfeeCP/TX+N353jSfnPbQcPAwlvvzFzfUX5FQPZNNpsvF4C+2sysp0qabPQcKVYoxXd4
+         CRpGvCcEqJvCN0Yt54hSElvNxfHeaCYzz7KTMU6Ul0bN2Nl/JF3/e3etHOnS0rjynsh+
+         MyEH9j/fLjbOx8D/Kr4h4+QvdZNism8HaTCg2fZMU8A1aF4rkihF/h6PctcJvqpiZn9j
+         ozofFooq8Y9O+qHKmv5mSLtEUYIGPNigbsY/gKACJe/eIYcwtQnUJpWbJs8DB8ity+ww
+         8kEA==
+X-Gm-Message-State: AOAM532AFA9dbQ/9PB5RlrjAwONaptfRLV41gTVF1RlmnNIuFAF5P5Ye
+        15RgYsgz0j8+JWDkxn2djdquPJOq
+X-Google-Smtp-Source: ABdhPJzHwlH82W9y4w5C+kdkMDP/5EI41sxvEjHgizXEikHzsbh2cE8UepqlgbOi/jQSwv4PVxX9bg==
+X-Received: by 2002:a17:907:100a:: with SMTP id ox10mr14644241ejb.351.1593455835070;
+        Mon, 29 Jun 2020 11:37:15 -0700 (PDT)
+Received: from ltop.local ([2a02:a03f:b7f9:7600:4d36:64ba:210e:1576])
+        by smtp.gmail.com with ESMTPSA id by20sm295745ejc.119.2020.06.29.11.37.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 11:37:14 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 20:37:13 +0200
+From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sparse: use static inline for __chk_{user,io}_ptr()
+Message-ID: <20200629183713.msrfozjvpt6jr6jl@ltop.local>
+References: <20200628072019.67107-1-luc.vanoostenryck@gmail.com>
+ <202006300219.fQMPm3tC%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202006300219.fQMPm3tC%lkp@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 27 Jun 2020 09:10:58 +0200
-"Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
-
-> You know what: I totally agree with you! They are actively harmful and 
-> shall not be there. End of story.
+On Tue, Jun 30, 2020 at 02:08:36AM +0800, kernel test robot wrote:
+> Hi Luc,
 > 
-> But *why* you don't let me work step-by-step and *focus on one task* at 
-> a time?
+> I love your patch! Perhaps something to improve:
+> 
+> [auto build test WARNING on next-20200626]
+> [cannot apply to linux/master linus/master v5.8-rc2 v5.8-rc1 v5.7 v5.8-rc3]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
 
-Nobody is preventing you from doing that.  But this work *does* require
-corresponding work from me and others, so I don't think it's inappropriate
-to say that there are other, related projects that, in my mind, have a
-rather higher priority.
+This patch should be applied on top of akpm's tree or on top of next.
+I'm not sure hwo I should have specified this, 'git send-mail --base=...'
+is less useful for these trees.
 
-Thanks,
-
-jon
+-- Luc
