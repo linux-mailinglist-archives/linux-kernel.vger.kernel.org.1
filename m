@@ -2,88 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386D720E785
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FD420E797
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391512AbgF2V6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728939AbgF2V6F (ORCPT
+        id S2404770AbgF2V6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:58:47 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:39213 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729176AbgF2V6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:58:05 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FEDC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:58:05 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1593467881;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qCfJAHafYa/AK9R1oGXdsMRC8dDD1+/B6dAzjfz2e8A=;
-        b=atALUCdRSCjttKOnEF7ACaejPFRnLCROGTU2TYcrTGB+x4/vvCK2w3z0nOYKLM29guozda
-        v7GCs60PvZimi55BI+pF9yKr/oUNB2pfhzkq7fNd86NV8iVTuqfRYKSZwZexUdfeagQSsQ
-        r1F6NS0luJXHyEo3nMPC7GqnxrpGXEVvOdhan1/v12ZxlCOJrLWrUEucsY22IFVjXWjuhM
-        YrYO6Zgzj0fEHOiEM+CO2MkJKNZZmCoA+gIHSwB53Ee5SDqiG6MXljMOzzertMSSFJkEGB
-        dyhtUpSOIV8vYMaows5UqYXNooA2Afc7Lu0+X+b8nSliReFAIoK1N09pDp8WnQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1593467881;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qCfJAHafYa/AK9R1oGXdsMRC8dDD1+/B6dAzjfz2e8A=;
-        b=0UaMBvXKer7+fp5NEnvGteOT9ErcAAfKjSd3iwxofOplHufM1dhe3a4AYC6EWgF6qzN1Oq
-        lry2ysi0HSt+ASBQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: buffer allocation: was: [PATCH v3 3/3] printk: use the lockless ringbuffer
-References: <20200618144919.9806-1-john.ogness@linutronix.de>
-        <20200618144919.9806-4-john.ogness@linutronix.de>
-        <20200625082838.GF6156@alley> <87sgeh3m5j.fsf@jogness.linutronix.de>
-        <20200629140445.GK6156@alley>
-Date:   Mon, 29 Jun 2020 23:57:59 +0200
-In-Reply-To: <20200629140445.GK6156@alley> (Petr Mladek's message of "Mon, 29
-        Jun 2020 16:04:45 +0200")
-Message-ID: <87ftad8rh4.fsf@jogness.linutronix.de>
+        Mon, 29 Jun 2020 17:58:42 -0400
+Received: by mail-il1-f193.google.com with SMTP id k6so15862732ili.6;
+        Mon, 29 Jun 2020 14:58:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6QT2CxKngMlY2p6AbcTTZAUqsEvoLy2nz/okkRGauIc=;
+        b=lUp/19A7OQSUweoHI2QEAowtTQzqfc2lloX74hWdQME3l6d04TbFg9uaAKJkEZgTVG
+         P7rRIS3F1R3SShw2kyEAjSVL1YDPeDbfIIByNwf7RDW+95blrcRu77A1x3i8+17nEcnC
+         dbE89/8fqM8FS09XGD4CmFtwIv4J6sqSYfWax0HsIbPwSsiQ6nozeoZOLRMnM/FGIUzK
+         6rObPbd7dfRmV1z6ZoxJPXRYrsZ779rSrLHnVldNMrboR5+CruKN392Zwk3QGqMl9fyx
+         Mi01wCC05p7NADXAB8xJBqQ0qe9jwRmPii4L2SvQWKO1X2dkdmLRwIK7cDDIwh2/QgpC
+         CBZQ==
+X-Gm-Message-State: AOAM530kYFx0mchKQIasRRp81PyQLwgO3FrzYBgB7Ly0JozI8yel7UsC
+        2vtxG2ldVr1x3oQZ0bh+hg==
+X-Google-Smtp-Source: ABdhPJylefPN6e1fWTB8vAdKMAzJZl6DuCBfuuXfmf35nWeNuXIU1oLVRKCxPnf1E3+V6I0ZxzpOqw==
+X-Received: by 2002:a92:bf0c:: with SMTP id z12mr17464216ilh.151.1593467921338;
+        Mon, 29 Jun 2020 14:58:41 -0700 (PDT)
+Received: from xps15 ([64.188.179.255])
+        by smtp.gmail.com with ESMTPSA id b8sm669748ilc.42.2020.06.29.14.58.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 14:58:40 -0700 (PDT)
+Received: (nullmailer pid 3006922 invoked by uid 1000);
+        Mon, 29 Jun 2020 21:58:39 -0000
+Date:   Mon, 29 Jun 2020 15:58:39 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Florinel Iordache <florinel.iordache@nxp.com>
+Cc:     kuba@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        davem@davemloft.net, andrew@lunn.ch, mark.rutland@arm.com,
+        linux@armlinux.org.uk, corbet@lwn.net, ioana.ciornei@nxp.com,
+        linux-kernel@vger.kernel.org, hkallweit1@gmail.com,
+        f.fainelli@gmail.com, leoyang.li@nxp.com, netdev@vger.kernel.org,
+        madalin.bucur@oss.nxp.com
+Subject: Re: [PATCH net-next v3 2/7] dt-bindings: net: add backplane dt
+ bindings
+Message-ID: <20200629215839.GA3004274@bogus>
+References: <1592832924-31733-1-git-send-email-florinel.iordache@nxp.com>
+ <1592832924-31733-3-git-send-email-florinel.iordache@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1592832924-31733-3-git-send-email-florinel.iordache@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-29, Petr Mladek <pmladek@suse.com> wrote:
->> @@ @@ void __init setup_log_buf(int early)
->> +	prb_init(&printk_rb_dynamic,
->> +		 new_log_buf, order_base_2(new_log_buf_len),
->> +		 new_dict_buf, order_base_2(new_log_buf_len),
->> +		 new_descs, order_base_2(new_descs_count));
->
-> order_base_2() is safe. But the result might be tat some allocated
-> space is not used.
->
-> I would prefer to make sure that new_log_buf_len is rounded, e.g.
-> by roundup_pow_of_two(), at the beginning of the function. Then we
-> could use ilog2() here.
+On Mon, 22 Jun 2020 16:35:19 +0300, Florinel Iordache wrote:
+> Add ethernet backplane device tree bindings
+> 
+> Signed-off-by: Florinel Iordache <florinel.iordache@nxp.com>
+> ---
+>  .../bindings/net/ethernet-controller.yaml          |  7 ++-
+>  .../devicetree/bindings/net/ethernet-phy.yaml      | 50 ++++++++++++++++++++++
+>  .../devicetree/bindings/net/serdes-lane.yaml       | 49 +++++++++++++++++++++
+>  Documentation/devicetree/bindings/net/serdes.yaml  | 42 ++++++++++++++++++
+>  4 files changed, 146 insertions(+), 2 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/net/serdes-lane.yaml
+>  create mode 100644 Documentation/devicetree/bindings/net/serdes.yaml
+> 
 
-new_log_buf_len can only be set within log_buf_len_update(), and it
-is already doing exactly what you want:
 
-        if (size)
-                size = roundup_pow_of_two(size);
-        if (size > log_buf_len)
-                new_log_buf_len = (unsigned long)size;
+My bot found errors running 'make dt_binding_check' on your patch:
 
-I can switch to ilog2() instead of the more conservative order_base_2().
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/serdes.example.dt.yaml: example-0: serdes@1ea0000:reg:0: [0, 32112640, 0, 8192] is too long
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/serdes-lane.example.dt.yaml: example-0: serdes@1ea0000:reg:0: [0, 32112640, 0, 8192] is too long
 
-John Ogness
+
+See https://patchwork.ozlabs.org/patch/1314386
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
+
