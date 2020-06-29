@@ -2,143 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB3D20E7BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E1420E499
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726409AbgF2V75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:59:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726392AbgF2SfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:35:25 -0400
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DFCA3255C7;
-        Mon, 29 Jun 2020 17:57:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593453470;
-        bh=ZtASUsHSUH9iBmQouSmlHBp0adBRXfaTVKN3IEKwB2A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=2kKS+wDhkOuxpH9plHm9j0XcBd1NOUkJJmJEvlxcmanpfHqlzhfaHZvWTWdWKm1fj
-         wSf07FVi3Vc5BoJg00SsFz9stOKYZjSXPZ0CZnwRUr9xGG9SK7jE+dnTuQahmLknAV
-         QdfXGtfSQm+QApl5nSJa5URHEmOz9dzGsODL98zw=
-Received: by mail-ot1-f51.google.com with SMTP id q21so8790879otc.7;
-        Mon, 29 Jun 2020 10:57:49 -0700 (PDT)
-X-Gm-Message-State: AOAM530ZH+ymx1LRhBUi64LdyKz+BbmrCg9xFIijTPklFGRFQdXbXrT8
-        a0c6j2G3NQXXwQ5O1ORx4/1uP7KmUySXwk2IGA==
-X-Google-Smtp-Source: ABdhPJyimQAzFgXMjRYrAPs8oEIeWpJhMBKYcA7auFeZopuljB1Q7c28J7qEymPHWgbqxTgyvUyyluEt85Lj4qCu1n4=
-X-Received: by 2002:a05:6830:3104:: with SMTP id b4mr14554766ots.192.1593453469212;
- Mon, 29 Jun 2020 10:57:49 -0700 (PDT)
+        id S2391101AbgF2V1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:27:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729079AbgF2Smp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:42:45 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3437CC031C6D
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:03:03 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id u5so8228327pfn.7
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:03:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jcOa7nLCMvwvBvn+lXefiaEhY1cnw7datfi9VffahTk=;
+        b=r13LcPYkVT0QvwJZmwPVtSiSE821D8z+loelig4JyhWpIr2GDIKdMpwQEoIwTQy2oH
+         TmbsgQgAdaNwDNSMupvVB0Q5lBpVn0GlcrJ/QltbLA7O4hd371LAsV7U/bNWwKh3fjjJ
+         Emnx6ima91VS1Q/Coc13JQiR6B7PeqtzMdSDveDWWXo/TbrU5lZ5CmGyIrdrbcZWayMf
+         y5tlvmSbbV4sJ7OYjoxYDJRYvf+h2fgbUczNYJDoheq4vWjGcQK+JZouEgO6tEIKjP0J
+         qf5p0fOOrT1TcBV7dXPpqhhkYuiuUNN8qlWdn2JY+3bmJ/GIeRZAVv+AqO4ojiijs4Uj
+         JfJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jcOa7nLCMvwvBvn+lXefiaEhY1cnw7datfi9VffahTk=;
+        b=HDHvjRDZG4Wj1pa9fnffQdDbMbjQBMKwzUEG/RoEurJsF3bDN3myuD/MfxHtZil0Wv
+         PPsubGg/Ahme8tzPYP+NhCVB5R/FrtTkBcokCvgEw1hFUfPlM7yTQJznLfd1a3X7n+l6
+         AKi4Hc3rSftI8IdpIDhkFIzXdW3BP+MOEVoWJHGpxlF0RR0itsbOnmEor/SH9b5giCKs
+         CcZI+thv6DbYEleS5gx5PF5iEeW8UxGvMhkcByeeDQKWLiLjYvUPn5VvHdrPtcyJk8mk
+         sUezGjS2JsWLkXfVB8h9jR3ppkAQjqwNiR3+DQY/veob4VZmMCvmxkl+t0GMdMF0ynV3
+         yLOA==
+X-Gm-Message-State: AOAM532kODE0gVVy9m6GhNlvQez6YRR8XUECUn237yIZYNwMOBtvWnZ4
+        UDI8l9Wv/TllUiG49UELh2TRDAiVv/lAhFVvMGV83Q==
+X-Google-Smtp-Source: ABdhPJz9+i4D45iNpvDJAjy8t0TCOs03y2uc7EK1ApuKtEPPpmNHtDv8UmtRzYb/Tg4Esq7LtMnkj4tJsm1tUYBKEnc=
+X-Received: by 2002:a05:6a00:15ca:: with SMTP id o10mr15661788pfu.169.1593453782335;
+ Mon, 29 Jun 2020 11:03:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200618224413.1115849-1-robh@kernel.org> <20200619215341.GA6857@ravnborg.org>
- <20200622165730.pnx7fzbq5e6q5h4l@holly.lan>
-In-Reply-To: <20200622165730.pnx7fzbq5e6q5h4l@holly.lan>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 29 Jun 2020 11:57:37 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqK1yJ09k6tKak==TjRN17VzueVkcf-WOLw2ETL2ZJv9sg@mail.gmail.com>
-Message-ID: <CAL_JsqK1yJ09k6tKak==TjRN17VzueVkcf-WOLw2ETL2ZJv9sg@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: backlight: Convert common backlight bindings
- to DT schema
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, devicetree@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200629061840.4065483-1-keescook@chromium.org>
+ <20200629061840.4065483-6-keescook@chromium.org> <CAMj1kXE+toCd=Bx-zw7D9bvDRNB2aPn5-_7CY7MOKcVGA-azVg@mail.gmail.com>
+ <202006290806.3BDE2A8@keescook>
+In-Reply-To: <202006290806.3BDE2A8@keescook>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 29 Jun 2020 11:02:51 -0700
+Message-ID: <CAKwvOd=DMfmvfiEX7KDPLs75SbNz+LAGSwC3V_=LgGH3kjtE=g@mail.gmail.com>
+Subject: Re: [PATCH v4 05/17] ctype: Work around Clang -mbranch-protection=none
+ bug
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Will Deacon <will@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, X86 ML <x86@kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Kiss <daniel.kiss@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 10:57 AM Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
+On Mon, Jun 29, 2020 at 8:06 AM Kees Cook <keescook@chromium.org> wrote:
 >
-> On Fri, Jun 19, 2020 at 11:53:41PM +0200, Sam Ravnborg wrote:
-> > > diff --git a/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml
-> > > new file mode 100644
-> > > index 000000000000..7e1f109a38a4
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml
-> > > @@ -0,0 +1,98 @@
-> > > +# SPDX-License-Identifier: GPL-2.0-only
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/leds/backlight/pwm-backlight.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> On Mon, Jun 29, 2020 at 10:15:47AM +0200, Ard Biesheuvel wrote:
+> > On Mon, 29 Jun 2020 at 08:18, Kees Cook <keescook@chromium.org> wrote:
+> > >
+> > > In preparation for building efi/libstub with -mbranch-protection=none
+> > > (EFI does not support branch protection features[1]), add no-op code
+> > > to work around a Clang bug that emits an unwanted .note.gnu.property
+> > > section for object files without code[2].
+> > >
+> > > [1] https://lore.kernel.org/lkml/CAMj1kXHck12juGi=E=P4hWP_8vQhQ+-x3vBMc3TGeRWdQ-XkxQ@mail.gmail.com
+> > > [2] https://bugs.llvm.org/show_bug.cgi?id=46480
+> > >
+> > > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > > Cc: Will Deacon <will@kernel.org>
+> > > Cc: Dave Martin <Dave.Martin@arm.com>
+> > > Cc: clang-built-linux@googlegroups.com
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > ---
+> > >  lib/ctype.c | 10 ++++++++++
+> > >  1 file changed, 10 insertions(+)
+> > >
+> > > diff --git a/lib/ctype.c b/lib/ctype.c
+> > > index c819fe269eb2..21245ed57d90 100644
+> > > --- a/lib/ctype.c
+> > > +++ b/lib/ctype.c
+> > > @@ -36,3 +36,13 @@ _L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,     /* 224-239 */
+> > >  _L,_L,_L,_L,_L,_L,_L,_P,_L,_L,_L,_L,_L,_L,_L,_L};      /* 240-255 */
+> > >
+> > >  EXPORT_SYMBOL(_ctype);
 > > > +
-> > > +title: pwm-backlight bindings
-> > > +
-> > > +maintainers:
-> > > +  - Lee Jones <lee.jones@linaro.org>
-> > > +  - Daniel Thompson <daniel.thompson@linaro.org>
-> > > +  - Jingoo Han <jingoohan1@gmail.com>
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: pwm-backlight
-> > > +
-> > > +  pwms:
-> > > +    maxItems: 1
-> > > +
-> > > +  pwm-names: true
-> > > +
-> > > +  power-supply:
-> > > +    description: regulator for supply voltage
-> > > +
-> > > +  enable-gpios:
-> > > +    description: Contains a single GPIO specifier for the GPIO which enables
-> > > +      and disables the backlight
-> > > +    maxItems: 1
-> > > +
-> > > +  post-pwm-on-delay-ms:
-> > > +    description: Delay in ms between setting an initial (non-zero) PWM and
-> > > +      enabling the backlight using GPIO.
-> > > +
-> > > +  pwm-off-delay-ms:
-> > > +    description: Delay in ms between disabling the backlight using GPIO
-> > > +      and setting PWM value to 0.
-> > > +
-> > > +  brightness-levels:
-> > > +    description: Array of distinct brightness levels. Typically these are
-> > > +      in the range from 0 to 255, but any range starting at 0 will do. The
-> > > +      actual brightness level (PWM duty cycle) will be interpolated from
-> > > +      these values. 0 means a 0% duty cycle (darkest/off), while the last
-> > > +      value in the array represents a 100% duty cycle (brightest).
-> > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > > +
-> > > +  default-brightness-level:
-> > > +    description: The default brightness level (index into the array defined
-> > > +      by the "brightness-levels" property).
-> > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > Same comment as before...
+> > > +/*
+> > > + * Clang will generate .note.gnu.property sections for object files
+> > > + * without code, even in the presence of -mbranch-protection=none.
+> > > + * To work around this, define an unused static function.
+> > > + * https://bugs.llvm.org/show_bug.cgi?id=46480
+> > > + */
+> > > +#ifdef CONFIG_CC_IS_CLANG
+> > > +void __maybe_unused __clang_needs_code_here(void) { }
+> > > +#endif
+> > > --
+> > > 2.25.1
+> > >
+> >
+> > I take it we don't need this horrible hack if we build the EFI stub
+> > with branch protections and filter out the .note.gnu.property section
+> > explicitly?
+> >
+> > Sorry to backpedal, but that is probably a better approach after all,
+> > given that the instructions don't hurt, and we will hopefully be able
+> > to arm them once UEFI (as well as PE/COFF) gets around to describing
+> > this in a way that both the firmware and the OS can consume.
 >
-> Sorry the "ditto" meant I didn't thing about PWM as much as I should
-> have.
+> How does this look?
 >
-> The situation for PWM is a little different to LED. That's mostly
-> because we decided not to clutter the LED code with
-> "num-interpolated-steps".
 >
-> The PWM code implements the default-brightness-level as an index into
-> the brightness array *after* it has been expanded using interpolation.
-> In other words today Linux treats the default-brightness-level more
-> like[1].
+> commit 051ef0b75a386c3fe2f216d16246468147a48c5b
+> Author: Kees Cook <keescook@chromium.org>
+> Date:   Tue Jun 23 18:02:56 2020 -0700
 >
->     description: The default brightness level. When
->       num-interpolated-steps is not set this is simply an index into
->       the array defined by the "brightness-levels" property. If
->       num-interpolated-steps is set the brightness array will be
->       expanded by interpolation before we index to get a default
->       level.
+>     efi/libstub: Disable -mbranch-protection
 >
-> This is the best I have come up with so far... but I concede it still
-> lacks elegance.
+>     In preparation for adding --orphan-handling=warn to more architectures,
+>     disable -mbranch-protection, as EFI does not yet support it[1].  This was
+>     noticed due to it producing unwanted .note.gnu.property sections (prefixed
+>     with .init due to the objcopy build step).
+>
+>     However, we must also work around a bug in Clang where the section is
+>     still emitted for code-less object files[2], so also remove the section
+>     during the objcopy.
+>
+>     [1] https://lore.kernel.org/lkml/CAMj1kXHck12juGi=E=P4hWP_8vQhQ+-x3vBMc3TGeRWdQ-XkxQ@mail.gmail.com
+>     [2] https://bugs.llvm.org/show_bug.cgi?id=46480
+>
+>     Cc: Ard Biesheuvel <ardb@kernel.org>
+>     Cc: Arvind Sankar <nivedita@alum.mit.edu>
+>     Cc: Atish Patra <atish.patra@wdc.com>
+>     Cc: linux-efi@vger.kernel.org
+>     Signed-off-by: Kees Cook <keescook@chromium.org>
+>
+> diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
+> index 75daaf20374e..f9f1922f8f28 100644
+> --- a/drivers/firmware/efi/libstub/Makefile
+> +++ b/drivers/firmware/efi/libstub/Makefile
+> @@ -18,7 +18,8 @@ cflags-$(CONFIG_X86)          += -m$(BITS) -D__KERNEL__ \
+>  # arm64 uses the full KBUILD_CFLAGS so it's necessary to explicitly
+>  # disable the stackleak plugin
+>  cflags-$(CONFIG_ARM64)         := $(subst $(CC_FLAGS_FTRACE),,$(KBUILD_CFLAGS)) \
+> -                                  -fpie $(DISABLE_STACKLEAK_PLUGIN)
+> +                                  -fpie $(DISABLE_STACKLEAK_PLUGIN) \
+> +                                  $(call cc-option,-mbranch-protection=none)
+>  cflags-$(CONFIG_ARM)           := $(subst $(CC_FLAGS_FTRACE),,$(KBUILD_CFLAGS)) \
+>                                    -fno-builtin -fpic \
+>                                    $(call cc-option,-mno-single-pic-base)
+> @@ -66,6 +67,12 @@ lib-$(CONFIG_X86)            += x86-stub.o
+>  CFLAGS_arm32-stub.o            := -DTEXT_OFFSET=$(TEXT_OFFSET)
+>  CFLAGS_arm64-stub.o            := -DTEXT_OFFSET=$(TEXT_OFFSET)
+>
+> +# Even when -mbranch-protection=none is set, Clang will generate a
+> +# .note.gnu.property for code-less object files (like lib/ctype.c),
+> +# so work around this by explicitly removing the unwanted section.
+> +# https://bugs.llvm.org/show_bug.cgi?id=46480
+> +STUBCOPY_FLAGS-y               += --remove-section=.note.gnu.property
 
-Happy to add this or whatever folks want if there's agreement, but I
-don't want to get bogged down on re-reviewing and re-writing the
-binding on what is just a conversion. There's a mountain of bindings
-to convert.
+This is definitely better than the empty function.  Though a patch is
+posted for fixing this in LLVM. Assuming that lands before this, we
+might not actually need this workaround?
 
-Rob
+arch/arm64/Kconfig
+1625 config ARM64_BTI_KERNEL
+...
+1633   # https://reviews.llvm.org/rGb8ae3fdfa579dbf366b1bb1cbfdbf8c51db7fa55
+1634   depends on !CC_IS_CLANG || CLANG_VERSION >= 100001
+
+So if Daniel's patch lands AND is backported into the clang 10.0.1
+release, then we might not need to carry this workaround?  Either way,
+
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+> +
+>  #
+>  # For x86, bootloaders like systemd-boot or grub-efi do not zero-initialize the
+>  # .bss section, so the .bss section of the EFI stub needs to be included in the
+>
+> --
+> Kees Cook
+
+-- 
+Thanks,
+~Nick Desaulniers
