@@ -2,183 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2D120D408
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A194320D43C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730180AbgF2TEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41758 "EHLO
+        id S1730744AbgF2TG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:06:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730534AbgF2TCn (ORCPT
+        with ESMTP id S1730523AbgF2TCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Jun 2020 15:02:43 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526DDC030F21
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:35:25 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id b6so17157468wrs.11
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:35:25 -0700 (PDT)
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40136C030F23
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:36:52 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id h19so18712789ljg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:36:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wt2+QYgzsGCiZ5jzGn3DF1M7zW6pV2DVB1wYY6nIW44=;
-        b=Bajct2+ZVPJoRDMicEwKHAotig5QEVkNwLKSg5aT/LW6Wumvsk90f6Q/QIhvsNLrRD
-         WN2tHYAAbLHeLZqX7YNifnMuJh0renYAvTm5Tk59GaHQkmKIDfyWHsX9I6ENwSnImZdl
-         Qe3IrLAf2Dj4DECkRUQw51ToAgudOdJu5jMZ5UpIh39n38MugmAaah2n8q5yT+ohLjas
-         JZCD6OJveAlK+kqzISbbU9xkaEt1kZVWqziHeOmdyxILTGPtYvUf4KfO63ByrOZqidhi
-         sWuqgP5e/+QcHcxm+DppmbvrHPyHjXH+ZAhfQc90BQ9v+9St/WnEM+JLDYCzCRs59Cp3
-         Mywg==
+        bh=tI71Ydu+pOwgXlMgU1oRf0sUNNr5tt035+vZPAuuAlc=;
+        b=aUdFRUhudS+xPjPDQJSELxYOf4pJLDIm4+/ROEP7p1wsB51Uh2J9psit34O0WmSaxJ
+         OYVP5cGLT9NFbqYH97fpKyzYqtetDtgEQMyQ95b1c8KZXih8pZxMfCuFO6cesNCcfyUh
+         MZ+KwA8V96MowogGQxiP9Tmg7PvYg8Xa4kdsA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wt2+QYgzsGCiZ5jzGn3DF1M7zW6pV2DVB1wYY6nIW44=;
-        b=B8qU7oO2iwBHVFVNOASSe8AkMP7sylDkQc8BJUpfz2dGuQFr5bWoEw7Xy4Nazv8cUD
-         6hpTA4Q3+IH4gNPkwepMkT2vRjztJdEi1db+5iyeThRjUic2OzmtF6tfCqNAP9q53lhg
-         eI7NryPLZgDVCVi9cyD2NwOCxCeLkRLZtwrQVoLBBMyAfiEUkVHo/yIWAoKjeCx2gD43
-         asJetwa6r8URrUFbkDw2+mhjT0M8sgAyj1dbdWtKJoSPzwm55djad2SQ9Ayijs27DYN+
-         wGJQpQtkNZTDeOnOkSjBmyuCdDHGk/8EJ1JCnldMj9VRcBNHQ+vlvR1CQAjsJrxGoQ4p
-         LMrA==
-X-Gm-Message-State: AOAM531Gc8FbVrh5PR1QvvzDg/4TxRuhNY92yqVWRPBR4uEwRGWij8Zq
-        m4RLysd4tDYF5PQg1ZhijjRCYhAMiaOBsoODHRYRfw==
-X-Google-Smtp-Source: ABdhPJzY4nZ0xx0kja+NoBvYD52SqAzPXWDc1jiACjyyTIkCa7mTWSDocPv4eNorqBHjQYtDKek4O7uzGakdu8Ok4fo=
-X-Received: by 2002:adf:e40e:: with SMTP id g14mr19147300wrm.271.1593448523736;
- Mon, 29 Jun 2020 09:35:23 -0700 (PDT)
+        bh=tI71Ydu+pOwgXlMgU1oRf0sUNNr5tt035+vZPAuuAlc=;
+        b=kh0Vcv1FifW2nMOWChn+SO/tdMR6fD35t4jqa9lTxydmEtNzaKLGkp/WVx5D2N7Cgb
+         lbPxGCqWVbz0jo3HGFKqMqKiH0itzRcrhlnF3rkBnRDr4RrzObTfOSs7cngY6a23orkX
+         gnEid/7eSrEts3hk8dXWqOmucl2lbweVUxpz5MnhA+gVcEditBTXJtMLfjjv4LHPXXQY
+         tG6ySvOLteprJ1zT8KT2oiGCP48EzrKZruqQy2PSHOIGFry/Ndvlgcf6wyad/xSa3Wsg
+         PKvJ48QgPUK74J98thEZPoyUgxSjA3X98YlWMfwWvI+hREGXgT1L58VzHS/R19l3WiYu
+         oK8Q==
+X-Gm-Message-State: AOAM533ojN0Pn37p54TSWuXd23xxu7lktKVmHfdAsy3xj4I7upf5z+Wb
+        GwQUaXqgu6MdtbagjveUD7dZ1GgbZkQ=
+X-Google-Smtp-Source: ABdhPJxgB18vHifK/fLWhdVGFdE+3JqppPYalnPYumYqYevAlih/Og2IBuVHZgf4eYqIbN5uQuaxjg==
+X-Received: by 2002:a2e:99c6:: with SMTP id l6mr1064609ljj.220.1593448610367;
+        Mon, 29 Jun 2020 09:36:50 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id w24sm42617lfl.17.2020.06.29.09.36.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jun 2020 09:36:49 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id n23so18773020ljh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:36:49 -0700 (PDT)
+X-Received: by 2002:a2e:991:: with SMTP id 139mr8131159ljj.314.1593448608820;
+ Mon, 29 Jun 2020 09:36:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200626194720.2915044-1-jolsa@kernel.org> <20200626194720.2915044-10-jolsa@kernel.org>
- <CAP-5=fUODuF+LY6cbU4BPEcxu_YXDYg42pgRYU=yY5e47z05=g@mail.gmail.com> <20200628215957.GO2988321@krava>
-In-Reply-To: <20200628215957.GO2988321@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 29 Jun 2020 09:35:12 -0700
-Message-ID: <CAP-5=fWS7dsqrjM2gP6fpsjbjW5CoFHwGLYf-WxzJ9JdhD-LzQ@mail.gmail.com>
-Subject: Re: [PATCH 09/10] perf tools: Compute other metrics
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
+References: <20200624161142.GA12184@redhat.com> <20200624162042.GA12238@redhat.com>
+ <CAHk-=wjJA2Z3kUFb-5s=6+n0qbTs8ELqKFt9B3pH85a8fGD73w@mail.gmail.com>
+ <20200626154313.GI4817@hirez.programming.kicks-ass.net> <CAHk-=whvVWNXPJq1k566zn4SfXAifXtiA7T+7JFweR3rQ0nc9A@mail.gmail.com>
+ <1593396958.ydiznwsuu8.astroid@bobo.none> <1593436373.x8otyji40u.astroid@bobo.none>
+In-Reply-To: <1593436373.x8otyji40u.astroid@bobo.none>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 29 Jun 2020 09:36:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjJKicPgmvf7atx=h6Li7ez9nFrpJdgTSRm5aUEnuVH6w@mail.gmail.com>
+Message-ID: <CAHk-=wjJKicPgmvf7atx=h6Li7ez9nFrpJdgTSRm5aUEnuVH6w@mail.gmail.com>
+Subject: Re: wait_on_page_bit_common(TASK_KILLABLE, EXCLUSIVE) can miss wakeup?
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>
+        Davidlohr Bueso <dave@stgolabs.net>, Jan Kara <jack@suse.cz>,
+        Lukas Czerner <lczerner@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Oleg Nesterov <oleg@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 28, 2020 at 3:00 PM Jiri Olsa <jolsa@redhat.com> wrote:
+On Mon, Jun 29, 2020 at 6:16 AM Nicholas Piggin <npiggin@gmail.com> wrote:
 >
-> On Fri, Jun 26, 2020 at 02:24:38PM -0700, Ian Rogers wrote:
->
-> SNIP
->
-> > > +
-> > > +                                       if (expr__get_id(ctx, lookup, &data) || !data) {
-> > >                                                 pr_debug("%s not found\n", $1);
-> > >                                                 free($1);
-> > >                                                 YYABORT;
-> > >                                         }
-> > > +
-> > > +                                       pr_debug2("lookup: is_other %d, counted %d: %s\n",
-> > > +                                                 data->is_other, data->other.counted, lookup);
-> > > +
-> > > +                                       if (data->is_other && !data->other.counted) {
-> > > +                                               data->other.counted = true;
-> > > +                                               if (expr__parse(&data->val, ctx, data->other.metric_expr, 1)) {
-> >
-> > Ah, so this handles the problem the referenced metric isn't calculated
-> > and calculates it - with the sharing of events this doesn't impose
-> > extra pmu cost. Do we need to worry about detecting recursion? For
-> > example:
-> >
-> > "MetricName": "Foo",
-> > "MetricExpr": "1/metric:Foo",
->
-> right, we should add some recursion check,
-> I'll lcheck on it
->
-> >
-> > It seems unfortunate to have the MetricExpr calculated twice, but it
->
-> hum, not sure what you mean by twice.. we do that just once for
-> each involved metric and store the value.. the metric is also
-> processed before for 'other' metrics
+> No, ignore this part (which you explained well it was just a thinko,
+> and your patch of course would not have worked if this was the case):
+> the exclusive wake up doesn't get lost if schedule() was called because
+> state goes back to running regardless of what woke it.
 
-So I'm thinking out loud. Here is an example from Skylake:
+Right.
 
-{
- "BriefDescription": "All L2 hit counts",
- "MetricExpr": "L2_RQSTS.DEMAND_DATA_RD_HIT + L2_RQSTS.PF_HIT +
-L2_RQSTS.RFO_HIT",
- "MetricName": "DCache_L2_All_Hits",
-}
-{
- "BriefDescription": "All L2 miss counts",
- "MetricExpr": "MAX(L2_RQSTS.ALL_DEMAND_DATA_RD -
-L2_RQSTS.DEMAND_DATA_RD_HIT, 0) + L2_RQSTS.PF_MISS +
-L2_RQSTS.RFO_MISS",
- "MetricName": "DCache_L2_All_Miss",
-}
-{
- "BriefDescription": "All L2 counts",
- "MetricExpr": "metric:DCache_L2_All_Hits + metric:DCache_L2_All_Miss",
- "MetricName": "DCache_L2_All",
-}
-{
- "BriefDescription": "DCache L2 hit rate",
- "MetricExpr": "d_ratio(metric:DCache_L2_All_Hits, metric:DCache_L2_All)",
- "MetricName": "DCache_L2_Hits",
- "MetricGroup": "DCache_L2",
- "ScaleUnit": "100%",
-},
-{
- "BriefDescription": "DCache L2 miss rate",
- "MetricExpr": "d_ratio(metric:DCache_L2_All_Miss, metric:DCache_L2_All)",
- "MetricName": "DCache_L2_Misses",
- "MetricGroup": "DCache_L2",
- "ScaleUnit": "100%",
-},
+The normal pattern for a wait-loop is
 
-Firstly, it should be clear that having this change makes the json far
-more readable! The current approach is to copy and paste resulting in
-100s of characters wide expressions. This is a great improvement!
+ - add yourself to the wait-queue and set yourself "sleeping" with a
+memory barrier.
 
-With these metrics the hope would be that 'perf stat -M DCache_L2 ...'
-is going to report just DCache_L2_Hits and DCache_L2_Misses. To
-compute these two metrics, as an example, DCache_L2_All_Hits is needed
-three times. My comment was meant to mean that it seems a little
-unfortunate to keep repeatedly evaluating the expression rather than
-to compute it once and reuse the result.
+ - test for the condition, exit if ok
 
-Thanks,
-Ian
+ - go to sleep
 
-> jirka
->
-> > is understandable. Is it also a property that referenced/other metrics
-> > won't be reported individually? Perhaps these are sub-metrics?
->
-> >
-> > Thanks,
-> > Ian
-> >
-> > > +                                                       pr_debug("%s failed to count\n", $1);
-> > > +                                                       free($1);
-> > > +                                                       YYABORT;
-> > > +                                               }
-> > > +                                       }
-> > > +
-> > >                                         $$ = data->val;
-> > >                                         free($1);
-> > >                                 }
-> > > --
-> > > 2.25.4
-> > >
-> >
->
+and that pattern doesn't have the race.
+
+The other common pattern is to check for the "do I need to sleep at
+all" at the *top* of the function, long before you bother with any
+wait-queues at all. This code does that odd "let's check in the middle
+if we need to sleep" instead, which then caused the bug.
+
+So we had an odd setup because of three different wait conditions that
+had different rules for what they could/should do before sleeping, and
+then not sleeping reliably at all.
+
+We could also fix it by just splitting out the three cases into their
+own wait routines that match the normal pattern. The bug really
+happened because that wait-loop is doing things such an odd way due to
+all the different cases..
+
+I actually think it would be a lot more readable if it was three
+different cases instead of trying to be one "common" routine.
+
+The *common* parts is the special PG_locked logic at the top, and the
+thrashing/delayacct code at the bottom.
+
+And *that* could be a true common helper, but the wait loop (which
+isn't even a loop for the DROP case) are fundamentally different and
+probably should be separate functions.
+
+So I think my "one-liner" fixes the problem, but I'd certainly be open
+to somebody cleaning this up properly.
+
+Anybody?
+
+             Linus
