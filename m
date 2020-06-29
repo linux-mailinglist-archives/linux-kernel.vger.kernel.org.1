@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E01420E5EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8163920E639
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391403AbgF2Vm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37556 "EHLO
+        id S2404065AbgF2VpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:45:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727883AbgF2Shx (ORCPT
+        with ESMTP id S1727779AbgF2Sho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:53 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED73C02F031
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:59:48 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id 5so13775796oty.11
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:59:48 -0700 (PDT)
+        Mon, 29 Jun 2020 14:37:44 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81118C02F033
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:01:14 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id q21so8255067otc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:01:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=O9Y/+e/e29D9znyzVTDfGPWcbDE2sgU04HkRdXVP2Y0=;
-        b=Pe1X843TCcJC8mG7AsPGFWzJt/6SM1sl85DIfk19L1KrVD6knekTW4seEvRud51YLG
-         yF9aKcbBg4q775aYOUzlkGAEJOOOKRiyuBwuilfm4pPJIUy3YX/pmL/EAGHifRbCyiJq
-         k3FQUeAHHiajm2816UP4/LUgQgs/2o4zcgAYmf9l28dk5cUNyniMVkGWO1vxa6IShY/S
-         pO1B9AxL0HEbQeut+iS4tR4xrH+F+Df/XvWpU4Erj+xwyJzWZWqIbFAIJuInnq9P1U+g
-         FKrIUvKc+LBQf2TFAwHy/02dsywvHZkFa6sDSr5r6rYstA7KtHHXW06HvIlHVuk20on5
-         ycjQ==
+        bh=e77xl3a0rUVRcLQU1oC50Ds8tydYE4Dms5PHNqeAu/k=;
+        b=XMQy1CXVlqSYhEurPprg8PGiPgE1Rib39cTW09WzQAffWwG7ga+mJUImPuQjU3hKBz
+         aMiLQH+uoAR+QqXiAp7sDCqQr5VQgfujaZk/HxPsHQ7JWVFlBD9YOjNEm+KPNdPY1skY
+         Xxgw8Lzy27lSZoIjcUaaMSZ5UJL7aK6dVQbrbBKi8z9t16Ir1bF/W+UCXVChiKMwnlVr
+         pja+8G2+B0w9fCTjslr2a6pAc+tIpyLi2T0HkBtvPahOiKs0nUOFya8C5YPuohKNIija
+         aS8Q7PqpakqtxX6a8KfLaVo8K1AGsc+9jZ4S0m/Wd/G5xXloS79fEavwA5t4Vjj11Fx+
+         P9wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=O9Y/+e/e29D9znyzVTDfGPWcbDE2sgU04HkRdXVP2Y0=;
-        b=D3J4/Jm4fOQmu/rF0fXBRN1uRz0UNDuCkX7AR1eSZzHBOuW5Lk6I05k7zEoDcVmwyx
-         Wj/pvq1/zrl34qD55/K0ltNHqH1jT/RS0d2G/NAQZw8rnpjOFpC8L/Hmehv2EM2Fmscy
-         DWZssHmkIuJ1vEczQC/JkFfuYRCBf6NN7nft/XZNsrgPeOWhnVS7LRJNJoOFnxI4uWOs
-         uXa3JUbfamMkRiMqiwkMHJzQfqZ70Qqp9FrSntBLwyHiJipNzzUYFzRJakctjyCd7y5z
-         do82bbG8+joWdq8WMQTX7EMwSl+2jBnRh2s4m0A+e/elBmub6dTQA2TAloQ4l8oW7kOE
-         o1Nw==
-X-Gm-Message-State: AOAM533+/2hBRYqYYSRvKzowRw5oPTFFtZR7n4yUinRhoqqpav1diwU9
-        CpFha7jx0WP+cSyqep4orIQgwRQ6NotMi9Y2oMY=
-X-Google-Smtp-Source: ABdhPJxlHj+j8ZYs6uJnfSfCiAx17n4DDEDtLjPmb8ihqGFXQe3xIjU2VD3uRKFJGZJB9fzSwltqlI9xmBA20MbcoMU=
-X-Received: by 2002:a4a:dfb5:: with SMTP id k21mr6039768ook.27.1593442787765;
- Mon, 29 Jun 2020 07:59:47 -0700 (PDT)
+        bh=e77xl3a0rUVRcLQU1oC50Ds8tydYE4Dms5PHNqeAu/k=;
+        b=YhxriyKUHpDISbMtMUt6K3BKuDq6wph0LiPNUPuZBU7D7D+tN3joOerSDDWudRX+WZ
+         J/WsbXL/fuzEckAHs+WWEOaXq2rSID29lB/ZvqxHk8oDAjSJXj7UDNriwM2i0p863TTa
+         wRjPWsQzAkhKhr0UFVmGiA01RUKbA1v4xKTSOIDNMvCbhBIvC9BMSEVaK/FRRCeRAVXj
+         xVNDRgAVvxQsKFbgnzNSlB9IgNWvnX9EFJyTZx2UtMLrW1dg93vkrpLDzi8w1/LCB/uy
+         kRfGxDf/RXU1j0S63CDlxkVbiVM30KlcAfLmoi3gtUvkWY6C2tNE4KudrUG4uA2B2QL2
+         MGUw==
+X-Gm-Message-State: AOAM531BKxbPmendFzCoT8xwd/vBCx82lLhZJQSlsXOHykehgGeEhJG0
+        JAvcxP/BdIY2R6n3I/j686dQAEXuO+ituB2luxs=
+X-Google-Smtp-Source: ABdhPJxFZkCXG8p4u8jtirweZHRw3Zm3HpCOYXiTJk93I7XtfkyjfulYGVNkoX+Wbg3ThmFgvmNP5bQgChAlfrjYrN4=
+X-Received: by 2002:a9d:6254:: with SMTP id i20mr13643292otk.145.1593442873894;
+ Mon, 29 Jun 2020 08:01:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200629140442.1043957-1-lee.jones@linaro.org> <20200629140442.1043957-6-lee.jones@linaro.org>
-In-Reply-To: <20200629140442.1043957-6-lee.jones@linaro.org>
+References: <20200629140442.1043957-1-lee.jones@linaro.org> <20200629140442.1043957-8-lee.jones@linaro.org>
+In-Reply-To: <20200629140442.1043957-8-lee.jones@linaro.org>
 From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Mon, 29 Jun 2020 17:59:19 +0300
-Message-ID: <CAFCwf10QWLtuK3FmS+251o-aD+t8AOp4CHFaUwm-2fCQqOLvGA@mail.gmail.com>
-Subject: Re: [PATCH 05/20] misc: habanalabs: irq: Repair kerneldoc formatting issues
+Date:   Mon, 29 Jun 2020 18:00:45 +0300
+Message-ID: <CAFCwf115Hm+Rf7r0bZmMbnGgz6jUm=ZK=Zvij_aD1WKEBUvOGw@mail.gmail.com>
+Subject: Re: [PATCH 07/20] misc: habanalabs: pci: Scrub documentation for
+ non-present function argument
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -65,120 +66,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, Jun 29, 2020 at 5:04 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> W=1 kernel builds report a lack of descriptions for various
-> function arguments.  In reality they are documented, but the
-> formatting was not as expected '@.*:'.  Instead, '-'s were
-> used as separators.
+> 'dma_mask' is not passed directly into hl_pci_set_dma_mask() as
+> an argument.  Instead, it is pulled from struct hl_device *hdev.
 >
-> While we're here, the headers for functions various functions
-> were written in kerneldoc format, but lack the kerneldoc
-> identifier '/**'.  Let's promote them so they can gain access
-> to the checker.
+> Fixed the following W=1 warning:
 >
-> This change fixes the following W=1 warnings:
->
->  drivers/misc/habanalabs/irq.c:24: warning: Function parameter or member 'eq_work' not described in 'hl_eqe_work'
->  drivers/misc/habanalabs/irq.c:24: warning: Function parameter or member 'hdev' not described in 'hl_eqe_work'
->  drivers/misc/habanalabs/irq.c:24: warning: Function parameter or member 'eq_entry' not described in 'hl_eqe_work'
+>  drivers/misc/habanalabs/pci.c:328: warning: Excess function parameter 'dma_mask' description in 'hl_pci_set_dma_mask
 >
 > Cc: Oded Gabbay <oded.gabbay@gmail.com>
 > Cc: Tomer Tayar <ttayar@habana.ai>
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  drivers/misc/habanalabs/irq.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
+>  drivers/misc/habanalabs/pci.c | 1 -
+>  1 file changed, 1 deletion(-)
 >
-> diff --git a/drivers/misc/habanalabs/irq.c b/drivers/misc/habanalabs/irq.c
-> index 4e77a73857793..6981d67153b11 100644
-> --- a/drivers/misc/habanalabs/irq.c
-> +++ b/drivers/misc/habanalabs/irq.c
-> @@ -13,9 +13,9 @@
->   * struct hl_eqe_work - This structure is used to schedule work of EQ
->   *                      entry and armcp_reset event
+> diff --git a/drivers/misc/habanalabs/pci.c b/drivers/misc/habanalabs/pci.c
+> index 24073e8eb8df9..61a8bb07262cf 100644
+> --- a/drivers/misc/habanalabs/pci.c
+> +++ b/drivers/misc/habanalabs/pci.c
+> @@ -317,7 +317,6 @@ int hl_pci_init_iatu(struct hl_device *hdev, u64 sram_base_address,
+>  /**
+>   * hl_pci_set_dma_mask() - Set DMA masks for the device.
+>   * @hdev: Pointer to hl_device structure.
+> - * @dma_mask: number of bits for the requested dma mask.
 >   *
-> - * @eq_work          - workqueue object to run when EQ entry is received
-> - * @hdev             - pointer to device structure
-> - * @eq_entry         - copy of the EQ entry
-> + * @eq_work:          workqueue object to run when EQ entry is received
-> + * @hdev:             pointer to device structure
-> + * @eq_entry:         copy of the EQ entry
->   */
->  struct hl_eqe_work {
->         struct work_struct      eq_work;
-> @@ -23,7 +23,7 @@ struct hl_eqe_work {
->         struct hl_eq_entry      eq_entry;
->  };
->
-> -/*
-> +/**
->   * hl_cq_inc_ptr - increment ci or pi of cq
->   *
->   * @ptr: the current ci or pi value of the completion queue
-> @@ -39,7 +39,7 @@ inline u32 hl_cq_inc_ptr(u32 ptr)
->         return ptr;
->  }
->
-> -/*
-> +/**
->   * hl_eq_inc_ptr - increment ci of eq
->   *
->   * @ptr: the current ci value of the event queue
-> @@ -66,7 +66,7 @@ static void irq_handle_eqe(struct work_struct *work)
->         kfree(eqe_work);
->  }
->
-> -/*
-> +/**
->   * hl_irq_handler_cq - irq handler for completion queue
->   *
->   * @irq: irq number
-> @@ -142,7 +142,7 @@ irqreturn_t hl_irq_handler_cq(int irq, void *arg)
->         return IRQ_HANDLED;
->  }
->
-> -/*
-> +/**
->   * hl_irq_handler_eq - irq handler for event queue
->   *
->   * @irq: irq number
-> @@ -206,7 +206,7 @@ irqreturn_t hl_irq_handler_eq(int irq, void *arg)
->         return IRQ_HANDLED;
->  }
->
-> -/*
-> +/**
->   * hl_cq_init - main initialization function for an cq object
->   *
->   * @hdev: pointer to device structure
-> @@ -238,7 +238,7 @@ int hl_cq_init(struct hl_device *hdev, struct hl_cq *q, u32 hw_queue_id)
->         return 0;
->  }
->
-> -/*
-> +/**
->   * hl_cq_fini - destroy completion queue
->   *
->   * @hdev: pointer to device structure
-> @@ -269,7 +269,7 @@ void hl_cq_reset(struct hl_device *hdev, struct hl_cq *q)
->         memset((void *) (uintptr_t) q->kernel_address, 0, HL_CQ_SIZE_IN_BYTES);
->  }
->
-> -/*
-> +/**
->   * hl_eq_init - main initialization function for an event queue object
->   *
->   * @hdev: pointer to device structure
-> @@ -297,7 +297,7 @@ int hl_eq_init(struct hl_device *hdev, struct hl_eq *q)
->         return 0;
->  }
->
-> -/*
-> +/**
->   * hl_eq_fini - destroy event queue
->   *
->   * @hdev: pointer to device structure
+>   * This function sets the DMA masks (regular and consistent) for a specified
+>   * value. If it doesn't succeed, it tries to set it to a fall-back value
 > --
 > 2.25.1
 >
+
 This patch is:
 Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
