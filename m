@@ -2,83 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C382320D825
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6E520D84F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732634AbgF2Tgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:36:33 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:54693 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729305AbgF2TgX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:36:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1593459383; x=1624995383;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=b4/y29sI+1yiTQiF1xYesH4kt0pQMd5eSrVNTpeSPi4=;
-  b=LhMrpjSDf/mnZHYhSrEDPKDmdrPwxiQfr1dbGMLPojkN6ps2Afa7AiEa
-   Vg3gYnKcTSWGjSF2j8DBPkd7PVqE78er3SOTq6THG/PC0pHFD5xhJCVPf
-   c5Zgpk2UuTgvDaEIoxB9kIq7GKpENd0xy7PTHSilfNgCtiOvzgmi4YkwW
-   s=;
-IronPort-SDR: 30ZfxPliLXRENJTl2hI0YJ7tElU9JTYqigHOFsbk/lUG7zcXVx6pI7nW0ogcDx+3yHCtxim+sP
- YCQMGiTTYanQ==
-X-IronPort-AV: E=Sophos;i="5.75,295,1589241600"; 
-   d="scan'208";a="39176521"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 29 Jun 2020 19:36:19 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id B7CFDA1C47;
-        Mon, 29 Jun 2020 19:36:17 +0000 (UTC)
-Received: from EX13D31EUA004.ant.amazon.com (10.43.165.161) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 29 Jun 2020 19:36:17 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.48) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 29 Jun 2020 19:36:12 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <gregkh@linuxfoundation.org>, <sashal@kernel.org>
-CC:     <sj38.park@gmail.com>, <stable@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Upstream fixes not merged in 5.4.y
-Date:   Mon, 29 Jun 2020 21:35:37 +0200
-Message-ID: <20200629193537.21738-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
+        id S1733222AbgF2TiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:38:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387488AbgF2TiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:38:00 -0400
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D22EF20780;
+        Mon, 29 Jun 2020 19:37:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593459479;
+        bh=IxP7fkKngaycJwsg21YV+tvkJ91Wj/BE51SsDiZ/4k8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sb7NGoy7T/HwxKy8QYvemUwy3DhQCubraado/xaW5kE1It/wO5zWa02cLwxkKlDun
+         FNvofZFfbaECarbvSqXT5Ocyk9BDO/wT+yRsxZyh111mndxwKLBeNp2D+Nvoe98cr0
+         iJ+dcVMJIHFs1G137M/dvcD5voKNYOQUl9Po0L0s=
+Received: by mail-ot1-f52.google.com with SMTP id 18so16545539otv.6;
+        Mon, 29 Jun 2020 12:37:59 -0700 (PDT)
+X-Gm-Message-State: AOAM5311vdv4r+NGlHKFVURWnKyJ6EUfYhWtNelqBt0R7t53JI+0lV2d
+        LiTSF9tnEDw3TegA2nWZY0JHc/SegfbpDXSCcA==
+X-Google-Smtp-Source: ABdhPJz6kmqtXJ1OIC7MMXmPStyq8zxaV71RF1e7y0B2HRZcYqLhuf4XSQqPFMKWaNblWCA07w8uXnCW74H/zUsItAM=
+X-Received: by 2002:a05:6830:3104:: with SMTP id b4mr14923890ots.192.1593459479172;
+ Mon, 29 Jun 2020 12:37:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.48]
-X-ClientProxiedBy: EX13D04UWB001.ant.amazon.com (10.43.161.46) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+References: <20200618224413.1115849-1-robh@kernel.org> <20200619215341.GA6857@ravnborg.org>
+In-Reply-To: <20200619215341.GA6857@ravnborg.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 29 Jun 2020 13:37:47 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJcL6VJXiTGyAAs-UCD24wxh4NBAs_SntLomwUTo6Qhzw@mail.gmail.com>
+Message-ID: <CAL_JsqJcL6VJXiTGyAAs-UCD24wxh4NBAs_SntLomwUTo6Qhzw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: backlight: Convert common backlight bindings
+ to DT schema
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     devicetree@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Jun 19, 2020 at 3:53 PM Sam Ravnborg <sam@ravnborg.org> wrote:
+>
+> Hi Rob.
+>
+> Good to have these converted. A few comments in the following. One
+> comment is for the backlight people as you copied the original text.
+>
+>         Sam
+>
+> On Thu, Jun 18, 2020 at 04:44:13PM -0600, Rob Herring wrote:
+> > Convert the common GPIO, LED, and PWM backlight bindings to DT schema
+> > format.
+> >
+> > Given there's only 2 common properties and the descriptions are slightly
+> > different, I opted to not create a common backlight schema.
+> >
+> > Cc: Lee Jones <lee.jones@linaro.org>
+> > Cc: Daniel Thompson <daniel.thompson@linaro.org>
+> > Cc: Jingoo Han <jingoohan1@gmail.com>
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  .../leds/backlight/gpio-backlight.txt         | 16 ---
+> >  .../leds/backlight/gpio-backlight.yaml        | 41 ++++++++
+> >  .../bindings/leds/backlight/led-backlight.txt | 28 ------
+> >  .../leds/backlight/led-backlight.yaml         | 58 +++++++++++
+> >  .../bindings/leds/backlight/pwm-backlight.txt | 61 ------------
+> >  .../leds/backlight/pwm-backlight.yaml         | 98 +++++++++++++++++++
+> >  6 files changed, 197 insertions(+), 105 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/leds/backlight/gpio-backlight.txt
+> >  create mode 100644 Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml
+> >  delete mode 100644 Documentation/devicetree/bindings/leds/backlight/led-backlight.txt
+> >  create mode 100644 Documentation/devicetree/bindings/leds/backlight/led-backlight.yaml
+> >  delete mode 100644 Documentation/devicetree/bindings/leds/backlight/pwm-backlight.txt
+> >  create mode 100644 Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.txt b/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.txt
+> > deleted file mode 100644
+> > index 321be6640533..000000000000
+> > --- a/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.txt
+> > +++ /dev/null
+> > @@ -1,16 +0,0 @@
+> > -gpio-backlight bindings
+> > -
+> > -Required properties:
+> > -  - compatible: "gpio-backlight"
+> > -  - gpios: describes the gpio that is used for enabling/disabling the backlight.
+> > -    refer to bindings/gpio/gpio.txt for more details.
+> > -
+> > -Optional properties:
+> > -  - default-on: enable the backlight at boot.
+> > -
+> > -Example:
+> > -     backlight {
+> > -             compatible = "gpio-backlight";
+> > -             gpios = <&gpio3 4 GPIO_ACTIVE_HIGH>;
+> > -             default-on;
+> > -     };
+> > diff --git a/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml
+> > new file mode 100644
+> > index 000000000000..75cc569b9c55
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml
+> > @@ -0,0 +1,41 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/leds/backlight/gpio-backlight.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: gpio-backlight bindings
+> > +
+> > +maintainers:
+> > +  - Lee Jones <lee.jones@linaro.org>
+> > +  - Daniel Thompson <daniel.thompson@linaro.org>
+> > +  - Jingoo Han <jingoohan1@gmail.com>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: gpio-backlight
+> > +
+> > +  gpios:
+> > +    description: The gpio that is used for enabling/disabling the backlight.
+> > +    maxItems: 1
+> > +
+> > +  default-on:
+> > +    description: enable the backlight at boot.
+> > +    type: boolean
+> > +
+> > +required:
+> > +  - compatible
+> > +  - gpios
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/gpio/gpio.h>
+> > +    backlight {
+> > +        compatible = "gpio-backlight";
+> > +        gpios = <&gpio3 4 GPIO_ACTIVE_HIGH>;
+> > +        default-on;
+> > +    };
+> > +
+> > +...
+> > diff --git a/Documentation/devicetree/bindings/leds/backlight/led-backlight.txt b/Documentation/devicetree/bindings/leds/backlight/led-backlight.txt
+> > deleted file mode 100644
+> > index 4c7dfbe7f67a..000000000000
+> > --- a/Documentation/devicetree/bindings/leds/backlight/led-backlight.txt
+> > +++ /dev/null
+> > @@ -1,28 +0,0 @@
+> > -led-backlight bindings
+> > -
+> > -This binding is used to describe a basic backlight device made of LEDs.
+> > -It can also be used to describe a backlight device controlled by the output of
+> > -a LED driver.
+> > -
+> > -Required properties:
+> > -  - compatible: "led-backlight"
+> > -  - leds: a list of LEDs
+> > -
+> > -Optional properties:
+> > -  - brightness-levels: Array of distinct brightness levels. The levels must be
+> > -                       in the range accepted by the underlying LED devices.
+> > -                       This is used to translate a backlight brightness level
+> > -                       into a LED brightness level. If it is not provided, the
+> > -                       identity mapping is used.
+> > -
+> > -  - default-brightness-level: The default brightness level.
+> > -
+> > -Example:
+> > -
+> > -     backlight {
+> > -             compatible = "led-backlight";
+> > -
+> > -             leds = <&led1>, <&led2>;
+> > -             brightness-levels = <0 4 8 16 32 64 128 255>;
+> > -             default-brightness-level = <6>;
+> > -     };
+> > diff --git a/Documentation/devicetree/bindings/leds/backlight/led-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/led-backlight.yaml
+> > new file mode 100644
+> > index 000000000000..ae50945d2798
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/leds/backlight/led-backlight.yaml
+> > @@ -0,0 +1,58 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/leds/backlight/led-backlight.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: led-backlight bindings
+> > +
+> > +maintainers:
+> > +  - Lee Jones <lee.jones@linaro.org>
+> > +  - Daniel Thompson <daniel.thompson@linaro.org>
+> > +  - Jingoo Han <jingoohan1@gmail.com>
+> > +
+> > +description:
+> > +  This binding is used to describe a basic backlight device made of LEDs. It
+> > +  can also be used to describe a backlight device controlled by the output of
+> > +  a LED driver.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: led-backlight
+> > +
+> > +  leds:
+> > +    description: A list of LED nodes
+> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > +
+> > +  brightness-levels:
+> > +    description: Array of distinct brightness levels. The levels must be
+> > +      in the range accepted by the underlying LED devices. This is used
+> > +      to translate a backlight brightness level into a LED brightness level.
+> > +      If it is not provided, the identity mapping is used.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> bike-shedding. To me it is a tad easier to read when multi-line
+> descriptions are on a separate line.
+> So "description:" on one line, and the text on following lines.
+> example-schema.yaml does both - so both are official acceptable.
 
+I agree, but the one issue is ruamel yaml wants it the above way
+unless you do '|' (or really '>' may be the correct annotation here).
+That's mainly an issue if doing tree wide yaml->python
+processing->yaml transformations. But if the line lengths don't match
+exactly what ruamel is set to, then it reformats it anyways, so in the
+end it doesn't really matter. I just have to filter out unwanted
+reformatting (until ruamel can really do roundtrips with no
+reformatting).
 
-With my little script, I found below commits in the mainline tree are more than
-1 week old and fixing commits that back-ported in v5.4..v5.4.49 but not merged
-in the stable/linux-5.4.y tree.  Are those need to be merged in but missed or
-dealyed?
-
-9210c075cef2 ("nvme-pci: avoid race between nvme_reap_pending_cqes() and nvme_poll()")
-9fecd13202f5 ("btrfs: fix a block group ref counter leak after failure to remove block group")
-9d964e1b82d8 ("fix a braino in "sparc32: fix register window handling in genregs32_[gs]et()"")
-8ab3a3812aa9 ("drm/i915/gt: Incrementally check for rewinding")
-6e2f83884c09 ("bnxt_en: Fix AER reset logic on 57500 chips.")
-efb94790852a ("drm/panel-simple: fix connector type for LogicPD Type28 Display")
-ff58bbc7b970 ("ALSA: usb-audio: Fix potential use-after-free of streams")
-ff58bbc7b970 ("ALSA: usb-audio: Fix potential use-after-free of streams")
-8dbe4c5d5e40 ("net: dsa: bcm_sf2: Fix node reference count")
-ca8826095e4d ("selftests/net: report etf errors correctly")
-5a8d7f126c97 ("of: of_mdio: Correct loop scanning logic")
-d35d3660e065 ("binder: fix null deref of proc->context")
-
-The script found several more commits but I exclude those here, because those
-seems not applicable on 5.4.y or fixing trivial problems only.  If I'm not
-following a proper process for this kind of reports, please let me know.
-
-
-Thanks,
-SeongJae Park
+Rob
