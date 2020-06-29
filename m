@@ -2,108 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632A220E8DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 01:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1F920E928
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 01:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbgF2Wjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 18:39:41 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50114 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728308AbgF2Wjg (ORCPT
+        id S1729295AbgF2XOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 19:14:14 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:55864 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726180AbgF2XOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 18:39:36 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <seth.forshee@canonical.com>)
-        id 1jpt07-0006Yj-Dn
-        for linux-kernel@vger.kernel.org; Mon, 29 Jun 2020 12:35:07 +0000
-Received: by mail-il1-f200.google.com with SMTP id o2so12193502ilg.14
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:35:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d3wAD+FwY/apCHMWEbeYwrensmYJ31fzvIHVdi3AjOc=;
-        b=VyOG5HndfgGbPATU6G4YYrSiCOgUL9/rCywNeBBuAXXqsMT2Q0h3ce5WJL6BkNaTAQ
-         Vkhj6SgPFATzh1qfPaiDxdJingEsO0gK2kSRriM/xwBJPulwmVx3Yo7REPeW8+aEEdfu
-         YKR3wQeBMTEn/s2OyijfL2rsM5LYepuVS1pSeGusso6ZwFw5k1GZuiGOZSyrv6KVPWIS
-         PJWnkEVPA0yoKPhEah8iOtBy0grNsqyt6E3SyksO4iLh394gzdnWx8V9BQFMQK6zzJUB
-         WpEElLtbXYvP6u4YWegJwI7C9uoQVaJpjqnQLPl5zubkKS0wDLy+OmzVUC5CoWY8g8sa
-         bg6Q==
-X-Gm-Message-State: AOAM531yL8YoNFwCLRWtm41zf9YPMpjiRi+pk+KMAOGtjFZkmrfiV7xk
-        rdPDoAu9qz/+6mrgz5+JvtSCKlDGSbipCMoT/RAUzIhbCtGk6QxwnW7/MCawEhEburNEwpqvP4k
-        xRkXq5vb68toc0pSGLquY/6VvW4E2xUbhW8Sp1Bja1Q==
-X-Received: by 2002:a05:6602:2584:: with SMTP id p4mr17011702ioo.30.1593434106459;
-        Mon, 29 Jun 2020 05:35:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxxO+NSoKtLYJDs5amRG3FY0ewjylJLex5PUDsxJbLwE0b+jaD8LtRlSybHl9IyUxFufDoH9Q==
-X-Received: by 2002:a05:6602:2584:: with SMTP id p4mr17011678ioo.30.1593434106233;
-        Mon, 29 Jun 2020 05:35:06 -0700 (PDT)
-Received: from localhost ([136.37.150.243])
-        by smtp.gmail.com with ESMTPSA id d18sm351778ils.34.2020.06.29.05.35.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 05:35:05 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 07:35:04 -0500
-From:   Seth Forshee <seth.forshee@canonical.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: remove obsolete entry after file renaming
-Message-ID: <20200629123504.GA10686@ubuntu-x1>
-References: <20200628180229.5068-1-lukas.bulwahn@gmail.com>
+        Mon, 29 Jun 2020 19:14:12 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05TCqx0C108046;
+        Mon, 29 Jun 2020 07:52:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1593435179;
+        bh=LxZK6XItt8eRN8M36E8UH3WGeBppveLJV6p+zmugmTI=;
+        h=From:To:CC:Subject:Date;
+        b=ciW8v2d9+KONMCI11Nvt2pemy2FVyX1TioT/topmoboAD+JEFreQeaSFDFiJHH00V
+         Gw43BL5TtfflHc7I9JwE5SV4Y6UKpFl6RWI4v/askkCrF2Pbij/LMoQf/35+YGVDeE
+         rWLwKvUrKyVJQB4qps0HHlmopiab4pCq+1aoCSfg=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05TCqxJl014789
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 29 Jun 2020 07:52:59 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 29
+ Jun 2020 07:52:59 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 29 Jun 2020 07:52:58 -0500
+Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05TCqugv015456;
+        Mon, 29 Jun 2020 07:52:56 -0500
+From:   Roger Quadros <rogerq@ti.com>
+To:     <t-kristo@ti.com>
+CC:     <robh@kernel.org>, <kishon@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Roger Quadros <rogerq@ti.com>
+Subject: [PATCH v4 0/6] arm64: ti: k3-j721e: Add SERDES PHY and USB3.0 support
+Date:   Mon, 29 Jun 2020 15:52:48 +0300
+Message-ID: <20200629125254.28754-1-rogerq@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200628180229.5068-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 28, 2020 at 08:02:29PM +0200, Lukas Bulwahn wrote:
-> Commit f16861b12fa0 ("regulator: rename da903x to da903x-regulator") missed
-> to adjust the DIALOG SEMICONDUCTOR DRIVERS section in MAINTAINERS.
-> 
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
-> 
->   warning: no file matches    F:    drivers/regulator/da903x.c
-> 
-> The da903x-regulator.c file is already covered by the pattern
-> drivers/regulator/da9???-regulator.[ch] in the section.
-> 
-> So, simply remove the non-matching file entry in MAINTAINERS.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Hi Tero,
 
-I didn't think to check MAINTAINERS when renaming the file. This makes
-sense to me.
+This series adds SERDES PHY support and Type-C USB Super-Speed support
+to the J721E EVM.
 
-Acked-by: Seth Forshee <seth.forshee@canonical.com>
+Please queue this for -next. Thanks.
 
-> ---
-> applies cleanly on next-20200626
-> 
-> Seth, please ack.
-> Mark, please pick this minor non-urgent patch into your -next tree.
-> 
->  MAINTAINERS | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 04fceaee5200..970136e262c2 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5021,7 +5021,6 @@ F:	drivers/mfd/da91??-*.c
->  F:	drivers/pinctrl/pinctrl-da90??.c
->  F:	drivers/power/supply/da9052-battery.c
->  F:	drivers/power/supply/da91??-*.c
-> -F:	drivers/regulator/da903x.c
->  F:	drivers/regulator/da9???-regulator.[ch]
->  F:	drivers/regulator/slg51000-regulator.[ch]
->  F:	drivers/rtc/rtc-da90??.c
-> -- 
-> 2.17.1
-> 
+cheers,
+-roger
+
+Changelog:
+v4:
+- Removed redundant patch
+- used compaible string for yaml filename
+- typo fix s/mdf/mfd in patch subject
+- added simple-mfd, address-cells, size-cells and ranges
+
+v3:
+- Add new DT schema for J721E System controller.
+- Re-order system controller's compatible string i.e. most compatible to least.
+
+v2:
+- Addressed Rob's comments.
+- Changed type-C debounce delay from 300ms to 700ms as 300ms is not
+sufficient on EVM.
+
+
+Kishon Vijay Abraham I (2):
+  arm64: dts: ti: k3-j721e-main: Add WIZ and SERDES PHY nodes
+  arm64: dts: ti: k3-j721e-main: Add system controller node and SERDES
+    lane mux
+
+Roger Quadros (4):
+  dt-bindings: mfd: ti,j721e-system-controller.yaml: Add J721e system
+    controller
+  arm64: dts: ti: k3-j721e-main.dtsi: Add USB to SERDES MUX
+  arm64: dts: ti: k3-j721e: Enable Super-Speed support for USB0
+  arm64: dts: k3-j721e-proc-board: Add wait time for sampling Type-C DIR
+    line
+
+ .../mfd/ti,j721e-system-controller.yaml       |  74 +++++
+ .../dts/ti/k3-j721e-common-proc-board.dts     |  33 ++-
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 275 ++++++++++++++++++
+ include/dt-bindings/mux/mux-j721e-wiz.h       |  53 ++++
+ 4 files changed, 433 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
+ create mode 100644 include/dt-bindings/mux/mux-j721e-wiz.h
+
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
