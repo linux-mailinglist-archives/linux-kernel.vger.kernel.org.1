@@ -2,101 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B7620E0C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840DB20DFFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387672AbgF2Uti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43372 "EHLO
+        id S2389538AbgF2Ulv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731358AbgF2TNk (ORCPT
+        with ESMTP id S1731553AbgF2TOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:40 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C68C00862A;
-        Mon, 29 Jun 2020 03:55:11 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Mon, 29 Jun 2020 15:14:06 -0400
+X-Greylist: delayed 517 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 29 Jun 2020 04:07:43 PDT
+Received: from pmg01-out3.zxcs.nl (pmg01-out3.zxcs.nl [IPv6:2a06:2ec0:1:b::ffeb])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B503C00862C
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:07:43 -0700 (PDT)
+Received: from pmg01.zxcs.nl (localhost.localdomain [127.0.0.1])
+        by pmg01.zxcs.nl (Zxcs) with ESMTP id BE0761035FD;
+        Mon, 29 Jun 2020 12:59:04 +0200 (CEST)
+Received: from web0081.zxcs.nl (web0081.zxcs.nl [IPv6:2a06:2ec0:1::81])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49wPX01jWzz9s6w;
-        Mon, 29 Jun 2020 20:54:55 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1593428108;
-        bh=Ikj+QFFobl8b3GOszRTI8T5Tvh6wpN/NDrkClHklAgw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=YiHYnDocf/5avJ1oQV/ZaHBo/5KnMj7//ysZQFYyI4CFWIs0UV549pLr1FezSCW5R
-         7XD/bwKDSUl4GAlnxg7+l0dw4qYA4xFJR/p0JjqRrWAn2c6piTAq/Kf99cWgxRb+Vr
-         ch+9DPfW5GFlugwK8NDTwdtqvhOtAXApFXREB/EMHOgHMLm6ivU0YJfIMjJPJ40xpN
-         kv2gGSe40lRU0VLBuIWAsbpJHfD2vQ8cVfDbiLUGCL8LADDRAfzAvbVmxjxe8KYph/
-         C0DoRs93QcEpGuelY5DIvGvYXit7Ov60w25mPElZgJuSxb+KyRGJmW1byOAeC/UHQf
-         AIm77bM9c7www==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, x86@kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        by pmg01.zxcs.nl (Zxcs) with ESMTPS;
+        Mon, 29 Jun 2020 12:59:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=pascalroeleven.nl; s=x; h=Content-Transfer-Encoding:Content-Type:Message-ID
+        :References:In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=BeEd1bjgVqI+6WM8IxHn3yBv6gBN5vUlSzEvbSv2GPY=; b=yMmYS8VgDQ27kiSVRfsNHb29iE
+        LPmdLaagH+bhjYa54+X3DMcJw/nqLZV5COm0Da2zOkefygoaxdrpUEvEHZmBtFVSzEFG9x1NIuXin
+        I1E5JmsDND6n2nkV9HZuv+1p5MFjUc+FoJDbKytPhTvY0MRa2F7TDed2QfZrlyxmEPFezW39If8ZR
+        llTMADSiNPRmBiZ72ZBx/mxD1WsEvyqYe2WHWTx83dzz1qTw7J73QFk0CDdeDSqELEzDMvAGMy+OK
+        9/A/IOH366nZ3vtIYr10sHMVvuSCsLkY1HJ6TRYo0Gx2ZTuUb633j1zBZovb0Pz192M3r0YlsTIN3
+        zIejNerg==;
+Received: from spamrelay.zxcs.nl ([185.104.28.12]:48016 helo=mail-slave02.zxcs.nl)
+        by web0081.zxcs.nl with esmtp (Exim 4.93.0.4)
+        (envelope-from <dev@pascalroeleven.nl>)
+        id 1jprV9-004AMs-6x; Mon, 29 Jun 2020 12:59:03 +0200
+MIME-Version: 1.0
+Date:   Mon, 29 Jun 2020 12:59:02 +0200
+From:   Pascal Roeleven <dev@pascalroeleven.nl>
+To:     laurent.pinchart@ideasonboard.com
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        intel-gfx@lists.freedesktop.org, Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH 13/13] powerpc/dma: Remove dev->archdata.iommu_domain
-In-Reply-To: <20200625130836.1916-14-joro@8bytes.org>
-References: <20200625130836.1916-1-joro@8bytes.org> <20200625130836.1916-14-joro@8bytes.org>
-Date:   Mon, 29 Jun 2020 20:57:07 +1000
-Message-ID: <87bll287i4.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain
+        dri-devel@lists.freedesktop.org, linux-sunxi@googlegroups.com
+Subject: Re: [linux-sunxi] Re: [PATCH v2 2/5] drm: panel: Add Starry KR070PE2T
+In-Reply-To: <20200628072819.GB8391@pendragon.ideasonboard.com>
+References: <20200320112205.7100-1-dev@pascalroeleven.nl>
+ <20200320112205.7100-3-dev@pascalroeleven.nl>
+ <20200628072819.GB8391@pendragon.ideasonboard.com>
+User-Agent: Roundcube Webmail/1.4.6
+Message-ID: <d43b324fa26638c179650e3c52adbf32@pascalroeleven.nl>
+X-Sender: dev@pascalroeleven.nl
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-AuthUser: 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Joerg Roedel <joro@8bytes.org> writes:
-> From: Joerg Roedel <jroedel@suse.de>
->
-> There are no users left, so remove the pointer and save some memory.
->
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  arch/powerpc/include/asm/device.h | 3 ---
->  1 file changed, 3 deletions(-)
+Hi Laurent,
 
-It's a little hard to confirm there are no users left just with grep,
-but I think you've got them all, and the compiler should tell us if
-you've missed any.
+Good catch. It's actually the connector type which is wrong. The 
+connector_type should be DRM_MODE_CONNECTOR_DPI. If you would include 
+this in your patch series, you can have my acked-by.
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Regards,
+Pascal
 
-cheers
+On 2020-06-28 09:28, Laurent Pinchart wrote:
+> Hi Pascal,
+> 
+> On Fri, Mar 20, 2020 at 12:21:33PM +0100, Pascal Roeleven wrote:
+>> The KR070PE2T is a 7" panel with a resolution of 800x480.
+>> 
+>> KR070PE2T is the marking present on the ribbon cable. As this panel is
+>> probably available under different brands, this marking will catch
+>> most devices.
+>> 
+>> As I can't find a datasheet for this panel, the bus_flags are instead
+>> from trial-and-error. The flags seem to be common for these kind of
+>> panels as well.
+>> 
+>> Signed-off-by: Pascal Roeleven <dev@pascalroeleven.nl>
+>> ---
+>>  drivers/gpu/drm/panel/panel-simple.c | 29 
+>> ++++++++++++++++++++++++++++
+>>  1 file changed, 29 insertions(+)
+>> 
+>> diff --git a/drivers/gpu/drm/panel/panel-simple.c 
+>> b/drivers/gpu/drm/panel/panel-simple.c
+>> index e14c14ac6..b3d257257 100644
+>> --- a/drivers/gpu/drm/panel/panel-simple.c
+>> +++ b/drivers/gpu/drm/panel/panel-simple.c
+>> @@ -2842,6 +2842,32 @@ static const struct panel_desc 
+>> shelly_sca07010_bfn_lnn = {
+>>  	.bus_format = MEDIA_BUS_FMT_RGB666_1X18,
+>>  };
+>> 
+>> +static const struct drm_display_mode starry_kr070pe2t_mode = {
+>> +	.clock = 33000,
+>> +	.hdisplay = 800,
+>> +	.hsync_start = 800 + 209,
+>> +	.hsync_end = 800 + 209 + 1,
+>> +	.htotal = 800 + 209 + 1 + 45,
+>> +	.vdisplay = 480,
+>> +	.vsync_start = 480 + 22,
+>> +	.vsync_end = 480 + 22 + 1,
+>> +	.vtotal = 480 + 22 + 1 + 22,
+>> +	.vrefresh = 60,
+>> +};
+>> +
+>> +static const struct panel_desc starry_kr070pe2t = {
+>> +	.modes = &starry_kr070pe2t_mode,
+>> +	.num_modes = 1,
+>> +	.bpc = 8,
+>> +	.size = {
+>> +		.width = 152,
+>> +		.height = 86,
+>> +	},
+>> +	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
+>> +	.bus_flags = DRM_BUS_FLAG_DE_HIGH | 
+>> DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE,
+>> +	.connector_type = DRM_MODE_CONNECTOR_LVDS,
+> 
+> I'm trying to fix inconsistencies in the panel-simple driver, and this
+> caught my eyes. MEDIA_BUS_FMT_RGB888_1X24 isn't a correct format for
+> LVDS panels. MEDIA_BUS_FMT_RGB666_1X7X3_SPWG,
+> MEDIA_BUS_FMT_RGB888_1X7X4_SPWG or MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA
+> should be used instead. As I couldn't find documentation for the panel,
+> I can't tell which format is correct. Could you please help ?
+> 
+>> +};
+>> +
+>>  static const struct drm_display_mode starry_kr122ea0sra_mode = {
+>>  	.clock = 147000,
+>>  	.hdisplay = 1920,
+>> @@ -3474,6 +3500,9 @@ static const struct of_device_id 
+>> platform_of_match[] = {
+>>  	}, {
+>>  		.compatible = "shelly,sca07010-bfn-lnn",
+>>  		.data = &shelly_sca07010_bfn_lnn,
+>> +	}, {
+>> +		.compatible = "starry,kr070pe2t",
+>> +		.data = &starry_kr070pe2t,
+>>  	}, {
+>>  		.compatible = "starry,kr122ea0sra",
+>>  		.data = &starry_kr122ea0sra,
+> 
+> --
+> Regards,
+> 
+> Laurent Pinchart
 
-> diff --git a/arch/powerpc/include/asm/device.h b/arch/powerpc/include/asm/device.h
-> index 266542769e4b..1bc595213338 100644
-> --- a/arch/powerpc/include/asm/device.h
-> +++ b/arch/powerpc/include/asm/device.h
-> @@ -34,9 +34,6 @@ struct dev_archdata {
->  	struct iommu_table	*iommu_table_base;
->  #endif
->  
-> -#ifdef CONFIG_IOMMU_API
-> -	void			*iommu_domain;
-> -#endif
->  #ifdef CONFIG_PPC64
->  	struct pci_dn		*pci_data;
->  #endif
-> -- 
-> 2.27.0
