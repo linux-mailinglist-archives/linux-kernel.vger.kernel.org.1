@@ -2,319 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F140B20D503
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47B220D351
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731464AbgF2TNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731364AbgF2TN2 (ORCPT
+        id S1730192AbgF2S5t convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 29 Jun 2020 14:57:49 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:39176 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729915AbgF2S5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:28 -0400
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on061b.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0c::61b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CEACC08EB19
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:25:52 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ffb0tryf3+WMusuxriFspTuyCD0jR5nujp/rzdzc6JR92rJsWlAVE8I313MSQBTprU4nobwvSXgu8vR4rC/9MeFgvPh//pXnseXz3XbJJeHjIQvsLIahqtiVa8KEaN9fHGnvZSy0Qr2bIC0t8RsRIlKBpkSTaXkMpmqT4lBXcrwyiy3yRA56Fu5tl5PlYR3gujgCm468frMy1aWF1CvKp2yVN54FRB03txEI8SJjwDXXSKDDSXjfCX+wrBVk/Q/ZEKZ4SrwGQolzsfMcR1OnB2Har2Lpfb/Ija4WBx086MLPPMNYBJ7IIQGt86NYaNEcT872f7hEX+HmJhFpUXIotg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZVinsJJnviT21i7XI0KnA6+56MrUkVoRCxqh0lP/y9s=;
- b=hhaBE5XukKYUuZPClQoZo29++2XadgB3N0uZbP+RCVP7EAwcu+hbgCHnj3aXOesCe+pkNU7XRSV8Ou/voG/N+htBPj3/yP+oH2Yaopp9jCu5sfSbGNirApS0dBqcGjopmO6lqSmhxcAPk4la3xmEWlDpfcoKaVM1sIcSBLhitZ8EooVWcd8K5aJ2K7WUjGESlCyvEBgwabFwCl32r9iD+JQ8DLt6kQGyiRPbQcvFmL+M9zrsuF4/j0tG2aVNLogbhNBb8oQA1iD08zMf505DtilMBXEcq6hEj/dCBKYAiRfxkVVUkn/3qlyRE8tn5V0wigeEriicm7ltAw0eBkVfLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZVinsJJnviT21i7XI0KnA6+56MrUkVoRCxqh0lP/y9s=;
- b=L1zcjV0CGehZeD7cB6ZqeDkIn8Wkfl30zMXdjW2xafn6zwlvwrzgTksmnOEBJzLvcWyZ6S5jRwc2qF+4dQcok7dMBsqvuQZeQcu1Nq4ClyFRoPBTAzyYPCluwfjmtoQeVQDqjbDH5VaFL36TLFhMmuaD6uecdAr6PLacwaycXQs=
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB8PR04MB6715.eurprd04.prod.outlook.com (2603:10a6:10:10d::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.24; Mon, 29 Jun
- 2020 06:25:41 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::2d36:b569:17c:7701]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::2d36:b569:17c:7701%4]) with mapi id 15.20.3131.026; Mon, 29 Jun 2020
- 06:25:41 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     Stefano Stabellini <sstabellini@kernel.org>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH] xen: introduce xen_vring_use_dma
-Thread-Topic: [PATCH] xen: introduce xen_vring_use_dma
-Thread-Index: AQHWSgTusARd8c8cRkWwDit233DtZajneYoAgACU6oCAAC7QAIAAEpoAgAAGSwCAAUK2gIABcSaAgAPk6cCAADgrAIAAAH5w
-Date:   Mon, 29 Jun 2020 06:25:41 +0000
-Message-ID: <DB6PR0402MB27602AB2A9A242D79343CE48886E0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <20200624091732.23944-1-peng.fan@nxp.com>
- <20200624050355-mutt-send-email-mst@kernel.org>
- <alpine.DEB.2.21.2006241047010.8121@sstabellini-ThinkPad-T480s>
- <20200624163940-mutt-send-email-mst@kernel.org>
- <alpine.DEB.2.21.2006241351430.8121@sstabellini-ThinkPad-T480s>
- <20200624181026-mutt-send-email-mst@kernel.org>
- <alpine.DEB.2.21.2006251014230.8121@sstabellini-ThinkPad-T480s>
- <20200626110629-mutt-send-email-mst@kernel.org>
- <DB6PR0402MB27601CA74B85DA5A9F5E5DD6886E0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
- <20200629022124-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20200629022124-mutt-send-email-mst@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: a5e1c4cb-0c5f-447d-9984-08d81bf53f1b
-x-ms-traffictypediagnostic: DB8PR04MB6715:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB8PR04MB67159207B33C95FEA00FE33F886E0@DB8PR04MB6715.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 044968D9E1
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZcomgzT8z0TV8AdfcgQXBFI1wdcxYJJGw2fCPEYYV2HF5Asq2udSyAxCqG2x424rMSoSB19NYDH2/cltuOnvwJewUKeUap9q6OxMr5rpTs8qTvM0LWCCHaMxslX2x5Kw4P7LsAUS1MV7Kq4NCH8IeoHXVqZKXLZibUu8OQX77pe7RD8Uehe92lYOxg0IIjmPTpaHPU0xUSv/747T7V1t3n1n48YZVipEAlJ36w5LfLqcdQ+tM+iQSH4ToueQp8TeBuAY6VX0Q58g6J0FYF2UT9WNDIgd/mcTxuqk9BIhCZLzlEi3VhJVXiwxs91dLexhPfI0y1+TDhStDySFnLh6ldmQZIVSnILpem5NP3bMP+iYGcSEJHYXGraspfUuTcmgpiGqfDQUzCt4h/o1602WSQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(136003)(346002)(376002)(396003)(366004)(6916009)(186003)(86362001)(9686003)(76116006)(66446008)(45080400002)(7696005)(55016002)(5660300002)(66946007)(26005)(83380400001)(71200400001)(66476007)(66556008)(64756008)(33656002)(7416002)(52536014)(4326008)(6506007)(54906003)(478600001)(44832011)(8676002)(316002)(966005)(8936002)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: yAnM0ejSbejlrSnR31b9U9qBdkL0+lYs1XiRprTYLdv0aTF4h/fK7BMlL9j5/Efdh2jIQq3P9IpIsXCvMJ2nZp+QjeRsYQm1Vi/g0bWtsGrlC3mbi/7RplbNGBRgqLxfttNrsnazacGBy45PpLP3jDu0ITIVyZpFgmxR9zw17h9ODKv0sZaBHTyCbDQFt089cdMTCluY+rur3KLU5ty7nI5NdQGto4tY2Dm2oF8USaJ6t4OF7YAV14XQTV+CudulV3zH9eqWt3wcc/hymm1fdv8dvk37aNah9MbPftxJ3VGKSXDRLYm9jStQZqeUX2riVQHl8UGnTJ7DGJf7NAr7RPRjlBJvG7/F8Ty57bgrPoIR6Ll9jJIp+nvIt8VTBbHf0wF8y6qy/ahygmI8ZyXSTe1b1nScNRKRQcKU08ce8oglUa3Zte1r/wHFyA33zb/H9JbBjaOotRYHXU476nK0MAbxPyhdWD/HfkU3sQuzjtH5XhTNtJJYQGeDjUZzm5OK
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a5e1c4cb-0c5f-447d-9984-08d81bf53f1b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2020 06:25:41.1516
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Jlca2JAB/hh8X/P93HXsVW0tsA8+sgSQYIkgLQ2VlEVRDYpq8IaCerlyTe74kscdoLfBrQC2fq3z4lL2GPh/QQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6715
+        Mon, 29 Jun 2020 14:57:41 -0400
+Received: from marcel-macpro.fritz.box (p5b3d2638.dip0.t-ipconnect.de [91.61.38.56])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 6F94DCECCC;
+        Mon, 29 Jun 2020 08:59:12 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [RFC PATCH v1 2/2] Bluetooth: queue L2CAP conn req if encryption
+ is needed
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20200627185320.RFC.v1.2.I7363a6e528433d88c5240b67cbda5a88a107f56c@changeid>
+Date:   Mon, 29 Jun 2020 08:49:17 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        chromeos-bluetooth-upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <9117B008-7B6C-48E1-B6B6-087531652C70@holtmann.org>
+References: <20200627105437.453053-1-apusaka@google.com>
+ <20200627185320.RFC.v1.2.I7363a6e528433d88c5240b67cbda5a88a107f56c@changeid>
+To:     Archie Pusaka <apusaka@google.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: Re: [PATCH] xen: introduce xen_vring_use_dma
->=20
-> On Mon, Jun 29, 2020 at 03:05:19AM +0000, Peng Fan wrote:
-> > > Subject: Re: [PATCH] xen: introduce xen_vring_use_dma
-> > >
-> > > On Thu, Jun 25, 2020 at 10:31:27AM -0700, Stefano Stabellini wrote:
-> > > > On Wed, 24 Jun 2020, Michael S. Tsirkin wrote:
-> > > > > On Wed, Jun 24, 2020 at 02:53:54PM -0700, Stefano Stabellini wrot=
-e:
-> > > > > > On Wed, 24 Jun 2020, Michael S. Tsirkin wrote:
-> > > > > > > On Wed, Jun 24, 2020 at 10:59:47AM -0700, Stefano Stabellini
-> wrote:
-> > > > > > > > On Wed, 24 Jun 2020, Michael S. Tsirkin wrote:
-> > > > > > > > > On Wed, Jun 24, 2020 at 05:17:32PM +0800, Peng Fan wrote:
-> > > > > > > > > > Export xen_swiotlb for all platforms using xen swiotlb
-> > > > > > > > > >
-> > > > > > > > > > Use xen_swiotlb to determine when vring should use dma
-> > > > > > > > > > APIs to map the
-> > > > > > > > > > ring: when xen_swiotlb is enabled the dma API is requir=
-ed.
-> > > > > > > > > > When it is disabled, it is not required.
-> > > > > > > > > >
-> > > > > > > > > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > > > > > > > >
-> > > > > > > > > Isn't there some way to use VIRTIO_F_IOMMU_PLATFORM for
-> > > this?
-> > > > > > > > > Xen was there first, but everyone else is using that now.
-> > > > > > > >
-> > > > > > > > Unfortunately it is complicated and it is not related to
-> > > > > > > > VIRTIO_F_IOMMU_PLATFORM :-(
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > The Xen subsystem in Linux uses dma_ops via swiotlb_xen to
-> > > > > > > > translate foreign mappings (memory coming from other VMs)
-> > > > > > > > to
-> > > physical addresses.
-> > > > > > > > On x86, it also uses dma_ops to translate Linux's idea of
-> > > > > > > > a physical address into a real physical address (this is
-> > > > > > > > unneeded on ARM.)
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > So regardless of VIRTIO_F_IOMMU_PLATFORM, dma_ops should
-> > > > > > > > be used on Xen/x86 always and on Xen/ARM if Linux is Dom0
-> > > > > > > > (because it has foreign
-> > > > > > > > mappings.) That is why we have the if (xen_domain) return
-> > > > > > > > true; in vring_use_dma_api.
-> > > > > > >
-> > > > > > > VIRTIO_F_IOMMU_PLATFORM makes guest always use DMA ops.
-> > > > > > >
-> > > > > > > Xen hack predates VIRTIO_F_IOMMU_PLATFORM so it *also*
-> > > > > > > forces DMA ops even if VIRTIO_F_IOMMU_PLATFORM is clear.
-> > > > > > >
-> > > > > > > Unfortunately as a result Xen never got around to properly
-> > > > > > > setting VIRTIO_F_IOMMU_PLATFORM.
-> > > > > >
-> > > > > > I don't think VIRTIO_F_IOMMU_PLATFORM would be correct for
-> > > > > > this because the usage of swiotlb_xen is not a property of
-> > > > > > virtio,
-> > > > >
-> > > > >
-> > > > > Basically any device without VIRTIO_F_ACCESS_PLATFORM (that is
-> > > > > it's name in latest virtio spec, VIRTIO_F_IOMMU_PLATFORM is what
-> > > > > linux calls it) is declared as "special, don't follow normal
-> > > > > rules for access".
-> > > > >
-> > > > > So yes swiotlb_xen is not a property of virtio, but what *is* a
-> > > > > property of virtio is that it's not special, just a regular
-> > > > > device from DMA
-> > > POV.
-> > > >
-> > > > I am trying to understand what you meant but I think I am missing
-> > > > something.
-> > > >
-> > > > Are you saying that modern virtio should always have
-> > > > VIRTIO_F_ACCESS_PLATFORM, hence use normal dma_ops as any other
-> > > devices?
-> > >
-> > > I am saying it's a safe default. Clear VIRTIO_F_ACCESS_PLATFORM if
-> > > you have some special needs e.g. you are very sure it's ok to bypass
-> > > DMA ops, or you need to support a legacy guest (produced in the
-> > > window between virtio 1 support in 2014 and support for
-> VIRTIO_F_ACCESS_PLATFORM in 2016).
-> > >
-> > >
-> > > > If that is the case, how is it possible that virtio breaks on ARM
-> > > > using the default dma_ops? The breakage is not Xen related (except
-> > > > that Xen turns dma_ops on). The original message from Peng was:
-> > > >
-> > > >   vring_map_one_sg -> vring_use_dma_api
-> > > >                    -> dma_map_page
-> > > >   		       -> __swiotlb_map_page
-> > > >   		                ->swiotlb_map_page
-> > > >   				->__dma_map_area(phys_to_virt(dma_to_phys(dev,
-> > > dev_addr)), size, dir);
-> > > >   However we are using per device dma area for rpmsg, phys_to_virt
-> > > >   could not return a correct virtual address for virtual address in
-> > > >   vmalloc area. Then kernel panic.
-> > > >
-> > > > I must be missing something. Maybe it is because it has to do with
-> RPMesg?
-> > >
-> > > I think it's an RPMesg bug, yes
-> >
-> > rpmsg bug is another issue, it should not use dma_alloc_coherent for
-> > reserved area, and use vmalloc_to_page.
-> >
-> > Anyway here using dma api will also trigger issue.
-> >
-> > >
-> > > >
-> > > > > > > > You might have noticed that I missed one possible case abov=
-e:
-> > > > > > > > Xen/ARM DomU :-)
-> > > > > > > >
-> > > > > > > > Xen/ARM domUs don't need swiotlb_xen, it is not even
-> > > > > > > > initialized. So if
-> > > > > > > > (xen_domain) return true; would give the wrong answer in th=
-at
-> case.
-> > > > > > > > Linux would end up calling the "normal" dma_ops, not
-> > > > > > > > swiotlb-xen, and the "normal" dma_ops fail.
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > The solution I suggested was to make the check in
-> > > > > > > > vring_use_dma_api more flexible by returning true if the
-> > > > > > > > swiotlb_xen is supposed to be used, not in general for all
-> > > > > > > > Xen domains, because that is what the check was really mean=
-t to
-> do.
-> > > > > > >
-> > > > > > > Why not fix DMA ops so they DTRT (nop) on Xen/ARM DomU?
-> What
-> > > > > > > is
-> > > wrong with that?
-> > > > > >
-> > > > > > swiotlb-xen is not used on Xen/ARM DomU, the default dma_ops
-> > > > > > are the ones that are used. So you are saying, why don't we
-> > > > > > fix the default dma_ops to work with virtio?
-> > > > > >
-> > > > > > It is bad that the default dma_ops crash with virtio, so yes I
-> > > > > > think it would be good to fix that. However, even if we fixed
-> > > > > > that, the if
-> > > > > > (xen_domain()) check in vring_use_dma_api is still a problem.
-> > > > >
-> > > > > Why is it a problem? It just makes virtio use DMA API.
-> > > > > If that in turn works, problem solved.
-> > > >
-> > > > You are correct in the sense that it would work. However I do
-> > > > think it is wrong for vring_use_dma_api to enable
-> > > > dma_ops/swiotlb-xen for Xen/ARM DomUs that don't need it. There
-> > > > are many different types of Xen guests, Xen x86 is drastically
-> > > > different from Xen ARM, it seems wrong to treat them the same way.
-> > >
-> > > I could imagine some future Xen hosts setting a flag somewhere in
-> > > the platform capability saying "no xen specific flag, rely on
-> > > "VIRTIO_F_ACCESS_PLATFORM". Then you set that accordingly in QEMU.
-> > > How about that?
-> > >
-> >
-> > Michael, Stefano,
-> >
-> > So what's your suggestion here, that we could avoid similar issue for
-> > virtio drivers in ARM DomU?
-> >
-> > Thanks,
-> > Peng.
-> >
-> > >
-> > > >
-> > > >
-> > > > Anyway, re-reading the last messages of the original thread [1],
-> > > > it looks like Peng had a clear idea on how to fix the general issue=
-.
-> > > > Peng, what happened with that?
-> >
-> > We shrinked the rpmsg reserved area to workaround the issue.
-> > So still use the dma apis in rpmsg.
-> >
-> > But here I am going to address domu android trusty issue using virtio.
->=20
-> My suggestion is to first of all fix DMA API so it works properly.
+Hi Archie,
 
-Could you please elaborate more details?
+> It is possible to receive an L2CAP conn req for an encrypted
+> connection, before actually receiving the HCI change encryption
+> event. If this happened, the received L2CAP packet will be ignored.
+> 
+> This patch queues the L2CAP packet and process them after the
+> expected HCI event is received. If after 2 seconds we still don't
+> receive it, then we assume something bad happened and discard the
+> queued packets.
 
-You mean the DMA API usage of rpmsg? Or xen domu dma_ops?
+as with the other patch, this should be behind the same quirk and experimental setting for exactly the same reasons.
 
-Thanks,
-Peng.=20
+> 
+> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> 
+> ---
+> 
+> include/net/bluetooth/bluetooth.h |  6 +++
+> include/net/bluetooth/l2cap.h     |  6 +++
+> net/bluetooth/hci_event.c         |  3 ++
+> net/bluetooth/l2cap_core.c        | 87 +++++++++++++++++++++++++++----
+> 4 files changed, 91 insertions(+), 11 deletions(-)
+> 
+> diff --git a/include/net/bluetooth/bluetooth.h b/include/net/bluetooth/bluetooth.h
+> index 7ee8041af803..e64278401084 100644
+> --- a/include/net/bluetooth/bluetooth.h
+> +++ b/include/net/bluetooth/bluetooth.h
+> @@ -335,7 +335,11 @@ struct l2cap_ctrl {
+> 	u16	reqseq;
+> 	u16	txseq;
+> 	u8	retries;
+> +	u8	rsp_code;
+> +	u8	amp_id;
+> +	__u8	ident;
+> 	__le16  psm;
+> +	__le16	scid;
+> 	bdaddr_t bdaddr;
+> 	struct l2cap_chan *chan;
+> };
 
->=20
-> > > >
-> > > >
-> > > > [1]
-> > > > https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2=
-F
-> > > > lore
-> > > > .kernel.org%2Fpatchwork%2Fpatch%2F1033801%2F%231222404&amp;
-> dat
-> > > a=3D02%7C0
-> > > >
-> > >
-> 1%7Cpeng.fan%40nxp.com%7C08ba48d3b3d54e775a8108d819e62fd0%7C68
-> > > 6ea1d3bc
-> > > >
-> > >
-> 2b4c6fa92cd99c5c301635%7C0%7C0%7C637287823721994475&amp;sdata
-> > > =3DCw4FHWrH
-> > > > uVKBCn3%2BKS2VM7cWuGoTI6R7SHJrJSLY5Io%3D&amp;reserved=3D0
+I would not bother trying to make this work with CREATE_CHAN_REQ. That is if you want to setup a L2CAP channel that can be moved between BR/EDR and AMP controllers and in that case you have to read the L2CAP information and features first. Meaning there will have been unencrypted ACL packets. This problem only exists if the remote side doesn’t request any version information first.
+
+> @@ -374,6 +378,8 @@ struct bt_skb_cb {
+> 		struct hci_ctrl hci;
+> 	};
+> };
+> +static_assert(sizeof(struct bt_skb_cb) <= sizeof(((struct sk_buff *)0)->cb));
+> +
+> #define bt_cb(skb) ((struct bt_skb_cb *)((skb)->cb))
+> 
+> #define hci_skb_pkt_type(skb) bt_cb((skb))->pkt_type
+> diff --git a/include/net/bluetooth/l2cap.h b/include/net/bluetooth/l2cap.h
+> index 8f1e6a7a2df8..f8f6dec96f12 100644
+> --- a/include/net/bluetooth/l2cap.h
+> +++ b/include/net/bluetooth/l2cap.h
+> @@ -58,6 +58,7 @@
+> #define L2CAP_MOVE_ERTX_TIMEOUT		msecs_to_jiffies(60000)
+> #define L2CAP_WAIT_ACK_POLL_PERIOD	msecs_to_jiffies(200)
+> #define L2CAP_WAIT_ACK_TIMEOUT		msecs_to_jiffies(10000)
+> +#define L2CAP_PEND_ENC_CONN_TIMEOUT	msecs_to_jiffies(2000)
+> 
+> #define L2CAP_A2MP_DEFAULT_MTU		670
+> 
+> @@ -700,6 +701,9 @@ struct l2cap_conn {
+> 	struct mutex		chan_lock;
+> 	struct kref		ref;
+> 	struct list_head	users;
+> +
+> +	struct delayed_work	remove_pending_encrypt_conn;
+> +	struct sk_buff_head	pending_conn_q;
+> };
+> 
+> struct l2cap_user {
+> @@ -1001,4 +1005,6 @@ void l2cap_conn_put(struct l2cap_conn *conn);
+> int l2cap_register_user(struct l2cap_conn *conn, struct l2cap_user *user);
+> void l2cap_unregister_user(struct l2cap_conn *conn, struct l2cap_user *user);
+> 
+> +void l2cap_process_pending_encrypt_conn(struct hci_conn *hcon);
+> +
+> #endif /* __L2CAP_H */
+> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+> index 108c6c102a6a..8cefc51a5ca4 100644
+> --- a/net/bluetooth/hci_event.c
+> +++ b/net/bluetooth/hci_event.c
+> @@ -3136,6 +3136,9 @@ static void hci_encrypt_change_evt(struct hci_dev *hdev, struct sk_buff *skb)
+> 
+> unlock:
+> 	hci_dev_unlock(hdev);
+> +
+> +	if (conn && !ev->status && ev->encrypt)
+> +		l2cap_process_pending_encrypt_conn(conn);
+> }
+> 
+> static void hci_change_link_key_complete_evt(struct hci_dev *hdev,
+> diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+> index 35d2bc569a2d..fc6fe2c80c46 100644
+> --- a/net/bluetooth/l2cap_core.c
+> +++ b/net/bluetooth/l2cap_core.c
+> @@ -62,6 +62,10 @@ static void l2cap_send_disconn_req(struct l2cap_chan *chan, int err);
+> static void l2cap_tx(struct l2cap_chan *chan, struct l2cap_ctrl *control,
+> 		     struct sk_buff_head *skbs, u8 event);
+> 
+> +static struct l2cap_chan *l2cap_connect(struct l2cap_conn *conn,
+> +					u8 ident, u8 *data, u8 rsp_code,
+> +					u8 amp_id, bool queue_if_fail);
+> +
+> static inline u8 bdaddr_type(u8 link_type, u8 bdaddr_type)
+> {
+> 	if (link_type == LE_LINK) {
+> @@ -1902,6 +1906,8 @@ static void l2cap_conn_del(struct hci_conn *hcon, int err)
+> 	if (conn->info_state & L2CAP_INFO_FEAT_MASK_REQ_SENT)
+> 		cancel_delayed_work_sync(&conn->info_timer);
+> 
+> +	cancel_delayed_work_sync(&conn->remove_pending_encrypt_conn);
+> +
+> 	hcon->l2cap_data = NULL;
+> 	conn->hchan = NULL;
+> 	l2cap_conn_put(conn);
+> @@ -2023,6 +2029,55 @@ static void l2cap_retrans_timeout(struct work_struct *work)
+> 	l2cap_chan_put(chan);
+> }
+> 
+> +static void l2cap_add_pending_encrypt_conn(struct l2cap_conn *conn,
+> +					   struct l2cap_conn_req *req,
+> +					   u8 ident, u8 rsp_code, u8 amp_id)
+> +{
+> +	struct sk_buff *skb = bt_skb_alloc(0, GFP_KERNEL);
+> +
+> +	bt_cb(skb)->l2cap.psm = req->psm;
+> +	bt_cb(skb)->l2cap.scid = req->scid;
+> +	bt_cb(skb)->l2cap.ident = ident;
+> +	bt_cb(skb)->l2cap.rsp_code = rsp_code;
+> +	bt_cb(skb)->l2cap.amp_id = amp_id;
+> +
+> +	skb_queue_tail(&conn->pending_conn_q, skb);
+> +	queue_delayed_work(conn->hcon->hdev->workqueue,
+> +			   &conn->remove_pending_encrypt_conn,
+> +			   L2CAP_PEND_ENC_CONN_TIMEOUT);
+> +}
+> +
+> +void l2cap_process_pending_encrypt_conn(struct hci_conn *hcon)
+> +{
+> +	struct sk_buff *skb;
+> +	struct l2cap_conn *conn = hcon->l2cap_data;
+> +
+> +	if (!conn)
+> +		return;
+> +
+> +	while ((skb = skb_dequeue(&conn->pending_conn_q))) {
+> +		struct l2cap_conn_req req;
+> +		u8 ident, rsp_code, amp_id;
+> +
+> +		req.psm = bt_cb(skb)->l2cap.psm;
+> +		req.scid = bt_cb(skb)->l2cap.scid;
+> +		ident = bt_cb(skb)->l2cap.ident;
+> +		rsp_code = bt_cb(skb)->l2cap.rsp_code;
+> +		amp_id = bt_cb(skb)->l2cap.amp_id;
+> +
+> +		l2cap_connect(conn, ident, (u8 *)&req, rsp_code, amp_id, false);
+> +		kfree_skb(skb);
+> +	}
+> +}
+> +
+> +static void l2cap_remove_pending_encrypt_conn(struct work_struct *work)
+> +{
+> +	struct l2cap_conn *conn = container_of(work, struct l2cap_conn,
+> +					    remove_pending_encrypt_conn.work);
+> +
+> +	l2cap_process_pending_encrypt_conn(conn->hcon);
+> +}
+> +
+> static void l2cap_streaming_send(struct l2cap_chan *chan,
+> 				 struct sk_buff_head *skbs)
+> {
+> @@ -4076,8 +4131,8 @@ static inline int l2cap_command_rej(struct l2cap_conn *conn,
+> }
+> 
+> static struct l2cap_chan *l2cap_connect(struct l2cap_conn *conn,
+> -					struct l2cap_cmd_hdr *cmd,
+> -					u8 *data, u8 rsp_code, u8 amp_id)
+> +					u8 ident, u8 *data, u8 rsp_code,
+> +					u8 amp_id, bool queue_if_fail)
+> {
+> 	struct l2cap_conn_req *req = (struct l2cap_conn_req *) data;
+> 	struct l2cap_conn_rsp rsp;
+> @@ -4103,8 +4158,15 @@ static struct l2cap_chan *l2cap_connect(struct l2cap_conn *conn,
+> 	/* Check if the ACL is secure enough (if not SDP) */
+> 	if (psm != cpu_to_le16(L2CAP_PSM_SDP) &&
+> 	    !hci_conn_check_link_mode(conn->hcon)) {
+> -		conn->disc_reason = HCI_ERROR_AUTH_FAILURE;
+> -		result = L2CAP_CR_SEC_BLOCK;
+> +		if (!queue_if_fail) {
+> +			conn->disc_reason = HCI_ERROR_AUTH_FAILURE;
+> +			result = L2CAP_CR_SEC_BLOCK;
+> +			goto response;
+> +		}
+> +
+> +		l2cap_add_pending_encrypt_conn(conn, req, ident, rsp_code,
+> +					       amp_id);
+> +		result = L2CAP_CR_PEND;
+> 		goto response;
+> 	}
+
+So I am actually wondering if the approach is not better to send back a pending to the connect request like we do for everything else. And then proceed with getting our remote L2CAP information. If these come back in encrypted, then we can assume that we actually had encryption enabled and proceed with a L2CAP connect response saying that all is fine.
+
+That also means no queuing of packets is required.
+
+Regards
+
+Marcel
 
