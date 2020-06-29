@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02D620D4A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F9020D4ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729340AbgF2TK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:10:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53770 "EHLO mail.kernel.org"
+        id S1731134AbgF2TMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:12:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730961AbgF2TKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730968AbgF2TKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Jun 2020 15:10:18 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BEC86254A3;
-        Mon, 29 Jun 2020 15:53:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB9EE254A6;
+        Mon, 29 Jun 2020 15:53:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593445999;
-        bh=jyMPnnl8aflQgArorbOcPERLj5N9lJz/zKxlrgPdh2w=;
+        s=default; t=1593446000;
+        bh=H4bLp+NXSxDVf8zAgb8bhAnGb5CXhl2QrEc45pTUjk4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vNozmLiWn1ZHTZZF00Jmf7yM4XcQlT5FJw4bwA73Ezf6h3q+7SDLCD3Mbq/1qseLR
-         szk4zLvx0JdC4ZF+5Qn/M6V1VL6ga9MhR3XQB88dfxMRB3X31HiBtPh/12zVaxr/Iz
-         PWj5D4Htwq/rK35k2VLfAIwtOJzNDZonMuurt9l0=
+        b=DrjgGUxASs1xU9EfzrSc7h0cEyDaDpWLWYrtASy/Osoq1niqG1kwRvKsOf8sNAFaQ
+         R/j19Smb9Hr45RPmN5hdklAmqc6RfSBnyOMApUI+xW2FKI5SWOExI6Ic8lVOv4FonW
+         iVuuucKGSQhCRB34ZXNXTkGOKGosqMgifA/UmKio=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 007/135] i2c: pxa: clear all master action bits in i2c_pxa_stop_message()
-Date:   Mon, 29 Jun 2020 11:51:01 -0400
-Message-Id: <20200629155309.2495516-8-sashal@kernel.org>
+Cc:     Oliver Neukum <oneukum@suse.com>,
+        syzbot+be5b5f86a162a6c281e6@syzkaller.appspotmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 008/135] usblp: poison URBs upon disconnect
+Date:   Mon, 29 Jun 2020 11:51:02 -0400
+Message-Id: <20200629155309.2495516-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629155309.2495516-1-sashal@kernel.org>
 References: <20200629155309.2495516-1-sashal@kernel.org>
@@ -48,41 +50,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King <rmk+kernel@armlinux.org.uk>
+From: Oliver Neukum <oneukum@suse.com>
 
-[ Upstream commit e81c979f4e071d516aa27cf5a0c3939da00dc1ca ]
+[ Upstream commit 296a193b06120aa6ae7cf5c0d7b5e5b55968026e ]
 
-If we timeout during a message transfer, the control register may
-contain bits that cause an action to be set. Read-modify-writing the
-register leaving these bits set may trigger the hardware to attempt
-one of these actions unintentionally.
+syzkaller reported an URB that should have been killed to be active.
+We do not understand it, but this should fix the issue if it is real.
 
-Always clear these bits when cleaning up after a message or after
-a timeout.
-
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Reported-by: syzbot+be5b5f86a162a6c281e6@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/20200507085806.5793-1-oneukum@suse.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-pxa.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/usb/class/usblp.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-pxa.c b/drivers/i2c/busses/i2c-pxa.c
-index 0d351954db02b..3264b50311ff0 100644
---- a/drivers/i2c/busses/i2c-pxa.c
-+++ b/drivers/i2c/busses/i2c-pxa.c
-@@ -691,11 +691,9 @@ static inline void i2c_pxa_stop_message(struct pxa_i2c *i2c)
- {
- 	u32 icr;
+diff --git a/drivers/usb/class/usblp.c b/drivers/usb/class/usblp.c
+index 07c3c3449147f..c578d64edc153 100644
+--- a/drivers/usb/class/usblp.c
++++ b/drivers/usb/class/usblp.c
+@@ -481,7 +481,8 @@ static int usblp_release(struct inode *inode, struct file *file)
+ 	usb_autopm_put_interface(usblp->intf);
  
--	/*
--	 * Clear the STOP and ACK flags
--	 */
-+	/* Clear the START, STOP, ACK, TB and MA flags */
- 	icr = readl(_ICR(i2c));
--	icr &= ~(ICR_STOP | ICR_ACKNAK);
-+	icr &= ~(ICR_START | ICR_STOP | ICR_ACKNAK | ICR_TB | ICR_MA);
- 	writel(icr, _ICR(i2c));
+ 	if (!usblp->present)		/* finish cleanup from disconnect */
+-		usblp_cleanup(usblp);
++		usblp_cleanup(usblp);	/* any URBs must be dead */
++
+ 	mutex_unlock(&usblp_mutex);
+ 	return 0;
+ }
+@@ -1397,9 +1398,11 @@ static void usblp_disconnect(struct usb_interface *intf)
+ 
+ 	usblp_unlink_urbs(usblp);
+ 	mutex_unlock(&usblp->mut);
++	usb_poison_anchored_urbs(&usblp->urbs);
+ 
+ 	if (!usblp->used)
+ 		usblp_cleanup(usblp);
++
+ 	mutex_unlock(&usblp_mutex);
  }
  
 -- 
