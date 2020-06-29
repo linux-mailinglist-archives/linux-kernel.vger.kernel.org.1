@@ -2,78 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D62320E4E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E5F20E4D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387505AbgF2VaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:30:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40462 "EHLO mx2.suse.de"
+        id S2391225AbgF2V3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:29:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40460 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728888AbgF2SlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:41:24 -0400
+        id S1728889AbgF2SlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:41:25 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8266DAFAA;
-        Mon, 29 Jun 2020 10:27:20 +0000 (UTC)
-Subject: Re: [PATCH for v5.8 3/3] mm/memory: fix IO cost for anonymous page
-To:     js1304@gmail.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan.kim@gmail.com>,
-        Michal Hocko <mhocko@suse.com>, kernel-team@lge.com,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <1592288204-27734-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1592288204-27734-4-git-send-email-iamjoonsoo.kim@lge.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <882baec9-6d8e-55e9-ef67-67266458cbe0@suse.cz>
-Date:   Mon, 29 Jun 2020 12:27:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <1592288204-27734-4-git-send-email-iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        by mx2.suse.de (Postfix) with ESMTP id 80509ABCE;
+        Mon, 29 Jun 2020 10:29:29 +0000 (UTC)
+Message-ID: <1593426565.3504.6.camel@suse.de>
+Subject: Re: [PATCH v3 00/15] HWPOISON: soft offline rework
+From:   Oscar Salvador <osalvador@suse.de>
+To:     nao.horiguchi@gmail.com, linux-mm@kvack.org
+Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
+        mike.kravetz@oracle.com, tony.luck@intel.com, david@redhat.com,
+        aneesh.kumar@linux.vnet.ibm.com, zeil@yandex-team.ru,
+        naoya.horiguchi@nec.com, linux-kernel@vger.kernel.org
+Date:   Mon, 29 Jun 2020 12:29:25 +0200
+In-Reply-To: <20200624150137.7052-1-nao.horiguchi@gmail.com>
+References: <20200624150137.7052-1-nao.horiguchi@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/20 8:16 AM, js1304@gmail.com wrote:
-> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> 
-> With synchronous IO swap device, swap-in is directly handled in fault
-> code. Since IO cost notation isn't added there, with synchronous IO swap
-> device, LRU balancing could be wrongly biased. Fix it to count it
-> in fault code.
-> 
-> Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+On Wed, 2020-06-24 at 15:01 +0000, nao.horiguchi@gmail.com wrote:
+> I rebased soft-offline rework patchset [1][2] onto the latest
+> mmotm.  The
+> rebasing required some non-trivial changes to adjust, but mainly that
+> was
+> straightforward.  I confirmed that the reported problem doesn't
+> reproduce on
+> compaction after soft offline.  For more precise description of the
+> problem
+> and the motivation of this patchset, please see [2].
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Hi Naoya,
 
-> ---
->  mm/memory.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index bc6a471..3359057 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3143,6 +3143,14 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  				if (err)
->  					goto out_page;
->  
-> +				/*
-> +				 * XXX: Move to lru_cache_add() when it
-> +				 * supports new vs putback
-> +				 */
-> +				spin_lock_irq(&page_pgdat(page)->lru_lock);
-> +				lru_note_cost_page(page);
-> +				spin_unlock_irq(&page_pgdat(page)->lru_lock);
-> +
->  				lru_cache_add(page);
->  				swap_readpage(page, true);
->  			}
-> 
+Thanks for dusting this off.
+To be honest, I got stuck with the hard offline mode so this delayed
+the resubmission, along other problems.
 
+> I think that the following two patches in v2 are better to be done
+> with
+> separate work of hard-offline rework, so it's not included in this
+> series.
+> 
+>   - mm,hwpoison: Take pages off the buddy when hard-offlining
+>   - mm/hwpoison-inject: Rip off duplicated checks
+> 
+> These two are not directly related to the reported problem, so they
+> seems
+> not urgent.  And the first one breaks num_poisoned_pages counting in
+> some
+> testcases, and The second patch needs more consideration about
+> commented point.
+
+I fully agree.
+
+> Any comment/suggestion/help would be appreciated.
+
+My "new" version included a patch to make sure we give a chance to
+pages that possibly are in a pcplist.
+Current behavior is that if someone tries to soft-offline such a page,
+we return an error because page count is 0 but page is not in the buddy
+system.
+
+Since this patchset already landed in the mm tree, I could send it as a
+standalone patch on top if you agree with it.
+
+My patch looked something like:
+
+From: Oscar Salvador <osalvador@suse.de>
+Date: Mon, 29 Jun 2020 12:25:11 +0200
+Subject: [PATCH] mm,hwpoison: Drain pcplists before bailing out for
+non-buddy
+ zero-refcount page
+
+A page with 0-refcount and !PageBuddy could perfectly be a pcppage.
+Currently, we bail out with an error if we encounter such a page,
+meaning that we do not give a chance to handle pcppages.
+
+Fix this by draining pcplists whenever we find this kind of page
+and retry the check again.
+It might be that pcplists have been spilled into the buddy allocator
+and so we can handle it.
+
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+---
+ mm/memory-failure.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
+
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index e90ddddab397..3aac3f1eeed0 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -958,7 +958,7 @@ static int page_action(struct page_state *ps,
+struct page *p,
+  * Return: return 0 if failed to grab the refcount, otherwise true
+(some
+  * non-zero value.)
+  */
+-static int get_hwpoison_page(struct page *page)
++static int __get_hwpoison_page(struct page *page)
+ {
+ 	struct page *head = compound_head(page);
+ 
+@@ -988,6 +988,28 @@ static int get_hwpoison_page(struct page *page)
+ 	return 0;
+ }
+ 
++static int get_hwpoison_page(struct page *p)
++{
++	int ret;
++	bool drained = false;
++
++retry:
++	ret = __get_hwpoison_page(p);
++	if (!ret) {
++		if (!is_free_buddy_page(p) && !page_count(p) &&
+!drained) {
++			/*
++			 * The page might be in a pcplist, so try to
+drain
++			 * those and see if we are lucky.
++			 */
++			drain_all_pages(page_zone(p));
++			drained = true;
++			goto retry;
++		}
++	}
++
++	return ret;
++}
++
+ /*
+  * Do all that is necessary to remove user space mappings. Unmap
+  * the pages and send SIGBUS to the processes if the data was dirty.
+-- 
+2.26.2
+
+-- 
+Oscar Salvador
+SUSE L3
