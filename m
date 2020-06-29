@@ -2,67 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3833620DD76
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9249520DF93
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729914AbgF2SzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729629AbgF2Sy5 (ORCPT
+        id S2389546AbgF2UiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:38:03 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:36938 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726736AbgF2TSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:54:57 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40804C031C40
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:54:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rHCxMAr5/QRYYlY+wj4xHleNaD2XeEWYXXCLc6cZruE=; b=FcgBnyLz9Fx+QZO0k3eTm2zZzp
-        8EVRqSvt68Krztk0t+uF3tZ21nrcR1yz6hb0G88EzU0qqx9cCe9VWnNBQuZ9EsQON5xIA5iUPrlrI
-        UgQ2Q9LXVVjtgKQaAm56BbNT9kDyk0OL6M5HuFqTqSi84OWOamE+BGgDJRAMU5uxhaaR5WZigdX5S
-        l3NjtpOxj3DDE8aCdHpgY3vrdxRtd+qyX0keOdatEC/OrFDi/KyyOCSr+haxFZA8JYKTgqSxUVuNX
-        mIKdaHVxqriwZ2wsLyjmf2ZqRXLSpA139CGNu1kmPexQ2Lh9oLG761UH4YTiXpRZpYW0rmrrUKIi2
-        +N9eW0Ow==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jpyvK-00006r-AV; Mon, 29 Jun 2020 18:54:35 +0000
-Date:   Mon, 29 Jun 2020 19:54:34 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>, stable@kernel.org
-Subject: Re: [PATCH] hugetlb: fix pages per hugetlb calculation
-Message-ID: <20200629185434.GI25523@casper.infradead.org>
-References: <20200629185003.97202-1-mike.kravetz@oracle.com>
+        Mon, 29 Jun 2020 15:18:52 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 5F29F20024;
+        Mon, 29 Jun 2020 21:18:49 +0200 (CEST)
+Date:   Mon, 29 Jun 2020 21:18:47 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH] dt-bindings: backlight: Convert common backlight
+ bindings to DT schema
+Message-ID: <20200629191847.GA318506@ravnborg.org>
+References: <20200618224413.1115849-1-robh@kernel.org>
+ <20200619215341.GA6857@ravnborg.org>
+ <20200622165730.pnx7fzbq5e6q5h4l@holly.lan>
+ <CAL_JsqK1yJ09k6tKak==TjRN17VzueVkcf-WOLw2ETL2ZJv9sg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200629185003.97202-1-mike.kravetz@oracle.com>
+In-Reply-To: <CAL_JsqK1yJ09k6tKak==TjRN17VzueVkcf-WOLw2ETL2ZJv9sg@mail.gmail.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=f+hm+t6M c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=KKAkSRfTAAAA:8 a=gEfo2CItAAAA:8 a=pGLkceISAAAA:8
+        a=wNlRYuuYm4J86z4hMpcA:9 a=hv1kb02ZR_FIT1_D:21 a=XilPnIEmbnQ7gt8O:21
+        a=CjuIK1q_8ugA:10 a=cvBusfyB2V15izCimMoJ:22 a=sptkURWiP4Gy88Gu7hUp:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 11:50:03AM -0700, Mike Kravetz wrote:
-> The routine hpage_nr_pages() was incorrectly used to calculate the
-> number of base pages in a hugetlb page.  hpage_nr_pages is designed
-> to be called for THP pages and will return HPAGE_PMD_NR for hugetlb
-> pages of any size.
+On Mon, Jun 29, 2020 at 11:57:37AM -0600, Rob Herring wrote:
+> On Mon, Jun 22, 2020 at 10:57 AM Daniel Thompson
+> <daniel.thompson@linaro.org> wrote:
+> >
+> > On Fri, Jun 19, 2020 at 11:53:41PM +0200, Sam Ravnborg wrote:
+> > > > diff --git a/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..7e1f109a38a4
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml
+> > > > @@ -0,0 +1,98 @@
+> > > > +# SPDX-License-Identifier: GPL-2.0-only
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/leds/backlight/pwm-backlight.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: pwm-backlight bindings
+> > > > +
+> > > > +maintainers:
+> > > > +  - Lee Jones <lee.jones@linaro.org>
+> > > > +  - Daniel Thompson <daniel.thompson@linaro.org>
+> > > > +  - Jingoo Han <jingoohan1@gmail.com>
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    const: pwm-backlight
+> > > > +
+> > > > +  pwms:
+> > > > +    maxItems: 1
+> > > > +
+> > > > +  pwm-names: true
+> > > > +
+> > > > +  power-supply:
+> > > > +    description: regulator for supply voltage
+> > > > +
+> > > > +  enable-gpios:
+> > > > +    description: Contains a single GPIO specifier for the GPIO which enables
+> > > > +      and disables the backlight
+> > > > +    maxItems: 1
+> > > > +
+> > > > +  post-pwm-on-delay-ms:
+> > > > +    description: Delay in ms between setting an initial (non-zero) PWM and
+> > > > +      enabling the backlight using GPIO.
+> > > > +
+> > > > +  pwm-off-delay-ms:
+> > > > +    description: Delay in ms between disabling the backlight using GPIO
+> > > > +      and setting PWM value to 0.
+> > > > +
+> > > > +  brightness-levels:
+> > > > +    description: Array of distinct brightness levels. Typically these are
+> > > > +      in the range from 0 to 255, but any range starting at 0 will do. The
+> > > > +      actual brightness level (PWM duty cycle) will be interpolated from
+> > > > +      these values. 0 means a 0% duty cycle (darkest/off), while the last
+> > > > +      value in the array represents a 100% duty cycle (brightest).
+> > > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> > > > +
+> > > > +  default-brightness-level:
+> > > > +    description: The default brightness level (index into the array defined
+> > > > +      by the "brightness-levels" property).
+> > > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > Same comment as before...
+> >
+> > Sorry the "ditto" meant I didn't thing about PWM as much as I should
+> > have.
+> >
+> > The situation for PWM is a little different to LED. That's mostly
+> > because we decided not to clutter the LED code with
+> > "num-interpolated-steps".
+> >
+> > The PWM code implements the default-brightness-level as an index into
+> > the brightness array *after* it has been expanded using interpolation.
+> > In other words today Linux treats the default-brightness-level more
+> > like[1].
+> >
+> >     description: The default brightness level. When
+> >       num-interpolated-steps is not set this is simply an index into
+> >       the array defined by the "brightness-levels" property. If
+> >       num-interpolated-steps is set the brightness array will be
+> >       expanded by interpolation before we index to get a default
+> >       level.
+> >
+> > This is the best I have come up with so far... but I concede it still
+> > lacks elegance.
 > 
-> Due to the context in which hpage_nr_pages was called, it is unlikely
-> to produce a user visible error.  The routine with the incorrect call
-> is only exercised in the case of hugetlb memory error or migration.
-> In addition, this would need to be on an architecture which supports
-> huge page sizes less than PMD_SIZE.  And, the vma containing the huge
-> page would also need to smaller than PMD_SIZE.
-> 
-> Fixes: c0d0381ade79 ("hugetlbfs: use i_mmap_rwsem for more pmd sharing synchronization")
-> Cc: stable@kernel.org
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Happy to add this or whatever folks want if there's agreement, but I
+> don't want to get bogged down on re-reviewing and re-writing the
+> binding on what is just a conversion. There's a mountain of bindings
+> to convert.
+The original explanation is ok, as pointed out by Daniel.
+So I suggest moving forward with that and then others can improve the
+descriptions later as necessary.
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Inadvertently-Reported-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-
+	Sam
