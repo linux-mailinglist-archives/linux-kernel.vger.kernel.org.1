@@ -2,130 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D96B20D254
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C443320D1A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728937AbgF2Ssb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729343AbgF2Sro (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:47:44 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312E9C02E2C6
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:01:41 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id h5so16653259wrc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:01:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=542naEdYkdwVfUzvqH+aC9YM376E3GIWXppavzrS/u4=;
-        b=EyHDUEEFWn9yVK28+Hgzis259S8xuw43nD/Kg+npWsOctFyY7oszfTuquPbZFQ1HHB
-         EmW7Y2DjQ10Tg3SaXiSTTKfal6ejUHL/zlDla+u4Q3sAaEiUFUs6aE15BAKMSQOMF6tv
-         rSu60mDOxCvQUXYI2e9dLCkt08apIBll62dI5E+LmBDdvifni3ou19LQmKPUqkblwvyn
-         8x3deH+l1r/KOiSleREKnrsG1ahqQmGmmon/NyVU2TbKlc3/Z3wb2oAmWRUAB5EhF60m
-         05qGxt60rv/QALyEDWgxPxLT6rfA/ngDjNYC/RYmu1dYKbQ2RzskINX3fE7a0Csk0UFn
-         tgOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=542naEdYkdwVfUzvqH+aC9YM376E3GIWXppavzrS/u4=;
-        b=BGK7gjlPCkXh6R4LJq9JsGaIF+drgOpau6xQmuYq3hR+vgDXlUtu4aoyQyElT0++MC
-         jZUpgojEP+NmoN9sZKsG0U4F/8i8BCaJKd4bFJtOnMyNCdgvL5JnxXuiHS1q6hZjW1M2
-         L15cdHn+F7LrM2rccUrC4oBF9ZkosftWFMs9HBRcUduGoqIuCWp431LOjvH4ME/QYTq6
-         zY8en3r+h2/O5SJ++RYOLhbkaBTPGvN3O1DWijSLknPES/846GAELBLWEngH9wiL5HDT
-         JDRyYXyEXYeIVtf/bI2wHwUbutRHV08YJPP+1prIJk7ZQ8zuL7mLTZIor+8aG/VqwAm8
-         bjPw==
-X-Gm-Message-State: AOAM533VXEl2XvvBdMsPOwWP5aZN/JxerCd7jpKhJsygBAGi5kc+t9Ia
-        SgUwUOqbbMjuIRFavCewIDcmBQ==
-X-Google-Smtp-Source: ABdhPJyPSo9CxDFKlpX0USRTe74IGxi3ZCgTem7f2aHVNbKECSpsX/29GQmLi6yCxzm/QN24uf/aUw==
-X-Received: by 2002:a05:6000:12c5:: with SMTP id l5mr18374864wrx.219.1593439299864;
-        Mon, 29 Jun 2020 07:01:39 -0700 (PDT)
-Received: from dell ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id o1sm52473800wrw.20.2020.06.29.07.01.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 07:01:39 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 15:01:37 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Subject: Re: [PATCH 4/5] mfd: sprd-sc27xx-spi: Fix divide by zero when
- allocating register offset/mask
-Message-ID: <20200629140137.GK177734@dell>
-References: <20200629123215.1014747-1-lee.jones@linaro.org>
- <20200629123215.1014747-5-lee.jones@linaro.org>
- <20200629130644.GU3334@localhost>
+        id S1729072AbgF2Smo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:42:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726836AbgF2Sl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:41:26 -0400
+Received: from [10.44.0.192] (unknown [103.48.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E09AB23D68;
+        Mon, 29 Jun 2020 14:03:11 +0000 (UTC)
+Subject: Re: [PATCH 1/2] m68k: nommu: register start of the memory with
+ memblock
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@linux.ibm.com>
+References: <20200617065341.32160-1-rppt@kernel.org>
+ <20200617065341.32160-2-rppt@kernel.org>
+ <45cb9ecf-44c2-d307-4342-e66851ef67a7@linux-m68k.org>
+ <4a988de6-b194-5831-9eec-3dd7417bc3c7@linux-m68k.org>
+ <20200629041459.GA1492837@kernel.org>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <25be53bf-3ec3-490b-4f2f-1a94ba7a7700@linux-m68k.org>
+Date:   Tue, 30 Jun 2020 00:03:08 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20200629041459.GA1492837@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200629130644.GU3334@localhost>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Jun 2020, Johan Hovold wrote:
+Hi Mike,
 
-> On Mon, Jun 29, 2020 at 01:32:14PM +0100, Lee Jones wrote:
-> > Since ddata->irqs[] is already zeroed when allocated by devm_kcalloc() and
-> > dividing 0 by anything is still 0, there is no need to re-assign
-> > ddata->irqs[i].* values.  Instead, it should be safe to begin at 1.
-> > 
-> > This fixes the following W=1 warning:
-> > 
-> >  drivers/mfd/sprd-sc27xx-spi.c:255 sprd_pmic_probe() debug: sval_binop_unsigned: divide by zero
-> > 
-> > Cc: Orson Zhai <orsonzhai@gmail.com>
-> > Cc: Baolin Wang <baolin.wang7@gmail.com>
-> > Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/mfd/sprd-sc27xx-spi.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
-> > index c305e941e435c..694a7d429ccff 100644
-> > --- a/drivers/mfd/sprd-sc27xx-spi.c
-> > +++ b/drivers/mfd/sprd-sc27xx-spi.c
-> > @@ -251,7 +251,7 @@ static int sprd_pmic_probe(struct spi_device *spi)
-> >  		return -ENOMEM;
-> >  
-> >  	ddata->irq_chip.irqs = ddata->irqs;
-> > -	for (i = 0; i < pdata->num_irqs; i++) {
-> > +	for (i = 1; i < pdata->num_irqs; i++) {
-> >  		ddata->irqs[i].reg_offset = i / pdata->num_irqs;
-> >  		ddata->irqs[i].mask = BIT(i % pdata->num_irqs);
-> >  	}
+On 29/6/20 2:14 pm, Mike Rapoport wrote:
+> On Mon, Jun 29, 2020 at 11:10:16AM +1000, Greg Ungerer wrote:
+>> On 17/6/20 10:33 pm, Greg Ungerer wrote:
+>>> On 17/6/20 4:53 pm, Mike Rapoport wrote:
+>>>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>>>
+>>>> The m68k nommu setup code didn't register the beginning of the physical
+>>>> memory with memblock because it was anyway occupied by the kernel. However,
+>>>> commit fa3354e4ea39 ("mm: free_area_init: use maximal zone PFNs rather than
+>>>> zone sizes") changed zones initialization to use memblock.memory to detect
+>>>> the zone extents and this caused inconsistency between zone PFNs and the
+>>>> actual PFNs:
+>>>>
+>>>> BUG: Bad page state in process swapper  pfn:20165
+>>>> page:41fe0ca0 refcount:0 mapcount:1 mapping:00000000 index:0x0 flags: 0x0()
+>>>> raw: 00000000 00000100 00000122 00000000 00000000 00000000 00000000 00000000
+>>>> page dumped because: nonzero mapcount
+>>>> CPU: 0 PID: 1 Comm: swapper Not tainted 5.8.0-rc1-00001-g3a38f8a60c65-dirty #1
+>>>> Stack from 404c9ebc:
+>>>>           404c9ebc 4029ab28 4029ab28 40088470 41fe0ca0 40299e21 40299df1 404ba2a4
+>>>>           00020165 00000000 41fd2c10 402c7ba0 41fd2c04 40088504 41fe0ca0 40299e21
+>>>>           00000000 40088a12 41fe0ca0 41fe0ca4 0000020a 00000000 00000001 402ca000
+>>>>           00000000 41fe0ca0 41fd2c10 41fd2c10 00000000 00000000 402b2388 00000001
+>>>>           400a0934 40091056 404c9f44 404c9f44 40088db4 402c7ba0 00000001 41fd2c04
+>>>>           41fe0ca0 41fd2000 41fe0ca0 40089e02 4026ecf4 40089e4e 41fe0ca0 ffffffff
+>>>> Call Trace:
+>>>>           [<40088470>] 0x40088470
+>>>>    [<40088504>] 0x40088504
+>>>>    [<40088a12>] 0x40088a12
+>>>>    [<402ca000>] 0x402ca000
+>>>>    [<400a0934>] 0x400a0934
+>>>>
+>>>> Adjust the memory registration with memblock to include the beginning of
+>>>> the physical memory and make sure that the area occupied by the kernel is
+>>>> marked as reserved.
+>>>>
+>>>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+>>>
+>>> Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+>>
+>> What path do you anticipate this taking into mainline?
+>> I see it is still broken in 5.8-rc3.
 > 
-> This doesn't look right either.
+> I thought it will go through m68k tree.
+
+Ok, no worries, I will push them through.
+I have pushed into the for-next and for-linus branches of the m68knommu
+git tree to get the ball rolling.
+
+Regards
+Greg
+
+
+
+>>>> ---
+>>>>    arch/m68k/kernel/setup_no.c | 3 ++-
+>>>>    1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
+>>>> index e779b19e0193..f66f4b1d062e 100644
+>>>> --- a/arch/m68k/kernel/setup_no.c
+>>>> +++ b/arch/m68k/kernel/setup_no.c
+>>>> @@ -138,7 +138,8 @@ void __init setup_arch(char **cmdline_p)
+>>>>        pr_debug("MEMORY -> ROMFS=0x%p-0x%06lx MEM=0x%06lx-0x%06lx\n ",
+>>>>             __bss_stop, memory_start, memory_start, memory_end);
+>>>> -    memblock_add(memory_start, memory_end - memory_start);
+>>>> +    memblock_add(_rambase, memory_end - _rambase);
+>>>> +    memblock_reserve(_rambase, memory_start - _rambase);
+>>>>        /* Keep a copy of command line */
+>>>>        *cmdline_p = &command_line[0];
+>>>>
 > 
-> First, the loop is never executed if num_irqs is zero.
-
-The point of the patch is that 0 entries are never processed.
-
-However, what I appear to have overlooked is that BIT(0 % x) is not 0,
-it's 1.
-
-> Second, the current code looks bogus too as reg_offset is always set to
-> zero and mask to BIT(i)...
-
-Heh.  I wonder if/how this was tested.
-
-I'm going to wait to hear from the authors before attempting to fix
-this again.
-
-Baolin, Could you please clarify this for us please?
-
---
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
