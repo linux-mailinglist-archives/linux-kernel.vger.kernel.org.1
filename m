@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4E320DB21
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B34C20DCA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388595AbgF2UDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:03:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40586 "EHLO mail.kernel.org"
+        id S1731048AbgF2TaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:30:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732355AbgF2Tac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:30:32 -0400
+        id S1732620AbgF2TZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:25:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6982252DA;
-        Mon, 29 Jun 2020 15:38:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD0122535A;
+        Mon, 29 Jun 2020 15:40:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593445104;
-        bh=/Vfb+hM5tO6yfeV9re5p1yh8AyyENuBa1fzjOM4vrv8=;
+        s=default; t=1593445218;
+        bh=X2R+j2ZdNZt6t0CmdutaIa9okM3nECUW4GKc5aL0RiU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DURoEzRmvTk8Gp4y2/Xk+EAP6QPGZ3JOlihWKMDp6q+LaK8lK3L7D7mRG7STfDh8g
-         9Sjov/Ds7UdOiHBMf9kMbiBmn89QbyFlsUngWkMYnHS/YK4Y0uI71CRgOIV7Tgss1S
-         zvC8jD0a1/jOgWhPb/Lt5PffaIcT7FC02H9TmF/I=
+        b=X6Gh7UbTAid3iF/jVW/ZjOtMCoXlumQIsUSDd1+SuQjX4eQzZiAk/FDpY+jiZLn4R
+         W2yy6P66AT5J1CkwtFX5Lkuohl9RsGhMals9fB/25EJfjERFIkOMC5zPX70+DrklOt
+         B9aUnGOcYrVcH938fO0Dc+pP8YEe5piLoQk08XZU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Howells <dhowells@redhat.com>,
-        syzbot+d3eccef36ddbd02713e9@syzkaller.appspotmail.com,
-        "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.14 13/78] rxrpc: Fix notification call on completion of discarded calls
-Date:   Mon, 29 Jun 2020 11:37:01 -0400
-Message-Id: <20200629153806.2494953-14-sashal@kernel.org>
+Cc:     Jon Hunter <jonathanh@nvidia.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 006/191] backlight: lp855x: Ensure regulators are disabled on probe failure
+Date:   Mon, 29 Jun 2020 11:37:02 -0400
+Message-Id: <20200629154007.2495120-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629153806.2494953-1-sashal@kernel.org>
-References: <20200629153806.2494953-1-sashal@kernel.org>
+In-Reply-To: <20200629154007.2495120-1-sashal@kernel.org>
+References: <20200629154007.2495120-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.186-rc1.gz
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.229-rc1.gz
 X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
+X-KernelTest-Branch: linux-4.9.y
 X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.186-rc1
-X-KernelTest-Deadline: 2020-07-01T15:38+00:00
+X-KernelTest-Version: 4.9.229-rc1
+X-KernelTest-Deadline: 2020-07-01T15:39+00:00
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -50,149 +50,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Jon Hunter <jonathanh@nvidia.com>
 
-[ Upstream commit 0041cd5a50442db6e456b145892a0eaf2dff061f ]
+[ Upstream commit d8207c155a7c6015eb7f43739baa7dfb1fa638af ]
 
-When preallocated service calls are being discarded, they're passed to
-->discard_new_call() to have the caller clean up any attached higher-layer
-preallocated pieces before being marked completed.  However, the act of
-marking them completed now invokes the call's notification function - which
-causes a problem because that function might assume that the previously
-freed pieces of memory are still there.
+If probing the LP885x backlight fails after the regulators have been
+enabled, then the following warning is seen when releasing the
+regulators ...
 
-Fix this by setting a dummy notification function on the socket after
-calling ->discard_new_call().
+ WARNING: CPU: 1 PID: 289 at drivers/regulator/core.c:2051 _regulator_put.part.28+0x158/0x160
+ Modules linked in: tegra_xudc lp855x_bl(+) host1x pwm_tegra ip_tables x_tables ipv6 nf_defrag_ipv6
+ CPU: 1 PID: 289 Comm: systemd-udevd Not tainted 5.6.0-rc2-next-20200224 #1
+ Hardware name: NVIDIA Jetson TX1 Developer Kit (DT)
 
-This results in the following kasan message when the kafs module is
-removed.
+ ...
 
-==================================================================
-BUG: KASAN: use-after-free in afs_wake_up_async_call+0x6aa/0x770 fs/afs/rxrpc.c:707
-Write of size 1 at addr ffff8880946c39e4 by task kworker/u4:1/21
+ Call trace:
+  _regulator_put.part.28+0x158/0x160
+  regulator_put+0x34/0x50
+  devm_regulator_release+0x10/0x18
+  release_nodes+0x12c/0x230
+  devres_release_all+0x34/0x50
+  really_probe+0x1c0/0x370
+  driver_probe_device+0x58/0x100
+  device_driver_attach+0x6c/0x78
+  __driver_attach+0xb0/0xf0
+  bus_for_each_dev+0x68/0xc8
+  driver_attach+0x20/0x28
+  bus_add_driver+0x160/0x1f0
+  driver_register+0x60/0x110
+  i2c_register_driver+0x40/0x80
+  lp855x_driver_init+0x20/0x1000 [lp855x_bl]
+  do_one_initcall+0x58/0x1a0
+  do_init_module+0x54/0x1d0
+  load_module+0x1d80/0x21c8
+  __do_sys_finit_module+0xe8/0x100
+  __arm64_sys_finit_module+0x18/0x20
+  el0_svc_common.constprop.3+0xb0/0x168
+  do_el0_svc+0x20/0x98
+  el0_sync_handler+0xf4/0x1b0
+  el0_sync+0x140/0x180
 
-CPU: 0 PID: 21 Comm: kworker/u4:1 Not tainted 5.8.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xd3/0x413 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- afs_wake_up_async_call+0x6aa/0x770 fs/afs/rxrpc.c:707
- rxrpc_notify_socket+0x1db/0x5d0 net/rxrpc/recvmsg.c:40
- __rxrpc_set_call_completion.part.0+0x172/0x410 net/rxrpc/recvmsg.c:76
- __rxrpc_call_completed net/rxrpc/recvmsg.c:112 [inline]
- rxrpc_call_completed+0xca/0xf0 net/rxrpc/recvmsg.c:111
- rxrpc_discard_prealloc+0x781/0xab0 net/rxrpc/call_accept.c:233
- rxrpc_listen+0x147/0x360 net/rxrpc/af_rxrpc.c:245
- afs_close_socket+0x95/0x320 fs/afs/rxrpc.c:110
- afs_net_exit+0x1bc/0x310 fs/afs/main.c:155
- ops_exit_list.isra.0+0xa8/0x150 net/core/net_namespace.c:186
- cleanup_net+0x511/0xa50 net/core/net_namespace.c:603
- process_one_work+0x965/0x1690 kernel/workqueue.c:2269
- worker_thread+0x96/0xe10 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:291
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+Fix this by ensuring that the regulators are disabled, if enabled, on
+probe failure.
 
-Allocated by task 6820:
- save_stack+0x1b/0x40 mm/kasan/common.c:48
- set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc mm/kasan/common.c:494 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:467
- kmem_cache_alloc_trace+0x153/0x7d0 mm/slab.c:3551
- kmalloc include/linux/slab.h:555 [inline]
- kzalloc include/linux/slab.h:669 [inline]
- afs_alloc_call+0x55/0x630 fs/afs/rxrpc.c:141
- afs_charge_preallocation+0xe9/0x2d0 fs/afs/rxrpc.c:757
- afs_open_socket+0x292/0x360 fs/afs/rxrpc.c:92
- afs_net_init+0xa6c/0xe30 fs/afs/main.c:125
- ops_init+0xaf/0x420 net/core/net_namespace.c:151
- setup_net+0x2de/0x860 net/core/net_namespace.c:341
- copy_net_ns+0x293/0x590 net/core/net_namespace.c:482
- create_new_namespaces+0x3fb/0xb30 kernel/nsproxy.c:110
- unshare_nsproxy_namespaces+0xbd/0x1f0 kernel/nsproxy.c:231
- ksys_unshare+0x43d/0x8e0 kernel/fork.c:2983
- __do_sys_unshare kernel/fork.c:3051 [inline]
- __se_sys_unshare kernel/fork.c:3049 [inline]
- __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3049
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Finally, ensure that the vddio regulator is disabled in the driver
+remove handler.
 
-Freed by task 21:
- save_stack+0x1b/0x40 mm/kasan/common.c:48
- set_track mm/kasan/common.c:56 [inline]
- kasan_set_free_info mm/kasan/common.c:316 [inline]
- __kasan_slab_free+0xf7/0x140 mm/kasan/common.c:455
- __cache_free mm/slab.c:3426 [inline]
- kfree+0x109/0x2b0 mm/slab.c:3757
- afs_put_call+0x585/0xa40 fs/afs/rxrpc.c:190
- rxrpc_discard_prealloc+0x764/0xab0 net/rxrpc/call_accept.c:230
- rxrpc_listen+0x147/0x360 net/rxrpc/af_rxrpc.c:245
- afs_close_socket+0x95/0x320 fs/afs/rxrpc.c:110
- afs_net_exit+0x1bc/0x310 fs/afs/main.c:155
- ops_exit_list.isra.0+0xa8/0x150 net/core/net_namespace.c:186
- cleanup_net+0x511/0xa50 net/core/net_namespace.c:603
- process_one_work+0x965/0x1690 kernel/workqueue.c:2269
- worker_thread+0x96/0xe10 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:291
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-
-The buggy address belongs to the object at ffff8880946c3800
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 484 bytes inside of
- 1024-byte region [ffff8880946c3800, ffff8880946c3c00)
-The buggy address belongs to the page:
-page:ffffea000251b0c0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea0002546508 ffffea00024fa248 ffff8880aa000c40
-raw: 0000000000000000 ffff8880946c3000 0000000100000002 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff8880946c3880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880946c3900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff8880946c3980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                       ^
- ffff8880946c3a00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880946c3a80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-Reported-by: syzbot+d3eccef36ddbd02713e9@syzkaller.appspotmail.com
-Fixes: 5ac0d62226a0 ("rxrpc: Fix missing notification")
-Signed-off-by: David Howells <dhowells@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/rxrpc/call_accept.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/video/backlight/lp855x_bl.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/net/rxrpc/call_accept.c b/net/rxrpc/call_accept.c
-index 2dd13f5c47c86..61425179780c3 100644
---- a/net/rxrpc/call_accept.c
-+++ b/net/rxrpc/call_accept.c
-@@ -26,6 +26,11 @@
- #include <net/ip.h>
- #include "ar-internal.h"
- 
-+static void rxrpc_dummy_notify(struct sock *sk, struct rxrpc_call *call,
-+			       unsigned long user_call_ID)
-+{
-+}
-+
- /*
-  * Preallocate a single service call, connection and peer and, if possible,
-  * give them a user ID and attach the user's side of the ID to them.
-@@ -227,6 +232,8 @@ void rxrpc_discard_prealloc(struct rxrpc_sock *rx)
- 		if (rx->discard_new_call) {
- 			_debug("discard %lx", call->user_call_ID);
- 			rx->discard_new_call(call, call->user_call_ID);
-+			if (call->notify_rx)
-+				call->notify_rx = rxrpc_dummy_notify;
- 			rxrpc_put_call(call, rxrpc_call_put_kernel);
+diff --git a/drivers/video/backlight/lp855x_bl.c b/drivers/video/backlight/lp855x_bl.c
+index 939f057836e19..4cdc7a3f6dc5c 100644
+--- a/drivers/video/backlight/lp855x_bl.c
++++ b/drivers/video/backlight/lp855x_bl.c
+@@ -460,7 +460,7 @@ static int lp855x_probe(struct i2c_client *cl, const struct i2c_device_id *id)
+ 		ret = regulator_enable(lp->enable);
+ 		if (ret < 0) {
+ 			dev_err(lp->dev, "failed to enable vddio: %d\n", ret);
+-			return ret;
++			goto disable_supply;
  		}
- 		rxrpc_call_completed(call);
+ 
+ 		/*
+@@ -475,24 +475,34 @@ static int lp855x_probe(struct i2c_client *cl, const struct i2c_device_id *id)
+ 	ret = lp855x_configure(lp);
+ 	if (ret) {
+ 		dev_err(lp->dev, "device config err: %d", ret);
+-		return ret;
++		goto disable_vddio;
+ 	}
+ 
+ 	ret = lp855x_backlight_register(lp);
+ 	if (ret) {
+ 		dev_err(lp->dev,
+ 			"failed to register backlight. err: %d\n", ret);
+-		return ret;
++		goto disable_vddio;
+ 	}
+ 
+ 	ret = sysfs_create_group(&lp->dev->kobj, &lp855x_attr_group);
+ 	if (ret) {
+ 		dev_err(lp->dev, "failed to register sysfs. err: %d\n", ret);
+-		return ret;
++		goto disable_vddio;
+ 	}
+ 
+ 	backlight_update_status(lp->bl);
++
+ 	return 0;
++
++disable_vddio:
++	if (lp->enable)
++		regulator_disable(lp->enable);
++disable_supply:
++	if (lp->supply)
++		regulator_disable(lp->supply);
++
++	return ret;
+ }
+ 
+ static int lp855x_remove(struct i2c_client *cl)
+@@ -501,6 +511,8 @@ static int lp855x_remove(struct i2c_client *cl)
+ 
+ 	lp->bl->props.brightness = 0;
+ 	backlight_update_status(lp->bl);
++	if (lp->enable)
++		regulator_disable(lp->enable);
+ 	if (lp->supply)
+ 		regulator_disable(lp->supply);
+ 	sysfs_remove_group(&lp->dev->kobj, &lp855x_attr_group);
 -- 
 2.25.1
 
