@@ -2,146 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7C520E5F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF87620E617
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403953AbgF2VnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:43:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
+        id S2404022AbgF2VoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:44:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727875AbgF2Shw (ORCPT
+        with ESMTP id S1727816AbgF2Shq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:52 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DF2C031C7F
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:18:32 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id a127so8221478pfa.12
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:18:32 -0700 (PDT)
+        Mon, 29 Jun 2020 14:37:46 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8F4C033C05
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:19:50 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id b185so5561078qkg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:19:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RVpg6vIouDiH3on4zq6Qkvcb4IcnV9Eg7LBox0nJvvM=;
-        b=TG6rKq8OIgA/7NkvNhVbwcp7Zv81JPFjOf+X5UcCa1t+7uVP1xbpgSP9j7A1oaOrDB
-         URqVDRAfG2f8ZVotshyU0N6vx7j9gnEMkN2ZKla0nhU8H+hqEabOCXFHgrmhkdiUNDc0
-         c10xCi1y0+t2AOlKgfjDJ3AF633ROwnB2UluF8oFnaHIxW/ZNI4eeEh/Tnaf0n3YeW+T
-         YTW9iGyu6ShQ6xVj1DqYA0MHDO/YQTZJ6l/Re/dhnJklZQC8rIkaANrpwMxz2E/eYA6E
-         q6tGvHjkbrH7RdYeDdgMCAj7jYCOqIERf7OTSeWu13R4TJZinjirQ0MiAVPZ4kdnGlSh
-         PMWw==
+         :cc:content-transfer-encoding;
+        bh=nz1mLb/HdxeeFzjt/WhHL5+3D6vBhDXixYCmk24G57Y=;
+        b=KTaItmVPIOJ4TKndqPFZNnDxN6e1bHP33oFGPpxCzsjP0+kj6JLp95d9LrUKkoUfnu
+         8EcigUPbANiKCquB6BteEY6R50rhIZtQquKKKJPUvsCG4ZigLjc8cDRCVobGsoSJYkiT
+         yrp45btBd/a9pXqBT3DhrEuWhUf1Sevu5vxGSpTNSJF98GrXcCAhw79k+uj5nbhAjG2o
+         asXKOi4FvF5nV/L/Y5yZs9aL2Ti5/ZrVxA+Np8BbwY7aL5vj7w1XoesRA7MJwpfOXdGA
+         GNGVCCoSk/e3eCjSDwpDNxp16ontCAIPfDzCM4LspFtf85ZafYfnOaTursDxfNsAjpGx
+         LjEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RVpg6vIouDiH3on4zq6Qkvcb4IcnV9Eg7LBox0nJvvM=;
-        b=WGwJqk95sXsvtpldIN0w2oQEpXj0A05PF4edrwN9J2AgDq3jmm+2WPQ5e/VxqFoDad
-         wMXyFD2A+oUNCknCGYR9bhhnYtHO82IGaEaLc7AQPyTFdsQegm3nNixv/lgte0VtaR0y
-         E7Iv7NlX5MIiHrEL9P0oRBwEQ/wU1kl4NFOYvtKbuqgDQjmcAbDtt6gK2yjMXIZwdce9
-         1luEoPZgvimXZSv8XHs8yYbQwipCGtVayd0W+bjAtaWAljDkQ1hdGVRKh1xOuTTe3bbj
-         5GBxeywrHUPsKnFdhZYpV51UF1SfTNyKMax0zOx2hBhLx/SakJE74jCG2IZ7k0w0qJUA
-         6toA==
-X-Gm-Message-State: AOAM533KzOw0cKC5OwbzqJxEhaLujCESvNVC5PXagVUu/3/fDigYw0ew
-        uT0OaHt5bXGlI9RnsLIikniFZxYUwx2RniMeqke2vs8H
-X-Google-Smtp-Source: ABdhPJx9DCxKOqTyOvK/N39qAKQF4pHJeiMiGtVuafF9ig7zbCcl+2HZ5M9JzPJoDZZmvSgVG0JvPipv8QimLEaooNg=
-X-Received: by 2002:a63:5644:: with SMTP id g4mr11018260pgm.381.1593454711516;
- Mon, 29 Jun 2020 11:18:31 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nz1mLb/HdxeeFzjt/WhHL5+3D6vBhDXixYCmk24G57Y=;
+        b=P+HkWn56R5yqYXjMSo8KS0scTndhb2HsDp7XEkNpIk26EV0A/2gYasCMFjipQ8WUHv
+         2ii7bGiCwyLGSZfTlK1cViVHhXHDNebrrSMJUhSaLbH6JjEHl6LPqUR9UTpWWSSY3vJu
+         hnDXioTvqfuTko1hTzMTLBPMPWcegVBxgGxzT5thQOR9Yj7xWZFhgkEh3JZrTOd9zgJq
+         N3aClvc9vN06y6h5ulaRtYZ5KN7awDe4J3bO5YyFHx3buSpTTmkHQRD3Tq5O/FrI731u
+         trakYXlB4+GA0oiR/XqOMBQGZzm4Jd9UUghBqL6spN+m4SSae/U7gocg3KP8gYR6+OFH
+         z0tg==
+X-Gm-Message-State: AOAM531mS8nTPfup8mqI+ohzCRP0vmzNlSpoUhCz3vrCHVohhuBXlYSC
+        iRRRaYTtTwnD5nNmOIOyoC2Gj/X1QYUYHFyKPB9m2w==
+X-Google-Smtp-Source: ABdhPJw0kKfy29PMxzVdPuyCXAvvVUbrEXcnOevNI79vzRZfnh0YXlM6Z5sp+V92ur7bHOUZ7/Zsr9+aZFGRkK7EXO8=
+X-Received: by 2002:a37:2781:: with SMTP id n123mr16407496qkn.106.1593454789227;
+ Mon, 29 Jun 2020 11:19:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <202006210249.QHly8bQZ%lkp@intel.com> <CA+h21hpABfDvthiwq_JwWGpqZ68VJxu5TOBVbw_Gaxpq8j+XQg@mail.gmail.com>
- <CAKwvOdnAKR_CtOccZohR_r1kzKKVuvo8LbpLi0s3ek+3u+c_zw@mail.gmail.com> <CA+h21hokCCF52O1wxkg0gLqS9ZcGtB0xMBm07_--i56=anJ=Rg@mail.gmail.com>
-In-Reply-To: <CA+h21hokCCF52O1wxkg0gLqS9ZcGtB0xMBm07_--i56=anJ=Rg@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 29 Jun 2020 11:18:20 -0700
-Message-ID: <CAKwvOdkcPWT4krC5FuCpiXaoY+GiTeUa=CiamFCk5tPJOz4Cjw@mail.gmail.com>
-Subject: Re: drivers/gpu/drm/panel/panel-samsung-ld9040.c:240:12: warning:
- stack frame size of 8312 bytes in function 'ld9040_prepare'
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>
+References: <20200521162518.1809995-1-lma@semihalf.com> <3c89e614-81f5-ba87-19a9-fbe9f5c73925@linux.intel.com>
+ <CAFJ_xbr8TN3ynfELJ3NQnkuRg0VRbkjB7=Cyb8yu2L==JGXJiw@mail.gmail.com>
+ <475fb5c0-9b26-a8f6-c102-25c7775bc2ca@linux.intel.com> <CAFJ_xbq-QotvPG=AxSp7=Etc5P5f4ePRWLCvSNnTkzUO9o_qjQ@mail.gmail.com>
+ <268b11b6-9f4c-d769-a7f9-536d77198705@linux.intel.com> <CAFJ_xboUTDtnpvskb2dY4fGhGLNkEgT0sH3dU0NYJV_Cb_gqPw@mail.gmail.com>
+ <BY5PR11MB4307284BAE6DA415CFC0865CFD6E0@BY5PR11MB4307.namprd11.prod.outlook.com>
+In-Reply-To: <BY5PR11MB4307284BAE6DA415CFC0865CFD6E0@BY5PR11MB4307.namprd11.prod.outlook.com>
+From:   =?UTF-8?Q?=C5=81ukasz_Majczak?= <lma@semihalf.com>
+Date:   Mon, 29 Jun 2020 20:19:38 +0200
+Message-ID: <CAFJ_xbq3DU8NMmymYHLjy0z+QbGRAOmB4NaiXPphAr2Zu0MPAg@mail.gmail.com>
+Subject: Re: [PATCH v3] ASoC: Intel: kbl_rt5663_rt5514_max98927: Split
+ be_hw_params_fixup function
+To:     "N, Harshapriya" <harshapriya.n@intel.com>
+Cc:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Radoslaw Biernacki <rad@semihalf.com>,
+        Ross Zwisler <zwisler@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Bob Brandt <brndt@google.com>, Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@chromium.org>,
+        "M R, Sathya Prakash" <sathya.prakash.m.r@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 27, 2020 at 12:43 PM Vladimir Oltean <olteanv@gmail.com> wrote:
+Hi Harsha,
+
+I've put the reason for this change in the commit message.
+I had to split be_hw_params_fixup function for different codecs
+because current approach (made for kernel 4.4) used in kernel 5.4,
+leads to crash while trying to get snd_soc_dpcm with container_of()
+macro in kabylake_ssp_fixup().
+The crash call path looks as below:
+soc_pcm_hw_params()
+snd_soc_dai_hw_params(codec_dai, substream, &codec_params);
+rtd->dai_link->be_hw_params_fixup(rtd, params)
+kabylake_ssp_fixup()
+In this case, codec_params is just a copy of an internal structure and is
+not embedded into struct snd_soc_dpcm thus we cannot use
+container_of() on it.
+
+Best regards,
+Lukasz
+
+pon., 29 cze 2020 o 18:51 N, Harshapriya <harshapriya.n@intel.com> napisa=
+=C5=82(a):
 >
-> Hi Nick,
->
-> On Mon, 22 Jun 2020 at 19:50, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > -----Original Message-----
+> > From: =C5=81ukasz Majczak <lma@semihalf.com>
+> > Sent: Monday, June 29, 2020 4:11 AM
+> > To: N, Harshapriya <harshapriya.n@intel.com>
+> > Cc: alsa-devel@alsa-project.org; Pierre-Louis Bossart <pierre-
+> > louis.bossart@linux.intel.com>; Jie Yang <yang.jie@linux.intel.com>; Ra=
+doslaw
+> > Biernacki <rad@semihalf.com>; Ross Zwisler <zwisler@google.com>; linux-
+> > kernel@vger.kernel.org; Liam Girdwood <liam.r.girdwood@linux.intel.com>=
+;
+> > Bob Brandt <brndt@google.com>; Marcin Wojtas <mw@semihalf.com>; Alex
+> > Levin <levinale@chromium.org>
+> > Subject: Re: [PATCH v3] ASoC: Intel: kbl_rt5663_rt5514_max98927: Split
+> > be_hw_params_fixup function
 > >
->
-> > > I really don't get what's the problem here. The listing of
-> > > ld9040_prepare at the given commit and with the given .config is:
+> > Hi Harsha,
 > >
-> > I wrote a tool to help debug these.
-> > https://github.com/ClangBuiltLinux/frame-larger-than
-> > If you fetch the randconfig and rebuild with debug info, that tool
-> > will help show you which variables are used in which stack frames and
-> > what their sizes are.  Also note that strange things get dug up from
-> > randconfigs.
+> > We would like to continue the work on this, could you please suggest th=
+e
+> > correct approach.
 > >
+> > Best regards,
+> > Lukasz
 > >
-> > --
-> > Thanks,
-> > ~Nick Desaulniers
+> > czw., 21 maj 2020 o 20:10 Pierre-Louis Bossart <pierre-
+> > louis.bossart@linux.intel.com> napisa=C5=82(a):
+> > >
+> > >
+> > >
+> > > On 5/21/20 12:30 PM, =C5=81ukasz Majczak wrote:
+> > > > Hi Pierre
+> > > >
+> > > > If you will take a look at the original kabylake_ssp_fixup() you
+> > > > will see that it is checking whether the related FE is "Kbl Audio
+> > > > Port", "Kbl Audio Headset Playback", "Kbl Audio Capture Port" or
+> > > > "Kbl Audio DMIC cap" - then for the first 3 cases it sets min/max
+> > > > channels to 2 while for the "Kbl DMIC cap" it can be 2 or 4, that's
+> > > > is why I'm trying to split this, but maybe I'm missing here somethi=
+ng.
+> > >
+> > > I don't understand this code either.
+> > >
+> > > I believe the intent is that for all SSP1-RT5663 usages, we should us=
+e
+> > >
+> > >                 rate->min =3D rate->max =3D 48000;
+> > >                 chan->min =3D chan->max =3D 2;
+> > >                 snd_mask_none(fmt);
+> > >                 snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
+> > >
+> > > That is pretty easy to move to a dedicated ssp1 fixup.
+> > >
+> > > for SSP0, we have RT5514 for capture and max98927 for playback, but
+> > > the existing code does not explicitly deal with rate/channels/format
+> > > for all cases, so it's not clear what should happen.
+> > >
+> > > Harsha, can you help here?
+> Apologies for missing the email I had to respond to.
 >
-> I ran your tool and it basically told me that all 11 calls to
-
-Cool? No bugs running it? (I still need to extend support for many
-architectures)
-
-> ld9040_dcs_write from within ld9040_init are inlined by the compiler.
-> Each of these ld9040_dcs_write functions calls ld9040_spi_write_word
-> twice, so 22 inline calls to that. Now, sizeof(struct
-> spi_transfer)=136 and sizeof(struct spi_message)=104, so, no wonder we
-> run out of stack pretty quickly.
-
-I'd expect these to have distinct lifetimes resulting in stack slot
-reuse.  When the compiler inlines functions, it introduces a lexical
-scope. You can imagine it inlining the body, but within a new `{}`
-delineated compound statement.  Then the compiler knows that the
-variables local to those scopes can't outlive each other, and can
-reuse their stack slots in the containing function.  Escape analysis
-comes into play, too, but I'm not sure that's an issue here.
-
+> SSP0 - has the speakers
+> SSP1 - has headset and dmic
+> For speakers and headsets its 48Khz, 2 ch and 24 bit and this setting is =
+done based on the front-end dai
+> For speakers, however support only 16 bit, so we set it back to 16 bit
+> If the front end dai is dmic, then the channel is set to either 2 or 4 dm=
+ic_constraints. No other formats need to be set.
 >
-> But my question is: what's wrong with the code, if anything at all?
-
-The general case we try to find+fix with this warning is excessively
-large stack allocations that probably should be heap allocated,
-percpu, or static.  Also, the `noinline_for_stack` function annotation
-is used frequently for this.
-
-One known case of issues are the sanitizers, which can generally
-prevent the reuse of stack slots.  Were any of those set in this
-config, since this was a randconfig?  I'd check this first, then
-consider if `noinline_for_stack` is appropriate on any of the related
-functions.
-
-> Why does the compiler try to inline it, and then complain that it's
-> using too much stack
-
-The flag -Wframe-larger-than= is a warning on semantics, not really an
-optimization flag controlling the maximum stack depth of the function
-being inlined into.
-
-> when basically nobody appears to have asked it to
-> inline it?
-
-That's not really how inlining works.  If you don't specify compiler
-attributes, then the compiler can decide to inline or not at its
-discretion.  The `inline` keyword or its absence doesn't really affect
-this.  __attribute__((always_inline)) and __attribute__((noinline))
-can give you more control, but there are hyper obscure edge cases
-where even those don't work as advertised.
-
--- 
-Thanks,
-~Nick Desaulniers
+> All the SSP1 usages do not have the same parameters (as dmic is on SSP1 a=
+nd its different as given above)
+> Most parameters are same for speakers and headset which are on different =
+SSP. This is the reason we had a single fixup function.
+>
+> Is there a reason why the fixup function needs to be split?
+>
+> > >
+> > > >
+> > > > Best regards,
+> > > > Lukasz
+> > > >
+> > > > czw., 21 maj 2020 o 19:17 Pierre-Louis Bossart
+> > > > <pierre-louis.bossart@linux.intel.com> napisa=C5=82(a):
+> > > >>
+> > > >>
+> > > >>
+> > > >> On 5/21/20 12:08 PM, =C5=81ukasz Majczak wrote:
+> > > >>>>
+> > > >>>> don't add a new dailink, this is not right.
+> > > >>>>
+> > > >>> Can you advise a better solution how to assign different fixup
+> > > >>> functions to mic and to speakers? I was looking at "dmic01"
+> > > >>> dailink in skl_nau88l25_max98357a.c as an example.
+> > > >>
+> > > >> I am not sure I follow. the DMICs are handled on a shared SSP, so
+> > > >> how would one set a different fixup? The word length have to be th=
+e same.
