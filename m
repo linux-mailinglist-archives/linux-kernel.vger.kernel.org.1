@@ -2,131 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C0720D441
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA9220D438
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730788AbgF2TGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:06:40 -0400
-Received: from mga17.intel.com ([192.55.52.151]:62620 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730770AbgF2TGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:06:35 -0400
-IronPort-SDR: ZFS0/pA/eyFFSPj2DcQb3oDKDr9FwB09wtoHw/UXtuMf2idZPT73wKAVaNFeBE6SZWl6CSA1rv
- i2thgjnyQ4SQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="126138403"
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="126138403"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 09:05:08 -0700
-IronPort-SDR: OqLpBVE0oER3NZTuAfsg1sBle2mfPBr2qnWfQzlpNVzZSFDgxX7e7v1yz+hdXM4zuhXNkvvsDl
- ynI9Ra8r1jxQ==
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="454241879"
-Received: from tclumbax-mobl2.gar.corp.intel.com (HELO [10.255.1.194]) ([10.255.1.194])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 09:05:06 -0700
-Subject: Re: [PATCH] mm/vmscan: restore zone_reclaim_mode ABI
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        ben.widawsky@intel.com, alex.shi@linux.alibaba.com,
-        tobin@kernel.org, cl@linux.com, akpm@linux-foundation.org,
-        stable@kernel.org
-References: <20200626003459.D8E015CA@viggo.jf.intel.com>
- <20200626075918.dj6ioaon5iuhtg6k@beryllium.lan>
- <83731eeb-1f64-50b7-41e9-5b7114678533@intel.com>
- <20200629071338.m4veigbp4tu45gbz@beryllium.lan>
- <c9a24700-7ec8-2bf8-1a13-c3ddf249a1a0@intel.com>
- <20200629155302.6okkufqmj3kupvzw@beryllium.lan>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <5d568f0d-b49b-6c31-db6c-02cb26c3b8a2@intel.com>
-Date:   Mon, 29 Jun 2020 09:05:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1730737AbgF2TGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:06:23 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36096 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730365AbgF2TGV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:06:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593457580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LUfU3DwcJDvqG3254Hkil0FQVUF3NIrSHMy6nXbf4kc=;
+        b=BnG2VuBjHIzQb04h2bRzyKJR99Wj+dJUNT1XT6k7OFua3jQuNncLfEdV/5E+xqWevnfLQC
+        WqUmsiO5K+avw9V5oJrZN3Bp8AgEMXfYhZtymtxOOxMkdKkgPjXViy7a/nR8/fUGJkgP7g
+        pwQtmk5sktZ1ytzzd9zDQMLAghOhsuY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-407-srnLdMb6O5SSjgOgzzj6JA-1; Mon, 29 Jun 2020 12:05:38 -0400
+X-MC-Unique: srnLdMb6O5SSjgOgzzj6JA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B4A4EBFC3;
+        Mon, 29 Jun 2020 16:05:36 +0000 (UTC)
+Received: from gondolin (ovpn-113-61.ams2.redhat.com [10.36.113.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6DB1960BEC;
+        Mon, 29 Jun 2020 16:05:28 +0000 (UTC)
+Date:   Mon, 29 Jun 2020 18:05:26 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Pierre Morel <pmorel@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        pasic@linux.ibm.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        jasowang@redhat.com, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
+        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v3 1/1] s390: virtio: let arch accept devices without
+ IOMMU feature
+Message-ID: <20200629180526.41d0732b.cohuck@redhat.com>
+In-Reply-To: <20200629115651-mutt-send-email-mst@kernel.org>
+References: <1592390637-17441-1-git-send-email-pmorel@linux.ibm.com>
+        <1592390637-17441-2-git-send-email-pmorel@linux.ibm.com>
+        <20200629115651-mutt-send-email-mst@kernel.org>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-In-Reply-To: <20200629155302.6okkufqmj3kupvzw@beryllium.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/29/20 8:53 AM, Daniel Wagner wrote:
-> On Mon, Jun 29, 2020 at 07:36:15AM -0700, Dave Hansen wrote:
->> On 6/29/20 12:13 AM, Daniel Wagner wrote:
->>> I went to go add a new RECLAIM_* mode for the zone_reclaim_mode
->>> sysctl.
->>
->> This conveys my motivation.
+On Mon, 29 Jun 2020 11:57:14 -0400
+"Michael S. Tsirkin" <mst@redhat.com> wrote:
+
+> On Wed, Jun 17, 2020 at 12:43:57PM +0200, Pierre Morel wrote:
+> > An architecture protecting the guest memory against unauthorized host
+> > access may want to enforce VIRTIO I/O device protection through the
+> > use of VIRTIO_F_IOMMU_PLATFORM.
+> > 
+> > Let's give a chance to the architecture to accept or not devices
+> > without VIRTIO_F_IOMMU_PLATFORM.
+> > 
+> > Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
+> > Acked-by: Jason Wang <jasowang@redhat.com>
+> > Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> > ---
+> >  arch/s390/mm/init.c     |  6 ++++++
+> >  drivers/virtio/virtio.c | 22 ++++++++++++++++++++++
+> >  include/linux/virtio.h  |  2 ++
+> >  3 files changed, 30 insertions(+)
+
+> > @@ -179,6 +194,13 @@ int virtio_finalize_features(struct virtio_device *dev)
+> >  	if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1))
+> >  		return 0;
+> >  
+> > +	if (arch_needs_virtio_iommu_platform(dev) &&
+> > +		!virtio_has_feature(dev, VIRTIO_F_IOMMU_PLATFORM)) {
+> > +		dev_warn(&dev->dev,
+> > +			 "virtio: device must provide VIRTIO_F_IOMMU_PLATFORM\n");
+> > +		return -ENODEV;
+> > +	}
+> > +
+> >  	virtio_add_status(dev, VIRTIO_CONFIG_S_FEATURES_OK);
+> >  	status = dev->config->get_status(dev);
+> >  	if (!(status & VIRTIO_CONFIG_S_FEATURES_OK)) {  
 > 
-> You don't need to tell a story. 
+> Well don't you need to check it *before* VIRTIO_F_VERSION_1, not after?
 
-Interesting!  I literally tell folks all the time that their changelogs
-*should* tell a story. :)
-
-I think this is clearly a case where you and I have differing personal
-opinions on style.  I understand what you are asking for, and this is
-usually a case where our friendly maintainers can help out of they have
-a strong preference either way.
-
-> As explained in the documetation 'Describe your changes', describe
-> your change in imperative mood, e.g. something like
-> 
->   "Add RECLAIM_* mode for the the zone_reclaim_mode sysctl."
-
-This is my personal opinion, but I think this interpretation takes the
-documentation a bit too literally.  The documentation speaking about
-"imperative mood" applies specifically to the language about your fix,
-it does not apply to the background.
-
-It is there to encourage contributors to avoid some of the more passive
-language like:
-
-	This patch does blah....  This patch fixes blah...
+But it's only available with VERSION_1 anyway, isn't it? So it probably
+also needs to fail when this feature is needed if VERSION_1 has not been
+negotiated, I think.
 
