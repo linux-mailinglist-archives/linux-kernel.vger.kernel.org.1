@@ -2,97 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344E020E430
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5988520E421
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390959AbgF2VWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:22:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
+        id S2390939AbgF2VVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729338AbgF2Swm (ORCPT
+        with ESMTP id S1729768AbgF2Swn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:42 -0400
+        Mon, 29 Jun 2020 14:52:43 -0400
 Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03E4C02E2D7
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:05 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id o11so16673823wrv.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DCEC02E2D8
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:07 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z15so5408173wrl.8
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XFhbgCKNRxFbloxjm7n8+8nB92/O/AE2sBwMkN1jQVY=;
-        b=rDYv3J+t/fvTXVYSLvlXorZNbHhUQ/6y/asw1e95tUgjbuzJJ22wOs5jgNEXZ9aCFw
-         7nENOeDtyDLGMIcPXDx4J6RpgY0J72cV3yU9pJyBzsKwUHo5ax6PbSWYW3A0F0yg5poM
-         yrnzqIS/FqzMaroXxLXo+0M2YedfnRYdVtYyO882ipkmlwYEGNM5n0IX7fASjRbyJRhX
-         qNjGbqr4NAX+OrG9kHVAeWj4xRrT+Piiiq+v8IaiWO+R1O1vthsB8/QlFEKVLAQYZvzM
-         NsKP8ih9Vk3CTfeB4RzJyjQ0jdxLswX27P9M+U41Yd8vx4H2FQERi0c+7/F7l5VcEEpi
-         kJSQ==
+        bh=t94gU7LdZ9jhuE6Fuy5QcBW6wxTpYHr3wMA3J0Azebg=;
+        b=UerGcuAlj7Z9MLnen9oULz1ZCNnOGBCp6prj5iOmxWAPp79uH10ApRql/esij74qU1
+         TWwBUWUwXKybD7mLCIFuxnDkchZH4v0l7AhLDtvi1LP5qGhTW5sQI1CWSfJzFZ2r0vbq
+         iNCHT11TSH8gowVpzmfcRa9Ybi5BKsZNrAdCaLmXiEmJdHZQ/WB4GD2FFJw0jldyNHWe
+         1OOZfR50UhVxtQc3KBBvl3eGL4DEhf4K/Wvr3X/HV9mV+Jt0MY2ytHYcvMJwARnRZ6kJ
+         Ug4lNp8IbJIuT+yzwH5HioKnq78YX5xRE4ZSMXGPflUPfa9qFJlKYMJqu8veJZDVafd/
+         ORJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XFhbgCKNRxFbloxjm7n8+8nB92/O/AE2sBwMkN1jQVY=;
-        b=MI7H+j76FWcEkW4J1kXujEMU/4E/Zq0iZYtZMnbsm77+sHQ0IbonFMOueBNta6+K5e
-         I1YwSD+K+OQxnjPWbe5kwqPFyAXW38bpTYM2b3aKYCE283ieVUoen+7lq40S/SJ+NDSl
-         brvz7TxYOiDXTo3FRm3fKyGFd/IrPyih03IgLaX2M4+e19tOU1SoMQjlycS0VadsWz0b
-         CmX7hVMqe3n4Mp+XGmmMidiAlI4AFBGRiG0kxtaGTXR6MJOaX789EGHPIgAYVihFMJRI
-         W8Sp57ncOpDoN4sI9rB857FiRIRMDN2I6iPr+OoTesSxfefiaqY7PbJfh4BJBvI4n60b
-         zr3Q==
-X-Gm-Message-State: AOAM531hL0/71tYmgmyOKfZRPm+UNxPHtzV5Dbne7IHH+xKmb91v2/2z
-        GXiAqV2AJyeJxLUQFXIYMc3W6g==
-X-Google-Smtp-Source: ABdhPJzyDyJpP65nJE9M2B1HioZi4XCaFMuMdtxDSjSoHMRbycyagIcp+yN52R7KVxHSkjFw7Jr9QA==
-X-Received: by 2002:a5d:4649:: with SMTP id j9mr16461671wrs.270.1593439504476;
-        Mon, 29 Jun 2020 07:05:04 -0700 (PDT)
+        bh=t94gU7LdZ9jhuE6Fuy5QcBW6wxTpYHr3wMA3J0Azebg=;
+        b=gfBSeuDjnScxX4rCcQSyYVO3K+5YsmK7RFmdp3Zw8RM+UnzOQ8nvmxCVq4JYCD4d7u
+         uHQ4mE74EuzbfrOskPuq6yF3CPTsZSTjZPG9f+Z6I2d6PLfyjaFkmxdLlh+aBNaWW0qK
+         2f7LHMQyIWX0rs7SLSw3gwtNpJFInLLgUQJjuVxF/8Onr/DjHSYAJha2nS20mu4cXtOd
+         f+RGtaBuvIk66vmo0XCWRUUZfjUc5ZWtmFwaZ7wk8R0QVJpz1UlM68GxQFGkUqbUHE/y
+         UJ3skvvQS+yrjsoVf4HGe1AoQlPzCwwjwjywTSsUP0kyc/+tQ+dlPrisRpZfhrm2sPi3
+         omWQ==
+X-Gm-Message-State: AOAM53333NkT+mNx6dMUmCETUFC/RfoTy4G2RCBy13sZaR/cqZNwk0M8
+        eE3Owzfu34v/GB/cNGwxCU/iKA==
+X-Google-Smtp-Source: ABdhPJwmw6HtLwtc/BWKL7jvIFL/StauXcjQlFWHZqdNshQG+W/DhIyNUji82FIRqL0MnKMNZWFvkg==
+X-Received: by 2002:a5d:6846:: with SMTP id o6mr17265668wrw.370.1593439505791;
+        Mon, 29 Jun 2020 07:05:05 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.05.03
+        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.05.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 07:05:03 -0700 (PDT)
+        Mon, 29 Jun 2020 07:05:05 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [PATCH 15/20] misc: enclosure: Update enclosure_remove_device() documentation to match reality
-Date:   Mon, 29 Jun 2020 15:04:37 +0100
-Message-Id: <20200629140442.1043957-16-lee.jones@linaro.org>
+        Michael Jung <mijung@gmx.net>,
+        Michael Ruettger <michael@ibmra.de>,
+        Frank Haverkamp <haver@linux.ibm.com>,
+        Joerg-Stephan Vogt <jsvogt@de.ibm.com>
+Subject: [PATCH 16/20] misc: genwqe: card_base: Remove set but unused variable 'rc'
+Date:   Mon, 29 Jun 2020 15:04:38 +0100
+Message-Id: <20200629140442.1043957-17-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629140442.1043957-1-lee.jones@linaro.org>
 References: <20200629140442.1043957-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-enclosure_remove_device() hasn't taken an 'int component for over a decade.
-Instead use kerneldoc to describe the 'struct device' actually passed in.
+Variable 'rc' hasn't been checked since the driver's inception
+in 2013.  If it hasn't caused any issues since then, it's unlikely
+to in the future.  Let's take it out for now.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/misc/enclosure.c:400: warning: Function parameter or member 'dev' not described in 'enclosure_remove_device'
- drivers/misc/enclosure.c:400: warning: Excess function parameter 'num' description in 'enclosure_remove_device'
+ drivers/misc/genwqe/card_base.c: In function ‘genwqe_health_check_stop’:
+ /home/lee/projects/linux/kernel/drivers/misc/genwqe/card_base.c:1046:6: warning: variable ‘rc’ set but not used [-Wunused-but-set-variable]
+ 1046 | int rc;
+ | ^~
 
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Michael Jung <mijung@gmx.net>
+Cc: Michael Ruettger <michael@ibmra.de>
+Cc: Frank Haverkamp <haver@linux.ibm.com>
+Cc: Joerg-Stephan Vogt <jsvogt@de.ibm.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/enclosure.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/misc/genwqe/card_base.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/misc/enclosure.c b/drivers/misc/enclosure.c
-index e8eba52750b34..f950d0155876a 100644
---- a/drivers/misc/enclosure.c
-+++ b/drivers/misc/enclosure.c
-@@ -391,7 +391,7 @@ EXPORT_SYMBOL_GPL(enclosure_add_device);
- /**
-  * enclosure_remove_device - remove a device from an enclosure
-  * @edev:	the enclosure device
-- * @num:	the number of the component to remove
-+ * @dev:	device to remove/put
-  *
-  * Returns zero on success or an error.
-  *
+diff --git a/drivers/misc/genwqe/card_base.c b/drivers/misc/genwqe/card_base.c
+index 1dc6c7c5cbce9..bceebf49de2d5 100644
+--- a/drivers/misc/genwqe/card_base.c
++++ b/drivers/misc/genwqe/card_base.c
+@@ -1043,12 +1043,10 @@ static int genwqe_health_thread_running(struct genwqe_dev *cd)
+ 
+ static int genwqe_health_check_stop(struct genwqe_dev *cd)
+ {
+-	int rc;
+-
+ 	if (!genwqe_health_thread_running(cd))
+ 		return -EIO;
+ 
+-	rc = kthread_stop(cd->health_thread);
++	kthread_stop(cd->health_thread);
+ 	cd->health_thread = NULL;
+ 	return 0;
+ }
 -- 
 2.25.1
 
