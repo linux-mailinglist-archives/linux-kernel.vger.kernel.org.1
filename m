@@ -2,141 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C5020D4F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DF120D34A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730747AbgF2TNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:13:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731271AbgF2TNI (ORCPT
+        id S1730163AbgF2S5p convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 29 Jun 2020 14:57:45 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:47515 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730012AbgF2S5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:08 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 071FDC08EB22
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:27:31 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id k71so4114248pje.0
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:27:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EO3sRskvzqVrSi/8WlTJ+nKIw1S19eoepjwOuVzqC+k=;
-        b=KCQ5YzkONWOo65CEsckxdgEZDidmsxzkUPEN/UJBCW/qObWNXMfEoB9r0/E7rvaRmO
-         xlnRluaPTdkLMjWOJpH+yUIspSAOF0HgZkzvSgs47FWa+/kG7rzViG86wdee3s9jODiH
-         uu4zTKxTboSZHSRTNaUsgRAj4+LH6Z0yJ6Lok=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EO3sRskvzqVrSi/8WlTJ+nKIw1S19eoepjwOuVzqC+k=;
-        b=th95Gpdxt/6aN9BwilCk8D6wCp3abZOnS68uG0VcKBDTNrX2L2z57b3m9cb1Tc3tfN
-         6K+BRS4hTX/gI96Xq7eCpuiNLYEw4xLcXZfXwUJI4XwTineoMsgRGNbVfXoYIiZ6LjK9
-         zx4aA4+4o2xuWXn3yRZPi4pFTGuNnEa2ryj43dxk8pSPRp1LG7nJ7+5O1OCB7uHclZC7
-         sLmRu0KT/m8C0CTRSYQB4FOFvRSyIPkr8loaCG7H1g2h4KiqvGBGtrmSOu0DTvr3RngV
-         9GZglLAEbkT44/LOux/hc3HSzRr7O1BYrFjqvHknJhBDJwqROj7ttiuH97rQzhPkDRMf
-         4G1A==
-X-Gm-Message-State: AOAM532rAP8jJ7/B35c0b1tmU7x+hpRZCJNl+9JRa0qxRMaO8f5WcM9B
-        6eduIduRiwDJHdZ0cXgWMFGAPw==
-X-Google-Smtp-Source: ABdhPJxsnK2AsNvKawVoNrn3+ksDPrZ4SCYduO82/RDQuADusHJqjvhs/5ikZAbuEc8CjzSaMNuCrA==
-X-Received: by 2002:a17:90b:4d10:: with SMTP id mw16mr15789032pjb.143.1593412050567;
-        Sun, 28 Jun 2020 23:27:30 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h3sm19838700pje.28.2020.06.28.23.27.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jun 2020 23:27:28 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 17/17] x86/boot: Warn on orphan section placement
-Date:   Sun, 28 Jun 2020 23:18:40 -0700
-Message-Id: <20200629061840.4065483-18-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629061840.4065483-1-keescook@chromium.org>
-References: <20200629061840.4065483-1-keescook@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 29 Jun 2020 14:57:40 -0400
+Received: from marcel-macpro.fritz.box (p5b3d2638.dip0.t-ipconnect.de [91.61.38.56])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 806F1CECCA;
+        Mon, 29 Jun 2020 08:29:16 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH] Bluetooth: btusb: WBS support USB alternate setting 1
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20200629060338.10705-1-hildawu@realtek.com>
+Date:   Mon, 29 Jun 2020 08:19:21 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        BlueZ <linux-bluetooth@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, max.chou@realtek.com,
+        alex_lu@realsil.com.cn, kidman@realtek.com
+Content-Transfer-Encoding: 8BIT
+Message-Id: <FBDECDBA-A76F-4276-91E0-685DC828EF87@holtmann.org>
+References: <20200629060338.10705-1-hildawu@realtek.com>
+To:     hildawu@realtek.com
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't want to depend on the linker's orphan section placement
-heuristics as these can vary between linkers, and may change between
-versions. All sections need to be explicitly named in the linker
-script.
+Hi Hilda,
 
-Add the common debugging sections. Discard the unused note, rel, plt,
-dyn, and hash sections that are not needed in the compressed vmlinux.
-Disable .eh_frame generation in the linker and enable orphan section
-warnings.
+> For WBS support, btusb driver could be set to alternate setting 1.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- arch/x86/boot/compressed/Makefile      |  3 ++-
- arch/x86/boot/compressed/vmlinux.lds.S | 10 ++++++++++
- 2 files changed, 12 insertions(+), 1 deletion(-)
+please be more descriptive since this is special for Realtek devices.
 
-diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-index 7619742f91c9..646720a05f89 100644
---- a/arch/x86/boot/compressed/Makefile
-+++ b/arch/x86/boot/compressed/Makefile
-@@ -48,6 +48,7 @@ GCOV_PROFILE := n
- UBSAN_SANITIZE :=n
- 
- KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
-+KBUILD_LDFLAGS += $(call ld-option,--no-ld-generated-unwind-info)
- # Compressed kernel should be built as PIE since it may be loaded at any
- # address by the bootloader.
- ifeq ($(CONFIG_X86_32),y)
-@@ -59,7 +60,7 @@ else
- KBUILD_LDFLAGS += $(shell $(LD) --help 2>&1 | grep -q "\-z noreloc-overflow" \
- 	&& echo "-z noreloc-overflow -pie --no-dynamic-linker")
- endif
--LDFLAGS_vmlinux := -T
-+LDFLAGS_vmlinux := --orphan-handling=warn -T
- 
- hostprogs	:= mkpiggy
- HOST_EXTRACFLAGS += -I$(srctree)/tools/include
-diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-index d88612e3091f..9afb8737896f 100644
---- a/arch/x86/boot/compressed/vmlinux.lds.S
-+++ b/arch/x86/boot/compressed/vmlinux.lds.S
-@@ -75,7 +75,17 @@ SECTIONS
- 	. = ALIGN(PAGE_SIZE);	/* keep ZO size page aligned */
- 	_end = .;
- 
-+	STABS_DEBUG
-+	DWARF_DEBUG
- 	ELF_DETAILS
- 
- 	DISCARDS
-+	/DISCARD/ : {
-+		*(.note.*)
-+		*(.rela.*) *(.rela_*)
-+		*(.rel.*) *(.rel_*)
-+		*(.plt) *(.plt.*)
-+		*(.dyn*)
-+		*(.hash) *(.gnu.hash)
-+	}
- }
--- 
-2.25.1
+> 
+> Signed-off-by: Hilda Wu <hildawu@realtek.com>
+> ---
+> drivers/bluetooth/btusb.c | 16 +++++++++++-----
+> 1 file changed, 11 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index c7cc8e594166..7942f9314fd7 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -453,6 +453,7 @@ static const struct dmi_system_id btusb_needs_reset_resume_table[] = {
+> #define BTUSB_HW_RESET_ACTIVE	12
+> #define BTUSB_TX_WAIT_VND_EVT	13
+> #define BTUSB_WAKEUP_DISABLE	14
+> +#define BTUSB_WBS_ALT1		15
+
+Use BTUSB_USE_ALT1_FOR_WBS as a more descriptive name.
+
+> 
+> struct btusb_data {
+> 	struct hci_dev       *hdev;
+> @@ -1666,14 +1667,18 @@ static void btusb_work(struct work_struct *work)
+> 				new_alts = data->sco_num;
+> 			}
+> 		} else if (data->air_mode == HCI_NOTIFY_ENABLE_SCO_TRANSP) {
+> -
+> -			data->usb_alt6_packet_flow = true;
+> -
+> 			/* Check if Alt 6 is supported for Transparent audio */
+> -			if (btusb_find_altsetting(data, 6))
+> +			if (btusb_find_altsetting(data, 6)) {
+> +				data->usb_alt6_packet_flow = true;
+> 				new_alts = 6;
+> -			else
+> +			} else if (test_bit(BTUSB_WBS_ALT1, &data->flags)) {
+> +				if (btusb_find_altsetting(data, 1))
+> +					new_alts = 1;
+> +				else
+> +					bt_dev_err(hdev, "Device does not support ALT setting 1");
+
+Scrap this check and error and move it into the probe() function if you actually have Realtek hardware that does not support alternate setting 1.
+
+> +			} else {
+> 				bt_dev_err(hdev, "Device does not support ALT setting 6");
+> +			}
+> 		}
+> 
+> 		if (btusb_switch_alt_setting(hdev, new_alts) < 0)
+> @@ -3965,6 +3970,7 @@ static int btusb_probe(struct usb_interface *intf,
+> 		 * (DEVICE_REMOTE_WAKEUP)
+> 		 */
+> 		set_bit(BTUSB_WAKEUP_DISABLE, &data->flags);
+> +		set_bit(BTUSB_WBS_ALT1, &data->flags);
+> 
+> 		err = usb_autopm_get_interface(intf);
+> 		if (err < 0)
+
+Regards
+
+Marcel
 
