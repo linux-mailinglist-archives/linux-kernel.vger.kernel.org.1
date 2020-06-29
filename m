@@ -2,170 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D07620E282
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7F320E537
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390303AbgF2VGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731006AbgF2TMm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:12:42 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB892C08C5EE
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 21:28:19 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id w17so6394890otl.4
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 21:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LmoPe2SauK8cs9bRn6bTRLzxO3FPfMTTx1fSlCe95d8=;
-        b=gKkqbViBG7WBVI5NjrSJyQpjokEKocyZ3xjP0GI/wEF4IAQ7TEArhrPTCE+86csn4t
-         ztJcVsQFb2Orb6efdvOELarX0CiP0FF2xymfqPLneU0JpjIBn6WmXIplFSoK/jeHnG0W
-         QOLquAkwHNFaNJBDm11vaWQpobVgNFAP61VOwdt7aqGlfRNUnW9u514s+inD30VQ4b6R
-         30GBa2KaGsG4Lcrs82P7D3k9iiSws9rXH2MkssoFiSefo1r/OFakPuV0gEiPCcZbtJdr
-         fqc9J32Vk9mDg9Swwavm1Y2ft01ftY/ulLiRRebj6eG6tThHnF7ciSywIQjkC/6ioRRN
-         V1PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LmoPe2SauK8cs9bRn6bTRLzxO3FPfMTTx1fSlCe95d8=;
-        b=QTlqsdzSqHDJiOtV/+yiRJYjkYNYEMQ6h6syLhgCiiucD4ADaCQv7aqWBGGR/OI/XQ
-         NJGJNXDva6X+zmDh9v21rqrRNU2p68HwpUHBTiMGE6EzWng58fAXxwa6o451xRik04ZY
-         X+Geis5UYlhJvDqmR/ouPivXfHqu/xkhSu/nI/lPTLJLAP6on9i0dkRuArZY5kb52TxE
-         osWFEgvagiGRpBrv3e6OwHPY7AVjmGGe3Mmy2GgI6PgOhPdTOX046myKmoOKpVcaXGlX
-         T3C8galNgOsr6+6vHv9+KsuoNU8+r4wAFskQ5hsA3t6zjOdmt28LEP4dpHLERlf7vgXW
-         dxbA==
-X-Gm-Message-State: AOAM531VqbyLo+zDRzmSY7gJVoyyLGIrRsawtb3W8ObgnUxAESbBrgB/
-        ndmcvEBCgnM3fUt0aQsEHgV8PmgEH6df0BxL9hUec0erAIg=
-X-Google-Smtp-Source: ABdhPJxuV9e/bdajpyOTCW3jUhfFs6GfvwaIjwyWuTWIcFYCNOoZ17sobH1l6CwPKbEcdycLek+MonZIX94hGVZ+Wls=
-X-Received: by 2002:a9d:186:: with SMTP id e6mr12147068ote.33.1593404899159;
- Sun, 28 Jun 2020 21:28:19 -0700 (PDT)
+        id S1728610AbgF2VeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:34:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728621AbgF2Sk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:40:57 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 090A120748;
+        Mon, 29 Jun 2020 04:31:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593405108;
+        bh=f9QrZ7It4fGYsjb9a6cvY079w56pWeVWl5KwH6SnOMM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BuGNezybI69MDBw2alkHDhrLGmQsSyNyoIMvO7kONZsLXD/de+jYUnAJ927znkubP
+         p2m+MaZ7sc3P1dFFYmmp6gO3ZXVusIzO6em1VLpkVvOojILqsMQjyDELBMJRYUFy7y
+         1VaN7URBO60W8yZrqE3qlCe/emyrj0osBf8wvbF0=
+Date:   Mon, 29 Jun 2020 06:31:46 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Peter Chen <peter.chen@nxp.com>
+Cc:     Pawel Laszczak <pawell@cadence.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "ben.dooks@codethink.co.uk" <ben.dooks@codethink.co.uk>,
+        "colin.king@canonical.com" <colin.king@canonical.com>,
+        "rogerq@ti.com" <rogerq@ti.com>,
+        "weiyongjun1@huawei.com" <weiyongjun1@huawei.com>,
+        Jayshri Dajiram Pawar <jpawar@cadence.com>,
+        Rahul Kumar <kurahul@cadence.com>,
+        Sanket Parmar <sparmar@cadence.com>
+Subject: Re: [PATCH RFC 0/5] Introduced new Cadence USBSSP DRD Driver.
+Message-ID: <20200629043146.GA323164@kroah.com>
+References: <20200626045450.10205-1-pawell@cadence.com>
+ <878sga5nfr.fsf@kernel.org>
+ <BL0PR07MB5522A8796EE7BFB5062A8E76DD930@BL0PR07MB5522.namprd07.prod.outlook.com>
+ <20200629034213.GB30684@b29397-desktop>
 MIME-Version: 1.0
-References: <cover.1593397455.git.zong.li@sifive.com> <3de3a480517d167a3faae086aa8ab0c0c7141d99.1593397455.git.zong.li@sifive.com>
- <CAAhSdy3VBUTMg_b2tO12cTYuvHYtH=4dj9-qT-at35Whf3w_7w@mail.gmail.com>
-In-Reply-To: <CAAhSdy3VBUTMg_b2tO12cTYuvHYtH=4dj9-qT-at35Whf3w_7w@mail.gmail.com>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Mon, 29 Jun 2020 12:28:08 +0800
-Message-ID: <CANXhq0pV87oSzyAt80ySoXGRXp26bCnahPW0r27J+wjj5yc=nw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/6] dt-bindings: riscv: Add YAML documentation for PMU
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629034213.GB30684@b29397-desktop>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 12:09 PM Anup Patel <anup@brainfault.org> wrote:
->
-> On Mon, Jun 29, 2020 at 8:49 AM Zong Li <zong.li@sifive.com> wrote:
-> >
-> > Add device tree bindings for performance monitor unit. And it passes the
-> > dt_binding_check verification.
-> >
-> > Signed-off-by: Zong Li <zong.li@sifive.com>
-> > ---
-> >  .../devicetree/bindings/riscv/pmu.yaml        | 59 +++++++++++++++++++
-> >  1 file changed, 59 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/riscv/pmu.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/riscv/pmu.yaml b/Documentation/devicetree/bindings/riscv/pmu.yaml
-> > new file mode 100644
-> > index 000000000000..f55ccbc6c685
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/riscv/pmu.yaml
-> > @@ -0,0 +1,59 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/riscv/pmu.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: RISC-V Performance Monitor Units
-> > +
-> > +maintainers:
-> > +  - Zong Li <zong.li@sifive.com>
-> > +  - Paul Walmsley <paul.walmsley@sifive.com>
-> > +  - Palmer Dabbelt <palmer@dabbelt.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - const: riscv,pmu
-> > +
-> > +  riscv,width-base-cntr:
-> > +    description: The width of cycle and instret CSRs.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +
-> > +  riscv,width-event-cntr:
-> > +    description: The width of hpmcounter CSRs.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
->
-> The terms "base" and "event" is confusing because
-> we only have counters with no interrupt associated with it.
->
-> The RISC-V spec defines 3 counters and rest are all
-> implementation specific counters.
+On Mon, Jun 29, 2020 at 03:41:49AM +0000, Peter Chen wrote:
+> On 20-06-26 07:19:56, Pawel Laszczak wrote:
+> > Hi Felipe,
+> > 
+> > >
+> > >Hi,
+> > >
+> > >Pawel Laszczak <pawell@cadence.com> writes:
+> > >> This patch introduce new Cadence USBSS DRD driver to linux kernel.
+> > >>
+> > >> The Cadence USBSS DRD Controller is a highly configurable IP Core which
+> > >> can be instantiated as Dual-Role Device (DRD), Peripheral Only and
+> > >> Host Only (XHCI)configurations.
+> > >>
+> > >> The current driver has been validated with FPGA burned. We have support
+> > >> for PCIe bus, which is used on FPGA prototyping.
+> > >>
+> > >> The host side of USBSS-DRD controller is compliance with XHCI
+> > >> specification, so it works with standard XHCI Linux driver.
+> > >>
+> > >> The host side of USBSS DRD controller is compliant with XHCI.
+> > >> The architecture for device side is almost the same as for host side,
+> > >> and most of the XHCI specification can be used to understand how
+> > >> this controller operates.
+> > >>
+> > >> This controller and driver support Full Speed, Hight Speed, Supper Speed
+> > >> and Supper Speed Plus USB protocol.
+> > >>
+> > >> The prefix cdnsp used in driver has chosen by analogy to cdn3 driver.
+> > >> The last letter of this acronym means PLUS. The formal name of controller
+> > >> is USBSSP but it's to generic so I've decided to use CDNSP.
+> > >>
+> > >> The patch 1: adds DT binding.
+> > >> The patch 2: adds PCI to platform wrapper used on Cadnece testing
+> > >>              platform. It is FPGA based on platform.
+> > >> The patches 3-5: add the main part of driver and has been intentionally
+> > >>              split into 3 part. In my opinion such division should not
+> > >>              affect understanding and reviewing the driver, and cause that
+> > >>              main patch (4/5) is little smaller. Patch 3 introduces main
+> > >>              header file for driver, 4 is the main part that implements all
+> > >>              functionality of driver and 5 introduces tracepoints.
+> > >
+> > >I'm more interested in how is this different from CDNS3. Aren't they SW compatible?
+> > 
+> > In general, the controller can be split into 2 part- DRD part and the rest UDC. 
+> > 
+> > The second part UDC which consist gadget.c, ring.c and mem.c file is completely different. 
+> > 
+> > The DRD part contains drd.c and core.c. 
+> > cdnsp drd.c is similar to cdns3 drd.c but it's little different. CDNSP has similar, but has different register space.
+> > Some register was moved, some was removed and some was added.  
+> > 
+> > core.c is very similar and eventually could be common for both drivers.  I thought about this but
+> > I wanted to avoid interfering with cdns3 driver at this point CDNSP is still under testing and 
+> > CDNS3 is used by some products on the market. 
+> 
+> Pawel, I suggest adding CDNSP at driver/staging first since it is still
+> under testing. When you are thinking the driver (as well as hardware) are
+> mature, you could try to add gadget part (eg, gadget-v2) and make
+> necessary changes for core.c.
 
-As I know, there are 2 counters of spec definition: cycle and instret.
-What is the 3rd counter you mentioned?
+I only take code for drivers/staging/ that for some reason is not
+meeting the normal coding style/rules/whatever.  For stuff that is an
+obvious duplicate of existing code like this, and needs to be
+rearchitected.  It is much more work to try to convert code once it is
+in the tree than to just do it out of the tree on your own and resubmit
+it, as you don't have to follow the in-kernel rules of "one patch does
+one thing" that you would if it was in staging.
 
->
-> I suggest using the terms "spec counters" and "impl counters"
-> instead of "base counters" and "event counters".
+So don't think that staging is the right place for this, just spend a
+few weeks to get it right and then resubmit it.
 
-OK, they are good to me. Let me change it.
+thanks,
 
-
->
-> Further, "riscv,width" properties are redundant because
-> RISC-V spec clearly tells that counters are 64bit for both
-> RV32 and RV64.
->
-> > +
-> > +  riscv,n-event-cntr:
-> > +    description: The number of hpmcounter CSRs.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +
-> > +  riscv,hw-event-map:
-> > +    description: The mapping of generic hardware events. Default is no mapping.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +
-> > +  riscv,hw-cache-event-map:
-> > +    description: The mapping of generic hardware cache events.
-> > +      Default is no mapping.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +
-> > +required:
-> > +  - compatible
-> > +  - riscv,width-base-cntr
-> > +  - riscv,width-event-cntr
-> > +  - riscv,n-event-cntr
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    pmu {
-> > +      compatible = "riscv,pmu";
-> > +      riscv,width-base-cntr = <64>;
-> > +      riscv,width-event-cntr = <40>;
-> > +      riscv,n-event-cntr = <2>;
-> > +      riscv,hw-event-map = <0x0 0x0 0x1 0x1 0x3 0x0202 0x4 0x4000>;
-> > +      riscv,hw-cache-event-map = <0x010201 0x0102 0x010204 0x0802>;
-> > +    };
-> > +
-> > +...
-> > --
-> > 2.27.0
-> >
->
-> Regards,
-> Anup
+greg k-h
