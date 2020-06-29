@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A4F20D76A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 556A720DCB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732654AbgF2T3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:29:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37028 "EHLO mail.kernel.org"
+        id S2387495AbgF2USA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:18:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732657AbgF2TZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:25:42 -0400
+        id S1732644AbgF2TZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:25:41 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4533525416;
-        Mon, 29 Jun 2020 15:42:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC81B2541F;
+        Mon, 29 Jun 2020 15:42:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593445367;
-        bh=wKVojw3v10HVgEldxDQ8d8OdOl9ZfBVivKKmRcFWmq4=;
+        s=default; t=1593445370;
+        bh=5pWkCfgdkObiF9GbO2HC9ljwC2UHSmBbgSLU8Gu4Tus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LKcGVSdKs2Fbqt+k2nFzqrU46+6k3ZEXv9GQfqbsOZT41QoRXJYjCrUQ4RwEPPx/Z
-         TskONi364b8mb/q8NCjuGzSgTw4SfW3PvCXlcWmDt6jjDwlPlvB6irCN/0Vkr16lfI
-         dNF1TNbNVg1oTS1zbAiJhKe/mltlJOvb7+qI66kk=
+        b=LQCCtuDxV62g2rtXae6rs3vdd8h5lAsd8OY/aotI8lr4iDG9OnJHVjeeFsqS6k3kn
+         NRPtHa1d/HLY5hhg9gOWrpRFCSNavsjqzMFJVelbatyFGkEWWNe7tBMlWaQbhd8nkZ
+         +Y0M2NqXmb6A4v3jJM3rDGW0JDHilpRH+bqBgy5U=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 122/191] mtd: rawnand: xway: Fix the probe error path
-Date:   Mon, 29 Jun 2020 11:38:58 -0400
-Message-Id: <20200629154007.2495120-123-sashal@kernel.org>
+Subject: [PATCH 4.9 125/191] mtd: rawnand: plat_nand: Fix the probe error path
+Date:   Mon, 29 Jun 2020 11:39:01 -0400
+Message-Id: <20200629154007.2495120-126-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629154007.2495120-1-sashal@kernel.org>
 References: <20200629154007.2495120-1-sashal@kernel.org>
@@ -50,40 +50,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-[ Upstream commit 34531be5e804a8e1abf314a6c3a19fe342e4a154 ]
+[ Upstream commit 5284024b4dac5e94f7f374ca905c7580dbc455e9 ]
 
 nand_release() is supposed be called after MTD device registration.
 Here, only nand_scan() happened, so use nand_cleanup() instead.
 
 There is no real Fixes tag applying here as the use of nand_release()
-in this driver predates the introduction of nand_cleanup() in
+in this driver predates by far the introduction of nand_cleanup() in
 commit d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
-which makes this change possible. However, pointing this commit as the
-culprit for backporting purposes makes sense even if this commit is not
-introducing any bug.
+which makes this change possible, hence pointing it as the commit to
+fix for backporting purposes, even if this commit is not introducing
+any bug.
 
 Fixes: d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-61-miquel.raynal@bootlin.com
+Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-43-miquel.raynal@bootlin.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/xway_nand.c | 2 +-
+ drivers/mtd/nand/plat_nand.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-index d374a0007960a..3d51b8fc5aafe 100644
---- a/drivers/mtd/nand/xway_nand.c
-+++ b/drivers/mtd/nand/xway_nand.c
-@@ -211,7 +211,7 @@ static int xway_nand_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
+index 245efb0f83e26..ae2b3c0804cec 100644
+--- a/drivers/mtd/nand/plat_nand.c
++++ b/drivers/mtd/nand/plat_nand.c
+@@ -100,7 +100,7 @@ static int plat_nand_probe(struct platform_device *pdev)
+ 	if (!err)
+ 		return err;
  
- 	err = mtd_device_register(mtd, NULL, 0);
- 	if (err)
--		nand_release(&data->chip);
-+		nand_cleanup(&data->chip);
- 
- 	return err;
- }
+-	nand_release(&data->chip);
++	nand_cleanup(&data->chip);
+ out:
+ 	if (pdata->ctrl.remove)
+ 		pdata->ctrl.remove(pdev);
 -- 
 2.25.1
 
