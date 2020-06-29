@@ -2,147 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A1E20D3F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5E220D510
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730268AbgF2TDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
+        id S1731780AbgF2TOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730528AbgF2TCn (ORCPT
+        with ESMTP id S1731659AbgF2TOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:02:43 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E833C02A551;
-        Mon, 29 Jun 2020 06:04:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=3zpdI8UmwBB+KQo6imlBDm+KZhNuWD0HZ+7/RXg0Qeo=; b=NJadWazrl8uT+evvJdr4n8PtH2
-        nN4b5x1zFCfERhYewoAOFG4wWd05hgltRhZJ0RGPRTXLipdAAzLtI8PU9/BoDctoMat+0tzS0xzFQ
-        TD793hEyiDS8nNPtuOmVPI07LqkXURV44OS9OVYTMC0afYGlKfdBTtgOeHix3ULRykZOMaA2KOmCH
-        TBkXODizBHR/Whz0vP73PdKkyl66g0m6sjBpYr7cfhODudFhNyJpn4/dV5gAY+bX++GifzTFMWF0m
-        S/U6RvBOjEB/pHXtjc5GMOf2jTKtkMhUVXhrdnnFbCdWNy27QVeyacAys15VwZtdrpUlgF4iREWq1
-        Ea+R8kNw==;
-Received: from [2001:4bb8:184:76e3:c71:f334:376b:cf5f] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jptSB-0004Xt-ER; Mon, 29 Jun 2020 13:04:08 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] xsk: use dma_need_sync instead of reimplenting it
-Date:   Mon, 29 Jun 2020 15:03:59 +0200
-Message-Id: <20200629130359.2690853-5-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200629130359.2690853-1-hch@lst.de>
-References: <20200629130359.2690853-1-hch@lst.de>
+        Mon, 29 Jun 2020 15:14:05 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E5EC02A561
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:16:09 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id d10so7089247pls.5
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:16:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=mFtZdXnZoFeNGtyvf66K2jZKiZ/gK1UF6BVtHNZ3mHI=;
+        b=Nt6M5/nKGbXrQjy2BwEweDNFBFYiMj/wBEhhEny4MMASVjH6m6mZpHcVI+hg+PvGKm
+         dEOYM40hm1iDmI7dX9FYhdtiO2EtIoHfGSn/pvM7OhuJBxjgUmH2oiHbd1JTaCXVsZtj
+         8igrD7sl1wXJOhDDktWPbxu4++td2UGZmYJ868qDyhJwHjLnHY7dUK3NTHlB/VeRaTf5
+         rcAQXEAOoJnheBuKBB6sw8K1WDJnqR06Bws7w5Sel6xC7nOwf9332Hi3ZdT0zQcQYAlB
+         sZUoUrEh8qkGxR7hPxHfrbalGFLqqyngEmpS6B8HNYyVzbyh6o46d9HzOPBqzV3FAz79
+         eMAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=mFtZdXnZoFeNGtyvf66K2jZKiZ/gK1UF6BVtHNZ3mHI=;
+        b=f5dabe7whLv3N0J0SjSTMYqTeiL7EVeMnPjFtxDCfDf0NuSgx7VZq/E0eMQR9WONPY
+         nhvmiv2gUiwmmQhcZ5G50gXdpQbP/EG8Re4NOoQ56Xvx0ZlgtGghYjlPdX8ACaizZCRl
+         JWb6CNStQPalhsqz3TaqVl9jXUGxmXPGY9UUIJKkUAijhjsMCSREmwXjhHxzyS9YR9RJ
+         HOIQoKXo96U9AXPihkK3MZM0asAM4AXmcJePbz3XstpaM2dVKWh2YTk0xgXMJFRoSB91
+         tw+elpPOw/p7nZnftF3A3G8UOF7AiHy1yM90l5tK83P38iwoII9naGqQ4HdH67lob64n
+         ZrpQ==
+X-Gm-Message-State: AOAM530/I57A/ZcDMYx0ou2ak/pkNDK1+x99SeMpB5/RD96WeSzPl9pu
+        r2H7ctZR9y/LUYQYMcNHmMZ8cQjX
+X-Google-Smtp-Source: ABdhPJwXie2fp8YVq1KEB6udvdDRGLBLXh9J5umDzqrc5tBT87oF/81ckceVCFPl9c0Vvk9ZPGqZJg==
+X-Received: by 2002:a17:90a:e00a:: with SMTP id u10mr17351314pjy.17.1593436568724;
+        Mon, 29 Jun 2020 06:16:08 -0700 (PDT)
+Received: from localhost (61-68-186-125.tpgi.com.au. [61.68.186.125])
+        by smtp.gmail.com with ESMTPSA id k19sm7098pfg.153.2020.06.29.06.16.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 06:16:08 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 23:16:02 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: wait_on_page_bit_common(TASK_KILLABLE, EXCLUSIVE) can miss
+ wakeup?
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>, Jan Kara <jack@suse.cz>,
+        Lukas Czerner <lczerner@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Oleg Nesterov <oleg@redhat.com>
+References: <20200624161142.GA12184@redhat.com>
+        <20200624162042.GA12238@redhat.com>
+        <CAHk-=wjJA2Z3kUFb-5s=6+n0qbTs8ELqKFt9B3pH85a8fGD73w@mail.gmail.com>
+        <20200626154313.GI4817@hirez.programming.kicks-ass.net>
+        <CAHk-=whvVWNXPJq1k566zn4SfXAifXtiA7T+7JFweR3rQ0nc9A@mail.gmail.com>
+        <1593396958.ydiznwsuu8.astroid@bobo.none>
+In-Reply-To: <1593396958.ydiznwsuu8.astroid@bobo.none>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Message-Id: <1593436373.x8otyji40u.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the dma_need_sync helper instead of (not always entirely correctly)
-poking into the dma-mapping internals.
+Excerpts from Nicholas Piggin's message of June 29, 2020 1:28 pm:
+> Excerpts from Linus Torvalds's message of June 28, 2020 3:39 pm:
+>> On Fri, Jun 26, 2020 at 8:43 AM Peter Zijlstra <peterz@infradead.org> wr=
+ote:
+>>>
+>>> I ended up with something like the below.. but it is too warm to think
+>>> properly.
+>>>
+>>> I don't particularly like WQ_FLAG_PAGEWAITERS, but I liked open-coding
+>>> all that even less.
+>>=20
+>> Ugh.
+>>=20
+>> I think I have a much simpler approach, actually.
+>>=20
+>> So the *problem* is purely around that
+>>=20
+>>                 if (behavior =3D=3D EXCLUSIVE) {
+>>                         if (!test_and_set_bit_lock(bit_nr, &page->flags)=
+)
+>>                                 break;
+>>                 } else ..
+>>=20
+>> and in particular it is purely *after* that test_and_set_bit_lock()
+>> case. We have two cases:
+>>=20
+>>  (a) *If* we get the lock there, we're good, and all done, and we have
+>> the lock. We don't care about any other wakeups, because they'll be
+>> stale anyway (the thing that released the lock that we just took) and
+>> because we got the lock, no other exclusive waiters should be woken up
+>> anyway (and we will in turn wake up any waiters when we release it)
+>>=20
+>>  (b) we did *not* get the lock, because somebody else got it and is
+>> about to immediately unlock again. And that _future_ wakeup that they
+>> send might get lost because it might end up targeting us (but we might
+>> just exit and not care).
+>>=20
+>> Agreed?
+>>=20
+>> So the only case that really matters is that we didn't get the lock,
+>> but we must *not* be woken up afterwards.
+>>=20
+>> So how about the attached trivial two-liner? We solve the problem by
+>> simply marking ourselves TASK_RUNNING, which means that we won't be
+>> counted as an exclusive wakeup.
+>>=20
+>> Ok, so the "one" line to do that is that is actually two lines:
+>>=20
+>>         __set_current_state(TASK_RUNNING);
+>>         smp_mb__before_atomic();
+>>=20
+>> and there's four lines of comments to go with it, but it really is
+>> very simple: if we do that before we do the test_and_set_bit_lock(),
+>> no wakeups will be lost, because we won't be sleeping for that wakeup.
+>>=20
+>> I'm not entirely happy about that "smp_mb__before_atomic()". I think
+>> it's right in practice that test_and_set_bit_lock() (when it actually
+>> does a write) has at LEAST atomic seqmantics, so I think it's good.
+>> But it's not pretty.
+>>=20
+>> But I don't want to use a heavy
+>>=20
+>>         set_current_state(TASK_RUNNING);
+>>         if (!test_and_set_bit_lock(bit_nr, &page->flags)) ..
+>>=20
+>> sequence, because at least on x86, that test_and_set_bit_lock()
+>> already has a memory barrier in it, so the extra memory barrier from
+>> set_current_state() is all kinds of pointless.
+>>=20
+>> Hmm?
+>=20
+> Wow good catch. Does bit_is_set even have to be true? If it's woken due=20
+> to a signal, it may still be on the waitqueue right?
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- net/xdp/xsk_buff_pool.c | 50 +++--------------------------------------
- 1 file changed, 3 insertions(+), 47 deletions(-)
+No, ignore this part (which you explained well it was just a thinko,
+and your patch of course would not have worked if this was the case):
+the exclusive wake up doesn't get lost if schedule() was called because
+state goes back to running regardless of what woke it.
 
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index 6733e2c59e4835..08b80669f64955 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -2,9 +2,6 @@
- 
- #include <net/xsk_buff_pool.h>
- #include <net/xdp_sock.h>
--#include <linux/dma-direct.h>
--#include <linux/dma-noncoherent.h>
--#include <linux/swiotlb.h>
- 
- #include "xsk_queue.h"
- 
-@@ -124,48 +121,6 @@ static void xp_check_dma_contiguity(struct xsk_buff_pool *pool)
- 	}
- }
- 
--static bool __maybe_unused xp_check_swiotlb_dma(struct xsk_buff_pool *pool)
--{
--#if defined(CONFIG_SWIOTLB)
--	phys_addr_t paddr;
--	u32 i;
--
--	for (i = 0; i < pool->dma_pages_cnt; i++) {
--		paddr = dma_to_phys(pool->dev, pool->dma_pages[i]);
--		if (is_swiotlb_buffer(paddr))
--			return false;
--	}
--#endif
--	return true;
--}
--
--static bool xp_check_cheap_dma(struct xsk_buff_pool *pool)
--{
--#if defined(CONFIG_HAS_DMA)
--	const struct dma_map_ops *ops = get_dma_ops(pool->dev);
--
--	if (ops) {
--		return !ops->sync_single_for_cpu &&
--			!ops->sync_single_for_device;
--	}
--
--	if (!dma_is_direct(ops))
--		return false;
--
--	if (!xp_check_swiotlb_dma(pool))
--		return false;
--
--	if (!dev_is_dma_coherent(pool->dev)) {
--#if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU) ||		\
--	defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) ||	\
--	defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE)
--		return false;
--#endif
--	}
--#endif
--	return true;
--}
--
- int xp_dma_map(struct xsk_buff_pool *pool, struct device *dev,
- 	       unsigned long attrs, struct page **pages, u32 nr_pages)
- {
-@@ -179,6 +134,7 @@ int xp_dma_map(struct xsk_buff_pool *pool, struct device *dev,
- 
- 	pool->dev = dev;
- 	pool->dma_pages_cnt = nr_pages;
-+	pool->dma_need_sync = false;
- 
- 	for (i = 0; i < pool->dma_pages_cnt; i++) {
- 		dma = dma_map_page_attrs(dev, pages[i], 0, PAGE_SIZE,
-@@ -187,13 +143,13 @@ int xp_dma_map(struct xsk_buff_pool *pool, struct device *dev,
- 			xp_dma_unmap(pool, attrs);
- 			return -ENOMEM;
- 		}
-+		if (dma_need_sync(dev, dma))
-+			pool->dma_need_sync = true;
- 		pool->dma_pages[i] = dma;
- 	}
- 
- 	if (pool->unaligned)
- 		xp_check_dma_contiguity(pool);
--
--	pool->dma_need_sync = !xp_check_cheap_dma(pool);
- 	return 0;
- }
- EXPORT_SYMBOL(xp_dma_map);
--- 
-2.26.2
+I still prefer if it can be changed to the below fix though.
 
+> works, but it looks like a pretty standard variant of "don't lose
+> wakeups" bug.
+>=20
+> prepare_to_wait_event() has a pretty good pattern (and comment), I would
+> favour using that (test the signal when inserting on the waitqueue).
+>=20
+> @@ -1133,6 +1133,15 @@ static inline int wait_on_page_bit_common(wait_que=
+ue_head_t *q,
+>         for (;;) {
+>                 spin_lock_irq(&q->lock);
+> =20
+> +               if (signal_pending_state(state, current)) {
+> +                       /* Must not lose an exclusive wake up, see
+> +                        * prepare_to_wait_event comment */
+> +                       list_del_init(&wait->entry);
+> +                       spin_unlock_irq(&q->lock);> +                    =
+   ret =3D -EINTR;
+> +                       break;
+> +               }
+> +
+>                 if (likely(list_empty(&wait->entry))) {
+>                         __add_wait_queue_entry_tail(q, wait);
+>                         SetPageWaiters(page);
+> @@ -1157,11 +1166,6 @@ static inline int wait_on_page_bit_common(wait_que=
+ue_head_t *q,
+>                                 break;
+>                 }
+> =20
+> -               if (signal_pending_state(state, current)) {
+> -                       ret =3D -EINTR;
+> -                       break;
+> -               }
+> -
+>                 if (behavior =3D=3D DROP) {
+>                         /*
+>                          * We can no longer safely access page->flags:
+>=20
+> - mutex_lock_common does the signal check under its wait queue lock.
+>=20
+> - rwsem looks like it does it backward and checks if it was woken if it
+> got a signal and tries to handle it that way (hopefully okay, I prefer
+> the standard pattern).
+>=20
+> - futex unqueues and tests for wakeup before testing signal.
+>=20
+> Etc. And it's not even exclusive to signals of course, those are just=20
+> the typical asynchronous thing that would wake us without removing from
+> the wait queue. Bit of a shame there is no standard pattern to follow
+> though.
+>=20
+> I wonder how you could improve that. finish_wait could WARN_ON an
+> exclusive waiter being found on the queue?
+>=20
+> @@ -377,6 +377,7 @@ void finish_wait(struct wait_queue_head *wq_head, str=
+uct wait_queue_entry *wq_en
+>          *    the list).
+>          */
+>         if (!list_empty_careful(&wq_entry->entry)) {
+> +               WARN_ON(wq_entry->flags & WQ_FLAG_EXCLUSIVE);
+>                 spin_lock_irqsave(&wq_head->lock, flags);
+>                 list_del_init(&wq_entry->entry);
+>                 spin_unlock_irqrestore(&wq_head->lock, flags);
+>=20
+> That doesn't catch a limited count of wake ups, maybe if you passed in=20
+> success value to finish_wait, it could warn in case a failure has=20
+> WQ_FLAG_WOKEN. That doesn't help things that invent their own waitqueues
+> mind you. I wonder if we could do some kind of generic annotations for
+> anyone implementing wait queues to call, which could have debug checks
+> implemented?
+>=20
+> Thanks,
+> Nick
+>=20
+>=20
