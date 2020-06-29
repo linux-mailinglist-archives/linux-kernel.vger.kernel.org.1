@@ -2,106 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A0320D9CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE42720DA0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732770AbgF2Tuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49828 "EHLO
+        id S1731946AbgF2Txa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728823AbgF2Tut (ORCPT
+        with ESMTP id S2387790AbgF2TxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:50:49 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1362C03E979
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:50:49 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jpznh-0000h3-F5; Mon, 29 Jun 2020 21:50:45 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jpzng-0005aB-Te; Mon, 29 Jun 2020 21:50:44 +0200
-Date:   Mon, 29 Jun 2020 21:50:44 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6] gpio: pca953x: Add Maxim MAX7313 PWM support
-Message-ID: <20200629195044.uvgma53cajiko3gf@pengutronix.de>
-References: <20200503105453.23658-1-miquel.raynal@bootlin.com>
- <20200629160844.6ecf79c1@xps13>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mft2vsrhiooh6kvs"
-Content-Disposition: inline
-In-Reply-To: <20200629160844.6ecf79c1@xps13>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Mon, 29 Jun 2020 15:53:10 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0969BC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:53:11 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id q198so16466075qka.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:53:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=oyEodCgkXhNOrxY4Db2raIEhJBe/zcrPZ6JM1bawZr0=;
+        b=bVz8OiapgEka8x6YtNWVDwk6aWW04aYZrWQR1RhB3i8t5MbJ4ylwQLukcm9wzGU/40
+         tLZ0D7YQrL9fWT3i0zp4Tkh4NN+IDCF7wdSaKO5oN7ARFc6wClflvVFZ/queIBBjAB8T
+         nIMmXoJBEQL3RM7KH/VVoktOklJgn4lUTRkXFNq+dhL5EX6KCGfuIBdUKCU+xN6f6cQF
+         PTdLT6rqPyEouO2b8FWpA1wZFNGBo9w8WvD1v+/t+iF5AmjOlizau0LWULoERm93Ybkb
+         eYTNBycgPYOHH3JLAHWoaluu+mVeeqJpcD2aaRD9WwWAMgRy5ZOzbxxWH8LL4kF4O+Mo
+         2wKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=oyEodCgkXhNOrxY4Db2raIEhJBe/zcrPZ6JM1bawZr0=;
+        b=fnsZwncZuomIte2eSc1uvp+1ooCOtc174jpQ5SvAccYlM8AkTPVrUu3mf7CNDKQfho
+         g/BrVu2lR7K45YNMqX9oM/MQVI49KQ15+T9lj3gm6rkJimzUUMk/wLzqRv7RTMQ0NBb7
+         wyVSi1/jmSCa2aMqeiVAdHLPDTJkmETE/zpWDWbd5OfiqoDpz6HBRjGXuYkxURKeIvt+
+         a6CXoCmjrIKc15mksFSUpBOiR5ikkx1+X77Spp+pakzDYfKaqNgRZlhmywIXV+F/Ev7O
+         uNlwGtUjBUZGAU3y4D0YtESFn3Wg3gXQE4kz8r+tG7N44yBMtDff0ESBP/H4Hf9zsAEu
+         D80Q==
+X-Gm-Message-State: AOAM531Mtse17K3h5BpwHsTtxm7em7p/mWo3AJ8TwesVU2uvojgCnNpO
+        xKXROSyQmueNK6rlmgHfQIo=
+X-Google-Smtp-Source: ABdhPJwX18jDoBGiBdMyQNJUUV/2hvnsDjfOh/ZD9ytFt9u/2MrGF+GqE0gb225g6POrhgTsWW24mg==
+X-Received: by 2002:ae9:f814:: with SMTP id x20mr16596296qkh.253.1593460390137;
+        Mon, 29 Jun 2020 12:53:10 -0700 (PDT)
+Received: from localhost.localdomain ([72.53.229.195])
+        by smtp.gmail.com with ESMTPSA id e25sm655098qtc.93.2020.06.29.12.53.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 12:53:09 -0700 (PDT)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     tudor.ambarus@microchip.com, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mtd: spi-nor: Add support for Winbond w25q64jvm spi flash
+Date:   Mon, 29 Jun 2020 15:53:06 -0400
+Message-Id: <20200629195306.1030-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This chip is (nearly) identical to the Winbond w25q64 which is
+already supported by Linux. Compared to the w25q64, the 'jvm'
+has a different JEDEC ID.
 
---mft2vsrhiooh6kvs
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Sven Van Asbroeck <TheSven73@gmail.com>
+---
 
-On Mon, Jun 29, 2020 at 04:08:44PM +0200, Miquel Raynal wrote:
-> Hello Uwe, Thierry,
->=20
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote on Sun,  3 May 2020
-> 12:54:53 +0200:
->=20
-> > The MAX7313 chip is fully compatible with the PCA9535 on its basic
-> > functions but can also manage the intensity on each of its ports with
-> > PWM. Each output is independent and may be tuned with 16 values (4
-> > bits per output). The period is always 32kHz, only the duty-cycle may
-> > be changed. One can use any output as GPIO or PWM.
-> >=20
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > ---
->=20
-> Can I have a status on this patch please?
->=20
-> If it was forgotten, I would be good to have it queued now, otherwise,
-> may I know the reason?
+v1 -> v2:
+  - Tudor Ambarus: name the chip "w25q64jvm"
 
-You could reply to my feedback ... If you could say there: "What you
-want isn't possible" I'd count this as a strong indication to not ask to
-implement Andy's suggestion. (Even if this would be possible, I'm not
-sure this is a good idea, but still ...)
+Tree: 5.8-rc3
 
-Best regards
-Uwe
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>
+To: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+ drivers/mtd/spi-nor/winbond.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---mft2vsrhiooh6kvs
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index 5062af10f138..18bdff02f57f 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -65,6 +65,7 @@ static const struct flash_info winbond_parts[] = {
+ 			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+ 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
++	{ "w25q64jvm", INFO(0xef7017, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "w25q64dw", INFO(0xef6017, 0, 64 * 1024, 128,
+ 			   SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			   SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+-- 
+2.17.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl76RhEACgkQwfwUeK3K
-7AnNygf/ajou6A2cnBZDepvApB9y0hCf2RUYvXMGZEw5WqGZbmWr5Edmtsym/bZL
-9x4/ugEvXcDFZrYfnYxCaEX6Y4HpKvwKX+gu2Ovbfx4LE3nEqZHh0qXrQgK2vTUD
-By5NJRRup31nL9iIjmLPrG4I1ddDdN2/oQU9sHtycbwhEunnV0GuzlwBdKA6LISX
-N+MBcqPfpoUlS0xCYRVacwtVNnS8/5yjA30pnUHLrHyfcErNjSKL647CmSv1B+Zx
-BENNroAw8tgHnrOASQ4RAmRMQ7zIPhv+/cfv2ICG4q4E8C+MPgDc7JnW1GOhBeDV
-d+D8SLIBaU7HDi4BTUcZSg8br9TmtA==
-=YjLE
------END PGP SIGNATURE-----
-
---mft2vsrhiooh6kvs--
