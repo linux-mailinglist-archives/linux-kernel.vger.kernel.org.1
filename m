@@ -2,95 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8D620D753
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4693220DAFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730104AbgF2T2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:28:54 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:37784 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731269AbgF2T2k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:28:40 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 2F01920021;
-        Mon, 29 Jun 2020 09:39:33 +0200 (CEST)
-Date:   Mon, 29 Jun 2020 09:39:31 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     shawnguo@kernel.org, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/zte: remove unneeded semicolon
-Message-ID: <20200629073931.GA227119@ravnborg.org>
-References: <20200504113230.40588-1-yanaijie@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200504113230.40588-1-yanaijie@huawei.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=f+hm+t6M c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=i0EeH86SAAAA:8 a=e5mUnYsNAAAA:8
-        a=08u2UhFWmFwjV6_hJKUA:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
+        id S1731831AbgF2UC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:02:28 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:38474 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387426AbgF2Tjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:39:44 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CB92C200F4E;
+        Mon, 29 Jun 2020 09:51:20 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DB19B200F49;
+        Mon, 29 Jun 2020 09:51:16 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id B6161402E0;
+        Mon, 29 Jun 2020 15:51:11 +0800 (SGT)
+From:   andy.tang@nxp.com
+To:     shawnguo@kernel.org
+Cc:     leoyang.li@nxp.com, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yuantian Tang <andy.tang@nxp.com>
+Subject: [PATCH 1/2] arm64: dts: ls1046a: add more thermal zone support
+Date:   Mon, 29 Jun 2020 15:45:18 +0800
+Message-Id: <20200629074519.28851-1-andy.tang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 07:32:30PM +0800, Jason Yan wrote:
-> Fix the following coccicheck warning:
-> 
-> drivers/gpu/drm/zte/zx_vga.c:158:2-3: Unneeded semicolon
-> drivers/gpu/drm/zte/zx_vga.c:171:2-3: Unneeded semicolon
-> drivers/gpu/drm/zte/zx_vga.c:179:2-3: Unneeded semicolon
-> 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+From: Yuantian Tang <andy.tang@nxp.com>
 
-Applied to drm-misc-next.
+There are 5 thermal zones in ls1046a soc. Add the rest thermal zone
+nodes to enable them.
 
-	Sam
+Signed-off-by: Yuantian Tang <andy.tang@nxp.com>
+---
+ .../arm64/boot/dts/freescale/fsl-ls1046a.dtsi | 88 ++++++++++++++++++-
+ 1 file changed, 84 insertions(+), 4 deletions(-)
 
-> ---
->  drivers/gpu/drm/zte/zx_vga.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/zte/zx_vga.c b/drivers/gpu/drm/zte/zx_vga.c
-> index a7ed7f5ca837..0f9bbb7e3b8d 100644
-> --- a/drivers/gpu/drm/zte/zx_vga.c
-> +++ b/drivers/gpu/drm/zte/zx_vga.c
-> @@ -155,7 +155,7 @@ static int zx_vga_register(struct drm_device *drm, struct zx_vga *vga)
->  	if (ret) {
->  		DRM_DEV_ERROR(dev, "failed to init encoder: %d\n", ret);
->  		return ret;
-> -	};
-> +	}
->  
->  	drm_encoder_helper_add(encoder, &zx_vga_encoder_helper_funcs);
->  
-> @@ -168,7 +168,7 @@ static int zx_vga_register(struct drm_device *drm, struct zx_vga *vga)
->  	if (ret) {
->  		DRM_DEV_ERROR(dev, "failed to init connector: %d\n", ret);
->  		goto clean_encoder;
-> -	};
-> +	}
->  
->  	drm_connector_helper_add(connector, &zx_vga_connector_helper_funcs);
->  
-> @@ -176,7 +176,7 @@ static int zx_vga_register(struct drm_device *drm, struct zx_vga *vga)
->  	if (ret) {
->  		DRM_DEV_ERROR(dev, "failed to attach encoder: %d\n", ret);
->  		goto clean_connector;
-> -	};
-> +	}
->  
->  	return 0;
->  
-> -- 
-> 2.21.1
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+index d4c1da3d4bde..9896379309d8 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+@@ -117,19 +117,79 @@
+ 	};
+ 
+ 	thermal-zones {
+-		cpu_thermal: cpu-thermal {
++		ddr-controller {
++			polling-delay-passive = <1000>;
++			polling-delay = <5000>;
++			thermal-sensors = <&tmu 0>;
++
++			trips {
++				ddr-ctrler-alert {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				ddr-ctrler-crit {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "critical";
++				};
++			};
++		};
++
++		serdes {
++			polling-delay-passive = <1000>;
++			polling-delay = <5000>;
++			thermal-sensors = <&tmu 1>;
++
++			trips {
++				serdes-alert {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				serdes-crit {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "critical";
++				};
++			};
++		};
++
++		fman {
++			polling-delay-passive = <1000>;
++			polling-delay = <5000>;
++			thermal-sensors = <&tmu 2>;
++
++			trips {
++				fman-alert {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				fman-crit {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "critical";
++				};
++			};
++		};
++
++		core-cluster {
+ 			polling-delay-passive = <1000>;
+ 			polling-delay = <5000>;
+ 			thermal-sensors = <&tmu 3>;
+ 
+ 			trips {
+-				cpu_alert: cpu-alert {
++				core_cluster_alert: core-cluster-alert {
+ 					temperature = <85000>;
+ 					hysteresis = <2000>;
+ 					type = "passive";
+ 				};
+ 
+-				cpu_crit: cpu-crit {
++				core_cluster_crit: core-cluster-crit {
+ 					temperature = <95000>;
+ 					hysteresis = <2000>;
+ 					type = "critical";
+@@ -138,7 +198,7 @@
+ 
+ 			cooling-maps {
+ 				map0 {
+-					trip = <&cpu_alert>;
++					trip = <&core_cluster_alert>;
+ 					cooling-device =
+ 						<&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+ 						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+@@ -147,6 +207,26 @@
+ 				};
+ 			};
+ 		};
++
++		sec {
++			polling-delay-passive = <1000>;
++			polling-delay = <5000>;
++			thermal-sensors = <&tmu 4>;
++
++			trips {
++				sec-alert {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				sec-crit {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "critical";
++				};
++			};
++		};
+ 	};
+ 
+ 	timer {
+-- 
+2.17.1
+
