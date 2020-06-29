@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBD620E272
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF6620E285
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390095AbgF2VFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
+        id S2390307AbgF2VGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390154AbgF2VFQ (ORCPT
+        with ESMTP id S2389594AbgF2VGF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:05:16 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F68CC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:05:15 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id i14so18254637ejr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:05:15 -0700 (PDT)
+        Mon, 29 Jun 2020 17:06:05 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1EEC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:06:05 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id p20so18218034ejd.13
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:06:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=N5+uXhdVLL1JQ/BpOyWY0ygfez6SfYmoRUf/dprU/yU=;
-        b=DAjeBl1FR1/DsgxRPaw2h7sQ6NmKmhZOtQFKgN7YjvWQhxictsYYSeYGazOoUUQyVX
-         alqgM2kNHwP4fyBEJbljNuPX4+oLFlR2Kg2TWkD56BYOjT6EOB8jJLvp2Hdv+ufX1/nV
-         mmR4Vqn9Fw1p6ceCJxEKRz7RTmN7e+1f3A8vIkd6+JR64a8eHe4mZgHVXYmWhrkpCWMX
-         wBIybOQwCJa3YXNY71dAYltEmU1ivZPlvNAjUR6HNAK0i74Wp0jhtOIrxrhLRhBgNoAl
-         rXr7U7XMJJbc3tml365yyXerE1Qx0L2CcPue0xQ4AUqvS1l5pBgl+U9Y27beRtN3x621
-         UbIA==
+        bh=rq20rSFORtIjkkFfsOodF7/loWbxXzOkNkZ9gABTDVk=;
+        b=hSeSQ6MXm37ABAafBYuGpCCIr8kzQpA01Oj4bpo9DYXwgHyCcg19o4AUzS7jbrRpOb
+         poip2fESmXOCp/ZkLkaX/AJQpBJjL6sJ3/SlvJ5aTkzPmT1Er5IU6xCDTrQolyn+Thn4
+         tHjLsD8QwjcV2LDXb91H1JhLeVqtTsKm7TI9BYDJg5Gmyu9Cb6lHNC7itlELEVXFzgtN
+         Ju5AQMT76MVnJUKayU0eDHaHJdX858w6maZfMarJWghToy7BZ8J2hSLH4QaHGa4sr9uR
+         Ca63WFIXQ0U93GCk6rCcjTaNS+Uyi0UuIxbVHT5jSUMHH4HmDU/KtBIEEdndNFhQZ7lp
+         tC7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=N5+uXhdVLL1JQ/BpOyWY0ygfez6SfYmoRUf/dprU/yU=;
-        b=i3s3vRA8ZAglJ/oA1f2r6hKDTttIdEQ3yFNTAeh2eGO8bTFeSX7WXWWvXwLcch3QSj
-         VB+x5otjuCJDRcbkIJfN64Vsvb2FD4ZHdGQXXIlfcTYgaDnxFBiLRk0hQdt6O9lpFfEA
-         JhYad+hCcGdXLqrG69EGV5Qk0cy/XKWD94jVErQeQJwmYm5XQz2GWxgNg1dHtLvvYVC6
-         MAK8wFbaAe3ooEMr2h2CrHPAOlLNEKcDQk/PNNX65hW6m+oLA+KFogVCxnH31gwXRQAf
-         hKj6dkmwx9eV65UY/eQpXEPmdBV0RDuYWQvO6LIMy+RV6tq1+ixMMuT8F53RQ3oMoX4a
-         Lx2A==
-X-Gm-Message-State: AOAM531tevBtox3+0L7+J+Ig08gu2lm6WYMbmu1w4aPzMolYGelRWdwI
-        iOg0Q40LGt0Ar6UNdhm1mxcvWDlARbFOgJO80Ty3Ww==
-X-Google-Smtp-Source: ABdhPJwx9rhIytg8KU9TIpWcmbacvDsAZoA4TlJzTKaE74b20apQO9Ypzds5Sl0QWHtudAJj5L+BZoDvzVK9463aznE=
-X-Received: by 2002:a17:906:ef2:: with SMTP id x18mr15149889eji.547.1593464713805;
- Mon, 29 Jun 2020 14:05:13 -0700 (PDT)
+        bh=rq20rSFORtIjkkFfsOodF7/loWbxXzOkNkZ9gABTDVk=;
+        b=liYmMja3IJ904r1u8mxHwYxcjbYRPluhSMl32/G/80AabNHlirxtNC5cDsctMF+nXl
+         N3wVy8Csu0MjRmFIlLi8K7WMa9rVkGlD6AKW4W9c+A454M3LlFSDWN4PGkIsLtd4rl4H
+         9UGVV4wVVjg8liQao/zZ+WSsnUXIIv/R/+4wn/tueeF/nz1FOpwnPCMYQZsapmLUh69c
+         tedchdFnIlMvkEWlwv9E39LO4HDxR9HTkbd8csy/ONuB4Gf60xYUsDKeVfL9uFecVIOc
+         1EP1a6UzS84Haz5zn6KzDR08dztDsMqstnz/87+zlmlDRBnAYei3rmH3E/IHj3WJwEDC
+         XQVQ==
+X-Gm-Message-State: AOAM532JvrkYV3kglhSEFIsZYugMyjcj6Ww9ZVa6Wa8tny+98n7x4vvI
+        LvbPyyhTIaAVTcZfDFytnD29a3Zfpvb9Kf+lshtrQA==
+X-Google-Smtp-Source: ABdhPJxn+9mxEDJtgIvUOIFg6YNIcgYeyPSSi16cAgmgoim/yZIjeZYVXiGU2P080VBLtQrUENC5fJqF3cyMzFh4uw4=
+X-Received: by 2002:a17:906:8316:: with SMTP id j22mr15258617ejx.97.1593464763819;
+ Mon, 29 Jun 2020 14:06:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200629163851.2130450-1-pmalani@chromium.org>
-In-Reply-To: <20200629163851.2130450-1-pmalani@chromium.org>
+References: <20200629163851.2130450-1-pmalani@chromium.org> <20200629163851.2130450-2-pmalani@chromium.org>
+In-Reply-To: <20200629163851.2130450-2-pmalani@chromium.org>
 From:   Guenter Roeck <groeck@google.com>
-Date:   Mon, 29 Jun 2020 14:05:02 -0700
-Message-ID: <CABXOdTe-hY98YFusFkS+C8iVWZANVWcavpKSmaYtjC11yMgFrg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] platform/chrome: cros_ec_typec: Use workqueue for
- port update
+Date:   Mon, 29 Jun 2020 14:05:52 -0700
+Message-ID: <CABXOdTfax0f_W=H7042uBMcNgNTV6R-QOR7af4YnvSfaJ9Wn_w@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] platform/chrome: cros_ec_typec: Add PM support
 To:     Prashant Malani <pmalani@chromium.org>
 Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
         Heikki Krogerus <heikki.krogerus@linux.intel.com>,
@@ -64,90 +63,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 9:38 AM Prashant Malani <pmalani@chromium.org> wrote:
+On Mon, Jun 29, 2020 at 9:39 AM Prashant Malani <pmalani@chromium.org> wrote:
 >
-> Use a work queue to call the port update routines, instead of doing it
-> directly in the PD notifier callback. This will prevent other drivers
-> with PD notifier callbacks from being blocked on the port update routine
-> completing.
+> Define basic suspend resume functions for cros-ec-typec. On suspend, we
+> simply ensure that any pending port update work is completed, and on
+> resume, we re-poll the port state to account for any
+> changes/disconnections that might have occurred during suspend.
 >
 > Signed-off-by: Prashant Malani <pmalani@chromium.org>
+
+Reviewed-by: Guenter Roeck <groeck@chromium.org>
+
 > ---
 >
 > Changes in v3:
-> - Use new 100 character line length limit.
+> - Remove superfluous DEV_PM_OPS #define.
 >
 > Changes in v2:
-> - No changes.
+> - Remove #ifdef-ery, add __maybe_unused tag to functions.
 >
->  drivers/platform/chrome/cros_ec_typec.c | 25 ++++++++++++++++++++-----
->  1 file changed, 20 insertions(+), 5 deletions(-)
+>  drivers/platform/chrome/cros_ec_typec.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
 >
 > diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> index 0c041b79cbba..0beb62bf5adf 100644
+> index 0beb62bf5adf..d5ac691de68b 100644
 > --- a/drivers/platform/chrome/cros_ec_typec.c
 > +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -58,6 +58,7 @@ struct cros_typec_data {
->         /* Array of ports, indexed by port number. */
->         struct cros_typec_port *ports[EC_USB_PD_MAX_PORTS];
->         struct notifier_block nb;
-> +       struct work_struct port_work;
->  };
->
->  static int cros_typec_parse_port_props(struct typec_capability *cap,
-> @@ -619,18 +620,26 @@ static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
->         return 0;
+> @@ -722,11 +722,35 @@ static int cros_typec_probe(struct platform_device *pdev)
+>         return ret;
 >  }
 >
-> -static int cros_ec_typec_event(struct notifier_block *nb,
-> -                              unsigned long host_event, void *_notify)
-> +static void cros_typec_port_work(struct work_struct *work)
->  {
-> -       struct cros_typec_data *typec = container_of(nb, struct cros_typec_data,
-> -                                                    nb);
-> -       int ret, i;
-> +       struct cros_typec_data *typec = container_of(work, struct cros_typec_data, port_work);
-> +       int ret;
-> +       int i;
->
-
-I know I am getting picky here, but this seems like a personal
-preference change. There is no "one variable declaration per line"
-coding style rule.
-
->         for (i = 0; i < typec->num_ports; i++) {
->                 ret = cros_typec_port_update(typec, i);
->                 if (ret < 0)
->                         dev_warn(typec->dev, "Update failed for port: %d\n", i);
->         }
+> +static int __maybe_unused cros_typec_suspend(struct device *dev)
+> +{
+> +       struct cros_typec_data *typec = dev_get_drvdata(dev);
+> +
+> +       cancel_work_sync(&typec->port_work);
+> +
+> +       return 0;
 > +}
 > +
-> +
-
-... but anyway, there should be no double empty lines.
-
-> +static int cros_ec_typec_event(struct notifier_block *nb,
-> +                              unsigned long host_event, void *_notify)
+> +static int __maybe_unused cros_typec_resume(struct device *dev)
 > +{
-> +       struct cros_typec_data *typec = container_of(nb, struct cros_typec_data, nb);
+> +       struct cros_typec_data *typec = dev_get_drvdata(dev);
 > +
+> +       /* Refresh port state. */
 > +       schedule_work(&typec->port_work);
->
->         return NOTIFY_OK;
->  }
-> @@ -689,6 +698,12 @@ static int cros_typec_probe(struct platform_device *pdev)
->         if (ret < 0)
->                 return ret;
->
-> +       INIT_WORK(&typec->port_work, cros_typec_port_work);
 > +
-> +       /*
-> +        * Safe to call port update here, since we haven't registered the
-> +        * PD notifier yet.
-> +        */
->         for (i = 0; i < typec->num_ports; i++) {
->                 ret = cros_typec_port_update(typec, i);
->                 if (ret < 0)
+> +       return 0;
+> +}
+> +
+> +static const struct dev_pm_ops cros_typec_pm_ops = {
+> +       SET_SYSTEM_SLEEP_PM_OPS(cros_typec_suspend, cros_typec_resume)
+> +};
+> +
+>  static struct platform_driver cros_typec_driver = {
+>         .driver = {
+>                 .name = DRV_NAME,
+>                 .acpi_match_table = ACPI_PTR(cros_typec_acpi_id),
+>                 .of_match_table = of_match_ptr(cros_typec_of_match),
+> +               .pm = &cros_typec_pm_ops,
+>         },
+>         .probe = cros_typec_probe,
+>  };
 > --
 > 2.27.0.212.ge8ba1cc988-goog
 >
