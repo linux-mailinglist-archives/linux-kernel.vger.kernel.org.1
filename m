@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C3A20D2D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4410620D302
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729780AbgF2Sws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:52:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40018 "EHLO
+        id S1729121AbgF2Syx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:54:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729687AbgF2Swm (ORCPT
+        with ESMTP id S1729803AbgF2Swv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:42 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D98C02E2CF
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:55 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id f139so16235430wmf.5
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:55 -0700 (PDT)
+        Mon, 29 Jun 2020 14:52:51 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E5FC02E2D9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:08 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id a6so16688858wrm.4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xnIhP+BLJCkXHxO9I8vb7t4ZYrl34I7GGa9NV7vqaQI=;
-        b=PbIxwA8vy7vWwp3PD1xYvC/boLvJezju8OhuIn1WM5qPXlK2MdHIieYvhn934I/UGA
-         OURRy4f4bR0e0ymv4gSsOjdvPt+GDIeqZW65pRyK3+1U3jg+H4I2SGTL5572ec1SsDNz
-         N+VMvXp2ig6KCBI/kKZM7CZ0OLIimgEUoYBfBhg8GeUjawTAJC3doOiPq6oJOzVJ/12U
-         dMXCjVQc6LifoAl9uBJ8pFrHlHAMFF5aB10GKWdxKort9tIty0y2pSIcGpIivF9NIPmn
-         nOQycVd1S4Orevvtr0YBONdbpszrq0tUfl6hfN8a9UI2cpYPDvBQcA+vULw12+lFAIZP
-         5OxA==
+        bh=ObKoaiwUBMsH7RgwRp2nwwP2sLs2C+zRlkZVkrEZxL8=;
+        b=CITmqLc3nbGdsGtKVJszDGHLgzCb7zsuvkz+o0c8ghMxDpU6eESRHcmbaHok/SMQ2R
+         3BU+t5KbBGhwJFZI+r+/nkGDxLbMDFjegBajaC6W6wItOi04H/OIE/Hth21EIcoxTgPS
+         zEG/Pxz8a4/dNmmparDp0h0BLY0sTcsOeYI4rE6yK7E6G6mLkhST9OS1rTALTq79Fozc
+         74S2ArYQU1OOHSZ/moJCDIwcmWgFtR5hTcH7/j3iFTt3wuPylApkTXnwcx5VF99WNeKD
+         RJvoNJm9t4E/z0j1kjIWLSVgkJIarplQvWgTVfehAFzcmf0+Zp+yvd8G5B8KZftONrdD
+         4z5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xnIhP+BLJCkXHxO9I8vb7t4ZYrl34I7GGa9NV7vqaQI=;
-        b=rjXebj7YDA5D04dB5LbZeHHIqKJOwzmD3MsED9R4urdTdb6e5aW6fscN/2+UMsUkcf
-         1R6MRF4WZxcasuNJG9am8bUWjaKX9czySLRtYi1zsZ2AJqY2dB9vtwSmjdndaEzoEvYa
-         teTBy5UzzZYR9LZZ97YjGu2zvg3t2Yx0jJKy0F35JFZQJsHa/afzMyzNf8+B6qJ8PQPs
-         GLJKiDN3pdt0igRu6dpYfermhxV98M2LK4bnTraH5w45ZlDYs1q2QcbM0KUPd6tBVX7+
-         Xdpp9AmQVzblbSu0HOefthU/jb2yCV09CZYORxCsrbiZD/XeY/l2c7tEI7S5+gRDUpyT
-         GZoQ==
-X-Gm-Message-State: AOAM533Dv7KW2xlR/4AvM/3vPUxgZgbdfOamVsMz4k4VL77AeCMSbKPj
-        +ka7Ow+o8mjIod32DncE+StlnA==
-X-Google-Smtp-Source: ABdhPJzOeMnbeszmHXXVmi9cS1WP+C6v+N9/fl+FfYjF90m7DrLtS9Wxsh//Et3QXAUgw7l8F9buNA==
-X-Received: by 2002:a1c:e908:: with SMTP id q8mr6088247wmc.59.1593439494664;
-        Mon, 29 Jun 2020 07:04:54 -0700 (PDT)
+        bh=ObKoaiwUBMsH7RgwRp2nwwP2sLs2C+zRlkZVkrEZxL8=;
+        b=k1yplDKU9lIg0/Ae9q/nRm3eEKr1vQK/5Qdgkj3SuvjX0hWE1SBoM9vqRYFNACr60l
+         ywWkllpV66mvxIlv9REzs01Wdm9kvTqUkCmZSOrk3ywZje7sCJQTuTndXwogLTuwCuNh
+         oXjA8DyPFHkgpXLjvfCzyaqw2EqF0IVZhYFUxuz82WHnYSEilNVQZhXxU8BFkEK2i/6P
+         zbaAsXSMSJZSr9n8Me8ItiHqRC9wVsivfLByhgMLatuXYNe3/NVNJflWPnzmwpOQlFhc
+         Q94BUAKwYHENpLJdCeoMFBlyehBKt3xJwMrKKZJAsB4OChqknOgqbxU9pvn7+6gNrofm
+         n0Qg==
+X-Gm-Message-State: AOAM533Z4KTnqWy3iZx5cVIjGSunuzUpB/dlNZEQB45hBtTtGbL7SJav
+        oLxD/D/+IBJ3UkGqh83FKP1/Sw==
+X-Google-Smtp-Source: ABdhPJxkqzk0GPRCr9K1MAup+ksNzBdsY/taKwJeGxTcrmTr/Z34GpJMd3SoWqWuUsqXZ3BvIKddTg==
+X-Received: by 2002:adf:fe0e:: with SMTP id n14mr16825329wrr.325.1593439507115;
+        Mon, 29 Jun 2020 07:05:07 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.04.53
+        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.05.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 07:04:54 -0700 (PDT)
+        Mon, 29 Jun 2020 07:05:06 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Tomer Tayar <ttayar@habana.ai>
-Subject: [PATCH 07/20] misc: habanalabs: pci: Scrub documentation for non-present function argument
-Date:   Mon, 29 Jun 2020 15:04:29 +0100
-Message-Id: <20200629140442.1043957-8-lee.jones@linaro.org>
+        Michael Jung <mijung@gmx.net>,
+        Michael Ruettger <michael@ibmra.de>,
+        Frank Haverkamp <haver@linux.ibm.com>,
+        Joerg-Stephan Vogt <jsvogt@de.ibm.com>
+Subject: [PATCH 17/20] misc: genwqe: card_base: Do not  pass unused argument 'fatal_err'
+Date:   Mon, 29 Jun 2020 15:04:39 +0100
+Message-Id: <20200629140442.1043957-18-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629140442.1043957-1-lee.jones@linaro.org>
 References: <20200629140442.1043957-1-lee.jones@linaro.org>
@@ -67,32 +69,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'dma_mask' is not passed directly into hl_pci_set_dma_mask() as
-an argument.  Instead, it is pulled from struct hl_device *hdev.
+'fatal_err' is taken as an argument to a static function which is only
+invoked once.  During this invocation 'fatal_err' is not set.  There
+doesn't appear to be a good reason to keep it around.
 
-Fixed the following W=1 warning:
+Also fixes the following W=1 kernel build warning:
 
- drivers/misc/habanalabs/pci.c:328: warning: Excess function parameter 'dma_mask' description in 'hl_pci_set_dma_mask
+ drivers/misc/genwqe/card_base.c:588: warning: Function parameter or member 'fatal_err' not described in 'genwqe_recover_card'
 
-Cc: Oded Gabbay <oded.gabbay@gmail.com>
-Cc: Tomer Tayar <ttayar@habana.ai>
+Cc: Michael Jung <mijung@gmx.net>
+Cc: Michael Ruettger <michael@ibmra.de>
+Cc: Frank Haverkamp <haver@linux.ibm.com>
+Cc: Joerg-Stephan Vogt <jsvogt@de.ibm.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/habanalabs/pci.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/misc/genwqe/card_base.c | 18 +++---------------
+ 1 file changed, 3 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/pci.c b/drivers/misc/habanalabs/pci.c
-index 24073e8eb8df9..61a8bb07262cf 100644
---- a/drivers/misc/habanalabs/pci.c
-+++ b/drivers/misc/habanalabs/pci.c
-@@ -317,7 +317,6 @@ int hl_pci_init_iatu(struct hl_device *hdev, u64 sram_base_address,
+diff --git a/drivers/misc/genwqe/card_base.c b/drivers/misc/genwqe/card_base.c
+index bceebf49de2d5..809a6f46f6de3 100644
+--- a/drivers/misc/genwqe/card_base.c
++++ b/drivers/misc/genwqe/card_base.c
+@@ -569,30 +569,18 @@ static int genwqe_stop(struct genwqe_dev *cd)
+ 
  /**
-  * hl_pci_set_dma_mask() - Set DMA masks for the device.
-  * @hdev: Pointer to hl_device structure.
-- * @dma_mask: number of bits for the requested dma mask.
+  * genwqe_recover_card() - Try to recover the card if it is possible
+- *
+- * If fatal_err is set no register access is possible anymore. It is
+- * likely that genwqe_start fails in that situation. Proper error
+- * handling is required in this case.
++ * @cd: GenWQE device information
   *
-  * This function sets the DMA masks (regular and consistent) for a specified
-  * value. If it doesn't succeed, it tries to set it to a fall-back value
+  * genwqe_bus_reset() will cause the pci code to call genwqe_remove()
+  * and later genwqe_probe() for all virtual functions.
+  */
+-static int genwqe_recover_card(struct genwqe_dev *cd, int fatal_err)
++static int genwqe_recover_card(struct genwqe_dev *cd)
+ {
+ 	int rc;
+ 	struct pci_dev *pci_dev = cd->pci_dev;
+ 
+ 	genwqe_stop(cd);
+ 
+-	/*
+-	 * Make sure chip is not reloaded to maintain FFDC. Write SLU
+-	 * Reset Register, CPLDReset field to 0.
+-	 */
+-	if (!fatal_err) {
+-		cd->softreset = 0x70ull;
+-		__genwqe_writeq(cd, IO_SLC_CFGREG_SOFTRESET, cd->softreset);
+-	}
+-
+ 	rc = genwqe_bus_reset(cd);
+ 	if (rc != 0) {
+ 		dev_err(&pci_dev->dev,
+@@ -958,7 +946,7 @@ static int genwqe_health_thread(void *data)
+ 
+ 			cd->card_state = GENWQE_CARD_FATAL_ERROR;
+ 
+-			rc = genwqe_recover_card(cd, 0);
++			rc = genwqe_recover_card(cd);
+ 			if (rc < 0) {
+ 				/* FIXME Card is unusable and needs unbind! */
+ 				goto fatal_error;
 -- 
 2.25.1
 
