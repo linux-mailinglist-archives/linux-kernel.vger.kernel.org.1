@@ -2,116 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A0820E605
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7C520E5F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403996AbgF2Vni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37580 "EHLO
+        id S2403953AbgF2VnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727849AbgF2Sht (ORCPT
+        with ESMTP id S1727875AbgF2Shw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:49 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F53DC031C7E;
-        Mon, 29 Jun 2020 11:18:20 -0700 (PDT)
-Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 2AD6822FE5;
-        Mon, 29 Jun 2020 20:18:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1593454698;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cNOkHiPv2byQuAj2pn9ZPa3+Ddro6cPpf6otG6XMIXU=;
-        b=Qt5Lh88+98GRoG6VG+zgAmNMRTGGa5VpEv+Ku63uodMS0RsBKLYndk4AYHhmRbWS8RtJ6w
-        UYR3Ctbmic8zNcTFOnYMnlHam8JyvG0QERHY2zeMl3NObqvIJQpNv+AE/65FH/xg5yR9qY
-        wSoZZ3y9pgoFrus6TXetUx3rMtdENHE=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH 2/2] can: flexcan: add support for ISO CAN-FD
-Date:   Mon, 29 Jun 2020 20:18:09 +0200
-Message-Id: <20200629181809.25338-3-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200629181809.25338-1-michael@walle.cc>
-References: <20200629181809.25338-1-michael@walle.cc>
+        Mon, 29 Jun 2020 14:37:52 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DF2C031C7F
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:18:32 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id a127so8221478pfa.12
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:18:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RVpg6vIouDiH3on4zq6Qkvcb4IcnV9Eg7LBox0nJvvM=;
+        b=TG6rKq8OIgA/7NkvNhVbwcp7Zv81JPFjOf+X5UcCa1t+7uVP1xbpgSP9j7A1oaOrDB
+         URqVDRAfG2f8ZVotshyU0N6vx7j9gnEMkN2ZKla0nhU8H+hqEabOCXFHgrmhkdiUNDc0
+         c10xCi1y0+t2AOlKgfjDJ3AF633ROwnB2UluF8oFnaHIxW/ZNI4eeEh/Tnaf0n3YeW+T
+         YTW9iGyu6ShQ6xVj1DqYA0MHDO/YQTZJ6l/Re/dhnJklZQC8rIkaANrpwMxz2E/eYA6E
+         q6tGvHjkbrH7RdYeDdgMCAj7jYCOqIERf7OTSeWu13R4TJZinjirQ0MiAVPZ4kdnGlSh
+         PMWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RVpg6vIouDiH3on4zq6Qkvcb4IcnV9Eg7LBox0nJvvM=;
+        b=WGwJqk95sXsvtpldIN0w2oQEpXj0A05PF4edrwN9J2AgDq3jmm+2WPQ5e/VxqFoDad
+         wMXyFD2A+oUNCknCGYR9bhhnYtHO82IGaEaLc7AQPyTFdsQegm3nNixv/lgte0VtaR0y
+         E7Iv7NlX5MIiHrEL9P0oRBwEQ/wU1kl4NFOYvtKbuqgDQjmcAbDtt6gK2yjMXIZwdce9
+         1luEoPZgvimXZSv8XHs8yYbQwipCGtVayd0W+bjAtaWAljDkQ1hdGVRKh1xOuTTe3bbj
+         5GBxeywrHUPsKnFdhZYpV51UF1SfTNyKMax0zOx2hBhLx/SakJE74jCG2IZ7k0w0qJUA
+         6toA==
+X-Gm-Message-State: AOAM533KzOw0cKC5OwbzqJxEhaLujCESvNVC5PXagVUu/3/fDigYw0ew
+        uT0OaHt5bXGlI9RnsLIikniFZxYUwx2RniMeqke2vs8H
+X-Google-Smtp-Source: ABdhPJx9DCxKOqTyOvK/N39qAKQF4pHJeiMiGtVuafF9ig7zbCcl+2HZ5M9JzPJoDZZmvSgVG0JvPipv8QimLEaooNg=
+X-Received: by 2002:a63:5644:: with SMTP id g4mr11018260pgm.381.1593454711516;
+ Mon, 29 Jun 2020 11:18:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <202006210249.QHly8bQZ%lkp@intel.com> <CA+h21hpABfDvthiwq_JwWGpqZ68VJxu5TOBVbw_Gaxpq8j+XQg@mail.gmail.com>
+ <CAKwvOdnAKR_CtOccZohR_r1kzKKVuvo8LbpLi0s3ek+3u+c_zw@mail.gmail.com> <CA+h21hokCCF52O1wxkg0gLqS9ZcGtB0xMBm07_--i56=anJ=Rg@mail.gmail.com>
+In-Reply-To: <CA+h21hokCCF52O1wxkg0gLqS9ZcGtB0xMBm07_--i56=anJ=Rg@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 29 Jun 2020 11:18:20 -0700
+Message-ID: <CAKwvOdkcPWT4krC5FuCpiXaoY+GiTeUa=CiamFCk5tPJOz4Cjw@mail.gmail.com>
+Subject: Re: drivers/gpu/drm/panel/panel-samsung-ld9040.c:240:12: warning:
+ stack frame size of 8312 bytes in function 'ld9040_prepare'
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Up until now, the controller used non-ISO CAN-FD mode, although it
-supports it. Add support for ISO mode, too. By default the hardware
-is in non-ISO mode and an enable bit has to be explicitly set.
+On Sat, Jun 27, 2020 at 12:43 PM Vladimir Oltean <olteanv@gmail.com> wrote:
+>
+> Hi Nick,
+>
+> On Mon, 22 Jun 2020 at 19:50, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> >
+>
+> > > I really don't get what's the problem here. The listing of
+> > > ld9040_prepare at the given commit and with the given .config is:
+> >
+> > I wrote a tool to help debug these.
+> > https://github.com/ClangBuiltLinux/frame-larger-than
+> > If you fetch the randconfig and rebuild with debug info, that tool
+> > will help show you which variables are used in which stack frames and
+> > what their sizes are.  Also note that strange things get dug up from
+> > randconfigs.
+> >
+> >
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
+>
+> I ran your tool and it basically told me that all 11 calls to
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/net/can/flexcan.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+Cool? No bugs running it? (I still need to extend support for many
+architectures)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 183e094f8d66..a92d3cdf4195 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -94,6 +94,7 @@
- #define FLEXCAN_CTRL2_MRP		BIT(18)
- #define FLEXCAN_CTRL2_RRS		BIT(17)
- #define FLEXCAN_CTRL2_EACEN		BIT(16)
-+#define FLEXCAN_CTRL2_ISOCANFDEN	BIT(12)
- 
- /* FLEXCAN memory error control register (MECR) bits */
- #define FLEXCAN_MECR_ECRWRDIS		BIT(31)
-@@ -1344,14 +1345,25 @@ static int flexcan_chip_start(struct net_device *dev)
- 	else
- 		reg_mcr |= FLEXCAN_MCR_SRX_DIS;
- 
--	/* MCR - CAN-FD */
--	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
-+	/* MCR, CTRL2
-+	 *
-+	 * CAN-FD mode
-+	 * ISO CAN-FD mode
-+	 */
-+	reg_ctrl2 = priv->read(&regs->ctrl2);
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
- 		reg_mcr |= FLEXCAN_MCR_FDEN;
--	else
-+		reg_ctrl2 |= FLEXCAN_CTRL2_ISOCANFDEN;
-+	} else {
- 		reg_mcr &= ~FLEXCAN_MCR_FDEN;
-+	}
-+
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO)
-+		reg_ctrl2 &= ~FLEXCAN_CTRL2_ISOCANFDEN;
- 
- 	netdev_dbg(dev, "%s: writing mcr=0x%08x", __func__, reg_mcr);
- 	priv->write(reg_mcr, &regs->mcr);
-+	priv->write(reg_ctrl2, &regs->ctrl2);
- 
- 	/* CTRL
- 	 *
-@@ -1952,6 +1964,7 @@ static int flexcan_probe(struct platform_device *pdev)
- 
- 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SUPPORT_FD) {
- 		priv->can.ctrlmode_supported |= CAN_CTRLMODE_FD;
-+		priv->can.ctrlmode_supported |= CAN_CTRLMODE_FD_NON_ISO;
- 		priv->can.bittiming_const = &flexcan_fd_bittiming_const;
- 		priv->can.data_bittiming_const =
- 			&flexcan_fd_data_bittiming_const;
+> ld9040_dcs_write from within ld9040_init are inlined by the compiler.
+> Each of these ld9040_dcs_write functions calls ld9040_spi_write_word
+> twice, so 22 inline calls to that. Now, sizeof(struct
+> spi_transfer)=136 and sizeof(struct spi_message)=104, so, no wonder we
+> run out of stack pretty quickly.
+
+I'd expect these to have distinct lifetimes resulting in stack slot
+reuse.  When the compiler inlines functions, it introduces a lexical
+scope. You can imagine it inlining the body, but within a new `{}`
+delineated compound statement.  Then the compiler knows that the
+variables local to those scopes can't outlive each other, and can
+reuse their stack slots in the containing function.  Escape analysis
+comes into play, too, but I'm not sure that's an issue here.
+
+>
+> But my question is: what's wrong with the code, if anything at all?
+
+The general case we try to find+fix with this warning is excessively
+large stack allocations that probably should be heap allocated,
+percpu, or static.  Also, the `noinline_for_stack` function annotation
+is used frequently for this.
+
+One known case of issues are the sanitizers, which can generally
+prevent the reuse of stack slots.  Were any of those set in this
+config, since this was a randconfig?  I'd check this first, then
+consider if `noinline_for_stack` is appropriate on any of the related
+functions.
+
+> Why does the compiler try to inline it, and then complain that it's
+> using too much stack
+
+The flag -Wframe-larger-than= is a warning on semantics, not really an
+optimization flag controlling the maximum stack depth of the function
+being inlined into.
+
+> when basically nobody appears to have asked it to
+> inline it?
+
+That's not really how inlining works.  If you don't specify compiler
+attributes, then the compiler can decide to inline or not at its
+discretion.  The `inline` keyword or its absence doesn't really affect
+this.  __attribute__((always_inline)) and __attribute__((noinline))
+can give you more control, but there are hyper obscure edge cases
+where even those don't work as advertised.
+
 -- 
-2.20.1
-
+Thanks,
+~Nick Desaulniers
