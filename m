@@ -2,159 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E112C20E2D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB30120E305
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390459AbgF2VIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390439AbgF2VIo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:08:44 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 475D5C03E979
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:08:44 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id g13so14009474qtv.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:08:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PbUqdK1otFEuJAwkKU1CGhmnKqFJa2aBCYhP9X9TuK8=;
-        b=Prw+e3qTN9JwuIoiIug0Niirg1ym+zVjLsyNSzSMsWW/rrTwPpz6oR3SZgBTuZZKyr
-         qqHnF0cFCgyKjCq1GNdB0P5a9qFBHfo1z3qfvmHCMugOFPVjpffw4PF3nYMsh8FMzacd
-         QOo3cKUkDXvrUmL0ueE6l7YrQH23TQwpl3bSw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PbUqdK1otFEuJAwkKU1CGhmnKqFJa2aBCYhP9X9TuK8=;
-        b=hDUN51wpcr8CBVcRqeHE7gUIXzpxjOrxrR8iC9/TGmTxy5edfY4rbA2EPjzm0l037v
-         tYj+UHiKdADZvs7nxjdpzGi5yV/hWzBXEGqQKRxKC3gV4ANZJROlibWYTxUoPFH/LVz6
-         m5MiT9r45M57snHLkOSUXoiXmUdiqAWBBLCWDRRK1YXfl8DjFhLGJi6+XbYnsJJvq+Q6
-         e6ZHtyzUnE4n4DEqfEMut/1JmeU2tp610qC5sn9XfAiC2WU9bpL3uVeMPYEBHY4+cqtq
-         s+SYOvqlN/K14unBk6fRucsHR7otzgeDjNteXNILQ77i36GM5YjkSwi916wF3b6+6MFY
-         kwbQ==
-X-Gm-Message-State: AOAM532jTcShKY361FwM4KTrOw2o1nb3bIiV7p4AiRxhSyuXFdQOOfmP
-        aAuk8H5qG1ajztGjWbsvsj6Vaxw6PiZWHFH0ZV9QTQ==
-X-Google-Smtp-Source: ABdhPJxVPp7ZUB1Hy3lQG+5hOinD9KhlF5RhGa4Utgi0hBsSBGgXhKCXFd15P2JzxT7RwmVyK03V4nMGut8WCru7OHg=
-X-Received: by 2002:ac8:2a3d:: with SMTP id k58mr2187470qtk.265.1593464923410;
- Mon, 29 Jun 2020 14:08:43 -0700 (PDT)
+        id S2388390AbgF2VKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:10:50 -0400
+Received: from www.zeus03.de ([194.117.254.33]:59276 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390538AbgF2VKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 17:10:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=1R5VbfyjnCD0CmpFWZBQGlSYfWm+
+        NoLCMYa6SRuHNZI=; b=DuUNS0rIyBlqryiO1lADl4AQ5JfcuOPcJDV2IVFGM+pG
+        BxMC/hkT5dkyCGF6Q1HTk4aJwCOLxenQqr8CAwZ8iWxCG9hxIYJYDosJU+dNoPJO
+        Wze1Y9QWn06Sop7cYVo1anfQUotBy+ag5oUFAmqaYsB6C/ClU4FdFIxQ5eTRYoo=
+Received: (qmail 2172219 invoked from network); 29 Jun 2020 23:10:30 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Jun 2020 23:10:30 +0200
+X-UD-Smtp-Session: l3s3148p1@IvsbfT+pqsMgAwDPXwOPAI5mQFP60fXe
+Date:   Mon, 29 Jun 2020 23:10:27 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     corbet@lwn.net, aaro.koskinen@iki.fi, tony@atomide.com,
+        linux@armlinux.org.uk, daniel@zonque.org, haojian.zhuang@gmail.com,
+        robert.jarzmik@free.fr, kgene@kernel.org, krzk@kernel.org,
+        dmitry.torokhov@gmail.com, lee.jones@linaro.org,
+        ulf.hansson@linaro.org, davem@davemloft.net, kuba@kernel.org,
+        b.zolnierkie@samsung.com, j.neuschaefer@gmx.net,
+        mchehab+samsung@kernel.org, gustavo@embeddedor.com,
+        gregkh@linuxfoundation.org, yanaijie@huawei.com,
+        daniel.vetter@ffwll.ch, rafael.j.wysocki@intel.com,
+        Julia.Lawall@inria.fr, linus.walleij@linaro.org,
+        viresh.kumar@linaro.org, arnd@arndb.de, jani.nikula@intel.com,
+        yuehaibing@huawei.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH] Remove handhelds.org links and email addresses
+Message-ID: <20200629211027.GA1481@kunai>
+References: <20200629203121.7892-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-References: <20200629163851.2130450-1-pmalani@chromium.org> <CABXOdTe-hY98YFusFkS+C8iVWZANVWcavpKSmaYtjC11yMgFrg@mail.gmail.com>
-In-Reply-To: <CABXOdTe-hY98YFusFkS+C8iVWZANVWcavpKSmaYtjC11yMgFrg@mail.gmail.com>
-From:   Prashant Malani <pmalani@chromium.org>
-Date:   Mon, 29 Jun 2020 14:08:31 -0700
-Message-ID: <CACeCKaeqw7Lj7z3DYDvR0j6x+ud3BcxVgxb9-sQ3ZS0ks_f7gg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] platform/chrome: cros_ec_typec: Use workqueue for
- port update
-To:     Guenter Roeck <groeck@google.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="G4iJoqBmSsgzjUCe"
+Content-Disposition: inline
+In-Reply-To: <20200629203121.7892-1-grandmaster@al2klimov.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
 
-Thanks for the comments.
+--G4iJoqBmSsgzjUCe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Mon, Jun 29, 2020 at 2:05 PM Guenter Roeck <groeck@google.com> wrote:
->
-> On Mon, Jun 29, 2020 at 9:38 AM Prashant Malani <pmalani@chromium.org> wrote:
-> >
-> > Use a work queue to call the port update routines, instead of doing it
-> > directly in the PD notifier callback. This will prevent other drivers
-> > with PD notifier callbacks from being blocked on the port update routine
-> > completing.
-> >
-> > Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> > ---
-> >
-> > Changes in v3:
-> > - Use new 100 character line length limit.
-> >
-> > Changes in v2:
-> > - No changes.
-> >
-> >  drivers/platform/chrome/cros_ec_typec.c | 25 ++++++++++++++++++++-----
-> >  1 file changed, 20 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> > index 0c041b79cbba..0beb62bf5adf 100644
-> > --- a/drivers/platform/chrome/cros_ec_typec.c
-> > +++ b/drivers/platform/chrome/cros_ec_typec.c
-> > @@ -58,6 +58,7 @@ struct cros_typec_data {
-> >         /* Array of ports, indexed by port number. */
-> >         struct cros_typec_port *ports[EC_USB_PD_MAX_PORTS];
-> >         struct notifier_block nb;
-> > +       struct work_struct port_work;
-> >  };
-> >
-> >  static int cros_typec_parse_port_props(struct typec_capability *cap,
-> > @@ -619,18 +620,26 @@ static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
-> >         return 0;
-> >  }
-> >
-> > -static int cros_ec_typec_event(struct notifier_block *nb,
-> > -                              unsigned long host_event, void *_notify)
-> > +static void cros_typec_port_work(struct work_struct *work)
-> >  {
-> > -       struct cros_typec_data *typec = container_of(nb, struct cros_typec_data,
-> > -                                                    nb);
-> > -       int ret, i;
-> > +       struct cros_typec_data *typec = container_of(work, struct cros_typec_data, port_work);
-> > +       int ret;
-> > +       int i;
-> >
->
-> I know I am getting picky here, but this seems like a personal
-> preference change. There is no "one variable declaration per line"
-> coding style rule.
+Hi Alexander,
 
-Done.
->
-> >         for (i = 0; i < typec->num_ports; i++) {
-> >                 ret = cros_typec_port_update(typec, i);
-> >                 if (ret < 0)
-> >                         dev_warn(typec->dev, "Update failed for port: %d\n", i);
-> >         }
-> > +}
-> > +
-> > +
->
-> ... but anyway, there should be no double empty lines.
->
+thanks for trying to fix this, yet I have some doubts.
 
-Done.
-> > +static int cros_ec_typec_event(struct notifier_block *nb,
-> > +                              unsigned long host_event, void *_notify)
-> > +{
-> > +       struct cros_typec_data *typec = container_of(nb, struct cros_typec_data, nb);
-> > +
-> > +       schedule_work(&typec->port_work);
-> >
-> >         return NOTIFY_OK;
-> >  }
-> > @@ -689,6 +698,12 @@ static int cros_typec_probe(struct platform_device *pdev)
-> >         if (ret < 0)
-> >                 return ret;
-> >
-> > +       INIT_WORK(&typec->port_work, cros_typec_port_work);
-> > +
-> > +       /*
-> > +        * Safe to call port update here, since we haven't registered the
-> > +        * PD notifier yet.
-> > +        */
-> >         for (i = 0; i < typec->num_ports; i++) {
-> >                 ret = cros_typec_port_update(typec, i);
-> >                 if (ret < 0)
-> > --
-> > 2.27.0.212.ge8ba1cc988-goog
-> >
+On Mon, Jun 29, 2020 at 10:31:21PM +0200, Alexander A. Klimov wrote:
+> Rationale:
+> https://lore.kernel.org/linux-doc/20200626110706.7b5d4a38@lwn.net/
+
+I think we need some text here. Clicking on a link to understand what a
+patch is about is not comfortable. You can add the link with a Link: tag
+for additional information.
+
+Removing stale email addresses may have some value, but removing...
+
+>  Compaq's Bootldr + John Dorsey's patch for Assabet support
+> -(http://www.handhelds.org/Compaq/bootldr.html)
+
+... information like this is not good. 'Wayback machine' still has
+copies in case someone wants to look at where the infos came from.
+
+> - * Copyright 2004-2005  Phil Blundell <pb@handhelds.org>
+> + * Copyright 2004-2005  Phil Blundell
+
+This is an OK case in my book...
+
+
+> -MODULE_AUTHOR("Phil Blundell <pb@handhelds.org>");
+> +MODULE_AUTHOR("Phil Blundell");
+
+... same here ...
+
+> @@ -435,7 +435,6 @@
+>                             case a PCI bridge (DEC chip 21152). The value of
+>                             'pb' is now only initialized if a de4x5 chip is
+>                             present.
+> -                           <france@handhelds.org>
+
+This is kind of a signature and should be kept IMO.
+
+>   * 2001/07/23: <rmk@arm.linux.org.uk>
+> - *	- Hand merge version from handhelds.org CVS tree.  See patch
+> + *	- Hand merge version from CVS tree.  See patch
+
+That information may be useful.
+
+
+>  /* SPDX-License-Identifier: GPL-2.0-only */
+>  /* -*- linux-c -*-
+> - *
+> - * (C) 2003 zecke@handhelds.org
+
+Removing copyright is a bad idea.
+
+Probably some comment blocks are cruft meanwhile and can be removed as a
+whole. That can be discussed. But removing only the handhelds.org part
+makes most parts worse IMHO.
+
+Thanks and happy hacking,
+
+   Wolfram
+
+
+--G4iJoqBmSsgzjUCe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl76WMAACgkQFA3kzBSg
+KbZgWA/+IxRkb15JXVvwYM1c4ReuUiEUrJ0KOI0M0XELe0YWelDrhgcOtSC0ozRT
+lTt8uizNNBK4bsRpoo+ghjZvNELOeMx+4VsVtMM+IoXXxIKha1jSJ1hqFDsBcCP0
+urAvhdaNyC+TWmEM2H98eb5JfdSxKxrzjIMs4tTBlZOBnu+wAoiDZv4mPf/y1bGv
+L33lwlFG6tkWpVX2veVNoTg04TG0LupAtXUyiI+Hnxt7srbugymQs0iwtd5sCt2R
+AG+BmuN5zmUS5cISCL6p1uXSxVRrs3FI02dwU7m5yvBfvHHSGVsx+f9wPpnpqNc8
+1I3oAR+Ct2K3lvu3uLBY2xDL4WbTmPobmzGLXbwB8ksPC/B1TV5LC/+TI2F+c+gk
+ROaTdQqzt4H0wfzNFOzYT8zGyZOoiPFro7jxCcH9CZjbkeDi19sJt7TQ6I1B0I9+
+bSTAb7s3yWhzUypFHzdR0PT97e8zeiK/xJUTbPkvv+JsDZZvPht423X7CYEUjaCo
+sPQ5UuDSfS4xT25PBabjhNeunmODzCE/+DrtbOSuM5AV63TOoVMB8zWBoJH17emH
+mRgD29xeEITWlq/fBWcPWIjgFDVanjDPYIW2/jnGqm7RLTaw703ajQSbD/7ELOAB
+84gr1NpIeJuhMnRnB11nHCJsUWnRqvl2rt7lretb/tFUB8LhGFE=
+=FQ9k
+-----END PGP SIGNATURE-----
+
+--G4iJoqBmSsgzjUCe--
