@@ -2,252 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A9820D886
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C77120D889
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387535AbgF2Tjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:39:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40570 "EHLO mail.kernel.org"
+        id S1733005AbgF2Tjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:39:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733004AbgF2Tad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732999AbgF2Tad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Jun 2020 15:30:33 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 46A3E251EB;
-        Mon, 29 Jun 2020 15:35:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 44BBF252C4;
+        Mon, 29 Jun 2020 15:38:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593444911;
-        bh=zhDviILGrP7MEy5wU5vTBeWiRXOj8U5WPd55gq7vL/Y=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=X/uofipCG3PEl+Pm/dKaREUsIwGJ6KOUa15O99jy7/cqQQQYaxZR2vU0LuTLguRsN
-         14OFjlHLJKCyts5b6zAz/WLyUiZXqYkHXrEOht1SNbIr161vxXjYZjbgq8zjmKqugk
-         jz4Oo5T2A7VpDrvlMT7mrSGuQygCGjQ7AP17BHL8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 33EA83522641; Mon, 29 Jun 2020 08:35:11 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 08:35:11 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Anton Blanchard <anton@ozlabs.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ring-buffer: speed up buffer resets by avoiding
- synchronize_rcu for each CPU
-Message-ID: <20200629153511.GX9247@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200625053403.2386972-1-npiggin@gmail.com>
+        s=default; t=1593445089;
+        bh=NbzUEhDsiJpIOw0lMP+ImybHEIXHGCL2U9HM9AcxjqU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=p8+dq8mHnByroLLepvydWu/chZnPnIOjKai3YB8Hq2CFafa9ZnEd1ps8ualioQOEL
+         Sq7FLXy09ULSHULk81DNQDcoI/h+9B93EZVyelErYYbqkXa1n4jTiZFeC2/FfVs7rY
+         wmu7mJRvXooupkMti7D58ogcrnM4SpWiU7thAw6Q=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Sasha Levin <sashal@kernel.org>, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, ben.hutchings@codethink.co.uk,
+        lkft-triage@lists.linaro.org
+Subject: [PATCH 4.14 00/78] 4.14.186-rc1 review
+Date:   Mon, 29 Jun 2020 11:36:48 -0400
+Message-Id: <20200629153806.2494953-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200625053403.2386972-1-npiggin@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.186-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.14.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.14.186-rc1
+X-KernelTest-Deadline: 2020-07-01T15:38+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 03:34:03PM +1000, Nicholas Piggin wrote:
-> On a 144 thread system, `perf ftrace` takes about 20 seconds to start
-> up, due to calling synchronize_rcu() for each CPU.
-> 
->   cat /proc/108560/stack
->     0xc0003e7eb336f470
->     __switch_to+0x2e0/0x480
->     __wait_rcu_gp+0x20c/0x220
->     synchronize_rcu+0x9c/0xc0
->     ring_buffer_reset_cpu+0x88/0x2e0
->     tracing_reset_online_cpus+0x84/0xe0
->     tracing_open+0x1d4/0x1f0
-> 
-> On a system with 10x more threads, it starts to become an annoyance.
-> 
-> Batch these up so we disable all the per-cpu buffers first, then
-> synchronize_rcu() once, then reset each of the buffers. This brings
-> the time down to about 0.5s.
-> 
-> Cc: Paul McKenney <paulmck@kernel.org>
-> Cc: Anton Blanchard <anton@ozlabs.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 
-Looks plausible from an RCU viewpoint:
+This is the start of the stable review cycle for the 4.14.186 release.
+There are 78 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
+Responses should be made by Wed 01 Jul 2020 03:38:04 PM UTC.
+Anything received after that time might be too late.
 
-> ---
->  include/linux/ring_buffer.h |  1 +
->  kernel/trace/ring_buffer.c  | 85 +++++++++++++++++++++++++++++++------
->  kernel/trace/trace.c        |  4 +-
->  3 files changed, 73 insertions(+), 17 deletions(-)
-> 
-> diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-> index c76b2f3b3ac4..136ea0997e6d 100644
-> --- a/include/linux/ring_buffer.h
-> +++ b/include/linux/ring_buffer.h
-> @@ -143,6 +143,7 @@ bool ring_buffer_iter_dropped(struct ring_buffer_iter *iter);
->  unsigned long ring_buffer_size(struct trace_buffer *buffer, int cpu);
->  
->  void ring_buffer_reset_cpu(struct trace_buffer *buffer, int cpu);
-> +void ring_buffer_reset_online_cpus(struct trace_buffer *buffer);
->  void ring_buffer_reset(struct trace_buffer *buffer);
->  
->  #ifdef CONFIG_RING_BUFFER_ALLOW_SWAP
-> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-> index b8e1ca48be50..3f1fd02bd14a 100644
-> --- a/kernel/trace/ring_buffer.c
-> +++ b/kernel/trace/ring_buffer.c
-> @@ -270,6 +270,9 @@ EXPORT_SYMBOL_GPL(ring_buffer_event_data);
->  #define for_each_buffer_cpu(buffer, cpu)		\
->  	for_each_cpu(cpu, buffer->cpumask)
->  
-> +#define for_each_online_buffer_cpu(buffer, cpu)		\
-> +	for_each_cpu_and(cpu, buffer->cpumask, cpu_online_mask)
-> +
->  #define TS_SHIFT	27
->  #define TS_MASK		((1ULL << TS_SHIFT) - 1)
->  #define TS_DELTA_TEST	(~TS_MASK)
-> @@ -4484,6 +4487,26 @@ rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
->  	rb_head_page_activate(cpu_buffer);
->  }
->  
-> +/* Must have disabled the cpu buffer then done a synchronize_rcu */
-> +static void reset_disabled_cpu_buffer(struct ring_buffer_per_cpu *cpu_buffer)
-> +{
-> +	unsigned long flags;
-> +
-> +	raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
-> +
-> +	if (RB_WARN_ON(cpu_buffer, local_read(&cpu_buffer->committing)))
-> +		goto out;
-> +
-> +	arch_spin_lock(&cpu_buffer->lock);
-> +
-> +	rb_reset_cpu(cpu_buffer);
-> +
-> +	arch_spin_unlock(&cpu_buffer->lock);
-> +
-> + out:
-> +	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
-> +}
-> +
->  /**
->   * ring_buffer_reset_cpu - reset a ring buffer per CPU buffer
->   * @buffer: The ring buffer to reset a per cpu buffer of
-> @@ -4492,7 +4515,6 @@ rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
->  void ring_buffer_reset_cpu(struct trace_buffer *buffer, int cpu)
->  {
->  	struct ring_buffer_per_cpu *cpu_buffer = buffer->buffers[cpu];
-> -	unsigned long flags;
->  
->  	if (!cpumask_test_cpu(cpu, buffer->cpumask))
->  		return;
-> @@ -4503,24 +4525,42 @@ void ring_buffer_reset_cpu(struct trace_buffer *buffer, int cpu)
->  	/* Make sure all commits have finished */
->  	synchronize_rcu();
->  
-> -	raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
-> +	reset_disabled_cpu_buffer(cpu_buffer);
->  
-> -	if (RB_WARN_ON(cpu_buffer, local_read(&cpu_buffer->committing)))
-> -		goto out;
-> +	atomic_dec(&cpu_buffer->record_disabled);
-> +	atomic_dec(&cpu_buffer->resize_disabled);
-> +}
-> +EXPORT_SYMBOL_GPL(ring_buffer_reset_cpu);
->  
-> -	arch_spin_lock(&cpu_buffer->lock);
-> +/**
-> + * ring_buffer_reset_cpu - reset a ring buffer per CPU buffer
-> + * @buffer: The ring buffer to reset a per cpu buffer of
-> + * @cpu: The CPU buffer to be reset
-> + */
-> +void ring_buffer_reset_online_cpus(struct trace_buffer *buffer)
-> +{
-> +	struct ring_buffer_per_cpu *cpu_buffer;
-> +	int cpu;
->  
-> -	rb_reset_cpu(cpu_buffer);
-> +	for_each_online_buffer_cpu(buffer, cpu) {
-> +		cpu_buffer = buffer->buffers[cpu];
->  
-> -	arch_spin_unlock(&cpu_buffer->lock);
-> +		atomic_inc(&cpu_buffer->resize_disabled);
-> +		atomic_inc(&cpu_buffer->record_disabled);
-> +	}
->  
-> - out:
-> -	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
-> +	/* Make sure all commits have finished */
-> +	synchronize_rcu();
->  
-> -	atomic_dec(&cpu_buffer->record_disabled);
-> -	atomic_dec(&cpu_buffer->resize_disabled);
-> +	for_each_online_buffer_cpu(buffer, cpu) {
-> +		cpu_buffer = buffer->buffers[cpu];
-> +
-> +		reset_disabled_cpu_buffer(cpu_buffer);
-> +
-> +		atomic_dec(&cpu_buffer->record_disabled);
-> +		atomic_dec(&cpu_buffer->resize_disabled);
-> +	}
->  }
-> -EXPORT_SYMBOL_GPL(ring_buffer_reset_cpu);
->  
->  /**
->   * ring_buffer_reset - reset a ring buffer
-> @@ -4528,10 +4568,27 @@ EXPORT_SYMBOL_GPL(ring_buffer_reset_cpu);
->   */
->  void ring_buffer_reset(struct trace_buffer *buffer)
->  {
-> +	struct ring_buffer_per_cpu *cpu_buffer;
->  	int cpu;
->  
-> -	for_each_buffer_cpu(buffer, cpu)
-> -		ring_buffer_reset_cpu(buffer, cpu);
-> +	for_each_buffer_cpu(buffer, cpu) {
-> +		cpu_buffer = buffer->buffers[cpu];
-> +
-> +		atomic_inc(&cpu_buffer->resize_disabled);
-> +		atomic_inc(&cpu_buffer->record_disabled);
-> +	}
-> +
-> +	/* Make sure all commits have finished */
-> +	synchronize_rcu();
-> +
-> +	for_each_buffer_cpu(buffer, cpu) {
-> +		cpu_buffer = buffer->buffers[cpu];
-> +
-> +		reset_disabled_cpu_buffer(cpu_buffer);
-> +
-> +		atomic_dec(&cpu_buffer->record_disabled);
-> +		atomic_dec(&cpu_buffer->resize_disabled);
-> +	}
->  }
->  EXPORT_SYMBOL_GPL(ring_buffer_reset);
->  
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index ec44b0e2a19c..9a26a1c875ae 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -2003,7 +2003,6 @@ static void tracing_reset_cpu(struct array_buffer *buf, int cpu)
->  void tracing_reset_online_cpus(struct array_buffer *buf)
->  {
->  	struct trace_buffer *buffer = buf->buffer;
-> -	int cpu;
->  
->  	if (!buffer)
->  		return;
-> @@ -2015,8 +2014,7 @@ void tracing_reset_online_cpus(struct array_buffer *buf)
->  
->  	buf->time_start = buffer_ftrace_now(buf, buf->cpu);
->  
-> -	for_each_online_cpu(cpu)
-> -		ring_buffer_reset_cpu(buffer, cpu);
-> +	ring_buffer_reset_online_cpus(buffer);
->  
->  	ring_buffer_record_enable(buffer);
->  }
-> -- 
-> 2.23.0
-> 
+The whole patch series can be found in one patch at:
+	https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.14.y&id2=v4.14.185
+
+or in the git tree and branch at:
+        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+and the diffstat can be found below.
+
+--
+Thanks,
+Sasha
+
+-------------------------
+
+Pseudo-Shortlog of commits:
+
+Aaron Plattner (1):
+  ALSA: hda: Add NVIDIA codec IDs 9a & 9d through a0 to patch table
+
+Aditya Pakki (1):
+  rocker: fix incorrect error handling in dma_rings_init
+
+Al Cooper (1):
+  xhci: Fix enumeration issue when setting max packet size for FS
+    devices.
+
+Al Viro (1):
+  fix a braino in "sparc32: fix register window handling in
+    genregs32_[gs]et()"
+
+Alexander Lobakin (3):
+  net: qed: fix left elements count calculation
+  net: qed: fix NVMe login fails over VFs
+  net: qed: fix excessive QM ILT lines consumption
+
+Chuck Lever (1):
+  SUNRPC: Properly set the @subbuf parameter of xdr_buf_subsegment()
+
+Chuhong Yuan (1):
+  USB: ohci-sm501: Add missed iounmap() in remove
+
+Dan Carpenter (2):
+  usb: gadget: udc: Potential Oops in error handling code
+  Staging: rtl8723bs: prevent buffer overflow in
+    update_sta_support_rate()
+
+David Christensen (1):
+  tg3: driver sleeps indefinitely when EEH errors exceed eeh_max_freezes
+
+David Howells (2):
+  rxrpc: Fix notification call on completion of discarded calls
+  rxrpc: Fix handling of rwind from an ACK packet
+
+Denis Efremov (1):
+  drm/radeon: fix fb_div check in ni_init_smc_spll_table()
+
+Doug Berger (1):
+  net: bcmgenet: use hardware padding of runt frames
+
+Eric Dumazet (2):
+  net: be more gentle about silly gso requests coming from user
+  tcp: grow window for OOO packets only for SACK flows
+
+Fan Guo (1):
+  RDMA/mad: Fix possible memory leak in ib_mad_post_receive_mads()
+
+Filipe Manana (1):
+  btrfs: fix failure of RWF_NOWAIT write into prealloc extent beyond eof
+
+Jann Horn (1):
+  apparmor: don't try to replace stale label in ptraceme check
+
+Jeremy Kerr (1):
+  net: usb: ax88179_178a: fix packet alignment padding
+
+Jiping Ma (1):
+  arm64: perf: Report the PC value in REGS_ABI_32 mode
+
+Joakim Tjernlund (1):
+  cdc-acm: Add DISABLE_ECHO quirk for Microchip/SMSC chip
+
+Julian Scheel (1):
+  ALSA: usb-audio: uac1: Invalidate ctl on interrupt
+
+Junxiao Bi (3):
+  ocfs2: load global_inode_alloc
+  ocfs2: fix value of OCFS2_INVALID_SLOT
+  ocfs2: fix panic on nfs server over ocfs2
+
+Juri Lelli (1):
+  sched/core: Fix PI boosting between RT and DEADLINE tasks
+
+Kai-Heng Feng (1):
+  xhci: Poll for U0 after disabling USB2 LPM
+
+Longfang Liu (1):
+  USB: ehci: reopen solution for Synopsys HC bug
+
+Luis Chamberlain (1):
+  blktrace: break out of blktrace setup on concurrent calls
+
+Macpaul Lin (1):
+  usb: host: xhci-mtk: avoid runtime suspend when removing hcd
+
+Marcelo Ricardo Leitner (1):
+  sctp: Don't advertise IPv4 addresses if ipv6only is set on the socket
+
+Mark Zhang (1):
+  RDMA/cma: Protect bind_list and listen_list while finding matching cm
+    id
+
+Martin Wilck (1):
+  scsi: scsi_devinfo: handle non-terminated strings
+
+Masahiro Yamada (1):
+  kbuild: improve cc-option to clean up all temporary files
+
+Masami Hiramatsu (1):
+  tracing: Fix event trigger to accept redundant spaces
+
+Mathias Nyman (1):
+  xhci: Fix incorrect EP_STATE_MASK
+
+Matthew Hagan (1):
+  ARM: dts: NSP: Correct FA2 mailbox node
+
+Minas Harutyunyan (1):
+  usb: dwc2: Postponed gadget registration to the udc class driver
+
+Nathan Chancellor (1):
+  ACPI: sysfs: Fix pm_profile_attr type
+
+Neal Cardwell (1):
+  tcp_cubic: fix spurious HYSTART_DELAY exit upon drop in min RTT
+
+Olga Kornievskaia (1):
+  NFSv4 fix CLOSE not waiting for direct IO compeletion
+
+Qiushi Wu (2):
+  efi/esrt: Fix reference count leak in esre_create_sysfs_entry.
+  ASoC: rockchip: Fix a reference count leak.
+
+Russell King (1):
+  netfilter: ipset: fix unaligned atomic access
+
+Sasha Levin (1):
+  Linux 4.14.186-rc1
+
+Sean Christopherson (1):
+  KVM: nVMX: Plumb L2 GPA through to PML emulation
+
+Sven Schnelle (1):
+  s390/ptrace: fix setting syscall number
+
+Taehee Yoo (3):
+  ip_tunnel: fix use-after-free in ip_tunnel_lookup()
+  ip6_gre: fix use-after-free in ip6gre_tunnel_lookup()
+  net: core: reduce recursion limit value
+
+Takashi Iwai (3):
+  ALSA: usb-audio: Clean up mixer element list traverse
+  ALSA: usb-audio: Fix OOB access of mixer element list
+  ALSA: usb-audio: Fix invalid NULL check in snd_emuusb_set_samplerate()
+
+Tang Bin (1):
+  usb: host: ehci-exynos: Fix error check in exynos_ehci_probe()
+
+Tariq Toukan (1):
+  net: Do not clear the sock TX queue in sk_set_socket()
+
+Thomas Falcon (1):
+  ibmveth: Fix max MTU limit
+
+Thomas Martitz (1):
+  net: bridge: enfore alignment for ethernet address
+
+Tomasz Meresiński (1):
+  usb: add USB_QUIRK_DELAY_INIT for Logitech C922
+
+Trond Myklebust (1):
+  pNFS/flexfiles: Fix list corruption if the mirror count changes
+
+Valentin Longchamp (1):
+  net: sched: export __netdev_watchdog_up()
+
+Vasily Averin (1):
+  sunrpc: fixed rollback in rpc_gssd_dummy_populate()
+
+Waiman Long (1):
+  mm/slab: use memzero_explicit() in kzfree()
+
+Wang Hai (1):
+  mld: fix memory leak in ipv6_mc_destroy_dev()
+
+Xiaoyao Li (1):
+  KVM: X86: Fix MSR range of APIC registers in X2APIC mode
+
+Yang Yingliang (1):
+  net: fix memleak in register_netdevice()
+
+Ye Bin (1):
+  ata/libata: Fix usage of page address by page_address in
+    ata_scsi_mode_select_xlat function
+
+Yick W. Tse (1):
+  ALSA: usb-audio: add quirk for Denon DCD-1500RE
+
+Zekun Shen (1):
+  net: alx: fix race condition in alx_remove
+
+Zhang Xiaoxu (2):
+  cifs/smb3: Fix data inconsistent when punch hole
+  cifs/smb3: Fix data inconsistent when zero file range
+
+Zheng Bin (2):
+  loop: replace kill_bdev with invalidate_bdev
+  xfs: add agf freeblocks verify in xfs_agf_verify
+
+guodeqing (1):
+  net: Fix the arp error in some cases
+
+yu kuai (2):
+  block/bio-integrity: don't free 'buf' if bio_integrity_add_page()
+    failed
+  ARM: imx5: add missing put_device() call in imx_suspend_alloc_ocram()
+
+ Makefile                                      |  4 +--
+ arch/arm/boot/dts/bcm-nsp.dtsi                |  6 ++--
+ arch/arm/mach-imx/pm-imx5.c                   |  6 ++--
+ arch/arm64/kernel/perf_regs.c                 | 25 ++++++++++++--
+ arch/s390/kernel/ptrace.c                     | 31 ++++++++++++++++-
+ arch/sparc/kernel/ptrace_32.c                 |  9 +++--
+ arch/x86/include/asm/kvm_host.h               |  2 +-
+ arch/x86/kvm/mmu.c                            |  4 +--
+ arch/x86/kvm/mmu.h                            |  2 +-
+ arch/x86/kvm/paging_tmpl.h                    |  7 ++--
+ arch/x86/kvm/vmx.c                            |  5 ++-
+ arch/x86/kvm/x86.c                            |  4 +--
+ block/bio-integrity.c                         |  1 -
+ drivers/acpi/sysfs.c                          |  4 +--
+ drivers/ata/libata-scsi.c                     |  9 +++--
+ drivers/block/loop.c                          |  6 ++--
+ drivers/firmware/efi/esrt.c                   |  2 +-
+ drivers/gpu/drm/radeon/ni_dpm.c               |  2 +-
+ drivers/infiniband/core/cma.c                 | 18 ++++++++++
+ drivers/infiniband/core/mad.c                 |  1 +
+ drivers/net/ethernet/atheros/alx/main.c       |  9 ++---
+ .../net/ethernet/broadcom/genet/bcmgenet.c    |  8 ++---
+ drivers/net/ethernet/broadcom/tg3.c           |  4 +--
+ drivers/net/ethernet/ibm/ibmveth.c            |  2 +-
+ drivers/net/ethernet/qlogic/qed/qed_cxt.c     |  2 +-
+ drivers/net/ethernet/qlogic/qed/qed_vf.c      | 23 ++++++++++---
+ drivers/net/ethernet/rocker/rocker_main.c     |  4 +--
+ drivers/net/usb/ax88179_178a.c                | 11 +++---
+ drivers/scsi/scsi_devinfo.c                   |  5 +--
+ .../staging/rtl8723bs/core/rtw_wlan_util.c    |  4 ++-
+ drivers/usb/class/cdc-acm.c                   |  2 ++
+ drivers/usb/core/quirks.c                     |  3 +-
+ drivers/usb/dwc2/gadget.c                     |  6 ----
+ drivers/usb/dwc2/platform.c                   | 11 ++++++
+ drivers/usb/gadget/udc/mv_udc_core.c          |  3 +-
+ drivers/usb/host/ehci-exynos.c                |  5 ++-
+ drivers/usb/host/ehci-pci.c                   |  7 ++++
+ drivers/usb/host/ohci-sm501.c                 |  1 +
+ drivers/usb/host/xhci-mtk.c                   |  5 +--
+ drivers/usb/host/xhci.c                       |  4 +++
+ drivers/usb/host/xhci.h                       |  2 +-
+ fs/btrfs/inode.c                              |  3 --
+ fs/cifs/smb2ops.c                             | 12 +++++++
+ fs/nfs/direct.c                               | 13 ++++---
+ fs/nfs/file.c                                 |  1 +
+ fs/nfs/flexfilelayout/flexfilelayout.c        | 11 +++---
+ fs/ocfs2/ocfs2_fs.h                           |  4 +--
+ fs/ocfs2/suballoc.c                           |  9 +++--
+ fs/xfs/libxfs/xfs_alloc.c                     | 16 +++++++++
+ include/linux/netdevice.h                     |  2 +-
+ include/linux/qed/qed_chain.h                 | 26 ++++++++------
+ include/linux/virtio_net.h                    | 17 +++++-----
+ include/net/sctp/constants.h                  |  8 +++--
+ include/net/sock.h                            |  1 -
+ kernel/sched/core.c                           |  3 +-
+ kernel/trace/blktrace.c                       | 13 +++++++
+ kernel/trace/trace_events_trigger.c           | 21 ++++++++++--
+ mm/slab_common.c                              |  2 +-
+ net/bridge/br_private.h                       |  2 +-
+ net/core/dev.c                                |  7 ++++
+ net/core/sock.c                               |  2 ++
+ net/ipv4/fib_semantics.c                      |  2 +-
+ net/ipv4/ip_tunnel.c                          | 14 ++++----
+ net/ipv4/tcp_cubic.c                          |  2 ++
+ net/ipv4/tcp_input.c                          | 12 +++++--
+ net/ipv6/ip6_gre.c                            |  9 +++--
+ net/ipv6/mcast.c                              |  1 +
+ net/netfilter/ipset/ip_set_core.c             |  2 ++
+ net/rxrpc/call_accept.c                       |  7 ++++
+ net/rxrpc/input.c                             |  7 ++--
+ net/sched/sch_generic.c                       |  1 +
+ net/sctp/associola.c                          |  5 ++-
+ net/sctp/bind_addr.c                          |  1 +
+ net/sctp/protocol.c                           |  3 +-
+ net/sunrpc/rpc_pipe.c                         |  1 +
+ net/sunrpc/xdr.c                              |  4 +++
+ scripts/Kbuild.include                        | 11 +++---
+ security/apparmor/lsm.c                       |  4 +--
+ sound/pci/hda/patch_hdmi.c                    |  5 +++
+ sound/soc/rockchip/rockchip_pdm.c             |  4 ++-
+ sound/usb/mixer.c                             | 34 ++++++++++++-------
+ sound/usb/mixer.h                             | 15 ++++++--
+ sound/usb/mixer_quirks.c                      | 11 +++---
+ sound/usb/mixer_scarlett.c                    |  6 ++--
+ sound/usb/quirks.c                            |  1 +
+ 85 files changed, 433 insertions(+), 171 deletions(-)
+
+-- 
+2.25.1
+
