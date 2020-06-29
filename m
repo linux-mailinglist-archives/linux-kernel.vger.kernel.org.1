@@ -2,110 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7EF220DBB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5D220D69F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387726AbgF2UIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:08:46 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16981 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388843AbgF2UIY (ORCPT
+        id S1732282AbgF2TWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:22:01 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:59190 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732200AbgF2TVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:08:24 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5efa17410007>; Mon, 29 Jun 2020 09:30:57 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 29 Jun 2020 09:32:35 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 29 Jun 2020 09:32:35 -0700
-Received: from [10.25.103.164] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 29 Jun
- 2020 16:32:27 +0000
-CC:     <spujar@nvidia.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <robh+dt@kernel.org>, <lgirdwood@gmail.com>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <digetx@gmail.com>, <alsa-devel@alsa-project.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
-        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
-        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
-        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
-        <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH v4 11/23] ASoC: simple-card: Loop over all children for
- 'mclk-fs'
-To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
- <1593233625-14961-12-git-send-email-spujar@nvidia.com>
- <875zba1y28.wl-kuninori.morimoto.gx@renesas.com>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <58000bd3-861c-bbc2-75e1-128cf0199a76@nvidia.com>
-Date:   Mon, 29 Jun 2020 22:02:24 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 29 Jun 2020 15:21:35 -0400
+Received: from 89-64-84-69.dynamic.chello.pl (89.64.84.69) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id 4a4c27ae3a89cb78; Mon, 29 Jun 2020 18:34:53 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Cc:     rafael.j.wysocki@intel.com, Len Brown <lenb@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Ira Weiny <ira.weiny@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-nvdimm@lists.01.org, Bob Moore <robert.moore@intel.com>
+Subject: [PATCH v4 1/2] ACPI: OSL: Implement deferred unmapping of ACPI memory
+Date:   Mon, 29 Jun 2020 18:33:10 +0200
+Message-ID: <7504970.auntBLC07g@kreacher>
+In-Reply-To: <1666722.UopIai5n7p@kreacher>
+References: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com> <2788992.3K7huLjdjL@kreacher> <1666722.UopIai5n7p@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <875zba1y28.wl-kuninori.morimoto.gx@renesas.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593448257; bh=eCgPnGs+t6mTlUrWspHqn3L6WbSBOIjW+yMMr1FqO98=;
-        h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=E0bgnTS+65jRjYEbGCuLpuR8gnCRlXvUMWJ2XzgjkKSHqUAwlVCdS3CdarJxGka2x
-         rZypFMDFhq/5cquU2SjBDGBdPh2TqT7kW8VSprjIMw8ygVZwG25ubKqG/zx28oIpGp
-         348TCN+unvZvTVBjQOq5FQVNc64tKcaZ6NEWgYtPNLRs9KI+9QASfgOwbEjPNkLVSJ
-         oGIonuFPpJ707Pn1RIsg3J0E6d6y46o1olkiB3HI4dA1r3VED4YwLcUFVsjhcYkGl6
-         rut7emaQHbqsyf7lbuhlsTX1riPozhD/6r8hqdRq8cSZjZEcbt8Svte7nsuTbV8OFl
-         mPk5sQEZYA+hA==
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+
+The ACPI OS layer in Linux uses RCU to protect the walkers of the
+list of ACPI memory mappings from seeing an inconsistent state
+while it is being updated.  Among other situations, that list can
+be walked in (NMI and non-NMI) interrupt context, so using a
+sleeping lock to protect it is not an option.
+
+However, performance issues related to the RCU usage in there
+appear, as described by Dan Williams:
+
+"Recently a performance problem was reported for a process invoking
+a non-trival ASL program. The method call in this case ends up
+repetitively triggering a call path like:
+
+    acpi_ex_store
+    acpi_ex_store_object_to_node
+    acpi_ex_write_data_to_field
+    acpi_ex_insert_into_field
+    acpi_ex_write_with_update_rule
+    acpi_ex_field_datum_io
+    acpi_ex_access_region
+    acpi_ev_address_space_dispatch
+    acpi_ex_system_memory_space_handler
+    acpi_os_map_cleanup.part.14
+    _synchronize_rcu_expedited.constprop.89
+    schedule
+
+The end result of frequent synchronize_rcu_expedited() invocation is
+tiny sub-millisecond spurts of execution where the scheduler freely
+migrates this apparently sleepy task. The overhead of frequent
+scheduler invocation multiplies the execution time by a factor
+of 2-3X."
+
+The source of this is that acpi_ex_system_memory_space_handler()
+unmaps the memory mapping currently cached by it at the access time
+if that mapping doesn't cover the memory area being accessed.
+Consequently, if there is a memory opregion with two fields
+separated from each other by an unused chunk of address space that
+is large enough for not being covered by a single mapping, and they
+happen to be used in an alternating pattern, the unmapping will
+occur on every acpi_ex_system_memory_space_handler() invocation for
+that memory opregion and that will lead to significant overhead.
+
+Moreover, acpi_ex_system_memory_space_handler() carries out the
+memory unmapping with the namespace and interpreter mutexes held
+which may lead to additional latency, because all of the tasks
+wanting to acquire on of these mutexes need to wait for the
+memory unmapping operation to complete.
+
+To address that, rework acpi_os_unmap_memory() so that it does not
+release the memory mapping covering the given address range right
+away and instead make it queue up the mapping at hand for removal
+via queue_rcu_work().
+
+Reported-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/osl.c | 112 +++++++++++++++++++++++++++++++--------------
+ 1 file changed, 77 insertions(+), 35 deletions(-)
+
+diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+index 762c5d50b8fe..5ced89a756a8 100644
+--- a/drivers/acpi/osl.c
++++ b/drivers/acpi/osl.c
+@@ -77,7 +77,10 @@ struct acpi_ioremap {
+ 	void __iomem *virt;
+ 	acpi_physical_address phys;
+ 	acpi_size size;
+-	unsigned long refcount;
++	union {
++		unsigned long refcount;
++		struct rcu_work rwork;
++	} track;
+ };
+ 
+ static LIST_HEAD(acpi_ioremaps);
+@@ -250,7 +253,7 @@ void __iomem *acpi_os_get_iomem(acpi_physical_address phys, unsigned int size)
+ 	map = acpi_map_lookup(phys, size);
+ 	if (map) {
+ 		virt = map->virt + (phys - map->phys);
+-		map->refcount++;
++		map->track.refcount++;
+ 	}
+ 	mutex_unlock(&acpi_ioremap_lock);
+ 	return virt;
+@@ -335,7 +338,7 @@ void __iomem __ref
+ 	/* Check if there's a suitable mapping already. */
+ 	map = acpi_map_lookup(phys, size);
+ 	if (map) {
+-		map->refcount++;
++		map->track.refcount++;
+ 		goto out;
+ 	}
+ 
+@@ -358,7 +361,7 @@ void __iomem __ref
+ 	map->virt = virt;
+ 	map->phys = pg_off;
+ 	map->size = pg_sz;
+-	map->refcount = 1;
++	map->track.refcount = 1;
+ 
+ 	list_add_tail_rcu(&map->list, &acpi_ioremaps);
+ 
+@@ -374,41 +377,46 @@ void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
+ }
+ EXPORT_SYMBOL_GPL(acpi_os_map_memory);
+ 
++static void acpi_os_map_remove(struct acpi_ioremap *map)
++{
++	acpi_unmap(map->phys, map->virt);
++	kfree(map);
++}
++
++static void acpi_os_map_cleanup_deferred(struct work_struct *work)
++{
++	acpi_os_map_remove(container_of(to_rcu_work(work), struct acpi_ioremap,
++					track.rwork));
++}
++
+ /* Must be called with mutex_lock(&acpi_ioremap_lock) */
+-static unsigned long acpi_os_drop_map_ref(struct acpi_ioremap *map)
++static bool acpi_os_drop_map_ref(struct acpi_ioremap *map, bool defer)
+ {
+-	unsigned long refcount = --map->refcount;
++	if (--map->track.refcount)
++		return true;
+ 
+-	if (!refcount)
+-		list_del_rcu(&map->list);
+-	return refcount;
++	list_del_rcu(&map->list);
++
++	if (defer) {
++		INIT_RCU_WORK(&map->track.rwork, acpi_os_map_cleanup_deferred);
++		queue_rcu_work(system_wq, &map->track.rwork);
++	}
++	return defer;
+ }
+ 
+ static void acpi_os_map_cleanup(struct acpi_ioremap *map)
+ {
++	if (!map)
++		return;
++
+ 	synchronize_rcu_expedited();
+-	acpi_unmap(map->phys, map->virt);
+-	kfree(map);
++	acpi_os_map_remove(map);
+ }
+ 
+-/**
+- * acpi_os_unmap_iomem - Drop a memory mapping reference.
+- * @virt: Start of the address range to drop a reference to.
+- * @size: Size of the address range to drop a reference to.
+- *
+- * Look up the given virtual address range in the list of existing ACPI memory
+- * mappings, drop a reference to it and unmap it if there are no more active
+- * references to it.
+- *
+- * During early init (when acpi_permanent_mmap has not been set yet) this
+- * routine simply calls __acpi_unmap_table() to get the job done.  Since
+- * __acpi_unmap_table() is an __init function, the __ref annotation is needed
+- * here.
+- */
+-void __ref acpi_os_unmap_iomem(void __iomem *virt, acpi_size size)
++static void __ref __acpi_os_unmap_iomem(void __iomem *virt, acpi_size size,
++					bool defer)
+ {
+ 	struct acpi_ioremap *map;
+-	unsigned long refcount;
+ 
+ 	if (!acpi_permanent_mmap) {
+ 		__acpi_unmap_table(virt, size);
+@@ -416,23 +424,56 @@ void __ref acpi_os_unmap_iomem(void __iomem *virt, acpi_size size)
+ 	}
+ 
+ 	mutex_lock(&acpi_ioremap_lock);
++
+ 	map = acpi_map_lookup_virt(virt, size);
+ 	if (!map) {
+ 		mutex_unlock(&acpi_ioremap_lock);
+ 		WARN(true, PREFIX "%s: bad address %p\n", __func__, virt);
+ 		return;
+ 	}
+-	refcount = acpi_os_drop_map_ref(map);
++	if (acpi_os_drop_map_ref(map, defer))
++		map = NULL;
++
+ 	mutex_unlock(&acpi_ioremap_lock);
+ 
+-	if (!refcount)
+-		acpi_os_map_cleanup(map);
++	acpi_os_map_cleanup(map);
++}
++
++/**
++ * acpi_os_unmap_iomem - Drop a memory mapping reference.
++ * @virt: Start of the address range to drop a reference to.
++ * @size: Size of the address range to drop a reference to.
++ *
++ * Look up the given virtual address range in the list of existing ACPI memory
++ * mappings, drop a reference to it and unmap it if there are no more active
++ * references to it.
++ *
++ * During early init (when acpi_permanent_mmap has not been set yet) this
++ * routine simply calls __acpi_unmap_table() to get the job done.  Since
++ * __acpi_unmap_table() is an __init function, the __ref annotation is needed
++ * here.
++ */
++void __ref acpi_os_unmap_iomem(void __iomem *virt, acpi_size size)
++{
++	__acpi_os_unmap_iomem(virt, size, false);
+ }
+ EXPORT_SYMBOL_GPL(acpi_os_unmap_iomem);
+ 
++/**
++ * acpi_os_unmap_memory - Drop a memory mapping reference.
++ * @virt: Start of the address range to drop a reference to.
++ * @size: Size of the address range to drop a reference to.
++ *
++ * Look up the given virtual address range in the list of existing ACPI memory
++ * mappings, drop a reference to it and if there are no more active references
++ * to it, put it in the list of unused memory mappings.
++ *
++ * During early init (when acpi_permanent_mmap has not been set yet) this
++ * routine behaves like acpi_os_unmap_iomem().
++ */
+ void __ref acpi_os_unmap_memory(void *virt, acpi_size size)
+ {
+-	return acpi_os_unmap_iomem((void __iomem *)virt, size);
++	__acpi_os_unmap_iomem((void __iomem *)virt, size, true);
+ }
+ EXPORT_SYMBOL_GPL(acpi_os_unmap_memory);
+ 
+@@ -461,7 +502,6 @@ void acpi_os_unmap_generic_address(struct acpi_generic_address *gas)
+ {
+ 	u64 addr;
+ 	struct acpi_ioremap *map;
+-	unsigned long refcount;
+ 
+ 	if (gas->space_id != ACPI_ADR_SPACE_SYSTEM_MEMORY)
+ 		return;
+@@ -472,16 +512,18 @@ void acpi_os_unmap_generic_address(struct acpi_generic_address *gas)
+ 		return;
+ 
+ 	mutex_lock(&acpi_ioremap_lock);
++
+ 	map = acpi_map_lookup(addr, gas->bit_width / 8);
+ 	if (!map) {
+ 		mutex_unlock(&acpi_ioremap_lock);
+ 		return;
+ 	}
+-	refcount = acpi_os_drop_map_ref(map);
++	if (acpi_os_drop_map_ref(map, false))
++		map = NULL;
++
+ 	mutex_unlock(&acpi_ioremap_lock);
+ 
+-	if (!refcount)
+-		acpi_os_map_cleanup(map);
++	acpi_os_map_cleanup(map);
+ }
+ EXPORT_SYMBOL(acpi_os_unmap_generic_address);
+ 
+-- 
+2.26.2
 
 
-On 6/29/2020 6:35 AM, Kuninori Morimoto wrote:
-> External email: Use caution opening links or attachments
->
->
-> Hi Sameer
->
->> CPU/Codec in DPCM DAI links are connected as CPU<->Dummy and Dummy<->Codec.
->> Though mostly CPU won't use/require 'mclk-fs' property, looping over
->> 'np' (current child node in a DAI link) can help in cases where multiple
->> Codecs are defined. This further helps to get rid of 'codec' argument
->> from simple_dai_link_of_dpcm() function, which gets called for DPCM links.
->>
->> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->> ---
-> (snip)
->> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
->> index 39cdc71..02d6295 100644
->> --- a/sound/soc/generic/simple-card.c
->> +++ b/sound/soc/generic/simple-card.c
->> @@ -107,7 +107,9 @@ static void simple_parse_mclk_fs(struct device_node *top,
->>        snprintf(prop, sizeof(prop), "%smclk-fs", prefix);
->>        of_property_read_u32(node,      prop, &props->mclk_fs);
->>        of_property_read_u32(cpu,       prop, &props->mclk_fs);
->> -     of_property_read_u32(codec,     prop, &props->mclk_fs);
->> +
->> +     if (cpu != codec)
->> +             of_property_read_u32(codec, prop, &props->mclk_fs);
-> Maybe we want to have "cpu" in simple_dai_link_of_dpcm() side
-> without using magical code in simple_parse_mclk_fs() side ?
 
-Are you suggesting if we should simplify simple_parse_mclk_fs() by 
-either passing 'cpu' or 'codec'?
->
-> Thank you for your help !!
->
-> Best regards
-> ---
-> Kuninori Morimoto
 
