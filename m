@@ -2,182 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2C320D111
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3754D20D2A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726093AbgF2SiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:38:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727969AbgF2SiC (ORCPT
+        id S1729422AbgF2Sve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:51:34 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:44623 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729333AbgF2Sv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:38:02 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA47C02F032
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:00:51 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id 5so13780100oty.11
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:00:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=64cs0TbTbP8oXkjqFwlVyOK6sTxRyWaYSp+tM0bVADY=;
-        b=iJsS8hBM9QxkxafcTMtycbQCdy9iovLnZQNdm8sCMuUW7wM0vJYf5QfWXoLeJioLI9
-         zuvRpVpeKmZt7ZodsyhJFd7sMFqdMhqfJaDmmNRU088OIknBDX2Qfw3w74wbyBichTco
-         0AoN+RjPb0ODn5sXj655D7NhIWazi7BLmbQ5QZkVjOjHcgRp8JDNfrBkm/Z/pmvtz5lW
-         sqfT4dwvk9uyfa+TPJc7Rb1sANktKemkQv0y3XrC/ZHh+CvhL6rHiv5IcqUlLuRyNU9o
-         ZN6zW0cF4acVTqClrpTBc3bdnzXC3B6KxGjzrkaZ7ViJ+uGfpZ8ARYYSTDPcvO0sKb5n
-         5RfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=64cs0TbTbP8oXkjqFwlVyOK6sTxRyWaYSp+tM0bVADY=;
-        b=NuIo1VlcZv49m6B1n4c/lzUFZiUpCZG11pyYTVCnviiD1ppRJ/TXyVgpMqv0D4zrkp
-         dDKbFLhUc7fhj/qNWM49I+KdDddFcvUOaHAyQfLrjIn5LeG1t4Xpo13yxo70F8m8PXZ4
-         LtYu59wWjWLUH1614ELGr05qUbCivAh9jK4RDAMvJKCC19Bcjr8JJw/M8lS7nB/020wv
-         OVLKMBXwGm29xGJ0VrUJS4lII+6QuMasudTvWIw0GwvpAYMKMDRYp2JR+Q6qKiD6E2pf
-         cRH+RVj/HSmUX+zMWVVu3sSrFl2zcXK6ViXcq1cx55bHxZFezJwhIelkLXt/Tb+XO/ei
-         Jwgg==
-X-Gm-Message-State: AOAM532doZIboY7Xgwhr4+YsKfOpUWMS4PTKsM5WET7COFhGAevWSaSN
-        cJxfJMkXO+MqmmYHd8C/joXBHrA3QB9X2ow9FRs=
-X-Google-Smtp-Source: ABdhPJzhdHJhL6wz1HDjdvznHpIGmS/1e0gDDMgS5NOP2fYaMZB7eIyrlZjLdTrGaY2+0NhG+ZKaNsBIJm4MAxyRH3Y=
-X-Received: by 2002:a9d:904:: with SMTP id 4mr14130648otp.339.1593442851032;
- Mon, 29 Jun 2020 08:00:51 -0700 (PDT)
+        Mon, 29 Jun 2020 14:51:27 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 260DD5805B0;
+        Mon, 29 Jun 2020 11:01:11 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 29 Jun 2020 11:01:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=sNYlobJ1pS1Ohf9R4+0abgm6IJT
+        CYCd2l6ZmNPrPlSA=; b=DWMlBHcziyoD7n2VBoKBMQ/YxDyKWpVBlvyx6I0Mh63
+        9N3BYcQcc0AXHNTyweL/38j0GtymQRJm/vEQIt0+ziKTYvGkfa456jewfOWYASdP
+        jQiCa8q3bughoOLiDZFN6fYcTjU/poinnWr3fL+yeeDASlUK4Tr8glC3Xx9d8yNZ
+        N92nANai38bPo9EBImtsSSEoElKxUTshUTkEmVNwQYKPLK94VGhppl7WLVessYkq
+        9Hd8OjLDSxi3/Vz1FOKjl7MLMFg4g5sw3uZAnoraTTqEv7Mn4vczwQ3WJIgN8YCi
+        Jbe+Hcf31HBgrmGrDLk3F6QlpBxeSRYcaRrkLMPrrqw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=sNYlob
+        J1pS1Ohf9R4+0abgm6IJTCYCd2l6ZmNPrPlSA=; b=pm9xGVSBedaUZC8oTh1pIw
+        BAJKleBBLVtKXvw2ZwfMWlr2Ht1mPO3POhWB4W+Ov7G3UOPsfew6wqB/hQIrwRBm
+        DLf9TAupo0jFjX7rVSg/niGfVU19fDrPcCiKC5ORpz3RMW8EGzJz2T+RGhQW9uE6
+        /PApegkh6ToIaBA7Mpq/HIVofzkT/bHpCcIW25Kkw7p1pSTFYptL0KC6WJp3Fxgf
+        dflOU+XzFNIv5laQKx21gzjz7MHce1LmKaJlOym8MYdE9fGA1xvyucQVjv2pC2CQ
+        m7qiqbbxp0dRfnT9DJTozlJot7vlwaBZoXwpjwvsxHt/jp2Xa/5dEfaXUp5RSDxA
+        ==
+X-ME-Sender: <xms:MwL6Xsj4Z9FZANkSVU2BdsHxlYDSvHYVhWy2MCECAneZHrUs6WoLcQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudelledgudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:MwL6XlC5HqPkQ1Qsk95QLIv424Hp8uj956i4iB1kuXfKnZLq9-ZB_Q>
+    <xmx:MwL6XkEfszsWkaT_duTnZcLDtDklBuk0iDiCCdY7b5ArpyNn_VCReQ>
+    <xmx:MwL6XtQgKMx5Bj1CM_uV4higUE98YYcjMRQvOVXszmAIikdbb2V3Cg>
+    <xmx:NwL6XggX8VHAbnft1ZLigEObaHapWQkinOTPI8r1N7R4-gUZ3WQ7Yg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id DE1DE3067CA7;
+        Mon, 29 Jun 2020 11:01:06 -0400 (EDT)
+Date:   Mon, 29 Jun 2020 17:01:05 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Frank Lee <frank@allwinnertech.com>
+Cc:     robh+dt@kernel.org, wens@csie.org, mturquette@baylibre.com,
+        sboyd@kernel.org, srinivas.kandagatla@linaro.org,
+        linus.walleij@linaro.org, anarsoul@gmail.com,
+        tiny.windzz@gmail.com, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, amit.kucheria@verdurent.com,
+        p.zabel@pengutronix.de, clabbe@baylibre.com, icenowy@aosc.io,
+        megous@megous.com, karlp@tweak.net.au, bage@linutronix.de,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
+        huangshuosheng@allwinnertech.com, liyong@allwinnertech.com
+Subject: Re: [PATCH v2 03/11] dt-bindings: pinctrl: sunxi: Add A100 pinctrl
+ bindings
+Message-ID: <20200629150105.5yisonmm34qlk4jh@gilmour.lan>
+References: <20200622025907.32574-1-frank@allwinnertech.com>
+ <20200622025907.32574-4-frank@allwinnertech.com>
 MIME-Version: 1.0
-References: <20200629140442.1043957-1-lee.jones@linaro.org> <20200629140442.1043957-7-lee.jones@linaro.org>
-In-Reply-To: <20200629140442.1043957-7-lee.jones@linaro.org>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Mon, 29 Jun 2020 18:00:21 +0300
-Message-ID: <CAFCwf12UOrL3R4TKuE6Zwrgyfz0NHRRqyqdSwJQZ78yYvRVrDg@mail.gmail.com>
-Subject: Re: [PATCH 06/20] misc: habanalabs: goya: Omit pointless check
- ensuring addr is >=0
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Tomer Tayar <ttayar@habana.ai>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ksr2pme4uhjoiziv"
+Content-Disposition: inline
+In-Reply-To: <20200622025907.32574-4-frank@allwinnertech.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 5:04 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Seeing as 'addr' is unsigned, it would be impossible for the assigned
-> value to be anything other than zero or positive.
->
-> Squashes the following W=3D1 warnings:
->
->  drivers/misc/habanalabs/goya/goya.c: In function =E2=80=98goya_debugfs_r=
-ead32=E2=80=99:
->  drivers/misc/habanalabs/goya/goya.c:3945:19: warning: comparison of unsi=
-gned expression >=3D 0 is always true [-Wtype-limits]
->  3945 | } else if ((addr >=3D DRAM_PHYS_BASE) &&
->  | ^~
->  drivers/misc/habanalabs/goya/goya.c: In function =E2=80=98goya_debugfs_w=
-rite32=E2=80=99:
->  drivers/misc/habanalabs/goya/goya.c:4002:19: warning: comparison of unsi=
-gned expression >=3D 0 is always true [-Wtype-limits]
->  4002 | } else if ((addr >=3D DRAM_PHYS_BASE) &&
->  | ^~
->  drivers/misc/habanalabs/goya/goya.c: In function =E2=80=98goya_debugfs_r=
-ead64=E2=80=99:
->  drivers/misc/habanalabs/goya/goya.c:4047:19: warning: comparison of unsi=
-gned expression >=3D 0 is always true [-Wtype-limits]
->  4047 | } else if ((addr >=3D DRAM_PHYS_BASE) &&
->  | ^~
->  drivers/misc/habanalabs/goya/goya.c: In function =E2=80=98goya_debugfs_w=
-rite64=E2=80=99:
->  drivers/misc/habanalabs/goya/goya.c:4091:19: warning: comparison of unsi=
-gned expression >=3D 0 is always true [-Wtype-limits]
->  4091 | } else if ((addr >=3D DRAM_PHYS_BASE) &&
->  | ^~
->  drivers/misc/habanalabs/pci.c:328: warning: Excess function parameter 'd=
-ma_mask' description in 'hl_pci_set_dma_mask'
->  drivers/misc/habanalabs/goya/goya_coresight.c: In function =E2=80=98goya=
-_debug_coresight=E2=80=99:
->  drivers/misc/habanalabs/goya/goya_coresight.c:643:6: warning: variable =
-=E2=80=98val=E2=80=99 set but not used [-Wunused-but-set-variable]
->  643 | u32 val;
->  | ^~~
->
-> Cc: Oded Gabbay <oded.gabbay@gmail.com>
-> Cc: Tomer Tayar <ttayar@habana.ai>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/misc/habanalabs/goya/goya.c | 16 ++++++----------
->  1 file changed, 6 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalab=
-s/goya/goya.c
-> index 0d2952bb58dfb..a4a20e27ed3b4 100644
-> --- a/drivers/misc/habanalabs/goya/goya.c
-> +++ b/drivers/misc/habanalabs/goya/goya.c
-> @@ -3942,8 +3942,7 @@ static int goya_debugfs_read32(struct hl_device *hd=
-ev, u64 addr, u32 *val)
->                 *val =3D readl(hdev->pcie_bar[SRAM_CFG_BAR_ID] +
->                                 (addr - SRAM_BASE_ADDR));
->
-> -       } else if ((addr >=3D DRAM_PHYS_BASE) &&
-> -                       (addr < DRAM_PHYS_BASE + hdev->asic_prop.dram_siz=
-e)) {
-> +       } else if (addr < DRAM_PHYS_BASE + hdev->asic_prop.dram_size) {
->
->                 u64 bar_base_addr =3D DRAM_PHYS_BASE +
->                                 (addr & ~(prop->dram_pci_bar_size - 0x1ul=
-l));
-> @@ -3999,8 +3998,7 @@ static int goya_debugfs_write32(struct hl_device *h=
-dev, u64 addr, u32 val)
->                 writel(val, hdev->pcie_bar[SRAM_CFG_BAR_ID] +
->                                         (addr - SRAM_BASE_ADDR));
->
-> -       } else if ((addr >=3D DRAM_PHYS_BASE) &&
-> -                       (addr < DRAM_PHYS_BASE + hdev->asic_prop.dram_siz=
-e)) {
-> +       } else if (addr < DRAM_PHYS_BASE + hdev->asic_prop.dram_size) {
->
->                 u64 bar_base_addr =3D DRAM_PHYS_BASE +
->                                 (addr & ~(prop->dram_pci_bar_size - 0x1ul=
-l));
-> @@ -4044,9 +4042,8 @@ static int goya_debugfs_read64(struct hl_device *hd=
-ev, u64 addr, u64 *val)
->                 *val =3D readq(hdev->pcie_bar[SRAM_CFG_BAR_ID] +
->                                 (addr - SRAM_BASE_ADDR));
->
-> -       } else if ((addr >=3D DRAM_PHYS_BASE) &&
-> -                  (addr <=3D
-> -                   DRAM_PHYS_BASE + hdev->asic_prop.dram_size - sizeof(u=
-64))) {
-> +       } else if (addr <=3D
-> +                  DRAM_PHYS_BASE + hdev->asic_prop.dram_size - sizeof(u6=
-4)) {
->
->                 u64 bar_base_addr =3D DRAM_PHYS_BASE +
->                                 (addr & ~(prop->dram_pci_bar_size - 0x1ul=
-l));
-> @@ -4088,9 +4085,8 @@ static int goya_debugfs_write64(struct hl_device *h=
-dev, u64 addr, u64 val)
->                 writeq(val, hdev->pcie_bar[SRAM_CFG_BAR_ID] +
->                                         (addr - SRAM_BASE_ADDR));
->
-> -       } else if ((addr >=3D DRAM_PHYS_BASE) &&
-> -                  (addr <=3D
-> -                   DRAM_PHYS_BASE + hdev->asic_prop.dram_size - sizeof(u=
-64))) {
-> +       } else if (addr <=3D
-> +                  DRAM_PHYS_BASE + hdev->asic_prop.dram_size - sizeof(u6=
-4)) {
->
->                 u64 bar_base_addr =3D DRAM_PHYS_BASE +
->                                 (addr & ~(prop->dram_pci_bar_size - 0x1ul=
-l));
-> --
-> 2.25.1
->
 
-This patch is:
-Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
+--ksr2pme4uhjoiziv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Mon, Jun 22, 2020 at 10:58:59AM +0800, Frank Lee wrote:
+> Add device tree binding Documentation details for A100 pinctrl driver,
+> whic has an r pin controller and a pin controller with more irq lines.
+>=20
+> Signed-off-by: Frank Lee <frank@allwinnertech.com>
+> ---
+>  .../pinctrl/allwinner,sun4i-a10-pinctrl.yaml       | 72 +++++++++++++---=
+------
+>  1 file changed, 43 insertions(+), 29 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a1=
+0-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-=
+a10-pinctrl.yaml
+> index bfefd09..2ac5eb5 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinct=
+rl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinct=
+rl.yaml
+> @@ -48,6 +48,8 @@ properties:
+>        - allwinner,sun9i-a80-r-pinctrl
+>        - allwinner,sun50i-a64-pinctrl
+>        - allwinner,sun50i-a64-r-pinctrl
+> +      - allwinner,sun50i-a100-pinctrl
+> +      - allwinner,sun50i-a100-r-pinctrl
+>        - allwinner,sun50i-h5-pinctrl
+>        - allwinner,sun50i-h6-pinctrl
+>        - allwinner,sun50i-h6-r-pinctrl
+> @@ -144,75 +146,87 @@ allOf:
+>    # FIXME: We should have the pin bank supplies here, but not a lot of
+>    # boards are defining it at the moment so it would generate a lot of
+>    # warnings.
+> -
+>    - if:
+>        properties:
+>          compatible:
+>            enum:
+> -            - allwinner,sun9i-a80-pinctrl
+> +            - allwinner,sun50i-a100-pinctrl
+> =20
+>      then:
+>        properties:
+>          interrupts:
+> -          minItems: 5
+> -          maxItems: 5
+> +          minItems: 7
+> +          maxItems: 7
+> =20
+>      else:
+>        if:
+>          properties:
+>            compatible:
+>              enum:
+> -              - allwinner,sun6i-a31-pinctrl
+> -              - allwinner,sun6i-a31s-pinctrl
+> -              - allwinner,sun50i-h6-pinctrl
+> +              - allwinner,sun9i-a80-pinctrl
+
+The diff is a bit of a mess here. I guess you just added a new if with
+the A100 pinctrl compatible?
+
+Also, since it's a new SoC and we don't really have to care about the
+existing DT for boards, it would be great if you could make the gpio
+banks supplies required.
+
+Thanks!
+Maxime
+
+--ksr2pme4uhjoiziv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXvoCMQAKCRDj7w1vZxhR
+xWPvAP9LZcafd4D2lCpgUabz+vBQk/jZ4yIiOaajI+Es0NedYwEAhxAGjP80TFrZ
+RAkD8uwHBQ+s2kLx229O2zmQ1CeFoQo=
+=jflY
+-----END PGP SIGNATURE-----
+
+--ksr2pme4uhjoiziv--
