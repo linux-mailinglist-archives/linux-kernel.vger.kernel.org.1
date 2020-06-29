@@ -2,133 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E455120D6B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3858720D6B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730979AbgF2TXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45104 "EHLO
+        id S1732322AbgF2TXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730404AbgF2TWp (ORCPT
+        with ESMTP id S1732295AbgF2TWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Jun 2020 15:22:45 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51AA8C02E2F9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:35:19 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id d21so9190297lfb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:35:19 -0700 (PDT)
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B686BC02E2FB
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:37:36 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id k15so15671735otp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:37:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=RaTcPoUQJY1lOqOm/hLw7WScDE1kdon3oAxJjzWJBGs=;
-        b=c3q7wPvuWmxbXEeQbOXweKx9JWUXhVEdKTI9tOiGufjlgDQVL+HCyOLJP+J74EWwaS
-         PHpEkg184kjqjYLicQRA2S5pusbsv40d2NPwsfR/i1/sI1jcwOnFMzq8I06Ep0vk/BhQ
-         VaBAup3tV/I2JN+YGMDkQEviOdvR/Dr0DHalr7UdlABf5RkDM2ZgB2tBmszegEkzKc3S
-         UiMzSzA38BAqrqn2UuOd4SIRwddzJyIKCPq97MFVawrYNZ2rFzK+6bKzg/tgUkx0uY76
-         cdWkO4Nxxb4Fdn5afDc7s2m/Ta5XCqx4EehNzw5TbXPj2N8hGm9pfhQf1kSHxkWEBnye
-         PG4w==
+        bh=cveXjL+4X4gh1TmXdX8oqUnZgc2Vd1IaF1EU/HiH/po=;
+        b=pUD5GVMvZNlTyNPmyJi9IXsTZfrSpSaM0QY7ebsyC1zCo0OHvFNpbLVF1pJscNAUqe
+         IFyUSK2FgPrznhkiChklKg/G7qoGD7VR+JxDCQ+2fGlXHzsXTAeebGDSbDi+xKb4oeiQ
+         r7TCH5o2rRa9F7dzql1Y0Y4WBuhpBWi1/YxuFjhqYkw3Gk8eneRiedH9eIkkpmhuMVqw
+         oLoc7SDNFwvw9CyUztYOctHv3EI/iIZ6WPxRIm3c+LnISDzu8GPBBQTtWbyUAoIKTPkK
+         TcQTR90pveM86/MHrDr6nAEk9rl3U5f0rwT6CQHlwFY7wh5l0XX7yi+KGFgnVqS4+XCo
+         sevw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RaTcPoUQJY1lOqOm/hLw7WScDE1kdon3oAxJjzWJBGs=;
-        b=nu3dY6dkX5wDLwvR44VzRaEfoXaHFwbim8rqgoJzJiDtRsQ+cwoweILU+TrzBZm+mK
-         PIv8zNa42RWHmy6SOoyNGfiR2XiPaPfZwqDZShiwmP8ICHrIVnroiXQkvDyPdUtsfyg/
-         aoS7kJXCCGOdP8pZPS8aID5e/olD/UD2xnWTD+s2fI+pmqGcDDTQCte8LY3dSdwfO74g
-         nKvcHRABmHVLMv3/+GkRdUw3rc7QI6gZZGn/mwiGMf+DtRh0HLSdxrp4dO58ucYIs9ml
-         xfVs+g2qoS5RP6RqUbVP/1ibCsDrfa7OZ7AL/tYItPI+uJ1KYS58sy+05uT24xx4nulS
-         mSQQ==
-X-Gm-Message-State: AOAM5331vR9Maa76mjTYz0vhRQNuGUZ7RZiXMaEUehoztrzcBYERJsP6
-        1yoAVbxr6EgKXY4NimvtxoncFBVPWuPZT/jpjog=
-X-Google-Smtp-Source: ABdhPJw9k6oTdppBMyT/KY2IUwKfPX6ngAt9KNp5tgyRQ/K3MrIhYF73uYTXUj1LpJ3QS0XdIxjni9cckLDUTwSJIzA=
-X-Received: by 2002:a05:6512:108f:: with SMTP id j15mr9276546lfg.19.1593441317711;
- Mon, 29 Jun 2020 07:35:17 -0700 (PDT)
+        bh=cveXjL+4X4gh1TmXdX8oqUnZgc2Vd1IaF1EU/HiH/po=;
+        b=ifeew4E+VXO5QXSsvQiln15uO6ojzZmj3urM5kYIuXSAARhzLuREF6RbfbbQuikSJS
+         53rVdeubR5Nfoho1pH6tJxUaICsJC0oT/pjxg4NGqUP7aZom99fUxJWjQomfJXFBJCJX
+         AUDZ25osnNuatFWABx5Hb/0KzTHMYF2Z85S/eCSdi9Lh+OzNUBx+lhBpyZlT6ly3eWZp
+         BmtyIrmmlcoZ79A1OfV6a5/+hf29BPPfBmV0aa5DsRsRRcvWFKPDXY0frUa0Uj14wzie
+         vAXlHh8hqks6sFQHjjWUlbOXAPsDCdCVxqgSaJEN6f5qiOtd2vmG/YahohDrrvbACpnS
+         dF4A==
+X-Gm-Message-State: AOAM530QcdMcb+hITD1l+Ul9Z783NLj5cTBD9vQMr8nv4nrY+CbBuUZf
+        TeEUeTYcr8aXJhJXbWWv/9iSOiK9QkZ3oHl0cxM=
+X-Google-Smtp-Source: ABdhPJxR9g/vuVB4KPn3jdGd9TFAWyi4TL/l19BuOkeMaOra6mdLr30ClOYBUAd6kOsB5YS6iY65MEoC5vi4wUTht3Y=
+X-Received: by 2002:a9d:2c26:: with SMTP id f35mr14207086otb.232.1593441455928;
+ Mon, 29 Jun 2020 07:37:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200629123215.1014747-1-lee.jones@linaro.org>
- <20200629123215.1014747-5-lee.jones@linaro.org> <20200629130644.GU3334@localhost>
- <20200629140137.GK177734@dell>
-In-Reply-To: <20200629140137.GK177734@dell>
-From:   Baolin Wang <baolin.wang7@gmail.com>
-Date:   Mon, 29 Jun 2020 22:35:06 +0800
-Message-ID: <CADBw62r_tkGEr9kHpojAi+fJ+qUqbsc-DQgG1TUAwOdbDXTgNQ@mail.gmail.com>
-Subject: Re: [PATCH 4/5] mfd: sprd-sc27xx-spi: Fix divide by zero when
- allocating register offset/mask
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Johan Hovold <johan@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Chunyan Zhang <zhang.lyra@gmail.com>
+References: <20200625140105.14999-1-TheSven73@gmail.com> <20200625140105.14999-2-TheSven73@gmail.com>
+ <CAOMZO5AWiHWSLAcd=dj9dDFj8jLPAVAuoiOAJ8qKGPwRq1Q41g@mail.gmail.com>
+ <CAGngYiXJy4ASTNfT+R+qzJ3wA=Wy2h6XZm+8oo09sD+Jmse02w@mail.gmail.com> <CAOMZO5Cr3k+oy_Sf0kL9gge7bwqkvJR8BQhY-FvxVXN00A2ARw@mail.gmail.com>
+In-Reply-To: <CAOMZO5Cr3k+oy_Sf0kL9gge7bwqkvJR8BQhY-FvxVXN00A2ARw@mail.gmail.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Mon, 29 Jun 2020 10:37:25 -0400
+Message-ID: <CAGngYiW=Pc_QjsjCv4Pc_R9OZk7nOAKm=k=b4TMbYRZ-08zKrQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] ARM: imx6plus: enable internal routing of
+ clk_enet_ref where possible
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Fugang Duan <fugang.duan@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 10:01 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Mon, 29 Jun 2020, Johan Hovold wrote:
->
-> > On Mon, Jun 29, 2020 at 01:32:14PM +0100, Lee Jones wrote:
-> > > Since ddata->irqs[] is already zeroed when allocated by devm_kcalloc() and
-> > > dividing 0 by anything is still 0, there is no need to re-assign
-> > > ddata->irqs[i].* values.  Instead, it should be safe to begin at 1.
-> > >
-> > > This fixes the following W=1 warning:
-> > >
-> > >  drivers/mfd/sprd-sc27xx-spi.c:255 sprd_pmic_probe() debug: sval_binop_unsigned: divide by zero
-> > >
-> > > Cc: Orson Zhai <orsonzhai@gmail.com>
-> > > Cc: Baolin Wang <baolin.wang7@gmail.com>
-> > > Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > ---
-> > >  drivers/mfd/sprd-sc27xx-spi.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
-> > > index c305e941e435c..694a7d429ccff 100644
-> > > --- a/drivers/mfd/sprd-sc27xx-spi.c
-> > > +++ b/drivers/mfd/sprd-sc27xx-spi.c
-> > > @@ -251,7 +251,7 @@ static int sprd_pmic_probe(struct spi_device *spi)
-> > >             return -ENOMEM;
-> > >
-> > >     ddata->irq_chip.irqs = ddata->irqs;
-> > > -   for (i = 0; i < pdata->num_irqs; i++) {
-> > > +   for (i = 1; i < pdata->num_irqs; i++) {
-> > >             ddata->irqs[i].reg_offset = i / pdata->num_irqs;
-> > >             ddata->irqs[i].mask = BIT(i % pdata->num_irqs);
-> > >     }
-> >
-> > This doesn't look right either.
-> >
-> > First, the loop is never executed if num_irqs is zero.
->
-> The point of the patch is that 0 entries are never processed.
->
-> However, what I appear to have overlooked is that BIT(0 % x) is not 0,
-> it's 1.
+Hi Fabio,
 
-Yes.
-
+On Mon, Jun 29, 2020 at 10:26 AM Fabio Estevam <festevam@gmail.com> wrote:
 >
-> > Second, the current code looks bogus too as reg_offset is always set to
-> > zero and mask to BIT(i)...
+> Just tested 5.4.24_2.1.0 on an imx6qp sabresd and DHCP also fails there.
 
-Now the result is correct, since all PMIC irq mask bits are in one
-register now, which means the reg_offset is always 0 can work well.
-But I think the logics still can be improved if our PMIC irq numbers
-are larger than 32 in future.
+I think I discovered the problem !
 
->
-> Heh.  I wonder if/how this was tested.
->
-> I'm going to wait to hear from the authors before attempting to fix
-> this again.
->
-> Baolin, Could you please clarify this for us please?
+When I compare the sabresd devicetree on mainline with the actual sabresd
+schematics, the devicetree is incorrect ! Things still work, but only
+by accident.
 
-Yes, see above comments.
+The sabresd has an AR8131 PHY, which generates the enet ref clock, not the
+imx6. So on the schematic we see that the clock output of the PHY is wired
+to imx6 ENET_REF_CLK, so it can be used as a clock source. And GPIO_16
+is disconnected, as it should, because the imx6 is not generating the ref clk.
 
--- 
-Baolin Wang
+But the devicetree is written as if the imx6 is providing the clock ! See
+here:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/arch/arm/boot/dts/imx6qdl-sabresd.dtsi?h=v5.7.6#n513
+
+Also there is no override of the fec PTP clock:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/arch/arm/boot/dts/imx6qdl-sabresd.dtsi?h=v5.7.6#n202
+
+Although Shawn's mainline patch mandates this?
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=v5.7.6&id=810c0ca879098a993e2ce0a190d24d11c17df748
+
+This will work, but only by accident. So on a plus, when we
+(incorrectly) switch the
+bypass bit on, things stop working.
