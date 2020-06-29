@@ -2,69 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D8E20D332
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E9220D496
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730056AbgF2S4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:56:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42468 "EHLO mail.kernel.org"
+        id S1730262AbgF2TJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:09:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729977AbgF2SzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:55:17 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1730335AbgF2TAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:00:19 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E001F25580;
-        Mon, 29 Jun 2020 15:55:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DB7F2554B;
+        Mon, 29 Jun 2020 15:55:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593446147;
-        bh=kDKUVPt/3p32cfcsLdYtxbB/zdyyDPW09NBOwmGzE6c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xSIIfZK5y3zVjSBhpllL8DtiERztgARXutG1jluiyCxJZzcGlgxQyzHqbvgw5WtK6
-         fJ3VXOL9H80NyDQ402XCOozGztSnWcapB8FYDshMqCPTfQlZibNbjS4WufW9emLNzC
-         Og1fkIwZXmmWM7vJ9hYfe2fg1QS0p9RZAMFVe2Uo=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 135/135] Linux 4.4.229-rc1
-Date:   Mon, 29 Jun 2020 11:53:09 -0400
-Message-Id: <20200629155309.2495516-136-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629155309.2495516-1-sashal@kernel.org>
-References: <20200629155309.2495516-1-sashal@kernel.org>
+        s=default; t=1593446112;
+        bh=4iXE6X6BH7Sxje+iISVf8jR0Is6iv3UfKTVAnMUZGaY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h2U+MILBVT23YaZGdGpLO6laSjCwUsbg1urnAwBg/mN+0QstKMt2rgVhJrjbvq5RT
+         s6etxdPdTY1Mv4RLGYevq3RavmmS//9KWuBexp7reG+SFRlF4vhtx+Z2GYBUqhoUnK
+         bgcM4W2IY97lLpe70xK5huDwRLE4lOXseGWjvwcM=
+Date:   Mon, 29 Jun 2020 17:55:03 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     B K Karthik <bkkarthik@pesu.pes.edu>
+Cc:     B K Karthik <karthik.bk2000@live.com>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH] staging: media: atomisp: i2c: atomisp-ov2680.c: fixed a
+ brace coding style issue.
+Message-ID: <20200629155503.GB512815@kroah.com>
+References: <20200628043833.3dodctrmkec6aoe5@pesu-pes-edu>
+ <20200629144336.fhykjoqrhfhifmes@pesu-pes-edu>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.229-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.4.229-rc1
-X-KernelTest-Deadline: 2020-07-01T15:53+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629144336.fhykjoqrhfhifmes@pesu-pes-edu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
----
- Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+A: http://en.wikipedia.org/wiki/Top_post
+Q: Were do I find info about this thing called top-posting?
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing in e-mail?
 
-diff --git a/Makefile b/Makefile
-index 009a36b276f7e..1b4b356c1bcbe 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- VERSION = 4
- PATCHLEVEL = 4
--SUBLEVEL = 228
--EXTRAVERSION =
-+SUBLEVEL = 229
-+EXTRAVERSION = -rc1
- NAME = Blurry Fish Butt
- 
- # *DOCUMENTATION*
--- 
-2.25.1
+A: No.
+Q: Should I include quotations after my reply?
 
+http://daringfireball.net/2007/07/on_top
+
+On Mon, Jun 29, 2020 at 10:43:36AM -0400, B K Karthik wrote:
+> Did this get burried in along with a bunch of other patches? I am sending this email only because I did not recieve a negetive acknowledgement on the patch.
+> 
+> I apologize if this message was hurtful / disrespectfull in any manner,
+> thank you for reading this message.
+> 
+> karthik
+> 
+> On 20/06/28 12:38AM, B K Karthik wrote:
+
+You sent this one day ago.
+
+Please be patient, some maintainers only get to patches every few weeks.
+If, after 2 weeks, there has not been a response, then resend it.
+
+Remember, maintainers have other work to do as well, and staging patches
+are usually down the list of things they work on.
+
+(hint, I'm not the maintainer of this part of the staging tree...)
+
+thanks,
+
+greg k-h
