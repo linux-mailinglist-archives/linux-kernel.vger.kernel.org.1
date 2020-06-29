@@ -2,110 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4BCF20D1C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCA920D25A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727048AbgF2Snl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726596AbgF2Snj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:43:39 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190BAC031C40
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:43:39 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id dm12so8115106qvb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:43:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=20l025BZSmljDHaRdAwUJU/sS1IgTLaKPGtOtjxywLI=;
-        b=EDLsjzTsEWau+DTUx00QeWGrmY63SYxKcs+gb1NA5d7R97Cm8ah5dWrQZQDrWCkyRL
-         JUxyP4uNFo1+Q0sSMHBZ9X4OHKcXOVmxbsYiE2GTJYNW/YxoFFnnajvguRf/YfhfE7Rl
-         2dlsAiQsBWzZ7HpicS4TCKGfObU8F3S5OmF3hnrx1UdIKP6ajL/gvx5t+p6w2xM3Muuj
-         FjpQ8ubaPjXiOzdRdZ+oMmgOgv/45CqOPMco6y/DVwAEW7TU45x1UQkzwkPdUz/rb6aR
-         NBfE2PSvtvIc5MVsP6VVkbWt4Xu6e7LuIVsmCD3FFFLZHUn5pqL9AlVhaPq4VVzNRbFE
-         bwPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=20l025BZSmljDHaRdAwUJU/sS1IgTLaKPGtOtjxywLI=;
-        b=EkGQVxA2f0CwH4QzIYCvt9fk6CrfzI07eIadgjukyM9+xaGRtZihcZdA4XPxjx1+wl
-         karyGBjGIeCvXQHG8uQMdWH7ZXv9uLC60Iob7etXqaw3pT1auCG0r6JKCFfmPdMV2w2f
-         LNm8RNjIvh5ErJNGU9MwITyfBvTqW6qYXRGmiovvLsrPSioC0yTffJ19pO/6XkSjb9E8
-         i+PYBWD3zfxEFlAHcq8lM5yP2I50yQeSR9EjI9mPGCg4altIRRPRzimAxKP6lf0y809H
-         9sM+HnmFW6u+mU4KBXUXSn7YVgT7FvOkVJ9jHIYwLLP2Q+Oe0Ivjvc9WyA0FuFORbBrf
-         zvYg==
-X-Gm-Message-State: AOAM533Jk8b9lceID9BvFIA/KzYRyeUSZ3Ga9k5zJe4RXdaNG5zAl3K3
-        I3KJ7JXR3+h4o0M+q/ZeEOY=
-X-Google-Smtp-Source: ABdhPJyv48cnmze6ap1z6r/F1pbCtC2KwFqlodfQ72ywXHjT25cbajzYc/ZEl65kkVJ7l/E8dcV/ag==
-X-Received: by 2002:a0c:8e04:: with SMTP id v4mr16625133qvb.213.1593456218301;
-        Mon, 29 Jun 2020 11:43:38 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id u27sm578425qkm.121.2020.06.29.11.43.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 11:43:37 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Mon, 29 Jun 2020 14:43:35 -0400
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 7/7] x86/boot: Check that there are no runtime
- relocations
-Message-ID: <20200629184335.GA1102734@rani.riverdale.lan>
-References: <20200629140928.858507-1-nivedita@alum.mit.edu>
- <20200629140928.858507-8-nivedita@alum.mit.edu>
- <202006290907.E5EF18A@keescook>
- <CAMj1kXFge5aWL2BY8Y1=m1TonB+SrDq6p7TQWuO5JkzcR2dhjQ@mail.gmail.com>
- <202006290919.93C759C62@keescook>
+        id S1729135AbgF2Ssl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:48:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43040 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726990AbgF2Ssi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:48:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B3D3AAAC5;
+        Mon, 29 Jun 2020 18:48:35 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 9726B1E12E7; Mon, 29 Jun 2020 20:48:35 +0200 (CEST)
+Date:   Mon, 29 Jun 2020 20:48:35 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] fs: Do not check if there is a fsnotify watcher on
+ pseudo inodes
+Message-ID: <20200629184835.GK26507@quack2.suse.cz>
+References: <20200615121358.GF3183@techsingularity.net>
+ <CAOQ4uxi0fqKFZ9=U-+DQ78233hR9TXEU44xRih4q=M556ynphA@mail.gmail.com>
+ <20200616074701.GA20086@quack2.suse.cz>
+ <4f6c8dab-4b54-d523-8636-2b01c03d14d3@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202006290919.93C759C62@keescook>
+In-Reply-To: <4f6c8dab-4b54-d523-8636-2b01c03d14d3@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 09:20:31AM -0700, Kees Cook wrote:
-> On Mon, Jun 29, 2020 at 06:11:59PM +0200, Ard Biesheuvel wrote:
-> > On Mon, 29 Jun 2020 at 18:09, Kees Cook <keescook@chromium.org> wrote:
-> > >
-> > > Should these be marked (INFO) as well?
-> > >
+On Mon 29-06-20 08:17:02, Eric Dumazet wrote:
+> On 6/16/20 12:47 AM, Jan Kara wrote:
+> > On Mon 15-06-20 19:26:38, Amir Goldstein wrote:
+> >>> This patch changes alloc_file_pseudo() to always opt out of fsnotify by
+> >>> setting FMODE_NONOTIFY flag so that no check is made for fsnotify watchers
+> >>> on pseudo files. This should be safe as the underlying helper for the
+> >>> dentry is d_alloc_pseudo which explicitly states that no lookups are ever
+> >>> performed meaning that fanotify should have nothing useful to attach to.
+> >>>
+> >>> The test motivating this was "perf bench sched messaging --pipe". On
+> >>> a single-socket machine using threads the difference of the patch was
+> >>> as follows.
+> >>>
+> >>>                               5.7.0                  5.7.0
+> >>>                             vanilla        nofsnotify-v1r1
+> >>> Amean     1       1.3837 (   0.00%)      1.3547 (   2.10%)
+> >>> Amean     3       3.7360 (   0.00%)      3.6543 (   2.19%)
+> >>> Amean     5       5.8130 (   0.00%)      5.7233 *   1.54%*
+> >>> Amean     7       8.1490 (   0.00%)      7.9730 *   2.16%*
+> >>> Amean     12     14.6843 (   0.00%)     14.1820 (   3.42%)
+> >>> Amean     18     21.8840 (   0.00%)     21.7460 (   0.63%)
+> >>> Amean     24     28.8697 (   0.00%)     29.1680 (  -1.03%)
+> >>> Amean     30     36.0787 (   0.00%)     35.2640 *   2.26%*
+> >>> Amean     32     38.0527 (   0.00%)     38.1223 (  -0.18%)
+> >>>
+> >>> The difference is small but in some cases it's outside the noise so
+> >>> while marginal, there is still some small benefit to ignoring fsnotify
+> >>> for files allocated via alloc_file_pseudo in some cases.
+> >>>
+> >>> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> >>
+> >> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 > > 
-> > Given that sections marked as (INFO) will still be emitted into the
-> > ELF image, it does not really make a difference to do this for zero
-> > sized sections.
+> > Thanks for the patch Mel and for review Amir! I've added the patch to my
+> > tree with small amendments to the changelog.
+> > 
+> > 								Honza
+> > 
 > 
-> Oh, I misunderstood -- I though they were _not_ emitted; I see now what
-> you said was not allocated. So, disk space used for the .got.plt case,
-> but not memory space used. Sorry for the confusion!
+> Note this patch broke some user programs (one instance being packetdrill)
 > 
-> -Kees
+> Typical legacy packetdrill script has :
 > 
+> // Create a socket and set it to non-blocking.
+>     0 socket(..., SOCK_STREAM, IPPROTO_TCP) = 3
+>    +0 fcntl(3, F_GETFL) = 0x2 (flags O_RDWR)
+>    +0 fcntl(3, F_SETFL, O_RDWR|O_NONBLOCK) = 0
+> 
+> 
+> But after this change, fcntl(3, F_GETFL) returns 0x4000002 
+> 
+> FMODE_NONOTIFY was not meant to be visible to user space. (otherwise
+> there would be a O_NONOTIFY) ?
 
-To confuse the issue a bit more, there are subtleties around "disk space
-used" :) The section will be present in the ELF format file, but at
-least on x86, that file is then converted into binary format via
-objcopy. At this point a non-allocated section at the end of the file
-will be stripped off. So on 32-bit x86, moving .got.plt to the end and
-marking it INFO will shave 16 bytes off the bzImage kernel.
+Interesting. As Mel said the patch is reverted anyway (Linus already
+applied the revert) but the question about FMODE_NONOTIFY is interesting.
+Userspace certainly cannot set the flag (the kernel enforces this on
+open(2) and fcntl(F_SETFL)). But it is visible to userspace via
+fcntl(F_GETFL) which may have been an oversight... I'm just not sure
+whether some of the fanotify(7) users which legitimately get such file
+descriptors don't depend on this flag being visible.
+
+								Honza
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
