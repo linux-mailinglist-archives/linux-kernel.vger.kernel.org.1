@@ -2,127 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0176B20D18E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DC620D112
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729019AbgF2SmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:42:13 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:56949 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728020AbgF2SmK (ORCPT
+        id S1728002AbgF2SiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:38:17 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20021 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727996AbgF2SiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:42:10 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 34EB0B40;
-        Mon, 29 Jun 2020 02:23:45 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Mon, 29 Jun 2020 02:23:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=62elEdlP6x2ddcxnJcAEZnSvZ9H
-        SDNzcszxZZAT5pX4=; b=qJAG6HdHGWfCTzYDdMelv5U2v6p5Kcn4/vgR8L5/Yq6
-        4qAXeCitm6wCl5ThMVa4CCT3RKMIxa7O76xkLKesiLGvyaaGJgxhHqbNcrvxlRj6
-        KLDVakdV8H7OJWFdR/nRTk1O8MwYWsNhV+GBtmzDnAn+qcJuC6LYEnf5CWFZ9WTj
-        py6z6h0CaOp1wYUOUAO7nXJ9poJziWmUKRMpXo9tBGQ7nTTIBEf16dTWRxaE9+zM
-        eTLUluJq53Q5reaOnzK2Tuq9LTAIQlU82CCiGw67fDdWKzrCek11L0YoSUHzJY3o
-        CQQe7eMSN+Jhh47NDkVhdCg5f7U9/mS2CLSueGiZoNA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=62elEd
-        lP6x2ddcxnJcAEZnSvZ9HSDNzcszxZZAT5pX4=; b=s/Dnl0lEXb6qTuQBzdKkhN
-        +SpNL8nuLs6ePUuNnpcgngK3KIM5dQVkOQg79k1BjzTfe1/TPQstYMoqc03WxX0A
-        DLqJHikNS5o0xBkFJuoTTCr0HzOtcauTWXYbqQsLUQafmBNereP8ruQeWiKgAqxX
-        ilEg5JoJmM4n0Q4/Huty+J/9lCCLKxxTmkrMatwG3yTtUk4hjI3+WNr9AmM6nZch
-        afNg2v8ARGLOFuh9oCY/TDT/9AkpodyrlDfdeT3IjeSBECLI0ssNXIrpYwcXj0Aq
-        NVkqXws5hBSx8/TAMRkJ+FWDQiATvsq3DGC4lxJrGFhuvpAjwelLozWlxknVVUow
-        ==
-X-ME-Sender: <xms:8Ij5XgqS8VjhlYXoagASF8q1oM12XCVA90BptRe5Urj0NWA_JbGNNw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudeljedguddutdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
-    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeek
-    fedrkeeirdekledruddtjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:8Ij5XmpGPn0hdLuQ9mmeGGVhmCGBFyFhYNUFwlaWma8oitWFcQ7PFw>
-    <xmx:8Ij5XlOP3xP4NRVNB3K315rHsG-ECyNagkqTiGycebKepFlK5MuJug>
-    <xmx:8Ij5Xn4EXLDqTxzfwPuTHxx_1AG-3LmIw0Lk-ZOeCl_Yjx1B8fykwA>
-    <xmx:8Ij5XsgjItYgHuMOcCRTBo2Cbn40xwk_HBsRBwZ0yZR5O_3Byo3abw>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 048683067C47;
-        Mon, 29 Jun 2020 02:23:43 -0400 (EDT)
-Date:   Mon, 29 Jun 2020 08:23:33 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Chen <peter.chen@nxp.com>
-Subject: Re: linux-next: manual merge of the usb tree with the usb.current
- tree
-Message-ID: <20200629062333.GA223877@kroah.com>
-References: <20200626132910.73031f1f@canb.auug.org.au>
+        Mon, 29 Jun 2020 14:38:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593455891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Iiom3LNVi9ET0XgfPNiU1I3DflByt3ZNInrS8hmdp2U=;
+        b=Dm4DRQiQ6fUDiw0ODYfzRHM0l5n+/OCax4tsmQVFEte4dJzOhv+iMeaX7PPDTf5oyU2Cvy
+        0CJwQz6V7YaBivk2kU2ABaaWuXVz4uW6YjOtq4MYIn+3EyNMsgXd1uWHXxibfnQTObK24F
+        8SkzU6q4SO8an7e201QLwzG41YBOs7A=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-455-zq5FJK0EM5iWibiXsRdCPQ-1; Mon, 29 Jun 2020 02:33:44 -0400
+X-MC-Unique: zq5FJK0EM5iWibiXsRdCPQ-1
+Received: by mail-wm1-f72.google.com with SMTP id g138so9169162wme.7
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:33:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Iiom3LNVi9ET0XgfPNiU1I3DflByt3ZNInrS8hmdp2U=;
+        b=bcJwot1rvvs31r6/bGkj69+UdKhSSU3V29QHO2CN/GXz2IBDw0gXkenJA5N8Fhy7pP
+         yv6SjNdVYVEEVRlWaKnFo2or0J342R83z/tPKQ4Lu+9avZ1h4gk4KJYgOf2tHqquDaxv
+         dKRcHykJPRBatK8yz/XMHye1JGzGO6WzGc6sLB70r9CYKpLVQXCy2bR545Ldhq8kzV0X
+         D5yd0nT6kg01GFPFY99Pd6GrVCh4TVc6u6XvlP94eFK3nSkbkCZoOeL6w1dRROFpCrtp
+         YSGj1o6IHwbwbP+aCQYAekMjaFjAV69JCyzGFY0hANWF6WxxyKy3HdVXawA+ztSCitb3
+         MamQ==
+X-Gm-Message-State: AOAM530kykZRCy2aHGfDYcu1cKbcr+mYv9MGX3cJp5TMQP037huGMZHQ
+        1J5pGyazveM8pQupjHGQXa4NmqbqUiizQhjwevBkf+beDJiPsUI+FM719+Cn3xROx9v64wgxE2c
+        pK53+Jv4h2oM6W7hincD04d3/
+X-Received: by 2002:adf:8067:: with SMTP id 94mr14821901wrk.427.1593412423677;
+        Sun, 28 Jun 2020 23:33:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxfYJ1M6jIB+Bt9+iuqmCS+1/JuHYbah8AxWL9RwY6izIKRHTcVkotYUsuHjo+DZqHXAwCswQ==
+X-Received: by 2002:adf:8067:: with SMTP id 94mr14821888wrk.427.1593412423531;
+        Sun, 28 Jun 2020 23:33:43 -0700 (PDT)
+Received: from redhat.com (bzq-79-182-31-92.red.bezeqint.net. [79.182.31.92])
+        by smtp.gmail.com with ESMTPSA id s8sm41059111wru.38.2020.06.28.23.33.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jun 2020 23:33:42 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 02:33:39 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH] xen: introduce xen_vring_use_dma
+Message-ID: <20200629023225-mutt-send-email-mst@kernel.org>
+References: <20200624050355-mutt-send-email-mst@kernel.org>
+ <alpine.DEB.2.21.2006241047010.8121@sstabellini-ThinkPad-T480s>
+ <20200624163940-mutt-send-email-mst@kernel.org>
+ <alpine.DEB.2.21.2006241351430.8121@sstabellini-ThinkPad-T480s>
+ <20200624181026-mutt-send-email-mst@kernel.org>
+ <alpine.DEB.2.21.2006251014230.8121@sstabellini-ThinkPad-T480s>
+ <20200626110629-mutt-send-email-mst@kernel.org>
+ <DB6PR0402MB27601CA74B85DA5A9F5E5DD6886E0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+ <20200629022124-mutt-send-email-mst@kernel.org>
+ <DB6PR0402MB27602AB2A9A242D79343CE48886E0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200626132910.73031f1f@canb.auug.org.au>
+In-Reply-To: <DB6PR0402MB27602AB2A9A242D79343CE48886E0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 01:29:10PM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Jun 29, 2020 at 06:25:41AM +0000, Peng Fan wrote:
+> > > > > Anyway, re-reading the last messages of the original thread [1],
+> > > > > it looks like Peng had a clear idea on how to fix the general issue.
+> > > > > Peng, what happened with that?
+> > >
+> > > We shrinked the rpmsg reserved area to workaround the issue.
+> > > So still use the dma apis in rpmsg.
+> > >
+> > > But here I am going to address domu android trusty issue using virtio.
+> > 
+> > My suggestion is to first of all fix DMA API so it works properly.
 > 
-> Today's linux-next merge of the usb tree got a conflict in:
+> Could you please elaborate more details?
 > 
->   drivers/usb/cdns3/ep0.c
+> You mean the DMA API usage of rpmsg? Or xen domu dma_ops?
 > 
-> between commit:
-> 
->   c0e2a0341cd8 ("usb: cdns3: ep0: fix the test mode set incorrectly")
-> 
-> from the usb.current tree and commit:
-> 
->   62fb45d317c5 ("USB: ch9: add "USB_" prefix in front of TEST defines")
-> 
-> from the usb tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-> 
-> diff --cc drivers/usb/cdns3/ep0.c
-> index 61ec5bb2b0ca,04a522f5ae58..000000000000
-> --- a/drivers/usb/cdns3/ep0.c
-> +++ b/drivers/usb/cdns3/ep0.c
-> @@@ -327,12 -327,11 +327,12 @@@ static int cdns3_ep0_feature_handle_dev
->   		if (!set || (tmode & 0xff) != 0)
->   			return -EINVAL;
->   
->  -		switch (tmode >> 8) {
->  +		tmode >>= 8;
->  +		switch (tmode) {
-> - 		case TEST_J:
-> - 		case TEST_K:
-> - 		case TEST_SE0_NAK:
-> - 		case TEST_PACKET:
-> + 		case USB_TEST_J:
-> + 		case USB_TEST_K:
-> + 		case USB_TEST_SE0_NAK:
-> + 		case USB_TEST_PACKET:
->   			cdns3_set_register_bit(&priv_dev->regs->usb_cmd,
->   					       USB_CMD_STMODE |
->   					       USB_STS_TMODE_SEL(tmode - 1));
+> Thanks,
+> Peng. 
 
-This is now resolved in my tree, thanks!
+Not 100% sure but I think xen dma ops.
 
-greg k-h
+-- 
+MST
+
