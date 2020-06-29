@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62D320E63E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E0E20E62D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404084AbgF2Vpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37554 "EHLO
+        id S1727797AbgF2Vo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727775AbgF2Shn (ORCPT
+        with ESMTP id S1727802AbgF2Shp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:43 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86812C00F830
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:47:57 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 22so15255638wmg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:47:57 -0700 (PDT)
+        Mon, 29 Jun 2020 14:37:45 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96EEAC00F832
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:47:58 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id 22so15255694wmg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:47:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MXWPj65SsgiOS9zBWng/y3B2dHdHCzzNx8KN4IFF3T0=;
-        b=Jlf/+bu6MQO1H2Y1nOpHwS2pO3hXcUe/HKZCIAl8BbtiP7Kf0yEVgv1uZN932HwADc
-         133TMwpc3TtvSaPRg1M+WFSrLYTatgIZv2mcd/+YFO4O6JtO2y//GGZpwk8nnUrhGdYQ
-         hMsTYPm9uxGpufCX1GKnRNjRNFLSlDT5dQXKo2WuBUcsIN677aUB958DsS2Ufpw3Ef1L
-         nFdL6uQVDk5/7DG88H8PBdiJnSa0JYbh6CpzKvzVtC54HCTmX3MW25q6eJUouLqxLHNI
-         k0W+rWsYph1/w8326KtVbvoRim9UDd1hixtZ35evPkPMsFz+gjbP/UFmtrYOWW786+7s
-         t8lg==
+        bh=R3CtQwwHBAUYt5tWEUptOpRirDIZjfKx8cL/+kZ0aGU=;
+        b=TqYbZi1IpvUJDffa5OV7Qjrr0N+cDJ9cZOajkmxHXTv6jjxCNtpB2is8KLr+GUNZ6D
+         wsWKBVDUmapCkLaM/97Mquh2EEnsU4aZLcuUyRYGkjA9TdTd3MvA8NhMxPf9bSdIUiuf
+         sesF6dNfGI25PtjY4+evZRcAg+Pj/rNSZgcudJgTOg4rBIkEPZhFvFPt/hTc20elA1AT
+         W07BruFYC45AsFzkmPBPtwvfC9B5Cbe1Zdirxm0UNAQ8oGSf3UL5DJtsts8XTQsP4Oec
+         +2n10RLzXOTsbHl6bR1aWOWxe0cfxgqBp4/RhSW6l0vlVG6pun/AG8d7Vahpwcdjd/br
+         RGXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MXWPj65SsgiOS9zBWng/y3B2dHdHCzzNx8KN4IFF3T0=;
-        b=anJ4TIRiOQvh0KHBMznK85FSvTtL+kAdBMBy+PPz8S64Gp1BDL6n6b92IiroS8LFPf
-         SlYPxRCxUyEh2jTxKwePUaNNIVIZklGkm6HCMO/sqhVTNa+xM8HQbT1Zyx6cYhRDYLas
-         +bxlQbn9isYwMNuZj7Yx+CMPLPLmltTXNyHk33idf0y0DwENo1NOkhsBJ0MMNrEyDL/L
-         9gzJR/T3eQz+0XMIZSmY6oWodQKf00kkQ0aQQh9gbbhkDLFTWTPSVH92KVJqj3SzXmWl
-         8+3Jh6J1mXCLgS1hSWUZIIcnmA8zpOu83UpEneQ9T/97CUnq9+3syosTuLiOwptcwZc5
-         rAEw==
-X-Gm-Message-State: AOAM530OKCywGj5dmzGR3p/WlA49tLNMLlx7I8g6y9S2nf+RkVdIb/9z
-        4SBePSlc/aY/oqdyjNsh1P/Z/g==
-X-Google-Smtp-Source: ABdhPJwFsoOz7r0nFMjUVsQWVlIpJeZRYkCocmfI+AhlI+deNKBfMmUDPAunud4nny3pLzOyhu25ug==
-X-Received: by 2002:a7b:cbc5:: with SMTP id n5mr16593514wmi.95.1593434876317;
-        Mon, 29 Jun 2020 05:47:56 -0700 (PDT)
+        bh=R3CtQwwHBAUYt5tWEUptOpRirDIZjfKx8cL/+kZ0aGU=;
+        b=q8Q2sx81CQvZqFflogCnDpblswayfbvAllX860i39M5czLuNdpPMrp4ADnD8EAivGs
+         Dev7nwMxTELpHVwIT+nKx5j3JY+Sf1tZpTwxRN7K9NIGmidgCKwWm4ryVlQhcK3BPI6s
+         BvqPXSzFCCRHKo3hQQUE4L99CvvwsZFBmcDJgs7TIK5KHmPgLGTJe1bQ6aS2HPgh7uDQ
+         r5ciRV1NmPXRgY6oDPjqGxaLXYyLpbPwvvbvZt+LinmWbxm4LW/TSP3ouLkZc75lT5dt
+         2Eyew6EHqaUqXja7l8lwP0DM2/tMj9cOxEg76LjirOD4v/nuCOFOK/H+R1fNaWmg9BgY
+         HYgw==
+X-Gm-Message-State: AOAM530qEdYy3Pvwo5yYjkQfkx/iaE92ll3wr/ZuN4rDVufkjvyR3DC8
+        WouaRIpNnSFI8/CpMbEwO9sXZg==
+X-Google-Smtp-Source: ABdhPJxeGeJLZE8P8dHdFHVkY80hy0oIW4BMYmEqs8sF7naCIUyVXxBQDOR2f7ZO+bDIvrZQdliD6w==
+X-Received: by 2002:a7b:c055:: with SMTP id u21mr16091687wmc.132.1593434877370;
+        Mon, 29 Jun 2020 05:47:57 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id e17sm12995924wrr.88.2020.06.29.05.47.55
+        by smtp.gmail.com with ESMTPSA id e17sm12995924wrr.88.2020.06.29.05.47.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 05:47:55 -0700 (PDT)
+        Mon, 29 Jun 2020 05:47:56 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
         linux-pwm@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>, Ray Jui <rjui@broadcom.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
         Scott Branden <sbranden@broadcom.com>,
-        Yendapally Reddy Dhananjaya Reddy 
-        <yendapally.reddy@broadcom.com>,
         bcm-kernel-feedback-list@broadcom.com
-Subject: [PATCH 1/4] pwm: bcm-iproc: Remove impossible comparison when validating duty cycle
-Date:   Mon, 29 Jun 2020 13:47:49 +0100
-Message-Id: <20200629124752.1018358-2-lee.jones@linaro.org>
+Subject: [PATCH 2/4] pwm: bcm-kona: Remove impossible comparison when validating duty cycle
+Date:   Mon, 29 Jun 2020 13:47:50 +0100
+Message-Id: <20200629124752.1018358-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629124752.1018358-1-lee.jones@linaro.org>
 References: <20200629124752.1018358-1-lee.jones@linaro.org>
@@ -70,37 +70,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'duty' here is an unsigned int, thus checking for <0 will always
+'dc' here is an unsigned long, thus checking for <0 will always
 evaluate to false.
 
 Fixes the following W=1 warning:
 
- drivers/pwm/pwm-bcm-iproc.c:147:12: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
+ drivers/pwm/pwm-bcm-kona.c:141:35: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
 
+Cc: Florian Fainelli <f.fainelli@gmail.com>
 Cc: Ray Jui <rjui@broadcom.com>
 Cc: Scott Branden <sbranden@broadcom.com>
-Cc: Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
 Cc: bcm-kernel-feedback-list@broadcom.com
 Cc: linux-pwm@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/pwm/pwm-bcm-iproc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/pwm/pwm-bcm-kona.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pwm/pwm-bcm-iproc.c b/drivers/pwm/pwm-bcm-iproc.c
-index 1f829edd8ee70..46f0a45e9049c 100644
---- a/drivers/pwm/pwm-bcm-iproc.c
-+++ b/drivers/pwm/pwm-bcm-iproc.c
-@@ -143,8 +143,7 @@ static int iproc_pwmc_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 		value = rate * state->duty_cycle;
- 		duty = div64_u64(value, div);
+diff --git a/drivers/pwm/pwm-bcm-kona.c b/drivers/pwm/pwm-bcm-kona.c
+index 81da91df2529a..16c5898b934a8 100644
+--- a/drivers/pwm/pwm-bcm-kona.c
++++ b/drivers/pwm/pwm-bcm-kona.c
+@@ -138,7 +138,7 @@ static int kona_pwmc_config(struct pwm_chip *chip, struct pwm_device *pwm,
+ 		dc = div64_u64(val, div);
  
--		if (period < IPROC_PWM_PERIOD_MIN ||
--		    duty < IPROC_PWM_DUTY_CYCLE_MIN)
-+		if (period < IPROC_PWM_PERIOD_MIN)
+ 		/* If duty_ns or period_ns are not achievable then return */
+-		if (pc < PERIOD_COUNT_MIN || dc < DUTY_CYCLE_HIGH_MIN)
++		if (pc < PERIOD_COUNT_MIN)
  			return -EINVAL;
  
- 		if (period <= IPROC_PWM_PERIOD_MAX &&
+ 		/* If pc and dc are in bounds, the calculation is done */
 -- 
 2.25.1
 
