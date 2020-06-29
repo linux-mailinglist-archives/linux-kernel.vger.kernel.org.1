@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F3D20D25B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A18C20D1BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729200AbgF2Ssp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:48:45 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10384 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728109AbgF2Ssh (ORCPT
+        id S1728420AbgF2Sna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:43:30 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1808 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726158AbgF2Sn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:48:37 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05T5Vwwl188340;
-        Mon, 29 Jun 2020 02:01:04 -0400
+        Mon, 29 Jun 2020 14:43:29 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05T62F0i179145;
+        Mon, 29 Jun 2020 02:23:18 -0400
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31wyqufjc0-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31xkqjaqjf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 02:01:04 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05T613Px163660;
-        Mon, 29 Jun 2020 02:01:03 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31wyqufjar-1
+        Mon, 29 Jun 2020 02:23:17 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05T62PWK179837;
+        Mon, 29 Jun 2020 02:23:17 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31xkqjaqht-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 02:01:03 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05T5tJR7020658;
-        Mon, 29 Jun 2020 06:01:02 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 31wwr89w10-1
+        Mon, 29 Jun 2020 02:23:17 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05T6L5Tu011514;
+        Mon, 29 Jun 2020 06:23:15 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04fra.de.ibm.com with ESMTP id 31wwr80whk-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 06:01:01 +0000
+        Mon, 29 Jun 2020 06:23:15 +0000
 Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05T60wQh51445850
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05T6NCjx2621908
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Jun 2020 06:00:59 GMT
+        Mon, 29 Jun 2020 06:23:12 GMT
 Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B0821A40CB;
-        Mon, 29 Jun 2020 06:00:56 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 46019A4053;
+        Mon, 29 Jun 2020 06:23:12 +0000 (GMT)
 Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 895FCA41C8;
-        Mon, 29 Jun 2020 06:00:36 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 14DC8A405B;
+        Mon, 29 Jun 2020 06:23:09 +0000 (GMT)
 Received: from [9.102.0.109] (unknown [9.102.0.109])
         by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 29 Jun 2020 06:00:36 +0000 (GMT)
-Subject: Re: [PATCH 01/11] kexec_file: allow archs to handle special regions
- while locating memory hole
-To:     piliu <piliu@redhat.com>, Michael Ellerman <mpe@ellerman.id.au>,
+        Mon, 29 Jun 2020 06:23:08 +0000 (GMT)
+Subject: Re: [PATCH 02/11] powerpc/kexec_file: mark PPC64 specific code
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Andrew Morton <akpm@linux-foundation.org>
-Cc:     Kexec-ml <kexec@lists.infradead.org>,
+Cc:     Pingfan Liu <piliu@redhat.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
         Petr Tesarik <ptesarik@suse.cz>,
         Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
         Sourabh Jain <sourabhjain@linux.ibm.com>,
@@ -62,56 +63,81 @@ Cc:     Kexec-ml <kexec@lists.infradead.org>,
         Vivek Goyal <vgoyal@redhat.com>,
         Eric Biederman <ebiederm@xmission.com>
 References: <159319825403.16351.7253978047621755765.stgit@hbathini.in.ibm.com>
- <159319828304.16351.6990340111766605842.stgit@hbathini.in.ibm.com>
- <ed94a357-16aa-9f17-aa5f-5aab6617ed68@redhat.com>
+ <159319829236.16351.3935863082429593906.stgit@hbathini.in.ibm.com>
+ <68d59c00-da02-b362-7bd9-a9631eca0fdd@csgroup.eu>
 From:   Hari Bathini <hbathini@linux.ibm.com>
-Message-ID: <38237270-ce15-c8ec-a527-1ff938ca257d@linux.ibm.com>
-Date:   Mon, 29 Jun 2020 11:30:35 +0530
+Message-ID: <29542b4a-eb44-5330-60e8-c0b0d294d72f@linux.ibm.com>
+Date:   Mon, 29 Jun 2020 11:53:08 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <ed94a357-16aa-9f17-aa5f-5aab6617ed68@redhat.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <68d59c00-da02-b362-7bd9-a9631eca0fdd@csgroup.eu>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
  definitions=2020-06-29_04:2020-06-26,2020-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 mlxscore=0 adultscore=0 spamscore=0 suspectscore=0
- impostorscore=0 cotscore=-2147483648 bulkscore=0 lowpriorityscore=0
- clxscore=1015 mlxlogscore=999 phishscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006290035
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 bulkscore=0
+ mlxscore=0 adultscore=0 clxscore=1011 phishscore=0 priorityscore=1501
+ malwarescore=0 lowpriorityscore=0 suspectscore=0 cotscore=-2147483648
+ spamscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006290039
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Christophe
 
+Thanks for the review...
 
-On 28/06/20 7:58 am, piliu wrote:
-> Hi Hari,
+On 27/06/20 12:12 pm, Christophe Leroy wrote:
 > 
-> If in [4/11],  get_exclude_memory_ranges() turns out to be unnecessary
-> ,then this patch is abundant either. As my understanding, memblock has
-> already helped to achieved the purpose that get_exclude_memory_ranges()
-> wants.
+> 
+> Le 26/06/2020 à 21:04, Hari Bathini a écrit :
+>> Some of the kexec_file_load code isn't PPC64 specific. Move PPC64
+>> specific code from kexec/file_load.c to kexec/file_load_64.c. Also,
+>> rename purgatory/trampoline.S to purgatory/trampoline_64.S in the
+>> same spirit.
+> 
+> At the time being, CONFIG_KEXEC_FILE depends on PPC64.
 
-As mentioned in the other patch, there is a need for @exclude_ranges as crashkernel
-region is likely to have an overlap with regions like opal, rtas..
+Right.
 
-But yeah.. the weak function should have been kexec_locate_mem_hole() instead
-of kexec_add_buffer(). Will take care of that in v2.
+> Are you planning to make it work on PPC32 as well ?
 
-> On 06/27/2020 03:04 AM, Hari Bathini wrote:
->> Some archs can have special memory regions, within the given memory
->> range, which can't be used for the buffer in a kexec segment. As
->> kexec_add_buffer() function is being called from generic code as well,
->> add weak arch_kexec_add_buffer definition for archs to override & take
->> care of special regions before trying to locate a memory hole.
+No.
+
+> Otherwise I don't understand the purpose of this patch.
+
+But I want to make sure the changes I am adding in this series do not
+get in the way of adding PPC32 changes whenever they are submitted as there
+is common code currently and some more of it in the changes I am adding
+in this series...
+
+> Also, what is being done in this patch seems to go far beyond what you describe above.> It is propably worth splitting in several patches with proper explanation.
+
+Hmmm.. I don't see any other reason beyond what I mentioned above.
+Will try to split the patch but the changelog would still be the same, afaics.
+
+> Christophe
+> 
 >>
 >> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+>> ---
+>>   arch/powerpc/include/asm/kexec.h       |   11 +++
+>>   arch/powerpc/kexec/Makefile            |    2 -
+>>   arch/powerpc/kexec/elf_64.c            |    7 +-
+>>   arch/powerpc/kexec/file_load.c         |   37 ++--------
+>>   arch/powerpc/kexec/file_load_64.c      |  108 ++++++++++++++++++++++++++++++
+>>   arch/powerpc/purgatory/Makefile        |    4 +
+>>   arch/powerpc/purgatory/trampoline.S    |  117 --------------------------------
+>>   arch/powerpc/purgatory/trampoline_64.S |  117 ++++++++++++++++++++++++++++++++
+>>   8 files changed, 248 insertions(+), 155 deletions(-)
+>>   create mode 100644 arch/powerpc/kexec/file_load_64.c
+>>   delete mode 100644 arch/powerpc/purgatory/trampoline.S
+>>   create mode 100644 arch/powerpc/purgatory/trampoline_64.S
 
 Thanks
 Hari
