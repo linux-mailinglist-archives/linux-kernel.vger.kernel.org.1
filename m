@@ -2,101 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC3320D523
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23DC20D4F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731058AbgF2TPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:15:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43348 "EHLO
+        id S1731285AbgF2TNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:13:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731791AbgF2TOX (ORCPT
+        with ESMTP id S1731094AbgF2TMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:14:23 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02CAC08EE1B;
-        Mon, 29 Jun 2020 00:15:19 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id e64so11113401iof.12;
-        Mon, 29 Jun 2020 00:15:19 -0700 (PDT)
+        Mon, 29 Jun 2020 15:12:43 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9284C014A42
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:09:33 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id s14so6793727plq.6
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:09:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=adzyPkXTkp0sO71SdlU/u3i679+c3g+8gNM14op6Zh4=;
-        b=ToSqHyMjXzY8sb/AduIlKKW2aCikkJnwsQnLXnOzOgUpsPkSmLq4YRImXGoTxRdOMb
-         nJYIHujt1SoSirmLtO7VhNw1RwSkOCG4N+r3A5WQOSndtHbdHFjtJ6vfJuRLPl9sSEVV
-         apqg2X1P+XkenHfT02bJGZgydkN000VqHIGuhOTeOaLU4aHSJzQnbUSfHKdJU6lx3jTu
-         Ul17wnlM+sui0bqxR/iazioQTndlpoh88ptx8EVQJRz/PMBaq5uavlyne8EwM8dErhe0
-         qt4D601OmS8z0+CrKMH+qxRfwM1z+TpbGak8y3WjIPrW2KgjFyA5uXHXfrprA9H4ZQHF
-         94TA==
+        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=f7mzmYEZ90niD9lpV23xIyu8jzdfLFeCZQFxCAagons=;
+        b=d7RGwmjsilF1uieXeXCwjyX46zkjF0CPwMH+1SXCeq1TYFvl7vveSIbI/M2deJlujm
+         r2tKT65aSxJH6tQsCoSGCtWShjlQg6+gl6YUzTwBPgRb8aFlT80tmQ7tHVQYNBRi/cqm
+         VEfjiENxZdDLbUzBZvFeMEHmhSycGNiPOuvxKxM1tgxFx8446PVfCutaA3nAhlndlPIe
+         kCmw/f769wdc3bvigI76pEe2/7GMbvXHUX21bG+vvgc1YLsr4OvtNvj/1j+zrNwn+ZAF
+         myYXasWD35If0kzz4vYddPksBJcGabQlptcPZxuJ46TFGP6MOpotFGjFaTQtUhFMmhaR
+         m2vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=adzyPkXTkp0sO71SdlU/u3i679+c3g+8gNM14op6Zh4=;
-        b=XAETSz2Giiaqh5qzut20BwKAqTWdPmieoy5SGlMpI2SiTqEIwlzg4iJB3vaSgtexis
-         CDtKW4w2+wJ2PYyk/mikEwTabZlMOKQvzc5qgpqeRc5VdUKHP1t9MwaH+AqVmZguSvBw
-         w7zS11ssrfElWmqZZ9jU+iStt+YY0m+iTL5QG4bjyFM59YrREQwS+jaFkeW4P4r9uuc1
-         VrzbwqcvIRGp1h4om06J82KxPZv7WF3vcQYUrkwm2LusGwu/sPAzXsJjLIBXVMJ6yk2n
-         ZaKpWaEOpbCxy6JYo2yx8hTN51Ja7Bq7uWfZEvnHDqlCPKjCIT4gwnC9G48DFTL34VXD
-         9Cgg==
-X-Gm-Message-State: AOAM531iTVXnx5zqFbxo0CQMBEap9P9ZDv2eEVKbul94jtzWI8z/oaF7
-        79HsIv8grhTZIObKsm0s7N+bt2nPB4WR+fLWMLk=
-X-Google-Smtp-Source: ABdhPJwhWFrCSpeie7O8ZZc6ylWvzGqcD+nXDxE+VaCR9WC377uXctoAAbiNoe4UHdQG0mW0kIrxFXHMeyLKGcLDF/Q=
-X-Received: by 2002:a6b:bc07:: with SMTP id m7mr15180805iof.107.1593414919316;
- Mon, 29 Jun 2020 00:15:19 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=f7mzmYEZ90niD9lpV23xIyu8jzdfLFeCZQFxCAagons=;
+        b=FIMNBZO9CCFDYiR0owHOvAsvrat3brx3ofnevi0QYa2uBIjYaYXgVFXIRMAvtRJM30
+         uD60y2iCkmDBFOI9EbCj/k1uLAAPlvnXkS2uZ+hiOvfQ+77ZCBAh5mLpAXo/x0wzwsND
+         7R1WUpQCYxjJFVDWpABXW7ahs5ZodlDvIqf2ImnD8HNo7WJ1xsdAgVgQ6SfB3DDFKU9F
+         fNw0rwATclruX7S+T7ltOpMv7p/R9cEHhhWhth8p80XIvtXcUQ7sQ0Aorc9RgtXoFkkF
+         NqQDGjWhnZnmQsF9VhmrPLP3+PTFHdY3CcxSJ/AxUqbHZVsXEDmUzEJY+LR7mgU8k1wc
+         lgfw==
+X-Gm-Message-State: AOAM5302QIJ5GTZuYK8LeesWX+QpaDLWZBFc0OP9z1LtJPNVTAbG07Wg
+        yBUTmZHy075XpOHwBM3gHkV1iw==
+X-Google-Smtp-Source: ABdhPJzeqeWulbzG+1u84D/dmk/gQ0Cad1akAqYZj+mABVhiBf5N0Idkigo9ffle7lMT+GTOJakKng==
+X-Received: by 2002:a17:90a:4bc7:: with SMTP id u7mr2294632pjl.217.1593418173517;
+        Mon, 29 Jun 2020 01:09:33 -0700 (PDT)
+Received: from localhost ([2406:7400:73:703c:908:f18a:1156:5c38])
+        by smtp.gmail.com with ESMTPSA id a8sm7457402pfi.29.2020.06.29.01.09.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 01:09:32 -0700 (PDT)
+From:   B K Karthik <bkkarthik@pesu.pes.edu>
+X-Google-Original-From: B K Karthik <karthik.bk2000@live.com>
+Date:   Mon, 29 Jun 2020 04:09:27 -0400
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Straube <straube.linux@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8188eu: include: ieee80211.h: fixed multiple
+ blank line coding style issues.
+Message-ID: <20200629080927.ivzvczusduxtrc2g@pesu-pes-edu>
 MIME-Version: 1.0
-References: <20200629033226.160936-1-vaibhavgupta40@gmail.com> <87y2o6xvx5.fsf@codeaurora.org>
-In-Reply-To: <87y2o6xvx5.fsf@codeaurora.org>
-From:   Vaibhav Gupta <vaibhav.varodek@gmail.com>
-Date:   Mon, 29 Jun 2020 12:43:43 +0530
-Message-ID: <CAPBsFfBW7B9+ef+RwBd6SsHokWc9DxCGz6hMczpO7Y6y=q1EyQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] ipw2x00: use generic power management
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="p3svisjutkhbdlvx"
+Content-Disposition: inline
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Jun 2020 at 11:20, Kalle Valo <kvalo@codeaurora.org> wrote:
->
-> Vaibhav Gupta <vaibhavgupta40@gmail.com> writes:
->
-> > Linux Kernel Mentee: Remove Legacy Power Management.
-> >
-> > The purpose of this patch series is to remove legacy power management callbacks
-> > from amd ethernet drivers.
-> >
-> > The callbacks performing suspend() and resume() operations are still calling
-> > pci_save_state(), pci_set_power_state(), etc. and handling the power management
-> > themselves, which is not recommended.
-> >
-> > The conversion requires the removal of the those function calls and change the
-> > callback definition accordingly and make use of dev_pm_ops structure.
-> >
-> > All patches are compile-tested only.
-> >
-> > Vaibhav Gupta (2):
-> >   ipw2100: use generic power management
-> >   ipw2200: use generic power management
-> >
-> >  drivers/net/wireless/intel/ipw2x00/ipw2100.c | 31 +++++---------------
-> >  drivers/net/wireless/intel/ipw2x00/ipw2200.c | 30 +++++--------------
-> >  2 files changed, 14 insertions(+), 47 deletions(-)
->
-> For wireless patches you should CC linux-wireless, otherwise they will
-> not be in radar.
-Oh yes, sorry! My mistake, I missed CCing them. Sending it again!
-> See more from link below.
->
-> --
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+--p3svisjutkhbdlvx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+removed multiple blank lines to improve code readability.
+
+Signed-off-by: B K Karthik <karthik.bk2000@live.com>
+---
+ drivers/staging/rtl8188eu/include/ieee80211.h | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/drivers/staging/rtl8188eu/include/ieee80211.h b/drivers/staging/rtl8188eu/include/ieee80211.h
+index 75f0ebe0faf5..93fd0e9c49dc 100644
+--- a/drivers/staging/rtl8188eu/include/ieee80211.h
++++ b/drivers/staging/rtl8188eu/include/ieee80211.h
+@@ -90,7 +90,6 @@ enum {
+ #define IEEE_CRYPT_ERR_TX_KEY_SET_FAILED		6
+ #define IEEE_CRYPT_ERR_CARD_CONF_FAILED		7
+
+-
+ #define	IEEE_CRYPT_ALG_NAME_LEN			16
+
+ #define WPA_CIPHER_NONE		BIT(0)
+@@ -99,8 +98,6 @@ enum {
+ #define WPA_CIPHER_TKIP		BIT(3)
+ #define WPA_CIPHER_CCMP		BIT(4)
+
+-
+-
+ #define WPA_SELECTOR_LEN 4
+ extern u8 RTW_WPA_OUI_TYPE[];
+ extern u8 WPA_AUTH_KEY_MGMT_NONE[];
+@@ -113,7 +110,6 @@ extern u8 WPA_CIPHER_SUITE_WRAP[];
+ extern u8 WPA_CIPHER_SUITE_CCMP[];
+ extern u8 WPA_CIPHER_SUITE_WEP104[];
+
+-
+ #define RSN_HEADER_LEN 4
+ #define RSN_SELECTOR_LEN 4
+
+@@ -192,7 +188,6 @@ enum NETWORK_TYPE {
+ #define IsSupportedTxMCS(NetType)				\
+ 	((NetType) & (WIRELESS_11_24N | WIRELESS_11_5N) ? true : false)
+
+-
+ struct ieee_param {
+ 	u32 cmd;
+ 	u8 sta_addr[ETH_ALEN];
+@@ -270,11 +265,9 @@ struct sta_data {
+  * WEP IV and ICV. (this interpretation suggested by Ramiro Barreiro)
+  */
+
+-
+ #define IEEE80211_HLEN			30
+ #define IEEE80211_FRAME_LEN		(IEEE80211_DATA_LEN + IEEE80211_HLEN)
+
+-
+ /* this is stolen from ipw2200 driver */
+ #define IEEE_IBSS_MAC_HASH_SIZE 31
+
+@@ -297,7 +290,6 @@ enum eap_type {
+ #define RTW_IEEE80211_SCTL_FRAG	0x000F
+ #define RTW_IEEE80211_SCTL_SEQ	0xFFF0
+
+-
+ #define RTW_ERP_INFO_NON_ERP_PRESENT BIT(0)
+ #define RTW_ERP_INFO_USE_PROTECTION BIT(1)
+ #define RTW_ERP_INFO_BARKER_PREAMBLE_MODE BIT(2)
+@@ -354,7 +346,6 @@ struct ieee80211_snap_hdr {
+ #define IEEE80211_CCK_RATE_LEN			4
+ #define IEEE80211_NUM_OFDM_RATESLEN	8
+
+-
+ #define IEEE80211_CCK_RATE_1MB			0x02
+ #define IEEE80211_CCK_RATE_2MB			0x04
+ #define IEEE80211_CCK_RATE_5MB			0x0B
+--
+2.20.1
+
+
+--p3svisjutkhbdlvx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAEBCgAdFiEEpIrzAt4LvWLJmKjp471Q5AHeZ2oFAl75obcACgkQ471Q5AHe
+Z2qjswv/aC80O/zH6WxMngmgZjQPQG9ROeE506BjzkkAUtP90pFLQIJKDY/0dwt0
+Q3SmIJyFEuv6tkAIfYQEAbDFuWDC0iK6B+pIq6+FZ4y91d20NcUZ1bGjEuYWtKV2
+Ue5P+MoMvNoycsHDktLlz/EoM8veJXUkoc9UNOes5sgTptlOR6AGbbOVQu/86Qqi
+RhmOz8/zpPp2MI0Rta1CEIJtYUGmRwnLq8omQu3kSv51GDjTI2uvO+nJGSvelSu3
+6ck0lgblyH2uwlUBy3A1qwLgt76qn/mFsVb1Yg5Qrc3JUl5BITP0d+3NBAXkFHKL
+ly8Z8+lFvA/OJFGQACcsMYekM3bnMgt6t15Rt7tbrCh3luVXRP9FZT8RNYW4eDij
+0mHeKgiTCZJEWxhIkG29FbP8obki6XFZLzeDGaolgtfNEP3BI4vpzJGU9Tm63MNE
+BeYxhvAnwZ+HPNsdvT71gYv/WkymMBYNayLAt7KpWdfQfoUDtgIWDAJii1H9MiFz
+mynQ/tUZ
+=1zZ0
+-----END PGP SIGNATURE-----
+
+--p3svisjutkhbdlvx--
