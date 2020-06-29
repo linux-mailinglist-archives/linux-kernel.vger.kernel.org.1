@@ -2,104 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE7920D3C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938AD20D429
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730464AbgF2TB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:01:56 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:56641 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727018AbgF2TBv (ORCPT
+        id S1730087AbgF2TFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:05:45 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23297 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728989AbgF2TEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:01:51 -0400
+        Mon, 29 Jun 2020 15:04:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593457305;
+        s=mimecast20190719; t=1593457471;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rE8sePDsqa4643aK/Xq/VoL9+mfjUnQLSGGnMx89Flk=;
-        b=R9ki7V9/RnRr86Dlmgk8FELDy8nWOxN4KYPjz0WXf0d2ID56d+nsw+m0N452NSAYot6mve
-        mV6EmfvFUy8uIidrEwJjb68eIiCMTrrUCN+gfVMJffhBNuCpN/OUhwsOkrO6mVCtnULGUc
-        /ElGP50P7f15XvuWiISOjqfAX+Q/ypA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-Z7Hk_V3DPFe4DDRLgJCccg-1; Mon, 29 Jun 2020 09:59:28 -0400
-X-MC-Unique: Z7Hk_V3DPFe4DDRLgJCccg-1
-Received: by mail-wr1-f70.google.com with SMTP id p9so16576130wrx.10
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:59:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rE8sePDsqa4643aK/Xq/VoL9+mfjUnQLSGGnMx89Flk=;
-        b=EoFblXlhAgvxBtNtf6LKdOeFl1L1jkINCLxuOyobzaXmw6FiFDXlbbAiftOOKPigbw
-         Fc1tYIBhtGwL4X6Nt7HmeYiBWeHmYEtC9FSWBKeFkRFyiUZz8Qyp6tEr6E77/lcDj/1S
-         DvbEBQ1xNLiMZVVYoy/woYMUgcD0Jom9JAlg1lGgibe512ERQLaXcyIBCY1gkJnhtU+P
-         pYseRectbOk5QJgjRHi1n5QrPMhw1NOYdKeraX287WXKrCqCe4ksmiPyGXRyqpDdqNRq
-         X4UejaIkzr60/EjocEjb4YcY8jiJtmmw2NNgfKaGmsjav38sXw/qUlG9AsVmiNG4vCf9
-         ccRg==
-X-Gm-Message-State: AOAM531qqqE2Ea3zRw+LwCiKKFyZrFd6PIlokSJkpFSiam/1o67y5Qa8
-        UgwxyGfLrZV0WMjLVtRnKYGwFieX5y8KB1hmNQsARPZgWk7Jcn9e+E9Vad4mKSGarSczTM4xhlG
-        THPhuFO0TnYPq1i2mZnRaVnxS
-X-Received: by 2002:a1c:ce:: with SMTP id 197mr16802247wma.177.1593439167025;
-        Mon, 29 Jun 2020 06:59:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwsxz9zZlXFnZ7BIFPMcVeMeUzlm7a/lsLSfHAU3MGsXPZfgWzKa7c4KMMzMv09dmjzWh/Gkg==
-X-Received: by 2002:a1c:ce:: with SMTP id 197mr16802236wma.177.1593439166855;
-        Mon, 29 Jun 2020 06:59:26 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:b0e5:c632:a580:8b9a? ([2001:b07:6468:f312:b0e5:c632:a580:8b9a])
-        by smtp.gmail.com with ESMTPSA id o1sm52465447wrw.20.2020.06.29.06.59.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jun 2020 06:59:26 -0700 (PDT)
-Subject: Re: [PATCH] KVM: X86: Fix async pf caused null-ptr-deref
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <kernellwp@gmail.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vivek Goyal <vgoyal@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <1593426391-8231-1-git-send-email-wanpengli@tencent.com>
- <877dvqc7cs.fsf@vitty.brq.redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f9b06428-51c3-09af-48cc-d378182916fd@redhat.com>
-Date:   Mon, 29 Jun 2020 15:59:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        bh=p41BYxDXNlmwz2C42eGa2ZzhpFkIIuJMJJ3lIC+eY/o=;
+        b=KkEHc2YaGKEhoFgo02FlvBbJOIpLdeQPZQfHSL2qw/DC/CkaswK+grU0tIQS/LENLBZqnP
+        7Qu9KP10EngCezCTxKgJ5t9A7tCe3gTQR1yBTXMWYEnzvd6zLosKu8tDCNTXULc5uPIAj/
+        i416ZjvoCrCnJCjHh/gm93rNVxnSXXs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-473-5rwivrXOPfKJlzcKinpGIw-1; Mon, 29 Jun 2020 10:02:52 -0400
+X-MC-Unique: 5rwivrXOPfKJlzcKinpGIw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B3C191176;
+        Mon, 29 Jun 2020 14:02:50 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.58])
+        by smtp.corp.redhat.com (Postfix) with SMTP id C90201C4;
+        Mon, 29 Jun 2020 14:02:47 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 29 Jun 2020 16:02:49 +0200 (CEST)
+Date:   Mon, 29 Jun 2020 16:02:46 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>, Jan Kara <jack@suse.cz>,
+        Lukas Czerner <lczerner@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: Re: wait_on_page_bit_common(TASK_KILLABLE, EXCLUSIVE) can miss
+ wakeup?
+Message-ID: <20200629140245.GB20323@redhat.com>
+References: <20200624161142.GA12184@redhat.com>
+ <20200624162042.GA12238@redhat.com>
+ <CAHk-=wjJA2Z3kUFb-5s=6+n0qbTs8ELqKFt9B3pH85a8fGD73w@mail.gmail.com>
+ <20200626154313.GI4817@hirez.programming.kicks-ass.net>
+ <CAHk-=whvVWNXPJq1k566zn4SfXAifXtiA7T+7JFweR3rQ0nc9A@mail.gmail.com>
+ <1593396958.ydiznwsuu8.astroid@bobo.none>
 MIME-Version: 1.0
-In-Reply-To: <877dvqc7cs.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1593396958.ydiznwsuu8.astroid@bobo.none>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/06/20 15:46, Vitaly Kuznetsov wrote:
->> +	if (!lapic_in_kernel(vcpu))
->> +		return 1;
->> +
-> I'm not sure how much we care about !lapic_in_kernel() case but this
-> change should be accompanied with userspace changes to not expose
-> KVM_FEATURE_ASYNC_PF_INT or how would the guest know that writing a
-> legitimate value will result in #GP?
+On 06/29, Nicholas Piggin wrote:
+>
+> prepare_to_wait_event() has a pretty good pattern (and comment), I would
+> favour using that (test the signal when inserting on the waitqueue).
+>
+> @@ -1133,6 +1133,15 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+>         for (;;) {
+>                 spin_lock_irq(&q->lock);
+>
+> +               if (signal_pending_state(state, current)) {
+> +                       /* Must not lose an exclusive wake up, see
+> +                        * prepare_to_wait_event comment */
+> +                       list_del_init(&wait->entry);
+> +                       spin_unlock_irq(&q->lock);
+> +                       ret = -EINTR;
 
-Almost any pv feature is broken with QEMU if kernel_irqchip=off.  I
-wouldn't bother and I am seriously thinking of dropping all support for
-that, including:
+Basically this is what my patch in the 1st email does. But note that we can't
+just set "ret = -EINTR" here, we will need to clear "ret" if test_and_set_bit()
+below succeeds. That is why I used another "int intr" variable.
 
-- just injecting #UD for MOV from/to CR8 unless lapic_in_kernel()
-
-- make KVM_INTERRUPT fail unless irqchip_in_kernel(), so that
-KVM_INTERRUPT is only used to inject EXTINT with kernel_irqchip=split
-
-Paolo
-
-> Alternatively, we may just return '0' here: guest will be able to check
-> what's in the MSR to see if the feature was enabled. Normally, guests
-> shouldn't care about this but maybe there are cases when they do?
-> 
+Oleg.
 
