@@ -2,126 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F6220DC39
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9ED20D7D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732863AbgF2TaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:30:19 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:25701 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732807AbgF2TaO (ORCPT
+        id S1732403AbgF2TdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:33:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733233AbgF2Tcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:30:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593459007;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/rozIRZd2Z+z5ejQC/EdCJboYjDdy+vJEupYT4pSKo0=;
-        b=V/hTM7XB50m9Kuc7AcgnYYNGh4Ng3MgmS/LaBBEh0+2dFG8O4oS1UeRcsITjTRKqc4qeTt
-        eHeB033RqlUURYiw4myCfNGX/VNPBxa5FfRHQOflni2f1hLK+cxi3nvwKTMCR0Q+5sDAO9
-        EMoYa5r0TO1dKQtqMLIvZ9PpozT7iNY=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-292-msZzHqchMRycRMFTAle1qQ-1; Mon, 29 Jun 2020 09:28:07 -0400
-X-MC-Unique: msZzHqchMRycRMFTAle1qQ-1
-Received: by mail-qv1-f70.google.com with SMTP id a12so6120174qvt.22
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:28:07 -0700 (PDT)
+        Mon, 29 Jun 2020 15:32:45 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61354C02A56D
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:34:50 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id 35so7121108ple.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:34:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4UqCNZ+OTg1lzw/q2Kz2sA9G3h4mbPe/xzzDfR/Wl6o=;
+        b=uoCEwiDCGEqtbe7O+Em8bzStBM5vKsAYjy8MoMFXisoatf8+XTf+LrMkC5VTawzwLX
+         SSXx/hr7EtwZ12rlaxaID/8K3ZYsYMPMxZYfkgLnKptbkLt/0VrDUwfR+pm5TaM1uPvt
+         A43qeOdeLNDUBAodtLWwre4CS6LwzTRSjqAeSu7iyS0bCxasJ5EP6PlaFtKreB56bhfd
+         t4qjXFO0/sehcK29CoOm4TCk/IfanJKC3PGukuY1X2otfHa9MzoxRO1coKxiXHLMokr+
+         uEBBJdQex0pl5UGlSC0UFZ0o+btw8jDnk4NqQvBITF9aRn92xPH3J5ec02+6MYCCe2Gy
+         4HJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=/rozIRZd2Z+z5ejQC/EdCJboYjDdy+vJEupYT4pSKo0=;
-        b=SI6zwWqwO7Lxip1jAvaO1GlOZNk30zQE1O/mTeED+mvw0TIYUSrewuoxrxQ8xnhToW
-         PR14BLDDa+dDBbl1GUP8s88brzZYV3HdK1WeEyl0ydCspaipn6vM1Gu4Z2UHyvmXRD2F
-         Epust4ksYJ54wWx4NqtsBHCgqbNTbb2DHKRbDsAInlHSA7TDn/JbB3URB0opOFUPH5za
-         BKQtIb6moDjNojLl8rRZRaO2XwthTYJjqLRpLo5SdfPz8CVCeFIR1PV+7EuzG4eysXBr
-         61BtujSuInBMNfXrlvUqed6J/fWJSmfZ/ZNZ04pqRkRgqVEZMVRMRtcUjXSCuEV442pb
-         dOwA==
-X-Gm-Message-State: AOAM531arp6/thp9Wb4saSiVuFXHfEOBwXAjpVE51HLLcl6z+0LpnKAP
-        RbxJ7ktWEjHBUBZp//KFAD8UCLfyS+LqF5jSYEXZjCy0bnotX7sl4LW9HzMwfUHjzHmQ8QlMnwn
-        OC79xKQ0V+h1JK3JdPULlHeeH
-X-Received: by 2002:a0c:b246:: with SMTP id k6mr15065267qve.146.1593437287342;
-        Mon, 29 Jun 2020 06:28:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwms1o8tyqQwrkXCJ8cIREd5x9uNk+bPTzS0ou0s1jv5IQbRinAHtIoLnXqHLMHBn8uHQRMvg==
-X-Received: by 2002:a0c:b246:: with SMTP id k6mr15065252qve.146.1593437287140;
-        Mon, 29 Jun 2020 06:28:07 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id x13sm17008095qts.57.2020.06.29.06.28.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jun 2020 06:28:06 -0700 (PDT)
-Subject: Re: [PATCH] fpga: dfl: improve configuration of dfl pci devices
-To:     "Wu, Hao" <hao.wu@intel.com>, "Xu, Yilun" <yilun.xu@intel.com>
-Cc:     "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "matthew.gerlach@linux.intel.com" <matthew.gerlach@linux.intel.com>
-References: <20200628151813.7679-1-trix@redhat.com>
- <20200629021924.GB2620@yilunxu-OptiPlex-7050>
- <DM6PR11MB38196ED29A3E0BBAD7B246C1856E0@DM6PR11MB3819.namprd11.prod.outlook.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <26b7c920-7b9f-b753-4a49-258e09b771fa@redhat.com>
-Date:   Mon, 29 Jun 2020 06:28:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4UqCNZ+OTg1lzw/q2Kz2sA9G3h4mbPe/xzzDfR/Wl6o=;
+        b=VNt/vE9Rp4Acyf/AhXJonOHTDGAzIosYl3O4OMBadnwWpwqr0ewShzqU3rLuDLIxvm
+         3nyw6KsuxQTg8sjeEC6CtIiLNNnW/iEGRyIjiSo9zB6S7iVYATjKetlp6ovEMAde1hlJ
+         7qKUyg0y4wkAIohLKGPIjIBJJz5G49cZyAWLEq5Z27C22ZACp1++li5Mt037TNOztO8w
+         YxtpTnBaQFKc65OFAk2DePonHm2sup/+JsivJgBN7znO9jiNJRS09OyIVGXOwQXbYMjd
+         bT4Vk4ib1E+ZAYBmnYjx3UFFlxwcsEWcSD2i7yX9URnkj7QC0J+gmMRM+B3UCaVKaNWE
+         jYuQ==
+X-Gm-Message-State: AOAM530fVL0A2YX9zQOKFp2QZ56cKMDvpUj9e5kQgSgylVKd1QkCJNM7
+        IGpWqYmKNzAl3Va4qwPlBIf4lUHbMDrnmiCjdQC/JQ==
+X-Google-Smtp-Source: ABdhPJyyemzBk8k+EQj691PWuk6+4I3GKU57Y8C1zgPV7Ot5fRccf1akeHSxr5QncO44LEIGHn+Chol5ExPGybUsiX4=
+X-Received: by 2002:a17:902:6ac1:: with SMTP id i1mr14053992plt.147.1593437689499;
+ Mon, 29 Jun 2020 06:34:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <DM6PR11MB38196ED29A3E0BBAD7B246C1856E0@DM6PR11MB3819.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200629104157.3242503-1-elver@google.com>
+In-Reply-To: <20200629104157.3242503-1-elver@google.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 29 Jun 2020 15:34:38 +0200
+Message-ID: <CAAeHK+wbaHoeEqaKCNgPhFFWQZ0Ck2BYF9QiCcOuyB9JGDmhsw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kasan: Improve and simplify Kconfig.kasan
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Walter Wu <walter-zh.wu@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Axtens <dja@axtens.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 6/28/20 8:12 PM, Wu, Hao wrote:
->> -----Original Message-----
->> From: linux-fpga-owner@vger.kernel.org <linux-fpga-owner@vger.kernel.org>
->> On Behalf Of Xu Yilun
->> Sent: Monday, June 29, 2020 10:19 AM
->> To: trix@redhat.com
->> Cc: mdf@kernel.org; linux-fpga@vger.kernel.org; linux-
->> kernel@vger.kernel.org; Wu, Hao <hao.wu@intel.com>;
->> matthew.gerlach@linux.intel.com
->> Subject: Re: [PATCH] fpga: dfl: improve configuration of dfl pci devices
->>
->> I think maybe we don't have to select them all. It is now possible for
->> FPGA DFL boards to work without FME or AFU, providing limited
->> functionality. It is possible designers trim the bitstream for their
->> purpose, and also need a smaller driver set.
->>
-> Yes, we hope that this dfl-pci could be a common module shared by
-> different cards. Some device doesn't have FME, e.g. some VF device
-> with AFU only, some device has FME, but no PR support, and in the
-> future, it's possible to add new modules, or something replacing AFU
-> or FME, so we don't have to select all here.
+On Mon, Jun 29, 2020 at 12:42 PM Marco Elver <elver@google.com> wrote:
 >
->> I think we may add "default FPGA_DFL" for FPGA_DFL_FME,
->> FPGA_DFL_FME_MGR and others to make life easier.
-> It's hard to say it's easier for everybody, e.g. I am a user of N3000, but
-> I have to unselect the PR modules, as they are default Yes as proposed?
-> Maybe it's better to let user select what they want, unless we find
-> something really common needed under DFL framework.
-
-I get your point about n3000, but that card is not currently supported in the public. Currently there is really only pac10, the 0x9c4 device.  Once n3000 (and d5005) is out, it will have several sub devices that will also so need to be manually configured.  While a developer of the n3000 will know which subdevices are needed, someone just building the kernel will not.  So would expect there to be something like
-
-CONFIG_FPGA_DFL_N3000
-
-select CONFIG_DFL_PCI
-
-select CONFIG_DFL_SUBDEV_1
-
-..
-
-On PF vs FP, yes only afu parts are needed.  But i doubt anyone builds a VF specific kernel. And if folks wanted to not use the fme parts they would not have to load it's module at run time.
-
-I would like a top level config what auto selects all of the submodules needed based on the card. I think maybe that is CONFIG_FPGA_DFL_PAC10. so we will be ready for CONFIG_FPGA_DFL_N3000 and CONFIG_FPGA_DFL_D5005 and what ever comes later.
-
-Tom
-
-> Hao
+> Turn 'KASAN' into a menuconfig, to avoid cluttering its parent menu with
+> the suboptions if enabled. Use 'if KASAN ... endif' instead of having
+> to 'depend on KASAN' for each entry.
+>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+>  lib/Kconfig.kasan | 15 ++++++++-------
+>  1 file changed, 8 insertions(+), 7 deletions(-)
+>
+> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+> index 34b84bcbd3d9..89053defc0d9 100644
+> --- a/lib/Kconfig.kasan
+> +++ b/lib/Kconfig.kasan
+> @@ -18,7 +18,7 @@ config CC_HAS_KASAN_SW_TAGS
+>  config CC_HAS_WORKING_NOSANITIZE_ADDRESS
+>         def_bool !CC_IS_GCC || GCC_VERSION >= 80300
+>
+> -config KASAN
+> +menuconfig KASAN
+>         bool "KASAN: runtime memory debugger"
+>         depends on (HAVE_ARCH_KASAN && CC_HAS_KASAN_GENERIC) || \
+>                    (HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS)
+> @@ -29,9 +29,10 @@ config KASAN
+>           designed to find out-of-bounds accesses and use-after-free bugs.
+>           See Documentation/dev-tools/kasan.rst for details.
+>
+> +if KASAN
+> +
+>  choice
+>         prompt "KASAN mode"
+> -       depends on KASAN
+>         default KASAN_GENERIC
+>         help
+>           KASAN has two modes: generic KASAN (similar to userspace ASan,
+> @@ -88,7 +89,6 @@ endchoice
+>
+>  choice
+>         prompt "Instrumentation type"
+> -       depends on KASAN
+>         default KASAN_OUTLINE
+>
+>  config KASAN_OUTLINE
+> @@ -113,7 +113,6 @@ endchoice
+>
+>  config KASAN_STACK_ENABLE
+>         bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
+> -       depends on KASAN
+>         help
+>           The LLVM stack address sanitizer has a know problem that
+>           causes excessive stack usage in a lot of functions, see
+> @@ -134,7 +133,7 @@ config KASAN_STACK
+>
+>  config KASAN_S390_4_LEVEL_PAGING
+>         bool "KASan: use 4-level paging"
+> -       depends on KASAN && S390
+> +       depends on S390
+>         help
+>           Compiling the kernel with KASan disables automatic 3-level vs
+>           4-level paging selection. 3-level paging is used by default (up
+> @@ -151,7 +150,7 @@ config KASAN_SW_TAGS_IDENTIFY
+>
+>  config KASAN_VMALLOC
+>         bool "Back mappings in vmalloc space with real shadow memory"
+> -       depends on KASAN && HAVE_ARCH_KASAN_VMALLOC
+> +       depends on HAVE_ARCH_KASAN_VMALLOC
+>         help
+>           By default, the shadow region for vmalloc space is the read-only
+>           zero page. This means that KASAN cannot detect errors involving
+> @@ -164,8 +163,10 @@ config KASAN_VMALLOC
+>
+>  config TEST_KASAN
+>         tristate "Module for testing KASAN for bug detection"
+> -       depends on m && KASAN
+> +       depends on m
+>         help
+>           This is a test module doing various nasty things like
+>           out of bounds accesses, use after free. It is useful for testing
+>           kernel debugging features like KASAN.
+> +
+> +endif # KASAN
+> --
+> 2.27.0.212.ge8ba1cc988-goog
 >
 
+Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
