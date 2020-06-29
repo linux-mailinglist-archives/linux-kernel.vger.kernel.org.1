@@ -2,85 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC5A20DD64
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84EE120E226
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729376AbgF2SvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:51:00 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:38135 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729511AbgF2Suz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:50:55 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49wQ1h4CRKz9v03x;
-        Mon, 29 Jun 2020 13:17:12 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id iuSqKncCRLeh; Mon, 29 Jun 2020 13:17:12 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49wQ1h380Lz9v03v;
-        Mon, 29 Jun 2020 13:17:12 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 01BE58B79F;
-        Mon, 29 Jun 2020 13:17:19 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id oz9GrzxMmbUc; Mon, 29 Jun 2020 13:17:18 +0200 (CEST)
-Received: from pc16570vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.105])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AE2138B799;
-        Mon, 29 Jun 2020 13:17:18 +0200 (CEST)
-Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 9B6D265B29; Mon, 29 Jun 2020 11:17:18 +0000 (UTC)
-Message-Id: <610d6b1a60ad0bedef865a90153c1110cfaa507e.1593429426.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 1/2] powerpc/ptdump: Refactor update of st->last_pa
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 29 Jun 2020 11:17:18 +0000 (UTC)
+        id S1732342AbgF2VCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731160AbgF2TMt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:12:49 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B7AC0076FA;
+        Mon, 29 Jun 2020 04:25:07 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id i14so16179619ejr.9;
+        Mon, 29 Jun 2020 04:25:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=twf//RldOgxncn/3LQYhKedjeWngP2CVDq9dznPpIUk=;
+        b=ia0B667JCeMfjKiPdQMBP0fMuEfSykAiIMFO+nrs7Pmddd/ia1zR2kPh+1UFtZc0rG
+         N6qrMQw1C7z1U6hvpQaipSEvu86uiL+36eRWfxGqQNZeJgJJ92Rv55XSP2NtBiOvVcef
+         uo9yG9cSC9lvt8rQTjwqoV2Dx0tpdCRombUjjZ9IwJDIYcs8oA2Z2i5Re/djcpSbDjwj
+         3DFzET9jfqVRkKOFa5V553mJt3Eagb6xNbJ1enwHaq/Qk84wZx50eIZrNXU3eMIf2Thl
+         QxKpZrS4EAgUMrGNA/tvphCPLrJE+EcUpIqagaDBatXoSNPNJH/KwoVpwBbF7Vf+v3hD
+         tkAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=twf//RldOgxncn/3LQYhKedjeWngP2CVDq9dznPpIUk=;
+        b=U89Fg3P9o4gNQZTrPSTXrIaNWx7J5TPQZ3qcWfwngTZCy/kg5Gtf4YZkwhsrOKf2wK
+         APcGIdZmcmSfBN2l1zVFWR33/P5xWTdJb5Pb0MCMeFuBtbDQ5FqfElGor5R45r0XCn8f
+         BhBmvEDEIWNObATW+owurgS8H/Y4qzrb6lKYGUgIx2kUaJsPrqffUsLjIa6wdDmtdLvS
+         tJlb4OXONH8aDiRb0gKI3qa6+Za8WUxzdy4p14EeLqUtRxekhGEy1NCbRsYavL6txmFC
+         WN/dNVSVR1shiUvk8z+xSf5Gc9Tt75qZV4WveOTiilRMbn2Aw/nlXsL+M7W4ZxKkx/vB
+         KXmA==
+X-Gm-Message-State: AOAM533YVANxZrkkIIpFvZZytSV3yx0p6VM7LLkYnTjZPZQQvuOKeGQP
+        ztEjGw+hBkff7IiDhAe6Dvs=
+X-Google-Smtp-Source: ABdhPJxfzBjp+rimy0f7Lsn2I1LIphbpq0jKdNkGT5Lrev5SL2F7eby0iO+T+MDFBcn6vVKMgBzuLg==
+X-Received: by 2002:a17:906:f2c1:: with SMTP id gz1mr14020443ejb.88.1593429906122;
+        Mon, 29 Jun 2020 04:25:06 -0700 (PDT)
+Received: from ubuntu-laptop ([2a01:598:b88e:dd15:40fc:c0bc:1cfd:2755])
+        by smtp.googlemail.com with ESMTPSA id f17sm12039192ejr.71.2020.06.29.04.25.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 29 Jun 2020 04:25:05 -0700 (PDT)
+Message-ID: <60647cf00d9db6818488a714b48b9b6e2a1eb728.camel@gmail.com>
+Subject: Re: [RFC PATCH v3 0/5] scsi: ufs: Add Host Performance Booster
+ Support
+From:   Bean Huo <huobean@gmail.com>
+To:     daejun7.park@samsung.com,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Date:   Mon, 29 Jun 2020 13:25:03 +0200
+In-Reply-To: <336371513.41593411482259.JavaMail.epsvc@epcpadp2>
+References: <948f573d136b39410f7d610e5019aafc9c04fe62.camel@gmail.com>
+         <963815509.21592879582091.JavaMail.epsvc@epcpadp2>
+         <CGME20200623010201epcms2p11aebdf1fbc719b409968cba997507114@epcms2p3>
+         <336371513.41593411482259.JavaMail.epsvc@epcpadp2>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-st->last_pa is always updated in note_page() so it can
-be done outside the if/elseif/else block.
+Hi Daejun
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/mm/ptdump/ptdump.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+On Mon, 2020-06-29 at 15:15 +0900, Daejun Park wrote:
+> > Seems you intentionally ignored to give you comments on my
+> > suggestion.
+> > let me provide the reason.
+> 
+> Sorry! I replied to your comment (
+> https://lkml.org/lkml/2020/6/15/1492),
+> but you didn't reply on that. I thought you agreed because you didn't
+> send
+> any more comments.
+> 
+> 
+> > Before submitting your next version patch, please check your L2P
+> > mapping HPB reqeust submission logical algorithem. I have did
+> 
+> We are also reviewing the code that you submitted before.
+> It seems to be a performance improvement as it sends a map request
+> directly.
+> 
+> > performance comparison testing on 4KB, there are about 13%
+> > performance
+> > drop. Also the hit count is lower. I don't know if this is related
+> > to
+> 
+> It is interesting that there is actually a performance improvement. 
+> Could you share the test environment, please? However, I think
+> stability is
+> important to HPB driver. We have tested our method with the real
+> products and
+> the HPB 1.0 driver is based on that.
 
-diff --git a/arch/powerpc/mm/ptdump/ptdump.c b/arch/powerpc/mm/ptdump/ptdump.c
-index b2ed1ca4f254..20a039867934 100644
---- a/arch/powerpc/mm/ptdump/ptdump.c
-+++ b/arch/powerpc/mm/ptdump/ptdump.c
-@@ -211,7 +211,6 @@ static void note_page(struct pg_state *st, unsigned long addr,
- 		st->current_flags = flag;
- 		st->start_address = addr;
- 		st->start_pa = pa;
--		st->last_pa = pa;
- 		st->page_size = page_size;
- 		pt_dump_seq_printf(st->seq, "---[ %s ]---\n", st->marker->name);
- 	/*
-@@ -251,13 +250,11 @@ static void note_page(struct pg_state *st, unsigned long addr,
- 		}
- 		st->start_address = addr;
- 		st->start_pa = pa;
--		st->last_pa = pa;
- 		st->page_size = page_size;
- 		st->current_flags = flag;
- 		st->level = level;
--	} else {
--		st->last_pa = pa;
- 	}
-+	st->last_pa = pa;
- }
- 
- static void walk_pte(struct pg_state *st, pmd_t *pmd, unsigned long start)
--- 
-2.25.0
+I just run fio benchmark tool with --rw=randread, --bs=4kb, --
+size=8G/10G/64G/100G. and see what performance diff with the direct
+submission approach.
+
+> After this patch, your approach can be done as an incremental patch?
+> I would
+> like to test the patch that you submitted and verify it.
+> 
+> > your current work queue scheduling, since you didn't add the timer
+> > for
+> > each HPB request.
+> 
+
+Taking into consideration of the HPB 2.0, can we submit the HPB write
+request to the SCSI layer? if not, it will be a direct submission way.
+why not directly use direct way? or maybe you have a more advisable
+approach to work around this. would you please share with us.
+appreciate.
+
+
+> There was Bart's comment that it was not good add an arbitrary
+> timeout value
+> to the request. (please refer to: 
+> https://lkml.org/lkml/2020/6/11/1043)
+> When no timer is added to the request, the SD timout will be set as
+> default
+> timeout at the block layer.
+> 
+
+I saw that, so I should add a timer in order to optimise HPB reqeust
+scheduling/completition. this is ok so far.
+
+> Thanks,
+> Daejun
+
+Thanks,
+Bean
+
 
