@@ -2,51 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87CF20D391
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3773120D473
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730299AbgF2TAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:00:12 -0400
-Received: from muru.com ([72.249.23.125]:59960 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728088AbgF2TAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:00:10 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id D90A5819C;
-        Mon, 29 Jun 2020 16:32:16 +0000 (UTC)
-Date:   Mon, 29 Jun 2020 09:31:21 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        devicetree@vger.kernel.org, bcousson@baylibre.com,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>
-Subject: Re: [PATCH v3 0/3] pinctrl: single: support #pinctrl-cells = 2
-Message-ID: <20200629163121.GS37466@atomide.com>
-References: <20200622172951.524306-1-drew@beagleboard.org>
- <20200629122858.GA506802@x1>
+        id S1730894AbgF2TI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730518AbgF2TCm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:02:42 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13FAC030F1F;
+        Mon, 29 Jun 2020 09:32:53 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id u185so6088212pfu.1;
+        Mon, 29 Jun 2020 09:32:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=da39VVe9VP5T/e+C8JHxMlj+Kybnqkg4N1aw6KhL+T4=;
+        b=sT8xhrOECEHRXKWwOR2jxn87IGYL2kJ1l4F2kL7ZD8FLaUxwLTYUitf4r5KXgba7es
+         2SnRQW0LEpMlgpuCu8aHX3SEnFDMkEn7TnIWKaZv78S0hlUUkPsMIgjs/61BWPw0CG5J
+         2ZWj+DWzNjdOzxlwrblgNHO8VW9UU+1h8VwHH7H2txpLbVssWHbCUbv9EKi504IfyZjR
+         /tD1K1PoD5yJQTYuTykPekiAmWV7G8JvOXnczhyXUcatx/jcJEbr50NYgI7HdDn38uha
+         AunMBNxqmPqNPwDAqehx+oCKqCRiPeEqkl74hCQjq2pk93CR3s+C0tW3LbhWKP5qM3lM
+         Z/bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=da39VVe9VP5T/e+C8JHxMlj+Kybnqkg4N1aw6KhL+T4=;
+        b=J5sz/PrOTaptIdrklWtBjHsPqKYd57QwuvQ3DS7ufLtGlEyGzP5HnhyxYDJ6jdwYbF
+         27oywj2dR5ReDLdp2u4gs1GxsRru4ORkZ2YJbmsVfCajD+1bKhIP+7tpp1UHMzF4SdP3
+         kbwQNT+j5Z315Ob8UPS2YB9jLA2cVJWfXx9T0mP3Nzxu0QzvR8wM8MIlKmZG1HzreQ1M
+         BIA6avPkZKcpl7QmYTIQEMP0tKDoejPQ3nCs598Xm1f3KqOIBQ5LrDQ4Tv8uqQ/xJw3p
+         D8SL4+Gk09YdVrexUlriymKKOq0D2p5Ks+CwRsHcBfcKxkgCBnwcQjY791beNcH6ekhZ
+         dYZw==
+X-Gm-Message-State: AOAM532dZWEH4h88PcmccelCfGSgjn/Lxk/f13DDMdR0OE9ekbPfA1jO
+        xpcVxTfUxuGCkrUd/5wI5Os=
+X-Google-Smtp-Source: ABdhPJywWQc6qI3490FIO81xYxyg6Iwnhb79XiLfzm1JW/pzgcHctYxrVXg7XCyAWghyw/PXZgzecQ==
+X-Received: by 2002:a62:2743:: with SMTP id n64mr14828108pfn.163.1593448373261;
+        Mon, 29 Jun 2020 09:32:53 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h9sm74743pjs.50.2020.06.29.09.32.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 29 Jun 2020 09:32:52 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 09:32:51 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v2 6/6] hwmon: pmbus: use more devres helpers
+Message-ID: <20200629163251.GA113813@roeck-us.net>
+References: <20200629065008.27620-1-brgl@bgdev.pl>
+ <20200629065008.27620-7-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200629122858.GA506802@x1>
+In-Reply-To: <20200629065008.27620-7-brgl@bgdev.pl>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Drew Fustini <drew@beagleboard.org> [200629 12:29]:
-> Hi Tony - do you think this series is useful as-is?
+On Mon, Jun 29, 2020 at 08:50:08AM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> Or do you want to see some usage of the seperate conf and mux values
-> first?
+> Shrink pmbus code by using devm_hwmon_device_register_with_groups()
+> and devm_krealloc() instead of their non-managed variants.
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Hmm to me it seems you should squash patches 2 and 3 together as
-otherwise git bisect will fail to boot probably at patch 2.
+Acked-by: Guenter Roeck <linux@roeck-us.net>
 
-Regards,
-
-Tony
+Thanks,
+Guenter
