@@ -2,177 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E537420DA7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C05C420DAA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730591AbgF2T5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:57:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50864 "EHLO
+        id S2388529AbgF2T7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:59:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388200AbgF2T5b (ORCPT
+        with ESMTP id S2388442AbgF2T6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:57:31 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07BF4C061755;
-        Mon, 29 Jun 2020 12:57:31 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id h28so14053585edz.0;
-        Mon, 29 Jun 2020 12:57:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AaIAGXzm3zle6m3IyH6J6bY+lak3D/cEfWozndthNJQ=;
-        b=bH7wT0Px6bC7hXr1S6yEgmoWByAw/Sx0DSg0e3sBnS6GfVDVkgciX1P6xiXpE5ikWi
-         EKNxcnejGmYA74L9W6I79GzlF+DEBoJDK9EZpI3DGdPHozeUi933NqosK1opTbyWgskW
-         ta2XN6jexhlUpxoUpJJ68E+L+6RcUF4kcyij9OgF1o7eM6Y8JzUP8cafX4ViUqNz6TaB
-         Lt0FKK9Nu+u4VEyFbOojPocJ0pnx/8RJPCHhxka9jm3y2F6G1YUMZAPRUbSdvYM8RrPh
-         ANjOnT2SH02GOZKMLwoa4t0cOvQGEENFu0/ZhL9smtbFnj2dZfjMa2k4ysF/piDp7gd0
-         Bl6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AaIAGXzm3zle6m3IyH6J6bY+lak3D/cEfWozndthNJQ=;
-        b=jJ9+pIK3JdCHw6lEMn97tzxaqG4FB0LCjm6WKYhFkifZvsju7JVaQMsIjtYvt8yMnZ
-         BYP9sBSw6wjnOY4qGpNZCmPV3yOZhkntZbCXEe0oYP1g4MjO/4zuO4hQLEwoYIC02UjA
-         y1UaEO6FdDX6XEavzq7PwwT7cf7W9HRYFXq1Wuydt+giXMn/15NWh2Y4T+mcUuGLUEZl
-         jgfiMvMN9I0OuTDP0Im//1tXGJ0Cymwmb3FSNT5T66oyzkAbR/rPRLdq0gqB7j4a3Lgx
-         Qtl4XZxBkTt1FeCOeg8p0EZYY3gbFSpWlA19wNLxYG3IRU2IlMd1j3VR904U2xQr2ZgF
-         bYNw==
-X-Gm-Message-State: AOAM5322vxZYZ9gMLg3oqZMKCcFz/KMPGKEbL9afCHWptIlHC3DjTTSp
-        n8uKv/OAaz9fR7eqMAUUjCMUM1txgUgNI6uSDySZgPl/
-X-Google-Smtp-Source: ABdhPJxuqVeCta8VoAgMN0v4dnb20yspX1tWXnf7++Cbpyc1biLAcvlB00qweNwifDIJzhl2qqHoB4gCEw2ejQUXIfA=
-X-Received: by 2002:aa7:d792:: with SMTP id s18mr19820549edq.7.1593460649733;
- Mon, 29 Jun 2020 12:57:29 -0700 (PDT)
+        Mon, 29 Jun 2020 15:58:53 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A708C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:58:53 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jpzvT-0001Px-Tj; Mon, 29 Jun 2020 21:58:47 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jpzvS-0005io-8i; Mon, 29 Jun 2020 21:58:46 +0200
+Date:   Mon, 29 Jun 2020 21:58:46 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Cc:     linux-pwm@vger.kernel.org, thierry.reding@gmail.com,
+        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        rahul.tanwar.linux@gmail.com
+Subject: Re: [PATCH v3 2/2] Add PWM fan controller driver for LGM SoC
+Message-ID: <20200629195846.6fonhke5d2rs4mna@pengutronix.de>
+References: <cover.1593420979.git.rahul.tanwar@linux.intel.com>
+ <df22a642083474e71f9f8274c033a6ef9757af5f.1593420979.git.rahul.tanwar@linux.intel.com>
 MIME-Version: 1.0
-References: <20200629181921.3019271-1-eric@anholt.net> <20200629181921.3019271-2-eric@anholt.net>
-In-Reply-To: <20200629181921.3019271-2-eric@anholt.net>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 29 Jun 2020 12:57:59 -0700
-Message-ID: <CAF6AEGstctXSCwW9Hv=MmB_Ca1VGA_DZNtzvqSY-1NqPTK+WPQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drm/msm: Quiet error during failure in optional
- resource mappings.
-To:     Eric Anholt <eric@anholt.net>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sean Paul <sean@poorly.run>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kjvrp6vjwce3kmbh"
+Content-Disposition: inline
+In-Reply-To: <df22a642083474e71f9f8274c033a6ef9757af5f.1593420979.git.rahul.tanwar@linux.intel.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 11:19 AM Eric Anholt <eric@anholt.net> wrote:
->
-> We don't expect to find vbif_nrt or regdma on cheza, but were clogging
-> up dmesg with errors about it.
 
-nit: s/cheza/sdm845/ (since this really applies to the SoC rather than
-the board..
+--kjvrp6vjwce3kmbh
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-also, maybe msm_ioremap_optional() ?
+Hello,
 
-BR,
--R
+On Mon, Jun 29, 2020 at 05:03:47PM +0800, Rahul Tanwar wrote:
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index cb8d739067d2..a3303e22d5fa 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -232,6 +232,15 @@ config PWM_IMX_TPM
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called pwm-imx-tpm.
+> =20
+> +config PWM_INTEL_LGM
+> +	tristate "Intel LGM PWM support"
+> +	depends on X86 || COMPILE_TEST
 
->
-> Signed-off-by: Eric Anholt <eric@anholt.net>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c |  4 ++--
->  drivers/gpu/drm/msm/msm_drv.c           | 22 ++++++++++++++++++----
->  drivers/gpu/drm/msm/msm_drv.h           |  2 ++
->  3 files changed, 22 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> index a4ab802fee6d..d9aef2b5e930 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> @@ -838,13 +838,13 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
->                 dpu_kms->vbif[VBIF_RT] = NULL;
->                 goto error;
->         }
-> -       dpu_kms->vbif[VBIF_NRT] = msm_ioremap(dpu_kms->pdev, "vbif_nrt", "vbif_nrt");
-> +       dpu_kms->vbif[VBIF_NRT] = msm_ioremap_quiet(dpu_kms->pdev, "vbif_nrt", "vbif_nrt");
->         if (IS_ERR(dpu_kms->vbif[VBIF_NRT])) {
->                 dpu_kms->vbif[VBIF_NRT] = NULL;
->                 DPU_DEBUG("VBIF NRT is not defined");
->         }
->
-> -       dpu_kms->reg_dma = msm_ioremap(dpu_kms->pdev, "regdma", "regdma");
-> +       dpu_kms->reg_dma = msm_ioremap_quiet(dpu_kms->pdev, "regdma", "regdma");
->         if (IS_ERR(dpu_kms->reg_dma)) {
->                 dpu_kms->reg_dma = NULL;
->                 DPU_DEBUG("REG_DMA is not defined");
-> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-> index f6ce40bf3699..df4a3c6a49cd 100644
-> --- a/drivers/gpu/drm/msm/msm_drv.c
-> +++ b/drivers/gpu/drm/msm/msm_drv.c
-> @@ -120,8 +120,8 @@ struct clk *msm_clk_get(struct platform_device *pdev, const char *name)
->         return clk;
->  }
->
-> -void __iomem *msm_ioremap(struct platform_device *pdev, const char *name,
-> -               const char *dbgname)
-> +void __iomem *_msm_ioremap(struct platform_device *pdev, const char *name,
-> +                          const char *dbgname, bool quiet)
->  {
->         struct resource *res;
->         unsigned long size;
-> @@ -133,7 +133,8 @@ void __iomem *msm_ioremap(struct platform_device *pdev, const char *name,
->                 res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->
->         if (!res) {
-> -               DRM_DEV_ERROR(&pdev->dev, "failed to get memory resource: %s\n", name);
-> +               if (!quiet)
-> +                       DRM_DEV_ERROR(&pdev->dev, "failed to get memory resource: %s\n", name);
->                 return ERR_PTR(-EINVAL);
->         }
->
-> @@ -141,7 +142,8 @@ void __iomem *msm_ioremap(struct platform_device *pdev, const char *name,
->
->         ptr = devm_ioremap(&pdev->dev, res->start, size);
->         if (!ptr) {
-> -               DRM_DEV_ERROR(&pdev->dev, "failed to ioremap: %s\n", name);
-> +               if (!quiet)
-> +                       DRM_DEV_ERROR(&pdev->dev, "failed to ioremap: %s\n", name);
->                 return ERR_PTR(-ENOMEM);
->         }
->
-> @@ -151,6 +153,18 @@ void __iomem *msm_ioremap(struct platform_device *pdev, const char *name,
->         return ptr;
->  }
->
-> +void __iomem *msm_ioremap(struct platform_device *pdev, const char *name,
-> +                         const char *dbgname)
-> +{
-> +       return _msm_ioremap(pdev, name, dbgname, false);
-> +}
+Another thing I just noticed: You're using regmap, so I think you should
+have
+
+	select REGMAP_MMIO
+
+here.
+
+> +	help
+> +	  Generic PWM fan controller driver for LGM SoC.
 > +
-> +void __iomem *msm_ioremap_quiet(struct platform_device *pdev, const char *name,
-> +                               const char *dbgname)
-> +{
-> +       return _msm_ioremap(pdev, name, dbgname, true);
-> +}
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called pwm-intel-lgm.
 > +
->  void msm_writel(u32 data, void __iomem *addr)
->  {
->         if (reglog)
-> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-> index e2d6a6056418..2687f7a42c15 100644
-> --- a/drivers/gpu/drm/msm/msm_drv.h
-> +++ b/drivers/gpu/drm/msm/msm_drv.h
-> @@ -411,6 +411,8 @@ struct clk *msm_clk_bulk_get_clock(struct clk_bulk_data *bulk, int count,
->         const char *name);
->  void __iomem *msm_ioremap(struct platform_device *pdev, const char *name,
->                 const char *dbgname);
-> +void __iomem *msm_ioremap_quiet(struct platform_device *pdev, const char *name,
-> +               const char *dbgname);
->  void msm_writel(u32 data, void __iomem *addr);
->  u32 msm_readl(const void __iomem *addr);
->
-> --
-> 2.26.2
->
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--kjvrp6vjwce3kmbh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl76R/IACgkQwfwUeK3K
+7AnSIwgAioBKgOURNuZlj2ZaOEbNv0Asga+afCAc5eCL1G1zoFg3nIUlLLtz0EUT
+MGLMD63sjZHvB3kkMZYwA5DZFs6prNaWoI2HxN6LA2SCNalwjIQvbxQMvwUh9vwD
+9sJfzQaubgGEawID/xOniJyuTOf66HFXQ9moU0VEf3NwTm2pfrapFrOzsKQP8a/K
+8VPsgHGCWrIchyhSyw+zOM36XccSSl/TXLWEspAoPh5dOLKKxlcpPsgAe37v7JGJ
+QXg09RtvP+ipfWdrPSrt/+2tOj2b5AgatzgBh0Gdt0JEO0SMprMwkl+8PIv7mqhF
+LrDM55V72Emp+3WPOdTJUwrR7zN+iQ==
+=J0cp
+-----END PGP SIGNATURE-----
+
+--kjvrp6vjwce3kmbh--
