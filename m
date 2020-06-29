@@ -2,114 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E0D20D73B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEEF420D71C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730932AbgF2T2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732771AbgF2T15 (ORCPT
+        id S1730215AbgF2T1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:27:06 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:43097 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730220AbgF2T1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:27:57 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AECC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:27:57 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id f6so4396870pjq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:27:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gjtO3+vpKn1A68ulTNV3+i1kW5W8NfqinqR35PqtzaI=;
-        b=KMAALDJGoGqtO4OG1RHmMXxEqwnS9LcbGgumEAe0ue9WMeuKbWgzvqK6u9RHeNs3PO
-         hJVPWrtmgZ3DV9y8pQjNFfIrujZfg/OeJOB+5YH9B647Krz5oAq9Q6OefmoCPUHRnpO8
-         gO0OUkpAmKqS+MtNG7QBmUCW0a6wVU+vzFpVo6mK6BVJlBuoF/r3WOwqtnF72kf34a5K
-         bT8WsbVXiGXMsekX+lWRdz9N2oyaWBp+EjqpPPlH07TbHmzlYsdPRA2dze8JFXDONFuc
-         VG3tMGgUk55U3op7075lFmFL+v6gF9r2IhQ7YZ8eVy8KV7Zk/UlXsWEE/ZT+RaRbrCwt
-         GNRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gjtO3+vpKn1A68ulTNV3+i1kW5W8NfqinqR35PqtzaI=;
-        b=ZiDbt9fwTacYU0a8oZN3FjF9jCHxXXHEF5XaTRMoUAHBwqZmfocuTYhPdYbypDtQRz
-         2Q15+KmQDh9YV16JHOCwm/XJJposMXagQGb0GAn7MTvxa2IlU0SCBdgPH8rHY54xA0Em
-         ZKIwYGymhDLXWRsi8RODsr/zZS+Gm49bTuCEc8Q4kXMVNgjHtNAAw5nNcxuyeUUG+SYp
-         QA+C6XGekt5fqwNTgikgI06SSXce06Ypowiadg1wVRO20iI6aLt1ELOdQzLm3J1yEGM2
-         XFez/T/vavudB+Df/H+h/dMycX6PuRl9IoEFrQCpX+Li2w3ySxHFtWZQF1B01u2oaUUO
-         6FmA==
-X-Gm-Message-State: AOAM532Coz9GSegPNV/krerSveL6GiI4v3FKXaEuuKd2PVKgDoXNy8Tp
-        0LiKDu/8ZuIZqHORxR5Feefkmg==
-X-Google-Smtp-Source: ABdhPJy0SChbO2shXRc4vp0bmFhI2gH9IjNGdF2dYdDp0EX9wxfgtO8MwNTFrtY2y9b7qitmPqOirw==
-X-Received: by 2002:a17:90b:4c8b:: with SMTP id my11mr18897947pjb.153.1593458876736;
-        Mon, 29 Jun 2020 12:27:56 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id 22sm428848pfx.94.2020.06.29.12.27.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 12:27:56 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 12:25:24 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH -next] <linux/of.h>: add stub for of_get_next_parent() to
- fix qcom build error
-Message-ID: <20200629192524.GK388985@builder.lan>
-References: <ce0d7561-ff93-d267-b57a-6505014c728c@infradead.org>
+        Mon, 29 Jun 2020 15:27:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593458822;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ULeTr0SB55lWnRLDf1wo07nelEQfKeugCaPGmgEHj60=;
+        b=YZh8en+ZhpdmZcyVTkuLHT53oPyVb6e0qFsRSK4A6d/+9ANkYc/8kIgYOThCEXpzytkyr1
+        lgz+NSuvDH+wjYsl7DrytbWsToP169YbD2GFpZwPP+FfaPjtbkGp9zP+Utyw83b5pz3XJQ
+        ZY7kxJeTuL9YBe+L/M6z8K/BHHIaIoE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-18-5TlJu8U2Nl6yNclv8OYdGQ-1; Mon, 29 Jun 2020 15:27:00 -0400
+X-MC-Unique: 5TlJu8U2Nl6yNclv8OYdGQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6FFDBA0C01;
+        Mon, 29 Jun 2020 19:26:59 +0000 (UTC)
+Received: from prarit.bos.redhat.com (prarit-guest.7a2m.lab.eng.bos.redhat.com [10.16.222.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EC68C19C71;
+        Mon, 29 Jun 2020 19:26:58 +0000 (UTC)
+From:   Prarit Bhargava <prarit@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Prarit Bhargava <prarit@redhat.com>, Len Brown <lenb@kernel.org>,
+        linux-pm@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH] turbostat: Use sched_getcpu() instead of hardcoded cpu 0
+Date:   Mon, 29 Jun 2020 15:26:57 -0400
+Message-Id: <20200629192657.34045-1-prarit@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ce0d7561-ff93-d267-b57a-6505014c728c@infradead.org>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 29 Jun 09:43 PDT 2020, Randy Dunlap wrote:
+Disabling cpu 0 results in an error
 
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Fix a (COMPILE_TEST) build error when CONFIG_OF is not set/enabled
-> by adding a stub for of_get_next_parent().
-> 
-> ../drivers/soc/qcom/qcom-geni-se.c:819:11: error: implicit declaration of function 'of_get_next_parent'; did you mean 'of_get_parent'? [-Werror=implicit-function-declaration]
-> ../drivers/soc/qcom/qcom-geni-se.c:819:9: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Frank Rowand <frowand.list@gmail.com>
-> Cc: devicetree@vger.kernel.org
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: linux-arm-msm@vger.kernel.org
+turbostat: /sys/devices/system/cpu/cpu0/topology/thread_siblings: open failed: No such file or directory
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Use sched_getcpu() instead of a hardcoded cpu 0 to get the max cpu number.
 
-Regards,
-Bjorn
+Signed-off-by: Prarit Bhargava <prarit@redhat.com>
+Cc: Len Brown <lenb@kernel.org>
+Cc: linux-pm@vger.kernel.org
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+ tools/power/x86/turbostat/turbostat.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-> ---
->  include/linux/of.h |    5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> --- linux-next-20200629.orig/include/linux/of.h
-> +++ linux-next-20200629/include/linux/of.h
-> @@ -630,6 +630,11 @@ static inline struct device_node *of_get
->  	return NULL;
->  }
->  
-> +static inline struct device_node *of_get_next_parent(struct device_node *node)
-> +{
-> +	return NULL;
-> +}
-> +
->  static inline struct device_node *of_get_next_child(
->  	const struct device_node *node, struct device_node *prev)
->  {
-> 
-> 
+diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+index 33b370865d16..2d3a3012f2f8 100644
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -2769,12 +2769,19 @@ void re_initialize(void)
+ void set_max_cpu_num(void)
+ {
+ 	FILE *filep;
++	int base_cpu;
+ 	unsigned long dummy;
++	char pathname[64];
+ 
++	base_cpu = sched_getcpu();
++	if (base_cpu < 0)
++		err(1, "cannot find calling cpu ID");
++	sprintf(pathname,
++		"/sys/devices/system/cpu/cpu%d/topology/thread_siblings",
++		base_cpu);
++
++	filep = fopen_or_die(pathname, "r");
+ 	topo.max_cpu_num = 0;
+-	filep = fopen_or_die(
+-			"/sys/devices/system/cpu/cpu0/topology/thread_siblings",
+-			"r");
+ 	while (fscanf(filep, "%lx,", &dummy) == 1)
+ 		topo.max_cpu_num += BITMASK_SIZE;
+ 	fclose(filep);
+-- 
+2.21.3
+
