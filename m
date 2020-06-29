@@ -2,219 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7424720E04A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CF320E203
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730546AbgF2Uom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43372 "EHLO
+        id S2390151AbgF2VBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731601AbgF2TN7 (ORCPT
+        with ESMTP id S1730026AbgF2TM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:59 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D368C0147F5
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:25:18 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id y18so6815494plr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:25:18 -0700 (PDT)
+        Mon, 29 Jun 2020 15:12:57 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949DBC008740
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:28:06 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id q15so14508622wmj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:28:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=i9Nqhif6ApfXooGjeibxstbXojwGjO9SaXuxe+uQjDQ=;
-        b=jD0KhJNTqUUeR6j8mvpYmsiEJ6YBf4Q+GOdLtNpRkaBosp2KwiuK9yUwZ8EHRsFuai
-         KYlaB4Q7zIBzB2CxHTakt+snj6JFm0zvArqsimL3CTVwFzg9kFc/0uJX+4EJSMKl78Bc
-         YCiIqNCe1diXqPg7c6Mx/WhrlkN/DkzOY8IABTkcpPU92AXSVbkPxz+vgwWZCUWrwHAy
-         HHm4m+xOl4bLGpYOv4MdVIYM7y+wGaHXjZXNn0ntnKRUnenNT2W/SkCtEoTHirw+Bicz
-         6AptWVdJlrnSBh25JHVXnbv+eT7UEvVvS4o5HLKaQ0MHyTc5UnqrtFjtTGM2izAw55it
-         Xx3w==
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jhEnhfJli6ncCAHeEoV+qwFqYEF14Keo1BCmMzJ2sq4=;
+        b=tF+QglDtRAjOHWBI/3gKzqBKloDVbRGAKLYcxV1LbyTdKUE+5nig4RbBh0fONEI8x4
+         Y7r9tJXD7LxxnB22VEYyPJVLXiwq9xcsDbkKC+VcdfaTrInqIgrvbKlMBqjzShgvhR7l
+         LSZDy4CppWY/0hqO+Si0dlwNOiRL2voiE/CuXyvxbpCnwnXwOQXy01j2jT8sxSud3jGG
+         8jz/NcnJpe04JGW7XHfyleMRRjW7Fs0hgUsIDbqxJCq1+CdGHUREetAnZfWR3W9tur5C
+         nOSn9jX7Z2mDI4dT8QZJpkvkTIo6Fx19ai+TVh6jmZ1LE5wgxJVTwdUGESI5khXeCw1G
+         jW8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=i9Nqhif6ApfXooGjeibxstbXojwGjO9SaXuxe+uQjDQ=;
-        b=YrzxnIB+BwnFTM3mJtsVi7K7fE9YoiszxQkEtJ0EW2B2m7UFFd6PCZI1iDXBASk3XU
-         6ATI+nARsYooca++rYCDH3nItKQdyZMVxBR3XaQAwr0sxqD0jq7cCrxHdSGYmhi+qGFv
-         Zqw2F7t/gUVooex7UeLdkaG2/iK8WdaAJA2Aryx5IJiAjri8ct2yBA0VlXfkRIYfLZcn
-         2mSACBbWo/4C1TvlCTrJD0ZgPF5Z7tefWgrIFat63xvwZtBWGq3QDnnPRRjVh8cvGNWe
-         O9U7v6n1v1NySGql8+ZTrhtI2hBTTmC7hEE5hyHjSJms1U92Inlgi7eNov9nSBCw/+vw
-         neUw==
-X-Gm-Message-State: AOAM531lIvE87jinuwdZrtMxzcaqrIpZP9QgKOm980/le8uA57lxD0lL
-        9SAI4fggnRfjFXFJS3Jbyfj7xQ==
-X-Google-Smtp-Source: ABdhPJySmY+y/vwIX7ZPHKRcm025SbC8nwl+OHt6zHB9pB5+zOoWeprGva6CTquPpjzuELrjdUDBrw==
-X-Received: by 2002:a17:90b:1492:: with SMTP id js18mr8390978pjb.42.1593419118010;
-        Mon, 29 Jun 2020 01:25:18 -0700 (PDT)
-Received: from localhost ([122.172.127.76])
-        by smtp.gmail.com with ESMTPSA id 8sm19048210pja.0.2020.06.29.01.25.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Jun 2020 01:25:17 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com, tkjos@google.com, adharmap@codeaurora.org,
-        Quentin Perret <qperret@google.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V4 3/3] cpufreq: Specify default governor on command line
-Date:   Mon, 29 Jun 2020 13:55:00 +0530
-Message-Id: <96b6e6ca02b664194ff3e57e1ec768fbc597bf38.1593418662.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1593418662.git.viresh.kumar@linaro.org>
-References: <cover.1593418662.git.viresh.kumar@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jhEnhfJli6ncCAHeEoV+qwFqYEF14Keo1BCmMzJ2sq4=;
+        b=Kpb0+6QnwbTD+rkZdwnW0BKZpqtlT5KwgKP+KwFORuXL3uQVhMsoJW+DLj6KqNuaxB
+         e3RQfa7wc94NePd0vBhDTWpPnEG6pFUDAkYOtmlyDapgr8XJLMWfK0YOLrKNxehhoMc+
+         T6g/4OegPDFV99DF1e8ex/zX4sTcVcDUeNDqLITsjRE115tjatYvV/HHU8FRqWR40+q1
+         Gt9092TktMjTvKFiON9B8GLAWXwuJhO3QV/k6ljeV1E/YAr1eo0OxKlFe27K+5zs1LnM
+         51e9afcAiGB6/RKO6Bx2903xad5UCXwYlodNXvknOEHGPU+G9DttCG/E6/Jnh0TMAR6N
+         ltKw==
+X-Gm-Message-State: AOAM533xGirqO5RMhSnvTPdommUvscfIr+dc5yf8yfY9jKTXlz5PUDuT
+        ixYG9CVAWETHKJqVKDwBlK6063i4NGmt3+4FnimIRg==
+X-Google-Smtp-Source: ABdhPJzhxZXUqBgnQ1HG5bYWm22c4NWgWogtnDllPgrVAfM1+RuGad+1r2gECEyARZuQzWa2/NHIF5M79bJ57DUtFFY=
+X-Received: by 2002:a1c:f30a:: with SMTP id q10mr15292236wmq.3.1593419285032;
+ Mon, 29 Jun 2020 01:28:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1593397455.git.zong.li@sifive.com> <CAAhSdy1uFt3rqf8cSHqS=W90AoeQjo10R_Ak4Cknb_QUvH1SPQ@mail.gmail.com>
+ <CANXhq0p_HoD6npHmoxxYHohBsgihfe5S-0DG04xLpQ3VO1w7oQ@mail.gmail.com>
+In-Reply-To: <CANXhq0p_HoD6npHmoxxYHohBsgihfe5S-0DG04xLpQ3VO1w7oQ@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 29 Jun 2020 13:57:53 +0530
+Message-ID: <CAAhSdy0Ed8zQ5LVZva6p2TWqTOzrDRtL0JJkAdmpzWFhzJLUfg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/6] Support raw event and DT for perf on RISC-V
+To:     Zong Li <zong.li@sifive.com>
+Cc:     Alan Kao <alankao@andestech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quentin Perret <qperret@google.com>
+On Mon, Jun 29, 2020 at 11:22 AM Zong Li <zong.li@sifive.com> wrote:
+>
+> On Mon, Jun 29, 2020 at 12:53 PM Anup Patel <anup@brainfault.org> wrote:
+> >
+> > On Mon, Jun 29, 2020 at 8:49 AM Zong Li <zong.li@sifive.com> wrote:
+> > >
+> > > This patch set adds raw event support on RISC-V. In addition, we
+> > > introduce the DT mechanism to make our perf more generic and common.
+> > >
+> > > Currently, we set the hardware events by writing the mhpmeventN CSRs, it
+> > > would raise an illegal instruction exception and trap into m-mode to
+> > > emulate event selector CSRs access. It doesn't make sense because we
+> > > shouldn't write the m-mode CSRs in s-mode. Ideally, we should set event
+> > > selector through standard SBI call or the shadow CSRs of s-mode. We have
+> > > prepared a proposal of a new SBI extension, called "PMU SBI extension",
+> > > but we also discussing the feasibility of accessing these PMU CSRs on
+> > > s-mode at the same time, such as delegation mechanism, so I was
+> > > wondering if we could use SBI calls first and make the PMU SBI extension
+> > > as legacy when s-mode access mechanism is accepted by Foundation? or
+> > > keep the current situation to see what would happen in the future.
+> > >
+> > > This patch set also introduces the DT mechanism, we don't want to add too
+> > > much platform-dependency code in perf like other architectures, so we
+> > > put the mapping of generic hardware events to DT, then we can easy to
+> > > transfer generic hardware events to vendor's own hardware events without
+> > > any platfrom-dependency stuff in our perf.
+> >
+> > Please re-write this series to have RISC-V PMU driver as a regular
+> > platform driver as drivers/perf/riscv_pmu.c.
+> >
+> > The PMU related sources will have to be removed from arch/riscv.
+> >
+> > Based on implementation of final drivers/perf/riscv_pmu.c we will
+> > come-up with drivers/perf/riscv_sbi_pmu.c driver for SBI perf counters.
+> >
+>
+> There are some different ways to implement perf, and current
+> implementation seems to be consensus when perf was introduced at the
+> beginning [0][1]. I don't persist to which one, I could change the
+> implementation as you mentioned if it is a new consensus one.
+>
+> [0] https://github.com/riscv/riscv-linux/pull/124#issuecomment-367563910
 
-Currently, the only way to specify the default CPUfreq governor is via
-Kconfig options, which suits users who can build the kernel themselves
-perfectly.
+I would not recommend taking the original RISC-V linux fork as reference.
 
-However, for those who use a distro-like kernel (such as Android, with
-the Generic Kernel Image project), the only way to use a different
-default is to boot to userspace, and to then switch using the sysfs
-interface. Being able to specify the default governor on the command
-line, like is the case for cpuidle, would enable those users to specify
-their governor of choice earlier on, and to simplify slighlty the
-userspace boot procedure.
+Rather we should study how things are done on other architectures.
 
-To support this use-case, add a kernel command line parameter enabling
-to specify a default governor for CPUfreq, which takes precedence over
-the builtin default.
+I really appreciate the attempt to make RISC-V PMU driver depend on DT
+but if we are going this route then we should maximize the use of Linux
+platform driver framework. In fact, whenever possible we should integrate
+RISC-V features as platform drivers under the drivers/ directory.
 
-This implementation has one notable limitation: the default governor
-must be registered before the driver. This is solved for builtin
-governors and drivers using appropriate *_initcall() functions. And in
-the modular case, this must be reflected as a constraint on the module
-loading order.
+I thought about SBI PMU counters as well. In future, we can easily
+expose SBI PMU counters as RAW events in the same RISC-V PMU
+driver. The sbi_probe_extension() can be used in RISC-V PMU driver
+to check for SBI PMU counters so no special provisions needed in DT
+for SBI PMU counters.
 
-Signed-off-by: Quentin Perret <qperret@google.com>
-[ Viresh: Converted 'default_governor' to a string and parsing it only
-	  at initcall level, and several updates to
-	  cpufreq_init_policy(). ]
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- .../admin-guide/kernel-parameters.txt         |  5 +++
- Documentation/admin-guide/pm/cpufreq.rst      |  6 ++--
- drivers/cpufreq/cpufreq.c                     | 31 +++++++++++++------
- 3 files changed, 30 insertions(+), 12 deletions(-)
+Also, the RISC-V PMU driver can be implemented such that it will
+work for RV32, RV64, NoMMU RV32, and NoMMU RV64.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index fb95fad81c79..8deb5a89328a 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -703,6 +703,11 @@
- 	cpufreq.off=1	[CPU_FREQ]
- 			disable the cpufreq sub-system
- 
-+	cpufreq.default_governor=
-+			[CPU_FREQ] Name of the default cpufreq governor or
-+			policy to use. This governor must be registered in the
-+			kernel before the cpufreq driver probes.
-+
- 	cpu_init_udelay=N
- 			[X86] Delay for N microsec between assert and de-assert
- 			of APIC INIT to start processors.  This delay occurs
-diff --git a/Documentation/admin-guide/pm/cpufreq.rst b/Documentation/admin-guide/pm/cpufreq.rst
-index 0c74a7784964..368e612145d2 100644
---- a/Documentation/admin-guide/pm/cpufreq.rst
-+++ b/Documentation/admin-guide/pm/cpufreq.rst
-@@ -147,9 +147,9 @@ CPUs in it.
- 
- The next major initialization step for a new policy object is to attach a
- scaling governor to it (to begin with, that is the default scaling governor
--determined by the kernel configuration, but it may be changed later
--via ``sysfs``).  First, a pointer to the new policy object is passed to the
--governor's ``->init()`` callback which is expected to initialize all of the
-+determined by the kernel command line or configuration, but it may be changed
-+later via ``sysfs``).  First, a pointer to the new policy object is passed to
-+the governor's ``->init()`` callback which is expected to initialize all of the
- data structures necessary to handle the given policy and, possibly, to add
- a governor ``sysfs`` interface to it.  Next, the governor is started by
- invoking its ``->start()`` callback.
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index e9e8200a0211..ad94b1d47ddb 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -50,6 +50,8 @@ static LIST_HEAD(cpufreq_governor_list);
- #define for_each_governor(__governor)				\
- 	list_for_each_entry(__governor, &cpufreq_governor_list, governor_list)
- 
-+static char default_governor[CPUFREQ_NAME_LEN];
-+
- /**
-  * The "cpufreq driver" - the arch- or hardware-dependent low
-  * level driver of CPUFreq support, and its spinlock. This lock
-@@ -1061,7 +1063,6 @@ __weak struct cpufreq_governor *cpufreq_default_governor(void)
- 
- static int cpufreq_init_policy(struct cpufreq_policy *policy)
- {
--	struct cpufreq_governor *def_gov = cpufreq_default_governor();
- 	struct cpufreq_governor *gov = NULL;
- 	unsigned int pol = CPUFREQ_POLICY_UNKNOWN;
- 	int ret;
-@@ -1071,21 +1072,27 @@ static int cpufreq_init_policy(struct cpufreq_policy *policy)
- 		gov = get_governor(policy->last_governor);
- 		if (gov) {
- 			pr_debug("Restoring governor %s for cpu %d\n",
--				 policy->governor->name, policy->cpu);
--		} else if (def_gov) {
--			gov = def_gov;
--			__module_get(gov->owner);
-+				 gov->name, policy->cpu);
- 		} else {
--			return -ENODATA;
-+			gov = get_governor(default_governor);
-+		}
-+
-+		if (!gov) {
-+			gov = cpufreq_default_governor();
-+			if (!gov)
-+				return -ENODATA;
-+			__module_get(gov->owner);
- 		}
-+
- 	} else {
-+
- 		/* Use the default policy if there is no last_policy. */
- 		if (policy->last_policy) {
- 			pol = policy->last_policy;
--		} else if (def_gov) {
--			pol = cpufreq_parse_policy(def_gov->name);
-+		} else {
-+			pol = cpufreq_parse_policy(default_governor);
- 			/*
--			 * In case the default governor is neiter "performance"
-+			 * In case the default governor is neither "performance"
- 			 * nor "powersave", fall back to the initial policy
- 			 * value set by the driver.
- 			 */
-@@ -2795,13 +2802,19 @@ EXPORT_SYMBOL_GPL(cpufreq_unregister_driver);
- 
- static int __init cpufreq_core_init(void)
- {
-+	struct cpufreq_governor *gov = cpufreq_default_governor();
-+
- 	if (cpufreq_disabled())
- 		return -ENODEV;
- 
- 	cpufreq_global_kobject = kobject_create_and_add("cpufreq", &cpu_subsys.dev_root->kobj);
- 	BUG_ON(!cpufreq_global_kobject);
- 
-+	if (!strlen(default_governor))
-+		strncpy(default_governor, gov->name, CPUFREQ_NAME_LEN);
-+
- 	return 0;
- }
- module_param(off, int, 0444);
-+module_param_string(default_governor, default_governor, CPUFREQ_NAME_LEN, 0444);
- core_initcall(cpufreq_core_init);
--- 
-2.25.0.rc1.19.g042ed3e048af
+Regards,
+Anup
 
+> [1] https://groups.google.com/a/groups.riscv.org/g/sw-dev/c/f19TmCNP6yA
+>
+> > Regards,
+> > Anup
+> >
+> > >
+> > > Zong Li (6):
+> > >   dt-bindings: riscv: Add YAML documentation for PMU
+> > >   riscv: dts: sifive: Add DT support for PMU
+> > >   riscv: add definition of hpmcounter CSRs
+> > >   riscv: perf: Add raw event support
+> > >   riscv: perf: introduce DT mechanism
+> > >   riscv: remove PMU menu of Kconfig
+> > >
+> > >  .../devicetree/bindings/riscv/pmu.yaml        |  59 +++
+> > >  arch/riscv/Kconfig                            |  13 -
+> > >  arch/riscv/boot/dts/sifive/fu540-c000.dtsi    |  13 +
+> > >  arch/riscv/include/asm/csr.h                  |  58 +++
+> > >  arch/riscv/include/asm/perf_event.h           | 100 ++--
+> > >  arch/riscv/kernel/Makefile                    |   2 +-
+> > >  arch/riscv/kernel/perf_event.c                | 471 +++++++++++-------
+> > >  7 files changed, 471 insertions(+), 245 deletions(-)
+> > >  create mode 100644 Documentation/devicetree/bindings/riscv/pmu.yaml
+> > >
+> > > --
+> > > 2.27.0
+> > >
