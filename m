@@ -2,172 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12E720E0CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9434A20E12E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387857AbgF2Utv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:49:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
+        id S2389662AbgF2Uwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731482AbgF2TNk (ORCPT
+        with ESMTP id S1731344AbgF2TNY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:40 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31DD0C0086DE;
-        Mon, 29 Jun 2020 02:31:46 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id z5so8039614pgb.6;
-        Mon, 29 Jun 2020 02:31:46 -0700 (PDT)
+        Mon, 29 Jun 2020 15:13:24 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7BB7C00877F
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 02:30:30 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id o38so12300989qtf.6
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 02:30:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=U8LfJvZ8Suv0UU3L8Vq/myysU79XrKbzAI5mVt1upHA=;
-        b=UMnRMoplidwqa2axc+13CTf6GjvG/QKjq19NX5mr89r2PyhZPX2MmNwdhqGn5qo/AE
-         M/IV5z4/XD05V3cPZvLn0BS3/ArPV/QS+ZEH9j7MePFM4pBR9FEAf7VN6gytNgMOuzwd
-         LpJdF3e/tF391hQub1QawVUYlZHIIYXfYfAVpsYvXVu9lab+VFzIx3/ydCnJKYCUXEmR
-         VdWO4gpulSb43KzGvbLkwnqUkfIXscpggHyFGR/ixKo889mdkn9g1akJKYcwTJTY+HIS
-         VYxamiq6E56/6ub1rzvsawOCbz6kYBvFRVeo28EdhIndpB5xhclS+Eh+UmAAuX0JpzPp
-         egYQ==
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UWVs7He7VNIcTh2C2GcW0olT9jljSKgU/1oAwOuPtj8=;
+        b=hW0bjXJ0rtdgLiAay3FdknLQeHjtZqzeYHE69L5wxoXNmFXvK+g5OpTMUhJwRHwb7q
+         bvbox0QHDiD0SWD3kx0HYahntB4q1cNXNRlDC0/R9t7yEOw5ekE67FmcALSsiLzjg3+f
+         VL/UgX+94SeirX9eASNqOzglpF/GB/ckHbGUEubGz6b0wAx0SKVBnANLxN/gaYoMo2Yc
+         X6pSS5Lirm3fN4cisNuiLIMKseewP65b30sMVYmnNDQwpy+Yd8O8q/HJ/TxZAZcgU9Bh
+         Do9DkbjBCxyJAw9Q953X/t9ZOnwnvkOC5h6FffoGecyxugFrYB5FmJHH2EO9vzhEErtB
+         s/VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=U8LfJvZ8Suv0UU3L8Vq/myysU79XrKbzAI5mVt1upHA=;
-        b=mkQHfdvKLx3SYlrbGo5wZqvZQscv0ZW16Uyr2vuEJpbElvO84wlYkjcWTrZVPdHJlY
-         eWbPwPyNcsL7gD6JhrjrqxsCHxfDbr4DwSz4/deZVmfVspAp3IivN212DDPcH3i5Zyae
-         UpBI7o/QFV9plfNaQM+hDosjaWZdp2wxODRwFbgCck4caz+NQICDX/JCeClMO0glycwm
-         EddpX1RDM6r9GJLdrv6UZYOrvdeiYbIjBan3yy/NQF5l9GQ00NURJL2+42xioF+TluDb
-         uCl4hb5dQbDCMyJdc3kJ8QIMxCkAYcf2YSFHIZiGGEUGm6KgTwDUIG4dgiXIcn1/5k05
-         OB3g==
-X-Gm-Message-State: AOAM532G9bzmjJWiHy0DRt+vYNAIfsIiLFxm/DQLhMuQwS58eJXZdSbG
-        gh69ovekFAzttowPaQdynXE=
-X-Google-Smtp-Source: ABdhPJxCrwzkJMp9WcEN5z/vEr5Xrtqg4Z1I1sF8VTyeVMLmhzbwmlekF7t0Va8jyim44rh9w5wtUA==
-X-Received: by 2002:a63:b915:: with SMTP id z21mr9981906pge.145.1593423105725;
-        Mon, 29 Jun 2020 02:31:45 -0700 (PDT)
-Received: from varodek.localdomain ([106.210.40.90])
-        by smtp.gmail.com with ESMTPSA id q20sm2921286pfn.111.2020.06.29.02.31.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 02:31:45 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org
-Subject: [PATCH v1 5/5] e100: use generic power management
-Date:   Mon, 29 Jun 2020 14:59:43 +0530
-Message-Id: <20200629092943.227910-6-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200629092943.227910-1-vaibhavgupta40@gmail.com>
-References: <20200629092943.227910-1-vaibhavgupta40@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UWVs7He7VNIcTh2C2GcW0olT9jljSKgU/1oAwOuPtj8=;
+        b=RXAd/lXTPAjLgMwLjSa+mMx7h6VAM6xNv3btNYcjSm2TOPcWnUWVBpnSMQ/AV5KBuR
+         YnORPVzQcTknjT1zCJoLqDDRZrkoN+7DLO+dC7L0QTXXqrauDQHd7my9z3VvND+TLfjR
+         DXPqoM90+iTWxU/M2AzS+5HObFgaHioPTVQgMtT5rV/p+m3vvJij3fN9QuKvh5Idr7n/
+         eTJDFCsLjDzDvEaSNlwQ6sFsJb6PKTSnsY2fgYPR3qFd6Nq0WKAkCi5BhXFTULG6xJpI
+         9MCuS7LXUFt83+TwGRudh0I0RgE+/ciQV8TcbjZJJpzZnP/iyPoTMNnWJBJZlO1pu6ZT
+         wR9Q==
+X-Gm-Message-State: AOAM533/Msp56ODdvi//2EzYSOW5MadcRyK4zWCv9k1ju9MqAl5cdqTk
+        AQO25qCZjI20rSpqD7ArCXh05t3N6w7922w4ekKjiQ==
+X-Google-Smtp-Source: ABdhPJypLWJGj9IRMTQXEPocCDXObCcTTrMC0Y9v+HHaQ4Ic+KR82mGBzixOF6s8j9FAdyeyxr4vPoEu5a71J2jx/OI=
+X-Received: by 2002:ac8:3470:: with SMTP id v45mr15134731qtb.51.1593423029840;
+ Mon, 29 Jun 2020 02:30:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1592308864-30205-1-git-send-email-yash.shah@sifive.com>
+In-Reply-To: <1592308864-30205-1-git-send-email-yash.shah@sifive.com>
+From:   Greentime Hu <greentime.hu@sifive.com>
+Date:   Mon, 29 Jun 2020 17:30:18 +0800
+Message-ID: <CAHCEeh+X+0m_oprdS+frRkfbmW7EvWF63xWeJFcQB4_Zc_RUgw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Dynamic CPU frequency switching for the HiFive
+To:     Yash Shah <yash.shah@sifive.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>, robh+dt@kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, sachin.ghadi@sifive.com,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup@brainfault.org>, lollivier@baylibre.com,
+        Green Wan <green.wan@sifive.com>,
+        Atish Patra <atish.patra@wdc.com>, alistair.francis@wdc.com,
+        deepa.kernel@gmail.com, bmeng.cn@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With legacy PM hooks, it was the responsibility of a driver to manage PCI
-states and also the device's power state. The generic approach is to let
-PCI core handle the work.
+Yash Shah <yash.shah@sifive.com> =E6=96=BC 2020=E5=B9=B46=E6=9C=8816=E6=97=
+=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:01=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> The patch series adds the support for dynamic CPU frequency switching
+> for FU540-C000 SoC on the HiFive Unleashed board. All the patches are
+> based on Paul Walmsley's work.
+>
+> This series is based on Linux v5.7 and tested on HiFive unleashed board.
+>
+> Yash Shah (3):
+>   riscv: defconfig, Kconfig: enable CPU power management
+>   riscv: dts: fu540-c000: define hart clocks
+>   riscv: dts: HiFive Unleashed: define a default set of CPU OPPs
+>
+>  arch/riscv/Kconfig                                 |  8 +++++
+>  arch/riscv/boot/dts/sifive/fu540-c000.dtsi         |  5 +++
+>  .../riscv/boot/dts/sifive/hifive-unleashed-a00.dts | 38 ++++++++++++++++=
+++++++
+>  arch/riscv/configs/defconfig                       |  5 +++
+>  4 files changed, 56 insertions(+)
+>
 
-e100_suspend() calls __e100_shutdown() to perform intermediate tasks.
-__e100_shutdown() calls pci_save_state() which is not recommended.
+Hi Yash,
 
-e100_suspend() also calls __e100_power_off() which is calling PCI helper
-functions, pci_prepare_to_sleep(), pci_set_power_state(), along with
-pci_wake_from_d3(...,false). Hence, the functin call is removed and wol is
-disabled as earlier using device_wakeup_disable().
+Thank you for the patch. It works for me to test with cpufreq-ljt-stress-te=
+st.
+Here is my log.
 
-Compile-tested only.
+CPU stress test, which is doing JPEG decoding by libjpeg-turbo
+at different cpufreq operating points.
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/net/ethernet/intel/e100.c | 31 +++++++++++++------------------
- 1 file changed, 13 insertions(+), 18 deletions(-)
+Testing CPU 0
+ 1400 MHz ............................................................ OK
+  999 MHz ............................................................ OK
+  700 MHz ............................................................ OK
+  350 MHz ............................................................ OK
 
-diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
-index 1b8d015ebfb0..7506fb5eca8f 100644
---- a/drivers/net/ethernet/intel/e100.c
-+++ b/drivers/net/ethernet/intel/e100.c
-@@ -2997,8 +2997,6 @@ static void __e100_shutdown(struct pci_dev *pdev, bool *enable_wake)
- 		e100_down(nic);
- 	netif_device_detach(netdev);
- 
--	pci_save_state(pdev);
--
- 	if ((nic->flags & wol_magic) | e100_asf(nic)) {
- 		/* enable reverse auto-negotiation */
- 		if (nic->phy == phy_82552_v) {
-@@ -3028,24 +3026,21 @@ static int __e100_power_off(struct pci_dev *pdev, bool wake)
- 	return 0;
- }
- 
--#ifdef CONFIG_PM
--static int e100_suspend(struct pci_dev *pdev, pm_message_t state)
-+static int __maybe_unused e100_suspend(struct device *dev_d)
- {
- 	bool wake;
--	__e100_shutdown(pdev, &wake);
--	return __e100_power_off(pdev, wake);
-+	__e100_shutdown(to_pci_dev(dev_d), &wake);
-+
-+	device_wakeup_disable(dev_d);
-+
-+	return 0;
- }
- 
--static int e100_resume(struct pci_dev *pdev)
-+static int __maybe_unused e100_resume(struct device *dev_d)
- {
--	struct net_device *netdev = pci_get_drvdata(pdev);
-+	struct net_device *netdev = dev_get_drvdata(dev_d);
- 	struct nic *nic = netdev_priv(netdev);
- 
--	pci_set_power_state(pdev, PCI_D0);
--	pci_restore_state(pdev);
--	/* ack any pending wake events, disable PME */
--	pci_enable_wake(pdev, PCI_D0, 0);
--
- 	/* disable reverse auto-negotiation */
- 	if (nic->phy == phy_82552_v) {
- 		u16 smartspeed = mdio_read(netdev, nic->mii.phy_id,
-@@ -3062,7 +3057,6 @@ static int e100_resume(struct pci_dev *pdev)
- 
- 	return 0;
- }
--#endif /* CONFIG_PM */
- 
- static void e100_shutdown(struct pci_dev *pdev)
- {
-@@ -3150,16 +3144,17 @@ static const struct pci_error_handlers e100_err_handler = {
- 	.resume = e100_io_resume,
- };
- 
-+static SIMPLE_DEV_PM_OPS(e100_pm_ops, e100_suspend, e100_resume);
-+
- static struct pci_driver e100_driver = {
- 	.name =         DRV_NAME,
- 	.id_table =     e100_id_table,
- 	.probe =        e100_probe,
- 	.remove =       e100_remove,
--#ifdef CONFIG_PM
-+
- 	/* Power Management hooks */
--	.suspend =      e100_suspend,
--	.resume =       e100_resume,
--#endif
-+	.driver.pm =	&e100_pm_ops,
-+
- 	.shutdown =     e100_shutdown,
- 	.err_handler = &e100_err_handler,
- };
--- 
-2.27.0
+Testing CPU 1
+ 1400 MHz ............................................................ OK
+  999 MHz ............................................................ OK
+  700 MHz ............................................................ OK
+  350 MHz ............................................................ OK
 
+Testing CPU 2
+ 1400 MHz ............................................................ OK
+  999 MHz ............................................................ OK
+  700 MHz ............................................................ OK
+  350 MHz ............................................................ OK
+
+Testing CPU 3
+ 1400 MHz ............................................................ OK
+  999 MHz ............................................................ OK
+  700 MHz ............................................................ OK
+  350 MHz ............................................................ OK
+
+Overall result : PASSED
+
+Tested-by: Greentime Hu <greentime.hu@sifive.com>
