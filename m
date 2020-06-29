@@ -2,167 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840DB20DFFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D5A20E1FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389538AbgF2Ulv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
+        id S2390128AbgF2VBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731553AbgF2TOG (ORCPT
+        with ESMTP id S1731199AbgF2TM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:14:06 -0400
-X-Greylist: delayed 517 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 29 Jun 2020 04:07:43 PDT
-Received: from pmg01-out3.zxcs.nl (pmg01-out3.zxcs.nl [IPv6:2a06:2ec0:1:b::ffeb])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B503C00862C
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:07:43 -0700 (PDT)
-Received: from pmg01.zxcs.nl (localhost.localdomain [127.0.0.1])
-        by pmg01.zxcs.nl (Zxcs) with ESMTP id BE0761035FD;
-        Mon, 29 Jun 2020 12:59:04 +0200 (CEST)
-Received: from web0081.zxcs.nl (web0081.zxcs.nl [IPv6:2a06:2ec0:1::81])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pmg01.zxcs.nl (Zxcs) with ESMTPS;
-        Mon, 29 Jun 2020 12:59:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=pascalroeleven.nl; s=x; h=Content-Transfer-Encoding:Content-Type:Message-ID
-        :References:In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=BeEd1bjgVqI+6WM8IxHn3yBv6gBN5vUlSzEvbSv2GPY=; b=yMmYS8VgDQ27kiSVRfsNHb29iE
-        LPmdLaagH+bhjYa54+X3DMcJw/nqLZV5COm0Da2zOkefygoaxdrpUEvEHZmBtFVSzEFG9x1NIuXin
-        I1E5JmsDND6n2nkV9HZuv+1p5MFjUc+FoJDbKytPhTvY0MRa2F7TDed2QfZrlyxmEPFezW39If8ZR
-        llTMADSiNPRmBiZ72ZBx/mxD1WsEvyqYe2WHWTx83dzz1qTw7J73QFk0CDdeDSqELEzDMvAGMy+OK
-        9/A/IOH366nZ3vtIYr10sHMVvuSCsLkY1HJ6TRYo0Gx2ZTuUb633j1zBZovb0Pz192M3r0YlsTIN3
-        zIejNerg==;
-Received: from spamrelay.zxcs.nl ([185.104.28.12]:48016 helo=mail-slave02.zxcs.nl)
-        by web0081.zxcs.nl with esmtp (Exim 4.93.0.4)
-        (envelope-from <dev@pascalroeleven.nl>)
-        id 1jprV9-004AMs-6x; Mon, 29 Jun 2020 12:59:03 +0200
+        Mon, 29 Jun 2020 15:12:57 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C7CC00862D
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:11:27 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id i16so12466598qtr.7
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:11:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Tfv7vMX8zqf+KfHaA8JVxdjImJiQttmClnXwjby4rK4=;
+        b=Qlh/C2Si9KuqV8DlShjWN9r1U/ujzT7mJ0nPxB8gzmTL4bhYkHXavuQkfF24tWFJmu
+         FiT4upWYrEjC51EgP6FDrfvijHlSw8249drYY8WoGCVarzqLsdvDUmczgxaI3cN9v99C
+         46k9AKijYQpLkJxOF4HZWlPmOuYEIasBD96nLDDTAOhk72yZS7HqZ/E3ehGsKahZhy44
+         H/K8RFCDW3lGgmL0899QJ40bautJESc9na0MWjfncH3Irp6P7RHcAVT1f+OgwQE8jg6N
+         KSiYN3ep1hRPcDOLbzd6ackRDiAgvFHFKFWwzzhvhomoZeeHkuz16bCxtI06AUgQor18
+         yvRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Tfv7vMX8zqf+KfHaA8JVxdjImJiQttmClnXwjby4rK4=;
+        b=q8EUSZKLHgKUK9L2TgD2c/8B0yKUHVC8OfxBIBrBCAeCQiSZ12wdLedB2XT93QSdak
+         bblPVFB7jBi8KjrPgx2vvSMTDSfUDYHetOzbyt5NoXrNXiEscooRm8mV5kiu4IB6OR/l
+         mY6A7FkuIZb1HFNaT4D7YjJgJCRjfLW1CT9SdQwHpD/hpAQP24nMh/FE2sIE6KgQIvNp
+         K9EebluprZsJcUuQacSfZW9NU+17kAbHRoMQ8VKTK4MAimz2NsyE0JBKNt3TaOfqCfXR
+         LIlb9jjA8WOlvE3eJ4nEWyVRkAcKxEmi5YIXZJwWY2UcjJgG6uZBtYkJ1UVKOGzpYZVk
+         CRfQ==
+X-Gm-Message-State: AOAM531PZ7Ht3nr6W/ngKkg+IVsdOVliy/9FR3U69IferLHksYzC6i5R
+        HvmEDrLZyU4BW4ivb/+OoEmL68nkQlbqwvu7J0Qm+A==
+X-Google-Smtp-Source: ABdhPJwJlC3jb4FspekGZ2zZFbumeGe86bJU/RzU6zbSwvDGQ8M7H0EEjtLRjMJhl17j4fcbTxPiBr5Aq/KlXdtcz/Q=
+X-Received: by 2002:ac8:1871:: with SMTP id n46mr14159717qtk.252.1593429086671;
+ Mon, 29 Jun 2020 04:11:26 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Mon, 29 Jun 2020 12:59:02 +0200
-From:   Pascal Roeleven <dev@pascalroeleven.nl>
-To:     laurent.pinchart@ideasonboard.com
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-sunxi@googlegroups.com
-Subject: Re: [linux-sunxi] Re: [PATCH v2 2/5] drm: panel: Add Starry KR070PE2T
-In-Reply-To: <20200628072819.GB8391@pendragon.ideasonboard.com>
-References: <20200320112205.7100-1-dev@pascalroeleven.nl>
- <20200320112205.7100-3-dev@pascalroeleven.nl>
- <20200628072819.GB8391@pendragon.ideasonboard.com>
-User-Agent: Roundcube Webmail/1.4.6
-Message-ID: <d43b324fa26638c179650e3c52adbf32@pascalroeleven.nl>
-X-Sender: dev@pascalroeleven.nl
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-AuthUser: 
+References: <20200521162518.1809995-1-lma@semihalf.com> <3c89e614-81f5-ba87-19a9-fbe9f5c73925@linux.intel.com>
+ <CAFJ_xbr8TN3ynfELJ3NQnkuRg0VRbkjB7=Cyb8yu2L==JGXJiw@mail.gmail.com>
+ <475fb5c0-9b26-a8f6-c102-25c7775bc2ca@linux.intel.com> <CAFJ_xbq-QotvPG=AxSp7=Etc5P5f4ePRWLCvSNnTkzUO9o_qjQ@mail.gmail.com>
+ <268b11b6-9f4c-d769-a7f9-536d77198705@linux.intel.com>
+In-Reply-To: <268b11b6-9f4c-d769-a7f9-536d77198705@linux.intel.com>
+From:   =?UTF-8?Q?=C5=81ukasz_Majczak?= <lma@semihalf.com>
+Date:   Mon, 29 Jun 2020 13:11:15 +0200
+Message-ID: <CAFJ_xboUTDtnpvskb2dY4fGhGLNkEgT0sH3dU0NYJV_Cb_gqPw@mail.gmail.com>
+Subject: Re: [PATCH v3] ASoC: Intel: kbl_rt5663_rt5514_max98927: Split
+ be_hw_params_fixup function
+To:     Harsha Priya <harshapriya.n@intel.com>
+Cc:     alsa-devel@alsa-project.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Radoslaw Biernacki <rad@semihalf.com>,
+        Ross Zwisler <zwisler@google.com>,
+        linux-kernel@vger.kernel.org,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Bob Brandt <brndt@google.com>, Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+Hi Harsha,
 
-Good catch. It's actually the connector type which is wrong. The 
-connector_type should be DRM_MODE_CONNECTOR_DPI. If you would include 
-this in your patch series, you can have my acked-by.
+We would like to continue the work on this, could you please suggest
+the correct approach.
 
-Regards,
-Pascal
+Best regards,
+Lukasz
 
-On 2020-06-28 09:28, Laurent Pinchart wrote:
-> Hi Pascal,
-> 
-> On Fri, Mar 20, 2020 at 12:21:33PM +0100, Pascal Roeleven wrote:
->> The KR070PE2T is a 7" panel with a resolution of 800x480.
->> 
->> KR070PE2T is the marking present on the ribbon cable. As this panel is
->> probably available under different brands, this marking will catch
->> most devices.
->> 
->> As I can't find a datasheet for this panel, the bus_flags are instead
->> from trial-and-error. The flags seem to be common for these kind of
->> panels as well.
->> 
->> Signed-off-by: Pascal Roeleven <dev@pascalroeleven.nl>
->> ---
->>  drivers/gpu/drm/panel/panel-simple.c | 29 
->> ++++++++++++++++++++++++++++
->>  1 file changed, 29 insertions(+)
->> 
->> diff --git a/drivers/gpu/drm/panel/panel-simple.c 
->> b/drivers/gpu/drm/panel/panel-simple.c
->> index e14c14ac6..b3d257257 100644
->> --- a/drivers/gpu/drm/panel/panel-simple.c
->> +++ b/drivers/gpu/drm/panel/panel-simple.c
->> @@ -2842,6 +2842,32 @@ static const struct panel_desc 
->> shelly_sca07010_bfn_lnn = {
->>  	.bus_format = MEDIA_BUS_FMT_RGB666_1X18,
->>  };
->> 
->> +static const struct drm_display_mode starry_kr070pe2t_mode = {
->> +	.clock = 33000,
->> +	.hdisplay = 800,
->> +	.hsync_start = 800 + 209,
->> +	.hsync_end = 800 + 209 + 1,
->> +	.htotal = 800 + 209 + 1 + 45,
->> +	.vdisplay = 480,
->> +	.vsync_start = 480 + 22,
->> +	.vsync_end = 480 + 22 + 1,
->> +	.vtotal = 480 + 22 + 1 + 22,
->> +	.vrefresh = 60,
->> +};
->> +
->> +static const struct panel_desc starry_kr070pe2t = {
->> +	.modes = &starry_kr070pe2t_mode,
->> +	.num_modes = 1,
->> +	.bpc = 8,
->> +	.size = {
->> +		.width = 152,
->> +		.height = 86,
->> +	},
->> +	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
->> +	.bus_flags = DRM_BUS_FLAG_DE_HIGH | 
->> DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE,
->> +	.connector_type = DRM_MODE_CONNECTOR_LVDS,
-> 
-> I'm trying to fix inconsistencies in the panel-simple driver, and this
-> caught my eyes. MEDIA_BUS_FMT_RGB888_1X24 isn't a correct format for
-> LVDS panels. MEDIA_BUS_FMT_RGB666_1X7X3_SPWG,
-> MEDIA_BUS_FMT_RGB888_1X7X4_SPWG or MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA
-> should be used instead. As I couldn't find documentation for the panel,
-> I can't tell which format is correct. Could you please help ?
-> 
->> +};
->> +
->>  static const struct drm_display_mode starry_kr122ea0sra_mode = {
->>  	.clock = 147000,
->>  	.hdisplay = 1920,
->> @@ -3474,6 +3500,9 @@ static const struct of_device_id 
->> platform_of_match[] = {
->>  	}, {
->>  		.compatible = "shelly,sca07010-bfn-lnn",
->>  		.data = &shelly_sca07010_bfn_lnn,
->> +	}, {
->> +		.compatible = "starry,kr070pe2t",
->> +		.data = &starry_kr070pe2t,
->>  	}, {
->>  		.compatible = "starry,kr122ea0sra",
->>  		.data = &starry_kr122ea0sra,
-> 
-> --
-> Regards,
-> 
-> Laurent Pinchart
-
+czw., 21 maj 2020 o 20:10 Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> napisa=C5=82(a):
+>
+>
+>
+> On 5/21/20 12:30 PM, =C5=81ukasz Majczak wrote:
+> > Hi Pierre
+> >
+> > If you will take a look at the original kabylake_ssp_fixup() you will
+> > see that it is checking whether the related FE is "Kbl Audio Port",
+> > "Kbl Audio Headset Playback", "Kbl Audio Capture Port" or "Kbl Audio
+> > DMIC cap" - then for the first 3 cases it sets min/max channels to 2
+> > while for the "Kbl DMIC cap" it can be 2 or 4, that's is why I'm
+> > trying to split this, but maybe I'm missing here something.
+>
+> I don't understand this code either.
+>
+> I believe the intent is that for all SSP1-RT5663 usages, we should use
+>
+>                 rate->min =3D rate->max =3D 48000;
+>                 chan->min =3D chan->max =3D 2;
+>                 snd_mask_none(fmt);
+>                 snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
+>
+> That is pretty easy to move to a dedicated ssp1 fixup.
+>
+> for SSP0, we have RT5514 for capture and max98927 for playback, but the
+> existing code does not explicitly deal with rate/channels/format for all
+> cases, so it's not clear what should happen.
+>
+> Harsha, can you help here?
+>
+> >
+> > Best regards,
+> > Lukasz
+> >
+> > czw., 21 maj 2020 o 19:17 Pierre-Louis Bossart
+> > <pierre-louis.bossart@linux.intel.com> napisa=C5=82(a):
+> >>
+> >>
+> >>
+> >> On 5/21/20 12:08 PM, =C5=81ukasz Majczak wrote:
+> >>>>
+> >>>> don't add a new dailink, this is not right.
+> >>>>
+> >>> Can you advise a better solution how to assign different fixup
+> >>> functions to mic and to speakers? I was looking at "dmic01" dailink i=
+n
+> >>> skl_nau88l25_max98357a.c as an example.
+> >>
+> >> I am not sure I follow. the DMICs are handled on a shared SSP, so how
+> >> would one set a different fixup? The word length have to be the same.
