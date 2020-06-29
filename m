@@ -2,84 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0857220D2B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D8820D203
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729712AbgF2SwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:52:01 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18046 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729702AbgF2Svx (ORCPT
+        id S1728416AbgF2Spi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:45:38 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:29948 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729027AbgF2SpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:51:53 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ef9ed360000>; Mon, 29 Jun 2020 06:31:34 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Mon, 29 Jun 2020 06:31:47 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Mon, 29 Jun 2020 06:31:47 -0700
-Received: from [10.26.75.188] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 29 Jun
- 2020 13:31:40 +0000
-Subject: Re: [PATCH V3 1/2] arm64: tegra: Re-order PCIe aperture mappings to
- support ACPI boot
-To:     Vidya Sagar <vidyas@nvidia.com>, <bhelgaas@google.com>,
-        <lorenzo.pieralisi@arm.com>, <rjw@rjwysocki.net>,
-        <lenb@kernel.org>, <andrew.murray@arm.com>, <treding@nvidia.com>
-CC:     <linux-tegra@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <sagar.tv@gmail.com>
-References: <20200106082709.14370-1-vidyas@nvidia.com>
- <20200110191500.9538-1-vidyas@nvidia.com>
- <20200110191500.9538-2-vidyas@nvidia.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <d52db35b-dbf8-a706-9611-95448cf6a69e@nvidia.com>
-Date:   Mon, 29 Jun 2020 14:31:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 29 Jun 2020 14:45:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593456310;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C8p+g/bhhWgJJpsjfpg/BDWzFyh4M4c6HCRnxTXHtTc=;
+        b=PT3vgVBfQJ5E8cgTuPCZNjgk95OUYXha7ngqrHd6YRfglJvyFIvlRpc/gHDHv5+Z1rTtPP
+        IK4kjl9I3M/Qi1XbT9gQQ8kNdfwSnXGeoEMWDTHCj7Tg437fxN7dKmoV0q0G1nM08l5Ant
+        6VYBwyj3K1ARXE54VP1pN5Lt4uJnSFY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-353-NcQ64LAZMp6uZxzZQhG4IA-1; Mon, 29 Jun 2020 09:43:29 -0400
+X-MC-Unique: NcQ64LAZMp6uZxzZQhG4IA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC20080572D;
+        Mon, 29 Jun 2020 13:43:27 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 00B4810013C1;
+        Mon, 29 Jun 2020 13:43:24 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 05TDhOV0013363;
+        Mon, 29 Jun 2020 09:43:24 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 05TDhNGN013360;
+        Mon, 29 Jun 2020 09:43:24 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Mon, 29 Jun 2020 09:43:23 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Dave Chinner <david@fromorbit.com>
+cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, dm-devel@redhat.com,
+        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>
+Subject: Re: [PATCH 0/6] Overhaul memalloc_no*
+In-Reply-To: <20200629003550.GJ2005@dread.disaster.area>
+Message-ID: <alpine.LRH.2.02.2006290918030.11293@file01.intranet.prod.int.rdu2.redhat.com>
+References: <20200625113122.7540-1-willy@infradead.org> <alpine.LRH.2.02.2006261058250.11899@file01.intranet.prod.int.rdu2.redhat.com> <20200626230847.GI2005@dread.disaster.area> <alpine.LRH.2.02.2006270848540.14350@file01.intranet.prod.int.rdu2.redhat.com>
+ <20200629003550.GJ2005@dread.disaster.area>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-In-Reply-To: <20200110191500.9538-2-vidyas@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593437494; bh=Y32CfHcMUWKKF9wD0CLFw8La6QEVGFVAMOsFhmKdfEU=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=SHCJ5JM/tbcA1imuBapYWSJr6z+o4OojHikk4j61y7FE/MkNF54FhwyT08IMnjadW
-         lHTOBpjK6/7Fj289JNT9INlUuWwXTI4Y+81NRoDs7DLuDK5EPg/dW/qU4MZ9DmvAVM
-         gfivYDmVRoUITMwz4H+8CmISt8nEBI9bJSy48Vxzfqo6sixPDGCsAOi0qEeAM2wAAc
-         PkYY7LbPQa7d8ZiPLf6HDYMfg4wYlUEIkOribMuqvsIMFnRfI2n1mCzvkn1F1e8VIj
-         lMpP0hNtbkeybDwNSPr8ubqADxgY+pBCDAy5o4lvgK4vnUiAVenSFo2B9sXKEgYsJ3
-         Z2KSQjp2XTjsg==
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sagar,
 
-On 10/01/2020 19:14, Vidya Sagar wrote:
-> Re-order Tegra194's PCIe aperture mappings to have IO window moved to
-> 64-bit aperture and have the entire 32-bit aperture used for accessing
-> the configuration space. This makes it to use the entire 32MB of the 32-bit
-> aperture for ECAM purpose while booting through ACPI.
+
+On Mon, 29 Jun 2020, Dave Chinner wrote:
+
+> On Sat, Jun 27, 2020 at 09:09:09AM -0400, Mikulas Patocka wrote:
+> > 
+> > 
+> > On Sat, 27 Jun 2020, Dave Chinner wrote:
+> > 
+> > > On Fri, Jun 26, 2020 at 11:02:19AM -0400, Mikulas Patocka wrote:
+> > > > Hi
+> > > > 
+> > > > I suggest to join memalloc_noio and memalloc_nofs into just one flag that 
+> > > > prevents both filesystem recursion and i/o recursion.
+> > > > 
+> > > > Note that any I/O can recurse into a filesystem via the loop device, thus 
+> > > > it doesn't make much sense to have a context where PF_MEMALLOC_NOFS is set 
+> > > > and PF_MEMALLOC_NOIO is not set.
+> > > 
+> > > Correct me if I'm wrong, but I think that will prevent swapping from
+> > > GFP_NOFS memory reclaim contexts.
+> > 
+> > Yes.
+> > 
+> > > IOWs, this will substantially
+> > > change the behaviour of the memory reclaim system under sustained
+> > > GFP_NOFS memory pressure. Sustained GFP_NOFS memory pressure is
+> > > quite common, so I really don't think we want to telling memory
+> > > reclaim "you can't do IO at all" when all we are trying to do is
+> > > prevent recursion back into the same filesystem.
+> > 
+> > So, we can define __GFP_ONLY_SWAP_IO and __GFP_IO.
 > 
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> Uh, why?
+> 
+> Exactly what problem are you trying to solve here?
 
-Any reason why we should not merge this change, even if patch 2/2 is not
-accepted? If there is no harm in us merging this, this would be one less
-change for us to carry out-of-tree. If so, can you update and re-post
-for 5.9?
+This:
 
-Cheers
-Jon
+1. The filesystem does a GFP_NOFS allocation.
+2. The allocation calls directly a dm-bufio shrinker.
+3. The dm-bufio shrinker sees that there is __GFP_IO set, so it assumes 
+   that it can do I/O. It selects some dirty buffers, writes them back and 
+   waits for the I/O to finish.
+4. The dirty buffers belong to a loop device.
+5. The loop device thread calls the filesystem that did the GFP_NOFS 
+   allocation in step 1 (and that is still waiting for the allocation to 
+   succeed).
 
--- 
-nvpublic
+Note that setting PF_MEMALLOC_NOIO on the loop thread won't help with this 
+deadlock.
+
+Do you argue that this is a bug in dm-bufio? Or a bug in the kernel? Or 
+that it can't happen?
+
+> > I saw this deadlock in the past in the dm-bufio subsystem - see the commit 
+> > 9d28eb12447ee08bb5d1e8bb3195cf20e1ecd1c0 that fixed it.
+> 
+> 2014?
+> 
+> /me looks closer.
+> 
+> Hmmm. Only sent to dm-devel, no comments, no review, just merged.
+> No surprise that nobody else actually knows about this commit. Well,
+> time to review it ~6 years after it was merged....
+> 
+> | dm-bufio tested for __GFP_IO. However, dm-bufio can run on a loop block
+> | device that makes calls into the filesystem. If __GFP_IO is present and
+> | __GFP_FS isn't, dm-bufio could still block on filesystem operations if it
+> | runs on a loop block device.
+> 
+> OK, so from an architectural POV, this commit is fundamentally
+> broken - block/device layer allocation should not allow relcaim
+> recursion into filesystems because filesystems are dependent on
+> the block layer making forwards progress. This commit is trying to
+> work around the loop device doing GFP_KERNEL/GFP_NOFS context
+> allocation back end IO path of the loop device. This part of the
+> loop device is a block device, so needs to run under GFP_NOIO
+> context.
+
+I agree that it is broken, but it fixes the above deadlock.
+
+Mikulas
+
