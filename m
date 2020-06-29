@@ -2,113 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A623F20D37C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8AC220D338
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729537AbgF2S7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:59:16 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:32667 "EHLO m43-7.mailgun.net"
+        id S1728065AbgF2S4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:56:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728041AbgF2S67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:58:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593457139; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=LiEshpG6n+ZWXWHltSTHJXa6fUUMpuwtQ5+FAEi+WoU=; b=Yh0Ac6h3g0GgmRW6nIU2tRu7Qi6cz/WSw5F3e9LtMBy5xS6F2obBQmExnqxgeKbWoajQ9S3o
- AQgkd3Yvx7ym+j+bZpCV8WjGRDp1b0ynMaxWgcf7TjZPHCfXMpX5DkaE6Ej3mX2Lqj27vtjf
- dYV5scjhPtRvfalhYuGc6sEfpHs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5efa0e96356bcc26abe0da72 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 15:53:58
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9D2F4C433AD; Mon, 29 Jun 2020 15:53:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1729344AbgF2SzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:55:17 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8DAF8C433B2;
-        Mon, 29 Jun 2020 15:53:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8DAF8C433B2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv3 5/7] iommu: arm-smmu-impl: Convert to use of_match_node() for qcom impl
-Date:   Mon, 29 Jun 2020 21:22:48 +0530
-Message-Id: <eac57bb8a99f811a47242a216343b8aadb4b1677.1593344119.git.saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1593344119.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1593344119.git.saiprakash.ranjan@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 4439125560;
+        Mon, 29 Jun 2020 15:55:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593446123;
+        bh=tzLUPNuFjhni840cOZi9CFA58r7CpGWMWGFnbgO4BHs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BLprKUfTxO7jGtTMcHMFbMJiGNU4gKoLH+klYaCER4DQ38s/Qr0aOL7gMm2vtDvRq
+         yMLpF/+GYshiG0uh7efkCGpJg7uMNRDMsfdE4kVKbnQa2S41/dEWSpppYw7sqsCA3U
+         TRACEzS4iPV9e0xrwDw1XU5w+JWZTEIv7Ent+Zyk=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 114/135] usb: gadget: udc: Potential Oops in error handling code
+Date:   Mon, 29 Jun 2020 11:52:48 -0400
+Message-Id: <20200629155309.2495516-115-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200629155309.2495516-1-sashal@kernel.org>
+References: <20200629155309.2495516-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.229-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.4.229-rc1
+X-KernelTest-Deadline: 2020-07-01T15:53+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use of_match_node() to match qcom implementation instead
-of multiple of_device_compatible() calls for each qcom
-implementation.
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+[ Upstream commit e55f3c37cb8d31c7e301f46396b2ac6a19eb3a7c ]
+
+If this is in "transceiver" mode the the ->qwork isn't required and is
+a NULL pointer.  This can lead to a NULL dereference when we call
+destroy_workqueue(udc->qwork).
+
+Fixes: 3517c31a8ece ("usb: gadget: mv_udc: use devm_xxx for probe")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/arm-smmu-impl.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/udc/mv_udc_core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/arm-smmu-impl.c b/drivers/iommu/arm-smmu-impl.c
-index 8fbab9c38b61..42020d50ce12 100644
---- a/drivers/iommu/arm-smmu-impl.c
-+++ b/drivers/iommu/arm-smmu-impl.c
-@@ -9,6 +9,12 @@
+diff --git a/drivers/usb/gadget/udc/mv_udc_core.c b/drivers/usb/gadget/udc/mv_udc_core.c
+index 81b6229c78054..4f480059f851c 100644
+--- a/drivers/usb/gadget/udc/mv_udc_core.c
++++ b/drivers/usb/gadget/udc/mv_udc_core.c
+@@ -2322,7 +2322,8 @@ static int mv_udc_probe(struct platform_device *pdev)
+ 	return 0;
  
- #include "arm-smmu.h"
- 
-+static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
-+	{ .compatible = "qcom,sc7180-smmu-500" },
-+	{ .compatible = "qcom,sdm845-smmu-500" },
-+	{ }
-+};
-+
- static int arm_smmu_gr0_ns(int offset)
- {
- 	switch (offset) {
-@@ -168,8 +174,7 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
- 	if (of_property_read_bool(np, "calxeda,smmu-secure-config-access"))
- 		smmu->impl = &calxeda_impl;
- 
--	if (of_device_is_compatible(np, "qcom,sdm845-smmu-500") ||
--	    of_device_is_compatible(np, "qcom,sc7180-smmu-500"))
-+	if (of_match_node(qcom_smmu_impl_of_match, np))
- 		return qcom_smmu_impl_init(smmu);
- 
- 	if (of_device_is_compatible(smmu->dev->of_node, "qcom,adreno-smmu"))
+ err_create_workqueue:
+-	destroy_workqueue(udc->qwork);
++	if (udc->qwork)
++		destroy_workqueue(udc->qwork);
+ err_destroy_dma:
+ 	dma_pool_destroy(udc->dtd_pool);
+ err_free_dma:
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.25.1
 
