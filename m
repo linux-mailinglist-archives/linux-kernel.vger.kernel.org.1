@@ -2,135 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552B420DDC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B32620DDDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733305AbgF2USy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:18:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388538AbgF2USj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:18:39 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8720EC061755;
-        Mon, 29 Jun 2020 13:18:38 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id b25so16139293ljp.6;
-        Mon, 29 Jun 2020 13:18:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=8KS8I9Q3x2kXGfX+XyyK1sOmdPbnTRSOpvvTvwkAeTs=;
-        b=kKlzs4sb6gvS9zYIlKdtNO9qZQptM0LCZ/5tTmz0g8zeAuvX6L7DG9YSQv5O6J8o0t
-         +CfV51o+Z9H4vt+N0eAH1ce3eZwBa+rTl+XL8Hf1acezphKbNdejOR7/uTqpvIv9SfQA
-         2KWUGHa9aRo43YP5EqG7Hx9mGJwieKRlykPLqMKejsyZIky6Rpy0C0LZHNa3HINiVxpa
-         MEuoN5HtplNVLYZFprLtWZFMPJ3H2GbFy+unFlOKGfRMW6Tbn6F2doUdsuu+6jTP+uWQ
-         nvvaoXQQPTxy7YodFAQgWWGj5w3UiZCX3Y67jQeJz9wcdsDAK+XaohzCuEGB9fN7piJ+
-         ahYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=8KS8I9Q3x2kXGfX+XyyK1sOmdPbnTRSOpvvTvwkAeTs=;
-        b=KsE/W+rfDYRWXsZsV0vEPeO4m2I8BnQfISLxWwOGtmoFlB9ZXp3T7ukjSXuPLDlj7/
-         Lf4xy7+4cL01mKYGweluUT0/2ONBfOzLFso/UimyzlhQCa1Z/jjKXTtEKxrrYW9V9f/K
-         1JJYYrPeAGlqEyVGgHYMFuHWRXfgIJUeqz+tVMOQrhpWgdjrfEjXZwSswOWuQrJ7uedy
-         lfl4PBR7oCb90Q4khyrBbGkvpMaT8fWyUfoP68v02RraaIfdpNOtc5DbiReY8mw3+fao
-         8ncno4+QxpzC6L6c9eBVxjtykwjCKunDZ2AMqFoD/z6twJA89jhbTuLkt+iGT4iVVS6a
-         oEIg==
-X-Gm-Message-State: AOAM531wiCNvQQWz9dUIZ6HnAPli7IyRKMfwpbbDRPVNhcEX/U3YUmyN
-        P5Dk4rTmfYYNPpvTM4KSaqk=
-X-Google-Smtp-Source: ABdhPJxxtuESaMskdjQR3zZ4lP77PTmYj17q1RARRdk3vtTHJODW8Xdzzd0fpl4TxUPk/wOQ6/FF6w==
-X-Received: by 2002:a2e:b88e:: with SMTP id r14mr8307120ljp.197.1593461917004;
-        Mon, 29 Jun 2020 13:18:37 -0700 (PDT)
-Received: from localhost ([80.64.86.170])
-        by smtp.gmail.com with ESMTPSA id x64sm154660lff.14.2020.06.29.13.18.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 29 Jun 2020 13:18:36 -0700 (PDT)
-From:   Ruslan Bilovol <ruslan.bilovol@gmail.com>
-To:     balbi@kernel.org
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] usb: gadget: epautoconf: claim smallest endpoints first
-Date:   Mon, 29 Jun 2020 23:18:45 +0300
-Message-Id: <20200629201845.28138-1-ruslan.bilovol@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1732611AbgF2UUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:20:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54630 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730358AbgF2UTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 16:19:46 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F40120656;
+        Mon, 29 Jun 2020 20:19:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593461985;
+        bh=Q+nb5q1cvvwhLMQRTlsmjm6i6AodKrYeamR2WgN/o9Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OfapS9P/M1RT/W0yP+3qKkf31PJT12faFLUknJbUW3G0vqei9SL47icfW/aG1ExQP
+         /fsWyiNZXV7T8068iwQ/GDuJwIdgmjm9SY6wmo3ey9AR8Bpq3m/g/BUrvFF6Rop0a0
+         gRs3feFy5Ahc5Nu0Dj10yYxE71EWwQPkN5PPS5+Y=
+Date:   Mon, 29 Jun 2020 13:19:43 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org
+Subject: Re: [PATCH 1/2] f2fs: split f2fs_allocate_new_segments()
+Message-ID: <20200629201943.GB1117827@google.com>
+References: <20200622093849.35684-1-yuchao0@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200622093849.35684-1-yuchao0@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UDC hardware may have endpoints with different maxpacket
-size. Current endpoint matching code takes first matching
-endpoint from the list.
+On 06/22, Chao Yu wrote:
+> to two independent functions:
+> - f2fs_allocate_new_segment() for specified type segment allocation
+> - f2fs_allocate_new_segments() for all data type segments allocation
+> 
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> ---
+>  fs/f2fs/f2fs.h     |  3 ++-
+>  fs/f2fs/file.c     |  2 +-
+>  fs/f2fs/recovery.c |  2 +-
+>  fs/f2fs/segment.c  | 39 +++++++++++++++++++++++----------------
+>  4 files changed, 27 insertions(+), 19 deletions(-)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 70565d81320b..07290943e91d 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -3327,7 +3327,8 @@ void f2fs_release_discard_addrs(struct f2fs_sb_info *sbi);
+>  int f2fs_npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_ra);
+>  void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
+>  					unsigned int start, unsigned int end);
+> -void f2fs_allocate_new_segments(struct f2fs_sb_info *sbi, int type);
+> +void f2fs_allocate_new_segment(struct f2fs_sb_info *sbi, int type);
+> +void f2fs_allocate_new_segments(struct f2fs_sb_info *sbi);
+>  int f2fs_trim_fs(struct f2fs_sb_info *sbi, struct fstrim_range *range);
+>  bool f2fs_exist_trim_candidates(struct f2fs_sb_info *sbi,
+>  					struct cp_control *cpc);
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index f196187159e9..67c65e40b22b 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -1659,7 +1659,7 @@ static int expand_inode_data(struct inode *inode, loff_t offset,
+>  		map.m_seg_type = CURSEG_COLD_DATA_PINNED;
+>  
+>  		f2fs_lock_op(sbi);
+> -		f2fs_allocate_new_segments(sbi, CURSEG_COLD_DATA);
+> +		f2fs_allocate_new_segment(sbi, CURSEG_COLD_DATA_PINNED);
 
-It's always possible that gadget allocates endpoints for
-small transfers (maxpacket size) first, then larger ones.
-That works fine if all matching UDC endpoints have same
-maxpacket size or are big enough to serve that allocation.
+This should be CURSEG_COLD_DATA. Otherwise it causes the below kernel panic.
+I fixed this in the -dev, so let me know, if you have other concern.
 
-However, some UDCs have first endpoints in the list with
-bigger maxpacket size, whereas last endpoints are much
-smaller. In this case endpoint allocation will fail for
-the gadget (which allocates smaller endpoints first) on
-final endpoint allocations.
+  259 Unable to handle kernel NULL pointer dereference at virtual address 00000008
+  259 task: 0000000082b4de99 task.stack: 00000000c6b39dbf
+  259 pc : f2fs_do_write_data_page+0x2b4/0x794
+  259 lr : f2fs_do_write_data_page+0x290/0x794
+  259 sp : ffffff800c83b5a0 pstate : 60c00145
+  259 Call trace:
+  259  f2fs_do_write_data_page+0x2b4/0x794
+  259  f2fs_write_single_data_page+0x4a4/0x764
+  259  f2fs_write_data_pages+0x4dc/0x968
+  259  do_writepages+0x60/0x124
+  259  __writeback_single_inode+0xd8/0x490
+  259  writeback_sb_inodes+0x3a8/0x6e4
+  259  __writeback_inodes_wb+0xa4/0x14c
+  259  wb_writeback+0x218/0x434
+  259  wb_workfn+0x2bc/0x57c
+  259  process_one_work+0x25c/0x440
+  259  worker_thread+0x24c/0x480
+  259  kthread+0x11c/0x12c
+  259  ret_from_fork+0x10/0x18
 
-To make endpoint allocation fair, pick up smallest
-matching endpoints first, leaving bigger ones for
-heavier applications.
-
-Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
----
-
-v2: rebased onto latest balbi/next branch
-
- drivers/usb/gadget/epautoconf.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/usb/gadget/epautoconf.c b/drivers/usb/gadget/epautoconf.c
-index 1eb4fa2e623f..6c453b5d87bb 100644
---- a/drivers/usb/gadget/epautoconf.c
-+++ b/drivers/usb/gadget/epautoconf.c
-@@ -66,7 +66,7 @@ struct usb_ep *usb_ep_autoconfig_ss(
- 	struct usb_ss_ep_comp_descriptor *ep_comp
- )
- {
--	struct usb_ep	*ep;
-+	struct usb_ep	*ep, *ep_min = NULL;
- 
- 	if (gadget->ops->match_ep) {
- 		ep = gadget->ops->match_ep(gadget, desc, ep_comp);
-@@ -74,14 +74,27 @@ struct usb_ep *usb_ep_autoconfig_ss(
- 			goto found_ep;
- 	}
- 
--	/* Second, look at endpoints until an unclaimed one looks usable */
-+	/*
-+	 * Second, look at endpoints until an unclaimed one looks usable.
-+	 * Try to find one with smallest maxpacket limit, leaving larger
-+	 * endpoints for heavier applications
-+	 */
- 	list_for_each_entry (ep, &gadget->ep_list, ep_list) {
--		if (usb_gadget_ep_match_desc(gadget, ep, desc, ep_comp))
--			goto found_ep;
-+		if (usb_gadget_ep_match_desc(gadget, ep, desc, ep_comp)) {
-+			if (desc->wMaxPacketSize == 0)
-+				goto found_ep;
-+			else if (!ep_min)
-+				ep_min = ep;
-+			else if (ep->maxpacket_limit < ep_min->maxpacket_limit)
-+				ep_min = ep;
-+		}
- 	}
- 
- 	/* Fail */
--	return NULL;
-+	if (!ep_min)
-+		return NULL;
-+
-+	ep = ep_min;
- found_ep:
- 
- 	/*
--- 
-2.17.1
-
+>  		f2fs_unlock_op(sbi);
+>  
+>  		err = f2fs_map_blocks(inode, &map, 1, F2FS_GET_BLOCK_PRE_DIO);
+> diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
+> index ae5310f02e7f..af974ba273b3 100644
+> --- a/fs/f2fs/recovery.c
+> +++ b/fs/f2fs/recovery.c
+> @@ -742,7 +742,7 @@ static int recover_data(struct f2fs_sb_info *sbi, struct list_head *inode_list,
+>  		f2fs_put_page(page, 1);
+>  	}
+>  	if (!err)
+> -		f2fs_allocate_new_segments(sbi, NO_CHECK_TYPE);
+> +		f2fs_allocate_new_segments(sbi);
+>  	return err;
+>  }
+>  
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index 113114f98087..f15711e8ee5b 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -2707,28 +2707,35 @@ void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
+>  	up_read(&SM_I(sbi)->curseg_lock);
+>  }
+>  
+> -void f2fs_allocate_new_segments(struct f2fs_sb_info *sbi, int type)
+> +void __allocate_new_segment(struct f2fs_sb_info *sbi, int type)
+>  {
+> -	struct curseg_info *curseg;
+> +	struct curseg_info *curseg = CURSEG_I(sbi, type);
+>  	unsigned int old_segno;
+> -	int i;
+>  
+> -	down_write(&SIT_I(sbi)->sentry_lock);
+> +	if (!curseg->next_blkoff &&
+> +		!get_valid_blocks(sbi, curseg->segno, false) &&
+> +		!get_ckpt_valid_blocks(sbi, curseg->segno))
+> +		return;
+>  
+> -	for (i = CURSEG_HOT_DATA; i <= CURSEG_COLD_DATA; i++) {
+> -		if (type != NO_CHECK_TYPE && i != type)
+> -			continue;
+> +	old_segno = curseg->segno;
+> +	SIT_I(sbi)->s_ops->allocate_segment(sbi, type, true);
+> +	locate_dirty_segment(sbi, old_segno);
+> +}
+>  
+> -		curseg = CURSEG_I(sbi, i);
+> -		if (type == NO_CHECK_TYPE || curseg->next_blkoff ||
+> -				get_valid_blocks(sbi, curseg->segno, false) ||
+> -				get_ckpt_valid_blocks(sbi, curseg->segno)) {
+> -			old_segno = curseg->segno;
+> -			SIT_I(sbi)->s_ops->allocate_segment(sbi, i, true);
+> -			locate_dirty_segment(sbi, old_segno);
+> -		}
+> -	}
+> +void f2fs_allocate_new_segment(struct f2fs_sb_info *sbi, int type)
+> +{
+> +	down_write(&SIT_I(sbi)->sentry_lock);
+> +	__allocate_new_segment(sbi, type);
+> +	up_write(&SIT_I(sbi)->sentry_lock);
+> +}
+>  
+> +void f2fs_allocate_new_segments(struct f2fs_sb_info *sbi)
+> +{
+> +	int i;
+> +
+> +	down_write(&SIT_I(sbi)->sentry_lock);
+> +	for (i = CURSEG_HOT_DATA; i <= CURSEG_COLD_DATA; i++)
+> +		__allocate_new_segment(sbi, i);
+>  	up_write(&SIT_I(sbi)->sentry_lock);
+>  }
+>  
+> -- 
+> 2.26.2
