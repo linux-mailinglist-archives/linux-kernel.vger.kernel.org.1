@@ -2,103 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE7020E96F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 01:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F96920E97E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 01:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728237AbgF2XiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 19:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
+        id S1728146AbgF2XnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 19:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725936AbgF2XiF (ORCPT
+        with ESMTP id S1727065AbgF2XnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 19:38:05 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CCCC061755;
-        Mon, 29 Jun 2020 16:38:05 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id u8so8391754pje.4;
-        Mon, 29 Jun 2020 16:38:05 -0700 (PDT)
+        Mon, 29 Jun 2020 19:43:20 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06653C03E979
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 16:43:20 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id z5so9041949pgb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 16:43:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xDmndeuf6+uwXZ1m8jycymUjCeI0m9qm4ZAV+tpUoqg=;
-        b=hfcENy/nu+8E+qPHtGgHggPo6FrtxlNt1g3/qmAgrr2o/GeOEqJpOKezxPVlV2RrRh
-         0KzMSRt54d77uU3CRpOsadNGCSfoFK6qKedJodEwFFHR0W/ZF5AQzl06oNG3A3o+KFEn
-         MzKOf00Bp6rabpwXlPL5ygB6sxRt8CRt9wZM3XAODkEaa56JTdG16bmehUOHrMm/ZX89
-         s7hvtrUVekSR3hNK4AVPO83dr5GpeL6ncNfFHhKSgoXQ+frCdgB3GxuQ0GwG1mmNoWZL
-         F5yTQyy1amwtjAv9UtHUwiQpqAWx/D64f6YQW+qYlYLJn5apqAZIQMWwX2+/etDOzU8X
-         X0Ig==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QciK5tXPc0ig4ewp8mAOTjfJLOJkGR17cLI3UFIq7P4=;
+        b=JP+KeEw5Ge2u0AgRunHG6CylzE+cjwR7RMtG2QLQWVY0SIR3gmC+cjStYNxrDVrF0T
+         cWYhp3nhvP0oIs8lc57KPy6JBKX03zycDRKQa4/w1+HqdRKKW1wBReQJuZaLVWtpYpWY
+         zztg+w4Z21un2gOixaBjAOXx1LE6O+uO7LIIc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xDmndeuf6+uwXZ1m8jycymUjCeI0m9qm4ZAV+tpUoqg=;
-        b=SRTIaQDAt2G8c/jLDMjy4gJxDjI9HqjtHDlfZ+TpfsYhYIkvjls5R5e17Uz72cSQbC
-         bJL84BVDAoDZOoi2LiokUXvbeEw1On0hZS9aZa2IsI3I4ESqIeHEUAH+of8qn7B1/WyG
-         HT0NzhOmoxXfKF/hPS/ZwPOr2G5cKYGBVqGJ85xsJQo0MZ4SW+JsK7vxvZ+9KYbGB5OV
-         CRTKvElr+6iy1QBgjpjW89tTmC2Z0uXDWVtXuouL6v/2qwVb/N6vYmi3uFqH+DQAbTbp
-         HvARRTxAi2ktXneKA9svoA3EPYlCylJJnDJ6y9LqZst2wNR/Tx113pBgawfuUcsCJQyu
-         rBjg==
-X-Gm-Message-State: AOAM530lsp0t0DB13jWjgVHMdgNI6rFCXD073tMGXzaaQtO0t0r9IZOO
-        abDSEyJ8kMj/lJtbHGBedQ8=
-X-Google-Smtp-Source: ABdhPJw6Bo4vFRwwv/fuSCRqDQFKj4SZC42yqkHiNSoyybyL4QJ4pKH13OihOF5unIFYUS8sr+jhfg==
-X-Received: by 2002:a17:90a:930f:: with SMTP id p15mr20182148pjo.85.1593473884458;
-        Mon, 29 Jun 2020 16:38:04 -0700 (PDT)
-Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id x69sm637205pfc.144.2020.06.29.16.38.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 29 Jun 2020 16:38:03 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 16:37:57 -0700
-From:   Tao Ren <rentao.bupt@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: Re: [PATCH] usb: gadget: fix langid kernel-doc warning in usbstring.c
-Message-ID: <20200629233756.GA25245@taoren-ubuntu-R90MNF91>
-References: <b49b7e07-8986-f185-3a99-a088419a532b@infradead.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QciK5tXPc0ig4ewp8mAOTjfJLOJkGR17cLI3UFIq7P4=;
+        b=ueJAuoDguJkAvZ6JyBN6uptEaE5cX2TqJ7rCC0yxh3AetqHUp97kVdKMeXRWnNCHRd
+         TU1iC3rTCO9+RSc3OV95PlXMtsoDtvNyF0n8a0YKmNcMyOF5Nk82HIQ0JqcZLsIaAIH0
+         NuPwPbsJYzXgu+nw6LUykbb3DS3IKzUhK5B0SfEz0QI1SfKO0MWvzYl7eRX90nXuU0vG
+         Er8zvLog1w/LfgHP5S12mkVad3F0MloMnvTdueEbQTXXhBy55aZOc+Bj84I0eMAl5auh
+         MTvDX+/6bsLiXHQTSo3QqQ5f/1027xnYi59wXWmp27RmoMjXjq78SObDLHfagmaFO2es
+         cafQ==
+X-Gm-Message-State: AOAM531lvF0mNrA2oikle3iJ6RU8rsxZ348ezWFmLqMOauulYPCEEGzz
+        g2wTmCI4k6OORW+Mrid0Hcz8bA==
+X-Google-Smtp-Source: ABdhPJyI8g97mTqP8wUF/YUNfuHe3OhvjyzPpoxFXcVqURHplY/uOe+v6Yiqilg3jnWEFhYr70yfWQ==
+X-Received: by 2002:aa7:988f:: with SMTP id r15mr7635504pfl.2.1593474199348;
+        Mon, 29 Jun 2020 16:43:19 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
+        by smtp.gmail.com with ESMTPSA id s30sm753535pgn.34.2020.06.29.16.43.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 16:43:18 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Benson Leung <bleung@chromium.org>,
+        linux-arm-msm@vger.kernel.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        swboyd@chromium.org, Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: [PATCH] spi: Avoid setting the chip select if we don't need to
+Date:   Mon, 29 Jun 2020 16:41:06 -0700
+Message-Id: <20200629164103.1.Ied8e8ad8bbb2df7f947e3bc5ea1c315e041785a2@changeid>
+X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b49b7e07-8986-f185-3a99-a088419a532b@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 28, 2020 at 08:08:03PM -0700, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Fix spelling of the 'langid' function argument in the kernel-doc
-> notation to quieten a kernel-doc warning.
-> 
-> ../drivers/usb/gadget/usbstring.c:77: warning: Function parameter or member 'langid' not described in 'usb_validate_langid'
-> ../drivers/usb/gadget/usbstring.c:77: warning: Excess function parameter 'lang' description in 'usb_validate_langid'
-> 
-> Fixes: 17309a6a4356 ("usb: gadget: add "usb_validate_langid" function")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Tao Ren <rentao.bupt@gmail.com>
-> Cc: Felipe Balbi <balbi@kernel.org>
+On some SPI controllers (like spi-geni-qcom) setting the chip select
+is a heavy operation.  For instance on spi-geni-qcom, with the current
+code, is was measured as taking upwards of 20 us.  Even on SPI
+controllers that aren't as heavy, setting the chip select is at least
+something like a MMIO operation over some peripheral bus which isn't
+as fast as a RAM access.
 
-Thanks for the fix, Randy!
+While it would be good to find ways to mitigate problems like this in
+the drivers for those SPI controllers, it can also be noted that the
+SPI framework could also help out.  Specifically, in some situations,
+we can see the SPI framework calling the driver's set_cs() with the
+same parameter several times in a row.  This is specifically observed
+when looking at the way the Chrome OS EC SPI driver (cros_ec_spi)
+works but other drivers likely trip it to some extent.
 
-Reviewed-by: Tao Ren <rentao.bupt@gmail.com>
+Let's solve this by caching the chip select state in the core and only
+calling into the controller if there was a change.  We check not only
+the "enable" state but also the chip select mode (active high or
+active low) since controllers may care about both the mode and the
+enable flag in their callback.
 
-> ---
->  drivers/usb/gadget/usbstring.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- linux-next-20200626.orig/drivers/usb/gadget/usbstring.c
-> +++ linux-next-20200626/drivers/usb/gadget/usbstring.c
-> @@ -68,7 +68,7 @@ EXPORT_SYMBOL_GPL(usb_gadget_get_string)
->  
->  /**
->   * usb_validate_langid - validate usb language identifiers
-> - * @lang: usb language identifier
-> + * @langid: usb language identifier
->   *
->   * Returns true for valid language identifier, otherwise false.
->   */
-> 
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+
+ drivers/spi/spi.c       | 11 +++++++++++
+ include/linux/spi/spi.h |  4 ++++
+ 2 files changed, 15 insertions(+)
+
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 6fa56590bba2..d4ba723a30da 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -778,6 +778,17 @@ static void spi_set_cs(struct spi_device *spi, bool enable)
+ {
+ 	bool enable1 = enable;
+ 
++	/*
++	 * Avoid calling into the driver (or doing delays) if the chip select
++	 * isn't actually changing from the last time this was called.
++	 */
++	if ((spi->controller->last_cs_enable == enable) &&
++	    (spi->controller->last_cs_mode_high == (spi->mode & SPI_CS_HIGH)))
++		return;
++
++	spi->controller->last_cs_enable = enable;
++	spi->controller->last_cs_mode_high = spi->mode & SPI_CS_HIGH;
++
+ 	if (!spi->controller->set_cs_timing) {
+ 		if (enable1)
+ 			spi_delay_exec(&spi->controller->cs_setup, NULL);
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index b4917df79637..0e67a9a3a1d3 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -368,6 +368,8 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
+  * @cur_msg_prepared: spi_prepare_message was called for the currently
+  *                    in-flight message
+  * @cur_msg_mapped: message has been mapped for DMA
++ * @last_cs_enable: was enable true on the last call to set_cs.
++ * @last_cs_mode_high: was (mode & SPI_CS_HIGH) true on the last call to set_cs.
+  * @xfer_completion: used by core transfer_one_message()
+  * @busy: message pump is busy
+  * @running: message pump is running
+@@ -604,6 +606,8 @@ struct spi_controller {
+ 	bool				auto_runtime_pm;
+ 	bool                            cur_msg_prepared;
+ 	bool				cur_msg_mapped;
++	bool				last_cs_enable;
++	bool				last_cs_mode_high;
+ 	bool                            fallback;
+ 	struct completion               xfer_completion;
+ 	size_t				max_dma_len;
+-- 
+2.27.0.212.ge8ba1cc988-goog
+
