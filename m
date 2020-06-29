@@ -2,62 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D90520E1DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7093520E1DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390083AbgF2VAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:00:12 -0400
-Received: from namei.org ([65.99.196.166]:42618 "EHLO namei.org"
+        id S2390089AbgF2VAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:00:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731225AbgF2VAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:00:05 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by namei.org (8.14.4/8.14.4) with ESMTP id 05TL03nS010843;
-        Mon, 29 Jun 2020 21:00:03 GMT
-Date:   Tue, 30 Jun 2020 07:00:03 +1000 (AEST)
-From:   James Morris <jmorris@namei.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Security subsystem fixes for v5.8
-Message-ID: <alpine.LRH.2.21.2006300659080.10756@namei.org>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1731225AbgF2VAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 17:00:13 -0400
+Subject: Re: [GIT PULL] thermal fixes for v5.8-rc4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593464413;
+        bh=OPQI9bTtFwn3NAYXqCtC8OZYAmmTN/PSS9eYiGGqp/4=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=FEvcKNpbTd3C8/18x8GaKDs05fxi3AFOvywjbEZi0hGPiQeaJ+KORnOMLr/gF7CQC
+         LtTbg6/R85URmqHvqKODZZUkxW5jP9Jz7WqfBhqKJbNBFacqW2Bd4kc2JmP7IfsfFc
+         RgOJtfkS8P/aXx2dClYCg9NRIiCKtMqctW8tB3zA=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <55cb7814-8305-23bd-873c-5a82104b1248@linaro.org>
+References: <55cb7814-8305-23bd-873c-5a82104b1248@linaro.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <55cb7814-8305-23bd-873c-5a82104b1248@linaro.org>
+X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
+ tags/thermal-v5.8-rc4
+X-PR-Tracked-Commit-Id: 5f8f06425a0dcdad7bedbb77e67f5c65ab4dacfc
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: be88fef34f784a8d612366e7ebb149785de7f928
+Message-Id: <159346441299.11856.7816524140098619658.pr-tracker-bot@kernel.org>
+Date:   Mon, 29 Jun 2020 21:00:12 +0000
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM mailing list <linux-pm@vger.kernel.org>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Anson Huang <anson.huang@nxp.com>, dien.pham.ry@renesas.com,
+        Finley Xiao <finley.xiao@rock-chips.com>,
+        "michael.kao" <Michael.Kao@mediatek.com>, yangtiezhu@loongson.cn,
+        Zhang Rui <rui.zhang@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull (now using signed tags).
+The pull request you sent on Mon, 29 Jun 2020 12:31:32 +0200:
 
-The following changes since commit 48778464bb7d346b47157d21ffde2af6b2d39110:
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git tags/thermal-v5.8-rc4
 
-  Linux 5.8-rc2 (2020-06-21 15:45:29 -0700)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/be88fef34f784a8d612366e7ebb149785de7f928
 
-are available in the Git repository at:
+Thank you!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git tags/fixes-v5.8-rc3-a
-
-for you to fetch changes up to 23e390cdbe6f85827a43d38f9288dcd3066fa376:
-
-  security: Fix hook iteration and default value for inode_copy_up_xattr (2020-06-23 16:39:23 -0700)
-
-----------------------------------------------------------------
-Two simple fixes for v5.8:
-
-1) Fix hook iteration and default value for inode_copy_up_xattr
-	from KP Singh <kpsingh@google.com>
-
-2) Fix the key_permission LSM hook function type
-	from Sami Tolvanen <samitolvanen@google.com>
-
-----------------------------------------------------------------
-KP Singh (1):
-      security: Fix hook iteration and default value for inode_copy_up_xattr
-
-Sami Tolvanen (1):
-      security: fix the key_permission LSM hook function type
-
- include/linux/lsm_hook_defs.h |  4 ++--
- security/security.c           | 17 ++++++++++++++++-
- 2 files changed, 18 insertions(+), 3 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
