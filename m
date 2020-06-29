@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7AD20E5D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53ADA20E5F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgF2VmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37572 "EHLO
+        id S2403959AbgF2VnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727940AbgF2Sh7 (ORCPT
+        with ESMTP id S1727880AbgF2Shx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:59 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172F5C031425
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:21:06 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id t11so5946423qvk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:21:06 -0700 (PDT)
+        Mon, 29 Jun 2020 14:37:53 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32631C03142C
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:21:09 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id e3so1683303qvo.10
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:21:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0ufJ+qo3NfI0pabE9TlU5wbhOS8NacG5qNuj9VUJYPk=;
-        b=OMKFcKDrueeyAPoA5OL/u+H5xzaq00FILSbTOVAi+N3SEtlp8hpaP/IDWZoxs0d4ew
-         +sBK5UiS0nXSrilEKSGD4wzUOszhbHGyMeJBzOvUx/hI0EUnxruMBe3zf1Qt/nhbXs0c
-         qoQeZsA6V9ZBnAN/4r+5B5IPeQqLi1kq2qEVl5jc/wPf8tX5twMJ4sPsnC3nBqjg4PyU
-         sQYDK1d2pUrg1xYUcsKlZSAPaTlbgvlOvVskif7nCYjrIx4SScOY0PSSUCGyt/V2o4jg
-         bI1WRU3euefu9A9HL6hgH9D+en/DXyshXvMsHWCGd8tJjX5lgiFIAtolwhQCAevaN2Sb
-         QUpA==
+        bh=fNFf1AHiZrCdSiYdBqYQtf+nkqBR/m0y7WTyi1yw8FM=;
+        b=VWtqmuPqPQ/Wmey41mf2SgkPFEQeVhfHg2KV97SKy14BZK+kLMSbjYN+ZPvMGC5i0Y
+         +r4q9jtPqzscxAPUihxpI+WhVY4fA2fOb5wNdVYpsw7mHOTtH58z96/Me2kJL2riWq1/
+         Ri2ca9uK/R3fhW8iFGRWnFah8BahMMXcCU19Dc5bqR+XweDTz9Bs6jxVG0mGLwyN2okP
+         y35pEgnQfrTJ39nlz4rC58djQsnMs3TyogejJSjEdxLWK4354Bmk8SX4uWlf82+Yf5yB
+         tUrfhKqMTiJD8nKznciNwm0aDEqSDMW6Hb5j9mXpIPahzmXfvyGuwkkpd48KuK7PXvCn
+         +Yfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0ufJ+qo3NfI0pabE9TlU5wbhOS8NacG5qNuj9VUJYPk=;
-        b=F9Y3INv3NYyxqKVF5hL1rR2eg/q/Ntx8xIsRyI8Hkj/i53BFZ+wFyrIW9zvRFtWXgu
-         GNFcgNRoHxOgAunKJ1r2iYmQ0Bp20meAE3rYSvQM6zsMGqH3NsviiREpWYdcnbfm6JVH
-         Ar0QGz5DHu511fp4+VCbPRPfTZQasvViBbDa1Ru7CQtqUevvc2VNYdCAp7dct0oKL4GN
-         IZQmME8D1mRuw8J+32F0xwQSGhWK+NNi0rLBG6tWymyfmsAexQ+9EHYtoGrK9E85puj8
-         S6cewiLCWs9TqoM9s0oCl97tc27NAGPfmLjxKZv4ipPj5mnjvZSixHsPRTwzw5TXvLd7
-         ph1g==
-X-Gm-Message-State: AOAM530aR5pekUuoxj0nHRgrEGwVo6OVY8FxI+IKIoGUwh7Kbfu24So4
-        HDSXvyn5lhmAiDOfsMaNJu7L3w==
-X-Google-Smtp-Source: ABdhPJz8pJS6NEBzMCzGxe3fMXEDZTIp+qlfGMxwpTu++ezpcDWHCsvWqMxpRKYmLhixDhcOZZ7X9w==
-X-Received: by 2002:a0c:800e:: with SMTP id 14mr6319433qva.92.1593451265173;
-        Mon, 29 Jun 2020 10:21:05 -0700 (PDT)
+        bh=fNFf1AHiZrCdSiYdBqYQtf+nkqBR/m0y7WTyi1yw8FM=;
+        b=YxttSBh3gmy5uKjmrczBTOHdc/+DCtuK6AtCnraQXLfdnICPqvx6N2byP8Lbfpm0Ch
+         uqX7b/0517iWh5vKGzS+ORkzelAnSzJKQeLIJgk2yQufsAtfC2pmalvai5QEse5B2luw
+         62kgWRZFEeC4BW7W5XRKzCCyXNXqdf4OnbY1QWmwe8pjsZHDwSebFpBk+2+sfLKvIJZu
+         BFy/jvQF1a9dmkFdgXD6O/7yhaJJRW20lHH+g9dsBEN1LYz/Y5EJdVcWR7IKPb0zrCjv
+         TcCdVbw3OJwigitlntlC51WQO7ZxT/YXc2EdFbP1ZjSpOe8p3TEIfM5E9idMnaQWyC/T
+         in0g==
+X-Gm-Message-State: AOAM5331tZsKKRH75zsar+oyRBdhxQHZ8Py9rwlod4gxzX425XaKW59k
+        WGCOASifKNdmof9e+QOyCOEq7uWL+bA=
+X-Google-Smtp-Source: ABdhPJyflHo+JB8zV+2M63HtV4/+CmvoKImlgNTrNPL+fJa4r4o9hHcti8JR5R4KbbSHo/VHx0tpug==
+X-Received: by 2002:a05:6214:13c6:: with SMTP id cg6mr16481717qvb.160.1593451268441;
+        Mon, 29 Jun 2020 10:21:08 -0700 (PDT)
 Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id q5sm408363qtf.12.2020.06.29.10.21.04
+        by smtp.gmail.com with ESMTPSA id q5sm408363qtf.12.2020.06.29.10.21.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 10:21:04 -0700 (PDT)
+        Mon, 29 Jun 2020 10:21:08 -0700 (PDT)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 04/13] clk: qcom: clk-alpha-pll: use the right PCAL_DONE value for lucid pll
-Date:   Mon, 29 Jun 2020 13:20:34 -0400
-Message-Id: <20200629172049.30452-5-jonathan@marek.ca>
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 06/13] dt-bindings: clock: Introduce SM8150 QCOM Graphics clock bindings
+Date:   Mon, 29 Jun 2020 13:20:36 -0400
+Message-Id: <20200629172049.30452-7-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200629172049.30452-1-jonathan@marek.ca>
 References: <20200629172049.30452-1-jonathan@marek.ca>
@@ -69,94 +71,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lucid PCAL_DONE is different from trion.
+Add device tree bindings for graphics clock controller for
+Qualcomm Technology Inc's SM8150 SoCs.
 
 Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 ---
- drivers/clk/qcom/clk-alpha-pll.c | 28 ++++++++++++++++++++++++++--
- drivers/clk/qcom/clk-alpha-pll.h |  2 +-
- 2 files changed, 27 insertions(+), 3 deletions(-)
+ .../bindings/clock/qcom,sm8150-gpucc.yaml     | 74 +++++++++++++++++++
+ include/dt-bindings/clock/qcom,gpucc-sm8150.h | 40 ++++++++++
+ 2 files changed, 114 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,sm8150-gpucc.yaml
+ create mode 100644 include/dt-bindings/clock/qcom,gpucc-sm8150.h
 
-diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
-index be7ffeae21b1..26139ef005e4 100644
---- a/drivers/clk/qcom/clk-alpha-pll.c
-+++ b/drivers/clk/qcom/clk-alpha-pll.c
-@@ -143,6 +143,9 @@ EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
- #define TRION_PLL_CAL_VAL	0x44
- #define TRION_PCAL_DONE		BIT(26)
- 
-+/* LUCID PLL specific settings and offsets */
-+#define LUCID_PCAL_DONE		BIT(27)
+diff --git a/Documentation/devicetree/bindings/clock/qcom,sm8150-gpucc.yaml b/Documentation/devicetree/bindings/clock/qcom,sm8150-gpucc.yaml
+new file mode 100644
+index 000000000000..683b50dd3492
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/qcom,sm8150-gpucc.yaml
+@@ -0,0 +1,74 @@
++# SPDX-License-Identifier: GPL-2.0-only
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/qcom,sm8150-gpucc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- #define pll_alpha_width(p)					\
- 		((PLL_ALPHA_VAL_U(p) - PLL_ALPHA_VAL(p) == 4) ?	\
- 				 ALPHA_REG_BITWIDTH : ALPHA_REG_16BIT_WIDTH)
-@@ -1447,7 +1450,7 @@ EXPORT_SYMBOL_GPL(clk_trion_pll_configure);
-  * The TRION PLL requires a power-on self-calibration which happens when the
-  * PLL comes out of reset. Calibrate in case it is not completed.
-  */
--static int alpha_pll_trion_prepare(struct clk_hw *hw)
-+static int __alpha_pll_trion_prepare(struct clk_hw *hw, u32 pcal_done)
- {
- 	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
- 	u32 regval;
-@@ -1455,7 +1458,7 @@ static int alpha_pll_trion_prepare(struct clk_hw *hw)
- 
- 	/* Return early if calibration is not needed. */
- 	regmap_read(pll->clkr.regmap, PLL_STATUS(pll), &regval);
--	if (regval & TRION_PCAL_DONE)
-+	if (regval & pcal_done)
- 		return 0;
- 
- 	/* On/off to calibrate */
-@@ -1466,6 +1469,16 @@ static int alpha_pll_trion_prepare(struct clk_hw *hw)
- 	return ret;
- }
- 
-+static int alpha_pll_trion_prepare(struct clk_hw *hw)
-+{
-+	return __alpha_pll_trion_prepare(hw, TRION_PCAL_DONE);
-+}
++title: Qualcomm Graphics Clock & Reset Controller Binding for SM8150
 +
-+static int alpha_pll_lucid_prepare(struct clk_hw *hw)
-+{
-+	return __alpha_pll_trion_prepare(hw, LUCID_PCAL_DONE);
-+}
++maintainers:
++  -
 +
- static int alpha_pll_trion_set_rate(struct clk_hw *hw, unsigned long rate,
- 				    unsigned long prate)
- {
-@@ -1529,6 +1542,17 @@ const struct clk_ops clk_alpha_pll_trion_ops = {
- 	.round_rate = clk_alpha_pll_round_rate,
- 	.set_rate = alpha_pll_trion_set_rate,
- };
-+EXPORT_SYMBOL_GPL(clk_alpha_pll_trion_ops);
++description: |
++  Qualcomm graphics clock control module which supports the clocks, resets and
++  power domains on SM8150.
 +
-+const struct clk_ops clk_alpha_pll_lucid_ops = {
-+	.prepare = alpha_pll_lucid_prepare,
-+	.enable = clk_trion_pll_enable,
-+	.disable = clk_trion_pll_disable,
-+	.is_enabled = clk_trion_pll_is_enabled,
-+	.recalc_rate = clk_trion_pll_recalc_rate,
-+	.round_rate = clk_alpha_pll_round_rate,
-+	.set_rate = alpha_pll_trion_set_rate,
-+};
- EXPORT_SYMBOL_GPL(clk_alpha_pll_lucid_ops);
- 
- const struct clk_ops clk_alpha_pll_postdiv_lucid_ops = {
-diff --git a/drivers/clk/qcom/clk-alpha-pll.h b/drivers/clk/qcom/clk-alpha-pll.h
-index 67f1fd271931..69337c1b5850 100644
---- a/drivers/clk/qcom/clk-alpha-pll.h
-+++ b/drivers/clk/qcom/clk-alpha-pll.h
-@@ -132,7 +132,7 @@ extern const struct clk_ops clk_alpha_pll_trion_ops;
- extern const struct clk_ops clk_alpha_pll_fixed_trion_ops;
- extern const struct clk_ops clk_alpha_pll_postdiv_trion_ops;
- 
--#define clk_alpha_pll_lucid_ops clk_alpha_pll_trion_ops
-+extern const struct clk_ops clk_alpha_pll_lucid_ops;
- #define clk_alpha_pll_fixed_lucid_ops clk_alpha_pll_fixed_trion_ops
- extern const struct clk_ops clk_alpha_pll_postdiv_lucid_ops;
- 
++  See also dt-bindings/clock/qcom,gpucc-sm8150.h.
++
++properties:
++  compatible:
++    const: qcom,sm8150-gpucc
++
++  clocks:
++    items:
++      - description: Board XO source
++      - description: GPLL0 main branch source
++      - description: GPLL0 div branch source
++
++  clock-names:
++    items:
++      - const: bi_tcxo
++      - const: gcc_gpu_gpll0_clk_src
++      - const: gcc_gpu_gpll0_div_clk_src
++
++  '#clock-cells':
++    const: 1
++
++  '#reset-cells':
++    const: 1
++
++  '#power-domain-cells':
++    const: 1
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - '#clock-cells'
++  - '#reset-cells'
++  - '#power-domain-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/qcom,gcc-sm8150.h>
++    #include <dt-bindings/clock/qcom,rpmh.h>
++    clock-controller@2c90000 {
++      compatible = "qcom,sm8150-gpucc";
++      reg = <0x2c90000 0x9000>;
++      clocks = <&rpmhcc RPMH_CXO_CLK>,
++               <&gcc GCC_GPU_GPLL0_CLK_SRC>,
++               <&gcc GCC_GPU_GPLL0_DIV_CLK_SRC>;
++      clock-names = "bi_tcxo",
++                    "gcc_gpu_gpll0_clk_src",
++                    "gcc_gpu_gpll0_div_clk_src";
++      #clock-cells = <1>;
++      #reset-cells = <1>;
++      #power-domain-cells = <1>;
++    };
++...
+diff --git a/include/dt-bindings/clock/qcom,gpucc-sm8150.h b/include/dt-bindings/clock/qcom,gpucc-sm8150.h
+new file mode 100644
+index 000000000000..e7cac7fe9739
+--- /dev/null
++++ b/include/dt-bindings/clock/qcom,gpucc-sm8150.h
+@@ -0,0 +1,40 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (c) 2017-2020, The Linux Foundation. All rights reserved.
++ */
++
++#ifndef _DT_BINDINGS_CLK_QCOM_GPU_CC_SM8150_H
++#define _DT_BINDINGS_CLK_QCOM_GPU_CC_SM8150_H
++
++/* GPU_CC clock registers */
++#define GPU_CC_AHB_CLK				0
++#define GPU_CC_CRC_AHB_CLK			1
++#define GPU_CC_CX_APB_CLK			2
++#define GPU_CC_CX_GMU_CLK			3
++#define GPU_CC_CX_QDSS_AT_CLK			4
++#define GPU_CC_CX_QDSS_TRIG_CLK			5
++#define GPU_CC_CX_QDSS_TSCTR_CLK		6
++#define GPU_CC_CX_SNOC_DVM_CLK			7
++#define GPU_CC_CXO_AON_CLK			8
++#define GPU_CC_CXO_CLK				9
++#define GPU_CC_GMU_CLK_SRC			10
++#define GPU_CC_GX_GMU_CLK			11
++#define GPU_CC_GX_QDSS_TSCTR_CLK		12
++#define GPU_CC_GX_VSENSE_CLK			13
++#define GPU_CC_PLL1				14
++#define GPU_CC_PLL_TEST_CLK			15
++#define GPU_CC_SLEEP_CLK			16
++
++/* GPU_CC Resets */
++#define GPUCC_GPU_CC_CX_BCR			0
++#define GPUCC_GPU_CC_GFX3D_AON_BCR		1
++#define GPUCC_GPU_CC_GMU_BCR			2
++#define GPUCC_GPU_CC_GX_BCR			3
++#define GPUCC_GPU_CC_SPDM_BCR			4
++#define GPUCC_GPU_CC_XO_BCR			5
++
++/* GPU_CC GDSCRs */
++#define GPU_CX_GDSC				0
++#define GPU_GX_GDSC				1
++
++#endif
 -- 
 2.26.1
 
