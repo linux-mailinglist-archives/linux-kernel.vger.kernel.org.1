@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC3420E0A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD93120E024
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732334AbgF2UsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
+        id S2389514AbgF2UnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731533AbgF2TNv (ORCPT
+        with ESMTP id S1731636AbgF2TOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:51 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636F4C0F26C3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:04:12 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id o11so16270520wrv.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:04:12 -0700 (PDT)
+        Mon, 29 Jun 2020 15:14:03 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9683C00E3D1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:04:18 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id j18so15126630wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:04:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C3SFeAEvbOoZI/xpVJ8MO71Sd1LqnSCGoIeWQbxnMQg=;
-        b=W34A5EzIFj5HWi2O+Uu6ihBeBiDeWhpckbWrX2jnfqXAR3x0qNViaW+WgvnvpxwiWO
-         MGqgE1enmwmS0gQxdKT5NnCo8pT8qbnyks2TEEdLnPjFm0OCLBWs+QPHAs9eXm7uQdat
-         JWbhorZHQ3BtymX0aXM/lywfKu/bT8ZNk4SSMGwMY45YdISPCRJHVeIp8gOWUa6hI3x5
-         yl2q7FCGF3ftBuUSxFt5y3sPjglhVa+3G49n58H+eBi39BWD3W01vtmugl+iYZj5MxaS
-         mkrYBWhfSoM6r/EQlCIFuE/GmGSu3DIPQIVdw8C/+juCBxxelde4Yfeywt4RMER4CJbR
-         0+DA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=vANIsXo74NzXiDIyR10LVPoVvN0SF3cCppVREngNaSg=;
+        b=nQ9byLrDn58wjHMhoadRsTTETa0UhC6JF4a46q+PYUs7UZGZeUDV+Ialz0dd7h+UZR
+         mhqFHyY0EbcDbESld8SYOxPhwBLpUwtVkb7pnzsNitFSbO7EEfGSOy2q2y7CP79Hex0H
+         1b+M8CdLjEStcijSVXMq80kujGFckpNmUPo54ebhhky847n6l7blHRFboEfpPZTyy81E
+         MMdTQ19QQn9i1JzgLPdR6Txwa+fNw+Wy8dARSM1y/DGypJ0Whb8UBnHg8y/LnybqbSGv
+         f43pJWnxIJUXGw1WzhE2J9N+9sBt5Oq9JRyYdz9w5VzjVb+Gsr45rKUvPRAqZkU/fFCF
+         warw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C3SFeAEvbOoZI/xpVJ8MO71Sd1LqnSCGoIeWQbxnMQg=;
-        b=AUFBBEIgkftungfrRP4+1vytC5O4BUntZwYa9aArfkVtmGmGu6uzi80TcD7dN8p4w3
-         mwO0ughNP2joJ+F2fbrnacdfy/ICPdgSmK+jAK4rCVwt0I/4FKGILD37w05i2iycd2Aq
-         DU8G48ZJ6+17L2Rkcwf1DsBYkeXo+XL/lqIP6s2f9vsL3Mbz7XXZnWI+mqf2OxxnCtlr
-         zT32ffsV8kAPtxECLBIZDlzraubVQ6qqApcrjRom7cNLO4XM1AgVZIN/jSwZtamXuMei
-         LDtovRAxuYAbPoxU1fkNesY68x8he+08BntOdX1cv7hD8ERQNoTJmp/TFQn8ux4jL64Q
-         SfUg==
-X-Gm-Message-State: AOAM533z5fsTGWiwQ7oK2rYPhG93vy+Z8lnDGDYciFvBkdIHI2b2hckO
-        4iDvAnWJqcwTxB34D888UKCm1w==
-X-Google-Smtp-Source: ABdhPJzvKPYK67MLNdl2CXmAriudaJFiLrZRmwhzT6FCEy4WwbiER21DP71IWFlJPEiw6dlp0MpaYQ==
-X-Received: by 2002:adf:e40e:: with SMTP id g14mr18038664wrm.271.1593432250982;
-        Mon, 29 Jun 2020 05:04:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vANIsXo74NzXiDIyR10LVPoVvN0SF3cCppVREngNaSg=;
+        b=lqgJZF+A0vx86sQXZayOjNWdKIUP/Rl+4L64nZEzCWELR0uhoNRM0iMK3EnhLVGl4D
+         bfWc5dSXiug3mg05GW0cbOqEaOnsWwMUty3SMWVR+Tn0z6/uJW7ih+w68I+EJ/Muw4Di
+         pvPvmWoR9/HnFm0aaRY2/X9QygVu1e4sijSk2dOxmoNsPLzgQnQpy9f/VOIkL0N8/jfx
+         1nPMYmxttXwkEXCcteYh0cBWBeO8QEB8hIVV1cyOWUkexFBK4QoTiRpyermbQ/T41Udy
+         WBn4WcaW2fI0R+M2AudQWk9wqEzvmmuy2/L6F45HF2S63q5nAv98iD9TIicpP+jpnGlL
+         a5WQ==
+X-Gm-Message-State: AOAM531qBvfhZh7+29QuLzeX0N1MkLIYyRKZv5uuFnyYp6bXjBUI1vls
+        BvPG+laL/9mpL5HKVKmK5S9KJw==
+X-Google-Smtp-Source: ABdhPJzzIpHdKMTQ6SjqhWeqI//sR8Iftgms6VcGQcyabxIbGKuFkf8bRkm3ckDgSAITcNYh0w9Y4Q==
+X-Received: by 2002:a7b:c746:: with SMTP id w6mr17250018wmk.171.1593432257471;
+        Mon, 29 Jun 2020 05:04:17 -0700 (PDT)
 Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id d81sm25274347wmc.0.2020.06.29.05.04.09
+        by smtp.gmail.com with ESMTPSA id d81sm25274347wmc.0.2020.06.29.05.04.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 05:04:10 -0700 (PDT)
+        Mon, 29 Jun 2020 05:04:16 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
         "David S . Miller" <davem@davemloft.net>,
@@ -66,10 +66,12 @@ Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 00/10] net: improve devres helpers
-Date:   Mon, 29 Jun 2020 14:03:36 +0200
-Message-Id: <20200629120346.4382-1-brgl@bgdev.pl>
+Subject: [PATCH v2 04/10] Documentation: devres: add missing mdio helper
+Date:   Mon, 29 Jun 2020 14:03:40 +0200
+Message-Id: <20200629120346.4382-5-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200629120346.4382-1-brgl@bgdev.pl>
+References: <20200629120346.4382-1-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -79,53 +81,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-So it seems like there's no support for relaxing certain networking devres
-helpers to not require previously allocated structures to also be managed.
-However the way mdio devres variants are implemented is still wrong and I
-modified my series to address it while keeping the functions strict.
+We have a devres variant of mdiobus_register() but it's not listed in
+devres.rst. Add it under other mdio devm functions.
 
-First two patches modify the ixgbe driver to get rid of the last user of
-devm_mdiobus_free().
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ Documentation/driver-api/driver-model/devres.rst | 1 +
+ 1 file changed, 1 insertion(+)
 
-Patches 3, 4, 5 and 6 are mostly cosmetic.
-
-Patch 7 fixes the way devm_mdiobus_register() is implemented.
-
-Patches 8 & 9 provide a managed variant of of_mdiobus_register() and
-last patch uses it in mtk-star-emac driver.
-
-v1 -> v2:
-- drop the patch relaxing devm_register_netdev()
-- require struct mii_bus to be managed in devm_mdiobus_register() and
-  devm_of_mdiobus_register() but don't store that information in the
-  structure itself: use devres_find() instead
-
-Bartosz Golaszewski (10):
-  net: ethernet: ixgbe: check the return value of ixgbe_mii_bus_init()
-  net: ethernet: ixgbe: don't call devm_mdiobus_free()
-  net: devres: rename the release callback of devm_register_netdev()
-  Documentation: devres: add missing mdio helper
-  phy: un-inline devm_mdiobus_register()
-  phy: mdio: add kerneldoc for __devm_mdiobus_register()
-  net: phy: don't abuse devres in devm_mdiobus_register()
-  of: mdio: remove the 'extern' keyword from function declarations
-  of: mdio: provide devm_of_mdiobus_register()
-  net: ethernet: mtk-star-emac: use devm_of_mdiobus_register()
-
- .../driver-api/driver-model/devres.rst        |   3 +-
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |   6 +-
- drivers/net/ethernet/intel/ixgbe/ixgbe_phy.c  |  14 +-
- drivers/net/ethernet/mediatek/mtk_star_emac.c |  13 +-
- drivers/net/ethernet/realtek/r8169_main.c     |   2 +-
- drivers/net/phy/Makefile                      |   2 +
- drivers/net/phy/mdio_bus.c                    |  73 ----------
- drivers/net/phy/mdio_devres.c                 | 133 ++++++++++++++++++
- include/linux/of_mdio.h                       |  40 +++---
- include/linux/phy.h                           |  21 +--
- net/devres.c                                  |   4 +-
- 11 files changed, 174 insertions(+), 137 deletions(-)
- create mode 100644 drivers/net/phy/mdio_devres.c
-
+diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
+index e0b58c392e4f..5463fc8a60c1 100644
+--- a/Documentation/driver-api/driver-model/devres.rst
++++ b/Documentation/driver-api/driver-model/devres.rst
+@@ -343,6 +343,7 @@ MDIO
+   devm_mdiobus_alloc()
+   devm_mdiobus_alloc_size()
+   devm_mdiobus_free()
++  devm_mdiobus_register()
+ 
+ MEM
+   devm_free_pages()
 -- 
 2.26.1
 
