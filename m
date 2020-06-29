@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C163720DECD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34FED20DE45
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732757AbgF2U3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:29:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37058 "EHLO mail.kernel.org"
+        id S2388909AbgF2UYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:24:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732440AbgF2TZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:25:22 -0400
+        id S1732561AbgF2TZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:25:31 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22E802533C;
-        Mon, 29 Jun 2020 15:39:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 570702533B;
+        Mon, 29 Jun 2020 15:39:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1593445179;
-        bh=z9HC8fjtE91zDOgMhT+LLjIAS45FRJcu+53+IAN2WII=;
+        bh=4ZO3tFXObaGfCPX+bWEYa6pc6iCg3U9UGNYrABAuf1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=he6xZo3N+1K3Z19hlNiaL1laJQNFGyPDDXTiFB9Oc/w2SWk0W5cHd41xQxlnwVlAn
-         /JNq9Jyo1QboEK/o8i1jXdMM8LWhmWS2f4FdQvbLCudWv5SmcNPkaJ4mOd1Ci4BVRU
-         etoXUie5poofX/9RFT2x9PCpE5eP5R/RYBDyZV5c=
+        b=J2NTubYYF830biPVa+KlzxnAoURunxts8D1x5LFUuY0kjfjZ8LegdNOheperPDNFU
+         uxevVxwQ44XxNks75KJRVscmLO1UFnoVpiYDQkIUJt2Gti2QkKMglKIfseQ+dA2JpM
+         vJO298x9alzKNak8KZDUMIRhZp/HG3/OYg4yfHM8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Denis Efremov <efremov@linux.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.14 70/78] drm/radeon: fix fb_div check in ni_init_smc_spll_table()
-Date:   Mon, 29 Jun 2020 11:37:58 -0400
-Message-Id: <20200629153806.2494953-71-sashal@kernel.org>
+Subject: [PATCH 4.14 71/78] Staging: rtl8723bs: prevent buffer overflow in update_sta_support_rate()
+Date:   Mon, 29 Jun 2020 11:37:59 -0400
+Message-Id: <20200629153806.2494953-72-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629153806.2494953-1-sashal@kernel.org>
 References: <20200629153806.2494953-1-sashal@kernel.org>
@@ -49,35 +48,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Denis Efremov <efremov@linux.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 35f760b44b1b9cb16a306bdcc7220fbbf78c4789 upstream.
+commit b65a2d8c8614386f7e8d38ea150749f8a862f431 upstream.
 
-clk_s is checked twice in a row in ni_init_smc_spll_table().
-fb_div should be checked instead.
+The "ie_len" variable is in the 0-255 range and it comes from the
+network.  If it's over NDIS_802_11_LENGTH_RATES_EX (16) then that will
+lead to memory corruption.
 
-Fixes: 69e0b57a91ad ("drm/radeon/kms: add dpm support for cayman (v5)")
-Cc: stable@vger.kernel.org
-Signed-off-by: Denis Efremov <efremov@linux.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 554c0a3abf21 ("staging: Add rtl8723bs sdio wifi driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200603101958.GA1845750@mwanda
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/radeon/ni_dpm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/rtl8723bs/core/rtw_wlan_util.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/radeon/ni_dpm.c b/drivers/gpu/drm/radeon/ni_dpm.c
-index 9416e72f86aaf..d491b3aa124f3 100644
---- a/drivers/gpu/drm/radeon/ni_dpm.c
-+++ b/drivers/gpu/drm/radeon/ni_dpm.c
-@@ -2126,7 +2126,7 @@ static int ni_init_smc_spll_table(struct radeon_device *rdev)
- 		if (clk_s & ~(SMC_NISLANDS_SPLL_DIV_TABLE_CLKS_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_CLKS_SHIFT))
- 			ret = -EINVAL;
+diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+index f485f541e36d0..d6de62ee681e5 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
++++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+@@ -1904,12 +1904,14 @@ int update_sta_support_rate(struct adapter *padapter, u8 *pvar_ie, uint var_ie_l
+ 	pIE = (struct ndis_80211_var_ie *)rtw_get_ie(pvar_ie, _SUPPORTEDRATES_IE_, &ie_len, var_ie_len);
+ 	if (pIE == NULL)
+ 		return _FAIL;
++	if (ie_len > sizeof(pmlmeinfo->FW_sta_info[cam_idx].SupportedRates))
++		return _FAIL;
  
--		if (clk_s & ~(SMC_NISLANDS_SPLL_DIV_TABLE_CLKS_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_CLKS_SHIFT))
-+		if (fb_div & ~(SMC_NISLANDS_SPLL_DIV_TABLE_FBDIV_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_FBDIV_SHIFT))
- 			ret = -EINVAL;
+ 	memcpy(pmlmeinfo->FW_sta_info[cam_idx].SupportedRates, pIE->data, ie_len);
+ 	supportRateNum = ie_len;
  
- 		if (clk_v & ~(SMC_NISLANDS_SPLL_DIV_TABLE_CLKV_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_CLKV_SHIFT))
+ 	pIE = (struct ndis_80211_var_ie *)rtw_get_ie(pvar_ie, _EXT_SUPPORTEDRATES_IE_, &ie_len, var_ie_len);
+-	if (pIE)
++	if (pIE && (ie_len <= sizeof(pmlmeinfo->FW_sta_info[cam_idx].SupportedRates) - supportRateNum))
+ 		memcpy((pmlmeinfo->FW_sta_info[cam_idx].SupportedRates + supportRateNum), pIE->data, ie_len);
+ 
+ 	return _SUCCESS;
 -- 
 2.25.1
 
