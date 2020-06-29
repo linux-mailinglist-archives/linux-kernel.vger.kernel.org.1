@@ -2,82 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1AD20D60A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A227C20D640
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731825AbgF2TRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:17:00 -0400
-Received: from mga01.intel.com ([192.55.52.88]:63720 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726947AbgF2TQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:16:54 -0400
-IronPort-SDR: 3u8gdtn0V+O33IBQP5QiQx220SHS3qyrILm1griFN9Qo1imHZdoN2suzZpHDccy7cuTNRi/Gwu
- idJCLgcQhD+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="164003720"
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="164003720"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 08:42:12 -0700
-IronPort-SDR: 1JiA3oy9vAT2yPS3waIF9GsF3Qi46ZkiEA044OeZ6BVgLNwWsT/dgLo/bEd0OHfyQOTpdfo1Yr
- q9wBQMk/UYjQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="280906554"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by orsmga006.jf.intel.com with ESMTP; 29 Jun 2020 08:42:12 -0700
-Date:   Mon, 29 Jun 2020 08:42:12 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vivek Goyal <vgoyal@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH] KVM: X86: Fix async pf caused null-ptr-deref
-Message-ID: <20200629154212.GC12312@linux.intel.com>
-References: <1593426391-8231-1-git-send-email-wanpengli@tencent.com>
- <877dvqc7cs.fsf@vitty.brq.redhat.com>
- <f9b06428-51c3-09af-48cc-d378182916fd@redhat.com>
+        id S1732021AbgF2TS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:18:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731870AbgF2TRm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:17:42 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8E7C0307A1;
+        Mon, 29 Jun 2020 08:42:39 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id t18so3124611otq.5;
+        Mon, 29 Jun 2020 08:42:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ByBiz3Yf8Ie7OVrqv/Mz9cEMnJyRfxViWcmC4BsTpCo=;
+        b=hE0uYABTBummnjR4Ws7/8m9VVzWu3XAHX7c2WGmbGrae6o+12esgMGqEHBl4sl73+C
+         AToMRiaGu1UVkN6DOweDnKiho6a8hv9J3XvoKydijrHEboTGALRT/TGeQckwC85r+b4J
+         2Zw18I8VuJDeNxe3bifM4EJtPrXvUqSlhjN1qO2qKunLb61XO2XoQcnD32wfqTCgt4M4
+         qD5BwJwOaUF+gQPy18XRVJlH05V+T7VbWoBAjJKR6IJZzaQwjLTk14QaP1C47epEVNId
+         N8NjARUfAf/n6uX5Qr3IgkkCHJdghf7za3mZIYyyIDv8CttxvvDCJw+1wK4I4eGBWt50
+         P2cA==
+X-Gm-Message-State: AOAM533m/nSIvlk6XUAXMgV8JRrLeMfpbqqzPNRNzbHEdYH+T3ZNHbdE
+        MVvWhQJ4846m4ksPjwoaF6YS5nNSR8//g+GmAMg=
+X-Google-Smtp-Source: ABdhPJzZv9yrcqjQPIqNSuZYxDZ0MHssHdmPppPpB4X3a0jGl41oFltbqUVWyGPYv/nioiv+o7pFkroyCV6uhkj/ZSQ=
+X-Received: by 2002:a05:6830:1451:: with SMTP id w17mr1241594otp.250.1593445359003;
+ Mon, 29 Jun 2020 08:42:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f9b06428-51c3-09af-48cc-d378182916fd@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20200627143453.31835-1-rppt@kernel.org> <20200627143453.31835-7-rppt@kernel.org>
+In-Reply-To: <20200627143453.31835-7-rppt@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 29 Jun 2020 17:42:28 +0200
+Message-ID: <CAMuHMdWP07XqvgrXjCG+n5FssH3BwdDEWA4fD9TQgvVy93uMhQ@mail.gmail.com>
+Subject: Re: [PATCH 6/8] asm-generic: pgalloc: provide generic pgd_free()
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Joerg Roedel <joro@8bytes.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-csky@vger.kernel.org,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 03:59:25PM +0200, Paolo Bonzini wrote:
-> On 29/06/20 15:46, Vitaly Kuznetsov wrote:
-> >> +	if (!lapic_in_kernel(vcpu))
-> >> +		return 1;
-> >> +
-> > I'm not sure how much we care about !lapic_in_kernel() case but this
-> > change should be accompanied with userspace changes to not expose
-> > KVM_FEATURE_ASYNC_PF_INT or how would the guest know that writing a
-> > legitimate value will result in #GP?
-> 
-> Almost any pv feature is broken with QEMU if kernel_irqchip=off.  I
-> wouldn't bother and I am seriously thinking of dropping all support for
-> that, including:
+On Sat, Jun 27, 2020 at 4:36 PM Mike Rapoport <rppt@kernel.org> wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+>
+> Most architectures define pgd_free() as a wrapper for free_page().
+>
+> Provide a generic version in asm-generic/pgalloc.h and enable its use for
+> most architectures.
+>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-Heh, based on my limited testing, that could be "Almost everything is
-broken with Qemu if kernel_irqchip=off".
+For the m68k part:
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-> - just injecting #UD for MOV from/to CR8 unless lapic_in_kernel()
-> 
-> - make KVM_INTERRUPT fail unless irqchip_in_kernel(), so that
-> KVM_INTERRUPT is only used to inject EXTINT with kernel_irqchip=split
-> 
-> Paolo
-> 
-> > Alternatively, we may just return '0' here: guest will be able to check
-> > what's in the MSR to see if the feature was enabled. Normally, guests
-> > shouldn't care about this but maybe there are cases when they do?
-> > 
-> 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
