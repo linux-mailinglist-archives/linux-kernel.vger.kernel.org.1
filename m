@@ -2,172 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5DC20D66F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3987E20DAA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732092AbgF2TUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:20:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:39572 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730507AbgF2TT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:19:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D324D1478;
-        Mon, 29 Jun 2020 05:12:44 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EECB93F73C;
-        Mon, 29 Jun 2020 05:12:42 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 13:12:40 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Patrick Bellasi <patrick.bellasi@matbug.net>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Chris Redpath <chris.redpath@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] sched/uclamp: Fix initialization of struct
- uclamp_rq
-Message-ID: <20200629121240.pxec7mvoum6xp2z4@e107158-lin.cambridge.arm.com>
-References: <20200625154352.24767-1-qais.yousef@arm.com>
- <20200625154352.24767-2-qais.yousef@arm.com>
- <87eeq2nh1k.derkling@matbug.net>
+        id S2388460AbgF2T7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:59:10 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:50686 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388517AbgF2T7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:59:02 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id F099BE347D5E59611496;
+        Mon, 29 Jun 2020 20:13:34 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 29 Jun 2020 20:13:27 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH v2 2/3] f2fs: support to trace f2fs_bmap()
+Date:   Mon, 29 Jun 2020 20:13:12 +0800
+Message-ID: <20200629121313.68072-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87eeq2nh1k.derkling@matbug.net>
-User-Agent: NeoMutt/20171215
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Patrick
+to show f2fs_bmap()'s result as below:
 
-On 06/26/20 14:32, Patrick Bellasi wrote:
-> 
-> On Thu, Jun 25, 2020 at 17:43:51 +0200, Qais Yousef <qais.yousef@arm.com> wrote...
-> 
-> > struct uclamp_rq was zeroed out entirely in assumption that in the first
-> > call to uclamp_rq_inc() they'd be initialized correctly in accordance to
-> > default settings.
-> 
-> Perhaps I was not clear in my previous comment:
-> 
->    https://lore.kernel.org/lkml/87sgekorfq.derkling@matbug.net/
-> 
-> when I did say:
-> 
->    Does not this means the problem is more likely with
->    uclamp_rq_util_with(), which should be guarded?
-> 
-> I did not mean that we have to guard the calls to that function but
-> instead that we should just make that function aware of uclamp being
-> opted in or not.
-> 
-> > But when next patch introduces a static key to skip
-> > uclamp_rq_{inc,dec}() until userspace opts in to use uclamp, schedutil
-> > will fail to perform any frequency changes because the
-> > rq->uclamp[UCLAMP_MAX].value is zeroed at init and stays as such. Which
-> > means all rqs are capped to 0 by default.
-> 
-> The initialization you wants to do here it's needed because with the
-> current approach you keep calling the same uclamp_rq_util_with() and
-> keep doing min/max aggregations even when uclamp is not opted in.
-> But this means also that we have min/max aggregation _when not really
-> required_.
-> 
-> > Fix it by making sure we do proper initialization at init without
-> > relying on uclamp_rq_inc() doing it later.
-> 
-> My proposal was as simple as:
-> 
-> ---8<---
->   static __always_inline
->   unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
->   				  struct task_struct *p)
->   {
->   	unsigned long min_util = READ_ONCE(rq->uclamp[UCLAMP_MIN].value);
->   	unsigned long max_util = READ_ONCE(rq->uclamp[UCLAMP_MAX].value);
->   
-> +       if (!static_branch_unlikely(&sched_uclamp_used))
-> +               return rt_task(p) ? uclamp_none(UCLAMP_MAX) : util 
+f2fs_bmap: dev = (251,0), ino = 7, lblock:0, pblock:396800
 
-This the same mistake I've done.
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+v2:
+- use show_dev_ino() to avoid compile warning.
+ fs/f2fs/data.c              | 14 +++++++++++---
+ include/trace/events/f2fs.h | 26 ++++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+), 3 deletions(-)
 
-schedutil_cpu_util() is called by sugov_get_util() passing p as NULL.
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 91dc7b598961..c07a50e4d967 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -3713,18 +3713,26 @@ static sector_t f2fs_bmap_compress(struct inode *inode, sector_t block)
+ static sector_t f2fs_bmap(struct address_space *mapping, sector_t block)
+ {
+ 	struct inode *inode = mapping->host;
++	struct buffer_head tmp = {
++		.b_size = i_blocksize(inode),
++	};
++	sector_t blknr = 0;
+ 
+ 	if (f2fs_has_inline_data(inode))
+-		return 0;
++		goto out;
+ 
+ 	/* make sure allocating whole blocks */
+ 	if (mapping_tagged(mapping, PAGECACHE_TAG_DIRTY))
+ 		filemap_write_and_wait(mapping);
+ 
+ 	if (f2fs_compressed_file(inode))
+-		return f2fs_bmap_compress(inode, block);
++		blknr = f2fs_bmap_compress(inode, block);
+ 
+-	return generic_block_bmap(mapping, block, get_data_block_bmap);
++	if (!get_data_block_bmap(inode, block, &tmp, 0))
++		blknr = tmp.b_blocknr;
++out:
++	trace_f2fs_bmap(inode, block, blknr);
++	return blknr;
+ }
+ 
+ #ifdef CONFIG_MIGRATION
+diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
+index 8639ab962a71..2e8713a52d76 100644
+--- a/include/trace/events/f2fs.h
++++ b/include/trace/events/f2fs.h
+@@ -1891,6 +1891,32 @@ TRACE_EVENT(f2fs_iostat,
+ 		__entry->fs_cdrio, __entry->fs_nrio, __entry->fs_mrio)
+ );
+ 
++TRACE_EVENT(f2fs_bmap,
++
++	TP_PROTO(struct inode *inode, sector_t lblock, sector_t pblock),
++
++	TP_ARGS(inode, lblock, pblock),
++
++	TP_STRUCT__entry(
++		__field(dev_t, dev)
++		__field(ino_t, ino)
++		__field(sector_t, lblock)
++		__field(sector_t, pblock)
++	),
++
++	TP_fast_assign(
++		__entry->dev		= inode->i_sb->s_dev;
++		__entry->ino		= inode->i_ino;
++		__entry->lblock		= lblock;
++		__entry->pblock		= pblock;
++	),
++
++	TP_printk("dev = (%d,%d), ino = %lu, lblock:%lld, pblock:%lld",
++		show_dev_ino(__entry),
++		(unsigned long long)__entry->lblock,
++		(unsigned long long)__entry->pblock)
++);
++
+ #endif /* _TRACE_F2FS_H */
+ 
+  /* This part must be outside protection */
+-- 
+2.26.2
 
-292 static unsigned long sugov_get_util(struct sugov_cpu *sg_cpu)                                                                                                                                               
-293 {                                                                               
-294         struct rq *rq = cpu_rq(sg_cpu->cpu);                                    
-295         unsigned long util = cpu_util_cfs(rq);                                  
-296         unsigned long max = arch_scale_cpu_capacity(sg_cpu->cpu);               
-297                                                                                 
-298         sg_cpu->max = max;                                                      
-299         sg_cpu->bw_dl = cpu_bw_dl(rq);                                          
-300                                                                                 
-301         return schedutil_cpu_util(sg_cpu->cpu, util, max, FREQUENCY_UTIL, NULL);
-302 }
-
-So this will not fix the problem with RT tasks and we have to do the check
-at schedutil which is the right abstraction layer anyway. I don't think calling
-rq_rt_is_runnable() is right here and is unnecessary duplication since
-schedutil will still have to do that anyway.
-
-When p is not NULL then the function will work correctly in regards to
-uclamp_eff_get() returning the right value, including the default settings.
-Which is important when my patch to introduce sysctl for default RT boosting
-comes into play.
-
-The function deserves a comment for sure though so that users are aware that
-the function will not be useful if the static key is disabled. There's no
-aggregation done at rq level and this can certainly catch people out.
-
-We can add a static key to return util directly too. I might just do this since
-it might help with readability.
-
-Please shout if I missed something.
-
->   
->   	if (p) {
->   		min_util = max(min_util, uclamp_eff_value(p, UCLAMP_MIN));
->   		max_util = max(max_util, uclamp_eff_value(p, UCLAMP_MAX));
->   	}
->   
->   	/*
->   	 * Since CPU's {min,max}_util clamps are MAX aggregated considering
->   	 * RUNNABLE tasks with _different_ clamps, we can end up with an
->   	 * inversion. Fix it now when the clamps are applied.
->   	 */
->   	if (unlikely(min_util >= max_util))
->   		return min_util;
->   
->   	return clamp(util, min_util, max_util);
->   }
-> ---8<---
-> 
-> Such small change is more self-contained IMHO and does not remove
-> an existing optimizations like this lazy RQ's initialization at first
-
-IMHO this is a bug not an optimization. We have to write to these struct
-anyway, so why not write the right value to start with? This already caught me
-out and wasted over half a day trying to chase it.
-
-Beside what are we optimizing for here? I think correctness dictates we start
-with correct initial values if we can, no? How are you expecting this to slow
-down sched_init()?
-
-Thanks
-
---
-Qais Yousef
-
-> usage.
-> 
-> Moreover, it can folded in the following patch, with all the other
-> static keys shortcuts.
-> 
