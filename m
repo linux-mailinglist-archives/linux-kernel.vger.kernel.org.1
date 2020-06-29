@@ -2,110 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A6820E2C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E112C20E2D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390422AbgF2VIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:08:30 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:38415 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390229AbgF2VIZ (ORCPT
+        id S2390459AbgF2VIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390439AbgF2VIo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:08:25 -0400
-Received: by mail-ed1-f65.google.com with SMTP id n2so5209653edr.5;
-        Mon, 29 Jun 2020 14:08:22 -0700 (PDT)
+        Mon, 29 Jun 2020 17:08:44 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 475D5C03E979
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:08:44 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id g13so14009474qtv.8
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:08:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PbUqdK1otFEuJAwkKU1CGhmnKqFJa2aBCYhP9X9TuK8=;
+        b=Prw+e3qTN9JwuIoiIug0Niirg1ym+zVjLsyNSzSMsWW/rrTwPpz6oR3SZgBTuZZKyr
+         qqHnF0cFCgyKjCq1GNdB0P5a9qFBHfo1z3qfvmHCMugOFPVjpffw4PF3nYMsh8FMzacd
+         QOo3cKUkDXvrUmL0ueE6l7YrQH23TQwpl3bSw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WVzOc0zshIAzur/W9UldDSamNUZIg6bYwU7gViF4xjM=;
-        b=XUXYJW1YjmtF6PwxsLRs3RzxxVAxAPl7iKRiELCzxj0g2cn0itGuB0hAxZWMlVWLz9
-         mB/GxGKY1TNMXWRU3RyUPszljbezvgimuF6zmQ0AUbEHJuhn5+x1GZYaLrRDElgjbSS7
-         tr0XrGMtbul0eR19pifhTezdUkD5WSsa7vIzIGTgYm2mpC0vO3G70xoKufwmcU+2ps1k
-         7xV+f1JuuXwcGNa+V4U00pMduOQX/3MwZ5Qe+fxzAnl5SjnNtYGamDSIL8apuZ/WdfZB
-         FrgtdWnROwzVaJs8oBJco62GMCT7Gck1SN5QKUVSVVl1OdVPJVU/Ub29R1fKnBhFF6X0
-         T9vw==
-X-Gm-Message-State: AOAM531cBYxiOkNeTnLFpykwfPa4/2XJFJMFgqXxfIHsM/ztjxcTxXHk
-        eAS3ol0jBFkx/OeDL/YUclE=
-X-Google-Smtp-Source: ABdhPJz7uJ34zkR7UdIcDmO5eQD/05KE/U7ACuTf+SbkMdyaKDXIEt+RJAAp/9n0LB1FcwdSrdDevA==
-X-Received: by 2002:aa7:d6cc:: with SMTP id x12mr11487518edr.354.1593464901568;
-        Mon, 29 Jun 2020 14:08:21 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.195])
-        by smtp.googlemail.com with ESMTPSA id q3sm736869eds.0.2020.06.29.14.08.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 29 Jun 2020 14:08:20 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 23:08:17 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     corbet@lwn.net, aaro.koskinen@iki.fi, tony@atomide.com,
-        linux@armlinux.org.uk, daniel@zonque.org, haojian.zhuang@gmail.com,
-        robert.jarzmik@free.fr, kgene@kernel.org,
-        dmitry.torokhov@gmail.com, lee.jones@linaro.org,
-        wsa+renesas@sang-engineering.com, ulf.hansson@linaro.org,
-        davem@davemloft.net, kuba@kernel.org, b.zolnierkie@samsung.com,
-        j.neuschaefer@gmx.net, mchehab+samsung@kernel.org,
-        gustavo@embeddedor.com, gregkh@linuxfoundation.org,
-        yanaijie@huawei.com, daniel.vetter@ffwll.ch,
-        rafael.j.wysocki@intel.com, Julia.Lawall@inria.fr,
-        linus.walleij@linaro.org, viresh.kumar@linaro.org, arnd@arndb.de,
-        jani.nikula@intel.com, yuehaibing@huawei.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH] Remove handhelds.org links and email addresses
-Message-ID: <20200629210817.GA32399@kozik-lap>
-References: <20200629203121.7892-1-grandmaster@al2klimov.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PbUqdK1otFEuJAwkKU1CGhmnKqFJa2aBCYhP9X9TuK8=;
+        b=hDUN51wpcr8CBVcRqeHE7gUIXzpxjOrxrR8iC9/TGmTxy5edfY4rbA2EPjzm0l037v
+         tYj+UHiKdADZvs7nxjdpzGi5yV/hWzBXEGqQKRxKC3gV4ANZJROlibWYTxUoPFH/LVz6
+         m5MiT9r45M57snHLkOSUXoiXmUdiqAWBBLCWDRRK1YXfl8DjFhLGJi6+XbYnsJJvq+Q6
+         e6ZHtyzUnE4n4DEqfEMut/1JmeU2tp610qC5sn9XfAiC2WU9bpL3uVeMPYEBHY4+cqtq
+         s+SYOvqlN/K14unBk6fRucsHR7otzgeDjNteXNILQ77i36GM5YjkSwi916wF3b6+6MFY
+         kwbQ==
+X-Gm-Message-State: AOAM532jTcShKY361FwM4KTrOw2o1nb3bIiV7p4AiRxhSyuXFdQOOfmP
+        aAuk8H5qG1ajztGjWbsvsj6Vaxw6PiZWHFH0ZV9QTQ==
+X-Google-Smtp-Source: ABdhPJxVPp7ZUB1Hy3lQG+5hOinD9KhlF5RhGa4Utgi0hBsSBGgXhKCXFd15P2JzxT7RwmVyK03V4nMGut8WCru7OHg=
+X-Received: by 2002:ac8:2a3d:: with SMTP id k58mr2187470qtk.265.1593464923410;
+ Mon, 29 Jun 2020 14:08:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200629203121.7892-1-grandmaster@al2klimov.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200629163851.2130450-1-pmalani@chromium.org> <CABXOdTe-hY98YFusFkS+C8iVWZANVWcavpKSmaYtjC11yMgFrg@mail.gmail.com>
+In-Reply-To: <CABXOdTe-hY98YFusFkS+C8iVWZANVWcavpKSmaYtjC11yMgFrg@mail.gmail.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Mon, 29 Jun 2020 14:08:31 -0700
+Message-ID: <CACeCKaeqw7Lj7z3DYDvR0j6x+ud3BcxVgxb9-sQ3ZS0ks_f7gg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] platform/chrome: cros_ec_typec: Use workqueue for
+ port update
+To:     Guenter Roeck <groeck@google.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 10:31:21PM +0200, Alexander A. Klimov wrote:
-> Rationale:
-> https://lore.kernel.org/linux-doc/20200626110706.7b5d4a38@lwn.net/
-> 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> ---
->  @Jon I thought about what I said and *no*, unfortunately I *can't* automate
->  the detection of such as easy as the HTTPSifying. As you maybe see below
->  cleaning up is even "harder".
-> 
->  We have only 17 files and one domain here. Shall I split it up per subsystem
->  or can we let it as is?
-> 
->  Documentation/arm/sa1100/assabet.rst           |  2 --
->  Documentation/arm/samsung-s3c24xx/h1940.rst    | 10 ----------
->  Documentation/arm/samsung-s3c24xx/overview.rst |  3 +--
->  Documentation/arm/samsung-s3c24xx/smdk2440.rst |  4 ----
->  arch/arm/mach-omap1/Kconfig                    |  4 +---
->  arch/arm/mach-pxa/h5000.c                      |  2 +-
->  arch/arm/mach-s3c24xx/mach-h1940.c             |  2 --
->  arch/arm/mach-s3c24xx/mach-n30.c               |  3 ---
->  arch/arm/mach-s3c24xx/mach-rx3715.c            |  2 --
+Hi Guenter,
 
-For s3c24xx, I am fine taking it through docs tree:
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Thanks for the comments.
 
-Otherwise, after splitting, I could take the s3c-24xx bits.
+On Mon, Jun 29, 2020 at 2:05 PM Guenter Roeck <groeck@google.com> wrote:
+>
+> On Mon, Jun 29, 2020 at 9:38 AM Prashant Malani <pmalani@chromium.org> wrote:
+> >
+> > Use a work queue to call the port update routines, instead of doing it
+> > directly in the PD notifier callback. This will prevent other drivers
+> > with PD notifier callbacks from being blocked on the port update routine
+> > completing.
+> >
+> > Signed-off-by: Prashant Malani <pmalani@chromium.org>
+> > ---
+> >
+> > Changes in v3:
+> > - Use new 100 character line length limit.
+> >
+> > Changes in v2:
+> > - No changes.
+> >
+> >  drivers/platform/chrome/cros_ec_typec.c | 25 ++++++++++++++++++++-----
+> >  1 file changed, 20 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> > index 0c041b79cbba..0beb62bf5adf 100644
+> > --- a/drivers/platform/chrome/cros_ec_typec.c
+> > +++ b/drivers/platform/chrome/cros_ec_typec.c
+> > @@ -58,6 +58,7 @@ struct cros_typec_data {
+> >         /* Array of ports, indexed by port number. */
+> >         struct cros_typec_port *ports[EC_USB_PD_MAX_PORTS];
+> >         struct notifier_block nb;
+> > +       struct work_struct port_work;
+> >  };
+> >
+> >  static int cros_typec_parse_port_props(struct typec_capability *cap,
+> > @@ -619,18 +620,26 @@ static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
+> >         return 0;
+> >  }
+> >
+> > -static int cros_ec_typec_event(struct notifier_block *nb,
+> > -                              unsigned long host_event, void *_notify)
+> > +static void cros_typec_port_work(struct work_struct *work)
+> >  {
+> > -       struct cros_typec_data *typec = container_of(nb, struct cros_typec_data,
+> > -                                                    nb);
+> > -       int ret, i;
+> > +       struct cros_typec_data *typec = container_of(work, struct cros_typec_data, port_work);
+> > +       int ret;
+> > +       int i;
+> >
+>
+> I know I am getting picky here, but this seems like a personal
+> preference change. There is no "one variable declaration per line"
+> coding style rule.
 
-Best regards,
-Krzysztof
+Done.
+>
+> >         for (i = 0; i < typec->num_ports; i++) {
+> >                 ret = cros_typec_port_update(typec, i);
+> >                 if (ret < 0)
+> >                         dev_warn(typec->dev, "Update failed for port: %d\n", i);
+> >         }
+> > +}
+> > +
+> > +
+>
+> ... but anyway, there should be no double empty lines.
+>
 
-
->  drivers/input/keyboard/gpio_keys.c             |  2 +-
->  drivers/input/keyboard/jornada720_kbd.c        |  2 +-
->  drivers/input/touchscreen/jornada720_ts.c      |  2 +-
->  drivers/mfd/asic3.c                            |  2 +-
->  drivers/mmc/host/renesas_sdhi_core.c           |  2 +-
->  drivers/net/ethernet/dec/tulip/de4x5.c         |  1 -
->  drivers/video/fbdev/sa1100fb.c                 |  2 +-
->  include/linux/apm-emulation.h                  |  2 --
->  17 files changed, 9 insertions(+), 38 deletions(-)
+Done.
+> > +static int cros_ec_typec_event(struct notifier_block *nb,
+> > +                              unsigned long host_event, void *_notify)
+> > +{
+> > +       struct cros_typec_data *typec = container_of(nb, struct cros_typec_data, nb);
+> > +
+> > +       schedule_work(&typec->port_work);
+> >
+> >         return NOTIFY_OK;
+> >  }
+> > @@ -689,6 +698,12 @@ static int cros_typec_probe(struct platform_device *pdev)
+> >         if (ret < 0)
+> >                 return ret;
+> >
+> > +       INIT_WORK(&typec->port_work, cros_typec_port_work);
+> > +
+> > +       /*
+> > +        * Safe to call port update here, since we haven't registered the
+> > +        * PD notifier yet.
+> > +        */
+> >         for (i = 0; i < typec->num_ports; i++) {
+> >                 ret = cros_typec_port_update(typec, i);
+> >                 if (ret < 0)
+> > --
+> > 2.27.0.212.ge8ba1cc988-goog
+> >
