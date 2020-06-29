@@ -2,221 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940B320E094
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E525920E0D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389805AbgF2Urd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389787AbgF2UrY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:47:24 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF3AC03E979
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:47:24 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id j19so5999850ybj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:47:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UYdsVW3BBX8OC9WrPhf4Ap0SclutgAMBOwsFuhmAiUc=;
-        b=sj3Z3WaQ1XCj7qzBWUHl68lvUTLwnu6zeQufplCvQ7tx0Qlt+QJveoGV1nfGTLWyLv
-         M9vMyUf7RdkMji4al4luUrBJcN0XeDmkmrOP/FKVt6KzO3zJABVlVDOmki4v00ZinZsG
-         W3QatwpjQU/iv2XPFNkb3pk0fgKTqufJuLYy7G9ouIXrZNHI0mXMv8bpiQaKt1wr0Hey
-         zXQiFGGxuXjY2dwQ4qTyezFna1+McjHL8mJYxtwlnFmhj8/4Na+fIdw6DCLrOsEZz6vp
-         nrfN7LVua3jDjmxgQfa07/uAThOHhECLgI6qrP4c4P5428H7aUw8G6BVfA7qjCy+fXsF
-         LhdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UYdsVW3BBX8OC9WrPhf4Ap0SclutgAMBOwsFuhmAiUc=;
-        b=DszULbdszLBJsLGMGbEZueKHbI6Jb3mMqKFjmsAJ5qP/nfrRmMum9Zo893jz7wdwJy
-         Z9OZY5W/XGUIByKbpCx7zBc2k5CTBgrHyFM13DxKFmKWPgdnG7hrV3j37OKzitwwBeuj
-         lH5Rmb1HIA/P2kE5QK7X8eeIYcnoPpn662JEju3pG6MLoXbv1TgsMsMdY+HZUnaxkski
-         3mYe4T2CSxeutiaYgtVep2dN/sKVJt7zHMJ3mWoIAuSU7zSvTZKXK+B8U++nWylGAncC
-         m2LbS/FpYl3r3nan6UVfL0rDWALPmYSIbwfSnxXwgHzYO7TUa/m8s/wM/luNOyo+d2o7
-         FesA==
-X-Gm-Message-State: AOAM533VFIdD9Cswk2HhgufPfEtTTtIROW5R/Xm6bHCjM8nRaUmf8xkX
-        6alBQZ9AEKQ4arUJ6JhX0DMecqLpmiXUnHkZW7XIkw==
-X-Google-Smtp-Source: ABdhPJxtcxHf4vay9U02xLtRTxdahfswH8fg2jT+pmXLYU6yoQ0LrxrKPuLTeJOmlFoMAdLKDEoo0vUghrQVCwVvJug=
-X-Received: by 2002:a25:cd87:: with SMTP id d129mr27206628ybf.395.1593463642859;
- Mon, 29 Jun 2020 13:47:22 -0700 (PDT)
+        id S1732292AbgF2UuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:50:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46664 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731473AbgF2UuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 16:50:08 -0400
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4DEE020720;
+        Mon, 29 Jun 2020 20:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593463807;
+        bh=bf1gx6HwyAGL1lgUaDDu+79hOVdRZJ+m+V17HLQNqP8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=13bkz6rT88bW5ozmcTVlIDpLKBOZ9RXp5Dr9YU/HxouH/lD3TjAXms857cHHw2KkV
+         /2ixNXRUdyyGI63P/xu6opcacLXslGJGqcQJutmchqqO/13Dp1GMejsr+c+vg2puDb
+         qanzweqYc6g3z+fdluowc8Z2mlJoZ+ONrT0Cw5pw=
+Received: by mail-ot1-f45.google.com with SMTP id d4so16724576otk.2;
+        Mon, 29 Jun 2020 13:50:07 -0700 (PDT)
+X-Gm-Message-State: AOAM530enl5d2ZGClclltXDXi9w2bAcDslvSppaGQZUxrk+FJUEOQVwb
+        E3C8G1nI7fIl4noVO/zSJ+k5EZMzh9Tx4SgQlg==
+X-Google-Smtp-Source: ABdhPJzzF4kN7KDy2z2NmYmJxIweiy6VO0KsRTtdXWY9U7ErrDy0wmMgtxFXM1W9UJjV4JYyi44/uK+KLXtRv6Qmytk=
+X-Received: by 2002:a9d:2646:: with SMTP id a64mr14052433otb.107.1593463806654;
+ Mon, 29 Jun 2020 13:50:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <341326348.19635.1589398715534.JavaMail.zimbra@efficios.com>
- <CANn89i+GH2ukLZUcWYGquvKg66L9Vbto0FxyEt3pOJyebNxqBg@mail.gmail.com>
- <CANn89iL26OMWWAi18PqoQK4VBfFvRvxBJUioqXDk=8ZbKq_Efg@mail.gmail.com> <1132973300.15954.1593459836756.JavaMail.zimbra@efficios.com>
-In-Reply-To: <1132973300.15954.1593459836756.JavaMail.zimbra@efficios.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 29 Jun 2020 13:47:11 -0700
-Message-ID: <CANn89iJ4nh6VRsMt_rh_YwC-pn=hBqsP-LD9ykeRTnDC-P5iog@mail.gmail.com>
-Subject: Re: [regression] TCP_MD5SIG on established sockets
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Yuchung Cheng <ycheng@google.com>,
-        Jonathan Rajotte-Julien <joraj@efficios.com>
+References: <20200625170434.635114-1-masahiroy@kernel.org> <20200625170434.635114-5-masahiroy@kernel.org>
+In-Reply-To: <20200625170434.635114-5-masahiroy@kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 29 Jun 2020 14:49:55 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqL4pTFK_pSNn1cSvjzwdg71dVzM3P06BYYEwDj2t+swPA@mail.gmail.com>
+Message-ID: <CAL_JsqL4pTFK_pSNn1cSvjzwdg71dVzM3P06BYYEwDj2t+swPA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] dt-bindings: split DT schema check rules
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 12:43 PM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
+On Thu, Jun 25, 2020 at 11:05 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> ----- On May 13, 2020, at 3:56 PM, Eric Dumazet edumazet@google.com wrote:
+> When building %.dt.yaml from %.dts, two things happen in a row:
 >
-> > On Wed, May 13, 2020 at 12:49 PM Eric Dumazet <edumazet@google.com> wrote:
-> >>
-> >>
-> >> On Wed, May 13, 2020 at 12:38 PM Mathieu Desnoyers
-> >> <mathieu.desnoyers@efficios.com> wrote:
-> >> >
-> >> > Hi,
-> >> >
-> >> > I am reporting a regression with respect to use of TCP_MD5SIG/TCP_MD5SIG_EXT
-> >> > on established sockets. It is observed by a customer.
-> >> >
-> >> > This issue is introduced by this commit:
-> >> >
-> >> > commit 721230326891 "tcp: md5: reject TCP_MD5SIG or TCP_MD5SIG_EXT on
-> >> > established sockets"
-> >> >
-> >> > The intent of this commit appears to be to fix a use of uninitialized value in
-> >> > tcp_parse_options(). The change introduced by this commit is to disallow setting
-> >> > the TCP_MD5SIG{,_EXT} socket options on an established socket.
-> >> >
-> >> > The justification for this change appears in the commit message:
-> >> >
-> >> >    "I believe this was caused by a TCP_MD5SIG being set on live
-> >> >     flow.
-> >> >
-> >> >     This is highly unexpected, since TCP option space is limited.
-> >> >
-> >> >     For instance, presence of TCP MD5 option automatically disables
-> >> >     TCP TimeStamp option at SYN/SYNACK time, which we can not do
-> >> >     once flow has been established.
-> >> >
-> >> >     Really, adding/deleting an MD5 key only makes sense on sockets
-> >> >     in CLOSE or LISTEN state."
-> >> >
-> >> > However, reading through RFC2385 [1], this justification does not appear
-> >> > correct. Quoting to the RFC:
-> >> >
-> >> >    "This password never appears in the connection stream, and the actual
-> >> >     form of the password is up to the application. It could even change
-> >> >     during the lifetime of a particular connection so long as this change
-> >> >     was synchronized on both ends"
-> >> >
-> >> > The paragraph above clearly underlines that changing the MD5 signature of
-> >> > a live TCP socket is allowed.
-> >> >
-> >> > I also do not understand why it would be invalid to transition an established
-> >> > TCP socket from no-MD5 to MD5, or transition from MD5 to no-MD5. Quoting the
-> >> > RFC:
-> >> >
-> >> >   "The total header size is also an issue.  The TCP header specifies
-> >> >    where segment data starts with a 4-bit field which gives the total
-> >> >    size of the header (including options) in 32-byte words.  This means
-> >> >    that the total size of the header plus option must be less than or
-> >> >    equal to 60 bytes -- this leaves 40 bytes for options."
-> >> >
-> >> > The paragraph above seems to be the only indication that some TCP options
-> >> > cannot be combined on a given TCP socket: if the resulting header size does
-> >> > not fit. However, I do not see anything in the specification preventing any
-> >> > of the following use-cases on an established TCP socket:
-> >> >
-> >> > - Transition from no-MD5 to MD5,
-> >> > - Transition from MD5 to no-MD5,
-> >> > - Changing the MD5 key associated with a socket.
-> >> >
-> >> > As long as the resulting combination of options does not exceed the available
-> >> > header space.
-> >> >
-> >> > Can we please fix this KASAN report in a way that does not break user-space
-> >> > applications expectations about Linux' implementation of RFC2385 ?
-> [...]
-> >> > [1] RFC2385: https://tools.ietf.org/html/rfc2385
-> >>
-> >>
-> >> I do not think we want to transition sockets in the middle. since
-> >> packets can be re-ordered in the network.
-> >>
-> >> MD5 is about security (and a loose form of it), so better make sure
-> >> all packets have it from the beginning of the flow.
-> >>
-> >> A flow with TCP TS on can not suddenly be sending packets without TCP TS.
-> >>
-> >> Clearly, trying to support this operation is a can of worms, I do not
-> >> want to maintain such atrocity.
-> >>
-> >> RFC can state whatever it wants, sometimes reality forces us to have
-> >> sane operations.
-> >>
-> >> Thanks.
-> >>
-> > Also the RFC states :
-> >
-> > "This password never appears in the connection stream, and the actual
-> >    form of the password is up to the application. It could even change
-> >    during the lifetime of a particular connection so long as this change
-> >    was synchronized on both ends"
-> >
-> > It means the key can be changed, but this does not imply the option
-> > can be turned on/off dynamically.
-> >
+>  [1] Run DTC to convert %.dts into %.dt.yaml
 >
-> The change discussed previously (introduced by commit 721230326891 "tcp:
-> md5: reject TCP_MD5SIG or TCP_MD5SIG_EXT on established sockets") breaks
-> user-space ABI. As an example, the following BGP application uses
-> setsockopt TCP_MD5SIG on a live TCP socket:
+>  [2] Run dt-validate against %.dt.yaml
 >
-> https://github.com/IPInfusion/SDN-IP
+> Currently, when any .yaml schema file is updated, processed-schema.yaml
+> is regenerated, then both [1] and [2] are rerun for all .dts files.
 >
-> In addition to break user-space, it also breaks network protocol
-> expectations for network equipment vendors implementing RFC2385.
-> Considering that the goal of these protocols is interaction between
-> different network equipment, breaking compatibility on that side
-> is unexpected as well. Requiring to bring down/up the connection
-> just to change the TCP MD5 password is a no-go in networks with
-> high availability requirements. Changing the BGP authentication
-> password must be allowed without tearing down and re-establishing
-> the TCP sockets. Otherwise it doesn't scale for large network
-> operators to have to individually manage each individual TCP socket
-> in their network. However, based on the feedback I received, it
-> would be acceptable to tear-down the TCP connections and re-establish
-> them when enabling or disabling the MD5 option.
->
-> Here is a list of a few network vendors along with their behavior
-> with respect to TCP MD5:
->
-> - Cisco: Allows for password to be changed, but within the hold-down
-> timer (~180 seconds).
-> - Juniper: When password is initially set on active connection it will
-> reset, but after that any subsequent password changes no network
-> resets.
-> - Nokia: No notes on if they flap the tcp connection or not.
-> - Ericsson/RedBack: Allows for 2 password (old/new) to co-exist until
-> both sides are ok with new passwords.
-> - Meta-Switch: Expects the password to be set before a connection is
-> attempted, but no further info on whether they reset the TCP
-> connection on a change.
-> - Avaya: Disable the neighbor, then set password, then re-enable.
-> - Zebos: Would normally allow the change when socket connected.
->
->
+> Actually, we do not need to rerun [1] since the original .dts is not
+> updated.
 
-If you want to be able to _change_ md5 key, this is fine by me, please
-send a patch.
+I have plans (and an intern working on it) to integrate the schema
+checks into dtc. That's going to make turning on the schema checks
+just a flag to dtc. I'm not sure if adding the complexity here is
+worth it as I'd expect much of this patch to go away again.
 
-We can not dynamically turn on MD5, this is mentioned briefly in
-tcp_synack_options().
+Is there any negative impact on the absolute clean build time? I'm
+more concerned about that than optimizing rerunning.
 
-If you want to turn on MD5 on an established flow, then you must
-ensure that both SACK and TS were not enabled in the 3WHS,
-and then make sure nothing blows up in the stack.
+Rob
