@@ -2,60 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FF620E384
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFBD620E272
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390359AbgF2VPC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 29 Jun 2020 17:15:02 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:55692 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726912AbgF2S4r (ORCPT
+        id S2390095AbgF2VFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390154AbgF2VFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:56:47 -0400
-Received: from marcel-macpro.fritz.box (p5b3d2638.dip0.t-ipconnect.de [91.61.38.56])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 23289CECDA;
-        Mon, 29 Jun 2020 21:06:40 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH] dt-bindings: net: bluetooth: realtek: Fix uart-has-rtscts
- example
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200629180545.2879272-1-martin.blumenstingl@googlemail.com>
-Date:   Mon, 29 Jun 2020 20:56:45 +0200
-Cc:     devicetree <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Alistair Francis <alistair@alistair23.me>, anarsoul@gmail.com,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <8BBD6F0B-DE92-4241-999E-ED26040E891B@holtmann.org>
-References: <20200629180545.2879272-1-martin.blumenstingl@googlemail.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        Mon, 29 Jun 2020 17:05:16 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F68CC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:05:15 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id i14so18254637ejr.9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:05:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N5+uXhdVLL1JQ/BpOyWY0ygfez6SfYmoRUf/dprU/yU=;
+        b=DAjeBl1FR1/DsgxRPaw2h7sQ6NmKmhZOtQFKgN7YjvWQhxictsYYSeYGazOoUUQyVX
+         alqgM2kNHwP4fyBEJbljNuPX4+oLFlR2Kg2TWkD56BYOjT6EOB8jJLvp2Hdv+ufX1/nV
+         mmR4Vqn9Fw1p6ceCJxEKRz7RTmN7e+1f3A8vIkd6+JR64a8eHe4mZgHVXYmWhrkpCWMX
+         wBIybOQwCJa3YXNY71dAYltEmU1ivZPlvNAjUR6HNAK0i74Wp0jhtOIrxrhLRhBgNoAl
+         rXr7U7XMJJbc3tml365yyXerE1Qx0L2CcPue0xQ4AUqvS1l5pBgl+U9Y27beRtN3x621
+         UbIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N5+uXhdVLL1JQ/BpOyWY0ygfez6SfYmoRUf/dprU/yU=;
+        b=i3s3vRA8ZAglJ/oA1f2r6hKDTttIdEQ3yFNTAeh2eGO8bTFeSX7WXWWvXwLcch3QSj
+         VB+x5otjuCJDRcbkIJfN64Vsvb2FD4ZHdGQXXIlfcTYgaDnxFBiLRk0hQdt6O9lpFfEA
+         JhYad+hCcGdXLqrG69EGV5Qk0cy/XKWD94jVErQeQJwmYm5XQz2GWxgNg1dHtLvvYVC6
+         MAK8wFbaAe3ooEMr2h2CrHPAOlLNEKcDQk/PNNX65hW6m+oLA+KFogVCxnH31gwXRQAf
+         hKj6dkmwx9eV65UY/eQpXEPmdBV0RDuYWQvO6LIMy+RV6tq1+ixMMuT8F53RQ3oMoX4a
+         Lx2A==
+X-Gm-Message-State: AOAM531tevBtox3+0L7+J+Ig08gu2lm6WYMbmu1w4aPzMolYGelRWdwI
+        iOg0Q40LGt0Ar6UNdhm1mxcvWDlARbFOgJO80Ty3Ww==
+X-Google-Smtp-Source: ABdhPJwx9rhIytg8KU9TIpWcmbacvDsAZoA4TlJzTKaE74b20apQO9Ypzds5Sl0QWHtudAJj5L+BZoDvzVK9463aznE=
+X-Received: by 2002:a17:906:ef2:: with SMTP id x18mr15149889eji.547.1593464713805;
+ Mon, 29 Jun 2020 14:05:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200629163851.2130450-1-pmalani@chromium.org>
+In-Reply-To: <20200629163851.2130450-1-pmalani@chromium.org>
+From:   Guenter Roeck <groeck@google.com>
+Date:   Mon, 29 Jun 2020 14:05:02 -0700
+Message-ID: <CABXOdTe-hY98YFusFkS+C8iVWZANVWcavpKSmaYtjC11yMgFrg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] platform/chrome: cros_ec_typec: Use workqueue for
+ port update
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
-
-> uart-has-rtscts is a boolean property. These are defined as present
-> (which means that this property evaluates to "true") or absent (which
-> means that this property evaluates to "false"). Remove the numeric value
-> from the example to make it comply with the boolean property bindings.
-> 
-> Fixes: 1cc2d0e021f867 ("dt-bindings: net: bluetooth: Add rtl8723bs-bluetooth")
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+On Mon, Jun 29, 2020 at 9:38 AM Prashant Malani <pmalani@chromium.org> wrote:
+>
+> Use a work queue to call the port update routines, instead of doing it
+> directly in the PD notifier callback. This will prevent other drivers
+> with PD notifier callbacks from being blocked on the port update routine
+> completing.
+>
+> Signed-off-by: Prashant Malani <pmalani@chromium.org>
 > ---
-> Documentation/devicetree/bindings/net/realtek-bluetooth.yaml | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Changes in v3:
+> - Use new 100 character line length limit.
+>
+> Changes in v2:
+> - No changes.
+>
+>  drivers/platform/chrome/cros_ec_typec.c | 25 ++++++++++++++++++++-----
+>  1 file changed, 20 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> index 0c041b79cbba..0beb62bf5adf 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -58,6 +58,7 @@ struct cros_typec_data {
+>         /* Array of ports, indexed by port number. */
+>         struct cros_typec_port *ports[EC_USB_PD_MAX_PORTS];
+>         struct notifier_block nb;
+> +       struct work_struct port_work;
+>  };
+>
+>  static int cros_typec_parse_port_props(struct typec_capability *cap,
+> @@ -619,18 +620,26 @@ static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
+>         return 0;
+>  }
+>
+> -static int cros_ec_typec_event(struct notifier_block *nb,
+> -                              unsigned long host_event, void *_notify)
+> +static void cros_typec_port_work(struct work_struct *work)
+>  {
+> -       struct cros_typec_data *typec = container_of(nb, struct cros_typec_data,
+> -                                                    nb);
+> -       int ret, i;
+> +       struct cros_typec_data *typec = container_of(work, struct cros_typec_data, port_work);
+> +       int ret;
+> +       int i;
+>
 
-patch has been applied to bluetooth-next tree.
+I know I am getting picky here, but this seems like a personal
+preference change. There is no "one variable declaration per line"
+coding style rule.
 
-Regards
+>         for (i = 0; i < typec->num_ports; i++) {
+>                 ret = cros_typec_port_update(typec, i);
+>                 if (ret < 0)
+>                         dev_warn(typec->dev, "Update failed for port: %d\n", i);
+>         }
+> +}
+> +
+> +
 
-Marcel
+... but anyway, there should be no double empty lines.
 
+> +static int cros_ec_typec_event(struct notifier_block *nb,
+> +                              unsigned long host_event, void *_notify)
+> +{
+> +       struct cros_typec_data *typec = container_of(nb, struct cros_typec_data, nb);
+> +
+> +       schedule_work(&typec->port_work);
+>
+>         return NOTIFY_OK;
+>  }
+> @@ -689,6 +698,12 @@ static int cros_typec_probe(struct platform_device *pdev)
+>         if (ret < 0)
+>                 return ret;
+>
+> +       INIT_WORK(&typec->port_work, cros_typec_port_work);
+> +
+> +       /*
+> +        * Safe to call port update here, since we haven't registered the
+> +        * PD notifier yet.
+> +        */
+>         for (i = 0; i < typec->num_ports; i++) {
+>                 ret = cros_typec_port_update(typec, i);
+>                 if (ret < 0)
+> --
+> 2.27.0.212.ge8ba1cc988-goog
+>
