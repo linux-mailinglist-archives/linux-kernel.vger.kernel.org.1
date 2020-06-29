@@ -2,225 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696C320E057
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0031A20DFEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388057AbgF2UpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:45:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
+        id S1731693AbgF2Uk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731578AbgF2TN6 (ORCPT
+        with ESMTP id S1730481AbgF2TOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:58 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BBAC0A88B0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 00:36:22 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id w3so2622637wmi.4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 00:36:22 -0700 (PDT)
+        Mon, 29 Jun 2020 15:14:09 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A42FC0A893A;
+        Mon, 29 Jun 2020 00:38:08 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id k6so13574332ili.6;
+        Mon, 29 Jun 2020 00:38:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=lpjt1zswNKMvS5djY3ctzDxWqp304nocjJTBTZb5p18=;
-        b=Xb6v613GSJsh7dDsApm/ir5qwYnG+gAoxzl8vTH96tkpKLL1mF97c2GqfpOtrQj2W6
-         QQcjmzdmPhYC5hJPSKm2uaEzcBag8wI9ndCV3kP0BuM1nBzpeOae8Pc2Q63/2fAHNHPu
-         ISeB8G+ht4jUjXD9Ogb10cbG/Jv1732N9rB8ogsB5xT5AXOAvNFZUT2PbFo8i3vsPozb
-         A/V+3Oi32EeHw2wJz8+xAtA7A3nnyj2tPKOCKp6oh7CLEV0O2IQjS+etZguzyx3xCZUo
-         pLU6BFrepzT0sbG0LLQ2jF33V7P0HHfNaFDSJnxoCXozxRk6XjuvnW/efM5mFPgmYySb
-         fAxA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zTLnTytmqwPo2QrVotAhwjgdIikFCW3Y9V9c+Ul628k=;
+        b=hO7YgCFEdPYQrvp3kFZV2OXX7bnz/HWxL/I8M9F3srON/2EpwrjADVZaSmO3wpR10e
+         xShjxgypbemlvSD4Bz2KZS86mWY4elE17aaWa4OOf7VRrcaMFZDnWR2kmmozvactxe8V
+         vM+6Leu3iiG3sATYROu72hMLLm2MvJ+916wUcSNvcmS/VTVDrNw4lnWf+BAIOfmSaLzi
+         0DWQpAEbhPYF8NHE2JoIR9A36MthArCCdlrbViQbFS8mqlUIyyL6FA3raDQc22IukKk8
+         hRi7ulSD+AEVcXSzY1xkQF/eQcZYVfkoF4U4jwu4IMEjvmBXghP0hrkbuxAD1I/tQvV6
+         mi2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=lpjt1zswNKMvS5djY3ctzDxWqp304nocjJTBTZb5p18=;
-        b=DUloxUcfZx8fCtpPC3BtYTSGvpYT6EQ9O+Ne6scUOM2wm7Fpy3GXYk4BAk+tifxv39
-         b6grGcsDIL1x5KpfiY6xlS2tvfqUwZGg2oS2gczepeJlABOMxwLMvFWilNppe0PZPNXG
-         3HSoBKpJgOASgzfD93rc/Un4dhuGIhe/5XuDZrJ43rUcBcE6n4OQkK/Cq3/HYBJ0KJyu
-         JcncJiPJanOnd5ZKLp00qoTleHg5Luqf0br5bcBgMKMbF7tDCpig8xhk0TGxh+mnsISt
-         0oGydvq/pRg+dVpZ/sHC2sJU4w0gX4NWEiNyAn58rvFRLWkIF7lP4oAe99rqVTU1ODJJ
-         l93Q==
-X-Gm-Message-State: AOAM530pxTC9og/JncpZCo8XB1UGd8/F68702OKmI/pNuD/hhtkNTVMo
-        iPAhaP/S3iglRRwrQ11Z3vjItA==
-X-Google-Smtp-Source: ABdhPJy67jjtg4NKwoCcMRemNsFqljoxw5xMsjUhinUQsYu2vFwl6e5TypTLoHbqRvCXbQ6CnBoYsA==
-X-Received: by 2002:a7b:c345:: with SMTP id l5mr16097005wmj.31.1593416180947;
-        Mon, 29 Jun 2020 00:36:20 -0700 (PDT)
-Received: from dell ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id a126sm26988070wme.28.2020.06.29.00.36.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 00:36:19 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 08:36:17 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/4] ARM: dts: uniphier: change support card to
- simple-mfd from simple-bus
-Message-ID: <20200629073617.GF177734@dell>
-References: <20200623114614.792648-1-yamada.masahiro@socionext.com>
- <20200623114614.792648-4-yamada.masahiro@socionext.com>
- <20200623122413.GA954398@dell>
- <CAK7LNAR-dm6Zbtt9MsUunn9+qqwTtRCbq4Wzb=8uKLtfaLK6TQ@mail.gmail.com>
- <20200624181605.GJ954398@dell>
- <CAK7LNATFUX56t=wn-3qOSYLwESp63gqDWjADEVQ1g1CYrGxA3g@mail.gmail.com>
- <20200625145726.GT954398@dell>
- <CAK7LNAQdoe_eS8d9AoF1p4QgAB7oUM9aA+qgFS2GwPZsZbTnhg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zTLnTytmqwPo2QrVotAhwjgdIikFCW3Y9V9c+Ul628k=;
+        b=cNaE0ttekSHwOIIfqsCLdzL+DKkW2lyjXcYGQH18Ro8/3pd0iT0Ru5nPnHpwbcayg4
+         g+CYWeZSxCXijoODh2ywCQtehaxUEK7tbGnjctTGKPExf8jt1DpTbC/kuCsIFiK4NjkT
+         /elxKQJG7ZtJOc1e3DRKONK+4GtIbQDRle2+NU42RRv6+eZWlmmO5WAjSQKJUWLg0Gk+
+         o6RPPt1wZJWl5wW80kGrrtHJBl7xfnSjEd+ubUsySb4xUXYlUvdfh/jqouhiOIupvLq4
+         lC9cLHWjNjWeD8JA6kd4pO4lypcv14SVBTdDj99uPQ76Vy2ZmdBbaPyLiewnMvvNAab5
+         5f0w==
+X-Gm-Message-State: AOAM5300mW8CXUI/OO5fkm26IgnI39xs+Xa01vGy1EBJmM/UHkO765Wq
+        a10E1mn+53yGO4VOKNrwJbDgNQUrLTZnJJtzBjQ=
+X-Google-Smtp-Source: ABdhPJzyfEuSvsvqAyieDmK4mMBIE5np8Cjw7UhIz6L0NfvR0InXzI9MesOfgOM7McMyA0mnJHM4y1HqDRacRIX8BDg=
+X-Received: by 2002:a92:940f:: with SMTP id c15mr15673200ili.204.1593416287611;
+ Mon, 29 Jun 2020 00:38:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNAQdoe_eS8d9AoF1p4QgAB7oUM9aA+qgFS2GwPZsZbTnhg@mail.gmail.com>
+References: <1593410434-19406-1-git-send-email-chunfeng.yun@mediatek.com>
+In-Reply-To: <1593410434-19406-1-git-send-email-chunfeng.yun@mediatek.com>
+From:   Peter Chen <hzpeterchen@gmail.com>
+Date:   Mon, 29 Jun 2020 15:37:54 +0800
+Message-ID: <CAL411-qVjxYk7f+b74XHfj7jpxALS4LYUKe0XdSfwRZcQibNfA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] usb: mtu3: disable USB2 LPM
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <felipe.balbi@linux.intel.com>,
+        USB list <linux-usb@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Jun 2020, Masahiro Yamada wrote:
+On Mon, Jun 29, 2020 at 2:04 PM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
+>
+> A SuperSpeed device shall include the USB 2.0 extension descriptor
+> and shall support LPM when operating in USB 2.0 HS mode(see usb3.2
+> spec9.6.2.1). But we always don't support it, so disable it by
+> default, otherwise device will enter LPM suspend mode when
+> connected to Win10 system.
 
-> On Thu, Jun 25, 2020 at 11:57 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Thu, 25 Jun 2020, Masahiro Yamada wrote:
-> >
-> > > On Thu, Jun 25, 2020 at 3:16 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > > >
-> > > > On Thu, 25 Jun 2020, Masahiro Yamada wrote:
-> > > >
-> > > > > On Tue, Jun 23, 2020 at 9:24 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > > > > >
-> > > > > > On Tue, 23 Jun 2020, Masahiro Yamada wrote:
-> > > > > >
-> > > > > > > 'make ARCH=arm dtbs_check' emits the following warning:
-> > > > > > >
-> > > > > > >   support-card@1,1f00000: $nodename:0: 'support-card@1,1f00000' does not match '^(bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
-> > > > > > >
-> > > > > > > Maybe, simple-mfd could be a better fit for this device.
-> > > > > >
-> > > > > > The two should be equivalent.
-> > > > >
-> > > > > Yes, I know.
-> > > > > That's why I can change "simple-bus" to "simple-mfd"
-> > > > > with no risk.
-> > > > >
-> > > > > The difference is schema-check.
-> > > > >
-> > > > > The node name for "simple-bus" is checked by 'make dtbs_check'.
-> > > > >
-> > > > > See this code:
-> > > > > https://github.com/robherring/dt-schema/blob/v2020.05/schemas/simple-bus.yaml#L17
-> > > > >
-> > > > > Even if I rename the node, it does not accept the
-> > > > > unit name '1,1f00000'
-> > > > >
-> > > > > > What do you mean by "maybe"?  Does this squash the warning?
-> > > > >
-> > > > > "maybe" means I am not quite sure
-> > > > > which compatible is a better fit
-> > > > > to describe this device.
-> > > > >
-> > > > > As mentioned above, simple-bus and simple-mfd
-> > > > > are interchangeable from a driver point of view.
-> > > > >
-> > > > > This add-on board is integrated with various peripherals
-> > > > > such as 16550a serial, smsc9115 ether etc.
-> > > > > The address-decode is implemented in a CPLD device.
-> > > > > It has chip selects and local addresses, which are mapped to
-> > > > > the parent.
-> > > > >
-> > > > > It can be either simple-bus or simple-mfd, I think.
-> > > > >
-> > > > >
-> > > > > dt-schema checks the node name of simple-bus.
-> > > > > Currently, there is no check for simple-mfd.
-> > > > >
-> > > > > So, I think this patch is an easy solution
-> > > > > to fix the warning.
-> > > >
-> > > > Yes, looking at the documentation it seems as though 'simple-mfd'
-> > > > would be a better fit.  Is the device a single IP with various
-> > > > different functions?
-> > >
-> > > Not an IP.
-> > >
-> > > This is a small board that consists of
-> > > a CPLD + ethernet controller + serial controller + LED, etc.
-> >
-> > Then simple MFD does not seem like a good fit.
-> >
-> > Neither does 'simple-bus'.
-> 
-> Then, I do not know what to do.
-> 
-> 
-> This board connection is so simple
-> that no hardware initialization needed to get access
-> to peripherals.
-> 
-> So, 'simple-bus' or 'simple-mfd' is preferred.
-> 
-> If this is not either simple-bus or simple-mfd,
-> I need a special driver to probe the
-> child devices such as ethernet, serial etc.
-> 
-> 
-> 
-> > What is it you're trying to describe in the device hierarchy?
-> 
-> 
-> The connection is as follows:
-> 
-> 
-> |-Main board -|      |----- add-on board ----|
-> |             |      |     (this board)      |
-> |             |      |                       |
-> |    (SoC) ---|------|--- CPLD --- ethernet  |
-> |             |      |          |- serial    |
-> |-------------|      |          |- LED       |
->                      |                       |
->                      |-----------------------|
-> 
-> 
-> 
-> uniphier-support-card.dtsi describes the
-> "add-on board" part.
-> Address-decode is implemented in CPLD.
-> 
-> 
-> So, the criteria to become MFD is
-> whether it is an IP integrated into SoC.
-> 
-> 
-> - implemented in an SoC  --> MFD
+Linux also supports USB2 LPM. Besides, USB-IF CH9 test will check
+LPM support if the device is USB 2.1, how could you deal with it?
 
-If
+Peter
 
- s/in an SoC/in a single piece of silicon/
-
-... then yes.
-
-> - implemented in a board + CPLD  --> not MFD
-> 
-> Right?
-
-Right.  Unless all H/W is represented inside the CPLD, in which case
-the CPLD is, in theory, the MFD.  Although, due to the nature of
-CPLDs, this is a slippery slope.
-
-You may want something like:
-
-  arch/arm64/boot/dts/rockchip/rk3399-roc-pc-mezzanine.dts
-
-... where the add-on board is represented separately (not in the
-same hierarchical structure as the main board.  The main board is then
-included as a DTSI from the add-on board.
-
-It might also be worth looking at how consumer boards such as the
-RaspberryPi, BeagleBoard and the like handle their add-on boards,
-mezzanines, capes, hats, etc.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>  drivers/usb/mtu3/mtu3_core.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/usb/mtu3/mtu3_core.c b/drivers/usb/mtu3/mtu3_core.c
+> index 9dd0216..50d6a40 100644
+> --- a/drivers/usb/mtu3/mtu3_core.c
+> +++ b/drivers/usb/mtu3/mtu3_core.c
+> @@ -604,6 +604,8 @@ static void mtu3_regs_init(struct mtu3 *mtu)
+>         mtu3_clrbits(mbase, U3D_MISC_CTRL, VBUS_FRC_EN | VBUS_ON);
+>         /* enable automatical HWRW from L1 */
+>         mtu3_setbits(mbase, U3D_POWER_MANAGEMENT, LPM_HRWE);
+> +       /* always reject LPM request */
+> +       mtu3_setbits(mbase, U3D_POWER_MANAGEMENT, LPM_MODE(1));
+>
+>         /* use new QMU format when HW version >= 0x1003 */
+>         if (mtu->gen2cp)
+> --
+> 1.9.1
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
