@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420C520D0C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E0720D0CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgF2Sfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:35:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56904 "EHLO mail.kernel.org"
+        id S1726082AbgF2SgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:36:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726228AbgF2SfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:35:23 -0400
+        id S1726632AbgF2Sfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:35:39 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC8F124683;
-        Mon, 29 Jun 2020 15:19:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35CA02468A;
+        Mon, 29 Jun 2020 15:19:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593443982;
-        bh=Lh/wP2IgRNVU0BEv+HYmvbnZxJKAdQ3IZPOli5tfthM=;
+        s=default; t=1593443986;
+        bh=7VlxaRnLEAXuzxc1DqjOaN93RU3LWp7PGuQKVENWRGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tcDuA73RwbUDk2Q9lWydpnD52xOIs05glgLoHDWu56sZJV9fDAt6rSe1glrKc5fRJ
-         xQi0s54kKBuyxH6m0ddwUZ590gtnQ1KBstpuFifnevT9Qu9w1U9lvcjE0Tsm+GSFDt
-         DK4M531XXdRkNvsQOdziCFiKjJ0/SL2PVZVNMyLw=
+        b=Hjb/P3hWbOp5rp0qejC78C+JuRJqvFcJicEYiIh1m073CDzK3quy6GUQ4ZfpD46t5
+         tSQsDqW2CIK2nf7QJ9I0FDWHZ+FxXhXynL7CvgQtO8IZENDuxEzPXzgIE1Z7rMbJBi
+         0IrY9ESK8HCSB5fIHTJN8Gleu46CUggJZoyO3VRI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mathias Nyman <mathias.nyman@linux.intel.com>,
+Cc:     Zheng Bin <zhengbin13@huawei.com>, Christoph Hellwig <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.7 086/265] xhci: Fix incorrect EP_STATE_MASK
-Date:   Mon, 29 Jun 2020 11:15:19 -0400
-Message-Id: <20200629151818.2493727-87-sashal@kernel.org>
+Subject: [PATCH 5.7 090/265] loop: replace kill_bdev with invalidate_bdev
+Date:   Mon, 29 Jun 2020 11:15:23 -0400
+Message-Id: <20200629151818.2493727-91-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629151818.2493727-1-sashal@kernel.org>
 References: <20200629151818.2493727-1-sashal@kernel.org>
@@ -48,39 +50,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Zheng Bin <zhengbin13@huawei.com>
 
-commit dceea67058fe22075db3aed62d5cb62092be5053 upstream.
+[ Upstream commit f4bd34b139a3fa2808c4205f12714c65e1548c6c ]
 
-EP_STATE_MASK should be 0x7 instead of 0xf
+When a filesystem is mounted on a loop device and on a loop ioctl
+LOOP_SET_STATUS64, because of kill_bdev, buffer_head mappings are getting
+destroyed.
+kill_bdev
+  truncate_inode_pages
+    truncate_inode_pages_range
+      do_invalidatepage
+        block_invalidatepage
+          discard_buffer  -->clear BH_Mapped flag
 
-xhci spec 6.2.3 shows that the EP state field in the endpoint context data
-structure consist of bits [2:0].
-The old value included a bit from the next field which fortunately is a
- RsvdZ region. So hopefully this hasn't caused too much harm
+sb_bread
+  __bread_gfp
+  bh = __getblk_gfp
+  -->discard_buffer clear BH_Mapped flag
+  __bread_slow
+    submit_bh
+      submit_bh_wbc
+        BUG_ON(!buffer_mapped(bh))  --> hit this BUG_ON
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20200624135949.22611-2-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 5db470e229e2 ("loop: drop caches if offset or block_size are changed")
+Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/block/loop.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-index 86cfefdd6632b..c80710e474769 100644
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -716,7 +716,7 @@ struct xhci_ep_ctx {
-  * 4 - TRB error
-  * 5-7 - reserved
-  */
--#define EP_STATE_MASK		(0xf)
-+#define EP_STATE_MASK		(0x7)
- #define EP_STATE_DISABLED	0
- #define EP_STATE_RUNNING	1
- #define EP_STATE_HALTED		2
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index da693e6a834e5..418bb4621255a 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -1289,7 +1289,7 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
+ 	if (lo->lo_offset != info->lo_offset ||
+ 	    lo->lo_sizelimit != info->lo_sizelimit) {
+ 		sync_blockdev(lo->lo_device);
+-		kill_bdev(lo->lo_device);
++		invalidate_bdev(lo->lo_device);
+ 	}
+ 
+ 	/* I/O need to be drained during transfer transition */
+@@ -1320,7 +1320,7 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
+ 
+ 	if (lo->lo_offset != info->lo_offset ||
+ 	    lo->lo_sizelimit != info->lo_sizelimit) {
+-		/* kill_bdev should have truncated all the pages */
++		/* invalidate_bdev should have truncated all the pages */
+ 		if (lo->lo_device->bd_inode->i_mapping->nrpages) {
+ 			err = -EAGAIN;
+ 			pr_warn("%s: loop%d (%s) has still dirty pages (nrpages=%lu)\n",
+@@ -1565,11 +1565,11 @@ static int loop_set_block_size(struct loop_device *lo, unsigned long arg)
+ 		return 0;
+ 
+ 	sync_blockdev(lo->lo_device);
+-	kill_bdev(lo->lo_device);
++	invalidate_bdev(lo->lo_device);
+ 
+ 	blk_mq_freeze_queue(lo->lo_queue);
+ 
+-	/* kill_bdev should have truncated all the pages */
++	/* invalidate_bdev should have truncated all the pages */
+ 	if (lo->lo_device->bd_inode->i_mapping->nrpages) {
+ 		err = -EAGAIN;
+ 		pr_warn("%s: loop%d (%s) has still dirty pages (nrpages=%lu)\n",
 -- 
 2.25.1
 
