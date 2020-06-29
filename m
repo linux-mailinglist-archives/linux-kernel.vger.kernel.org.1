@@ -2,140 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB6420CB9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 04:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A5520CBA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 04:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbgF2CAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 22:00:36 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:22033 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726395AbgF2CAf (ORCPT
+        id S1726506AbgF2CDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 22:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726345AbgF2CDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 22:00:35 -0400
-X-UUID: d4dad5e9f2de48a7b2effb1e3118ad79-20200629
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=4lFMxuhJ25naDr/+y71J6EdZIeUqF8IshiKTFLqt/kg=;
-        b=ee9t3F11yR6wmVzfKNgLjYBuVH3SHqVpPM23ra21biUVzpNs3XC0xuqdYq37SPMLS84+IF0Ank/3XrMyFFQKj7535J5eATL8tnBkNId7+85wQio3V8U4BjPctq9IE8qeSshLnzA0i2p8JEPh9F4yjVhVEDgzgvYY02gEoOX0jcc=;
-X-UUID: d4dad5e9f2de48a7b2effb1e3118ad79-20200629
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 1803340885; Mon, 29 Jun 2020 10:00:28 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N1.mediatek.inc
- (172.27.4.71) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Jun
- 2020 10:00:26 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 29 Jun 2020 10:00:26 +0800
-Message-ID: <1593396009.15820.6.camel@mhfsdcap03>
-Subject: Re: [PATCH] i2c: mediatek: Add to support continuous mode
-From:   Qii Wang <qii.wang@mediatek.com>
-To:     Qiangming Xia <qiangming.xia@mediatek.com>
-CC:     <wsa@the-dreams.de>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
-Date:   Mon, 29 Jun 2020 10:00:09 +0800
-In-Reply-To: <20200619080643.25269-1-qiangming.xia@mediatek.com>
-References: <20200619080643.25269-1-qiangming.xia@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Sun, 28 Jun 2020 22:03:23 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38918C03E979
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 19:03:22 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id p3so7595450pgh.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 19:03:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=QDZVkEGnIrKfbxBfohB8JpyHIKxziKsOzFFQJQW1Y2g=;
+        b=B0UhxI61raVzv+EmENSz8VpoRV7j2xH27ETZQ52gSc61GH1r/h/ezXpRdNhwEbZHtK
+         uBy8nUuY8AqprEoCZxvLTVbKPajt3AEutHfbdumpGqZF0QJpQ1Lrrjn0JqP2dW/V/vTp
+         CKJkhzsPVPftyk8Su7NczWON8qvTBXgbq0dBHTeyMy9gGvsoENibT8lhswpFsBOfz3Yx
+         N+4hBdcssVo/al2DqZvXi48JBD9Qk2UPSyY4Ann/JkDgP75TCf16LaXHVRTAdh0s4Jle
+         KNFS1cDM1sqceGyjDPKA53I4oYdjBEode/i43sgesSCkXk1R8a2UZmdcGwphqJy6W2jR
+         KmtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QDZVkEGnIrKfbxBfohB8JpyHIKxziKsOzFFQJQW1Y2g=;
+        b=Vq0yaO9m9n9O/t1l38GLU3Yeyrss0K/mkXm0YzPvgP15q8x3Qn9oZM4ACjld0ql9qr
+         WcHMpGkX3kWBCcYZmK5q30OBE5ACcIoj/puGkVILsPV/4F72W04Um3sxXuLzIzI0NjNi
+         HEHV5F3wF0tQOuXXS5Oi3q7kODx/YtMIuEozkLmuY5QJnDdx361+pEKF+HP+ooIu5v0h
+         CaIQylD0Su7M75qkJ9fzODxS6zTf5FFfG18KdV3xcvzRa79+PapxicY590uxB/Z3CMiy
+         gdib5jLkg2FttJK4cRHdOwZzZm78TAwqeT6tjiiz2bb7I6G/FOqyWeP3faZZIcUjq2YV
+         QIWg==
+X-Gm-Message-State: AOAM533ISsAPFH4df2Ek5HxmFAIhv7iehu05AM8yROSt3AC4+w2P7Chh
+        Qon28UoahLA1oiZ4llBuERKRKAyAcgc=
+X-Google-Smtp-Source: ABdhPJxxkJXjW4f5no0NjX84TxHnLzmVO8fiRUg6nyOW06GtGPhTBdBZIsVWaxOWXIxLMVXsL+WGCg==
+X-Received: by 2002:aa7:9184:: with SMTP id x4mr12338959pfa.271.1593396201686;
+        Sun, 28 Jun 2020 19:03:21 -0700 (PDT)
+Received: from localhost ([122.172.127.76])
+        by smtp.gmail.com with ESMTPSA id s10sm4726713pjf.3.2020.06.28.19.03.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 28 Jun 2020 19:03:21 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 07:33:18 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
+        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: spear: Align L2 cache-controller nodename with
+ dtschema
+Message-ID: <20200629020318.etzz3xsju7shcglr@vireshk-i7>
+References: <20200626080557.3680-1-krzk@kernel.org>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: C31847E92F6DEFDA176D4CA2DAB465987940A895748A3FC01C0609B5BC4887B02000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200626080557.3680-1-krzk@kernel.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUWlhbmdtaW5nOg0KCURvIHlvdSBoYXZlIHRoZSBzcGVjaWZpYyB0aW1pbmcgY29zdCBkYXRh
-IGFib3V0IHRoZSAiY29udGludW91cyBtb2RlIj8NCklzIGl0IGJldHRlciB0aGFuIHRoZSBkZWZh
-dWx0IG11bHRpLXdyaXRlIG1vZGUob25lIG1lc3NhZ2UgYnkgb25lDQptZXNzYWdlKSA/SSBuZWVk
-IHRvIGtub3cgaWYgdGhpcyBwYXRjaCBpcyB2ZXJ5IG5lY2Vzc2FyeS4NCg0KT24gRnJpLCAyMDIw
-LTA2LTE5IGF0IDE2OjA2ICswODAwLCBRaWFuZ21pbmcgWGlhIHdyb3RlOg0KPiBGcm9tOiAicWlh
-bmdtaW5nLnhpYSIgPHFpYW5nbWluZy54aWFAbWVkaWF0ZWsuY29tPg0KPiANCj4gICAgIE1lZGlh
-dGVrIGkyYyBjb250cm9sbGVyIHN1cHBvcnQgZm9yIGNvbnRpbnVvdXMgbW9kZSwNCj4gaXQgYWxs
-b3cgdG8gdHJhbnNmZXIgb25jZSBtdWx0aXBsZSB3cml0aW5nIG1lc3NhZ2VzIG9mIGVxdWFsIGxl
-bmd0aC4NCj4gICAgIEZvciBleGFtcGxlLCBhIHNsYXZlIG5lZWQgd3JpdGUgYSBzZXJpYWwgb2Yg
-bm9uLWNvbnRpbnVvdXMNCj4gb2Zmc2V0IHJhbmdlIGluIGNoaXAsZS5nLiB3cml0aW5nIG9mZnNl
-dCAwLG9mZnNldCAyIGFuZCBvZmZzZXQgNC4NCj4gTm9ybWFsbHksIGl0IG5lZWQgdGhyZWUgdGlt
-ZXMgaTJjIHdyaXRlIG9wZXJhdGlvbi4gSG93ZXZlcixpdCBjYW4NCj4gdXNlIG9uY2UgdHJhbnNm
-ZXIgdG8gZmluaXNoIGl0IGJ5IHVzaW5nIGNvbnRpbnVvdXMgbW9kZS4NCj4gDQo+IENoYW5nZS1J
-ZDogSWYwNjk5MWUzZmQzMjg2N2JkZWFhY2YxNWJiMjQ4NjRkNWM1OTA0ZDANCj4gU2lnbmVkLW9m
-Zi1ieTogUWlhbmdtaW5nIFhpYSA8cWlhbmdtaW5nLnhpYUBtZWRpYXRlay5jb20+DQo+IC0tLQ0K
-PiAgZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYyB8IDY3ICsrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKw0KPiAgMSBmaWxlIGNoYW5nZWQsIDY3IGluc2VydGlvbnMoKykNCj4g
-DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4eC5jIGIvZHJpdmVy
-cy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYw0KPiBpbmRleCBkZWVmNjllNTY5MDYuLjc2ZWM2NWQ4
-NjlmNiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYw0KPiAr
-KysgYi9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4eC5jDQo+IEBAIC05Nyw2ICs5Nyw3IEBA
-IGVudW0gbXRrX3RyYW5zX29wIHsNCj4gIAlJMkNfTUFTVEVSX1dSID0gMSwNCj4gIAlJMkNfTUFT
-VEVSX1JELA0KPiAgCUkyQ19NQVNURVJfV1JSRCwNCj4gKwlJMkNfTUFTVEVSX0NPTlRJTlVPVVNf
-V1IsDQo+ICB9Ow0KPiAgDQo+ICBlbnVtIEkyQ19SRUdTX09GRlNFVCB7DQo+IEBAIC04NDYsNiAr
-ODQ3LDkgQEAgc3RhdGljIGludCBtdGtfaTJjX2RvX3RyYW5zZmVyKHN0cnVjdCBtdGtfaTJjICpp
-MmMsIHN0cnVjdCBpMmNfbXNnICptc2dzLA0KPiAgCQkJCQkgICAgT0ZGU0VUX1RSQU5TRkVSX0xF
-Tik7DQo+ICAJCX0NCj4gIAkJbXRrX2kyY193cml0ZXcoaTJjLCBJMkNfV1JSRF9UUkFOQUNfVkFM
-VUUsIE9GRlNFVF9UUkFOU0FDX0xFTik7DQo+ICsJfSBlbHNlIGlmIChpMmMtPm9wID09IEkyQ19N
-QVNURVJfQ09OVElOVU9VU19XUikgew0KPiArCQltdGtfaTJjX3dyaXRldyhpMmMsIG1zZ3MtPmxl
-biAvIG51bSwgT0ZGU0VUX1RSQU5TRkVSX0xFTik7DQo+ICsJCW10a19pMmNfd3JpdGV3KGkyYywg
-bnVtLCBPRkZTRVRfVFJBTlNBQ19MRU4pOw0KPiAgCX0gZWxzZSB7DQo+ICAJCW10a19pMmNfd3Jp
-dGV3KGkyYywgbXNncy0+bGVuLCBPRkZTRVRfVFJBTlNGRVJfTEVOKTsNCj4gIAkJbXRrX2kyY193
-cml0ZXcoaTJjLCBudW0sIE9GRlNFVF9UUkFOU0FDX0xFTik7DQo+IEBAIC04OTYsNiArOTAwLDIz
-IEBAIHN0YXRpYyBpbnQgbXRrX2kyY19kb190cmFuc2ZlcihzdHJ1Y3QgbXRrX2kyYyAqaTJjLCBz
-dHJ1Y3QgaTJjX21zZyAqbXNncywNCj4gIAkJCXdyaXRlbChyZWdfNGdfbW9kZSwgaTJjLT5wZG1h
-YmFzZSArIE9GRlNFVF9UWF80R19NT0RFKTsNCj4gIAkJfQ0KPiAgDQo+ICsJCXdyaXRlbCgodTMy
-KXdwYWRkciwgaTJjLT5wZG1hYmFzZSArIE9GRlNFVF9UWF9NRU1fQUREUik7DQo+ICsJCXdyaXRl
-bChtc2dzLT5sZW4sIGkyYy0+cGRtYWJhc2UgKyBPRkZTRVRfVFhfTEVOKTsNCj4gKwl9IGVsc2Ug
-aWYgKGkyYy0+b3AgPT0gSTJDX01BU1RFUl9DT05USU5VT1VTX1dSKSB7DQo+ICsJCXdyaXRlbChJ
-MkNfRE1BX0lOVF9GTEFHX05PTkUsIGkyYy0+cGRtYWJhc2UgKyBPRkZTRVRfSU5UX0ZMQUcpOw0K
-PiArCQl3cml0ZWwoSTJDX0RNQV9DT05fVFgsIGkyYy0+cGRtYWJhc2UgKyBPRkZTRVRfQ09OKTsN
-Cj4gKwkJd3BhZGRyID0gZG1hX21hcF9zaW5nbGUoaTJjLT5kZXYsIG1zZ3MtPmJ1ZiwNCj4gKwkJ
-CQkJbXNncy0+bGVuLCBETUFfVE9fREVWSUNFKTsNCj4gKwkJaWYgKGRtYV9tYXBwaW5nX2Vycm9y
-KGkyYy0+ZGV2LCB3cGFkZHIpKSB7DQo+ICsJCQlrZnJlZShtc2dzLT5idWYpOw0KPiArCQkJcmV0
-dXJuIC1FTk9NRU07DQo+ICsJCX0NCj4gKw0KPiArCQlpZiAoaTJjLT5kZXZfY29tcC0+c3VwcG9y
-dF8zM2JpdHMpIHsNCj4gKwkJCXJlZ180Z19tb2RlID0gbXRrX2kyY19zZXRfNGdfbW9kZSh3cGFk
-ZHIpOw0KPiArCQkJd3JpdGVsKHJlZ180Z19tb2RlLCBpMmMtPnBkbWFiYXNlICsgT0ZGU0VUX1RY
-XzRHX01PREUpOw0KPiArCQl9DQo+ICsNCj4gIAkJd3JpdGVsKCh1MzIpd3BhZGRyLCBpMmMtPnBk
-bWFiYXNlICsgT0ZGU0VUX1RYX01FTV9BRERSKTsNCj4gIAkJd3JpdGVsKG1zZ3MtPmxlbiwgaTJj
-LT5wZG1hYmFzZSArIE9GRlNFVF9UWF9MRU4pOw0KPiAgCX0gZWxzZSB7DQo+IEBAIC05NzksNiAr
-MTAwMCwxMSBAQCBzdGF0aWMgaW50IG10a19pMmNfZG9fdHJhbnNmZXIoc3RydWN0IG10a19pMmMg
-KmkyYywgc3RydWN0IGkyY19tc2cgKm1zZ3MsDQo+ICAJCQkJIG1zZ3MtPmxlbiwgRE1BX0ZST01f
-REVWSUNFKTsNCj4gIA0KPiAgCQlpMmNfcHV0X2RtYV9zYWZlX21zZ19idWYoZG1hX3JkX2J1Ziwg
-bXNncywgdHJ1ZSk7DQo+ICsJfSBlbHNlIGlmIChpMmMtPm9wID09IEkyQ19NQVNURVJfQ09OVElO
-VU9VU19XUikgew0KPiArCQlkbWFfdW5tYXBfc2luZ2xlKGkyYy0+ZGV2LCB3cGFkZHIsDQo+ICsJ
-CQkJIG1zZ3MtPmxlbiwgRE1BX1RPX0RFVklDRSk7DQo+ICsNCj4gKwkJa2ZyZWUobXNncy0+YnVm
-KTsNCj4gIAl9IGVsc2Ugew0KPiAgCQlkbWFfdW5tYXBfc2luZ2xlKGkyYy0+ZGV2LCB3cGFkZHIs
-IG1zZ3MtPmxlbiwNCj4gIAkJCQkgRE1BX1RPX0RFVklDRSk7DQo+IEBAIC0xMDA5LDYgKzEwMzUs
-OSBAQCBzdGF0aWMgaW50IG10a19pMmNfdHJhbnNmZXIoc3RydWN0IGkyY19hZGFwdGVyICphZGFw
-LA0KPiAgew0KPiAgCWludCByZXQ7DQo+ICAJaW50IGxlZnRfbnVtID0gbnVtOw0KPiArCWludCBp
-LCBqOw0KPiArCXU4ICpkbWFfbXVsdGlfd3JfYnVmOw0KPiArCXN0cnVjdCBpMmNfbXNnIG11bHRp
-X21zZ1sxXTsNCj4gIAlzdHJ1Y3QgbXRrX2kyYyAqaTJjID0gaTJjX2dldF9hZGFwZGF0YShhZGFw
-KTsNCj4gIA0KPiAgCXJldCA9IG10a19pMmNfY2xvY2tfZW5hYmxlKGkyYyk7DQo+IEBAIC0xMDI1
-LDYgKzEwNTQsNDQgQEAgc3RhdGljIGludCBtdGtfaTJjX3RyYW5zZmVyKHN0cnVjdCBpMmNfYWRh
-cHRlciAqYWRhcCwNCj4gIAkJfQ0KPiAgCX0NCj4gIA0KPiArCWlmIChudW0gPiAxKSB7DQo+ICsJ
-CWZvciAoaSA9IDA7IGkgPCBudW0gLSAxOyBpKyspIHsNCj4gKwkJCWlmICghKG1zZ3NbaV0uZmxh
-Z3MgJiBJMkNfTV9SRCkgJiYgIShtc2dzW2krMV0uZmxhZ3MgJg0KPiArCQkJCUkyQ19NX1JEKSAm
-JiAobXNnc1tpXS5hZGRyID09IG1zZ3NbaSsxXS5hZGRyKQ0KPiArCQkJCQkmJiAobXNnc1tpXS5s
-ZW4gPT0gbXNnc1tpKzFdLmxlbikpIHsNCj4gKwkJCQljb250aW51ZTsNCj4gKwkJCX0gZWxzZQ0K
-PiArCQkJCWJyZWFrOw0KPiArCQl9DQo+ICsJCWlmIChpID49IG51bSAtIDEpIHsNCj4gKwkJCWky
-Yy0+b3AgPSBJMkNfTUFTVEVSX0NPTlRJTlVPVVNfV1I7DQo+ICsJCQlqID0gMDsNCj4gKwkJCWRt
-YV9tdWx0aV93cl9idWYgPSBremFsbG9jKG1zZ3MtPmxlbiAqIG51bSwgR0ZQX0tFUk5FTCk7DQo+
-ICsJCQlpZiAoIWRtYV9tdWx0aV93cl9idWYpIHsNCj4gKwkJCQlyZXQgPSAgLUVOT01FTTsNCj4g
-KwkJCQlnb3RvIGVycl9leGl0Ow0KPiArCQkJfQ0KPiArCQkJbXVsdGlfbXNnLT5hZGRyICA9IG1z
-Z3MtPmFkZHI7DQo+ICsJCQltdWx0aV9tc2ctPmxlbiAgID0gbXNncy0+bGVuICogbnVtOw0KPiAr
-CQkJbXVsdGlfbXNnLT5idWYgICA9IGRtYV9tdWx0aV93cl9idWY7DQo+ICsJCQltdWx0aV9tc2ct
-PmZsYWdzICA9IDA7DQo+ICsJCQl3aGlsZSAoaiA8IG51bSkgew0KPiArCQkJCW1lbWNweShkbWFf
-bXVsdGlfd3JfYnVmICsgbXNncy0+bGVuICogaiwNCj4gKwkJCQkJCQltc2dzLT5idWYsIG1zZ3Mt
-Pmxlbik7DQo+ICsJCQkJaisrOw0KPiArCQkJCW1zZ3MrKzsNCj4gKwkJCQl9DQo+ICsNCj4gKwkJ
-CWkyYy0+aWdub3JlX3Jlc3RhcnRfaXJxID0gZmFsc2U7DQo+ICsJCQlyZXQgPSBtdGtfaTJjX2Rv
-X3RyYW5zZmVyKGkyYywgbXVsdGlfbXNnLCBudW0sIDApOw0KPiArCQkJaWYgKHJldCA8IDApDQo+
-ICsJCQkJZ290byBlcnJfZXhpdDsNCj4gKwkJCXJldCA9IG51bTsNCj4gKwkJCQlnb3RvIGVycl9l
-eGl0Ow0KPiArDQo+ICsJCX0NCj4gKwl9DQo+ICsNCj4gIAlpZiAoaTJjLT5hdXRvX3Jlc3RhcnQg
-JiYgbnVtID49IDIgJiYgaTJjLT5zcGVlZF9oeiA+IEkyQ19NQVhfRkFTVF9NT0RFX0ZSRVEpDQo+
-ICAJCS8qIGlnbm9yZSB0aGUgZmlyc3QgcmVzdGFydCBpcnEgYWZ0ZXIgdGhlIG1hc3RlciBjb2Rl
-LA0KPiAgCQkgKiBvdGhlcndpc2UgdGhlIGZpcnN0IHRyYW5zZmVyIHdpbGwgYmUgZGlzY2FyZGVk
-Lg0KDQo=
+On 26-06-20, 10:05, Krzysztof Kozlowski wrote:
+> Fix dtschema validator warnings like:
+>     l2-cache: $nodename:0: 'l2-cache' does not match '^(cache-controller|cpu)(@[0-9a-f,]+)*$'
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  arch/arm/boot/dts/spear13xx.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/boot/dts/spear13xx.dtsi b/arch/arm/boot/dts/spear13xx.dtsi
+> index f187da4485f4..c87b881b2c8b 100644
+> --- a/arch/arm/boot/dts/spear13xx.dtsi
+> +++ b/arch/arm/boot/dts/spear13xx.dtsi
+> @@ -43,7 +43,7 @@
+>  			      0 7 0x04>;
+>  	};
+>  
+> -	L2: l2-cache {
+> +	L2: cache-controller {
+>  		    compatible = "arm,pl310-cache";
+>  		    reg = <0xed000000 0x1000>;
+>  		    cache-unified;
 
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+
+-- 
+viresh
