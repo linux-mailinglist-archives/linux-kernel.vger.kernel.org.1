@@ -2,127 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D647020E029
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A5F20E0BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729308AbgF2UnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:43:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
+        id S2388229AbgF2UtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731634AbgF2TOD (ORCPT
+        with ESMTP id S1731510AbgF2TNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:14:03 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8F6C014AF7
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 00:55:13 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id h28so12019959edz.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 00:55:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Go+MGAqswQJ5Or7swZG3YdRuz2dFng+SdQlnF5u8UcY=;
-        b=TrqZ78o6Lo7TxTA2f1Zw4bEtjp8PnlDTD8K4yPHe3LbvzdYRpokNRybEi1GB30yqvq
-         InxvSRGZRUiJLvfCSj8Db1AoQQlW/apw9JprEJ1aGVWPTfpETjKGE7A8RlLyCyRBizGx
-         8gwVumpmiAf1SlnW9MdUWid6Z4bjno3iMLckR3ZjKTap5+ISTAm7ilbnLz469BvWQnbX
-         rGNPfDyQAlRc1iftjquNIBfLqsER8jBsBb3xcwJlp4AJD2zB0/Y4NZP/Ztv4CJCPwffq
-         iv2hKTPOOJJez0ALBrjWzNA4bmOgQlbrvy6kRB8ksr86u3rxCXpeBFld9OuZdaYeUSFS
-         IOgw==
-X-Gm-Message-State: AOAM532vTScIu7yoJSCnkz4WLiuljXrFwXw8vWBUXkbDsuxGjJChk7/X
-        RPNxqchXPX6kcKYxojyGwmU=
-X-Google-Smtp-Source: ABdhPJynPWVX63OFc/KJXdxkxNjTlQ3FASZvpIdqRrmIoYOiBcrDUVoghxouzfD/w2WirFe+O5AHNQ==
-X-Received: by 2002:a50:b086:: with SMTP id j6mr13392527edd.6.1593417312217;
-        Mon, 29 Jun 2020 00:55:12 -0700 (PDT)
-Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
-        by smtp.gmail.com with ESMTPSA id g22sm2606486eds.67.2020.06.29.00.55.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 00:55:11 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 09:55:10 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Joonsoo Kim <js1304@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH v3 4/8] mm/hugetlb: make hugetlb migration callback CMA
- aware
-Message-ID: <20200629075510.GA32461@dhcp22.suse.cz>
-References: <1592892828-1934-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1592892828-1934-5-git-send-email-iamjoonsoo.kim@lge.com>
- <20200625115422.GE1320@dhcp22.suse.cz>
- <CAAmzW4MHuRhNqVXMntLAc_x4kJgkgQ-pD5GfFxRxJRchrEFr9g@mail.gmail.com>
- <20200626072324.GT1320@dhcp22.suse.cz>
- <CAAmzW4NLVwvqtoUb+JJ+WV=7_n800vA+YYC0LyrDS6iQ7wxcdg@mail.gmail.com>
+        Mon, 29 Jun 2020 15:13:48 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33299C014AFC;
+        Mon, 29 Jun 2020 00:59:50 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: myjosserand)
+        with ESMTPSA id EA3EF2A1D14
+Subject: Re: [PATCH v4 0/2] ARM: Add Rockchip rk3288w support
+To:     Heiko Stuebner <heiko@sntech.de>, robh+dt@kernel.org,
+        sboyd@kernel.org, mturquette@baylibre.com
+Cc:     linux-clk@vger.kernel.org, kernel@collabora.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20200602080644.11333-1-mylene.josserand@collabora.com>
+ <159238429476.1470505.6023847362048785737.b4-ty@sntech.de>
+From:   Mylene Josserand <mylene.josserand@collabora.com>
+Message-ID: <66bfd77c-83e4-3689-d8c1-c5ae47b40f02@collabora.com>
+Date:   Mon, 29 Jun 2020 09:59:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAmzW4NLVwvqtoUb+JJ+WV=7_n800vA+YYC0LyrDS6iQ7wxcdg@mail.gmail.com>
+In-Reply-To: <159238429476.1470505.6023847362048785737.b4-ty@sntech.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 29-06-20 15:27:25, Joonsoo Kim wrote:
-[...]
-> Solution that Introduces a new
-> argument doesn't cause this problem while avoiding CMA regions.
+Hello Heiko,
 
-My primary argument is that there is no real reason to treat hugetlb
-dequeing somehow differently. So if we simply exclude __GFP_MOVABLE for
-_any_ other allocation then this certainly has some drawbacks on the
-usable memory for the migration target and it can lead to allocation
-failures (especially on movable_node setups where the amount of movable
-memory might be really high) and therefore longterm gup failures. And
-yes those failures might be premature. But my point is that the behavior
-would be _consistent_. So a user wouldn't see random failures for some
-types of pages while a success for others.
+On 6/17/20 10:58 AM, Heiko Stuebner wrote:
+> On Tue, 2 Jun 2020 10:06:42 +0200, Mylène Josserand wrote:
+>> Context
+>> -------
+>>
+>> Here is my V4 of my patches that add the support for the Rockchip
+>> RK3288w which is a revision of the RK3288. It is mostly the same SOC
+>> except for, at least, one clock tree which is different.
+>> This difference is only known by looking at the BSP kernel [1].
+>>
+>> [...]
+> 
+> Applied, thanks!
 
-Let's have a look at this patch. It is simply working that around the
-restriction for a very limited types of pages - only hugetlb pages
-which have reserves in non-cma movable pools. I would claim that many
-setups will simply not have many (if any) spare hugetlb pages in the
-pool except for temporary time periods when a workload is (re)starting
-because this would be effectively a wasted memory.
+Thank you!
 
-The patch is adding a special case flag to claim what the code already
-does by memalloc_nocma_{save,restore} API so the information is already
-there. Sorry I didn't bring this up earlier but I have completely forgot
-about its existence. With that one in place I do agree that dequeing
-needs a fixup but that should be something like the following instead.
+Best regards,
+Mylène
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 57ece74e3aae..c1595b1d36f3 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1092,10 +1092,14 @@ static struct page *dequeue_huge_page_nodemask(struct hstate *h, gfp_t gfp_mask,
- /* Movability of hugepages depends on migration support. */
- static inline gfp_t htlb_alloc_mask(struct hstate *h)
- {
-+	gfp_t gfp;
-+
- 	if (hugepage_movable_supported(h))
--		return GFP_HIGHUSER_MOVABLE;
-+		gfp = GFP_HIGHUSER_MOVABLE;
- 	else
--		return GFP_HIGHUSER;
-+		gfp = GFP_HIGHUSER;
-+
-+	return current_gfp_context(gfp);
- }
- 
- static struct page *dequeue_huge_page_vma(struct hstate *h,
+> 
+> [1/2] clk: rockchip: Handle clock tree for rk3288w variant
+>        commit: 1627f683636df70fb25358b0a7b39a24e8fce5bf
+> [2/2] dt-bindings: clocks: add rk3288w variant compatible
+>        commit: 00bd404144241155653bb0d0c15be51e4e6983aa
+> 
+> Best regards,
+> 
 
-If we even fix this general issue for other allocations and allow a
-better CMA exclusion then it would be implemented consistently for
-everybody.
-
-Does this make more sense to you are we still not on the same page wrt
-to the actual problem?
--- 
-Michal Hocko
-SUSE Labs
