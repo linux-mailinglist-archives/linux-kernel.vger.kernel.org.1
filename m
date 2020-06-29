@@ -2,113 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DC620D112
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A615120D1E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728002AbgF2SiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:38:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20021 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727996AbgF2SiN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:38:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593455891;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Iiom3LNVi9ET0XgfPNiU1I3DflByt3ZNInrS8hmdp2U=;
-        b=Dm4DRQiQ6fUDiw0ODYfzRHM0l5n+/OCax4tsmQVFEte4dJzOhv+iMeaX7PPDTf5oyU2Cvy
-        0CJwQz6V7YaBivk2kU2ABaaWuXVz4uW6YjOtq4MYIn+3EyNMsgXd1uWHXxibfnQTObK24F
-        8SkzU6q4SO8an7e201QLwzG41YBOs7A=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-455-zq5FJK0EM5iWibiXsRdCPQ-1; Mon, 29 Jun 2020 02:33:44 -0400
-X-MC-Unique: zq5FJK0EM5iWibiXsRdCPQ-1
-Received: by mail-wm1-f72.google.com with SMTP id g138so9169162wme.7
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:33:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Iiom3LNVi9ET0XgfPNiU1I3DflByt3ZNInrS8hmdp2U=;
-        b=bcJwot1rvvs31r6/bGkj69+UdKhSSU3V29QHO2CN/GXz2IBDw0gXkenJA5N8Fhy7pP
-         yv6SjNdVYVEEVRlWaKnFo2or0J342R83z/tPKQ4Lu+9avZ1h4gk4KJYgOf2tHqquDaxv
-         dKRcHykJPRBatK8yz/XMHye1JGzGO6WzGc6sLB70r9CYKpLVQXCy2bR545Ldhq8kzV0X
-         D5yd0nT6kg01GFPFY99Pd6GrVCh4TVc6u6XvlP94eFK3nSkbkCZoOeL6w1dRROFpCrtp
-         YSGj1o6IHwbwbP+aCQYAekMjaFjAV69JCyzGFY0hANWF6WxxyKy3HdVXawA+ztSCitb3
-         MamQ==
-X-Gm-Message-State: AOAM530kykZRCy2aHGfDYcu1cKbcr+mYv9MGX3cJp5TMQP037huGMZHQ
-        1J5pGyazveM8pQupjHGQXa4NmqbqUiizQhjwevBkf+beDJiPsUI+FM719+Cn3xROx9v64wgxE2c
-        pK53+Jv4h2oM6W7hincD04d3/
-X-Received: by 2002:adf:8067:: with SMTP id 94mr14821901wrk.427.1593412423677;
-        Sun, 28 Jun 2020 23:33:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxfYJ1M6jIB+Bt9+iuqmCS+1/JuHYbah8AxWL9RwY6izIKRHTcVkotYUsuHjo+DZqHXAwCswQ==
-X-Received: by 2002:adf:8067:: with SMTP id 94mr14821888wrk.427.1593412423531;
-        Sun, 28 Jun 2020 23:33:43 -0700 (PDT)
-Received: from redhat.com (bzq-79-182-31-92.red.bezeqint.net. [79.182.31.92])
-        by smtp.gmail.com with ESMTPSA id s8sm41059111wru.38.2020.06.28.23.33.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jun 2020 23:33:42 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 02:33:39 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Peng Fan <peng.fan@nxp.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH] xen: introduce xen_vring_use_dma
-Message-ID: <20200629023225-mutt-send-email-mst@kernel.org>
-References: <20200624050355-mutt-send-email-mst@kernel.org>
- <alpine.DEB.2.21.2006241047010.8121@sstabellini-ThinkPad-T480s>
- <20200624163940-mutt-send-email-mst@kernel.org>
- <alpine.DEB.2.21.2006241351430.8121@sstabellini-ThinkPad-T480s>
- <20200624181026-mutt-send-email-mst@kernel.org>
- <alpine.DEB.2.21.2006251014230.8121@sstabellini-ThinkPad-T480s>
- <20200626110629-mutt-send-email-mst@kernel.org>
- <DB6PR0402MB27601CA74B85DA5A9F5E5DD6886E0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
- <20200629022124-mutt-send-email-mst@kernel.org>
- <DB6PR0402MB27602AB2A9A242D79343CE48886E0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DB6PR0402MB27602AB2A9A242D79343CE48886E0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+        id S1728665AbgF2Soi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:44:38 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:34260 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729140AbgF2SoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:44:02 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B9ADB1A10E4;
+        Mon, 29 Jun 2020 08:54:20 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6F80E1A01C6;
+        Mon, 29 Jun 2020 08:54:15 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 179B8402F7;
+        Mon, 29 Jun 2020 14:54:09 +0800 (SGT)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_sai: Refine regcache usage with pm runtime
+Date:   Mon, 29 Jun 2020 14:42:33 +0800
+Message-Id: <1593412953-10897-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 06:25:41AM +0000, Peng Fan wrote:
-> > > > > Anyway, re-reading the last messages of the original thread [1],
-> > > > > it looks like Peng had a clear idea on how to fix the general issue.
-> > > > > Peng, what happened with that?
-> > >
-> > > We shrinked the rpmsg reserved area to workaround the issue.
-> > > So still use the dma apis in rpmsg.
-> > >
-> > > But here I am going to address domu android trusty issue using virtio.
-> > 
-> > My suggestion is to first of all fix DMA API so it works properly.
-> 
-> Could you please elaborate more details?
-> 
-> You mean the DMA API usage of rpmsg? Or xen domu dma_ops?
-> 
-> Thanks,
-> Peng. 
+When there is dedicated power domain bound with device, after probing
+the power will be disabled, then registers are not accessible in
+fsl_sai_dai_probe(), so regcache only need to be enabled in end of
+probe() and regcache_mark_dirty should be moved to pm runtime resume
+callback function.
 
-Not 100% sure but I think xen dma ops.
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_sai.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 9d436b0c5718..a22562f2df47 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -1016,6 +1016,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, sai);
+ 
+ 	pm_runtime_enable(&pdev->dev);
++	regcache_cache_only(sai->regmap, true);
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_component,
+ 			&fsl_sai_dai, 1);
+@@ -1107,7 +1108,6 @@ static int fsl_sai_runtime_suspend(struct device *dev)
+ 	clk_disable_unprepare(sai->bus_clk);
+ 
+ 	regcache_cache_only(sai->regmap, true);
+-	regcache_mark_dirty(sai->regmap);
+ 
+ 	return 0;
+ }
+@@ -1137,6 +1137,7 @@ static int fsl_sai_runtime_resume(struct device *dev)
+ 	}
+ 
+ 	regcache_cache_only(sai->regmap, false);
++	regcache_mark_dirty(sai->regmap);
+ 	regmap_write(sai->regmap, FSL_SAI_TCSR(ofs), FSL_SAI_CSR_SR);
+ 	regmap_write(sai->regmap, FSL_SAI_RCSR(ofs), FSL_SAI_CSR_SR);
+ 	usleep_range(1000, 2000);
 -- 
-MST
+2.21.0
 
