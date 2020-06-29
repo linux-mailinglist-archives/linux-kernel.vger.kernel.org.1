@@ -2,268 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA8120D2D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5DD20D2E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729821AbgF2Swx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
+        id S1728331AbgF2Sx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:53:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726889AbgF2Swm (ORCPT
+        with ESMTP id S1729814AbgF2Sww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:42 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF82C02E2DC
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:11 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id j4so14226291wrp.10
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:11 -0700 (PDT)
+        Mon, 29 Jun 2020 14:52:52 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCC5C02E2DD;
+        Mon, 29 Jun 2020 07:05:49 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id k6so14538057ili.6;
+        Mon, 29 Jun 2020 07:05:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=L35hXwGJYWdFNYEqvYo8VWLeKGQ8JU/sfeVxKoFGLpc=;
-        b=faYbDJZZ9JpfMImGBJzoscendZhfvHpM47CPMRR4jSzOeOEei37aq3S7hRFnCXYwSV
-         Zb755P0uqqSdADz/4FkfjIBjJP1WuRcNIuw9KeFK9QqNK0Ful+iEYhl0g1O1AAz6tSBR
-         KzpEwa/0OaX2TP6s2bOY7N9Rvko5LmWtAZMhdiPqQe10JwAo80y0n7Jmv+aLL2l6/kC+
-         WKEO6/EjP2mFqCm1PD6WYrl5AQINA+OHgXc5ScW2P1nehzakjMt2A151p8FZQNOz3+fy
-         0lW1dznXS2BYhYDzM9/wMTH8jDxTaTx1F+2EScbbimKzD0vRtEliKh+6FfNMGRa88xeY
-         yUMA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SIY049maXgLeyh5B7pSQJoj4G7EcvGdwTWmpWjXLOLg=;
+        b=Wyp0PLFugiK1RUPQcKtPHeek3fr/J/2Gy2AilxBoARXp1yFmWsTt3ik4X3TQZD8vf9
+         zuwDJQuCI33YONsdXRxww3JbOSHF0Cy3xNSQdlmAFGWrcGPLnIjfbIVR2GDMZVuA41Xk
+         +cE9N8UPLHOXuAdVJOBHqWLL48OrvZ1xTkQ91vxg1lzdIAppxXvb3JCvQDb7CmuV7YsR
+         AhbRF4xoPIyCIN9kSKkKwvk8F0oXX5++Ixcf7nXW6lJhku6iVYVfmOm/7t9kZMLn5Qw1
+         G4gr/pHHm8wlpxfqLfQbLV88FFwdtzVpIw9hgkBCp6MmRR7iA/xk0kYlCNg6mVtkYHdg
+         CjZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=L35hXwGJYWdFNYEqvYo8VWLeKGQ8JU/sfeVxKoFGLpc=;
-        b=pgpcWvXNyC2SKdlhNpUopHlIRj4K8mgxqLfQQfcHKixe+MgzI5mjZVykR0LFrWANPP
-         k55drK7lsdq07VSQs+yCntM+Eh4fnlMo4BsHZg9JNmCCq28a7MzcM/S7QKnbe9Ij2FlV
-         GfMDyqXTYQjgezG3tAZI4LniylF2mGLMBdLWA9+UWgQyPHg/2b0209EzLH+ZLVchSa5q
-         /7UplGlg6Y81M20A3WwpDIAeQQ6Xuysl1H2/tQl99I410MTblkW0znU56ZnyNPcFmOg3
-         +m75hmxLLFxzwWZ94Wie0r4M4dNNKD9gJ9AXOfHzo1UEfinKfkD2QW9f1B5jJm5vAJx6
-         CxlQ==
-X-Gm-Message-State: AOAM533YWYbuDbt1hAPznsZnUE23DtQY84vz6KSg/56ZyXrB5yTNAHLJ
-        UBFzPpYS4jXA/N5+XIUPSIMp5A==
-X-Google-Smtp-Source: ABdhPJxjuhlvdoJM+CJIODgeu/TfKjRtqBLpoYlSycTPURSj2Y1LRCuoFybaejKcg5Z1rr5Wh5o1/A==
-X-Received: by 2002:a5d:4c82:: with SMTP id z2mr16302472wrs.287.1593439510514;
-        Mon, 29 Jun 2020 07:05:10 -0700 (PDT)
-Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.05.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 07:05:09 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Michael Jung <mijung@gmx.net>,
-        Michael Ruettger <michael@ibmra.de>,
-        Frank Haverkamp <haver@linux.ibm.com>,
-        Joerg-Stephan Vogt <jsvogt@de.ibm.com>
-Subject: [PATCH 20/20] misc: genwqe: card_utils: Whole a plethora of documentation issues
-Date:   Mon, 29 Jun 2020 15:04:42 +0100
-Message-Id: <20200629140442.1043957-21-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629140442.1043957-1-lee.jones@linaro.org>
-References: <20200629140442.1043957-1-lee.jones@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SIY049maXgLeyh5B7pSQJoj4G7EcvGdwTWmpWjXLOLg=;
+        b=D9Pu9R0L7tPXRGZ9qi1aNX1Fs0BIzq7M2OgZIN0+6vvk6hWj+0sOJ7EjZVWJZWQNYT
+         ZZwGhXS/p2C60eqazoxfPdJb14FvC1wt820XKib/574pIkqG9CRtAsWKtyRW1b58/ZeW
+         OwlZx2mg7BIsR7mFWTOeXWkizBjTw1oUKP7mXaz4PG8i0wFeYFZqFtDVSK37t8fTP9th
+         RQXxqrxf0+uVBj1tYbmDnMeTP2Hb1ynlMKeWxiasSVa8sVeCo/3UlHMVdaAaqDcVv42N
+         8ofrM2xtJGW5t5Ov4DIzS5J+5O5i5UuMcBQ4X4DL2NhZOqfJwXhfLEghCLxqSQ4/jl7r
+         /oqg==
+X-Gm-Message-State: AOAM531Y0pimMkzRK/r3W+JWI6e206oPn/BBxFp5Tfic9cuUKBym3jI8
+        JNEjshUucxnoR2WqgNT+J+cQv9Vri/ObHKAIq2c=
+X-Google-Smtp-Source: ABdhPJxQkwee4h4i38IDgjWPIBbehnogM+Uwa4QjkjNIXA6MDuKP1JoQ0D6pSJNpUdpuu1DfoaOtoHeSo/c3/MUVr/0=
+X-Received: by 2002:a92:2a0c:: with SMTP id r12mr15665053ile.275.1593439549027;
+ Mon, 29 Jun 2020 07:05:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <7b4aa1e985007c6d582fffe5e8435f8153e28e0f.camel@redhat.com>
+ <CAOQ4uxg8E-im=B6L0PQNaTTKdtxVAO=MSJki7kxq875ME4hOLw@mail.gmail.com> <20200629130915.GF26507@quack2.suse.cz>
+In-Reply-To: <20200629130915.GF26507@quack2.suse.cz>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Mon, 29 Jun 2020 17:05:38 +0300
+Message-ID: <CAOQ4uxhdOMbn9vL_PAGKLtriVzkjwBkuEgbdB5+uH2ZM6uA97w@mail.gmail.com>
+Subject: Re: Commit 'fs: Do not check if there is a fsnotify watcher on pseudo
+ inodes' breaks chromium here
+To:     Jan Kara <jack@suse.cz>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Including; demoting file header from kerneldoc to standard comment/
-header, adding a variety of missing function argument documentation,
-repairing formatting (kerneldoc does not like blank lines) and the
-demotion of a kerneldoc header which shows no interest in providing
-documentation for any of its arguments.
+On Mon, Jun 29, 2020 at 4:09 PM Jan Kara <jack@suse.cz> wrote:
+>
+> On Sun 28-06-20 15:53:51, Amir Goldstein wrote:
+> > On Sun, Jun 28, 2020 at 2:14 PM Maxim Levitsky <mlevitsk@redhat.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > I just did usual kernel update and now chromium crashes on startup.
+> > > It happens both in a KVM's VM (with virtio-gpu if that matters) and natively with amdgpu driver.
+> > > Most likely not GPU related although I initially suspected that it is.
+> > >
+> > > Chromium starts as a white rectangle, shows few white rectangles
+> > > that resemble its notifications and then crashes.
+> > >
+> > > The stdout output from chromium:
+> >
+> > I guess this answers our question whether we could disable fsnoitfy
+> > watches on pseudo inodes....
+>
+> Right :-|
+>
+> > From comments like these in chromium code:
+> > https://chromium.googlesource.com/chromium/src/+/master/mojo/core/watcher_dispatcher.cc#77
+> > https://chromium.googlesource.com/chromium/src/+/master/base/files/file_descriptor_watcher_posix.cc#176
+> > https://chromium.googlesource.com/chromium/src/+/master/ipc/ipc_channel_mojo.cc#240
+> >
+> > I am taking a wild guess that the missing FS_CLOSE event on anonymous pipes is
+> > the cause for regression.
+>
+> I was checking the Chromium code for some time. It uses inotify in
+> base/files/file_path_watcher_linux.cc and watches IN_CLOSE_WRITE event
+> (among other ones) but I was unable to track down how the class gets
+> connected to the mojo class that crashes. I'd be somewhat curious how they
+> place inotify watches on pipe inodes - probably they have to utilize proc
+> magic links but I'd like to be sure. Anyway your guess appears to be
+> correct :)
 
-Fixes this the following W=1 issues:
+Well, I lost track of the code as well...
 
- drivers/misc/genwqe/card_utils.c:37: warning: Incorrect use of kernel-doc format:  * __genwqe_writeq() - Write 64-bit register
- drivers/misc/genwqe/card_utils.c:45: warning: Function parameter or member 'cd' not described in '__genwqe_writeq'
- drivers/misc/genwqe/card_utils.c:45: warning: Function parameter or member 'byte_offs' not described in '__genwqe_writeq'
- drivers/misc/genwqe/card_utils.c:45: warning: Function parameter or member 'val' not described in '__genwqe_writeq'
- drivers/misc/genwqe/card_utils.c:136: warning: Function parameter or member 'cd' not described in 'genwqe_read_app_id'
- drivers/misc/genwqe/card_utils.c:136: warning: Function parameter or member 'app_name' not described in 'genwqe_read_app_id'
- drivers/misc/genwqe/card_utils.c:136: warning: Function parameter or member 'len' not described in 'genwqe_read_app_id'
- drivers/misc/genwqe/card_utils.c:186: warning: bad line:
- drivers/misc/genwqe/card_utils.c:290: warning: Function parameter or member 'cd' not described in 'genwqe_alloc_sync_sgl'
- drivers/misc/genwqe/card_utils.c:290: warning: Function parameter or member 'sgl' not described in 'genwqe_alloc_sync_sgl'
- drivers/misc/genwqe/card_utils.c:290: warning: Function parameter or member 'user_addr' not described in 'genwqe_alloc_sync_sgl'
- drivers/misc/genwqe/card_utils.c:290: warning: Function parameter or member 'user_size' not described in 'genwqe_alloc_sync_sgl'
- drivers/misc/genwqe/card_utils.c:290: warning: Function parameter or member 'write' not described in 'genwqe_alloc_sync_sgl'
- drivers/misc/genwqe/card_utils.c:469: warning: Function parameter or member 'cd' not described in 'genwqe_free_sync_sgl'
- drivers/misc/genwqe/card_utils.c:469: warning: Function parameter or member 'sgl' not described in 'genwqe_free_sync_sgl'
- drivers/misc/genwqe/card_utils.c:716: warning: Function parameter or member 'count' not described in 'genwqe_set_interrupt_capability'
- drivers/misc/genwqe/card_utils.c:747: warning: Function parameter or member 'idx' not described in 'set_reg_idx'
- drivers/misc/genwqe/card_utils.c:747: warning: Excess function parameter 'index' description in 'set_reg_idx'
- drivers/misc/genwqe/card_utils.c:823: warning: Function parameter or member 'cd' not described in 'genwqe_ffdc_buff_size'
- drivers/misc/genwqe/card_utils.c:823: warning: Function parameter or member 'uid' not described in 'genwqe_ffdc_buff_size'
- drivers/misc/genwqe/card_utils.c:877: warning: Function parameter or member 'cd' not described in 'genwqe_ffdc_buff_read'
- drivers/misc/genwqe/card_utils.c:877: warning: Function parameter or member 'uid' not described in 'genwqe_ffdc_buff_read'
- drivers/misc/genwqe/card_utils.c:877: warning: Function parameter or member 'regs' not described in 'genwqe_ffdc_buff_read'
- drivers/misc/genwqe/card_utils.c:877: warning: Function parameter or member 'max_regs' not described in 'genwqe_ffdc_buff_read'
- drivers/misc/genwqe/card_utils.c:964: warning: Function parameter or member 'cd' not described in 'genwqe_write_vreg'
- drivers/misc/genwqe/card_utils.c:964: warning: Function parameter or member 'reg' not described in 'genwqe_write_vreg'
- drivers/misc/genwqe/card_utils.c:964: warning: Function parameter or member 'val' not described in 'genwqe_write_vreg'
- drivers/misc/genwqe/card_utils.c:964: warning: Function parameter or member 'func' not described in 'genwqe_write_vreg'
- drivers/misc/genwqe/card_utils.c:977: warning: Function parameter or member 'cd' not described in 'genwqe_read_vreg'
- drivers/misc/genwqe/card_utils.c:977: warning: Function parameter or member 'reg' not described in 'genwqe_read_vreg'
- drivers/misc/genwqe/card_utils.c:977: warning: Function parameter or member 'func' not described in 'genwqe_read_vreg'
- drivers/misc/genwqe/card_utils.c:995: warning: Function parameter or member 'cd' not described in 'genwqe_base_clock_frequency'
- drivers/misc/genwqe/card_utils.c:1012: warning: Function parameter or member 'cd' not described in 'genwqe_stop_traps'
- drivers/misc/genwqe/card_utils.c:1022: warning: Function parameter or member 'cd' not described in 'genwqe_start_traps'
+>
+> > The motivation for the patch "fs: Do not check if there is a fsnotify
+> > watcher on pseudo inodes"
+> > was performance, but actually, FS_CLOSE and FS_OPEN events probably do
+> > not impact performance as FS_MODIFY and FS_ACCESS.
+>
+> Correct.
+>
+> > Do you agree that dropping FS_MODIFY/FS_ACCESS events for FMODE_STREAM
+> > files as a general rule should be safe?
+>
+> Hum, so your patch drops FS_MODIFY/FS_ACCESS events also for named pipes
+> compared to the original patch AFAIU and for those fsnotify works fine
+> so far. So I'm not sure we won't regress someone else with this.
+>
+> I've also tested inotify on a sample pipe like: cat /dev/stdin | tee
+> and watched /proc/<tee pid>/fd/0 and it actually generated IN_MODIFY |
+> IN_ACCESS when data arrived to a pipe and tee(1) read it and then
+> IN_CLOSE_WRITE | IN_CLOSE_NOWRITE when the pipe got closed (I thought you
+> mentioned modify and access events didn't get properly generated?).
 
-Cc: Michael Jung <mijung@gmx.net>
-Cc: Michael Ruettger <michael@ibmra.de>
-Cc: Frank Haverkamp <haver@linux.ibm.com>
-Cc: Joerg-Stephan Vogt <jsvogt@de.ibm.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+I don't think that I did (did I?)
 
- # Please enter the commit message for your changes. Lines starting
- # with '#' will be ignored, and an empty message aborts the commit.
- #
- # Date:      Mon Jun 29 10:30:56 2020 +0100
- #
- # On branch tb-mfd-fix-warnings
- # Changes to be committed:
- #	modified:   drivers/misc/genwqe/card_utils.c
- #
- # Untracked files:
- #	qemu-i2c-devs.txt
- #
----
- drivers/misc/genwqe/card_utils.c | 30 ++++++++++++++++++++++++++----
- 1 file changed, 26 insertions(+), 4 deletions(-)
+>
+> So as much as I agree that some fsnotify events on FMODE_STREAM files are
+> dubious, they could get used (possibly accidentally) and so after this
+> Chromium experience I think we just have to revert the change and live with
+> generating notification events for pipes to avoid userspace regressions.
+>
+> Thoughts?
 
-diff --git a/drivers/misc/genwqe/card_utils.c b/drivers/misc/genwqe/card_utils.c
-index 77c21caf2acd1..039b923d1d60a 100644
---- a/drivers/misc/genwqe/card_utils.c
-+++ b/drivers/misc/genwqe/card_utils.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * IBM Accelerator Family 'GenWQE'
-  *
-  * (C) Copyright IBM Corp. 2013
-@@ -129,6 +129,9 @@ u32 __genwqe_readl(struct genwqe_dev *cd, u64 byte_offs)
- 
- /**
-  * genwqe_read_app_id() - Extract app_id
-+ * @cd:	        genwqe device descriptor
-+ * @app_name:   carrier used to pass-back name
-+ * @len:        length of data for name
-  *
-  * app_unitcfg need to be filled with valid data first
-  */
-@@ -183,7 +186,7 @@ void genwqe_init_crc32(void)
-  * @init:       initial crc (0xffffffff at start)
-  *
-  * polynomial = x^32 * + x^29 + x^18 + x^14 + x^3 + 1 (0x20044009)
--
-+ *
-  * Example: 4 bytes 0x01 0x02 0x03 0x04 with init=0xffffffff should
-  * result in a crc32 of 0xf33cb7d3.
-  *
-@@ -277,7 +280,7 @@ static int genwqe_sgl_size(int num_pages)
- 	return roundup(len, PAGE_SIZE);
- }
- 
--/**
-+/*
-  * genwqe_alloc_sync_sgl() - Allocate memory for sgl and overlapping pages
-  *
-  * Allocates memory for sgl and overlapping pages. Pages which might
-@@ -460,6 +463,8 @@ int genwqe_setup_sgl(struct genwqe_dev *cd, struct genwqe_sgl *sgl,
- 
- /**
-  * genwqe_free_sync_sgl() - Free memory for sgl and overlapping pages
-+ * @cd:	        genwqe device descriptor
-+ * @sgl:        scatter gather list describing user-space memory
-  *
-  * After the DMA transfer has been completed we free the memory for
-  * the sgl and the cached pages. Data is being transferred from cached
-@@ -710,6 +715,7 @@ int genwqe_read_softreset(struct genwqe_dev *cd)
- /**
-  * genwqe_set_interrupt_capability() - Configure MSI capability structure
-  * @cd:         pointer to the device
-+ * @count:      number of vectors to allocate
-  * Return: 0 if no error
-  */
- int genwqe_set_interrupt_capability(struct genwqe_dev *cd, int count)
-@@ -738,7 +744,7 @@ void genwqe_reset_interrupt_capability(struct genwqe_dev *cd)
-  * @i:          index to desired entry
-  * @m:          maximum possible entries
-  * @addr:       addr which is read
-- * @index:      index in debug array
-+ * @idx:        index in debug array
-  * @val:        read value
-  */
- static int set_reg_idx(struct genwqe_dev *cd, struct genwqe_reg *r,
-@@ -818,6 +824,8 @@ int genwqe_read_ffdc_regs(struct genwqe_dev *cd, struct genwqe_reg *regs,
- 
- /**
-  * genwqe_ffdc_buff_size() - Calculates the number of dump registers
-+ * @cd:	        genwqe device descriptor
-+ * @uid:	unit ID
-  */
- int genwqe_ffdc_buff_size(struct genwqe_dev *cd, int uid)
- {
-@@ -871,6 +879,10 @@ int genwqe_ffdc_buff_size(struct genwqe_dev *cd, int uid)
- 
- /**
-  * genwqe_ffdc_buff_read() - Implements LogoutExtendedErrorRegisters procedure
-+ * @cd:	        genwqe device descriptor
-+ * @uid:	unit ID
-+ * @regs:       register information
-+ * @max_regs:   number of register entries
-  */
- int genwqe_ffdc_buff_read(struct genwqe_dev *cd, int uid,
- 			  struct genwqe_reg *regs, unsigned int max_regs)
-@@ -956,6 +968,10 @@ int genwqe_ffdc_buff_read(struct genwqe_dev *cd, int uid,
- 
- /**
-  * genwqe_write_vreg() - Write register in virtual window
-+ * @cd:	        genwqe device descriptor
-+ * @reg:	register (byte) offset within BAR
-+ * @val:	value to write
-+ * @func:	PCI virtual function
-  *
-  * Note, these registers are only accessible to the PF through the
-  * VF-window. It is not intended for the VF to access.
-@@ -969,6 +985,9 @@ int genwqe_write_vreg(struct genwqe_dev *cd, u32 reg, u64 val, int func)
- 
- /**
-  * genwqe_read_vreg() - Read register in virtual window
-+ * @cd:	        genwqe device descriptor
-+ * @reg:	register (byte) offset within BAR
-+ * @func:	PCI virtual function
-  *
-  * Note, these registers are only accessible to the PF through the
-  * VF-window. It is not intended for the VF to access.
-@@ -981,6 +1000,7 @@ u64 genwqe_read_vreg(struct genwqe_dev *cd, u32 reg, int func)
- 
- /**
-  * genwqe_base_clock_frequency() - Deteremine base clock frequency of the card
-+ * @cd:	        genwqe device descriptor
-  *
-  * Note: From a design perspective it turned out to be a bad idea to
-  * use codes here to specifiy the frequency/speed values. An old
-@@ -1005,6 +1025,7 @@ int genwqe_base_clock_frequency(struct genwqe_dev *cd)
- 
- /**
-  * genwqe_stop_traps() - Stop traps
-+ * @cd:	        genwqe device descriptor
-  *
-  * Before reading out the analysis data, we need to stop the traps.
-  */
-@@ -1015,6 +1036,7 @@ void genwqe_stop_traps(struct genwqe_dev *cd)
- 
- /**
-  * genwqe_start_traps() - Start traps
-+ * @cd:	        genwqe device descriptor
-  *
-  * After having read the data, we can/must enable the traps again.
-  */
--- 
-2.25.1
+I am fine with that.
 
+Before I thought of trying out FMODE_STREAM I was considering to propose
+to set the new flag FMODE_NOIONOTIFY in alloc_file_pseudo() to narrow Mel's
+patch to dropping FS_MODIFY|FS_ACCESS.
+
+But I guess the burden of proof is back on Mel.
+And besides, quoting Mel's patch:
+"A patch is pending that reduces, but does not eliminate, the overhead of
+    fsnotify but for files that cannot be looked up via a path, even that
+    small overhead is unnecessary"
+
+So really, we are not even sacrificing much by reverting this patch.
+We down to "nano optimizations".
+
+Thanks,
+Amir.
