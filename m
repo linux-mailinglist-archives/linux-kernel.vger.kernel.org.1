@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7DA20DF72
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C7B20DF61
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730949AbgF2UgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:36:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59448 "EHLO mx2.suse.de"
+        id S2389261AbgF2Uf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:35:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59490 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730681AbgF2TVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:21:30 -0400
+        id S1732193AbgF2TVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:21:33 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A8C62AF44;
-        Mon, 29 Jun 2020 15:09:53 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id D6B53AF57;
+        Mon, 29 Jun 2020 15:09:54 +0000 (UTC)
 From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 To:     gregkh@linuxfoundation.org
 Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
@@ -24,9 +24,9 @@ Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
         Dave Stevenson <dave.stevenson@raspberrypi.org>,
         Jacopo Mondi <jacopo@jmondi.org>,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [PATCH v2 03/47] staging: mmal-vchiq: Fixup vchiq-mmal include ordering
-Date:   Mon, 29 Jun 2020 17:09:01 +0200
-Message-Id: <20200629150945.10720-4-nsaenzjulienne@suse.de>
+Subject: [PATCH v2 05/47] staging: mmal-vchiq: Always return the param size from param_get
+Date:   Mon, 29 Jun 2020 17:09:03 +0200
+Message-Id: <20200629150945.10720-6-nsaenzjulienne@suse.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200629150945.10720-1-nsaenzjulienne@suse.de>
 References: <20200629150945.10720-1-nsaenzjulienne@suse.de>
@@ -39,42 +39,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dave Stevenson <dave.stevenson@raspberrypi.org>
 
-There were dependencies on including the headers in the correct
-order. Fix up the headers so that they include the other
-headers that they depend on themselves.
+mmal-vchiq is a reimplementation of the userland library for MMAL.
+When getting a parameter, the client provides the storage and
+the size of the storage. The VPU then returns the size of the
+parameter that it wished to return, and as much as possible of
+that parameter is returned to the client.
+
+The implementation previously only returned the size provided
+by the VPU should it exceed the buffer size. So for parameters
+such as the supported encodings list the client had no idea
+how much of the provided storage had been populated.
 
 Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.org>
 Signed-off-by: Jacopo Mondi <jacopo@jmondi.org>
 Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 ---
- drivers/staging/vc04_services/vchiq-mmal/mmal-msg.h   | 1 +
- drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-msg.h b/drivers/staging/vc04_services/vchiq-mmal/mmal-msg.h
-index 43cc59316f90..91f9b400d8dc 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/mmal-msg.h
-+++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-msg.h
-@@ -38,6 +38,7 @@
- #include "mmal-msg-common.h"
- #include "mmal-msg-format.h"
- #include "mmal-msg-port.h"
-+#include "mmal-vchiq.h"
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+index 3bc04f2ea53a..efdf30b9edf9 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+@@ -1282,11 +1282,12 @@ static int port_parameter_get(struct vchiq_mmal_instance *instance,
+ 		 */
+ 		memcpy(value, &rmsg->u.port_parameter_get_reply.value,
+ 		       *value_size);
+-		*value_size = rmsg->u.port_parameter_get_reply.size;
+ 	} else {
+ 		memcpy(value, &rmsg->u.port_parameter_get_reply.value,
+ 		       rmsg->u.port_parameter_get_reply.size);
+ 	}
++	/* Always report the size of the returned parameter to the caller */
++	*value_size = rmsg->u.port_parameter_get_reply.size;
  
- enum mmal_msg_type {
- 	MMAL_MSG_TYPE_QUIT = 1,
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
-index cca7289761c2..df608585063b 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
-+++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
-@@ -16,6 +16,7 @@
- #ifndef MMAL_VCHIQ_H
- #define MMAL_VCHIQ_H
- 
-+#include "mmal-common.h"
- #include "mmal-msg-format.h"
- 
- #define MAX_PORT_COUNT 4
+ 	pr_debug("%s:result:%d component:0x%x port:%d parameter:%d\n", __func__,
+ 		 ret, port->component->handle, port->handle, parameter_id);
 -- 
 2.27.0
 
