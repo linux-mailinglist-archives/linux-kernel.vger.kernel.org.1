@@ -2,155 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D3420DABB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 310DD20D773
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388402AbgF2UAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:00:06 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:51446 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732138AbgF2UAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:00:00 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id EB34C1AEC8048B373B37;
-        Mon, 29 Jun 2020 20:13:34 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 29 Jun 2020 20:13:28 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH v2 3/3] f2fs: support to trace f2fs_fiemap()
-Date:   Mon, 29 Jun 2020 20:13:13 +0800
-Message-ID: <20200629121313.68072-2-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200629121313.68072-1-yuchao0@huawei.com>
-References: <20200629121313.68072-1-yuchao0@huawei.com>
+        id S1732751AbgF2TaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:30:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:40664 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730063AbgF2T34 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:29:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22FB9147A;
+        Mon, 29 Jun 2020 05:21:53 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 794443F73C;
+        Mon, 29 Jun 2020 05:21:51 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 13:21:49 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Patrick Bellasi <patrick.bellasi@matbug.net>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Chris Redpath <chris.redpath@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] sched/uclamp: Protect uclamp fast path code with
+ static key
+Message-ID: <20200629122148.klgi4mi3znhnzaf7@e107158-lin.cambridge.arm.com>
+References: <20200625154352.24767-1-qais.yousef@arm.com>
+ <20200625154352.24767-3-qais.yousef@arm.com>
+ <87bll6ngrr.derkling@matbug.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87bll6ngrr.derkling@matbug.net>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-to show f2fs_fiemap()'s result as below:
+On 06/26/20 14:38, Patrick Bellasi wrote:
+> 
+> On Thu, Jun 25, 2020 at 17:43:52 +0200, Qais Yousef <qais.yousef@arm.com> wrote...
+> 
+> [...]
+> 
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 235b2cae00a0..e2f1fffa013c 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -794,6 +794,25 @@ unsigned int sysctl_sched_uclamp_util_max = SCHED_CAPACITY_SCALE;
+> >  /* All clamps are required to be less or equal than these values */
+> >  static struct uclamp_se uclamp_default[UCLAMP_CNT];
+> >  
+> > +/*
+> > + * This static key is used to reduce the uclamp overhead in the fast path. It
+> > + * only disables the call to uclamp_rq_{inc, dec}() in enqueue/dequeue_task().
+> > + *
+> > + * This allows users to continue to enable uclamp in their kernel config with
+> > + * minimum uclamp overhead in the fast path.
+> > + *
+> > + * As soon as userspace modifies any of the uclamp knobs, the static key is
+> > + * enabled, since we have an actual users that make use of uclamp
+> > + * functionality.
+> > + *
+> > + * The knobs that would enable this static key are:
+> > + *
+> > + *   * A task modifying its uclamp value with sched_setattr().
+> > + *   * An admin modifying the sysctl_sched_uclamp_{min, max} via procfs.
+> > + *   * An admin modifying the cgroup cpu.uclamp.{min, max}
+> > + */
+> > +static DEFINE_STATIC_KEY_FALSE(sched_uclamp_used);
+> 
+> This is me being choosy, but given that:
 
-f2fs_fiemap: dev = (251,0), ino = 7, lblock:0, pblock:1625292800, len:2097152, flags:0, ret:0
+ulcamp_enabled is already used. And technically uclamp is enabled but not used
+here. We can use active too, but I prefer this term as it refers to userspace
+opting in using util clamp.
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
-v2:
-- use show_dev_ino() to avoid compile warning.
- fs/f2fs/data.c              |  6 +++++-
- fs/f2fs/inline.c            |  2 ++
- include/trace/events/f2fs.h | 37 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 44 insertions(+), 1 deletion(-)
+> 
+> ---8<---
+> % grep -e '_used[ )]' fair.c core.c
+> fair.c:	return static_key_false(&__cfs_bandwidth_used);
+> fair.c:	static_key_slow_inc_cpuslocked(&__cfs_bandwidth_used);
+> fair.c:	static_key_slow_dec_cpuslocked(&__cfs_bandwidth_used);
+> 
+> % grep -e '_enabled[ )]' fair.c core.c
+> fair.c:	if (!cfs_bandwidth_used() || !cfs_rq->runtime_enabled)
+> fair.c:	if (!cfs_rq->runtime_enabled || cfs_rq->nr_running)
+> fair.c:	if (!cfs_rq->runtime_enabled || cfs_rq->curr)
+> fair.c:	if (likely(!cfs_rq->runtime_enabled || cfs_rq->runtime_remaining > 0))
+> fair.c:	cfs_rq->runtime_enabled = 0;
+> fair.c:		cfs_rq->runtime_enabled = cfs_b->quota != RUNTIME_INF;
+> fair.c:		if (!cfs_rq->runtime_enabled)
+> fair.c:		cfs_rq->runtime_enabled = 0;
+> core.c:	if (static_key_false((&paravirt_steal_rq_enabled))) {
+> core.c:	if (unlikely(!p->sched_class->uclamp_enabled))
+> core.c:	if (unlikely(!p->sched_class->uclamp_enabled))
+> core.c:	 * Prevent race between setting of cfs_rq->runtime_enabled and
+> core.c:	runtime_enabled = quota != RUNTIME_INF;
+> core.c:	runtime_was_enabled = cfs_b->quota != RUNTIME_INF;
+> core.c:	if (runtime_enabled && !runtime_was_enabled)
+> core.c:	if (runtime_enabled)
+> core.c:		cfs_rq->runtime_enabled = runtime_enabled;
+> core.c:	if (runtime_was_enabled && !runtime_enabled)
+> ---8<---
+> 
+> even just for consistency shake, I would still prefer sched_uclamp_enabled for
+> the static key name.
+> 
+> > +
+> >  /* Integer rounded range for each bucket */
+> >  #define UCLAMP_BUCKET_DELTA DIV_ROUND_CLOSEST(SCHED_CAPACITY_SCALE, UCLAMP_BUCKETS)
+> >  
+> > @@ -994,9 +1013,16 @@ static inline void uclamp_rq_dec_id(struct rq *rq, struct task_struct *p,
+> >  	lockdep_assert_held(&rq->lock);
+> >  
+> >  	bucket = &uc_rq->bucket[uc_se->bucket_id];
+> > -	SCHED_WARN_ON(!bucket->tasks);
+> > -	if (likely(bucket->tasks))
+> > -		bucket->tasks--;
+> > +
+> > +	/*
+> > +	 * This could happen if sched_uclamp_used was enabled while the
+> > +	 * current task was running, hence we could end up with unbalanced call
+> > +	 * to uclamp_rq_dec_id().
+> > +	 */
+> > +	if (unlikely(!bucket->tasks))
+> > +		return;
+> > +
+> > +	bucket->tasks--;
+> >  	uc_se->active = false;
+> 
+> In this chunk you are indeed changing the code.
+> 
+> Are we sure there are not issues with patterns like:
+> 
+>   enqueue(taskA)
+>   // uclamp gets enabled
+>   enqueue(taskB)
+>   dequeue(taskA)
+>   // bucket->tasks is now 0
+>   dequeue(taskB)
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index c07a50e4d967..995cf78b23c5 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -1813,6 +1813,7 @@ static int f2fs_xattr_fiemap(struct inode *inode,
- 			flags |= FIEMAP_EXTENT_LAST;
- 
- 		err = fiemap_fill_next_extent(fieinfo, 0, phys, len, flags);
-+		trace_f2fs_fiemap(inode, 0, phys, len, flags, err);
- 		if (err || err == 1)
- 			return err;
- 	}
-@@ -1836,8 +1837,10 @@ static int f2fs_xattr_fiemap(struct inode *inode,
- 		flags = FIEMAP_EXTENT_LAST;
- 	}
- 
--	if (phys)
-+	if (phys) {
- 		err = fiemap_fill_next_extent(fieinfo, 0, phys, len, flags);
-+		trace_f2fs_fiemap(inode, 0, phys, len, flags, err);
-+	}
- 
- 	return (err < 0 ? err : 0);
- }
-@@ -1931,6 +1934,7 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
- 
- 		ret = fiemap_fill_next_extent(fieinfo, logical,
- 				phys, size, flags);
-+		trace_f2fs_fiemap(inode, logical, phys, size, flags, ret);
- 		if (ret)
- 			goto out;
- 		size = 0;
-diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
-index dbade310dc79..def4b8481883 100644
---- a/fs/f2fs/inline.c
-+++ b/fs/f2fs/inline.c
-@@ -12,6 +12,7 @@
- 
- #include "f2fs.h"
- #include "node.h"
-+#include <trace/events/f2fs.h>
- 
- bool f2fs_may_inline_data(struct inode *inode)
- {
-@@ -776,6 +777,7 @@ int f2fs_inline_data_fiemap(struct inode *inode,
- 	byteaddr += (char *)inline_data_addr(inode, ipage) -
- 					(char *)F2FS_INODE(ipage);
- 	err = fiemap_fill_next_extent(fieinfo, start, byteaddr, ilen, flags);
-+	trace_f2fs_fiemap(inode, start, byteaddr, ilen, flags, err);
- out:
- 	f2fs_put_page(ipage, 1);
- 	return err;
-diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-index 2e8713a52d76..8a1c1311acac 100644
---- a/include/trace/events/f2fs.h
-+++ b/include/trace/events/f2fs.h
-@@ -1917,6 +1917,43 @@ TRACE_EVENT(f2fs_bmap,
- 		(unsigned long long)__entry->pblock)
- );
- 
-+TRACE_EVENT(f2fs_fiemap,
-+
-+	TP_PROTO(struct inode *inode, sector_t lblock, sector_t pblock,
-+		unsigned long long len, unsigned int flags, int ret),
-+
-+	TP_ARGS(inode, lblock, pblock, len, flags, ret),
-+
-+	TP_STRUCT__entry(
-+		__field(dev_t, dev)
-+		__field(ino_t, ino)
-+		__field(sector_t, lblock)
-+		__field(sector_t, pblock)
-+		__field(unsigned long long, len)
-+		__field(unsigned int, flags)
-+		__field(int, ret)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->dev		= inode->i_sb->s_dev;
-+		__entry->ino		= inode->i_ino;
-+		__entry->lblock		= lblock;
-+		__entry->pblock		= pblock;
-+		__entry->len		= len;
-+		__entry->flags		= flags;
-+		__entry->ret		= ret;
-+	),
-+
-+	TP_printk("dev = (%d,%d), ino = %lu, lblock:%lld, pblock:%lld, "
-+		"len:%llu, flags:%u, ret:%d",
-+		show_dev_ino(__entry),
-+		(unsigned long long)__entry->lblock,
-+		(unsigned long long)__entry->pblock,
-+		__entry->len,
-+		__entry->flags,
-+		__entry->ret)
-+);
-+
- #endif /* _TRACE_F2FS_H */
- 
-  /* This part must be outside protection */
--- 
-2.26.2
+Hmm I don't know to be honest if this ordering problem could happen.
 
+> 
+> TaskB has been enqueued with with uclamp enabled, thus it
+> has got uc_se->active=True and enforced its clamp value at RQ level.
+> 
+> But with your change above we don't reset that anymore.
+> 
+> As per my previous proposal: why not just removing the SCHED_WARN_ON?
+> That's the only real problem in the code above, since now we are not
+> more granted to have balanced inc/dec.
+
+Yeah I agree. I'll re-instate it and add a comment of this ordering issue too.
+
+> 
+> [...]
+> 
+> > +bool uclamp_is_enabled(void)
+> > +{
+> > +	return static_branch_likely(&sched_uclamp_used);
+> > +}
+> > +
+> 
+> The above and the following changes are not necessary if we just
+> add the guards at the beginning of uclamp_rq_util_with() instead of what
+> you do in PATCH1.
+
+I addressed that in patch 1 and hopefully my reasoning made sense of why we
+can't do what you're suggesting in uclamp_rq_util_with().
+
+> 
+> I think this will give better overheads removal by avoiding not
+> necessary min/max clamps for both RT and CFS.
+
+As I stated earlier, uclamp_rq_util_with() is called from schedutil_cpu_util()
+and find_energy_efficient_cpu(). I don't think it's an overhead if they continue
+to call it since it'll not break correctness and speed is not an issue.
+
+But as I think this could be potential cause of confusion at least. I'll add
+a comment there and probably make it return early so it's more readable and
+future proof.
+
+Thanks
+
+--
+Qais Yousef
+
+>   
+> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> > index 7fbaee24c824..3f4e296ccb67 100644
+> > --- a/kernel/sched/cpufreq_schedutil.c
+> > +++ b/kernel/sched/cpufreq_schedutil.c
+> > @@ -210,7 +210,7 @@ unsigned long schedutil_cpu_util(int cpu, unsigned long util_cfs,
+> >  	unsigned long dl_util, util, irq;
+> >  	struct rq *rq = cpu_rq(cpu);
+> >  
+> > -	if (!IS_BUILTIN(CONFIG_UCLAMP_TASK) &&
+> > +	if (!uclamp_is_enabled() &&
+> >  	    type == FREQUENCY_UTIL && rt_rq_is_runnable(&rq->rt)) {
+> >  		return max;
+> >  	}
+> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> > index 1d4e94c1e5fe..aff5430331e4 100644
+> > --- a/kernel/sched/sched.h
+> > +++ b/kernel/sched/sched.h
+> > @@ -2371,6 +2371,8 @@ unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
+> >  
+> >  	return clamp(util, min_util, max_util);
+> >  }
+> > +
+> > +bool uclamp_is_enabled(void);
+> >  #else /* CONFIG_UCLAMP_TASK */
+> >  static inline
+> >  unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
+> > @@ -2378,6 +2380,11 @@ unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
+> >  {
+> >  	return util;
+> >  }
+> > +
+> > +static inline bool uclamp_is_enabled(void)
+> > +{
+> > +	return false;
+> > +}
+> >  #endif /* CONFIG_UCLAMP_TASK */
+> >  
+> >  #ifdef arch_scale_freq_capacity
+> 
