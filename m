@@ -2,202 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1479620E0D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA5920DFF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732054AbgF2UuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
+        id S2387929AbgF2Ul0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731469AbgF2TNh (ORCPT
+        with ESMTP id S1731673AbgF2TOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:37 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3475AC00875C
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:47:55 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id f18so7613532wrs.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:47:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EffOshP13YGIgJwXnCvVvNFs3Gt+n5ALuno/hX+Xibk=;
-        b=O6TA/khj2oAd50wICvTYvI8rNtrjotOqN8tzE3VwLns4q49M36UxPhle5ZI+whRmsb
-         e/KvJVk0YKIz25aWGKJu7NgL+4s+h4h7TGCeStNrjO9+ECce1sJWpllWWrtqDkYps6me
-         gNFHnP6kRuzn4vlzSPeA6N8Dcabbfrejo2pLlBKAy5Oy1Z9sgcofHZv60bXtC2d6j/4v
-         LNlkuaBR9uyBGK+z4xLYq8PItyU+TYf6QmlWFrD4Nmp1JCMJSFM0awNfgTE8kH4ufECr
-         or+PCddx/lCrdI+309TTG03QGtBbE1vB5OhgdfRES9E0qx2aez7HFRjgomo51QH5Mizs
-         GQsQ==
+        Mon, 29 Jun 2020 15:14:07 -0400
+Received: from mail-il1-x148.google.com (mail-il1-x148.google.com [IPv6:2607:f8b0:4864:20::148])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522FDC00875E
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:51:11 -0700 (PDT)
+Received: by mail-il1-x148.google.com with SMTP id x2so3261818ila.11
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:51:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=EffOshP13YGIgJwXnCvVvNFs3Gt+n5ALuno/hX+Xibk=;
-        b=ZUpdtbiAcUA14t9sjJfNZa8Xi81UzOf2ojhcwdwo1UzOiReC/dSvKCo3Uh3e3Cl8ip
-         I3qjb8UGQF9y3LDzo+O/Ib1epsx6LGXdm252D4OszRxotGfJlZyrroSU/1Cwoz1p2+je
-         A8UqCpOZN0cTXgT2PkFeemO/0xO7DHODxDNJ0zsYLFMzhkHiJnfVgxG14TDPHCQ7ty5U
-         Z5ZEs6W/1fforubclSvRXEjbNgxnyrp/N2ETAecYfR0yzCS7DXkNXS/0ii3n+CHh1Ll3
-         eGyBf+7PHnNEyk+pkrB1JPDOLrB+/hlcGuguKVEQLZLuJFgOqhUpy+87TR5DfWEPowjS
-         F7Nw==
-X-Gm-Message-State: AOAM531HdFKHrJKRny8h/kx0OS08q8Vv5xXey0r88JM9JVEqZJ/9vslh
-        ssrWL4NRe9atHJ70grTrw5XmCQ==
-X-Google-Smtp-Source: ABdhPJyKCEz4lXI73wHLHAlG3HZk35S0elYYf8BSZHGCOmLggLDix7TloGxvh3UbU/inFApdle93DA==
-X-Received: by 2002:adf:e811:: with SMTP id o17mr17081860wrm.53.1593420473627;
-        Mon, 29 Jun 2020 01:47:53 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:9902:c1f0:76c7:9dbc? ([2a01:e35:2ec0:82b0:9902:c1f0:76c7:9dbc])
-        by smtp.gmail.com with ESMTPSA id s15sm8329418wmj.41.2020.06.29.01.47.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jun 2020 01:47:52 -0700 (PDT)
-Subject: Re: [PATCH v9 00/11] Genericize DW MIPI DSI bridge and add i.MX 6
- driver
-To:     Adrian Ratiu <adrian.ratiu@collabora.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Philippe CORNU <philippe.cornu@st.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Yannick FERTRE <yannick.fertre@st.com>,
-        Andrzej Hajda <a.hajda@samsung.com>, linux-imx@nxp.com,
-        kernel@collabora.com, linux-stm32@st-md-mailman.stormreply.com
-References: <20200609174959.955926-1-adrian.ratiu@collabora.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- BSwxi7g3Mu7u5kUByanqHyA=
-Organization: Baylibre
-Message-ID: <c6f10db1-7f56-a156-36a1-125e764c8c1a@baylibre.com>
-Date:   Mon, 29 Jun 2020 10:47:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ROvN58bMs+/Mdp+fmaywI8ZO468/VS7QI9MJ+inN3wQ=;
+        b=iUUuEUDRWSAEw8y4cNzydW8zRhQJmUa5l7hq3Ip7aIkROJMzbq81w/SgRsVW6phih3
+         hYuvgnJ5f/mWF61NfH2r7qmyjpmYdBMuxw/vyj0gGJWTCprRTz2WcC2sRrhOQWVD/W8p
+         iSP6X5ddPiYsK5dV4Xe307aSnbPP9FiBh0tZzk6yO3j2Xh/CEvDXGCjRDT3mbSmBujDf
+         YGJojdlde3JymJ8ZXpwnw7tjABFQiHjpWgCuoSlu1PwkcxZJ6Zp5HeQ8hXGyt+1YCIMh
+         vk35+x4I3q05z1PWab4lJDQsXeGLmBAtyrKb5qnWGV2q8XzB/3AzRyEZVp+onaEZt0GM
+         rWyw==
+X-Gm-Message-State: AOAM533O6bLMrGOmkyFfFhRvzd2qevGjjn1+4oN4dXZZy2vHor16+RIx
+        DdmQfM2qAXX/3AqmMks/huKI7tYEwcwQHG4f0Y8i9fZXMOle
+X-Google-Smtp-Source: ABdhPJwWSIaP5qztCBfp4O0+tW449qcsNaqurETy0KKZrJmSIlXdLHj3Dsc1s8iJi2HSTJ4Jk4yrPZwR7aFDELFxt6eaBzHfdOWp
 MIME-Version: 1.0
-In-Reply-To: <20200609174959.955926-1-adrian.ratiu@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:2172:: with SMTP id p18mr17111736jak.63.1593420670562;
+ Mon, 29 Jun 2020 01:51:10 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 01:51:10 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000bf7b405a93529d8@google.com>
+Subject: general protection fault in __apic_accept_irq (2)
+From:   syzbot <syzbot+1bf777dfdde86d64b89b@syzkaller.appspotmail.com>
+To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrian,
+Hello,
 
-On 09/06/2020 19:49, Adrian Ratiu wrote:
-> [Re-submitting to cc dri-devel, sorry about the noise]
-> 
-> Hello all,
-> 
-> v9 cleanly applies on top of latest next-20200609 tree.
-> 
-> v9 does not depend on other patches as the last binding doc has been merged.
-> 
-> All feedback up to this point has been addressed. Specific details in
-> individual patch changelogs.
-> 
-> The biggest changes are the deprecation of the Synopsys DW bridge bind()
-> API in favor of of_drm_find_bridge() and .attach callbacks, the addition
-> of a TODO entry which outlines future planned bridge driver refactorings
-> and a reordering of some i.MX 6 patches to appease checkpatch.
-> 
-> The idea behind the TODO is to get this regmap and i.MX 6 driver merged
-> and then do the rest of refactorings in-tree because it's easier and the
-> refactorings themselves are out-of-scope of this series which is adding
-> i.MX 6 support and is quite big already, so please, if there are more
-> refactoring ideas, let's add them to the TODO doc. :) I intend to tackle
-> those after this series is merged to avoid two complex inter-dependent
-> simultaneous series.
+syzbot found the following crash on:
 
-This has been around here for a long time and you seem to have addressed all
-the reviews.
+HEAD commit:    7ae77150 Merge tag 'powerpc-5.8-1' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1024dead100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d195fe572fb15312
+dashboard link: https://syzkaller.appspot.com/bug?extid=1bf777dfdde86d64b89b
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e542f9100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154c1c03100000
 
-> 
-> As always more testing is welcome especially on Rockchip and STM SoCs.
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+1bf777dfdde86d64b89b@syzkaller.appspotmail.com
 
-It has been tested on STM, but I'd like a feedback on RK platform before applying
-the bridge parts.
+L1TF CPU bug present and SMT on, data leak possible. See CVE-2018-3646 and https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/l1tf.html for details.
+general protection fault, probably for non-canonical address 0xdffffc0000000013: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000098-0x000000000000009f]
+CPU: 1 PID: 6780 Comm: syz-executor153 Not tainted 5.7.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__apic_accept_irq+0x46/0xb80 arch/x86/kvm/lapic.c:1039
+Code: 4c 24 18 4c 89 4c 24 08 e8 67 0d 61 00 49 8d 87 98 00 00 00 48 89 c2 48 89 44 24 20 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 1b 0a 00 00 49 8b af 98 00 00 00 0f 1f 44 00 00
+RSP: 0018:ffffc900015f79a8 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff888095b00040 RCX: 0000000000000000
+RDX: 0000000000000013 RSI: ffffffff8112c159 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: fffff520002bef4c R12: 0000000000000000
+R13: ffff8880a00b8e68 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000001193880(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa6130226c0 CR3: 00000000a1257000 CR4: 00000000001426e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ kvm_arch_async_page_present+0x7de/0x9e0 arch/x86/kvm/x86.c:10580
+ kvm_check_async_pf_completion+0x18d/0x400 arch/x86/kvm/../../../virt/kvm/async_pf.c:151
+ vcpu_enter_guest arch/x86/kvm/x86.c:8437 [inline]
+ vcpu_run arch/x86/kvm/x86.c:8669 [inline]
+ kvm_arch_vcpu_ioctl_run+0x18bf/0x69f0 arch/x86/kvm/x86.c:8890
+ kvm_vcpu_ioctl+0x46a/0xe20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3163
+ vfs_ioctl fs/ioctl.c:47 [inline]
+ ksys_ioctl+0x11a/0x180 fs/ioctl.c:771
+ __do_sys_ioctl fs/ioctl.c:780 [inline]
+ __se_sys_ioctl fs/ioctl.c:778 [inline]
+ __x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:778
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x440299
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffc336022f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440299
+RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000005
+RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
+R10: 00000000004002c8 R11: 0000000000000246 R12: 0000000000401b20
+R13: 0000000000401bb0 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 85b25eaa183f3d19 ]---
+RIP: 0010:__apic_accept_irq+0x46/0xb80 arch/x86/kvm/lapic.c:1039
+Code: 4c 24 18 4c 89 4c 24 08 e8 67 0d 61 00 49 8d 87 98 00 00 00 48 89 c2 48 89 44 24 20 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 1b 0a 00 00 49 8b af 98 00 00 00 0f 1f 44 00 00
+RSP: 0018:ffffc900015f79a8 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff888095b00040 RCX: 0000000000000000
+RDX: 0000000000000013 RSI: ffffffff8112c159 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: fffff520002bef4c R12: 0000000000000000
+R13: ffff8880a00b8e68 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000001193880(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000560b8ba34fa8 CR3: 00000000a1257000 CR4: 00000000001426f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-Can the imx & stm patches be applied separately ?
 
-Neil
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> 
-> Big thank you to everyone who has contributed to this up to now,
-> Adrian
-> 
-> Adrian Ratiu (11):
->   drm: bridge: dw_mipi_dsi: add initial regmap infrastructure
->   drm: bridge: dw_mipi_dsi: abstract register access using reg_fields
->   drm: bridge: dw_mipi_dsi: add dsi v1.01 support
->   drm: bridge: dw_mipi_dsi: remove bind/unbind API
->   dt-bindings: display: add i.MX6 MIPI DSI host controller doc
->   ARM: dts: imx6qdl: add missing mipi dsi properties
->   drm: imx: Add i.MX 6 MIPI DSI host platform driver
->   drm: stm: dw-mipi-dsi: let the bridge handle the HW version check
->   drm: bridge: dw-mipi-dsi: split low power cfg register into fields
->   drm: bridge: dw-mipi-dsi: fix bad register field offsets
->   Documentation: gpu: todo: Add dw-mipi-dsi consolidation plan
-> 
->  .../display/imx/fsl,mipi-dsi-imx6.yaml        | 112 +++
->  Documentation/gpu/todo.rst                    |  25 +
->  arch/arm/boot/dts/imx6qdl.dtsi                |   8 +
->  drivers/gpu/drm/bridge/synopsys/Kconfig       |   1 +
->  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 713 ++++++++++++------
->  drivers/gpu/drm/imx/Kconfig                   |   8 +
->  drivers/gpu/drm/imx/Makefile                  |   1 +
->  drivers/gpu/drm/imx/dw_mipi_dsi-imx6.c        | 399 ++++++++++
->  .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   |   7 +-
->  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c         |  16 +-
->  10 files changed, 1059 insertions(+), 231 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,mipi-dsi-imx6.yaml
->  create mode 100644 drivers/gpu/drm/imx/dw_mipi_dsi-imx6.c
-> 
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
