@@ -2,77 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640BC20DE27
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B290C20DE51
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732889AbgF2UXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:23:06 -0400
-Received: from mga17.intel.com ([192.55.52.151]:4368 "EHLO mga17.intel.com"
+        id S2388688AbgF2UYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:24:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732276AbgF2UXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:23:03 -0400
-IronPort-SDR: Nn3KdIzXxBH3AmDRtRC7fh1FFQdezP5pCeuPJFw4KjdAurYFbLy+GkxQBR6s8eRqBJ7j8cABx8
- 3yLkor0UAaKg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="126197047"
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="126197047"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 13:23:02 -0700
-IronPort-SDR: yftIs/JWOAhBU81sWmB9VyvJd86EmAa3JTtUEhlxTGsJKLkXr8QWZCECgVuYq4/IJBy0Kt7W0R
- +Q5DN6Lilc/w==
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="454319084"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.206.102]) ([10.254.206.102])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 13:23:00 -0700
-Subject: Re: [PATCH v2 3/8] IB/hfi1: Convert PCIBIOS_* errors to generic -E*
- errors
-To:     refactormyself@gmail.com, helgaas@kernel.org
-Cc:     bjorn@helgaas.com, linux-pci@vger.kernel.org,
-        skhan@linuxfoundation.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-References: <20200615073225.24061-1-refactormyself@gmail.com>
- <20200615073225.24061-4-refactormyself@gmail.com>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <5cf6a566-fded-6e98-f7ad-ff1c2a7608ad@intel.com>
-Date:   Mon, 29 Jun 2020 16:22:58 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1732546AbgF2UYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 16:24:35 -0400
+Received: from kernel.org (unknown [87.71.40.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 744072067D;
+        Mon, 29 Jun 2020 20:24:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593462275;
+        bh=wEIaLX71dfGicqQIWZky1iByqXvab7v8PvlHmX+vmWI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ow0w90ZCmyfal+adkRjsIQpW7g7XWqTq/MOUKtMTpPj6QkRvuUBvney2UMWoRZg+P
+         9FT+ytQ5jYVsJE4wvynybaWOkXYN+Rvu2RcVkggJAcvQZwwdFVWX528Qco0/BAJx8z
+         /ul5NvzHoiwFUAWCGITz6BO3KRpf7MJs5iB8TjoU=
+Date:   Mon, 29 Jun 2020 23:24:29 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Rientjes <rientjes@google.com>
+Cc:     Su Hui <sh_def@163.com>, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm: remove the redundancy code
+Message-ID: <20200629202429.GG1492837@kernel.org>
+References: <20200629173047.GA38128@ubuntu>
+ <alpine.DEB.2.22.394.2006291149040.1030250@chino.kir.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <20200615073225.24061-4-refactormyself@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2006291149040.1030250@chino.kir.corp.google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/2020 3:32 AM, refactormyself@gmail.com wrote:
-> From: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
+On Mon, Jun 29, 2020 at 11:50:15AM -0700, David Rientjes wrote:
+> On Tue, 30 Jun 2020, Su Hui wrote:
 > 
-> restore_pci_variables() and save_pci_variables() return PCIBIOS_ error
-> codes from PCIe capability accessors.
+> > remove the redundancy code, the zone_start_pfn
+> > is assigned from zone->zone_start_pfn
+> > Signed-off-by: Su Hui <sh_def@163.com>
 > 
-> PCIBIOS_ error codes have positive values. Passing on these values is
-> inconsistent with functions which return only a negative value on failure.
-> 
-> Before passing on the return value of PCIe capability accessors, call
-> pcibios_err_to_errno() to convert any positive PCIBIOS_ error codes to
-> negative generic error values.
-> 
-> Fix redundant initialisation.
-> 
-> Suggested-by: Bjorn Helgaas <bjorn@helgaas.com>
-> Signed-off-by: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
+> I don't think this is redundant, it's used by memory hotplug when onlining 
+> new memory.
 
-Looks like we may have had a problem when calling 
-pci_read_config_dword() from the init dd path and doing a check for < 0 
-to bail. So this looks like goodness to me.
+Right, it is:
 
-Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+$ git grep -wn init_currently_empty_zone mm/memory_hotplug.c
+mm/memory_hotplug.c:697:            init_currently_empty_zone(zone, start_pfn, nr_pages);
+
+
+> > ---
+> >  mm/page_alloc.c | 2 --
+> >  1 file changed, 2 deletions(-)
+> > 
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index 3c4eb750a199..3372a8c9fbc4 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -6215,8 +6215,6 @@ void __meminit init_currently_empty_zone(struct zone *zone,
+> >  	if (zone_idx > pgdat->nr_zones)
+> >  		pgdat->nr_zones = zone_idx;
+> >  
+> > -	zone->zone_start_pfn = zone_start_pfn;
+> > -
+> >  	mminit_dprintk(MMINIT_TRACE, "memmap_init",
+> >  			"Initialising map node %d zone %lu pfns %lu -> %lu\n",
+> >  			pgdat->node_id,
+> 
+
+-- 
+Sincerely yours,
+Mike.
