@@ -2,136 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B03F120E9A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 02:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECAB720E9A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 02:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728216AbgF2Xsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 19:48:38 -0400
-Received: from mga07.intel.com ([134.134.136.100]:11691 "EHLO mga07.intel.com"
+        id S1728367AbgF2Xs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 19:48:58 -0400
+Received: from mga05.intel.com ([192.55.52.43]:17894 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726500AbgF2Xsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 19:48:36 -0400
-IronPort-SDR: NARoCczc+1EEaPgWaesHpuehkla4kN/ikw1ekRbOaulrWvBpo116gfzPFRlOuVTQbWN7owpytM
- yVF3lF6QDLJg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="211173260"
+        id S1728187AbgF2Xso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 19:48:44 -0400
+IronPort-SDR: /IUzi5FFn77QQM8QS0EQEmJXav3sDFEKqcBghYcUaz1odXF6Y1vxMUdo7lt1k74T8o6EJ3jj0q
+ wc2+62LIY9Gw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="230951621"
 X-IronPort-AV: E=Sophos;i="5.75,296,1589266800"; 
-   d="scan'208";a="211173260"
+   d="scan'208";a="230951621"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 16:48:34 -0700
-IronPort-SDR: cSvOxbCWprVWDC9jeINzlhUbJCerkYsavNkCk9Uq9WEwYZfOjAVF34iAZDqm10x7jxTHjulg67
- rR543a07qo2A==
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 16:48:36 -0700
+IronPort-SDR: 9l3t0L3FlRaHvDVcoJ77HngWdERhkzcih1h5VWLn7eVK4RJzOSkeBYVW6kA/mTCYqKE3Kpzh8F
+ hn55odvfiS5A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,296,1589266800"; 
-   d="scan'208";a="355607603"
+   d="scan'208";a="312203671"
 Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by orsmga001.jf.intel.com with ESMTP; 29 Jun 2020 16:48:34 -0700
-Subject: [RFC][PATCH 4/8] mm/vmscan: add page demotion counter
+  by orsmga008.jf.intel.com with ESMTP; 29 Jun 2020 16:48:36 -0700
+Subject: [RFC][PATCH 5/8] mm/numa: automatically generate node migration order
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, Dave Hansen <dave.hansen@linux.intel.com>,
         yang.shi@linux.alibaba.com, rientjes@google.com,
         ying.huang@intel.com, dan.j.williams@intel.com
 From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Mon, 29 Jun 2020 16:45:10 -0700
+Date:   Mon, 29 Jun 2020 16:45:12 -0700
 References: <20200629234503.749E5340@viggo.jf.intel.com>
 In-Reply-To: <20200629234503.749E5340@viggo.jf.intel.com>
-Message-Id: <20200629234510.1BF23254@viggo.jf.intel.com>
+Message-Id: <20200629234512.F34EDC44@viggo.jf.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-From: Yang Shi <yang.shi@linux.alibaba.com>
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
-Account the number of demoted pages into reclaim_state->nr_demoted.
+When memory fills up on a node, memory contents can be
+automatically migrated to another node.  The biggest problems are
+knowing when to migrate and to where the migration should be
+targeted.
 
-Add pgdemote_kswapd and pgdemote_direct VM counters showed in
-/proc/vmstat.
+The most straightforward way to generate the "to where" list
+would be to follow the page allocator fallback lists.  Those
+lists already tell us if memory is full where to look next.  It
+would also be logical to move memory in that order.
 
-[ daveh:
-   - __count_vm_events() a bit, and made them look at the THP
-     size directly rather than getting data from migrate_pages()
-]
+But, the allocator fallback lists have a fatal flaw: most nodes
+appear in all the lists.  This would potentially lead to
+migration cycles (A->B, B->A, A->B, ...).
 
-Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
+Instead of using the allocator fallback lists directly, keep a
+separate node migration ordering.  But, reuse the same data used
+to generate page allocator fallback in the first place:
+find_next_best_node().
+
+This means that the firmware data used to populate node distances
+essentially dictates the ordering for now.  It should also be
+architecture-neutral since all NUMA architectures have a working
+find_next_best_node().
+
+The protocol for node_demotion[] access and writing is not
+standard.  It has no specific locking and is intended to be read
+locklessly.  Readers must take care to avoid observing changes
+that appear incoherent.  This was done so that node_demotion[]
+locking has no chance of becoming a bottleneck on large systems
+with lots of CPUs in direct reclaim.
+
+This code is unused for now.  It will be called later in the
+series.
+
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Yang Shi <yang.shi@linux.alibaba.com>
 Cc: David Rientjes <rientjes@google.com>
 Cc: Huang Ying <ying.huang@intel.com>
 Cc: Dan Williams <dan.j.williams@intel.com>
 ---
 
- b/include/linux/vm_event_item.h |    2 ++
- b/mm/migrate.c                  |   13 ++++++++++++-
- b/mm/vmscan.c                   |    1 +
- b/mm/vmstat.c                   |    2 ++
- 4 files changed, 17 insertions(+), 1 deletion(-)
+ b/mm/internal.h   |    1 
+ b/mm/migrate.c    |  130 +++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ b/mm/page_alloc.c |    2 
+ 3 files changed, 131 insertions(+), 2 deletions(-)
 
-diff -puN include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter include/linux/vm_event_item.h
---- a/include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter	2020-06-29 16:34:40.332312601 -0700
-+++ b/include/linux/vm_event_item.h	2020-06-29 16:34:40.342312601 -0700
-@@ -32,6 +32,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PS
- 		PGREFILL,
- 		PGSTEAL_KSWAPD,
- 		PGSTEAL_DIRECT,
-+		PGDEMOTE_KSWAPD,
-+		PGDEMOTE_DIRECT,
- 		PGSCAN_KSWAPD,
- 		PGSCAN_DIRECT,
- 		PGSCAN_DIRECT_THROTTLE,
-diff -puN mm/migrate.c~mm-vmscan-add-page-demotion-counter mm/migrate.c
---- a/mm/migrate.c~mm-vmscan-add-page-demotion-counter	2020-06-29 16:34:40.334312601 -0700
-+++ b/mm/migrate.c	2020-06-29 16:34:40.343312601 -0700
-@@ -1187,6 +1187,7 @@ static struct page *alloc_demote_node_pa
- int migrate_demote_mapping(struct page *page)
- {
- 	int next_nid = next_demotion_node(page_to_nid(page));
-+	int ret;
+diff -puN mm/internal.h~auto-setup-default-migration-path-from-firmware mm/internal.h
+--- a/mm/internal.h~auto-setup-default-migration-path-from-firmware	2020-06-29 16:34:41.629312597 -0700
++++ b/mm/internal.h	2020-06-29 16:34:41.638312597 -0700
+@@ -192,6 +192,7 @@ extern int user_min_free_kbytes;
  
- 	VM_BUG_ON_PAGE(!PageLocked(page), page);
- 	VM_BUG_ON_PAGE(PageHuge(page), page);
-@@ -1198,8 +1199,18 @@ int migrate_demote_mapping(struct page *
- 		return -ENOMEM;
+ extern void zone_pcp_update(struct zone *zone);
+ extern void zone_pcp_reset(struct zone *zone);
++extern int find_next_best_node(int node, nodemask_t *used_node_mask);
  
- 	/* MIGRATE_ASYNC is the most light weight and never blocks.*/
--	return __unmap_and_move(alloc_demote_node_page, NULL, next_nid,
-+	ret = __unmap_and_move(alloc_demote_node_page, NULL, next_nid,
- 				page, MIGRATE_ASYNC, MR_DEMOTION);
-+
-+	if (ret == MIGRATEPAGE_SUCCESS) {
-+		int nr_demoted = hpage_nr_pages(page);
-+		if (current_is_kswapd())
-+			__count_vm_events(PGDEMOTE_KSWAPD, nr_demoted);
-+		else
-+			__count_vm_events(PGDEMOTE_DIRECT, nr_demoted);
-+	}
-+
-+	return ret;
+ #if defined CONFIG_COMPACTION || defined CONFIG_CMA
+ 
+diff -puN mm/migrate.c~auto-setup-default-migration-path-from-firmware mm/migrate.c
+--- a/mm/migrate.c~auto-setup-default-migration-path-from-firmware	2020-06-29 16:34:41.631312597 -0700
++++ b/mm/migrate.c	2020-06-29 16:34:41.639312597 -0700
+@@ -1128,6 +1128,10 @@ out:
+ 	return rc;
  }
  
++/*
++ * Writes to this array occur without locking.  READ_ONCE()
++ * is recommended for readers.
++ */
+ static int node_demotion[MAX_NUMNODES] = {[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
  
-diff -puN mm/vmscan.c~mm-vmscan-add-page-demotion-counter mm/vmscan.c
---- a/mm/vmscan.c~mm-vmscan-add-page-demotion-counter	2020-06-29 16:34:40.336312601 -0700
-+++ b/mm/vmscan.c	2020-06-29 16:34:40.344312601 -0700
-@@ -140,6 +140,7 @@ struct scan_control {
- 		unsigned int immediate;
- 		unsigned int file_taken;
- 		unsigned int taken;
-+		unsigned int demoted;
- 	} nr;
- 
- 	/* for recording the reclaimed slab by now */
-diff -puN mm/vmstat.c~mm-vmscan-add-page-demotion-counter mm/vmstat.c
---- a/mm/vmstat.c~mm-vmscan-add-page-demotion-counter	2020-06-29 16:34:40.339312601 -0700
-+++ b/mm/vmstat.c	2020-06-29 16:34:40.345312601 -0700
-@@ -1198,6 +1198,8 @@ const char * const vmstat_text[] = {
- 	"pgrefill",
- 	"pgsteal_kswapd",
- 	"pgsteal_direct",
-+	"pgdemote_kswapd",
-+	"pgdemote_direct",
- 	"pgscan_kswapd",
- 	"pgscan_direct",
- 	"pgscan_direct_throttle",
+ /**
+@@ -1141,7 +1145,13 @@ int next_demotion_node(int node)
+ {
+ 	get_online_mems();
+ 	while (true) {
+-		node = node_demotion[node];
++		/*
++		 * node_demotion[] is updated without excluding
++		 * this function from running.  READ_ONCE() avoids
++		 * 'node' checks reading different values from
++		 * node_demotion[].
++		 */
++		node = READ_ONCE(node_demotion[node]);
+ 		if (node == NUMA_NO_NODE)
+ 			break;
+ 		if (node_online(node))
+@@ -3086,3 +3096,121 @@ void migrate_vma_finalize(struct migrate
+ }
+ EXPORT_SYMBOL(migrate_vma_finalize);
+ #endif /* CONFIG_DEVICE_PRIVATE */
++
++/* Disable reclaim-based migration. */
++static void disable_all_migrate_targets(void)
++{
++	int node;
++
++	for_each_online_node(node)
++		node_demotion[node] = NUMA_NO_NODE;
++}
++
++/*
++ * Find an automatic demotion target for 'node'.
++ * Failing here is OK.  It might just indicate
++ * being at the end of a chain.
++ */
++static int establish_migrate_target(int node, nodemask_t *used)
++{
++	int migration_target;
++
++	/*
++	 * Can not set a migration target on a
++	 * node with it already set.
++	 *
++	 * No need for READ_ONCE() here since this
++	 * in the write path for node_demotion[].
++	 * This should be the only thread writing.
++	 */
++	if (node_demotion[node] != NUMA_NO_NODE)
++		return NUMA_NO_NODE;
++
++	migration_target = find_next_best_node(node, used);
++	if (migration_target == NUMA_NO_NODE)
++		return NUMA_NO_NODE;
++
++	node_demotion[node] = migration_target;
++
++	return migration_target;
++}
++
++/*
++ * When memory fills up on a node, memory contents can be
++ * automatically migrated to another node instead of
++ * discarded at reclaim.
++ *
++ * Establish a "migration path" which will start at nodes
++ * with CPUs and will follow the priorities used to build the
++ * page allocator zonelists.
++ *
++ * The difference here is that cycles must be avoided.  If
++ * node0 migrates to node1, then neither node1, nor anything
++ * node1 migrates to can migrate to node0.
++ *
++ * This function can run simultaneously with readers of
++ * node_demotion[].  However, it can not run simultaneously
++ * with itself.  Exclusion is provided by memory hotplug events
++ * being single-threaded.
++ */
++void set_migration_target_nodes(void)
++{
++	nodemask_t next_pass = NODE_MASK_NONE;
++	nodemask_t this_pass = NODE_MASK_NONE;
++	nodemask_t used_targets = NODE_MASK_NONE;
++	int node;
++
++	get_online_mems();
++	/*
++	 * Avoid any oddities like cycles that could occur
++	 * from changes in the topology.  This will leave
++	 * a momentary gap when migration is disabled.
++	 */
++	disable_all_migrate_targets();
++
++	/*
++	 * Ensure that the "disable" is visible across the system.
++	 * Readers will see either a combination of before+disable
++	 * state or disable+after.  They will never see before and
++	 * after state together.
++	 *
++	 * The before+after state together might have cycles and
++	 * could cause readers to do things like loop until this
++	 * function finishes.  This ensures they can only see a
++	 * single "bad" read and would, for instance, only loop
++	 * once.
++	 */
++	smp_wmb();
++
++	/*
++	 * Allocations go close to CPUs, first.  Assume that
++	 * the migration path starts at the nodes with CPUs.
++	 */
++	next_pass = node_states[N_CPU];
++again:
++	this_pass = next_pass;
++	next_pass = NODE_MASK_NONE;
++	/*
++	 * To avoid cycles in the migration "graph", ensure
++	 * that migration sources are not future targets by
++	 * setting them in 'used_targets'.
++	 *
++	 * But, do this only once per pass so that multiple
++	 * source nodes can share a target node.
++	 */
++	nodes_or(used_targets, used_targets, this_pass);
++	for_each_node_mask(node, this_pass) {
++		int target_node = establish_migrate_target(node, &used_targets);
++
++		if (target_node == NUMA_NO_NODE)
++			continue;
++
++		/* Visit targets from this pass in the next pass: */
++		node_set(target_node, next_pass);
++	}
++	/* Is another pass necessary? */
++	if (!nodes_empty(next_pass))
++		goto again;
++
++	put_online_mems();
++}
+diff -puN mm/page_alloc.c~auto-setup-default-migration-path-from-firmware mm/page_alloc.c
+--- a/mm/page_alloc.c~auto-setup-default-migration-path-from-firmware	2020-06-29 16:34:41.634312597 -0700
++++ b/mm/page_alloc.c	2020-06-29 16:34:41.641312597 -0700
+@@ -5591,7 +5591,7 @@ static int node_load[MAX_NUMNODES];
+  *
+  * Return: node id of the found node or %NUMA_NO_NODE if no node is found.
+  */
+-static int find_next_best_node(int node, nodemask_t *used_node_mask)
++int find_next_best_node(int node, nodemask_t *used_node_mask)
+ {
+ 	int n, val;
+ 	int min_val = INT_MAX;
 _
