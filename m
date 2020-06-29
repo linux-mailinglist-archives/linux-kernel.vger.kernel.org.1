@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E5E20E137
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6308420E18A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730994AbgF2UxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:53:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
+        id S2389985AbgF2U4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731335AbgF2TNX (ORCPT
+        with ESMTP id S1731267AbgF2TNH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:23 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60EBC014A54
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:17:28 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id u8so7444003pje.4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:17:28 -0700 (PDT)
+        Mon, 29 Jun 2020 15:13:07 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0385CC014A5E
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:17:35 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id j12so7568737pfn.10
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:17:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LQbv/kqpYIFMU5rUjcmTQLBycdHYItEePq3QI83n7qo=;
-        b=bkt6Q0TcR4n/l+mBmN3Mq3o4JTW33uWez2KZwEhui6jpKMAK6feYaJ/p7yeSgj4aY8
-         kouegoT4XvMfelGTNnqistuNTIYK0t8iaSds1Pwd2GZMmd5rBVVJ07daijT0XaBJUnEZ
-         huI6yAjhoYtjnoILtfsweJszvd+SVsGObGcmRijmR0F/99YERXlh8J2C7XijVX84ug3X
-         A8rc5/SzoItUpTkhGwagy++k7o26fx818Ghi67KkbBgbw9wr6AWxkn+YggKBedaRgVE3
-         jeQ6KrvJETk967RjT7Sm3t5pYOy2SS3u7uz2WvHOOjVhDAfWuprvBxD2NWUePlkMuVop
-         f7+Q==
+        bh=arjTPx8IlIG3Faejt7byV8E3hxyauMop9P6uXWb4FG0=;
+        b=AMQ90uHUA7E18kK7PM3qs+qkCHIEBr/2YsGM884IGiHe8bl9IF+TBUR41PqeoaPqzx
+         OmeWZ9q8OnSCLd4PphAMKt1qHDDRzq1O1bPXIAeID6K4S+G2jtr+SvWIaZSJbe/EIRL3
+         65jSxbF0YxiwOJrRC4Ddx0JDQICnkKioA0K88phNtx02WNdqIcRgJwsyChCVjjKoEohN
+         YBSTlTeart+jflKn18fRZ2QxC7a11LzCPeIBzC+wXl44aTLz3zfmBAljb2Te/YrtT8g0
+         q9a+1suAj2hYNzwMIfsMwfzQoyE5h6XIeglbLxIJqRsUFmv3UW+i9lHeK9EON+2ZXjEX
+         lUIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LQbv/kqpYIFMU5rUjcmTQLBycdHYItEePq3QI83n7qo=;
-        b=uk1S1lEdAdhjma1gPvWGOclvvMxLYHuS7zeRCpMuyQfT93YnoAE/O4yRXJ1f7mIqJa
-         plgDk7WhUBCb89gnDGEYdruvqnpMSMnqXVNBmxkbVYgoebmJgDYw7bav4lyx8SBwjB3t
-         Q+Ptw/xMrRwwOGiClxzfz+JKYyNcOGxAXOsvvEm9XlJnPZAVL23ZvuWbr/W9HcSELtWf
-         zfjpxODDvdvYuslZZA7mNDxo9OU8xOBMA/iw2xIT4XjXya7k9PbHSkDJRPyRX05LoAoC
-         uVPfOtp8hD9EW9sV2q4EFk4rPXMcvkJLxU4GjPrKir2aNngKe8XpIURv6+fXtxC/bDiS
-         29KQ==
-X-Gm-Message-State: AOAM533lwMiSK8ae4KFHgG2DxVsuJghdpCQ+6Gze7g8QI3FHNGGoVdt7
-        v6TCDUE1XXktmsG1ue22y3o=
-X-Google-Smtp-Source: ABdhPJwQKm/0wvFfLPrzBSGZOAhguhAg7eyU3UUCTNgvWuQvPS/qYbNuIbd2IYrNGNfKtDUf0maWYw==
-X-Received: by 2002:a17:902:b714:: with SMTP id d20mr2645461pls.318.1593418648402;
-        Mon, 29 Jun 2020 01:17:28 -0700 (PDT)
+        bh=arjTPx8IlIG3Faejt7byV8E3hxyauMop9P6uXWb4FG0=;
+        b=V5cl5q/PzbJe+AgvQO4hN/kUdF4A6Hp/NIdQdnqL5mKE3oWPaqHcqiAtHuZ3NaEcVo
+         FhOst06aWSp9gFv0JaMNxL+NYNgZpSy8pd6Ypfjh48hoFvvii+e5Rt6sa7lEd4qczXB8
+         El4gJ34zo6IoAg1AqQ2/NERy+xxeCbh8Jr6/f/uJN9kewRZjbKjR5xgR6MjvKq5qIZ6n
+         Gm/uwW3tyfTvPo3wlmoy9pz7HA+Ldko6iSEcysuJrbALa88ATUA/85+BoYlwehrrUpNZ
+         ZxCwWUZWT0wBNL+bDzC+sO64bbvONjxaS9cm6WtPMSQvd3g4I2l/wqOTQ6HX7lt3Yelo
+         mDbw==
+X-Gm-Message-State: AOAM532u0Gqge8yXI1jIF/Q3JxaT1RwwzOfNXHj83tJWs0ToEhlEvdV+
+        DT2eK1R7Nyf692qm/DMwfo0=
+X-Google-Smtp-Source: ABdhPJynwBo1/481k/kTslfiIhadtlrrNybnr1PxMyeVh81m/kwbIePqoYulSXlVcW7u8ianI6gxQg==
+X-Received: by 2002:a65:644d:: with SMTP id s13mr9449614pgv.103.1593418654500;
+        Mon, 29 Jun 2020 01:17:34 -0700 (PDT)
 Received: from varodek.localdomain ([106.210.40.90])
-        by smtp.gmail.com with ESMTPSA id co1sm3345154pjb.34.2020.06.29.01.17.22
+        by smtp.gmail.com with ESMTPSA id co1sm3345154pjb.34.2020.06.29.01.17.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 01:17:27 -0700 (PDT)
+        Mon, 29 Jun 2020 01:17:34 -0700 (PDT)
 From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
 To:     Bjorn Helgaas <helgaas@kernel.org>,
         Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
@@ -59,9 +59,9 @@ Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
         linux-kernel@vger.kernel.org,
         linux-kernel-mentees@lists.linuxfoundation.org,
         skhan@linuxfoundation.org
-Subject: [PATCH v1 2/5] cardreader/rtsx_pcr.c: use generic power management
-Date:   Mon, 29 Jun 2020 13:45:28 +0530
-Message-Id: <20200629081531.214734-3-vaibhavgupta40@gmail.com>
+Subject: [PATCH v1 3/5] misc/tifm_7xx1.c: use generic power management
+Date:   Mon, 29 Jun 2020 13:45:29 +0530
+Message-Id: <20200629081531.214734-4-vaibhavgupta40@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200629081531.214734-1-vaibhavgupta40@gmail.com>
 References: <20200629081531.214734-1-vaibhavgupta40@gmail.com>
@@ -77,7 +77,7 @@ states and related operations, for the device, themselves. This driver was
 handling them with the help of PCI helper functions like
 pci_save/restore_state(), pci_enable/disable_device(), etc.
 
-With generic PM, all essentials will be handled by the  PCI core. Driver
+With generic PM, all essentials will be handled by the PCI core. Driver
 needs to do only device-specific operations.
 
 The driver was also using pci_enable_wake(...,..., 0) to disable wake. Use
@@ -87,91 +87,88 @@ Compile-tested only.
 
 Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
 ---
- drivers/misc/cardreader/rtsx_pcr.c | 27 ++++++++++-----------------
- 1 file changed, 10 insertions(+), 17 deletions(-)
+ drivers/misc/tifm_7xx1.c | 30 ++++++++----------------------
+ 1 file changed, 8 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
-index 0d5928bc1b6d..ca5212cba1c0 100644
---- a/drivers/misc/cardreader/rtsx_pcr.c
-+++ b/drivers/misc/cardreader/rtsx_pcr.c
-@@ -1604,10 +1604,9 @@ static void rtsx_pci_remove(struct pci_dev *pcidev)
- 		pci_name(pcidev), (int)pcidev->vendor, (int)pcidev->device);
+diff --git a/drivers/misc/tifm_7xx1.c b/drivers/misc/tifm_7xx1.c
+index e6b40aa8fb42..228f2eb1d476 100644
+--- a/drivers/misc/tifm_7xx1.c
++++ b/drivers/misc/tifm_7xx1.c
+@@ -207,10 +207,9 @@ static void tifm_7xx1_switch_media(struct work_struct *work)
+ 	spin_unlock_irqrestore(&fm->lock, flags);
  }
  
 -#ifdef CONFIG_PM
 -
--static int rtsx_pci_suspend(struct pci_dev *pcidev, pm_message_t state)
-+static int __maybe_unused rtsx_pci_suspend(struct device *dev_d)
+-static int tifm_7xx1_suspend(struct pci_dev *dev, pm_message_t state)
++static int __maybe_unused tifm_7xx1_suspend(struct device *dev_d)
  {
-+	struct pci_dev *pcidev = to_pci_dev(dev_d);
- 	struct pcr_handle *handle;
- 	struct rtsx_pcr *pcr;
++	struct pci_dev *dev = to_pci_dev(dev_d);
+ 	struct tifm_adapter *fm = pci_get_drvdata(dev);
+ 	int cnt;
  
-@@ -1623,17 +1622,15 @@ static int rtsx_pci_suspend(struct pci_dev *pcidev, pm_message_t state)
+@@ -221,15 +220,13 @@ static int tifm_7xx1_suspend(struct pci_dev *dev, pm_message_t state)
+ 			tifm_7xx1_sock_power_off(fm->sockets[cnt]->addr);
+ 	}
  
- 	rtsx_pci_power_off(pcr, HOST_ENTER_S3);
- 
--	pci_save_state(pcidev);
--	pci_enable_wake(pcidev, pci_choose_state(pcidev, state), 0);
--	pci_disable_device(pcidev);
--	pci_set_power_state(pcidev, pci_choose_state(pcidev, state));
+-	pci_save_state(dev);
+-	pci_enable_wake(dev, pci_choose_state(dev, state), 0);
+-	pci_disable_device(dev);
+-	pci_set_power_state(dev, pci_choose_state(dev, state));
 +	device_wakeup_disable(dev_d);
- 
- 	mutex_unlock(&pcr->pcr_mutex);
  	return 0;
  }
  
--static int rtsx_pci_resume(struct pci_dev *pcidev)
-+static int __maybe_unused rtsx_pci_resume(struct device *dev_d)
+-static int tifm_7xx1_resume(struct pci_dev *dev)
++static int __maybe_unused tifm_7xx1_resume(struct device *dev_d)
  {
-+	struct pci_dev *pcidev = to_pci_dev(dev_d);
- 	struct pcr_handle *handle;
- 	struct rtsx_pcr *pcr;
- 	int ret = 0;
-@@ -1645,11 +1642,6 @@ static int rtsx_pci_resume(struct pci_dev *pcidev)
++	struct pci_dev *dev = to_pci_dev(dev_d);
+ 	struct tifm_adapter *fm = pci_get_drvdata(dev);
+ 	int rc;
+ 	unsigned long timeout;
+@@ -242,11 +239,6 @@ static int tifm_7xx1_resume(struct pci_dev *dev)
+ 	if (WARN_ON(fm->num_sockets > ARRAY_SIZE(new_ids)))
+ 		return -ENXIO;
  
- 	mutex_lock(&pcr->pcr_mutex);
+-	pci_set_power_state(dev, PCI_D0);
+-	pci_restore_state(dev);
+-	rc = pci_enable_device(dev);
+-	if (rc)
+-		return rc;
+ 	pci_set_master(dev);
  
--	pci_set_power_state(pcidev, PCI_D0);
--	pci_restore_state(pcidev);
--	ret = pci_enable_device(pcidev);
--	if (ret)
--		goto out;
- 	pci_set_master(pcidev);
- 
- 	ret = rtsx_pci_write_register(pcr, HOST_SLEEP_STATE, 0x03, 0x00);
-@@ -1667,6 +1659,8 @@ static int rtsx_pci_resume(struct pci_dev *pcidev)
- 	return ret;
+ 	dev_dbg(&dev->dev, "resuming host\n");
+@@ -297,13 +289,6 @@ static int tifm_7xx1_resume(struct pci_dev *dev)
+ 	return 0;
  }
  
-+#ifdef CONFIG_PM
-+
- static void rtsx_pci_shutdown(struct pci_dev *pcidev)
+-#else
+-
+-#define tifm_7xx1_suspend NULL
+-#define tifm_7xx1_resume NULL
+-
+-#endif /* CONFIG_PM */
+-
+ static int tifm_7xx1_dummy_has_ms_pif(struct tifm_adapter *fm,
+ 				      struct tifm_dev *sock)
  {
- 	struct pcr_handle *handle;
-@@ -1686,19 +1680,18 @@ static void rtsx_pci_shutdown(struct pci_dev *pcidev)
- 
- #else /* CONFIG_PM */
- 
--#define rtsx_pci_suspend NULL
--#define rtsx_pci_resume NULL
- #define rtsx_pci_shutdown NULL
- 
- #endif /* CONFIG_PM */
- 
-+static SIMPLE_DEV_PM_OPS(rtsx_pci_pm_ops, rtsx_pci_suspend, rtsx_pci_resume);
-+
- static struct pci_driver rtsx_pci_driver = {
- 	.name = DRV_NAME_RTSX_PCI,
- 	.id_table = rtsx_pci_ids,
- 	.probe = rtsx_pci_probe,
- 	.remove = rtsx_pci_remove,
--	.suspend = rtsx_pci_suspend,
--	.resume = rtsx_pci_resume,
-+	.driver.pm = &rtsx_pci_pm_ops,
- 	.shutdown = rtsx_pci_shutdown,
+@@ -424,13 +409,14 @@ static const struct pci_device_id tifm_7xx1_pci_tbl[] = {
+ 	{ }
  };
- module_pci_driver(rtsx_pci_driver);
+ 
++static SIMPLE_DEV_PM_OPS(tifm_7xx1_pm_ops, tifm_7xx1_suspend, tifm_7xx1_resume);
++
+ static struct pci_driver tifm_7xx1_driver = {
+ 	.name = DRIVER_NAME,
+ 	.id_table = tifm_7xx1_pci_tbl,
+ 	.probe = tifm_7xx1_probe,
+ 	.remove = tifm_7xx1_remove,
+-	.suspend = tifm_7xx1_suspend,
+-	.resume = tifm_7xx1_resume,
++	.driver.pm = &tifm_7xx1_pm_ops,
+ };
+ 
+ module_pci_driver(tifm_7xx1_driver);
 -- 
 2.27.0
 
