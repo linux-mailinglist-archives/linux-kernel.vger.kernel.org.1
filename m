@@ -2,122 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A368420E404
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E0520E40B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730315AbgF2VUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
+        id S1731185AbgF2VUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729772AbgF2Swt (ORCPT
+        with ESMTP id S1729785AbgF2Swt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Jun 2020 14:52:49 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BC6C02E2D3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:00 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id q15so15509477wmj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:00 -0700 (PDT)
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DB3C02E2D4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:01 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id l17so15527899wmj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KG862h2vmccOR30Zy+dEvVE74O1dfXe3tQ9ea9Wl0kU=;
-        b=a6lY1hwRQfrrWwQ+wHSUIGy11GsRdeUlhhyJ0ZzZ4czs3V0mgD5NY7lzixVzuUWzlL
-         akdh+Uv6PTnpAKv4iWUHoYDESL7HfZjPqk9/WM7W3w6T2yrZmrwO9FRiBuIBV0deyNo+
-         zfStV9k4eSj/vx0x15mO3/VJWdg+hl3nt0cQX3K1bu+ZJurQBip0CMxhGHy0VIb6MP9b
-         oxFY1I/GLar0bZxP0OGjfUvxGvX0VFDkl2k6Qd2SztjENj+Vo76dCcgV5R005s+8cfrh
-         a0jr0UdpYMJ5rWgozkUzZeZLAUBB1FWNf3xP+ebdGw/sy4Es8VLllhYU0opQNaHghjNf
-         y1LA==
+        bh=MA4D/3EmXU00HIViUNDTK2zztNgG9GHE3QsyfvIeaek=;
+        b=Yqxeccx+BeP2NcoVf8V9CW9Kfpy/B9e8WWtiZSLEHcXHUfBkdQr5EVkUMgJXYsMhRX
+         eauSayO11Dx3fdjMWqVvKs8GhjWRJLil0U37o7wDe0enpWSyrIfJfS8I0zq1UCIH1waR
+         nSq/2T/OlzJugB5pOGYgAC0+y4dfD241WRypgzJ6jV0dSfxi7/PVCjfJJf6sgOjNVlhz
+         uAAUA0LtZmQhBOmnS6splciovURAzeKzs5zQCV19j1xV1Woy2IFAqcrzrujtgS/xZEoE
+         SW69zYx+gng/6cTnFfPiy0h4WZAr2yIQIHpdb5NMI1ipqNxuU3XKJB3ENdl0yGYKwOTt
+         nM2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KG862h2vmccOR30Zy+dEvVE74O1dfXe3tQ9ea9Wl0kU=;
-        b=dZU010fR7rWAjgg5VukMEOfg+kUOV27Jd/7Yb3qyuNTQTwVDh5YbeHNjN1wep6KxSR
-         SWPsNzXRO5l5paLg4WslHOJrpkpy481/Q9zvxJ16tYSwZinXRcbviH4miRZf1eRLzK76
-         b+PiG9eisTwQkj23HoTgWC5M3KGxoBcU6Bpy0xu9YDByuJJOK8dVc+GoF4pLdLM5mwYa
-         wHLDijUQkSeYZTC7YDTKGBhDpldN2i76Asf4hgW7pZMX2KKzknjBhuqOGTDNeu6asl76
-         BpiTrrqmOsF69WFfI9GTnWHl9DSPQ++hjO4qXwiPRZWdsdG7G5mSBLHgp0dfcSZxPLL2
-         z+yQ==
-X-Gm-Message-State: AOAM531qODXSMqjKrmJEKKouw4hwNtDSRYd5WlhdaqiLD45lzKjzuXle
-        MzARXYKd/nHOc9XkLAfcTEJy3A==
-X-Google-Smtp-Source: ABdhPJz/fRbJ6fyCO1SuMHt5E5sUIRbeH3s/cAZ07coPEBwFUMgIQRAVseQRxEZ6RHFD+GJq655Rlg==
-X-Received: by 2002:a05:600c:414f:: with SMTP id h15mr5965306wmm.82.1593439499585;
-        Mon, 29 Jun 2020 07:04:59 -0700 (PDT)
+        bh=MA4D/3EmXU00HIViUNDTK2zztNgG9GHE3QsyfvIeaek=;
+        b=rpEwvJA8wMqb5ROmu3Dn/yxxuhRRfLMO9qruiDWiwXUMl7317d0/FRazxAzmwMItvh
+         VD2pVfl8qKp0KdX1rW2Dp09tjhhmW4au3fug0c5xSDJ5qoFZ4qNF3NNfW783UNpjqKYr
+         87kn8lsgKKpTG9lsRXMmEAihOSoK7My8xwbcJz0qPSdigTRf1jw2pBwM16S53U+AZiWg
+         hzkyR/I+oh/VDcDo1XbAicZCAjArghtd67175O9EO8LNxkgXr6J6kLcIrXrhwU7Y51kl
+         +35MzHU4PKyN4/GruCnjTManYCNdsJClA2m5oBvBUh5x05qGsTG8JcuHOAnJ3kxIlXhU
+         uBPQ==
+X-Gm-Message-State: AOAM530+5M0d8GtVJV84J07D1bTWNSvcqbFgCvXe38eLpWhbCV3OU25e
+        WAJcCfAoZTy6ZQV8brKNd+fDcQ==
+X-Google-Smtp-Source: ABdhPJxDNp7vd10O4kA6m0+v/7iGwoA/DNFCia8vBm/9JG0WJDOmhz/GZXc5w1/8d9K8otS7NjxLwg==
+X-Received: by 2002:a1c:bdc3:: with SMTP id n186mr1698099wmf.84.1593439500590;
+        Mon, 29 Jun 2020 07:05:00 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.04.58
+        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.04.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 07:04:58 -0700 (PDT)
+        Mon, 29 Jun 2020 07:04:59 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [PATCH 11/20] misc: enclosure: Fix some kerneldoc anomalies
-Date:   Mon, 29 Jun 2020 15:04:33 +0100
-Message-Id: <20200629140442.1043957-12-lee.jones@linaro.org>
+        Lee Jones <lee.jones@linaro.org>, Stefan Roese <sr@denx.de>
+Subject: [PATCH 12/20] misc: lattice-ecp3-config: Remove set but clearly unused variable 'ret'
+Date:   Mon, 29 Jun 2020 15:04:34 +0100
+Message-Id: <20200629140442.1043957-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629140442.1043957-1-lee.jones@linaro.org>
 References: <20200629140442.1043957-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Firstly some missing function argument documentation, then some
-whch are present, but are incorrectly named.
+It's odd for the return value to be assigned to a variable so many
+times, but never actually checked, but this has been the case since
+the driver's inception in 2012.  If it hasn't caused any issues by
+now, it's probably unlikely to.  Let's take it out, at least until
+someone finds a reason to start using it.
 
-Fixes the following W=1 kernel build warnings:
+Fixes the following W=1 kernel build warning:
 
- drivers/misc/enclosure.c:115: warning: Function parameter or member 'name' not described in 'enclosure_register'
- drivers/misc/enclosure.c:115: warning: Function parameter or member 'cb' not described in 'enclosure_register'
- drivers/misc/enclosure.c:283: warning: Function parameter or member 'number' not described in 'enclosure_component_alloc'
- drivers/misc/enclosure.c:283: warning: Excess function parameter 'num' description in 'enclosure_component_alloc'
- drivers/misc/enclosure.c:363: warning: Function parameter or member 'component' not described in 'enclosure_add_device'
- drivers/misc/enclosure.c:363: warning: Excess function parameter 'num' description in 'enclosure_add_device'
- drivers/misc/enclosure.c:398: warning: Function parameter or member 'dev' not described in 'enclosure_remove_device'
- drivers/misc/enclosure.c:398: warning: Excess function parameter 'num' description in 'enclosure_remove_device'
+ drivers/misc/lattice-ecp3-config.c: In function ‘firmware_load’:
+ drivers/misc/lattice-ecp3-config.c:70:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+ 70 | int ret;
+ | ^~~
 
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Stefan Roese <sr@denx.de>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/enclosure.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/misc/lattice-ecp3-config.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/misc/enclosure.c b/drivers/misc/enclosure.c
-index 3c2d405bc79b9..e8eba52750b34 100644
---- a/drivers/misc/enclosure.c
-+++ b/drivers/misc/enclosure.c
-@@ -103,7 +103,9 @@ EXPORT_SYMBOL_GPL(enclosure_for_each_device);
-  * enclosure_register - register device as an enclosure
-  *
-  * @dev:	device containing the enclosure
-+ * @name:	chosen device name
-  * @components:	number of components in the enclosure
-+ * @cb:         platform call-backs
-  *
-  * This sets up the device for being an enclosure.  Note that @dev does
-  * not have to be a dedicated enclosure device.  It may be some other type
-@@ -266,7 +268,7 @@ static const struct attribute_group *enclosure_component_groups[];
- /**
-  * enclosure_component_alloc - prepare a new enclosure component
-  * @edev:	the enclosure to add the component
-- * @num:	the device number
-+ * @number:	the device number
-  * @type:	the type of component being added
-  * @name:	an optional name to appear in sysfs (leave NULL if none)
-  *
-@@ -347,7 +349,7 @@ EXPORT_SYMBOL_GPL(enclosure_component_register);
- /**
-  * enclosure_add_device - add a device as being part of an enclosure
-  * @edev:	the enclosure device being added to.
-- * @num:	the number of the component
-+ * @component:	the number of the component
-  * @dev:	the device being added
-  *
-  * Declares a real device to reside in slot (or identifier) @num of an
+diff --git a/drivers/misc/lattice-ecp3-config.c b/drivers/misc/lattice-ecp3-config.c
+index 884485c3f7232..5eaf74447ca1e 100644
+--- a/drivers/misc/lattice-ecp3-config.c
++++ b/drivers/misc/lattice-ecp3-config.c
+@@ -67,7 +67,6 @@ static void firmware_load(const struct firmware *fw, void *context)
+ 	struct spi_device *spi = (struct spi_device *)context;
+ 	struct fpga_data *data = spi_get_drvdata(spi);
+ 	u8 *buffer;
+-	int ret;
+ 	u8 txbuf[8];
+ 	u8 rxbuf[8];
+ 	int rx_len = 8;
+@@ -92,7 +91,7 @@ static void firmware_load(const struct firmware *fw, void *context)
+ 
+ 	/* Trying to speak with the FPGA via SPI... */
+ 	txbuf[0] = FPGA_CMD_READ_ID;
+-	ret = spi_write_then_read(spi, txbuf, 8, rxbuf, rx_len);
++	spi_write_then_read(spi, txbuf, 8, rxbuf, rx_len);
+ 	jedec_id = get_unaligned_be32(&rxbuf[4]);
+ 	dev_dbg(&spi->dev, "FPGA JTAG ID=%08x\n", jedec_id);
+ 
+@@ -110,7 +109,7 @@ static void firmware_load(const struct firmware *fw, void *context)
+ 	dev_info(&spi->dev, "FPGA %s detected\n", ecp3_dev[i].name);
+ 
+ 	txbuf[0] = FPGA_CMD_READ_STATUS;
+-	ret = spi_write_then_read(spi, txbuf, 8, rxbuf, rx_len);
++	spi_write_then_read(spi, txbuf, 8, rxbuf, rx_len);
+ 	status = get_unaligned_be32(&rxbuf[4]);
+ 	dev_dbg(&spi->dev, "FPGA Status=%08x\n", status);
+ 
+@@ -130,20 +129,20 @@ static void firmware_load(const struct firmware *fw, void *context)
+ 	memcpy(buffer + 4, fw->data, fw->size);
+ 
+ 	txbuf[0] = FPGA_CMD_REFRESH;
+-	ret = spi_write(spi, txbuf, 4);
++	spi_write(spi, txbuf, 4);
+ 
+ 	txbuf[0] = FPGA_CMD_WRITE_EN;
+-	ret = spi_write(spi, txbuf, 4);
++	spi_write(spi, txbuf, 4);
+ 
+ 	txbuf[0] = FPGA_CMD_CLEAR;
+-	ret = spi_write(spi, txbuf, 4);
++	spi_write(spi, txbuf, 4);
+ 
+ 	/*
+ 	 * Wait for FPGA memory to become cleared
+ 	 */
+ 	for (i = 0; i < FPGA_CLEAR_LOOP_COUNT; i++) {
+ 		txbuf[0] = FPGA_CMD_READ_STATUS;
+-		ret = spi_write_then_read(spi, txbuf, 8, rxbuf, rx_len);
++		spi_write_then_read(spi, txbuf, 8, rxbuf, rx_len);
+ 		status = get_unaligned_be32(&rxbuf[4]);
+ 		if (status == FPGA_STATUS_CLEARED)
+ 			break;
+@@ -160,13 +159,13 @@ static void firmware_load(const struct firmware *fw, void *context)
+ 	}
+ 
+ 	dev_info(&spi->dev, "Configuring the FPGA...\n");
+-	ret = spi_write(spi, buffer, fw->size + 8);
++	spi_write(spi, buffer, fw->size + 8);
+ 
+ 	txbuf[0] = FPGA_CMD_WRITE_DIS;
+-	ret = spi_write(spi, txbuf, 4);
++	spi_write(spi, txbuf, 4);
+ 
+ 	txbuf[0] = FPGA_CMD_READ_STATUS;
+-	ret = spi_write_then_read(spi, txbuf, 8, rxbuf, rx_len);
++	spi_write_then_read(spi, txbuf, 8, rxbuf, rx_len);
+ 	status = get_unaligned_be32(&rxbuf[4]);
+ 	dev_dbg(&spi->dev, "FPGA Status=%08x\n", status);
+ 
 -- 
 2.25.1
 
