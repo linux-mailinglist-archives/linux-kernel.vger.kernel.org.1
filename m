@@ -2,110 +2,586 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCA920D25A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A3820D504
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729135AbgF2Ssl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:48:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43040 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726990AbgF2Ssi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:48:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B3D3AAAC5;
-        Mon, 29 Jun 2020 18:48:35 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 9726B1E12E7; Mon, 29 Jun 2020 20:48:35 +0200 (CEST)
-Date:   Mon, 29 Jun 2020 20:48:35 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] fs: Do not check if there is a fsnotify watcher on
- pseudo inodes
-Message-ID: <20200629184835.GK26507@quack2.suse.cz>
-References: <20200615121358.GF3183@techsingularity.net>
- <CAOQ4uxi0fqKFZ9=U-+DQ78233hR9TXEU44xRih4q=M556ynphA@mail.gmail.com>
- <20200616074701.GA20086@quack2.suse.cz>
- <4f6c8dab-4b54-d523-8636-2b01c03d14d3@gmail.com>
+        id S1730099AbgF2TNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:13:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731394AbgF2TN2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:13:28 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D21C08C5F3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 21:37:13 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id q15so14050374wmj.2
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 21:37:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9BuRZbsQSVawCPMcscVv5I1a2tQ7JLUzF77XaHSUmes=;
+        b=OmSP7K/Fp8ycjP0MQRFzk3m0N05+BXFdvrBWIKNIflOxOaygzKAl3/jWKF8mlQLMV9
+         7nDQ8zacSRXcaeBDszwo9uWFqT0DbvbUQ2kyLRP3mYc/GMdvOfJe5EEIXW5oQepaqCNN
+         9FjTdxCfQiEwYwcrjHkXGxj7mE586/fAQdNbQG82hENixj86aKnv6rvqQ5Z2XaB7zxaB
+         vmJGzEFqDmLJGyp5bPlKNC2mXoW2dsc0PPuJLxTXGFjD5SIQ8JD/0Mm4wYHsXvtBRe1G
+         9/svfs+lR+nTNzD4wP5XrQXNKWrEARDI0m8PWPw5rmkKAK3VQmVSRHO+ExIWVvDNLnLg
+         /ilA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9BuRZbsQSVawCPMcscVv5I1a2tQ7JLUzF77XaHSUmes=;
+        b=XaKEagHNeWEr0T8oAT/A5l+zrlT5vW1jCUHSi6c9cxn9SRHbZWzdLe7msOs+siw7mh
+         Il/hK84d40rTSxwmGWpMiL/XJrUPxn3KDUDSGaYCx7nNQsKKURHteWyQNgLlv2OXA7Tz
+         uF841uEL0svTjoeP/GcmllvlCv6z/kc9aKweYPUYAhvuPUVHNm3yKxLE1hv5xhaazXUB
+         PueGz4n8Zn3y7dXUAdko/jKidTazqYh61nK+UJKVaVasrB5+CqCt5k/0ZOVkbyCpUE5Y
+         t7H9/bYPBzV1av/zr42c/Ypucn5RZKgIpYQ0MuGXzwy4rkS0une1b1Jfk7cO+h0OWDS0
+         UaOw==
+X-Gm-Message-State: AOAM531JRCFWeOPKUDMARcy1J1I2NHh8aAOwn3ushXdK3hNBj8jZ6RJ5
+        hAADgprdeerqky3FWDZez3ZC+ycHUuo7EQoJ/MvtJg==
+X-Google-Smtp-Source: ABdhPJxwMKc1T/xx1mGxQmMC31/mbZKHBDAGZiJ1dAaiWIEmGnv0plAQ8rDW+U3JTAXPnSFFk6fHBZvXajAum94ocYI=
+X-Received: by 2002:a1c:a3c5:: with SMTP id m188mr14496922wme.152.1593405430040;
+ Sun, 28 Jun 2020 21:37:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4f6c8dab-4b54-d523-8636-2b01c03d14d3@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <cover.1593397455.git.zong.li@sifive.com> <da261dc8b456fc0dd67508d98b16838bcd697220.1593397455.git.zong.li@sifive.com>
+In-Reply-To: <da261dc8b456fc0dd67508d98b16838bcd697220.1593397455.git.zong.li@sifive.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 29 Jun 2020 10:06:56 +0530
+Message-ID: <CAAhSdy1qTtGvtYe+fUqVGOxOzfiLjXvy-7uDMCUJbbDEFp=nUw@mail.gmail.com>
+Subject: Re: [RFC PATCH 5/6] riscv: perf: introduce DT mechanism
+To:     Zong Li <zong.li@sifive.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 29-06-20 08:17:02, Eric Dumazet wrote:
-> On 6/16/20 12:47 AM, Jan Kara wrote:
-> > On Mon 15-06-20 19:26:38, Amir Goldstein wrote:
-> >>> This patch changes alloc_file_pseudo() to always opt out of fsnotify by
-> >>> setting FMODE_NONOTIFY flag so that no check is made for fsnotify watchers
-> >>> on pseudo files. This should be safe as the underlying helper for the
-> >>> dentry is d_alloc_pseudo which explicitly states that no lookups are ever
-> >>> performed meaning that fanotify should have nothing useful to attach to.
-> >>>
-> >>> The test motivating this was "perf bench sched messaging --pipe". On
-> >>> a single-socket machine using threads the difference of the patch was
-> >>> as follows.
-> >>>
-> >>>                               5.7.0                  5.7.0
-> >>>                             vanilla        nofsnotify-v1r1
-> >>> Amean     1       1.3837 (   0.00%)      1.3547 (   2.10%)
-> >>> Amean     3       3.7360 (   0.00%)      3.6543 (   2.19%)
-> >>> Amean     5       5.8130 (   0.00%)      5.7233 *   1.54%*
-> >>> Amean     7       8.1490 (   0.00%)      7.9730 *   2.16%*
-> >>> Amean     12     14.6843 (   0.00%)     14.1820 (   3.42%)
-> >>> Amean     18     21.8840 (   0.00%)     21.7460 (   0.63%)
-> >>> Amean     24     28.8697 (   0.00%)     29.1680 (  -1.03%)
-> >>> Amean     30     36.0787 (   0.00%)     35.2640 *   2.26%*
-> >>> Amean     32     38.0527 (   0.00%)     38.1223 (  -0.18%)
-> >>>
-> >>> The difference is small but in some cases it's outside the noise so
-> >>> while marginal, there is still some small benefit to ignoring fsnotify
-> >>> for files allocated via alloc_file_pseudo in some cases.
-> >>>
-> >>> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> >>
-> >> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> > 
-> > Thanks for the patch Mel and for review Amir! I've added the patch to my
-> > tree with small amendments to the changelog.
-> > 
-> > 								Honza
-> > 
-> 
-> Note this patch broke some user programs (one instance being packetdrill)
-> 
-> Typical legacy packetdrill script has :
-> 
-> // Create a socket and set it to non-blocking.
->     0 socket(..., SOCK_STREAM, IPPROTO_TCP) = 3
->    +0 fcntl(3, F_GETFL) = 0x2 (flags O_RDWR)
->    +0 fcntl(3, F_SETFL, O_RDWR|O_NONBLOCK) = 0
-> 
-> 
-> But after this change, fcntl(3, F_GETFL) returns 0x4000002 
-> 
-> FMODE_NONOTIFY was not meant to be visible to user space. (otherwise
-> there would be a O_NONOTIFY) ?
+On Mon, Jun 29, 2020 at 8:49 AM Zong Li <zong.li@sifive.com> wrote:
+>
+> Each architecture is responsible for mapping generic hardware and cache
+> events to their own specific encoding of hardware events. For each
+> architecture, it also have to distinguish the defination of hardware
+> events of different platforms of each vendor. We use DT file to describe
+> platform-specific information to make our perf implementation more
+> generic and common.
+>
+> Signed-off-by: Zong Li <zong.li@sifive.com>
+> ---
+>  arch/riscv/include/asm/perf_event.h |  55 ++----
+>  arch/riscv/kernel/perf_event.c      | 273 +++++++++++++---------------
+>  2 files changed, 139 insertions(+), 189 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/perf_event.h b/arch/riscv/include/asm/perf_event.h
+> index 41d515a1f331..e95d3bbaae3e 100644
+> --- a/arch/riscv/include/asm/perf_event.h
+> +++ b/arch/riscv/include/asm/perf_event.h
+> @@ -17,6 +17,8 @@
+>  #define RISCV_EVENT_COUNTERS   29
+>  #define RISCV_TOTAL_COUNTERS   (RISCV_BASE_COUNTERS + RISCV_EVENT_COUNTERS)
+>
+> +#define RISCV_DEFAULT_WIDTH_COUNTER    64
+> +
+>  /*
+>   * According to the spec, an implementation can support counter up to
+>   * mhpmcounter31, but many high-end processors has at most 6 general
+> @@ -33,9 +35,21 @@
+>
+>  #define RISCV_PMU_HPMCOUNTER_FIRST     3
+>  #define RISCV_PMU_HPMCOUNTER_LAST                                      \
+> -       (RISCV_PMU_HPMCOUNTER_FIRST + riscv_pmu->num_counters - 1)
+> +       (RISCV_PMU_HPMCOUNTER_FIRST + riscv_pmu.num_event_cntr - 1)
+> +
+> +#define RISCV_OP_UNSUPP                        (-EOPNOTSUPP)
+> +
+> +#define RISCV_MAP_ALL_UNSUPPORTED                                      \
+> +       [0 ... PERF_COUNT_HW_MAX - 1] = RISCV_OP_UNSUPP
+>
+> -#define RISCV_OP_UNSUPP                (-EOPNOTSUPP)
+> +#define C(x) PERF_COUNT_HW_CACHE_##x
+> +
+> +#define RISCV_CACHE_MAP_ALL_UNSUPPORTED                                        \
+> +[0 ... C(MAX) - 1] = {                                                 \
+> +       [0 ... C(OP_MAX) - 1] = {                                       \
+> +               [0 ... C(RESULT_MAX) - 1] = RISCV_OP_UNSUPP,            \
+> +       },                                                              \
+> +}
+>
+>  /* Hardware cache event encoding */
+>  #define PERF_HW_CACHE_TYPE             0
+> @@ -65,43 +79,6 @@
+>  #define CSR_MHPMEVENT7 0x327
+>  #define CSR_MHPMEVENT8 0x328
+>
+> -struct cpu_hw_events {
+> -       /* # currently enabled events*/
+> -       int                     n_events;
+> -       /* currently enabled events */
+> -       struct perf_event       *events[RISCV_EVENT_COUNTERS];
+> -       /* bitmap of used event counters */
+> -       unsigned long           used_cntr_mask;
+> -       /* vendor-defined PMU data */
+> -       void                    *platform;
+> -};
+> -
+> -struct riscv_pmu {
+> -       struct pmu      *pmu;
+> -
+> -       /* generic hw/cache events table */
+> -       const int       *hw_events;
+> -       const int       (*cache_events)[PERF_COUNT_HW_CACHE_MAX]
+> -                                      [PERF_COUNT_HW_CACHE_OP_MAX]
+> -                                      [PERF_COUNT_HW_CACHE_RESULT_MAX];
+> -       /* method used to map hw/cache events */
+> -       int             (*map_hw_event)(u64 config);
+> -       int             (*map_cache_event)(u64 config);
+> -
+> -       /* max generic hw events in map */
+> -       int             max_events;
+> -       /* number total counters, 2(base) + x(general) */
+> -       int             num_counters;
+> -       /* the width of the counter */
+> -       int             counter_width;
+> -
+> -       /* vendor-defined PMU features */
+> -       void            *platform;
+> -
+> -       irqreturn_t     (*handle_irq)(int irq_num, void *dev);
+> -       int             irq;
+> -};
+> -
+>  #endif
+>  #ifdef CONFIG_PERF_EVENTS
+>  #define perf_arch_bpf_user_pt_regs(regs) (struct user_regs_struct *)regs
+> diff --git a/arch/riscv/kernel/perf_event.c b/arch/riscv/kernel/perf_event.c
+> index 0cfcd6f1e57b..3bdfbe4efd5c 100644
+> --- a/arch/riscv/kernel/perf_event.c
+> +++ b/arch/riscv/kernel/perf_event.c
+> @@ -9,6 +9,7 @@
+>   * Copyright (C) 2009 Google, Inc., Stephane Eranian
+>   * Copyright 2014 Tilera Corporation. All Rights Reserved.
+>   * Copyright (C) 2018 Andes Technology Corporation
+> + * Copyright (C) 2020 SiFive
+>   *
+>   * Perf_events support for RISC-V platforms.
+>   *
+> @@ -30,113 +31,55 @@
+>  #include <linux/perf_event.h>
+>  #include <linux/atomic.h>
+>  #include <linux/of.h>
+> +#include <asm/csr.h>
+>  #include <asm/perf_event.h>
+>
+> -static const struct riscv_pmu *riscv_pmu __read_mostly;
+> +static struct riscv_pmu {
+> +       struct pmu      *pmu;
+> +
+> +       /* number of event counters */
+> +       int             num_event_cntr;
+> +
+> +       /* the width of base counters */
+> +       int             width_base_cntr;
+> +
+> +       /* the width of event counters */
+> +       int             width_event_cntr;
+> +
+> +       irqreturn_t     (*handle_irq)(int irq_num, void *dev);
+> +
+> +       int             irq;
+> +} riscv_pmu;
+> +
+> +struct cpu_hw_events {
+> +       /* # currently enabled events*/
+> +       int                     n_events;
+> +
+> +       /* currently enabled events */
+> +       struct perf_event       *events[RISCV_EVENT_COUNTERS];
+> +
+> +       /* bitmap of used event counters */
+> +       unsigned long           used_cntr_mask;
+> +};
+> +
+>  static DEFINE_PER_CPU(struct cpu_hw_events, cpu_hw_events);
+>
+>  /*
+>   * Hardware & cache maps and their methods
+>   */
+>
+> -static const int riscv_hw_event_map[] = {
+> -       [PERF_COUNT_HW_CPU_CYCLES]              = RISCV_PMU_CYCLE,
+> -       [PERF_COUNT_HW_INSTRUCTIONS]            = RISCV_PMU_INSTRET,
+> -       [PERF_COUNT_HW_CACHE_REFERENCES]        = RISCV_OP_UNSUPP,
+> -       [PERF_COUNT_HW_CACHE_MISSES]            = RISCV_OP_UNSUPP,
+> -       [PERF_COUNT_HW_BRANCH_INSTRUCTIONS]     = RISCV_OP_UNSUPP,
+> -       [PERF_COUNT_HW_BRANCH_MISSES]           = RISCV_OP_UNSUPP,
+> -       [PERF_COUNT_HW_BUS_CYCLES]              = RISCV_OP_UNSUPP,
+> +static int riscv_hw_event_map[PERF_COUNT_HW_MAX] = {
+> +       RISCV_MAP_ALL_UNSUPPORTED,
+> +
+> +       /* Specify base pmu, even if they aren't present in DT file */
+> +       [PERF_COUNT_HW_CPU_CYCLES]      = RISCV_PMU_CYCLE,
+> +       [PERF_COUNT_HW_INSTRUCTIONS]    = RISCV_PMU_INSTRET,
+>  };
+>
+> -#define C(x) PERF_COUNT_HW_CACHE_##x
+> -static const int riscv_cache_event_map[PERF_COUNT_HW_CACHE_MAX]
+> -[PERF_COUNT_HW_CACHE_OP_MAX]
+> -[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
+> -       [C(L1D)] = {
+> -               [C(OP_READ)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -               [C(OP_WRITE)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -               [C(OP_PREFETCH)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -       },
+> -       [C(L1I)] = {
+> -               [C(OP_READ)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -               [C(OP_WRITE)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -               [C(OP_PREFETCH)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -       },
+> -       [C(LL)] = {
+> -               [C(OP_READ)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -               [C(OP_WRITE)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -               [C(OP_PREFETCH)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -       },
+> -       [C(DTLB)] = {
+> -               [C(OP_READ)] = {
+> -                       [C(RESULT_ACCESS)] =  RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] =  RISCV_OP_UNSUPP,
+> -               },
+> -               [C(OP_WRITE)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -               [C(OP_PREFETCH)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -       },
+> -       [C(ITLB)] = {
+> -               [C(OP_READ)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -               [C(OP_WRITE)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -               [C(OP_PREFETCH)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -       },
+> -       [C(BPU)] = {
+> -               [C(OP_READ)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -               [C(OP_WRITE)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -               [C(OP_PREFETCH)] = {
+> -                       [C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+> -                       [C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+> -               },
+> -       },
+> +static int riscv_cache_event_map[PERF_COUNT_HW_CACHE_MAX]
+> +                               [PERF_COUNT_HW_CACHE_OP_MAX]
+> +                               [PERF_COUNT_HW_CACHE_RESULT_MAX] = {
+> +       RISCV_CACHE_MAP_ALL_UNSUPPORTED,
+>  };
+>
+>  /*
+> @@ -154,6 +97,17 @@ static inline int is_event_counter(int idx)
+>                 idx <= RISCV_PMU_HPMCOUNTER_LAST);
+>  }
+>
+> +static inline int get_counter_width(int idx)
+> +{
+> +       if (is_base_counter(idx))
+> +               return riscv_pmu.width_base_cntr;
+> +
+> +       if (is_event_counter(idx))
+> +               return riscv_pmu.width_event_cntr;
+> +
+> +       return 0;
+> +}
+> +
+>  static inline int get_available_counter(struct perf_event *event)
+>  {
+>         struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> @@ -188,10 +142,14 @@ static inline int get_available_counter(struct perf_event *event)
+>   */
+>  static int riscv_map_hw_event(u64 config)
+>  {
+> -       if (config >= riscv_pmu->max_events)
+> +       int ret;
+> +
+> +       if (config >= PERF_COUNT_HW_MAX)
+>                 return -EINVAL;
+>
+> -       return riscv_pmu->hw_events[config];
+> +       ret = riscv_hw_event_map[config];
+> +
+> +       return ret == RISCV_OP_UNSUPP ? -ENOENT : ret;
+>  }
+>
+>  /*
+> @@ -355,7 +313,7 @@ static void riscv_pmu_read(struct perf_event *event)
+>          * delta is the value to update the counter we maintain in the kernel.
+>          */
+>         delta = (new_raw_count - prev_raw_count) &
+> -               ((1ULL << riscv_pmu->counter_width) - 1);
+> +               ((1ULL << get_counter_width(idx)) - 1);
+>
+>         local64_add(delta, &event->count);
+>         /*
+> @@ -386,7 +344,7 @@ static void riscv_pmu_stop(struct perf_event *event, int flags)
+>         hwc->state |= PERF_HES_STOPPED;
+>
+>         if ((flags & PERF_EF_UPDATE) && !(hwc->state & PERF_HES_UPTODATE)) {
+> -               riscv_pmu->pmu->read(event);
+> +               riscv_pmu_read(event);
+>                 hwc->state |= PERF_HES_UPTODATE;
+>         }
+>  }
+> @@ -429,7 +387,7 @@ static int riscv_pmu_add(struct perf_event *event, int flags)
+>         struct hw_perf_event *hwc = &event->hw;
+>         int count_idx;
+>
+> -       if (cpuc->n_events == riscv_pmu->num_counters)
+> +       if (cpuc->n_events == riscv_pmu.num_event_cntr)
+>                 return -ENOSPC;
+>
+>         count_idx = get_available_counter(event);
+> @@ -437,13 +395,13 @@ static int riscv_pmu_add(struct perf_event *event, int flags)
+>                 return -ENOSPC;
+>
+>         cpuc->n_events++;
+> +
+>         hwc->idx = count_idx;
+> -       cpuc->events[hwc->idx] = event;
+>
+>         hwc->state = PERF_HES_UPTODATE | PERF_HES_STOPPED;
+>
+>         if (flags & PERF_EF_START)
+> -               riscv_pmu->pmu->start(event, PERF_EF_RELOAD);
+> +               riscv_pmu_start(event, PERF_EF_RELOAD);
+>
+>         return 0;
+>  }
+> @@ -459,8 +417,8 @@ static void riscv_pmu_del(struct perf_event *event, int flags)
+>         cpuc->n_events--;
+>         __clear_bit(hwc->idx, &cpuc->used_cntr_mask);
+>
+> -       cpuc->events[hwc->idx] = NULL;
+> -       riscv_pmu->pmu->stop(event, PERF_EF_UPDATE);
+> +       riscv_pmu_stop(event, PERF_EF_UPDATE);
+> +
+>         perf_event_update_userpage(event);
+>  }
+>
+> @@ -470,7 +428,7 @@ static void riscv_pmu_del(struct perf_event *event, int flags)
+>
+>  static DEFINE_MUTEX(pmc_reserve_mutex);
+>
+> -static irqreturn_t riscv_base_pmu_handle_irq(int irq_num, void *dev)
+> +static irqreturn_t riscv_pmu_handle_irq(int irq_num, void *dev)
+>  {
+>         return IRQ_NONE;
+>  }
+> @@ -480,8 +438,8 @@ static int reserve_pmc_hardware(void)
+>         int err = 0;
+>
+>         mutex_lock(&pmc_reserve_mutex);
+> -       if (riscv_pmu->irq >= 0 && riscv_pmu->handle_irq) {
+> -               err = request_irq(riscv_pmu->irq, riscv_pmu->handle_irq,
+> +       if (riscv_pmu.irq >= 0 && riscv_pmu.handle_irq) {
+> +               err = request_irq(riscv_pmu.irq, riscv_pmu.handle_irq,
+>                                   IRQF_PERCPU, "riscv-base-perf", NULL);
+>         }
+>         mutex_unlock(&pmc_reserve_mutex);
+> @@ -492,8 +450,8 @@ static int reserve_pmc_hardware(void)
+>  static void release_pmc_hardware(void)
+>  {
+>         mutex_lock(&pmc_reserve_mutex);
+> -       if (riscv_pmu->irq >= 0)
+> -               free_irq(riscv_pmu->irq, NULL);
+> +       if (riscv_pmu.irq >= 0)
+> +               free_irq(riscv_pmu.irq, NULL);
+>         mutex_unlock(&pmc_reserve_mutex);
+>  }
+>
+> @@ -529,10 +487,10 @@ static int riscv_event_init(struct perf_event *event)
+>
+>         switch (event->attr.type) {
+>         case PERF_TYPE_HARDWARE:
+> -               code = riscv_pmu->map_hw_event(attr->config);
+> +               code = riscv_map_hw_event(attr->config);
+>                 break;
+>         case PERF_TYPE_HW_CACHE:
+> -               code = riscv_pmu->map_cache_event(attr->config);
+> +               code = riscv_map_cache_event(attr->config);
+>                 break;
+>         case PERF_TYPE_RAW:
+>                 code = attr->config;
+> @@ -555,9 +513,6 @@ static int riscv_event_init(struct perf_event *event)
+>         /*
+>          * idx is set to -1 because the index of a general event should not be
+>          * decided until binding to some counter in pmu->add().
+> -        *
+> -        * But since we don't have such support, later in pmu->add(), we just
+> -        * use hwc->config as the index instead.
+>          */
+>         hwc->config_base = config_base;
+>         hwc->config = code;
+> @@ -570,52 +525,70 @@ static int riscv_event_init(struct perf_event *event)
+>   * Initialization
+>   */
+>
+> -static struct pmu min_pmu = {
+> -       .name           = "riscv-base",
+> -       .event_init     = riscv_event_init,
+> -       .add            = riscv_pmu_add,
+> -       .del            = riscv_pmu_del,
+> -       .start          = riscv_pmu_start,
+> -       .stop           = riscv_pmu_stop,
+> -       .read           = riscv_pmu_read,
+> -};
+> +static struct riscv_pmu riscv_pmu = {
+> +       .pmu = &(struct pmu) {
+> +               .name           = "riscv-pmu",
+> +               .event_init     = riscv_event_init,
+> +               .add            = riscv_pmu_add,
+> +               .del            = riscv_pmu_del,
+> +               .start          = riscv_pmu_start,
+> +               .stop           = riscv_pmu_stop,
+> +               .read           = riscv_pmu_read,
+> +       },
+>
+> -static const struct riscv_pmu riscv_base_pmu = {
+> -       .pmu = &min_pmu,
+> -       .max_events = ARRAY_SIZE(riscv_hw_event_map),
+> -       .map_hw_event = riscv_map_hw_event,
+> -       .hw_events = riscv_hw_event_map,
+> -       .map_cache_event = riscv_map_cache_event,
+> -       .cache_events = &riscv_cache_event_map,
+> -       .counter_width = 63,
+> -       .num_counters = RISCV_BASE_COUNTERS + 0,
+> -       .handle_irq = &riscv_base_pmu_handle_irq,
+> +       .num_event_cntr = 0,
+> +       .width_event_cntr = RISCV_DEFAULT_WIDTH_COUNTER,
+> +       .width_base_cntr = RISCV_DEFAULT_WIDTH_COUNTER,
+>
+> +       .handle_irq = &riscv_pmu_handle_irq,
+>         /* This means this PMU has no IRQ. */
+>         .irq = -1,
+>  };
+>
+> -static const struct of_device_id riscv_pmu_of_ids[] = {
+> -       {.compatible = "riscv,base-pmu",        .data = &riscv_base_pmu},
+> -       { /* sentinel value */ }
+> -};
+> +static int __init init_riscv_pmu(struct device_node *node)
+> +{
+> +       int num_events, key, value, i;
+> +
+> +       of_property_read_u32(node, "riscv,width-base-cntr", &riscv_pmu.width_base_cntr);
+> +
+> +       of_property_read_u32(node, "riscv,width-event-cntr", &riscv_pmu.width_event_cntr);
+> +
+> +       of_property_read_u32(node, "riscv,n-event-cntr", &riscv_pmu.num_event_cntr);
+> +       if (riscv_pmu.num_event_cntr > RISCV_EVENT_COUNTERS)
+> +               riscv_pmu.num_event_cntr = RISCV_EVENT_COUNTERS;
+> +
+> +       num_events = of_property_count_u32_elems(node, "riscv,hw-event-map");
+> +       if (num_events > 0 && num_events % 2 == 0)
+> +               for (i = 0; i < num_events;) {
+> +                       of_property_read_u32_index(node, "riscv,hw-event-map", i++, &key);
+> +                       of_property_read_u32_index(node, "riscv,hw-event-map", i++, &value);
+> +                       riscv_hw_event_map[key] = value;
+> +               }
+> +
+> +       num_events = of_property_count_u32_elems(node, "riscv,hw-cache-event-map");
+> +       if (num_events > 0 && num_events % 2 == 0)
+> +               for (i = 0; i < num_events;) {
+> +                       of_property_read_u32_index(node, "riscv,hw-cache-event-map", i++, &key);
+> +                       of_property_read_u32_index(node, "riscv,hw-cache-event-map", i++, &value);
+> +                       riscv_cache_event_map
+> +                               [(key >> PERF_HW_CACHE_TYPE) & PERF_HW_CACHE_MASK]
+> +                               [(key >> PERF_HW_CACHE_OP) & PERF_HW_CACHE_MASK]
+> +                               [(key >> PERF_HW_CACHE_RESULT) & PERF_HW_CACHE_MASK] = value;
+> +               }
+> +
+> +       return 0;
+> +}
+>
+>  static int __init init_hw_perf_events(void)
+>  {
+> -       struct device_node *node = of_find_node_by_type(NULL, "pmu");
+> -       const struct of_device_id *of_id;
+> +       struct device_node *node = of_find_compatible_node(NULL, NULL, "riscv,pmu");
+>
+> -       riscv_pmu = &riscv_base_pmu;
+> +       if (node)
+> +               init_riscv_pmu(node);
+>
+> -       if (node) {
+> -               of_id = of_match_node(riscv_pmu_of_ids, node);
+> -
+> -               if (of_id)
+> -                       riscv_pmu = of_id->data;
+> -               of_node_put(node);
+> -       }
+> +       /* Even if there is no pmu node in DT, we reach here for base PMU. */
+> +       perf_pmu_register(riscv_pmu.pmu, "cpu", PERF_TYPE_RAW);
+>
+> -       perf_pmu_register(riscv_pmu->pmu, "cpu", PERF_TYPE_RAW);
+>         return 0;
+>  }
+>  arch_initcall(init_hw_perf_events);
 
-Interesting. As Mel said the patch is reverted anyway (Linus already
-applied the revert) but the question about FMODE_NONOTIFY is interesting.
-Userspace certainly cannot set the flag (the kernel enforces this on
-open(2) and fcntl(F_SETFL)). But it is visible to userspace via
-fcntl(F_GETFL) which may have been an oversight... I'm just not sure
-whether some of the fanotify(7) users which legitimately get such file
-descriptors don't depend on this flag being visible.
+Why does this have to arch_initcall() ??
+Why can't we just probe this like a regular DT based driver ??
 
-								Honza
+This driver needs total re-write because it has to be a platform driver.
+Even the names of counters are not registered. The implementation
+specific counter names should come from DT property.
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Regards,
+Anup
+
+> --
+> 2.27.0
+>
