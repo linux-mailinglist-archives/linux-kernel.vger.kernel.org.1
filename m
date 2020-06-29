@@ -2,30 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3987E20DAA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D3420DABB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388460AbgF2T7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:59:10 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:50686 "EHLO huawei.com"
+        id S2388402AbgF2UAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:00:06 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:51446 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388517AbgF2T7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:59:02 -0400
+        id S1732138AbgF2UAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 16:00:00 -0400
 Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id F099BE347D5E59611496;
+        by Forcepoint Email with ESMTP id EB34C1AEC8048B373B37;
         Mon, 29 Jun 2020 20:13:34 +0800 (CST)
 Received: from szvp000203569.huawei.com (10.120.216.130) by
  DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 29 Jun 2020 20:13:27 +0800
+ 14.3.487.0; Mon, 29 Jun 2020 20:13:28 +0800
 From:   Chao Yu <yuchao0@huawei.com>
 To:     <jaegeuk@kernel.org>
 CC:     <linux-f2fs-devel@lists.sourceforge.net>,
         <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
         Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH v2 2/3] f2fs: support to trace f2fs_bmap()
-Date:   Mon, 29 Jun 2020 20:13:12 +0800
-Message-ID: <20200629121313.68072-1-yuchao0@huawei.com>
+Subject: [PATCH v2 3/3] f2fs: support to trace f2fs_fiemap()
+Date:   Mon, 29 Jun 2020 20:13:13 +0800
+Message-ID: <20200629121313.68072-2-yuchao0@huawei.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200629121313.68072-1-yuchao0@huawei.com>
+References: <20200629121313.68072-1-yuchao0@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -36,71 +38,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-to show f2fs_bmap()'s result as below:
+to show f2fs_fiemap()'s result as below:
 
-f2fs_bmap: dev = (251,0), ino = 7, lblock:0, pblock:396800
+f2fs_fiemap: dev = (251,0), ino = 7, lblock:0, pblock:1625292800, len:2097152, flags:0, ret:0
 
 Signed-off-by: Chao Yu <yuchao0@huawei.com>
 ---
 v2:
 - use show_dev_ino() to avoid compile warning.
- fs/f2fs/data.c              | 14 +++++++++++---
- include/trace/events/f2fs.h | 26 ++++++++++++++++++++++++++
- 2 files changed, 37 insertions(+), 3 deletions(-)
+ fs/f2fs/data.c              |  6 +++++-
+ fs/f2fs/inline.c            |  2 ++
+ include/trace/events/f2fs.h | 37 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 44 insertions(+), 1 deletion(-)
 
 diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 91dc7b598961..c07a50e4d967 100644
+index c07a50e4d967..995cf78b23c5 100644
 --- a/fs/f2fs/data.c
 +++ b/fs/f2fs/data.c
-@@ -3713,18 +3713,26 @@ static sector_t f2fs_bmap_compress(struct inode *inode, sector_t block)
- static sector_t f2fs_bmap(struct address_space *mapping, sector_t block)
- {
- 	struct inode *inode = mapping->host;
-+	struct buffer_head tmp = {
-+		.b_size = i_blocksize(inode),
-+	};
-+	sector_t blknr = 0;
+@@ -1813,6 +1813,7 @@ static int f2fs_xattr_fiemap(struct inode *inode,
+ 			flags |= FIEMAP_EXTENT_LAST;
  
- 	if (f2fs_has_inline_data(inode))
--		return 0;
-+		goto out;
+ 		err = fiemap_fill_next_extent(fieinfo, 0, phys, len, flags);
++		trace_f2fs_fiemap(inode, 0, phys, len, flags, err);
+ 		if (err || err == 1)
+ 			return err;
+ 	}
+@@ -1836,8 +1837,10 @@ static int f2fs_xattr_fiemap(struct inode *inode,
+ 		flags = FIEMAP_EXTENT_LAST;
+ 	}
  
- 	/* make sure allocating whole blocks */
- 	if (mapping_tagged(mapping, PAGECACHE_TAG_DIRTY))
- 		filemap_write_and_wait(mapping);
+-	if (phys)
++	if (phys) {
+ 		err = fiemap_fill_next_extent(fieinfo, 0, phys, len, flags);
++		trace_f2fs_fiemap(inode, 0, phys, len, flags, err);
++	}
  
- 	if (f2fs_compressed_file(inode))
--		return f2fs_bmap_compress(inode, block);
-+		blknr = f2fs_bmap_compress(inode, block);
- 
--	return generic_block_bmap(mapping, block, get_data_block_bmap);
-+	if (!get_data_block_bmap(inode, block, &tmp, 0))
-+		blknr = tmp.b_blocknr;
-+out:
-+	trace_f2fs_bmap(inode, block, blknr);
-+	return blknr;
+ 	return (err < 0 ? err : 0);
  }
+@@ -1931,6 +1934,7 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
  
- #ifdef CONFIG_MIGRATION
+ 		ret = fiemap_fill_next_extent(fieinfo, logical,
+ 				phys, size, flags);
++		trace_f2fs_fiemap(inode, logical, phys, size, flags, ret);
+ 		if (ret)
+ 			goto out;
+ 		size = 0;
+diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
+index dbade310dc79..def4b8481883 100644
+--- a/fs/f2fs/inline.c
++++ b/fs/f2fs/inline.c
+@@ -12,6 +12,7 @@
+ 
+ #include "f2fs.h"
+ #include "node.h"
++#include <trace/events/f2fs.h>
+ 
+ bool f2fs_may_inline_data(struct inode *inode)
+ {
+@@ -776,6 +777,7 @@ int f2fs_inline_data_fiemap(struct inode *inode,
+ 	byteaddr += (char *)inline_data_addr(inode, ipage) -
+ 					(char *)F2FS_INODE(ipage);
+ 	err = fiemap_fill_next_extent(fieinfo, start, byteaddr, ilen, flags);
++	trace_f2fs_fiemap(inode, start, byteaddr, ilen, flags, err);
+ out:
+ 	f2fs_put_page(ipage, 1);
+ 	return err;
 diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-index 8639ab962a71..2e8713a52d76 100644
+index 2e8713a52d76..8a1c1311acac 100644
 --- a/include/trace/events/f2fs.h
 +++ b/include/trace/events/f2fs.h
-@@ -1891,6 +1891,32 @@ TRACE_EVENT(f2fs_iostat,
- 		__entry->fs_cdrio, __entry->fs_nrio, __entry->fs_mrio)
+@@ -1917,6 +1917,43 @@ TRACE_EVENT(f2fs_bmap,
+ 		(unsigned long long)__entry->pblock)
  );
  
-+TRACE_EVENT(f2fs_bmap,
++TRACE_EVENT(f2fs_fiemap,
 +
-+	TP_PROTO(struct inode *inode, sector_t lblock, sector_t pblock),
++	TP_PROTO(struct inode *inode, sector_t lblock, sector_t pblock,
++		unsigned long long len, unsigned int flags, int ret),
 +
-+	TP_ARGS(inode, lblock, pblock),
++	TP_ARGS(inode, lblock, pblock, len, flags, ret),
 +
 +	TP_STRUCT__entry(
 +		__field(dev_t, dev)
 +		__field(ino_t, ino)
 +		__field(sector_t, lblock)
 +		__field(sector_t, pblock)
++		__field(unsigned long long, len)
++		__field(unsigned int, flags)
++		__field(int, ret)
 +	),
 +
 +	TP_fast_assign(
@@ -108,12 +133,19 @@ index 8639ab962a71..2e8713a52d76 100644
 +		__entry->ino		= inode->i_ino;
 +		__entry->lblock		= lblock;
 +		__entry->pblock		= pblock;
++		__entry->len		= len;
++		__entry->flags		= flags;
++		__entry->ret		= ret;
 +	),
 +
-+	TP_printk("dev = (%d,%d), ino = %lu, lblock:%lld, pblock:%lld",
++	TP_printk("dev = (%d,%d), ino = %lu, lblock:%lld, pblock:%lld, "
++		"len:%llu, flags:%u, ret:%d",
 +		show_dev_ino(__entry),
 +		(unsigned long long)__entry->lblock,
-+		(unsigned long long)__entry->pblock)
++		(unsigned long long)__entry->pblock,
++		__entry->len,
++		__entry->flags,
++		__entry->ret)
 +);
 +
  #endif /* _TRACE_F2FS_H */
