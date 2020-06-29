@@ -2,121 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631F820D328
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4DBB20D30D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgF2S4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:56:14 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:54415 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730023AbgF2S4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:56:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593456966; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=vO5cQ9r6C1BPb1i55IQPk0kf5dp76XCzv2CyuUd7XPI=; b=FTd4dSa/iq72XesUI/nUFaLewTYz0ETh8INf67Syf0sCLyAsCcF6jbJ7eWddslhNSr6T0bo7
- Upq9qdTwIaV7pGedNFnX56iWiTJ+4aedLjcqv43QIgK83R7mKRE2MmvGFr5t1lNvJ3YEWywM
- OgVc2TR/5xu6ztEWTCH57kmkzi4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5ef9d0db3a8a8b20b8dd2087 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 11:30:35
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CEB54C4339C; Mon, 29 Jun 2020 11:30:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.50.61.98] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AC8BDC433C6;
-        Mon, 29 Jun 2020 11:30:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AC8BDC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH v6 6/6] spi: spi-qcom-qspi: Use OPP API to set clk/perf
- state
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Mark Brown <broonie@kernel.org>, bjorn.andersson@linaro.org,
-        agross@kernel.org, robdclark@gmail.com, robdclark@chromium.org,
-        stanimir.varbanov@linaro.org, viresh.kumar@linaro.org,
-        sboyd@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alok Chauhan <alokc@codeaurora.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        linux-spi@vger.kernel.org
-References: <1592222564-13556-1-git-send-email-rnayak@codeaurora.org>
- <1592222564-13556-7-git-send-email-rnayak@codeaurora.org>
- <20200624170933.GB39073@google.com> <20200624171537.GL5472@sirena.org.uk>
- <20200624173948.GC39073@google.com> <20200624174417.GM5472@sirena.org.uk>
- <20200624175536.GD39073@google.com> <20200624180005.GO5472@sirena.org.uk>
- <20200624181245.GE39073@google.com> <20200625152527.GG39073@google.com>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <d35e45f3-faf6-6879-e9e3-19e395bdd77c@codeaurora.org>
-Date:   Mon, 29 Jun 2020 17:00:28 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200625152527.GG39073@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1729946AbgF2SzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:55:15 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:57277 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729915AbgF2SzC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:55:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1593456903; x=1624992903;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=PUzrMPCvQRgKFPptoGH1iHwrWY4W0MKUEl4I50pJ6RSnYF/Hg36sFsn3
+   m3ThVZZHikKTi2Egq8mzNUgC43gUujZ4Ub1eLc+7hcnsRc64dzB+ORlLw
+   odJEQfQ1OBFhvv+ddbj8OFT+yqhhzCCfVm2jwdVOj8trIF7Z3CuV81/fi
+   yN+rI5IraYGCr7cl+w1VU9m18ACRLV/ye+l9tcjBjiV5O3M30WKAuc3gW
+   EpkPA3pHE4Kuo+5T9glzJtsQcgDwcJltfEPupbQiq8ziJ7pUHSYNyikse
+   odje5wOYwgmhmPIOAfHCt2B1m2XszmuP8dVOu8j1DzAknjbL+f/lAUmQn
+   A==;
+IronPort-SDR: KhXGgmHMMb9SG+CtFZQqtGZAxoYN9wrpDFS/2sJYGbEoL6tvuMqS+bdTm5I1ky2XohrMBGpnTy
+ CshMSQjiqIJzk5nvZZ031DdGewwyFkQNNv9DxrSWgp79XaqNKGh5EgCaih0O/A3RxMP97drznJ
+ KIeghhPAFzB6NBUu8MV0GrroWdXC2l2mV8wwQLsQ4+OooGQbx9Y/8RW2/AAfWFv1i0Lq8r0vwO
+ 4+AcnTT1kFf5fJKwDDUg4Wz066L3bj2HaowxH8Ek1qJXDTNp9kyMbga4J/+IJ1zV4DYqYk5khq
+ Cug=
+X-IronPort-AV: E=Sophos;i="5.75,294,1589212800"; 
+   d="scan'208";a="244196826"
+Received: from mail-bn3nam04lp2057.outbound.protection.outlook.com (HELO NAM04-BN3-obe.outbound.protection.outlook.com) ([104.47.46.57])
+  by ob1.hgst.iphmx.com with ESMTP; 29 Jun 2020 19:52:39 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZeRxOost6a/NHDB7o56bl1df/Zv6JHcM9C0Na8qOgLGs5ssrPp2az0zqDxxhMidDSBFtyTxD8x8gXCybU6MG9SwB/VreUJ4LvCETVcxuSxb4E7u8fJdG9dHgH/TyD1Trr+evTTiOw1/aygV+i/7u7A3rtHxgYbGsB7dX7aQDw1vmEW7bTpOfz0q97kFnAas3USi0X9T4JP0UgiZBYrKwggmtw5+kJvO7f5aCihmORiFAxJ1P0BKHs1cIiVEpUHWR7v4j4AOZZpikIGJ4Pvlqm1aECe8Kx0mxbNax/XtuhsMa7WEmhMrC8xg+ePGGEKHLATTYk8bI3Q3/B1kipOkakA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=ZzdpcuBTlzrG6QAQClmf8Rur3gc3YK3ZlYzCfWftUUY/pzQfj7fnwl9KlY+6Rm6bfYFUrNCnIZqdC/+e6vT7s01unwHn8OH0+5osxF7eKWiquplJaF6EPtKE2oTVXA0c25HSuSUp8fUT02pyeTLjC6lKJYCfTqkegv89L3ScekYU/EuKKhbF/f7OWoGFfExK7ZqhyRRldL9hjdbkIBAwyYZsc3Jzvve3Y1kaciu+Zgbd0PIstJsa382rzRViMInD08oiJYjM/qljXxPyrcavHmuM3cEac5ZkXoWRaVv3MhrpZwKS65UwdLnk2tH4G6FXoA7eTHcLPrBeCWW2OACj5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=ahuB1EArBr0OakjXg/kmgKkHlShI6WADXeGdzgxl/Bc9y5KRLRFuKPFECh5H71wrjcFgq6ZQhg9SxncVhJSGGUsZbuZCHNPLWHA/gJ0NU18gnrMiPZPIQcb7ZxAbrvO0Gtxx2B1UhhY2rJGbspbqyhkHgP4ozlB8qPezIpkP4oU=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN2PR04MB2141.namprd04.prod.outlook.com
+ (2603:10b6:804:10::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21; Mon, 29 Jun
+ 2020 11:51:53 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3131.026; Mon, 29 Jun 2020
+ 11:51:53 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Tejun Heo <tj@kernel.org>
+CC:     Dennis Zhou <dennis@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH 06/14] block: move the bio cgroup associatation helpers to
+ blk-cgroup.c
+Thread-Topic: [PATCH 06/14] block: move the bio cgroup associatation helpers
+ to blk-cgroup.c
+Thread-Index: AQHWTFUu08pVkN1Cw0KGAMSZ5Pm71w==
+Date:   Mon, 29 Jun 2020 11:51:53 +0000
+Message-ID: <SN4PR0401MB3598CB2CD25407E4E2C036299B6E0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200627073159.2447325-1-hch@lst.de>
+ <20200627073159.2447325-7-hch@lst.de>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:1515:bd01:5d2:80d1:159b:260e]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 5ae21004-5992-4af0-edbe-08d81c22d108
+x-ms-traffictypediagnostic: SN2PR04MB2141:
+x-microsoft-antispam-prvs: <SN2PR04MB2141FB87E3D46E1561FDC7D89B6E0@SN2PR04MB2141.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 044968D9E1
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 69At67BcIfvYdTKT0TLkseflVB2srWWRyGF+x2DVR09iqaX8hzsn6oXipDu2dZj4B9bNZFPTfwmn9yLdASzLiDtLcN7BAhiYIWZejcBJIexjYUp0nFO9cM1bo3DTuz2Zf19ZnEtwf70pvkvtiLsTdzGVWBls0UZnlm82qEyn+Lvs3zLf0oHe2wOpZotvIDMHzIY5o7lgdJiSjJ4JtsSZgTtWQtpTmq7D4mZqCjkRoZdkFaF011QH/0wfc/LboAUy5pi9KN7xVMnzit1OznPC63qBG8CSydIW3v/S4AGRonft2mw+WeSQFSJEuHL6TAZVJTF+lnF8zqEEYaHPAHuHhQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(376002)(396003)(346002)(39860400002)(366004)(2906002)(55016002)(8676002)(9686003)(4270600006)(478600001)(7416002)(52536014)(33656002)(86362001)(5660300002)(71200400001)(186003)(6506007)(316002)(8936002)(66946007)(76116006)(66446008)(558084003)(91956017)(19618925003)(7696005)(66556008)(64756008)(4326008)(66476007)(110136005)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: RGPjjeMEQ3C3Wu/hVRjcsUVGvY8r1u3Zd8G4YTEsD5HNhDvqZFgkVnHp3q0rcXKpgaO0mwPRu2LRI4SNTCP/2F0XBl3VzX1arPyTc7wYFKAygNVcWoP2l3r6vRDzzygdIU1pn+yRq4hTmwrcPNa04g2Ty1yXU7aV5LBhnXZu8oy8Hv3W6AXolXmDhjlNdYuCnibChKTOIPBC5fnAGW0juI835vEkSnlfYmGgvKVIZCJ5KwZTSW2ODuUQCox81o1wJ1xkWJFTPCh1Ry3cSMP7yxlxW1FefSENvA7+YXdvzPA0BEOYhjRI1uVuC1AsNniWCpLzZE/pAINXohE8kJqFwoygOiMV5La0wEjAq4ORdAgYWikNza1cgDvqQrmWaXCRZ3Nlp/D9E2qs7+zGjUX1gXdR11ZNCTfPSWMCIrJO3MxzZmd0YrmLjMsrvc/xRFmG1SHizqrZ5+T5hy1u5sXf8VCRd1I1Eru5P2GCgkLddYnj27owP7e74fj27ddmiHY4GSgo12db35dZTGBS8BkEMZL7uDt02aNxwoDchlaxYYOulq5ylLD3U/mLrD1xPxB0
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ae21004-5992-4af0-edbe-08d81c22d108
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2020 11:51:53.3005
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: q1bvhzTli5C8EXlrDuPw7lYmef1F1zxqjOuLwDzWBqoWpsemymXP6oUBUAq87Ul9Ylzj6Hb0GpVALLm0oE7aPvNChpyybnwIjORJ9Eknwvs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN2PR04MB2141
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 6/25/2020 8:55 PM, Matthias Kaehlcke wrote:
-> On Wed, Jun 24, 2020 at 11:12:45AM -0700, Matthias Kaehlcke wrote:
->> On Wed, Jun 24, 2020 at 07:00:05PM +0100, Mark Brown wrote:
->>> On Wed, Jun 24, 2020 at 10:55:36AM -0700, Matthias Kaehlcke wrote:
->>>> On Wed, Jun 24, 2020 at 06:44:17PM +0100, Mark Brown wrote:
->>>
->>>>> Wait, so *some* of the series should go together but not other bits?
->>>>> But you want them split up for some reason?
->>>
->>>> Yes, this will almost certainly be the case, even if not for this patch.
->>>> I brought this up earlier (https://patchwork.kernel.org/cover/11604623/#23428709).
->>>
->>> I'm not really reading any of this stuff for the series as a whole, as
->>> far as I could tell I'd reviewed all my bits and was hoping whatever
->>> random platform stuff needs sorting out was going to be sorted out so I
->>> stopped getting copied on revisions :(
->>
->> Sorry this caused you extra work, I only fully realized this when the series
->> was basically ready to land :(
->>
->> Avoiding unnecessary revision spam is another good reason to not combine
->> technically unrelated patches in a single series.
->>
->> If I notice similar series in the future I'll try to bring it up early.
->>
->>>> For the QSPI patch you could argue to just take it through QCOM since the SPI
->>>> patch of this series goes through this tree, up to you, I just want to make
->>>> sure everybody is on the same page.
->>>
->>> If there are some part of this that don't have a connection with the
->>> rest of the series and should be applied separately please split them
->>> out and send them separately so it's clear what's going on.
->>
->> Rajendra, IIUC you have to re-spin this series anyway, please split it
->> up in self-contained chunks.
-> 
-> One more thing: when you do the split it seems it would make sense to
-> include the DT changes that were initially part of this series
-> (https://patchwork.kernel.org/project/linux-arm-msm/list/?series=278691&state=*)
-
-Sure, I'll send the ones out for which driver changes are already merged/pulled in,
-like sdhc, geni-uart and geni-spi.
-For the rest, I will include them with the driver changes.
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
