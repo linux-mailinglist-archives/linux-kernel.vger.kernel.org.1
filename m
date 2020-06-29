@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F2F20D154
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383F820D125
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728524AbgF2Skt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:40:49 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60072 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728391AbgF2Skf (ORCPT
+        id S1728071AbgF2Siy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727953AbgF2SiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:35 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TGXkNW147767;
-        Mon, 29 Jun 2020 12:57:45 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31ydjwpppk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 12:57:45 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05TGYWfM152459;
-        Mon, 29 Jun 2020 12:57:44 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31ydjwppnf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 12:57:44 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05TGexbZ020434;
-        Mon, 29 Jun 2020 16:57:42 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06fra.de.ibm.com with ESMTP id 31wwcgs7qb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 16:57:42 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05TGveue39518286
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Jun 2020 16:57:40 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 31AA811C04C;
-        Mon, 29 Jun 2020 16:57:40 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 57B4411C04A;
-        Mon, 29 Jun 2020 16:57:39 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.137.220])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 29 Jun 2020 16:57:39 +0000 (GMT)
-Message-ID: <1593449858.5085.24.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 2/2] IMA: Add audit log for failure conditions
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Paul Moore <paul@paul-moore.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     sgrubb@redhat.com, rgb@redhat.com, linux-integrity@vger.kernel.org,
-        linux-audit@redhat.com, linux-kernel@vger.kernel.org
-Date:   Mon, 29 Jun 2020 12:57:38 -0400
-In-Reply-To: <CAHC9VhRQru30WtA-CMeqq=0GBtZ-Ut20ecHwpYfbEu5qCFqgDg@mail.gmail.com>
-References: <20200618211012.2823-1-nramas@linux.microsoft.com>
-         <20200618211012.2823-2-nramas@linux.microsoft.com>
-         <1592942295.5389.9.camel@linux.ibm.com>
-         <39d66bdc-55be-984a-42a0-34d0a011e0fb@linux.microsoft.com>
-         <CAHC9VhRQru30WtA-CMeqq=0GBtZ-Ut20ecHwpYfbEu5qCFqgDg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-06-29_18:2020-06-29,2020-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 impostorscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
- priorityscore=1501 spamscore=0 mlxscore=0 cotscore=-2147483648 bulkscore=0
- suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006290106
+        Mon, 29 Jun 2020 14:38:00 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE29C031416;
+        Mon, 29 Jun 2020 10:20:31 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id k1so7359789pls.2;
+        Mon, 29 Jun 2020 10:20:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EBxO7W3vjKfKExb7YIhRFg//dsteKdeNGdPmppkjMb8=;
+        b=ewKodK9aN0OWBZQbu44iYiVfZECWxTo16lvDvRM89Z4teK9Y+NqZrKgHYKIHfQNOTY
+         vWSJsKDUNNqYREungOJwclpKtKpmRkrGL+hMdIqE94CYuq5fgEYhUIMzysHUIT76AEss
+         9/Hf9IgN/E1R5MQ6oWDqXpxAzTI8bKdOJqf3X5whfi8CQo95Fb5coiHOOJu0SF++m1CG
+         xuFod+DMFoP8uTRz17dh9MvwIzMuRq7CCB2EiZri8RNCupv/MdpyiQacCznzyf9Hd0Hm
+         FhBrhOLm+FIsA6Wt/Uu/B/3Nlo28pPvmhyhjwn+WhNH66L0Y/en19olQMt1/sRgiJtSM
+         LrFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EBxO7W3vjKfKExb7YIhRFg//dsteKdeNGdPmppkjMb8=;
+        b=A92X8F6O9ZZ/sefrG8X3+lnBbHgSzPl/mH0w2b8Fr8ovLmcCCO3Y5wd8syVZhNHSAo
+         XEE8Yb1+zHFY8GwyiJavjdyPPJGoe5a3Mi0eUaH0PAfpiZQJi5MvY3Y3HntfHVaR5l3A
+         KLcsLcnF5aLnTeCaU9OwV5ygsP9dyWUm0vvcdYGhaPBWh4RCodBGcDSWeQSpsbGJhgGw
+         1LpiwXwHPfLVLoCAHFkyct2v5m8auuGJx8+87WHPBuF2JcW74T2bNxwHpF0A0EScN3Te
+         QbJvN/+/FLSbgtbq+Yi8qnDlNbqWk8KoBhVDyY+EEne8SOwQGSucIVvzTmzsEY+uYUZL
+         bxEQ==
+X-Gm-Message-State: AOAM533j5O2Dp47UJOXGXjMlbVZ9bVHufOnuGYp+UJ0wnbqIzW/bD/2E
+        0erjhOVP6vvY1GJnU71B5IU=
+X-Google-Smtp-Source: ABdhPJwBXYzSqVqaej7MrTtvAoxQQyVfrLurS2VT0FpRREZWIImH+ognZwMO6/Mmioqfe4mIEvAzzw==
+X-Received: by 2002:a17:902:301:: with SMTP id 1mr14726130pld.214.1593451231314;
+        Mon, 29 Jun 2020 10:20:31 -0700 (PDT)
+Received: from [10.230.30.107] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id f29sm331735pga.59.2020.06.29.10.20.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jun 2020 10:20:30 -0700 (PDT)
+Subject: Re: [PATCH v2 08/10] of: mdio: remove the 'extern' keyword from
+ function declarations
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20200629120346.4382-1-brgl@bgdev.pl>
+ <20200629120346.4382-9-brgl@bgdev.pl>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <4ec2d4c1-3169-da94-2fe2-1165e1fbd531@gmail.com>
+Date:   Mon, 29 Jun 2020 10:20:28 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200629120346.4382-9-brgl@bgdev.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-06-25 at 15:14 -0400, Paul Moore wrote:
-> On Wed, Jun 24, 2020 at 1:25 PM Lakshmi Ramasubramanian
-> <nramas@linux.microsoft.com> wrote:
-> >
-> > On 6/23/20 12:58 PM, Mimi Zohar wrote:
-> >
-> > Hi Steve\Paul,
-> >
-> > >> Sample audit messages:
-> > >>
-> > >> [    6.303048] audit: type=1804 audit(1592506281.627:2): pid=1 uid=0
-> > >> auid=4294967295 ses=4294967295 subj=kernel op=measuring_key
-> > >> cause=ENOMEM comm="swapper/0" name=".builtin_trusted_keys" res=0
-> > >> errno=-12
-> > >
-> > > My only concern is that auditing -ENOMEM will put additional memory
-> > > pressure on the system.  I'm not sure if this is a concern and, if so,
-> > > how it should be handled.
-> >
-> > Do you have any concerns with respect to adding audit messages in low
-> > memory conditions?
+
+
+On 6/29/2020 5:03 AM, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> Assuming the system is not completely toast, the allocation failure
-> could be a very transient issue; I wouldn't worry too much about it.
+> The 'extern' keyword in headers doesn't have any benefit. Remove them
+> all from the of_mdio.h header.
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-There was a major clean up of removing ENOMEM error messages through
-out the kernel a while ago by Wolfram Sang.  The subject lines
-included "don't print error when allocating XXX fails".  As it turns
-out, they were being removed because "kmalloc will print enough
-information in case of failure."  It had nothing to do with memory
-pressure on the system.
-
-Thanks, Paul.  I think we're good.
-
-Mimi
-
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
