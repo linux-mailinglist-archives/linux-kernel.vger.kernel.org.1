@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C24020DF79
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4736120DF67
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389495AbgF2UhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:37:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59448 "EHLO mx2.suse.de"
+        id S1732184AbgF2Uft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:35:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59498 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732160AbgF2TV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:21:27 -0400
+        id S1732176AbgF2TVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:21:31 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BF806B048;
-        Mon, 29 Jun 2020 15:10:08 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 21FC4B052;
+        Mon, 29 Jun 2020 15:10:09 +0000 (UTC)
 From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 To:     gregkh@linuxfoundation.org
 Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
@@ -22,9 +22,9 @@ Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         devel@driverdev.osuosl.org,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [PATCH v2 38/47] staging: vchiq: Make vchiq_add_service() local
-Date:   Mon, 29 Jun 2020 17:09:36 +0200
-Message-Id: <20200629150945.10720-39-nsaenzjulienne@suse.de>
+Subject: [PATCH v2 39/47] staging: vchiq: Move definitions only used by core into core header
+Date:   Mon, 29 Jun 2020 17:09:37 +0200
+Message-Id: <20200629150945.10720-40-nsaenzjulienne@suse.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200629150945.10720-1-nsaenzjulienne@suse.de>
 References: <20200629150945.10720-1-nsaenzjulienne@suse.de>
@@ -35,50 +35,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function is being exported although there is no use for it outside
-of vchiq's core code. Keep it local then.
+vchiq_if.h is used by service consumers and only the exported API should
+be present. Move the rest of definitions, which were not exported by the
+way, to vchiq_core.h where they belong.
 
 Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 ---
- drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 3 +--
- drivers/staging/vc04_services/interface/vchiq_arm/vchiq_if.h  | 3 ---
- 2 files changed, 1 insertion(+), 5 deletions(-)
+ .../interface/vchiq_arm/vchiq_core.h          | 22 +++++++++++++++++++
+ .../interface/vchiq_arm/vchiq_if.h            | 16 --------------
+ 2 files changed, 22 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-index dddd5ea5d917..1a050ac116fa 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-@@ -271,7 +271,7 @@ enum vchiq_status vchiq_connect(struct vchiq_instance *instance)
- }
- EXPORT_SYMBOL(vchiq_connect);
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
+index b97b661bea1c..ff91c04ba6b9 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
+@@ -486,6 +486,18 @@ struct bulk_waiter {
+ 	int actual;
+ };
  
--enum vchiq_status vchiq_add_service(
-+static enum vchiq_status vchiq_add_service(
- 	struct vchiq_instance             *instance,
- 	const struct vchiq_service_params *params,
- 	unsigned int       *phandle)
-@@ -308,7 +308,6 @@ enum vchiq_status vchiq_add_service(
++struct vchiq_config {
++	unsigned int max_msg_size;
++	unsigned int bulk_threshold; /* The message size above which it
++					is better to use a bulk transfer
++					(<= max_msg_size) */
++	unsigned int max_outstanding_bulks;
++	unsigned int max_services;
++	short version;      /* The version of VCHIQ */
++	short version_min;  /* The minimum compatible version of VCHIQ */
++};
++
++
+ extern spinlock_t bulk_waiter_spinlock;
  
- 	return status;
- }
--EXPORT_SYMBOL(vchiq_add_service);
+ extern int vchiq_core_log_level;
+@@ -665,4 +677,14 @@ extern void
+ vchiq_log_dump_mem(const char *label, uint32_t addr, const void *voidMem,
+ 	size_t numBytes);
  
- enum vchiq_status vchiq_open_service(
- 	struct vchiq_instance             *instance,
++extern enum vchiq_status vchiq_remove_service(unsigned int service);
++
++extern int vchiq_get_client_id(unsigned int service);
++
++extern void vchiq_get_config(struct vchiq_config *config);
++
++extern enum vchiq_status
++vchiq_set_service_option(unsigned int service, enum vchiq_service_option option,
++			 int value);
++
+ #endif
 diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_if.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_if.h
-index 407e7dc31108..b852980447dc 100644
+index b852980447dc..931debcd6492 100644
 --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_if.h
 +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_if.h
-@@ -94,9 +94,6 @@ struct vchiq_instance;
+@@ -78,17 +78,6 @@ struct vchiq_service_params {
+ 	short version_min;   /* Update for incompatible changes */
+ };
+ 
+-struct vchiq_config {
+-	unsigned int max_msg_size;
+-	unsigned int bulk_threshold; /* The message size above which it
+-					is better to use a bulk transfer
+-					(<= max_msg_size) */
+-	unsigned int max_outstanding_bulks;
+-	unsigned int max_services;
+-	short version;      /* The version of VCHIQ */
+-	short version_min;  /* The minimum compatible version of VCHIQ */
+-};
+-
+ struct vchiq_instance;
+ 
  extern enum vchiq_status vchiq_initialise(struct vchiq_instance **pinstance);
- extern enum vchiq_status vchiq_shutdown(struct vchiq_instance *instance);
- extern enum vchiq_status vchiq_connect(struct vchiq_instance *instance);
--extern enum vchiq_status vchiq_add_service(struct vchiq_instance *instance,
--	const struct vchiq_service_params *params,
--	unsigned int *pservice);
- extern enum vchiq_status vchiq_open_service(struct vchiq_instance *instance,
+@@ -98,7 +87,6 @@ extern enum vchiq_status vchiq_open_service(struct vchiq_instance *instance,
  	const struct vchiq_service_params *params,
  	unsigned int *pservice);
+ extern enum vchiq_status vchiq_close_service(unsigned int service);
+-extern enum vchiq_status vchiq_remove_service(unsigned int service);
+ extern enum vchiq_status vchiq_use_service(unsigned int service);
+ extern enum vchiq_status vchiq_release_service(unsigned int service);
+ extern enum vchiq_status vchiq_queue_kernel_message(unsigned int handle,
+@@ -112,11 +100,7 @@ extern enum vchiq_status vchiq_bulk_transmit(unsigned int service,
+ extern enum vchiq_status vchiq_bulk_receive(unsigned int service,
+ 	void *data, unsigned int size, void *userdata,
+ 	enum vchiq_bulk_mode mode);
+-extern int   vchiq_get_client_id(unsigned int service);
+ extern void *vchiq_get_service_userdata(unsigned int service);
+-extern void vchiq_get_config(struct vchiq_config *config);
+-extern enum vchiq_status vchiq_set_service_option(unsigned int service,
+-	enum vchiq_service_option option, int value);
+ extern enum vchiq_status vchiq_get_peer_version(unsigned int handle,
+       short *peer_version);
+ extern void vchiq_msg_queue_push(unsigned handle, struct vchiq_header *header);
 -- 
 2.27.0
 
