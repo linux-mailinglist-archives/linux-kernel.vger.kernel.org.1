@@ -2,71 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8447220DAF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4D020D911
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731937AbgF2UCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:02:01 -0400
-Received: from muru.com ([72.249.23.125]:59972 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731818AbgF2TkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:40:11 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id EA96381A8;
-        Mon, 29 Jun 2020 17:13:52 +0000 (UTC)
-Date:   Mon, 29 Jun 2020 10:12:57 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        "Mark A. Yoder" <mark.a.yoder@gmail.com>
-Subject: Re: [PATCH V2] ARM: dts: am33xx-l4: add gpio-ranges
-Message-ID: <20200629171257.GU37466@atomide.com>
-References: <20200610110258.GA3024740@x1>
+        id S1731479AbgF2Tny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387807AbgF2Tmm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:42:42 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8348CC031410
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:16:49 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id g18so17351777wrm.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:16:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/AxbpdcHiw/57CHMJ7xpxqgYfQdZczHJYp1MAsDX43Y=;
+        b=rpmNg9w/3E0zMNlLG1raYG1/UxOIIlTW68NocFRo+88EeK3tMtRAcrzCYHZKctzMqb
+         W540F3Vg47a/dBMpHJQ/o3sqh/M+jK5egjQXfs93zthRONVC10H7Vx5V3pH66eKyePDF
+         drmkLMRW6Iv17UAV/GPUiR/BlfHIwAEYbwDdqfkwytbwXqKKWBbFRjdxcy/Vw+XJuzkK
+         ABBN9fF/THs0twqcw7trLlD99xkrHiULIh9OX8DSKkr7EnR1U1l6VOakg2dEqtaKaueo
+         MXAUWVg2Ib9j6/2On6MEXNBN1Cyb96pWxsIadQ+TpVZbEyE2jSdF6kLCgEVpNYw6B+LI
+         LwdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/AxbpdcHiw/57CHMJ7xpxqgYfQdZczHJYp1MAsDX43Y=;
+        b=aD44hKXieAud57q+PC76bCIEGVmzSXP85Dr7jO7wR2VJA4bozg5FBGLPDlptzkS75y
+         LIECNO47EImN3XAyjMfiZxHIFIdoLvfAYeicJdx+7bQJXxCcsARYm99qvgrwFhb0seb/
+         rOUBTXhjxp1/rTpiCMEPruY5AlV8jvxfFqaHS6JBuN/JL702nbKrpo3c6H6GQfLHNyPu
+         ZCcentOBKG/ZDErYuWSihLEfvCjQSY/PtX7kgVISxyWFhTkyt0kjiq1DB6P2PeeYzQLJ
+         AE4MnJNknJGAoBFoD4Cd1z4U5s9QmpqeA8voZC23fpEpt8rGLhh1u7sbsSkSNtn/8BV9
+         ghXg==
+X-Gm-Message-State: AOAM531AyyVFFFGWLBRy+iMDeToLcQrK+MuT2Al53gR8P6/fozkbvodp
+        n2ExjVyJov1yTNBBWKugM1w=
+X-Google-Smtp-Source: ABdhPJxWgsvGcIlPWyFh+Qe6tqa2H1kaQYicf6+/H2QtbvZIyg8lEgBQA2xo3nZciQA2TuCnosuo+Q==
+X-Received: by 2002:a5d:5084:: with SMTP id a4mr18528004wrt.191.1593451008291;
+        Mon, 29 Jun 2020 10:16:48 -0700 (PDT)
+Received: from localhost.localdomain (dslb-178-011-230-176.178.011.pools.vodafone-ip.de. [178.11.230.176])
+        by smtp.gmail.com with ESMTPSA id n14sm432728wro.81.2020.06.29.10.16.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 10:16:47 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, hdegoede@redhat.com,
+        florian.c.schilhabel@googlemail.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH 1/3] staging: rtl8188eu: remove some ieee80211 constants from wifi.h
+Date:   Mon, 29 Jun 2020 19:14:03 +0200
+Message-Id: <20200629171405.7711-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200610110258.GA3024740@x1>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Drew Fustini <drew@beagleboard.org> [200610 04:03]:
-> Add gpio-ranges properties to the gpio controller nodes.
-> 
-> These gpio-ranges were created based on "Table 9-10. CONTROL_MODULE
-> REGISTERS" in the  "AM335x Technical Reference Manual" [0] and "Table
-> 4-2. Pin Attributes" in the "AM335x Sitara Processor datasheet" [1].
-> A csv file with this data is available for reference [2].
-> 
-> These mappings are valid for all SoC's that are using am33xx-l4.dtsi.
-> In addition, the only TI AM33xx parts that actually exist are [0]:
-> AM3351, AM3352, AM3354, AM3356, AM3357, AM3358, AM3359
-> 
-> These gpio-ranges properties should be added as they describe the
-> relationship between a gpio line and pin control register that exists
-> in the hardware.  For example, GPMC_A0 pin has mode 7 which is labeled
-> gpio1_16. conf_gpmc_a0 register is at offset 840h which makes it pin 16.
-> 
-> [0] https://www.ti.com/lit/ug/spruh73q/spruh73q.pdf
-> [1] http://www.ti.com/lit/ds/symlink/am3358.pdf
-> [2] https://gist.github.com/pdp7/6ffaddc8867973c1c3e8612cfaf72020
-> [3] http://www.ti.com/processors/sitara-arm/am335x-cortex-a8/overview.html
-> 
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> ---
-> V2 changes:
-> - clarify that these gpio-ranges are valid for all SoCs including that
->   am33xx-l4.dtsi
-> - describe why these gpio-ranges should be added
+The constants IEEE80211_BAR_CTRL_ACK_POLICY_NORMAL and
+IEEE80211_BAR_CTRL_CBMTID_COMPRESSED_BA are not used in the driver
+code and, if ever needed, available from 'include/linux/ieee80211.h'.
+Remove them from wifi.h.
 
-Thanks applying into omap-for-v5.9/dt.
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
+---
+ drivers/staging/rtl8188eu/include/wifi.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Regards,
+diff --git a/drivers/staging/rtl8188eu/include/wifi.h b/drivers/staging/rtl8188eu/include/wifi.h
+index 667055796b66..e12e3d0a45e0 100644
+--- a/drivers/staging/rtl8188eu/include/wifi.h
++++ b/drivers/staging/rtl8188eu/include/wifi.h
+@@ -453,10 +453,6 @@ static inline int IsFrameTypeCtrl(unsigned char *pframe)
+ 				Below is the definition for 802.11n
+ ------------------------------------------------------------------------------*/
+ 
+-/* 802.11 BAR control masks */
+-#define IEEE80211_BAR_CTRL_ACK_POLICY_NORMAL     0x0000
+-#define IEEE80211_BAR_CTRL_CBMTID_COMPRESSED_BA  0x0004
+-
+ /**
+  * struct rtw_ieee80211_ht_cap - HT additional information
+  *
+-- 
+2.27.0
 
-Tony
