@@ -2,93 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9287120D631
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D8720DB5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731779AbgF2TSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:18:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730984AbgF2TRn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:17:43 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD63C03079B;
-        Mon, 29 Jun 2020 08:37:43 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f09280085fdc63970f65a73.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:2800:85fd:c639:70f6:5a73])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1731038AbgF2UF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:05:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40598 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732962AbgF2Ta2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:30:28 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8A1B31EC0281;
-        Mon, 29 Jun 2020 17:37:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1593445058;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=E2Vy1BjgpL7djeeIafMFG4u5IsZeMp6SGkzpkdddWqk=;
-        b=CBoXxLFoMIY5VXcvAjrKeGHkctJgQQ+mpYy95c4ccd0Z87tioA+Bk1XaGXpZgf608oRnP4
-        WbzG9rrLcBktAzNOsrOwzcQC8CIKp04tXZlgE2YypfyeekjI8h9hWQpyLus8riMgcX90WB
-        iXQ8njrtu3RsCR8dpQkSF0SD2QKnOWs=
-Date:   Mon, 29 Jun 2020 17:37:37 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v33 11/21] x86/sgx: Linux Enclave Driver
-Message-ID: <20200629153737.GA32176@zn.tnic>
-References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
- <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
- <20200627174335.GC15585@zn.tnic>
- <20200629152718.GA12312@linux.intel.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 347C02531B;
+        Mon, 29 Jun 2020 15:39:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593445148;
+        bh=nLNVnUkhRI/NJ1/56ogLVmoCKmOrnZaaRd6qx79OxKI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=NFU/HkvSvv5Fr3+W0fMMw9pRK6gyek6rpVpPu47k2iNfrQ/ScN7xq4Zpjr1XXBwGK
+         t+QrAOdIEQv3k6D431B7NRb3McKe2MBHEAT9Yzx8jh/5Ifv/FPUtOOd766IqJ4Xco6
+         XKdf2ZsIshUa8CGQiHlxymAWBs6wcov4+Qaoqp6c=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 51/78] netfilter: ipset: fix unaligned atomic access
+Date:   Mon, 29 Jun 2020 11:37:39 -0400
+Message-Id: <20200629153806.2494953-52-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200629153806.2494953-1-sashal@kernel.org>
+References: <20200629153806.2494953-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200629152718.GA12312@linux.intel.com>
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.186-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.14.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.14.186-rc1
+X-KernelTest-Deadline: 2020-07-01T15:38+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 08:27:19AM -0700, Sean Christopherson wrote:
-> Hmm, I was going to say that SGX_ENCL_INITIALIZED can't be checked until
-> encl->lock is held, but that's not true for this path as mutual exclusion
-> is provided by the SGX_ENCL_IOCTL flag.  So yeah, this can be checked at
-> the same time as SGX_ENCL_CREATED in sgx_ioc_enclave_init().
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-Right, so my point is to have state checks for flags which make sense in
-all ioctl entry points, in order to catch a misuse early. But we're on
-the same page.
+[ Upstream commit 715028460082d07a7ec6fcd87b14b46784346a72 ]
 
-> ENCLS[EINIT] is interruptible because it has such a high latency, e.g. 50k+
-> cycles on success.  If an IRQ/NMI/SMI becomes pending, EINIT may fail with
-> SGX_UNMASKED_EVENT so that the event can be serviced.
->
-> The idea behind the double loop is to try EINIT in a tight loop, then back
-> off and sleep for a while before retrying that tight inner loop.
+When using ip_set with counters and comment, traffic causes the kernel
+to panic on 32-bit ARM:
 
-That gist of that kinda wants to be in a comment over that double-loop for
-future on-lookers.
+Alignment trap: not handling instruction e1b82f9f at [<bf01b0dc>]
+Unhandled fault: alignment exception (0x221) at 0xea08133c
+PC is at ip_set_match_extensions+0xe0/0x224 [ip_set]
 
-Thx.
+The problem occurs when we try to update the 64-bit counters - the
+faulting address above is not 64-bit aligned.  The problem occurs
+due to the way elements are allocated, for example:
 
+	set->dsize = ip_set_elem_len(set, tb, 0, 0);
+	map = ip_set_alloc(sizeof(*map) + elements * set->dsize);
+
+If the element has a requirement for a member to be 64-bit aligned,
+and set->dsize is not a multiple of 8, but is a multiple of four,
+then every odd numbered elements will be misaligned - and hitting
+an atomic64_add() on that element will cause the kernel to panic.
+
+ip_set_elem_len() must return a size that is rounded to the maximum
+alignment of any extension field stored in the element.  This change
+ensures that is the case.
+
+Fixes: 95ad1f4a9358 ("netfilter: ipset: Fix extension alignment")
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Acked-by: Jozsef Kadlecsik <kadlec@netfilter.org>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/netfilter/ipset/ip_set_core.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_set_core.c
+index c2b21c9c12295..5c59bbad8d193 100644
+--- a/net/netfilter/ipset/ip_set_core.c
++++ b/net/netfilter/ipset/ip_set_core.c
+@@ -381,6 +381,8 @@ ip_set_elem_len(struct ip_set *set, struct nlattr *tb[], size_t len,
+ 	for (id = 0; id < IPSET_EXT_ID_MAX; id++) {
+ 		if (!add_extension(id, cadt_flags, tb))
+ 			continue;
++		if (align < ip_set_extensions[id].align)
++			align = ip_set_extensions[id].align;
+ 		len = ALIGN(len, ip_set_extensions[id].align);
+ 		set->offset[id] = len;
+ 		set->extensions |= ip_set_extensions[id].type;
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
