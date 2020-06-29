@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5409E20D521
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B41C520D50D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731769AbgF2TO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
+        id S1730619AbgF2TOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:14:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731789AbgF2TOX (ORCPT
+        with ESMTP id S1731651AbgF2TOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:14:23 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00DFC0F26CC
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:04:13 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id a6so13599018wmm.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:04:13 -0700 (PDT)
+        Mon, 29 Jun 2020 15:14:04 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57415C00E3C4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:04:15 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id g75so15105281wme.5
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:04:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Hz0iVZuquqaAZG91zpdXr2Uyq4D9Tl6Yab1oO2oLyu4=;
-        b=VvL4yO6jCcGsEdtzYiLzKqRQKd+CJHaFyeqJWf7CcFeUmtn3q8wK56Ka3u84RH2/TB
-         NB1CiAymp//XtqnFz5/H+ApJeRCUh/SqYJkad+wuFzUrSypwMyamn05nNgh9bLzgio/4
-         QBu82NPhZZT4p9ki5bX41KR4ZogP7bglHyn0k1CHfqSTORfkjFmMOuW3F+ZcTgaapo1B
-         kH2qepefaYlMyQ/1lvRS5epPqtlijcTGvri5VRyh7kANgzWCz96TsJFHbd1OpXN75CnZ
-         b9jNoyvkUTRs0Vyin0UkoI4pBwLsrwpFCWDaCSYqIKh9GuRWgBS4RIRv05e4D75Eph+2
-         us+Q==
+        bh=nZJ9RrYkX//UjOI/5YYylQYoHuaDDR4YnVJY1VbZiK8=;
+        b=GHZrNXAbixM8hIlftssrgQxdDlC2R8smynvTThHUqsGw3QGlkt8NhoPhAOcQQGzRtw
+         8UiJW8UelWWaFm3hR3IBZDUiETIQ4cw/d0cKQJ2t1YCJDD+35seh4iu5J6/ZnfNA9Cf2
+         0PVuY8rWNQGb4TJy8iFdvM58AtK7sHgm7tkKp+d8JruntQqh4/uEGDPUikx3v8VCVX/X
+         t0nKty1pn7Dat78dI2BiItZ4JxBDOUehXZ0nt2E9AXLK4007faqBTbkxlHvbnLr9M2so
+         H+SDo8uHBGYBqIx7PHreVr5lgWWgBQR/mjyFndySyTN3eQfiaXuMtvjj/R5CALJQPX52
+         cZCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Hz0iVZuquqaAZG91zpdXr2Uyq4D9Tl6Yab1oO2oLyu4=;
-        b=Ou9Ycae3gy+0KZZwc2wxWYAJq7WO2UkznRUy2+PMIPDrEUjZuaL80DMhtuwiM+bCmz
-         iEKnkkzkcTu6Mon6FVT6M2U8ye4MkUfGLCh5P88XzyVxNtO6so/hep23VgCGtR2RGvLX
-         bwJtioG/iuKGiYyrrjYjjGJf35rbad5Ma4IjEr+VZhqRRvAnvYzbJusLkERaQipPQciZ
-         HeQDLHeQCKolQhGuEG/BbZQW7ILf0aTiEu90/j355cWY+mSN6+1pP3Sx4MpS0bKgrzL/
-         51pyX53zlARo1/wQcUDnjuEdgv850MhuUoVosNQbpFc9YuVl5k3FnsXDpAlDaVX1ZWtF
-         x73g==
-X-Gm-Message-State: AOAM533sal4ucR7bKWC2Rpxqj/oWPrsVb1m78DOWG4UhSbhScpan2qrt
-        5DFs1X/QHJNrrojO6O2IDf3Caw==
-X-Google-Smtp-Source: ABdhPJwR+XCjvBHh7hN27yb4wbyQ2NgRHNnJda5bGoNm1j9W8pobPb9+mBDwQzfYrDFvbqSH7NAqWg==
-X-Received: by 2002:a7b:cc8b:: with SMTP id p11mr17632537wma.180.1593432252690;
-        Mon, 29 Jun 2020 05:04:12 -0700 (PDT)
+        bh=nZJ9RrYkX//UjOI/5YYylQYoHuaDDR4YnVJY1VbZiK8=;
+        b=BDl/XZNMJmAssTZg8wTj/Wovr0jiuRvkDj7gv5zEHoDqBZjja679gyFAikGcNyd/1Z
+         c6zvchslhygFkyOvl+I7RRfgVqcWHSnhQAM8dUkwVTAriPLTDzOzhKPx11ttmkdnVGuf
+         J5nATE8iH1Fl+7286w0D0Sj6yr3Lk7xSWUATNXllfzqLQzI5E/6r1f/Y71SuA2i7Unen
+         U0OBCRaMmuRzK4fs/9apHjriFxs7o4tzwuQkYDUlvzuRMicoohkYku/MtzcQrnsZ8xfq
+         zbqsRPpCdUG/o+xUOg7THB9soych9+cUtSD6HDBadXFh9lORWT0uVopfdISSUyY71B1e
+         NDEg==
+X-Gm-Message-State: AOAM532amHXnkPkVpq7LomMo7vwi016Q6y37nKq4PChLjKrOeiieY/ex
+        pPFRRwE3Ju62NyO74eUlT6+YsQ==
+X-Google-Smtp-Source: ABdhPJxPsnR1q89EpF5XRsu5RI2Mrvn6hFviI2UQaVTUzem4LR886XkHZ07utmAJlfbggOLXkkyVfg==
+X-Received: by 2002:a7b:c381:: with SMTP id s1mr17268979wmj.25.1593432254093;
+        Mon, 29 Jun 2020 05:04:14 -0700 (PDT)
 Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id d81sm25274347wmc.0.2020.06.29.05.04.11
+        by smtp.gmail.com with ESMTPSA id d81sm25274347wmc.0.2020.06.29.05.04.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 05:04:12 -0700 (PDT)
+        Mon, 29 Jun 2020 05:04:13 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
         "David S . Miller" <davem@davemloft.net>,
@@ -66,9 +66,9 @@ Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 01/10] net: ethernet: ixgbe: check the return value of ixgbe_mii_bus_init()
-Date:   Mon, 29 Jun 2020 14:03:37 +0200
-Message-Id: <20200629120346.4382-2-brgl@bgdev.pl>
+Subject: [PATCH v2 02/10] net: ethernet: ixgbe: don't call devm_mdiobus_free()
+Date:   Mon, 29 Jun 2020 14:03:38 +0200
+Message-Id: <20200629120346.4382-3-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200629120346.4382-1-brgl@bgdev.pl>
 References: <20200629120346.4382-1-brgl@bgdev.pl>
@@ -81,34 +81,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-This function may fail. Check its return value and propagate the error
-code.
+The idea behind devres is that the release callbacks are called if
+probe fails. As we now check the return value of ixgbe_mii_bus_init(),
+we can drop the call devm_mdiobus_free() in error path as the release
+callback will be called automatically.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_phy.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 97a423ecf808..8752b5eea091 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -11175,10 +11175,14 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 			IXGBE_LINK_SPEED_10GB_FULL | IXGBE_LINK_SPEED_1GB_FULL,
- 			true);
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_phy.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_phy.c
+index 2fb97967961c..7980d7265e10 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_phy.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_phy.c
+@@ -905,7 +905,6 @@ s32 ixgbe_mii_bus_init(struct ixgbe_hw *hw)
+ 	struct pci_dev *pdev = adapter->pdev;
+ 	struct device *dev = &adapter->netdev->dev;
+ 	struct mii_bus *bus;
+-	int err = -ENODEV;
  
--	ixgbe_mii_bus_init(hw);
-+	err = ixgbe_mii_bus_init(hw);
-+	if (err)
-+		goto err_netdev;
+ 	bus = devm_mdiobus_alloc(dev);
+ 	if (!bus)
+@@ -923,7 +922,7 @@ s32 ixgbe_mii_bus_init(struct ixgbe_hw *hw)
+ 	case IXGBE_DEV_ID_X550EM_A_1G_T:
+ 	case IXGBE_DEV_ID_X550EM_A_1G_T_L:
+ 		if (!ixgbe_x550em_a_has_mii(hw))
+-			goto ixgbe_no_mii_bus;
++			return -ENODEV;
+ 		bus->read = &ixgbe_x550em_a_mii_bus_read;
+ 		bus->write = &ixgbe_x550em_a_mii_bus_write;
+ 		break;
+@@ -948,15 +947,8 @@ s32 ixgbe_mii_bus_init(struct ixgbe_hw *hw)
+ 	 */
+ 	hw->phy.mdio.mode_support = MDIO_SUPPORTS_C45 | MDIO_SUPPORTS_C22;
  
- 	return 0;
+-	err = mdiobus_register(bus);
+-	if (!err) {
+-		adapter->mii_bus = bus;
+-		return 0;
+-	}
+-
+-ixgbe_no_mii_bus:
+-	devm_mdiobus_free(dev, bus);
+-	return err;
++	adapter->mii_bus = bus;
++	return mdiobus_register(bus);
+ }
  
-+err_netdev:
-+	unregister_netdev(netdev);
- err_register:
- 	ixgbe_release_hw_control(adapter);
- 	ixgbe_clear_interrupt_scheme(adapter);
+ /**
 -- 
 2.26.1
 
