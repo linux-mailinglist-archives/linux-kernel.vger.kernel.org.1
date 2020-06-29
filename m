@@ -2,102 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4C820E4ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9F820E4B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391087AbgF2Vag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:30:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728852AbgF2SlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:41:21 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD7F8255E3;
-        Mon, 29 Jun 2020 18:25:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593455103;
-        bh=wkackI2rfYcaIhwqNMPcXwmVpxfvX7NY51JrPzFNKm0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Blp8tuH+v0xm4gkhx5A0ISpTqN77nf36qnKbOK9TmxsqaJhHMajqjfDivu7VSTh08
-         aAMfNC9mUqwFGKrHwqGjavV7dxtzH2fuRo3vr3RAjjccgO++1NZ0z6FqxKMNjLrUNu
-         8x9sfbWrIlUXPrEXqdshhQCQ/Xw0d+XMJG9z9c3w=
-Date:   Mon, 29 Jun 2020 11:25:02 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Subject: Re: [PATCH v2] f2fs: avoid readahead race condition
-Message-ID: <20200629182502.GF20492@sol.localdomain>
-References: <20200624012148.180050-1-jaegeuk@kernel.org>
- <20200629150323.GA3293033@google.com>
- <20200629160934.GA1752982@gmail.com>
- <20200629182414.GA1117827@google.com>
+        id S2391154AbgF2V2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:28:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729051AbgF2Smo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:42:44 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06521C033C0F;
+        Mon, 29 Jun 2020 11:26:31 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jpyU8-002Dsy-Jp; Mon, 29 Jun 2020 18:26:28 +0000
+From:   Al Viro <viro@ZenIV.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Miller <davem@davemloft.net>,
+        Tony Luck <tony.luck@intel.com>, Will Deacon <will@kernel.org>
+Subject: [PATCH 01/41] introduction of regset ->get() wrappers, switching ELF coredumps to those
+Date:   Mon, 29 Jun 2020 19:25:48 +0100
+Message-Id: <20200629182628.529995-1-viro@ZenIV.linux.org.uk>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200629182349.GA2786714@ZenIV.linux.org.uk>
+References: <20200629182349.GA2786714@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629182414.GA1117827@google.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 11:24:14AM -0700, Jaegeuk Kim wrote:
-> On 06/29, Eric Biggers wrote:
-> > On Mon, Jun 29, 2020 at 08:03:23AM -0700, Jaegeuk Kim wrote:
-> > > If two readahead threads having same offset enter in readpages, every read
-> > > IOs are split and issued to the disk which giving lower bandwidth.
-> > > 
-> > > This patch tries to avoid redundant readahead calls.
-> > > 
-> > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > > ---
-> > > v2:
-> > >  - add missing code to bypass read
-> > > 
-> > >  fs/f2fs/data.c  | 18 +++++++++++++++++-
-> > >  fs/f2fs/f2fs.h  |  1 +
-> > >  fs/f2fs/super.c |  2 ++
-> > >  3 files changed, 20 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> > > index d6094b9f3916..9b69a159cc6c 100644
-> > > --- a/fs/f2fs/data.c
-> > > +++ b/fs/f2fs/data.c
-> > > @@ -2403,6 +2403,7 @@ int f2fs_mpage_readpages(struct address_space *mapping,
-> > >  #endif
-> > >  	unsigned max_nr_pages = nr_pages;
-> > >  	int ret = 0;
-> > > +	bool drop_ra = false;
-> > >  
-> > >  	map.m_pblk = 0;
-> > >  	map.m_lblk = 0;
-> > > @@ -2413,13 +2414,25 @@ int f2fs_mpage_readpages(struct address_space *mapping,
-> > >  	map.m_seg_type = NO_CHECK_TYPE;
-> > >  	map.m_may_create = false;
-> > >  
-> > > +	/*
-> > > +	 * Two readahead threads for same address range can cause race condition
-> > > +	 * which fragments sequential read IOs. So let's avoid each other.
-> > > +	 */
-> > > +	if (pages && is_readahead) {
-> > > +		page = list_last_entry(pages, struct page, lru);
-> > > +		if (F2FS_I(inode)->ra_offset == page_index(page))
-> > > +			drop_ra = true;
-> > > +		else
-> > > +			F2FS_I(inode)->ra_offset = page_index(page);
-> > > +	}
-> > 
-> > This is a data race because ra_offset can be read/written by different threads
-> > concurrently.
-> > 
-> > It either needs locking, or READ_ONCE() and WRITE_ONCE() if races are okay.
-> 
-> I just wanted to keep zero overhead, since it doesn't matter either cases of
-> skipping readahead or not.
-> 
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-Okay, then it should use READ_ONCE() and WRITE_ONCE().
+Two new helpers: given a process and regset, dump into a buffer.
+regset_get() takes a buffer and size, regset_get_alloc() takes size
+and allocates a buffer.
 
-- Eric
+Return value in both cases is the amount of data actually dumped in
+case of success or -E...  on error.
+
+In both cases the size is capped by regset->n * regset->size, so
+->get() is called with offset 0 and size no more than what regset
+expects.
+
+binfmt_elf.c callers of ->get() are switched to using those; the other
+caller (copy_regset_to_user()) will need some preparations to switch.
+
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ fs/binfmt_elf.c        | 54 ++++++++++++++++++++++++--------------------------
+ include/linux/regset.h |  9 +++++++++
+ kernel/Makefile        |  2 +-
+ kernel/regset.c        | 54 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 90 insertions(+), 29 deletions(-)
+ create mode 100644 kernel/regset.c
+
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 9fe3b51c116a..80743b8957c9 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -1821,7 +1821,7 @@ static int fill_thread_core_info(struct elf_thread_core_info *t,
+ 				 long signr, size_t *total)
+ {
+ 	unsigned int i;
+-	unsigned int regset0_size = regset_size(t->task, &view->regsets[0]);
++	unsigned int regset0_size;
+ 
+ 	/*
+ 	 * NT_PRSTATUS is the one special case, because the regset data
+@@ -1830,8 +1830,10 @@ static int fill_thread_core_info(struct elf_thread_core_info *t,
+ 	 * We assume that regset 0 is NT_PRSTATUS.
+ 	 */
+ 	fill_prstatus(&t->prstatus, t->task, signr);
+-	(void) view->regsets[0].get(t->task, &view->regsets[0], 0, regset0_size,
+-				    &t->prstatus.pr_reg, NULL);
++	regset0_size = regset_get(t->task, &view->regsets[0],
++		   sizeof(t->prstatus.pr_reg), &t->prstatus.pr_reg);
++	if (regset0_size < 0)
++		return 0;
+ 
+ 	fill_note(&t->notes[0], "CORE", NT_PRSTATUS,
+ 		  PRSTATUS_SIZE(t->prstatus, regset0_size), &t->prstatus);
+@@ -1846,32 +1848,28 @@ static int fill_thread_core_info(struct elf_thread_core_info *t,
+ 	 */
+ 	for (i = 1; i < view->n; ++i) {
+ 		const struct user_regset *regset = &view->regsets[i];
++		int note_type = regset->core_note_type;
++		bool is_fpreg = note_type == NT_PRFPREG;
++		void *data;
++		int ret;
++
+ 		do_thread_regset_writeback(t->task, regset);
+-		if (regset->core_note_type && regset->get &&
+-		    (!regset->active || regset->active(t->task, regset) > 0)) {
+-			int ret;
+-			size_t size = regset_size(t->task, regset);
+-			void *data = kzalloc(size, GFP_KERNEL);
+-			if (unlikely(!data))
+-				return 0;
+-			ret = regset->get(t->task, regset,
+-					  0, size, data, NULL);
+-			if (unlikely(ret))
+-				kfree(data);
+-			else {
+-				if (regset->core_note_type != NT_PRFPREG)
+-					fill_note(&t->notes[i], "LINUX",
+-						  regset->core_note_type,
+-						  size, data);
+-				else {
+-					SET_PR_FPVALID(&t->prstatus,
+-							1, regset0_size);
+-					fill_note(&t->notes[i], "CORE",
+-						  NT_PRFPREG, size, data);
+-				}
+-				*total += notesize(&t->notes[i]);
+-			}
+-		}
++		if (!note_type) // not for coredumps
++			continue;
++		if (regset->active && regset->active(t->task, regset) <= 0)
++			continue;
++
++		ret = regset_get_alloc(t->task, regset, ~0U, &data);
++		if (ret < 0)
++			continue;
++
++		if (is_fpreg)
++			SET_PR_FPVALID(&t->prstatus, 1, regset0_size);
++
++		fill_note(&t->notes[i], is_fpreg ? "CORE" : "LINUX",
++			  note_type, ret, data);
++
++		*total += notesize(&t->notes[i]);
+ 	}
+ 
+ 	return 1;
+diff --git a/include/linux/regset.h b/include/linux/regset.h
+index 46d6ae68c455..968a032922d5 100644
+--- a/include/linux/regset.h
++++ b/include/linux/regset.h
+@@ -353,6 +353,15 @@ static inline int user_regset_copyin_ignore(unsigned int *pos,
+ 	return 0;
+ }
+ 
++extern int regset_get(struct task_struct *target,
++		      const struct user_regset *regset,
++		      unsigned int size, void *data);
++
++extern int regset_get_alloc(struct task_struct *target,
++			    const struct user_regset *regset,
++			    unsigned int size,
++			    void **data);
++
+ /**
+  * copy_regset_to_user - fetch a thread's user_regset data into user memory
+  * @target:	thread to be examined
+diff --git a/kernel/Makefile b/kernel/Makefile
+index f3218bc5ec69..e6e03380a0f1 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -10,7 +10,7 @@ obj-y     = fork.o exec_domain.o panic.o \
+ 	    extable.o params.o \
+ 	    kthread.o sys_ni.o nsproxy.o \
+ 	    notifier.o ksysfs.o cred.o reboot.o \
+-	    async.o range.o smpboot.o ucount.o
++	    async.o range.o smpboot.o ucount.o regset.o
+ 
+ obj-$(CONFIG_MODULES) += kmod.o
+ obj-$(CONFIG_MULTIUSER) += groups.o
+diff --git a/kernel/regset.c b/kernel/regset.c
+new file mode 100644
+index 000000000000..6b39fa0993ec
+--- /dev/null
++++ b/kernel/regset.c
+@@ -0,0 +1,54 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <linux/export.h>
++#include <linux/slab.h>
++#include <linux/regset.h>
++
++static int __regset_get(struct task_struct *target,
++			const struct user_regset *regset,
++			unsigned int size,
++			void **data)
++{
++	void *p = *data, *to_free = NULL;
++	int res;
++
++	if (!regset->get)
++		return -EOPNOTSUPP;
++	if (size > regset->n * regset->size)
++		size = regset->n * regset->size;
++	if (!p) {
++		to_free = p = kzalloc(size, GFP_KERNEL);
++		if (!p)
++			return -ENOMEM;
++	}
++	res = regset->get(target, regset, 0, size, p, NULL);
++	if (unlikely(res < 0)) {
++		kfree(to_free);
++		return res;
++	}
++	*data = p;
++	if (regset->get_size) { // arm64-only kludge, will go away
++		unsigned max_size = regset->get_size(target, regset);
++		if (size > max_size)
++			size = max_size;
++	}
++	return size;
++}
++
++int regset_get(struct task_struct *target,
++	       const struct user_regset *regset,
++	       unsigned int size,
++	       void *data)
++{
++	return __regset_get(target, regset, size, &data);
++}
++EXPORT_SYMBOL(regset_get);
++
++int regset_get_alloc(struct task_struct *target,
++		     const struct user_regset *regset,
++		     unsigned int size,
++		     void **data)
++{
++	*data = NULL;
++	return __regset_get(target, regset, size, data);
++}
++EXPORT_SYMBOL(regset_get_alloc);
+-- 
+2.11.0
+
