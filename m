@@ -2,132 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A92F20D260
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD1B20D15A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729044AbgF2Sst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:48:49 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:5895 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727928AbgF2Ssl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:48:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1593456521; x=1624992521;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=Run3GENLouqiI3KFuPSxjv38R2dIhbzS6TvTzsq3i0I=;
-  b=DG6XkUqQBl41oUV7NXHXQm4PG5EwbPwzsWRCr8wJMsMWj6G4fIbDosuu
-   7QbxwO79r2D9f7pdD347D8hOPp5fao2sYASCA2lWZPXNh/6CuFgok5Exd
-   jIsHO388szr3DuM70BwWfa3iQwqo+phxbat+Omq9AmbDWc/sA/YviyhAh
-   peADQvPQN/Th4w/Vqn9IITJ5rVdrTh5q47aWPlDv94SLRchVYcQEM8H8m
-   gOlsQffSv9oL6ESQxYFOEyMHQynsfPoEAuX5qwzWoaFmI0naUZ2A5FVvT
-   lRJ/0ZhICF8mmEv1GNPz/2wTaUX2nwQTtARox2tfnjIB+nZq4uNAPez3d
-   Q==;
-IronPort-SDR: rgltqBgr/JxVsqjfvmEX0jX2J7XKiIcvSnR/OTPgtT/PBNeK8WuC/8w4xWXnF4E5mXtJ9UQUNi
- +zAsn3D4FoF3uN16WTyvGajStdCFiXMFQeoQGkL6byEiDyvbPjMENoRSk7cAmay+IGBcgZdGMW
- V8Eu+Lt4PvEQibEGUi1VvN2rHU9UvKBnjCpZY0vpelgbpEs2JfKf6/A0OMJvnSflhXqZou5r2H
- OhQS+aK8RSKg1bD3fgp9QKIuj07d4Iq2VuOwiLGYHUwdpCv0I2qtpaz4QKebfZvZHEFbaOTmH1
- aYM=
-X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
-   d="scan'208";a="17378207"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Jun 2020 00:26:43 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 29 Jun 2020 00:26:26 -0700
-Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Mon, 29 Jun 2020 00:26:39 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <robh+dt@kernel.org>,
-        <frowand.list@gmail.com>
-CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH] of: of_mdio: count number of regitered phys
-Date:   Mon, 29 Jun 2020 10:26:36 +0300
-Message-ID: <1593415596-9487-1-git-send-email-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.7.4
+        id S1728848AbgF2SlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:41:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728735AbgF2SlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:41:11 -0400
+Received: from localhost.localdomain (unknown [122.182.251.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 895DF23132;
+        Mon, 29 Jun 2020 07:50:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593417014;
+        bh=5lj2CjP+mqKw3lIwcakr7w5MtVUT9JglI5l66SdwoVw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=urFpXw2Nprp+sZH5KbJeu7SytbNd781ejuIm530e85EZPeNa1/DAn2ZmjBtdxvltY
+         q6GbEWWnIUFDZaxpLIToAyhOOCx0TnZFBbNWAccfBjU+2vRsvXjB2WXm7XJ3054N8y
+         VnBd0GaNdrVrB++fp2ZBVpDsqwufP9eXFgdLngG0=
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/3] ALSA: compress: Document stream states and fix gapless SM
+Date:   Mon, 29 Jun 2020 13:19:59 +0530
+Message-Id: <20200629075002.11436-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of_mdiobus_register_phy()/of_mdiobus_register_device()
-returns -ENODEV for all PHYs in device tree or for all scanned
-PHYs there is a chance that of_mdiobus_register() to
-return success code although no PHY devices were registered.
-Add a counter that increments every time a PHY was registered
-to avoid the above scenario.
+Srini found issue with gapless implementation which prompted to look deeper
+into SM for compressed stream.
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
+So documenting SM was first step, so first two patches add that. Last patch
+fixes the issue by keeping track on partial_drain and then moving state to
+'running' in snd_compr_drain_notify() for partial_drain case on success.
+While at it, noticed snd_compr_drain_notify() is lockless state change, so
+fixed that as well.
 
-Though I haven't encountered the scenario described in commit
-message. Just went through this code and seemed to me that it
-could be enhanved by checking the number of successfuly
-registered devices.
+I have tested this on Dragon board RB3, compressed audio works out of the
+box on that platform and Srini will send driver and fcplay patches for
+gapless soon.
 
-Thank you,
-Claudiu Beznea
+Changes in v4:
+ - Add review tag by Charles
+ - fix the lock deadlock pointed by Charles
 
- drivers/of/of_mdio.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+Changes in v3:
+ - Add pause->stop->free transition
+ - Add setup->free transition
+ - remove running->free as that goes thru stop
 
-diff --git a/drivers/of/of_mdio.c b/drivers/of/of_mdio.c
-index eb84507de28a..bbf1d42d27f8 100644
---- a/drivers/of/of_mdio.c
-+++ b/drivers/of/of_mdio.c
-@@ -249,7 +249,7 @@ int of_mdiobus_register(struct mii_bus *mdio, struct device_node *np)
- {
- 	struct device_node *child;
- 	bool scanphys = false;
--	int addr, rc;
-+	int addr, rc, devices = 0;
- 
- 	if (!np)
- 		return mdiobus_register(mdio);
-@@ -293,9 +293,11 @@ int of_mdiobus_register(struct mii_bus *mdio, struct device_node *np)
- 				addr);
- 		else if (rc)
- 			goto unregister;
-+		else
-+			devices++;
- 	}
- 
--	if (!scanphys)
-+	if (!scanphys && devices)
- 		return 0;
- 
- 	/* auto scan for PHYs with empty reg property */
-@@ -319,14 +321,21 @@ int of_mdiobus_register(struct mii_bus *mdio, struct device_node *np)
- 				 * scanning should continue.
- 				 */
- 				rc = of_mdiobus_register_phy(mdio, child, addr);
--				if (!rc)
-+				if (!rc) {
-+					devices++;
- 					break;
-+				}
- 				if (rc != -ENODEV)
- 					goto unregister;
- 			}
- 		}
- 	}
- 
-+	if (!devices) {
-+		rc = -ENODEV;
-+		goto unregister;
-+	}
-+
- 	return 0;
- 
- unregister:
+Changes in v2:
+ - Added tested tag by Srini
+ - Update compress SM with Free state and compr_stop() transitions
+
+Vinod Koul (3):
+  ALSA: compress: document the compress audio state machine
+  ALSA: compress: document the compress gapless audio state machine
+  ALSA: compress: fix partial_drain completion state
+
+ .../sound/designs/compress-offload.rst        | 83 +++++++++++++++++++
+ include/sound/compress_driver.h               | 10 ++-
+ sound/core/compress_offload.c                 |  4 +
+ 3 files changed, 96 insertions(+), 1 deletion(-)
+
 -- 
-2.7.4
+2.26.2
 
