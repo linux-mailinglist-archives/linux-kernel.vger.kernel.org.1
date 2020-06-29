@@ -2,108 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C8B20E445
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7156720E5C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391001AbgF2VXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:23:08 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:52619 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729598AbgF2Sv0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:51:26 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id E3ECF5C00D3;
-        Mon, 29 Jun 2020 09:27:02 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 29 Jun 2020 09:27:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=JpiETwDZ/SAflAAJFgDp4FBg1pZ
-        pP5xS6lyjUSfpKCM=; b=mXRRbfVPgfG6UPXp/PSzKJMBzfyjzsl1E/7lyo5a3gM
-        9Cge2GRb9lDgs1kvu9QUnD5zMEAk50D+o3Dz/RYf823HuITyl2SD6M5mqGJgvWNc
-        o1DHLyzKoKgSZJTUqsMGT7GI/A6baxRB5Kh0TJgXydX2agP/hYV74Adp+0f8Bx9X
-        4OWOLbSK1Dkwef0W1j8RNCam018fu8QBRaea8CUFHF60Snqn740cn2LdKaRsUVnb
-        PeJU5B266/SwyxLZ8L1vrCoB165XsYMg4BGvlvXCsF6Urim6SXsBQDWghKck1U/6
-        eiTtWyReAbSY+f0ZJw6Ghgc7Wkt7q+kCS6UASuCNlDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=JpiETw
-        DZ/SAflAAJFgDp4FBg1pZpP5xS6lyjUSfpKCM=; b=JiDM2YHPZhJvZBxwhPP024
-        aKmfMURylJFOkccBcL+q9vj+SXy0Evq7N25IywsKCzIYUHcz8gpZOMl++jUWhpU6
-        zp0+gQjFNV8O4i4iAn/UZAYNcJN9oUGoKduYA479RqzWzLCCCje0orJiJOtaC8NM
-        k1rT+n0nuZyz5hujpZsPR04VTXwa+HyqAY01mhHSSocPRLJO25uJ4X34mdxgOUNV
-        hreUs4zsGH16nEuchYNsY5ScQnkqiKUjY7fxwbzlMgNs5DtdHdnvwx1fhyHFw5QC
-        WJPWI5KinuhCKrPH0eCVROihF8YBDz6fv6IU+z/zT39CiG/8Tk2KpRZTwXJhrVTg
-        ==
-X-ME-Sender: <xms:Juz5XuE4l6QSEmDlfJ9AvbfBgIk02Prg-ilcCIwJZhXYadez6pF8Ig>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudelkedgieehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:Juz5XvV538Y4-dH1cRmxotMtkaQwuH05ywz1yFow3UEOXy4Vswm_fw>
-    <xmx:Juz5XoJj9U8sljPLdaVdWpfy9zRwxhL1HDr_B4wECbYa_REcNOORTA>
-    <xmx:Juz5XoGWnT9dNZWrIqynMyfRugD9fbrG5znCVlOdhnELAzJ-dY-LsA>
-    <xmx:Juz5Xteuhv-OXifqHbVUMdKUdfk-96lZMLTejeBsEnJiZVurIx-9wg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 12707328005D;
-        Mon, 29 Jun 2020 09:27:01 -0400 (EDT)
-Date:   Mon, 29 Jun 2020 15:27:00 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu: SUN50I_IOMMU should depend on HAS_DMA
-Message-ID: <20200629132700.qtchohqyb4vslfhz@gilmour.lan>
-References: <20200629121146.24011-1-geert@linux-m68k.org>
+        id S2403881AbgF2VlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:41:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728186AbgF2SkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:40:20 -0400
+Received: from [10.56.182.155] (unknown [2.55.133.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 966E123B06;
+        Mon, 29 Jun 2020 13:45:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593438323;
+        bh=fbNV2p8AknATNCvchaixaZk7J1gfSAuksWkmaOa87ec=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=rIJqavQGtKdDnlgH17SXo4lT2EuWXNLVpkw36+4fLHQ8xavualOqCc/Ck325eOUP4
+         T6UtQ8bd6poUsB+upMM3i3e7JAMyx/cHy79ZP65sGoWQxmU0HpOCbo6LWjBK+yfvxQ
+         96jSvpY1gUv1qWQtZ4Eur6wDToh2ek3ph+aiMBu4=
+Date:   Mon, 29 Jun 2020 16:45:14 +0300
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20200629125231.GJ32461@dhcp22.suse.cz>
+References: <20200625113122.7540-1-willy@infradead.org> <20200625113122.7540-7-willy@infradead.org> <20200629050851.GC1492837@kernel.org> <20200629121816.GC25523@casper.infradead.org> <20200629125231.GJ32461@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="srp6bnpiqzimzunw"
-Content-Disposition: inline
-In-Reply-To: <20200629121146.24011-1-geert@linux-m68k.org>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 6/6] mm: Add memalloc_nowait
+To:     Michal Hocko <mhocko@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+CC:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, dm-devel@redhat.com,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>
+From:   Mike Rapoport <rppt@kernel.org>
+Message-ID: <6421BC93-CF2F-4697-B5CB-5ECDAA9FCB37@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---srp6bnpiqzimzunw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 29, 2020 at 02:11:46PM +0200, Geert Uytterhoeven wrote:
-> If NO_DMA=3Dy (e.g. Sun-3 all{mod,yes}-config):
+On June 29, 2020 3:52:31 PM GMT+03:00, Michal Hocko <mhocko@kernel=2Eorg> =
+wrote:
+>On Mon 29-06-20 13:18:16, Matthew Wilcox wrote:
+>> On Mon, Jun 29, 2020 at 08:08:51AM +0300, Mike Rapoport wrote:
+>> > > @@ -886,8 +868,12 @@ static struct dm_buffer
+>*__alloc_buffer_wait_no_callback(struct dm_bufio_client
+>> > >  			return NULL;
+>> > > =20
+>> > >  		if (dm_bufio_cache_size_latch !=3D 1 && !tried_noio_alloc) {
+>> > > +			unsigned noio_flag;
+>> > > +
+>> > >  			dm_bufio_unlock(c);
+>> > > -			b =3D alloc_buffer(c, GFP_NOIO | __GFP_NORETRY |
+>__GFP_NOMEMALLOC | __GFP_NOWARN);
+>> > > +			noio_flag =3D memalloc_noio_save();
+>> >=20
+>> > I've read the series twice and I'm still missing the definition of
+>> > memalloc_noio_save()=2E
+>> >=20
+>> > And also it would be nice to have a paragraph about it in
+>> > Documentation/core-api/memory-allocation=2Erst
+>>=20
+>>
+>Documentation/core-api/gfp_mask-from-fs-io=2Erst:``memalloc_nofs_save``,
+>``memalloc_nofs_restore`` respectively ``memalloc_noio_save``,
+>> Documentation/core-api/gfp_mask-from-fs-io=2Erst:   :functions:
+>memalloc_noio_save memalloc_noio_restore
+>> Documentation/core-api/gfp_mask-from-fs-io=2Erst:allows nesting so it
+>is safe to call ``memalloc_noio_save`` or
 >=20
->     drivers/iommu/dma-iommu.o: In function `iommu_dma_mmap':
->     dma-iommu.c:(.text+0x92e): undefined reference to `dma_pgprot'
->=20
-> IOMMU_DMA must not be selected, unless HAS_DMA=3Dy.
->=20
-> Hence fix this by making SUN50I_IOMMU depend on HAS_DMA.
->=20
-> Fixes: 4100b8c229b32835 ("iommu: Add Allwinner H6 IOMMU driver")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>The patch is adding memalloc_nowait* and I suspect Mike had that in
+>mind, which would be a fair request=2E=20
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+Right, sorry misprinted that=2E
 
-Thanks!
-Maxime
-
---srp6bnpiqzimzunw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXvnsJAAKCRDj7w1vZxhR
-xT08AQD0Cz/X0wU0i8MZumEsV0zYZgHgFem+MQvh7UEfUWFx6QEAwPl3iEuK5fAo
-DgSiPvd7gsJK7PToEsd3T2mB9YYqzQE=
-=WyeQ
------END PGP SIGNATURE-----
-
---srp6bnpiqzimzunw--
+> Btw=2E we are missing
+>memalloc_nocma*
+>documentation either - I was just reminded of its existence today=2E=2E
+--=20
+Sincerely yours,
+Mike
