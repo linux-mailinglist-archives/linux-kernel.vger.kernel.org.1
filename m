@@ -2,126 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED74520D7D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2389E20D7D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732384AbgF2TdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46812 "EHLO
+        id S1733249AbgF2TdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:33:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733235AbgF2Tcp (ORCPT
+        with ESMTP id S1733231AbgF2Tcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Jun 2020 15:32:45 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE1DC02F002
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:43:27 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id c11so9213409lfh.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:43:27 -0700 (PDT)
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6EAC02F007
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:43:43 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id d10so7182720pls.5
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:43:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jLORGp6VfrDrQA8PpUsXn5+mhrmQSe4/xK3Vs+cmlnA=;
+        b=CN262X2BWpTSqbB1xZLnzt3P6PXjtlLIfYiIegWD8/RQLngh8QXv28Rke8t+T7ErjV
+         0xoehil5YqUKWFNf9122vK/5Bl/5hRrynVReUB3J5JnMTxyoit84XWPf/TXz1ioFztsx
+         AHVRLwqLna0A2h1BfWLa6SpiqcFSvanAVPhajVV+GYLDx6Q8/BDHlmGdGmlSXzWQ/ZTX
+         IFWxdidVNy4yIbMMgL2eFDLZh1gon3kWRo1AzuR3WxbQGW5UDDAdyMMFy5F/qo91WYm7
+         qo+N+qOh3A/N7rL4UKaOo4Xf7ki/gntOiUCTeRRDcT02wPU4+AzS2xOjl9YaWxHfl1JS
+         T3HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YSrvY7ndQQ0VwYyPuUYQZgjUMOLCrC7/BsK3Jg70uiA=;
-        b=EpQ/dIMdwCYLaRtO5Nv/wtgebffrzaIRTec6A8uPQLjJiTw/a0L6udd4vIUrBW/z2H
-         PKCbFthfmiv7Xjf6wHm9W0BRiKErd/U9vpsYfZ67IDu3GUd40sBdcFjxzKsivxfBxVKU
-         WB1qHSJxp7J+10CQOjX9GZu/5VL3waWRuX1AIDwExBLoLpiVMBp2GL5nRpHUcKFAhkyk
-         tdzJO2JOH+JYflIsWbFApZv+CzvsLEhffvN/Gp1DQFiIitTPIfn0m+mew6jcbk9ot3AU
-         zhQuNLaLtFGF7c5VWjYKEV3mhKLmtdJTdjcz9rsF8wf15Wp1rEg9R8w1FqAU3xPrfUks
-         mvbw==
-X-Gm-Message-State: AOAM5328u0KiphH9u5eeKetW+I2wb03wZYoKwZ+BkhL4+2FIyTnVak+C
-        HvlZJkJT40PWNpb7tUYU4Ok=
-X-Google-Smtp-Source: ABdhPJxlXL/WPQmHiWHBUnNiCTuuoYT2K4kdoHBsIw1V5XczaXf3Hns3BgilQStZ/HVmyNueCKOooQ==
-X-Received: by 2002:ac2:518c:: with SMTP id u12mr9295373lfi.91.1593441806019;
-        Mon, 29 Jun 2020 07:43:26 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id v19sm2858051lfi.65.2020.06.29.07.43.25
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jLORGp6VfrDrQA8PpUsXn5+mhrmQSe4/xK3Vs+cmlnA=;
+        b=qCVPkv8JqWMRbYUhK8LMeic1idMygjtLPoqEY8kSXLMvbdi5AUZZmXX2RWIkVU7Xmd
+         C06O3edf+tWXQsN89QxxzUdbmMMo7nZmtadX/YB/vbm+LJ67zNB8RFEznHhBG0xFg1AI
+         2toGKbAutoYCgbXoffUTJ1gHvgJa504mEAIQahwQwSDOEq5HByKyAhzph2jzWrrxTtn5
+         ep5bDyu2sGpx4mUOpiMr4HpN0lx1Xd8LrhyEI+3jAxuzZApivkW/8DFLe0j6M52X5yC2
+         We4uN+JQyY9eSHdtxUi6muFOXbBd5sx4lXpHpSIHfIIPSsiKoMetGdFpozsEZfy1YYym
+         E6gQ==
+X-Gm-Message-State: AOAM53074DSoCv9FTIFvO9cXhJJEePTA0yOJoIubeiWkAHqAtl0v9SEr
+        aKFVMctJLBSWgBucoxsjC2LdJQ==
+X-Google-Smtp-Source: ABdhPJyirQnsQiQuhswSo/uIYV1ui5LyLyvg/sRt0KpvA9WEl1ByzdHprHAFfNPsV1N0i2xDWfS+Eg==
+X-Received: by 2002:a17:90a:a413:: with SMTP id y19mr4591589pjp.59.1593441822678;
+        Mon, 29 Jun 2020 07:43:42 -0700 (PDT)
+Received: from localhost ([2406:7400:73:703c:908:f18a:1156:5c38])
+        by smtp.gmail.com with ESMTPSA id s9sm101062pgo.22.2020.06.29.07.43.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 07:43:25 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1jpv0H-0005HB-DZ; Mon, 29 Jun 2020 16:43:25 +0200
-Date:   Mon, 29 Jun 2020 16:43:25 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Baolin Wang <baolin.wang7@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Johan Hovold <johan@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Subject: Re: [PATCH 4/5] mfd: sprd-sc27xx-spi: Fix divide by zero when
- allocating register offset/mask
-Message-ID: <20200629144325.GV3334@localhost>
-References: <20200629123215.1014747-1-lee.jones@linaro.org>
- <20200629123215.1014747-5-lee.jones@linaro.org>
- <20200629130644.GU3334@localhost>
- <20200629140137.GK177734@dell>
- <CADBw62r_tkGEr9kHpojAi+fJ+qUqbsc-DQgG1TUAwOdbDXTgNQ@mail.gmail.com>
+        Mon, 29 Jun 2020 07:43:41 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 10:43:36 -0400
+From:   B K Karthik <bkkarthik@pesu.pes.edu>
+To:     B K Karthik <karthik.bk2000@live.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: media: atomisp: i2c: atomisp-ov2680.c: fixed a
+ brace coding style issue.
+Message-ID: <20200629144336.fhykjoqrhfhifmes@pesu-pes-edu>
+References: <20200628043833.3dodctrmkec6aoe5@pesu-pes-edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="i3ho2sv5roir6t7m"
 Content-Disposition: inline
-In-Reply-To: <CADBw62r_tkGEr9kHpojAi+fJ+qUqbsc-DQgG1TUAwOdbDXTgNQ@mail.gmail.com>
+In-Reply-To: <20200628043833.3dodctrmkec6aoe5@pesu-pes-edu>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 10:35:06PM +0800, Baolin Wang wrote:
-> On Mon, Jun 29, 2020 at 10:01 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Mon, 29 Jun 2020, Johan Hovold wrote:
-> >
-> > > On Mon, Jun 29, 2020 at 01:32:14PM +0100, Lee Jones wrote:
-> > > > Since ddata->irqs[] is already zeroed when allocated by devm_kcalloc() and
-> > > > dividing 0 by anything is still 0, there is no need to re-assign
-> > > > ddata->irqs[i].* values.  Instead, it should be safe to begin at 1.
-> > > >
-> > > > This fixes the following W=1 warning:
-> > > >
-> > > >  drivers/mfd/sprd-sc27xx-spi.c:255 sprd_pmic_probe() debug: sval_binop_unsigned: divide by zero
-> > > >
-> > > > Cc: Orson Zhai <orsonzhai@gmail.com>
-> > > > Cc: Baolin Wang <baolin.wang7@gmail.com>
-> > > > Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > > ---
-> > > >  drivers/mfd/sprd-sc27xx-spi.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
-> > > > index c305e941e435c..694a7d429ccff 100644
-> > > > --- a/drivers/mfd/sprd-sc27xx-spi.c
-> > > > +++ b/drivers/mfd/sprd-sc27xx-spi.c
-> > > > @@ -251,7 +251,7 @@ static int sprd_pmic_probe(struct spi_device *spi)
-> > > >             return -ENOMEM;
-> > > >
-> > > >     ddata->irq_chip.irqs = ddata->irqs;
-> > > > -   for (i = 0; i < pdata->num_irqs; i++) {
-> > > > +   for (i = 1; i < pdata->num_irqs; i++) {
-> > > >             ddata->irqs[i].reg_offset = i / pdata->num_irqs;
-> > > >             ddata->irqs[i].mask = BIT(i % pdata->num_irqs);
-> > > >     }
-> > >
-> > > This doesn't look right either.
-> > >
-> > > First, the loop is never executed if num_irqs is zero.
-> >
-> > The point of the patch is that 0 entries are never processed.
 
-So what's the problem? There's no division by zero here.
+--i3ho2sv5roir6t7m
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-And what compiler are you using, Lee? Seems broken.
+Did this get burried in along with a bunch of other patches? I am sending t=
+his email only because I did not recieve a negetive acknowledgement on the =
+patch.
 
-> > > Second, the current code looks bogus too as reg_offset is always set to
-> > > zero and mask to BIT(i)...
-> 
-> Now the result is correct, since all PMIC irq mask bits are in one
-> register now, which means the reg_offset is always 0 can work well.
-> But I think the logics still can be improved if our PMIC irq numbers
-> are larger than 32 in future.
+I apologize if this message was hurtful / disrespectfull in any manner,
+thank you for reading this message.
 
-The code is still bogus as pointed out above. Why do you bother to
-divide by num_irqs at all?
+karthik
 
-And what have you guys been smoking? ;)
+On 20/06/28 12:38AM, B K Karthik wrote:
+> Fixed a coding style issue.
+>=20
+> Signed-off-by: B K Karthik <karthik.bk2000@live.com>
+> ---
+>  drivers/staging/media/atomisp/i2c/atomisp-ov2680.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers=
+/staging/media/atomisp/i2c/atomisp-ov2680.c
+> index 90d125ba080f..c90730513438 100644
+> --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+> +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+> @@ -495,11 +495,11 @@ static int ov2680_h_flip(struct v4l2_subdev *sd, s3=
+2 value)
+>  	ret =3D ov2680_read_reg(client, 1, OV2680_MIRROR_REG, &val);
+>  	if (ret)
+>  		return ret;
+> -	if (value) {
+> +	if (value)
+>  		val |=3D OV2680_FLIP_MIRROR_BIT_ENABLE;
+> -	} else {
+> +	else
+>  		val &=3D ~OV2680_FLIP_MIRROR_BIT_ENABLE;
+> -	}
+> +
+>  	ret =3D ov2680_write_reg(client, 1,
+>  			       OV2680_MIRROR_REG, val);
+>  	if (ret)
+> --
+> 2.20.1
 
-Johan
+
+
+--i3ho2sv5roir6t7m
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAEBCgAdFiEEpIrzAt4LvWLJmKjp471Q5AHeZ2oFAl75/hgACgkQ471Q5AHe
+Z2o9Zwv/W+4Q3b66dFYLTKnXoigYHIbecsuAc0LMW5V2VSXQJ8dq+DsCFvawZMh3
+UmbKaZsk033rYkKxbc1rubekPkm1eQ0kAY2iG6j+sIPnYtlUpkLRT6fU6vclZkAO
+gliHVAn1j0aB483pR6TJY0ek+ieMra9a7cetHsDHwzjdFQsheKDmEvtwjSYo5CCY
+0gImXtqo0md5TaiCmATWZ8GA6iOFcgOA+AHxhHN/s/SJ+CmZ2Ep4JGbPiaOCZcvq
+YjwBI15IiHVfJ8DDiYbemJvZRkZdKmgh8oIFDKS0jyFcGBn6fBkhWregLs9tqhyu
+PaSgKyS4nCIXL0mSDv87nPH8pq8DTfmFb6LEA09slsKzwMBUgESCywCLX0jiWTSn
+q0Y+CaE5mdKQBkOkizun3BuHbu43YDHKTy4qHNBDnTrLdltAKFjvxfvh6Sixfsvj
+1tEo886KYQETUjkIdmdCkjs5FT5uRDF+XGjCH2MxY/uxmq/LkxMOLY/IMGjMPf9U
+TkhSrXDs
+=Ikkk
+-----END PGP SIGNATURE-----
+
+--i3ho2sv5roir6t7m--
