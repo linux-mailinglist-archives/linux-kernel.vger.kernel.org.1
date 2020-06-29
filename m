@@ -2,70 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D6920E4BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E59CA20E4AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391007AbgF2V2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:28:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
+        id S2391146AbgF2V1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729029AbgF2Smn (ORCPT
+        with ESMTP id S1729057AbgF2Smo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:42:43 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C04C031C72
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:05:31 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id w17so14451735oie.6
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:05:31 -0700 (PDT)
+        Mon, 29 Jun 2020 14:42:44 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D4BC031C73;
+        Mon, 29 Jun 2020 11:05:55 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id h28so13687243edz.0;
+        Mon, 29 Jun 2020 11:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hJ7bwzBcJdJpIqyIZcO1uCM9Pw8AFzZZQdo+BMkM/wI=;
+        b=SLRB44N0JiC73+18YWv4FOQgCRuo9RDcXbGvKQN9AK5bgYKeK4KBNdylz0TGW704q2
+         mVyX0kOwJ8f2lhJVD6O4pvcH9fRnRamZAQ4k2fOeJ9y2nqv801LHCj9c+V0sV41kCYsl
+         qOafEoFtNGiraeC+62ve5Q59dPv05KWkzenF6UtDAvTfLOJ8t0jMRpEZVgx7oYfji6dv
+         v2ilBNMlssGpE2qqwUoAIXeCwvBfO7RUGvFARu0t1xZvlEsmJvpyT37fMHmkjAwEf0ky
+         St6mxRNAtxjV6tDEOEMHg9zhX0rdM4wWf6P11Y2tCyzxsFdhqUS0nP/fBPyeSefcVE7V
+         Vjtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rX104BbGwOQ14WsCLGGZ1Udo7R4aRoXzrV5bYBGECLY=;
-        b=pW4C4F/OUJpdUCOrpTi2yo30JR7s34mAU9cr4kTkBCrwRYnsbFz50WNJ8XS75uUXgC
-         sCCKpfSSc+ShGdkG4VdSREK/ckIdyGjrednyaasSM78yfiaMeWsWvJlb6Bo/vjHOdcJF
-         YJH+YZnsD/KMCiKz2RCsDCKG5mvYMtIOqAWj7+P26Z4YAMc0tcmL0sM2hAygR6YC/buF
-         HkAy0HK1Y2lkD/UzQnyDztiHChBMe+HAXTx6zDLlEo4WMMQ3I/AZ9XC3FFwek9H5YsMJ
-         Z8jRcJdkFIPztxeBSEdOorABLZ5jvjM5Trj5/zwC6Gy/AmayH5grRmUjmJq5nimhLj6L
-         MVMQ==
-X-Gm-Message-State: AOAM530HTxA3njjSWk1v1VZtN7mzaqyxfPqhgWQa/OHHmThYE7dLbsoF
-        VPkUokgk/KcXi08uuEZxU6BpOPaQmuwFWEVHuxgT0w==
-X-Google-Smtp-Source: ABdhPJwsvity5Fqa3Bi5hbSxakVB8FJykdbCncdXMItCKPpxk9NXvAeHCG+2YII5PZLpL5lQcwoU0I3VjdwnVcZx9k8=
-X-Received: by 2002:aca:1801:: with SMTP id h1mr8338348oih.148.1593453930463;
- Mon, 29 Jun 2020 11:05:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hJ7bwzBcJdJpIqyIZcO1uCM9Pw8AFzZZQdo+BMkM/wI=;
+        b=gkEPeX7IT/kW6jasTz2HjoOAxirrQ7RhIbgyCGXVOkUGXsUEXvxbc/HRtzkbw+3YRg
+         XK6ZGcAErWq6Dxlo8K5ClZaAonN8X8OUjjoNRlU5TcEA5kF4aIdNFIP0TKZ7RYDqmkt0
+         /ju96LajN73bXeJmqNq+joOW9D72DSwJ0zjd1bzlwy/KPbwhHy9nSWDafDdH7ZLKhRLg
+         BhoFrqdN+RPPgtB/FXo1vPlko6qzglnWzXEAmE4BF7wbnrvsvSMnWCZ4wpvZorIgxdYL
+         rEaZPFr1jyiPUiZidlsap0qiwnM+o7HurCzkkLz5cCh1xt8hQbJLT1lcSoH8S3pNPMgy
+         9EIA==
+X-Gm-Message-State: AOAM533GFQoiVImqgCtrBYMl9GxcX8BTaicCKgE/ALswIzUyqBtET0G6
+        wCCTfOZPd+0i7aEw9dMeLBaSld6s
+X-Google-Smtp-Source: ABdhPJxCsPnKAQk2H0DnK6TPDN2TMKek+xOMmP/lSIUI54dR+E3eobWScl1UkHE91a2hvf1KvmltdA==
+X-Received: by 2002:aa7:c80d:: with SMTP id a13mr19225286edt.327.1593453954340;
+        Mon, 29 Jun 2020 11:05:54 -0700 (PDT)
+Received: from localhost.localdomain (p200300f137396800428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3739:6800:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id w18sm232937ejc.62.2020.06.29.11.05.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 11:05:53 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     devicetree@vger.kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        marcel@holtmann.org, alistair@alistair23.me, anarsoul@gmail.com,
+        kuba@kernel.org, davem@davemloft.net,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH] dt-bindings: net: bluetooth: realtek: Fix uart-has-rtscts example
+Date:   Mon, 29 Jun 2020 20:05:45 +0200
+Message-Id: <20200629180545.2879272-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200527133942.GA10408@embeddedor>
-In-Reply-To: <20200527133942.GA10408@embeddedor>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 29 Jun 2020 20:05:19 +0200
-Message-ID: <CAMuHMdUXaW9PwBcLwct5S=dUduN9drpZ5nMYdB_QvpVpeK=V1Q@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Use sizeof_field() helper
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 3:34 PM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
-> Make use of the sizeof_field() helper instead of an open-coded version.
->
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+uart-has-rtscts is a boolean property. These are defined as present
+(which means that this property evaluates to "true") or absent (which
+means that this property evaluates to "false"). Remove the numeric value
+from the example to make it comply with the boolean property bindings.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.9 branch.
+Fixes: 1cc2d0e021f867 ("dt-bindings: net: bluetooth: Add rtl8723bs-bluetooth")
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+ Documentation/devicetree/bindings/net/realtek-bluetooth.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/Documentation/devicetree/bindings/net/realtek-bluetooth.yaml b/Documentation/devicetree/bindings/net/realtek-bluetooth.yaml
+index f15a5e5e4859..c488f24ed38f 100644
+--- a/Documentation/devicetree/bindings/net/realtek-bluetooth.yaml
++++ b/Documentation/devicetree/bindings/net/realtek-bluetooth.yaml
+@@ -44,7 +44,7 @@ examples:
+     uart1 {
+         pinctrl-names = "default";
+         pinctrl-0 = <&uart1_pins>, <&uart1_rts_cts_pins>;
+-        uart-has-rtscts = <1>;
++        uart-has-rtscts;
+ 
+         bluetooth {
+             compatible = "realtek,rtl8723bs-bt";
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.27.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
