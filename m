@@ -2,104 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A59020D7DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2072B20D7F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733139AbgF2TdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46780 "EHLO
+        id S1732912AbgF2TeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:34:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733227AbgF2Tco (ORCPT
+        with ESMTP id S1733223AbgF2Tcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:32:44 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E64C0307AD;
-        Mon, 29 Jun 2020 08:54:04 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id c30so11812501qka.10;
-        Mon, 29 Jun 2020 08:54:04 -0700 (PDT)
+        Mon, 29 Jun 2020 15:32:43 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FF9C0307AE
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:55:07 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id f7so14057083wrw.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:55:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aJxCpiw45uiFCKFF/Aa3ZwVBKPmiXfb3oRMSPK0K9jk=;
-        b=BZU/9VIc2Y6E9fhw3s/Nvu9omCHAjFS6JaJV5N4AxmLYc8SJERh++jMh8hnkBkk5Rj
-         nj3dy4P+rSnq/nKutiHVABK5OvmhyQTpqlnRoybjbMehxbS3dchjXD/bXVVgiUic9uiX
-         9KEIZ9SFZNWU1A1IkKVOam+79epkd7faiaeumhjdsOfstN/OVNInEuKXfKQx/sEHHahv
-         RB+f8/hLrG2qOALMJ24yNYyH+tfgwNzIZCerrom8AQJZpijMe2n8a1SdwL5fPMpUqUXp
-         m3eWJnS1YrcNRqYOxz41DsFZ6fzDkWK87qnOzwnDRL2z6um5+Tphb3hwxdh4ZFbHTXGn
-         PBAA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZFc5XPKIgNYhYwJA1n4yTN5CHu3v+KM87EzlXbZPcTY=;
+        b=l47u7exlvIn/jx3xAqIAczbjhilE4KyVhrwkqtjh3duabNCEBJC5hubFV7C3FVPfbv
+         Lyo/gqXT64iB8DVEAjIEwYTtOxRfJZTlCcSP+xRt3Ibu07jWuP9ibzQXstlbxLp/Z/LF
+         I9heSPEDvEZP0OIiv7KOz5sTqhstz4tDEV80/+RkCgCx+iPYYApzgFRhCqw95A/z49/5
+         +M/xHElO/C6XA3d6DbiKDcNcmxDu7QMhI9Jck806xyW4QJfOVQQAR6145hjqyw98UGAg
+         c7CD+y0VqKEpnjrNOmkrZnT7ANLuY18qM3pbH98E6I5Z19Cm2jzmkmmsy4V4wBHmjDLd
+         HiGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=aJxCpiw45uiFCKFF/Aa3ZwVBKPmiXfb3oRMSPK0K9jk=;
-        b=O9/E2OtiXV98xAPz8iP+4nhN496omKmdK/qPb/ff+/UeCD9HW2E2PeD335lFT9q7IL
-         /0y3zcTGXlFdR+IZiMF8WGdOvCyL2Axpmi/uRE4eQVTdocDz9BUKcOoZmVtvkJtvgT0a
-         juAbkhRCW8dBASFE+lN2rYlNOY0hvvmuizoM5WGs96/tNnvQqLTtcHH7/wlR03vuOLm/
-         Lk6T0tOBLq7Ja0L/j+4i7LY8Giqyq6slIbzVhkLPzQhAMFYyGLxQnWnU32y/wYZ8G5Zm
-         1Xe2L6/pDeXArWHcwWkyrGV5MVHJIVcjSABtM7p0Hjv8z3n6HOo7444i1IyiZRLr5A6p
-         UsIA==
-X-Gm-Message-State: AOAM530/VDNixSidB90UlbtTb5L4Oc5o7lVq85ImQWw4Fxb48SUvMk/5
-        6m2j1b4sVtEY2aWNwvUNevM=
-X-Google-Smtp-Source: ABdhPJxwuEkyqc0Vgw+drYJAZii7afEIejnAVDgmQdUScCrDEFtKnUdsKQel/JRcOrIWioge2a+zKQ==
-X-Received: by 2002:a05:620a:c08:: with SMTP id l8mr15224938qki.239.1593446044131;
-        Mon, 29 Jun 2020 08:54:04 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id l46sm81965qtf.7.2020.06.29.08.54.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 08:54:03 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Mon, 29 Jun 2020 11:54:01 -0400
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 14/17] arm/build: Warn on orphan section placement
-Message-ID: <20200629155401.GB900899@rani.riverdale.lan>
-References: <20200629061840.4065483-1-keescook@chromium.org>
- <20200629061840.4065483-15-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZFc5XPKIgNYhYwJA1n4yTN5CHu3v+KM87EzlXbZPcTY=;
+        b=bXbrNlY4pclX0iEgJ9VEbzLrKXQQ3km9A2sM/ONbg0c31QD2zkpHk9nUoEuaMThpWQ
+         3uM/kQWUgPPfTYYeCPxSL8u5nVhanoET36wNJUdfc1kRiKPp4ZiA2wjnX7xgeXSqOzow
+         XpqirZLHM1SLdZQwzOuyQEMwWXjFylZbD75qZOp7o1MfzQSEl6ilIRJFo5HSNu8ViBA3
+         rXUoQe+bI3tUI3fzHh+TDRiRjAO8ppSOIdoCGkX0EZwrT8DRvKLsMO24Cr8FmJJE6tUR
+         nGqYJldijCCK0qsVWGqfwAHyYcqGAEoIu1DOqhBWZ1qw5RVLzUFPagNTDfxNefBO/i/7
+         PsDg==
+X-Gm-Message-State: AOAM531U3EIH309KlDlLhl+nAyx+yQeDOGQQ+tHG6oEriPQbz3DMPHFy
+        kOuyTznXeNvtT/P6pHskwUtmulKUVam9ScFXbXZtUg==
+X-Google-Smtp-Source: ABdhPJy40XlPWnOzw4LBzoM58nDVnA2N6tc38Ldgg9nvLriVUNZtGOSvI7l8GImcKcnpqhT6hQPAkU02W13k1JbL+W0=
+X-Received: by 2002:adf:e40e:: with SMTP id g14mr18979492wrm.271.1593446105622;
+ Mon, 29 Jun 2020 08:55:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200629061840.4065483-15-keescook@chromium.org>
+References: <20200626194720.2915044-1-jolsa@kernel.org> <20200626194720.2915044-7-jolsa@kernel.org>
+ <CAP-5=fWJGGPCx4Rk_5UXLjDjQ3fLzzPO-gnRtPGV2GWoNLzL=w@mail.gmail.com> <20200628220601.GR2988321@krava>
+In-Reply-To: <20200628220601.GR2988321@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 29 Jun 2020 08:54:54 -0700
+Message-ID: <CAP-5=fWoBwqONO_obfCAfQTyMzv_kxVNsnRTQ1yToTxD5ew+cw@mail.gmail.com>
+Subject: Re: [PATCH 06/10] perf tools: Collect other metrics in struct egroup
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A. Clarke" <pc@us.ibm.com>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 28, 2020 at 11:18:37PM -0700, Kees Cook wrote:
-> We don't want to depend on the linker's orphan section placement
-> heuristics as these can vary between linkers, and may change between
-> versions. All sections need to be explicitly named in the linker
-> script.
-> 
-> Specifically, this would have made a recently fixed bug very obvious:
-> 
-> ld: warning: orphan section `.fixup' from `arch/arm/lib/copy_from_user.o' being placed in section `.fixup'
-> 
-> Discard unneeded sections .iplt, .rel.iplt, .igot.plt, and .modinfo.
-> 
-> Add missing text stub sections .vfp11_veneer and .v4_bx.
-> 
-> Add debug sections explicitly.
-> 
-> Finally enable orphan section warning.
+On Sun, Jun 28, 2020 at 3:06 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Fri, Jun 26, 2020 at 02:48:02PM -0700, Ian Rogers wrote:
+> > On Fri, Jun 26, 2020 at 12:47 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > Collecting other metrics in struct egroup object,
+> > > so we can process them later on.
+> > >
+> > > The change will parse or 'other' metric names out of
+> > > expression and 'resolve' them.
+> > >
+> > > Every used expression needs to have 'metric:' prefix,
+> > > like:
+> > >   cache_miss_cycles = metric:dcache_miss_cpi + metric:icache_miss_cycles
+> > >
+> > > All 'other' metrics are disolved into one context,
+> > > meaning all 'other' metrics events and addded to
+> > > the parent context.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  .../arch/x86/skylake/skl-metrics.json         |   2 +-
+> > >  tools/perf/util/expr.c                        |  11 ++
+> > >  tools/perf/util/expr.h                        |   1 +
+> > >  tools/perf/util/metricgroup.c                 | 158 ++++++++++++++++--
+> > >  4 files changed, 157 insertions(+), 15 deletions(-)
+> > >
+> > > diff --git a/tools/perf/pmu-events/arch/x86/skylake/skl-metrics.json b/tools/perf/pmu-events/arch/x86/skylake/skl-metrics.json
+> > > index 8704efeb8d31..71e5a2b471ac 100644
+> > > --- a/tools/perf/pmu-events/arch/x86/skylake/skl-metrics.json
+> > > +++ b/tools/perf/pmu-events/arch/x86/skylake/skl-metrics.json
+> > > @@ -57,7 +57,7 @@
+> > >      },
+> > >      {
+> > >          "BriefDescription": "Instructions Per Cycle (per Logical Processor)",
+> > > -        "MetricExpr": "INST_RETIRED.ANY / CPU_CLK_UNHALTED.THREAD",
+> > > +        "MetricExpr": "1/metric:CPI",
+> > >          "MetricGroup": "TopDownL1",
+> > >          "MetricName": "IPC"
+> > >      },
+> > > diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
+> > > index aa14c7111ecc..cd73dae4588c 100644
+> > > --- a/tools/perf/util/expr.c
+> > > +++ b/tools/perf/util/expr.c
+> > > @@ -150,3 +150,14 @@ int expr__find_other(const char *expr, const char *one,
+> > >
+> > >         return ret;
+> > >  }
+> > > +
+> > > +#define METRIC "metric:"
+> > > +
+> > > +bool expr__is_metric(const char *name, const char **metric)
+> > > +{
+> > > +       int ret = !strncmp(name, METRIC, sizeof(METRIC) - 1);
+> > > +
+> > > +       if (ret && metric)
+> > > +               *metric = name + sizeof(METRIC) - 1;
+> > > +       return ret;
+> > > +}
+> >
+> > Should expr.l recognize metric:... as a different kind of token rather
+> > than an ID?
+>
+> hm, we still want it to be returned as ID token, and the processing
+> code needs a way to distinguish between event and metric, so I'd think
+> we need to keep it, but I'll double check
 
-This is unrelated to this patch as such, but I noticed that ARM32/64 places
-the .got section inside .text -- is that expected on ARM?
+Thanks, the struct names sound good. I suggested using a token as it
+is a little strange that we have layers of parsing and this would be a
+chance to avoid one layer. It isn't a big deal, the event parsing is
+far more complex :-)
+
+Ian
+
+> thanks,
+> jirka
+>
