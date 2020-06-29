@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631B920E5F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A69120E614
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403974AbgF2VnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37572 "EHLO
+        id S2391439AbgF2VoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726779AbgF2Shv (ORCPT
+        with ESMTP id S1727828AbgF2Shq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:51 -0400
-Received: from mail-il1-x148.google.com (mail-il1-x148.google.com [IPv6:2607:f8b0:4864:20::148])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DB5C030F02
+        Mon, 29 Jun 2020 14:37:46 -0400
+Received: from mail-io1-xd45.google.com (mail-io1-xd45.google.com [IPv6:2607:f8b0:4864:20::d45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3682C030F04
         for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:11:17 -0700 (PDT)
-Received: by mail-il1-x148.google.com with SMTP id o4so12652716ilc.15
+Received: by mail-io1-xd45.google.com with SMTP id l13so11301802ioj.5
         for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:11:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=GaRDhX7cOPGC7KOMXOAFCs/7Rjn+jmhfg9ZC0k5r71U=;
-        b=dOthf3zS9Iyl0OdnGv77ASXPBEmDoupfR6ltRXLd93ddhTitgrTJiGsFvdfxy8hXLG
-         Yw7TzFD9cMlgCakmEwAjAMts8xSCNyRPHGSvFMpE1oMtfoo0O1nWsADqwQAJ9dtvjKDW
-         WM0iQxbZcSfsptMlnd2vrpsmWYlngQHG5qweF4YzAINrb/3Oh/kd+PA/xjT0kLntYWaC
-         XznFwOCmTombilM3ae0KrnqzXMzQK69Sh1s/I0IlnB1PGg0Qoa7DFnSsusHgN6LuTjtc
-         3eLwH8LT2gkVj4wqUvKf70sXu1wmiCqHxFbk/WSrcvQxtFQKVBuesvbzC3w+wvfjmqry
-         AKkg==
-X-Gm-Message-State: AOAM532DWk+aiHDtRTiznvi8lfYTCtchi/8XnZ00VROFrWwS73zsDzVi
-        TNYXKB6xPvIA5phJjyBkyPsjNZJgUrm39743/XtlzCceUh10
-X-Google-Smtp-Source: ABdhPJw3z2t1uM0GJaA/Osa2SsZoIxIS7OgCF3fDdFOVi6vY4GhZg/Hf0xiq2OUimUiGtPWglLDG9mSqk6Zl/leZAjbX/wyNWmbr
+        bh=fHNShTIFKimzlTuSuHsOSN8MhkqtCX4a3iQZfPeFGNk=;
+        b=jp/Gg8REsxq8vD8VDtfjMNdrB2tOtYG/C5y0T8+Nq9aHYgConIPjmoCzvyJ6QWWpw2
+         FXjsbsBItWEHuyNIEXGl8D0EEYr/W+NPCaaPeYUGDp6FVfvKf0hf+D3TshsXb/RT2353
+         CvyVi8nki8pIcg5amGvpmeMY7U+yLXY3KqFps8UE8TbOdwdCQQlqrb6pFrN/SX0634hY
+         e0IHRmEbNobjVPlzFyEdklcXbaN/j4ydm1xFKeneGnazrq3mws1/22bkRZWOsQ2mqF7I
+         AlqQOEK6wKz2VglyNlb47d6fb4eXSDnhO0pGXVOOBpvOgv10AHRikaHCVORivQp8Vki3
+         fqrg==
+X-Gm-Message-State: AOAM531zDT5PSEiA6IpporgSwBMvGJDTFu6SrI0qAGlPov6ld44/HeyG
+        3oz5kDgfvSe77mY5ybVL6aTqOZ/r4LcPdTlpTIi7YzIDWc6O
+X-Google-Smtp-Source: ABdhPJysiOaUNCY1J4HnT+7BtSo8nTwGdQ9+J7zWVN+86liAyR0PJzzajluP2G91WNKtFm0zWVNujfGJaPc71DuMmFALwhrQmBw+
 MIME-Version: 1.0
-X-Received: by 2002:a02:5d49:: with SMTP id w70mr18854000jaa.16.1593447076495;
+X-Received: by 2002:a05:6602:140b:: with SMTP id t11mr17540527iov.198.1593447076756;
  Mon, 29 Jun 2020 09:11:16 -0700 (PDT)
 Date:   Mon, 29 Jun 2020 09:11:16 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f6883a05a93b4e6d@google.com>
-Subject: KASAN: use-after-free Read in tipc_nl_publ_dump (2)
-From:   syzbot <syzbot+6db30c775c0fb130e335@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jmaloy@redhat.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        tipc-discussion@lists.sourceforge.net, ying.xue@windriver.com
+Message-ID: <000000000000fa90bb05a93b4e52@google.com>
+Subject: KMSAN: uninit-value in macvlan_start_xmit
+From:   syzbot <syzbot+301cccce1b286fa6449e@syzkaller.appspotmail.com>
+To:     ap420073@gmail.com, davem@davemloft.net, dong.menglong@zte.com.cn,
+        edumazet@google.com, glider@google.com,
+        linux-kernel@vger.kernel.org, maheshb@google.com,
+        netdev@vger.kernel.org, richardcochran@gmail.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -53,123 +54,91 @@ Hello,
 
 syzbot found the following crash on:
 
-HEAD commit:    4e99b321 Merge tag 'nfs-for-5.8-2' of git://git.linux-nfs...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=122afae3100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bf3aec367b9ab569
-dashboard link: https://syzkaller.appspot.com/bug?extid=6db30c775c0fb130e335
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=158718cd100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=131b33c5100000
+HEAD commit:    f0d5ec90 kmsan: apply __no_sanitize_memory to dotraplinkag..
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1565759b100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=86e4f8af239686c6
+dashboard link: https://syzkaller.appspot.com/bug?extid=301cccce1b286fa6449e
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=132ae8f5100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=156200f3100000
 
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+6db30c775c0fb130e335@syzkaller.appspotmail.com
+Reported-by: syzbot+301cccce1b286fa6449e@syzkaller.appspotmail.com
 
-netlink: 8 bytes leftover after parsing attributes in process `syz-executor007'.
-==================================================================
-BUG: KASAN: use-after-free in nla_len include/net/netlink.h:1135 [inline]
-BUG: KASAN: use-after-free in nla_parse_nested_deprecated include/net/netlink.h:1218 [inline]
-BUG: KASAN: use-after-free in tipc_nl_publ_dump+0xae0/0xce0 net/tipc/socket.c:3766
-Read of size 2 at addr ffff8880a7ee0284 by task syz-executor007/6830
-
-CPU: 0 PID: 6830 Comm: syz-executor007 Not tainted 5.8.0-rc2-syzkaller #0
+=====================================================
+BUG: KMSAN: uninit-value in macvlan_queue_xmit drivers/net/macvlan.c:521 [inline]
+BUG: KMSAN: uninit-value in macvlan_start_xmit+0x3ea/0xb50 drivers/net/macvlan.c:562
+CPU: 0 PID: 9 Comm: ksoftirqd/0 Not tainted 5.7.0-rc4-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x436 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- nla_len include/net/netlink.h:1135 [inline]
- nla_parse_nested_deprecated include/net/netlink.h:1218 [inline]
- tipc_nl_publ_dump+0xae0/0xce0 net/tipc/socket.c:3766
- genl_lock_dumpit+0x7f/0xb0 net/netlink/genetlink.c:575
- netlink_dump+0x4cd/0xf60 net/netlink/af_netlink.c:2245
- __netlink_dump_start+0x643/0x900 net/netlink/af_netlink.c:2353
- genl_family_rcv_msg_dumpit+0x2ac/0x310 net/netlink/genetlink.c:638
- genl_family_rcv_msg net/netlink/genetlink.c:733 [inline]
- genl_rcv_msg+0x797/0x9e0 net/netlink/genetlink.c:753
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2469
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:764
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x445f09
-Code: Bad RIP value.
-RSP: 002b:00007fffb147d488 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000445f09
-RDX: 0000000000000000 RSI: 0000000020000500 RDI: 0000000000000004
-RBP: 00000000006d0018 R08: 0000000000000000 R09: 00000000004002e0
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004030a0
-R13: 0000000000403130 R14: 0000000000000000 R15: 0000000000000000
+ dump_stack+0x1c9/0x220 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+ macvlan_queue_xmit drivers/net/macvlan.c:521 [inline]
+ macvlan_start_xmit+0x3ea/0xb50 drivers/net/macvlan.c:562
+ __netdev_start_xmit include/linux/netdevice.h:4533 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4547 [inline]
+ xmit_one net/core/dev.c:3477 [inline]
+ dev_hard_start_xmit+0x531/0xab0 net/core/dev.c:3493
+ __dev_queue_xmit+0x2f8d/0x3b20 net/core/dev.c:4052
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4085
+ hsr_xmit net/hsr/hsr_forward.c:228 [inline]
+ hsr_forward_do net/hsr/hsr_forward.c:285 [inline]
+ hsr_forward_skb+0x2614/0x30d0 net/hsr/hsr_forward.c:361
+ hsr_handle_frame+0x3be/0x500 net/hsr/hsr_slave.c:44
+ __netif_receive_skb_core+0x21ce/0x5870 net/core/dev.c:5089
+ __netif_receive_skb_one_core net/core/dev.c:5186 [inline]
+ __netif_receive_skb net/core/dev.c:5302 [inline]
+ process_backlog+0x936/0x1410 net/core/dev.c:6134
+ napi_poll net/core/dev.c:6572 [inline]
+ net_rx_action+0x786/0x1aa0 net/core/dev.c:6640
+ __do_softirq+0x311/0x83d kernel/softirq.c:293
+ run_ksoftirqd+0x25/0x40 kernel/softirq.c:608
+ smpboot_thread_fn+0x493/0x980 kernel/smpboot.c:165
+ kthread+0x4b5/0x4f0 kernel/kthread.c:269
+ ret_from_fork+0x35/0x40 arch/x86/entry/entry_64.S:353
 
-Allocated by task 6828:
- save_stack+0x1b/0x40 mm/kasan/common.c:48
- set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:494
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0xae/0x550 net/core/skbuff.c:210
- alloc_skb include/linux/skbuff.h:1083 [inline]
- netlink_alloc_large_skb net/netlink/af_netlink.c:1175 [inline]
- netlink_sendmsg+0x94f/0xd90 net/netlink/af_netlink.c:1893
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
+ kmsan_memcpy_memmove_metadata+0x272/0x2e0 mm/kmsan/kmsan.c:247
+ kmsan_memcpy_metadata+0xb/0x10 mm/kmsan/kmsan.c:267
+ __msan_memcpy+0x43/0x50 mm/kmsan/kmsan_instr.c:116
+ pskb_expand_head+0x38b/0x1b00 net/core/skbuff.c:1636
+ __skb_pad+0x47f/0x900 net/core/skbuff.c:1804
+ __skb_put_padto include/linux/skbuff.h:3244 [inline]
+ skb_put_padto include/linux/skbuff.h:3263 [inline]
+ send_hsr_supervision_frame+0x122d/0x1500 net/hsr/hsr_device.c:301
+ hsr_announce+0x1e2/0x370 net/hsr/hsr_device.c:332
+ call_timer_fn+0x218/0x510 kernel/time/timer.c:1405
+ expire_timers kernel/time/timer.c:1450 [inline]
+ __run_timers+0xcff/0x1210 kernel/time/timer.c:1774
+ run_timer_softirq+0x2d/0x50 kernel/time/timer.c:1787
+ __do_softirq+0x311/0x83d kernel/softirq.c:293
 
-Freed by task 6828:
- save_stack+0x1b/0x40 mm/kasan/common.c:48
- set_track mm/kasan/common.c:56 [inline]
- kasan_set_free_info mm/kasan/common.c:316 [inline]
- __kasan_slab_free+0xf5/0x140 mm/kasan/common.c:455
- __cache_free mm/slab.c:3426 [inline]
- kfree+0x103/0x2c0 mm/slab.c:3757
- skb_free_head net/core/skbuff.c:590 [inline]
- skb_release_data+0x6d9/0x910 net/core/skbuff.c:610
- skb_release_all net/core/skbuff.c:664 [inline]
- __kfree_skb net/core/skbuff.c:678 [inline]
- consume_skb net/core/skbuff.c:837 [inline]
- consume_skb+0xc2/0x160 net/core/skbuff.c:831
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x53b/0x7d0 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff8880a7ee0000
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 644 bytes inside of
- 1024-byte region [ffff8880a7ee0000, ffff8880a7ee0400)
-The buggy address belongs to the page:
-page:ffffea00029fb800 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea000278a308 ffffea00025273c8 ffff8880aa000c40
-raw: 0000000000000000 ffff8880a7ee0000 0000000100000002 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff8880a7ee0180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880a7ee0200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff8880a7ee0280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff8880a7ee0300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880a7ee0380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+Uninit was created at:
+ kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:144
+ kmsan_internal_alloc_meta_for_pages mm/kmsan/kmsan_shadow.c:269 [inline]
+ kmsan_alloc_page+0xb9/0x180 mm/kmsan/kmsan_shadow.c:293
+ __alloc_pages_nodemask+0x56a2/0x5dc0 mm/page_alloc.c:4848
+ __alloc_pages include/linux/gfp.h:504 [inline]
+ __alloc_pages_node include/linux/gfp.h:517 [inline]
+ alloc_pages_node include/linux/gfp.h:531 [inline]
+ __page_frag_cache_refill mm/page_alloc.c:4923 [inline]
+ page_frag_alloc+0x3ae/0x910 mm/page_alloc.c:4953
+ __napi_alloc_skb+0x193/0xa60 net/core/skbuff.c:519
+ napi_alloc_skb include/linux/skbuff.h:2876 [inline]
+ page_to_skb+0x1a2/0x1390 drivers/net/virtio_net.c:384
+ receive_mergeable drivers/net/virtio_net.c:935 [inline]
+ receive_buf+0xec6/0x8d20 drivers/net/virtio_net.c:1045
+ virtnet_receive drivers/net/virtio_net.c:1335 [inline]
+ virtnet_poll+0x64b/0x19f0 drivers/net/virtio_net.c:1440
+ napi_poll net/core/dev.c:6572 [inline]
+ net_rx_action+0x786/0x1aa0 net/core/dev.c:6640
+ __do_softirq+0x311/0x83d kernel/softirq.c:293
+=====================================================
 
 
 ---
