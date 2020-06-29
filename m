@@ -2,170 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2FB720E523
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865BD20E280
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391136AbgF2VdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:33:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60654 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728655AbgF2SlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:41:03 -0400
-Received: from kernel.org (unknown [87.71.40.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2388470AbgF2VGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:06:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731080AbgF2TMm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:12:42 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5190C08E9A9;
+        Sun, 28 Jun 2020 22:43:10 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3FEEC2311E;
-        Mon, 29 Jun 2020 05:08:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593407337;
-        bh=LBfhDIhyAbegWKiFoWANZi3Pap2eilYpWYyw9E97Frw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kn0EDPLt/kFtL3TZwbVsUV6b9Vc5HPIVlyu8B/7Z9XfljZNUO7/rCJq63g5bf9pSJ
-         OuJViNwGVJTHvPk1NoY7dWJEDKZDnrb/oqmreD43xNTbok6DB/kaiaAxuKlUdglMKc
-         LIKCiivFZH7gq+RcuYB4BDBIb7L2Rr8ceeaQPnaU=
-Date:   Mon, 29 Jun 2020 08:08:51 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, dm-devel@redhat.com,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>
-Subject: Re: [PATCH 6/6] mm: Add memalloc_nowait
-Message-ID: <20200629050851.GC1492837@kernel.org>
-References: <20200625113122.7540-1-willy@infradead.org>
- <20200625113122.7540-7-willy@infradead.org>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49wGcD0QQCz9sQt;
+        Mon, 29 Jun 2020 15:43:07 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1593409388;
+        bh=0gQlwqc7+1RNpQwLvCTErzn5lDh79VUZyyhucRciNrU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=bFsvxMeG1BWfYgKBPbuEgrIA6YfnfKaD/ACoD8szYUP0+A1CmwmtCeSUuPkvUxw72
+         8rnEOa2Y3PzEidUb6FTp0qTmwopesnY3cNsIVNrsk6CCMTUq72SqBEd07FmQdHnCa0
+         361bn09FBtf7nXmlOw9ridBYllRrCdgLf5ua1t0vAd6JVLViSPHU4sfOKQoIdsCs3o
+         Lp8qAKoLr+WbIbvHhu9sPrAGE2doU0ZQe61QJ+GRIvA5yLYE/h2DurQF4LbMxxuIcj
+         WtN0qAUjec9fPcwOCQPhViozll9Fi+ZngwFJCYl05kCJwYIxZxI1ZQZpJgiL6HtFhH
+         K+LuXz/7Ed9vQ==
+Date:   Mon, 29 Jun 2020 15:43:05 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kees Cook <keescook@google.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+Subject: linux-next: manual merge of the kspp tree with Linus' tree
+Message-ID: <20200629154305.0067d113@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200625113122.7540-7-willy@infradead.org>
+Content-Type: multipart/signed; boundary="Sig_/O=BM_rb4ZsTj+JaxRLGGYJ/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 12:31:22PM +0100, Matthew Wilcox (Oracle) wrote:
-> Similar to memalloc_noio() and memalloc_nofs(), memalloc_nowait()
-> guarantees we will not sleep to reclaim memory.  Use it to simplify
-> dm-bufio's allocations.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  drivers/md/dm-bufio.c    | 30 ++++++++----------------------
->  include/linux/sched.h    |  1 +
->  include/linux/sched/mm.h | 12 ++++++++----
->  3 files changed, 17 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/md/dm-bufio.c b/drivers/md/dm-bufio.c
-> index 6d1565021d74..140ada9a2c8f 100644
-> --- a/drivers/md/dm-bufio.c
-> +++ b/drivers/md/dm-bufio.c
-> @@ -412,23 +412,6 @@ static void *alloc_buffer_data(struct dm_bufio_client *c, gfp_t gfp_mask,
->  
->  	*data_mode = DATA_MODE_VMALLOC;
->  
-> -	/*
-> -	 * __vmalloc allocates the data pages and auxiliary structures with
-> -	 * gfp_flags that were specified, but pagetables are always allocated
-> -	 * with GFP_KERNEL, no matter what was specified as gfp_mask.
-> -	 *
-> -	 * Consequently, we must set per-process flag PF_MEMALLOC_NOIO so that
-> -	 * all allocations done by this process (including pagetables) are done
-> -	 * as if GFP_NOIO was specified.
-> -	 */
-> -	if (gfp_mask & __GFP_NORETRY) {
-> -		unsigned noio_flag = memalloc_noio_save();
-> -		void *ptr = __vmalloc(c->block_size, gfp_mask);
-> -
-> -		memalloc_noio_restore(noio_flag);
-> -		return ptr;
-> -	}
-> -
->  	return __vmalloc(c->block_size, gfp_mask);
->  }
->  
-> @@ -866,9 +849,6 @@ static struct dm_buffer *__alloc_buffer_wait_no_callback(struct dm_bufio_client
->  	 * dm-bufio is resistant to allocation failures (it just keeps
->  	 * one buffer reserved in cases all the allocations fail).
->  	 * So set flags to not try too hard:
-> -	 *	GFP_NOWAIT: don't wait; if we need to sleep we'll release our
-> -	 *		    mutex and wait ourselves.
-> -	 *	__GFP_NORETRY: don't retry and rather return failure
->  	 *	__GFP_NOMEMALLOC: don't use emergency reserves
->  	 *	__GFP_NOWARN: don't print a warning in case of failure
->  	 *
-> @@ -877,7 +857,9 @@ static struct dm_buffer *__alloc_buffer_wait_no_callback(struct dm_bufio_client
->  	 */
->  	while (1) {
->  		if (dm_bufio_cache_size_latch != 1) {
-> -			b = alloc_buffer(c, GFP_NOWAIT | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
-> +			unsigned nowait_flag = memalloc_nowait_save();
-> +			b = alloc_buffer(c, GFP_KERNEL | __GFP_NOMEMALLOC | __GFP_NOWARN);
-> +			memalloc_nowait_restore(nowait_flag);
->  			if (b)
->  				return b;
->  		}
-> @@ -886,8 +868,12 @@ static struct dm_buffer *__alloc_buffer_wait_no_callback(struct dm_bufio_client
->  			return NULL;
->  
->  		if (dm_bufio_cache_size_latch != 1 && !tried_noio_alloc) {
-> +			unsigned noio_flag;
-> +
->  			dm_bufio_unlock(c);
-> -			b = alloc_buffer(c, GFP_NOIO | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
-> +			noio_flag = memalloc_noio_save();
+--Sig_/O=BM_rb4ZsTj+JaxRLGGYJ/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I've read the series twice and I'm still missing the definition of
-memalloc_noio_save().
+Hi all,
 
-And also it would be nice to have a paragraph about it in
-Documentation/core-api/memory-allocation.rst
+Today's linux-next merge of the kspp tree got a conflict in:
 
-> +			b = alloc_buffer(c, GFP_KERNEL |
-> __GFP_NOMEMALLOC | __GFP_NOWARN); +
-> memalloc_noio_restore(noio_flag); dm_bufio_lock(c); if (b)
->  				return b;
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 90336850e940..b1c2cddd366c 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -803,6 +803,7 @@ struct task_struct {
->  #endif
->  	unsigned			memalloc_noio:1;
->  	unsigned			memalloc_nofs:1;
-> +	unsigned			memalloc_nowait:1;
->  	unsigned			memalloc_nocma:1;
->  
->  	unsigned long			atomic_flags; /* Flags requiring atomic access. */
-> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-> index 6f7b59a848a6..6484569f50df 100644
-> --- a/include/linux/sched/mm.h
-> +++ b/include/linux/sched/mm.h
-> @@ -179,12 +179,16 @@ static inline bool in_vfork(struct task_struct *tsk)
->  static inline gfp_t current_gfp_context(gfp_t flags)
->  {
->  	if (unlikely(current->memalloc_noio || current->memalloc_nofs ||
-> -		     current->memalloc_nocma)) {
-> +		     current->memalloc_nocma) || current->memalloc_nowait) {
->  		/*
-> -		 * NOIO implies both NOIO and NOFS and it is a weaker context
-> -		 * so always make sure it makes precedence
-> +		 * Clearing DIRECT_RECLAIM means we won't get to the point
-> +		 * of testing IO or FS, so we don't need to bother clearing
-> +		 * them.  noio implies neither IO nor FS and it is a weaker
-> +		 * context so always make sure it takes precedence.
->  		 */
-> -		if (current->memalloc_noio)
-> +		if (current->memalloc_nowait)
-> +			flags &= ~__GFP_DIRECT_RECLAIM;
-> +		else if (current->memalloc_noio)
->  			flags &= ~(__GFP_IO | __GFP_FS);
->  		else if (current->memalloc_nofs)
->  			flags &= ~__GFP_FS;
-> -- 
-> 2.27.0
-> 
-> 
+  kernel/debug/kdb/kdb_io.c
 
--- 
-Sincerely yours,
-Mike.
+between commit:
+
+  9d71b344f86f ("kdb: Re-factor kdb_printf() message write code")
+
+from Linus' tree and commit:
+
+  80b89ab785a4 ("treewide: Remove uninitialized_var() usage")
+
+from the kspp tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc kernel/debug/kdb/kdb_io.c
+index 683a799618ad,af0a26a521eb..000000000000
+--- a/kernel/debug/kdb/kdb_io.c
++++ b/kernel/debug/kdb/kdb_io.c
+@@@ -591,7 -553,8 +591,7 @@@ int vkdb_printf(enum kdb_msgsrc src, co
+  	int this_cpu, old_cpu;
+  	char *cp, *cp2, *cphold =3D NULL, replaced_byte =3D ' ';
+  	char *moreprompt =3D "more> ";
+- 	unsigned long uninitialized_var(flags);
+ -	struct console *c;
++ 	unsigned long flags;
+ =20
+  	/* Serialize kdb_printf if multiple cpus try to write at once.
+  	 * But if any cpu goes recursive in kdb, just print the output,
+
+--Sig_/O=BM_rb4ZsTj+JaxRLGGYJ/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl75f2kACgkQAVBC80lX
+0Gzxpgf/ZeyGgu656e8xymIJkSQH5NvdjOL5cGTthZNwnQIhAuuVTYosa5pMSR/U
+pVjJJuxeBoJZyavka0ac9RCwg/FphoRF1FryhY+Y+UolTxqK+LGqxc9fjGeJCcFj
+NGPaiotQJxOsZdhXTz+8Kno/xq0f2fAYM04j192q0daE+3XEDUWx+CgmDGsKqTGV
+13Xb3bAtHeAiHDqcs8nHOfhkWJ8E+a0z3ORNDKKOVQx2Ui+rg5nEDngUch3QNg17
+jMONoW2KmEAlxwp7m5XJDGtYYt80A0KQ1q/057epW+8CJJDb9K3Uro1NhrSEzPDA
+oW3eV2QCFKAnFDagmlr/hRjAazMELQ==
+=zXMH
+-----END PGP SIGNATURE-----
+
+--Sig_/O=BM_rb4ZsTj+JaxRLGGYJ/--
