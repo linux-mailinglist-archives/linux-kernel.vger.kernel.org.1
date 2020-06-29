@@ -2,31 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95AE120DF5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F72320DF74
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389404AbgF2UfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:35:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59484 "EHLO mx2.suse.de"
+        id S2389316AbgF2Ugi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:36:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59488 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732202AbgF2TVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:21:34 -0400
+        id S1732170AbgF2TV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:21:28 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 54DECAF55;
-        Mon, 29 Jun 2020 15:09:55 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id A6990AF63;
+        Mon, 29 Jun 2020 15:09:56 +0000 (UTC)
 From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 To:     gregkh@linuxfoundation.org
 Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
         linux-rpi-kernel@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         devel@driverdev.osuosl.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.org>,
-        Jacopo Mondi <jacopo@jmondi.org>,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [PATCH v2 06/47] staging: mmal-vchiq: If the VPU returns an error, don't negate it
-Date:   Mon, 29 Jun 2020 17:09:04 +0200
-Message-Id: <20200629150945.10720-7-nsaenzjulienne@suse.de>
+Subject: [PATCH v2 09/47] staging: vchi: Get rid of all useless callback reasons
+Date:   Mon, 29 Jun 2020 17:09:07 +0200
+Message-Id: <20200629150945.10720-10-nsaenzjulienne@suse.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200629150945.10720-1-nsaenzjulienne@suse.de>
 References: <20200629150945.10720-1-nsaenzjulienne@suse.de>
@@ -37,35 +35,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Stevenson <dave.stevenson@raspberrypi.org>
+They are neither produced nor expected, so just delete them.
 
-There is an enum for the errors that the VPU can return.
-port_parameter_get was negating that value, but also using -EINVAL
-from the Linux error codes.
-Pass the VPU error code as positive values. Should the function
-need to pass a Linux failure, then return that as negative.
-
-Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.org>
-Signed-off-by: Jacopo Mondi <jacopo@jmondi.org>
 Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 ---
- drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ .../interface/vchi/vchi_common.h              | 40 ++-----------------
+ 1 file changed, 3 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-index efdf30b9edf9..7fb502f90a89 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-+++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-@@ -1270,7 +1270,8 @@ static int port_parameter_get(struct vchiq_mmal_instance *instance,
- 		goto release_msg;
- 	}
+diff --git a/drivers/staging/vc04_services/interface/vchi/vchi_common.h b/drivers/staging/vc04_services/interface/vchi/vchi_common.h
+index 7fc04e38936d..0f79bea4757d 100644
+--- a/drivers/staging/vc04_services/interface/vchi/vchi_common.h
++++ b/drivers/staging/vc04_services/interface/vchi/vchi_common.h
+@@ -31,8 +31,6 @@ enum vchi_crc_control {
  
--	ret = -rmsg->u.port_parameter_get_reply.status;
-+	ret = rmsg->u.port_parameter_get_reply.status;
-+
- 	/* port_parameter_get_reply.size includes the header,
- 	 * whilst *value_size doesn't.
+ //callback reasons when an event occurs on a service
+ enum vchi_callback_reason {
+-	VCHI_CALLBACK_REASON_MIN,
+-
+ 	/*
+ 	 * This indicates that there is data available handle is the msg id that
+ 	 * was transmitted with the data
+@@ -41,44 +39,12 @@ enum vchi_callback_reason {
+ 	 * Tasks get kicked by the callback, reset their event and try and read
+ 	 * from the fifo until it fails
  	 */
++	VCHI_CALLBACK_SERVICE_CLOSED,
+ 	VCHI_CALLBACK_MSG_AVAILABLE,
+-	VCHI_CALLBACK_MSG_SENT,
+-	VCHI_CALLBACK_MSG_SPACE_AVAILABLE, // XXX not yet implemented
+-
+-	// This indicates that a transfer from the other side has completed
+-	VCHI_CALLBACK_BULK_RECEIVED,
+-	//This indicates that data queued up to be sent has now gone
+-	//handle is the msg id that was used when sending the data
+ 	VCHI_CALLBACK_BULK_SENT,
+-	VCHI_CALLBACK_BULK_RX_SPACE_AVAILABLE, // XXX not yet implemented
+-	VCHI_CALLBACK_BULK_TX_SPACE_AVAILABLE, // XXX not yet implemented
+-
+-	VCHI_CALLBACK_SERVICE_CLOSED,
+-
+-	/*
+-	 * this side has sent XOFF to peer due to lack of data consumption by
+-	 * service (suggests the service may need to take some recovery action
+-	 * if it has been deliberately holding off consuming data)
+-	 */
+-	VCHI_CALLBACK_SENT_XOFF,
+-	VCHI_CALLBACK_SENT_XON,
+-
+-	// indicates that a bulk transfer has finished reading the source buffer
+-	VCHI_CALLBACK_BULK_DATA_READ,
+-
+-	// power notification events (currently host side only)
+-	VCHI_CALLBACK_PEER_OFF,
+-	VCHI_CALLBACK_PEER_SUSPENDED,
+-	VCHI_CALLBACK_PEER_ON,
+-	VCHI_CALLBACK_PEER_RESUMED,
+-	VCHI_CALLBACK_FORCED_POWER_OFF,
+-
+-	// some extra notifications provided by vchiq_arm
+-	VCHI_CALLBACK_SERVICE_OPENED,
+-	VCHI_CALLBACK_BULK_RECEIVE_ABORTED,
++	VCHI_CALLBACK_BULK_RECEIVED,
+ 	VCHI_CALLBACK_BULK_TRANSMIT_ABORTED,
+-
+-	VCHI_CALLBACK_REASON_MAX
++	VCHI_CALLBACK_BULK_RECEIVE_ABORTED,
+ };
+ 
+ // service control options
 -- 
 2.27.0
 
