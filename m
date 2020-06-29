@@ -2,155 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E2B20D6BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE60320D823
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732163AbgF2TXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:23:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732285AbgF2TWo (ORCPT
+        id S1732804AbgF2Tg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:36:26 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:47574 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730437AbgF2TgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:22:44 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0B7C030F39;
-        Mon, 29 Jun 2020 09:56:52 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id z5so8569340pgb.6;
-        Mon, 29 Jun 2020 09:56:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=/ma/F8azHfAAlX2tIXoGzMQscfg5HcD+VaBkA6I2zHQ=;
-        b=pZER90CeOCVTshThob8SMWZGTPpq0Mux+NuRers8/6P2d0f4w05GGRSqD38aYcR8ZZ
-         12G9obczqcC1AFF562uQjh3gP+CYReqnp1GfE2ls8ZNYxhGZ8NeOzFlvLYb4fhQVTgw+
-         drDHEyhfRZQThZRHWbPqaYsosoDZyprHv0VWmIDHGBLihzGeKEW0eUIgUpLq+zjzfJEV
-         X9MSU4N34Sr3VrhXDbKxq8GarIAoqKX/BUhbleGf2EDvUpLtuhQyVdQohOUDokASKovU
-         v3hSmeogbUBwwqUUhpG8mhxfAVv22+KxEWOweLvDxOTbSO7NhguMdtjuQ0vGSyPpoGsK
-         D5GA==
-X-Gm-Message-State: AOAM533Xpd0YJw46l0YjdEqWsLVYGUk6Y0tfaYip9Hybi9VKGvLmjZ6u
-        2LYZypdyLwl/pyRziGdgk2w=
-X-Google-Smtp-Source: ABdhPJxAvEhIQPLv4qR5l3ldPDQeKRXPQEDzt66dAti3bw4uNmWPcIma5kppyybAmSHb90GeBtGz8A==
-X-Received: by 2002:a63:5110:: with SMTP id f16mr10872564pgb.377.1593449812186;
-        Mon, 29 Jun 2020 09:56:52 -0700 (PDT)
-Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id a30sm258527pfr.87.2020.06.29.09.56.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jun 2020 09:56:51 -0700 (PDT)
-Subject: Re: [PATCH] scsi: sd: add runtime pm to open / release
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     jejb@linux.ibm.com, Can Guo <cang@codeaurora.org>,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@puri.sm
-References: <20200623111018.31954-1-martin.kepplinger@puri.sm>
- <ed9ae198-4c68-f82b-04fc-2299ab16df96@acm.org>
- <eccacce9-393c-ca5d-e3b3-09961340e0db@puri.sm>
- <1379e21d-c51a-3710-e185-c2d7a9681fb7@acm.org>
- <20200626154441.GA296771@rowland.harvard.edu>
- <c19f1938-ae47-2357-669d-5b4021aec154@puri.sm>
- <20200629161536.GA405175@rowland.harvard.edu>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <df54c02f-dbe9-08d5-fec8-835788caf164@acm.org>
-Date:   Mon, 29 Jun 2020 09:56:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200629161536.GA405175@rowland.harvard.edu>
-Content-Type: text/plain; charset=utf-8
+        Mon, 29 Jun 2020 15:36:20 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TGt3re027481;
+        Mon, 29 Jun 2020 09:56:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=qXullG9VUSDOlcxffaa8Iax5xyCbXolNPH4syXdcWP4=;
+ b=mELjv7rb6O5o/YqGQ/tuLnTXbTPiauTTLQLG+23Jr58xN1kH0ZWjDdGW3J/POXvWmd5s
+ 8uAEr3lzQo7Z0l1YH2ElFNrHyZpiGCkFJ9X0tlcfWJEEBOCKMAEa7Mb/lPMsna1J1yla
+ 9tBp8Yei2zixHqY9+6WzKyRCOUSNU7fib08= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 31x3mmfypb-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 29 Jun 2020 09:56:53 -0700
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 29 Jun 2020 09:56:53 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DUVi73QL2hZ7lxK7lyUHXIVblOhhCVztYJHhDCco1jo5lNHYGrPhjapv4rdpAxsNeOGKFuJrw2PN6qFBbvxLgkvMrucMPRBWPXmYcliCYwX7Z8JqgGDQcHen4EGI9dB3T4/CF8Nb2wCl1/iKd5W7egagurRfkKzzbEL3XvBS6O9BnUAVRlp7D+bK7nGRqCMtBKzKVVkZfT7VpLo3xW99yfu8kCZuizz5SDeUrtJu6YcDN7NXqzdlOkxJE/pU3sFkKA8FL3o4xXKtMW7bDzVhV3e7r0Rpfh8uycAqq6qV1fZKjA7OTW0Ul0T6CTjj5TToRb/ar/Q3lXhMxVcKAUS+CQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qXullG9VUSDOlcxffaa8Iax5xyCbXolNPH4syXdcWP4=;
+ b=f0BgwdsFOR7SVzgd5kroWpXzv35xMQQfM9IWA3v0HeKIwRztIqVhimTgHuptHENiBkGRLERCTGdpro2STQ0Fq9lsvxDt4dveGLUjEUrJIjqfM+UwgJgdCS1LnizCUQy0Iy0pQpD5Sa0gg7lNIH3ML7HnnEd5bAYowsHG7JvZVh6Z6nhEN1cTn4mdSc1HicjmYzmFXBw3G8wizt5IjpMLgKOCUyIwOBNCy87KJ4fNKMrX8xhmqwh8rKwbpkQeOjmcrf41xAzEG4DocSTjQdITxFKcxSXds+Zje7msyEEblQ8TDnXHh+mGLJnsctm5tf+d3M69LETli25yAeypUuoO6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qXullG9VUSDOlcxffaa8Iax5xyCbXolNPH4syXdcWP4=;
+ b=CcaOcIk4B6JDzf3U/7zMQNOsNglOjjcgeN6iH1/F4ySt4L0KWL8RuIKhS0Hy0kJAhAwzt1uLYhT4UE+w6Dp5ZsnyWXwirehdNJHBdpEeigdDyYq8h0G7KQaiTQLlAovsC+ri8rfo0/+i7MGcIM0HrzkSH9GlIyzpu9hCdPmaKqs=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.26; Mon, 29 Jun
+ 2020 16:56:52 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8%5]) with mapi id 15.20.3131.027; Mon, 29 Jun 2020
+ 16:56:52 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Kernel Team" <Kernel-team@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@chromium.org" <kpsingh@chromium.org>
+Subject: Re: [PATCH v4 bpf-next 4/4] selftests/bpf: add bpf_iter test with
+ bpf_get_task_stack()
+Thread-Topic: [PATCH v4 bpf-next 4/4] selftests/bpf: add bpf_iter test with
+ bpf_get_task_stack()
+Thread-Index: AQHWTdoDfCOX11YGIkGMqBxDcia9fajvsh+AgAAevoA=
+Date:   Mon, 29 Jun 2020 16:56:52 +0000
+Message-ID: <D3BAF0B3-122D-409C-B0DD-600E1EE606C0@fb.com>
+References: <20200629055530.3244342-1-songliubraving@fb.com>
+ <20200629055530.3244342-5-songliubraving@fb.com>
+ <bd62a752-df45-8e65-9f74-e340ef708764@fb.com>
+In-Reply-To: <bd62a752-df45-8e65-9f74-e340ef708764@fb.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.80.23.2.2)
+x-originating-ip: [2620:10d:c091:480::1:2b35]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ff34af05-3303-4aec-c487-08d81c4d6c04
+x-ms-traffictypediagnostic: BYAPR15MB4088:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB40880E0CC89213D4858D6D21B36E0@BYAPR15MB4088.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:3276;
+x-forefront-prvs: 044968D9E1
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: duz5jXhrS5DEGunREhPj1UPvEwPn0RLITMIJJJPipvKXtMfbjfokAZeuYtYlvv+BunpNCJd+xghE7/+K951pWepp1Q4cTLqkgoODruzjtVGh8oZCiE8kIIH2hAKRugBbU8oYEmH/nKpXrlvMwk24+rzkqfSEOm3awk4bRWMWXHVh08hSL6p93oljWcGwTdIIttRGmTPVoDHi6QTNYVXz2AALOK5KmGC6E0I/2dIPddC3ALm4slP3iiBQxyVEDhAb/TEJ4ND1k6lNXaAJRwkYVGlN45DZem9yle4r/Qj7451MOgKQVE/jImzrbIKRBH3JbF8GTFerLG/sPNYfxsWerA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(396003)(366004)(39860400002)(346002)(376002)(6486002)(37006003)(54906003)(36756003)(6862004)(6512007)(86362001)(2616005)(4326008)(478600001)(316002)(8936002)(2906002)(6506007)(33656002)(53546011)(66476007)(66556008)(64756008)(71200400001)(5660300002)(66946007)(8676002)(76116006)(186003)(6636002)(66446008)(91956017);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 7AWQG/ZHrFRVDkuvJBfp/mU4k+v8LTvzU6H1RNCJu7IkA/8kgR6+/36SnYRsujXs85BnpdlGAtKLvzzpKlVXZPByK8Nrr2EtlgaAqherJd+9ai0vEw4yVtnLC3o01zRqHOgZSvLVieYBaLpGDqCqt2i39YGOcwjQfk9o9wVz8BZnJpNN3UVD2H4rYjY+8Js0ehg5nBa/2ZmL9lbYjskMnCIlmpeAhIU76LQZhwzx/SSUb0EE3Pfl2bAtnc3srztbIUcZFBzQobB8K+x8ULI56vCps0tQM0ne2n43tbfQ99Km5Mkh605KOgpUvMMAtydH0UNoHjqYcyFzct4LftU/4BKM0yJ0QFxKAIwej+0dzPjWfTo5i8aSXnPiiVbfuwRwUkV0dRlEKdNADbbw/6x0gvbA4Hs6BRGX7jEEzIAYnLFKpotofaJ5In+FyYqe4gfzY2Z8/QVrciyiDf0ZwEYAXhVy8i1Mkc16DIOkp0wdi7DmkBT38EmdlRVhV62EGRkbeu7my08VxToysqQP03BLPg==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <D65D069ED4CCB34BB8A9545E6242AB29@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff34af05-3303-4aec-c487-08d81c4d6c04
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2020 16:56:52.2336
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7DWS3t/1AqOiETwg+wBN7+VHT/9FMJQoU9cQ6u4mzq9iGxRPfYPq7WrwvXdXysk13nmG9fDdqM8vVIkA4b0aBQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4088
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-06-29_18:2020-06-29,2020-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 cotscore=-2147483648 spamscore=0
+ mlxlogscore=999 adultscore=0 clxscore=1015 malwarescore=0 suspectscore=0
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006290109
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-29 09:15, Alan Stern wrote:
-> Aha.  Looking at this more closely, it's apparent that the code in 
-> blk-core.c contains a logic bug: It assumes that if the BLK_MQ_REQ_PREEMPT 
-> flag is set then the request can be issued regardless of the queue's 
-> runtime status.  That is not correct when the queue is suspended.
 
-Please clarify why this is not correct.
 
-> Index: usb-devel/block/blk-core.c
-> ===================================================================
-> --- usb-devel.orig/block/blk-core.c
-> +++ usb-devel/block/blk-core.c
-> @@ -423,7 +423,8 @@ int blk_queue_enter(struct request_queue
->  			 * responsible for ensuring that that counter is
->  			 * globally visible before the queue is unfrozen.
->  			 */
-> -			if (pm || !blk_queue_pm_only(q)) {
-> +			if ((pm && q->rpm_status != RPM_SUSPENDED) ||
-> +			    !blk_queue_pm_only(q)) {
->  				success = true;
->  			} else {
->  				percpu_ref_put(&q->q_usage_counter);
+> On Jun 29, 2020, at 8:06 AM, Yonghong Song <yhs@fb.com> wrote:
+>=20
+>=20
+>=20
+> On 6/28/20 10:55 PM, Song Liu wrote:
+>> The new test is similar to other bpf_iter tests. It dumps all
+>> /proc/<pid>/stack to a seq_file. Here is some example output:
+>> pid:     2873 num_entries:        3
+>> [<0>] worker_thread+0xc6/0x380
+>> [<0>] kthread+0x135/0x150
+>> [<0>] ret_from_fork+0x22/0x30
+>> pid:     2874 num_entries:        9
+>> [<0>] __bpf_get_stack+0x15e/0x250
+>> [<0>] bpf_prog_22a400774977bb30_dump_task_stack+0x4a/0xb3c
+>> [<0>] bpf_iter_run_prog+0x81/0x170
+>> [<0>] __task_seq_show+0x58/0x80
+>> [<0>] bpf_seq_read+0x1c3/0x3b0
+>> [<0>] vfs_read+0x9e/0x170
+>> [<0>] ksys_read+0xa7/0xe0
+>> [<0>] do_syscall_64+0x4c/0xa0
+>> [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>> Note: To print the output, it is necessary to modify the selftest.
+>=20
+> I do not know what this sentence means. It seems confusing
+> and probably not needed.
 
-Does the above change make it impossible to bring a suspended device
-back to the RPM_ACTIVE state if the BLK_MQ_REQ_NOWAIT flag is set?
+It means current do_dummy_read() doesn't check/print the contents of the=20
+seq_file:
 
-> @@ -448,8 +449,7 @@ int blk_queue_enter(struct request_queue
->  
->  		wait_event(q->mq_freeze_wq,
->  			   (!q->mq_freeze_depth &&
-> -			    (pm || (blk_pm_request_resume(q),
-> -				    !blk_queue_pm_only(q)))) ||
-> +			    blk_pm_resume_queue(pm, q)) ||
->  			   blk_queue_dying(q));
->  		if (blk_queue_dying(q))
->  			return -ENODEV;
-> Index: usb-devel/block/blk-pm.h
-> ===================================================================
-> --- usb-devel.orig/block/blk-pm.h
-> +++ usb-devel/block/blk-pm.h
-> @@ -6,11 +6,14 @@
->  #include <linux/pm_runtime.h>
->  
->  #ifdef CONFIG_PM
-> -static inline void blk_pm_request_resume(struct request_queue *q)
-> +static inline int blk_pm_resume_queue(const bool pm, struct request_queue *q)
->  {
-> -	if (q->dev && (q->rpm_status == RPM_SUSPENDED ||
-> -		       q->rpm_status == RPM_SUSPENDING))
-> -		pm_request_resume(q->dev);
-> +	if (!q->dev || !blk_queue_pm_only(q))
-> +		return 1;	/* Nothing to do */
-> +	if (pm && q->rpm_status != RPM_SUSPENDED)
-> +		return 1;	/* Request allowed */
-> +	pm_request_resume(q->dev);
-> +	return 0;
->  }
+        /* not check contents, but ensure read() ends without error */
+        while ((len =3D read(iter_fd, buf, sizeof(buf))) > 0)
+                ;
 
-Does the above change, especially the " && q->rpm_status !=
-RPM_SUSPENDED" part, make it impossible to bring a suspended device back
-to the RPM_ACTIVE state?
+>=20
+>> Signed-off-by: Song Liu <songliubraving@fb.com>
+>=20
+> Acked-by: Yonghong Song <yhs@fb.com>
 
-Thanks,
+Thanks!
 
-Bart.
+[...]
+
