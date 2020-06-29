@@ -2,127 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDBE20D155
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B911720D26F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728597AbgF2Skz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:40:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60594 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728528AbgF2Skv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:51 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F07123D51;
-        Mon, 29 Jun 2020 14:01:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593439266;
-        bh=34RLz4AGlOLv0qThfaZkESlSozovgvdYMlx7twj9dNo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=H9hqRgTH3hbbEok3oVOWnPSHA8uX73nPBDevXHnc+9COGNF/WvBBV3bLj1bTeRu56
-         HY/l+I/ZhoyZ4BZCC4QisD1Jqi89UZtqqlLdEF+UYbuxaL9FKjK7eC0U/o9YpB4kS0
-         3LaZwMu/3b9xCFSjl/q0BfUfzGUiudLaGrBv8J3w=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jpuLJ-007Kfz-4d; Mon, 29 Jun 2020 15:01:05 +0100
+        id S1726015AbgF2StI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729136AbgF2Srm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:47:42 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C001C02E2C4;
+        Mon, 29 Jun 2020 07:01:28 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id e3so1342915qvo.10;
+        Mon, 29 Jun 2020 07:01:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8FrjxWdY/Gjwce8t0JyeJsnYTMhQlskObJO/oLUWzfo=;
+        b=KsYeoNtN/hmKD60koJPvKXhY1HT5rh0BdsIymjK2OY+Ah5csm67fWOMInZoSB5MyiF
+         z81tpEOU7gbEs2Eu9dK1IU73/ldLFTcOuXQ4NQt1zxjMaUlUH9xpuPmQkDZyG2XpHE5A
+         z0rDQ6F3p6odfLFvjQ20/v+vqn3osPhCyUtrTurdqBrAHPO36wwugYL1OqGKXGdazN2M
+         p5mNNLqMsIqkd1lea0NNKZvGNZ4NvI4uksXON6N73LrjpsMxdX6M9+heVdl/zTyGvkYj
+         tkHXxI8XU7hiVfWyn9RhwdGCF2zdf8eMUPHFh6FNadOyOkvVyTEcnpjW7aa7VVLEWYLN
+         vdxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8FrjxWdY/Gjwce8t0JyeJsnYTMhQlskObJO/oLUWzfo=;
+        b=DSuuW0+07wcgDzTyrYqX0uyN8GZtYZA9b0ZFzEyTViLNb4h6pZE597I9G0VIgucvJD
+         aiZeyxbU/LSSBjt/pL+KcMGE7PdanaXo0F2JQdC4l7Q+lwLAbtqljTLF5jCwAHMlBPUx
+         g9V1dJ5kIS/ynUdt8Uj9EbrQvD1UKTOBhjBgT3ZyiKXpXLYea3P9JO587LRoRz2KeeNv
+         eZqifAnr1Wkk1Tbua5iQLkIIx1PjQ4rLVNJNpBwRZBFoa/yWLwkUM8sbJjjbKMZOzgjN
+         W751EaDIWYcQSSdewozHh8vpCX0MUn8gZqR6oLzx/ggkpNe6LzEx+ImM9X0Jc6Xo6gRe
+         H7ow==
+X-Gm-Message-State: AOAM531JKlq/ZGAplHoVs4tch6+PMhfQcqxtbGk2MjY0gdNj9heTXIcP
+        cO3qNZhciqnutr86w2breH3RRck7yxyKPa0VQlQ=
+X-Google-Smtp-Source: ABdhPJwRvnHK4e9FuZZ286EO2eHunvWxUS+jw1hxD70l+wfbFL9aDwHZRKLC21a2KPKCyOwmNUkOhP18WuRSaAVXDjg=
+X-Received: by 2002:ad4:4cc3:: with SMTP id i3mr8130354qvz.114.1593439286277;
+ Mon, 29 Jun 2020 07:01:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 29 Jun 2020 15:01:05 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Zenghui Yu <yuzenghui@huawei.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        wanghaibin.wang@huawei.com, kuhn.chenqun@huawei.com,
-        wangjingyi11@huawei.com
-Subject: Re: [BUG] irqchip/gic-v4.1: sleeping function called from invalid
- context
-In-Reply-To: <1d673e99-0dd2-d287-aedf-65686eed5194@huawei.com>
-References: <1d673e99-0dd2-d287-aedf-65686eed5194@huawei.com>
-User-Agent: Roundcube Webmail/1.4.5
-Message-ID: <c401871295f68391473f2e522b920719@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: yuzenghui@huawei.com, tglx@linutronix.de, jason@lakedaemon.net, linux-kernel@vger.kernel.org, wanghaibin.wang@huawei.com, kuhn.chenqun@huawei.com, wangjingyi11@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20200627143453.31835-1-rppt@kernel.org>
+In-Reply-To: <20200627143453.31835-1-rppt@kernel.org>
+From:   Pekka Enberg <penberg@gmail.com>
+Date:   Mon, 29 Jun 2020 17:01:14 +0300
+Message-ID: <CAOJsxLE47WP9aMY3nh=E7C1a_esHt=sBFWCnsVA2umZ7TZ6TTA@mail.gmail.com>
+Subject: Re: [PATCH 0/8] mm: cleanup usage of <asm/pgalloc.h>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Joerg Roedel <joro@8bytes.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-alpha@vger.kernel.org,
+        "list@ebiederm.org:DOCUMENTATION <linux-doc@vger.kernel.org>,
+        list@ebiederm.org:MEMORY MANAGEMENT <linux-mm@kvack.org>," 
+        <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        ia64 <linux-ia64@vger.kernel.org>,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        openrisc@lists.librecores.org, sparclinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zenghui,
+On Sat, Jun 27, 2020 at 5:35 PM Mike Rapoport <rppt@kernel.org> wrote:
+> Most architectures have very similar versions of pXd_alloc_one() and
+> pXd_free_one() for intermediate levels of page table.
+> These patches add generic versions of these functions in
+> <asm-generic/pgalloc.h> and enable use of the generic functions where
+> appropriate.
 
-On 2020-06-29 10:39, Zenghui Yu wrote:
-> Hi All,
-> 
-> Booting the latest kernel with DEBUG_ATOMIC_SLEEP=y on a GICv4.1 
-> enabled
-> box, I get the following kernel splat:
-> 
-> [    0.053766] BUG: sleeping function called from invalid context at
-> mm/slab.h:567
-> [    0.053767] in_atomic(): 1, irqs_disabled(): 128, non_block: 0,
-> pid: 0, name: swapper/1
-> [    0.053769] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.8.0-rc3+ #23
-> [    0.053770] Call trace:
-> [    0.053774]  dump_backtrace+0x0/0x218
-> [    0.053775]  show_stack+0x2c/0x38
-> [    0.053777]  dump_stack+0xc4/0x10c
-> [    0.053779]  ___might_sleep+0xfc/0x140
-> [    0.053780]  __might_sleep+0x58/0x90
-> [    0.053782]  slab_pre_alloc_hook+0x7c/0x90
-> [    0.053783]  kmem_cache_alloc_trace+0x60/0x2f0
-> [    0.053785]  its_cpu_init+0x6f4/0xe40
-> [    0.053786]  gic_starting_cpu+0x24/0x38
-> [    0.053788]  cpuhp_invoke_callback+0xa0/0x710
-> [    0.053789]  notify_cpu_starting+0xcc/0xd8
-> [    0.053790]  secondary_start_kernel+0x148/0x200
-> 
-> # ./scripts/faddr2line vmlinux its_cpu_init+0x6f4/0xe40
-> its_cpu_init+0x6f4/0xe40:
-> allocate_vpe_l1_table at drivers/irqchip/irq-gic-v3-its.c:2818
-> (inlined by) its_cpu_init_lpis at drivers/irqchip/irq-gic-v3-its.c:3138
-> (inlined by) its_cpu_init at drivers/irqchip/irq-gic-v3-its.c:5166
+Very nice cleanup series to the page table code!
 
-Let me guess: a system with more than a single CommonLPIAff group?
+FWIW:
 
-> I've tried to replace GFP_KERNEL flag with GFP_ATOMIC to allocate 
-> memory
-> in this atomic context, and the splat disappears. But after a quick 
-> look
-> at [*], it seems not a good idea to allocate memory within the CPU
-> hotplug notifier. I really don't know much about it, please have a 
-> look.
-> 
-> [*]
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=11e37d357f6ba7a9af850a872396082cc0a0001f
-
-The allocation of the cpumask is pretty benign, and could either be
-allocated upfront for all RDs (and freed on detecting that we share
-the same CommonLPIAff group) or made atomic.
-
-The much bigger issue is the alloc_pages call just after. Allocating 
-this
-upfront probably is the wrong thing to do, as you are likely to allocate
-way too much memory, even if you free it quickly afterwards.
-
-At this stage, I'd rather we turn this into an atomic allocation. A 
-notifier
-is just another atomic context, and if this fails at such an early 
-stage,
-then the CPU is unlikely to continue booting...
-
-Would you like to write a patch for this? Given that you have tested
-something, it probably already exists. Or do you want me to do it?
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Reviewed-by: Pekka Enberg <penberg@kernel.org>
