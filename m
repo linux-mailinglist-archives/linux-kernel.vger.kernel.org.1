@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C683920D687
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CFC20D67B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731889AbgF2TU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:20:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33194 "EHLO mail.kernel.org"
+        id S1732130AbgF2TU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:20:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732111AbgF2TUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732110AbgF2TUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Jun 2020 15:20:18 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4575525474;
-        Mon, 29 Jun 2020 15:43:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4729225477;
+        Mon, 29 Jun 2020 15:43:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593445430;
-        bh=Zsuzx71pZooDjmFzEE3YE2X6XtW6hgWY+zfdN6AS70g=;
+        s=default; t=1593445431;
+        bh=CPoLbO4bEUspwUnycH2PlRBtiaWpwvB983rVPZ/hEcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v0Nu6K+OEJVExLKLL7rpCLasa0XaH3lmQ1C8ca/nFrtZLaoNzIOcky1dtA7FAJ3sQ
-         /y8qKXP0mpkAFZmgZBsleJLqdqhISOGFuDHlGFrFQrhHN7iUbxpg5VIpRGOmdcCjsI
-         kh4xAypyTDM8O70xXPm9/6T8Nms/fSoh0GDOkdJo=
+        b=y+7l2+0WYoU9szJpNIxihGJolRW/KBQ9XBbWzO08y/gjVSDSaAZXaVB9nw+rtTzhF
+         OsQmtFPEYxqnKRbAhaQYhdB+kA1rrIm3gc1yO1d0x4s3EavdW/XSHxqRrYv0eB5AWs
+         GfNfltxR5Z2Pb6nu6b2IWDgbfqhZNN2dcvkZ8WiA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        yuu ichii <byahu140@heisei.be>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+Cc:     Xiaoyao Li <xiaoyao.li@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.9 176/191] ACPI: sysfs: Fix pm_profile_attr type
-Date:   Mon, 29 Jun 2020 11:39:52 -0400
-Message-Id: <20200629154007.2495120-177-sashal@kernel.org>
+Subject: [PATCH 4.9 177/191] KVM: X86: Fix MSR range of APIC registers in X2APIC mode
+Date:   Mon, 29 Jun 2020 11:39:53 -0400
+Message-Id: <20200629154007.2495120-178-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629154007.2495120-1-sashal@kernel.org>
 References: <20200629154007.2495120-1-sashal@kernel.org>
@@ -50,96 +51,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Xiaoyao Li <xiaoyao.li@intel.com>
 
-commit e6d701dca9893990d999fd145e3e07223c002b06 upstream.
+commit bf10bd0be53282183f374af23577b18b5fbf7801 upstream.
 
-When running a kernel with Clang's Control Flow Integrity implemented,
-there is a violation that happens when accessing
-/sys/firmware/acpi/pm_profile:
+Only MSR address range 0x800 through 0x8ff is architecturally reserved
+and dedicated for accessing APIC registers in x2APIC mode.
 
-$ cat /sys/firmware/acpi/pm_profile
-0
-
-$ dmesg
-...
-[   17.352564] ------------[ cut here ]------------
-[   17.352568] CFI failure (target: acpi_show_profile+0x0/0x8):
-[   17.352572] WARNING: CPU: 3 PID: 497 at kernel/cfi.c:29 __cfi_check_fail+0x33/0x40
-[   17.352573] Modules linked in:
-[   17.352575] CPU: 3 PID: 497 Comm: cat Tainted: G        W         5.7.0-microsoft-standard+ #1
-[   17.352576] RIP: 0010:__cfi_check_fail+0x33/0x40
-[   17.352577] Code: 48 c7 c7 50 b3 85 84 48 c7 c6 50 0a 4e 84 e8 a4 d8 60 00 85 c0 75 02 5b c3 48 c7 c7 dc 5e 49 84 48 89 de 31 c0 e8 7d 06 eb ff <0f> 0b 5b c3 00 00 cc cc 00 00 cc cc 00 85 f6 74 25 41 b9 ea ff ff
-[   17.352577] RSP: 0018:ffffaa6dc3c53d30 EFLAGS: 00010246
-[   17.352578] RAX: 331267e0c06cee00 RBX: ffffffff83d85890 RCX: ffffffff8483a6f8
-[   17.352579] RDX: ffff9cceabbb37c0 RSI: 0000000000000082 RDI: ffffffff84bb9e1c
-[   17.352579] RBP: ffffffff845b2bc8 R08: 0000000000000001 R09: ffff9cceabbba200
-[   17.352579] R10: 000000000000019d R11: 0000000000000000 R12: ffff9cc947766f00
-[   17.352580] R13: ffffffff83d6bd50 R14: ffff9ccc6fa80000 R15: ffffffff845bd328
-[   17.352582] FS:  00007fdbc8d13580(0000) GS:ffff9cce91ac0000(0000) knlGS:0000000000000000
-[   17.352582] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   17.352583] CR2: 00007fdbc858e000 CR3: 00000005174d0000 CR4: 0000000000340ea0
-[   17.352584] Call Trace:
-[   17.352586]  ? rev_id_show+0x8/0x8
-[   17.352587]  ? __cfi_check+0x45bac/0x4b640
-[   17.352589]  ? kobj_attr_show+0x73/0x80
-[   17.352590]  ? sysfs_kf_seq_show+0xc1/0x140
-[   17.352592]  ? ext4_seq_options_show.cfi_jt+0x8/0x8
-[   17.352593]  ? seq_read+0x180/0x600
-[   17.352595]  ? sysfs_create_file_ns.cfi_jt+0x10/0x10
-[   17.352596]  ? tlbflush_read_file+0x8/0x8
-[   17.352597]  ? __vfs_read+0x6b/0x220
-[   17.352598]  ? handle_mm_fault+0xa23/0x11b0
-[   17.352599]  ? vfs_read+0xa2/0x130
-[   17.352599]  ? ksys_read+0x6a/0xd0
-[   17.352601]  ? __do_sys_getpgrp+0x8/0x8
-[   17.352602]  ? do_syscall_64+0x72/0x120
-[   17.352603]  ? entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   17.352604] ---[ end trace 7b1fa81dc897e419 ]---
-
-When /sys/firmware/acpi/pm_profile is read, sysfs_kf_seq_show is called,
-which in turn calls kobj_attr_show, which gets the ->show callback
-member by calling container_of on attr (casting it to struct
-kobj_attribute) then calls it.
-
-There is a CFI violation because pm_profile_attr is of type
-struct device_attribute but kobj_attr_show calls ->show expecting it
-to be from struct kobj_attribute. CFI checking ensures that function
-pointer types match when doing indirect calls. Fix pm_profile_attr to
-be defined in terms of kobj_attribute so there is no violation or
-mismatch.
-
-Fixes: 362b646062b2 ("ACPI: Export FADT pm_profile integer value to userspace")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1051
-Reported-by: yuu ichii <byahu140@heisei.be>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Cc: 3.10+ <stable@vger.kernel.org> # 3.10+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 0105d1a52640 ("KVM: x2apic interface to lapic")
+Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+Message-Id: <20200616073307.16440-1-xiaoyao.li@intel.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Reviewed-by: Jim Mattson <jmattson@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/acpi/sysfs.c | 4 ++--
+ arch/x86/kvm/x86.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/sysfs.c b/drivers/acpi/sysfs.c
-index 7502441b14000..764786cfb0d94 100644
---- a/drivers/acpi/sysfs.c
-+++ b/drivers/acpi/sysfs.c
-@@ -843,13 +843,13 @@ static void __exit interrupt_stats_exit(void)
- }
- 
- static ssize_t
--acpi_show_profile(struct device *dev, struct device_attribute *attr,
-+acpi_show_profile(struct kobject *kobj, struct kobj_attribute *attr,
- 		  char *buf)
- {
- 	return sprintf(buf, "%d\n", acpi_gbl_FADT.preferred_profile);
- }
- 
--static const struct device_attribute pm_profile_attr =
-+static const struct kobj_attribute pm_profile_attr =
- 	__ATTR(pm_profile, S_IRUGO, acpi_show_profile, NULL);
- 
- static ssize_t hotplug_enabled_show(struct kobject *kobj,
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 0f66f7dd89384..6b7faa14c27bb 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -2304,7 +2304,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 		return kvm_mtrr_set_msr(vcpu, msr, data);
+ 	case MSR_IA32_APICBASE:
+ 		return kvm_set_apic_base(vcpu, msr_info);
+-	case APIC_BASE_MSR ... APIC_BASE_MSR + 0x3ff:
++	case APIC_BASE_MSR ... APIC_BASE_MSR + 0xff:
+ 		return kvm_x2apic_msr_write(vcpu, msr, data);
+ 	case MSR_IA32_TSCDEADLINE:
+ 		kvm_set_lapic_tscdeadline_msr(vcpu, data);
+@@ -2576,7 +2576,7 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 	case MSR_IA32_APICBASE:
+ 		msr_info->data = kvm_get_apic_base(vcpu);
+ 		break;
+-	case APIC_BASE_MSR ... APIC_BASE_MSR + 0x3ff:
++	case APIC_BASE_MSR ... APIC_BASE_MSR + 0xff:
+ 		return kvm_x2apic_msr_read(vcpu, msr_info->index, &msr_info->data);
+ 		break;
+ 	case MSR_IA32_TSCDEADLINE:
 -- 
 2.25.1
 
