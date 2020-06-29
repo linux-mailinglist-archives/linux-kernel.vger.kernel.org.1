@@ -2,202 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D61520E3AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B53520E55F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387585AbgF2VQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:16:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42390 "EHLO mail.kernel.org"
+        id S2403799AbgF2VgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:36:16 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:33481 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729938AbgF2SzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:55:15 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726869AbgF2Skn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:40:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593456043; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=MMgpD5DCLQ6JjRpMGo318xv/+oipR7QB8aPXFQoSC2I=; b=VCAl77z4c2Yw0uwrj5anPBR+fJRd3a3E+5q6FwIM5E2fWRS1Gy9hiN/hxk6B25cr2+JwZCAt
+ yiWl6XGml7FpdjxrV/VhdqZLPO1qvnyRqc92RPVMJkO7QJmPTPqFwOxort9kxJzTNVgv8MT0
+ u0ax27SW84XAkU3yNN2hEljfVlM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5efa0e694c9690533a5f0fc1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 15:53:13
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8BDA9C433B1; Mon, 29 Jun 2020 15:53:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98FF325553;
-        Mon, 29 Jun 2020 15:55:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593446115;
-        bh=T879Ggz8zg9MIuGjLYvLFAyf/Cw5E5Q2TNLL9+LsFGs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VD6lE4OQAwgAcV/r79S6WbDG8VFlAhNjk0j8QFi8ZFBpWwKVgCrqPZV9Wep+U/UYH
-         pysOPC1mKE6Ns7g3DJzMm1OVG2dtMEOM0TnbQ69mLQ2sJuGiLP9lAvLZ3OfHMwAnzO
-         Y9sL4ld7XsjkGASSKxp4JeovS4t5d1+8DGDoBViw=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 106/135] ALSA: usb-audio: Clean up mixer element list traverse
-Date:   Mon, 29 Jun 2020 11:52:40 -0400
-Message-Id: <20200629155309.2495516-107-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629155309.2495516-1-sashal@kernel.org>
-References: <20200629155309.2495516-1-sashal@kernel.org>
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 467E3C433CA;
+        Mon, 29 Jun 2020 15:53:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 467E3C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv3 0/7] System Cache support for GPU and required SMMU support
+Date:   Mon, 29 Jun 2020 21:22:43 +0530
+Message-Id: <cover.1593344119.git.saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.229-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.4.229-rc1
-X-KernelTest-Deadline: 2020-07-01T15:53+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+Some hardware variants contain a system cache or the last level
+cache(llc). This cache is typically a large block which is shared
+by multiple clients on the SOC. GPU uses the system cache to cache
+both the GPU data buffers(like textures) as well the SMMU pagetables.
+This helps with improved render performance as well as lower power
+consumption by reducing the bus traffic to the system memory.
 
-[ Upstream commit 8c558076c740e8009a96c6fdc3d4245dde62be77 ]
+The system cache architecture allows the cache to be split into slices
+which then be used by multiple SOC clients. This patch series is an
+effort to enable and use two of those slices perallocated for the GPU,
+one for the GPU data buffers and another for the GPU SMMU hardware
+pagetables.
 
-Introduce a new macro for iterating over mixer element list for
-avoiding the open codes in many places.  Also the open-coded
-container_of() and the forced cast to struct usb_mixer_elem_info are
-replaced with another simple macro, too.
+Patch 1 adds a init_context_bank implementation hook to set SCTLR.HUPCF.
+Patch 2,3,6,7 adds system cache support in SMMU and GPU driver.
+Patch 4 and 5 are minor cleanups for arm-smmu impl.
 
-No functional changes but just readability improvement.
+Changes in v3:
+ * Fix domain attribute setting to before iommu_attach_device()
+ * Fix few code style and checkpatch warnings
+ * Rebase on top of Jordan's latest split pagetables and per-instance
+   pagetables support [1][2]
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/usb/mixer.c          | 20 +++++++++-----------
- sound/usb/mixer.h          |  6 ++++++
- sound/usb/mixer_quirks.c   |  2 +-
- sound/usb/mixer_scarlett.c |  6 ++----
- 4 files changed, 18 insertions(+), 16 deletions(-)
+Changes in v2:
+ * Addressed review comments and rebased on top of Jordan's split
+   pagetables series
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index eb98e60e57335..c29931cd461fc 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -2330,9 +2330,9 @@ void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid)
- {
- 	struct usb_mixer_elem_list *list;
- 
--	for (list = mixer->id_elems[unitid]; list; list = list->next_id_elem) {
-+	for_each_mixer_elem(list, mixer, unitid) {
- 		struct usb_mixer_elem_info *info =
--			(struct usb_mixer_elem_info *)list;
-+			mixer_elem_list_to_info(list);
- 		/* invalidate cache, so the value is read from the device */
- 		info->cached = 0;
- 		snd_ctl_notify(mixer->chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
-@@ -2343,7 +2343,7 @@ void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid)
- static void snd_usb_mixer_dump_cval(struct snd_info_buffer *buffer,
- 				    struct usb_mixer_elem_list *list)
- {
--	struct usb_mixer_elem_info *cval = (struct usb_mixer_elem_info *)list;
-+	struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
- 	static char *val_types[] = {"BOOLEAN", "INV_BOOLEAN",
- 				    "S8", "U8", "S16", "U16"};
- 	snd_iprintf(buffer, "    Info: id=%i, control=%i, cmask=0x%x, "
-@@ -2369,8 +2369,7 @@ static void snd_usb_mixer_proc_read(struct snd_info_entry *entry,
- 				mixer->ignore_ctl_error);
- 		snd_iprintf(buffer, "Card: %s\n", chip->card->longname);
- 		for (unitid = 0; unitid < MAX_ID_ELEMS; unitid++) {
--			for (list = mixer->id_elems[unitid]; list;
--			     list = list->next_id_elem) {
-+			for_each_mixer_elem(list, mixer, unitid) {
- 				snd_iprintf(buffer, "  Unit: %i\n", list->id);
- 				if (list->kctl)
- 					snd_iprintf(buffer,
-@@ -2400,19 +2399,19 @@ static void snd_usb_mixer_interrupt_v2(struct usb_mixer_interface *mixer,
- 		return;
- 	}
- 
--	for (list = mixer->id_elems[unitid]; list; list = list->next_id_elem)
-+	for_each_mixer_elem(list, mixer, unitid)
- 		count++;
- 
- 	if (count == 0)
- 		return;
- 
--	for (list = mixer->id_elems[unitid]; list; list = list->next_id_elem) {
-+	for_each_mixer_elem(list, mixer, unitid) {
- 		struct usb_mixer_elem_info *info;
- 
- 		if (!list->kctl)
- 			continue;
- 
--		info = (struct usb_mixer_elem_info *)list;
-+		info = mixer_elem_list_to_info(list);
- 		if (count > 1 && info->control != control)
- 			continue;
- 
-@@ -2632,7 +2631,7 @@ int snd_usb_mixer_suspend(struct usb_mixer_interface *mixer)
- 
- static int restore_mixer_value(struct usb_mixer_elem_list *list)
- {
--	struct usb_mixer_elem_info *cval = (struct usb_mixer_elem_info *)list;
-+	struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
- 	int c, err, idx;
- 
- 	if (cval->cmask) {
-@@ -2668,8 +2667,7 @@ int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
- 	if (reset_resume) {
- 		/* restore cached mixer values */
- 		for (id = 0; id < MAX_ID_ELEMS; id++) {
--			for (list = mixer->id_elems[id]; list;
--			     list = list->next_id_elem) {
-+			for_each_mixer_elem(list, mixer, id) {
- 				if (list->resume) {
- 					err = list->resume(list);
- 					if (err < 0)
-diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-index 545d99b09706b..004d99037210f 100644
---- a/sound/usb/mixer.h
-+++ b/sound/usb/mixer.h
-@@ -52,6 +52,12 @@ struct usb_mixer_elem_list {
- 	usb_mixer_elem_resume_func_t resume;
- };
- 
-+/* iterate over mixer element list of the given unit id */
-+#define for_each_mixer_elem(list, mixer, id)	\
-+	for ((list) = (mixer)->id_elems[id]; (list); (list) = (list)->next_id_elem)
-+#define mixer_elem_list_to_info(list) \
-+	container_of(list, struct usb_mixer_elem_info, head)
-+
- struct usb_mixer_elem_info {
- 	struct usb_mixer_elem_list head;
- 	unsigned int control;	/* CS or ICN (high byte) */
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index 723b535ca2ec5..5d6af9c861ad9 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -1170,7 +1170,7 @@ void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
- 	int unitid = 12; /* SamleRate ExtensionUnit ID */
- 
- 	list_for_each_entry(mixer, &chip->mixer_list, list) {
--		cval = (struct usb_mixer_elem_info *)mixer->id_elems[unitid];
-+		cval = mixer_elem_list_to_info(mixer->id_elems[unitid]);
- 		if (cval) {
- 			snd_usb_mixer_set_ctl_value(cval, UAC_SET_CUR,
- 						    cval->control << 8,
-diff --git a/sound/usb/mixer_scarlett.c b/sound/usb/mixer_scarlett.c
-index 7438e7c4a842d..2876cd9b35b38 100644
---- a/sound/usb/mixer_scarlett.c
-+++ b/sound/usb/mixer_scarlett.c
-@@ -287,8 +287,7 @@ static int scarlett_ctl_switch_put(struct snd_kcontrol *kctl,
- 
- static int scarlett_ctl_resume(struct usb_mixer_elem_list *list)
- {
--	struct usb_mixer_elem_info *elem =
--		container_of(list, struct usb_mixer_elem_info, head);
-+	struct usb_mixer_elem_info *elem = mixer_elem_list_to_info(list);
- 	int i;
- 
- 	for (i = 0; i < elem->channels; i++)
-@@ -447,8 +446,7 @@ static int scarlett_ctl_enum_put(struct snd_kcontrol *kctl,
- 
- static int scarlett_ctl_enum_resume(struct usb_mixer_elem_list *list)
- {
--	struct usb_mixer_elem_info *elem =
--		container_of(list, struct usb_mixer_elem_info, head);
-+	struct usb_mixer_elem_info *elem = mixer_elem_list_to_info(list);
- 
- 	if (elem->cached)
- 		snd_usb_set_cur_mix_value(elem, 0, 0, *elem->cache_val);
+[1] https://lore.kernel.org/patchwork/cover/1264446/
+[2] https://lore.kernel.org/patchwork/cover/1264460/
+
+Jordan Crouse (1):
+  iommu/arm-smmu: Add a init_context_bank implementation hook
+
+Sai Prakash Ranjan (4):
+  iommu/io-pgtable-arm: Add support to use system cache
+  iommu/arm-smmu: Add domain attribute for system cache
+  iommu: arm-smmu-impl: Remove unwanted extra blank lines
+  iommu: arm-smmu-impl: Convert to use of_match_node() for qcom impl
+
+Sharat Masetty (2):
+  drm/msm: rearrange the gpu_rmw() function
+  drm/msm/a6xx: Add support for using system cache(LLC)
+
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 82 +++++++++++++++++++++++++
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.h   |  3 +
+ drivers/gpu/drm/msm/adreno/adreno_gpu.c | 23 ++++++-
+ drivers/gpu/drm/msm/msm_drv.c           |  8 +++
+ drivers/gpu/drm/msm/msm_drv.h           |  1 +
+ drivers/gpu/drm/msm/msm_gpu.h           |  5 +-
+ drivers/gpu/drm/msm/msm_iommu.c         |  3 +
+ drivers/gpu/drm/msm/msm_mmu.h           |  4 ++
+ drivers/iommu/arm-smmu-impl.c           | 13 ++--
+ drivers/iommu/arm-smmu-qcom.c           | 13 ++++
+ drivers/iommu/arm-smmu.c                | 46 +++++++++-----
+ drivers/iommu/arm-smmu.h                | 13 ++++
+ drivers/iommu/io-pgtable-arm.c          |  7 ++-
+ include/linux/io-pgtable.h              |  4 ++
+ include/linux/iommu.h                   |  1 +
+ 15 files changed, 198 insertions(+), 28 deletions(-)
+
 -- 
-2.25.1
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
