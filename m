@@ -2,93 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA9C20E45A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7FF620E384
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390416AbgF2VYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:24:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729502AbgF2SuQ (ORCPT
+        id S2390359AbgF2VPC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 29 Jun 2020 17:15:02 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:55692 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726912AbgF2S4r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:50:16 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5DCC031C40
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:50:16 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x3so2747961pfo.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:50:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=IvtcfFZZb6MrwnG6pfelExB/xyAxufFTua0HopUMxCU=;
-        b=H/jEqMD1SdPz6aA0pAK8ExCaF3JVkU35Md8uqDiJLGEEGf7E5Leit4kCJJ1irK9uIb
-         Tzx6RKVhPjKznVV634fxBlhD9fMVYiRVb/MmZRnN9Qq5ikDNYxyzq0YNseNiceylR7tL
-         KYLHl0LE6ur7y11jNaH7Ugj8sFCWRn9rw3XDdJkWG8mJcxCo5sWLxNL+NBMxJqEqaUwi
-         X+X/M1/BWx0+c504Rm7O3KDFBHmrznaS9OK5h5UYz0C3uA0aJwmrlVLO7AODVCASBl3i
-         QN6Raks5jplfCGtxAE++JPFO42hrsDclow1zfk89aWp55h09EMI+Qx8SZzMJ+w39iIkn
-         Splg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=IvtcfFZZb6MrwnG6pfelExB/xyAxufFTua0HopUMxCU=;
-        b=B1dL7z6CseH3QFtCM5PoymrN1WvE+/PR9x/BWSs5UB/ysduiO6WvQJLLEsbtX12jmc
-         ynqnuczVIYUso1QgcZj+K3vRitwBtSoliNrEXb3eVZq+24m+/675G6UV/eC7yFM73DjC
-         ha076JXsi+972uuHVNFLf4HJVobFCX0APTa8kNgjnbysZr22yGBNqzCiGqmaSertL23I
-         do5XLQmz5jW8Ggbyg3wfJ75xmvHXpC5TfvlTlMZBNN2On5hKlcIQcNaMq1HpYw0LTexl
-         F2Bl2T8P7VrofOIoQHz8Sfe2MlG0av9QwrJQKIje0PiwIyDHuqNEd+7iBztPIp/itSjT
-         plNQ==
-X-Gm-Message-State: AOAM532WjAC/L2B3dT80OcRfGpR8B7vCE2J7FMWZ7nRCt55njwINkr/1
-        7AzV6RofrXpED5vsWjbSLePZbQ==
-X-Google-Smtp-Source: ABdhPJxL3kQ0LFQSbczS6Y5Fq3oezIBxASxtVF6xl94kQKNiE4hpG9cpR01wPsXtOn/372mJgk3tKA==
-X-Received: by 2002:a63:525a:: with SMTP id s26mr11270037pgl.155.1593456616190;
-        Mon, 29 Jun 2020 11:50:16 -0700 (PDT)
-Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id x22sm406823pfr.11.2020.06.29.11.50.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 11:50:15 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 11:50:15 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Su Hui <sh_def@163.com>
-cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm: remove the redundancy code
-In-Reply-To: <20200629173047.GA38128@ubuntu>
-Message-ID: <alpine.DEB.2.22.394.2006291149040.1030250@chino.kir.corp.google.com>
-References: <20200629173047.GA38128@ubuntu>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Mon, 29 Jun 2020 14:56:47 -0400
+Received: from marcel-macpro.fritz.box (p5b3d2638.dip0.t-ipconnect.de [91.61.38.56])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 23289CECDA;
+        Mon, 29 Jun 2020 21:06:40 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH] dt-bindings: net: bluetooth: realtek: Fix uart-has-rtscts
+ example
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20200629180545.2879272-1-martin.blumenstingl@googlemail.com>
+Date:   Mon, 29 Jun 2020 20:56:45 +0200
+Cc:     devicetree <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Alistair Francis <alistair@alistair23.me>, anarsoul@gmail.com,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <8BBD6F0B-DE92-4241-999E-ED26040E891B@holtmann.org>
+References: <20200629180545.2879272-1-martin.blumenstingl@googlemail.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Jun 2020, Su Hui wrote:
+Hi Martin,
 
-> remove the redundancy code, the zone_start_pfn
-> is assigned from zone->zone_start_pfn
-> Signed-off-by: Su Hui <sh_def@163.com>
-
-I don't think this is redundant, it's used by memory hotplug when onlining 
-new memory.
-
-> ---
->  mm/page_alloc.c | 2 --
->  1 file changed, 2 deletions(-)
+> uart-has-rtscts is a boolean property. These are defined as present
+> (which means that this property evaluates to "true") or absent (which
+> means that this property evaluates to "false"). Remove the numeric value
+> from the example to make it comply with the boolean property bindings.
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 3c4eb750a199..3372a8c9fbc4 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6215,8 +6215,6 @@ void __meminit init_currently_empty_zone(struct zone *zone,
->  	if (zone_idx > pgdat->nr_zones)
->  		pgdat->nr_zones = zone_idx;
->  
-> -	zone->zone_start_pfn = zone_start_pfn;
-> -
->  	mminit_dprintk(MMINIT_TRACE, "memmap_init",
->  			"Initialising map node %d zone %lu pfns %lu -> %lu\n",
->  			pgdat->node_id,
+> Fixes: 1cc2d0e021f867 ("dt-bindings: net: bluetooth: Add rtl8723bs-bluetooth")
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> ---
+> Documentation/devicetree/bindings/net/realtek-bluetooth.yaml | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+
+patch has been applied to bluetooth-next tree.
+
+Regards
+
+Marcel
+
