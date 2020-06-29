@@ -2,63 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD98420E66B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D34420E871
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731954AbgF2VrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:47:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56780 "EHLO mail.kernel.org"
+        id S2404852AbgF2WG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 18:06:58 -0400
+Received: from muru.com ([72.249.23.125]:59938 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726741AbgF2Sfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:35:44 -0400
-Subject: Re: [GIT PULL] Crypto Fixes for 5.8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593450914;
-        bh=Sf3fgStsrUyF1JZW9gNQ9fUsCF7HtLMfWRNqJtTJmaA=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=V6P5V5YEAio5SN5KUVGZa+DAnvllREp7oNvQPH+NCFl8fgTZHq9LjCdp9YiA9rgcK
-         K+JZJ7tuMWbBYZ0i3RJQXGcpc3W2Aj7wysKN/qhphDV15heN1wmAE+geGzQog6127H
-         8KLNggj2diWH5zUqPHjx4Ak6UWofeG9kp9fYBD5s=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200629021627.GA13792@gondor.apana.org.au>
-References: <20190916084901.GA20338@gondor.apana.org.au>
- <20190923050515.GA6980@gondor.apana.org.au>
- <20191202062017.ge4rz72ki3vczhgb@gondor.apana.org.au>
- <20191214084749.jt5ekav5o5pd2dcp@gondor.apana.org.au>
- <20200115150812.mo2eycc53lbsgvue@gondor.apana.org.au>
- <20200213033231.xjwt6uf54nu26qm5@gondor.apana.org.au>
- <20200408061513.GA23636@gondor.apana.org.au>
- <20200611040544.GA27603@gondor.apana.org.au>
- <20200621082303.GA30729@gondor.apana.org.au>
- <20200629021627.GA13792@gondor.apana.org.au>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200629021627.GA13792@gondor.apana.org.au>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
-X-PR-Tracked-Commit-Id: e04ec0de61c1eb9693179093e83ab8ca68a30d08
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2cfa46dadd203eef88cc70131df7a81ebc34b8ff
-Message-Id: <159345091425.2382.6853137988813099953.pr-tracker-bot@kernel.org>
-Date:   Mon, 29 Jun 2020 17:15:14 +0000
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+        id S1726112AbgF2SfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:35:14 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id B266381B7;
+        Mon, 29 Jun 2020 17:17:04 +0000 (UTC)
+Date:   Mon, 29 Jun 2020 10:16:09 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        bcousson@baylibre.com, Linux-OMAP <linux-omap@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>
+Subject: Re: [PATCH v2] arm: dts: am335x-pocketbeagle: add gpio-line-names
+Message-ID: <20200629171609.GW37466@atomide.com>
+References: <20200618182921.GA61509@x1>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200618182921.GA61509@x1>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 29 Jun 2020 12:16:27 +1000:
+* Drew Fustini <drew@beagleboard.org> [200618 11:30]:
+> The BeagleBoard.org PocketBeagle has P1 and P2 headers [0] which expose
+> many of the TI AM3358 SoC balls to stacking expansion boards called
+> "capes", or to other external connections like jumper wires connected
+> to a breadboard.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+Thanks applying into omap-for-v5.9/dt.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2cfa46dadd203eef88cc70131df7a81ebc34b8ff
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+Tony
