@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA9D20D450
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B628F20D44E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730405AbgF2THP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:07:15 -0400
-Received: from mga17.intel.com ([192.55.52.151]:62621 "EHLO mga17.intel.com"
+        id S1730653AbgF2THM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:07:12 -0400
+Received: from mga17.intel.com ([192.55.52.151]:62624 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729064AbgF2TGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730752AbgF2TGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Jun 2020 15:06:32 -0400
-IronPort-SDR: o4TYOTXhqg3RgA9L97IlRf6f3E9noCLc8rNkVbfrm23brw1ypOHL2pdW/F74vL1/Wg1u83RqFG
- PV4z0qVH8Phw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="126075739"
+IronPort-SDR: AUWlgaVCG97hPzzYVPxWPhOJjNJ/FshjfmmxFasgw+3y1Okg7TpTcWdngRHPw7n1YRBPNNdbvX
+ LeXHPqVrcIIQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="126075741"
 X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
-   d="scan'208";a="126075739"
+   d="scan'208";a="126075741"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 02:20:43 -0700
-IronPort-SDR: cOzZ3MveNN8ZkbfE9/UZ7zDb6zrOiJ4QiAtskA+98Zcgjn20GDDQ8C0kndkJhIstM5YOhvkhfM
- Qw858FEfr2/w==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 02:20:45 -0700
+IronPort-SDR: NMLhYEMSCaor3fmiTKY4DLeY2S9czCd0u1QDK/s0P0UzoaY3PzkXjXnU+sddJjszp0SxhTSfIH
+ RE1Vx/02LIfA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
-   d="scan'208";a="303001190"
+   d="scan'208";a="303001198"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.73])
-  by fmsmga004.fm.intel.com with ESMTP; 29 Jun 2020 02:20:42 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 29 Jun 2020 02:20:43 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/6] perf scripts python: exported-sql-viewer.py: Fix zero id in call tree 'Find' result
-Date:   Mon, 29 Jun 2020 12:19:54 +0300
-Message-Id: <20200629091955.17090-6-adrian.hunter@intel.com>
+Subject: [PATCH 6/6] perf scripts python: exported-sql-viewer.py: Fix time chart call tree
+Date:   Mon, 29 Jun 2020 12:19:55 +0300
+Message-Id: <20200629091955.17090-7-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200629091955.17090-1-adrian.hunter@intel.com>
 References: <20200629091955.17090-1-adrian.hunter@intel.com>
@@ -42,8 +42,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using ctrl-F ('Find') would not find 'unknown' because it matches id zero.
-Fix by excluding id zero from selection.
+Using Python version 3.8.2 and PySide2 version 5.14.0, time chart call tree
+would not expand the tree to the result. Fix by using setExpanded().
 
 Example:
  $ perf record -e intel_pt//u uname
@@ -58,35 +58,52 @@ Example:
  2020-06-26 15:32:15.549716 Done
  $ python3 ~/libexec/perf-core/scripts/python/exported-sql-viewer.py perf.data.db
 
- Select: Reports -> Call Tree
- Press: Ctrl-F
- Enter: unknown
- Press: Enter
+ Select: Charts -> Time chart by CPU
+ Move mouse over middle of chart
+ Right-click and select Show Call Tree
 
- Before: displays 'unknown' not found
- After: tree is expanded to line showing 'unknown'
+ Before: displays Call Tree but not expanded to selected time
+ After: displays Call Tree expanded to selected time
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Fixes: ae8b887c00d3f ("perf scripts python: exported-sql-viewer.py: Add call tree")
+Fixes: e69d5df75d74d ("perf scripts python: exported-sql-viewer.py: Add ability for Call tree to open at a specified task and time")
 Cc: stable@vger.kernel.org
 ---
- tools/perf/scripts/python/exported-sql-viewer.py | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/perf/scripts/python/exported-sql-viewer.py | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/tools/perf/scripts/python/exported-sql-viewer.py b/tools/perf/scripts/python/exported-sql-viewer.py
-index e0c90aeff15e..0f295055ac6b 100755
+index 0f295055ac6b..7daa8bb70a5a 100755
 --- a/tools/perf/scripts/python/exported-sql-viewer.py
 +++ b/tools/perf/scripts/python/exported-sql-viewer.py
-@@ -964,7 +964,8 @@ class CallTreeModel(CallGraphModelBase):
- 						" FROM calls"
- 						" INNER JOIN call_paths ON calls.call_path_id = call_paths.id"
- 						" INNER JOIN symbols ON call_paths.symbol_id = symbols.id"
--						" WHERE symbols.name" + match +
-+						" WHERE calls.id <> 0"
-+						" AND symbols.name" + match +
- 						" ORDER BY comm_id, thread_id, call_time, calls.id")
+@@ -1130,6 +1130,7 @@ class CallTreeWindow(TreeWindowBase):
+ 				child = self.model.index(row, 0, parent)
+ 				if child.internalPointer().dbid == dbid:
+ 					found = True
++					self.view.setExpanded(parent, True)
+ 					self.view.setCurrentIndex(child)
+ 					parent = child
+ 					break
+@@ -1142,6 +1143,7 @@ class CallTreeWindow(TreeWindowBase):
+ 				return
+ 			last_child = None
+ 			for row in xrange(n):
++				self.view.setExpanded(parent, True)
+ 				child = self.model.index(row, 0, parent)
+ 				child_call_time = child.internalPointer().call_time
+ 				if child_call_time < time:
+@@ -1154,9 +1156,11 @@ class CallTreeWindow(TreeWindowBase):
+ 			if not last_child:
+ 				if not found:
+ 					child = self.model.index(0, 0, parent)
++					self.view.setExpanded(parent, True)
+ 					self.view.setCurrentIndex(child)
+ 				return
+ 			found = True
++			self.view.setExpanded(parent, True)
+ 			self.view.setCurrentIndex(last_child)
+ 			parent = last_child
  
- 	def FindPath(self, query):
 -- 
 2.17.1
 
