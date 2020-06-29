@@ -2,98 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A7120E446
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2317F20E511
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391005AbgF2VXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:23:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44620 "EHLO mx2.suse.de"
+        id S1730092AbgF2VcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:32:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729588AbgF2SvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:51:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A8E8FAD2C;
-        Mon, 29 Jun 2020 18:12:58 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 811B91E12E7; Mon, 29 Jun 2020 20:12:58 +0200 (CEST)
-Date:   Mon, 29 Jun 2020 20:12:58 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] Revert "fs: Do not check if there is a fsnotify watcher
- on pseudo inodes"
-Message-ID: <20200629181258.GI26507@quack2.suse.cz>
-References: <7b4aa1e985007c6d582fffe5e8435f8153e28e0f.camel@redhat.com>
- <CAOQ4uxg8E-im=B6L0PQNaTTKdtxVAO=MSJki7kxq875ME4hOLw@mail.gmail.com>
- <20200629130915.GF26507@quack2.suse.cz>
- <CAOQ4uxhdOMbn9vL_PAGKLtriVzkjwBkuEgbdB5+uH2ZM6uA97w@mail.gmail.com>
- <20200629144145.GA3183@techsingularity.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629144145.GA3183@techsingularity.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728718AbgF2SlK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:41:10 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA1A6255C6;
+        Mon, 29 Jun 2020 18:15:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593454514;
+        bh=IBzxuR0hFcqeAgG2EU4dUDO26QpO4vvo3eIUQ7aMYKs=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=HhFbS7Xj84k5nI21HMV4EP97C8ujn6/pwl4GBB890EsnHh3ZXTOLzkKgzqeZl81WU
+         Xijs/8HCFr6FhZk9osR4uMa+tVN+OsJjzUheuC352EhRUC14A0dbpu4dyacGK2brPJ
+         ZP7SQkQ9NYQ3oZ7m0FAZXPHq8rzV3OnVtt3UpK/Q=
+Date:   Mon, 29 Jun 2020 19:15:11 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>, Takashi Iwai <tiwai@suse.de>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        moderated for non-subscribers <alsa-devel@alsa-project.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <a9f59f30-8cf2-ea82-567c-1706fd64fe62@infradead.org>
+References: <a9f59f30-8cf2-ea82-567c-1706fd64fe62@infradead.org>
+Subject: Re: [PATCH -next] ASoC: Documentation: fix reference to renamed source file
+Message-Id: <159345450675.54191.15555131185550091270.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 29-06-20 15:41:45, Mel Gorman wrote:
-> This reverts commit e9c15badbb7b ("fs: Do not check if there is a
-> fsnotify watcher on pseudo inodes"). The commit intended to eliminate
-> fsnotify-related overhead for pseudo inodes but it is broken in
-> concept. inotify can receive events of pipe files under /proc/X/fd and
-> chromium relies on close and open events for sandboxing. Maxim Levitsky
-> reported the following
+On Sun, 28 Jun 2020 20:23:33 -0700, Randy Dunlap wrote:
+> sound/soc/soc-io.c was merged into sound/soc/soc-component.c, so fixup
+> the Documentation to use the updated file name.
 > 
->   Chromium starts as a white rectangle, shows few white rectangles that
->   resemble its notifications and then crashes.
-> 
->   The stdout output from chromium:
-> 
->   [mlevitsk@starship ~]$chromium-freeworld
->   mesa: for the   --simplifycfg-sink-common option: may only occur zero or one times!
->   mesa: for the   --global-isel-abort option: may only occur zero or one times!
->   [3379:3379:0628/135151.440930:ERROR:browser_switcher_service.cc(238)] XXX Init()
->   ../../sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc:**CRASHING**:seccomp-bpf failure in syscall 0072
->   Received signal 11 SEGV_MAPERR 0000004a9048
-> 
-> Crashes are not universal but even if chromium does not crash, it certainly
-> does not work properly. While filtering just modify and access might be
-> safe, the benefit is not worth the risk hence the revert.
-> 
-> Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
-> Fixes: e9c15badbb7b ("fs: Do not check if there is a fsnotify watcher on pseudo inodes")
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> Error: Cannot open file ../sound/soc/soc-io.c
+> WARNING: kernel-doc '../scripts/kernel-doc -rst -enable-lineno ../sound/soc/soc-io.c' failed with return code 1
 
-Thanks for the revert Mel. I can see Linus already picked it up so we are
-done.
+Applied to
 
-								Honza
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> ---
->  fs/file_table.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/file_table.c b/fs/file_table.c
-> index 65603502fed6..656647f9575a 100644
-> --- a/fs/file_table.c
-> +++ b/fs/file_table.c
-> @@ -230,7 +230,7 @@ struct file *alloc_file_pseudo(struct inode *inode, struct vfsmount *mnt,
->  		d_set_d_op(path.dentry, &anon_ops);
->  	path.mnt = mntget(mnt);
->  	d_instantiate(path.dentry, inode);
-> -	file = alloc_file(&path, flags | FMODE_NONOTIFY, fops);
-> +	file = alloc_file(&path, flags, fops);
->  	if (IS_ERR(file)) {
->  		ihold(inode);
->  		path_put(&path);
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks!
+
+[1/1] ASoC: Documentation: fix reference to renamed source file
+      commit: 4946cd45ef665d99074796fdd8ce04ba37ce1bdf
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
