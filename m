@@ -2,99 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B911720D26F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D96B20D254
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726015AbgF2StI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
+        id S1728937AbgF2Ssb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729136AbgF2Srm (ORCPT
+        with ESMTP id S1729343AbgF2Sro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:47:42 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C001C02E2C4;
-        Mon, 29 Jun 2020 07:01:28 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id e3so1342915qvo.10;
-        Mon, 29 Jun 2020 07:01:28 -0700 (PDT)
+        Mon, 29 Jun 2020 14:47:44 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312E9C02E2C6
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:01:41 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id h5so16653259wrc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:01:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8FrjxWdY/Gjwce8t0JyeJsnYTMhQlskObJO/oLUWzfo=;
-        b=KsYeoNtN/hmKD60koJPvKXhY1HT5rh0BdsIymjK2OY+Ah5csm67fWOMInZoSB5MyiF
-         z81tpEOU7gbEs2Eu9dK1IU73/ldLFTcOuXQ4NQt1zxjMaUlUH9xpuPmQkDZyG2XpHE5A
-         z0rDQ6F3p6odfLFvjQ20/v+vqn3osPhCyUtrTurdqBrAHPO36wwugYL1OqGKXGdazN2M
-         p5mNNLqMsIqkd1lea0NNKZvGNZ4NvI4uksXON6N73LrjpsMxdX6M9+heVdl/zTyGvkYj
-         tkHXxI8XU7hiVfWyn9RhwdGCF2zdf8eMUPHFh6FNadOyOkvVyTEcnpjW7aa7VVLEWYLN
-         vdxg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=542naEdYkdwVfUzvqH+aC9YM376E3GIWXppavzrS/u4=;
+        b=EyHDUEEFWn9yVK28+Hgzis259S8xuw43nD/Kg+npWsOctFyY7oszfTuquPbZFQ1HHB
+         EmW7Y2DjQ10Tg3SaXiSTTKfal6ejUHL/zlDla+u4Q3sAaEiUFUs6aE15BAKMSQOMF6tv
+         rSu60mDOxCvQUXYI2e9dLCkt08apIBll62dI5E+LmBDdvifni3ou19LQmKPUqkblwvyn
+         8x3deH+l1r/KOiSleREKnrsG1ahqQmGmmon/NyVU2TbKlc3/Z3wb2oAmWRUAB5EhF60m
+         05qGxt60rv/QALyEDWgxPxLT6rfA/ngDjNYC/RYmu1dYKbQ2RzskINX3fE7a0Csk0UFn
+         tgOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8FrjxWdY/Gjwce8t0JyeJsnYTMhQlskObJO/oLUWzfo=;
-        b=DSuuW0+07wcgDzTyrYqX0uyN8GZtYZA9b0ZFzEyTViLNb4h6pZE597I9G0VIgucvJD
-         aiZeyxbU/LSSBjt/pL+KcMGE7PdanaXo0F2JQdC4l7Q+lwLAbtqljTLF5jCwAHMlBPUx
-         g9V1dJ5kIS/ynUdt8Uj9EbrQvD1UKTOBhjBgT3ZyiKXpXLYea3P9JO587LRoRz2KeeNv
-         eZqifAnr1Wkk1Tbua5iQLkIIx1PjQ4rLVNJNpBwRZBFoa/yWLwkUM8sbJjjbKMZOzgjN
-         W751EaDIWYcQSSdewozHh8vpCX0MUn8gZqR6oLzx/ggkpNe6LzEx+ImM9X0Jc6Xo6gRe
-         H7ow==
-X-Gm-Message-State: AOAM531JKlq/ZGAplHoVs4tch6+PMhfQcqxtbGk2MjY0gdNj9heTXIcP
-        cO3qNZhciqnutr86w2breH3RRck7yxyKPa0VQlQ=
-X-Google-Smtp-Source: ABdhPJwRvnHK4e9FuZZ286EO2eHunvWxUS+jw1hxD70l+wfbFL9aDwHZRKLC21a2KPKCyOwmNUkOhP18WuRSaAVXDjg=
-X-Received: by 2002:ad4:4cc3:: with SMTP id i3mr8130354qvz.114.1593439286277;
- Mon, 29 Jun 2020 07:01:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=542naEdYkdwVfUzvqH+aC9YM376E3GIWXppavzrS/u4=;
+        b=BGK7gjlPCkXh6R4LJq9JsGaIF+drgOpau6xQmuYq3hR+vgDXlUtu4aoyQyElT0++MC
+         jZUpgojEP+NmoN9sZKsG0U4F/8i8BCaJKd4bFJtOnMyNCdgvL5JnxXuiHS1q6hZjW1M2
+         L15cdHn+F7LrM2rccUrC4oBF9ZkosftWFMs9HBRcUduGoqIuCWp431LOjvH4ME/QYTq6
+         zY8en3r+h2/O5SJ++RYOLhbkaBTPGvN3O1DWijSLknPES/846GAELBLWEngH9wiL5HDT
+         JDRyYXyEXYeIVtf/bI2wHwUbutRHV08YJPP+1prIJk7ZQ8zuL7mLTZIor+8aG/VqwAm8
+         bjPw==
+X-Gm-Message-State: AOAM533VXEl2XvvBdMsPOwWP5aZN/JxerCd7jpKhJsygBAGi5kc+t9Ia
+        SgUwUOqbbMjuIRFavCewIDcmBQ==
+X-Google-Smtp-Source: ABdhPJyPSo9CxDFKlpX0USRTe74IGxi3ZCgTem7f2aHVNbKECSpsX/29GQmLi6yCxzm/QN24uf/aUw==
+X-Received: by 2002:a05:6000:12c5:: with SMTP id l5mr18374864wrx.219.1593439299864;
+        Mon, 29 Jun 2020 07:01:39 -0700 (PDT)
+Received: from dell ([2.27.35.144])
+        by smtp.gmail.com with ESMTPSA id o1sm52473800wrw.20.2020.06.29.07.01.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 07:01:39 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 15:01:37 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Subject: Re: [PATCH 4/5] mfd: sprd-sc27xx-spi: Fix divide by zero when
+ allocating register offset/mask
+Message-ID: <20200629140137.GK177734@dell>
+References: <20200629123215.1014747-1-lee.jones@linaro.org>
+ <20200629123215.1014747-5-lee.jones@linaro.org>
+ <20200629130644.GU3334@localhost>
 MIME-Version: 1.0
-References: <20200627143453.31835-1-rppt@kernel.org>
-In-Reply-To: <20200627143453.31835-1-rppt@kernel.org>
-From:   Pekka Enberg <penberg@gmail.com>
-Date:   Mon, 29 Jun 2020 17:01:14 +0300
-Message-ID: <CAOJsxLE47WP9aMY3nh=E7C1a_esHt=sBFWCnsVA2umZ7TZ6TTA@mail.gmail.com>
-Subject: Re: [PATCH 0/8] mm: cleanup usage of <asm/pgalloc.h>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Joerg Roedel <joro@8bytes.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-alpha@vger.kernel.org,
-        "list@ebiederm.org:DOCUMENTATION <linux-doc@vger.kernel.org>,
-        list@ebiederm.org:MEMORY MANAGEMENT <linux-mm@kvack.org>," 
-        <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        ia64 <linux-ia64@vger.kernel.org>,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
-        openrisc@lists.librecores.org, sparclinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200629130644.GU3334@localhost>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 27, 2020 at 5:35 PM Mike Rapoport <rppt@kernel.org> wrote:
-> Most architectures have very similar versions of pXd_alloc_one() and
-> pXd_free_one() for intermediate levels of page table.
-> These patches add generic versions of these functions in
-> <asm-generic/pgalloc.h> and enable use of the generic functions where
-> appropriate.
+On Mon, 29 Jun 2020, Johan Hovold wrote:
 
-Very nice cleanup series to the page table code!
+> On Mon, Jun 29, 2020 at 01:32:14PM +0100, Lee Jones wrote:
+> > Since ddata->irqs[] is already zeroed when allocated by devm_kcalloc() and
+> > dividing 0 by anything is still 0, there is no need to re-assign
+> > ddata->irqs[i].* values.  Instead, it should be safe to begin at 1.
+> > 
+> > This fixes the following W=1 warning:
+> > 
+> >  drivers/mfd/sprd-sc27xx-spi.c:255 sprd_pmic_probe() debug: sval_binop_unsigned: divide by zero
+> > 
+> > Cc: Orson Zhai <orsonzhai@gmail.com>
+> > Cc: Baolin Wang <baolin.wang7@gmail.com>
+> > Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/mfd/sprd-sc27xx-spi.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
+> > index c305e941e435c..694a7d429ccff 100644
+> > --- a/drivers/mfd/sprd-sc27xx-spi.c
+> > +++ b/drivers/mfd/sprd-sc27xx-spi.c
+> > @@ -251,7 +251,7 @@ static int sprd_pmic_probe(struct spi_device *spi)
+> >  		return -ENOMEM;
+> >  
+> >  	ddata->irq_chip.irqs = ddata->irqs;
+> > -	for (i = 0; i < pdata->num_irqs; i++) {
+> > +	for (i = 1; i < pdata->num_irqs; i++) {
+> >  		ddata->irqs[i].reg_offset = i / pdata->num_irqs;
+> >  		ddata->irqs[i].mask = BIT(i % pdata->num_irqs);
+> >  	}
+> 
+> This doesn't look right either.
+> 
+> First, the loop is never executed if num_irqs is zero.
 
-FWIW:
+The point of the patch is that 0 entries are never processed.
 
-Reviewed-by: Pekka Enberg <penberg@kernel.org>
+However, what I appear to have overlooked is that BIT(0 % x) is not 0,
+it's 1.
+
+> Second, the current code looks bogus too as reg_offset is always set to
+> zero and mask to BIT(i)...
+
+Heh.  I wonder if/how this was tested.
+
+I'm going to wait to hear from the authors before attempting to fix
+this again.
+
+Baolin, Could you please clarify this for us please?
+
+--
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
