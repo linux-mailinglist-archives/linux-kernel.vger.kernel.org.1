@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829D520E70F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF0920E6F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404633AbgF2Vx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:53:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56786 "EHLO mail.kernel.org"
+        id S2391515AbgF2Vw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:52:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726612AbgF2Sfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:35:38 -0400
+        id S1726630AbgF2Sfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:35:39 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A384247C7;
-        Mon, 29 Jun 2020 15:22:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B9A4247CA;
+        Mon, 29 Jun 2020 15:22:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593444133;
-        bh=qk3PqaYN3K8ht8hxfcYu2z1uz6TSo+5efZS26xagav0=;
+        s=default; t=1593444135;
+        bh=MouZSTVrUh0LDNHZw9RYHNyEcfZHloCjp7rQlYscy9Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MAzbI5hUwtxWqWOBjaiQ5Z0qV2LR+jj0DChZ5qcqa+s476OiZOEai4vgt0TM7V+hk
-         ccpoi4Hg7XMdgWHYbDQCDDyS+givmW+GIBUapDuxIdeUpcVo8wZ8om62JavuSXVAEL
-         YUhrfLyauB90quixT14Ce18he93TGvV0VmhwgIok=
+        b=XH8p8jSRkJ+jfTF/dRoMV6i2WLIPNkNjiW7oRa2V2DRgVBMcXyfGrNj2A7BG//0zF
+         x+XA3PpESEFIp0IUfQq6R666UI6VQK0ikQ+UvNMNDAEQMIRlqcdkYhqIxllQO0chAu
+         gliNhtui64tM8f3VIDp/IGindt7PfRMkuBM0dwAA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Robin Gong <yibin.gong@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.7 240/265] arm64: dts: imx8mn-ddr4-evk: correct ldo1/ldo2 voltage range
-Date:   Mon, 29 Jun 2020 11:17:53 -0400
-Message-Id: <20200629151818.2493727-241-sashal@kernel.org>
+Subject: [PATCH 5.7 242/265] tracing: Fix event trigger to accept redundant spaces
+Date:   Mon, 29 Jun 2020 11:17:55 -0400
+Message-Id: <20200629151818.2493727-243-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629151818.2493727-1-sashal@kernel.org>
 References: <20200629151818.2493727-1-sashal@kernel.org>
@@ -51,53 +50,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Gong <yibin.gong@nxp.com>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-commit cfb12c8952f617df58d73d24161e539a035d82b0 upstream.
+commit 6784beada631800f2c5afd567e5628c843362cee upstream.
 
-Correct ldo1 voltage range from wrong high group(3.0V~3.3V) to low group
-(1.6V~1.9V) because the ldo1 should be 1.8V. Actually, two voltage groups
-have been supported at bd718x7-regulator driver, hence, just corrrect the
-voltage range to 1.6V~3.3V. For ldo2@0.8V, correct voltage range too.
-Otherwise, ldo1 would be kept @3.0V and ldo2@0.9V which violate i.mx8mn
-datasheet as the below warning log in kernel:
+Fix the event trigger to accept redundant spaces in
+the trigger input.
 
-[    0.995524] LDO1: Bringing 1800000uV into 3000000-3000000uV
-[    0.999196] LDO2: Bringing 800000uV into 900000-900000uV
+For example, these return -EINVAL
 
-Fixes: 3e44dd09736d ("arm64: dts: imx8mn-ddr4-evk: Add rohm,bd71847 PMIC support")
+echo " traceon" > events/ftrace/print/trigger
+echo "traceon  if common_pid == 0" > events/ftrace/print/trigger
+echo "disable_event:kmem:kmalloc " > events/ftrace/print/trigger
+
+But these are hard to find what is wrong.
+
+To fix this issue, use skip_spaces() to remove spaces
+in front of actual tokens, and set NULL if there is no
+token.
+
+Link: http://lkml.kernel.org/r/159262476352.185015.5261566783045364186.stgit@devnote2
+
+Cc: Tom Zanussi <zanussi@kernel.org>
 Cc: stable@vger.kernel.org
-Signed-off-by: Robin Gong <yibin.gong@nxp.com>
-Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: 85f2b08268c0 ("tracing: Add basic event trigger framework")
+Reviewed-by: Tom Zanussi <zanussi@kernel.org>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/trace/trace_events_trigger.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
-index 2497eebb57393..fe49dbc535e1f 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
-@@ -101,7 +101,7 @@
+diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_events_trigger.c
+index 3a74736da363a..f725802160c0b 100644
+--- a/kernel/trace/trace_events_trigger.c
++++ b/kernel/trace/trace_events_trigger.c
+@@ -216,11 +216,17 @@ static int event_trigger_regex_open(struct inode *inode, struct file *file)
  
- 			ldo1_reg: LDO1 {
- 				regulator-name = "LDO1";
--				regulator-min-microvolt = <3000000>;
-+				regulator-min-microvolt = <1600000>;
- 				regulator-max-microvolt = <3300000>;
- 				regulator-boot-on;
- 				regulator-always-on;
-@@ -109,7 +109,7 @@
+ int trigger_process_regex(struct trace_event_file *file, char *buff)
+ {
+-	char *command, *next = buff;
++	char *command, *next;
+ 	struct event_command *p;
+ 	int ret = -EINVAL;
  
- 			ldo2_reg: LDO2 {
- 				regulator-name = "LDO2";
--				regulator-min-microvolt = <900000>;
-+				regulator-min-microvolt = <800000>;
- 				regulator-max-microvolt = <900000>;
- 				regulator-boot-on;
- 				regulator-always-on;
++	next = buff = skip_spaces(buff);
+ 	command = strsep(&next, ": \t");
++	if (next) {
++		next = skip_spaces(next);
++		if (!*next)
++			next = NULL;
++	}
+ 	command = (command[0] != '!') ? command : command + 1;
+ 
+ 	mutex_lock(&trigger_cmd_mutex);
+@@ -630,8 +636,14 @@ event_trigger_callback(struct event_command *cmd_ops,
+ 	int ret;
+ 
+ 	/* separate the trigger from the filter (t:n [if filter]) */
+-	if (param && isdigit(param[0]))
++	if (param && isdigit(param[0])) {
+ 		trigger = strsep(&param, " \t");
++		if (param) {
++			param = skip_spaces(param);
++			if (!*param)
++				param = NULL;
++		}
++	}
+ 
+ 	trigger_ops = cmd_ops->get_trigger_ops(cmd, trigger);
+ 
+@@ -1368,6 +1380,11 @@ int event_enable_trigger_func(struct event_command *cmd_ops,
+ 	trigger = strsep(&param, " \t");
+ 	if (!trigger)
+ 		return -EINVAL;
++	if (param) {
++		param = skip_spaces(param);
++		if (!*param)
++			param = NULL;
++	}
+ 
+ 	system = strsep(&trigger, ":");
+ 	if (!trigger)
 -- 
 2.25.1
 
