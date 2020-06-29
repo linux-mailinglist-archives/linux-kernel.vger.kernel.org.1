@@ -2,132 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC4F20E53D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03B420E490
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728743AbgF2Vem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:34:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60668 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728598AbgF2Sk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:56 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0108C23E53;
-        Mon, 29 Jun 2020 15:03:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593443004;
-        bh=raL4d33RBba0Q+Amt7jmBy+/u73rlt5v3RwFSVQIRYY=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=qYycy74u4p+VrNz3wJU8piFLUBVQZrNd8YIJ2V5+OiyNijLS+DIk3Tysqkxk+ETl4
-         Imz+y6ajfoESV+TsNjb06OCNnyFWo/z8TBbUKFh6pk0xAgy28AyOY5XR0uoNod8Oki
-         oeTLGo81shimoB2dCesRITTW2XNk8GK8q1B0rTzY=
-Date:   Mon, 29 Jun 2020 08:03:23 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Subject: Re: [PATCH v2] f2fs: avoid readahead race condition
-Message-ID: <20200629150323.GA3293033@google.com>
-References: <20200624012148.180050-1-jaegeuk@kernel.org>
+        id S2390967AbgF2V0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729086AbgF2Smr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:42:47 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35430C02F039
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:06:23 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x3so2496564pfo.9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:06:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3uYMGufQeinwe5TzCeKKQc4KuZ3gyDOI7a8/HUZ8hi0=;
+        b=GFdIes0NaPgVnj0kpIj0DJWvFJui+XGRjSrxTdwTtssM0YlTlRqvSQ7iWqJgxivs2A
+         V2UY7vJQ244YFiWMgNd+uTT2HvN9uH7lm7VK6dM+mFLx0sCmlVTIcQG7NdVcmdqk1sYq
+         KhVb+24qKHDv1EiZiT4Lj8rG+2a3e4c/tjwN8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3uYMGufQeinwe5TzCeKKQc4KuZ3gyDOI7a8/HUZ8hi0=;
+        b=jbVTXcS2cthfwsrHyFTjEgTMJ5sVntYqqekdFtMheR2hJYgPWW7djE3Xz6SywXPAKJ
+         M9cPzgKCQ3LeEkHq5pzPgzsHk0kEHk060pKYkX0HTQy1p/K4CzTAFrXHWD6CX/DDHhAO
+         trc0KqckYkzipozns5I2iOmEVAO0mgVICjS2sI91NwbDaq6bwmSdQ1rVvpW0GAtfKzo8
+         gNUqTjJy+qdGfM4s4oVd2eyJ/GViaOrQiZbJP+/u8YYCrALkWCBZsyM3G7m9F3bgm5NT
+         kO02yunpDRNkbLhfhauxBSkufsCdzoKpdhZ3uBGs+pNJEJJ87kfKmTZl9/sVOxZdB14R
+         HBSg==
+X-Gm-Message-State: AOAM532r/flSeMH1K35uhKF6MsHl0iq9wLEZ4hTr2UkJ9YmDgOuEBnVx
+        3bD8cq+mZ3YVWRrY0HgCPIhhuA==
+X-Google-Smtp-Source: ABdhPJwmJHfhNQEGW2fCn0Phxn0U1ZsG2g/MWF2WFv30oub1N/KkasH2Yc0MVXRNzjzpcl4R2bsE8A==
+X-Received: by 2002:a63:e017:: with SMTP id e23mr10765487pgh.125.1593443182549;
+        Mon, 29 Jun 2020 08:06:22 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f23sm244869pja.8.2020.06.29.08.06.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 08:06:21 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 08:06:20 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Will Deacon <will@kernel.org>, Dave Martin <Dave.Martin@arm.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, X86 ML <x86@kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 05/17] ctype: Work around Clang
+ -mbranch-protection=none bug
+Message-ID: <202006290806.3BDE2A8@keescook>
+References: <20200629061840.4065483-1-keescook@chromium.org>
+ <20200629061840.4065483-6-keescook@chromium.org>
+ <CAMj1kXE+toCd=Bx-zw7D9bvDRNB2aPn5-_7CY7MOKcVGA-azVg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200624012148.180050-1-jaegeuk@kernel.org>
+In-Reply-To: <CAMj1kXE+toCd=Bx-zw7D9bvDRNB2aPn5-_7CY7MOKcVGA-azVg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If two readahead threads having same offset enter in readpages, every read
-IOs are split and issued to the disk which giving lower bandwidth.
+On Mon, Jun 29, 2020 at 10:15:47AM +0200, Ard Biesheuvel wrote:
+> On Mon, 29 Jun 2020 at 08:18, Kees Cook <keescook@chromium.org> wrote:
+> >
+> > In preparation for building efi/libstub with -mbranch-protection=none
+> > (EFI does not support branch protection features[1]), add no-op code
+> > to work around a Clang bug that emits an unwanted .note.gnu.property
+> > section for object files without code[2].
+> >
+> > [1] https://lore.kernel.org/lkml/CAMj1kXHck12juGi=E=P4hWP_8vQhQ+-x3vBMc3TGeRWdQ-XkxQ@mail.gmail.com
+> > [2] https://bugs.llvm.org/show_bug.cgi?id=46480
+> >
+> > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Dave Martin <Dave.Martin@arm.com>
+> > Cc: clang-built-linux@googlegroups.com
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  lib/ctype.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/lib/ctype.c b/lib/ctype.c
+> > index c819fe269eb2..21245ed57d90 100644
+> > --- a/lib/ctype.c
+> > +++ b/lib/ctype.c
+> > @@ -36,3 +36,13 @@ _L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,     /* 224-239 */
+> >  _L,_L,_L,_L,_L,_L,_L,_P,_L,_L,_L,_L,_L,_L,_L,_L};      /* 240-255 */
+> >
+> >  EXPORT_SYMBOL(_ctype);
+> > +
+> > +/*
+> > + * Clang will generate .note.gnu.property sections for object files
+> > + * without code, even in the presence of -mbranch-protection=none.
+> > + * To work around this, define an unused static function.
+> > + * https://bugs.llvm.org/show_bug.cgi?id=46480
+> > + */
+> > +#ifdef CONFIG_CC_IS_CLANG
+> > +void __maybe_unused __clang_needs_code_here(void) { }
+> > +#endif
+> > --
+> > 2.25.1
+> >
+> 
+> I take it we don't need this horrible hack if we build the EFI stub
+> with branch protections and filter out the .note.gnu.property section
+> explicitly?
+> 
+> Sorry to backpedal, but that is probably a better approach after all,
+> given that the instructions don't hurt, and we will hopefully be able
+> to arm them once UEFI (as well as PE/COFF) gets around to describing
+> this in a way that both the firmware and the OS can consume.
 
-This patch tries to avoid redundant readahead calls.
+How does this look?
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
-v2:
- - add missing code to bypass read
 
- fs/f2fs/data.c  | 18 +++++++++++++++++-
- fs/f2fs/f2fs.h  |  1 +
- fs/f2fs/super.c |  2 ++
- 3 files changed, 20 insertions(+), 1 deletion(-)
+commit 051ef0b75a386c3fe2f216d16246468147a48c5b
+Author: Kees Cook <keescook@chromium.org>
+Date:   Tue Jun 23 18:02:56 2020 -0700
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index d6094b9f3916..9b69a159cc6c 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -2403,6 +2403,7 @@ int f2fs_mpage_readpages(struct address_space *mapping,
- #endif
- 	unsigned max_nr_pages = nr_pages;
- 	int ret = 0;
-+	bool drop_ra = false;
+    efi/libstub: Disable -mbranch-protection
+    
+    In preparation for adding --orphan-handling=warn to more architectures,
+    disable -mbranch-protection, as EFI does not yet support it[1].  This was
+    noticed due to it producing unwanted .note.gnu.property sections (prefixed
+    with .init due to the objcopy build step).
+    
+    However, we must also work around a bug in Clang where the section is
+    still emitted for code-less object files[2], so also remove the section
+    during the objcopy.
+    
+    [1] https://lore.kernel.org/lkml/CAMj1kXHck12juGi=E=P4hWP_8vQhQ+-x3vBMc3TGeRWdQ-XkxQ@mail.gmail.com
+    [2] https://bugs.llvm.org/show_bug.cgi?id=46480
+    
+    Cc: Ard Biesheuvel <ardb@kernel.org>
+    Cc: Arvind Sankar <nivedita@alum.mit.edu>
+    Cc: Atish Patra <atish.patra@wdc.com>
+    Cc: linux-efi@vger.kernel.org
+    Signed-off-by: Kees Cook <keescook@chromium.org>
+
+diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
+index 75daaf20374e..f9f1922f8f28 100644
+--- a/drivers/firmware/efi/libstub/Makefile
++++ b/drivers/firmware/efi/libstub/Makefile
+@@ -18,7 +18,8 @@ cflags-$(CONFIG_X86)		+= -m$(BITS) -D__KERNEL__ \
+ # arm64 uses the full KBUILD_CFLAGS so it's necessary to explicitly
+ # disable the stackleak plugin
+ cflags-$(CONFIG_ARM64)		:= $(subst $(CC_FLAGS_FTRACE),,$(KBUILD_CFLAGS)) \
+-				   -fpie $(DISABLE_STACKLEAK_PLUGIN)
++				   -fpie $(DISABLE_STACKLEAK_PLUGIN) \
++				   $(call cc-option,-mbranch-protection=none)
+ cflags-$(CONFIG_ARM)		:= $(subst $(CC_FLAGS_FTRACE),,$(KBUILD_CFLAGS)) \
+ 				   -fno-builtin -fpic \
+ 				   $(call cc-option,-mno-single-pic-base)
+@@ -66,6 +67,12 @@ lib-$(CONFIG_X86)		+= x86-stub.o
+ CFLAGS_arm32-stub.o		:= -DTEXT_OFFSET=$(TEXT_OFFSET)
+ CFLAGS_arm64-stub.o		:= -DTEXT_OFFSET=$(TEXT_OFFSET)
  
- 	map.m_pblk = 0;
- 	map.m_lblk = 0;
-@@ -2413,13 +2414,25 @@ int f2fs_mpage_readpages(struct address_space *mapping,
- 	map.m_seg_type = NO_CHECK_TYPE;
- 	map.m_may_create = false;
- 
-+	/*
-+	 * Two readahead threads for same address range can cause race condition
-+	 * which fragments sequential read IOs. So let's avoid each other.
-+	 */
-+	if (pages && is_readahead) {
-+		page = list_last_entry(pages, struct page, lru);
-+		if (F2FS_I(inode)->ra_offset == page_index(page))
-+			drop_ra = true;
-+		else
-+			F2FS_I(inode)->ra_offset = page_index(page);
-+	}
++# Even when -mbranch-protection=none is set, Clang will generate a
++# .note.gnu.property for code-less object files (like lib/ctype.c),
++# so work around this by explicitly removing the unwanted section.
++# https://bugs.llvm.org/show_bug.cgi?id=46480
++STUBCOPY_FLAGS-y		+= --remove-section=.note.gnu.property
 +
- 	for (; nr_pages; nr_pages--) {
- 		if (pages) {
- 			page = list_last_entry(pages, struct page, lru);
- 
- 			prefetchw(&page->flags);
- 			list_del(&page->lru);
--			if (add_to_page_cache_lru(page, mapping,
-+			if (drop_ra || add_to_page_cache_lru(page, mapping,
- 						  page_index(page),
- 						  readahead_gfp_mask(mapping)))
- 				goto next_page;
-@@ -2484,6 +2497,9 @@ int f2fs_mpage_readpages(struct address_space *mapping,
- 	BUG_ON(pages && !list_empty(pages));
- 	if (bio)
- 		__f2fs_submit_read_bio(F2FS_I_SB(inode), bio, DATA);
-+
-+	if (pages && is_readahead && !drop_ra)
-+		F2FS_I(inode)->ra_offset = -1;
- 	return pages ? 0 : ret;
- }
- 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 35afa13124b8..a95f84d72a55 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -806,6 +806,7 @@ struct f2fs_inode_info {
- 	struct list_head inmem_pages;	/* inmemory pages managed by f2fs */
- 	struct task_struct *inmem_task;	/* store inmemory task */
- 	struct mutex inmem_lock;	/* lock for inmemory pages */
-+	pgoff_t ra_offset;		/* ongoing readahead offset */
- 	struct extent_tree *extent_tree;	/* cached extent_tree entry */
- 
- 	/* avoid racing between foreground op and gc */
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 0e860186a9c5..6fd2ad43d9e4 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -1011,6 +1011,8 @@ static struct inode *f2fs_alloc_inode(struct super_block *sb)
- 	/* Will be used by directory only */
- 	fi->i_dir_level = F2FS_SB(sb)->dir_level;
- 
-+	fi->ra_offset = -1;
-+
- 	return &fi->vfs_inode;
- }
- 
+ #
+ # For x86, bootloaders like systemd-boot or grub-efi do not zero-initialize the
+ # .bss section, so the .bss section of the EFI stub needs to be included in the
+
 -- 
-2.27.0.111.gc72c7da667-goog
-
+Kees Cook
