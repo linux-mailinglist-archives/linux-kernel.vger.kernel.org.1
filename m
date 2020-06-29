@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804A820DC15
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9287120D631
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730509AbgF2UMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:12:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732883AbgF2TaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:30:21 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1731779AbgF2TSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730984AbgF2TRn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:17:43 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD63C03079B;
+        Mon, 29 Jun 2020 08:37:43 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f09280085fdc63970f65a73.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:2800:85fd:c639:70f6:5a73])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6F3525317;
-        Mon, 29 Jun 2020 15:39:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593445145;
-        bh=kQvr20PH6P7HMgnnOg/6cEQl1b6N7Ru9B3CPfUxmv1w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jxa92TIzw9BIVqyCZsCN5PGvG0xA2Q3t/sZGASgpVdhkjEZoATJYJblaOdVssjozc
-         OyB9jumSTWS5CsYNh8UCpoRLfVS63x0Uw8DFw9CBq+WeBLs6PbvVhIc57w1h0jH3sn
-         aPTNYQb68IRLkU2IogoYhLxtnXKdbUmny5pAfVKE=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     yu kuai <yukuai3@huawei.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 49/78] ARM: imx5: add missing put_device() call in imx_suspend_alloc_ocram()
-Date:   Mon, 29 Jun 2020 11:37:37 -0400
-Message-Id: <20200629153806.2494953-50-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629153806.2494953-1-sashal@kernel.org>
-References: <20200629153806.2494953-1-sashal@kernel.org>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8A1B31EC0281;
+        Mon, 29 Jun 2020 17:37:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1593445058;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=E2Vy1BjgpL7djeeIafMFG4u5IsZeMp6SGkzpkdddWqk=;
+        b=CBoXxLFoMIY5VXcvAjrKeGHkctJgQQ+mpYy95c4ccd0Z87tioA+Bk1XaGXpZgf608oRnP4
+        WbzG9rrLcBktAzNOsrOwzcQC8CIKp04tXZlgE2YypfyeekjI8h9hWQpyLus8riMgcX90WB
+        iXQ8njrtu3RsCR8dpQkSF0SD2QKnOWs=
+Date:   Mon, 29 Jun 2020 17:37:37 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v33 11/21] x86/sgx: Linux Enclave Driver
+Message-ID: <20200629153737.GA32176@zn.tnic>
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+ <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
+ <20200627174335.GC15585@zn.tnic>
+ <20200629152718.GA12312@linux.intel.com>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.186-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.186-rc1
-X-KernelTest-Deadline: 2020-07-01T15:38+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200629152718.GA12312@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: yu kuai <yukuai3@huawei.com>
+On Mon, Jun 29, 2020 at 08:27:19AM -0700, Sean Christopherson wrote:
+> Hmm, I was going to say that SGX_ENCL_INITIALIZED can't be checked until
+> encl->lock is held, but that's not true for this path as mutual exclusion
+> is provided by the SGX_ENCL_IOCTL flag.  So yeah, this can be checked at
+> the same time as SGX_ENCL_CREATED in sgx_ioc_enclave_init().
 
-[ Upstream commit 586745f1598ccf71b0a5a6df2222dee0a865954e ]
+Right, so my point is to have state checks for flags which make sense in
+all ioctl entry points, in order to catch a misuse early. But we're on
+the same page.
 
-if of_find_device_by_node() succeed, imx_suspend_alloc_ocram() doesn't
-have a corresponding put_device(). Thus add a jump target to fix the
-exception handling for this function implementation.
+> ENCLS[EINIT] is interruptible because it has such a high latency, e.g. 50k+
+> cycles on success.  If an IRQ/NMI/SMI becomes pending, EINIT may fail with
+> SGX_UNMASKED_EVENT so that the event can be serviced.
+>
+> The idea behind the double loop is to try EINIT in a tight loop, then back
+> off and sleep for a while before retrying that tight inner loop.
 
-Fixes: 1579c7b9fe01 ("ARM: imx53: Set DDR pins to high impedance when in suspend to RAM.")
-Signed-off-by: yu kuai <yukuai3@huawei.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/arm/mach-imx/pm-imx5.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+That gist of that kinda wants to be in a comment over that double-loop for
+future on-lookers.
 
-diff --git a/arch/arm/mach-imx/pm-imx5.c b/arch/arm/mach-imx/pm-imx5.c
-index 868781fd460c7..14c630c899c5d 100644
---- a/arch/arm/mach-imx/pm-imx5.c
-+++ b/arch/arm/mach-imx/pm-imx5.c
-@@ -301,14 +301,14 @@ static int __init imx_suspend_alloc_ocram(
- 	if (!ocram_pool) {
- 		pr_warn("%s: ocram pool unavailable!\n", __func__);
- 		ret = -ENODEV;
--		goto put_node;
-+		goto put_device;
- 	}
- 
- 	ocram_base = gen_pool_alloc(ocram_pool, size);
- 	if (!ocram_base) {
- 		pr_warn("%s: unable to alloc ocram!\n", __func__);
- 		ret = -ENOMEM;
--		goto put_node;
-+		goto put_device;
- 	}
- 
- 	phys = gen_pool_virt_to_phys(ocram_pool, ocram_base);
-@@ -318,6 +318,8 @@ static int __init imx_suspend_alloc_ocram(
- 	if (virt_out)
- 		*virt_out = virt;
- 
-+put_device:
-+	put_device(&pdev->dev);
- put_node:
- 	of_node_put(node);
- 
+Thx.
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
