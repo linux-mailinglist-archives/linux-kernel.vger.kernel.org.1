@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF9E20D0F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 380F120D0E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726828AbgF2Sfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:35:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56782 "EHLO mail.kernel.org"
+        id S1726858AbgF2Sf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:35:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726311AbgF2SfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:35:24 -0400
+        id S1726408AbgF2Sf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:35:26 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 654DB2470E;
-        Mon, 29 Jun 2020 15:20:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 755CB24729;
+        Mon, 29 Jun 2020 15:20:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593444044;
-        bh=U4K35wrAcyhQtG+Pym2up4Z24wupd2IepHIdhLQYRNc=;
+        s=default; t=1593444049;
+        bh=tVsnTm9/h7OmU9e02FNXpZ30dLcpvq334sbkhXiJcuk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kleQjzIVOyJRC/9u94esXBJpUCyBMFl4FumvG5jhA5BtS03qo/CJK9LB4EO8JHOn6
-         UMUY6jaSgWKVY3uzdCmEmfXcJ8IcrORlb1iO7H/ylszopThGHaUjJm4fjQnlpo+2Dv
-         g5Q9KZGfYfuY4zV6SOCqmhcIEY6omtLuan+LAaGE=
+        b=jO+0ubFfMv5CUYWGJ93BzYQWoYevsyN19d+yqqRVZhj0VfxY0fxyBthgvZUH/10U0
+         t/j0e4/8eM3KX2lMNlKs32nibqi7ueKySq8yl00Zz7JnIScL0Vrn4y2Sa8Z0ZIKJ0X
+         Fa6EzPFpnzbPtvTTuieIQFav/vybYsyOwt+ZoBnQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alexander Lobakin <alobakin@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
+Cc:     Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 151/265] net: qed: fix excessive QM ILT lines consumption
-Date:   Mon, 29 Jun 2020 11:16:24 -0400
-Message-Id: <20200629151818.2493727-152-sashal@kernel.org>
+Subject: [PATCH 5.7 156/265] cxgb4: move PTP lock and unlock to caller in Tx path
+Date:   Mon, 29 Jun 2020 11:16:29 -0400
+Message-Id: <20200629151818.2493727-157-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629151818.2493727-1-sashal@kernel.org>
 References: <20200629151818.2493727-1-sashal@kernel.org>
@@ -51,38 +49,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@marvell.com>
+From: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
 
-[ Upstream commit d434d02f7e7c24c721365fd594ed781acb18e0da ]
+[ Upstream commit 030c98824deaba205787af501a074b3d7f46e32e ]
 
-This is likely a copy'n'paste mistake. The amount of ILT lines to
-reserve for a single VF was being multiplied by the total VFs count.
-This led to a huge redundancy in reservation and potential lines
-drainouts.
+Check for whether PTP is enabled or not at the caller and perform
+locking/unlocking at the caller.
 
-Fixes: 1408cc1fa48c ("qed: Introduce VFs")
-Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
-Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+Fixes following sparse warning:
+sge.c:1641:26: warning: context imbalance in 'cxgb4_eth_xmit' -
+different lock contexts for basic block
+
+Fixes: a456950445a0 ("cxgb4: time stamping interface for PTP")
+Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qed/qed_cxt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/chelsio/cxgb4/sge.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_cxt.c b/drivers/net/ethernet/qlogic/qed/qed_cxt.c
-index 1a636bad717dc..1880aa1d3bb59 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_cxt.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_cxt.c
-@@ -270,7 +270,7 @@ static void qed_cxt_qm_iids(struct qed_hwfn *p_hwfn,
- 		vf_tids += segs[NUM_TASK_PF_SEGMENTS].count;
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+index 6516c45864b35..db8106d9d6edf 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+@@ -1425,12 +1425,10 @@ static netdev_tx_t cxgb4_eth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 
+ 	qidx = skb_get_queue_mapping(skb);
+ 	if (ptp_enabled) {
+-		spin_lock(&adap->ptp_lock);
+ 		if (!(adap->ptp_tx_skb)) {
+ 			skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
+ 			adap->ptp_tx_skb = skb_get(skb);
+ 		} else {
+-			spin_unlock(&adap->ptp_lock);
+ 			goto out_free;
+ 		}
+ 		q = &adap->sge.ptptxq;
+@@ -1444,11 +1442,8 @@ static netdev_tx_t cxgb4_eth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 
+ #ifdef CONFIG_CHELSIO_T4_FCOE
+ 	ret = cxgb_fcoe_offload(skb, adap, pi, &cntrl);
+-	if (unlikely(ret == -ENOTSUPP)) {
+-		if (ptp_enabled)
+-			spin_unlock(&adap->ptp_lock);
++	if (unlikely(ret == -EOPNOTSUPP))
+ 		goto out_free;
+-	}
+ #endif /* CONFIG_CHELSIO_T4_FCOE */
+ 
+ 	chip_ver = CHELSIO_CHIP_VERSION(adap->params.chip);
+@@ -1461,8 +1456,6 @@ static netdev_tx_t cxgb4_eth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 		dev_err(adap->pdev_dev,
+ 			"%s: Tx ring %u full while queue awake!\n",
+ 			dev->name, qidx);
+-		if (ptp_enabled)
+-			spin_unlock(&adap->ptp_lock);
+ 		return NETDEV_TX_BUSY;
  	}
  
--	iids->vf_cids += vf_cids * p_mngr->vf_count;
-+	iids->vf_cids = vf_cids;
- 	iids->tids += vf_tids * p_mngr->vf_count;
+@@ -1481,8 +1474,6 @@ static netdev_tx_t cxgb4_eth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	    unlikely(cxgb4_map_skb(adap->pdev_dev, skb, sgl_sdesc->addr) < 0)) {
+ 		memset(sgl_sdesc->addr, 0, sizeof(sgl_sdesc->addr));
+ 		q->mapping_err++;
+-		if (ptp_enabled)
+-			spin_unlock(&adap->ptp_lock);
+ 		goto out_free;
+ 	}
  
- 	DP_VERBOSE(p_hwfn, QED_MSG_ILT,
+@@ -1630,8 +1621,6 @@ static netdev_tx_t cxgb4_eth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	txq_advance(&q->q, ndesc);
+ 
+ 	cxgb4_ring_tx_db(adap, &q->q, ndesc);
+-	if (ptp_enabled)
+-		spin_unlock(&adap->ptp_lock);
+ 	return NETDEV_TX_OK;
+ 
+ out_free:
+@@ -2365,6 +2354,16 @@ netdev_tx_t t4_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	if (unlikely(qid >= pi->nqsets))
+ 		return cxgb4_ethofld_xmit(skb, dev);
+ 
++	if (is_ptp_enabled(skb, dev)) {
++		struct adapter *adap = netdev2adap(dev);
++		netdev_tx_t ret;
++
++		spin_lock(&adap->ptp_lock);
++		ret = cxgb4_eth_xmit(skb, dev);
++		spin_unlock(&adap->ptp_lock);
++		return ret;
++	}
++
+ 	return cxgb4_eth_xmit(skb, dev);
+ }
+ 
 -- 
 2.25.1
 
