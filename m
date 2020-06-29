@@ -2,126 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CC220D258
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0864420D247
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729016AbgF2Ssh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
+        id S1729242AbgF2SsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:48:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729336AbgF2Sro (ORCPT
+        with ESMTP id S1729348AbgF2Srp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:47:44 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9DCC031C4A
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:27:53 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id o38so13451600qtf.6
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:27:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I+h1WtSND1gZmFF1Lpj+XH5zZAhc+/M8o2aQRQdjh50=;
-        b=vN4jQV/XHQ40iIH2MPATkDhQ9XYk5JOA4Cu18nURwdyM7Ht8324JB4h7QnrcbHSh0R
-         uKKcYQU4Tmo37sWRyrYkZhvqqYzG/9ZXo5l9eyiCVc19l9Dbr/LHunoO8LapcliqcnSD
-         3LhMUJkZ297hLPjw3jyZJv+TWE7c2KvXMhEaZDDuaFMIGXEHIumNwmEWUiJ862xyVmqm
-         MJAfw/iY0wlRX2S10wNuLITTVXcfVN3BLWNyw66SBI6+zrw+HQX3JlHnLtj6AqxbmY24
-         n6CHFe1Ehezl1qZ1Vka9N9dQ4cSLMzyuhl7Gu4Yq6Oi447DXbCbTo6nObrKVcHTc25Se
-         S9Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I+h1WtSND1gZmFF1Lpj+XH5zZAhc+/M8o2aQRQdjh50=;
-        b=VI06QvX5pOONEjdgOWeoevzMZN4juFA7z4PpoEcplEtL6R4vkTLsd6dV0BNdg76vmM
-         WDVNq8b/CnrKrGcX/LkjWDvHpP3d3IspUhE47VIq4pYULL1PKJR6T8qkGW6dkgpuh+VX
-         WO8vHfgeDbpndZfkWeiD2yxN0xJPh2TllmMzkAVCmEpWiBsRpLw50Z6Jqo1MWiR1vpPt
-         +iQ0qi11b5ilpBwEhOmPYziuEXtlNTkOyTwrg4hzq0YWIMfbKwEaUDUWoTSqfGoG3/6C
-         P1zT14jXpBeKZUgQcTi1YfeXKk2pdley4mUUQ+h14VAWMddhyv5RIo9lMMqz6ZrVN9Zl
-         e4OQ==
-X-Gm-Message-State: AOAM533MTXm7X3SyAdw6AADSlvo5bavbbx0ov9lvYz7qw2c40a2Bqwlz
-        Hz/L2euvYbsQ7cNRwdO+OA4gZzdpVjAkvvnhM/Xgqw==
-X-Google-Smtp-Source: ABdhPJwBDrl7Z6joBJSwfnK/ZIszLge5SHZULmIYamE/+wcJ4SgCb9HG2qDHpPbGVSJJDzFUwOdk4bos+M1tWqEEmog=
-X-Received: by 2002:ac8:260b:: with SMTP id u11mr17039578qtu.380.1593451672211;
- Mon, 29 Jun 2020 10:27:52 -0700 (PDT)
+        Mon, 29 Jun 2020 14:47:45 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749F8C031C4D;
+        Mon, 29 Jun 2020 10:31:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=u+6HLVb+cgRR0Hb2dw/N6EBtkK2k556CYS23hEx+WSk=; b=Mej8KfJXpy+djVbbFX8sK8jJ6Z
+        qmYOpW/auxeHHvN0nGfRYth5IAcRg876lllOpE4VARJ29D0oKyOsoi0bKyfm+X43d6SaX/dORAK+H
+        IBXmmidDvtg5ivgR5ptvj/VCPhfVklyCzO9Qw8WSmwhoabgiSwNzykNdVUFKKKnmBg+mOQv/VZ2dM
+        HxW7msrnxH7A3q34gSpsL9dwmABDG1mHHUIBkIuBQnWt4fLn+rHc4gXYmKpMiavbhq3m3SRl0+Gwt
+        V7bLLpjDT7AEryBVpNv/1pkYh7G8F3Gjt94tciTA0TIbAtXeiLPgRJ657daY0n5X0EhUJjSM7CxHI
+        g77vcozQ==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jpxcj-0003Vz-12; Mon, 29 Jun 2020 17:31:18 +0000
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Julia Lawall <julia.lawall@lip6.fr>
+Cc:     Gilles Muller <Gilles.Muller@lip6.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>, cocci@systeme.lip6.fr,
+        Jonathan Corbet <corbet@lwn.net>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] Documentation: Coccinelle: fix typos and command example
+Message-ID: <725b57dd-cfde-a63f-0475-954452761508@infradead.org>
+Date:   Mon, 29 Jun 2020 10:31:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <000000000000107b4605a7bdce7d@google.com> <20200614085321.8740-1-hdanton@sina.com>
- <20200627130205.16900-1-hdanton@sina.com> <20200627222527.GC25301@ziepe.ca> <CACT4Y+ab1q7fON3rkj+FHODPQXDGyP5c0tJt7gbrpmsAAYRb1g@mail.gmail.com>
-In-Reply-To: <CACT4Y+ab1q7fON3rkj+FHODPQXDGyP5c0tJt7gbrpmsAAYRb1g@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 29 Jun 2020 19:27:40 +0200
-Message-ID: <CACT4Y+Zjw=ru-Sqs-V7cP0Exgu7g0jWBXcPeVKnLqpbkS-wDRg@mail.gmail.com>
-Subject: Re: KASAN: use-after-free Read in addr_handler (2)
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        syzkaller <syzkaller@googlegroups.com>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+a929647172775e335941@syzkaller.appspotmail.com>,
-        chuck.lever@oracle.com, Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        parav@mellanox.com, Markus Elfring <Markus.Elfring@web.de>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 4:42 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Sun, Jun 28, 2020 at 12:25 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Sat, Jun 27, 2020 at 09:02:05PM +0800, Hillf Danton wrote:
-> > > > So, to hit this syzkaller one of these must have happened:
-> > > >  1) rdma_addr_cancel() didn't work and the process_one_work() is still
-> > > >     runnable/running
-> > >
-> > > What syzbot reported indicates that the kworker did survive not only
-> > > canceling work but the handler_mutex, despite it's a sync cancel that
-> > > waits for the work to complete.
-> >
-> > The syzbot report doesn't confirm that the cancel work was actaully
-> > called.
-> >
-> > The most likely situation is that it was skipped because of the state
-> > mangling the patch fixes..
-> >
-> > > >  2) The state changed away from RDMA_CM_ADDR_QUERY without doing
-> > > >     rdma_addr_cancel()
-> > >
-> > > The cancel does cover the query state in the reported case, and have
-> > > difficult time working out what's in the patch below preventing the
-> > > work from going across the line the sync cancel draws. That's the
-> > > question we can revisit once there is a reproducer available.
-> >
-> > rdma-cm never seems to get reproducers from syzkaller
->
-> +syzkaller mailing list
->
-> Hi Jason,
->
-> Wonder if there is some systematic issue. Let me double check.
+From: Randy Dunlap <rdunlap@infradead.org>
 
-By scanning bugs at:
-https://syzkaller.appspot.com/upstream
-https://syzkaller.appspot.com/upstream/fixed
+Fix various typos etc. in dev-tools/coccinelle.rst:
 
-I found a significant number of bugs that I would qualify as "rdma-cm"
-and that have reproducers. Here is an incomplete list (I did not get
-to the end):
+- punctuation, grammar, wording
+- add "path/to/file.c" when using Coccinelle to check a single file
 
-https://syzkaller.appspot.com/bug?id=b8febdb3c7c8c1f1b606fb903cee66b21b2fd02f
-https://syzkaller.appspot.com/bug?id=d5222b3e1659e0aea19df562c79f216515740daa
-https://syzkaller.appspot.com/bug?id=c600e111223ce0a20e5f2fb4e9a4ebdff54d7fa6
-https://syzkaller.appspot.com/bug?id=a9796acbdecc1b2ba927578917755899c63c48af
-https://syzkaller.appspot.com/bug?id=95f89b8fb9fdc42e28ad586e657fea074e4e719b
-https://syzkaller.appspot.com/bug?id=8dc0bcd9dd6ec915ba10b3354740eb420884acaa
-https://syzkaller.appspot.com/bug?id=805ad726feb6910e35088ae7bbe61f4125e573b7
-https://syzkaller.appspot.com/bug?id=56b60fb3340c5995373fe5b8eae9e8722a012fc4
-https://syzkaller.appspot.com/bug?id=38d36d1b26b4299bf964d50af4d79688d39ab960
-https://syzkaller.appspot.com/bug?id=25e00dd59f31783f233185cb60064b0ab645310f
-https://syzkaller.appspot.com/bug?id=2f38d7e5312fdd0acc979c5e26ef2ef8f3370996
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: Gilles Muller <Gilles.Muller@lip6.fr>
+Cc: Nicolas Palix <nicolas.palix@imag.fr>
+Cc: Michal Marek <michal.lkml@markovi.net>
+Cc: cocci@systeme.lip6.fr
+---
+ Documentation/dev-tools/coccinelle.rst |   44 +++++++++++------------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
 
-Do you mean some specific subset of bugs by "rdma-cm"? If yes, what is
-that subset?
+--- linux-next-20200629.orig/Documentation/dev-tools/coccinelle.rst
++++ linux-next-20200629/Documentation/dev-tools/coccinelle.rst
+@@ -85,7 +85,7 @@ Four basic modes are defined: ``patch``,
+   file:line:column-column: message
+ 
+ - ``context`` highlights lines of interest and their context in a
+-  diff-like style.Lines of interest are indicated with ``-``.
++  diff-like style. Lines of interest are indicated with ``-``.
+ 
+ - ``org`` generates a report in the Org mode format of Emacs.
+ 
+@@ -119,7 +119,7 @@ For each semantic patch, a commit messag
+ description of the problem being checked by the semantic patch, and
+ includes a reference to Coccinelle.
+ 
+-As any static code analyzer, Coccinelle produces false
++As with any static code analyzer, Coccinelle produces false
+ positives. Thus, reports must be carefully checked, and patches
+ reviewed.
+ 
+@@ -135,18 +135,18 @@ the parallelism, set the J= variable. Fo
+ 
+    make coccicheck MODE=report J=4
+ 
+-As of Coccinelle 1.0.2 Coccinelle uses Ocaml parmap for parallelization,
++As of Coccinelle 1.0.2 Coccinelle uses Ocaml parmap for parallelization;
+ if support for this is detected you will benefit from parmap parallelization.
+ 
+ When parmap is enabled coccicheck will enable dynamic load balancing by using
+-``--chunksize 1`` argument, this ensures we keep feeding threads with work
++``--chunksize 1`` argument. This ensures we keep feeding threads with work
+ one by one, so that we avoid the situation where most work gets done by only
+ a few threads. With dynamic load balancing, if a thread finishes early we keep
+ feeding it more work.
+ 
+ When parmap is enabled, if an error occurs in Coccinelle, this error
+-value is propagated back, the return value of the ``make coccicheck``
+-captures this return value.
++value is propagated back, and the return value of the ``make coccicheck``
++command captures this return value.
+ 
+ Using Coccinelle with a single semantic patch
+ ---------------------------------------------
+@@ -177,13 +177,13 @@ For example, to check drivers/net/wirele
+ To apply Coccinelle on a file basis, instead of a directory basis, the
+ following command may be used::
+ 
+-    make C=1 CHECK="scripts/coccicheck"
++    make C=1 CHECK="scripts/coccicheck" path/to/file.c
+ 
+ To check only newly edited code, use the value 2 for the C flag, i.e.::
+ 
+-    make C=2 CHECK="scripts/coccicheck"
++    make C=2 CHECK="scripts/coccicheck" path/to/file.c
+ 
+-In these modes, which works on a file basis, there is no information
++In these modes, which work on a file basis, there is no information
+ about semantic patches displayed, and no commit message proposed.
+ 
+ This runs every semantic patch in scripts/coccinelle by default. The
+@@ -198,12 +198,12 @@ Debugging Coccinelle SmPL patches
+ 
+ Using coccicheck is best as it provides in the spatch command line
+ include options matching the options used when we compile the kernel.
+-You can learn what these options are by using V=1, you could then
++You can learn what these options are by using V=1; you could then
+ manually run Coccinelle with debug options added.
+ 
+ Alternatively you can debug running Coccinelle against SmPL patches
+-by asking for stderr to be redirected to stderr, by default stderr
+-is redirected to /dev/null, if you'd like to capture stderr you
++by asking for stderr to be redirected to stderr. By default stderr
++is redirected to /dev/null; if you'd like to capture stderr you
+ can specify the ``DEBUG_FILE="file.txt"`` option to coccicheck. For
+ instance::
+ 
+@@ -211,8 +211,8 @@ instance::
+     make coccicheck COCCI=scripts/coccinelle/free/kfree.cocci MODE=report DEBUG_FILE=cocci.err
+     cat cocci.err
+ 
+-You can use SPFLAGS to add debugging flags, for instance you may want to
+-add both --profile --show-trying to SPFLAGS when debugging. For instance
++You can use SPFLAGS to add debugging flags; for instance you may want to
++add both --profile --show-trying to SPFLAGS when debugging. For example
+ you may want to use::
+ 
+     rm -f err.log
+@@ -229,7 +229,7 @@ DEBUG_FILE support is only supported whe
+ --------------------
+ 
+ Coccinelle supports reading .cocciconfig for default Coccinelle options that
+-should be used every time spatch is spawned, the order of precedence for
++should be used every time spatch is spawned. The order of precedence for
+ variables for .cocciconfig is as follows:
+ 
+ - Your current user's home directory is processed first
+@@ -237,7 +237,7 @@ variables for .cocciconfig is as follows
+ - The directory provided with the --dir option is processed last, if used
+ 
+ Since coccicheck runs through make, it naturally runs from the kernel
+-proper dir, as such the second rule above would be implied for picking up a
++proper dir; as such the second rule above would be implied for picking up a
+ .cocciconfig when using ``make coccicheck``.
+ 
+ ``make coccicheck`` also supports using M= targets. If you do not supply
+@@ -260,13 +260,13 @@ If not using the kernel's coccicheck tar
+ order logic of .cocciconfig reading. If using the kernel's coccicheck target,
+ override any of the kernel's .coccicheck's settings using SPFLAGS.
+ 
+-We help Coccinelle when used against Linux with a set of sensible defaults
++We help Coccinelle when used against Linux with a set of sensible default
+ options for Linux with our own Linux .cocciconfig. This hints to coccinelle
+-git can be used for ``git grep`` queries over coccigrep. A timeout of 200
++that git can be used for ``git grep`` queries over coccigrep. A timeout of 200
+ seconds should suffice for now.
+ 
+ The options picked up by coccinelle when reading a .cocciconfig do not appear
+-as arguments to spatch processes running on your system, to confirm what
++as arguments to spatch processes running on your system. To confirm what
+ options will be used by Coccinelle run::
+ 
+       spatch --print-options-only
+@@ -290,7 +290,7 @@ given to it when options are in conflict
+ 
+ Coccinelle supports idutils as well but requires coccinelle >= 1.0.6.
+ When no ID file is specified coccinelle assumes your ID database file
+-is in the file .id-utils.index on the top level of the kernel, coccinelle
++is in the file .id-utils.index on the top level of the kernel. Coccinelle
+ carries a script scripts/idutils_index.sh which creates the database with::
+ 
+     mkid -i C --output .id-utils.index
+@@ -317,7 +317,7 @@ SmPL patch specific options
+ ---------------------------
+ 
+ SmPL patches can have their own requirements for options passed
+-to Coccinelle. SmPL patch specific options can be provided by
++to Coccinelle. SmPL patch-specific options can be provided by
+ providing them at the top of the SmPL patch, for instance::
+ 
+ 	// Options: --no-includes --include-headers
+@@ -327,7 +327,7 @@ SmPL patch Coccinelle requirements
+ 
+ As Coccinelle features get added some more advanced SmPL patches
+ may require newer versions of Coccinelle. If an SmPL patch requires
+-at least a version of Coccinelle, this can be specified as follows,
++at minimum version of Coccinelle, this can be specified as follows,
+ as an example if requiring at least Coccinelle >= 1.0.5::
+ 
+ 	// Requires: 1.0.5
+
