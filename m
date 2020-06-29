@@ -2,114 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD0620D528
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D5320D458
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731207AbgF2TPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:15:17 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:47087 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729413AbgF2TPO (ORCPT
+        id S1730606AbgF2THg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:07:36 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:20206 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730818AbgF2THc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:15:14 -0400
-Received: from mail-qt1-f176.google.com ([209.85.160.176]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MqJuP-1j3RDk2HQp-00nNSp; Mon, 29 Jun 2020 17:08:27 +0200
-Received: by mail-qt1-f176.google.com with SMTP id e12so13043116qtr.9;
-        Mon, 29 Jun 2020 08:08:27 -0700 (PDT)
-X-Gm-Message-State: AOAM532sAB5W/VPKTkLUR4AyavMWVsGao0RwMo+gteq4fYHPXPyfoutQ
-        665YQr8uXaKdWTyCPAVtHS4hP8llk1XsRXqz39Q=
-X-Google-Smtp-Source: ABdhPJyQuqwhfm5xEtb+Xwa0xEiKtz926rq5DKPRj0B3De279sqAWoVcj6OMbI8F3yDTfe5Hmp0EzLxdKp04XA+X8n0=
-X-Received: by 2002:ac8:7587:: with SMTP id s7mr16233441qtq.304.1593443306252;
- Mon, 29 Jun 2020 08:08:26 -0700 (PDT)
+        Mon, 29 Jun 2020 15:07:32 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TF6FTe012597;
+        Mon, 29 Jun 2020 08:10:56 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=wf30wEEJDmil7omMqdUJ1gyyCQzgkjmSEHpL2q5VBoE=;
+ b=Oy3K5Ag63R6JtAm00nxDrEVjL6h1/Afw3pknoXqL+Y2tubs6Lx2PLr+1ShQlDYVSxjOB
+ ZixzxHUd0KnXpvI5jpanGFIm33PC3IWMIlQb1FGDPMWBB7Ad1UtFxmVflnNdPFQdiB1A
+ Xque47MMLImEmvt+FGLn4HZ1EiekmMDFS8s= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 31xpcnmtv7-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 29 Jun 2020 08:10:56 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 29 Jun 2020 08:10:53 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PE6vaM4UOEvaCKBFJZX27g8OE/9OIcJ+yhzaewuvUW4dIdh1BCC6zfxaaFGSB1uDuGBnXAEA7xpvyPqJc2sXk2xhIVpQc+F81BekSECXqIe6urNB2dUkg5ByUG3GjG5/zdMU03gfZwYUmd+mO29VNB13n3jwVmVdt2Botwnz1VYGxhJQF7SyCE6GcGX+/NM1LAeuVON1xdiwvYZdRecndmQA6a8qiFxZtkjjM3zKvq3yy6jyh1V7QsRiOgBqnvx0qdcai83X/a4lo7fJ0tlRGFp2XG/1KIfdpfqBRKqKe4TtQ+QprwQUIlTCsGihVZ0DDlCm8TSxGeBEgCEKJroqKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wf30wEEJDmil7omMqdUJ1gyyCQzgkjmSEHpL2q5VBoE=;
+ b=f5fkZaeau8R3g1OPyc4g8EvGwCW7IKIEjpWGWtOKb95dRR8ok5jYGctZljKnvxE8eFeUZ8CpBLNDLkSq8CQKLKz70iasAhpWb407IJ5dq2uytJpOTg6cH1EeGFIYFy98rNxQGGH/3+iQzG/NMGbA5Z0izAhkJcKkLexJfAa+skNGnAN7b5COfZ2bSSuIbshoe+vwmpzTehG5LLL7gR6ycM/XNjsq+03tn+mQyAYWRyZN5/XSd8f0I2YO+evhnJQd5E5Dag9qdzkHNtmVA+wnE7tNvxtF5jHTADt8IN3L/ZNTqN3Wi7Ou46uA7SDUQIXFOpsEy+3d4qy7kUxsud2yEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wf30wEEJDmil7omMqdUJ1gyyCQzgkjmSEHpL2q5VBoE=;
+ b=AdTkpQJc3LpicXo+wO9dlBFkZnGH5hGSJ4gTVp9x6uaDxyG+uks6WmWoCKiU7PvGEOo7UmiAaRguntICtJWDpNzlZAGFrvaur0oT8PuBIOilqV+5XPF7iF8a82WpGzrTb38g4NxHBy22PDVxmKZph0xfxmPup/4/y77eAv1Utk4=
+Authentication-Results: lists.01.org; dkim=none (message not signed)
+ header.d=none;lists.01.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB3094.namprd15.prod.outlook.com (2603:10b6:a03:ff::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.25; Mon, 29 Jun
+ 2020 15:10:52 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3131.027; Mon, 29 Jun 2020
+ 15:10:52 +0000
+Subject: Re: [bpf] af7ec13833: will-it-scale.per_process_ops -2.5% regression
+To:     kernel test robot <rong.a.chen@intel.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>, <lkp@lists.01.org>
+References: <20200628085032.GT5535@shao2-debian>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <cb4cab43-8f13-dd2a-5c58-855d93c6e790@fb.com>
+Date:   Mon, 29 Jun 2020 08:10:49 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
+In-Reply-To: <20200628085032.GT5535@shao2-debian>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR01CA0025.prod.exchangelabs.com (2603:10b6:a02:80::38)
+ To BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-References: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com>
- <1593410042-10598-5-git-send-email-Anson.Huang@nxp.com> <CAK8P3a2yXFbGxuSRoC5_dYBujnAtVoEMXe50V7QYjPYhqra7nA@mail.gmail.com>
- <DB3PR0402MB39160335642AFBAC4B38C511F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CAK8P3a0CcijnVxJws_kMiaOBbc4Uox40W4=-dX+BG6OeMYtFpw@mail.gmail.com> <DB3PR0402MB39167D9A3897C3CE327EBDDBF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-In-Reply-To: <DB3PR0402MB39167D9A3897C3CE327EBDDBF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 29 Jun 2020 17:08:10 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1cYsgJu+JCrmQw-VQyAKpyOz7fpOf3jBZ7QKc=urUFtw@mail.gmail.com>
-Message-ID: <CAK8P3a1cYsgJu+JCrmQw-VQyAKpyOz7fpOf3jBZ7QKc=urUFtw@mail.gmail.com>
-Subject: Re: [PATCH V3 04/10] clk: imx: Support building SCU clock driver as module
-To:     Anson Huang <anson.huang@nxp.com>
-Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
-        Stefan Agner <stefan.agner@toradex.com>,
-        Peng Fan <peng.fan@nxp.com>, Abel Vesa <abel.vesa@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        Andy Duan <fugang.duan@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:wKgMKK0eUebDi30MowMdmQn02QMB0d3ji+fQ99MNTtuMvfZKqJj
- IGFEYRMy+xVLrwh3WOwQeEr1LKzXFgPeg7rFA2RO8pqbmryQpxnJ1JwGN98DYMQitIbtFDA
- H+w435NjfnbrJwry2unOkb6mjk2P2rkVAmcRlgqA6l7pvXAx06xwWhQkdz/AyWdzP3+6Koq
- S8My9fm5+y7e7qqsvFDUA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:iiPSoLVcnOk=:qoxOSacGPmBIHf5353Yapl
- gndagjhThquKoK9CuFn0RXLqH1ytqqCBv2O7rzoaIV4nHK+9dVhqcMuYUBd5M+6sbNeEXwxi2
- u3MyWGgvXqMqBHHxaSgH6SD2rvap8DjqlJTxXhIbq1YT+Ry8bKv07ZBKZ2kp/9anClzRqvk1d
- N9qZVN0dmdKg2WBIAxWYpBfthLV3wjGrXC4lCw1nbQn5yiyzDx4IvPuhVPxmo7Lvd6Cf+LdJa
- rvTs1te+x8zWObIW7WKrISxPxZgGZGtiphjt4nEDZYxoke9kbYjf2o3VotfQjIEs38yslOZ1D
- z4E9HM61JkWcRcH8LXgM2buDQk53yMrsqgyo909zMIAH9Djr0jYRBTqklewJwEXuQCIe91rgN
- i1ZRa/bEs3gf/w/htk2eh3OUyGo6xZfBR536vqcK5E1qAeJXBBKrAN6b2VH5J1ns+YMe026IY
- ycrfc5x60mZEUIgPOW+7vjasWQY3M32RN2YwwGmUw+XDUqy6SaIxYHKWK91WcpjG6BRbiunwa
- GfixAd7RegewVNZNqQlNFhT285rp0vZbbrySolHEQr2UGYXUGICBdGOUIO1Pm9eYkGtZ+biio
- BJhNlg7dfFIy92SnPGC0GUXXtMjs4efj8pv/TTQ0LQJerHgveYkfI0WBp+zgkQ25kZVHiFVYB
- GMrzRDpVBDw1Naz8wlX/A51F7Ge3JdIvU2wBpXKxcluj5YDBWaI6RKt8mgS/8i6Noet18uytu
- ltKKZHsUjU3S4YdTRGOnP4s+0Fb+36/Hlpt8Vt4NvnqXZBHJ/xkJpeC7Xhe5immPAvD+texNM
- V/oWkPIdsjYEpRo1TLlpA2biPGaMar6SACaHB8Ut45zlKgje3g=
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21cf::11fb] (2620:10d:c090:400::5:c5e6) by BYAPR01CA0025.prod.exchangelabs.com (2603:10b6:a02:80::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20 via Frontend Transport; Mon, 29 Jun 2020 15:10:51 +0000
+X-Originating-IP: [2620:10d:c090:400::5:c5e6]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a0215cae-6e2f-4cbc-36ab-08d81c3e9cc0
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3094:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB30948BA2273CA285FEC1DAA1D36E0@BYAPR15MB3094.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1186;
+X-Forefront-PRVS: 044968D9E1
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4idhr6YpDBdGJYZYJr6/ChqREU+r7dIBIOotAEYjX34ChT8hzURV/qBK/dzUnE5tvMq9J1YPAxlFTYuyeSjM6/JfddOxVajOfsrUiHDGuAR+WzeRyPJZ7WbroMV5zwfoE7iLFUbE2o2GtS/Tza+bedHcozIqnCFq+19vi/47z5+IgGqkXVSJ44CPZGMXoii3cI56BbFLI36R8lzSemHNK/Mxb3a0J5sKRqoPCquO7KmjXr8+8GNvqW3W683SI5p+wp4uLiobY91JEgMI8Avk2+3T3oaYDYPVY3xH/63baWyD0ycPEoujWdpfBaLnLRAzqjyTPhyODpS+36OF2/s5h8m5YUwEHQ7GhBtZ1ssaBYIq9SxgXLJIWj+NHZWrkDFW6p+wcbsjlAy42BvWCPSSobbwsQXhMU+mEFgmiiz3Vbr9BnRzDFWvwBp07kGGoUkYbVmFCCgyM0zrBCP8cGahNQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(366004)(376002)(136003)(396003)(346002)(31696002)(66946007)(66476007)(4326008)(66556008)(31686004)(83380400001)(6916009)(36756003)(966005)(2906002)(86362001)(53546011)(6486002)(316002)(54906003)(52116002)(478600001)(16526019)(186003)(5660300002)(8676002)(2616005)(8936002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: l2ciBUzwUQoyvxxj3yZslnBZ9JOGTTowD90drognwG/mMpcTUiTELewpE23RauhoeqMC+/uavEybRabJ45JPHnQP7NApfTwDhE+la1xtYIK+UErsQlE8sx3Gsztuv6/6J93XdfjZcKIkpfStJGYmi5xCuYsQSg/2Z+jtqaudcG8/w1dz8WLBErUR7QGE9wwt77w3RGc50e0tozrv1qH7tgL7JNRVkp2Gqb78XyKgcO9XU+K4G3VvLaK3RCGTJ+Fbr5zAjxmyhejQtGYYF36wUhlm8e96ix6B5omAup8V0uUbUIja2JTBDxriYRy/9OC3E3eEbroufRQz6k4JhooBGLf+rn5uGbSTJ76Y+jc2WB+MOWgX4dCY7zoqDQCWkm2LHESzpgcTrHX4gBT4pUXyiTWCyQlmbAG6HfRg5pEbaGBNMW322STS9FrS/UpPOL3956HXPksvH9b0WwWoODEMBtUhgjshBGjnrKpMGIzyTMruxxqVqcROeEI3PhGC07wcnXzRZi7bCBx8OjLWOwIVZA==
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0215cae-6e2f-4cbc-36ab-08d81c3e9cc0
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2020 15:10:51.8536
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rbtDDIQ4smyxI89AmnuuEPaxF983dU06nbVyXFTAWhvny3lSIb5zcs0XHpq4iWgo
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3094
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-06-29_15:2020-06-29,2020-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 malwarescore=0 spamscore=0
+ impostorscore=0 bulkscore=0 cotscore=-2147483648 suspectscore=0
+ priorityscore=1501 mlxlogscore=725 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006290103
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 4:52 PM Anson Huang <anson.huang@nxp.com> wrote:
-> > Subject: Re: [PATCH V3 04/10] clk: imx: Support building SCU clock driver as module
-> > On Mon, Jun 29, 2020 at 2:53 PM Anson Huang <anson.huang@nxp.com> wrote:
-> >
-> > Sorry, I misread the patch in multiple ways. First of all, you already put
-> > clk-scu.o and clk-lpcg-scu.o files into a combined loadable module, and I had
-> > only looked at clk-scu.c.
-> >
-> > What I actually meant here was to link clk-scu.o together with clk-imx8qxp.o
-> > (and possibly future chip-specific files) into a loadable module and drop the
-> > export.
->
-> Sorry, could you please advise more details about how to do it in Makefile?
-> I tried below but it looks like NOT working. multiple definition of module_init() error reported.
->
-> obj-$(CONFIG_MXC_CLK_SCU) := clk-imx.o
-> clk-imx-y += clk-scu.o clk-lpcg-scu.o
-> clk-imx-$(CONFIG_CLK_IMX8QXP) += clk-imx8qxp.o clk-imx8qxp-lpcg.o
 
-Right, you can't have multiple module_init() in a module, so what I suggested
-earlier won't work any more as soon as you add a second chip that uses the
-clk-scu driver, and then you have to use separate modules, or some hack
-that calls the init functions one at a time, which is probably worse.
 
-If it's only imx8qxp, you can do it like this:
+On 6/28/20 1:50 AM, kernel test robot wrote:
+> Greeting,
+> 
+> FYI, we noticed a -2.5% regression of will-it-scale.per_process_ops due to commit:
+> 
+> 
+> commit: af7ec13833619e17f03aa73a785a2f871da6d66b ("bpf: Add bpf_skc_to_tcp6_sock() helper")
+> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
 
-obj-$(CONFIG_MXC_CLK_SCU) := clk-imx-scu.o clk-imx-lpcg.o
-clk-imx-scu-y         += clk-scu.o clk-imx8qxp.o
-clk-imx-lpcq-scu-y += clk-lpcg-scu.o clk-imx8qxp-lpcg.o
+One of previous emails claims that
+     commit: 492e639f0c222784e2e0f121966375f641c61b15 ("bpf: Add 
+bpf_seq_printf and bpf_seq_write helpers")
+is reponsible for 2.5% improvement for will-it-scale.per_process_ops, 
+which I believe is false.
 
-If you already know that the scu driver is going to be used in future
-chips, then just stay with what you have now, using a separate module
-per file, exporting the symbols as needed.
+This commit should not cause regression.
 
-        Arnd
+Probably the variation of performance is caused by test environment 
+which you may want to investigate further to reduce false alarming.
+Thanks!
+
+> 
+> in testcase: will-it-scale
+> on test machine: 192 threads Intel(R) Xeon(R) Platinum 9242 CPU @ 2.30GHz with 192G memory
+> with following parameters:
+> 
+> 	nr_task: 16
+> 	mode: process
+> 	test: mmap1
+> 	cpufreq_governor: performance
+> 	ucode: 0x5002f01
+> 
+> test-description: Will It Scale takes a testcase and runs it from 1 through to n parallel copies to see if the testcase will scale. It builds both a process and threads based test in order to see any differences between the two.
+> test-url: https://github.com/antonblanchard/will-it-scale
+> 
+> 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> 
+> 
+> Details are as below:
+[...]
