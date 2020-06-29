@@ -2,197 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7F320D520
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5191420D52C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731004AbgF2TOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:14:50 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29731 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731769AbgF2TO3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:14:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593458061;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EKk9x1ZzFjGFJjDTJMw2AVFBxkCLtkiGAK1b50FnpyI=;
-        b=WATI1aeZOHz9BODvfqaTcBY2W/1jGBnLt5xW4kA4HhoiSHA9WDX/MQIcOHN1lq5hFBx9Qm
-        RcPnzk06yxIDvIqZo4e/FEn6/I9hZvcCNt87YdWz6ZXESnzDa0roqJ+U0wt+J2CamvYbNl
-        ixyG+Wh+wf4uW0iQytHYf/8Q5g5+Bvk=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-374-FXOnTUHOM4eXhKCA6AhhAA-1; Mon, 29 Jun 2020 12:09:07 -0400
-X-MC-Unique: FXOnTUHOM4eXhKCA6AhhAA-1
-Received: by mail-wr1-f69.google.com with SMTP id g14so16716041wrp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:09:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EKk9x1ZzFjGFJjDTJMw2AVFBxkCLtkiGAK1b50FnpyI=;
-        b=LLv0CmCT/fbX/QGAk4mdytBE+LPKlQvmI+WL8zP1+PFo+pHi+6NBVxWB5aNDoEDGPG
-         eMhAmXRFrLN4pv7ZDtdVlzmHAKrt0z27SqM2cXYYpQcfEi3tXBKquQW9XndtAQjmD8su
-         3d3JoN24GVS5wLoINXP5gKHWxgNaBKkbfld9INB7KeZrV9qRPNv6g08LPqg7KchZuRtP
-         a+snnqDxFqOqUz5R/cplLJIakbQjsQZ9ULCxp3/aL26wyr3uqZS/r47pSQA2C0ohpLVU
-         CJwepUFqMTkMduqXqm2iKD+8dKDZ4ux5I5o/9/FDCEg8II39B1CzIm4PBPrIP/j+sBXd
-         YOqg==
-X-Gm-Message-State: AOAM533QtBaxVfXvLmTrhxu5EDsmiUPBlNxGLqVd4uDKNz744hHP8sFh
-        eGCiSO/bU4/zAw4tosL6Rjh9yJaUdgFsGixr0CVvAc4DwOVFdmLo5FoK6EOTjPjeR+um8LHEoT5
-        tso7uL2e+/sh3cdvN6aj+63l5
-X-Received: by 2002:adf:b6a4:: with SMTP id j36mr17963500wre.260.1593446946505;
-        Mon, 29 Jun 2020 09:09:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzDXOCSXxSQZMNZVOBwszvdjERPP6yUs2xp6RZO8HYxWfEU+82mznJ8Ra2CRJJQ8FwgVwFeLw==
-X-Received: by 2002:adf:b6a4:: with SMTP id j36mr17963478wre.260.1593446946277;
-        Mon, 29 Jun 2020 09:09:06 -0700 (PDT)
-Received: from redhat.com (bzq-79-182-31-92.red.bezeqint.net. [79.182.31.92])
-        by smtp.gmail.com with ESMTPSA id j6sm274496wma.25.2020.06.29.09.09.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 09:09:05 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 12:09:01 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Pierre Morel <pmorel@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, jasowang@redhat.com,
-        cohuck@redhat.com, kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
-        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v3 1/1] s390: virtio: let arch accept devices without
- IOMMU feature
-Message-ID: <20200629115952-mutt-send-email-mst@kernel.org>
-References: <1592390637-17441-1-git-send-email-pmorel@linux.ibm.com>
- <1592390637-17441-2-git-send-email-pmorel@linux.ibm.com>
+        id S1731458AbgF2TPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:15:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730567AbgF2TPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:15:15 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F64725584;
+        Mon, 29 Jun 2020 16:09:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593446976;
+        bh=W1dt6kfSnOHTFoS6K7XMXEcOthu54wUoE2DzEwzuUCc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oxrwItvubx0lq7oIN/a7Rq7cYTKxXqo5fqEXmzLXWogl6W9oG5klLLotwLjdgv5qS
+         FznAmT3k1zilakXVbzMjT06uJ/5FUDaZP0tOZISIIzbPdUqTOv1cMt6ZcC9CmRUWM1
+         mdSdiiHj2iIeTTYSOT2dPyZiv32d6Hv2i0vDArdo=
+Date:   Mon, 29 Jun 2020 09:09:34 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: avoid readahead race condition
+Message-ID: <20200629160934.GA1752982@gmail.com>
+References: <20200624012148.180050-1-jaegeuk@kernel.org>
+ <20200629150323.GA3293033@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1592390637-17441-2-git-send-email-pmorel@linux.ibm.com>
+In-Reply-To: <20200629150323.GA3293033@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 12:43:57PM +0200, Pierre Morel wrote:
-> An architecture protecting the guest memory against unauthorized host
-> access may want to enforce VIRTIO I/O device protection through the
-> use of VIRTIO_F_IOMMU_PLATFORM.
-> Let's give a chance to the architecture to accept or not devices
-> without VIRTIO_F_IOMMU_PLATFORM.
-
-I agree it's a bit misleading. Protection is enforced by memory
-encryption, you can't trust the hypervisor to report the bit correctly
-so using that as a securoty measure would be pointless.
-The real gain here is that broken configs are easier to
-debug.
-
-Here's an attempt at a better description:
-
-	On some architectures, guest knows that VIRTIO_F_IOMMU_PLATFORM is
-	required for virtio to function: e.g. this is the case on s390 protected
-	virt guests, since otherwise guest passes encrypted guest memory to devices,
-	which the device can't read. Without VIRTIO_F_IOMMU_PLATFORM the
-	result is that affected memory (or even a whole page containing
-	it is corrupted). Detect and fail probe instead - that is easier
-	to debug.
-
-however, now that we have described what it is (hypervisor
-misconfiguration) I ask a question: can we be sure this will never
-ever work? E.g. what if some future hypervisor gains ability to
-access the protected guest memory in some abstractly secure manner?
-We are blocking this here, and it's hard to predict the future,
-and a broken hypervisor can always find ways to crash the guest ...
-
-IMHO it would be safer to just print a warning.
-What do you think?
-
-
-
+On Mon, Jun 29, 2020 at 08:03:23AM -0700, Jaegeuk Kim wrote:
+> If two readahead threads having same offset enter in readpages, every read
+> IOs are split and issued to the disk which giving lower bandwidth.
 > 
-> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
-> Acked-by: Jason Wang <jasowang@redhat.com>
-> Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> This patch tries to avoid redundant readahead calls.
+> 
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 > ---
->  arch/s390/mm/init.c     |  6 ++++++
->  drivers/virtio/virtio.c | 22 ++++++++++++++++++++++
->  include/linux/virtio.h  |  2 ++
->  3 files changed, 30 insertions(+)
+> v2:
+>  - add missing code to bypass read
 > 
-> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-> index 6dc7c3b60ef6..215070c03226 100644
-> --- a/arch/s390/mm/init.c
-> +++ b/arch/s390/mm/init.c
-> @@ -45,6 +45,7 @@
->  #include <asm/kasan.h>
->  #include <asm/dma-mapping.h>
->  #include <asm/uv.h>
-> +#include <linux/virtio.h>
+>  fs/f2fs/data.c  | 18 +++++++++++++++++-
+>  fs/f2fs/f2fs.h  |  1 +
+>  fs/f2fs/super.c |  2 ++
+>  3 files changed, 20 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index d6094b9f3916..9b69a159cc6c 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -2403,6 +2403,7 @@ int f2fs_mpage_readpages(struct address_space *mapping,
+>  #endif
+>  	unsigned max_nr_pages = nr_pages;
+>  	int ret = 0;
+> +	bool drop_ra = false;
 >  
->  pgd_t swapper_pg_dir[PTRS_PER_PGD] __section(.bss..swapper_pg_dir);
+>  	map.m_pblk = 0;
+>  	map.m_lblk = 0;
+> @@ -2413,13 +2414,25 @@ int f2fs_mpage_readpages(struct address_space *mapping,
+>  	map.m_seg_type = NO_CHECK_TYPE;
+>  	map.m_may_create = false;
 >  
-> @@ -161,6 +162,11 @@ bool force_dma_unencrypted(struct device *dev)
->  	return is_prot_virt_guest();
->  }
->  
-> +int arch_needs_virtio_iommu_platform(struct virtio_device *dev)
-> +{
-> +	return is_prot_virt_guest();
-> +}
-> +
->  /* protected virtualization */
->  static void pv_init(void)
->  {
-> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-> index a977e32a88f2..aa8e01104f86 100644
-> --- a/drivers/virtio/virtio.c
-> +++ b/drivers/virtio/virtio.c
-> @@ -167,6 +167,21 @@ void virtio_add_status(struct virtio_device *dev, unsigned int status)
->  }
->  EXPORT_SYMBOL_GPL(virtio_add_status);
->  
-> +/*
-> + * arch_needs_virtio_iommu_platform - provide arch specific hook when finalizing
-> + *				      features for VIRTIO device dev
-> + * @dev: the VIRTIO device being added
-> + *
-> + * Permits the platform to provide architecture specific functionality when
-> + * devices features are finalized. This is the default implementation.
-> + * Architecture implementations can override this.
-> + */
-> +
-> +int __weak arch_needs_virtio_iommu_platform(struct virtio_device *dev)
-> +{
-> +	return 0;
-> +}
-> +
->  int virtio_finalize_features(struct virtio_device *dev)
->  {
->  	int ret = dev->config->finalize_features(dev);
-> @@ -179,6 +194,13 @@ int virtio_finalize_features(struct virtio_device *dev)
->  	if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1))
->  		return 0;
->  
-> +	if (arch_needs_virtio_iommu_platform(dev) &&
-> +		!virtio_has_feature(dev, VIRTIO_F_IOMMU_PLATFORM)) {
-> +		dev_warn(&dev->dev,
-> +			 "virtio: device must provide VIRTIO_F_IOMMU_PLATFORM\n");
-> +		return -ENODEV;
+> +	/*
+> +	 * Two readahead threads for same address range can cause race condition
+> +	 * which fragments sequential read IOs. So let's avoid each other.
+> +	 */
+> +	if (pages && is_readahead) {
+> +		page = list_last_entry(pages, struct page, lru);
+> +		if (F2FS_I(inode)->ra_offset == page_index(page))
+> +			drop_ra = true;
+> +		else
+> +			F2FS_I(inode)->ra_offset = page_index(page);
 > +	}
-> +
->  	virtio_add_status(dev, VIRTIO_CONFIG_S_FEATURES_OK);
->  	status = dev->config->get_status(dev);
->  	if (!(status & VIRTIO_CONFIG_S_FEATURES_OK)) {
-> diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-> index a493eac08393..e8526ae3463e 100644
-> --- a/include/linux/virtio.h
-> +++ b/include/linux/virtio.h
-> @@ -195,4 +195,6 @@ void unregister_virtio_driver(struct virtio_driver *drv);
->  #define module_virtio_driver(__virtio_driver) \
->  	module_driver(__virtio_driver, register_virtio_driver, \
->  			unregister_virtio_driver)
-> +
-> +int arch_needs_virtio_iommu_platform(struct virtio_device *dev);
->  #endif /* _LINUX_VIRTIO_H */
-> -- 
-> 2.25.1
 
+This is a data race because ra_offset can be read/written by different threads
+concurrently.
+
+It either needs locking, or READ_ONCE() and WRITE_ONCE() if races are okay.
+
+- Eric
