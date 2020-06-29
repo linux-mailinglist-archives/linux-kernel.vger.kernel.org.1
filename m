@@ -2,157 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9ED20D7D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D3220D7DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732403AbgF2TdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46808 "EHLO
+        id S1733267AbgF2Td3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733233AbgF2Tcp (ORCPT
+        with ESMTP id S1733228AbgF2Tco (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:32:45 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61354C02A56D
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:34:50 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id 35so7121108ple.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:34:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4UqCNZ+OTg1lzw/q2Kz2sA9G3h4mbPe/xzzDfR/Wl6o=;
-        b=uoCEwiDCGEqtbe7O+Em8bzStBM5vKsAYjy8MoMFXisoatf8+XTf+LrMkC5VTawzwLX
-         SSXx/hr7EtwZ12rlaxaID/8K3ZYsYMPMxZYfkgLnKptbkLt/0VrDUwfR+pm5TaM1uPvt
-         A43qeOdeLNDUBAodtLWwre4CS6LwzTRSjqAeSu7iyS0bCxasJ5EP6PlaFtKreB56bhfd
-         t4qjXFO0/sehcK29CoOm4TCk/IfanJKC3PGukuY1X2otfHa9MzoxRO1coKxiXHLMokr+
-         uEBBJdQex0pl5UGlSC0UFZ0o+btw8jDnk4NqQvBITF9aRn92xPH3J5ec02+6MYCCe2Gy
-         4HJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4UqCNZ+OTg1lzw/q2Kz2sA9G3h4mbPe/xzzDfR/Wl6o=;
-        b=VNt/vE9Rp4Acyf/AhXJonOHTDGAzIosYl3O4OMBadnwWpwqr0ewShzqU3rLuDLIxvm
-         3nyw6KsuxQTg8sjeEC6CtIiLNNnW/iEGRyIjiSo9zB6S7iVYATjKetlp6ovEMAde1hlJ
-         7qKUyg0y4wkAIohLKGPIjIBJJz5G49cZyAWLEq5Z27C22ZACp1++li5Mt037TNOztO8w
-         YxtpTnBaQFKc65OFAk2DePonHm2sup/+JsivJgBN7znO9jiNJRS09OyIVGXOwQXbYMjd
-         bT4Vk4ib1E+ZAYBmnYjx3UFFlxwcsEWcSD2i7yX9URnkj7QC0J+gmMRM+B3UCaVKaNWE
-         jYuQ==
-X-Gm-Message-State: AOAM530fVL0A2YX9zQOKFp2QZ56cKMDvpUj9e5kQgSgylVKd1QkCJNM7
-        IGpWqYmKNzAl3Va4qwPlBIf4lUHbMDrnmiCjdQC/JQ==
-X-Google-Smtp-Source: ABdhPJyyemzBk8k+EQj691PWuk6+4I3GKU57Y8C1zgPV7Ot5fRccf1akeHSxr5QncO44LEIGHn+Chol5ExPGybUsiX4=
-X-Received: by 2002:a17:902:6ac1:: with SMTP id i1mr14053992plt.147.1593437689499;
- Mon, 29 Jun 2020 06:34:49 -0700 (PDT)
+        Mon, 29 Jun 2020 15:32:44 -0400
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [IPv6:2a00:da80:fff0:2::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5576C02A56E;
+        Mon, 29 Jun 2020 06:36:47 -0700 (PDT)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 2E0DD1C0C23; Mon, 29 Jun 2020 15:36:45 +0200 (CEST)
+Date:   Mon, 29 Jun 2020 15:36:44 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Merlijn Wajer <merlijn@wizzup.org>, jikos@suse.cz, vojtech@suse.cz
+Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Beno??t Cousson <bcousson@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mattias Jacobsson <2pi@mok.nu>,
+        Mark Gross <mgross@linux.intel.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        "open list:OMAP DEVICE TREE SUPPORT" <linux-omap@vger.kernel.org>,
+        "open list:OMAP DEVICE TREE SUPPORT" <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:INPUT (KEYBOARD, MOUSE, JOYSTICK, TOUCHSCREEN)..." 
+        <linux-input@vger.kernel.org>
+Subject: input maintainer -- are you there? was Re: [PATCH 1/2] Input: add
+ `SW_MACHINE_COVER`
+Message-ID: <20200629133644.GA22227@amd>
+References: <20200612125402.18393-1-merlijn@wizzup.org>
+ <20200612125402.18393-2-merlijn@wizzup.org>
+ <20200616105045.GB1718@bug>
+ <fef69c79-9943-7bd1-5c51-101f551cf2c8@wizzup.org>
 MIME-Version: 1.0
-References: <20200629104157.3242503-1-elver@google.com>
-In-Reply-To: <20200629104157.3242503-1-elver@google.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Mon, 29 Jun 2020 15:34:38 +0200
-Message-ID: <CAAeHK+wbaHoeEqaKCNgPhFFWQZ0Ck2BYF9QiCcOuyB9JGDmhsw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kasan: Improve and simplify Kconfig.kasan
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Walter Wu <walter-zh.wu@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Axtens <dja@axtens.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="0F1p//8PRICkK4MW"
+Content-Disposition: inline
+In-Reply-To: <fef69c79-9943-7bd1-5c51-101f551cf2c8@wizzup.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 12:42 PM Marco Elver <elver@google.com> wrote:
->
-> Turn 'KASAN' into a menuconfig, to avoid cluttering its parent menu with
-> the suboptions if enabled. Use 'if KASAN ... endif' instead of having
-> to 'depend on KASAN' for each entry.
->
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
->  lib/Kconfig.kasan | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
->
-> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-> index 34b84bcbd3d9..89053defc0d9 100644
-> --- a/lib/Kconfig.kasan
-> +++ b/lib/Kconfig.kasan
-> @@ -18,7 +18,7 @@ config CC_HAS_KASAN_SW_TAGS
->  config CC_HAS_WORKING_NOSANITIZE_ADDRESS
->         def_bool !CC_IS_GCC || GCC_VERSION >= 80300
->
-> -config KASAN
-> +menuconfig KASAN
->         bool "KASAN: runtime memory debugger"
->         depends on (HAVE_ARCH_KASAN && CC_HAS_KASAN_GENERIC) || \
->                    (HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS)
-> @@ -29,9 +29,10 @@ config KASAN
->           designed to find out-of-bounds accesses and use-after-free bugs.
->           See Documentation/dev-tools/kasan.rst for details.
->
-> +if KASAN
-> +
->  choice
->         prompt "KASAN mode"
-> -       depends on KASAN
->         default KASAN_GENERIC
->         help
->           KASAN has two modes: generic KASAN (similar to userspace ASan,
-> @@ -88,7 +89,6 @@ endchoice
->
->  choice
->         prompt "Instrumentation type"
-> -       depends on KASAN
->         default KASAN_OUTLINE
->
->  config KASAN_OUTLINE
-> @@ -113,7 +113,6 @@ endchoice
->
->  config KASAN_STACK_ENABLE
->         bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
-> -       depends on KASAN
->         help
->           The LLVM stack address sanitizer has a know problem that
->           causes excessive stack usage in a lot of functions, see
-> @@ -134,7 +133,7 @@ config KASAN_STACK
->
->  config KASAN_S390_4_LEVEL_PAGING
->         bool "KASan: use 4-level paging"
-> -       depends on KASAN && S390
-> +       depends on S390
->         help
->           Compiling the kernel with KASan disables automatic 3-level vs
->           4-level paging selection. 3-level paging is used by default (up
-> @@ -151,7 +150,7 @@ config KASAN_SW_TAGS_IDENTIFY
->
->  config KASAN_VMALLOC
->         bool "Back mappings in vmalloc space with real shadow memory"
-> -       depends on KASAN && HAVE_ARCH_KASAN_VMALLOC
-> +       depends on HAVE_ARCH_KASAN_VMALLOC
->         help
->           By default, the shadow region for vmalloc space is the read-only
->           zero page. This means that KASAN cannot detect errors involving
-> @@ -164,8 +163,10 @@ config KASAN_VMALLOC
->
->  config TEST_KASAN
->         tristate "Module for testing KASAN for bug detection"
-> -       depends on m && KASAN
-> +       depends on m
->         help
->           This is a test module doing various nasty things like
->           out of bounds accesses, use after free. It is useful for testing
->           kernel debugging features like KASAN.
-> +
-> +endif # KASAN
-> --
-> 2.27.0.212.ge8ba1cc988-goog
->
 
-Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+--0F1p//8PRICkK4MW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> Looks like we're blocking on this input patch.
+>=20
+> On 16/06/2020 12:50, Pavel Machek wrote:
+> > On Fri 2020-06-12 14:53:58, Merlijn Wajer wrote:
+> >> This event code represents the state of a removable cover of a device.
+> >> Value 0 means that the cover is open or removed, value 1 means that the
+> >> cover is closed.
+> >>
+> >> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com> Acked=
+-by: Tony Lindgren=20
+> >> <tony@atomide.com> Signed-off-by: Merlijn Wajer <merlijn@wizzup.org> -=
+--
+> >=20
+> > Dmitry, can we get some kind of comment here, or better yet can we get =
+you to apply this?
+>=20
+> This is part of a patch series to resolve problems with the Nokia N900
+> not booting when the cover is removed (making the cover be the card
+> detect was also just weird IMHO). Just removing the card-detect from the
+> DTS is fine, but it was suggested that we expose the data instead as
+> input event. And that's gotten no response for about four months.
+>=20
+> Should we just drop the feature and only remove the cd-gpios line from
+> the DTS, assuming upstream doesn't want this SW_MACHINE_COVER code?
+
+I believe series is good, lets keep it. Changing now will only delay
+it a bit more. Let me try to get Dmitry's attention...
+
+If that does not work, we can get Linus' attention :-).
+
+If that does not work, umm, there are some other options.
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--0F1p//8PRICkK4MW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl757mwACgkQMOfwapXb+vJWKwCeKCWtJeiWc/FxANNI2HrHGQQ7
+Fx4An1mjqwvcVp1xJprABVuC4z8nryZ1
+=Fk60
+-----END PGP SIGNATURE-----
+
+--0F1p//8PRICkK4MW--
