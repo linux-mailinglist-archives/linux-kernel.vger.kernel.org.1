@@ -2,182 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BF120D466
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528BD20D45A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730534AbgF2TIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:08:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
+        id S1730832AbgF2THq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730822AbgF2THn (ORCPT
+        with ESMTP id S1729786AbgF2THm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:07:43 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7265BC030F28
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:38:18 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id f2so7300385plr.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:38:18 -0700 (PDT)
+        Mon, 29 Jun 2020 15:07:42 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8F6C030F29
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:38:57 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id o1so734193plk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:38:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kfKoyluBhqQK8WBSpnVThNVVFytFAMIzrkcMglZ8Sh0=;
-        b=uauVhkLqChQY63QDsmizLdb/jQYdWYW2KZ7pDQo7+LSredLUfRUSIycrU7mWGxUqmv
-         UqhWWO75apzhc+4AIvEGjaPBN6DgDsjFKLLbLxodJmTZyv5NWBdEI7SN9qeaem1xeojk
-         4YuYBBHgFJC1Axa1M4NXPDBt4XfhgZKQAp4wgHVmxX1gQhufADuzSGfbv4UHcpkYfOj7
-         q1VsVxAKsaF0O5un27MpbU1wyibjF4fizkGKLO2oiNuG3h8NFSAQlD/cwH+02E3TJnUt
-         h1tf5Dv0xt/qmGWxJMBRxbW19fIlwNgnPTt2O9f+wtLKjcFE+X9sFxQyvTbE/GTASltt
-         alBQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WwUSLGARJc0tc0i7e9PAJ1aEIwQmah2Mj+7/Lw4GWVQ=;
+        b=O5LrA0hvh6pdSNYojIfuGO/VrkNKrM+IJqkHmMn4yck9UH4KIOfGZ880eO68An1QrF
+         pqMdoHrQrlzvSd7H5nTCyPiX3zdnX4gvVQZCrr6gRBFxqzAcC4zmzK9J3FECjM1JAo4i
+         tdb5Mpm6Rm+PiwgvaQZ3UxOSezJDzGlrQFIAU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kfKoyluBhqQK8WBSpnVThNVVFytFAMIzrkcMglZ8Sh0=;
-        b=hqcjUM1xnSrp9OUqsQAWjQlxN4GhmTFcOLVmgf6CW1GEdhA7HoqVwisjPtxNP2+6TI
-         HIoE3qV73DTdmjh+OPn/pM0inEQgTsDgZ/Zqkh2aqdbGd66uPf/jpaf2BU6yVvHfLE+t
-         00+Ro5occfPu654IBrKFGYTM9GVMxIbdBBgJPMd9eDxwq9PNPztOKXoufXOPEDHoHAeQ
-         dGLYQ5U7dmqftf0xdfG2cejZA+HI5h+jGZsBjgjp129lEFkK5tDfj/R6fMek93NzFbS0
-         av+uWR6FVhKFBhjZWGQtoilCHQ+6drM7uN87awkaiX1p5smTsstD+Z9L+f6HG0sGQCYq
-         8LEg==
-X-Gm-Message-State: AOAM5304GMqiACWWRnb3vkt5jVVGe/qnnHjCFQJLJBNVB+yOJEM8NCl6
-        dSsLpt5UpxX0gmaY+AlzFNzzO4/CA2LNXsINRFvibwtPK/E=
-X-Google-Smtp-Source: ABdhPJyR7dnU1HeSw18RQd4JxqNmjcJaca3SHFEBSw63fP13UbNmoK//y1xzhiGRspEbeWiiZppivaRU9rPhRRIw160=
-X-Received: by 2002:a17:902:7611:: with SMTP id k17mr14218920pll.255.1593448697956;
- Mon, 29 Jun 2020 09:38:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WwUSLGARJc0tc0i7e9PAJ1aEIwQmah2Mj+7/Lw4GWVQ=;
+        b=lpHlgJC7czyIXDbso2D3a+weSyKcpGP70IEqrtSxSjRyuC9Abtca69WIqAfnO8l7Cl
+         C5fkJwtnyknMfWsi3YVzMg4EPgBuMiUzNZZ/gjFcL2EtKf2bhdtwZiatXMdiKkqRrzYq
+         XBQRomaPDktLvTlgcaZ99ujOk/2n+knMyf2yD6G1nMlWur9qtBXYOHlKrumB0jtDIPTx
+         UAttujJEx4DyD7ppaOScrodg3l6CYFvvu3M5Bo92u4y0EJPT6Ic1eyro954p5rqFtBh8
+         RhnuYZW95G9mb5kYqmP9bJggBApcutMjbEBa9QLgaD0y6ur/K7PXf2+Rmd8GM/mBfnXW
+         v1fQ==
+X-Gm-Message-State: AOAM532zMw9KBcb5kw8FgrqaVg4kl8t8VB8H2Q3pplYvzhMtugyRtyXI
+        CCY9RIWFM9ZgyTCi9zhl2atjwUztBCw=
+X-Google-Smtp-Source: ABdhPJxiDSxzoFZlOF1LR3M+87QWIqODfOOJoQ3pC0z7sFyrqvYTX8eG16fEZIV3H1/WdJdnQ3CMfg==
+X-Received: by 2002:a17:90a:d587:: with SMTP id v7mr7889439pju.29.1593448737198;
+        Mon, 29 Jun 2020 09:38:57 -0700 (PDT)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:476b:691:abc3:38db])
+        by smtp.gmail.com with ESMTPSA id s6sm79060pfd.20.2020.06.29.09.38.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 09:38:56 -0700 (PDT)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com,
+        Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH v3 1/2] platform/chrome: cros_ec_typec: Use workqueue for port update
+Date:   Mon, 29 Jun 2020 09:38:50 -0700
+Message-Id: <20200629163851.2130450-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
 MIME-Version: 1.0
-References: <CGME20200629112248eucas1p187e5dac2f4f6120aacbc86e48ad0fff9@eucas1p1.samsung.com>
- <20200629112242.18380-1-a.hajda@samsung.com> <20200629112242.18380-2-a.hajda@samsung.com>
-In-Reply-To: <20200629112242.18380-2-a.hajda@samsung.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 29 Jun 2020 19:38:04 +0300
-Message-ID: <CAHp75VegHLG5tgVFjwmpmDfSqELqNXcb9dFSM4jLRx+anW7Lsw@mail.gmail.com>
-Subject: Re: [PATCH v7 1/4] driver core: add device probe log helper
-To:     Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Mark Brown <broonie@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 2:22 PM Andrzej Hajda <a.hajda@samsung.com> wrote:
->
-> During probe every time driver gets resource it should usually check for
-> error printk some message if it is not -EPROBE_DEFER and return the error.
-> This pattern is simple but requires adding few lines after any resource
-> acquisition code, as a result it is often omitted or implemented only
-> partially.
-> dev_err_probe helps to replace such code sequences with simple call,
-> so code:
->         if (err != -EPROBE_DEFER)
->                 dev_err(dev, ...);
->         return err;
-> becomes:
->         return dev_err_probe(dev, err, ...);
+Use a work queue to call the port update routines, instead of doing it
+directly in the PD notifier callback. This will prevent other drivers
+with PD notifier callbacks from being blocked on the port update routine
+completing.
 
-FWIW,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+---
 
-(I'm fine with current code, though, consider below comments)
+Changes in v3:
+- Use new 100 character line length limit.
 
-> Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
-> Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
-> ---
->  drivers/base/core.c    | 42 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/device.h |  3 +++
->  2 files changed, 45 insertions(+)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 67d39a90b45c..3a827c82933f 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -3953,6 +3953,48 @@ define_dev_printk_level(_dev_info, KERN_INFO);
->
->  #endif
->
-> +/**
-> + * dev_err_probe - probe error check and log helper
-> + * @dev: the pointer to the struct device
-> + * @err: error value to test
-> + * @fmt: printf-style format string
-> + * @...: arguments as specified in the format string
-> + *
-> + * This helper implements common pattern present in probe functions for error
-> + * checking: print debug or error message depending if the error value is
-> + * -EPROBE_DEFER and propagate error upwards.
-> + * It replaces code sequence:
-> + *     if (err != -EPROBE_DEFER)
-> + *             dev_err(dev, ...);
-> + *     else
-> + *             dev_dbg(dev, ...);
-> + *     return err;
-> + * with
-> + *     return dev_err_probe(dev, err, ...);
-> + *
-> + * Returns @err.
-> + *
-> + */
-> +int dev_err_probe(const struct device *dev, int err, const char *fmt, ...)
-> +{
-> +       struct va_format vaf;
-> +       va_list args;
-> +
-> +       va_start(args, fmt);
-> +       vaf.fmt = fmt;
-> +       vaf.va = &args;
-> +
-> +       if (err != -EPROBE_DEFER)
+Changes in v2:
+- No changes.
 
-Perhaps positive conditional.
+ drivers/platform/chrome/cros_ec_typec.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
-> +               dev_err(dev, "error %d: %pV", err, &vaf);
-> +       else
-> +               dev_dbg(dev, "error %d: %pV", err, &vaf);
-
-Perhaps {} to be added here.
-
-> +
-> +       va_end(args);
-> +
-> +       return err;
-> +}
-> +EXPORT_SYMBOL_GPL(dev_err_probe);
-> +
->  static inline bool fwnode_is_primary(struct fwnode_handle *fwnode)
->  {
->         return fwnode && !IS_ERR(fwnode->secondary);
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index 15460a5ac024..6b2272ae9af8 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -964,6 +964,9 @@ void device_link_remove(void *consumer, struct device *supplier);
->  void device_links_supplier_sync_state_pause(void);
->  void device_links_supplier_sync_state_resume(void);
->
-> +extern __printf(3, 4)
-> +int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
-> +
->  /* Create alias, so I can be autoloaded. */
->  #define MODULE_ALIAS_CHARDEV(major,minor) \
->         MODULE_ALIAS("char-major-" __stringify(major) "-" __stringify(minor))
-> --
-> 2.17.1
->
-
-
+diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+index 0c041b79cbba..0beb62bf5adf 100644
+--- a/drivers/platform/chrome/cros_ec_typec.c
++++ b/drivers/platform/chrome/cros_ec_typec.c
+@@ -58,6 +58,7 @@ struct cros_typec_data {
+ 	/* Array of ports, indexed by port number. */
+ 	struct cros_typec_port *ports[EC_USB_PD_MAX_PORTS];
+ 	struct notifier_block nb;
++	struct work_struct port_work;
+ };
+ 
+ static int cros_typec_parse_port_props(struct typec_capability *cap,
+@@ -619,18 +620,26 @@ static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
+ 	return 0;
+ }
+ 
+-static int cros_ec_typec_event(struct notifier_block *nb,
+-			       unsigned long host_event, void *_notify)
++static void cros_typec_port_work(struct work_struct *work)
+ {
+-	struct cros_typec_data *typec = container_of(nb, struct cros_typec_data,
+-						     nb);
+-	int ret, i;
++	struct cros_typec_data *typec = container_of(work, struct cros_typec_data, port_work);
++	int ret;
++	int i;
+ 
+ 	for (i = 0; i < typec->num_ports; i++) {
+ 		ret = cros_typec_port_update(typec, i);
+ 		if (ret < 0)
+ 			dev_warn(typec->dev, "Update failed for port: %d\n", i);
+ 	}
++}
++
++
++static int cros_ec_typec_event(struct notifier_block *nb,
++			       unsigned long host_event, void *_notify)
++{
++	struct cros_typec_data *typec = container_of(nb, struct cros_typec_data, nb);
++
++	schedule_work(&typec->port_work);
+ 
+ 	return NOTIFY_OK;
+ }
+@@ -689,6 +698,12 @@ static int cros_typec_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	INIT_WORK(&typec->port_work, cros_typec_port_work);
++
++	/*
++	 * Safe to call port update here, since we haven't registered the
++	 * PD notifier yet.
++	 */
+ 	for (i = 0; i < typec->num_ports; i++) {
+ 		ret = cros_typec_port_update(typec, i);
+ 		if (ret < 0)
 -- 
-With Best Regards,
-Andy Shevchenko
+2.27.0.212.ge8ba1cc988-goog
+
