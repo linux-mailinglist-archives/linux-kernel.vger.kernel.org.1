@@ -2,177 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CED820E087
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 940B320E094
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389764AbgF2UrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:47:06 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:35671 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732940AbgF2Uq5 (ORCPT
+        id S2389805AbgF2Urd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389787AbgF2UrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:46:57 -0400
-Received: by mail-wr1-f65.google.com with SMTP id g18so17996675wrm.2;
-        Mon, 29 Jun 2020 13:46:55 -0700 (PDT)
+        Mon, 29 Jun 2020 16:47:24 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF3AC03E979
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:47:24 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id j19so5999850ybj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:47:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UYdsVW3BBX8OC9WrPhf4Ap0SclutgAMBOwsFuhmAiUc=;
+        b=sj3Z3WaQ1XCj7qzBWUHl68lvUTLwnu6zeQufplCvQ7tx0Qlt+QJveoGV1nfGTLWyLv
+         M9vMyUf7RdkMji4al4luUrBJcN0XeDmkmrOP/FKVt6KzO3zJABVlVDOmki4v00ZinZsG
+         W3QatwpjQU/iv2XPFNkb3pk0fgKTqufJuLYy7G9ouIXrZNHI0mXMv8bpiQaKt1wr0Hey
+         zXQiFGGxuXjY2dwQ4qTyezFna1+McjHL8mJYxtwlnFmhj8/4Na+fIdw6DCLrOsEZz6vp
+         nrfN7LVua3jDjmxgQfa07/uAThOHhECLgI6qrP4c4P5428H7aUw8G6BVfA7qjCy+fXsF
+         LhdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7B3b2pBNzZdwKMzrzlsX2I3eoakSivJkPodIWcuujkg=;
-        b=fW+SnvRyi7VKbM8KtWX/EO15B0SBjRffG/Odue+cS1UymPPA8k6eW3mSzqFiITb2u0
-         Gocix24S1s+ZcZDMNepQRf7+gxj1u358NYhWXrFihe3I7mWc2/n7R9B1VA8L2rX6zjxa
-         Xp3FYzuQloJ2ovpAFmOOoe6FtSPKljIRdAaxBQk9emnaacet3SiAwd3PFkKE/Fx3K4W2
-         VQ1nXmFgGk2MnQC7Zhj0ZWbiX6dNboENmZ/MxE/7ESOzV9m/F2dIZUPWbwTqmlTmQftp
-         TV+LXmLZNzCky+c51f6yFf/iGsusFC9859cRMM02AJ11R+xqrYsB5J+WFoe6+wfsWX08
-         7D1A==
-X-Gm-Message-State: AOAM530wbfzhxTw/C91C0IkQfXp8I8xI8UqKJ4yYyshiulB80EFcTR2N
-        lp81RfZlTNuh3BX0wZ33UgM=
-X-Google-Smtp-Source: ABdhPJyTQzsvY9UTZXZpGaoSPj9qQo2aDDpJP8RGi6+4kz9ZQ+mhGEvD1IWlImXuk16Q5SQVGOWyTQ==
-X-Received: by 2002:adf:f20a:: with SMTP id p10mr19802378wro.41.1593463615117;
-        Mon, 29 Jun 2020 13:46:55 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id z2sm1152694wmc.2.2020.06.29.13.46.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 13:46:54 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 20:46:53 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     t-mabelt@microsoft.com
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
-        parri.andrea@gmail.com, Andres Beltran <lkmlabelt@gmail.com>
-Subject: Re: [PATCH v2 1/3] Drivers: hv: vmbus: Add vmbus_requestor data
- structure for VMBus hardening
-Message-ID: <20200629204653.o6q3a2fufgq62pzo@liuwe-devbox-debian-v2>
-References: <20200629200227.1518784-1-lkmlabelt@gmail.com>
- <20200629200227.1518784-2-lkmlabelt@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UYdsVW3BBX8OC9WrPhf4Ap0SclutgAMBOwsFuhmAiUc=;
+        b=DszULbdszLBJsLGMGbEZueKHbI6Jb3mMqKFjmsAJ5qP/nfrRmMum9Zo893jz7wdwJy
+         Z9OZY5W/XGUIByKbpCx7zBc2k5CTBgrHyFM13DxKFmKWPgdnG7hrV3j37OKzitwwBeuj
+         lH5Rmb1HIA/P2kE5QK7X8eeIYcnoPpn662JEju3pG6MLoXbv1TgsMsMdY+HZUnaxkski
+         3mYe4T2CSxeutiaYgtVep2dN/sKVJt7zHMJ3mWoIAuSU7zSvTZKXK+B8U++nWylGAncC
+         m2LbS/FpYl3r3nan6UVfL0rDWALPmYSIbwfSnxXwgHzYO7TUa/m8s/wM/luNOyo+d2o7
+         FesA==
+X-Gm-Message-State: AOAM533VFIdD9Cswk2HhgufPfEtTTtIROW5R/Xm6bHCjM8nRaUmf8xkX
+        6alBQZ9AEKQ4arUJ6JhX0DMecqLpmiXUnHkZW7XIkw==
+X-Google-Smtp-Source: ABdhPJxtcxHf4vay9U02xLtRTxdahfswH8fg2jT+pmXLYU6yoQ0LrxrKPuLTeJOmlFoMAdLKDEoo0vUghrQVCwVvJug=
+X-Received: by 2002:a25:cd87:: with SMTP id d129mr27206628ybf.395.1593463642859;
+ Mon, 29 Jun 2020 13:47:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629200227.1518784-2-lkmlabelt@gmail.com>
-User-Agent: NeoMutt/20180716
+References: <341326348.19635.1589398715534.JavaMail.zimbra@efficios.com>
+ <CANn89i+GH2ukLZUcWYGquvKg66L9Vbto0FxyEt3pOJyebNxqBg@mail.gmail.com>
+ <CANn89iL26OMWWAi18PqoQK4VBfFvRvxBJUioqXDk=8ZbKq_Efg@mail.gmail.com> <1132973300.15954.1593459836756.JavaMail.zimbra@efficios.com>
+In-Reply-To: <1132973300.15954.1593459836756.JavaMail.zimbra@efficios.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 29 Jun 2020 13:47:11 -0700
+Message-ID: <CANn89iJ4nh6VRsMt_rh_YwC-pn=hBqsP-LD9ykeRTnDC-P5iog@mail.gmail.com>
+Subject: Re: [regression] TCP_MD5SIG on established sockets
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Jonathan Rajotte-Julien <joraj@efficios.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 04:02:25PM -0400, Andres Beltran wrote:
-> Currently, VMbus drivers use pointers into guest memory as request IDs
-> for interactions with Hyper-V. To be more robust in the face of errors
-> or malicious behavior from a compromised Hyper-V, avoid exposing
-> guest memory addresses to Hyper-V. Also avoid Hyper-V giving back a
-> bad request ID that is then treated as the address of a guest data
-> structure with no validation. Instead, encapsulate these memory
-> addresses and provide small integers as request IDs.
-> 
-> Signed-off-by: Andres Beltran <lkmlabelt@gmail.com>
-> ---
-> Changes in v2:
-> 	- Get rid of "rqstor" variable in __vmbus_open().
-> 
->  drivers/hv/channel.c   | 146 +++++++++++++++++++++++++++++++++++++++++
->  include/linux/hyperv.h |  21 ++++++
->  2 files changed, 167 insertions(+)
-> 
-> diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
-> index 3ebda7707e46..c89d57d0c2d2 100644
-> --- a/drivers/hv/channel.c
-> +++ b/drivers/hv/channel.c
-> @@ -112,6 +112,70 @@ int vmbus_alloc_ring(struct vmbus_channel *newchannel,
->  }
->  EXPORT_SYMBOL_GPL(vmbus_alloc_ring);
->  
-> +/**
-> + * request_arr_init - Allocates memory for the requestor array. Each slot
-> + * keeps track of the next available slot in the array. Initially, each
-> + * slot points to the next one (as in a Linked List). The last slot
-> + * does not point to anything, so its value is U64_MAX by default.
-> + * @size The size of the array
-> + */
-> +static u64 *request_arr_init(u32 size)
-> +{
-> +	int i;
-> +	u64 *req_arr;
-> +
-> +	req_arr = kcalloc(size, sizeof(u64), GFP_KERNEL);
-> +	if (!req_arr)
-> +		return NULL;
-> +
-> +	for (i = 0; i < size - 1; i++)
-> +		req_arr[i] = i + 1;
-> +
-> +	/* Last slot (no more available slots) */
-> +	req_arr[i] = U64_MAX;
-> +
-> +	return req_arr;
-> +}
-> +
-> +/*
-> + * vmbus_alloc_requestor - Initializes @rqstor's fields.
-> + * Slot at index 0 is the first free slot.
-> + * @size: Size of the requestor array
-> + */
-> +static int vmbus_alloc_requestor(struct vmbus_requestor *rqstor, u32 size)
-> +{
-> +	u64 *rqst_arr;
-> +	unsigned long *bitmap;
-> +
-> +	rqst_arr = request_arr_init(size);
-> +	if (!rqst_arr)
-> +		return -ENOMEM;
-> +
-> +	bitmap = bitmap_zalloc(size, GFP_KERNEL);
-> +	if (!bitmap) {
-> +		kfree(rqst_arr);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	rqstor->req_arr = rqst_arr;
-> +	rqstor->req_bitmap = bitmap;
-> +	rqstor->size = size;
-> +	rqstor->next_request_id = 0;
-> +	spin_lock_init(&rqstor->req_lock);
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * vmbus_free_requestor - Frees memory allocated for @rqstor
-> + * @rqstor: Pointer to the requestor struct
-> + */
-> +static void vmbus_free_requestor(struct vmbus_requestor *rqstor)
-> +{
-> +	kfree(rqstor->req_arr);
-> +	bitmap_free(rqstor->req_bitmap);
-> +}
-> +
->  static int __vmbus_open(struct vmbus_channel *newchannel,
->  		       void *userdata, u32 userdatalen,
->  		       void (*onchannelcallback)(void *context), void *context)
-> @@ -132,6 +196,12 @@ static int __vmbus_open(struct vmbus_channel *newchannel,
->  	if (newchannel->state != CHANNEL_OPEN_STATE)
->  		return -EINVAL;
->  
-> +	/* Create and init requestor */
-> +	if (newchannel->rqstor_size) {
-> +		if (vmbus_alloc_requestor(&newchannel->requestor, newchannel->rqstor_size))
-> +			return -ENOMEM;
-> +	}
-> +
+On Mon, Jun 29, 2020 at 12:43 PM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
+> ----- On May 13, 2020, at 3:56 PM, Eric Dumazet edumazet@google.com wrote:
+>
+> > On Wed, May 13, 2020 at 12:49 PM Eric Dumazet <edumazet@google.com> wrote:
+> >>
+> >>
+> >> On Wed, May 13, 2020 at 12:38 PM Mathieu Desnoyers
+> >> <mathieu.desnoyers@efficios.com> wrote:
+> >> >
+> >> > Hi,
+> >> >
+> >> > I am reporting a regression with respect to use of TCP_MD5SIG/TCP_MD5SIG_EXT
+> >> > on established sockets. It is observed by a customer.
+> >> >
+> >> > This issue is introduced by this commit:
+> >> >
+> >> > commit 721230326891 "tcp: md5: reject TCP_MD5SIG or TCP_MD5SIG_EXT on
+> >> > established sockets"
+> >> >
+> >> > The intent of this commit appears to be to fix a use of uninitialized value in
+> >> > tcp_parse_options(). The change introduced by this commit is to disallow setting
+> >> > the TCP_MD5SIG{,_EXT} socket options on an established socket.
+> >> >
+> >> > The justification for this change appears in the commit message:
+> >> >
+> >> >    "I believe this was caused by a TCP_MD5SIG being set on live
+> >> >     flow.
+> >> >
+> >> >     This is highly unexpected, since TCP option space is limited.
+> >> >
+> >> >     For instance, presence of TCP MD5 option automatically disables
+> >> >     TCP TimeStamp option at SYN/SYNACK time, which we can not do
+> >> >     once flow has been established.
+> >> >
+> >> >     Really, adding/deleting an MD5 key only makes sense on sockets
+> >> >     in CLOSE or LISTEN state."
+> >> >
+> >> > However, reading through RFC2385 [1], this justification does not appear
+> >> > correct. Quoting to the RFC:
+> >> >
+> >> >    "This password never appears in the connection stream, and the actual
+> >> >     form of the password is up to the application. It could even change
+> >> >     during the lifetime of a particular connection so long as this change
+> >> >     was synchronized on both ends"
+> >> >
+> >> > The paragraph above clearly underlines that changing the MD5 signature of
+> >> > a live TCP socket is allowed.
+> >> >
+> >> > I also do not understand why it would be invalid to transition an established
+> >> > TCP socket from no-MD5 to MD5, or transition from MD5 to no-MD5. Quoting the
+> >> > RFC:
+> >> >
+> >> >   "The total header size is also an issue.  The TCP header specifies
+> >> >    where segment data starts with a 4-bit field which gives the total
+> >> >    size of the header (including options) in 32-byte words.  This means
+> >> >    that the total size of the header plus option must be less than or
+> >> >    equal to 60 bytes -- this leaves 40 bytes for options."
+> >> >
+> >> > The paragraph above seems to be the only indication that some TCP options
+> >> > cannot be combined on a given TCP socket: if the resulting header size does
+> >> > not fit. However, I do not see anything in the specification preventing any
+> >> > of the following use-cases on an established TCP socket:
+> >> >
+> >> > - Transition from no-MD5 to MD5,
+> >> > - Transition from MD5 to no-MD5,
+> >> > - Changing the MD5 key associated with a socket.
+> >> >
+> >> > As long as the resulting combination of options does not exceed the available
+> >> > header space.
+> >> >
+> >> > Can we please fix this KASAN report in a way that does not break user-space
+> >> > applications expectations about Linux' implementation of RFC2385 ?
+> [...]
+> >> > [1] RFC2385: https://tools.ietf.org/html/rfc2385
+> >>
+> >>
+> >> I do not think we want to transition sockets in the middle. since
+> >> packets can be re-ordered in the network.
+> >>
+> >> MD5 is about security (and a loose form of it), so better make sure
+> >> all packets have it from the beginning of the flow.
+> >>
+> >> A flow with TCP TS on can not suddenly be sending packets without TCP TS.
+> >>
+> >> Clearly, trying to support this operation is a can of worms, I do not
+> >> want to maintain such atrocity.
+> >>
+> >> RFC can state whatever it wants, sometimes reality forces us to have
+> >> sane operations.
+> >>
+> >> Thanks.
+> >>
+> > Also the RFC states :
+> >
+> > "This password never appears in the connection stream, and the actual
+> >    form of the password is up to the application. It could even change
+> >    during the lifetime of a particular connection so long as this change
+> >    was synchronized on both ends"
+> >
+> > It means the key can be changed, but this does not imply the option
+> > can be turned on/off dynamically.
+> >
+>
+> The change discussed previously (introduced by commit 721230326891 "tcp:
+> md5: reject TCP_MD5SIG or TCP_MD5SIG_EXT on established sockets") breaks
+> user-space ABI. As an example, the following BGP application uses
+> setsockopt TCP_MD5SIG on a live TCP socket:
+>
+> https://github.com/IPInfusion/SDN-IP
+>
+> In addition to break user-space, it also breaks network protocol
+> expectations for network equipment vendors implementing RFC2385.
+> Considering that the goal of these protocols is interaction between
+> different network equipment, breaking compatibility on that side
+> is unexpected as well. Requiring to bring down/up the connection
+> just to change the TCP MD5 password is a no-go in networks with
+> high availability requirements. Changing the BGP authentication
+> password must be allowed without tearing down and re-establishing
+> the TCP sockets. Otherwise it doesn't scale for large network
+> operators to have to individually manage each individual TCP socket
+> in their network. However, based on the feedback I received, it
+> would be acceptable to tear-down the TCP connections and re-establish
+> them when enabling or disabling the MD5 option.
+>
+> Here is a list of a few network vendors along with their behavior
+> with respect to TCP MD5:
+>
+> - Cisco: Allows for password to be changed, but within the hold-down
+> timer (~180 seconds).
+> - Juniper: When password is initially set on active connection it will
+> reset, but after that any subsequent password changes no network
+> resets.
+> - Nokia: No notes on if they flap the tcp connection or not.
+> - Ericsson/RedBack: Allows for 2 password (old/new) to co-exist until
+> both sides are ok with new passwords.
+> - Meta-Switch: Expects the password to be set before a connection is
+> attempted, but no further info on whether they reset the TCP
+> connection on a change.
+> - Avaya: Disable the neighbor, then set password, then re-enable.
+> - Zebos: Would normally allow the change when socket connected.
+>
+>
 
-Sorry for not noticing this in the last round: this infrastructure is
-initialized conditionally but used unconditionally.
+If you want to be able to _change_ md5 key, this is fine by me, please
+send a patch.
 
-I can think of two options here:
+We can not dynamically turn on MD5, this is mentioned briefly in
+tcp_synack_options().
 
-  1. Mandate rqstor_size to be non-zero. Always initialize this
-     infra.
-  2. Modify vmbus_next_request_id and vmbus_request_addr to deal with
-     uninitialized state.
-
-For #2, you can simply check rqstor->size _before_ taking the lock
-(because it may be uninitialized, and the assumption is ->size will not
-change during the channel's lifetime, hence no lock is needed) and
-simply return the same value to the caller.
-
-Wei.
+If you want to turn on MD5 on an established flow, then you must
+ensure that both SACK and TS were not enabled in the 3WHS,
+and then make sure nothing blows up in the stack.
