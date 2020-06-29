@@ -2,69 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6DA20D605
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A062220D618
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731902AbgF2TQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:16:55 -0400
-Received: from mga01.intel.com ([192.55.52.88]:63720 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731807AbgF2TQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:16:52 -0400
-IronPort-SDR: /awpK8vauA1UY5MpEZ/YTnuYaQaZ4sDgei+W1TMRpYQL7dQwcjJ2isBadoMAnfC5R01SflKf/7
- LdcjrdMZm54Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="163998934"
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="163998934"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 08:10:46 -0700
-IronPort-SDR: mw6GdldLIMHUg1p42ZqiigUai0KEvZPO4JmOhxUKKwkLU1eWIPjoi4leEGe+trp6TiAwM03dva
- 0x/VdwNad0nA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="313073307"
-Received: from unknown (HELO btopel-mobl.ger.intel.com) ([10.252.54.90])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Jun 2020 08:10:43 -0700
-Subject: Re: [PATCH net] xsk: remove cheap_dma optimization
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        netdev@vger.kernel.org, davem@davemloft.net,
-        konrad.wilk@oracle.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        maximmi@mellanox.com, magnus.karlsson@intel.com,
-        jonathan.lemon@gmail.com
-References: <20200626134358.90122-1-bjorn.topel@gmail.com>
- <c60dfb5a-2bf3-20bd-74b3-6b5e215f73f8@iogearbox.net>
- <20200627070406.GB11854@lst.de>
- <88d27e1b-dbda-301c-64ba-2391092e3236@intel.com>
- <e879bcc8-5f7d-b1b3-9b66-1032dec6245d@iogearbox.net>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <81aec200-c1a0-6d57-e3b6-26dad30790b8@intel.com>
-Date:   Mon, 29 Jun 2020 17:10:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1731814AbgF2TRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:17:36 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:46260 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728039AbgF2TRc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:17:32 -0400
+Received: from 89-64-84-69.dynamic.chello.pl (89.64.84.69) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id 60876454d392fc4c; Mon, 29 Jun 2020 17:17:29 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Neal Liu <neal.liu@mediatek.com>
+Cc:     Len Brown <lenb@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com
+Subject: Re: [PATCH] cpuidle: change enter_s2idle() prototype
+Date:   Mon, 29 Jun 2020 17:17:28 +0200
+Message-ID: <9963896.lEaLCsxmBZ@kreacher>
+In-Reply-To: <1593421540-7397-2-git-send-email-neal.liu@mediatek.com>
+References: <1593421540-7397-1-git-send-email-neal.liu@mediatek.com> <1593421540-7397-2-git-send-email-neal.liu@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <e879bcc8-5f7d-b1b3-9b66-1032dec6245d@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-29 15:52, Daniel Borkmann wrote:
+On Monday, June 29, 2020 11:05:40 AM CEST Neal Liu wrote:
+> Control Flow Integrity(CFI) is a security mechanism that disallows
+> changes to the original control flow graph of a compiled binary,
+> making it significantly harder to perform such attacks.
 > 
-> Ok, fair enough, please work with DMA folks to get this properly 
-> integrated and
-> restored then. Applied, thanks!
+> init_state_node() assigns same function pointer to idle_state->enter
+> and idle_state->enter_s2idle. This definitely causes CFI failure
+> when calling either enter() or enter_s2idle().
+> 
+> Align enter_s2idle() with enter() function prototype to fix CFI
+> failure.
 
-Daniel, you were too quick! Please revert this one; Christoph just 
-submitted a 4-patch-series that addresses both the DMA API, and the perf 
-regression!
+That needs to be documented somewhere close to the definition of the
+callbacks in question.
+
+Otherwise it is completely unclear why this is a good idea.
+
+> Signed-off-by: Neal Liu <neal.liu@mediatek.com>
+> ---
+>  drivers/acpi/processor_idle.c   |    6 ++++--
+>  drivers/cpuidle/cpuidle-tegra.c |    8 +++++---
+>  drivers/idle/intel_idle.c       |    6 ++++--
+>  include/linux/cpuidle.h         |    6 +++---
+>  4 files changed, 16 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+> index 75534c5..6ffb6c9 100644
+> --- a/drivers/acpi/processor_idle.c
+> +++ b/drivers/acpi/processor_idle.c
+> @@ -655,8 +655,8 @@ static int acpi_idle_enter(struct cpuidle_device *dev,
+>  	return index;
+>  }
+>  
+> -static void acpi_idle_enter_s2idle(struct cpuidle_device *dev,
+> -				   struct cpuidle_driver *drv, int index)
+> +static int acpi_idle_enter_s2idle(struct cpuidle_device *dev,
+> +				  struct cpuidle_driver *drv, int index)
+>  {
+>  	struct acpi_processor_cx *cx = per_cpu(acpi_cstate[index], dev->cpu);
+>  
+> @@ -674,6 +674,8 @@ static void acpi_idle_enter_s2idle(struct cpuidle_device *dev,
+>  		}
+>  	}
+>  	acpi_idle_do_entry(cx);
+> +
+> +	return 0;
+>  }
+>  
+>  static int acpi_processor_setup_cpuidle_cx(struct acpi_processor *pr,
+> diff --git a/drivers/cpuidle/cpuidle-tegra.c b/drivers/cpuidle/cpuidle-tegra.c
+> index 1500458..a12fb14 100644
+> --- a/drivers/cpuidle/cpuidle-tegra.c
+> +++ b/drivers/cpuidle/cpuidle-tegra.c
+> @@ -253,11 +253,13 @@ static int tegra_cpuidle_enter(struct cpuidle_device *dev,
+>  	return err ? -1 : index;
+>  }
+>  
+> -static void tegra114_enter_s2idle(struct cpuidle_device *dev,
+> -				  struct cpuidle_driver *drv,
+> -				  int index)
+> +static int tegra114_enter_s2idle(struct cpuidle_device *dev,
+> +				 struct cpuidle_driver *drv,
+> +				 int index)
+>  {
+>  	tegra_cpuidle_enter(dev, drv, index);
+> +
+> +	return 0;
+>  }
+>  
+>  /*
+> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+> index f449584..b178da3 100644
+> --- a/drivers/idle/intel_idle.c
+> +++ b/drivers/idle/intel_idle.c
+> @@ -175,13 +175,15 @@ static __cpuidle int intel_idle(struct cpuidle_device *dev,
+>   * Invoked as a suspend-to-idle callback routine with frozen user space, frozen
+>   * scheduler tick and suspended scheduler clock on the target CPU.
+>   */
+> -static __cpuidle void intel_idle_s2idle(struct cpuidle_device *dev,
+> -					struct cpuidle_driver *drv, int index)
+> +static __cpuidle int intel_idle_s2idle(struct cpuidle_device *dev,
+> +				       struct cpuidle_driver *drv, int index)
+>  {
+>  	unsigned long eax = flg2MWAIT(drv->states[index].flags);
+>  	unsigned long ecx = 1; /* break on interrupt flag */
+>  
+>  	mwait_idle_with_hints(eax, ecx);
+> +
+> +	return 0;
+>  }
+>  
+>  /*
+> diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
+> index ec2ef63..bee10c0 100644
+> --- a/include/linux/cpuidle.h
+> +++ b/include/linux/cpuidle.h
+> @@ -66,9 +66,9 @@ struct cpuidle_state {
+>  	 * suspended, so it must not re-enable interrupts at any point (even
+>  	 * temporarily) or attempt to change states of clock event devices.
+>  	 */
+> -	void (*enter_s2idle) (struct cpuidle_device *dev,
+> -			      struct cpuidle_driver *drv,
+> -			      int index);
+> +	int (*enter_s2idle)(struct cpuidle_device *dev,
+> +			    struct cpuidle_driver *drv,
+> +			    int index);
+>  };
+>  
+>  /* Idle State Flags */
+> -- 
+> 1.7.9.5
+> 
 
 
-Björn
+
+
