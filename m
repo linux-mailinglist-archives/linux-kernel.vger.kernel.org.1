@@ -2,160 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F6120E21B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8F220E072
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389896AbgF2VC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
+        id S2389738AbgF2UqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728818AbgF2TMu (ORCPT
+        with ESMTP id S1731559AbgF2TNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:12:50 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7CDC08ECB4
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:50:22 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id f7so12339681wrw.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:50:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aJcoTCCNzlFqdkD2IQ5/+inRuV3iTmw7U1wrbHYsCXY=;
-        b=yQNBIfth1iVmJ6MlsArzRkfMw8p3OlqAJFnPjZ9jDWZ8Ckq89NZ8HbCJp70g7E8YCL
-         2JY3b42faBfp+pI9Wj+q3iC3i4AZyTUy1GEkfEUcBsqlmw8y8AvYgv5WcS2C2MW5u0JL
-         zpbB9ruLU8gyxebla6lw8iGRWOyQDsCc5QzcNd8GacOCDvBNnYL3QOwwMzM23Zf9QFs2
-         Iv5wKlZhCSNSPWT5AoW8QvVFYWoTZNDQbgoayzreAzhHe2dFIE9MQe0QbnDRPPdsflBy
-         ssKY8pQVsk/0DwYidUKAHysQwmVOmtON7Mggt89l+RXLWxm7hlhn5VM7hDk0VhHUwDrK
-         t9uw==
+        Mon, 29 Jun 2020 15:13:53 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D95C08ECB9;
+        Sun, 28 Jun 2020 23:52:14 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id n2so2833421edr.5;
+        Sun, 28 Jun 2020 23:52:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aJcoTCCNzlFqdkD2IQ5/+inRuV3iTmw7U1wrbHYsCXY=;
-        b=NmKCxzIcfxZAtfbqlLq37lWXQnh12dIlUsNiBsRwzgHZhzJVTe7k7upt/rfRZ9GE7v
-         FTPhZzkuqolJZFMyWBg6jIam+kSwhf4slUUHy6bC4x98huVtM16plJbnq6rCOYprJysX
-         TBIr5sYilH5InxJboY/02kKe/IFGdgliwDOZWCte347RgugqTLTICaZSqKJF8t6AOkqW
-         2VGOMzZkN1exT/V4vbd3I9lHijY3qdLEabHvwi4mi/NXLnwdaTINmIjnfLqpMeAD0aVa
-         9oWxzLpWMbZVJ8Rk2eZuhd9hWMH+AcZpQJNOq+GFu7WAsWLimjZPVWv1KHx0OMIMXJfv
-         fUiQ==
-X-Gm-Message-State: AOAM532zg+aKCS8nQxfoL3jiVAbc3/w+t4AzWu5KDl4faUObKZtB95EN
-        GL+clrMkwV605zGK6a24hS7lrA==
-X-Google-Smtp-Source: ABdhPJzt8Ln/xndbl27Fr/QEAXZT87zNp1KC2QGgpukfa3lZmG8mDlVvRIemD49AvoDQJ3zM4pnmjg==
-X-Received: by 2002:a5d:6786:: with SMTP id v6mr15360274wru.258.1593413421366;
-        Sun, 28 Jun 2020 23:50:21 -0700 (PDT)
-Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id z25sm26400850wmk.28.2020.06.28.23.50.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jun 2020 23:50:20 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 6/6] hwmon: pmbus: use more devres helpers
-Date:   Mon, 29 Jun 2020 08:50:08 +0200
-Message-Id: <20200629065008.27620-7-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200629065008.27620-1-brgl@bgdev.pl>
-References: <20200629065008.27620-1-brgl@bgdev.pl>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MJNvhIQCteTm5VtFSyzzsWJRKykcFhaBMFS+SgAaulE=;
+        b=uNI53+DW4ONYlbuHphXC9uYMySsEMjyWfy5sBfX+nJbg4OS9i4+HWrsrE1tWTK/Hef
+         02OIFYUVziudbAsKub4UzWh1xRVhXjYE5FnNrbLcGcXQ7qr+7Ilpk6XFAzB9kDwAr/QX
+         oVGpNc84c8tKZEO/yPLs7jAyvT8qSv0+gbiIG00uGK+Gwk026vO4birTebkPxwjQCQhf
+         /tHgX4kwxIn/+TzpFtRp457rHdY1XnQlQxPZnPfuwaj4Aa1o+VvZR5OWzyPUY0G5Aev4
+         cvLIOMRCe4/yYTnMIyWSIVYfHH2FtVDSQs1Xw2AFfqOuYKr//f3g2FyzEjOUPiRn0ykP
+         zNZA==
+X-Gm-Message-State: AOAM532Z9dACPIuq4ShX8Zn+MRhc06Y3FtBXyvPT6EdT5VC2gN9OcQ9L
+        8+/oJ1CkwU6vJkS4NbTiDc0=
+X-Google-Smtp-Source: ABdhPJw9FZnwCiOCE7JrbDHqCcdYHvx1EqL2R+gxeefz5/+dK9PWLHMqdziIkts4ezYexqkOwTWX0w==
+X-Received: by 2002:a50:f047:: with SMTP id u7mr16877181edl.274.1593413532938;
+        Sun, 28 Jun 2020 23:52:12 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.195])
+        by smtp.googlemail.com with ESMTPSA id m14sm9438582ejx.80.2020.06.28.23.52.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 28 Jun 2020 23:52:12 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 08:52:10 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: bmc150_magn: Document and fix
+ missing compatibles
+Message-ID: <20200629065210.GB5879@kozik-lap>
+References: <20200622060110.23192-1-krzk@kernel.org>
+ <20200627144359.1ae30bb0@archlinux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200627144359.1ae30bb0@archlinux>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Sat, Jun 27, 2020 at 02:43:59PM +0100, Jonathan Cameron wrote:
+> On Mon, 22 Jun 2020 08:01:09 +0200
+> Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> 
+> > The driver supports also BMC156B and BMM150B but these compatibles had
+> > redundant suffix "_magn".  Add existing compatibles marking them
+> > deprecated along with adding a new, proper one for this family of
+> > devices.
+> Thanks for tidying this up.
+> 
+> The BMC156B is a dual magnetometer and accelerometer chip
+> so for that one the _magn postfix probably is needed.
+> 
+> Or am I missing something?
+> 
+> The way this does SPI is rather odd but seems to be the same as the bmc150
+> (two chips with non overlapping register maps).
 
-Shrink pmbus code by using devm_hwmon_device_register_with_groups()
-and devm_krealloc() instead of their non-managed variants.
+You're right, only one compatible should be trimmed from suffix. I'll
+send v3.
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/hwmon/pmbus/pmbus_core.c | 28 +++++++++-------------------
- 1 file changed, 9 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
-index a420877ba533..225d0ac162c7 100644
---- a/drivers/hwmon/pmbus/pmbus_core.c
-+++ b/drivers/hwmon/pmbus/pmbus_core.c
-@@ -1022,9 +1022,9 @@ static int pmbus_add_attribute(struct pmbus_data *data, struct attribute *attr)
- {
- 	if (data->num_attributes >= data->max_attributes - 1) {
- 		int new_max_attrs = data->max_attributes + PMBUS_ATTR_ALLOC_SIZE;
--		void *new_attrs = krealloc(data->group.attrs,
--					   new_max_attrs * sizeof(void *),
--					   GFP_KERNEL);
-+		void *new_attrs = devm_krealloc(data->dev, data->group.attrs,
-+						new_max_attrs * sizeof(void *),
-+						GFP_KERNEL);
- 		if (!new_attrs)
- 			return -ENOMEM;
- 		data->group.attrs = new_attrs;
-@@ -2538,7 +2538,7 @@ int pmbus_do_probe(struct i2c_client *client, const struct i2c_device_id *id,
- 
- 	ret = pmbus_find_attributes(client, data);
- 	if (ret)
--		goto out_kfree;
-+		return ret;
- 
- 	/*
- 	 * If there are no attributes, something is wrong.
-@@ -2546,35 +2546,27 @@ int pmbus_do_probe(struct i2c_client *client, const struct i2c_device_id *id,
- 	 */
- 	if (!data->num_attributes) {
- 		dev_err(dev, "No attributes found\n");
--		ret = -ENODEV;
--		goto out_kfree;
-+		return -ENODEV;
- 	}
- 
- 	data->groups[0] = &data->group;
- 	memcpy(data->groups + 1, info->groups, sizeof(void *) * groups_num);
--	data->hwmon_dev = hwmon_device_register_with_groups(dev, client->name,
--							    data, data->groups);
-+	data->hwmon_dev = devm_hwmon_device_register_with_groups(dev,
-+					client->name, data, data->groups);
- 	if (IS_ERR(data->hwmon_dev)) {
--		ret = PTR_ERR(data->hwmon_dev);
- 		dev_err(dev, "Failed to register hwmon device\n");
--		goto out_kfree;
-+		return PTR_ERR(data->hwmon_dev);
- 	}
- 
- 	ret = pmbus_regulator_register(data);
- 	if (ret)
--		goto out_unregister;
-+		return ret;
- 
- 	ret = pmbus_init_debugfs(client, data);
- 	if (ret)
- 		dev_warn(dev, "Failed to register debugfs\n");
- 
- 	return 0;
--
--out_unregister:
--	hwmon_device_unregister(data->hwmon_dev);
--out_kfree:
--	kfree(data->group.attrs);
--	return ret;
- }
- EXPORT_SYMBOL_GPL(pmbus_do_probe);
- 
-@@ -2584,8 +2576,6 @@ int pmbus_do_remove(struct i2c_client *client)
- 
- 	debugfs_remove_recursive(data->debugfs);
- 
--	hwmon_device_unregister(data->hwmon_dev);
--	kfree(data->group.attrs);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(pmbus_do_remove);
--- 
-2.26.1
+Best regards,
+Krzysztof
 
