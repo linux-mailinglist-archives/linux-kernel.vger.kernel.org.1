@@ -2,161 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A1F20E44F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B91720E516
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388483AbgF2VXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:23:33 -0400
-Received: from mga03.intel.com ([134.134.136.65]:63958 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729383AbgF2SvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:51:21 -0400
-IronPort-SDR: uBUsazwOnmNYLPGQng0mmYqeiDr+H3IEsq7fDUMEBm+6npRfF3QqmMXMIDWcu0EOKFVNFuDZqy
- VeGmPmjIIZbQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="145971622"
-X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
-   d="scan'208";a="145971622"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 07:36:17 -0700
-IronPort-SDR: 7MwTDCGr5NjvvVT2xsNX3KfYnWnWvuUzoUCN0hhPSWxf0G/GgQJFCv3SqhoBI+4o7oVrkruyVH
- Ot/elOcYiaIw==
-X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
-   d="scan'208";a="454214032"
-Received: from tclumbax-mobl2.gar.corp.intel.com (HELO [10.255.1.194]) ([10.255.1.194])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 07:36:16 -0700
-From:   Dave Hansen <dave.hansen@intel.com>
-Subject: Re: [PATCH] mm/vmscan: restore zone_reclaim_mode ABI
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        ben.widawsky@intel.com, alex.shi@linux.alibaba.com,
-        tobin@kernel.org, cl@linux.com, akpm@linux-foundation.org,
-        stable@kernel.org
-References: <20200626003459.D8E015CA@viggo.jf.intel.com>
- <20200626075918.dj6ioaon5iuhtg6k@beryllium.lan>
- <83731eeb-1f64-50b7-41e9-5b7114678533@intel.com>
- <20200629071338.m4veigbp4tu45gbz@beryllium.lan>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <c9a24700-7ec8-2bf8-1a13-c3ddf249a1a0@intel.com>
-Date:   Mon, 29 Jun 2020 07:36:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200629071338.m4veigbp4tu45gbz@beryllium.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1728702AbgF2VcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:32:16 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:45722 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728691AbgF2SlI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:41:08 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05TEW5oH024178;
+        Mon, 29 Jun 2020 14:44:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=iypkSq/rSFiyRGsyjH0iS+Ob1Ls3Rp3j/D/U0O2SU5s=;
+ b=nvAzSY/g7bZDBSUzmHciv+5/ZkwQOpsO19TScPawDZ/68Mn2ZL4kjY/CmZBcy/h5LjKs
+ FGujVkDlAhzCMZfbBWlmELIcc+cRGozkHnVIbc/V8hzZF08X03Ct1+RAbdgZ9R5k6j2I
+ kn6wKZjGB7one92gJChBiC+1ObpvsIMEXS2X23nxPb0vi9yKRIhQECQTtV2vXZG8e5X8
+ Z620UxA0dONhVsg6+H2zFCOyRkwWA9wBrCrkwNEZRnQkA7S3Wq/i434ceoI/x+4wZAle
+ b/Zh9YUCaqJtf9qIKZV2+pzcjXBJkWPVAbHARoEVvNxUj5gKLtbwqHoGjEwrOgR4IXOR bg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 31wxrmxv73-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 29 Jun 2020 14:44:18 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05TERhiU157681;
+        Mon, 29 Jun 2020 14:44:18 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 31xg1v5363-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Jun 2020 14:44:18 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05TEi8Gv003370;
+        Mon, 29 Jun 2020 14:44:08 GMT
+Received: from dhcp-10-154-101-2.vpn.oracle.com (/10.154.101.2)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 29 Jun 2020 14:44:08 +0000
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.5\))
+Subject: Re: [PATCH v9 0/5] support reserving crashkernel above 4G on arm64
+ kdump
+From:   John Donnelly <john.p.donnelly@oracle.com>
+In-Reply-To: <20200628083458.40066-1-chenzhou10@huawei.com>
+Date:   Mon, 29 Jun 2020 09:44:06 -0500
+Cc:     Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        dyoung@redhat.com, bhe@redhat.com, catalin.marinas@arm.com,
+        will@kernel.org, james.morse@arm.com, robh+dt@kernel.org,
+        arnd@arndb.de, prabhakar.pkin@gmail.com, nsaenzjulienne@suse.de,
+        corbet@lwn.net, bhsharma@redhat.com, horms@verge.net.au,
+        guohanjun@huawei.com, xiexiuqi@huawei.com, huawei.libin@huawei.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kexec@lists.infradead.org, linux-doc@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <7DE7332B-1431-466A-A1DB-658A8D65F5CE@oracle.com>
+References: <20200628083458.40066-1-chenzhou10@huawei.com>
+To:     Chen Zhou <chenzhou10@huawei.com>
+X-Mailer: Apple Mail (2.3445.9.5)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9666 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 phishscore=0
+ malwarescore=0 mlxlogscore=999 adultscore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006290100
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9666 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
+ priorityscore=1501 impostorscore=0 bulkscore=0 clxscore=1011
+ malwarescore=0 phishscore=0 adultscore=0 cotscore=-2147483648
+ lowpriorityscore=0 suspectscore=0 spamscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006290100
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/29/20 12:13 AM, Daniel Wagner wrote:
-> On Fri, Jun 26, 2020 at 06:53:33AM -0700, Dave Hansen wrote:
->> Was there something else specifically in the documentation which you
->> think I've neglected?
-> 
-> The first paragraph explains how you ended up modifying the code. While
-> I understand that you want to document the process, it wont help
-> a reader in future. It doesn't add any intersting information at all.
-> Just state what you're doing as first thing and explain why you are
-> doing it after it.
+Hi ,=20
 
-I went back and looked at it to see what interesting information I think
-the first paragraph conveys:
+> On Jun 28, 2020, at 3:34 AM, Chen Zhou <chenzhou10@huawei.com> wrote:
+>=20
+> This patch series enable reserving crashkernel above 4G in arm64.
+>=20
+> There are following issues in arm64 kdump:
+> 1. We use crashkernel=3DX to reserve crashkernel below 4G, which will =
+fail
+> when there is no enough low memory.
+> 2. Currently, crashkernel=3DY@X can be used to reserve crashkernel =
+above 4G,
+> in this case, if swiotlb or DMA buffers are required, crash dump =
+kernel
+> will boot failure because there is no low memory available for =
+allocation.
+> 3. commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32") =
+broken
+> the arm64 kdump. If the memory reserved for crash dump kernel falled =
+in
+> ZONE_DMA32, the devices in crash dump kernel need to use ZONE_DMA will =
+alloc
+> fail.
+>=20
+> To solve these issues, introduce crashkernel=3DX,low to reserve =
+specified
+> size low memory.
+> Crashkernel=3DX tries to reserve memory for the crash dump kernel =
+under
+> 4G. If crashkernel=3DY,low is specified simultaneously, reserve =
+spcified
+> size low memory for crash kdump kernel devices firstly and then =
+reserve
+> memory above 4G.
+>=20
+> When crashkernel is reserved above 4G in memory and crashkernel=3DX,low
+> is specified simultaneously, kernel should reserve specified size low =
+memory
+> for crash dump kernel devices. So there may be two crash kernel =
+regions, one
+> is below 4G, the other is above 4G.
+> In order to distinct from the high region and make no effect to the =
+use of
+> kexec-tools, rename the low region as "Crash kernel (low)", and pass =
+the
+> low region by reusing DT property "linux,usable-memory-range". We made =
+the low
+> memory region as the last range of "linux,usable-memory-range" to keep
+> compatibility with existing user-space and older kdump kernels.
+>=20
+> Besides, we need to modify kexec-tools:
+> arm64: support more than one crash kernel regions(see [1])
+>=20
+> Another update is document about DT property =
+'linux,usable-memory-range':
+> schemas: update 'linux,usable-memory-range' node schema(see [2])
+>=20
+> The previous changes and discussions can be retrieved from:
+>=20
+> Changes since [v8]
+> - Reuse DT property "linux,usable-memory-range".
+> Suggested by Rob, reuse DT property "linux,usable-memory-range" to =
+pass the low
+> memory region.
+> - Fix kdump broken with ZONE_DMA reintroduced.
+> - Update chosen schema.
 
-> I went to go add a new RECLAIM_* mode for the zone_reclaim_mode
-> sysctl.
+ =20
+  Nice job Chen,=20
 
-This conveys my motivation.  It relays that my discovery of the issue
-was in the process of modifying the code, in contrast to it having being
-found through observed pathological kernel behavior.
+  Does this need a Ack-by from the Raspberry maintainers on this =
+ZONE_DMA fix  ?
 
-> Like a good kernel developer, I also went to go update the 
-> documentation.
+  This activity has been going on for over a year now.  Can we please =
+get this finalized and merged ?
+=20
+ Thank you,
+ John.
 
-This takes the opportunity to throw a tiny bit of shade in the direction
-of the other folks who modified the #define without updating the
-documentation.  It also helps build the justification for the new
-comment on top of the #defines.  I guess you can argue that this should
-be struck from the changelog.  But, heck, it gave me a little chuckle
-when read it just now.
 
-> I noticed that the bits in the documentation didn't
-> match the bits in the #defines.
 
-This is the crux of the problem statement.  Can't get rid of this.
+>=20
+> Changes since [v7]
+> - Move x86 CRASH_ALIGN to 2M
+> Suggested by Dave and do some test, move x86 CRASH_ALIGN to 2M.
+> - Update Documentation/devicetree/bindings/chosen.txt.
+> Add corresponding documentation to =
+Documentation/devicetree/bindings/chosen.txt
+> suggested by Arnd.
+> - Add Tested-by from Jhon and pk.
+>=20
+> Changes since [v6]
+> - Fix build errors reported by kbuild test robot.
+>=20
+> Changes since [v5]
+> - Move reserve_crashkernel_low() into kernel/crash_core.c.
+> - Delete crashkernel=3DX,high.
+> - Modify crashkernel=3DX,low.
+> If crashkernel=3DX,low is specified simultaneously, reserve spcified =
+size low
+> memory for crash kdump kernel devices firstly and then reserve memory =
+above 4G.
+> In addition, rename crashk_low_res as "Crash kernel (low)" for arm64, =
+and then
+> pass to crash dump kernel by DT property "linux,low-memory-range".
+> - Update Documentation/admin-guide/kdump/kdump.rst.
+>=20
+> Changes since [v4]
+> - Reimplement memblock_cap_memory_ranges for multiple ranges by Mike.
+>=20
+> Changes since [v3]
+> - Add memblock_cap_memory_ranges back for multiple ranges.
+> - Fix some compiling warnings.
+>=20
+> Changes since [v2]
+> - Split patch "arm64: kdump: support reserving crashkernel above 4G" =
+as
+> two. Put "move reserve_crashkernel_low() into kexec_core.c" in a =
+separate
+> patch.
+>=20
+> Changes since [v1]:
+> - Move common reserve_crashkernel_low() code into kernel/kexec_core.c.
+> - Remove memblock_cap_memory_ranges() i added in v1 and implement that
+> in fdt_enforce_memory_region().
+> There are at most two crash kernel regions, for two crash kernel =
+regions
+> case, we cap the memory range [min(regs[*].start), max(regs[*].end)]
+> and then remove the memory range in the middle.
+>=20
+> [1]: =
+https://urldefense.com/v3/__http://lists.infradead.org/pipermail/kexec/202=
+0-June/020737.html__;!!GqivPVa7Brio!OnPQrQrzeDmjwp6OTFe3rN1ddb-AUny-Wq5vla=
+MfxI3rSentYYQy-2H91dqbw-1A43Ss$=20
+> [2]: =
+https://urldefense.com/v3/__https://github.com/robherring/dt-schema/pull/1=
+9__;!!GqivPVa7Brio!OnPQrQrzeDmjwp6OTFe3rN1ddb-AUny-Wq5vlaMfxI3rSentYYQy-2H=
+91dqbw9xTB8yT$ =20
+> [v1]: =
+https://urldefense.com/v3/__https://lkml.org/lkml/2019/4/2/1174__;!!GqivPV=
+a7Brio!OnPQrQrzeDmjwp6OTFe3rN1ddb-AUny-Wq5vlaMfxI3rSentYYQy-2H91dqbw2EAOIh=
+M$=20
+> [v2]: =
+https://urldefense.com/v3/__https://lkml.org/lkml/2019/4/9/86__;!!GqivPVa7=
+Brio!OnPQrQrzeDmjwp6OTFe3rN1ddb-AUny-Wq5vlaMfxI3rSentYYQy-2H91dqbwx3ILnLL$=
+=20
+> [v3]: =
+https://urldefense.com/v3/__https://lkml.org/lkml/2019/4/9/306__;!!GqivPVa=
+7Brio!OnPQrQrzeDmjwp6OTFe3rN1ddb-AUny-Wq5vlaMfxI3rSentYYQy-2H91dqbw5YJeYoP=
+$=20
+> [v4]: =
+https://urldefense.com/v3/__https://lkml.org/lkml/2019/4/15/273__;!!GqivPV=
+a7Brio!OnPQrQrzeDmjwp6OTFe3rN1ddb-AUny-Wq5vlaMfxI3rSentYYQy-2H91dqbwxbryST=
+W$=20
+> [v5]: =
+https://urldefense.com/v3/__https://lkml.org/lkml/2019/5/6/1360__;!!GqivPV=
+a7Brio!OnPQrQrzeDmjwp6OTFe3rN1ddb-AUny-Wq5vlaMfxI3rSentYYQy-2H91dqbwzGOGcM=
+s$=20
+> [v6]: =
+https://urldefense.com/v3/__https://lkml.org/lkml/2019/8/30/142__;!!GqivPV=
+a7Brio!OnPQrQrzeDmjwp6OTFe3rN1ddb-AUny-Wq5vlaMfxI3rSentYYQy-2H91dqbw70P0bK=
+y$=20
+> [v7]: =
+https://urldefense.com/v3/__https://lkml.org/lkml/2019/12/23/411__;!!GqivP=
+Va7Brio!OnPQrQrzeDmjwp6OTFe3rN1ddb-AUny-Wq5vlaMfxI3rSentYYQy-2H91dqbw29m6W=
+rh$=20
+> [v8]: =
+https://urldefense.com/v3/__https://lkml.org/lkml/2020/5/21/213__;!!GqivPV=
+a7Brio!OnPQrQrzeDmjwp6OTFe3rN1ddb-AUny-Wq5vlaMfxI3rSentYYQy-2H91dqbw-jGzSc=
+F$=20
+>=20
+> Chen Zhou (5):
+>  x86: kdump: move reserve_crashkernel_low() into crash_core.c
+>  arm64: kdump: reserve crashkenel above 4G for crash dump kernel
+>  arm64: kdump: add memory for devices by DT property
+>    linux,usable-memory-range
+>  arm64: kdump: fix kdump broken with ZONE_DMA reintroduced
+>  kdump: update Documentation about crashkernel on arm64
+>=20
+> Documentation/admin-guide/kdump/kdump.rst     | 13 ++-
+> .../admin-guide/kernel-parameters.txt         | 17 +++-
+> arch/arm64/kernel/setup.c                     |  8 +-
+> arch/arm64/mm/init.c                          | 74 ++++++++++++---
+> arch/x86/kernel/setup.c                       | 66 ++------------
+> include/linux/crash_core.h                    |  3 +
+> include/linux/kexec.h                         |  2 -
+> kernel/crash_core.c                           | 90 +++++++++++++++++++
+> kernel/kexec_core.c                           | 17 ----
+> 9 files changed, 196 insertions(+), 94 deletions(-)
+>=20
+> --=20
+> 2.20.1
+>=20
 
-So, I guess I could pare the above down to simply:
-
-	When modifying the zone_reclaim_mode sysctl documentation, I
-	found through inspection that the bits in the documentation
-	did not match the bits in the #defines.
-
-That's certainly chuckle-free, and it would make my editor happy because
-it's shorter and now he can sell another ad on the page.  Would you
-prefer that form?
-
->>> I think the documentation update should not be part of this patch.
->>> This makes the back porting to stable more difficult.
->>
->> Really?  If a backporter doesn't care about documentation, I'd just
->> expect them to see the reject, ignore it, and move on with their life.
->> If they do, they'd want the code fix and the Documentation/ update in
->> the same patch so that they don't get disconnected.
-> 
-> I understood you are fixing a regression ingroduced by a previous change. In
-> this case I would only fix the regression. Updating/improving the
-> documentation is good, I just don't think it's necessary to back port it to
-> stables trees along side the bug fix.
-
-That's a question for the person doing the backport.  Attaching the two
-things makes it the most likely that they will be given the best, most
-complete information.
-
-I've done my share of backports and I if it were me, I think I'd rather
-have it this way.
