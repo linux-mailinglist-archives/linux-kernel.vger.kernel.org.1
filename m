@@ -2,129 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A235320DAFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850FB20DB0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388498AbgF2UCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:02:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51644 "EHLO
+        id S2388721AbgF2UDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:03:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388677AbgF2UC1 (ORCPT
+        with ESMTP id S2388703AbgF2UCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:02:27 -0400
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E3BC03E979
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:02:27 -0700 (PDT)
-Received: by mail-oo1-xc42.google.com with SMTP id m38so114342ool.4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:02:27 -0700 (PDT)
+        Mon, 29 Jun 2020 16:02:53 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704B3C061755;
+        Mon, 29 Jun 2020 13:02:53 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b16so8333035pfi.13;
+        Mon, 29 Jun 2020 13:02:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OH0rNBT9W84o9wS9VyW5dxui8DUCwiqdXYynayWRkhE=;
-        b=gyfjAP1QH+9K8XAonMYDiORbrREk2hnAYmMygagJYnS/PeSTeo/N58LOXYMLWUahyG
-         XVe20skhr9p6H53LmgIF8g0gvy6EN2HG3F6zTTW/6eQ4G5uHJSWsA1z4oExHLiRBxtfh
-         sqIRG2ev1wRpRxVl5JxU+XKTd+loVqFw1rP8g=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version:reply-to
+         :content-transfer-encoding;
+        bh=BzZHVC0iAgOjnmp+banoepd5A4N8/DrSMscTABsdBD0=;
+        b=gxQtO2x15mMvNYI3GfhGgpm7fHc4g2nms0huDE+15T7xCQEsuc78OuuetjDqsyn6tx
+         xt1bW8kG6CaMAQlYpXKV31hcSl+YsH6TVPlGZFoKlZvXii2v1a+tQaJaVk/ibhnpbAa/
+         LiUz1qO/nP3My6mMwN1cjB3duRmDtnh8HZ1S1z3v4KmqjYNKMkrYmU0vaXVnEj+gJIFK
+         fgoxxPpk8L+kTtAZGf3e7NwTCZ0Wsydn5eL0cttdGfXLNXbBdUjTbdRIrbz65uP6fxWQ
+         d0q1/6sLZKmlQQm98PX1njG2izxpGsj2HbZq/CLT+MWlt9h1KlF4iipkvuL4ZFHmam8G
+         3M7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OH0rNBT9W84o9wS9VyW5dxui8DUCwiqdXYynayWRkhE=;
-        b=Nc4atyDtwv0+ar/6HpJ/Tl9TIlaGx5enGSGFzzksCb8g8ey8nwdwvqJO7nTGXG1pnk
-         DjjrhoXSVYEW9ttMzXBOJLdkTMuDTXKjRtoEU3YhEeq8i3pWd0AOvUTaiI1w2nP5jzX/
-         reuqoqjhpdqw+Grd9a4iaLRuKXMJvrQY44CQEQLf7NC/N3oh3BsHvvPEpnrfIFCb/uPl
-         03SN4G66j+Rs3B2pc9unA2O7rMUAGKNNQXKx/mmsWA9Kg4TKjyTvNc0k8pMKufKy54hE
-         gmbG6KHSdnkHjWCahaUo+OCkgQT1VQnfWxZNKKcfRsn7hZf33wNjlLFrW2vb+c0AU0mz
-         u5tg==
-X-Gm-Message-State: AOAM533cHM5movVYNnIQf06xSC883mlhTYK5v8xQIc9q8FD5J2q0C7Ku
-        ZwIl47UmWQrSD/3N0dX6u1Nm8Q==
-X-Google-Smtp-Source: ABdhPJzhXyOuVOdh8wAFssxnqlQ8dPjp+s+W0dbcr5Y+R9um/gLKAFxVscQBA7dUfd8gQbfYxG8Tzg==
-X-Received: by 2002:a4a:2259:: with SMTP id z25mr14954165ooe.29.1593460947269;
-        Mon, 29 Jun 2020 13:02:27 -0700 (PDT)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id p73sm213895oop.36.2020.06.29.13.02.26
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :reply-to:content-transfer-encoding;
+        bh=BzZHVC0iAgOjnmp+banoepd5A4N8/DrSMscTABsdBD0=;
+        b=ki76yRQ+dO5qWM3T+rxfq9hGa0b2utMO6OsOvRFDRCiIb/DCEJZCa9zr6o5IxNVgZc
+         /+zkPLiGugbFTpSYnKw3nJGBFmt8yP+DvvHvOQ7ewVO4BDyghfQdqQLb6fWj85CNWrKn
+         1yYiy94pjszpOSc1AJr1GHtljCZyxdcMqJNr1c2u7bp64mp8zG7s3q9Ej+tLoZJ1q6iq
+         BwvMzkH2J/D965Rekua//+L8V3dizsmfJQaMwTcWlzPe4EUWEPsR0aAHKyqvmLFvY8VZ
+         SSRIUOFXWIvUOHzIvPo4L/7RYzAqqW5C7hHje/0GzQXIP147wqOgLCUdmso1W0MkItT7
+         ZMNA==
+X-Gm-Message-State: AOAM531MMRLDGSqXglXFxCJaW9G7COpBIR0BOlkFRjh+3r3YswQJlCzZ
+        k8jVVq9S5rPU3ISXlkySFj4=
+X-Google-Smtp-Source: ABdhPJytEAzHyixe1kECCeyJXTT86jjUfyrwVMZsO1pdGsd1R/rkhiznp9a2++5gEXsLfcS37CRmng==
+X-Received: by 2002:a63:7b15:: with SMTP id w21mr12350457pgc.386.1593460972852;
+        Mon, 29 Jun 2020 13:02:52 -0700 (PDT)
+Received: from localhost.localdomain ([131.107.160.194])
+        by smtp.gmail.com with ESMTPSA id j10sm531558pgh.28.2020.06.29.13.02.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 13:02:26 -0700 (PDT)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     trenn@suse.com, shuah@kernel.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] cpupower: Fix NULL but dereferenced coccicheck errors
-Date:   Mon, 29 Jun 2020 14:02:23 -0600
-Message-Id: <20200629200223.27322-2-skhan@linuxfoundation.org>
+        Mon, 29 Jun 2020 13:02:52 -0700 (PDT)
+From:   Andres Beltran <lkmlabelt@gmail.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mikelley@microsoft.com, parri.andrea@gmail.com,
+        Andres Beltran <lkmlabelt@gmail.com>,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH v2 0/3] Drivers: hv: vmbus: vmbus_requestor data structure for VMBus hardening
+Date:   Mon, 29 Jun 2020 16:02:24 -0400
+Message-Id: <20200629200227.1518784-1-lkmlabelt@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629200223.27322-1-skhan@linuxfoundation.org>
-References: <20200629200223.27322-1-skhan@linuxfoundation.org>
 MIME-Version: 1.0
+Reply-To: t-mabelt@microsoft.com
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix NULL but dereferenced coccicheck errors found by:
+Currently, VMbus drivers use pointers into guest memory as request IDs
+for interactions with Hyper-V. To be more robust in the face of errors
+or malicious behavior from a compromised Hyper-V, avoid exposing
+guest memory addresses to Hyper-V. Also avoid Hyper-V giving back a
+bad request ID that is then treated as the address of a guest data
+structure with no validation. Instead, encapsulate these memory
+addresses and provide small integers as request IDs.
 
-make coccicheck MODE=report M=tools/power/cpupower
+The first patch creates the definitions for the data structure, provides
+helper methods to generate new IDs and retrieve data, and
+allocates/frees the memory needed for vmbus_requestor.
 
-tools/power/cpupower/lib/cpufreq.c:384:19-23: ERROR: first is NULL but dereferenced.
-tools/power/cpupower/lib/cpufreq.c:440:19-23: ERROR: first is NULL but dereferenced.
-tools/power/cpupower/lib/cpufreq.c:308:19-23: ERROR: first is NULL but dereferenced.
-tools/power/cpupower/lib/cpufreq.c:753:19-23: ERROR: first is NULL but dereferenced.
+The second and third patches make use of vmbus_requestor to send request
+IDs to Hyper-V in storvsc and netvsc respectively.
 
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- tools/power/cpupower/lib/cpufreq.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Thanks.
+Andres Beltran
 
-diff --git a/tools/power/cpupower/lib/cpufreq.c b/tools/power/cpupower/lib/cpufreq.c
-index 6e04304560ca..c3b56db8b921 100644
---- a/tools/power/cpupower/lib/cpufreq.c
-+++ b/tools/power/cpupower/lib/cpufreq.c
-@@ -285,7 +285,7 @@ struct cpufreq_available_governors *cpufreq_get_available_governors(unsigned
- 			} else {
- 				first = malloc(sizeof(*first));
- 				if (!first)
--					goto error_out;
-+					return NULL;
- 				current = first;
- 			}
- 			current->first = first;
-@@ -362,7 +362,7 @@ struct cpufreq_available_frequencies
- 			} else {
- 				first = malloc(sizeof(*first));
- 				if (!first)
--					goto error_out;
-+					return NULL;
- 				current = first;
- 			}
- 			current->first = first;
-@@ -418,7 +418,7 @@ struct cpufreq_available_frequencies
- 			} else {
- 				first = malloc(sizeof(*first));
- 				if (!first)
--					goto error_out;
-+					return NULL;
- 				current = first;
- 			}
- 			current->first = first;
-@@ -493,7 +493,7 @@ static struct cpufreq_affected_cpus *sysfs_get_cpu_list(unsigned int cpu,
- 			} else {
- 				first = malloc(sizeof(*first));
- 				if (!first)
--					goto error_out;
-+					return NULL;
- 				current = first;
- 			}
- 			current->first = first;
-@@ -726,7 +726,7 @@ struct cpufreq_stats *cpufreq_get_stats(unsigned int cpu,
- 			} else {
- 				first = malloc(sizeof(*first));
- 				if (!first)
--					goto error_out;
-+					return NULL;
- 				current = first;
- 			}
- 			current->first = first;
+Cc: linux-scsi@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: James E.J. Bottomley <jejb@linux.ibm.com>
+Cc: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+
+Andres Beltran (3):
+  Drivers: hv: vmbus: Add vmbus_requestor data structure for VMBus
+    hardening
+  scsi: storvsc: Use vmbus_requestor to generate transaction IDs for
+    VMBus hardening
+  hv_netvsc: Use vmbus_requestor to generate transaction IDs for VMBus
+    hardening
+
+ drivers/hv/channel.c              | 146 ++++++++++++++++++++++++++++++
+ drivers/net/hyperv/hyperv_net.h   |  13 +++
+ drivers/net/hyperv/netvsc.c       |  79 +++++++++++++---
+ drivers/net/hyperv/rndis_filter.c |   1 +
+ drivers/scsi/storvsc_drv.c        |  85 ++++++++++++++---
+ include/linux/hyperv.h            |  22 +++++
+ 6 files changed, 321 insertions(+), 25 deletions(-)
+
 -- 
 2.25.1
 
