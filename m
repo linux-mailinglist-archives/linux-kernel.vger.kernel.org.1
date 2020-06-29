@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7C620D404
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCDD20D422
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730636AbgF2TEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:04:07 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:51254 "EHLO inva020.nxp.com"
+        id S1729368AbgF2TFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:05:30 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:41034 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730626AbgF2TED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:04:03 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D6AF51A01F6;
-        Mon, 29 Jun 2020 08:06:03 +0200 (CEST)
+        id S1730534AbgF2TEq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:04:46 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E5D78200FE3;
+        Mon, 29 Jun 2020 08:06:05 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 084551A01A5;
-        Mon, 29 Jun 2020 08:05:53 +0200 (CEST)
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1278F200EF8;
+        Mon, 29 Jun 2020 08:05:55 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 1B47B402F7;
-        Mon, 29 Jun 2020 14:05:40 +0800 (SGT)
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 4F852402E0;
+        Mon, 29 Jun 2020 14:05:42 +0800 (SGT)
 From:   Anson Huang <Anson.Huang@nxp.com>
 To:     linux@armlinux.org.uk, shawnguo@kernel.org, s.hauer@pengutronix.de,
         kernel@pengutronix.de, festevam@gmail.com, mturquette@baylibre.com,
@@ -30,9 +30,9 @@ To:     linux@armlinux.org.uk, shawnguo@kernel.org, s.hauer@pengutronix.de,
         viro@zeniv.linux.org.uk, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
 Cc:     Linux-imx@nxp.com
-Subject: [PATCH V3 03/10] ARM: imx: Select MXC_CLK for each SoC
-Date:   Mon, 29 Jun 2020 13:53:55 +0800
-Message-Id: <1593410042-10598-4-git-send-email-Anson.Huang@nxp.com>
+Subject: [PATCH V3 04/10] clk: imx: Support building SCU clock driver as module
+Date:   Mon, 29 Jun 2020 13:53:56 +0800
+Message-Id: <1593410042-10598-5-git-send-email-Anson.Huang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com>
 References: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com>
@@ -42,108 +42,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i.MX common clock drivers may support module build, so it is NOT
-selected by default, for ARCH_MXC ARMv7 platforms, need to select
-it manually in each SoC to make build pass.
+There are more and more requirements of building SoC specific drivers
+as modules, add support for building SCU clock driver as module to meet
+the requirement.
 
 Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
 Changes since V2:
-	- manually select the MXC_CLK in each SoC instead of selecting it
-	  for ARCH_MXC.
+	- use separated line for each file which is included for build;
+	- include linux/export.h where necessary.
 ---
- arch/arm/mach-imx/Kconfig | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/clk/imx/Kconfig        | 4 ++--
+ drivers/clk/imx/Makefile       | 6 +++---
+ drivers/clk/imx/clk-lpcg-scu.c | 2 ++
+ drivers/clk/imx/clk-scu.c      | 5 +++++
+ 4 files changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
-index e7d7b90..a465c0f 100644
---- a/arch/arm/mach-imx/Kconfig
-+++ b/arch/arm/mach-imx/Kconfig
-@@ -58,6 +58,7 @@ config SOC_IMX21
- 	select CPU_ARM926T
- 	select IMX_HAVE_IOMUX_V1
- 	select MXC_AVIC
-+	select MXC_CLK
+diff --git a/drivers/clk/imx/Kconfig b/drivers/clk/imx/Kconfig
+index db0253f..ded0643 100644
+--- a/drivers/clk/imx/Kconfig
++++ b/drivers/clk/imx/Kconfig
+@@ -5,8 +5,8 @@ config MXC_CLK
+ 	def_bool ARCH_MXC
  
- config SOC_IMX27
- 	bool
-@@ -65,17 +66,20 @@ config SOC_IMX27
- 	select IMX_HAVE_IOMUX_V1
- 	select MXC_AVIC
- 	select PINCTRL_IMX27
-+	select MXC_CLK
+ config MXC_CLK_SCU
+-	bool
+-	depends on IMX_SCU
++	tristate "IMX SCU clock"
++	depends on ARCH_MXC && IMX_SCU
  
- config SOC_IMX31
- 	bool
- 	select CPU_V6
- 	select MXC_AVIC
-+	select MXC_CLK
+ config CLK_IMX8MM
+ 	bool "IMX8MM CCM Clock Driver"
+diff --git a/drivers/clk/imx/Makefile b/drivers/clk/imx/Makefile
+index 928f874..c6574a3 100644
+--- a/drivers/clk/imx/Makefile
++++ b/drivers/clk/imx/Makefile
+@@ -21,9 +21,9 @@ obj-$(CONFIG_MXC_CLK) += \
+ 	clk-sscg-pll.o \
+ 	clk-pll14xx.o
  
- config SOC_IMX35
- 	bool
- 	select ARCH_MXC_IOMUX_V3
- 	select MXC_AVIC
- 	select PINCTRL_IMX35
-+	select MXC_CLK
+-obj-$(CONFIG_MXC_CLK_SCU) += \
+-	clk-scu.o \
+-	clk-lpcg-scu.o
++mxc-clk-scu-objs += clk-lpcg-scu.o
++mxc-clk-scu-objs += clk-scu.o
++obj-$(CONFIG_MXC_CLK_SCU) += mxc-clk-scu.o
  
- if ARCH_MULTI_V5
+ obj-$(CONFIG_CLK_IMX8MM) += clk-imx8mm.o
+ obj-$(CONFIG_CLK_IMX8MN) += clk-imx8mn.o
+diff --git a/drivers/clk/imx/clk-lpcg-scu.c b/drivers/clk/imx/clk-lpcg-scu.c
+index a73a799..d4e78ca 100644
+--- a/drivers/clk/imx/clk-lpcg-scu.c
++++ b/drivers/clk/imx/clk-lpcg-scu.c
+@@ -6,6 +6,7 @@
  
-@@ -419,6 +423,7 @@ config SOC_IMX1
- 	select CPU_ARM920T
- 	select MXC_AVIC
- 	select PINCTRL_IMX1
-+	select MXC_CLK
- 	help
- 	  This enables support for Freescale i.MX1 processor
+ #include <linux/clk-provider.h>
+ #include <linux/err.h>
++#include <linux/export.h>
+ #include <linux/io.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+@@ -114,3 +115,4 @@ struct clk_hw *imx_clk_lpcg_scu(const char *name, const char *parent_name,
  
-@@ -432,6 +437,7 @@ config SOC_IMX25
- 	select CPU_ARM926T
- 	select MXC_AVIC
- 	select PINCTRL_IMX25
-+	select MXC_CLK
- 	help
- 	  This enables support for Freescale i.MX25 processor
- endif
-@@ -444,6 +450,7 @@ config SOC_IMX5
- 	bool
- 	select HAVE_IMX_SRC
- 	select MXC_TZIC
-+	select MXC_CLK
+ 	return hw;
+ }
++EXPORT_SYMBOL_GPL(imx_clk_lpcg_scu);
+diff --git a/drivers/clk/imx/clk-scu.c b/drivers/clk/imx/clk-scu.c
+index b8b2072..9688981 100644
+--- a/drivers/clk/imx/clk-scu.c
++++ b/drivers/clk/imx/clk-scu.c
+@@ -8,6 +8,7 @@
+ #include <linux/arm-smccc.h>
+ #include <linux/clk-provider.h>
+ #include <linux/err.h>
++#include <linux/module.h>
+ #include <linux/slab.h>
  
- config	SOC_IMX50
- 	bool "i.MX50 support"
-@@ -477,6 +484,7 @@ config SOC_IMX6
- 	select HAVE_IMX_MMDC
- 	select HAVE_IMX_SRC
- 	select MFD_SYSCON
-+	select MXC_CLK
- 	select PL310_ERRATA_769419 if CACHE_L2X0
+ #include "clk-scu.h"
+@@ -132,6 +133,7 @@ int imx_clk_scu_init(void)
+ {
+ 	return imx_scu_get_handle(&ccm_ipc_handle);
+ }
++EXPORT_SYMBOL_GPL(imx_clk_scu_init);
  
- config SOC_IMX6Q
-@@ -561,6 +569,7 @@ config SOC_IMX7D_CM4
- config SOC_IMX7D
- 	bool "i.MX7 Dual support"
- 	select PINCTRL_IMX7D
-+	select MXC_CLK
- 	select SOC_IMX7D_CA7 if ARCH_MULTI_V7
- 	select SOC_IMX7D_CM4 if ARM_SINGLE_ARMV7M
- 	select ARM_ERRATA_814220 if ARCH_MULTI_V7
-@@ -571,6 +580,7 @@ config SOC_IMX7ULP
- 	bool "i.MX7ULP support"
- 	select CLKSRC_IMX_TPM
- 	select PINCTRL_IMX7ULP
-+	select MXC_CLK
- 	select SOC_IMX7D_CA7 if ARCH_MULTI_V7
- 	select SOC_IMX7D_CM4 if ARM_SINGLE_ARMV7M
- 	help
-@@ -580,6 +590,7 @@ config SOC_VF610
- 	bool "Vybrid Family VF610 support"
- 	select ARM_GIC if ARCH_MULTI_V7
- 	select PINCTRL_VF610
-+	select MXC_CLK
+ /*
+  * clk_scu_recalc_rate - Get clock rate for a SCU clock
+@@ -387,3 +389,6 @@ struct clk_hw *__imx_clk_scu(const char *name, const char * const *parents,
  
- 	help
- 	  This enables support for Freescale Vybrid VF610 processor.
+ 	return hw;
+ }
++EXPORT_SYMBOL_GPL(__imx_clk_scu);
++
++MODULE_LICENSE("GPL v2");
 -- 
 2.7.4
 
