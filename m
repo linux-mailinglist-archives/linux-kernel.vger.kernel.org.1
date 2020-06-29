@@ -2,136 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A0020D3B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A65020D506
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730438AbgF2TB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:01:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48448 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728101AbgF2TBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:01:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7BA11AD8D;
-        Mon, 29 Jun 2020 09:44:40 +0000 (UTC)
-Date:   Mon, 29 Jun 2020 11:43:50 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        Linus Torvalds <torvalds@linux-foundation.org>, ast@kernel.org,
-        daniel@iogearbox.net, yhs@fb.com, andriin@fb.com,
-        arnaldo.melo@gmail.com, kafai@fb.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        linux@rasmusvillemoes.dk, joe@perches.com,
-        andriy.shevchenko@linux.intel.com, corbet@lwn.net,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v3 bpf-next 4/8] printk: add type-printing %pT format
- specifier which uses BTF
-Message-ID: <20200629094349.GQ8444@alley>
-References: <1592914031-31049-1-git-send-email-alan.maguire@oracle.com>
- <1592914031-31049-5-git-send-email-alan.maguire@oracle.com>
- <20200626101523.GM8444@alley>
- <alpine.LRH.2.21.2006261147130.417@localhost>
+        id S1731560AbgF2TNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:13:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731467AbgF2TNg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:13:36 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF8DC0086F2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 02:48:31 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id s10so15819131wrw.12
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 02:48:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=53lrQUK5V0R5X9ZjWHVM8fR4aDPLU332zBTO52qfJo0=;
+        b=JnRx9Y+zwfxpRk+lCViV8yNn8Lh5fwC569wzdoeWEClhDQHG6m2Xay+NUT45SdKC2v
+         6hi5IJIynqYjnQvHsQBtTrrygjqCGOek/nk93m4sMaI7kc5Nr9pcFvZJXijPJXZBd4kF
+         gJv0ygLdaVBMVYDiqaK+nWSnjud8vJk5sooXIw6dKkIZA+lVblCYW+pvNIDdWQKREshm
+         ahg757SV624NnHdvdQxUQsT7kIB10OdIpcaHHe7S5hbCnU88BnbStBr5ImBJCIqffXWW
+         xYtHwZn5O+iajGMvqzC0uLVU4500akD33etgK5BU6EP5TSi3Y4WVjt8WRgZ2wkgKW7ww
+         VZDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=53lrQUK5V0R5X9ZjWHVM8fR4aDPLU332zBTO52qfJo0=;
+        b=BweHgm49SU7I4hIhZFUnxbj22ZciL4+M1S+3F0AbnLDBG2CKD54EgKJpFPrNjKaAhh
+         IlRMwY2UYcUYxTexE4G6fmgg4/AocA9QNCyUwMAn0IPz/EEepI/ZEUCwaovHzXoyIo/D
+         7SR80L5yG0cCTLaOuuUIPYePViKgzMC/8l9BQXT1G0xH/VdLu/282wxfe6CNGbcph2L4
+         qaqwgDARVvDNITe/KiqLvZlHhp3jzEMqWeGIPmVmnPp+77XdP1uOcI8Zc5+1+lggZWyq
+         dvM2oMkfz5YIbqZlHQAXeJa/l2vyQb1+ZJSvDY8ltHmkUz/9CbPJSi1wKmxaF43ZWfRO
+         WGZQ==
+X-Gm-Message-State: AOAM533MGV0itJpcdB4WjWwwUFU+IAf2KrGUuIOyQdMa3q9TnLeiy5ya
+        2iXSuNoNhcAGaO2M64q2fCXoiQ==
+X-Google-Smtp-Source: ABdhPJx0Ku5T89UPaWu567plluHv+iRyJfjLQ0ckyz7mLSL3YaFEfuG+0mg7IOEgARLWdiyfZ1xzJw==
+X-Received: by 2002:adf:e6cb:: with SMTP id y11mr15736698wrm.282.1593424109700;
+        Mon, 29 Jun 2020 02:48:29 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:110:d6cc:2030:37c1:9964])
+        by smtp.gmail.com with ESMTPSA id u10sm27556177wml.29.2020.06.29.02.48.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 02:48:29 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 10:48:25 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com, tkjos@google.com, adharmap@codeaurora.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 3/3] cpufreq: Specify default governor on command line
+Message-ID: <20200629094825.GA1231692@google.com>
+References: <cover.1593418662.git.viresh.kumar@linaro.org>
+ <96b6e6ca02b664194ff3e57e1ec768fbc597bf38.1593418662.git.viresh.kumar@linaro.org>
+ <20200629094452.GB1228312@google.com>
+ <20200629094627.jh7pwhftcdqj6nhm@vireshk-i7>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.21.2006261147130.417@localhost>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200629094627.jh7pwhftcdqj6nhm@vireshk-i7>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-06-26 12:37:19, Alan Maguire wrote:
-> 
-> On Fri, 26 Jun 2020, Petr Mladek wrote:
-> 
-> > On Tue 2020-06-23 13:07:07, Alan Maguire wrote:
-> > > 
-> > >         printk(KERN_INFO "%pT", BTF_PTR_TYPE(skb, struct sk_buff));
-> > > 
-> > >   struct sk_buff *skb = alloc_skb(64, GFP_KERNEL);
-> > >   pr_info("%pT", BTF_PTR_TYPE(skb, struct sk_buff));
-> > > 
-> > > ...gives us:
-> > > 
-> > > (struct sk_buff){
-> > >  .transport_header = (__u16)65535,
-> > >  .mac_header = (__u16)65535,
-> > >  .end = (sk_buff_data_t)192,
-> > >  .head = (unsigned char *)0x000000006b71155a,
-> > >  .data = (unsigned char *)0x000000006b71155a,
-> > >  .truesize = (unsigned int)768,
-> > >  .users = (refcount_t){
-> > >   .refs = (atomic_t){
-> > >    .counter = (int)1,
-> > >   },
-> > >  },
-> > >  .extensions = (struct skb_ext *)0x00000000f486a130,
-> > > }
-> > > 
-> > > printk output is truncated at 1024 bytes.  For cases where overflow
-> > > is likely, the compact/no type names display modes may be used.
+On Monday 29 Jun 2020 at 15:16:27 (+0530), Viresh Kumar wrote:
+> On 29-06-20, 10:44, Quentin Perret wrote:
+> > On Monday 29 Jun 2020 at 13:55:00 (+0530), Viresh Kumar wrote:
+> > >  static int __init cpufreq_core_init(void)
+> > >  {
+> > > +	struct cpufreq_governor *gov = cpufreq_default_governor();
+> > > +
+> > >  	if (cpufreq_disabled())
+> > >  		return -ENODEV;
+> > >  
+> > >  	cpufreq_global_kobject = kobject_create_and_add("cpufreq", &cpu_subsys.dev_root->kobj);
+> > >  	BUG_ON(!cpufreq_global_kobject);
+> > >  
+> > > +	if (!strlen(default_governor))
 > > 
-> > Hmm, this scares me:
-> > 
-> >    1. The long message and many lines are going to stretch printk
-> >       design in another dimensions.
-> > 
-> >    2. vsprintf() is important for debugging the system. It has to be
-> >       stable. But the btf code is too complex.
-> >
+> > Should we test '!strlen(default_governor) && gov' here actually?
+> > We check the return value of cpufreq_default_governor() in
+> > cpufreq_init_policy(), so I'm guessing we should do the same here to be
+> > on the safe side.
 > 
-> Right on both points, and there's no way around that really. Representing 
-> even small data structures will stretch us to or beyond the 1024 byte 
-> limit.  This can be mitigated by using compact display mode and not 
-> printing field names, but the output becomes hard to parse then.
->
-> I think a better approach might be to start small, adding the core
-> btf_show functionality to BPF, allowing consumers to use it there,
-> perhaps via a custom helper.
+> With the current setup (the Kconfig option being a choice which
+> selects one governor at least), it is not possible for gov to be NULL
+> here. And so I didn't worry about it :)
 
-Sounds good to me.
+Right, so should we remove the check in cpufreq_init_policy() then?
+I don't mind either way as long as we are consitent :)
 
-> In the current model bpf_trace_printk() inherits the functionality
-> to display data from core printk, so a different approach would
-> be needed there.
-
-BTW: Even the trace buffer has a limitation, see BUF_MAX_DATA_SIZE
-in kernel/trace/ring_buffer.c. It is internally implemented as
-a list of memory pages, see the comments above RB_BUFFER_OFF
-definition.
-
-It is typically 4k. I think that you might hit this limit as well.
-We had to increase per-CPU buffers used by printk() in NMI context
-because 4k was not enough for some backtraces.
-
-So, using different approach would make sense even when using trace
-buffer.
-
-> Other consumers outside of BPF
-> could potentially avail of the show functionality directly via the btf_show
-> functions in the future, but at least it would have one consumer at the 
-> outset, and wouldn't present problems like these for printk.
-
-Sounds good to me.
-
-> > I would strongly prefer to keep this outside vsprintf and printk.
-> > Please, invert the logic and convert it into using separate printk()
-> > call for each printed line.
-> > 
-> 
-> I think the above is in line with what you're suggesting?
-
-Yes, as far as I understand it.
-
-> Yep, no way round this either. I'll try a different approach. Thanks for 
-> taking a look!
-
-Uff, thanks a lot for understanding. I hope that most of the code will
-be reusable in some form.
-
-Best Regards,
-Petr
+Thanks,
+Quentin
