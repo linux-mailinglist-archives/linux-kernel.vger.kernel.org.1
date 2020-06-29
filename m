@@ -2,146 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D189720D385
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FDD20D4DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729648AbgF2S7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:59:52 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:35520 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728088AbgF2S7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:59:44 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 70AA02010B8;
-        Mon, 29 Jun 2020 16:10:31 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AF2862010AB;
-        Mon, 29 Jun 2020 16:10:26 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id D0415402E7;
-        Mon, 29 Jun 2020 22:10:20 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl_asrc: Add an option to select internal ratio mode
-Date:   Mon, 29 Jun 2020 21:58:35 +0800
-Message-Id: <1593439115-19282-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1730839AbgF2TME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:12:04 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:46628 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730529AbgF2TMC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:12:02 -0400
+X-Greylist: delayed 1030 seconds by postgrey-1.27 at vger.kernel.org; Mon, 29 Jun 2020 15:12:01 EDT
+Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id D75E93AB679
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:00:33 +0000 (UTC)
+X-Originating-IP: 84.44.14.226
+Received: from nexussix.ar.arcelik (unknown [84.44.14.226])
+        (Authenticated sender: cengiz@kernel.wtf)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 53A10FF80E;
+        Mon, 29 Jun 2020 14:00:09 +0000 (UTC)
+From:   Cengiz Can <cengiz@kernel.wtf>
+To:     Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Cengiz Can <cengiz@kernel.wtf>
+Subject: [PATCH] kdb: prevent possible null deref in kdb_msg_write
+Date:   Mon, 29 Jun 2020 16:59:24 +0300
+Message-Id: <20200629135923.14912-1-cengiz@kernel.wtf>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ASRC not only supports ideal ratio mode, but also supports
-internal ratio mode.
+`kdb_msg_write` operates on a global `struct kgdb_io *` called
+`dbg_io_ops`.
 
-For internal rato mode, the rate of clock source should be divided
-with no remainder by sample rate, otherwise there is sound
-distortion.
+Although it is initialized in `debug_core.c`, there's a null check in
+`kdb_msg_write` which implies that it can be null whenever we dereference
+it in this function call.
 
-Add function fsl_asrc_select_clk() to find proper clock source for
-internal ratio mode, if the clock source is available then internal
-ratio mode will be selected.
+Coverity scanner caught this as CID 1465042.
 
-With change, the ideal ratio mode is not the only option for user.
+I have modified the function to bail out if `dbg_io_ops` is not properly
+initialized.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
 ---
- sound/soc/fsl/fsl_asrc.c | 58 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 56 insertions(+), 2 deletions(-)
+ kernel/debug/kdb/kdb_io.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 95f6a9617b0b..fcafc8ecb131 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -582,11 +582,59 @@ static int fsl_asrc_dai_startup(struct snd_pcm_substream *substream,
- 			SNDRV_PCM_HW_PARAM_RATE, &fsl_asrc_rate_constraints);
- }
+diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
+index 683a799618ad..85e579812458 100644
+--- a/kernel/debug/kdb/kdb_io.c
++++ b/kernel/debug/kdb/kdb_io.c
+@@ -549,14 +549,15 @@ static void kdb_msg_write(const char *msg, int msg_len)
+ 	if (msg_len == 0)
+ 		return;
  
-+/**
-+ * Select proper clock source for internal ratio mode
-+ */
-+static int fsl_asrc_select_clk(struct fsl_asrc_priv *asrc_priv,
-+			       struct fsl_asrc_pair *pair,
-+			       int in_rate,
-+			       int out_rate)
-+{
-+	struct fsl_asrc_pair_priv *pair_priv = pair->private;
-+	struct asrc_config *config = pair_priv->config;
-+	int rate[2], select_clk[2]; /* Array size 2 means IN and OUT */
-+	int clk_rate, clk_index;
-+	int i = 0, j = 0;
-+	bool clk_sel[2];
-+
-+	rate[0] = in_rate;
-+	rate[1] = out_rate;
-+
-+	/* Select proper clock source for internal ratio mode */
-+	for (j = 0; j < 2; j++) {
-+		for (i = 0; i < ASRC_CLK_MAP_LEN; i++) {
-+			clk_index = asrc_priv->clk_map[j][i];
-+			clk_rate = clk_get_rate(asrc_priv->asrck_clk[clk_index]);
-+			if (clk_rate != 0 && (clk_rate / rate[j]) <= 1024 &&
-+			    (clk_rate % rate[j]) == 0)
-+				break;
-+		}
-+
-+		if (i == ASRC_CLK_MAP_LEN) {
-+			select_clk[j] = OUTCLK_ASRCK1_CLK;
-+			clk_sel[j] = false;
-+		} else {
-+			select_clk[j] = i;
-+			clk_sel[j] = true;
-+		}
-+	}
-+
-+	/* Switch to ideal ratio mode if there is no proper clock source */
-+	if (!clk_sel[IN] || !clk_sel[OUT])
-+		select_clk[IN] = INCLK_NONE;
-+
-+	config->inclk = select_clk[IN];
-+	config->outclk = select_clk[OUT];
-+
-+	return 0;
-+}
-+
- static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
- 				  struct snd_pcm_hw_params *params,
- 				  struct snd_soc_dai *dai)
- {
- 	struct fsl_asrc *asrc = snd_soc_dai_get_drvdata(dai);
-+	struct fsl_asrc_priv *asrc_priv = asrc->private;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct fsl_asrc_pair *pair = runtime->private_data;
- 	struct fsl_asrc_pair_priv *pair_priv = pair->private;
-@@ -605,8 +653,6 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+-	if (dbg_io_ops) {
+-		const char *cp = msg;
+-		int len = msg_len;
++	if (!dbg_io_ops)
++		return;
  
- 	config.pair = pair->index;
- 	config.channel_num = channels;
--	config.inclk = INCLK_NONE;
--	config.outclk = OUTCLK_ASRCK1_CLK;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		config.input_format   = params_format(params);
-@@ -620,6 +666,14 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
- 		config.output_sample_rate = rate;
+-		while (len--) {
+-			dbg_io_ops->write_char(*cp);
+-			cp++;
+-		}
++	const char *cp = msg;
++	int len = msg_len;
++
++	while (len--) {
++		dbg_io_ops->write_char(*cp);
++		cp++;
  	}
  
-+	ret = fsl_asrc_select_clk(asrc_priv, pair,
-+				  config.input_sample_rate,
-+				  config.output_sample_rate);
-+	if (ret) {
-+		dev_err(dai->dev, "fail to select clock\n");
-+		return ret;
-+	}
-+
- 	ret = fsl_asrc_config_pair(pair, false);
- 	if (ret) {
- 		dev_err(dai->dev, "fail to config asrc pair\n");
+ 	for_each_console(c) {
 -- 
-2.21.0
+2.27.0
 
