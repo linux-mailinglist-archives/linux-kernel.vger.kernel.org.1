@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F91A20D1E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0857220D2B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729238AbgF2Sos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:44:48 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:13134 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729232AbgF2Soo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:44:44 -0400
-IronPort-SDR: 1FbhWjwLcEdn1Q0su9oP38NdY2BKY6oXeFifTV9dO+033aukPIh430pBrmZ1g0n3zOXxH9lRL1
- 7tf8AxYnlIkNxvdhh0LbyXMkotSJTW8gUyW3NZsJ0wOlfc0d9Naew0Jg9b03KycF9Ex7VzXslI
- 4VaHJGdgzY+qPGevaqx8fU3JG896QEFyxxnKKDtT6rJ2Sud/pb3e+8Ja+GDSK+c39aPDUwiuBR
- mK4m0EjeNNa+jzwZF5DDAztyxBAlCTv9SootrYyj8pd0RL4xVtto9Rr9WCmF7u5eEXl5OU6LRG
- Wlk=
-X-IronPort-AV: E=Sophos;i="5.75,294,1589234400"; 
-   d="scan'208";a="12880961"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 29 Jun 2020 15:22:03 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Mon, 29 Jun 2020 15:22:03 +0200
+        id S1729712AbgF2SwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:52:01 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18046 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729702AbgF2Svx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:51:53 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ef9ed360000>; Mon, 29 Jun 2020 06:31:34 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Mon, 29 Jun 2020 06:31:47 -0700
 X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Mon, 29 Jun 2020 15:22:03 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1593436923; x=1624972923;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=d765UglviXAqW+GAijNHXP9xNKKGdAwIhk+fTvwY8VY=;
-  b=LPesvD1rXXYhkRpxl1FfikAZIZD/im6ie8wuU/x98l56AY+NiRGXLDhL
-   a9dLbgeIweQlEIZfGaGtaXY2LmOn6EGIE2EHvYxDC/UrWTWpkmkbQkNjs
-   MxSrafFu4JnXnF9BI5WYt8KXgErmM7Teyj+b/kncNubiJZgXrqlGNjL/5
-   J7ScWseQmjRtHCtTtVT55ZPAYmUib2dJfoUeSgEFnDc3071pK78GHkQGW
-   jlBHlEFex9vaWIaj8Rw2TyC3Xf4+Lcs0P3JMMLGac8h0H2Htj+k0HlIEh
-   UVRl6hex7UG0qRY5DltPSiRRnGFvCCA9Pibg9qdpdsBH1LJGqw8kycPi3
-   A==;
-IronPort-SDR: e+L1oTFDLOrjFOUDjEXWydcdezL20EffWxOmHbukB/o/vXOiCuLRGv7XJ+HsiX4z+tLAaf163B
- CtfaaEHOxpUCdWGOb7oZU2r2oEv7hh9bwOvHBE+i0KynHNXnNpLQpYiF0p8oslv8qv8GnoARSe
- OpC+3mLqTwFr41W0W2JFQ5LJlzNaF4JwE1gJMsoY4Z3Us09XtGKRf+fdsKWGTY5+1d7lHxQWEC
- a2Qpd8AaZqIpCd9tfPMS/i488P/znhWF+nnRpWKGpZLKI88JanWcXQvS3WllWlLjjDvIdBA+eF
- QkE=
-X-IronPort-AV: E=Sophos;i="5.75,294,1589234400"; 
-   d="scan'208";a="12880960"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 29 Jun 2020 15:22:03 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 5DB1F280065;
-        Mon, 29 Jun 2020 15:22:03 +0200 (CEST)
-Message-ID: <570474bcc4055527d85ca8cf84b653f56bef3e23.camel@ew.tq-group.com>
-Subject: Re: (EXT) Re: [PATCH] mtd: spi-nor: micron-st: enable 4-byte
- opcodes for n25q512a
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Tudor.Ambarus@microchip.com
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        michael.krummsdorf@tq-group.com, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com
-Date:   Mon, 29 Jun 2020 15:22:01 +0200
-In-Reply-To: <e94d42be-5e40-e2bb-4683-cc7af59e801a@microchip.com>
-References: <20200610091616.29555-1-matthias.schiffer@ew.tq-group.com>
-         <e94d42be-5e40-e2bb-4683-cc7af59e801a@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+        by hqpgpgate102.nvidia.com on Mon, 29 Jun 2020 06:31:47 -0700
+Received: from [10.26.75.188] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 29 Jun
+ 2020 13:31:40 +0000
+Subject: Re: [PATCH V3 1/2] arm64: tegra: Re-order PCIe aperture mappings to
+ support ACPI boot
+To:     Vidya Sagar <vidyas@nvidia.com>, <bhelgaas@google.com>,
+        <lorenzo.pieralisi@arm.com>, <rjw@rjwysocki.net>,
+        <lenb@kernel.org>, <andrew.murray@arm.com>, <treding@nvidia.com>
+CC:     <linux-tegra@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <sagar.tv@gmail.com>
+References: <20200106082709.14370-1-vidyas@nvidia.com>
+ <20200110191500.9538-1-vidyas@nvidia.com>
+ <20200110191500.9538-2-vidyas@nvidia.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <d52db35b-dbf8-a706-9611-95448cf6a69e@nvidia.com>
+Date:   Mon, 29 Jun 2020 14:31:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200110191500.9538-2-vidyas@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1593437494; bh=Y32CfHcMUWKKF9wD0CLFw8La6QEVGFVAMOsFhmKdfEU=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=SHCJ5JM/tbcA1imuBapYWSJr6z+o4OojHikk4j61y7FE/MkNF54FhwyT08IMnjadW
+         lHTOBpjK6/7Fj289JNT9INlUuWwXTI4Y+81NRoDs7DLuDK5EPg/dW/qU4MZ9DmvAVM
+         gfivYDmVRoUITMwz4H+8CmISt8nEBI9bJSy48Vxzfqo6sixPDGCsAOi0qEeAM2wAAc
+         PkYY7LbPQa7d8ZiPLf6HDYMfg4wYlUEIkOribMuqvsIMFnRfI2n1mCzvkn1F1e8VIj
+         lMpP0hNtbkeybDwNSPr8ubqADxgY+pBCDAy5o4lvgK4vnUiAVenSFo2B9sXKEgYsJ3
+         Z2KSQjp2XTjsg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-06-29 at 13:02 +0000, Tudor.Ambarus@microchip.com wrote:
-> Hi, Matthias,
-> 
-> On 6/10/20 12:16 PM, Matthias Schiffer wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you
-> > know the content is safe
-> > 
-> > From: Michael Krummsdorf <michael.krummsdorf@tq-group.com>
-> > 
-> > Set SPI_NOR_4B_OPCODES, as the flash supports 4-byte opcodes.
-> 
-> I remember that we stripped SPI_NOR_4B_OPCODES intentionally for the
-> n25q
-> flashes, check  https://lkml.org/lkml/2019/12/5/50.
-> 
-> Cheers,
-> ta
+Hi Sagar,
 
-Ah, thank you for the pointer. Looking at a boot log of a more recent
-kernel again, the SPI-NOR flash on our hardware is actually detected as
-mt25qu512a and not n25q512a now, so everything should work as expected
-without this patch.
+On 10/01/2020 19:14, Vidya Sagar wrote:
+> Re-order Tegra194's PCIe aperture mappings to have IO window moved to
+> 64-bit aperture and have the entire 32-bit aperture used for accessing
+> the configuration space. This makes it to use the entire 32MB of the 32-bit
+> aperture for ECAM purpose while booting through ACPI.
+> 
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
 
+Any reason why we should not merge this change, even if patch 2/2 is not
+accepted? If there is no harm in us merging this, this would be one less
+change for us to carry out-of-tree. If so, can you update and re-post
+for 5.9?
 
+Cheers
+Jon
+
+-- 
+nvpublic
