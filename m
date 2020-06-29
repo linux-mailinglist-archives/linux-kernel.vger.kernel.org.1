@@ -2,185 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50AF20E6A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A9C20E7D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404128AbgF2VtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:49:13 -0400
-Received: from a80-127-99-228.adsl.xs4all.nl ([80.127.99.228]:54600 "EHLO
-        hetgrotebos.org" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2404335AbgF2VtC (ORCPT
+        id S2391754AbgF2WAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 18:00:38 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:58248 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726241AbgF2SfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:49:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=wizzup.org;
-         s=mail; h=Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:
-        References:Cc:To:Subject:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
-        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
-        :List-Post:List-Owner:List-Archive;
-        bh=yYf/4uioxwUJRWditCtSogal4Oh2sBPAPwofmyk83yw=; b=OJM4aI1cX/AKmwFJh9uqrq3T39
-        SG2V5EIUhlUHaxxaauiqH+DmP0Nreqh15pF8gW6PTeC7CA6cLbxXkQy094TrCVsSsI7GgFiT5swJe
-        hAl8kSZGEfcJnkjxNn00oR5ugXjY4MkunDNFMHTKVhcx4wx+P8Xz/rXppv4Mzbo4fOI2JZgktt2Bh
-        ipLPwLY7WwrbiSeUZsR13kxE272WvorNLSQJ+EXoNymUFvSbnGvghBElw8T50GvqZTsoBkL3fKePN
-        /D1OrbzSp/H+BG4I3CDrmjMEV4anJzi/YjiFEGRo8SDGdumI3ODEWv0teRzAcWJUwnVOBbwsyxKFc
-        cYkYKpCQ==;
-Received: from deepwater.fritz.box ([192.168.178.25] helo=[0.0.0.0])
-        by hetgrotebos.org with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <merlijn@wizzup.org>)
-        id 1jpruQ-0000p4-V1; Mon, 29 Jun 2020 11:25:10 +0000
-Subject: Re: [PATCH 1/2] Input: add `SW_MACHINE_COVER`
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Beno??t Cousson <bcousson@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mattias Jacobsson <2pi@mok.nu>,
-        Mark Gross <mgross@linux.intel.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        "open list:OMAP DEVICE TREE SUPPORT" <linux-omap@vger.kernel.org>,
-        "open list:OMAP DEVICE TREE SUPPORT" <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:INPUT (KEYBOARD, MOUSE, JOYSTICK, TOUCHSCREEN)..." 
-        <linux-input@vger.kernel.org>
-References: <20200612125402.18393-1-merlijn@wizzup.org>
- <20200612125402.18393-2-merlijn@wizzup.org> <20200616105045.GB1718@bug>
-From:   Merlijn Wajer <merlijn@wizzup.org>
-Autocrypt: addr=merlijn@wizzup.org; prefer-encrypt=mutual; keydata=
- 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
- /XslHw==
-Message-ID: <fef69c79-9943-7bd1-5c51-101f551cf2c8@wizzup.org>
-Date:   Mon, 29 Jun 2020 13:27:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 29 Jun 2020 14:35:24 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200629112844euoutp01fb634957880abd4962c289c79192c156~dAEF9KV3P0097100971euoutp01N
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:28:44 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200629112844euoutp01fb634957880abd4962c289c79192c156~dAEF9KV3P0097100971euoutp01N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593430124;
+        bh=pFFs/lRck/tCRXFr6SqUvhPQKz67deqCJc8xoAztPTE=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=EOOP1itOvAfUaj6PCybOsUVX45DotywEx+vI3RxiNm+V/xN7NagSaCoFta4nZtyFs
+         pFb0iX166uJi3pRugMu2PIEFtdf25e2PbCgcvsY1CodjHpawJjsaoZEErjoe6KEtu0
+         YfOHPZA0M7SlH+56D4V9YtCd4BIAoxwOvu1HdVaw=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200629112844eucas1p2c7285c5db202aa4bf4ca244116c2e744~dAEFkL0kk0048900489eucas1p2C;
+        Mon, 29 Jun 2020 11:28:44 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 71.69.06318.B60D9FE5; Mon, 29
+        Jun 2020 12:28:43 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200629112843eucas1p2b0bd7618b6d35259693cef313326bff5~dAEFO70CU3176631766eucas1p2E;
+        Mon, 29 Jun 2020 11:28:43 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200629112843eusmtrp17043a9c74d2d1fdb7b58238f85d49901~dAEFOManV0843508435eusmtrp1a;
+        Mon, 29 Jun 2020 11:28:43 +0000 (GMT)
+X-AuditID: cbfec7f5-38bff700000018ae-88-5ef9d06b2643
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 75.00.06314.B60D9FE5; Mon, 29
+        Jun 2020 12:28:43 +0100 (BST)
+Received: from [106.210.85.205] (unknown [106.210.85.205]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200629112842eusmtip231c1f9355ca9af6efe8c6bd2bbac5c0c~dAEEVIdva0594505945eusmtip2n;
+        Mon, 29 Jun 2020 11:28:42 +0000 (GMT)
+Subject: Re: [PATCH v6 2/4] driver core: add deferring probe reason to
+ devices_deferred property
+To:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        andy.shevchenko@gmail.com, Mark Brown <broonie@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+From:   Andrzej Hajda <a.hajda@samsung.com>
+Message-ID: <7e3c924b-c025-a829-6868-78e2935c70eb@samsung.com>
+Date:   Mon, 29 Jun 2020 13:28:42 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200616105045.GB1718@bug>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="L9nXZWfLgDBc19pVr702UfFy2pqPFtyAn"
+In-Reply-To: <5f159e00-44fd-515b-dd8c-4db9845dc9e6@ti.com>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Se0hTcRjtt3t3d12urtPww6R0EGSRFkrcVHoH98+I+kfRnHpR89mmvcto
+        rZyVmCa5zYWpywfJbL4tTWb5TPHR1EKTUgbaQ6utWKjkdo3873znfI9z4CMx8W++F5mQks7K
+        UqRJEkKIN3TaB3YlDtojd2dX7KNnczsQ/azQwKcLPs4Q9FvbPEErSg0EXfkAp82/ZzG654sZ
+        p1X3ywS0cXqUT4+0FBG0qaAV0dWvJgW0KSec1lkLsIMbmZHRIYyZH1cKmGbNpIDRZqn5jLFK
+        RTDducM85qXuqYCZutPFY2rLMpmcuirEtN/Lx5mu8UYe89O45bgoTBgayyYlnGNlAfujhPFz
+        /XoirVxwQWkZRdeRishGLiRQQWBuL+BnIyEppioQfK8ZQ1xhRTCs12Fc8RPB4C89+jfS+P4+
+        jxPKEfS9+LQ6P49AtfABd3S5U9EwWdfKd2APKgbsE8uEowmjGnCYePTcKRCUHyzVvnM6EVH7
+        wTChXDlBkji1DZa6Ixz0JioCcvTFqy1u0KOece53oYKhdHLQyWPUVlDUazEOe8INa6XTEFB6
+        EhStQzzO9lF4ONuNc9gd5rrqBBz2hr78u6t8JkxV3MS44SwE9TXNGCeEwMTAH8JhDlsxbWgJ
+        cECgDoF+ei8HN8D4VzfOwgbIa3iIcbQIsm6JuR2+MNVfv7rPE/SDNiIXSTRrgmnWhNGsCaP5
+        f7YY4VXIk82QJ8ex8sAU9ry/XJosz0iJ849JTTailXfsW+6yNaG2xWgTokgkcRVFDdgjxXzp
+        OfnFZBMCEpN4iA7390WKRbHSi5dYWeppWUYSKzehzSQu8RQFlsxGiKk4aTqbyLJprOyfyiNd
+        vK6j4ialz9lr/qpTn6vNwf0l8VbvEPLACE8de/L8yJhxZ4M1Tyz4ttlVSC2uf0McKbTn1wY9
+        sSoM6qmOpJCDvdrLyk4/mTksxKdC2/L4hO51MaPMo8MtV7VzvQ+Wz9zeaolb0M3gtsbQjiO+
+        Q4pvbWqbKfuKZfu64Pnpnh9FHccsElweL92zA5PJpX8BkyRJzooDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupmleLIzCtJLcpLzFFi42I5/e/4Pd3sCz/jDA7PVLF4OeEwo8XGGetZ
+        LaY+fMJmceXrezaL5sXr2SxWTmGxuPr9JbPFyTdXWSw6Jy5ht9j0+BqrxeVdc9gsDk3dy2ix
+        9shddotDfdEWc79MZXbg97h87SKzx/sbreweO2fdZfeY3TGT1WPTqk42jxMTLjF57J+7ht3j
+        fvdxJo/NS+o9+rasYvQ40DuZxeP4je1MHp83yQXwRunZFOWXlqQqZOQXl9gqRRtaGOkZWlro
+        GZlY6hkam8daGZkq6dvZpKTmZJalFunbJehlvDq7lK1gOXtF67NrjA2MnWxdjJwcEgImEttv
+        TWTqYuTiEBJYyihxu+skC0RCXGL3/LfMELawxJ9rXWwQRW8ZJb4sOgaWEBZIkri7ZS8riC0i
+        kCzxpeMFC0gRs8AuFokTfxvYITpeM0r86P8PNpZNQFPi7+abYLt5Bewk1t9pZexi5OBgEVCV
+        +HsiFiQsKhAr8e3eFqgSQYmTM5+AtXIKWEksvnsBLM4sYCYxb/NDZghbXqJ562woW1yi6ctK
+        1gmMQrOQtM9C0jILScssJC0LGFlWMYqklhbnpucWG+oVJ+YWl+al6yXn525iBCaEbcd+bt7B
+        eGlj8CFGAQ5GJR7ehHM/44RYE8uKK3MPMUpwMCuJ8DqdPR0nxJuSWFmVWpQfX1Sak1p8iNEU
+        6LeJzFKiyfnAZJVXEm9oamhuYWlobmxubGahJM7bIXAwRkggPbEkNTs1tSC1CKaPiYNTqoEx
+        4fJcZ/mbYpd+rVsx73rGCZkfye5VPwveVnVd2ur29SV/IOOWx6/eLy+S8/lp85W/Zq6bpdna
+        C5Z9DyqZAreExT3XzzDYUXpwUfbPg7Wlz00NS70Lpe58epZmyMOoO90skk34mte7kldLuLd4
+        Tz12WKgiW9r14AeWgo1P1nFtuxD1kf/xs4emSizFGYmGWsxFxYkA5y1lGh4DAAA=
+X-CMS-MailID: 20200629112843eucas1p2b0bd7618b6d35259693cef313326bff5
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200626100110eucas1p2c5b91f2c98a5c6e5739f5af3207d192e
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200626100110eucas1p2c5b91f2c98a5c6e5739f5af3207d192e
+References: <20200626100103.18879-1-a.hajda@samsung.com>
+        <CGME20200626100110eucas1p2c5b91f2c98a5c6e5739f5af3207d192e@eucas1p2.samsung.com>
+        <20200626100103.18879-3-a.hajda@samsung.com>
+        <5f159e00-44fd-515b-dd8c-4db9845dc9e6@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---L9nXZWfLgDBc19pVr702UfFy2pqPFtyAn
-Content-Type: multipart/mixed; boundary="EqbQqHPlILTDAUo6V7sORgxEpUBvBrTyA"
+Hi Grygorii,
 
---EqbQqHPlILTDAUo6V7sORgxEpUBvBrTyA
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
+(...)
 
-Hi,
-
-Looks like we're blocking on this input patch.
-
-On 16/06/2020 12:50, Pavel Machek wrote:
-> On Fri 2020-06-12 14:53:58, Merlijn Wajer wrote:
->> This event code represents the state of a removable cover of a device.=
-
->> Value 0 means that the cover is open or removed, value 1 means that th=
-e
->> cover is closed.
+>>   /*
+>>    * deferred_devs_show() - Show the devices in the deferred probe 
+>> pending list.
+>>    */
+>> @@ -221,7 +241,8 @@ static int deferred_devs_show(struct seq_file *s, 
+>> void *data)
+>>       mutex_lock(&deferred_probe_mutex);
+>>         list_for_each_entry(curr, &deferred_probe_pending_list, 
+>> deferred_probe)
+>> -        seq_printf(s, "%s\n", dev_name(curr->device));
+>> +        seq_printf(s, "%s\t%s", dev_name(curr->device),
+>> +               curr->device->p->deferred_probe_reason ?: "\n");
+>>         mutex_unlock(&deferred_probe_mutex);
 >>
->> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com> Acked=
--by: Tony Lindgren=20
->> <tony@atomide.com> Signed-off-by: Merlijn Wajer <merlijn@wizzup.org> -=
---
->=20
-> Dmitry, can we get some kind of comment here, or better yet can we get =
-you to apply this?
+>
+> Sry, may be i missing smth, but shouldn't it be optional
+> (CONFIG_DEBUG_FS is probably too generic).
+>
 
-This is part of a patch series to resolve problems with the Nokia N900
-not booting when the cover is removed (making the cover be the card
-detect was also just weird IMHO). Just removing the card-detect from the
-DTS is fine, but it was suggested that we expose the data instead as
-input event. And that's gotten no response for about four months.
-
-Should we just drop the feature and only remove the cd-gpios line from
-the DTS, assuming upstream doesn't want this SW_MACHINE_COVER code?
-
-Merlijn
+I am not sure what exactly are you referring to, but this patch does not 
+add new property, it just extends functionality of existing one.
 
 
---EqbQqHPlILTDAUo6V7sORgxEpUBvBrTyA--
+Regards
 
---L9nXZWfLgDBc19pVr702UfFy2pqPFtyAn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Andrzej
 
------BEGIN PGP SIGNATURE-----
 
-iHUEARYIAB0WIQRM5LT7NbLF9yb6a/UGN09rynK8WgUCXvnQKAAKCRAGN09rynK8
-WgE7AP9fyxHZYvAwf0BX3mGGRxMa++9Yz8UqZbcxLpGyR89XPgEAkRwyWpSwCu4o
-8hYneNbhz/Wg4AUBuPfSi9aG+QuQdwc=
-=tGXY
------END PGP SIGNATURE-----
-
---L9nXZWfLgDBc19pVr702UfFy2pqPFtyAn--
