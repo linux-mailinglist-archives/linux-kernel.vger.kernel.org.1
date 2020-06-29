@@ -2,111 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642D220D377
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730C920D3C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730258AbgF2S7F convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 29 Jun 2020 14:59:05 -0400
-Received: from mga09.intel.com ([134.134.136.24]:65099 "EHLO mga09.intel.com"
+        id S1730462AbgF2TBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:01:49 -0400
+Received: from m12-14.163.com ([220.181.12.14]:51505 "EHLO m12-14.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726960AbgF2S6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:58:54 -0400
-IronPort-SDR: eKoD8V2wqTWUE0QfvlcDWBj2fUJGp1JQFAZEWCcOdd9RB6Iz2k79WYN3SDqzCHfZ5x5HJtYUrS
- TCxYV5wPo5rQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="147558727"
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="147558727"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 10:18:48 -0700
-IronPort-SDR: PfovTJ7ctRVVTVNzrBgATY6YChrZ/17qHIHtYJnPMMZEpZLRlO/kZ9uRGO0xFF6kZv7z2obVoF
- C6l1q1l38H6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="424885466"
-Received: from orsmsx106.amr.corp.intel.com ([10.22.225.133])
-  by orsmga004.jf.intel.com with ESMTP; 29 Jun 2020 10:18:47 -0700
-Received: from orsmsx112.amr.corp.intel.com ([169.254.3.199]) by
- ORSMSX106.amr.corp.intel.com ([169.254.1.104]) with mapi id 14.03.0439.000;
- Mon, 29 Jun 2020 10:18:47 -0700
-From:   "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Heiner Kallweit" <hkallweit1@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "Florian Fainelli" <f.fainelli@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: RE: [PATCH v2 02/10] net: ethernet: ixgbe: don't call
- devm_mdiobus_free()
-Thread-Topic: [PATCH v2 02/10] net: ethernet: ixgbe: don't call
- devm_mdiobus_free()
-Thread-Index: AQHWTg2KqoUStuk1GEW2zcU3EcxbWKjv1lQw
-Date:   Mon, 29 Jun 2020 17:18:46 +0000
-Message-ID: <61CC2BC414934749BD9F5BF3D5D940449874064D@ORSMSX112.amr.corp.intel.com>
-References: <20200629120346.4382-1-brgl@bgdev.pl>
- <20200629120346.4382-3-brgl@bgdev.pl>
-In-Reply-To: <20200629120346.4382-3-brgl@bgdev.pl>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.22.254.138]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728171AbgF2TBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:01:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=Hvy7C
+        q8rT4BgdG7jY1sZ9yj6W+j3Whjfwevbqonqeco=; b=VWuRDzoVvVJbps476+X/O
+        pxQcQfJ0RRSNyB2SDRUJtYfI7W7p1bwlziWLZe2YAQy4ef7Xecs6TLDh7DDmLiw6
+        ZVmAby0PFGJ7AddKuqkq2S+j37/MpAPNK2H3HtyFs81Zlvfwsc++d91kIzS2Kkvw
+        IGSbttAyOkTaBgJbeTUym0=
+Received: from localhost (unknown [101.86.215.249])
+        by smtp10 (Coremail) with SMTP id DsCowADHscVHJfpeN+61Iw--.48796S2;
+        Tue, 30 Jun 2020 01:30:48 +0800 (CST)
+Date:   Tue, 30 Jun 2020 01:30:47 +0800
+From:   Su Hui <sh_def@163.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH] mm: remove the redundancy code
+Message-ID: <20200629173047.GA38128@ubuntu>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: DsCowADHscVHJfpeN+61Iw--.48796S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtw18Zw15uryDZw1xAFWrXwb_yoWxCrgEvw
+        12y34FkrWYyF4S9w48Aa17Krn2qryvkF18GF13KF13t3W2y3ZYq3WkAwnxAryUWrZ7uryU
+        Cr4DZFWxtryaqjkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0PPE3UUUUU==
+X-Originating-IP: [101.86.215.249]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiLghSX1SIoztm4wAAsq
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Bartosz Golaszewski <brgl@bgdev.pl>
-> Sent: Monday, June 29, 2020 05:04
-> To: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>; David S . Miller
-> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; John Crispin
-> <john@phrozen.org>; Sean Wang <sean.wang@mediatek.com>; Mark Lee
-> <Mark-MC.Lee@mediatek.com>; Matthias Brugger
-> <matthias.bgg@gmail.com>; Heiner Kallweit <hkallweit1@gmail.com>; Andrew
-> Lunn <andrew@lunn.ch>; Florian Fainelli <f.fainelli@gmail.com>; Russell King
-> <linux@armlinux.org.uk>; Rob Herring <robh+dt@kernel.org>; Frank Rowand
-> <frowand.list@gmail.com>
-> Cc: linux-kernel@vger.kernel.org; netdev@vger.kernel.org; linux-arm-
-> kernel@lists.infradead.org; linux-mediatek@lists.infradead.org;
-> devicetree@vger.kernel.org; Bartosz Golaszewski
-> <bgolaszewski@baylibre.com>
-> Subject: [PATCH v2 02/10] net: ethernet: ixgbe: don't call
-> devm_mdiobus_free()
-> 
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> The idea behind devres is that the release callbacks are called if probe fails. As
-> we now check the return value of ixgbe_mii_bus_init(), we can drop the call
-> devm_mdiobus_free() in error path as the release callback will be called
-> automatically.
-> 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
- 
-Acked-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+remove the redundancy code, the zone_start_pfn
+is assigned from zone->zone_start_pfn
+Signed-off-by: Su Hui <sh_def@163.com>
+---
+ mm/page_alloc.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-> ---
->  drivers/net/ethernet/intel/ixgbe/ixgbe_phy.c | 14 +++-----------
->  1 file changed, 3 insertions(+), 11 deletions(-)
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 3c4eb750a199..3372a8c9fbc4 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -6215,8 +6215,6 @@ void __meminit init_currently_empty_zone(struct zone *zone,
+ 	if (zone_idx > pgdat->nr_zones)
+ 		pgdat->nr_zones = zone_idx;
+ 
+-	zone->zone_start_pfn = zone_start_pfn;
+-
+ 	mminit_dprintk(MMINIT_TRACE, "memmap_init",
+ 			"Initialising map node %d zone %lu pfns %lu -> %lu\n",
+ 			pgdat->node_id,
+-- 
+2.25.1
+
+
