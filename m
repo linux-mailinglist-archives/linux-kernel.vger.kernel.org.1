@@ -2,244 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA6420D29D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD70720D1EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729224AbgF2Suw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:50:52 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:24134 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726567AbgF2Sus (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:50:48 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TF5qSs029221;
-        Mon, 29 Jun 2020 08:06:56 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=HnDEnL8zq+AAbs9pmTHb2Jebp8tfA5gmJOXiPnRU+6Q=;
- b=KLxd5ONfJS108jEFUTGK8ALhFNm7n0PJZV414k9CuOjBpDAbJoaIo1PTvagqGU9fvc70
- 8gPJ+Op66orWRmscd1zcWAg3YS6YKd4Ph+C7MP0FdmHof4KCvJUFOIAfft+zacq02fvC
- GdxBc+weqiB29fil4oQQMc51Ju5yWdxBaNQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31xntbmx05-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 29 Jun 2020 08:06:55 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 29 Jun 2020 08:06:53 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VI5TIAinUwO3/a4x8Tqi5v/L6ycGdW8fQz0YrJQzE6grSHP74H/C4SlU4+RYg37fabZGmVOv+fUlsx0spbo+/yecpOCbW+PzfcI4YtqPdoxr7aQy2Yq/nvqvvmloR3Sw7vCBEwcIfzSsXzqKwt4Ky4AdCEovWUwPxm40rN1h48HcPhLHFKZIYH7N1VQSNhtgEz0Wa3m4smpX2juuBDqI1iiwXPG5EZsVKthm+xSOIYnw4ogsOCr+JiZR5lyJTUrZw2RnbJ0CCVbXnP7LVOZbDO0QNP23PYFjXRGFww6Z1zuFTNCvNggTt9w9fUueKKV/W2hTezuiYiVp98Avn/dxlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HnDEnL8zq+AAbs9pmTHb2Jebp8tfA5gmJOXiPnRU+6Q=;
- b=VPYGSz6L/evJeAW19z0+lHT7y+9BU4o+w6e/w+5RxxMlBuFlrN+1v8279j/Bs/pglrcAbXF5PebJW1U83ZuEi7Nn2phVcXR/MSI5rroryFUbEr0vt3w6U30hbkqM59u8zpJwRBUDtSB6tOkZdzug43bKyaplRwRiUDu71gQjAt2vbmpHqcJqDCSG5fpsV1Ficl50EQYkur1RiJjmj+lNGnt8+O4fDgbSeVKwlRio8y/JmoF6CQ+nE4QLfc74Nj7utOXRP+Daju0Lqrn5Seb54QagjJ9StFs+c5oyUY1NkSjh/MHT3Wpb8gHWSeiKMmN6y67+b5OwSAMBRC0XeeZlLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HnDEnL8zq+AAbs9pmTHb2Jebp8tfA5gmJOXiPnRU+6Q=;
- b=TFHT1r2I9g+Q56H1M+mQh2zllsJbBbp2zDdHBJYrwpC2bVxmdFnwBMcR5S8OGqtxe6Ip5S+p3u29uI3qDKSReiFe1+wzCw2xkJfA67d7Gh5cf3g7N+ebtEDS5PJZbEjm/Z8Bm/rWUQaH3EuzPbkqqWfoSmFzVWQ4Maxv1e2yBGU=
-Authentication-Results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB4086.namprd15.prod.outlook.com (2603:10b6:a02:ca::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.25; Mon, 29 Jun
- 2020 15:06:52 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3131.027; Mon, 29 Jun 2020
- 15:06:52 +0000
-Subject: Re: [PATCH v4 bpf-next 4/4] selftests/bpf: add bpf_iter test with
- bpf_get_task_stack()
-To:     Song Liu <songliubraving@fb.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <peterz@infradead.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <kernel-team@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@chromium.org>
-References: <20200629055530.3244342-1-songliubraving@fb.com>
- <20200629055530.3244342-5-songliubraving@fb.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <bd62a752-df45-8e65-9f74-e340ef708764@fb.com>
-Date:   Mon, 29 Jun 2020 08:06:49 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
-In-Reply-To: <20200629055530.3244342-5-songliubraving@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY3PR04CA0028.namprd04.prod.outlook.com
- (2603:10b6:a03:217::33) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S1728156AbgF2SpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:45:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:35692 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728132AbgF2So4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:44:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7BD50C0A;
+        Mon, 29 Jun 2020 08:07:38 -0700 (PDT)
+Received: from bogus (unknown [10.37.8.30])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A6D43F73C;
+        Mon, 29 Jun 2020 08:07:35 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 16:07:28 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH/RFC v4 2/4] regulator: fixed: add regulator_ops members
+ for suspend/resume
+Message-ID: <20200629150728.GA27911@bogus>
+References: <1593163942-5087-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <1593163942-5087-3-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <20200626143914.GE5289@sirena.org.uk>
+ <TY2PR01MB3692A3B12CEF7F9708A8A59CD86E0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+ <20200629125756.GC5499@sirena.org.uk>
+ <20200629134011.GA23284@bogus>
+ <CAMuHMdU81-EAve+jHhL8+ohCd5YXrgLWpMgaCvgXFDLO7p17pQ@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::11fb] (2620:10d:c090:400::5:c5e6) by BY3PR04CA0028.namprd04.prod.outlook.com (2603:10b6:a03:217::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21 via Frontend Transport; Mon, 29 Jun 2020 15:06:51 +0000
-X-Originating-IP: [2620:10d:c090:400::5:c5e6]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6e56ea51-0810-4319-1068-08d81c3e0dcd
-X-MS-TrafficTypeDiagnostic: BYAPR15MB4086:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB408637CCA26C9BBC4BAED91AD36E0@BYAPR15MB4086.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:1107;
-X-Forefront-PRVS: 044968D9E1
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7NFhi/9PsteJntgUNk6AWolagnRvPRZ8XCXzkVH3GvJyBzlZ0eDgXxScsLO2EBnYuWUhvuQIepozpVfVAQ4qB42hjje0v8/oVtOl+NLy7w06+Z/fnWoB4LYi9RYk8uGQUvpmLhlRJMQLaGZFsRKLV6qwJHb1XDKOWgIskQ8udJG4fU6+jjWdwpcrqV3WPuQZKDYCutEEC5oT4oGqs4RxSlP99XUhsLbFUzJY8JOZPpAJ2+6h8MoZFRekPDkS2fbp5S/qwfISAV1je6hiXmsP7p5gvSTLkmDUM+p+9x+c+jnJVzShFp9oXDOhfgiJyZn7DFeMGegLqgbFQQf7jJauK9mPusSVrjr8TiUsSYfEaZBNmG3r1JifdMndZs/SGPaU
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(136003)(376002)(366004)(39860400002)(346002)(2616005)(6486002)(2906002)(53546011)(52116002)(66476007)(86362001)(66946007)(36756003)(66556008)(8676002)(31686004)(31696002)(478600001)(16526019)(8936002)(4326008)(186003)(316002)(5660300002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: ouBvviEUcdAGT9du771AMjemwjT+SeTwS2iPsekg9mQJe9WwEA0u+P3QSvdBH8NtGB54s7SJo8StfTiAX7Ojr+W2gicDg8UQOLlhfc2NBPiScqqdt/OOM1Vw0U1L8/LFjMYC8PtBQSJeTnZny/vJ7zf2dPN9h02fbdSYnsjTctxP2BP8izOWPgM5gzivwxtix93WkfUw/b8ks85KEFoEggUZ8LG30ZyluzvIurK9PxzufoftZnY5BZjrKztFKR3VO4sY7hboT6EdLO8qOvQepYGgffZQ3FkgT23RMpiv49LWpAyee4wG14ASSul10tgMggWYvXA+psnV4NOdm5EO0o1OlaSSK0GtHv1u5Vqv2NcR7keuHBK4xtCrD+qGqPkdAc5YlAF6H8j3lvdv0smbiGtndDzCH0jPaSEdk/c0UZUF1ZHNK/ztZ2xauA6egQzMs48zlDqUnvcJ8N4ZxWtJdKHxVQA+58PCjlwfkmPWZAbKY3zvCyXMEUxNsBLQWkm0Vy8xJ0W186iFjvYOfZ19OA==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e56ea51-0810-4319-1068-08d81c3e0dcd
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2020 15:06:52.0956
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Hq2cE5by6XT3ztgpppxqr+d4CtaUQRrtrt0ZZX0P2LljaUlMQc5/HRV57TCvVaqF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4086
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-06-29_15:2020-06-29,2020-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- cotscore=-2147483648 lowpriorityscore=0 mlxscore=0 clxscore=1015
- bulkscore=0 spamscore=0 suspectscore=0 impostorscore=0 priorityscore=1501
- adultscore=0 mlxlogscore=999 phishscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006290103
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdU81-EAve+jHhL8+ohCd5YXrgLWpMgaCvgXFDLO7p17pQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 29, 2020 at 04:15:39PM +0200, Geert Uytterhoeven wrote:
+> Hi Sudeep,
+>
+> On Mon, Jun 29, 2020 at 3:40 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> > On Mon, Jun 29, 2020 at 01:57:56PM +0100, Mark Brown wrote:
+> > > On Mon, Jun 29, 2020 at 02:42:26AM +0000, Yoshihiro Shimoda wrote:
+> > > > > From: Mark Brown, Sent: Friday, June 26, 2020 11:39 PM
+> > > > > According to the changelog this is all about reflecting changes in the
+> > > > > system state done by firmware but there's no interaction with firmware
+> > > > > here which means this will be at best fragile.  If we need to reflect
+> > > > > changes in firmware configuration I'd expect there to be some
+> > > > > interaction with firmware about how it is configured, or at least that
+> > > > > the configuration would come from the same source.
+> >
+> > I agree.
+> >
+> > > > I should have described background of previous patch series though,
+> > > > according to previous discussion [1] the firmware side (like PSCI) is
+> > > > also fragile unfortunately... So, I thought using regulator-off-in-suspend
+> > > > in a regulator was better.
+> >
+> > Please fix the firmware. You might have bigger problem than this if the
+> > PSCI firmware is fragile as you state. Better to disable power management
+> > on the platform if the firmware can't be fixed.
+>
+> Saying the implementation is "fragile" might be bad wording.
+> The issue is more with the specification being vague (see more below).
+>
 
+Please elaborate on the vague part of the specification, happy to help you
+get that fixed if it really needs to be.
 
-On 6/28/20 10:55 PM, Song Liu wrote:
-> The new test is similar to other bpf_iter tests. It dumps all
-> /proc/<pid>/stack to a seq_file. Here is some example output:
-> 
-> pid:     2873 num_entries:        3
-> [<0>] worker_thread+0xc6/0x380
-> [<0>] kthread+0x135/0x150
-> [<0>] ret_from_fork+0x22/0x30
-> 
-> pid:     2874 num_entries:        9
-> [<0>] __bpf_get_stack+0x15e/0x250
-> [<0>] bpf_prog_22a400774977bb30_dump_task_stack+0x4a/0xb3c
-> [<0>] bpf_iter_run_prog+0x81/0x170
-> [<0>] __task_seq_show+0x58/0x80
-> [<0>] bpf_seq_read+0x1c3/0x3b0
-> [<0>] vfs_read+0x9e/0x170
-> [<0>] ksys_read+0xa7/0xe0
-> [<0>] do_syscall_64+0x4c/0xa0
-> [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> Note: To print the output, it is necessary to modify the selftest.
+> > > > On other hand, Ulf is talking about either adding a property (perhaps like
+> > > > regulator-off-in-suspend) into a regulator or just adding a new property
+> > > > into MMC [2]. What do you think about Ulf' comment? I'm thinking
+> > > > adding a new property "full-pwr-cycle-in-suspend" is the best solution.
+> > > > This is because using a regulator property and reflecting a state of regulator without
+> > > > firmware is fragile, as you said.
+> >
+> > I haven't followed all the threads, but if it related to the policy you
+> > want in the Linux, then may be use DT property or something. I don't know.
+> > But if this is to indicate something based on firmware runtime/configuration,
+> > then NACK for any approaches unconditionally.
+>
+> Like "arm,psci-system-suspend-is-power-down"[1]?
+>
 
-I do not know what this sentence means. It seems confusing
-and probably not needed.
+Really sounds hack to me.
 
-> 
-> Signed-off-by: Song Liu <songliubraving@fb.com>
+> > > TBH I worry about a property drifting out of sync with the firmware on
+> > > systems where the firmware can be updated.  Personally my default
+> > > assumption would always be that we're going to loose power for anything
+>
+> OK, so that's the "safe" way to handle this: assume power is lost.
+>
+> > > except the RAM and whatever is needed for wake sources during suspend so
+>
+> Oh, even wake-up sources may become unpowered[2] ;-)
 
-Acked-by: Yonghong Song <yhs@fb.com>
+That is some serious issue. If there is no power, how can you expect it
+to be wake up source ? Sounds something wrong fundamentally IMO.
 
-> ---
->   .../selftests/bpf/prog_tests/bpf_iter.c       | 17 +++++++++
->   .../selftests/bpf/progs/bpf_iter_task_stack.c | 37 +++++++++++++++++++
->   2 files changed, 54 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> index 1e2e0fced6e81..fed42755416db 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> @@ -5,6 +5,7 @@
->   #include "bpf_iter_netlink.skel.h"
->   #include "bpf_iter_bpf_map.skel.h"
->   #include "bpf_iter_task.skel.h"
-> +#include "bpf_iter_task_stack.skel.h"
->   #include "bpf_iter_task_file.skel.h"
->   #include "bpf_iter_tcp4.skel.h"
->   #include "bpf_iter_tcp6.skel.h"
-> @@ -110,6 +111,20 @@ static void test_task(void)
->   	bpf_iter_task__destroy(skel);
->   }
->   
-> +static void test_task_stack(void)
-> +{
-> +	struct bpf_iter_task_stack *skel;
-> +
-> +	skel = bpf_iter_task_stack__open_and_load();
-> +	if (CHECK(!skel, "bpf_iter_task_stack__open_and_load",
-> +		  "skeleton open_and_load failed\n"))
-> +		return;
-> +
-> +	do_dummy_read(skel->progs.dump_task_stack);
-> +
-> +	bpf_iter_task_stack__destroy(skel);
-> +}
-> +
->   static void test_task_file(void)
->   {
->   	struct bpf_iter_task_file *skel;
-> @@ -452,6 +467,8 @@ void test_bpf_iter(void)
->   		test_bpf_map();
->   	if (test__start_subtest("task"))
->   		test_task();
-> +	if (test__start_subtest("task_stack"))
-> +		test_task_stack();
->   	if (test__start_subtest("task_file"))
->   		test_task_file();
->   	if (test__start_subtest("tcp4"))
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c b/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
-> new file mode 100644
-> index 0000000000000..e40d32a2ed93d
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
-> @@ -0,0 +1,37 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2020 Facebook */
-> +#include "bpf_iter.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +#define MAX_STACK_TRACE_DEPTH   64
-> +unsigned long entries[MAX_STACK_TRACE_DEPTH];
-> +#define SIZE_OF_ULONG (sizeof(unsigned long))
-> +
-> +SEC("iter/task")
-> +int dump_task_stack(struct bpf_iter__task *ctx)
-> +{
-> +	struct seq_file *seq = ctx->meta->seq;
-> +	struct task_struct *task = ctx->task;
-> +	long i, retlen;
-> +
-> +	if (task == (void *)0)
-> +		return 0;
-> +
-> +	retlen = bpf_get_task_stack(task, entries,
-> +				    MAX_STACK_TRACE_DEPTH * SIZE_OF_ULONG, 0);
-> +	if (retlen < 0)
-> +		return 0;
-> +
-> +	BPF_SEQ_PRINTF(seq, "pid: %8u num_entries: %8u\n", task->pid,
-> +		       retlen / SIZE_OF_ULONG);
-> +	for (i = 0; i < MAX_STACK_TRACE_DEPTH; i++) {
-> +		if (retlen > i * SIZE_OF_ULONG)
-> +			BPF_SEQ_PRINTF(seq, "[<0>] %pB\n", (void *)entries[i]);
-> +	}
-> +	BPF_SEQ_PRINTF(seq, "\n");
-> +
-> +	return 0;
-> +}
-> 
+> And thus stop working ;-(
+>
+> > > I find the discussion a bit surprising but in any case that seems like a
+> > > better option than trying to shoehorn things in the way the series here
+> > > did.  Like I said in my earlier replies if this is done through the
+> > > regulator API I'd expect it to be via the suspend interface.
+> >
+> > +1. If this platform needs Linux to keep some state on for users in the
+> > firmware or anything outside Linux, it must resume back in the same state
+> > as we entered the suspend state from the kernel.
+>
+> I think you're misunderstanding the issue: this is not related at all
+> to Linux keeping state for non-Linux users.
+>
+
+OK, thanks for confirming.
+
+> This is all about how to know what exactly PSCI is powering down during
+> SYSTEM_SUSPEND.  In this specific case, it is about knowing if the eMMC
+> is powered down or not, as Linux should follow a specific procedure to
+> prepare the eMMC for that, and Linux should not if that isn't the case.
+>
+
+OK, unless you are optimising, you shouldn't care then what PSCI does.
+If you don't need eMMC, just suspend/power it off before you enter system/
+psci suspend.
+
+> I had a quick look at the latest revision of the PSCI specification, and
+> it doesn't look like anything has changed in that area since my old patch
+> series from 2017.  So it still boils down to: we don't know what a
+> specific PSCI implementation will do, as basically anything is
+> compliant, so the only safe thing is to assume the worst.
+>
+
+The specification states clearly:
+"... all devices in the system must be in a state that is compatible
+with entry into the system state. These preconditions are beyond the scope
+of this specification and are therefore not described here."
+"Prior to the call, the OS must disable all sources of wakeup other than
+those it needs to support for its implementation of suspend to RAM."
+
+And of course, the firmware must rely on OSPM to do proper device PM if
+it is not shared resource. Trying to be aggressive and turning off all
+the wakeup sources which out knowledge of it is broken firmware.
+
+I see nothing has been fixed in the firmware too and we are still
+discussing the same after 3 years 😄. Clearly we should start trusting
+firmware and built capability to fix and replace it if there are bugs
+just like kernel and stop hacking around in the kernel to deal with
+just broken platform/psci firmware.
+
+--
+Regards,
+Sudeep
