@@ -2,180 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD17A20E1F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C1020E0DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389884AbgF2VBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
+        id S2387894AbgF2Uu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731203AbgF2TM6 (ORCPT
+        with ESMTP id S1730446AbgF2TNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:12:58 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95ADEC008605;
-        Mon, 29 Jun 2020 03:17:21 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id j4so13496920wrp.10;
-        Mon, 29 Jun 2020 03:17:21 -0700 (PDT)
+        Mon, 29 Jun 2020 15:13:36 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304DCC00860F
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 03:24:27 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id y3so3312140vkg.11
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 03:24:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vEwK4lSukE6zJDRZlz+0iEToMuV8fReSxfwSiJsBBt4=;
-        b=KHKoTDVDgVMWSQnYtgSW/TauAy5n+RSJe/CHk1Vq2k2Knd0Pu7XhlXrPUp7HWgUXBI
-         35+L0Jbc+f65+1WdQhhDmdOrg3bgp9opsExRHIrXHx5iTFUtF22UBB3OUIj2RBj2kRlE
-         X9EGoZ3wovr8mpguJb3NxC7sMtrxqQNukxa2XZ5u2Bo0j/a0w1iIDq7cKuKNpUD5W9Oy
-         7B74p2Rhzha5oAZVM5lNgfcx//kNsUx8fxQcCa1RUEBtRDRBj31EqhoQTh2RExD7oMeJ
-         cSewmbJBSDwFUSp5SpWEs9d18sAfMwxVMQ2sPARwuDvf5eKyyBmwdngPY+CR6TgEuNOX
-         ElqA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jXIzNUJKIGOWB+vmizHHKW6F1IB6+PeDc+RdNQZfG4E=;
+        b=H9p2ftgM6BDXXXU7ok8FHRr0sq4G6s1m37NDNFG1eDXJ2qFH1yJopBKuPGyReljBc2
+         kwUimi0R9cmeDvpOSRiQyQhHNeL/nurHP9Jh+UQbHEFANJyAEqzIRzvwW8/RZGiBJf0s
+         dBKMsE70llEhUl45joNctOxC5GYrj+/jp30sU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=vEwK4lSukE6zJDRZlz+0iEToMuV8fReSxfwSiJsBBt4=;
-        b=hpUgfx+52nTrK5eZ1qk5DO9+976duARK9RFpCfZZTLB3EiEBOx3LQnPFP3gGCNh/mM
-         nDDXhfyoBVQsMLjTBsjhRn9VkLZacBzwjOmVcgadtRr1I9IndX0uM3FwtYRL3Yxr9VMa
-         Ydst+D3T6vu4Mp+jlwOTfjHXp26AacKWoWHhcxYkA8YTjmE13iocIIxbrzP7pBcMwXH0
-         XByQ/A1ImLSJLwpjaB0WeCL9/+SGvajVi3ijWH6C3R4soHcANi/Frbty7A1XDCxAaYTv
-         qBrsWkB4aHyYtYNmxLBq3fGf8MmzeEt3M5FNhdN+rbEzHpWjHvE7QT7GP5jihE6FH2Fo
-         v6YA==
-X-Gm-Message-State: AOAM530fv+KGQ+bBcO5K1Hoh02shcMzXEfiP4skQXnwj15fSh/bJRWcd
-        6ytdWEtbIRhrureIi1/NVtc=
-X-Google-Smtp-Source: ABdhPJzhIFYSI76k5keRrxJ/YosnmFN5CcIrq+smP4Iaxg8KsJc+Bat4VIuVqaRGAa1+gnZ8HBeqBg==
-X-Received: by 2002:a05:6000:1c8:: with SMTP id t8mr17480192wrx.73.1593425840368;
-        Mon, 29 Jun 2020 03:17:20 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.114.138])
-        by smtp.gmail.com with ESMTPSA id c5sm27780601wmb.24.2020.06.29.03.17.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jun 2020 03:17:19 -0700 (PDT)
-Subject: Re: [PATCH v5 08/10] iommu/mediatek: Extend protect pa alignment
- value
-To:     Chao Hao <chao.hao@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Yong Wu <yong.wu@mediatek.com>, Evan Green <evgreen@chromium.org>,
-        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
-        FY Yang <fy.yang@mediatek.com>
-References: <20200629071310.1557-1-chao.hao@mediatek.com>
- <20200629071310.1557-9-chao.hao@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Autocrypt: addr=matthias.bgg@gmail.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <ce29ba24-f89b-4e1e-f98e-fd3497d08e05@gmail.com>
-Date:   Mon, 29 Jun 2020 12:17:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jXIzNUJKIGOWB+vmizHHKW6F1IB6+PeDc+RdNQZfG4E=;
+        b=l5Biyyahr6XKwTdp3oBXtzVRKvEhElthUj+qsP5Wtat41EPFjyvh9bOu4CqCMpnC5E
+         H0W5IZaiWUW4hsQuZgqvcqdUEDWqGOiCLDE7oMzCz1JXrk9vDYqSWPSVOs5iKV+U8idv
+         z8DLHXjjB1ZXXvjf8llZityVsRf1dAlq8o4H8J+zR+2kpVVby15RFfsXjJKfF2TVXcsX
+         KqO1AEGA2qyRGlYkNyj6r23QWhQy6ohk9lQelXozmb9ITmqFl2yIe+oowZaCrXnSVFIf
+         eBsldnWeKC/dGE5RzPoB3JyfE7FbFzGbGxYkv0MeJYqoy4MdyWkZB+6UI7X1aAsbAqgq
+         kMHQ==
+X-Gm-Message-State: AOAM530GCs1j9Opgh3UxLDqYeC++cUo2xZpZW1at8T9jiZ9i8O+kDlXY
+        fzMw/sMRN+uu+jmJtl5/7sgHAIV5c/kPVblUnh+Nvg==
+X-Google-Smtp-Source: ABdhPJwbhBKd5emQSa+NeM2N/t2NxnVvt7PQYuLqxuOf9/8087m6YgWuvv1HZwoG38pvPAxhwYkyo0VJbv0pY52R32g=
+X-Received: by 2002:a1f:17c1:: with SMTP id 184mr9308345vkx.51.1593426266169;
+ Mon, 29 Jun 2020 03:24:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200629071310.1557-9-chao.hao@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200616055223.119360-1-ikjn@chromium.org> <159293933210.62212.706350398043250620@swboyd.mtv.corp.google.com>
+In-Reply-To: <159293933210.62212.706350398043250620@swboyd.mtv.corp.google.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Mon, 29 Jun 2020 18:24:15 +0800
+Message-ID: <CAATdQgA4aoGWtuWb6AWpzD-VSfPV5u7++0rUoQN-cjwA7UpcVA@mail.gmail.com>
+Subject: Re: [PATCH] clk: Provide future parent in clk notification
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 24, 2020 at 3:08 AM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Ikjoon Jang (2020-06-15 22:52:23)
+> > Current clk notification handlers cannot know its new parent in
+> > PRE_RATE_CHANGE event. This patch simply adds parent clk to
+> > clk_notifier_data so the child clk is now able to know its future
+> > parent prior to reparenting.
+>
+> Yes, but why is that important?
 
+Basically I wondered if there are some cases needed to check more
+conditions other than
+clock rate (e.g. parent clock's internal properties).
 
-On 29/06/2020 09:13, Chao Hao wrote:
-> Starting with mt6779, iommu needs to extend to 256 bytes from 128
-> bytes which can send the max number of data for memory protection
-> pa alignment. So we can use a separate patch to modify it.
-> 
-> Suggested-by: Matthias Brugger <matthias.bgg@gmail.com>
-> Signed-off-by: Chao Hao <chao.hao@mediatek.com>
+In my case,  now I'm trying to make a wrapper clock on a mux clock which has
+a rate adjustable PLL clock and a fixed temporary clock as its parents.
 
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+clkPLL   clkTMP
+        \     /
+      clkMUX
 
-> ---
->  drivers/iommu/mtk_iommu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-> index 92316c4175a9..8299a3299090 100644
-> --- a/drivers/iommu/mtk_iommu.c
-> +++ b/drivers/iommu/mtk_iommu.c
-> @@ -98,7 +98,7 @@
->  #define F_MMU_INT_ID_LARB_ID(a)			(((a) >> 7) & 0x7)
->  #define F_MMU_INT_ID_PORT_ID(a)			(((a) >> 2) & 0x1f)
->  
-> -#define MTK_PROTECT_PA_ALIGN			128
-> +#define MTK_PROTECT_PA_ALIGN			256
->  
->  /*
->   * Get the local arbiter ID and the portid within the larb arbiter
-> 
+Current device driver is using three different clocks specified from
+the device tree
+and the driver handles clocks like this way to change operating clock speed.
+
+clk_set_parent(clkMUX, clkTMP);
+clk_set_rate(clkPLL, HZ);
+udelay(10);
+clk_set_parent(clkMUX, clkPLL);
+
+Now what I want to do is to supply only one clock to a device node,
+make the driver
+call clk_set_rate() only, and clkMUX 's notification handler does
+set_parent() things instead.
+So it's good to know that clkMUX's rate changing is not caused by
+clk_set_parent() and
+deny its rate changing when an inappropriate parent is set.
+
+Sorry for the long story for a simple reason, and maybe there could be
+a more plausible reason
+for this in near future?
+
+>
+> >
+> > Change-Id: I099a784d5302a93951bdc6254d85f8df8c770462
+>
+> Please remove these.
+
+Oops, thanks!
+
+>
+> > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> > ---
+> >  drivers/clk/clk.c   | 30 +++++++++++++++++-------------
+> >  include/linux/clk.h |  9 ++++++---
+> >  2 files changed, 23 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+> > index 3f588ed06ce3..62c4e7b50ae5 100644
+> > --- a/drivers/clk/clk.c
+> > +++ b/drivers/clk/clk.c
+> > @@ -1846,7 +1849,7 @@ static int __clk_set_parent(struct clk_core *core, struct clk_core *parent,
+> >   * take on the rate of its parent.
+> >   */
+> >  static int __clk_speculate_rates(struct clk_core *core,
+> > -                                unsigned long parent_rate)
+> > +                                struct clk_core *parent)
+> >  {
+> >         struct clk_core *child;
+> >         unsigned long new_rate;
+> > @@ -1854,11 +1857,12 @@ static int __clk_speculate_rates(struct clk_core *core,
+> >
+> >         lockdep_assert_held(&prepare_lock);
+> >
+> > -       new_rate = clk_recalc(core, parent_rate);
+> > +       new_rate = clk_recalc(core, parent ? parent->rate : 0);
+> >
+> >         /* abort rate change if a driver returns NOTIFY_BAD or NOTIFY_STOP */
+> >         if (core->notifier_count)
+> > -               ret = __clk_notify(core, PRE_RATE_CHANGE, core->rate, new_rate);
+> > +               ret = __clk_notify(core, parent, PRE_RATE_CHANGE,
+> > +                                  core->rate, new_rate);
+> >
+> >         if (ret & NOTIFY_STOP_MASK) {
+> >                 pr_debug("%s: clk notifier callback for clock %s aborted with error %d\n",
+> > @@ -1867,7 +1871,7 @@ static int __clk_speculate_rates(struct clk_core *core,
+> >         }
+> >
+> >         hlist_for_each_entry(child, &core->children, child_node) {
+> > -               ret = __clk_speculate_rates(child, new_rate);
+> > +               ret = __clk_speculate_rates(child, core);
+>
+> How does this work? core->rate isn't assigned yet when we're speculating
+> rates down the tree to the leaves. So that clk_recalc() in the above
+> hunk would need to save the rate away, which is wrong because it isn't
+> changed yet, for this line to make sense.
+>
+Yes, you're right, this was simply wrong..
+
+> Given that I had to read this for a few minutes to figure this out it
+> seems that trying to combine the parent and the rate as arguments is
+> actually more complicated than adding another parameter. Please just add
+> another argument.
+>
+> >                 if (ret & NOTIFY_STOP_MASK)
+> >                         break;
+> >         }
+
+Agree,
+Thank you for the review.
