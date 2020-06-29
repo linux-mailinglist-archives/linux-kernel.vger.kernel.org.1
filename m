@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B8120E17D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D977320E18B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389851AbgF2U4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:56:22 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:39337 "EHLO
+        id S2389990AbgF2U46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:56:58 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:39213 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731284AbgF2U4R (ORCPT
+        with ESMTP id S2389986AbgF2U4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:56:17 -0400
-Received: from mail-qk1-f182.google.com ([209.85.222.182]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1Mf0uq-1jATjC3nC6-00gVz9 for <linux-kernel@vger.kernel.org>; Mon, 29 Jun
- 2020 13:28:29 +0200
-Received: by mail-qk1-f182.google.com with SMTP id 145so12356881qke.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:28:28 -0700 (PDT)
-X-Gm-Message-State: AOAM531XpgxAB+w5fH3gfSbm+rKX69mxTCiqz6nWFprhnirr/OR+eQYW
-        DnQVWtUCdOYH68V3QlnL0ARLUNriJHyq2Ez7pPo=
-X-Google-Smtp-Source: ABdhPJx1a27SVGh6LzPXCycNokQG+CDZxoOG3UMU7wKdxdg7U0z8BdyRfM4glFcYitYHD0+6fYEnvcVI9PbQkgjt+84=
-X-Received: by 2002:a05:620a:1654:: with SMTP id c20mr8009980qko.138.1593430107812;
- Mon, 29 Jun 2020 04:28:27 -0700 (PDT)
+        Mon, 29 Jun 2020 16:56:54 -0400
+Received: from mail-qk1-f172.google.com ([209.85.222.172]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1Mzi3l-1iuAwi1hTd-00vgo9 for <linux-kernel@vger.kernel.org>; Mon, 29 Jun
+ 2020 13:29:21 +0200
+Received: by mail-qk1-f172.google.com with SMTP id c30so10984018qka.10
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:29:21 -0700 (PDT)
+X-Gm-Message-State: AOAM532KVF3Mrwsp88XFnB5qMzvUOyGYvzELSJ7vfp+3LkFxDCSgCuhk
+        tKdIdL1SiK8XewrnMn2E8AunhBmTcltVXq88Osw=
+X-Google-Smtp-Source: ABdhPJxOWyRR6TiiwQf9Wh2sxQ3AKNOhcX8BfRNiFAEby8tFCy7k4tx1AsKF2pBnKqqLfN8S+NOpfx/YguO5KbiA4Jk=
+X-Received: by 2002:a37:a496:: with SMTP id n144mr14507722qke.286.1593430160300;
+ Mon, 29 Jun 2020 04:29:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <1593425623-31810-1-git-send-email-Anson.Huang@nxp.com>
- <CAK8P3a1pr8YbZMpSXg6o_UeDvaU=dDqfo45DudTASNcsxeg3kg@mail.gmail.com> <DB3PR0402MB3916292FC3FDE4F28AFEB5EBF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-In-Reply-To: <DB3PR0402MB3916292FC3FDE4F28AFEB5EBF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+References: <1593425623-31810-1-git-send-email-Anson.Huang@nxp.com> <1593425623-31810-2-git-send-email-Anson.Huang@nxp.com>
+In-Reply-To: <1593425623-31810-2-git-send-email-Anson.Huang@nxp.com>
 From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 29 Jun 2020 13:28:11 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0Za99-xXTwtHNHO-Dzbo-1uesNC2oO91RA-gZZG3Anmw@mail.gmail.com>
-Message-ID: <CAK8P3a0Za99-xXTwtHNHO-Dzbo-1uesNC2oO91RA-gZZG3Anmw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] reset: imx7: Support module build
-To:     Anson Huang <anson.huang@nxp.com>
+Date:   Mon, 29 Jun 2020 13:29:04 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a31coESQTssW1mndGuZ1pvxXSRRpY=XT1ZO+pkj9aabxg@mail.gmail.com>
+Message-ID: <CAK8P3a31coESQTssW1mndGuZ1pvxXSRRpY=XT1ZO+pkj9aabxg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm64: defconfig: Select CONFIG_RESET_IMX7 by default
+To:     Anson Huang <Anson.Huang@nxp.com>
 Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
         Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
@@ -42,53 +41,45 @@ Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
         Will Deacon <will@kernel.org>,
         Philipp Zabel <p.zabel@pengutronix.de>,
         Stefan Agner <stefan.agner@toradex.com>,
-        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
+        oleksandr.suvorov@toradex.com,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
         Olof Johansson <olof@lixom.net>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
+        NXP Linux Team <Linux-imx@nxp.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:EjVc+ogzzXXqEFzj480i0DqLvw32xnU3m5wQrDzQpck5eHfOAfG
- HRkDxl0F5CwwRdLh0Zz7Lgp/Lducn1f5siBLvS/4KwMcXoqwuo90hZnojvFkOLiUGBodhLq
- ZZDGFKb97mLmKRB+U4KX75rOUuewGHe0m3Oay4XugYVvGCSrpeiZdacjK5aBQmQabDfoHgQ
- +9Z6yBTSaH+/EdxvFRr9Q==
+X-Provags-ID: V03:K1:L/cCgtNTGpTZuLd/vE7UdNH3zJxmqthQ+1RD5O4Pl1kAR+QwSLC
+ xbdM/tcUzx1D2AQfTzXsK0/CirZfD/hMsNayPxrJyKbeZ4Xe0no4guHiEYDDU/psXr5wBir
+ jmZ3Qin4lIcO9thalxj6l/rOxbB8Br0T2OheyFLCWcYPLUXmd1hahymuFFgEY71fxffFDpG
+ l6u8XrxzFuFndOwe/0nvw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:oMdFggA9gVQ=:fYdvnFtJM8WbK1LXfVVpVR
- OAeV1wzLC2zNCHgCAYMSt2Uv189+iCWulXlCRf8DuSL+hTboTaQw1oSO6T5dxxvF38glH2Njr
- fpV2isTMuu3f8MzIDfFCP308dfcuRxdnMEuYePmCkOryXXf6AccriHPTjIAdIVXg/Dc7LtXvS
- sx9tfY22QDWd0d45rDV9uNzLswJ3Yn9juiKaAsxtlP9O1gQCY0ZZmFMd9+R+zzSJbA1Ne5R+l
- jJDI9glctp+R2m8tRnSP+Nl7VUgZOG7x2d+LwMVuqKqTHlFD9zknwXkXo+526VTXFSQeNdaN5
- /i3kUrbhWTfKTv91m50spkroIAK+GJaSdMglkgYtBMwpkoTqIs+MkiYMdtZX2E7hXD6WmO4qv
- 1rWbT0wH8CsG6ohyUZwa4Cc9DU/jKqcbu9IIoP+om2fNXHN8M96snYFF75PStpUhC7sTLPXO9
- hnSxSKQGx1PwpWFDhXyC9neX7W29R9frldJFqRYcL93All9UkQklFYuRmXxlUknK6pLvS2LBp
- k13wlNldLuPYtTMI4UWvqGshaJisstq42c7iQWIg4MRPBH2OjKbISvuezEIrQnnPeeS6vl3z7
- Y/YvzwHyrZt7hUle5DLV2cYCAe5VHeyaeBFwJnYvBKUETqmYRJzQwvSqMBzzLPp/yLWOKZBIm
- LwhiN/Sdx5aYuX5XpGLv44k7sIiusl0GGel/pQ83qTkOIoeLrQ+95Om3CHKj9ta3F1tFle4WP
- iwM2awJzQCTyfK9Y7zjpMdQz+d7YYhWnoxjQ+9eO8nm/teAk1h7t0X6loZveflhz60v6H64q3
- lxK1GV+VxmtO3NZZ6hTg2hyC7QsyA/wKcdhS4Z+lfqajNPEKDdIrlz+vcylo7SYDtr+OMDrCh
- UvMFeb6K4ox5M0QXURumk/eYPk/AEBSvjF/RL9WxYZyL16wdkrtRtvK8IfnK6rU6yQauguInP
- QDce767acQeU4EBaaM7dVF4lvAgqpaVojtzqT6Pv3xvN57vXhvweM
+X-UI-Out-Filterresults: notjunk:1;V03:K0:k4fUJO9ov5M=:MBC+10tvQBuFpd2IVfJD9l
+ L4jMInpaovEk2f0E0nZg6O0VNMeJ/QGOJ+U8j6eADoO6XC6NG1wrNq5PpsoeahAuIF2aFgwM5
+ kKyZwko6j1BG7qX/PuhnvbEcLSkrhLAEtjyNaWwGDWcG6sWYOnjpqqggGTq86bkU6yIbVpO7B
+ MAcH2q5FgISQc1Soo/R/9QVhB8brNdxtcRId4MhbZHwfAUSM6i8R9H9wGwuPBFYucywSlwFKg
+ snKF7fOsKb7J3KIY4vbl9ZR1cjeBbDtLTaZszlnjt1rUyN0n7ND3le/reGxcCYtQCQR2khQ+C
+ FEARXPnwSRkiFP2vE5mbt2QjBqCFZahyrdqljGjH3Gi1t5k5MgblyTyujGCJ/4Ix06yFSXh3N
+ 3yN27M7M0ular2BfOsTu45eh99YO0IoEjTRcfxXjWYKD5a9OsBi1+WU1I91KrzvBZ2fsJhSWH
+ VdBFnt2DEr0gU9aDtTx3zYPl+JO/TC/8vuSzkovh77BAkWiU+L26oQqIlfHybI6VdXXrHeDRm
+ Cb0aL0fwyVJnFMX2MCIhVKsfZREkawUAz2DZ4pFWB9y5czHScPq3m5U7Eaca0ei0Zh1VlbLLk
+ Q0iLfPBPugURcJ7wArexRqaAjQeTXbiseMvDtD9O71mOLFbpQXdClIFFM47zXLA9qBXb3FwkK
+ D81rAUjodioeTBVjLVtwD7xKDgBoI5KfetXuc+T4ZfPUNcVtWz4VdtHiAsCo6KykktkYZfJzC
+ zDxRNX7GDBExnic5+29k1fGsRZCJPWEoYLK/kqlGpb5PSXaIRk5yZOX1sGBYISP9zOQ79heGL
+ 4g6ihZzewdviFcwCECr2zMFfNI9UF4prpgV3gIuNhFbBJ683K8=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 12:45 PM Anson Huang <anson.huang@nxp.com> wrote:
-> > Subject: Re: [PATCH 1/3] reset: imx7: Support module build
-> > On Mon, Jun 29, 2020 at 12:25 PM Anson Huang <Anson.Huang@nxp.com> wrote:
+On Mon, Jun 29, 2020 at 12:25 PM Anson Huang <Anson.Huang@nxp.com> wrote:
 >
-> The reset driver normally won't be removed since it is necessary for drivers which
-> need it, it is just for Android GKI support, in this case, do we need to change it to
-> module_platform_driver()?
+> i.MX7 reset driver now supports module build, it is no longer
+> built in by default, need to select it explicitly.
+>
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 
-Please at least try to do it, or explain in the changelog what went wrong
-if it doesn't work.
+Why not make it =m now that this is possible?
 
-I don't think "because Android GKI" should ever be the sole justification for
-a patch. Making drivers loadable module is a good idea regardless of GKI,
-and if you do that, then make it behave like any other loadable module.
-
-        Arnd
+      Arnd
