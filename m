@@ -2,113 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A3120E231
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8436820E053
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731152AbgF2VDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43376 "EHLO
+        id S2389623AbgF2UpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:45:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731157AbgF2TMt (ORCPT
+        with ESMTP id S1731588AbgF2TN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:12:49 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9302DC014AB8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:05:16 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id 17so15148491wmo.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:05:16 -0700 (PDT)
+        Mon, 29 Jun 2020 15:13:59 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79027C014ABF
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:07:55 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id h22so7695207pjf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:07:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5+hczelMMEDbYcHP5+CW5lQUh+iqmRD+aRAJuSk8CxM=;
-        b=uGXdcKt0pHO/pN/1e1d6qjxm6dypuBJxXYRvEDVJpohbWz0nM3+E0h2zX19UjPTDJT
-         /TUbDJkiNOZdbwZfrECDpJW5FBCvhNuLpD8BwD1Yd+fp+lBP4iODaZJxq6IaS4XkeiIM
-         xV6HwIgYOETVk8DEQy7tRQuOSAjBKL9Y4EmcnT1soTsMJDWuonlBeqo23WJSnrlCbREa
-         7PUtod/r12dmFpz1eTNc5ZYslMpGhvZiXtOepOO2ld9AbC+qtNFtB9Kozz8wjHYtLzuu
-         KPgEFHYSO9twXbF5nASFfCOLAXf6qhdYQjt5FbVZBB5uFhg0BeZngnyKJ9/q3fHxRsW9
-         O+7g==
+        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=OXfEAC8m7WsWKLpZr4RzDGbNAcYuuq3MdYSLZ6OlkGQ=;
+        b=pOimQYiak1CbHv7d59idxDYghN9l3G41PcKqfxGsTfgpSIyxG5bc/7aq0zT/8EvPeg
+         3WOVfr4BbAciS6IYJBubYgbglqDpFERjl3Wl6bg26bjYaNOSlNQeR4AmjHwQd+9GQt/C
+         jgxzDtTZ7Hhb1+K5YI1ZhURetiPSEU0pdNEGmQCfHWsIfXTM2c42q88OmkMzLzsvMODM
+         dDrvvtv7ewkFnHse3xS34IDEZqKUWdrKgctWslz1Yxzreg9yly1Z2Sfdk2da8yb2qdEn
+         I850t9J/guTuiDkuwX8LnGsBDrWHDkns0XP2a0AmPABHqBQD7EVY9ARZsDLGjK/WZ9+4
+         cd4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5+hczelMMEDbYcHP5+CW5lQUh+iqmRD+aRAJuSk8CxM=;
-        b=axdsBCkzgx+ykEItGvAc955XS3GXnAuVhdLH6jaA3PjpkaZXUcDH6r9QrK8h7s8yrv
-         gSW/Dq9OK3kQ99Xl2HtDHwcgvSJBIwDRSZ2iizJwsZq03Kboemmkqxt/0XO6GV+UqYQv
-         kLC5+nqoCpRP8qPc6cX9WIQv6Au2IJ8+N7sWOCNl6233ChRsOURXDISqM1C0MtzFO2dN
-         rv7atQM7W5ulU+ZmQD5h0DcX0QRLbyJo1rs/0NFXBliAf048X6fO6HAjPFoa88dIH/j7
-         ip6R2oaU4Vi3zPAdKOsb7WI1i8Qv5fjBT1DfKbSC1EZMIXkh5ZRKhMfouX+L+VlRgH7W
-         UhMQ==
-X-Gm-Message-State: AOAM533ru2tJd200U0J/P0zDpkTNwddZfnvmjpFLmwjepn3XmfW7y1EC
-        4POS6so3tIGm9/10mnexe2vN9g==
-X-Google-Smtp-Source: ABdhPJxzGmtYixvHk5OQIS11ERm+5ABmfFXTzChdfi8AO/NDYvXEPyeBiFluSdHDuoghA2KTZOI0yQ==
-X-Received: by 2002:a1c:a7c4:: with SMTP id q187mr15114921wme.0.1593417915196;
-        Mon, 29 Jun 2020 01:05:15 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:110:d6cc:2030:37c1:9964])
-        by smtp.gmail.com with ESMTPSA id y16sm47498532wro.71.2020.06.29.01.05.14
+        h=x-gm-message-state:from:date:to:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=OXfEAC8m7WsWKLpZr4RzDGbNAcYuuq3MdYSLZ6OlkGQ=;
+        b=DgPSf633FCEHPiLPCg4QiFs55lvH2NUtQoaadzJxcbypbQYh5gO3SGL736Wa4SLbhJ
+         /bF0z6dSoN7MMgq+ko+uxlLBUVmcOjEOG56YNhD3VlZfk5bP2hcTE6X8kn1y0tno2EsY
+         XmtTqCncBOgd8t8ie36ysEshG3UcGAMF6K1DC5VOBlEyb6Kkx0BIJ1zXagUDOrNtvMlK
+         caadJs8LVCDpRBvzh68LbAalJtgGK6DBl+N9hiLa6c/70sg0SEg5Ou7L4TtrRrhNoFti
+         CMpPTln5LREZHMvFb9Ti16126UacGsQ4b+THx4m/nlSkN4V5Qb7c8iqMTOFgQ890JwVr
+         uthQ==
+X-Gm-Message-State: AOAM532sQdXlhXL6vYuPlfJbA5FQgcgZancq1swUMbKTgudMEKvskDBW
+        xHYDX8g04HkaV13kx8dDH3m9rQ==
+X-Google-Smtp-Source: ABdhPJxie99acwKP/77ZGxBZ2fXE0poRQF3nOSrZU7/tjM6WDJBL6sJEiEgmxDiYhMEZmiuSZA2KTQ==
+X-Received: by 2002:a17:90b:1103:: with SMTP id gi3mr16296490pjb.110.1593418074892;
+        Mon, 29 Jun 2020 01:07:54 -0700 (PDT)
+Received: from localhost ([2406:7400:73:703c:908:f18a:1156:5c38])
+        by smtp.gmail.com with ESMTPSA id s12sm3410494pgp.54.2020.06.29.01.07.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 01:05:14 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 09:05:11 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com, tkjos@google.com, adharmap@codeaurora.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 1/3] cpufreq: Fix locking issues with governors
-Message-ID: <20200629080511.GB1217385@google.com>
-References: <cover.1593143118.git.viresh.kumar@linaro.org>
- <f366ed3dd3dd111e42173b366fe4dd5a0e4647fd.1593143118.git.viresh.kumar@linaro.org>
- <20200626082433.GA284605@google.com>
- <20200629021309.eleyysuh5f5g52qw@vireshk-i7>
+        Mon, 29 Jun 2020 01:07:53 -0700 (PDT)
+From:   B K Karthik <bkkarthik@pesu.pes.edu>
+X-Google-Original-From: B K Karthik <karthik.bk2000@live.com>
+Date:   Mon, 29 Jun 2020 04:07:48 -0400
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Straube <straube.linux@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8188eu: include: odm.h: fixed a blank space
+ coding style issue.
+Message-ID: <20200629080748.l4ufcpuk4cg2m725@pesu-pes-edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ky3s2llo3bsba3pz"
 Content-Disposition: inline
-In-Reply-To: <20200629021309.eleyysuh5f5g52qw@vireshk-i7>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 29 Jun 2020 at 07:43:09 (+0530), Viresh Kumar wrote:
-> I described why I chose to keep it that way in the other email, but I
-> am all for dropping the variable. And so what about this ?
-> 
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index e798a1193bdf..d9e9ae7051bb 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -1064,18 +1064,17 @@ static int cpufreq_init_policy(struct cpufreq_policy *policy)
->         struct cpufreq_governor *def_gov = cpufreq_default_governor();
->         struct cpufreq_governor *gov = NULL;
->         unsigned int pol = CPUFREQ_POLICY_UNKNOWN;
-> -       bool put_governor = false;
->         int ret;
->  
->         if (has_target()) {
->                 /* Update policy governor to the one used before hotplug. */
->                 gov = get_governor(policy->last_governor);
->                 if (gov) {
-> -                       put_governor = true;
->                         pr_debug("Restoring governor %s for cpu %d\n",
->                                  policy->governor->name, policy->cpu);
->                 } else if (def_gov) {
->                         gov = def_gov;
-> +                       module_get(gov->owner);
->                 } else {
->                         return -ENODATA;
->                 }
-> @@ -1099,7 +1098,7 @@ static int cpufreq_init_policy(struct cpufreq_policy *policy)
->         }
->  
->         ret = cpufreq_set_policy(policy, gov, pol);
-> -       if (put_governor)
-> +       if (gov)
->                 module_put(gov->owner);
->  
->         return ret;
 
-Right, I guess this is a good trade-off, so that works for me.
+--ky3s2llo3bsba3pz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Quentin
+added blank space and enclosed a complex valued macro within parentheses for improved code readability.
+
+Signed-off-by: B K Karthik <karthik.bk2000@live.com>
+---
+ drivers/staging/rtl8188eu/include/odm.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/rtl8188eu/include/odm.h b/drivers/staging/rtl8188eu/include/odm.h
+index 9d39fe13626a..27bffc2ead66 100644
+--- a/drivers/staging/rtl8188eu/include/odm.h
++++ b/drivers/staging/rtl8188eu/include/odm.h
+@@ -244,7 +244,7 @@ struct odm_rate_adapt {
+
+ #define AVG_THERMAL_NUM		8
+ #define IQK_Matrix_REG_NUM	8
+-#define IQK_Matrix_Settings_NUM	1+24+21
++#define IQK_Matrix_Settings_NUM	(1 + 24 + 21)
+
+ #define	DM_Type_ByFWi		0
+ #define	DM_Type_ByDriver	1
+--
+2.20.1
+
+
+--ky3s2llo3bsba3pz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAEBCgAdFiEEpIrzAt4LvWLJmKjp471Q5AHeZ2oFAl75oVQACgkQ471Q5AHe
+Z2qxIwv6A7R+6jcIxfrGZmDNs1aGiG271nP9bJyOcZS3Trkc4IAghcVyMsLkQ6UE
+B7Zm32o/NMawi7DNQKowf9kMM2crNKY1vDQgxVm38zlJPjLl/QuSL2OQf9QiGw8h
+vYghWNcxiMJAqdEfXJh92KLFqzNh8Kru7CQ3DLE2XDSMDx9ohXjqRmciUL4cfj7H
+2r6PC8a1iPBKC42wC1zYu+RNhCCRgNSFRntYbdfz/wfJsFulH3Gw1X3vFa6YIVaC
+NRRvpsM6hR/gDAEGe1YoZ9VDQy5/8BKuoIa/DNbQ0zJsSE2cVFpYqLquI0nSGu1u
+DFpjyj7rZNAHdd3Vp7CXI3msFRkUHinXGww6SZfd7morZV+7+jzDEXjnX4rMwaXh
+hjLE7LrB5l7IBIL5vgbSymptwTqc0coUaW0vFEjiWoWN/FUIP+Diml+FhUkUgFi6
+4rHopvniFo2/7Lz9T0cIgEwMvoGwPxB+DUB6Av0MH2xoz7SO3Kao2U9P1eXJpLnk
+doyI6Kvx
+=SdWm
+-----END PGP SIGNATURE-----
+
+--ky3s2llo3bsba3pz--
