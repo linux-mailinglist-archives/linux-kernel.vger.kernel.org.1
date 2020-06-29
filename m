@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD2F20DD86
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8072120DDB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730975AbgF2TKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:10:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53676 "EHLO mail.kernel.org"
+        id S1733056AbgF2USQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:18:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730294AbgF2TKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:10:15 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1732627AbgF2TZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:25:41 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 140FC2549D;
-        Mon, 29 Jun 2020 15:53:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A05DE2558A;
+        Mon, 29 Jun 2020 16:15:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593445995;
-        bh=GDty82TpQn3TQtvSKvWJza1OMJHRZPsq4SrmyPwrfAs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vNhB/hXSv1Dl7J+ovJnhVBecx2HAOtIRaqg/pPVPgsAlGYz0OqTXm2FoUylkccThk
-         XyT7c1T2/mjKWnw/eUndFMtAcDGb3OVJRx72a0oEYQPKYYwujzII0qR0hyXMkjEGYV
-         1gcoh4JvckHVETt2SG181EiuKfJBOjmXZsj9VGIU=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Adam Honse <calcprogrammer1@gmail.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 003/135] i2c: piix4: Detect secondary SMBus controller on AMD AM4 chipsets
-Date:   Mon, 29 Jun 2020 11:50:57 -0400
-Message-Id: <20200629155309.2495516-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629155309.2495516-1-sashal@kernel.org>
-References: <20200629155309.2495516-1-sashal@kernel.org>
+        s=default; t=1593447352;
+        bh=klIL3IOn+Sds26IUTL2F8EnYRJUx3am2hJ0RrpMsz0g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f9oWsTBo0LTbV90r28cXpkf0rG6Cx+kBwQhW0WyK5V7LJACKMYaXrNxLEsrfrbqfN
+         rttFp9EJzONsmvLLNJPGF4asPeiYLbxGyVKv3fe0PPtvUJH+5AuMaTzimvfWrLwNTa
+         tlcJPsSbq9Ck5M+B1LWGLoCgQEUCKcFTg/VPSd+c=
+Date:   Mon, 29 Jun 2020 18:15:42 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     sashal@kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Upstream fixes not merged in 5.4.y
+Message-ID: <20200629161542.GA683634@kroah.com>
+References: <20200629142805.28013-1-sjpark@amazon.com>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.229-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.4.229-rc1
-X-KernelTest-Deadline: 2020-07-01T15:53+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629142805.28013-1-sjpark@amazon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adam Honse <calcprogrammer1@gmail.com>
+On Mon, Jun 29, 2020 at 04:28:05PM +0200, SeongJae Park wrote:
+> Hello,
+> 
+> 
+> With my little script, I found below commits in the mainline tree are more than
+> 1 week old and fixing commits that back-ported in v5.4..v5.4.49, but not merged
+> in the stable/linux-5.4.y tree.  Are those need to be merged in but missed or
+> dealyed?
+> 
+> 9210c075cef2 ("nvme-pci: avoid race between nvme_reap_pending_cqes() and nvme_poll()")
+> 9fecd13202f5 ("btrfs: fix a block group ref counter leak after failure to remove block group")
+> 9d964e1b82d8 ("fix a braino in "sparc32: fix register window handling in genregs32_[gs]et()"")
+> 8ab3a3812aa9 ("drm/i915/gt: Incrementally check for rewinding")
+> 6e2f83884c09 ("bnxt_en: Fix AER reset logic on 57500 chips.")
+> efb94790852a ("drm/panel-simple: fix connector type for LogicPD Type28 Display")
+> ff58bbc7b970 ("ALSA: usb-audio: Fix potential use-after-free of streams")
+> ff58bbc7b970 ("ALSA: usb-audio: Fix potential use-after-free of streams")
+> 8dbe4c5d5e40 ("net: dsa: bcm_sf2: Fix node reference count")
+> ca8826095e4d ("selftests/net: report etf errors correctly")
+> 5a8d7f126c97 ("of: of_mdio: Correct loop scanning logic")
+> d35d3660e065 ("binder: fix null deref of proc->context")
+> 
+> The script found several more commits but I exclude those here, because those
+> seems not applicable on 5.4.y or fixing trivial problems only.  If I'm not
+> following a proper process for this kind of reports, please let me know.
 
-[ Upstream commit f27237c174fd9653033330e4e532cd9d153ce824 ]
+For commits that only have a "Fixes:" tag, and not a "cc: stable..."
+tag, wait a few weeks, or a month, for us to catch up with them.  We
+usually get to them eventually, but it takes us a while as we have lots
+more to deal with by developers and maintainers that are properly
+tagging patches for this type of thing.
 
-The AMD X370 and other AM4 chipsets (A/B/X 3/4/5 parts) and Threadripper
-equivalents have a secondary SMBus controller at I/O port address
-0x0B20.  This bus is used by several manufacturers to control
-motherboard RGB lighting via embedded controllers.  I have been using
-this bus in my OpenRGB project to control the Aura RGB on many
-motherboards and ASRock also uses this bus for their Polychrome RGB
-controller.
+Some of the above commits are queued up already, but not all of them.
+I'll take a look at the list after this next round of patches go out,
+and will let you know.
 
-I am not aware of any CZ-compatible platforms which do not have the
-second SMBus channel.  All of AMD's AM4- and Threadripper- series
-chipsets that OpenRGB users have tested appear to have this secondary
-bus.  I also noticed this secondary bus is present on older AMD
-platforms including my FM1 home server.
+And yes, we do want this type of list, it's greatly appreciated.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=202587
-Signed-off-by: Adam Honse <calcprogrammer1@gmail.com>
-Reviewed-by: Jean Delvare <jdelvare@suse.de>
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Tested-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/i2c/busses/i2c-piix4.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+thanks,
 
-diff --git a/drivers/i2c/busses/i2c-piix4.c b/drivers/i2c/busses/i2c-piix4.c
-index b61db9db3ca5d..c85ac178c4838 100644
---- a/drivers/i2c/busses/i2c-piix4.c
-+++ b/drivers/i2c/busses/i2c-piix4.c
-@@ -647,7 +647,8 @@ static int piix4_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 	}
- 
- 	if (dev->vendor == PCI_VENDOR_ID_AMD &&
--	    dev->device == PCI_DEVICE_ID_AMD_HUDSON2_SMBUS) {
-+	    (dev->device == PCI_DEVICE_ID_AMD_HUDSON2_SMBUS ||
-+	     dev->device == PCI_DEVICE_ID_AMD_KERNCZ_SMBUS)) {
- 		retval = piix4_setup_sb800(dev, id, 1);
- 	}
- 
--- 
-2.25.1
-
+greg k-h
