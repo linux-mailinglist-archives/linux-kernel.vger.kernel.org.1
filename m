@@ -2,69 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E78120E40E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849DA20E42A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbgF2VUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40038 "EHLO
+        id S1730114AbgF2VVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729781AbgF2Sws (ORCPT
+        with ESMTP id S1729767AbgF2Swn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:48 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF6FC031C57;
-        Mon, 29 Jun 2020 10:36:37 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id t6so8635774pgq.1;
-        Mon, 29 Jun 2020 10:36:37 -0700 (PDT)
+        Mon, 29 Jun 2020 14:52:43 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27425C031C58
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:37:24 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id l6so16021789qkc.6
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:37:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0fKzFmJ6swEgieVUVWwiawhKzRLACyYFxC8XDxv8xYs=;
-        b=R0fJ45LcAzqMEfB6noKVYodLWFah632V2+qcF0G9d0sHUN7n7MwsjReJlbHyOxFAgQ
-         Pyqf1TrIb5+jNNbE7Gu2zh7Pev/OIpQYVhr0G06pAc4EvZ3QZti8JaDPPh9JprJ6lqM7
-         tqLA5emrcXMH/+DvgiCyb8A/ClsuRUzKMnIbaTWBxp5GGslGGiGr9HKCHUy1PbvqS24j
-         60bvSOJ0Nj3W6JRhbdP6caRjgWiAIuXtyAUuqOPa4jCa9O05I1sFDK5lLIaDCRcZodQs
-         B0eEZH4anwaspISF1wAL0KJ23fKcs6Ri+fuakGDCBPHZtFTJikMOeCKnC+N8ARzFsldc
-         kSNg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gX63ojcBTGYgpVQDnPBqhrIrSpeuTImvwcad9Nat98g=;
+        b=a+Nlvf8b0GAArIMrvHg0EqEamnQp9ja+U/Uaeg7YODf1sy6MdhXEIbIC32Z9sDUOi1
+         n0YTthCuO1TCQA9Gzu9gdMfESJL1GeRhxHUT5p3EQI87TVgx1NNb13ujax0hp50ZogcJ
+         aF7GNAKqkDl24FtYhc1YG1eiDGxe/idMS4E9EP3/SB84Y5mO2I5eNGd+tzlL9pJroJfe
+         udmz34RIobKyserhWvMPiFQwaQxXynM9r2sJ0ecK2CcGyL5m3mtv3P35aXs4rPoKs0cb
+         ajDa4SmE0yv8vLaOdd76VlRleFAgNw48fp+Nj4vHQ4VJJQKY/gRToo7RdOUsg5NMN62E
+         O3qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0fKzFmJ6swEgieVUVWwiawhKzRLACyYFxC8XDxv8xYs=;
-        b=smNUO9Kknl4aB+epcEO3OvhfpqOYEzSnukU5Y8FOsTbHqEuOK4HUSAH0sOaZMol3pa
-         ZbysRAum9pevIeu/RoBsdy6BbPHkZyR42OHuxaP9QUwNOD25FvWkDCwkc5RlK1eFLw4z
-         Kor1VVJ4XEYoAiVX6paPq1xzU23BI3mcXrSuyd4ffz+QSct3XvpRExS9wCZ23vcv54/R
-         nfZRdR3zISxQcG86iCF/2rTUykT54JoOGM83r+vhE0TQ8yW3hH0al4uoY2AryDCGvna/
-         XTmadXJEMgbqbqq1uda6WxGElKIWiFAn5dcHKBJHgoxxqT99SwaC0i/fxrYTzNdaLsWj
-         7u3g==
-X-Gm-Message-State: AOAM530e5uElo1NSZYLHCxCvqMzR4Z8WAMgh1xVR78o8N1WD73djtKQ9
-        fZ16qRwMH0Dv8mblDvltrI0=
-X-Google-Smtp-Source: ABdhPJzX3W9pUE3rQzyWQqNZmLpVSpw6IGMNuc9exvw210citymSwYDDB32iKOYKjCaB5XfOf1cKHw==
-X-Received: by 2002:a63:4915:: with SMTP id w21mr5651899pga.134.1593452196587;
-        Mon, 29 Jun 2020 10:36:36 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.153.57])
-        by smtp.gmail.com with ESMTPSA id k23sm331461pgb.92.2020.06.29.10.36.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gX63ojcBTGYgpVQDnPBqhrIrSpeuTImvwcad9Nat98g=;
+        b=KDBc9dqOU0asuzIX4ZIWZK1I+3BkloMky4TgSb2G7VKNbSBAUjRQOsWBgFFfqr5AKl
+         BIKLFrbBfKhYel2AgF37NBXy5W4BO5tuahLTUaOS0jFxpghQXFG9TDdy1KegLguAGXrq
+         hsA7r98cPkwlw8Q+Vs3fs2SVVkKbCRdEVLJXLFoMBon65UmwcId6GsutjfcWXPelfx1s
+         eD7GqnjYVnAROEUoTsqinF0X3PzVT9SPGPFmLPdWvvLN3zHeKG/F2Z9gCTaI29Sgglrb
+         mL5n12cdeyDA5vk04bZ8dbaMcj0gOyf1wo4za+t3vObO9J6y9I3mYV1LL9c7LdWMvjkB
+         mrAQ==
+X-Gm-Message-State: AOAM533xj1ihkR6FMluR1jRm4PHF3WLTCBc44O5JD/62su8qJrbSr+YD
+        k3aocfjlXb0x0tj/OKKyh/8=
+X-Google-Smtp-Source: ABdhPJx+LIz0P/8LenwLfgW7Ca7V5ftnp3ugGg/IPNoNTAFicH4tYhzrZM00ANPF8tSjhiRWFCtTWw==
+X-Received: by 2002:a05:620a:2051:: with SMTP id d17mr16203522qka.237.1593452243400;
+        Mon, 29 Jun 2020 10:37:23 -0700 (PDT)
+Received: from mooncell.myfiosgateway.com (pool-173-75-208-99.phlapa.fios.verizon.net. [173.75.208.99])
+        by smtp.gmail.com with ESMTPSA id s46sm355282qts.85.2020.06.29.10.37.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 10:36:36 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Manish Chopra <manishc@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org
-Subject: [PATCH v2 4/4] vt6655/device_main.c: use generic power management
-Date:   Mon, 29 Jun 2020 23:04:59 +0530
-Message-Id: <20200629173459.262075-5-vaibhavgupta40@gmail.com>
+        Mon, 29 Jun 2020 10:37:22 -0700 (PDT)
+From:   Brooke Basile <brookebasile@gmail.com>
+To:     Larry.Finger@lwfinger.net, gregkh@linuxfoundation.org,
+        straube.linux@gmail.com, yepeilin.cs@gmail.com,
+        colin.king@canonical.com
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Brooke Basile <brookebasile@gmail.com>
+Subject: [PATCH v2] staging: rtl8188eu: Replace function name with __func__
+Date:   Mon, 29 Jun 2020 13:37:11 -0400
+Message-Id: <20200629173711.5158-1-brookebasile@gmail.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200629173459.262075-1-vaibhavgupta40@gmail.com>
-References: <20200629173459.262075-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -72,84 +65,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers should not use legacy power management as they have to manage power
-states and related operations, for the device, themselves. This driver was
-handling them with the help of PCI helper functions like
-pci_save/restore_state(), pci_enable/disable_device(), etc.
+Fix the following checkpatch warning:
+	WARNING: Prefer using '"%s...", __func__' to using 'rtw_get_bcn_info', this function's name, in a string
 
-With generic PM, all essentials will be handled by the PCI core. Driver
-needs to do only device-specific operations.
-
-The driver was also using pci_enable_wake(...,..., 0) to disable wake. Use
-device_wakeup_disable() instead.
-
-Compile-tested only.
-
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Signed-off-by: Brooke Basile <brookebasile@gmail.com>
 ---
- drivers/staging/vt6655/device_main.c | 25 +++++++------------------
- 1 file changed, 7 insertions(+), 18 deletions(-)
+Changes in v2:
+	- This should fix the previous issue that caused the patch to
+	  fail to apply. 
 
-diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
-index 41cbec4134b0..76de1fd568eb 100644
---- a/drivers/staging/vt6655/device_main.c
-+++ b/drivers/staging/vt6655/device_main.c
-@@ -1766,48 +1766,37 @@ vt6655_probe(struct pci_dev *pcid, const struct pci_device_id *ent)
+ drivers/staging/rtl8188eu/core/rtw_ieee80211.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/staging/rtl8188eu/core/rtw_ieee80211.c b/drivers/staging/rtl8188eu/core/rtw_ieee80211.c
+index 3316059238e0..b80273611fb8 100644
+--- a/drivers/staging/rtl8188eu/core/rtw_ieee80211.c
++++ b/drivers/staging/rtl8188eu/core/rtw_ieee80211.c
+@@ -987,10 +987,10 @@ void rtw_get_bcn_info(struct wlan_network *pnetwork)
+ 		if (bencrypt)
+ 			pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_WEP;
+ 	}
+-	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: pnetwork->encryp_protocol is %x\n",
+-						       pnetwork->BcnInfo.encryp_protocol));
+-	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: pnetwork->encryp_protocol is %x\n",
+-						       pnetwork->BcnInfo.encryp_protocol));
++	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("%s: pnetwork->encryp_protocol is %x\n",
++							__func__, pnetwork->BcnInfo.encryp_protocol));
++	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("%s: pnetwork->encryp_protocol is %x\n",
++							__func__, pnetwork->BcnInfo.encryp_protocol));
+ 	rtw_get_cipher_info(pnetwork);
  
- /*------------------------------------------------------------------*/
- 
--#ifdef CONFIG_PM
--static int vt6655_suspend(struct pci_dev *pcid, pm_message_t state)
-+static int __maybe_unused vt6655_suspend(struct device *dev_d)
- {
--	struct vnt_private *priv = pci_get_drvdata(pcid);
-+	struct vnt_private *priv = dev_get_drvdata(dev_d);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&priv->lock, flags);
- 
--	pci_save_state(pcid);
--
- 	MACbShutdown(priv);
- 
--	pci_disable_device(pcid);
--
- 	spin_unlock_irqrestore(&priv->lock, flags);
- 
--	pci_set_power_state(pcid, pci_choose_state(pcid, state));
--
- 	return 0;
- }
- 
--static int vt6655_resume(struct pci_dev *pcid)
-+static int __maybe_unused vt6655_resume(struct device *dev_d)
- {
--	pci_set_power_state(pcid, PCI_D0);
--	pci_enable_wake(pcid, PCI_D0, 0);
--	pci_restore_state(pcid);
-+	device_wakeup_disable(dev_d);
- 
- 	return 0;
- }
--#endif
- 
- MODULE_DEVICE_TABLE(pci, vt6655_pci_id_table);
- 
-+static SIMPLE_DEV_PM_OPS(vt6655_pm_ops, vt6655_suspend, vt6655_resume);
-+
- static struct pci_driver device_driver = {
- 	.name = DEVICE_NAME,
- 	.id_table = vt6655_pci_id_table,
- 	.probe = vt6655_probe,
- 	.remove = vt6655_remove,
--#ifdef CONFIG_PM
--	.suspend = vt6655_suspend,
--	.resume = vt6655_resume,
--#endif
-+	.driver.pm = &vt6655_pm_ops,
- };
- 
- module_pci_driver(device_driver);
+ 	/* get bwmode and ch_offset */
 -- 
 2.27.0
 
