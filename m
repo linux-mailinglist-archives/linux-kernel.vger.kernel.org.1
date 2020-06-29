@@ -2,108 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262E820E618
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19A420E555
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388577AbgF2Vo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:44:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727819AbgF2Shq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:46 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E03EC02A543
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:51:06 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id 9so17868005ljc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:51:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0LrwryG62eUyl2zqUjhBe++Y1D3GieTqe72DllAUzwU=;
-        b=C4qFFP+7RH7Vcxx5ZjN3j2bJnxL+r4+3jiGYt84pPaqsosTIEJNDj/UU0eZii3GXma
-         cZORP/L6e9NWAxNzlnX1cXOZbs/tDB32wYTaPaypAsMWNciOmzzVliM6jGL69iE0XLw8
-         H7gWBR/D0VhNTeuoQ8RlK5mGwYRUQ92NVqW22fm4T5jWKWVeLebVn3arK9cQjpnSL7+r
-         OeVfSiEcs16F6Tvbk5tL6tR9/ctWHGJtXU7mdqNXtapWOMXtRh8P7eZ4unM84LlCHZ5+
-         xz3tdLsHZj8zn/eDmLeyqodKDp2raRSH5Ddxs73WA/xBjuP7rFHvZckPtr0xnb9JBPJa
-         AJBg==
-X-Gm-Message-State: AOAM532yQ+KFB0uyqTqCbYRK5aVcBQCdFLjoXzfh8v6XaESPhR9BxKmo
-        CELdGshcp1Jh4ei6r++76Q2sLwl2vkM=
-X-Google-Smtp-Source: ABdhPJy1Oa+sFlJzr/Lrmq06b2ZzNN4W8IFLJhckyKTLVnMrowOCwFnL7cGHxQlWRfjiLHud6wIsow==
-X-Received: by 2002:a2e:3316:: with SMTP id d22mr1714816ljc.18.1593435064220;
-        Mon, 29 Jun 2020 05:51:04 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id l1sm2212934ljc.65.2020.06.29.05.51.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 05:51:03 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1jptFW-0006wJ-Se; Mon, 29 Jun 2020 14:51:03 +0200
-Date:   Mon, 29 Jun 2020 14:51:02 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <jhovold@gmail.com>
-Subject: Re: [PATCH 2/5] mfd: lm3533-ctrlbank: Cap BRIGHTNESS_MAX to 127
- since API uses u8 as carrier
-Message-ID: <20200629125102.GT3334@localhost>
-References: <20200629123215.1014747-1-lee.jones@linaro.org>
- <20200629123215.1014747-3-lee.jones@linaro.org>
+        id S2403789AbgF2Vft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:35:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728494AbgF2Skq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:40:46 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DBD6206A1;
+        Mon, 29 Jun 2020 12:56:09 +0000 (UTC)
+Date:   Mon, 29 Jun 2020 08:56:08 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     syzbot <syzbot+721aa903751db87aa244@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, mathieu.desnoyers@polymtl.ca,
+        mingo@elte.hu, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: WARNING in tracepoint_add_func
+Message-ID: <20200629085608.42ede213@oasis.local.home>
+In-Reply-To: <000000000000a6348d05a9234041@google.com>
+References: <000000000000a6348d05a9234041@google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200629123215.1014747-3-lee.jones@linaro.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 01:32:12PM +0100, Lee Jones wrote:
-> Since its conception in 2012 brightness has been artificially capped
-> at 127 since the variable carrying the value is u8.  We could go to
-> the trouble of changing the whole API (crossing 3 different subsystems),
-> but clearly this hasn't bothered anyone in the best part of a decade.
+
+Cc'd Frederic and Peter.
+
+-- Steve
+
+
+On Sun, 28 Jun 2020 04:29:17 -0700
+syzbot <syzbot+721aa903751db87aa244@syzkaller.appspotmail.com> wrote:
+
+> Hello,
 > 
-> Simply, cap BRIGHTNESS_MAX to 127 instead (for now at least).
-
-Hmm. This patch is clearly broken and would contrary to the claim be
-introducing an artificial cap at half brightness. u8 can hold the max
-brightness value 255 just fine.
-
-> Fixes the following W=1 warning(s):
+> syzbot found the following crash on:
 > 
->  drivers/mfd/lm3533-ctrlbank.c: In function ‘lm3533_ctrlbank_set_brightness’:
->  drivers/mfd/lm3533-ctrlbank.c:98:10: warning: comparison is always false due to limited range of data type [-Wtype-limits]
->  98 | if (val > LM3533_##_NAME##_MAX) | ^
->  drivers/mfd/lm3533-ctrlbank.c:125:1: note: in expansion of macro ‘lm3533_ctrlbank_set’
->  125 | lm3533_ctrlbank_set(brightness, BRIGHTNESS);
->  | ^~~~~~~~~~~~~~~~~~~
-
-This warning is benign. The same macro is used to defined two function
-where in one case the max value coincides with U8_MAX so that the sanity
-check becomes redundant.
-
-> Cc: Johan Hovold <jhovold@gmail.com>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> HEAD commit:    7a64135f libbpf: Adjust SEC short cut for expected attach ..
+> git tree:       bpf
+> console output: https://syzkaller.appspot.com/x/log.txt?x=142782e3100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=dcc6334acae363d4
+> dashboard link: https://syzkaller.appspot.com/bug?extid=721aa903751db87aa244
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> 
+> Unfortunately, I don't have any reproducer for this crash yet.
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+721aa903751db87aa244@syzkaller.appspotmail.com
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 16762 at kernel/tracepoint.c:243 tracepoint_add_func+0x254/0x880 kernel/tracepoint.c:243
+> Kernel panic - not syncing: panic_on_warn set ...
+> CPU: 1 PID: 16762 Comm: syz-executor.4 Not tainted 5.8.0-rc1-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+>  panic+0x2e3/0x75c kernel/panic.c:231
+>  __warn.cold+0x20/0x45 kernel/panic.c:600
+>  report_bug+0x1bd/0x210 lib/bug.c:198
+>  exc_invalid_op+0x24d/0x400 arch/x86/kernel/traps.c:235
+>  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:563
+> RIP: 0010:tracepoint_add_func+0x254/0x880 kernel/tracepoint.c:243
+> Code: 44 24 20 48 8b 5b 08 80 38 00 0f 85 6b 05 00 00 48 8b 44 24 08 48 3b 58 08 0f 85 2d ff ff ff 41 bc ef ff ff ff e8 4c 78 fe ff <0f> 0b e8 45 78 fe ff 44 89 e0 48 83 c4 38 5b 5d 41 5c 41 5d 41 5e
+> RSP: 0018:ffffc90001497a98 EFLAGS: 00010216
+> RAX: 000000000000199a RBX: ffffffff89b99040 RCX: ffffc90011df4000
+> RDX: 0000000000040000 RSI: ffffffff8174d824 RDI: ffff8880979adb30
+> RBP: ffffffff814f1b80 R08: 0000000000000000 R09: ffffffff89bf9867
+> R10: 000000000000000a R11: 0000000000000000 R12: 00000000ffffffef
+> R13: 0000000000000001 R14: dffffc0000000000 R15: ffff8880979adb10
+>  tracepoint_probe_register_prio kernel/tracepoint.c:315 [inline]
+>  tracepoint_probe_register+0x9c/0xe0 kernel/tracepoint.c:335
+>  trace_event_reg+0x28f/0x350 kernel/trace/trace_events.c:304
+>  perf_trace_event_reg kernel/trace/trace_event_perf.c:129 [inline]
+>  perf_trace_event_init+0x532/0x9a0 kernel/trace/trace_event_perf.c:204
+>  perf_trace_init+0x176/0x240 kernel/trace/trace_event_perf.c:228
+>  perf_tp_event_init+0xa2/0x120 kernel/events/core.c:9330
+>  perf_try_init_event+0x12a/0x560 kernel/events/core.c:10782
+>  perf_init_event kernel/events/core.c:10834 [inline]
+>  perf_event_alloc.part.0+0xdee/0x36f0 kernel/events/core.c:11110
+>  perf_event_alloc kernel/events/core.c:11489 [inline]
+>  __do_sys_perf_event_open+0x72c/0x2b50 kernel/events/core.c:11605
+>  do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x45cb19
+> Code: Bad RIP value.
+> RSP: 002b:00007f2d99608c78 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
+> RAX: ffffffffffffffda RBX: 00000000004fa640 RCX: 000000000045cb19
+> RDX: 0000000000000000 RSI: ffffffffffffffff RDI: 0000000020000100
+> RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
+> R10: ffffffffffffffff R11: 0000000000000246 R12: 00000000ffffffff
+> R13: 0000000000000841 R14: 00000000004cb320 R15: 00007f2d996096d4
+> Kernel Offset: disabled
+> 
+> 
 > ---
->  drivers/mfd/lm3533-ctrlbank.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> This bug is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 > 
-> diff --git a/drivers/mfd/lm3533-ctrlbank.c b/drivers/mfd/lm3533-ctrlbank.c
-> index 34fba06ec7057..348ce67453092 100644
-> --- a/drivers/mfd/lm3533-ctrlbank.c
-> +++ b/drivers/mfd/lm3533-ctrlbank.c
-> @@ -17,7 +17,7 @@
->  #define LM3533_MAX_CURRENT_MAX		29800
->  #define LM3533_MAX_CURRENT_STEP		800
->  
-> -#define LM3533_BRIGHTNESS_MAX		255
-> +#define LM3533_BRIGHTNESS_MAX		127  /* Capped by API - could be up to 255 */
->  #define LM3533_PWM_MAX			0x3f
->  
->  #define LM3533_REG_PWM_BASE		0x14
+> syzbot will keep track of this bug report. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Johan
