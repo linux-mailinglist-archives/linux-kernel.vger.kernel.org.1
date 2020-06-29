@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BBA20D128
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9510020D1E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728094AbgF2SjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:39:02 -0400
-Received: from condef-07.nifty.com ([202.248.20.72]:27946 "EHLO
-        condef-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728078AbgF2Si6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:38:58 -0400
-Received: from conuserg-07.nifty.com ([10.126.8.70])by condef-07.nifty.com with ESMTP id 05T90bCW006206;
-        Mon, 29 Jun 2020 18:00:37 +0900
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 05T8xLJe008001;
-        Mon, 29 Jun 2020 17:59:22 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 05T8xLJe008001
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1593421162;
-        bh=NsoI4eUWa9rbUruhM1nTxkmNquCZM22p5ZB+WQfFzbo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jlSAjWegy8blUBTbRWrR5LNbNgr+6sUDD4Su7dkk7/TngS4kv/cGl5CqqGQPCyhQF
-         yaIh4+2pg6hFIu5K8J+1ewz7WazZuH1klic6KdWxuUZM91ZiTuWr+F/Lx55k2x8ePl
-         YUi546bppwJS8+0NfM6Iaqyq1rbRx3iEvZ52Ce4fFhJsQzVq2evnmJGBucgtDOnSNh
-         fDUvrxvKIJtNpfDugb7tMgAzjetNTgFKL0b2qEJrcxj5+QxMgfEspn+eQVtrayLXXG
-         /YjvcMt020z2AGxBKcK+PSX9SCjJ/LYcww+LGsXlAHmzNhCS9qAn2tyShs71A6kva4
-         CWLaMR6NrddZw==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] kbuild: make Clang build userprogs for target architecture
-Date:   Mon, 29 Jun 2020 17:59:11 +0900
-Message-Id: <20200629085911.1676554-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728157AbgF2Son (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:44:43 -0400
+Received: from mga02.intel.com ([134.134.136.20]:40916 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726051AbgF2SoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:44:02 -0400
+IronPort-SDR: a+SOZ1NxVd3QEdWfn5A05yR/TJuFoBHoE9aq3qKb8KsLSD0o9HyPlbe9rqsP48BQO7HN2ErI5I
+ ww7XNEoKknqA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="134249545"
+X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
+   d="scan'208";a="134249545"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 02:04:00 -0700
+IronPort-SDR: STrvPj96RlAD7lPaaBOdSDyKih7aU1PdIQXeqvI1m6nWdHjjGCQy8LCHSPGJCI3J/c8s9USQH+
+ Sn2Hajo4qAZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
+   d="scan'208";a="294829170"
+Received: from sgsxdev001.isng.intel.com (HELO localhost) ([10.226.88.11])
+  by orsmga002.jf.intel.com with ESMTP; 29 Jun 2020 02:03:56 -0700
+From:   Rahul Tanwar <rahul.tanwar@linux.intel.com>
+To:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org
+Cc:     thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, andriy.shevchenko@intel.com,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
+        Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Subject: [PATCH v3 1/2] Add DT bindings YAML schema for PWM fan controller of LGM SoC
+Date:   Mon, 29 Jun 2020 17:03:46 +0800
+Message-Id: <cd0692812e7f1bce365a7594b076ae0ed19d2b37.1593420979.git.rahul.tanwar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <cover.1593420979.git.rahul.tanwar@linux.intel.com>
+References: <cover.1593420979.git.rahul.tanwar@linux.intel.com>
+In-Reply-To: <cover.1593420979.git.rahul.tanwar@linux.intel.com>
+References: <cover.1593420979.git.rahul.tanwar@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Programs added 'userprogs' should be compiled for the target
-architecture i.e. the same architecture as the kernel.
+Intel's LGM(Lightning Mountain) SoC contains a PWM fan controller
+which is only used to control the fan attached to the system. This
+PWM controller does not have any other consumer other than fan.
+Add DT bindings documentation for this PWM fan controller.
 
-GCC does this correctly since the target architecture is implied
-by the toolchain prefix.
-
-Clang builds standalone programs always for the host architecture
-because the target triple is currently missing.
-
-Fix this.
-
-Fixes: 7f3a59db274c ("kbuild: add infrastructure to build userspace programs")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
 ---
+ .../devicetree/bindings/pwm/intel,lgm-pwm.yaml     | 51 ++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
 
- Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 73948798ce3f..cac29cc2ec25 100644
---- a/Makefile
-+++ b/Makefile
-@@ -970,8 +970,8 @@ LDFLAGS_vmlinux	+= --pack-dyn-relocs=relr
- endif
- 
- # Align the bit size of userspace programs with the kernel
--KBUILD_USERCFLAGS  += $(filter -m32 -m64, $(KBUILD_CFLAGS))
--KBUILD_USERLDFLAGS += $(filter -m32 -m64, $(KBUILD_CFLAGS))
-+KBUILD_USERCFLAGS  += $(filter -m32 -m64 --target=%, $(KBUILD_CFLAGS))
-+KBUILD_USERLDFLAGS += $(filter -m32 -m64 --target=%, $(KBUILD_CFLAGS))
- 
- # make the checker run with the right architecture
- CHECKFLAGS += --arch=$(ARCH)
+diff --git a/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml b/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+new file mode 100644
+index 000000000000..bc3fbc46ec5c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+@@ -0,0 +1,51 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pwm/intel,lgm-pwm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: LGM SoC PWM fan controller
++
++maintainers:
++  - Rahul Tanwar <rahul.tanwar@intel.com>
++
++properties:
++  compatible:
++    const: intel,lgm-pwm
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  intel,fan-wire:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: Specifies fan mode. Default when unspecified is 2.
++
++  intel,max-rpm:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description:
++      Specifies maximum RPM of fan attached to the system.
++      Default when unspecified is 4000.
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - resets
++
++additionalProperties: false
++
++examples:
++  - |
++    pwm: pwm@e0d00000 {
++        compatible = "intel,lgm-pwm";
++        reg = <0xe0d00000 0x30>;
++        #pwm-cells = <2>;
++        clocks = <&cgu0 126>;
++        resets = <&rcu0 0x30 21>;
++    };
 -- 
-2.25.1
+2.11.0
 
