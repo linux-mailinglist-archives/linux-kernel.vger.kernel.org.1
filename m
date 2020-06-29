@@ -2,119 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED6A20E582
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E827520E358
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733175AbgF2Vhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:37:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60596 "EHLO mail.kernel.org"
+        id S2390617AbgF2VNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:13:10 -0400
+Received: from mout.web.de ([212.227.15.3]:56259 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728372AbgF2Skd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:33 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 627C423128;
-        Mon, 29 Jun 2020 07:22:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593415374;
-        bh=yT91BYvH3WjdmAvG2j2qrg9Xq6C0JSmmu5V70ZdeVAE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Y0p63s01rk+DVrstkcB9Db5yUPgHaeny0zC60+6dYzTJATXErTMDJEmi4aXIgBaet
-         QF+ho1djOTn6KVLeI8TZoiLcitj4+MdwV8uRljaCvrtcueHzMIw4T0Bhg2RxeATNMn
-         gWqaqAr/3Zsadcx1J7DlSM1FV/Q00KdP/F1C4lzI=
-Received: by pali.im (Postfix)
-        id CBE1881F; Mon, 29 Jun 2020 09:22:51 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Siva Rebbagondla <siva8118@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mmc: sdio: Move SDIO IDs from rsi_sdio driver to common include file
-Date:   Mon, 29 Jun 2020 09:21:44 +0200
-Message-Id: <20200629072144.24351-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S1730135AbgF2VNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 17:13:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1593465181;
+        bh=GbckntjVyg40tr+Z4lTM5jcF4Xd3zTNrMbsGyoGGFxM=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=pQhv46/vni1NP7NVUPg0RRndwK8JFXB2jERnOkqwpjZwi0UWFBhkjGMdmNJcJKHdR
+         ns36YnU3zqTX2pzHzYDq66/4RaHw1KdmDxci3zyFxY6E5eOJy9efVkY0kgwjXUIaGP
+         j8KqI36mFLrrvbsnNToUjFv2C3F/EmJV+9VvJOWw=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.131.123.16]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1M28WT-1jnKLl1Yy1-002WRb; Mon, 29
+ Jun 2020 09:31:00 +0200
+Subject: Re: [PATCH 1/2] usb: mtu3: disable USB2 LPM
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <felipe.balbi@linux.intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <1593410434-19406-1-git-send-email-chunfeng.yun@mediatek.com>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <af16d716-8bb3-ea1f-e410-b27443f74c31@web.de>
+Date:   Mon, 29 Jun 2020 09:30:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1593410434-19406-1-git-send-email-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vLXtRvv0TPIyWN9QDTCY3pBL+OVkLjRd48pYastvVAu9WFwnilT
+ YDtCWfgtPdH/nhAgtI95ZAX4lZwWqAhT7B131Oiuf21CgY61MSfQ6nm/gvgpBJK8A5jTAik
+ 83z04u+HTxpKcmn/8++Lyl/HO1nhZEl4ZXwisCHH8XVIY+pvSqXGgxXPR4/dMEQS4IzO6kr
+ 5QzwFKlMx1ZuvB9MZc+ww==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:F6NqNKB0Afo=:WGpywVafLi1KJmyCAnHGjg
+ amcrb+qcUyC7kwDqIy/U2DzsqxgpJrOTDniWgNnaLxbBUB8Qg0Zu2TOB4cBVYgccNvhG2V3m9
+ FmTB4PmPluebdinCipPrA5CQNSacwRNecWwmcUbUSpaqUARrKybnGQPdXLP7Kmko6aG1v+fc9
+ vTg/tfDKQgFTlNxFv7/mum6gprabU2naNxccAMkvwWUXEGAuRaw6yb0q5qegTH1dSEMXe4XF6
+ d4pJozgfy0S3X72ooSxGoq/Oo9RQq1tIFWLuLfaNdMDTOVKvi0dXfOV6y6ERpFeZCE5MVbflZ
+ 8v+r2mULwk+OR8iWmnwp7WSgmQc6yihtS/1Xizj2JwGdGBduz5gcIhTIlK+cEmR0lR+cIbAph
+ LGsA3wbuBk7R8WBGEO/EmOjLPLrJJn1HK2LPVSUctvvI5YabqDir8PAhXXr1NvSCRLJ4MXuFh
+ IyDcELCuomo6mShKc6OmXVI6osAVpzpEsPLe8sTcKRc1IFFUOwAGnR1ew54cYRnGEU8QgoCdH
+ puk+YjVYbQX2xu75FfheUG/mej5WRFTQS98AsPomYoXu6nBb4EgwKnnr0UPqoZpKcVOrU5PYa
+ wBFgxit+WxrpjAdv9NUpQGUYVjNH1I6SRXiwOt4s7ewsMT+iU0QFrlfa+2hYzm9Pd1mkxyOjr
+ IHXLC6vjrhLCfK4gjlR15q+wKJKLt8IOiPxkIZsynyzr3jP4JmNvE31V1gcjqyeLfTXysRHxp
+ u2Sqdz1cJMPJ+3H9jkRzj+Qmt0TaKQWYQ/ufVw7FbZh68GBgCcXO3kTtmeyLWpZrEOaT+terA
+ Mseuay7gaAD2xBe+RsPDT3+PcIcYQsqejjrIYUGDVvk9xK/Y19FjzEF0gAItdy4GbW1VHFYpz
+ NrNfflkOqXU6dg7APxhWjYJR7MuVflUVTUOL200LWY2EluJk+2lqi9FGERlWv9PXymiYJuTQs
+ R6AVSsPKEtJ8SN2jrByD55HhUlQy0+ss6jcaUgCkqwyatXRIZxQ8OvX1MPNThFyjuQXdz6OT5
+ +zA5HXCmcubxUqfq1ADzGEqIZ3uQpq0Tn1E3dBaVHH88fKJ35nKYNxHhU06TNk2WCWIFX8OoP
+ UzT99Ke3likdno61IFH9ieZ2isqjJsEjzNa0ZstBVWYFHmPshlmlnButomHbfTouYfMtCaHnM
+ igTLOMnB2V+JaYSIoQ2a3Oh9aFUCj0bxm5pOzNMR8o/qRnW4cq/goQnTDaKPQALRMqlc9Yjh8
+ Zp4eVPKsn+npa2+dX
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define appropriate macro names for consistency with other macros.
+> A SuperSpeed device shall include the USB 2.0 extension descriptor
+> and shall support LPM when operating in USB 2.0 HS mode(see usb3.2
+> spec9.6.2.1). But we always don't support it, so disable it by
+> default, otherwise device will enter LPM suspend mode when
+> connected to Win10 system.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
----
-Hello Ulf! I forgot to include change for rsi driver into patch series:
-"mmc: sdio: Move SDIO IDs from drivers to common include file"
-https://lore.kernel.org/linux-mmc/20200522144412.19712-1-pali@kernel.org/
-As patch series was already merged, I'm sending this patch separately.
----
- drivers/net/wireless/rsi/rsi_91x_sdio.c | 8 ++++----
- drivers/net/wireless/rsi/rsi_sdio.h     | 4 ----
- include/linux/mmc/sdio_ids.h            | 4 ++++
- 3 files changed, 8 insertions(+), 8 deletions(-)
+How do you think about a wording variant like the following?
 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_sdio.c b/drivers/net/wireless/rsi/rsi_91x_sdio.c
-index 5d6143a55187..a04ff75c409f 100644
---- a/drivers/net/wireless/rsi/rsi_91x_sdio.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_sdio.c
-@@ -1038,10 +1038,10 @@ static int rsi_probe(struct sdio_func *pfunction,
- 		goto fail_free_adapter;
- 	}
- 
--	if (pfunction->device == RSI_SDIO_PID_9113) {
-+	if (pfunction->device == SDIO_DEVICE_ID_RSI_9113) {
- 		rsi_dbg(ERR_ZONE, "%s: 9113 module detected\n", __func__);
- 		adapter->device_model = RSI_DEV_9113;
--	} else  if (pfunction->device == RSI_SDIO_PID_9116) {
-+	} else  if (pfunction->device == SDIO_DEVICE_ID_RSI_9116) {
- 		rsi_dbg(ERR_ZONE, "%s: 9116 module detected\n", __func__);
- 		adapter->device_model = RSI_DEV_9116;
- 	} else {
-@@ -1526,8 +1526,8 @@ static const struct dev_pm_ops rsi_pm_ops = {
- #endif
- 
- static const struct sdio_device_id rsi_dev_table[] =  {
--	{ SDIO_DEVICE(RSI_SDIO_VENDOR_ID, RSI_SDIO_PID_9113) },
--	{ SDIO_DEVICE(RSI_SDIO_VENDOR_ID, RSI_SDIO_PID_9116) },
-+	{ SDIO_DEVICE(SDIO_VENDOR_ID_RSI, SDIO_DEVICE_ID_RSI_9113) },
-+	{ SDIO_DEVICE(SDIO_VENDOR_ID_RSI, SDIO_DEVICE_ID_RSI_9116) },
- 	{ /* Blank */},
- };
- 
-diff --git a/drivers/net/wireless/rsi/rsi_sdio.h b/drivers/net/wireless/rsi/rsi_sdio.h
-index c5cfb6238f73..9afc1d0d2684 100644
---- a/drivers/net/wireless/rsi/rsi_sdio.h
-+++ b/drivers/net/wireless/rsi/rsi_sdio.h
-@@ -28,10 +28,6 @@
- #include <linux/mmc/sdio_ids.h>
- #include "rsi_main.h"
- 
--#define RSI_SDIO_VENDOR_ID   0x041B
--#define RSI_SDIO_PID_9113    0x9330
--#define RSI_SDIO_PID_9116    0x9116
--
- enum sdio_interrupt_type {
- 	BUFFER_FULL         = 0x0,
- 	BUFFER_AVAILABLE    = 0x2,
-diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
-index 15ed8ce9d394..ab41801c5f51 100644
---- a/include/linux/mmc/sdio_ids.h
-+++ b/include/linux/mmc/sdio_ids.h
-@@ -118,6 +118,10 @@
- #define SDIO_DEVICE_ID_SIANO_NOVA_A0		0x1100
- #define SDIO_DEVICE_ID_SIANO_STELLAR 		0x5347
- 
-+#define SDIO_VENDOR_ID_RSI			0x041b
-+#define SDIO_DEVICE_ID_RSI_9113			0x9330
-+#define SDIO_DEVICE_ID_RSI_9116			0x9116
-+
- #define SDIO_VENDOR_ID_TI_WL1251		0x104c
- #define SDIO_DEVICE_ID_TI_WL1251		0x9066
- 
--- 
-2.20.1
+   Change description:
+   A SuperSpeed device shall include the USB 2.0 extension descriptor
+   and shall support Link Power Management when operating in USB 2.0
+   High Speed mode. (See also: USB 3.2 specification 9.6.2.1)
+   But we do not support it generally. Thus disable this functionality
+   by default.
+   Otherwise, the device will enter LPM suspend mode when connected
+   to Win10 system.
 
+
+Would you like to add the tag =E2=80=9CFixes=E2=80=9D to the commit messag=
+e?
+
+Regards,
+Markus
