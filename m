@@ -2,102 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C8820CC0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 05:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8054320CC18
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 05:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgF2DNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 23:13:20 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:34405 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725976AbgF2DNT (ORCPT
+        id S1726055AbgF2DTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 23:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725976AbgF2DTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 23:13:19 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 05T3Cv0L2020611, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 05T3Cv0L2020611
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 29 Jun 2020 11:12:57 +0800
-Received: from RTEXMB02.realtek.com.tw (172.21.6.95) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 29 Jun 2020 11:12:57 +0800
-Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
- RTEXMB02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 29 Jun 2020 11:12:56 +0800
-Received: from RTEXMB04.realtek.com.tw ([fe80::941:6388:7d34:5c44]) by
- RTEXMB04.realtek.com.tw ([fe80::941:6388:7d34:5c44%3]) with mapi id
- 15.01.1779.005; Mon, 29 Jun 2020 11:12:56 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     "joe@perches.com" <joe@perches.com>
-CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH] rtlwifi/*/dm.c: Use const in swing_table declarations
-Thread-Topic: [PATCH] rtlwifi/*/dm.c: Use const in swing_table declarations
-Thread-Index: AQHWTTVpFYNDXI1US0K76Im0pij3zqjuU+2AgAALz4CAAAX4gA==
-Date:   Mon, 29 Jun 2020 03:12:56 +0000
-Message-ID: <1593400347.12786.8.camel@realtek.com>
-References: <0f24268338756bb54b4e44674db4aaf90f8a9fca.camel@perches.com>
-         <1593396529.11412.6.camel@realtek.com>
-         <45c908b9b55000dc7b0cf9438c8e6e44@perches.com>
-In-Reply-To: <45c908b9b55000dc7b0cf9438c8e6e44@perches.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.213]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8B202493E2F2C84395EEEFC9BEC3ABA1@realtek.com>
-Content-Transfer-Encoding: base64
+        Sun, 28 Jun 2020 23:19:21 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E520C03E979
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 20:19:21 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id 35so6548571ple.0
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 20:19:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MX1npRs6E1BJMvrT9omJsOQIQGUgSUPJQrW7wHX73nA=;
+        b=DjjLcbwY5BLsHDucAiJGHAt3gNsHaOg6PiLoaWZxOGruFvSbZQF4RW1hATXG1HnaWO
+         pcZRJWshtmAxSLaRi/JtjxHj7PxLej/B40u2BarfoutSjccAyDxw2hcUwpex99gqqQb2
+         9O3yqMDejj0DMYOFaiMYErhmu/2Fez6uwhyw8wgwxXrcc1yRNEkmuc8yM1x5s63g+AiZ
+         enfWSmp4cHLHLk6qJkgylXKWsIYPPMmEsWXpb0kiUrlFJ7M5Cf/meUzPO5Kim1q1/NrW
+         AQSaf1wD/krSAdzXwK7sbRUfAlua4GNPn5T1oGK4hVGstQcy3UrdJk7pyl0BaJ07C+f1
+         ss4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MX1npRs6E1BJMvrT9omJsOQIQGUgSUPJQrW7wHX73nA=;
+        b=Lvy3PvJc5WCfxiP0ZUX7jOhHWRKezj7l4m5k+qUvETHpd9DSzYlISTlPrtz92zfLfB
+         89TIYd0X+Y7dxRt1HkGFF3Qu4zxKOxH0uqXS+MrZW4r7pV4ea+BavmulcHM2Xu7uq6Km
+         c37S5hwVu7OUBd/bilTF7fD0e3k8Khv4fsrqIM/PKCzN/U2VHierRX+KkyQrnmM0xAXT
+         vGAs0vOkWAjKCxkDhz1o80rFh1ixUotTrcYwDXkDy0NjwQ23V1Hd3qKXpZck5MLJEXzr
+         3rJyBexXXg/ZCCDi/oN4stgkHAy8yYZu+9OCXcOMNlHoyYYpH3KZr40XY7VtHHd40arC
+         35aA==
+X-Gm-Message-State: AOAM532UPOGmV0mnd2syltXcKImGo5MfesKGetnTtJ+dtjxNUnzhbFLg
+        0vKyv7cBTRtWbCOAKEC3GAB6XQ==
+X-Google-Smtp-Source: ABdhPJwMpumCfd5Jtkmq2Tt8wb0YP3wqWSpHA4kY8SYSv0AOtdrJJ+gRAkE7qay+ZlKDrO56B2TLPA==
+X-Received: by 2002:a17:90a:20ad:: with SMTP id f42mr5130595pjg.96.1593400760594;
+        Sun, 28 Jun 2020 20:19:20 -0700 (PDT)
+Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
+        by smtp.gmail.com with ESMTPSA id j70sm12876254pfd.208.2020.06.28.20.19.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jun 2020 20:19:20 -0700 (PDT)
+From:   Zong Li <zong.li@sifive.com>
+To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Zong Li <zong.li@sifive.com>
+Subject: [RFC PATCH 0/6] Support raw event and DT for perf on RISC-V
+Date:   Mon, 29 Jun 2020 11:19:09 +0800
+Message-Id: <cover.1593397455.git.zong.li@sifive.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU3VuLCAyMDIwLTA2LTI4IGF0IDE5OjUxIC0wNzAwLCBqb2VAcGVyY2hlcy5jb20gd3JvdGU6
-DQo+IE9uIDIwMjAtMDYtMjggMTk6MDksIFBrc2hpaCB3cm90ZToNCj4gPiBPbiBTdW4sIDIwMjAt
-MDYtMjggYXQgMDM6MTcgLTA3MDAsIEpvZSBQZXJjaGVzIHdyb3RlOg0KPiA+wqANCj4gPiBVc2Ug
-J3J0bHdpZmk6JyBhcyBzdWJqZWN0IHRpdGxlIHByZWZpeCBpcyBlbm91Z2gsIGxpa2VzDQo+ID4g
-wqAgcnRsd2lmaTogVXNlIGNvbnN0IGluIHN3aW5nX3RhYmxlIGRlY2xhcmF0aW9ucw0KPiANCj4g
-V2UgZGlzYWdyZWUuDQo+IA0KPiBJIGxpa2Uga25vd2luZyB3aGF0IGNvbnRlbnQgaXMgY2hhbmdl
-ZCB2aWEgcGF0Y2ggc3ViamVjdCBsaW5lcw0KPiBhcyB0aGVyZSBhcmUgMyBydGx3aWZpIGRyaXZl
-cnMgYmVpbmcgY2hhbmdlZCBieSB0aGlzIG9uZSBwYXRjaC4NCg0KSWYgMyBkcml2ZXJzIGFyZSBu
-ZWVkZWQgdG8gYmUgbGlzdGVkLCBJJ2QgdXNlIGJlbG93IHN1YmplY3QNCg0KInJ0bHdpZmk6IFVz
-ZSBjb25zdCBpbiBydGw4MTg4ZWUvcnRsODcyM2JlL3J0bDg4MjFhZSBzd2luZ190YWJsZSBkZWNs
-YXJhdGlvbnMiDQoNCj4gDQo+IEJ1dCB5b3VyIGNob2ljZSwgeW91IGNhbiBjaGFuZ2UgaXQgaWYg
-eW91IGNob29zZS4NCj4gDQo+ID4+IFJlZHVjZSBkYXRhIHVzYWdlIGFib3V0IDFLQiBieSB1c2lu
-ZyBjb25zdC4NCj4gW10NCj4gPiBQbGVhc2UgcmVtb3ZlIGJlbG93IHR5cGUgY2FzdGluZzrCoA0K
-PiA+wqANCj4gPiBAQCAtMTg3MiwxMCArMTg3MiwxMCBAQCBzdGF0aWMgdm9pZMKgDQo+ID4gcnRs
-ODgyMWFlX2dldF9kZWx0YV9zd2luZ190YWJsZShzdHJ1Y3QNCj4gPiBpZWVlODAyMTFfaHcgKmh3
-LA0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgKnVwX2IgPSBydGw4ODIxYWVf
-ZGVsdGFfc3dpbmdfdGFibGVfaWR4XzVnYl9wWzJdOw0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgKmRvd25fYiA9IHJ0bDg4MjFhZV9kZWx0YV9zd2luZ190YWJsZV9pZHhfNWdi
-X25bMl07DQo+ID4gwqDCoMKgwqDCoMKgwqDCoH0gZWxzZSB7DQo+ID4gLcKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAqdXBfYSA9ICh1OCAqKXJ0bDg4MThlX2RlbHRhX3N3aW5nX3RhYmxlX2lkeF8yNGdi
-X3A7DQo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqAqZG93bl9hID0gKHU4ICopcnRsODgxOGVf
-ZGVsdGFfc3dpbmdfdGFibGVfaWR4XzI0Z2JfbjsNCj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCp1cF9iID0gKHU4ICopcnRsODgxOGVfZGVsdGFfc3dpbmdfdGFibGVfaWR4XzI0Z2JfcDsNCj4g
-PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCpkb3duX2IgPSAodTggKilydGw4ODE4ZV9kZWx0YV9z
-d2luZ190YWJsZV9pZHhfMjRnYl9uOw0KPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAqdXBfYSA9IHJ0bDg4MThlX2RlbHRhX3N3aW5nX3RhYmxlX2lkeF8yNGdiX3A7DQo+ID4gK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCpkb3duX2EgPSBydGw4ODE4ZV9kZWx0YV9zd2lu
-Z190YWJsZV9pZHhfMjRnYl9uOw0KPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAq
-dXBfYiA9IHJ0bDg4MThlX2RlbHRhX3N3aW5nX3RhYmxlX2lkeF8yNGdiX3A7DQo+ID4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCpkb3duX2IgPSBydGw4ODE4ZV9kZWx0YV9zd2luZ190
-YWJsZV9pZHhfMjRnYl9uOw0KPiANCj4gVGhlIGNvbXBpbGVyIGlzIHF1aWV0IGFib3V0IHRoaXMg
-c28gSSBiZWxpZXZlIHRoaXMgdG8gYmUNCj4gYW4gdW5yZWxhdGVkIGNoYW5nZSBhbmQgd2hpdGVz
-cGFjZSBjb3JyZWN0aW9uLg0KDQpJIGtub3cgY29tcGlsZXIgZG9lc24ndCB3YXJuIHRoaXMsIGJ1
-dCBpdCBsb29rcyB3aXJlZCB0byBjYXN0ICdjb25zdCB1OCAqJw0KdG8gJ3U4IConIHRvICdjb25z
-dCB1OCAqJy4NCg0KDQo+IA0KPiBPZiBjb3Vyc2UgeW91IGNvdWxkIG1vZGlmeSBpdCBpZiB5b3Ug
-Y2hvb3NlLg0KPiANCj4gYnR3OiBUaGVyZSdzIGFuIHVubmVjZXNzYXJ5IHJldHVybiBhdCB0aGUg
-Mm5kIGluc3RhbmNlDQo+IMKgwqDCoMKgwqDCoG9mIHRoaXMgY2FzdCByZW1vdmFsIHRvby4NCg0K
-SXQgc2VlbXMgbGlrZSB0byBjb3B5IGZyb23CoHJ0bDg4MTJhZV9nZXRfZGVsdGFfc3dpbmdfdGFi
-bGUoKSwgc28NCkkgY2FuIHJlbW92ZSBpdCBieSBhbm90aGVyIHBhdGNoLg0KDQo+IA0KPiBjaGVl
-cnMsIEpvZQ0KPiANCj4gLS0tLS0tUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZv
-cmUgcHJpbnRpbmcgdGhpcyBlLW1haWwuDQo=
+This patch set adds raw event support on RISC-V. In addition, we
+introduce the DT mechanism to make our perf more generic and common.
+
+Currently, we set the hardware events by writing the mhpmeventN CSRs, it
+would raise an illegal instruction exception and trap into m-mode to
+emulate event selector CSRs access. It doesn't make sense because we
+shouldn't write the m-mode CSRs in s-mode. Ideally, we should set event
+selector through standard SBI call or the shadow CSRs of s-mode. We have
+prepared a proposal of a new SBI extension, called "PMU SBI extension",
+but we also discussing the feasibility of accessing these PMU CSRs on
+s-mode at the same time, such as delegation mechanism, so I was
+wondering if we could use SBI calls first and make the PMU SBI extension
+as legacy when s-mode access mechanism is accepted by Foundation? or
+keep the current situation to see what would happen in the future.
+
+This patch set also introduces the DT mechanism, we don't want to add too
+much platform-dependency code in perf like other architectures, so we
+put the mapping of generic hardware events to DT, then we can easy to
+transfer generic hardware events to vendor's own hardware events without
+any platfrom-dependency stuff in our perf.
+
+Zong Li (6):
+  dt-bindings: riscv: Add YAML documentation for PMU
+  riscv: dts: sifive: Add DT support for PMU
+  riscv: add definition of hpmcounter CSRs
+  riscv: perf: Add raw event support
+  riscv: perf: introduce DT mechanism
+  riscv: remove PMU menu of Kconfig
+
+ .../devicetree/bindings/riscv/pmu.yaml        |  59 +++
+ arch/riscv/Kconfig                            |  13 -
+ arch/riscv/boot/dts/sifive/fu540-c000.dtsi    |  13 +
+ arch/riscv/include/asm/csr.h                  |  58 +++
+ arch/riscv/include/asm/perf_event.h           | 100 ++--
+ arch/riscv/kernel/Makefile                    |   2 +-
+ arch/riscv/kernel/perf_event.c                | 471 +++++++++++-------
+ 7 files changed, 471 insertions(+), 245 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/riscv/pmu.yaml
+
+-- 
+2.27.0
+
