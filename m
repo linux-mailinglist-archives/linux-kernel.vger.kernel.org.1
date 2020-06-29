@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7156720E5C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 008E120E565
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403881AbgF2VlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:41:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60596 "EHLO mail.kernel.org"
+        id S2403822AbgF2Vge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:36:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728186AbgF2SkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:20 -0400
-Received: from [10.56.182.155] (unknown [2.55.133.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728437AbgF2Skl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:40:41 -0400
+Received: from localhost.localdomain (unknown [122.182.251.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 966E123B06;
-        Mon, 29 Jun 2020 13:45:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB91E23D97;
+        Mon, 29 Jun 2020 13:47:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593438323;
-        bh=fbNV2p8AknATNCvchaixaZk7J1gfSAuksWkmaOa87ec=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=rIJqavQGtKdDnlgH17SXo4lT2EuWXNLVpkw36+4fLHQ8xavualOqCc/Ck325eOUP4
-         T6UtQ8bd6poUsB+upMM3i3e7JAMyx/cHy79ZP65sGoWQxmU0HpOCbo6LWjBK+yfvxQ
-         96jSvpY1gUv1qWQtZ4Eur6wDToh2ek3ph+aiMBu4=
-Date:   Mon, 29 Jun 2020 16:45:14 +0300
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20200629125231.GJ32461@dhcp22.suse.cz>
-References: <20200625113122.7540-1-willy@infradead.org> <20200625113122.7540-7-willy@infradead.org> <20200629050851.GC1492837@kernel.org> <20200629121816.GC25523@casper.infradead.org> <20200629125231.GJ32461@dhcp22.suse.cz>
+        s=default; t=1593438477;
+        bh=0OCHxp2KnCTCXtsx1UXOGT2ygj5ktWr6M3PFjMMVoqw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=l201X5wTivo4ptCZQWRZ9vuc4FuXXcWSwmjcIg9j7JYMjIzAZgXv3aYqCpDRGyNZi
+         eVFN152rI1WSYbIgnB0DnSp48HIua/grH+JEPa+fUoI97y+of7DrnhxmIsOI2HjTDV
+         OIfyP81chRrF9XIv+lQ2WFUWp2FPpl3aNX8ORk2o=
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 2/3] ALSA: compress: document the compress gapless audio state machine
+Date:   Mon, 29 Jun 2020 19:17:36 +0530
+Message-Id: <20200629134737.105993-3-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200629134737.105993-1-vkoul@kernel.org>
+References: <20200629134737.105993-1-vkoul@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 6/6] mm: Add memalloc_nowait
-To:     Michal Hocko <mhocko@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-CC:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, dm-devel@redhat.com,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>
-From:   Mike Rapoport <rppt@kernel.org>
-Message-ID: <6421BC93-CF2F-4697-B5CB-5ECDAA9FCB37@kernel.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Also documented the galpess transitions. Please note that these are not
+really stream states, but show how the stream steps in gapless mode
 
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+ .../sound/designs/compress-offload.rst        | 32 +++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-On June 29, 2020 3:52:31 PM GMT+03:00, Michal Hocko <mhocko@kernel=2Eorg> =
-wrote:
->On Mon 29-06-20 13:18:16, Matthew Wilcox wrote:
->> On Mon, Jun 29, 2020 at 08:08:51AM +0300, Mike Rapoport wrote:
->> > > @@ -886,8 +868,12 @@ static struct dm_buffer
->*__alloc_buffer_wait_no_callback(struct dm_bufio_client
->> > >  			return NULL;
->> > > =20
->> > >  		if (dm_bufio_cache_size_latch !=3D 1 && !tried_noio_alloc) {
->> > > +			unsigned noio_flag;
->> > > +
->> > >  			dm_bufio_unlock(c);
->> > > -			b =3D alloc_buffer(c, GFP_NOIO | __GFP_NORETRY |
->__GFP_NOMEMALLOC | __GFP_NOWARN);
->> > > +			noio_flag =3D memalloc_noio_save();
->> >=20
->> > I've read the series twice and I'm still missing the definition of
->> > memalloc_noio_save()=2E
->> >=20
->> > And also it would be nice to have a paragraph about it in
->> > Documentation/core-api/memory-allocation=2Erst
->>=20
->>
->Documentation/core-api/gfp_mask-from-fs-io=2Erst:``memalloc_nofs_save``,
->``memalloc_nofs_restore`` respectively ``memalloc_noio_save``,
->> Documentation/core-api/gfp_mask-from-fs-io=2Erst:   :functions:
->memalloc_noio_save memalloc_noio_restore
->> Documentation/core-api/gfp_mask-from-fs-io=2Erst:allows nesting so it
->is safe to call ``memalloc_noio_save`` or
->=20
->The patch is adding memalloc_nowait* and I suspect Mike had that in
->mind, which would be a fair request=2E=20
+diff --git a/Documentation/sound/designs/compress-offload.rst b/Documentation/sound/designs/compress-offload.rst
+index ad89af9b31c9..935f325dbc77 100644
+--- a/Documentation/sound/designs/compress-offload.rst
++++ b/Documentation/sound/designs/compress-offload.rst
+@@ -250,6 +250,38 @@ Sequence flow for gapless would be:
+ 
+ (note: order for partial_drain and write for next track can be reversed as well)
+ 
++Gapless Playback SM
++===================
++
++For Gapless, we move from running state to partial drain and back, along
++with setting of meta_data and signalling for next track ::
++
++
++                                        +----------+
++                compr_drain_notify()    |          |
++              +------------------------>|  RUNNING |
++              |                         |          |
++              |                         +----------+
++              |                              |
++              |                              |
++              |                              | compr_next_track()
++              |                              |
++              |                              V
++              |                         +----------+
++              |                         |          |
++              |                         |NEXT_TRACK|
++              |                         |          |
++              |                         +----------+
++              |                              |
++              |                              |
++              |                              | compr_partial_drain()
++              |                              |
++              |                              V
++              |                         +----------+
++              |                         |          |
++              +------------------------ | PARTIAL_ |
++                                        |  DRAIN   |
++                                        +----------+
+ 
+ Not supported
+ =============
+-- 
+2.26.2
 
-Right, sorry misprinted that=2E
-
-> Btw=2E we are missing
->memalloc_nocma*
->documentation either - I was just reminded of its existence today=2E=2E
---=20
-Sincerely yours,
-Mike
