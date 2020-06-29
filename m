@@ -2,110 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4AB20D8C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B24F20D8CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387914AbgF2TlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48260 "EHLO
+        id S2387397AbgF2Tlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387802AbgF2TlS (ORCPT
+        with ESMTP id S1729393AbgF2Tlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:41:18 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C4FC03E979
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:41:18 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jpzeU-0006mv-KD; Mon, 29 Jun 2020 21:41:14 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jpzeT-0005Kz-PV; Mon, 29 Jun 2020 21:41:13 +0200
-Date:   Mon, 29 Jun 2020 21:41:13 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>, thierry.reding@gmail.com,
-        linux-pwm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com
-Subject: Re: [PATCH 2/4] pwm: bcm-kona: Remove impossible comparison when
- validating duty cycle
-Message-ID: <20200629194113.5ppu6fbolvk2ibkj@pengutronix.de>
-References: <20200629124752.1018358-1-lee.jones@linaro.org>
- <20200629124752.1018358-3-lee.jones@linaro.org>
- <0db8ebc7-b75b-a74c-8852-b235daedaf82@gmail.com>
+        Mon, 29 Jun 2020 15:41:40 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D24C03E979
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:41:40 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id e13so16412391qkg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:41:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QvdDQWAT9Z1b4tHlY2KQ+Wb11SVaesY+vPIQJ1iufDY=;
+        b=HWSftGfFhpY45fPy7VC+cdsQ/Po0jzPrZQNmUtOCkM8OGbVOH+RnvN5bi3ioCkrqhy
+         Glwz6OtqSDkSsxh2JcQZqlUOechGWpxo/iXVO1UmSf4pQrKdXgCbuwivQ8G32n0XYol2
+         elUQuh2gf8XMT12Qe8yzTazj1rhPUtPM7KWJdT3Bhcbu9ETe3ADUOoIHEUkMNrdKBrHm
+         WbhAOmfTPlBSNyWVvFAO1M9zWtm3iJK9FRCM9wJ1PkpR9aKDUmLc73e7xHqZ69fxUKYc
+         THiFKTecK4CdTMI1NiLDTu1I3uuh/JB0RhqpvNwYLaJ0RIf5YuxSkmxacUcMYL6yUENV
+         7AXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QvdDQWAT9Z1b4tHlY2KQ+Wb11SVaesY+vPIQJ1iufDY=;
+        b=tIDUAlrFqWEi/5KueuKhx2JRG4Ed+FEdFOolxWBAeGFklqpWH/Rpru4z7XcXGygs+2
+         xe0GKptOXAt0upGw+l4AILYbZ98yulFNy0HJ6cMDoczrC/nfCwmdC5qUR8ghLJPAmaDc
+         Yvb6LH330PdcwuJfc+Hb5kSqk+OPYNQtS1ULXuVDFSueeMMgUjZQxFrOeJCnz63Rc5RS
+         BgL40ET3wrzdWBb+OcT3Dq7dnGSZ4BinrzxuOTZYfrvSWiXEj/WFItfvc4W3aGW2rYcf
+         JEc7aGzlqy39Pa6r+/+wD6/IpXJHo9oQeDEl0lpkrXi5ajdD4mARrZVnk6uyGxmV+NRH
+         c7lg==
+X-Gm-Message-State: AOAM531ViNYf9R/nVhaSupJO3YywCtJCEsW6OE0Jq2shwF1NF7l6/U0P
+        eBnj6ZjyJ4csGn25wppIWzJIAkAbFTfJ42X+Qktb6g==
+X-Google-Smtp-Source: ABdhPJym2+ZxxMc80cE9zQefSkfB/DFa2F6Ga0IhHiGx/uZihQ9c950v7wLi4cPLxYn3pL2TcfRcNPT9qrbCtEXeEcw=
+X-Received: by 2002:a37:4f0e:: with SMTP id d14mr17080420qkb.8.1593459699006;
+ Mon, 29 Jun 2020 12:41:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="iom6ccgswov23aih"
-Content-Disposition: inline
-In-Reply-To: <0db8ebc7-b75b-a74c-8852-b235daedaf82@gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <000000000000107b4605a7bdce7d@google.com> <20200614085321.8740-1-hdanton@sina.com>
+ <20200627130205.16900-1-hdanton@sina.com> <20200627222527.GC25301@ziepe.ca>
+ <CACT4Y+ab1q7fON3rkj+FHODPQXDGyP5c0tJt7gbrpmsAAYRb1g@mail.gmail.com>
+ <CACT4Y+Zjw=ru-Sqs-V7cP0Exgu7g0jWBXcPeVKnLqpbkS-wDRg@mail.gmail.com> <20200629192255.GE25301@ziepe.ca>
+In-Reply-To: <20200629192255.GE25301@ziepe.ca>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 29 Jun 2020 21:41:27 +0200
+Message-ID: <CACT4Y+bWgEMuSoYKf4GQdfH1VZi_vpDJZ6q3gUZ-6Ce=OsrCuA@mail.gmail.com>
+Subject: Re: KASAN: use-after-free Read in addr_handler (2)
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     syzkaller <syzkaller@googlegroups.com>,
+        Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+a929647172775e335941@syzkaller.appspotmail.com>,
+        chuck.lever@oracle.com, Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        parav@mellanox.com, Markus Elfring <Markus.Elfring@web.de>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 29, 2020 at 9:22 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > > On Sat, Jun 27, 2020 at 09:02:05PM +0800, Hillf Danton wrote:
+> > > > > > So, to hit this syzkaller one of these must have happened:
+> > > > > >  1) rdma_addr_cancel() didn't work and the process_one_work() is still
+> > > > > >     runnable/running
+> > > > >
+> > > > > What syzbot reported indicates that the kworker did survive not only
+> > > > > canceling work but the handler_mutex, despite it's a sync cancel that
+> > > > > waits for the work to complete.
+> > > >
+> > > > The syzbot report doesn't confirm that the cancel work was actaully
+> > > > called.
+> > > >
+> > > > The most likely situation is that it was skipped because of the state
+> > > > mangling the patch fixes..
+> > > >
+> > > > > >  2) The state changed away from RDMA_CM_ADDR_QUERY without doing
+> > > > > >     rdma_addr_cancel()
+> > > > >
+> > > > > The cancel does cover the query state in the reported case, and have
+> > > > > difficult time working out what's in the patch below preventing the
+> > > > > work from going across the line the sync cancel draws. That's the
+> > > > > question we can revisit once there is a reproducer available.
+> > > >
+> > > > rdma-cm never seems to get reproducers from syzkaller
+> > >
+> > > +syzkaller mailing list
+> > >
+> > > Hi Jason,
+> > >
+> > > Wonder if there is some systematic issue. Let me double check.
+> >
+> > By scanning bugs at:
+> > https://syzkaller.appspot.com/upstream
+> > https://syzkaller.appspot.com/upstream/fixed
+> >
+> > I found a significant number of bugs that I would qualify as "rdma-cm"
+> > and that have reproducers. Here is an incomplete list (I did not get
+> > to the end):
+> >
+> > https://syzkaller.appspot.com/bug?id=b8febdb3c7c8c1f1b606fb903cee66b21b2fd02f
+> > https://syzkaller.appspot.com/bug?id=d5222b3e1659e0aea19df562c79f216515740daa
+> > https://syzkaller.appspot.com/bug?id=c600e111223ce0a20e5f2fb4e9a4ebdff54d7fa6
+> > https://syzkaller.appspot.com/bug?id=a9796acbdecc1b2ba927578917755899c63c48af
+> > https://syzkaller.appspot.com/bug?id=95f89b8fb9fdc42e28ad586e657fea074e4e719b
+> > https://syzkaller.appspot.com/bug?id=8dc0bcd9dd6ec915ba10b3354740eb420884acaa
+> > https://syzkaller.appspot.com/bug?id=805ad726feb6910e35088ae7bbe61f4125e573b7
+> > https://syzkaller.appspot.com/bug?id=56b60fb3340c5995373fe5b8eae9e8722a012fc4
+> > https://syzkaller.appspot.com/bug?id=38d36d1b26b4299bf964d50af4d79688d39ab960
+> > https://syzkaller.appspot.com/bug?id=25e00dd59f31783f233185cb60064b0ab645310f
+> > https://syzkaller.appspot.com/bug?id=2f38d7e5312fdd0acc979c5e26ef2ef8f3370996
+> >
+> > Do you mean some specific subset of bugs by "rdma-cm"? If yes, what is
+> > that subset?
+>
+> The race condition bugs never seem to get reproducers, I checked a few
+> of the above and these are much more deterministic things.
+>
+> I think the recurrance rate for the races is probably too low?
 
---iom6ccgswov23aih
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jun 29, 2020 at 09:45:31AM -0700, Florian Fainelli wrote:
->=20
->=20
-> On 6/29/2020 5:47 AM, Lee Jones wrote:
-> > 'dc' here is an unsigned long, thus checking for <0 will always
-> > evaluate to false.
-> >=20
-> > Fixes the following W=3D1 warning:
-> >=20
-> >  drivers/pwm/pwm-bcm-kona.c:141:35: warning: comparison of unsigned exp=
-ression < 0 is always false [-Wtype-limits]
-> >=20
-> > Cc: Florian Fainelli <f.fainelli@gmail.com>
-> > Cc: Ray Jui <rjui@broadcom.com>
-> > Cc: Scott Branden <sbranden@broadcom.com>
-> > Cc: bcm-kernel-feedback-list@broadcom.com
-> > Cc: linux-pwm@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
->=20
-> And similar to patch #1, DUTY_CYCLE_HIGH_MIN now gets unused, so if you
-> remove it as well, you can add:
->=20
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-
-Even without removing DUTY_CYCLE_HIGH_MIN (which might still serve as
-documentation):
-
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---iom6ccgswov23aih
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl76Q9UACgkQwfwUeK3K
-7Al0CAf/Y4ZPaVHfhUvfydRJdCxxev03qoTCFtAzDTPaVB5uB2EoQY52OdKsixQ2
-ael/uUR1eKJKfQZ3YTgJisVG135iRhv4e9QAaPUAjNJ5c6NBsHd5vevPzMm5vjq9
-Pso3NLmhEcZk1qzn/SQJcjRCbUALSN9fXe7cORKeoJKH92ApyYxAz4T0ynURzwju
-cjW2fPgfBC1T0r15e0+AbUwuy/8cgg+RjVM1/DXrZC0YD/QIMVCfQ4mk4UHIlAWA
-WTNN/1J05XFWK5EmpsGgTnjYtGQYH//wLR0/jHG4TlhfbW9SdF4PYUkb4k93fNdr
-3iUPx7ZRd+DqvR9cFPX0W0jhYjGiig==
-=4PU7
------END PGP SIGNATURE-----
-
---iom6ccgswov23aih--
+Yes, it definitely may depend on probability. There is usually a
+significant correlation with the number of crashes. This bug happened
+only once, that usually means either a very hard to trigger race
+condition, or a previous induced memory corruption. For harder to
+trigger race conditions, KCSAN (the data race detector) may help in
+future. However, kernel has too many races to report them to mailing
+lists:
+https://syzkaller.appspot.com/upstream?manager=ci2-upstream-kcsan-gce
+Though, some race conditions are manageable to trigger and I think we
+have hundreds of race conditions with reproducers on the dashboard.
