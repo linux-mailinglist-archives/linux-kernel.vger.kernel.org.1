@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD6B20D412
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7C620D404
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730658AbgF2TEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:04:50 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:41056 "EHLO inva021.nxp.com"
+        id S1730636AbgF2TEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:04:07 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:51254 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730535AbgF2TEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:04:45 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 963BF20016E;
-        Mon, 29 Jun 2020 08:06:01 +0200 (CEST)
+        id S1730626AbgF2TED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:04:03 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D6AF51A01F6;
+        Mon, 29 Jun 2020 08:06:03 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CA76E200F02;
-        Mon, 29 Jun 2020 08:05:50 +0200 (CEST)
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 084551A01A5;
+        Mon, 29 Jun 2020 08:05:53 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 2F6FA402E8;
-        Mon, 29 Jun 2020 14:05:38 +0800 (SGT)
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 1B47B402F7;
+        Mon, 29 Jun 2020 14:05:40 +0800 (SGT)
 From:   Anson Huang <Anson.Huang@nxp.com>
 To:     linux@armlinux.org.uk, shawnguo@kernel.org, s.hauer@pengutronix.de,
         kernel@pengutronix.de, festevam@gmail.com, mturquette@baylibre.com,
@@ -30,9 +30,9 @@ To:     linux@armlinux.org.uk, shawnguo@kernel.org, s.hauer@pengutronix.de,
         viro@zeniv.linux.org.uk, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
 Cc:     Linux-imx@nxp.com
-Subject: [PATCH V3 02/10] init.h: Fix the __setup_param() macro for module build
-Date:   Mon, 29 Jun 2020 13:53:54 +0800
-Message-Id: <1593410042-10598-3-git-send-email-Anson.Huang@nxp.com>
+Subject: [PATCH V3 03/10] ARM: imx: Select MXC_CLK for each SoC
+Date:   Mon, 29 Jun 2020 13:53:55 +0800
+Message-Id: <1593410042-10598-4-git-send-email-Anson.Huang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com>
 References: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com>
@@ -42,30 +42,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Keep __setup_param() to use same parameters for both built in
-and built as module, it can make the drivers which call it easier
-when the drivers can be built in or built as module.
+i.MX common clock drivers may support module build, so it is NOT
+selected by default, for ARCH_MXC ARMv7 platforms, need to select
+it manually in each SoC to make build pass.
 
 Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
-new patch.
+Changes since V2:
+	- manually select the MXC_CLK in each SoC instead of selecting it
+	  for ARCH_MXC.
 ---
- include/linux/init.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/mach-imx/Kconfig | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/include/linux/init.h b/include/linux/init.h
-index 212fc9e..8f27299 100644
---- a/include/linux/init.h
-+++ b/include/linux/init.h
-@@ -293,7 +293,7 @@ void __init parse_early_options(char *cmdline);
+diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
+index e7d7b90..a465c0f 100644
+--- a/arch/arm/mach-imx/Kconfig
++++ b/arch/arm/mach-imx/Kconfig
+@@ -58,6 +58,7 @@ config SOC_IMX21
+ 	select CPU_ARM926T
+ 	select IMX_HAVE_IOMUX_V1
+ 	select MXC_AVIC
++	select MXC_CLK
  
- #else /* MODULE */
+ config SOC_IMX27
+ 	bool
+@@ -65,17 +66,20 @@ config SOC_IMX27
+ 	select IMX_HAVE_IOMUX_V1
+ 	select MXC_AVIC
+ 	select PINCTRL_IMX27
++	select MXC_CLK
  
--#define __setup_param(str, unique_id, fn)	/* nothing */
-+#define __setup_param(str, unique_id, fn, early)	/* nothing */
- #define __setup(str, func) 			/* nothing */
- #endif
+ config SOC_IMX31
+ 	bool
+ 	select CPU_V6
+ 	select MXC_AVIC
++	select MXC_CLK
  
+ config SOC_IMX35
+ 	bool
+ 	select ARCH_MXC_IOMUX_V3
+ 	select MXC_AVIC
+ 	select PINCTRL_IMX35
++	select MXC_CLK
+ 
+ if ARCH_MULTI_V5
+ 
+@@ -419,6 +423,7 @@ config SOC_IMX1
+ 	select CPU_ARM920T
+ 	select MXC_AVIC
+ 	select PINCTRL_IMX1
++	select MXC_CLK
+ 	help
+ 	  This enables support for Freescale i.MX1 processor
+ 
+@@ -432,6 +437,7 @@ config SOC_IMX25
+ 	select CPU_ARM926T
+ 	select MXC_AVIC
+ 	select PINCTRL_IMX25
++	select MXC_CLK
+ 	help
+ 	  This enables support for Freescale i.MX25 processor
+ endif
+@@ -444,6 +450,7 @@ config SOC_IMX5
+ 	bool
+ 	select HAVE_IMX_SRC
+ 	select MXC_TZIC
++	select MXC_CLK
+ 
+ config	SOC_IMX50
+ 	bool "i.MX50 support"
+@@ -477,6 +484,7 @@ config SOC_IMX6
+ 	select HAVE_IMX_MMDC
+ 	select HAVE_IMX_SRC
+ 	select MFD_SYSCON
++	select MXC_CLK
+ 	select PL310_ERRATA_769419 if CACHE_L2X0
+ 
+ config SOC_IMX6Q
+@@ -561,6 +569,7 @@ config SOC_IMX7D_CM4
+ config SOC_IMX7D
+ 	bool "i.MX7 Dual support"
+ 	select PINCTRL_IMX7D
++	select MXC_CLK
+ 	select SOC_IMX7D_CA7 if ARCH_MULTI_V7
+ 	select SOC_IMX7D_CM4 if ARM_SINGLE_ARMV7M
+ 	select ARM_ERRATA_814220 if ARCH_MULTI_V7
+@@ -571,6 +580,7 @@ config SOC_IMX7ULP
+ 	bool "i.MX7ULP support"
+ 	select CLKSRC_IMX_TPM
+ 	select PINCTRL_IMX7ULP
++	select MXC_CLK
+ 	select SOC_IMX7D_CA7 if ARCH_MULTI_V7
+ 	select SOC_IMX7D_CM4 if ARM_SINGLE_ARMV7M
+ 	help
+@@ -580,6 +590,7 @@ config SOC_VF610
+ 	bool "Vybrid Family VF610 support"
+ 	select ARM_GIC if ARCH_MULTI_V7
+ 	select PINCTRL_VF610
++	select MXC_CLK
+ 
+ 	help
+ 	  This enables support for Freescale Vybrid VF610 processor.
 -- 
 2.7.4
 
