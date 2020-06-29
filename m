@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6502E20DD4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292F320DD3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728737AbgF2SlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:41:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60660 "EHLO mail.kernel.org"
+        id S1727844AbgF2Shs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:37:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728688AbgF2SlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:41:06 -0400
+        id S1726790AbgF2Sfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:35:50 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35F9124125;
-        Mon, 29 Jun 2020 15:18:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E0B842473A;
+        Mon, 29 Jun 2020 15:20:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593443936;
-        bh=R7Ov2awEkrZIyqcu8QasaYukANbO8HJ0R3f0yEw4k7U=;
+        s=default; t=1593444058;
+        bh=0WaZU/K1ypkbm+ycWQnZZ8t/GAAaU/C20hvWc8njQg0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nl3iI7PteN8xcIH8JJvpqjbX8/2TMlGokKC8TTu9V1fBcQf7tvQWSZDPuEPe5oQxN
-         RvHC8LQDNfDXtZgsNJqsBpG57oIaGmYwnaYTpfKqhiTco54uj/8t2jtvob7Tr0nql3
-         lkLPJGdQr4L12sfUdMiUHR8usBhkCFXvJa/FC6/8=
+        b=Erpte6ySkGZYA1ZetOxERCTpG8MBWk5lkANAJSG3u4xtZB2Bd9Ijr04kBjVediAXJ
+         PBvjlJw6qbmWK6f6d4Wz2qiJcIII/DV7pzrXIfavsUH+UybrAiq3p7yPnpYGqwBZiV
+         5tJSYDiK5/b5mDywhSW2Mg84/EynXf3Rzi9hX44c=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Neal Cardwell <ncardwell@google.com>,
-        Mirja Kuehlewind <mirja.kuehlewind@ericsson.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
+Cc:     Colin Ian King <colin.king@canonical.com>,
         "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.7 037/265] tcp_cubic: fix spurious HYSTART_DELAY exit upon drop in min RTT
-Date:   Mon, 29 Jun 2020 11:14:30 -0400
-Message-Id: <20200629151818.2493727-38-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 166/265] qed: add missing error test for DBG_STATUS_NO_MATCHING_FRAMING_MODE
+Date:   Mon, 29 Jun 2020 11:16:39 -0400
+Message-Id: <20200629151818.2493727-167-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629151818.2493727-1-sashal@kernel.org>
 References: <20200629151818.2493727-1-sashal@kernel.org>
@@ -52,57 +49,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neal Cardwell <ncardwell@google.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit b344579ca8478598937215f7005d6c7b84d28aee ]
+[ Upstream commit a51243860893615b457b149da1ef5df0a4f1ffc2 ]
 
-Mirja Kuehlewind reported a bug in Linux TCP CUBIC Hystart, where
-Hystart HYSTART_DELAY mechanism can exit Slow Start spuriously on an
-ACK when the minimum rtt of a connection goes down. From inspection it
-is clear from the existing code that this could happen in an example
-like the following:
+The error DBG_STATUS_NO_MATCHING_FRAMING_MODE was added to the enum
+enum dbg_status however there is a missing corresponding entry for
+this in the array s_status_str. This causes an out-of-bounds read when
+indexing into the last entry of s_status_str.  Fix this by adding in
+the missing entry.
 
-o The first 8 RTT samples in a round trip are 150ms, resulting in a
-  curr_rtt of 150ms and a delay_min of 150ms.
-
-o The 9th RTT sample is 100ms. The curr_rtt does not change after the
-  first 8 samples, so curr_rtt remains 150ms. But delay_min can be
-  lowered at any time, so delay_min falls to 100ms. The code executes
-  the HYSTART_DELAY comparison between curr_rtt of 150ms and delay_min
-  of 100ms, and the curr_rtt is declared far enough above delay_min to
-  force a (spurious) exit of Slow start.
-
-The fix here is simple: allow every RTT sample in a round trip to
-lower the curr_rtt.
-
-Fixes: ae27e98a5152 ("[TCP] CUBIC v2.3")
-Reported-by: Mirja Kuehlewind <mirja.kuehlewind@ericsson.com>
-Signed-off-by: Neal Cardwell <ncardwell@google.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
+Addresses-Coverity: ("Out-of-bounds read").
+Fixes: 2d22bc8354b1 ("qed: FW 8.42.2.0 debug features")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_cubic.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/qlogic/qed/qed_debug.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/ipv4/tcp_cubic.c b/net/ipv4/tcp_cubic.c
-index 8f8eefd3a3ce1..c7bf5b26bf0c2 100644
---- a/net/ipv4/tcp_cubic.c
-+++ b/net/ipv4/tcp_cubic.c
-@@ -432,10 +432,9 @@ static void hystart_update(struct sock *sk, u32 delay)
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_debug.c b/drivers/net/ethernet/qlogic/qed/qed_debug.c
+index f4eebaabb6d0d..3e56b6056b477 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_debug.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_debug.c
+@@ -5568,7 +5568,8 @@ static const char * const s_status_str[] = {
  
- 	if (hystart_detect & HYSTART_DELAY) {
- 		/* obtain the minimum delay of more than sampling packets */
-+		if (ca->curr_rtt > delay)
-+			ca->curr_rtt = delay;
- 		if (ca->sample_cnt < HYSTART_MIN_SAMPLES) {
--			if (ca->curr_rtt > delay)
--				ca->curr_rtt = delay;
+ 	/* DBG_STATUS_INVALID_FILTER_TRIGGER_DWORDS */
+ 	"The filter/trigger constraint dword offsets are not enabled for recording",
 -
- 			ca->sample_cnt++;
- 		} else {
- 			if (ca->curr_rtt > ca->delay_min +
++	/* DBG_STATUS_NO_MATCHING_FRAMING_MODE */
++	"No matching framing mode",
+ 
+ 	/* DBG_STATUS_VFC_READ_ERROR */
+ 	"Error reading from VFC",
 -- 
 2.25.1
 
