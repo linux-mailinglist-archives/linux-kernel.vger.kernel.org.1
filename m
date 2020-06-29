@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846E920E3C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6241E20E63B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390760AbgF2VRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729801AbgF2Swv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:51 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A625DC02A556
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:06:47 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id q7so4699983ljm.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:06:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YWzRxTXrUasbGXUFwSr2i2nPcUT+2MUUycvRS8lYyrM=;
-        b=hqb37tRcYrufOBW+bXtELSQb8eYyvV7u0oFo6Bx5fAjCfViqRn2BQVIz2frQYJdkXB
-         gXpzQ5MoWm0Cu3sX93zhH3N79e3A3T0Htjl3gfeybeV0vGV0SWiy4c4HY2OIF5jIfSII
-         CHaWmMFuJ1TDwImjAOscqtMLSVzUGDaIHDRDzKpofeu64bwHeZcxFo66gfPEFMTQzNCf
-         1L/EZ0Uocdy4G2ludZCWovpgryyPQgRY1qUPLbk5iJXVkHMk98wg8Ul8TdMjMr/8oNVO
-         Hcbl2h5puCqxc3+MftLIHIkeIs44shq1RMsHbycGOXbBsg+aXArbwiordsyLNyNi26+n
-         +2NA==
-X-Gm-Message-State: AOAM5339x94fU/prGU2zQFcGqf7c6tM1Yb4Z6nzxiwzoBaDP0alBL2Vz
-        MilQXJlZa74jOv9hBMv4BOs=
-X-Google-Smtp-Source: ABdhPJwQFKL4/TMXmQS8Je9ya6myBWYfn8LiUhyH3xk8GCLpw4qDQMLOc/6BbQ7ZvG4DSGtm/UrBtQ==
-X-Received: by 2002:a2e:b55a:: with SMTP id a26mr3583999ljn.349.1593436005924;
-        Mon, 29 Jun 2020 06:06:45 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id f22sm7456128ljn.66.2020.06.29.06.06.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 06:06:45 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1jptUi-0007Vk-Lx; Mon, 29 Jun 2020 15:06:45 +0200
-Date:   Mon, 29 Jun 2020 15:06:44 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Subject: Re: [PATCH 4/5] mfd: sprd-sc27xx-spi: Fix divide by zero when
- allocating register offset/mask
-Message-ID: <20200629130644.GU3334@localhost>
-References: <20200629123215.1014747-1-lee.jones@linaro.org>
- <20200629123215.1014747-5-lee.jones@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629123215.1014747-5-lee.jones@linaro.org>
+        id S2404080AbgF2Vp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:45:27 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:49520 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727123AbgF2Shn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:37:43 -0400
+Received: from kvm-dev1.localdomain (unknown [10.2.5.134])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn9566flezmRMAA--.4772S2;
+        Mon, 29 Jun 2020 21:15:39 +0800 (CST)
+From:   bibo mao <maobibo@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Bibo Mao <maobibo@loongson.cn>
+Subject: [PATCH 1/2] hugetlb: clear huge pte during flush function on mips platform
+Date:   Mon, 29 Jun 2020 21:15:32 +0800
+Message-Id: <1593436533-8645-1-git-send-email-maobibo@loongson.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: AQAAf9Dxn9566flezmRMAA--.4772S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZrWDGFWfKw4rAr17Ary3XFb_yoW8XF4kpF
+        WDCwn5G3ykGr9IkF1xZ34kK3y3tw4qgaySyFyrKF4FywnxXw4UKF97WFWUAw4kZrZ5ta18
+        uF4jqr4kAFsFvw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE-syl42xK
+        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUF9a9DUUUU
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 01:32:14PM +0100, Lee Jones wrote:
-> Since ddata->irqs[] is already zeroed when allocated by devm_kcalloc() and
-> dividing 0 by anything is still 0, there is no need to re-assign
-> ddata->irqs[i].* values.  Instead, it should be safe to begin at 1.
-> 
-> This fixes the following W=1 warning:
-> 
->  drivers/mfd/sprd-sc27xx-spi.c:255 sprd_pmic_probe() debug: sval_binop_unsigned: divide by zero
-> 
-> Cc: Orson Zhai <orsonzhai@gmail.com>
-> Cc: Baolin Wang <baolin.wang7@gmail.com>
-> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/mfd/sprd-sc27xx-spi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
-> index c305e941e435c..694a7d429ccff 100644
-> --- a/drivers/mfd/sprd-sc27xx-spi.c
-> +++ b/drivers/mfd/sprd-sc27xx-spi.c
-> @@ -251,7 +251,7 @@ static int sprd_pmic_probe(struct spi_device *spi)
->  		return -ENOMEM;
->  
->  	ddata->irq_chip.irqs = ddata->irqs;
-> -	for (i = 0; i < pdata->num_irqs; i++) {
-> +	for (i = 1; i < pdata->num_irqs; i++) {
->  		ddata->irqs[i].reg_offset = i / pdata->num_irqs;
->  		ddata->irqs[i].mask = BIT(i % pdata->num_irqs);
->  	}
+From: Bibo Mao <maobibo@loongson.cn>
 
-This doesn't look right either.
+If multiple threads are accessing the same huge page at the same
+time, hugetlb_cow will be called if one thread write the COW huge
+page. And function huge_ptep_clear_flush is called to notify other
+threads to clear the huge pte tlb entry. The other threads clear
+the huge pte tlb entry and reload it from page table, the reload
+huge pte entry may be old.
 
-First, the loop is never executed if num_irqs is zero.
+This patch fixes this issue on mips platform, and it clears huge
+pte entry before notifying other threads to flush current huge
+page entry, it is similar with other architectures.
 
-Second, the current code looks bogus too as reg_offset is always set to
-zero and mask to BIT(i)...
+Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+---
+ arch/mips/include/asm/hugetlb.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-Johan
+diff --git a/arch/mips/include/asm/hugetlb.h b/arch/mips/include/asm/hugetlb.h
+index 10e3be87..c214440 100644
+--- a/arch/mips/include/asm/hugetlb.h
++++ b/arch/mips/include/asm/hugetlb.h
+@@ -46,7 +46,13 @@ static inline pte_t huge_ptep_get_and_clear(struct mm_struct *mm,
+ static inline void huge_ptep_clear_flush(struct vm_area_struct *vma,
+ 					 unsigned long addr, pte_t *ptep)
+ {
+-	flush_tlb_page(vma, addr & huge_page_mask(hstate_vma(vma)));
++	/*
++	 * clear the huge pte entry firstly, so that the other smp threads will
++	 * not get old pte entry after finishing flush_tlb_page and before
++	 * setting new huge pte entry
++	 */
++	huge_ptep_get_and_clear(vma->vm_mm, addr, ptep);
++	flush_tlb_page(vma, addr);
+ }
+ 
+ #define __HAVE_ARCH_HUGE_PTE_NONE
+-- 
+1.8.3.1
+
