@@ -2,260 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7EF20D6A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A2C20D623
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729904AbgF2TWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:22:35 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:47724 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732191AbgF2TVf (ORCPT
+        id S1731976AbgF2TR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:17:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731954AbgF2TRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:21:35 -0400
-Received: from 89-64-84-69.dynamic.chello.pl (89.64.84.69) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id 39af2550cfacad4d; Mon, 29 Jun 2020 18:34:52 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>
-Cc:     rafael.j.wysocki@intel.com, Len Brown <lenb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Ira Weiny <ira.weiny@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-nvdimm@lists.01.org, Bob Moore <robert.moore@intel.com>
-Subject: [PATCH v4 2/2] ACPICA: Preserve memory opregion mappings
-Date:   Mon, 29 Jun 2020 18:33:58 +0200
-Message-ID: <1794490.F2OrUDcHQn@kreacher>
-In-Reply-To: <1666722.UopIai5n7p@kreacher>
-References: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com> <2788992.3K7huLjdjL@kreacher> <1666722.UopIai5n7p@kreacher>
+        Mon, 29 Jun 2020 15:17:43 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA3FC030F31;
+        Mon, 29 Jun 2020 09:50:55 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id o1so746758plk.1;
+        Mon, 29 Jun 2020 09:50:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=epjZAavl8OTnrmj035AkLkdZa01IVf7hDefQw4XclfM=;
+        b=qfyP5RxgxAmyq6gPs73byd3YoUOiLlNFQvfce7YA6ZsR4onyELxfCTqCWi9/zFOy9v
+         7ispQlUC7C62ftj66FOnsAaCx06Splb36D3NXxPefaLlEexM+/GJp5SzYtsGakl+mL8B
+         eiPo23Xf8b/PqiyIqGS164oGgDUWUvPrIGy1sBMgspA0aqQBkcHfxRXfE3/2dFsV6dAW
+         k11LT22CZUqLUqGH2Em2PSrz5m+H6cJgWvUB96mb2oPQvs7VGaO1I4H9d6J/iOgaigXr
+         4af3bgasPy59TzF+5e2A/5fHzziw2TWZci3cAFqTzHOYBESugR9IwZ0F6+uS9vE1IZyq
+         e9DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=epjZAavl8OTnrmj035AkLkdZa01IVf7hDefQw4XclfM=;
+        b=Ds++611FQtbDfwjmK0Ja4x9B58g+eThFp+aRwufbE2vjFMIxtgfGgWbB+qHZSOJdKh
+         5VsnBo8MQ/e2H3mNtffXUFLD2Ps4AcN9kHr36iYHIPL5ntx1ioOcUOHmT6F6ORvvbgW+
+         poPI0MMFucKV5HvwCURQH1raQjhOBVlulKj3W3r64sSU5qp/4vN+IRns1HuxGBDd5vk0
+         VWXkVyIEkbIQ9GQBHDI+CRTJo2gxuzAHOwZAjSdctc8LX2KFUTwCUmAD5MY6EKwcENhb
+         5HYFoGRr8/QMhmeS9C0i0JeRg+HEKWW381w6z2lIqX7+WFSzLSFvzpCqCxMNdjinfH9T
+         dvig==
+X-Gm-Message-State: AOAM531qr4mxBjjAKaoH7SAMxSn+Ci3wz8LYyEKVulMaeNx020qu7ULY
+        UQQkgwlPJjfciCCmyTDkTgvQAjzZORLlKmh1mmg=
+X-Google-Smtp-Source: ABdhPJwK8VIW73nkc0kipwx1fUf9LlTusE2dlg042QQH/vsyXg7aXQu6OoBfFkAIfefdmaXBT/ZOhM4ezkR0DNBgt9w=
+X-Received: by 2002:a17:902:8491:: with SMTP id c17mr6807522plo.262.1593449454975;
+ Mon, 29 Jun 2020 09:50:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20200503105453.23658-1-miquel.raynal@bootlin.com> <20200629160844.6ecf79c1@xps13>
+In-Reply-To: <20200629160844.6ecf79c1@xps13>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 29 Jun 2020 19:50:41 +0300
+Message-ID: <CAHp75Vehv_Cp1AhMPhk8ktyp-uHSkgweqnhhSq_7w2Kf9y=7XQ@mail.gmail.com>
+Subject: Re: [PATCH v6] gpio: pca953x: Add Maxim MAX7313 PWM support
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Uwe Kleine-Konig <u.kleine-koenig@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-pwm@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+On Mon, Jun 29, 2020 at 5:08 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote on Sun,  3 May 2020
+> 12:54:53 +0200:
+>
+> > The MAX7313 chip is fully compatible with the PCA9535 on its basic
+> > functions but can also manage the intensity on each of its ports with
+> > PWM. Each output is independent and may be tuned with 16 values (4
+> > bits per output). The period is always 32kHz, only the duty-cycle may
+> > be changed. One can use any output as GPIO or PWM.
 
-The ACPICA's strategy with respect to the handling of memory mappings
-associated with memory operation regions is to avoid mapping the
-entire region at once which may be problematic at least in principle
-(for example, it may lead to conflicts with overlapping mappings
-having different attributes created by drivers).  It may also be
-wasteful, because memory opregions on some systems take up vast
-chunks of address space while the fields in those regions actually
-accessed by AML are sparsely distributed.
+> Can I have a status on this patch please?
+>
+> If it was forgotten, I would be good to have it queued now, otherwise,
+> may I know the reason?
 
-For this reason, a one-page "window" is mapped for a given opregion
-on the first memory access through it and if that "window" does not
-cover an address range accessed through that opregion subsequently,
-it is unmapped and a new "window" is mapped to replace it.  Next,
-if the new "window" is not sufficient to acess memory through the
-opregion in question in the future, it will be replaced with yet
-another "window" and so on.  That may lead to a suboptimal sequence
-of memory mapping and unmapping operations, for example if two fields
-in one opregion separated from each other by a sufficiently wide
-chunk of unused address space are accessed in an alternating pattern.
+TWIMC, just my 2 cents about this patch.
+I don't like it in this form. On the constructive side I can propose
+at least two ways to solve:
+a) introduce a PWM as a pin mode; move pca953x to pin control; use
+this mode with PWM driver being separated from the pin control;
+b) introduce an MFD that provides two parts for this GPIO & PWM.
 
-The situation may still be suboptimal if the deferred unmapping
-introduced previously is supported by the OS layer.  For instance,
-the alternating memory access pattern mentioned above may produce
-a relatively long list of mappings to release with substantial
-duplication among the entries in it, which could be avoided if
-acpi_ex_system_memory_space_handler() did not release the mapping
-used by it previously as soon as the current access was not covered
-by it.
+Personally I would go with a) as I know at least one more pin
+controller which will get an advantage of this (and it's definitely
+not an MFD).
 
-In order to improve that, modify acpi_ex_system_memory_space_handler()
-to preserve all of the memory mappings created by it until the memory
-regions associated with them go away.
+If GPIO / pin control maintainers consider this okay, I will rest my
+case, but see above...
 
-Accordingly, update acpi_ev_system_memory_region_setup() to unmap all
-memory associated with memory opregions that go away.
-
-Reported-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/acpica/evrgnini.c | 14 ++++----
- drivers/acpi/acpica/exregion.c | 65 ++++++++++++++++++++++++----------
- include/acpi/actypes.h         | 12 +++++--
- 3 files changed, 64 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/acpi/acpica/evrgnini.c b/drivers/acpi/acpica/evrgnini.c
-index aefc0145e583..89be3ccdad53 100644
---- a/drivers/acpi/acpica/evrgnini.c
-+++ b/drivers/acpi/acpica/evrgnini.c
-@@ -38,6 +38,7 @@ acpi_ev_system_memory_region_setup(acpi_handle handle,
- 	union acpi_operand_object *region_desc =
- 	    (union acpi_operand_object *)handle;
- 	struct acpi_mem_space_context *local_region_context;
-+	struct acpi_mem_mapping *mm;
- 
- 	ACPI_FUNCTION_TRACE(ev_system_memory_region_setup);
- 
-@@ -46,13 +47,14 @@ acpi_ev_system_memory_region_setup(acpi_handle handle,
- 			local_region_context =
- 			    (struct acpi_mem_space_context *)*region_context;
- 
--			/* Delete a cached mapping if present */
-+			/* Delete memory mappings if present */
- 
--			if (local_region_context->mapped_length) {
--				acpi_os_unmap_memory(local_region_context->
--						     mapped_logical_address,
--						     local_region_context->
--						     mapped_length);
-+			while (local_region_context->first_mm) {
-+				mm = local_region_context->first_mm;
-+				local_region_context->first_mm = mm->next_mm;
-+				acpi_os_unmap_memory(mm->logical_address,
-+						     mm->length);
-+				ACPI_FREE(mm);
- 			}
- 			ACPI_FREE(local_region_context);
- 			*region_context = NULL;
-diff --git a/drivers/acpi/acpica/exregion.c b/drivers/acpi/acpica/exregion.c
-index d15a66de26c0..fd68f2134804 100644
---- a/drivers/acpi/acpica/exregion.c
-+++ b/drivers/acpi/acpica/exregion.c
-@@ -41,6 +41,7 @@ acpi_ex_system_memory_space_handler(u32 function,
- 	acpi_status status = AE_OK;
- 	void *logical_addr_ptr = NULL;
- 	struct acpi_mem_space_context *mem_info = region_context;
-+	struct acpi_mem_mapping *mm = mem_info->cur_mm;
- 	u32 length;
- 	acpi_size map_length;
- 	acpi_size page_boundary_map_length;
-@@ -96,20 +97,38 @@ acpi_ex_system_memory_space_handler(u32 function,
- 	 * Is 1) Address below the current mapping? OR
- 	 *    2) Address beyond the current mapping?
- 	 */
--	if ((address < mem_info->mapped_physical_address) ||
--	    (((u64) address + length) > ((u64)
--					 mem_info->mapped_physical_address +
--					 mem_info->mapped_length))) {
-+	if (!mm || (address < mm->physical_address) ||
-+	    ((u64) address + length > (u64) mm->physical_address + mm->length)) {
- 		/*
--		 * The request cannot be resolved by the current memory mapping;
--		 * Delete the existing mapping and create a new one.
-+		 * The request cannot be resolved by the current memory mapping.
-+		 *
-+		 * Look for an existing saved mapping covering the address range
-+		 * at hand.  If found, save it as the current one and carry out
-+		 * the access.
- 		 */
--		if (mem_info->mapped_length) {
-+		for (mm = mem_info->first_mm; mm; mm = mm->next_mm) {
-+			if (mm == mem_info->cur_mm)
-+				continue;
-+
-+			if (address < mm->physical_address)
-+				continue;
-+
-+			if ((u64) address + length >
-+					(u64) mm->physical_address + mm->length)
-+				continue;
- 
--			/* Valid mapping, delete it */
-+			mem_info->cur_mm = mm;
-+			goto access;
-+		}
- 
--			acpi_os_unmap_memory(mem_info->mapped_logical_address,
--					     mem_info->mapped_length);
-+		/* Create a new mappings list entry */
-+		mm = ACPI_ALLOCATE_ZEROED(sizeof(*mm));
-+		if (!mm) {
-+			ACPI_ERROR((AE_INFO,
-+				    "Unable to save memory mapping at 0x%8.8X%8.8X, size %u",
-+				    ACPI_FORMAT_UINT64(address),
-+				    (u32)map_length));
-+			return_ACPI_STATUS(AE_NO_MEMORY);
- 		}
- 
- 		/*
-@@ -143,29 +162,39 @@ acpi_ex_system_memory_space_handler(u32 function,
- 
- 		/* Create a new mapping starting at the address given */
- 
--		mem_info->mapped_logical_address =
--		    acpi_os_map_memory(address, map_length);
--		if (!mem_info->mapped_logical_address) {
-+		logical_addr_ptr = acpi_os_map_memory(address, map_length);
-+		if (!logical_addr_ptr) {
- 			ACPI_ERROR((AE_INFO,
- 				    "Could not map memory at 0x%8.8X%8.8X, size %u",
- 				    ACPI_FORMAT_UINT64(address),
- 				    (u32)map_length));
--			mem_info->mapped_length = 0;
-+			ACPI_FREE(mm);
- 			return_ACPI_STATUS(AE_NO_MEMORY);
- 		}
- 
- 		/* Save the physical address and mapping size */
- 
--		mem_info->mapped_physical_address = address;
--		mem_info->mapped_length = map_length;
-+		mm->logical_address = logical_addr_ptr;
-+		mm->physical_address = address;
-+		mm->length = map_length;
-+
-+		/*
-+		 * Add the new entry to the mappigs list and save it as the
-+		 * current mapping.
-+		 */
-+		mm->next_mm = mem_info->first_mm;
-+		mem_info->first_mm = mm;
-+
-+		mem_info->cur_mm = mm;
- 	}
- 
-+access:
- 	/*
- 	 * Generate a logical pointer corresponding to the address we want to
- 	 * access
- 	 */
--	logical_addr_ptr = mem_info->mapped_logical_address +
--	    ((u64) address - (u64) mem_info->mapped_physical_address);
-+	logical_addr_ptr = mm->logical_address +
-+		((u64) address - (u64) mm->physical_address);
- 
- 	ACPI_DEBUG_PRINT((ACPI_DB_INFO,
- 			  "System-Memory (width %u) R/W %u Address=%8.8X%8.8X\n",
-diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h
-index aa236b9e6f24..d005e35ab399 100644
---- a/include/acpi/actypes.h
-+++ b/include/acpi/actypes.h
-@@ -1201,12 +1201,18 @@ struct acpi_pci_id {
- 	u16 function;
- };
- 
-+struct acpi_mem_mapping {
-+	acpi_physical_address physical_address;
-+	u8 *logical_address;
-+	acpi_size length;
-+	struct acpi_mem_mapping *next_mm;
-+};
-+
- struct acpi_mem_space_context {
- 	u32 length;
- 	acpi_physical_address address;
--	acpi_physical_address mapped_physical_address;
--	u8 *mapped_logical_address;
--	acpi_size mapped_length;
-+	struct acpi_mem_mapping *cur_mm;
-+	struct acpi_mem_mapping *first_mm;
- };
- 
- /*
 -- 
-2.26.2
-
-
-
-
+With Best Regards,
+Andy Shevchenko
