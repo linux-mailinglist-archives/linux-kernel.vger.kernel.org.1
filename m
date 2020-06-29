@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E5F20D0B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF9E20D0F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726164AbgF2SfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:35:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56696 "EHLO mail.kernel.org"
+        id S1726828AbgF2Sfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:35:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726122AbgF2SfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:35:15 -0400
+        id S1726311AbgF2SfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:35:24 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9BE36246E6;
-        Mon, 29 Jun 2020 15:20:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 654DB2470E;
+        Mon, 29 Jun 2020 15:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593444030;
-        bh=WtMcDFcoVkqmSmFB9fi4UUXLZ3w+ig53ufzkYtp4ooo=;
+        s=default; t=1593444044;
+        bh=U4K35wrAcyhQtG+Pym2up4Z24wupd2IepHIdhLQYRNc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zz6A2LX6BpeLhHL6rhURsJfmdtr1o8fF3KVD2uEwfYawQx0K7zBIZU7pYrA3V57nW
-         3MDltxNhoI6/IRRnQ5O8pCWSssVS5KR47nFJ7fGixO3PKkehqlcZokDIqq0ynlO828
-         hHWLdT7jNQ3H1VLewMDcC/dH/6ozdf5cR3hMjPgM=
+        b=kleQjzIVOyJRC/9u94esXBJpUCyBMFl4FumvG5jhA5BtS03qo/CJK9LB4EO8JHOn6
+         UMUY6jaSgWKVY3uzdCmEmfXcJ8IcrORlb1iO7H/ylszopThGHaUjJm4fjQnlpo+2Dv
+         g5Q9KZGfYfuY4zV6SOCqmhcIEY6omtLuan+LAaGE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Julian Wiedmann <jwi@linux.ibm.com>,
+Cc:     Alexander Lobakin <alobakin@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 137/265] s390/qeth: fix error handling for isolation mode cmds
-Date:   Mon, 29 Jun 2020 11:16:10 -0400
-Message-Id: <20200629151818.2493727-138-sashal@kernel.org>
+Subject: [PATCH 5.7 151/265] net: qed: fix excessive QM ILT lines consumption
+Date:   Mon, 29 Jun 2020 11:16:24 -0400
+Message-Id: <20200629151818.2493727-152-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629151818.2493727-1-sashal@kernel.org>
 References: <20200629151818.2493727-1-sashal@kernel.org>
@@ -49,50 +51,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Wiedmann <jwi@linux.ibm.com>
+From: Alexander Lobakin <alobakin@marvell.com>
 
-[ Upstream commit e2dfcfba00ba4a414617ef4c5a8501fe21567eb3 ]
+[ Upstream commit d434d02f7e7c24c721365fd594ed781acb18e0da ]
 
-Current(?) OSA devices also store their cmd-specific return codes for
-SET_ACCESS_CONTROL cmds into the top-level cmd->hdr.return_code.
-So once we added stricter checking for the top-level field a while ago,
-none of the error logic that rolls back the user's configuration to its
-old state is applied any longer.
+This is likely a copy'n'paste mistake. The amount of ILT lines to
+reserve for a single VF was being multiplied by the total VFs count.
+This led to a huge redundancy in reservation and potential lines
+drainouts.
 
-For this specific cmd, go back to the old model where we peek into the
-cmd structure even though the top-level field indicated an error.
-
-Fixes: 686c97ee29c8 ("s390/qeth: fix error handling in adapter command callbacks")
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Fixes: 1408cc1fa48c ("qed: Introduce VFs")
+Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
+Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
+Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/net/qeth_core_main.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/net/ethernet/qlogic/qed/qed_cxt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/s390/net/qeth_core_main.c b/drivers/s390/net/qeth_core_main.c
-index 569966bdc5138..60d675fefac7d 100644
---- a/drivers/s390/net/qeth_core_main.c
-+++ b/drivers/s390/net/qeth_core_main.c
-@@ -4265,9 +4265,6 @@ static int qeth_setadpparms_set_access_ctrl_cb(struct qeth_card *card,
- 	int fallback = *(int *)reply->param;
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_cxt.c b/drivers/net/ethernet/qlogic/qed/qed_cxt.c
+index 1a636bad717dc..1880aa1d3bb59 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_cxt.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_cxt.c
+@@ -270,7 +270,7 @@ static void qed_cxt_qm_iids(struct qed_hwfn *p_hwfn,
+ 		vf_tids += segs[NUM_TASK_PF_SEGMENTS].count;
+ 	}
  
- 	QETH_CARD_TEXT(card, 4, "setaccb");
--	if (cmd->hdr.return_code)
--		return -EIO;
--	qeth_setadpparms_inspect_rc(cmd);
+-	iids->vf_cids += vf_cids * p_mngr->vf_count;
++	iids->vf_cids = vf_cids;
+ 	iids->tids += vf_tids * p_mngr->vf_count;
  
- 	access_ctrl_req = &cmd->data.setadapterparms.data.set_access_ctrl;
- 	QETH_CARD_TEXT_(card, 2, "rc=%d",
-@@ -4277,7 +4274,7 @@ static int qeth_setadpparms_set_access_ctrl_cb(struct qeth_card *card,
- 		QETH_DBF_MESSAGE(3, "ERR:SET_ACCESS_CTRL(%#x) on device %x: %#x\n",
- 				 access_ctrl_req->subcmd_code, CARD_DEVID(card),
- 				 cmd->data.setadapterparms.hdr.return_code);
--	switch (cmd->data.setadapterparms.hdr.return_code) {
-+	switch (qeth_setadpparms_inspect_rc(cmd)) {
- 	case SET_ACCESS_CTRL_RC_SUCCESS:
- 		if (card->options.isolation == ISOLATION_MODE_NONE) {
- 			dev_info(&card->gdev->dev,
+ 	DP_VERBOSE(p_hwfn, QED_MSG_ILT,
 -- 
 2.25.1
 
