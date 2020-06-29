@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97CC220D400
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5409E20D521
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730631AbgF2TED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:04:03 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:34729 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730618AbgF2TDz (ORCPT
+        id S1731769AbgF2TO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731789AbgF2TOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:03:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593457433;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FWDtF1fQ/mXJTKG1mwwIfkBgzU8jxhcN0FwqgicX+To=;
-        b=M/jvES4G3CoUZJddXdRBmRJ0jT5g9ZJs0WmaPGVizDc/+bgoJWeAZ9lYLBuJ1zD5kvxRKo
-        9E3t1zAnj0wNYWuwlBPrDZrE5IgR5rmsqimHVdD2LCdV+puzf/HCeVJJUH89wbyIdgT+2J
-        jeif31mEmTPbTDTJH7iwhDPg6QmXX7g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-84-lK8K4gwJN_moy10V8QBKFw-1; Mon, 29 Jun 2020 08:02:23 -0400
-X-MC-Unique: lK8K4gwJN_moy10V8QBKFw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C07480401D;
-        Mon, 29 Jun 2020 12:02:21 +0000 (UTC)
-Received: from Diego (unknown [10.40.208.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 96CFC7CAC5;
-        Mon, 29 Jun 2020 12:02:17 +0000 (UTC)
-Date:   Mon, 29 Jun 2020 14:02:04 +0200 (CEST)
-From:   Michael Petlan <mpetlan@redhat.com>
-X-X-Sender: Michael@Diego
-To:     Andi Kleen <ak@linux.intel.com>
-cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [RFC 00/10] perf tools: Add support to reuse metric
-In-Reply-To: <20200626215759.GG818054@tassilo.jf.intel.com>
-Message-ID: <alpine.LRH.2.20.2006291344440.4075@Diego>
-References: <20200626194720.2915044-1-jolsa@kernel.org> <20200626212522.GF818054@tassilo.jf.intel.com> <CAP-5=fVMs4Ok3=gYmzheNTzbBUGGHbCr0cpJSm9TV45aeZb4Ng@mail.gmail.com> <20200626215759.GG818054@tassilo.jf.intel.com>
-User-Agent: Alpine 2.20 (LRH 67 2015-01-07)
+        Mon, 29 Jun 2020 15:14:23 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00DFC0F26CC
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:04:13 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id a6so13599018wmm.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:04:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Hz0iVZuquqaAZG91zpdXr2Uyq4D9Tl6Yab1oO2oLyu4=;
+        b=VvL4yO6jCcGsEdtzYiLzKqRQKd+CJHaFyeqJWf7CcFeUmtn3q8wK56Ka3u84RH2/TB
+         NB1CiAymp//XtqnFz5/H+ApJeRCUh/SqYJkad+wuFzUrSypwMyamn05nNgh9bLzgio/4
+         QBu82NPhZZT4p9ki5bX41KR4ZogP7bglHyn0k1CHfqSTORfkjFmMOuW3F+ZcTgaapo1B
+         kH2qepefaYlMyQ/1lvRS5epPqtlijcTGvri5VRyh7kANgzWCz96TsJFHbd1OpXN75CnZ
+         b9jNoyvkUTRs0Vyin0UkoI4pBwLsrwpFCWDaCSYqIKh9GuRWgBS4RIRv05e4D75Eph+2
+         us+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Hz0iVZuquqaAZG91zpdXr2Uyq4D9Tl6Yab1oO2oLyu4=;
+        b=Ou9Ycae3gy+0KZZwc2wxWYAJq7WO2UkznRUy2+PMIPDrEUjZuaL80DMhtuwiM+bCmz
+         iEKnkkzkcTu6Mon6FVT6M2U8ye4MkUfGLCh5P88XzyVxNtO6so/hep23VgCGtR2RGvLX
+         bwJtioG/iuKGiYyrrjYjjGJf35rbad5Ma4IjEr+VZhqRRvAnvYzbJusLkERaQipPQciZ
+         HeQDLHeQCKolQhGuEG/BbZQW7ILf0aTiEu90/j355cWY+mSN6+1pP3Sx4MpS0bKgrzL/
+         51pyX53zlARo1/wQcUDnjuEdgv850MhuUoVosNQbpFc9YuVl5k3FnsXDpAlDaVX1ZWtF
+         x73g==
+X-Gm-Message-State: AOAM533sal4ucR7bKWC2Rpxqj/oWPrsVb1m78DOWG4UhSbhScpan2qrt
+        5DFs1X/QHJNrrojO6O2IDf3Caw==
+X-Google-Smtp-Source: ABdhPJwR+XCjvBHh7hN27yb4wbyQ2NgRHNnJda5bGoNm1j9W8pobPb9+mBDwQzfYrDFvbqSH7NAqWg==
+X-Received: by 2002:a7b:cc8b:: with SMTP id p11mr17632537wma.180.1593432252690;
+        Mon, 29 Jun 2020 05:04:12 -0700 (PDT)
+Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
+        by smtp.gmail.com with ESMTPSA id d81sm25274347wmc.0.2020.06.29.05.04.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 05:04:12 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v2 01/10] net: ethernet: ixgbe: check the return value of ixgbe_mii_bus_init()
+Date:   Mon, 29 Jun 2020 14:03:37 +0200
+Message-Id: <20200629120346.4382-2-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200629120346.4382-1-brgl@bgdev.pl>
+References: <20200629120346.4382-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Jun 2020, Andi Kleen wrote:
-> > The name could be a metric or an event, the logic for each is quite
-> 
-> I would say collisions are unlikely. Event names follow quite structured
-> patterns.
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-But across various architectures? I guess event names can be arbitrary.
-In perftool-testsuite, I use the following regexp to match event names:
-[\w\-\:\/_=,]+
+This function may fail. Check its return value and propagate the error
+code.
 
-> 
-> > different. You could look up an event and when it fails assume it was
-> > a metric, but I like the simplicity of this approach.
-> 
-> I don't think it's simpler for the user.
->
-I think it should be clear at the user level whether they're using an event
-or a metric (basically a couple of events together). I don't hiding too
-much of details from users is any good.
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-> > Maybe this
-> > change could be adopted more widely with something like "perf stat -e
-> > metric:IPC -a -I 1000" rather than the current "perf stat -M IPC -a -I
-> > 1000".
-> 
-> I thought about just adding metrics to -e, without metric: of course.
-> 
-> -Andi
-> 
-> 
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 97a423ecf808..8752b5eea091 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -11175,10 +11175,14 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 			IXGBE_LINK_SPEED_10GB_FULL | IXGBE_LINK_SPEED_1GB_FULL,
+ 			true);
+ 
+-	ixgbe_mii_bus_init(hw);
++	err = ixgbe_mii_bus_init(hw);
++	if (err)
++		goto err_netdev;
+ 
+ 	return 0;
+ 
++err_netdev:
++	unregister_netdev(netdev);
+ err_register:
+ 	ixgbe_release_hw_control(adapter);
+ 	ixgbe_clear_interrupt_scheme(adapter);
+-- 
+2.26.1
 
