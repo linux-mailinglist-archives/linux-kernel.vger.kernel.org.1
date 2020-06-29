@@ -2,196 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5052920D6E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D69720D85A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732392AbgF2TYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:24:53 -0400
-Received: from mga11.intel.com ([192.55.52.93]:22494 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732229AbgF2TYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:24:13 -0400
-IronPort-SDR: QUFCqV4WzEX0DpclvzL0kBs6jwzVpcJXCgAbZajmy8zRTXEWlwaqFxl/9S1L8AgCnvJbldA9m2
- HiGjVBczcpGg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="144144724"
-X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
-   d="scan'208";a="144144724"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 05:23:11 -0700
-IronPort-SDR: opdDwj+HB672U4xcrIPAvY6zveLUtMxy1iElSVFTqJnW264T+00B4NbPRsL5kliXRdqCrSGlvc
- NHQTBcEv2rOQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
-   d="scan'208";a="280847371"
-Received: from fmsmsx107.amr.corp.intel.com ([10.18.124.205])
-  by orsmga006.jf.intel.com with ESMTP; 29 Jun 2020 05:23:11 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx107.amr.corp.intel.com (10.18.124.205) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Mon, 29 Jun 2020 05:23:11 -0700
-Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 29 Jun 2020 05:23:10 -0700
-Received: from FMSEDG001.ED.cps.intel.com (10.1.192.133) by
- fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 29 Jun 2020 05:23:10 -0700
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (104.47.45.55) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server (TLS) id
- 14.3.439.0; Mon, 29 Jun 2020 05:23:10 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QnjE60hSEZAKsbXGaGUAkjzfO9Ak0ghaayHUURKPIWMcI3pZyQeP6WxldnyFh8uSPLF0q8xMNwRbpy4+wmCeztE2qt0FpBWpJ9OT/rbyg9fOxJ+4h7CsJcjI8aIb6kROdBejYx8bIMzndy4Hv6bkpwXsbDQsGfXeIRo+pBExZMrYiypBPOvbsD8Y1VMP+ocxYterhIHVzGtGdOUrUeSpAjXPify4ZHYTDK3DGL7RnrVI/vE3d22CkTposhexStjgN5KeigRtv0KogNGe/66FFuyfNdv+FbaqHz+N0CYrYnh+gCjMGNEZ1s2zLpah0W5RXBHPY9IWEw15GAHskwcGnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+13YzAJD7w6vO8YVDFkU3bnj5WWsLn2FcJvtsl34nog=;
- b=djuyuHv91mc7zHBYZ9s/GyMQl7wZMtERlpgaoXWmtAtJ2Hx/bvAW6JSyI/1XwBr0gkhhuJLijsAHxdAftXOLsYvyCg6KKJMyHeg/0MMSAByV/KCqqsQzoyiXag8qyypesz3NAyeW30GVhLkSod45ypjERSDTzqG7rMk2BYTGeuyiwnCfPBmJtbgTEWTYRgAe9ZVB4VMYH1Jwov3sVk2Gx1135wu2KfhbRPksJNXyGIa+LkUgwjdukHW0E22BftOUZtgxOiFbSFZuFCAaXl3vlVSBNNwmQwvOwZuBP+ftuZeuhu3trZR1hPPlhrsJR7byNzLqBgIEH1j2NGS7YxGCWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+13YzAJD7w6vO8YVDFkU3bnj5WWsLn2FcJvtsl34nog=;
- b=qyMxtctPMF3EICizAH45nFMO1V/X374vdeASqJkt5I1pInJ344MI4bJacVXBTyJTAxsk7UWxDFDM5IX/4dKXDBBJx4in2Il0ThSHnPDRJKZaHAg4fK9BEC0ae+AykaZS3fw+CRGLW3gNyt5KPIl4zM0oz0kzyQjwlprTfOrPwEs=
-Received: from DM5PR11MB1435.namprd11.prod.outlook.com (2603:10b6:4:7::18) by
- DM6PR11MB3708.namprd11.prod.outlook.com (2603:10b6:5:146::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3131.20; Mon, 29 Jun 2020 12:23:08 +0000
-Received: from DM5PR11MB1435.namprd11.prod.outlook.com
- ([fe80::2c3d:98d9:4e81:c86c]) by DM5PR11MB1435.namprd11.prod.outlook.com
- ([fe80::2c3d:98d9:4e81:c86c%6]) with mapi id 15.20.3131.027; Mon, 29 Jun 2020
- 12:23:08 +0000
-From:   "Liu, Yi L" <yi.l.liu@intel.com>
-To:     Stefan Hajnoczi <stefanha@gmail.com>
-CC:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>,
-        "Sun, Yi Y" <yi.y.sun@intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "Wu, Hao" <hao.wu@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 02/14] iommu: Report domain nesting info
-Thread-Topic: [PATCH v3 02/14] iommu: Report domain nesting info
-Thread-Index: AQHWSgRQVmc9Qp+Xi0mQEumzIJrE0qjvWjsAgAAviUA=
-Date:   Mon, 29 Jun 2020 12:23:08 +0000
-Message-ID: <DM5PR11MB1435FC14F2E8AC075DE41205C36E0@DM5PR11MB1435.namprd11.prod.outlook.com>
-References: <1592988927-48009-1-git-send-email-yi.l.liu@intel.com>
- <1592988927-48009-3-git-send-email-yi.l.liu@intel.com>
- <20200629092448.GB31392@stefanha-x1.localdomain>
-In-Reply-To: <20200629092448.GB31392@stefanha-x1.localdomain>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-dlp-product: dlpe-windows
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.198.147.219]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7594ca87-cb8d-44c5-121d-08d81c272e85
-x-ms-traffictypediagnostic: DM6PR11MB3708:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB3708DF26A6EF34F93AD67AB8C36E0@DM6PR11MB3708.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-forefront-prvs: 044968D9E1
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: EQH8LY1QihLjXelKVZq2O/b/4efcuOEmZtC8BcJ4RjdFaWWmwW5j9bkso1ZvYudT7jq+cKVjyseZRV8gqE1fFlJh2CiUYYvoIqd1V/PRN0lvMBVZG5oSUL+hnSsFFmxnk8jHFhmfqkFiwM8o7OyDM4rxjXHpiqho9EtWhBVYgF8fNYBMQdnzHBud+mWiF7CySu+O8gjPqS7E9q4Fn/brxp2lVu4tugVJ9PQLDJdd9GLlSqCdZabJU6/lapaOhXUM0jKGIs/O0KFEuojliRmAztgdFy6MyhN8B0jYhoJP+YIetswJ+ssoV1yK18xA/q+8Dhj4ER3tgDYSYWrR5ZFYyg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1435.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(39860400002)(396003)(376002)(136003)(366004)(478600001)(7696005)(316002)(2906002)(8676002)(8936002)(7416002)(66946007)(54906003)(76116006)(6916009)(6506007)(52536014)(33656002)(66476007)(64756008)(66446008)(5660300002)(66556008)(4326008)(186003)(86362001)(83380400001)(55016002)(9686003)(26005)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 4KlcjyTcElFwnXfazHOWtQu0g+uML7Q6H7w+nmdHAw1nS2NoQecUvYqe9Jno4HUduebghDfNRvU2zvTTnK4q8JGr4GJmsXoYXpOilrWWJW9XlGgcY0huqq91mvcPAJ+4bS2wjtmn0plz3WWldwZdv+DmDjCr4JRJLYkIAg6gkgqFi+P9SdqW/ggNGXQg26sCoefvwEdFo+yIv3AB15buhlUXu6Wu8NPfoiZmRjWj92V1TN3Lh5bx8G5rh7dsIw0Weop20t6GBH4j94wVKTrBGOLZSpn42EyQ79vrBnECSDCa2yHJPrzcTl55vA1LWdKhe4bHdAl4j5yqRwkFTEUDwUMTHDMRByvWIzcAsBsWksMJjDVOseXCBKKvCFgb3I3TPfLYMqIbGu6louX+1OBOuDXN+vXw3h5jdcy9TEsiYWTYj56KOia+ImxCZiwk7yV/alwjb1j70cT39WzQpFzd2g4wm7xb6KZkxMWhuZ2qdrFQ73wp37tyPy2UiJC/e3Al
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1733052AbgF2Ti3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387449AbgF2Tho (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:37:44 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA6BC02A549;
+        Mon, 29 Jun 2020 05:52:34 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id z17so12727584edr.9;
+        Mon, 29 Jun 2020 05:52:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mISjJ6W1t59EyOgM95PXut3o9oWxsupqoczgWBu6EVM=;
+        b=U+aAv48PQQCnh+KsZHoyXJp2fb+2JKRI7qPY/jFla8ukJUA0pqSumSJaqLP1d1c/Tg
+         QfUulpfaMxcxtpRdA0xd2YvPRJYF0X1F3NE3vdK3UR/tDmi+QfDx9cT7UXKBbtjjsPpF
+         3v4QE6RY8FZ0bO8xAJT/vUL8eTbWWxXWI+uwWu5Y/HETw6WBlLZHUxfxQG9ZsmdduygF
+         IeV+sFppe6kmQwReUz8SndYScV/KQSW3/ARWhd2MV7oZPNecQ2kLXmxVp2QkAvjFKRFH
+         Xaj0Qb8zk7m4nJUPj85jBwjxDU6FgXx6o++a7QOXmvJWBIMIKwmSdEQ1n0HiqP9ql7he
+         d52Q==
+X-Gm-Message-State: AOAM532rcdftR3zqGww/nsy4sirU2uOjxsKLIudipP8lgdUdqSGTAyxn
+        JQY4PQmIgkpBxm3WL52Qw/E=
+X-Google-Smtp-Source: ABdhPJwKuDYNd8lQ0rDIYcM14Sny/O73oVLrmaxeBF52BJhJLTspOZ/6aPol9DAWu4TfLKyk6WFptw==
+X-Received: by 2002:a05:6402:1c96:: with SMTP id cy22mr17042750edb.79.1593435153360;
+        Mon, 29 Jun 2020 05:52:33 -0700 (PDT)
+Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
+        by smtp.gmail.com with ESMTPSA id r17sm4808969edw.68.2020.06.29.05.52.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 05:52:32 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 14:52:31 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org, dm-devel@redhat.com,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>
+Subject: Re: [PATCH 6/6] mm: Add memalloc_nowait
+Message-ID: <20200629125231.GJ32461@dhcp22.suse.cz>
+References: <20200625113122.7540-1-willy@infradead.org>
+ <20200625113122.7540-7-willy@infradead.org>
+ <20200629050851.GC1492837@kernel.org>
+ <20200629121816.GC25523@casper.infradead.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1435.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7594ca87-cb8d-44c5-121d-08d81c272e85
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2020 12:23:08.1141
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rflPj9pyL03NnbKUQ8IK+h22QoRqwRqWwQ9I6kU8fvuLDsHk2nx0YtoAqoABRjezXpXygSB+PI3RiCPlCT4kjg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3708
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629121816.GC25523@casper.infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stefan,
+On Mon 29-06-20 13:18:16, Matthew Wilcox wrote:
+> On Mon, Jun 29, 2020 at 08:08:51AM +0300, Mike Rapoport wrote:
+> > > @@ -886,8 +868,12 @@ static struct dm_buffer *__alloc_buffer_wait_no_callback(struct dm_bufio_client
+> > >  			return NULL;
+> > >  
+> > >  		if (dm_bufio_cache_size_latch != 1 && !tried_noio_alloc) {
+> > > +			unsigned noio_flag;
+> > > +
+> > >  			dm_bufio_unlock(c);
+> > > -			b = alloc_buffer(c, GFP_NOIO | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+> > > +			noio_flag = memalloc_noio_save();
+> > 
+> > I've read the series twice and I'm still missing the definition of
+> > memalloc_noio_save().
+> > 
+> > And also it would be nice to have a paragraph about it in
+> > Documentation/core-api/memory-allocation.rst
+> 
+> Documentation/core-api/gfp_mask-from-fs-io.rst:``memalloc_nofs_save``, ``memalloc_nofs_restore`` respectively ``memalloc_noio_save``,
+> Documentation/core-api/gfp_mask-from-fs-io.rst:   :functions: memalloc_noio_save memalloc_noio_restore
+> Documentation/core-api/gfp_mask-from-fs-io.rst:allows nesting so it is safe to call ``memalloc_noio_save`` or
+ 
+The patch is adding memalloc_nowait* and I suspect Mike had that in
+mind, which would be a fair request. Btw. we are missing memalloc_nocma*
+documentation either - I was just reminded of its existence today...
 
-> From: Stefan Hajnoczi <stefanha@gmail.com>
-> Sent: Monday, June 29, 2020 5:25 PM
->=20
-> On Wed, Jun 24, 2020 at 01:55:15AM -0700, Liu Yi L wrote:
-> > +/*
-> > + * struct iommu_nesting_info - Information for nesting-capable IOMMU.
-> > + *				user space should check it before using
-> > + *				nesting capability.
-> > + *
-> > + * @size:	size of the whole structure
-> > + * @format:	PASID table entry format, the same definition with
-> > + *		@format of struct iommu_gpasid_bind_data.
-> > + * @features:	supported nesting features.
-> > + * @flags:	currently reserved for future extension.
-> > + * @data:	vendor specific cap info.
-> > + *
-> > + * +---------------+--------------------------------------------------=
---+
-> > + * | feature       |  Notes                                           =
-  |
-> > + *
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> =3D+
-> > + * | SYSWIDE_PASID |  Kernel manages PASID in system wide, PASIDs used=
-  |
-> > + * |               |  in the system should be allocated by host kernel=
-  |
-> > + * +---------------+--------------------------------------------------=
---+
-> > + * | BIND_PGTBL    |  bind page tables to host PASID, the PASID could =
-  |
-> > + * |               |  either be a host PASID passed in bind request or=
-  |
-> > + * |               |  default PASIDs (e.g. default PASID of aux-domain=
-) |
-> > + * +---------------+--------------------------------------------------=
---+
-> > + * | CACHE_INVLD   |  mandatory feature for nesting capable IOMMU     =
-  |
-> > + * +---------------+--------------------------------------------------=
---+
->=20
-> This feature description is vague about what CACHE_INVLD does and how to
-> use it. If I understand correctly, the presence of this feature means
-> that VFIO_IOMMU_NESTING_OP_CACHE_INVLD must be used?
->
-> The same kind of clarification could be done for SYSWIDE_PASID and
-> BIND_PGTBL too.
-
-For SYSWIDE_PASID and BIND_PGTBL, yes, presence of the feature bit
-means must use. So the two are requirements to user space if it wants
-to setup nesting. While for CACHE_INVLD, it's kind of availability
-here. How about removing CACHE_INVLD as presence of BIND_PGTBL should
-indicates support of CACHE_INVLD?
-
-Regards,
-Yi Liu
-
-> Stefan
+-- 
+Michal Hocko
+SUSE Labs
