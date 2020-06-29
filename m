@@ -2,203 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E4D20E56A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38CD20E5B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391352AbgF2Vgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:36:48 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:12468 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728407AbgF2Skk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593456040; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=2UyrXWkOMOMhSQo6t9EmNJzuHREHp5h9gbpKc9GpJzw=; b=jCQ39LoakAohhbZ1y9Vj7lPWwOf4QkjpOVUCgGwnUKaUMKEBc6GsY3pWFX/4ElehWxiVwGJa
- 5llSilGz2fd658iBERViKgJMOVjkmqTwUTJrCIIZtEn9vG/+D4YaJXwDVVhTvxC0P6fsJ6q9
- Uyr8ifkGp4ceV6w2K80/T0q5qBA=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n12.prod.us-west-2.postgun.com with SMTP id
- 5ef9c72cad153efa34b15da6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 10:49:16
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DCD1BC433CA; Mon, 29 Jun 2020 10:49:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.50.61.98] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2391368AbgF2Vkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:40:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728211AbgF2SkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:40:22 -0400
+Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 33980C433C6;
-        Mon, 29 Jun 2020 10:49:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 33980C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH v6 5/6] media: venus: core: Add support for opp
- tables/perf voting
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        bjorn.andersson@linaro.org, agross@kernel.org, robdclark@gmail.com,
-        robdclark@chromium.org
-Cc:     viresh.kumar@linaro.org, sboyd@kernel.org, mka@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-References: <1592222564-13556-1-git-send-email-rnayak@codeaurora.org>
- <1592222564-13556-6-git-send-email-rnayak@codeaurora.org>
- <e0f856ec-e391-9b1d-baa3-7dda20cb853a@linaro.org>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <fbb3bdd7-523b-a5fa-cde1-c61e7691e7f9@codeaurora.org>
-Date:   Mon, 29 Jun 2020 16:19:08 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 93344239EB;
+        Mon, 29 Jun 2020 10:57:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593428270;
+        bh=HcI2xoslyx35NhmXNHGQ6SltaGNwVVmR149tf8bukok=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=q6ZvW0Q2Zji1S022ZPEy0rHL9G0AiIAbnzvM1O+PwWKleo95q6udALhwSKjsSf+/q
+         jtPd3P+BH8MsMr6fBUgVJKgKpL0XVHfY7dM5DpcgDtfvAI3ZGdxj/S8T9KRjysoxl1
+         T4tbDH1Nczj8GcPWIrCYTFzAz1MeOTNOs9f8E0eM=
+Received: from mchehab by mail.kernel.org with local (Exim 4.93)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jprTw-006kPP-F2; Mon, 29 Jun 2020 12:57:48 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] kconfig: qconf: re-implement setSelected()
+Date:   Mon, 29 Jun 2020 12:57:45 +0200
+Message-Id: <7778611fde57d3e221cc1ed077c7b78bedb3cbd7.1593428163.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1593423060.git.mchehab+huawei@kernel.org>
+References: <cover.1593423060.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <e0f856ec-e391-9b1d-baa3-7dda20cb853a@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The default implementation for setSelected() at QTreeWidgetItem
+allows multiple items to be selected.
 
+Well, this should never be possible for the configItem lists.
 
-On 6/18/2020 8:24 PM, Stanimir Varbanov wrote:
-> Hi Rajendra,
-> 
-> On 6/15/20 3:02 PM, Rajendra Nayak wrote:
->> Add support to add OPP tables and perf voting on the OPP powerdomain.
->> This is needed so venus votes on the corresponding performance state
->> for the OPP powerdomain along with setting the core clock rate.
->>
->> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
->> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
->> Cc: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->> Cc: linux-media@vger.kernel.org
->> ---
->> No functional change in v6, rebased over 5.8-rc1
->> Bindings update to add optional PD https://lore.kernel.org/patchwork/patch/1241077/
->>
->>   drivers/media/platform/qcom/venus/core.c       | 43 +++++++++++++++++---
->>   drivers/media/platform/qcom/venus/core.h       |  5 +++
->>   drivers/media/platform/qcom/venus/pm_helpers.c | 54 ++++++++++++++++++++++++--
->>   3 files changed, 92 insertions(+), 10 deletions(-)
->>
-> 
-> <cut>
-> 
->>   
->> @@ -740,13 +740,16 @@ static int venc_power_v4(struct device *dev, int on)
->>   
->>   static int vcodec_domains_get(struct device *dev)
->>   {
->> +	int ret;
->> +	struct opp_table *opp_table;
->> +	struct device **opp_virt_dev;
->>   	struct venus_core *core = dev_get_drvdata(dev);
->>   	const struct venus_resources *res = core->res;
->>   	struct device *pd;
->>   	unsigned int i;
->>   
->>   	if (!res->vcodec_pmdomains_num)
->> -		return -ENODEV;
->> +		goto skip_pmdomains;
->>   
->>   	for (i = 0; i < res->vcodec_pmdomains_num; i++) {
->>   		pd = dev_pm_domain_attach_by_name(dev,
->> @@ -763,7 +766,41 @@ static int vcodec_domains_get(struct device *dev)
->>   	if (!core->pd_dl_venus)
->>   		return -ENODEV;
->>   
->> +skip_pmdomains:
->> +	if (!core->has_opp_table)
->> +		return 0;
->> +
->> +	/* Attach the power domain for setting performance state */
->> +	opp_table = dev_pm_opp_attach_genpd(dev, res->opp_pmdomain, &opp_virt_dev);
->> +	if (IS_ERR(opp_table)) {
->> +		ret = PTR_ERR(opp_table);
->> +		goto opp_attach_err;
->> +	}
->> +
->> +	core->opp_pmdomain = *opp_virt_dev;
->> +	core->opp_dl_venus = device_link_add(dev, core->opp_pmdomain,
->> +					     DL_FLAG_RPM_ACTIVE |
->> +					     DL_FLAG_PM_RUNTIME |
->> +					     DL_FLAG_STATELESS);
->> +	if (!core->opp_dl_venus) {
->> +		ret = -ENODEV;
->> +		goto opp_dl_add_err;
->> +	}
->> +
->>   	return 0;
->> +
->> +opp_dl_add_err:
->> +	dev_pm_domain_detach(core->opp_pmdomain, true);
->> +opp_attach_err:
->> +	if (core->pd_dl_venus) {
->> +		device_link_del(core->pd_dl_venus);
->> +		for (i = 0; i < res->vcodec_pmdomains_num; i++) {
->> +			if (IS_ERR_OR_NULL(core->pmdomains[i]))
->> +				continue;
->> +			dev_pm_domain_detach(core->pmdomains[i], true);
->> +		}
->> +	}
->> +	return ret;
->>   }
->>   
->>   static void vcodec_domains_put(struct device *dev)
->> @@ -773,7 +810,7 @@ static void vcodec_domains_put(struct device *dev)
->>   	unsigned int i;
->>   
->>   	if (!res->vcodec_pmdomains_num)
->> -		return;
->> +		goto skip_pmdomains;
->>   
->>   	if (core->pd_dl_venus)
->>   		device_link_del(core->pd_dl_venus);
->> @@ -783,6 +820,15 @@ static void vcodec_domains_put(struct device *dev)
->>   			continue;
->>   		dev_pm_domain_detach(core->pmdomains[i], true);
->>   	}
->> +
->> +skip_pmdomains:
->> +	if (!res->opp_pmdomain)
->> +		return;
->> +
->> +	if (core->opp_dl_venus)
->> +		device_link_del(core->opp_dl_venus);
->> +
->> +	dev_pm_domain_detach(core->opp_pmdomain, true);
-> 
-> Without corresponding changes in venus DT node we call pm_domain_detach
-> with core->opp_pmdomain = NULL which triggers NULL pointer dereference.
-> 
-> I guess you should check:
-> 
-> 	if (core->has_opp_table)
-> 		dev_pm_domain_detach(core->opp_pmdomain, true);
-> 
-> or
-> 
-> 	if (core->opp_pmdomain)
-> 		dev_pm_domain_detach(core->opp_pmdomain, true);
-> 
-> 
-> ... not sure which one is more appropriate or both are.
+So, implement a function that will automatically clean any
+previous selection. This simplifies the logic somewhat, while
+making the selection logic to be applied atomically, avoiding
+future issues on that.
 
-Thanks, I'll fix that up when I repost. Sorry I was out for a while so
-haven't been able to reproduce the rpmh timeout issue you reported.
-Will spend some time on it this week and see if I can reproduce it.
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
 
+This is a followup patch after the series I sent previously.
 
+I noticed that there are still some situations where it might be
+possible to have multiple lines selected at the config lists.
+
+This patch addresses it on a different way, ensuring that it shouldn't
+be possible anymore to have more than one lines selected.
+
+ scripts/kconfig/qconf.cc | 22 ++++------------------
+ scripts/kconfig/qconf.h  | 14 ++++++++++----
+ 2 files changed, 14 insertions(+), 22 deletions(-)
+
+diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
+index d8870b15a178..0ba373a3cdd4 100644
+--- a/scripts/kconfig/qconf.cc
++++ b/scripts/kconfig/qconf.cc
+@@ -537,7 +537,7 @@ void ConfigList::setRootMenu(struct menu *menu)
+ 	rootEntry = menu;
+ 	updateListAll();
+ 	if (currentItem()) {
+-		currentItem()->setSelected(hasFocus());
++		setSelected(currentItem(), hasFocus());
+ 		scrollToItem(currentItem());
+ 	}
+ }
+@@ -865,7 +865,7 @@ void ConfigList::focusInEvent(QFocusEvent *e)
+ 
+ 	ConfigItem* item = (ConfigItem *)currentItem();
+ 	if (item) {
+-		item->setSelected(true);
++		setSelected(item, true);
+ 		menu = item->menu;
+ 	}
+ 	emit gotFocus(menu);
+@@ -1696,17 +1696,10 @@ void ConfigMainWindow::setMenuLink(struct menu *menu)
+ 			if (!parent)
+ 				return;
+ 
+-			/* Clear an already-selected item */
+-			if (!configList->selectedItems().isEmpty()) {
+-				item = (ConfigItem*)configList->selectedItems().first();
+-				if (item)
+-					item->setSelected(false);
+-			}
+-
+ 			/* Select the config view */
+ 			item = configList->findConfigItem(parent);
+ 			if (item) {
+-				item->setSelected(true);
++				configList->setSelected(item, true);
+ 				configList->scrollToItem(item);
+ 			}
+ 
+@@ -1723,16 +1716,9 @@ void ConfigMainWindow::setMenuLink(struct menu *menu)
+ 	}
+ 
+ 	if (list) {
+-		/* Clear an already-selected item */
+-		if (!list->selectedItems().isEmpty()) {
+-			item = (ConfigItem*)list->selectedItems().first();
+-			if (item)
+-				item->setSelected(false);
+-		}
+-
+ 		item = list->findConfigItem(menu);
+ 		if (item) {
+-			item->setSelected(true);
++			list->setSelected(item, true);
+ 			list->scrollToItem(item);
+ 			list->setFocus();
+ 			helpText->setInfo(menu);
+diff --git a/scripts/kconfig/qconf.h b/scripts/kconfig/qconf.h
+index a193137f2314..fb9e9729266f 100644
+--- a/scripts/kconfig/qconf.h
++++ b/scripts/kconfig/qconf.h
+@@ -45,11 +45,17 @@ class ConfigList : public QTreeWidget {
+ public:
+ 	ConfigList(ConfigView* p, const char *name = 0);
+ 	void reinit(void);
+-	ConfigView* parent(void) const
+-	{
+-		return (ConfigView*)Parent::parent();
+-	}
+ 	ConfigItem* findConfigItem(struct menu *);
++	ConfigView* parent(void) const
++	{
++		return (ConfigView*)Parent::parent();
++	}
++	void setSelected(QTreeWidgetItem *item, bool enable) {
++		for (int i = 0; i < selectedItems().size(); i++)
++			selectedItems().at(i)->setSelected(false);
++
++		item->setSelected(enable);
++	}
+ 
+ protected:
+ 	void keyPressEvent(QKeyEvent *e);
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.26.2
+
+
