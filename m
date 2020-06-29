@@ -2,121 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F1F20D6E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6A420D60F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729724AbgF2TYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:24:51 -0400
-Received: from mga11.intel.com ([192.55.52.93]:22498 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732144AbgF2TYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:24:12 -0400
-IronPort-SDR: fugI7SEnECD8AcUrpPHl2Xm5xd7GVForJiOXr6uS0/Q6baUz9pxuSsaMfB0N2rtQJ703BA3CAR
- mIqm26Bip02w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="144218730"
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="144218730"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 11:43:17 -0700
-IronPort-SDR: 2J4kH3ECOEn2x8rudw4qFHfxJNd+hi7C5BzkjhtJL2RgnSBmdXcfphgfQtu1zmq40tmcXCkTVQ
- gfm3h3i66LWg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="318924324"
-Received: from spandruv-mobl3.amr.corp.intel.com ([10.254.77.33])
-  by orsmga007.jf.intel.com with ESMTP; 29 Jun 2020 11:43:16 -0700
-Message-ID: <651b555b0723352ad5c624a68bf4ed76429314d8.camel@linux.intel.com>
-Subject: Re: [PATCH v3] HID: intel-ish-hid: Replace PCI_DEV_FLAGS_NO_D3 with
- pci_save_state
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Zhang Lixu <lixu.zhang@intel.com>, Even Xu <even.xu@intel.com>,
-        "open list:INTEL INTEGRATED SENSOR HUB DRIVER" 
-        <linux-input@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Mon, 29 Jun 2020 11:43:16 -0700
-In-Reply-To: <20200629041648.19113-1-kai.heng.feng@canonical.com>
-References: <20200629041648.19113-1-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.3 (3.34.3-1.fc31) 
+        id S1731582AbgF2TRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:17:11 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:55572 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731963AbgF2TRJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:17:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593458228;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oCU9JjYn8E5EJ3tgtkZ8fJQcI1jYdB8KZDv2+twV1/g=;
+        b=A9TU9zrrWi35e6LxvVRWC3ssuzs97B2pnNvjC9jSNTDhQEBT9f1+XUZBVBY+pT4wv2TJz0
+        nDd9TUFapZWDpwXTSOtU3jc5nu8RU5GUfJq5dw6Q00NNVSePLwZPSXMTBuDc91BabDWL7y
+        KuQJGaJiUKHGRXov1guNRhxcMQP4/2Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-230-UuU0pLxkNTqGodv5frl3IQ-1; Mon, 29 Jun 2020 15:17:04 -0400
+X-MC-Unique: UuU0pLxkNTqGodv5frl3IQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F09FE91362B;
+        Mon, 29 Jun 2020 19:17:02 +0000 (UTC)
+Received: from krava (unknown [10.40.195.81])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 261F71C4;
+        Mon, 29 Jun 2020 19:17:00 +0000 (UTC)
+Date:   Mon, 29 Jun 2020 21:17:00 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 01/13] tools/libperf: avoid moving of fds at
+ fdarray__filter() call
+Message-ID: <20200629191700.GC3031756@krava>
+References: <0781a077-aa82-5b4a-273e-c17372a72b93@linux.intel.com>
+ <3d36dc7a-4249-096c-7554-80e6d290eac5@linux.intel.com>
+ <fada6325-2e6a-0de4-918f-0bc7d1410c52@linux.intel.com>
+ <20200625171405.GL2719003@krava>
+ <688910f3-289e-d63e-79e3-0a17a6df0e9e@linux.intel.com>
+ <20200626093745.GM2719003@krava>
+ <6582201a-9570-709f-f6e9-5a644296f49d@linux.intel.com>
+ <b2a868bb-b434-7814-d577-944efc5369aa@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b2a868bb-b434-7814-d577-944efc5369aa@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-06-29 at 12:16 +0800, Kai-Heng Feng wrote:
-> PCI_DEV_FLAGS_NO_D3 should not be used outside of PCI core.
-> 
-> Instead, we can use pci_save_state() to hint PCI core that the device
-> should stay at D0 during suspend. By doing so, PCI core will let the
-> upstream bridges also stays at D0 so the entire hierarchy is in the
-> correct power state as PCI spec mandates.
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+On Mon, Jun 29, 2020 at 06:11:52PM +0300, Alexey Budankov wrote:
 
-> ---
-> v3:
->  - Use multi-line comments.
-> v2:
->  - Wording change.
+SNIP
+
+> >>
+> >> I'm confused, are you talking about file descriptors limit now?
+> >> this wont be affected by epoll change.. what do I miss?
+> > 
+> > Currently there is already uname -n limit on the amount of open file descriptors
+> > and Perf tool process is affected by that limit.
+> > 
+> > Moving to epoll() will impose one more max_user_watches limit and that can additionally
+> > confine Perf applicability even though default value on some machines currently
+> > is high enough.
 > 
->  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
+> Prior making v9 I would prefer to agree on some design to be implemented in order to
+> avoid guessing and redundant reiterating.
 > 
-> diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> index f491d8b4e24c..c6d48a8648b7 100644
-> --- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> +++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> @@ -106,6 +106,11 @@ static inline bool ish_should_enter_d0i3(struct
-> pci_dev *pdev)
->  	return !pm_suspend_via_firmware() || pdev->device ==
-> CHV_DEVICE_ID;
->  }
->  
-> +static inline bool ish_should_leave_d0i3(struct pci_dev *pdev)
-> +{
-> +	return !pm_resume_via_firmware() || pdev->device ==
-> CHV_DEVICE_ID;
-> +}
-> +
->  /**
->   * ish_probe() - PCI driver probe callback
->   * @pdev:	pci device
-> @@ -215,9 +220,7 @@ static void __maybe_unused
-> ish_resume_handler(struct work_struct *work)
->  	struct ishtp_device *dev = pci_get_drvdata(pdev);
->  	int ret;
->  
-> -	/* Check the NO_D3 flag to distinguish the resume paths */
-> -	if (pdev->dev_flags & PCI_DEV_FLAGS_NO_D3) {
-> -		pdev->dev_flags &= ~PCI_DEV_FLAGS_NO_D3;
-> +	if (ish_should_leave_d0i3(pdev) && !dev->suspend_flag) {
->  		disable_irq_wake(pdev->irq);
->  
->  		ishtp_send_resume(dev);
-> @@ -281,8 +284,11 @@ static int __maybe_unused ish_suspend(struct
-> device *device)
->  			 */
->  			ish_disable_dma(dev);
->  		} else {
-> -			/* Set the NO_D3 flag, the ISH would enter D0i3
-> */
-> -			pdev->dev_flags |= PCI_DEV_FLAGS_NO_D3;
-> +			/*
-> +			 * Save state so PCI core will keep the device
-> at D0,
-> +			 * the ISH would enter D0i3
-> +			 */
-> +			pci_save_state(pdev);
->  
->  			enable_irq_wake(pdev->irq);
->  		}
+> Options that I see as good balanced ones are 1) or 5), + non screwing of fds to fix
+> staleness of pos(=fdarray__add()).
+> 
+> Are there any thoughts so far?
+
+let's try it and discuss over the code
+
+jirka
 
