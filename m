@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB88120D2E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C3A20D2D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729861AbgF2Sxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:53:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
+        id S1729780AbgF2Sws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729014AbgF2Sww (ORCPT
+        with ESMTP id S1729687AbgF2Swm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:52 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 186D9C02E2CC
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:52 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id q15so15508942wmj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:52 -0700 (PDT)
+        Mon, 29 Jun 2020 14:52:42 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D98C02E2CF
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:55 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id f139so16235430wmf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=snRavlMzvk6o89999ihW2SJGcP4kgkkLuKbzazJuz7M=;
-        b=EBCbSVbxb5YiApQEcA5o+TIGFgyXHcDAl7i662DfxDYdnp862l0GPoQfWOcNUtjcSe
-         jnezcozxuPVkZo5f4KjMKLccsMOZTvdDTyEbUlK4123+wVNAkXCXWv8ZfYrJxAS3qZ93
-         8vrs/CdF0z7YODI7HgsfSKNJdxYv1vhR4+IGMmCaoAOzFgJycGJVJ0ZGcNbsup+I/eZE
-         XqHkVB4Rbu4LtbCpo307g++fMpBLSJJGlXhTLve6b5TV0o4HitW+xa8FO/mP/sCAT6Pa
-         3VnkcXGnjMH8qE1jsEUyE7sTCYERb3R3EtTgvwOpZAcOq6zxn7z3UFHnAkImidK5q/fj
-         I+6g==
+        bh=xnIhP+BLJCkXHxO9I8vb7t4ZYrl34I7GGa9NV7vqaQI=;
+        b=PbIxwA8vy7vWwp3PD1xYvC/boLvJezju8OhuIn1WM5qPXlK2MdHIieYvhn934I/UGA
+         OURRy4f4bR0e0ymv4gSsOjdvPt+GDIeqZW65pRyK3+1U3jg+H4I2SGTL5572ec1SsDNz
+         N+VMvXp2ig6KCBI/kKZM7CZ0OLIimgEUoYBfBhg8GeUjawTAJC3doOiPq6oJOzVJ/12U
+         dMXCjVQc6LifoAl9uBJ8pFrHlHAMFF5aB10GKWdxKort9tIty0y2pSIcGpIivF9NIPmn
+         nOQycVd1S4Orevvtr0YBONdbpszrq0tUfl6hfN8a9UI2cpYPDvBQcA+vULw12+lFAIZP
+         5OxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=snRavlMzvk6o89999ihW2SJGcP4kgkkLuKbzazJuz7M=;
-        b=E1B9uHYV11G8VOzJ/dZm6QESMXWulDYDc7+zYLfF803zBzV06sGnVyxLJP8r4VwAxw
-         n00bJ6VjrbYyHb4gNUeQhE/nSa3yLx8mm0hxNXZLx1raMcUYBH97CdMT50Wa148bZrBr
-         t+gFpfeWr0JjAs0evFy8QBlqkDJT6Wb2da+5OiEaYSXuR9oMmtL5Tr4wg3RBW4216+n5
-         y2NrVi0HZFTHGIkVZaibza+mDaPVkyjrLnaItvKGwThwuaadJpKNdfIFPvOmt47uKYN6
-         K60ZeXOeLCstHjEBvbky4CRTN9IZkf71ufKVoRw+dHZyZAgO2ZaMmNK7tlWlW4diQt/A
-         Ls6g==
-X-Gm-Message-State: AOAM533u5dFSkKtSN18wIJ+qKxI9KJYGWFXiYlEswqIrXofIj8x4RLTq
-        90mEBB0S7+Drg7RrV6TOaargyQ==
-X-Google-Smtp-Source: ABdhPJwtIrvDrDIcBEd1RS2NhZDsLvIxIfEKOQpWVF86D0jsOeJclt4mGbamK7+WRgzx6R43bbW3/Q==
-X-Received: by 2002:a1c:2cd7:: with SMTP id s206mr16182224wms.109.1593439490833;
-        Mon, 29 Jun 2020 07:04:50 -0700 (PDT)
+        bh=xnIhP+BLJCkXHxO9I8vb7t4ZYrl34I7GGa9NV7vqaQI=;
+        b=rjXebj7YDA5D04dB5LbZeHHIqKJOwzmD3MsED9R4urdTdb6e5aW6fscN/2+UMsUkcf
+         1R6MRF4WZxcasuNJG9am8bUWjaKX9czySLRtYi1zsZ2AJqY2dB9vtwSmjdndaEzoEvYa
+         teTBy5UzzZYR9LZZ97YjGu2zvg3t2Yx0jJKy0F35JFZQJsHa/afzMyzNf8+B6qJ8PQPs
+         GLJKiDN3pdt0igRu6dpYfermhxV98M2LK4bnTraH5w45ZlDYs1q2QcbM0KUPd6tBVX7+
+         Xdpp9AmQVzblbSu0HOefthU/jb2yCV09CZYORxCsrbiZD/XeY/l2c7tEI7S5+gRDUpyT
+         GZoQ==
+X-Gm-Message-State: AOAM533Dv7KW2xlR/4AvM/3vPUxgZgbdfOamVsMz4k4VL77AeCMSbKPj
+        +ka7Ow+o8mjIod32DncE+StlnA==
+X-Google-Smtp-Source: ABdhPJzOeMnbeszmHXXVmi9cS1WP+C6v+N9/fl+FfYjF90m7DrLtS9Wxsh//Et3QXAUgw7l8F9buNA==
+X-Received: by 2002:a1c:e908:: with SMTP id q8mr6088247wmc.59.1593439494664;
+        Mon, 29 Jun 2020 07:04:54 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.04.49
+        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.04.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 07:04:50 -0700 (PDT)
+        Mon, 29 Jun 2020 07:04:54 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
         Oded Gabbay <oded.gabbay@gmail.com>,
         Tomer Tayar <ttayar@habana.ai>
-Subject: [PATCH 04/20] misc: habanalabs: pci: Fix a variety of kerneldoc issues
-Date:   Mon, 29 Jun 2020 15:04:26 +0100
-Message-Id: <20200629140442.1043957-5-lee.jones@linaro.org>
+Subject: [PATCH 07/20] misc: habanalabs: pci: Scrub documentation for non-present function argument
+Date:   Mon, 29 Jun 2020 15:04:29 +0100
+Message-Id: <20200629140442.1043957-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629140442.1043957-1-lee.jones@linaro.org>
 References: <20200629140442.1043957-1-lee.jones@linaro.org>
@@ -67,81 +67,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hl_pci_bars_map() has a miss-typed argument name in the function
-description.  hl_pci_elbi_write() was missing documented arguments.
-The headers for functions hl_pci_bars_unmap(), hl_pci_elbi_write()
-and hl_pci_reset_link_through_bridge() were written in kerneldoc
-format, but lack the kerneldoc identifier '/**'.  Let's promote
-them so they can gain access to the checker.
+'dma_mask' is not passed directly into hl_pci_set_dma_mask() as
+an argument.  Instead, it is pulled from struct hl_device *hdev.
 
-These changes fix the following W=1 kernel build warnings:
+Fixed the following W=1 warning:
 
- drivers/misc/habanalabs/pci.c:27: warning: Function parameter or member 'name' not described in 'hl_pci_bars_map'
- drivers/misc/habanalabs/pci.c:27: warning: Excess function parameter 'bar_name' description in 'hl_pci_bars_map'
- drivers/misc/habanalabs/pci.c:147: warning: Function parameter or member 'addr' not described in 'hl_pci_iatu_write'
- drivers/misc/habanalabs/pci.c:147: warning: Function parameter or member 'data' not described in 'hl_pci_iatu_write'
- drivers/misc/habanalabs/pci.c:324: warning: Excess function parameter 'dma_mask' description in 'hl_pci_set_dma_mask'
+ drivers/misc/habanalabs/pci.c:328: warning: Excess function parameter 'dma_mask' description in 'hl_pci_set_dma_mask
 
 Cc: Oded Gabbay <oded.gabbay@gmail.com>
 Cc: Tomer Tayar <ttayar@habana.ai>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/habanalabs/pci.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/misc/habanalabs/pci.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/misc/habanalabs/pci.c b/drivers/misc/habanalabs/pci.c
-index 9f634ef6f5b37..24073e8eb8df9 100644
+index 24073e8eb8df9..61a8bb07262cf 100644
 --- a/drivers/misc/habanalabs/pci.c
 +++ b/drivers/misc/habanalabs/pci.c
-@@ -15,7 +15,7 @@
+@@ -317,7 +317,6 @@ int hl_pci_init_iatu(struct hl_device *hdev, u64 sram_base_address,
  /**
-  * hl_pci_bars_map() - Map PCI BARs.
+  * hl_pci_set_dma_mask() - Set DMA masks for the device.
   * @hdev: Pointer to hl_device structure.
-- * @bar_name: Array of BAR names.
-+ * @name: Array of BAR names.
-  * @is_wc: Array with flag per BAR whether a write-combined mapping is needed.
+- * @dma_mask: number of bits for the requested dma mask.
   *
-  * Request PCI regions and map them to kernel virtual addresses.
-@@ -61,7 +61,7 @@ int hl_pci_bars_map(struct hl_device *hdev, const char * const name[3],
- 	return rc;
- }
- 
--/*
-+/**
-  * hl_pci_bars_unmap() - Unmap PCI BARS.
-  * @hdev: Pointer to hl_device structure.
-  *
-@@ -80,9 +80,11 @@ static void hl_pci_bars_unmap(struct hl_device *hdev)
- 	pci_release_regions(pdev);
- }
- 
--/*
-+/**
-  * hl_pci_elbi_write() - Write through the ELBI interface.
-  * @hdev: Pointer to hl_device structure.
-+ * @addr: Address to write to
-+ * @data: Data to write
-  *
-  * Return: 0 on success, negative value for failure.
-  */
-@@ -140,6 +142,8 @@ static int hl_pci_elbi_write(struct hl_device *hdev, u64 addr, u32 data)
- /**
-  * hl_pci_iatu_write() - iatu write routine.
-  * @hdev: Pointer to hl_device structure.
-+ * @addr: Address to write to
-+ * @data: Data to write
-  *
-  * Return: 0 on success, negative value for failure.
-  */
-@@ -161,7 +165,7 @@ int hl_pci_iatu_write(struct hl_device *hdev, u32 addr, u32 data)
- 	return 0;
- }
- 
--/*
-+/**
-  * hl_pci_reset_link_through_bridge() - Reset PCI link.
-  * @hdev: Pointer to hl_device structure.
-  */
+  * This function sets the DMA masks (regular and consistent) for a specified
+  * value. If it doesn't succeed, it tries to set it to a fall-back value
 -- 
 2.25.1
 
