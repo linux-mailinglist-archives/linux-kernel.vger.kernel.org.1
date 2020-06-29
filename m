@@ -2,91 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E28520E3CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C5620E3B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390594AbgF2VSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:18:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729795AbgF2Swu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:50 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FA7C030F19;
-        Mon, 29 Jun 2020 09:26:11 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id i4so8248442pjd.0;
-        Mon, 29 Jun 2020 09:26:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=w+DmP+C5HpOoE0pF5Z5NBc0Vqj5wfx4GqPu5fUO5SGM=;
-        b=NhrbggVY5sSA7Uyq25kP4AEcu29RMFWffcjdoxn8fLYgfOV5WcqwQ+YNsQo+QMriEo
-         vBkbD0/gUBC4SMrWBXdHrfVIwe2gSA+ICRHqVuafLo9YZ8qmhSQVanuTROaYj5Pw7LJv
-         5S7uEacqlfYOmg1qQEHcf834yWYWQRAsGaPxYkxQyvpjJmnRI4n+C8tSrKNaoJ6VaGH2
-         yVUsvnNDIji/TzBiS2aYdSB4wozC0ZIpPYyZ37Om2hWvgzpVEp6kaZgIue60O01DKAQp
-         PujheshRs6shypUCOuemDko9Xkl6aVdsWJ1EetsmsFkAM5rsfOkbEWbeJqyEbNCn8XDb
-         lKFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=w+DmP+C5HpOoE0pF5Z5NBc0Vqj5wfx4GqPu5fUO5SGM=;
-        b=T5btMXH3oGlE5XHM1I+kCQyJBYviGmqKhjhgdOlpPgMuk29RGxTWlfjijwGKLY8H1p
-         CtwGzgU2r9IeDjpwGjHnLgBAmBnCF7GOEgOUWMuD6OQAnCXBfQ3Z02ai5z77nk9B9E1l
-         ci9T36esAvJdQ5zeGPIbb1gUJHJYx/SIwcX5YPntdRRtOtRplybHqSSAre6/AKethiZW
-         Ow6UHMvA/9OXY+imvwhzshFSU7W5taPawwqnHgK0BvMW9dNKrGkonTVwtehNaw+eMVmn
-         L1ok8+6Pt3vUERqcXUtP+Q/3P2QD1Rq6Rqp/mv0sv7XoFHNC9sPYQwLKFYAJUPKpP+oj
-         uzPA==
-X-Gm-Message-State: AOAM532RNayVw5zCbfV0MAIa7oA1CP4bB4XY+ki+h3+Xa6zYR2NyQn4/
-        kurJLbhnP3cjOQPML+Wt6Fg=
-X-Google-Smtp-Source: ABdhPJwYMqR9MGGMB/wlqZcfyW8f9Ks2SubK7+20EyaN9ZO5KJ9PLbCQa+GSdhDr4AMPO4oeLPCiiw==
-X-Received: by 2002:a17:90b:f97:: with SMTP id ft23mr15508228pjb.21.1593447970738;
-        Mon, 29 Jun 2020 09:26:10 -0700 (PDT)
-Received: from [10.230.30.107] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id x7sm206783pfp.96.2020.06.29.09.26.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jun 2020 09:26:09 -0700 (PDT)
-Subject: Re: [PATCH v5 4/9] ARM: dts: bcm2711: Add reset controller to xHCI
- node
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        f.fainelli@gmail.com, gregkh@linuxfoundation.org, robh@kernel.org,
-        wahrenst@gmx.net, p.zabel@pengutronix.de, andy.shevchenko@gmail.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, tim.gover@raspberrypi.org,
-        linux-pci@vger.kernel.org, helgaas@kernel.org,
-        mathias.nyman@linux.intel.com, lorenzo.pieralisi@arm.com
-References: <20200629161845.6021-1-nsaenzjulienne@suse.de>
- <20200629161845.6021-5-nsaenzjulienne@suse.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <8490b6d4-1e9f-f7c4-71f1-8b04605924a9@gmail.com>
-Date:   Mon, 29 Jun 2020 09:26:07 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200629161845.6021-5-nsaenzjulienne@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S2390724AbgF2VRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:17:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:36814 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729802AbgF2Sy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:54:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 347081529;
+        Mon, 29 Jun 2020 09:26:38 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6B2EC3F71E;
+        Mon, 29 Jun 2020 09:26:36 -0700 (PDT)
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Chris Redpath <chris.redpath@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/2] sched: Optionally skip uclamp logic in fast path
+Date:   Mon, 29 Jun 2020 17:26:31 +0100
+Message-Id: <20200629162633.8800-1-qais.yousef@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series attempts to address the report that uclamp logic could be expensive
+sometimes and shows a regression in netperf UDP_STREAM under certain
+conditions.
+
+The first patch is a fix for how struct uclamp_rq is initialized which is
+required by the 2nd patch which contains the real 'fix'.
+
+Worth noting that the root cause of the overhead is believed to be system
+specific or related to potential certain code/data layout issues, leading to
+worse I/D $ performance.
+
+Different systems exhibited different behaviors and the regression did
+disappear in certain kernel version while attempting to reporoduce.
+
+More info can be found here:
+
+https://lore.kernel.org/lkml/20200616110824.dgkkbyapn3io6wik@e107158-lin/
+
+Having the static key seemed the best thing to do to ensure the effect of
+uclamp is minimized for kernels that compile it in but don't have a userspace
+that uses it, which will allow distros to distribute uclamp capable kernels by
+default without having to compromise on performance for some systems that could
+be affected.
+
+Changes in v5:
+	* Fix a race that could happen when order of enqueue/dequeue of tasks
+	  A and B is not done in order, and sched_uclamp_used is enabled in
+	  between.
+	* Add more comments explaining the race and the behavior of
+	  uclamp_rq_util_with() which is now protected with a static key to be
+	  a NOP. When no uclamp aggregation at rq level is done, this function
+	  can't do much.
+
+Changes in v4:
+	* Fix broken boosting of RT tasks when static key is disabled.
+
+Changes in v3:
+	* Avoid double negatives and rename the static key to uclamp_used
+	* Unconditionally enable the static key through any of the paths where
+	  the user can modify the default uclamp value.
+	* Use C99 named struct initializer for struct uclamp_rq which is easier
+	  to read than the memset().
+
+Changes in v2:
+	* Add more info in the commit message about the result of perf diff to
+	  demonstrate that the activate/deactivate_task pressure is reduced in
+	  the fast path.
+
+	* Fix sparse warning reported by the test robot.
+
+	* Add an extra commit about using static_branch_likely() instead of
+	  static_branc_unlikely().
+
+Thanks
+
+--
+Qais Yousef
+
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Mel Gorman <mgorman@suse.de>
+CC: Patrick Bellasi <patrick.bellasi@matbug.net>
+Cc: Chris Redpath <chris.redpath@arm.com>
+Cc: Lukasz Luba <lukasz.luba@arm.com>
+Cc: linux-kernel@vger.kernel.org
 
 
-On 6/29/2020 9:18 AM, Nicolas Saenz Julienne wrote:
-> The chip is hardwired to the board's PCIe bus and needs to be properly
-> setup trough a firmware routine after a PCI fundamental reset. Pass the
-> reset controller phandle that takes care of triggering the
-> initialization to the relevant PCI device.
-> 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Qais Yousef (2):
+  sched/uclamp: Fix initialization of struct uclamp_rq
+  sched/uclamp: Protect uclamp fast path code with static key
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+ kernel/sched/core.c              | 86 +++++++++++++++++++++++++++++---
+ kernel/sched/cpufreq_schedutil.c |  2 +-
+ kernel/sched/sched.h             | 39 ++++++++++++++-
+ 3 files changed, 117 insertions(+), 10 deletions(-)
+
 -- 
-Florian
+2.17.1
+
