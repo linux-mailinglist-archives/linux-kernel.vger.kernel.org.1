@@ -2,85 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A0520E520
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8B820E399
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728654AbgF2Vco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:32:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728652AbgF2SlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:41:03 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3880C23C92;
-        Mon, 29 Jun 2020 11:43:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593431020;
-        bh=Uoq248fVFUS7nUmxb0KXFHCYIbklwNYP4+WvgbTtC1U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XpeHWz9EqU044sGwnG7+DdW/u7FkYkft+eJigTVeZK0S7erx+eQJm3cTif2Jnqubr
-         JZNXSHPfFZsaoN1WacMh0LsuISkXsGW8rvwjy/6rlvPQm2EiSCuT1JbKk1RXhlraRj
-         fSNWAmxvj/yNBQp9VsB8r5nmHK1PVohkw3clDgP4=
-Date:   Mon, 29 Jun 2020 13:43:15 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pawel Laszczak <pawell@cadence.com>
-Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "balbi@kernel.org" <balbi@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "ben.dooks@codethink.co.uk" <ben.dooks@codethink.co.uk>,
-        "colin.king@canonical.com" <colin.king@canonical.com>,
-        "rogerq@ti.com" <rogerq@ti.com>,
-        "peter.chen@nxp.com" <peter.chen@nxp.com>,
-        "weiyongjun1@huawei.com" <weiyongjun1@huawei.com>,
-        Jayshri Dajiram Pawar <jpawar@cadence.com>,
-        "kurahul@cadene.com" <kurahul@cadene.com>,
-        Sanket Parmar <sparmar@cadence.com>
-Subject: Re: [PATCH RFC 2/5] usb:cdns3: Add pci to platform driver wrapper
-Message-ID: <20200629114315.GA121549@kroah.com>
-References: <20200626045450.10205-1-pawell@cadence.com>
- <20200626045450.10205-3-pawell@cadence.com>
- <20200626134344.GA4030531@kroah.com>
- <DM6PR07MB5529755E72D87EFDD1867A7BDD6E0@DM6PR07MB5529.namprd07.prod.outlook.com>
+        id S2390664AbgF2VPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:15:39 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:47565 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729949AbgF2VPe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 17:15:34 -0400
+Received: from mail-qk1-f179.google.com ([209.85.222.179]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1M5wTr-1jjXoK1ZIx-007XtN for <linux-kernel@vger.kernel.org>; Mon, 29 Jun
+ 2020 13:47:51 +0200
+Received: by mail-qk1-f179.google.com with SMTP id b185so4303789qkg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:47:51 -0700 (PDT)
+X-Gm-Message-State: AOAM531kW7xXBzqwARsG0zlpZpRPRhMTKSQ6PV/w66JyMVCMVOxJo9Yn
+        IH56xAQpbSQzO8d0yw6dj4AWRJzuz00vs84XHUY=
+X-Google-Smtp-Source: ABdhPJz/2Mk0UBypqySiBXzhbwhOOuuPjmaRdr8KCETbhDaAxvWInXHpxUDFWzD6SVaYXVOZ7MjowFJGo49t+l9Ai6c=
+X-Received: by 2002:a37:9dd6:: with SMTP id g205mr15045562qke.352.1593431270287;
+ Mon, 29 Jun 2020 04:47:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR07MB5529755E72D87EFDD1867A7BDD6E0@DM6PR07MB5529.namprd07.prod.outlook.com>
+References: <1593425623-31810-1-git-send-email-Anson.Huang@nxp.com>
+ <1593425623-31810-3-git-send-email-Anson.Huang@nxp.com> <CAK8P3a2wsaS9i9BrV6o845Qx4TJrZM=+13C1haqBLg17HKVgXw@mail.gmail.com>
+ <DB3PR0402MB3916E7A184549BF302C7401FF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+In-Reply-To: <DB3PR0402MB3916E7A184549BF302C7401FF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 29 Jun 2020 13:47:34 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1qSdiKfcgXLAQ8JTWeg4_i+8+qh-7hH5rYiEjp-dJMkA@mail.gmail.com>
+Message-ID: <CAK8P3a1qSdiKfcgXLAQ8JTWeg4_i+8+qh-7hH5rYiEjp-dJMkA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ARM: imx: Select RESET_IMX7 for i.MX7D
+To:     Anson Huang <anson.huang@nxp.com>
+Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Stefan Agner <stefan.agner@toradex.com>,
+        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Olof Johansson <olof@lixom.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:tVOg2jD1oItr1kXIzUR7X2b82Ivgn5xZGNS4yrdmYUxa9YbdP/W
+ RFHKLgKHH6lujFrgoh65TfQo5T0ZXHE5h4LWTzP2UMXd+ZsDScFBRu0QZhGOrwq+7yaPgRz
+ aoGHnMczEFbIv1+8NVwWzmrgwozv+ra+Q4TgV04NBeMCHyhifMBmAp4rE+VAkYQ3WVNsK1p
+ D5f7TCM0UY0j9dAWfRx3Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:p6Ba7RHcT38=:pK4VQat1pFN7MMQGGxwTDW
+ 1dXFPEBpGG/kNmNUgVBsRe6i5EWTzcU5XY5XB8G50JuGBWqsfQsUyrZo+u5bS8RjdNi5j8qTJ
+ fQwxdqNlCITb5Z0Mq9ns1v8mL8dC9VH0AkgJln8kW6lK+3NEMoL0qJqyyUeGnSxijaKz5ABlI
+ OM0mLeo4JpwYD0TNG7Z0fh+pFbLYZyu/3pRP+skjBz0fYDcbdmRCCXpuVHIzI2WfcgvTPfsx9
+ +vHwqJhWDi/Nui0WcU/DEt0m/97MUueJ7pNrDdIZNboK9RZzClLtTlF9MTyW6neiOCULlJK4L
+ 1KzaFGBB2GX96kykBV8akvOJy1C9vUIsSCdXJQLnrOitmdzOcsJSnygDuf6hzk21CXK7KRJO+
+ 9Ah8JaT3bT0iLYsFzKdo3NAlYlrFKMn3dkRhGMZ1Yb5RMXkBNvJ/5UagiqYWOb9mmHvLxL49E
+ hmzFW8YlIvx1YeLFUVsz7uUwWRIeNfxyLFe2iO6KNVEcK/60ZvCOO0iUDVP3P1rGHe+eA5iD3
+ GtOQ8PrSV20ZgIIhbXlUAxGam5yyoarrVVbBk+lodkGY6MV2uQHP2dV+FiYoyWHg+1vvF3v6s
+ r0fhWgPTSPFHM4nxW98watdrs/zk/6lKTpnvfEobLo4Vvz1/tYOSJmPn75jVDjxbMw4B4b9DL
+ 3WxeMtfkY7hg4WcF0wCEFYYhr+8SATzslxhMyl3l0TM3q2+jWqCylLkG3jX7esyRnH8tAIEk0
+ ppDblCvGWmj6JYAGR3Cn7nu6q2rQpx6CRSRZ+HwEIIFheO8xZr1y/T6tpLwfSvObl0Y0lKDNJ
+ /VBw1e/3zt3O3uXwBDzGQ49DITw3B0rL2kFoRYADWo0Uw4FfF1nT2ZmiZLQE2bUfjDqDUIoHz
+ Eshva/sdIBYtY2RDpFcCWog+H5hjt0SqE/d9k8MX0+iFit2B0gnaHxwujvVommdPLCe5wmt1u
+ Rb4Ce7WfjSRy5gE95AXIEWCAXQnJemDsC3voIfnpdPDYp53cw0cLp
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 11:35:32AM +0000, Pawel Laszczak wrote:
-> 
+On Mon, Jun 29, 2020 at 1:36 PM Anson Huang <anson.huang@nxp.com> wrote:
+> > Subject: Re: [PATCH 3/3] ARM: imx: Select RESET_IMX7 for i.MX7D
 > >
-> >On Fri, Jun 26, 2020 at 06:54:47AM +0200, Pawel Laszczak wrote:
-> >> Patch adds PCI specific glue driver that creates and registers in-system
-> >> cdns-usbssp platform device.
+> > On Mon, Jun 29, 2020 at 12:25 PM Anson Huang <Anson.Huang@nxp.com>
+> > wrote:
+> > >
+> > > i.MX7 reset driver now supports module build, it is no longer built in
+> > > by default, need to select it explicitly for i.MX7D.
+> > >
+> > > Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> > > ---
+> > >  arch/arm/mach-imx/Kconfig | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
+> > > index e7d7b90..3540483 100644
+> > > --- a/arch/arm/mach-imx/Kconfig
+> > > +++ b/arch/arm/mach-imx/Kconfig
+> > > @@ -561,6 +561,7 @@ config SOC_IMX7D_CM4  config SOC_IMX7D
+> > >         bool "i.MX7 Dual support"
+> > >         select PINCTRL_IMX7D
+> > > +       select RESET_IMX7
 > >
-> >Ick, no.
+> > Please drop this patch, it breaks the intent of the first one by forcing the driver
+> > to be built-in again rather than a loadable module.
 > >
-> >Platform devices are ONLY to be used for when you have a real platform
-> >device.  If your device is a PCI device, use that.  Don't try to be cute
-> >and make a platform device when you don't have one please.
-> >
-> >> Thanks to that we will be able to use
-> >> the cdns-usbssp platform driver for USBSS-DEV controller
-> >> build on PCI board.
-> >
-> >No, fix up that driver to not care about it being a platform device,
-> >make it just accept any type of 'struct device'.
-> >
-> Ok, I will remove it form this driver but probably in a few months I will have to add 
-> such support.  
+>
+> One thing to clarify is, the loadable module support is ONLY for i.MX ARMv8 SoCs,
 
-For a real platform device, that's fine, but that is not what you are
-doing here.
+I don't understand. Why can't this driver be a loadable module on i.MX7?
+Please clarify in the changelog what the bug is on i.MX7.
 
-thanks,
+> ARMv7 SoCs is NOT in the plan, that is why I add this patch to make it same as previously
+> when this reset driver is =y by default. Without this patch, this reset driver will NOT be
+> enabled by default for i.MX ARMv7 SoCs, function will be broken.
 
-greg k-h
+But it's the same driver, make it work the same way on all chips!
+
+I think artificially limiting a new driver feature to one chip just
+because nobody
+asked for it on another chip is not helpful.
+
+      Arnd
