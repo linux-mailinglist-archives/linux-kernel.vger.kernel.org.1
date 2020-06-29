@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC7B20D2E7
+	by mail.lfdr.de (Postfix) with ESMTP id BB88120D2E8
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729849AbgF2Sxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
+        id S1729861AbgF2Sxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:53:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729812AbgF2Sww (ORCPT
+        with ESMTP id S1729014AbgF2Sww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Jun 2020 14:52:52 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13CFCC02E2CB
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:51 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id g75so15495622wme.5
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:51 -0700 (PDT)
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 186D9C02E2CC
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:52 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id q15so15508942wmj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KMTCDVkmhrFSTaB8bx1bgREeHsoHTmBvamvepGv04mE=;
-        b=S/dhmjP1Wds8RWIrdtgpp+KtZkHcSrMog/xRtGlSaf3iTckrCpwC/qb3qLOOKEADrl
-         kZpxdApdfTy1KHnz6O6+jI7SbLRhTquBGADwdfSEIVjCa/Us7YMMK+rSrDigt9pKKqI0
-         arAl5wsHoGHJdXZD9hM3hrNqoas6LfBWPIXFg2LiSBUriBEnR58FC9UGbKCTqPgRmE8/
-         KJZtCDQD/bWeKePibICKhOVGetOraGmlTNY4Qmo+Wl4yjii80DNIgNBDngEU4Sg2WK3n
-         8SCG0nA/cmzTOyeEVf+hiyaq0XJoRy4VTVyAFgB3iB0KTHqz43w+6Ea4riu19Pvm1t5q
-         OUzQ==
+        bh=snRavlMzvk6o89999ihW2SJGcP4kgkkLuKbzazJuz7M=;
+        b=EBCbSVbxb5YiApQEcA5o+TIGFgyXHcDAl7i662DfxDYdnp862l0GPoQfWOcNUtjcSe
+         jnezcozxuPVkZo5f4KjMKLccsMOZTvdDTyEbUlK4123+wVNAkXCXWv8ZfYrJxAS3qZ93
+         8vrs/CdF0z7YODI7HgsfSKNJdxYv1vhR4+IGMmCaoAOzFgJycGJVJ0ZGcNbsup+I/eZE
+         XqHkVB4Rbu4LtbCpo307g++fMpBLSJJGlXhTLve6b5TV0o4HitW+xa8FO/mP/sCAT6Pa
+         3VnkcXGnjMH8qE1jsEUyE7sTCYERb3R3EtTgvwOpZAcOq6zxn7z3UFHnAkImidK5q/fj
+         I+6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KMTCDVkmhrFSTaB8bx1bgREeHsoHTmBvamvepGv04mE=;
-        b=V0em+pzxQ/ki3qk9D23QuMQ4zz98E/s9j3BD7SDkLIMEy3iwQdFISgjSMCryCY9DzS
-         AqW9vr/V+cPSvl8Yn9wPz1nT1ltZATqad4pBo9X6P8RkFvSxZxvI3QFwNLEWrKg4UlMC
-         K4nbCom3my+vCQFBSiK5CnyK9nq0Q8koehWpkeB7U76mSwGTn3cI6/3gs178cr7i1l6G
-         3weJm6+jWSQVWtKiLhGLHD8V06fRPw6CEgQ2kaiooAsXnbSJ3lTNk64q/1scMSsBPvF3
-         SGyiTzRbi7WrgY2ZPS4kOzp/FEEDSDl+PJmzsMsrDIbVkE+jq5W4gZ1NUmtessuxXDWE
-         5D8A==
-X-Gm-Message-State: AOAM533fNyStS+L4BeI7s5r9TeAa6Ee75WGJzdFkjzPijqLLlJa5Nrez
-        1vuwzKZ6oUs0oKxPCBeiqKgAPg==
-X-Google-Smtp-Source: ABdhPJxpFPRPZgqmcu4lCys19buO548MqP7hdlLxqhc4qChHB+Z5s1KZcLBS69vBLvmj0ivfeBVVlA==
-X-Received: by 2002:a05:600c:2285:: with SMTP id 5mr5381620wmf.78.1593439489644;
-        Mon, 29 Jun 2020 07:04:49 -0700 (PDT)
+        bh=snRavlMzvk6o89999ihW2SJGcP4kgkkLuKbzazJuz7M=;
+        b=E1B9uHYV11G8VOzJ/dZm6QESMXWulDYDc7+zYLfF803zBzV06sGnVyxLJP8r4VwAxw
+         n00bJ6VjrbYyHb4gNUeQhE/nSa3yLx8mm0hxNXZLx1raMcUYBH97CdMT50Wa148bZrBr
+         t+gFpfeWr0JjAs0evFy8QBlqkDJT6Wb2da+5OiEaYSXuR9oMmtL5Tr4wg3RBW4216+n5
+         y2NrVi0HZFTHGIkVZaibza+mDaPVkyjrLnaItvKGwThwuaadJpKNdfIFPvOmt47uKYN6
+         K60ZeXOeLCstHjEBvbky4CRTN9IZkf71ufKVoRw+dHZyZAgO2ZaMmNK7tlWlW4diQt/A
+         Ls6g==
+X-Gm-Message-State: AOAM533u5dFSkKtSN18wIJ+qKxI9KJYGWFXiYlEswqIrXofIj8x4RLTq
+        90mEBB0S7+Drg7RrV6TOaargyQ==
+X-Google-Smtp-Source: ABdhPJwtIrvDrDIcBEd1RS2NhZDsLvIxIfEKOQpWVF86D0jsOeJclt4mGbamK7+WRgzx6R43bbW3/Q==
+X-Received: by 2002:a1c:2cd7:: with SMTP id s206mr16182224wms.109.1593439490833;
+        Mon, 29 Jun 2020 07:04:50 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.04.48
+        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.04.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 07:04:48 -0700 (PDT)
+        Mon, 29 Jun 2020 07:04:50 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
         Oded Gabbay <oded.gabbay@gmail.com>,
         Tomer Tayar <ttayar@habana.ai>
-Subject: [PATCH 03/20] misc: habanalabs: firmware_if: Add missing 'fw_name' and 'dst' entries to function header
-Date:   Mon, 29 Jun 2020 15:04:25 +0100
-Message-Id: <20200629140442.1043957-4-lee.jones@linaro.org>
+Subject: [PATCH 04/20] misc: habanalabs: pci: Fix a variety of kerneldoc issues
+Date:   Mon, 29 Jun 2020 15:04:26 +0100
+Message-Id: <20200629140442.1043957-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629140442.1043957-1-lee.jones@linaro.org>
 References: <20200629140442.1043957-1-lee.jones@linaro.org>
@@ -67,36 +67,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks as though documentation for these function arguments have
-been missing since the driver's inception last year.
+hl_pci_bars_map() has a miss-typed argument name in the function
+description.  hl_pci_elbi_write() was missing documented arguments.
+The headers for functions hl_pci_bars_unmap(), hl_pci_elbi_write()
+and hl_pci_reset_link_through_bridge() were written in kerneldoc
+format, but lack the kerneldoc identifier '/**'.  Let's promote
+them so they can gain access to the checker.
 
-Fixes the following W=1 kernel build warnings:
+These changes fix the following W=1 kernel build warnings:
 
- drivers/misc/habanalabs/firmware_if.c:26: warning: Function parameter or member 'fw_name' not described in 'hl_fw_load_fw_to_device'
- drivers/misc/habanalabs/firmware_if.c:26: warning: Function parameter or member 'dst' not described in 'hl_fw_load_fw_to_device'
+ drivers/misc/habanalabs/pci.c:27: warning: Function parameter or member 'name' not described in 'hl_pci_bars_map'
+ drivers/misc/habanalabs/pci.c:27: warning: Excess function parameter 'bar_name' description in 'hl_pci_bars_map'
+ drivers/misc/habanalabs/pci.c:147: warning: Function parameter or member 'addr' not described in 'hl_pci_iatu_write'
+ drivers/misc/habanalabs/pci.c:147: warning: Function parameter or member 'data' not described in 'hl_pci_iatu_write'
+ drivers/misc/habanalabs/pci.c:324: warning: Excess function parameter 'dma_mask' description in 'hl_pci_set_dma_mask'
 
 Cc: Oded Gabbay <oded.gabbay@gmail.com>
 Cc: Tomer Tayar <ttayar@habana.ai>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/habanalabs/firmware_if.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/misc/habanalabs/pci.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/firmware_if.c b/drivers/misc/habanalabs/firmware_if.c
-index baf790cf4b787..15e0793da6554 100644
---- a/drivers/misc/habanalabs/firmware_if.c
-+++ b/drivers/misc/habanalabs/firmware_if.c
-@@ -15,7 +15,10 @@
- 
+diff --git a/drivers/misc/habanalabs/pci.c b/drivers/misc/habanalabs/pci.c
+index 9f634ef6f5b37..24073e8eb8df9 100644
+--- a/drivers/misc/habanalabs/pci.c
++++ b/drivers/misc/habanalabs/pci.c
+@@ -15,7 +15,7 @@
  /**
-  * hl_fw_load_fw_to_device() - Load F/W code to device's memory.
-+ *
-  * @hdev: pointer to hl_device structure.
-+ * @fw_name: the firmware image name
-+ * @dst: IO memory mapped address space to copy firmware to
+  * hl_pci_bars_map() - Map PCI BARs.
+  * @hdev: Pointer to hl_device structure.
+- * @bar_name: Array of BAR names.
++ * @name: Array of BAR names.
+  * @is_wc: Array with flag per BAR whether a write-combined mapping is needed.
   *
-  * Copy fw code from firmware file to device memory.
+  * Request PCI regions and map them to kernel virtual addresses.
+@@ -61,7 +61,7 @@ int hl_pci_bars_map(struct hl_device *hdev, const char * const name[3],
+ 	return rc;
+ }
+ 
+-/*
++/**
+  * hl_pci_bars_unmap() - Unmap PCI BARS.
+  * @hdev: Pointer to hl_device structure.
   *
+@@ -80,9 +80,11 @@ static void hl_pci_bars_unmap(struct hl_device *hdev)
+ 	pci_release_regions(pdev);
+ }
+ 
+-/*
++/**
+  * hl_pci_elbi_write() - Write through the ELBI interface.
+  * @hdev: Pointer to hl_device structure.
++ * @addr: Address to write to
++ * @data: Data to write
+  *
+  * Return: 0 on success, negative value for failure.
+  */
+@@ -140,6 +142,8 @@ static int hl_pci_elbi_write(struct hl_device *hdev, u64 addr, u32 data)
+ /**
+  * hl_pci_iatu_write() - iatu write routine.
+  * @hdev: Pointer to hl_device structure.
++ * @addr: Address to write to
++ * @data: Data to write
+  *
+  * Return: 0 on success, negative value for failure.
+  */
+@@ -161,7 +165,7 @@ int hl_pci_iatu_write(struct hl_device *hdev, u32 addr, u32 data)
+ 	return 0;
+ }
+ 
+-/*
++/**
+  * hl_pci_reset_link_through_bridge() - Reset PCI link.
+  * @hdev: Pointer to hl_device structure.
+  */
 -- 
 2.25.1
 
