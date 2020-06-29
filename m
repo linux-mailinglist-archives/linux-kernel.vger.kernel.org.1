@@ -2,177 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5E320E256
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42ED120E271
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390255AbgF2VEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33306 "EHLO
+        id S1732056AbgF2VFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389982AbgF2VEH (ORCPT
+        with ESMTP id S1730964AbgF2TMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:04:07 -0400
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97426C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:04:06 -0700 (PDT)
-Received: by mail-ua1-x943.google.com with SMTP id u6so3016619uau.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:04:06 -0700 (PDT)
+        Mon, 29 Jun 2020 15:12:43 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA116C08C5E0
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 21:09:37 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id h5so15067864wrc.7
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 21:09:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=EDDadDrSXYKtXL/TsWS5vlQswAboTcT6W+3/Oif1F20=;
-        b=Zhnvic0KQUbDVX5LSFm3hAeLEERhKCRPhYViT3hL3yJyva8CW+btVllsX8lmru+EeN
-         mvetgyKknHBgMwldDe67snB8PwHBZBQDGudwVnaGCiiwsZng5RVqjW+9G7Ul26gvfXoZ
-         55TX9gVBEka/btSKGV2IxuxB22BeiWRHiweFM=
+        bh=jqfpvi3iYp3AoWQd6MSO7doKcVpn2TJcLUHhv2lCYnI=;
+        b=P+epqYZloSbYG+AbCi/vnUslABKw6dTGUxMtmqk70qo8e+GHDnz6Dbj5BXuIthZXlr
+         0CUpkny20y3Yi7lcLdxO2389kQqc1CTuKFzUqM8HFZl6leu+QHNMNupx6coQ9Xamlt8J
+         UrVTd09fowebynpt5CnTRX6sTrUk3AEUOWSufL5JBNhUQc3w+a8ju9ea9wskW6zcwJIV
+         Nk9jFaS8B2u61i4nClqxT+s5PbGTbUnE59r5ZZC+wzzFr3EQ1+J4+KrFqIXMj1UJ8dko
+         PHGqVkikH/7/UHJnsmnU0RCBkuyeJOQlXlvXwZG8auj4EAlsUCItoyML8iPmiC3N6of5
+         oQXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EDDadDrSXYKtXL/TsWS5vlQswAboTcT6W+3/Oif1F20=;
-        b=cy0Y6CzEXEj1R3uEeE/p7zpOC/4L/XgpMrx7+w36Mc2z2Plzhm0tl1p6bLezEIeXPS
-         m5RLiCufAZgcfp2VbXSSaB0zxfFFephLu76G6wqMupKQbjMtzoyuQqmKnwu7xtfKG4z9
-         x+8RM255Re/p7QmrcwWYRC9aP8BSoJFhaSoYq+w7uPNLxO026rA6ki/rCQTLuzKdIG0+
-         azoGCXqEfXFvRmHLtAPOCDKGMt5hKCT96uvSvtLOCwNTWO0fH8fY3ZFqB1+FRIrrQdjF
-         R+NUKOR4zMrBuV8CqvJpFcMwym/jPJVqaz77iQGHfPsa4ZRx/fY/Ihsswn+RDfGXII7V
-         s7mQ==
-X-Gm-Message-State: AOAM531IgS9krZm+1vvZND7X5+x188d0RJSH5FDqCIF9kcAnWOlsxuKC
-        Uu9SMVWwhv+cxylAWrVgXCpBo1cKs6g=
-X-Google-Smtp-Source: ABdhPJznfXDEUKe9puzsUOyOmE/k/240+M6m+Wm2F6tJg5KidSREAYk8sXZp6E1jpYnD5jXE83AktQ==
-X-Received: by 2002:ab0:217:: with SMTP id 23mr12435567uas.51.1593464645510;
-        Mon, 29 Jun 2020 14:04:05 -0700 (PDT)
-Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com. [209.85.221.180])
-        by smtp.gmail.com with ESMTPSA id v141sm148622vkd.9.2020.06.29.14.04.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jun 2020 14:04:04 -0700 (PDT)
-Received: by mail-vk1-f180.google.com with SMTP id y3so3764701vkg.11
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:04:04 -0700 (PDT)
-X-Received: by 2002:a1f:280c:: with SMTP id o12mr11043341vko.92.1593464644374;
- Mon, 29 Jun 2020 14:04:04 -0700 (PDT)
+        bh=jqfpvi3iYp3AoWQd6MSO7doKcVpn2TJcLUHhv2lCYnI=;
+        b=juKw5KT5U3FgKGuix7FmYB/VbmAMYzUW6YttjE5ZHA9q9Bo0qMVKLY9VNShciq1iN7
+         wcq2YcCrjMvfA79uxcXBJtGZYFO7dcCbiWF5B4zUwpVLB8g4Hvm9ncku1FHCx1/5fpxR
+         SIF9/kmkK1PUA0D7XGcojUC7zkHtMmpire0Bi6ZmRKTnIBRM0hbUCo+vuN7mvNsocs7e
+         nZwUq/cNVJxXJkW+bby1Yo7yeSX4H1LQ25rxh7gP1MD6EL4f3xkyrBkXlV8KxxjuCjJB
+         RK3J9sVkWpxntDKiEnyEPZF7TyhRE1TriDTOaTV34saiQOLwSARlCNfQ/6Qi1MPGFJ+v
+         GGkw==
+X-Gm-Message-State: AOAM5312paaV0/wKEU+M3QnAfUaLHnCeFsVZvNhorVVsn27TNM5xWZQk
+        6bTK+jREf3MnzHgQecGjh8mQWfxjcwjJlqQtooVOVxI2
+X-Google-Smtp-Source: ABdhPJwx1knjHefqrB+oeWQ3YcqzAY6RsgARQklwQOrsgV4BeAw50AB+MKIpRinxVhKDLYaH38jdH075e1ij93+pORY=
+X-Received: by 2002:adf:ff87:: with SMTP id j7mr9282883wrr.128.1593403776321;
+ Sun, 28 Jun 2020 21:09:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200629171529.558003-1-daniel.thompson@linaro.org>
-In-Reply-To: <20200629171529.558003-1-daniel.thompson@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 29 Jun 2020 14:03:52 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=W9rdEsO1jP-kg6OetXmZO+kC9LenZM=CdxjUvv8BEU4g@mail.gmail.com>
-Message-ID: <CAD=FV=W9rdEsO1jP-kg6OetXmZO+kC9LenZM=CdxjUvv8BEU4g@mail.gmail.com>
-Subject: Re: [PATCH] kgdb: Resolve races during kgdb_io_register/unregister_module
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Petr Mladek <pmladek@suse.com>,
-        kgdb-bugreport@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>,
-        Patch Tracking <patches@linaro.org>
+References: <cover.1593397455.git.zong.li@sifive.com> <3de3a480517d167a3faae086aa8ab0c0c7141d99.1593397455.git.zong.li@sifive.com>
+In-Reply-To: <3de3a480517d167a3faae086aa8ab0c0c7141d99.1593397455.git.zong.li@sifive.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 29 Jun 2020 09:39:24 +0530
+Message-ID: <CAAhSdy3VBUTMg_b2tO12cTYuvHYtH=4dj9-qT-at35Whf3w_7w@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/6] dt-bindings: riscv: Add YAML documentation for PMU
+To:     Zong Li <zong.li@sifive.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, Jun 29, 2020 at 10:15 AM Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
+On Mon, Jun 29, 2020 at 8:49 AM Zong Li <zong.li@sifive.com> wrote:
 >
-> Currently kgdb_register_callbacks() and kgdb_unregister_callbacks()
-> are called outside the scope of the kgdb_registration_lock. This
-> allows them to race with each other. This could do all sorts of crazy
-> things up to and including dbg_io_ops becoming NULL partway through the
-> execution of the kgdb trap handler (which isn't allowed and would be
-> fatal).
+> Add device tree bindings for performance monitor unit. And it passes the
+> dt_binding_check verification.
 >
-> Fix this by bringing the trap handler setup and teardown into the scope
-> of the registration lock.
->
-> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+> Signed-off-by: Zong Li <zong.li@sifive.com>
 > ---
->  kernel/debug/debug_core.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+>  .../devicetree/bindings/riscv/pmu.yaml        | 59 +++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/riscv/pmu.yaml
 >
-> diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-> index 9e5934780f41..9799f2c6dc94 100644
-> --- a/kernel/debug/debug_core.c
-> +++ b/kernel/debug/debug_core.c
-> @@ -1117,9 +1117,8 @@ int kgdb_register_io_module(struct kgdb_io *new_dbg_io_ops)
+> diff --git a/Documentation/devicetree/bindings/riscv/pmu.yaml b/Documentation/devicetree/bindings/riscv/pmu.yaml
+> new file mode 100644
+> index 000000000000..f55ccbc6c685
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/riscv/pmu.yaml
+> @@ -0,0 +1,59 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/riscv/pmu.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: RISC-V Performance Monitor Units
+> +
+> +maintainers:
+> +  - Zong Li <zong.li@sifive.com>
+> +  - Paul Walmsley <paul.walmsley@sifive.com>
+> +  - Palmer Dabbelt <palmer@dabbelt.com>
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: riscv,pmu
+> +
+> +  riscv,width-base-cntr:
+> +    description: The width of cycle and instret CSRs.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  riscv,width-event-cntr:
+> +    description: The width of hpmcounter CSRs.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+
+The terms "base" and "event" is confusing because
+we only have counters with no interrupt associated with it.
+
+The RISC-V spec defines 3 counters and rest are all
+implementation specific counters.
+
+I suggest using the terms "spec counters" and "impl counters"
+instead of "base counters" and "event counters".
+
+Further, "riscv,width" properties are redundant because
+RISC-V spec clearly tells that counters are 64bit for both
+RV32 and RV64.
+
+> +
+> +  riscv,n-event-cntr:
+> +    description: The number of hpmcounter CSRs.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  riscv,hw-event-map:
+> +    description: The mapping of generic hardware events. Default is no mapping.
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +
+> +  riscv,hw-cache-event-map:
+> +    description: The mapping of generic hardware cache events.
+> +      Default is no mapping.
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +
+> +required:
+> +  - compatible
+> +  - riscv,width-base-cntr
+> +  - riscv,width-event-cntr
+> +  - riscv,n-event-cntr
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    pmu {
+> +      compatible = "riscv,pmu";
+> +      riscv,width-base-cntr = <64>;
+> +      riscv,width-event-cntr = <40>;
+> +      riscv,n-event-cntr = <2>;
+> +      riscv,hw-event-map = <0x0 0x0 0x1 0x1 0x3 0x0202 0x4 0x4000>;
+> +      riscv,hw-cache-event-map = <0x010201 0x0102 0x010204 0x0802>;
+> +    };
+> +
+> +...
+> --
+> 2.27.0
 >
->         dbg_io_ops = new_dbg_io_ops;
->
-> -       spin_unlock(&kgdb_registration_lock);
-> -
->         if (old_dbg_io_ops) {
-> +               spin_unlock(&kgdb_registration_lock);
->                 old_dbg_io_ops->deinit();
->                 return 0;
->         }
-> @@ -1129,6 +1128,8 @@ int kgdb_register_io_module(struct kgdb_io *new_dbg_io_ops)
->         /* Arm KGDB now. */
->         kgdb_register_callbacks();
->
-> +       spin_unlock(&kgdb_registration_lock);
 
-From looking at code paths, I think this is illegal, isn't it?  You're
-now calling kgdb_register_callbacks() while holding a spinlock, but:
-
-kgdb_register_callbacks()
--> register_console()
---> console_lock()
----> might_sleep()
-----> <boom!>
-
-
-I'm a little curious about the exact race we're trying to solve.
-Calling unregister on an IO module before register even finished seems
-like an error on the caller, so I guess it would be calling register
-from a 2nd thread for a different IO module while the first thread was
-partway through unregistering?  Even that seems awfully sketchy since
-you're risking registering a 2nd IO ops while the first is still there
-and that's illegal enough that we do a pr_err() for it (though we
-don't crash), but let's say we're trying to solve that one.
-
-Looking at it closely, I _think_ the only race in this case is if the
-one we're trying to unregister had a deinit() function and we going to
-replace it?  If it didn't have a deinit function:
-
-cpu1 (unregister)                 cpu2 (register):
------------------                 ----------------------
-kgdb_unregister_callbacks()
-                                  spin_lock() <got>
-spin_lock() <blocked>
-                                  if (old_dbg_io_ops) <true>
-                                    if (has dinit) <false>
-                                      print error
-                                      spin_unlock()
-                                      return -EBUSY
-<finish unregister>
-
-The above is fine and is the same thing that would happen if the
-whole register function ran before the unregister even started, right?
-
-Also: if the unregister won the race that should also be fine.
-
-So really the problem is this:
-
-cpu1 (unregister)                 cpu2 (register):
------------------                 ----------------------
-kgdb_unregister_callbacks()
-                                  spin_lock() <got>
-spin_lock() <blocked>
-                                  if (old_dbg_io_ops) <true>
-                                    if (has dinit) <true>
-                                      print Replacing
-                                  init new IO ops
-                                  spin_unlock()
-                                  if (old_dbg_io_ops) <true>
-                                    finish deinit of old
-                                    return true
-WARN_ON() <hits and shouts!>
-dbg_io_ops = NULL
-spin_unlock()
-if (deinit) <true>
-  double-call to deinit of old
-
-So in this case we'll hit a WARN_ON(), incorrectly unregister the new
-IO ops, and call deinit twice.
-
--Doug
+Regards,
+Anup
