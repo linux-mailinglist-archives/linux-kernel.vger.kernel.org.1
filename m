@@ -2,99 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAAF720E2C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143AB20E2E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389916AbgF2VI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:08:27 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:48001 "EHLO
+        id S2390235AbgF2VJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:09:41 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:34015 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388430AbgF2VIX (ORCPT
+        with ESMTP id S2390473AbgF2VJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:08:23 -0400
-Received: from mail-qt1-f177.google.com ([209.85.160.177]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MO9vD-1jRJwr2z1t-00OWKv; Mon, 29 Jun 2020 13:40:44 +0200
-Received: by mail-qt1-f177.google.com with SMTP id i3so12481802qtq.13;
-        Mon, 29 Jun 2020 04:40:44 -0700 (PDT)
-X-Gm-Message-State: AOAM531MqA3YaeQ4u0gkltxA/lNCDogD8K+5A5eInGwjOcWPXBeLNSJV
-        E2nNC1GXgpQcogyW3gFvFbK7lz2rvDAsboBmnY4=
-X-Google-Smtp-Source: ABdhPJz3molUt3XhhH/gcKqW2wmJX47FKk5O6OYBrVzFJ60Zs/j1zw8wVX5Qp6lQIudUPZgdiQLCp03/RIF2vyQgt/Q=
-X-Received: by 2002:ac8:2b98:: with SMTP id m24mr15453696qtm.7.1593430843466;
- Mon, 29 Jun 2020 04:40:43 -0700 (PDT)
+        Mon, 29 Jun 2020 17:09:28 -0400
+Received: from mail-qk1-f175.google.com ([209.85.222.175]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1M4s8v-1jrFTq3scJ-001xiw for <linux-kernel@vger.kernel.org>; Mon, 29 Jun
+ 2020 13:41:46 +0200
+Received: by mail-qk1-f175.google.com with SMTP id e11so14907359qkm.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:41:45 -0700 (PDT)
+X-Gm-Message-State: AOAM530sasEil8ERRVXJh5zFKP1CdrVns+7gvM+HvUKJIpZdPyYxNSib
+        bX128uWEDQ9oUqMRrgwIQpYpOk2AWicmkyr1piM=
+X-Google-Smtp-Source: ABdhPJyLhYoeBgzSA7MmAOwFTB9Sh+/zmsg8s7//3A8nJfIgT+w1yf4DFF1bfEfMRnermkkMST/HbKNPG8frHLqR+GA=
+X-Received: by 2002:a37:a496:: with SMTP id n144mr14552649qke.286.1593430904740;
+ Mon, 29 Jun 2020 04:41:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com> <1593410042-10598-11-git-send-email-Anson.Huang@nxp.com>
-In-Reply-To: <1593410042-10598-11-git-send-email-Anson.Huang@nxp.com>
+References: <1593425623-31810-1-git-send-email-Anson.Huang@nxp.com>
+ <CAK8P3a1pr8YbZMpSXg6o_UeDvaU=dDqfo45DudTASNcsxeg3kg@mail.gmail.com>
+ <DB3PR0402MB3916292FC3FDE4F28AFEB5EBF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CAK8P3a0Za99-xXTwtHNHO-Dzbo-1uesNC2oO91RA-gZZG3Anmw@mail.gmail.com> <DB3PR0402MB3916ADD54CB167B8ED10076DF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+In-Reply-To: <DB3PR0402MB3916ADD54CB167B8ED10076DF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
 From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 29 Jun 2020 13:40:27 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1W4Wxj0o3dtcjGq0L5VQqsH0=ntego=jmH2Von97+H-w@mail.gmail.com>
-Message-ID: <CAK8P3a1W4Wxj0o3dtcjGq0L5VQqsH0=ntego=jmH2Von97+H-w@mail.gmail.com>
-Subject: Re: [PATCH V3 10/10] clk: imx8qxp: Support module build
-To:     Anson Huang <Anson.Huang@nxp.com>
+Date:   Mon, 29 Jun 2020 13:41:28 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1mCD1JFg80HSos9hp0ye1vu_hk79wFGz6YZ3kj10XACg@mail.gmail.com>
+Message-ID: <CAK8P3a1mCD1JFg80HSos9hp0ye1vu_hk79wFGz6YZ3kj10XACg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] reset: imx7: Support module build
+To:     Anson Huang <anson.huang@nxp.com>
 Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
         Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
         Sascha Hauer <kernel@pengutronix.de>,
         Fabio Estevam <festevam@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, oleksandr.suvorov@toradex.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Stefan Agner <stefan.agner@toradex.com>,
-        Peng Fan <peng.fan@nxp.com>, Abel Vesa <abel.vesa@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Andy Duan <fugang.duan@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Olof Johansson <olof@lixom.net>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        NXP Linux Team <Linux-imx@nxp.com>
+        dl-linux-imx <linux-imx@nxp.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:qjtlj8TGy0jLGv32fYdCmtHGDy7Bb9UeJuTTjvVFYP38Co4vuRQ
- YxefKZD5wb7lxo2cLKCDvnFVAZVHTt1ZNTdNRXsBcBKPKShAxM0ksIzr3sD2CDLtplpIDQa
- lacuVPdlPRkQNtbKD8zOu221RZfKPXtVMRAyi4eozYHZPqVjUmNh3w0xjIlVvWyTJVbFf9y
- gz3MgeIZ+OfnoJrsogFMA==
+X-Provags-ID: V03:K1:33+CLiKFpT3UwZb3REktnSgLhRP+TGYP0n/qx2LjY7hgPxhJAs2
+ Pp3vKZfLmKdVlv+ITRF0uFDiLRTXRwl/S6xx4y3v6eO0JktCgeYJBybd/CXHT6FsSFW9H8h
+ Bxsk6XNBAa2NWgPMZCWr4X93/t2P2qwqlwlZfCt+0u7l5uI6jYVF/f2QTfDf1KtoX7do+qT
+ CE32p7T+OInySAmP7P0vA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:XmOmyTZ29KU=:rbSDWbNcV72GnMWdxPDS+s
- Qf/zf7Lrix47xUNmauLLdpWKNV6qyE/1sOX6FX5kIRVZQ0PDy8yb+4GYjnLnorIfamSXsMqOw
- m2qUuz8/U7f1uJC5mdiqpfwwvkmhu7Aw4eBvBS5P9GnpHj88m2dBcLgEy0DaAjPBiS7Hs02DJ
- lF3cZTr8Gg3MVBq1mcOi+e7w0c3JXQuFKjoU1ID7Ro71q6qa73iiSzg+qpRHzTGqSQZSzTuud
- QT3W1wjrTTSPMdIiBO2W9YB7RZUN/3xbfjWYAOJT8g6LD+7RlPFBsQLNm3TDodLra/9Kg7V8r
- s0eyTkfngEczgDggK0m7rse9H0jhLlYiQZeP2In5Q9+B/36/OaOmeYCLhkOeALkQtxJUhnbKp
- 29thSTPXQOFzr59fA/uv3Zwi2uH3zlkFm/5tL23DDSwSoGGnl5VTq6Eb4bCFsPMgC0m7SUSmr
- 0vMGJKRKnkgxCd/e4qcWCnfylJYR3UijhOmg84yrJaoWO8zTk7OUfJJH5hgMCLJmT+Y+TjdFa
- 3MDH8YGwqaRt0lgFQRnt8mCgWPM96++b7ubjPp7NmkEgY1Vj+kYmZbE3A/ZNWEZmBfiDOhoPH
- PCU7UqDDrQT8X3KZZThSM+q983yZmGLQYhFbCHxplVdbKnMZBcSyU5DHzuYLA9wS+5yso0wGF
- ZEW7y+JpmMK8tbx9ZDeXuL4GVFVODJKLQc70E6/Lo0hr+QggVn4kOs46sF0VNn1a5ROdQ2iTR
- CmljM009f1gl7ypDil3MkBzhorYr4slnVQkjLzEEq+Sg3yTuMNjJu+gzHLCt1mdt+BPbZpvCl
- +5lfWcZv09W9Fh2AFhYgGyRVlpMzX4nrinSw93Ys41wovI6vxg=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:14PJPh03Tpw=:+oF22SLQQmREumaoa5GRLe
+ 4qt78LSb+I/Xqs07uVD8KMw2x8Q9lrkZOTXyhWInIAEG8ai6/mnvRlAFDknTG6LdYoTOdhk/5
+ 4Kv6KmQfv1gd9UD7bIizWAX5l3Xm9bPnzJ17i3bXrgqUNsHWm1oJz9ue8J9cdWbr1XQ3xfK66
+ 9LaSJHYtTsugrjnHiOknqk1lsrVHfm5auPX73WoP/84xX7ARhxU+gFjAFaD5H19+Jy8HfxfaA
+ /sGBexzMi0MKOXmvzOFrD4T9cghzSlf2H0hm+IdhIol+13o4dKyrs3HJIuaBuxwTdvzu63gRR
+ 1NWOpLloDJUBKRPmnUbbk3ctIM+n7GJBO1kaXNni9hKDpM24zd5Y1OS0vUUiqfSYzQQaHZDZ6
+ hV4Cp3VhWJy88nGRKqSaKnpXS6qkirLUZoXlSKNRnU6SL76gzn4rtg4JXFx1ttgh9Z3mMt7dk
+ SF9WAy6M8mV+jbt3WZTD9eTKuYexIydpOVv6aoIMy4cpsdABUnfA7lp7CescAeORTWwgF6+SV
+ 8mZoS9P43BLiXT0WdHt6gGfYOYYKVw1CTChk6svkUkWH9gFccR3llF/TRQOICrRyGpMqX+HLm
+ tzFvXXQqmAQUfYuFszPq1Kqv8OyZpJ3sKt9HZWy+jDaKfjJwRDZ2AxfjUlVbjH3IdZo0DA1RC
+ 4V33ebPOw4UVYvutowfV6L4mMiYkaTa2Kd5t6GeeD+JjCLRU+1O8/a0mbOZLaBVdWue4vqOil
+ u1ZPZ3ujUt0s/9QYIaT8WJqz+CNqP3gsWXvDBo0ud+rZ55o4mK/JfqXuccth3K4dA8i5w8+9b
+ qJdlRdN4nqZNEz6GFC7rEf355pdqV9WnRAFg10DWOg7C/Lf3gs=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 8:06 AM Anson Huang <Anson.Huang@nxp.com> wrote:
+On Mon, Jun 29, 2020 at 1:32 PM Anson Huang <anson.huang@nxp.com> wrote:
+> > Subject: Re: [PATCH 1/3] reset: imx7: Support module build
+> >
+> > On Mon, Jun 29, 2020 at 12:45 PM Anson Huang <anson.huang@nxp.com>
+> > wrote:
+> > > > Subject: Re: [PATCH 1/3] reset: imx7: Support module build On Mon,
+> > > > Jun 29, 2020 at 12:25 PM Anson Huang <Anson.Huang@nxp.com> wrote:
+> > >
+> > > The reset driver normally won't be removed since it is necessary for
+> > > drivers which need it, it is just for Android GKI support, in this
+> > > case, do we need to change it to module_platform_driver()?
+> >
+> > Please at least try to do it, or explain in the changelog what went wrong if it
+> > doesn't work.
+> >
+> > I don't think "because Android GKI" should ever be the sole justification for a
+> > patch. Making drivers loadable module is a good idea regardless of GKI, and if
+> > you do that, then make it behave like any other loadable module.
+> >
 >
-> Support building i.MX8QXP clock driver as module.
->
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> OK, will do it in V2, BTW, I think there is nothing need to be done for .remove() callback,
+> can I just skip it or need to add a blank callback anyway?
 
-I would just combine the per-soc patches into one, as they all have the same
-changelog text.
+I think if everything is done through devm_() calls you should be able to
+have no .remove() callback at all, but I have not tried that.
 
-> diff --git a/drivers/clk/imx/clk-imx8qxp-lpcg.c b/drivers/clk/imx/clk-imx8qxp-lpcg.c
-> index 04c8ee3..8afaefc 100644
-> --- a/drivers/clk/imx/clk-imx8qxp-lpcg.c
-> +++ b/drivers/clk/imx/clk-imx8qxp-lpcg.c
-> @@ -232,3 +232,4 @@ static struct platform_driver imx8qxp_lpcg_clk_driver = {
->  };
->
->  builtin_platform_driver(imx8qxp_lpcg_clk_driver);
-> +MODULE_LICENSE("GPL v2");
-
-Same thing here: please try to make it possible to unload these drivers,
-and add MODULE_AUTHOR/MODULE_DESCRIPTION tags in addition
-to MODULE_LICENSE.
-
-          Arnd
+     Arnd
