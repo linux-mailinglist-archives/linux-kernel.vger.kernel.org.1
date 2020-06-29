@@ -2,122 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC2520D288
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D5C20D215
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725856AbgF2SuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:50:01 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:61738 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729180AbgF2St7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:49:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593456599; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Sender; bh=UN67+6exueZt49OSSOSCDajV8YbGx6Hd7cdOXnOfMkk=; b=QwMiNdqI5Br2s9cMPCxxiYuPy3HRZqXImd4VdKLdFKqF0i6TqVg9ttzM1eTZcwKI6JzhCli1
- x9ehV9ONZUYc1OpNo0ZDqFhro13Em6a9z0nq1xMncGMeoTU4J3fQSunockFlifEWHPx5/sW6
- zoGAfjpADkI4oafRpK7dA6BP0KU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5ef9daf68fe116ddd98d18b8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 12:13:42
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D3F7DC433CB; Mon, 29 Jun 2020 12:13:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from Pillair (unknown [183.83.71.149])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 26A85C433C6;
-        Mon, 29 Jun 2020 12:13:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 26A85C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pillair@codeaurora.org
-From:   "Rakesh Pillai" <pillair@codeaurora.org>
-To:     "'Doug Anderson'" <dianders@chromium.org>,
-        "'Kalle Valo'" <kvalo@codeaurora.org>
-Cc:     <ath10k@lists.infradead.org>,
-        "'open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS'" 
-        <devicetree@vger.kernel.org>,
-        "'linux-wireless'" <linux-wireless@vger.kernel.org>,
-        "'LKML'" <linux-kernel@vger.kernel.org>
-References: <1593194502-13164-1-git-send-email-pillair@codeaurora.org> <1593194502-13164-3-git-send-email-pillair@codeaurora.org> <CAD=FV=V1C2Lu31n8xQ8HPf21fNo_Da2SLtZAeStFBEou9+geEA@mail.gmail.com>
-In-Reply-To: <CAD=FV=V1C2Lu31n8xQ8HPf21fNo_Da2SLtZAeStFBEou9+geEA@mail.gmail.com>
-Subject: RE: [PATCH 2/2] ath10k: Add support for chain1 regulator supply voting
-Date:   Mon, 29 Jun 2020 17:43:35 +0530
-Message-ID: <000301d64e0e$b9e32c70$2da98550$@codeaurora.org>
+        id S1729220AbgF2Sq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:46:27 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:58803 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726046AbgF2SqG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:46:06 -0400
+Received: from mail-qt1-f173.google.com ([209.85.160.173]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1N63i4-1ijUcQ1moa-016RQt for <linux-kernel@vger.kernel.org>; Mon, 29 Jun
+ 2020 14:31:02 +0200
+Received: by mail-qt1-f173.google.com with SMTP id x62so12639867qtd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:31:02 -0700 (PDT)
+X-Gm-Message-State: AOAM531p7869LT5njh8wnj6KVn4FQ+Xh3qJNQJcKg59cP05CCuxmgU9O
+        tVvku5tfDJ695M6Z1OLQ+sQp2J7zRce2QdWcvKA=
+X-Google-Smtp-Source: ABdhPJyi8d5XSsqDz2xGWs39SMtTovk0NumfjVlNgvEVQqVelWtmCwHZ6CtxBJqI3LVrMPW8vqPvDjskRDxpKTJl7uo=
+X-Received: by 2002:ac8:7587:: with SMTP id s7mr15464702qtq.304.1593433861257;
+ Mon, 29 Jun 2020 05:31:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKOP6JTmaF44S4OU0UHs+POXUh10gKWMw65AYCLAK6nXugGkA==
-Content-Language: en-us
+References: <1593425623-31810-1-git-send-email-Anson.Huang@nxp.com>
+ <1593425623-31810-2-git-send-email-Anson.Huang@nxp.com> <CAK8P3a31coESQTssW1mndGuZ1pvxXSRRpY=XT1ZO+pkj9aabxg@mail.gmail.com>
+ <DB3PR0402MB3916987E13C37013ACF59EB1F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CAK8P3a3Ar3TnSuxpUUMj4NjCK0Qb0pD9cVbcFUcdeGa85m2fUQ@mail.gmail.com> <DB3PR0402MB3916192607A09C7061740087F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+In-Reply-To: <DB3PR0402MB3916192607A09C7061740087F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 29 Jun 2020 14:30:45 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1NoyMGNK90WzbgJ7opPbiVL8vwnMEuBeeNPNyvB+5sqQ@mail.gmail.com>
+Message-ID: <CAK8P3a1NoyMGNK90WzbgJ7opPbiVL8vwnMEuBeeNPNyvB+5sqQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm64: defconfig: Select CONFIG_RESET_IMX7 by default
+To:     Anson Huang <anson.huang@nxp.com>
+Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Stefan Agner <stefan.agner@toradex.com>,
+        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Olof Johansson <olof@lixom.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:2bbfnnu6caMfroSf3X6brnBsM4ueKxnAkzlLwmtvc7NLrcVsHrG
+ HG76r3AKyTfjXtQvSsvspWv6vx8BJvIpJ+SYUFm1kKL+CKntyhkyzI0zuvAGUEWog7SlI2D
+ BJRJthS7uCO0R2+HXeUsxIL4380OI2P7I31pzOUAp5pt1FiI8u1eeoaYd7YSAK2+3LZrkIt
+ aDA+yQeFVhaTWSiwmn8nA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EeNE1Bczr/E=:vh9X1h67EmkOmWVO+u3MlR
+ 6daWYLlzK8gV5wW6CEZWyje4BRW7MElm84xD2hG0JMjTt6dt2OcZUrd3nNSVWZFPebb6xnr5O
+ ZSnOaJXT939t8FT5IncDhIacZwF7daeXNchIGOb2FTzJYvTnUHPNCVqzWQVmZpjzFdTIu8a/2
+ O0XzT1j6gQYfZyl6Hmi0OOQSWNmLUejAPbAWE+S5+DuUQFjrxJvtSU/BgHnra35emZVzoDhzI
+ YY5gaSUl1HXyrTB0asdpv+KRE2MB94I+0rJc7OXvrMWdRK6rDiZy8tRJ6SPouy+Ix5nSn6WOP
+ HhrBesKYfAkbAtJHLTpIHXHCoEsYdduz0k+Ew9mZkTNedxkiCwB6w6YoLSW9w+2DUbmRdkrgg
+ Uo081LIZP6S6CuOhd1KnLk9jK9wEVk+n4eD+q2bH5TW+pI/DDZHTfclfrigwdt+fOsW6BriNY
+ bG1PdhTZx4EaYtCiAvEBEKCuAsDbggojHKPRo9pvaj/ls3eKl0l3X5LuSmKXGQxrQnqgKhhGh
+ M8o53h+f3GkmTJ8tu2A5s/G+NkypngXw5YpA+4LgRp5QBQSz/igkt16gwKGTUj+a5UULj/5L4
+ nD4h32mFdpkfe9UgmkbuFkiAwAffoVhz8xv9Q6mtMU3IxeqLUuR3pT9bthmbQVxJZhsfDnUUo
+ 9CAQ2YOh7f47fH/W6l3P/CUuInMvzPGPvfNZSFGSQLx6Yyvt7pGESJFB0BPsNW/9WhtuU/WfY
+ I2dS0KFCCRbemrvlvVeUFiigvMawJcaqNUsSZArBTqWvf3X1hNbXRGyeapPsNAheNE+YGSvRM
+ 4YfgTYvlW/SHSag8fBJr1cLxroUiskIxgldnF0XgboudRaKZJE=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Doug Anderson <dianders@chromium.org>
-> Sent: Saturday, June 27, 2020 3:22 AM
-> To: Rakesh Pillai <pillair@codeaurora.org>; Kalle Valo
-> <kvalo@codeaurora.org>
-> Cc: ath10k@lists.infradead.org; open list:OPEN FIRMWARE AND FLATTENED
-> DEVICE TREE BINDINGS <devicetree@vger.kernel.org>; linux-wireless =
-<linux-
-> wireless@vger.kernel.org>; LKML <linux-kernel@vger.kernel.org>
-> Subject: Re: [PATCH 2/2] ath10k: Add support for chain1 regulator =
-supply
-> voting
->=20
-> Hi,
->=20
-> On Fri, Jun 26, 2020 at 11:02 AM Rakesh Pillai =
-<pillair@codeaurora.org> wrote:
+On Mon, Jun 29, 2020 at 2:09 PM Anson Huang <anson.huang@nxp.com> wrote:
 > >
-> > Add support to vote for chain-1 voltage regulator
-> > in WCN3990.
+> > It sounds like your patch 1/3 is not ready to be merged then.
 > >
-> > Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+> > Please make sure that loading it later does not break other drivers that depend
+> > on it. Other drivers don't have to be able to deal with missing dependencies if
+> > this one is never loaded or disabled at compile-time. However before you
+> > make it possible to turn this into a loadable module, anything that depends on
+> > it must be able to deal with the modules getting loaded in a random order
+> > first.
 > >
-> > Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> > ---
-> >  drivers/net/wireless/ath/ath10k/snoc.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/net/wireless/ath/ath10k/snoc.c
-> b/drivers/net/wireless/ath/ath10k/snoc.c
-> > index 645ed5f..407a074 100644
-> > --- a/drivers/net/wireless/ath/ath10k/snoc.c
-> > +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-> > @@ -45,6 +45,7 @@ static const char * const ath10k_regulators[] =3D =
-{
-> >         "vdd-1.8-xo",
-> >         "vdd-1.3-rfa",
-> >         "vdd-3.3-ch0",
-> > +       "vdd-3.3-ch1",
->=20
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
->=20
-> ...with the slight nit that ${SUBJECT} and description should probably
-> call it "chan1" and not "chain1".  Presumably the maintainer can fix
-> when applying.
->=20
-> -Doug
+> I searched all driver which uses this reset driver, looks like ONLY i.MX6 PCIe is using it and
+> it ONLY supports built-in.
 
-Hi Doug,
+Ok, thanks for researching this.
 
-It has to be chain1 only, not chan1.
-This is the power supply rail for the wlan-chain1=20
+> and inside this driver, it does NOT support defer probe etc.,
+> since I am NOT sure when this PCIe driver will add module support, so do you think if I
+> can make PCI_IMX6 select RESET_IMX7, then it won't break the PCIe function even
+> RESET_IMX7 is set to =m in defconfig, as when PCI_IMX6 is enabled as =y, RESET_IMX7 will
+> be also =y.
 
+Yes, I think this can work as a short-term workaround, though ideally the
+PCIe driver would also become a loadable module and also support deferred
+probing.
+
+Having loadable PCIe drivers has traditionally been problematic in Linux,
+but Rob Herring has recently improved this in the series containing patch
+0c59c06a7c90 ("PCI: host-generic: Support building as modules"), which
+was also intended to help with Android GKI.
+
+As i.MX uses the designware PCI core support, this may require some
+more changes in PCIE_DW before the i.MX specific part can be
+a loadable module, but it should no longer require changes to the
+PCI core code. Turning the driver into a loadable module is probably
+not even that hard, but making it possible to unload definitely requires
+adding a proper .remove callback to properly unregister the PCIe
+host bridge.
+
+I also see a DECLARE_PCI_FIXUP() and a fault handler hook in
+the pci-imx6.c driver, which probably need to get moved into
+a separate built-in file with a few changes.
+
+And then I noticed a bug in the driver: it hooks the abort handler
+from an initcall whenever the driver is built into the kernel, regardless
+of which machine it is actually running on!
+
+Regarding deferrer probing, the PCIe host currently relies on
+the clk controller,  the regulator and (on imx7d) the reset driver
+to be probed first. I think making it support deferred probing for
+all three should be straightforward, most importantly this means
+not printing an error and returning -EPROBE_DEFER when not
+all dependencies are there yet.
+
+       Arnd
