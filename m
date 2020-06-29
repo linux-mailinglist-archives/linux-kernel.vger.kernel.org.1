@@ -2,220 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036E920CC22
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 05:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5452C20CC30
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 05:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgF2D2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 23:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725976AbgF2D2j (ORCPT
+        id S1726047AbgF2DlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 23:41:06 -0400
+Received: from m15114.mail.126.com ([220.181.15.114]:46649 "EHLO
+        m15114.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725983AbgF2DlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 23:28:39 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21262C03E979
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 20:28:39 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id s14so6539475plq.6
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 20:28:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=lbsx2y35w3P2mGZ5m5BFNka+yiBEnau35l+RTQ7+vso=;
-        b=QqNsrcb9Qqk7Iz4v6VAXZu18pDLTGkUMgJWOVhb4NUKkdRArjYiLsAJN8u/MLrfncu
-         FzZeWhKxnxdqmS7smLe2BbnqVCQD5Vr8ovP0JWRJt4zliBlBmkmtLyU6Yuph+AtJVRrP
-         JP6RvfxfOdo3MMZ/teEQi+PrCBlprTXf2qGPgS2GdUvEbkgYZxtSHFExdwHLYqCVsuv9
-         ZJwbd0TcocOS7FkZ0FNU0v7YVBQyhkzvxsyCXSz5D5aTAJJV1WncbeV4vptDGl3KeXZi
-         WILZyJw3fjmXytRKtAvWe6xty17FiM9qagNtVSA/RLrivREa4Ssb61Ux+DXhUeY0gw3z
-         hL5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=lbsx2y35w3P2mGZ5m5BFNka+yiBEnau35l+RTQ7+vso=;
-        b=rojGaowtAXA39mEIZfAohOpFQ29G8Y3ldU+hEz6foHXxHFu5qnj1Y7O1jUaRsbFIa5
-         lLnh0oGW9KIdpfzDQzb0jeGpD1pXh9gYmVUaQFXk+JkEEZ/oELH2xElHhBsj+TlS1k1n
-         n2qbvMi2HyCzhiiTlrw9RXwq7/062YY+LP6n3HAXOJ5kF2kejf/Z8EqDAoEGBho/+74x
-         iHW3+A4JfpgXTE47kAEpM/yZW4d0OlU/LaQowEseYrXu7bWk++xkMCqQjxoPty5T4PHF
-         n3NHxV9a00TtaZg28YqSryb/7eROKZxA2X0EsL5ffKt1JErIPqN5VFF6MkACkfiwnM3a
-         R+CA==
-X-Gm-Message-State: AOAM532dSByaAaia2Bd3m6QIptG/zaxtxoLPYEIe57lCfltI6OsOEayM
-        xudvkFN4uG2WZeNbih34RE0=
-X-Google-Smtp-Source: ABdhPJwFYZyx6mCEIvbCqQnbti91xePhhnZG6yyJHNcT7dZOAlEZIFmbDit2gyDks/V1ftSTQ2OGpA==
-X-Received: by 2002:a17:90a:354d:: with SMTP id q71mr16059340pjb.216.1593401318606;
-        Sun, 28 Jun 2020 20:28:38 -0700 (PDT)
-Received: from localhost (61-68-186-125.tpgi.com.au. [61.68.186.125])
-        by smtp.gmail.com with ESMTPSA id hg13sm5003331pjb.21.2020.06.28.20.28.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jun 2020 20:28:37 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 13:28:31 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: wait_on_page_bit_common(TASK_KILLABLE, EXCLUSIVE) can miss
- wakeup?
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Davidlohr Bueso <dave@stgolabs.net>, Jan Kara <jack@suse.cz>,
-        Lukas Czerner <lczerner@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Oleg Nesterov <oleg@redhat.com>
-References: <20200624161142.GA12184@redhat.com>
-        <20200624162042.GA12238@redhat.com>
-        <CAHk-=wjJA2Z3kUFb-5s=6+n0qbTs8ELqKFt9B3pH85a8fGD73w@mail.gmail.com>
-        <20200626154313.GI4817@hirez.programming.kicks-ass.net>
-        <CAHk-=whvVWNXPJq1k566zn4SfXAifXtiA7T+7JFweR3rQ0nc9A@mail.gmail.com>
-In-Reply-To: <CAHk-=whvVWNXPJq1k566zn4SfXAifXtiA7T+7JFweR3rQ0nc9A@mail.gmail.com>
-MIME-Version: 1.0
-Message-Id: <1593396958.ydiznwsuu8.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+        Sun, 28 Jun 2020 23:41:06 -0400
+X-Greylist: delayed 1827 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Jun 2020 23:41:04 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=w+EIEf24qwNuCWKj35
+        zeUBF8QLrIvjDA8vW20eFEtc0=; b=f66LYiQCmMi3YvJrnhTruUZ6DBHjqV4AT2
+        hAY1Z0AHFkQI22ac+4AwLiOTeMRomZO5CLxQtEjXjehIr0Id3WIo/4e/kJwhi56O
+        stn+ekWURI4ZF0zqF3oXt8rBp5l1bqoBGDH5MNiY6mfgLpZ2E/kYciPyxVaEB+vs
+        D8VOnE0k0=
+Received: from xr-hulk-k8s-node1933.gh.sankuai.com (unknown [101.236.11.3])
+        by smtp7 (Coremail) with SMTP id DsmowAB3eGhlW_leYwmDGw--.3986S2;
+        Mon, 29 Jun 2020 11:09:30 +0800 (CST)
+From:   Jiang Ying <jiangying8582@126.com>
+To:     Markus.Elfring@web.de, tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     wanglong19@meituan.com
+Subject: [PATCH v2] ext4: fix direct I/O read error
+Date:   Mon, 29 Jun 2020 11:09:25 +0800
+Message-Id: <1593400165-114818-1-git-send-email-jiangying8582@126.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: DsmowAB3eGhlW_leYwmDGw--.3986S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxZr47tFWDJrW5JryxJw4UCFg_yoW5tw4fpF
+        sxCa15WrWkZr1fC3ZrKanrZFyFy3yDGFWUXr98uw1UAr4ag3s5KFWIkF17G3y5GrWF9w4F
+        vFZ8tryrAw1UZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jYT5dUUUUU=
+X-Originating-IP: [101.236.11.3]
+X-CM-SenderInfo: xmld0wp1lqwmqvysqiyswou0bp/1tbimgpSAFpEAcprjQAAsx
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Linus Torvalds's message of June 28, 2020 3:39 pm:
-> On Fri, Jun 26, 2020 at 8:43 AM Peter Zijlstra <peterz@infradead.org> wro=
-te:
->>
->> I ended up with something like the below.. but it is too warm to think
->> properly.
->>
->> I don't particularly like WQ_FLAG_PAGEWAITERS, but I liked open-coding
->> all that even less.
->=20
-> Ugh.
->=20
-> I think I have a much simpler approach, actually.
->=20
-> So the *problem* is purely around that
->=20
->                 if (behavior =3D=3D EXCLUSIVE) {
->                         if (!test_and_set_bit_lock(bit_nr, &page->flags))
->                                 break;
->                 } else ..
->=20
-> and in particular it is purely *after* that test_and_set_bit_lock()
-> case. We have two cases:
->=20
->  (a) *If* we get the lock there, we're good, and all done, and we have
-> the lock. We don't care about any other wakeups, because they'll be
-> stale anyway (the thing that released the lock that we just took) and
-> because we got the lock, no other exclusive waiters should be woken up
-> anyway (and we will in turn wake up any waiters when we release it)
->=20
->  (b) we did *not* get the lock, because somebody else got it and is
-> about to immediately unlock again. And that _future_ wakeup that they
-> send might get lost because it might end up targeting us (but we might
-> just exit and not care).
->=20
-> Agreed?
->=20
-> So the only case that really matters is that we didn't get the lock,
-> but we must *not* be woken up afterwards.
->=20
-> So how about the attached trivial two-liner? We solve the problem by
-> simply marking ourselves TASK_RUNNING, which means that we won't be
-> counted as an exclusive wakeup.
->=20
-> Ok, so the "one" line to do that is that is actually two lines:
->=20
->         __set_current_state(TASK_RUNNING);
->         smp_mb__before_atomic();
->=20
-> and there's four lines of comments to go with it, but it really is
-> very simple: if we do that before we do the test_and_set_bit_lock(),
-> no wakeups will be lost, because we won't be sleeping for that wakeup.
->=20
-> I'm not entirely happy about that "smp_mb__before_atomic()". I think
-> it's right in practice that test_and_set_bit_lock() (when it actually
-> does a write) has at LEAST atomic seqmantics, so I think it's good.
-> But it's not pretty.
->=20
-> But I don't want to use a heavy
->=20
->         set_current_state(TASK_RUNNING);
->         if (!test_and_set_bit_lock(bit_nr, &page->flags)) ..
->=20
-> sequence, because at least on x86, that test_and_set_bit_lock()
-> already has a memory barrier in it, so the extra memory barrier from
-> set_current_state() is all kinds of pointless.
->=20
-> Hmm?
+Fixes: 9fe55eea7e4b ("Fix race when checking i_size on direct i/o read").
+This commit caused ext4 direct I/O read error when the read size is not
+alignment with block size.
 
-Wow good catch. Does bit_is_set even have to be true? If it's woken due=20
-to a signal, it may still be on the waitqueue right? I think your patch
-works, but it looks like a pretty standard variant of "don't lose
-wakeups" bug.
+Then, I will use a test to explain the error.
 
-prepare_to_wait_event() has a pretty good pattern (and comment), I would
-favour using that (test the signal when inserting on the waitqueue).
+(1) Make the file that is not alignment with block size:
+	$dd if=/dev/zero of=./test.jar bs=1000 count=3
 
-@@ -1133,6 +1133,15 @@ static inline int wait_on_page_bit_common(wait_queue=
-_head_t *q,
-        for (;;) {
-                spin_lock_irq(&q->lock);
-=20
-+               if (signal_pending_state(state, current)) {
-+                       /* Must not lose an exclusive wake up, see
-+                        * prepare_to_wait_event comment */
-+                       list_del_init(&wait->entry);
-+                       spin_unlock_irq(&q->lock);
-+                       ret =3D -EINTR;
-+                       break;
-+               }
+(2) I wrote a test script named "direct_io_read_file.c" as following:
+
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <unistd.h>
+	#include <sys/file.h>
+	#include <sys/types.h>
+	#include <sys/stat.h>
+	#include <string.h>
+	#define BUF_SIZE 1024
+
+	int main()
+	{
+		int fd;
+		int ret;
+
+		unsigned char *buf;
+		ret = posix_memalign((void **)&buf, 512, BUF_SIZE);
+		if (ret) {
+			perror("posix_memalign failed");
+			exit(1);
+		}
+		fd = open("./test.jar", O_RDONLY | O_DIRECT, 0755);
+		if (fd < 0){
+			perror("open ./test.jar failed");
+			exit(1);
+		}
+
+		do {
+			ret = read(fd, buf, BUF_SIZE);
+			printf("ret=%d\n",ret);
+			if (ret < 0) {
+				perror("write test.jar failed");
+			}
+		} while (ret > 0);
+
+		free(buf);
+		close(fd);
+	}
+
+(3) Compiling the script:
+	$gcc direct_io_read_file.c -D_GNU_SOURCE
+
+(4) Exec the script:
+	$./a.out
+
+	The result is as following:
+	ret=1024
+	ret=1024
+	ret=952
+	ret=-1
+	write test.jar failed: Invalid argument.
+
+I have tested this script on XFS filesystem, XFS does not have
+this problem, because XFS use iomap_dio_rw() to do direct I/O
+read. And the comparing between read offset and file size is done
+in iomap_dio_rw(), the code is as following:
+	if (pos < size) {
+		retval = filemap_write_and_wait_range(mapping, pos,
+				pos + iov_length(iov, nr_segs) - 1);
+
+		if (!retval) {
+			retval = mapping->a_ops->direct_IO(READ, iocb,
+						iov, pos, nr_segs);
+		}
+		...
+	}
+Only when "pos < size", direct I/O can be done, or 0 will be return.
+
+I have tested my fix patch, it is up to the mustard of EINVAL in
+man2(read) as following:
+	#include <unistd.h>
+	ssize_t read(int fd, void *buf, size_t count);
+
+	EINVAL
+		fd is attached to an object which is unsuitable for reading;
+		or the file was opened with the O_DIRECT flag, and either the
+		address specified in buf, the value specified in count, or the
+		current file offset is not suitably aligned.
+
+So I think this patch can be applied to fix ext4 direct I/O error.
+
+However Ext4 introduces direct I/O read using iomap infrastructure
+on kernel 5.5, the patch is commit <b1b4705d54ab>
+("ext4: introduce direct I/O read using iomap infrastructure"),
+then Ext4 will be the same as XFS, they all use iomap_dio_rw() to do direct
+I/O read. So this problem does not exist on kernel 5.5 for Ext4.
+
+From above description, we can see this problem exists on all the kernel
+versions between kernel 3.14 and kernel 5.4. Please apply this patch
+on these kernel versions, or please use the method on kernel 5.5 to fix
+this problem. Thanks.
+
+Co-developed-by: Wang Long <wanglong19@meituan.com>
+Signed-off-by: Wang Long <wanglong19@meituan.com>
+Signed-off-by: Jiang Ying <jiangying8582@126.com>
+---
+ fs/ext4/inode.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 516faa2..d514ff5 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3821,6 +3821,12 @@ static ssize_t ext4_direct_IO_read(struct kiocb *iocb, struct iov_iter *iter)
+ 	struct inode *inode = mapping->host;
+ 	size_t count = iov_iter_count(iter);
+ 	ssize_t ret;
++	loff_t offset = iocb->ki_pos;
++	loff_t size;
 +
-                if (likely(list_empty(&wait->entry))) {
-                        __add_wait_queue_entry_tail(q, wait);
-                        SetPageWaiters(page);
-@@ -1157,11 +1166,6 @@ static inline int wait_on_page_bit_common(wait_queue=
-_head_t *q,
-                                break;
-                }
-=20
--               if (signal_pending_state(state, current)) {
--                       ret =3D -EINTR;
--                       break;
--               }
--
-                if (behavior =3D=3D DROP) {
-                        /*
-                         * We can no longer safely access page->flags:
-
-- mutex_lock_common does the signal check under its wait queue lock.
-
-- rwsem looks like it does it backward and checks if it was woken if it
-got a signal and tries to handle it that way (hopefully okay, I prefer
-the standard pattern).
-
-- futex unqueues and tests for wakeup before testing signal.
-
-Etc. And it's not even exclusive to signals of course, those are just=20
-the typical asynchronous thing that would wake us without removing from
-the wait queue. Bit of a shame there is no standard pattern to follow
-though.
-
-I wonder how you could improve that. finish_wait could WARN_ON an
-exclusive waiter being found on the queue?
-
-@@ -377,6 +377,7 @@ void finish_wait(struct wait_queue_head *wq_head, struc=
-t wait_queue_entry *wq_en
-         *    the list).
-         */
-        if (!list_empty_careful(&wq_entry->entry)) {
-+               WARN_ON(wq_entry->flags & WQ_FLAG_EXCLUSIVE);
-                spin_lock_irqsave(&wq_head->lock, flags);
-                list_del_init(&wq_entry->entry);
-                spin_unlock_irqrestore(&wq_head->lock, flags);
-
-That doesn't catch a limited count of wake ups, maybe if you passed in=20
-success value to finish_wait, it could warn in case a failure has=20
-WQ_FLAG_WOKEN. That doesn't help things that invent their own waitqueues
-mind you. I wonder if we could do some kind of generic annotations for
-anyone implementing wait queues to call, which could have debug checks
-implemented?
-
-Thanks,
-Nick
++	size = i_size_read(inode);
++	if (offset >= size)
++		return 0;
+ 
+ 	/*
+ 	 * Shared inode_lock is enough for us - it protects against concurrent
+-- 
+1.8.3.1
 
