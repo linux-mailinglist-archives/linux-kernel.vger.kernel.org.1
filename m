@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7324620D447
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D5620D475
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730809AbgF2TGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:06:51 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:39070 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728941AbgF2TGs (ORCPT
+        id S1730897AbgF2TId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:08:33 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:55906 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730889AbgF2TI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:06:48 -0400
-Received: by mail-wr1-f68.google.com with SMTP id q5so17657430wru.6;
-        Mon, 29 Jun 2020 12:06:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9kB1Yqxehc4mOOV+E+s8ly+87mL5I0qDl2+46tT33LU=;
-        b=FEd80YYsVCJ6pf74frJNQnajWBRVFV0QMHP/qy3W0W9HXQvypW8nvMlgqUbUnomnHi
-         O8YsWoOkY/0gsW1wuFENzG/2p0MVio6drckkCAWQhUX6YDslI8N05qYfTEXdmhP050ez
-         bhhL/WcbK3Get7wdtSpsPanlCdnMclxEMNQpfZM5K1TVukzTINfUA72OwM6DkmfPxH9t
-         /nSv3f411beyEx6DfQgAOSHjXwM11BzG+OadcwuOj4GrnqcsG3ZF6B8VfA3RAP+dKogT
-         E1J4xLWzGLTYfhBLP5IHDZsHCJwR02k3Inzl4qa08HVYqt+obUA97UjS6qAGnkjPz7dV
-         9u+w==
-X-Gm-Message-State: AOAM532gqGscXvj6dC9M5WbWWjQSodQTDCt6C2jhKsLmH65iLW6oWn1k
-        /XtV0uL03teTbKbOIBhaR8A=
-X-Google-Smtp-Source: ABdhPJzQcaoC3As2bwvXjFpEkhrTsir6J88mWLOgOu4Igyehnga3Bo7Tm9krH0O+TUUtcdYBw1n/EA==
-X-Received: by 2002:adf:de12:: with SMTP id b18mr19710508wrm.390.1593457606425;
-        Mon, 29 Jun 2020 12:06:46 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id e17sm728179wrr.88.2020.06.29.12.06.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 12:06:45 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 19:06:44 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Andres Beltran <t-mabelt@microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>, Andres Beltran <lkmlabelt@gmail.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "parri.andrea@gmail.com" <parri.andrea@gmail.com>
-Subject: Re: [PATCH 1/3] Drivers: hv: vmbus: Add vmbus_requestor data
- structure for VMBus hardening
-Message-ID: <20200629190644.hlem6jskyx26csaj@liuwe-devbox-debian-v2>
-References: <CH2PR21MB149464F9EF20C516C6FB362A8B6E0@CH2PR21MB1494.namprd21.prod.outlook.com>
+        Mon, 29 Jun 2020 15:08:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593457705;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=n2qVe7QVtMWlsu3tW293XYJBZ3r5SYGfqQyhGd9NB2s=;
+        b=Ij4PBgcSg3Ntims8eYjhczQG0ARN8QglfAWrodFofst2aw7QaYiOcET3Hw72LrnenPGKes
+        0ZCiaX6ecA50df/o7VpoyZjad6QJlmHXU+17fcI0hsUFPZwB5BlSZ2ZdhtPaMs9X8O2wfb
+        +3QqEPmzBVN82VzSlgZ8g/Pwe4cSavg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-240-L3fpmOSlM7CetVm3iyl5YQ-1; Mon, 29 Jun 2020 15:08:13 -0400
+X-MC-Unique: L3fpmOSlM7CetVm3iyl5YQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B3B1210059A3;
+        Mon, 29 Jun 2020 19:08:11 +0000 (UTC)
+Received: from [IPv6:::1] (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 074F960BF3;
+        Mon, 29 Jun 2020 19:08:10 +0000 (UTC)
+From:   Eric Sandeen <sandeen@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     cgroups@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Subject: [PATCH] doc: cgroup: add f2fs and xfs to supported list for writeback
+Message-ID: <c8271324-9132-388c-5242-d7699f011892@redhat.com>
+Date:   Mon, 29 Jun 2020 14:08:09 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CH2PR21MB149464F9EF20C516C6FB362A8B6E0@CH2PR21MB1494.namprd21.prod.outlook.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 06:19:46PM +0000, Andres Beltran wrote:
-[...]
-> > >  EXPORT_SYMBOL_GPL(vmbus_recvpacket_raw);
-> > > +
-> > > +/*
-> > > + * vmbus_next_request_id - Returns a new request id. It is also
-> > > + * the index at which the guest memory address is stored.
-> > > + * Uses a spin lock to avoid race conditions.
-> > > + * @rqstor: Pointer to the requestor struct
-> > > + * @rqst_add: Guest memory address to be stored in the array
-> > > + */
-> > > +u64 vmbus_next_request_id(struct vmbus_requestor *rqstor, u64 rqst_addr)
-> > > +{
-> > > +	unsigned long flags;
-> > > +	u64 current_id;
-> > > +
-> > > +	spin_lock_irqsave(&rqstor->req_lock, flags);
-> > 
-> > Do you really need the irqsave variant here? I.e. is there really a
-> > chance this code is reachable from an interrupt handler?
-> 
-> Other VMBus drivers will also need to use this functionality, and
-> some of them will be called with interrupts disabled. So, I think
-> we should keep the irqsave variant here.
-> 
+f2fs and xfs have both added support for cgroup writeback:
 
-Okay. This makes sense.
+578c647 f2fs: implement cgroup writeback support
+adfb5fb xfs: implement cgroup aware writeback
 
-Wei.
+so add them to the supported list in the docs.
+
+Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+---
+
+TBH I wonder about the wisdom of having this detail in
+the doc, as it apparently gets missed quite often ...
+
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index ce3e05e..4f82afa 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1684,9 +1684,9 @@ per-cgroup dirty memory states are examined and the more restrictive
+ of the two is enforced.
+ 
+ cgroup writeback requires explicit support from the underlying
+-filesystem.  Currently, cgroup writeback is implemented on ext2, ext4
+-and btrfs.  On other filesystems, all writeback IOs are attributed to
+-the root cgroup.
++filesystem.  Currently, cgroup writeback is implemented on ext2, ext4,
++btrfs, f2fs, and xfs.  On other filesystems, all writeback IOs are 
++attributed to the root cgroup.
+ 
+ There are inherent differences in memory and writeback management
+ which affects how cgroup ownership is tracked.  Memory is tracked per
+
