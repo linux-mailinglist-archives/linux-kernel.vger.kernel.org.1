@@ -2,73 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A00720D577
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD8220D7B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726910AbgF2TQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:16:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731896AbgF2TQD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:16:03 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D86BC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:16:02 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id v6so4700236iob.4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:16:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=XdfoRVGuOCD2JOxmLnJxyvoO2f5zjf1xh4i//8cGLHs=;
-        b=E57soH+fAZU9oM/uuDn4bCNx2wALmvA7rwFsDeo/VdmyR4hSt+vRDMPW0qpAcJ9V/h
-         UbYJ9fIR9BUAZrS+1TfrEzBoFSxbLFUBB/IIzj7rfy4Y1SyxPmM/cs9fEremwVWV5m5u
-         b9v38myIgTBJNjasjLIOUO/K2CJS7vPJsURIlWBEC7RA0ax+vZbkexDjvFbqaAUgNm/w
-         yj4NkgHNxXLdKOO4AZsIv5vnXx8YMl4s3e1fTXh2Hp6rhwVI9k4nzVvvlc/OSvXrfpbl
-         +6DOlsrKa8IKCRxKxdcbetpm2uz+ZUKJBnziwlMhGJ11qW6bGQPIDGjYXF06+gry04Zz
-         3NGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=XdfoRVGuOCD2JOxmLnJxyvoO2f5zjf1xh4i//8cGLHs=;
-        b=imfPyvZPdru6A1BDZiePCnUaoAq1H3HN0jQfprtCjf55OlSUpNPcaCOZ2IyVYFCDfE
-         yRXYvhtwPKjxKeCAUkJ1lQWDipNlh1f3OikG4LRutlkQ18V4KW9JDuydWvFjFpM9zihK
-         ifnlyakvC9FHzpSpDyAvLTSmwgXje0b1muoKM7Gnt1RCRJw3EiX+mvqMDGDX9LCfOsUM
-         EV38+LB3ioFEQBnKav4pVedj895FFGmlht1+QYANSGWQIg+ds2X82XeslWL+Th6n7bUc
-         cSIhVj4S4XgK5t5b81oEpc7MvtvVXifIdj4Rnp3QGvCGSyaBqEy5zycQyNw0s/Jj+bmK
-         iDuw==
-X-Gm-Message-State: AOAM531N1ANhujA2gsxZ/K7NAgU9tJ7Wepmn2MR1oyrEE+a5sERRvWLK
-        yoxGnmMHkykyUVayiWgHaZLtUsefDjGTvDzyzVE=
-X-Google-Smtp-Source: ABdhPJyNR5zXZ8o09DSJzsSA3OSccnAxM/c9AxKQjYYOZlXvOMCiHs1YW/1gQi1Sa70TQ2VOPtabshfviWRkV7+ICnM=
-X-Received: by 2002:a6b:db17:: with SMTP id t23mr18236117ioc.4.1593458159284;
- Mon, 29 Jun 2020 12:15:59 -0700 (PDT)
+        id S1730090AbgF2Tb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:31:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36734 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732448AbgF2Tb2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:31:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 326E3AD76;
+        Mon, 29 Jun 2020 05:17:22 +0000 (UTC)
+Subject: Re: [PATCH fsgsbase v2 4/4] x86/fsgsbase: Fix Xen PV support
+To:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org
+References: <cover.1593192140.git.luto@kernel.org>
+ <f07c08f178fe9711915862b656722a207cd52c28.1593192140.git.luto@kernel.org>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <714d4c04-5907-885f-e23b-baef662f1080@suse.com>
+Date:   Mon, 29 Jun 2020 07:17:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Received: by 2002:a05:6602:1588:0:0:0:0 with HTTP; Mon, 29 Jun 2020 12:15:58
- -0700 (PDT)
-Reply-To: mrs.victoria.alexander2@gmail.com
-From:   "mrs.victoria alexander" <markalexandermilley321@gmail.com>
-Date:   Mon, 29 Jun 2020 12:15:58 -0700
-Message-ID: <CAP7XNCwEGQ+-Q==u4yk4yvJdk1X+gsfSU6pUV_hROjmF=p-DHw@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f07c08f178fe9711915862b656722a207cd52c28.1593192140.git.luto@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear friend,
+On 26.06.20 19:24, Andy Lutomirski wrote:
+> On Xen PV, SWAPGS doesn't work.  Teach __rdfsbase_inactive() and
+> __wrgsbase_inactive() to use rdmsrl()/wrmsrl() on Xen PV.  The Xen
+> pvop code will understand this and issue the correct hypercalls.
+> 
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: Juergen Gross <jgross@suse.com>
+> Cc: Stefano Stabellini <sstabellini@kernel.org>
+> Cc: xen-devel@lists.xenproject.org
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> ---
+>   arch/x86/kernel/process_64.c | 20 ++++++++++++++------
+>   1 file changed, 14 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+> index cb8e37d3acaa..457d02aa10d8 100644
+> --- a/arch/x86/kernel/process_64.c
+> +++ b/arch/x86/kernel/process_64.c
+> @@ -163,9 +163,13 @@ static noinstr unsigned long __rdgsbase_inactive(void)
+>   
+>   	lockdep_assert_irqs_disabled();
+>   
+> -	native_swapgs();
+> -	gsbase = rdgsbase();
+> -	native_swapgs();
+> +	if (!static_cpu_has(X86_FEATURE_XENPV)) {
+> +		native_swapgs();
+> +		gsbase = rdgsbase();
+> +		native_swapgs();
+> +	} else {
+> +		rdmsrl(MSR_KERNEL_GS_BASE, gsbase);
+> +	}
+>   
+>   	return gsbase;
+>   }
+> @@ -182,9 +186,13 @@ static noinstr void __wrgsbase_inactive(unsigned long gsbase)
+>   {
+>   	lockdep_assert_irqs_disabled();
+>   
+> -	native_swapgs();
+> -	wrgsbase(gsbase);
+> -	native_swapgs();
+> +	if (!static_cpu_has(X86_FEATURE_XENPV)) {
+> +		native_swapgs();
+> +		wrgsbase(gsbase);
+> +		native_swapgs();
+> +	} else {
+> +		wrmsrl(MSR_KERNEL_GS_BASE, gsbase);
+> +	}
+>   }
+>   
+>   /*
+> 
+
+Another possibility would be to just do (I'm fine either way):
+
+diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
+index acc49fa6a097..b78dd373adbf 100644
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -318,6 +318,8 @@ static void __init xen_init_capabilities(void)
+  		setup_clear_cpu_cap(X86_FEATURE_XSAVE);
+  		setup_clear_cpu_cap(X86_FEATURE_OSXSAVE);
+  	}
++
++	setup_clear_cpu_cap(X86_FEATURE_FSGSBASE);
+  }
+
+  static void xen_set_debugreg(int reg, unsigned long val)
 
 
-I have a business container transaction what that some of( $13million dollars)
-
- I would like to discuss with you. If you are interested, please
-contact my email
-
-address (mrs.victoria.alexander2@gmail.com)
-
-My WhatsApp number but only message (+19293737780)
-
-Please do not reply if you are not ready
-Thanks
+Juergen
