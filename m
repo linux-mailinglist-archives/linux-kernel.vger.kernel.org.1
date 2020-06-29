@@ -2,133 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1547820DE9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EBA20DED6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388915AbgF2U1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:27:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387521AbgF2U1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:27:21 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B39A20656;
-        Mon, 29 Jun 2020 20:27:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593462441;
-        bh=AiODangSG0g8XMTYh4fc4/mILDu9VI7nqiWX6Uw4QIY=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=M4xaXqyijf5hqRA6pOQmyLxhsgtUrLbFEV47XEjyOoSbUU+UwpuzS3ws9PE00rr9m
-         1hOUs2QfgwyOcT9vVytA2n6gPqwuWXp4hUXxlzeT3rY2oReykmtafFI/l4s/NzA5hr
-         Ek12VOxSG5N/uFPHiv1Ks3vqasr8dj0R7zr7pt+k=
-Date:   Mon, 29 Jun 2020 13:27:20 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Subject: Re: [f2fs-dev] [PATCH v3] f2fs: avoid readahead race condition
-Message-ID: <20200629202720.GA230664@google.com>
-References: <20200624012148.180050-1-jaegeuk@kernel.org>
- <20200629150323.GA3293033@google.com>
+        id S1732679AbgF2U3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389032AbgF2U33 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 16:29:29 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 231C9C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:29:29 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id j4so7541656plk.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:29:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=u03RiaGtlqzYCD4RuvVKRMMObH9Mbbvja6DS7CirGAE=;
+        b=PpQ1P+ha/DYO3jk489n3VBpVZbntveZSxgs/hRGIO6pnEGbH52FyTZ7HjQSx8XZAfw
+         XrUjaFKIZJHoimmQ629sshjfkTbMPQBjQX+3d+XPcL6TgaVXWRvVcc3e4Pi7HUhLStaE
+         EJ5e0Tfuhs/ADOSQ9dwzsBZN0UIfmT2OiDdMZhD6oLeigELT9CWRToldqH94VxjVy3cE
+         HNfykk6NY/xa8HO0zyQB1dHKegOAH8YOnvhgRgQ3e8PLQJceXwIU2TVkhXfR+8+6KVTD
+         QbmKLPX2PI9MHwqVbsgG//nxJywoxUU7SyAXv53FUpYz7fc7QX5bM17ZGRTYZAGNutM/
+         l4og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=u03RiaGtlqzYCD4RuvVKRMMObH9Mbbvja6DS7CirGAE=;
+        b=uW6DNeTAQlYBDIZQ/nsFerwVf2SRglKU04XJ9lWiZ8uMWPLFMaWgfOlbz9wfcl/xyn
+         cEBLXPZFXNP9BfgzR8zrLeJF8qEjYoE7kooFsn3CvqM+fzXi5wWVwAgbOhr+SwkZku4J
+         B4eFr4s62sTzBeje4E96ssNGgKZG0Hb8+sTwy/ZsuJUbQpYYXsOq0TEEMbaurhPs5cek
+         q2bkgxZrKR2CxJ/Im2emCCfUueARYIHI4IcdRxuj49XHEzZx5j1izc6PvYrLSM1/bYmM
+         3mlW7Ut6YMsknQ1UWqeq+nRkPoVWEhkAP//qJ/E4XodEVaMLV/LGIAaZNFRJvKc2KFK7
+         j1FA==
+X-Gm-Message-State: AOAM533Xvhaet1JhGdJGGVZAOF1dAiyksBR+poG1WDzcsR608/pTRdUU
+        U9wN3NoilywAwv7j5oFfOf5Qmw==
+X-Google-Smtp-Source: ABdhPJyaDP2H6/oFfrrkpIQLa1e0rC9OCatRY+xr96oYLf9cmMyb+D8UkvrIOyu6IecgCJSqb2JbrQ==
+X-Received: by 2002:a17:90b:94f:: with SMTP id dw15mr6834764pjb.209.1593462568590;
+        Mon, 29 Jun 2020 13:29:28 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id a17sm333021pjh.31.2020.06.29.13.29.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 13:29:28 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 14:29:26 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Mike Leach <mike.leach@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH v2] coresight: cti: Fix error handling in probe
+Message-ID: <20200629202926.GA3732655@xps15>
+References: <CAJ9a7Vjn-1gvOY0h5eiffXgqiNu4rz=Z18hgV33WExGnLEV-nA@mail.gmail.com>
+ <20200617171549.GA9686@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200629150323.GA3293033@google.com>
+In-Reply-To: <20200617171549.GA9686@kadam>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If two readahead threads having same offset enter in readpages, every read
-IOs are split and issued to the disk which giving lower bandwidth.
+On Wed, Jun 17, 2020 at 08:15:50PM +0300, Dan Carpenter wrote:
+> There were a couple problems with error handling in the probe function:
+> 1)  If the "drvdata" allocation failed then it lead to a NULL
+>     dereference.
+> 2)  On several error paths we decremented "nr_cti_cpu" before it was
+>     incremented which lead to a reference counting bug.
+> 
+> There were also some parts of the error handling which were not bugs but
+> were messy.  The error handling was confusing to read.  It printed some
+> unnecessary error messages.
+> 
+> The simplest way to fix these problems was to create a cti_pm_setup()
+> function that did all the power management setup in one go.  That way
+> when we call cti_pm_release() we don't have to deal with the
+> complications of a partially configured power management config.
+> 
+> I reversed the "if (drvdata->ctidev.cpu >= 0)" condition in cti_pm_release()
+> so that it mirros the new cti_pm_setup() function.
+> 
+> Fixes: 6a0953ce7de9 ("coresight: cti: Add CPU idle pm notifer to CTI devices")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+> v2: I accidentally introduced a bug in cti_pm_release() in v1.
 
-This patch tries to avoid redundant readahead calls.
+Thanks for the cleanup.  I'll send this to Greg for a 5.8 fixup.
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
-v3:
- - use READ|WRITE_ONCE
-v2:
-  - add missing code to bypass read
- 
- fs/f2fs/data.c  | 18 ++++++++++++++++++
- fs/f2fs/f2fs.h  |  1 +
- fs/f2fs/super.c |  2 ++
- 3 files changed, 21 insertions(+)
+Regards,
+Mathieu
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 995cf78b23c5e..360b4c9080d97 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -2296,6 +2296,7 @@ static int f2fs_mpage_readpages(struct inode *inode,
- 	unsigned nr_pages = rac ? readahead_count(rac) : 1;
- 	unsigned max_nr_pages = nr_pages;
- 	int ret = 0;
-+	bool drop_ra = false;
- 
- 	map.m_pblk = 0;
- 	map.m_lblk = 0;
-@@ -2306,10 +2307,24 @@ static int f2fs_mpage_readpages(struct inode *inode,
- 	map.m_seg_type = NO_CHECK_TYPE;
- 	map.m_may_create = false;
- 
-+	/*
-+	 * Two readahead threads for same address range can cause race condition
-+	 * which fragments sequential read IOs. So let's avoid each other.
-+	 */
-+	if (rac && readahead_count(rac)) {
-+		if (READ_ONCE(F2FS_I(inode)->ra_offset) == readahead_index(rac))
-+			drop_ra = true;
-+		else
-+			WRITE_ONCE(F2FS_I(inode)->ra_offset,
-+						readahead_index(rac));
-+	}
-+
- 	for (; nr_pages; nr_pages--) {
- 		if (rac) {
- 			page = readahead_page(rac);
- 			prefetchw(&page->flags);
-+			if (drop_ra)
-+				goto next_page;
- 		}
- 
- #ifdef CONFIG_F2FS_FS_COMPRESSION
-@@ -2372,6 +2387,9 @@ static int f2fs_mpage_readpages(struct inode *inode,
- 	}
- 	if (bio)
- 		__submit_bio(F2FS_I_SB(inode), bio, DATA);
-+
-+	if (rac && readahead_count(rac) && !drop_ra)
-+		WRITE_ONCE(F2FS_I(inode)->ra_offset, -1);
- 	return ret;
- }
- 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 6a655edeb522f..e6e47618a3576 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -809,6 +809,7 @@ struct f2fs_inode_info {
- 	struct list_head inmem_pages;	/* inmemory pages managed by f2fs */
- 	struct task_struct *inmem_task;	/* store inmemory task */
- 	struct mutex inmem_lock;	/* lock for inmemory pages */
-+	pgoff_t ra_offset;		/* ongoing readahead offset */
- 	struct extent_tree *extent_tree;	/* cached extent_tree entry */
- 
- 	/* avoid racing between foreground op and gc */
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 7326522057378..80cb7cd358f84 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -1015,6 +1015,8 @@ static struct inode *f2fs_alloc_inode(struct super_block *sb)
- 	/* Will be used by directory only */
- 	fi->i_dir_level = F2FS_SB(sb)->dir_level;
- 
-+	fi->ra_offset = -1;
-+
- 	return &fi->vfs_inode;
- }
- 
--- 
-2.27.0.212.ge8ba1cc988-goog
-
+> 
+>  drivers/hwtracing/coresight/coresight-cti.c | 96 ++++++++++++---------
+>  1 file changed, 54 insertions(+), 42 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-cti.c b/drivers/hwtracing/coresight/coresight-cti.c
+> index 40387d58c8e7..d2da5bf9f552 100644
+> --- a/drivers/hwtracing/coresight/coresight-cti.c
+> +++ b/drivers/hwtracing/coresight/coresight-cti.c
+> @@ -747,17 +747,50 @@ static int cti_dying_cpu(unsigned int cpu)
+>  	return 0;
+>  }
+>  
+> +static int cti_pm_setup(struct cti_drvdata *drvdata)
+> +{
+> +	int ret;
+> +
+> +	if (drvdata->ctidev.cpu == -1)
+> +		return 0;
+> +
+> +	if (nr_cti_cpu)
+> +		goto done;
+> +
+> +	cpus_read_lock();
+> +	ret = cpuhp_setup_state_nocalls_cpuslocked(
+> +			CPUHP_AP_ARM_CORESIGHT_CTI_STARTING,
+> +			"arm/coresight_cti:starting",
+> +			cti_starting_cpu, cti_dying_cpu);
+> +	if (ret) {
+> +		cpus_read_unlock();
+> +		return ret;
+> +	}
+> +
+> +	ret = cpu_pm_register_notifier(&cti_cpu_pm_nb);
+> +	cpus_read_unlock();
+> +	if (ret) {
+> +		cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_CTI_STARTING);
+> +		return ret;
+> +	}
+> +
+> +done:
+> +	nr_cti_cpu++;
+> +	cti_cpu_drvdata[drvdata->ctidev.cpu] = drvdata;
+> +
+> +	return 0;
+> +}
+> +
+>  /* release PM registrations */
+>  static void cti_pm_release(struct cti_drvdata *drvdata)
+>  {
+> -	if (drvdata->ctidev.cpu >= 0) {
+> -		if (--nr_cti_cpu == 0) {
+> -			cpu_pm_unregister_notifier(&cti_cpu_pm_nb);
+> +	if (drvdata->ctidev.cpu == -1)
+> +		return;
+>  
+> -			cpuhp_remove_state_nocalls(
+> -				CPUHP_AP_ARM_CORESIGHT_CTI_STARTING);
+> -		}
+> -		cti_cpu_drvdata[drvdata->ctidev.cpu] = NULL;
+> +	cti_cpu_drvdata[drvdata->ctidev.cpu] = NULL;
+> +	if (--nr_cti_cpu == 0) {
+> +		cpu_pm_unregister_notifier(&cti_cpu_pm_nb);
+> +		cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_CTI_STARTING);
+>  	}
+>  }
+>  
+> @@ -823,19 +856,14 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
+>  
+>  	/* driver data*/
+>  	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
+> -	if (!drvdata) {
+> -		ret = -ENOMEM;
+> -		dev_info(dev, "%s, mem err\n", __func__);
+> -		goto err_out;
+> -	}
+> +	if (!drvdata)
+> +		return -ENOMEM;
+>  
+>  	/* Validity for the resource is already checked by the AMBA core */
+>  	base = devm_ioremap_resource(dev, res);
+> -	if (IS_ERR(base)) {
+> -		ret = PTR_ERR(base);
+> -		dev_err(dev, "%s, remap err\n", __func__);
+> -		goto err_out;
+> -	}
+> +	if (IS_ERR(base))
+> +		return PTR_ERR(base);
+> +
+>  	drvdata->base = base;
+>  
+>  	dev_set_drvdata(dev, drvdata);
+> @@ -854,8 +882,7 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
+>  	pdata = coresight_cti_get_platform_data(dev);
+>  	if (IS_ERR(pdata)) {
+>  		dev_err(dev, "coresight_cti_get_platform_data err\n");
+> -		ret =  PTR_ERR(pdata);
+> -		goto err_out;
+> +		return  PTR_ERR(pdata);
+>  	}
+>  
+>  	/* default to powered - could change on PM notifications */
+> @@ -867,35 +894,20 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
+>  					       drvdata->ctidev.cpu);
+>  	else
+>  		cti_desc.name = coresight_alloc_device_name(&cti_sys_devs, dev);
+> -	if (!cti_desc.name) {
+> -		ret = -ENOMEM;
+> -		goto err_out;
+> -	}
+> +	if (!cti_desc.name)
+> +		return -ENOMEM;
+>  
+>  	/* setup CPU power management handling for CPU bound CTI devices. */
+> -	if (drvdata->ctidev.cpu >= 0) {
+> -		cti_cpu_drvdata[drvdata->ctidev.cpu] = drvdata;
+> -		if (!nr_cti_cpu++) {
+> -			cpus_read_lock();
+> -			ret = cpuhp_setup_state_nocalls_cpuslocked(
+> -				CPUHP_AP_ARM_CORESIGHT_CTI_STARTING,
+> -				"arm/coresight_cti:starting",
+> -				cti_starting_cpu, cti_dying_cpu);
+> -
+> -			if (!ret)
+> -				ret = cpu_pm_register_notifier(&cti_cpu_pm_nb);
+> -			cpus_read_unlock();
+> -			if (ret)
+> -				goto err_out;
+> -		}
+> -	}
+> +	ret = cti_pm_setup(drvdata);
+> +	if (ret)
+> +		return ret;
+>  
+>  	/* create dynamic attributes for connections */
+>  	ret = cti_create_cons_sysfs(dev, drvdata);
+>  	if (ret) {
+>  		dev_err(dev, "%s: create dynamic sysfs entries failed\n",
+>  			cti_desc.name);
+> -		goto err_out;
+> +		goto pm_release;
+>  	}
+>  
+>  	/* set up coresight component description */
+> @@ -908,7 +920,7 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
+>  	drvdata->csdev = coresight_register(&cti_desc);
+>  	if (IS_ERR(drvdata->csdev)) {
+>  		ret = PTR_ERR(drvdata->csdev);
+> -		goto err_out;
+> +		goto pm_release;
+>  	}
+>  
+>  	/* add to list of CTI devices */
+> @@ -927,7 +939,7 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
+>  	dev_info(&drvdata->csdev->dev, "CTI initialized\n");
+>  	return 0;
+>  
+> -err_out:
+> +pm_release:
+>  	cti_pm_release(drvdata);
+>  	return ret;
+>  }
+> -- 
+> 2.27.0
