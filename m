@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F5520E159
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73EF20E022
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389698AbgF2Uyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
+        id S2389636AbgF2Umz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731312AbgF2TNS (ORCPT
+        with ESMTP id S1731640AbgF2TOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:18 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CC0C0086F4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 02:49:36 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id f9so7692820pfn.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 02:49:36 -0700 (PDT)
+        Mon, 29 Jun 2020 15:14:03 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F8EC0086F7
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 02:50:43 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id w3so3011744wmi.4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 02:50:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=908Q6F9vnpUpqdsRok1kJOp1UfdjYn7RTaPOk8rPa7s=;
-        b=K4cV+eDGQe/ywLx7Hea34M9L4+o6jA1UwaGhOl2F1k1pKXHebEzIi00A3eXinUhHsj
-         sfdCVjCMH1wW2m3aakI/L39gS9Vf9LN18trMVIuSY8Af7MqRA3OaF/S7qCIGv6AjoU7H
-         JfIR6Uc7UOix3m7M29aFxSeunhIHWTzR1YsUO6HSPOgLjVl1iWX0VZcCgz9fyWVLdRYQ
-         6MqF+7tU2ysTPv7iuuB2N7J64PQN1dQ2oDuGZAH5NPJw+MoUuBVmqlbyXDqzN5UvSuH9
-         U6RGmJ0brDiyKDMgOAlhKKfsaN9XDGvrVCzqtujyoXGj3BZvfCpg+LZkyShKmRWeqs42
-         7M6g==
+         :content-disposition:in-reply-to;
+        bh=IXD7e4aEv7sgXUIWJkq0xUs1aBDV2xAaVnA6400SobQ=;
+        b=CLgd6xmdcEKh0TYTp6bS2/cnN4ve6VpRHpjGNf1iI1fca4aR7317bHKFlRuZ9Wx2q6
+         5agnn/14ytGl0Zc3TOng7wBjOUZXSXteNxxJwTw2NCavC0ZzZN8CaFmgPX49JPkVhUWL
+         PFK5aaOWQuOkJT/BINyeAu1ZxoKKaJD9N3AOWGHjxna7hGelNbCEA2ApFp+EdFj3tjMa
+         EcoY4RBXpeN1cp3atcfrD2v0mfB/sxZS/CrQID6YEV57FpKEIEgN20t1yY4GTxlShSdA
+         WcqoXCviP51t0/2Z77vnIhZDuCmAZ8jBkpmkYnNPQIMaWW3Tkmc/z0xufzCR4jwBKR2E
+         gHKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=908Q6F9vnpUpqdsRok1kJOp1UfdjYn7RTaPOk8rPa7s=;
-        b=eY+R0VgpcUNFpQAcT1bWNtN2fXdqmQC3Y4y0d+K6Au8xrr3j6HoZDbd/P9utw1dveM
-         BCr1U8YYTRagVpxX/bKj7h7kMKzbKK21PbLMd7lN0k8PCylQ+efdfSm2z06inIRyqfR7
-         erBqJeB1xM5vWopTu8IaFMQIo7QmL7QXcFCC/Eh76LYzGw7+/4x2jb+vXmZ8Nq48wYrj
-         KSVCUEDskNKG//llOCfjKuh9qef9p0KXzeYO7t28MB2jm0oVdcusFZ9QhKQ5pNq8v4P6
-         z/r8hKuhzw3JqjREvobi9Tqt5Ky+JfYor1S58V7LFmds7DB+Up7nw73KYNtCgdUgobcA
-         Z2OA==
-X-Gm-Message-State: AOAM531lL8g5fzvDnLZ5nRBu8gPcoNdDWJ0JjMO7q2Fgxkj3td70D6Jb
-        +5QUsqbUDVqL7jPGbik29/yEQA==
-X-Google-Smtp-Source: ABdhPJyyHuSsstC2FkFfOBkBMG9TIg0jujD+uM29enO1mJksrpDaXWQfQdbhQ+75RZqx3mwwNae1IQ==
-X-Received: by 2002:a62:27c6:: with SMTP id n189mr14078705pfn.277.1593424176363;
-        Mon, 29 Jun 2020 02:49:36 -0700 (PDT)
-Received: from localhost ([122.172.127.76])
-        by smtp.gmail.com with ESMTPSA id g12sm5108745pfb.190.2020.06.29.02.49.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Jun 2020 02:49:35 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 15:19:34 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Quentin Perret <qperret@google.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=IXD7e4aEv7sgXUIWJkq0xUs1aBDV2xAaVnA6400SobQ=;
+        b=YHI2HlacD4nSjh0KmGFVpmStkg5gKXZXUq55D7Y99EAcfug0ItD/Th8jeLsrWzhZJS
+         ZA22gtk/M/J/eF13khTSzoZLzZGVGHFoQaJAeTuVx/CH6Phw8Ui16YrQ/4L4ksOyGEr/
+         XP2kSgrVuvCl8B7/r5DVGD7fB0eOiFy3K2FuAee4Zfkg3rJ0NLaOqrKVsYAkE6K0m+sn
+         NihLWzvbk4yPzF4MCStLNXbQXI9dsijMQU/U/4FoHkjy4erhb2YhqGiFnyGHjEYCeE5u
+         c4PQyqEXE4G3267TBRt1kPdYIHjTZpV5BDuK6f9hhVdq4XFWfolV6s8KTQ2UvfdHZlf7
+         cTkg==
+X-Gm-Message-State: AOAM531iyhr/xVkosVZRW6VyCMDd/pCcOC8BkVKhfBNAUqKg2mkevlca
+        4W84GdvTGS6JjsS6bmXZ0lt+yA==
+X-Google-Smtp-Source: ABdhPJxMqPKSRyQRTa8e+1xxaRQXHveCNK3SVjkE6kDWmX2xGNysUBdu3iSx65dgB0uJZD4m0+GKlA==
+X-Received: by 2002:a1c:ab84:: with SMTP id u126mr10979386wme.43.1593424242304;
+        Mon, 29 Jun 2020 02:50:42 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:110:d6cc:2030:37c1:9964])
+        by smtp.gmail.com with ESMTPSA id 138sm29835351wma.23.2020.06.29.02.50.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 02:50:41 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 10:50:38 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
 Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
         Jonathan Corbet <corbet@lwn.net>, linux-pm@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
         kernel-team@android.com, tkjos@google.com, adharmap@codeaurora.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH V4 3/3] cpufreq: Specify default governor on command line
-Message-ID: <20200629094934.vbcprgimvywhfwk6@vireshk-i7>
+Message-ID: <20200629095038.GB1231692@google.com>
 References: <cover.1593418662.git.viresh.kumar@linaro.org>
  <96b6e6ca02b664194ff3e57e1ec768fbc597bf38.1593418662.git.viresh.kumar@linaro.org>
  <20200629094452.GB1228312@google.com>
@@ -67,13 +67,12 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20200629094825.GA1231692@google.com>
-User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-06-20, 10:48, Quentin Perret wrote:
+On Monday 29 Jun 2020 at 10:48:25 (+0100), Quentin Perret wrote:
 > On Monday 29 Jun 2020 at 15:16:27 (+0530), Viresh Kumar wrote:
 > > On 29-06-20, 10:44, Quentin Perret wrote:
 > > > On Monday 29 Jun 2020 at 13:55:00 (+0530), Viresh Kumar wrote:
@@ -101,7 +100,9 @@ On 29-06-20, 10:48, Quentin Perret wrote:
 > Right, so should we remove the check in cpufreq_init_policy() then?
 > I don't mind either way as long as we are consitent :)
 
-We can get rid of that as well.
+And actually maybe we should remove the weakly defined
+cpufreq_default_governor() implementation too? That'd make sure we get a
+link-time error if for some reason things change in the Kconfig options.
 
--- 
-viresh
+Thanks,
+Quentin
