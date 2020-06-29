@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20C420D715
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C54120D6F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732224AbgF2T0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:26:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37042 "EHLO mail.kernel.org"
+        id S1732558AbgF2TZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:25:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732668AbgF2TZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:25:44 -0400
+        id S1732146AbgF2TZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:25:16 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E30602544F;
-        Mon, 29 Jun 2020 15:43:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DFD425459;
+        Mon, 29 Jun 2020 15:43:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593445403;
-        bh=0o1eBr6mNFv6neboNJd0U7cVg8BlS8w2mFXzgB4Dr+U=;
+        s=default; t=1593445408;
+        bh=NreF01LoI6c9QfXFcdFmk5Yu4R8Y/7nG3te/iilV4QY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nHgZYgeEmduUNG1rfrS/nPM9vO9v1aGWxxCoH7vlbh8WSx4ObKXOd/pY2SgJ/oCY5
-         QaoeAxZaFfuBsLTtOrgK5Xy0chOyYllC4X5lKkgwSIMQfr7T4z7/1JfmNwIwh7mC9G
-         Kd2PYxfN59+Xz9kZ4whJWNJgQIR7jXYh4PvQ9Oj4=
+        b=NWtBbDTgSMHDKFNHsCABoEPXlHvKXHKR4NUUtpTwWavMFqWArXwtNoLacXKfgydzg
+         wEKMklVr5W42vFDd30E4g1luSxlLdU4Dz3ogQ6GtVwkCnfYnuViN7yVM16KsTrSIak
+         bgc+qUT0ZkS0wZWBf82ookX0/e5FUZnmtxThrgs0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Julian Scheel <julian@jusst.de>, Takashi Iwai <tiwai@suse.de>,
+Cc:     Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
+        Pavel Shilovsky <pshilov@microsoft.com>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 155/191] ALSA: usb-audio: uac1: Invalidate ctl on interrupt
-Date:   Mon, 29 Jun 2020 11:39:31 -0400
-Message-Id: <20200629154007.2495120-156-sashal@kernel.org>
+Subject: [PATCH 4.9 159/191] cifs/smb3: Fix data inconsistent when punch hole
+Date:   Mon, 29 Jun 2020 11:39:35 -0400
+Message-Id: <20200629154007.2495120-160-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629154007.2495120-1-sashal@kernel.org>
 References: <20200629154007.2495120-1-sashal@kernel.org>
@@ -48,42 +50,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Scheel <julian@jusst.de>
+From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 
-[ Upstream commit b2500b584cfd228d67e1e43daf27c8af865b499e ]
+[ Upstream commit acc91c2d8de4ef46ed751c5f9df99ed9a109b100 ]
 
-When an interrupt occurs, the value of at least one of the belonging
-controls should have changed. To make sure they get re-read from device
-on the next read, invalidate the cache. This was correctly implemented
-for uac2 already, but missing for uac1.
+When punch hole success, we also can read old data from file:
+  # strace -e trace=pread64,fallocate xfs_io -f -c "pread 20 40" \
+           -c "fpunch 20 40" -c"pread 20 40" file
+  pread64(3, " version 5.8.0-rc1+"..., 40, 20) = 40
+  fallocate(3, FALLOC_FL_KEEP_SIZE|FALLOC_FL_PUNCH_HOLE, 20, 40) = 0
+  pread64(3, " version 5.8.0-rc1+"..., 40, 20) = 40
 
-Signed-off-by: Julian Scheel <julian@jusst.de>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+CIFS implements the fallocate(FALLOCATE_FL_PUNCH_HOLE) with send SMB
+ioctl(FSCTL_SET_ZERO_DATA) to server. It just set the range of the
+remote file to zero, but local page caches not updated, then the
+local page caches inconsistent with server.
+
+Also can be found by xfstests generic/316.
+
+So, we need to remove the page caches before send the SMB
+ioctl(FSCTL_SET_ZERO_DATA) to server.
+
+Fixes: 31742c5a33176 ("enable fallocate punch hole ("fallocate -p") for SMB3")
+Suggested-by: Pavel Shilovsky <pshilov@microsoft.com>
+Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
+Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Cc: stable@vger.kernel.org # v3.17
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/mixer.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ fs/cifs/smb2ops.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 024864ce3f761..60423d2572c7d 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -2397,9 +2397,14 @@ void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid)
- {
- 	struct usb_mixer_elem_list *list;
+diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
+index 67d9b7a277a3b..9c29317deef56 100644
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -1276,6 +1276,12 @@ static long smb3_punch_hole(struct file *file, struct cifs_tcon *tcon,
+ 	if (!smb2_set_sparse(xid, tcon, cfile, inode, set_sparse))
+ 		return -EOPNOTSUPP;
  
--	for (list = mixer->id_elems[unitid]; list; list = list->next_id_elem)
-+	for (list = mixer->id_elems[unitid]; list; list = list->next_id_elem) {
-+		struct usb_mixer_elem_info *info =
-+			(struct usb_mixer_elem_info *)list;
-+		/* invalidate cache, so the value is read from the device */
-+		info->cached = 0;
- 		snd_ctl_notify(mixer->chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
- 			       &list->kctl->id);
-+	}
- }
++	/*
++	 * We implement the punch hole through ioctl, so we need remove the page
++	 * caches first, otherwise the data may be inconsistent with the server.
++	 */
++	truncate_pagecache_range(inode, offset, offset + len - 1);
++
+ 	cifs_dbg(FYI, "offset %lld len %lld", offset, len);
  
- static void snd_usb_mixer_dump_cval(struct snd_info_buffer *buffer,
+ 	fsctl_buf.FileOffset = cpu_to_le64(offset);
 -- 
 2.25.1
 
