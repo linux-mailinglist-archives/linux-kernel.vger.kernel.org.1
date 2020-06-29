@@ -2,86 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410DC20DB14
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E07620DB9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388745AbgF2UDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:03:20 -0400
-Received: from smtprelay0235.hostedemail.com ([216.40.44.235]:52858 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732683AbgF2UDS (ORCPT
+        id S2388420AbgF2UIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:08:19 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:36630 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732373AbgF2UIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:03:18 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id F14C2100E7B45;
-        Mon, 29 Jun 2020 20:03:16 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1714:1730:1747:1777:1792:1801:2393:2525:2553:2560:2563:2682:2685:2693:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3351:3622:3865:3866:3867:3870:3871:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4384:4605:5007:6119:6691:6742:8985:9025:10004:10400:10848:11026:11232:11658:11914:12043:12297:12555:12740:12760:12895:13069:13160:13229:13311:13357:13439:14181:14659:14721:21080:21627:21740:21972:30029:30054:30069:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: cough56_6201ffd26e72
-X-Filterd-Recvd-Size: 2768
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 29 Jun 2020 20:03:13 +0000 (UTC)
-Message-ID: <9b7f9c3aed7223e49def6e775d3b250aa780e562.camel@perches.com>
-Subject: Re: [PATCH v4 08/17] arm64/mm: Remove needless section quotes
-From:   Joe Perches <joe@perches.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Mon, 29 Jun 2020 13:03:12 -0700
-In-Reply-To: <CAKwvOd=r6bsBfSZxVYrnbm1Utq==ApWBDjx+0Fxsm90Aq3Jghw@mail.gmail.com>
-References: <20200629061840.4065483-1-keescook@chromium.org>
-         <20200629061840.4065483-9-keescook@chromium.org>
-         <CAKwvOd=r6bsBfSZxVYrnbm1Utq==ApWBDjx+0Fxsm90Aq3Jghw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Mon, 29 Jun 2020 16:08:15 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jq04c-0003ZM-3v; Mon, 29 Jun 2020 14:08:14 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jq04b-0000Ts-2E; Mon, 29 Jun 2020 14:08:13 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     <linux-kernel@vger.kernel.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200625095725.GA3303921@kroah.com>
+        <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+        <20200625120725.GA3493334@kroah.com>
+        <20200625.123437.2219826613137938086.davem@davemloft.net>
+        <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+        <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+        <87y2oac50p.fsf@x220.int.ebiederm.org>
+        <87bll17ili.fsf_-_@x220.int.ebiederm.org>
+Date:   Mon, 29 Jun 2020 15:03:41 -0500
+In-Reply-To: <87bll17ili.fsf_-_@x220.int.ebiederm.org> (Eric W. Biederman's
+        message of "Mon, 29 Jun 2020 14:55:05 -0500")
+Message-ID: <87r1tx4p2a.fsf_-_@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1jq04b-0000Ts-2E;;;mid=<87r1tx4p2a.fsf_-_@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19IX0qdGDHj2d42J790qFSa6SiJQNy2ip4=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.8 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMSlimDrugH
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.0 XMSlimDrugH Weight loss drug headers
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: ; sa07 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;<linux-kernel@vger.kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 424 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 9 (2.1%), b_tie_ro: 8 (1.8%), parse: 1.30 (0.3%),
+        extract_message_metadata: 20 (4.7%), get_uri_detail_list: 1.95 (0.5%),
+        tests_pri_-1000: 31 (7.2%), tests_pri_-950: 1.29 (0.3%),
+        tests_pri_-900: 1.00 (0.2%), tests_pri_-90: 115 (27.0%), check_bayes:
+        112 (26.5%), b_tokenize: 14 (3.3%), b_tok_get_all: 6 (1.5%),
+        b_comp_prob: 2.2 (0.5%), b_tok_touch_all: 86 (20.3%), b_finish: 0.91
+        (0.2%), tests_pri_0: 233 (55.1%), check_dkim_signature: 0.54 (0.1%),
+        check_dkim_adsp: 2.2 (0.5%), poll_dns_idle: 0.62 (0.1%), tests_pri_10:
+        2.1 (0.5%), tests_pri_500: 7 (1.6%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH v2 09/15] umh: Stop calling do_execve_file
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-06-29 at 12:53 -0700, Nick Desaulniers wrote:
-> On Sun, Jun 28, 2020 at 11:18 PM Kees Cook <keescook@chromium.org> wrote:
-> > Fix a case of needless quotes in __section(), which Clang doesn't like.
-> > 
-> > Acked-by: Will Deacon <will@kernel.org>
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> 
-> Yep, I remember bugs from this.  Probably should scan the kernel for
-> other instances of this.  +Joe for checkpatch.pl validation.
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-$ git grep -P -n '__section\s*\(\s*\"'
-arch/arm64/mm/mmu.c:45:u64 __section(".mmuoff.data.write") vabits_actual;
-include/linux/compiler.h:211:   __section("___kentry" "+" #sym )                        \
-include/linux/export.h:133:     static int __ksym_marker_##sym[0] __section(".discard.ksym") __used
-include/linux/srcutree.h:127:           __section("___srcu_struct_ptrs") = &name
+With the user mode driver code changed to not set subprocess_info.file
+there are no more users of subproces_info.file.  Remove this field
+from struct subprocess_info and remove the only user in
+call_usermodehelper_exec_async that would call do_execve_file instead
+of do_execve if file was set.
 
-My recollection is I submitted a patch
-to _add_ quotes
+Link: https://lkml.kernel.org/r/877dvuf0i7.fsf_-_@x220.int.ebiederm.org
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ include/linux/umh.h |  1 -
+ kernel/umh.c        | 10 +++-------
+ 2 files changed, 3 insertions(+), 8 deletions(-)
 
-https://lore.kernel.org/patchwork/patch/1125785/
-
+diff --git a/include/linux/umh.h b/include/linux/umh.h
+index 73173c4a07e5..244aff638220 100644
+--- a/include/linux/umh.h
++++ b/include/linux/umh.h
+@@ -22,7 +22,6 @@ struct subprocess_info {
+ 	const char *path;
+ 	char **argv;
+ 	char **envp;
+-	struct file *file;
+ 	int wait;
+ 	int retval;
+ 	int (*init)(struct subprocess_info *info, struct cred *new);
+diff --git a/kernel/umh.c b/kernel/umh.c
+index 3e4e453d45c8..6ca2096298b9 100644
+--- a/kernel/umh.c
++++ b/kernel/umh.c
+@@ -98,13 +98,9 @@ static int call_usermodehelper_exec_async(void *data)
+ 
+ 	commit_creds(new);
+ 
+-	if (sub_info->file)
+-		retval = do_execve_file(sub_info->file,
+-					sub_info->argv, sub_info->envp);
+-	else
+-		retval = do_execve(getname_kernel(sub_info->path),
+-				   (const char __user *const __user *)sub_info->argv,
+-				   (const char __user *const __user *)sub_info->envp);
++	retval = do_execve(getname_kernel(sub_info->path),
++			   (const char __user *const __user *)sub_info->argv,
++			   (const char __user *const __user *)sub_info->envp);
+ out:
+ 	sub_info->retval = retval;
+ 	/*
+-- 
+2.25.0
 
