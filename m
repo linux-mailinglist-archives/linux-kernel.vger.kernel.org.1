@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4274920D319
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4BB20D4B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729372AbgF2Szp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:55:45 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:56524 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729913AbgF2SzU (ORCPT
+        id S1731020AbgF2TKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:10:52 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:48069 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730767AbgF2TKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:55:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593456919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IRNIV4x43P6HErryarebd5FQz8VopUKzf076Ub4cEhw=;
-        b=X8x6aysVFVe8YFVhCEmUfJRQ0p8IteM8r0KfEtdIzRJXebemoPOpgVk9PmFw5+q1RAqeiE
-        dlMu7KrzsZ4zc4fdXbNYAnrQuME4wPHLgFAbnxqe/rXB7sTU6CZKGfqYUivNX0byQ3+V6a
-        vntnh5Ohk0wTgsLP66a1K4lHuNxKu08=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-um4uu1F4PoCkq658zZ3pxg-1; Mon, 29 Jun 2020 08:54:00 -0400
-X-MC-Unique: um4uu1F4PoCkq658zZ3pxg-1
-Received: by mail-wm1-f69.google.com with SMTP id v6so16151905wmg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:54:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IRNIV4x43P6HErryarebd5FQz8VopUKzf076Ub4cEhw=;
-        b=P9u/mZg4grv2BZpGy6gmnrIurUD2sBX+C3GJ02eyjG4cgVO4qGPAnY/jbN2yHtTG7g
-         rxNO+Q0aHlet4vo8UUn/qlFDowC94sUCuBrYkwzSzetKzI6Qhp0aGYAq8CjFUH/CCFzW
-         0k36sVr8/8PH1CFj1aC/5PcqklFZ/GbnfUNYIwNPIm6z5XtUb4WIQ6JFJQOLDo/wTERX
-         6Kclqz6okEl8/dc1AX5ZApGAZnZADKB57Mqgv+3GQSPlhh0eeKMdzsdT+rnnZshTXWML
-         XpZ/Qjb9kXuUVLpPcn6kNloxe3kTwcdBGBX8DoHXd8isc3gdrhXszP71POr2aeJXkrA5
-         tmEQ==
-X-Gm-Message-State: AOAM531o4yRACR0YCgkRR0hmnQ7v+E2Oh3NfqHGKTsVYXUTAuoXEa9dR
-        9DMFt+51vBP+lncE2mlP7bOONMPjMlUk3Hvo/vrhU0Faes89C9Cd8UhwPKxepNNxWQPHP3qQf/P
-        Yj9zcm4IU8PO8mW1vRNc6HjUA
-X-Received: by 2002:a1c:5418:: with SMTP id i24mr16011211wmb.47.1593435239275;
-        Mon, 29 Jun 2020 05:53:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyCGDvr+eGI0QiQBdG3VZDI0bqn2iCa/GHXZRlpJW0cXI/cAOmdxZFkRYH9FPz3OcQeGVb3lA==
-X-Received: by 2002:a1c:5418:: with SMTP id i24mr16011199wmb.47.1593435239033;
-        Mon, 29 Jun 2020 05:53:59 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.8.241])
-        by smtp.gmail.com with ESMTPSA id x13sm50975152wre.83.2020.06.29.05.53.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 05:53:58 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 14:53:56 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org,
-        linux-rt-users@vger.kernel.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] tick/sched: update full_nohz status after SCHED dep
- is cleared
-Message-ID: <20200629125356.GB9670@localhost.localdomain>
-References: <20200520164925.GM10078@localhost.localdomain>
- <20200520170215.GB8800@lenoir>
- <20200520184710.GO10078@localhost.localdomain>
- <20200521004443.GB15455@lenoir>
- <20200521170020.GQ10078@localhost.localdomain>
- <20200615210743.GA21371@lenoir>
- <20200616065757.GA446382@localhost.localdomain>
- <20200616204649.GA4914@lenoir>
- <20200629123651.GA9670@localhost.localdomain>
- <20200629124207.GA6088@lenoir>
+        Mon, 29 Jun 2020 15:10:42 -0400
+Received: from mail-qv1-f42.google.com ([209.85.219.42]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MN4ux-1jZ2rM0CP7-00J2oD for <linux-kernel@vger.kernel.org>; Mon, 29 Jun
+ 2020 14:55:37 +0200
+Received: by mail-qv1-f42.google.com with SMTP id g11so7553578qvs.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:55:36 -0700 (PDT)
+X-Gm-Message-State: AOAM531AddKxbPCElwxBeXP8CG6S0lt+aGjjVypushYSzpM4yk1xkddl
+        OOzCNwJic9tFwX32lc0Hnra1+7ZMUN0RjrBf0Wg=
+X-Google-Smtp-Source: ABdhPJwTUgWBKuCYHhm9IfBDK7FIWMaC5caJVsnREcVoFi6MO3w8Y1aC9gRnZGddm1b731YJ/OBzbCxzjKv7KsI7YTw=
+X-Received: by 2002:a0c:f385:: with SMTP id i5mr15431499qvk.4.1593435335949;
+ Mon, 29 Jun 2020 05:55:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629124207.GA6088@lenoir>
+References: <1593425623-31810-1-git-send-email-Anson.Huang@nxp.com>
+ <1593425623-31810-2-git-send-email-Anson.Huang@nxp.com> <CAK8P3a31coESQTssW1mndGuZ1pvxXSRRpY=XT1ZO+pkj9aabxg@mail.gmail.com>
+ <DB3PR0402MB3916987E13C37013ACF59EB1F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CAK8P3a3Ar3TnSuxpUUMj4NjCK0Qb0pD9cVbcFUcdeGa85m2fUQ@mail.gmail.com>
+ <DB3PR0402MB3916192607A09C7061740087F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CAK8P3a1NoyMGNK90WzbgJ7opPbiVL8vwnMEuBeeNPNyvB+5sqQ@mail.gmail.com> <DB3PR0402MB39162138624705E5A296A047F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+In-Reply-To: <DB3PR0402MB39162138624705E5A296A047F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 29 Jun 2020 14:55:19 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3n6c5i_RqxxO9N4SdBswmyXbpu3LBi4udfSUHy3mJPsQ@mail.gmail.com>
+Message-ID: <CAK8P3a3n6c5i_RqxxO9N4SdBswmyXbpu3LBi4udfSUHy3mJPsQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm64: defconfig: Select CONFIG_RESET_IMX7 by default
+To:     Anson Huang <anson.huang@nxp.com>
+Cc:     Richard Zhu <hongxing.zhu@nxp.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Stefan Agner <stefan.agner@toradex.com>,
+        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Olof Johansson <olof@lixom.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:rSY+zoLBo+mwL1X7TzIIpQI8/fd7K6+NGn4xf8+tddJ6ggX+Yoz
+ 2cdpWv9puKYj8LGWQ/jwHLkatFvui2vMLY3LdEU3Jv5w/vMqjYZHSXSOBzwsD2etOsn9rWP
+ fKL7qDR9IsUnheQlUg8DhMr1XUne0in4K3YHdqqu8Ugx2vAwT0ut2fvaG0ZyPTXQLPtG0sN
+ 1Sm3/r7rV90o502vju47A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Y44tv8Ismyo=:ccWvjKYeZjh1aZQpi6seDN
+ e92JgIO60xnSqOmpzDJyeRglqq8E/xqtFRpeT9yr+K4jGOXkh0SOq6XMCSfcidc/MbMP1xuxZ
+ MRxK1S3QwPgLmUdrNGpislA4KO4ownQu+eSFek2bgRpLNNW7CmxsWRud6TbPqvq7TuNxohNbA
+ 8036bjuqTLFkzoWbSvKWUD5oJVDvjZKJOs+Ok9poKhXEWyarPgiuGKAmzw+M5SsqUR9BpI6An
+ IrLAM74lnGhR+1KrLWGXzPfb7dOerkb6HfsyxznUnubystYkulBBQlUn40kVZczidH4qCWH9+
+ 8JotgytQfFzcE+nanvDmF4jOW/rtE9jyxdmqx7ZenXjwZpdf9Q4wealEWeM8C+ZLRZgyBZH3F
+ O1jDJux8w0OWVKLJzYlxE5mdMtfKyi6WNgbxzqeSQ81D16Zvak1UfRpW8S2Nbyj1+q1CqDQeo
+ BGx2l0+aOmeAFmB+SYBcG++cpVVkNmkR9zyx59kICGDpJiHvvvBtvcdyCp7jsGMt8jFeGKaOo
+ yGMlkRO6hYsqT2WyM0Hj5LIDv+xC26TRrFXRVazbqCvqVRkhNITxDdkXXoFxmKuBH0JYi/GEu
+ atvpGY2OhW4FOGdQ/Qjxj43oA7J8ujiMHbYuKNMZ9vBHpVsHx/QACuWdUVnx/PuJUCbuZcIGF
+ yjXiYoNunGSeOCowG/IDdcEA2JAe2HzEXfKGOfO+6PjS7xDnhM61qMYGsCl0JHfOPeF6g2IqB
+ OuGcLn5OhtXi+GJlPPZxVRBJlSlTD4kddG38vuwJuifpYoYPNUyaZZCNR3UrVw84SaUILVHXe
+ VYvaTtYTivuRjhwYhSLU/Ks9EptLpZQGhC+67PfovAcrci/YQHgZdP6m7abZObLpOrpx1hWc+
+ GMGS7iv5PkDsVcMbsUHN6m0MLpBIr3avocpgJUVmk9uFl6an56ohDLd74NOIUR6hTyHeDK23G
+ ifSg3KeKGxf/H5QzJYbsoKivQSPZBtpMwALtyErdNFYSqdjM0LTff
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/06/20 14:42, Frederic Weisbecker wrote:
-> On Mon, Jun 29, 2020 at 02:36:51PM +0200, Juri Lelli wrote:
-> > Hi,
-> > 
-> > On 16/06/20 22:46, Frederic Weisbecker wrote:
-> > > On Tue, Jun 16, 2020 at 08:57:57AM +0200, Juri Lelli wrote:
-> > > > Sure. Let me know if you find anything.
-> > > 
-> > > I managed to reproduce. With "threadirqs" and without
-> > > "tsc=reliable". I see tons of spurious TIMER softirqs.
-> > > Investigation begins! I'll let you know.
-> > 
-> > Gentle ping. Any new findings about this issue?
-> 
-> Yep, I'm working on a series to reduce timer softirqs. I'm almost
-> done, should post it soon.
+On Mon, Jun 29, 2020 at 2:46 PM Anson Huang <anson.huang@nxp.com> wrote:
+> > Subject: Re: [PATCH 2/3] arm64: defconfig: Select CONFIG_RESET_IMX7 by
+> > default
 
-Great!
+> Thanks for detailed info about PCI loadable module support, I copy our PCI owner
+> here to help on the support of i.MX6 PCIe driver to support loadable module. Meanwhile,
+> in this patch series, I will add the short-term workaround as I described upper, and then remove
+> this short-term workaround either in the i.MX6 PCI driver's loadable module support patch later
+> or adding a new patch if necessary.
 
-Looking forward to it.
+Ok, sounds good. Thanks,
 
-Best,
-
-Juri
-
+     Arnd
