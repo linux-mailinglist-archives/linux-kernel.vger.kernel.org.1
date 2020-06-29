@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351A520D61D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AC220D727
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731952AbgF2TRt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 29 Jun 2020 15:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731953AbgF2TRn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:17:43 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166F0C03079D
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:39:02 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id h19so18498546ljg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:39:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UQmPCDX6xMOsUPe/v2T5v2xy5fsOZjivnEQOFoz/TIE=;
-        b=baouVJ3gD+I0VlenNRasksMaTOgh2MD0ap27alPsbihTh5ADnaARKaags2r5XfFJ5c
-         JtIoM4IUmOwFid7DFUWtaGs2a0Yu5wNGTJnPvIc8hn85KWjgwl/jujMwMWtiDm/JYQST
-         DgnWEUx8VVzue5ThodBk7TiqSjJAc6E925Q77XVf0BXl1B0v2BzhZHvosxt/OKKM3x1u
-         FvXuSJV91VFSnD/+He8HO9sW9Q57XG8xIyyKSJfFiLQeEgO5a9bdUtoOuiNhBRhAPksN
-         vuHxq9JCCkU16SiipEqIgxS2yO42RQtUHdDZU8QH4sZirqraUc2dDsd3gfVKgd+O5W5j
-         Lq/A==
-X-Gm-Message-State: AOAM530BmJA6weU9cF++lCjL3RrvKkMz8rzwPFxksu5dCcVq9A1bR3Cy
-        5+PwjoAcqu3pIhHRspAzTLhvtAI8IdU=
-X-Google-Smtp-Source: ABdhPJzqTgTER43gmMLxrLQzPWsW2sthTWJSc0MNSxQvpzC/50ihNTlFax6crYFapvJ6G5wlF9ORHw==
-X-Received: by 2002:a2e:b0da:: with SMTP id g26mr3840235ljl.299.1593445139962;
-        Mon, 29 Jun 2020 08:38:59 -0700 (PDT)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id u8sm11311lff.38.2020.06.29.08.38.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jun 2020 08:38:59 -0700 (PDT)
-Received: by mail-lj1-f171.google.com with SMTP id f8so6267475ljc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:38:59 -0700 (PDT)
-X-Received: by 2002:a2e:890d:: with SMTP id d13mr8550620lji.75.1593445139288;
- Mon, 29 Jun 2020 08:38:59 -0700 (PDT)
+        id S1732450AbgF2T12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:27:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732663AbgF2TZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:25:43 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E99AC2540A;
+        Mon, 29 Jun 2020 15:42:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593445355;
+        bh=VC0RHqcVsa2hE+dmNr1/xgwrg5FMctxrbBQx02b4w1w=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dLNjKlVhlNc4uFRMiw0cmwyaR7eVRPBVQE7PdMU2mMiQCyxzzbI0w4XvxDqozRet0
+         Aw5Wi0OkamoB1VtpUK4WmM7wG1rZppuTxWV1ufR9K0uwNHba66GnvfGKOJgNJQnmb9
+         jVxs0YBCfqaWbxFJeZTURhqUuPvQFnYyKadreQRs=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@s-opensource.com>,
+        Daniel Scheller <d.scheller@gmx.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 4.9 113/191] media: dvb_frontend: be sure to init dvb_frontend_handle_ioctl() return code
+Date:   Mon, 29 Jun 2020 11:38:49 -0400
+Message-Id: <20200629154007.2495120-114-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200629154007.2495120-1-sashal@kernel.org>
+References: <20200629154007.2495120-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20200629123215.1014747-1-lee.jones@linaro.org> <20200629123215.1014747-6-lee.jones@linaro.org>
-In-Reply-To: <20200629123215.1014747-6-lee.jones@linaro.org>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Mon, 29 Jun 2020 23:38:47 +0800
-X-Gmail-Original-Message-ID: <CAGb2v66Ws4WNPZbOYQvikKoozj_2WjzS-Jq-o2VxT77=k0vODw@mail.gmail.com>
-Message-ID: <CAGb2v66Ws4WNPZbOYQvikKoozj_2WjzS-Jq-o2VxT77=k0vODw@mail.gmail.com>
-Subject: Re: [PATCH 5/5] mfd: axp20x-i2c: Do not define 'struct
- acpi_device_id' when !CONFIG_ACPI
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Carlo Caione <carlo@caione.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.229-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.9.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.9.229-rc1
+X-KernelTest-Deadline: 2020-07-01T15:39+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding Hans to the list as he's the one that deals with all the x86
-platforms that use this series of chips.
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 
-On Mon, Jun 29, 2020 at 8:32 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Since ACPI_PTR() is used to NULLify the value when !CONFIG_ACPI,
-> struct axp20x_i2c_acpi_match becomes defined by unused.
->
-> This squashes the current W=1 kernel builds warning:
->
->  drivers/mfd/axp20x-i2c.c:82:36: warning: ‘axp20x_i2c_acpi_match’ defined but not used [-Wunused-const-variable=]
->
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Carlo Caione <carlo@caione.org>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/mfd/axp20x-i2c.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/mfd/axp20x-i2c.c b/drivers/mfd/axp20x-i2c.c
-> index 14f9df74f855c..3dd650125c239 100644
-> --- a/drivers/mfd/axp20x-i2c.c
-> +++ b/drivers/mfd/axp20x-i2c.c
-> @@ -79,6 +79,7 @@ static const struct i2c_device_id axp20x_i2c_id[] = {
->  };
->  MODULE_DEVICE_TABLE(i2c, axp20x_i2c_id);
->
-> +#if IS_ENABLED(CONFIG_ACPI)
->  static const struct acpi_device_id axp20x_i2c_acpi_match[] = {
+commit a9cb97c3e628902e37583d8a40bb28cf76522cf1 upstream
 
-I'd rather use "__maybe_unused" if possible to at least get a compile
-check, and also because "ACPI_PTR NULLifies the value" might not be
-well known to people not working on ACPI-based platforms.
+As smatch warned:
+	drivers/media/dvb-core/dvb_frontend.c:2468 dvb_frontend_handle_ioctl() error: uninitialized symbol 'err'.
 
-Either way,
+The ioctl handler actually got a regression here: before changeset
+d73dcf0cdb95 ("media: dvb_frontend: cleanup ioctl handling logic"),
+the code used to return -EOPNOTSUPP if an ioctl handler was not
+implemented on a driver. After the change, it may return a random
+value.
 
-Acked-by: Chen-Yu Tsai <wens@csie.org>
+Fixes: d73dcf0cdb95 ("media: dvb_frontend: cleanup ioctl handling logic")
 
+Cc: stable@vger.kernel.org
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Tested-by: Daniel Scheller <d.scheller@gmx.net>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/media/dvb-core/dvb_frontend.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
->         {
->                 .id = "INT33F4",
-> @@ -87,6 +88,7 @@ static const struct acpi_device_id axp20x_i2c_acpi_match[] = {
->         { },
->  };
->  MODULE_DEVICE_TABLE(acpi, axp20x_i2c_acpi_match);
-> +#endif
->
->  static struct i2c_driver axp20x_i2c_driver = {
->         .driver = {
-> --
-> 2.25.1
->
+diff --git a/drivers/media/dvb-core/dvb_frontend.c b/drivers/media/dvb-core/dvb_frontend.c
+index a9ae9e5092050..6f9ee78a18703 100644
+--- a/drivers/media/dvb-core/dvb_frontend.c
++++ b/drivers/media/dvb-core/dvb_frontend.c
+@@ -2113,7 +2113,7 @@ static int dvb_frontend_handle_ioctl(struct file *file,
+ 	struct dvb_frontend *fe = dvbdev->priv;
+ 	struct dvb_frontend_private *fepriv = fe->frontend_priv;
+ 	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+-	int i, err;
++	int i, err = -EOPNOTSUPP;
+ 
+ 	dev_dbg(fe->dvb->device, "%s:\n", __func__);
+ 
+@@ -2148,6 +2148,7 @@ static int dvb_frontend_handle_ioctl(struct file *file,
+ 			}
+ 		}
+ 		kfree(tvp);
++		err = 0;
+ 		break;
+ 	}
+ 	case FE_GET_PROPERTY: {
+@@ -2198,6 +2199,7 @@ static int dvb_frontend_handle_ioctl(struct file *file,
+ 			return -EFAULT;
+ 		}
+ 		kfree(tvp);
++		err = 0;
+ 		break;
+ 	}
+ 
+-- 
+2.25.1
+
