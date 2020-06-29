@@ -2,263 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB3F920D82D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED74520D7D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733155AbgF2Tg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:36:58 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:56232 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733211AbgF2Tgw (ORCPT
+        id S1732384AbgF2TdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733235AbgF2Tcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:36:52 -0400
-Received: from relay11.mail.gandi.net (unknown [217.70.178.231])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 769703AB531
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:42:35 +0000 (UTC)
-Received: from [192.168.1.11] (lfbn-gre-1-325-105.w90-112.abo.wanadoo.fr [90.112.45.105])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id C2AD310000E;
-        Mon, 29 Jun 2020 14:42:12 +0000 (UTC)
-Subject: Re: [PATCH 2/2] riscv: Use PUD/PGDIR entries for linear mapping when
- possible
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Anup Patel <anup@brainfault.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Alistair Francis <Alistair.Francis@wdc.com>
-References: <20200603153608.30056-1-alex@ghiti.fr>
- <20200603153608.30056-3-alex@ghiti.fr>
- <CAOnJCU+JSuOGbOmZW-vqb-A_qR7CJc=qG16FbgOLWSm1vhJH1A@mail.gmail.com>
- <23529a84-44a0-3c45-f16d-5a7ee528610d@ghiti.fr>
- <CAOnJCU+s5JuNdPg_R-Cg2+WnMjR51DD0ekbRr84EFCig6=YyZA@mail.gmail.com>
- <f1a5ec6e-540b-497f-a9ad-f2d1e7adfc65@ghiti.fr>
- <2588a00a-b042-4902-1602-7cb8d587ac2b@ghiti.fr>
- <CAOnJCU+JOdoJfVCAKOHK52m47UwR_NzpJoGXQywD+Mx-6JRw5w@mail.gmail.com>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <567064d8-0f23-1629-c40a-606a89cf4b97@ghiti.fr>
-Date:   Mon, 29 Jun 2020 10:42:12 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 29 Jun 2020 15:32:45 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE1DC02F002
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:43:27 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id c11so9213409lfh.8
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:43:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YSrvY7ndQQ0VwYyPuUYQZgjUMOLCrC7/BsK3Jg70uiA=;
+        b=EpQ/dIMdwCYLaRtO5Nv/wtgebffrzaIRTec6A8uPQLjJiTw/a0L6udd4vIUrBW/z2H
+         PKCbFthfmiv7Xjf6wHm9W0BRiKErd/U9vpsYfZ67IDu3GUd40sBdcFjxzKsivxfBxVKU
+         WB1qHSJxp7J+10CQOjX9GZu/5VL3waWRuX1AIDwExBLoLpiVMBp2GL5nRpHUcKFAhkyk
+         tdzJO2JOH+JYflIsWbFApZv+CzvsLEhffvN/Gp1DQFiIitTPIfn0m+mew6jcbk9ot3AU
+         zhQuNLaLtFGF7c5VWjYKEV3mhKLmtdJTdjcz9rsF8wf15Wp1rEg9R8w1FqAU3xPrfUks
+         mvbw==
+X-Gm-Message-State: AOAM5328u0KiphH9u5eeKetW+I2wb03wZYoKwZ+BkhL4+2FIyTnVak+C
+        HvlZJkJT40PWNpb7tUYU4Ok=
+X-Google-Smtp-Source: ABdhPJxlXL/WPQmHiWHBUnNiCTuuoYT2K4kdoHBsIw1V5XczaXf3Hns3BgilQStZ/HVmyNueCKOooQ==
+X-Received: by 2002:ac2:518c:: with SMTP id u12mr9295373lfi.91.1593441806019;
+        Mon, 29 Jun 2020 07:43:26 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id v19sm2858051lfi.65.2020.06.29.07.43.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 07:43:25 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1jpv0H-0005HB-DZ; Mon, 29 Jun 2020 16:43:25 +0200
+Date:   Mon, 29 Jun 2020 16:43:25 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Baolin Wang <baolin.wang7@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Johan Hovold <johan@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Subject: Re: [PATCH 4/5] mfd: sprd-sc27xx-spi: Fix divide by zero when
+ allocating register offset/mask
+Message-ID: <20200629144325.GV3334@localhost>
+References: <20200629123215.1014747-1-lee.jones@linaro.org>
+ <20200629123215.1014747-5-lee.jones@linaro.org>
+ <20200629130644.GU3334@localhost>
+ <20200629140137.GK177734@dell>
+ <CADBw62r_tkGEr9kHpojAi+fJ+qUqbsc-DQgG1TUAwOdbDXTgNQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAOnJCU+JOdoJfVCAKOHK52m47UwR_NzpJoGXQywD+Mx-6JRw5w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADBw62r_tkGEr9kHpojAi+fJ+qUqbsc-DQgG1TUAwOdbDXTgNQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Atish,
+On Mon, Jun 29, 2020 at 10:35:06PM +0800, Baolin Wang wrote:
+> On Mon, Jun 29, 2020 at 10:01 PM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Mon, 29 Jun 2020, Johan Hovold wrote:
+> >
+> > > On Mon, Jun 29, 2020 at 01:32:14PM +0100, Lee Jones wrote:
+> > > > Since ddata->irqs[] is already zeroed when allocated by devm_kcalloc() and
+> > > > dividing 0 by anything is still 0, there is no need to re-assign
+> > > > ddata->irqs[i].* values.  Instead, it should be safe to begin at 1.
+> > > >
+> > > > This fixes the following W=1 warning:
+> > > >
+> > > >  drivers/mfd/sprd-sc27xx-spi.c:255 sprd_pmic_probe() debug: sval_binop_unsigned: divide by zero
+> > > >
+> > > > Cc: Orson Zhai <orsonzhai@gmail.com>
+> > > > Cc: Baolin Wang <baolin.wang7@gmail.com>
+> > > > Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > > ---
+> > > >  drivers/mfd/sprd-sc27xx-spi.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
+> > > > index c305e941e435c..694a7d429ccff 100644
+> > > > --- a/drivers/mfd/sprd-sc27xx-spi.c
+> > > > +++ b/drivers/mfd/sprd-sc27xx-spi.c
+> > > > @@ -251,7 +251,7 @@ static int sprd_pmic_probe(struct spi_device *spi)
+> > > >             return -ENOMEM;
+> > > >
+> > > >     ddata->irq_chip.irqs = ddata->irqs;
+> > > > -   for (i = 0; i < pdata->num_irqs; i++) {
+> > > > +   for (i = 1; i < pdata->num_irqs; i++) {
+> > > >             ddata->irqs[i].reg_offset = i / pdata->num_irqs;
+> > > >             ddata->irqs[i].mask = BIT(i % pdata->num_irqs);
+> > > >     }
+> > >
+> > > This doesn't look right either.
+> > >
+> > > First, the loop is never executed if num_irqs is zero.
+> >
+> > The point of the patch is that 0 entries are never processed.
 
-Le 6/22/20 à 3:11 PM, Atish Patra a écrit :
-> On Sun, Jun 21, 2020 at 2:39 AM Alex Ghiti <alex@ghiti.fr> wrote:
->>
->> Hi Atish,
->>
->> Le 6/20/20 à 5:04 AM, Alex Ghiti a écrit :
->>> Hi Atish,
->>>
->>> Le 6/19/20 à 2:16 PM, Atish Patra a écrit :
->>>> On Thu, Jun 18, 2020 at 9:28 PM Alex Ghiti <alex@ghiti.fr> wrote:
->>>>> Hi Atish,
->>>>>
->>>>> Le 6/18/20 à 8:47 PM, Atish Patra a écrit :
->>>>>> On Wed, Jun 3, 2020 at 8:38 AM Alexandre Ghiti <alex@ghiti.fr> wrote:
->>>>>>> Improve best_map_size so that PUD or PGDIR entries are used for
->>>>>>> linear
->>>>>>> mapping when possible as it allows better TLB utilization.
->>>>>>>
->>>>>>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
->>>>>>> ---
->>>>>>>     arch/riscv/mm/init.c | 45
->>>>>>> +++++++++++++++++++++++++++++++++-----------
->>>>>>>     1 file changed, 34 insertions(+), 11 deletions(-)
->>>>>>>
->>>>>>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
->>>>>>> index 9a5c97e091c1..d275f9f834cf 100644
->>>>>>> --- a/arch/riscv/mm/init.c
->>>>>>> +++ b/arch/riscv/mm/init.c
->>>>>>> @@ -424,13 +424,29 @@ static void __init create_pgd_mapping(pgd_t
->>>>>>> *pgdp,
->>>>>>>            create_pgd_next_mapping(nextp, va, pa, sz, prot);
->>>>>>>     }
->>>>>>>
->>>>>>> -static uintptr_t __init best_map_size(phys_addr_t base,
->>>>>>> phys_addr_t size)
->>>>>>> +static bool is_map_size_ok(uintptr_t map_size, phys_addr_t base,
->>>>>>> +                          uintptr_t base_virt, phys_addr_t size)
->>>>>>>     {
->>>>>>> -       /* Upgrade to PMD_SIZE mappings whenever possible */
->>>>>>> -       if ((base & (PMD_SIZE - 1)) || (size & (PMD_SIZE - 1)))
->>>>>>> -               return PAGE_SIZE;
->>>>>>> +       return !((base & (map_size - 1)) || (base_virt & (map_size
->>>>>>> - 1)) ||
->>>>>>> +                       (size < map_size));
->>>>>>> +}
->>>>>>> +
->>>>>>> +static uintptr_t __init best_map_size(phys_addr_t base, uintptr_t
->>>>>>> base_virt,
->>>>>>> +                                     phys_addr_t size)
->>>>>>> +{
->>>>>>> +#ifndef __PAGETABLE_PMD_FOLDED
->>>>>>> +       if (is_map_size_ok(PGDIR_SIZE, base, base_virt, size))
->>>>>>> +               return PGDIR_SIZE;
->>>>>>> +
->>>>>>> +       if (pgtable_l4_enabled)
->>>>>>> +               if (is_map_size_ok(PUD_SIZE, base, base_virt, size))
->>>>>>> +                       return PUD_SIZE;
->>>>>>> +#endif
->>>>>>> +
->>>>>>> +       if (is_map_size_ok(PMD_SIZE, base, base_virt, size))
->>>>>>> +               return PMD_SIZE;
->>>>>>>
->>>>>>> -       return PMD_SIZE;
->>>>>>> +       return PAGE_SIZE;
->>>>>>>     }
->>>>>>>
->>>>>>>     /*
->>>>>>> @@ -576,7 +592,7 @@ void create_kernel_page_table(pgd_t *pgdir,
->>>>>>> uintptr_t map_size)
->>>>>>>     asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->>>>>>>     {
->>>>>>>            uintptr_t va, end_va;
->>>>>>> -       uintptr_t map_size = best_map_size(load_pa,
->>>>>>> MAX_EARLY_MAPPING_SIZE);
->>>>>>> +       uintptr_t map_size;
->>>>>>>
->>>>>>>            load_pa = (uintptr_t)(&_start);
->>>>>>>            load_sz = (uintptr_t)(&_end) - load_pa;
->>>>>>> @@ -587,6 +603,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->>>>>>>
->>>>>>>            kernel_virt_addr = KERNEL_VIRT_ADDR;
->>>>>>>
->>>>>>> +       map_size = best_map_size(load_pa, PAGE_OFFSET,
->>>>>>> MAX_EARLY_MAPPING_SIZE);
->>>>>>>            va_pa_offset = PAGE_OFFSET - load_pa;
->>>>>>>            va_kernel_pa_offset = kernel_virt_addr - load_pa;
->>>>>>>            pfn_base = PFN_DOWN(load_pa);
->>>>>>> @@ -700,6 +717,8 @@ static void __init setup_vm_final(void)
->>>>>>>
->>>>>>>            /* Map all memory banks */
->>>>>>>            for_each_memblock(memory, reg) {
->>>>>>> +               uintptr_t remaining_size;
->>>>>>> +
->>>>>>>                    start = reg->base;
->>>>>>>                    end = start + reg->size;
->>>>>>>
->>>>>>> @@ -707,15 +726,19 @@ static void __init setup_vm_final(void)
->>>>>>>                            break;
->>>>>>>                    if (memblock_is_nomap(reg))
->>>>>>>                            continue;
->>>>>>> -               if (start <= __pa(PAGE_OFFSET) &&
->>>>>>> -                   __pa(PAGE_OFFSET) < end)
->>>>>>> -                       start = __pa(PAGE_OFFSET);
->>>>>>>
->>>>>>> -               map_size = best_map_size(start, end - start);
->>>>>>> -               for (pa = start; pa < end; pa += map_size) {
->>>>>>> +               pa = start;
->>>>>>> +               remaining_size = reg->size;
->>>>>>> +
->>>>>>> +               while (remaining_size) {
->>>>>>>                            va = (uintptr_t)__va(pa);
->>>>>>> +                       map_size = best_map_size(pa, va,
->>>>>>> remaining_size);
->>>>>>> +
->>>>>>> create_pgd_mapping(swapper_pg_dir, va, pa,
->>>>>>>                                               map_size, PAGE_KERNEL);
->>>>>>> +
->>>>>>> +                       pa += map_size;
->>>>>>> +                       remaining_size -= map_size;
->>>>>>>                    }
->>>>>>>            }
->>>>>>>
->>>>>> This may not work in the RV32 with 2G memory  and if the map_size is
->>>>>> determined to be a page size
->>>>>> for the last memblock. Both pa & remaining_size will overflow and the
->>>>>> loop will try to map memory from zero again.
->>>>> I'm not sure I understand: if pa starts at 0x8000_0000 and size is 2G,
->>>>> then pa will overflow in the last iteration, but remaining_size will
->>>>> then be equal to 0 right ?
->>>>>
->>>> Not unless the remaining_size is at least page size aligned. The last
->>>> remaining size would "fff".
->>>> It will overflow as well after subtracting the map_size.
->>
->>
->> While fixing this issue, I noticed that if the size in the device tree
->> is not aligned on PAGE_SIZE, the size is then automatically realigned on
->> PAGE_SIZE: see early_init_dt_add_memory_arch where size is and-ed with
->> PAGE_MASK to remove the unaligned part.
->>
-> Yes. But the memblock size is not guaranteed to be PAGE_SIZE aligned.
-> The memblock size is updated in memblock_cap_size
-> 
->      /* adjust *@size so that (@base + *@size) doesn't overflow, return
-> new size */
->     static inline phys_addr_t memblock_cap_size(phys_addr_t base,
-> phys_addr_t *size)
->     {
->              return *size = min(*size, PHYS_ADDR_MAX - base);
->     }
-> 
+So what's the problem? There's no division by zero here.
 
-Yes you're right, I will fix that in a v2.
+And what compiler are you using, Lee? Seems broken.
 
-Thanks,
+> > > Second, the current code looks bogus too as reg_offset is always set to
+> > > zero and mask to BIT(i)...
+> 
+> Now the result is correct, since all PMIC irq mask bits are in one
+> register now, which means the reg_offset is always 0 can work well.
+> But I think the logics still can be improved if our PMIC irq numbers
+> are larger than 32 in future.
 
-Alex
+The code is still bogus as pointed out above. Why do you bother to
+divide by num_irqs at all?
 
-> You will not see this issue right away even if you allocate 2GB of
-> memory while running 32 bit linux in qemu
-> because the kernel removes anything beyond 0xc0400000 for 32 bit in
-> bootmem setup.
-> 
-> │[    0.000000][    T0] memblock_remove: [0xc0400000-0xfffffffe]
-> setup_bootmem+0x90/0x216
-> 
-> This also restricts the kernel to use only 1GB of memory even if
-> maximum physical memory supported is 2GB.
-> 
->> So the issue does not need to be fixed :)
->>
->> Thanks anyway,
->>
->> Alex
->>
->>
->>>>
->>>>> And by the way, I realize that this loop only handles sizes that are
->>>>> aligned on map_size.
->>>>>
->>>> Yeah.
->>>
->>>
->>> Thanks for noticing, I send a v2.
->>>
->>> Alex
->>>
->>>
->>>>
->>>>> Thanks,
->>>>>
->>>>> Alex
->>>>>
->>>>>
->>>>>>> --
->>>>>>> 2.20.1
->>>>>>>
->>>>>>>
->>>>
->>>>
->>>
-> 
-> 
-> 
-> --
-> Regards,
-> Atish
-> 
+And what have you guys been smoking? ;)
+
+Johan
