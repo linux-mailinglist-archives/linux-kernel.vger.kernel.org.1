@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D977320E18B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9E620E1C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389990AbgF2U46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:56:58 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:39213 "EHLO
+        id S1731282AbgF2U7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:59:09 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:59499 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389986AbgF2U4y (ORCPT
+        with ESMTP id S2390056AbgF2U7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:56:54 -0400
-Received: from mail-qk1-f172.google.com ([209.85.222.172]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1Mzi3l-1iuAwi1hTd-00vgo9 for <linux-kernel@vger.kernel.org>; Mon, 29 Jun
- 2020 13:29:21 +0200
-Received: by mail-qk1-f172.google.com with SMTP id c30so10984018qka.10
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:29:21 -0700 (PDT)
-X-Gm-Message-State: AOAM532KVF3Mrwsp88XFnB5qMzvUOyGYvzELSJ7vfp+3LkFxDCSgCuhk
-        tKdIdL1SiK8XewrnMn2E8AunhBmTcltVXq88Osw=
-X-Google-Smtp-Source: ABdhPJxOWyRR6TiiwQf9Wh2sxQ3AKNOhcX8BfRNiFAEby8tFCy7k4tx1AsKF2pBnKqqLfN8S+NOpfx/YguO5KbiA4Jk=
-X-Received: by 2002:a37:a496:: with SMTP id n144mr14507722qke.286.1593430160300;
- Mon, 29 Jun 2020 04:29:20 -0700 (PDT)
+        Mon, 29 Jun 2020 16:59:00 -0400
+Received: from mail-qv1-f52.google.com ([209.85.219.52]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1McHQA-1jFRrA1qBQ-00ce1G for <linux-kernel@vger.kernel.org>; Mon, 29 Jun
+ 2020 13:31:20 +0200
+Received: by mail-qv1-f52.google.com with SMTP id a14so7440963qvq.6
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:31:20 -0700 (PDT)
+X-Gm-Message-State: AOAM5308l507zbMa2ZQ0GcjZj2tqmv/tfKKppLar81SlWzK+jf6eWPxH
+        e3ZWebSRy5vFMWQKs6OGYCI0b1k2/63Z081MOTM=
+X-Google-Smtp-Source: ABdhPJzLDVrEKQ0RXFpDoEkLY9qnujNgHbMgU9hIQBerWflFs7aWuPkyYqKtG/A+3+fGgK3hLwO/TW0eSdce/TZJPHA=
+X-Received: by 2002:a0c:a992:: with SMTP id a18mr5896548qvb.211.1593430279342;
+ Mon, 29 Jun 2020 04:31:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <1593425623-31810-1-git-send-email-Anson.Huang@nxp.com> <1593425623-31810-2-git-send-email-Anson.Huang@nxp.com>
-In-Reply-To: <1593425623-31810-2-git-send-email-Anson.Huang@nxp.com>
+References: <1593425623-31810-1-git-send-email-Anson.Huang@nxp.com> <1593425623-31810-3-git-send-email-Anson.Huang@nxp.com>
+In-Reply-To: <1593425623-31810-3-git-send-email-Anson.Huang@nxp.com>
 From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 29 Jun 2020 13:29:04 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a31coESQTssW1mndGuZ1pvxXSRRpY=XT1ZO+pkj9aabxg@mail.gmail.com>
-Message-ID: <CAK8P3a31coESQTssW1mndGuZ1pvxXSRRpY=XT1ZO+pkj9aabxg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] arm64: defconfig: Select CONFIG_RESET_IMX7 by default
+Date:   Mon, 29 Jun 2020 13:31:03 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2wsaS9i9BrV6o845Qx4TJrZM=+13C1haqBLg17HKVgXw@mail.gmail.com>
+Message-ID: <CAK8P3a2wsaS9i9BrV6o845Qx4TJrZM=+13C1haqBLg17HKVgXw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ARM: imx: Select RESET_IMX7 for i.MX7D
 To:     Anson Huang <Anson.Huang@nxp.com>
 Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
         Shawn Guo <shawnguo@kernel.org>,
@@ -50,24 +50,24 @@ Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         NXP Linux Team <Linux-imx@nxp.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:L/cCgtNTGpTZuLd/vE7UdNH3zJxmqthQ+1RD5O4Pl1kAR+QwSLC
- xbdM/tcUzx1D2AQfTzXsK0/CirZfD/hMsNayPxrJyKbeZ4Xe0no4guHiEYDDU/psXr5wBir
- jmZ3Qin4lIcO9thalxj6l/rOxbB8Br0T2OheyFLCWcYPLUXmd1hahymuFFgEY71fxffFDpG
- l6u8XrxzFuFndOwe/0nvw==
+X-Provags-ID: V03:K1:ENfp5QlzDknHjn75URmVPMXECyz+2Wky+VuhDNFUQms/Z8CB6kC
+ JIEQHyvbU9lnpMLNlFZlDgvI6cI2tT+4rzS+uiWl94Rcr7QAy2WcegX3UT1J8ct4peopbbM
+ UxY232fQtaYZpHOHP06ms5ivmQw3WKMnSdxHJ7iMq04ma2u5MelDqCDF+vq/1Kjoc+RoSCH
+ c+2pblAmD5KxC6rFciEgQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:k4fUJO9ov5M=:MBC+10tvQBuFpd2IVfJD9l
- L4jMInpaovEk2f0E0nZg6O0VNMeJ/QGOJ+U8j6eADoO6XC6NG1wrNq5PpsoeahAuIF2aFgwM5
- kKyZwko6j1BG7qX/PuhnvbEcLSkrhLAEtjyNaWwGDWcG6sWYOnjpqqggGTq86bkU6yIbVpO7B
- MAcH2q5FgISQc1Soo/R/9QVhB8brNdxtcRId4MhbZHwfAUSM6i8R9H9wGwuPBFYucywSlwFKg
- snKF7fOsKb7J3KIY4vbl9ZR1cjeBbDtLTaZszlnjt1rUyN0n7ND3le/reGxcCYtQCQR2khQ+C
- FEARXPnwSRkiFP2vE5mbt2QjBqCFZahyrdqljGjH3Gi1t5k5MgblyTyujGCJ/4Ix06yFSXh3N
- 3yN27M7M0ular2BfOsTu45eh99YO0IoEjTRcfxXjWYKD5a9OsBi1+WU1I91KrzvBZ2fsJhSWH
- VdBFnt2DEr0gU9aDtTx3zYPl+JO/TC/8vuSzkovh77BAkWiU+L26oQqIlfHybI6VdXXrHeDRm
- Cb0aL0fwyVJnFMX2MCIhVKsfZREkawUAz2DZ4pFWB9y5czHScPq3m5U7Eaca0ei0Zh1VlbLLk
- Q0iLfPBPugURcJ7wArexRqaAjQeTXbiseMvDtD9O71mOLFbpQXdClIFFM47zXLA9qBXb3FwkK
- D81rAUjodioeTBVjLVtwD7xKDgBoI5KfetXuc+T4ZfPUNcVtWz4VdtHiAsCo6KykktkYZfJzC
- zDxRNX7GDBExnic5+29k1fGsRZCJPWEoYLK/kqlGpb5PSXaIRk5yZOX1sGBYISP9zOQ79heGL
- 4g6ihZzewdviFcwCECr2zMFfNI9UF4prpgV3gIuNhFbBJ683K8=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:M89Yk+J5LGM=:+fHLPCr8qtI3Lbk1sQUzwx
+ 03PXdA+1UcBWfzS4kjpHu7erprdxUCamYOTT1EpSiohDOWOEhU0iSFtMjvXk8rcm4ovDfD9Yi
+ FagG+drzR6BX7n6BNzlCSRAgD4/3VyULbxOM5CsQv2ba7e2NDfF0aNaE0WdWT+WHnAgViIbNH
+ LDnMmoJq4r56RNqKT+YiEy5VZCvkpsnUlXKEafT7Fk9uBDulOYQvk5VqjXPBMtVmCAQU53SGc
+ m23HcBF1ynq78kr5ErZAfmbsl5PyMKQcTxsaJasz/yL8RcnhYZeLdUrpbzpx2c7ibGHGXUuQX
+ TPDsa11rugon6Yzee9YccsDdFqlSlIFQiXG2n43GSnE6/MMVtbBvoJsentYL9b0GfFaKP6WiT
+ eGKjItzD3/OSMmaTxqujIuzeoVfp0YQjklVQpPzhpIDZYRUmV0mJj2zx65blbptE2Kr6kIyrC
+ SyH3Lzza7Owb+OGK/mJZ8nXXQEVZJblQBUNUOD6aeb4e0cWMeEogBUANZahjhcHgJvgohoZCv
+ Gm5zRRVyB58JHnapQHmTyJNbxprQVY7YgOsMK7+FF4DuFpQTWS23kTUbImlVQMwhhOBhQC2bD
+ 27SubEbzda5BHz7vpT5RZYVOqCPTeQOpMGa+d3qObo519E1kGgtKsfYI7YrN1LEITzDyPP1qu
+ pw8WKkyPfNkDbomS/gRxm20FynFHFPs26zEvqoiL0bXwQeyJSCMG94SwGxFs47qxu1TbWvCIH
+ G8B3afNGzw7axdTOMbR7rqRQ1x93lV83k8A+rZIWJHakq3Yb8/ThRNw9VFsW+5nzMpk4+UakL
+ lUrCHp0rt/K0VfXjJkU3cNyMRZsfHQT9eEEGvcbpTGcnJA5iVE=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -76,10 +76,24 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Mon, Jun 29, 2020 at 12:25 PM Anson Huang <Anson.Huang@nxp.com> wrote:
 >
 > i.MX7 reset driver now supports module build, it is no longer
-> built in by default, need to select it explicitly.
+> built in by default, need to select it explicitly for i.MX7D.
 >
 > Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> ---
+>  arch/arm/mach-imx/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
+> index e7d7b90..3540483 100644
+> --- a/arch/arm/mach-imx/Kconfig
+> +++ b/arch/arm/mach-imx/Kconfig
+> @@ -561,6 +561,7 @@ config SOC_IMX7D_CM4
+>  config SOC_IMX7D
+>         bool "i.MX7 Dual support"
+>         select PINCTRL_IMX7D
+> +       select RESET_IMX7
 
-Why not make it =m now that this is possible?
+Please drop this patch, it breaks the intent of the first one by forcing
+the driver to be built-in again rather than a loadable module.
 
-      Arnd
+        Arnd
