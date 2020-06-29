@@ -2,133 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721CF20D3EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3F820D509
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729850AbgF2TDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:03:09 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43842 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726051AbgF2TDG (ORCPT
+        id S1731617AbgF2TOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:14:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731554AbgF2TNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:03:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593457384;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=2QOGVGFzRVKWNQySHe49H5TbBnoiSG0GTPoOr1bPhO0=;
-        b=gGbbhxS6maFU03sMbd4J/Rfa/qX+/ycp6KV6DCionn9R/fdexYjFaGmWPDoOOJAKTMAZuQ
-        selMylympI397Jre7Uk4YSCo01a1hNW5joWadft3WlpA1EosE8i6ti7u3C1Yir5svDkTCf
-        0GUciZ0BTx4mq0YDCW5HlsHy1+mMUok=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-440-eFQI0pS-P8eHP3vdJFGVxg-1; Mon, 29 Jun 2020 08:01:31 -0400
-X-MC-Unique: eFQI0pS-P8eHP3vdJFGVxg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8DD53805EF7;
-        Mon, 29 Jun 2020 12:01:29 +0000 (UTC)
-Received: from [10.36.114.157] (ovpn-114-157.ams2.redhat.com [10.36.114.157])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6F2925C557;
-        Mon, 29 Jun 2020 12:01:23 +0000 (UTC)
-Subject: Re: [PATCH RFC] s390x/vmem: get rid of memory segment list
-To:     Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-mm@kvack.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200625150029.45019-1-david@redhat.com>
- <20200626192253.2281d95d@thinkpad> <20200626204621.55248f99@thinkpad>
- <20200629115537.GC4468@osiris>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
-Organization: Red Hat GmbH
-Message-ID: <0c783dbb-630c-6440-74b8-8b40af146d6a@redhat.com>
-Date:   Mon, 29 Jun 2020 14:01:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 29 Jun 2020 15:13:53 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69110C0D941E
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:02:05 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EF217299;
+        Mon, 29 Jun 2020 14:02:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1593432124;
+        bh=eQbJn3vb0K78NPoXf+o0lEl+wgzeznRoWZwwR/EyWX4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nA0sQtL16b7El+YqlTorIQEubvJwfP0WNhDTIvMI7hI5RnECeVA3SaemFBxEFAoaa
+         Ud/pXw0EzF6DQZZVKVvUvMM/YHS4AfQP9kea3JNHeKFL7grT8arzlR07Zp31pf2jk4
+         zcqz3zgeTDKOgvyAMoEeXWLpje6TeVfZTozo8IuY=
+Date:   Mon, 29 Jun 2020 15:02:00 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>
+Subject: Re: [PATCH v8 0/3] phy: zynqmp: Add PHY driver for the Xilinx ZynqMP
+ Gigabit Transceiver
+Message-ID: <20200629120200.GA10648@pendragon.ideasonboard.com>
+References: <20200513172239.26444-1-laurent.pinchart@ideasonboard.com>
+ <20200629093943.GB2599@vkoul-mobl>
 MIME-Version: 1.0
-In-Reply-To: <20200629115537.GC4468@osiris>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Disposition: inline
+In-Reply-To: <20200629093943.GB2599@vkoul-mobl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.06.20 13:55, Heiko Carstens wrote:
-> On Fri, Jun 26, 2020 at 08:46:21PM +0200, Gerald Schaefer wrote:
->> Verified with DCSS overlapping boot and standby memory, works fine.
->> As expected, the error message changes, but I don't think that is a
->> problem, as long as you also remove the old -ENOSPC case / comment
->> in arch/s390/mm/extmem.c. It is actually more correct now I guess,
->> -ENOSPC doesn't look like the correct return value anyway.
->>
->> Thanks for cleaning up! Looks good to me, and removes > 100 LOC,
->> unless Heiko remembers some other issues from ancient times.
->>
->> Reviewed-by: Gerald Schaefer <gerald.schaefer@de.ibm.com>
->> Tested-by: Gerald Schaefer <gerald.schaefer@de.ibm.com> [DCSS]
-> 
-> Looks good to me too. Gerald, thanks for looking and verifying this,
-> and David, thanks for providing the patch.
-> 
-> Applied.
-> 
+Hi Vinod,
 
-Thanks Gerald and Heiko! Should I send an addon patch to tweak the
-documentation or resend this patch?
+On Mon, Jun 29, 2020 at 03:09:43PM +0530, Vinod Koul wrote:
+> On 13-05-20, 20:22, Laurent Pinchart wrote:
+> > Hello,
+> > 
+> > The patch series adds a PHY driver for the Xilinx ZynqMP gigabit serial
+> > transceivers (PS-GTR). The PS-GTR is a set of 4 PHYs that can be used by
+> > the PCIe, USB 3.0, DisplayPort, SATA and Ethernet controllers that are
+> > part of the Serial I/O Unit (SIOU).
+> > 
+> > The code is based on a previous version sent by Anurag Kumar Vulisha and
+> > available at [1]. The DT bindings have been converted to YAML, and both
+> > the bindings and the driver have been considerably reworked (and
+> > simplified). The most notable changes is the removal of manual handling
+> > of the reset lines of the PHY users (which belongs to the PHY users
+> > themselves), and moving to the standard PHY .power_on() and .configure()
+> > operations to replace functions that were previously exported by the
+> > driver. Please see individual patches for a more detailed changelog.
+> > 
+> > Compared to v7, review comments on the PHY driver have been taken into
+> > account, and the DT bindings have switched to the GPL-2.0-only OR
+> > BSD-2-Clause license
+> > 
+> > The code is based on v5.6 and has been tested with DisplayPort on the
+> > Xilinx ZC106 board.
+> 
+> This (dt patch and 8.1 update) fails to apply for me, can you please
+> rebased on phy-next and resend. Also I saw this while trying to apply:
+> 
+> WARNING: Misordered MAINTAINERS entry - list 'S:' before 'T:'
+> #403: FILE: MAINTAINERS:18605:
+> +T:	git https://github.com/Xilinx/linux-xlnx.git
+> +S:	Supported
+
+Rebased, fixed and resent.
 
 -- 
-Thanks,
+Regards,
 
-David / dhildenb
-
+Laurent Pinchart
