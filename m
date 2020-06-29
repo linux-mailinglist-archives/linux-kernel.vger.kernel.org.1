@@ -2,77 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BF020E549
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09EA220E436
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388637AbgF2VfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:35:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728529AbgF2Sky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:54 -0400
-Received: from localhost (lfbn-ncy-1-996-218.w90-101.abo.wanadoo.fr [90.101.73.218])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54B8E23D24;
-        Mon, 29 Jun 2020 12:42:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593434530;
-        bh=vDqH4OQik9QBHRoYPIsS115Se7LvewJkoA+wC/XILJ8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=04ef066Nl1RVmJ0rEQuLCUxIe74aNZT94SXMcWmBJpt8ieJLaRiuiPf01/phg/pRn
-         cwsQ8o70pdRXGfjV7aiVEDSYjYr+B/VlEQvBhNdQABAmIitvNHFdXFvu5FutYwDCMl
-         yFxuImOmuk9k1S/icL0Ln6ggd0ghKrEIiR1lHDhc=
-Date:   Mon, 29 Jun 2020 14:42:08 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org,
-        linux-rt-users@vger.kernel.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] tick/sched: update full_nohz status after SCHED dep
- is cleared
-Message-ID: <20200629124207.GA6088@lenoir>
-References: <20200520162400.GA8800@lenoir>
- <20200520164925.GM10078@localhost.localdomain>
- <20200520170215.GB8800@lenoir>
- <20200520184710.GO10078@localhost.localdomain>
- <20200521004443.GB15455@lenoir>
- <20200521170020.GQ10078@localhost.localdomain>
- <20200615210743.GA21371@lenoir>
- <20200616065757.GA446382@localhost.localdomain>
- <20200616204649.GA4914@lenoir>
- <20200629123651.GA9670@localhost.localdomain>
+        id S2388815AbgF2VWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:22:33 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64878 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726158AbgF2Swk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:52:40 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TCaS58133515;
+        Mon, 29 Jun 2020 08:44:40 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31xmxf2cda-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 08:44:40 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05TCafKU134876;
+        Mon, 29 Jun 2020 08:44:40 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31xmxf2cck-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 08:44:39 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05TCTnpM001503;
+        Mon, 29 Jun 2020 12:44:37 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 31wwr893s7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 12:44:37 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05TCiY8U51445968
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Jun 2020 12:44:34 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 39F1911C05B;
+        Mon, 29 Jun 2020 12:44:34 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CFA3911C052;
+        Mon, 29 Jun 2020 12:44:33 +0000 (GMT)
+Received: from osiris (unknown [9.171.82.53])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 29 Jun 2020 12:44:33 +0000 (GMT)
+Date:   Mon, 29 Jun 2020 14:44:32 +0200
+From:   Heiko Carstens <heiko.carstens@de.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-s390@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Philipp Rudo <prudo@linux.ibm.com>,
+        Michael Holzheu <holzheu@linux.vnet.ibm.com>
+Subject: Re: [PATCH RFC 2/2] s390/mm: don't set ARCH_KEEP_MEMBLOCK
+Message-ID: <20200629124432.GE4468@osiris>
+References: <20200417150151.17239-1-david@redhat.com>
+ <20200417150151.17239-3-david@redhat.com>
+ <20200626163215.GA4268@osiris>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200629123651.GA9670@localhost.localdomain>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200626163215.GA4268@osiris>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-29_11:2020-06-29,2020-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ impostorscore=0 spamscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
+ mlxlogscore=813 lowpriorityscore=0 suspectscore=2 bulkscore=0 phishscore=0
+ cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006290088
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 02:36:51PM +0200, Juri Lelli wrote:
-> Hi,
-> 
-> On 16/06/20 22:46, Frederic Weisbecker wrote:
-> > On Tue, Jun 16, 2020 at 08:57:57AM +0200, Juri Lelli wrote:
-> > > Sure. Let me know if you find anything.
+On Fri, Jun 26, 2020 at 06:32:15PM +0200, Heiko Carstens wrote:
+> On Fri, Apr 17, 2020 at 05:01:51PM +0200, David Hildenbrand wrote:
+> > Commit 50be63450728 ("s390/mm: Convert bootmem to memblock") mentions
+> > 	"The original bootmem allocator is getting replaced by memblock. To
+> > 	cover the needs of the s390 kdump implementation the physical
+> > 	memory list is used."
 > > 
-> > I managed to reproduce. With "threadirqs" and without
-> > "tsc=reliable". I see tons of spurious TIMER softirqs.
-> > Investigation begins! I'll let you know.
+> > zcore was converted to use resources instead of memblocks.
+> > memblock_discard() will *not* mess with "physmem", only with "memory" and
+> > "reserved" memblocks. So, that data will stay after early boot, to be
+> > used in arch/s390/kernel/crash_dump.c to create the ELF header from
+> > inside the 2nd (a.k.a. dumping) kernel.
+> > 
+> > We no longer need ARCH_KEEP_MEMBLOCK.
+> > 
+> > Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+> > Cc: Vasily Gorbik <gor@linux.ibm.com>
+> > Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> > Cc: Philipp Rudo <prudo@linux.ibm.com>
+> > Cc: Michael Holzheu <holzheu@linux.vnet.ibm.com>
+> > Signed-off-by: David Hildenbrand <david@redhat.com>
+> > ---
+> >  arch/s390/Kconfig | 1 -
+> >  1 file changed, 1 deletion(-)
 > 
-> Gentle ping. Any new findings about this issue?
+> Applied, thanks!
 
-Yep, I'm working on a series to reduce timer softirqs. I'm almost
-done, should post it soon.
+Hmm, this triggers:
 
-I believe you guessed right:
+WARNING: modpost: vmlinux.o(.text+0x1e7c2): Section mismatch in reference from the function elfcorehdr_alloc() to the variable .meminit.data:memblock
+The function elfcorehdr_alloc() references
+the variable __meminitdata memblock.
+This is often because elfcorehdr_alloc lacks a __meminitdata 
+annotation or the annotation of memblock is wrong.
 
-* Timer tick raises timer softirq
-* Ksoftirqd wakes up, restarts the tick
-* Timer tick raises timer softirq
-* ...
+WARNING: modpost: vmlinux.o(.text+0x1e800): Section mismatch in reference from the function elfcorehdr_alloc() to the function .meminit.text:__next_mem_range()
+The function elfcorehdr_alloc() references
+the function __meminit __next_mem_range().
+This is often because elfcorehdr_alloc lacks a __meminit 
+annotation or the annotation of __next_mem_range is wrong.
 
-Thanks.
+WARNING: modpost: vmlinux.o(.text+0x1e844): Section mismatch in reference from the function elfcorehdr_alloc() to the function .meminit.text:__next_mem_range()
+The function elfcorehdr_alloc() references
+the function __meminit __next_mem_range().
+This is often because elfcorehdr_alloc lacks a __meminit 
+annotation or the annotation of __next_mem_range is wrong.
+
+So, reverted again ;)
