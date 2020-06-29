@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7A420DBAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C7920D80B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388969AbgF2UIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:08:51 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16982 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732373AbgF2UIY (ORCPT
+        id S1733239AbgF2TfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:35:17 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:24916 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732761AbgF2TbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:08:24 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5efa24980000>; Mon, 29 Jun 2020 10:27:52 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 29 Jun 2020 10:29:30 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 29 Jun 2020 10:29:30 -0700
-Received: from [10.25.103.164] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 29 Jun
- 2020 17:29:20 +0000
-CC:     <spujar@nvidia.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <robh+dt@kernel.org>, <lgirdwood@gmail.com>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <digetx@gmail.com>, <alsa-devel@alsa-project.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
-        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
-        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
-        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
-        <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH v4 16/23] ASoC: soc-pcm: Get all BEs along DAPM path
-To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
- <1593233625-14961-17-git-send-email-spujar@nvidia.com>
- <871rly1wem.wl-kuninori.morimoto.gx@renesas.com>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <d45bf2fc-3baa-fd68-4d96-345ab7b99df9@nvidia.com>
-Date:   Mon, 29 Jun 2020 22:59:15 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 29 Jun 2020 15:31:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1593459077; x=1624995077;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=CVcq2zndXVsddYQ8O6xnjIwELA++4s2vt+dBW25RPxw=;
+  b=b9otqqiVz5IzO+TpgIpIl5x1fTTmOSQG3OMqvKf/mqzDz7ttXDj9cy26
+   wjH+Yz5v/7wnS0xjesx81aJ/isv60akcXmXlfsnBUQNTHbwvQbgb2vfQh
+   Jdy7RDAj9Iez+cpJouBD4vlDLPkIyE6m2cb3C98As0xr/wUV4lhcX5wE8
+   g=;
+IronPort-SDR: IqI4/h1k6y6GKcc3DjPyyObPuwfrJpzrWV6Wad85FwQ4Pbpf/ah8+z9QegclRz+AL7FxXn7PPI
+ qJ++tEW4Qo/Q==
+X-IronPort-AV: E=Sophos;i="5.75,295,1589241600"; 
+   d="scan'208";a="54762156"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 29 Jun 2020 17:45:46 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com (Postfix) with ESMTPS id 586D0A24B4;
+        Mon, 29 Jun 2020 17:45:46 +0000 (UTC)
+Received: from EX13D16EUB001.ant.amazon.com (10.43.166.28) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 29 Jun 2020 17:45:44 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.161.145) by
+ EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 29 Jun 2020 17:45:36 +0000
+Subject: Re: [PATCH v4 07/18] nitro_enclaves: Init misc device providing the
+ ioctl interface
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        "Alexander Graf" <graf@amazon.de>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Stefan Hajnoczi" <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        "Uwe Dannowski" <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200622200329.52996-1-andraprs@amazon.com>
+ <20200622200329.52996-8-andraprs@amazon.com>
+ <20200629162013.GA718066@kroah.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <b87e2eeb-39cf-8de5-0f5f-1db04b3e2794@amazon.com>
+Date:   Mon, 29 Jun 2020 20:45:25 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <871rly1wem.wl-kuninori.morimoto.gx@renesas.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593451672; bh=VngQ8+Vmfzw1t09YiyiqerLv/mWB5JEXAQux2nHccrU=;
-        h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=Jv2lz5H9kDXCcAWkYYs5hZM0NYd+3onwc+585S9DakRaHHx/t/LOpP+rd/KNOLsoz
-         OTYjJIhz2oUDmDPaIG6xqdV1cskod1HL9KDOI5VInL+3RbBoGgOAyxNgRygOca9cr0
-         pgV7//H4S4IWitR/1BCkmRU3YH4zbE7GUqHYd8NdXyHYI8KpNr8zo0VCzuWLMh21as
-         0a1RA8Kmd4WT/3BRJSc7aYao9U7IuW5tmtOLV37hdQ6YB+i03Zrc7w4qEXAC4MgF+K
-         GHpFGcGeQJlvHxD0oYDxJk+aoolbQ3jirK4U7mgrEVKG1RvPaW7zk/S3rl8DMx8KNc
-         6pmn4s6Fc8iLg==
+In-Reply-To: <20200629162013.GA718066@kroah.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.161.145]
+X-ClientProxiedBy: EX13D39UWB004.ant.amazon.com (10.43.161.148) To
+ EX13D16EUB001.ant.amazon.com (10.43.166.28)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/29/2020 7:11 AM, Kuninori Morimoto wrote:
-> External email: Use caution opening links or attachments
->
->
-> Hi Sameer
->
->> dpcm_end_walk_at_be() stops the graph walk when first BE is found for
->> the given FE component. In a component model we may want to connect
->> multiple DAIs from different components. A new flag is introduced in
->> 'snd_soc_card', which when set allows DAI/component chaining. Later
->> PCM operations can be called for all these listed components for a
->> valid DAPM path.
-> (snip)
->> @@ -1069,6 +1069,7 @@ struct snd_soc_card {
->>        int num_of_dapm_widgets;
->>        const struct snd_soc_dapm_route *of_dapm_routes;
->>        int num_of_dapm_routes;
->> +     bool component_chaining;
-> snd_soc_card has many /* bit field */ variables.
-> Please use it instead of bool.
-
-OK, will use.
->
-> Thank you for your help !!
->
-> Best regards
-> ---
-> Kuninori Morimoto
+CgpPbiAyOS8wNi8yMDIwIDE5OjIwLCBHcmVnIEtIIHdyb3RlOgo+Cj4gT24gTW9uLCBKdW4gMjIs
+IDIwMjAgYXQgMTE6MDM6MThQTSArMDMwMCwgQW5kcmEgUGFyYXNjaGl2IHdyb3RlOgo+PiArc3Rh
+dGljIGludCBfX2luaXQgbmVfaW5pdCh2b2lkKQo+PiArewo+PiArICAgICBzdHJ1Y3QgcGNpX2Rl
+diAqcGRldiA9IHBjaV9nZXRfZGV2aWNlKFBDSV9WRU5ET1JfSURfQU1BWk9OLAo+PiArICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFBDSV9ERVZJQ0VfSURfTkUsIE5V
+TEwpOwo+PiArICAgICBpbnQgcmMgPSAtRUlOVkFMOwo+PiArCj4+ICsgICAgIGlmICghcGRldikK
+Pj4gKyAgICAgICAgICAgICByZXR1cm4gLUVOT0RFVjsKPiBJY2ssIHRoYXQncyBhIF92ZXJ5XyBv
+bGQtc2Nob29sIHdheSBvZiBiaW5kaW5nIHRvIGEgcGNpIGRldmljZS4gIFBsZWFzZQo+IGp1c3Qg
+YmUgYSAicmVhbCIgcGNpIGRyaXZlciBhbmQgeW91ciBwcm9iZSBmdW5jdGlvbiB3aWxsIGJlIGNh
+bGxlZCBpZgo+IHlvdXIgaGFyZHdhcmUgaXMgcHJlc2VudCAob3Igd2hlbiBpdCBzaG93cyB1cC4p
+ICBUbyBkbyBpdCB0aGlzIHdheQo+IHByZXZlbnRzIHlvdXIgZHJpdmVyIGZyb20gYmVpbmcgYXV0
+by1sb2FkZWQgZm9yIHdoZW4geW91ciBoYXJkd2FyZSBpcwo+IHNlZW4gaW4gdGhlIHN5c3RlbSwg
+YXMgd2VsbCBhcyBsb3RzIG9mIG90aGVyIHRoaW5ncy4KClRoaXMgY2hlY2sgaXMgbWFpbmx5IGhl
+cmUgaW4gdGhlIGNhc2UgYW55IGNvZGViYXNlIGlzIGFkZGVkIGJlZm9yZSB0aGUgCnBjaSBkcml2
+ZXIgcmVnaXN0ZXIgY2FsbCBiZWxvdy4KCkFuZCBpZiB3ZSBsb2cgYW55IGVycm9yIHdpdGggZGV2
+X2VycigpIGluc3RlYWQgb2YgcHJfZXJyKCkgYmVmb3JlIHRoZSAKZHJpdmVyIHJlZ2lzdGVyLgoK
+VGhhdCBjaGVjayB3YXMgb25seSBmb3IgbG9nZ2luZyBwdXJwb3NlcywgaWYgZG9uZSB3aXRoIGRl
+dl9lcnIoKS4gSSAKcmVtb3ZlZCB0aGUgY2hlY2sgaW4gdjUuCgo+PiArCj4+ICsgICAgIGlmICgh
+emFsbG9jX2NwdW1hc2tfdmFyKCZuZV9jcHVfcG9vbC5hdmFpbCwgR0ZQX0tFUk5FTCkpCj4+ICsg
+ICAgICAgICAgICAgcmV0dXJuIC1FTk9NRU07Cj4+ICsKPj4gKyAgICAgbXV0ZXhfaW5pdCgmbmVf
+Y3B1X3Bvb2wubXV0ZXgpOwo+PiArCj4+ICsgICAgIHJjID0gcGNpX3JlZ2lzdGVyX2RyaXZlcigm
+bmVfcGNpX2RyaXZlcik7Cj4gTmljZSwgeW91IGRpZCBpdCByaWdodCBoZXJlLCBidXQgd2h5IHRo
+ZSBhYm92ZSBjcmF6eSB0ZXN0Pwo+Cj4+ICsgICAgIGlmIChyYyA8IDApIHsKPj4gKyAgICAgICAg
+ICAgICBkZXZfZXJyKCZwZGV2LT5kZXYsCj4+ICsgICAgICAgICAgICAgICAgICAgICAiRXJyb3Ig
+aW4gcGNpIHJlZ2lzdGVyIGRyaXZlciBbcmM9JWRdXG4iLCByYyk7Cj4+ICsKPj4gKyAgICAgICAg
+ICAgICBnb3RvIGZyZWVfY3B1bWFzazsKPj4gKyAgICAgfQo+PiArCj4+ICsgICAgIHJldHVybiAw
+Owo+IFlvdSBsZWFrZWQgYSByZWZlcmVuY2Ugb24gdGhhdCBwY2kgZGV2aWNlLCBkaWRuJ3QgeW91
+PyAgTm90IGdvb2QgOigKClllcywgdGhlIHBjaSBnZXQgZGV2aWNlIGNhbGwgbmVlZHMgaXRzIHBh
+aXIgLSBwY2lfZGV2X3B1dCgpLiBJIGFkZGVkIGl0IApoZXJlIGFuZCBmb3IgdGhlIG90aGVyIG9j
+Y3VycmVuY2VzIHdoZXJlIGl0IHdhcyBtaXNzaW5nLgoKVGhhbmtzIGZvciByZXZpZXcuCgpBbmRy
+YQoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIChSb21hbmlhKSBTLlIuTC4gcmVnaXN0ZXJl
+ZCBvZmZpY2U6IDI3QSBTZi4gTGF6YXIgU3RyZWV0LCBVQkM1LCBmbG9vciAyLCBJYXNpLCBJYXNp
+IENvdW50eSwgNzAwMDQ1LCBSb21hbmlhLiBSZWdpc3RlcmVkIGluIFJvbWFuaWEuIFJlZ2lzdHJh
+dGlvbiBudW1iZXIgSjIyLzI2MjEvMjAwNS4K
 
