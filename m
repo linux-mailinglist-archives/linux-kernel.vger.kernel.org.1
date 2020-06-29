@@ -2,137 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6077E20CC1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 05:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CDB20CC1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 05:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbgF2DTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 23:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37828 "EHLO
+        id S1726026AbgF2DX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 23:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgF2DTa (ORCPT
+        with ESMTP id S1725976AbgF2DX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 23:19:30 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D15C03E979
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 20:19:30 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id j12so7277002pfn.10
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 20:19:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZKfMrSfh/1bie8cySquwojH2PxFPR3ZK3HqOY75MLbE=;
-        b=ftT4z8T6YJu06KMqRVdlMDg2q4w/wVXqKAQsM+8ujaw7OMn1HVy6rapb4tpakMEMW7
-         nJO4wGpe2sOpbE4oBN8gex/K+LetkiMYiUaLjpjm6NCLaeJugrqNgMXgAjNzYFhD/QCu
-         eYzaonWZAkFovEnY6dm+slwZj8kLH3NiR5Ub033AauyRghFnYo6dE1yyQaN1tNf6QHmx
-         LvROSBlaYU6tmtfyCAD7RNgvBaZNigsS1PnlCMtcApJaJTLSJsZG5eLPQvA6NlmEgxYn
-         1kLcsTLwOP5rlMBvArdJ0OMpEiLx4OFOWNT7GZN48Pdsnx3popYDLD83rbZ9HnKz1ej+
-         Ph/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZKfMrSfh/1bie8cySquwojH2PxFPR3ZK3HqOY75MLbE=;
-        b=YfVJfNg5cW1t+qVOmWHi8sF2FiEn0HnWN764W8s2CNjiClOLferd6mWwFy5hk/bn1w
-         mvmoUCyFPaMYy6J1+rnCXn27p6azQl9PwGGVRfCem59V/HO6FI9oQL2wXp38pDblm4Tb
-         ZLRfWzaPBY1GUNnY7erKbp0ZTEdKCBhjnIvb590GkLFvFUAVda4ohgE+velJK32scKXW
-         bi5xc9Bfa/42QrbXFMml0cfOExiA3H04EVTaYhh5r180jEcXxqMjGjm6wsjvVi7wH9hZ
-         I/IMrmHgNxO88eLoa3gVvPbveTZ+Si7EJU0nxYI0jdsMOOrxoW3rbsp7p7rTbDYeRrR5
-         ABuA==
-X-Gm-Message-State: AOAM532AItF5Lje9admt473jMtW4kkrhnAN5FnxIuu/TcjepzcbRYMIQ
-        rz6o5CPgDMrOEeeIDNC5W8VTYw==
-X-Google-Smtp-Source: ABdhPJwq3Jh47y19VyyQgPItpKzVqNI4nRh3QCg+GTyihkO1sAimafJfqtC/3470fFtDP3xOa8zeWA==
-X-Received: by 2002:a05:6a00:22c2:: with SMTP id f2mr13386684pfj.187.1593400770097;
-        Sun, 28 Jun 2020 20:19:30 -0700 (PDT)
-Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id j70sm12876254pfd.208.2020.06.28.20.19.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jun 2020 20:19:29 -0700 (PDT)
-From:   Zong Li <zong.li@sifive.com>
-To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Zong Li <zong.li@sifive.com>
-Subject: [RFC PATCH 6/6] riscv: remove PMU menu of Kconfig
-Date:   Mon, 29 Jun 2020 11:19:15 +0800
-Message-Id: <f704db6a46b6c4d89fcff28433900d1357ba4f26.1593397455.git.zong.li@sifive.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1593397455.git.zong.li@sifive.com>
-References: <cover.1593397455.git.zong.li@sifive.com>
+        Sun, 28 Jun 2020 23:23:59 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A930C03E979
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 20:23:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=blQRyd/HnAyTbWfbQ9xtykWqeCj1aEkm67zC7s9PG2w=; b=DE01pAvHW6rcfid3cvE/jIdTqU
+        nqqb9R2nFsmYFIjfnzSXtcbUHQzBQ95NnEZPBuq7UNDzYSHWA5DhHA9ZAUXVOSdrixZqIQdMu0y3S
+        v7F9ibuJJoanNGjL1CC9W+CoBW6KsNZoF06HAKqv3EBhpa7G+BCKyzb+ZtxhnV6vxy475Lf5Fl7xV
+        75aDqAn1/Bi0T6Z0VxVzxkg6vqZCjEWqcxVBAoBE+Rjus2AeKz+GA8NWMl0lnSIkis89unej4pTSk
+        lYmf1ALW0kemIFuM6ca57rm/yYqUy1jDytPH4zD64cjYRGnDME8bc9pdmm+QXInAKpdCC2Y4E/FXf
+        2oo5LwhA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jpkOO-0003eW-BA; Mon, 29 Jun 2020 03:23:37 +0000
+To:     LKML <linux-kernel@vger.kernel.org>,
+        moderated for non-subscribers <alsa-devel@alsa-project.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH -next] ASoC: Documentation: fix reference to renamed source
+ file
+Message-ID: <a9f59f30-8cf2-ea82-567c-1706fd64fe62@infradead.org>
+Date:   Sun, 28 Jun 2020 20:23:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We only one instance of riscv_pmu now, and use DT file to describe the
-platform-specific information, so drop the dependency and menu of
-RISCV_BASE_PMU.
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Signed-off-by: Zong Li <zong.li@sifive.com>
+sound/soc/soc-io.c was merged into sound/soc/soc-component.c, so fixup
+the Documentation to use the updated file name.
+
+Error: Cannot open file ../sound/soc/soc-io.c
+WARNING: kernel-doc '../scripts/kernel-doc -rst -enable-lineno ../sound/soc/soc-io.c' failed with return code 1
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>
 ---
- arch/riscv/Kconfig                  | 13 -------------
- arch/riscv/include/asm/perf_event.h |  2 --
- arch/riscv/kernel/Makefile          |  2 +-
- 3 files changed, 1 insertion(+), 16 deletions(-)
+ Documentation/sound/kernel-api/alsa-driver-api.rst |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 128192e14ff2..deec11e924ce 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -292,19 +292,6 @@ config RISCV_ISA_C
- 
- 	   If you don't know what to do here, say Y.
- 
--menu "supported PMU type"
--	depends on PERF_EVENTS
--
--config RISCV_BASE_PMU
--	bool "Base Performance Monitoring Unit"
--	def_bool y
--	help
--	  A base PMU that serves as a reference implementation and has limited
--	  feature of perf.  It can run on any RISC-V machines so serves as the
--	  fallback, but this option can also be disable to reduce kernel size.
--
--endmenu
--
- config FPU
- 	bool "FPU support"
- 	default y
-diff --git a/arch/riscv/include/asm/perf_event.h b/arch/riscv/include/asm/perf_event.h
-index e95d3bbaae3e..9ee654381d8c 100644
---- a/arch/riscv/include/asm/perf_event.h
-+++ b/arch/riscv/include/asm/perf_event.h
-@@ -12,7 +12,6 @@
- #include <linux/ptrace.h>
- #include <linux/interrupt.h>
- 
--#ifdef CONFIG_RISCV_BASE_PMU
- #define RISCV_BASE_COUNTERS	2
- #define RISCV_EVENT_COUNTERS	29
- #define RISCV_TOTAL_COUNTERS	(RISCV_BASE_COUNTERS + RISCV_EVENT_COUNTERS)
-@@ -79,7 +78,6 @@
- #define CSR_MHPMEVENT7	0x327
- #define CSR_MHPMEVENT8	0x328
- 
--#endif
- #ifdef CONFIG_PERF_EVENTS
- #define perf_arch_bpf_user_pt_regs(regs) (struct user_regs_struct *)regs
- #endif
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index b355cf485671..1f5736e996fd 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -43,7 +43,7 @@ obj-$(CONFIG_MODULE_SECTIONS)	+= module-sections.o
- obj-$(CONFIG_FUNCTION_TRACER)	+= mcount.o ftrace.o
- obj-$(CONFIG_DYNAMIC_FTRACE)	+= mcount-dyn.o
- 
--obj-$(CONFIG_RISCV_BASE_PMU)	+= perf_event.o
-+obj-$(CONFIG_PERF_EVENTS)	+= perf_event.o
- obj-$(CONFIG_PERF_EVENTS)	+= perf_callchain.o
- obj-$(CONFIG_HAVE_PERF_REGS)	+= perf_regs.o
- obj-$(CONFIG_RISCV_SBI)		+= sbi.o
--- 
-2.27.0
+--- linux-next-20200626.orig/Documentation/sound/kernel-api/alsa-driver-api.rst
++++ linux-next-20200626/Documentation/sound/kernel-api/alsa-driver-api.rst
+@@ -99,7 +99,7 @@ ASoC Core API
+ .. kernel-doc:: include/sound/soc.h
+ .. kernel-doc:: sound/soc/soc-core.c
+ .. kernel-doc:: sound/soc/soc-devres.c
+-.. kernel-doc:: sound/soc/soc-io.c
++.. kernel-doc:: sound/soc/soc-component.c
+ .. kernel-doc:: sound/soc/soc-pcm.c
+ .. kernel-doc:: sound/soc/soc-ops.c
+ .. kernel-doc:: sound/soc/soc-compress.c
 
