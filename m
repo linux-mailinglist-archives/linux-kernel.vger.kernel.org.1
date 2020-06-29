@@ -2,126 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B1E20D45D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D9B20D3A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730054AbgF2THu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:07:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbgF2THm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:07:42 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E56DC030F2A
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:39:20 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id d6so8256526pjs.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:39:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SQm9k3QD0fOYn01ydGN/ugkrIz4gUsIQA2Gtlz9ae7I=;
-        b=bO3ONsX+3iGctW2inZ47Wqs9ZZv05POvU+r5G58J2J9LTLymRmNXHznvKTUP2GMQan
-         Rfr3P4nrWcmum4eD1X7htUPtPI8DRP30iJI9z/4k5X02qKxhZUY00uzvkjqs187NT162
-         mvUZE3WWSoq+BN80zlmKoJeeTgtLzA368MTFQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SQm9k3QD0fOYn01ydGN/ugkrIz4gUsIQA2Gtlz9ae7I=;
-        b=OcTPWAPBp47x/C6+ld2Pac1wbeGt7olhMES6C12kf2bjKZvcdhsRZK65rc2G5fGPV/
-         sQc/6NExflK2FcOV9G5uicG2P18/MPNOkgWsJXCEjcYxSdqY8MubZBrP2iCzw6wrUsWo
-         VDqeqEfFjG+rGA3h5kXqpFZOTfWKksETQ8NZ+1W5nrrtHfS77nO73i+hpEqQocr2vd2L
-         5dv2zaD+Vw4PHtOKFG+fcSFKsEac96KQBOSN6ELfgwEEjmFYHp55RwjT+f4bvlFVVSXx
-         ePSoejPs0HKDCxXrn0jjL3WqeIIA+0Hgak3Ho5FwUgPcmz+HEVfoVViBd+Rv418gc724
-         ntSA==
-X-Gm-Message-State: AOAM530ZaIbOazanMKYRZHMoNmW/wq3Nj6pvZ3r+pEe37bO5o28R31lu
-        49P5MVfcH4P3ety2heMnx19gEq6jLdg=
-X-Google-Smtp-Source: ABdhPJylRt8boVH4iQcwk+v7TEPvKAJKV/4fgP9gbOjcDa4aaign8K0BU9D5DsISGrDpRvkqIEDj+A==
-X-Received: by 2002:a17:90a:ea05:: with SMTP id w5mr90418pjy.175.1593448759530;
-        Mon, 29 Jun 2020 09:39:19 -0700 (PDT)
-Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:476b:691:abc3:38db])
-        by smtp.gmail.com with ESMTPSA id s6sm79060pfd.20.2020.06.29.09.39.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 09:39:19 -0700 (PDT)
-From:   Prashant Malani <pmalani@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     heikki.krogerus@linux.intel.com,
-        Prashant Malani <pmalani@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: [PATCH v3 2/2] platform/chrome: cros_ec_typec: Add PM support
-Date:   Mon, 29 Jun 2020 09:38:52 -0700
-Message-Id: <20200629163851.2130450-2-pmalani@chromium.org>
-X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
-In-Reply-To: <20200629163851.2130450-1-pmalani@chromium.org>
-References: <20200629163851.2130450-1-pmalani@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1729359AbgF2TBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:01:04 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:32667 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730346AbgF2TAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:00:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593457223; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=MGpgHTPanseMUSP/5lHDa6o1Mxq+oOakQ9xuKUP30WY=; b=oTcfFWKeY+TcNxeQMFBvU5xW/rxPfn4d9Xncxw4QCJhKroeqpxZQK1mzt6kZvkYAPHbK8AmM
+ Jn/h+oOFvZ67uQ9kf3RjZA6yBKPepUNYVMNF0xfq0vb3jWx9qULEZ2aLxu12BkEr6m8hWxKA
+ 5HEOwXVLm8L6W6cr9tDJak8hTOs=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5efa1958fe1db4db892338cd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 16:39:52
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 621F0C433C6; Mon, 29 Jun 2020 16:39:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C6CBEC433C8;
+        Mon, 29 Jun 2020 16:39:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C6CBEC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v4 0/9] Introduce features and debugfs/sysfs entries for MHI
+Date:   Mon, 29 Jun 2020 09:39:33 -0700
+Message-Id: <1593448782-8385-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define basic suspend resume functions for cros-ec-typec. On suspend, we
-simply ensure that any pending port update work is completed, and on
-resume, we re-poll the port state to account for any
-changes/disconnections that might have occurred during suspend.
+Introduce independent bus and device voting mechanism for clients and save
+hardware information from BHI.
+Allow reading and modifying some MHI variables for debug, test, and
+informational purposes using debugfs.
+Read values for device specific hardware information to be used by OEMs in
+factory testing such as serial number and PK hash using sysfs.
 
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
----
+This set of patches was tested on arm64 and x86.
 
-Changes in v3:
-- Remove superfluous DEV_PM_OPS #define.
+v4:
+-Removed bus: mhi: core: Introduce independent voting mechanism patch
+-Removed bus vote function from debugfs due to independent voting removal
+-Added helper resume APIs to aid consolidation of spread out code
+-Added a clean-up patch and a missing host resume in voting API
 
-Changes in v2:
-- Remove #ifdef-ery, add __maybe_unused tag to functions.
+v3:
+-Add patch to check for pending packets in suspend as a dependency for the
+independent voting mechanism introduction
+-Include register dump entry for debugfs to dump MHI, BHI, and BHIe registers
+-Update commit message for the debugfs patch
+-Updated Documentation/ABI with the required info for sysfs
+-Updated debugfs patch to include a new KConfig entry and dependencies
+-Updated reviewed-by for some patches
 
- drivers/platform/chrome/cros_ec_typec.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+v2:
+-Added a new debugfs.c file for specific debugfs entries and code
+-Updated commit text and addressed some comments for voting change
+-Made sure sysfs is only used for serial number and OEM PK hash usage
 
-diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-index 0beb62bf5adf..d5ac691de68b 100644
---- a/drivers/platform/chrome/cros_ec_typec.c
-+++ b/drivers/platform/chrome/cros_ec_typec.c
-@@ -722,11 +722,35 @@ static int cros_typec_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
-+static int __maybe_unused cros_typec_suspend(struct device *dev)
-+{
-+	struct cros_typec_data *typec = dev_get_drvdata(dev);
-+
-+	cancel_work_sync(&typec->port_work);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused cros_typec_resume(struct device *dev)
-+{
-+	struct cros_typec_data *typec = dev_get_drvdata(dev);
-+
-+	/* Refresh port state. */
-+	schedule_work(&typec->port_work);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops cros_typec_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(cros_typec_suspend, cros_typec_resume)
-+};
-+
- static struct platform_driver cros_typec_driver = {
- 	.driver	= {
- 		.name = DRV_NAME,
- 		.acpi_match_table = ACPI_PTR(cros_typec_acpi_id),
- 		.of_match_table = of_match_ptr(cros_typec_of_match),
-+		.pm = &cros_typec_pm_ops,
- 	},
- 	.probe = cros_typec_probe,
- };
+Bhaumik Bhatt (9):
+  bus: mhi: core: Remove double occurrence for mhi_ctrl_ev_task()
+    declaration
+  bus: mhi: core: Abort suspends due to outgoing pending packets
+  bus: mhi: core: Use helper API to trigger a non-blocking host resume
+  bus: mhi: core: Trigger a host resume when device vote is requested
+  bus: mhi: core: Use generic name field for an MHI device
+  bus: mhi: core: Introduce helper function to check device state
+  bus: mhi: core: Introduce debugfs entries and counters for MHI
+  bus: mhi: core: Read and save device hardware information from BHI
+  bus: mhi: core: Introduce sysfs entries for MHI
+
+ Documentation/ABI/stable/sysfs-bus-mhi |  25 ++
+ MAINTAINERS                            |   1 +
+ drivers/bus/mhi/Kconfig                |   8 +
+ drivers/bus/mhi/core/Makefile          |   5 +-
+ drivers/bus/mhi/core/boot.c            |  17 +-
+ drivers/bus/mhi/core/debugfs.c         | 444 +++++++++++++++++++++++++++++++++
+ drivers/bus/mhi/core/init.c            |  65 ++++-
+ drivers/bus/mhi/core/internal.h        |  38 ++-
+ drivers/bus/mhi/core/main.c            |  27 +-
+ drivers/bus/mhi/core/pm.c              |  19 +-
+ include/linux/mhi.h                    |  18 +-
+ 11 files changed, 633 insertions(+), 34 deletions(-)
+ create mode 100644 Documentation/ABI/stable/sysfs-bus-mhi
+ create mode 100644 drivers/bus/mhi/core/debugfs.c
+
 -- 
-2.27.0.212.ge8ba1cc988-goog
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
