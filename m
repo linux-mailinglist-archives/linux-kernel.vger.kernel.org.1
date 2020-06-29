@@ -2,66 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D9020D8C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88D620D7E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730846AbgF2Tl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:41:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41408 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729393AbgF2TlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:41:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 37EF8AD26;
-        Mon, 29 Jun 2020 15:53:03 +0000 (UTC)
-Date:   Mon, 29 Jun 2020 17:53:02 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        ben.widawsky@intel.com, alex.shi@linux.alibaba.com,
-        tobin@kernel.org, cl@linux.com, akpm@linux-foundation.org,
-        stable@kernel.org
-Subject: Re: [PATCH] mm/vmscan: restore zone_reclaim_mode ABI
-Message-ID: <20200629155302.6okkufqmj3kupvzw@beryllium.lan>
-References: <20200626003459.D8E015CA@viggo.jf.intel.com>
- <20200626075918.dj6ioaon5iuhtg6k@beryllium.lan>
- <83731eeb-1f64-50b7-41e9-5b7114678533@intel.com>
- <20200629071338.m4veigbp4tu45gbz@beryllium.lan>
- <c9a24700-7ec8-2bf8-1a13-c3ddf249a1a0@intel.com>
+        id S1733041AbgF2Tdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733225AbgF2Tcn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:32:43 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCABC0307AC
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:53:08 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id o22so3143078pjw.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:53:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Fvsxr2HY+SFC+OoeANTJ+FulqBtWNjBDs0tQuiH8cfs=;
+        b=oZmPy0NUHejl3XUKBcC5T3FFDms87XvGbeC0msSSdPgVOWFAadeDR6/miZ2dl9X0oA
+         Q319OjegRbD3vmA9nQ2psCSPOHtWd89Hxkx5GMw/IZ9phj4eB+Gwb0wLu0gDo2mYiSnZ
+         HFsIzTOxuHh9gS4KgXnvVz7NT/cILSiaILCNM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fvsxr2HY+SFC+OoeANTJ+FulqBtWNjBDs0tQuiH8cfs=;
+        b=H7SQyyZd9SSPajOBENy0uBGQIVHrCiLGV4JM5PmAe3Xdpft1TalqATuG/J3aAGfV0p
+         EjMpJUIdXm4wrzjT3POXUrKDZ0M2vW/6XL3PzbWmE9w66VrBAYybYe6mJJvek7QyzuCM
+         rdyNL/zIB+7gbye9LJI1u6OthxQWYC3BGwuRdCnYZNinKPbucnCqMXnmkfrZqUhNqHaB
+         3LdXARbyScpUtkb8rdWR98PEcdCis+zvlbKPsMh8GR9O+k3966J0pnEp6qNWZ0VmZ8I4
+         Ezc9LsTP8X91Tj+tZaMv0fA4WKb9uQiH0vogz4dyw0JfLGUj9DXCrH9T/appkrEZTTuN
+         fc7Q==
+X-Gm-Message-State: AOAM532QvUML/35Z6pZCk02O8ZYVs+eBYk7tcZaQbqCbK4o+7HpW8js/
+        ydSG2XEqpUKRCKvAZKIvABZ/Qw==
+X-Google-Smtp-Source: ABdhPJzZI0Yxq2JQ/+q+i3HCyDg9pTmqYoI/unXrrriftrBiDaxzs0XO5BRewTpHOTZ8EJko7BAzog==
+X-Received: by 2002:a17:90b:1491:: with SMTP id js17mr18692103pjb.118.1593445988392;
+        Mon, 29 Jun 2020 08:53:08 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s6sm47034pjz.2.2020.06.29.08.53.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 08:53:07 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 08:53:06 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        clang-built-linux@googlegroups.com,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/7] x86/boot/compressed: Get rid of GOT fixup code
+Message-ID: <202006290852.8D8CAF38@keescook>
+References: <20200629140928.858507-1-nivedita@alum.mit.edu>
+ <20200629140928.858507-4-nivedita@alum.mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c9a24700-7ec8-2bf8-1a13-c3ddf249a1a0@intel.com>
+In-Reply-To: <20200629140928.858507-4-nivedita@alum.mit.edu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 07:36:15AM -0700, Dave Hansen wrote:
-> On 6/29/20 12:13 AM, Daniel Wagner wrote:
-> > I went to go add a new RECLAIM_* mode for the zone_reclaim_mode
-> > sysctl.
+On Mon, Jun 29, 2020 at 10:09:24AM -0400, Arvind Sankar wrote:
+> From: Ard Biesheuvel <ardb@kernel.org>
 > 
-> This conveys my motivation.
-
-You don't need to tell a story. As explained in the documetation
-'Describe your changes', describe your change in imperative mood,
-e.g. something like
-
-  "Add RECLAIM_* mode for the the zone_reclaim_mode sysctl."
-
-> > Like a good kernel developer, I also went to go update the
-> > documentation.
+> In a previous patch, we have eliminated GOT entries from the decompressor
+> binary and added an assertion that the .got section is empty. This means
+> that the GOT fixup routines that exist in both the 32-bit and 64-bit
+> startup routines have become dead code, and can be removed.
 > 
-> This takes the opportunity to throw a tiny bit of shade in the direction
-> of the other folks who modified the #define without updating the
-> documentation.
+> While at it, drop the KEEP() from the linker script, as it has no effect
+> on the contents of output sections that are created by the linker itself.
+> 
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> Acked-by: Arvind Sankar <nivedita@alum.mit.edu>
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> From: Ard Biesheuvel <ardb@kernel.org>
+> Link: https://lore.kernel.org/r/20200523120021.34996-4-ardb@kernel.org
+> ---
+>  arch/x86/boot/compressed/head_32.S     | 24 ++---------
+>  arch/x86/boot/compressed/head_64.S     | 57 --------------------------
+>  arch/x86/boot/compressed/vmlinux.lds.S |  4 +-
+>  3 files changed, 5 insertions(+), 80 deletions(-)
 
-What about something simple as, "Update the documetation to
-match the implementation" or whatever makes it clear why
-you are touching the documetation bits.
+This makes me very happy! This code always bugged me. ;)
 
-Anyway, I just wanted to help you to write better commit
-messages. I understand, my help is not welcome.
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
