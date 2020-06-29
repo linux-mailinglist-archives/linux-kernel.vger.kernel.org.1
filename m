@@ -2,129 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B0420D644
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EADDB20D690
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732032AbgF2TSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731834AbgF2TRm (ORCPT
+        id S1732037AbgF2TVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:21:23 -0400
+Received: from outbound-smtp04.blacknight.com ([81.17.249.35]:53108 "EHLO
+        outbound-smtp04.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729572AbgF2TUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:17:42 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E432C02E2F4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:27:55 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l2so14835310wmf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:27:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WpCx9wlLkUF/9BjY/GSmmZuh83h0/gYp6cSgw55h1ks=;
-        b=vuFaCFQbsN0wObGUMWiRJxLtNYxJ0D4oGlZnGvvMS0hv+E+raFBtm15LJ31LILkXy8
-         a92fLI0UQlsQkt5DtNXbLVLyO8W1EUTtEDN3zSefvXsRg8oUmsgXBCuy2JBewo5H31di
-         xD3EU6HAoKSFEGtuPl3//qrQ4phTVgfQXt9y286djiTzt09Tk0yIEd11VGWCteZyW/Tr
-         FjGeED+4Dw345WikbF+FoL+I7OYl9QMOnNPt1Gp4i0iI1pkB1Y55Uus5Ieyn5o+oJsin
-         ExEHQS/Sn/FoPcBVfy9XwDns7Wana0wsi5uyJ3gAvhqnvjBXDIVL7fD2IuOvEoSV4K/w
-         bMgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WpCx9wlLkUF/9BjY/GSmmZuh83h0/gYp6cSgw55h1ks=;
-        b=Na5qgDMr8UhmraQpxgNSaVgVjvDvgRYuGis+LhLYNGpue0hr7jexysyqYms/gWqx0/
-         TgQAXhPbxvuiQuTTrhGeLu0/oPyJG+bp6unBno4vmcFo0OvNqrsult4f/WMWo4y1XDyP
-         fe/LFfTbW4HqjFCnTxpV8GMCPcjpdTHnCmySFwzz4+r4e5PUsoixU05TOEl16J4YIkeW
-         CI+hRsY+4FiG1c6UtsTemK6BPw35Z+/kM2sv+XX0qUH4mpVKchN0NKbxOyT+Lltne87E
-         CRzC4cns+auoAiIKfAEclIhoU79mOcSVKW9UQNJKNOY/pA+RRo6xLedNf00x+fTe0eg4
-         TRMA==
-X-Gm-Message-State: AOAM532eiIWogzvUbJkmFwfusksYX3HxcwjgoBxqo8lXZCW6cT5Gnitl
-        E4WIZpFtvYO6PdUm6v3q2J2wKo1yoLU=
-X-Google-Smtp-Source: ABdhPJxtFivGPYcWB67LI7zAbVSDQ6qLN1rJhZmqOsqNq4J+C2829AxMq50IR49aEIqObEXJ7j/hNg==
-X-Received: by 2002:a7b:c92e:: with SMTP id h14mr16380764wml.36.1593440873894;
-        Mon, 29 Jun 2020 07:27:53 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id r1sm39557232wrt.73.2020.06.29.07.27.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 07:27:53 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 15:27:51 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Cengiz Can <cengiz@kernel.wtf>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH] kdb: prevent possible null deref in kdb_msg_write
-Message-ID: <20200629142751.qsljmbbj5neoanpc@holly.lan>
-References: <20200629135923.14912-1-cengiz@kernel.wtf>
+        Mon, 29 Jun 2020 15:20:54 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp04.blacknight.com (Postfix) with ESMTPS id 5562EBEB4F
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 15:32:19 +0100 (IST)
+Received: (qmail 4532 invoked from network); 29 Jun 2020 14:32:19 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.18.5])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 29 Jun 2020 14:32:19 -0000
+Date:   Mon, 29 Jun 2020 15:32:17 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: Commit 'fs: Do not check if there is a fsnotify watcher on
+ pseudo inodes' breaks chromium here
+Message-ID: <20200629143217.GZ3183@techsingularity.net>
+References: <7b4aa1e985007c6d582fffe5e8435f8153e28e0f.camel@redhat.com>
+ <CAOQ4uxg8E-im=B6L0PQNaTTKdtxVAO=MSJki7kxq875ME4hOLw@mail.gmail.com>
+ <20200629130915.GF26507@quack2.suse.cz>
+ <CAOQ4uxhdOMbn9vL_PAGKLtriVzkjwBkuEgbdB5+uH2ZM6uA97w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20200629135923.14912-1-cengiz@kernel.wtf>
+In-Reply-To: <CAOQ4uxhdOMbn9vL_PAGKLtriVzkjwBkuEgbdB5+uH2ZM6uA97w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 04:59:24PM +0300, Cengiz Can wrote:
-> `kdb_msg_write` operates on a global `struct kgdb_io *` called
-> `dbg_io_ops`.
+On Mon, Jun 29, 2020 at 05:05:38PM +0300, Amir Goldstein wrote:
+> > > The motivation for the patch "fs: Do not check if there is a fsnotify
+> > > watcher on pseudo inodes"
+> > > was performance, but actually, FS_CLOSE and FS_OPEN events probably do
+> > > not impact performance as FS_MODIFY and FS_ACCESS.
+> >
+> > Correct.
+> >
+> > > Do you agree that dropping FS_MODIFY/FS_ACCESS events for FMODE_STREAM
+> > > files as a general rule should be safe?
+> >
+> > Hum, so your patch drops FS_MODIFY/FS_ACCESS events also for named pipes
+> > compared to the original patch AFAIU and for those fsnotify works fine
+> > so far. So I'm not sure we won't regress someone else with this.
+> >
+> > I've also tested inotify on a sample pipe like: cat /dev/stdin | tee
+> > and watched /proc/<tee pid>/fd/0 and it actually generated IN_MODIFY |
+> > IN_ACCESS when data arrived to a pipe and tee(1) read it and then
+> > IN_CLOSE_WRITE | IN_CLOSE_NOWRITE when the pipe got closed (I thought you
+> > mentioned modify and access events didn't get properly generated?).
 > 
-> Although it is initialized in `debug_core.c`, there's a null check in
-> `kdb_msg_write` which implies that it can be null whenever we dereference
-> it in this function call.
+> I don't think that I did (did I?)
 > 
-> Coverity scanner caught this as CID 1465042.
-> 
-> I have modified the function to bail out if `dbg_io_ops` is not properly
-> initialized.
 
-That can't possibly be the right fix!
+I didn't see them properly generated for fanotify_mark but that could
+have been a failure. inotify-watch is able to generate the events.
 
-If dbg_io_ops were NULL in this part of the code then the system
-is seriously broken and we would need to panic()... but since we
-know that is isn't NULL (as you said, we already checked it before
-we entered kdb) then we can just remove the check.
-
-
-Daniel.
-
+> >
+> > So as much as I agree that some fsnotify events on FMODE_STREAM files are
+> > dubious, they could get used (possibly accidentally) and so after this
+> > Chromium experience I think we just have to revert the change and live with
+> > generating notification events for pipes to avoid userspace regressions.
+> >
+> > Thoughts?
 > 
-> Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
-> ---
->  kernel/debug/kdb/kdb_io.c | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
+> I am fine with that.
 > 
-> diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
-> index 683a799618ad..85e579812458 100644
-> --- a/kernel/debug/kdb/kdb_io.c
-> +++ b/kernel/debug/kdb/kdb_io.c
-> @@ -549,14 +549,15 @@ static void kdb_msg_write(const char *msg, int msg_len)
->  	if (msg_len == 0)
->  		return;
->  
-> -	if (dbg_io_ops) {
-> -		const char *cp = msg;
-> -		int len = msg_len;
-> +	if (!dbg_io_ops)
-> +		return;
->  
-> -		while (len--) {
-> -			dbg_io_ops->write_char(*cp);
-> -			cp++;
-> -		}
-> +	const char *cp = msg;
-> +	int len = msg_len;
-> +
-> +	while (len--) {
-> +		dbg_io_ops->write_char(*cp);
-> +		cp++;
->  	}
->  
->  	for_each_console(c) {
-> -- 
-> 2.27.0
+> Before I thought of trying out FMODE_STREAM I was considering to propose
+> to set the new flag FMODE_NOIONOTIFY in alloc_file_pseudo() to narrow Mel's
+> patch to dropping FS_MODIFY|FS_ACCESS.
 > 
+> But I guess the burden of proof is back on Mel.
+> And besides, quoting Mel's patch:
+> "A patch is pending that reduces, but does not eliminate, the overhead of
+>     fsnotify but for files that cannot be looked up via a path, even that
+>     small overhead is unnecessary"
+> 
+> So really, we are not even sacrificing much by reverting this patch.
+> We down to "nano optimizations".
+> 
+
+It's too marginal to be worth the risk. A plain revert is safest when
+multiple people are hitting this.
+
+-- 
+Mel Gorman
+SUSE Labs
