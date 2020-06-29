@@ -2,80 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B290C20DE51
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1547820DE9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388688AbgF2UYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:24:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57984 "EHLO mail.kernel.org"
+        id S2388915AbgF2U1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:27:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732546AbgF2UYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:24:35 -0400
-Received: from kernel.org (unknown [87.71.40.38])
+        id S2387521AbgF2U1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 16:27:21 -0400
+Received: from localhost (unknown [104.132.1.66])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 744072067D;
-        Mon, 29 Jun 2020 20:24:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B39A20656;
+        Mon, 29 Jun 2020 20:27:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593462275;
-        bh=wEIaLX71dfGicqQIWZky1iByqXvab7v8PvlHmX+vmWI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ow0w90ZCmyfal+adkRjsIQpW7g7XWqTq/MOUKtMTpPj6QkRvuUBvney2UMWoRZg+P
-         9FT+ytQ5jYVsJE4wvynybaWOkXYN+Rvu2RcVkggJAcvQZwwdFVWX528Qco0/BAJx8z
-         /ul5NvzHoiwFUAWCGITz6BO3KRpf7MJs5iB8TjoU=
-Date:   Mon, 29 Jun 2020 23:24:29 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Rientjes <rientjes@google.com>
-Cc:     Su Hui <sh_def@163.com>, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm: remove the redundancy code
-Message-ID: <20200629202429.GG1492837@kernel.org>
-References: <20200629173047.GA38128@ubuntu>
- <alpine.DEB.2.22.394.2006291149040.1030250@chino.kir.corp.google.com>
+        s=default; t=1593462441;
+        bh=AiODangSG0g8XMTYh4fc4/mILDu9VI7nqiWX6Uw4QIY=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=M4xaXqyijf5hqRA6pOQmyLxhsgtUrLbFEV47XEjyOoSbUU+UwpuzS3ws9PE00rr9m
+         1hOUs2QfgwyOcT9vVytA2n6gPqwuWXp4hUXxlzeT3rY2oReykmtafFI/l4s/NzA5hr
+         Ek12VOxSG5N/uFPHiv1Ks3vqasr8dj0R7zr7pt+k=
+Date:   Mon, 29 Jun 2020 13:27:20 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Subject: Re: [f2fs-dev] [PATCH v3] f2fs: avoid readahead race condition
+Message-ID: <20200629202720.GA230664@google.com>
+References: <20200624012148.180050-1-jaegeuk@kernel.org>
+ <20200629150323.GA3293033@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2006291149040.1030250@chino.kir.corp.google.com>
+In-Reply-To: <20200629150323.GA3293033@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 11:50:15AM -0700, David Rientjes wrote:
-> On Tue, 30 Jun 2020, Su Hui wrote:
-> 
-> > remove the redundancy code, the zone_start_pfn
-> > is assigned from zone->zone_start_pfn
-> > Signed-off-by: Su Hui <sh_def@163.com>
-> 
-> I don't think this is redundant, it's used by memory hotplug when onlining 
-> new memory.
+If two readahead threads having same offset enter in readpages, every read
+IOs are split and issued to the disk which giving lower bandwidth.
 
-Right, it is:
+This patch tries to avoid redundant readahead calls.
 
-$ git grep -wn init_currently_empty_zone mm/memory_hotplug.c
-mm/memory_hotplug.c:697:            init_currently_empty_zone(zone, start_pfn, nr_pages);
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+v3:
+ - use READ|WRITE_ONCE
+v2:
+  - add missing code to bypass read
+ 
+ fs/f2fs/data.c  | 18 ++++++++++++++++++
+ fs/f2fs/f2fs.h  |  1 +
+ fs/f2fs/super.c |  2 ++
+ 3 files changed, 21 insertions(+)
 
-
-> > ---
-> >  mm/page_alloc.c | 2 --
-> >  1 file changed, 2 deletions(-)
-> > 
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index 3c4eb750a199..3372a8c9fbc4 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -6215,8 +6215,6 @@ void __meminit init_currently_empty_zone(struct zone *zone,
-> >  	if (zone_idx > pgdat->nr_zones)
-> >  		pgdat->nr_zones = zone_idx;
-> >  
-> > -	zone->zone_start_pfn = zone_start_pfn;
-> > -
-> >  	mminit_dprintk(MMINIT_TRACE, "memmap_init",
-> >  			"Initialising map node %d zone %lu pfns %lu -> %lu\n",
-> >  			pgdat->node_id,
-> 
-
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 995cf78b23c5e..360b4c9080d97 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -2296,6 +2296,7 @@ static int f2fs_mpage_readpages(struct inode *inode,
+ 	unsigned nr_pages = rac ? readahead_count(rac) : 1;
+ 	unsigned max_nr_pages = nr_pages;
+ 	int ret = 0;
++	bool drop_ra = false;
+ 
+ 	map.m_pblk = 0;
+ 	map.m_lblk = 0;
+@@ -2306,10 +2307,24 @@ static int f2fs_mpage_readpages(struct inode *inode,
+ 	map.m_seg_type = NO_CHECK_TYPE;
+ 	map.m_may_create = false;
+ 
++	/*
++	 * Two readahead threads for same address range can cause race condition
++	 * which fragments sequential read IOs. So let's avoid each other.
++	 */
++	if (rac && readahead_count(rac)) {
++		if (READ_ONCE(F2FS_I(inode)->ra_offset) == readahead_index(rac))
++			drop_ra = true;
++		else
++			WRITE_ONCE(F2FS_I(inode)->ra_offset,
++						readahead_index(rac));
++	}
++
+ 	for (; nr_pages; nr_pages--) {
+ 		if (rac) {
+ 			page = readahead_page(rac);
+ 			prefetchw(&page->flags);
++			if (drop_ra)
++				goto next_page;
+ 		}
+ 
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+@@ -2372,6 +2387,9 @@ static int f2fs_mpage_readpages(struct inode *inode,
+ 	}
+ 	if (bio)
+ 		__submit_bio(F2FS_I_SB(inode), bio, DATA);
++
++	if (rac && readahead_count(rac) && !drop_ra)
++		WRITE_ONCE(F2FS_I(inode)->ra_offset, -1);
+ 	return ret;
+ }
+ 
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 6a655edeb522f..e6e47618a3576 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -809,6 +809,7 @@ struct f2fs_inode_info {
+ 	struct list_head inmem_pages;	/* inmemory pages managed by f2fs */
+ 	struct task_struct *inmem_task;	/* store inmemory task */
+ 	struct mutex inmem_lock;	/* lock for inmemory pages */
++	pgoff_t ra_offset;		/* ongoing readahead offset */
+ 	struct extent_tree *extent_tree;	/* cached extent_tree entry */
+ 
+ 	/* avoid racing between foreground op and gc */
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 7326522057378..80cb7cd358f84 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -1015,6 +1015,8 @@ static struct inode *f2fs_alloc_inode(struct super_block *sb)
+ 	/* Will be used by directory only */
+ 	fi->i_dir_level = F2FS_SB(sb)->dir_level;
+ 
++	fi->ra_offset = -1;
++
+ 	return &fi->vfs_inode;
+ }
+ 
 -- 
-Sincerely yours,
-Mike.
+2.27.0.212.ge8ba1cc988-goog
+
