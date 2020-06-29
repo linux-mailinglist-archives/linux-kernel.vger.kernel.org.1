@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A91A20E472
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B266D20E4A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729117AbgF2VZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:25:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38368 "EHLO
+        id S2391122AbgF2V1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729123AbgF2Smv (ORCPT
+        with ESMTP id S1729068AbgF2Smo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:42:51 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FF4C030F05;
-        Mon, 29 Jun 2020 09:13:18 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id o18so12702400eje.7;
-        Mon, 29 Jun 2020 09:13:18 -0700 (PDT)
+        Mon, 29 Jun 2020 14:42:44 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47258C030F07
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:13:53 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id t11so3240859pfq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:13:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZdeFEpNDYkXFwTK4R5nfayVzl1J/Ocu3hnRhqkjhhqg=;
-        b=FpwdF7V1gcTCIKfgLOQYaXG7D5pZHEOv2lGFKzleZXMdNHT09dvKTyMItQ4HR6jw5Y
-         Jn1uJKAT3IKyK5wua6R4aKYRCSoZo1w1VhHVcmVVnswhrM7QW694+fjN0hd3bWxPkDGx
-         xK3hLXGvQPqAfzFJ5XEV/JF2Dd6PB+LD2Ae33nTPyvaANMoWkFDyV5BR0Rl+A96BHNXe
-         CPY5G4klZQI/aD7U5KuruNhhBf7tH3HtnhReiQ7RtnsLWsBUt/uuXnj3tm2qc/b32v1w
-         kfDRIpwqeDPHNcpCiiaphYtEwFMHWEmQnHZy4VM9C8Zcyly67SJk9+8AdbL2khyWCnyp
-         jhdA==
+        bh=XxKoXEPuBlTQyUvZurMXJpDKgGIiS8L+c8IX0bHvw0I=;
+        b=ZbIN+JQ//n3EjgqTOkxX8ekliUEAwjrDiPxXO8sdYMv3PjsHgAP1nHlnBoXEVQUQo+
+         6yx/lX1lGZmAt5N4ds9sj0kru9/aQaEzthHpzQWl7eAn49ZkUvpOItVzAIn954A1VV9b
+         BpATBvCE9AahTLjS0sYbh7C3vxW2VdR8SCeOc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZdeFEpNDYkXFwTK4R5nfayVzl1J/Ocu3hnRhqkjhhqg=;
-        b=rMcdN1rhKPGpbdymli0Fye89pK8TTumgt3u1a06EZolSucmi9f7ZWmsK1jUPbe4mVQ
-         mx8iPBK4keGO9CdHGXHK/euCQXzoM3mzUyfItrBOViDBkAG4Jw44mKHJ2V5ZaxdMZ6BN
-         c9Nkrk6E4IoWnOo8Owrp324qT6qHiaJRDMHaRP6VIqqldztQTMcEqhsxCpDtFycCVPns
-         kRRXKk1evfVcqhEGl2xH79oXRFPgUUHEC+BY3jFsluhWg5r/zcG9r9qB/GwwMNaX3RRC
-         ckjRNWSKHVLAwccsnxwtM/LS1nILoV3c08CBAV7aOK0VQpW8HGj1aFXflD8MIuDxZBRq
-         cEuw==
-X-Gm-Message-State: AOAM530EK7ofJ00/v6b5FGd2hxAz5tXxJ7oi9bQpCm5DbWEWf2ErShZ2
-        KDi7I0Ni7wE23MwuZsPpFR0=
-X-Google-Smtp-Source: ABdhPJyYH8JXIDkgPspXRN2vNPMMQ+uX2Q9v7t9x0iqMg6ZIkNek0dm4JqwSffuIxDQxiUiNWQCxMQ==
-X-Received: by 2002:a17:906:71d4:: with SMTP id i20mr15394732ejk.533.1593447197127;
-        Mon, 29 Jun 2020 09:13:17 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:a03f:b7f9:7600:8d8b:2aae:ac29:9590])
-        by smtp.gmail.com with ESMTPSA id l1sm222822edi.33.2020.06.29.09.13.15
+        bh=XxKoXEPuBlTQyUvZurMXJpDKgGIiS8L+c8IX0bHvw0I=;
+        b=JxKyGgV/EBD8hCIBPjA+RzF8V3/1IsU+fJZLN4HqCB7Q0LGZBaZlwJIruiDkXdlSZN
+         zf5tvi/i3MmlAXQWphzNGJ9ra4N/JA2Xkn49qaqcZKFDDD3Go7IUu9ApNgrByB/WR8CL
+         Z2VJxUhyGHNYWcsLp9+5VXjy88CL1ZL7LWr1bGgg6FxGRG5WMd3iEmr4FxnI84IyDXQA
+         A6p3MXHY5BxRNE0wxqHUToDENK0IS8ZR/V7Ti92V/10dwJwoSQabOAF+rChOSL8SEKYF
+         boBwBmL5rZ+UxhQ3cVvPWiRUxyW6wRQ7Pue5/GW9ke4qP1d36oK9xER7ztSz7L+wrJ8u
+         BFWg==
+X-Gm-Message-State: AOAM531XdqrMpJjv2dV9HbH0R/T53ynifUqiauLH4YBnN0fhCotGoZUA
+        0HdTX1bDJE3uQ4FQQPxHVnM4IQwAb/U=
+X-Google-Smtp-Source: ABdhPJywueBWqoLIhuqMQ7cBJU/+OGOIL8B8/25cx6FoSvyPEwkSCIAK1vwBSUZrloSGjTfbYI58gw==
+X-Received: by 2002:a63:bf04:: with SMTP id v4mr11418563pgf.212.1593447232551;
+        Mon, 29 Jun 2020 09:13:52 -0700 (PDT)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:476b:691:abc3:38db])
+        by smtp.gmail.com with ESMTPSA id d5sm188462pfa.71.2020.06.29.09.13.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 09:13:16 -0700 (PDT)
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: [PATCH v2] doc: add link to sparse's home page/internal docs
-Date:   Mon, 29 Jun 2020 18:13:10 +0200
-Message-Id: <20200629161310.89783-1-luc.vanoostenryck@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200629044154.GB1492837@kernel.org>
-References: <20200629044154.GB1492837@kernel.org>
+        Mon, 29 Jun 2020 09:13:52 -0700 (PDT)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com,
+        Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Add PM support
+Date:   Mon, 29 Jun 2020 09:13:34 -0700
+Message-Id: <20200629161333.2110327-2-pmalani@chromium.org>
+X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
+In-Reply-To: <20200629161333.2110327-1-pmalani@chromium.org>
+References: <20200629161333.2110327-1-pmalani@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,36 +65,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sparse's home page used to be a wiki (sparse.wiki.kernel.org)
-but this wiki only contained a short intro and the release notes.
-But nowadays, sparse's main page is sparse.docs.kernel.org,
-which contains all what was in the wiki but also other documentation,
-mainly oriented about sparse's internals.
+Define basic suspend resume functions for cros-ec-typec. On suspend, we
+simply ensure that any pending port update work is completed, and on
+resume, we re-poll the port state to account for any
+changes/disconnections that might have occurred during suspend.
 
-So, add a link to this in the kernel documentation.
-
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
 ---
 
-Changes since v1:
-* fix a typo (s/kernl/kernel/) thanks to Mike Rapoport.
+Changes in v2:
+- Remove #ifdef-ery, add __maybe_unused tag to functions.
 
- Documentation/dev-tools/sparse.rst | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/platform/chrome/cros_ec_typec.c | 26 +++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/Documentation/dev-tools/sparse.rst b/Documentation/dev-tools/sparse.rst
-index 8a7055593c31..02102be7ff49 100644
---- a/Documentation/dev-tools/sparse.rst
-+++ b/Documentation/dev-tools/sparse.rst
-@@ -9,6 +9,8 @@ Sparse is a semantic checker for C programs; it can be used to find a
- number of potential problems with kernel code.  See
- https://lwn.net/Articles/689907/ for an overview of sparse; this document
- contains some kernel-specific sparse information.
-+More information on sparse, mainly about its internals, can be found in
-+its official pages at https://sparse.docs.kernel.org.
+diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+index 630170fb2cbe..b2e7e928e788 100644
+--- a/drivers/platform/chrome/cros_ec_typec.c
++++ b/drivers/platform/chrome/cros_ec_typec.c
+@@ -725,11 +725,37 @@ static int cros_typec_probe(struct platform_device *pdev)
+ 	return ret;
+ }
  
- 
- Using sparse for typechecking
++static int __maybe_unused cros_typec_suspend(struct device *dev)
++{
++	struct cros_typec_data *typec = dev_get_drvdata(dev);
++
++	cancel_work_sync(&typec->port_work);
++
++	return 0;
++}
++
++static int __maybe_unused cros_typec_resume(struct device *dev)
++{
++	struct cros_typec_data *typec = dev_get_drvdata(dev);
++
++	/* Refresh port state. */
++	schedule_work(&typec->port_work);
++
++	return 0;
++}
++
++static const struct dev_pm_ops cros_typec_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(cros_typec_suspend, cros_typec_resume)
++};
++
++#define DEV_PM_OPS	(&cros_typec_pm_ops)
++
+ static struct platform_driver cros_typec_driver = {
+ 	.driver	= {
+ 		.name = DRV_NAME,
+ 		.acpi_match_table = ACPI_PTR(cros_typec_acpi_id),
+ 		.of_match_table = of_match_ptr(cros_typec_of_match),
++		.pm = DEV_PM_OPS,
+ 	},
+ 	.probe = cros_typec_probe,
+ };
 -- 
-2.27.0
+2.27.0.212.ge8ba1cc988-goog
 
