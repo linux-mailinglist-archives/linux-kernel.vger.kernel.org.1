@@ -2,139 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B73020D2A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5336320D2A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726996AbgF2SvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:51:13 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:20896 "EHLO pegase1.c-s.fr"
+        id S1726813AbgF2SvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:51:05 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:40014 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729516AbgF2Suz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:50:55 -0400
+        id S1729509AbgF2Su4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:50:56 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49wPzW5vwvz9v03r;
-        Mon, 29 Jun 2020 13:15:19 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 49wQ1j4VTjz9v040;
+        Mon, 29 Jun 2020 13:17:13 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id T7ftkxT9ebcv; Mon, 29 Jun 2020 13:15:19 +0200 (CEST)
+        with ESMTP id H2YRpVdWyF5x; Mon, 29 Jun 2020 13:17:13 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49wPzW4ddLz9tyqw;
-        Mon, 29 Jun 2020 13:15:19 +0200 (CEST)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49wQ1j3kf7z9v03v;
+        Mon, 29 Jun 2020 13:17:13 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 35CF78B79E;
-        Mon, 29 Jun 2020 13:15:26 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1882A8B79E;
+        Mon, 29 Jun 2020 13:17:20 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 9ZZT30Db0E_K; Mon, 29 Jun 2020 13:15:26 +0200 (CEST)
+        with ESMTP id BmjMbQuvKpJa; Mon, 29 Jun 2020 13:17:20 +0200 (CEST)
 Received: from pc16570vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.105])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0833B8B799;
-        Mon, 29 Jun 2020 13:15:26 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id AF1B68B799;
+        Mon, 29 Jun 2020 13:17:19 +0200 (CEST)
 Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 06A8E65B29; Mon, 29 Jun 2020 11:15:26 +0000 (UTC)
-Message-Id: <eb8faba9148b6cf17c696ba776b4e8ee2f6313bf.1593428200.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1593428200.git.christophe.leroy@csgroup.eu>
-References: <cover.1593428200.git.christophe.leroy@csgroup.eu>
+        id A030365B29; Mon, 29 Jun 2020 11:17:19 +0000 (UTC)
+Message-Id: <a284a809f01c705bbaab303b06fda216f147a99a.1593429426.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <610d6b1a60ad0bedef865a90153c1110cfaa507e.1593429426.git.christophe.leroy@csgroup.eu>
+References: <610d6b1a60ad0bedef865a90153c1110cfaa507e.1593429426.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 6/6] powerpc/32s: Use dedicated segment for modules with
- STRICT_KERNEL_RWX
+Subject: [PATCH v2 2/2] powerpc/ptdump: Refactor update of pg_state
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 29 Jun 2020 11:15:26 +0000 (UTC)
+Date:   Mon, 29 Jun 2020 11:17:19 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When STRICT_KERNEL_RWX is set, we want to set NX bit on vmalloc
-segments. But modules require exec.
+In note_page(), the pg_state is updated the same way in two places.
 
-Use a dedicated segment for modules. There is not much space
-above kernel, and we don't waste vmalloc space to do alignment.
-Therefore, we take the segment before PAGE_OFFSET for modules.
+Add note_page_update_state() to do it.
+
+Also include the display of boundary markers there as it is missing
+"no level" leg, leading to a mismatch when the first two markers
+are at the same address and the first displayed area uses that
+address.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/Kconfig                         |  1 +
- arch/powerpc/include/asm/book3s/32/pgtable.h | 15 +++++----------
- arch/powerpc/mm/ptdump/ptdump.c              |  8 ++++++++
- 3 files changed, 14 insertions(+), 10 deletions(-)
+ arch/powerpc/mm/ptdump/ptdump.c | 34 +++++++++++++++++++--------------
+ 1 file changed, 20 insertions(+), 14 deletions(-)
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 51abc59c3334..963b3bc7d969 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -1194,6 +1194,7 @@ config TASK_SIZE_BOOL
- config TASK_SIZE
- 	hex "Size of user task space" if TASK_SIZE_BOOL
- 	default "0x80000000" if PPC_8xx
-+	default "0xb0000000" if PPC_BOOK3S_32 && STRICT_KERNEL_RWX
- 	default "0xc0000000"
- endmenu
- 
-diff --git a/arch/powerpc/include/asm/book3s/32/pgtable.h b/arch/powerpc/include/asm/book3s/32/pgtable.h
-index 224912432821..36443cda8dcf 100644
---- a/arch/powerpc/include/asm/book3s/32/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
-@@ -184,17 +184,7 @@ int map_kernel_page(unsigned long va, phys_addr_t pa, pgprot_t prot);
-  */
- #define VMALLOC_OFFSET (0x1000000) /* 16M */
- 
--/*
-- * With CONFIG_STRICT_KERNEL_RWX, kernel segments are set NX. But when modules
-- * are used, NX cannot be set on VMALLOC space. So vmalloc VM space and linear
-- * memory shall not share segments.
-- */
--#if defined(CONFIG_STRICT_KERNEL_RWX) && defined(CONFIG_MODULES)
--#define VMALLOC_START ((ALIGN((long)high_memory, 256L << 20) + VMALLOC_OFFSET) & \
--		       ~(VMALLOC_OFFSET - 1))
--#else
- #define VMALLOC_START ((((long)high_memory + VMALLOC_OFFSET) & ~(VMALLOC_OFFSET-1)))
--#endif
- 
- #ifdef CONFIG_KASAN_VMALLOC
- #define VMALLOC_END	ALIGN_DOWN(ioremap_bot, PAGE_SIZE << KASAN_SHADOW_SCALE_SHIFT)
-@@ -202,6 +192,11 @@ int map_kernel_page(unsigned long va, phys_addr_t pa, pgprot_t prot);
- #define VMALLOC_END	ioremap_bot
- #endif
- 
-+#ifdef CONFIG_STRICT_KERNEL_RWX
-+#define MODULES_END	ALIGN_DOWN(PAGE_OFFSET, SZ_256M)
-+#define MODULES_VADDR	(MODULES_END - SZ_256M)
-+#endif
-+
- #ifndef __ASSEMBLY__
- #include <linux/sched.h>
- #include <linux/threads.h>
 diff --git a/arch/powerpc/mm/ptdump/ptdump.c b/arch/powerpc/mm/ptdump/ptdump.c
-index 9d942136c7be..b2ed1ca4f254 100644
+index 20a039867934..c911cd757f7d 100644
 --- a/arch/powerpc/mm/ptdump/ptdump.c
 +++ b/arch/powerpc/mm/ptdump/ptdump.c
-@@ -74,6 +74,10 @@ struct addr_marker {
+@@ -199,6 +199,24 @@ static void note_prot_wx(struct pg_state *st, unsigned long addr)
+ 	st->wx_pages += (addr - st->start_address) / PAGE_SIZE;
+ }
  
- static struct addr_marker address_markers[] = {
- 	{ 0,	"Start of kernel VM" },
-+#ifdef MODULES_VADDR
-+	{ 0,	"modules start" },
-+	{ 0,	"modules end" },
-+#endif
- 	{ 0,	"vmalloc() Area" },
- 	{ 0,	"vmalloc() End" },
- #ifdef CONFIG_PPC64
-@@ -352,6 +356,10 @@ static void populate_markers(void)
- 	address_markers[i++].start_address = PAGE_OFFSET;
- #else
- 	address_markers[i++].start_address = TASK_SIZE;
-+#endif
-+#ifdef MODULES_VADDR
-+	address_markers[i++].start_address = MODULES_VADDR;
-+	address_markers[i++].start_address = MODULES_END;
- #endif
- 	address_markers[i++].start_address = VMALLOC_START;
- 	address_markers[i++].start_address = VMALLOC_END;
++static void note_page_update_state(struct pg_state *st, unsigned long addr,
++				   unsigned int level, u64 val, unsigned long page_size)
++{
++	u64 flag = val & pg_level[level].mask;
++	u64 pa = val & PTE_RPN_MASK;
++
++	st->level = level;
++	st->current_flags = flag;
++	st->start_address = addr;
++	st->start_pa = pa;
++	st->page_size = page_size;
++
++	while (addr >= st->marker[1].start_address) {
++		st->marker++;
++		pt_dump_seq_printf(st->seq, "---[ %s ]---\n", st->marker->name);
++	}
++}
++
+ static void note_page(struct pg_state *st, unsigned long addr,
+ 	       unsigned int level, u64 val, unsigned long page_size)
+ {
+@@ -207,12 +225,8 @@ static void note_page(struct pg_state *st, unsigned long addr,
+ 
+ 	/* At first no level is set */
+ 	if (!st->level) {
+-		st->level = level;
+-		st->current_flags = flag;
+-		st->start_address = addr;
+-		st->start_pa = pa;
+-		st->page_size = page_size;
+ 		pt_dump_seq_printf(st->seq, "---[ %s ]---\n", st->marker->name);
++		note_page_update_state(st, addr, level, val, page_size);
+ 	/*
+ 	 * Dump the section of virtual memory when:
+ 	 *   - the PTE flags from one entry to the next differs.
+@@ -244,15 +258,7 @@ static void note_page(struct pg_state *st, unsigned long addr,
+ 		 * Address indicates we have passed the end of the
+ 		 * current section of virtual memory
+ 		 */
+-		while (addr >= st->marker[1].start_address) {
+-			st->marker++;
+-			pt_dump_seq_printf(st->seq, "---[ %s ]---\n", st->marker->name);
+-		}
+-		st->start_address = addr;
+-		st->start_pa = pa;
+-		st->page_size = page_size;
+-		st->current_flags = flag;
+-		st->level = level;
++		note_page_update_state(st, addr, level, val, page_size);
+ 	}
+ 	st->last_pa = pa;
+ }
 -- 
 2.25.0
 
