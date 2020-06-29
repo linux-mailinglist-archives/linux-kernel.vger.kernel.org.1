@@ -2,147 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F32F20E45D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A7120E446
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390595AbgF2VYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:24:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38878 "EHLO mail.kernel.org"
+        id S2391005AbgF2VXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:23:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44620 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729486AbgF2SuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:50:16 -0400
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D49BD255D1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 18:12:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593454320;
-        bh=ReZPNCCJ/K8FhCzM6IWgUGCUkf/Lpb/MqZLHZJkjp6Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DiNV0rrk4nxNWP2xmZ6XvSg5tLQJUxPmbUHZ7WJ3PeCJNRMmGZo74Si++VJ22FSeB
-         7gx19IER85mfjjr+KDi4Oz8Hfx/c/O82rTfc3aesS+JAU1RPDj8+qBXY2FPxTzmpXk
-         XgnaC0PFOEg8aPua+51eU3v+iNtkYThYhhIknY0I=
-Received: by mail-ot1-f51.google.com with SMTP id 95so5706119otw.10
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:12:00 -0700 (PDT)
-X-Gm-Message-State: AOAM5309BYLjEBXTUCGofcaTymrt9Vn0pIdvxBWh8LQ9nT0lFdiw81UG
-        PyVhp/UAvbkkThucBjlFKNifjRcqnJp2SsgYBQY=
-X-Google-Smtp-Source: ABdhPJxc638TmUfjS/lrdhyJTEOBYRyhNqfLvQ8GpbSLeTU7CkpIsJfGZckRrod124lrqnbaz6n8cz9ebPVaLGai5NE=
-X-Received: by 2002:a9d:4a8f:: with SMTP id i15mr15291584otf.77.1593454320102;
- Mon, 29 Jun 2020 11:12:00 -0700 (PDT)
+        id S1729588AbgF2SvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:51:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A8E8FAD2C;
+        Mon, 29 Jun 2020 18:12:58 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 811B91E12E7; Mon, 29 Jun 2020 20:12:58 +0200 (CEST)
+Date:   Mon, 29 Jun 2020 20:12:58 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "fs: Do not check if there is a fsnotify watcher
+ on pseudo inodes"
+Message-ID: <20200629181258.GI26507@quack2.suse.cz>
+References: <7b4aa1e985007c6d582fffe5e8435f8153e28e0f.camel@redhat.com>
+ <CAOQ4uxg8E-im=B6L0PQNaTTKdtxVAO=MSJki7kxq875ME4hOLw@mail.gmail.com>
+ <20200629130915.GF26507@quack2.suse.cz>
+ <CAOQ4uxhdOMbn9vL_PAGKLtriVzkjwBkuEgbdB5+uH2ZM6uA97w@mail.gmail.com>
+ <20200629144145.GA3183@techsingularity.net>
 MIME-Version: 1.0
-References: <20200629140928.858507-1-nivedita@alum.mit.edu>
- <20200629140928.858507-8-nivedita@alum.mit.edu> <202006290907.E5EF18A@keescook>
- <CAMj1kXFge5aWL2BY8Y1=m1TonB+SrDq6p7TQWuO5JkzcR2dhjQ@mail.gmail.com>
- <202006290919.93C759C62@keescook> <20200629165603.GD900899@rani.riverdale.lan>
- <20200629173735.l3ssrj7m3q5swfup@google.com>
-In-Reply-To: <20200629173735.l3ssrj7m3q5swfup@google.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 29 Jun 2020 20:11:49 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHaXzYFkW_H=w36vMb1qPpuZXsnTd_giq4vsh0bw3S3eA@mail.gmail.com>
-Message-ID: <CAMj1kXHaXzYFkW_H=w36vMb1qPpuZXsnTd_giq4vsh0bw3S3eA@mail.gmail.com>
-Subject: Re: [PATCH v3 7/7] x86/boot: Check that there are no runtime relocations
-To:     Fangrui Song <maskray@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629144145.GA3183@techsingularity.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Jun 2020 at 19:37, Fangrui Song <maskray@google.com> wrote:
->
-> On 2020-06-29, Arvind Sankar wrote:
-> >On Mon, Jun 29, 2020 at 09:20:31AM -0700, Kees Cook wrote:
-> >> On Mon, Jun 29, 2020 at 06:11:59PM +0200, Ard Biesheuvel wrote:
-> >> > On Mon, 29 Jun 2020 at 18:09, Kees Cook <keescook@chromium.org> wrote:
-> >> > >
-> >> > > On Mon, Jun 29, 2020 at 10:09:28AM -0400, Arvind Sankar wrote:
-> >> > > > Add a linker script check that there are no runtime relocations, and
-> >> > > > remove the old one that tries to check via looking for specially-named
-> >> > > > sections in the object files.
-> >> > > >
-> >> > > > Drop the tests for -fPIE compiler option and -pie linker option, as they
-> >> > > > are available in all supported gcc and binutils versions (as well as
-> >> > > > clang and lld).
-> >> > > >
-> >> > > > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> >> > > > Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-> >> > > > Reviewed-by: Fangrui Song <maskray@google.com>
-> >> > > > ---
-> >> > > >  arch/x86/boot/compressed/Makefile      | 28 +++-----------------------
-> >> > > >  arch/x86/boot/compressed/vmlinux.lds.S |  8 ++++++++
-> >> > > >  2 files changed, 11 insertions(+), 25 deletions(-)
-> >> > >
-> >> > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> >> > >
-> >> > > question below ...
-> >> > >
-> >> > > > diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-> >> > > > index a4a4a59a2628..a78510046eec 100644
-> >> > > > --- a/arch/x86/boot/compressed/vmlinux.lds.S
-> >> > > > +++ b/arch/x86/boot/compressed/vmlinux.lds.S
-> >> > > > @@ -42,6 +42,12 @@ SECTIONS
-> >> > > >               *(.rodata.*)
-> >> > > >               _erodata = . ;
-> >> > > >       }
-> >> > > > +     .rel.dyn : {
-> >> > > > +             *(.rel.*)
-> >> > > > +     }
-> >> > > > +     .rela.dyn : {
-> >> > > > +             *(.rela.*)
-> >> > > > +     }
-> >> > > >       .got : {
-> >> > > >               *(.got)
-> >> > > >       }
-> >> > >
-> >> > > Should these be marked (INFO) as well?
-> >> > >
-> >> >
-> >> > Given that sections marked as (INFO) will still be emitted into the
-> >> > ELF image, it does not really make a difference to do this for zero
-> >> > sized sections.
-> >>
-> >> Oh, I misunderstood -- I though they were _not_ emitted; I see now what
-> >> you said was not allocated. So, disk space used for the .got.plt case,
-> >> but not memory space used. Sorry for the confusion!
-> >>
-> >> -Kees
->
-> About output section type (INFO):
-> https://sourceware.org/binutils/docs/ld/Output-Section-Type.html#Output-Section-Type
-> says "These type names are supported for backward compatibility, and are
-> rarely used."
->
-> If all input section don't have the SHF_ALLOC flag, the output section
-> will not have this flag as well. This type is not useful...
->
-> If .got and .got.plt were used, they should be considered dynamic
-> relocations which should be part of the loadable image. So they should
-> have the SHF_ALLOC flag. (INFO) will not be applicable anyway.
->
+On Mon 29-06-20 15:41:45, Mel Gorman wrote:
+> This reverts commit e9c15badbb7b ("fs: Do not check if there is a
+> fsnotify watcher on pseudo inodes"). The commit intended to eliminate
+> fsnotify-related overhead for pseudo inodes but it is broken in
+> concept. inotify can receive events of pipe files under /proc/X/fd and
+> chromium relies on close and open events for sandboxing. Maxim Levitsky
+> reported the following
+> 
+>   Chromium starts as a white rectangle, shows few white rectangles that
+>   resemble its notifications and then crashes.
+> 
+>   The stdout output from chromium:
+> 
+>   [mlevitsk@starship ~]$chromium-freeworld
+>   mesa: for the   --simplifycfg-sink-common option: may only occur zero or one times!
+>   mesa: for the   --global-isel-abort option: may only occur zero or one times!
+>   [3379:3379:0628/135151.440930:ERROR:browser_switcher_service.cc(238)] XXX Init()
+>   ../../sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc:**CRASHING**:seccomp-bpf failure in syscall 0072
+>   Received signal 11 SEGV_MAPERR 0000004a9048
+> 
+> Crashes are not universal but even if chromium does not crash, it certainly
+> does not work properly. While filtering just modify and access might be
+> safe, the benefit is not worth the risk hence the revert.
+> 
+> Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
+> Fixes: e9c15badbb7b ("fs: Do not check if there is a fsnotify watcher on pseudo inodes")
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
-I don't care deeply either way, but Kees indicated that he would like
-to get rid of the 24 bytes of .got.plt magic entries that we have no
-need for.
+Thanks for the revert Mel. I can see Linus already picked it up so we are
+done.
 
-In fact, a lot of this mangling is caused by the fact that the linker
-is creating a relocatable binary, and assumes that it is a hosted
-binary that is loaded by a dynamic loader. It would actually be much
-better if the compiler and linker would take -ffreestanding into
-account, and suppress GOT entries, PLTs, dynamic program headers for
-shared libraries altogether.
+								Honza
+
+> ---
+>  fs/file_table.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/file_table.c b/fs/file_table.c
+> index 65603502fed6..656647f9575a 100644
+> --- a/fs/file_table.c
+> +++ b/fs/file_table.c
+> @@ -230,7 +230,7 @@ struct file *alloc_file_pseudo(struct inode *inode, struct vfsmount *mnt,
+>  		d_set_d_op(path.dentry, &anon_ops);
+>  	path.mnt = mntget(mnt);
+>  	d_instantiate(path.dentry, inode);
+> -	file = alloc_file(&path, flags | FMODE_NONOTIFY, fops);
+> +	file = alloc_file(&path, flags, fops);
+>  	if (IS_ERR(file)) {
+>  		ihold(inode);
+>  		path_put(&path);
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
