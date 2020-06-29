@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D363520E420
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A80120E3D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730545AbgF2VVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:21:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
+        id S2390821AbgF2VSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729769AbgF2Swn (ORCPT
+        with ESMTP id S1729789AbgF2Swt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:43 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC19C00F815
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:20 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z13so16365729wrw.5
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:20 -0700 (PDT)
+        Mon, 29 Jun 2020 14:52:49 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D606FC00F817
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:22 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id o2so15959559wmh.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=f4yvmeMrYth7vqHMwVBhUCXZW5p/DEPphxbozS+jA6U=;
-        b=lnvjLc1bBFbqMU2TfxeyZvdJzgXPTGJDHyapuZIjb+oS4LFvMB8r2/fUcVYnBE5OaE
-         w9KYpFZkwCEcTu4keVTFajpMTRIffqCYl/qZLCgMO/dbVRTIPkq2USh0W3X2/5mxnK4X
-         hZCO597boD94CSEq0XihDCgRuOuksUoaEsV+k9qFre9ZvmEnKzcuFoaKqLSjMdW/qGAt
-         7ocgBiTYsr6oqRJStWX9Xj6X4gJHXy6LW5YeCjA1nEywFtcBOqtuIAGWYyzyS78biusE
-         wh4RLszlwl3rhrENusI8biXNYHp9PWU2CiYuIQmq8OD1h6z8FvQG/uwtTJ8d3tXU0RIQ
-         sdwg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=VuuqoTwThT8s602WA+AxDJcFcHKmxLr2h6v/0tChBaU=;
+        b=e+4oOHQ6RDs2p+Io00oa/emidcGQRqk7JerI3yILsojpqdQRpRZMvrW7GoDkx0vT2B
+         lplAA0wn2r7LRBgZviGKEk7KNRvvDVKf/6+mpsv1fny0zUYEk8U9iU0EXdT3FlFx6ztY
+         RwZKGW1FVaINeoz9PceNRHLgK2DNUJjJn3gHoB6Us9JgkkjrDl7fUEAUsngc9yVBFKcV
+         a9pSWhBIbdO/b56Ne/tQWL9gOhACllTAZnDK4+lyRYfSTyNDRPItfZ6fnWTpRHCeLX/7
+         sDdoEg17qu2dR4j4m/WNua9QIazerZqix3d7lG+wn1X63sItdtZkQk+UutRM6o4bc5VZ
+         SmBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=f4yvmeMrYth7vqHMwVBhUCXZW5p/DEPphxbozS+jA6U=;
-        b=ADrUTn6svdJnc7Z9Gpnq/hXROzq42xE739j1LnERyXLW1PaVu2FWbfFUFfKs3whzh6
-         SFo5pqFYbfKN8/rNfbsSAl4J/lrtW6dTg8g5Oe37SWspSY4AUW0vu76zdziu0aKh37Z4
-         Qf5RNPNBen8yOhK+663YPtNQ7cota5SwRdIO8qM+b4d9w2yOYjynZGxotFgKTWPlpP0i
-         R9PHFoGE8q1CKRUn82CqvWkO1DkqHPgb+aX/mOMO/j3UT8WpaSNoJGnBqeRR8b8b9cNa
-         JYybGh+ajd7aqcuBPmPfEUoQQ6wzuLDY9IQHsuOko1jIqk7/qNRxthR6s2Svl8Op+8IU
-         5HIA==
-X-Gm-Message-State: AOAM533oMSC3OnsD/5Y4V+gAVZkO6XSo0JPKj6Gj1zYGZB26Wh2SFVzu
-        fAX0Tb8MAaOtixehc79Er/x7zg==
-X-Google-Smtp-Source: ABdhPJy/09sSLknOKduOER2VRtpSYW/RiFyA61OtJ1cUqDxEZ65G6LFMODiDvN0649LK6VhfkXsznQ==
-X-Received: by 2002:a5d:4b4f:: with SMTP id w15mr16564174wrs.84.1593433938785;
-        Mon, 29 Jun 2020 05:32:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VuuqoTwThT8s602WA+AxDJcFcHKmxLr2h6v/0tChBaU=;
+        b=Bg3hJePNYObeQNtvvEXo8d1Ss0p701r6sZj9MKxTWnFKuMhek05FRc21qBqc2kryzn
+         7o73GYJRicMYz9bn0/4ILLPeXTp2WzfbGoapPowM+z2R6Wuo0en2Wp5AJR5VHfkL5mfH
+         jZA+BXHCjBsoZXi7bIeEgczrb8XzUxMXmdDpnE+okvV1/lqu8kDS5roTp+dQSASTt1+j
+         5xa9EWeK67riki7BJ1njqP7YXIk5/0u+1Ge8cODKBBxtnRB2lu0T0mcUliBY2AqVLiXb
+         zstPhYuOCKKWTdHrUMQMnMY0LFD29EDokEQEUXYEvGCxunjQELp4co7VKaJKi8e9xIHN
+         cs3g==
+X-Gm-Message-State: AOAM531DvfhyEDTTSEHtnUynCoNSQDTSkiuAnokHFg4lIVR8Y3wVtKyB
+        PiV37oFgMF2H559rYas0Mm1FDA==
+X-Google-Smtp-Source: ABdhPJw43jNqoGVh+hJFrPOvTEjVXd9NzN7F/IbjiW/b18XUIAOo295g/2Buzs0x1LHwvEknDIfXEg==
+X-Received: by 2002:a1c:309:: with SMTP id 9mr8045031wmd.164.1593433941522;
+        Mon, 29 Jun 2020 05:32:21 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id d201sm28064111wmd.34.2020.06.29.05.32.17
+        by smtp.gmail.com with ESMTPSA id d201sm28064111wmd.34.2020.06.29.05.32.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 05:32:18 -0700 (PDT)
+        Mon, 29 Jun 2020 05:32:20 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/5] Last batch of W=1 warning fixes in MFD
-Date:   Mon, 29 Jun 2020 13:32:10 +0100
-Message-Id: <20200629123215.1014747-1-lee.jones@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <jhovold@gmail.com>
+Subject: [PATCH 2/5] mfd: lm3533-ctrlbank: Cap BRIGHTNESS_MAX to 127 since API uses u8 as carrier
+Date:   Mon, 29 Jun 2020 13:32:12 +0100
+Message-Id: <20200629123215.1014747-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200629123215.1014747-1-lee.jones@linaro.org>
+References: <20200629123215.1014747-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attempting to clean-up W=1 kernel builds, which are currently
-overwhelmingly riddled with niggly little warnings.
+Since its conception in 2012 brightness has been artificially capped
+at 127 since the variable carrying the value is u8.  We could go to
+the trouble of changing the whole API (crossing 3 different subsystems),
+but clearly this hasn't bothered anyone in the best part of a decade.
 
-Lee Jones (5):
-  mfd: si476x-cmd: Add missing documentation for
-    si476x_cmd_fm_rds_status()'s arg 'report'
-  mfd: lm3533-ctrlbank: Cap BRIGHTNESS_MAX to 127 since API uses u8 as
-    carrier
-  mfd: rave-sp: Fix mistake in 'struct rave_sp_deframer's kerneldoc
-  mfd: sprd-sc27xx-spi: Fix divide by zero when allocating register
-    offset/mask
-  mfd: axp20x-i2c: Do not define 'struct acpi_device_id' when
-    !CONFIG_ACPI
+Simply, cap BRIGHTNESS_MAX to 127 instead (for now at least).
 
- drivers/mfd/axp20x-i2c.c      | 2 ++
+Fixes the following W=1 warning(s):
+
+ drivers/mfd/lm3533-ctrlbank.c: In function ‘lm3533_ctrlbank_set_brightness’:
+ drivers/mfd/lm3533-ctrlbank.c:98:10: warning: comparison is always false due to limited range of data type [-Wtype-limits]
+ 98 | if (val > LM3533_##_NAME##_MAX) | ^
+ drivers/mfd/lm3533-ctrlbank.c:125:1: note: in expansion of macro ‘lm3533_ctrlbank_set’
+ 125 | lm3533_ctrlbank_set(brightness, BRIGHTNESS);
+ | ^~~~~~~~~~~~~~~~~~~
+
+Cc: Johan Hovold <jhovold@gmail.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
  drivers/mfd/lm3533-ctrlbank.c | 2 +-
- drivers/mfd/rave-sp.c         | 2 +-
- drivers/mfd/si476x-cmd.c      | 2 ++
- drivers/mfd/sprd-sc27xx-spi.c | 2 +-
- 5 files changed, 7 insertions(+), 3 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/mfd/lm3533-ctrlbank.c b/drivers/mfd/lm3533-ctrlbank.c
+index 34fba06ec7057..348ce67453092 100644
+--- a/drivers/mfd/lm3533-ctrlbank.c
++++ b/drivers/mfd/lm3533-ctrlbank.c
+@@ -17,7 +17,7 @@
+ #define LM3533_MAX_CURRENT_MAX		29800
+ #define LM3533_MAX_CURRENT_STEP		800
+ 
+-#define LM3533_BRIGHTNESS_MAX		255
++#define LM3533_BRIGHTNESS_MAX		127  /* Capped by API - could be up to 255 */
+ #define LM3533_PWM_MAX			0x3f
+ 
+ #define LM3533_REG_PWM_BASE		0x14
 -- 
 2.25.1
 
