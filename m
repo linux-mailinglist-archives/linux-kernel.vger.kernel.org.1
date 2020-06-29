@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC6120CC1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 05:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB16C20CC1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 05:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726152AbgF2DTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 23:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
+        id S1726165AbgF2DTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 23:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726122AbgF2DT1 (ORCPT
+        with ESMTP id S1726144AbgF2DTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 23:19:27 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547D1C03E979
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 20:19:27 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id j19so795068pgm.11
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 20:19:27 -0700 (PDT)
+        Sun, 28 Jun 2020 23:19:30 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE98AC03E979
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 20:19:29 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id j19so795095pgm.11
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 20:19:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XaA9jUuSJfuxXQxYO24v+FgfOdOoJJudQbbX4y1p8G0=;
-        b=FSZIXoXXS39bifqbHm+zuXWtJuz6QwKU5GcQ0afKIRP4nNn7gldAGXm+uUYbo3r/S0
-         ZL5PuNXLxkT3ezATzbCFYz2eRWHgL9hmxaN7ZE212yoilzt+lKbR6pyKikAj9zjdGCbs
-         0DwCgx9t2bGuuyARKrSiRQZexD1+L/4brd8b3f71afegco+kq4U7SNhMQg20g6mcbkoF
-         CZAi0zI07jx14xm6psRCSqvI+ecgQJM7TJKBSeEjGq+ACvVr0wBK9wQNpd0F5U8ehuyR
-         fyLpVr1tHaHxeMHvgJ/PlIlg0QQ6ePTm+9c7L+cM1KnnozJlKbXSe+dNgT7bff8RJmsU
-         91Eg==
+        bh=Ke0+UrQQmYifY1d5x+UaMUT/9tOxe+cmDmvA0YLGWNU=;
+        b=lljjePOmNs7J795TX2kFJ5X4IZgmMcJtEWbTUsUbmXmPBgS7xZqn3UcoRSpGLYck9L
+         pQZgn1PZS5cVcRgst2LCabxWuZB6var63k7koylL4SjQrn2xDQ1jPe41MFaXXsDnXD5J
+         OfpolxPdG+jdIn/2KtC7pNkj+2H0dp0YxCQqp/4pmBdtgy8cN58tAKih+C4P32TWwYKy
+         mmErI92lydgbJUf+GHERDIpDUXwSVcQVaGeapCMLkl4xuL9NK7vjla1yYAbIToOonmp/
+         x/rSnLrjawimREtWPTFQMS4H8DL7P9XqQuZfIXUdJcBKPCy/FfNgewILtWA6m8Mq2lU5
+         tVsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XaA9jUuSJfuxXQxYO24v+FgfOdOoJJudQbbX4y1p8G0=;
-        b=epFFqPeqZbKgk4TPZrSIMG2Gzvm+oowAhTVreTTATSPY2Yfegp89tIMWTvFHxm7ijc
-         vRgqGNzmKefqNg4kypk25MvgJuELDiqAqbW5nfGhpqdqrNBvI9OHMePO4nJAknnasGzR
-         g0gnS2Rf/J+pCF8fA7tKcznPCP86eMOv3O4YOvCC9/xjVJ/RK18aZxNok69J06e9Y2Hr
-         JSPxDI4+OfaooTXjEuRFuGZJkIWZN1Q4oiHleT5NBMpwbNUvLQ5TfkmMqoQmF8hW5S+f
-         hYHTn4OtJrUvHFkNm0/vDKGXrKnBEB0cRIzAZcz44LPZMNj1GyzUBLbVV8QQ7f+mGOxq
-         MnHw==
-X-Gm-Message-State: AOAM532335x24nq/M1jNowdFocsw557wiFUefa0NxaAD/BKKHktPmJX1
-        6KXVo8AwprB8nk5XlLLeI5rQLQ==
-X-Google-Smtp-Source: ABdhPJwqAHV4Y/B8eXziL2RjxQ7Ie/ERnFbsKQBIA1HBGa0rmRgSRh+V6Rf9OYCO7WKHrCjnWDtbbg==
-X-Received: by 2002:a63:a13:: with SMTP id 19mr8456092pgk.100.1593400766742;
-        Sun, 28 Jun 2020 20:19:26 -0700 (PDT)
+        bh=Ke0+UrQQmYifY1d5x+UaMUT/9tOxe+cmDmvA0YLGWNU=;
+        b=WCmc3pon3GT450yijNL9g1yJtqo5rOfH3GpxafTiPMXCV3EcSA8dI/u7+oRqFaRSIu
+         Pm0ckW4FebraEAmsTG4/FVniggp8OvTSdhkMO6ex8fRAZwE5REMjlVcLvmXYB7DIgeqX
+         Gd/eFnnciOaj8QfyxaBJQhIFNlwvz0zfeBOGlhQpKakxlbPIqQPgNSCv4x5nYCcstCNX
+         CndZUqn57S7dOGY2TS0jvvAuiZ8SSFydoeLVEjYyfBwKkYj5DDLvzqL340f0TJiAJYay
+         oz9PaizV/ouuzFXxKdxXdHyjj289dm1qykT0/tQhtGrbH47lByjDEo3KuhZx5ufqoCHa
+         F3DA==
+X-Gm-Message-State: AOAM532qoAynU/GRWOxrDoDqbK6UZuqI7XC4O+GcbiVEot7opuDGVWme
+        XDGv51eKuAhdWg3y+RJgHEHyTA==
+X-Google-Smtp-Source: ABdhPJxULZbwjdkZrXMttB50ilaeQtXCYuIIYSmIytko6sHu7tj0TLsZVwLWyA5gr0PLMREVlk8p3A==
+X-Received: by 2002:a63:1641:: with SMTP id 1mr8604342pgw.370.1593400768360;
+        Sun, 28 Jun 2020 20:19:28 -0700 (PDT)
 Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id j70sm12876254pfd.208.2020.06.28.20.19.25
+        by smtp.gmail.com with ESMTPSA id j70sm12876254pfd.208.2020.06.28.20.19.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jun 2020 20:19:26 -0700 (PDT)
+        Sun, 28 Jun 2020 20:19:28 -0700 (PDT)
 From:   Zong Li <zong.li@sifive.com>
 To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Zong Li <zong.li@sifive.com>
-Subject: [RFC PATCH 4/6] riscv: perf: Add raw event support
-Date:   Mon, 29 Jun 2020 11:19:13 +0800
-Message-Id: <8b9f52c19bdb11a4ad741ad1a3695526a1d061b8.1593397455.git.zong.li@sifive.com>
+Subject: [RFC PATCH 5/6] riscv: perf: introduce DT mechanism
+Date:   Mon, 29 Jun 2020 11:19:14 +0800
+Message-Id: <da261dc8b456fc0dd67508d98b16838bcd697220.1593397455.git.zong.li@sifive.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1593397455.git.zong.li@sifive.com>
 References: <cover.1593397455.git.zong.li@sifive.com>
@@ -65,431 +65,513 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for raw events and hardware cache events. Currently, we set
-the events by writing the mhpmeventN CSRs, it would raise an illegal
-instruction exception and trap into m-mode to emulate event selector
-CSRs access. It doesn't make sense because we shouldn't write the
-m-mode CSRs in s-mode, it would be better that set events through SBI
-call or the shadow CSRs of s-mode. We would change it later.
+Each architecture is responsible for mapping generic hardware and cache
+events to their own specific encoding of hardware events. For each
+architecture, it also have to distinguish the defination of hardware
+events of different platforms of each vendor. We use DT file to describe
+platform-specific information to make our perf implementation more
+generic and common.
 
 Signed-off-by: Zong Li <zong.li@sifive.com>
 ---
- arch/riscv/include/asm/perf_event.h |  65 ++++++---
- arch/riscv/kernel/perf_event.c      | 204 +++++++++++++++++++++++-----
- 2 files changed, 215 insertions(+), 54 deletions(-)
+ arch/riscv/include/asm/perf_event.h |  55 ++----
+ arch/riscv/kernel/perf_event.c      | 273 +++++++++++++---------------
+ 2 files changed, 139 insertions(+), 189 deletions(-)
 
 diff --git a/arch/riscv/include/asm/perf_event.h b/arch/riscv/include/asm/perf_event.h
-index 062efd3a1d5d..41d515a1f331 100644
+index 41d515a1f331..e95d3bbaae3e 100644
 --- a/arch/riscv/include/asm/perf_event.h
 +++ b/arch/riscv/include/asm/perf_event.h
-@@ -14,39 +14,64 @@
+@@ -17,6 +17,8 @@
+ #define RISCV_EVENT_COUNTERS	29
+ #define RISCV_TOTAL_COUNTERS	(RISCV_BASE_COUNTERS + RISCV_EVENT_COUNTERS)
  
- #ifdef CONFIG_RISCV_BASE_PMU
- #define RISCV_BASE_COUNTERS	2
-+#define RISCV_EVENT_COUNTERS	29
-+#define RISCV_TOTAL_COUNTERS	(RISCV_BASE_COUNTERS + RISCV_EVENT_COUNTERS)
- 
++#define RISCV_DEFAULT_WIDTH_COUNTER	64
++
  /*
-- * The RISCV_MAX_COUNTERS parameter should be specified.
-- */
--
--#define RISCV_MAX_COUNTERS	2
--
--/*
-- * These are the indexes of bits in counteren register *minus* 1,
-- * except for cycle.  It would be coherent if it can directly mapped
-- * to counteren bit definition, but there is a *time* register at
-- * counteren[1].  Per-cpu structure is scarce resource here.
-- *
   * According to the spec, an implementation can support counter up to
   * mhpmcounter31, but many high-end processors has at most 6 general
-  * PMCs, we give the definition to MHPMCOUNTER8 here.
-  */
--#define RISCV_PMU_CYCLE		0
--#define RISCV_PMU_INSTRET	1
--#define RISCV_PMU_MHPMCOUNTER3	2
--#define RISCV_PMU_MHPMCOUNTER4	3
--#define RISCV_PMU_MHPMCOUNTER5	4
--#define RISCV_PMU_MHPMCOUNTER6	5
--#define RISCV_PMU_MHPMCOUNTER7	6
--#define RISCV_PMU_MHPMCOUNTER8	7
-+#define RISCV_PMU_CYCLE			0
-+#define RISCV_PMU_INSTRET		2
-+#define RISCV_PMU_HPMCOUNTER3		3
-+#define RISCV_PMU_HPMCOUNTER4		4
-+#define RISCV_PMU_HPMCOUNTER5		5
-+#define RISCV_PMU_HPMCOUNTER6		6
-+#define RISCV_PMU_HPMCOUNTER7		7
-+#define RISCV_PMU_HPMCOUNTER8		8
-+
-+#define RISCV_PMU_HPMCOUNTER_FIRST	3
-+#define RISCV_PMU_HPMCOUNTER_LAST					\
-+	(RISCV_PMU_HPMCOUNTER_FIRST + riscv_pmu->num_counters - 1)
+@@ -33,9 +35,21 @@
  
- #define RISCV_OP_UNSUPP		(-EOPNOTSUPP)
+ #define RISCV_PMU_HPMCOUNTER_FIRST	3
+ #define RISCV_PMU_HPMCOUNTER_LAST					\
+-	(RISCV_PMU_HPMCOUNTER_FIRST + riscv_pmu->num_counters - 1)
++	(RISCV_PMU_HPMCOUNTER_FIRST + riscv_pmu.num_event_cntr - 1)
++
++#define RISCV_OP_UNSUPP			(-EOPNOTSUPP)
++
++#define RISCV_MAP_ALL_UNSUPPORTED					\
++	[0 ... PERF_COUNT_HW_MAX - 1] = RISCV_OP_UNSUPP
  
-+/* Hardware cache event encoding */
-+#define PERF_HW_CACHE_TYPE		0
-+#define PERF_HW_CACHE_OP		8
-+#define PERF_HW_CACHE_RESULT		16
-+#define PERF_HW_CACHE_MASK		0xff
+-#define RISCV_OP_UNSUPP		(-EOPNOTSUPP)
++#define C(x) PERF_COUNT_HW_CACHE_##x
 +
-+/* config_base encoding */
-+#define RISCV_PMU_TYPE_MASK		0x3
-+#define RISCV_PMU_TYPE_BASE		0x1
-+#define RISCV_PMU_TYPE_EVENT		0x2
-+#define RISCV_PMU_EXCLUDE_MASK		0xc
-+#define RISCV_PMU_EXCLUDE_USER		0x3
-+#define RISCV_PMU_EXCLUDE_KERNEL	0x4
-+
-+/*
-+ * Currently, machine-mode supports emulation of mhpmeventN. Setting mhpmeventN
-+ * to raise an illegal instruction exception to set event types in machine-mode.
-+ * Eventually, we should set event types through standard SBI call or the shadow
-+ * CSRs of supervisor-mode, because it is weird for writing CSR of machine-mode
-+ * explicitly in supervisor-mode. These macro should be removed in the future.
-+ */
-+#define CSR_MHPMEVENT3	0x323
-+#define CSR_MHPMEVENT4	0x324
-+#define CSR_MHPMEVENT5	0x325
-+#define CSR_MHPMEVENT6	0x326
-+#define CSR_MHPMEVENT7	0x327
-+#define CSR_MHPMEVENT8	0x328
-+
- struct cpu_hw_events {
- 	/* # currently enabled events*/
- 	int			n_events;
- 	/* currently enabled events */
--	struct perf_event	*events[RISCV_MAX_COUNTERS];
-+	struct perf_event	*events[RISCV_EVENT_COUNTERS];
-+	/* bitmap of used event counters */
-+	unsigned long		used_cntr_mask;
- 	/* vendor-defined PMU data */
- 	void			*platform;
- };
++#define RISCV_CACHE_MAP_ALL_UNSUPPORTED					\
++[0 ... C(MAX) - 1] = {							\
++	[0 ... C(OP_MAX) - 1] = {					\
++		[0 ... C(RESULT_MAX) - 1] = RISCV_OP_UNSUPP,		\
++	},								\
++}
+ 
+ /* Hardware cache event encoding */
+ #define PERF_HW_CACHE_TYPE		0
+@@ -65,43 +79,6 @@
+ #define CSR_MHPMEVENT7	0x327
+ #define CSR_MHPMEVENT8	0x328
+ 
+-struct cpu_hw_events {
+-	/* # currently enabled events*/
+-	int			n_events;
+-	/* currently enabled events */
+-	struct perf_event	*events[RISCV_EVENT_COUNTERS];
+-	/* bitmap of used event counters */
+-	unsigned long		used_cntr_mask;
+-	/* vendor-defined PMU data */
+-	void			*platform;
+-};
+-
+-struct riscv_pmu {
+-	struct pmu	*pmu;
+-
+-	/* generic hw/cache events table */
+-	const int	*hw_events;
+-	const int	(*cache_events)[PERF_COUNT_HW_CACHE_MAX]
+-				       [PERF_COUNT_HW_CACHE_OP_MAX]
+-				       [PERF_COUNT_HW_CACHE_RESULT_MAX];
+-	/* method used to map hw/cache events */
+-	int		(*map_hw_event)(u64 config);
+-	int		(*map_cache_event)(u64 config);
+-
+-	/* max generic hw events in map */
+-	int		max_events;
+-	/* number total counters, 2(base) + x(general) */
+-	int		num_counters;
+-	/* the width of the counter */
+-	int		counter_width;
+-
+-	/* vendor-defined PMU features */
+-	void		*platform;
+-
+-	irqreturn_t	(*handle_irq)(int irq_num, void *dev);
+-	int		irq;
+-};
+-
+ #endif
+ #ifdef CONFIG_PERF_EVENTS
+ #define perf_arch_bpf_user_pt_regs(regs) (struct user_regs_struct *)regs
 diff --git a/arch/riscv/kernel/perf_event.c b/arch/riscv/kernel/perf_event.c
-index c835f0362d94..0cfcd6f1e57b 100644
+index 0cfcd6f1e57b..3bdfbe4efd5c 100644
 --- a/arch/riscv/kernel/perf_event.c
 +++ b/arch/riscv/kernel/perf_event.c
-@@ -139,6 +139,53 @@ static const int riscv_cache_event_map[PERF_COUNT_HW_CACHE_MAX]
- 	},
+@@ -9,6 +9,7 @@
+  * Copyright (C) 2009 Google, Inc., Stephane Eranian
+  * Copyright 2014 Tilera Corporation. All Rights Reserved.
+  * Copyright (C) 2018 Andes Technology Corporation
++ * Copyright (C) 2020 SiFive
+  *
+  * Perf_events support for RISC-V platforms.
+  *
+@@ -30,113 +31,55 @@
+ #include <linux/perf_event.h>
+ #include <linux/atomic.h>
+ #include <linux/of.h>
++#include <asm/csr.h>
+ #include <asm/perf_event.h>
+ 
+-static const struct riscv_pmu *riscv_pmu __read_mostly;
++static struct riscv_pmu {
++	struct pmu	*pmu;
++
++	/* number of event counters */
++	int		num_event_cntr;
++
++	/* the width of base counters */
++	int		width_base_cntr;
++
++	/* the width of event counters */
++	int		width_event_cntr;
++
++	irqreturn_t	(*handle_irq)(int irq_num, void *dev);
++
++	int		irq;
++} riscv_pmu;
++
++struct cpu_hw_events {
++	/* # currently enabled events*/
++	int			n_events;
++
++	/* currently enabled events */
++	struct perf_event	*events[RISCV_EVENT_COUNTERS];
++
++	/* bitmap of used event counters */
++	unsigned long		used_cntr_mask;
++};
++
+ static DEFINE_PER_CPU(struct cpu_hw_events, cpu_hw_events);
+ 
+ /*
+  * Hardware & cache maps and their methods
+  */
+ 
+-static const int riscv_hw_event_map[] = {
+-	[PERF_COUNT_HW_CPU_CYCLES]		= RISCV_PMU_CYCLE,
+-	[PERF_COUNT_HW_INSTRUCTIONS]		= RISCV_PMU_INSTRET,
+-	[PERF_COUNT_HW_CACHE_REFERENCES]	= RISCV_OP_UNSUPP,
+-	[PERF_COUNT_HW_CACHE_MISSES]		= RISCV_OP_UNSUPP,
+-	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS]	= RISCV_OP_UNSUPP,
+-	[PERF_COUNT_HW_BRANCH_MISSES]		= RISCV_OP_UNSUPP,
+-	[PERF_COUNT_HW_BUS_CYCLES]		= RISCV_OP_UNSUPP,
++static int riscv_hw_event_map[PERF_COUNT_HW_MAX] = {
++	RISCV_MAP_ALL_UNSUPPORTED,
++
++	/* Specify base pmu, even if they aren't present in DT file */
++	[PERF_COUNT_HW_CPU_CYCLES]	= RISCV_PMU_CYCLE,
++	[PERF_COUNT_HW_INSTRUCTIONS]	= RISCV_PMU_INSTRET,
  };
  
-+/*
-+ * Methods for checking and getting PMU information
-+ */
-+
-+static inline int is_base_counter(int idx)
-+{
-+	return (idx == RISCV_PMU_CYCLE || idx == RISCV_PMU_INSTRET);
-+}
-+
-+static inline int is_event_counter(int idx)
-+{
-+	return (idx >= RISCV_PMU_HPMCOUNTER_FIRST &&
-+		idx <= RISCV_PMU_HPMCOUNTER_LAST);
-+}
-+
-+static inline int get_available_counter(struct perf_event *event)
-+{
-+	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-+	struct hw_perf_event *hwc = &event->hw;
-+	unsigned long config_base = hwc->config_base & RISCV_PMU_TYPE_MASK;
-+	unsigned long mask;
-+	int ret;
-+
-+	switch (config_base) {
-+	case RISCV_PMU_TYPE_BASE:
-+		ret = hwc->config;
-+		if (WARN_ON_ONCE(!is_base_counter(ret)))
-+			return -ENOSPC;
-+		break;
-+	case RISCV_PMU_TYPE_EVENT:
-+		mask = ~cpuc->used_cntr_mask;
-+		ret = find_next_bit(&mask, RISCV_PMU_HPMCOUNTER_LAST, 3);
-+		if (WARN_ON_ONCE(!is_event_counter(ret)))
-+			return -ENOSPC;
-+		break;
-+	default:
-+		return -ENOENT;
-+	}
-+
-+	__set_bit(ret, &cpuc->used_cntr_mask);
-+
-+	return ret;
-+}
-+
-+/*
-+ * Map generic hardware event
-+ */
- static int riscv_map_hw_event(u64 config)
- {
- 	if (config >= riscv_pmu->max_events)
-@@ -147,32 +194,28 @@ static int riscv_map_hw_event(u64 config)
- 	return riscv_pmu->hw_events[config];
+-#define C(x) PERF_COUNT_HW_CACHE_##x
+-static const int riscv_cache_event_map[PERF_COUNT_HW_CACHE_MAX]
+-[PERF_COUNT_HW_CACHE_OP_MAX]
+-[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
+-	[C(L1D)] = {
+-		[C(OP_READ)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_WRITE)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_PREFETCH)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-	},
+-	[C(L1I)] = {
+-		[C(OP_READ)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_WRITE)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_PREFETCH)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-	},
+-	[C(LL)] = {
+-		[C(OP_READ)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_WRITE)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_PREFETCH)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-	},
+-	[C(DTLB)] = {
+-		[C(OP_READ)] = {
+-			[C(RESULT_ACCESS)] =  RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] =  RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_WRITE)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_PREFETCH)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-	},
+-	[C(ITLB)] = {
+-		[C(OP_READ)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_WRITE)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_PREFETCH)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-	},
+-	[C(BPU)] = {
+-		[C(OP_READ)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_WRITE)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_PREFETCH)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-	},
++static int riscv_cache_event_map[PERF_COUNT_HW_CACHE_MAX]
++				[PERF_COUNT_HW_CACHE_OP_MAX]
++				[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
++	RISCV_CACHE_MAP_ALL_UNSUPPORTED,
+ };
+ 
+ /*
+@@ -154,6 +97,17 @@ static inline int is_event_counter(int idx)
+ 		idx <= RISCV_PMU_HPMCOUNTER_LAST);
  }
  
--static int riscv_map_cache_decode(u64 config, unsigned int *type,
--			   unsigned int *op, unsigned int *result)
--{
--	return -ENOENT;
--}
--
-+/*
-+ * Map generic hardware cache event
-+ */
- static int riscv_map_cache_event(u64 config)
++static inline int get_counter_width(int idx)
++{
++	if (is_base_counter(idx))
++		return riscv_pmu.width_base_cntr;
++
++	if (is_event_counter(idx))
++		return riscv_pmu.width_event_cntr;
++
++	return 0;
++}
++
+ static inline int get_available_counter(struct perf_event *event)
  {
- 	unsigned int type, op, result;
--	int err = -ENOENT;
--		int code;
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+@@ -188,10 +142,14 @@ static inline int get_available_counter(struct perf_event *event)
+  */
+ static int riscv_map_hw_event(u64 config)
+ {
+-	if (config >= riscv_pmu->max_events)
 +	int ret;
- 
--	err = riscv_map_cache_decode(config, &type, &op, &result);
--	if (!riscv_pmu->cache_events || err)
--		return err;
-+	type	= (config >> PERF_HW_CACHE_TYPE) & PERF_HW_CACHE_MASK;
-+	op	= (config >> PERF_HW_CACHE_OP) & PERF_HW_CACHE_MASK;
-+	result	= (config >> PERF_HW_CACHE_RESULT) & PERF_HW_CACHE_MASK;
- 
- 	if (type >= PERF_COUNT_HW_CACHE_MAX ||
- 	    op >= PERF_COUNT_HW_CACHE_OP_MAX ||
- 	    result >= PERF_COUNT_HW_CACHE_RESULT_MAX)
++
++	if (config >= PERF_COUNT_HW_MAX)
  		return -EINVAL;
  
--	code = (*riscv_pmu->cache_events)[type][op][result];
--	if (code == RISCV_OP_UNSUPP)
-+	ret = riscv_cache_event_map[type][op][result];
-+	if (ret == RISCV_OP_UNSUPP)
- 		return -EINVAL;
- 
--	return code;
+-	return riscv_pmu->hw_events[config];
++	ret = riscv_hw_event_map[config];
++
 +	return ret == RISCV_OP_UNSUPP ? -ENOENT : ret;
  }
  
  /*
-@@ -190,8 +233,27 @@ static inline u64 read_counter(int idx)
- 	case RISCV_PMU_INSTRET:
- 		val = csr_read(CSR_INSTRET);
- 		break;
-+	case RISCV_PMU_HPMCOUNTER3:
-+		val = csr_read(CSR_HPMCOUNTER3);
-+		break;
-+	case RISCV_PMU_HPMCOUNTER4:
-+		val = csr_read(CSR_HPMCOUNTER4);
-+		break;
-+	case RISCV_PMU_HPMCOUNTER5:
-+		val = csr_read(CSR_HPMCOUNTER5);
-+		break;
-+	case RISCV_PMU_HPMCOUNTER6:
-+		val = csr_read(CSR_HPMCOUNTER6);
-+		break;
-+	case RISCV_PMU_HPMCOUNTER7:
-+		val = csr_read(CSR_HPMCOUNTER7);
-+		break;
-+	case RISCV_PMU_HPMCOUNTER8:
-+		val = csr_read(CSR_HPMCOUNTER8);
-+		break;
- 	default:
--		WARN_ON_ONCE(idx < 0 ||	idx > RISCV_MAX_COUNTERS);
-+		WARN_ON_ONCE(idx < RISCV_PMU_CYCLE ||
-+			     idx > RISCV_TOTAL_COUNTERS);
- 		return -EINVAL;
- 	}
- 
-@@ -204,6 +266,68 @@ static inline void write_counter(int idx, u64 value)
- 	WARN_ON_ONCE(1);
- }
- 
-+static inline void write_event(int idx, u64 value)
-+{
-+	/* TODO: We shouldn't write CSR of m-mode explicitly here. Ideally,
-+	 * it need to set the event selector by SBI call or the s-mode
-+	 * shadow CSRs of them. Exploit illegal instruction exception to
-+	 * emulate mhpmcounterN access in m-mode.
-+	 */
-+	switch (idx) {
-+	case RISCV_PMU_HPMCOUNTER3:
-+		csr_write(CSR_MHPMEVENT3, value);
-+		break;
-+	case RISCV_PMU_HPMCOUNTER4:
-+		csr_write(CSR_MHPMEVENT4, value);
-+		break;
-+	case RISCV_PMU_HPMCOUNTER5:
-+		csr_write(CSR_MHPMEVENT5, value);
-+		break;
-+	case RISCV_PMU_HPMCOUNTER6:
-+		csr_write(CSR_MHPMEVENT6, value);
-+		break;
-+	case RISCV_PMU_HPMCOUNTER7:
-+		csr_write(CSR_MHPMEVENT7, value);
-+		break;
-+	case RISCV_PMU_HPMCOUNTER8:
-+		csr_write(CSR_MHPMEVENT8, value);
-+		break;
-+	default:
-+		WARN_ON_ONCE(idx < RISCV_PMU_HPMCOUNTER3 ||
-+			     idx > RISCV_TOTAL_COUNTERS);
-+		return;
-+	}
-+}
-+
-+/*
-+ * Enable and disable event counters
-+ */
-+
-+static inline void riscv_pmu_enable_event(struct perf_event *event)
-+{
-+	struct hw_perf_event *hwc = &event->hw;
-+	int idx = hwc->idx;
-+
-+	if (is_event_counter(idx))
-+		write_event(idx, hwc->config);
-+
-+	/*
-+	 * Since we cannot write to counters, this serves as an initialization
-+	 * to the delta-mechanism in pmu->read(); otherwise, the delta would be
-+	 * wrong when pmu->read is called for the first time.
-+	 */
-+	local64_set(&hwc->prev_count, read_counter(hwc->idx));
-+}
-+
-+static inline void riscv_pmu_disable_event(struct perf_event *event)
-+{
-+	struct hw_perf_event *hwc = &event->hw;
-+	int idx = hwc->idx;
-+
-+	if (is_event_counter(idx))
-+		write_event(idx, 0);
-+}
-+
- /*
-  * pmu->read: read and update the counter
-  *
-@@ -232,6 +356,7 @@ static void riscv_pmu_read(struct perf_event *event)
+@@ -355,7 +313,7 @@ static void riscv_pmu_read(struct perf_event *event)
+ 	 * delta is the value to update the counter we maintain in the kernel.
  	 */
  	delta = (new_raw_count - prev_raw_count) &
- 		((1ULL << riscv_pmu->counter_width) - 1);
-+
+-		((1ULL << riscv_pmu->counter_width) - 1);
++		((1ULL << get_counter_width(idx)) - 1);
+ 
  	local64_add(delta, &event->count);
  	/*
- 	 * Something like local64_sub(delta, &hwc->period_left) here is
-@@ -252,6 +377,11 @@ static void riscv_pmu_stop(struct perf_event *event, int flags)
- {
- 	struct hw_perf_event *hwc = &event->hw;
- 
-+	if (WARN_ON_ONCE(hwc->idx == -1))
-+		return;
-+
-+	riscv_pmu_disable_event(event);
-+
- 	WARN_ON_ONCE(hwc->state & PERF_HES_STOPPED);
+@@ -386,7 +344,7 @@ static void riscv_pmu_stop(struct perf_event *event, int flags)
  	hwc->state |= PERF_HES_STOPPED;
  
-@@ -271,6 +401,9 @@ static void riscv_pmu_start(struct perf_event *event, int flags)
- 	if (WARN_ON_ONCE(!(event->hw.state & PERF_HES_STOPPED)))
- 		return;
- 
-+	if (WARN_ON_ONCE(hwc->idx == -1))
-+		return;
-+
- 	if (flags & PERF_EF_RELOAD) {
- 		WARN_ON_ONCE(!(event->hw.state & PERF_HES_UPTODATE));
- 
-@@ -281,14 +414,10 @@ static void riscv_pmu_start(struct perf_event *event, int flags)
+ 	if ((flags & PERF_EF_UPDATE) && !(hwc->state & PERF_HES_UPTODATE)) {
+-		riscv_pmu->pmu->read(event);
++		riscv_pmu_read(event);
+ 		hwc->state |= PERF_HES_UPTODATE;
  	}
- 
- 	hwc->state = 0;
--	perf_event_update_userpage(event);
- 
--	/*
--	 * Since we cannot write to counters, this serves as an initialization
--	 * to the delta-mechanism in pmu->read(); otherwise, the delta would be
--	 * wrong when pmu->read is called for the first time.
--	 */
--	local64_set(&hwc->prev_count, read_counter(hwc->idx));
-+	riscv_pmu_enable_event(event);
-+
-+	perf_event_update_userpage(event);
  }
- 
- /*
-@@ -298,21 +427,18 @@ static int riscv_pmu_add(struct perf_event *event, int flags)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+@@ -429,7 +387,7 @@ static int riscv_pmu_add(struct perf_event *event, int flags)
  	struct hw_perf_event *hwc = &event->hw;
-+	int count_idx;
+ 	int count_idx;
  
- 	if (cpuc->n_events == riscv_pmu->num_counters)
+-	if (cpuc->n_events == riscv_pmu->num_counters)
++	if (cpuc->n_events == riscv_pmu.num_event_cntr)
  		return -ENOSPC;
  
--	/*
--	 * We don't have general conunters, so no binding-event-to-counter
--	 * process here.
--	 *
--	 * Indexing using hwc->config generally not works, since config may
--	 * contain extra information, but here the only info we have in
--	 * hwc->config is the event index.
--	 */
--	hwc->idx = hwc->config;
--	cpuc->events[hwc->idx] = event;
-+	count_idx = get_available_counter(event);
-+	if (count_idx < 0)
-+		return -ENOSPC;
-+
+ 	count_idx = get_available_counter(event);
+@@ -437,13 +395,13 @@ static int riscv_pmu_add(struct perf_event *event, int flags)
+ 		return -ENOSPC;
+ 
  	cpuc->n_events++;
-+	hwc->idx = count_idx;
-+	cpuc->events[hwc->idx] = event;
++
+ 	hwc->idx = count_idx;
+-	cpuc->events[hwc->idx] = event;
  
  	hwc->state = PERF_HES_UPTODATE | PERF_HES_STOPPED;
  
-@@ -330,8 +456,10 @@ static void riscv_pmu_del(struct perf_event *event, int flags)
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
- 	struct hw_perf_event *hwc = &event->hw;
+ 	if (flags & PERF_EF_START)
+-		riscv_pmu->pmu->start(event, PERF_EF_RELOAD);
++		riscv_pmu_start(event, PERF_EF_RELOAD);
+ 
+ 	return 0;
+ }
+@@ -459,8 +417,8 @@ static void riscv_pmu_del(struct perf_event *event, int flags)
+ 	cpuc->n_events--;
+ 	__clear_bit(hwc->idx, &cpuc->used_cntr_mask);
  
 -	cpuc->events[hwc->idx] = NULL;
- 	cpuc->n_events--;
-+	__clear_bit(hwc->idx, &cpuc->used_cntr_mask);
+-	riscv_pmu->pmu->stop(event, PERF_EF_UPDATE);
++	riscv_pmu_stop(event, PERF_EF_UPDATE);
 +
-+	cpuc->events[hwc->idx] = NULL;
- 	riscv_pmu->pmu->stop(event, PERF_EF_UPDATE);
  	perf_event_update_userpage(event);
  }
-@@ -385,6 +513,7 @@ static int riscv_event_init(struct perf_event *event)
- {
- 	struct perf_event_attr *attr = &event->attr;
- 	struct hw_perf_event *hwc = &event->hw;
-+	unsigned long config_base = 0;
- 	int err;
- 	int code;
  
-@@ -406,11 +535,17 @@ static int riscv_event_init(struct perf_event *event)
- 		code = riscv_pmu->map_cache_event(attr->config);
+@@ -470,7 +428,7 @@ static void riscv_pmu_del(struct perf_event *event, int flags)
+ 
+ static DEFINE_MUTEX(pmc_reserve_mutex);
+ 
+-static irqreturn_t riscv_base_pmu_handle_irq(int irq_num, void *dev)
++static irqreturn_t riscv_pmu_handle_irq(int irq_num, void *dev)
+ {
+ 	return IRQ_NONE;
+ }
+@@ -480,8 +438,8 @@ static int reserve_pmc_hardware(void)
+ 	int err = 0;
+ 
+ 	mutex_lock(&pmc_reserve_mutex);
+-	if (riscv_pmu->irq >= 0 && riscv_pmu->handle_irq) {
+-		err = request_irq(riscv_pmu->irq, riscv_pmu->handle_irq,
++	if (riscv_pmu.irq >= 0 && riscv_pmu.handle_irq) {
++		err = request_irq(riscv_pmu.irq, riscv_pmu.handle_irq,
+ 				  IRQF_PERCPU, "riscv-base-perf", NULL);
+ 	}
+ 	mutex_unlock(&pmc_reserve_mutex);
+@@ -492,8 +450,8 @@ static int reserve_pmc_hardware(void)
+ static void release_pmc_hardware(void)
+ {
+ 	mutex_lock(&pmc_reserve_mutex);
+-	if (riscv_pmu->irq >= 0)
+-		free_irq(riscv_pmu->irq, NULL);
++	if (riscv_pmu.irq >= 0)
++		free_irq(riscv_pmu.irq, NULL);
+ 	mutex_unlock(&pmc_reserve_mutex);
+ }
+ 
+@@ -529,10 +487,10 @@ static int riscv_event_init(struct perf_event *event)
+ 
+ 	switch (event->attr.type) {
+ 	case PERF_TYPE_HARDWARE:
+-		code = riscv_pmu->map_hw_event(attr->config);
++		code = riscv_map_hw_event(attr->config);
+ 		break;
+ 	case PERF_TYPE_HW_CACHE:
+-		code = riscv_pmu->map_cache_event(attr->config);
++		code = riscv_map_cache_event(attr->config);
  		break;
  	case PERF_TYPE_RAW:
--		return -EOPNOTSUPP;
-+		code = attr->config;
-+		break;
- 	default:
- 		return -ENOENT;
- 	}
- 
-+	if (is_base_counter(code))
-+		config_base |= RISCV_PMU_TYPE_BASE;
-+	else
-+		config_base |= RISCV_PMU_TYPE_EVENT;
-+
- 	event->destroy = riscv_event_destroy;
- 	if (code < 0) {
- 		event->destroy(event);
-@@ -424,6 +559,7 @@ static int riscv_event_init(struct perf_event *event)
- 	 * But since we don't have such support, later in pmu->add(), we just
- 	 * use hwc->config as the index instead.
+ 		code = attr->config;
+@@ -555,9 +513,6 @@ static int riscv_event_init(struct perf_event *event)
+ 	/*
+ 	 * idx is set to -1 because the index of a general event should not be
+ 	 * decided until binding to some counter in pmu->add().
+-	 *
+-	 * But since we don't have such support, later in pmu->add(), we just
+-	 * use hwc->config as the index instead.
  	 */
-+	hwc->config_base = config_base;
+ 	hwc->config_base = config_base;
  	hwc->config = code;
- 	hwc->idx = -1;
+@@ -570,52 +525,70 @@ static int riscv_event_init(struct perf_event *event)
+  * Initialization
+  */
  
+-static struct pmu min_pmu = {
+-	.name		= "riscv-base",
+-	.event_init	= riscv_event_init,
+-	.add		= riscv_pmu_add,
+-	.del		= riscv_pmu_del,
+-	.start		= riscv_pmu_start,
+-	.stop		= riscv_pmu_stop,
+-	.read		= riscv_pmu_read,
+-};
++static struct riscv_pmu riscv_pmu = {
++	.pmu = &(struct pmu) {
++		.name		= "riscv-pmu",
++		.event_init	= riscv_event_init,
++		.add		= riscv_pmu_add,
++		.del		= riscv_pmu_del,
++		.start		= riscv_pmu_start,
++		.stop		= riscv_pmu_stop,
++		.read		= riscv_pmu_read,
++	},
+ 
+-static const struct riscv_pmu riscv_base_pmu = {
+-	.pmu = &min_pmu,
+-	.max_events = ARRAY_SIZE(riscv_hw_event_map),
+-	.map_hw_event = riscv_map_hw_event,
+-	.hw_events = riscv_hw_event_map,
+-	.map_cache_event = riscv_map_cache_event,
+-	.cache_events = &riscv_cache_event_map,
+-	.counter_width = 63,
+-	.num_counters = RISCV_BASE_COUNTERS + 0,
+-	.handle_irq = &riscv_base_pmu_handle_irq,
++	.num_event_cntr = 0,
++	.width_event_cntr = RISCV_DEFAULT_WIDTH_COUNTER,
++	.width_base_cntr = RISCV_DEFAULT_WIDTH_COUNTER,
+ 
++	.handle_irq = &riscv_pmu_handle_irq,
+ 	/* This means this PMU has no IRQ. */
+ 	.irq = -1,
+ };
+ 
+-static const struct of_device_id riscv_pmu_of_ids[] = {
+-	{.compatible = "riscv,base-pmu",	.data = &riscv_base_pmu},
+-	{ /* sentinel value */ }
+-};
++static int __init init_riscv_pmu(struct device_node *node)
++{
++	int num_events, key, value, i;
++
++	of_property_read_u32(node, "riscv,width-base-cntr", &riscv_pmu.width_base_cntr);
++
++	of_property_read_u32(node, "riscv,width-event-cntr", &riscv_pmu.width_event_cntr);
++
++	of_property_read_u32(node, "riscv,n-event-cntr", &riscv_pmu.num_event_cntr);
++	if (riscv_pmu.num_event_cntr > RISCV_EVENT_COUNTERS)
++		riscv_pmu.num_event_cntr = RISCV_EVENT_COUNTERS;
++
++	num_events = of_property_count_u32_elems(node, "riscv,hw-event-map");
++	if (num_events > 0 && num_events % 2 == 0)
++		for (i = 0; i < num_events;) {
++			of_property_read_u32_index(node, "riscv,hw-event-map", i++, &key);
++			of_property_read_u32_index(node, "riscv,hw-event-map", i++, &value);
++			riscv_hw_event_map[key] = value;
++		}
++
++	num_events = of_property_count_u32_elems(node, "riscv,hw-cache-event-map");
++	if (num_events > 0 && num_events % 2 == 0)
++		for (i = 0; i < num_events;) {
++			of_property_read_u32_index(node, "riscv,hw-cache-event-map", i++, &key);
++			of_property_read_u32_index(node, "riscv,hw-cache-event-map", i++, &value);
++			riscv_cache_event_map
++				[(key >> PERF_HW_CACHE_TYPE) & PERF_HW_CACHE_MASK]
++				[(key >> PERF_HW_CACHE_OP) & PERF_HW_CACHE_MASK]
++				[(key >> PERF_HW_CACHE_RESULT) & PERF_HW_CACHE_MASK] = value;
++		}
++
++	return 0;
++}
+ 
+ static int __init init_hw_perf_events(void)
+ {
+-	struct device_node *node = of_find_node_by_type(NULL, "pmu");
+-	const struct of_device_id *of_id;
++	struct device_node *node = of_find_compatible_node(NULL, NULL, "riscv,pmu");
+ 
+-	riscv_pmu = &riscv_base_pmu;
++	if (node)
++		init_riscv_pmu(node);
+ 
+-	if (node) {
+-		of_id = of_match_node(riscv_pmu_of_ids, node);
+-
+-		if (of_id)
+-			riscv_pmu = of_id->data;
+-		of_node_put(node);
+-	}
++	/* Even if there is no pmu node in DT, we reach here for base PMU. */
++	perf_pmu_register(riscv_pmu.pmu, "cpu", PERF_TYPE_RAW);
+ 
+-	perf_pmu_register(riscv_pmu->pmu, "cpu", PERF_TYPE_RAW);
+ 	return 0;
+ }
+ arch_initcall(init_hw_perf_events);
 -- 
 2.27.0
 
