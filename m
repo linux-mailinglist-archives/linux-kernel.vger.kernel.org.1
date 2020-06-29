@@ -2,92 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1B320D85B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 070C820D88F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387452AbgF2Tia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387450AbgF2Tho (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:37:44 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE9AC02A573
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:40:51 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id n6so15541065otl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:40:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e2yPHKowUi96Vn2b3DOoicWlqu6R072c9j8HQHzbwdU=;
-        b=qJOEMzB7xbxdQjpO+XL5H0gKfxvjsVXEi6ZaHyfxCFOI5uO9ZlyJzc3O6PJoV2fkmv
-         loacqs6nDBuoGABmSYSH7aZL4osJDtZbvQzHSUGu1mmO/EEXyyV3RGKTlb+LYOiNz6eK
-         qjEkdk1p9Z2GTjVS7xRdj1ocEXJL9XX/jBQ03tgMrwLsf1aDakKhjRRtrqfRSryeO0K+
-         o+Hv92Tx+nGSK1WzW7EvZjrBFhJc8infvGvOVcLjEJ3Q9BgyTayq9rWYD5nsP2BYmsiw
-         55XmrnGd/w3ufr6QwTCIFKgnkXF+y94EJDQL1UEM8MxNA17C2VJYFjNrmrx5QdB7q/6q
-         zWgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e2yPHKowUi96Vn2b3DOoicWlqu6R072c9j8HQHzbwdU=;
-        b=MPetrr2mB0/dLnabLs/wOWYBlkN06B/BeVn8BO5D50+4kEUAgHSB6LsnX6kbCo0Ial
-         VF1y0mi7X+KpNK3b8wrQhx7BbcEXU8+hqKsrwv0GVbcC11x90BZotHombcM6nAJrUAxr
-         QlBwvULLnqSm1KCZUhV6/Tw4JmTVONM4geoibqOHH6lkW7S0OkCoGYlUIk4x7XEInckM
-         yZyGOuihrJDVhwxwRZXZSXU550q+It3FGkyh8opUExYlZqGQkc9HQCLu3pqSRVDpmJki
-         ZArBb6/SLZpNYKmWD99qQ9J5VKHne09XoCXGrAxH5PNSG0NCzmT8Zr/KQR2bKnk5225r
-         M+Hw==
-X-Gm-Message-State: AOAM530C5utNzzm3OQN7LxtDsFaYJ1IcNW47P4NG0SV5vIS4YZWZvevK
-        Lrlm4fpfNbpQOU5HMNuq0ktcZLAcsMCyakopJnw=
-X-Google-Smtp-Source: ABdhPJw7kEzXBxJJnUuNUUoU45XMZoYtBPe0snAmYN8gjM/GZ/pcyzUWVZ8CWfI2On4ChM+3h/EaYLLVeEcrx/mUa+o=
-X-Received: by 2002:a9d:2c26:: with SMTP id f35mr13978875otb.232.1593438050647;
- Mon, 29 Jun 2020 06:40:50 -0700 (PDT)
+        id S1733105AbgF2TkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:40:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:41800 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731818AbgF2Tjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:39:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2974A1509;
+        Mon, 29 Jun 2020 06:40:57 -0700 (PDT)
+Received: from bogus (unknown [10.37.12.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AA0C43F73C;
+        Mon, 29 Jun 2020 06:40:54 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 14:40:47 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "geert+renesas@glider.be" <geert+renesas@glider.be>,
+        "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH/RFC v4 2/4] regulator: fixed: add regulator_ops members
+ for suspend/resume
+Message-ID: <20200629134011.GA23284@bogus>
+References: <1593163942-5087-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <1593163942-5087-3-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <20200626143914.GE5289@sirena.org.uk>
+ <TY2PR01MB3692A3B12CEF7F9708A8A59CD86E0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+ <20200629125756.GC5499@sirena.org.uk>
 MIME-Version: 1.0
-References: <20200625140105.14999-1-TheSven73@gmail.com> <20200625140105.14999-2-TheSven73@gmail.com>
- <CAOMZO5AWiHWSLAcd=dj9dDFj8jLPAVAuoiOAJ8qKGPwRq1Q41g@mail.gmail.com>
-In-Reply-To: <CAOMZO5AWiHWSLAcd=dj9dDFj8jLPAVAuoiOAJ8qKGPwRq1Q41g@mail.gmail.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Mon, 29 Jun 2020 09:40:38 -0400
-Message-ID: <CAGngYiXJy4ASTNfT+R+qzJ3wA=Wy2h6XZm+8oo09sD+Jmse02w@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] ARM: imx6plus: enable internal routing of
- clk_enet_ref where possible
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Fugang Duan <fugang.duan@nxp.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629125756.GC5499@sirena.org.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio,
-
-On Mon, Jun 29, 2020 at 9:10 AM Fabio Estevam <festevam@gmail.com> wrote:
+On Mon, Jun 29, 2020 at 01:57:56PM +0100, Mark Brown wrote:
+> On Mon, Jun 29, 2020 at 02:42:26AM +0000, Yoshihiro Shimoda wrote:
+> > > From: Mark Brown, Sent: Friday, June 26, 2020 11:39 PM
 >
-> I have tested this series on an imx6qp sabresd and unfortunately, it
-> breaks Ethernet as I can no longer get an IP address from the DHCP
-> server.
+> Copying in Sudeep for the feedback on firmware interfaces.
+>
 
-Thank you for testing this out on a different platform !
+Thanks Mark.
 
-I had a look at how things are done in the Freescale fork of the kernel
-(5.4.24_2.1.0) and I noticed that this kernel has almost the same
-behaviour as this proposed patch: the GPR5 bit is _always_ set
-on a plus. The code does not check how the enet clock is generated.
+> > > According to the changelog this is all about reflecting changes in the
+> > > system state done by firmware but there's no interaction with firmware
+> > > here which means this will be at best fragile.  If we need to reflect
+> > > changes in firmware configuration I'd expect there to be some
+> > > interaction with firmware about how it is configured, or at least that
+> > > the configuration would come from the same source.
+>
 
-https://source.codeaurora.org/external/imx/linux-imx/tree/arch/arm/mach-imx/mach-imx6q.c?h=rel_imx_5.4.24_2.1.0&id=babac008e5cf168abca1a85bda2e8071ca27a5c0#n269
+I agree.
 
-Now, I'm assuming that the sabresd-plus can run on the Freescale
-kernel fork. The GPR5 bit will always be set there.
+> > I should have described background of previous patch series though,
+> > according to previous discussion [1] the firmware side (like PSCI) is
+> > also fragile unfortunately... So, I thought using regulator-off-in-suspend
+> > in a regulator was better.
+>
 
-So why won't mainline work with this patch? What have I overlooked?
+Please fix the firmware. You might have bigger problem than this if the
+PSCI firmware is fragile as you state. Better to disable power management
+on the platform if the firmware can't be fixed.
 
-I'm sure you've checked that sabresd ethernet works ok on mainline
-even without this patch?
+> > On other hand, Ulf is talking about either adding a property (perhaps like
+> > regulator-off-in-suspend) into a regulator or just adding a new property
+> > into MMC [2]. What do you think about Ulf' comment? I'm thinking
+> > adding a new property "full-pwr-cycle-in-suspend" is the best solution.
+> > This is because using a regulator property and reflecting a state of regulator without
+> > firmware is fragile, as you said.
+
+I haven't followed all the threads, but if it related to the policy you
+want in the Linux, then may be use DT property or something. I don't know.
+But if this is to indicate something based on firmware runtime/configuration,
+then NACK for any approaches unconditionally.
+
+>
+> TBH I worry about a property drifting out of sync with the firmware on
+> systems where the firmware can be updated.  Personally my default
+> assumption would always be that we're going to loose power for anything
+> except the RAM and whatever is needed for wake sources during suspend so
+> I find the discussion a bit surprising but in any case that seems like a
+> better option than trying to shoehorn things in the way the series here
+> did.  Like I said in my earlier replies if this is done through the
+> regulator API I'd expect it to be via the suspend interface.
+>
+
++1. If this platform needs Linux to keep some state on for users in the
+firmware or anything outside Linux, it must resume back in the same state
+as we entered the suspend state from the kernel.
+
+--
+Regards,
+Sudeep
