@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C5C20D164
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6BC20D14E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728997AbgF2Slo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:41:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60598 "EHLO mail.kernel.org"
+        id S1727053AbgF2SkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:40:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726990AbgF2Slc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:41:32 -0400
+        id S1726726AbgF2SkP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:40:15 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB48F23ECE;
-        Mon, 29 Jun 2020 15:18:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BF1D23F36;
+        Mon, 29 Jun 2020 15:18:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593443901;
-        bh=ooaYo2UWxBuWMktj2MkFM4Eulu1UWspFb8hoIGx+cj4=;
+        s=default; t=1593443913;
+        bh=Fu4hmcKPJbjvLpgyOOO6j+b6QwUhVvN5cGmQQ/V6jnE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A+KVZViAIDeJ6Das8WNnMJ8WJpD+ALcYd5yMt+/LrqttKoe5+qpivajAFARbJ337i
-         BjsnBMq1Z+qCaQ5eCgobZjf17EEzfOLJfepkJJxxD2T1mgmMWemqc+NmkwDOZWX750
-         vjpPr42T3g75/mYEn/Q8TqQ822Ea07nf5VGkaQLk=
+        b=aDbix2nrhX7+q+dyahnlQUTqkSsj6HBq1Thjy9WajrE1XEy25uojFesCS3opDL6KC
+         4ZOiLxBGvGJ2bkBu20wcBRPyeAkVZmpFKMc720f07KZAvnSy2SsOn0mRXBmxlJJ9/T
+         lvdfkyR8ohMP+1bC7eWzh0VLDAJiD1wxcljAzTAk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S . Miller" <davem@davemloft.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.7 001/265] spi: spi-fsl-dspi: Free DMA memory with matching function
-Date:   Mon, 29 Jun 2020 11:13:54 -0400
-Message-Id: <20200629151818.2493727-2-sashal@kernel.org>
+Subject: [PATCH 5.7 013/265] net: ethtool: add missing string for NETIF_F_GSO_TUNNEL_REMCSUM
+Date:   Mon, 29 Jun 2020 11:14:06 -0400
+Message-Id: <20200629151818.2493727-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629151818.2493727-1-sashal@kernel.org>
 References: <20200629151818.2493727-1-sashal@kernel.org>
@@ -50,72 +49,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Alexander Lobakin <alobakin@pm.me>
 
-commit 03fe7aaf0c3d40ef7feff2bdc7180c146989586a upstream.
+[ Upstream commit b4730ae6a443afe611afb4fb651c885c51003c15 ]
 
-Driver allocates DMA memory with dma_alloc_coherent() but frees it with
-dma_unmap_single().
+Commit e585f2363637 ("udp: Changes to udp_offload to support remote
+checksum offload") added new GSO type and a corresponding netdev
+feature, but missed Ethtool's 'netdev_features_strings' table.
+Give it a name so it will be exposed to userspace and become available
+for manual configuration.
 
-This causes DMA warning during system shutdown (with DMA debugging) on
-Toradex Colibri VF50 module:
+v3:
+ - decouple from "netdev_features_strings[] cleanup" series;
+ - no functional changes.
 
-    WARNING: CPU: 0 PID: 1 at ../kernel/dma/debug.c:1036 check_unmap+0x3fc/0xb04
-    DMA-API: fsl-edma 40098000.dma-controller: device driver frees DMA memory with wrong function
-      [device address=0x0000000087040000] [size=8 bytes] [mapped as coherent] [unmapped as single]
-    Hardware name: Freescale Vybrid VF5xx/VF6xx (Device Tree)
-      (unwind_backtrace) from [<8010bb34>] (show_stack+0x10/0x14)
-      (show_stack) from [<8011ced8>] (__warn+0xf0/0x108)
-      (__warn) from [<8011cf64>] (warn_slowpath_fmt+0x74/0xb8)
-      (warn_slowpath_fmt) from [<8017d170>] (check_unmap+0x3fc/0xb04)
-      (check_unmap) from [<8017d900>] (debug_dma_unmap_page+0x88/0x90)
-      (debug_dma_unmap_page) from [<80601d68>] (dspi_release_dma+0x88/0x110)
-      (dspi_release_dma) from [<80601e4c>] (dspi_shutdown+0x5c/0x80)
-      (dspi_shutdown) from [<805845f8>] (device_shutdown+0x17c/0x220)
-      (device_shutdown) from [<80143ef8>] (kernel_restart+0xc/0x50)
-      (kernel_restart) from [<801441cc>] (__do_sys_reboot+0x18c/0x210)
-      (__do_sys_reboot) from [<80100060>] (ret_fast_syscall+0x0/0x28)
-    DMA-API: Mapped at:
-     dma_alloc_attrs+0xa4/0x130
-     dspi_probe+0x568/0x7b4
-     platform_drv_probe+0x6c/0xa4
-     really_probe+0x208/0x348
-     driver_probe_device+0x5c/0xb4
+v2:
+ - don't split the "Fixes:" tag across lines;
+ - no functional changes.
 
-Fixes: 90ba37033cb9 ("spi: spi-fsl-dspi: Add DMA support for Vybrid")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1591803717-11218-1-git-send-email-krzk@kernel.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: e585f2363637 ("udp: Changes to udp_offload to support remote checksum offload")
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-fsl-dspi.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ net/ethtool/common.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-index 2e9f9adc59003..88176eaca448f 100644
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -584,14 +584,14 @@ static void dspi_release_dma(struct fsl_dspi *dspi)
- 		return;
- 
- 	if (dma->chan_tx) {
--		dma_unmap_single(dma->chan_tx->device->dev, dma->tx_dma_phys,
--				 dma_bufsize, DMA_TO_DEVICE);
-+		dma_free_coherent(dma->chan_tx->device->dev, dma_bufsize,
-+				  dma->tx_dma_buf, dma->tx_dma_phys);
- 		dma_release_channel(dma->chan_tx);
- 	}
- 
- 	if (dma->chan_rx) {
--		dma_unmap_single(dma->chan_rx->device->dev, dma->rx_dma_phys,
--				 dma_bufsize, DMA_FROM_DEVICE);
-+		dma_free_coherent(dma->chan_rx->device->dev, dma_bufsize,
-+				  dma->rx_dma_buf, dma->rx_dma_phys);
- 		dma_release_channel(dma->chan_rx);
- 	}
- }
+diff --git a/net/ethtool/common.c b/net/ethtool/common.c
+index 423e640e3876d..7f7fff88c5d3e 100644
+--- a/net/ethtool/common.c
++++ b/net/ethtool/common.c
+@@ -40,6 +40,7 @@ const char netdev_features_strings[NETDEV_FEATURE_COUNT][ETH_GSTRING_LEN] = {
+ 	[NETIF_F_GSO_UDP_TUNNEL_BIT] =	 "tx-udp_tnl-segmentation",
+ 	[NETIF_F_GSO_UDP_TUNNEL_CSUM_BIT] = "tx-udp_tnl-csum-segmentation",
+ 	[NETIF_F_GSO_PARTIAL_BIT] =	 "tx-gso-partial",
++	[NETIF_F_GSO_TUNNEL_REMCSUM_BIT] = "tx-tunnel-remcsum-segmentation",
+ 	[NETIF_F_GSO_SCTP_BIT] =	 "tx-sctp-segmentation",
+ 	[NETIF_F_GSO_ESP_BIT] =		 "tx-esp-segmentation",
+ 	[NETIF_F_GSO_UDP_L4_BIT] =	 "tx-udp-segmentation",
 -- 
 2.25.1
 
