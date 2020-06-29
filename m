@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7D020D289
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC4820D210
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729455AbgF2SuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:50:04 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:49407 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729281AbgF2SuB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:50:01 -0400
+        id S1729157AbgF2SqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:46:14 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:45611 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728632AbgF2SqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:46:10 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593456600; h=Content-Transfer-Encoding: MIME-Version:
+ s=smtp; t=1593456370; h=Content-Transfer-Encoding: MIME-Version:
  References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=6+m2NylI/67mo3h/rBMfzfIIuvn/OkghJLXIWt5F+PU=; b=w0fGtMeFkqY9zVCWT+bmOBwqxJLB14rfTiKbMyfx6adeiJsTqs/5m8PpszhoYbxKaTmJjkfH
- 1Hb0XKZEnM8TylNcc3yOxu9MCN7ahGAQKCCGcsR3yCakQ+KmoGluIzYhkHFMUUcEAd8XR0GW
- h+fKaVGgyBMO//yduU9ofOhu4hY=
-X-Mailgun-Sending-Ip: 104.130.122.29
+ Sender; bh=Nlv7Rf/jfB8kGSXWgVtT7Chuv1kVyM09QN/RDs/cbeU=; b=Bx6hKf+3jHdK3G36ncw5LzZWbaUart3DlH0l9Fc5iFHT2fxMsdrECYXWslBmbZbAQiIGhHQE
+ ZOFyAX4n2LbRPwb/BwlW9Hnn39STEqdx+wDBcbmMHYOo54vHO0WP84QWzpnuaU1ATiT5n718
+ 49iNaXEPJ65Yg8PVLwkkL7W+/Zs=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
  smtp-out-n16.prod.us-west-2.postgun.com with SMTP id
- 5efa0e89f3deea03f3b232e7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 15:53:45
+ 5efa0ea33a8a8b20b87b614e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 15:54:11
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F0F6EC433C6; Mon, 29 Jun 2020 15:53:44 +0000 (UTC)
+        id 2259AC4339C; Mon, 29 Jun 2020 15:54:11 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -37,9 +36,9 @@ Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Out
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 984A3C433C8;
-        Mon, 29 Jun 2020 15:53:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 984A3C433C8
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F1193C43395;
+        Mon, 29 Jun 2020 15:54:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F1193C43395
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
 From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
@@ -60,9 +59,9 @@ Cc:     iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
         Stephen Boyd <swboyd@chromium.org>,
         Matthias Kaehlcke <mka@chromium.org>,
         Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv3 3/7] iommu/arm-smmu: Add domain attribute for system cache
-Date:   Mon, 29 Jun 2020 21:22:46 +0530
-Message-Id: <134a67a32813dba111e9b888244d8ca44ab15f84.1593344119.git.saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv3 6/7] drm/msm: rearrange the gpu_rmw() function
+Date:   Mon, 29 Jun 2020 21:22:49 +0530
+Message-Id: <9a39c39a9d96664c91175b845eaacda63d712adb.1593344119.git.saiprakash.ranjan@codeaurora.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1593344119.git.saiprakash.ranjan@codeaurora.org>
 References: <cover.1593344119.git.saiprakash.ranjan@codeaurora.org>
@@ -73,83 +72,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add iommu domain attribute for using system cache aka last level
-cache by client drivers like GPU to set right attributes for caching
-the hardware pagetables into the system cache.
+From: Sharat Masetty <smasetty@codeaurora.org>
 
+The register read-modify-write construct is generic enough
+that it can be used by other subsystems as needed, create
+a more generic rmw() function and have the gpu_rmw() use
+this new function.
+
+Signed-off-by: Sharat Masetty <smasetty@codeaurora.org>
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
 Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 ---
- drivers/iommu/arm-smmu.c | 17 +++++++++++++++++
- drivers/iommu/arm-smmu.h |  1 +
- include/linux/iommu.h    |  1 +
- 3 files changed, 19 insertions(+)
+ drivers/gpu/drm/msm/msm_drv.c | 8 ++++++++
+ drivers/gpu/drm/msm/msm_drv.h | 1 +
+ drivers/gpu/drm/msm/msm_gpu.h | 5 +----
+ 3 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-index b2564f93d685..71b6f7038423 100644
---- a/drivers/iommu/arm-smmu.c
-+++ b/drivers/iommu/arm-smmu.c
-@@ -897,6 +897,9 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
- 			goto out_unlock;
- 	}
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 0c219b954943..5aa070929220 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -166,6 +166,14 @@ u32 msm_readl(const void __iomem *addr)
+ 	return val;
+ }
  
-+	if (smmu_domain->sys_cache)
-+		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_SYS_CACHE;
++void msm_rmw(void __iomem *addr, u32 mask, u32 or)
++{
++	u32 val = msm_readl(addr);
 +
- 	if (smmu_domain->non_strict)
- 		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
- 
-@@ -1732,6 +1735,9 @@ static int arm_smmu_domain_get_attr(struct iommu_domain *domain,
- 		case DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE:
- 			*(int *)data = smmu_domain->non_strict;
- 			return 0;
-+		case DOMAIN_ATTR_SYS_CACHE:
-+			*((int *)data) = smmu_domain->sys_cache;
-+			return 0;
- 		default:
- 			return -ENODEV;
- 		}
-@@ -1763,6 +1769,17 @@ static int arm_smmu_domain_set_attr(struct iommu_domain *domain,
- 			else
- 				smmu_domain->stage = ARM_SMMU_DOMAIN_S1;
- 			break;
-+		case DOMAIN_ATTR_SYS_CACHE:
-+			if (smmu_domain->smmu) {
-+				ret = -EPERM;
-+				goto out_unlock;
-+			}
++	val &= ~mask;
++	msm_writel(val | or, addr);
++}
 +
-+			if (*((int *)data))
-+				smmu_domain->sys_cache = true;
-+			else
-+				smmu_domain->sys_cache = false;
-+			break;
- 		default:
- 			ret = -ENODEV;
- 		}
-diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
-index 4a335ef3d97a..bbae48bdc022 100644
---- a/drivers/iommu/arm-smmu.h
-+++ b/drivers/iommu/arm-smmu.h
-@@ -348,6 +348,7 @@ struct arm_smmu_domain {
- 	struct iommu_domain		domain;
- 	struct device			*dev;	/* Device attached to this domain */
- 	bool				aux;
-+	bool				sys_cache;
- };
+ struct msm_vblank_work {
+ 	struct work_struct work;
+ 	int crtc_id;
+diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+index 983a8b7e5a74..5bb02ccb863a 100644
+--- a/drivers/gpu/drm/msm/msm_drv.h
++++ b/drivers/gpu/drm/msm/msm_drv.h
+@@ -417,6 +417,7 @@ void __iomem *msm_ioremap(struct platform_device *pdev, const char *name,
+ 		const char *dbgname);
+ void msm_writel(u32 data, void __iomem *addr);
+ u32 msm_readl(const void __iomem *addr);
++void msm_rmw(void __iomem *addr, u32 mask, u32 or);
  
- struct arm_smmu_cb {
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 2388117641f1..a48edbebe3cb 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -125,6 +125,7 @@ enum iommu_attr {
- 	DOMAIN_ATTR_NESTING,	/* two stages of translation */
- 	DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE,
- 	DOMAIN_ATTR_PGTABLE_CFG,
-+	DOMAIN_ATTR_SYS_CACHE,
- 	DOMAIN_ATTR_MAX,
- };
+ struct msm_gpu_submitqueue;
+ int msm_submitqueue_init(struct drm_device *drm, struct msm_file_private *ctx);
+diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
+index f1762b77bea8..3519777c8cb2 100644
+--- a/drivers/gpu/drm/msm/msm_gpu.h
++++ b/drivers/gpu/drm/msm/msm_gpu.h
+@@ -232,10 +232,7 @@ static inline u32 gpu_read(struct msm_gpu *gpu, u32 reg)
  
+ static inline void gpu_rmw(struct msm_gpu *gpu, u32 reg, u32 mask, u32 or)
+ {
+-	uint32_t val = gpu_read(gpu, reg);
+-
+-	val &= ~mask;
+-	gpu_write(gpu, reg, val | or);
++	msm_rmw(gpu->mmio + (reg << 2), mask, or);
+ }
+ 
+ static inline u64 gpu_read64(struct msm_gpu *gpu, u32 lo, u32 hi)
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
 of Code Aurora Forum, hosted by The Linux Foundation
