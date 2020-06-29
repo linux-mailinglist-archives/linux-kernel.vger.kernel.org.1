@@ -2,72 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1910820D541
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C982B20D50B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730200AbgF2TQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:16:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
+        id S1731663AbgF2TOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731776AbgF2TOW (ORCPT
+        with ESMTP id S1731553AbgF2TNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:14:22 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1868C0147C3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:25:08 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id c1so452976pja.5
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:25:08 -0700 (PDT)
+        Mon, 29 Jun 2020 15:13:53 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69011C008742;
+        Mon, 29 Jun 2020 01:29:40 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id u9so3209957pls.13;
+        Mon, 29 Jun 2020 01:29:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=9NfPVc9X1tGAaTQ7LTtkR4j1ayN5pMJRPHgx7xTYQLA=;
-        b=LdqciQKkXx0vF40NVmUbSHqVzrdkPFKV3dLzzHZQ0CmTxL0oifFIHpiE1eOCfrV+cj
-         3cVFOU1CWsgeA4WPaCLwixL8fpHf2gD4VmBWCeugFP0phu7dzgx0EP4jXAFdYovq5cJG
-         mqrifK45bUERCQFkFNqN5CCv0cbp9O0w33VxEH9fSjt8seAUkgCj5NWfSlx7GXbXerH+
-         3zTNgotZ4LFOJ+OuIfxb02TkTqZNjsAvm094siM8wm3CPW3Xw1zLi37XGdZb0Rf/F3fj
-         b5purGoOvV/g6TdTCZgkSYAkw1VmcplH6qmVLCU/WwZMug1lxsBcwO8BPtFaLkGUy4cC
-         Y6ig==
+        bh=j855cYiSGakl5HlD4KvWXf0FO1kVCBOsIjwxuw77YFY=;
+        b=Qt7NBYtjMoTWLro+TnOOtAF4Xut4Vos3hIQ6uZCvtttqOvjE/15HTV1Qy1EOTFeq93
+         S+V+eT7ed2ISAJHkug/YDQk6V00THDRnJhoP1B2JuD1Mq++HszZRGphCZAmchWsKyPrH
+         +oTUXsOjLHsc4Xeb5gI57u8hju/lB2UWjt/F3+alaVcZ5+7N4cctz+aXXrcH5DRLub8Y
+         7aaB/IV8A9oTT9hECIHuCDUuAXAgXqNfHrHq3m8ExHcMM1AMT/jSY9DAAL0AxT1fIALP
+         azFzpZZoB+ctyf0c4R18B5TmXmacNW43LW5RA16OnX627iSH+NPPdh8QcVpTk9LYxQxU
+         BhGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=9NfPVc9X1tGAaTQ7LTtkR4j1ayN5pMJRPHgx7xTYQLA=;
-        b=uh8NFNUKLPoW+R7FdQuY8Fvntvk5CaB/RZC+TkBZ6RWmEaNxpNvHDmgjbgI8s0zGwi
-         ftyF7m2UZdBodR48j8JUJzgrp1NnrE8fpsBs1bIafM45p0gV7M0brEiOj3T6SsMaEAqY
-         uduuv81oKViiLXXl+nyfQoktL3YWMNxVPo+FlJMsHxZ3jKS1azuJD0LBoMVKZ46PEDkY
-         Q9WQaog7KdYMYTpRabhX3LExprNd+Z8dwsam35rF+LHDuDbh7gileuOCAkhhLSlRldk1
-         Ayr5eNIZ02FIXfDKnqw0yirmd9xpWqf8Ekx5sKGF0A9j4rRMH7xCYHnwrptCm3hYl/R2
-         CXig==
-X-Gm-Message-State: AOAM5325URMiPZY8PPjBMpsHE6wxFQTqTdfvdN75uFvZFQl5FHifhUpY
-        aEPAawgeXAf+LraX5g+y7+whhQ==
-X-Google-Smtp-Source: ABdhPJyR6iTPdisyGhDmgEwBMsi6ZvJ9kAEpwNBdUll/2hJsHd7ZMJ+XKDb/SY3trQjtVNUA1QgVcA==
-X-Received: by 2002:a17:902:694b:: with SMTP id k11mr13062647plt.245.1593419108221;
-        Mon, 29 Jun 2020 01:25:08 -0700 (PDT)
-Received: from localhost ([122.172.127.76])
-        by smtp.gmail.com with ESMTPSA id u2sm8807092pfl.21.2020.06.29.01.25.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Jun 2020 01:25:07 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>, Arnd Bergmann <arnd@arndb.de>,
-        Ben Segall <bsegall@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-pm@vger.kernel.org, kernel-team@android.com,
-        tkjos@google.com, adharmap@codeaurora.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Quentin Perret <qperret@google.com>
-Subject: [PATCH V4 0/3] cpufreq: Allow default governor on cmdline and fix locking issues
-Date:   Mon, 29 Jun 2020 13:54:57 +0530
-Message-Id: <cover.1593418662.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        bh=j855cYiSGakl5HlD4KvWXf0FO1kVCBOsIjwxuw77YFY=;
+        b=dLxN3EkaUT2DFvTH0HuZlLy8E0LeFGxDFx+BjLyCFQcE3+/mP3MND3OhcVc7/myDOL
+         jZnZFzq+oQclrTEF8Qw+D0X8IumZpsXkO+Tf+XdS56fr1mfqKi+cIFxOuua3xr7VT/jt
+         CrkeFCYZPRAYd4qtRZRcSjphjtVDJmckancXFz/XDyRtJPB3QIyZtgOR0+EzGCNZiOZq
+         aIuI1KVRwJMqA0kHtroxEUYUc3z9Ifm2Q2b676Q/6jFgHMq+nbfyIqp39g4/0GiGRmhk
+         ezPbERmKsGhls4en0h7254U5sWZwc+SRpccLKR9H4E6RpTIm1nf0jWoUJpL2vgGNqnyX
+         kQ0Q==
+X-Gm-Message-State: AOAM532kTqBLlsMCVOGxbFalCsQ/C97Cft32ffs8n9c3ng7sFl7urQzT
+        e+Mo1InHYlKp6i49tOWzW6Q=
+X-Google-Smtp-Source: ABdhPJwm9mW0Fufp4shSPDWzVwPHl0w3nrVEErBgiMOkUomzsXXC/S8WUFdAwiXgffxdnBn4BOzsyQ==
+X-Received: by 2002:a17:902:8342:: with SMTP id z2mr12605998pln.300.1593419379930;
+        Mon, 29 Jun 2020 01:29:39 -0700 (PDT)
+Received: from varodek.localdomain ([106.210.40.90])
+        by smtp.gmail.com with ESMTPSA id 202sm9133790pfw.84.2020.06.29.01.29.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 01:29:39 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Manish Chopra <manishc@marvell.com>,
+        GR-Linux-NIC-Dev@marvell.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org
+Subject: [PATCH v1 0/4] drivers/staging: use generic power management
+Date:   Mon, 29 Jun 2020 13:58:15 +0530
+Message-Id: <20200629082819.216405-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -75,70 +70,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Linux Kernel Mentee: Remove Legacy Power Management.
 
-I have picked Quentin's series over my patch, modified both and tested.
+The purpose of this patch series is to remove legacy power management callbacks
+from amd ethernet drivers.
 
-V3->V4:
-- Do __module_get() for cpufreq_default_governor() case as well and get
-  rid of an extra variable.
-- Use a single character array, default_governor, instead of two of them.
+The callbacks performing suspend() and resume() operations are still calling
+pci_save_state(), pci_set_power_state(), etc. and handling the power management
+themselves, which is not recommended.
 
-V2->V3:
-- default_governor is a string now and we don't set it on governor
-  registration or unregistration anymore.
-- Fixed locking issues in cpufreq_init_policy().
+The conversion requires the removal of the those function calls and change the
+callback definition accordingly and make use of dev_pm_ops structure.
 
---
-Viresh
+All patches are compile-tested only.
 
-Original cover letter fro Quentin:
+Vaibhav Gupta (4):
+  qlge/qlge_main.c: use genric power management
+  staging/rtl8192e: use generic power management
+  rts5208/rtsx.c: use generic power management
+  vt6655/device_main.c: use generic power management
 
-This series enables users of prebuilt kernels (e.g. distro kernels) to
-specify their CPUfreq governor of choice using the kernel command line,
-instead of having to wait for the system to fully boot to userspace to
-switch using the sysfs interface. This is helpful for 2 reasons:
-  1. users get to choose the governor that runs during the actual boot;
-  2. it simplifies the userspace boot procedure a bit (one less thing to
-     worry about).
-
-To enable this, the first patch moves all governor init calls to
-core_initcall, to make sure they are registered by the time the drivers
-probe. This should be relatively low impact as registering a governor
-is a simple procedure (it gets added to a llist), and all governors
-already load at core_initcall anyway when they're set as the default
-in Kconfig. This also allows to clean-up the governors' init/exit code,
-and reduces boilerplate.
-
-The second patch introduces the new command line parameter, inspired by
-its cpuidle counterpart. More details can be found in the respective
-patch headers.
-
-Changes in v2:
- - added Viresh's ack to patch 01
- - moved the assignment of 'default_governor' in patch 02 to the governor
-   registration path instead of the driver registration (Viresh)
-
-Quentin Perret (2):
-  cpufreq: Register governors at core_initcall
-  cpufreq: Specify default governor on command line
-
-Viresh Kumar (1):
-  cpufreq: Fix locking issues with governors
-
- .../admin-guide/kernel-parameters.txt         |  5 ++
- Documentation/admin-guide/pm/cpufreq.rst      |  6 +-
- .../platforms/cell/cpufreq_spudemand.c        | 26 +-----
- drivers/cpufreq/cpufreq.c                     | 87 ++++++++++++-------
- drivers/cpufreq/cpufreq_conservative.c        | 22 ++---
- drivers/cpufreq/cpufreq_ondemand.c            | 24 ++---
- drivers/cpufreq/cpufreq_performance.c         | 14 +--
- drivers/cpufreq/cpufreq_powersave.c           | 18 +---
- drivers/cpufreq/cpufreq_userspace.c           | 18 +---
- include/linux/cpufreq.h                       | 14 +++
- kernel/sched/cpufreq_schedutil.c              |  6 +-
- 11 files changed, 100 insertions(+), 140 deletions(-)
+ drivers/staging/qlge/qlge_main.c             | 36 +++++---------------
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.c |  5 +--
+ drivers/staging/rtl8192e/rtl8192e/rtl_pm.c   | 26 ++++----------
+ drivers/staging/rtl8192e/rtl8192e/rtl_pm.h   |  4 +--
+ drivers/staging/rts5208/rtsx.c               | 30 +++++-----------
+ drivers/staging/vt6655/device_main.c         | 25 ++++----------
+ 6 files changed, 36 insertions(+), 90 deletions(-)
 
 -- 
-2.25.0.rc1.19.g042ed3e048af
+2.27.0
 
