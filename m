@@ -2,104 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC6D20D26D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B827520D240
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729404AbgF2StC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:49:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39198 "EHLO
+        id S1728104AbgF2Srx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729332AbgF2Srn (ORCPT
+        with ESMTP id S1729360AbgF2Srq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:47:43 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010F7C02E2C0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:58:15 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id h22so10969348lji.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:58:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uCQ8gnTNmCbw3Jp4/ShmxDGjAQ3pvSFd1R7iQkCtV0o=;
-        b=bEMO9AAnWp5LTsNLVdXW9Oe7mzKQhGXAj0e5OEmfEtAkG1cNaFNZSh2Qdo5mWbPuMY
-         9DiqUdT+MsXYwleFvjrGxmVJqwyvuKXhxlQUK3rtF7VdMnvX7cTOhwoxwrJJLOVzNu5i
-         2XK9FlT9eHx+sLquBViH/xZ5rB5rAhbPqcP9GuagM0OXFUt9wlcNzUKNy1aLnFdNwo+V
-         8Ruz/vdEgYh0uNq8BnFoCh6EqK2N49EfB0DJU88m7ryxOsAPu8lNbY+iq10lCSBY9Mui
-         ZPg6x5swpeRbq9anXoM2U2j46UxRzipSI496ZyBwvvY+KYVNwgj+Iwoz/AD7OkkAul0p
-         isLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uCQ8gnTNmCbw3Jp4/ShmxDGjAQ3pvSFd1R7iQkCtV0o=;
-        b=K8z7CbZ7f/bIKEL2UZNNiAyqeJ+zcH+MDRnGYkjcIiq8neWjAMCYMxY2O7dpv9Pb8x
-         ehcrmg7fmNYNAnpjTndqZU3Q03IG+IRfpgfgditp1nqYII2Y0JcZB/fhwEWn4pr8GTfg
-         IbQa79BKkfc91sZ/RHlsT1Q+DWzLzeE9Zlbgm0AmZLVx2AIOOyoNUaksUhbwUyreII/m
-         R/6qDbhVL0ygq8eimHkeQuuGCTglWqJMPsQpF2YO0eqAgX22VMjd6zuyQdN4sw34ArXU
-         VsVSjfGPrXSEOZ9xUPzP+bvjw1Kze5vAPCKRZSdN6z05NZlNF1ccXNWnPi7MFyJ1dk4O
-         m/Yg==
-X-Gm-Message-State: AOAM530fbl4cLveudISBXg4kyHN0JroKLDY0vid0h36KLkR5UueZcxo5
-        Q3eIPacDzYm+58HrABLHDjeyjs41Glu5roQCHEHOsw==
-X-Google-Smtp-Source: ABdhPJyszh+KKJKX6JxEpQEiu36tPTXZ+lFvnrC92R82eADyKCIBV3+TFvVd2yAYiyqz2uUbOeMX15KpV7G5lmjJkoI=
-X-Received: by 2002:a2e:3504:: with SMTP id z4mr8452019ljz.283.1593439093501;
- Mon, 29 Jun 2020 06:58:13 -0700 (PDT)
+        Mon, 29 Jun 2020 14:47:46 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA80C02E2C2;
+        Mon, 29 Jun 2020 06:58:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=qWyNxceE1HxDR9dXe27zL2Runx7nsY5emtD94N5b97s=; b=YN5nfLhHtwAS5bza4algxyhr3
+        6ldxxk2+Hq3tRFjkQMCxV8cQsvoEhWZt9/PN9SG8360DvtYKHX1oxrz3Ur9oAM5hhskUF4KiYfEWX
+        CSFMYP7pm9SOn8nnSVcTO46vMYVSiqGsSBiLR5HvhrUTWss1B7chmVvaXYnYJ+UCY00CoUT4lW5Ej
+        b4f7DRoLGKoGp1FICS/Fq59Ku4k14U9e/ndBjLuJhoCUTHXxQ4cLt0DBRd8i8K02b8A3YtRXjflsx
+        6qw9FNQTxUBiG/PsY9W93rkyr36N60B6TZtbC5ly3vYr2Le3wHaFJL5kKKTQjpNvtGnHkIkl0NXY/
+        JRlhlr9VA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33104)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jpuJ4-0007h0-CS; Mon, 29 Jun 2020 14:58:46 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jpuJ0-0007AW-Al; Mon, 29 Jun 2020 14:58:42 +0100
+Date:   Mon, 29 Jun 2020 14:58:42 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     "Madalin Bucur (OSS)" <madalin.bucur@oss.nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florinel Iordache <florinel.iordache@nxp.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        Leo Li <leoyang.li@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v3 4/7] net: phy: add backplane kr driver support
+Message-ID: <20200629135842.GU1551@shell.armlinux.org.uk>
+References: <1592832924-31733-1-git-send-email-florinel.iordache@nxp.com>
+ <1592832924-31733-5-git-send-email-florinel.iordache@nxp.com>
+ <20200622142430.GP279339@lunn.ch>
+ <AM6PR04MB397677E90EFBD9749D01B061EC970@AM6PR04MB3976.eurprd04.prod.outlook.com>
+ <7b12d7f1-9e36-e3ee-7a51-d8d8628e2e6f@gmail.com>
 MIME-Version: 1.0
-References: <20200629123003.1014387-1-lee.jones@linaro.org>
-In-Reply-To: <20200629123003.1014387-1-lee.jones@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 29 Jun 2020 15:58:02 +0200
-Message-ID: <CACRpkdYxRsCmK+3Zu9ywMZD=Y1c4N-27gj-w4eTwpRGGd2=-hw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] crypto: ux500: hash: Add namespacing to hash_init()
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7b12d7f1-9e36-e3ee-7a51-d8d8628e2e6f@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 2:30 PM Lee Jones <lee.jones@linaro.org> wrote:
+On Fri, Jun 26, 2020 at 12:02:05PM -0700, Florian Fainelli wrote:
+> On 6/22/20 8:08 AM, Madalin Bucur (OSS) wrote:
+> > Hi Andrew, the reasons behind this selection:
+> > 
+> > - the PCS that is controlled by the backplane driver belongs to the PHY
+> > layer so the representation as a PHY device is legitimate
+> 
+> That argument makes sense.
 
-> A recent change to the Regulator consumer API (which this driver
-> utilises) add prototypes for the some suspend functions.  These
-> functions require including header file include/linux/suspend.h.
->
-> The following tree of includes affecting this driver will be
-> present:
->
->    In file included from include/linux/elevator.h:6,
->                     from include/linux/blkdev.h:288,
->                     from include/linux/blk-cgroup.h:23,
->                     from include/linux/writeback.h:14,
->                     from include/linux/memcontrol.h:22,
->                     from include/linux/swap.h:9,
->                     from include/linux/suspend.h:5,
->                     from include/linux/regulator/consumer.h:35,
->                     from drivers/crypto/ux500/hash/hash_core.c:28:
->
-> include/linux/elevator.h pulls in include/linux/hashtable.h which
-> contains its own version of hash_init().  This confuses the build
-> system and results in the following error (amongst others):
->
->  drivers/crypto/ux500/hash/hash_core.c:1362:19: error: passing argument 1 of '__hash_init' from incompatible pointer type [-Werror=incompatible-pointer-types]
->  1362 |  return hash_init(req);
->
-> Fix this by namespacing the local hash_init() such that the
-> source of confusion is removed.
->
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: linux-crypto@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+It doesn't when you also are subjected to other parts of NXP arguing
+that the PCS is tightly bound inside the SoC and therefore should be
+effectively a library - as has been discussed in the threads about
+the Lynx PCS.
 
-This looks reasonable.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > - the PHY driver provides the state machine that is required, not using
+> > this representation backplane would need to add a separate, duplicate
+> > state machine
+> 
+> Which is entirely permissible according to the PHY library
+> documentation, not that we have seen many people do it though, even less
+> so when the PHY driver is providing the state machine.
 
-Yours,
-Linus Walleij
+It seems the PHYlib state machine is getting smaller and smaller
+as we move forward; phy_state_machine() is now looking very bare
+compared to what it used to look like.  I think it's not that far
+off being eliminated.
+
+> > - the limitation, that only one PHY layer entity can be managed by the
+> > PHYLib, is a known limitation that always existed, is not introduced by
+> > the backplane support; the unsupported scenario with a backplane connection
+> > to a PHY entity that needs to be managed relates to that limitation and
+> > a solution for it should not be added through the backplane support
+> > - afaik, Russell and Ioana are discussing the PCS representation in the
+> > context of PHYLink, this submission is using PHYLib. If we are to discuss
+> > about the PCS representation, it's the problem of the simplistic "one device
+> > in the PHY layer" issue that needs to be addressed to have a proper PCS
+> > representation at all times.
+> 
+> So would not it make sense for the PCS representation to be settled and
+> then add the backplane driver implementation such that there is no
+> double work happening for Florinel and for reviewers and the PCS
+> implementation als factors in the backplane use case and requirements?
+
+Yes, that is my assessment; there's a lot of work going on in different
+areas in QoriQ networking, and it seems people are pulling things in
+quite diverse directions.
+
+If we're not careful, we're going to end up with the Lynx PCS being
+implemented one way, and backplane PCS being implemented completely
+differently and preventing any hope of having a backplane PCS
+connected to a conventional copper PHY.
+
+I think folk at NXP need to stop, stand back, and look at the bigger
+picture about how they want to integrate all these individual,
+independent strands of development into the kernel, and come up with
+a common approach that also satisfies the mainline kernel, rather
+than having individual discussions with mainline kernel maintainers
+on public lists.  What I'm saying is, it isn't our job to co-ordinate
+between the different parts of NXP - that's fairly and squarely
+NXP's problem to sort out themselves.
+
+So, I think, further progress in public on backplane support needs to
+wait until we have the general situation for PCS resolved.
+
+Makes sense?
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
