@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1140220E3D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD11120E40D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388467AbgF2VSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
+        id S2390524AbgF2VU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729787AbgF2Swt (ORCPT
+        with ESMTP id S1729325AbgF2Sws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:49 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9047C02E2D0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:56 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id b6so16655456wrs.11
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:56 -0700 (PDT)
+        Mon, 29 Jun 2020 14:52:48 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0217FC02E2D1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:59 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 22so15513539wmg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1S50qko1q+z74H3H0J6W5HtpHbtK1gQwgwBXn9Rlvzc=;
-        b=yR7EVA/JfMBOI9U5dnD0dsDVA/IHZqoG8OX+LKynRnDtfmxafybx4Z1ZVUsa0221gw
-         xWauzNcM5+cKRdOuF6YTMKPahxAdgN3yCtQ2Uowy2mLLdVxBF0BHoY3LFCD+i00XyFrc
-         PkkbwMlKAoH7XAYVQW3PZUvDJdSGvHGDQaUTjVJSTqDj48v/pB2GyvTgRn39wWvEtgZ3
-         UfIywRtxHwUjIlNYJ8MwtNNzp+LIKvWmUnesoPvAkV8vDuM3NaVZPWOM4bAVYxOfrwaQ
-         Y8/dgvQKIAtTIPTBVuNfuPVJlfZn65WKu1hoX4o20Zi8VRS2aouROf1cs84TMYqlaoM2
-         95Zw==
+        bh=M622QyXkGImCQOBm9coRWRHenvXfV0A+BN5blU47k6s=;
+        b=hUHcgi2vihm8gXNvlTePM3HpVMkMlur2cTNuCxMxvj+KIjqeq3e8gkHbWaW1YdmXzZ
+         8jjqtglnruE6j5R+lzaQu9fZdxFcvfr1+fxXFIY/TZgE8cmjdG05PtbWEBK2p6YoFSAc
+         ESoURzHQKCCoMmpFTYSoVA96mFuSvZYrh3fVsl5U7gS4TD8kIGhj6LnJBXyXJlQk2qyl
+         4DjC7HmsgszTC7Rt8nzICoJYKVCaCicSoLOKR5PhvNuXAp3boRKRdhjoqdVM6UGhnrSH
+         w48rWMBw1XdQtKe0b63eQl+7z9/yHDPxyDtyOsVXu29tQKp0eH7Fjr4NtXu/Z4bdF5Mc
+         77bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1S50qko1q+z74H3H0J6W5HtpHbtK1gQwgwBXn9Rlvzc=;
-        b=WQRgwpsEpAsPwg5Y/FTA0fYoLjBhysNMM3aOSe0ds0E1h+ThV4j2ysTLzmdy3swcLP
-         Fq5RgdZzwExHMy355W0ruOF1xf+EwSHUZ+PAjcZLsekHViZwuXd4OUO2hurvYvoUtmnU
-         FW/ST2Fj79YLVATvGpfsjnx4gAmu96WdfJkPJaIfyIY4+Ao1a0/OOS5cKXn4vy/9asSz
-         ssX3X7srNqnYvfvc/e3Lqeui352A/E9UmvK3HhZKOCOZfHlxJb7muGRTFHKM83wPnHLy
-         wqImiOAGkJ4EAp4Y8tJhnE+sPqI66HrpIz9zH23QaC+apAyJDTI99eI8a7HBZl++KfMn
-         lTmg==
-X-Gm-Message-State: AOAM531zO/1F0yVwJoOV4yzmyPcstIyotXLRyapnvpwja6i1deHE+6XS
-        JKOoC6zK/LIebMzxIsXcaSWEqQ==
-X-Google-Smtp-Source: ABdhPJw7u+pR3PUUjovhGP29vg+5MVuG3YO6weDsgP3XkESH2uz5kK5iz1fARHNMR2qAFPReAFxLOQ==
-X-Received: by 2002:adf:e901:: with SMTP id f1mr17201511wrm.80.1593439495667;
-        Mon, 29 Jun 2020 07:04:55 -0700 (PDT)
+        bh=M622QyXkGImCQOBm9coRWRHenvXfV0A+BN5blU47k6s=;
+        b=etC9MNfjUlXnrA/XHc+YvVFq8yCXQuX8/goJaJ1wVx9oNA50U5OdlHfN14rPsmV8gl
+         4+qgs0JecKAmjjTZoVkxPSqX6pNXbV5hxA8UN4MUckLW3jKqVGqM5FVp9Jz6t+L2qVy0
+         nm1QZpUtkQUqWzb+nB4tjgfhj65vAk1fzYGZW+q1q9gB1GfX2O2SczGlG9HVOjd3g3dd
+         3unM3Uorq67Q9JxDRgbuRYKSOlMDhXoQi/JV8Rr004iRqShagmleeg/H1rMSP+6SzVf0
+         QEb4T2UYGMemMerDSUf2EPIXlQMNlX6g9WdJJRMNXfh7cvKQ1YeNnG6ikP4i/LLJkcCm
+         bDCQ==
+X-Gm-Message-State: AOAM532g0eTRWileBOo0fWa8A9KZ0WdS+nccBlR7TFWoHOmIi8nUQqcd
+        o5A6orB9qTnhThXWuJoOvITn7A==
+X-Google-Smtp-Source: ABdhPJxHpy4/biSgBzjt0OrJ9J5FM6Wm0UnBQzDsoEPjxlScdZKQtk0/AHSsk+eH8Q4Ea8ol50x1Lw==
+X-Received: by 2002:a1c:cc0d:: with SMTP id h13mr18320824wmb.168.1593439496774;
+        Mon, 29 Jun 2020 07:04:56 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.04.54
+        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.04.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 07:04:55 -0700 (PDT)
+        Mon, 29 Jun 2020 07:04:56 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
         Oded Gabbay <oded.gabbay@gmail.com>,
         Tomer Tayar <ttayar@habana.ai>
-Subject: [PATCH 08/20] misc: habanalabs: goya: goya_coresight: Remove set but unused variable 'val'
-Date:   Mon, 29 Jun 2020 15:04:30 +0100
-Message-Id: <20200629140442.1043957-9-lee.jones@linaro.org>
+Subject: [PATCH 09/20] misc: habanalabs: gaudi: Remove ill placed asterisk from kerneldoc header
+Date:   Mon, 29 Jun 2020 15:04:31 +0100
+Message-Id: <20200629140442.1043957-10-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629140442.1043957-1-lee.jones@linaro.org>
 References: <20200629140442.1043957-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No attempt to check the return value of RREG32() has been made
-since the call was introduced a year ago.
+W=1 kernel builds report a lack of description of gaudi_set_asic_funcs()'s
+'hdev' argument.  In reality it is documented, but the formatting
+was not as expected '@.*:'.  Instead, there was a misplaced asterisk
+which was confusing the kerneldoc validator.
 
-Fixes W=1 kernel build warning:
+Squashes the following W=1 warning:
 
- drivers/misc/habanalabs/goya/goya_coresight.c: In function ‘goya_debug_coresight’:
- drivers/misc/habanalabs/goya/goya_coresight.c:643:6: warning: variable ‘val’ set but not used [-Wunused-but-set-variable]
- 643 | u32 val;
- | ^~~
+ drivers/misc/habanalabs/gaudi/gaudi.c:6746: warning: Function parameter or member 'hdev' not described in 'gaudi_set_asic_funcs'
 
 Cc: Oded Gabbay <oded.gabbay@gmail.com>
 Cc: Tomer Tayar <ttayar@habana.ai>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/habanalabs/goya/goya_coresight.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/misc/habanalabs/gaudi/gaudi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/habanalabs/goya/goya_coresight.c b/drivers/misc/habanalabs/goya/goya_coresight.c
-index 1258724ea5106..aa51fc71f0a1f 100644
---- a/drivers/misc/habanalabs/goya/goya_coresight.c
-+++ b/drivers/misc/habanalabs/goya/goya_coresight.c
-@@ -640,7 +640,6 @@ static int goya_config_spmu(struct hl_device *hdev,
- int goya_debug_coresight(struct hl_device *hdev, void *data)
- {
- 	struct hl_debug_params *params = data;
--	u32 val;
- 	int rc = 0;
- 
- 	switch (params->op) {
-@@ -672,7 +671,7 @@ int goya_debug_coresight(struct hl_device *hdev, void *data)
- 	}
- 
- 	/* Perform read from the device to flush all configuration */
--	val = RREG32(mmPCIE_DBI_DEVICE_ID_VENDOR_ID_REG);
-+	RREG32(mmPCIE_DBI_DEVICE_ID_VENDOR_ID_REG);
- 
- 	return rc;
- }
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index 61f88e9884ce9..bdb9c0080c464 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -6739,7 +6739,7 @@ static const struct hl_asic_funcs gaudi_funcs = {
+ /**
+  * gaudi_set_asic_funcs - set GAUDI function pointers
+  *
+- * @*hdev: pointer to hl_device structure
++ * @hdev: pointer to hl_device structure
+  *
+  */
+ void gaudi_set_asic_funcs(struct hl_device *hdev)
 -- 
 2.25.1
 
