@@ -2,120 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C1F20DB32
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C22CB20DBC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgF2UEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732988AbgF2UEd (ORCPT
+        id S1728009AbgF2UJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:09:30 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:40112 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726943AbgF2UJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:04:33 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20D8C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:04:33 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id b184so1947308pfa.6
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:04:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dTLUsyi9EoNBvYop+SAQkhC6GYIREzqCPpDVHlef0N4=;
-        b=iyegTPlbjhn5HlYQVhbZw8XqrIU7lJKRRk5bmuxEeuSQzinLKXX6CuU8egSe3yPdKD
-         hN4x0leCH3AyDKiaTF3Nb59aff4r2LF1aPPEwtqGfIEB+oZD9/0TJ9jhmlHrykRvmJnl
-         a6cjSj2v7FpsBA9YWOnvcv54vPdfr5mhHAKW4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dTLUsyi9EoNBvYop+SAQkhC6GYIREzqCPpDVHlef0N4=;
-        b=IZKfKnEkp2aT4NKlWIRDOIfFrLG0C68TTdCZpGDqbBd4Azsd4q8HCE7gwS3yAV18wL
-         CradKshH7Yr+tq08sGQLUE66u4HjX4JGZ8q0EPVczxz8mdT6R6OWJy1yQqeLcGbJCj60
-         U84vUJwnZWkYlS6cg4aoAeEhgioFptmOGYAU/5iXT/ZdlQpj54ttFlWMnj17pHUq8DFh
-         Fafz/c+bQ+R+sOLwt2k+lEHDhpB6Ddte+knrEBa/4PH1PLwtfO1zLgmi8DP/UlWjlJox
-         62FbYH0BgDZlQS7CtgdNKryqtdrfJrRj2DCtri9+KIrD3t2uXE9jzXI49n9PPV5S9x3Y
-         9WYQ==
-X-Gm-Message-State: AOAM533m95idJ0mRFwD+Q20T3KkQTNHOACWBId7NtLLz1ztdDSEUu+e6
-        L/v0yjFZ5SMaPVZkPhJvMLCXIw==
-X-Google-Smtp-Source: ABdhPJzdUinj83wjxemEYOkw00z16gQNGulknaX544OOjyQoDtiBgCLUR8nqCuc5q1pH8hR406oB2w==
-X-Received: by 2002:a63:4c08:: with SMTP id z8mr11413821pga.201.1593461073426;
-        Mon, 29 Jun 2020 13:04:33 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h130sm446526pfe.200.2020.06.29.13.04.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 13:04:32 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 13:04:31 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v4 08/17] arm64/mm: Remove needless section quotes
-Message-ID: <202006291301.46FEF3B7@keescook>
-References: <20200629061840.4065483-1-keescook@chromium.org>
- <20200629061840.4065483-9-keescook@chromium.org>
- <CAKwvOd=r6bsBfSZxVYrnbm1Utq==ApWBDjx+0Fxsm90Aq3Jghw@mail.gmail.com>
+        Mon, 29 Jun 2020 16:09:22 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jq05b-0006JU-NI; Mon, 29 Jun 2020 14:09:15 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jq05a-0000cx-I2; Mon, 29 Jun 2020 14:09:15 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     <linux-kernel@vger.kernel.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200625095725.GA3303921@kroah.com>
+        <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+        <20200625120725.GA3493334@kroah.com>
+        <20200625.123437.2219826613137938086.davem@davemloft.net>
+        <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+        <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+        <87y2oac50p.fsf@x220.int.ebiederm.org>
+        <87bll17ili.fsf_-_@x220.int.ebiederm.org>
+Date:   Mon, 29 Jun 2020 15:04:41 -0500
+In-Reply-To: <87bll17ili.fsf_-_@x220.int.ebiederm.org> (Eric W. Biederman's
+        message of "Mon, 29 Jun 2020 14:55:05 -0500")
+Message-ID: <87lfk54p0m.fsf_-_@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOd=r6bsBfSZxVYrnbm1Utq==ApWBDjx+0Fxsm90Aq3Jghw@mail.gmail.com>
+Content-Type: text/plain
+X-XM-SPF: eid=1jq05a-0000cx-I2;;;mid=<87lfk54p0m.fsf_-_@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18jk9MPy/jYN6RjgP7KmdEpIJ9vTl3XBbc=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.8 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,TR_XM_PhishingBody,T_TooManySym_01,XM_B_Phish66
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  2.0 XM_B_Phish66 BODY: Obfuscated XMission
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 TR_XM_PhishingBody Phishing flag in body of message
+X-Spam-DCC: ; sa07 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;<linux-kernel@vger.kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 619 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 12 (2.0%), b_tie_ro: 10 (1.6%), parse: 1.62
+        (0.3%), extract_message_metadata: 29 (4.6%), get_uri_detail_list: 4.8
+        (0.8%), tests_pri_-1000: 44 (7.1%), tests_pri_-950: 1.37 (0.2%),
+        tests_pri_-900: 0.99 (0.2%), tests_pri_-90: 146 (23.6%), check_bayes:
+        144 (23.3%), b_tokenize: 17 (2.7%), b_tok_get_all: 12 (1.9%),
+        b_comp_prob: 2.7 (0.4%), b_tok_touch_all: 109 (17.6%), b_finish: 0.94
+        (0.2%), tests_pri_0: 371 (59.9%), check_dkim_signature: 0.56 (0.1%),
+        check_dkim_adsp: 2.0 (0.3%), poll_dns_idle: 0.59 (0.1%), tests_pri_10:
+        2.1 (0.3%), tests_pri_500: 7 (1.1%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH v2 10/15] exec: Remove do_execve_file
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 12:53:47PM -0700, Nick Desaulniers wrote:
-> On Sun, Jun 28, 2020 at 11:18 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > Fix a case of needless quotes in __section(), which Clang doesn't like.
-> >
-> > Acked-by: Will Deacon <will@kernel.org>
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> 
-> Yep, I remember bugs from this.  Probably should scan the kernel for
-> other instances of this.  +Joe for checkpatch.pl validation.
 
-I think the others are safe because they're in macros:
+Now that the last callser has been removed remove this code from exec.
 
-$ git grep -4 '__section("'
-include/linux/compiler.h-# define KENTRY(sym)                                           \
-include/linux/compiler.h-       extern typeof(sym) sym;                                 \
-include/linux/compiler.h-       static const unsigned long __kentry_##sym               \
-include/linux/compiler.h-       __used                                                  \
-include/linux/compiler.h:       __section("___kentry" "+" #sym )                        \
-include/linux/compiler.h-       = (unsigned long)&sym;
---
-include/linux/export.h-#define __ksym_marker(sym)       \
-include/linux/export.h: static int __ksym_marker_##sym[0] __section(".discard.ksym") __used
---
-include/linux/srcutree.h-# define __DEFINE_SRCU(name, is_static)                                \
-include/linux/srcutree.h-       is_static struct srcu_struct name;                              \
-include/linux/srcutree.h-       struct srcu_struct * const __srcu_struct_##name                 \
-include/linux/srcutree.h:               __section("___srcu_struct_ptrs") = &name
+For anyone thinking of resurrecing do_execve_file please note that
+the code was buggy in several fundamental ways.
 
+- It did not ensure the file it was passed was read-only and that
+  deny_write_access had been called on it.  Which subtlely breaks
+  invaniants in exec.
 
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+- The caller of do_execve_file was expected to hold and put a
+  reference to the file, but an extra reference for use by exec was
+  not taken so that when exec put it's reference to the file an
+  underflow occured on the file reference count.
 
-Thanks!
+- The point of the interface was so that a pathname did not need to
+  exist.  Which breaks pathname based LSMs.
 
+Tetsuo Handa originally reported these issues[1].  While it was clear
+that deny_write_access was missing the fundamental incompatibility
+with the passed in O_RDWR filehandle was not immediately recognized.
+
+All of these issues were fixed by modifying the usermode driver code
+to have a path, so it did not need this hack.
+
+Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+[1] https://lore.kernel.org/linux-fsdevel/2a8775b4-1dd5-9d5c-aa42-9872445e0942@i-love.sakura.ne.jp/
+Link: https://lkml.kernel.org/r/871rm2f0hi.fsf_-_@x220.int.ebiederm.org
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ fs/exec.c               | 38 +++++++++-----------------------------
+ include/linux/binfmts.h |  1 -
+ 2 files changed, 9 insertions(+), 30 deletions(-)
+
+diff --git a/fs/exec.c b/fs/exec.c
+index e6e8a9a70327..23dfbb820626 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1818,13 +1818,14 @@ static int exec_binprm(struct linux_binprm *bprm)
+ /*
+  * sys_execve() executes a new program.
+  */
+-static int __do_execve_file(int fd, struct filename *filename,
+-			    struct user_arg_ptr argv,
+-			    struct user_arg_ptr envp,
+-			    int flags, struct file *file)
++static int do_execveat_common(int fd, struct filename *filename,
++			      struct user_arg_ptr argv,
++			      struct user_arg_ptr envp,
++			      int flags)
+ {
+ 	char *pathbuf = NULL;
+ 	struct linux_binprm *bprm;
++	struct file *file;
+ 	struct files_struct *displaced;
+ 	int retval;
+ 
+@@ -1863,8 +1864,7 @@ static int __do_execve_file(int fd, struct filename *filename,
+ 	check_unsafe_exec(bprm);
+ 	current->in_execve = 1;
+ 
+-	if (!file)
+-		file = do_open_execat(fd, filename, flags);
++	file = do_open_execat(fd, filename, flags);
+ 	retval = PTR_ERR(file);
+ 	if (IS_ERR(file))
+ 		goto out_unmark;
+@@ -1872,9 +1872,7 @@ static int __do_execve_file(int fd, struct filename *filename,
+ 	sched_exec();
+ 
+ 	bprm->file = file;
+-	if (!filename) {
+-		bprm->filename = "none";
+-	} else if (fd == AT_FDCWD || filename->name[0] == '/') {
++	if (fd == AT_FDCWD || filename->name[0] == '/') {
+ 		bprm->filename = filename->name;
+ 	} else {
+ 		if (filename->name[0] == '\0')
+@@ -1935,8 +1933,7 @@ static int __do_execve_file(int fd, struct filename *filename,
+ 	task_numa_free(current, false);
+ 	free_bprm(bprm);
+ 	kfree(pathbuf);
+-	if (filename)
+-		putname(filename);
++	putname(filename);
+ 	if (displaced)
+ 		put_files_struct(displaced);
+ 	return retval;
+@@ -1967,27 +1964,10 @@ static int __do_execve_file(int fd, struct filename *filename,
+ 	if (displaced)
+ 		reset_files_struct(displaced);
+ out_ret:
+-	if (filename)
+-		putname(filename);
++	putname(filename);
+ 	return retval;
+ }
+ 
+-static int do_execveat_common(int fd, struct filename *filename,
+-			      struct user_arg_ptr argv,
+-			      struct user_arg_ptr envp,
+-			      int flags)
+-{
+-	return __do_execve_file(fd, filename, argv, envp, flags, NULL);
+-}
+-
+-int do_execve_file(struct file *file, void *__argv, void *__envp)
+-{
+-	struct user_arg_ptr argv = { .ptr.native = __argv };
+-	struct user_arg_ptr envp = { .ptr.native = __envp };
+-
+-	return __do_execve_file(AT_FDCWD, NULL, argv, envp, 0, file);
+-}
+-
+ int do_execve(struct filename *filename,
+ 	const char __user *const __user *__argv,
+ 	const char __user *const __user *__envp)
+diff --git a/include/linux/binfmts.h b/include/linux/binfmts.h
+index 4a20b7517dd0..7c27d7b57871 100644
+--- a/include/linux/binfmts.h
++++ b/include/linux/binfmts.h
+@@ -141,6 +141,5 @@ extern int do_execveat(int, struct filename *,
+ 		       const char __user * const __user *,
+ 		       const char __user * const __user *,
+ 		       int);
+-int do_execve_file(struct file *file, void *__argv, void *__envp);
+ 
+ #endif /* _LINUX_BINFMTS_H */
 -- 
-Kees Cook
+2.25.0
+
