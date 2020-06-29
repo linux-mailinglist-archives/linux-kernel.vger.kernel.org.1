@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CAFA20D0BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC97B20D0D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbgF2Sfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:35:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56892 "EHLO mail.kernel.org"
+        id S1726957AbgF2SgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:36:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726175AbgF2SfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:35:22 -0400
+        id S1726776AbgF2Sfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:35:50 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16422247C9;
-        Mon, 29 Jun 2020 15:22:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E54AF247E5;
+        Mon, 29 Jun 2020 15:22:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593444135;
-        bh=+BScHcEoWoNxBeKrIFUTdorvUOhsOsh1PWnSVcUlz+c=;
+        s=default; t=1593444151;
+        bh=K8+LwfUHm44DtcHH9wCOgg7GmT6oZ3W6ubALuIjbOXs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C7ZZEU5o/tSeT1CJRSnZB4t4L2xwXudOXzi6nGDqaHhfiGax9+j92QEpq9pg9pXib
-         /FesMi5G1tSLGrCgPs4GY+LSFWbt+ZJD1LLOVN7jSe+pS0sKIh8ZpLpJFH4/M0I+MI
-         Nulj7Z+FEOpX0NpN3kipMPcrcJUFKbtIa31S5bDM=
+        b=wld+Rvmx9dt+X21AAiXZEcBydEDxxlvH50AFTu37m3vfchJ3m3TAzLy3OrZUQbLEV
+         SScxTZjkKecoUA5cn1SsHf5jTu60800zGlXr1KMk10RtQpvBUcWmBPQYAF6V7xOFUt
+         u9QF04LaU9zQgrKiKKSqycK8rQtfcPXpUYI4DL0k=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sascha Ortmann <sascha.ortmann@stud.uni-hannover.de>,
-        linux-kernel@i4.cs.fau.de,
-        Maximilian Werner <maximilian.werner96@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+Cc:     Vasily Averin <vvs@virtuozzo.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.7 241/265] tracing/boottime: Fix kprobe multiple events
-Date:   Mon, 29 Jun 2020 11:17:54 -0400
-Message-Id: <20200629151818.2493727-242-sashal@kernel.org>
+Subject: [PATCH 5.7 257/265] sunrpc: fixed rollback in rpc_gssd_dummy_populate()
+Date:   Mon, 29 Jun 2020 11:18:10 -0400
+Message-Id: <20200629151818.2493727-258-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629151818.2493727-1-sashal@kernel.org>
 References: <20200629151818.2493727-1-sashal@kernel.org>
@@ -52,75 +50,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sascha Ortmann <sascha.ortmann@stud.uni-hannover.de>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-commit 20dc3847cc2fc886ee4eb9112e6e2fad9419b0c7 upstream.
+commit b7ade38165ca0001c5a3bd5314a314abbbfbb1b7 upstream.
 
-Fix boottime kprobe events to report and abort after each failure when
-adding probes.
+__rpc_depopulate(gssd_dentry) was lost on error path
 
-As an example, when we try to set multiprobe kprobe events in
-bootconfig like this:
-
-ftrace.event.kprobes.vfsevents {
-        probes = "vfs_read $arg1 $arg2,,
-                 !error! not reported;?", // leads to error
-                 "vfs_write $arg1 $arg2"
-}
-
-This will not work as expected. After
-commit da0f1f4167e3af69e ("tracing/boottime: Fix kprobe event API usage"),
-the function trace_boot_add_kprobe_event will not produce any error
-message when adding a probe fails at kprobe_event_gen_cmd_start.
-Furthermore, we continue to add probes when kprobe_event_gen_cmd_end fails
-(and kprobe_event_gen_cmd_start did not fail). In this case the function
-even returns successfully when the last call to kprobe_event_gen_cmd_end
-is successful.
-
-The behaviour of reporting and aborting after failures is not
-consistent.
-
-The function trace_boot_add_kprobe_event now reports each failure and
-stops adding probes immediately.
-
-Link: https://lkml.kernel.org/r/20200618163301.25854-1-sascha.ortmann@stud.uni-hannover.de
-
-Cc: stable@vger.kernel.org
-Cc: linux-kernel@i4.cs.fau.de
-Co-developed-by: Maximilian Werner <maximilian.werner96@gmail.com>
-Fixes: da0f1f4167e3 ("tracing/boottime: Fix kprobe event API usage")
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Maximilian Werner <maximilian.werner96@gmail.com>
-Signed-off-by: Sascha Ortmann <sascha.ortmann@stud.uni-hannover.de>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+cc: stable@vger.kernel.org
+Fixes: commit 4b9a445e3eeb ("sunrpc: create a new dummy pipe for gssd to hold open")
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Reviewed-by: Jeff Layton <jlayton@redhat.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/trace/trace_boot.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ net/sunrpc/rpc_pipe.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
-index 9de29bb45a27f..fdc5abc00bf84 100644
---- a/kernel/trace/trace_boot.c
-+++ b/kernel/trace/trace_boot.c
-@@ -101,12 +101,16 @@ trace_boot_add_kprobe_event(struct xbc_node *node, const char *event)
- 		kprobe_event_cmd_init(&cmd, buf, MAX_BUF_LEN);
- 
- 		ret = kprobe_event_gen_cmd_start(&cmd, event, val);
--		if (ret)
-+		if (ret) {
-+			pr_err("Failed to generate probe: %s\n", buf);
- 			break;
-+		}
- 
- 		ret = kprobe_event_gen_cmd_end(&cmd);
--		if (ret)
-+		if (ret) {
- 			pr_err("Failed to add probe: %s\n", buf);
-+			break;
-+		}
+diff --git a/net/sunrpc/rpc_pipe.c b/net/sunrpc/rpc_pipe.c
+index 39e14d5edaf13..e9d0953522f09 100644
+--- a/net/sunrpc/rpc_pipe.c
++++ b/net/sunrpc/rpc_pipe.c
+@@ -1317,6 +1317,7 @@ rpc_gssd_dummy_populate(struct dentry *root, struct rpc_pipe *pipe_data)
+ 	q.len = strlen(gssd_dummy_clnt_dir[0].name);
+ 	clnt_dentry = d_hash_and_lookup(gssd_dentry, &q);
+ 	if (!clnt_dentry) {
++		__rpc_depopulate(gssd_dentry, gssd_dummy_clnt_dir, 0, 1);
+ 		pipe_dentry = ERR_PTR(-ENOENT);
+ 		goto out;
  	}
- 
- 	return ret;
 -- 
 2.25.1
 
