@@ -2,100 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD0220D72C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 351A520D61D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732468AbgF2T1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:27:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732666AbgF2TZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:25:43 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E332825405;
-        Mon, 29 Jun 2020 15:42:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593445352;
-        bh=siDFv2wBYonOfCEnGvScoWYFodnBr3X6yc4XrIJKW9o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=omi0j0rzDn1rUsCn//77wA55nGr8hG4dws3yBWHPYZ9n2u6d5rznIJeuZCSClYpKI
-         1U+csIgX8ggK2rrXpLzT5LytVrd9rcyxR9hvT9kdfjySNdReReZ4NEBf5yaVLl1TQQ
-         RaWgO4Mpqlgioxw5hbLbaFYS4pWwUA0yHyLympvQ=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mauro Carvalho Chehab <mchehab@s-opensource.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.9 110/191] media: dvb_frontend: better document the -EPERM condition
-Date:   Mon, 29 Jun 2020 11:38:46 -0400
-Message-Id: <20200629154007.2495120-111-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629154007.2495120-1-sashal@kernel.org>
-References: <20200629154007.2495120-1-sashal@kernel.org>
+        id S1731952AbgF2TRt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 29 Jun 2020 15:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731953AbgF2TRn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:17:43 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166F0C03079D
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:39:02 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id h19so18498546ljg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:39:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UQmPCDX6xMOsUPe/v2T5v2xy5fsOZjivnEQOFoz/TIE=;
+        b=baouVJ3gD+I0VlenNRasksMaTOgh2MD0ap27alPsbihTh5ADnaARKaags2r5XfFJ5c
+         JtIoM4IUmOwFid7DFUWtaGs2a0Yu5wNGTJnPvIc8hn85KWjgwl/jujMwMWtiDm/JYQST
+         DgnWEUx8VVzue5ThodBk7TiqSjJAc6E925Q77XVf0BXl1B0v2BzhZHvosxt/OKKM3x1u
+         FvXuSJV91VFSnD/+He8HO9sW9Q57XG8xIyyKSJfFiLQeEgO5a9bdUtoOuiNhBRhAPksN
+         vuHxq9JCCkU16SiipEqIgxS2yO42RQtUHdDZU8QH4sZirqraUc2dDsd3gfVKgd+O5W5j
+         Lq/A==
+X-Gm-Message-State: AOAM530BmJA6weU9cF++lCjL3RrvKkMz8rzwPFxksu5dCcVq9A1bR3Cy
+        5+PwjoAcqu3pIhHRspAzTLhvtAI8IdU=
+X-Google-Smtp-Source: ABdhPJzqTgTER43gmMLxrLQzPWsW2sthTWJSc0MNSxQvpzC/50ihNTlFax6crYFapvJ6G5wlF9ORHw==
+X-Received: by 2002:a2e:b0da:: with SMTP id g26mr3840235ljl.299.1593445139962;
+        Mon, 29 Jun 2020 08:38:59 -0700 (PDT)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id u8sm11311lff.38.2020.06.29.08.38.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jun 2020 08:38:59 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id f8so6267475ljc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:38:59 -0700 (PDT)
+X-Received: by 2002:a2e:890d:: with SMTP id d13mr8550620lji.75.1593445139288;
+ Mon, 29 Jun 2020 08:38:59 -0700 (PDT)
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.229-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.9.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.9.229-rc1
-X-KernelTest-Deadline: 2020-07-01T15:39+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20200629123215.1014747-1-lee.jones@linaro.org> <20200629123215.1014747-6-lee.jones@linaro.org>
+In-Reply-To: <20200629123215.1014747-6-lee.jones@linaro.org>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Mon, 29 Jun 2020 23:38:47 +0800
+X-Gmail-Original-Message-ID: <CAGb2v66Ws4WNPZbOYQvikKoozj_2WjzS-Jq-o2VxT77=k0vODw@mail.gmail.com>
+Message-ID: <CAGb2v66Ws4WNPZbOYQvikKoozj_2WjzS-Jq-o2VxT77=k0vODw@mail.gmail.com>
+Subject: Re: [PATCH 5/5] mfd: axp20x-i2c: Do not define 'struct
+ acpi_device_id' when !CONFIG_ACPI
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Carlo Caione <carlo@caione.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Adding Hans to the list as he's the one that deals with all the x86
+platforms that use this series of chips.
 
-commit da5516b5e81d45a96291823620f6c820178dc055 upstream
+On Mon, Jun 29, 2020 at 8:32 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Since ACPI_PTR() is used to NULLify the value when !CONFIG_ACPI,
+> struct axp20x_i2c_acpi_match becomes defined by unused.
+>
+> This squashes the current W=1 kernel builds warning:
+>
+>  drivers/mfd/axp20x-i2c.c:82:36: warning: ‘axp20x_i2c_acpi_match’ defined but not used [-Wunused-const-variable=]
+>
+> Cc: Chen-Yu Tsai <wens@csie.org>
+> Cc: Carlo Caione <carlo@caione.org>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/mfd/axp20x-i2c.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/mfd/axp20x-i2c.c b/drivers/mfd/axp20x-i2c.c
+> index 14f9df74f855c..3dd650125c239 100644
+> --- a/drivers/mfd/axp20x-i2c.c
+> +++ b/drivers/mfd/axp20x-i2c.c
+> @@ -79,6 +79,7 @@ static const struct i2c_device_id axp20x_i2c_id[] = {
+>  };
+>  MODULE_DEVICE_TABLE(i2c, axp20x_i2c_id);
+>
+> +#if IS_ENABLED(CONFIG_ACPI)
+>  static const struct acpi_device_id axp20x_i2c_acpi_match[] = {
 
-Two readonly ioctls can't be allowed if the frontend device
-is opened in read only mode. Explain why.
+I'd rather use "__maybe_unused" if possible to at least get a compile
+check, and also because "ACPI_PTR NULLifies the value" might not be
+well known to people not working on ACPI-based platforms.
 
-Reviewed by: Shuah Khan <shuahkh@osg.samsung.com>
+Either way,
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/media/dvb-core/dvb_frontend.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+Acked-by: Chen-Yu Tsai <wens@csie.org>
 
-diff --git a/drivers/media/dvb-core/dvb_frontend.c b/drivers/media/dvb-core/dvb_frontend.c
-index a7ba8e200b677..673cefb7230cb 100644
---- a/drivers/media/dvb-core/dvb_frontend.c
-+++ b/drivers/media/dvb-core/dvb_frontend.c
-@@ -1925,9 +1925,23 @@ static int dvb_frontend_ioctl(struct file *file, unsigned int cmd, void *parg)
- 		return -ENODEV;
- 	}
- 
--	if ((file->f_flags & O_ACCMODE) == O_RDONLY &&
--	    (_IOC_DIR(cmd) != _IOC_READ || cmd == FE_GET_EVENT ||
--	     cmd == FE_DISEQC_RECV_SLAVE_REPLY)) {
-+	/*
-+	 * If the frontend is opened in read-only mode, only the ioctls
-+	 * that don't interfere with the tune logic should be accepted.
-+	 * That allows an external application to monitor the DVB QoS and
-+	 * statistics parameters.
-+	 *
-+	 * That matches all _IOR() ioctls, except for two special cases:
-+	 *   - FE_GET_EVENT is part of the tuning logic on a DVB application;
-+	 *   - FE_DISEQC_RECV_SLAVE_REPLY is part of DiSEqC 2.0
-+	 *     setup
-+	 * So, those two ioctls should also return -EPERM, as otherwise
-+	 * reading from them would interfere with a DVB tune application
-+	 */
-+	if ((file->f_flags & O_ACCMODE) == O_RDONLY
-+	    && (_IOC_DIR(cmd) != _IOC_READ
-+		|| cmd == FE_GET_EVENT
-+		|| cmd == FE_DISEQC_RECV_SLAVE_REPLY)) {
- 		up(&fepriv->sem);
- 		return -EPERM;
- 	}
--- 
-2.25.1
 
+>         {
+>                 .id = "INT33F4",
+> @@ -87,6 +88,7 @@ static const struct acpi_device_id axp20x_i2c_acpi_match[] = {
+>         { },
+>  };
+>  MODULE_DEVICE_TABLE(acpi, axp20x_i2c_acpi_match);
+> +#endif
+>
+>  static struct i2c_driver axp20x_i2c_driver = {
+>         .driver = {
+> --
+> 2.25.1
+>
