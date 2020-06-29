@@ -2,93 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B423D20E55B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C8B20E445
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391334AbgF2VgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:36:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728486AbgF2Skp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:45 -0400
-Received: from localhost (unknown [122.182.251.219])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D02523D50;
-        Mon, 29 Jun 2020 13:21:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593436905;
-        bh=LXvcRe88NweP1KRH4lrxCsBpxttGet8FB2YNmIkHxnc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lk8z7Qeu0qofDn4k3ukyl8Sgf9/l0vRWVNNaxxiLCWKdrrkSPK6sw9oFTo8sGJd1R
-         8PFulkOmFfu4BtOELvFb+dYXpcL58MVebjO7CQKYydYCX0IlDe0Gf+7yT9rjRPWn6R
-         CZCP4xfFBBzpmAeGfiSw66I6ySQrWvLzT2eJBH/s=
-Date:   Mon, 29 Jun 2020 18:51:41 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>
-Cc:     Amit Singh Tomar <amittomer25@gmail.com>, afaerber@suse.de,
-        manivannan.sadhasivam@linaro.org, dan.j.williams@intel.com,
-        cristian.ciocaltea@gmail.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org
-Subject: Re: [PATCH v4 02/10] dmaengine: Actions: Add support for S700 DMA
- engine
-Message-ID: <20200629132141.GM2599@vkoul-mobl>
-References: <1591697830-16311-1-git-send-email-amittomer25@gmail.com>
- <1591697830-16311-3-git-send-email-amittomer25@gmail.com>
- <20200624061529.GF2324254@vkoul-mobl>
- <75d154d0-2962-99e6-a7c7-bf0928ec8b2a@arm.com>
- <20200629095446.GH2599@vkoul-mobl>
- <36274785-f400-4d69-deed-b7d545718d40@arm.com>
+        id S2391001AbgF2VXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:23:08 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:52619 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729598AbgF2Sv0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:51:26 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id E3ECF5C00D3;
+        Mon, 29 Jun 2020 09:27:02 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 29 Jun 2020 09:27:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=JpiETwDZ/SAflAAJFgDp4FBg1pZ
+        pP5xS6lyjUSfpKCM=; b=mXRRbfVPgfG6UPXp/PSzKJMBzfyjzsl1E/7lyo5a3gM
+        9Cge2GRb9lDgs1kvu9QUnD5zMEAk50D+o3Dz/RYf823HuITyl2SD6M5mqGJgvWNc
+        o1DHLyzKoKgSZJTUqsMGT7GI/A6baxRB5Kh0TJgXydX2agP/hYV74Adp+0f8Bx9X
+        4OWOLbSK1Dkwef0W1j8RNCam018fu8QBRaea8CUFHF60Snqn740cn2LdKaRsUVnb
+        PeJU5B266/SwyxLZ8L1vrCoB165XsYMg4BGvlvXCsF6Urim6SXsBQDWghKck1U/6
+        eiTtWyReAbSY+f0ZJw6Ghgc7Wkt7q+kCS6UASuCNlDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=JpiETw
+        DZ/SAflAAJFgDp4FBg1pZpP5xS6lyjUSfpKCM=; b=JiDM2YHPZhJvZBxwhPP024
+        aKmfMURylJFOkccBcL+q9vj+SXy0Evq7N25IywsKCzIYUHcz8gpZOMl++jUWhpU6
+        zp0+gQjFNV8O4i4iAn/UZAYNcJN9oUGoKduYA479RqzWzLCCCje0orJiJOtaC8NM
+        k1rT+n0nuZyz5hujpZsPR04VTXwa+HyqAY01mhHSSocPRLJO25uJ4X34mdxgOUNV
+        hreUs4zsGH16nEuchYNsY5ScQnkqiKUjY7fxwbzlMgNs5DtdHdnvwx1fhyHFw5QC
+        WJPWI5KinuhCKrPH0eCVROihF8YBDz6fv6IU+z/zT39CiG/8Tk2KpRZTwXJhrVTg
+        ==
+X-ME-Sender: <xms:Juz5XuE4l6QSEmDlfJ9AvbfBgIk02Prg-ilcCIwJZhXYadez6pF8Ig>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudelkedgieehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:Juz5XvV538Y4-dH1cRmxotMtkaQwuH05ywz1yFow3UEOXy4Vswm_fw>
+    <xmx:Juz5XoJj9U8sljPLdaVdWpfy9zRwxhL1HDr_B4wECbYa_REcNOORTA>
+    <xmx:Juz5XoGWnT9dNZWrIqynMyfRugD9fbrG5znCVlOdhnELAzJ-dY-LsA>
+    <xmx:Juz5Xteuhv-OXifqHbVUMdKUdfk-96lZMLTejeBsEnJiZVurIx-9wg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 12707328005D;
+        Mon, 29 Jun 2020 09:27:01 -0400 (EDT)
+Date:   Mon, 29 Jun 2020 15:27:00 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu: SUN50I_IOMMU should depend on HAS_DMA
+Message-ID: <20200629132700.qtchohqyb4vslfhz@gilmour.lan>
+References: <20200629121146.24011-1-geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="srp6bnpiqzimzunw"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <36274785-f400-4d69-deed-b7d545718d40@arm.com>
+In-Reply-To: <20200629121146.24011-1-geert@linux-m68k.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-06-20, 12:19, André Przywara wrote:
-> On 29/06/2020 10:54, Vinod Koul wrote:
 
-> >> What newer SoCs? I don't think we should try to guess the future here.
-> > 
-> > In a patch for adding new SoC, quite ironical I would say!
-> 
-> S700 is not a new SoC, it's just this driver didn't support it yet. What
-> I meant is that I don't even know about the existence of upcoming SoCs
-> (Google seems clueless), not to speak of documentation to assess which
-> DMA controller they use.
-> 
-> >> We can always introduce further abstractions later, once we actually
-> >> *know* what we are looking at.
-> > 
-> > Rather if we know we are adding abstractions, why not add in a way that
-> > makes it scale better rather than rework again
-> 
-> I appreciate the effort, but this really tapping around in the dark,
-> since we don't know which direction any new DMA controller is taking. I
-> might not even be similar.
-> 
-> >> Besides, I don't understand what you are after. The max frame length is
-> >> 1MB in both cases, it's just a matter of where to put FCNT_VAL, either
-> >> in FLEN or in CTRLB. And having an extra flag for that in driver data
-> >> sounds a bit over the top at the moment.
-> > 
-> > Maybe, maybe not. I would rather make it support N SoC when adding
-> > support for second one rather than keep adding everytime a new SoC is
-> > added...
-> 
-> Well, what do you suggest, specifically? At the moment we have two
-> *slightly* different DMA controllers, so we differentiate between the
-> two based on the model. Do you want to introduce an extra flag like
-> FRAME_CNT_IN_CTRLB? That seems to be a bit over the top here, since we
-> don't know if a future DMA controller is still compatible, or introduces
-> completely new differences.
+--srp6bnpiqzimzunw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fair enough, okay let us go with compatible for now
+On Mon, Jun 29, 2020 at 02:11:46PM +0200, Geert Uytterhoeven wrote:
+> If NO_DMA=3Dy (e.g. Sun-3 all{mod,yes}-config):
+>=20
+>     drivers/iommu/dma-iommu.o: In function `iommu_dma_mmap':
+>     dma-iommu.c:(.text+0x92e): undefined reference to `dma_pgprot'
+>=20
+> IOMMU_DMA must not be selected, unless HAS_DMA=3Dy.
+>=20
+> Hence fix this by making SUN50I_IOMMU depend on HAS_DMA.
+>=20
+> Fixes: 4100b8c229b32835 ("iommu: Add Allwinner H6 IOMMU driver")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
--- 
-~Vinod
+Acked-by: Maxime Ripard <mripard@kernel.org>
+
+Thanks!
+Maxime
+
+--srp6bnpiqzimzunw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXvnsJAAKCRDj7w1vZxhR
+xT08AQD0Cz/X0wU0i8MZumEsV0zYZgHgFem+MQvh7UEfUWFx6QEAwPl3iEuK5fAo
+DgSiPvd7gsJK7PToEsd3T2mB9YYqzQE=
+=WyeQ
+-----END PGP SIGNATURE-----
+
+--srp6bnpiqzimzunw--
