@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0BF20CC1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 05:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69AC820CC1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 05:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgF2DT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 23:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
+        id S1726139AbgF2DT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 23:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725976AbgF2DTY (ORCPT
+        with ESMTP id S1726016AbgF2DTZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 23:19:24 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DA7C03E979
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 20:19:24 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id c1so138991pja.5
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 20:19:24 -0700 (PDT)
+        Sun, 28 Jun 2020 23:19:25 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904EFC03E979
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 20:19:25 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id h22so7400492pjf.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 20:19:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=N7ALW83XlMpZ1UNtCe3339z3xtZN1TwIo7hbmM2+bF0=;
-        b=CtUW1G7rX1aMx2QF59g+J78Z94tMoXWIIVhLD2JEBHaXi7uvpEv8fC2AsCqzJZTxRC
-         JBEfUwTsw5guLXx5y3oAiRFLzMkQM63qumKW1s/Q8XSLd4ghrTWGvoy5HtxDIIiTCIem
-         tJ/HQ9UCOCFcjof+pojb95RYUi8143OBVYNLZYzzU8yX1BpAir30Rxi0tJsHVjXcqig+
-         zjBsx5ghHMkbDPex+Z59vhpzguaVWEt98LrTeLGL15jHpPAQOkcIRfYoXdjimV0iz0ax
-         v7XTQfFQc0XwSBhrxfhVAZRB5dTmWpg0fxg38DTbmxeMaNNX0YrylLRKC6RO/su+v0Ws
-         k0lw==
+        bh=PSUA2EwIKXLOLtNV96SGUJsM2m2OTdn3sR6o2KuM1UA=;
+        b=SI3ZxUA9MsGFyjEOEhJDbIUFM4vZxkLrpUos41w1aNc7MaAAu/mg9tswobj1hVq6nO
+         n5w/oWiSuHVskaRjPfz/DYSSKAo69a0PrXMKnQAjrWOEY0wDBSoXmkm4k7Jm9VsnqAoQ
+         PZE6TLXel62BJhqpSuxlJeZuqxWsCiMOrvvFWxyT6dp5ARd5dbNIyEBrjvlt0J4zw4Ow
+         7zOY1EJaov0Yqz+aFPfRjvelwlPxwgiKW2hOYARD9IM/vUoLjsy0xhp/42IDAt9ohhEK
+         rp+We8aLf/9bHHgZsV59QFqMJLwL4Ia/rscQp0gz/62hnc8KHQnliaYb0FuSSnztGcWI
+         sRxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=N7ALW83XlMpZ1UNtCe3339z3xtZN1TwIo7hbmM2+bF0=;
-        b=VLyFHib3mGOoixKPHzx4SalkiLoptiSpZa1IglNPKKeEOYdbEmF95s6AYqkmSagjur
-         EpEPGnq+Mayeny+Ivn4kUbV6jqFqgDCJBmXWnGWMkIyOmLyQtYnx/6B8p0XqqhG4M+AN
-         EKyPCZytuFJaiVPYW+Uo0/V56+iz/lbxyLYbxPolpDSjcEJIrtVPTnRq2VD8yJdOcf0W
-         JyRDeiG5N5sAM2EJsjRt0+9SFOpfeOuE2yROXY0umyrKqH5nSnUJxUKFM5Sw5lX5/t4M
-         18vcv7YONEVnQzupNqyEzDW2nu+KKYF4PTmmnsinoWVy3Onkd7cNhdUFWGEt4zgtlLtJ
-         Lzxg==
-X-Gm-Message-State: AOAM531wZe9eCRZm38vySjn0DK9gvFrM3w+veEWeWwEYXwZHwuXDXL8W
-        c1jRfkzryWnY7yFrXBjOxNcaV9k2JTkLZw==
-X-Google-Smtp-Source: ABdhPJwI/FlxEB4eqDmKB/m+/Up3gTbXvrv98xnOr3oTcgypiCSZ3DcqOB2TUerg5zb4ouEh+nnZdw==
-X-Received: by 2002:a17:902:b496:: with SMTP id y22mr11901540plr.224.1593400763621;
-        Sun, 28 Jun 2020 20:19:23 -0700 (PDT)
+        bh=PSUA2EwIKXLOLtNV96SGUJsM2m2OTdn3sR6o2KuM1UA=;
+        b=fm9GObAfdLmD8XqR4rt+W3/L/hLBiXvtIOs8ltAZCFcA9rzxgE+S+m/jJo5j4lXU7W
+         ll4TyKehHaSY5qOVZMY/+AnP1WnwgvJZGKfg0yjrgFylPIZ7WWlKohhL06rd9uJfuHvg
+         Gnm7/f2bUDTuWsZ6hej3Y1KEDiDgjIc/ntOYjOjIZDupgj1wQTbHgf48nKhwVbyLkpN4
+         56TJlQIT0IRSYVaaphOgJDc3sz7kefSJFRO6N0dyWjYkPyRa/YjX5C8QElPdEEzvo2Gt
+         E8+7MDFVvT04kVEwu5fFu52OSLyXUK97mEwLaD6nhjss8Zk6aa174C6zXWF46S97ZjwW
+         ieoA==
+X-Gm-Message-State: AOAM532425J9wr3N9EKrqbspIvDDm/sKofybOR3pTXRURvEx5+NkeJ6S
+        0uWurIbF+AE35t3EnsevkMBxGw==
+X-Google-Smtp-Source: ABdhPJxbFHWw7jbZvnoyS2mNUkXDUMitESxb7srIaoRp/tgjSbxzNGBXmxyMtnMqIcEnC21YLuFAgQ==
+X-Received: by 2002:a17:902:9047:: with SMTP id w7mr11534050plz.95.1593400765176;
+        Sun, 28 Jun 2020 20:19:25 -0700 (PDT)
 Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id j70sm12876254pfd.208.2020.06.28.20.19.22
+        by smtp.gmail.com with ESMTPSA id j70sm12876254pfd.208.2020.06.28.20.19.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jun 2020 20:19:23 -0700 (PDT)
+        Sun, 28 Jun 2020 20:19:24 -0700 (PDT)
 From:   Zong Li <zong.li@sifive.com>
 To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Zong Li <zong.li@sifive.com>
-Subject: [RFC PATCH 2/6] riscv: dts: sifive: Add DT support for PMU
-Date:   Mon, 29 Jun 2020 11:19:11 +0800
-Message-Id: <b90858e0baa2184d8aeac1a930c6d6882f9cc09f.1593397455.git.zong.li@sifive.com>
+Subject: [RFC PATCH 3/6] riscv: add definition of hpmcounter CSRs
+Date:   Mon, 29 Jun 2020 11:19:12 +0800
+Message-Id: <7301edd00542bf480539f2f00011be8d9cc76d3e.1593397455.git.zong.li@sifive.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1593397455.git.zong.li@sifive.com>
 References: <cover.1593397455.git.zong.li@sifive.com>
@@ -65,36 +65,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add performance monitor unit DT node in SiFive Fu540 soc-specific DT
-file. This pmu node passes the dtbs_check verification.
+The hpmcounter CSRs are used for perf to read the value of monitoring
+hardware events.
 
 Signed-off-by: Zong Li <zong.li@sifive.com>
 ---
- arch/riscv/boot/dts/sifive/fu540-c000.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ arch/riscv/include/asm/csr.h | 58 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 58 insertions(+)
 
-diff --git a/arch/riscv/boot/dts/sifive/fu540-c000.dtsi b/arch/riscv/boot/dts/sifive/fu540-c000.dtsi
-index 7db861053483..824351fe2a57 100644
---- a/arch/riscv/boot/dts/sifive/fu540-c000.dtsi
-+++ b/arch/riscv/boot/dts/sifive/fu540-c000.dtsi
-@@ -283,4 +283,17 @@ gpio: gpio@10060000 {
- 			status = "disabled";
- 		};
- 	};
-+	pmu {
-+		compatible = "riscv,pmu";
-+		riscv,width-base-cntr = <64>;
-+		riscv,width-event-cntr = <40>;
-+		riscv,n-event-cntr = <2>;
-+		riscv,hw-event-map = <0x0 0x0
-+				      0x1 0x1
-+				      0x3 0x0202
-+				      0x4 0x4000
-+				      0x5 0x2001>;
-+		riscv,hw-cache-event-map = <0x010201 0x0102
-+					    0x010204 0x0802>;
-+	};
- };
+diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
+index cec462e198ce..3a18a0bbdc6d 100644
+--- a/arch/riscv/include/asm/csr.h
++++ b/arch/riscv/include/asm/csr.h
+@@ -83,9 +83,67 @@
+ #define CSR_CYCLE		0xc00
+ #define CSR_TIME		0xc01
+ #define CSR_INSTRET		0xc02
++#define CSR_HPMCOUNTER3		0xc03
++#define CSR_HPMCOUNTER4		0xc04
++#define CSR_HPMCOUNTER5		0xc05
++#define CSR_HPMCOUNTER6		0xc06
++#define CSR_HPMCOUNTER7		0xc07
++#define CSR_HPMCOUNTER8		0xc08
++#define CSR_HPMCOUNTER9		0xc09
++#define CSR_HPMCOUNTER10	0xc0a
++#define CSR_HPMCOUNTER11	0xc0b
++#define CSR_HPMCOUNTER12	0xc0c
++#define CSR_HPMCOUNTER13	0xc0d
++#define CSR_HPMCOUNTER14	0xc0e
++#define CSR_HPMCOUNTER15	0xc0f
++#define CSR_HPMCOUNTER16	0xc10
++#define CSR_HPMCOUNTER17	0xc11
++#define CSR_HPMCOUNTER18	0xc12
++#define CSR_HPMCOUNTER19	0xc13
++#define CSR_HPMCOUNTER20	0xc14
++#define CSR_HPMCOUNTER21	0xc15
++#define CSR_HPMCOUNTER22	0xc16
++#define CSR_HPMCOUNTER23	0xc17
++#define CSR_HPMCOUNTER24	0xc18
++#define CSR_HPMCOUNTER25	0xc19
++#define CSR_HPMCOUNTER26	0xc1a
++#define CSR_HPMCOUNTER27	0xc1b
++#define CSR_HPMCOUNTER28	0xc1c
++#define CSR_HPMCOUNTER29	0xc1d
++#define CSR_HPMCOUNTER30	0xc1e
++#define CSR_HPMCOUNTER31	0xc1f
+ #define CSR_CYCLEH		0xc80
+ #define CSR_TIMEH		0xc81
+ #define CSR_INSTRETH		0xc82
++#define CSR_HPMCOUNTER3H	0xc83
++#define CSR_HPMCOUNTER4H	0xc84
++#define CSR_HPMCOUNTER5H	0xc85
++#define CSR_HPMCOUNTER6H	0xc86
++#define CSR_HPMCOUNTER7H	0xc87
++#define CSR_HPMCOUNTER8H	0xc88
++#define CSR_HPMCOUNTER9H	0xc89
++#define CSR_HPMCOUNTER10H	0xc8a
++#define CSR_HPMCOUNTER11H	0xc8b
++#define CSR_HPMCOUNTER12H	0xc8c
++#define CSR_HPMCOUNTER13H	0xc8d
++#define CSR_HPMCOUNTER14H	0xc8e
++#define CSR_HPMCOUNTER15H	0xc8f
++#define CSR_HPMCOUNTER16H	0xc90
++#define CSR_HPMCOUNTER17H	0xc91
++#define CSR_HPMCOUNTER18H	0xc92
++#define CSR_HPMCOUNTER19H	0xc93
++#define CSR_HPMCOUNTER20H	0xc94
++#define CSR_HPMCOUNTER21H	0xc95
++#define CSR_HPMCOUNTER22H	0xc96
++#define CSR_HPMCOUNTER23H	0xc97
++#define CSR_HPMCOUNTER24H	0xc98
++#define CSR_HPMCOUNTER25H	0xc99
++#define CSR_HPMCOUNTER26H	0xc9a
++#define CSR_HPMCOUNTER27H	0xc9b
++#define CSR_HPMCOUNTER28H	0xc9c
++#define CSR_HPMCOUNTER29H	0xc9d
++#define CSR_HPMCOUNTER30H	0xc9e
++#define CSR_HPMCOUNTER31H	0xc9f
+ 
+ #define CSR_SSTATUS		0x100
+ #define CSR_SIE			0x104
 -- 
 2.27.0
 
