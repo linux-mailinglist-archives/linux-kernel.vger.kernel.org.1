@@ -2,153 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524F320D0A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2237020D0D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726028AbgF2Se5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:34:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:34558 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725869AbgF2Se5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:34:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E206A101E;
-        Sun, 28 Jun 2020 23:45:30 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.83.176])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6C5B33F73C;
-        Sun, 28 Jun 2020 23:45:26 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org
-Cc:     robin.murphy@arm.com,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2] arm64/hugetlb: Reserve CMA areas for gigantic pages on 16K and 64K configs
-Date:   Mon, 29 Jun 2020 12:15:07 +0530
-Message-Id: <1593413107-12779-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726975AbgF2SgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:36:24 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:52790 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726936AbgF2SgO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:36:14 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200629065003epoutp02adbf693a5ec4b49a1d64d7b1598035d5~c8QxV3K6H1107911079epoutp02X
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:50:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200629065003epoutp02adbf693a5ec4b49a1d64d7b1598035d5~c8QxV3K6H1107911079epoutp02X
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593413403;
+        bh=Gf3pprKXKrcSeP86aKBRO6sfzz3FSEUrZ6VtYq5iOiA=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=Zhx8tlVZf4alD7CbADu6icHoUN1LkMfPcJ/k7csz25kpWYHTC53GSK8j4r7fqe4y2
+         ttngKi65L1+89iFYQCWV2SsDSj0db5QndEFWr98RbsUZrNLL0KzHv73+2/DQJcoyld
+         RHamEz2khA2tzNeDOrNbRveowQlkInwiR3lqXL4g=
+Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p2.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200629065002epcas1p27b22a8678c41d2bcdde721adb43f5085~c8Qw6GAND1512515125epcas1p2d;
+        Mon, 29 Jun 2020 06:50:02 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [PATCH v4 1/5] scsi: ufs: Add UFS feature related parameter
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <231786897.01593413281727.JavaMail.epsvc@epcpadp2>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1239183618.61593413402991.JavaMail.epsvc@epcpadp1>
+Date:   Mon, 29 Jun 2020 15:48:57 +0900
+X-CMS-MailID: 20200629064857epcms2p4e4bc13826bb0079440fe011c4c105070
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200629064323epcms2p787baba58a416fef7fdd3927f8da701da
+References: <231786897.01593413281727.JavaMail.epsvc@epcpadp2>
+        <CGME20200629064323epcms2p787baba58a416fef7fdd3927f8da701da@epcms2p4>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently 'hugetlb_cma=' command line argument does not create CMA area on
-ARM64_16K_PAGES and ARM64_64K_PAGES based platforms. Instead, it just ends
-up with the following warning message. Reason being, hugetlb_cma_reserve()
-never gets called for these huge page sizes.
+This is a patch for parameters to be used for UFS features layer and HPB
+module.
 
-[   64.255669] hugetlb_cma: the option isn't supported by current arch
-
-This enables CMA areas reservation on ARM64_16K_PAGES and ARM64_64K_PAGES
-configs by defining an unified arm64_hugetlb_cma_reseve() that is wrapped
-in CONFIG_CMA.
-
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Barry Song <song.bao.hua@hisilicon.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
 ---
-Applies on 5.8-rc3.
+ drivers/scsi/ufs/ufs.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Changes in V2:
-
-- Moved arm64_hugetlb_cma_reserve() stub and declaration near call site
-
-Changes in V1: (https://patchwork.kernel.org/patch/11619839/)
-
- arch/arm64/mm/hugetlbpage.c | 38 +++++++++++++++++++++++++++++++++++++
- arch/arm64/mm/init.c        | 12 +++++++++---
- 2 files changed, 47 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
-index 0a52ce46f020..ea7fb48b8617 100644
---- a/arch/arm64/mm/hugetlbpage.c
-+++ b/arch/arm64/mm/hugetlbpage.c
-@@ -19,6 +19,44 @@
- #include <asm/tlbflush.h>
- #include <asm/pgalloc.h>
+diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
+index f8ab16f30fdc..ae557b8d3eba 100644
+--- a/drivers/scsi/ufs/ufs.h
++++ b/drivers/scsi/ufs/ufs.h
+@@ -122,6 +122,7 @@ enum flag_idn {
+ 	QUERY_FLAG_IDN_WB_EN                            = 0x0E,
+ 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_EN                 = 0x0F,
+ 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_DURING_HIBERN8     = 0x10,
++	QUERY_FLAG_IDN_HPB_RESET                        = 0x11,
+ };
  
-+/*
-+ * HugeTLB Support Matrix
-+ *
-+ * ---------------------------------------------------
-+ * | Page Size | CONT PTE |  PMD  | CONT PMD |  PUD  |
-+ * ---------------------------------------------------
-+ * |     4K    |   64K    |   2M  |    32M   |   1G  |
-+ * |    16K    |    2M    |  32M  |     1G   |       |
-+ * |    64K    |    2M    | 512M  |    16G   |       |
-+ * ---------------------------------------------------
-+ */
-+
-+/*
-+ * Reserve CMA areas for the largest supported gigantic
-+ * huge page when requested. Any other smaller gigantic
-+ * huge pages could still be served from those areas.
-+ */
-+#ifdef CONFIG_CMA
-+void __init arm64_hugetlb_cma_reserve(void)
-+{
-+	int order;
-+
-+#ifdef CONFIG_ARM64_4K_PAGES
-+	order = PUD_SHIFT - PAGE_SHIFT;
-+#else
-+	order = CONT_PMD_SHIFT + PMD_SHIFT - PAGE_SHIFT;
-+#endif
-+	/*
-+	 * HugeTLB CMA reservation is required for gigantic
-+	 * huge pages which could not be allocated via the
-+	 * page allocator. Just warn if there is any change
-+	 * breaking this assumption.
-+	 */
-+	WARN_ON(order <= MAX_ORDER);
-+	hugetlb_cma_reserve(order);
-+}
-+#endif /* CONFIG_CMA */
-+
- #ifdef CONFIG_ARCH_ENABLE_HUGEPAGE_MIGRATION
- bool arch_hugetlb_migration_supported(struct hstate *h)
- {
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 1e93cfc7c47a..8a260ef0cb94 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -406,6 +406,14 @@ void __init arm64_memblock_init(void)
- 	dma_contiguous_reserve(arm64_dma32_phys_limit);
- }
+ /* Attribute idn for Query requests */
+@@ -195,6 +196,9 @@ enum unit_desc_param {
+ 	UNIT_DESC_PARAM_PHY_MEM_RSRC_CNT	= 0x18,
+ 	UNIT_DESC_PARAM_CTX_CAPABILITIES	= 0x20,
+ 	UNIT_DESC_PARAM_LARGE_UNIT_SIZE_M1	= 0x22,
++	UNIT_DESC_HPB_LU_MAX_ACTIVE_REGIONS	= 0x23,
++	UNIT_DESC_HPB_LU_PIN_REGION_START_OFFSET	= 0x25,
++	UNIT_DESC_HPB_LU_NUM_PIN_REGIONS	= 0x27,
+ 	UNIT_DESC_PARAM_WB_BUF_ALLOC_UNITS	= 0x29,
+ };
  
-+#if defined(CONFIG_HUGETLB_PAGE) && defined(CONFIG_CMA)
-+void arm64_hugetlb_cma_reserve(void);
-+#else
-+static inline void arm64_hugetlb_cma_reserve(void)
-+{
-+}
-+#endif
-+
- void __init bootmem_init(void)
- {
- 	unsigned long min, max;
-@@ -425,9 +433,7 @@ void __init bootmem_init(void)
- 	 * initialize node_online_map that gets used in hugetlb_cma_reserve()
- 	 * while allocating required CMA size across online nodes.
- 	 */
--#ifdef CONFIG_ARM64_4K_PAGES
--	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
--#endif
-+	arm64_hugetlb_cma_reserve();
+@@ -235,6 +239,8 @@ enum device_desc_param {
+ 	DEVICE_DESC_PARAM_PSA_MAX_DATA		= 0x25,
+ 	DEVICE_DESC_PARAM_PSA_TMT		= 0x29,
+ 	DEVICE_DESC_PARAM_PRDCT_REV		= 0x2A,
++	DEVICE_DESC_PARAM_HPB_VER		= 0x40,
++	DEVICE_DESC_PARAM_HPB_CONTROL		= 0x42,
+ 	DEVICE_DESC_PARAM_EXT_UFS_FEATURE_SUP	= 0x4F,
+ 	DEVICE_DESC_PARAM_WB_PRESRV_USRSPC_EN	= 0x53,
+ 	DEVICE_DESC_PARAM_WB_TYPE		= 0x54,
+@@ -283,6 +289,10 @@ enum geometry_desc_param {
+ 	GEOMETRY_DESC_PARAM_ENM4_MAX_NUM_UNITS	= 0x3E,
+ 	GEOMETRY_DESC_PARAM_ENM4_CAP_ADJ_FCTR	= 0x42,
+ 	GEOMETRY_DESC_PARAM_OPT_LOG_BLK_SIZE	= 0x44,
++	GEOMETRY_DESC_HPB_REGION_SIZE		= 0x48,
++	GEOMETRY_DESC_HPB_NUMBER_LU		= 0x49,
++	GEOMETRY_DESC_HPB_SUBREGION_SIZE	= 0x4A,
++	GEOMETRY_DESC_HPB_DEVICE_MAX_ACTIVE_REGIONS	= 0x4B,
+ 	GEOMETRY_DESC_PARAM_WB_MAX_ALLOC_UNITS	= 0x4F,
+ 	GEOMETRY_DESC_PARAM_WB_MAX_WB_LUNS	= 0x53,
+ 	GEOMETRY_DESC_PARAM_WB_BUFF_CAP_ADJ	= 0x54,
+@@ -327,6 +337,7 @@ enum {
  
- 	/*
- 	 * Sparsemem tries to allocate bootmem in memory_present(), so must be
+ /* Possible values for dExtendedUFSFeaturesSupport */
+ enum {
++	UFS_DEV_HPB_SUPPORT		= BIT(7),
+ 	UFS_DEV_WRITE_BOOSTER_SUP	= BIT(8),
+ };
+ 
+@@ -537,6 +548,7 @@ struct ufs_dev_info {
+ 	u8 *model;
+ 	u16 wspecversion;
+ 	u32 clk_gating_wait_us;
++	u8 b_ufs_feature_sup;
+ 	u32 d_ext_ufs_feature_sup;
+ 	u8 b_wb_buffer_type;
+ 	u32 d_wb_alloc_units;
+
+base-commit: fbca7a04dbd8271752a58594727b61307bcc85b6
 -- 
-2.20.1
+2.17.1
+
 
