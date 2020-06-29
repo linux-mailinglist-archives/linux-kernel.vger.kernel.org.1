@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F286820E4AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A91A20E472
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391124AbgF2V1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
+        id S1729117AbgF2VZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729060AbgF2Smo (ORCPT
+        with ESMTP id S1729123AbgF2Smv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:42:44 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6909C030F08
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:15:33 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id dg28so13314376edb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:15:33 -0700 (PDT)
+        Mon, 29 Jun 2020 14:42:51 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FF4C030F05;
+        Mon, 29 Jun 2020 09:13:18 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id o18so12702400eje.7;
+        Mon, 29 Jun 2020 09:13:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=heGKiszYARvox0tZHtQsGW6ogrsChhTM0vUjjAQ7Fxc=;
-        b=bnPjIH3An1mt00bkgQp2o32ds9guwFtm/l2yxOJMsPPjrCQRaFOFw58b/wgq61+qz6
-         ffC7FuhZSPOuZHBdaQXYTipMPLoEImqRxrQCzc8dHvFHmBZpVsvGp5CWGNx7QJopncJJ
-         +tBYoHExJmEI/Cgcji6A0JQX/+vnsTSxV+m4z1nZ7+kkoLq3aYN9vUcUBgF+Aet6J0oM
-         tO7LDFT9SoX5Kf3R9KLwif43XUss7VrjqX5dmRU1FUVx35428FvFzyXPeAolGnCQkfBC
-         ++S6gCucl7Zz8XFT8ZGCFzxS28/ahcwdFCsFJ53JNMOLAerLb8u2Do7PoWEMQHLpgemD
-         sqBw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZdeFEpNDYkXFwTK4R5nfayVzl1J/Ocu3hnRhqkjhhqg=;
+        b=FpwdF7V1gcTCIKfgLOQYaXG7D5pZHEOv2lGFKzleZXMdNHT09dvKTyMItQ4HR6jw5Y
+         Jn1uJKAT3IKyK5wua6R4aKYRCSoZo1w1VhHVcmVVnswhrM7QW694+fjN0hd3bWxPkDGx
+         xK3hLXGvQPqAfzFJ5XEV/JF2Dd6PB+LD2Ae33nTPyvaANMoWkFDyV5BR0Rl+A96BHNXe
+         CPY5G4klZQI/aD7U5KuruNhhBf7tH3HtnhReiQ7RtnsLWsBUt/uuXnj3tm2qc/b32v1w
+         kfDRIpwqeDPHNcpCiiaphYtEwFMHWEmQnHZy4VM9C8Zcyly67SJk9+8AdbL2khyWCnyp
+         jhdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=heGKiszYARvox0tZHtQsGW6ogrsChhTM0vUjjAQ7Fxc=;
-        b=llALyO5ZZiBnNsH5wAdWNysyU/+T9fqfrDrJ9O3fQgaqgvaKDQMUoU4HfwO0HJ1XDB
-         KSPMWI1YM8zXWpxj0Qut8PxgbGwNVzwqN88DFMjW8pqewb2YDP82j6aTzl267YGp7UFY
-         Wek1NMtTpiquCNWcc0A1YVKEKA4PttCROAxAiGQZRJendG0wwCiOhAK8oqlGTie27VaP
-         INeoR8SqrnnWDXOR1PI47gCWTfYTiUdqP8Msbzkvy7zWw1DXb1bcI13c0Ssz8QlQnt6g
-         SskPiCY1NeAwCVtgYgFJvFW9BhDpCBmlizVimh+EoNHiwHBVwBGchuU1XRcC7VEiIGR/
-         SNZw==
-X-Gm-Message-State: AOAM5316nftikXvzXAP38MPFr2jl6UZY2MjUNJ3S9leHlyNdp8k5R/3X
-        r8PBr531aDp/dnA7Yp5kMV8=
-X-Google-Smtp-Source: ABdhPJyX/7C2PCphFFlJPw5Rs4TlWFjhF5uJNYqqBvCYao2poNLZoN5EPeTH0YCtFu3/aCHjRnDG4w==
-X-Received: by 2002:a50:a661:: with SMTP id d88mr18585795edc.34.1593447332650;
-        Mon, 29 Jun 2020 09:15:32 -0700 (PDT)
-Received: from localhost.localdomain (dslb-178-011-230-176.178.011.pools.vodafone-ip.de. [178.11.230.176])
-        by smtp.gmail.com with ESMTPSA id m6sm87831ejq.85.2020.06.29.09.15.31
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZdeFEpNDYkXFwTK4R5nfayVzl1J/Ocu3hnRhqkjhhqg=;
+        b=rMcdN1rhKPGpbdymli0Fye89pK8TTumgt3u1a06EZolSucmi9f7ZWmsK1jUPbe4mVQ
+         mx8iPBK4keGO9CdHGXHK/euCQXzoM3mzUyfItrBOViDBkAG4Jw44mKHJ2V5ZaxdMZ6BN
+         c9Nkrk6E4IoWnOo8Owrp324qT6qHiaJRDMHaRP6VIqqldztQTMcEqhsxCpDtFycCVPns
+         kRRXKk1evfVcqhEGl2xH79oXRFPgUUHEC+BY3jFsluhWg5r/zcG9r9qB/GwwMNaX3RRC
+         ckjRNWSKHVLAwccsnxwtM/LS1nILoV3c08CBAV7aOK0VQpW8HGj1aFXflD8MIuDxZBRq
+         cEuw==
+X-Gm-Message-State: AOAM530EK7ofJ00/v6b5FGd2hxAz5tXxJ7oi9bQpCm5DbWEWf2ErShZ2
+        KDi7I0Ni7wE23MwuZsPpFR0=
+X-Google-Smtp-Source: ABdhPJyYH8JXIDkgPspXRN2vNPMMQ+uX2Q9v7t9x0iqMg6ZIkNek0dm4JqwSffuIxDQxiUiNWQCxMQ==
+X-Received: by 2002:a17:906:71d4:: with SMTP id i20mr15394732ejk.533.1593447197127;
+        Mon, 29 Jun 2020 09:13:17 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:a03f:b7f9:7600:8d8b:2aae:ac29:9590])
+        by smtp.gmail.com with ESMTPSA id l1sm222822edi.33.2020.06.29.09.13.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 09:15:32 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 1/2] staging: rtl8188eu: use compound assignment operators
-Date:   Mon, 29 Jun 2020 18:12:54 +0200
-Message-Id: <20200629161255.28371-1-straube.linux@gmail.com>
+        Mon, 29 Jun 2020 09:13:16 -0700 (PDT)
+From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: [PATCH v2] doc: add link to sparse's home page/internal docs
+Date:   Mon, 29 Jun 2020 18:13:10 +0200
+Message-Id: <20200629161310.89783-1-luc.vanoostenryck@gmail.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200629044154.GB1492837@kernel.org>
+References: <20200629044154.GB1492837@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -64,36 +66,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use compound assignment operators to simplify the code and clear
-missing spaces around operators checkpatch issues.
+Sparse's home page used to be a wiki (sparse.wiki.kernel.org)
+but this wiki only contained a short intro and the release notes.
+But nowadays, sparse's main page is sparse.docs.kernel.org,
+which contains all what was in the wiki but also other documentation,
+mainly oriented about sparse's internals.
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
+So, add a link to this in the kernel documentation.
+
+Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
 ---
- drivers/staging/rtl8188eu/os_dep/ioctl_linux.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-index d5968ef9f43d..68196d8c05eb 100644
---- a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-@@ -211,7 +211,7 @@ static char *translate_scan(struct adapter *padapter,
- 		else/* default MCS7 */
- 			max_rate = (bw_40MHz) ? ((short_GI) ? 150 : 135) : ((short_GI) ? 72 : 65);
+Changes since v1:
+* fix a typo (s/kernl/kernel/) thanks to Mike Rapoport.
+
+ Documentation/dev-tools/sparse.rst | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/dev-tools/sparse.rst b/Documentation/dev-tools/sparse.rst
+index 8a7055593c31..02102be7ff49 100644
+--- a/Documentation/dev-tools/sparse.rst
++++ b/Documentation/dev-tools/sparse.rst
+@@ -9,6 +9,8 @@ Sparse is a semantic checker for C programs; it can be used to find a
+ number of potential problems with kernel code.  See
+ https://lwn.net/Articles/689907/ for an overview of sparse; this document
+ contains some kernel-specific sparse information.
++More information on sparse, mainly about its internals, can be found in
++its official pages at https://sparse.docs.kernel.org.
  
--		max_rate = max_rate*2;/* Mbps/2; */
-+		max_rate *= 2; /* Mbps/2; */
- 	}
  
- 	iwe.cmd = SIOCGIWRATE;
-@@ -1395,7 +1395,7 @@ static int rtw_wx_set_rate(struct net_device *dev,
- 		ratevalue = 11;
- 		goto set_rate;
- 	}
--	target_rate = target_rate/100000;
-+	target_rate /= 100000;
- 
- 	switch (target_rate) {
- 	case 10:
+ Using sparse for typechecking
 -- 
 2.27.0
 
