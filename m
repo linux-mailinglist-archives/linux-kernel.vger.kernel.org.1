@@ -2,180 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E94D20D88E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2792F20DA38
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387550AbgF2TkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:40:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:41798 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732999AbgF2Tj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:39:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1254E13FD;
-        Mon, 29 Jun 2020 04:20:36 -0700 (PDT)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B30A83F73C;
-        Mon, 29 Jun 2020 04:20:34 -0700 (PDT)
-Subject: Re: [PATCH v4 02/10] dmaengine: Actions: Add support for S700 DMA
- engine
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Amit Singh Tomar <amittomer25@gmail.com>, afaerber@suse.de,
-        manivannan.sadhasivam@linaro.org, dan.j.williams@intel.com,
-        cristian.ciocaltea@gmail.com, dmaengine@vger.kernel.org,
+        id S2387698AbgF2Tyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:54:55 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:36516 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387634AbgF2TkZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:40:25 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200629112248euoutp016c3100b7f179c6c86dde122f93aa41bd~c-_6YProw2854728547euoutp01-
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:22:48 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200629112248euoutp016c3100b7f179c6c86dde122f93aa41bd~c-_6YProw2854728547euoutp01-
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593429768;
+        bh=egNq6XIWhS8LBJ6syi2DRN8QJ6iMhA7JYnFew+U+M1Q=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=V+43EhJcTlf2n+B7+0Zjr+VtkDIECKWi1wOeO4Od8RwrlJNl0wO0BzTnFMHnxfsiD
+         LRskZOAC3aFVmQ7HZTGJGAZI0l5UwOpsjwSOz/kfjKDGTZiy3HxgVHELgu43eFZjVi
+         YfrzlSo5Qp3V/HOKOwcALK0lMZgIWdI7a75W4FCs=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200629112247eucas1p25116a18f7ec152d9e0f408477cb90094~c-_59B8Sf2255522555eucas1p2Q;
+        Mon, 29 Jun 2020 11:22:47 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 6B.A7.06456.70FC9FE5; Mon, 29
+        Jun 2020 12:22:47 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200629112247eucas1p2f5a1c0a4ffe3a2571658646a7b369cfd~c-_5iquFu2471224712eucas1p2S;
+        Mon, 29 Jun 2020 11:22:47 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200629112247eusmtrp20c0757f41e1b475d92adc62eb3a5679e~c-_5h01f01939019390eusmtrp2Z;
+        Mon, 29 Jun 2020 11:22:47 +0000 (GMT)
+X-AuditID: cbfec7f2-809ff70000001938-be-5ef9cf075662
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 09.EC.06017.70FC9FE5; Mon, 29
+        Jun 2020 12:22:47 +0100 (BST)
+Received: from AMDC3748.digital.local (unknown [106.120.51.74]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200629112246eusmtip187e11c51d342934a9ff5e5ffedcd484f~c-_4w3dQM2169621696eusmtip1D;
+        Mon, 29 Jun 2020 11:22:46 +0000 (GMT)
+From:   Andrzej Hajda <a.hajda@samsung.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org
-References: <1591697830-16311-1-git-send-email-amittomer25@gmail.com>
- <1591697830-16311-3-git-send-email-amittomer25@gmail.com>
- <20200624061529.GF2324254@vkoul-mobl>
- <75d154d0-2962-99e6-a7c7-bf0928ec8b2a@arm.com>
- <20200629095446.GH2599@vkoul-mobl>
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
- 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
- i4aIXCH3Wv6K
-Organization: ARM Ltd.
-Message-ID: <36274785-f400-4d69-deed-b7d545718d40@arm.com>
-Date:   Mon, 29 Jun 2020 12:19:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200629095446.GH2599@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        andy.shevchenko@gmail.com, Mark Brown <broonie@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS)
+Subject: [PATCH v7 0/4] driver core: add probe error check helper
+Date:   Mon, 29 Jun 2020 13:22:38 +0200
+Message-Id: <20200629112242.18380-1-a.hajda@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA0WSa0gUYRSG+XZmZ2bNlWlV9sPCcLEfRmlq4AdFpRRMEOiPoCg1txwvpKvt
+        6nqh0krNC66XsNRaM9O8bpo3UrJkLM3EdfOeKF5KYSOVvKJR5u5Y/XvOe8573vPjUJiEE9pR
+        oYooVqmQh8kIC7y5c0N/iOzb8D88l+aBxl7ohciY3QHQy/xaIcqb/kqgreYcDA2uLhLo7rNa
+        Ag2tGzHU/X0IR2k5pSSq/zIsRAOtjwnE5bUBpHs3QSJOcwlpV/KwkzQzMPwJYxZHk0mmba0Y
+        Z1oKJ0jmUWqBkKmvSiOYD9n9AuattoZkJjO6BExDaQKjaawCTHvmfZxZrrf3EV+0OBbIhoWq
+        WaXL8QCLEH3+azyyxipWY1Qkgue70oGIgvQRmKx5SqQDC0pCVwCYOW4Q8MUKgCX9WpIvlgFs
+        z6jF/1p0U8sY3ygHsHitFfyz3OZShaYpgnaCvxo+Eya2od1hVm+heRVGb+Jw6F6Kecia9oRa
+        XaeZcXo/NJjDRZSYRnBqYVDIx+2D1XXt5jhI60k427+F8Y1TMLdyZucma/itq5HkeS/canki
+        4DkBTlYk7ZhTAWyqa9kxH4Xj+s3t86jtk5xgbasLL3vC8REOmGRIW8HR+d0mGdvG3OaHGC+L
+        YWqKhJ92gJO9TTsLpbDMsErwzMDs+Y/AxBLaD05Xt5HZwL7wf1YxAFVAykarwoNZlauCjXFW
+        ycNV0Ypg56sR4fVg+7N6fnctvQKr/Vc4QFNAZikO0G/4S4RytSounAOQwmQ2Yq/eHn+JOFAe
+        F88qIy4ro8NYFQf2ULhMKnYvMfpJ6GB5FHuNZSNZ5d+ugBLZJYKCByOlcp9l1ke0FAMGHdcN
+        Y1mdnvFvMi+wOsvg87Co1cFQKu1YmbrxfmhB1KdX95zzkHZ3bnGzat8Rt/Ict8jrp/3V83dm
+        Oce88h+6uAqvQIOxyNu2cuCnb9+Z6LKzM96MrfZmLDFQ4zaiCQ0avVWpDnKem/R2nK7RLh5M
+        OiHDVSFy1wOYUiX/A7Dx0xRVAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprGIsWRmVeSWpSXmKPExsVy+t/xu7rs53/GGbx7LGlxa905VouXEw4z
+        WmycsZ7VYurDJ2wW/7dNZLa48vU9m0Xz4vVsFle/v2S2OPnmKotF58Ql7BabHl9jtbi8aw6b
+        xaGpexkt1h65y25xqC/aYu6XqcwOAh6Xr11k9nh/o5XdY++3BSweO2fdZfeY3TGT1WPTqk42
+        jxMTLjF57J+7ht3jfvdxJo/NS+o9+rasYvQ40DuZxePzJrkA3ig9m6L80pJUhYz84hJbpWhD
+        CyM9Q0sLPSMTSz1DY/NYKyNTJX07m5TUnMyy1CJ9uwS9jHMz9rAUrOGr6HuZ18C4jLuLkZND
+        QsBEYu2Dz8wgtpDAUkaJF78zIeLiErvnv2WGsIUl/lzrYoOo+cQocaFZDcRmE9CU+Lv5Jlhc
+        RMBYov/sLPYuRi4OZoE2Vom555+wgySEBRwl5q49xgpiswioSly4c4EJxOYVsJB48O4KK8QC
+        eYnVGw4wT2DkWcDIsIpRJLW0ODc9t9hIrzgxt7g0L10vOT93EyMwTrYd+7llB2PXu+BDjAIc
+        jEo8vAnnfsYJsSaWFVfmHmKU4GBWEuF1Ons6Tog3JbGyKrUoP76oNCe1+BCjKdDyicxSosn5
+        wBjOK4k3NDU0t7A0NDc2NzazUBLn7RA4GCMkkJ5YkpqdmlqQWgTTx8TBKdXAGHHLrXhKwY2U
+        ki1+9w4XKGquCts5j21GaMU+w8sys6IamCRtKzJ+LnnBI3tKTfD1/TnBmwJvT+q2CPucHnJg
+        RbRvv03OwqeGbaoOHHsZJWOWPl37/NSfJLsl8To1HhLzrQ6bH5nK47U94Nu7j0nrmkJesk5e
+        lpZ9Icpw57pXK/VX7hNfcvTYdCWW4oxEQy3mouJEADzs2u+pAgAA
+X-CMS-MailID: 20200629112247eucas1p2f5a1c0a4ffe3a2571658646a7b369cfd
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200629112247eucas1p2f5a1c0a4ffe3a2571658646a7b369cfd
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200629112247eucas1p2f5a1c0a4ffe3a2571658646a7b369cfd
+References: <CGME20200629112247eucas1p2f5a1c0a4ffe3a2571658646a7b369cfd@eucas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/06/2020 10:54, Vinod Koul wrote:
+Hi All,
 
-Hi Vinod,
+Thanks for comments.
 
-> On 24-06-20, 10:35, Andrï¿½ Przywara wrote:
->> On 24/06/2020 07:15, Vinod Koul wrote:
->>> On 09-06-20, 15:47, Amit Singh Tomar wrote:
->>>
->>>> @@ -372,6 +383,7 @@ static inline int owl_dma_cfg_lli(struct owl_dma_vchan *vchan,
->>>>  				  struct dma_slave_config *sconfig,
->>>>  				  bool is_cyclic)
->>>>  {
->>>> +	struct owl_dma *od = to_owl_dma(vchan->vc.chan.device);
->>>>  	u32 mode, ctrlb;
->>>>  
->>>>  	mode = OWL_DMA_MODE_PW(0);
->>>> @@ -427,14 +439,26 @@ static inline int owl_dma_cfg_lli(struct owl_dma_vchan *vchan,
->>>>  	lli->hw[OWL_DMADESC_DADDR] = dst;
->>>>  	lli->hw[OWL_DMADESC_SRC_STRIDE] = 0;
->>>>  	lli->hw[OWL_DMADESC_DST_STRIDE] = 0;
->>>> -	/*
->>>> -	 * Word starts from offset 0xC is shared between frame length
->>>> -	 * (max frame length is 1MB) and frame count, where first 20
->>>> -	 * bits are for frame length and rest of 12 bits are for frame
->>>> -	 * count.
->>>> -	 */
->>>> -	lli->hw[OWL_DMADESC_FLEN] = len | FCNT_VAL << 20;
->>>> -	lli->hw[OWL_DMADESC_CTRLB] = ctrlb;
->>>> +
->>>> +	if (od->devid == S700_DMA) {
->>>> +		/* Max frame length is 1MB */
->>>> +		lli->hw[OWL_DMADESC_FLEN] = len;
->>>> +		/*
->>>> +		 * On S700, word starts from offset 0x1C is shared between
->>>> +		 * frame count and ctrlb, where first 12 bits are for frame
->>>> +		 * count and rest of 20 bits are for ctrlb.
->>>> +		 */
->>>> +		lli->hw[OWL_DMADESC_CTRLB] = FCNT_VAL | ctrlb;
->>>> +	} else {
->>>> +		/*
->>>> +		 * On S900, word starts from offset 0xC is shared between
->>>> +		 * frame length (max frame length is 1MB) and frame count,
->>>> +		 * where first 20 bits are for frame length and rest of
->>>> +		 * 12 bits are for frame count.
->>>> +		 */
->>>> +		lli->hw[OWL_DMADESC_FLEN] = len | FCNT_VAL << 20;
->>>> +		lli->hw[OWL_DMADESC_CTRLB] = ctrlb;
->>>
->>> Unfortunately this wont scale, we will keep adding new conditions for
->>> newer SoC's! So rather than this why not encode max frame length in
->>> driver_data rather than S900_DMA/S700_DMA.. In future one can add values
->>> for newer SoC and not code above logic again.
->>
->> What newer SoCs? I don't think we should try to guess the future here.
-> 
-> In a patch for adding new SoC, quite ironical I would say!
+Changes since v6:
+- removed leftovers from old naming scheme in commit descritions,
+- added R-Bs.
 
-S700 is not a new SoC, it's just this driver didn't support it yet. What
-I meant is that I don't even know about the existence of upcoming SoCs
-(Google seems clueless), not to speak of documentation to assess which
-DMA controller they use.
+Changes since v5:
+- removed patch adding macro, dev_err_probe(dev, PTR_ERR(ptr), ...) should be used instead,
+- added dev_dbg logging in case of -EPROBE_DEFER,
+- renamed functions and vars according to comments,
+- extended docs,
+- cosmetics.
 
->> We can always introduce further abstractions later, once we actually
->> *know* what we are looking at.
-> 
-> Rather if we know we are adding abstractions, why not add in a way that
-> makes it scale better rather than rework again
+Original message (with small adjustments):
 
-I appreciate the effort, but this really tapping around in the dark,
-since we don't know which direction any new DMA controller is taking. I
-might not even be similar.
+Recently I took some time to re-check error handling in drivers probe code,
+and I have noticed that number of incorrect resource acquisition error handling
+increased and there are no other propositions which can cure the situation.
 
->> Besides, I don't understand what you are after. The max frame length is
->> 1MB in both cases, it's just a matter of where to put FCNT_VAL, either
->> in FLEN or in CTRLB. And having an extra flag for that in driver data
->> sounds a bit over the top at the moment.
-> 
-> Maybe, maybe not. I would rather make it support N SoC when adding
-> support for second one rather than keep adding everytime a new SoC is
-> added...
+So I have decided to resend my old proposition of probe_err helper which should
+simplify resource acquisition error handling, it also extend it with adding defer
+probe reason to devices_deferred debugfs property, which should improve debugging
+experience for developers/testers.
 
-Well, what do you suggest, specifically? At the moment we have two
-*slightly* different DMA controllers, so we differentiate between the
-two based on the model. Do you want to introduce an extra flag like
-FRAME_CNT_IN_CTRLB? That seems to be a bit over the top here, since we
-don't know if a future DMA controller is still compatible, or introduces
-completely new differences.
+I have also added two patches showing usage and benefits of the helper.
 
-Cheers,
-Andre
+My dirty/ad-hoc cocci scripts shows that this helper can be used in at least 2700 places
+saving about 3500 lines of code.
+
+Regards
+Andrzej
+
+
+Andrzej Hajda (4):
+  driver core: add device probe log helper
+  driver core: add deferring probe reason to devices_deferred property
+  drm/bridge/sii8620: fix resource acquisition error handling
+  drm/bridge: lvds-codec: simplify error handling
+
+ drivers/base/base.h                  |  3 ++
+ drivers/base/core.c                  | 46 ++++++++++++++++++++++++++++
+ drivers/base/dd.c                    | 23 +++++++++++++-
+ drivers/gpu/drm/bridge/lvds-codec.c  | 10 ++----
+ drivers/gpu/drm/bridge/sil-sii8620.c | 21 ++++++-------
+ include/linux/device.h               |  3 ++
+ 6 files changed, 86 insertions(+), 20 deletions(-)
+
+-- 
+2.17.1
+
