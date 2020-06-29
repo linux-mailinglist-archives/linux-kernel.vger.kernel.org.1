@@ -2,155 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3362B20E4D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FCF20E610
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388144AbgF2V3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:29:14 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48542 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727976AbgF2Smj (ORCPT
+        id S2391430AbgF2VoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727835AbgF2Shr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:42:39 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TFajYC188023;
-        Mon, 29 Jun 2020 12:10:49 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31ydmqmpxk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 12:10:49 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05TGAm7D150990;
-        Mon, 29 Jun 2020 12:10:48 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31ydmqmpw9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 12:10:48 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05TG6QpM016445;
-        Mon, 29 Jun 2020 16:10:46 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma01fra.de.ibm.com with ESMTP id 31wyyase64-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 16:10:46 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05TGAhQt46924020
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Jun 2020 16:10:43 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B4444C05A;
-        Mon, 29 Jun 2020 16:10:43 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C08124C046;
-        Mon, 29 Jun 2020 16:10:40 +0000 (GMT)
-Received: from oc3016276355.ibm.com (unknown [9.145.79.64])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 29 Jun 2020 16:10:40 +0000 (GMT)
-Subject: Re: [PATCH v3 1/1] s390: virtio: let arch accept devices without
- IOMMU feature
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     Halil Pasic <pasic@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, mst@redhat.com,
-        jasowang@redhat.com, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
-        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com
-References: <1592390637-17441-1-git-send-email-pmorel@linux.ibm.com>
- <1592390637-17441-2-git-send-email-pmorel@linux.ibm.com>
- <20200618002956.5f179de4.pasic@linux.ibm.com>
- <20200619112051.74babdb1.cohuck@redhat.com>
- <7fe6e9ab-fd5a-3f92-1f3a-f9e6805d3730@linux.ibm.com>
- <20200629154439.14cc5ae7.cohuck@redhat.com>
-From:   Pierre Morel <pmorel@linux.ibm.com>
-Message-ID: <4777633f-728b-1a67-c870-0fafa313e468@linux.ibm.com>
-Date:   Mon, 29 Jun 2020 18:10:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 29 Jun 2020 14:37:47 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4C8C0307BE
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:10:06 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x3so2568698pfo.9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:10:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VLeKruvw8xS/1C0BGsgxQCKuNobKaryrVDfkNcFoTKw=;
+        b=i+9UP96BeuDUndvXAn5oRwVUqCxKPUqo5jb9FpFAkevibF4fOIyewm6LBAtkZLrBzP
+         /7U3H02kF4xz1/F9l3P0SJ2jj2PFznh1x5HDxhs16XUY+e7OWMJgLhbNHwJYVT8KWpee
+         TodpFVlf7IKIfvaTS8QPjZFYeI1/hHcL3q4bY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VLeKruvw8xS/1C0BGsgxQCKuNobKaryrVDfkNcFoTKw=;
+        b=Q440k/y6E7c3jBG0LIB6b9Gr0mSHBjQw3bzPBiLt4T9k9ESmvAG/HdqayEVJjUwuGc
+         fh4d4U1LEZJOb5nvecMBDGUWMdr4GGiWQ1RHftgtu7QatRcilGbDOxAdnzArhCJj7aIB
+         x7xhCflg66T0F+3pJC71HBg1faVZE5MTsGM5lNWwpc2GDuYt42K1DB/2eio24LYfDxjH
+         iyBCxWYGuPlQjVgGE/jSzMJGX9m7TRFbfs6q7XisClhpzeo0B2u5CkaHYokz5qfkHk9H
+         BK3673eJa1oeQ/hnLeTglh6ddlCYHGNonmONPBg6JBeCEwzyp4ZB7yYMI29PyiCYFmTu
+         VCOQ==
+X-Gm-Message-State: AOAM530SFj0+XxykKDZxSy3GpNztGZWFBjnXOVGg6UbsqqyBl94ep3Qm
+        a9ABZ2JjZXlAqy9cI0HDfew19w==
+X-Google-Smtp-Source: ABdhPJxiXdS02g2kg/C3e7NIZ+hRQZoFSkyCVmAnS41BhXLKFEBoQYo+oIuHHOwfsIe186IoCXJYwg==
+X-Received: by 2002:a65:5649:: with SMTP id m9mr10671287pgs.279.1593447006373;
+        Mon, 29 Jun 2020 09:10:06 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j21sm176656pfa.133.2020.06.29.09.10.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 09:10:05 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 09:10:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H . J . Lu" <hjl@sourceware.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/7] x86/boot/compressed: Move .got.plt entries out of
+ the .got section
+Message-ID: <202006290909.F79ED275C@keescook>
+References: <20200629140928.858507-1-nivedita@alum.mit.edu>
+ <20200629140928.858507-2-nivedita@alum.mit.edu>
+ <202006290846.5A5C76A4D7@keescook>
+ <20200629155011.GA900899@rani.riverdale.lan>
+ <CAMj1kXH1Fx3c4fZRVgNPeXnPFbHWVhgywU0Jvu65=wBaR_5yjA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200629154439.14cc5ae7.cohuck@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-06-29_15:2020-06-29,2020-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- spamscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
- mlxlogscore=999 adultscore=0 clxscore=1015 priorityscore=1501
- suspectscore=0 mlxscore=0 cotscore=-2147483648 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006290105
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXH1Fx3c4fZRVgNPeXnPFbHWVhgywU0Jvu65=wBaR_5yjA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020-06-29 15:44, Cornelia Huck wrote:
-> On Mon, 29 Jun 2020 15:14:04 +0200
-> Pierre Morel <pmorel@linux.ibm.com> wrote:
+On Mon, Jun 29, 2020 at 05:51:00PM +0200, Ard Biesheuvel wrote:
+> On Mon, 29 Jun 2020 at 17:50, Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> >
+> > On Mon, Jun 29, 2020 at 08:48:05AM -0700, Kees Cook wrote:
+> > > On Mon, Jun 29, 2020 at 10:09:22AM -0400, Arvind Sankar wrote:
+> > >
+> > > This is also being done on arm64, and the section was specified slightly
+> > > differently (with INFO) which maybe should be done here too?
+> >
+> > I was actually just about to email you to ask what that INFO is for :)
+> > What does it do?
+> >
 > 
->> On 2020-06-19 11:20, Cornelia Huck wrote:
->>> On Thu, 18 Jun 2020 00:29:56 +0200
->>> Halil Pasic <pasic@linux.ibm.com> wrote:
->>>    
->>>> On Wed, 17 Jun 2020 12:43:57 +0200
->>>> Pierre Morel <pmorel@linux.ibm.com> wrote:
-> 
->>>>> @@ -179,6 +194,13 @@ int virtio_finalize_features(struct virtio_device *dev)
->>>>>    	if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1))
->>>>>    		return 0;
->>>>>    
->>>>> +	if (arch_needs_virtio_iommu_platform(dev) &&
->>>>> +		!virtio_has_feature(dev, VIRTIO_F_IOMMU_PLATFORM)) {
->>>>> +		dev_warn(&dev->dev,
->>>>> +			 "virtio: device must provide VIRTIO_F_IOMMU_PLATFORM\n");
-> 
-> [Side note: wasn't there a patch renaming this bit on the list? I think
-> this name is only kept for userspace compat.]
+> It makes the section non-allocatable, so it is dropped from the final image
 
-Sorry, I do not understand what you expect from me.
-On which mailing list you think there is a patch on?
-
-> 
->>>>
->>>> I'm not sure, divulging the current Linux name of this feature bit is a
->>>> good idea, but if everybody else is fine with this, I don't care that
->>>
->>> Not sure if that feature name will ever change, as it is exported in
->>> headers. At most, we might want to add the new ACCESS_PLATFORM define
->>> and keep the old one, but that would still mean some churn.
->>>    
->>>> much. An alternative would be:
->>>> "virtio: device falsely claims to have full access to the memory,
->>>> aborting the device"
->>>
->>> "virtio: device does not work with limited memory access" ?
->>>
->>> But no issue with keeping the current message.
->>>    
->>
->> If it is OK, I would like to specify that the arch is responsible to
->> accept or not the device.
->> The reason why the device is not accepted without IOMMU_PLATFORM is arch
->> specific.
-> 
-> Hm, I'd think the reason is always the same (the device cannot access
-> the memory directly), just the way to figure out whether that is the
-> case or not is arch-specific, as with so many other things. No real
-> need to go into detail here, I think.
-> 
-
-As you like, so I rename the subject to:
-"virtio: device does not work with limited memory access"
-
-Regards,
-
-Pierre
-
+i.e. takes no disk space, but the ASSERT can still be done.
 
 -- 
-Pierre Morel
-IBM Lab Boeblingen
+Kees Cook
