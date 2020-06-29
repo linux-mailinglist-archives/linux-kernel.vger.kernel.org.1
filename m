@@ -2,103 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F88C20D641
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A588C20D818
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732029AbgF2TSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:18:31 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:58440 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732015AbgF2TSY (ORCPT
+        id S2387414AbgF2Tfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:35:41 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:44357 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732113AbgF2Tfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:18:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593458302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C+A60OaYSKQfoFPbCowvu2GaNu7uEQw80AdN699By4g=;
-        b=JW1oBc1wFcVC+uf1flpa+W22pyWP04j2WVCtRQp8y8PXlJ7dZKE2IYW9VtXUI+S6ITmeq0
-        3H3m9v23sl0+ZhUzDEXqNla+MKOwUzo6BVJ/4D2d/qClBlMrcdK5egQOnxOLqieBcAzWxv
-        7EIYjmqo1ZgmebG0xeAX2UlgjiajXqs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-454-R5iFLdihOc-M61CgFCZKcg-1; Mon, 29 Jun 2020 09:17:15 -0400
-X-MC-Unique: R5iFLdihOc-M61CgFCZKcg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3640518FF662;
-        Mon, 29 Jun 2020 13:17:14 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 062BD2B47C;
-        Mon, 29 Jun 2020 13:17:09 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 05TDH9li012066;
-        Mon, 29 Jun 2020 09:17:09 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 05TDH8JV012062;
-        Mon, 29 Jun 2020 09:17:08 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Mon, 29 Jun 2020 09:17:08 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Eric Biggers <ebiggers@kernel.org>
-cc:     Mike Snitzer <msnitzer@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Zaibo Xu <xuzaibo@huawei.com>, linux-kernel@vger.kernel.org,
-        Wei Xu <xuwei5@hisilicon.com>, dm-devel@redhat.com,
-        George Cherian <gcherian@marvell.com>,
-        linux-crypto@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Milan Broz <mbroz@redhat.com>
-Subject: Re: [dm-devel] [PATCH 1/3 v2] crypto: introduce the flag
- CRYPTO_ALG_ALLOCATES_MEMORY
-In-Reply-To: <20200628200022.GE11197@sol.localdomain>
-Message-ID: <alpine.LRH.2.02.2006290905340.11293@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2006161101080.28052@file01.intranet.prod.int.rdu2.redhat.com> <20200616173620.GA207319@gmail.com> <alpine.LRH.2.02.2006171107220.18714@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2006171108440.18714@file01.intranet.prod.int.rdu2.redhat.com>
- <20200626044534.GA2870@gondor.apana.org.au> <alpine.LRH.2.02.2006261109520.11899@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2006261215480.13882@file01.intranet.prod.int.rdu2.redhat.com> <20200626164617.GA211634@gmail.com>
- <20200626170039.GB211634@gmail.com> <alpine.LRH.2.02.2006281505530.347@file01.intranet.prod.int.rdu2.redhat.com> <20200628200022.GE11197@sol.localdomain>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        Mon, 29 Jun 2020 15:35:37 -0400
+Received: from mail-qk1-f175.google.com ([209.85.222.175]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MBDva-1jgVWL1PeY-00Cj1w; Mon, 29 Jun 2020 15:20:31 +0200
+Received: by mail-qk1-f175.google.com with SMTP id z63so15126119qkb.8;
+        Mon, 29 Jun 2020 06:20:31 -0700 (PDT)
+X-Gm-Message-State: AOAM533ZJSAok7jlSRbfwQAVTrEvXLc3dVAIhoX5VLL1+Q5z2k/tWNzy
+        T4GhrP7N1EOYyFVhxReaWoqgPPE1ZF8cSiw2KMk=
+X-Google-Smtp-Source: ABdhPJwdmyIy2DXspwln00tSJlWBM/RffskxeSD5edRyoGLfgGk7pYtSMO2AKnWt6g6WM8uCKr4sKoJigN65H2p7/FQ=
+X-Received: by 2002:a05:620a:1654:: with SMTP id c20mr8459703qko.138.1593436830130;
+ Mon, 29 Jun 2020 06:20:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com>
+ <1593410042-10598-5-git-send-email-Anson.Huang@nxp.com> <CAK8P3a2yXFbGxuSRoC5_dYBujnAtVoEMXe50V7QYjPYhqra7nA@mail.gmail.com>
+ <DB3PR0402MB39160335642AFBAC4B38C511F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+In-Reply-To: <DB3PR0402MB39160335642AFBAC4B38C511F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 29 Jun 2020 15:20:13 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0CcijnVxJws_kMiaOBbc4Uox40W4=-dX+BG6OeMYtFpw@mail.gmail.com>
+Message-ID: <CAK8P3a0CcijnVxJws_kMiaOBbc4Uox40W4=-dX+BG6OeMYtFpw@mail.gmail.com>
+Subject: Re: [PATCH V3 04/10] clk: imx: Support building SCU clock driver as module
+To:     Anson Huang <anson.huang@nxp.com>
+Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
+        Stefan Agner <stefan.agner@toradex.com>,
+        Peng Fan <peng.fan@nxp.com>, Abel Vesa <abel.vesa@nxp.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        Andy Duan <fugang.duan@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:b0yzQOCCTZd+elNc6Q7/QnHIpomX4vV3bgG68HT+lCfG2Nqxz3e
+ /zY+elPSL+xd/FENBfREHS5z8zguV4CZ4fu0uXzi4XgkTJrpt15zzhYwqfY1tHD3fAdqNCy
+ IBQRTe1wgQC3h0RioRLhfmMdeNc9mJjD/qwF/ViXQFyGpmvBTCtdbOgnt6oxE6o2/l70F44
+ 3nklo4nCtdNnUcN1EjhVQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wddScc3gBbY=:9FLiBjsnYjWwOT967YuGO4
+ w2nnLLAiCIfa6CWXrxz84prDuuhyXcNo2xeq/0jRjcY2JdeW+2YUEtKgzCySiE+vPsrOGEy/Z
+ pvQe5DCMGnquQqdIO1XbvammKJFYu5+QoRAzdxhjvMeRtYjv2B+pZC/XJQ6Of4L1/N3r04IXr
+ iZ3cYn21LM8U6iC2PLMK6+Ocl34z6gcBXJRHfCgn9kW+aX1EjZPEkhpQYgCId1DgFAnx6hBhu
+ akrABzMT37m1RviASSy+qgpJfmq5aAEmV4vc9C1KAjt2dUaAtsgrh0L2p0iv/CwAw3Jaq7ygE
+ mLX+d74y1eubmRHlkyPfADHX3Y0TMAR2dNTE8GQIyJdMyrUvWBdyqNweEyDGfozRJjyIw70aO
+ s4ONdC0irEp0910DdpXDrwdHS3YJp0xQMcipSW1xZYGEBAVPCJ4ItcoIE3NHri06LPeQJiUso
+ x+seJ6Wj+41cCjs3lbJShLb0MCyAAbKUxmHUrKa4hwUp7RFZqGhpD15fJpTA4qtgQ8fGAu4lp
+ 1kPar2/dzsDbmamtgQAKbv5iI7/mevZw5h0rk+zjhdpDtxiaDB+DM8ewGeIngvUjSZUWeucVt
+ KA8wdjmyhPRWGpug0Sx/pMwRDKBzWKFHgpMv/nOWPwWYRwmk3PDjmc9vJt6WjT4x7CC0Lmkry
+ DhtKtzpWQlI4mLhXXur8uP98w/ALKS9U1KsZce4Az8pNyiFVc4OIrY5FQWtjzbTxCoaa2V7tz
+ 29Y2Fc6F614fp4yqFy8p9iMrkeDt++iTU+u0EeXYJHfOk3qbSLWNpv4Y4sD79ZMw4oMgdpLji
+ YOCrK4C4MSZzRd+IvWOBi4O7QMd8gjIVg3U26WogEFvWJfkEqWYBn3sey+TQt9j0wTwkwoHK/
+ CSm3lXcCsKPgDq+RWjAks7uhbOkb5z+RNmwXDcFPj3eXAqZk7zFlUMJMhn9iGXtR6dKSShO/g
+ 1/GSk+L6ezhrodyMxXsUzocEbwXvYTCOpXzLWW9sO0MHv1OjvJaDz
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 29, 2020 at 2:53 PM Anson Huang <anson.huang@nxp.com> wrote:
+> > Subject: Re: [PATCH V3 04/10] clk: imx: Support building SCU clock driver as
+> > module
+> >
+> > On Mon, Jun 29, 2020 at 8:06 AM Anson Huang <Anson.Huang@nxp.com>
+> > wrote:
+> >
+> > > --- a/drivers/clk/imx/Makefile
+> > > +++ b/drivers/clk/imx/Makefile
+> > > @@ -21,9 +21,9 @@ obj-$(CONFIG_MXC_CLK) += \
+> > >         clk-sscg-pll.o \
+> > >         clk-pll14xx.o
+> > >
+> > > -obj-$(CONFIG_MXC_CLK_SCU) += \
+> > > -       clk-scu.o \
+> > > -       clk-lpcg-scu.o
+> > > +mxc-clk-scu-objs += clk-lpcg-scu.o
+> > > +mxc-clk-scu-objs += clk-scu.o
+> > > +obj-$(CONFIG_MXC_CLK_SCU) += mxc-clk-scu.o
+> >
+> > It looks like the two modules are tightly connected, one is useless without the
+> > other. How about linking them into a combined module and dropping the
+> > export statement?
+> >
+>
+> From HW perspective, the SCU clock driver and LPCG SCU clock driver are different,
+> SCU clock driver is for those clocks controlled by system controller (M4 which runs a firmware),
+> while LPCG SCU clock is for those clock gates inside module, which means AP core can
+> control it directly via register access, no need to via SCU API.
 
+Sorry, I misread the patch in multiple ways. First of all, you already put
+clk-scu.o and clk-lpcg-scu.o files into a combined loadable module, and
+I had only looked at clk-scu.c.
 
-On Sun, 28 Jun 2020, Eric Biggers wrote:
+What I actually meant here was to link clk-scu.o together with clk-imx8qxp.o
+(and possibly future chip-specific files) into a loadable module and drop
+the export.
 
-> On Sun, Jun 28, 2020 at 03:07:49PM -0400, Mikulas Patocka wrote:
-> > > 
-> > > cryptd_create_skcipher(), cryptd_create_hash(), cryptd_create_aead(), and
-> > > crypto_rfc4309_create() are also missing setting the mask.
-> > > 
-> > > pcrypt_create_aead() is missing both setting the mask and inheriting the flags.
-> > 
-> > I added CRYPTO_ALG_ALLOCATES_MEMORY there.
-> 
-> I don't see where the cryptd request processing functions allocate memory.
-> 
-> It seems that cryptd should just inherit the flag, like most other templates.
-> 
-> Likewise for pcrypt.
-> 
-> And also likewise for rfc4309.
-> 
-> Where are you seeing the memory allocations that would require
-> CRYPTO_ALG_ALLOCATES_MEMORY to always be enabled for these?
-> 
-> - Eric
+> So, I think it is NOT that tightly connected, it is because they are both for i.MX8 SoCs with SCU
+> inside, so they are put together in the Makefile.
+>
+> If the export statement is acceptable, I think it is better to just keep it, make sense?
 
-This was some misunderstanding. You said "cryptd_create_skcipher ... is 
-missing both setting the mask and inheriting the flags.", so I understood 
-it so that it should inherit CRYPTO_ALG_INHERITED_FLAGS and set 
-CRYPTO_ALG_ALLOCATES_MEMORY unconditionally.
+There is nothing wrong with the export as such, this was just an
+idea to simplify the logic.
 
-Mikulas
-
+      Arnd
