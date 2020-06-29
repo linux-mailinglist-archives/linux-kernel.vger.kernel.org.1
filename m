@@ -2,101 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A65020D506
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C6D20D4BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731560AbgF2TNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731467AbgF2TNg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:36 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF8DC0086F2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 02:48:31 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id s10so15819131wrw.12
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 02:48:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=53lrQUK5V0R5X9ZjWHVM8fR4aDPLU332zBTO52qfJo0=;
-        b=JnRx9Y+zwfxpRk+lCViV8yNn8Lh5fwC569wzdoeWEClhDQHG6m2Xay+NUT45SdKC2v
-         6hi5IJIynqYjnQvHsQBtTrrygjqCGOek/nk93m4sMaI7kc5Nr9pcFvZJXijPJXZBd4kF
-         gJv0ygLdaVBMVYDiqaK+nWSnjud8vJk5sooXIw6dKkIZA+lVblCYW+pvNIDdWQKREshm
-         ahg757SV624NnHdvdQxUQsT7kIB10OdIpcaHHe7S5hbCnU88BnbStBr5ImBJCIqffXWW
-         xYtHwZn5O+iajGMvqzC0uLVU4500akD33etgK5BU6EP5TSi3Y4WVjt8WRgZ2wkgKW7ww
-         VZDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=53lrQUK5V0R5X9ZjWHVM8fR4aDPLU332zBTO52qfJo0=;
-        b=BweHgm49SU7I4hIhZFUnxbj22ZciL4+M1S+3F0AbnLDBG2CKD54EgKJpFPrNjKaAhh
-         IlRMwY2UYcUYxTexE4G6fmgg4/AocA9QNCyUwMAn0IPz/EEepI/ZEUCwaovHzXoyIo/D
-         7SR80L5yG0cCTLaOuuUIPYePViKgzMC/8l9BQXT1G0xH/VdLu/282wxfe6CNGbcph2L4
-         qaqwgDARVvDNITe/KiqLvZlHhp3jzEMqWeGIPmVmnPp+77XdP1uOcI8Zc5+1+lggZWyq
-         dvM2oMkfz5YIbqZlHQAXeJa/l2vyQb1+ZJSvDY8ltHmkUz/9CbPJSi1wKmxaF43ZWfRO
-         WGZQ==
-X-Gm-Message-State: AOAM533MGV0itJpcdB4WjWwwUFU+IAf2KrGUuIOyQdMa3q9TnLeiy5ya
-        2iXSuNoNhcAGaO2M64q2fCXoiQ==
-X-Google-Smtp-Source: ABdhPJx0Ku5T89UPaWu567plluHv+iRyJfjLQ0ckyz7mLSL3YaFEfuG+0mg7IOEgARLWdiyfZ1xzJw==
-X-Received: by 2002:adf:e6cb:: with SMTP id y11mr15736698wrm.282.1593424109700;
-        Mon, 29 Jun 2020 02:48:29 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:110:d6cc:2030:37c1:9964])
-        by smtp.gmail.com with ESMTPSA id u10sm27556177wml.29.2020.06.29.02.48.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 02:48:29 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 10:48:25 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com, tkjos@google.com, adharmap@codeaurora.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 3/3] cpufreq: Specify default governor on command line
-Message-ID: <20200629094825.GA1231692@google.com>
-References: <cover.1593418662.git.viresh.kumar@linaro.org>
- <96b6e6ca02b664194ff3e57e1ec768fbc597bf38.1593418662.git.viresh.kumar@linaro.org>
- <20200629094452.GB1228312@google.com>
- <20200629094627.jh7pwhftcdqj6nhm@vireshk-i7>
+        id S1731059AbgF2TLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:11:25 -0400
+Received: from mx.socionext.com ([202.248.49.38]:30877 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730760AbgF2TLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:11:19 -0400
+Received: from unknown (HELO iyokan-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 29 Jun 2020 18:49:31 +0900
+Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
+        by iyokan-ex.css.socionext.com (Postfix) with ESMTP id 83E1060060;
+        Mon, 29 Jun 2020 18:49:31 +0900 (JST)
+Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Mon, 29 Jun 2020 18:49:31 +0900
+Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
+        by iyokan.css.socionext.com (Postfix) with ESMTP id 1653D4031A;
+        Mon, 29 Jun 2020 18:49:31 +0900 (JST)
+Received: from [10.213.29.155] (unknown [10.213.29.155])
+        by yuzu.css.socionext.com (Postfix) with ESMTP id 7654F120455;
+        Mon, 29 Jun 2020 18:49:30 +0900 (JST)
+Subject: Re: [PATCH v5 2/6] PCI: uniphier: Add misc interrupt handler to
+ invoke PME and AER
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>
+References: <1592469493-1549-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <1592469493-1549-3-git-send-email-hayashi.kunihiko@socionext.com>
+ <87v9jcet5h.wl-maz@kernel.org>
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Message-ID: <c09ceb2f-0bf3-a5de-f918-1ccd0dba1e0a@socionext.com>
+Date:   Mon, 29 Jun 2020 18:49:30 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629094627.jh7pwhftcdqj6nhm@vireshk-i7>
+In-Reply-To: <87v9jcet5h.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 29 Jun 2020 at 15:16:27 (+0530), Viresh Kumar wrote:
-> On 29-06-20, 10:44, Quentin Perret wrote:
-> > On Monday 29 Jun 2020 at 13:55:00 (+0530), Viresh Kumar wrote:
-> > >  static int __init cpufreq_core_init(void)
-> > >  {
-> > > +	struct cpufreq_governor *gov = cpufreq_default_governor();
-> > > +
-> > >  	if (cpufreq_disabled())
-> > >  		return -ENODEV;
-> > >  
-> > >  	cpufreq_global_kobject = kobject_create_and_add("cpufreq", &cpu_subsys.dev_root->kobj);
-> > >  	BUG_ON(!cpufreq_global_kobject);
-> > >  
-> > > +	if (!strlen(default_governor))
-> > 
-> > Should we test '!strlen(default_governor) && gov' here actually?
-> > We check the return value of cpufreq_default_governor() in
-> > cpufreq_init_policy(), so I'm guessing we should do the same here to be
-> > on the safe side.
+Hi Marc,
+
+On 2020/06/27 18:48, Marc Zyngier wrote:
+> On Thu, 18 Jun 2020 09:38:09 +0100,
+> Kunihiko Hayashi <hayashi.kunihiko@socionext.com> wrote:
+>>
+>> The misc interrupts consisting of PME, AER, and Link event, is handled
+>> by INTx handler, however, these interrupts should be also handled by
+>> MSI handler.
+>>
+>> This adds the function uniphier_pcie_misc_isr() that handles misc
+>> interrupts, which is called from both INTx and MSI handlers.
+>> This function detects PME and AER interrupts with the status register,
+>> and invoke PME and AER drivers related to MSI.
+>>
+>> And this sets the mask for misc interrupts from INTx if MSI is enabled
+>> and sets the mask for misc interrupts from MSI if MSI is disabled.
+>>
+>> Cc: Marc Zyngier <maz@kernel.org>
+>> Cc: Jingoo Han <jingoohan1@gmail.com>
+>> Cc: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+>> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+>> ---
+>>   drivers/pci/controller/dwc/pcie-uniphier.c | 57 ++++++++++++++++++++++++------
+>>   1 file changed, 46 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
+>> index a5401a0..5ce2479 100644
+>> --- a/drivers/pci/controller/dwc/pcie-uniphier.c
+>> +++ b/drivers/pci/controller/dwc/pcie-uniphier.c
+>> @@ -44,7 +44,9 @@
+>>   #define PCL_SYS_AUX_PWR_DET		BIT(8)
+>>   
+>>   #define PCL_RCV_INT			0x8108
+>> +#define PCL_RCV_INT_ALL_INT_MASK	GENMASK(28, 25)
+>>   #define PCL_RCV_INT_ALL_ENABLE		GENMASK(20, 17)
+>> +#define PCL_RCV_INT_ALL_MSI_MASK	GENMASK(12, 9)
+>>   #define PCL_CFG_BW_MGT_STATUS		BIT(4)
+>>   #define PCL_CFG_LINK_AUTO_BW_STATUS	BIT(3)
+>>   #define PCL_CFG_AER_RC_ERR_MSI_STATUS	BIT(2)
+>> @@ -167,7 +169,15 @@ static void uniphier_pcie_stop_link(struct dw_pcie *pci)
+>>   
+>>   static void uniphier_pcie_irq_enable(struct uniphier_pcie_priv *priv)
+>>   {
+>> -	writel(PCL_RCV_INT_ALL_ENABLE, priv->base + PCL_RCV_INT);
+>> +	u32 val;
+>> +
+>> +	val = PCL_RCV_INT_ALL_ENABLE;
+>> +	if (pci_msi_enabled())
+>> +		val |= PCL_RCV_INT_ALL_INT_MASK;
+>> +	else
+>> +		val |= PCL_RCV_INT_ALL_MSI_MASK;
 > 
-> With the current setup (the Kconfig option being a choice which
-> selects one governor at least), it is not possible for gov to be NULL
-> here. And so I didn't worry about it :)
+> Does this affect endpoints? Or just the RC itself?
 
-Right, so should we remove the check in cpufreq_init_policy() then?
-I don't mind either way as long as we are consitent :)
+These interrupts are asserted by RC itself, so this part affects only RC.
 
-Thanks,
-Quentin
+>> +
+>> +	writel(val, priv->base + PCL_RCV_INT);
+>>   	writel(PCL_RCV_INTX_ALL_ENABLE, priv->base + PCL_RCV_INTX);
+>>   }
+>>   
+>> @@ -231,32 +241,56 @@ static const struct irq_domain_ops uniphier_intx_domain_ops = {
+>>   	.map = uniphier_pcie_intx_map,
+>>   };
+>>   
+>> -static void uniphier_pcie_irq_handler(struct irq_desc *desc)
+>> +static void uniphier_pcie_misc_isr(struct pcie_port *pp, bool is_msi)
+>>   {
+>> -	struct pcie_port *pp = irq_desc_get_handler_data(desc);
+>>   	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>>   	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
+>> -	struct irq_chip *chip = irq_desc_get_chip(desc);
+>> -	unsigned long reg;
+>> -	u32 val, bit, virq;
+>> +	u32 val, virq;
+>>   
+>> -	/* INT for debug */
+>>   	val = readl(priv->base + PCL_RCV_INT);
+>>   
+>>   	if (val & PCL_CFG_BW_MGT_STATUS)
+>>   		dev_dbg(pci->dev, "Link Bandwidth Management Event\n");
+>> +
+>>   	if (val & PCL_CFG_LINK_AUTO_BW_STATUS)
+>>   		dev_dbg(pci->dev, "Link Autonomous Bandwidth Event\n");
+>> -	if (val & PCL_CFG_AER_RC_ERR_MSI_STATUS)
+>> -		dev_dbg(pci->dev, "Root Error\n");
+>> -	if (val & PCL_CFG_PME_MSI_STATUS)
+>> -		dev_dbg(pci->dev, "PME Interrupt\n");
+>> +
+>> +	if (is_msi) {
+>> +		if (val & PCL_CFG_AER_RC_ERR_MSI_STATUS)
+>> +			dev_dbg(pci->dev, "Root Error Status\n");
+>> +
+>> +		if (val & PCL_CFG_PME_MSI_STATUS)
+>> +			dev_dbg(pci->dev, "PME Interrupt\n");
+>> +
+>> +		if (val & (PCL_CFG_AER_RC_ERR_MSI_STATUS |
+>> +			   PCL_CFG_PME_MSI_STATUS)) {
+>> +			virq = irq_linear_revmap(pp->irq_domain, 0);
+>> +			generic_handle_irq(virq);
+>> +		}
+>> +	}
+> 
+> Please have two handlers: one for interrupts that are from the RC,
+> another for interrupts coming from the endpoints.
+I assume that this handler treats interrupts from the RC only and
+this is set on the member ".msi_host_isr" added in the patch 1/6.
+I think that the handler for interrupts coming from endpoints should be
+treated as a normal case (after calling .msi_host_isr in
+dw_handle_msi_irq()).
+
+Thank you,
+
+---
+Best Regards
+Kunihiko Hayashi
