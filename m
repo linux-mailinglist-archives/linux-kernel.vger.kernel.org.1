@@ -2,152 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E8920D4BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A00720D577
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728456AbgF2TLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43116 "EHLO
+        id S1726910AbgF2TQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731040AbgF2TLQ (ORCPT
+        with ESMTP id S1731896AbgF2TQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:11:16 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059CFC031415
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:11:15 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id d16so7235874edz.12
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:11:15 -0700 (PDT)
+        Mon, 29 Jun 2020 15:16:03 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D86BC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:16:02 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id v6so4700236iob.4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:16:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NroMd8DfMK868D8FL8lie3B1iaJmWDlvZoIY161nvvg=;
-        b=N7mXCg2NLcNbdNNrXCuFA8Af3Lc5aqsbv3Exg4+0dUr7yL0Eq863c9MSzQtN7Ej2vw
-         FnhLnser4TEh0nkGuUNgvLAl4qwmK0dQma56oE1xG4vHWnM3BWjEgd9njb06gyQkFBpu
-         tssbRMkIyNWgfrbRgqa+ealIZBwtD82n5H3qg=
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=XdfoRVGuOCD2JOxmLnJxyvoO2f5zjf1xh4i//8cGLHs=;
+        b=E57soH+fAZU9oM/uuDn4bCNx2wALmvA7rwFsDeo/VdmyR4hSt+vRDMPW0qpAcJ9V/h
+         UbYJ9fIR9BUAZrS+1TfrEzBoFSxbLFUBB/IIzj7rfy4Y1SyxPmM/cs9fEremwVWV5m5u
+         b9v38myIgTBJNjasjLIOUO/K2CJS7vPJsURIlWBEC7RA0ax+vZbkexDjvFbqaAUgNm/w
+         yj4NkgHNxXLdKOO4AZsIv5vnXx8YMl4s3e1fTXh2Hp6rhwVI9k4nzVvvlc/OSvXrfpbl
+         +6DOlsrKa8IKCRxKxdcbetpm2uz+ZUKJBnziwlMhGJ11qW6bGQPIDGjYXF06+gry04Zz
+         3NGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NroMd8DfMK868D8FL8lie3B1iaJmWDlvZoIY161nvvg=;
-        b=MSzExM0rDsn1UOVhZTqnzguG5m8Sl+QtkDy5vg1s99GDoEq3SYXaT9+gT5p9rBlBXP
-         FtJNFcda1iQdp3/dsyjU7oIGVANolh3vXL2eu3vOqCt+sLmXQOIcr6ZN0vJmIZ34j4Bg
-         ExghDOBXeVhFGLc+rV7F2Pfsum//KqgxIhwiNWi/GX+u8LSYYewuGpznfbS48DCErYhR
-         Utx/d+jb0toqzXkHxTtubFGIZUOJSWp9xxfUQ87d/uN8VUeqG73F0LQRuLfUhuqUbkcU
-         W+/5+LrbsAW5etHNwIvJj5p/lzJ0wgsu6Hn4k2rEc5dsjEimCLZCsfsGcOZrqXS/NChg
-         9Btg==
-X-Gm-Message-State: AOAM5320GeiFXFdQv+JvaS7ZjmEVKmkXFhWKUr45mDVXkHvGD6AsHGXy
-        CBEFJNlsYIHBS2Z62deHpq/hFhC/j+yq8eRfVHV05w==
-X-Google-Smtp-Source: ABdhPJzL7uVA+dVAF1QW30vuD7NCdhEOj1gDC9CMkWqkDjC97pJ9HEtE2P1H5GL5MRzD06Y+IN1VY11+kv6zy8NRcWE=
-X-Received: by 2002:a50:c90d:: with SMTP id o13mr19293199edh.338.1593457874607;
- Mon, 29 Jun 2020 12:11:14 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=XdfoRVGuOCD2JOxmLnJxyvoO2f5zjf1xh4i//8cGLHs=;
+        b=imfPyvZPdru6A1BDZiePCnUaoAq1H3HN0jQfprtCjf55OlSUpNPcaCOZ2IyVYFCDfE
+         yRXYvhtwPKjxKeCAUkJ1lQWDipNlh1f3OikG4LRutlkQ18V4KW9JDuydWvFjFpM9zihK
+         ifnlyakvC9FHzpSpDyAvLTSmwgXje0b1muoKM7Gnt1RCRJw3EiX+mvqMDGDX9LCfOsUM
+         EV38+LB3ioFEQBnKav4pVedj895FFGmlht1+QYANSGWQIg+ds2X82XeslWL+Th6n7bUc
+         cSIhVj4S4XgK5t5b81oEpc7MvtvVXifIdj4Rnp3QGvCGSyaBqEy5zycQyNw0s/Jj+bmK
+         iDuw==
+X-Gm-Message-State: AOAM531N1ANhujA2gsxZ/K7NAgU9tJ7Wepmn2MR1oyrEE+a5sERRvWLK
+        yoxGnmMHkykyUVayiWgHaZLtUsefDjGTvDzyzVE=
+X-Google-Smtp-Source: ABdhPJyNR5zXZ8o09DSJzsSA3OSccnAxM/c9AxKQjYYOZlXvOMCiHs1YW/1gQi1Sa70TQ2VOPtabshfviWRkV7+ICnM=
+X-Received: by 2002:a6b:db17:: with SMTP id t23mr18236117ioc.4.1593458159284;
+ Mon, 29 Jun 2020 12:15:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200602080644.11333-1-mylene.josserand@collabora.com> <20200602080644.11333-2-mylene.josserand@collabora.com>
-In-Reply-To: <20200602080644.11333-2-mylene.josserand@collabora.com>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Tue, 30 Jun 2020 00:41:03 +0530
-Message-ID: <CAMty3ZDx-_-VHEwjbV05GBb-hQbPpo21aZbCrQ+GTaoT_gxAMg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] clk: rockchip: rk3288: Handle clock tree for rk3288w
-To:     =?UTF-8?Q?Myl=C3=A8ne_Josserand?= <mylene.josserand@collabora.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        kernel@collabora.com, linux-clk <linux-clk@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Received: by 2002:a05:6602:1588:0:0:0:0 with HTTP; Mon, 29 Jun 2020 12:15:58
+ -0700 (PDT)
+Reply-To: mrs.victoria.alexander2@gmail.com
+From:   "mrs.victoria alexander" <markalexandermilley321@gmail.com>
+Date:   Mon, 29 Jun 2020 12:15:58 -0700
+Message-ID: <CAP7XNCwEGQ+-Q==u4yk4yvJdk1X+gsfSU6pUV_hROjmF=p-DHw@mail.gmail.com>
+Subject: Hello,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 2, 2020 at 1:37 PM Myl=C3=A8ne Josserand
-<mylene.josserand@collabora.com> wrote:
->
-> The revision rk3288w has a different clock tree about "hclk_vio"
-> clock, according to the BSP kernel code.
->
-> This patch handles this difference by detecting which device-tree
-> we are using. If it is a "rockchip,rk3288-cru", let's register
-> the clock tree as it was before. If the device-tree node is
-> "rockchip,rk3288w-cru", we will apply the difference with this
-> version of this SoC.
->
-> Noticed that this new device-tree compatible must be handled in
-> bootloader such as u-boot.
->
-> Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand@collabora.com>
-> ---
->  drivers/clk/rockchip/clk-rk3288.c | 20 ++++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/clk/rockchip/clk-rk3288.c b/drivers/clk/rockchip/clk=
--rk3288.c
-> index cc2a177bbdbf..204976e2d0cb 100644
-> --- a/drivers/clk/rockchip/clk-rk3288.c
-> +++ b/drivers/clk/rockchip/clk-rk3288.c
-> @@ -425,8 +425,6 @@ static struct rockchip_clk_branch rk3288_clk_branches=
-[] __initdata =3D {
->         COMPOSITE(0, "aclk_vio0", mux_pll_src_cpll_gpll_usb480m_p, CLK_IG=
-NORE_UNUSED,
->                         RK3288_CLKSEL_CON(31), 6, 2, MFLAGS, 0, 5, DFLAGS=
-,
->                         RK3288_CLKGATE_CON(3), 0, GFLAGS),
-> -       DIV(0, "hclk_vio", "aclk_vio0", 0,
-> -                       RK3288_CLKSEL_CON(28), 8, 5, DFLAGS),
->         COMPOSITE(0, "aclk_vio1", mux_pll_src_cpll_gpll_usb480m_p, CLK_IG=
-NORE_UNUSED,
->                         RK3288_CLKSEL_CON(31), 14, 2, MFLAGS, 8, 5, DFLAG=
-S,
->                         RK3288_CLKGATE_CON(3), 2, GFLAGS),
-> @@ -819,6 +817,16 @@ static struct rockchip_clk_branch rk3288_clk_branche=
-s[] __initdata =3D {
->         INVERTER(0, "pclk_isp", "pclk_isp_in", RK3288_CLKSEL_CON(29), 3, =
-IFLAGS),
->  };
->
-> +static struct rockchip_clk_branch rk3288w_hclkvio_branch[] __initdata =
-=3D {
-> +       DIV(0, "hclk_vio", "aclk_vio1", 0,
-> +                       RK3288_CLKSEL_CON(28), 8, 5, DFLAGS),
-> +};
-> +
-> +static struct rockchip_clk_branch rk3288_hclkvio_branch[] __initdata =3D=
- {
-> +       DIV(0, "hclk_vio", "aclk_vio0", 0,
-> +                       RK3288_CLKSEL_CON(28), 8, 5, DFLAGS),
-> +};
-> +
->  static const char *const rk3288_critical_clocks[] __initconst =3D {
->         "aclk_cpu",
->         "aclk_peri",
-> @@ -936,6 +944,14 @@ static void __init rk3288_clk_init(struct device_nod=
-e *np)
->                                    RK3288_GRF_SOC_STATUS1);
->         rockchip_clk_register_branches(ctx, rk3288_clk_branches,
->                                   ARRAY_SIZE(rk3288_clk_branches));
-> +
-> +       if (of_device_is_compatible(np, "rockchip,rk3288w-cru"))
-> +               rockchip_clk_register_branches(ctx, rk3288w_hclkvio_branc=
-h,
-> +                                              ARRAY_SIZE(rk3288w_hclkvio=
-_branch));
-> +       else
-> +               rockchip_clk_register_branches(ctx, rk3288_hclkvio_branch=
-,
-> +                                              ARRAY_SIZE(rk3288_hclkvio_=
-branch));
-> +
+Dear friend,
 
-Sorry for the late query on this. I am a bit unclear about this
-compatible change, does Linux expect to replace rockchip,rk3288-cru
-with rockchip,rk3288w-cru in bootloader if the chip is RK3288w? or
-append the existing cru compatible node with rockchip,rk3288w-cru?
-because replace new cru node make clock never probe since the
-CLK_OF_DECLARE checking rockchip,rk3288-cru
 
-Jagan.
+I have a business container transaction what that some of( $13million dollars)
+
+ I would like to discuss with you. If you are interested, please
+contact my email
+
+address (mrs.victoria.alexander2@gmail.com)
+
+My WhatsApp number but only message (+19293737780)
+
+Please do not reply if you are not ready
+Thanks
