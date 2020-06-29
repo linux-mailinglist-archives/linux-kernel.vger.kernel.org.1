@@ -2,90 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8063C20E10A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC7920E246
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389844AbgF2Uvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
+        id S2388293AbgF2VDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731388AbgF2TN1 (ORCPT
+        with ESMTP id S1730459AbgF2TMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:27 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D295AC014A45;
-        Mon, 29 Jun 2020 01:10:18 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49wKsz3Ldfz9sQt;
-        Mon, 29 Jun 2020 18:10:15 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1593418216;
-        bh=crWSNNu528LAfdEMbW7KUH2pWweNYViIJO8WxsWa4Tg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gtPgUF8F34Ded9aBpbOEfWwctqu5d+tOBBKJlXtDhz8JMTTPXSq+uEvPSdBn7KKUT
-         bmaQ6MtpVIKTRe66ARLKx1zUgwYpHkjC3OrYo+TxOLHDHhObDYeYO0T8QkQBgODIAu
-         oh2VqKR6ex1ZL8Fb90YQuxmvhSoqQj40bqtgdTNyP4eF1JczGAEdXaZY9vPcRYAyXH
-         x2ZQfocM5NtmJRCpYY359kDoWbibNM8lroymr0q3d/xhnTa17iomgdmPR0hXZ3tovF
-         UWrw6WJlmfVs9rzf+KldX6fLpa8lWJ02r1ZKsxNsdn0Oo+OcCYeb+ogRNl7jyE1bsO
-         qFJkl3sfKPHQQ==
-Date:   Mon, 29 Jun 2020 18:10:14 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     akpm@linux-foundation.org, Randy Dunlap <rdunlap@infradead.org>,
-        broonie@kernel.org, mhocko@suse.cz, linux-next@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, mm-commits@vger.kernel.org
-Subject: Re: [PATCH] slab: Fix misplaced __free_one()
-Message-ID: <20200629181014.02f2022d@canb.auug.org.au>
-In-Reply-To: <202006261306.0D82A2B@keescook>
-References: <202006261306.0D82A2B@keescook>
+        Mon, 29 Jun 2020 15:12:46 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89800C014A4A
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:17:14 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id p3so7961709pgh.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:17:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tgDUE0GKIkXmW6aX8lSR4NBOqlcCjZE7PQjmXBJ/lhQ=;
+        b=Z1jI6aqnyUAm3q07oAb5HCKKw4uCkN9ddj5DoN/Sg5VrboJwevPNrx5jLcmZc9Dl8O
+         ZRcimyRboN1Mw60EMnIE6sg0WqQspyGB1f47XUPbzFnvcL28gzVoEypDV9PSA492B4qB
+         LMY0EoGnFUAttLxvYWDvZy+U616IqcnR3Wgrjq3C7ebwO/PSzhVk5D6D61MlfjqhrPcH
+         MGdFVCtnMLP+C03SvJiWfyOZSmg78HZ/2Tv10F1tHbg1RZaJEWFtWk5xGCeQHKhIE4Sn
+         eUiAQCmCxLZX4NKVOwTXMuZrMaya1tu3C78hwonMTqzMaIKTD5KAdAxDuVuHJLmmfiP3
+         7NKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tgDUE0GKIkXmW6aX8lSR4NBOqlcCjZE7PQjmXBJ/lhQ=;
+        b=hJ4ygH8oTk4CWTjQa/w5axW3ojbPZh3J2j/aq8pxt6+GW9SsMyLVW2p1MsyOTOfzKE
+         SXdFcEvX4HA2eddKyFtrE894UwbkGOv6wDAEDefiMn9Dc+6pi2tKjtwfko9nP6YH12wk
+         vli156ayo2++CAG6TPO5Ic6uhwbqr8aKHh5RHRIf+mHiO6iVc9dwLnXByN+MK9+4KyaS
+         Gg37DKIQQ52pQ/NyFzlkV24Hix1LhVHnrCC1Spy9OCGUClepmPIm4WL4jo0t8kMMYBlG
+         iZWqbgelyq6hQC7iVNqfFn/6Tt5P3eoOOzAxYAbsgJU/fD/GnXEZMDHQ6oTgdCO0AFyR
+         uGTw==
+X-Gm-Message-State: AOAM530icLzeX9pNWY4a9QBvzUxr2vgMRPuft3t1WpTLK636FiPQXrpy
+        TcIEkI2Fdm21tuAARCuRctc=
+X-Google-Smtp-Source: ABdhPJzM28IRQ1wZ9naK+e4ccSXlhOR9bkSkq6Iyv0YsLSn5bOc6DAlXFR5zm+eZRxkTJOETv4SPtA==
+X-Received: by 2002:a63:6643:: with SMTP id a64mr9557397pgc.246.1593418633762;
+        Mon, 29 Jun 2020 01:17:13 -0700 (PDT)
+Received: from varodek.localdomain ([106.210.40.90])
+        by smtp.gmail.com with ESMTPSA id co1sm3345154pjb.34.2020.06.29.01.17.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 01:17:13 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@gmail.com>, Alex Dubov <oakad@yahoo.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org
+Subject: [PATCH v1 0/5] misc: use generic power management
+Date:   Mon, 29 Jun 2020 13:45:26 +0530
+Message-Id: <20200629081531.214734-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Dyu5QPdDe/MilO+Q7TeeL45";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Dyu5QPdDe/MilO+Q7TeeL45
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Linux Kernel Mentee: Remove Legacy Power Management.
 
-Hi Kees,
+The purpose of this patch series is to remove legacy power management callbacks
+from amd ethernet drivers.
 
-On Fri, 26 Jun 2020 13:07:53 -0700 Kees Cook <keescook@chromium.org> wrote:
->
-> The implementation of __free_one() was accidentally placed inside a
-> CONFIG_NUMA #ifdef. Move it above.
->=20
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Link: https://lore.kernel.org/lkml/7ff248c7-d447-340c-a8e2-8c02972aca70@i=
-nfradead.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+The callbacks performing suspend() and resume() operations are still calling
+pci_save_state(), pci_set_power_state(), etc. and handling the power management
+themselves, which is not recommended.
 
-I added that to linux-next for today.
+The conversion requires the removal of the those function calls and change the
+callback definition accordingly and make use of dev_pm_ops structure.
 
---=20
-Cheers,
-Stephen Rothwell
+All patches are compile-tested only.
 
---Sig_/Dyu5QPdDe/MilO+Q7TeeL45
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Vaibhav Gupta (5):
+  cb710/core.c: use generic power management
+  cardreader/rtsx_pcr.c: use generic power management
+  misc/tifm_7xx1.c: use generic power management
+  misc/phantom.c: use generic power management
+  misc/pch_phub.c: use generic power management
 
------BEGIN PGP SIGNATURE-----
+ drivers/misc/cardreader/rtsx_pcr.c | 27 +++++++----------
+ drivers/misc/cb710/core.c          | 28 +++++------------
+ drivers/misc/pch_phub.c            | 48 ++++++------------------------
+ drivers/misc/phantom.c             | 20 +++++--------
+ drivers/misc/tifm_7xx1.c           | 30 +++++--------------
+ 5 files changed, 42 insertions(+), 111 deletions(-)
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl75oeYACgkQAVBC80lX
-0Gw23Af9G6llJx86wM9f653I6RddIKgNYCd1+ZQBm0e3vsDC982acrw12+AxRXyy
-Yk4Gv8seQChMrSjgw9AXifoxKsoYrHncHeM1QerK8B9xtvvWxlMrCYwca9jVdhqQ
-d6CHpFvQWxLRjJRFkTgFHQJVrt8GUrsbDuIJ477V3ipJ/91jG18Z/tbF1zidhU7d
-KOXO0J/BsASSac4czoLQnSj/jC9+K+cADlIL5dvfwNn6iVRwSYRpJmGSv/ZyHoGO
-O5jpNs0c5AVaHXtq4FzwkDvY9KsTMxnWEGx+wUypYxuszAx+U9rm6wytDvbcPsFS
-A1nE5D5dEnbiZbH6jLRoyeTJep6bIw==
-=1SDg
------END PGP SIGNATURE-----
+-- 
+2.27.0
 
---Sig_/Dyu5QPdDe/MilO+Q7TeeL45--
