@@ -2,86 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75FBE20E4BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123AB20E869
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729253AbgF2V2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:28:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729037AbgF2Smn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:42:43 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B734C033C24;
-        Mon, 29 Jun 2020 11:26:34 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jpyUC-002Dwd-Qa; Mon, 29 Jun 2020 18:26:32 +0000
-From:   Al Viro <viro@ZenIV.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Miller <davem@davemloft.net>,
-        Tony Luck <tony.luck@intel.com>, Will Deacon <will@kernel.org>
-Subject: [PATCH 32/41] h8300: switch to ->get2()
-Date:   Mon, 29 Jun 2020 19:26:19 +0100
-Message-Id: <20200629182628.529995-32-viro@ZenIV.linux.org.uk>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200629182628.529995-1-viro@ZenIV.linux.org.uk>
-References: <20200629182349.GA2786714@ZenIV.linux.org.uk>
- <20200629182628.529995-1-viro@ZenIV.linux.org.uk>
+        id S2391920AbgF2WGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 18:06:43 -0400
+Received: from muru.com ([72.249.23.125]:59940 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726116AbgF2SfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:35:14 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 590AB81C2;
+        Mon, 29 Jun 2020 18:27:18 +0000 (UTC)
+Date:   Mon, 29 Jun 2020 11:26:22 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND 07/10] regulator: cpcap-regulator: Remove declared and
+ set, but never used variable 'ignore'
+Message-ID: <20200629182622.GC37466@atomide.com>
+References: <20200625191708.4014533-1-lee.jones@linaro.org>
+ <20200625191708.4014533-8-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200625191708.4014533-8-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+* Lee Jones <lee.jones@linaro.org> [200625 19:18]:
+> It's okay to not check the return value that you're not conserned
+> about, however it is not okay to assign a variable and not check or
+> use the result.
+> 
+> Fixes W=1 warnings(s):
+> 
+>  drivers/regulator/cpcap-regulator.c:172:13: warning: variable ‘ignore’ set but not used [-Wunused-but-set-variable]
+>  172 | int error, ignore;
+>  | ^~~~~~
+>  drivers/regulator/cpcap-regulator.c: In function ‘cpcap_regulator_disable’:
+>  drivers/regulator/cpcap-regulator.c:196:13: warning: variable ‘ignore’ set but not used [-Wunused-but-set-variable]
+>  196 | int error, ignore;
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
- arch/h8300/kernel/ptrace.c | 17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
-
-diff --git a/arch/h8300/kernel/ptrace.c b/arch/h8300/kernel/ptrace.c
-index 0dc1c8f622bc..a99cbe91a6d3 100644
---- a/arch/h8300/kernel/ptrace.c
-+++ b/arch/h8300/kernel/ptrace.c
-@@ -87,20 +87,15 @@ int h8300_put_reg(struct task_struct *task, int regno, unsigned long data)
- 
- static int regs_get(struct task_struct *target,
- 		    const struct user_regset *regset,
--		    unsigned int pos, unsigned int count,
--		    void *kbuf, void __user *ubuf)
-+		    struct membuf to)
- {
- 	int r;
--	struct user_regs_struct regs;
--	long *reg = (long *)&regs;
- 
--	/* build user regs in buffer */
--	BUILD_BUG_ON(sizeof(regs) % sizeof(long) != 0);
--	for (r = 0; r < sizeof(regs) / sizeof(long); r++)
--		*reg++ = h8300_get_reg(target, r);
-+	BUILD_BUG_ON(sizeof(struct user_regs_struct) % sizeof(long) != 0);
-+	for (r = 0; r < ELF_NGREG; r++)
-+		membuf_store(&to, h8300_get_reg(target, r));
- 
--	return user_regset_copyout(&pos, &count, &kbuf, &ubuf,
--				   &regs, 0, sizeof(regs));
-+	return 0;
- }
- 
- static int regs_set(struct task_struct *target,
-@@ -139,7 +134,7 @@ static const struct user_regset h8300_regsets[] = {
- 		.n		= ELF_NGREG,
- 		.size		= sizeof(long),
- 		.align		= sizeof(long),
--		.get		= regs_get,
-+		.get2		= regs_get,
- 		.set		= regs_set,
- 	},
- };
--- 
-2.11.0
-
+Acked-by: Tony Lindgren <tony@atomide.com>
