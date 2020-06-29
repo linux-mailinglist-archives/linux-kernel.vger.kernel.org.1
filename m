@@ -2,100 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3858720D6B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FBF20D81C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732322AbgF2TXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:23:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732295AbgF2TWp (ORCPT
+        id S1730432AbgF2TgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:36:10 -0400
+Received: from outbound-smtp30.blacknight.com ([81.17.249.61]:60650 "EHLO
+        outbound-smtp30.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729568AbgF2Ta6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:22:45 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B686BC02E2FB
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:37:36 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id k15so15671735otp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:37:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cveXjL+4X4gh1TmXdX8oqUnZgc2Vd1IaF1EU/HiH/po=;
-        b=pUD5GVMvZNlTyNPmyJi9IXsTZfrSpSaM0QY7ebsyC1zCo0OHvFNpbLVF1pJscNAUqe
-         IFyUSK2FgPrznhkiChklKg/G7qoGD7VR+JxDCQ+2fGlXHzsXTAeebGDSbDi+xKb4oeiQ
-         r7TCH5o2rRa9F7dzql1Y0Y4WBuhpBWi1/YxuFjhqYkw3Gk8eneRiedH9eIkkpmhuMVqw
-         oLoc7SDNFwvw9CyUztYOctHv3EI/iIZ6WPxRIm3c+LnISDzu8GPBBQTtWbyUAoIKTPkK
-         TcQTR90pveM86/MHrDr6nAEk9rl3U5f0rwT6CQHlwFY7wh5l0XX7yi+KGFgnVqS4+XCo
-         sevw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cveXjL+4X4gh1TmXdX8oqUnZgc2Vd1IaF1EU/HiH/po=;
-        b=ifeew4E+VXO5QXSsvQiln15uO6ojzZmj3urM5kYIuXSAARhzLuREF6RbfbbQuikSJS
-         53rVdeubR5Nfoho1pH6tJxUaICsJC0oT/pjxg4NGqUP7aZom99fUxJWjQomfJXFBJCJX
-         AUDZ25osnNuatFWABx5Hb/0KzTHMYF2Z85S/eCSdi9Lh+OzNUBx+lhBpyZlT6ly3eWZp
-         BmtyIrmmlcoZ79A1OfV6a5/+hf29BPPfBmV0aa5DsRsRRcvWFKPDXY0frUa0Uj14wzie
-         vAXlHh8hqks6sFQHjjWUlbOXAPsDCdCVxqgSaJEN6f5qiOtd2vmG/YahohDrrvbACpnS
-         dF4A==
-X-Gm-Message-State: AOAM530QcdMcb+hITD1l+Ul9Z783NLj5cTBD9vQMr8nv4nrY+CbBuUZf
-        TeEUeTYcr8aXJhJXbWWv/9iSOiK9QkZ3oHl0cxM=
-X-Google-Smtp-Source: ABdhPJxR9g/vuVB4KPn3jdGd9TFAWyi4TL/l19BuOkeMaOra6mdLr30ClOYBUAd6kOsB5YS6iY65MEoC5vi4wUTht3Y=
-X-Received: by 2002:a9d:2c26:: with SMTP id f35mr14207086otb.232.1593441455928;
- Mon, 29 Jun 2020 07:37:35 -0700 (PDT)
+        Mon, 29 Jun 2020 15:30:58 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp30.blacknight.com (Postfix) with ESMTPS id A74EDBA9E6
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 15:41:46 +0100 (IST)
+Received: (qmail 22832 invoked from network); 29 Jun 2020 14:41:46 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.18.5])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 29 Jun 2020 14:41:46 -0000
+Date:   Mon, 29 Jun 2020 15:41:45 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jan Kara <jack@suse.cz>, Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: [PATCH] Revert "fs: Do not check if there is a fsnotify watcher on
+ pseudo inodes"
+Message-ID: <20200629144145.GA3183@techsingularity.net>
+References: <7b4aa1e985007c6d582fffe5e8435f8153e28e0f.camel@redhat.com>
+ <CAOQ4uxg8E-im=B6L0PQNaTTKdtxVAO=MSJki7kxq875ME4hOLw@mail.gmail.com>
+ <20200629130915.GF26507@quack2.suse.cz>
+ <CAOQ4uxhdOMbn9vL_PAGKLtriVzkjwBkuEgbdB5+uH2ZM6uA97w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200625140105.14999-1-TheSven73@gmail.com> <20200625140105.14999-2-TheSven73@gmail.com>
- <CAOMZO5AWiHWSLAcd=dj9dDFj8jLPAVAuoiOAJ8qKGPwRq1Q41g@mail.gmail.com>
- <CAGngYiXJy4ASTNfT+R+qzJ3wA=Wy2h6XZm+8oo09sD+Jmse02w@mail.gmail.com> <CAOMZO5Cr3k+oy_Sf0kL9gge7bwqkvJR8BQhY-FvxVXN00A2ARw@mail.gmail.com>
-In-Reply-To: <CAOMZO5Cr3k+oy_Sf0kL9gge7bwqkvJR8BQhY-FvxVXN00A2ARw@mail.gmail.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Mon, 29 Jun 2020 10:37:25 -0400
-Message-ID: <CAGngYiW=Pc_QjsjCv4Pc_R9OZk7nOAKm=k=b4TMbYRZ-08zKrQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] ARM: imx6plus: enable internal routing of
- clk_enet_ref where possible
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Fugang Duan <fugang.duan@nxp.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxhdOMbn9vL_PAGKLtriVzkjwBkuEgbdB5+uH2ZM6uA97w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio,
+This reverts commit e9c15badbb7b ("fs: Do not check if there is a
+fsnotify watcher on pseudo inodes"). The commit intended to eliminate
+fsnotify-related overhead for pseudo inodes but it is broken in
+concept. inotify can receive events of pipe files under /proc/X/fd and
+chromium relies on close and open events for sandboxing. Maxim Levitsky
+reported the following
 
-On Mon, Jun 29, 2020 at 10:26 AM Fabio Estevam <festevam@gmail.com> wrote:
->
-> Just tested 5.4.24_2.1.0 on an imx6qp sabresd and DHCP also fails there.
+  Chromium starts as a white rectangle, shows few white rectangles that
+  resemble its notifications and then crashes.
 
-I think I discovered the problem !
+  The stdout output from chromium:
 
-When I compare the sabresd devicetree on mainline with the actual sabresd
-schematics, the devicetree is incorrect ! Things still work, but only
-by accident.
+  [mlevitsk@starship ~]$chromium-freeworld
+  mesa: for the   --simplifycfg-sink-common option: may only occur zero or one times!
+  mesa: for the   --global-isel-abort option: may only occur zero or one times!
+  [3379:3379:0628/135151.440930:ERROR:browser_switcher_service.cc(238)] XXX Init()
+  ../../sandbox/linux/seccomp-bpf-helpers/sigsys_handlers.cc:**CRASHING**:seccomp-bpf failure in syscall 0072
+  Received signal 11 SEGV_MAPERR 0000004a9048
 
-The sabresd has an AR8131 PHY, which generates the enet ref clock, not the
-imx6. So on the schematic we see that the clock output of the PHY is wired
-to imx6 ENET_REF_CLK, so it can be used as a clock source. And GPIO_16
-is disconnected, as it should, because the imx6 is not generating the ref clk.
+Crashes are not universal but even if chromium does not crash, it certainly
+does not work properly. While filtering just modify and access might be
+safe, the benefit is not worth the risk hence the revert.
 
-But the devicetree is written as if the imx6 is providing the clock ! See
-here:
+Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
+Fixes: e9c15badbb7b ("fs: Do not check if there is a fsnotify watcher on pseudo inodes")
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+---
+ fs/file_table.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/arch/arm/boot/dts/imx6qdl-sabresd.dtsi?h=v5.7.6#n513
-
-Also there is no override of the fec PTP clock:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/arch/arm/boot/dts/imx6qdl-sabresd.dtsi?h=v5.7.6#n202
-
-Although Shawn's mainline patch mandates this?
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=v5.7.6&id=810c0ca879098a993e2ce0a190d24d11c17df748
-
-This will work, but only by accident. So on a plus, when we
-(incorrectly) switch the
-bypass bit on, things stop working.
+diff --git a/fs/file_table.c b/fs/file_table.c
+index 65603502fed6..656647f9575a 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -230,7 +230,7 @@ struct file *alloc_file_pseudo(struct inode *inode, struct vfsmount *mnt,
+ 		d_set_d_op(path.dentry, &anon_ops);
+ 	path.mnt = mntget(mnt);
+ 	d_instantiate(path.dentry, inode);
+-	file = alloc_file(&path, flags | FMODE_NONOTIFY, fops);
++	file = alloc_file(&path, flags, fops);
+ 	if (IS_ERR(file)) {
+ 		ihold(inode);
+ 		path_put(&path);
