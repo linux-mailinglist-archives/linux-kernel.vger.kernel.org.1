@@ -2,53 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1624D20DAEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECDD20D909
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726892AbgF2UB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:01:58 -0400
-Received: from muru.com ([72.249.23.125]:59970 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732992AbgF2TkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:40:11 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id B5FBA81B3;
-        Mon, 29 Jun 2020 17:15:34 +0000 (UTC)
-Date:   Mon, 29 Jun 2020 10:14:39 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>
-Subject: Re: [PATCH v2] arm: dts: am335x-boneblack: add gpio-line-names
-Message-ID: <20200629171439.GV37466@atomide.com>
-References: <20200521200926.GC429020@x1>
- <20200528131620.GA3126290@x1>
- <20200529172108.GS37466@atomide.com>
+        id S2387514AbgF2Tnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387981AbgF2Tmo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:42:44 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C413CC03140F
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:15:44 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a6so17314028wrm.4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:15:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LdmyDXtA8EIM1jxYalqYHcGVicYKfXEl1rpwhzYY7yY=;
+        b=c9p9Gar7D2nXzpz2YR/ib39Abgv4y6hEa91cr786gH8hhBcc2XHPgejdMauKVSCXyw
+         EgAsOWswu0yM60MBbUpqEjXeok6FXbZK3cY12YvSpijtvD0BGihf4HyPCLh9I970OF+w
+         78MwbI9PqGOns9VkUov0ZQ9RbuCV+fwXeAcEtPspxUT9Uk7UyYJvZDXRhVlIPAhOgy1r
+         0ebCtAluvcdaAZtdvp/iG7aZAmwyeaGzf8o6royVXgBp6bmZYTZ+EEf7K6vitzPvHvWn
+         wVU1xmaE5kyGW65gr+wCRjIx7La2Aae9t0Re8V+Heu0ZC4EarsLzwXx5hOPENYGaf8DM
+         nFPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LdmyDXtA8EIM1jxYalqYHcGVicYKfXEl1rpwhzYY7yY=;
+        b=PrGPzt9o5OGEqMKcEQT4O6DvCaufkq6Nhn5vLtGywb0g4oJMqS56T4IUcJNb5sENhm
+         QqVk68ohR6yL4lMsbFnWKD/DpwktTe0Z5Om7DKcI4Mrg0l+6OiXcF313tpG9GjuKnp/i
+         hGcrC4aDovDaqeCTXeO07NhJA47CWpzNgtpf2lXVSOsSEbx0CpVX2gSpVdzfd2LGjc9P
+         E8vkwFAJN09sL6Ek+P9KY4N5Zfd5dQUaw9dEf2GHDPyKmj3DOcc9G9ErIsia8wNcdy/P
+         T62YNYzW1nQNfNNQ315EBH8YZncnBWgZZJ2VVux5v/aTuXlHLOh/TfP2rw8va+Ou07aW
+         O92Q==
+X-Gm-Message-State: AOAM533Cph6rDZCDgz+vgN/kXn1X1oomALLT5FZ/5z75mbMWigtppnKR
+        xjtJFe0aKyilqufWOsgtz72NFA==
+X-Google-Smtp-Source: ABdhPJzs30159xRqcvLpbN8z4ChYHhI0ngFXg57huo/LOl0+OMOWqLHYtRb1FBzKVGwD5ZJ8obYgyw==
+X-Received: by 2002:a5d:66ca:: with SMTP id k10mr7472015wrw.244.1593450943526;
+        Mon, 29 Jun 2020 10:15:43 -0700 (PDT)
+Received: from wychelm.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id g195sm517482wme.38.2020.06.29.10.15.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 10:15:42 -0700 (PDT)
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>, pmladek@suse.com,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        patches@linaro.org
+Subject: [PATCH] kgdb: Resolve races during kgdb_io_register/unregister_module
+Date:   Mon, 29 Jun 2020 18:15:29 +0100
+Message-Id: <20200629171529.558003-1-daniel.thompson@linaro.org>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529172108.GS37466@atomide.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Tony Lindgren <tony@atomide.com> [200529 17:22]:
-> * Drew Fustini <drew@beagleboard.org> [200528 13:17]:
-> > FYI - Linus W. provided an Acked-by in related thread [0].
-> > 
-> > Anyone else have any review comments?
-> 
-> Looks good to me thanks. But as the merge window is about
-> to open, let's do fixes only at this point and leave this
-> for v5.9.
+Currently kgdb_register_callbacks() and kgdb_unregister_callbacks()
+are called outside the scope of the kgdb_registration_lock. This
+allows them to race with each other. This could do all sorts of crazy
+things up to and including dbg_io_ops becoming NULL partway through the
+execution of the kgdb trap handler (which isn't allowed and would be
+fatal).
 
-Applying into omap-for-v5.9/dt thanks.
+Fix this by bringing the trap handler setup and teardown into the scope
+of the registration lock.
 
-Tony
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+---
+ kernel/debug/debug_core.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+index 9e5934780f41..9799f2c6dc94 100644
+--- a/kernel/debug/debug_core.c
++++ b/kernel/debug/debug_core.c
+@@ -1117,9 +1117,8 @@ int kgdb_register_io_module(struct kgdb_io *new_dbg_io_ops)
+
+ 	dbg_io_ops = new_dbg_io_ops;
+
+-	spin_unlock(&kgdb_registration_lock);
+-
+ 	if (old_dbg_io_ops) {
++		spin_unlock(&kgdb_registration_lock);
+ 		old_dbg_io_ops->deinit();
+ 		return 0;
+ 	}
+@@ -1129,6 +1128,8 @@ int kgdb_register_io_module(struct kgdb_io *new_dbg_io_ops)
+ 	/* Arm KGDB now. */
+ 	kgdb_register_callbacks();
+
++	spin_unlock(&kgdb_registration_lock);
++
+ 	if (kgdb_break_asap &&
+ 	    (!dbg_is_early || IS_ENABLED(CONFIG_ARCH_HAS_EARLY_DEBUG)))
+ 		kgdb_initial_breakpoint();
+@@ -1147,13 +1148,14 @@ void kgdb_unregister_io_module(struct kgdb_io *old_dbg_io_ops)
+ {
+ 	BUG_ON(kgdb_connected);
+
++	spin_lock(&kgdb_registration_lock);
++
+ 	/*
+ 	 * KGDB is no longer able to communicate out, so
+ 	 * unregister our callbacks and reset state.
+ 	 */
+ 	kgdb_unregister_callbacks();
+
+-	spin_lock(&kgdb_registration_lock);
+
+ 	WARN_ON_ONCE(dbg_io_ops != old_dbg_io_ops);
+ 	dbg_io_ops = NULL;
+
+base-commit: 9ebcfadb0610322ac537dd7aa5d9cbc2b2894c68
+--
+2.25.4
+
