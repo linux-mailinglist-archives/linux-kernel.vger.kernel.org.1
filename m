@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B58B20DF90
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FFF20DFC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389537AbgF2Uh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388942AbgF2Uh4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:37:56 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14501C03E97A
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:37:56 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id 76so2265343otu.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 13:37:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Fm46DHlI8TQvkZHu+cmRB2IdIOYCe5xNqBHbvb86YyI=;
-        b=V2Y3vTGJ12Ll/zYo3s2cphA4SCNvy6j4fT/a3ty8OKVVsQYsdqWJ227S2Q04r/yETO
-         h+WFXtp2g82jsnVpQ55K1BaUAT6r6jDmYafNQeIrtx27I17+9xkY5SMcWC1b7EuJVqW7
-         J5tQYaClR7vkxyDmmz3EYV/8sbafzTBaw0184=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Fm46DHlI8TQvkZHu+cmRB2IdIOYCe5xNqBHbvb86YyI=;
-        b=kmkvA2QoI+9MGO4i2VqfZll8hIVOdrZh90wktnpoTLEBkgA/3g7QXclAfj+2oqKLYD
-         VQWl4aAVoNqATt6kkUJTc5TVjabBVtFWqhhbyn9S7kSr4qrtZ3jFhXSbHLL+4xfBj9wf
-         HFCOeuRE0EX+NGnW9SO9D0Jwl72zqaCSIUuk6sf+RBcyoTHFe50aWPMNhcTH097ogNym
-         Bxt3Ivbw98fosEx5nX8NWVgqqbWb+ZNMRW7ENum/EVLkHOX3uixOZLihSfGUL2r+vFk3
-         YN6aRRuBsXamSNRoz5o2K3mgJr6J3+fnTXEL6gu6gI6eVyf5QY8xQJdApUkan0+PtX2A
-         h27g==
-X-Gm-Message-State: AOAM531MgW4u8y6I3+rPy0xfRcvFvXqgQVUqCH6nUaVEcnxKhioBbVy7
-        qAYKjslaZsfyxYoAeQgSAQCAbA==
-X-Google-Smtp-Source: ABdhPJzNAvuk+0W2NxftJEP+MRskEe2g3Brg83ppvWRminnOPpTlroZr/g6WX21bBuN68CdAychIPg==
-X-Received: by 2002:a9d:4a8f:: with SMTP id i15mr15826182otf.77.1593463075332;
-        Mon, 29 Jun 2020 13:37:55 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id g126sm187086oia.41.2020.06.29.13.37.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jun 2020 13:37:54 -0700 (PDT)
-Subject: Re: [PATCH 5.7 000/265] 5.7.7-rc1 review
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20200629151818.2493727-1-sashal@kernel.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <42dadde8-04c0-863b-651a-1959a3d85494@linuxfoundation.org>
-Date:   Mon, 29 Jun 2020 14:37:53 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200629151818.2493727-1-sashal@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S2389599AbgF2UjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:39:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389392AbgF2UjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 16:39:20 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.195])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12F8B20672;
+        Mon, 29 Jun 2020 20:39:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593463159;
+        bh=L1Zczp4G94BGZF6AbOCQuN5y8MVMnaPGHuo808oDcHo=;
+        h=From:To:Subject:Date:From;
+        b=LDzIOgDv674g5tQqCvxsTTAKURVuacJ5Rf9RT9R+uWMp6sTNSpMwjEBywxXZs9/xU
+         Rx3i4ms6wo21O+78JqdY2Fp6UHaUsptFMfN10IYKj/6ecDXqKoyrQQDSH1SAhLx9sq
+         Z1sEONvenJ8ztfTbIFnrWfSDgJY0AcjApohqqJt8=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: arm: samsung: Do not require clkout on Exynos5260 and Exynos7
+Date:   Mon, 29 Jun 2020 22:38:59 +0200
+Message-Id: <20200629203859.17298-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sasha,
+The PMU (Power Management Unit) driver is a clkout clock provider (for
+clock signal monitoring) only for certain Exynos SoCs.  It was never
+implemented for Exynos5260 and Exynos7.  This fixes dtschema validator
+warnings like:
 
-On 6/29/20 9:13 AM, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 5.7.7 release.
-> There are 265 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed 01 Jul 2020 03:14:48 PM UTC.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.7.y&id2=v5.7.6
-> 
+    system-controller@105c0000: '#clock-cells' is a required property
 
-Looks like patch naming convention has changed. My scripts look
-for the following convention Greg uses. Are you planning to use
-the above going forward? My scripts failed looking for the usual
-naming convention.
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ .../devicetree/bindings/arm/samsung/pmu.yaml  | 22 ++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.6-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
-and the diffstat can be found below.
+diff --git a/Documentation/devicetree/bindings/arm/samsung/pmu.yaml b/Documentation/devicetree/bindings/arm/samsung/pmu.yaml
+index c9651892710e..686c13c14e32 100644
+--- a/Documentation/devicetree/bindings/arm/samsung/pmu.yaml
++++ b/Documentation/devicetree/bindings/arm/samsung/pmu.yaml
+@@ -85,12 +85,28 @@ properties:
+ required:
+   - compatible
+   - reg
+-  - '#clock-cells'
+-  - clock-names
+-  - clocks
+ 
+ additionalProperties: false
+ 
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - samsung,exynos3250-pmu
++              - samsung,exynos4210-pmu
++              - samsung,exynos4412-pmu
++              - samsung,exynos5250-pmu
++              - samsung,exynos5410-pmu
++              - samsung,exynos5420-pmu
++              - samsung,exynos5433-pmu
++    then:
++      required:
++        - '#clock-cells'
++        - clock-names
++        - clocks
++
+ examples:
+   - |
+     #include <dt-bindings/clock/exynos5250.h>
+-- 
+2.17.1
 
-thanks,
--- Shuah
