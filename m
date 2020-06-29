@@ -2,138 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BBD20D49D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDEBF20D316
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730626AbgF2TKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:10:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:38490 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729895AbgF2TJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:09:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A226715AD;
-        Mon, 29 Jun 2020 09:42:13 -0700 (PDT)
-Received: from bogus (unknown [10.37.8.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8DAED3F71E;
-        Mon, 29 Jun 2020 09:42:10 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 17:42:07 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH/RFC v4 2/4] regulator: fixed: add regulator_ops members
- for suspend/resume
-Message-ID: <20200629164207.GB27911@bogus>
-References: <1593163942-5087-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <1593163942-5087-3-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <20200626143914.GE5289@sirena.org.uk>
- <TY2PR01MB3692A3B12CEF7F9708A8A59CD86E0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
- <20200629125756.GC5499@sirena.org.uk>
- <20200629134011.GA23284@bogus>
- <CAMuHMdU81-EAve+jHhL8+ohCd5YXrgLWpMgaCvgXFDLO7p17pQ@mail.gmail.com>
- <20200629150728.GA27911@bogus>
- <20200629161450.GE5499@sirena.org.uk>
+        id S1730016AbgF2Szd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:55:33 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:51060 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726399AbgF2Sz0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:55:26 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TGbilX079593;
+        Mon, 29 Jun 2020 12:48:41 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ydmqnnu6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 12:48:41 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05TGeQ0B090545;
+        Mon, 29 Jun 2020 12:48:41 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ydmqnnt5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 12:48:41 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05TGfcbo015555;
+        Mon, 29 Jun 2020 16:48:38 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 31wwr8ajr0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 16:48:38 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05TGmZ6b33161402
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Jun 2020 16:48:36 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DCB584C059;
+        Mon, 29 Jun 2020 16:48:34 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 006AF4C050;
+        Mon, 29 Jun 2020 16:48:31 +0000 (GMT)
+Received: from oc3016276355.ibm.com (unknown [9.145.79.64])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 29 Jun 2020 16:48:30 +0000 (GMT)
+Subject: Re: [PATCH v3 1/1] s390: virtio: let arch accept devices without
+ IOMMU feature
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, jasowang@redhat.com,
+        cohuck@redhat.com, kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
+        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com
+References: <1592390637-17441-1-git-send-email-pmorel@linux.ibm.com>
+ <1592390637-17441-2-git-send-email-pmorel@linux.ibm.com>
+ <20200629115952-mutt-send-email-mst@kernel.org>
+From:   Pierre Morel <pmorel@linux.ibm.com>
+Message-ID: <66f808f2-5dd9-9127-d0e8-6bafbf13fc62@linux.ibm.com>
+Date:   Mon, 29 Jun 2020 18:48:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200629161450.GE5499@sirena.org.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200629115952-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-06-29_18:2020-06-29,2020-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ spamscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
+ mlxlogscore=868 adultscore=0 clxscore=1015 priorityscore=1501
+ suspectscore=0 mlxscore=0 cotscore=-2147483648 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006290107
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 05:14:50PM +0100, Mark Brown wrote:
-> On Mon, Jun 29, 2020 at 04:07:28PM +0100, Sudeep Holla wrote:
-> > On Mon, Jun 29, 2020 at 04:15:39PM +0200, Geert Uytterhoeven wrote:
->
-> > > This is all about how to know what exactly PSCI is powering down during
-> > > SYSTEM_SUSPEND.  In this specific case, it is about knowing if the eMMC
-> > > is powered down or not, as Linux should follow a specific procedure to
-> > > prepare the eMMC for that, and Linux should not if that isn't the case.
->
-> > OK, unless you are optimising, you shouldn't care then what PSCI does.
-> > If you don't need eMMC, just suspend/power it off before you enter system/
-> > psci suspend.
->
-> That only works if the power off procedure doesn't require that power be
-> removed as part of the procedure.  There's a reasonable argument that
-> specs that have such requirements are unhelpful but that doesn't mean
-> that nobody will make hardware with such requrements which creates
-> problems for generic code that needs to control that hardware if it
-> can't discover the power state over suspend.
->
 
-Fair enough.
 
-> > > I had a quick look at the latest revision of the PSCI specification, and
-> > > it doesn't look like anything has changed in that area since my old patch
-> > > series from 2017.  So it still boils down to: we don't know what a
-> > > specific PSCI implementation will do, as basically anything is
-> > > compliant, so the only safe thing is to assume the worst.
->
-> > The specification states clearly:
-> > "... all devices in the system must be in a state that is compatible
-> > with entry into the system state. These preconditions are beyond the scope
-> > of this specification and are therefore not described here."
-> > "Prior to the call, the OS must disable all sources of wakeup other than
-> > those it needs to support for its implementation of suspend to RAM."
->
-> This gets a bit circular for a generic OS since the OS needs some way to
-> figure out what it's supposed to do on a given platform - for example
-> the OS may be happy to use wakeup sources that the firmware is just
-> going to cut power on.
->
+On 2020-06-29 18:09, Michael S. Tsirkin wrote:
+> On Wed, Jun 17, 2020 at 12:43:57PM +0200, Pierre Morel wrote:
+>> An architecture protecting the guest memory against unauthorized host
+>> access may want to enforce VIRTIO I/O device protection through the
+>> use of VIRTIO_F_IOMMU_PLATFORM.
+>> Let's give a chance to the architecture to accept or not devices
+>> without VIRTIO_F_IOMMU_PLATFORM.
+> 
+> I agree it's a bit misleading. Protection is enforced by memory
+> encryption, you can't trust the hypervisor to report the bit correctly
+> so using that as a securoty measure would be pointless.
+> The real gain here is that broken configs are easier to
+> debug.
+> 
+> Here's an attempt at a better description:
+> 
+> 	On some architectures, guest knows that VIRTIO_F_IOMMU_PLATFORM is
+> 	required for virtio to function: e.g. this is the case on s390 protected
+> 	virt guests, since otherwise guest passes encrypted guest memory to devices,
+> 	which the device can't read. Without VIRTIO_F_IOMMU_PLATFORM the
+> 	result is that affected memory (or even a whole page containing
+> 	it is corrupted). Detect and fail probe instead - that is easier
+> 	to debug.
 
-While I understand the sentiments here, PSCI is targeted to address CPU
-power state management mainly and system states like suspend/reset and
-poweroff which involves last CPU. This is one of the reason it is out of
-the scope of the specification.
+Thanks indeed better aside from the "encrypted guest memory": the 
+mechanism used to avoid the access to the guest memory from the host by 
+s390 is not encryption but a hardware feature denying the general host 
+access and allowing pieces of memory to be shared between guest and host.
+As a consequence the data read from memory is not corrupted but not read 
+at all and the read error kills the hypervizor with a SIGSEGV.
 
-Here is my understanding. DT specifies all the wakeup sources. Linux
-can configure those and user may choose to enable a subset of them is
-wakeup. As stated in the spec and also based on what we already do in
-the kernel, we disable all other wakeup sources.
 
-The PSCI firmware can then either read those from the interrupt controller
-or based on static platform understanding, must not disable those wakeup
-sources.
+> 
+> however, now that we have described what it is (hypervisor
+> misconfiguration) I ask a question: can we be sure this will never
+> ever work? E.g. what if some future hypervisor gains ability to
+> access the protected guest memory in some abstractly secure manner?
 
-> > I see nothing has been fixed in the firmware too and we are still
-> > discussing the same after 3 years 😄. Clearly we should start trusting
-> > firmware and built capability to fix and replace it if there are bugs
-> > just like kernel and stop hacking around in the kernel to deal with
-> > just broken platform/psci firmware.
->
-> This isn't just an issue of buggy firmware as far as I can see, it's
-> also a lack of ability for the OS and firmware to communicate
-> information about their intentions to each other.  As things stand you'd
-> need to put static information in the DT.
+The goal of the s390 PV feature is to avoid this possibility so I don't 
+think so; however, there is a possibility that some hardware VIRTIO 
+device gain access to the guest's protected memory, even such device 
+does not exist yet.
 
-It is easy for DT to get out of sync with firmware unless it is generated
-by the same firmware. That's the reason why I am against such multiple
-sources of information. I understand ACPI has more flexibility and I did
-discuss this in LPC few years back and people were happy to have simple
-model as I have mentioned above. I was pushing to add more clarity to
-the specification but as I mentioned it was rejected as it is more a cpu
-and system centric spec and avoids talking about devices which I kind
-of agree.
+At the moment such device exists we will need a driver for it, at least 
+to enable the feature and apply policies, it is also one of the reasons 
+why a hook to the architecture is interesting.
 
-Each device or platform having its specific property in DT is not scalable.
-Not sure if it is a generic problem. If it is, I would like to understand
-more details on such lack of ability for communtication between OS and
-firmware.
+> We are blocking this here, and it's hard to predict the future,
+> and a broken hypervisor can always find ways to crash the guest ...
 
---
-Regards,
-Sudeep
+yes, this is also something to fix on the hypervizor side, Halil is 
+working on it.
+
+> 
+> IMHO it would be safer to just print a warning.
+> What do you think?
+
+Sadly, putting a warning may not help as qemu is killed if it accesses 
+the protected memory.
+Also note that the crash occurs not only on start but also on hotplug.
+
+Thanks,
+Pierre
+
+-- 
+Pierre Morel
+IBM Lab Boeblingen
