@@ -2,103 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D6420D325
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0360520D2CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728397AbgF2S4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:56:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42430 "EHLO mail.kernel.org"
+        id S1729124AbgF2SwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:52:24 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:36456 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729976AbgF2SzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:55:17 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1729742AbgF2SwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:52:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593456741; h=Content-Transfer-Encoding: MIME-Version:
+ References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Ky6EgIpsLXuCQ1ZyQQj8TAObCq/x3v8ZEUf9hqB0i5U=; b=sl7VZh2iZdbPyFnP4RxQwa/bcxiSA8kp8SGaKYNt9VjNHXXwescF/Yc4pxEsNPK6dPvjKN3I
+ FKoHAgrGWMz0Kj8kZQR4ViPPBmbQun39i/m/xgseMSY3fp8vfnC3y9cIlLjkI2l3xxCprGwV
+ 4QakvCi87sq+cT3EKPl7E1Y+ORA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n14.prod.us-west-2.postgun.com with SMTP id
+ 5efa0e78f3deea03f3b21908 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 15:53:28
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B1D31C43395; Mon, 29 Jun 2020 15:53:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81EB9248C3;
-        Mon, 29 Jun 2020 15:55:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593446118;
-        bh=Q5bwQkRY743XCiSdqiliDAuIeq9xfC1buCDIUfDYiWM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DIKmiur++nZSLsFAii6bsXkAqAcyeTBnZrzfuDyia9vQJWcmS+topKE5HvYEaXI3G
-         rYnOJuPBPSqu6dXtlSeRR2CrCfvroEq5F6uGBWNBHvU1aEW5Sv4A7g5xK6hEhxShp6
-         mbvAcyRZRCxIP9OooKXNybyurEywK/Y67vIG4p/g=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
-        Pavel Shilovsky <pshilov@microsoft.com>,
-        Steve French <stfrench@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 109/135] cifs/smb3: Fix data inconsistent when punch hole
-Date:   Mon, 29 Jun 2020 11:52:43 -0400
-Message-Id: <20200629155309.2495516-110-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629155309.2495516-1-sashal@kernel.org>
-References: <20200629155309.2495516-1-sashal@kernel.org>
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 36CB3C433C8;
+        Mon, 29 Jun 2020 15:53:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 36CB3C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv3 1/7] iommu/arm-smmu: Add a init_context_bank implementation hook
+Date:   Mon, 29 Jun 2020 21:22:44 +0530
+Message-Id: <cdcc6a1c95a84e774790389dc8b3b7feeee490dc.1593344119.git.saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <cover.1593344119.git.saiprakash.ranjan@codeaurora.org>
+References: <cover.1593344119.git.saiprakash.ranjan@codeaurora.org>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.229-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.4.229-rc1
-X-KernelTest-Deadline: 2020-07-01T15:53+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+From: Jordan Crouse <jcrouse@codeaurora.org>
 
-[ Upstream commit acc91c2d8de4ef46ed751c5f9df99ed9a109b100 ]
+Add a new implementation hook to allow the implementation specific code
+to tweek the context bank configuration just before it gets written.
+The first user will be the Adreno GPU implementation to turn on
+SCTLR.HUPCF to ensure that a page fault doesn't terminating pending
+transactions. Doing so could hang the GPU if one of the terminated
+transactions is a CP read.
 
-When punch hole success, we also can read old data from file:
-  # strace -e trace=pread64,fallocate xfs_io -f -c "pread 20 40" \
-           -c "fpunch 20 40" -c"pread 20 40" file
-  pread64(3, " version 5.8.0-rc1+"..., 40, 20) = 40
-  fallocate(3, FALLOC_FL_KEEP_SIZE|FALLOC_FL_PUNCH_HOLE, 20, 40) = 0
-  pread64(3, " version 5.8.0-rc1+"..., 40, 20) = 40
+This depends on the arm-smmu adreno SMMU implementation [1].
 
-CIFS implements the fallocate(FALLOCATE_FL_PUNCH_HOLE) with send SMB
-ioctl(FSCTL_SET_ZERO_DATA) to server. It just set the range of the
-remote file to zero, but local page caches not updated, then the
-local page caches inconsistent with server.
+[1] https://lore.kernel.org/patchwork/patch/1264452/
 
-Also can be found by xfstests generic/316.
-
-So, we need to remove the page caches before send the SMB
-ioctl(FSCTL_SET_ZERO_DATA) to server.
-
-Fixes: 31742c5a33176 ("enable fallocate punch hole ("fallocate -p") for SMB3")
-Suggested-by: Pavel Shilovsky <pshilov@microsoft.com>
-Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
-Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-Cc: stable@vger.kernel.org # v3.17
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 ---
- fs/cifs/smb2ops.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/iommu/arm-smmu-qcom.c | 13 +++++++++++++
+ drivers/iommu/arm-smmu.c      | 29 +++++++++++++----------------
+ drivers/iommu/arm-smmu.h      | 12 ++++++++++++
+ 3 files changed, 38 insertions(+), 16 deletions(-)
 
-diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
-index 0fcf42401a5df..870b7e763bab9 100644
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -1201,6 +1201,12 @@ static long smb3_punch_hole(struct file *file, struct cifs_tcon *tcon,
- 	if (!smb2_set_sparse(xid, tcon, cfile, inode, set_sparse))
- 		return -EOPNOTSUPP;
+diff --git a/drivers/iommu/arm-smmu-qcom.c b/drivers/iommu/arm-smmu-qcom.c
+index cb2acb6b19dd..6462fb00f493 100644
+--- a/drivers/iommu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm-smmu-qcom.c
+@@ -17,6 +17,18 @@ static bool qcom_adreno_smmu_is_gpu_device(struct arm_smmu_domain *smmu_domain)
+ 	return of_device_is_compatible(smmu_domain->dev->of_node, "qcom,adreno");
+ }
  
++static void qcom_adreno_smmu_init_context_bank(struct arm_smmu_domain *smmu_domain,
++		struct arm_smmu_cb *cb)
++{
 +	/*
-+	 * We implement the punch hole through ioctl, so we need remove the page
-+	 * caches first, otherwise the data may be inconsistent with the server.
++	 * On the GPU device we want to process subsequent transactions after a
++	 * fault to keep the GPU from hanging
 +	 */
-+	truncate_pagecache_range(inode, offset, offset + len - 1);
 +
- 	cifs_dbg(FYI, "offset %lld len %lld", offset, len);
++	if (qcom_adreno_smmu_is_gpu_device(smmu_domain))
++		cb->sctlr |= ARM_SMMU_SCTLR_HUPCF;
++}
++
+ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+ 		struct io_pgtable_cfg *pgtbl_cfg)
+ {
+@@ -92,6 +104,7 @@ static const struct arm_smmu_impl qcom_adreno_smmu_impl = {
+ 	.init_context = qcom_adreno_smmu_init_context,
+ 	.def_domain_type = qcom_smmu_def_domain_type,
+ 	.reset = qcom_smmu500_reset,
++	.init_context_bank = qcom_adreno_smmu_init_context_bank,
+ };
  
- 	fsctl_buf.FileOffset = cpu_to_le64(offset);
+ 
+diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
+index 4bd247dfd703..b2564f93d685 100644
+--- a/drivers/iommu/arm-smmu.c
++++ b/drivers/iommu/arm-smmu.c
+@@ -86,14 +86,6 @@ struct arm_smmu_smr {
+ 	bool				valid;
+ };
+ 
+-struct arm_smmu_cb {
+-	u64				ttbr[2];
+-	u32				tcr[2];
+-	u32				mair[2];
+-	struct arm_smmu_cfg		*cfg;
+-	atomic_t			aux;
+-};
+-
+ struct arm_smmu_master_cfg {
+ 	struct arm_smmu_device		*smmu;
+ 	s16				smendx[];
+@@ -580,6 +572,18 @@ static void arm_smmu_init_context_bank(struct arm_smmu_domain *smmu_domain,
+ 			cb->mair[1] = pgtbl_cfg->arm_lpae_s1_cfg.mair >> 32;
+ 		}
+ 	}
++
++	cb->sctlr = ARM_SMMU_SCTLR_CFIE | ARM_SMMU_SCTLR_CFRE | ARM_SMMU_SCTLR_AFE |
++		ARM_SMMU_SCTLR_TRE | ARM_SMMU_SCTLR_M;
++
++	if (stage1)
++		cb->sctlr |= ARM_SMMU_SCTLR_S1_ASIDPNE;
++	if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
++		cb->sctlr |= ARM_SMMU_SCTLR_E;
++
++	/* Give the implementation a chance to adjust the configuration */
++	if (smmu_domain->smmu->impl && smmu_domain->smmu->impl->init_context_bank)
++		smmu_domain->smmu->impl->init_context_bank(smmu_domain, cb);
+ }
+ 
+ static void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx)
+@@ -658,14 +662,7 @@ static void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx)
+ 	}
+ 
+ 	/* SCTLR */
+-	reg = ARM_SMMU_SCTLR_CFIE | ARM_SMMU_SCTLR_CFRE | ARM_SMMU_SCTLR_AFE |
+-	      ARM_SMMU_SCTLR_TRE | ARM_SMMU_SCTLR_M;
+-	if (stage1)
+-		reg |= ARM_SMMU_SCTLR_S1_ASIDPNE;
+-	if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
+-		reg |= ARM_SMMU_SCTLR_E;
+-
+-	arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_SCTLR, reg);
++	arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_SCTLR, cb->sctlr);
+ }
+ 
+ /*
+diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
+index 79d441024043..4a335ef3d97a 100644
+--- a/drivers/iommu/arm-smmu.h
++++ b/drivers/iommu/arm-smmu.h
+@@ -142,6 +142,7 @@ enum arm_smmu_cbar_type {
+ 
+ #define ARM_SMMU_CB_SCTLR		0x0
+ #define ARM_SMMU_SCTLR_S1_ASIDPNE	BIT(12)
++#define ARM_SMMU_SCTLR_HUPCF		BIT(8)
+ #define ARM_SMMU_SCTLR_CFCFG		BIT(7)
+ #define ARM_SMMU_SCTLR_CFIE		BIT(6)
+ #define ARM_SMMU_SCTLR_CFRE		BIT(5)
+@@ -349,6 +350,15 @@ struct arm_smmu_domain {
+ 	bool				aux;
+ };
+ 
++struct arm_smmu_cb {
++	u64			ttbr[2];
++	u32			tcr[2];
++	u32			mair[2];
++	u32			sctlr;
++	struct arm_smmu_cfg	*cfg;
++	atomic_t		aux;
++};
++
+ static inline u32 arm_smmu_lpae_tcr(struct io_pgtable_cfg *cfg)
+ {
+ 	u32 tcr = FIELD_PREP(ARM_SMMU_TCR_TG0, cfg->arm_lpae_s1_cfg.tcr.tg) |
+@@ -403,6 +413,8 @@ struct arm_smmu_impl {
+ 	void (*tlb_sync)(struct arm_smmu_device *smmu, int page, int sync,
+ 			 int status);
+ 	int (*def_domain_type)(struct device *dev);
++	void (*init_context_bank)(struct arm_smmu_domain *smmu_domain,
++			struct arm_smmu_cb *cb);
+ };
+ 
+ static inline void __iomem *arm_smmu_page(struct arm_smmu_device *smmu, int n)
 -- 
-2.25.1
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
