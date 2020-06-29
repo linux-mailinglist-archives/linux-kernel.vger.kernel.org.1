@@ -2,126 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECDD20D909
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9165720D722
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387514AbgF2Tnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:43:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387981AbgF2Tmo (ORCPT
+        id S1732112AbgF2T1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:27:17 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:10620 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730220AbgF2T1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:42:44 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C413CC03140F
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:15:44 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a6so17314028wrm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:15:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LdmyDXtA8EIM1jxYalqYHcGVicYKfXEl1rpwhzYY7yY=;
-        b=c9p9Gar7D2nXzpz2YR/ib39Abgv4y6hEa91cr786gH8hhBcc2XHPgejdMauKVSCXyw
-         EgAsOWswu0yM60MBbUpqEjXeok6FXbZK3cY12YvSpijtvD0BGihf4HyPCLh9I970OF+w
-         78MwbI9PqGOns9VkUov0ZQ9RbuCV+fwXeAcEtPspxUT9Uk7UyYJvZDXRhVlIPAhOgy1r
-         0ebCtAluvcdaAZtdvp/iG7aZAmwyeaGzf8o6royVXgBp6bmZYTZ+EEf7K6vitzPvHvWn
-         wVU1xmaE5kyGW65gr+wCRjIx7La2Aae9t0Re8V+Heu0ZC4EarsLzwXx5hOPENYGaf8DM
-         nFPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LdmyDXtA8EIM1jxYalqYHcGVicYKfXEl1rpwhzYY7yY=;
-        b=PrGPzt9o5OGEqMKcEQT4O6DvCaufkq6Nhn5vLtGywb0g4oJMqS56T4IUcJNb5sENhm
-         QqVk68ohR6yL4lMsbFnWKD/DpwktTe0Z5Om7DKcI4Mrg0l+6OiXcF313tpG9GjuKnp/i
-         hGcrC4aDovDaqeCTXeO07NhJA47CWpzNgtpf2lXVSOsSEbx0CpVX2gSpVdzfd2LGjc9P
-         E8vkwFAJN09sL6Ek+P9KY4N5Zfd5dQUaw9dEf2GHDPyKmj3DOcc9G9ErIsia8wNcdy/P
-         T62YNYzW1nQNfNNQ315EBH8YZncnBWgZZJ2VVux5v/aTuXlHLOh/TfP2rw8va+Ou07aW
-         O92Q==
-X-Gm-Message-State: AOAM533Cph6rDZCDgz+vgN/kXn1X1oomALLT5FZ/5z75mbMWigtppnKR
-        xjtJFe0aKyilqufWOsgtz72NFA==
-X-Google-Smtp-Source: ABdhPJzs30159xRqcvLpbN8z4ChYHhI0ngFXg57huo/LOl0+OMOWqLHYtRb1FBzKVGwD5ZJ8obYgyw==
-X-Received: by 2002:a5d:66ca:: with SMTP id k10mr7472015wrw.244.1593450943526;
-        Mon, 29 Jun 2020 10:15:43 -0700 (PDT)
-Received: from wychelm.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id g195sm517482wme.38.2020.06.29.10.15.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 10:15:42 -0700 (PDT)
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>, pmladek@suse.com,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        patches@linaro.org
-Subject: [PATCH] kgdb: Resolve races during kgdb_io_register/unregister_module
-Date:   Mon, 29 Jun 2020 18:15:29 +0100
-Message-Id: <20200629171529.558003-1-daniel.thompson@linaro.org>
-X-Mailer: git-send-email 2.25.4
+        Mon, 29 Jun 2020 15:27:07 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5efa21d80001>; Mon, 29 Jun 2020 10:16:08 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 29 Jun 2020 10:16:57 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 29 Jun 2020 10:16:57 -0700
+Received: from [10.25.103.164] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 29 Jun
+ 2020 17:16:46 +0000
+CC:     <spujar@nvidia.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <robh+dt@kernel.org>, <lgirdwood@gmail.com>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <digetx@gmail.com>, <alsa-devel@alsa-project.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
+        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
+        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
+        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
+        <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH v4 12/23] ASoC: simple-card: Support DPCM DAI link with
+ multiple Codecs
+To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
+ <1593233625-14961-13-git-send-email-spujar@nvidia.com>
+ <874kqu1x70.wl-kuninori.morimoto.gx@renesas.com>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <1e0cf6d1-bf4e-8808-5390-c8a3b7c7fe7e@nvidia.com>
+Date:   Mon, 29 Jun 2020 22:46:39 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <874kqu1x70.wl-kuninori.morimoto.gx@renesas.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1593450968; bh=RaxazFJv01kl+GXduhdNNy3QB5MQDQAMcc2g7XVpJl4=;
+        h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=MGcNekimPKBkOEsCk1rJkoseD42Y/vWWmtt6b9wi2eD9y3VoFNf9in23HXcZ21wb+
+         +xSu+3Fcnh2ACalnQ0jNDpk4yfNjJ5YItdrjzPRc+VzZqWU+aeKkqBGzaGnun8Yf3U
+         1vICpTU8MdTpr0qc6M11PgQcpJHfrzWeNRLam5xXNGQPYJDY4iGB3vz6qElZuhhYBG
+         dcIx+VKnI9jE4y4iiTsMFQ1Z3HTp3bUpkPfWqmOgKZ6ew+oMNR4ELfB55KYb7xQ1gi
+         REWFicJ1W6BW5uxZeJ6deYeIH7Og+0rnZlf3H3UEgA6OnefYLXCC1DMOoDg9sLsyG9
+         VYGUn2BjH8TaQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently kgdb_register_callbacks() and kgdb_unregister_callbacks()
-are called outside the scope of the kgdb_registration_lock. This
-allows them to race with each other. This could do all sorts of crazy
-things up to and including dbg_io_ops becoming NULL partway through the
-execution of the kgdb trap handler (which isn't allowed and would be
-fatal).
 
-Fix this by bringing the trap handler setup and teardown into the scope
-of the registration lock.
 
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
----
- kernel/debug/debug_core.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+On 6/29/2020 6:54 AM, Kuninori Morimoto wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> Hi Sameer
+>
+>> The simple-card driver supports multiple CPU and single Codec entries
+>> for DPCM DAI links. In some cases it is required to have multiple
+>> CPU/Codecs. Currently parsing logic for DPCM link loops over all
+>> children of DAI link but assumes that there is a single Codec entry.
+>> When DAI link has multiple Codecs it considers only the first Codec
+>> entry and remaining Codecs are wrongly treated as CPU. This happens
+>> because first Codec is used as reference for parsing all other child
+>> nodes.
+> (snip)
+>> @@ -137,8 +136,13 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+>>         * Codec |return|Pass
+>>         * np
+>>         */
+>> -     if (li->cpu == (np == codec))
+>> -             return 0;
+>> +     if (li->cpu) {
+>> +             if (!strcmp(np->name, "codec"))
+>> +                     return 0;
+>> +     } else {
+>> +             if (!strcmp(np->name, "cpu"))
+>> +                     return 0;
+>> +     }
+> Checking node name is maybe nice idea,
+> but please consider "prefix" here.
 
-diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-index 9e5934780f41..9799f2c6dc94 100644
---- a/kernel/debug/debug_core.c
-+++ b/kernel/debug/debug_core.c
-@@ -1117,9 +1117,8 @@ int kgdb_register_io_module(struct kgdb_io *new_dbg_io_ops)
+Sorry I missed that example where DAI is defined at sound level. I will 
+update.
+>
+> Maybe base issue for multiple codec support
+> is that simple_for_each_link() is caring first codec only ?
 
- 	dbg_io_ops = new_dbg_io_ops;
+Yes that is true.
+>
+>          simple_for_each_link(...)
+>          {
+>                  ...
+>                  do {
+> =>                      /* get codec */
+> =>                      codec = of_get_child_by_name(...);
+>                          ...
+>                  }
+>          }
+>
+> Remove above and having simple_node_is_codec(np, xxx) function
+> or something can help it ?
 
--	spin_unlock(&kgdb_registration_lock);
--
- 	if (old_dbg_io_ops) {
-+		spin_unlock(&kgdb_registration_lock);
- 		old_dbg_io_ops->deinit();
- 		return 0;
- 	}
-@@ -1129,6 +1128,8 @@ int kgdb_register_io_module(struct kgdb_io *new_dbg_io_ops)
- 	/* Arm KGDB now. */
- 	kgdb_register_callbacks();
-
-+	spin_unlock(&kgdb_registration_lock);
-+
- 	if (kgdb_break_asap &&
- 	    (!dbg_is_early || IS_ENABLED(CONFIG_ARCH_HAS_EARLY_DEBUG)))
- 		kgdb_initial_breakpoint();
-@@ -1147,13 +1148,14 @@ void kgdb_unregister_io_module(struct kgdb_io *old_dbg_io_ops)
- {
- 	BUG_ON(kgdb_connected);
-
-+	spin_lock(&kgdb_registration_lock);
-+
- 	/*
- 	 * KGDB is no longer able to communicate out, so
- 	 * unregister our callbacks and reset state.
- 	 */
- 	kgdb_unregister_callbacks();
-
--	spin_lock(&kgdb_registration_lock);
-
- 	WARN_ON_ONCE(dbg_io_ops != old_dbg_io_ops);
- 	dbg_io_ops = NULL;
-
-base-commit: 9ebcfadb0610322ac537dd7aa5d9cbc2b2894c68
---
-2.25.4
+Ideally I wanted to remove above two lines and allow empty codec list. 
+But some users may expect the parsing to fail if no 'Codec' is found in 
+the DAI link, hence did not remove above. If it is fine to remove above 
+two lines it would be simpler. The loop inside simple_for_each_link() 
+would anyway loop for each child node of DAI link and 
+simple_dai_link_of_dpcm() can parse each 'np'.
+>
+>
+> Thank you for your help !!
+>
+> Best regards
+> ---
+> Kuninori Morimoto
 
