@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D7E20D0FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8377120D20E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgF2ShS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:37:18 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5512 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727073AbgF2ShN (ORCPT
+        id S1727972AbgF2SqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:46:12 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61662 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728088AbgF2SqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:13 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TFd8GP052220;
+        Mon, 29 Jun 2020 14:46:08 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TFZsCK187966;
         Mon, 29 Jun 2020 11:50:18 -0400
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31ycd47q58-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 11:50:18 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05TFibkT078882;
-        Mon, 29 Jun 2020 11:50:17 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31ycd47q48-1
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31ycksfa3p-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Mon, 29 Jun 2020 11:50:17 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05TFo8Xi024870;
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05TFa3TW188984;
+        Mon, 29 Jun 2020 11:50:17 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31ycksfa2u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 11:50:17 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05TFktZH001146;
         Mon, 29 Jun 2020 15:50:15 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma05fra.de.ibm.com with ESMTP id 31wwr896gp-1
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06fra.de.ibm.com with ESMTP id 31wwcgs6hw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Mon, 29 Jun 2020 15:50:15 +0000
 Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05TFoCXP61997140
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05TFoDIt50921500
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Jun 2020 15:50:12 GMT
+        Mon, 29 Jun 2020 15:50:13 GMT
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C516FAE051;
-        Mon, 29 Jun 2020 15:50:12 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 37EB6AE045;
+        Mon, 29 Jun 2020 15:50:13 +0000 (GMT)
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 765E0AE055;
+        by IMSVA (Postfix) with ESMTP id DAF6AAE057;
         Mon, 29 Jun 2020 15:50:12 +0000 (GMT)
 Received: from oc3871087118.ibm.com (unknown [9.145.156.24])
         by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
@@ -51,95 +51,124 @@ To:     linux-kernel@vger.kernel.org
 Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Ingo Molnar <mingo@redhat.com>
-Subject: [PATCH 1/3] perf bench numa: fix incorrect NUMA toplogy assumption
-Date:   Mon, 29 Jun 2020 17:50:07 +0200
-Message-Id: <a53eedd6ad2fb46aec4d59066277aad7ace470b7.1593445668.git.agordeev@linux.ibm.com>
+Subject: [PATCH 2/3] perf bench numa: fix benchmark names
+Date:   Mon, 29 Jun 2020 17:50:08 +0200
+Message-Id: <aee0cc30c77779673d2c473693cfb7abb3f1de58.1593445668.git.agordeev@linux.ibm.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <cover.1593445668.git.agordeev@linux.ibm.com>
 References: <cover.1593445668.git.agordeev@linux.ibm.com>
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-06-29_15:2020-06-29,2020-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 cotscore=-2147483648 malwarescore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 suspectscore=1 phishscore=0 impostorscore=0 clxscore=1015
- priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006290103
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ mlxscore=0 bulkscore=0 priorityscore=1501 phishscore=0 spamscore=0
+ clxscore=1015 malwarescore=0 mlxlogscore=999 suspectscore=1
+ cotscore=-2147483648 lowpriorityscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006290103
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current code assumes that CPUs are evenly spread among
-NUMA nodes. That is generally incorrect and leads to failure
-on systems that have different NUMA topology.
+Several benchmarks have names that do not correspond to
+their configuration. Fix that and also some whitespace
+inconsistencies.
 
 Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc: Ingo Molnar <mingo@redhat.com>
 Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
 ---
- tools/perf/bench/numa.c | 27 +++++++++++++--------------
- 1 file changed, 13 insertions(+), 14 deletions(-)
+ tools/perf/bench/numa.c | 42 +++++++++++++++++++++---------------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
 
 diff --git a/tools/perf/bench/numa.c b/tools/perf/bench/numa.c
-index 5797253..5497c74 100644
+index 5497c74..7965a55 100644
 --- a/tools/perf/bench/numa.c
 +++ b/tools/perf/bench/numa.c
-@@ -247,12 +247,13 @@ static int is_node_present(int node)
-  */
- static bool node_has_cpus(int node)
- {
--	struct bitmask *cpu = numa_allocate_cpumask();
-+	struct bitmask *cpumask = numa_allocate_cpumask();
- 	unsigned int i;
- 
--	if (cpu && !numa_node_to_cpus(node, cpu)) {
--		for (i = 0; i < cpu->size; i++) {
--			if (numa_bitmask_isbitset(cpu, i))
-+	BUG_ON(cpumask);
-+	if (!numa_node_to_cpus(node, cpumask)) {
-+		for (i = 0; i < cpumask->size; i++) {
-+			if (numa_bitmask_isbitset(cpumask, i))
- 				return true;
+@@ -812,12 +812,12 @@ static u64 do_work(u8 *__data, long bytes, int nr, int nr_max, int loop, u64 val
+ 			}
  		}
- 	}
-@@ -288,14 +289,10 @@ static cpu_set_t bind_to_cpu(int target_cpu)
+ 	} else if (!g->p.data_backwards || (nr + loop) & 1) {
++		/* Process data forwards: */
  
- static cpu_set_t bind_to_node(int target_node)
- {
--	int cpus_per_node = g->p.nr_cpus / nr_numa_nodes();
- 	cpu_set_t orig_mask, mask;
- 	int cpu;
- 	int ret;
+ 		d0 = data + off;
+ 		d  = data + off + 1;
+ 		d1 = data + words;
  
--	BUG_ON(cpus_per_node * nr_numa_nodes() != g->p.nr_cpus);
--	BUG_ON(!cpus_per_node);
--
- 	ret = sched_getaffinity(0, sizeof(orig_mask), &orig_mask);
- 	BUG_ON(ret);
+-		/* Process data forwards: */
+ 		for (;;) {
+ 			if (unlikely(d >= d1))
+ 				d = data;
+@@ -835,7 +835,6 @@ static u64 do_work(u8 *__data, long bytes, int nr, int nr_max, int loop, u64 val
+ 		d  = data + off - 1;
+ 		d1 = data + words;
  
-@@ -305,13 +302,15 @@ static cpu_set_t bind_to_node(int target_node)
- 		for (cpu = 0; cpu < g->p.nr_cpus; cpu++)
- 			CPU_SET(cpu, &mask);
- 	} else {
--		int cpu_start = (target_node + 0) * cpus_per_node;
--		int cpu_stop  = (target_node + 1) * cpus_per_node;
--
--		BUG_ON(cpu_stop > g->p.nr_cpus);
-+		struct bitmask *cpumask = numa_allocate_cpumask();
+-		/* Process data forwards: */
+ 		for (;;) {
+ 			if (unlikely(d < data))
+ 				d = data + words-1;
+@@ -1732,12 +1731,12 @@ static int run_bench_numa(const char *name, const char **argv)
+  */
+ static const char *tests[][MAX_ARGS] = {
+    /* Basic single-stream NUMA bandwidth measurements: */
+-   { "RAM-bw-local,",	  "mem",  "-p",  "1",  "-t",  "1", "-P", "1024",
++   { "RAM-bw-local,",     "mem",  "-p",  "1",  "-t",  "1", "-P", "1024",
+ 			  "-C" ,   "0", "-M",   "0", OPT_BW_RAM },
+    { "RAM-bw-local-NOTHP,",
+ 			  "mem",  "-p",  "1",  "-t",  "1", "-P", "1024",
+ 			  "-C" ,   "0", "-M",   "0", OPT_BW_RAM_NOTHP },
+-   { "RAM-bw-remote,",	  "mem",  "-p",  "1",  "-t",  "1", "-P", "1024",
++   { "RAM-bw-remote,",    "mem",  "-p",  "1",  "-t",  "1", "-P", "1024",
+ 			  "-C" ,   "0", "-M",   "1", OPT_BW_RAM },
  
--		for (cpu = cpu_start; cpu < cpu_stop; cpu++)
--			CPU_SET(cpu, &mask);
-+		BUG_ON(!cpumask);
-+		if (!numa_node_to_cpus(target_node, cpumask)) {
-+			for (cpu = 0; cpu < (int)cpumask->size; cpu++) {
-+				if (numa_bitmask_isbitset(cpumask, cpu))
-+					CPU_SET(cpu, &mask);
-+			}
-+		}
- 	}
+    /* 2-stream NUMA bandwidth measurements: */
+@@ -1779,27 +1778,28 @@ static int run_bench_numa(const char *name, const char **argv)
+ 			  "mem",  "-p",  "8", "-t",  "1", "-P", " 512", OPT_BW_NOTHP },
+    { "16x1-bw-process,",  "mem",  "-p", "16", "-t",  "1", "-P",  "256", OPT_BW },
  
- 	ret = sched_setaffinity(0, sizeof(mask), &mask);
+-   { " 4x1-bw-thread,",	  "mem",  "-p",  "1", "-t",  "4", "-T",  "256", OPT_BW },
+-   { " 8x1-bw-thread,",	  "mem",  "-p",  "1", "-t",  "8", "-T",  "256", OPT_BW },
+-   { "16x1-bw-thread,",   "mem",  "-p",  "1", "-t", "16", "-T",  "128", OPT_BW },
+-   { "32x1-bw-thread,",   "mem",  "-p",  "1", "-t", "32", "-T",   "64", OPT_BW },
++   { " 1x4-bw-thread,",   "mem",  "-p",  "1", "-t",  "4", "-T",  "256", OPT_BW },
++   { " 1x8-bw-thread,",   "mem",  "-p",  "1", "-t",  "8", "-T",  "256", OPT_BW },
++   { "1x16-bw-thread,",   "mem",  "-p",  "1", "-t", "16", "-T",  "128", OPT_BW },
++   { "1x32-bw-thread,",   "mem",  "-p",  "1", "-t", "32", "-T",   "64", OPT_BW },
+ 
+-   { " 2x3-bw-thread,",	  "mem",  "-p",  "2", "-t",  "3", "-P",  "512", OPT_BW },
+-   { " 4x4-bw-thread,",	  "mem",  "-p",  "4", "-t",  "4", "-P",  "512", OPT_BW },
+-   { " 4x6-bw-thread,",	  "mem",  "-p",  "4", "-t",  "6", "-P",  "512", OPT_BW },
+-   { " 4x8-bw-thread,",	  "mem",  "-p",  "4", "-t",  "8", "-P",  "512", OPT_BW },
+-   { " 4x8-bw-thread-NOTHP,",
++   { " 2x3-bw-process,",  "mem",  "-p",  "2", "-t",  "3", "-P",  "512", OPT_BW },
++   { " 4x4-bw-process,",  "mem",  "-p",  "4", "-t",  "4", "-P",  "512", OPT_BW },
++   { " 4x6-bw-process,",  "mem",  "-p",  "4", "-t",  "6", "-P",  "512", OPT_BW },
++   { " 4x8-bw-process,",  "mem",  "-p",  "4", "-t",  "8", "-P",  "512", OPT_BW },
++   { " 4x8-bw-process-NOTHP,",
+ 			  "mem",  "-p",  "4", "-t",  "8", "-P",  "512", OPT_BW_NOTHP },
+-   { " 3x3-bw-thread,",	  "mem",  "-p",  "3", "-t",  "3", "-P",  "512", OPT_BW },
+-   { " 5x5-bw-thread,",	  "mem",  "-p",  "5", "-t",  "5", "-P",  "512", OPT_BW },
++   { " 3x3-bw-process,",  "mem",  "-p",  "3", "-t",  "3", "-P",  "512", OPT_BW },
++   { " 5x5-bw-process,",  "mem",  "-p",  "5", "-t",  "5", "-P",  "512", OPT_BW },
+ 
+-   { "2x16-bw-thread,",   "mem",  "-p",  "2", "-t", "16", "-P",  "512", OPT_BW },
+-   { "1x32-bw-thread,",   "mem",  "-p",  "1", "-t", "32", "-P", "2048", OPT_BW },
++   { "2x16-bw-process,",  "mem",  "-p",  "2", "-t", "16", "-P",  "512", OPT_BW },
++   { "1x32-bw-process,",  "mem",  "-p",  "1", "-t", "32", "-P", "2048", OPT_BW },
+ 
+-   { "numa02-bw,",	  "mem",  "-p",  "1", "-t", "32", "-T",   "32", OPT_BW },
+-   { "numa02-bw-NOTHP,",  "mem",  "-p",  "1", "-t", "32", "-T",   "32", OPT_BW_NOTHP },
+-   { "numa01-bw-thread,", "mem",  "-p",  "2", "-t", "16", "-T",  "192", OPT_BW },
+-   { "numa01-bw-thread-NOTHP,",
++   { "1x32-bw-thread,",   "mem",  "-p",  "1", "-t", "32", "-T",   "32", OPT_BW },
++   { "1x32-bw-thread-NOTHP,",
++			  "mem",  "-p",  "1", "-t", "32", "-T",   "32", OPT_BW_NOTHP },
++   { "2x16-bw-thread,",   "mem",  "-p",  "2", "-t", "16", "-T",  "192", OPT_BW },
++   { "2x16-bw-thread-NOTHP,",
+ 			  "mem",  "-p",  "2", "-t", "16", "-T",  "192", OPT_BW_NOTHP },
+ };
+ 
 -- 
 1.8.3.1
 
