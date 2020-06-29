@@ -2,141 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B24F20D8CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FDF520D8D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387397AbgF2Tlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48318 "EHLO
+        id S2387949AbgF2TmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729393AbgF2Tlk (ORCPT
+        with ESMTP id S2387919AbgF2Tlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:41:40 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D24C03E979
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:41:40 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id e13so16412391qkg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:41:40 -0700 (PDT)
+        Mon, 29 Jun 2020 15:41:51 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CF2C03E97E
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:41:51 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id h28so14003439edz.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:41:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QvdDQWAT9Z1b4tHlY2KQ+Wb11SVaesY+vPIQJ1iufDY=;
-        b=HWSftGfFhpY45fPy7VC+cdsQ/Po0jzPrZQNmUtOCkM8OGbVOH+RnvN5bi3ioCkrqhy
-         Glwz6OtqSDkSsxh2JcQZqlUOechGWpxo/iXVO1UmSf4pQrKdXgCbuwivQ8G32n0XYol2
-         elUQuh2gf8XMT12Qe8yzTazj1rhPUtPM7KWJdT3Bhcbu9ETe3ADUOoIHEUkMNrdKBrHm
-         WbhAOmfTPlBSNyWVvFAO1M9zWtm3iJK9FRCM9wJ1PkpR9aKDUmLc73e7xHqZ69fxUKYc
-         THiFKTecK4CdTMI1NiLDTu1I3uuh/JB0RhqpvNwYLaJ0RIf5YuxSkmxacUcMYL6yUENV
-         7AXA==
+        d=javigon-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6a8cX4N7tIU78Bd4F2J28aUNQpAoW/gTIhMzNFxYwFY=;
+        b=wzHj9+BuUUyCxdkKKiVEO9Ay5o9qtrK16ExaJLYOzw9UjAZQdvSNNgtbBCPwpsy/DK
+         oOPPisPG3Jp6HMjyAM88YEmbc4MDI7lDa7lekQFpo9RI9gN3n9mARHGJEwrNKi9kC38r
+         Ce3aUZZ+nEMx9yRyJBLUvGZbk5xaDb6NWnMGjIj16rwPeBiYEbInz0zi20nb9qNOgstC
+         wNZrkFMkycFHtcxYH+4vMjgNQZrnLfYkT3RQ4NcC0f5LkbXSt4M6eGqtfetmnqe8GV8S
+         2fNCPhZVLkcIeUdVeVcXi5koewbAqwpWVD8ZaYMi7h6Gy4t3JE8Mkz7HXMGVRP9Gzk9j
+         D2+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QvdDQWAT9Z1b4tHlY2KQ+Wb11SVaesY+vPIQJ1iufDY=;
-        b=tIDUAlrFqWEi/5KueuKhx2JRG4Ed+FEdFOolxWBAeGFklqpWH/Rpru4z7XcXGygs+2
-         xe0GKptOXAt0upGw+l4AILYbZ98yulFNy0HJ6cMDoczrC/nfCwmdC5qUR8ghLJPAmaDc
-         Yvb6LH330PdcwuJfc+Hb5kSqk+OPYNQtS1ULXuVDFSueeMMgUjZQxFrOeJCnz63Rc5RS
-         BgL40ET3wrzdWBb+OcT3Dq7dnGSZ4BinrzxuOTZYfrvSWiXEj/WFItfvc4W3aGW2rYcf
-         JEc7aGzlqy39Pa6r+/+wD6/IpXJHo9oQeDEl0lpkrXi5ajdD4mARrZVnk6uyGxmV+NRH
-         c7lg==
-X-Gm-Message-State: AOAM531ViNYf9R/nVhaSupJO3YywCtJCEsW6OE0Jq2shwF1NF7l6/U0P
-        eBnj6ZjyJ4csGn25wppIWzJIAkAbFTfJ42X+Qktb6g==
-X-Google-Smtp-Source: ABdhPJym2+ZxxMc80cE9zQefSkfB/DFa2F6Ga0IhHiGx/uZihQ9c950v7wLi4cPLxYn3pL2TcfRcNPT9qrbCtEXeEcw=
-X-Received: by 2002:a37:4f0e:: with SMTP id d14mr17080420qkb.8.1593459699006;
- Mon, 29 Jun 2020 12:41:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6a8cX4N7tIU78Bd4F2J28aUNQpAoW/gTIhMzNFxYwFY=;
+        b=Oc+mkTpkZkd+7HdZLx1MgyYYMiYHS89cIGyUcdnwxHLxCEmhrorAH/gAFyKr3RnmRs
+         5PdE3naWmX2I/cJyoMmG0rnMy2Yq12Y/WCMGfMc9IVtZMaG4f90CJDyhXYb8vUAxzYyk
+         RDKnqUlP5A3HZwl7D0oyQzZmd9kzVjFXM+gFxv/B+xDaFoL39weCz7uYpV79f0nourSq
+         /zHAjFxLzvKi7c1sRoDRagpUe/VwP2LnQUNbLf3pxqMb5GmFFnC7NIdUI8SdMXp0VyX/
+         abszDirtJK4nSzCA3h9zJpufwntUDe2uuC5f4Gre2TFOvKrkEIBhGstghxScospb2rS0
+         fAYg==
+X-Gm-Message-State: AOAM533E781Dp4tKj6TO2LKqyRyOo2CEANE822McbAD2UlF6iGRz7NJr
+        L7j0LQdtPEHVCmT1s6m6CBRWaA==
+X-Google-Smtp-Source: ABdhPJwaQcnwY52SximMvE4NidS6hrc6E1VXJzI8qyuuYEC11lN320FeP2VQ2lnXILPB7F8de+Ejfw==
+X-Received: by 2002:a50:8467:: with SMTP id 94mr18907410edp.249.1593459709993;
+        Mon, 29 Jun 2020 12:41:49 -0700 (PDT)
+Received: from localhost (5.186.127.235.cgn.fibianet.dk. [5.186.127.235])
+        by smtp.gmail.com with ESMTPSA id l18sm599845eds.46.2020.06.29.12.41.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 12:41:49 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 21:41:48 +0200
+From:   Javier =?utf-8?B?R29uesOhbGV6?= <javier@javigon.com>
+To:     Niklas Cassel <niklas.cassel@wdc.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH 1/2] block: add max_open_zones to blk-sysfs
+Message-ID: <20200629194148.vaifnt4fhr2t5bi2@MacBook-Pro.localdomain>
+References: <20200616102546.491961-1-niklas.cassel@wdc.com>
+ <20200616102546.491961-2-niklas.cassel@wdc.com>
 MIME-Version: 1.0
-References: <000000000000107b4605a7bdce7d@google.com> <20200614085321.8740-1-hdanton@sina.com>
- <20200627130205.16900-1-hdanton@sina.com> <20200627222527.GC25301@ziepe.ca>
- <CACT4Y+ab1q7fON3rkj+FHODPQXDGyP5c0tJt7gbrpmsAAYRb1g@mail.gmail.com>
- <CACT4Y+Zjw=ru-Sqs-V7cP0Exgu7g0jWBXcPeVKnLqpbkS-wDRg@mail.gmail.com> <20200629192255.GE25301@ziepe.ca>
-In-Reply-To: <20200629192255.GE25301@ziepe.ca>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 29 Jun 2020 21:41:27 +0200
-Message-ID: <CACT4Y+bWgEMuSoYKf4GQdfH1VZi_vpDJZ6q3gUZ-6Ce=OsrCuA@mail.gmail.com>
-Subject: Re: KASAN: use-after-free Read in addr_handler (2)
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     syzkaller <syzkaller@googlegroups.com>,
-        Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+a929647172775e335941@syzkaller.appspotmail.com>,
-        chuck.lever@oracle.com, Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        parav@mellanox.com, Markus Elfring <Markus.Elfring@web.de>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200616102546.491961-2-niklas.cassel@wdc.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 9:22 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > > On Sat, Jun 27, 2020 at 09:02:05PM +0800, Hillf Danton wrote:
-> > > > > > So, to hit this syzkaller one of these must have happened:
-> > > > > >  1) rdma_addr_cancel() didn't work and the process_one_work() is still
-> > > > > >     runnable/running
-> > > > >
-> > > > > What syzbot reported indicates that the kworker did survive not only
-> > > > > canceling work but the handler_mutex, despite it's a sync cancel that
-> > > > > waits for the work to complete.
-> > > >
-> > > > The syzbot report doesn't confirm that the cancel work was actaully
-> > > > called.
-> > > >
-> > > > The most likely situation is that it was skipped because of the state
-> > > > mangling the patch fixes..
-> > > >
-> > > > > >  2) The state changed away from RDMA_CM_ADDR_QUERY without doing
-> > > > > >     rdma_addr_cancel()
-> > > > >
-> > > > > The cancel does cover the query state in the reported case, and have
-> > > > > difficult time working out what's in the patch below preventing the
-> > > > > work from going across the line the sync cancel draws. That's the
-> > > > > question we can revisit once there is a reproducer available.
-> > > >
-> > > > rdma-cm never seems to get reproducers from syzkaller
-> > >
-> > > +syzkaller mailing list
-> > >
-> > > Hi Jason,
-> > >
-> > > Wonder if there is some systematic issue. Let me double check.
-> >
-> > By scanning bugs at:
-> > https://syzkaller.appspot.com/upstream
-> > https://syzkaller.appspot.com/upstream/fixed
-> >
-> > I found a significant number of bugs that I would qualify as "rdma-cm"
-> > and that have reproducers. Here is an incomplete list (I did not get
-> > to the end):
-> >
-> > https://syzkaller.appspot.com/bug?id=b8febdb3c7c8c1f1b606fb903cee66b21b2fd02f
-> > https://syzkaller.appspot.com/bug?id=d5222b3e1659e0aea19df562c79f216515740daa
-> > https://syzkaller.appspot.com/bug?id=c600e111223ce0a20e5f2fb4e9a4ebdff54d7fa6
-> > https://syzkaller.appspot.com/bug?id=a9796acbdecc1b2ba927578917755899c63c48af
-> > https://syzkaller.appspot.com/bug?id=95f89b8fb9fdc42e28ad586e657fea074e4e719b
-> > https://syzkaller.appspot.com/bug?id=8dc0bcd9dd6ec915ba10b3354740eb420884acaa
-> > https://syzkaller.appspot.com/bug?id=805ad726feb6910e35088ae7bbe61f4125e573b7
-> > https://syzkaller.appspot.com/bug?id=56b60fb3340c5995373fe5b8eae9e8722a012fc4
-> > https://syzkaller.appspot.com/bug?id=38d36d1b26b4299bf964d50af4d79688d39ab960
-> > https://syzkaller.appspot.com/bug?id=25e00dd59f31783f233185cb60064b0ab645310f
-> > https://syzkaller.appspot.com/bug?id=2f38d7e5312fdd0acc979c5e26ef2ef8f3370996
-> >
-> > Do you mean some specific subset of bugs by "rdma-cm"? If yes, what is
-> > that subset?
+On 16.06.2020 12:25, Niklas Cassel wrote:
+>Add a new max_open_zones definition in the sysfs documentation.
+>This definition will be common for all devices utilizing the zoned block
+>device support in the kernel.
 >
-> The race condition bugs never seem to get reproducers, I checked a few
-> of the above and these are much more deterministic things.
+>Export max open zones according to this new definition for NVMe Zoned
+>Namespace devices, ZAC ATA devices (which are treated as SCSI devices by
+>the kernel), and ZBC SCSI devices.
 >
-> I think the recurrance rate for the races is probably too low?
+>Add the new max_open_zones struct member to the request_queue, rather
+>than as a queue limit, since this property cannot be split across stacking
+>drivers.
+>
+>Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
+>---
+> Documentation/block/queue-sysfs.rst |  7 +++++++
+> block/blk-sysfs.c                   | 15 +++++++++++++++
+> drivers/nvme/host/zns.c             |  1 +
+> drivers/scsi/sd_zbc.c               |  4 ++++
+> include/linux/blkdev.h              | 20 ++++++++++++++++++++
+> 5 files changed, 47 insertions(+)
+>
+>diff --git a/Documentation/block/queue-sysfs.rst b/Documentation/block/queue-sysfs.rst
+>index 6a8513af9201..f01cf8530ae4 100644
+>--- a/Documentation/block/queue-sysfs.rst
+>+++ b/Documentation/block/queue-sysfs.rst
+>@@ -117,6 +117,13 @@ Maximum number of elements in a DMA scatter/gather list with integrity
+> data that will be submitted by the block layer core to the associated
+> block driver.
+>
+>+max_open_zones (RO)
+>+-------------------
+>+For zoned block devices (zoned attribute indicating "host-managed" or
+>+"host-aware"), the sum of zones belonging to any of the zone states:
+>+EXPLICIT OPEN or IMPLICIT OPEN, is limited by this value.
+>+If this value is 0, there is no limit.
+>+
+> max_sectors_kb (RW)
+> -------------------
+> This is the maximum number of kilobytes that the block layer will allow
+>diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+>index 02643e149d5e..fa42961e9678 100644
+>--- a/block/blk-sysfs.c
+>+++ b/block/blk-sysfs.c
+>@@ -305,6 +305,11 @@ static ssize_t queue_nr_zones_show(struct request_queue *q, char *page)
+> 	return queue_var_show(blk_queue_nr_zones(q), page);
+> }
+>
+>+static ssize_t queue_max_open_zones_show(struct request_queue *q, char *page)
+>+{
+>+	return queue_var_show(queue_max_open_zones(q), page);
+>+}
+>+
+> static ssize_t queue_nomerges_show(struct request_queue *q, char *page)
+> {
+> 	return queue_var_show((blk_queue_nomerges(q) << 1) |
+>@@ -667,6 +672,11 @@ static struct queue_sysfs_entry queue_nr_zones_entry = {
+> 	.show = queue_nr_zones_show,
+> };
+>
+>+static struct queue_sysfs_entry queue_max_open_zones_entry = {
+>+	.attr = {.name = "max_open_zones", .mode = 0444 },
+>+	.show = queue_max_open_zones_show,
+>+};
+>+
+> static struct queue_sysfs_entry queue_nomerges_entry = {
+> 	.attr = {.name = "nomerges", .mode = 0644 },
+> 	.show = queue_nomerges_show,
+>@@ -765,6 +775,7 @@ static struct attribute *queue_attrs[] = {
+> 	&queue_nonrot_entry.attr,
+> 	&queue_zoned_entry.attr,
+> 	&queue_nr_zones_entry.attr,
+>+	&queue_max_open_zones_entry.attr,
+> 	&queue_nomerges_entry.attr,
+> 	&queue_rq_affinity_entry.attr,
+> 	&queue_iostats_entry.attr,
+>@@ -792,6 +803,10 @@ static umode_t queue_attr_visible(struct kobject *kobj, struct attribute *attr,
+> 		(!q->mq_ops || !q->mq_ops->timeout))
+> 			return 0;
+>
+>+	if (attr == &queue_max_open_zones_entry.attr &&
+>+	    !blk_queue_is_zoned(q))
+>+		return 0;
+>+
+> 	return attr->mode;
+> }
+>
+>diff --git a/drivers/nvme/host/zns.c b/drivers/nvme/host/zns.c
+>index c08f6281b614..af156529f3b6 100644
+>--- a/drivers/nvme/host/zns.c
+>+++ b/drivers/nvme/host/zns.c
+>@@ -82,6 +82,7 @@ int nvme_update_zone_info(struct gendisk *disk, struct nvme_ns *ns,
+>
+> 	q->limits.zoned = BLK_ZONED_HM;
+> 	blk_queue_flag_set(QUEUE_FLAG_ZONE_RESETALL, q);
+>+	blk_queue_max_open_zones(q, le32_to_cpu(id->mor) + 1);
+> free_data:
+> 	kfree(id);
+> 	return status;
+>diff --git a/drivers/scsi/sd_zbc.c b/drivers/scsi/sd_zbc.c
+>index 183a20720da9..aa3564139b40 100644
+>--- a/drivers/scsi/sd_zbc.c
+>+++ b/drivers/scsi/sd_zbc.c
+>@@ -717,6 +717,10 @@ int sd_zbc_read_zones(struct scsi_disk *sdkp, unsigned char *buf)
+> 	/* The drive satisfies the kernel restrictions: set it up */
+> 	blk_queue_flag_set(QUEUE_FLAG_ZONE_RESETALL, q);
+> 	blk_queue_required_elevator_features(q, ELEVATOR_F_ZBD_SEQ_WRITE);
+>+	if (sdkp->zones_max_open == U32_MAX)
+>+		blk_queue_max_open_zones(q, 0);
+>+	else
+>+		blk_queue_max_open_zones(q, sdkp->zones_max_open);
+> 	nr_zones = round_up(sdkp->capacity, zone_blocks) >> ilog2(zone_blocks);
+>
+> 	/* READ16/WRITE16 is mandatory for ZBC disks */
+>diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+>index 8fd900998b4e..2f332f00501d 100644
+>--- a/include/linux/blkdev.h
+>+++ b/include/linux/blkdev.h
+>@@ -520,6 +520,7 @@ struct request_queue {
+> 	unsigned int		nr_zones;
+> 	unsigned long		*conv_zones_bitmap;
+> 	unsigned long		*seq_zones_wlock;
+>+	unsigned int		max_open_zones;
+> #endif /* CONFIG_BLK_DEV_ZONED */
+>
+> 	/*
+>@@ -729,6 +730,17 @@ static inline bool blk_queue_zone_is_seq(struct request_queue *q,
+> 		return true;
+> 	return !test_bit(blk_queue_zone_no(q, sector), q->conv_zones_bitmap);
+> }
+>+
+>+static inline void blk_queue_max_open_zones(struct request_queue *q,
+>+		unsigned int max_open_zones)
+>+{
+>+	q->max_open_zones = max_open_zones;
+>+}
+>+
+>+static inline unsigned int queue_max_open_zones(const struct request_queue *q)
+>+{
+>+	return q->max_open_zones;
+>+}
+> #else /* CONFIG_BLK_DEV_ZONED */
+> static inline unsigned int blk_queue_nr_zones(struct request_queue *q)
+> {
+>@@ -744,6 +756,14 @@ static inline unsigned int blk_queue_zone_no(struct request_queue *q,
+> {
+> 	return 0;
+> }
+>+static inline void blk_queue_max_open_zones(struct request_queue *q,
+>+		unsigned int max_open_zones)
+>+{
+>+}
+>+static inline unsigned int queue_max_open_zones(const struct request_queue *q)
+>+{
+>+	return 0;
+>+}
+> #endif /* CONFIG_BLK_DEV_ZONED */
+>
+> static inline bool rq_is_sync(struct request *rq)
+>-- 
+>2.26.2
+>
+>
+>_______________________________________________
+>linux-nvme mailing list
+>linux-nvme@lists.infradead.org
+>http://lists.infradead.org/mailman/listinfo/linux-nvme
 
-Yes, it definitely may depend on probability. There is usually a
-significant correlation with the number of crashes. This bug happened
-only once, that usually means either a very hard to trigger race
-condition, or a previous induced memory corruption. For harder to
-trigger race conditions, KCSAN (the data race detector) may help in
-future. However, kernel has too many races to report them to mailing
-lists:
-https://syzkaller.appspot.com/upstream?manager=ci2-upstream-kcsan-gce
-Though, some race conditions are manageable to trigger and I think we
-have hundreds of race conditions with reproducers on the dashboard.
+Looks good to me.
+
+Reviewed-by: Javier González <javier@javigon.com>
