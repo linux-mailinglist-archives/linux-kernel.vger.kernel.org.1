@@ -2,131 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBFDD20D10C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FB820D0F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727980AbgF2SiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727922AbgF2Sh5 (ORCPT
+        id S1727075AbgF2ShN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:37:13 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48392 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726831AbgF2Sf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:57 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1247C0307BD
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:09:18 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id q17so8090079pfu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:09:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Dpcg/V5/bVux0rs7VkxFu353liBeuYLlwoKIVZn1zEc=;
-        b=ct0mv2T0RjdmYV1r2g3shjdEpjoUYMExe0D7cbytkVt7URajCK7sMn2lgMvkPFTDtT
-         B6e0osia8R1xcxdsu1BBSWWdC90GP7XLPKUMpUNAbTFBPpu42nc6i9OZtXC71O1efA/P
-         4ylNra4o8Pd7dj8TEYxISYWxhCFSaMWvEPRaQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Dpcg/V5/bVux0rs7VkxFu353liBeuYLlwoKIVZn1zEc=;
-        b=BiDhjUyoYieapzrHcMyFBHUN+PLZfRpFPe1GD+0DciHgFw6DFsaOSeKWGSehDPS9kY
-         1wYvvtXR5kkZRznlrjAbxqTBRj5wTSMAH6yfiSdGi64yQLiSdTc61dB0qdTO+80oKDjt
-         EhHaxCb2lZUTTtTJ+gw5Lc4PEnZQrbMgFe5tYRiktnZumZuHBj39gdcMnQI1BBV+Ja8O
-         6sks3LLkFST72rdTXLQ52nukX/hEXYSlEUoNs6Vd3WO3laR8kw3GqkVaqylxInUKudqv
-         7gjbIwiBlJ38Dx/VDnetwxQD6rbmaqtFZ6IsW/vPBw/P42uyZHyCxb5fkX+XVOdJ6V6q
-         kIHA==
-X-Gm-Message-State: AOAM530p5CX8FExQUjBTSNkLVWBgYFp4aokd2oZ6e5AVGwJq3Agao7OE
-        Xfx2JDJBz7ID1HB+Md1CoXt1oA==
-X-Google-Smtp-Source: ABdhPJwdMzhUEihbszttz1nTcxlrJL0pe9SFMhjHmbbNgUqzZFGh80VrfiWcOpG+4qWPncvSOSJsew==
-X-Received: by 2002:a63:a1f:: with SMTP id 31mr10760873pgk.228.1593446956199;
-        Mon, 29 Jun 2020 09:09:16 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s194sm237565pgs.24.2020.06.29.09.09.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 09:09:15 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 09:09:14 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        clang-built-linux@googlegroups.com,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 7/7] x86/boot: Check that there are no runtime
- relocations
-Message-ID: <202006290907.E5EF18A@keescook>
-References: <20200629140928.858507-1-nivedita@alum.mit.edu>
- <20200629140928.858507-8-nivedita@alum.mit.edu>
+        Mon, 29 Jun 2020 14:35:56 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TG488h169400;
+        Mon, 29 Jun 2020 12:10:49 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ycgcynfv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 12:10:49 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05TG5V45177075;
+        Mon, 29 Jun 2020 12:10:48 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ycgcynes-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 12:10:48 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05TG5oE8026201;
+        Mon, 29 Jun 2020 16:10:46 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma05fra.de.ibm.com with ESMTP id 31wwr896r7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 16:10:46 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05TGAhBU65470542
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Jun 2020 16:10:43 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 356ED4C066;
+        Mon, 29 Jun 2020 16:10:43 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C086B4C04A;
+        Mon, 29 Jun 2020 16:10:40 +0000 (GMT)
+Received: from oc3016276355.ibm.com (unknown [9.145.79.64])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 29 Jun 2020 16:10:40 +0000 (GMT)
+Subject: Re: [PATCH v3 1/1] s390: virtio: let arch accept devices without
+ IOMMU feature
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, jasowang@redhat.com,
+        cohuck@redhat.com, kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
+        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com
+References: <1592390637-17441-1-git-send-email-pmorel@linux.ibm.com>
+ <1592390637-17441-2-git-send-email-pmorel@linux.ibm.com>
+ <20200629115651-mutt-send-email-mst@kernel.org>
+From:   Pierre Morel <pmorel@linux.ibm.com>
+Message-ID: <a94443a3-1aff-8cf5-bc1c-9271f260e930@linux.ibm.com>
+Date:   Mon, 29 Jun 2020 18:09:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629140928.858507-8-nivedita@alum.mit.edu>
+In-Reply-To: <20200629115651-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-06-29_15:2020-06-29,2020-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 cotscore=-2147483648 mlxscore=0 bulkscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 priorityscore=1501 impostorscore=0
+ phishscore=0 spamscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006290105
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 10:09:28AM -0400, Arvind Sankar wrote:
-> Add a linker script check that there are no runtime relocations, and
-> remove the old one that tries to check via looking for specially-named
-> sections in the object files.
+
+
+On 2020-06-29 17:57, Michael S. Tsirkin wrote:
+> On Wed, Jun 17, 2020 at 12:43:57PM +0200, Pierre Morel wrote:
+>> An architecture protecting the guest memory against unauthorized host
+>> access may want to enforce VIRTIO I/O device protection through the
+>> use of VIRTIO_F_IOMMU_PLATFORM.
+>>
+>> Let's give a chance to the architecture to accept or not devices
+>> without VIRTIO_F_IOMMU_PLATFORM.
+>>
+>> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
+>> Acked-by: Jason Wang <jasowang@redhat.com>
+>> Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
+>> ---
+>>   arch/s390/mm/init.c     |  6 ++++++
+>>   drivers/virtio/virtio.c | 22 ++++++++++++++++++++++
+>>   include/linux/virtio.h  |  2 ++
+>>   3 files changed, 30 insertions(+)
+>>
+>> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
+>> index 6dc7c3b60ef6..215070c03226 100644
+>> --- a/arch/s390/mm/init.c
+>> +++ b/arch/s390/mm/init.c
+>> @@ -45,6 +45,7 @@
+>>   #include <asm/kasan.h>
+>>   #include <asm/dma-mapping.h>
+>>   #include <asm/uv.h>
+>> +#include <linux/virtio.h>
+>>   
+>>   pgd_t swapper_pg_dir[PTRS_PER_PGD] __section(.bss..swapper_pg_dir);
+>>   
+>> @@ -161,6 +162,11 @@ bool force_dma_unencrypted(struct device *dev)
+>>   	return is_prot_virt_guest();
+>>   }
+>>   
+>> +int arch_needs_virtio_iommu_platform(struct virtio_device *dev)
+>> +{
+>> +	return is_prot_virt_guest();
+>> +}
+>> +
+>>   /* protected virtualization */
+>>   static void pv_init(void)
+>>   {
+>> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+>> index a977e32a88f2..aa8e01104f86 100644
+>> --- a/drivers/virtio/virtio.c
+>> +++ b/drivers/virtio/virtio.c
+>> @@ -167,6 +167,21 @@ void virtio_add_status(struct virtio_device *dev, unsigned int status)
+>>   }
+>>   EXPORT_SYMBOL_GPL(virtio_add_status);
+>>   
+>> +/*
+>> + * arch_needs_virtio_iommu_platform - provide arch specific hook when finalizing
+>> + *				      features for VIRTIO device dev
+>> + * @dev: the VIRTIO device being added
+>> + *
+>> + * Permits the platform to provide architecture specific functionality when
+>> + * devices features are finalized. This is the default implementation.
+>> + * Architecture implementations can override this.
+>> + */
+>> +
+>> +int __weak arch_needs_virtio_iommu_platform(struct virtio_device *dev)
+>> +{
+>> +	return 0;
+>> +}
+>> +
+>>   int virtio_finalize_features(struct virtio_device *dev)
+>>   {
+>>   	int ret = dev->config->finalize_features(dev);
+>> @@ -179,6 +194,13 @@ int virtio_finalize_features(struct virtio_device *dev)
+>>   	if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1))
+>>   		return 0;
+>>   
+>> +	if (arch_needs_virtio_iommu_platform(dev) &&
+>> +		!virtio_has_feature(dev, VIRTIO_F_IOMMU_PLATFORM)) {
+>> +		dev_warn(&dev->dev,
+>> +			 "virtio: device must provide VIRTIO_F_IOMMU_PLATFORM\n");
+>> +		return -ENODEV;
+>> +	}
+>> +
+>>   	virtio_add_status(dev, VIRTIO_CONFIG_S_FEATURES_OK);
+>>   	status = dev->config->get_status(dev);
+>>   	if (!(status & VIRTIO_CONFIG_S_FEATURES_OK)) {
 > 
-> Drop the tests for -fPIE compiler option and -pie linker option, as they
-> are available in all supported gcc and binutils versions (as well as
-> clang and lld).
-> 
-> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-> Reviewed-by: Fangrui Song <maskray@google.com>
-> ---
->  arch/x86/boot/compressed/Makefile      | 28 +++-----------------------
->  arch/x86/boot/compressed/vmlinux.lds.S |  8 ++++++++
->  2 files changed, 11 insertions(+), 25 deletions(-)
+> Well don't you need to check it *before* VIRTIO_F_VERSION_1, not after?
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Yes, you are right,
 
-question below ...
+Thanks,
 
-> diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-> index a4a4a59a2628..a78510046eec 100644
-> --- a/arch/x86/boot/compressed/vmlinux.lds.S
-> +++ b/arch/x86/boot/compressed/vmlinux.lds.S
-> @@ -42,6 +42,12 @@ SECTIONS
->  		*(.rodata.*)
->  		_erodata = . ;
->  	}
-> +	.rel.dyn : {
-> +		*(.rel.*)
-> +	}
-> +	.rela.dyn : {
-> +		*(.rela.*)
-> +	}
->  	.got : {
->  		*(.got)
->  	}
-
-Should these be marked (INFO) as well?
-
-> @@ -85,3 +91,5 @@ ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18, "Unexpected GOT/PLT en
->  #else
->  ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0xc, "Unexpected GOT/PLT entries detected!")
->  #endif
-> +
-> +ASSERT(SIZEOF(.rel.dyn) == 0 && SIZEOF(.rela.dyn) == 0, "Unexpected runtime relocations detected!")
-
-I think I should be doing this same ASSERT style for other explicit
-DISCARDS in my orphan series so we'll notice if they change, instead
-of being silently dropped if they grow.
+Pierre
 
 -- 
-Kees Cook
+Pierre Morel
+IBM Lab Boeblingen
