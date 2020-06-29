@@ -2,140 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE40120D6B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E2B20D6BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732320AbgF2TW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45124 "EHLO
+        id S1732163AbgF2TXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:23:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732293AbgF2TWp (ORCPT
+        with ESMTP id S1732285AbgF2TWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:22:45 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E22C030F3B
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:56:54 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id u17so13400638qtq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:56:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gmp0D2tdeFRnXQgw7lSdvfRGqahLRtacjy20V4Dgy4c=;
-        b=Jfgz6+ehlKKKW4qoq8xVJu2q7caS/mX7d2eerQrmJ/I8fEtrkUoYA5pgWnWcfjvIDt
-         utQSsqPaOEgIRXKX03NaualVOXjO63W2a35ig0TSMcEvHD/PcZNONbY9GUUYfk1mDK7a
-         ouQynf+wqQT5N4M8740UpW12VB7n9Jgyl+lX2odBXE5pal3VZrz0Gun2gLsRDsoSeCn1
-         4izLQLIdLSK2kPxv32lSMlEo3LqIFrnsiB9ePxMtpwt8X5utuupEstYsFyha+jdQgRgh
-         WgnW+TwAW5sRiUUFiQ6MSEV88c8RfYaX8bxGe/hkSHOAZI8dMGVQyQmstOf6vv5SN6vx
-         oMTw==
+        Mon, 29 Jun 2020 15:22:44 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0B7C030F39;
+        Mon, 29 Jun 2020 09:56:52 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id z5so8569340pgb.6;
+        Mon, 29 Jun 2020 09:56:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gmp0D2tdeFRnXQgw7lSdvfRGqahLRtacjy20V4Dgy4c=;
-        b=eGS9hzkIy2dX2D/M9MhsWAbwRdzOcQGFOVnuKmocdz2sO28mh2Sw768ieeYC6qKW7R
-         i5j0XzFiX1GSzU9BirFpC0IHiK1OQ083PpQYa0Drpvxj7KN3OXpERHklmV08+AlI/gmj
-         IIpYZq2GzvhCwwBZTcb3GYu5rVuo+w9hfb1wd7toY2SZCpUWU8KfRJZWwlEbujoS6AWO
-         dLcSt6sjLM0oHQ5Xp0M1fAUfYZbMGfShknxvM4+sgMiFrNm3e8j/1L0EcP8XG4J8jmyD
-         QgXrzfcNR0KeqmL5nKQzQ84l3Tt3/s6qB/hoN/pTNahuj1kJAypDEXXHXqv8CffaLs22
-         ZIOw==
-X-Gm-Message-State: AOAM530u7c5FbsaZmN9WTsxe+qP1AL/FvBALHk5RiUAsYjN2jhJIfuc0
-        6dvWdNiD3Vxvh0HM8VLgDJrkEGQQGvR6g1+dWattAw==
-X-Google-Smtp-Source: ABdhPJz4vWfkua2eG9MpTJ6k/kJDSLhEXhO0H2alk/afqT4ySNVYGzkUifS11LUHAxlT47DxEztZASWHQWqf40cxVOE=
-X-Received: by 2002:ac8:260b:: with SMTP id u11mr16891475qtu.380.1593449812975;
- Mon, 29 Jun 2020 09:56:52 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=/ma/F8azHfAAlX2tIXoGzMQscfg5HcD+VaBkA6I2zHQ=;
+        b=pZER90CeOCVTshThob8SMWZGTPpq0Mux+NuRers8/6P2d0f4w05GGRSqD38aYcR8ZZ
+         12G9obczqcC1AFF562uQjh3gP+CYReqnp1GfE2ls8ZNYxhGZ8NeOzFlvLYb4fhQVTgw+
+         drDHEyhfRZQThZRHWbPqaYsosoDZyprHv0VWmIDHGBLihzGeKEW0eUIgUpLq+zjzfJEV
+         X9MSU4N34Sr3VrhXDbKxq8GarIAoqKX/BUhbleGf2EDvUpLtuhQyVdQohOUDokASKovU
+         v3hSmeogbUBwwqUUhpG8mhxfAVv22+KxEWOweLvDxOTbSO7NhguMdtjuQ0vGSyPpoGsK
+         D5GA==
+X-Gm-Message-State: AOAM533Xpd0YJw46l0YjdEqWsLVYGUk6Y0tfaYip9Hybi9VKGvLmjZ6u
+        2LYZypdyLwl/pyRziGdgk2w=
+X-Google-Smtp-Source: ABdhPJxAvEhIQPLv4qR5l3ldPDQeKRXPQEDzt66dAti3bw4uNmWPcIma5kppyybAmSHb90GeBtGz8A==
+X-Received: by 2002:a63:5110:: with SMTP id f16mr10872564pgb.377.1593449812186;
+        Mon, 29 Jun 2020 09:56:52 -0700 (PDT)
+Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id a30sm258527pfr.87.2020.06.29.09.56.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jun 2020 09:56:51 -0700 (PDT)
+Subject: Re: [PATCH] scsi: sd: add runtime pm to open / release
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     jejb@linux.ibm.com, Can Guo <cang@codeaurora.org>,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@puri.sm
+References: <20200623111018.31954-1-martin.kepplinger@puri.sm>
+ <ed9ae198-4c68-f82b-04fc-2299ab16df96@acm.org>
+ <eccacce9-393c-ca5d-e3b3-09961340e0db@puri.sm>
+ <1379e21d-c51a-3710-e185-c2d7a9681fb7@acm.org>
+ <20200626154441.GA296771@rowland.harvard.edu>
+ <c19f1938-ae47-2357-669d-5b4021aec154@puri.sm>
+ <20200629161536.GA405175@rowland.harvard.edu>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <df54c02f-dbe9-08d5-fec8-835788caf164@acm.org>
+Date:   Mon, 29 Jun 2020 09:56:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <000000000000a4293f0598ef165e@google.com> <000000000000a1c96505a109a31b@google.com>
-In-Reply-To: <000000000000a1c96505a109a31b@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 29 Jun 2020 18:56:41 +0200
-Message-ID: <CACT4Y+bK_1tNXQoVHz=maMr-pCw4FK_chGzA7LuvChM6DGO-LA@mail.gmail.com>
-Subject: Re: KASAN: vmalloc-out-of-bounds Write in bitfill_aligned
-To:     syzbot <syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com>,
-        gk568005@gmail.com
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200629161536.GA405175@rowland.harvard.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 17, 2020 at 10:34 AM syzbot
-<syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com> wrote:
->
-> syzbot has found a reproducer for the following crash on:
->
-> HEAD commit:    fb33c651 Linux 5.6-rc6
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17dacd55e00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=9f894bd92023de02
-> dashboard link: https://syzkaller.appspot.com/bug?extid=e5fd3e65515b48c02a30
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11b8ca75e00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=114800e5e00000
->
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com
+On 2020-06-29 09:15, Alan Stern wrote:
+> Aha.  Looking at this more closely, it's apparent that the code in 
+> blk-core.c contains a logic bug: It assumes that if the BLK_MQ_REQ_PREEMPT 
+> flag is set then the request can be issued regardless of the queue's 
+> runtime status.  That is not correct when the queue is suspended.
 
-+George who may know what causes this
+Please clarify why this is not correct.
 
-> ==================================================================
-> BUG: KASAN: vmalloc-out-of-bounds in bitfill_aligned drivers/video/fbdev/core/sysfillrect.c:54 [inline]
-> BUG: KASAN: vmalloc-out-of-bounds in bitfill_aligned+0x34b/0x410 drivers/video/fbdev/core/sysfillrect.c:25
-> Write of size 8 at addr ffffc90009621000 by task syz-executor767/9337
->
-> CPU: 3 PID: 9337 Comm: syz-executor767 Not tainted 5.6.0-rc6-syzkaller #0
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x188/0x20d lib/dump_stack.c:118
->  print_address_description.constprop.0.cold+0x5/0x315 mm/kasan/report.c:374
->  __kasan_report.cold+0x1a/0x32 mm/kasan/report.c:506
->  kasan_report+0xe/0x20 mm/kasan/common.c:641
->  bitfill_aligned drivers/video/fbdev/core/sysfillrect.c:54 [inline]
->  bitfill_aligned+0x34b/0x410 drivers/video/fbdev/core/sysfillrect.c:25
->  sys_fillrect+0x415/0x7a0 drivers/video/fbdev/core/sysfillrect.c:291
->  drm_fb_helper_sys_fillrect+0x1c/0x190 drivers/gpu/drm/drm_fb_helper.c:719
->  bit_clear_margins+0x2d5/0x4a0 drivers/video/fbdev/core/bitblit.c:232
->  fbcon_clear_margins+0x1de/0x240 drivers/video/fbdev/core/fbcon.c:1379
->  fbcon_switch+0xd1b/0x1740 drivers/video/fbdev/core/fbcon.c:2361
->  redraw_screen+0x2a8/0x770 drivers/tty/vt/vt.c:1008
->  fbcon_modechanged+0x5bd/0x780 drivers/video/fbdev/core/fbcon.c:2998
->  fbcon_update_vcs+0x3a/0x50 drivers/video/fbdev/core/fbcon.c:3045
->  fb_set_var+0xad0/0xd40 drivers/video/fbdev/core/fbmem.c:1056
->  do_fb_ioctl+0x390/0x7d0 drivers/video/fbdev/core/fbmem.c:1109
->  fb_ioctl+0xdd/0x130 drivers/video/fbdev/core/fbmem.c:1185
->  vfs_ioctl fs/ioctl.c:47 [inline]
->  ksys_ioctl+0x11a/0x180 fs/ioctl.c:763
->  __do_sys_ioctl fs/ioctl.c:772 [inline]
->  __se_sys_ioctl fs/ioctl.c:770 [inline]
->  __x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:770
->  do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:294
->  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> RIP: 0033:0x433d29
-> Code: c4 18 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 eb da fc ff c3 66 2e 0f 1f 84 00 00 00 00
-> RSP: 002b:00007fff33d61508 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 00000000004002e0 RCX: 0000000000433d29
-> RDX: 00000000200001c0 RSI: 0000000000004601 RDI: 0000000000000003
-> RBP: 00000000006b2018 R08: 0000000000000000 R09: 00000000004002e0
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401bc0
-> R13: 0000000000401c50 R14: 0000000000000000 R15: 0000000000000000
->
->
-> Memory state around the buggy address:
->  ffffc90009620f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->  ffffc90009620f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> >ffffc90009621000: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
->                    ^
->  ffffc90009621080: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
->  ffffc90009621100: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
-> ==================================================================
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000a1c96505a109a31b%40google.com.
+> Index: usb-devel/block/blk-core.c
+> ===================================================================
+> --- usb-devel.orig/block/blk-core.c
+> +++ usb-devel/block/blk-core.c
+> @@ -423,7 +423,8 @@ int blk_queue_enter(struct request_queue
+>  			 * responsible for ensuring that that counter is
+>  			 * globally visible before the queue is unfrozen.
+>  			 */
+> -			if (pm || !blk_queue_pm_only(q)) {
+> +			if ((pm && q->rpm_status != RPM_SUSPENDED) ||
+> +			    !blk_queue_pm_only(q)) {
+>  				success = true;
+>  			} else {
+>  				percpu_ref_put(&q->q_usage_counter);
+
+Does the above change make it impossible to bring a suspended device
+back to the RPM_ACTIVE state if the BLK_MQ_REQ_NOWAIT flag is set?
+
+> @@ -448,8 +449,7 @@ int blk_queue_enter(struct request_queue
+>  
+>  		wait_event(q->mq_freeze_wq,
+>  			   (!q->mq_freeze_depth &&
+> -			    (pm || (blk_pm_request_resume(q),
+> -				    !blk_queue_pm_only(q)))) ||
+> +			    blk_pm_resume_queue(pm, q)) ||
+>  			   blk_queue_dying(q));
+>  		if (blk_queue_dying(q))
+>  			return -ENODEV;
+> Index: usb-devel/block/blk-pm.h
+> ===================================================================
+> --- usb-devel.orig/block/blk-pm.h
+> +++ usb-devel/block/blk-pm.h
+> @@ -6,11 +6,14 @@
+>  #include <linux/pm_runtime.h>
+>  
+>  #ifdef CONFIG_PM
+> -static inline void blk_pm_request_resume(struct request_queue *q)
+> +static inline int blk_pm_resume_queue(const bool pm, struct request_queue *q)
+>  {
+> -	if (q->dev && (q->rpm_status == RPM_SUSPENDED ||
+> -		       q->rpm_status == RPM_SUSPENDING))
+> -		pm_request_resume(q->dev);
+> +	if (!q->dev || !blk_queue_pm_only(q))
+> +		return 1;	/* Nothing to do */
+> +	if (pm && q->rpm_status != RPM_SUSPENDED)
+> +		return 1;	/* Request allowed */
+> +	pm_request_resume(q->dev);
+> +	return 0;
+>  }
+
+Does the above change, especially the " && q->rpm_status !=
+RPM_SUSPENDED" part, make it impossible to bring a suspended device back
+to the RPM_ACTIVE state?
+
+Thanks,
+
+Bart.
