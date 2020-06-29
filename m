@@ -2,135 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DB620E195
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF8820E247
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732748AbgF2U51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
+        id S2390064AbgF2VDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729386AbgF2TNG (ORCPT
+        with ESMTP id S1731127AbgF2TMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:06 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01BD9C0147C0;
-        Mon, 29 Jun 2020 01:22:13 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id dr13so15669757ejc.3;
-        Mon, 29 Jun 2020 01:22:12 -0700 (PDT)
+        Mon, 29 Jun 2020 15:12:45 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85DD2C0147C9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:25:11 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id f9so7602010pfn.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:25:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9cN6j0Ra4hTEQxVvKv02zIobt4Y/RvzU1LBCy2puJqU=;
+        b=Qgec2BJkq7UooQ/OTJc/ye/hxVhyPLlqi9ITafcrZQh0NONrh9LallTFIsrjUAwteY
+         Dxqj09oQUh23HK2po7xV3g5ppKJ6LdmlFXjvcXU9tLMADtodwCAVk7W6mbIm0Vjvkvhl
+         VQFtUPTrEsrutiSPI2UK72jylfkeUtvToUOY0RAj/WMfkUE2yV2kcFCV9fMhckkh5F68
+         6cTRfyN+70n5zoPOCGBYnoKLNAwQbhXHcuWMjA8OOdvRBcFoUYOBeZHdiqMKIN/LHfK+
+         BXW8Rus3omR3mCmviN38JBCDpsatBJAKEKvUcJ1UYyy0L3xF7r6YEATZ+158GbnEuCLa
+         UXPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mPrydynbK5+rnDYJyI/EITf6/MzUF0CRG2o081Vq5dc=;
-        b=cAUwQQoKDC06YT4LHqdA4xDyz4JhAwt/ytb8hC2uFAgm3TaJ0OqssW2rznu5kn46N0
-         JEfbQYCX8VjtVSYRhGVHgjVYgSFWExMm1vkZXi1UwgkfXGAynHOqVs6b8Uyz4VSmSm7d
-         g8vZqCOtQq89cSyg0hzhyyAdIElZ9ayjmNLD5XwRybW4IiJvn7V3HaL/koa8Rn1Zk4F7
-         LXKY7Wn3Qug30+dPR0hRk132yk2/ruEAxMLBk/x6JjQrK0mqQawVfXpByLN2YxpGFNJA
-         +CRptDvNTYQkuOkCl7DSICXv2c9+yGZNOBEZtT2ghVeHYlDtKRZ0N+kEKvfD1WUSSt2Q
-         gm9g==
-X-Gm-Message-State: AOAM533eUkhnbbKD9GNDNyDTvijEnMJmgU0VUOBWOli7pTBGPUWkLY6Y
-        sQL3l0vxf7X3S8m+C5hMF7o=
-X-Google-Smtp-Source: ABdhPJxpOcTkL4osdGXouPGkUvoEu+LR2SWHbzDt5dJZtwUNOJWJOn7V0ppda1Dcr/qptC9T6ZT4xQ==
-X-Received: by 2002:a17:906:fa9b:: with SMTP id lt27mr12396115ejb.365.1593418931557;
-        Mon, 29 Jun 2020 01:22:11 -0700 (PDT)
-Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
-        by smtp.gmail.com with ESMTPSA id x10sm15592704ejc.46.2020.06.29.01.22.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 01:22:10 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 10:22:09 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Mikulas Patocka <mpatocka@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, dm-devel@redhat.com,
-        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>
-Subject: Re: [PATCH 0/6] Overhaul memalloc_no*
-Message-ID: <20200629082209.GC32461@dhcp22.suse.cz>
-References: <20200625113122.7540-1-willy@infradead.org>
- <alpine.LRH.2.02.2006261058250.11899@file01.intranet.prod.int.rdu2.redhat.com>
- <20200626230847.GI2005@dread.disaster.area>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9cN6j0Ra4hTEQxVvKv02zIobt4Y/RvzU1LBCy2puJqU=;
+        b=FF8HzvhZu7qJD7Iy7cl0+vxvFBc9MJA1/Yp3htfEAPUgpNV7BTf3ex0GjKSuAhDv7l
+         6IhD3JyZyRZ+Qn5E47dmP7QdBuLuOtf4BeTnaEWOQHl42lhhp8QYXSdeR8CHJjuNhtfx
+         YQ6EEe4exE32rElD1I/3YUQxod6xEuY149mPqYY2zRPjZkyEw/zf6hmzu/kEPqkg7Ngx
+         mAsLN+mKhmZp0R4/LKAg4oeyoEnxy+Qqqwyw3tcbJdb2PxIuNnMzgoqdvzCWLtMveaC1
+         fLBz+iHmKII7N61KGEWD82zxgglLvM5FTgU4639MgQpONAlOPSHyQFtjy+fgowCSBrLv
+         KyYQ==
+X-Gm-Message-State: AOAM531gDrmf3K+U2jsYKqeJIr7Meavzq6EqpOldONrkEZL4JLsgUNJz
+        3+a8d2JPSxXGXTdNatNL9zZGkA==
+X-Google-Smtp-Source: ABdhPJy88bXkx/N/KFZoZOZgrWhDp//E4ZzApQLzxh5Z0Ohkn7kvLmtrWT1NrP9Wp7nV2sIq4HRrcw==
+X-Received: by 2002:a62:1692:: with SMTP id 140mr13937131pfw.168.1593419111080;
+        Mon, 29 Jun 2020 01:25:11 -0700 (PDT)
+Received: from localhost ([122.172.127.76])
+        by smtp.gmail.com with ESMTPSA id h7sm8404191pfq.15.2020.06.29.01.25.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 29 Jun 2020 01:25:10 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com, tkjos@google.com, adharmap@codeaurora.org,
+        Quentin Perret <qperret@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V4 1/3] cpufreq: Fix locking issues with governors
+Date:   Mon, 29 Jun 2020 13:54:58 +0530
+Message-Id: <fdc55a7550a6a6a95dab1c80ff94d461b8ba0664.1593418662.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+In-Reply-To: <cover.1593418662.git.viresh.kumar@linaro.org>
+References: <cover.1593418662.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200626230847.GI2005@dread.disaster.area>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 27-06-20 09:08:47, Dave Chinner wrote:
-> On Fri, Jun 26, 2020 at 11:02:19AM -0400, Mikulas Patocka wrote:
-> > Hi
-> > 
-> > I suggest to join memalloc_noio and memalloc_nofs into just one flag that 
-> > prevents both filesystem recursion and i/o recursion.
-> > 
-> > Note that any I/O can recurse into a filesystem via the loop device, thus 
-> > it doesn't make much sense to have a context where PF_MEMALLOC_NOFS is set 
-> > and PF_MEMALLOC_NOIO is not set.
-> 
-> Correct me if I'm wrong, but I think that will prevent swapping from
-> GFP_NOFS memory reclaim contexts. IOWs, this will substantially
-> change the behaviour of the memory reclaim system under sustained
-> GFP_NOFS memory pressure. Sustained GFP_NOFS memory pressure is
-> quite common, so I really don't think we want to telling memory
-> reclaim "you can't do IO at all" when all we are trying to do is
-> prevent recursion back into the same filesystem.
-> 
-> Given that the loop device IO path already operates under
-> memalloc_noio context, (i.e. the recursion restriction is applied in
-> only the context that needs is) I see no reason for making that a
-> global reclaim limitation....
-> 
-> In reality, we need to be moving the other way with GFP_NOFS - to
-> fine grained anti-recursion contexts, not more broad contexts.
+The locking around governors handling isn't adequate currently. The list
+of governors should never be traversed without locking in place. Also we
+must make sure the governor isn't removed while it is still referenced
+by code.
 
-Absolutely agreed! It is not really hard to see system struggling due to
-heavy FS metadata workload while there are objects which could be
-reclaimed.
+Reported-by: Quentin Perret <qperret@google.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/cpufreq/cpufreq.c | 58 +++++++++++++++++++++++----------------
+ 1 file changed, 35 insertions(+), 23 deletions(-)
 
-> That is, GFP_NOFS prevents recursion into any filesystem, not just
-> the one that we are actively operating on and needing to prevent
-> recursion back into. We can safely have reclaim do relcaim work on
-> other filesysetms without fear of recursion deadlocks, but the
-> memory reclaim infrastructure does not provide that capability.(*)
-> 
-> e.g. if memalloc_nofs_save() took a reclaim context structure that
-> the filesystem put the superblock, the superblock's nesting depth
-> (because layering on loop devices can create cross-filesystem
-> recursion dependencies), and any other filesyetm private data the
-> fs wanted to add, we could actually have reclaim only avoid reclaim
-> from filesytsems where there is a deadlock possiblity. e.g:
-> 
-> 	- superblock nesting depth is different, apply GFP_NOFS
-> 	  reclaim unconditionally
-> 	- superblock different apply GFP_KERNEL reclaim
-> 	- superblock the same, pass context to filesystem to
-> 	  decide if reclaim from the sueprblock is safe.
-> 
-> At this point, we get memory reclaim able to always be able to
-> reclaim from filesystems that are not at risk of recursion
-> deadlocks. Direct reclaim is much more likely to be able to make
-> progress now because it is much less restricted in what it can
-> reclaim. That's going to make direct relcaim faster and more
-> efficient, and taht's the ultimate goal we are aiming to acheive
-> here...
-
-Yes, we have discussed something like that few years back at LSFMM IIRC.
-The scoped NOFS/NOIO api was just a first step to reduce explicit
-NOFS/NOIO usage with a hope that we will get no-recursion entry points
-much more well defined and get rid of many instances where "this is a fs
-code so it has to use NOFS gfp mask".
-
-Some of that has happened and that is really great. On the other hand
-many people still like to use that api as a workaround for an immediate
-problem because no-recursion scopes are much harder to recognize unless
-you are supper familiar with the specific fs/IO layer implementation.
-So this is definitely not a project for somebody to go over all code and
-just do the clean up.
-
-Thanks!
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index 0128de3603df..e9e8200a0211 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -621,6 +621,24 @@ static struct cpufreq_governor *find_governor(const char *str_governor)
+ 	return NULL;
+ }
+ 
++static struct cpufreq_governor *get_governor(const char *str_governor)
++{
++	struct cpufreq_governor *t;
++
++	mutex_lock(&cpufreq_governor_mutex);
++	t = find_governor(str_governor);
++	if (!t)
++		goto unlock;
++
++	if (!try_module_get(t->owner))
++		t = NULL;
++
++unlock:
++	mutex_unlock(&cpufreq_governor_mutex);
++
++	return t;
++}
++
+ static unsigned int cpufreq_parse_policy(char *str_governor)
+ {
+ 	if (!strncasecmp(str_governor, "performance", CPUFREQ_NAME_LEN))
+@@ -640,28 +658,14 @@ static struct cpufreq_governor *cpufreq_parse_governor(char *str_governor)
+ {
+ 	struct cpufreq_governor *t;
+ 
+-	mutex_lock(&cpufreq_governor_mutex);
+-
+-	t = find_governor(str_governor);
+-	if (!t) {
+-		int ret;
+-
+-		mutex_unlock(&cpufreq_governor_mutex);
+-
+-		ret = request_module("cpufreq_%s", str_governor);
+-		if (ret)
+-			return NULL;
+-
+-		mutex_lock(&cpufreq_governor_mutex);
++	t = get_governor(str_governor);
++	if (t)
++		return t;
+ 
+-		t = find_governor(str_governor);
+-	}
+-	if (t && !try_module_get(t->owner))
+-		t = NULL;
+-
+-	mutex_unlock(&cpufreq_governor_mutex);
++	if (request_module("cpufreq_%s", str_governor))
++		return NULL;
+ 
+-	return t;
++	return get_governor(str_governor);
+ }
+ 
+ /**
+@@ -815,12 +819,14 @@ static ssize_t show_scaling_available_governors(struct cpufreq_policy *policy,
+ 		goto out;
+ 	}
+ 
++	mutex_lock(&cpufreq_governor_mutex);
+ 	for_each_governor(t) {
+ 		if (i >= (ssize_t) ((PAGE_SIZE / sizeof(char))
+ 		    - (CPUFREQ_NAME_LEN + 2)))
+-			goto out;
++			break;
+ 		i += scnprintf(&buf[i], CPUFREQ_NAME_PLEN, "%s ", t->name);
+ 	}
++	mutex_unlock(&cpufreq_governor_mutex);
+ out:
+ 	i += sprintf(&buf[i], "\n");
+ 	return i;
+@@ -1058,15 +1064,17 @@ static int cpufreq_init_policy(struct cpufreq_policy *policy)
+ 	struct cpufreq_governor *def_gov = cpufreq_default_governor();
+ 	struct cpufreq_governor *gov = NULL;
+ 	unsigned int pol = CPUFREQ_POLICY_UNKNOWN;
++	int ret;
+ 
+ 	if (has_target()) {
+ 		/* Update policy governor to the one used before hotplug. */
+-		gov = find_governor(policy->last_governor);
++		gov = get_governor(policy->last_governor);
+ 		if (gov) {
+ 			pr_debug("Restoring governor %s for cpu %d\n",
+ 				 policy->governor->name, policy->cpu);
+ 		} else if (def_gov) {
+ 			gov = def_gov;
++			__module_get(gov->owner);
+ 		} else {
+ 			return -ENODATA;
+ 		}
+@@ -1089,7 +1097,11 @@ static int cpufreq_init_policy(struct cpufreq_policy *policy)
+ 			return -ENODATA;
+ 	}
+ 
+-	return cpufreq_set_policy(policy, gov, pol);
++	ret = cpufreq_set_policy(policy, gov, pol);
++	if (gov)
++		module_put(gov->owner);
++
++	return ret;
+ }
+ 
+ static int cpufreq_add_policy_cpu(struct cpufreq_policy *policy, unsigned int cpu)
 -- 
-Michal Hocko
-SUSE Labs
+2.25.0.rc1.19.g042ed3e048af
+
