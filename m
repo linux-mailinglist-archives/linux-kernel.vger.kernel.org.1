@@ -2,43 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6018A20D28C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A933120D15B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729510AbgF2SuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:50:18 -0400
-Received: from muru.com ([72.249.23.125]:59950 "EHLO muru.com"
+        id S1727950AbgF2SlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:41:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729465AbgF2SuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:50:11 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 4A4F581BF;
-        Mon, 29 Jun 2020 18:15:31 +0000 (UTC)
-Date:   Mon, 29 Jun 2020 11:14:35 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: am: Align L2 cache-controller nodename with
- dtschema
-Message-ID: <20200629181435.GA37466@atomide.com>
-References: <20200626080651.4355-1-krzk@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200626080651.4355-1-krzk@kernel.org>
+        id S1728739AbgF2SlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:41:11 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 839F52559D;
+        Mon, 29 Jun 2020 18:15:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593454509;
+        bh=IPwYZWpcmEBmGKzpEn32o92vTbK48d5Td6bDmd7aHCk=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=x50Faqq+gwSwcZygE4OE7sGOF5idPSWZfmTac/xIZCdD30VFEN8bXJfD0PR9m8yor
+         812VR2ZzMHMwlsxjVuWfDx5o0dokYrjQPYvnAm9MAbUB46uLKU1po2wdDUb5dkVbIF
+         u3KZ0Wv3I1T9cf0J0Z72E9+K9Fu8zBNmX4FjoZHU=
+Date:   Mon, 29 Jun 2020 19:15:06 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Vinod Koul <vkoul@kernel.org>, Patrick Lai <plai@codeaurora.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Rohit kumar <rohitkr@codeaurora.org>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20200629122443.21736-1-geert@linux-m68k.org>
+References: <20200629122443.21736-1-geert@linux-m68k.org>
+Subject: Re: [PATCH] ASoC: qcom: Drop HAS_DMA dependency to fix link failure
+Message-Id: <159345450676.54191.5667484527733224439.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Krzysztof Kozlowski <krzk@kernel.org> [200626 01:07]:
-> Fix dtschema validator warnings like:
->     l2-cache-controller@48242000: $nodename:0: 'l2-cache-controller@48242000'
->         does not match '^(cache-controller|cpu)(@[0-9a-f,]+)*$'
+On Mon, 29 Jun 2020 14:24:43 +0200, Geert Uytterhoeven wrote:
+> When building on allyesconfig kernel for a NO_DMA=y platform (e.g.
+> Sun-3), CONFIG_SND_SOC_QCOM_COMMON=y, but CONFIG_SND_SOC_QDSP6_AFE=n,
+> leading to a link failure:
+> 
+>     sound/soc/qcom/common.o: In function `qcom_snd_parse_of':
+>     common.c:(.text+0x2e2): undefined reference to `q6afe_is_rx_port'
+> 
+> [...]
 
-Applying into omap-for-v5.9/dt thanks.
+Applied to
 
-Tony
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: qcom: Drop HAS_DMA dependency to fix link failure
+      commit: b6aa06de7757667bac88997a8807b143b8436035
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
