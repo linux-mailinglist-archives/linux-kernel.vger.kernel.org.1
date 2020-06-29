@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5848A20D0FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CAFA20D0BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727099AbgF2Shb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:37:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56910 "EHLO mail.kernel.org"
+        id S1726607AbgF2Sfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:35:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726787AbgF2Sfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:35:50 -0400
+        id S1726175AbgF2SfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:35:22 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF715247BF;
-        Mon, 29 Jun 2020 15:22:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 16422247C9;
+        Mon, 29 Jun 2020 15:22:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593444128;
-        bh=MTjlcBR2OT9Vy7WzWDXrko29JUse4iEHGIPkf4sLke4=;
+        s=default; t=1593444135;
+        bh=+BScHcEoWoNxBeKrIFUTdorvUOhsOsh1PWnSVcUlz+c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x7ChO+Ijz3J0EYFzyhebws5qgBexDJBFiXyiyNpp2vYgQYu2ssxTNepyt7Qdi8Rm8
-         hcYksgSJ5jFcLMY/r2MEDkq5kJfpLSh5dpqTs7/Fgm0ahmrDroFobcTlIdWFz9R28D
-         2DwrghE0FjtkZY3XnAyDZWjcDJUYV8nWx1gf/Ly8=
+        b=C7ZZEU5o/tSeT1CJRSnZB4t4L2xwXudOXzi6nGDqaHhfiGax9+j92QEpq9pg9pXib
+         /FesMi5G1tSLGrCgPs4GY+LSFWbt+ZJD1LLOVN7jSe+pS0sKIh8ZpLpJFH4/M0I+MI
+         Nulj7Z+FEOpX0NpN3kipMPcrcJUFKbtIa31S5bDM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+Cc:     Sascha Ortmann <sascha.ortmann@stud.uni-hannover.de>,
+        linux-kernel@i4.cs.fau.de,
+        Maximilian Werner <maximilian.werner96@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.7 235/265] mm: memcontrol: handle div0 crash race condition in memory.low
-Date:   Mon, 29 Jun 2020 11:17:48 -0400
-Message-Id: <20200629151818.2493727-236-sashal@kernel.org>
+Subject: [PATCH 5.7 241/265] tracing/boottime: Fix kprobe multiple events
+Date:   Mon, 29 Jun 2020 11:17:54 -0400
+Message-Id: <20200629151818.2493727-242-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629151818.2493727-1-sashal@kernel.org>
 References: <20200629151818.2493727-1-sashal@kernel.org>
@@ -53,80 +52,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Weiner <hannes@cmpxchg.org>
+From: Sascha Ortmann <sascha.ortmann@stud.uni-hannover.de>
 
-commit cd324edce598ebddde44162a2aa01321c1261b9e upstream.
+commit 20dc3847cc2fc886ee4eb9112e6e2fad9419b0c7 upstream.
 
-Tejun reports seeing rare div0 crashes in memory.low stress testing:
+Fix boottime kprobe events to report and abort after each failure when
+adding probes.
 
-  RIP: 0010:mem_cgroup_calculate_protection+0xed/0x150
-  Code: 0f 46 d1 4c 39 d8 72 57 f6 05 16 d6 42 01 40 74 1f 4c 39 d8 76 1a 4c 39 d1 76 15 4c 29 d1 4c 29 d8 4d 29 d9 31 d2 48 0f af c1 <49> f7 f1 49 01 c2 4c 89 96 38 01 00 00 5d c3 48 0f af c7 31 d2 49
-  RSP: 0018:ffffa14e01d6fcd0 EFLAGS: 00010246
-  RAX: 000000000243e384 RBX: 0000000000000000 RCX: 0000000000008f4b
-  RDX: 0000000000000000 RSI: ffff8b89bee84000 RDI: 0000000000000000
-  RBP: ffffa14e01d6fcd0 R08: ffff8b89ca7d40f8 R09: 0000000000000000
-  R10: 0000000000000000 R11: 00000000006422f7 R12: 0000000000000000
-  R13: ffff8b89d9617000 R14: ffff8b89bee84000 R15: ffffa14e01d6fdb8
-  FS:  0000000000000000(0000) GS:ffff8b8a1f1c0000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007f93b1fc175b CR3: 000000016100a000 CR4: 0000000000340ea0
-  Call Trace:
-    shrink_node+0x1e5/0x6c0
-    balance_pgdat+0x32d/0x5f0
-    kswapd+0x1d7/0x3d0
-    kthread+0x11c/0x160
-    ret_from_fork+0x1f/0x30
+As an example, when we try to set multiprobe kprobe events in
+bootconfig like this:
 
-This happens when parent_usage == siblings_protected.
+ftrace.event.kprobes.vfsevents {
+        probes = "vfs_read $arg1 $arg2,,
+                 !error! not reported;?", // leads to error
+                 "vfs_write $arg1 $arg2"
+}
 
-We check that usage is bigger than protected, which should imply
-parent_usage being bigger than siblings_protected.  However, we don't
-read (or even update) these values atomically, and they can be out of
-sync as the memory state changes under us.  A bit of fluctuation around
-the target protection isn't a big deal, but we need to handle the div0
-case.
+This will not work as expected. After
+commit da0f1f4167e3af69e ("tracing/boottime: Fix kprobe event API usage"),
+the function trace_boot_add_kprobe_event will not produce any error
+message when adding a probe fails at kprobe_event_gen_cmd_start.
+Furthermore, we continue to add probes when kprobe_event_gen_cmd_end fails
+(and kprobe_event_gen_cmd_start did not fail). In this case the function
+even returns successfully when the last call to kprobe_event_gen_cmd_end
+is successful.
 
-Check the parent state explicitly to make sure we have a reasonable
-positive value for the divisor.
+The behaviour of reporting and aborting after failures is not
+consistent.
 
-Link: http://lkml.kernel.org/r/20200615140658.601684-1-hannes@cmpxchg.org
-Fixes: 8a931f801340 ("mm: memcontrol: recursive memory.low protection")
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-Reported-by: Tejun Heo <tj@kernel.org>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Acked-by: Chris Down <chris@chrisdown.name>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+The function trace_boot_add_kprobe_event now reports each failure and
+stops adding probes immediately.
+
+Link: https://lkml.kernel.org/r/20200618163301.25854-1-sascha.ortmann@stud.uni-hannover.de
+
+Cc: stable@vger.kernel.org
+Cc: linux-kernel@i4.cs.fau.de
+Co-developed-by: Maximilian Werner <maximilian.werner96@gmail.com>
+Fixes: da0f1f4167e3 ("tracing/boottime: Fix kprobe event API usage")
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Maximilian Werner <maximilian.werner96@gmail.com>
+Signed-off-by: Sascha Ortmann <sascha.ortmann@stud.uni-hannover.de>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/memcontrol.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ kernel/trace/trace_boot.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index a3b97f1039665..1b05e25d8aef2 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6349,11 +6349,16 @@ static unsigned long effective_protection(unsigned long usage,
- 	 * We're using unprotected memory for the weight so that if
- 	 * some cgroups DO claim explicit protection, we don't protect
- 	 * the same bytes twice.
-+	 *
-+	 * Check both usage and parent_usage against the respective
-+	 * protected values. One should imply the other, but they
-+	 * aren't read atomically - make sure the division is sane.
- 	 */
- 	if (!(cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_RECURSIVE_PROT))
- 		return ep;
--
--	if (parent_effective > siblings_protected && usage > protected) {
-+	if (parent_effective > siblings_protected &&
-+	    parent_usage > siblings_protected &&
-+	    usage > protected) {
- 		unsigned long unclaimed;
+diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
+index 9de29bb45a27f..fdc5abc00bf84 100644
+--- a/kernel/trace/trace_boot.c
++++ b/kernel/trace/trace_boot.c
+@@ -101,12 +101,16 @@ trace_boot_add_kprobe_event(struct xbc_node *node, const char *event)
+ 		kprobe_event_cmd_init(&cmd, buf, MAX_BUF_LEN);
  
- 		unclaimed = parent_effective - siblings_protected;
+ 		ret = kprobe_event_gen_cmd_start(&cmd, event, val);
+-		if (ret)
++		if (ret) {
++			pr_err("Failed to generate probe: %s\n", buf);
+ 			break;
++		}
+ 
+ 		ret = kprobe_event_gen_cmd_end(&cmd);
+-		if (ret)
++		if (ret) {
+ 			pr_err("Failed to add probe: %s\n", buf);
++			break;
++		}
+ 	}
+ 
+ 	return ret;
 -- 
 2.25.1
 
