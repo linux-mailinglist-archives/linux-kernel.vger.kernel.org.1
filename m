@@ -2,107 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1F920E928
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 01:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B3820E89D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 01:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729295AbgF2XOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 19:14:14 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:55864 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726180AbgF2XOM (ORCPT
+        id S1730148AbgF2WNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 18:13:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725937AbgF2WNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 19:14:12 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05TCqx0C108046;
-        Mon, 29 Jun 2020 07:52:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1593435179;
-        bh=LxZK6XItt8eRN8M36E8UH3WGeBppveLJV6p+zmugmTI=;
-        h=From:To:CC:Subject:Date;
-        b=ciW8v2d9+KONMCI11Nvt2pemy2FVyX1TioT/topmoboAD+JEFreQeaSFDFiJHH00V
-         Gw43BL5TtfflHc7I9JwE5SV4Y6UKpFl6RWI4v/askkCrF2Pbij/LMoQf/35+YGVDeE
-         rWLwKvUrKyVJQB4qps0HHlmopiab4pCq+1aoCSfg=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05TCqxJl014789
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 29 Jun 2020 07:52:59 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 29
- Jun 2020 07:52:59 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 29 Jun 2020 07:52:58 -0500
-Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05TCqugv015456;
-        Mon, 29 Jun 2020 07:52:56 -0500
-From:   Roger Quadros <rogerq@ti.com>
-To:     <t-kristo@ti.com>
-CC:     <robh@kernel.org>, <kishon@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v4 0/6] arm64: ti: k3-j721e: Add SERDES PHY and USB3.0 support
-Date:   Mon, 29 Jun 2020 15:52:48 +0300
-Message-ID: <20200629125254.28754-1-rogerq@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 29 Jun 2020 18:13:38 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBED4C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 15:13:37 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id b15so14352698edy.7
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 15:13:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=K4P8LKVTe5uXiv5CF12dyUP3GsCS0f55L5RS9bYmy6s=;
+        b=TYDM21jlaEWrczTgpptgS/N7rK1Bd/hFjHiVqFg8CH/odj/0JHq/SWjjosVXKTar0z
+         JhK0lqHlowbBubO5YdLsUIeYZqoAIAx41jaVKt4jSZpb9qpKbMBklKkP+qPBJVhuzJ/8
+         tvmvypxaw478c7pUQG3gCWp0B00HOvTU6J95+KtSNLm6Q/LEHfvPMfe+VpX9RiSXZYAb
+         +BpANty5cTk/d/KSm1hi4dJ4MQ/01iP79D9O3qM3TdiboMmxEhtFQkndMeJiyPaI6TGC
+         w1OmACGfeq4MdZD1B3EC1+N0XkJeGk3RNigxpW5ThA5OGMicYBnEvh9GttgQI6kck035
+         ZZYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=K4P8LKVTe5uXiv5CF12dyUP3GsCS0f55L5RS9bYmy6s=;
+        b=ITTMg6dc7UTdj0wj0eV6ym5PxpMoQ6v4CQFchXcxurO+CYtl7GOxESF17NUg2trc7K
+         j20PEH5m625KAuw+NdNCBOmARqjZRuGrjH2KtKZ1pXJwfiDOjfx14iSqblYvFmxJ3rFq
+         4xa8HfjYxmSHDYbUoFuRsZpH8YPMNipzXFsY4H3xvoThafO48M9sHPEInxxtCqswnEm6
+         PWdwlC8wMILk9RpJqsdTXOjRfMfUp6967XilJPRQU3MpzVe55dCCfPtpqflH+hnPwa6Q
+         yg6kwhYZhSvZLuErqDzw0Yb3sFoWVOwCuXUgJTAC+yeOXiCeRBs/V3HjNlB+q+TqG8Dl
+         VN/g==
+X-Gm-Message-State: AOAM533H6yIOA28IZyEy4X02jqO1D32nD4JM8CiKrMVENYJG3sqzSp2I
+        Ef/idcXdhXvCJeHD6V5161vTED1dOhdTx5ewrVniAg==
+X-Google-Smtp-Source: ABdhPJxE92Vl3dMU6YdSUcgNvBLlsmv8x89spCVSrKlAXXuf4yBVYS/6NJ5lEkK2x5KqYdKSrSEwowTp1Kf9Tzq/l6Q=
+X-Received: by 2002:aa7:c24d:: with SMTP id y13mr20776220edo.123.1593468816606;
+ Mon, 29 Jun 2020 15:13:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <CAPcyv4gMQsBSQ-kXM6H_zz96ZTJ5F0XnDfq6_mZTn4t9JwmEpA@mail.gmail.com>
+ <4D73CD59-BFD5-401A-A001-41F7BF5641BA@redhat.com> <CAPcyv4hnsUoavnzX8q5VReiLXrOsOYW0Ef5GDKxQtS+6pQLy4A@mail.gmail.com>
+ <20200629083411.GA38188@L-31X9LVDL-1304.local>
+In-Reply-To: <20200629083411.GA38188@L-31X9LVDL-1304.local>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 29 Jun 2020 15:13:25 -0700
+Message-ID: <CAPcyv4gK2PL5YNLkeQjSCLrNZ62P1U_HjuBSNpkEvuHMcyeGOQ@mail.gmail.com>
+Subject: Re: [PATCH] mm/spase: never partially remove memmap for early section
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Linux MM <linux-mm@kvack.org>, Baoquan He <bhe@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tero,
+On Mon, Jun 29, 2020 at 1:34 AM Wei Yang
+<richard.weiyang@linux.alibaba.com> wrote:
+>
+> On Thu, Jun 25, 2020 at 12:46:43PM -0700, Dan Williams wrote:
+> >On Wed, Jun 24, 2020 at 10:53 PM David Hildenbrand <david@redhat.com> wr=
+ote:
+> >>
+> >>
+> >>
+> >> > Am 25.06.2020 um 01:47 schrieb Dan Williams <dan.j.williams@intel.co=
+m>:
+> >> >
+> >> > =EF=BB=BFOn Wed, Jun 24, 2020 at 3:44 PM Wei Yang
+> >> > <richard.weiyang@linux.alibaba.com> wrote:
+> >> > [..]
+> >> >>> So, you are right that there is a mismatch here, but I think the
+> >> >>> comprehensive fix is to allow early sections to be partially
+> >> >>> depopulated/repopulated rather than have section_activate() and
+> >> >>> section_deacticate() special case early sections. The special casi=
+ng
+> >> >>> is problematic in retrospect as section_deactivate() can't be
+> >> >>> maintained without understand special rules in section_activate().
+> >> >>
+> >> >> Hmm... This means we need to adjust pfn_valid() too, which always r=
+eturn true
+> >> >> for early sections.
+> >> >
+> >> > Right, rather than carry workarounds in 3 locations, and the bug tha=
+t
+> >> > has resulted from then getting out of sync, just teach early section
+> >> > mapping to allow for the subsection populate/depopulate.
+> >> >
+> >>
+> >> I prefer the easy fix first - IOW what we Here here. Especially, pfn_t=
+o_online_page() will need changes as well.
+> >
+> >Agree, yes, let's do the simple fix first for 5.8 and the special-case
+> >elimination work later.
+>
+> Dan,
+>
+> A quick test shows this is not a simple task.
 
-This series adds SERDES PHY support and Type-C USB Super-Speed support
-to the J721E EVM.
+Thanks for taking a look...
 
-Please queue this for -next. Thanks.
+> First, early sections don't set subsection bitmap, which is necessary for=
+ the
+> hot-add/remove.
+>
+> To properly set subsection bitmap, we need to know how many subsections i=
+n
+> early section. While current code doesn't has a alignment requirement for
+> last early section. We mark the whole last early section as present.
 
-cheers,
--roger
+I was thinking that the subsection map does not need to be accurate on
+initial setup, it only needs to be accurate after the first removal.
+However, that would result in new special casing that somewhat defeats
+the purpose. The hardest part is potentially breaking up a PMD mapping
+of the page array into a series of PTE mappings without disturbing
+in-flight pfn_to_page() users.
 
-Changelog:
-v4:
-- Removed redundant patch
-- used compaible string for yaml filename
-- typo fix s/mdf/mfd in patch subject
-- added simple-mfd, address-cells, size-cells and ranges
+> I don't find a way to enable this.
 
-v3:
-- Add new DT schema for J721E System controller.
-- Re-order system controller's compatible string i.e. most compatible to least.
-
-v2:
-- Addressed Rob's comments.
-- Changed type-C debounce delay from 300ms to 700ms as 300ms is not
-sufficient on EVM.
-
-
-Kishon Vijay Abraham I (2):
-  arm64: dts: ti: k3-j721e-main: Add WIZ and SERDES PHY nodes
-  arm64: dts: ti: k3-j721e-main: Add system controller node and SERDES
-    lane mux
-
-Roger Quadros (4):
-  dt-bindings: mfd: ti,j721e-system-controller.yaml: Add J721e system
-    controller
-  arm64: dts: ti: k3-j721e-main.dtsi: Add USB to SERDES MUX
-  arm64: dts: ti: k3-j721e: Enable Super-Speed support for USB0
-  arm64: dts: k3-j721e-proc-board: Add wait time for sampling Type-C DIR
-    line
-
- .../mfd/ti,j721e-system-controller.yaml       |  74 +++++
- .../dts/ti/k3-j721e-common-proc-board.dts     |  33 ++-
- arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 275 ++++++++++++++++++
- include/dt-bindings/mux/mux-j721e-wiz.h       |  53 ++++
- 4 files changed, 433 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
- create mode 100644 include/dt-bindings/mux/mux-j721e-wiz.h
-
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
+While I don't like that this bug crept into the mismatched special
+casing of early sections, I'm now coming around to the same opinion.
+I.e. that making the memmap for early sections permanent is a simpler
+mechanism to maintain.
