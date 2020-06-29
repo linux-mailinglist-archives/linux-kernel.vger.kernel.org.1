@@ -2,190 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B903320D60B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9825B20D8F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731958AbgF2TRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:17:05 -0400
-Received: from mga01.intel.com ([192.55.52.88]:63722 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731875AbgF2TQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:16:54 -0400
-IronPort-SDR: 1g8gEhSaaWiUI1v1Uj2zOLNMhhc3kPsTv3XBqhH2vfek7peBzKv0XyXfL6s2+Sg4Gg8HcfV24m
- Ve8VWme8/MnA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="164006926"
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="164006926"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 08:58:33 -0700
-IronPort-SDR: sRLBBEXcVtjT9ztSBkn97HUnJU4v7w2EpoAjB7RkdorPP1Dv7J6ov4LWKt+waJNKQWCdtFzuhr
- UWEhP3mubGKg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="480838700"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga005.fm.intel.com with ESMTP; 29 Jun 2020 08:58:33 -0700
-Date:   Mon, 29 Jun 2020 08:58:33 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     =?utf-8?B?5aec6L+O?= <jiangying8582@126.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: fix direct I/O read error
-Message-ID: <20200629155832.GE2454695@iweiny-DESK2.sc.intel.com>
-References: <7925c422.4205.172f9ae864d.Coremail.jiangying8582@126.com>
+        id S2388022AbgF2TnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387992AbgF2Tmo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:42:44 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7F3C0307B6;
+        Mon, 29 Jun 2020 09:02:51 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f09280085fdc63970f65a73.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:2800:85fd:c639:70f6:5a73])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 61A8E1EC01A9;
+        Mon, 29 Jun 2020 18:02:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1593446569;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=2L1vbdXs6967q5MXhDQz9AYQuCk2nlJpbVP3fi23e9k=;
+        b=q3Vmk0FhoNVFWMh5+mBQDvLiLh3GQaDdq9zlzmE986sR91a5GEjRxfhBB4Wg7VoZL+7KWA
+        mNTp8vkKYfVQ1qTyePc6HJ6DoocVKr65s6JZBEfA0Xh4/t5mh34IFJsCgyEJsQ7h1KN0PW
+        sh1YVBu/JYjlt5uU9fhchMqyy8ICZmw=
+Date:   Mon, 29 Jun 2020 18:02:42 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        sean.j.christopherson@intel.com, tglx@linutronix.de,
+        yaozhangx@google.com
+Subject: Re: [PATCH v33 12/21] x86/sgx: Allow a limited use of
+ ATTRIBUTE.PROVISIONKEY for attestation
+Message-ID: <20200629160242.GB32176@zn.tnic>
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+ <20200617220844.57423-13-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7925c422.4205.172f9ae864d.Coremail.jiangying8582@126.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200617220844.57423-13-jarkko.sakkinen@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 28, 2020 at 02:47:43PM +0800, 姜迎 wrote:
-> From: jiangying8582 <jiangying8582@126.com>
-> Date: Wed, 24 Jun 2020 19:02:34 +0800
-> Subject: [PATCH] ext4: fix direct I/O read error
-> 
-> This patch is used to fix ext4 direct I/O read error when
-> the read size is not alignment with block size. Compare the
-> size between read offset with file size, if read offset is
-> greater than file size, then return 0.
-> 
-> Then, I will use a test to explain the error.
-> (1) Make the file that is not alignment wiht block size:
->         $dd if=/dev/zero of=./test.jar bs=1000 count=3
-> 
-> (2) I wrote a test script named "direct_io_read_file.c" s following:
-> 
->         #include <stdio.h>
->         #include <stdlib.h>
->         #include <unistd.h>
->         #include <sys/file.h>
->         #include <sys/types.h>
->         #include <sys/stat.h>
->         #include <string.h>
->         #define BUF_SIZE 1024
-> 
->         int main()
->         {
->                 int fd;
->                 int ret;
-> 
->                 unsigned char *buf;
->                 ret = posix_memalign((void **)&buf, 512, BUF_SIZE);
->                 if (ret) {
->                         perror("posix_memalign failed");
->                         exit(1);
->                 }
->                 fd = open("./test.jar", O_RDONLY | O_DIRECT, 0755);
->                 if (fd < 0){
->                         perror("open ./test.jar failed");
->                         exit(1);
->                 }
-> 
->                 do {
->                         ret = read(fd, buf, BUF_SIZE);
->                         printf("ret=%d\n",ret);
->                         if (ret < 0) {
->                                 perror("write test.jar failed");
->                         }
-> 
->                 } while (ret > 0);
-> 
->                 free(buf);
->                 close(fd);
->         }
-> 
-> (3) Compiling the script:
->         $gcc direct_io_read_file.c -D_GNU_SOURCE
-> 
-> (4) Exec the script:
->         $./a.out
-> 
->     The result is as following:
->         ret=1024
->         ret=1024
->         ret=952
->         ret=-1
->         write rts-segmenter-0.3.7.2.jar failed: Invalid argument
-> 
-> I have tested this script on XFS filesystem, XFS does not have
-> this problem, because XFS use iomap_dio_rw() to do direct I/O
-> read. And the comparing between read offset and file size is done
-> is iomap_dio_rw(), the code is as following:
->         if (pos < size) {
->                 retval = filemap_write_and_wait_range(mapping, pos,
->                                         pos + iov_length(iov, nr_segs) - 1);
->                 if (!retval) {
->                         retval = mapping->a_ops->direct_IO(READ, iocb,
->                                                 iov, pos, nr_segs);
->                 }
->                 ...
->         }
-> Only when "pos < size", direct I/O can be done, or 0 will be return.
-> 
-> I have tested my fix patch, it is up to the mustard of EINVAL in
-> man2(read) as following:
->         #include <unistd.h>
->         ssize_t read(int fd, void *buf, size_t count);
-> 
->         EINVAL
->                 fd is attached to an object which is unsuitable for reading;
->                 or the file was opened with the O_DIRECT flag, and either the
->                 address specified in buf, the value specified in count, or the
->                 current file offset is not suitably aligned.
-> So I think this patch can be applied to fix ext4 direct I/O problem.
-> 
-> Why this problem can happen? I think
-> commit <9fe55eea7e4b> ("Fix race when checking i_size on direct i/o read")
-> caused.
+On Thu, Jun 18, 2020 at 01:08:34AM +0300, Jarkko Sakkinen wrote:
+> Provisioning Certification Enclave (PCE), the root of trust for other
+> enclaves, generates a signing key from a fused key called Provisioning
+> Certification Key. PCE can then use this key to certify an attestation key
+> of a QE, e.g. we get the chain of trust down to the hardware if the Intel
 
-Looks like you need a 'Fixes' tag added.
+What's a QE?
 
-> 
-> However Ext4 introduces direct I/O read using iomap infrastructure
-> on kernel 5.5, the patch is commit <b1b4705d54ab>
-> ("ext4: introduce direct I/O read using iomap infrastructure"),
-> then Ext4 will be the same as XFS, they all use iomap_dio_rw() to do direct
-> I/O read. So this problem does not exist on kernel 5.5 for Ext4.
-> 
-> From above description, we can see this problem exists on all the kernel
-> versions between kernel 3.14 and kernel 5.4. Please apply this patch
-> on these kernel versions, or please use the method on kernel 5.5 to fix
-> this problem. Thanks.
+I don't see this acronym resolved anywhere in the whole patchset.
 
-And looks like you need this marked stable as well.
+> signed PCE is used.
+> 
+> To use the needed keys, ATTRIBUTE.PROVISIONKEY is required but should be
+> only allowed for those who actually need it so that only the trusted
+> parties can certify QE's.
+> 
+> Obviously the attestation service should know the public key of the used
+> PCE and that way detect illegit attestation, but whitelisting the legit
+> users still adds an additional layer of defence.
+> 
+> Add new device file called /dev/sgx/provision. The sole purpose of this
+> file is to provide file descriptors that act as privilege tokens to allow
+> to build enclaves with ATTRIBUTE.PROVISIONKEY set. A new ioctl called
+> SGX_IOC_ENCLAVE_SET_ATTRIBUTE is used to assign this token to an enclave.
 
-Ira
+So I'm sure I'm missing something here: what controls which
+enclave can open /dev/sgx/provision and thus pass the FD to
+SGX_IOC_ENCLAVE_SET_ATTRIBUTE?
 
-> 
-> Signed-off-by: jiangying8582 <jiangying8582@126.com>
-> ---
->  fs/ext4/inode.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 516faa2..d514ff5 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3821,6 +3821,12 @@ static ssize_t ext4_direct_IO_read(struct kiocb *iocb, struct iov_iter *iter)
->         struct inode *inode = mapping->host;
->         size_t count = iov_iter_count(iter);
->         ssize_t ret;
-> +       loff_t offset = iocb->ki_pos;
-> +       loff_t size;
-> +
-> +       size = i_size_read(inode);
-> +       if (offset >= size)
-> +               return 0;
-> 
->         /*
->          * Shared inode_lock is enough for us - it protects against concurrent
-> -- 
-> 1.8.3.1
-> 
+And in general, how does that whole flow look like: what calls
+SGX_IOC_ENCLAVE_SET_ATTRIBUTE when?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
