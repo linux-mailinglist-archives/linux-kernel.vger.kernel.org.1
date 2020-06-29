@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A007020E68A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB4920E6A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404284AbgF2VsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:48:21 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:38672 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404255AbgF2VsJ (ORCPT
+        id S2404371AbgF2VtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:49:22 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:51886 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404340AbgF2VtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:48:09 -0400
-Received: by mail-io1-f68.google.com with SMTP id f6so3231010ioj.5;
-        Mon, 29 Jun 2020 14:48:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wGWmyGXfNATJETlByWIEZ13t4eNzYwD3JHETLNfxb54=;
-        b=LSTQHAqoIoV/qaZ7TayTtaGHtNbbU7i50/njuRYKApJYi5gEpkVGwdXkB8vXP2xdsk
-         ysyi5ajs/I2ER9KBGj8+FdLPeUk8NJJgtiU2kYrYe8LvmeJZVEegydgAFgSmUidGI5WE
-         XRSdYwZpFaVKH9pNYAuiBhl4LeC0cjIdybvKY0LCYUMqPuHFiCci7zW8rPSRUHfyHuvy
-         H/wxaPx+sjuP4DW/i4PbZTOq8/BgZvYCxkrQq9+BHaNs1n2gpQcaogkhoQvBW95ajTAK
-         lcIRPfmdOKKvOR8GTecazz47RjfNvCGq1WXPpHwSQ4GAS/yciphyChc6sEuD6dZ1XKTl
-         K5qQ==
-X-Gm-Message-State: AOAM531m6d+RoibLzHPJ5tXG+6acAXaykD8ExqP0U9wwrSS/kSIyu9wP
-        oLPMdakqjKQrvQRXi7jXsA==
-X-Google-Smtp-Source: ABdhPJwEfRn6dYm/O5ro6RnMRhK1qWiklysncseXKlDL5Wp1cyeVC6ap1ygyNz6c3jdV70Ag3tnIxg==
-X-Received: by 2002:a6b:1496:: with SMTP id 144mr18920446iou.6.1593467288379;
-        Mon, 29 Jun 2020 14:48:08 -0700 (PDT)
-Received: from xps15 ([64.188.179.255])
-        by smtp.gmail.com with ESMTPSA id k3sm601299ils.8.2020.06.29.14.48.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 14:48:07 -0700 (PDT)
-Received: (nullmailer pid 2985144 invoked by uid 1000);
-        Mon, 29 Jun 2020 21:48:05 -0000
-Date:   Mon, 29 Jun 2020 15:48:05 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     mturquette@baylibre.com, ulf.hansson@linaro.org, sboyd@kernel.org,
-        aisheng.dong@nxp.com, linux-clk@vger.kernel.org,
-        festevam@gmail.com, s.hauer@pengutronix.de, robh+dt@kernel.org,
-        s.trumtrar@pengutronix.de, devicetree@vger.kernel.org,
-        shawnguo@kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, Linux-imx@nxp.com
-Subject: Re: [PATCH V4 1/3] dt-bindings: mmc: Convert imx esdhc to json-schema
-Message-ID: <20200629214805.GA2983242@bogus>
-References: <1592450578-30140-1-git-send-email-Anson.Huang@nxp.com>
+        Mon, 29 Jun 2020 17:49:05 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id D9FFE1C0C22; Mon, 29 Jun 2020 23:49:00 +0200 (CEST)
+Date:   Mon, 29 Jun 2020 23:49:00 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Merlijn Wajer <merlijn@wizzup.org>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-omap@vger.kernel.org, tony@atomide.com, sre@kernel.org,
+        nekit1000@gmail.com, mpartap@gmx.net, martin_rysavy@centrum.cz,
+        linux-pm@vger.kernel.org
+Subject: Re: [RFC] Limiting charge current on Droid 4 (and N900)
+Message-ID: <20200629214900.GB26513@amd>
+References: <20200615140557.GA22781@duo.ucw.cz>
+ <23f924be-a0ee-8efa-d92c-da83700261da@wizzup.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ZfOjI3PrQbgiZnxM"
 Content-Disposition: inline
-In-Reply-To: <1592450578-30140-1-git-send-email-Anson.Huang@nxp.com>
+In-Reply-To: <23f924be-a0ee-8efa-d92c-da83700261da@wizzup.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Jun 2020 11:22:56 +0800, Anson Huang wrote:
-> Convert the i.MX ESDHC binding to DT schema format using json-schema
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
-> No change.
-> ---
->  .../devicetree/bindings/mmc/fsl-imx-esdhc.txt      |  67 -----------
->  .../devicetree/bindings/mmc/fsl-imx-esdhc.yaml     | 124 +++++++++++++++++++++
->  2 files changed, 124 insertions(+), 67 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.txt
->  create mode 100644 Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
-> 
 
+--ZfOjI3PrQbgiZnxM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Hi!
 
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.example.dt.yaml: mmc@5b010000: compatible: Additional items are not allowed ('fsl,imx7d-usdhc' was unexpected)
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.example.dt.yaml: mmc@5b010000: compatible: ['fsl,imx8qxp-usdhc', 'fsl,imx7d-usdhc'] is too long
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx35-clock.example.dt.yaml: esdhc@53fb4000: $nodename:0: 'esdhc@53fb4000' does not match '^mmc(@.*)?$'
+> > Droid 4 has same problem as N900: it is often neccessary to manually
+> > tweak current draw from USB, for example when using thin charging cable.
+> >=20
+> > N900 creates unique attribute by hand, but I believe
+> > POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT looks suitable. (Should N900 be
+> > converted?)
+> >=20
+> > Comments? Would the patch be acceptable after fixing whitespace?
+>=20
+> I'm not very knowledgeable on batteries - but the patch looks good to me.
+>=20
+> Could you perhaps explain what exactly this fixes? I've seen some
+> interesting behaviour when plugging a Droid 4 into a PC (or wall
+> charger, really): the led blinks for a few seconds until it
+> stabilises.
 
+With this patch, we'll limit charging to 0.5A by default, unless
+overrident by user. So you should not see green LED blinking, unless
+you manually select bigger current than charger can handle.
 
-See https://patchwork.ozlabs.org/patch/1311722
+> And then there's the issue where, once the battery is full, it will
+> switch between charging and discharging every few seconds/minutes.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
+This will definitely not help with this one.
 
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
-Please check and re-submit.
+--ZfOjI3PrQbgiZnxM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl76YcwACgkQMOfwapXb+vLX6wCeJphl0Oi4AFWn9kxgBhOq9X31
+wtwAoL3nHC9lc2nGxO6RSI3cXE/ZOYdJ
+=KZon
+-----END PGP SIGNATURE-----
+
+--ZfOjI3PrQbgiZnxM--
