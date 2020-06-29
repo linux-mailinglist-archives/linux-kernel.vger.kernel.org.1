@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D38F20D2D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F5720D2DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgF2Swg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:52:36 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:59788 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726074AbgF2Sw2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:28 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05TIqIXN105777;
-        Mon, 29 Jun 2020 18:52:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=PXr5z4xVxGeYYRpr4zEXjcUv9wnEGSb27BZRmqn2Gno=;
- b=ZA/9y5fLJQNGGFuk2+vWQiwRQMU05GMy94wbpN/cm17Xesb20tmlvtpvq7f5mPM+TQZD
- H1vpiyfwEfIZPjZ7QgcLhQZPkqSp/tXPT/iRo2UuEGaQ+IISCQkL0Hi8poEToACpwehC
- 9RwYqAIYrsfrSCFpmqPei9VyfsmG9vNspKjB11tJuUjeROGx/1716FA+cjzh4CeX+QqG
- fB4eybeQ5OTJQ0/B2GK859djpyl50LrVOoXJLL4yUKF9YHoCYQ8Hf/oI/8K3DMon4zqS
- iNmOmQnMOlCoobfz5xHQbJ3KKCP33x/j1/Pw2L6WQicBnA2zeqADPyaP0IY8HxONPAFE Eg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 31xx1dn18c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 29 Jun 2020 18:52:18 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05TIgd43023540;
-        Mon, 29 Jun 2020 18:50:17 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 31xg113aey-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Jun 2020 18:50:17 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05TIoFEf019806;
-        Mon, 29 Jun 2020 18:50:15 GMT
-Received: from monkey.oracle.com (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 29 Jun 2020 18:50:15 +0000
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>, stable@kernel.org
-Subject: [PATCH] hugetlb: fix pages per hugetlb calculation
-Date:   Mon, 29 Jun 2020 11:50:03 -0700
-Message-Id: <20200629185003.97202-1-mike.kravetz@oracle.com>
-X-Mailer: git-send-email 2.25.4
+        id S1729835AbgF2SxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:53:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729398AbgF2SxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:53:03 -0400
+Received: from localhost (mobile-166-170-222-206.mycingular.net [166.170.222.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2087020656;
+        Mon, 29 Jun 2020 18:53:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593456783;
+        bh=AtlRuJKLlODGcf0YKJZLfj2RAej3mthtdV/MDVcMw4Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=D5mspzYz7Wk9Rrwkob53bTTIf0YdxQK699Y4YNft6y1B9ucikwsOU2AFa1F7eoySC
+         mNJWCyhxn++LR0bUgvkTObNDVZgI+o7heUO+YKg3tK3eBowzAX6keVdy/lB8ceHesF
+         sJkORmtTMG1Iwqvv/lyVwHzWpxVfnibZYEIzMayM=
+Date:   Mon, 29 Jun 2020 13:53:01 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
+        p.zabel@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        bjorn.andersson@linaro.org, leoyang.li@nxp.com, vkoul@kernel.org,
+        geert+renesas@glider.be, olof@lixom.net, treding@nvidia.com,
+        gustavo.pimentel@synopsys.com, amurray@thegoodpenguin.co.uk,
+        vidyas@nvidia.com, xiaowei.bao@nxp.com, jonnyc@amazon.com,
+        hayashi.kunihiko@socionext.com, eswara.kota@linux.intel.com,
+        krzk@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Linux-imx@nxp.com
+Subject: Re: [PATCH V2 3/3] pci: imx: Select RESET_IMX7 by default
+Message-ID: <20200629185301.GA3280149@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9667 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
- mlxlogscore=999 suspectscore=0 bulkscore=0 mlxscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006290117
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9667 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011 adultscore=0
- suspectscore=0 mlxlogscore=999 cotscore=-2147483648 lowpriorityscore=0
- malwarescore=0 phishscore=0 impostorscore=0 mlxscore=0 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006290118
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1593443129-18766-3-git-send-email-Anson.Huang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The routine hpage_nr_pages() was incorrectly used to calculate the
-number of base pages in a hugetlb page.  hpage_nr_pages is designed
-to be called for THP pages and will return HPAGE_PMD_NR for hugetlb
-pages of any size.
+If you post a V3, "git log --oneline
+drivers/pci/controller/dwc/pci-imx6.c" says the subject line could be:
 
-Due to the context in which hpage_nr_pages was called, it is unlikely
-to produce a user visible error.  The routine with the incorrect call
-is only exercised in the case of hugetlb memory error or migration.
-In addition, this would need to be on an architecture which supports
-huge page sizes less than PMD_SIZE.  And, the vma containing the huge
-page would also need to smaller than PMD_SIZE.
+  PCI: imx6: Select CONFIG_RESET_IMX7
 
-Fixes: c0d0381ade79 ("hugetlbfs: use i_mmap_rwsem for more pmd sharing synchronization")
-Cc: stable@kernel.org
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
----
- mm/hugetlb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If you don't need a V3 for any other reason, whoever applies this
+series might adjust that for you.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 57ece74e3aae..fab4485b9e52 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1593,7 +1593,7 @@ static struct address_space *_get_hugetlb_page_mapping(struct page *hpage)
- 
- 	/* Use first found vma */
- 	pgoff_start = page_to_pgoff(hpage);
--	pgoff_end = pgoff_start + hpage_nr_pages(hpage) - 1;
-+	pgoff_end = pgoff_start + pages_per_huge_page(page_hstate(hpage)) - 1;
- 	anon_vma_interval_tree_foreach(avc, &anon_vma->rb_root,
- 					pgoff_start, pgoff_end) {
- 		struct vm_area_struct *vma = avc->vma;
--- 
-2.25.4
-
+On Mon, Jun 29, 2020 at 11:05:29PM +0800, Anson Huang wrote:
+> i.MX7 reset driver now supports module build and it is no longer
+> built in by default, so i.MX PCI driver needs to select it explicitly
+> due to it is NOT supporting loadable module currently.
+> 
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> ---
+> New patch.
+> ---
+>  drivers/pci/controller/dwc/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
+> index 044a376..bcf63ce 100644
+> --- a/drivers/pci/controller/dwc/Kconfig
+> +++ b/drivers/pci/controller/dwc/Kconfig
+> @@ -90,6 +90,7 @@ config PCI_EXYNOS
+>  
+>  config PCI_IMX6
+>  	bool "Freescale i.MX6/7/8 PCIe controller"
+> +	select RESET_IMX7
+>  	depends on ARCH_MXC || COMPILE_TEST
+>  	depends on PCI_MSI_IRQ_DOMAIN
+>  	select PCIE_DW_HOST
+> -- 
+> 2.7.4
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
