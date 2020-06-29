@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EEE920DC46
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE5220DCAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732121AbgF2UN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:13:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40568 "EHLO mail.kernel.org"
+        id S1732394AbgF2URj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:17:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732801AbgF2TaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:30:19 -0400
+        id S1732649AbgF2TZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:25:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 281DB252EA;
-        Mon, 29 Jun 2020 15:38:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 488E42536B;
+        Mon, 29 Jun 2020 15:40:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593445118;
-        bh=Evl3tL7eAk0POPj/StZxd50TjrGF9jUpJPmzfxon0ns=;
+        s=default; t=1593445232;
+        bh=HSjAp+dSBzj/dulTRv2yCBxROZb0MDPE6fkIYOhEF0M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cl6OEGU9P97o2bMP84YnXo+W0ii3W6/vsAh2ow3TJHqgFAtAhHG5wbDxBMm2Ws5RF
-         0isivDPix3DdpYvDA90vkrT5x/8/htoJBAcjPiUhMfBuCcOxGvwWy0LqN/wOdh8D0p
-         yFUvJKyPEb1A5zWTN9rioj7EWIA5VDcTdZHecUAc=
+        b=uFsup52jFCMwSQjtl5cri6/nrhOteZM8ljAT6dFuvP5XTa/KyhrHUCJYOSVS5PORH
+         FrkJjI71/ypbDxYRX27b+SCTmkLH299hFQsiZxzrqtHQ8TAi/IG0QWyGB6puF8Thqw
+         Kbyf/4nROwF5FtAseHtleL+JeaSHDJCPcDBIX4i4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
-        kbuild test robot <lkp@intel.com>,
-        Marek Vasut <marex@denx.de>,
-        Minas Harutyunyan <hminas@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.14 24/78] usb: dwc2: Postponed gadget registration to the udc class driver
-Date:   Mon, 29 Jun 2020 11:37:12 -0400
-Message-Id: <20200629153806.2494953-25-sashal@kernel.org>
+Cc:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Daniel Wagner <dwagner@suse.de>,
+        James Smart <james.smart@broadcom.com>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 017/191] scsi: lpfc: Fix lpfc_nodelist leak when processing unsolicited event
+Date:   Mon, 29 Jun 2020 11:37:13 -0400
+Message-Id: <20200629154007.2495120-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629153806.2494953-1-sashal@kernel.org>
-References: <20200629153806.2494953-1-sashal@kernel.org>
+In-Reply-To: <20200629154007.2495120-1-sashal@kernel.org>
+References: <20200629154007.2495120-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.186-rc1.gz
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.229-rc1.gz
 X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
+X-KernelTest-Branch: linux-4.9.y
 X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.186-rc1
-X-KernelTest-Deadline: 2020-07-01T15:38+00:00
+X-KernelTest-Version: 4.9.229-rc1
+X-KernelTest-Deadline: 2020-07-01T15:39+00:00
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -51,66 +52,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-commit 207324a321a866401b098cadf19e4a2dd6584622 upstream.
+[ Upstream commit 7217e6e694da3aae6d17db8a7f7460c8d4817ebf ]
 
-During dwc2 driver probe, after gadget registration to the udc class
-driver, if exist any builtin function driver it immediately bound to
-dwc2 and after init host side (dwc2_hcd_init()) stucked in host mode.
-Patch postpone gadget registration after host side initialization done.
+In order to create or activate a new node, lpfc_els_unsol_buffer() invokes
+lpfc_nlp_init() or lpfc_enable_node() or lpfc_nlp_get(), all of them will
+return a reference of the specified lpfc_nodelist object to "ndlp" with
+increased refcnt.
 
-Fixes: 117777b2c3bb9 ("usb: dwc2: Move gadget probe function into platform code")
-Reported-by: kbuild test robot <lkp@intel.com>
-Tested-by: Marek Vasut <marex@denx.de>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Minas Harutyunyan <hminas@synopsys.com>
-Link: https://lore.kernel.org/r/f21cb38fecc72a230b86155d94c7e60c9cb66f58.1591690938.git.hminas@synopsys.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+When lpfc_els_unsol_buffer() returns, local variable "ndlp" becomes
+invalid, so the refcount should be decreased to keep refcount balanced.
+
+The reference counting issue happens in one exception handling path of
+lpfc_els_unsol_buffer(). When "ndlp" in DEV_LOSS, the function forgets to
+decrease the refcnt increased by lpfc_nlp_init() or lpfc_enable_node() or
+lpfc_nlp_get(), causing a refcnt leak.
+
+Fix this issue by calling lpfc_nlp_put() when "ndlp" in DEV_LOSS.
+
+Link: https://lore.kernel.org/r/1590416184-52592-1-git-send-email-xiyuyang19@fudan.edu.cn
+Reviewed-by: Daniel Wagner <dwagner@suse.de>
+Reviewed-by: James Smart <james.smart@broadcom.com>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc2/gadget.c   |  6 ------
- drivers/usb/dwc2/platform.c | 11 +++++++++++
- 2 files changed, 11 insertions(+), 6 deletions(-)
+ drivers/scsi/lpfc/lpfc_els.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/usb/dwc2/gadget.c b/drivers/usb/dwc2/gadget.c
-index aeb6f7c84ea0a..03bc479d04e0d 100644
---- a/drivers/usb/dwc2/gadget.c
-+++ b/drivers/usb/dwc2/gadget.c
-@@ -4723,12 +4723,6 @@ int dwc2_gadget_init(struct dwc2_hsotg *hsotg, int irq)
- 					  epnum, 0);
+diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
+index 4901bf24916b5..09dbf3021bb0b 100644
+--- a/drivers/scsi/lpfc/lpfc_els.c
++++ b/drivers/scsi/lpfc/lpfc_els.c
+@@ -7606,6 +7606,8 @@ lpfc_els_unsol_buffer(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
+ 	spin_lock_irq(shost->host_lock);
+ 	if (ndlp->nlp_flag & NLP_IN_DEV_LOSS) {
+ 		spin_unlock_irq(shost->host_lock);
++		if (newnode)
++			lpfc_nlp_put(ndlp);
+ 		goto dropit;
  	}
- 
--	ret = usb_add_gadget_udc(dev, &hsotg->gadget);
--	if (ret) {
--		dwc2_hsotg_ep_free_request(&hsotg->eps_out[0]->ep,
--					   hsotg->ctrl_req);
--		return ret;
--	}
- 	dwc2_hsotg_dump(hsotg);
- 
- 	return 0;
-diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
-index daf0d37acb37f..c8ac0391e65fc 100644
---- a/drivers/usb/dwc2/platform.c
-+++ b/drivers/usb/dwc2/platform.c
-@@ -452,6 +452,17 @@ static int dwc2_driver_probe(struct platform_device *dev)
- 	if (hsotg->dr_mode == USB_DR_MODE_PERIPHERAL)
- 		dwc2_lowlevel_hw_disable(hsotg);
- 
-+#if IS_ENABLED(CONFIG_USB_DWC2_PERIPHERAL) || \
-+	IS_ENABLED(CONFIG_USB_DWC2_DUAL_ROLE)
-+	/* Postponed adding a new gadget to the udc class driver list */
-+	if (hsotg->gadget_enabled) {
-+		retval = usb_add_gadget_udc(hsotg->dev, &hsotg->gadget);
-+		if (retval) {
-+			dwc2_hsotg_remove(hsotg);
-+			goto error;
-+		}
-+	}
-+#endif /* CONFIG_USB_DWC2_PERIPHERAL || CONFIG_USB_DWC2_DUAL_ROLE */
- 	return 0;
- 
- error:
+ 	spin_unlock_irq(shost->host_lock);
 -- 
 2.25.1
 
