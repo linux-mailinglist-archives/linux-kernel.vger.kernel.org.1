@@ -2,109 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0338F20D6A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EF220DBB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731782AbgF2TW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:22:26 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:45968 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732226AbgF2TVg (ORCPT
+        id S2387726AbgF2UIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:08:46 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16981 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388843AbgF2UIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:21:36 -0400
-Received: from 89-64-84-69.dynamic.chello.pl (89.64.84.69) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id 200f7df7d1df78b0; Mon, 29 Jun 2020 18:34:54 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>
-Cc:     rafael.j.wysocki@intel.com, Len Brown <lenb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Ira Weiny <ira.weiny@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-nvdimm@lists.01.org, Bob Moore <robert.moore@intel.com>
-Subject: [PATCH v4 0/2] ACPI: ACPICA / OSL: Avoid unmapping ACPI memory inside of the AML interpreter
-Date:   Mon, 29 Jun 2020 18:31:02 +0200
-Message-ID: <1666722.UopIai5n7p@kreacher>
-In-Reply-To: <2788992.3K7huLjdjL@kreacher>
-References: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com> <2713141.s8EVnczdoM@kreacher> <2788992.3K7huLjdjL@kreacher>
+        Mon, 29 Jun 2020 16:08:24 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5efa17410007>; Mon, 29 Jun 2020 09:30:57 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 29 Jun 2020 09:32:35 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 29 Jun 2020 09:32:35 -0700
+Received: from [10.25.103.164] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 29 Jun
+ 2020 16:32:27 +0000
+CC:     <spujar@nvidia.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <robh+dt@kernel.org>, <lgirdwood@gmail.com>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <digetx@gmail.com>, <alsa-devel@alsa-project.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
+        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
+        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
+        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
+        <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH v4 11/23] ASoC: simple-card: Loop over all children for
+ 'mclk-fs'
+To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
+ <1593233625-14961-12-git-send-email-spujar@nvidia.com>
+ <875zba1y28.wl-kuninori.morimoto.gx@renesas.com>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <58000bd3-861c-bbc2-75e1-128cf0199a76@nvidia.com>
+Date:   Mon, 29 Jun 2020 22:02:24 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <875zba1y28.wl-kuninori.morimoto.gx@renesas.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1593448257; bh=eCgPnGs+t6mTlUrWspHqn3L6WbSBOIjW+yMMr1FqO98=;
+        h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=E0bgnTS+65jRjYEbGCuLpuR8gnCRlXvUMWJ2XzgjkKSHqUAwlVCdS3CdarJxGka2x
+         rZypFMDFhq/5cquU2SjBDGBdPh2TqT7kW8VSprjIMw8ygVZwG25ubKqG/zx28oIpGp
+         348TCN+unvZvTVBjQOq5FQVNc64tKcaZ6NEWgYtPNLRs9KI+9QASfgOwbEjPNkLVSJ
+         oGIonuFPpJ707Pn1RIsg3J0E6d6y46o1olkiB3HI4dA1r3VED4YwLcUFVsjhcYkGl6
+         rut7emaQHbqsyf7lbuhlsTX1riPozhD/6r8hqdRq8cSZjZEcbt8Svte7nsuTbV8OFl
+         mPk5sQEZYA+hA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
-
-On Friday, June 26, 2020 7:28:27 PM CEST Rafael J. Wysocki wrote:
-> Hi All,
-> 
-> On Monday, June 22, 2020 3:50:42 PM CEST Rafael J. Wysocki wrote:
-> > Hi All,
-> > 
-> > This series is to address the problem with RCU synchronization occurring,
-> > possibly relatively often, inside of acpi_ex_system_memory_space_handler(),
-> > when the namespace and interpreter mutexes are held.
-> > 
-> > Like I said before, I had decided to change the approach used in the previous
-> > iteration of this series and to allow the unmap operations carried out by 
-> > acpi_ex_system_memory_space_handler() to be deferred in the first place,
-> > which is done in patches [1-2/4].
-> 
-> In the meantime I realized that calling syncrhonize_rcu_expedited() under the
-> "tables" mutex within ACPICA is not quite a good idea too and that there is no
-> reason for any users of acpi_os_unmap_memory() in the tree to use the "sync"
-> variant of unmapping.
-> 
-> So, unless I'm missing something, acpi_os_unmap_memory() can be changed to
-> always defer the final unmapping and the only ACPICA change needed to support
-> that is the addition of the acpi_os_release_unused_mappings() call to get rid
-> of the unused mappings when leaving the interpreter (module the extra call in
-> the debug code for consistency).
-> 
-> So patches [1-2/4] have been changed accordingly.
-
-And this still can be improved by using queue_rcu_work() to queue up the unused
-mappings for removal in which case ACPICA need not be modified at all for the
-deferred unmapping to work.
-
-Accordingly, patches [1-2/4] from the v3 (and earlier) are now replaced by one
-patch, the [1/2].
-
-> > However, it turns out that the "fast-path" mapping is still useful on top of
-> > the above to reduce the number of ioremap-iounmap cycles for the same address
-> > range and so it is introduced by patches [3-4/4].
-> 
-> Patches [3-4/4] still do what they did, but they have been simplified a bit
-> after rebasing on top of the new [1-2/4].
-
-Moreover, the ACPICA part of the old patches [3-4/4] can be reworked to always
-preserve memory mappings created by the memory opregion handler without the
-need to take additional references to memory mappings at the OS level, so
-patch [4/4] from the v3 (and earlier) is not needed now.
-
-Again, for details, please refer to the patch changelogs, but I'm kind of
-inclined to make these changes regardless, because they both are clear
-improvements to me.
-
-As before:
-
-> > The series is available from the git branch at
-> > 
-> >  git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
-> >  acpica-osl
-> > 
-> > for easier testing.
-> 
-> Also the series have been tested locally.
-
-Cheers,
-Rafael
 
 
+On 6/29/2020 6:35 AM, Kuninori Morimoto wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> Hi Sameer
+>
+>> CPU/Codec in DPCM DAI links are connected as CPU<->Dummy and Dummy<->Codec.
+>> Though mostly CPU won't use/require 'mclk-fs' property, looping over
+>> 'np' (current child node in a DAI link) can help in cases where multiple
+>> Codecs are defined. This further helps to get rid of 'codec' argument
+>> from simple_dai_link_of_dpcm() function, which gets called for DPCM links.
+>>
+>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+>> ---
+> (snip)
+>> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+>> index 39cdc71..02d6295 100644
+>> --- a/sound/soc/generic/simple-card.c
+>> +++ b/sound/soc/generic/simple-card.c
+>> @@ -107,7 +107,9 @@ static void simple_parse_mclk_fs(struct device_node *top,
+>>        snprintf(prop, sizeof(prop), "%smclk-fs", prefix);
+>>        of_property_read_u32(node,      prop, &props->mclk_fs);
+>>        of_property_read_u32(cpu,       prop, &props->mclk_fs);
+>> -     of_property_read_u32(codec,     prop, &props->mclk_fs);
+>> +
+>> +     if (cpu != codec)
+>> +             of_property_read_u32(codec, prop, &props->mclk_fs);
+> Maybe we want to have "cpu" in simple_dai_link_of_dpcm() side
+> without using magical code in simple_parse_mclk_fs() side ?
+
+Are you suggesting if we should simplify simple_parse_mclk_fs() by 
+either passing 'cpu' or 'codec'?
+>
+> Thank you for your help !!
+>
+> Best regards
+> ---
+> Kuninori Morimoto
 
