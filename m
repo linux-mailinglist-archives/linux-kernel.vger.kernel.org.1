@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08BE20E431
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1140220E3D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730700AbgF2VWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:22:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
+        id S2388467AbgF2VSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729539AbgF2Swm (ORCPT
+        with ESMTP id S1729787AbgF2Swt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:42 -0400
+        Mon, 29 Jun 2020 14:52:49 -0400
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7940C02E2CE
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:54 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f18so8626116wrs.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9047C02E2D0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:56 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id b6so16655456wrs.11
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=eCTcGJHtSmaPBnZUOms/69xtZG01NEK1s+KL4aDek/0=;
-        b=mExcRW14yTqdrE+npdERL83UBRuofRErdA5/zgO3vl9BxrfDKDkoQbWF20CyrH2IUS
-         8UGyTrSsNjnnKbfg/JmvpnQmPPE+9II9m4mQ1g3abKPLo/CHKonJEB9B2KyTk40TL7zZ
-         wJelDv5eKmyMI8SV1t20g5eXswq7iBjDP7X11tsetirsv9dUe16SDowmC7QpfiHTMG+x
-         XvDbt0wa3fLD8MJ8wtrAGo1AQyLuSl7AIsI5m7XxErYSsKc6UKyp0O771NkG9DgFhEm6
-         NN/AlfVVuxiSc3efXqK8IquWgOi6l6dGg0dGxvvifTk7+/navEyuFGkz6eRr2WYZVKZy
-         IMow==
+        bh=1S50qko1q+z74H3H0J6W5HtpHbtK1gQwgwBXn9Rlvzc=;
+        b=yR7EVA/JfMBOI9U5dnD0dsDVA/IHZqoG8OX+LKynRnDtfmxafybx4Z1ZVUsa0221gw
+         xWauzNcM5+cKRdOuF6YTMKPahxAdgN3yCtQ2Uowy2mLLdVxBF0BHoY3LFCD+i00XyFrc
+         PkkbwMlKAoH7XAYVQW3PZUvDJdSGvHGDQaUTjVJSTqDj48v/pB2GyvTgRn39wWvEtgZ3
+         UfIywRtxHwUjIlNYJ8MwtNNzp+LIKvWmUnesoPvAkV8vDuM3NaVZPWOM4bAVYxOfrwaQ
+         Y8/dgvQKIAtTIPTBVuNfuPVJlfZn65WKu1hoX4o20Zi8VRS2aouROf1cs84TMYqlaoM2
+         95Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=eCTcGJHtSmaPBnZUOms/69xtZG01NEK1s+KL4aDek/0=;
-        b=IWBdMMwAN+gjSGQrrv+xZmZfCFW2KDImMpRZ1EA8zvgVUlBvIm8oQXDcTH6kDLk8WH
-         D+0PHXmjWEBI4q45Z2VAxYD8An+HnnHw4R/kxknyeGh9lEtLMjdqg/3yg1pqWiyEfHbg
-         zWivR/vEGpzmoK5zx+ZR2AQfhosR32bvhZUpcUiEdisnlegG3I8zxBEuFvyByapm2l7E
-         jvEyvuW8hQm8E44DuOyHHzqPGGvPVNCUCQOeAPwJ+LOYjwqTfhA6o426EU+bjMaH6JSr
-         kNQRwxp6GeYcThpEgA60n1chrQ6jWhZT2/r1N6J4dqEzLpcz5IWQcFFetLAmELhWhHQ1
-         qgrQ==
-X-Gm-Message-State: AOAM531OhwK+SClB/+COtbTJHh1w/3v1CRVT5MkbCFqjlTlI2KzuQtpp
-        qBGBXlm/5XmvqeboJRg8XT9f7Q==
-X-Google-Smtp-Source: ABdhPJygUbnUrJAbW4jXvLREPQuFQ/kwh1F2Ffox4kxTw9ORCJFsMC95XOvyQ46XY78Axn7iLPLN1w==
-X-Received: by 2002:a5d:6846:: with SMTP id o6mr17264874wrw.370.1593439493674;
-        Mon, 29 Jun 2020 07:04:53 -0700 (PDT)
+        bh=1S50qko1q+z74H3H0J6W5HtpHbtK1gQwgwBXn9Rlvzc=;
+        b=WQRgwpsEpAsPwg5Y/FTA0fYoLjBhysNMM3aOSe0ds0E1h+ThV4j2ysTLzmdy3swcLP
+         Fq5RgdZzwExHMy355W0ruOF1xf+EwSHUZ+PAjcZLsekHViZwuXd4OUO2hurvYvoUtmnU
+         FW/ST2Fj79YLVATvGpfsjnx4gAmu96WdfJkPJaIfyIY4+Ao1a0/OOS5cKXn4vy/9asSz
+         ssX3X7srNqnYvfvc/e3Lqeui352A/E9UmvK3HhZKOCOZfHlxJb7muGRTFHKM83wPnHLy
+         wqImiOAGkJ4EAp4Y8tJhnE+sPqI66HrpIz9zH23QaC+apAyJDTI99eI8a7HBZl++KfMn
+         lTmg==
+X-Gm-Message-State: AOAM531zO/1F0yVwJoOV4yzmyPcstIyotXLRyapnvpwja6i1deHE+6XS
+        JKOoC6zK/LIebMzxIsXcaSWEqQ==
+X-Google-Smtp-Source: ABdhPJw7u+pR3PUUjovhGP29vg+5MVuG3YO6weDsgP3XkESH2uz5kK5iz1fARHNMR2qAFPReAFxLOQ==
+X-Received: by 2002:adf:e901:: with SMTP id f1mr17201511wrm.80.1593439495667;
+        Mon, 29 Jun 2020 07:04:55 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.04.52
+        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.04.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 07:04:53 -0700 (PDT)
+        Mon, 29 Jun 2020 07:04:55 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
         Oded Gabbay <oded.gabbay@gmail.com>,
         Tomer Tayar <ttayar@habana.ai>
-Subject: [PATCH 06/20] misc: habanalabs: goya: Omit pointless check ensuring addr is >=0
-Date:   Mon, 29 Jun 2020 15:04:28 +0100
-Message-Id: <20200629140442.1043957-7-lee.jones@linaro.org>
+Subject: [PATCH 08/20] misc: habanalabs: goya: goya_coresight: Remove set but unused variable 'val'
+Date:   Mon, 29 Jun 2020 15:04:30 +0100
+Message-Id: <20200629140442.1043957-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629140442.1043957-1-lee.jones@linaro.org>
 References: <20200629140442.1043957-1-lee.jones@linaro.org>
@@ -68,28 +68,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Seeing as 'addr' is unsigned, it would be impossible for the assigned
-value to be anything other than zero or positive.
+No attempt to check the return value of RREG32() has been made
+since the call was introduced a year ago.
 
-Squashes the following W=1 warnings:
+Fixes W=1 kernel build warning:
 
- drivers/misc/habanalabs/goya/goya.c: In function ‘goya_debugfs_read32’:
- drivers/misc/habanalabs/goya/goya.c:3945:19: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
- 3945 | } else if ((addr >= DRAM_PHYS_BASE) &&
- | ^~
- drivers/misc/habanalabs/goya/goya.c: In function ‘goya_debugfs_write32’:
- drivers/misc/habanalabs/goya/goya.c:4002:19: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
- 4002 | } else if ((addr >= DRAM_PHYS_BASE) &&
- | ^~
- drivers/misc/habanalabs/goya/goya.c: In function ‘goya_debugfs_read64’:
- drivers/misc/habanalabs/goya/goya.c:4047:19: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
- 4047 | } else if ((addr >= DRAM_PHYS_BASE) &&
- | ^~
- drivers/misc/habanalabs/goya/goya.c: In function ‘goya_debugfs_write64’:
- drivers/misc/habanalabs/goya/goya.c:4091:19: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
- 4091 | } else if ((addr >= DRAM_PHYS_BASE) &&
- | ^~
- drivers/misc/habanalabs/pci.c:328: warning: Excess function parameter 'dma_mask' description in 'hl_pci_set_dma_mask'
  drivers/misc/habanalabs/goya/goya_coresight.c: In function ‘goya_debug_coresight’:
  drivers/misc/habanalabs/goya/goya_coresight.c:643:6: warning: variable ‘val’ set but not used [-Wunused-but-set-variable]
  643 | u32 val;
@@ -99,57 +82,30 @@ Cc: Oded Gabbay <oded.gabbay@gmail.com>
 Cc: Tomer Tayar <ttayar@habana.ai>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/habanalabs/goya/goya.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ drivers/misc/habanalabs/goya/goya_coresight.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index 0d2952bb58dfb..a4a20e27ed3b4 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -3942,8 +3942,7 @@ static int goya_debugfs_read32(struct hl_device *hdev, u64 addr, u32 *val)
- 		*val = readl(hdev->pcie_bar[SRAM_CFG_BAR_ID] +
- 				(addr - SRAM_BASE_ADDR));
+diff --git a/drivers/misc/habanalabs/goya/goya_coresight.c b/drivers/misc/habanalabs/goya/goya_coresight.c
+index 1258724ea5106..aa51fc71f0a1f 100644
+--- a/drivers/misc/habanalabs/goya/goya_coresight.c
++++ b/drivers/misc/habanalabs/goya/goya_coresight.c
+@@ -640,7 +640,6 @@ static int goya_config_spmu(struct hl_device *hdev,
+ int goya_debug_coresight(struct hl_device *hdev, void *data)
+ {
+ 	struct hl_debug_params *params = data;
+-	u32 val;
+ 	int rc = 0;
  
--	} else if ((addr >= DRAM_PHYS_BASE) &&
--			(addr < DRAM_PHYS_BASE + hdev->asic_prop.dram_size)) {
-+	} else if (addr < DRAM_PHYS_BASE + hdev->asic_prop.dram_size) {
+ 	switch (params->op) {
+@@ -672,7 +671,7 @@ int goya_debug_coresight(struct hl_device *hdev, void *data)
+ 	}
  
- 		u64 bar_base_addr = DRAM_PHYS_BASE +
- 				(addr & ~(prop->dram_pci_bar_size - 0x1ull));
-@@ -3999,8 +3998,7 @@ static int goya_debugfs_write32(struct hl_device *hdev, u64 addr, u32 val)
- 		writel(val, hdev->pcie_bar[SRAM_CFG_BAR_ID] +
- 					(addr - SRAM_BASE_ADDR));
+ 	/* Perform read from the device to flush all configuration */
+-	val = RREG32(mmPCIE_DBI_DEVICE_ID_VENDOR_ID_REG);
++	RREG32(mmPCIE_DBI_DEVICE_ID_VENDOR_ID_REG);
  
--	} else if ((addr >= DRAM_PHYS_BASE) &&
--			(addr < DRAM_PHYS_BASE + hdev->asic_prop.dram_size)) {
-+	} else if (addr < DRAM_PHYS_BASE + hdev->asic_prop.dram_size) {
- 
- 		u64 bar_base_addr = DRAM_PHYS_BASE +
- 				(addr & ~(prop->dram_pci_bar_size - 0x1ull));
-@@ -4044,9 +4042,8 @@ static int goya_debugfs_read64(struct hl_device *hdev, u64 addr, u64 *val)
- 		*val = readq(hdev->pcie_bar[SRAM_CFG_BAR_ID] +
- 				(addr - SRAM_BASE_ADDR));
- 
--	} else if ((addr >= DRAM_PHYS_BASE) &&
--		   (addr <=
--		    DRAM_PHYS_BASE + hdev->asic_prop.dram_size - sizeof(u64))) {
-+	} else if (addr <=
-+		   DRAM_PHYS_BASE + hdev->asic_prop.dram_size - sizeof(u64)) {
- 
- 		u64 bar_base_addr = DRAM_PHYS_BASE +
- 				(addr & ~(prop->dram_pci_bar_size - 0x1ull));
-@@ -4088,9 +4085,8 @@ static int goya_debugfs_write64(struct hl_device *hdev, u64 addr, u64 val)
- 		writeq(val, hdev->pcie_bar[SRAM_CFG_BAR_ID] +
- 					(addr - SRAM_BASE_ADDR));
- 
--	} else if ((addr >= DRAM_PHYS_BASE) &&
--		   (addr <=
--		    DRAM_PHYS_BASE + hdev->asic_prop.dram_size - sizeof(u64))) {
-+	} else if (addr <=
-+		   DRAM_PHYS_BASE + hdev->asic_prop.dram_size - sizeof(u64)) {
- 
- 		u64 bar_base_addr = DRAM_PHYS_BASE +
- 				(addr & ~(prop->dram_pci_bar_size - 0x1ull));
+ 	return rc;
+ }
 -- 
 2.25.1
 
