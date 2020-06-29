@@ -2,93 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F8B20E3CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C16520E41F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390791AbgF2VSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:18:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
+        id S2390759AbgF2VVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729791AbgF2Swt (ORCPT
+        with ESMTP id S1729770AbgF2Swn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:49 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B79C030F17
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:25:04 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id k71so4763497pje.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:25:04 -0700 (PDT)
+        Mon, 29 Jun 2020 14:52:43 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A027C030F18
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:25:44 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id by13so3471283edb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:25:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6u7fsXOnpntiVLfxhPmOks2Cw5x4MKBv8gUIWlulmZQ=;
-        b=eupvc9s7oTUWLWpef4QipcnGJua7jXAWsjt7JWwV+gxzv4gQvuOPABkzbJGCpMX50M
-         7VDeXpYwQcWLIN68hFKi8495Lt2hq++eSMC1HOfPA6BUcZVKNQF+H4xJ6jCh+IW8CeN+
-         4CwNQUXtRuVU8dez4qk1ww+if1571lMT89enUcZs2tPLFV3e/mhS8MOytKxOKQuK9SVl
-         aIeYvgHRCgpLzJWvq8THmowVyVy/j8A81XaQJ3ee62M3KBOCO1NjsRJhYZs45Tj9Xkfq
-         mBk2ULY8qHLgKoDJikvetY1Ir/z/EC/porLZF97jSoXEMMIyP/USaoF6yQvRrEtYzCbs
-         ZBpg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9JdwFaIk/SBsKiNUj1msSBe/13JfoNO8Wze0XSCM5ME=;
+        b=vV6YiyYs1Li40btnp4UbtO+zACr59gQjCO+fCxWJ2oVJh2GE5f3C2kHFkKAnvKvYBk
+         l798V8RyBS3FP1ZGoOQQeWMhNaPDt0kELzqS6LHIzUT+HYzPDUPt5cYpZi49ZhhYD3Hs
+         njjAgu3acTBMuW67l8TP+CrXdEAU1dhFv+hdpcguTdxG1DqWrMOXmmL9zYMYbRF7Vr5S
+         h4DaZJNz6AcqAcj6uGdgqUn9giOH69Tmkz0g7QznClxnwwCZadcUdbGwqNP9GuPK1E5m
+         2U+XA6A24SB+SooKyzJueP+H6LLlLsgETy9TtVd34JGr8kTUW1QSF2I5K2ctQjoM90EP
+         Vyuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6u7fsXOnpntiVLfxhPmOks2Cw5x4MKBv8gUIWlulmZQ=;
-        b=ZUak3eRqJ44tFU5BogqqWWPyaY6LdGjvT3uDcSNjSvcfMZWBKbEtax2YB4BoXFHVMo
-         3e+8z2TCjcsNo/TDoS7o3ShetQfhONl1rnBxDa53B7HxUyKdsUQCZTYN9G7BjtvZY3v7
-         7GqRLotIE6T7uuVltVh46eDvVU300f4pNdu+rNHGA4WDzmF742rJVqxHPm8ktEj6o81/
-         yxSyCFVmb/M7/Dwbh9bLGnR5/Q0fsUoIZ71zufk7nTrmA1Avm+aJXDyHF5djA2jC7VBM
-         BUaM9AIPcynOsMRyBTPZiteEhOMQpwdW8y925fprN74jMWMC4vU9wKHDF5eTaoJzJzGD
-         c78Q==
-X-Gm-Message-State: AOAM533hkMexAFvOeYoTYHxEcJl2TbZKqFdb7+V6jcw32fU1hrhc3/HO
-        u8EMtk3shhD0Mp/y8tozRZAfg5v3tdGp/g==
-X-Google-Smtp-Source: ABdhPJwoJE3KK2/ckFz3jcZ/3sSQF+7WycuVQNd3KJFtZYhYYhEPn0QeeddqpPWDR/3UlOahPZTYeA==
-X-Received: by 2002:a17:902:b78a:: with SMTP id e10mr14216607pls.34.1593447903575;
-        Mon, 29 Jun 2020 09:25:03 -0700 (PDT)
-Received: from [192.168.86.197] (cpe-75-85-219-51.dc.res.rr.com. [75.85.219.51])
-        by smtp.gmail.com with ESMTPSA id z25sm194632pfg.140.2020.06.29.09.25.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jun 2020 09:25:03 -0700 (PDT)
-Subject: Re: linux-next: Fixes tag needs some work in the block tree
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200629080533.5f44d445@canb.auug.org.au>
- <3949fc27-da62-6e26-cf07-59d3c78e2b64@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <fa5b0279-32a6-f9c6-f325-cedc2786b74a@kernel.dk>
-Date:   Mon, 29 Jun 2020 10:25:01 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9JdwFaIk/SBsKiNUj1msSBe/13JfoNO8Wze0XSCM5ME=;
+        b=uPQ0LXOXoM6i25WZUC6+F3KuVe2nsmaj9pT4XUwkg1Rl8LzjKwdceZzHSlGGkRrRwo
+         YWpv0nzuo6BGoO2LWDGlCuMtOf5m9perhOv2mHxvKtgu/RGPSxbiIPs60zVn4fSrs4SX
+         WqalU4+gDUYHrmDxpKyfH6LXV45l5c9rrpHKfLyn1fi4krpT5k1AygeYkMcNGa5h/ly8
+         rKTCaQ6fwrmRc57EHiwtrv+AR5zGOoDftMZOEbP/sQ7eqQBGN/+v5QdQUi6i0+iCygOu
+         Nma+qlFKXtCADCac40pbaOD5tYLbKDxi+tLSUkZRbDkeuEhWPZosf6Xb66ediPZ1/KAn
+         Ek8w==
+X-Gm-Message-State: AOAM530WK0KtEy70OIPxjedMNhkJ7bB5qsO2IAGjTnEjcRwNI9xns5zP
+        ++NniYXPHUaJUYsYgMHbuHtWBnm860tGhWKerXhxjg==
+X-Google-Smtp-Source: ABdhPJw/dx0pIba71K59e822Vxezxawzu1b4Q24KSpL6m//sHFjdfbI+QoKQ7V3kCj3C0FeVok/KJZm/ehl+h/H50Zo=
+X-Received: by 2002:a05:6402:22f0:: with SMTP id dn16mr18662329edb.83.1593447942682;
+ Mon, 29 Jun 2020 09:25:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3949fc27-da62-6e26-cf07-59d3c78e2b64@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200629161333.2110327-1-pmalani@chromium.org> <20200629161333.2110327-2-pmalani@chromium.org>
+In-Reply-To: <20200629161333.2110327-2-pmalani@chromium.org>
+From:   Guenter Roeck <groeck@google.com>
+Date:   Mon, 29 Jun 2020 09:25:31 -0700
+Message-ID: <CABXOdTe_t94GL6soaZbXp5TVxnG72zHRqh_qTa+zpmzTCw50ng@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Add PM support
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/29/20 10:21 AM, Pavel Begunkov wrote:
-> On 29/06/2020 01:05, Stephen Rothwell wrote:
->> Hi all,
->>
->> In commit
->>
->>   8c9cb6cd9a46 ("io_uring: fix refs underflow in io_iopoll_queue()")
->>
->> Fixes tag
->>
->>   Fixes: a1d7c393c47 ("io_uring: enable READ/WRITE to use deferred completions")
-> 
-> Jens, could you please fix this up after me?
-> full hash: a1d7c393c4711a9ce6c239c3ab053a50dc96505a
+On Mon, Jun 29, 2020 at 9:13 AM Prashant Malani <pmalani@chromium.org> wrote:
+>
+> Define basic suspend resume functions for cros-ec-typec. On suspend, we
+> simply ensure that any pending port update work is completed, and on
+> resume, we re-poll the port state to account for any
+> changes/disconnections that might have occurred during suspend.
+>
+> Signed-off-by: Prashant Malani <pmalani@chromium.org>
+> ---
+>
+> Changes in v2:
+> - Remove #ifdef-ery, add __maybe_unused tag to functions.
+>
+>  drivers/platform/chrome/cros_ec_typec.c | 26 +++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+>
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> index 630170fb2cbe..b2e7e928e788 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -725,11 +725,37 @@ static int cros_typec_probe(struct platform_device *pdev)
+>         return ret;
+>  }
+>
+> +static int __maybe_unused cros_typec_suspend(struct device *dev)
+> +{
+> +       struct cros_typec_data *typec = dev_get_drvdata(dev);
+> +
+> +       cancel_work_sync(&typec->port_work);
+> +
+> +       return 0;
+> +}
+> +
+> +static int __maybe_unused cros_typec_resume(struct device *dev)
+> +{
+> +       struct cros_typec_data *typec = dev_get_drvdata(dev);
+> +
+> +       /* Refresh port state. */
+> +       schedule_work(&typec->port_work);
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct dev_pm_ops cros_typec_pm_ops = {
+> +       SET_SYSTEM_SLEEP_PM_OPS(cros_typec_suspend, cros_typec_resume)
+> +};
+> +
+> +#define DEV_PM_OPS     (&cros_typec_pm_ops)
 
-I don't think that's a grave enough concern to rebase, it's just "missing" a
-single digit of the sha.
+I don't think this define adds any value.
 
--- 
-Jens Axboe
-
+> +
+>  static struct platform_driver cros_typec_driver = {
+>         .driver = {
+>                 .name = DRV_NAME,
+>                 .acpi_match_table = ACPI_PTR(cros_typec_acpi_id),
+>                 .of_match_table = of_match_ptr(cros_typec_of_match),
+> +               .pm = DEV_PM_OPS,
+>         },
+>         .probe = cros_typec_probe,
+>  };
+> --
+> 2.27.0.212.ge8ba1cc988-goog
+>
