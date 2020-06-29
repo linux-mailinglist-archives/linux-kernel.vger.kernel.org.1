@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA95320E5E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E3A20E3CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391342AbgF2Vmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:42:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37566 "EHLO
+        id S2390792AbgF2VSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:18:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727905AbgF2Sh4 (ORCPT
+        with ESMTP id S1729790AbgF2Swt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:56 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D80FC02A57C
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:49:41 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EF7FF299;
-        Mon, 29 Jun 2020 15:49:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1593438578;
-        bh=qrk1hsipZuct2oHoo+8A1DwCXMZV/BkNkxcor0eZDOo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Me9pZVSe2NPeNTRb1Ay5OpK2uSuKHCg6WoZUX4bYQ+Z6n01AlRiAzkcAjp5G2jLTy
-         9108XmEffPy9gYcL+ZN+05k6PEoWrRg3YL6PXFRWa3Z9fdtUH7NINKccW10qntY8x2
-         Va+xT4g2QxXSrmarOLkLLHe0f+wxmkeS8yr/JfHQ=
-Date:   Mon, 29 Jun 2020 16:49:34 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH v9 0/3] phy: zynqmp: Add PHY driver for the Xilinx ZynqMP
- Gigabit Transceiver
-Message-ID: <20200629134934.GE10681@pendragon.ideasonboard.com>
-References: <20200629120054.29338-1-laurent.pinchart@ideasonboard.com>
- <20200629131917.GL2599@vkoul-mobl>
+        Mon, 29 Jun 2020 14:52:49 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB7DC02E2C7
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:22 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id o4so9150019lfi.7
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:04:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GdM2w64gWRdB5OaPu2OfO505k9M/DLrx4Gj5g+0KkHM=;
+        b=NiObvsFRAfhCHcKIZJxxITl4aTiQKwfL1u+ntTGZvpEuV/9T5kPnWzHj4jzMajVBWD
+         3sldeMpZn0s2E2a78m73hbUe+N1n2Da/hXYA8IGcRmQjHQBn2Rw1efawF/AC8Nv+sXxT
+         yUQd36RQMomGdUmWEOo7F+QSauo3UhrOKnp/GBAYP3niFWgiG43uSP+7DZ4vh/Mtb9y+
+         cOQ3TFyWZSOocEqraEQkqP4EAUx/GvFcFJmmrlCeTAL1Ceq+EKdEP0y31kFIi4EwiyBA
+         AkZ0hGNsnifC20CQzF3nvb0cfW921DcGW67ej9IJUH2bi/76VDkYyORJcq0BL7RgX88x
+         b1+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GdM2w64gWRdB5OaPu2OfO505k9M/DLrx4Gj5g+0KkHM=;
+        b=jQ200iKrtz5y2jZcT+tC120sQ+s5fPwh3fx8ctmQLfe0Z7LM7BHCiRfK/DSg1OMPYO
+         Gxw3DiWUGlKWaDVsxGFb9qfKVVtsSAO+/9ISHnbl7xmZSLbeGnKfe8+IyYT+YljmTP2R
+         bWj7CWdbUKQs6/XmKRsuQA1svdjO4FbYyOQzxxVzsxyjtpF2OfMaUwWu3ijzYGvnHU5M
+         ho+Q7T2jm8FnVkZZ4TUUh6B0IZQXwNPctkktra8W0xjvvUK8im1t81MeySibN0pYM8FM
+         gdW/IQ0p+56RvsRVrdlLFDyVTnMbLe2uXA9rpzHaWzxSNFl6N9IAlDKLB0rrvWYeXuQd
+         z+tw==
+X-Gm-Message-State: AOAM530eiHfVmJLENutVBYHl5OksG8wwmFK/hRBzd3tdKKAST8G4BOVw
+        5wxsyuY7OyEzuLFeh9W/LR7PWsWfOXJvD7VZ3zo=
+X-Google-Smtp-Source: ABdhPJzx9CClLEmRBgiQDyVnGWmmPmAYo5tJMvnl6sYOxCuC3YGuGckclarIt5klHUynM2zoK9eikriIhKQxYAU31Uc=
+X-Received: by 2002:ac2:5962:: with SMTP id h2mr9106265lfp.66.1593439461261;
+ Mon, 29 Jun 2020 07:04:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200629131917.GL2599@vkoul-mobl>
+References: <20200625140105.14999-1-TheSven73@gmail.com> <20200625140105.14999-2-TheSven73@gmail.com>
+ <CAOMZO5AWiHWSLAcd=dj9dDFj8jLPAVAuoiOAJ8qKGPwRq1Q41g@mail.gmail.com> <CAGngYiXJy4ASTNfT+R+qzJ3wA=Wy2h6XZm+8oo09sD+Jmse02w@mail.gmail.com>
+In-Reply-To: <CAGngYiXJy4ASTNfT+R+qzJ3wA=Wy2h6XZm+8oo09sD+Jmse02w@mail.gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 29 Jun 2020 11:04:09 -0300
+Message-ID: <CAOMZO5BgKNKceJmvX+ayeB_z9YWMcJMJmOX7Uf81HTeZ-t7_fQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] ARM: imx6plus: enable internal routing of
+ clk_enet_ref where possible
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Fugang Duan <fugang.duan@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+Hi Sven,
 
-On Mon, Jun 29, 2020 at 06:49:17PM +0530, Vinod Koul wrote:
-> On 29-06-20, 15:00, Laurent Pinchart wrote:
-> > Hello,
-> > 
-> > The patch series adds a PHY driver for the Xilinx ZynqMP gigabit serial
-> > transceivers (PS-GTR). The PS-GTR is a set of 4 PHYs that can be used by
-> > the PCIe, USB 3.0, DisplayPort, SATA and Ethernet controllers that are
-> > part of the Serial I/O Unit (SIOU).
-> > 
-> > The code is based on a previous version sent by Anurag Kumar Vulisha and
-> > available at [1]. The DT bindings have been converted to YAML, and both
-> > the bindings and the driver have been considerably reworked (and
-> > simplified). The most notable changes is the removal of manual handling
-> > of the reset lines of the PHY users (which belongs to the PHY users
-> > themselves), and moving to the standard PHY .power_on() and .configure()
-> > operations to replace functions that were previously exported by the
-> > driver. Please see individual patches for a more detailed changelog.
-> > 
-> > Compared to v8, the series has been rebased on phy/next, and a minor
-> > issue in MAINTAINERS has been fixed.
-> 
-> Thanks for quick rebase, Applied 1 & 2 now
+On Mon, Jun 29, 2020 at 10:40 AM Sven Van Asbroeck <thesven73@gmail.com> wrote:
 
-Thank you. Michal, could you apply 3/3 to your tree ?
+> I'm sure you've checked that sabresd ethernet works ok on mainline
+> even without this patch?
 
-> > [1] https://patchwork.kernel.org/cover/10735681/
-> > 
-> > Anurag Kumar Vulisha (2):
-> >   dt-bindings: phy: Add DT bindings for Xilinx ZynqMP PSGTR PHY
-> >   phy: zynqmp: Add PHY driver for the Xilinx ZynqMP Gigabit Transceiver
-> > 
-> > Laurent Pinchart (1):
-> >   arm64: dts: zynqmp: Add GTR transceivers
-> > 
-> >  .../bindings/phy/xlnx,zynqmp-psgtr.yaml       | 105 ++
-> >  MAINTAINERS                                   |   9 +
-> >  arch/arm64/boot/dts/xilinx/zynqmp.dtsi        |  10 +
-> >  drivers/phy/Kconfig                           |   1 +
-> >  drivers/phy/Makefile                          |   3 +-
-> >  drivers/phy/xilinx/Kconfig                    |  13 +
-> >  drivers/phy/xilinx/Makefile                   |   3 +
-> >  drivers/phy/xilinx/phy-zynqmp.c               | 995 ++++++++++++++++++
-> >  include/dt-bindings/phy/phy.h                 |   1 +
-> >  9 files changed, 1139 insertions(+), 1 deletion(-)
-> >  create mode 100644 Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
-> >  create mode 100644 drivers/phy/xilinx/Kconfig
-> >  create mode 100644 drivers/phy/xilinx/Makefile
-> >  create mode 100644 drivers/phy/xilinx/phy-zynqmp.c
+Yes, I have tested several times: without this patch series, DHCP works fine.
 
--- 
-Regards,
+Applying this series causes DHCP to fail. The test is 100% reproducible.
 
-Laurent Pinchart
+Cheers
