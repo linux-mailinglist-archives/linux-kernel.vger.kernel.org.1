@@ -2,281 +2,484 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2130C20E377
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0196820E561
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731606AbgF2VON convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 29 Jun 2020 17:14:13 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:52769 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730010AbgF2S5m (ORCPT
+        id S2391338AbgF2VgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:36:25 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:10037 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728424AbgF2Skn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:57:42 -0400
-Received: from marcel-macpro.fritz.box (p5b3d2638.dip0.t-ipconnect.de [91.61.38.56])
-        by mail.holtmann.org (Postfix) with ESMTPSA id D17D0CECCB;
-        Mon, 29 Jun 2020 08:50:50 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [RFC PATCH v1 1/2] Bluetooth: queue ACL packets if no handle is
- found
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200627185320.RFC.v1.1.Icea550bb064a24b89f2217cf19e35b4480a31afd@changeid>
-Date:   Mon, 29 Jun 2020 08:40:56 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        chromeos-bluetooth-upstreaming 
-        <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <91CFE951-262A-4E83-8550-25445AE84B5A@holtmann.org>
-References: <20200627105437.453053-1-apusaka@google.com>
- <20200627185320.RFC.v1.1.Icea550bb064a24b89f2217cf19e35b4480a31afd@changeid>
-To:     Archie Pusaka <apusaka@google.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        Mon, 29 Jun 2020 14:40:43 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200629065303epoutp01f1711bd5efc8df7116346f615fcfe1e2~c8TY26e6X2023320233epoutp01W
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:53:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200629065303epoutp01f1711bd5efc8df7116346f615fcfe1e2~c8TY26e6X2023320233epoutp01W
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593413583;
+        bh=7bdDrtKfhDIeoE6nA3jqgvIZ53z3Zzgsj9GRaApA+3s=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=vh68/fxo0BXeKLPxfU2BSZz300/5XF1N4O65/cGh8MmE7IxnbJMTJ8TKr88+6Malh
+         zRP5406vPg949HTvlVIqszXBKgVT5Xds5qAXXCC+84rfv92amSB1oi/r7MVutEYjXx
+         vXz8me3rGiocnrJLNL83e2OTk951UOXWiugSp51M=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p2.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200629065302epcas1p2eb3ffeb26eb214d361ac7007ce1b8291~c8TYc09-71437714377epcas1p25;
+        Mon, 29 Jun 2020 06:53:02 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [PATCH v4 2/5] scsi: ufs: Add UFS-feature layer
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <1239183618.61593413402991.JavaMail.epsvc@epcpadp1>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <963815509.21593413582881.JavaMail.epsvc@epcpadp2>
+Date:   Mon, 29 Jun 2020 15:50:52 +0900
+X-CMS-MailID: 20200629065052epcms2p3096e06bb5ac384bf6a5158996eef31c4
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200629064323epcms2p787baba58a416fef7fdd3927f8da701da
+References: <1239183618.61593413402991.JavaMail.epsvc@epcpadp1>
+        <231786897.01593413281727.JavaMail.epsvc@epcpadp2>
+        <CGME20200629064323epcms2p787baba58a416fef7fdd3927f8da701da@epcms2p3>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
+This patch is adding UFS feature layer to UFS core driver.
 
-> There is a possibility that an ACL packet is received before we
-> receive the HCI connect event for the corresponding handle. If this
-> happens, we discard the ACL packet.
-> 
-> Rather than just ignoring them, this patch provides a queue for
-> incoming ACL packet without a handle. The queue is processed when
-> receiving a HCI connection event. If 2 seconds elapsed without
-> receiving the HCI connection event, assume something bad happened
-> and discard the queued packet.
-> 
-> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+UFS Driver data structure (struct ufs_hba)
+=09=E2=94=82
+=E2=94=8C--------------=E2=94=90
+=E2=94=82 UFS feature  =E2=94=82 <-- HPB module
+=E2=94=82    layer     =E2=94=82 <-- other extended feature module
+=E2=94=94--------------=E2=94=98
+Each extended UFS-Feature module has a bus of ufs-ext feature type.
+The UFS feature layer manages common APIs used by each extended feature
+module. The APIs are set of UFS Query requests and UFS Vendor commands
+related to each extended feature module.
 
-so two things up front. I want to hide this behind a HCI_QUIRK_OUT_OF_ORDER_ACL that a transport driver has to set first. Frankly if this kind of out-of-order happens on UART or SDIO transports, then something is obviously going wrong. I have no plan to fix up after a fully serialized transport.
+Other extended features can also be implemented using the proposed APIs.
+For example, in Write Booster, "prep_fn" can be used to guarantee the
+lifetime of UFS by updating the amount of write IO.
+And reset/reset_host/suspend/resume can be used to manage the kernel task
+for checking lifetime of UFS.
 
-Secondly, if a transport sets HCI_QUIRK_OUT_OF_ORDER_ACL, then I want this off by default. You can enable it via an experimental setting. The reason here is that we have to make it really hard and fail as often as possible so that hardware manufactures and spec writers realize that something is fundamentally broken here.
+The following 6 callback functions have been added to "ufshcd.c".
+prep_fn: called after construct upiu structure
+reset: called after proving hba
+reset_host: called before ufshcd_host_reset_and_restore
+suspend: called before ufshcd_suspend
+resume: called after ufshcd_resume
+rsp_upiu: called in ufshcd_transfer_rsp_status with SAM_STAT_GOOD state
 
-I have no problem in running the code and complaining loudly in case the quirk has been set. Just injecting the packets can only happen if bluetoothd explicitly enabled it.
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+---
+ drivers/scsi/ufs/Makefile     |   2 +-
+ drivers/scsi/ufs/ufsfeature.c | 148 ++++++++++++++++++++++++++++++++++
+ drivers/scsi/ufs/ufsfeature.h |  69 ++++++++++++++++
+ drivers/scsi/ufs/ufshcd.c     |  17 ++++
+ drivers/scsi/ufs/ufshcd.h     |   3 +
+ 5 files changed, 238 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/scsi/ufs/ufsfeature.c
+ create mode 100644 drivers/scsi/ufs/ufsfeature.h
 
-> 
-> ---
-> 
-> include/net/bluetooth/hci_core.h |  8 +++
-> net/bluetooth/hci_core.c         | 84 +++++++++++++++++++++++++++++---
-> net/bluetooth/hci_event.c        |  2 +
-> 3 files changed, 88 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-> index 836dc997ff94..b69ecdd0d15a 100644
-> --- a/include/net/bluetooth/hci_core.h
-> +++ b/include/net/bluetooth/hci_core.h
-> @@ -270,6 +270,9 @@ struct adv_monitor {
-> /* Default authenticated payload timeout 30s */
-> #define DEFAULT_AUTH_PAYLOAD_TIMEOUT   0x0bb8
-> 
-> +/* Time to keep ACL packets without a corresponding handle queued (2s) */
-> +#define PENDING_ACL_TIMEOUT		msecs_to_jiffies(2000)
-> +
+diff --git a/drivers/scsi/ufs/Makefile b/drivers/scsi/ufs/Makefile
+index f0c5b95ec9cc..433b871badfa 100644
+--- a/drivers/scsi/ufs/Makefile
++++ b/drivers/scsi/ufs/Makefile
+@@ -6,7 +6,7 @@ obj-$(CONFIG_SCSI_UFS_CDNS_PLATFORM) +=3D cdns-pltfrm.o
+ obj-$(CONFIG_SCSI_UFS_QCOM) +=3D ufs-qcom.o
+ obj-$(CONFIG_SCSI_UFS_EXYNOS) +=3D ufs-exynos.o
+ obj-$(CONFIG_SCSI_UFSHCD) +=3D ufshcd-core.o
+-ufshcd-core-y=09=09=09=09+=3D ufshcd.o ufs-sysfs.o
++ufshcd-core-y=09=09=09=09+=3D ufshcd.o ufs-sysfs.o ufsfeature.o
+ ufshcd-core-$(CONFIG_SCSI_UFS_BSG)=09+=3D ufs_bsg.o
+ obj-$(CONFIG_SCSI_UFSHCD_PCI) +=3D ufshcd-pci.o
+ obj-$(CONFIG_SCSI_UFSHCD_PLATFORM) +=3D ufshcd-pltfrm.o
+diff --git a/drivers/scsi/ufs/ufsfeature.c b/drivers/scsi/ufs/ufsfeature.c
+new file mode 100644
+index 000000000000..94c6be6babd3
+--- /dev/null
++++ b/drivers/scsi/ufs/ufsfeature.c
+@@ -0,0 +1,148 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Universal Flash Storage Feature Support
++ *
++ * Copyright (C) 2017-2018 Samsung Electronics Co., Ltd.
++ *
++ * Authors:
++ *=09Yongmyung Lee <ymhungry.lee@samsung.com>
++ *=09Jinyoung Choi <j-young.choi@samsung.com>
++ */
++
++#include "ufshcd.h"
++#include "ufsfeature.h"
++
++inline void ufsf_slave_configure(struct ufs_hba *hba,
++=09=09=09=09 struct scsi_device *sdev)
++{
++=09/* skip well-known LU */
++=09if (sdev->lun >=3D UFS_UPIU_MAX_UNIT_NUM_ID)
++=09=09return;
++
++=09if (!(hba->dev_info.b_ufs_feature_sup & UFS_DEV_HPB_SUPPORT))
++=09=09return;
++
++=09atomic_inc(&hba->ufsf.slave_conf_cnt);
++
++=09wake_up(&hba->ufsf.sdev_wait);
++}
++
++inline void ufsf_ops_prep_fn(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
++{
++=09struct ufshpb_driver *ufshpb_drv;
++
++=09ufshpb_drv =3D dev_get_drvdata(&hba->ufsf.hpb_dev);
++
++=09if (ufshpb_drv && ufshpb_drv->ufshpb_ops.prep_fn)
++=09=09ufshpb_drv->ufshpb_ops.prep_fn(hba, lrbp);
++}
++
++inline void ufsf_ops_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp=
+)
++{
++=09struct ufshpb_driver *ufshpb_drv;
++
++=09ufshpb_drv =3D dev_get_drvdata(&hba->ufsf.hpb_dev);
++
++=09if (ufshpb_drv && ufshpb_drv->ufshpb_ops.rsp_upiu)
++=09=09ufshpb_drv->ufshpb_ops.rsp_upiu(hba, lrbp);
++}
++
++inline void ufsf_ops_reset_host(struct ufs_hba *hba)
++{
++=09struct ufshpb_driver *ufshpb_drv;
++
++=09ufshpb_drv =3D dev_get_drvdata(&hba->ufsf.hpb_dev);
++
++=09if (ufshpb_drv && ufshpb_drv->ufshpb_ops.reset_host)
++=09=09ufshpb_drv->ufshpb_ops.reset_host(hba);
++}
++
++inline void ufsf_ops_reset(struct ufs_hba *hba)
++{
++=09struct ufshpb_driver *ufshpb_drv;
++
++=09ufshpb_drv =3D dev_get_drvdata(&hba->ufsf.hpb_dev);
++
++=09if (ufshpb_drv && ufshpb_drv->ufshpb_ops.reset)
++=09=09ufshpb_drv->ufshpb_ops.reset(hba);
++}
++
++inline void ufsf_ops_suspend(struct ufs_hba *hba)
++{
++=09struct ufshpb_driver *ufshpb_drv;
++
++=09ufshpb_drv =3D dev_get_drvdata(&hba->ufsf.hpb_dev);
++
++=09if (ufshpb_drv && ufshpb_drv->ufshpb_ops.suspend)
++=09=09ufshpb_drv->ufshpb_ops.suspend(hba);
++}
++
++inline void ufsf_ops_resume(struct ufs_hba *hba)
++{
++=09struct ufshpb_driver *ufshpb_drv;
++
++=09ufshpb_drv =3D dev_get_drvdata(&hba->ufsf.hpb_dev);
++
++=09if (ufshpb_drv && ufshpb_drv->ufshpb_ops.resume)
++=09=09ufshpb_drv->ufshpb_ops.resume(hba);
++}
++
++struct device_type ufshpb_dev_type =3D {
++=09.name =3D "ufshpb_device"
++};
++EXPORT_SYMBOL(ufshpb_dev_type);
++
++static int ufsf_bus_match(struct device *dev,
++=09=09=09 struct device_driver *gendrv)
++{
++=09if (dev->type =3D=3D &ufshpb_dev_type)
++=09=09return 1;
++
++=09return 0;
++}
++
++struct bus_type ufsf_bus_type =3D {
++=09.name =3D "ufsf_bus",
++=09.match =3D ufsf_bus_match,
++};
++EXPORT_SYMBOL(ufsf_bus_type);
++
++static void ufsf_dev_release(struct device *dev)
++{
++=09put_device(dev->parent);
++}
++
++void ufsf_scan_features(struct ufs_hba *hba)
++{
++=09int ret;
++
++=09init_waitqueue_head(&hba->ufsf.sdev_wait);
++=09atomic_set(&hba->ufsf.slave_conf_cnt, 0);
++
++=09if (hba->dev_info.wspecversion >=3D HPB_SUPPORTED_VERSION &&
++=09    (hba->dev_info.b_ufs_feature_sup & UFS_DEV_HPB_SUPPORT)) {
++=09=09device_initialize(&hba->ufsf.hpb_dev);
++
++=09=09hba->ufsf.hpb_dev.bus =3D &ufsf_bus_type;
++=09=09hba->ufsf.hpb_dev.type =3D &ufshpb_dev_type;
++=09=09hba->ufsf.hpb_dev.parent =3D get_device(hba->dev);
++=09=09hba->ufsf.hpb_dev.release =3D ufsf_dev_release;
++
++=09=09dev_set_name(&hba->ufsf.hpb_dev, "ufshpb");
++=09=09ret =3D device_add(&hba->ufsf.hpb_dev);
++=09=09if (ret)
++=09=09=09dev_warn(hba->dev, "ufshpb: failed to add device\n");
++=09}
++}
++
++static int __init ufsf_init(void)
++{
++=09int ret;
++
++=09ret =3D bus_register(&ufsf_bus_type);
++=09if (ret)
++=09=09pr_err("%s bus_register failed\n", __func__);
++
++=09return ret;
++}
++device_initcall(ufsf_init);
+diff --git a/drivers/scsi/ufs/ufsfeature.h b/drivers/scsi/ufs/ufsfeature.h
+new file mode 100644
+index 000000000000..1822d9d8e745
+--- /dev/null
++++ b/drivers/scsi/ufs/ufsfeature.h
+@@ -0,0 +1,69 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Universal Flash Storage Feature Support
++ *
++ * Copyright (C) 2017-2018 Samsung Electronics Co., Ltd.
++ *
++ * Authors:
++ *=09Yongmyung Lee <ymhungry.lee@samsung.com>
++ *=09Jinyoung Choi <j-young.choi@samsung.com>
++ */
++
++#ifndef _UFSFEATURE_H_
++#define _UFSFEATURE_H_
++
++#define HPB_SUPPORTED_VERSION=09=09=090x0310
++
++struct ufs_hba;
++struct ufshcd_lrb;
++
++/**
++ * struct ufsf_operation - UFS feature specific callbacks
++ * @prep_fn: called after construct upiu structure. The prep_fn should wor=
+k
++ *=09     properly even if it processes the same SCSI command multiple
++ *=09     times by requeuing.
++ * @reset: called after probing hba
++ * @reset_host: called before ufshcd_host_reset_and_restore
++ * @suspend: called before ufshcd_suspend
++ * @resume: called after ufshcd_resume
++ * @rsp_upiu: called in ufshcd_transfer_rsp_status with SAM_STAT_GOOD stat=
+e
++ */
++struct ufsf_operation {
++=09void (*prep_fn)(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
++=09void (*reset)(struct ufs_hba *hba);
++=09void (*reset_host)(struct ufs_hba *hba);
++=09void (*suspend)(struct ufs_hba *hba);
++=09void (*resume)(struct ufs_hba *hba);
++=09void (*rsp_upiu)(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
++};
++
++struct ufshpb_driver {
++=09struct device_driver drv;
++=09struct list_head lh_hpb_lu;
++
++=09struct ufsf_operation ufshpb_ops;
++
++=09/* memory management */
++=09struct kmem_cache *ufshpb_mctx_cache;
++=09mempool_t *ufshpb_mctx_pool;
++=09mempool_t *ufshpb_page_pool;
++
++=09struct workqueue_struct *ufshpb_wq;
++};
++
++struct ufsf_feature_info {
++=09atomic_t slave_conf_cnt;
++=09wait_queue_head_t sdev_wait;
++=09struct device hpb_dev;
++};
++
++void ufsf_slave_configure(struct ufs_hba *hba, struct scsi_device *sdev);
++void ufsf_scan_features(struct ufs_hba *hba);
++void ufsf_ops_prep_fn(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
++void ufsf_ops_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
++void ufsf_ops_reset_host(struct ufs_hba *hba);
++void ufsf_ops_reset(struct ufs_hba *hba);
++void ufsf_ops_suspend(struct ufs_hba *hba);
++void ufsf_ops_resume(struct ufs_hba *hba);
++
++#endif /* End of Header */
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 59358bb75014..d02106bf80d8 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -2533,6 +2533,8 @@ static int ufshcd_queuecommand(struct Scsi_Host *host=
+, struct scsi_cmnd *cmd)
+=20
+ =09ufshcd_comp_scsi_upiu(hba, lrbp);
+=20
++=09ufsf_ops_prep_fn(hba, lrbp);
++
+ =09err =3D ufshcd_map_sg(hba, lrbp);
+ =09if (err) {
+ =09=09lrbp->cmd =3D NULL;
+@@ -4665,6 +4667,8 @@ static int ufshcd_slave_configure(struct scsi_device =
+*sdev)
+ =09struct ufs_hba *hba =3D shost_priv(sdev->host);
+ =09struct request_queue *q =3D sdev->request_queue;
+=20
++=09ufsf_slave_configure(hba, sdev);
++
+ =09blk_queue_update_dma_pad(q, PRDT_DATA_BYTE_COUNT_PAD - 1);
+=20
+ =09if (ufshcd_is_rpm_autosuspend_allowed(hba))
+@@ -4791,6 +4795,9 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba, struc=
+t ufshcd_lrb *lrbp)
+ =09=09=09=09 */
+ =09=09=09=09pm_runtime_get_noresume(hba->dev);
+ =09=09=09}
++
++=09=09=09if (scsi_status =3D=3D SAM_STAT_GOOD)
++=09=09=09=09ufsf_ops_rsp_upiu(hba, lrbp);
+ =09=09=09break;
+ =09=09case UPIU_TRANSACTION_REJECT_UPIU:
+ =09=09=09/* TODO: handle Reject UPIU Response */
+@@ -6539,6 +6546,8 @@ static int ufshcd_host_reset_and_restore(struct ufs_h=
+ba *hba)
+ =09 * Stop the host controller and complete the requests
+ =09 * cleared by h/w
+ =09 */
++=09ufsf_ops_reset_host(hba);
++
+ =09ufshcd_hba_stop(hba);
+=20
+ =09spin_lock_irqsave(hba->host->host_lock, flags);
+@@ -6973,6 +6982,7 @@ static int ufs_get_device_desc(struct ufs_hba *hba)
+ =09/* getting Specification Version in big endian format */
+ =09dev_info->wspecversion =3D desc_buf[DEVICE_DESC_PARAM_SPEC_VER] << 8 |
+ =09=09=09=09      desc_buf[DEVICE_DESC_PARAM_SPEC_VER + 1];
++=09dev_info->b_ufs_feature_sup =3D desc_buf[DEVICE_DESC_PARAM_UFS_FEAT];
+=20
+ =09model_index =3D desc_buf[DEVICE_DESC_PARAM_PRDCT_NAME];
+=20
+@@ -7343,6 +7353,7 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
+ =09}
+=20
+ =09ufs_bsg_probe(hba);
++=09ufsf_scan_features(hba);
+ =09scsi_scan_host(hba->host);
+ =09pm_runtime_put_sync(hba->dev);
+=20
+@@ -7431,6 +7442,7 @@ static int ufshcd_probe_hba(struct ufs_hba *hba, bool=
+ async)
+ =09/* Enable Auto-Hibernate if configured */
+ =09ufshcd_auto_hibern8_enable(hba);
+=20
++=09ufsf_ops_reset(hba);
+ out:
+=20
+ =09trace_ufshcd_init(dev_name(hba->dev), ret,
+@@ -8188,6 +8200,8 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum u=
+fs_pm_op pm_op)
+ =09=09req_link_state =3D UIC_LINK_OFF_STATE;
+ =09}
+=20
++=09ufsf_ops_suspend(hba);
++
+ =09/*
+ =09 * If we can't transition into any of the low power modes
+ =09 * just gate the clocks.
+@@ -8309,6 +8323,7 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum u=
+fs_pm_op pm_op)
+ =09hba->clk_gating.is_suspended =3D false;
+ =09hba->dev_info.b_rpm_dev_flush_capable =3D false;
+ =09ufshcd_release(hba);
++=09ufsf_ops_resume(hba);
+ out:
+ =09if (hba->dev_info.b_rpm_dev_flush_capable) {
+ =09=09schedule_delayed_work(&hba->rpm_dev_flush_recheck_work,
+@@ -8405,6 +8420,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum uf=
+s_pm_op pm_op)
+ =09/* Enable Auto-Hibernate if configured */
+ =09ufshcd_auto_hibern8_enable(hba);
+=20
++=09ufsf_ops_resume(hba);
++
+ =09if (hba->dev_info.b_rpm_dev_flush_capable) {
+ =09=09hba->dev_info.b_rpm_dev_flush_capable =3D false;
+ =09=09cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index c774012582b4..6fe5c9b3a0e7 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -46,6 +46,7 @@
+ #include "ufs.h"
+ #include "ufs_quirks.h"
+ #include "ufshci.h"
++#include "ufsfeature.h"
+=20
+ #define UFSHCD "ufshcd"
+ #define UFSHCD_DRIVER_VERSION "0.2"
+@@ -736,6 +737,8 @@ struct ufs_hba {
+ =09bool wb_buf_flush_enabled;
+ =09bool wb_enabled;
+ =09struct delayed_work rpm_dev_flush_recheck_work;
++
++=09struct ufsf_feature_info ufsf;
+ };
+=20
+ /* Returns true if clocks can be gated. Otherwise false */
+--=20
+2.17.1
 
-Do we have some btmon traces with timestamps. Isn’t a second enough? Actually 2 seconds is an awful long time.
-
-> struct amp_assoc {
-> 	__u16	len;
-> 	__u16	offset;
-> @@ -538,6 +541,9 @@ struct hci_dev {
-> 	struct delayed_work	rpa_expired;
-> 	bdaddr_t		rpa;
-> 
-> +	struct delayed_work	remove_pending_acl;
-> +	struct sk_buff_head	pending_acl_q;
-> +
-
-can we name this ooo_q and move it to the other queues in this struct. Unless we want to add a Kconfig option around it, we don’t need to keep it here.
-
-> #if IS_ENABLED(CONFIG_BT_LEDS)
-> 	struct led_trigger	*power_led;
-> #endif
-> @@ -1773,6 +1779,8 @@ void hci_le_start_enc(struct hci_conn *conn, __le16 ediv, __le64 rand,
-> void hci_copy_identity_address(struct hci_dev *hdev, bdaddr_t *bdaddr,
-> 			       u8 *bdaddr_type);
-> 
-> +void hci_process_pending_acl(struct hci_dev *hdev, struct hci_conn *conn);
-> +
-> #define SCO_AIRMODE_MASK       0x0003
-> #define SCO_AIRMODE_CVSD       0x0000
-> #define SCO_AIRMODE_TRANSP     0x0003
-> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-> index 7959b851cc63..30780242c267 100644
-> --- a/net/bluetooth/hci_core.c
-> +++ b/net/bluetooth/hci_core.c
-> @@ -1786,6 +1786,7 @@ int hci_dev_do_close(struct hci_dev *hdev)
-> 	skb_queue_purge(&hdev->rx_q);
-> 	skb_queue_purge(&hdev->cmd_q);
-> 	skb_queue_purge(&hdev->raw_q);
-> +	skb_queue_purge(&hdev->pending_acl_q);
-> 
-> 	/* Drop last sent command */
-> 	if (hdev->sent_cmd) {
-> @@ -3518,6 +3519,78 @@ static int hci_suspend_notifier(struct notifier_block *nb, unsigned long action,
-> 	return NOTIFY_STOP;
-> }
-> 
-> +static void hci_add_pending_acl(struct hci_dev *hdev, struct sk_buff *skb)
-> +{
-> +	skb_queue_tail(&hdev->pending_acl_q, skb);
-> +
-> +	queue_delayed_work(hdev->workqueue, &hdev->remove_pending_acl,
-> +			   PENDING_ACL_TIMEOUT);
-> +}
-> +
-> +void hci_process_pending_acl(struct hci_dev *hdev, struct hci_conn *conn)
-> +{
-> +	struct sk_buff *skb, *tmp;
-> +	struct hci_acl_hdr *hdr;
-> +	u16 handle, flags;
-> +	bool reset_timer = false;
-> +
-> +	skb_queue_walk_safe(&hdev->pending_acl_q, skb, tmp) {
-> +		hdr = (struct hci_acl_hdr *)skb->data;
-> +		handle = __le16_to_cpu(hdr->handle);
-> +		flags  = hci_flags(handle);
-> +		handle = hci_handle(handle);
-> +
-> +		if (handle != conn->handle)
-> +			continue;
-> +
-> +		__skb_unlink(skb, &hdev->pending_acl_q);
-> +		skb_pull(skb, HCI_ACL_HDR_SIZE);
-> +
-> +		l2cap_recv_acldata(conn, skb, flags);
-> +		reset_timer = true;
-> +	}
-> +
-> +	if (reset_timer)
-> +		mod_delayed_work(hdev->workqueue, &hdev->remove_pending_acl,
-> +				 PENDING_ACL_TIMEOUT);
-> +}
-> +
-> +/* Remove the oldest pending ACL, and all pending ACLs with the same handle */
-> +static void hci_remove_pending_acl(struct work_struct *work)
-> +{
-> +	struct hci_dev *hdev;
-> +	struct sk_buff *skb, *tmp;
-> +	struct hci_acl_hdr *hdr;
-> +	u16 handle, oldest_handle;
-> +
-> +	hdev = container_of(work, struct hci_dev, remove_pending_acl.work);
-> +	skb = skb_dequeue(&hdev->pending_acl_q);
-> +
-> +	if (!skb)
-> +		return;
-> +
-> +	hdr = (struct hci_acl_hdr *)skb->data;
-> +	oldest_handle = hci_handle(__le16_to_cpu(hdr->handle));
-> +	kfree_skb(skb);
-> +
-> +	bt_dev_err(hdev, "ACL packet for unknown connection handle %d",
-> +		   oldest_handle);
-> +
-> +	skb_queue_walk_safe(&hdev->pending_acl_q, skb, tmp) {
-> +		hdr = (struct hci_acl_hdr *)skb->data;
-> +		handle = hci_handle(__le16_to_cpu(hdr->handle));
-> +
-> +		if (handle == oldest_handle) {
-> +			__skb_unlink(skb, &hdev->pending_acl_q);
-> +			kfree_skb(skb);
-> +		}
-> +	}
-> +
-> +	if (!skb_queue_empty(&hdev->pending_acl_q))
-> +		queue_delayed_work(hdev->workqueue, &hdev->remove_pending_acl,
-> +				   PENDING_ACL_TIMEOUT);
-> +}
-> +
-
-So I am wondering if we make this too complicated. Since generally speaking we can only have a single HCI connect complete anyway at a time. No matter if the controller serializes it for us or we do it for the controller. So hci_conn_add could just process the queue for packets with its handle and then flush it. And it can flush it no matter what since whatever other packets are in the queue, they can not be valid.
-
-That said, we wouldn’t even need to check the packet handles at all. We just needed to flag them as already out-of-order queued once and hand them back into the rx_q at the top. Then the would be processed as usual. Already ooo packets would cause the same error as before if it is for a non-existing handle and others would end up being processed.
-
-For me this means we just need another queue to park the packets until hci_conn_add gets called. I might have missed something, but I am looking for the least invasive option for this and least code duplication.
-
-> /* Alloc HCI device */
-> struct hci_dev *hci_alloc_dev(void)
-> {
-> @@ -3610,10 +3683,12 @@ struct hci_dev *hci_alloc_dev(void)
-> 	INIT_WORK(&hdev->suspend_prepare, hci_prepare_suspend);
-> 
-> 	INIT_DELAYED_WORK(&hdev->power_off, hci_power_off);
-> +	INIT_DELAYED_WORK(&hdev->remove_pending_acl, hci_remove_pending_acl);
-> 
-> 	skb_queue_head_init(&hdev->rx_q);
-> 	skb_queue_head_init(&hdev->cmd_q);
-> 	skb_queue_head_init(&hdev->raw_q);
-> +	skb_queue_head_init(&hdev->pending_acl_q);
-> 
-> 	init_waitqueue_head(&hdev->req_wait_q);
-> 	init_waitqueue_head(&hdev->suspend_wait_q);
-> @@ -4662,8 +4737,6 @@ static void hci_acldata_packet(struct hci_dev *hdev, struct sk_buff *skb)
-> 	struct hci_conn *conn;
-> 	__u16 handle, flags;
-> 
-> -	skb_pull(skb, HCI_ACL_HDR_SIZE);
-> -
-> 	handle = __le16_to_cpu(hdr->handle);
-> 	flags  = hci_flags(handle);
-> 	handle = hci_handle(handle);
-> @@ -4678,17 +4751,16 @@ static void hci_acldata_packet(struct hci_dev *hdev, struct sk_buff *skb)
-> 	hci_dev_unlock(hdev);
-> 
-> 	if (conn) {
-> +		skb_pull(skb, HCI_ACL_HDR_SIZE);
-> +
-> 		hci_conn_enter_active_mode(conn, BT_POWER_FORCE_ACTIVE_OFF);
-> 
-> 		/* Send to upper protocol */
-> 		l2cap_recv_acldata(conn, skb, flags);
-> 		return;
-> 	} else {
-> -		bt_dev_err(hdev, "ACL packet for unknown connection handle %d",
-> -			   handle);
-> +		hci_add_pending_acl(hdev, skb);
-
-So here I want to keep being verbose. If no quirk is set, then this has to stay as an error. In case the quirk is set, then this should still warn that we are queuing up a packet. It is not an expected behavior.
-
-> 	}
-> -
-> -	kfree_skb(skb);
-> }
-> 
-> /* SCO data packet */
-> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-> index e060fc9ebb18..108c6c102a6a 100644
-> --- a/net/bluetooth/hci_event.c
-> +++ b/net/bluetooth/hci_event.c
-> @@ -2627,6 +2627,8 @@ static void hci_conn_complete_evt(struct hci_dev *hdev, struct sk_buff *skb)
-> 			hci_send_cmd(hdev, HCI_OP_CHANGE_CONN_PTYPE, sizeof(cp),
-> 				     &cp);
-> 		}
-> +
-> +		hci_process_pending_acl(hdev, conn);
-
-Can we just do this in hci_conn_add() when we create the connection object?
- 
-> 	} else {
-> 		conn->state = BT_CLOSED;
-> 		if (conn->type == ACL_LINK)
-> -- 
-> 2.27.0.212.ge8ba1cc988-goog
-> 
-
-Regards
-
-Marcel
 
