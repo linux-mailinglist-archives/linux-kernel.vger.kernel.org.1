@@ -2,197 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F363E20E030
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F2420E13A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389705AbgF2Unj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:43:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
+        id S2389127AbgF2UxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731626AbgF2TOC (ORCPT
+        with ESMTP id S1731337AbgF2TNX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:14:02 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BA6C00874B
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:31:54 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id j4so13161262wrp.10
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:31:54 -0700 (PDT)
+        Mon, 29 Jun 2020 15:13:23 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13CCC00874C
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:33:13 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id g75so14509018wme.5
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 01:33:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0a0BV57yL5ficDtUjeioVVS7bAcbhc1pkjbiChvtOqw=;
-        b=v9Zl362zUqiASgib07aYF9GS74MB9McYmwsWwm7+u0JHRuQpa3JpFxQp5HKSqBu5bV
-         hME65OV8FA+Sv55A0o4GVkl+ixCjmwUWNfVgy2z+8TBssXcPIOrmWDGWt9+sbHHr66Cy
-         dM9KjCpllKI8bYvqw4vjCkcohZDHEXPCojjgMyUv3H0v/ZQ/Ab2RvpAS/l5oLbHEdRCh
-         Y8vGhsyLmEBHT1hNaD6YBQU0S1rBOZQIB71ttneeUsPFIOdHJQJWpRvbKjeQxIc/+3Jb
-         UnGZ9ogeuxEtE7BFE+LdxkUttNlG6vIAePCjPL+gxVgRW3uY9YQM0VODgnxR7MZj68lM
-         H9GQ==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JL/R2Gk95aMqnh/tOQo8+arLcYW1SEEkw+GXG7Cww8A=;
+        b=LdnlEGiclZ040S0PvH/uCI8WKJc61uscxqQFG32CjFluZY/v34pQE8JQgmFmQvIUc9
+         GTiSZYfWPQWyST6m5IYg7JVyEmhS5VwXue/3eNlKQ7XgaiFpjIhVfTKzRSoh055dHEAa
+         GGhJ+zMVtf1/ybKgrQ1k0lcWRIyWH98pr/QEDf5QyDF4BCVnvysySZc/1J6i9eMKcVHk
+         h0ieANMn67jrRhCtmalHq3VasAawNdNd5t7vjR9lVMB7ZHM5ifsBGUCBDX18ZGdsvbcx
+         e8ZitnbQ/ruG1lH0JfJuN2Rsjtj2Ivio1H4tksSA/UWOobyw8rJRfHM48RqLq+DqD0dI
+         2pQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0a0BV57yL5ficDtUjeioVVS7bAcbhc1pkjbiChvtOqw=;
-        b=UTzH8TFN7RQmU/psLg2F9vjwRlQgRYEl4ghMHIqnto2HrooIYp1mijiK8D4ce+WB3D
-         b3VMOPWb00Gpf1AZeQKm9vUV/4D+sv85+m4l5jCwCE1f8gdbiGe39qr+wBRBZmXC/+yA
-         rylXfJqiJ8+fwNmo35l2Kp8o+ZI6EEQiW8y2y4wTClRKV0MJtO/zohw3GVWZpzrYP93N
-         pdrsVtFqwwIHufjLkxwqmxyOAmemDcWvNQ2HNYqe89ADWUpA2RUwOZBJU4lh4UJtjl2F
-         1O4Lxl0mQCRdxLmEc4dFYXAGTKVNg/OunDfCEPWB4/VbjkoJpp60xY5TUTWBvzeYGa5C
-         VF9g==
-X-Gm-Message-State: AOAM533b5Pv2FHmrrMuBPRiUVy312fmhD/L7/kh0xbDnkp9hfjSR0f2r
-        lm3+8j+tDp15CU1D//yuntZrEMqhkM/NaXdO0/rJng==
-X-Google-Smtp-Source: ABdhPJzYtZ0h83Rb5WNqf3L2Z5EidEEuCHUWCZ3RyjUvGssx1mKVKMQW6Z3EnvrO6S8+Wt/rD5qZ1q2bxYtlg5kacQY=
-X-Received: by 2002:adf:aa90:: with SMTP id h16mr16128490wrc.356.1593419513242;
- Mon, 29 Jun 2020 01:31:53 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=JL/R2Gk95aMqnh/tOQo8+arLcYW1SEEkw+GXG7Cww8A=;
+        b=socKBuE6tMEHJRHF9YCP4EoXwiBfC53NWPNu/pt+8vc1TWSpEGHPFYzrWT1Ktrzp+u
+         fA80alJw+woH0hCCHnrP4bPhLX/KHScJE1WcgzOYIt27ZB1lkoMUT3daXXNPLcyQgHXz
+         KClnc0ImJugy9NB0NTz3taZzGthiJvHu4srmRgmVe6mI54kS16fl5Dx8EicM7qwGtvy2
+         jcazOy0ojd2L7lwvn59vSly0uLQ7sQVVPzd1nvBPSr19Kno+PC7fc7THhwsipPukSHf4
+         j9k0zahAAxXQGvL8ajdnvsit4DmKMhkrVr5zK/DJkvY7Qj0Pyc4kYDOUucbwY2xW471G
+         H34w==
+X-Gm-Message-State: AOAM532hyKQeB/jUy7/olOayfJ45+Y6E3grLDeq1Is39e2EF+eWytOPI
+        DwQrXpDYA9FkBO8vMrjU0GTmNQ==
+X-Google-Smtp-Source: ABdhPJxFsIK+1+mJoCnkvaEWujQLMpGkxdRXRSbuf57/8c2xw8a6zbtlo0FrgQZt5lSwuMDeWw721g==
+X-Received: by 2002:a1c:4086:: with SMTP id n128mr16120246wma.118.1593419592416;
+        Mon, 29 Jun 2020 01:33:12 -0700 (PDT)
+Received: from ?IPv6:2a01:e35:2ec0:82b0:9902:c1f0:76c7:9dbc? ([2a01:e35:2ec0:82b0:9902:c1f0:76c7:9dbc])
+        by smtp.gmail.com with ESMTPSA id p17sm26734746wma.47.2020.06.29.01.33.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jun 2020 01:33:11 -0700 (PDT)
+Subject: Re: [PATCH v6 3/4] drm/bridge/sii8620: fix resource acquisition error
+ handling
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        andy.shevchenko@gmail.com, Mark Brown <broonie@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
+References: <20200626100103.18879-1-a.hajda@samsung.com>
+ <CGME20200626100110eucas1p24327c924dada0c2e86ecf0ab5b5af571@eucas1p2.samsung.com>
+ <20200626100103.18879-4-a.hajda@samsung.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ BSwxi7g3Mu7u5kUByanqHyA=
+Organization: Baylibre
+Message-ID: <15310ceb-64dc-db07-dad5-8a1fcb5433eb@baylibre.com>
+Date:   Mon, 29 Jun 2020 10:33:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <cover.1593397455.git.zong.li@sifive.com> <3de3a480517d167a3faae086aa8ab0c0c7141d99.1593397455.git.zong.li@sifive.com>
- <CAAhSdy3VBUTMg_b2tO12cTYuvHYtH=4dj9-qT-at35Whf3w_7w@mail.gmail.com>
- <CANXhq0pV87oSzyAt80ySoXGRXp26bCnahPW0r27J+wjj5yc=nw@mail.gmail.com>
- <CAAhSdy3BUfPCS+LUWp9GKdnf960N-UkxtUtRArgkVd-1cGZxhQ@mail.gmail.com> <CANXhq0rvjJ6yAcOq=bc7O_rYGDcbRfp7DJhcM0RBQ8q2x7xH0A@mail.gmail.com>
-In-Reply-To: <CANXhq0rvjJ6yAcOq=bc7O_rYGDcbRfp7DJhcM0RBQ8q2x7xH0A@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Mon, 29 Jun 2020 14:01:41 +0530
-Message-ID: <CAAhSdy1NE2yd1gGZBjEdUSt0cZy6b+pLH5sqLBmUafzryqd4iA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/6] dt-bindings: riscv: Add YAML documentation for PMU
-To:     Zong Li <zong.li@sifive.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200626100103.18879-4-a.hajda@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 12:06 PM Zong Li <zong.li@sifive.com> wrote:
->
-> On Mon, Jun 29, 2020 at 12:38 PM Anup Patel <anup@brainfault.org> wrote:
-> >
-> > On Mon, Jun 29, 2020 at 9:58 AM Zong Li <zong.li@sifive.com> wrote:
-> > >
-> > > On Mon, Jun 29, 2020 at 12:09 PM Anup Patel <anup@brainfault.org> wrote:
-> > > >
-> > > > On Mon, Jun 29, 2020 at 8:49 AM Zong Li <zong.li@sifive.com> wrote:
-> > > > >
-> > > > > Add device tree bindings for performance monitor unit. And it passes the
-> > > > > dt_binding_check verification.
-> > > > >
-> > > > > Signed-off-by: Zong Li <zong.li@sifive.com>
-> > > > > ---
-> > > > >  .../devicetree/bindings/riscv/pmu.yaml        | 59 +++++++++++++++++++
-> > > > >  1 file changed, 59 insertions(+)
-> > > > >  create mode 100644 Documentation/devicetree/bindings/riscv/pmu.yaml
-> > > > >
-> > > > > diff --git a/Documentation/devicetree/bindings/riscv/pmu.yaml b/Documentation/devicetree/bindings/riscv/pmu.yaml
-> > > > > new file mode 100644
-> > > > > index 000000000000..f55ccbc6c685
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/devicetree/bindings/riscv/pmu.yaml
-> > > > > @@ -0,0 +1,59 @@
-> > > > > +# SPDX-License-Identifier: GPL-2.0
-> > > > > +%YAML 1.2
-> > > > > +---
-> > > > > +$id: http://devicetree.org/schemas/riscv/pmu.yaml#
-> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > +
-> > > > > +title: RISC-V Performance Monitor Units
-> > > > > +
-> > > > > +maintainers:
-> > > > > +  - Zong Li <zong.li@sifive.com>
-> > > > > +  - Paul Walmsley <paul.walmsley@sifive.com>
-> > > > > +  - Palmer Dabbelt <palmer@dabbelt.com>
-> > > > > +
-> > > > > +properties:
-> > > > > +  compatible:
-> > > > > +    items:
-> > > > > +      - const: riscv,pmu
-> > > > > +
-> > > > > +  riscv,width-base-cntr:
-> > > > > +    description: The width of cycle and instret CSRs.
-> > > > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > > > +
-> > > > > +  riscv,width-event-cntr:
-> > > > > +    description: The width of hpmcounter CSRs.
-> > > > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > >
-> > > > The terms "base" and "event" is confusing because
-> > > > we only have counters with no interrupt associated with it.
-> > > >
-> > > > The RISC-V spec defines 3 counters and rest are all
-> > > > implementation specific counters.
-> > >
-> > > As I know, there are 2 counters of spec definition: cycle and instret.
-> > > What is the 3rd counter you mentioned?
-> >
-> > TIME is a counter CSR.
-> >
-> > >
-> > > >
-> > > > I suggest using the terms "spec counters" and "impl counters"
-> > > > instead of "base counters" and "event counters".
-> > >
-> > > OK, they are good to me. Let me change it.
-> > >
-> > >
-> > > >
-> > > > Further, "riscv,width" properties are redundant because
-> > > > RISC-V spec clearly tells that counters are 64bit for both
-> > > > RV32 and RV64.
-> > > >
->
-> Sorry for the lost replying. The maximum length of counters is 64, but
-> it doesn't require to implement all bits. A real case is that
-> unleashed board only implements 40 bit for mhpmcounters.
+On 26/06/2020 12:01, Andrzej Hajda wrote:
+> In case of error during resource acquisition driver should print error
+> message only in case it is not deferred probe, using dev_err_probe helper
+> solves the issue. Moreover it records defer probe reason for debugging.
+> 
+> Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
+> ---
+>  drivers/gpu/drm/bridge/sil-sii8620.c | 21 +++++++++------------
+>  1 file changed, 9 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/sil-sii8620.c b/drivers/gpu/drm/bridge/sil-sii8620.c
+> index 92acd336aa89..389c1f029774 100644
+> --- a/drivers/gpu/drm/bridge/sil-sii8620.c
+> +++ b/drivers/gpu/drm/bridge/sil-sii8620.c
+> @@ -2299,10 +2299,9 @@ static int sii8620_probe(struct i2c_client *client,
+>  	INIT_LIST_HEAD(&ctx->mt_queue);
+>  
+>  	ctx->clk_xtal = devm_clk_get(dev, "xtal");
+> -	if (IS_ERR(ctx->clk_xtal)) {
+> -		dev_err(dev, "failed to get xtal clock from DT\n");
+> -		return PTR_ERR(ctx->clk_xtal);
+> -	}
+> +	if (IS_ERR(ctx->clk_xtal))
+> +		return dev_err_probe(dev, PTR_ERR(ctx->clk_xtal),
+> +				     "failed to get xtal clock from DT\n");
+>  
+>  	if (!client->irq) {
+>  		dev_err(dev, "no irq provided\n");
+> @@ -2313,16 +2312,14 @@ static int sii8620_probe(struct i2c_client *client,
+>  					sii8620_irq_thread,
+>  					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+>  					"sii8620", ctx);
+> -	if (ret < 0) {
+> -		dev_err(dev, "failed to install IRQ handler\n");
+> -		return ret;
+> -	}
+> +	if (ret < 0)
+> +		return dev_err_probe(dev, ret,
+> +				     "failed to install IRQ handler\n");
+>  
+>  	ctx->gpio_reset = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
+> -	if (IS_ERR(ctx->gpio_reset)) {
+> -		dev_err(dev, "failed to get reset gpio from DT\n");
+> -		return PTR_ERR(ctx->gpio_reset);
+> -	}
+> +	if (IS_ERR(ctx->gpio_reset))
+> +		return dev_err_probe(dev, PTR_ERR(ctx->gpio_reset),
+> +				     "failed to get reset gpio from DT\n");
+>  
+>  	ctx->supplies[0].supply = "cvcc10";
+>  	ctx->supplies[1].supply = "iovcc18";
+> 
 
-The "3.1.11 Hardware Performance Monitor" clearly states that
-all counters are 64bit
+Nice helper, totally missed this patchset before !
 
-To take care of the unleashed board, the "riscv,width-xyz" DT properties
-should be optional. Whenever these properties are not present, we
-should assume 64bit counter width.
-
->
-> > > > > +
-> > > > > +  riscv,n-event-cntr:
-> > > > > +    description: The number of hpmcounter CSRs.
-> > > > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > > > +
-> > > > > +  riscv,hw-event-map:
-> > > > > +    description: The mapping of generic hardware events. Default is no mapping.
-> > > > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > > > > +
-> > > > > +  riscv,hw-cache-event-map:
-> > > > > +    description: The mapping of generic hardware cache events.
-> > > > > +      Default is no mapping.
-> > > > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > > > > +
-> > > > > +required:
-> > > > > +  - compatible
-> > > > > +  - riscv,width-base-cntr
-> > > > > +  - riscv,width-event-cntr
-> > > > > +  - riscv,n-event-cntr
-> > > > > +
-> > > > > +additionalProperties: false
-> > > > > +
-> > > > > +examples:
-> > > > > +  - |
-> > > > > +    pmu {
-> > > > > +      compatible = "riscv,pmu";
-> > > > > +      riscv,width-base-cntr = <64>;
-> > > > > +      riscv,width-event-cntr = <40>;
-> > > > > +      riscv,n-event-cntr = <2>;
-> > > > > +      riscv,hw-event-map = <0x0 0x0 0x1 0x1 0x3 0x0202 0x4 0x4000>;
-> > > > > +      riscv,hw-cache-event-map = <0x010201 0x0102 0x010204 0x0802>;
-> > > > > +    };
-> > > > > +
-> > > > > +...
-> > > > > --
-> > > > > 2.27.0
-> > > > >
-> > > >
-> > > > Regards,
-> > > > Anup
-
-Regards,
-Anup
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
