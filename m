@@ -2,41 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF86D20E090
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC3420E0A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389780AbgF2UrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
+        id S1732334AbgF2UsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:48:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731536AbgF2TNw (ORCPT
+        with ESMTP id S1731533AbgF2TNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:52 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697CEC0D941C
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:01:05 -0700 (PDT)
-Received: from pendragon.bb.dnainternet.fi (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4260C11FB;
-        Mon, 29 Jun 2020 14:01:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1593432063;
-        bh=HfffLeIgzU0qJiONJ/2Mxb+8Ga1wUFsZEZw7+O8ivA4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pr9L49tabM89y4Tjk3VmuOobocjgGrpAkmUL0k0BVTSCUOjAkPcK64RbL6jxKpIBJ
-         boBg+Wz6n52KFTr1Py7lYS7SO4y9W3t+Lsv2F0/jKMNiZX6RELl9ekKxpkL7JpANxv
-         VNa3X4Z/WeLchAhgWtNpjuAojQhtJBMqXOLvURso=
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH v9 3/3] arm64: dts: zynqmp: Add GTR transceivers
-Date:   Mon, 29 Jun 2020 15:00:54 +0300
-Message-Id: <20200629120054.29338-4-laurent.pinchart@ideasonboard.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200629120054.29338-1-laurent.pinchart@ideasonboard.com>
-References: <20200629120054.29338-1-laurent.pinchart@ideasonboard.com>
+        Mon, 29 Jun 2020 15:13:51 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636F4C0F26C3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:04:12 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id o11so16270520wrv.9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:04:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C3SFeAEvbOoZI/xpVJ8MO71Sd1LqnSCGoIeWQbxnMQg=;
+        b=W34A5EzIFj5HWi2O+Uu6ihBeBiDeWhpckbWrX2jnfqXAR3x0qNViaW+WgvnvpxwiWO
+         MGqgE1enmwmS0gQxdKT5NnCo8pT8qbnyks2TEEdLnPjFm0OCLBWs+QPHAs9eXm7uQdat
+         JWbhorZHQ3BtymX0aXM/lywfKu/bT8ZNk4SSMGwMY45YdISPCRJHVeIp8gOWUa6hI3x5
+         yl2q7FCGF3ftBuUSxFt5y3sPjglhVa+3G49n58H+eBi39BWD3W01vtmugl+iYZj5MxaS
+         mkrYBWhfSoM6r/EQlCIFuE/GmGSu3DIPQIVdw8C/+juCBxxelde4Yfeywt4RMER4CJbR
+         0+DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C3SFeAEvbOoZI/xpVJ8MO71Sd1LqnSCGoIeWQbxnMQg=;
+        b=AUFBBEIgkftungfrRP4+1vytC5O4BUntZwYa9aArfkVtmGmGu6uzi80TcD7dN8p4w3
+         mwO0ughNP2joJ+F2fbrnacdfy/ICPdgSmK+jAK4rCVwt0I/4FKGILD37w05i2iycd2Aq
+         DU8G48ZJ6+17L2Rkcwf1DsBYkeXo+XL/lqIP6s2f9vsL3Mbz7XXZnWI+mqf2OxxnCtlr
+         zT32ffsV8kAPtxECLBIZDlzraubVQ6qqApcrjRom7cNLO4XM1AgVZIN/jSwZtamXuMei
+         LDtovRAxuYAbPoxU1fkNesY68x8he+08BntOdX1cv7hD8ERQNoTJmp/TFQn8ux4jL64Q
+         SfUg==
+X-Gm-Message-State: AOAM533z5fsTGWiwQ7oK2rYPhG93vy+Z8lnDGDYciFvBkdIHI2b2hckO
+        4iDvAnWJqcwTxB34D888UKCm1w==
+X-Google-Smtp-Source: ABdhPJzvKPYK67MLNdl2CXmAriudaJFiLrZRmwhzT6FCEy4WwbiER21DP71IWFlJPEiw6dlp0MpaYQ==
+X-Received: by 2002:adf:e40e:: with SMTP id g14mr18038664wrm.271.1593432250982;
+        Mon, 29 Jun 2020 05:04:10 -0700 (PDT)
+Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
+        by smtp.gmail.com with ESMTPSA id d81sm25274347wmc.0.2020.06.29.05.04.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 05:04:10 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v2 00/10] net: improve devres helpers
+Date:   Mon, 29 Jun 2020 14:03:36 +0200
+Message-Id: <20200629120346.4382-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -44,44 +77,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a DT node for the PS-GTR transceivers.
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Acked-by: Michal Simek <michal.simek@xilinx.com>
----
- arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+So it seems like there's no support for relaxing certain networking devres
+helpers to not require previously allocated structures to also be managed.
+However the way mdio devres variants are implemented is still wrong and I
+modified my series to address it while keeping the functions strict.
 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-index 9174ddc76bdc..a0aad47b0ffc 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-@@ -13,6 +13,7 @@
-  */
- 
- #include <dt-bindings/power/xlnx-zynqmp-power.h>
-+#include <dt-bindings/reset/xlnx-zynqmp-resets.h>
- 
- / {
- 	compatible = "xlnx,zynqmp";
-@@ -558,6 +559,15 @@ pcie_intc: legacy-interrupt-controller {
- 			};
- 		};
- 
-+		psgtr: phy@fd400000 {
-+			compatible = "xlnx,zynqmp-psgtr-v1.1";
-+			status = "disabled";
-+			reg = <0x0 0xfd400000 0x0 0x40000>,
-+			      <0x0 0xfd3d0000 0x0 0x1000>;
-+			reg-names = "serdes", "siou";
-+			#phy-cells = <4>;
-+		};
-+
- 		rtc: rtc@ffa60000 {
- 			compatible = "xlnx,zynqmp-rtc";
- 			status = "disabled";
+First two patches modify the ixgbe driver to get rid of the last user of
+devm_mdiobus_free().
+
+Patches 3, 4, 5 and 6 are mostly cosmetic.
+
+Patch 7 fixes the way devm_mdiobus_register() is implemented.
+
+Patches 8 & 9 provide a managed variant of of_mdiobus_register() and
+last patch uses it in mtk-star-emac driver.
+
+v1 -> v2:
+- drop the patch relaxing devm_register_netdev()
+- require struct mii_bus to be managed in devm_mdiobus_register() and
+  devm_of_mdiobus_register() but don't store that information in the
+  structure itself: use devres_find() instead
+
+Bartosz Golaszewski (10):
+  net: ethernet: ixgbe: check the return value of ixgbe_mii_bus_init()
+  net: ethernet: ixgbe: don't call devm_mdiobus_free()
+  net: devres: rename the release callback of devm_register_netdev()
+  Documentation: devres: add missing mdio helper
+  phy: un-inline devm_mdiobus_register()
+  phy: mdio: add kerneldoc for __devm_mdiobus_register()
+  net: phy: don't abuse devres in devm_mdiobus_register()
+  of: mdio: remove the 'extern' keyword from function declarations
+  of: mdio: provide devm_of_mdiobus_register()
+  net: ethernet: mtk-star-emac: use devm_of_mdiobus_register()
+
+ .../driver-api/driver-model/devres.rst        |   3 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |   6 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_phy.c  |  14 +-
+ drivers/net/ethernet/mediatek/mtk_star_emac.c |  13 +-
+ drivers/net/ethernet/realtek/r8169_main.c     |   2 +-
+ drivers/net/phy/Makefile                      |   2 +
+ drivers/net/phy/mdio_bus.c                    |  73 ----------
+ drivers/net/phy/mdio_devres.c                 | 133 ++++++++++++++++++
+ include/linux/of_mdio.h                       |  40 +++---
+ include/linux/phy.h                           |  21 +--
+ net/devres.c                                  |   4 +-
+ 11 files changed, 174 insertions(+), 137 deletions(-)
+ create mode 100644 drivers/net/phy/mdio_devres.c
+
 -- 
-Regards,
-
-Laurent Pinchart
+2.26.1
 
