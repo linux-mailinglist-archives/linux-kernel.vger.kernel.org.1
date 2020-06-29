@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A164520E3C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344E020E430
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390778AbgF2VSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:18:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40046 "EHLO
+        id S2390959AbgF2VWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729793AbgF2Swu (ORCPT
+        with ESMTP id S1729338AbgF2Swm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:50 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BE5C02E2D6
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:04 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id r12so16623446wrj.13
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:04 -0700 (PDT)
+        Mon, 29 Jun 2020 14:52:42 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03E4C02E2D7
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:05 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id o11so16673823wrv.9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JmkBl6CgYcKij/6z3M241pPTb33PjPTKpPi0m3JJzZw=;
-        b=UWLk6VmlQbmgGn4fxQ9O9psVUunquWgTklcNwPDy56YobyD39DbRUDQCyVvdxB+o3p
-         LGCnqchxFgFvLy1pT+ih5xMmrLS1HVNnYIK/pluBDZb09cz8AqhLnXfvEjPncFbmC13T
-         p2N7ccpTgWZ7gkTeMI4Y64VGhLlUURWMObv42l0H+kk/Fq5rONWnaJ9Yn8s69opYrbdW
-         pS2nx53E8qC4aQPhLC6IocEWs+ZOu/cxQ8ONVYrZPOfPsW6cwQK7vzt+9GGr+RChqZCj
-         bjo/bWB+8L5H4e+VqyufDUV/kEx7SG2rQphbkfVZTatbY7LItp8tSL3kV7gDzh+dkST0
-         OIQw==
+        bh=XFhbgCKNRxFbloxjm7n8+8nB92/O/AE2sBwMkN1jQVY=;
+        b=rDYv3J+t/fvTXVYSLvlXorZNbHhUQ/6y/asw1e95tUgjbuzJJ22wOs5jgNEXZ9aCFw
+         7nENOeDtyDLGMIcPXDx4J6RpgY0J72cV3yU9pJyBzsKwUHo5ax6PbSWYW3A0F0yg5poM
+         yrnzqIS/FqzMaroXxLXo+0M2YedfnRYdVtYyO882ipkmlwYEGNM5n0IX7fASjRbyJRhX
+         qNjGbqr4NAX+OrG9kHVAeWj4xRrT+Piiiq+v8IaiWO+R1O1vthsB8/QlFEKVLAQYZvzM
+         NsKP8ih9Vk3CTfeB4RzJyjQ0jdxLswX27P9M+U41Yd8vx4H2FQERi0c+7/F7l5VcEEpi
+         kJSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JmkBl6CgYcKij/6z3M241pPTb33PjPTKpPi0m3JJzZw=;
-        b=SkG0ZCunQyTH9ChiQBQZsn5nQFQ4zB3SFedaHv4oH1OlZNoW4dZ6pTlOapUJklE0y6
-         LyHEwpKDsH/3j1RDCPsKo2IfM0wyv2wYHgIrHxmIFAi7E59sEJi+wknV0+JLHThos8mb
-         Cenx3VJVL0rU2wEp7QCIuEeMiQGyxlOl4PxzjiZzrC0/e4mY6xBa5d8eJc1kBBwxrj7i
-         s1WjzaXY5R4RHIy/lHRPBgG6fKNRVrlhHy+QduoPx2u3o7V/bJRY4olDvgBFEbTOukEZ
-         nxenWt3pSazEJoBwOQgF1VRIshzfoCQJMF7LJnUKwxdqHouwc2KhSP0r3AJ7ZxmpGKy4
-         FQUA==
-X-Gm-Message-State: AOAM530FzDXICTwxtEN9NJfc4P0be8JWVjb345ROqJevNM4bG0qwxskR
-        MJXSEwo3LW2QaUTd/2SZRsEybTC4lcc=
-X-Google-Smtp-Source: ABdhPJyQRVI9EP39ZGYsTFc+3vc1D9TeBEYaguyI5hOW2INRl8vdxPpsYcnXAsNe5kQjL671fwMBlA==
-X-Received: by 2002:a5d:684f:: with SMTP id o15mr12582448wrw.148.1593439502968;
-        Mon, 29 Jun 2020 07:05:02 -0700 (PDT)
+        bh=XFhbgCKNRxFbloxjm7n8+8nB92/O/AE2sBwMkN1jQVY=;
+        b=MI7H+j76FWcEkW4J1kXujEMU/4E/Zq0iZYtZMnbsm77+sHQ0IbonFMOueBNta6+K5e
+         I1YwSD+K+OQxnjPWbe5kwqPFyAXW38bpTYM2b3aKYCE283ieVUoen+7lq40S/SJ+NDSl
+         brvz7TxYOiDXTo3FRm3fKyGFd/IrPyih03IgLaX2M4+e19tOU1SoMQjlycS0VadsWz0b
+         CmX7hVMqe3n4Mp+XGmmMidiAlI4AFBGRiG0kxtaGTXR6MJOaX789EGHPIgAYVihFMJRI
+         W8Sp57ncOpDoN4sI9rB857FiRIRMDN2I6iPr+OoTesSxfefiaqY7PbJfh4BJBvI4n60b
+         zr3Q==
+X-Gm-Message-State: AOAM531hL0/71tYmgmyOKfZRPm+UNxPHtzV5Dbne7IHH+xKmb91v2/2z
+        GXiAqV2AJyeJxLUQFXIYMc3W6g==
+X-Google-Smtp-Source: ABdhPJzyDyJpP65nJE9M2B1HioZi4XCaFMuMdtxDSjSoHMRbycyagIcp+yN52R7KVxHSkjFw7Jr9QA==
+X-Received: by 2002:a5d:4649:: with SMTP id j9mr16461671wrs.270.1593439504476;
+        Mon, 29 Jun 2020 07:05:04 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.05.02
+        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.05.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 07:05:02 -0700 (PDT)
+        Mon, 29 Jun 2020 07:05:03 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Masayuki Ohtak <masa-korg@dsn.okisemi.com>,
-        Tomoya MORINAGA <tomoya-linux@dsn.okisemi.com>
-Subject: [PATCH 14/20] misc: pch_phub: Remove superfluous descriptions to non-existent args 'offset_address'
-Date:   Mon, 29 Jun 2020 15:04:36 +0100
-Message-Id: <20200629140442.1043957-15-lee.jones@linaro.org>
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [PATCH 15/20] misc: enclosure: Update enclosure_remove_device() documentation to match reality
+Date:   Mon, 29 Jun 2020 15:04:37 +0100
+Message-Id: <20200629140442.1043957-16-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629140442.1043957-1-lee.jones@linaro.org>
 References: <20200629140442.1043957-1-lee.jones@linaro.org>
@@ -67,41 +66,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Probably a copy 'n' paste error, 'offset_address' has never been
-part of the pch_phub_{read,write}_gbe_mac_addr() functions.
+enclosure_remove_device() hasn't taken an 'int component for over a decade.
+Instead use kerneldoc to describe the 'struct device' actually passed in.
 
-Squashes the following W=1 warnings:
+Fixes the following W=1 kernel build warning(s):
 
- drivers/misc/pch_phub.c:450: warning: Excess function parameter 'offset_address' description in 'pch_phub_read_gbe_mac_addr'
- drivers/misc/pch_phub.c:462: warning: Excess function parameter 'offset_address' description in 'pch_phub_write_gbe_mac_addr'
+ drivers/misc/enclosure.c:400: warning: Function parameter or member 'dev' not described in 'enclosure_remove_device'
+ drivers/misc/enclosure.c:400: warning: Excess function parameter 'num' description in 'enclosure_remove_device'
 
-Cc: Masayuki Ohtak <masa-korg@dsn.okisemi.com>
-Cc: Tomoya MORINAGA <tomoya-linux@dsn.okisemi.com>
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/pch_phub.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/misc/enclosure.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/pch_phub.c b/drivers/misc/pch_phub.c
-index 95ba82a8625b0..b27d826132915 100644
---- a/drivers/misc/pch_phub.c
-+++ b/drivers/misc/pch_phub.c
-@@ -448,7 +448,6 @@ static int pch_phub_gbe_serial_rom_conf_mp(struct pch_phub_reg *chip)
- 
+diff --git a/drivers/misc/enclosure.c b/drivers/misc/enclosure.c
+index e8eba52750b34..f950d0155876a 100644
+--- a/drivers/misc/enclosure.c
++++ b/drivers/misc/enclosure.c
+@@ -391,7 +391,7 @@ EXPORT_SYMBOL_GPL(enclosure_add_device);
  /**
-  * pch_phub_read_gbe_mac_addr() - Read Gigabit Ethernet MAC address
-- * @offset_address:	Gigabit Ethernet MAC address offset value.
-  * @chip:		Pointer to the PHUB register structure
-  * @data:		Buffer of the Gigabit Ethernet MAC address value.
-  */
-@@ -461,7 +460,6 @@ static void pch_phub_read_gbe_mac_addr(struct pch_phub_reg *chip, u8 *data)
- 
- /**
-  * pch_phub_write_gbe_mac_addr() - Write MAC address
-- * @offset_address:	Gigabit Ethernet MAC address offset value.
-  * @chip:		Pointer to the PHUB register structure
-  * @data:		Gigabit Ethernet MAC address value.
-  */
+  * enclosure_remove_device - remove a device from an enclosure
+  * @edev:	the enclosure device
+- * @num:	the number of the component to remove
++ * @dev:	device to remove/put
+  *
+  * Returns zero on success or an error.
+  *
 -- 
 2.25.1
 
