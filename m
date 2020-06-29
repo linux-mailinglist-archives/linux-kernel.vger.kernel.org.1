@@ -2,69 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3A520D22C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B1020D26E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728987AbgF2SrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:47:12 -0400
-Received: from outbound-smtp53.blacknight.com ([46.22.136.237]:42629 "EHLO
-        outbound-smtp53.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728632AbgF2SqY (ORCPT
+        id S1729405AbgF2StF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729330AbgF2Srn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:46:24 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp53.blacknight.com (Postfix) with ESMTPS id 72326FB182
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 16:08:09 +0100 (IST)
-Received: (qmail 27903 invoked from network); 29 Jun 2020 15:08:09 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.18.5])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 29 Jun 2020 15:08:09 -0000
-Date:   Mon, 29 Jun 2020 16:08:07 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Martin Steigerwald <martin@lichtvoll.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [REGRESSION] 5.8-rc3: seccomp crash with Chromium, QtWebEngine
- and related browsers: seccomp-bpf failure in syscall 0072
-Message-ID: <20200629150807.GB3183@techsingularity.net>
-References: <2293324.KF7j4Pszzj@merkaba>
- <202006290739.8AB49B15@keescook>
+        Mon, 29 Jun 2020 14:47:43 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043E0C02F03E
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:09:50 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id u8so7882912pje.4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:09:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NqlmVG78iXs3ajjXsqe/luI6Bsp4Jqxp96Da7CCW4P0=;
+        b=m0swvNT5I4fsJ5e0cVdRCGoS4Gep1sPkCbXehbvbkq+AANBChxcAllGhlBu0NrflKc
+         i75XmYCkOQ7onW5AoCG6eCrz24Tr7rgsr7d0+eu0uJtAiS62ODVgPZ1+T+nd+gNZPk+K
+         tz9fcA9G3gIiKOVi0fOebGPrsDXPjX1qqHNGuq3d/S36WOD2Awto4/RKwsVUrRXp5l60
+         FbKtJnwhq8Nevr37M3deQWyv/IqzYPtC8a6O9fKz8k7GN7/N8WAuFzzUTmwtynKD2yuQ
+         Uf/lFdAUyyLcs3eJhIzvwxHyTImxc1Ln5ZACcRGG3UEFWISgdBleMn4XbujIAFsjsCmP
+         esIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NqlmVG78iXs3ajjXsqe/luI6Bsp4Jqxp96Da7CCW4P0=;
+        b=uUzzHFSwVayn/gliwAlSspVN9M6lTrOvJawQzORbxxyZdf+aMcumaxcDQIrFyelaZ6
+         rEvkr9fUv3zwBLNZb53lYx1iLtd0Ogm2AbGDRFIBBU2V+iQflHo+ty8bENGtluTUm/oH
+         ATEgztcdw0zfg5128n1a3jAst4M08ab2Qw9U7pMf8N5bIkpmpjNSH5XcItm9QfW0fZxw
+         yjbWJmzc22XbzEhxVZ1PJ4KNQdR2PtQD+uNO/h7+heZ3gHa4BRQmkek6XGeCaX4Va7bj
+         LBStH80y6iCMCDhIXlPY514jiSzjd7iUGZc/3PQT/Wd4UE7T0f/p57ybaQYWrKBsTVGH
+         uogQ==
+X-Gm-Message-State: AOAM533I8EshlbelgJoZe8dIRK9+yvVdAu/AF4NWmtpSAemB9woh0beD
+        WjePCV3kAZrdnxCtbnBGsTN3ng==
+X-Google-Smtp-Source: ABdhPJxwZjsguM484F6sMiKLUZjrGQV40HFdBT3LN52GuV2BrrlgN4LhTVhem+onWXtopEtTIEUvTw==
+X-Received: by 2002:a17:90a:222d:: with SMTP id c42mr11700791pje.126.1593443389436;
+        Mon, 29 Jun 2020 08:09:49 -0700 (PDT)
+Received: from [192.168.86.197] (cpe-75-85-219-51.dc.res.rr.com. [75.85.219.51])
+        by smtp.gmail.com with ESMTPSA id p19sm83847pff.116.2020.06.29.08.09.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jun 2020 08:09:48 -0700 (PDT)
+Subject: Re: drive-by blk-cgroup cleanups
+To:     Christoph Hellwig <hch@lst.de>, Tejun Heo <tj@kernel.org>
+Cc:     Dennis Zhou <dennis@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+References: <20200627073159.2447325-1-hch@lst.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <90c404ed-58b0-274e-516f-b7c63ce34fcc@kernel.dk>
+Date:   Mon, 29 Jun 2020 09:09:45 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <202006290739.8AB49B15@keescook>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200627073159.2447325-1-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 07:41:56AM -0700, Kees Cook wrote:
-> On Mon, Jun 29, 2020 at 11:08:10AM +0200, Martin Steigerwald wrote:
-> > Dear Andy, Kees, Will, dear kernel community,
-> > 
-> > With 5.8-rc3 there is a seccomp related crash which prevents Chromium and
-> > QtWebEngine from starting:
-> > 
-> > Bug 208369 - seccomp crash with Chromium, QtWebEngine and related browsers: seccomp-bpf failure in syscall 0072
-> > 
-> > https://bugzilla.kernel.org/show_bug.cgi?id=208369
-> > 
-> > Reverting to 5.8-rc2 fixes the issue.
+On 6/27/20 1:31 AM, Christoph Hellwig wrote:
+> Hi all,
 > 
-> Hi,
-> 
-> It looks like this is from e9c15badbb7b ("fs: Do not check if there is a
-> fsnotify watcher on pseudo inodes")
-> 
-> Currently being discussed here:
-> https://lore.kernel.org/lkml/7b4aa1e985007c6d582fffe5e8435f8153e28e0f.camel@redhat.com/#r
-> 
+> while looking into another "project" I ended up wading through the
+> blkcq code for research and found a bunch of lose ends.  So here is
+> a bunch of drive-by cleanups for the code.
 
-It's a definite problem. I've sent a revert but it hasn't hit lkml yet
-for whatever reason.
+Applied, thanks.
 
 -- 
-Mel Gorman
-SUSE Labs
+Jens Axboe
+
