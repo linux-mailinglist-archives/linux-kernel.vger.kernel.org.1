@@ -2,89 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D69720D85A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E7320DC84
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733052AbgF2Ti3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:38:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387449AbgF2Tho (ORCPT
+        id S1730785AbgF2UQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:16:08 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:51036 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730866AbgF2UQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:37:44 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA6BC02A549;
-        Mon, 29 Jun 2020 05:52:34 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id z17so12727584edr.9;
-        Mon, 29 Jun 2020 05:52:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mISjJ6W1t59EyOgM95PXut3o9oWxsupqoczgWBu6EVM=;
-        b=U+aAv48PQQCnh+KsZHoyXJp2fb+2JKRI7qPY/jFla8ukJUA0pqSumSJaqLP1d1c/Tg
-         QfUulpfaMxcxtpRdA0xd2YvPRJYF0X1F3NE3vdK3UR/tDmi+QfDx9cT7UXKBbtjjsPpF
-         3v4QE6RY8FZ0bO8xAJT/vUL8eTbWWxXWI+uwWu5Y/HETw6WBlLZHUxfxQG9ZsmdduygF
-         IeV+sFppe6kmQwReUz8SndYScV/KQSW3/ARWhd2MV7oZPNecQ2kLXmxVp2QkAvjFKRFH
-         Xaj0Qb8zk7m4nJUPj85jBwjxDU6FgXx6o++a7QOXmvJWBIMIKwmSdEQ1n0HiqP9ql7he
-         d52Q==
-X-Gm-Message-State: AOAM532rcdftR3zqGww/nsy4sirU2uOjxsKLIudipP8lgdUdqSGTAyxn
-        JQY4PQmIgkpBxm3WL52Qw/E=
-X-Google-Smtp-Source: ABdhPJwKuDYNd8lQ0rDIYcM14Sny/O73oVLrmaxeBF52BJhJLTspOZ/6aPol9DAWu4TfLKyk6WFptw==
-X-Received: by 2002:a05:6402:1c96:: with SMTP id cy22mr17042750edb.79.1593435153360;
-        Mon, 29 Jun 2020 05:52:33 -0700 (PDT)
-Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
-        by smtp.gmail.com with ESMTPSA id r17sm4808969edw.68.2020.06.29.05.52.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 05:52:32 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 14:52:31 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org, dm-devel@redhat.com,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>
-Subject: Re: [PATCH 6/6] mm: Add memalloc_nowait
-Message-ID: <20200629125231.GJ32461@dhcp22.suse.cz>
-References: <20200625113122.7540-1-willy@infradead.org>
- <20200625113122.7540-7-willy@infradead.org>
- <20200629050851.GC1492837@kernel.org>
- <20200629121816.GC25523@casper.infradead.org>
+        Mon, 29 Jun 2020 16:16:03 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05TCr6Io030020;
+        Mon, 29 Jun 2020 07:53:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1593435186;
+        bh=uZzuW2dv2cMMVtbXg7LVptpnmlAjlXYZa5nOer++PqE=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=iQ7omHAk+VsckPQw1Q3g7sQs6I9blvygNXso4+lJRhWu5xJfBAb6r+6YnggH8Aw+Q
+         0YiQYdxhToJr+jnG1Jfe4bOez0GrgfrdW+B4PafqLthfrIlkPTT+mItKo7MqtYFPdf
+         1vKn6lkkqL9V4nbpt6mTHMu6o4prjA7+xaaezIiE=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05TCr6dw015197
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 29 Jun 2020 07:53:06 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 29
+ Jun 2020 07:53:05 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 29 Jun 2020 07:53:05 -0500
+Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05TCquh0015456;
+        Mon, 29 Jun 2020 07:53:04 -0500
+From:   Roger Quadros <rogerq@ti.com>
+To:     <t-kristo@ti.com>
+CC:     <robh@kernel.org>, <kishon@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Roger Quadros <rogerq@ti.com>
+Subject: [PATCH v4 3/6] arm64: dts: ti: k3-j721e-main: Add system controller node and SERDES lane mux
+Date:   Mon, 29 Jun 2020 15:52:51 +0300
+Message-ID: <20200629125254.28754-4-rogerq@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200629125254.28754-1-rogerq@ti.com>
+References: <20200629125254.28754-1-rogerq@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629121816.GC25523@casper.infradead.org>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 29-06-20 13:18:16, Matthew Wilcox wrote:
-> On Mon, Jun 29, 2020 at 08:08:51AM +0300, Mike Rapoport wrote:
-> > > @@ -886,8 +868,12 @@ static struct dm_buffer *__alloc_buffer_wait_no_callback(struct dm_bufio_client
-> > >  			return NULL;
-> > >  
-> > >  		if (dm_bufio_cache_size_latch != 1 && !tried_noio_alloc) {
-> > > +			unsigned noio_flag;
-> > > +
-> > >  			dm_bufio_unlock(c);
-> > > -			b = alloc_buffer(c, GFP_NOIO | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
-> > > +			noio_flag = memalloc_noio_save();
-> > 
-> > I've read the series twice and I'm still missing the definition of
-> > memalloc_noio_save().
-> > 
-> > And also it would be nice to have a paragraph about it in
-> > Documentation/core-api/memory-allocation.rst
-> 
-> Documentation/core-api/gfp_mask-from-fs-io.rst:``memalloc_nofs_save``, ``memalloc_nofs_restore`` respectively ``memalloc_noio_save``,
-> Documentation/core-api/gfp_mask-from-fs-io.rst:   :functions: memalloc_noio_save memalloc_noio_restore
-> Documentation/core-api/gfp_mask-from-fs-io.rst:allows nesting so it is safe to call ``memalloc_noio_save`` or
- 
-The patch is adding memalloc_nowait* and I suspect Mike had that in
-mind, which would be a fair request. Btw. we are missing memalloc_nocma*
-documentation either - I was just reminded of its existence today...
+From: Kishon Vijay Abraham I <kishon@ti.com>
 
+The system controller node manages the CTRL_MMR0 region.
+Add serdes_ln_ctrl node which is used for controlling the SERDES lane mux.
+
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+---
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 27 ++++++++++++
+ include/dt-bindings/mux/mux-j721e-wiz.h   | 53 +++++++++++++++++++++++
+ 2 files changed, 80 insertions(+)
+ create mode 100644 include/dt-bindings/mux/mux-j721e-wiz.h
+
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+index b11cb51af747..5f1f11b6fdff 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+@@ -5,6 +5,8 @@
+  * Copyright (C) 2016-2019 Texas Instruments Incorporated - http://www.ti.com/
+  */
+ #include <dt-bindings/phy/phy.h>
++#include <dt-bindings/mux/mux.h>
++#include <dt-bindings/mux/mux-j721e-wiz.h>
+ 
+ &cbass_main {
+ 	msmc_ram: sram@70000000 {
+@@ -19,6 +21,31 @@
+ 		};
+ 	};
+ 
++	scm_conf: scm-conf@100000 {
++		compatible = "ti,j721e-system-controller", "syscon", "simple-mfd";
++		reg = <0 0x00100000 0 0x1c000>; /* excludes pinctrl region */
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0x0 0x0 0x00100000 0x1c000>;
++
++		serdes_ln_ctrl: serdes-ln-ctrl@4080 {
++			compatible = "mmio-mux";
++			reg = <0x00004080 0x50>;
++			#mux-control-cells = <1>;
++			mux-reg-masks = <0x4080 0x3>, <0x4084 0x3>, /* SERDES0 lane0/1 select */
++					<0x4090 0x3>, <0x4094 0x3>, /* SERDES1 lane0/1 select */
++					<0x40a0 0x3>, <0x40a4 0x3>, /* SERDES2 lane0/1 select */
++					<0x40b0 0x3>, <0x40b4 0x3>, /* SERDES3 lane0/1 select */
++					<0x40c0 0x3>, <0x40c4 0x3>, <0x40c8 0x3>, <0x40cc 0x3>;
++					/* SERDES4 lane0/1/2/3 select */
++			idle-states = <SERDES0_LANE0_PCIE0_LANE0>, <SERDES0_LANE1_PCIE0_LANE1>,
++				      <SERDES1_LANE0_PCIE1_LANE0>, <SERDES1_LANE1_PCIE1_LANE1>,
++				      <SERDES2_LANE0_PCIE2_LANE0>, <SERDES2_LANE1_PCIE2_LANE1>,
++				      <MUX_IDLE_AS_IS>, <SERDES3_LANE1_USB3_0>,
++				      <SERDES4_LANE0_EDP_LANE0>, <SERDES4_LANE1_EDP_LANE1>, <SERDES4_LANE2_EDP_LANE2>, <SERDES4_LANE3_EDP_LANE3>;
++		};
++	};
++
+ 	gic500: interrupt-controller@1800000 {
+ 		compatible = "arm,gic-v3";
+ 		#address-cells = <2>;
+diff --git a/include/dt-bindings/mux/mux-j721e-wiz.h b/include/dt-bindings/mux/mux-j721e-wiz.h
+new file mode 100644
+index 000000000000..fd1c4ea9fc7f
+--- /dev/null
++++ b/include/dt-bindings/mux/mux-j721e-wiz.h
+@@ -0,0 +1,53 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * This header provides constants for J721E WIZ.
++ */
++
++#ifndef _DT_BINDINGS_J721E_WIZ
++#define _DT_BINDINGS_J721E_WIZ
++
++#define SERDES0_LANE0_QSGMII_LANE1	0x0
++#define SERDES0_LANE0_PCIE0_LANE0	0x1
++#define SERDES0_LANE0_USB3_0_SWAP	0x2
++
++#define SERDES0_LANE1_QSGMII_LANE2	0x0
++#define SERDES0_LANE1_PCIE0_LANE1	0x1
++#define SERDES0_LANE1_USB3_0		0x2
++
++#define SERDES1_LANE0_QSGMII_LANE3	0x0
++#define SERDES1_LANE0_PCIE1_LANE0	0x1
++#define SERDES1_LANE0_USB3_1_SWAP	0x2
++#define SERDES1_LANE0_SGMII_LANE0	0x3
++
++#define SERDES1_LANE1_QSGMII_LANE4	0x0
++#define SERDES1_LANE1_PCIE1_LANE1	0x1
++#define SERDES1_LANE1_USB3_1		0x2
++#define SERDES1_LANE1_SGMII_LANE1	0x3
++
++#define SERDES2_LANE0_PCIE2_LANE0	0x1
++#define SERDES2_LANE0_SGMII_LANE0	0x3
++#define SERDES2_LANE0_USB3_1_SWAP	0x2
++
++#define SERDES2_LANE1_PCIE2_LANE1	0x1
++#define SERDES2_LANE1_USB3_1		0x2
++#define SERDES2_LANE1_SGMII_LANE1	0x3
++
++#define SERDES3_LANE0_PCIE3_LANE0	0x1
++#define SERDES3_LANE0_USB3_0_SWAP	0x2
++
++#define SERDES3_LANE1_PCIE3_LANE1	0x1
++#define SERDES3_LANE1_USB3_0		0x2
++
++#define SERDES4_LANE0_EDP_LANE0		0x0
++#define SERDES4_LANE0_QSGMII_LANE5	0x2
++
++#define SERDES4_LANE1_EDP_LANE1		0x0
++#define SERDES4_LANE1_QSGMII_LANE6	0x2
++
++#define SERDES4_LANE2_EDP_LANE2		0x0
++#define SERDES4_LANE2_QSGMII_LANE7	0x2
++
++#define SERDES4_LANE3_EDP_LANE3		0x0
++#define SERDES4_LANE3_QSGMII_LANE8	0x2
++
++#endif /* _DT_BINDINGS_J721E_WIZ */
 -- 
-Michal Hocko
-SUSE Labs
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
