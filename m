@@ -2,83 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B519D20CB66
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 03:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B2120CB64
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 03:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgF2BWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 21:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgF2BWU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 21:22:20 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0DEC03E979
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 18:22:19 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id di5so2043022qvb.11
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 18:22:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=Gh8U1Z9aatU+1G7l/mTh27mGH6DDhKMcWP0trx36I7Y=;
-        b=nF52aeqa6XvI17VPNWfcxUO3BvWQWocUrQt4NXM5BPW4VeOXe+BAqRmkyPFsZZP7gT
-         lHaIauq6Rf/gswtinjhDpyTrHlYvnaYZ2glDFrGJvjWJHlKsW0G50ypzCHQovjows77j
-         1XPkqdyBN802miZ6CBrFrLHC2p+9sXrvGKbWcvewr+fqsmeby+kPDrc9b0ccbuM9vU4F
-         uEDTo1caGWeRYWuiq3HiG41w6A3xY3kRnRoOwtASefv/FVSep4ByOfvV96Ba8t7jVAEw
-         iq9ro33zXzxdHsldk82gfElLQR43YqGnorWgF+s+tmvJoSbxo3E1WHWkX6aCCNuNjSWM
-         MF4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references;
-        bh=Gh8U1Z9aatU+1G7l/mTh27mGH6DDhKMcWP0trx36I7Y=;
-        b=YiEkK4Ymq4ZXaGBcZJJCE1TNoHbEfc/9B0bOgyfN3TRc19e2xsCYdb0fshTSxeV3h/
-         syYdaQJFOdnX7jr4Uhh/uYx5LP0fTjAQgdjHCNucqz9JI3FmKA5SQhqOKyQfeGbu3vKz
-         PZ2GdI6ci51GCsbKBj9qnPBrs/bgFwmzf/nCHaid7yL9r/ckkjmzEm13vUB/3QVz/+w4
-         Qmhnoosjlk0ROc392iMnmr7c6SssuGUEJoZMrgXiPjWGqbq6KbPSGXMoIOXiZDoQz2A4
-         kScMRXSSzBROyBJIruj5W0EamxvYUx2LmZwUD5/OvNPTNRil90jvtub2aVgUP/F7JCOC
-         KwUg==
-X-Gm-Message-State: AOAM532+DNjjvhGhSruAUKbQiooi8/tu6U2LFODeqF7OykWn3fhgZxFX
-        HkBTblyGSfgmNEZywCL5opc=
-X-Google-Smtp-Source: ABdhPJxp74N6P3MOVzgMLWI70QSmixkYtlP57p89PpUlEcDy6Ky5ITGxpDJdzTuOltHEmlMGxo55+g==
-X-Received: by 2002:a0c:f385:: with SMTP id i5mr13474375qvk.4.1593393739128;
-        Sun, 28 Jun 2020 18:22:19 -0700 (PDT)
-Received: from linux.home ([2604:2000:1344:41d:f01c:7705:2169:19ef])
-        by smtp.googlemail.com with ESMTPSA id 19sm6784157qky.72.2020.06.28.18.22.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jun 2020 18:22:18 -0700 (PDT)
-From:   Gaurav Singh <gaurav1086@gmail.com>
-To:     gaurav1086@gmail.com, linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] [scripts] read_file: fix memory leak
-Date:   Sun, 28 Jun 2020 21:21:33 -0400
-Message-Id: <20200629012149.29839-1-gaurav1086@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200621165657.9814-1-gaurav1086@gmail.com>
-References: <20200621165657.9814-1-gaurav1086@gmail.com>
+        id S1726771AbgF2BQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 21:16:57 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6848 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726229AbgF2BQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Jun 2020 21:16:57 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 13C10858DA3A05C5B6EA;
+        Mon, 29 Jun 2020 09:16:55 +0800 (CST)
+Received: from huawei.com (10.90.53.225) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 29 Jun 2020
+ 09:16:48 +0800
+From:   Zheng Bin <zhengbin13@huawei.com>
+To:     <mchristi@redhat.com>, <ebiggers@kernel.org>,
+        <josef@toxicpanda.com>, <axboe@kernel.dk>,
+        <navid.emamdoost@gmail.com>, <linux-block@vger.kernel.org>,
+        <nbd@other.debian.org>, <linux-kernel@vger.kernel.org>
+CC:     <yi.zhang@huawei.com>, <zhengbin13@huawei.com>
+Subject: [PATCH v4] nbd: Fix memory leak in nbd_add_socket
+Date:   Mon, 29 Jun 2020 09:23:49 +0800
+Message-ID: <20200629012349.26641-1-zhengbin13@huawei.com>
+X-Mailer: git-send-email 2.26.0.106.g9fadedd
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.90.53.225]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Free buf before returning to avoid memory leak.
+When adding first socket to nbd, if nsock's allocation failed, the data
+structure member "config->socks" was reallocated, but the data structure
+member "config->num_connections" was not updated. A memory leak will occur
+then because the function "nbd_config_put" will free "config->socks" only
+when "config->num_connections" is not zero.
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+Fixes: 03bf73c315ed ("nbd: prevent memory leak")
+Reported-by: syzbot+934037347002901b8d2a@syzkaller.appspotmail.com
+Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
 ---
- scripts/insert-sys-cert.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/scripts/insert-sys-cert.c b/scripts/insert-sys-cert.c
-index 8902836c2342..22d99a8faca9 100644
---- a/scripts/insert-sys-cert.c
-+++ b/scripts/insert-sys-cert.c
-@@ -250,6 +250,7 @@ static char *read_file(char *file_name, int *size)
+v1->v2: improve change description
+v2->v3: fix some code style issues, improve change description
+v3->v4: add "Reported-by" tag
+
+ drivers/block/nbd.c | 25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 01794cd2b6ca..3ff4054d6834 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -1036,25 +1036,26 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
+ 	     test_bit(NBD_RT_BOUND, &config->runtime_flags))) {
+ 		dev_err(disk_to_dev(nbd->disk),
+ 			"Device being setup by another task");
+-		sockfd_put(sock);
+-		return -EBUSY;
++		err = -EBUSY;
++		goto put_socket;
++	}
++
++	nsock = kzalloc(sizeof(*nsock), GFP_KERNEL);
++	if (!nsock) {
++		err = -ENOMEM;
++		goto put_socket;
  	}
- 	if (read(fd, buf, *size) != *size) {
- 		perror("File read failed");
-+		free(buf);
- 		close(fd);
- 		return NULL;
+
+ 	socks = krealloc(config->socks, (config->num_connections + 1) *
+ 			 sizeof(struct nbd_sock *), GFP_KERNEL);
+ 	if (!socks) {
+-		sockfd_put(sock);
+-		return -ENOMEM;
++		kfree(nsock);
++		err = -ENOMEM;
++		goto put_socket;
  	}
--- 
-2.17.1
+
+ 	config->socks = socks;
+
+-	nsock = kzalloc(sizeof(struct nbd_sock), GFP_KERNEL);
+-	if (!nsock) {
+-		sockfd_put(sock);
+-		return -ENOMEM;
+-	}
+-
+ 	nsock->fallback_index = -1;
+ 	nsock->dead = false;
+ 	mutex_init(&nsock->tx_lock);
+@@ -1066,6 +1067,10 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
+ 	atomic_inc(&config->live_connections);
+
+ 	return 0;
++
++put_socket:
++	sockfd_put(sock);
++	return err;
+ }
+
+ static int nbd_reconnect_socket(struct nbd_device *nbd, unsigned long arg)
+--
+2.26.0.106.g9fadedd
 
