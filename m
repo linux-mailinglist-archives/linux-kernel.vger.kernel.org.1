@@ -2,123 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1424220E828
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54CB20E847
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391680AbgF2WEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 18:04:10 -0400
-Received: from mga17.intel.com ([192.55.52.151]:13064 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391789AbgF2WEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 18:04:01 -0400
-IronPort-SDR: DHbY/j1+e5YRByWtjoNiEmCgRPpCVnSwSkLrr85eCRZ1qWZRt3T6hfjkORSFy7VK8WoOAtBt+u
- 0gpQxvZdnaNA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="126217642"
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="126217642"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 15:04:00 -0700
-IronPort-SDR: SreirR+rW8l5lvYprSMfMupp38yiGawA6y2IndIaYKmlSV9rQeGpcfGD8AVlg9Nf7e28dnSeBc
- NDZmcB9roRzw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="454351736"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by orsmga005.jf.intel.com with ESMTP; 29 Jun 2020 15:04:00 -0700
-Date:   Mon, 29 Jun 2020 15:04:00 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v33 12/21] x86/sgx: Allow a limited use of
- ATTRIBUTE.PROVISIONKEY for attestation
-Message-ID: <20200629220400.GI12312@linux.intel.com>
-References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
- <20200617220844.57423-13-jarkko.sakkinen@linux.intel.com>
- <20200629160242.GB32176@zn.tnic>
+        id S1729217AbgF2WFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 18:05:30 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:37067 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391865AbgF2WFG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 18:05:06 -0400
+Received: by mail-io1-f68.google.com with SMTP id v6so5193838iob.4;
+        Mon, 29 Jun 2020 15:05:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/33WwvXDUgobqj85r5L3nzLt5ser+3dcQ28svWATI7k=;
+        b=mifdKd076vt1x5Ou7aR4oKqwHs2Fqnn/+OFDNsQXVfa6hHKR4yRnzFX/WQWnyg5rxn
+         mkdXsccScyk8qejLl092dkXpTsFrRFeCQoEhB2jXD2R/JDUBkhhs70kaLANQseD/fVwR
+         FHR8i+nUTHOdDunZLy5Esm7JsUm4UTILGPjvxarqKQqcIhso8tN0ZnRgss5b2oR9ybd3
+         wzYB1ZgspLoAPcOOsFmScLDu7FEZhJNASfDTroEiH3c8wGzwQcvqo1P4zmPQ8FWxykCL
+         6t/nLXPfGR0RyGF17614wKs+/06idorQlldid+QdvVUUp+OXC18oX1x8TT9nqV2WhvC5
+         c+tg==
+X-Gm-Message-State: AOAM5317VzWIU8D6C42s0zlRJCgfXNLpBWtQKb48FCfPst7flQstOf7k
+        I1UDQWo45w1TTAUE5PhVjrxOcTbkjw==
+X-Google-Smtp-Source: ABdhPJxVuYyuGtstqDJ8HOPThuovY3rPXcwWLAx5FKDmu1o5PgaYcJiB1dyG+EsqAE8S7/Upre6ZQQ==
+X-Received: by 2002:a05:6602:2dca:: with SMTP id l10mr18871444iow.163.1593468305897;
+        Mon, 29 Jun 2020 15:05:05 -0700 (PDT)
+Received: from xps15 ([64.188.179.255])
+        by smtp.gmail.com with ESMTPSA id o19sm543584iob.5.2020.06.29.15.05.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 15:05:05 -0700 (PDT)
+Received: (nullmailer pid 3021658 invoked by uid 1000);
+        Mon, 29 Jun 2020 22:05:02 -0000
+Date:   Mon, 29 Jun 2020 16:05:02 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        ulf.hansson@linaro.org, s.trumtrar@pengutronix.de,
+        aisheng.dong@nxp.com, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Linux-imx@nxp.com
+Subject: Re: [PATCH V4 3/3] dt-bindings: clock: Correct example in i.MX8QXP
+ LPCG binding
+Message-ID: <20200629220502.GA3019731@bogus>
+References: <1592450578-30140-1-git-send-email-Anson.Huang@nxp.com>
+ <1592450578-30140-3-git-send-email-Anson.Huang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200629160242.GB32176@zn.tnic>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <1592450578-30140-3-git-send-email-Anson.Huang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 06:02:42PM +0200, Borislav Petkov wrote:
-> On Thu, Jun 18, 2020 at 01:08:34AM +0300, Jarkko Sakkinen wrote:
-> > Provisioning Certification Enclave (PCE), the root of trust for other
-> > enclaves, generates a signing key from a fused key called Provisioning
-> > Certification Key. PCE can then use this key to certify an attestation key
-> > of a QE, e.g. we get the chain of trust down to the hardware if the Intel
+On Thu, Jun 18, 2020 at 11:22:58AM +0800, Anson Huang wrote:
+> In i.MX8QXP LPCG binding's example, "fsl,imx7d-usdhc" as fallback
+> compatible is incorrect, remove it to avoid below build error:
 > 
-> What's a QE?
+> Documentation/devicetree/bindings/clock/imx8qxp-lpcg.example.dt.yaml:
+> mmc@5b010000: compatible: Additional items are not allowed ('fsl,imx7d-usdhc' was unexpected)
+> Documentation/devicetree/bindings/clock/imx8qxp-lpcg.example.dt.yaml:
+> mmc@5b010000: compatible: ['fsl,imx8qxp-usdhc', 'fsl,imx7d-usdhc'] is too long
 > 
-> I don't see this acronym resolved anywhere in the whole patchset.
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> ---
+> New patch, to fix build error when patch #1 is added.
 
-Quoting Enclave.
+So, patch 1 should come last. I'll re-order when applying.
 
-> > signed PCE is used.
-> > 
-> > To use the needed keys, ATTRIBUTE.PROVISIONKEY is required but should be
-> > only allowed for those who actually need it so that only the trusted
-> > parties can certify QE's.
-> > 
-> > Obviously the attestation service should know the public key of the used
-> > PCE and that way detect illegit attestation, but whitelisting the legit
-> > users still adds an additional layer of defence.
-> > 
-> > Add new device file called /dev/sgx/provision. The sole purpose of this
-> > file is to provide file descriptors that act as privilege tokens to allow
-> > to build enclaves with ATTRIBUTE.PROVISIONKEY set. A new ioctl called
-> > SGX_IOC_ENCLAVE_SET_ATTRIBUTE is used to assign this token to an enclave.
-> 
-> So I'm sure I'm missing something here: what controls which
-> enclave can open /dev/sgx/provision and thus pass the FD to
-> SGX_IOC_ENCLAVE_SET_ATTRIBUTE?
-
-/dev/sgx/provision is root-only by default, the expectation is that the admin
-will configure the system to grant only specific enclaves access to the
-PROVISION_KEY.
-
-> And in general, how does that whole flow look like: what calls
-> SGX_IOC_ENCLAVE_SET_ATTRIBUTE when?
-
-The basic gist is that the host process of an enclave that needs/wants access
-to the PROVISION_KEY will invoke SGX_IOC_ENCLAVE_SET_ATTRIBUTE when building
-the enclave.  Any enclave can request access to PROVISION_KEY, but practically
-speaking only the PCE and QE (or their non-Intel equivalents) actually need
-access to the key.  KVM (future series) will also respect /dev/sgx/provision,
-i.e. require a similar ioctl() to expose the PROVISION_KEY to a guest.
-
-E.g. for my own personal testing, I never do anything attestation related, so
-none of the enclaves I run request PROVISION_KEY, but I do expose it to VMs to
-test the KVM paths.
-
-In this series, access is fairly binary, i.e. there's no additional kernel
-infrastructure to help userspace make per-enclave decisions.  There have been
-more than a few proposals on how to extend the kernel to help provide better
-granularity, e.g. LSM hooks, but it was generally agreed to punt that stuff
-to post-upstreaming to keep things "simple" once we went far enough down
-various paths to ensure we weren't painting ourselves into a corner.
-
-If you want super gory details, Intel's whitepaper on attestation in cloud
-environments is a good starting point[*], but I don't recommended doing much
-more than skimming unless you really like attestation stuff or are
-masochistic, which IMO amount to the same thing :-)
-
-[*] https://download.01.org/intel-sgx/dcap-1.0/docs/SGX_ECDSA_QuoteGenReference_DCAP_API_Linux_1.0.pdf
+Rob
