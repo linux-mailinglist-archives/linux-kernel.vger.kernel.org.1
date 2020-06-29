@@ -2,150 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A12A420D346
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14AD220D518
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730110AbgF2S5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:57:36 -0400
-Received: from mga05.intel.com ([192.55.52.43]:57279 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729847AbgF2S5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:57:33 -0400
-IronPort-SDR: 6vsMOgbGYcMt1ZHGcMZSH+75h2h0ld/P6ibxsCj3/Gnyp8RzoS9kxsqZvLp3+QG7O4O9Dq2fJH
- PN/yM3eh5T/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="230816141"
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="230816141"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 08:12:12 -0700
-IronPort-SDR: j2KamSBj8xliJFX76goLSWvtUaCr1ceFqJcdJUpb5K/K1mEEwtccZaF4zdMF9IvsBvgRkEjMiw
- uzCCpDkS/bhg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="318198466"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 29 Jun 2020 08:11:58 -0700
-Received: from [10.249.227.168] (abudanko-mobl.ccr.corp.intel.com [10.249.227.168])
-        by linux.intel.com (Postfix) with ESMTP id 491A9580107;
-        Mon, 29 Jun 2020 08:11:53 -0700 (PDT)
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Subject: Re: [PATCH v8 01/13] tools/libperf: avoid moving of fds at
- fdarray__filter() call
-To:     Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        id S1730930AbgF2TOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:14:39 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:51586 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731819AbgF2TOf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:14:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593458074;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uaWG/Hwtc/IuZbOB2qwDYiIrGK8VtDdNu+bH/o2E7C4=;
+        b=b+L75C/29nuPnY7P7vp/5K56gpxYUxfEN2LmOxKSBtEOuNgEMLivk6ByH5mFPrwYyNDxR3
+        NMID2N3Uvn/mpzlvc9y65GCIjI8JAcUXXl4sWls5AD785df12+oqamND3tSY/Tcvq4qtEY
+        RGChheQHJVzCDsN3PmvjYVt3PHomg1A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-35-4UE05tubOXSAa1_zfb3LrQ-1; Mon, 29 Jun 2020 11:13:46 -0400
+X-MC-Unique: 4UE05tubOXSAa1_zfb3LrQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22F07107ACCA;
+        Mon, 29 Jun 2020 15:13:45 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.58])
+        by smtp.corp.redhat.com (Postfix) with SMTP id BFEE2101E5A2;
+        Mon, 29 Jun 2020 15:13:42 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 29 Jun 2020 17:13:44 +0200 (CEST)
+Date:   Mon, 29 Jun 2020 17:13:41 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Jan Kara <jack@suse.cz>, Davidlohr Bueso <dave@stgolabs.net>,
         Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <0781a077-aa82-5b4a-273e-c17372a72b93@linux.intel.com>
- <3d36dc7a-4249-096c-7554-80e6d290eac5@linux.intel.com>
- <fada6325-2e6a-0de4-918f-0bc7d1410c52@linux.intel.com>
- <20200625171405.GL2719003@krava>
- <688910f3-289e-d63e-79e3-0a17a6df0e9e@linux.intel.com>
- <20200626093745.GM2719003@krava>
- <6582201a-9570-709f-f6e9-5a644296f49d@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <b2a868bb-b434-7814-d577-944efc5369aa@linux.intel.com>
-Date:   Mon, 29 Jun 2020 18:11:52 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Lukas Czerner <lczerner@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: wait_on_page_bit_common(TASK_KILLABLE, EXCLUSIVE) can miss
+ wakeup?
+Message-ID: <20200629151340.GC20323@redhat.com>
+References: <20200624161142.GA12184@redhat.com>
+ <20200624162042.GA12238@redhat.com>
+ <CAHk-=wjJA2Z3kUFb-5s=6+n0qbTs8ELqKFt9B3pH85a8fGD73w@mail.gmail.com>
+ <20200626154313.GI4817@hirez.programming.kicks-ass.net>
+ <CAHk-=whvVWNXPJq1k566zn4SfXAifXtiA7T+7JFweR3rQ0nc9A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <6582201a-9570-709f-f6e9-5a644296f49d@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whvVWNXPJq1k566zn4SfXAifXtiA7T+7JFweR3rQ0nc9A@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 06/27, Linus Torvalds wrote:
+>
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -1150,6 +1150,12 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+>  			io_schedule();
+>  
+>  		if (behavior == EXCLUSIVE) {
+> +			/*
+> +			 * Make sure we don't get any exclusive wakeups
+> +			 * after this point!
+> +			 */
+> +			__set_current_state(TASK_RUNNING);
+> +			smp_mb__before_atomic();
+>  			if (!test_and_set_bit_lock(bit_nr, &page->flags))
+>  				break;
+>  		} else if (behavior == SHARED) {
 
-On 26.06.2020 13:06, Alexey Budankov wrote:
-> 
-> On 26.06.2020 12:37, Jiri Olsa wrote:
->> On Thu, Jun 25, 2020 at 10:32:29PM +0300, Alexey Budankov wrote:
->>>
->>> On 25.06.2020 20:14, Jiri Olsa wrote:
->>>> On Wed, Jun 24, 2020 at 08:19:32PM +0300, Alexey Budankov wrote:
->>>>>
->>>>> On 17.06.2020 11:35, Alexey Budankov wrote:
->>>>>>
->>>>>> Skip fds with zeroed revents field from count and avoid fds moving
->>>>>> at fdarray__filter() call so fds indices returned by fdarray__add()
->>>>>> call stay the same and can be used for direct access and processing
->>>>>> of fd revents status field at entries array of struct fdarray object.
->>>>>>
->>>>>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
->>>>>> ---
->>>>>>  tools/lib/api/fd/array.c   | 11 +++++------
->>>>>>  tools/perf/tests/fdarray.c | 20 ++------------------
->>>>>>  2 files changed, 7 insertions(+), 24 deletions(-)
->>>>>>
->>>>>> diff --git a/tools/lib/api/fd/array.c b/tools/lib/api/fd/array.c
->>>>>> index 58d44d5eee31..97843a837370 100644
->>>>>> --- a/tools/lib/api/fd/array.c
->>>>>> +++ b/tools/lib/api/fd/array.c
->>>>>> @@ -93,22 +93,21 @@ int fdarray__filter(struct fdarray *fda, short revents,
->>>>>>  		return 0;
->>>>>>  
->>>>>>  	for (fd = 0; fd < fda->nr; ++fd) {
->>>>>> +		if (!fda->entries[fd].revents)
->>>>>> +			continue;
->>>>>> +
->>>>>
->>>>> So it looks like this condition also filters out non signaling events fds, not only
->>>>> control and others fds, and this should be somehow avoided so such event related fds
->>>>> would be counted. Several options have been proposed so far:
->>>>>
->>>>> 1) Explicit typing of fds via API extension and filtering based on the types:
->>>>>    a) with separate fdarray__add_stat() call
->>>>>    b) with type arg of existing fdarray__add() call
->>>>>    c) various memory management design is possible
->>>>>
->>>>> 2) Playing tricks with fd positions inside entries and assumptions on fdarray API calls ordering
->>>>>    - looks more like a hack than a designed solution
->>>>>
->>>>> 3) Rewrite of fdarray class to allocate separate object for every added fds
->>>>>    - can be replaced with nonscrewing of fds by __filter()
->>>>>
->>>>> 4) Distinct between fds types at fdarray__filter() using .revents == 0 condition
->>>>>    - seems to have corner cases and thus not applicable
->>>>>
->>>>> 5) Extension of fdarray__poll(, *arg_ptr, arg_size) with arg of fds array to atomically poll
->>>>>    on fdarray_add()-ed fds and external arg fds and then external arg fds processing
->>>>>
->>>>> 6) Rewrite of fdarray class on epoll() call basis
->>>>>    - introduces new scalability restrictions for Perf tool
->>>>
->>>> hum, how many fds for polling do you expect in your workloads?
->>>
->>> Currently it is several hundreds so default of 1K is easily hit and 
->>> "Profile a Large Number of PMU Events on Multi-Core Systems" section [1]
->>> recommends:
->>>
->>> soft nofile 65535
->>> hard nofile 65535
->>
->> I'm confused, are you talking about file descriptors limit now?
->> this wont be affected by epoll change.. what do I miss?
-> 
-> Currently there is already uname -n limit on the amount of open file descriptors
-> and Perf tool process is affected by that limit.
-> 
-> Moving to epoll() will impose one more max_user_watches limit and that can additionally
-> confine Perf applicability even though default value on some machines currently
-> is high enough.
+FWIW,
 
-Prior making v9 I would prefer to agree on some design to be implemented in order to
-avoid guessing and redundant reiterating.
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 
-Options that I see as good balanced ones are 1) or 5), + non screwing of fds to fix
-staleness of pos(=fdarray__add()).
-
-Are there any thoughts so far?
-
-~Aleksei
