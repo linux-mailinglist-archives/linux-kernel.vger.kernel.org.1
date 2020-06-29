@@ -2,134 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A335720D66E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1CE20D632
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732088AbgF2TUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:20:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:39574 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728684AbgF2TT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:19:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F3E111516;
-        Mon, 29 Jun 2020 08:41:20 -0700 (PDT)
-Received: from [10.57.21.32] (unknown [10.57.21.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD4A13F73C;
-        Mon, 29 Jun 2020 08:41:18 -0700 (PDT)
-Subject: Re: [PATCH net] xsk: remove cheap_dma optimization
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     maximmi@mellanox.com, konrad.wilk@oracle.com,
-        jonathan.lemon@gmail.com, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, magnus.karlsson@intel.com
-References: <20200626134358.90122-1-bjorn.topel@gmail.com>
- <c60dfb5a-2bf3-20bd-74b3-6b5e215f73f8@iogearbox.net>
- <20200627070406.GB11854@lst.de>
- <88d27e1b-dbda-301c-64ba-2391092e3236@intel.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <878626a2-6663-0d75-6339-7b3608aa4e42@arm.com>
-Date:   Mon, 29 Jun 2020 16:41:16 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1731105AbgF2TSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:18:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731886AbgF2TRn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:17:43 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69549C03079F;
+        Mon, 29 Jun 2020 08:41:55 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id d4so15937212otk.2;
+        Mon, 29 Jun 2020 08:41:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=18DuSBZeLijFT5byeb07kqFnxpD8Og5k3o71uVKMsdg=;
+        b=pdqY7+o2ViXtdwzpRg7V0spv+w3RMUTM8pq1mA6PmxJQxaN+pwXkRL4gutZbEnUAKk
+         7oZWR0fNzNN95BqoUgj38z60RkoZbqe4xAnV7jSf0z2PY1Vs68uxoB44TPGrQzkJO7a0
+         Vyua6rOkYqe3j2a+SNQtf1aAGahjOQ6olRQRMR+QKVRHTqTrB26RJMcrE0bQrdpP0kxb
+         GXkekPVusG/8EahYhVxY3eQGoN00/OYTFsMlyutG2FEKFwqzG7+e2D6I98d2I2Ajzi8X
+         2phUh4VE9sJpVENYIDLD7jo8f7GkC33+xzVej1zgc1PQXMy/mwSU4BfTjAdKNWzeDASN
+         aDpQ==
+X-Gm-Message-State: AOAM532mh0D7t76EfolXynbkKGtSx7oXy9QJfDi+g7PO2w/qt/ymCT0a
+        6P7ZpiPFXLDHyBHypymp52y56QVZgAapKfX/hxQ=
+X-Google-Smtp-Source: ABdhPJyfGDnofAtWY6Vq9zQSiEjHHywgsNVHJzUbnOYeAK8rSOSVeLQNZQAOcMed2+/KO3c+bzP8Q5CiqDzs7aUNX9g=
+X-Received: by 2002:a05:6830:1451:: with SMTP id w17mr1238896otp.250.1593445314725;
+ Mon, 29 Jun 2020 08:41:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <88d27e1b-dbda-301c-64ba-2391092e3236@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <20200627143453.31835-1-rppt@kernel.org> <20200627143453.31835-2-rppt@kernel.org>
+In-Reply-To: <20200627143453.31835-2-rppt@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 29 Jun 2020 17:41:43 +0200
+Message-ID: <CAMuHMdUOrrrtKuhtWJvzKNNLXY1fx+Ym1oXGN2J_CZ7RqByGHQ@mail.gmail.com>
+Subject: Re: [PATCH 1/8] mm: remove unneeded includes of <asm/pgalloc.h>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Joerg Roedel <joro@8bytes.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-csky@vger.kernel.org,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-28 18:16, Björn Töpel wrote:
-> 
-> On 2020-06-27 09:04, Christoph Hellwig wrote:
->> On Sat, Jun 27, 2020 at 01:00:19AM +0200, Daniel Borkmann wrote:
->>> Given there is roughly a ~5 weeks window at max where this removal could
->>> still be applied in the worst case, could we come up with a fix / 
->>> proposal
->>> first that moves this into the DMA mapping core? If there is 
->>> something that
->>> can be agreed upon by all parties, then we could avoid re-adding the 9%
->>> slowdown. :/
->>
->> I'd rather turn it upside down - this abuse of the internals blocks work
->> that has basically just missed the previous window and I'm not going
->> to wait weeks to sort out the API misuse.  But we can add optimizations
->> back later if we find a sane way.
->>
-> 
-> I'm not super excited about the performance loss, but I do get
-> Christoph's frustration about gutting the DMA API making it harder for
-> DMA people to get work done. Lets try to solve this properly using
-> proper DMA APIs.
-> 
-> 
->> That being said I really can't see how this would make so much of a
->> difference.  What architecture and what dma_ops are you using for
->> those measurements?  What is the workload?
->>
-> 
-> The 9% is for an AF_XDP (Fast raw Ethernet socket. Think AF_PACKET, but 
-> faster.) benchmark: receive the packet from the NIC, and drop it. The 
-> DMA syncs stand out in the perf top:
-> 
->    28.63%  [kernel]                   [k] i40e_clean_rx_irq_zc
->    17.12%  [kernel]                   [k] xp_alloc
->     8.80%  [kernel]                   [k] __xsk_rcv_zc
->     7.69%  [kernel]                   [k] xdp_do_redirect
->     5.35%  bpf_prog_992d9ddc835e5629  [k] bpf_prog_992d9ddc835e5629
->     4.77%  [kernel]                   [k] xsk_rcv.part.0
->     4.07%  [kernel]                   [k] __xsk_map_redirect
->     3.80%  [kernel]                   [k] dma_direct_sync_single_for_cpu
->     3.03%  [kernel]                   [k] dma_direct_sync_single_for_device
->     2.76%  [kernel]                   [k] i40e_alloc_rx_buffers_zc
->     1.83%  [kernel]                   [k] xsk_flush
-> ...
-> 
-> For this benchmark the dma_ops are NULL (dma_is_direct() == true), and
-> the main issue is that SWIOTLB is now unconditionally enabled [1] for
-> x86, and for each sync we have to check that if is_swiotlb_buffer()
-> which involves a some costly indirection.
-> 
-> That was pretty much what my hack avoided. Instead we did all the checks
-> upfront, since AF_XDP has long-term DMA mappings, and just set a flag
-> for that.
-> 
-> Avoiding the whole "is this address swiotlb" in
-> dma_direct_sync_single_for_{cpu, device]() per-packet
-> would help a lot.
+On Sat, Jun 27, 2020 at 4:35 PM Mike Rapoport <rppt@kernel.org> wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+>
+> In the most cases <asm/pgalloc.h> header is required only for allocations
+> of page table memory. Most of the .c files that include that header do not
+> use symbols declared in <asm/pgalloc.h> and do not require that header.
+>
+> As for the other header files that used to include <asm/pgalloc.h>, it is
+> possible to move that include into the .c file that actually uses symbols
+> from <asm/pgalloc.h> and drop the include from the header file.
+>
+> The process was somewhat automated using
+>
+>         sed -i -E '/[<"]asm\/pgalloc\.h/d' \
+>                 $(grep -L -w -f /tmp/xx \
+>                         $(git grep -E -l '[<"]asm/pgalloc\.h'))
+>
+> where /tmp/xx contains all the symbols defined in
+> arch/*/include/asm/pgalloc.h.
+>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-I'm pretty sure that's one of the things we hope to achieve with the 
-generic bypass flag :)
+For the m68k part:
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-> Somewhat related to the DMA API; It would have performance benefits for
-> AF_XDP if the DMA range of the mapped memory was linear, i.e. by IOMMU
-> utilization. I've started hacking a thing a little bit, but it would be
-> nice if such API was part of the mapping core.
-> 
-> Input: array of pages Output: array of dma addrs (and obviously dev,
-> flags and such)
-> 
-> For non-IOMMU len(array of pages) == len(array of dma addrs)
-> For best-case IOMMU len(array of dma addrs) == 1 (large linear space)
-> 
-> But that's for later. :-)
+Gr{oetje,eeting}s,
 
-FWIW you will typically get that behaviour from IOMMU-based 
-implementations of dma_map_sg() right now, although it's not strictly 
-guaranteed. If you can weather some additional setup cost of calling 
-sg_alloc_table_from_pages() plus walking the list after mapping to test 
-whether you did get a contiguous result, you could start taking 
-advantage of it as some of the dma-buf code in DRM and v4l2 does already 
-(although those cases actually treat it as a strict dependency rather 
-than an optimisation).
+                        Geert
 
-I'm inclined to agree that if we're going to see more of these cases, a 
-new API call that did formally guarantee a DMA-contiguous mapping 
-(either via IOMMU or bounce buffering) or failure might indeed be handy.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Robin.
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
