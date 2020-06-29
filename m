@@ -2,125 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B266D20E4A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CD120E4FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391122AbgF2V1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729068AbgF2Smo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:42:44 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47258C030F07
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:13:53 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id t11so3240859pfq.11
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:13:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XxKoXEPuBlTQyUvZurMXJpDKgGIiS8L+c8IX0bHvw0I=;
-        b=ZbIN+JQ//n3EjgqTOkxX8ekliUEAwjrDiPxXO8sdYMv3PjsHgAP1nHlnBoXEVQUQo+
-         6yx/lX1lGZmAt5N4ds9sj0kru9/aQaEzthHpzQWl7eAn49ZkUvpOItVzAIn954A1VV9b
-         BpATBvCE9AahTLjS0sYbh7C3vxW2VdR8SCeOc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XxKoXEPuBlTQyUvZurMXJpDKgGIiS8L+c8IX0bHvw0I=;
-        b=JxKyGgV/EBD8hCIBPjA+RzF8V3/1IsU+fJZLN4HqCB7Q0LGZBaZlwJIruiDkXdlSZN
-         zf5tvi/i3MmlAXQWphzNGJ9ra4N/JA2Xkn49qaqcZKFDDD3Go7IUu9ApNgrByB/WR8CL
-         Z2VJxUhyGHNYWcsLp9+5VXjy88CL1ZL7LWr1bGgg6FxGRG5WMd3iEmr4FxnI84IyDXQA
-         A6p3MXHY5BxRNE0wxqHUToDENK0IS8ZR/V7Ti92V/10dwJwoSQabOAF+rChOSL8SEKYF
-         boBwBmL5rZ+UxhQ3cVvPWiRUxyW6wRQ7Pue5/GW9ke4qP1d36oK9xER7ztSz7L+wrJ8u
-         BFWg==
-X-Gm-Message-State: AOAM531XdqrMpJjv2dV9HbH0R/T53ynifUqiauLH4YBnN0fhCotGoZUA
-        0HdTX1bDJE3uQ4FQQPxHVnM4IQwAb/U=
-X-Google-Smtp-Source: ABdhPJywueBWqoLIhuqMQ7cBJU/+OGOIL8B8/25cx6FoSvyPEwkSCIAK1vwBSUZrloSGjTfbYI58gw==
-X-Received: by 2002:a63:bf04:: with SMTP id v4mr11418563pgf.212.1593447232551;
-        Mon, 29 Jun 2020 09:13:52 -0700 (PDT)
-Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:476b:691:abc3:38db])
-        by smtp.gmail.com with ESMTPSA id d5sm188462pfa.71.2020.06.29.09.13.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 09:13:52 -0700 (PDT)
-From:   Prashant Malani <pmalani@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     heikki.krogerus@linux.intel.com,
-        Prashant Malani <pmalani@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Add PM support
-Date:   Mon, 29 Jun 2020 09:13:34 -0700
-Message-Id: <20200629161333.2110327-2-pmalani@chromium.org>
-X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
-In-Reply-To: <20200629161333.2110327-1-pmalani@chromium.org>
-References: <20200629161333.2110327-1-pmalani@chromium.org>
+        id S2391049AbgF2VbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:31:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60658 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728804AbgF2SlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:41:18 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C6B325587;
+        Mon, 29 Jun 2020 16:14:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593447293;
+        bh=i3XF3hOBLFwb0NzPxlALfSrDzl4dgkIr0XA+m7+JoC8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X+SIl8ZxkoXoG+sr41c2HNEnAyjfyK1CY3DA9icEyBQ+PEswOA8VF0ZeBwHmyoaxQ
+         eAllUfzRvyXPv1+0n0a0Y83PLyxT/SowR4vO1gl3gFkVw3NnVmu9y4mTdHddlP87K0
+         33omSROIgfdIPoK7+55i1Fm9buHYzrVyNTQwjTME=
+Date:   Mon, 29 Jun 2020 17:14:50 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH/RFC v4 2/4] regulator: fixed: add regulator_ops members
+ for suspend/resume
+Message-ID: <20200629161450.GE5499@sirena.org.uk>
+References: <1593163942-5087-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <1593163942-5087-3-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <20200626143914.GE5289@sirena.org.uk>
+ <TY2PR01MB3692A3B12CEF7F9708A8A59CD86E0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+ <20200629125756.GC5499@sirena.org.uk>
+ <20200629134011.GA23284@bogus>
+ <CAMuHMdU81-EAve+jHhL8+ohCd5YXrgLWpMgaCvgXFDLO7p17pQ@mail.gmail.com>
+ <20200629150728.GA27911@bogus>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9crTWz/Z+Zyzu20v"
+Content-Disposition: inline
+In-Reply-To: <20200629150728.GA27911@bogus>
+X-Cookie: Real programs don't eat cache.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define basic suspend resume functions for cros-ec-typec. On suspend, we
-simply ensure that any pending port update work is completed, and on
-resume, we re-poll the port state to account for any
-changes/disconnections that might have occurred during suspend.
 
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
----
+--9crTWz/Z+Zyzu20v
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Changes in v2:
-- Remove #ifdef-ery, add __maybe_unused tag to functions.
+On Mon, Jun 29, 2020 at 04:07:28PM +0100, Sudeep Holla wrote:
+> On Mon, Jun 29, 2020 at 04:15:39PM +0200, Geert Uytterhoeven wrote:
 
- drivers/platform/chrome/cros_ec_typec.c | 26 +++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+> > This is all about how to know what exactly PSCI is powering down during
+> > SYSTEM_SUSPEND.  In this specific case, it is about knowing if the eMMC
+> > is powered down or not, as Linux should follow a specific procedure to
+> > prepare the eMMC for that, and Linux should not if that isn't the case.
 
-diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-index 630170fb2cbe..b2e7e928e788 100644
---- a/drivers/platform/chrome/cros_ec_typec.c
-+++ b/drivers/platform/chrome/cros_ec_typec.c
-@@ -725,11 +725,37 @@ static int cros_typec_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
-+static int __maybe_unused cros_typec_suspend(struct device *dev)
-+{
-+	struct cros_typec_data *typec = dev_get_drvdata(dev);
-+
-+	cancel_work_sync(&typec->port_work);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused cros_typec_resume(struct device *dev)
-+{
-+	struct cros_typec_data *typec = dev_get_drvdata(dev);
-+
-+	/* Refresh port state. */
-+	schedule_work(&typec->port_work);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops cros_typec_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(cros_typec_suspend, cros_typec_resume)
-+};
-+
-+#define DEV_PM_OPS	(&cros_typec_pm_ops)
-+
- static struct platform_driver cros_typec_driver = {
- 	.driver	= {
- 		.name = DRV_NAME,
- 		.acpi_match_table = ACPI_PTR(cros_typec_acpi_id),
- 		.of_match_table = of_match_ptr(cros_typec_of_match),
-+		.pm = DEV_PM_OPS,
- 	},
- 	.probe = cros_typec_probe,
- };
--- 
-2.27.0.212.ge8ba1cc988-goog
+> OK, unless you are optimising, you shouldn't care then what PSCI does.
+> If you don't need eMMC, just suspend/power it off before you enter system/
+> psci suspend.
 
+That only works if the power off procedure doesn't require that power be
+removed as part of the procedure.  There's a reasonable argument that
+specs that have such requirements are unhelpful but that doesn't mean
+that nobody will make hardware with such requrements which creates
+problems for generic code that needs to control that hardware if it
+can't discover the power state over suspend.
+
+> > I had a quick look at the latest revision of the PSCI specification, and
+> > it doesn't look like anything has changed in that area since my old pat=
+ch
+> > series from 2017.  So it still boils down to: we don't know what a
+> > specific PSCI implementation will do, as basically anything is
+> > compliant, so the only safe thing is to assume the worst.
+
+> The specification states clearly:
+> "... all devices in the system must be in a state that is compatible
+> with entry into the system state. These preconditions are beyond the scope
+> of this specification and are therefore not described here."
+> "Prior to the call, the OS must disable all sources of wakeup other than
+> those it needs to support for its implementation of suspend to RAM."
+
+This gets a bit circular for a generic OS since the OS needs some way to
+figure out what it's supposed to do on a given platform - for example
+the OS may be happy to use wakeup sources that the firmware is just
+going to cut power on.
+
+> I see nothing has been fixed in the firmware too and we are still
+> discussing the same after 3 years =F0=9F=98=84. Clearly we should start t=
+rusting
+> firmware and built capability to fix and replace it if there are bugs
+> just like kernel and stop hacking around in the kernel to deal with
+> just broken platform/psci firmware.
+
+This isn't just an issue of buggy firmware as far as I can see, it's
+also a lack of ability for the OS and firmware to communicate
+information about their intentions to each other.  As things stand you'd
+need to put static information in the DT.
+
+--9crTWz/Z+Zyzu20v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl76E3kACgkQJNaLcl1U
+h9CVZQf/b/5Ry1gGVzgtNgFJSdZbuHAxc/M3ISHQRVcymW1iEZfglFzYYPbztCAh
+Z9wvSSL2wdE5QIn3fiCogRWEYZ00MRWYaGEkejEVuGiX37nlPtjvrnuk0jU892SI
+mE0lbSPO8fWuF625sxNgUqVVtEX1rYzLY/cQm1OGqADIv2Vu2UsxkotYJ1GogT2N
+D2Uar5ao+JY3t4DkbNw0vL6bnem2tPcQh94HbNR8E/yf+c1dcosKS4nTXQkzzFcK
+pTbtsakKpe+sNs/BXSDOH2Nq00O3LHIrAUEUfx/dl6MyXg5SCHlwmek300usG/8y
+BuBF13l/Vd3ujNfSFazfX8dpElQDQQ==
+=TKQb
+-----END PGP SIGNATURE-----
+
+--9crTWz/Z+Zyzu20v--
