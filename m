@@ -2,155 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E5F20E4D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B7F620E3BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391225AbgF2V3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:29:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40460 "EHLO mx2.suse.de"
+        id S2390755AbgF2VRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:17:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:36810 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728889AbgF2SlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:41:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 80509ABCE;
-        Mon, 29 Jun 2020 10:29:29 +0000 (UTC)
-Message-ID: <1593426565.3504.6.camel@suse.de>
-Subject: Re: [PATCH v3 00/15] HWPOISON: soft offline rework
-From:   Oscar Salvador <osalvador@suse.de>
-To:     nao.horiguchi@gmail.com, linux-mm@kvack.org
-Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
-        mike.kravetz@oracle.com, tony.luck@intel.com, david@redhat.com,
-        aneesh.kumar@linux.vnet.ibm.com, zeil@yandex-team.ru,
-        naoya.horiguchi@nec.com, linux-kernel@vger.kernel.org
-Date:   Mon, 29 Jun 2020 12:29:25 +0200
-In-Reply-To: <20200624150137.7052-1-nao.horiguchi@gmail.com>
-References: <20200624150137.7052-1-nao.horiguchi@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.1 
-Mime-Version: 1.0
+        id S1729478AbgF2Sy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:54:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E64061042;
+        Mon, 29 Jun 2020 03:37:58 -0700 (PDT)
+Received: from [10.37.12.90] (unknown [10.37.12.90])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4DCCC3F71E;
+        Mon, 29 Jun 2020 03:37:57 -0700 (PDT)
+Subject: Re: [PATCH] arm64/cpufeature: Validate feature bits spacing in
+ arm64_ftr_regs[]
+To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, broonie@kernel.org,
+        mark.rutland@arm.com, linux-kernel@vger.kernel.org
+References: <1592274331-19006-1-git-send-email-anshuman.khandual@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <ec04ed20-1ad8-6130-ebd9-0157e5753ef6@arm.com>
+Date:   Mon, 29 Jun 2020 11:42:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
+MIME-Version: 1.0
+In-Reply-To: <1592274331-19006-1-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-06-24 at 15:01 +0000, nao.horiguchi@gmail.com wrote:
-> I rebased soft-offline rework patchset [1][2] onto the latest
-> mmotm.  The
-> rebasing required some non-trivial changes to adjust, but mainly that
-> was
-> straightforward.  I confirmed that the reported problem doesn't
-> reproduce on
-> compaction after soft offline.  For more precise description of the
-> problem
-> and the motivation of this patchset, please see [2].
-
-Hi Naoya,
-
-Thanks for dusting this off.
-To be honest, I got stuck with the hard offline mode so this delayed
-the resubmission, along other problems.
-
-> I think that the following two patches in v2 are better to be done
-> with
-> separate work of hard-offline rework, so it's not included in this
-> series.
+On 06/16/2020 03:25 AM, Anshuman Khandual wrote:
+> arm64_feature_bits for a register in arm64_ftr_regs[] are in a descending
+> order as per their shift values. Validate that these features bits are
+> defined correctly and do not overlap with each other. This check protects
+> against any inadvertent erroneous changes to the register definitions.
 > 
->   - mm,hwpoison: Take pages off the buddy when hard-offlining
->   - mm/hwpoison-inject: Rip off duplicated checks
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> Applies on 5.8-rc1.
 > 
-> These two are not directly related to the reported problem, so they
-> seems
-> not urgent.  And the first one breaks num_poisoned_pages counting in
-> some
-> testcases, and The second patch needs more consideration about
-> commented point.
+>   arch/arm64/kernel/cpufeature.c | 45 +++++++++++++++++++++++++++++++---
+>   1 file changed, 42 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index 4ae41670c2e6..2270eda9a7fb 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -697,11 +697,50 @@ static s64 arm64_ftr_safe_value(const struct arm64_ftr_bits *ftrp, s64 new,
+>   
+>   static void __init sort_ftr_regs(void)
+>   {
+> -	int i;
+> +	const struct arm64_ftr_reg *ftr_reg;
+> +	const struct arm64_ftr_bits *ftr_bits;
+> +	unsigned int i, j, width, shift, prev_shift;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(arm64_ftr_regs); i++) {
+> +		/*
+> +		 * Features here must be sorted in descending order with respect
+> +		 * to their shift values and should not overlap with each other.
+> +		 */
+> +		ftr_reg = arm64_ftr_regs[i].reg;
+> +		for (ftr_bits = ftr_reg->ftr_bits, j = 0;
+> +				ftr_bits->width != 0; ftr_bits++, j++) {
+> +			if (WARN_ON(ftr_bits->shift  + ftr_bits->width > 64))
+> +				pr_err("%s has invalid feature at shift %d\n",
+> +					ftr_reg->name, ftr_bits->shift);
 
-I fully agree.
+nit:
 
-> Any comment/suggestion/help would be appreciated.
+			WARN((ftr_bits->shift + ftr_bits->width) > 64,
+				"%s......);?
 
-My "new" version included a patch to make sure we give a chance to
-pages that possibly are in a pcplist.
-Current behavior is that if someone tries to soft-offline such a page,
-we return an error because page count is 0 but page is not in the buddy
-system.
+> +
+> +			/*
+> +			 * Skip the first feature. There is nothing to
+> +			 * compare against for now.
+> +			 */
+> +			if (j == 0)
+> +				continue;
+> +
+> +			prev_shift = ftr_reg->ftr_bits[j - 1].shift;
+> +			width = ftr_reg->ftr_bits[j].width;
+> +			shift = ftr_reg->ftr_bits[j].shift;
+> +			if (WARN_ON(prev_shift < shift + width))
+> +				pr_err("%s has feature overlap at shift %d\n",
+> +					ftr_reg->name, ftr_bits->shift);
 
-Since this patchset already landed in the mm tree, I could send it as a
-standalone patch on top if you agree with it.
+same as above ?
 
-My patch looked something like:
+> +		}
+>   
+> -	/* Check that the array is sorted so that we can do the binary search */
+> -	for (i = 1; i < ARRAY_SIZE(arm64_ftr_regs); i++)
+> +		/*
+> +		 * Skip the first register. There is nothing to
+> +		 * compare against for now.
+> +		 */
+> +		if (i == 0)
+> +			continue;
 
-From: Oscar Salvador <osalvador@suse.de>
-Date: Mon, 29 Jun 2020 12:25:11 +0200
-Subject: [PATCH] mm,hwpoison: Drain pcplists before bailing out for
-non-buddy
- zero-refcount page
+You are starting at 1 already, so you may skip this check.
 
-A page with 0-refcount and !PageBuddy could perfectly be a pcppage.
-Currently, we bail out with an error if we encounter such a page,
-meaning that we do not give a chance to handle pcppages.
+> +		/*
+> +		 * Registers here must be sorted in ascending order with respect
+> +		 * to sys_id for subsequent binary search in get_arm64_ftr_reg()
+> +		 * to work correctly.
+> +		 */
+>   		BUG_ON(arm64_ftr_regs[i].sys_id < arm64_ftr_regs[i - 1].sys_id);
+> +	}
+>   }
+>   
+>   /*
 
-Fix this by draining pcplists whenever we find this kind of page
-and retry the check again.
-It might be that pcplists have been spilled into the buddy allocator
-and so we can handle it.
+Otherwise looks good to me.
 
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
----
- mm/memory-failure.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
-
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index e90ddddab397..3aac3f1eeed0 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -958,7 +958,7 @@ static int page_action(struct page_state *ps,
-struct page *p,
-  * Return: return 0 if failed to grab the refcount, otherwise true
-(some
-  * non-zero value.)
-  */
--static int get_hwpoison_page(struct page *page)
-+static int __get_hwpoison_page(struct page *page)
- {
- 	struct page *head = compound_head(page);
- 
-@@ -988,6 +988,28 @@ static int get_hwpoison_page(struct page *page)
- 	return 0;
- }
- 
-+static int get_hwpoison_page(struct page *p)
-+{
-+	int ret;
-+	bool drained = false;
-+
-+retry:
-+	ret = __get_hwpoison_page(p);
-+	if (!ret) {
-+		if (!is_free_buddy_page(p) && !page_count(p) &&
-!drained) {
-+			/*
-+			 * The page might be in a pcplist, so try to
-drain
-+			 * those and see if we are lucky.
-+			 */
-+			drain_all_pages(page_zone(p));
-+			drained = true;
-+			goto retry;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
- /*
-  * Do all that is necessary to remove user space mappings. Unmap
-  * the pages and send SIGBUS to the processes if the data was dirty.
--- 
-2.26.2
-
--- 
-Oscar Salvador
-SUSE L3
+Suzuki
