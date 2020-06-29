@@ -2,97 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D61920D1FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBFDD20D10C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728329AbgF2SpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:45:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729264AbgF2SpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:45:15 -0400
-Received: from kernel.org (unknown [87.71.40.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E93025581;
-        Mon, 29 Jun 2020 15:59:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593446372;
-        bh=O/nZ0BxK4nESVxMtlEZ3aR9HUzEjAJ3vpNzo90oK+Gw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ve2Rt8tVmffLLnlIRt4m0+FLkplbTh12wsmkxiiXh2shMIztHBj9/nk/f9S/ai5jU
-         3BFQpw5Dz/XZFCZs/y8ymsBDt+3vvNo/l/kVYqcYBemM5Bac+QbcUhusbQGI9QlPev
-         vYsxGXmlFAgYBNiTAVuThytC5RkEIP2ptiiEd7Jg=
-Date:   Mon, 29 Jun 2020 18:59:20 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
+        id S1727980AbgF2SiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727922AbgF2Sh5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:37:57 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1247C0307BD
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:09:18 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id q17so8090079pfu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:09:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Dpcg/V5/bVux0rs7VkxFu353liBeuYLlwoKIVZn1zEc=;
+        b=ct0mv2T0RjdmYV1r2g3shjdEpjoUYMExe0D7cbytkVt7URajCK7sMn2lgMvkPFTDtT
+         B6e0osia8R1xcxdsu1BBSWWdC90GP7XLPKUMpUNAbTFBPpu42nc6i9OZtXC71O1efA/P
+         4ylNra4o8Pd7dj8TEYxISYWxhCFSaMWvEPRaQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Dpcg/V5/bVux0rs7VkxFu353liBeuYLlwoKIVZn1zEc=;
+        b=BiDhjUyoYieapzrHcMyFBHUN+PLZfRpFPe1GD+0DciHgFw6DFsaOSeKWGSehDPS9kY
+         1wYvvtXR5kkZRznlrjAbxqTBRj5wTSMAH6yfiSdGi64yQLiSdTc61dB0qdTO+80oKDjt
+         EhHaxCb2lZUTTtTJ+gw5Lc4PEnZQrbMgFe5tYRiktnZumZuHBj39gdcMnQI1BBV+Ja8O
+         6sks3LLkFST72rdTXLQ52nukX/hEXYSlEUoNs6Vd3WO3laR8kw3GqkVaqylxInUKudqv
+         7gjbIwiBlJ38Dx/VDnetwxQD6rbmaqtFZ6IsW/vPBw/P42uyZHyCxb5fkX+XVOdJ6V6q
+         kIHA==
+X-Gm-Message-State: AOAM530p5CX8FExQUjBTSNkLVWBgYFp4aokd2oZ6e5AVGwJq3Agao7OE
+        Xfx2JDJBz7ID1HB+Md1CoXt1oA==
+X-Google-Smtp-Source: ABdhPJwdMzhUEihbszttz1nTcxlrJL0pe9SFMhjHmbbNgUqzZFGh80VrfiWcOpG+4qWPncvSOSJsew==
+X-Received: by 2002:a63:a1f:: with SMTP id 31mr10760873pgk.228.1593446956199;
+        Mon, 29 Jun 2020 09:09:16 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s194sm237565pgs.24.2020.06.29.09.09.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 09:09:15 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 09:09:14 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        clang-built-linux@googlegroups.com,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Joerg Roedel <joro@8bytes.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org,
-        sparclinux@vger.kernel.org
-Subject: Re: [PATCH 4/8] asm-generic: pgalloc: provide generic
- pmd_alloc_one() and pmd_free_one()
-Message-ID: <20200629155920.GD1492837@kernel.org>
-References: <20200627143453.31835-1-rppt@kernel.org>
- <20200627143453.31835-5-rppt@kernel.org>
- <20200627190304.GG25039@casper.infradead.org>
+        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 7/7] x86/boot: Check that there are no runtime
+ relocations
+Message-ID: <202006290907.E5EF18A@keescook>
+References: <20200629140928.858507-1-nivedita@alum.mit.edu>
+ <20200629140928.858507-8-nivedita@alum.mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200627190304.GG25039@casper.infradead.org>
+In-Reply-To: <20200629140928.858507-8-nivedita@alum.mit.edu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 27, 2020 at 08:03:04PM +0100, Matthew Wilcox wrote:
-> On Sat, Jun 27, 2020 at 05:34:49PM +0300, Mike Rapoport wrote:
-> > More elaborate versions on arm64 and x86 account memory for the user page
-> > tables and call to pgtable_pmd_page_ctor() as the part of PMD page
-> > initialization.
-> > 
-> > Move the arm64 version to include/asm-generic/pgalloc.h and use the generic
-> > version on several architectures.
-> > 
-> > The pgtable_pmd_page_ctor() is a NOP when ARCH_ENABLE_SPLIT_PMD_PTLOCK is
-> > not enabled, so there is no functional change for most architectures except
-> > of the addition of __GFP_ACCOUNT for allocation of user page tables.
+On Mon, Jun 29, 2020 at 10:09:28AM -0400, Arvind Sankar wrote:
+> Add a linker script check that there are no runtime relocations, and
+> remove the old one that tries to check via looking for specially-named
+> sections in the object files.
 > 
-> Thanks for including this line; it reminded me that we're not setting
-> the PageTable flag on the page, nor accounting it to the zone page stats.
-> Hope you don't mind me tagging a patch to do that on as 9/8.
+> Drop the tests for -fPIE compiler option and -pie linker option, as they
+> are available in all supported gcc and binutils versions (as well as
+> clang and lld).
+> 
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+> Reviewed-by: Fangrui Song <maskray@google.com>
+> ---
+>  arch/x86/boot/compressed/Makefile      | 28 +++-----------------------
+>  arch/x86/boot/compressed/vmlinux.lds.S |  8 ++++++++
+>  2 files changed, 11 insertions(+), 25 deletions(-)
 
-We also never set PageTable flag for early page tables and for the page
-tables allocated directly with get_free_page(), e.g PTI, KASAN.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-> We could also do with a pud_page_[cd]tor and maybe even p4d/pgd versions.
-> But that brings me to the next question -- could/should some of this
-> be moved over to asm-generic/pgalloc.h?  The ctor/dtor aren't called
-> from anywhere else, and there's value to reducing the total amount of
-> code in mm.h, but then there's also value to keeping all the ifdef
-> ARCH_ENABLE_SPLIT_PMD_PTLOCK code together too.  So I'm a bit torn.
-> What do you think?
+question below ...
+
+> diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
+> index a4a4a59a2628..a78510046eec 100644
+> --- a/arch/x86/boot/compressed/vmlinux.lds.S
+> +++ b/arch/x86/boot/compressed/vmlinux.lds.S
+> @@ -42,6 +42,12 @@ SECTIONS
+>  		*(.rodata.*)
+>  		_erodata = . ;
+>  	}
+> +	.rel.dyn : {
+> +		*(.rel.*)
+> +	}
+> +	.rela.dyn : {
+> +		*(.rela.*)
+> +	}
+>  	.got : {
+>  		*(.got)
+>  	}
+
+Should these be marked (INFO) as well?
+
+> @@ -85,3 +91,5 @@ ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18, "Unexpected GOT/PLT en
+>  #else
+>  ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0xc, "Unexpected GOT/PLT entries detected!")
+>  #endif
+> +
+> +ASSERT(SIZEOF(.rel.dyn) == 0 && SIZEOF(.rela.dyn) == 0, "Unexpected runtime relocations detected!")
+
+I think I should be doing this same ASSERT style for other explicit
+DISCARDS in my orphan series so we'll notice if they change, instead
+of being silently dropped if they grow.
 
 -- 
-Sincerely yours,
-Mike.
+Kees Cook
