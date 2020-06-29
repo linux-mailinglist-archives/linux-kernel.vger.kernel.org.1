@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DCCB20E48F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4370D20E495
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391084AbgF2V0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:26:41 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:35701 "EHLO
+        id S2388803AbgF2V0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:26:52 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:46583 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391062AbgF2V0K (ORCPT
+        with ESMTP id S1729086AbgF2V0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:26:10 -0400
-Received: from mail-qk1-f175.google.com ([209.85.222.175]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1Mn1iT-1j99130zRf-00k9ZW; Mon, 29 Jun 2020 13:58:34 +0200
-Received: by mail-qk1-f175.google.com with SMTP id k18so14910846qke.4;
-        Mon, 29 Jun 2020 04:58:33 -0700 (PDT)
-X-Gm-Message-State: AOAM532L/5LO5TUz/wOFh/8bn+/7Oaq8qHC/H7WmOHrgpLBUdtx5rwV2
-        vpmir8ijxbtzgSXzO2S7eSTcJEj985na/+iZUuc=
-X-Google-Smtp-Source: ABdhPJxw4aQcyyOjqz6zdloYX0Zg8NLEiVrSGqKIRrgeB6TYwmUcJuTIitYyWyx3icLmYS7sF9chjW5BSGykMBVcb8E=
-X-Received: by 2002:a37:a282:: with SMTP id l124mr13904809qke.3.1593431913015;
- Mon, 29 Jun 2020 04:58:33 -0700 (PDT)
+        Mon, 29 Jun 2020 17:26:46 -0400
+Received: from mail-qk1-f181.google.com ([209.85.222.181]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MC2o9-1jfjxx1pxV-00CQW9; Mon, 29 Jun 2020 13:59:08 +0200
+Received: by mail-qk1-f181.google.com with SMTP id j80so14938409qke.0;
+        Mon, 29 Jun 2020 04:59:08 -0700 (PDT)
+X-Gm-Message-State: AOAM531dNoRFCGQ5gU+WKgIQezUtMEXHMxzuOjwCEaKgGIXbfLmJtxX5
+        IUlkRwyKWfCdVH0F294m9CILhcAT/AMHyZym1bw=
+X-Google-Smtp-Source: ABdhPJwiHIrS/zcyAzwtI//A/mP+kmmPqCmXXzVgsA8QR3TbrjAPEDgdefcDhM7ibQGaLfv1MsgnsXjRn6wnP1Y+ubE=
+X-Received: by 2002:a37:b484:: with SMTP id d126mr14639824qkf.394.1593431947272;
+ Mon, 29 Jun 2020 04:59:07 -0700 (PDT)
 MIME-Version: 1.0
 References: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com>
- <1593410042-10598-3-git-send-email-Anson.Huang@nxp.com> <CAK8P3a2ZL6_rV=2brNz=UDdji3mddF+1Nb6Ew+=n4j0-fNrCug@mail.gmail.com>
- <DB3PR0402MB3916BA91E0F44EA5DAD6BF26F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-In-Reply-To: <DB3PR0402MB3916BA91E0F44EA5DAD6BF26F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <1593410042-10598-11-git-send-email-Anson.Huang@nxp.com> <CAK8P3a1W4Wxj0o3dtcjGq0L5VQqsH0=ntego=jmH2Von97+H-w@mail.gmail.com>
+ <DB3PR0402MB3916911E2321760C65AB3293F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+In-Reply-To: <DB3PR0402MB3916911E2321760C65AB3293F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
 From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 29 Jun 2020 13:58:17 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3igMrRNa1oR=d=9A-YNAmb+LXNRbwBk9zuJZq5tfvr9Q@mail.gmail.com>
-Message-ID: <CAK8P3a3igMrRNa1oR=d=9A-YNAmb+LXNRbwBk9zuJZq5tfvr9Q@mail.gmail.com>
-Subject: Re: [PATCH V3 02/10] init.h: Fix the __setup_param() macro for module build
+Date:   Mon, 29 Jun 2020 13:58:51 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a28=41imeva5nG-fSx5dPG52Um8hkZ2_=y7soOZ8p5bnw@mail.gmail.com>
+Message-ID: <CAK8P3a28=41imeva5nG-fSx5dPG52Um8hkZ2_=y7soOZ8p5bnw@mail.gmail.com>
+Subject: Re: [PATCH V3 10/10] clk: imx8qxp: Support module build
 To:     Anson Huang <anson.huang@nxp.com>
 Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
         Shawn Guo <shawnguo@kernel.org>,
@@ -54,59 +54,46 @@ Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
         linux-clk <linux-clk@vger.kernel.org>,
         dl-linux-imx <linux-imx@nxp.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:3UBpymz75L77s+ZBkM6AxNezIczom5vTWMfpVWjT2zNNZ2uI+Jk
- gUwDS7fCBHdh7KRWiQV3MvL+yCDTKPuyeZEPTyce2r+BWozsosOwrahHhucAUaZAE4Tdxtn
- Pvqq3EiEfKrWCUdaLiDDdHC1xtVJabUfX50XNDWg9SxBJVhfW8nT71NqP+u+UhGXckJQHbH
- 72fapY9XfA5r0MDbF89LA==
+X-Provags-ID: V03:K1:EfD4DhoPrgKqPKihKT5z/Cx/um5RnkYhhXBAEVqqcd5KXJV3mGk
+ FnkR4upRdwIFx6cIM2dkWoYHi8Mzs9c2uM17g4sHi3Atxqxd/0HjtCqRpqcLu9cgbti82X7
+ gp5hNsJzQl4KMoXR+XK3XjWtOUkU6vZ6U4bOFFumXRZM5kwEKi0WL8xPLdhxglCdXFp2cyk
+ ugWKHpW6biMesJyQj9BAQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5MMYrR6kRDY=:5GXOgJLK93AGgu6E0y8kq9
- vq0Fe+QJg7M+5vTz8nfKpeJvQ2aMUMKc/IGtM+qNzpR88DcKmcFWiqbRbAXUAmFF+UYGY5SLv
- saAbHJD7HwTwNNeSV1ozIccPaP2YORPy+hCl9Xvfkdpm1E95+uDQ4cn1LqA9AsRiHwQnJx6d9
- yWEyviDEUCB2+1wlxzfXq2uW83PJGswPMlmEyc9nWLNsnp3YXBwb+6581pv8+dTFnUHcMV83E
- JQqU+6OKEtJ5ZqAhi/kLECRXfKLgpCwSvYR2m+N80I2r7K+X537xXwh3Tze9I5lDIq/cnd4+A
- 9D+trY8GQCMeEz0b7IwRAvwjMMPXEPXyAQs9Df25WKt5eIZduAqYtzd9jue8NgnpO7FeVD7tb
- r0iNLmD+iuLFTbYHOTmyFPgHDFUa7o7HKa2inZ5yQqBLixfT4hUXWMDi52zBBC7kJyHPz8wiV
- H6t6lhXaET7WBC5CZOybuSGVAZx7RBmcqLzXR5EE36misXQaBW/R3s5AECcfiebj9zgCpQ6JP
- jUarJrGCF99zAZT/IbaFgWZob8zs77H6ULxd5G6sWiWJzK7nvU+edpfRMwWf0othSjmR5Ox7y
- fyioPFAnhY4sy8Qw3aNtV3tzYxwYF4pNT366oY6mKGnKTwciwBjyhh9nAyrASj3uZ4BgJYMfC
- v8bwV6uLMhx2phd/nifmLjqWcA4o37Ckj0rPrLwMo3IViBhx+ZGBYjo71P6+7l+F+4FhABP/k
- yUMSL4TEwesQOhi9MIXhwBrdxPpocjrGXTq8OogudK94VGTx/1pEsqbe9fIEgrxb1I9obmQ9C
- DrpbclHNtx3V4Xj4aSxn/0XHE4ZKEyXSR22Tjb3i6klmZMBFus=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:u4BHHFgnkr8=:wAptT75sXjOiKxyrZxJdjS
+ FXEkX3heeqNYUeRtxlLPUpOc0NpOAkHhNiQatb1kzFE5jnsV1nq8sglceXECtLLcqNgVk1RHR
+ 7z3rnjKVRnCzG+HHN96RneHuF1vCC5m5dDSe6+bSwIy3OHCaKAd1Balf8HoYr6y37gd8zu8qV
+ /W+wLpOZgq35rdH9q2dEXjMbmWUhHCSvwN+/vUwqLb0cXijBEhKE+mPaBLbSrmeGgQszplK8m
+ pIPOF3IQ4/DwrdJIJ3thfE4j7+jBlKatupe/L9P6ZG6MPD+Z/1SBSL8j2FvbPEghz61U3eiKz
+ el0GHwqCX5KE9qm8XXhM5cbqQlTKN7QkEf5pDhO/H0gv3d032DWuw1VDtzLZQZZfsNUa6Cbz9
+ fbagBwP+JYYyyarp8un2MDtEK1UWgS9+3YScR9ivmW4Mp6CzvxFCJvDmQkNo9Bxl3SzFUZIv9
+ Qe2zXFp5SmLpxDdDo/kR9Vo5tg7CBGbLrKrSKj5bA3nc4KuE0NErLgYWIZeJvS6I+yT6Uxut3
+ VVONUXAkrzuzq1zZuKw9Tt0cWX7s/IshFsrbPLW4+q8Bz5zr9/7jfFsuCW/UiYLigGqH1jVzi
+ GTKB3+lQJ/9NgDobeUrgldXQcZz6tFW6F6AiCoX5CMPosr7vYDX2FYTuMFTLbLMTSP22s164T
+ +0mLUuNANnnVJ4xvdSjO7PgLAG7FTRSMHNdDxmRBUo2m6okyEu2G96vPbmvkeW1jamGRNW+Ws
+ RfCtxp0zW/IhHrapv8JGHSE1LhquxCTIqLsNutgoIpoeLD1l899EwDK5pnrthXpUlcWb8LLq1
+ vb4oTofPY43GsXCGc3G0RLG0auiDPm0xDNf/L0FpVkByOabe/M=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 1:40 PM Anson Huang <anson.huang@nxp.com> wrote:
-> > Subject: Re: [PATCH V3 02/10] init.h: Fix the __setup_param() macro for
-> > module build
+On Mon, Jun 29, 2020 at 1:43 PM Anson Huang <anson.huang@nxp.com> wrote:
+> > Subject: Re: [PATCH V3 10/10] clk: imx8qxp: Support module build
 > >
 > > On Mon, Jun 29, 2020 at 8:06 AM Anson Huang <Anson.Huang@nxp.com>
 > > wrote:
 > > >
-> > > Keep __setup_param() to use same parameters for both built in and
-> > > built as module, it can make the drivers which call it easier when the
-> > > drivers can be built in or built as module.
+> > > Support building i.MX8QXP clock driver as module.
 > > >
 > > > Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 > >
-> > I wonder if we should instead drop the __setup() and __setup_param()
-> > definitions from the #else block here. This was clearly not used anywhere, and
-> > it sounds like any possible user is broken and should be changed to not use
-> > __setup() anyway.
-> >
+> > I would just combine the per-soc patches into one, as they all have the same
+> > changelog text.
 >
->
-> It makes sense to drop the __setup() and __serup_param() in the #else block,
-> just use one definition for all cases, if no one objects, I will remove them in next patch series.
+> OK, I will merge those patches with same changelog text into one patch.
+> But for i.MX8QXP clock driver, as I need to add more changes about module author
+> etc., I will keep it as a separate patch.
 
-Ok, sounds good. Note that there may be users of the plain __setup() that
-just get turned into nops right now. Usually those are already enclosed in
-"#ifndef MODULE", but if they are not, then removing the definition would cause
-a build error.
+Ok, sounds good.
 
-Have a look if you can find such instances, and either change the patch to
-add the missing "#ifndef MODULE" checks, or just drop the __setup_param()
-and leave the __setup() if it gets too complicated.
-
-       Arnd
+      Arnd
