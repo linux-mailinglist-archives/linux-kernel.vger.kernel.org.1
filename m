@@ -2,192 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3EC20E5AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D23720E571
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389967AbgF2VkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:40:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60642 "EHLO mail.kernel.org"
+        id S2403852AbgF2VhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:37:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728262AbgF2Sk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:28 -0400
-Received: from localhost (unknown [122.182.251.219])
+        id S1728428AbgF2Skj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:40:39 -0400
+Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF13820857;
-        Mon, 29 Jun 2020 09:34:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D401223139;
+        Mon, 29 Jun 2020 09:35:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593423274;
-        bh=00blYSw4H3we8f6YNcADktzYDOCPmayZbfhVhGUiz6o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=profOf+OjR7WE03HKWGRwyP+LXIRgPlX8syXRo/3NQJ8Cr9hQPWee9UDxZACi3WCF
-         ONI2Zny5nkvY3b1m12zOrx6cBSzw69Dv+tVQDZ/PKSubTsWPxVS6ATnMHH7swTNwlL
-         vSa10APt2UUDEq5Qh4vgF2mM7T2ZQMh2/ocuIec4=
-Date:   Mon, 29 Jun 2020 15:04:29 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= 
-        <amadeuszx.slawinski@linux.intel.com>
-Cc:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
-        alsa-devel@alsa-project.org,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v4 1/3] ALSA: compress: document the compress audio state
- machine
-Message-ID: <20200629093429.GA2599@vkoul-mobl>
-References: <20200629075002.11436-1-vkoul@kernel.org>
- <20200629075002.11436-2-vkoul@kernel.org>
- <c29b3199-cebd-2153-5530-e75f76aa8b4b@linux.intel.com>
+        s=default; t=1593423343;
+        bh=YbxJalyVGHm1SOjDLZ72yzU9Tf+RBOgPQtWzC3+C6V0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sRB2rMKD9jgBvfzfnC2L99xFQYMNo/LqjPATbhoO9J4zMFXKDF0TRFOgAhluYJ0IM
+         L++U1yAN2fVCMwqriqNRFC7bB6GVhw1yLkIHiBQniCKonZ+KPkZloC40RuUJRetQe1
+         wWCje7DCFqeZHZ+P9Oc12U3I9b3AMzL2A/gP7tAE=
+Received: from mchehab by mail.kernel.org with local (Exim 4.93)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jpqCS-006cAC-Ct; Mon, 29 Jun 2020 11:35:40 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH v2 0/5] Fix split view search and debug info navigation
+Date:   Mon, 29 Jun 2020 11:35:34 +0200
+Message-Id: <cover.1593423060.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c29b3199-cebd-2153-5530-e75f76aa8b4b@linux.intel.com>
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Amadeusz,
+This series fixes some issues with search while on split view and fix the
+broken hyperlink navigation.
 
-On 29-06-20, 11:05, Amadeusz Sławiński wrote:
-> 
-> 
-> On 6/29/2020 9:50 AM, Vinod Koul wrote:
-> > So we had some discussions of the stream states, so I thought it is a
-> > good idea to document the state transitions, so add it documentation
-> > 
-> > Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> >   .../sound/designs/compress-offload.rst        | 51 +++++++++++++++++++
-> >   1 file changed, 51 insertions(+)
-> > 
-> > diff --git a/Documentation/sound/designs/compress-offload.rst b/Documentation/sound/designs/compress-offload.rst
-> > index ad4bfbdacc83..b6e9025ae105 100644
-> > --- a/Documentation/sound/designs/compress-offload.rst
-> > +++ b/Documentation/sound/designs/compress-offload.rst
-> > @@ -151,6 +151,57 @@ Modifications include:
-> >   - Addition of encoding options when required (derived from OpenMAX IL)
-> >   - Addition of rateControlSupported (missing in OpenMAX AL)
-> > +State Machine
-> > +=============
-> > +
-> > +The compressed audio stream state machine is described below ::
-> > +
-> > +                                        +----------+
-> > +                                        |          |
-> > +                                        |   OPEN   |
-> > +                                        |          |
-> > +                                        +----------+
-> > +                                             |
-> > +                                             |
-> > +                                             | compr_set_params()
-> > +                                             |
-> > +                                             v
-> > +         compr_free()                   +----------+
-> > +  +------------------------------------|          |
-> > +  |                                    |   SETUP  |
-> > +  |          +------------------------>|          |<-------------------------+
-> > +  |          | compr_drain_notify()    +----------+                          |
-> > +  |          |         or                   ^                                |
-> > +  |          |      compr_stop()            |                                |
-> > +  |          |                              | compr_write()                  |
-> > +  |          |                              |                                |
-> > +  |          |                              |                                |
+The first patches restore the pre-Qt5 conversion behavior. The last
+one implements navigation on a different way. I opted to keep this one
+in separate, as this one is a new feature.
 
-Not sure, this is not in the version I posted, arrow is from setup ->
-prepare. See https://lore.kernel.org/alsa-devel/20200629075002.11436-2-vkoul@kernel.org/
+Mauro Carvalho Chehab (5):
+  kconfig: qconf: cleanup includes
+  kconfig: qconf: ensure that only one item will be highlighted
+  kconfig: qconf: make search fully work again on split mode
+  kconfig: qconf: make debug links work again
+  kconfig: qconf: navigate menus on hyperlinks
 
-I don't know how it got reversed in your version, maybe the MUA messed
-up??
-
-> > +  |          |                         +----------+                          |
-> > +  |          |                         |          |   compr_free()           |
-> > +  |          |                         |  PREPARE |---------------> A        |
-> > +  |          |                         |          |                          |
-> > +  |          |                         +----------+                          |
-> > +  |          |                              |                                |
-> > +  |          |                              |                                |
-> > +  |          |                              | compr_start()                  |
-> > +  |          |                              |                                |
-> > +  |          |                              v                                |
-> > +  |    +----------+                    +----------+                          |
-> > +  |    |          |    compr_drain()   |          |        compr_stop()      |
-> > +  |    |  DRAIN   |<-------------------|  RUNNING |--------------------------+
-> > +  |    |          |                    |          |                          |
-> > +  |    +----------+                    +----------+                          |
-> > +  |                                       |    ^                             |
-> > +  |          A                            |    |                             |
-> > +  |          |              compr_pause() |    | compr_resume()              |
-> > +  |          |                            |    |                             |
-> > +  |          v                            v    |                             |
-> > +  |    +----------+                   +----------+                           |
-> > +  |    |          |                   |          |         compr_stop()      |
-> > +  +--->|   FREE   |                   |  PAUSE   |---------------------------+
-> > +       |          |                   |          |
-> > +       +----------+                   +----------+
-> > +
-> >   Gapless Playback
-> >   ================
-> > 
-> 
-> Line containing compr_free (between SETUP and FREE) seems to be misaligned?
-
-not in the version I posted and see on lore
-
-> If you move prepare to the left and drain in place of drain, it feels like
-> you won't need this weird indirection with A
-
-yeah that was a compromise to make it bit neater to me than adding
-overlapping arrows...
-
-> Something like:
-> 
-> >> +                                             v
-> > > +         compr_free()                   +----------+
-> > > +  +------------------------------------|          |
-> > > +  |                                    |   SETUP  |
-> > > +  |          +------------------------>|          |<-------------------------+
-> > > +  |          | compr_write()           +----------+                          |
-> > > +  |          |                              ^                                |
-> > > +  |          |                              | compr_drain_notify() or        |
-> > > +  |          |                              | compr_stop()                   |
-> > > +  |          |                              |                                |
-> > > +  |          |                              |                                |
-> > > +  |          |                         +----------+                          |
-> > > +  |          |                         |          |                          |
-> > > +  |          |                         |  DRAIN   |                          |
-> > > +  |          |                         |          |                          |
-> > > +  |          |                         +----------+                          |
-> > > +  |          |                              ^                                |
-> > > +  |          |                              |                                |
-> > > +  |          |                              | compr_drain()                  |
-> > > +  |          |                              |                                |
-> > > +  |          |                              |                                |
-> > > +  |    +----------+                    +----------+                          |
-> > > +  |    |          |    compr_start()   |          |        compr_stop()      |
-> > > +  |    |  PREPARE |------------------->|  RUNNING |--------------------------+
-> > > +  |    |          |                    |          |                          |
-> > > +  |    +----------+                    +----------+                          |
-> > > +  |          |                            |    ^                             |
-> > > +  |          | compr_free()               |    |                             |
-> > > +  |          |              compr_pause() |    | compr_resume()              |
-> > > +  |          |                            |    |                             |
-> > > +  |          v                            v    |                             |
-> > > +  |    +----------+                   +----------+                           |
-> > > +  |    |          |                   |          |         compr_stop()      |
-> > > +  +--->|   FREE   |                   |  PAUSE   |---------------------------+
-> > > +       |          |                   |          |
-> > > +       +----------+                   +----------+
-> > > +
-> 
-
-> but this makes me question PREPARE state, how do you enter it?
-
-a compr_write() moves from SETUP -> PREPARE. Fixing that above looks
-better version of mine..
+ scripts/kconfig/qconf.cc | 120 +++++++++++++++++++++++++++++----------
+ scripts/kconfig/qconf.h  |  15 ++---
+ 2 files changed, 98 insertions(+), 37 deletions(-)
 
 -- 
-~Vinod
+2.26.2
+
+
