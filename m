@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3091520E7B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9262D20E734
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404670AbgF2V7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:59:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56794 "EHLO mail.kernel.org"
+        id S2391505AbgF2VzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:55:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726427AbgF2Sf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:35:27 -0400
+        id S1726534AbgF2Sfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:35:31 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 737C2241A2;
-        Mon, 29 Jun 2020 15:19:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E464241A5;
+        Mon, 29 Jun 2020 15:19:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593443956;
-        bh=kM7M2oW2pF7mF5sfHW5VKQ3niclpBBbtT+B91pvlGlw=;
+        s=default; t=1593443957;
+        bh=esX7GwYz/akZW9Mo7rVMUHb6u/ZZjIe4uOnKDwYVESw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FjH4xuytt6uHUaA08bFSU6BsoX8qiq/wPtrRP9vBT1p7XmOvWp5xLXsNc7P/txTMo
-         V9vAbA07rr4Gr6YuAJlyWsaazEC/O3EnSSSD1d3CsGafysbd29glduWkZcyVg6fA2N
-         OU6hEJhFv/fRfhP0VZ0hA61UdKbRMgk0es+ddl2Y=
+        b=gDuX+AYqHJ6fjjPq1rMvuzwnGERAtA1l8EErSdIwpwIKFccENcUEDld44y45AS+4e
+         H8Dwq0avXGaNWV2D/iE5U5l146tZKboIUX8cOVxyL0cRdIQmUUxDHGkleENn4RvbTh
+         sPa8Ir/H64NsXsu7try5HRkuAb1nVpxwsjwHtrM8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 058/265] btrfs: fix a block group ref counter leak after failure to remove block group
-Date:   Mon, 29 Jun 2020 11:14:51 -0400
-Message-Id: <20200629151818.2493727-59-sashal@kernel.org>
+Cc:     Tomas Winkler <tomas.winkler@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 5.7 060/265] mei: me: disable mei interface on Mehlow server platforms
+Date:   Mon, 29 Jun 2020 11:14:53 -0400
+Message-Id: <20200629151818.2493727-61-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629151818.2493727-1-sashal@kernel.org>
 References: <20200629151818.2493727-1-sashal@kernel.org>
@@ -51,116 +48,226 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Tomas Winkler <tomas.winkler@intel.com>
 
-[ Upstream commit 9fecd13202f520f3f25d5b1c313adb740fe19773 ]
+commit f76d77f50b343bc7f7d01e4c2771d43fb074f617 upstream.
 
-When removing a block group, if we fail to delete the block group's item
-from the extent tree, we jump to the 'out' label and end up decrementing
-the block group's reference count once only (by 1), resulting in a counter
-leak because the block group at that point was already removed from the
-block group cache rbtree - so we have to decrement the reference count
-twice, once for the rbtree and once for our lookup at the start of the
-function.
+For SPS firmware versions 5.0 and newer the way detection has changed.
+The detection is done now via PCI_CFG_HFS_3 register.
+To prevent conflict the previous method will get sps_4 suffix
+Disable both CNP_H and CNP_H_3 interfaces. CNP_H_3 requires
+a separate configuration as it doesn't support DMA.
 
-There is a second bug where if removing the free space tree entries (the
-call to remove_block_group_free_space()) fails we end up jumping to the
-'out_put_group' label but end up decrementing the reference count only
-once, when we should have done it twice, since we have already removed
-the block group from the block group cache rbtree. This happens because
-the reference count decrement for the rbtree reference happens after
-attempting to remove the free space tree entries, which is far away from
-the place where we remove the block group from the rbtree.
-
-To make things less error prone, decrement the reference count for the
-rbtree immediately after removing the block group from it. This also
-eleminates the need for two different exit labels on error, renaming
-'out_put_label' to just 'out' and removing the old 'out'.
-
-Fixes: f6033c5e333238 ("btrfs: fix block group leak when removing fails")
-CC: stable@vger.kernel.org # 4.4+
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+Link: https://lore.kernel.org/r/20200619165121.2145330-1-tomas.winkler@intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/block-group.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ drivers/misc/mei/hw-me-regs.h |  2 ++
+ drivers/misc/mei/hw-me.c      | 60 +++++++++++++++++++++++++++++++----
+ drivers/misc/mei/hw-me.h      | 13 +++++---
+ drivers/misc/mei/pci-me.c     | 16 +++++-----
+ 4 files changed, 73 insertions(+), 18 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 233c5663f2332..0c17f18b47940 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -916,7 +916,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
- 	path = btrfs_alloc_path();
- 	if (!path) {
- 		ret = -ENOMEM;
--		goto out_put_group;
-+		goto out;
- 	}
+diff --git a/drivers/misc/mei/hw-me-regs.h b/drivers/misc/mei/hw-me-regs.h
+index 9392934e3a060..01b1bf74f2626 100644
+--- a/drivers/misc/mei/hw-me-regs.h
++++ b/drivers/misc/mei/hw-me-regs.h
+@@ -107,6 +107,8 @@
+ #  define PCI_CFG_HFS_1_D0I3_MSK     0x80000000
+ #define PCI_CFG_HFS_2         0x48
+ #define PCI_CFG_HFS_3         0x60
++#  define PCI_CFG_HFS_3_FW_SKU_MSK   0x00000070
++#  define PCI_CFG_HFS_3_FW_SKU_SPS   0x00000060
+ #define PCI_CFG_HFS_4         0x64
+ #define PCI_CFG_HFS_5         0x68
+ #define PCI_CFG_HFS_6         0x6C
+diff --git a/drivers/misc/mei/hw-me.c b/drivers/misc/mei/hw-me.c
+index f620442addf52..f8155c1e811d7 100644
+--- a/drivers/misc/mei/hw-me.c
++++ b/drivers/misc/mei/hw-me.c
+@@ -1366,7 +1366,7 @@ static bool mei_me_fw_type_nm(struct pci_dev *pdev)
+ #define MEI_CFG_FW_NM                           \
+ 	.quirk_probe = mei_me_fw_type_nm
  
- 	/*
-@@ -954,7 +954,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
- 		ret = btrfs_orphan_add(trans, BTRFS_I(inode));
- 		if (ret) {
- 			btrfs_add_delayed_iput(inode);
--			goto out_put_group;
-+			goto out;
- 		}
- 		clear_nlink(inode);
- 		/* One for the block groups ref */
-@@ -977,13 +977,13 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+-static bool mei_me_fw_type_sps(struct pci_dev *pdev)
++static bool mei_me_fw_type_sps_4(struct pci_dev *pdev)
+ {
+ 	u32 reg;
+ 	unsigned int devfn;
+@@ -1382,7 +1382,36 @@ static bool mei_me_fw_type_sps(struct pci_dev *pdev)
+ 	return (reg & 0xf0000) == 0xf0000;
+ }
  
- 	ret = btrfs_search_slot(trans, tree_root, &key, path, -1, 1);
- 	if (ret < 0)
--		goto out_put_group;
-+		goto out;
- 	if (ret > 0)
- 		btrfs_release_path(path);
- 	if (ret == 0) {
- 		ret = btrfs_del_item(trans, tree_root, path);
- 		if (ret)
--			goto out_put_group;
-+			goto out;
- 		btrfs_release_path(path);
- 	}
- 
-@@ -992,6 +992,9 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
- 		 &fs_info->block_group_cache_tree);
- 	RB_CLEAR_NODE(&block_group->cache_node);
- 
-+	/* Once for the block groups rbtree */
-+	btrfs_put_block_group(block_group);
+-#define MEI_CFG_FW_SPS                           \
++#define MEI_CFG_FW_SPS_4                          \
++	.quirk_probe = mei_me_fw_type_sps_4
 +
- 	if (fs_info->first_logical_byte == block_group->start)
- 		fs_info->first_logical_byte = (u64)-1;
- 	spin_unlock(&fs_info->block_group_cache_lock);
-@@ -1102,10 +1105,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
++/**
++ * mei_me_fw_sku_sps() - check for sps sku
++ *
++ * Read ME FW Status register to check for SPS Firmware.
++ * The SPS FW is only signaled in pci function 0
++ *
++ * @pdev: pci device
++ *
++ * Return: true in case of SPS firmware
++ */
++static bool mei_me_fw_type_sps(struct pci_dev *pdev)
++{
++	u32 reg;
++	u32 fw_type;
++	unsigned int devfn;
++
++	devfn = PCI_DEVFN(PCI_SLOT(pdev->devfn), 0);
++	pci_bus_read_config_dword(pdev->bus, devfn, PCI_CFG_HFS_3, &reg);
++	trace_mei_pci_cfg_read(&pdev->dev, "PCI_CFG_HFS_3", PCI_CFG_HFS_3, reg);
++	fw_type = (reg & PCI_CFG_HFS_3_FW_SKU_MSK);
++
++	dev_dbg(&pdev->dev, "fw type is %d\n", fw_type);
++
++	return fw_type == PCI_CFG_HFS_3_FW_SKU_SPS;
++}
++
++#define MEI_CFG_FW_SPS                          \
+ 	.quirk_probe = mei_me_fw_type_sps
  
- 	ret = remove_block_group_free_space(trans, block_group);
- 	if (ret)
--		goto out_put_group;
--
--	/* Once for the block groups rbtree */
--	btrfs_put_block_group(block_group);
-+		goto out;
+ #define MEI_CFG_FW_VER_SUPP                     \
+@@ -1452,10 +1481,17 @@ static const struct mei_cfg mei_me_pch8_cfg = {
+ };
  
- 	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
- 	if (ret > 0)
-@@ -1128,10 +1128,9 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
- 		free_extent_map(em);
- 	}
+ /* PCH8 Lynx Point with quirk for SPS Firmware exclusion */
+-static const struct mei_cfg mei_me_pch8_sps_cfg = {
++static const struct mei_cfg mei_me_pch8_sps_4_cfg = {
+ 	MEI_CFG_PCH8_HFS,
+ 	MEI_CFG_FW_VER_SUPP,
+-	MEI_CFG_FW_SPS,
++	MEI_CFG_FW_SPS_4,
++};
++
++/* LBG with quirk for SPS (4.0) Firmware exclusion */
++static const struct mei_cfg mei_me_pch12_sps_4_cfg = {
++	MEI_CFG_PCH8_HFS,
++	MEI_CFG_FW_VER_SUPP,
++	MEI_CFG_FW_SPS_4,
+ };
  
--out_put_group:
-+out:
- 	/* Once for the lookup reference */
- 	btrfs_put_block_group(block_group);
--out:
- 	if (remove_rsv)
- 		btrfs_delayed_refs_rsv_release(fs_info, 1);
- 	btrfs_free_path(path);
+ /* Cannon Lake and newer devices */
+@@ -1465,8 +1501,18 @@ static const struct mei_cfg mei_me_pch12_cfg = {
+ 	MEI_CFG_DMA_128,
+ };
+ 
+-/* LBG with quirk for SPS Firmware exclusion */
++/* Cannon Lake with quirk for SPS 5.0 and newer Firmware exclusion */
+ static const struct mei_cfg mei_me_pch12_sps_cfg = {
++	MEI_CFG_PCH8_HFS,
++	MEI_CFG_FW_VER_SUPP,
++	MEI_CFG_DMA_128,
++	MEI_CFG_FW_SPS,
++};
++
++/* Cannon Lake with quirk for SPS 5.0 and newer Firmware exclusion
++ * w/o DMA support
++ */
++static const struct mei_cfg mei_me_pch12_nodma_sps_cfg = {
+ 	MEI_CFG_PCH8_HFS,
+ 	MEI_CFG_FW_VER_SUPP,
+ 	MEI_CFG_FW_SPS,
+@@ -1492,9 +1538,11 @@ static const struct mei_cfg *const mei_cfg_list[] = {
+ 	[MEI_ME_PCH7_CFG] = &mei_me_pch7_cfg,
+ 	[MEI_ME_PCH_CPT_PBG_CFG] = &mei_me_pch_cpt_pbg_cfg,
+ 	[MEI_ME_PCH8_CFG] = &mei_me_pch8_cfg,
+-	[MEI_ME_PCH8_SPS_CFG] = &mei_me_pch8_sps_cfg,
++	[MEI_ME_PCH8_SPS_4_CFG] = &mei_me_pch8_sps_4_cfg,
+ 	[MEI_ME_PCH12_CFG] = &mei_me_pch12_cfg,
++	[MEI_ME_PCH12_SPS_4_CFG] = &mei_me_pch12_sps_4_cfg,
+ 	[MEI_ME_PCH12_SPS_CFG] = &mei_me_pch12_sps_cfg,
++	[MEI_ME_PCH12_SPS_NODMA_CFG] = &mei_me_pch12_nodma_sps_cfg,
+ 	[MEI_ME_PCH15_CFG] = &mei_me_pch15_cfg,
+ };
+ 
+diff --git a/drivers/misc/mei/hw-me.h b/drivers/misc/mei/hw-me.h
+index b6b94e2114645..52e0c6d578f27 100644
+--- a/drivers/misc/mei/hw-me.h
++++ b/drivers/misc/mei/hw-me.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ /*
+- * Copyright (c) 2012-2019, Intel Corporation. All rights reserved.
++ * Copyright (c) 2012-2020, Intel Corporation. All rights reserved.
+  * Intel Management Engine Interface (Intel MEI) Linux driver
+  */
+ 
+@@ -76,11 +76,14 @@ struct mei_me_hw {
+  *                         with quirk for Node Manager exclusion.
+  * @MEI_ME_PCH8_CFG:       Platform Controller Hub Gen8 and newer
+  *                         client platforms.
+- * @MEI_ME_PCH8_SPS_CFG:   Platform Controller Hub Gen8 and newer
++ * @MEI_ME_PCH8_SPS_4_CFG: Platform Controller Hub Gen8 and newer
+  *                         servers platforms with quirk for
+  *                         SPS firmware exclusion.
+  * @MEI_ME_PCH12_CFG:      Platform Controller Hub Gen12 and newer
+- * @MEI_ME_PCH12_SPS_CFG:  Platform Controller Hub Gen12 and newer
++ * @MEI_ME_PCH12_SPS_4_CFG:Platform Controller Hub Gen12 up to 4.0
++ *                         servers platforms with quirk for
++ *                         SPS firmware exclusion.
++ * @MEI_ME_PCH12_SPS_CFG:  Platform Controller Hub Gen12 5.0 and newer
+  *                         servers platforms with quirk for
+  *                         SPS firmware exclusion.
+  * @MEI_ME_PCH15_CFG:      Platform Controller Hub Gen15 and newer
+@@ -94,9 +97,11 @@ enum mei_cfg_idx {
+ 	MEI_ME_PCH7_CFG,
+ 	MEI_ME_PCH_CPT_PBG_CFG,
+ 	MEI_ME_PCH8_CFG,
+-	MEI_ME_PCH8_SPS_CFG,
++	MEI_ME_PCH8_SPS_4_CFG,
+ 	MEI_ME_PCH12_CFG,
++	MEI_ME_PCH12_SPS_4_CFG,
+ 	MEI_ME_PCH12_SPS_CFG,
++	MEI_ME_PCH12_SPS_NODMA_CFG,
+ 	MEI_ME_PCH15_CFG,
+ 	MEI_ME_NUM_CFG,
+ };
+diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.c
+index a1ed375fed374..f74c6113812d6 100644
+--- a/drivers/misc/mei/pci-me.c
++++ b/drivers/misc/mei/pci-me.c
+@@ -59,18 +59,18 @@ static const struct pci_device_id mei_me_pci_tbl[] = {
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_PPT_1, MEI_ME_PCH7_CFG)},
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_PPT_2, MEI_ME_PCH7_CFG)},
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_PPT_3, MEI_ME_PCH7_CFG)},
+-	{MEI_PCI_DEVICE(MEI_DEV_ID_LPT_H, MEI_ME_PCH8_SPS_CFG)},
+-	{MEI_PCI_DEVICE(MEI_DEV_ID_LPT_W, MEI_ME_PCH8_SPS_CFG)},
++	{MEI_PCI_DEVICE(MEI_DEV_ID_LPT_H, MEI_ME_PCH8_SPS_4_CFG)},
++	{MEI_PCI_DEVICE(MEI_DEV_ID_LPT_W, MEI_ME_PCH8_SPS_4_CFG)},
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_LPT_LP, MEI_ME_PCH8_CFG)},
+-	{MEI_PCI_DEVICE(MEI_DEV_ID_LPT_HR, MEI_ME_PCH8_SPS_CFG)},
++	{MEI_PCI_DEVICE(MEI_DEV_ID_LPT_HR, MEI_ME_PCH8_SPS_4_CFG)},
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_WPT_LP, MEI_ME_PCH8_CFG)},
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_WPT_LP_2, MEI_ME_PCH8_CFG)},
+ 
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_SPT, MEI_ME_PCH8_CFG)},
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_SPT_2, MEI_ME_PCH8_CFG)},
+-	{MEI_PCI_DEVICE(MEI_DEV_ID_SPT_H, MEI_ME_PCH8_SPS_CFG)},
+-	{MEI_PCI_DEVICE(MEI_DEV_ID_SPT_H_2, MEI_ME_PCH8_SPS_CFG)},
+-	{MEI_PCI_DEVICE(MEI_DEV_ID_LBG, MEI_ME_PCH12_SPS_CFG)},
++	{MEI_PCI_DEVICE(MEI_DEV_ID_SPT_H, MEI_ME_PCH8_SPS_4_CFG)},
++	{MEI_PCI_DEVICE(MEI_DEV_ID_SPT_H_2, MEI_ME_PCH8_SPS_4_CFG)},
++	{MEI_PCI_DEVICE(MEI_DEV_ID_LBG, MEI_ME_PCH12_SPS_4_CFG)},
+ 
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_BXT_M, MEI_ME_PCH8_CFG)},
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_APL_I, MEI_ME_PCH8_CFG)},
+@@ -84,8 +84,8 @@ static const struct pci_device_id mei_me_pci_tbl[] = {
+ 
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_CNP_LP, MEI_ME_PCH12_CFG)},
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_CNP_LP_3, MEI_ME_PCH8_CFG)},
+-	{MEI_PCI_DEVICE(MEI_DEV_ID_CNP_H, MEI_ME_PCH12_CFG)},
+-	{MEI_PCI_DEVICE(MEI_DEV_ID_CNP_H_3, MEI_ME_PCH8_CFG)},
++	{MEI_PCI_DEVICE(MEI_DEV_ID_CNP_H, MEI_ME_PCH12_SPS_CFG)},
++	{MEI_PCI_DEVICE(MEI_DEV_ID_CNP_H_3, MEI_ME_PCH12_SPS_NODMA_CFG)},
+ 
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_CMP_LP, MEI_ME_PCH12_CFG)},
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_CMP_LP_3, MEI_ME_PCH8_CFG)},
 -- 
 2.25.1
 
