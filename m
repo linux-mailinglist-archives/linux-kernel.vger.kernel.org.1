@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0360520D2CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A623F20D37C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729124AbgF2SwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:52:24 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:36456 "EHLO m43-7.mailgun.net"
+        id S1729537AbgF2S7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:59:16 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:32667 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729742AbgF2SwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:21 -0400
+        id S1728041AbgF2S67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:58:59 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593456741; h=Content-Transfer-Encoding: MIME-Version:
+ s=smtp; t=1593457139; h=Content-Transfer-Encoding: MIME-Version:
  References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=Ky6EgIpsLXuCQ1ZyQQj8TAObCq/x3v8ZEUf9hqB0i5U=; b=sl7VZh2iZdbPyFnP4RxQwa/bcxiSA8kp8SGaKYNt9VjNHXXwescF/Yc4pxEsNPK6dPvjKN3I
- FKoHAgrGWMz0Kj8kZQR4ViPPBmbQun39i/m/xgseMSY3fp8vfnC3y9cIlLjkI2l3xxCprGwV
- 4QakvCi87sq+cT3EKPl7E1Y+ORA=
+ Sender; bh=LiEshpG6n+ZWXWHltSTHJXa6fUUMpuwtQ5+FAEi+WoU=; b=Yh0Ac6h3g0GgmRW6nIU2tRu7Qi6cz/WSw5F3e9LtMBy5xS6F2obBQmExnqxgeKbWoajQ9S3o
+ AQgkd3Yvx7ym+j+bZpCV8WjGRDp1b0ynMaxWgcf7TjZPHCfXMpX5DkaE6Ej3mX2Lqj27vtjf
+ dYV5scjhPtRvfalhYuGc6sEfpHs=
 X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n14.prod.us-west-2.postgun.com with SMTP id
- 5efa0e78f3deea03f3b21908 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 15:53:28
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5efa0e96356bcc26abe0da72 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 15:53:58
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B1D31C43395; Mon, 29 Jun 2020 15:53:28 +0000 (UTC)
+        id 9D2F4C433AD; Mon, 29 Jun 2020 15:53:57 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -36,9 +36,9 @@ Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Out
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 36CB3C433C8;
-        Mon, 29 Jun 2020 15:53:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 36CB3C433C8
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8DAF8C433B2;
+        Mon, 29 Jun 2020 15:53:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8DAF8C433B2
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
 From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
@@ -59,9 +59,9 @@ Cc:     iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
         Stephen Boyd <swboyd@chromium.org>,
         Matthias Kaehlcke <mka@chromium.org>,
         Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv3 1/7] iommu/arm-smmu: Add a init_context_bank implementation hook
-Date:   Mon, 29 Jun 2020 21:22:44 +0530
-Message-Id: <cdcc6a1c95a84e774790389dc8b3b7feeee490dc.1593344119.git.saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv3 5/7] iommu: arm-smmu-impl: Convert to use of_match_node() for qcom impl
+Date:   Mon, 29 Jun 2020 21:22:48 +0530
+Message-Id: <eac57bb8a99f811a47242a216343b8aadb4b1677.1593344119.git.saiprakash.ranjan@codeaurora.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1593344119.git.saiprakash.ranjan@codeaurora.org>
 References: <cover.1593344119.git.saiprakash.ranjan@codeaurora.org>
@@ -72,149 +72,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jordan Crouse <jcrouse@codeaurora.org>
+Use of_match_node() to match qcom implementation instead
+of multiple of_device_compatible() calls for each qcom
+implementation.
 
-Add a new implementation hook to allow the implementation specific code
-to tweek the context bank configuration just before it gets written.
-The first user will be the Adreno GPU implementation to turn on
-SCTLR.HUPCF to ensure that a page fault doesn't terminating pending
-transactions. Doing so could hang the GPU if one of the terminated
-transactions is a CP read.
-
-This depends on the arm-smmu adreno SMMU implementation [1].
-
-[1] https://lore.kernel.org/patchwork/patch/1264452/
-
-Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
 Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 ---
- drivers/iommu/arm-smmu-qcom.c | 13 +++++++++++++
- drivers/iommu/arm-smmu.c      | 29 +++++++++++++----------------
- drivers/iommu/arm-smmu.h      | 12 ++++++++++++
- 3 files changed, 38 insertions(+), 16 deletions(-)
+ drivers/iommu/arm-smmu-impl.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iommu/arm-smmu-qcom.c b/drivers/iommu/arm-smmu-qcom.c
-index cb2acb6b19dd..6462fb00f493 100644
---- a/drivers/iommu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm-smmu-qcom.c
-@@ -17,6 +17,18 @@ static bool qcom_adreno_smmu_is_gpu_device(struct arm_smmu_domain *smmu_domain)
- 	return of_device_is_compatible(smmu_domain->dev->of_node, "qcom,adreno");
- }
+diff --git a/drivers/iommu/arm-smmu-impl.c b/drivers/iommu/arm-smmu-impl.c
+index 8fbab9c38b61..42020d50ce12 100644
+--- a/drivers/iommu/arm-smmu-impl.c
++++ b/drivers/iommu/arm-smmu-impl.c
+@@ -9,6 +9,12 @@
  
-+static void qcom_adreno_smmu_init_context_bank(struct arm_smmu_domain *smmu_domain,
-+		struct arm_smmu_cb *cb)
-+{
-+	/*
-+	 * On the GPU device we want to process subsequent transactions after a
-+	 * fault to keep the GPU from hanging
-+	 */
-+
-+	if (qcom_adreno_smmu_is_gpu_device(smmu_domain))
-+		cb->sctlr |= ARM_SMMU_SCTLR_HUPCF;
-+}
-+
- static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
- 		struct io_pgtable_cfg *pgtbl_cfg)
- {
-@@ -92,6 +104,7 @@ static const struct arm_smmu_impl qcom_adreno_smmu_impl = {
- 	.init_context = qcom_adreno_smmu_init_context,
- 	.def_domain_type = qcom_smmu_def_domain_type,
- 	.reset = qcom_smmu500_reset,
-+	.init_context_bank = qcom_adreno_smmu_init_context_bank,
- };
+ #include "arm-smmu.h"
  
- 
-diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-index 4bd247dfd703..b2564f93d685 100644
---- a/drivers/iommu/arm-smmu.c
-+++ b/drivers/iommu/arm-smmu.c
-@@ -86,14 +86,6 @@ struct arm_smmu_smr {
- 	bool				valid;
- };
- 
--struct arm_smmu_cb {
--	u64				ttbr[2];
--	u32				tcr[2];
--	u32				mair[2];
--	struct arm_smmu_cfg		*cfg;
--	atomic_t			aux;
--};
--
- struct arm_smmu_master_cfg {
- 	struct arm_smmu_device		*smmu;
- 	s16				smendx[];
-@@ -580,6 +572,18 @@ static void arm_smmu_init_context_bank(struct arm_smmu_domain *smmu_domain,
- 			cb->mair[1] = pgtbl_cfg->arm_lpae_s1_cfg.mair >> 32;
- 		}
- 	}
-+
-+	cb->sctlr = ARM_SMMU_SCTLR_CFIE | ARM_SMMU_SCTLR_CFRE | ARM_SMMU_SCTLR_AFE |
-+		ARM_SMMU_SCTLR_TRE | ARM_SMMU_SCTLR_M;
-+
-+	if (stage1)
-+		cb->sctlr |= ARM_SMMU_SCTLR_S1_ASIDPNE;
-+	if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
-+		cb->sctlr |= ARM_SMMU_SCTLR_E;
-+
-+	/* Give the implementation a chance to adjust the configuration */
-+	if (smmu_domain->smmu->impl && smmu_domain->smmu->impl->init_context_bank)
-+		smmu_domain->smmu->impl->init_context_bank(smmu_domain, cb);
- }
- 
- static void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx)
-@@ -658,14 +662,7 @@ static void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx)
- 	}
- 
- 	/* SCTLR */
--	reg = ARM_SMMU_SCTLR_CFIE | ARM_SMMU_SCTLR_CFRE | ARM_SMMU_SCTLR_AFE |
--	      ARM_SMMU_SCTLR_TRE | ARM_SMMU_SCTLR_M;
--	if (stage1)
--		reg |= ARM_SMMU_SCTLR_S1_ASIDPNE;
--	if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
--		reg |= ARM_SMMU_SCTLR_E;
--
--	arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_SCTLR, reg);
-+	arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_SCTLR, cb->sctlr);
- }
- 
- /*
-diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
-index 79d441024043..4a335ef3d97a 100644
---- a/drivers/iommu/arm-smmu.h
-+++ b/drivers/iommu/arm-smmu.h
-@@ -142,6 +142,7 @@ enum arm_smmu_cbar_type {
- 
- #define ARM_SMMU_CB_SCTLR		0x0
- #define ARM_SMMU_SCTLR_S1_ASIDPNE	BIT(12)
-+#define ARM_SMMU_SCTLR_HUPCF		BIT(8)
- #define ARM_SMMU_SCTLR_CFCFG		BIT(7)
- #define ARM_SMMU_SCTLR_CFIE		BIT(6)
- #define ARM_SMMU_SCTLR_CFRE		BIT(5)
-@@ -349,6 +350,15 @@ struct arm_smmu_domain {
- 	bool				aux;
- };
- 
-+struct arm_smmu_cb {
-+	u64			ttbr[2];
-+	u32			tcr[2];
-+	u32			mair[2];
-+	u32			sctlr;
-+	struct arm_smmu_cfg	*cfg;
-+	atomic_t		aux;
++static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
++	{ .compatible = "qcom,sc7180-smmu-500" },
++	{ .compatible = "qcom,sdm845-smmu-500" },
++	{ }
 +};
 +
- static inline u32 arm_smmu_lpae_tcr(struct io_pgtable_cfg *cfg)
+ static int arm_smmu_gr0_ns(int offset)
  {
- 	u32 tcr = FIELD_PREP(ARM_SMMU_TCR_TG0, cfg->arm_lpae_s1_cfg.tcr.tg) |
-@@ -403,6 +413,8 @@ struct arm_smmu_impl {
- 	void (*tlb_sync)(struct arm_smmu_device *smmu, int page, int sync,
- 			 int status);
- 	int (*def_domain_type)(struct device *dev);
-+	void (*init_context_bank)(struct arm_smmu_domain *smmu_domain,
-+			struct arm_smmu_cb *cb);
- };
+ 	switch (offset) {
+@@ -168,8 +174,7 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
+ 	if (of_property_read_bool(np, "calxeda,smmu-secure-config-access"))
+ 		smmu->impl = &calxeda_impl;
  
- static inline void __iomem *arm_smmu_page(struct arm_smmu_device *smmu, int n)
+-	if (of_device_is_compatible(np, "qcom,sdm845-smmu-500") ||
+-	    of_device_is_compatible(np, "qcom,sc7180-smmu-500"))
++	if (of_match_node(qcom_smmu_impl_of_match, np))
+ 		return qcom_smmu_impl_init(smmu);
+ 
+ 	if (of_device_is_compatible(smmu->dev->of_node, "qcom,adreno-smmu"))
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
 of Code Aurora Forum, hosted by The Linux Foundation
