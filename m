@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C3920DF51
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2351120DD3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389386AbgF2UeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:34:23 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28391 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730093AbgF2TZO (ORCPT
+        id S1727948AbgF2SjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727947AbgF2Sh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:25:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593458713;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lZIwwdY+4quyzpnR8PUmWqC5xEd+/+UfLosIlVye92g=;
-        b=XfTI9qoX+sXb18yxRHATyx9lYlpAmQxaBGhH+Q59uMKyWWHF3IJC3OAk7st/0l13bAUF/H
-        ASig2sVX3qHT0YY+4EvsIwvi/f1nTu7MtvnnBv6BQyBKSfqSCdqiNTi71HuD46AXwFp797
-        zjzvXOB58eyS8FWNTE9M+s3DZnLNFQQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-308-I02TrkkrNZaFJyo8zF93YA-1; Mon, 29 Jun 2020 08:23:52 -0400
-X-MC-Unique: I02TrkkrNZaFJyo8zF93YA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D5D2464;
-        Mon, 29 Jun 2020 12:23:51 +0000 (UTC)
-Received: from starship (unknown [10.35.206.100])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 46A7D5D9DA;
-        Mon, 29 Jun 2020 12:23:50 +0000 (UTC)
-Message-ID: <649f4c040c2f6dd2d83e984a88343917d498b4ad.camel@redhat.com>
-Subject: Re: [PATCH v2 0/5] Fix split view search and debug info navigation
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 29 Jun 2020 15:23:49 +0300
-In-Reply-To: <cover.1593423060.git.mchehab+huawei@kernel.org>
-References: <cover.1593423060.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Mon, 29 Jun 2020 14:37:59 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116DFC02A558
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:10:13 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id y18so9016599lfh.11
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:10:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jr1nek3J8zYrEJUnEDGgWevLtl77KOHWAeMwQjMSDdA=;
+        b=pVTf/0go2c42RtZJAsf+7SPFbpXnMlAHaciCTkREVPwihX8fWC2JlSPaEQKBQ/aAJN
+         5SxsxtgI7FpQUeWLyU1wFDJ2vB0FNaxbrWABYoO26pAL5FpLYvlJE1q3MiQxgjgLGprm
+         xlVWz43m6SWWCSyxCgCvNZtM+U813ehNZ4XALmQxInpS92F4SOVSKTjitku0R8wLOIJq
+         LZmOqql2/CeZZsaggx9uhv7Cew+YebAMKjAeHsa31HD+lfwU9Yi037GVUJm5AVDIsuOO
+         iyHJiCvI3ThpVB7bZlBW4QbASTz/1TVYbD7cR5AGWVM/lTuMOMvDCAt5TRzl5AcxePgW
+         wUmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jr1nek3J8zYrEJUnEDGgWevLtl77KOHWAeMwQjMSDdA=;
+        b=JjINrvpPkXVJrNkDnM4xfcmWa6XWXPsPUdk9544ad9BOSlJTDdquxLx3C95+3hm9ln
+         CoUAL75E1jxReiQUBvsbIZRr4bwZmEyzX/aLBVbJNTNQm31qkf6bLoMDk0UiQEuQOnzP
+         a4zK6z0v562SwL2Bo/zbg67OdBj1OGh6HmwJthXsOFf9c5eZ3cj5QFilSlq5yJUjZH4t
+         zQniGbNNI8A+xU4FfK485rl3xhHPiFVYt7oO8r6kybtrXV/DvchYrcYGpW5TDqhSlc+g
+         QmSqrBPnWfUZAQ7OUqNBn7QugZJF18xs1dIslkTILpKYC97mBBa7FWCiRYCU+5J9oTpq
+         PTpg==
+X-Gm-Message-State: AOAM533ZIGxgN/ZawqmxZ6rvvVC6A0R+ZN/ztQqHwTNZI6iWBNCZIbXx
+        YOxw5zP5k4MVS/BLC27CGi2CyonbmU/uNVOdGgo=
+X-Google-Smtp-Source: ABdhPJyKMYwlzKGDBLGeTXdwuk1wi968jDSKqlLN+LMTU4fHTuq8QJ42iNtJ48JBSb8Ib4KKwpybB4wm3thHbkt4iFU=
+X-Received: by 2002:ac2:5f04:: with SMTP id 4mr9051681lfq.140.1593436211359;
+ Mon, 29 Jun 2020 06:10:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200625140105.14999-1-TheSven73@gmail.com> <20200625140105.14999-2-TheSven73@gmail.com>
+In-Reply-To: <20200625140105.14999-2-TheSven73@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 29 Jun 2020 10:09:59 -0300
+Message-ID: <CAOMZO5AWiHWSLAcd=dj9dDFj8jLPAVAuoiOAJ8qKGPwRq1Q41g@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] ARM: imx6plus: enable internal routing of
+ clk_enet_ref where possible
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Fugang Duan <fugang.duan@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-06-29 at 11:35 +0200, Mauro Carvalho Chehab wrote:
-> This series fixes some issues with search while on split view and fix the
-> broken hyperlink navigation.
-> 
-> The first patches restore the pre-Qt5 conversion behavior. The last
-> one implements navigation on a different way. I opted to keep this one
-> in separate, as this one is a new feature.
-> 
-> Mauro Carvalho Chehab (5):
->   kconfig: qconf: cleanup includes
->   kconfig: qconf: ensure that only one item will be highlighted
->   kconfig: qconf: make search fully work again on split mode
->   kconfig: qconf: make debug links work again
->   kconfig: qconf: navigate menus on hyperlinks
-> 
->  scripts/kconfig/qconf.cc | 120 +++++++++++++++++++++++++++++----------
->  scripts/kconfig/qconf.h  |  15 ++---
->  2 files changed, 98 insertions(+), 37 deletions(-)
-> 
-I tested the series, and it works really well here.
-Thanks a lot for the patch 5, I indeed noted that 
-I am not sure it ever worked like that but it does now, 
-and it is a very good improvement in terms of usability.
+Hi Sven,
 
-There is still a tiny issue in patch 5 - sometimes already
-selected items remain selected like it was in the search (now fixed).
+On Thu, Jun 25, 2020 at 11:01 AM Sven Van Asbroeck <thesven73@gmail.com> wrote:
+>
+> On imx6, the ethernet reference clock (clk_enet_ref) can be generated
+> by either the imx6, or an external source (e.g. an oscillator or the
+> PHY). When generated by the imx6, the clock source (from ANATOP)
+> must be routed to the input of clk_enet_ref via two pads on the SoC,
+> typically via a dedicated track on the PCB.
+>
+> On an imx6 plus however, there is a new setting which enables this
+> clock to be routed internally on the SoC, from its ANATOP clock
+> source, straight to clk_enet_ref, without having to go through
+> the SoC pads.
+>
+> Board designs where the clock is generated by the imx6 should not
+> be affected by routing the clock internally. Therefore on a plus,
+> we can enable internal routing by default.
+>
+> Signed-off-by: Sven Van Asbroeck <TheSven73@gmail.com>
 
-Also I found another bug - clicking on '..' menu doesn't work:
+I have tested this series on an imx6qp sabresd and unfortunately, it
+breaks Ethernet as I can no longer get an IP address from the DHCP
+server.
 
-For example select 'input device support', then 'keyboards' on the right,
-then you can't get back. It also might be something that never worked,
-and it doesn't bother me, I just note this for reference.
+Without this series, IP address can normally be retrieved.
 
-Thanks a lot for these fixes!
-Best regards,
-	Maxim Levitsky
-
+Therefore I suggest to create a device tree property for this feature
+and only enable it when such device tree property is present.
