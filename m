@@ -2,121 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A1B20DAF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAC020D8C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732312AbgF2UCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
+        id S2387840AbgF2TlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387485AbgF2TkD (ORCPT
+        with ESMTP id S1733200AbgF2TlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:40:03 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C65FC03E979
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:40:03 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jpzdH-0006Hf-Lb; Mon, 29 Jun 2020 21:39:59 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jpzdG-0005D9-HF; Mon, 29 Jun 2020 21:39:58 +0200
-Date:   Mon, 29 Jun 2020 21:39:58 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     thierry.reding@gmail.com, linux-pwm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Tony Lindgren <tony@atomide.com>, NeilBrown <neilb@suse.de>,
-        Grant Erickson <marathon96@gmail.com>
-Subject: Re: [PATCH 4/4] pwm: omap-dmtimer: Repair pwm_omap_dmtimer_chip's
- broken kerneldoc header
-Message-ID: <20200629193958.dasxmmkcexfxorfq@pengutronix.de>
-References: <20200629124752.1018358-1-lee.jones@linaro.org>
- <20200629124752.1018358-5-lee.jones@linaro.org>
+        Mon, 29 Jun 2020 15:41:15 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C975CC03E979
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:41:15 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id x83so7853309oif.10
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:41:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=digitalocean.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hGexIaT8CwluIqqizyzXpQ7j6qkMuzI/CkS1DRj6oWo=;
+        b=GHT1e+xybW7cSMRjiOJNskRGbqCBCcu7GxLVqKldbleFHJMoICodTLII5Fil7CImrt
+         7ZDwx8qVW94n7P9LJmGppi30mq4fWKrED7dVtBZQZCw5GcdvujnGv5AfBYKcKnUWVJqB
+         mOaYqbayQcZiaSTPdetU2mYYsr/SU88cbfZLg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hGexIaT8CwluIqqizyzXpQ7j6qkMuzI/CkS1DRj6oWo=;
+        b=IUQveFmhp6Ri4eLXCKfp3xbkG+CoXAcfn+LuKFkq5UCTA9jYN7eZJTfcka5J2GTkAe
+         GTuCrw19tNoDST+xhbCjcwIxppw7N0TS74rCTpk5eCciSzfVUUSK8W5jFQw1XjBHv2qQ
+         PqiCxF9aYWMk+wCD8dxyGCdZSfErYIvzCEwK5KuZtp/9rB8n2mxjjVNXozc+l4OqK9PV
+         U1L0UOBu2XA+rGkSd6maHdSaQrK3hqhvNgeAnYbExk0Q9v2BKjRo4R37UUhoJ6w0xlX7
+         xGaGtfTJUP/H92xI5oJFjNbWM0RJ4WAmoPBMcKAnBm8L/i5Lj4wIxQzEkSnF/6cgv7bt
+         W/+g==
+X-Gm-Message-State: AOAM531zaj3slIeE0PGvyWDfZSnSlNu/aj7X8JrwbCpLAvomVG2iEb8B
+        yG/q2TKjm/+86tBRQe4CiGE6G92xZP6HCYXZSA+jDQ==
+X-Google-Smtp-Source: ABdhPJwv8yb0f9OhR6M3vN5uZIe1nZ2BMLDXD0xNf+Gs6g3qLHpu1FTIRsddJkS4o346lt1JVlcWMrbRgOx0sgMASF8=
+X-Received: by 2002:a54:4585:: with SMTP id z5mr13725249oib.110.1593459675085;
+ Mon, 29 Jun 2020 12:41:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ktwuwrjs6xawhva4"
-Content-Disposition: inline
-In-Reply-To: <20200629124752.1018358-5-lee.jones@linaro.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <cover.1583332764.git.vpillai@digitalocean.com>
+ <CANaguZBQMarzMb-iXBEx8wJqkTYtRskTL+xQnShuAW7hP9UdqA@mail.gmail.com> <1e3c84b1-78c3-af2c-cfe5-bdd96f520576@linux.intel.com>
+In-Reply-To: <1e3c84b1-78c3-af2c-cfe5-bdd96f520576@linux.intel.com>
+From:   Vineeth Remanan Pillai <vpillai@digitalocean.com>
+Date:   Mon, 29 Jun 2020 15:41:04 -0400
+Message-ID: <CANaguZB1_wBMXMzb=itEfhhYTh6F0GbMT_1OWmw_XS-ufi7Umg@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/13] Core scheduling v5
+To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Paul Turner <pjt@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Aubrey,
 
---ktwuwrjs6xawhva4
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jun 29, 2020 at 8:34 AM Li, Aubrey <aubrey.li@linux.intel.com> wrote:
+>
+> >  - Load balancing/migration changes ignores group weights:
+> >    - https://lwn.net/ml/linux-kernel/20200225034438.GA617271@ziqianlu-desktop.localdomain
+>
+> According to Aaron's response below:
+> https://lwn.net/ml/linux-kernel/20200305085231.GA12108@ziqianlu-desktop.localdomain/
+>
+> The following logic seems to be helpful for Aaron's case.
+>
+> +       /*
+> +        * Ignore cookie match if there is a big imbalance between the src rq
+> +        * and dst rq.
+> +        */
+> +       if ((src_rq->cfs.h_nr_running - rq->cfs.h_nr_running) > 1)
+> +               return true;
+>
+> I didn't see any other comments on the patch at here:
+> https://lwn.net/ml/linux-kernel/67e46f79-51c2-5b69-71c6-133ec10b68c4@linux.intel.com/
+>
+> Do we have another way to address this issue?
+>
+We do not have a clear fix for this yet, and did not get much time to
+work on this.
 
-Hello,
+I feel that the above change would not be fixing the real issue.
+The issue is about not considering the weight of the group when we
+try to load balance, but the above change is checking only the
+nr_running which might not work always. I feel that we should fix
+the real issue in v6 and probably hold on to adding the workaround
+fix in the interim.  I have added a TODO specifically for this bug
+in v6.
 
-[dropped Joachim Eastwood <manabian@gmail.com> from recipents as his
-address bounces]
+What do you think?
 
-On Mon, Jun 29, 2020 at 01:47:52PM +0100, Lee Jones wrote:
-> Argument descriptions must be prepended with a '@' to be understood
-> by the kerneldoc tooling/parsers/validators.
->=20
-> Fixes the following W=3D1 warning:
->=20
->   drivers/pwm/pwm-omap-dmtimer.c:70: warning: Function parameter or membe=
-r 'dm_timer_pdev' not described in 'pwm_omap_dmtimer_chip'
->=20
-> Cc: Tony Lindgren <tony@atomide.com>
-> Cc: Joachim Eastwood <manabian@gmail.com>
-> Cc: NeilBrown <neilb@suse.de>
-> Cc: Grant Erickson <marathon96@gmail.com>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/pwm/pwm-omap-dmtimer.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/pwm/pwm-omap-dmtimer.c b/drivers/pwm/pwm-omap-dmtime=
-r.c
-> index 0d31833db2e2c..75cea7f2aff5e 100644
-> --- a/drivers/pwm/pwm-omap-dmtimer.c
-> +++ b/drivers/pwm/pwm-omap-dmtimer.c
-> @@ -58,7 +58,7 @@
->   * @mutex:		Mutex to protect pwm apply state
->   * @dm_timer:		Pointer to omap dm timer.
->   * @pdata:		Pointer to omap dm timer ops.
-> - * dm_timer_pdev:	Pointer to omap dm timer platform device
-> + * @dm_timer_pdev:	Pointer to omap dm timer platform device
->   */
->  struct pwm_omap_dmtimer_chip {
->  	struct pwm_chip chip;
-
-LGTM,
-
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
-Thanks
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ktwuwrjs6xawhva4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl76Q4sACgkQwfwUeK3K
-7AmzWAf/Zj9Hhj4s99PZArypybzk5l2H7shVDnUei4T1aCiVqD9rL+QJitW3TzTZ
-HyhCa7plxP9BHXDPcQKagFjgnj/zj/tNPSst12WGmX6rc2omP5DHpzzMqAkCCAb+
-Iw3YHQPmQQOdFNYIgQ2CsIIJs4Yo+pkm+XswLVR7pRJpuHu8omfiK6BhklqjJ/IG
-nskRKoHfPpzmay1PlTmhDytmtpT6wlb67xbEzLv59kZlYabgWjTClYN14fHRpELe
-AgWX0v3tdwPZLcVRuRcv2aPWuayBGSnLUi4H8h42WpxuveHjkWJql/2ETbSqCaP3
-6rtluenkb9KLsjjeLxIatc3UjArhYg==
-=3KKv
------END PGP SIGNATURE-----
-
---ktwuwrjs6xawhva4--
+Thanks,
+Vineeth
