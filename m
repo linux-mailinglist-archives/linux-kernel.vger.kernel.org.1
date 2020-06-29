@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FDD20D4DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE7920D3C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730839AbgF2TME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:12:04 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:46628 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730529AbgF2TMC (ORCPT
+        id S1730464AbgF2TB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:01:56 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:56641 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727018AbgF2TBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:12:02 -0400
-X-Greylist: delayed 1030 seconds by postgrey-1.27 at vger.kernel.org; Mon, 29 Jun 2020 15:12:01 EDT
-Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id D75E93AB679
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:00:33 +0000 (UTC)
-X-Originating-IP: 84.44.14.226
-Received: from nexussix.ar.arcelik (unknown [84.44.14.226])
-        (Authenticated sender: cengiz@kernel.wtf)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 53A10FF80E;
-        Mon, 29 Jun 2020 14:00:09 +0000 (UTC)
-From:   Cengiz Can <cengiz@kernel.wtf>
-To:     Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>
-Cc:     kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Cengiz Can <cengiz@kernel.wtf>
-Subject: [PATCH] kdb: prevent possible null deref in kdb_msg_write
-Date:   Mon, 29 Jun 2020 16:59:24 +0300
-Message-Id: <20200629135923.14912-1-cengiz@kernel.wtf>
-X-Mailer: git-send-email 2.27.0
+        Mon, 29 Jun 2020 15:01:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593457305;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rE8sePDsqa4643aK/Xq/VoL9+mfjUnQLSGGnMx89Flk=;
+        b=R9ki7V9/RnRr86Dlmgk8FELDy8nWOxN4KYPjz0WXf0d2ID56d+nsw+m0N452NSAYot6mve
+        mV6EmfvFUy8uIidrEwJjb68eIiCMTrrUCN+gfVMJffhBNuCpN/OUhwsOkrO6mVCtnULGUc
+        /ElGP50P7f15XvuWiISOjqfAX+Q/ypA=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-157-Z7Hk_V3DPFe4DDRLgJCccg-1; Mon, 29 Jun 2020 09:59:28 -0400
+X-MC-Unique: Z7Hk_V3DPFe4DDRLgJCccg-1
+Received: by mail-wr1-f70.google.com with SMTP id p9so16576130wrx.10
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:59:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rE8sePDsqa4643aK/Xq/VoL9+mfjUnQLSGGnMx89Flk=;
+        b=EoFblXlhAgvxBtNtf6LKdOeFl1L1jkINCLxuOyobzaXmw6FiFDXlbbAiftOOKPigbw
+         Fc1tYIBhtGwL4X6Nt7HmeYiBWeHmYEtC9FSWBKeFkRFyiUZz8Qyp6tEr6E77/lcDj/1S
+         DvbEBQ1xNLiMZVVYoy/woYMUgcD0Jom9JAlg1lGgibe512ERQLaXcyIBCY1gkJnhtU+P
+         pYseRectbOk5QJgjRHi1n5QrPMhw1NOYdKeraX287WXKrCqCe4ksmiPyGXRyqpDdqNRq
+         X4UejaIkzr60/EjocEjb4YcY8jiJtmmw2NNgfKaGmsjav38sXw/qUlG9AsVmiNG4vCf9
+         ccRg==
+X-Gm-Message-State: AOAM531qqqE2Ea3zRw+LwCiKKFyZrFd6PIlokSJkpFSiam/1o67y5Qa8
+        UgwxyGfLrZV0WMjLVtRnKYGwFieX5y8KB1hmNQsARPZgWk7Jcn9e+E9Vad4mKSGarSczTM4xhlG
+        THPhuFO0TnYPq1i2mZnRaVnxS
+X-Received: by 2002:a1c:ce:: with SMTP id 197mr16802247wma.177.1593439167025;
+        Mon, 29 Jun 2020 06:59:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwsxz9zZlXFnZ7BIFPMcVeMeUzlm7a/lsLSfHAU3MGsXPZfgWzKa7c4KMMzMv09dmjzWh/Gkg==
+X-Received: by 2002:a1c:ce:: with SMTP id 197mr16802236wma.177.1593439166855;
+        Mon, 29 Jun 2020 06:59:26 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:b0e5:c632:a580:8b9a? ([2001:b07:6468:f312:b0e5:c632:a580:8b9a])
+        by smtp.gmail.com with ESMTPSA id o1sm52465447wrw.20.2020.06.29.06.59.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jun 2020 06:59:26 -0700 (PDT)
+Subject: Re: [PATCH] KVM: X86: Fix async pf caused null-ptr-deref
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <kernellwp@gmail.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vivek Goyal <vgoyal@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <1593426391-8231-1-git-send-email-wanpengli@tencent.com>
+ <877dvqc7cs.fsf@vitty.brq.redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f9b06428-51c3-09af-48cc-d378182916fd@redhat.com>
+Date:   Mon, 29 Jun 2020 15:59:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <877dvqc7cs.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`kdb_msg_write` operates on a global `struct kgdb_io *` called
-`dbg_io_ops`.
+On 29/06/20 15:46, Vitaly Kuznetsov wrote:
+>> +	if (!lapic_in_kernel(vcpu))
+>> +		return 1;
+>> +
+> I'm not sure how much we care about !lapic_in_kernel() case but this
+> change should be accompanied with userspace changes to not expose
+> KVM_FEATURE_ASYNC_PF_INT or how would the guest know that writing a
+> legitimate value will result in #GP?
 
-Although it is initialized in `debug_core.c`, there's a null check in
-`kdb_msg_write` which implies that it can be null whenever we dereference
-it in this function call.
+Almost any pv feature is broken with QEMU if kernel_irqchip=off.  I
+wouldn't bother and I am seriously thinking of dropping all support for
+that, including:
 
-Coverity scanner caught this as CID 1465042.
+- just injecting #UD for MOV from/to CR8 unless lapic_in_kernel()
 
-I have modified the function to bail out if `dbg_io_ops` is not properly
-initialized.
+- make KVM_INTERRUPT fail unless irqchip_in_kernel(), so that
+KVM_INTERRUPT is only used to inject EXTINT with kernel_irqchip=split
 
-Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
----
- kernel/debug/kdb/kdb_io.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+Paolo
 
-diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
-index 683a799618ad..85e579812458 100644
---- a/kernel/debug/kdb/kdb_io.c
-+++ b/kernel/debug/kdb/kdb_io.c
-@@ -549,14 +549,15 @@ static void kdb_msg_write(const char *msg, int msg_len)
- 	if (msg_len == 0)
- 		return;
- 
--	if (dbg_io_ops) {
--		const char *cp = msg;
--		int len = msg_len;
-+	if (!dbg_io_ops)
-+		return;
- 
--		while (len--) {
--			dbg_io_ops->write_char(*cp);
--			cp++;
--		}
-+	const char *cp = msg;
-+	int len = msg_len;
-+
-+	while (len--) {
-+		dbg_io_ops->write_char(*cp);
-+		cp++;
- 	}
- 
- 	for_each_console(c) {
--- 
-2.27.0
+> Alternatively, we may just return '0' here: guest will be able to check
+> what's in the MSR to see if the feature was enabled. Normally, guests
+> shouldn't care about this but maybe there are cases when they do?
+> 
 
