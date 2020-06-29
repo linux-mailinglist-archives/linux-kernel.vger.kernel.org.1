@@ -2,95 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4BB20D4B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A82E20D3FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731020AbgF2TKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:10:52 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:48069 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730767AbgF2TKm (ORCPT
+        id S1730621AbgF2TD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:03:59 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:51093 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730619AbgF2TDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:10:42 -0400
-Received: from mail-qv1-f42.google.com ([209.85.219.42]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MN4ux-1jZ2rM0CP7-00J2oD for <linux-kernel@vger.kernel.org>; Mon, 29 Jun
- 2020 14:55:37 +0200
-Received: by mail-qv1-f42.google.com with SMTP id g11so7553578qvs.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:55:36 -0700 (PDT)
-X-Gm-Message-State: AOAM531AddKxbPCElwxBeXP8CG6S0lt+aGjjVypushYSzpM4yk1xkddl
-        OOzCNwJic9tFwX32lc0Hnra1+7ZMUN0RjrBf0Wg=
-X-Google-Smtp-Source: ABdhPJwTUgWBKuCYHhm9IfBDK7FIWMaC5caJVsnREcVoFi6MO3w8Y1aC9gRnZGddm1b731YJ/OBzbCxzjKv7KsI7YTw=
-X-Received: by 2002:a0c:f385:: with SMTP id i5mr15431499qvk.4.1593435335949;
- Mon, 29 Jun 2020 05:55:35 -0700 (PDT)
+        Mon, 29 Jun 2020 15:03:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593457433;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=tafezFPVKisxFrViNoe9kf9bq7boE8cZG7BjLLxVJOo=;
+        b=A0IQmMlJPzSy6qDFK405nzj82PqX0Qw11AON9g14wLbv0KoVXTPZA1bLpeeQDzIoENSBPi
+        PjxqZNQGIf3bzVX81WvSzv7UTQCbUoV5XWZJ19Rq9pC4hHIhDPFtA/DsUNn9V0i5qA5Azw
+        /c1mT1BssOoueaK1mHaqUoSnM4xx5uE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-139-gUkfve_3M3qoeuyEa2k3FA-1; Mon, 29 Jun 2020 09:02:38 -0400
+X-MC-Unique: gUkfve_3M3qoeuyEa2k3FA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C13B1017E01;
+        Mon, 29 Jun 2020 13:02:36 +0000 (UTC)
+Received: from [10.36.114.157] (ovpn-114-157.ams2.redhat.com [10.36.114.157])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CCB009CFF2;
+        Mon, 29 Jun 2020 13:02:32 +0000 (UTC)
+Subject: Re: [PATCH RFC 2/2] s390/mm: don't set ARCH_KEEP_MEMBLOCK
+To:     Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-s390@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Philipp Rudo <prudo@linux.ibm.com>,
+        Michael Holzheu <holzheu@linux.vnet.ibm.com>
+References: <20200417150151.17239-1-david@redhat.com>
+ <20200417150151.17239-3-david@redhat.com> <20200626163215.GA4268@osiris>
+ <20200629124432.GE4468@osiris>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+Organization: Red Hat GmbH
+Message-ID: <1d9b431a-58cb-8b5f-cb3f-5656a3032e34@redhat.com>
+Date:   Mon, 29 Jun 2020 15:02:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <1593425623-31810-1-git-send-email-Anson.Huang@nxp.com>
- <1593425623-31810-2-git-send-email-Anson.Huang@nxp.com> <CAK8P3a31coESQTssW1mndGuZ1pvxXSRRpY=XT1ZO+pkj9aabxg@mail.gmail.com>
- <DB3PR0402MB3916987E13C37013ACF59EB1F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CAK8P3a3Ar3TnSuxpUUMj4NjCK0Qb0pD9cVbcFUcdeGa85m2fUQ@mail.gmail.com>
- <DB3PR0402MB3916192607A09C7061740087F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CAK8P3a1NoyMGNK90WzbgJ7opPbiVL8vwnMEuBeeNPNyvB+5sqQ@mail.gmail.com> <DB3PR0402MB39162138624705E5A296A047F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-In-Reply-To: <DB3PR0402MB39162138624705E5A296A047F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 29 Jun 2020 14:55:19 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3n6c5i_RqxxO9N4SdBswmyXbpu3LBi4udfSUHy3mJPsQ@mail.gmail.com>
-Message-ID: <CAK8P3a3n6c5i_RqxxO9N4SdBswmyXbpu3LBi4udfSUHy3mJPsQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] arm64: defconfig: Select CONFIG_RESET_IMX7 by default
-To:     Anson Huang <anson.huang@nxp.com>
-Cc:     Richard Zhu <hongxing.zhu@nxp.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Stefan Agner <stefan.agner@toradex.com>,
-        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Olof Johansson <olof@lixom.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:rSY+zoLBo+mwL1X7TzIIpQI8/fd7K6+NGn4xf8+tddJ6ggX+Yoz
- 2cdpWv9puKYj8LGWQ/jwHLkatFvui2vMLY3LdEU3Jv5w/vMqjYZHSXSOBzwsD2etOsn9rWP
- fKL7qDR9IsUnheQlUg8DhMr1XUne0in4K3YHdqqu8Ugx2vAwT0ut2fvaG0ZyPTXQLPtG0sN
- 1Sm3/r7rV90o502vju47A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Y44tv8Ismyo=:ccWvjKYeZjh1aZQpi6seDN
- e92JgIO60xnSqOmpzDJyeRglqq8E/xqtFRpeT9yr+K4jGOXkh0SOq6XMCSfcidc/MbMP1xuxZ
- MRxK1S3QwPgLmUdrNGpislA4KO4ownQu+eSFek2bgRpLNNW7CmxsWRud6TbPqvq7TuNxohNbA
- 8036bjuqTLFkzoWbSvKWUD5oJVDvjZKJOs+Ok9poKhXEWyarPgiuGKAmzw+M5SsqUR9BpI6An
- IrLAM74lnGhR+1KrLWGXzPfb7dOerkb6HfsyxznUnubystYkulBBQlUn40kVZczidH4qCWH9+
- 8JotgytQfFzcE+nanvDmF4jOW/rtE9jyxdmqx7ZenXjwZpdf9Q4wealEWeM8C+ZLRZgyBZH3F
- O1jDJux8w0OWVKLJzYlxE5mdMtfKyi6WNgbxzqeSQ81D16Zvak1UfRpW8S2Nbyj1+q1CqDQeo
- BGx2l0+aOmeAFmB+SYBcG++cpVVkNmkR9zyx59kICGDpJiHvvvBtvcdyCp7jsGMt8jFeGKaOo
- yGMlkRO6hYsqT2WyM0Hj5LIDv+xC26TRrFXRVazbqCvqVRkhNITxDdkXXoFxmKuBH0JYi/GEu
- atvpGY2OhW4FOGdQ/Qjxj43oA7J8ujiMHbYuKNMZ9vBHpVsHx/QACuWdUVnx/PuJUCbuZcIGF
- yjXiYoNunGSeOCowG/IDdcEA2JAe2HzEXfKGOfO+6PjS7xDnhM61qMYGsCl0JHfOPeF6g2IqB
- OuGcLn5OhtXi+GJlPPZxVRBJlSlTD4kddG38vuwJuifpYoYPNUyaZZCNR3UrVw84SaUILVHXe
- VYvaTtYTivuRjhwYhSLU/Ks9EptLpZQGhC+67PfovAcrci/YQHgZdP6m7abZObLpOrpx1hWc+
- GMGS7iv5PkDsVcMbsUHN6m0MLpBIr3avocpgJUVmk9uFl6an56ohDLd74NOIUR6hTyHeDK23G
- ifSg3KeKGxf/H5QzJYbsoKivQSPZBtpMwALtyErdNFYSqdjM0LTff
+In-Reply-To: <20200629124432.GE4468@osiris>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 2:46 PM Anson Huang <anson.huang@nxp.com> wrote:
-> > Subject: Re: [PATCH 2/3] arm64: defconfig: Select CONFIG_RESET_IMX7 by
-> > default
+On 29.06.20 14:44, Heiko Carstens wrote:
+> On Fri, Jun 26, 2020 at 06:32:15PM +0200, Heiko Carstens wrote:
+>> On Fri, Apr 17, 2020 at 05:01:51PM +0200, David Hildenbrand wrote:
+>>> Commit 50be63450728 ("s390/mm: Convert bootmem to memblock") mentions
+>>> 	"The original bootmem allocator is getting replaced by memblock. To
+>>> 	cover the needs of the s390 kdump implementation the physical
+>>> 	memory list is used."
+>>>
+>>> zcore was converted to use resources instead of memblocks.
+>>> memblock_discard() will *not* mess with "physmem", only with "memory" and
+>>> "reserved" memblocks. So, that data will stay after early boot, to be
+>>> used in arch/s390/kernel/crash_dump.c to create the ELF header from
+>>> inside the 2nd (a.k.a. dumping) kernel.
+>>>
+>>> We no longer need ARCH_KEEP_MEMBLOCK.
+>>>
+>>> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+>>> Cc: Vasily Gorbik <gor@linux.ibm.com>
+>>> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+>>> Cc: Philipp Rudo <prudo@linux.ibm.com>
+>>> Cc: Michael Holzheu <holzheu@linux.vnet.ibm.com>
+>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>> ---
+>>>  arch/s390/Kconfig | 1 -
+>>>  1 file changed, 1 deletion(-)
+>>
+>> Applied, thanks!
+> 
+> Hmm, this triggers:
 
-> Thanks for detailed info about PCI loadable module support, I copy our PCI owner
-> here to help on the support of i.MX6 PCIe driver to support loadable module. Meanwhile,
-> in this patch series, I will add the short-term workaround as I described upper, and then remove
-> this short-term workaround either in the i.MX6 PCI driver's loadable module support patch later
-> or adding a new patch if necessary.
+Ah, I see, will have a look. Weird I didn't notice that ...
 
-Ok, sounds good. Thanks,
+Thanks!
 
-     Arnd
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
