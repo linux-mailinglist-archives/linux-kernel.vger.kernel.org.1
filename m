@@ -2,154 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519E920DFFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D8220E190
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731672AbgF2Ulj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
+        id S1730251AbgF2U5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731668AbgF2TOG (ORCPT
+        with ESMTP id S1731264AbgF2TNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:14:06 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA99C00874A;
-        Mon, 29 Jun 2020 01:30:17 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id o1so248041plk.1;
-        Mon, 29 Jun 2020 01:30:17 -0700 (PDT)
+        Mon, 29 Jun 2020 15:13:06 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02146C008741;
+        Mon, 29 Jun 2020 01:29:09 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id e22so12063739edq.8;
+        Mon, 29 Jun 2020 01:29:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0fKzFmJ6swEgieVUVWwiawhKzRLACyYFxC8XDxv8xYs=;
-        b=u88w+iCHX068TQdQGlFddt3hLNx2yCGO6LVQWWywBYNrJPxfB6jM2kQ0XCokKCXWI7
-         S1cvKjjK9AGtLBQS1eeRpxrkvPJ0Btbze1eRbWhdVRjxMpbENC512swG6tlAU26t//UN
-         9G9uVHnZLZZnXJfFJfhmQyPbcg8w7GRijrB0W97/4wfSZVzov43X5BvVnBmnf6TJTOLM
-         UpdbzAp3t1s48We2fXEVPg7YoZteQfCvHF74x2W9vRAIgSOsm1G2psse5kshx5sLUhbi
-         xJ6SP0gdGhfnUx8mR9034EIf/ZSIARVpiu8yhDeJVrG+y42v4RxA42o8A5pKyYHKXQCw
-         o3VA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=p0Amh6fr+1R3C2RHtf7InopKIGPAneI2V6X/f0nvW6Q=;
+        b=b77Q8K97SjCe4N8FKt73VUizzh+FuWSG8cJXm6d2FMGC0TtHg5b70pfUimyt/OH2Rt
+         OAr/iJ4zjJb444/lbv2zVCLlse3US+YJfBymOdvEXIe7pTciZW+2R8mCpvl8um5461QU
+         9rpTxROKF4jinHlpY+bak3w8PAzNO4b6KgBtnr5nvlGVgDfUe2VOf8enHOyYS6Eihw2i
+         77Gd/SXdsF9tCnssdbK2oB0g46Z2D9+bAvqhwvlI8QmqW34M8X9Q4kmNSIjbvmib4SBr
+         l+1efmH1oorND0bS9As7HzVldskq32kutrrGOyjohkSuTPAnozd6J3bVOV1f8mn1cf2l
+         1lTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0fKzFmJ6swEgieVUVWwiawhKzRLACyYFxC8XDxv8xYs=;
-        b=fyFIiwPSLZyv2i2isYh3zVsrWx12X/1ayKyIu58db9eehh+5cammbPWd6KzJRafV48
-         V4hHmzyG9zQaOw76AFpDh3dSSB8uNgh6SHayA50aRYzpp/Ck0EZ2kR92OIYGDIyJ28aZ
-         zsOyuThPMyI+856WB2d1U5GnldTClSFZtlJ6knDdMnNbCFPrgL4qauR/wl+xNWT4Kw4a
-         BGwGD6OMrM22PE+giUH6fastr3foZm3V/T6606lOqwnkrSlSgBebDrJyPK2UMebp52hf
-         Ij/ohwJx/3OOOUZcGpagSNQm+volobZkWcSA6A6kO7ahrtHGrElYwgGYbmHLCb+3VaSP
-         OIZQ==
-X-Gm-Message-State: AOAM530Cko1QYEYXtP55GBN3oL1Gm4VYr1WE2amzCfW6LIlIMsrsjCvu
-        AfWOZXR5RrnGHChC+7mAxo4=
-X-Google-Smtp-Source: ABdhPJx50yg55yRr8PC0U3W2gjfdg9NljC8EQz8jcleRFkBEGqMnsbxB67lXZSnw+Rkn/GpYwdbLHg==
-X-Received: by 2002:a17:902:8c89:: with SMTP id t9mr13070339plo.14.1593419416870;
-        Mon, 29 Jun 2020 01:30:16 -0700 (PDT)
-Received: from varodek.localdomain ([106.210.40.90])
-        by smtp.gmail.com with ESMTPSA id 202sm9133790pfw.84.2020.06.29.01.30.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 01:30:16 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Manish Chopra <manishc@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org
-Subject: [PATCH v1 4/4] vt6655/device_main.c: use generic power management
-Date:   Mon, 29 Jun 2020 13:58:19 +0530
-Message-Id: <20200629082819.216405-5-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200629082819.216405-1-vaibhavgupta40@gmail.com>
-References: <20200629082819.216405-1-vaibhavgupta40@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=p0Amh6fr+1R3C2RHtf7InopKIGPAneI2V6X/f0nvW6Q=;
+        b=f0dC3cHkAPRcqFtJijH7ejOSz/XegJ7gXyIPkzzg+aTKLYvfsv1TbeL761oATIi0gx
+         GuEhUB4K96AzGpgyaA/jXsvtPE9BJGZfG5EHKLDn83fwdsm1+AlSgOxIND5/P1TZweRK
+         z+jICI5H6SLApWcMx3XsOwksNXdnt8HpZ+LsqqO3w/d8xM4mlNpEYiHGaNeOhJA6bODG
+         PhtWSPjTPXWCXAaZvFJ4goTv6H2/QiMfYZxSIrP4HzX/CyRzYoD9rkWo9FK8dsN2hjYd
+         05g6vGASrJzJR8/XDSQ7Fp3/OHkrfS6dwcvhMsuXLVhCFVcNrwrzu1lEHKCUn8sBHvK7
+         th9w==
+X-Gm-Message-State: AOAM533IzXTdztckmmaPWiQfTIMNSagVQpja8gs1UeOLpUf2S488lApl
+        KtVSwpI9rs0otg9y+dS9q8YJl1FShz6nin+RQHU=
+X-Google-Smtp-Source: ABdhPJxPj3tJ0PQzOv97lm804VPCxbjl4m6U29OVUfEV8uCWqRZKPmi25QGenCWT2I5pPTREN2ZYJEXttVeTSUc/wVc=
+X-Received: by 2002:a50:f413:: with SMTP id r19mr17094422edm.17.1593419347605;
+ Mon, 29 Jun 2020 01:29:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1591697830-16311-1-git-send-email-amittomer25@gmail.com>
+ <1591697830-16311-3-git-send-email-amittomer25@gmail.com> <20200624061529.GF2324254@vkoul-mobl>
+ <75d154d0-2962-99e6-a7c7-bf0928ec8b2a@arm.com>
+In-Reply-To: <75d154d0-2962-99e6-a7c7-bf0928ec8b2a@arm.com>
+From:   Amit Tomer <amittomer25@gmail.com>
+Date:   Mon, 29 Jun 2020 13:58:31 +0530
+Message-ID: <CABHD4K-uFzzHLcH8SXGYkn_ZburG-g0f-ECrefU2V61Fp+z3fQ@mail.gmail.com>
+Subject: Re: [PATCH v4 02/10] dmaengine: Actions: Add support for S700 DMA engine
+To:     =?UTF-8?Q?Andr=C3=A9_Przywara?= <andre.przywara@arm.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        dan.j.williams@intel.com, cristian.ciocaltea@gmail.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-actions@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers should not use legacy power management as they have to manage power
-states and related operations, for the device, themselves. This driver was
-handling them with the help of PCI helper functions like
-pci_save/restore_state(), pci_enable/disable_device(), etc.
+Hi,
 
-With generic PM, all essentials will be handled by the PCI core. Driver
-needs to do only device-specific operations.
+On Wed, Jun 24, 2020 at 3:06 PM Andr=C3=A9 Przywara <andre.przywara@arm.com=
+> wrote:
+>
+> On 24/06/2020 07:15, Vinod Koul wrote:
+>
+> Hi,
+>
+> > On 09-06-20, 15:47, Amit Singh Tomar wrote:
+> >
+> >> @@ -372,6 +383,7 @@ static inline int owl_dma_cfg_lli(struct owl_dma_v=
+chan *vchan,
+> >>                                struct dma_slave_config *sconfig,
+> >>                                bool is_cyclic)
+> >>  {
+> >> +    struct owl_dma *od =3D to_owl_dma(vchan->vc.chan.device);
+> >>      u32 mode, ctrlb;
+> >>
+> >>      mode =3D OWL_DMA_MODE_PW(0);
+> >> @@ -427,14 +439,26 @@ static inline int owl_dma_cfg_lli(struct owl_dma=
+_vchan *vchan,
+> >>      lli->hw[OWL_DMADESC_DADDR] =3D dst;
+> >>      lli->hw[OWL_DMADESC_SRC_STRIDE] =3D 0;
+> >>      lli->hw[OWL_DMADESC_DST_STRIDE] =3D 0;
+> >> -    /*
+> >> -     * Word starts from offset 0xC is shared between frame length
+> >> -     * (max frame length is 1MB) and frame count, where first 20
+> >> -     * bits are for frame length and rest of 12 bits are for frame
+> >> -     * count.
+> >> -     */
+> >> -    lli->hw[OWL_DMADESC_FLEN] =3D len | FCNT_VAL << 20;
+> >> -    lli->hw[OWL_DMADESC_CTRLB] =3D ctrlb;
+> >> +
+> >> +    if (od->devid =3D=3D S700_DMA) {
+> >> +            /* Max frame length is 1MB */
+> >> +            lli->hw[OWL_DMADESC_FLEN] =3D len;
+> >> +            /*
+> >> +             * On S700, word starts from offset 0x1C is shared betwee=
+n
+> >> +             * frame count and ctrlb, where first 12 bits are for fra=
+me
+> >> +             * count and rest of 20 bits are for ctrlb.
+> >> +             */
+> >> +            lli->hw[OWL_DMADESC_CTRLB] =3D FCNT_VAL | ctrlb;
+> >> +    } else {
+> >> +            /*
+> >> +             * On S900, word starts from offset 0xC is shared between
+> >> +             * frame length (max frame length is 1MB) and frame count=
+,
+> >> +             * where first 20 bits are for frame length and rest of
+> >> +             * 12 bits are for frame count.
+> >> +             */
+> >> +            lli->hw[OWL_DMADESC_FLEN] =3D len | FCNT_VAL << 20;
+> >> +            lli->hw[OWL_DMADESC_CTRLB] =3D ctrlb;
+> >
+> > Unfortunately this wont scale, we will keep adding new conditions for
+> > newer SoC's! So rather than this why not encode max frame length in
+> > driver_data rather than S900_DMA/S700_DMA.. In future one can add value=
+s
+> > for newer SoC and not code above logic again.
+>
+> What newer SoCs? I don't think we should try to guess the future here.
+> We can always introduce further abstractions later, once we actually
+> *know* what we are looking at.
+>
+Apart from it , we have *one* more SoC from Actions .i.e. S500 where
+the DMA controller is
+identical to S900, and requires *no* additional code to work properly.
 
-The driver was also using pci_enable_wake(...,..., 0) to disable wake. Use
-device_wakeup_disable() instead.
+So, I think we are safe to have the changes proposed in this patch.
 
-Compile-tested only.
+Thanks
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/staging/vt6655/device_main.c | 25 +++++++------------------
- 1 file changed, 7 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
-index 41cbec4134b0..76de1fd568eb 100644
---- a/drivers/staging/vt6655/device_main.c
-+++ b/drivers/staging/vt6655/device_main.c
-@@ -1766,48 +1766,37 @@ vt6655_probe(struct pci_dev *pcid, const struct pci_device_id *ent)
- 
- /*------------------------------------------------------------------*/
- 
--#ifdef CONFIG_PM
--static int vt6655_suspend(struct pci_dev *pcid, pm_message_t state)
-+static int __maybe_unused vt6655_suspend(struct device *dev_d)
- {
--	struct vnt_private *priv = pci_get_drvdata(pcid);
-+	struct vnt_private *priv = dev_get_drvdata(dev_d);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&priv->lock, flags);
- 
--	pci_save_state(pcid);
--
- 	MACbShutdown(priv);
- 
--	pci_disable_device(pcid);
--
- 	spin_unlock_irqrestore(&priv->lock, flags);
- 
--	pci_set_power_state(pcid, pci_choose_state(pcid, state));
--
- 	return 0;
- }
- 
--static int vt6655_resume(struct pci_dev *pcid)
-+static int __maybe_unused vt6655_resume(struct device *dev_d)
- {
--	pci_set_power_state(pcid, PCI_D0);
--	pci_enable_wake(pcid, PCI_D0, 0);
--	pci_restore_state(pcid);
-+	device_wakeup_disable(dev_d);
- 
- 	return 0;
- }
--#endif
- 
- MODULE_DEVICE_TABLE(pci, vt6655_pci_id_table);
- 
-+static SIMPLE_DEV_PM_OPS(vt6655_pm_ops, vt6655_suspend, vt6655_resume);
-+
- static struct pci_driver device_driver = {
- 	.name = DEVICE_NAME,
- 	.id_table = vt6655_pci_id_table,
- 	.probe = vt6655_probe,
- 	.remove = vt6655_remove,
--#ifdef CONFIG_PM
--	.suspend = vt6655_suspend,
--	.resume = vt6655_resume,
--#endif
-+	.driver.pm = &vt6655_pm_ops,
- };
- 
- module_pci_driver(device_driver);
--- 
-2.27.0
-
+-Amit
