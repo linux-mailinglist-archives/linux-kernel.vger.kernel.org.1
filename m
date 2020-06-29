@@ -2,152 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1C620E531
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB3D20E7BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728626AbgF2VeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:34:08 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:39055 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1728611AbgF2Sk6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:58 -0400
-Received: (qmail 410173 invoked by uid 1000); 29 Jun 2020 13:40:55 -0400
-Date:   Mon, 29 Jun 2020 13:40:55 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Martin Kepplinger <martin.kepplinger@puri.sm>, jejb@linux.ibm.com,
-        Can Guo <cang@codeaurora.org>, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@puri.sm
-Subject: Re: [PATCH] scsi: sd: add runtime pm to open / release
-Message-ID: <20200629174055.GA408860@rowland.harvard.edu>
-References: <20200623111018.31954-1-martin.kepplinger@puri.sm>
- <ed9ae198-4c68-f82b-04fc-2299ab16df96@acm.org>
- <eccacce9-393c-ca5d-e3b3-09961340e0db@puri.sm>
- <1379e21d-c51a-3710-e185-c2d7a9681fb7@acm.org>
- <20200626154441.GA296771@rowland.harvard.edu>
- <c19f1938-ae47-2357-669d-5b4021aec154@puri.sm>
- <20200629161536.GA405175@rowland.harvard.edu>
- <df54c02f-dbe9-08d5-fec8-835788caf164@acm.org>
+        id S1726409AbgF2V75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:59:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726392AbgF2SfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:35:25 -0400
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DFCA3255C7;
+        Mon, 29 Jun 2020 17:57:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593453470;
+        bh=ZtASUsHSUH9iBmQouSmlHBp0adBRXfaTVKN3IEKwB2A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=2kKS+wDhkOuxpH9plHm9j0XcBd1NOUkJJmJEvlxcmanpfHqlzhfaHZvWTWdWKm1fj
+         wSf07FVi3Vc5BoJg00SsFz9stOKYZjSXPZ0CZnwRUr9xGG9SK7jE+dnTuQahmLknAV
+         QdfXGtfSQm+QApl5nSJa5URHEmOz9dzGsODL98zw=
+Received: by mail-ot1-f51.google.com with SMTP id q21so8790879otc.7;
+        Mon, 29 Jun 2020 10:57:49 -0700 (PDT)
+X-Gm-Message-State: AOAM530ZH+ymx1LRhBUi64LdyKz+BbmrCg9xFIijTPklFGRFQdXbXrT8
+        a0c6j2G3NQXXwQ5O1ORx4/1uP7KmUySXwk2IGA==
+X-Google-Smtp-Source: ABdhPJyimQAzFgXMjRYrAPs8oEIeWpJhMBKYcA7auFeZopuljB1Q7c28J7qEymPHWgbqxTgyvUyyluEt85Lj4qCu1n4=
+X-Received: by 2002:a05:6830:3104:: with SMTP id b4mr14554766ots.192.1593453469212;
+ Mon, 29 Jun 2020 10:57:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <df54c02f-dbe9-08d5-fec8-835788caf164@acm.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200618224413.1115849-1-robh@kernel.org> <20200619215341.GA6857@ravnborg.org>
+ <20200622165730.pnx7fzbq5e6q5h4l@holly.lan>
+In-Reply-To: <20200622165730.pnx7fzbq5e6q5h4l@holly.lan>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 29 Jun 2020 11:57:37 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqK1yJ09k6tKak==TjRN17VzueVkcf-WOLw2ETL2ZJv9sg@mail.gmail.com>
+Message-ID: <CAL_JsqK1yJ09k6tKak==TjRN17VzueVkcf-WOLw2ETL2ZJv9sg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: backlight: Convert common backlight bindings
+ to DT schema
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Sam Ravnborg <sam@ravnborg.org>, devicetree@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 09:56:49AM -0700, Bart Van Assche wrote:
-> On 2020-06-29 09:15, Alan Stern wrote:
-> > Aha.  Looking at this more closely, it's apparent that the code in 
-> > blk-core.c contains a logic bug: It assumes that if the BLK_MQ_REQ_PREEMPT 
-> > flag is set then the request can be issued regardless of the queue's 
-> > runtime status.  That is not correct when the queue is suspended.
-> 
-> Please clarify why this is not correct.
+On Mon, Jun 22, 2020 at 10:57 AM Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
+>
+> On Fri, Jun 19, 2020 at 11:53:41PM +0200, Sam Ravnborg wrote:
+> > > diff --git a/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml
+> > > new file mode 100644
+> > > index 000000000000..7e1f109a38a4
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml
+> > > @@ -0,0 +1,98 @@
+> > > +# SPDX-License-Identifier: GPL-2.0-only
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/leds/backlight/pwm-backlight.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: pwm-backlight bindings
+> > > +
+> > > +maintainers:
+> > > +  - Lee Jones <lee.jones@linaro.org>
+> > > +  - Daniel Thompson <daniel.thompson@linaro.org>
+> > > +  - Jingoo Han <jingoohan1@gmail.com>
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: pwm-backlight
+> > > +
+> > > +  pwms:
+> > > +    maxItems: 1
+> > > +
+> > > +  pwm-names: true
+> > > +
+> > > +  power-supply:
+> > > +    description: regulator for supply voltage
+> > > +
+> > > +  enable-gpios:
+> > > +    description: Contains a single GPIO specifier for the GPIO which enables
+> > > +      and disables the backlight
+> > > +    maxItems: 1
+> > > +
+> > > +  post-pwm-on-delay-ms:
+> > > +    description: Delay in ms between setting an initial (non-zero) PWM and
+> > > +      enabling the backlight using GPIO.
+> > > +
+> > > +  pwm-off-delay-ms:
+> > > +    description: Delay in ms between disabling the backlight using GPIO
+> > > +      and setting PWM value to 0.
+> > > +
+> > > +  brightness-levels:
+> > > +    description: Array of distinct brightness levels. Typically these are
+> > > +      in the range from 0 to 255, but any range starting at 0 will do. The
+> > > +      actual brightness level (PWM duty cycle) will be interpolated from
+> > > +      these values. 0 means a 0% duty cycle (darkest/off), while the last
+> > > +      value in the array represents a 100% duty cycle (brightest).
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> > > +
+> > > +  default-brightness-level:
+> > > +    description: The default brightness level (index into the array defined
+> > > +      by the "brightness-levels" property).
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > Same comment as before...
+>
+> Sorry the "ditto" meant I didn't thing about PWM as much as I should
+> have.
+>
+> The situation for PWM is a little different to LED. That's mostly
+> because we decided not to clutter the LED code with
+> "num-interpolated-steps".
+>
+> The PWM code implements the default-brightness-level as an index into
+> the brightness array *after* it has been expanded using interpolation.
+> In other words today Linux treats the default-brightness-level more
+> like[1].
+>
+>     description: The default brightness level. When
+>       num-interpolated-steps is not set this is simply an index into
+>       the array defined by the "brightness-levels" property. If
+>       num-interpolated-steps is set the brightness array will be
+>       expanded by interpolation before we index to get a default
+>       level.
+>
+> This is the best I have come up with so far... but I concede it still
+> lacks elegance.
 
-As I understand it, BLK_MQ_REQ_PREEMPT is supposed to mean (among other 
-things) that this request may be issued as part of the procedure for 
-putting a device into a low-power state or returning it to a high-power 
-state.  Consequently, requests with that flag set must be allowed while 
-the queue is in the RPM_SUSPENDING or RPM_RESUMING runtime states -- as 
-opposed to ordinary requests, which are allowed only in the RPM_ACTIVE 
-state.
+Happy to add this or whatever folks want if there's agreement, but I
+don't want to get bogged down on re-reviewing and re-writing the
+binding on what is just a conversion. There's a mountain of bindings
+to convert.
 
-In the RPM_SUSPENDED state, however, the queue is entirely inactive.  Even 
-if a request were to be issued somehow, it would fail because the system 
-would not be able to transmit it to the device.  In other words, when the 
-queue is in the RPM_SUSPENDED state, a resume must be requested before 
-_any_ request can be issued.
-
-> > Index: usb-devel/block/blk-core.c
-> > ===================================================================
-> > --- usb-devel.orig/block/blk-core.c
-> > +++ usb-devel/block/blk-core.c
-> > @@ -423,7 +423,8 @@ int blk_queue_enter(struct request_queue
-> >  			 * responsible for ensuring that that counter is
-> >  			 * globally visible before the queue is unfrozen.
-> >  			 */
-> > -			if (pm || !blk_queue_pm_only(q)) {
-> > +			if ((pm && q->rpm_status != RPM_SUSPENDED) ||
-> > +			    !blk_queue_pm_only(q)) {
-> >  				success = true;
-> >  			} else {
-> >  				percpu_ref_put(&q->q_usage_counter);
-> 
-> Does the above change make it impossible to bring a suspended device
-> back to the RPM_ACTIVE state if the BLK_MQ_REQ_NOWAIT flag is set?
-
-The only case affected by this change is when BLK_MQ_REQ_PREEMPT is set 
-and the queue is in the RPM_SUSPENDED state.  If BLK_MQ_REQ_NOWAIT was 
-also set, the original code would set "success" to true, allowing the 
-request to proceed even though it could not be carried out immediately -- 
-a bug.
-
-With the patch, such a request will fail without resuming the device.  I 
-don't know whether that is the desired behavior or not, but at least it's 
-not obviously a bug.
-
-It does seem odd that blk_queue_enter() tests the queue's pm_only status 
-and the request flag in two different spots (here and below).  Why does it 
-do this?  It seems like an invitation for bugs.
-
-> > @@ -448,8 +449,7 @@ int blk_queue_enter(struct request_queue
-> >  
-> >  		wait_event(q->mq_freeze_wq,
-> >  			   (!q->mq_freeze_depth &&
-> > -			    (pm || (blk_pm_request_resume(q),
-> > -				    !blk_queue_pm_only(q)))) ||
-> > +			    blk_pm_resume_queue(pm, q)) ||
-> >  			   blk_queue_dying(q));
-> >  		if (blk_queue_dying(q))
-> >  			return -ENODEV;
-> > Index: usb-devel/block/blk-pm.h
-> > ===================================================================
-> > --- usb-devel.orig/block/blk-pm.h
-> > +++ usb-devel/block/blk-pm.h
-> > @@ -6,11 +6,14 @@
-> >  #include <linux/pm_runtime.h>
-> >  
-> >  #ifdef CONFIG_PM
-> > -static inline void blk_pm_request_resume(struct request_queue *q)
-> > +static inline int blk_pm_resume_queue(const bool pm, struct request_queue *q)
-> >  {
-> > -	if (q->dev && (q->rpm_status == RPM_SUSPENDED ||
-> > -		       q->rpm_status == RPM_SUSPENDING))
-> > -		pm_request_resume(q->dev);
-> > +	if (!q->dev || !blk_queue_pm_only(q))
-> > +		return 1;	/* Nothing to do */
-> > +	if (pm && q->rpm_status != RPM_SUSPENDED)
-> > +		return 1;	/* Request allowed */
-> > +	pm_request_resume(q->dev);
-> > +	return 0;
-> >  }
-> 
-> Does the above change, especially the " && q->rpm_status !=
-> RPM_SUSPENDED" part, make it impossible to bring a suspended device back
-> to the RPM_ACTIVE state?
-
-Just the opposite -- the change makes it _possible_ for a 
-BLK_MQ_REQ_PREEMPT request to bring a suspended device back to the 
-RPM_ACTIVE state.
-
-Look at the existing code: If pm is true then blk_pm_request_resume() will 
-be skipped, so the device won't be resumed.  With this patch -- in 
-particular with the "&& q->rpm_status != RPM_SUSPENDED" part added -- the 
-call won't be skipped and so the resume will take place.
-
-The rather complicated syntax of the wait_event() call in the existing 
-code contributes to this confusion.  One of the things my patch tries to 
-do is make the code more straightforward and easier to grasp.
-
-I admit that there are parts to this thing I don't understand.  The 
-wait_event() call in blk_queue_enter(), for example: If we are waiting for 
-the device to leave the RPM_SUSPENDED state (or enter the RPM_ACTIVE 
-state), where does q->mq_freeze_wq get woken up?  There's no obvious spot 
-in blk_{pre|post}_runtime_resume().
-
-Alan Stern
+Rob
