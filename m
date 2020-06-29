@@ -2,125 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C11B20E25B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DB620E195
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387673AbgF2VE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
+        id S1732748AbgF2U51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731117AbgF2TMp (ORCPT
+        with ESMTP id S1729386AbgF2TNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:12:45 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on0624.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0d::624])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9375C0149DE;
-        Mon, 29 Jun 2020 01:21:51 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jhQBOfTy7By6kbXinX7C/ck4uzFw7VSiiRe7dx6906awmCplIeoL20q9Ic5/1jwDlBXuBk+MDd3yOb22nRWttWetnLFue+06nthQS9WX/z4Ff/DcgYGACU5EweRsLxreDdTZGNgphGeA9U7K1V3fv0MH3bz7HmdfPf9R8Pb/Hm1BEgCnkUa+1+Cmkio//i57eTXahgHmn/kQSbEjfVlivYt6tvgrnZM/KwBUYXmC2HpfbqKd7Sf9LSs7Kll/reXfheV87YN0MJSWgINuCEqxjp7YCtXQGYJ16MxsrMIKqRQuXa9l2JIZVQ3U8UVl0tx+MPT1d+ztXAx6XC9nw8dQAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gvsE1BPZSFDZhV2i9t4Zift3VtsPgdnijLSL9nQ49vM=;
- b=hjMzo+2Pzy4YQaXhVd36SAKH0OjrIHE0rlVqlJ5vAjwp/hjOifK5vrRL7aaoNyNncvTfYDnggmr1IWRgT80r3qAgBbe0iR/VrflwuG/pmspVao44z8b1WeXA6xYv1T9YC9elzgaEz9YzC67RVCGs2r5xA+qQHHL3kKjizcZ+5QvLWTVHTyopVLu7AkvbWAoMORvbLsfvjktKnAV0hHzU/k2g6I0O7DNJaaSa/HDxh1nt7k8IvkMG6zfx99FAa262AgRU7rxsbSLGmHgccinNbLBZax3NJE7YPPD3XujUxA6MVKJ/6JBYxvyAHniTbgW8HbtjzbzHBVaoGplR+q1CvQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gvsE1BPZSFDZhV2i9t4Zift3VtsPgdnijLSL9nQ49vM=;
- b=eFYra3M8ZhNQy7th5+kKm032IqohaDgf+Gt4gdgQxECciAIcJw19sXdTVwvxIhFqoz8i4ftan7JOz34DEoce2cJk5RwVioxWa0w3bl26Lj5hdHL9WgFxOeH/Ir/dmsErnv1G9GYhQdCjOMNFeetUME2HhNRje1ASeXo27uheIog=
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
- by DB6PR0401MB2536.eurprd04.prod.outlook.com (2603:10a6:4:36::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.24; Mon, 29 Jun
- 2020 08:21:47 +0000
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::1dab:b68c:e028:acb3]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::1dab:b68c:e028:acb3%6]) with mapi id 15.20.3131.027; Mon, 29 Jun 2020
- 08:21:47 +0000
-From:   Anson Huang <anson.huang@nxp.com>
-To:     Aisheng Dong <aisheng.dong@nxp.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
-        Stefan Agner <stefan.agner@toradex.com>,
-        "arnd@arndb.de" <arnd@arndb.de>, Peng Fan <peng.fan@nxp.com>,
-        Abel Vesa <abel.vesa@nxp.com>, Andy Duan <fugang.duan@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        "yuehaibing@huawei.com" <yuehaibing@huawei.com>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
-CC:     dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH V3 03/10] ARM: imx: Select MXC_CLK for each SoC
-Thread-Topic: [PATCH V3 03/10] ARM: imx: Select MXC_CLK for each SoC
-Thread-Index: AQHWTdtgkkz4NNv7RUGPqd2huY8+RKjvMd6AgAAOKdA=
-Date:   Mon, 29 Jun 2020 08:21:46 +0000
-Message-ID: <DB3PR0402MB3916A4DF80C182319F79BB21F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-References: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com>
- <1593410042-10598-4-git-send-email-Anson.Huang@nxp.com>
- <AM6PR04MB49662FB8227AEE678F55C116806E0@AM6PR04MB4966.eurprd04.prod.outlook.com>
-In-Reply-To: <AM6PR04MB49662FB8227AEE678F55C116806E0@AM6PR04MB4966.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [183.192.13.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 19265e99-7dca-4b68-5bbb-08d81c05772c
-x-ms-traffictypediagnostic: DB6PR0401MB2536:
-x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB6PR0401MB2536B78F710901C904AEDC11F56E0@DB6PR0401MB2536.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-forefront-prvs: 044968D9E1
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ++/cJ8aOBRKXpH3ztRGJVAZ09rhX1+zNE3lXAgLGYcBR/567M1+ni5J/8egu9x+aLXXGP2HWvADmovp8KkqML+nspKDbT9/BOzumUKw6KtCf6xo3r7fh2ZvPm3kmTC0uMkO3KE27O76MxGwYAVCWxywtB51aFLWVmBVNPmdQR65LiJM44pz0LErnC+/aINjBQ57XxCgACNJd7TfJOalkKGnicT/I/2ORkbE6AALsLwaxpzSc/0ESTNNCoaWRM9hi830Qj8c+HY9n/amA7l2Uxxju+rFHUIwjQTAAGsHMsoGRyyunDekr0lnt0n2k0AIX9LpxPDURBsy7jSqDt4Kj4l7ZxVo/PuEIuMttPtcpDFbEorSCTuTjxBZnKY9nm+4F
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(366004)(136003)(39860400002)(396003)(71200400001)(7416002)(110136005)(76116006)(316002)(44832011)(66946007)(86362001)(66446008)(64756008)(66476007)(66556008)(2906002)(8936002)(186003)(33656002)(4744005)(26005)(6506007)(52536014)(55016002)(478600001)(9686003)(4326008)(5660300002)(83380400001)(8676002)(7696005)(921003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: FVGzgr/qCSyTEIo6XHWdAMjwIexbcmYexdU9YrU7Tr5x7XWX6djq/yyqFVdfiDSQYsnSqb3HgfNuiff+ks5a+Umb6n0fd2DL9jN1GO6OHCIdWmIfbQMH1XgDlD0t1FN8UbPNTR96GN5p6JO2fP1xGzX/O0o+7vIKzI1+X417HSfS0dGTxYrX8PfvO7hIZih4dyYKnafCWWm5CM2kBp4hqvWwjbDbcY82puPW7BWKWt4fcRZTWr3MkWQePhT5W0+gJl/GawUpbvwp/26qLYXC13ykmUFBH2thAq9mVX83Db21UYW1DYfJCbHKSXdWo37H6KLgEsuvzrjdXg9k2vH0/tod1kH/JPcs4/BsJiXmDUqr5G6z7J7tapF4y7NyuXPeATFzr9wYc2Hu5iWv7SbzrCbustfiDGMdTHIEIGhQKel9gzSLEp/t7ChALoEGkYjaSdld7sOMlYPJ8GGUsJSJ/vit7RDWZmEpXPrKDbExmHwOk2MzdMt3qho1ViZcGoX8
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 29 Jun 2020 15:13:06 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01BD9C0147C0;
+        Mon, 29 Jun 2020 01:22:13 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id dr13so15669757ejc.3;
+        Mon, 29 Jun 2020 01:22:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mPrydynbK5+rnDYJyI/EITf6/MzUF0CRG2o081Vq5dc=;
+        b=cAUwQQoKDC06YT4LHqdA4xDyz4JhAwt/ytb8hC2uFAgm3TaJ0OqssW2rznu5kn46N0
+         JEfbQYCX8VjtVSYRhGVHgjVYgSFWExMm1vkZXi1UwgkfXGAynHOqVs6b8Uyz4VSmSm7d
+         g8vZqCOtQq89cSyg0hzhyyAdIElZ9ayjmNLD5XwRybW4IiJvn7V3HaL/koa8Rn1Zk4F7
+         LXKY7Wn3Qug30+dPR0hRk132yk2/ruEAxMLBk/x6JjQrK0mqQawVfXpByLN2YxpGFNJA
+         +CRptDvNTYQkuOkCl7DSICXv2c9+yGZNOBEZtT2ghVeHYlDtKRZ0N+kEKvfD1WUSSt2Q
+         gm9g==
+X-Gm-Message-State: AOAM533eUkhnbbKD9GNDNyDTvijEnMJmgU0VUOBWOli7pTBGPUWkLY6Y
+        sQL3l0vxf7X3S8m+C5hMF7o=
+X-Google-Smtp-Source: ABdhPJxpOcTkL4osdGXouPGkUvoEu+LR2SWHbzDt5dJZtwUNOJWJOn7V0ppda1Dcr/qptC9T6ZT4xQ==
+X-Received: by 2002:a17:906:fa9b:: with SMTP id lt27mr12396115ejb.365.1593418931557;
+        Mon, 29 Jun 2020 01:22:11 -0700 (PDT)
+Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
+        by smtp.gmail.com with ESMTPSA id x10sm15592704ejc.46.2020.06.29.01.22.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 01:22:10 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 10:22:09 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Mikulas Patocka <mpatocka@redhat.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, dm-devel@redhat.com,
+        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>
+Subject: Re: [PATCH 0/6] Overhaul memalloc_no*
+Message-ID: <20200629082209.GC32461@dhcp22.suse.cz>
+References: <20200625113122.7540-1-willy@infradead.org>
+ <alpine.LRH.2.02.2006261058250.11899@file01.intranet.prod.int.rdu2.redhat.com>
+ <20200626230847.GI2005@dread.disaster.area>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB3PR0402MB3916.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 19265e99-7dca-4b68-5bbb-08d81c05772c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2020 08:21:47.0796
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: n2CnRH42qYjqUdw5yde3FKY0NymUb6HRWfCWfkZ+W4ca9CYQ4y3OTSnztELPCfEkOIVhZWfSTKA5+Mki5A9p4g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0401MB2536
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200626230847.GI2005@dread.disaster.area>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gU3ViamVjdDogUkU6IFtQQVRDSCBWMyAwMy8xMF0gQVJNOiBpbXg6IFNlbGVjdCBNWENf
-Q0xLIGZvciBlYWNoIFNvQw0KPiANCj4gPiBGcm9tOiBBbnNvbiBIdWFuZyA8QW5zb24uSHVhbmdA
-bnhwLmNvbT4NCj4gPiBTZW50OiBNb25kYXksIEp1bmUgMjksIDIwMjAgMTo1NCBQTQ0KPiA+DQo+
-ID4gaS5NWCBjb21tb24gY2xvY2sgZHJpdmVycyBtYXkgc3VwcG9ydCBtb2R1bGUgYnVpbGQsIHNv
-IGl0IGlzIE5PVA0KPiA+IHNlbGVjdGVkIGJ5IGRlZmF1bHQsIGZvciBBUkNIX01YQyBBUk12NyBw
-bGF0Zm9ybXMsIG5lZWQgdG8gc2VsZWN0IGl0DQo+ID4gbWFudWFsbHkgaW4gZWFjaCBTb0MgdG8g
-bWFrZSBidWlsZCBwYXNzLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQW5zb24gSHVhbmcgPEFu
-c29uLkh1YW5nQG54cC5jb20+DQo+ID4gLS0tDQo+ID4gQ2hhbmdlcyBzaW5jZSBWMjoNCj4gPiAJ
-LSBtYW51YWxseSBzZWxlY3QgdGhlIE1YQ19DTEsgaW4gZWFjaCBTb0MgaW5zdGVhZCBvZiBzZWxl
-Y3RpbmcgaXQNCj4gPiAJICBmb3IgQVJDSF9NWEMuDQo+IA0KPiBBbnkgcmVhc29uIHRvIGRvIHRo
-aXM/DQoNCkZvcm0gdGhlIGRpc2N1c3Npb24sIGxvb2tzIGxpa2Ugc2VsZWN0aW5nIGl0IGZvciBl
-YWNoIFNvQyBtYWtlIG1vcmUgc2Vuc2UsIGFzIHRoZXJlIGlzDQpubyBDTEtfSU1YKiBmb3IgaS5N
-WDYvNywgb3IgYW0gSSBtaXN1bmRlcnN0YW5kaW5nIFN0ZXBoZW4ncyBjb21tZW50PyBKdXN0IHVz
-ZQ0KcHJldmlvdXMgaW1wbGVtZW50YXRpb24gb2Ygc2VsZWN0aW5nIGl0IG9uY2UgaW4gQVJDSF9N
-WEM/DQoNCkFuc29uDQo=
+On Sat 27-06-20 09:08:47, Dave Chinner wrote:
+> On Fri, Jun 26, 2020 at 11:02:19AM -0400, Mikulas Patocka wrote:
+> > Hi
+> > 
+> > I suggest to join memalloc_noio and memalloc_nofs into just one flag that 
+> > prevents both filesystem recursion and i/o recursion.
+> > 
+> > Note that any I/O can recurse into a filesystem via the loop device, thus 
+> > it doesn't make much sense to have a context where PF_MEMALLOC_NOFS is set 
+> > and PF_MEMALLOC_NOIO is not set.
+> 
+> Correct me if I'm wrong, but I think that will prevent swapping from
+> GFP_NOFS memory reclaim contexts. IOWs, this will substantially
+> change the behaviour of the memory reclaim system under sustained
+> GFP_NOFS memory pressure. Sustained GFP_NOFS memory pressure is
+> quite common, so I really don't think we want to telling memory
+> reclaim "you can't do IO at all" when all we are trying to do is
+> prevent recursion back into the same filesystem.
+> 
+> Given that the loop device IO path already operates under
+> memalloc_noio context, (i.e. the recursion restriction is applied in
+> only the context that needs is) I see no reason for making that a
+> global reclaim limitation....
+> 
+> In reality, we need to be moving the other way with GFP_NOFS - to
+> fine grained anti-recursion contexts, not more broad contexts.
+
+Absolutely agreed! It is not really hard to see system struggling due to
+heavy FS metadata workload while there are objects which could be
+reclaimed.
+
+> That is, GFP_NOFS prevents recursion into any filesystem, not just
+> the one that we are actively operating on and needing to prevent
+> recursion back into. We can safely have reclaim do relcaim work on
+> other filesysetms without fear of recursion deadlocks, but the
+> memory reclaim infrastructure does not provide that capability.(*)
+> 
+> e.g. if memalloc_nofs_save() took a reclaim context structure that
+> the filesystem put the superblock, the superblock's nesting depth
+> (because layering on loop devices can create cross-filesystem
+> recursion dependencies), and any other filesyetm private data the
+> fs wanted to add, we could actually have reclaim only avoid reclaim
+> from filesytsems where there is a deadlock possiblity. e.g:
+> 
+> 	- superblock nesting depth is different, apply GFP_NOFS
+> 	  reclaim unconditionally
+> 	- superblock different apply GFP_KERNEL reclaim
+> 	- superblock the same, pass context to filesystem to
+> 	  decide if reclaim from the sueprblock is safe.
+> 
+> At this point, we get memory reclaim able to always be able to
+> reclaim from filesystems that are not at risk of recursion
+> deadlocks. Direct reclaim is much more likely to be able to make
+> progress now because it is much less restricted in what it can
+> reclaim. That's going to make direct relcaim faster and more
+> efficient, and taht's the ultimate goal we are aiming to acheive
+> here...
+
+Yes, we have discussed something like that few years back at LSFMM IIRC.
+The scoped NOFS/NOIO api was just a first step to reduce explicit
+NOFS/NOIO usage with a hope that we will get no-recursion entry points
+much more well defined and get rid of many instances where "this is a fs
+code so it has to use NOFS gfp mask".
+
+Some of that has happened and that is really great. On the other hand
+many people still like to use that api as a workaround for an immediate
+problem because no-recursion scopes are much harder to recognize unless
+you are supper familiar with the specific fs/IO layer implementation.
+So this is definitely not a project for somebody to go over all code and
+just do the clean up.
+
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
