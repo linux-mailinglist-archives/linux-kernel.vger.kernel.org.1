@@ -2,80 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBEAE20D230
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BCF20D1C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729165AbgF2SrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:47:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38376 "EHLO
+        id S1727048AbgF2Snl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729132AbgF2Smw (ORCPT
+        with ESMTP id S1726596AbgF2Snj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:42:52 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F86C033C3B
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:37:16 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id i14so17713836ejr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:37:16 -0700 (PDT)
+        Mon, 29 Jun 2020 14:43:39 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190BAC031C40
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:43:39 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id dm12so8115106qvb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 11:43:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=iwjexUe6g3MgBE57x0AwTJYB+Tm1mR4Xc5V3Hpfp0Q0=;
-        b=BPMNbr2saZvodqadONafw08F2hySjig25hblzKcpl4Dn0xdeMuAJDob+Hj8/e26XnW
-         DcsrasfTyHgT8KAkwUeolszGnixcmMnYIE8upwFFBx3ce9FSI6+4bF66uZlIeO/IYnfR
-         nKG6W1gtUsCNuWXnXti67445rUxPidn7R2448rSS8fOhA6OPz9hTN+9JZ1bGkvKjvOET
-         f/Of69MzWFDlYi0WAMar+2iMf+Vf9KeLGwI7hmgPshMBgwV9SN3pybBp7tN/RZCinBap
-         xt0HZrWg0pNjOJCFPyFfAmVzUL7cyakhsBGU59PquHibfr0OHjgGhkDaijqPOVeIGj/+
-         uBMQ==
+        bh=20l025BZSmljDHaRdAwUJU/sS1IgTLaKPGtOtjxywLI=;
+        b=EDLsjzTsEWau+DTUx00QeWGrmY63SYxKcs+gb1NA5d7R97Cm8ah5dWrQZQDrWCkyRL
+         JUxyP4uNFo1+Q0sSMHBZ9X4OHKcXOVmxbsYiE2GTJYNW/YxoFFnnajvguRf/YfhfE7Rl
+         2dlsAiQsBWzZ7HpicS4TCKGfObU8F3S5OmF3hnrx1UdIKP6ajL/gvx5t+p6w2xM3Muuj
+         FjpQ8ubaPjXiOzdRdZ+oMmgOgv/45CqOPMco6y/DVwAEW7TU45x1UQkzwkPdUz/rb6aR
+         NBfE2PSvtvIc5MVsP6VVkbWt4Xu6e7LuIVsmCD3FFFLZHUn5pqL9AlVhaPq4VVzNRbFE
+         bwPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iwjexUe6g3MgBE57x0AwTJYB+Tm1mR4Xc5V3Hpfp0Q0=;
-        b=c3PV9D1DtUthse7Pa55WczsmWXzkxAjFdcQ2mTzRIbdTxqOazLTSmo0QgtJ5erWdtp
-         AfeeCP/TX+N353jSfnPbQcPAwlvvzFzfUX5FQPZNNpsvF4C+2sysp0qabPQcKVYoxXd4
-         CRpGvCcEqJvCN0Yt54hSElvNxfHeaCYzz7KTMU6Ul0bN2Nl/JF3/e3etHOnS0rjynsh+
-         MyEH9j/fLjbOx8D/Kr4h4+QvdZNism8HaTCg2fZMU8A1aF4rkihF/h6PctcJvqpiZn9j
-         ozofFooq8Y9O+qHKmv5mSLtEUYIGPNigbsY/gKACJe/eIYcwtQnUJpWbJs8DB8ity+ww
-         8kEA==
-X-Gm-Message-State: AOAM532AFA9dbQ/9PB5RlrjAwONaptfRLV41gTVF1RlmnNIuFAF5P5Ye
-        15RgYsgz0j8+JWDkxn2djdquPJOq
-X-Google-Smtp-Source: ABdhPJzHwlH82W9y4w5C+kdkMDP/5EI41sxvEjHgizXEikHzsbh2cE8UepqlgbOi/jQSwv4PVxX9bg==
-X-Received: by 2002:a17:907:100a:: with SMTP id ox10mr14644241ejb.351.1593455835070;
-        Mon, 29 Jun 2020 11:37:15 -0700 (PDT)
-Received: from ltop.local ([2a02:a03f:b7f9:7600:4d36:64ba:210e:1576])
-        by smtp.gmail.com with ESMTPSA id by20sm295745ejc.119.2020.06.29.11.37.14
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=20l025BZSmljDHaRdAwUJU/sS1IgTLaKPGtOtjxywLI=;
+        b=EkGQVxA2f0CwH4QzIYCvt9fk6CrfzI07eIadgjukyM9+xaGRtZihcZdA4XPxjx1+wl
+         karyGBjGIeCvXQHG8uQMdWH7ZXv9uLC60Iob7etXqaw3pT1auCG0r6JKCFfmPdMV2w2f
+         LNm8RNjIvh5ErJNGU9MwITyfBvTqW6qYXRGmiovvLsrPSioC0yTffJ19pO/6XkSjb9E8
+         i+PYBWD3zfxEFlAHcq8lM5yP2I50yQeSR9EjI9mPGCg4altIRRPRzimAxKP6lf0y809H
+         9sM+HnmFW6u+mU4KBXUXSn7YVgT7FvOkVJ9jHIYwLLP2Q+Oe0Ivjvc9WyA0FuFORbBrf
+         zvYg==
+X-Gm-Message-State: AOAM533Jk8b9lceID9BvFIA/KzYRyeUSZ3Ga9k5zJe4RXdaNG5zAl3K3
+        I3KJ7JXR3+h4o0M+q/ZeEOY=
+X-Google-Smtp-Source: ABdhPJyv48cnmze6ap1z6r/F1pbCtC2KwFqlodfQ72ywXHjT25cbajzYc/ZEl65kkVJ7l/E8dcV/ag==
+X-Received: by 2002:a0c:8e04:: with SMTP id v4mr16625133qvb.213.1593456218301;
+        Mon, 29 Jun 2020 11:43:38 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id u27sm578425qkm.121.2020.06.29.11.43.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 11:37:14 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 20:37:13 +0200
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sparse: use static inline for __chk_{user,io}_ptr()
-Message-ID: <20200629183713.msrfozjvpt6jr6jl@ltop.local>
-References: <20200628072019.67107-1-luc.vanoostenryck@gmail.com>
- <202006300219.fQMPm3tC%lkp@intel.com>
+        Mon, 29 Jun 2020 11:43:37 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Mon, 29 Jun 2020 14:43:35 -0400
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H . J . Lu" <hjl@sourceware.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 7/7] x86/boot: Check that there are no runtime
+ relocations
+Message-ID: <20200629184335.GA1102734@rani.riverdale.lan>
+References: <20200629140928.858507-1-nivedita@alum.mit.edu>
+ <20200629140928.858507-8-nivedita@alum.mit.edu>
+ <202006290907.E5EF18A@keescook>
+ <CAMj1kXFge5aWL2BY8Y1=m1TonB+SrDq6p7TQWuO5JkzcR2dhjQ@mail.gmail.com>
+ <202006290919.93C759C62@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202006300219.fQMPm3tC%lkp@intel.com>
+In-Reply-To: <202006290919.93C759C62@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 02:08:36AM +0800, kernel test robot wrote:
-> Hi Luc,
+On Mon, Jun 29, 2020 at 09:20:31AM -0700, Kees Cook wrote:
+> On Mon, Jun 29, 2020 at 06:11:59PM +0200, Ard Biesheuvel wrote:
+> > On Mon, 29 Jun 2020 at 18:09, Kees Cook <keescook@chromium.org> wrote:
+> > >
+> > > Should these be marked (INFO) as well?
+> > >
+> > 
+> > Given that sections marked as (INFO) will still be emitted into the
+> > ELF image, it does not really make a difference to do this for zero
+> > sized sections.
 > 
-> I love your patch! Perhaps something to improve:
+> Oh, I misunderstood -- I though they were _not_ emitted; I see now what
+> you said was not allocated. So, disk space used for the .got.plt case,
+> but not memory space used. Sorry for the confusion!
 > 
-> [auto build test WARNING on next-20200626]
-> [cannot apply to linux/master linus/master v5.8-rc2 v5.8-rc1 v5.7 v5.8-rc3]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> -Kees
+> 
 
-This patch should be applied on top of akpm's tree or on top of next.
-I'm not sure hwo I should have specified this, 'git send-mail --base=...'
-is less useful for these trees.
-
--- Luc
+To confuse the issue a bit more, there are subtleties around "disk space
+used" :) The section will be present in the ELF format file, but at
+least on x86, that file is then converted into binary format via
+objcopy. At this point a non-allocated section at the end of the file
+will be stripped off. So on 32-bit x86, moving .got.plt to the end and
+marking it INFO will shave 16 bytes off the bzImage kernel.
