@@ -2,99 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A2C20D623
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15CA20D630
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731976AbgF2TR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44314 "EHLO
+        id S1730851AbgF2TSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:18:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731954AbgF2TRn (ORCPT
+        with ESMTP id S1731950AbgF2TRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Jun 2020 15:17:43 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA3FC030F31;
-        Mon, 29 Jun 2020 09:50:55 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id o1so746758plk.1;
-        Mon, 29 Jun 2020 09:50:55 -0700 (PDT)
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3E7C030F32
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:52:13 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id v19so13320259qtq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:52:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=epjZAavl8OTnrmj035AkLkdZa01IVf7hDefQw4XclfM=;
-        b=qfyP5RxgxAmyq6gPs73byd3YoUOiLlNFQvfce7YA6ZsR4onyELxfCTqCWi9/zFOy9v
-         7ispQlUC7C62ftj66FOnsAaCx06Splb36D3NXxPefaLlEexM+/GJp5SzYtsGakl+mL8B
-         eiPo23Xf8b/PqiyIqGS164oGgDUWUvPrIGy1sBMgspA0aqQBkcHfxRXfE3/2dFsV6dAW
-         k11LT22CZUqLUqGH2Em2PSrz5m+H6cJgWvUB96mb2oPQvs7VGaO1I4H9d6J/iOgaigXr
-         4af3bgasPy59TzF+5e2A/5fHzziw2TWZci3cAFqTzHOYBESugR9IwZ0F6+uS9vE1IZyq
-         e9DQ==
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zVHoQQL1LMsjUx4guRxFxG91mzY8eSh+1dSHVIjtlAw=;
+        b=AbHbF76TqmAMD6PPzsJCCJLquGawD17crfO8756wqiYD2QTDJqwM1V4JoCk4fahs9P
+         hmwMMQIXhWDBt9WTcm/8eBOhR2JJs+r4Nlb18DFOVbOhjKz4G/A221gd0mLpR2K/W6fN
+         Y/8lxIgiV7xoK2zNetBqhe38al2oz7padgN2vH4YN6u97FI56v51Z/uxdOQOaM4ZzqF5
+         O5HCXyHcS949k0Oxm5RJNn1KN4iWUsha1uLN55/0mgOHiNZs+tSNa7MLR65Xa8cPCgVw
+         HJNlWG4C1+cVOXqUHSDPkhd55CoJC3JLP0frt+de4d9SuyGKB4RLReP7fbTIE888tWuP
+         XMjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=epjZAavl8OTnrmj035AkLkdZa01IVf7hDefQw4XclfM=;
-        b=Ds++611FQtbDfwjmK0Ja4x9B58g+eThFp+aRwufbE2vjFMIxtgfGgWbB+qHZSOJdKh
-         5VsnBo8MQ/e2H3mNtffXUFLD2Ps4AcN9kHr36iYHIPL5ntx1ioOcUOHmT6F6ORvvbgW+
-         poPI0MMFucKV5HvwCURQH1raQjhOBVlulKj3W3r64sSU5qp/4vN+IRns1HuxGBDd5vk0
-         VWXkVyIEkbIQ9GQBHDI+CRTJo2gxuzAHOwZAjSdctc8LX2KFUTwCUmAD5MY6EKwcENhb
-         5HYFoGRr8/QMhmeS9C0i0JeRg+HEKWW381w6z2lIqX7+WFSzLSFvzpCqCxMNdjinfH9T
-         dvig==
-X-Gm-Message-State: AOAM531qr4mxBjjAKaoH7SAMxSn+Ci3wz8LYyEKVulMaeNx020qu7ULY
-        UQQkgwlPJjfciCCmyTDkTgvQAjzZORLlKmh1mmg=
-X-Google-Smtp-Source: ABdhPJwK8VIW73nkc0kipwx1fUf9LlTusE2dlg042QQH/vsyXg7aXQu6OoBfFkAIfefdmaXBT/ZOhM4ezkR0DNBgt9w=
-X-Received: by 2002:a17:902:8491:: with SMTP id c17mr6807522plo.262.1593449454975;
- Mon, 29 Jun 2020 09:50:54 -0700 (PDT)
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=zVHoQQL1LMsjUx4guRxFxG91mzY8eSh+1dSHVIjtlAw=;
+        b=C4lob7syRDRBqszsIdLv25W7b997AA07ski+ewCSI2OHV3y2mhJj84mqERYcCT5b1A
+         wOrK1sfAUJOd93o29GzEeL7CqQU8gzB8MkQYwgEuksjbOb5a0FE0oJ88JaaUoopcRdeH
+         NbBXwaLkzHZ5mpB5ftCm8/+Oyw4ur95zjBK93ScMTVo6+Xw5291ojrILHLk3Ygjw2Qhh
+         XsiPBascE9Fqk3i5EImhvHgqN3G2MrgSOgdtjO1lmPmiTkw1kW/hKMqUelSxfaFj8xs6
+         k4Zq/HoixK6cFaoO6YzL+RRP28l6FD6Q5eVzaT+JIv2+UNBQ4gug85nevmgWC/8CDm+V
+         /sfg==
+X-Gm-Message-State: AOAM531hywLebhYnpnW6NO4mDVC8W1xIX8mWWBr2BFpdI8mWY1pPTizK
+        wrEdEKzp/0IiPq3XstJ2xpc=
+X-Google-Smtp-Source: ABdhPJwy1vikItqkvahrY4JF8s/d4g/QtX4Rsl8mDkBv4CAPplOG1B4GSDPQ+xdeh/9E/MRX/up7UQ==
+X-Received: by 2002:ac8:3496:: with SMTP id w22mr16740693qtb.147.1593449532575;
+        Mon, 29 Jun 2020 09:52:12 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id g145sm398035qke.17.2020.06.29.09.52.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 09:52:12 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Mon, 29 Jun 2020 12:52:10 -0400
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        clang-built-linux@googlegroups.com,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 6/7] x86/boot: Remove runtime relocations from
+ head_{32,64}.S
+Message-ID: <20200629165210.GC900899@rani.riverdale.lan>
+References: <20200629140928.858507-1-nivedita@alum.mit.edu>
+ <20200629140928.858507-7-nivedita@alum.mit.edu>
+ <202006290905.7531731A@keescook>
 MIME-Version: 1.0
-References: <20200503105453.23658-1-miquel.raynal@bootlin.com> <20200629160844.6ecf79c1@xps13>
-In-Reply-To: <20200629160844.6ecf79c1@xps13>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 29 Jun 2020 19:50:41 +0300
-Message-ID: <CAHp75Vehv_Cp1AhMPhk8ktyp-uHSkgweqnhhSq_7w2Kf9y=7XQ@mail.gmail.com>
-Subject: Re: [PATCH v6] gpio: pca953x: Add Maxim MAX7313 PWM support
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Uwe Kleine-Konig <u.kleine-koenig@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-pwm@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202006290905.7531731A@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 5:08 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote on Sun,  3 May 2020
-> 12:54:53 +0200:
->
-> > The MAX7313 chip is fully compatible with the PCA9535 on its basic
-> > functions but can also manage the intensity on each of its ports with
-> > PWM. Each output is independent and may be tuned with 16 values (4
-> > bits per output). The period is always 32kHz, only the duty-cycle may
-> > be changed. One can use any output as GPIO or PWM.
+On Mon, Jun 29, 2020 at 09:06:07AM -0700, Kees Cook wrote:
+> On Mon, Jun 29, 2020 at 10:09:27AM -0400, Arvind Sankar wrote:
+> > The BFD linker generates runtime relocations for z_input_len and
+> > z_output_len, even though they are absolute symbols.
+> > 
+> > This is fixed for binutils-2.35 [1]. Work around this for earlier
+> > versions by defining two variables input_len and output_len in addition
+> > to the symbols, and use them via position-independent references.
+> > 
+> > This eliminates the last two runtime relocations in the head code and
+> > allows us to drop the -z noreloc-overflow flag to the linker.
+> > 
+> > [1] https://sourceware.org/bugzilla/show_bug.cgi?id=25754
+> > 
+> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+> > Reviewed-by: Fangrui Song <maskray@google.com>
+> > ---
+> >  arch/x86/boot/compressed/Makefile  |  8 --------
+> >  arch/x86/boot/compressed/head_32.S | 17 ++++++++---------
+> >  arch/x86/boot/compressed/head_64.S |  4 ++--
+> >  arch/x86/boot/compressed/mkpiggy.c |  6 ++++++
+> >  4 files changed, 16 insertions(+), 19 deletions(-)
+> 
+> I continue to really enjoy the smaller code. Anything that makes
+> mkpiggy.c smaller is a win. :)
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> 
+> -- 
+> Kees Cook
 
-> Can I have a status on this patch please?
->
-> If it was forgotten, I would be good to have it queued now, otherwise,
-> may I know the reason?
-
-TWIMC, just my 2 cents about this patch.
-I don't like it in this form. On the constructive side I can propose
-at least two ways to solve:
-a) introduce a PWM as a pin mode; move pca953x to pin control; use
-this mode with PWM driver being separated from the pin control;
-b) introduce an MFD that provides two parts for this GPIO & PWM.
-
-Personally I would go with a) as I know at least one more pin
-controller which will get an advantage of this (and it's definitely
-not an MFD).
-
-If GPIO / pin control maintainers consider this okay, I will rest my
-case, but see above...
-
--- 
-With Best Regards,
-Andy Shevchenko
+It doesn't actually reduce the size? mkpiggy.c _could_ I think be
+replaced with some carefully written shell code, but this doesn't do
+anything like that.
