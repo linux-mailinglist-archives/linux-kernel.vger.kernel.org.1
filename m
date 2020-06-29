@@ -2,87 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD29720DD50
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F35620E01A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727863AbgF2SlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:41:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60668 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728698AbgF2SlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:41:07 -0400
-Received: from localhost (unknown [122.182.251.219])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D53423125;
-        Mon, 29 Jun 2020 05:17:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593407824;
-        bh=crmtCeTm/UluhEluBQPykauUvFRi/Z9kzPRAWcvYg0k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i5YR6pw/aFV2iOyU/9vkfAejtQ2CzfxmUzysh7DBmuU5k6mThFvvnOO3/Y85M8IJN
-         gKHLvO4LX3X6YXz+O5+Jhj6+78ejPHVSmLwVUt+KgCUsBjEjnlYYtRBU1mymTpk1/z
-         VaXloID+owO3dQOa4GY9oSltJigVxf44g4Sp0H9s=
-Date:   Mon, 29 Jun 2020 10:46:59 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] ALSA: compress: fix partial_drain completion state
-Message-ID: <20200629051659.GB376808@vkoul-mobl>
-References: <20200625154651.99758-1-vkoul@kernel.org>
- <20200625154651.99758-4-vkoul@kernel.org>
- <20200626103549.GB71940@ediswmail.ad.cirrus.com>
+        id S2389663AbgF2Umk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:42:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731646AbgF2TOE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:14:04 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A259CC08E876;
+        Sun, 28 Jun 2020 22:30:10 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id s14so6638498plq.6;
+        Sun, 28 Jun 2020 22:30:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=RTxiRpvzpRJD0gmX8PNYXY4R+aOe0063njB+b000qww=;
+        b=kzY0/e2RlK+glH8fy5i/IPcEaya89/gQceJy2XZKwDnqL9d5r3Ads9fMwoiYC8dQFl
+         tGsiAxw6E1ivm5fMdTBlKLC2CDsBgTh3imQyb0NLPG4Sg5A1O/hEpKhplEcaBlh9nFfL
+         Bxft3462dCCwN5bySfhnFQFNHIAa2M3LEyxk5MmP0XFEQeHAXPnJCeza+8oisGQWe0gI
+         krWpMT5EVtn8JYUJrsUv9ZV7lUlvL56dzOCzpnbcGqzgd+vLGAM2gNEZw+2prJ4zsXrL
+         5/s+Jtx8Qj6WEw7yVEHmakIDZ98JG8s3oDxv5v5RMik7n8iIZMkwxQk4GDBv+HcOeKOR
+         tt/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=RTxiRpvzpRJD0gmX8PNYXY4R+aOe0063njB+b000qww=;
+        b=dbkCYOEE90lSntQi1IsdYNfb9ky42hz+hHKrtMFTap8ol72056lJDATwZn/mKtpbNz
+         Wvo+ikzBLx8lXH4ekLyAPsm0KzqO4rEjs9BoJDXbUHPrfliC5cthWqVyu6C+5u2F/lAW
+         053MVbTRVDNnPBfhyex/dkgGL1uDsyWNpmBOOsdS1x/CAJ+47CZhub/7O7bnJL4VvZsz
+         60TbOo4LJzRq+WHNlDz437aAWbm/deILm4Us9/FC05WsiqYzJOesKhsq1DGol+crxBhr
+         x0iskV9i97USqyw14QMgkeMHN0oQg4OdXKHZ/ER2dElHco7IT7r3fWZYc/L8565r+zGf
+         UR7A==
+X-Gm-Message-State: AOAM533seudzrXH/S3WzJJoQxtwLUMl85/uW4CVSx3GHEgj0MR7/FjFk
+        l1k7BQs/iS4vs0axnEoNTRU=
+X-Google-Smtp-Source: ABdhPJzbaDbjKQDAWCduVkv0WZ13VTrbYwK7Ufzf0M0t0w6OPbJqunP2vGqA4bI1Cdxiyv0yoaY3PQ==
+X-Received: by 2002:a17:90b:381:: with SMTP id ga1mr16047548pjb.232.1593408609732;
+        Sun, 28 Jun 2020 22:30:09 -0700 (PDT)
+Received: from f3 (ae055068.dynamic.ppp.asahi-net.or.jp. [14.3.55.68])
+        by smtp.gmail.com with ESMTPSA id nl5sm19526826pjb.36.2020.06.28.22.30.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jun 2020 22:30:08 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 14:30:04 +0900
+From:   Benjamin Poirier <benjamin.poirier@gmail.com>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     devel@driverdev.osuosl.org, joe@perches.com,
+        dan.carpenter@oracle.com, gregkh@linuxfoundation.org,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/4] staging: qlge: replace pr_err with netdev_err
+Message-ID: <20200629053004.GA6165@f3>
+References: <20200627145857.15926-1-coiby.xu@gmail.com>
+ <20200627145857.15926-5-coiby.xu@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200626103549.GB71940@ediswmail.ad.cirrus.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200627145857.15926-5-coiby.xu@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-06-20, 10:35, Charles Keepax wrote:
+On 2020-06-27 22:58 +0800, Coiby Xu wrote:
+[...]
+>  void ql_dump_qdev(struct ql_adapter *qdev)
+>  {
+> @@ -1611,99 +1618,100 @@ void ql_dump_qdev(struct ql_adapter *qdev)
+>  #ifdef QL_CB_DUMP
+>  void ql_dump_wqicb(struct wqicb *wqicb)
+>  {
+> -	pr_err("Dumping wqicb stuff...\n");
+> -	pr_err("wqicb->len = 0x%x\n", le16_to_cpu(wqicb->len));
+> -	pr_err("wqicb->flags = %x\n", le16_to_cpu(wqicb->flags));
+> -	pr_err("wqicb->cq_id_rss = %d\n",
+> -	       le16_to_cpu(wqicb->cq_id_rss));
+> -	pr_err("wqicb->rid = 0x%x\n", le16_to_cpu(wqicb->rid));
+> -	pr_err("wqicb->wq_addr = 0x%llx\n",
+> -	       (unsigned long long)le64_to_cpu(wqicb->addr));
+> -	pr_err("wqicb->wq_cnsmr_idx_addr = 0x%llx\n",
+> -	       (unsigned long long)le64_to_cpu(wqicb->cnsmr_idx_addr));
+> +	netdev_err(qdev->ndev, "Dumping wqicb stuff...\n");
 
-> > -	stream->runtime->state = SNDRV_PCM_STATE_SETUP;
-> > +	mutex_lock(&stream->device->lock);
-> > +	/* for partial_drain case we are back to running state on success */
-> > +	if (stream->partial_drain) {
-> > +		stream->runtime->state = SNDRV_PCM_STATE_RUNNING;
-> > +		stream->partial_drain = false; /* clear this flag as well */
-> > +	} else {
-> > +		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
-> > +	}
-> > +	mutex_unlock(&stream->device->lock);
-> 
-> You have added locking here in snd_compr_drain_notify but....
-> >  
-> >  	wake_up(&stream->runtime->sleep);
-> >  }
-> > diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-> > index e618580feac4..1c4b2cf450a0 100644
-> > --- a/sound/core/compress_offload.c
-> > +++ b/sound/core/compress_offload.c
-> > @@ -803,6 +803,9 @@ static int snd_compr_stop(struct snd_compr_stream *stream)
-> >  
-> >  	retval = stream->ops->trigger(stream, SNDRV_PCM_TRIGGER_STOP);
-> >  	if (!retval) {
-> > +		/* clear flags and stop any drain wait */
-> > +		stream->partial_drain = false;
-> > +		stream->metadata_set = false;
-> >  		snd_compr_drain_notify(stream);
-> 
-> that can be called from snd_compr_stop here which is already
-> holding the lock resulting in deadlock.
+drivers/staging/qlge/qlge_dbg.c:1621:13: error: ‘qdev’ undeclared (first use in this function); did you mean ‘cdev’?
+ 1621 |  netdev_err(qdev->ndev, "Dumping wqicb stuff...\n");
+      |             ^~~~
+      |             cdev
 
-Thanks Charles, right somehow my testing missed this, have verified that
-it is the case.
+[...]
+and many more like that
 
-I will remove the locks here, and we should add a comment to note this..
-
-Thanks
-
--- 
-~Vinod
+Anyways, qlge_dbg.h is a dumpster. It has hundreds of lines of code
+bitrotting away in ifdef land. See this comment from David Miller on the
+topic of ifdef'ed debugging code:
+https://lore.kernel.org/netdev/20200303.145916.1506066510928020193.davem@davemloft.net/
