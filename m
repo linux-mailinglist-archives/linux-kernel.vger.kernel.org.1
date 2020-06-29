@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90DA20DB5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F316B20D6F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726965AbgF2UGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:06:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40564 "EHLO mail.kernel.org"
+        id S1732545AbgF2TZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:25:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732968AbgF2Ta2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:30:28 -0400
+        id S1731916AbgF2TZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:25:16 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B4A01252FB;
-        Mon, 29 Jun 2020 15:38:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F53C25300;
+        Mon, 29 Jun 2020 15:38:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593445127;
-        bh=5a4vMiA89yhb7XOQaVEtSlAjPYdcO6kAdT0WJKVbJVs=;
+        s=default; t=1593445129;
+        bh=293rpKy0v8xh4bIVOL88tAUCSNTrAdXpaA8DqQdvsY0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CL4NGA/H4iu9of8W2N0iGxcM/a5yFDbsi6osvQVzx7Yiiu3suw7XFPqYVxW8j7/Wz
-         mWbBAdpMvhutIJGwIgo53mVHKZ+05dYx4RDT51wkmHYpNB+dpxOyI/cujNSLi3Jq+V
-         xFu+v28/81MtpjBmrXPY7Lboy5BoxkrjzdKf9hoI=
+        b=oqQUGKS1wvya/w1/O+vvRhKnvmuTPPl+MGGN1x0Z92S7G09i5zdbZGYURDDtrLVxM
+         1A0j3xYNd0XVBk1tne34hcMC8Yo9XmP7JF3XXlN7bYWm2xYXKXuaDWblosAtjsXXrA
+         lL9nm2NEUidf2/7/bezuShkDnd++OXiST9e2hlAY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Julian Scheel <julian@jusst.de>, Takashi Iwai <tiwai@suse.de>,
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        syzbot+fb14314433463ad51625@syzkaller.appspotmail.com,
+        syzbot+2405ca3401e943c538b5@syzkaller.appspotmail.com,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 34/78] ALSA: usb-audio: uac1: Invalidate ctl on interrupt
-Date:   Mon, 29 Jun 2020 11:37:22 -0400
-Message-Id: <20200629153806.2494953-35-sashal@kernel.org>
+Subject: [PATCH 4.14 36/78] ALSA: usb-audio: Fix OOB access of mixer element list
+Date:   Mon, 29 Jun 2020 11:37:24 -0400
+Message-Id: <20200629153806.2494953-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629153806.2494953-1-sashal@kernel.org>
 References: <20200629153806.2494953-1-sashal@kernel.org>
@@ -48,42 +50,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Scheel <julian@jusst.de>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit b2500b584cfd228d67e1e43daf27c8af865b499e ]
+[ Upstream commit 220345e98f1cdc768eeb6e3364a0fa7ab9647fe7 ]
 
-When an interrupt occurs, the value of at least one of the belonging
-controls should have changed. To make sure they get re-read from device
-on the next read, invalidate the cache. This was correctly implemented
-for uac2 already, but missing for uac1.
+The USB-audio mixer code holds a linked list of usb_mixer_elem_list,
+and several operations are performed for each mixer element.  A few of
+them (snd_usb_mixer_notify_id() and snd_usb_mixer_interrupt_v2())
+assume each mixer element being a usb_mixer_elem_info object that is a
+subclass of usb_mixer_elem_list, cast via container_of() and access it
+members.  This may result in an out-of-bound access when a
+non-standard list element has been added, as spotted by syzkaller
+recently.
 
-Signed-off-by: Julian Scheel <julian@jusst.de>
+This patch adds a new field, is_std_info, in usb_mixer_elem_list to
+indicate that the element is the usb_mixer_elem_info type or not, and
+skip the access to such an element if needed.
+
+Reported-by: syzbot+fb14314433463ad51625@syzkaller.appspotmail.com
+Reported-by: syzbot+2405ca3401e943c538b5@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200624122340.9615-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/mixer.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/usb/mixer.c        | 15 +++++++++++----
+ sound/usb/mixer.h        |  9 +++++++--
+ sound/usb/mixer_quirks.c |  3 ++-
+ 3 files changed, 20 insertions(+), 7 deletions(-)
 
 diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index dbbc5609b453b..33deb5ec8b7a1 100644
+index 1a8d706491e65..b29a3546ab6af 100644
 --- a/sound/usb/mixer.c
 +++ b/sound/usb/mixer.c
-@@ -2403,9 +2403,14 @@ void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid)
+@@ -591,8 +591,9 @@ static int check_matrix_bitmap(unsigned char *bmap,
+  * if failed, give up and free the control instance.
+  */
+ 
+-int snd_usb_mixer_add_control(struct usb_mixer_elem_list *list,
+-			      struct snd_kcontrol *kctl)
++int snd_usb_mixer_add_list(struct usb_mixer_elem_list *list,
++			   struct snd_kcontrol *kctl,
++			   bool is_std_info)
  {
+ 	struct usb_mixer_interface *mixer = list->mixer;
+ 	int err;
+@@ -605,6 +606,7 @@ int snd_usb_mixer_add_control(struct usb_mixer_elem_list *list,
+ 		return err;
+ 	}
+ 	list->kctl = kctl;
++	list->is_std_info = is_std_info;
+ 	list->next_id_elem = mixer->id_elems[list->id];
+ 	mixer->id_elems[list->id] = list;
+ 	return 0;
+@@ -2404,8 +2406,11 @@ void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid)
  	struct usb_mixer_elem_list *list;
  
--	for (list = mixer->id_elems[unitid]; list; list = list->next_id_elem)
-+	for (list = mixer->id_elems[unitid]; list; list = list->next_id_elem) {
-+		struct usb_mixer_elem_info *info =
-+			(struct usb_mixer_elem_info *)list;
-+		/* invalidate cache, so the value is read from the device */
-+		info->cached = 0;
+ 	for_each_mixer_elem(list, mixer, unitid) {
+-		struct usb_mixer_elem_info *info =
+-			mixer_elem_list_to_info(list);
++		struct usb_mixer_elem_info *info;
++
++		if (!list->is_std_info)
++			continue;
++		info = mixer_elem_list_to_info(list);
+ 		/* invalidate cache, so the value is read from the device */
+ 		info->cached = 0;
  		snd_ctl_notify(mixer->chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
- 			       &list->kctl->id);
-+	}
+@@ -2483,6 +2488,8 @@ static void snd_usb_mixer_interrupt_v2(struct usb_mixer_interface *mixer,
+ 
+ 		if (!list->kctl)
+ 			continue;
++		if (!list->is_std_info)
++			continue;
+ 
+ 		info = mixer_elem_list_to_info(list);
+ 		if (count > 1 && info->control != control)
+diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
+index e02653465e292..7c824a44589b0 100644
+--- a/sound/usb/mixer.h
++++ b/sound/usb/mixer.h
+@@ -49,6 +49,7 @@ struct usb_mixer_elem_list {
+ 	struct usb_mixer_elem_list *next_id_elem; /* list of controls with same id */
+ 	struct snd_kcontrol *kctl;
+ 	unsigned int id;
++	bool is_std_info;
+ 	usb_mixer_elem_dump_func_t dump;
+ 	usb_mixer_elem_resume_func_t resume;
+ };
+@@ -86,8 +87,12 @@ void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid);
+ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
+ 				int request, int validx, int value_set);
+ 
+-int snd_usb_mixer_add_control(struct usb_mixer_elem_list *list,
+-			      struct snd_kcontrol *kctl);
++int snd_usb_mixer_add_list(struct usb_mixer_elem_list *list,
++			   struct snd_kcontrol *kctl,
++			   bool is_std_info);
++
++#define snd_usb_mixer_add_control(list, kctl) \
++	snd_usb_mixer_add_list(list, kctl, true)
+ 
+ void snd_usb_mixer_elem_init_std(struct usb_mixer_elem_list *list,
+ 				 struct usb_mixer_interface *mixer,
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index ead0456a747c2..5604cce30a582 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -169,7 +169,8 @@ static int add_single_ctl_with_resume(struct usb_mixer_interface *mixer,
+ 		return -ENOMEM;
+ 	}
+ 	kctl->private_free = snd_usb_mixer_elem_free;
+-	return snd_usb_mixer_add_control(list, kctl);
++	/* don't use snd_usb_mixer_add_control() here, this is a special list element */
++	return snd_usb_mixer_add_list(list, kctl, false);
  }
  
- static void snd_usb_mixer_dump_cval(struct snd_info_buffer *buffer,
+ /*
 -- 
 2.25.1
 
