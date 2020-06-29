@@ -2,89 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393B720E55D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F9E20E2A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391162AbgF2VgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:36:10 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:17693 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726937AbgF2Sko (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593456044; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=WbUeEpKb1Qs2PCBMIgTEm9+uqDc9t0k9P6qZc4ZqOZE=; b=OtvFprdLppLSIFNI6V5LeyG/wwvThHTvpq27xmzLRF0tUE/3E0j2CpUn8Kk52dVEyvb6gf1r
- 2MNCPkRGIWDEOlgMxPoWKExO8bKR/8rBAWvN2dIGltB4f3PE8Vw3fOhIGy7pu50EgZ0zAG/N
- V5DCZhKxNA5rXr9yLUtbeFh+woY=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5efa195b117610c7ffefd39f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 16:39:55
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0057AC433CA; Mon, 29 Jun 2020 16:39:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S2390365AbgF2VHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:07:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730953AbgF2TKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:10:17 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5EB22C43391;
-        Mon, 29 Jun 2020 16:39:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5EB22C43391
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v4 6/9] bus: mhi: core: Introduce helper function to check device state
-Date:   Mon, 29 Jun 2020 09:39:39 -0700
-Message-Id: <1593448782-8385-7-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593448782-8385-1-git-send-email-bbhatt@codeaurora.org>
-References: <1593448782-8385-1-git-send-email-bbhatt@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D75125598;
+        Mon, 29 Jun 2020 16:42:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593448949;
+        bh=luNaPCU/6jbnS0K+V5U2aqJY+/BTW9KAGTO5MmkTewg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xVG63WHkl2xs6+ia1HETs24YSoPxEOtOo15i0bFAo8HQPhr0Anl1yaLLPGXv6teOz
+         fFNJADDTapRPEgPSm8b1NGC0958Mp8t6wlOsYCdm4eWlA/3LwvRaVZ2HJVdBnjd7Bb
+         8wQc3cho/y49Go37ii4Z0xAIcUtAP++zIf96px/A=
+Date:   Mon, 29 Jun 2020 09:42:27 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     syzbot <syzbot+95910cea1a7ad8850a0f@syzkaller.appspotmail.com>
+Cc:     bp@alien8.de, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        luto@kernel.org, mingo@redhat.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
+Subject: Re: BUG: unable to handle kernel NULL pointer dereference in
+ __syscall_return_slowpath
+Message-ID: <20200629164227.GB1752982@gmail.com>
+References: <00000000000077c48b05a93b96fa@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000077c48b05a93b96fa@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a helper function to determine whether the device is in a
-powered ON state and resides in one of the active MHI states. This will
-allow for some use cases where access can be pre-determined.
+On Mon, Jun 29, 2020 at 09:31:16AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following crash on:
+> 
+> HEAD commit:    4e99b321 Merge tag 'nfs-for-5.8-2' of git://git.linux-nfs...
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=116abdd3100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=bf3aec367b9ab569
+> dashboard link: https://syzkaller.appspot.com/bug?extid=95910cea1a7ad8850a0f
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> userspace arch: i386
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17020755100000
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
----
- drivers/bus/mhi/core/internal.h | 5 +++++
- 1 file changed, 5 insertions(+)
+Looks like ioctl$FBIOPUT_VSCREENINFO on /dev/fb0 striking again.  There are like
+20-30 open syzbot reports for this.
 
-diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-index cb32eaf..997c6e9 100644
---- a/drivers/bus/mhi/core/internal.h
-+++ b/drivers/bus/mhi/core/internal.h
-@@ -598,6 +598,11 @@ int mhi_queue_state_transition(struct mhi_controller *mhi_cntrl,
- int __mhi_device_get_sync(struct mhi_controller *mhi_cntrl);
- int mhi_send_cmd(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
- 		 enum mhi_cmd_type cmd);
-+static inline bool mhi_is_active(struct mhi_controller *mhi_cntrl)
-+{
-+	return (mhi_cntrl->dev_state >= MHI_STATE_M0 &&
-+		mhi_cntrl->dev_state <= MHI_STATE_M3_FAST);
-+}
- 
- static inline void mhi_trigger_resume(struct mhi_controller *mhi_cntrl,
- 				      bool hard_wakeup)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+See https://lkml.kernel.org/lkml/000000000000ff323f05a053100c@google.com/T/#u
+for some previous discussion.
 
+#syz dup: general protection fault in syscall_return_slowpath
