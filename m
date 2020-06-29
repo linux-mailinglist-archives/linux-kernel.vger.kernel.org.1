@@ -2,67 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2994120E5D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC4F20E53D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403921AbgF2VmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727933AbgF2Sh6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:58 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187F6C02F036
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:02:30 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id m25so9406720vsp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ReiCegvviEnxXcN9B7amB1T6WC+mfFX60FlcHwLHk9Y=;
-        b=LgrEurIEa+2Fg0zShzEndAfeMoc7t7VKXylILMjAASOsaox+aD8Z69q7MimoaxWsPG
-         n5Dmr3qard8YktQZZud2SVLd0y9CGk0BmFEUvXiTCMB43gBVMwbiLrYjfMC6sZ6VGwuh
-         OIX0m+7GQdSjK4evUBYVZxgZ5vvUH6bF2P60xjs4wRCQIYsTkcL2XvFN1FbUsBHZ0AE2
-         UfGMvsz1XCrmtD8wZ5OxxBIu7UsgXG9R/A0eUQJIa7FPyQ46QlizbRWr4nvU0gqPuFpG
-         utlhcBSp4saEkE5FvOnNJLozQcT62yUNWyEDAhn3oVTkciWuGL4ctz65XIkv3sFKxE++
-         hGAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ReiCegvviEnxXcN9B7amB1T6WC+mfFX60FlcHwLHk9Y=;
-        b=ZHYiJArkKiZ9jbO7c5CdkGV8cRKvR/KjxEPd6ckuhpjUnRpw3PMZtp6kMNEc8OXnh3
-         9Eyb3Q2FJnSD9HxQqzkxzeKOlj7aXeqO6Vbe1reEfw8B/qrVhb2ftIjhL6o6zgnI2M7H
-         fjpKuM6wEFLgouNEuVV7o0sUU7h3+mvhVlXka0xhwg2BgjC0YEL7zWqOHnb1df7xz2m7
-         /lBuHA2DMo68ni8Z9PG6hzUd/0XoEFN/Z090NKJSfRv1lIOlG/2TWMK/RWaJ6QoXWdmG
-         CqJR50Qw+1VJOI6eDtXMUagxuSG/Ukq4jaOPHE18SAW73GVUXP7Bdi4opbOiF05FCTBl
-         xQOw==
-X-Gm-Message-State: AOAM532soU7G01k/0nPCJJV/suLwPWLcRq6PehsxzzeUlMNmGCijkCSl
-        FysGPazBTPTYmX79U9CcXvr7rjbB4PLhefcT6q8=
-X-Google-Smtp-Source: ABdhPJz1YLIh+8BHICtTEG5+Ejzgy/q3w60+ollzYJz1nCKJLtLw1fUOG2pRtH06v8Hss857PFrVI+O2Wi3Ciyeb0BQ=
-X-Received: by 2002:a67:c990:: with SMTP id y16mr12118074vsk.105.1593442949198;
- Mon, 29 Jun 2020 08:02:29 -0700 (PDT)
+        id S1728743AbgF2Vem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:34:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728598AbgF2Sk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:40:56 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0108C23E53;
+        Mon, 29 Jun 2020 15:03:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593443004;
+        bh=raL4d33RBba0Q+Amt7jmBy+/u73rlt5v3RwFSVQIRYY=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=qYycy74u4p+VrNz3wJU8piFLUBVQZrNd8YIJ2V5+OiyNijLS+DIk3Tysqkxk+ETl4
+         Imz+y6ajfoESV+TsNjb06OCNnyFWo/z8TBbUKFh6pk0xAgy28AyOY5XR0uoNod8Oki
+         oeTLGo81shimoB2dCesRITTW2XNk8GK8q1B0rTzY=
+Date:   Mon, 29 Jun 2020 08:03:23 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Subject: Re: [PATCH v2] f2fs: avoid readahead race condition
+Message-ID: <20200629150323.GA3293033@google.com>
+References: <20200624012148.180050-1-jaegeuk@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a67:6e83:0:0:0:0:0 with HTTP; Mon, 29 Jun 2020 08:02:28
- -0700 (PDT)
-Reply-To: albertschmidtsg@yahoo.com
-From:   "Mr. Albert " <ttota8794@gmail.com>
-Date:   Mon, 29 Jun 2020 15:02:28 +0000
-Message-ID: <CAF5YCpd6VNZpdF9M7O2=FexdfMzFNZYo_XozEcU387U2dJuS7Q@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200624012148.180050-1-jaegeuk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+If two readahead threads having same offset enter in readpages, every read
+IOs are split and issued to the disk which giving lower bandwidth.
 
-I have a proposal of great benefit to discourse with you, kindly
-respond back for more details.
+This patch tries to avoid redundant readahead calls.
 
-Thanks
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+v2:
+ - add missing code to bypass read
 
-Mr. Albert
+ fs/f2fs/data.c  | 18 +++++++++++++++++-
+ fs/f2fs/f2fs.h  |  1 +
+ fs/f2fs/super.c |  2 ++
+ 3 files changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index d6094b9f3916..9b69a159cc6c 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -2403,6 +2403,7 @@ int f2fs_mpage_readpages(struct address_space *mapping,
+ #endif
+ 	unsigned max_nr_pages = nr_pages;
+ 	int ret = 0;
++	bool drop_ra = false;
+ 
+ 	map.m_pblk = 0;
+ 	map.m_lblk = 0;
+@@ -2413,13 +2414,25 @@ int f2fs_mpage_readpages(struct address_space *mapping,
+ 	map.m_seg_type = NO_CHECK_TYPE;
+ 	map.m_may_create = false;
+ 
++	/*
++	 * Two readahead threads for same address range can cause race condition
++	 * which fragments sequential read IOs. So let's avoid each other.
++	 */
++	if (pages && is_readahead) {
++		page = list_last_entry(pages, struct page, lru);
++		if (F2FS_I(inode)->ra_offset == page_index(page))
++			drop_ra = true;
++		else
++			F2FS_I(inode)->ra_offset = page_index(page);
++	}
++
+ 	for (; nr_pages; nr_pages--) {
+ 		if (pages) {
+ 			page = list_last_entry(pages, struct page, lru);
+ 
+ 			prefetchw(&page->flags);
+ 			list_del(&page->lru);
+-			if (add_to_page_cache_lru(page, mapping,
++			if (drop_ra || add_to_page_cache_lru(page, mapping,
+ 						  page_index(page),
+ 						  readahead_gfp_mask(mapping)))
+ 				goto next_page;
+@@ -2484,6 +2497,9 @@ int f2fs_mpage_readpages(struct address_space *mapping,
+ 	BUG_ON(pages && !list_empty(pages));
+ 	if (bio)
+ 		__f2fs_submit_read_bio(F2FS_I_SB(inode), bio, DATA);
++
++	if (pages && is_readahead && !drop_ra)
++		F2FS_I(inode)->ra_offset = -1;
+ 	return pages ? 0 : ret;
+ }
+ 
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 35afa13124b8..a95f84d72a55 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -806,6 +806,7 @@ struct f2fs_inode_info {
+ 	struct list_head inmem_pages;	/* inmemory pages managed by f2fs */
+ 	struct task_struct *inmem_task;	/* store inmemory task */
+ 	struct mutex inmem_lock;	/* lock for inmemory pages */
++	pgoff_t ra_offset;		/* ongoing readahead offset */
+ 	struct extent_tree *extent_tree;	/* cached extent_tree entry */
+ 
+ 	/* avoid racing between foreground op and gc */
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 0e860186a9c5..6fd2ad43d9e4 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -1011,6 +1011,8 @@ static struct inode *f2fs_alloc_inode(struct super_block *sb)
+ 	/* Will be used by directory only */
+ 	fi->i_dir_level = F2FS_SB(sb)->dir_level;
+ 
++	fi->ra_offset = -1;
++
+ 	return &fi->vfs_inode;
+ }
+ 
+-- 
+2.27.0.111.gc72c7da667-goog
+
