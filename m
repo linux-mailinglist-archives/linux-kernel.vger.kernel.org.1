@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3251320D4F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B5220D4A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731261AbgF2TNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:13:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53740 "EHLO mail.kernel.org"
+        id S1731001AbgF2TKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:10:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730960AbgF2TKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730958AbgF2TKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Jun 2020 15:10:18 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B19BF2545F;
-        Mon, 29 Jun 2020 15:53:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BD12B2549E
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 15:51:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593445997;
-        bh=NBYooCxBz9DLx51kVAfojPfrpaJKY1fDyyxiKGfm8rs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YzpYXpxA36uY64e3qR4E4VbNysSBWu2m2fnS1dZrkHOT+xJYkZA4aTrdP+W7AfF1m
-         tN6VoiiPfUko8rCSaAwU8zkua4TWdUO6LO8mh8WEPaXcWbsE7wW9myJVGWYaydYhyK
-         uMevMFPSHyo6eU4+14M9mFG33PVMM9o6EAn4UwFQ=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 005/135] ALSA: isa/wavefront: prevent out of bounds write in ioctl
-Date:   Mon, 29 Jun 2020 11:50:59 -0400
-Message-Id: <20200629155309.2495516-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629155309.2495516-1-sashal@kernel.org>
-References: <20200629155309.2495516-1-sashal@kernel.org>
+        s=default; t=1593445872;
+        bh=eQgDUs7J8VJ3ysHeL4WQSn/WO/okfHnq/562AgtsAk0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sWtK2vH7PYP2j67ezQzJinF0yOJF+6ZsFB2IytMjLVWP4giLRm4ykPrk7oDW5qgSg
+         wIN8EeaGhVXUlPqcRVpEQe8bSW7YUQ0m6YRDEgbRsnB/EgKnOFVKBctGnOJS3AT4th
+         MK5gWfzupsZmaePqKZCKr/bdvO+Ji/aHR2/+ONrE=
+Received: by mail-ot1-f51.google.com with SMTP id w17so8097543otl.4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:51:12 -0700 (PDT)
+X-Gm-Message-State: AOAM533LJJIOmfTx51AOC/NQqrLoXjHPjkAE6Fr3KLs2T+A1e/iNQQbl
+        4Bs3GuQvu2C677ybgpZcC0urwkg5WQ9VqWxc204=
+X-Google-Smtp-Source: ABdhPJxoGhtLOjs947FbLWqrlNCz9FYMKZhXHzbCv6ALUOXtCy7zU3GxZ2fjFFMn6idB3tk9YO4q0/ZbO7nZZNkcxmQ=
+X-Received: by 2002:a9d:688:: with SMTP id 8mr13766245otx.108.1593445871914;
+ Mon, 29 Jun 2020 08:51:11 -0700 (PDT)
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.229-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.4.229-rc1
-X-KernelTest-Deadline: 2020-07-01T15:53+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20200629140928.858507-1-nivedita@alum.mit.edu>
+ <20200629140928.858507-2-nivedita@alum.mit.edu> <202006290846.5A5C76A4D7@keescook>
+ <20200629155011.GA900899@rani.riverdale.lan>
+In-Reply-To: <20200629155011.GA900899@rani.riverdale.lan>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 29 Jun 2020 17:51:00 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXH1Fx3c4fZRVgNPeXnPFbHWVhgywU0Jvu65=wBaR_5yjA@mail.gmail.com>
+Message-ID: <CAMj1kXH1Fx3c4fZRVgNPeXnPFbHWVhgywU0Jvu65=wBaR_5yjA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/7] x86/boot/compressed: Move .got.plt entries out of
+ the .got section
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H . J . Lu" <hjl@sourceware.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+On Mon, 29 Jun 2020 at 17:50, Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> On Mon, Jun 29, 2020 at 08:48:05AM -0700, Kees Cook wrote:
+> > On Mon, Jun 29, 2020 at 10:09:22AM -0400, Arvind Sankar wrote:
+> >
+> > This is also being done on arm64, and the section was specified slightly
+> > differently (with INFO) which maybe should be done here too?
+>
+> I was actually just about to email you to ask what that INFO is for :)
+> What does it do?
+>
 
-[ Upstream commit 7f0d5053c5a9d23fe5c2d337495a9d79038d267b ]
+It makes the section non-allocatable, so it is dropped from the final image
 
-The "header->number" comes from the ioctl and it needs to be clamped to
-prevent out of bounds writes.
-
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20200501094011.GA960082@mwanda
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/isa/wavefront/wavefront_synth.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/sound/isa/wavefront/wavefront_synth.c b/sound/isa/wavefront/wavefront_synth.c
-index 718d5e3b7806f..6c06d06457796 100644
---- a/sound/isa/wavefront/wavefront_synth.c
-+++ b/sound/isa/wavefront/wavefront_synth.c
-@@ -1174,7 +1174,10 @@ wavefront_send_alias (snd_wavefront_t *dev, wavefront_patch_info *header)
- 				      "alias for %d\n",
- 				      header->number,
- 				      header->hdr.a.OriginalSample);
--    
-+
-+	if (header->number >= WF_MAX_SAMPLE)
-+		return -EINVAL;
-+
- 	munge_int32 (header->number, &alias_hdr[0], 2);
- 	munge_int32 (header->hdr.a.OriginalSample, &alias_hdr[2], 2);
- 	munge_int32 (*((unsigned int *)&header->hdr.a.sampleStartOffset),
-@@ -1205,6 +1208,9 @@ wavefront_send_multisample (snd_wavefront_t *dev, wavefront_patch_info *header)
- 	int num_samples;
- 	unsigned char *msample_hdr;
- 
-+	if (header->number >= WF_MAX_SAMPLE)
-+		return -EINVAL;
-+
- 	msample_hdr = kmalloc(WF_MSAMPLE_BYTES, GFP_KERNEL);
- 	if (! msample_hdr)
- 		return -ENOMEM;
--- 
-2.25.1
-
+> >
+> >        .got.plt (INFO) : { *(.got.plt) }
+> >        ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18, ".got.plt not empty")
+> >
+> > Otherwise, yes, looks good.
+> >
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> >
+> > > +
+> > >     .data : {
+> > >             _data = . ;
+> > >             *(.data)
+> > > @@ -77,3 +80,9 @@ SECTIONS
+> > >
+> > >     DISCARDS
+> > >  }
+> > > +
+> > > +#ifdef CONFIG_X86_64
+> > > +ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18, "Unexpected GOT/PLT entries detected!")
+> > > +#else
+> > > +ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0xc, "Unexpected GOT/PLT entries detected!")
+> > > +#endif
+> > > --
+> > > 2.26.2
+> > >
+> >
+> > --
+> > Kees Cook
