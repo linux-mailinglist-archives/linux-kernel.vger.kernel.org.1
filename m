@@ -2,221 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238D220E3BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBAF120E402
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390622AbgF2VR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35394 "EHLO
+        id S2390817AbgF2VUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730116AbgF2VRU (ORCPT
+        with ESMTP id S1729343AbgF2VSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:17:20 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27BFFC061755;
-        Mon, 29 Jun 2020 14:17:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=FQONZLCxNSFZb1sXC8Tkaq9Lqm1oP8ToJp0lQbwhQuo=; b=WAQpUjlemzxM4jBwSWLATlfa8H
-        fI/iCi+M2v3b1GCJBCm/YYUY1lGd5Ooapahjre8NbyoFy90T0etv6nMYZMmQa5ImC+QUCw18ohpaR
-        gLMaJAbPwnyLNqLiFzrmqxG+2e67Z6yz9NqXz2rLYOxDGhXBIRQHqZeBGc6V5+a9kj3M7hhYtYQFH
-        42QBTLqVbsi83yqOculdzhcHdcjJSPsh+GKhuee1c+EtO+ScCXyXD1Zd7+VG+Co8JyZZsBjlrUUI+
-        kFoMXJQJG5CLCg2+FsyDk+nxsiluXklse49asdGZEK1YEouIBMAmy7CmTOEmCWtFHAzJEugWiDvql
-        XPAsVKhA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jq192-0005gR-KC; Mon, 29 Jun 2020 21:16:53 +0000
-To:     LKML <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Julia Lawall <julia.lawall@lip6.fr>
-Cc:     Gilles Muller <Gilles.Muller@lip6.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Michal Marek <michal.lkml@markovi.net>, cocci@systeme.lip6.fr,
-        Markus Elfring <Markus.Elfring@web.de>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v2] Documentation: Coccinelle: fix typos and command example
-Message-ID: <0616dd0c-bb86-be2b-3dc6-1c695a92c3ca@infradead.org>
-Date:   Mon, 29 Jun 2020 14:16:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 29 Jun 2020 17:18:36 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51468C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:18:36 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id p7so8353918qvl.4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:18:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VQkFfkkA31JOV3zD6GN1+JAepXXLzSYJr6ThdL4AJWw=;
+        b=oBVPmbK7BuBk9iy5wv1Xu3RoNDgE1InrFOtYwW6eD/vUBuLizp+u0B9+OUPexecHlW
+         +2fNJezcMrBHgtRXirsrNI4HRFAVsCcBHR2ltT9vPFNxtml+gpGdYmF/PmXMPZ+YJUsb
+         nVL2orS00Pb+x6UiwfoMc4KPLReThSsdyoPNOjHQP6XDUq08v6WYk5EI7ChkVUau/ua9
+         /F4z3F/3EzI++UPRNI4R3JYxI5IM6voYNOPTjd6fdOgjNrBl4ga9opbNfyMym9VjndP6
+         QnuwtRoJ0n8NBb+k8D++QZ9cJeRYJP2dlNnpgFtiVPoY+10MeKlUAEsUCM0uFv78+aFy
+         kTMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VQkFfkkA31JOV3zD6GN1+JAepXXLzSYJr6ThdL4AJWw=;
+        b=i3QrCgHfXdI+vOVPVA9QCHF8jRXO9OfL9WckEYdmjyMXDDAJUlG1Sw40Ps/i6oOsYX
+         9aaD3L/gxUSR8jMlf1nkP8x6aPihDMYCKho5i+sm74AuXb2wRk70kNPS/r+xjlRToXEN
+         cucTOF1ypY8CwsmQixROlu2dVP9VCn80rtEETx+wY6QwWpwEjbznYIJpuxWypeyWKw8m
+         tvznAXQzjdMBoQpj8GYL0xgiMtBmfY90iaAx1VRDVmCXk9zRmgIwC8O9CgotOmyJRY0+
+         /u53/xc7xFAJKTaSvKcoMDwvfSzuTEYyueK4UohDTlVYppxPnGJsqWk7Yq6kDOn6ImZl
+         l8KA==
+X-Gm-Message-State: AOAM532QSDP9YhIS3IUYCHxNAhMr1qqcdTh4RWu/rTlvZa8RoKbf9ZHK
+        3/sErSEMgrww/s7wXsod7E2t3g==
+X-Google-Smtp-Source: ABdhPJybhecniRdYDGry+hooybXHKs+inJvNXIVa/OgWZd5nuVw0fV7/T0A/nK/BZp8YCc6gpSfWsQ==
+X-Received: by 2002:a0c:fd84:: with SMTP id p4mr17228790qvr.175.1593465515584;
+        Mon, 29 Jun 2020 14:18:35 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id b196sm1169078qkg.11.2020.06.29.14.18.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 14:18:35 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Deepak Katragadda <dkatraga@codeaurora.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
+        linux-kernel@vger.kernel.org (open list),
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>, Vinod Koul <vkoul@kernel.org>
+Subject: [RESEND PATCH v2 00/13] Enable GPU for SM8150 and SM8250
+Date:   Mon, 29 Jun 2020 17:17:06 -0400
+Message-Id: <20200629211725.2592-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+This series adds the missing clock drivers and dts nodes to enable
+the GPU on both SM8150 and SM8250.
 
-Fix various typos etc. in dev-tools/coccinelle.rst:
+Note an extra patch [1] is still required for GPU to work on SM8250.
 
-- punctuation, grammar, wording
-- add "path/to/file.c" when using Coccinelle to check a single file
+Changes in V2:
+* Added "clk: qcom: gcc: fix sm8150 GPU and NPU clocks" to fix the newly added
+  SM8150 GPU gcc clocks
+* Added "Fixes:" tag to "clk: qcom: clk-alpha-pll: remove unused/incorrect PLL_CAL_VAL"
+* Added yaml schemas to gpucc dt-bindings patches
+* Added "clk: qcom: add common gdsc_gx_do_nothing_enable for gpucc drivers" and changed
+  gpucc patches to use it.
+* Removed CLK_IS_CRITICAL from gpu_cc_ahb_clk
+* Added missing rpmh regulator level for sm8250 GPU clock levels
+* Use sm8150/sm8250 iommu compatibles in dts
+* Add gcc_gpu_gpll0_clk_src/gcc_gpu_gpll0_div_clk_src to gpucc clocks in dts
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: Gilles Muller <Gilles.Muller@lip6.fr>
-Cc: Nicolas Palix <nicolas.palix@imag.fr>
-Cc: Michal Marek <michal.lkml@markovi.net>
-Cc: cocci@systeme.lip6.fr
-Cc: Markus Elfring <Markus.Elfring@web.de>
----
-v2: s/at minimum/a minimum/ (Julia and Markus)
- Documentation/dev-tools/coccinelle.rst |   44 +++++++++++------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+[1] https://gist.github.com/flto/784f1aca761ebf2fe6c105719a4a04ca
 
---- linux-next-20200629.orig/Documentation/dev-tools/coccinelle.rst
-+++ linux-next-20200629/Documentation/dev-tools/coccinelle.rst
-@@ -85,7 +85,7 @@ Four basic modes are defined: ``patch``,
-   file:line:column-column: message
- 
- - ``context`` highlights lines of interest and their context in a
--  diff-like style.Lines of interest are indicated with ``-``.
-+  diff-like style. Lines of interest are indicated with ``-``.
- 
- - ``org`` generates a report in the Org mode format of Emacs.
- 
-@@ -119,7 +119,7 @@ For each semantic patch, a commit messag
- description of the problem being checked by the semantic patch, and
- includes a reference to Coccinelle.
- 
--As any static code analyzer, Coccinelle produces false
-+As with any static code analyzer, Coccinelle produces false
- positives. Thus, reports must be carefully checked, and patches
- reviewed.
- 
-@@ -135,18 +135,18 @@ the parallelism, set the J= variable. Fo
- 
-    make coccicheck MODE=report J=4
- 
--As of Coccinelle 1.0.2 Coccinelle uses Ocaml parmap for parallelization,
-+As of Coccinelle 1.0.2 Coccinelle uses Ocaml parmap for parallelization;
- if support for this is detected you will benefit from parmap parallelization.
- 
- When parmap is enabled coccicheck will enable dynamic load balancing by using
--``--chunksize 1`` argument, this ensures we keep feeding threads with work
-+``--chunksize 1`` argument. This ensures we keep feeding threads with work
- one by one, so that we avoid the situation where most work gets done by only
- a few threads. With dynamic load balancing, if a thread finishes early we keep
- feeding it more work.
- 
- When parmap is enabled, if an error occurs in Coccinelle, this error
--value is propagated back, the return value of the ``make coccicheck``
--captures this return value.
-+value is propagated back, and the return value of the ``make coccicheck``
-+command captures this return value.
- 
- Using Coccinelle with a single semantic patch
- ---------------------------------------------
-@@ -177,13 +177,13 @@ For example, to check drivers/net/wirele
- To apply Coccinelle on a file basis, instead of a directory basis, the
- following command may be used::
- 
--    make C=1 CHECK="scripts/coccicheck"
-+    make C=1 CHECK="scripts/coccicheck" path/to/file.c
- 
- To check only newly edited code, use the value 2 for the C flag, i.e.::
- 
--    make C=2 CHECK="scripts/coccicheck"
-+    make C=2 CHECK="scripts/coccicheck" path/to/file.c
- 
--In these modes, which works on a file basis, there is no information
-+In these modes, which work on a file basis, there is no information
- about semantic patches displayed, and no commit message proposed.
- 
- This runs every semantic patch in scripts/coccinelle by default. The
-@@ -198,12 +198,12 @@ Debugging Coccinelle SmPL patches
- 
- Using coccicheck is best as it provides in the spatch command line
- include options matching the options used when we compile the kernel.
--You can learn what these options are by using V=1, you could then
-+You can learn what these options are by using V=1; you could then
- manually run Coccinelle with debug options added.
- 
- Alternatively you can debug running Coccinelle against SmPL patches
--by asking for stderr to be redirected to stderr, by default stderr
--is redirected to /dev/null, if you'd like to capture stderr you
-+by asking for stderr to be redirected to stderr. By default stderr
-+is redirected to /dev/null; if you'd like to capture stderr you
- can specify the ``DEBUG_FILE="file.txt"`` option to coccicheck. For
- instance::
- 
-@@ -211,8 +211,8 @@ instance::
-     make coccicheck COCCI=scripts/coccinelle/free/kfree.cocci MODE=report DEBUG_FILE=cocci.err
-     cat cocci.err
- 
--You can use SPFLAGS to add debugging flags, for instance you may want to
--add both --profile --show-trying to SPFLAGS when debugging. For instance
-+You can use SPFLAGS to add debugging flags; for instance you may want to
-+add both --profile --show-trying to SPFLAGS when debugging. For example
- you may want to use::
- 
-     rm -f err.log
-@@ -229,7 +229,7 @@ DEBUG_FILE support is only supported whe
- --------------------
- 
- Coccinelle supports reading .cocciconfig for default Coccinelle options that
--should be used every time spatch is spawned, the order of precedence for
-+should be used every time spatch is spawned. The order of precedence for
- variables for .cocciconfig is as follows:
- 
- - Your current user's home directory is processed first
-@@ -237,7 +237,7 @@ variables for .cocciconfig is as follows
- - The directory provided with the --dir option is processed last, if used
- 
- Since coccicheck runs through make, it naturally runs from the kernel
--proper dir, as such the second rule above would be implied for picking up a
-+proper dir; as such the second rule above would be implied for picking up a
- .cocciconfig when using ``make coccicheck``.
- 
- ``make coccicheck`` also supports using M= targets. If you do not supply
-@@ -260,13 +260,13 @@ If not using the kernel's coccicheck tar
- order logic of .cocciconfig reading. If using the kernel's coccicheck target,
- override any of the kernel's .coccicheck's settings using SPFLAGS.
- 
--We help Coccinelle when used against Linux with a set of sensible defaults
-+We help Coccinelle when used against Linux with a set of sensible default
- options for Linux with our own Linux .cocciconfig. This hints to coccinelle
--git can be used for ``git grep`` queries over coccigrep. A timeout of 200
-+that git can be used for ``git grep`` queries over coccigrep. A timeout of 200
- seconds should suffice for now.
- 
- The options picked up by coccinelle when reading a .cocciconfig do not appear
--as arguments to spatch processes running on your system, to confirm what
-+as arguments to spatch processes running on your system. To confirm what
- options will be used by Coccinelle run::
- 
-       spatch --print-options-only
-@@ -290,7 +290,7 @@ given to it when options are in conflict
- 
- Coccinelle supports idutils as well but requires coccinelle >= 1.0.6.
- When no ID file is specified coccinelle assumes your ID database file
--is in the file .id-utils.index on the top level of the kernel, coccinelle
-+is in the file .id-utils.index on the top level of the kernel. Coccinelle
- carries a script scripts/idutils_index.sh which creates the database with::
- 
-     mkid -i C --output .id-utils.index
-@@ -317,7 +317,7 @@ SmPL patch specific options
- ---------------------------
- 
- SmPL patches can have their own requirements for options passed
--to Coccinelle. SmPL patch specific options can be provided by
-+to Coccinelle. SmPL patch-specific options can be provided by
- providing them at the top of the SmPL patch, for instance::
- 
- 	// Options: --no-includes --include-headers
-@@ -327,7 +327,7 @@ SmPL patch Coccinelle requirements
- 
- As Coccinelle features get added some more advanced SmPL patches
- may require newer versions of Coccinelle. If an SmPL patch requires
--at least a version of Coccinelle, this can be specified as follows,
-+a minimum version of Coccinelle, this can be specified as follows,
- as an example if requiring at least Coccinelle >= 1.0.5::
- 
- 	// Requires: 1.0.5
+Jonathan Marek (13):
+  clk: qcom: gcc: fix sm8150 GPU and NPU clocks
+  clk: qcom: clk-alpha-pll: remove unused/incorrect PLL_CAL_VAL
+  clk: qcom: clk-alpha-pll: same regs and ops for trion and lucid
+  clk: qcom: clk-alpha-pll: use the right PCAL_DONE value for lucid pll
+  clk: qcom: gcc: remove unnecessary vco_table from SM8150
+  dt-bindings: clock: Introduce SM8150 QCOM Graphics clock bindings
+  dt-bindings: clock: Introduce SM8250 QCOM Graphics clock bindings
+  clk: qcom: add common gdsc_gx_do_nothing_enable for gpucc drivers
+  clk: qcom: Add graphics clock controller driver for SM8150
+  clk: qcom: Add graphics clock controller driver for SM8250
+  dt-bindings: power: Add missing rpmpd rpmh regulator level
+  arm64: dts: qcom: add sm8150 GPU nodes
+  arm64: dts: qcom: add sm8250 GPU nodes
+
+ .../bindings/clock/qcom,sm8150-gpucc.yaml     |  74 +++
+ .../bindings/clock/qcom,sm8250-gpucc.yaml     |  74 +++
+ arch/arm64/boot/dts/qcom/sm8150.dtsi          | 136 ++++++
+ arch/arm64/boot/dts/qcom/sm8250.dtsi          | 143 ++++++
+ drivers/clk/qcom/Kconfig                      |  16 +
+ drivers/clk/qcom/Makefile                     |   2 +
+ drivers/clk/qcom/clk-alpha-pll.c              |  70 ++-
+ drivers/clk/qcom/clk-alpha-pll.h              |  15 +-
+ drivers/clk/qcom/gcc-sm8150.c                 |  26 +-
+ drivers/clk/qcom/gdsc.c                       |  25 +
+ drivers/clk/qcom/gdsc.h                       |   1 +
+ drivers/clk/qcom/gpucc-sc7180.c               |  27 +-
+ drivers/clk/qcom/gpucc-sdm845.c               |  27 +-
+ drivers/clk/qcom/gpucc-sm8150.c               | 421 ++++++++++++++++
+ drivers/clk/qcom/gpucc-sm8250.c               | 450 ++++++++++++++++++
+ include/dt-bindings/clock/qcom,gpucc-sm8150.h |  40 ++
+ include/dt-bindings/clock/qcom,gpucc-sm8250.h |  40 ++
+ include/dt-bindings/power/qcom-rpmpd.h        |   1 +
+ 18 files changed, 1479 insertions(+), 109 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,sm8150-gpucc.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,sm8250-gpucc.yaml
+ create mode 100644 drivers/clk/qcom/gpucc-sm8150.c
+ create mode 100644 drivers/clk/qcom/gpucc-sm8250.c
+ create mode 100644 include/dt-bindings/clock/qcom,gpucc-sm8150.h
+ create mode 100644 include/dt-bindings/clock/qcom,gpucc-sm8250.h
+
+-- 
+2.26.1
 
