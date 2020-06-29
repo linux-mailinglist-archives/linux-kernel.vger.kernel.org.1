@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7CC20D6BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E8A20D6CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730532AbgF2TXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:23:23 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:51556 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730502AbgF2TXT (ORCPT
+        id S1732275AbgF2TYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732338AbgF2TXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:23:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593458597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8sjxgsbXUH5TliF6aeepZ4Uon8SNTJXYIGtvY8oeRGE=;
-        b=FJ258LRJLStdpR8GHdntc7vs9z1PYe+nbraMw7FsFYmxoKTot+yqSfCAmnUD7L2ig1F8pa
-        U5nc/RtfErZjG4hVF/zdmVGQMXj2YNG7p0TfjS+m490xDnr5Up/gQ8ZvjCC0fzBb2BHnms
-        w5b0QR3tkT0z3RhwbW31u5lnZ/5z6v8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-467-j_ra0JiINkOtileaBTFjaA-1; Mon, 29 Jun 2020 15:23:15 -0400
-X-MC-Unique: j_ra0JiINkOtileaBTFjaA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 165E9A0C0D;
-        Mon, 29 Jun 2020 19:23:13 +0000 (UTC)
-Received: from krava (unknown [10.40.195.81])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0D59D9CFF2;
-        Mon, 29 Jun 2020 19:23:09 +0000 (UTC)
-Date:   Mon, 29 Jun 2020 21:23:09 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 09/10] perf tools: Compute other metrics
-Message-ID: <20200629192309.GD3031756@krava>
-References: <20200626194720.2915044-1-jolsa@kernel.org>
- <20200626194720.2915044-10-jolsa@kernel.org>
- <CAP-5=fUODuF+LY6cbU4BPEcxu_YXDYg42pgRYU=yY5e47z05=g@mail.gmail.com>
- <20200628215957.GO2988321@krava>
- <CAP-5=fWS7dsqrjM2gP6fpsjbjW5CoFHwGLYf-WxzJ9JdhD-LzQ@mail.gmail.com>
+        Mon, 29 Jun 2020 15:23:54 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB6BCC03E97A
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:23:53 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id m26so9798354lfo.13
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:23:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mkLALwEBsfgrF/H397Lx9Gt+sC05sJ13vZdNeAjTZ5E=;
+        b=FPlpwVAPUFD3v6bVUhip7cfhfzuueSDNYo7W0SMPvHcy6jzZIQis6GYHuGsYXXfKf3
+         ALP2bWjkMLoY3aUn94tO9sMxLR4uZyaVnIgdqw+dVS0hN08AsAYTmLgAbVhQzlDndEU7
+         PR1/ytPMFHpUV9rh2wieVICotA43fZMtUaYFU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mkLALwEBsfgrF/H397Lx9Gt+sC05sJ13vZdNeAjTZ5E=;
+        b=QdCim9pha63doSfYZ32MuHN6qPPpz2UvNqgv1xV4Rou9t5a6JUV78sS0HJNpbVH+v2
+         ANX9wgSi0BOyx2N/yymd1Li6luov3Wxr+8Xr0wa3ahww2Px40ny1IYluYzN0iiB0D5FW
+         MwIPXaU1CC05/UGh1NVxj8/aymzHoXp4biMH0oUe5rkBg+9tCkLPXCoVXB721AGm++HS
+         WnQcwrOP2zT4SHX5Mc+WPOGNKnd5YomuBZYzuwlpscr8u71WMlTwfsU6jrRE+YYU+qdj
+         LKauzXPJfvmtvhzbiTaRV7La0eOct/qd0vYSmYa0N6ye1cP5TUA8q07ts4znFzf1j/m7
+         u8sg==
+X-Gm-Message-State: AOAM533Lq7lck5oct6N26YN0eA+njKcqBXFqpaukrwx0xIvuNvkAcjMf
+        Tc4vqwYf+b0rWxNKOYHvv4KU97dnj28=
+X-Google-Smtp-Source: ABdhPJxRdmNXNYpVZbZVyipV2r66AuVsrUbiO2vrAw6WUzsH0YTxo8dw+RDUxmJBmBPIfeVCKG7qtw==
+X-Received: by 2002:ac2:521a:: with SMTP id a26mr9888743lfl.192.1593458631976;
+        Mon, 29 Jun 2020 12:23:51 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id a12sm147350ljb.92.2020.06.29.12.23.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jun 2020 12:23:51 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id d17so4826521ljl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:23:50 -0700 (PDT)
+X-Received: by 2002:a05:651c:1b6:: with SMTP id c22mr6878545ljn.421.1593458630544;
+ Mon, 29 Jun 2020 12:23:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fWS7dsqrjM2gP6fpsjbjW5CoFHwGLYf-WxzJ9JdhD-LzQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20200629182349.GA2786714@ZenIV.linux.org.uk> <20200629182628.529995-1-viro@ZenIV.linux.org.uk>
+ <20200629182628.529995-18-viro@ZenIV.linux.org.uk>
+In-Reply-To: <20200629182628.529995-18-viro@ZenIV.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 29 Jun 2020 12:23:34 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjd5HML-EuPGH7J8CjWJrbnMhst3NJbcUyt-P0RV649nA@mail.gmail.com>
+Message-ID: <CAHk-=wjd5HML-EuPGH7J8CjWJrbnMhst3NJbcUyt-P0RV649nA@mail.gmail.com>
+Subject: Re: [PATCH 18/41] regset: new method and helpers for it
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Tony Luck <tony.luck@intel.com>, Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 09:35:12AM -0700, Ian Rogers wrote:
+On Mon, Jun 29, 2020 at 11:28 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> ->get2() takes task+regset+buffer, returns the amount of free space
+> left in the buffer on success and -E... on error.
 
-SNIP
+Can we please give it a better name than "get2"?
 
-> 
-> {
->  "BriefDescription": "All L2 hit counts",
->  "MetricExpr": "L2_RQSTS.DEMAND_DATA_RD_HIT + L2_RQSTS.PF_HIT +
-> L2_RQSTS.RFO_HIT",
->  "MetricName": "DCache_L2_All_Hits",
-> }
-> {
->  "BriefDescription": "All L2 miss counts",
->  "MetricExpr": "MAX(L2_RQSTS.ALL_DEMAND_DATA_RD -
-> L2_RQSTS.DEMAND_DATA_RD_HIT, 0) + L2_RQSTS.PF_MISS +
-> L2_RQSTS.RFO_MISS",
->  "MetricName": "DCache_L2_All_Miss",
-> }
-> {
->  "BriefDescription": "All L2 counts",
->  "MetricExpr": "metric:DCache_L2_All_Hits + metric:DCache_L2_All_Miss",
->  "MetricName": "DCache_L2_All",
-> }
-> {
->  "BriefDescription": "DCache L2 hit rate",
->  "MetricExpr": "d_ratio(metric:DCache_L2_All_Hits, metric:DCache_L2_All)",
->  "MetricName": "DCache_L2_Hits",
->  "MetricGroup": "DCache_L2",
->  "ScaleUnit": "100%",
-> },
-> {
->  "BriefDescription": "DCache L2 miss rate",
->  "MetricExpr": "d_ratio(metric:DCache_L2_All_Miss, metric:DCache_L2_All)",
->  "MetricName": "DCache_L2_Misses",
->  "MetricGroup": "DCache_L2",
->  "ScaleUnit": "100%",
-> },
-> 
-> Firstly, it should be clear that having this change makes the json far
-> more readable! The current approach is to copy and paste resulting in
-> 100s of characters wide expressions. This is a great improvement!
-> 
-> With these metrics the hope would be that 'perf stat -M DCache_L2 ...'
-> is going to report just DCache_L2_Hits and DCache_L2_Misses. To
-> compute these two metrics, as an example, DCache_L2_All_Hits is needed
-> three times. My comment was meant to mean that it seems a little
-> unfortunate to keep repeatedly evaluating the expression rather than
-> to compute it once and reuse the result.
+That's not a great name to begin with, and it's a completely
+nonsensical name by the end of this series when you've removed the
+original "get" function.
 
-nice example, the code should evaluate the expression just once as long
-as it's under same name.. I'll prepare new version and verify that's the
-case with the example above
+So either:
 
-thanks,
-jirka
+ (a) add one final patch to rename "get2" all back to "get" after you
+got rid of the old "get"
 
+ (b) or just call it something better to begin with. Maybe just
+"get_regset" instead?
+
+I'd prefer (b) just because I think it will be a lot clearer if we
+ever end up having old patches forward-ported (or, more likely,
+newpatches back-ported), so having a "get" function that changed
+semantics but got back the old name sounds bad to me.
+
+Other than that, I can't really argue with the numbers:
+
+ 41 files changed, 1368 insertions(+), 2347 deletions(-)
+
+looks good to me, and the code seems more understandable.
+
+But I only scanned the individual patches, maybe I missed some other horror.
+
+               Linus
