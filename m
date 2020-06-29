@@ -2,600 +2,2496 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B7920D298
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2CF20D293
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729145AbgF2Suo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:50:44 -0400
-Received: from mga06.intel.com ([134.134.136.31]:64953 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729509AbgF2Sul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:50:41 -0400
-IronPort-SDR: v8HGsPPZvSro87ii5AMDtRQzD3Jf158nOJvZ3jaOSomc1d7o35Vv7RhYrnm+Dbl3z69Ifuhw7n
- OnXakZV4TqpA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="207444886"
-X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
-   d="gz'50?scan'50,208,50";a="207444886"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 03:51:47 -0700
-IronPort-SDR: 8ce1AIUFcahD0DczQfw5N8rvMlUwnIg1lqkqlJBrvb0XOm2XtsTZSFwYtJc6HSfmmat1D1ckns
- /kOq439dahwA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
-   d="gz'50?scan'50,208,50";a="313006134"
-Received: from lkp-server01.sh.intel.com (HELO 28879958b202) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Jun 2020 03:51:45 -0700
-Received: from kbuild by 28879958b202 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jprO5-0000w8-9M; Mon, 29 Jun 2020 10:51:45 +0000
-Date:   Mon, 29 Jun 2020 18:51:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: cc1: error: '-mloongson-mmi' must be used with '-mhard-float'
-Message-ID: <202006291815.f3yHu3XS%lkp@intel.com>
+        id S1729020AbgF2Sue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:50:34 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:29314 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729516AbgF2Su2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:50:28 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TB5ghk029788;
+        Mon, 29 Jun 2020 04:06:07 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=pfpt0818;
+ bh=Wk7kD1RtWeOsEHl4LzDnHOJsTJ+WLB5spv8+Fh2XMK0=;
+ b=Gbzmnjfy86kMp0tj8yZiw1J2iuYt4KHs251yYbv5M4IRVjbUOi4OJTft0JiOTs0eDDDd
+ 9g8//yyd4wSdhwJ3+jDOOXseWk9iLWiC0jjGeJxJKeP7hoN4rgjxBLHoWuIefJaER6wH
+ tFbBq1lLuCp+Ie9FEwUQzBv9SJVGpSn+Ux476UQcPHoaQBz4WNIB9M9SJFHt64KYzw2C
+ hK/dwx9vke4pfTFSUXbimeAxi+3M9+Rmi9N35QccMQNn+A5cbijlpl/m9Hkz+r9FJ3vj
+ BD4gmrhrBLp2ME6qOJPpJ/fYPI/XtNP2yqZcpJHBkz0paqSEzXS9x6EK7pVEuZXQjz0d gA== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 31y0wrtfxx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 04:06:06 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Jun
+ 2020 04:06:05 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 29 Jun 2020 04:06:05 -0700
+Received: from NN-LT0049.marvell.com (NN-LT0049.marvell.com [10.193.54.6])
+        by maili.marvell.com (Postfix) with ESMTP id 5F1323F703F;
+        Mon, 29 Jun 2020 04:06:02 -0700 (PDT)
+From:   Alexander Lobakin <alobakin@marvell.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Igor Russkikh <irusskikh@marvell.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        "Alexander Lobakin" <alobakin@marvell.com>,
+        <GR-everest-linux-l2@marvell.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next 2/6] net: qed: convert to SPDX License Identifiers
+Date:   Mon, 29 Jun 2020 14:05:08 +0300
+Message-ID: <20200629110512.1812-3-alobakin@marvell.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200629110512.1812-1-alobakin@marvell.com>
+References: <20200629110512.1812-1-alobakin@marvell.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="OXfL5xGRrasGEqWY"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-29_11:2020-06-29,2020-06-29 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+QLogic QED drivers source code is dual licensed under
+GPL-2.0/BSD-3-Clause.
+Remove all the boilerplates in the existing code and replace it with the
+correct SPDX tag.
 
---OXfL5xGRrasGEqWY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi Thomas,
-
-FYI, the error/warning still remains.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   9ebcfadb0610322ac537dd7aa5d9cbc2b2894c68
-commit: 26bff9eb49201aeb4e1b32d698c191831a39f5d4 MIPS: Only include the platform file needed
-date:   7 weeks ago
-config: mips-randconfig-r035-20200629 (attached as .config)
-compiler: mips64el-linux-gcc (GCC) 9.3.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        git checkout 26bff9eb49201aeb4e1b32d698c191831a39f5d4
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips 
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
->> cc1: error: '-mloongson-mmi' must be used with '-mhard-float'
-   scripts/genksyms/parse.y: warning: 9 shift/reduce conflicts [-Wconflicts-sr]
-   scripts/genksyms/parse.y: warning: 5 reduce/reduce conflicts [-Wconflicts-rr]
->> cc1: error: '-mloongson-mmi' must be used with '-mhard-float'
-   make[2]: *** [scripts/Makefile.build:100: kernel/bounds.s] Error 1
-   make[2]: Target 'missing-syscalls' not remade because of errors.
-   make[1]: *** [arch/mips/Makefile:398: archprepare] Error 2
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:180: sub-make] Error 2
-   make: Target 'prepare' not remade because of errors.
-
+Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
+Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/net/ethernet/qlogic/qed/qed.h         | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_cxt.c     | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_cxt.h     | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_dcbx.c    | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_dcbx.h    | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_dev.c     | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_dev_api.h | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_fcoe.c    | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_fcoe.h    | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_hsi.h     | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_hw.c      | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_hw.h      | 29 +-----------------
+ .../ethernet/qlogic/qed/qed_init_fw_funcs.c   | 29 +-----------------
+ .../net/ethernet/qlogic/qed/qed_init_ops.c    | 29 +-----------------
+ .../net/ethernet/qlogic/qed/qed_init_ops.h    | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_int.c     | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_int.h     | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_iscsi.c   | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_iscsi.h   | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_iwarp.c   | 30 ++-----------------
+ drivers/net/ethernet/qlogic/qed/qed_iwarp.h   | 30 ++-----------------
+ drivers/net/ethernet/qlogic/qed/qed_l2.c      | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_l2.h      | 30 ++-----------------
+ drivers/net/ethernet/qlogic/qed/qed_ll2.c     | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_ll2.h     | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_main.c    | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_mcp.c     | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_mcp.h     | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_ooo.c     | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_ooo.h     | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_ptp.c     | 30 ++-----------------
+ drivers/net/ethernet/qlogic/qed/qed_rdma.c    | 30 ++-----------------
+ drivers/net/ethernet/qlogic/qed/qed_rdma.h    | 30 ++-----------------
+ .../net/ethernet/qlogic/qed/qed_reg_addr.h    | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_roce.c    | 30 ++-----------------
+ drivers/net/ethernet/qlogic/qed/qed_roce.h    | 30 ++-----------------
+ .../net/ethernet/qlogic/qed/qed_selftest.c    | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_sp.h      | 29 +-----------------
+ .../net/ethernet/qlogic/qed/qed_sp_commands.c | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_spq.c     | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_sriov.c   | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_sriov.h   | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_vf.c      | 29 +-----------------
+ drivers/net/ethernet/qlogic/qed/qed_vf.h      | 29 +-----------------
+ include/linux/qed/common_hsi.h                | 29 +-----------------
+ include/linux/qed/eth_common.h                | 29 +-----------------
+ include/linux/qed/iscsi_common.h              | 29 +-----------------
+ include/linux/qed/iwarp_common.h              | 29 +-----------------
+ include/linux/qed/qed_chain.h                 | 29 +-----------------
+ include/linux/qed/qed_eth_if.h                | 29 +-----------------
+ include/linux/qed/qed_if.h                    | 29 +-----------------
+ include/linux/qed/qed_iov_if.h                | 29 +-----------------
+ include/linux/qed/qed_iscsi_if.h              | 29 +-----------------
+ include/linux/qed/qed_ll2_if.h                | 29 +-----------------
+ include/linux/qed/qed_rdma_if.h               | 30 ++-----------------
+ include/linux/qed/qede_rdma.h                 | 30 ++-----------------
+ include/linux/qed/rdma_common.h               | 29 +-----------------
+ include/linux/qed/roce_common.h               | 29 +-----------------
+ include/linux/qed/storage_common.h            | 29 +-----------------
+ include/linux/qed/tcp_common.h                | 29 +-----------------
+ 60 files changed, 70 insertions(+), 1680 deletions(-)
 
---OXfL5xGRrasGEqWY
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+diff --git a/drivers/net/ethernet/qlogic/qed/qed.h b/drivers/net/ethernet/qlogic/qed/qed.h
+index a49743d56b9c..52130dcbfe4c 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed.h
++++ b/drivers/net/ethernet/qlogic/qed/qed.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_cxt.c b/drivers/net/ethernet/qlogic/qed/qed_cxt.c
+index 08ba9d54ab63..3985dd746ca2 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_cxt.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_cxt.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_cxt.h b/drivers/net/ethernet/qlogic/qed/qed_cxt.h
+index ce08ae8d8498..05b28919653a 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_cxt.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_cxt.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_CXT_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_dcbx.c b/drivers/net/ethernet/qlogic/qed/qed_dcbx.c
+index 5c6a276f69ac..a72523298307 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_dcbx.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_dcbx.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_dcbx.h b/drivers/net/ethernet/qlogic/qed/qed_dcbx.h
+index 01f253ea4b22..537d60de4e2b 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_dcbx.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_dcbx.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_DCBX_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_dev.c b/drivers/net/ethernet/qlogic/qed/qed_dev.c
+index 3aa51374e727..fa7c10e8aa7a 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_dev.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_dev.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_dev_api.h b/drivers/net/ethernet/qlogic/qed/qed_dev_api.h
+index eb4808b3bf67..1f2122c699cc 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_dev_api.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_dev_api.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_DEV_API_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_fcoe.c b/drivers/net/ethernet/qlogic/qed/qed_fcoe.c
+index 4c7fa391fd33..91d6cdf4abe8 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_fcoe.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_fcoe.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_fcoe.h b/drivers/net/ethernet/qlogic/qed/qed_fcoe.h
+index 027a76ac839a..bf324736c7cb 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_fcoe.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_fcoe.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_FCOE_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_hsi.h b/drivers/net/ethernet/qlogic/qed/qed_hsi.h
+index f00460d00cab..ebbca7d999a4 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_hsi.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_hsi.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_HSI_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_hw.c b/drivers/net/ethernet/qlogic/qed/qed_hw.c
+index 5fa251489536..bdbb8fa8d399 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_hw.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_hw.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_hw.h b/drivers/net/ethernet/qlogic/qed/qed_hw.h
+index f5b109b04b66..68f44b747565 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_hw.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_hw.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_HW_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_init_fw_funcs.c b/drivers/net/ethernet/qlogic/qed/qed_init_fw_funcs.c
+index 2f1049b0b93a..72ff2e5c5f24 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_init_fw_funcs.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_init_fw_funcs.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_init_ops.c b/drivers/net/ethernet/qlogic/qed/qed_init_ops.c
+index 5a6e4ac4fef4..74c425640d67 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_init_ops.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_init_ops.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_init_ops.h b/drivers/net/ethernet/qlogic/qed/qed_init_ops.h
+index e9e8ade50ed3..cf33c41e0952 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_init_ops.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_init_ops.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_INIT_OPS_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_int.c b/drivers/net/ethernet/qlogic/qed/qed_int.c
+index b7b974f0ef21..be336d47c934 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_int.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_int.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_int.h b/drivers/net/ethernet/qlogic/qed/qed_int.h
+index e09db3386367..6fca82f6c7fa 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_int.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_int.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_INT_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_iscsi.c b/drivers/net/ethernet/qlogic/qed/qed_iscsi.c
+index 7245a615517a..164b4d953b67 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_iscsi.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_iscsi.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_iscsi.h b/drivers/net/ethernet/qlogic/qed/qed_iscsi.h
+index 225c75b02a06..8b6518a31b7e 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_iscsi.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_iscsi.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_ISCSI_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
+index 5409a2da6106..7fac39744275 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
+@@ -1,34 +1,8 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
++
+ #include <linux/if_ether.h>
+ #include <linux/if_vlan.h>
+ #include <linux/ip.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_iwarp.h b/drivers/net/ethernet/qlogic/qed/qed_iwarp.h
+index c1b2057d23b8..83ca05cd74d7 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_iwarp.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_iwarp.h
+@@ -1,34 +1,8 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
++
+ #ifndef _QED_IWARP_H
+ #define _QED_IWARP_H
+ 
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_l2.c b/drivers/net/ethernet/qlogic/qed/qed_l2.c
+index 29810a1aa210..750098e60c64 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_l2.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_l2.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_l2.h b/drivers/net/ethernet/qlogic/qed/qed_l2.h
+index 7127d5aaac42..dce39f5a87ca 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_l2.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_l2.h
+@@ -1,34 +1,8 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
++
+ #ifndef _QED_L2_H
+ #define _QED_L2_H
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_ll2.c b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
+index 4afd8572ada6..47da6d4e226c 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_ll2.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_ll2.h b/drivers/net/ethernet/qlogic/qed/qed_ll2.h
+index 288642d526b7..c0d13bd6c3a6 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_ll2.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_ll2.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_LL2_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_main.c b/drivers/net/ethernet/qlogic/qed/qed_main.c
+index 11367a248d55..d00335cc145b 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_main.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_main.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/stddef.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_mcp.c b/drivers/net/ethernet/qlogic/qed/qed_mcp.c
+index 9624616806e7..c17b140aa7ae 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_mcp.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_mcp.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_mcp.h b/drivers/net/ethernet/qlogic/qed/qed_mcp.h
+index 5750b4c5ef63..351a13215ddd 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_mcp.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_mcp.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_MCP_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_ooo.c b/drivers/net/ethernet/qlogic/qed/qed_ooo.c
+index ffac4ac87394..d01f91f7f661 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_ooo.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_ooo.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_ooo.h b/drivers/net/ethernet/qlogic/qed/qed_ooo.h
+index 49c4e75b15b1..2731c392a3f4 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_ooo.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_ooo.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_OOO_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_ptp.c b/drivers/net/ethernet/qlogic/qed/qed_ptp.c
+index 3e613058e225..f10ddf9d1704 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_ptp.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_ptp.c
+@@ -1,34 +1,8 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
++
+ #include <linux/types.h>
+ #include "qed.h"
+ #include "qed_dev_api.h"
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_rdma.c b/drivers/net/ethernet/qlogic/qed/qed_rdma.c
+index 19c0c8864da1..9a3541f159dc 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_rdma.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_rdma.c
+@@ -1,34 +1,8 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
++
+ #include <linux/types.h>
+ #include <asm/byteorder.h>
+ #include <linux/bitops.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_rdma.h b/drivers/net/ethernet/qlogic/qed/qed_rdma.h
+index 1e69d5bb0a70..a20397a395cf 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_rdma.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_rdma.h
+@@ -1,34 +1,8 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
++
+ #ifndef _QED_RDMA_H
+ #define _QED_RDMA_H
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_reg_addr.h b/drivers/net/ethernet/qlogic/qed/qed_reg_addr.h
+index 3dcb6ff58e73..bdfd90748042 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_reg_addr.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_reg_addr.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef REG_ADDR_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_roce.c b/drivers/net/ethernet/qlogic/qed/qed_roce.c
+index 7271dd7166e5..1e03d66e33d1 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_roce.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_roce.c
+@@ -1,34 +1,8 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
++
+ #include <linux/types.h>
+ #include <asm/byteorder.h>
+ #include <linux/bitops.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_roce.h b/drivers/net/ethernet/qlogic/qed/qed_roce.h
+index f801f39fde61..9178904bf0e9 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_roce.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_roce.h
+@@ -1,34 +1,8 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
++
+ #ifndef _QED_ROCE_H
+ #define _QED_ROCE_H
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_selftest.c b/drivers/net/ethernet/qlogic/qed/qed_selftest.c
+index cf1d4476f9d8..d24ee1ea8d3c 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_selftest.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_selftest.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2016  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/crc32.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_sp.h b/drivers/net/ethernet/qlogic/qed/qed_sp.h
+index b7b4fbbbccfe..4f646e101074 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_sp.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_sp.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_SP_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_sp_commands.c b/drivers/net/ethernet/qlogic/qed/qed_sp_commands.c
+index 900bc603e30a..23d630b37199 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_sp_commands.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_sp_commands.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_spq.c b/drivers/net/ethernet/qlogic/qed/qed_spq.c
+index 790c28d696a0..18c59981cab7 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_spq.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_spq.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_sriov.c b/drivers/net/ethernet/qlogic/qed/qed_sriov.c
+index 20679fd4204b..6d3c6d4f6308 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_sriov.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_sriov.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/etherdevice.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_sriov.h b/drivers/net/ethernet/qlogic/qed/qed_sriov.h
+index 368e88565783..43dfaf410332 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_sriov.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_sriov.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_SRIOV_H
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_vf.c b/drivers/net/ethernet/qlogic/qed/qed_vf.c
+index adc2c8f3d48e..c800f8812492 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_vf.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_vf.c
+@@ -1,33 +1,6 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #include <linux/crc32.h>
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_vf.h b/drivers/net/ethernet/qlogic/qed/qed_vf.h
+index 033409db86ae..60d2bb64e65f 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_vf.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_vf.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_VF_H
+diff --git a/include/linux/qed/common_hsi.h b/include/linux/qed/common_hsi.h
+index 2c4737e6694a..294d01eae5cb 100644
+--- a/include/linux/qed/common_hsi.h
++++ b/include/linux/qed/common_hsi.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2016  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _COMMON_HSI_H
+diff --git a/include/linux/qed/eth_common.h b/include/linux/qed/eth_common.h
+index 95f5fd615852..a9566ef3c2ce 100644
+--- a/include/linux/qed/eth_common.h
++++ b/include/linux/qed/eth_common.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef __ETH_COMMON__
+diff --git a/include/linux/qed/iscsi_common.h b/include/linux/qed/iscsi_common.h
+index 2f0a771a9176..7ca89fb9247f 100644
+--- a/include/linux/qed/iscsi_common.h
++++ b/include/linux/qed/iscsi_common.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef __ISCSI_COMMON__
+diff --git a/include/linux/qed/iwarp_common.h b/include/linux/qed/iwarp_common.h
+index c6cfd39cd910..23583e644257 100644
+--- a/include/linux/qed/iwarp_common.h
++++ b/include/linux/qed/iwarp_common.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef __IWARP_COMMON__
+diff --git a/include/linux/qed/qed_chain.h b/include/linux/qed/qed_chain.h
+index 6d15040c642c..e6e25197f7cb 100644
+--- a/include/linux/qed/qed_chain.h
++++ b/include/linux/qed/qed_chain.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_CHAIN_H
+diff --git a/include/linux/qed/qed_eth_if.h b/include/linux/qed/qed_eth_if.h
+index a1310482c4ed..7803dedbcb52 100644
+--- a/include/linux/qed/qed_eth_if.h
++++ b/include/linux/qed/qed_eth_if.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_ETH_IF_H
+diff --git a/include/linux/qed/qed_if.h b/include/linux/qed/qed_if.h
+index 8cb76405cbce..4a36608ff3a8 100644
+--- a/include/linux/qed/qed_if.h
++++ b/include/linux/qed/qed_if.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_IF_H
+diff --git a/include/linux/qed/qed_iov_if.h b/include/linux/qed/qed_iov_if.h
+index ac2e6a3199a3..c2ca8196def9 100644
+--- a/include/linux/qed/qed_iov_if.h
++++ b/include/linux/qed/qed_iov_if.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_IOV_IF_H
+diff --git a/include/linux/qed/qed_iscsi_if.h b/include/linux/qed/qed_iscsi_if.h
+index d0df1bec5357..89912c6c440c 100644
+--- a/include/linux/qed/qed_iscsi_if.h
++++ b/include/linux/qed/qed_iscsi_if.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_ISCSI_IF_H
+diff --git a/include/linux/qed/qed_ll2_if.h b/include/linux/qed/qed_ll2_if.h
+index 1313c34d9a68..79cac277e38b 100644
+--- a/include/linux/qed/qed_ll2_if.h
++++ b/include/linux/qed/qed_ll2_if.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef _QED_LL2_IF_H
+diff --git a/include/linux/qed/qed_rdma_if.h b/include/linux/qed/qed_rdma_if.h
+index 2d3ddd2b85e0..041a5b005a82 100644
+--- a/include/linux/qed/qed_rdma_if.h
++++ b/include/linux/qed/qed_rdma_if.h
+@@ -1,34 +1,8 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
++
+ #ifndef _QED_RDMA_IF_H
+ #define _QED_RDMA_IF_H
+ #include <linux/types.h>
+diff --git a/include/linux/qed/qede_rdma.h b/include/linux/qed/qede_rdma.h
+index 5a00c7a473bf..20ed7f2c55bb 100644
+--- a/include/linux/qed/qede_rdma.h
++++ b/include/linux/qed/qede_rdma.h
+@@ -1,34 +1,8 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qedr NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
++
+ #ifndef QEDE_ROCE_H
+ #define QEDE_ROCE_H
+ 
+diff --git a/include/linux/qed/rdma_common.h b/include/linux/qed/rdma_common.h
+index 480a57eb36cc..3e3f01136c06 100644
+--- a/include/linux/qed/rdma_common.h
++++ b/include/linux/qed/rdma_common.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef __RDMA_COMMON__
+diff --git a/include/linux/qed/roce_common.h b/include/linux/qed/roce_common.h
+index 473fba76aa77..89065f023813 100644
+--- a/include/linux/qed/roce_common.h
++++ b/include/linux/qed/roce_common.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef __ROCE_COMMON__
+diff --git a/include/linux/qed/storage_common.h b/include/linux/qed/storage_common.h
+index 9a973ffbbff5..34f069c79067 100644
+--- a/include/linux/qed/storage_common.h
++++ b/include/linux/qed/storage_common.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef __STORAGE_COMMON__
+diff --git a/include/linux/qed/tcp_common.h b/include/linux/qed/tcp_common.h
+index 4a4845193539..925e7cb7a582 100644
+--- a/include/linux/qed/tcp_common.h
++++ b/include/linux/qed/tcp_common.h
+@@ -1,33 +1,6 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+ /* QLogic qed NIC Driver
+  * Copyright (c) 2015-2017  QLogic Corporation
+- *
+- * This software is available to you under a choice of one of two
+- * licenses.  You may choose to be licensed under the terms of the GNU
+- * General Public License (GPL) Version 2, available from the file
+- * COPYING in the main directory of this source tree, or the
+- * OpenIB.org BSD license below:
+- *
+- *     Redistribution and use in source and binary forms, with or
+- *     without modification, are permitted provided that the following
+- *     conditions are met:
+- *
+- *      - Redistributions of source code must retain the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer.
+- *
+- *      - Redistributions in binary form must reproduce the above
+- *        copyright notice, this list of conditions and the following
+- *        disclaimer in the documentation and /or other materials
+- *        provided with the distribution.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- * SOFTWARE.
+  */
+ 
+ #ifndef __TCP_COMMON__
+-- 
+2.25.1
 
-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
-
---OXfL5xGRrasGEqWY--
