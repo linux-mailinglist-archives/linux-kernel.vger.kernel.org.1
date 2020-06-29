@@ -2,106 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D83720DA7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0A120DAF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388474AbgF2T5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387620AbgF2T5c (ORCPT
+        id S2388400AbgF2UCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:02:08 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:34140 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731899AbgF2UCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:57:32 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8850C03E979
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:57:31 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id y13so9872686lfe.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:57:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HXip5KwBZ4zG01jb8JoG5vDVesbu67fX4v/5SOWVsj4=;
-        b=Lk2ZKv/8twm874ckZSIpONTn1wKHEBB2f/Q7LqsydREQ3t324cgr3ti8w4T35d2hqD
-         stZeidGIKh7SFUlqSamSyI6bumqDuxvRhUR/GR3Ou4bbFVuEKvej60UDCiABSrNj82xS
-         s6q8oULU2pm6FzX20VTkivj1emLaZoqjdOjg8gxUcikDWxMNQImO70ppQ/w+2wxP3prx
-         aiBSTMMtSaQEiqS8jQd4JObvXwALmYxrLk/nwQ+Hh9mGPARJJ608+xOH3oGkSmpqrEJq
-         OrnDXyWTDQkYZng/JBYDEqMgjpsOhJ8KHg6KdSVfVBlfaQJpYtsMdL69J6B9ytpAT0Te
-         IsmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HXip5KwBZ4zG01jb8JoG5vDVesbu67fX4v/5SOWVsj4=;
-        b=YcnjDtExLtssHgw8cQBma05JJt8vLgG7WJFH7NrrvTvIR8OaDlOtMot44yaRHTameg
-         M4peexT3855H9ivK+URQ1Mz9Nx8FgLgYWY61Fw7onmeeHSx5jxilAWldRZw2gwA0R2YX
-         qHKFnHXekPVHaxrmh9SLGxWuwLngff/SivSHW+wNUwNEwV2C0HG2Z9Oqipv7h6ffrJXU
-         GYw6IN3x3QhrK7stoDEjBCEEL54NJpJS2xVLCtdtm9eitrvJ7ICzt9D8JE8tX7YlM0dc
-         zcuw4azleT6djS5fZSlYsGnUd1JuVr0tWVko8VGnrA12NLWnPlcXvO/AjV6o64aGr5tL
-         tN+Q==
-X-Gm-Message-State: AOAM530V7J89LkGURqp8BiXKqwNHuy8aH2UlnX8kTa2vL+sbunZpXKbe
-        7xlgIeKZFXEDnuFNGozqBfY=
-X-Google-Smtp-Source: ABdhPJzyjzo4qb7j6DhvyjzqhExSDy157w8OBaZ64xKDwkrn8HkXTU6LDyhB2G94yoljtX3cTlmO2g==
-X-Received: by 2002:a05:6512:31c5:: with SMTP id j5mr10255219lfe.26.1593460650455;
-        Mon, 29 Jun 2020 12:57:30 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-147.NA.cust.bahnhof.se. [98.128.228.147])
-        by smtp.gmail.com with ESMTPSA id y26sm166482ljk.26.2020.06.29.12.57.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 12:57:29 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     kishon@ti.com, vkoul@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] phy: allwinner: phy-sun6i-mipi-dphy: Constify structs
-Date:   Mon, 29 Jun 2020 21:57:27 +0200
-Message-Id: <20200629195727.9717-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 29 Jun 2020 16:02:04 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jpzyc-0002sK-UK; Mon, 29 Jun 2020 14:02:03 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jpzyZ-0003Ux-3x; Mon, 29 Jun 2020 14:02:02 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     <linux-kernel@vger.kernel.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200625095725.GA3303921@kroah.com>
+        <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+        <20200625120725.GA3493334@kroah.com>
+        <20200625.123437.2219826613137938086.davem@davemloft.net>
+        <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+        <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+        <87y2oac50p.fsf@x220.int.ebiederm.org>
+        <87bll17ili.fsf_-_@x220.int.ebiederm.org>
+Date:   Mon, 29 Jun 2020 14:57:28 -0500
+In-Reply-To: <87bll17ili.fsf_-_@x220.int.ebiederm.org> (Eric W. Biederman's
+        message of "Mon, 29 Jun 2020 14:55:05 -0500")
+Message-ID: <87tuyt63x3.fsf_-_@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1jpzyZ-0003Ux-3x;;;mid=<87tuyt63x3.fsf_-_@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18RpE6R/pGcowgvRUQ2NRyV2B5nU+ocdog=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa01 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa01 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;<linux-kernel@vger.kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1983 ms - load_scoreonly_sql: 0.21 (0.0%),
+        signal_user_changed: 12 (0.6%), b_tie_ro: 9 (0.5%), parse: 1.84 (0.1%),
+         extract_message_metadata: 114 (5.8%), get_uri_detail_list: 2.2 (0.1%),
+         tests_pri_-1000: 145 (7.3%), compile_eval: 158 (8.0%),
+        tests_pri_-950: 2.5 (0.1%), tests_pri_-900: 26 (1.3%), tests_pri_-90:
+        191 (9.7%), check_bayes: 176 (8.9%), b_tokenize: 33 (1.7%),
+        b_tok_get_all: 30 (1.5%), b_comp_prob: 2.3 (0.1%), b_tok_touch_all: 99
+        (5.0%), b_finish: 0.98 (0.0%), tests_pri_0: 1431 (72.2%),
+        check_dkim_signature: 0.92 (0.0%), check_dkim_adsp: 47 (2.4%),
+        poll_dns_idle: 33 (1.7%), tests_pri_10: 2.8 (0.1%), tests_pri_500: 50
+        (2.5%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH v2 03/15] umh: Rename the user mode driver helpers for clarity
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sun6i_dphy_ops and sun6i_dphy_regmap_config are not modified so make them
-const structs to allow the compiler to put them in read-only memory.
 
-Before:
-   text    data     bss     dec     hex filename
-   4407    1944      64    6415    190f drivers/phy/allwinner/phy-sun6i-mipi-dphy.o
+Now that the functionality of umh_setup_pipe and
+umh_clean_and_save_pid has changed their names are too specific and
+don't make much sense.  Instead name them  umd_setup and umd_cleanup
+for the functional role in setting up user mode drivers.
 
-After:
-   text    data     bss     dec     hex filename
-   4835    1496      64    6395    18fb drivers/phy/allwinner/phy-sun6i-mipi-dphy.o
-
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Link: https://lkml.kernel.org/r/875zbegf82.fsf_-_@x220.int.ebiederm.org
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 ---
- drivers/phy/allwinner/phy-sun6i-mipi-dphy.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/umh.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/phy/allwinner/phy-sun6i-mipi-dphy.c b/drivers/phy/allwinner/phy-sun6i-mipi-dphy.c
-index 79c8af5c7c1d..1fa761ba6cbb 100644
---- a/drivers/phy/allwinner/phy-sun6i-mipi-dphy.c
-+++ b/drivers/phy/allwinner/phy-sun6i-mipi-dphy.c
-@@ -233,7 +233,7 @@ static int sun6i_dphy_exit(struct phy *phy)
+diff --git a/kernel/umh.c b/kernel/umh.c
+index e6b9d6636850..26c3d493f168 100644
+--- a/kernel/umh.c
++++ b/kernel/umh.c
+@@ -429,7 +429,7 @@ struct subprocess_info *call_usermodehelper_setup_file(struct file *file,
+ 	return sub_info;
  }
  
+-static int umh_pipe_setup(struct subprocess_info *info, struct cred *new)
++static int umd_setup(struct subprocess_info *info, struct cred *new)
+ {
+ 	struct umh_info *umh_info = info->data;
+ 	struct file *from_umh[2];
+@@ -470,11 +470,11 @@ static int umh_pipe_setup(struct subprocess_info *info, struct cred *new)
+ 	return 0;
+ }
  
--static struct phy_ops sun6i_dphy_ops = {
-+static const struct phy_ops sun6i_dphy_ops = {
- 	.configure	= sun6i_dphy_configure,
- 	.power_on	= sun6i_dphy_power_on,
- 	.power_off	= sun6i_dphy_power_off,
-@@ -241,7 +241,7 @@ static struct phy_ops sun6i_dphy_ops = {
- 	.exit		= sun6i_dphy_exit,
- };
+-static void umh_clean_and_save_pid(struct subprocess_info *info)
++static void umd_cleanup(struct subprocess_info *info)
+ {
+ 	struct umh_info *umh_info = info->data;
  
--static struct regmap_config sun6i_dphy_regmap_config = {
-+static const struct regmap_config sun6i_dphy_regmap_config = {
- 	.reg_bits	= 32,
- 	.val_bits	= 32,
- 	.reg_stride	= 4,
+-	/* cleanup if umh_pipe_setup() was successful but exec failed */
++	/* cleanup if umh_setup() was successful but exec failed */
+ 	if (info->retval) {
+ 		fput(umh_info->pipe_to_umh);
+ 		fput(umh_info->pipe_from_umh);
+@@ -520,8 +520,8 @@ int fork_usermode_blob(void *data, size_t len, struct umh_info *info)
+ 	}
+ 
+ 	err = -ENOMEM;
+-	sub_info = call_usermodehelper_setup_file(file, umh_pipe_setup,
+-						  umh_clean_and_save_pid, info);
++	sub_info = call_usermodehelper_setup_file(file, umd_setup, umd_cleanup,
++						  info);
+ 	if (!sub_info)
+ 		goto out;
+ 
 -- 
-2.27.0
+2.25.0
 
