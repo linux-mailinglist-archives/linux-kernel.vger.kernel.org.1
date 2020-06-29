@@ -2,146 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FFE20D6B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61EAC20D6B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732080AbgF2TXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732318AbgF2TW5 (ORCPT
+        id S1730404AbgF2TXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:23:20 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:25655 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731944AbgF2TXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:22:57 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 365B9C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:22:57 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id s21so368042ilk.5
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 12:22:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZC/wx6BYtpV6+oS6GfTqmrGOk4Agnx/4t/kFHxFuX1c=;
-        b=NB0L9Jf44nLOQXjdxaFB7OESdzE0E3n+5gfJPDxlxaGUKeqHJIw4JnHtoPxOkZUNeE
-         gWEztc08nsdEdKiaqewWM4/2PufgbC1umy6eeakNmmavgPmTLiCKf4X+tM/lX1XbtRId
-         2kCdgJB9MJNxc2cSUUomhH4Im6NEiCvfnMWKHjtb/uiQa/8KOJDdgFiEInN49oAMo6MU
-         YWySRaiPNFREDtLEXC3llONWun8g2Ogf011o5WvX0apbDRX9NDLL3Z+1Xoo00loxQoIl
-         nvsuoiEipUgt+X1o1iwJQpgUSsj6912/YjdLCEfWQcqeQtLTQ2NNST3fn9rtbF+/onjG
-         81tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZC/wx6BYtpV6+oS6GfTqmrGOk4Agnx/4t/kFHxFuX1c=;
-        b=Thy2B3jhQR65KimIqHB8A+hArJsszDOaIGT+aXF3cZONkBwQq+UVPZTAOmIG/GY8jW
-         pn2OR3ybYTd/72wK6VKtvAXteOXTge+YNFEGngCVUy3Jgpn11Nuorjo5gAP6Y/nNcnmv
-         WuKKOzWEemo+5l9sU5Eh9XzNKflxiDIdROJT33BI14clXXxuJwUc0HA0RtfJzBwTccTG
-         r++cm3zbdyMGQ4cWa5qzKTSv7lL22R6IVuFHKffB3kurphM6WmiotOt4BecQ3qEpUD7P
-         R7Nkx072sQufSCpqOfNdX0t3aupd3mVBfv9paGZzroXERMt6dM7IStb5wJbHPfuBROUu
-         gxSg==
-X-Gm-Message-State: AOAM531YiAiZD4GC6Sla59RLrdq1JijAz2lH89kPjusNhaKF2O0fHyZR
-        0/S6rAHqV/qxp4Uw3fNwWnJU0IJbDbbijw==
-X-Google-Smtp-Source: ABdhPJxuDCpQ8zVvVIsoUoXrz64TVB2DcaTHauicCj1HoXP6cKM17Jkd9+9Z4z8u9DYEJQnsfGzlZQ==
-X-Received: by 2002:a92:9f0e:: with SMTP id u14mr16629538ili.277.1593458576600;
-        Mon, 29 Jun 2020 12:22:56 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id v5sm345230ios.54.2020.06.29.12.22.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 12:22:55 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jpzMl-001Bxd-0w; Mon, 29 Jun 2020 16:22:55 -0300
-Date:   Mon, 29 Jun 2020 16:22:55 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzkaller <syzkaller@googlegroups.com>,
-        Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+a929647172775e335941@syzkaller.appspotmail.com>,
-        chuck.lever@oracle.com, Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        parav@mellanox.com, Markus Elfring <Markus.Elfring@web.de>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: KASAN: use-after-free Read in addr_handler (2)
-Message-ID: <20200629192255.GE25301@ziepe.ca>
-References: <000000000000107b4605a7bdce7d@google.com>
- <20200614085321.8740-1-hdanton@sina.com>
- <20200627130205.16900-1-hdanton@sina.com>
- <20200627222527.GC25301@ziepe.ca>
- <CACT4Y+ab1q7fON3rkj+FHODPQXDGyP5c0tJt7gbrpmsAAYRb1g@mail.gmail.com>
- <CACT4Y+Zjw=ru-Sqs-V7cP0Exgu7g0jWBXcPeVKnLqpbkS-wDRg@mail.gmail.com>
+        Mon, 29 Jun 2020 15:23:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593458594;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Skz3PY1AIipx/DpmG3bzvqjYvKfRIA4c8EWGn2foPXs=;
+        b=MXLdU11BXbo42MPVhqi3DXiyHFUIOijY6EfL2h9/z6mPv6nxWOGF60zZqTYyHUugBJKM54
+        43NSpBd4gu6o7ObaV1jnhLanmkwLMnGbTo2Tsqz7zLnPVvdYptFLFACDNSB7BpOO01jSB4
+        THfwxlwqVwwouQ2ou9GEyEeHKvX8tR8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-307-PVW77Cw-MxiR9V1Kc_nRUA-1; Mon, 29 Jun 2020 15:23:10 -0400
+X-MC-Unique: PVW77Cw-MxiR9V1Kc_nRUA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D83C804002;
+        Mon, 29 Jun 2020 19:23:09 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (ovpn-113-80.phx2.redhat.com [10.3.113.80])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6D77B10016DA;
+        Mon, 29 Jun 2020 19:23:05 +0000 (UTC)
+Date:   Mon, 29 Jun 2020 15:23:03 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Qais Yousef <qais.yousef@arm.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [PATCH v2] Sched: Add a tracepoint to track rq->nr_running
+Message-ID: <20200629192303.GC120228@lorien.usersys.redhat.com>
+References: <20200619141120.1476-1-pauld@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+Zjw=ru-Sqs-V7cP0Exgu7g0jWBXcPeVKnLqpbkS-wDRg@mail.gmail.com>
+In-Reply-To: <20200619141120.1476-1-pauld@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 07:27:40PM +0200, Dmitry Vyukov wrote:
-> On Mon, Jun 29, 2020 at 4:42 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> > On Sun, Jun 28, 2020 at 12:25 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > >
-> > > On Sat, Jun 27, 2020 at 09:02:05PM +0800, Hillf Danton wrote:
-> > > > > So, to hit this syzkaller one of these must have happened:
-> > > > >  1) rdma_addr_cancel() didn't work and the process_one_work() is still
-> > > > >     runnable/running
-> > > >
-> > > > What syzbot reported indicates that the kworker did survive not only
-> > > > canceling work but the handler_mutex, despite it's a sync cancel that
-> > > > waits for the work to complete.
-> > >
-> > > The syzbot report doesn't confirm that the cancel work was actaully
-> > > called.
-> > >
-> > > The most likely situation is that it was skipped because of the state
-> > > mangling the patch fixes..
-> > >
-> > > > >  2) The state changed away from RDMA_CM_ADDR_QUERY without doing
-> > > > >     rdma_addr_cancel()
-> > > >
-> > > > The cancel does cover the query state in the reported case, and have
-> > > > difficult time working out what's in the patch below preventing the
-> > > > work from going across the line the sync cancel draws. That's the
-> > > > question we can revisit once there is a reproducer available.
-> > >
-> > > rdma-cm never seems to get reproducers from syzkaller
-> >
-> > +syzkaller mailing list
-> >
-> > Hi Jason,
-> >
-> > Wonder if there is some systematic issue. Let me double check.
-> 
-> By scanning bugs at:
-> https://syzkaller.appspot.com/upstream
-> https://syzkaller.appspot.com/upstream/fixed
-> 
-> I found a significant number of bugs that I would qualify as "rdma-cm"
-> and that have reproducers. Here is an incomplete list (I did not get
-> to the end):
-> 
-> https://syzkaller.appspot.com/bug?id=b8febdb3c7c8c1f1b606fb903cee66b21b2fd02f
-> https://syzkaller.appspot.com/bug?id=d5222b3e1659e0aea19df562c79f216515740daa
-> https://syzkaller.appspot.com/bug?id=c600e111223ce0a20e5f2fb4e9a4ebdff54d7fa6
-> https://syzkaller.appspot.com/bug?id=a9796acbdecc1b2ba927578917755899c63c48af
-> https://syzkaller.appspot.com/bug?id=95f89b8fb9fdc42e28ad586e657fea074e4e719b
-> https://syzkaller.appspot.com/bug?id=8dc0bcd9dd6ec915ba10b3354740eb420884acaa
-> https://syzkaller.appspot.com/bug?id=805ad726feb6910e35088ae7bbe61f4125e573b7
-> https://syzkaller.appspot.com/bug?id=56b60fb3340c5995373fe5b8eae9e8722a012fc4
-> https://syzkaller.appspot.com/bug?id=38d36d1b26b4299bf964d50af4d79688d39ab960
-> https://syzkaller.appspot.com/bug?id=25e00dd59f31783f233185cb60064b0ab645310f
-> https://syzkaller.appspot.com/bug?id=2f38d7e5312fdd0acc979c5e26ef2ef8f3370996
-> 
-> Do you mean some specific subset of bugs by "rdma-cm"? If yes, what is
-> that subset?
+Add a bare tracepoint trace_sched_update_nr_running_tp which tracks
+->nr_running CPU's rq. This is used to accurately trace this data and
+provide a visualization of scheduler imbalances in, for example, the
+form of a heat map.  The tracepoint is accessed by loading an external
+kernel module. An example module (forked from Qais' module and including
+the pelt related tracepoints) can be found at:
 
-The race condition bugs never seem to get reproducers, I checked a few
-of the above and these are much more deterministic things.
+  https://github.com/auldp/tracepoints-helpers.git
 
-I think the recurrance rate for the races is probably too low?
+A script to turn the trace-cmd report output into a heatmap plot can be
+found at:
 
-Jason
+  https://github.com/jirvoz/plot-nr-running
+
+The tracepoints are added to add_nr_running() and sub_nr_running() which
+are in kernel/sched/sched.h. In order to avoid CREATE_TRACE_POINTS in
+the header a wrapper call is used and the trace/events/sched.h include
+is moved before sched.h in kernel/sched/core.
+
+Signed-off-by: Phil Auld <pauld@redhat.com>
+CC: Qais Yousef <qais.yousef@arm.com>
+CC: Ingo Molnar <mingo@redhat.com>
+CC: Peter Zijlstra <peterz@infradead.org>
+CC: Vincent Guittot <vincent.guittot@linaro.org>
+CC: Steven Rostedt <rostedt@goodmis.org>
+CC: linux-kernel@vger.kernel.org
+---
+
+V2: Fix use of tracepoint in header from Steven. Pass rq* and use
+helper to get nr_running field, from Qais. 
+
+
+ include/linux/sched.h        |  1 +
+ include/trace/events/sched.h |  4 ++++
+ kernel/sched/core.c          | 13 +++++++++----
+ kernel/sched/fair.c          |  8 ++++++--
+ kernel/sched/pelt.c          |  2 --
+ kernel/sched/sched.h         | 10 ++++++++++
+ 6 files changed, 30 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 4418f5cb8324..5f114faf2247 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -2015,6 +2015,7 @@ const struct sched_avg *sched_trace_rq_avg_dl(struct rq *rq);
+ const struct sched_avg *sched_trace_rq_avg_irq(struct rq *rq);
+ 
+ int sched_trace_rq_cpu(struct rq *rq);
++int sched_trace_rq_nr_running(struct rq *rq);
+ 
+ const struct cpumask *sched_trace_rd_span(struct root_domain *rd);
+ 
+diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+index ed168b0e2c53..8c72f9113694 100644
+--- a/include/trace/events/sched.h
++++ b/include/trace/events/sched.h
+@@ -634,6 +634,10 @@ DECLARE_TRACE(sched_overutilized_tp,
+ 	TP_PROTO(struct root_domain *rd, bool overutilized),
+ 	TP_ARGS(rd, overutilized));
+ 
++DECLARE_TRACE(sched_update_nr_running_tp,
++	TP_PROTO(struct rq *rq, int change),
++	TP_ARGS(rq, change));
++
+ #endif /* _TRACE_SCHED_H */
+ 
+ /* This part must be outside protection */
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 9a2fbf98fd6f..0d35d7c4c330 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6,6 +6,10 @@
+  *
+  *  Copyright (C) 1991-2002  Linus Torvalds
+  */
++#define CREATE_TRACE_POINTS
++#include <trace/events/sched.h>
++#undef CREATE_TRACE_POINTS
++
+ #include "sched.h"
+ 
+ #include <linux/nospec.h>
+@@ -21,9 +25,6 @@
+ 
+ #include "pelt.h"
+ 
+-#define CREATE_TRACE_POINTS
+-#include <trace/events/sched.h>
+-
+ /*
+  * Export tracepoints that act as a bare tracehook (ie: have no trace event
+  * associated with them) to allow external modules to probe them.
+@@ -34,6 +35,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_dl_tp);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_irq_tp);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_se_tp);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_overutilized_tp);
++EXPORT_TRACEPOINT_SYMBOL_GPL(sched_update_nr_running_tp);
+ 
+ DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+ 
+@@ -7970,4 +7972,7 @@ const u32 sched_prio_to_wmult[40] = {
+  /*  15 */ 119304647, 148102320, 186737708, 238609294, 286331153,
+ };
+ 
+-#undef CREATE_TRACE_POINTS
++void call_trace_sched_update_nr_running(struct rq *rq, int count)
++{
++        trace_sched_update_nr_running_tp(rq, count);
++}
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index da3e5b54715b..2e2f3f68e318 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -22,8 +22,6 @@
+  */
+ #include "sched.h"
+ 
+-#include <trace/events/sched.h>
+-
+ /*
+  * Targeted preemption latency for CPU-bound tasks:
+  *
+@@ -11293,3 +11291,9 @@ const struct cpumask *sched_trace_rd_span(struct root_domain *rd)
+ #endif
+ }
+ EXPORT_SYMBOL_GPL(sched_trace_rd_span);
++
++int sched_trace_rq_nr_running(struct rq *rq)
++{
++        return rq ? rq->nr_running : -1;
++}
++EXPORT_SYMBOL_GPL(sched_trace_rq_nr_running);
+diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
+index b647d04d9c8b..bb69a0ae8d6c 100644
+--- a/kernel/sched/pelt.c
++++ b/kernel/sched/pelt.c
+@@ -28,8 +28,6 @@
+ #include "sched.h"
+ #include "pelt.h"
+ 
+-#include <trace/events/sched.h>
+-
+ /*
+  * Approximate:
+  *   val * y^n,    where y^32 ~= 0.5 (~1 scheduling period)
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index db3a57675ccf..e621eaa44474 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -75,6 +75,8 @@
+ #include "cpupri.h"
+ #include "cpudeadline.h"
+ 
++#include <trace/events/sched.h>
++
+ #ifdef CONFIG_SCHED_DEBUG
+ # define SCHED_WARN_ON(x)	WARN_ONCE(x, #x)
+ #else
+@@ -96,6 +98,7 @@ extern atomic_long_t calc_load_tasks;
+ extern void calc_global_load_tick(struct rq *this_rq);
+ extern long calc_load_fold_active(struct rq *this_rq, long adjust);
+ 
++extern void call_trace_sched_update_nr_running(struct rq *rq, int count);
+ /*
+  * Helpers for converting nanosecond timing to jiffy resolution
+  */
+@@ -1959,6 +1962,9 @@ static inline void add_nr_running(struct rq *rq, unsigned count)
+ 	unsigned prev_nr = rq->nr_running;
+ 
+ 	rq->nr_running = prev_nr + count;
++	if (trace_sched_update_nr_running_tp_enabled()) {
++		call_trace_sched_update_nr_running(rq, count);
++	}
+ 
+ #ifdef CONFIG_SMP
+ 	if (prev_nr < 2 && rq->nr_running >= 2) {
+@@ -1973,6 +1979,10 @@ static inline void add_nr_running(struct rq *rq, unsigned count)
+ static inline void sub_nr_running(struct rq *rq, unsigned count)
+ {
+ 	rq->nr_running -= count;
++	if (trace_sched_update_nr_running_tp_enabled()) {
++		call_trace_sched_update_nr_running(rq, count);
++	}
++
+ 	/* Check if we still need preemption */
+ 	sched_update_tick_dependency(rq);
+ }
+-- 
+2.18.0
+
+
+-- 
+
