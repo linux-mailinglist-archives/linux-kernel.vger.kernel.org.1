@@ -2,98 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3696920D156
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D0420D2A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728647AbgF2SlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:41:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728537AbgF2Skv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:51 -0400
-Received: from localhost (unknown [122.182.251.219])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7842923D58;
-        Mon, 29 Jun 2020 13:19:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593436763;
-        bh=KOWK4GzPHtsJt7GLaKVf1go3qUsF4/W/WpCc8e8O6I4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pzgs0amAInSU9KdERuWYQeSJdJTHDw3jGzv9bVTJhgB4VpvBpq08rKbQ8/WxEXlrf
-         2s8epdDnV6ycWyCgvtRBXaTjQvElQFO9gxqcnJrwqQkn7aUbXNRuu0tJutBoYWUo01
-         cQIK8z2P9K04Z3KjpUMDk6K1F5Ik5X/h6V068enA=
-Date:   Mon, 29 Jun 2020 18:49:17 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH v9 0/3] phy: zynqmp: Add PHY driver for the Xilinx ZynqMP
- Gigabit Transceiver
-Message-ID: <20200629131917.GL2599@vkoul-mobl>
-References: <20200629120054.29338-1-laurent.pinchart@ideasonboard.com>
+        id S1729578AbgF2SvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:51:16 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6078 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727968AbgF2Sux (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:50:53 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TD2pcP129947;
+        Mon, 29 Jun 2020 09:22:43 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ydmk7fv9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 09:22:43 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05TD3D9U132517;
+        Mon, 29 Jun 2020 09:22:42 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ydmk7ftb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 09:22:42 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05TDLsl5004036;
+        Mon, 29 Jun 2020 13:22:40 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 31wwch2897-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Jun 2020 13:22:40 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05TDMbSC17301516
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Jun 2020 13:22:37 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4875A4C04E;
+        Mon, 29 Jun 2020 13:22:37 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4A03E4C040;
+        Mon, 29 Jun 2020 13:21:47 +0000 (GMT)
+Received: from oc3016276355.ibm.com (unknown [9.145.28.234])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 29 Jun 2020 13:21:44 +0000 (GMT)
+Subject: Re: [PATCH v3 1/1] s390: virtio: let arch accept devices without
+ IOMMU feature
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
+        frankja@linux.ibm.com, mst@redhat.com, jasowang@redhat.com,
+        cohuck@redhat.com, kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
+        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com
+References: <1592390637-17441-1-git-send-email-pmorel@linux.ibm.com>
+ <1592390637-17441-2-git-send-email-pmorel@linux.ibm.com>
+ <20200618002956.5f179de4.pasic@linux.ibm.com>
+From:   Pierre Morel <pmorel@linux.ibm.com>
+Message-ID: <10b0c837-7609-fb87-857e-5c364b06ab8b@linux.ibm.com>
+Date:   Mon, 29 Jun 2020 15:21:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629120054.29338-1-laurent.pinchart@ideasonboard.com>
+In-Reply-To: <20200618002956.5f179de4.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-29_11:2020-06-29,2020-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 cotscore=-2147483648
+ malwarescore=0 lowpriorityscore=0 suspectscore=0 adultscore=0
+ mlxlogscore=539 clxscore=1015 bulkscore=0 phishscore=0 impostorscore=0
+ priorityscore=1501 spamscore=0 mlxscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006290089
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-06-20, 15:00, Laurent Pinchart wrote:
-> Hello,
-> 
-> The patch series adds a PHY driver for the Xilinx ZynqMP gigabit serial
-> transceivers (PS-GTR). The PS-GTR is a set of 4 PHYs that can be used by
-> the PCIe, USB 3.0, DisplayPort, SATA and Ethernet controllers that are
-> part of the Serial I/O Unit (SIOU).
-> 
-> The code is based on a previous version sent by Anurag Kumar Vulisha and
-> available at [1]. The DT bindings have been converted to YAML, and both
-> the bindings and the driver have been considerably reworked (and
-> simplified). The most notable changes is the removal of manual handling
-> of the reset lines of the PHY users (which belongs to the PHY users
-> themselves), and moving to the standard PHY .power_on() and .configure()
-> operations to replace functions that were previously exported by the
-> driver. Please see individual patches for a more detailed changelog.
-> 
-> Compared to v8, the series has been rebased on phy/next, and a minor
-> issue in MAINTAINERS has been fixed.
 
-Thanks for quick rebase, Applied 1 & 2 now
 
+On 2020-06-18 00:29, Halil Pasic wrote:
+> On Wed, 17 Jun 2020 12:43:57 +0200
+> Pierre Morel <pmorel@linux.ibm.com> wrote:
 > 
-> [1] https://patchwork.kernel.org/cover/10735681/
+>> An architecture protecting the guest memory against unauthorized host
+>> access may want to enforce VIRTIO I/O device protection through the
+>> use of VIRTIO_F_IOMMU_PLATFORM.
+>>
+>> Let's give a chance to the architecture to accept or not devices
+>> without VIRTIO_F_IOMMU_PLATFORM.
+>>
+> [..]
 > 
-> Anurag Kumar Vulisha (2):
->   dt-bindings: phy: Add DT bindings for Xilinx ZynqMP PSGTR PHY
->   phy: zynqmp: Add PHY driver for the Xilinx ZynqMP Gigabit Transceiver
 > 
-> Laurent Pinchart (1):
->   arm64: dts: zynqmp: Add GTR transceivers
+> I'm still not really satisfied with your commit message, furthermore
+> I did some thinking about the abstraction you introduce here. I will
+> give a short analysis of that, but first things first. Your patch does
+> the job of preventing calamity, and the details can be changed any time,
+> thus:
 > 
->  .../bindings/phy/xlnx,zynqmp-psgtr.yaml       | 105 ++
->  MAINTAINERS                                   |   9 +
->  arch/arm64/boot/dts/xilinx/zynqmp.dtsi        |  10 +
->  drivers/phy/Kconfig                           |   1 +
->  drivers/phy/Makefile                          |   3 +-
->  drivers/phy/xilinx/Kconfig                    |  13 +
->  drivers/phy/xilinx/Makefile                   |   3 +
->  drivers/phy/xilinx/phy-zynqmp.c               | 995 ++++++++++++++++++
->  include/dt-bindings/phy/phy.h                 |   1 +
->  9 files changed, 1139 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
->  create mode 100644 drivers/phy/xilinx/Kconfig
->  create mode 100644 drivers/phy/xilinx/Makefile
->  create mode 100644 drivers/phy/xilinx/phy-zynqmp.c
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
+> Acked-by: Halil Pasic <pasic@linux.ibm.com>
+
+Thanks,
+
+Connie already answered the other points you raised and I have nothing 
+to add on it.
+
+Regards,
+Pierre
+
 
 -- 
-~Vinod
+Pierre Morel
+IBM Lab Boeblingen
