@@ -2,88 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338E020D424
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B084F20D2F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730413AbgF2TFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:05:35 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:41028 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730499AbgF2TEq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:04:46 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E3830200FDD;
-        Mon, 29 Jun 2020 08:06:19 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C91AB200170;
-        Mon, 29 Jun 2020 08:06:08 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id A468F4032A;
-        Mon, 29 Jun 2020 14:05:53 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     linux@armlinux.org.uk, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, mturquette@baylibre.com,
-        sboyd@kernel.org, oleksandr.suvorov@toradex.com,
-        stefan.agner@toradex.com, arnd@arndb.de, peng.fan@nxp.com,
-        abel.vesa@nxp.com, aisheng.dong@nxp.com, fugang.duan@nxp.com,
-        daniel.baluta@nxp.com, yuehaibing@huawei.com, sfr@canb.auug.org.au,
-        viro@zeniv.linux.org.uk, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V3 10/10] clk: imx8qxp: Support module build
-Date:   Mon, 29 Jun 2020 13:54:02 +0800
-Message-Id: <1593410042-10598-11-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com>
-References: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1729395AbgF2SyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:54:13 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:26318 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729515AbgF2SyH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:54:07 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05T5ngSE023857
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 22:55:34 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=88tuhr3f1pOLl7SRW3iPo3wFtlQPZ7DRy59Ann1oPKE=;
+ b=dUyEO0+CmvVEyMvVr+xqTgpLvDgo6cZq05eDao4RAXKvodS44Z6BpnRH/fCy6aO+uDR6
+ eiw2DYEiF1Rb3V9b7ImAcQdyZMowNU5rmNZspP4bkbZl3k22VymituVW68hUNX6aQ2gF
+ LaiPaJjOW8cldyiqgIlXqjdhLCj/ca0qgpk= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 31x1kynpt0-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 22:55:34 -0700
+Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Sun, 28 Jun 2020 22:55:33 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 8F4CA62E505E; Sun, 28 Jun 2020 22:55:32 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Song Liu <songliubraving@fb.com>
+Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <peterz@infradead.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <kernel-team@fb.com>, <john.fastabend@gmail.com>,
+        <kpsingh@chromium.org>, Song Liu <songliubraving@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v4 bpf-next 0/4] bpf: introduce bpf_get_task_stack()
+Date:   Sun, 28 Jun 2020 22:55:26 -0700
+Message-ID: <20200629055530.3244342-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-29_04:2020-06-26,2020-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 bulkscore=0 mlxlogscore=999 impostorscore=0
+ cotscore=-2147483648 spamscore=0 priorityscore=1501 clxscore=1015
+ mlxscore=0 phishscore=0 suspectscore=0 adultscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006290042
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support building i.MX8QXP clock driver as module.
+This set introduces a new helper bpf_get_task_stack(). The primary use ca=
+se
+is to dump all /proc/*/stack to seq_file via bpf_iter__task.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-No change.
----
- drivers/clk/imx/Kconfig            | 2 +-
- drivers/clk/imx/clk-imx8qxp-lpcg.c | 1 +
- drivers/clk/imx/clk-imx8qxp.c      | 1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
+A few different approaches have been explored and compared:
 
-diff --git a/drivers/clk/imx/Kconfig b/drivers/clk/imx/Kconfig
-index 060f9c3..26cedbf 100644
---- a/drivers/clk/imx/Kconfig
-+++ b/drivers/clk/imx/Kconfig
-@@ -37,7 +37,7 @@ config CLK_IMX8MQ
- 	    Build the driver for i.MX8MQ CCM Clock Driver
- 
- config CLK_IMX8QXP
--	bool "IMX8QXP SCU Clock"
-+	tristate "IMX8QXP SCU Clock"
- 	depends on ARCH_MXC && IMX_SCU && ARM64
- 	select MXC_CLK_SCU
- 	help
-diff --git a/drivers/clk/imx/clk-imx8qxp-lpcg.c b/drivers/clk/imx/clk-imx8qxp-lpcg.c
-index 04c8ee3..8afaefc 100644
---- a/drivers/clk/imx/clk-imx8qxp-lpcg.c
-+++ b/drivers/clk/imx/clk-imx8qxp-lpcg.c
-@@ -232,3 +232,4 @@ static struct platform_driver imx8qxp_lpcg_clk_driver = {
- };
- 
- builtin_platform_driver(imx8qxp_lpcg_clk_driver);
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/clk/imx/clk-imx8qxp.c b/drivers/clk/imx/clk-imx8qxp.c
-index 5e2903e..a34c7c5 100644
---- a/drivers/clk/imx/clk-imx8qxp.c
-+++ b/drivers/clk/imx/clk-imx8qxp.c
-@@ -152,3 +152,4 @@ static struct platform_driver imx8qxp_clk_driver = {
- 	.probe = imx8qxp_clk_probe,
- };
- builtin_platform_driver(imx8qxp_clk_driver);
-+MODULE_LICENSE("GPL v2");
--- 
-2.7.4
+  1. A simple wrapper around stack_trace_save_tsk(), as v1 [1].
 
+     This approach introduces new syntax, which is different to existing
+     helper bpf_get_stack(). Therefore, this is not ideal.
+
+  2. Extend get_perf_callchain() to support "task" as argument.
+
+     This approach reuses most of bpf_get_stack(). However, extending
+     get_perf_callchain() requires non-trivial changes to architecture
+     specific code. Which is error prone.
+
+  3. Current (v2) approach, leverages most of existing bpf_get_stack(), a=
+nd
+     uses stack_trace_save_tsk() to handle architecture specific logic.
+
+[1] https://lore.kernel.org/netdev/20200623070802.2310018-1-songliubravin=
+g@fb.com/
+
+Changes v3 =3D> v4:
+1. Simplify the selftests with bpf_iter.h. (Yonghong)
+2. Add example output to commit log of 4/4. (Yonghong)
+
+Changes v2 =3D> v3:
+1. Rebase on top of bpf-next. (Yonghong)
+2. Sanitize get_callchain_entry(). (Peter)
+3. Use has_callchain_buf for bpf_get_task_stack. (Andrii)
+4. Other small clean up. (Yonghong, Andrii).
+
+Changes v1 =3D> v2:
+1. Reuse most of bpf_get_stack() logic. (Andrii)
+2. Fix unsigned long vs. u64 mismatch for 32-bit systems. (Yonghong)
+3. Add %pB support in bpf_trace_printk(). (Daniel)
+4. Fix buffer size to bytes.
+
+Song Liu (4):
+  perf: expose get/put_callchain_entry()
+  bpf: introduce helper bpf_get_task_stack()
+  bpf: allow %pB in bpf_seq_printf() and bpf_trace_printk()
+  selftests/bpf: add bpf_iter test with bpf_get_task_stack()
+
+ include/linux/bpf.h                           |  1 +
+ include/linux/perf_event.h                    |  2 +
+ include/uapi/linux/bpf.h                      | 36 ++++++++-
+ kernel/bpf/stackmap.c                         | 75 ++++++++++++++++++-
+ kernel/bpf/verifier.c                         |  4 +-
+ kernel/events/callchain.c                     | 13 ++--
+ kernel/trace/bpf_trace.c                      | 12 ++-
+ scripts/bpf_helpers_doc.py                    |  2 +
+ tools/include/uapi/linux/bpf.h                | 36 ++++++++-
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 17 +++++
+ .../selftests/bpf/progs/bpf_iter_task_stack.c | 37 +++++++++
+ 11 files changed, 220 insertions(+), 15 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_stack=
+.c
+
+--
+2.24.1
