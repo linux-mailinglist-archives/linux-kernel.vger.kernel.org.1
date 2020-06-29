@@ -2,117 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AADE820D2D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5504F20D420
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728999AbgF2Swl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:52:41 -0400
-Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:49426 "EHLO
-        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726889AbgF2Swc (ORCPT
+        id S1729498AbgF2TFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:05:25 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:11897 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729374AbgF2TFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:32 -0400
-X-Greylist: delayed 903 seconds by postgrey-1.27 at vger.kernel.org; Mon, 29 Jun 2020 14:52:31 EDT
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS2.zhaoxin.com
- (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Mon, 29 Jun
- 2020 19:21:36 +0800
-Received: from tony-HX002EA.zhaoxin.com (10.32.56.13) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Mon, 29 Jun
- 2020 19:21:33 +0800
-From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <x86@kernel.org>, <hpa@zytor.com>, <tony.luck@intel.com>,
-        <pawan.kumar.gupta@linux.intel.com>, <jpoimboe@redhat.com>,
-        <peterz@infradead.org>, <thellstrom@vmware.com>,
-        <mgross@linux.intel.com>, <kim.phillips@amd.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     <DavidWang@zhaoxin.com>, <CooperYan@zhaoxin.com>,
-        <QiyuanWang@zhaoxin.com>, <HerryYang@zhaoxin.com>,
-        <CobeChen@zhaoxin.com>
-Subject: [PATCH] x86/cpufeatures: Add new Zhaoxin CPU features
-Date:   Mon, 29 Jun 2020 19:21:29 +0800
-Message-ID: <1593429689-25131-1-git-send-email-TonyWWang-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.7.4
+        Mon, 29 Jun 2020 15:05:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593457523; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=bTRel+jIaUhGrzbH1i1gBp7pLF2BMvSOKMtXNQCwcs4=; b=PLJc2t2uNW9uJWHvGk5xPmHYKBgkT106snZexwvXA51oiEzjpeAJPjq8+hPHYUw4IhuwAWt2
+ JrdBV0+9oqEHphpu8up6MzVy73L+p7nF1DzDSHncchecR7Zzuc54HYJe928SWdGwaZ04C/z2
+ 9rcpZd9IdXoqTxPId8/OkIL1/Xc=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5ef9cf8a567385e8e7665deb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 11:24:58
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 69CA3C43391; Mon, 29 Jun 2020 11:24:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.50.61.98] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D81E5C433C8;
+        Mon, 29 Jun 2020 11:24:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D81E5C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v3 04/17] arm64: dts: sc7180: Add OPP table for all qup
+ devices
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1588080785-6812-1-git-send-email-rnayak@codeaurora.org>
+ <1588080785-6812-5-git-send-email-rnayak@codeaurora.org>
+ <20200625151713.GF39073@google.com>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <97dc03e1-48b1-ca69-1fa9-893f147361ad@codeaurora.org>
+Date:   Mon, 29 Jun 2020 16:54:48 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.32.56.13]
-X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
+In-Reply-To: <20200625151713.GF39073@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new Zhaoxin CPU features for enumeration in /proc/cpuinfo:
-SM2, SM2_EN, SM3, SM4, SM3_EN, SM4_EN, PARALLAX, PARALLAX_EN,
-TM3, TM3_EN, RNG2, RNG2_EN, PHE2, PHE2_EN, RSA, RSA_EN.
 
-CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 0]  SM2
-CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 1]  SM2_EN
-CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 4]  SM3 SM4
-CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 5]  SM3_EN SM4_EN
-CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 16] PARALLAX
-CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 17] PARALLAX_EN
-CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 20] TM3
-CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 21] TM3_EN
-CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 22] RNG2
-CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 23] RNG2_EN
-CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 25] PHE2
-CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 26] PHE2_EN
-CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 27] RSA
-CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 28] RSA_EN
+On 6/25/2020 8:47 PM, Matthias Kaehlcke wrote:
+> Hi Rajendra,
+> 
+> On Tue, Apr 28, 2020 at 07:02:52PM +0530, Rajendra Nayak wrote:
+>> qup has a requirement to vote on the performance state of the CX domain
+>> in sc7180 devices. Add OPP tables for these and also add power-domains
+>> property for all qup instances.
+>>
+>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sc7180.dtsi | 79 ++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 79 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> index 998f101..efba600 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> @@ -417,6 +417,25 @@
+>>   			status = "disabled";
+>>   		};
+>>   
+>> +		qup_opp_table: qup-opp-table {
+>> +			compatible = "operating-points-v2";
+>> +
+>> +			opp-75000000 {
+>> +				opp-hz = /bits/ 64 <75000000>;
+>> +				required-opps = <&rpmhpd_opp_low_svs>;
+>> +			};
+>> +
+>> +			opp-100000000 {
+>> +				opp-hz = /bits/ 64 <100000000>;
+>> +				required-opps = <&rpmhpd_opp_svs>;
+>> +			};
+>> +
+>> +			opp-128000000 {
+>> +				opp-hz = /bits/ 64 <128000000>;
+>> +				required-opps = <&rpmhpd_opp_nom>;
+>> +			};
+>> +		};
+>> +
+>>   		qupv3_id_0: geniqup@8c0000 {
+>>   			compatible = "qcom,geni-se-qup";
+>>   			reg = <0 0x008c0000 0 0x6000>;
+> 
+> 
+> no entries for i2c0?
 
-SM2, SM3, SM4 are Chinese Cipher Security algorithm.
-PARALLAX is a feature that automatically adjusts processors's voltage
-as a function of temperature.
-TM3 is Zhaoxin CPU Thermal Monitor v3.
-RNG2 is Zhaoxin Random Number Generation v2.
-PHE2 is Zhaoxin Padlock Hash Engine v2.
-RSA is Zhaoxin hardware support for RSA algorithm.
+I have actually wrongly added them for some i2c instances, I need to drop all of them.
+geni i2c does not support dvfs, it just uses a fixed clock.
 
-Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
----
- arch/x86/include/asm/cpufeatures.h | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index c693ebf..a6c2d2b 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -145,9 +145,13 @@
- #define X86_FEATURE_RDRAND		( 4*32+30) /* RDRAND instruction */
- #define X86_FEATURE_HYPERVISOR		( 4*32+31) /* Running on a hypervisor */
- 
--/* VIA/Cyrix/Centaur-defined CPU features, CPUID level 0xC0000001, word 5 */
-+/* VIA/Cyrix/Centaur/Zhaoxin-defined CPU features, CPUID level 0xC0000001, word 5 */
-+#define X86_FEATURE_SM2			( 5*32+ 0) /* Chinese cipher security hardware support of SM2 */
-+#define X86_FEATURE_SM2_EN		( 5*32+ 1) /* SM2 enabled */
- #define X86_FEATURE_XSTORE		( 5*32+ 2) /* "rng" RNG present (xstore) */
- #define X86_FEATURE_XSTORE_EN		( 5*32+ 3) /* "rng_en" RNG enabled */
-+#define X86_FEATURE_CCS			( 5*32+ 4) /* "sm3 sm4" Chinese Cipher Security hardware support*/
-+#define X86_FEATURE_CCS_EN		( 5*32+ 5) /* "sm3_en sm4_en" sm3 sm4 enabled */
- #define X86_FEATURE_XCRYPT		( 5*32+ 6) /* "ace" on-CPU crypto (xcrypt) */
- #define X86_FEATURE_XCRYPT_EN		( 5*32+ 7) /* "ace_en" on-CPU crypto enabled */
- #define X86_FEATURE_ACE2		( 5*32+ 8) /* Advanced Cryptography Engine v2 */
-@@ -156,6 +160,16 @@
- #define X86_FEATURE_PHE_EN		( 5*32+11) /* PHE enabled */
- #define X86_FEATURE_PMM			( 5*32+12) /* PadLock Montgomery Multiplier */
- #define X86_FEATURE_PMM_EN		( 5*32+13) /* PMM enabled */
-+#define X86_FEATURE_PARALLAX		( 5*32+16) /* Parallax auto adjust processor voltage */
-+#define X86_FEATURE_PARALLAX_EN		( 5*32+17) /* Parallax auto adjust processor voltage enabled */
-+#define X86_FEATURE_TM3			( 5*32+20) /* Thermal Monitor v3 support */
-+#define X86_FEATURE_TM3_EN		( 5*32+21) /* TM3 enabled */
-+#define X86_FEATURE_RNG2		( 5*32+22) /* RNG v2 present */
-+#define X86_FEATURE_RNG2_EN		( 5*32+23) /* RNG v2 enabled */
-+#define X86_FEATURE_PHE2		( 5*32+25) /* PHE v2 present */
-+#define X86_FEATURE_PHE2_EN		( 5*32+26) /* PHE v2 enabled */
-+#define X86_FEATURE_RSA			( 5*32+27) /* RSA hardware support */
-+#define X86_FEATURE_RSA_EN		( 5*32+28) /* RSA enabled */
- 
- /* More extended AMD flags: CPUID level 0x80000001, ECX, word 6 */
- #define X86_FEATURE_LAHF_LM		( 6*32+ 0) /* LAHF/SAHF in long mode */
 -- 
-2.7.4
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
