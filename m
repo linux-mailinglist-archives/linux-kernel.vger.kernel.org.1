@@ -2,67 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4403B20D484
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49FC820D40A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730521AbgF2TJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41714 "EHLO
+        id S1726154AbgF2TEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730364AbgF2TCm (ORCPT
+        with ESMTP id S1730533AbgF2TCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:02:42 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AACC00F800
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:23:17 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id t11so5449255qvk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:23:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=MzgADEAaLqCZCtsDLm4ffnQ0XJMngefK8MXJLmFTvck=;
-        b=ltbHxw21dl55sFkOaMf9s14HMF7fBBTTha79KyqjbyaRfK+27N/VwoXI7E4kl7EJGr
-         Hwo0rybltAdBbCpa/W28F/mT42QRur7cSFZcYiBfK2eTupJD/vYC00uojyEgZPadnuvN
-         vF+WKdsSy7ivF86FcqB14CtL8WeyrN5ZchVYM0NK+ZBEZdkN7PwGH1XQ/9IR5zgt06P4
-         fyPJ34SNRF6Dq9tWGLgwsu0eucxPGnBbKv/zvcvodbjr00oJfsEtDTXV8buRBkB4lErl
-         +r+amVgYg9sUh/2LCoiZadFSEPurkezUD3zHg2rmFVFjC7J8spXwOQT9OHv6kZbb6Gok
-         FlFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=MzgADEAaLqCZCtsDLm4ffnQ0XJMngefK8MXJLmFTvck=;
-        b=kvqxBKyKVGnRWaXP7dW+MbQdDWNpTIFQ2IJmqpRSBE5LdrqIzFlCyKwWtiLXurppcN
-         9+cE3mRczaYstH7pZnmCu1DhvcpxG5fSE9vk8KeM8POIP2pVfKDzSqR+qHSGcXxKKRQv
-         35aQxEBt1Pb6i75ZOwAvEMbA8LIWKlVtkd8HpKvTn0uG6o7T8aPpZR0gtehJ1E0iVwGD
-         2sHRkE4P2OEKBe7vo7WuNF5QpL1GiIRJCzZ5rX9+/dLE5Or1dJDgPU7tR5xSrij3FREN
-         VB+gawirauegeRx73R3cbG0YZJ/K+CohsbZyZEIdd0QZMcY4Sru96LBlj3JTBn58HYat
-         LS+g==
-X-Gm-Message-State: AOAM531pUv0KVrbDYwEJwWokTMJlQFlvKHEcssSqhNhTIS61CewbsYM8
-        1u7qaQH4FtH2cfPVjy/cQaaBcF+DmvDxkh4oMs0=
-X-Google-Smtp-Source: ABdhPJxXhY/mQh+YDkbVbuMru9DcAzB5auPA5Nz2a8Op0aae2DB5pPk7qviRvxlw7afZBadq7ZzzGFg1opgwAuMxQUI=
-X-Received: by 2002:a0c:bd12:: with SMTP id m18mr15247675qvg.178.1593433397049;
- Mon, 29 Jun 2020 05:23:17 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a0c:e202:0:0:0:0:0 with HTTP; Mon, 29 Jun 2020 05:23:16
- -0700 (PDT)
-Reply-To: cephasagbeh1@gmail.com
-From:   Cephas Agbeh <christophermulei10@gmail.com>
-Date:   Mon, 29 Jun 2020 14:23:16 +0200
-Message-ID: <CAFLtBxhZHA5gs=xhR+3mRXJo+c7GbJ4O2B440QiB=+z5q-xtow@mail.gmail.com>
-Subject: With Sense Of Urgency
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 29 Jun 2020 15:02:43 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF908C00F801
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:24:48 -0700 (PDT)
+Received: from ramsan ([IPv6:2a02:1810:ac12:ed20:ddd:9277:6399:6268])
+        by albert.telenet-ops.be with bizsmtp
+        id x0Qk2200U1qNRsK060QkHJ; Mon, 29 Jun 2020 14:24:47 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jpsq4-0001zq-KF; Mon, 29 Jun 2020 14:24:44 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jpsq4-0005fU-Hy; Mon, 29 Jun 2020 14:24:44 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Patrick Lai <plai@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rohit kumar <rohitkr@codeaurora.org>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] ASoC: qcom: Drop HAS_DMA dependency to fix link failure
+Date:   Mon, 29 Jun 2020 14:24:43 +0200
+Message-Id: <20200629122443.21736-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am bringing this notice to your attention in respect of the death of
-a deceased client of mine that has the same surname with you and his
-fund valued at $19.9M to be paid to you.contact me at
-cephasagbeh1@gmail.com for more details.
+When building on allyesconfig kernel for a NO_DMA=y platform (e.g.
+Sun-3), CONFIG_SND_SOC_QCOM_COMMON=y, but CONFIG_SND_SOC_QDSP6_AFE=n,
+leading to a link failure:
 
-Yours Sincerely,
-Cephas Agbeh,
-Attorney At Law.
+    sound/soc/qcom/common.o: In function `qcom_snd_parse_of':
+    common.c:(.text+0x2e2): undefined reference to `q6afe_is_rx_port'
+
+While SND_SOC_QDSP6 depends on HAS_DMA, SND_SOC_MSM8996 and SND_SOC_SDM845
+don't, so the following warning is seen:
+
+    WARNING: unmet direct dependencies detected for SND_SOC_QDSP6
+      Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && QCOM_APR [=y] && HAS_DMA [=n]
+      Selected by [y]:
+      - SND_SOC_MSM8996 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && QCOM_APR [=y]
+      - SND_SOC_SDM845 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && QCOM_APR [=y] && CROS_EC [=y] && I2C [=y] && SOUNDWIRE [=y]
+
+Until recently, this warning was harmless (from a compile-testing
+point-of-view), but the new user of q6afe_is_rx_port() turned this into
+a hard failure.
+
+As the QDSP6 driver itself builds fine if NO_DMA=y, and it depends on
+QCOM_APR (which in turns depends on ARCH_QCOM || COMPILE_TEST), it is
+safe to increase compile testing coverage.  Hence fix the link failure
+by dropping the HAS_DMA dependency of SND_SOC_QDSP6.
+
+Fixes: a2120089251f1fe2 ("ASoC: qcom: common: set correct directions for dailinks")
+Fixes: 6b1687bf76ef84cb ("ASoC: qcom: add sdm845 sound card support")
+Fixes: a6f933f63f2ffdb2 ("ASoC: qcom: apq8096: Add db820c machine driver")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ sound/soc/qcom/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index f51b28d1b94d87b5..92f51d0e9fe2bf02 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -72,7 +72,7 @@ config SND_SOC_QDSP6_ASM_DAI
+ 
+ config SND_SOC_QDSP6
+ 	tristate "SoC ALSA audio driver for QDSP6"
+-	depends on QCOM_APR && HAS_DMA
++	depends on QCOM_APR
+ 	select SND_SOC_QDSP6_COMMON
+ 	select SND_SOC_QDSP6_CORE
+ 	select SND_SOC_QDSP6_AFE
+-- 
+2.17.1
+
