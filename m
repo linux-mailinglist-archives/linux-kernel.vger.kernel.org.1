@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D7220D356
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7DA920D301
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbgF2S6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40918 "EHLO
+        id S1728238AbgF2Syu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730146AbgF2S5o (ORCPT
+        with ESMTP id S1729802AbgF2Swv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:57:44 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327C0C00F814
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:30:17 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id o11so16352787wrv.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:30:17 -0700 (PDT)
+        Mon, 29 Jun 2020 14:52:51 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEA9C00F816
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:21 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l17so15223812wmj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PJzVhpJJAv65Qazp2aPfqaE5/RwoX3RLz4Z8bcbSMRY=;
-        b=pRKyjljsaQEzYd/ZTriBGti7UFYvW3HNq59C0GxU7Os8zRMWbFWUMRj3M06J5MzDlV
-         vIaE8Ml1b3R2geKPTQuPHi0k8gxdJWzU/+9zRgsvtmmmql0m5TZgeU4zDB0+yx/AWOAJ
-         0AjDk8p6eJ9DH+NvXRrUP7M2kRklGw7lArXXNQhUPumIZYQQudDavWKt0u4DFSBrRT3m
-         pUhLKJwwToAo+RwJXhWKcWkk1OI119FZRjaPRJlZ9TC/zhhiTlHGsy8t33DnoHDR0qfk
-         4dXuRgRa1sUvhPZkzCVhHCY+k4jL3cExflco1rek0UXuoZA2huIC6wGPNqZKL04EAIKn
-         wBgQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=NcJWzHYOpdeqh8qGaDVcQ5xRq4JhsD2PhceqG1yeYgA=;
+        b=Q366rrasZM+J0LbW/35YiKvihiuoapb6NfN+Zb4zZsqCvq9+SkLa23MzIyUfk8kh5e
+         Tfzz+oPvckK85IfjKcsT2gzRYKGkjA9x48l/nKQyaBoJf04WdVxDuu5uycO/0JeIVv7l
+         lOtSMb0HK9cCkVoeyc2/p1hyWjQjR6EecqDrCwB0F4vdpGgomiwLq5Ge5NkeB38l2s9p
+         /RPpmnw26+sNuVt41FF5MJ94lR5+1+dlEqGMEV38RM0R9mtgMDHgqIuG7D8kGbWJx/HQ
+         SSsL2oC165G4yp4HZa8wpyhQ42TMENenXjRufPEz16j5xH7YcPE37CvTwtIEREwDv7Hd
+         yPOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PJzVhpJJAv65Qazp2aPfqaE5/RwoX3RLz4Z8bcbSMRY=;
-        b=FFfqJQC1Wk4eGeoOr+U4XHt1JVKERo5+9OOGiRlBCsEssJwY5+UrMsLtycyZChJLcm
-         U4iTnTm62/oHq7t2Q4Grd9+Wv7HOfquYrB/be7h/+8ZmJii6I6BL/sDnbx60EirJxqnX
-         UsYxPwHqvQPRAs7YLq7+SBSsosdw2QLReJJz/FZ+aoZ1qZttGHC7pEzTBCj3BkcfmKMJ
-         xAq99GkOI+i7b/74XSFX/r2hzbCOGp1uRKxLi/tKD73iH6prSaMIMDpOGcE+ZXKbBzaO
-         h+0H4oE++BRVqOVhtHNc7RAwLi8Ce5+sdgn145FzHtZvOLMgoUfSvQjYoq+8fyhr4ggu
-         CpSw==
-X-Gm-Message-State: AOAM531DBwUqhtKA4VydVngYkw41psAHI/Ope2AvqcTGSKGI85+OPgRQ
-        6ZrQaiuheiYgYtz6hDwOSVkuMQ==
-X-Google-Smtp-Source: ABdhPJyJCgqEzM0dRcjMBFFJyWUUkmlGDMG9BE8MzW+qrGWD2FeLjOf3tbRfUrqURp7S6UzoC8eBqg==
-X-Received: by 2002:adf:8b18:: with SMTP id n24mr17862490wra.372.1593433815872;
-        Mon, 29 Jun 2020 05:30:15 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=NcJWzHYOpdeqh8qGaDVcQ5xRq4JhsD2PhceqG1yeYgA=;
+        b=VVfZILbmcYV9fQiQV5z8I8TnZ9+XyDXuZXU7KxXdwaZRIbBfSI2OSnpm/dPlIsJAEZ
+         eIDK9JpwpeqQYVQIggcCwb5F0MqWtyI1Z2pIhoedBfoEFHOYN4L+NnjrGZ+cHi/FgmdR
+         NtAcWSa+8msGj72nvf3PKBYa43rT0CfpvoDx4U0ju9WCMqrDADNGumNKKmVz48d9CJoE
+         BV/64gf8361wpNpIJPdCWjTIkEhs5MRjRcGDfrjV68h1Ekw+35nsxCynB7LTq3ckOWXT
+         XMBuIP3/9qRexse2jcc9lVP3hIgS9cnndMlrXNySiSpkJ963TKXc5bNIw0bPLLMnNReI
+         CpqA==
+X-Gm-Message-State: AOAM531eKjYHkD/X5AlmfDqtLVjzS3HwM/Osh86Af3GVR2l4VrPPXSg7
+        pb7tl5dD2z44NJn4IeFDPgkjRg==
+X-Google-Smtp-Source: ABdhPJx4+0k8HqfmTYlIin6K3HPVFB67u5CbChkf/P40Ljl2tLMP9fSC9+ZutsjMFevxWA0Kb++IlQ==
+X-Received: by 2002:a1c:9cd3:: with SMTP id f202mr15608911wme.64.1593433940462;
+        Mon, 29 Jun 2020 05:32:20 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id g144sm32676472wme.2.2020.06.29.05.30.14
+        by smtp.gmail.com with ESMTPSA id d201sm28064111wmd.34.2020.06.29.05.32.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 05:30:15 -0700 (PDT)
+        Mon, 29 Jun 2020 05:32:19 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH 1/1] crypto: ux500: hash: Add namespacing to hash_init()
-Date:   Mon, 29 Jun 2020 13:30:03 +0100
-Message-Id: <20200629123003.1014387-1-lee.jones@linaro.org>
+        Andrey Smirnov <andrew.smirnov@gmail.com>
+Subject: [PATCH 1/5] mfd: si476x-cmd: Add missing documentation for si476x_cmd_fm_rds_status()'s arg 'report'
+Date:   Mon, 29 Jun 2020 13:32:11 +0100
+Message-Id: <20200629123215.1014747-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200629123215.1014747-1-lee.jones@linaro.org>
+References: <20200629123215.1014747-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,131 +65,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A recent change to the Regulator consumer API (which this driver
-utilises) add prototypes for the some suspend functions.  These
-functions require including header file include/linux/suspend.h.
+Kerneldoc syntax is used, but not complete.
 
-The following tree of includes affecting this driver will be
-present:
+Descriptions are required for all arguments.
 
-   In file included from include/linux/elevator.h:6,
-                    from include/linux/blkdev.h:288,
-                    from include/linux/blk-cgroup.h:23,
-                    from include/linux/writeback.h:14,
-                    from include/linux/memcontrol.h:22,
-                    from include/linux/swap.h:9,
-                    from include/linux/suspend.h:5,
-                    from include/linux/regulator/consumer.h:35,
-                    from drivers/crypto/ux500/hash/hash_core.c:28:
+Fixes the following W=1 build warning:
 
-include/linux/elevator.h pulls in include/linux/hashtable.h which
-contains its own version of hash_init().  This confuses the build
-system and results in the following error (amongst others):
+ drivers/mfd/si476x-cmd.c:907: warning: Function parameter or member 'report' not described in 'si476x_core_cmd_fm_rds_status'
 
- drivers/crypto/ux500/hash/hash_core.c:1362:19: error: passing argument 1 of '__hash_init' from incompatible pointer type [-Werror=incompatible-pointer-types]
- 1362 |  return hash_init(req);
-
-Fix this by namespacing the local hash_init() such that the
-source of confusion is removed.
-
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org
+Cc: Andrey Smirnov <andrew.smirnov@gmail.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
+ drivers/mfd/si476x-cmd.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Ideally this should go into v5.8's -rcs else it runs the risk of
-breaking when Linus pulls everything in for v5.9-rc1.
-
- drivers/crypto/ux500/hash/hash_core.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/crypto/ux500/hash/hash_core.c b/drivers/crypto/ux500/hash/hash_core.c
-index c24f2db8d5e83..a5ee8c2fb4e0b 100644
---- a/drivers/crypto/ux500/hash/hash_core.c
-+++ b/drivers/crypto/ux500/hash/hash_core.c
-@@ -545,7 +545,7 @@ static bool hash_dma_valid_data(struct scatterlist *sg, int datasize)
+diff --git a/drivers/mfd/si476x-cmd.c b/drivers/mfd/si476x-cmd.c
+index 0a40c5cb751db..d15b3e7833692 100644
+--- a/drivers/mfd/si476x-cmd.c
++++ b/drivers/mfd/si476x-cmd.c
+@@ -892,6 +892,8 @@ EXPORT_SYMBOL_GPL(si476x_core_cmd_fm_seek_start);
+  *                rest RDS data contains the last valid info received
+  * @mtfifo: if set the command clears RDS receive FIFO
+  * @intack: if set the command clards the RDSINT bit.
++ * @report: - all signal quality information retured by the command
++ *           (if NULL then the output of the command is ignored)
   *
-  * Initialize structures.
+  * Function returns 0 on success and negative error code on failure
   */
--static int hash_init(struct ahash_request *req)
-+static int ux500_hash_init(struct ahash_request *req)
- {
- 	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
- 	struct hash_ctx *ctx = crypto_ahash_ctx(tfm);
-@@ -1359,7 +1359,7 @@ static int ahash_sha1_init(struct ahash_request *req)
- 	ctx->config.oper_mode = HASH_OPER_MODE_HASH;
- 	ctx->digestsize = SHA1_DIGEST_SIZE;
- 
--	return hash_init(req);
-+	return ux500_hash_init(req);
- }
- 
- static int ahash_sha256_init(struct ahash_request *req)
-@@ -1372,7 +1372,7 @@ static int ahash_sha256_init(struct ahash_request *req)
- 	ctx->config.oper_mode = HASH_OPER_MODE_HASH;
- 	ctx->digestsize = SHA256_DIGEST_SIZE;
- 
--	return hash_init(req);
-+	return ux500_hash_init(req);
- }
- 
- static int ahash_sha1_digest(struct ahash_request *req)
-@@ -1425,7 +1425,7 @@ static int hmac_sha1_init(struct ahash_request *req)
- 	ctx->config.oper_mode	= HASH_OPER_MODE_HMAC;
- 	ctx->digestsize		= SHA1_DIGEST_SIZE;
- 
--	return hash_init(req);
-+	return ux500_hash_init(req);
- }
- 
- static int hmac_sha256_init(struct ahash_request *req)
-@@ -1438,7 +1438,7 @@ static int hmac_sha256_init(struct ahash_request *req)
- 	ctx->config.oper_mode	= HASH_OPER_MODE_HMAC;
- 	ctx->digestsize		= SHA256_DIGEST_SIZE;
- 
--	return hash_init(req);
-+	return ux500_hash_init(req);
- }
- 
- static int hmac_sha1_digest(struct ahash_request *req)
-@@ -1515,7 +1515,7 @@ static struct hash_algo_template hash_algs[] = {
- 		.conf.algorithm = HASH_ALGO_SHA1,
- 		.conf.oper_mode = HASH_OPER_MODE_HASH,
- 		.hash = {
--			.init = hash_init,
-+			.init = ux500_hash_init,
- 			.update = ahash_update,
- 			.final = ahash_final,
- 			.digest = ahash_sha1_digest,
-@@ -1538,7 +1538,7 @@ static struct hash_algo_template hash_algs[] = {
- 		.conf.algorithm	= HASH_ALGO_SHA256,
- 		.conf.oper_mode	= HASH_OPER_MODE_HASH,
- 		.hash = {
--			.init = hash_init,
-+			.init = ux500_hash_init,
- 			.update	= ahash_update,
- 			.final = ahash_final,
- 			.digest = ahash_sha256_digest,
-@@ -1561,7 +1561,7 @@ static struct hash_algo_template hash_algs[] = {
- 		.conf.algorithm = HASH_ALGO_SHA1,
- 		.conf.oper_mode = HASH_OPER_MODE_HMAC,
- 			.hash = {
--			.init = hash_init,
-+			.init = ux500_hash_init,
- 			.update = ahash_update,
- 			.final = ahash_final,
- 			.digest = hmac_sha1_digest,
-@@ -1585,7 +1585,7 @@ static struct hash_algo_template hash_algs[] = {
- 		.conf.algorithm = HASH_ALGO_SHA256,
- 		.conf.oper_mode = HASH_OPER_MODE_HMAC,
- 		.hash = {
--			.init = hash_init,
-+			.init = ux500_hash_init,
- 			.update = ahash_update,
- 			.final = ahash_final,
- 			.digest = hmac_sha256_digest,
 -- 
 2.25.1
 
