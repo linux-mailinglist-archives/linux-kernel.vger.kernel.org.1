@@ -2,137 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357C820E1D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4188620E11E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731349AbgF2VAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:00:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
+        id S2389875AbgF2UwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:52:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731231AbgF2TM7 (ORCPT
+        with ESMTP id S1731375AbgF2TN1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:12:59 -0400
-Received: from EUR02-VE1-obe.outbound.protection.outlook.com (mail-ve1eur02on060c.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe06::60c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEF5C0068FA
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:44:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XPrkNTJ38yIsT/dqEEnu3fUA27EH4vLhM61q33/7hUIPLAtHlkZIhR4BHuSQOOT6iNCnFXfaLIhiRHFP/HcZAd9WAuQbEV7bkrfDZuw8CEQVNpBXll903/5u5JfRePCFdBZ9NT/f1FpYc4GTAPczihMu/V9x+3jRd7KxhZFP7kd0lMajbGE/fRsRmioyWKYsskrj3SmKsX50+BPNp/XOK2IOlFUDXyKrZ0oxSXdzjBAFRNOLmDeiQ6OIFdVNTVn4IAi/svYU2QXWxYvH4XKlrdvxUyd05qnHTFBCxum1mxfY6AZta+VOPa+8EN1Z1VW/G9MfzKj9LMEDSm0z3RRrCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uLZ5JV7UGJM8S8sbbMwCdHUnQg6sFDggJlZ+hRkDtyU=;
- b=VXBWY7Laa3DsQ17PixLclPeQRRskGDWCmWZbjNgiL9GBX+IbM+OpgZ1J4GKxNaf1I5s7xnbxX0IfVowlP1b0FaPVcsLJ9+lQ5utHXp5PAACH8pdFPIAKd0ypad5dT5e9hseUtPsccEpUVlHIv0g/20T9HvLoeWZyUwSin3BgkdfH86EjJmoxlXMUYlqvMVwKBpKoZGEl1zZ6z8FoaeF31HuWhcux9PlNnIgBmVdXbmAJrRuOZEJOJI/XgNQCLZiVNawaF5JYQ4cXU7bhZaKZovlI1LGxEVLS5m4TUxl7qvSiw4h6uB7vlXd/r7igmvoK9tkC9OOkS3szHOcGW+X/Qw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uLZ5JV7UGJM8S8sbbMwCdHUnQg6sFDggJlZ+hRkDtyU=;
- b=Ono6JjXrMAsC9H1abqBf9h0oFlJBeGUkeYunkFlElzL1egkl0NGLfh96kEnCP9Mlc8B5aPInQBLB2dDVwmVwdKvIqfJWMH6nMjRaS2jYwymw0UuffnEVKRYLx7qcOYbIGXEyQ8/lAnGPE4yOEgy1MsWSFliXC+vPrRztZ+f/Ni4=
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
- by DB7PR04MB4092.eurprd04.prod.outlook.com (2603:10a6:5:27::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.25; Mon, 29 Jun
- 2020 11:44:49 +0000
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::1dab:b68c:e028:acb3]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::1dab:b68c:e028:acb3%6]) with mapi id 15.20.3131.027; Mon, 29 Jun 2020
- 11:44:49 +0000
-From:   Anson Huang <anson.huang@nxp.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Stefan Agner <stefan.agner@toradex.com>,
-        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Olof Johansson <olof@lixom.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH 1/3] reset: imx7: Support module build
-Thread-Topic: [PATCH 1/3] reset: imx7: Support module build
-Thread-Index: AQHWTf+gVil33+KDPEOiQKx/rvC/xajvZ8CAgAAAWbCAAAylgIAAALfAgAAC/wCAAACdIA==
-Date:   Mon, 29 Jun 2020 11:44:49 +0000
-Message-ID: <DB3PR0402MB39168490A754EC4B32CAFFA0F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-References: <1593425623-31810-1-git-send-email-Anson.Huang@nxp.com>
- <CAK8P3a1pr8YbZMpSXg6o_UeDvaU=dDqfo45DudTASNcsxeg3kg@mail.gmail.com>
- <DB3PR0402MB3916292FC3FDE4F28AFEB5EBF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CAK8P3a0Za99-xXTwtHNHO-Dzbo-1uesNC2oO91RA-gZZG3Anmw@mail.gmail.com>
- <DB3PR0402MB3916ADD54CB167B8ED10076DF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CAK8P3a1mCD1JFg80HSos9hp0ye1vu_hk79wFGz6YZ3kj10XACg@mail.gmail.com>
-In-Reply-To: <CAK8P3a1mCD1JFg80HSos9hp0ye1vu_hk79wFGz6YZ3kj10XACg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: arndb.de; dkim=none (message not signed)
- header.d=none;arndb.de; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [183.192.13.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8e082b3a-60da-4add-4eac-08d81c21d45c
-x-ms-traffictypediagnostic: DB7PR04MB4092:
-x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB7PR04MB409259F5C157CBF802B6A254F56E0@DB7PR04MB4092.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 044968D9E1
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PEUAbHkSJP2/AZi9wrbX+DoiYMJMBTauuOImJHdbga55jTRYytCRACEH5nptdT4EMaKYL1RC8eYVv7qAsEyvHSaeI5JuwlQmwHM8H/aO0SBRI5PmI0wGYt5rhonjMNzb3f89ENYkBi0ncfTiO65zEbg61fUmg2cz84c70lPfAy3mW+mx4RXBPrQdIujtdoaOU4pEXSQFA0FT/KXl0I7cVYUdetHXS3qX/RCQf3erLmR5MDSIveqeZ1ifV7Bc9UuYDuaDCBDBsSP5xrV/ntDyL1L+DSpLwiQXXb9nGElcwWWby20w6xSsQa7wQkBAUU7ONm2wTWyY9XplQVhKVAMHWw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(136003)(396003)(376002)(366004)(39860400002)(44832011)(66556008)(478600001)(64756008)(66946007)(66446008)(7696005)(66476007)(6916009)(76116006)(2906002)(316002)(54906003)(55016002)(9686003)(71200400001)(7416002)(26005)(4326008)(33656002)(186003)(52536014)(8676002)(83380400001)(8936002)(5660300002)(86362001)(53546011)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: lNxvDKNhvXJcq1+G/2/DadAG/Wm24/VhzymZoCFFnOxBL8o5J1oHVEEHTcMTAchZPYCCFNcOkTnUPWwhBXfKDQ4/B/w5drtQeshCvp3FXwCsmRvGOt2+gLrasAMqkq1iO+fL9k/UtREY/Z3Xc31tiaTmLLP99xiwDGjrS48+Ya72nItev6FeEfZC64rJcxEl8+BjPZdEKpm0jVbbCRxpwHnm9i75FqZW4KuF7IRIO2sa4aG+iYDgDqIGJ8tBCwDCVf38Rwvw/wUh+LhfjkyU//QJlxKMANrf2JsJCSuThli1mYtpgJri1O55sM+wu1nmzA/fxb+oLw+dV+pr9e7oukM0IIfBy4VLhEWOvbaBumZBQLGZKzLtzCfvH2ntq1LCuDUHC4dLLK4VC8r7ktcUHPDFHWNeLemK8F+ctNR6geQScS3zzEBMv5Jej0oGwNF5fVE6mnTrZHw9b3Q64bimn+4Y7pCiF9F1jySV5zI4kGryvE26mJJeXODFgpbzn70O
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 29 Jun 2020 15:13:27 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D435CC0068FB
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:45:04 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id b6so16191824wrs.11
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:45:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XGw/iLKNRAiVkZjoBpYpVGlTMGowb6J/RzcIqE9oUnc=;
+        b=rS5h5EDVXcM6nddGacPz/Nj3KgrOPH0q0nYOztg+J1s+b0tDo9soLUxF+5ac5OLI08
+         4pj4d8PGVhb2QpuWHGjPLdHrKX0AJKO5kd4h+mlDscVYvZ+wmgjgPcaGK+I6f94mzM4l
+         fb7mw0e8YVatfs/UV5KEfnEtOEVMtAaikz8UK4gdg/86d82CkVVrazsC2z8uZG7CUXUZ
+         niM55Y4S1aOeUjTWaFRV7epBvRNNInwxRoJNp/+oJDa1DqvxWLK+V7ia1o54br2dUWjk
+         r2bBnqELUcWJVWzHCzsw9/yfgbDJJaiY6No8zpA3wSx7ZRHXQyrZbqiOr9LQIvxuxb/V
+         Q9Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XGw/iLKNRAiVkZjoBpYpVGlTMGowb6J/RzcIqE9oUnc=;
+        b=sLpBb/NcFJyu4MVOEuDEQuGyCVFEVFJ0+6cz/c/QH7QU+jO1TiZgZzDita3lmPMoF4
+         jV+uUt+yP3ed/8PtN/tBkZ6IfJUvytNmhHZ6bOrm3G50v+lKgA8aEWbAKRZq95qoLmmE
+         MGL/oe7asTiH9zC3VUrJbGwzQBAtzH1HL8RJPOsxsK53f2BBiNUjeat2cgXZXlL969m4
+         j1goZkGTxP3uxhYqxZqhfKssUWqHfig7iuxVJKN87EfGDPfqD2NpjDU4qfvzd5wdrE6l
+         fR0dxSYLbh+R/R/dqpfHY2GNJ2VCMAsg9f8HoPUWuSiQDRjC08qOXCkPxie/zYGsJ2N7
+         Uqwg==
+X-Gm-Message-State: AOAM531i5EOShdklP+JnzxbJf19cSChu3XAmTvgqPVsDfe41rHJPdlJP
+        UBcLoNYg5ZizR39UFj/7Jeb/1Q==
+X-Google-Smtp-Source: ABdhPJxOJjSafM1OFUfqJURXwD3lrGdaznzf+9LM4EAUq/q+VGG6z+FfLqPpw2iGsX1ac9JHkVsJXw==
+X-Received: by 2002:adf:c142:: with SMTP id w2mr15839442wre.337.1593431103458;
+        Mon, 29 Jun 2020 04:45:03 -0700 (PDT)
+Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id s10sm17859915wme.31.2020.06.29.04.45.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 04:45:02 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 12:45:01 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Jiri Slaby <jslaby@suse.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/7] kgdb: Add request_nmi() to the io ops table for
+ kgdboc
+Message-ID: <20200629114501.7aq547dzo6o2abrt@holly.lan>
+References: <1592835984-28613-1-git-send-email-sumit.garg@linaro.org>
+ <1592835984-28613-4-git-send-email-sumit.garg@linaro.org>
+ <20200622160300.avgfhnfkpqzqqtsr@holly.lan>
+ <CAFA6WYOmQT-OQvjpy1pVPq2mx5S264bJPd-XfwnDY2BjeoWekg@mail.gmail.com>
+ <20200623105934.wvyidi3xgqgd35af@holly.lan>
+ <CAD=FV=XHZT9ud0Ze1pDvz-kQy7FMFzd9T6+jM5URt1k5BwQ15g@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB3PR0402MB3916.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e082b3a-60da-4add-4eac-08d81c21d45c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2020 11:44:49.4273
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: l8cEf+WQ95IRKba2KhoVHreJJMRj85MTc9gPTjf/1uwnG8Nbf+3BNy3x0Tgne9hthl+0kE+fajRomUHW3c5hDA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4092
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=XHZT9ud0Ze1pDvz-kQy7FMFzd9T6+jM5URt1k5BwQ15g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEFybmQNCg0KDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMS8zXSByZXNldDogaW14NzogU3Vw
-cG9ydCBtb2R1bGUgYnVpbGQNCj4gDQo+IE9uIE1vbiwgSnVuIDI5LCAyMDIwIGF0IDE6MzIgUE0g
-QW5zb24gSHVhbmcgPGFuc29uLmh1YW5nQG54cC5jb20+DQo+IHdyb3RlOg0KPiA+ID4gU3ViamVj
-dDogUmU6IFtQQVRDSCAxLzNdIHJlc2V0OiBpbXg3OiBTdXBwb3J0IG1vZHVsZSBidWlsZA0KPiA+
-ID4NCj4gPiA+IE9uIE1vbiwgSnVuIDI5LCAyMDIwIGF0IDEyOjQ1IFBNIEFuc29uIEh1YW5nDQo+
-IDxhbnNvbi5odWFuZ0BueHAuY29tPg0KPiA+ID4gd3JvdGU6DQo+ID4gPiA+ID4gU3ViamVjdDog
-UmU6IFtQQVRDSCAxLzNdIHJlc2V0OiBpbXg3OiBTdXBwb3J0IG1vZHVsZSBidWlsZCBPbg0KPiA+
-ID4gPiA+IE1vbiwgSnVuIDI5LCAyMDIwIGF0IDEyOjI1IFBNIEFuc29uIEh1YW5nIDxBbnNvbi5I
-dWFuZ0BueHAuY29tPg0KPiB3cm90ZToNCj4gPiA+ID4NCj4gPiA+ID4gVGhlIHJlc2V0IGRyaXZl
-ciBub3JtYWxseSB3b24ndCBiZSByZW1vdmVkIHNpbmNlIGl0IGlzIG5lY2Vzc2FyeQ0KPiA+ID4g
-PiBmb3IgZHJpdmVycyB3aGljaCBuZWVkIGl0LCBpdCBpcyBqdXN0IGZvciBBbmRyb2lkIEdLSSBz
-dXBwb3J0LCBpbg0KPiA+ID4gPiB0aGlzIGNhc2UsIGRvIHdlIG5lZWQgdG8gY2hhbmdlIGl0IHRv
-IG1vZHVsZV9wbGF0Zm9ybV9kcml2ZXIoKT8NCj4gPiA+DQo+ID4gPiBQbGVhc2UgYXQgbGVhc3Qg
-dHJ5IHRvIGRvIGl0LCBvciBleHBsYWluIGluIHRoZSBjaGFuZ2Vsb2cgd2hhdCB3ZW50DQo+ID4g
-PiB3cm9uZyBpZiBpdCBkb2Vzbid0IHdvcmsuDQo+ID4gPg0KPiA+ID4gSSBkb24ndCB0aGluayAi
-YmVjYXVzZSBBbmRyb2lkIEdLSSIgc2hvdWxkIGV2ZXIgYmUgdGhlIHNvbGUNCj4gPiA+IGp1c3Rp
-ZmljYXRpb24gZm9yIGEgcGF0Y2guIE1ha2luZyBkcml2ZXJzIGxvYWRhYmxlIG1vZHVsZSBpcyBh
-IGdvb2QNCj4gPiA+IGlkZWEgcmVnYXJkbGVzcyBvZiBHS0ksIGFuZCBpZiB5b3UgZG8gdGhhdCwg
-dGhlbiBtYWtlIGl0IGJlaGF2ZSBsaWtlIGFueQ0KPiBvdGhlciBsb2FkYWJsZSBtb2R1bGUuDQo+
-ID4gPg0KPiA+DQo+ID4gT0ssIHdpbGwgZG8gaXQgaW4gVjIsIEJUVywgSSB0aGluayB0aGVyZSBp
-cyBub3RoaW5nIG5lZWQgdG8gYmUgZG9uZQ0KPiA+IGZvciAucmVtb3ZlKCkgY2FsbGJhY2ssIGNh
-biBJIGp1c3Qgc2tpcCBpdCBvciBuZWVkIHRvIGFkZCBhIGJsYW5rIGNhbGxiYWNrDQo+IGFueXdh
-eT8NCj4gDQo+IEkgdGhpbmsgaWYgZXZlcnl0aGluZyBpcyBkb25lIHRocm91Z2ggZGV2bV8oKSBj
-YWxscyB5b3Ugc2hvdWxkIGJlIGFibGUgdG8gaGF2ZQ0KPiBubyAucmVtb3ZlKCkgY2FsbGJhY2sg
-YXQgYWxsLCBidXQgSSBoYXZlIG5vdCB0cmllZCB0aGF0Lg0KPiANCg0KT0ssIEkgaGF2ZSBjb25m
-aXJtZWQgdGhhdCBiZWZvcmUgaW4gb3RoZXIgZHJpdmVycywgc28gSSB3aWxsIG5vdCBoYXZlIC5y
-ZW1vdmUgY2FsbGJhY2soKQ0KZm9yIHRoaXMgZHJpdmVyLg0KDQpUaGFua3MsDQpBbnNvbg0K
+On Fri, Jun 26, 2020 at 12:44:15PM -0700, Doug Anderson wrote:
+> Hi,
+> 
+> On Tue, Jun 23, 2020 at 3:59 AM Daniel Thompson
+> <daniel.thompson@linaro.org> wrote:
+> >
+> > On Tue, Jun 23, 2020 at 02:07:47PM +0530, Sumit Garg wrote:
+> > > On Mon, 22 Jun 2020 at 21:33, Daniel Thompson
+> > > <daniel.thompson@linaro.org> wrote:
+> > > > > +     irq_set_status_flags(irq, IRQ_NOAUTOEN);
+> > > > > +     res = request_nmi(irq, fn, IRQF_PERCPU, "kgdboc", dev_id);
+> > > >
+> > > > Why do we need IRQF_PERCPU here. A UART interrupt is not normally
+> > > > per-cpu?
+> > > >
+> > >
+> > > Have a look at this comment [1] and corresponding check in
+> > > request_nmi(). So essentially yes UART interrupt is not normally
+> > > per-cpu but in order to make it an NMI, we need to request it in
+> > > per-cpu mode.
+> > >
+> > > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/irq/manage.c#n2112
+> >
+> > Thanks! This is clear.
+> >
+> > > > > +     if (res) {
+> > > > > +             res = request_irq(irq, fn, IRQF_SHARED, "kgdboc", dev_id);
+> > > >
+> > > > IRQF_SHARED?
+> > > >
+> > > > Currrently there is nothing that prevents concurrent activation of
+> > > > ttyNMI0 and the underlying serial driver. Using IRQF_SHARED means it
+> > > > becomes possible for both drivers to try to service the same interrupt.
+> > > > That risks some rather "interesting" problems.
+> > > >
+> > >
+> > > Could you elaborate more on "interesting" problems?
+> >
+> > Er... one of the serial drivers we have allowed the userspace to open
+> > will, at best, be stone dead and not passing any characters.
+> >
+> >
+> > > BTW, I noticed one more problem with this patch that is IRQF_SHARED
+> > > doesn't go well with IRQ_NOAUTOEN status flag. Earlier I tested it
+> > > with auto enable set.
+> > >
+> > > But if we agree that both shouldn't be active at the same time due to
+> > > some real problems(?) then I can rid of IRQF_SHARED as well. Also, I
+> > > think we should unregister underlying tty driver (eg. /dev/ttyAMA0) as
+> > > well as otherwise it would provide a broken interface to user-space.
+> >
+> > I don't have a particular strong opinion on whether IRQF_SHARED is
+> > correct or not correct since I think that misses the point.
+> >
+> > Firstly, using IRQF_SHARED shows us that there is no interlocking
+> > between kgdb_nmi and the underlying serial driver. That probably tells
+> > us about the importance of the interlock than about IRQF_SHARED.
+> >
+> > To some extent I'm also unsure that kgdb_nmi could ever actually know
+> > the correct flags to use in all cases (that was another reason for the
+> > TODO comment about poll_get_irq() being a bogus API).
+> 
+> I do wonder a little bit if the architecture of the "kgdb_nmi_console"
+> should change.  I remember looking at it in the past and thinking it a
+> little weird that if I wanted to get it to work I'd need to change my
+> "console=" command line to go through this new driver and (I guess)
+> change the agetty I have running on my serial port to point to
+> ttyNMI0.  Is that how it's supposed to work?  Then if I want to do a
+> build without kgdb then I need to go in and change my agetty to point
+> back at my normal serial port?
+> 
+> It kinda feels like a better way to much of what the driver does would be to:
+> 
+> 1. Allow kgdb to sniff incoming serial bytes on a port and look for
+> its characters.  We already have this feature in the kernel to a small
+> extent for sniffing a break / sysrq character.
+> 
+> 2. If userspace doesn't happen to have the serial port open then
+> ideally we could open the port (using all the standard APIs that
+> already exist) from in the kernel and just throw away all the bytes
+> (since we already sniffed them).  As soon as userspace tried to open
+> the port when it would get ownership and if userspace ever closed the
+> port then we'd start reading / throwing away bytes again.
+> 
+> If we had a solution like that:
+> 
+> a) No serial drivers would need to change.
+> 
+> b) No kernel command line parameters would need to change.
+> 
+> Obviously that solution wouldn't magically get you an NMI, though.
+> For that I'd presume the right answer would be to add a parameter for
+> each serial driver that can support it to run its rx interrupt in NMI
+> mode.
+
+... or allow modal changes to the uart driver when kgdboc comes up?
+
+We already allow UART drivers to de-optimize themselves and use
+different code paths when polling is enabled so its not totally crazy
+;-).
+
+
+> Of course, perhaps I'm just confused and crazy and the above is a
+> really bad idea.
+
+Thanks for bringing this up.
+
+Sumit and I were chatting last week and our discussion went in a similar
+direction (I think not exactly the same which is why it is good to
+see your thoughts too).
+
+Personally I think it comes down to how intrusive adding NMI support is
+to serial drivers. kgdb_nmi is rather hacky and feels a bit odd to
+enable. It is clearly intended to avoid almost all changes to the UART
+driver. On our side we have been wondering whether the serial core can
+add helpers to make it easy for a serial driver to implement an simple,
+safe but not optimal NMI implementation. Making it easy to have
+safety-first might make NMI more palatable.
+
+
+> Speaking of confused: is there actually any way to use the existing
+> kgdb NMI driver (CONFIG_SERIAL_KGDB_NMI) in mainline without out of
+> tree patches?  When I looked before I assumed it was just me that was
+> outta luck because I didn't have NMI at the time, but I just did some
+> grepping and I can't find anyplace in mainline where
+> "arch_kgdb_ops.enable_nmi" would not be NULL.  Did I miss it, or do we
+> need out-of-tree patches to enable this?
+
+Out-of-tree...
+
+If, after looking at other approaches, we do all agree to nuke kgdb_nmi
+then there shouldn't be much impediment (nor that many tears).
+
+
+Daniel.
