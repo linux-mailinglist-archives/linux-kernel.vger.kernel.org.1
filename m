@@ -2,67 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813EB20E130
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FAB20E192
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389886AbgF2Uww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
+        id S2389996AbgF2U5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730527AbgF2TNX (ORCPT
+        with ESMTP id S1731263AbgF2TNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:23 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD43EC0005E1;
-        Mon, 29 Jun 2020 04:49:34 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id w16so16268548ejj.5;
-        Mon, 29 Jun 2020 04:49:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GLjynTsVrR6VbalMpEbWa6xOYmDXyiUF5lBzn2Cag8M=;
-        b=eqyEV5/8wo72dYbOmPN4wgCvRYBqfaAoyfDWTA/CziIDDGjlgp5AMb9qLoJ1vL2AN7
-         hmGOj1A/wyNdaKWhtlgIZLRLxiX2fEpb4IOPAhSdmzJ7oGaVY+axBuEfBypjDhCz/Zg8
-         EXIfHry5/6cYajE3ATmDROKLRJ4k3bYc/6CrcuWhsgyAlMAHp3ZnckE0m+pMIEZhymLz
-         P26GvXuz2urtiK7i65JWdY1i9xYu2sbgLPUcqRMzLNuBZXzatJWsx+KkjjF3QXnjNKOl
-         75gpg48B6xD+z5UzuML/n8RJdX2buPaYyuSPKy05xio8NsmF4TxI8sHXJJ75QnI+f38e
-         HCQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GLjynTsVrR6VbalMpEbWa6xOYmDXyiUF5lBzn2Cag8M=;
-        b=pxQYIkMZjc3LEJjjFcTk9hHmDgTJPLSGCu9LCU+jj+6NYZ8LDP1FZ4Z3tM7SRDG2bC
-         xm/MNNI7PATOfVzvTw4NvCUT2GG+Vr3qRS4g7AF4x6wfsGcRY1N7MHxUPH3oiJ1uDhz5
-         uNHIDztFPkjVhiJbq27atZkEZVTPDZwxWkciiybXV5GT90zVUVv1KpiUSTfDn+loGjt1
-         1LqYdybqxBJI6JdsU+4aiITHoXz0rwk02aIJpLz55qNiWJm3HyPw+im3N8fEWo8q3E5A
-         DrlEVjmYCvH03QDVfZEc/8w0qhPSjaadWnpU2SsJcbr8zR58O9fPTivYJAOfpqkIKHqc
-         qjkA==
-X-Gm-Message-State: AOAM530+ECgnXufHSdHz6mFbIIZd9SHCHNOSOOhgdzNd1KowT2esqq/Y
-        eQjSTje4tyt+dYTdtrXh2v0wxViityE=
-X-Google-Smtp-Source: ABdhPJwqTPpW4lJkydjKNl2Ck5Ak3OQZa+r9ZAz2vMIOcNY6+NsQKHqERgvNSE0oQIqUe9KpwlAafg==
-X-Received: by 2002:a17:906:fc20:: with SMTP id ov32mr12827208ejb.531.1593431373396;
-        Mon, 29 Jun 2020 04:49:33 -0700 (PDT)
-Received: from xps13.lan (3e6b1cc1.rev.stofanet.dk. [62.107.28.193])
-        by smtp.googlemail.com with ESMTPSA id z20sm9818006edq.97.2020.06.29.04.49.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 04:49:32 -0700 (PDT)
-From:   Bruno Thomsen <bruno.thomsen@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>, bth@kamstrup.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Bruno Thomsen <bruno.thomsen@gmail.com>
-Subject: [PATCH 3/3] MAINTAINERS: Add Bruno Thomsen as reviewer of Kamstrup DTS
-Date:   Mon, 29 Jun 2020 13:49:27 +0200
-Message-Id: <20200629114927.17379-3-bruno.thomsen@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200629114927.17379-1-bruno.thomsen@gmail.com>
-References: <20200629114927.17379-1-bruno.thomsen@gmail.com>
+        Mon, 29 Jun 2020 15:13:06 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058DDC0D941B;
+        Mon, 29 Jun 2020 05:01:03 -0700 (PDT)
+Received: from pendragon.bb.dnainternet.fi (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 07B58734;
+        Mon, 29 Jun 2020 14:01:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1593432062;
+        bh=X0xCbcYYYzfCKHt5yFv1VQW59LoexinUu8b4tbBY7VU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=S5gF1lYbPD5U7b9shzsI+EzCTcQZ14Chmrflm1b+TCuAJ2Yq0MXD2Ds1TsocSI50E
+         RIyuIUhozo3GKTcD6xFieOC6MHOaAl4A1FEhFOr4jtLhwiM9KSSV0HIQeDL8I4wQZk
+         jVcDb0HmYnbtZfjEjdhNQ06b/gTCz93lsoz9RNUA=
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org
+Subject: [PATCH v9 1/3] dt-bindings: phy: Add DT bindings for Xilinx ZynqMP PSGTR PHY
+Date:   Mon, 29 Jun 2020 15:00:52 +0300
+Message-Id: <20200629120054.29338-2-laurent.pinchart@ideasonboard.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200629120054.29338-1-laurent.pinchart@ideasonboard.com>
+References: <20200629120054.29338-1-laurent.pinchart@ideasonboard.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -70,30 +44,171 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as reviewer of device trees for Kamstrup
-Concentrators.
+From: Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>
 
-Signed-off-by: Bruno Thomsen <bruno.thomsen@gmail.com>
+Add DT bindings for the Xilinx ZynqMP PHY. ZynqMP SoCs have a High Speed
+Processing System Gigabit Transceiver which provides PHY capabilities to
+USB, SATA, PCIE, Display Port and Ehernet SGMII controllers.
+
+Signed-off-by: Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- MAINTAINERS | 5 +++++
- 1 file changed, 5 insertions(+)
+Changes since v8:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 496fd4eafb68..97fc112309af 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9282,6 +9282,11 @@ S:	Maintained
- F:	Documentation/hwmon/k8temp.rst
- F:	drivers/hwmon/k8temp.c
- 
-+KAMSTRUP CONCENTRATORS
-+R:	Bruno Thomsen <bruno.thomsen@gmail.com>
-+S:	Maintained
-+F:	arch/arm/boot/dts/imx7d-flex-concentrator*.dts
+- Rebase on phy/next
+
+Changes since v7:
+
+- Switch to GPL-2.0-only OR BSD-2-Clause
+
+Changes since v6:
+
+- Fixed specification of compatible-dependent xlnx,tx-termination-fix
+  property
+- Dropped status property from example
+- Use 4 spaces to indent example
+
+Changes since v5:
+
+- Document clocks and clock-names properties
+- Document resets and reset-names properties
+- Replace subnodes with an additional entry in the PHY cells
+- Drop lane frequency PHY cell, replaced by reference clock phandle
+- Convert bindings to YAML
+- Reword the subject line
+- Drop Rob's R-b as the bindings have significantly changed
+- Drop resets and reset-names properties
+---
+ .../bindings/phy/xlnx,zynqmp-psgtr.yaml       | 105 ++++++++++++++++++
+ include/dt-bindings/phy/phy.h                 |   1 +
+ 2 files changed, 106 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
+
+diff --git a/Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml b/Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
+new file mode 100644
+index 000000000000..09e3cde7ebca
+--- /dev/null
++++ b/Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
+@@ -0,0 +1,105 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/phy/xlnx,zynqmp-psgtr.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- KASAN
- M:	Andrey Ryabinin <aryabinin@virtuozzo.com>
- R:	Alexander Potapenko <glider@google.com>
++title: Xilinx ZynqMP Gigabit Transceiver PHY Device Tree Bindings
++
++maintainers:
++  - Laurent Pinchart <laurent.pinchart@ideasonboard.com>
++
++description: |
++  This binding describes the Xilinx ZynqMP Gigabit Transceiver (GTR) PHY. The
++  GTR provides four lanes and is used by USB, SATA, PCIE, Display port and
++  Ethernet SGMII controllers.
++
++properties:
++  "#phy-cells":
++    const: 4
++    description: |
++      The cells contain the following arguments.
++
++      - description: The GTR lane
++        minimum: 0
++        maximum: 3
++      - description: The PHY type
++        enum:
++          - PHY_TYPE_DP
++          - PHY_TYPE_PCIE
++          - PHY_TYPE_SATA
++          - PHY_TYPE_SGMII
++          - PHY_TYPE_USB
++      - description: The PHY instance
++        minimum: 0
++        maximum: 1 # for DP, SATA or USB
++        maximum: 3 # for PCIE or SGMII
++      - description: The reference clock number
++        minimum: 0
++        maximum: 3
++
++  compatible:
++    enum:
++      - xlnx,zynqmp-psgtr-v1.1
++      - xlnx,zynqmp-psgtr
++
++  clocks:
++    minItems: 1
++    maxItems: 4
++    description: |
++      Clock for each PS_MGTREFCLK[0-3] reference clock input. Unconnected
++      inputs shall not have an entry.
++
++  clock-names:
++    minItems: 1
++    maxItems: 4
++    items:
++      pattern: "^ref[0-3]$"
++
++  reg:
++    items:
++      - description: SERDES registers block
++      - description: SIOU registers block
++
++  reg-names:
++    items:
++      - const: serdes
++      - const: siou
++
++  xlnx,tx-termination-fix:
++    description: |
++      Include this for fixing functional issue with the TX termination
++      resistance in GT, which can be out of spec for the XCZU9EG silicon
++      version.
++    type: boolean
++
++required:
++  - "#phy-cells"
++  - compatible
++  - reg
++  - reg-names
++
++if:
++  properties:
++    compatible:
++      const: xlnx,zynqmp-psgtr-v1.1
++
++then:
++  properties:
++    xlnx,tx-termination-fix: false
++
++additionalProperties: false
++
++examples:
++  - |
++    phy: phy@fd400000 {
++        compatible = "xlnx,zynqmp-psgtr-v1.1";
++        reg = <0x0 0xfd400000 0x0 0x40000>,
++              <0x0 0xfd3d0000 0x0 0x1000>;
++        reg-names = "serdes", "siou";
++        clocks = <&refclks 3>, <&refclks 2>, <&refclks 0>;
++        clock-names = "ref1", "ref2", "ref3";
++        #phy-cells = <4>;
++    };
++
++...
+diff --git a/include/dt-bindings/phy/phy.h b/include/dt-bindings/phy/phy.h
+index 3727ef72138b..36e8c241cf48 100644
+--- a/include/dt-bindings/phy/phy.h
++++ b/include/dt-bindings/phy/phy.h
+@@ -18,5 +18,6 @@
+ #define PHY_TYPE_UFS		5
+ #define PHY_TYPE_DP		6
+ #define PHY_TYPE_XPCS		7
++#define PHY_TYPE_SGMII		8
+ 
+ #endif /* _DT_BINDINGS_PHY */
 -- 
-2.26.2
+Regards,
+
+Laurent Pinchart
 
