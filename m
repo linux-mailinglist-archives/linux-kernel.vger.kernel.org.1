@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0308B20E6D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8474B20E6B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731658AbgF2VvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40474 "EHLO
+        id S2404375AbgF2Vt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404373AbgF2VtY (ORCPT
+        with ESMTP id S2404376AbgF2VtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:49:24 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9217AC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:49:24 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id i25so18911189iog.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:49:24 -0700 (PDT)
+        Mon, 29 Jun 2020 17:49:25 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C966CC08C5DB
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:49:25 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id e64so13914761iof.12
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:49:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OnwKMPzUR7vm+fNhfAe4BP95ZmBSiCousJyVZMr+eU4=;
-        b=uGRgKAiimrgL2i7Xoqg6kmfwYFmRBO1K+Hf2WRe219l2vR8aW/OqlhuegRdkChRdnc
-         rEWIRCb8GE4FvyD09etNE9iSoN66TFoedqfseGxy3t/ApZOdAWdhxQf6B8bBOQSOftS8
-         2P+qW5At3Ax4AqjfZVFTIpQGDm2A5NvFvPIvJv0NNZx6/t/jqaxv0r/K/R2ZZgkG7DBb
-         R8Rp46qzgzYKi2/RcXo92Efw+ZSAAMW9H0sm6Nanma6Vr90PCjA5lK5gj1G30t2HFupD
-         GrRfqkvcrxE5h0e4j5J/9sgEEnH9T/9T1oEnU7jgIUS27wS1H8ThmX0gfIGXYHG6ER0w
-         GGCg==
+        bh=Il6tZPozA+81DRifdvTR8dOWxcR0CVn20QskeLQXSZw=;
+        b=lqVFoan+9JSGnYlS5t8a7bwkLr0z10ICIXqMz1hxYO2oexKA364ZUNfCWNwL08JpmV
+         /+lTaRryvPqLqMDfxaUqYfWDiWmkBmfw0qumv6sX9x0klUHBMOWHwQEfPE0DrOzkOdkb
+         7wixiAuLQCtC/YN23hPtrj4jLV5oAsLVbPBXJ8TBA8EV9hHV91KOPCr5cw0/45VidQES
+         4qdyKi2LtpZIUPhVU3tfScB08DgQkCQWt9MiY2NZBC3QSvT02SLVg0K9QsaR/BKImE6l
+         SQBJIAvz/PD665euNXFPJlogsqAJ7Rj57mGmlamjHDL7pyuN6NT+2Pxl7fUBlRPom8JU
+         6K1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OnwKMPzUR7vm+fNhfAe4BP95ZmBSiCousJyVZMr+eU4=;
-        b=jD+sfnL2hbi95Q3Os4rFvbdRm61MrWwvNlX/Q2e4/TI6A8hBzETMV7QFxpb1+QJU/P
-         7CFSxz/7EmjZ+siAZxvhYIOIt9xaGz5y1kym1Ti13DyN1bkBKDKSVWfGSOU6djxnRTKx
-         yCiZXKTr6j7Ewy3KhRzkOioQP3KEitf80hczqmjv2h8jeqVakGCaJULGIn9h8JV1io31
-         nmncYLKT1exaKZOP6C7XIZzjWJ3anDmgsdKjPVBNn+qI5atbHDpmk6tZMczIfsT6+NkS
-         AEEiPDUe6m8DASGqiAkB+GX26LZKCVJ9qDIzxOJ9H9McKXUiwYifAMr6TzwDmMmloQW+
-         sHPQ==
-X-Gm-Message-State: AOAM532ImgMkyWWtQa4/S5Zfc/5zoD6I9QuD2T/SiFtTgz2B+2FMRAQF
-        iXz1EDy/UWkJrjHqKTAGK5wdPw==
-X-Google-Smtp-Source: ABdhPJzQw2nxuO3eOLUdcXu6/d/nND+rrrENJbWNxkhhgZktkVnd+vMwypSgufU/1EQnjqLTnT2seA==
-X-Received: by 2002:a05:6638:601:: with SMTP id g1mr20258787jar.137.1593467363991;
-        Mon, 29 Jun 2020 14:49:23 -0700 (PDT)
+        bh=Il6tZPozA+81DRifdvTR8dOWxcR0CVn20QskeLQXSZw=;
+        b=Ski2SvWg1sJzChNd3jNTQ7njPMAI/iZtvfYjndPvP7m/W18DBJf7r99Wp3HSrZ1R4S
+         t0IDSLmwCbrybaniAfgISaHgeZ+0hPeBhrf7i+BTYCIqpbLwpxOLJ2Vrx5rhS2TtlD9p
+         iRnti6P57QJcpFQ54XdCzskY2X0OITiI2EgSmZhD8IdDNJxXiMg/IEXznB0Q97jJ1HZ/
+         hIf3bYTg0NQZc6kdSxeTff4yTDQzul8N5IAOFCXp02EEmdYgXEHQ15K2eyWbnijBfYH8
+         uwyaX+k+ia3rkVxlzjgA+WqND8JB3mjuSUiHjohJPnKtCpa8arKQpndfAV7ZpMEMdvvO
+         RxQQ==
+X-Gm-Message-State: AOAM531aTuTVpRO8WQILiPYITfEgDlx4ihGPh3uzvs1B9pzbULVvDLGf
+        2a7GARJfl4Yl5oT4UxdrUNWGaQ==
+X-Google-Smtp-Source: ABdhPJzrssCIiELFHZzXgJZAcnCKtob6IAke/+TnnTYjfE0zxV6PrMK6Y8E2HFZxkcLHSpX52PPrzQ==
+X-Received: by 2002:a02:10c1:: with SMTP id 184mr19313863jay.135.1593467365137;
+        Mon, 29 Jun 2020 14:49:25 -0700 (PDT)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id u10sm555500iow.38.2020.06.29.14.49.22
+        by smtp.gmail.com with ESMTPSA id u10sm555500iow.38.2020.06.29.14.49.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 14:49:23 -0700 (PDT)
+        Mon, 29 Jun 2020 14:49:24 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     evgreen@chromium.org, subashab@codeaurora.org,
         cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 1/5] net: ipa: head-of-line block registers are RX only
-Date:   Mon, 29 Jun 2020 16:49:15 -0500
-Message-Id: <20200629214919.1196017-2-elder@linaro.org>
+Subject: [PATCH net-next 2/5] net: ipa: metadata_mask register is RX only
+Date:   Mon, 29 Jun 2020 16:49:16 -0500
+Message-Id: <20200629214919.1196017-3-elder@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629214919.1196017-1-elder@linaro.org>
 References: <20200629214919.1196017-1-elder@linaro.org>
@@ -66,48 +66,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The INIT_HOL_BLOCK_EN and INIT_HOL_BLOCK_TIMER endpoint registers
-are only valid for RX endpoints.
-
-Have ipa_endpoint_modem_hol_block_clear_all() skip writing these
-registers for TX endpoints.
+The INIT_HDR_METADATA_MASK endpoint configuration register is only
+valid for RX endpoints.  Rather than writing a zero to that register
+for TX endpoints, avoid writing the register at all.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_endpoint.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/ipa/ipa_endpoint.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index 9f50d0d11704..3f5a41fc1997 100644
+index 3f5a41fc1997..0c2bec166066 100644
 --- a/drivers/net/ipa/ipa_endpoint.c
 +++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -642,6 +642,8 @@ static int ipa_endpoint_init_hol_block_timer(struct ipa_endpoint *endpoint,
+@@ -527,10 +527,12 @@ static void ipa_endpoint_init_hdr_metadata_mask(struct ipa_endpoint *endpoint)
+ 	u32 val = 0;
  	u32 offset;
- 	u32 val;
  
 +	/* assert(!endpoint->toward_ipa); */
 +
- 	/* XXX We'll fix this when the register definition is clear */
- 	if (microseconds) {
- 		struct device *dev = &ipa->pdev->dev;
-@@ -671,6 +673,8 @@ ipa_endpoint_init_hol_block_enable(struct ipa_endpoint *endpoint, bool enable)
- 	u32 offset;
- 	u32 val;
+ 	offset = IPA_REG_ENDP_INIT_HDR_METADATA_MASK_N_OFFSET(endpoint_id);
  
-+	/* assert(!endpoint->toward_ipa); */
-+
- 	val = u32_encode_bits(enable ? 1 : 0, HOL_BLOCK_EN_FMASK);
- 	offset = IPA_REG_ENDP_INIT_HOL_BLOCK_EN_N_OFFSET(endpoint_id);
+ 	/* Note that HDR_ENDIANNESS indicates big endian header fields */
+-	if (!endpoint->toward_ipa && endpoint->data->qmap)
++	if (endpoint->data->qmap)
+ 		val = cpu_to_be32(IPA_ENDPOINT_QMAP_METADATA_MASK);
+ 
  	iowrite32(val, endpoint->ipa->reg_virt + offset);
-@@ -683,7 +687,7 @@ void ipa_endpoint_modem_hol_block_clear_all(struct ipa *ipa)
- 	for (i = 0; i < IPA_ENDPOINT_MAX; i++) {
- 		struct ipa_endpoint *endpoint = &ipa->endpoint[i];
- 
--		if (endpoint->ee_id != GSI_EE_MODEM)
-+		if (endpoint->toward_ipa || endpoint->ee_id != GSI_EE_MODEM)
- 			continue;
- 
- 		(void)ipa_endpoint_init_hol_block_timer(endpoint, 0);
+@@ -1306,10 +1308,10 @@ static void ipa_endpoint_program(struct ipa_endpoint *endpoint)
+ 			(void)ipa_endpoint_program_suspend(endpoint, false);
+ 		ipa_endpoint_init_hdr_ext(endpoint);
+ 		ipa_endpoint_init_aggr(endpoint);
++		ipa_endpoint_init_hdr_metadata_mask(endpoint);
+ 	}
+ 	ipa_endpoint_init_cfg(endpoint);
+ 	ipa_endpoint_init_hdr(endpoint);
+-	ipa_endpoint_init_hdr_metadata_mask(endpoint);
+ 	ipa_endpoint_init_mode(endpoint);
+ 	ipa_endpoint_status(endpoint);
+ }
 -- 
 2.25.1
 
