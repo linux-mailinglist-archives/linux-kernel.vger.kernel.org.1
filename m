@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE0120E63F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 262E820E618
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404092AbgF2Vpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37538 "EHLO
+        id S2388577AbgF2Vo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727124AbgF2Shm (ORCPT
+        with ESMTP id S1727819AbgF2Shq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:42 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E089CC00F836
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:48:00 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a6so16424980wrm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:48:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FwP8JJPtcWzsdQkUuHadbU0oZNWmZu/tGYbst3cTQzw=;
-        b=ml6IcAS0tlGAbS5Yi35OokE45RxF0PlZ3JGt98gnPLKHcCqHbUXqmS9PdkMcW8MEeD
-         nAdpEJRjuEjU33LDGSs8mOeNqej9cQUUwV1oCjYWIHXAYFjc4hoa+NFfqLh2BrXsxGwU
-         Aey8Ph72mumwG5PBRJkqa4N/anKJnrLqbygS9IIuId3q0EAMBtuaQiQXgQyF6j0tM5NJ
-         JtVTP07i2EIYkDv2ZhkHbxs0BLIMjYw+V1AyJY+Fvv4337ZFXkSSEqBTG0yBYsjHR1+N
-         KQfzuVk2r5gIZPDsYhj0V7yJQ2QsN/K2PUwgfx987ITORglch9ODjqGaZTYGtKkfKysx
-         VoOw==
+        Mon, 29 Jun 2020 14:37:46 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E03EC02A543
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:51:06 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id 9so17868005ljc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:51:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FwP8JJPtcWzsdQkUuHadbU0oZNWmZu/tGYbst3cTQzw=;
-        b=a38cbfIyYWigE6geVJfMELlCIcyK/2cv+DDwUk4BRoaXpgSAzr0HGFsmBi/zItnnzd
-         XF0TfvH2VCE/YD8lyNpNQ90bqU1/Z4JN6l1vn3BRmm3v3ZX3b6voE12a7HZ8ZmvNxVyX
-         2ExFaIBihrr90f8GLU1khRDubUVXZJCsxiy9qWRGkJeqhfUWNMow5a9SW8hxiw1RB6Nm
-         wMo9JddRx16h5ABekhMTu8UYFhKJ8PKgp8CBl0m/AbIe0+X6Mi/GlaG82eUiS/gxV5cG
-         deHdXAMYFq+X4ol+f8sXX+kMkzocrivz/5BwvQLmzVGUFdbBpkoamlSUkLukoOU+AD18
-         CuMw==
-X-Gm-Message-State: AOAM533vnGArLsP9fsnfMjpx3QAi1LCh64nMt3I2IUqIf7/W7fej/0+v
-        qoEoCHXrnAHOoeMm6gzP3JXBRg==
-X-Google-Smtp-Source: ABdhPJyQbkunaPWZht+ebwYU90pHFsz7tFovsxHwg6ZqsdgLm+mjM/1dJO07LLGXW+vHYNN8S/XRew==
-X-Received: by 2002:adf:f350:: with SMTP id e16mr16440164wrp.43.1593434879632;
-        Mon, 29 Jun 2020 05:47:59 -0700 (PDT)
-Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id e17sm12995924wrr.88.2020.06.29.05.47.58
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0LrwryG62eUyl2zqUjhBe++Y1D3GieTqe72DllAUzwU=;
+        b=C4qFFP+7RH7Vcxx5ZjN3j2bJnxL+r4+3jiGYt84pPaqsosTIEJNDj/UU0eZii3GXma
+         cZORP/L6e9NWAxNzlnX1cXOZbs/tDB32wYTaPaypAsMWNciOmzzVliM6jGL69iE0XLw8
+         H7gWBR/D0VhNTeuoQ8RlK5mGwYRUQ92NVqW22fm4T5jWKWVeLebVn3arK9cQjpnSL7+r
+         OeVfSiEcs16F6Tvbk5tL6tR9/ctWHGJtXU7mdqNXtapWOMXtRh8P7eZ4unM84LlCHZ5+
+         xz3tdLsHZj8zn/eDmLeyqodKDp2raRSH5Ddxs73WA/xBjuP7rFHvZckPtr0xnb9JBPJa
+         AJBg==
+X-Gm-Message-State: AOAM532yQ+KFB0uyqTqCbYRK5aVcBQCdFLjoXzfh8v6XaESPhR9BxKmo
+        CELdGshcp1Jh4ei6r++76Q2sLwl2vkM=
+X-Google-Smtp-Source: ABdhPJy1Oa+sFlJzr/Lrmq06b2ZzNN4W8IFLJhckyKTLVnMrowOCwFnL7cGHxQlWRfjiLHud6wIsow==
+X-Received: by 2002:a2e:3316:: with SMTP id d22mr1714816ljc.18.1593435064220;
+        Mon, 29 Jun 2020 05:51:04 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id l1sm2212934ljc.65.2020.06.29.05.51.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 05:47:59 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-        linux-pwm@vger.kernel.org
+        Mon, 29 Jun 2020 05:51:03 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1jptFW-0006wJ-Se; Mon, 29 Jun 2020 14:51:03 +0200
+Date:   Mon, 29 Jun 2020 14:51:02 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Joachim Eastwood <manabian@gmail.com>,
-        NeilBrown <neilb@suse.de>, Grant Erickson <marathon96@gmail.com>
-Subject: [PATCH 4/4] pwm: omap-dmtimer: Repair pwm_omap_dmtimer_chip's broken kerneldoc header
-Date:   Mon, 29 Jun 2020 13:47:52 +0100
-Message-Id: <20200629124752.1018358-5-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629124752.1018358-1-lee.jones@linaro.org>
-References: <20200629124752.1018358-1-lee.jones@linaro.org>
+        Johan Hovold <jhovold@gmail.com>
+Subject: Re: [PATCH 2/5] mfd: lm3533-ctrlbank: Cap BRIGHTNESS_MAX to 127
+ since API uses u8 as carrier
+Message-ID: <20200629125102.GT3334@localhost>
+References: <20200629123215.1014747-1-lee.jones@linaro.org>
+ <20200629123215.1014747-3-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200629123215.1014747-3-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Argument descriptions must be prepended with a '@' to be understood
-by the kerneldoc tooling/parsers/validators.
+On Mon, Jun 29, 2020 at 01:32:12PM +0100, Lee Jones wrote:
+> Since its conception in 2012 brightness has been artificially capped
+> at 127 since the variable carrying the value is u8.  We could go to
+> the trouble of changing the whole API (crossing 3 different subsystems),
+> but clearly this hasn't bothered anyone in the best part of a decade.
+> 
+> Simply, cap BRIGHTNESS_MAX to 127 instead (for now at least).
 
-Fixes the following W=1 warning:
+Hmm. This patch is clearly broken and would contrary to the claim be
+introducing an artificial cap at half brightness. u8 can hold the max
+brightness value 255 just fine.
 
-  drivers/pwm/pwm-omap-dmtimer.c:70: warning: Function parameter or member 'dm_timer_pdev' not described in 'pwm_omap_dmtimer_chip'
+> Fixes the following W=1 warning(s):
+> 
+>  drivers/mfd/lm3533-ctrlbank.c: In function ‘lm3533_ctrlbank_set_brightness’:
+>  drivers/mfd/lm3533-ctrlbank.c:98:10: warning: comparison is always false due to limited range of data type [-Wtype-limits]
+>  98 | if (val > LM3533_##_NAME##_MAX) | ^
+>  drivers/mfd/lm3533-ctrlbank.c:125:1: note: in expansion of macro ‘lm3533_ctrlbank_set’
+>  125 | lm3533_ctrlbank_set(brightness, BRIGHTNESS);
+>  | ^~~~~~~~~~~~~~~~~~~
 
-Cc: Tony Lindgren <tony@atomide.com>
-Cc: Joachim Eastwood <manabian@gmail.com>
-Cc: NeilBrown <neilb@suse.de>
-Cc: Grant Erickson <marathon96@gmail.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/pwm/pwm-omap-dmtimer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This warning is benign. The same macro is used to defined two function
+where in one case the max value coincides with U8_MAX so that the sanity
+check becomes redundant.
 
-diff --git a/drivers/pwm/pwm-omap-dmtimer.c b/drivers/pwm/pwm-omap-dmtimer.c
-index 0d31833db2e2c..75cea7f2aff5e 100644
---- a/drivers/pwm/pwm-omap-dmtimer.c
-+++ b/drivers/pwm/pwm-omap-dmtimer.c
-@@ -58,7 +58,7 @@
-  * @mutex:		Mutex to protect pwm apply state
-  * @dm_timer:		Pointer to omap dm timer.
-  * @pdata:		Pointer to omap dm timer ops.
-- * dm_timer_pdev:	Pointer to omap dm timer platform device
-+ * @dm_timer_pdev:	Pointer to omap dm timer platform device
-  */
- struct pwm_omap_dmtimer_chip {
- 	struct pwm_chip chip;
--- 
-2.25.1
+> Cc: Johan Hovold <jhovold@gmail.com>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/mfd/lm3533-ctrlbank.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mfd/lm3533-ctrlbank.c b/drivers/mfd/lm3533-ctrlbank.c
+> index 34fba06ec7057..348ce67453092 100644
+> --- a/drivers/mfd/lm3533-ctrlbank.c
+> +++ b/drivers/mfd/lm3533-ctrlbank.c
+> @@ -17,7 +17,7 @@
+>  #define LM3533_MAX_CURRENT_MAX		29800
+>  #define LM3533_MAX_CURRENT_STEP		800
+>  
+> -#define LM3533_BRIGHTNESS_MAX		255
+> +#define LM3533_BRIGHTNESS_MAX		127  /* Capped by API - could be up to 255 */
+>  #define LM3533_PWM_MAX			0x3f
+>  
+>  #define LM3533_REG_PWM_BASE		0x14
 
+Johan
