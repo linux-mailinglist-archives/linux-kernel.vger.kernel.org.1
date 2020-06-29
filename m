@@ -2,85 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B3C20E1BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C3920DF51
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389911AbgF2U6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:58:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731251AbgF2TNC (ORCPT
+        id S2389386AbgF2UeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:34:23 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28391 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730093AbgF2TZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:02 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E6AC00E3F8;
-        Mon, 29 Jun 2020 05:16:09 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id o18so11889056eje.7;
-        Mon, 29 Jun 2020 05:16:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=soXbhE7fjamRPVpZww01jKbOBo61CZjTIZgKR2wcZEM=;
-        b=Es+y1ZcaFE2vyCcFPTaEYe17yllLj4xwPgelB6vNVhT6If85EMMEEoqcEXGHKlO5j9
-         r9I7EmCPe2amg3d60HJp9VhsfrvguLKNGZxpFyaJnNYmAMWlc22X/9D4KnoMJUkKpIk7
-         wVkcc9u2zPA3Woe/4vuUiI+eZzUSE/zj3U/shduIu+ZaZYvzjzxZ0yjKmuWfC63Ia16q
-         VUD/BrbSbMhGRCd8+q5RVU8LDnvePf0HL9m70oPYoG09tLusSgOhSCFM44UoTQvie1cL
-         De2k7jXdx3A4vDrzulA2jsFfkVGWbqnvjG4/ZDcGk/yTg6Tx36oChwqyqphcb0laxjeY
-         Xhrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=soXbhE7fjamRPVpZww01jKbOBo61CZjTIZgKR2wcZEM=;
-        b=L0kdPZ4uxOA3be8s1CDoQsFWc0Q/y9qgH+r5gBpihg921a3ACsCFFXCi/FVMJvxlWD
-         hgnqXm82qxf5kC1cM4BBI9JRPDHNQKn/hw/9PYzZ6eAa9V3w9RN3bIlQk4s5vmtmUQY1
-         JC8T+d6OxZzc/o0Q92+22fh7az5e+Zw4hBLSrTdxm86FQJnfzZcXNTA3iPWgzv49Lg5L
-         4rNAydAa9poxcKfN5+VU/LvHZ4SNz4cUpCrg2pwbmXW29WmaOU0sWNmZpPbuvDC67Zvy
-         a5VycNsNZzykZbaZw7ZsrDVCrNQrdAHBfJATmGae3Qg/4O6r2cLKdytZUHRpEXogSa0Q
-         PGQg==
-X-Gm-Message-State: AOAM531Nh+5nUTMZjkk5Mbwj8F3jCo4n+GvUDJuJU7R4GTgEd/1K5VH0
-        ynF8pYguCDtcWObhMfhFDw1h+iasPuGbEEH2GZk=
-X-Google-Smtp-Source: ABdhPJxibo/BsVYpl4Oy+gCRpolTV0ZDAlF/gJWHHVyBTDNjk0EwwwBF7+zdsNd3Zc80ngr8WBE4JutDoPOiK7iCNno=
-X-Received: by 2002:a17:907:264d:: with SMTP id ar13mr9310992ejc.504.1593432967918;
- Mon, 29 Jun 2020 05:16:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200621213806.551879-1-konradybcio@gmail.com>
- <20200621213806.551879-8-konradybcio@gmail.com> <20200629120911.GA1319@bug>
-In-Reply-To: <20200629120911.GA1319@bug>
-From:   Konrad Dybcio <konradybcio@gmail.com>
-Date:   Mon, 29 Jun 2020 14:15:32 +0200
-Message-ID: <CAMS8qEXdoX1Zpm660sOMM9b2rni9qXM_7rAi9kkzFBQYmL3EgQ@mail.gmail.com>
-Subject: Re: [PATCH 7/8] arm64: dts: qcom: Add support for Sony Xperia
- XA2/Plus/Ultra (Nile platform)
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-clk@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-gpio@vger.kernel.org
+        Mon, 29 Jun 2020 15:25:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593458713;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lZIwwdY+4quyzpnR8PUmWqC5xEd+/+UfLosIlVye92g=;
+        b=XfTI9qoX+sXb18yxRHATyx9lYlpAmQxaBGhH+Q59uMKyWWHF3IJC3OAk7st/0l13bAUF/H
+        ASig2sVX3qHT0YY+4EvsIwvi/f1nTu7MtvnnBv6BQyBKSfqSCdqiNTi71HuD46AXwFp797
+        zjzvXOB58eyS8FWNTE9M+s3DZnLNFQQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-308-I02TrkkrNZaFJyo8zF93YA-1; Mon, 29 Jun 2020 08:23:52 -0400
+X-MC-Unique: I02TrkkrNZaFJyo8zF93YA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D5D2464;
+        Mon, 29 Jun 2020 12:23:51 +0000 (UTC)
+Received: from starship (unknown [10.35.206.100])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 46A7D5D9DA;
+        Mon, 29 Jun 2020 12:23:50 +0000 (UTC)
+Message-ID: <649f4c040c2f6dd2d83e984a88343917d498b4ad.camel@redhat.com>
+Subject: Re: [PATCH v2 0/5] Fix split view search and debug info navigation
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 29 Jun 2020 15:23:49 +0300
+In-Reply-To: <cover.1593423060.git.mchehab+huawei@kernel.org>
+References: <cover.1593423060.git.mchehab+huawei@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Do you really want autorepeat on keys like camera focus?
+On Mon, 2020-06-29 at 11:35 +0200, Mauro Carvalho Chehab wrote:
+> This series fixes some issues with search while on split view and fix the
+> broken hyperlink navigation.
+> 
+> The first patches restore the pre-Qt5 conversion behavior. The last
+> one implements navigation on a different way. I opted to keep this one
+> in separate, as this one is a new feature.
+> 
+> Mauro Carvalho Chehab (5):
+>   kconfig: qconf: cleanup includes
+>   kconfig: qconf: ensure that only one item will be highlighted
+>   kconfig: qconf: make search fully work again on split mode
+>   kconfig: qconf: make debug links work again
+>   kconfig: qconf: navigate menus on hyperlinks
+> 
+>  scripts/kconfig/qconf.cc | 120 +++++++++++++++++++++++++++++----------
+>  scripts/kconfig/qconf.h  |  15 ++---
+>  2 files changed, 98 insertions(+), 37 deletions(-)
+> 
+I tested the series, and it works really well here.
+Thanks a lot for the patch 5, I indeed noted that 
+I am not sure it ever worked like that but it does now, 
+and it is a very good improvement in terms of usability.
 
-I miiiight want to reconsider that when it will actually be in use :)
+There is still a tiny issue in patch 5 - sometimes already
+selected items remain selected like it was in the search (now fixed).
 
-> No volume up?
+Also I found another bug - clicking on '..' menu doesn't work:
 
-On this board, vol up is managed by pm660 resin.
+For example select 'input device support', then 'keyboards' on the right,
+then you can't get back. It also might be something that never worked,
+and it doesn't bother me, I just note this for reference.
 
-Regards
-Konrad
+Thanks a lot for these fixes!
+Best regards,
+	Maxim Levitsky
+
