@@ -2,138 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CE520E337
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B2D20E3B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390445AbgF2VMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:12:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730149AbgF2S5o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:57:44 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F3DC030F1B
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:29:43 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id x62so13302281qtd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:29:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eAEmaN/NdVFefXDM6LfGtyV/V/D8hHRz0d76RasnyHc=;
-        b=aUVNgh6tt8rsssN1Zw55aKmbKP1FBMvcU6Li23i8y2DGTLDckWw/CTpboiYvWDGDFE
-         U1DxleAoFoNnmxvS84E+CNSUXnw9SzDbuEdu9Uk3O23rG09zQF/yAlaCZhvHE5XyPq+k
-         z7z9o8GsnZKiEPRibPmxlmSJv9GgZciUoiK08=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eAEmaN/NdVFefXDM6LfGtyV/V/D8hHRz0d76RasnyHc=;
-        b=eSV+i2bG/Pz0nqBdvSPWRYo71Y9P1ampP/QP8G16XJFD2a9+dDRVKEmv5/9zblF9ke
-         DfNcJkRivtYy4Ncnt58EnWeik+VNNBUlXx3Md49sxOp+IGWbJtq9Vsh289dvsu8S/pBE
-         rESeJsh666Y7NKQlw66ZI5EGwQN1rbiU92I/Ap+kbK3FhbNtjrEmAVhKyttf/jLt/lOp
-         xZwmMM4+gGVBiezEgRYMN0sYZMwH3Ri1Ka5UX9vtop2W8HdJxgMap7ig/kW3kxsMrNh6
-         VLzv6blEA0sStgF6D/DcIVsDghmut1gp1vdxBxJ40ORSL3S9RuyOPUnPgJweOtX5JaEh
-         v+7A==
-X-Gm-Message-State: AOAM531DFj9uS+UCf/uY+byqdlnGq92CfJxWhr0nBoOJakFKSgunKzv2
-        UtbOBMhrKYsTOLfgx71SPrxvIvfQRVMrYUxAMoldGQ==
-X-Google-Smtp-Source: ABdhPJyJcSRHPydBEPn+HrFFAz4W0t9grJUr11/a8seW7COTXxyCGGTrC9xcPD9k+gx/hDH5i0au+pkPrSsko76LuN0=
-X-Received: by 2002:ac8:1991:: with SMTP id u17mr15942854qtj.93.1593448182155;
- Mon, 29 Jun 2020 09:29:42 -0700 (PDT)
+        id S2390627AbgF2VRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:17:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:36808 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729398AbgF2Sy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:54:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 688D11570;
+        Mon, 29 Jun 2020 09:29:37 -0700 (PDT)
+Received: from [10.57.21.32] (unknown [10.57.21.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8D8123F71E;
+        Mon, 29 Jun 2020 09:29:36 -0700 (PDT)
+Subject: Re: [PATCH] iommu: SUN50I_IOMMU should depend on HAS_DMA
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20200629121146.24011-1-geert@linux-m68k.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <c2047394-ea6e-3bc3-4bf0-a732237dbeca@arm.com>
+Date:   Mon, 29 Jun 2020 17:29:36 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <20200629161333.2110327-1-pmalani@chromium.org>
- <20200629161333.2110327-2-pmalani@chromium.org> <CABXOdTe_t94GL6soaZbXp5TVxnG72zHRqh_qTa+zpmzTCw50ng@mail.gmail.com>
-In-Reply-To: <CABXOdTe_t94GL6soaZbXp5TVxnG72zHRqh_qTa+zpmzTCw50ng@mail.gmail.com>
-From:   Prashant Malani <pmalani@chromium.org>
-Date:   Mon, 29 Jun 2020 09:29:30 -0700
-Message-ID: <CACeCKafrDOyziU5-FmOWQ8cPojxTgwo49osZFgmeO4O33QAGbg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Add PM support
-To:     Guenter Roeck <groeck@google.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200629121146.24011-1-geert@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+On 2020-06-29 13:11, Geert Uytterhoeven wrote:
+> If NO_DMA=y (e.g. Sun-3 all{mod,yes}-config):
+> 
+>      drivers/iommu/dma-iommu.o: In function `iommu_dma_mmap':
+>      dma-iommu.c:(.text+0x92e): undefined reference to `dma_pgprot'
+> 
+> IOMMU_DMA must not be selected, unless HAS_DMA=y.
 
-Thanks for reviewing the patch.
+Wait, no, IOMMU_DMA should not be selected by drivers at all - it's for 
+arch code to choose.
 
-On Mon, Jun 29, 2020 at 9:25 AM Guenter Roeck <groeck@google.com> wrote:
->
-> On Mon, Jun 29, 2020 at 9:13 AM Prashant Malani <pmalani@chromium.org> wrote:
-> >
-> > Define basic suspend resume functions for cros-ec-typec. On suspend, we
-> > simply ensure that any pending port update work is completed, and on
-> > resume, we re-poll the port state to account for any
-> > changes/disconnections that might have occurred during suspend.
-> >
-> > Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> > ---
-> >
-> > Changes in v2:
-> > - Remove #ifdef-ery, add __maybe_unused tag to functions.
-> >
-> >  drivers/platform/chrome/cros_ec_typec.c | 26 +++++++++++++++++++++++++
-> >  1 file changed, 26 insertions(+)
-> >
-> > diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> > index 630170fb2cbe..b2e7e928e788 100644
-> > --- a/drivers/platform/chrome/cros_ec_typec.c
-> > +++ b/drivers/platform/chrome/cros_ec_typec.c
-> > @@ -725,11 +725,37 @@ static int cros_typec_probe(struct platform_device *pdev)
-> >         return ret;
-> >  }
-> >
-> > +static int __maybe_unused cros_typec_suspend(struct device *dev)
-> > +{
-> > +       struct cros_typec_data *typec = dev_get_drvdata(dev);
-> > +
-> > +       cancel_work_sync(&typec->port_work);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int __maybe_unused cros_typec_resume(struct device *dev)
-> > +{
-> > +       struct cros_typec_data *typec = dev_get_drvdata(dev);
-> > +
-> > +       /* Refresh port state. */
-> > +       schedule_work(&typec->port_work);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static const struct dev_pm_ops cros_typec_pm_ops = {
-> > +       SET_SYSTEM_SLEEP_PM_OPS(cros_typec_suspend, cros_typec_resume)
-> > +};
-> > +
-> > +#define DEV_PM_OPS     (&cros_typec_pm_ops)
->
-> I don't think this define adds any value.
+x86 just complicates matters with some of its arch code being in its 
+IOMMU drivers...
 
-Right. Sorry, got sloppy here. Will push another patchset. Thanks for
-catching this.
+Robin.
 
-Best regards,
-
->
-> > +
-> >  static struct platform_driver cros_typec_driver = {
-> >         .driver = {
-> >                 .name = DRV_NAME,
-> >                 .acpi_match_table = ACPI_PTR(cros_typec_acpi_id),
-> >                 .of_match_table = of_match_ptr(cros_typec_of_match),
-> > +               .pm = DEV_PM_OPS,
-> >         },
-> >         .probe = cros_typec_probe,
-> >  };
-> > --
-> > 2.27.0.212.ge8ba1cc988-goog
-> >
+> Hence fix this by making SUN50I_IOMMU depend on HAS_DMA.
+> 
+> Fixes: 4100b8c229b32835 ("iommu: Add Allwinner H6 IOMMU driver")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>   drivers/iommu/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+> index 6dc49ed8377a5c12..b0f308cb7f7c2fc2 100644
+> --- a/drivers/iommu/Kconfig
+> +++ b/drivers/iommu/Kconfig
+> @@ -305,6 +305,7 @@ config ROCKCHIP_IOMMU
+>   
+>   config SUN50I_IOMMU
+>   	bool "Allwinner H6 IOMMU Support"
+> +	depends on HAS_DMA
+>   	depends on ARCH_SUNXI || COMPILE_TEST
+>   	select ARM_DMA_USE_IOMMU
+>   	select IOMMU_API
+> 
