@@ -2,50 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CACB20D6D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0378620D75F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732359AbgF2TYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:24:19 -0400
-Received: from mga11.intel.com ([192.55.52.93]:22498 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732234AbgF2TYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:24:12 -0400
-IronPort-SDR: P0NquBONXI66EZ8EjWWScDAVlMu26/nRWYk4oTMYSaW+vSlW6sKj2SpwCl4q9HcA3L3yspZJ8f
- f1QRhxqAUY6Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="144193378"
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="144193378"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 09:57:44 -0700
-IronPort-SDR: ab7yGGp3LTENK7bUd1phDwjiigebk0mWVMP2v3rmkM3rourM41GP/9ZXLyy5dvjpom+8+sZI+g
- 0YOzMCFkJpXQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="294937285"
-Received: from schen9-mobl.amr.corp.intel.com ([10.254.45.140])
-  by orsmga002.jf.intel.com with ESMTP; 29 Jun 2020 09:57:43 -0700
-Subject: Re: [Patch] mm: Increase pagevec size on large system
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Vladimir Davydov <vdavydov@virtuozzo.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.cz>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <d1cc9f12a8ad6c2a52cb600d93b06b064f2bbc57.1593205965.git.tim.c.chen@linux.intel.com>
- <20200627031304.GC25039@casper.infradead.org>
- <20200626204704.f023988699421db00e9bdab7@linux-foundation.org>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <6260c66e-68a3-ab3e-4bd9-4a290d068e1f@linux.intel.com>
-Date:   Mon, 29 Jun 2020 09:57:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1732788AbgF2T3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732709AbgF2T1m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:27:42 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01409C030F3E;
+        Mon, 29 Jun 2020 09:57:51 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id a6so14140026wmm.0;
+        Mon, 29 Jun 2020 09:57:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BQzFhhy4PPK+wORzA0eq8X7nCm3stS5K4TwJi9mD/OU=;
+        b=UU3gMqGQIDDI4aV0Xe5aM83CVRlvInAiCH7amNVA9uDmhXzVxpFuk1FmMYKZM7OCPq
+         a4tPy0pbznEdYQw55lRvmJjvgWSsIc7aOxVebt9kZHI03PxoJP4moiQaIKd2tsdTOA/U
+         JnNxFFUR43OLdXU4VvUpzlUX8gBrFgskl8tYwFfefmN/6EVob1pxAVGGSjb+l0vDpJoE
+         1a0DQSEFESYn08TPLpotPXvSKci9hmgYmBodhIaYks6pt7ykXGzVHeNT2li7jOYsBXKz
+         48agFyMb16F0QjcuV8o6yQ9F0zbAjdFAwxQPL1C9mdfV583zS7X0Ou6E3pbFcUKXGDOC
+         eQLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BQzFhhy4PPK+wORzA0eq8X7nCm3stS5K4TwJi9mD/OU=;
+        b=rEHiRwp8EeSh0IpAo7vSqLiC4bEN6Ttqd6oyd6HAQNsSLPLN40h7a8spc1s5UQ0uek
+         cEdd6kTt0uY8L0NgT0XNCztS2yGhHk+MHdiYhLmzNlek5pUUT7a9CuVVjBzs5kOwwbru
+         RqEK1fsB9YvC7zWID7yhkhbwU9ZX87Dq5xX0IM8bn7Gt28Hk9bfshAIrvdDJZTkpBoRc
+         s5PaoaAJNtAcRr+mcGAJfG8LAWkhm0SgiYuHJGGFDoxY2+22g8FCRtmywhAnxyzxRQMw
+         dhNnhuEcoV5zBuqmgm/YUShdCM59GeH8kb73W8VrfCIAsg7Ea9qQLmKlK4kGJbV2LrM+
+         z3cw==
+X-Gm-Message-State: AOAM533q0ehb269wRMVeNRodwDu4vCBgO6Dk80D2VoxAkTMw1CpE46WI
+        UDkF1xUzXMUHyonm9kFhI7M=
+X-Google-Smtp-Source: ABdhPJwfZU06pq3cZr3NXQLT/Ki5iwUmKfY9cklbAHtcV0HoBVmGm8eeONMeuclh5OLF4878sWZCdQ==
+X-Received: by 2002:a1c:19c5:: with SMTP id 188mr3212232wmz.124.1593449869667;
+        Mon, 29 Jun 2020 09:57:49 -0700 (PDT)
+Received: from [10.230.30.107] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id t4sm510754wmf.4.2020.06.29.09.57.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jun 2020 09:57:49 -0700 (PDT)
+Subject: Re: [PATCH v2 01/10] net: ethernet: ixgbe: check the return value of
+ ixgbe_mii_bus_init()
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20200629120346.4382-1-brgl@bgdev.pl>
+ <20200629120346.4382-2-brgl@bgdev.pl>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <7e30d5fc-b6db-1c09-3515-e309da1eb0f5@gmail.com>
+Date:   Mon, 29 Jun 2020 09:57:44 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200626204704.f023988699421db00e9bdab7@linux-foundation.org>
+In-Reply-To: <20200629120346.4382-2-brgl@bgdev.pl>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -56,50 +87,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 6/26/20 8:47 PM, Andrew Morton wrote:
-> On Sat, 27 Jun 2020 04:13:04 +0100 Matthew Wilcox <willy@infradead.org> wrote:
+On 6/29/2020 5:03 AM, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
->> On Fri, Jun 26, 2020 at 02:23:03PM -0700, Tim Chen wrote:
->>> Enlarge the pagevec size to 31 to reduce LRU lock contention for
->>> large systems.
->>>
->>> The LRU lock contention is reduced from 8.9% of total CPU cycles
->>> to 2.2% of CPU cyles.  And the pmbench throughput increases
->>> from 88.8 Mpages/sec to 95.1 Mpages/sec.
->>
->> The downside here is that pagevecs are often stored on the stack (eg
->> truncate_inode_pages_range()) as well as being used for the LRU list.
->> On a 64-bit system, this increases the stack usage from 128 to 256 bytes
->> for this array.
->>
->> I wonder if we could do something where we transform the ones on the
->> stack to DECLARE_STACK_PAGEVEC(pvec), and similarly DECLARE_LRU_PAGEVEC
->> the ones used for the LRUs.  There's plenty of space in the header to
->> add an unsigned char sz, delete PAGEVEC_SIZE and make it an variable
->> length struct.
->>
->> Or maybe our stacks are now big enough that we just don't care.
->> What do you think?
+> This function may fail. Check its return value and propagate the error
+> code.
 > 
-> And I wonder how useful CONFIG_NR_CPUS is for making this decision. 
-> Presumably a lot of general-purpose kernel builds have CONFIG_NR_CPUS
-> much larger than the actual number of CPUs.
-> 
-> I can't think of much of a fix for this, apart from making it larger on
-> all kernels, Is there a downside to this?
-> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Thanks for Matthew and Andrew's feedbacks.
-
-I am okay with Matthew's suggestion of keeping the stack pagevec size unchanged.
-Andrew, do you have a preference?
-
-I was assuming that for people who really care about saving the kernel memory
-usage, they would make CONFIG_NR_CPUS small. I also have a hard time coming
-up with a better scheme.
-
-Otherwise, we will have to adjust the pagevec size when we actually 
-found out how many CPUs we have brought online.  It seems like a lot
-of added complexity for going that route.
-
-Tim
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
