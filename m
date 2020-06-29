@@ -2,114 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878F620D354
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8ECB20D38B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730205AbgF2S54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:57:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730140AbgF2S5o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:57:44 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E84C031C5B
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:39:07 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id x8so6474999plm.10
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:39:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ymZPYXlQnFHAh4p3MfqCbK0ew51uYtV97Wu+f+eSAbk=;
-        b=eWpyylI85AglLaoIbXKzgT6INWjE87+tmdZZnx1ZJBJZGzUDo44tIyHwfSnXs9UAnK
-         GFO1nStX3pLJCvkUKDiYfLpuvRhlsZ50stz4D6ueFL6OC2H6TDM/KPyeHnDlp1F4dyYZ
-         IoUn4Q9g2K4c/FroVZbyT4tTwtB454OK2eUFxaTQGLxVezqM6fXAdeHPWgBj2kMU731k
-         b5Hv5ZIT9nSInEuw34rqU43ogvIy8wuX7a3v6Q4gFbiuD/Cpp7M1UoZbHpUtqh53dw7M
-         2VDEuwXMia3oKnJXpCt6D3LJUPa9OLIUbKUCXcCIebNSTZ3vFPexaa6WyhOzf7G5cR/T
-         EUZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ymZPYXlQnFHAh4p3MfqCbK0ew51uYtV97Wu+f+eSAbk=;
-        b=r9BI7nduWF3aoTFr+ZMcj0op0yFWryUO2Z3+WnQS0ffq1Xlob7GmnudH3gSZQhfMwe
-         GduxWKm3hLdWrfRlEU3CLhlgwMu/JZVtUNjKkFLNblZI6ER/5BGh0PJonyydQRID1Jlh
-         kfMX+Kikxm0dW+szHQrMNcoollIRAiZ7/nGmNQtBNZwMlQ+pkAk7b/CkTcKWRydUFvDh
-         TSp+7Rm4ChHg1FVGBkMDwU9gZQw5T1/QFwA+w++3GZb/X7cgxxVZpwyVgdvZduQhHZtL
-         AHvcIiSz6pU6apVXGodsGy7KgxHZXSe1xJ+oNtJ4ilwEX6jUK+I3DHWWgUNgZ1HiKQCQ
-         IdKg==
-X-Gm-Message-State: AOAM531KrU0FmIfJQ5/mjhlh0Ro5/A23w53cfIBxZysGm2kIIFI+1ywK
-        O+S6HfpCEA+ZZ24XpqXCZiTQdVOlsk7Lm79JZuIhkg==
-X-Google-Smtp-Source: ABdhPJx7WdyCIxUBawfx7KsliaWmLRKCViWely/imMPZEbhEYUYv0E0W0mfsBENNOc2Iz6VkBFm7Y7EZ+oiIH0Zwjfw=
-X-Received: by 2002:a17:902:7208:: with SMTP id ba8mr14269978plb.179.1593452347063;
- Mon, 29 Jun 2020 10:39:07 -0700 (PDT)
+        id S1730290AbgF2S77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:59:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:37358 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728460AbgF2S74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:59:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3DF96150C;
+        Mon, 29 Jun 2020 10:42:56 -0700 (PDT)
+Received: from bogus (unknown [10.37.8.30])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F079E3F71E;
+        Mon, 29 Jun 2020 10:42:52 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 18:42:46 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH/RFC v4 2/4] regulator: fixed: add regulator_ops members
+ for suspend/resume
+Message-ID: <20200629174220.GA4188@bogus>
+References: <1593163942-5087-3-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <20200626143914.GE5289@sirena.org.uk>
+ <TY2PR01MB3692A3B12CEF7F9708A8A59CD86E0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+ <20200629125756.GC5499@sirena.org.uk>
+ <20200629134011.GA23284@bogus>
+ <CAMuHMdU81-EAve+jHhL8+ohCd5YXrgLWpMgaCvgXFDLO7p17pQ@mail.gmail.com>
+ <20200629150728.GA27911@bogus>
+ <20200629161450.GE5499@sirena.org.uk>
+ <20200629164207.GB27911@bogus>
+ <20200629172651.GG5499@sirena.org.uk>
 MIME-Version: 1.0
-References: <20200629085911.1676554-1-masahiroy@kernel.org>
-In-Reply-To: <20200629085911.1676554-1-masahiroy@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 29 Jun 2020 10:38:56 -0700
-Message-ID: <CAKwvOd=qe5KE1vdUYQmpsW2zmDbk5i-MgRujs9B7wqnAj+af0w@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: make Clang build userprogs for target architecture
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200629172651.GG5499@sirena.org.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 1:59 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Mon, Jun 29, 2020 at 06:26:51PM +0100, Mark Brown wrote:
+> On Mon, Jun 29, 2020 at 05:42:07PM +0100, Sudeep Holla wrote:
+> > On Mon, Jun 29, 2020 at 05:14:50PM +0100, Mark Brown wrote:
+> > > On Mon, Jun 29, 2020 at 04:07:28PM +0100, Sudeep Holla wrote:
+> > >
+> > > > The specification states clearly:
+> > > > "... all devices in the system must be in a state that is compatible
+> > > > with entry into the system state. These preconditions are beyond the scope
+> > > > of this specification and are therefore not described here."
+> > > > "Prior to the call, the OS must disable all sources of wakeup other than
+> > > > those it needs to support for its implementation of suspend to RAM."
 >
-> Programs added 'userprogs' should be compiled for the target
-> architecture i.e. the same architecture as the kernel.
+> > > This gets a bit circular for a generic OS since the OS needs some way to
+> > > figure out what it's supposed to do on a given platform - for example
+> > > the OS may be happy to use wakeup sources that the firmware is just
+> > > going to cut power on.
 >
-> GCC does this correctly since the target architecture is implied
-> by the toolchain prefix.
+> > While I understand the sentiments here, PSCI is targeted to address CPU
+> > power state management mainly and system states like suspend/reset and
+> > poweroff which involves last CPU. This is one of the reason it is out of
+> > the scope of the specification.
 >
-> Clang builds standalone programs always for the host architecture
-> because the target triple is currently missing.
+> Sure, but as soon as we start talking about the last CPU stuff we're
+> inevitably talking about the system as a whole.
 >
-> Fix this.
+> > Here is my understanding. DT specifies all the wakeup sources. Linux
+> > can configure those and user may choose to enable a subset of them is
+> > wakeup. As stated in the spec and also based on what we already do in
+> > the kernel, we disable all other wakeup sources.
 >
-> Fixes: 7f3a59db274c ("kbuild: add infrastructure to build userspace programs")
+> > The PSCI firmware can then either read those from the interrupt controller
+> > or based on static platform understanding, must not disable those wakeup
+> > sources.
+>
+> That bit about static platform understanding isn't super helpful for the
+> OS, so long as the firmware might do that the OS is pretty much out of
+> luck.
+>
 
-This is a neat feature I didn't know about; looks relatively new.
-What's the test case command line invocation to test this with Clang?
+I don't disagree. That's one of the reason I wanted to gather requirement
+few years back when PSCI system suspend was introduced. I couldn't
+convince PSCI spec authors myself.
 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+> > > > I see nothing has been fixed in the firmware too and we are still
+> > > > discussing the same after 3 years 😄. Clearly we should start trusting
+> > > > firmware and built capability to fix and replace it if there are bugs
+> > > > just like kernel and stop hacking around in the kernel to deal with
+> > > > just broken platform/psci firmware.
 >
->  Makefile | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > This isn't just an issue of buggy firmware as far as I can see, it's
+> > > also a lack of ability for the OS and firmware to communicate
+> > > information about their intentions to each other.  As things stand you'd
+> > > need to put static information in the DT.
 >
-> diff --git a/Makefile b/Makefile
-> index 73948798ce3f..cac29cc2ec25 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -970,8 +970,8 @@ LDFLAGS_vmlinux     += --pack-dyn-relocs=relr
->  endif
+> > It is easy for DT to get out of sync with firmware unless it is generated
+> > by the same firmware. That's the reason why I am against such multiple
 >
->  # Align the bit size of userspace programs with the kernel
-> -KBUILD_USERCFLAGS  += $(filter -m32 -m64, $(KBUILD_CFLAGS))
-> -KBUILD_USERLDFLAGS += $(filter -m32 -m64, $(KBUILD_CFLAGS))
-> +KBUILD_USERCFLAGS  += $(filter -m32 -m64 --target=%, $(KBUILD_CFLAGS))
-> +KBUILD_USERLDFLAGS += $(filter -m32 -m64 --target=%, $(KBUILD_CFLAGS))
-
-That should be fine.
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-https://www.gnu.org/software/make/manual/html_node/Text-Functions.html
-
+> The ability for things to get out of sync also concerns me as I said
+> further back in the thread but I'm not sure we have much alternative,
+> realistically we're going to need some facility to work around firmware
+> that isn't ideal.
 >
->  # make the checker run with the right architecture
->  CHECKFLAGS += --arch=$(ARCH)
-> --
 
+I understand and I agree. That's the main reason I want to understand this
+better and provide a generic solution. The current pm_suspend_via_firmware
+seem to have different intentions(at-least that's what I grasped quickly
+reading through the document)
 
--- 
-Thanks,
-~Nick Desaulniers
+> > sources of information. I understand ACPI has more flexibility and I did
+>
+> ACPI has a much stronger idea of what the system looks like which helps
+> it a lot here.
+>
+
+Yes, I wanted something similar initially but didn't get good response
+both from community and PSCI spec authors.
+
+> > Each device or platform having its specific property in DT is not scalable.
+> > Not sure if it is a generic problem. If it is, I would like to understand
+> > more details on such lack of ability for communtication between OS and
+> > firmware.
+>
+> It seems like a generic issue from where I'm sitting.
+
+I can't disagree with that. The description of the issue and the solution
+in the thread is. We need make it more generic and provide generic solution,.
+I already see 2-3 threads addressing this in isolation as specific issue.
+Also we need to check with DT maintainers if there are fine with the idea
+of binding to address this issue.
+
+--
+Regards,
+Sudeep
