@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CB420E1FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732C520E175
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390117AbgF2VBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
+        id S1732497AbgF2Uz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731195AbgF2TM5 (ORCPT
+        with ESMTP id S1729296AbgF2TNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:12:57 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97786C08EAF1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:18:46 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id c1so306941pja.5
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:18:46 -0700 (PDT)
+        Mon, 29 Jun 2020 15:13:11 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE45C08EAEF
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:18:45 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id j4so6691601plk.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:18:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=94PT4ZZxVDelwBmV/2g0OBn6aDN7DJybZdz+0cO8lSM=;
-        b=htK3ULYAY8Ioor41oXa3s4blSCZQhPzhPSfKlTBtUmE8TmGgnEqgv1HDnW56PueYRY
-         rwR1GLfBYtJVgCfVbVdlRKZw9HFOOqYtVMXabp/ZIu23+Ma7pTzfhehjfRcyDvmSDc9y
-         XkOBFXJyJYHbtk5WAzkcIeQcKQoTVTt/3QCjU=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4bArInUOY6/vKGVdecpLjfb0/2uC+GzWucHk89/LRTo=;
+        b=EVDjc0VqYgRB2DG2EzHcBoN2SoQ4nLRItPJPDmHm0b1Z1rE2TFzvswTjV0UFJMg0A+
+         zk7wDPwhAdhR5pkqtDyugtOi4viSQFRF681TEkB9AOAbZShiWouWaRwMeqnrq0qniejQ
+         Np9npLPCvLOYdVSL9z4v5SRp3hcbR0u8c56Q0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=94PT4ZZxVDelwBmV/2g0OBn6aDN7DJybZdz+0cO8lSM=;
-        b=bNiJ+n8QOWK4p95yxHW9kAG18yKYRjJnsjqAMXL2EOxAbsBaBFG0JW9sFP3DBKC4KT
-         OLtuu1/vJqe3rzZiQl5eTuKYti/c7HtRZH6EI3bpn/2qxObfSEioFT7hE+vlHhTBS05I
-         md/OtlBnD5GFLaXVC5KLmvOceItV0LQ5MAbLF3VZeI/3CvSFTmPNgltyPgqUSP5IhXB5
-         PMN4X3K8ZPAvAPOQppj22O6vkIMNHGfTeUbvLtK0UCcJPXep/idFYLDky3gmUzJx9A3W
-         qtNMLafdd1qoFGqZAk8MgemNWSRTowfoS60awwBqTmilBo7x4QRU4gIi3/6rZ77lfZkS
-         wcPA==
-X-Gm-Message-State: AOAM530iU4IT0/vUoNPp9tgQAzI3BU8ndLwEx5F3Gtsjqbkl0fMj/SVj
-        q9YJOGqYEMxeKxu8+VDSyRJYMw==
-X-Google-Smtp-Source: ABdhPJy3RUB/apJg+B+3+3HZviihAw2PheDSpFiYSQqDcMDsJWYHNjl9Yj9fkPRQHuD3X2yCjYg2NQ==
-X-Received: by 2002:a17:90a:1acc:: with SMTP id p70mr5373622pjp.210.1593411526183;
-        Sun, 28 Jun 2020 23:18:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4bArInUOY6/vKGVdecpLjfb0/2uC+GzWucHk89/LRTo=;
+        b=CEC/5DNupJFRGO3HF+WYS6zMljHVyfg4uHb1Kmu/1RbahXNB6N/p9J9YF2e8hjpDz0
+         C5ZDxvhfgxYixFEibOfTa30ZvIWAM1noFZlIFVjz2HiGUrIpK+KXXH/j6JPQlEBc6QHE
+         FcoxKOztHqRmiO7a9Z0TSQ3E9xs+39/aFqYz+byMIlxG7rEWBC5pv14nxfyrbKPLaF3F
+         XaLh2kPXXy/UAhRvUX7+T570hVPhovJFUInP5ymhFwQEFC3ytyqX/1ikT2Gi4QsPBXtJ
+         A6NaPIAmpCmlWNemxgHWeMoSMFAPtKMwlkwu4C3Oa7ui+yA6ocGIU+Z7z5jfNZPIlvBj
+         fbFQ==
+X-Gm-Message-State: AOAM530viCutOJoykGMm/EQwcGgqR4YGZSZVmTEo6Jc/YX5RKPogbo3q
+        mTX2ZW5QfS3yfy8uoEm4xa9wPg==
+X-Google-Smtp-Source: ABdhPJxYBenbTI5DJ7oZajl9d4KYYFff7a69/j4AFC+Rq7Vn12vxMy0qYgcyv5UfojptE8ebjeq4/Q==
+X-Received: by 2002:a17:902:8491:: with SMTP id c17mr4942997plo.262.1593411525398;
+        Sun, 28 Jun 2020 23:18:45 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v28sm14619872pgc.44.2020.06.28.23.18.43
+        by smtp.gmail.com with ESMTPSA id u26sm2979285pfn.54.2020.06.28.23.18.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jun 2020 23:18:44 -0700 (PDT)
+        Sun, 28 Jun 2020 23:18:43 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Will Deacon <will@kernel.org>
 Cc:     Kees Cook <keescook@chromium.org>,
+        Fangrui Song <maskray@google.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Ard Biesheuvel <ardb@kernel.org>,
@@ -65,10 +66,12 @@ Cc:     Kees Cook <keescook@chromium.org>,
         clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
         linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 00/17] Warn on orphan section placement
-Date:   Sun, 28 Jun 2020 23:18:23 -0700
-Message-Id: <20200629061840.4065483-1-keescook@chromium.org>
+Subject: [PATCH v4 01/17] vmlinux.lds.h: Add .gnu.version* to DISCARDS
+Date:   Sun, 28 Jun 2020 23:18:24 -0700
+Message-Id: <20200629061840.4065483-2-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200629061840.4065483-1-keescook@chromium.org>
+References: <20200629061840.4065483-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -76,104 +79,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v4:
-- explicitly add .ARM.attributes
-- split up arm64 changes into separate patches
-- split up arm changes into separate patches
-- work around Clang section generation bug in -mbranch-protection
-- work around Clang section generation bug in KASAN and KCSAN
-- split "common" ELF sections out of STABS_DEBUG
-- changed relative position of .comment
-- add reviews/acks
-v3: https://lore.kernel.org/lkml/20200624014940.1204448-1-keescook@chromium.org/
-v2: https://lore.kernel.org/lkml/20200622205815.2988115-1-keescook@chromium.org/
-v1: https://lore.kernel.org/lkml/20200228002244.15240-1-keescook@chromium.org/
+For vmlinux linking, no architecture uses the .gnu.version* sections,
+so remove it via the common DISCARDS macro in preparation for adding
+--orphan-handling=warn more widely. This is a work-around for what
+appears to be a bug[1] in ld.bfd which warns for this synthetic section
+even when none is found in input objects, and even when no section is
+emitted for an output object[2].
 
-A recent bug[1] was solved for builds linked with ld.lld, and tracking
-it down took way longer than it needed to (a year). Ultimately, it
-boiled down to differences between ld.bfd and ld.lld's handling of
-orphan sections. Similarly, the recent FGKASLR series brough up orphan
-section handling too[2]. In both cases, it would have been nice if the
-linker was running with --orphan-handling=warn so that surprise sections
-wouldn't silently get mapped into the kernel image at locations up to the
-whim of the linker's orphan handling logic. Instead, all desired sections
-should be explicitly identified in the linker script (to be either kept or
-discarded) with any orphans throwing a warning. The powerpc architecture
-actually already does this, so this series extends coverage to x86, arm,
-and arm64.
+[1] https://sourceware.org/bugzilla/show_bug.cgi?id=26153
+[2] https://lore.kernel.org/lkml/202006221524.CEB86E036B@keescook/
 
-All three architectures depend on the first four commits (to
-vmlinux.lds.h), and arm64 depends on the 5th and 6th patches (to ctype,
-and efi/libstub). As such, I'd like to land this series as a whole. Given
-that two thirds of it is in the arm universe, perhaps this can land via
-the arm64 tree? If x86 -tip is preferred, that works too. Or I could
-just carry this myself in -next. In all cases, I would really appreciate
-reviews/acks/etc. :)
+Reviewed-by: Fangrui Song <maskray@google.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ include/asm-generic/vmlinux.lds.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks!
-
--Kees
-
-https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=linker/orphans/warn/v4
-
-Kees Cook (17):
-  vmlinux.lds.h: Add .gnu.version* to DISCARDS
-  vmlinux.lds.h: Avoid KASAN and KCSAN's unwanted sections
-  vmlinux.lds.h: Split ELF_DETAILS from STABS_DEBUG
-  vmlinux.lds.h: Add .symtab, .strtab, and .shstrtab to ELF_DETAILS
-  ctype: Work around Clang -mbranch-protection=none bug
-  efi/libstub: Disable -mbranch-protection
-  arm64/build: Use common DISCARDS in linker script
-  arm64/mm: Remove needless section quotes
-  arm64/build: Remove .eh_frame* sections due to unwind tables
-  arm64/kernel: Remove needless Call Frame Information annotations
-  arm64/build: Warn on orphan section placement
-  arm/build: Refactor linker script headers
-  arm/build: Explicitly keep .ARM.attributes sections
-  arm/build: Warn on orphan section placement
-  arm/boot: Warn on orphan section placement
-  x86/build: Warn on orphan section placement
-  x86/boot: Warn on orphan section placement
-
- arch/alpha/kernel/vmlinux.lds.S               |  1 +
- arch/arc/kernel/vmlinux.lds.S                 |  1 +
- arch/arm/boot/compressed/Makefile             |  2 ++
- arch/arm/boot/compressed/vmlinux.lds.S        | 18 +++++-----
- .../arm/{kernel => include/asm}/vmlinux.lds.h | 25 ++++++++++---
- arch/arm/kernel/vmlinux-xip.lds.S             |  6 ++--
- arch/arm/kernel/vmlinux.lds.S                 |  6 ++--
- arch/arm64/Makefile                           |  9 ++++-
- arch/arm64/kernel/smccc-call.S                |  2 --
- arch/arm64/kernel/vmlinux.lds.S               | 17 ++++++---
- arch/arm64/mm/mmu.c                           |  2 +-
- arch/csky/kernel/vmlinux.lds.S                |  1 +
- arch/hexagon/kernel/vmlinux.lds.S             |  1 +
- arch/ia64/kernel/vmlinux.lds.S                |  1 +
- arch/mips/kernel/vmlinux.lds.S                |  1 +
- arch/nds32/kernel/vmlinux.lds.S               |  1 +
- arch/nios2/kernel/vmlinux.lds.S               |  1 +
- arch/openrisc/kernel/vmlinux.lds.S            |  1 +
- arch/parisc/boot/compressed/vmlinux.lds.S     |  1 +
- arch/parisc/kernel/vmlinux.lds.S              |  1 +
- arch/powerpc/kernel/vmlinux.lds.S             |  2 +-
- arch/riscv/kernel/vmlinux.lds.S               |  1 +
- arch/s390/kernel/vmlinux.lds.S                |  1 +
- arch/sh/kernel/vmlinux.lds.S                  |  1 +
- arch/sparc/kernel/vmlinux.lds.S               |  1 +
- arch/um/kernel/dyn.lds.S                      |  2 +-
- arch/um/kernel/uml.lds.S                      |  2 +-
- arch/unicore32/kernel/vmlinux.lds.S           |  1 +
- arch/x86/Makefile                             |  8 ++++-
- arch/x86/boot/compressed/Makefile             |  3 +-
- arch/x86/boot/compressed/vmlinux.lds.S        | 12 +++++++
- arch/x86/include/asm/asm.h                    |  6 +++-
- arch/x86/kernel/vmlinux.lds.S                 |  7 ++++
- drivers/firmware/efi/libstub/Makefile         |  3 +-
- include/asm-generic/vmlinux.lds.h             | 35 +++++++++++++++++--
- lib/ctype.c                                   | 10 ++++++
- 36 files changed, 154 insertions(+), 39 deletions(-)
- rename arch/arm/{kernel => include/asm}/vmlinux.lds.h (88%)
-
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index db600ef218d7..1248a206be8d 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -934,6 +934,8 @@
+ 	*(.discard)							\
+ 	*(.discard.*)							\
+ 	*(.modinfo)							\
++	/* ld.bfd warns about .gnu.version* even when not emitted */	\
++	*(.gnu.version*)						\
+ 	}
+ 
+ /**
 -- 
 2.25.1
 
