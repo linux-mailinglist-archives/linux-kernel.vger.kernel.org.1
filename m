@@ -2,187 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56FF220E0C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB1C20E167
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387703AbgF2Utq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:49:46 -0400
-Received: from mail-m964.mail.126.com ([123.126.96.4]:54182 "EHLO
-        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731557AbgF2Utk (ORCPT
+        id S2389730AbgF2Uzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731094AbgF2TNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:49:40 -0400
-X-Greylist: delayed 5420 seconds by postgrey-1.27 at vger.kernel.org; Mon, 29 Jun 2020 16:49:39 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=dZFXghp2i9BkRXeQIr
-        QISjtevrHQgS0lHVzMWGLDDZI=; b=lj9PiDYYMZOxqGFVGXaCBp+s71xwrYi66o
-        tNIizvnECV5i9rd0sDxGOaFrjeO8jd5GfhEa374YfNLPRbxAhd5Fl9FS59zPG8tO
-        DDPUNDhRhzg8wyXCQeQf7diukTLsSS6TQFGa7dEI7h2WOEjDW6BrsvyGm2SsyKME
-        Lp/tyPGbA=
-Received: from xr-hulk-k8s-node1933.gh.sankuai.com (unknown [101.236.11.2])
-        by smtp9 (Coremail) with SMTP id NeRpCgCHnS07uPlezqHWAg--.1769S2;
-        Mon, 29 Jun 2020 17:45:36 +0800 (CST)
-From:   Jiang Ying <jiangying8582@126.com>
-To:     Markus.Elfring@web.de, tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wanglong19@meituan.com, heguanjun@meituan.com
-Subject: [PATCH v3] ext4: fix direct I/O read error
-Date:   Mon, 29 Jun 2020 17:45:30 +0800
-Message-Id: <1593423930-5576-1-git-send-email-jiangying8582@126.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: NeRpCgCHnS07uPlezqHWAg--.1769S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAw47WFW8tw4rCr1UZr4xZwb_yoWrGry5pr
-        nxCa15WrZ5Zr4xCanrK3ZrZFyFy3yDGFWUXry5u34UZr4Yg3s5KFWxKF17C3yUGrWF9w4F
-        qFZ8tryfAw1UAFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U_cTdUUUUU=
-X-Originating-IP: [101.236.11.2]
-X-CM-SenderInfo: xmld0wp1lqwmqvysqiyswou0bp/1tbiXABSAFpEA7E69AAAss
+        Mon, 29 Jun 2020 15:13:11 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C538AC0086ED
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 02:46:30 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id 67so3603056pfg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 02:46:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=twG/EpHFuddy1cJI4fW+wI5sB13DCvr59QOYZyPQvNU=;
+        b=yo/HNQ93HufpwCBYJHzJLpKYwIIAl0VMUj2nyPl6T2UPoijncLXHNKAdPYjL3L5lHT
+         Zk86qKQesI8zLVRj91lRQFZ9gQVG6tC5Rv9Io2JBMHEY3TZeHFmlCuEdE8Gr83Eip4YF
+         aEfxDR3S8vxeRS+pitFuvIq9wr9a6InjsNKI3O1wn3B06wNQd8vGg6OOOfNYtFctHxbp
+         qANSp15+IMUav5Rv3+a+7wzSUYJP3D2jOOYf9hLBUNPWef9axGtHkdFl0re9zwtYPKpg
+         HspnQ8i/aT7uNI3lE0e9Hg9fJjDeUxSVPBzdwYixvKF2NhNoxF0OSzFQLS72aksVZc4a
+         Ia5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=twG/EpHFuddy1cJI4fW+wI5sB13DCvr59QOYZyPQvNU=;
+        b=Yt9hLB/FK+ygW7C1tmxPWewdyUhQQoe5EWOAXVtImeuoB7ERyNOLs9FFS2J5Rbw5vZ
+         A26vOG7XQvtHum6lAqdOFWOAzIPyPZd90ULJismYpz6Pfxrwvn9so7N/36fU27JkcMLW
+         RP/aVK5W7UgksfJLPePN6j0QByHfHH4Lu/ZP0AiJG8nBvqnVGWk4dH2eZ+4PhqhWgdau
+         QFaMJnrTGhXKzy8tGLyn2SoePWl1pmNKrMFPnB807Vpam2Vv3Vq75dhwl+DC4+lf1C/g
+         ppusJahAGDPcH5u9CwDKyk9iXPjF5ljmfUjOrts5wMEINuS1aLeCnjq++PO0Jd7xgRzX
+         eiaw==
+X-Gm-Message-State: AOAM533aJFOAHSJNSfY/iBcPwhMgeJZ9e+EcyqzmRkmp8PbIGvElBVeT
+        RNNwPt6RmoHHsn1Vl8aHwPERrg==
+X-Google-Smtp-Source: ABdhPJxucTS/dE2M+PRfCssDuqawGeg909Rg9RxBv9//zm0cML2sSyfvU+J7x5kZWv89y8yYC7MFcw==
+X-Received: by 2002:a63:f903:: with SMTP id h3mr9891025pgi.437.1593423990258;
+        Mon, 29 Jun 2020 02:46:30 -0700 (PDT)
+Received: from localhost ([122.172.127.76])
+        by smtp.gmail.com with ESMTPSA id b14sm15088557pfb.186.2020.06.29.02.46.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 29 Jun 2020 02:46:29 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 15:16:27 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com, tkjos@google.com, adharmap@codeaurora.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 3/3] cpufreq: Specify default governor on command line
+Message-ID: <20200629094627.jh7pwhftcdqj6nhm@vireshk-i7>
+References: <cover.1593418662.git.viresh.kumar@linaro.org>
+ <96b6e6ca02b664194ff3e57e1ec768fbc597bf38.1593418662.git.viresh.kumar@linaro.org>
+ <20200629094452.GB1228312@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629094452.GB1228312@google.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is used to fix ext4 direct I/O read error when
-the read size is not aligned with block size.
+On 29-06-20, 10:44, Quentin Perret wrote:
+> On Monday 29 Jun 2020 at 13:55:00 (+0530), Viresh Kumar wrote:
+> >  static int __init cpufreq_core_init(void)
+> >  {
+> > +	struct cpufreq_governor *gov = cpufreq_default_governor();
+> > +
+> >  	if (cpufreq_disabled())
+> >  		return -ENODEV;
+> >  
+> >  	cpufreq_global_kobject = kobject_create_and_add("cpufreq", &cpu_subsys.dev_root->kobj);
+> >  	BUG_ON(!cpufreq_global_kobject);
+> >  
+> > +	if (!strlen(default_governor))
+> 
+> Should we test '!strlen(default_governor) && gov' here actually?
+> We check the return value of cpufreq_default_governor() in
+> cpufreq_init_policy(), so I'm guessing we should do the same here to be
+> on the safe side.
 
-Then, I will use a test to explain the error.
+With the current setup (the Kconfig option being a choice which
+selects one governor at least), it is not possible for gov to be NULL
+here. And so I didn't worry about it :)
 
-(1) Make a file that is not aligned with block size:
-	$dd if=/dev/zero of=./test.jar bs=1000 count=3
-
-(2) I wrote a source file named "direct_io_read_file.c" as following:
-
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include <unistd.h>
-	#include <sys/file.h>
-	#include <sys/types.h>
-	#include <sys/stat.h>
-	#include <string.h>
-	#define BUF_SIZE 1024
-
-	int main()
-	{
-		int fd;
-		int ret;
-
-		unsigned char *buf;
-		ret = posix_memalign((void **)&buf, 512, BUF_SIZE);
-		if (ret) {
-			perror("posix_memalign failed");
-			exit(1);
-		}
-		fd = open("./test.jar", O_RDONLY | O_DIRECT, 0755);
-		if (fd < 0){
-			perror("open ./test.jar failed");
-			exit(1);
-		}
-
-		do {
-			ret = read(fd, buf, BUF_SIZE);
-			printf("ret=%d\n",ret);
-			if (ret < 0) {
-				perror("write test.jar failed");
-			}
-		} while (ret > 0);
-
-		free(buf);
-		close(fd);
-	}
-
-(3) Compile the source file:
-	$gcc direct_io_read_file.c -D_GNU_SOURCE
-
-(4) Run the test program:
-	$./a.out
-
-	The result is as following:
-	ret=1024
-	ret=1024
-	ret=952
-	ret=-1
-	write test.jar failed: Invalid argument.
-
-I have tested this program on XFS filesystem, XFS does not have
-this problem, because XFS use iomap_dio_rw() to do direct I/O
-read. And the comparing between read offset and file size is done
-in iomap_dio_rw(), the code is as following:
-
-	if (pos < size) {
-		retval = filemap_write_and_wait_range(mapping, pos,
-				pos + iov_length(iov, nr_segs) - 1);
-
-		if (!retval) {
-			retval = mapping->a_ops->direct_IO(READ, iocb,
-						iov, pos, nr_segs);
-		}
-		...
-	}
-
-...only when "pos < size", direct I/O can be done, or 0 will be return.
-
-I have tested the fix patch on Ext4, it is up to the mustard of
-EINVAL in man2(read) as following:
-	#include <unistd.h>
-	ssize_t read(int fd, void *buf, size_t count);
-
-	EINVAL
-		fd is attached to an object which is unsuitable for reading;
-		or the file was opened with the O_DIRECT flag, and either the
-		address specified in buf, the value specified in count, or the
-		current file offset is not suitably aligned.
-
-So I think this patch can be applied to fix ext4 direct I/O error.
-
-However Ext4 introduces direct I/O read using iomap infrastructure
-on kernel 5.5, the patch is commit <b1b4705d54ab>
-("ext4: introduce direct I/O read using iomap infrastructure"),
-then Ext4 will be the same as XFS, they all use iomap_dio_rw() to do direct
-I/O read. So this problem does not exist on kernel 5.5 for Ext4.
-
-From above description, we can see this problem exists on all the kernel
-versions between kernel 3.14 and kernel 5.4. Please apply this patch
-on these kernel versions, or please use the method on kernel 5.5 to fix
-this problem.
-
-Fixes: 9fe55eea7e4b ("Fix race when checking i_size on direct i/o read")
-Co-developed-by: Wang Long <wanglong19@meituan.com>
-Signed-off-by: Wang Long <wanglong19@meituan.com>
-Signed-off-by: Jiang Ying <jiangying8582@126.com>
-
-Changes since V2:
-	Optimize the description of the commit message and make a variation for
-	the patch, e.g. with:
-
-		Before:
-			loff_t size;
-			size = i_size_read(inode);
-		After:
-			loff_t size = i_size_read(inode);
-
-Changes since V1:
-	Signed-off use real name and add "Fixes:" flag
-
----
- fs/ext4/inode.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 516faa2..a66b0ac 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3821,6 +3821,11 @@ static ssize_t ext4_direct_IO_read(struct kiocb *iocb, struct iov_iter *iter)
- 	struct inode *inode = mapping->host;
- 	size_t count = iov_iter_count(iter);
- 	ssize_t ret;
-+	loff_t offset = iocb->ki_pos;
-+	loff_t size = i_size_read(inode);
-+
-+	if (offset >= size)
-+		return 0;
- 
- 	/*
- 	 * Shared inode_lock is enough for us - it protects against concurrent
 -- 
-1.8.3.1
-
+viresh
