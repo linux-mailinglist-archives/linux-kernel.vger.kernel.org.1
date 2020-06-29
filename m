@@ -2,100 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB5420E57B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C24E20E51A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732752AbgF2VhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:37:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60668 "EHLO mail.kernel.org"
+        id S1730880AbgF2Vcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:32:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728411AbgF2Ski (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:40:38 -0400
+        id S1728680AbgF2SlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:41:04 -0400
 Received: from localhost.localdomain (unknown [194.230.155.195])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBAA723358;
-        Mon, 29 Jun 2020 08:17:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D2B62336D;
+        Mon, 29 Jun 2020 08:17:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593418624;
-        bh=Tt9I5dS3JeAJvU2sRBG7+iIKUeVdnCbPfw8XBTvHkOY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M3w/jW0sfpY78qC1W4n6OjPGfllVKlWaaK7SOpQVQopV6Em32krY/i5WIrgMV3qLk
-         vp14DQthtenP6sNr7r3+P61E3WmqI0okr9qg/iwMv2dcxDNmy3nxgzrPaz9GmOZpnA
-         NyZeEKzl1pngW5YhOIISNKGHKp+p8Au1+oLpdHvA=
+        s=default; t=1593418671;
+        bh=GXYdB00Xh9Ytcy3fLEs6rg5v+9F5AZvA4JiNgbEGPhM=;
+        h=From:To:Subject:Date:From;
+        b=tZ0NIsu8qQ3b3uls0XBWOROfHzhTPBaDkP9SSgmIdgnEwUgE4VZk62Mxy5ztDcjdn
+         /T30E9GKmvj9CBMbN2TcGmHjVcUvY0DQqAAnOvSWIkCy4XKtPlh0PDlDoXwMbwHP0+
+         6LrE4XrBnLgRBFQICRqaQSbfntNkDcGGQzbw5ci4=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+To:     Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nava kishore Manne <nava.manne@xilinx.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kalyani Akula <kalyani.akula@xilinx.com>,
+        Manish Narani <manish.narani@xilinx.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 2/2] arm64: dts: hisilicon: Align UART nodename with dtschema
-Date:   Mon, 29 Jun 2020 10:16:57 +0200
-Message-Id: <20200629081657.13821-2-krzk@kernel.org>
+Subject: [PATCH] arm64: dts: xilinx: Align IOMMU nodename with dtschema
+Date:   Mon, 29 Jun 2020 10:17:44 +0200
+Message-Id: <20200629081744.13916-1-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200629081657.13821-1-krzk@kernel.org>
-References: <20200629081657.13821-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fix dtschema validator warnings like:
-    uart@f8015000: $nodename:0: 'uart@f8015000' does not match '^serial(@[0-9a-f,]+)*$'
+    smmu@fd800000: $nodename:0: 'smmu@fd800000' does not match '^iommu@[0-9a-f]*'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm64/boot/dts/hisilicon/hi6220.dtsi | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi6220.dtsi b/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
-index 2072b637b5af..3d189d9f0d24 100644
---- a/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
-@@ -302,7 +302,7 @@
- 			mboxes = <&mailbox 1 0 11>;
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+index 9174ddc76bdc..2b82206eba02 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
++++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+@@ -601,7 +601,7 @@
+ 			power-domains = <&zynqmp_firmware PD_SD_1>;
  		};
  
--		uart0: uart@f8015000 {	/* console */
-+		uart0: serial@f8015000 {	/* console */
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0x0 0xf8015000 0x0 0x1000>;
- 			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
-@@ -311,7 +311,7 @@
- 			clock-names = "uartclk", "apb_pclk";
- 		};
- 
--		uart1: uart@f7111000 {
-+		uart1: serial@f7111000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0x0 0xf7111000 0x0 0x1000>;
- 			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
-@@ -325,7 +325,7 @@
+-		smmu: smmu@fd800000 {
++		smmu: iommu@fd800000 {
+ 			compatible = "arm,mmu-500";
+ 			reg = <0x0 0xfd800000 0x0 0x20000>;
  			status = "disabled";
- 		};
- 
--		uart2: uart@f7112000 {
-+		uart2: serial@f7112000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0x0 0xf7112000 0x0 0x1000>;
- 			interrupts = <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>;
-@@ -337,7 +337,7 @@
- 			status = "disabled";
- 		};
- 
--		uart3: uart@f7113000 {
-+		uart3: serial@f7113000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0x0 0xf7113000 0x0 0x1000>;
- 			interrupts = <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
-@@ -349,7 +349,7 @@
- 			status = "disabled";
- 		};
- 
--		uart4: uart@f7114000 {
-+		uart4: serial@f7114000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0x0 0xf7114000 0x0 0x1000>;
- 			interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
 -- 
 2.17.1
 
