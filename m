@@ -2,66 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA6320E42C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0F420E371
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730936AbgF2VVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:21:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40038 "EHLO
+        id S2387457AbgF2VNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729759AbgF2Swn (ORCPT
+        with ESMTP id S1730114AbgF2S5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:43 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A11CC02E2DB
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:10 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z13so16681820wrw.5
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:05:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vqNBDouTK8PphAMbImg0Rb2dZabHhQnfuFaJhvwhGMc=;
-        b=zB7LyQxQm5VAV564JDk+hIRS+rFVYoTLn+2odNt5cJA2OZCbVqBV6/ojoVy8kbcd6N
-         phRRRw4efeVbgdvzOAHc7Vp8J7CyxV7EwSvlFDHqv39hIagaRpuRPzMgyZIGD+rVyGtm
-         rqPBZ93NHBdfB8QdPg5miFgYKJUz2jPE7zqJfIntxdxqOaTSi+rzbDT5JgVWV1PbexWN
-         L0ucbbcLk9vWrLWAql7k+X8bPBnp5pHFUNpsdNAIbBqIXftZ6RPDIw8GQYVtbMZWFDoc
-         0R/I6TfjId5f32mbIN48VzhDo6icVIW630KZEgN5er9lBK4VbRbfznr4OoushIRloORH
-         Xxqw==
+        Mon, 29 Jun 2020 14:57:42 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A5CFC02E2DE
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:09:31 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id c139so15284106qkg.12
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:09:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vqNBDouTK8PphAMbImg0Rb2dZabHhQnfuFaJhvwhGMc=;
-        b=SerFRcB6Zi9bBMwarYYWTTwWISb9Lvvl4enGeWk+hMmbVLBlYJauZYh9it/1uQcdp+
-         IcmUd6MIImQZEvOiCQS0TV1or4AmKR0ZUKAj0etYIxF2wnGw8qq41jzk7lOYqHAtj1Sm
-         NutbN88IKKZrjDHzUa+xBeMg0cTgq7BuBskxaXYbjBELlkBaZLrPGWv9wVybN1lpdiMx
-         dNHGlFNSMTFoivP7nAJgHvUCwo6xMHPM/hHw/2+DZGLof4JkBldZgTSE5GMtiXV2FLYs
-         hB4yp2AkxmhpS63djvLnEPnkPcWJOBzsZW1fDNMjfWW5kBmh1p06M2Pnkc3wBn9rxJ/T
-         k6+w==
-X-Gm-Message-State: AOAM532UxHicrmKpDHz+nMYIHR9EjZ2QSnUyS5r3/naezFiC2Pgf1/d7
-        bODzU7/xajydlhqmyFVj6a/B1g==
-X-Google-Smtp-Source: ABdhPJxwXHImUgT4Ji8ujROEtLVQiDyh2r8H5CowRBsagghC0NtuoezWsUvt7hSsxqBQ3E7UkwNxYg==
-X-Received: by 2002:a5d:650e:: with SMTP id x14mr18020746wru.187.1593439509213;
-        Mon, 29 Jun 2020 07:05:09 -0700 (PDT)
-Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id p14sm15394928wrj.14.2020.06.29.07.05.08
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M44I2v4UaO9OPEP+jg2wmc2GcKMVwLBT5iRhIL1Tao0=;
+        b=gkVYx7pFDEcAbkRfTYC2pg6NwcWLXbxj2hL6P244iWxQMgI3hbmg6xjKbzAXhU/rsM
+         zl1nx4fDlOsC8hHLQC4J5+J6bb2ueB8skk2tExB02VxZJ2ignd7rg+qSKvtaL/s1ROkW
+         3Nw3OfHyKoJkGhXr7PzVtfK22MpvrX6yeW+ooaEfCjRby+Yso7r17zrtuY5rU14zpLtW
+         NQa3khVbaNQ/dt0hex9d1QN4jk6beINdt7Qgh6DqicwurIYzUt0ISBk40fj5UIbId37R
+         3nndbr6cwGLVnOVHA06vSgOqGeHHPPFbEquy0SPwULqrJMZcfulQiXOfpad/ibQ+sjtl
+         UBMw==
+X-Gm-Message-State: AOAM531PZvp2Wuh3jumWBa/A6MC5UGUYCXNzJ9bxifFqdvuypxjhfOwl
+        nLPVXK1PGhp28g0plrztO7k=
+X-Google-Smtp-Source: ABdhPJwwE/vx5To5SsVvdlgxz339Jn/jyUnXKYT8iXjlNSw6rXFzj1NqeKKv6bAnr1dvVOjAgL3yzg==
+X-Received: by 2002:a37:a00a:: with SMTP id j10mr14602308qke.87.1593439770329;
+        Mon, 29 Jun 2020 07:09:30 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id i26sm10741461qkh.14.2020.06.29.07.09.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 07:05:08 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Michael Jung <mijung@gmx.net>,
-        Michael Ruettger <michael@ibmra.de>,
-        Frank Haverkamp <haver@linux.ibm.com>,
-        Joerg-Stephan Vogt <jsvogt@de.ibm.com>
-Subject: [PATCH 19/20] misc: genwqe: card_dev: Whole host of kerneldoc fixes
-Date:   Mon, 29 Jun 2020 15:04:41 +0100
-Message-Id: <20200629140442.1043957-20-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629140442.1043957-1-lee.jones@linaro.org>
-References: <20200629140442.1043957-1-lee.jones@linaro.org>
+        Mon, 29 Jun 2020 07:09:29 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        clang-built-linux@googlegroups.com,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/7] x86/boot: Remove runtime relocations from compressed kernel
+Date:   Mon, 29 Jun 2020 10:09:21 -0400
+Message-Id: <20200629140928.858507-1-nivedita@alum.mit.edu>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -69,150 +64,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Including; add missing documentation for function arguments, re-ordering
-of #defines i.e. not placed between kerneldoc headers and the functions
-they are documenting, demotion of file header/comment from kerneldoc
-format and removal of documentation for non-existent args.
+The compressed kernel currently contains bogus runtime relocations in
+the startup code in head_{32,64}.S, which are generated by the linker,
+but must not actually be processed at runtime.
 
-Fixes the following W=1 kernel build warnings:
+This generates warnings when linking with the BFD linker, and errors
+with LLD, which defaults to erroring on runtime relocations in read-only
+sections. It also requires the -z noreloc-overflow hack for the 64-bit
+kernel, which prevents us from linking it as -pie on an older BFD linker
+(<= 2.26) or on LLD, because the locations that are to be apparently
+relocated are only 32-bits in size and so cannot really have
+R_X86_64_RELATIVE relocations.
 
- drivers/misc/genwqe/card_dev.c:33: warning: Function parameter or member 'cd' not described in 'genwqe_open_files'
- drivers/misc/genwqe/card_dev.c:98: warning: Function parameter or member 'virt_addr' not described in 'genwqe_search_pin'
- drivers/misc/genwqe/card_dev.c:98: warning: Excess function parameter 'dma_addr' description in 'genwqe_search_pin'
- drivers/misc/genwqe/card_dev.c:154: warning: Function parameter or member 'virt_addr' not described in '__genwqe_search_mapping'
- drivers/misc/genwqe/card_dev.c:256: warning: Function parameter or member 'cd' not described in 'genwqe_kill_fasync'
- drivers/misc/genwqe/card_dev.c:256: warning: Function parameter or member 'sig' not described in 'genwqe_kill_fasync'
- drivers/misc/genwqe/card_dev.c:387: warning: Function parameter or member 'vma' not described in 'genwqe_vma_close'
- drivers/misc/genwqe/card_dev.c:430: warning: Function parameter or member 'filp' not described in 'genwqe_mmap'
- drivers/misc/genwqe/card_dev.c:430: warning: Function parameter or member 'vma' not described in 'genwqe_mmap'
- drivers/misc/genwqe/card_dev.c:495: warning: Excess function parameter 'cd' description in 'FLASH_BLOCK'
- drivers/misc/genwqe/card_dev.c:495: warning: Excess function parameter 'load' description in 'FLASH_BLOCK'
- drivers/misc/genwqe/card_dev.c:827: warning: Function parameter or member 'cfile' not described in 'ddcb_cmd_cleanup'
- drivers/misc/genwqe/card_dev.c:827: warning: Function parameter or member 'req' not described in 'ddcb_cmd_cleanup'
- drivers/misc/genwqe/card_dev.c:854: warning: Function parameter or member 'cfile' not described in 'ddcb_cmd_fixups'
- drivers/misc/genwqe/card_dev.c:854: warning: Function parameter or member 'req' not described in 'ddcb_cmd_fixups'
- drivers/misc/genwqe/card_dev.c:984: warning: Function parameter or member 'cfile' not described in 'genwqe_execute_ddcb'
- drivers/misc/genwqe/card_dev.c:984: warning: Function parameter or member 'cmd' not described in 'genwqe_execute_ddcb'
- drivers/misc/genwqe/card_dev.c:1350: warning: Function parameter or member 'cd' not described in 'genwqe_device_remove'
+This series aims to get rid of these relocations. I've build- and
+boot-tested with combinations of clang/gcc-10 with lld/bfd-2.34, and
+gcc-4.8.5 with bfd-2.23, skipping clang on 32-bit because it currently
+has other issues [0].
 
-Cc: Michael Jung <mijung@gmx.net>
-Cc: Michael Ruettger <michael@ibmra.de>
-Cc: Frank Haverkamp <haver@linux.ibm.com>
-Cc: Joerg-Stephan Vogt <jsvogt@de.ibm.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/misc/genwqe/card_dev.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+The first three patches by Ard remove indirection via the GOT from the
+compressed kernel code.
 
-diff --git a/drivers/misc/genwqe/card_dev.c b/drivers/misc/genwqe/card_dev.c
-index 040a0bda31254..55fc5b80e649f 100644
---- a/drivers/misc/genwqe/card_dev.c
-+++ b/drivers/misc/genwqe/card_dev.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * IBM Accelerator Family 'GenWQE'
-  *
-  * (C) Copyright IBM Corp. 2013
-@@ -87,7 +87,7 @@ static int genwqe_del_pin(struct genwqe_file *cfile, struct dma_mapping *m)
-  * @cfile:	Descriptor of opened file
-  * @u_addr:	User virtual address
-  * @size:	Size of buffer
-- * @dma_addr:	DMA address to be updated
-+ * @virt_addr:	Virtual address to be updated
-  *
-  * Return: Pointer to the corresponding mapping	NULL if not found
-  */
-@@ -144,6 +144,7 @@ static void __genwqe_del_mapping(struct genwqe_file *cfile,
-  * @u_addr:	user virtual address
-  * @size:	size of buffer
-  * @dma_addr:	DMA address to be updated
-+ * @virt_addr:	Virtual address to be updated
-  * Return: Pointer to the corresponding mapping	NULL if not found
-  */
- static struct dma_mapping *__genwqe_search_mapping(struct genwqe_file *cfile,
-@@ -249,6 +250,8 @@ static void genwqe_remove_pinnings(struct genwqe_file *cfile)
- 
- /**
-  * genwqe_kill_fasync() - Send signal to all processes with open GenWQE files
-+ * @cd: GenWQE device information
-+ * @sig: Signal to send out
-  *
-  * E.g. genwqe_send_signal(cd, SIGIO);
-  */
-@@ -380,6 +383,7 @@ static void genwqe_vma_open(struct vm_area_struct *vma)
- 
- /**
-  * genwqe_vma_close() - Called each time when vma is unmapped
-+ * @vma: VMA area to close
-  *
-  * Free memory which got allocated by GenWQE mmap().
-  */
-@@ -416,6 +420,8 @@ static const struct vm_operations_struct genwqe_vma_ops = {
- 
- /**
-  * genwqe_mmap() - Provide contignous buffers to userspace
-+ * @filp:	File pointer (unused)
-+ * @vma:	VMA area to map
-  *
-  * We use mmap() to allocate contignous buffers used for DMA
-  * transfers. After the buffer is allocated we remap it to user-space
-@@ -484,16 +490,15 @@ static int genwqe_mmap(struct file *filp, struct vm_area_struct *vma)
- 	return rc;
- }
- 
-+#define	FLASH_BLOCK	0x40000	/* we use 256k blocks */
-+
- /**
-  * do_flash_update() - Excute flash update (write image or CVPD)
-- * @cd:        genwqe device
-+ * @cfile:	Descriptor of opened file
-  * @load:      details about image load
-  *
-  * Return: 0 if successful
-  */
--
--#define	FLASH_BLOCK	0x40000	/* we use 256k blocks */
--
- static int do_flash_update(struct genwqe_file *cfile,
- 			   struct genwqe_bitstream *load)
- {
-@@ -820,6 +825,8 @@ static int genwqe_unpin_mem(struct genwqe_file *cfile, struct genwqe_mem *m)
- 
- /**
-  * ddcb_cmd_cleanup() - Remove dynamically created fixup entries
-+ * @cfile:	Descriptor of opened file
-+ * @req:	DDCB work request
-  *
-  * Only if there are any. Pinnings are not removed.
-  */
-@@ -844,6 +851,8 @@ static int ddcb_cmd_cleanup(struct genwqe_file *cfile, struct ddcb_requ *req)
- 
- /**
-  * ddcb_cmd_fixups() - Establish DMA fixups/sglists for user memory references
-+ * @cfile:	Descriptor of opened file
-+ * @req:	DDCB work request
-  *
-  * Before the DDCB gets executed we need to handle the fixups. We
-  * replace the user-space addresses with DMA addresses or do
-@@ -974,6 +983,8 @@ static int ddcb_cmd_fixups(struct genwqe_file *cfile, struct ddcb_requ *req)
- 
- /**
-  * genwqe_execute_ddcb() - Execute DDCB using userspace address fixups
-+ * @cfile:	Descriptor of opened file
-+ * @cmd:        Command identifier (passed from user)
-  *
-  * The code will build up the translation tables or lookup the
-  * contignous memory allocation table to find the right translations
-@@ -1339,6 +1350,7 @@ static int genwqe_inform_and_stop_processes(struct genwqe_dev *cd)
- 
- /**
-  * genwqe_device_remove() - Remove genwqe's char device
-+ * @cd: GenWQE device information
-  *
-  * This function must be called after the client devices are removed
-  * because it will free the major/minor number range for the genwqe
+The next patch is an independent fix for LLD, to avoid an orphan
+section in arch/x86/boot/setup.elf.
+
+The fifth patch gets rid of almost all the relocations. It uses
+standard PIC addressing technique for 32-bit, i.e. loading a register
+with the address of _GLOBAL_OFFSET_TABLE_ and then using GOTOFF
+references to access variables. For 64-bit, there is 32-bit code that
+cannot use RIP-relative addressing, and also cannot use the 32-bit
+method, since GOTOFF references are 64-bit only. This is instead handled
+using a macro to replace a reference like gdt with (gdt-startup_32)
+instead. The assembler will generate a PC32 relocation entry, with
+addend set to (.-startup_32), and these will be replaced with constants
+at link time. This works as long as all the code using such references
+lives in the same section as startup_32, i.e. in .head.text.
+
+The sixth patch addresses a remaining issue with the BFD linker, which
+generates runtime relocations for absolute symbols. We use z_input_len
+and z_output_len, defined in the generated piggy.S file, as symbols
+whose absolute "addresses" are actually the size of the compressed
+payload and the size of the decompressed kernel image respectively. LLD
+does not generate relocations for these two symbols, but the BFD linker
+does, prior to the upcoming 2.35. To get around this, piggy.S is
+extended to also define two u32 variables (in .rodata) with the lengths,
+and the head code is modified to use those instead of the symbol
+addresses.
+
+An alternative way to handle z_input_len/z_output_len would be to just
+include piggy.S in head_{32,64}.S instead of as a separate object file,
+since the GNU assembler doesn't generate relocations for symbols set to
+constants.
+
+The last patch adds a check in the linker script to ensure that no
+runtime relocations get reintroduced.
+
+[0] https://lore.kernel.org/lkml/20200504230309.237398-1-ndesaulniers@google.com/
+
+Changes from v2:
+- Incorporate Ard's patches for eliminating GOT references into this
+  series
+- Rebase on v5.8-rc3
+
+v2: https://lore.kernel.org/lkml/20200525225918.1624470-1-nivedita@alum.mit.edu/
+
+Changes from v1:
+- Add .text.* to setup.ld instead of just .text.startup
+- Rename the la() macro introduced in the second patch for 64-bit to
+  rva(), and rework the explanatory comment.
+- In the last patch, check both .rel.dyn and .rela.dyn, instead of just
+  one per arch.
+
+Ard Biesheuvel (3):
+  x86/boot/compressed: Move .got.plt entries out of the .got section
+  x86/boot/compressed: Force hidden visibility for all symbol references
+  x86/boot/compressed: Get rid of GOT fixup code
+
+Arvind Sankar (4):
+  x86/boot: Add .text.* to setup.ld
+  x86/boot: Remove run-time relocations from .head.text code
+  x86/boot: Remove runtime relocations from head_{32,64}.S
+  x86/boot: Check that there are no runtime relocations
+
+ arch/x86/boot/compressed/Makefile      |  37 +-----
+ arch/x86/boot/compressed/head_32.S     |  99 +++++----------
+ arch/x86/boot/compressed/head_64.S     | 165 ++++++++++---------------
+ arch/x86/boot/compressed/hidden.h      |  19 +++
+ arch/x86/boot/compressed/mkpiggy.c     |   6 +
+ arch/x86/boot/compressed/vmlinux.lds.S |  24 +++-
+ arch/x86/boot/setup.ld                 |   2 +-
+ 7 files changed, 151 insertions(+), 201 deletions(-)
+ create mode 100644 arch/x86/boot/compressed/hidden.h
+
+
+base-commit: 9ebcfadb0610322ac537dd7aa5d9cbc2b2894c68
 -- 
-2.25.1
+2.26.2
 
