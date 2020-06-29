@@ -2,159 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A76620D0C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524F320D0A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgF2SgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:36:03 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:63991 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726614AbgF2Sfj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:35:39 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200629064802epoutp0192997be1677e257355394bd65a66b042~c8PAXMGQZ1621916219epoutp013
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 06:48:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200629064802epoutp0192997be1677e257355394bd65a66b042~c8PAXMGQZ1621916219epoutp013
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593413282;
-        bh=5X4YGRD6u1tf1xanJ6XnnURVxKYSn66IhirKFzp306A=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=SPMC12hxUgafWKEWNFEiPmg9UAySkWDoyVAvbrzXlGQPmJTMtNIcmsVfOYMSfHZkW
-         3eid/LP3jYkmdG1ZWyNS4s1GNWAk18a8OBoY2IP0rKEciqHORMZQXU+N2znZ8Vrj/E
-         7PBWqyZI7Q5uOPsqlyy72B9l739OBPSFcobayJd4=
-Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p1.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200629064801epcas1p11b707090a0db8eb35b02cca951d76ea7~c8O--hFfq2909229092epcas1p1N;
-        Mon, 29 Jun 2020 06:48:01 +0000 (GMT)
-Mime-Version: 1.0
-Subject: [PATCH v4 0/5] scsi: ufs: Add Host Performance Booster Support
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <231786897.01593413281727.JavaMail.epsvc@epcpadp2>
-Date:   Mon, 29 Jun 2020 15:43:23 +0900
-X-CMS-MailID: 20200629064323epcms2p787baba58a416fef7fdd3927f8da701da
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200629064323epcms2p787baba58a416fef7fdd3927f8da701da
-References: <CGME20200629064323epcms2p787baba58a416fef7fdd3927f8da701da@epcms2p7>
+        id S1726028AbgF2Se5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:34:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:34558 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725869AbgF2Se5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:34:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E206A101E;
+        Sun, 28 Jun 2020 23:45:30 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.83.176])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6C5B33F73C;
+        Sun, 28 Jun 2020 23:45:26 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org
+Cc:     robin.murphy@arm.com,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V2] arm64/hugetlb: Reserve CMA areas for gigantic pages on 16K and 64K configs
+Date:   Mon, 29 Jun 2020 12:15:07 +0530
+Message-Id: <1593413107-12779-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently 'hugetlb_cma=' command line argument does not create CMA area on
+ARM64_16K_PAGES and ARM64_64K_PAGES based platforms. Instead, it just ends
+up with the following warning message. Reason being, hugetlb_cma_reserve()
+never gets called for these huge page sizes.
 
-Changelog:
+[   64.255669] hugetlb_cma: the option isn't supported by current arch
 
-v3 -> v4
-1. Cleanup.
+This enables CMA areas reservation on ARM64_16K_PAGES and ARM64_64K_PAGES
+configs by defining an unified arm64_hugetlb_cma_reseve() that is wrapped
+in CONFIG_CMA.
 
-v2 -> v3
-1. Add checking input module parameter value.
-2. Change base commit from 5.8/scsi-queue to 5.9/scsi-queue.
-3. Cleanup for unused variables and label.
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Barry Song <song.bao.hua@hisilicon.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+Applies on 5.8-rc3.
 
-v1 -> v2
-1. Change the full boilerplate text to SPDX style.
-2. Adopt dynamic allocation for sub-region data structure.
-3. Cleanup.
+Changes in V2:
 
-NAND flash memory-based storage devices use Flash Translation Layer (FTL)
-to translate logical addresses of I/O requests to corresponding flash
-memory addresses. Mobile storage devices typically have RAM with
-constrained size, thus lack in memory to keep the whole mapping table.
-Therefore, mapping tables are partially retrieved from NAND flash on
-demand, causing random-read performance degradation.
+- Moved arm64_hugetlb_cma_reserve() stub and declaration near call site
 
-To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
-(Host Performance Booster) which uses host system memory as a cache for the
-FTL mapping table. By using HPB, FTL data can be read from host memory
-faster than from NAND flash memory. 
+Changes in V1: (https://patchwork.kernel.org/patch/11619839/)
 
-The current version only supports the DCM (device control mode).
-This patch consists of 4 parts to support HPB feature.
+ arch/arm64/mm/hugetlbpage.c | 38 +++++++++++++++++++++++++++++++++++++
+ arch/arm64/mm/init.c        | 12 +++++++++---
+ 2 files changed, 47 insertions(+), 3 deletions(-)
 
-1) UFS-feature layer
-2) HPB probe and initialization process
-3) READ -> HPB READ using cached map information
-4) L2P (logical to physical) map management
-
-The UFS-feature is an additional layer to avoid the structure in which the
-UFS-core driver and the UFS-feature are entangled with each other in a 
-single module.
-By adding the layer, UFS-features composed of various combinations can be
-supported. Also, even if a new feature is added, modification of the 
-UFS-core driver can be minimized.
-
-In the HPB probe and init process, the device information of the UFS is
-queried. After checking supported features, the data structure for the HPB
-is initialized according to the device information.
-
-A read I/O in the active sub-region where the map is cached is changed to
-HPB READ by the HPB module.
-
-The HPB module manages the L2P map using information received from the
-device. For active sub-region, the HPB module caches through ufshpb_map
-request. For the in-active region, the HPB module discards the L2P map.
-When a write I/O occurs in an active sub-region area, associated dirty
-bitmap checked as dirty for preventing stale read.
-
-HPB is shown to have a performance improvement of 58 - 67% for random read
-workload. [1]
-
-This series patches are based on the 5.9/scsi-queue branch.
-
-[1]:
-https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
-
-Daejun park (5):
- scsi: ufs: Add UFS feature related parameter
- scsi: ufs: Add UFS feature layer
- scsi: ufs: Introduce HPB module
- scsi: ufs: L2P map management for HPB read
- scsi: ufs: Prepare HPB read for cached sub-region
+diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
+index 0a52ce46f020..ea7fb48b8617 100644
+--- a/arch/arm64/mm/hugetlbpage.c
++++ b/arch/arm64/mm/hugetlbpage.c
+@@ -19,6 +19,44 @@
+ #include <asm/tlbflush.h>
+ #include <asm/pgalloc.h>
  
- drivers/scsi/ufs/Kconfig      |    9 +
- drivers/scsi/ufs/Makefile     |    3 +-
- drivers/scsi/ufs/ufs.h        |   12 +
- drivers/scsi/ufs/ufsfeature.c |  148 +++
- drivers/scsi/ufs/ufsfeature.h |   69 ++
- drivers/scsi/ufs/ufshcd.c     |   19 +
- drivers/scsi/ufs/ufshcd.h     |    3 +
- drivers/scsi/ufs/ufshpb.c     | 1997 ++++++++++++++++++++++++++++++++++++
- drivers/scsi/ufs/ufshpb.h     |  234 +++++
- 9 files changed, 2493 insertions(+), 1 deletion(-)
- created mode 100644 drivers/scsi/ufs/ufsfeature.c
- created mode 100644 drivers/scsi/ufs/ufsfeature.h
- created mode 100644 drivers/scsi/ufs/ufshpb.c
- created mode 100644 drivers/scsi/ufs/ufshpb.h
++/*
++ * HugeTLB Support Matrix
++ *
++ * ---------------------------------------------------
++ * | Page Size | CONT PTE |  PMD  | CONT PMD |  PUD  |
++ * ---------------------------------------------------
++ * |     4K    |   64K    |   2M  |    32M   |   1G  |
++ * |    16K    |    2M    |  32M  |     1G   |       |
++ * |    64K    |    2M    | 512M  |    16G   |       |
++ * ---------------------------------------------------
++ */
++
++/*
++ * Reserve CMA areas for the largest supported gigantic
++ * huge page when requested. Any other smaller gigantic
++ * huge pages could still be served from those areas.
++ */
++#ifdef CONFIG_CMA
++void __init arm64_hugetlb_cma_reserve(void)
++{
++	int order;
++
++#ifdef CONFIG_ARM64_4K_PAGES
++	order = PUD_SHIFT - PAGE_SHIFT;
++#else
++	order = CONT_PMD_SHIFT + PMD_SHIFT - PAGE_SHIFT;
++#endif
++	/*
++	 * HugeTLB CMA reservation is required for gigantic
++	 * huge pages which could not be allocated via the
++	 * page allocator. Just warn if there is any change
++	 * breaking this assumption.
++	 */
++	WARN_ON(order <= MAX_ORDER);
++	hugetlb_cma_reserve(order);
++}
++#endif /* CONFIG_CMA */
++
+ #ifdef CONFIG_ARCH_ENABLE_HUGEPAGE_MIGRATION
+ bool arch_hugetlb_migration_supported(struct hstate *h)
+ {
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 1e93cfc7c47a..8a260ef0cb94 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -406,6 +406,14 @@ void __init arm64_memblock_init(void)
+ 	dma_contiguous_reserve(arm64_dma32_phys_limit);
+ }
+ 
++#if defined(CONFIG_HUGETLB_PAGE) && defined(CONFIG_CMA)
++void arm64_hugetlb_cma_reserve(void);
++#else
++static inline void arm64_hugetlb_cma_reserve(void)
++{
++}
++#endif
++
+ void __init bootmem_init(void)
+ {
+ 	unsigned long min, max;
+@@ -425,9 +433,7 @@ void __init bootmem_init(void)
+ 	 * initialize node_online_map that gets used in hugetlb_cma_reserve()
+ 	 * while allocating required CMA size across online nodes.
+ 	 */
+-#ifdef CONFIG_ARM64_4K_PAGES
+-	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+-#endif
++	arm64_hugetlb_cma_reserve();
+ 
+ 	/*
+ 	 * Sparsemem tries to allocate bootmem in memory_present(), so must be
+-- 
+2.20.1
+
