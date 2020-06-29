@@ -2,105 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 015DC20D160
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC2520D288
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbgF2Sle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:41:34 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58072 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728930AbgF2Sl0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:41:26 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TC3mjr080192;
-        Mon, 29 Jun 2020 08:07:39 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31x1rupwev-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 08:07:38 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05TC4HMe081091;
-        Mon, 29 Jun 2020 08:07:36 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31x1rupw9r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 08:07:36 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05TC2658008359;
-        Mon, 29 Jun 2020 12:07:28 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 31wwch2637-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jun 2020 12:07:28 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05TC7PkX21823872
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Jun 2020 12:07:25 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B7EB74C050;
-        Mon, 29 Jun 2020 12:07:25 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5E3314C063;
-        Mon, 29 Jun 2020 12:07:25 +0000 (GMT)
-Received: from osiris (unknown [9.171.82.53])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 29 Jun 2020 12:07:25 +0000 (GMT)
-Date:   Mon, 29 Jun 2020 14:07:23 +0200
-From:   Heiko Carstens <heiko.carstens@de.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-mm@kvack.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH RFC] s390x/vmem: get rid of memory segment list
-Message-ID: <20200629120723.GD4468@osiris>
-References: <20200625150029.45019-1-david@redhat.com>
- <20200626192253.2281d95d@thinkpad>
- <20200626204621.55248f99@thinkpad>
- <20200629115537.GC4468@osiris>
- <0c783dbb-630c-6440-74b8-8b40af146d6a@redhat.com>
+        id S1725856AbgF2SuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:50:01 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:61738 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729180AbgF2St7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:49:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593456599; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=UN67+6exueZt49OSSOSCDajV8YbGx6Hd7cdOXnOfMkk=; b=QwMiNdqI5Br2s9cMPCxxiYuPy3HRZqXImd4VdKLdFKqF0i6TqVg9ttzM1eTZcwKI6JzhCli1
+ x9ehV9ONZUYc1OpNo0ZDqFhro13Em6a9z0nq1xMncGMeoTU4J3fQSunockFlifEWHPx5/sW6
+ zoGAfjpADkI4oafRpK7dA6BP0KU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5ef9daf68fe116ddd98d18b8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jun 2020 12:13:42
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D3F7DC433CB; Mon, 29 Jun 2020 12:13:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from Pillair (unknown [183.83.71.149])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 26A85C433C6;
+        Mon, 29 Jun 2020 12:13:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 26A85C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pillair@codeaurora.org
+From:   "Rakesh Pillai" <pillair@codeaurora.org>
+To:     "'Doug Anderson'" <dianders@chromium.org>,
+        "'Kalle Valo'" <kvalo@codeaurora.org>
+Cc:     <ath10k@lists.infradead.org>,
+        "'open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS'" 
+        <devicetree@vger.kernel.org>,
+        "'linux-wireless'" <linux-wireless@vger.kernel.org>,
+        "'LKML'" <linux-kernel@vger.kernel.org>
+References: <1593194502-13164-1-git-send-email-pillair@codeaurora.org> <1593194502-13164-3-git-send-email-pillair@codeaurora.org> <CAD=FV=V1C2Lu31n8xQ8HPf21fNo_Da2SLtZAeStFBEou9+geEA@mail.gmail.com>
+In-Reply-To: <CAD=FV=V1C2Lu31n8xQ8HPf21fNo_Da2SLtZAeStFBEou9+geEA@mail.gmail.com>
+Subject: RE: [PATCH 2/2] ath10k: Add support for chain1 regulator supply voting
+Date:   Mon, 29 Jun 2020 17:43:35 +0530
+Message-ID: <000301d64e0e$b9e32c70$2da98550$@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0c783dbb-630c-6440-74b8-8b40af146d6a@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-29_11:2020-06-29,2020-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- cotscore=-2147483648 lowpriorityscore=0 phishscore=0 spamscore=0
- bulkscore=0 adultscore=0 mlxlogscore=999 suspectscore=1 clxscore=1015
- malwarescore=0 mlxscore=0 impostorscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006290087
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKOP6JTmaF44S4OU0UHs+POXUh10gKWMw65AYCLAK6nXugGkA==
+Content-Language: en-us
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 02:01:22PM +0200, David Hildenbrand wrote:
-> On 29.06.20 13:55, Heiko Carstens wrote:
-> > On Fri, Jun 26, 2020 at 08:46:21PM +0200, Gerald Schaefer wrote:
-> >> Verified with DCSS overlapping boot and standby memory, works fine.
-> >> As expected, the error message changes, but I don't think that is a
-> >> problem, as long as you also remove the old -ENOSPC case / comment
-> >> in arch/s390/mm/extmem.c. It is actually more correct now I guess,
-> >> -ENOSPC doesn't look like the correct return value anyway.
-> >>
-> >> Thanks for cleaning up! Looks good to me, and removes > 100 LOC,
-> >> unless Heiko remembers some other issues from ancient times.
-> >>
-> >> Reviewed-by: Gerald Schaefer <gerald.schaefer@de.ibm.com>
-> >> Tested-by: Gerald Schaefer <gerald.schaefer@de.ibm.com> [DCSS]
-> > 
-> > Looks good to me too. Gerald, thanks for looking and verifying this,
-> > and David, thanks for providing the patch.
-> > 
-> > Applied.
-> > 
-> 
-> Thanks Gerald and Heiko! Should I send an addon patch to tweak the
-> documentation or resend this patch?
 
-Please send an addon patch. I will merge it.
+
+> -----Original Message-----
+> From: Doug Anderson <dianders@chromium.org>
+> Sent: Saturday, June 27, 2020 3:22 AM
+> To: Rakesh Pillai <pillair@codeaurora.org>; Kalle Valo
+> <kvalo@codeaurora.org>
+> Cc: ath10k@lists.infradead.org; open list:OPEN FIRMWARE AND FLATTENED
+> DEVICE TREE BINDINGS <devicetree@vger.kernel.org>; linux-wireless =
+<linux-
+> wireless@vger.kernel.org>; LKML <linux-kernel@vger.kernel.org>
+> Subject: Re: [PATCH 2/2] ath10k: Add support for chain1 regulator =
+supply
+> voting
+>=20
+> Hi,
+>=20
+> On Fri, Jun 26, 2020 at 11:02 AM Rakesh Pillai =
+<pillair@codeaurora.org> wrote:
+> >
+> > Add support to vote for chain-1 voltage regulator
+> > in WCN3990.
+> >
+> > Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+> >
+> > Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> > ---
+> >  drivers/net/wireless/ath/ath10k/snoc.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/net/wireless/ath/ath10k/snoc.c
+> b/drivers/net/wireless/ath/ath10k/snoc.c
+> > index 645ed5f..407a074 100644
+> > --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> > +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> > @@ -45,6 +45,7 @@ static const char * const ath10k_regulators[] =3D =
+{
+> >         "vdd-1.8-xo",
+> >         "vdd-1.3-rfa",
+> >         "vdd-3.3-ch0",
+> > +       "vdd-3.3-ch1",
+>=20
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+>=20
+> ...with the slight nit that ${SUBJECT} and description should probably
+> call it "chan1" and not "chain1".  Presumably the maintainer can fix
+> when applying.
+>=20
+> -Doug
+
+Hi Doug,
+
+It has to be chain1 only, not chan1.
+This is the power supply rail for the wlan-chain1=20
+
