@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B6E20E616
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E01420E5EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729264AbgF2VoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:44:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
+        id S2391403AbgF2Vm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727823AbgF2Shq (ORCPT
+        with ESMTP id S1727883AbgF2Shx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:46 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C886FC02F027
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:58:12 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id s21so14596888oic.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:58:12 -0700 (PDT)
+        Mon, 29 Jun 2020 14:37:53 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED73C02F031
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:59:48 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id 5so13775796oty.11
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 07:59:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qIceem+h4hEl/tJ04l9HZoi6zU5CRTZG4Umsn3mRaXc=;
-        b=nZGXcj1U0WmyHL/RFeStL7uSISwmuW8Vf1A3s+OQM9J/sqxUaM4yiJ8VZ4xmRpWYOy
-         W8OWynKS64uN2zYIr1zIISQs/omM/NeUadPYGo6mkqG5GuVo1Ul862pi26gTdhTVlMik
-         tULuyEzlpeSWpGp/H4b9OWFE3loOoA+wmZ8SBlxv6U4mPDAlafIXO4iBWzQlvLcUzCtO
-         HFW92b3GCgI2iItDuicgsLTH9Hb+Gd3OwgbIGglViUjNnF+ubEjQwjHo2u19Mw7RqL+P
-         ElQpI6jrrehqsS6malxi/0R1FGYQp8GRe/k4EA6UjajoP5lPWUYYCNANo/H8Z3e7POLI
-         2/UA==
+        bh=O9Y/+e/e29D9znyzVTDfGPWcbDE2sgU04HkRdXVP2Y0=;
+        b=Pe1X843TCcJC8mG7AsPGFWzJt/6SM1sl85DIfk19L1KrVD6knekTW4seEvRud51YLG
+         yF9aKcbBg4q775aYOUzlkGAEJOOOKRiyuBwuilfm4pPJIUy3YX/pmL/EAGHifRbCyiJq
+         k3FQUeAHHiajm2816UP4/LUgQgs/2o4zcgAYmf9l28dk5cUNyniMVkGWO1vxa6IShY/S
+         pO1B9AxL0HEbQeut+iS4tR4xrH+F+Df/XvWpU4Erj+xwyJzWZWqIbFAIJuInnq9P1U+g
+         FKrIUvKc+LBQf2TFAwHy/02dsywvHZkFa6sDSr5r6rYstA7KtHHXW06HvIlHVuk20on5
+         ycjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qIceem+h4hEl/tJ04l9HZoi6zU5CRTZG4Umsn3mRaXc=;
-        b=oTXQP1mH8XhDjGB2cQlxy7+aBBOfR07UC0hNUATqnGhhCREnVTnd4HtR1ep3IC6GLr
-         v++Rx/oanFC/X6JaciFUV5wfAcXeoWWS0v3GsUyTzuOT7J4ez0Y8GnwZx7yxod++eKfK
-         KR3OHU0u3DAMEmrsW6o7TFuyaxWXjSpos7ufEne8B9icgPvv2iXu00vrpJ76UUXvOq4n
-         Gk+U50hOz3D76TnWy+n7j7qV7aLEAHIyx473Wo0Q6dgFse/wWQ8LVjOe4kleezbRCCWz
-         oQwCiz45FiQDu+KUmYxq1xSzKvDH/9G25fuer7ClcoQM2wXse8E6tG21Q+OAzFn/q2+X
-         uHEQ==
-X-Gm-Message-State: AOAM5307hY2ecK2rFmaFgj6Wo2mwpPcXaQjcT8iv5JVHnMvuh/KbYUaO
-        qqD62s91r3iER0eDy76+TcMtgG4GBoN98ui10Nw=
-X-Google-Smtp-Source: ABdhPJzCu10+mX5AkEDLheJEQFRjFXLQ7wvHluaa8dXoLjlYMpM12gOMFMhuflJc3ofank0Hp9OrjGmCB9O03BR283k=
-X-Received: by 2002:a05:6808:b09:: with SMTP id s9mr11814027oij.130.1593442692101;
- Mon, 29 Jun 2020 07:58:12 -0700 (PDT)
+        bh=O9Y/+e/e29D9znyzVTDfGPWcbDE2sgU04HkRdXVP2Y0=;
+        b=D3J4/Jm4fOQmu/rF0fXBRN1uRz0UNDuCkX7AR1eSZzHBOuW5Lk6I05k7zEoDcVmwyx
+         Wj/pvq1/zrl34qD55/K0ltNHqH1jT/RS0d2G/NAQZw8rnpjOFpC8L/Hmehv2EM2Fmscy
+         DWZssHmkIuJ1vEczQC/JkFfuYRCBf6NN7nft/XZNsrgPeOWhnVS7LRJNJoOFnxI4uWOs
+         uXa3JUbfamMkRiMqiwkMHJzQfqZ70Qqp9FrSntBLwyHiJipNzzUYFzRJakctjyCd7y5z
+         do82bbG8+joWdq8WMQTX7EMwSl+2jBnRh2s4m0A+e/elBmub6dTQA2TAloQ4l8oW7kOE
+         o1Nw==
+X-Gm-Message-State: AOAM533+/2hBRYqYYSRvKzowRw5oPTFFtZR7n4yUinRhoqqpav1diwU9
+        CpFha7jx0WP+cSyqep4orIQgwRQ6NotMi9Y2oMY=
+X-Google-Smtp-Source: ABdhPJxlHj+j8ZYs6uJnfSfCiAx17n4DDEDtLjPmb8ihqGFXQe3xIjU2VD3uRKFJGZJB9fzSwltqlI9xmBA20MbcoMU=
+X-Received: by 2002:a4a:dfb5:: with SMTP id k21mr6039768ook.27.1593442787765;
+ Mon, 29 Jun 2020 07:59:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200629140442.1043957-1-lee.jones@linaro.org> <20200629140442.1043957-4-lee.jones@linaro.org>
-In-Reply-To: <20200629140442.1043957-4-lee.jones@linaro.org>
+References: <20200629140442.1043957-1-lee.jones@linaro.org> <20200629140442.1043957-6-lee.jones@linaro.org>
+In-Reply-To: <20200629140442.1043957-6-lee.jones@linaro.org>
 From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Mon, 29 Jun 2020 17:57:44 +0300
-Message-ID: <CAFCwf13J5T0h8Unq=Fz2s7N88N6OTQ22OQYmmVg2MrWZ4GBLug@mail.gmail.com>
-Subject: Re: [PATCH 03/20] misc: habanalabs: firmware_if: Add missing
- 'fw_name' and 'dst' entries to function header
+Date:   Mon, 29 Jun 2020 17:59:19 +0300
+Message-ID: <CAFCwf10QWLtuK3FmS+251o-aD+t8AOp4CHFaUwm-2fCQqOLvGA@mail.gmail.com>
+Subject: Re: [PATCH 05/20] misc: habanalabs: irq: Repair kerneldoc formatting issues
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -66,36 +65,118 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, Jun 29, 2020 at 5:04 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> Looks as though documentation for these function arguments have
-> been missing since the driver's inception last year.
+> W=1 kernel builds report a lack of descriptions for various
+> function arguments.  In reality they are documented, but the
+> formatting was not as expected '@.*:'.  Instead, '-'s were
+> used as separators.
 >
-> Fixes the following W=1 kernel build warnings:
+> While we're here, the headers for functions various functions
+> were written in kerneldoc format, but lack the kerneldoc
+> identifier '/**'.  Let's promote them so they can gain access
+> to the checker.
 >
->  drivers/misc/habanalabs/firmware_if.c:26: warning: Function parameter or member 'fw_name' not described in 'hl_fw_load_fw_to_device'
->  drivers/misc/habanalabs/firmware_if.c:26: warning: Function parameter or member 'dst' not described in 'hl_fw_load_fw_to_device'
+> This change fixes the following W=1 warnings:
+>
+>  drivers/misc/habanalabs/irq.c:24: warning: Function parameter or member 'eq_work' not described in 'hl_eqe_work'
+>  drivers/misc/habanalabs/irq.c:24: warning: Function parameter or member 'hdev' not described in 'hl_eqe_work'
+>  drivers/misc/habanalabs/irq.c:24: warning: Function parameter or member 'eq_entry' not described in 'hl_eqe_work'
 >
 > Cc: Oded Gabbay <oded.gabbay@gmail.com>
 > Cc: Tomer Tayar <ttayar@habana.ai>
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  drivers/misc/habanalabs/firmware_if.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  drivers/misc/habanalabs/irq.c | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
 >
-> diff --git a/drivers/misc/habanalabs/firmware_if.c b/drivers/misc/habanalabs/firmware_if.c
-> index baf790cf4b787..15e0793da6554 100644
-> --- a/drivers/misc/habanalabs/firmware_if.c
-> +++ b/drivers/misc/habanalabs/firmware_if.c
-> @@ -15,7 +15,10 @@
+> diff --git a/drivers/misc/habanalabs/irq.c b/drivers/misc/habanalabs/irq.c
+> index 4e77a73857793..6981d67153b11 100644
+> --- a/drivers/misc/habanalabs/irq.c
+> +++ b/drivers/misc/habanalabs/irq.c
+> @@ -13,9 +13,9 @@
+>   * struct hl_eqe_work - This structure is used to schedule work of EQ
+>   *                      entry and armcp_reset event
+>   *
+> - * @eq_work          - workqueue object to run when EQ entry is received
+> - * @hdev             - pointer to device structure
+> - * @eq_entry         - copy of the EQ entry
+> + * @eq_work:          workqueue object to run when EQ entry is received
+> + * @hdev:             pointer to device structure
+> + * @eq_entry:         copy of the EQ entry
+>   */
+>  struct hl_eqe_work {
+>         struct work_struct      eq_work;
+> @@ -23,7 +23,7 @@ struct hl_eqe_work {
+>         struct hl_eq_entry      eq_entry;
+>  };
 >
->  /**
->   * hl_fw_load_fw_to_device() - Load F/W code to device's memory.
-> + *
->   * @hdev: pointer to hl_device structure.
-> + * @fw_name: the firmware image name
-> + * @dst: IO memory mapped address space to copy firmware to
+> -/*
+> +/**
+>   * hl_cq_inc_ptr - increment ci or pi of cq
 >   *
->   * Copy fw code from firmware file to device memory.
+>   * @ptr: the current ci or pi value of the completion queue
+> @@ -39,7 +39,7 @@ inline u32 hl_cq_inc_ptr(u32 ptr)
+>         return ptr;
+>  }
+>
+> -/*
+> +/**
+>   * hl_eq_inc_ptr - increment ci of eq
 >   *
+>   * @ptr: the current ci value of the event queue
+> @@ -66,7 +66,7 @@ static void irq_handle_eqe(struct work_struct *work)
+>         kfree(eqe_work);
+>  }
+>
+> -/*
+> +/**
+>   * hl_irq_handler_cq - irq handler for completion queue
+>   *
+>   * @irq: irq number
+> @@ -142,7 +142,7 @@ irqreturn_t hl_irq_handler_cq(int irq, void *arg)
+>         return IRQ_HANDLED;
+>  }
+>
+> -/*
+> +/**
+>   * hl_irq_handler_eq - irq handler for event queue
+>   *
+>   * @irq: irq number
+> @@ -206,7 +206,7 @@ irqreturn_t hl_irq_handler_eq(int irq, void *arg)
+>         return IRQ_HANDLED;
+>  }
+>
+> -/*
+> +/**
+>   * hl_cq_init - main initialization function for an cq object
+>   *
+>   * @hdev: pointer to device structure
+> @@ -238,7 +238,7 @@ int hl_cq_init(struct hl_device *hdev, struct hl_cq *q, u32 hw_queue_id)
+>         return 0;
+>  }
+>
+> -/*
+> +/**
+>   * hl_cq_fini - destroy completion queue
+>   *
+>   * @hdev: pointer to device structure
+> @@ -269,7 +269,7 @@ void hl_cq_reset(struct hl_device *hdev, struct hl_cq *q)
+>         memset((void *) (uintptr_t) q->kernel_address, 0, HL_CQ_SIZE_IN_BYTES);
+>  }
+>
+> -/*
+> +/**
+>   * hl_eq_init - main initialization function for an event queue object
+>   *
+>   * @hdev: pointer to device structure
+> @@ -297,7 +297,7 @@ int hl_eq_init(struct hl_device *hdev, struct hl_eq *q)
+>         return 0;
+>  }
+>
+> -/*
+> +/**
+>   * hl_eq_fini - destroy event queue
+>   *
+>   * @hdev: pointer to device structure
 > --
 > 2.25.1
 >
