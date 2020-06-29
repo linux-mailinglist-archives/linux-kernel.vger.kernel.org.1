@@ -2,95 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FAA20E26D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F99F20E437
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733028AbgF2VFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:05:11 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:34209 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731103AbgF2VFC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:05:02 -0400
-Received: from mail-qk1-f176.google.com ([209.85.222.176]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1Mofst-1j0tDQ1GIb-00p4cK; Mon, 29 Jun 2020 13:37:25 +0200
-Received: by mail-qk1-f176.google.com with SMTP id l6so14871500qkc.6;
-        Mon, 29 Jun 2020 04:37:25 -0700 (PDT)
-X-Gm-Message-State: AOAM5316NKX+qTNj84k+pnnAbrw+5/y3z0doj76V5dvfxnvpdvWBZZxA
-        oPBAKeZOuefuW87vz3MvtjheK4d4eFGXVOZNWe4=
-X-Google-Smtp-Source: ABdhPJwGCaTaF/6lDsrwnIDXUL4eFvWm6Sxzf0vyht5U7St+DoN5wF2vfKmThITTZuTVI5ngfEi0EaDM8L8TwiPm6us=
-X-Received: by 2002:a37:a496:: with SMTP id n144mr14536437qke.286.1593430644096;
- Mon, 29 Jun 2020 04:37:24 -0700 (PDT)
+        id S2390858AbgF2VWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:22:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44784 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729593AbgF2Sv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:51:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4DCA4AD6A;
+        Mon, 29 Jun 2020 11:39:38 +0000 (UTC)
+Date:   Mon, 29 Jun 2020 13:39:33 +0200
+From:   Petr Tesarik <ptesarik@suse.cz>
+To:     Hari Bathini <hbathini@linux.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Pingfan Liu <piliu@redhat.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+Subject: Re: [PATCH 01/11] kexec_file: allow archs to handle special regions
+ while locating memory hole
+Message-ID: <20200629133933.0787f562@ezekiel.suse.cz>
+In-Reply-To: <159319828304.16351.6990340111766605842.stgit@hbathini.in.ibm.com>
+References: <159319825403.16351.7253978047621755765.stgit@hbathini.in.ibm.com>
+        <159319828304.16351.6990340111766605842.stgit@hbathini.in.ibm.com>
+Organization: SUSE Linux, s.r.o.
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-References: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com> <1593410042-10598-5-git-send-email-Anson.Huang@nxp.com>
-In-Reply-To: <1593410042-10598-5-git-send-email-Anson.Huang@nxp.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 29 Jun 2020 13:37:08 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2yXFbGxuSRoC5_dYBujnAtVoEMXe50V7QYjPYhqra7nA@mail.gmail.com>
-Message-ID: <CAK8P3a2yXFbGxuSRoC5_dYBujnAtVoEMXe50V7QYjPYhqra7nA@mail.gmail.com>
-Subject: Re: [PATCH V3 04/10] clk: imx: Support building SCU clock driver as module
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, oleksandr.suvorov@toradex.com,
-        Stefan Agner <stefan.agner@toradex.com>,
-        Peng Fan <peng.fan@nxp.com>, Abel Vesa <abel.vesa@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Andy Duan <fugang.duan@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        NXP Linux Team <Linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:fFz7B6CKzVGMcNOoqhEQ+Q6zaYdSbNLhT5RYA3WT73gjqRLfv3G
- x7gM7jqWl0DIDuUE2yeUfaY4Q6j4CH/U5slfRIMwAtxUWXQG9znYWhecwuWQAAt3obh02PH
- nAVFs/46bBHnM6Wnkra55WG0vQlGd5xeRMOOtcD4b57A6Q0f2WZfsewPe2YNGRXOYbeUMbq
- 4+1nzXnBh9Mn//puJkazg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/dLsAqa9/LA=:J29ItYNPuOs7yVt7PmEaOm
- 2v2y8akWwVq7bOTB2Vcf4yZ/oIoVEuk8+LJ8hrU0GB7yWvrX98hlqxZgHgLk6vc0FGYY6Qtqd
- DvvNXvEVI4dFqtgax2DQ4HfCGWxl7/BIzD6ZNHXCL+iwMV4w46fGzneUKB+kG6vKVtrx3BDcY
- s7hWyqTQIOEt9xiZKl7wT98Kw+LymsQwC8bhhy0nHMeou0VSjC/1LxzmyGDXp8khga3gSZDAd
- 8xsbNvJDtvTy66DvQuNQjqt4FFchgUe3LqPGtPGW4ijDh9DR/WqN95ArmdQV7p1ngJ/tEeRPT
- 0kGF5oevsi1jlBHmhfqaXtkCx33l6xYDfFLnUSGroQ6f+V1pthqD28lEwYdV7IxEtgpcCRATU
- 9maTfhYMr0hf/mxSpXXjT9IZ3vGZlDEa5x8tRwoFh74SQxETdd+1OGUNC1O9sHSbG9N0uJYhE
- hTz+DPwTWMNDA58pVwlGeyrhT1NVMSHf/o81B1u+iJIAwE22C6bNsHZy5JzaIpipkTd4MTyJM
- 0UFmaTl0Vhie6wRyYgSkPlpFt1feGcyUkcK0viTTGG4AbxglJd4p3vhKI43BCcsH+0DE03k8s
- EYvt5+aCpabCeS5Mjec+CxzFGsP9LT9P35VHD4aghfdY451Ua2rhA5djiNgLZFDZjj1LiLus2
- ECJ1H0qq51Uq1qZ0AqO1yHUnU5UnmVKLuvJhZ1T9U4yRLydFpTZpibPcIXqeWRAf4MDaXwwYJ
- J0Jv/l/XojF1cCaIo4YezUaifpf49tasTY9UapyhoddqJ3MMt6RYQuNbE8kLXRLmjVPJMo9NR
- k6sKxMiz66ma7v98h2709HyGWpfxuA+9aQ7Bhw4KzQajkV45lg=
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/D5Q_Btj.Z_5nJ6kJU141Zr9"; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 8:06 AM Anson Huang <Anson.Huang@nxp.com> wrote:
+--Sig_/D5Q_Btj.Z_5nJ6kJU141Zr9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> --- a/drivers/clk/imx/Makefile
-> +++ b/drivers/clk/imx/Makefile
-> @@ -21,9 +21,9 @@ obj-$(CONFIG_MXC_CLK) += \
->         clk-sscg-pll.o \
->         clk-pll14xx.o
->
-> -obj-$(CONFIG_MXC_CLK_SCU) += \
-> -       clk-scu.o \
-> -       clk-lpcg-scu.o
-> +mxc-clk-scu-objs += clk-lpcg-scu.o
-> +mxc-clk-scu-objs += clk-scu.o
-> +obj-$(CONFIG_MXC_CLK_SCU) += mxc-clk-scu.o
+Hi Hari,
 
-It looks like the two modules are tightly connected, one is useless without the
-other. How about linking them into a combined module and dropping the
-export statement?
+is there any good reason to add two more functions with a very similar
+name to an existing function? AFAICS all you need is a way to call a
+PPC64-specific function from within kexec_add_buffer (PATCH 4/11), so
+you could add something like this:
 
-      Arnd
+int __weak arch_kexec_locate_mem_hole(struct kexec_buf *kbuf)
+{
+	return 0;
+}
+
+Call this function from kexec_add_buffer where appropriate and then
+override it for PPC64 (it roughly corresponds to your
+kexec_locate_mem_hole_ppc64() from PATCH 4/11).
+
+FWIW it would make it easier for me to follow the resulting code.
+
+Petr T
+
+On Sat, 27 Jun 2020 00:34:43 +0530
+Hari Bathini <hbathini@linux.ibm.com> wrote:
+
+> Some archs can have special memory regions, within the given memory
+> range, which can't be used for the buffer in a kexec segment. As
+> kexec_add_buffer() function is being called from generic code as well,
+> add weak arch_kexec_add_buffer definition for archs to override & take
+> care of special regions before trying to locate a memory hole.
+>=20
+> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+> ---
+>  include/linux/kexec.h |    5 +++++
+>  kernel/kexec_file.c   |   37 +++++++++++++++++++++++++++++++++----
+>  2 files changed, 38 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+> index 1776eb2..1237682 100644
+> --- a/include/linux/kexec.h
+> +++ b/include/linux/kexec.h
+> @@ -195,6 +195,11 @@ int __weak arch_kexec_apply_relocations(struct purga=
+tory_info *pi,
+>  					const Elf_Shdr *relsec,
+>  					const Elf_Shdr *symtab);
+> =20
+> +extern int arch_kexec_add_buffer(struct kexec_buf *kbuf);
+> +
+> +/* arch_kexec_add_buffer calls this when it is ready */
+> +extern int __kexec_add_buffer(struct kexec_buf *kbuf);
+> +
+>  extern int kexec_add_buffer(struct kexec_buf *kbuf);
+>  int kexec_locate_mem_hole(struct kexec_buf *kbuf);
+> =20
+> diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+> index bb05fd5..a0b4f7f 100644
+> --- a/kernel/kexec_file.c
+> +++ b/kernel/kexec_file.c
+> @@ -669,10 +669,6 @@ int kexec_locate_mem_hole(struct kexec_buf *kbuf)
+>   */
+>  int kexec_add_buffer(struct kexec_buf *kbuf)
+>  {
+> -
+> -	struct kexec_segment *ksegment;
+> -	int ret;
+> -
+>  	/* Currently adding segment this way is allowed only in file mode */
+>  	if (!kbuf->image->file_mode)
+>  		return -EINVAL;
+> @@ -696,6 +692,25 @@ int kexec_add_buffer(struct kexec_buf *kbuf)
+>  	kbuf->memsz =3D ALIGN(kbuf->memsz, PAGE_SIZE);
+>  	kbuf->buf_align =3D max(kbuf->buf_align, PAGE_SIZE);
+> =20
+> +	return arch_kexec_add_buffer(kbuf);
+> +}
+> +
+> +/**
+> + * __kexec_add_buffer - arch_kexec_add_buffer would call this function a=
+fter
+> + *                      updating kbuf, to place a buffer in a kexec segm=
+ent.
+> + * @kbuf:               Buffer contents and memory parameters.
+> + *
+> + * This function assumes that kexec_mutex is held.
+> + * On successful return, @kbuf->mem will have the physical address of
+> + * the buffer in memory.
+> + *
+> + * Return: 0 on success, negative errno on error.
+> + */
+> +int __kexec_add_buffer(struct kexec_buf *kbuf)
+> +{
+> +	struct kexec_segment *ksegment;
+> +	int ret;
+> +
+>  	/* Walk the RAM ranges and allocate a suitable range for the buffer */
+>  	ret =3D kexec_locate_mem_hole(kbuf);
+>  	if (ret)
+> @@ -711,6 +726,20 @@ int kexec_add_buffer(struct kexec_buf *kbuf)
+>  	return 0;
+>  }
+> =20
+> +/**
+> + * arch_kexec_add_buffer - Some archs have memory regions within the giv=
+en
+> + *                         range that can't be used to place a kexec seg=
+ment.
+> + *                         Such archs can override this function to take=
+ care
+> + *                         of them before trying to locate the memory ho=
+le.
+> + * @kbuf:                  Buffer contents and memory parameters.
+> + *
+> + * Return: 0 on success, negative errno on error.
+> + */
+> +int __weak arch_kexec_add_buffer(struct kexec_buf *kbuf)
+> +{
+> +	return __kexec_add_buffer(kbuf);
+> +}
+> +
+>  /* Calculate and store the digest of segments */
+>  static int kexec_calculate_store_digests(struct kimage *image)
+>  {
+>=20
+
+
+--Sig_/D5Q_Btj.Z_5nJ6kJU141Zr9
+Content-Type: application/pgp-signature
+Content-Description: Digitální podpis OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEHl2YIZkIo5VO2MxYqlA7ya4PR6cFAl750vUACgkQqlA7ya4P
+R6dpTAf/dLQ6L45/sKP4CXfNn4HbDkmtImkYe5MjG/bvbhQrgLZxll54L0YT2bt/
+Xml4Bam2sLd761+VlBcJaQXLojyENgxLEpyAN2XXCFW+8YSipIRrpvmX8RrP+Szr
+PbYupPmCs8Y7GS6iptYE8nASFVQJm4JS4h/HZCsyUcZUpe+lrlM2BkO42FP+X8L9
+KdDubtEyyyWzwXx1PWpfq+I5IDIVKaIaCvXBeOp8OIjnHE4mtRcnMfahD2TBg3LM
+2ga/b4txkwuVkrnVuBaAjMmcK95nlth5oc0NFGMvyoLFUiS48fHYhwFWn7gYQW54
+08VDEBmerlqmS/Qvkym6ERI2MsuC6A==
+=M+ug
+-----END PGP SIGNATURE-----
+
+--Sig_/D5Q_Btj.Z_5nJ6kJU141Zr9--
