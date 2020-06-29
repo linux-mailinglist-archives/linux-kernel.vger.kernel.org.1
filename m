@@ -2,136 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3FA20D84B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82ADE20D875
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 22:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387475AbgF2Th4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:37:56 -0400
+        id S1733233AbgF2TjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:39:15 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387447AbgF2Tho (ORCPT
+        with ESMTP id S2387433AbgF2Thn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:37:44 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B362C03140A;
-        Mon, 29 Jun 2020 10:08:24 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id i25so18029840iog.0;
-        Mon, 29 Jun 2020 10:08:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=frtiYAYIRYzf0c7+OgXqsn5Y4WKcJhLf7MblWKEL3MA=;
-        b=KcVKFDX0aWv+4QnWokmKVfaYBiydsC8d4y04AFFqnqRTa8TX66glEnwA4LAx7jrcHO
-         aHjNlbLp8Fw7EqJrIE3NblKbq0ItY2uaETkpyHeezSbKT8I/F0tmUjNkeyG9jzVrjMSO
-         rJWjqHlIj/YxLkgY/M4hqNysJtlYr/cVXngCANAuqogcbUtjbjSQ95FEl+D/kmhCTsKy
-         idEiC55+sejV6tPeFdAePpRZr9pPMufXyF9bpVZ7fQdeWzkD7pc267kvzZghk+1wgj3V
-         skFuRFwlVk+WlcCA8THFcmZRPyIC4/MQMmMx8c8NqUXdVzxJMJp5oTrFDmDYVqMgosLK
-         2hyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=frtiYAYIRYzf0c7+OgXqsn5Y4WKcJhLf7MblWKEL3MA=;
-        b=SO0Iq0tcI9GLU//X2XFqrUWkn2LZO372Ms1DxwpguYuzNj67Azd4gjwMtjLEh4C8+o
-         wK5s9zu7Z4kQ5B85N1K2RYdKZJVA4O5AUHNXBlgzsZsCou7R12RZrXUqJ4O5KpDAsuqi
-         oexeZ1ft3B6PhslWfwola5LVev3/LJ5QHuQJqG99OaJQ4yVSCeEt3vmOxBopNC2IeAB6
-         XgLMGQZKFuJvfRuy9zRkKG9I4h+l4JjGccBX0nzwlpT2yTYYtp7svziIuBDfRIw9QRY/
-         GeoKO6F0Y/aVglnFpg0L8uuEHdJwS2wiwyVZqHcfbksf9SZeKyhw5TatNjHYiBRG3vgM
-         MbJA==
-X-Gm-Message-State: AOAM530+ESqpyB0BRhNhrgs20Lndjtj8FoeV4FU1TCaz2jcuV/81Jhkp
-        FzQ4iPF5fpWhk8AOXdntz+vORLMrf5PHi97UUDI=
-X-Google-Smtp-Source: ABdhPJwM8dA8f98ng1O4Ad9g0kEaSLHoAQus5mbh10axsYJMT/LexW2plXFhLFquWtBxTRJo3Sp3xpOjdyhOkK9dUEM=
-X-Received: by 2002:a02:a408:: with SMTP id c8mr19198600jal.59.1593450502896;
- Mon, 29 Jun 2020 10:08:22 -0700 (PDT)
+        Mon, 29 Jun 2020 15:37:43 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04EB2C03140B;
+        Mon, 29 Jun 2020 10:10:29 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f092800b9efbf1c1ef2eddc.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:2800:b9ef:bf1c:1ef2:eddc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4212D1EC01A9;
+        Mon, 29 Jun 2020 19:10:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1593450628;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=j5hXS9nvnbM+fSpieFZ04v4XNRE7FJsxEX2ec96mQh0=;
+        b=OBaDehdlg74vqOdiIcPbAbw5Rje/RWi1O7zVjWKP0EDqPqWqYFbl5qQ3gfCD/qW3lbLuO2
+        BSt1CvSrup/U1RHK89+BJnA9/J3LyWGRS3fY2Iw8AKeIt20+OAQpr0TTdx1kF342/Nq4a1
+        8yMJ4JH+A0CL+GRaITz21ZvbCvHu17Y=
+Date:   Mon, 29 Jun 2020 19:10:22 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v33 15/21] x86/vdso: Add support for exception fixup in
+ vDSO functions
+Message-ID: <20200629171022.GC32176@zn.tnic>
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+ <20200617220844.57423-16-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-References: <20200629082819.216405-2-vaibhavgupta40@gmail.com> <202006300026.hCr1U7Sc%lkp@intel.com>
-In-Reply-To: <202006300026.hCr1U7Sc%lkp@intel.com>
-From:   Vaibhav Gupta <vaibhav.varodek@gmail.com>
-Date:   Mon, 29 Jun 2020 22:36:45 +0530
-Message-ID: <CAPBsFfD8pNFtry605zUs+1uaQi+t8X12iuAiSWbnYqVLDpuBbA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/4] qlge/qlge_main.c: use genric power management
-To:     kernel test robot <lkp@intel.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, bjorn@helgaas.com,
-        Manish Chopra <manishc@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kbuild-all@lists.01.org, devel@driverdev.osuosl.org,
-        netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        skhan@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200617220844.57423-16-jarkko.sakkinen@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Jun 2020 at 21:39, kernel test robot <lkp@intel.com> wrote:
->
-> Hi Vaibhav,
->
-> Thank you for the patch! Yet something to improve:
->
-> [auto build test ERROR on staging/staging-testing]
-> [also build test ERROR on v5.8-rc3 next-20200629]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use  as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/Vaibhav-Gupta/drivers-staging-use-generic-power-management/20200629-163141
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git 347fa58ff5558075eec98725029c443c80ffbf4a
-> config: x86_64-rhel-7.6 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-13) 9.3.0
-> reproduce (this is a W=1 build):
->         # save the attached .config to linux build tree
->         make W=1 ARCH=x86_64
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    drivers/staging/qlge/qlge_main.c: In function 'qlge_resume':
-> >> drivers/staging/qlge/qlge_main.c:4793:17: error: 'pdev' undeclared (first use in this function); did you mean 'qdev'?
->     4793 |  pci_set_master(pdev);
->          |                 ^~~~
->          |                 qdev
->    drivers/staging/qlge/qlge_main.c:4793:17: note: each undeclared identifier is reported only once for each function it appears in
->
-> vim +4793 drivers/staging/qlge/qlge_main.c
->
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4786
-> 1aed508211e137 drivers/staging/qlge/qlge_main.c Vaibhav Gupta 2020-06-29  4787  static int __maybe_unused qlge_resume(struct device *dev_d)
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4788  {
-> 1aed508211e137 drivers/staging/qlge/qlge_main.c Vaibhav Gupta 2020-06-29  4789          struct net_device *ndev = dev_get_drvdata(dev_d);
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4790          struct ql_adapter *qdev = netdev_priv(ndev);
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4791          int err;
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4792
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18 @4793          pci_set_master(pdev);
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4794
-> 1aed508211e137 drivers/staging/qlge/qlge_main.c Vaibhav Gupta 2020-06-29  4795          device_wakeup_disable(dev_d);
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4796
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4797          if (netif_running(ndev)) {
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4798                  err = ql_adapter_up(qdev);
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4799                  if (err)
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4800                          return err;
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4801          }
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4802
-> 72046d84f0d6e3 drivers/net/qlge/qlge_main.c     Breno Leitao  2010-07-01  4803          mod_timer(&qdev->timer, jiffies + (5 * HZ));
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4804          netif_device_attach(ndev);
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4805
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4806          return 0;
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4807  }
-> c4e84bde1d595d drivers/net/qlge/qlge_main.c     Ron Mercer    2008-09-18  4808
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-This is a genuine error. I remember taking care of it when I upgraded
-the driver.
-Must have been caused by some unnoticed reverts at my side.
+On Thu, Jun 18, 2020 at 01:08:37AM +0300, Jarkko Sakkinen wrote:
+...
+> intended benefit of massaging GCC's inlining algorithm is unlikely to
+> realized in the vDSO any time soon, if ever.
 
-I will fix it and send a v2 patch-set. Thanks for reporting.
+That is a very good explanation and I would prefer if it would be in a
+sgx-specific README or so instead of it getting lost in git...
 
--- Vaibhav gupta
+> +bool fixup_vdso_exception(struct pt_regs *regs, int trapnr,
+> +			  unsigned long error_code, unsigned long fault_addr)
+> +{
+> +	const struct vdso_image *image = current->mm->context.vdso_image;
+> +	const struct vdso_exception_table_entry *extable;
+> +	unsigned int nr_entries, i;
+> +	unsigned long base;
+> +
+> +	/*
+> +	 * Do not attempt to fixup #DB or #BP.  It's impossible to identify
+> +	 * whether or not a #DB/#BP originated from within an SGX enclave and
+> +	 * SGX enclaves are currently the only use case for vDSO fixup.
+> +	 */
+
+So this is all fine and dandy but nowhere do I see the code doing:
+
+	if (am_I_an_sgx_enclave(tsk))
+		fixup_vdso_exception()
+
+because that vDSO exception fixup, albeit it looking kinda generic, is
+SGX-only for now. So it should be designed to run only for SGX enclaves
+for now.
+
+Also, is there any particular reason for fixup_vdso_exception() to be in
+arch/x86/entry/vdso/extable.c instead of in arch/x86/mm/extable.c?
+
+I mean, it gets called by traps.c so it looks like normal kernel code to
+me or am I missing some vdso magic?
+
+And built only when CONFIG_INTEL_SGX is enabled.
+
+And so on...
+
+...
+
+> diff --git a/arch/x86/entry/vdso/extable.h b/arch/x86/entry/vdso/extable.h
+> new file mode 100644
+> index 000000000000..aafdac396948
+> --- /dev/null
+> +++ b/arch/x86/entry/vdso/extable.h
+> @@ -0,0 +1,29 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __VDSO_EXTABLE_H
+> +#define __VDSO_EXTABLE_H
+> +
+> +/*
+> + * Inject exception fixup for vDSO code.  Unlike normal exception fixup,
+> + * vDSO uses a dedicated handler the addresses are relative to the overall
+> + * exception table, not each individual entry.
+> + */
+> +#ifdef __ASSEMBLY__
+> +#define _ASM_VDSO_EXTABLE_HANDLE(from, to)	\
+> +	ASM_VDSO_EXTABLE_HANDLE from to
+> +
+> +.macro ASM_VDSO_EXTABLE_HANDLE from:req to:req
+> +	.pushsection __ex_table, "a"
+> +	.long (\from) - __ex_table
+> +	.long (\to) - __ex_table
+> +	.popsection
+> +.endm
+> +#else
+> +#define _ASM_VDSO_EXTABLE_HANDLE(from, to)	\
+> +	".pushsection __ex_table, \"a\"\n"      \
+> +	".long (" #from ") - __ex_table\n"      \
+> +	".long (" #to ") - __ex_table\n"        \
+> +	".popsection\n"
+> +#endif
+> +
+> +#endif /* __VDSO_EXTABLE_H */
+> +
+
+.git/rebase-apply/patch:122: new blank line at EOF.
++
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
