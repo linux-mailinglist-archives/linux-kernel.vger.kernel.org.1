@@ -2,145 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A529720E255
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D4020E1BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390248AbgF2VEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:04:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
+        id S2390029AbgF2U6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731120AbgF2TMp (ORCPT
+        with ESMTP id S1731250AbgF2TNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:12:45 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807A2C030F2C
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:44:26 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id f5so2883291ljj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:44:26 -0700 (PDT)
+        Mon, 29 Jun 2020 15:13:02 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27BCAC030F2D;
+        Mon, 29 Jun 2020 09:45:23 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id r12so17156687wrj.13;
+        Mon, 29 Jun 2020 09:45:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l1ZouKwkA6OTn94EhFg+HzBGtNxozDTOKD9+zn9cXGk=;
-        b=pKJ9UEl9YW6klCcaX2H9le5Wxf+le5pbrXq73l9SdmWUOnpuT8/IOV1JLmFazjhbMo
-         4l9KjDPBB1mpMTXsVeNWQ4LchMq5Rgb7gkAQmsd2+IzeuneMCE26vVvSgnZ/Q2Jvu+FM
-         8JXKXwEyofd1vO8XYbIIbb1usQTJ/f9PapEiLqZ9hguc2OStJMeXr/f9LKLuIgUedLv7
-         AOBnxndVCPIrMRusUptiQdUMtqV42zIHpFwrjoE2ROBTg484kSZUBgxHP6Kd6J3V7WE9
-         OPnOlPS5v21DyhZvPVY0wyCz/Bns6fZHzCb3KrYfovBR0U4nnQBGbI1UO5e33F2Xabgn
-         tENA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=u9fUuABIS2EcFjNrVGvmrkgcrL3UypNwy9u+b06+fm8=;
+        b=RXfK6rQ+SzRHAAVPuZgSCcwjrzUnceasBHQrhHMlYQ5I1SwpWIBR7DK1d9z7HkvSKk
+         MEVg1EeIlqmjYTk5OsFBriXDewcGgPjdcNafq5kaZpPfePyEgRPZ9KR/zL8lyFUCczsQ
+         fiExr9g3JvIkRHCN4gf/kV7o6tI1lGDyqRUhkanPryvVXw1bR3kmf0rsFUEju8am7/2o
+         acuoJOCiMPtfkQ7D4wkqcUG6x3gCNCcsrnehQs1HTEiitZpPTqeKgDEHzc4SsrmYh7qT
+         V8kuot39HNtGZAe2xXp6kdzpSV1Fyy0OAUiP6MDKv4mmLUHNtkngmP/upBmbE0yXLUev
+         PKRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l1ZouKwkA6OTn94EhFg+HzBGtNxozDTOKD9+zn9cXGk=;
-        b=Wel/jbmYCSi82WhB4C/p+Y41JuoCPdh1iM3FKCnhhdeJfuw1i889QbfARcD5gFYwbx
-         8cOhDqlhE+RijC8MJ6jY9srXf4vHBc/ivHmWRg9995yBPQS4tzYtTFOPQfLUwHCblt/1
-         gkCWDxIRE26k62PZ+DXJjG1ZJm6oLzekVEYoBNwBhCefkrHyLi6MhkmaquD0G6mR7NL0
-         aBdFE/wN8bbYo+kZgM9EX4teeE4qBAzwl0Z8QwStlkZW7Fxm6zFRJQwZaflXQCxMDOmx
-         nIRJtMlDEqYSUybWy2jhAnGqI7qwgAp2rx/z2MUyZoE6MSvMArfLfPdQeg5onTac3rqN
-         3msA==
-X-Gm-Message-State: AOAM533mIA4RjgTsDJIn3yxFCiraPIXtLUmSEVPzezxIOjCc8G6HKb7h
-        as6Hzqj7s+Rqwt6mW21HsoO3xlic2sNqBg1wscr2pA==
-X-Google-Smtp-Source: ABdhPJyVt1EGdnwkzxBgZ1Lb7Jh/y1siTOx7bpCl5+h7hx97eolZc796gqE0Hs9aBqGZKYUJbc7UcVFScYhIXJb9EZM=
-X-Received: by 2002:a2e:7a03:: with SMTP id v3mr2272980ljc.141.1593449064684;
- Mon, 29 Jun 2020 09:44:24 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=u9fUuABIS2EcFjNrVGvmrkgcrL3UypNwy9u+b06+fm8=;
+        b=ctbcJyWcYp9E2dElxV6cbbkwCnyGNzhb0PprjSBjlMZg1P9RrEZgHtqB8TyEJtxyF6
+         sfT6CHXiCWoKEWgotJs8AeZHvkvW/C1P/yGDsen9I7lJwXbCQzqgXcqQiqR7U0GX3hZz
+         1v97sQlNGFWndu0bH4eVNeG/BGKIKJN0hDk/oIJR490ITX5GKAp9or7Go6e0e+ZgwUo0
+         julmu6Ap0NdH7PPp8GJvcj1jxehu0WZRBatozVkhhrQKTOAWP+G/tQwkGw++qsLUDfVF
+         ws7Ww1LLKTivRLsZfHoRKN2Q8sDMVfZsyYppN3/Hl2VCOZ7rcyALlSvMVZqfyevwpmas
+         M2lA==
+X-Gm-Message-State: AOAM532h0um9XRLkGswTxYbxI1WEP0uG3V4dPG1j3F9yjhyz/XxGZLsM
+        G3sfccVvsWk2UCzjVzz6ke8=
+X-Google-Smtp-Source: ABdhPJwgDtmaZGJrtNa0zEf2BklM+msP3P7Rk7sYX4yUbVAN3Av14f+0EZj5nhMLZ6sMh6IJblncLA==
+X-Received: by 2002:adf:f608:: with SMTP id t8mr18108260wrp.308.1593449121909;
+        Mon, 29 Jun 2020 09:45:21 -0700 (PDT)
+Received: from [10.230.30.107] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id p29sm438013wmi.43.2020.06.29.09.45.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jun 2020 09:45:21 -0700 (PDT)
+Subject: Re: [PATCH 1/4] pwm: bcm-iproc: Remove impossible comparison when
+ validating duty cycle
+To:     Lee Jones <lee.jones@linaro.org>, thierry.reding@gmail.com,
+        u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Yendapally Reddy Dhananjaya Reddy 
+        <yendapally.reddy@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com
+References: <20200629124752.1018358-1-lee.jones@linaro.org>
+ <20200629124752.1018358-2-lee.jones@linaro.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <3470e941-aa86-11a8-674b-5258a08fedb1@gmail.com>
+Date:   Mon, 29 Jun 2020 09:45:17 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <20200624185247.13269-1-posk@posk.io>
-In-Reply-To: <20200624185247.13269-1-posk@posk.io>
-From:   Peter Oskolkov <posk@google.com>
-Date:   Mon, 29 Jun 2020 09:44:13 -0700
-Message-ID: <CAPNVh5doRy04x_yRA+5sFNOaMnV0pjeBz7MJBjKp8uqH9U5-yg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/3 v3] futex/sched: introduce FUTEX_SWAP operation
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Peter Oskolkov <posk@posk.io>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Andrei Vagin <avagin@google.com>, Paul Turner <pjt@google.com>,
-        Ben Segall <bsegall@google.com>, Aaron Lu <aaron.lwe@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200629124752.1018358-2-lee.jones@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas, Ingo!
 
-Do you have any comments/suggestions/objections here? FUTEX_SWAP seems
-to be quite useful for fast task context switching, and several teams
-at Google would like to see this capability upstreamed.
 
-Thanks,
-Peter
+On 6/29/2020 5:47 AM, Lee Jones wrote:
+> 'duty' here is an unsigned int, thus checking for <0 will always
+> evaluate to false.
+> 
+> Fixes the following W=1 warning:
+> 
+>  drivers/pwm/pwm-bcm-iproc.c:147:12: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
+> 
+> Cc: Ray Jui <rjui@broadcom.com>
+> Cc: Scott Branden <sbranden@broadcom.com>
+> Cc: Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
+> Cc: bcm-kernel-feedback-list@broadcom.com
+> Cc: linux-pwm@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-On Wed, Jun 24, 2020 at 11:53 AM Peter Oskolkov <posk@posk.io> wrote:
->
-> From: Peter Oskolkov <posk@google.com>
->
-> This is an RFC!
->
-> As Paul Turner presented at LPC in 2013 ...
-> - pdf: http://pdxplumbers.osuosl.org/2013/ocw//system/presentations/1653/original/LPC%20-%20User%20Threading.pdf
-> - video: https://www.youtube.com/watch?v=KXuZi9aeGTw
->
-> ... Google has developed an M:N userspace threading subsystem backed
-> by Google-private SwitchTo Linux Kernel API (page 17 in the pdf referenced
-> above). This subsystem provides latency-sensitive services at Google with
-> fine-grained user-space control/scheduling over what is running when,
-> and this subsystem is used widely internally (called schedulers or fibers).
->
-> This RFC patchset is the first step to open-source this work. As explained
-> in the linked pdf and video, SwitchTo API has three core operations: wait,
-> resume, and swap (=switch). So this patchset adds a FUTEX_SWAP operation
-> that, in addition to FUTEX_WAIT and FUTEX_WAKE, will provide a foundation
-> on top of which user-space threading libraries can be built.
->
-> Another common use case for FUTEX_SWAP is message passing a-la RPC
-> between tasks: task/thread T1 prepares a message,
-> wakes T2 to work on it, and waits for the results; when T2 is done, it
-> wakes T1 and waits for more work to arrive. Currently the simplest
-> way to implement this is
->
-> a. T1: futex-wake T2, futex-wait
-> b. T2: wakes, does what it has been woken to do
-> c. T2: futex-wake T1, futex-wait
->
-> With FUTEX_SWAP, steps a and c above can be reduced to one futex operation
-> that runs 5-10 times faster.
->
-> Patches in this patchset:
->
-> Patch 1: introduce FUTEX_SWAP futex operation that,
->          internally, does wake + wait. The purpose of this patch is
->          to work out the API.
-> Patch 2: a first rough attempt to make FUTEX_SWAP faster than
->          what wake + wait can do.
-> Patch 3: a selftest that can also be used to benchmark FUTEX_SWAP vs
->          FUTEX_WAKE + FUTEX_WAIT.
->
-> v2: fix undefined symbol error ifndef CONFIG_SMP.
-> v3: rebased onto the latest tip/locking/core.
->
-> Peter Oskolkov (3):
->   futex: introduce FUTEX_SWAP operation
->   futex/sched: add wake_up_process_prefer_current_cpu, use in FUTEX_SWAP
->   selftests/futex: add futex_swap selftest
->
->  include/linux/sched.h                         |   1 +
->  include/uapi/linux/futex.h                    |   2 +
->  kernel/futex.c                                |  96 ++++++--
->  kernel/sched/core.c                           |   5 +
->  kernel/sched/fair.c                           |   3 +
->  kernel/sched/sched.h                          |   1 +
->  .../selftests/futex/functional/.gitignore     |   1 +
->  .../selftests/futex/functional/Makefile       |   1 +
->  .../selftests/futex/functional/futex_swap.c   | 209 ++++++++++++++++++
->  .../selftests/futex/include/futextest.h       |  19 ++
->  10 files changed, 322 insertions(+), 16 deletions(-)
->  create mode 100644 tools/testing/selftests/futex/functional/futex_swap.c
->
-> --
-> 2.25.1
->
+And IPROC_PWM_DUTY_CYCLE_MIN is unused after remove this single use of
+the define, if you also remove it you can add:
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
