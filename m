@@ -2,66 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF5720E455
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F4020E462
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391011AbgF2VX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:23:59 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:39831 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726524AbgF2VXr (ORCPT
+        id S2391025AbgF2VYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:24:45 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:46325 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391015AbgF2VYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:23:47 -0400
-Received: by mail-io1-f67.google.com with SMTP id f23so18790477iof.6;
-        Mon, 29 Jun 2020 14:23:47 -0700 (PDT)
+        Mon, 29 Jun 2020 17:24:40 -0400
+Received: by mail-il1-f196.google.com with SMTP id w9so15791277ilk.13;
+        Mon, 29 Jun 2020 14:24:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=bPNJneyouFFATOw4Dr0vJNDA4Ztsxwm7X1dPam5gKXc=;
-        b=GXUsOAnYIXWVU3ns2XQG/+nKhWlsNCNf3h0Q6geKniqIvRXiyuUl1AtymaCmMxSnje
-         hKeDElxpnlg7hDHOg2e1WrNNVHfsjXs0L263Ui0d7u05CQEoQapnJ3x3yUUhqEfklPOm
-         i+YP/l8zT8GbiuBCn35yOKb5utf7NR2fO8pHd7+knfor7lhOpujXytBEELGC7yaP/nX8
-         l/JeN1HHqowAdWslqpxrLPd3dqQbj+XZqf5SmfX2aNdhBMLZhoyaG6ETc0wEcaZ3hfP1
-         rHerSf+sUhiYFBXABkSe/qlH6cpbQLluQ1Buk4yHHNWEatEXnBc7mnVZTAqXtNDPoQCz
-         005A==
-X-Gm-Message-State: AOAM533YTAd2yYYVd+eUFGbxvILL61699X52jLSnKJ7KN0i/Kl2GeJTR
-        FllCc1dNwQmkvdPrRO7KEQ==
-X-Google-Smtp-Source: ABdhPJwN4xgBtOvB/QVmeS0dlgwgcCEX6eRha433UEB2sZAuODMXppw/myhpp3n0pTdObJJHwlROIg==
-X-Received: by 2002:a5d:858e:: with SMTP id f14mr14923501ioj.12.1593465826991;
-        Mon, 29 Jun 2020 14:23:46 -0700 (PDT)
+        bh=70WJ+qIYv3twQa9oIbP0W90ImfwlEJn6IZKm97PIadY=;
+        b=ol/1LFhs1z7BNaP/K6lQ8O0LLi06XiiPB9a95vlfGkuTjpWzptzhVHUUYewi9wq/aV
+         nNWC1GVSw9/vmVm3kNMf9hZJqmjW/ElRPvSajxM4cCqThIbqht8kpBZ1CqFXPk3h3xH4
+         Gsqjm60V1laAKX8c2mDyjvHxgZZyibA+AV9LS0bGJEBv0CmJfIWOd0t8UhzH7OVZzDwD
+         qJPPzLuA/t/0Zc+Os0TZCPA/cBAHpLS5AdSkwb7Hq8kNkeT4gV8WZJSB8J48c9rAq246
+         1zn7Y1E0SFHYYwX/4yOnnEhc1/4Lq/WgV0dwSDX7G1uoWmoUvbIZxNhm9rkeBL/AUpDw
+         5PLg==
+X-Gm-Message-State: AOAM5303Zxmeo5vv7DzzMF4Zlv8d2vOtBRZiD3p/CUVGFeF90Isa2o1f
+        j/PuPwTm0N8DcswPZIhWIoyLP+A7yA==
+X-Google-Smtp-Source: ABdhPJx7N1hclSAGU5RD7z6LsZcvE2bJ0953gV2C1HnxvIs1jAiI/HWiPN7Jy8gBh7z92FSSfsW0iQ==
+X-Received: by 2002:a92:d6d2:: with SMTP id z18mr6547533ilp.272.1593465878953;
+        Mon, 29 Jun 2020 14:24:38 -0700 (PDT)
 Received: from xps15 ([64.188.179.255])
-        by smtp.gmail.com with ESMTPSA id e3sm504612iot.7.2020.06.29.14.23.45
+        by smtp.gmail.com with ESMTPSA id o66sm621346ilb.26.2020.06.29.14.24.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 14:23:46 -0700 (PDT)
-Received: (nullmailer pid 2932013 invoked by uid 1000);
-        Mon, 29 Jun 2020 21:23:44 -0000
-Date:   Mon, 29 Jun 2020 15:23:43 -0600
+        Mon, 29 Jun 2020 14:24:38 -0700 (PDT)
+Received: (nullmailer pid 2934095 invoked by uid 1000);
+        Mon, 29 Jun 2020 21:24:36 -0000
+Date:   Mon, 29 Jun 2020 15:24:36 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Kangmin Park <l4stpr0gr4m@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mailbox: zynqmp_ipi: fix unit address
-Message-ID: <20200629212343.GA2930951@bogus>
-References: <20200625135158.5861-1-l4stpr0gr4m@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Subject: Re: [PATCH 1/4] dt-bindings: fix error in 'make clean' after 'make
+ dt_binding_check'
+Message-ID: <20200629212436.GA2933965@bogus>
+References: <20200625170434.635114-1-masahiroy@kernel.org>
+ <20200625170434.635114-2-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200625135158.5861-1-l4stpr0gr4m@gmail.com>
+In-Reply-To: <20200625170434.635114-2-masahiroy@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Jun 2020 22:51:58 +0900, Kangmin Park wrote:
-> Fix unit address to match the first address specified in the reg
-> property of the node in example.
+On Fri, 26 Jun 2020 02:04:31 +0900, Masahiro Yamada wrote:
+> We are having more and more schema files.
 > 
-> Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
+> Commit 8b6b80218b01 ("dt-bindings: Fix command line length limit
+> calling dt-mk-schema") fixed the 'Argument list too long' error of
+> the schema checks, but the same error happens while cleaning too.
+> 
+> 'make clean' after 'make dt_binding_check' fails as follows:
+> 
+>   $ make dt_binding_check
+>     [ snip ]
+>   $ make clean
+>   make[2]: execvp: /bin/sh: Argument list too long
+>   make[2]: *** [scripts/Makefile.clean:52: __clean] Error 127
+>   make[1]: *** [scripts/Makefile.clean:66: Documentation/devicetree/bindings] Error 2
+>   make: *** [Makefile:1763: _clean_Documentation] Error 2
+> 
+> 'make dt_binding_check' generates so many .example.dts, .dt.yaml files,
+> which are passed to the 'rm' command when you run 'make clean'.
+> 
+> I added a small hack to use the 'find' command to clean up most of the
+> build artifacts before they are processed by scripts/Makefile.clean
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
->  .../devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.txt     | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+>  Documentation/devicetree/bindings/Makefile | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
 
 Applied, thanks!
