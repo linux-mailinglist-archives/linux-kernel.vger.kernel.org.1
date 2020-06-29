@@ -2,87 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F4320E157
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A529720E255
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388098AbgF2Uyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:54:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43376 "EHLO
+        id S2390248AbgF2VEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:04:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731313AbgF2TNT (ORCPT
+        with ESMTP id S1731120AbgF2TMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:19 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC3DBC030F2B;
-        Mon, 29 Jun 2020 09:44:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=oWEN2HrEZzshPalh9h22/5jMAlzNjCxPZcOlTdfCeRk=; b=FTyujLINoEFwJfBDDiZffiOYsS
-        BOZP0lNNqNQYgm81MQzrN1dTB2zSgzMXpMKBMzAKqBNSUZjhWXDFzD5ix5SK/nr78EDMCww3KCtYB
-        FVZUrBmG/cFO4/WkHupIYCl2+9csBo+VKzxgGjSUHP5Hl7/tiAh/Rt6pXem1fYakk7QoB7Y5Lr0Bt
-        0f3Aip0bm2DWmWmW+X3rbSponeDdqXM8GfhOQVcue2706h9IT/uj1yo/G4cNfkKlcYRcA9KnQnkvB
-        ++WwoWBDi12ybggpNRY2O1AVJGlouzsl1v5yyiS/nOpk7i4e6bQDZlDQN+onRwDuINNv4lY0WR85S
-        c8vgyHMw==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jpwsu-00016O-1q; Mon, 29 Jun 2020 16:43:56 +0000
-To:     LKML <linux-kernel@vger.kernel.org>,
-        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH -next] <linux/of.h>: add stub for of_get_next_parent() to fix
- qcom build error
-Message-ID: <ce0d7561-ff93-d267-b57a-6505014c728c@infradead.org>
-Date:   Mon, 29 Jun 2020 09:43:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 29 Jun 2020 15:12:45 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807A2C030F2C
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:44:26 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id f5so2883291ljj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 09:44:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l1ZouKwkA6OTn94EhFg+HzBGtNxozDTOKD9+zn9cXGk=;
+        b=pKJ9UEl9YW6klCcaX2H9le5Wxf+le5pbrXq73l9SdmWUOnpuT8/IOV1JLmFazjhbMo
+         4l9KjDPBB1mpMTXsVeNWQ4LchMq5Rgb7gkAQmsd2+IzeuneMCE26vVvSgnZ/Q2Jvu+FM
+         8JXKXwEyofd1vO8XYbIIbb1usQTJ/f9PapEiLqZ9hguc2OStJMeXr/f9LKLuIgUedLv7
+         AOBnxndVCPIrMRusUptiQdUMtqV42zIHpFwrjoE2ROBTg484kSZUBgxHP6Kd6J3V7WE9
+         OPnOlPS5v21DyhZvPVY0wyCz/Bns6fZHzCb3KrYfovBR0U4nnQBGbI1UO5e33F2Xabgn
+         tENA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l1ZouKwkA6OTn94EhFg+HzBGtNxozDTOKD9+zn9cXGk=;
+        b=Wel/jbmYCSi82WhB4C/p+Y41JuoCPdh1iM3FKCnhhdeJfuw1i889QbfARcD5gFYwbx
+         8cOhDqlhE+RijC8MJ6jY9srXf4vHBc/ivHmWRg9995yBPQS4tzYtTFOPQfLUwHCblt/1
+         gkCWDxIRE26k62PZ+DXJjG1ZJm6oLzekVEYoBNwBhCefkrHyLi6MhkmaquD0G6mR7NL0
+         aBdFE/wN8bbYo+kZgM9EX4teeE4qBAzwl0Z8QwStlkZW7Fxm6zFRJQwZaflXQCxMDOmx
+         nIRJtMlDEqYSUybWy2jhAnGqI7qwgAp2rx/z2MUyZoE6MSvMArfLfPdQeg5onTac3rqN
+         3msA==
+X-Gm-Message-State: AOAM533mIA4RjgTsDJIn3yxFCiraPIXtLUmSEVPzezxIOjCc8G6HKb7h
+        as6Hzqj7s+Rqwt6mW21HsoO3xlic2sNqBg1wscr2pA==
+X-Google-Smtp-Source: ABdhPJyVt1EGdnwkzxBgZ1Lb7Jh/y1siTOx7bpCl5+h7hx97eolZc796gqE0Hs9aBqGZKYUJbc7UcVFScYhIXJb9EZM=
+X-Received: by 2002:a2e:7a03:: with SMTP id v3mr2272980ljc.141.1593449064684;
+ Mon, 29 Jun 2020 09:44:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200624185247.13269-1-posk@posk.io>
+In-Reply-To: <20200624185247.13269-1-posk@posk.io>
+From:   Peter Oskolkov <posk@google.com>
+Date:   Mon, 29 Jun 2020 09:44:13 -0700
+Message-ID: <CAPNVh5doRy04x_yRA+5sFNOaMnV0pjeBz7MJBjKp8uqH9U5-yg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/3 v3] futex/sched: introduce FUTEX_SWAP operation
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Peter Oskolkov <posk@posk.io>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Andrei Vagin <avagin@google.com>, Paul Turner <pjt@google.com>,
+        Ben Segall <bsegall@google.com>, Aaron Lu <aaron.lwe@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+Hi Thomas, Ingo!
 
-Fix a (COMPILE_TEST) build error when CONFIG_OF is not set/enabled
-by adding a stub for of_get_next_parent().
+Do you have any comments/suggestions/objections here? FUTEX_SWAP seems
+to be quite useful for fast task context switching, and several teams
+at Google would like to see this capability upstreamed.
 
-../drivers/soc/qcom/qcom-geni-se.c:819:11: error: implicit declaration of function 'of_get_next_parent'; did you mean 'of_get_parent'? [-Werror=implicit-function-declaration]
-../drivers/soc/qcom/qcom-geni-se.c:819:9: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+Thanks,
+Peter
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Frank Rowand <frowand.list@gmail.com>
-Cc: devicetree@vger.kernel.org
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org
----
- include/linux/of.h |    5 +++++
- 1 file changed, 5 insertions(+)
-
---- linux-next-20200629.orig/include/linux/of.h
-+++ linux-next-20200629/include/linux/of.h
-@@ -630,6 +630,11 @@ static inline struct device_node *of_get
- 	return NULL;
- }
- 
-+static inline struct device_node *of_get_next_parent(struct device_node *node)
-+{
-+	return NULL;
-+}
-+
- static inline struct device_node *of_get_next_child(
- 	const struct device_node *node, struct device_node *prev)
- {
-
-
+On Wed, Jun 24, 2020 at 11:53 AM Peter Oskolkov <posk@posk.io> wrote:
+>
+> From: Peter Oskolkov <posk@google.com>
+>
+> This is an RFC!
+>
+> As Paul Turner presented at LPC in 2013 ...
+> - pdf: http://pdxplumbers.osuosl.org/2013/ocw//system/presentations/1653/original/LPC%20-%20User%20Threading.pdf
+> - video: https://www.youtube.com/watch?v=KXuZi9aeGTw
+>
+> ... Google has developed an M:N userspace threading subsystem backed
+> by Google-private SwitchTo Linux Kernel API (page 17 in the pdf referenced
+> above). This subsystem provides latency-sensitive services at Google with
+> fine-grained user-space control/scheduling over what is running when,
+> and this subsystem is used widely internally (called schedulers or fibers).
+>
+> This RFC patchset is the first step to open-source this work. As explained
+> in the linked pdf and video, SwitchTo API has three core operations: wait,
+> resume, and swap (=switch). So this patchset adds a FUTEX_SWAP operation
+> that, in addition to FUTEX_WAIT and FUTEX_WAKE, will provide a foundation
+> on top of which user-space threading libraries can be built.
+>
+> Another common use case for FUTEX_SWAP is message passing a-la RPC
+> between tasks: task/thread T1 prepares a message,
+> wakes T2 to work on it, and waits for the results; when T2 is done, it
+> wakes T1 and waits for more work to arrive. Currently the simplest
+> way to implement this is
+>
+> a. T1: futex-wake T2, futex-wait
+> b. T2: wakes, does what it has been woken to do
+> c. T2: futex-wake T1, futex-wait
+>
+> With FUTEX_SWAP, steps a and c above can be reduced to one futex operation
+> that runs 5-10 times faster.
+>
+> Patches in this patchset:
+>
+> Patch 1: introduce FUTEX_SWAP futex operation that,
+>          internally, does wake + wait. The purpose of this patch is
+>          to work out the API.
+> Patch 2: a first rough attempt to make FUTEX_SWAP faster than
+>          what wake + wait can do.
+> Patch 3: a selftest that can also be used to benchmark FUTEX_SWAP vs
+>          FUTEX_WAKE + FUTEX_WAIT.
+>
+> v2: fix undefined symbol error ifndef CONFIG_SMP.
+> v3: rebased onto the latest tip/locking/core.
+>
+> Peter Oskolkov (3):
+>   futex: introduce FUTEX_SWAP operation
+>   futex/sched: add wake_up_process_prefer_current_cpu, use in FUTEX_SWAP
+>   selftests/futex: add futex_swap selftest
+>
+>  include/linux/sched.h                         |   1 +
+>  include/uapi/linux/futex.h                    |   2 +
+>  kernel/futex.c                                |  96 ++++++--
+>  kernel/sched/core.c                           |   5 +
+>  kernel/sched/fair.c                           |   3 +
+>  kernel/sched/sched.h                          |   1 +
+>  .../selftests/futex/functional/.gitignore     |   1 +
+>  .../selftests/futex/functional/Makefile       |   1 +
+>  .../selftests/futex/functional/futex_swap.c   | 209 ++++++++++++++++++
+>  .../selftests/futex/include/futextest.h       |  19 ++
+>  10 files changed, 322 insertions(+), 16 deletions(-)
+>  create mode 100644 tools/testing/selftests/futex/functional/futex_swap.c
+>
+> --
+> 2.25.1
+>
