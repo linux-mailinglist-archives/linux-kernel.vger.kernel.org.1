@@ -2,285 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D9E20DFF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B8120E17D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729341AbgF2Ula (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:41:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731672AbgF2TOH (ORCPT
+        id S2389851AbgF2U4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:56:22 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:39337 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731284AbgF2U4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:14:07 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56763C0076FB
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:25:45 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49wQCW3yNVz9sQt;
-        Mon, 29 Jun 2020 21:25:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1593429943;
-        bh=pSTHi4uumjVhxL7qDBBa05Rp89rWlxnW6GHpxYpiXr0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=jzBEmPbgoMv1WRUMc1FsFxPn/gU6MvXKvrNIJbtGGT5InxJUAOLu6ZDO2+BTMaqIn
-         JC8HU/A36uUdR7Ymd5NDURBejUGCYllRJ310rma5lh+slaGo1SWt5AlrdIEGpAwi9S
-         HFz8gxdtwL9DN3RuV7DbPulniA/WauUQYvvhSkNMoO8zoPs1Iq2MKP+7XpcruiB4KV
-         86C20NUDBXvNDTUm45k2+vDeQ1xsmpgs4dSumXim/uXvf3uPQ+oFsBjlJfWW+0tM0C
-         jK9U9Pp4ZjGY8MP/ne8NELBkc77XU4CU+0YImw/qHdpEAyc6Q1lW2KggFXj7VLiKX7
-         OVrhUDO4aHLHQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com,
-        segher@kernel.crashing.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] powerpc/uaccess: Use flexible addressing with __put_user()/__get_user()
-In-Reply-To: <7b916759-1683-b4df-0d4b-b04b3fcd9a02@csgroup.eu>
-References: <c2addbd9d76212242d3d8554a2f7ff849fb08b85.1587040754.git.christophe.leroy@c-s.fr> <7b916759-1683-b4df-0d4b-b04b3fcd9a02@csgroup.eu>
-Date:   Mon, 29 Jun 2020 21:27:56 +1000
-Message-ID: <878sg6862r.fsf@mpe.ellerman.id.au>
+        Mon, 29 Jun 2020 16:56:17 -0400
+Received: from mail-qk1-f182.google.com ([209.85.222.182]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1Mf0uq-1jATjC3nC6-00gVz9 for <linux-kernel@vger.kernel.org>; Mon, 29 Jun
+ 2020 13:28:29 +0200
+Received: by mail-qk1-f182.google.com with SMTP id 145so12356881qke.9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:28:28 -0700 (PDT)
+X-Gm-Message-State: AOAM531XpgxAB+w5fH3gfSbm+rKX69mxTCiqz6nWFprhnirr/OR+eQYW
+        DnQVWtUCdOYH68V3QlnL0ARLUNriJHyq2Ez7pPo=
+X-Google-Smtp-Source: ABdhPJx1a27SVGh6LzPXCycNokQG+CDZxoOG3UMU7wKdxdg7U0z8BdyRfM4glFcYitYHD0+6fYEnvcVI9PbQkgjt+84=
+X-Received: by 2002:a05:620a:1654:: with SMTP id c20mr8009980qko.138.1593430107812;
+ Mon, 29 Jun 2020 04:28:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <1593425623-31810-1-git-send-email-Anson.Huang@nxp.com>
+ <CAK8P3a1pr8YbZMpSXg6o_UeDvaU=dDqfo45DudTASNcsxeg3kg@mail.gmail.com> <DB3PR0402MB3916292FC3FDE4F28AFEB5EBF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+In-Reply-To: <DB3PR0402MB3916292FC3FDE4F28AFEB5EBF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 29 Jun 2020 13:28:11 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0Za99-xXTwtHNHO-Dzbo-1uesNC2oO91RA-gZZG3Anmw@mail.gmail.com>
+Message-ID: <CAK8P3a0Za99-xXTwtHNHO-Dzbo-1uesNC2oO91RA-gZZG3Anmw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] reset: imx7: Support module build
+To:     Anson Huang <anson.huang@nxp.com>
+Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Stefan Agner <stefan.agner@toradex.com>,
+        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Olof Johansson <olof@lixom.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:EjVc+ogzzXXqEFzj480i0DqLvw32xnU3m5wQrDzQpck5eHfOAfG
+ HRkDxl0F5CwwRdLh0Zz7Lgp/Lducn1f5siBLvS/4KwMcXoqwuo90hZnojvFkOLiUGBodhLq
+ ZZDGFKb97mLmKRB+U4KX75rOUuewGHe0m3Oay4XugYVvGCSrpeiZdacjK5aBQmQabDfoHgQ
+ +9Z6yBTSaH+/EdxvFRr9Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oMdFggA9gVQ=:fYdvnFtJM8WbK1LXfVVpVR
+ OAeV1wzLC2zNCHgCAYMSt2Uv189+iCWulXlCRf8DuSL+hTboTaQw1oSO6T5dxxvF38glH2Njr
+ fpV2isTMuu3f8MzIDfFCP308dfcuRxdnMEuYePmCkOryXXf6AccriHPTjIAdIVXg/Dc7LtXvS
+ sx9tfY22QDWd0d45rDV9uNzLswJ3Yn9juiKaAsxtlP9O1gQCY0ZZmFMd9+R+zzSJbA1Ne5R+l
+ jJDI9glctp+R2m8tRnSP+Nl7VUgZOG7x2d+LwMVuqKqTHlFD9zknwXkXo+526VTXFSQeNdaN5
+ /i3kUrbhWTfKTv91m50spkroIAK+GJaSdMglkgYtBMwpkoTqIs+MkiYMdtZX2E7hXD6WmO4qv
+ 1rWbT0wH8CsG6ohyUZwa4Cc9DU/jKqcbu9IIoP+om2fNXHN8M96snYFF75PStpUhC7sTLPXO9
+ hnSxSKQGx1PwpWFDhXyC9neX7W29R9frldJFqRYcL93All9UkQklFYuRmXxlUknK6pLvS2LBp
+ k13wlNldLuPYtTMI4UWvqGshaJisstq42c7iQWIg4MRPBH2OjKbISvuezEIrQnnPeeS6vl3z7
+ Y/YvzwHyrZt7hUle5DLV2cYCAe5VHeyaeBFwJnYvBKUETqmYRJzQwvSqMBzzLPp/yLWOKZBIm
+ LwhiN/Sdx5aYuX5XpGLv44k7sIiusl0GGel/pQ83qTkOIoeLrQ+95Om3CHKj9ta3F1tFle4WP
+ iwM2awJzQCTyfK9Y7zjpMdQz+d7YYhWnoxjQ+9eO8nm/teAk1h7t0X6loZveflhz60v6H64q3
+ lxK1GV+VxmtO3NZZ6hTg2hyC7QsyA/wKcdhS4Z+lfqajNPEKDdIrlz+vcylo7SYDtr+OMDrCh
+ UvMFeb6K4ox5M0QXURumk/eYPk/AEBSvjF/RL9WxYZyL16wdkrtRtvK8IfnK6rU6yQauguInP
+ QDce767acQeU4EBaaM7dVF4lvAgqpaVojtzqT6Pv3xvN57vXhvweM
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Hi Michael,
+On Mon, Jun 29, 2020 at 12:45 PM Anson Huang <anson.huang@nxp.com> wrote:
+> > Subject: Re: [PATCH 1/3] reset: imx7: Support module build
+> > On Mon, Jun 29, 2020 at 12:25 PM Anson Huang <Anson.Huang@nxp.com> wrote:
 >
-> I see this patch is marked as "defered" in patchwork, but I can't see=20
-> any related discussion. Is it normal ?
+> The reset driver normally won't be removed since it is necessary for drivers which
+> need it, it is just for Android GKI support, in this case, do we need to change it to
+> module_platform_driver()?
 
-Because it uses the "m<>" constraint which didn't work on GCC 4.6.
+Please at least try to do it, or explain in the changelog what went wrong
+if it doesn't work.
 
-https://github.com/linuxppc/issues/issues/297
+I don't think "because Android GKI" should ever be the sole justification for
+a patch. Making drivers loadable module is a good idea regardless of GKI,
+and if you do that, then make it behave like any other loadable module.
 
-So we should be able to pick it up for v5.9 hopefully.
-
-cheers
-
-
-> Le 16/04/2020 =C3=A0 14:39, Christophe Leroy a =C3=A9crit=C2=A0:
->> At the time being, __put_user()/__get_user() and friends only use
->> D-form addressing, with 0 offset. Ex:
->>=20
->> 	lwz	reg1, 0(reg2)
->>=20
->> Give the compiler the opportunity to use other adressing modes
->> whenever possible, to get more optimised code.
->>=20
->> Hereunder is a small exemple:
->>=20
->> struct test {
->> 	u32 item1;
->> 	u16 item2;
->> 	u8 item3;
->> 	u64 item4;
->> };
->>=20
->> int set_test_user(struct test __user *from, struct test __user *to)
->> {
->> 	int err;
->> 	u32 item1;
->> 	u16 item2;
->> 	u8 item3;
->> 	u64 item4;
->>=20
->> 	err =3D __get_user(item1, &from->item1);
->> 	err |=3D __get_user(item2, &from->item2);
->> 	err |=3D __get_user(item3, &from->item3);
->> 	err |=3D __get_user(item4, &from->item4);
->>=20
->> 	err |=3D __put_user(item1, &to->item1);
->> 	err |=3D __put_user(item2, &to->item2);
->> 	err |=3D __put_user(item3, &to->item3);
->> 	err |=3D __put_user(item4, &to->item4);
->>=20
->> 	return err;
->> }
->>=20
->> Before the patch:
->>=20
->> 00000df0 <set_test_user>:
->>   df0:	94 21 ff f0 	stwu    r1,-16(r1)
->>   df4:	39 40 00 00 	li      r10,0
->>   df8:	93 c1 00 08 	stw     r30,8(r1)
->>   dfc:	93 e1 00 0c 	stw     r31,12(r1)
->>   e00:	7d 49 53 78 	mr      r9,r10
->>   e04:	80 a3 00 00 	lwz     r5,0(r3)
->>   e08:	38 e3 00 04 	addi    r7,r3,4
->>   e0c:	7d 46 53 78 	mr      r6,r10
->>   e10:	a0 e7 00 00 	lhz     r7,0(r7)
->>   e14:	7d 29 33 78 	or      r9,r9,r6
->>   e18:	39 03 00 06 	addi    r8,r3,6
->>   e1c:	7d 46 53 78 	mr      r6,r10
->>   e20:	89 08 00 00 	lbz     r8,0(r8)
->>   e24:	7d 29 33 78 	or      r9,r9,r6
->>   e28:	38 63 00 08 	addi    r3,r3,8
->>   e2c:	7d 46 53 78 	mr      r6,r10
->>   e30:	83 c3 00 00 	lwz     r30,0(r3)
->>   e34:	83 e3 00 04 	lwz     r31,4(r3)
->>   e38:	7d 29 33 78 	or      r9,r9,r6
->>   e3c:	7d 43 53 78 	mr      r3,r10
->>   e40:	90 a4 00 00 	stw     r5,0(r4)
->>   e44:	7d 29 1b 78 	or      r9,r9,r3
->>   e48:	38 c4 00 04 	addi    r6,r4,4
->>   e4c:	7d 43 53 78 	mr      r3,r10
->>   e50:	b0 e6 00 00 	sth     r7,0(r6)
->>   e54:	7d 29 1b 78 	or      r9,r9,r3
->>   e58:	38 e4 00 06 	addi    r7,r4,6
->>   e5c:	7d 43 53 78 	mr      r3,r10
->>   e60:	99 07 00 00 	stb     r8,0(r7)
->>   e64:	7d 23 1b 78 	or      r3,r9,r3
->>   e68:	38 84 00 08 	addi    r4,r4,8
->>   e6c:	93 c4 00 00 	stw     r30,0(r4)
->>   e70:	93 e4 00 04 	stw     r31,4(r4)
->>   e74:	7c 63 53 78 	or      r3,r3,r10
->>   e78:	83 c1 00 08 	lwz     r30,8(r1)
->>   e7c:	83 e1 00 0c 	lwz     r31,12(r1)
->>   e80:	38 21 00 10 	addi    r1,r1,16
->>   e84:	4e 80 00 20 	blr
->>=20
->> After the patch:
->>=20
->> 00000dbc <set_test_user>:
->>   dbc:	39 40 00 00 	li      r10,0
->>   dc0:	7d 49 53 78 	mr      r9,r10
->>   dc4:	80 03 00 00 	lwz     r0,0(r3)
->>   dc8:	7d 48 53 78 	mr      r8,r10
->>   dcc:	a1 63 00 04 	lhz     r11,4(r3)
->>   dd0:	7d 29 43 78 	or      r9,r9,r8
->>   dd4:	7d 48 53 78 	mr      r8,r10
->>   dd8:	88 a3 00 06 	lbz     r5,6(r3)
->>   ddc:	7d 29 43 78 	or      r9,r9,r8
->>   de0:	7d 48 53 78 	mr      r8,r10
->>   de4:	80 c3 00 08 	lwz     r6,8(r3)
->>   de8:	80 e3 00 0c 	lwz     r7,12(r3)
->>   dec:	7d 29 43 78 	or      r9,r9,r8
->>   df0:	7d 43 53 78 	mr      r3,r10
->>   df4:	90 04 00 00 	stw     r0,0(r4)
->>   df8:	7d 29 1b 78 	or      r9,r9,r3
->>   dfc:	7d 43 53 78 	mr      r3,r10
->>   e00:	b1 64 00 04 	sth     r11,4(r4)
->>   e04:	7d 29 1b 78 	or      r9,r9,r3
->>   e08:	7d 43 53 78 	mr      r3,r10
->>   e0c:	98 a4 00 06 	stb     r5,6(r4)
->>   e10:	7d 23 1b 78 	or      r3,r9,r3
->>   e14:	90 c4 00 08 	stw     r6,8(r4)
->>   e18:	90 e4 00 0c 	stw     r7,12(r4)
->>   e1c:	7c 63 53 78 	or      r3,r3,r10
->>   e20:	4e 80 00 20 	blr
->>=20
->> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
->> Reviewed-by: Segher Boessenkool <segher@kernel.crashing.org>
->> ---
->> v2:
->> - Added <> modifier in __put_user_asm() and __get_user_asm()
->> - Removed %U2 in __put_user_asm2() and __get_user_asm2()
->> - Reworded the commit log
->> ---
->>   arch/powerpc/include/asm/uaccess.h | 28 ++++++++++++++--------------
->>   1 file changed, 14 insertions(+), 14 deletions(-)
->>=20
->> diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/a=
-sm/uaccess.h
->> index 7c811442b607..9365b59495a2 100644
->> --- a/arch/powerpc/include/asm/uaccess.h
->> +++ b/arch/powerpc/include/asm/uaccess.h
->> @@ -114,7 +114,7 @@ extern long __put_user_bad(void);
->>    */
->>   #define __put_user_asm(x, addr, err, op)			\
->>   	__asm__ __volatile__(					\
->> -		"1:	" op " %1,0(%2)	# put_user\n"		\
->> +		"1:	" op "%U2%X2 %1,%2	# put_user\n"	\
->>   		"2:\n"						\
->>   		".section .fixup,\"ax\"\n"			\
->>   		"3:	li %0,%3\n"				\
->> @@ -122,7 +122,7 @@ extern long __put_user_bad(void);
->>   		".previous\n"					\
->>   		EX_TABLE(1b, 3b)				\
->>   		: "=3Dr" (err)					\
->> -		: "r" (x), "b" (addr), "i" (-EFAULT), "0" (err))
->> +		: "r" (x), "m<>" (*addr), "i" (-EFAULT), "0" (err))
->>=20=20=20
->>   #ifdef __powerpc64__
->>   #define __put_user_asm2(x, ptr, retval)				\
->> @@ -130,8 +130,8 @@ extern long __put_user_bad(void);
->>   #else /* __powerpc64__ */
->>   #define __put_user_asm2(x, addr, err)				\
->>   	__asm__ __volatile__(					\
->> -		"1:	stw %1,0(%2)\n"				\
->> -		"2:	stw %1+1,4(%2)\n"			\
->> +		"1:	stw%X2 %1,%2\n"			\
->> +		"2:	stw%X2 %L1,%L2\n"			\
->>   		"3:\n"						\
->>   		".section .fixup,\"ax\"\n"			\
->>   		"4:	li %0,%3\n"				\
->> @@ -140,7 +140,7 @@ extern long __put_user_bad(void);
->>   		EX_TABLE(1b, 4b)				\
->>   		EX_TABLE(2b, 4b)				\
->>   		: "=3Dr" (err)					\
->> -		: "r" (x), "b" (addr), "i" (-EFAULT), "0" (err))
->> +		: "r" (x), "m" (*addr), "i" (-EFAULT), "0" (err))
->>   #endif /* __powerpc64__ */
->>=20=20=20
->>   #define __put_user_size_allowed(x, ptr, size, retval)		\
->> @@ -260,7 +260,7 @@ extern long __get_user_bad(void);
->>=20=20=20
->>   #define __get_user_asm(x, addr, err, op)		\
->>   	__asm__ __volatile__(				\
->> -		"1:	"op" %1,0(%2)	# get_user\n"	\
->> +		"1:	"op"%U2%X2 %1, %2	# get_user\n"	\
->>   		"2:\n"					\
->>   		".section .fixup,\"ax\"\n"		\
->>   		"3:	li %0,%3\n"			\
->> @@ -269,7 +269,7 @@ extern long __get_user_bad(void);
->>   		".previous\n"				\
->>   		EX_TABLE(1b, 3b)			\
->>   		: "=3Dr" (err), "=3Dr" (x)			\
->> -		: "b" (addr), "i" (-EFAULT), "0" (err))
->> +		: "m<>" (*addr), "i" (-EFAULT), "0" (err))
->>=20=20=20
->>   #ifdef __powerpc64__
->>   #define __get_user_asm2(x, addr, err)			\
->> @@ -277,8 +277,8 @@ extern long __get_user_bad(void);
->>   #else /* __powerpc64__ */
->>   #define __get_user_asm2(x, addr, err)			\
->>   	__asm__ __volatile__(				\
->> -		"1:	lwz %1,0(%2)\n"			\
->> -		"2:	lwz %1+1,4(%2)\n"		\
->> +		"1:	lwz%X2 %1, %2\n"			\
->> +		"2:	lwz%X2 %L1, %L2\n"		\
->>   		"3:\n"					\
->>   		".section .fixup,\"ax\"\n"		\
->>   		"4:	li %0,%3\n"			\
->> @@ -289,7 +289,7 @@ extern long __get_user_bad(void);
->>   		EX_TABLE(1b, 4b)			\
->>   		EX_TABLE(2b, 4b)			\
->>   		: "=3Dr" (err), "=3D&r" (x)			\
->> -		: "b" (addr), "i" (-EFAULT), "0" (err))
->> +		: "m" (*addr), "i" (-EFAULT), "0" (err))
->>   #endif /* __powerpc64__ */
->>=20=20=20
->>   #define __get_user_size_allowed(x, ptr, size, retval)		\
->> @@ -299,10 +299,10 @@ do {								\
->>   	if (size > sizeof(x))					\
->>   		(x) =3D __get_user_bad();				\
->>   	switch (size) {						\
->> -	case 1: __get_user_asm(x, ptr, retval, "lbz"); break;	\
->> -	case 2: __get_user_asm(x, ptr, retval, "lhz"); break;	\
->> -	case 4: __get_user_asm(x, ptr, retval, "lwz"); break;	\
->> -	case 8: __get_user_asm2(x, ptr, retval);  break;	\
->> +	case 1: __get_user_asm(x, (u8 __user *)ptr, retval, "lbz"); break;	\
->> +	case 2: __get_user_asm(x, (u16 __user *)ptr, retval, "lhz"); break;	\
->> +	case 4: __get_user_asm(x, (u32 __user *)ptr, retval, "lwz"); break;	\
->> +	case 8: __get_user_asm2(x, (u64 __user *)ptr, retval);  break;	\
->>   	default: (x) =3D __get_user_bad();			\
->>   	}							\
->>   } while (0)
->>=20
+        Arnd
