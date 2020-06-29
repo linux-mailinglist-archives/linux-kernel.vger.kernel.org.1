@@ -2,223 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C21320D512
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B2020D32A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731812AbgF2TO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:14:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731042AbgF2TOU (ORCPT
+        id S1730044AbgF2S4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:56:16 -0400
+Received: from outbound-smtp42.blacknight.com ([46.22.139.226]:41395 "EHLO
+        outbound-smtp42.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729273AbgF2S4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:14:20 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9F8C0086DC;
-        Mon, 29 Jun 2020 02:31:33 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id q17so7653368pfu.8;
-        Mon, 29 Jun 2020 02:31:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qe4WDxIQGl3f8nl5SssfB8C9vc9ueXmXwiDJGu9bR+U=;
-        b=gxKy2bwoStooFIbHMuvcV/ySW4DhExicwX6eDsJRMPKxT3EtXkkzy4XkPZ7XaBAXuL
-         dsCi0E0ZbCRPX9CA6lrQU0ga29adgeFdIRgXJjtuyloMTQnZ4IHAvGO42VKD1JSQtqx4
-         gLo9Ntqaqf1FDwUsl/4tvEBRQlNzQMViHgdFBu8rAY3E++k+ZFaYqfAy29nBtRRXcHPV
-         eudann+dY92ttd2o47kcoebTGocwMq5sNRKo9W31Bk+/Q/c5dQpujD1vq1Y+paMDOxPo
-         1pFGRPKNa+4nosY5izWIrVe17jk+JELQxI3GZoy1zTCNDM6Vc96RYfSi1wTwKKcqirt2
-         Nmug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qe4WDxIQGl3f8nl5SssfB8C9vc9ueXmXwiDJGu9bR+U=;
-        b=rHhUylfB0+RPFZiSSjJmQBIxNr5lywH5JSo4IVv6MZFeiqFkigZ/62CUL1CYBxdqeu
-         8jMuvKiW6ze/90NmNUv1Teqo3jRFj+fU2h5rsCMQAmuQXUPbu9iiDk9D97sU6GmsdUer
-         vTfAw94IuwYRXjCkJplRFKdqQ7NcNKzEbxOWvsge3jgzZF6SZQJHchAbAaOXfxUCCBo7
-         ndRl5w4tPZN0Usmm88+r9Q2jlsFPkrze8FWHjhB3tI75KePkCOO0Qm9X+h601TdTYG1a
-         IBFSm4BfgExY31zBfFValD7pd4CAyctnWhnQ/MyU+a1h5o6Ua7PZqg9vNHnVkiHWmxcO
-         LdSw==
-X-Gm-Message-State: AOAM531ZbAD+NsaYYOo5YjMXhYXECfHGt3i1xwl4aoIc26uDkNPIAWav
-        fLzTT83Am3sEqR/aAFNv+XDmGkLpRK8=
-X-Google-Smtp-Source: ABdhPJzc/HXeM2Z10CROTyp/Ia6gJiD+wH9o2SbtefVvniYcFcPJgHQUf/d2M3s4RdRVXyc6lOCjcA==
-X-Received: by 2002:a63:1e60:: with SMTP id p32mr9294309pgm.172.1593423093298;
-        Mon, 29 Jun 2020 02:31:33 -0700 (PDT)
-Received: from varodek.localdomain ([106.210.40.90])
-        by smtp.gmail.com with ESMTPSA id q20sm2921286pfn.111.2020.06.29.02.31.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 02:31:32 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org
-Subject: [PATCH v1 3/5] ixgbe: use generic power management
-Date:   Mon, 29 Jun 2020 14:59:41 +0530
-Message-Id: <20200629092943.227910-4-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200629092943.227910-1-vaibhavgupta40@gmail.com>
-References: <20200629092943.227910-1-vaibhavgupta40@gmail.com>
+        Mon, 29 Jun 2020 14:56:07 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp42.blacknight.com (Postfix) with ESMTPS id 9B9FD2320
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:31:35 +0100 (IST)
+Received: (qmail 402 invoked from network); 29 Jun 2020 09:31:35 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.18.5])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 29 Jun 2020 09:31:35 -0000
+Date:   Mon, 29 Jun 2020 10:31:34 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: Commit 'fs: Do not check if there is a fsnotify watcher on
+ pseudo inodes' breaks chromium here
+Message-ID: <20200629093134.GW3183@techsingularity.net>
+References: <7b4aa1e985007c6d582fffe5e8435f8153e28e0f.camel@redhat.com>
+ <CAOQ4uxg8E-im=B6L0PQNaTTKdtxVAO=MSJki7kxq875ME4hOLw@mail.gmail.com>
+ <bffe8da0944fad97c60bbd4e73dc970ee3a7a2c0.camel@redhat.com>
+ <d805dc9c56918a1fab5056a68165d34421f95ce7.camel@redhat.com>
+ <CAOQ4uxjy77SMM6+v2Hpu2i0zy_zQy0EGzY7Tj4wTgUu62TRFww@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxjy77SMM6+v2Hpu2i0zy_zQy0EGzY7Tj4wTgUu62TRFww@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With legacy PM hooks, it was the responsibility of a driver to manage PCI
-states and also the device's power state. The generic approach is to let
-PCI core handle the work.
+On Sun, Jun 28, 2020 at 04:34:51PM +0300, Amir Goldstein wrote:
+> > > > > #0 0x55f6da0120d9 base::debug::CollectStackTrace()
+> > > > > #1 0x55f6d9f75246 base::debug::StackTrace::StackTrace()
+> > > > > #2 0x55f6da01170a base::debug::(anonymous namespace)::StackDumpSignalHandler()
+> > > > > #3 0x55f6da011cfe base::debug::(anonymous namespace)::StackDumpSignalHandler()
+> > > > > #4 0x7ff46643ab20 (/usr/lib64/libpthread-2.30.so+0x14b1f)
+> > > > > #5 0x7ff462d87625 __GI_raise
+> > > > > #6 0x7ff462d708d9 __GI_abort
+> > > > > #7 0x55f6da0112d5 base::debug::BreakDebugger()
+> > > > > #8 0x55f6d9f86405 logging::LogMessage::~LogMessage()
+> > > > > #9 0x55f6d7ed5488 content::(anonymous namespace)::IntentionallyCrashBrowserForUnusableGpuProcess()
+> > > > > #10 0x55f6d7ed8479 content::GpuDataManagerImplPrivate::FallBackToNextGpuMode()
+> > > > > #11 0x55f6d7ed4eef content::GpuDataManagerImpl::FallBackToNextGpuMode()
+> > > > > #12 0x55f6d7ee0f41 content::GpuProcessHost::RecordProcessCrash()
+> > > > > #13 0x55f6d7ee105d content::GpuProcessHost::OnProcessCrashed()
+> > > > > #14 0x55f6d7cbe308 content::BrowserChildProcessHostImpl::OnChildDisconnected()
+> > > > > #15 0x55f6da8b511a IPC::ChannelMojo::OnPipeError()
+> > > > > #16 0x55f6da13cd62 mojo::InterfaceEndpointClient::NotifyError()
+> > > > > #17 0x55f6da8c1f9d IPC::(anonymous namespace)::ChannelAssociatedGroupController::OnPipeError()
+> > > > > #18 0x55f6da138968 mojo::Connector::HandleError()
+> > > > > #19 0x55f6da15bce7 mojo::SimpleWatcher::OnHandleReady()
+> > > > > #20 0x55f6da15c0fb mojo::SimpleWatcher::Context::CallNotify()
+> > > > > #21 0x55f6d78eaa73 mojo::core::WatcherDispatcher::InvokeWatchCallback()
+> > > > > #22 0x55f6d78ea38f mojo::core::Watch::InvokeCallback()
+> > > > > #23 0x55f6d78e6efa mojo::core::RequestContext::~RequestContext()
+> > > > > #24 0x55f6d78db76a mojo::core::NodeChannel::OnChannelError()
+> > > > > #25 0x55f6d78f232a mojo::core::(anonymous namespace)::ChannelPosix::OnFileCanReadWithoutBlocking()
+> > > > > #26 0x55f6da03345e base::MessagePumpLibevent::OnLibeventNotification()
+> > > > > #27 0x55f6da0f9b2d event_base_loop
+> > > > > #28 0x55f6da03316d base::MessagePumpLibevent::Run()
+> > > > > #29 0x55f6d9fd79c9 base::sequence_manager::internal::ThreadControllerWithMessagePumpImpl::Run()
+> > > > > #30 0x55f6d9fada7a base::RunLoop::Run()
+> > > > > #31 0x55f6d7ce6324 content::BrowserProcessSubThread::IOThreadRun()
+> > > > > #32 0x55f6d9fe0cb8 base::Thread::ThreadMain()
+> > > > > #33 0x55f6da024705 base::(anonymous namespace)::ThreadFunc()
+> > > > > #34 0x7ff46642f4e2 start_thread
+> > > > > #35 0x7ff462e4c6a3 __GI___clone
+> > > > >   r8: 0000000000000000  r9: 00007ff44e6a58d0 r10: 0000000000000008 r11: 0000000000000246
+> > > > >  r12: 00007ff44e6a6b40 r13: 00007ff44e6a6d00 r14: 000000000000006d r15: 00007ff44e6a6b30
+> > > > >   di: 0000000000000002  si: 00007ff44e6a58d0  bp: 00007ff44e6a5b20  bx: 00007ff44e6a9700
+> > > > >   dx: 0000000000000000  ax: 0000000000000000  cx: 00007ff462d87625  sp: 00007ff44e6a58d0
+> > > > >   ip: 00007ff462d87625 efl: 0000000000000246 cgf: 002b000000000033 erf: 0000000000000000
+> > > > >  trp: 0000000000000000 msk: 0000000000000000 cr2: 0000000000000000
+> > > > > [end of stack trace]
+> > > > > Calling _exit(1). Core file will not be generated.
+> > > > >
+> > > > >
+> > > >
+> > > > I guess this answers our question whether we could disable fsnoitfy
+> > > > watches on pseudo inodes....
+> > > >
+> > > > From comments like these in chromium code:
+> > > > https://chromium.googlesource.com/chromium/src/+/master/mojo/core/watcher_dispatcher.cc#77
+> > > > https://chromium.googlesource.com/chromium/src/+/master/base/files/file_descriptor_watcher_posix.cc#176
+> > > > https://chromium.googlesource.com/chromium/src/+/master/ipc/ipc_channel_mojo.cc#240
+> > > >
+> > > > I am taking a wild guess that the missing FS_CLOSE event on anonymous pipes is
+> > > > the cause for regression.
+> > > >
+> > > > The motivation for the patch "fs: Do not check if there is a fsnotify
+> > > > watcher on pseudo inodes"
+> > > > was performance, but actually, FS_CLOSE and FS_OPEN events probably do
+> > > > not impact
+> > > > performance as FS_MODIFY and FS_ACCESS.
+> > > >
+> > > > Mel,
+> > > >
+> > > > Do your perf results support the claim above?
+> > > >
+> > > > Jan/Linus,
+> > > >
+> > > > Do you agree that dropping FS_MODIFY/FS_ACCESS events for FMODE_STREAM
+> > > > files as a general rule should be safe?
+> > > >
+> > > > Maxim, can you try if the attached patch fixes the chromium regression.
+> > > > It is expected to leave the FS_OPEN/FS_CLOSE events on anonymous pipes
+> > > > but drop the FS_MODIFY/FS_ACCESS events.
+> > > Tested this (in the VM this time) and it works.
+> >
+> >
+> > Note that this should be changed to 'return' since function returns void.
+> >
+> > +       if (file->f_mode & FMODE_STREAM)
+> > +               return 0;
+> >
+> 
+> Right sorry. Didn't pay attention to the build warnings.
+> 
+> Now only left to see if this approach is acceptable and if it also
+> fixes the performance issue reported by Mel.
+> 
 
-ixgbe_suspend() calls __ixgbe_shutdown() to perform intermediate tasks.
-__ixgbe_shutdown() modifies the value of "wake" (device should be wakeup
-enabled or not), responsible for controlling the flow of legacy PM.
 
-Since, PCI core has no idea about the value of "wake", new code for generic
-PM may produce unexpected results. Thus, use "device_set_wakeup_enable()"
-to wakeup-enable the device accordingly.
+Thanks Amir!
 
-Compile-tested only.
+The performance seems fine and I think the patch is ok. If there is an
+issue with special casing FMODE_STREAM then the alternative would be to
+special case pipes with FMODE_NONOTIFY specifically as pipes appear to
+be the pseudo inode that is most affected by fsnotify checks.
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 61 +++++--------------
- 1 file changed, 15 insertions(+), 46 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 97a423ecf808..145296825e64 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -6861,32 +6861,20 @@ int ixgbe_close(struct net_device *netdev)
- 	return 0;
- }
- 
--#ifdef CONFIG_PM
--static int ixgbe_resume(struct pci_dev *pdev)
-+static int __maybe_unused ixgbe_resume(struct device *dev_d)
- {
-+	struct pci_dev *pdev = to_pci_dev(dev_d);
- 	struct ixgbe_adapter *adapter = pci_get_drvdata(pdev);
- 	struct net_device *netdev = adapter->netdev;
- 	u32 err;
- 
- 	adapter->hw.hw_addr = adapter->io_addr;
--	pci_set_power_state(pdev, PCI_D0);
--	pci_restore_state(pdev);
--	/*
--	 * pci_restore_state clears dev->state_saved so call
--	 * pci_save_state to restore it.
--	 */
--	pci_save_state(pdev);
- 
--	err = pci_enable_device_mem(pdev);
--	if (err) {
--		e_dev_err("Cannot enable PCI device from suspend\n");
--		return err;
--	}
- 	smp_mb__before_atomic();
- 	clear_bit(__IXGBE_DISABLED, &adapter->state);
- 	pci_set_master(pdev);
- 
--	pci_wake_from_d3(pdev, false);
-+	device_wakeup_disable(dev_d);
- 
- 	ixgbe_reset(adapter);
- 
-@@ -6904,7 +6892,6 @@ static int ixgbe_resume(struct pci_dev *pdev)
- 
- 	return err;
- }
--#endif /* CONFIG_PM */
- 
- static int __ixgbe_shutdown(struct pci_dev *pdev, bool *enable_wake)
- {
-@@ -6913,9 +6900,6 @@ static int __ixgbe_shutdown(struct pci_dev *pdev, bool *enable_wake)
- 	struct ixgbe_hw *hw = &adapter->hw;
- 	u32 ctrl;
- 	u32 wufc = adapter->wol;
--#ifdef CONFIG_PM
--	int retval = 0;
--#endif
- 
- 	rtnl_lock();
- 	netif_device_detach(netdev);
-@@ -6926,12 +6910,6 @@ static int __ixgbe_shutdown(struct pci_dev *pdev, bool *enable_wake)
- 	ixgbe_clear_interrupt_scheme(adapter);
- 	rtnl_unlock();
- 
--#ifdef CONFIG_PM
--	retval = pci_save_state(pdev);
--	if (retval)
--		return retval;
--
--#endif
- 	if (hw->mac.ops.stop_link_on_d3)
- 		hw->mac.ops.stop_link_on_d3(hw);
- 
-@@ -6986,26 +6964,18 @@ static int __ixgbe_shutdown(struct pci_dev *pdev, bool *enable_wake)
- 	return 0;
- }
- 
--#ifdef CONFIG_PM
--static int ixgbe_suspend(struct pci_dev *pdev, pm_message_t state)
-+static int __maybe_unused ixgbe_suspend(struct device *dev_d)
- {
-+	struct pci_dev *pdev = to_pci_dev(dev_d);
- 	int retval;
- 	bool wake;
- 
- 	retval = __ixgbe_shutdown(pdev, &wake);
--	if (retval)
--		return retval;
- 
--	if (wake) {
--		pci_prepare_to_sleep(pdev);
--	} else {
--		pci_wake_from_d3(pdev, false);
--		pci_set_power_state(pdev, PCI_D3hot);
--	}
-+	device_set_wakeup_enable(dev_d, wake);
- 
--	return 0;
-+	return retval;
- }
--#endif /* CONFIG_PM */
- 
- static void ixgbe_shutdown(struct pci_dev *pdev)
- {
-@@ -11489,16 +11459,15 @@ static const struct pci_error_handlers ixgbe_err_handler = {
- 	.resume = ixgbe_io_resume,
- };
- 
-+static SIMPLE_DEV_PM_OPS(ixgbe_pm_ops, ixgbe_suspend, ixgbe_resume);
-+
- static struct pci_driver ixgbe_driver = {
--	.name     = ixgbe_driver_name,
--	.id_table = ixgbe_pci_tbl,
--	.probe    = ixgbe_probe,
--	.remove   = ixgbe_remove,
--#ifdef CONFIG_PM
--	.suspend  = ixgbe_suspend,
--	.resume   = ixgbe_resume,
--#endif
--	.shutdown = ixgbe_shutdown,
-+	.name      = ixgbe_driver_name,
-+	.id_table  = ixgbe_pci_tbl,
-+	.probe     = ixgbe_probe,
-+	.remove    = ixgbe_remove,
-+	.driver.pm = &ixgbe_pm_ops,
-+	.shutdown  = ixgbe_shutdown,
- 	.sriov_configure = ixgbe_pci_sriov_configure,
- 	.err_handler = &ixgbe_err_handler
- };
 -- 
-2.27.0
-
+Mel Gorman
+SUSE Labs
