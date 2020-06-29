@@ -2,287 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BAC20CBC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 04:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C26A20CBD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 04:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbgF2C2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Jun 2020 22:28:46 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:4473 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgF2C2o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Jun 2020 22:28:44 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ef951cf0000>; Sun, 28 Jun 2020 19:28:31 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Sun, 28 Jun 2020 19:28:43 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Sun, 28 Jun 2020 19:28:43 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 29 Jun
- 2020 02:28:43 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Mon, 29 Jun 2020 02:28:43 +0000
-Received: from vdumpa-ubuntu.nvidia.com (Not Verified[172.17.173.140]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ef951db0002>; Sun, 28 Jun 2020 19:28:43 -0700
-From:   Krishna Reddy <vdumpa@nvidia.com>
-CC:     <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <treding@nvidia.com>,
-        <yhsu@nvidia.com>, <snikam@nvidia.com>, <praithatha@nvidia.com>,
-        <talho@nvidia.com>, <bbiswas@nvidia.com>, <mperttunen@nvidia.com>,
-        <nicolinc@nvidia.com>, <bhuntsman@nvidia.com>,
-        Krishna Reddy <vdumpa@nvidia.com>
-Subject: [PATCH v7 3/3] iommu/arm-smmu: Add global/context fault implementation hooks
-Date:   Sun, 28 Jun 2020 19:28:38 -0700
-Message-ID: <20200629022838.29628-4-vdumpa@nvidia.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200629022838.29628-1-vdumpa@nvidia.com>
-References: <20200629022838.29628-1-vdumpa@nvidia.com>
-MIME-Version: 1.0
-X-NVConfidentiality: public
+        id S1726051AbgF2Cmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Jun 2020 22:42:31 -0400
+Received: from mail-eopbgr1400133.outbound.protection.outlook.com ([40.107.140.133]:14781
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725983AbgF2Cma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Jun 2020 22:42:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n4IyAQhN+wpqGVEnXYeXS6qdjihhvDPdO/tySoxgmw7xjfe8MwjghNt/MNHZC9Tj/9YR0lRiKE5DMt08TCU3Ypg9Ug3OJV+CgZIA6cjMcNhvCNd2fFGChtOPW4xyhiu1tylkFF1Hw9CcGaAg74AA9WXtlbXedpZt2cVIJ25aJzSKOU2yeLIaaOuooe7NYwPGITifPa+AnZHvtnym5+Xd/g15qSHPiyW+ZEwok5fJhGf/aOrtkh7ug5lr9u13d4+dwe/8V4YqKDtww8p+UXNO420A3+4s43cPPz3CGrdDvwbT4/SZogwoROGl8gFNyXStGTgf61ukI3cOExerkAnOyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BxjrRQ/Xm60AUljb+ncHyTxJ18InEZucF+dgDcncihs=;
+ b=ZPgTdC4aGPMEhJVObqIINQber1DShw5AL0+JpIrJVdWsQLrWwk/uMDSJdJdtd1plLchzz+uXYRJJ8z9Yq0Fi2btegqcfVoO3LOj5NVLcXCwKvwE3Gnmzv4brZEq9+t/hmW37VPrZqN4myJsPZUOlw+ni83AD7EA72r1BMqKSFEo7wjqZKcEQOOIFMeB1cfHp1Q53/lSLfIO7aYWntIngbfI2yy98Kn6pYTmev4ZzOBSUugQYKdKVr0AiBMI5qHrtmdGxLx49g8epJ2k+zmj05wCp2JOphcc0PkuBBwmu8ehs8kpzelQbvgPgI6tAwr16khAQOPxeuAPRYhqUJ+5MWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BxjrRQ/Xm60AUljb+ncHyTxJ18InEZucF+dgDcncihs=;
+ b=qM33i6scZNKsrIC4+H6VNZ5BodIdn7iD67hQs/zB4dS5qP9+5n8hnQFb1DYqHKXlQHXSnkMPfqCJQ3VKfT1AFkxuYh0NYoquSnjZJ7nBBOzbHMobwuaZuM3NpmTLwLJGzTuIpghNgEqOuI+jnr49rVPCaBw+af40jdKIuA/XUQo=
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com (2603:1096:404:d5::22)
+ by TYAPR01MB3645.jpnprd01.prod.outlook.com (2603:1096:404:c1::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20; Mon, 29 Jun
+ 2020 02:42:26 +0000
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::9083:6001:8090:9f3]) by TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::9083:6001:8090:9f3%6]) with mapi id 15.20.3131.026; Mon, 29 Jun 2020
+ 02:42:26 +0000
+From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "geert+renesas@glider.be" <geert+renesas@glider.be>,
+        "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>
+Subject: RE: [PATCH/RFC v4 2/4] regulator: fixed: add regulator_ops members
+ for suspend/resume
+Thread-Topic: [PATCH/RFC v4 2/4] regulator: fixed: add regulator_ops members
+ for suspend/resume
+Thread-Index: AQHWS5y220V49G6mUUOIhQjj9iWCYajq9+eAgAPnVSA=
+Date:   Mon, 29 Jun 2020 02:42:26 +0000
+Message-ID: <TY2PR01MB3692A3B12CEF7F9708A8A59CD86E0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+References: <1593163942-5087-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <1593163942-5087-3-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <20200626143914.GE5289@sirena.org.uk>
+In-Reply-To: <20200626143914.GE5289@sirena.org.uk>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=renesas.com;
+x-originating-ip: [124.210.22.195]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 24f1ac22-98a8-4c64-db0d-08d81bd60f67
+x-ms-traffictypediagnostic: TYAPR01MB3645:
+x-microsoft-antispam-prvs: <TYAPR01MB364508DD5850606C1D5B6FF8D86E0@TYAPR01MB3645.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 044968D9E1
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wFvbADm7E9DXAZRNjVLbdT3w3bBTRH7SMbE9QWcBDD9AsEkZhLUYnsg/uXYkH0EHr/Q/8QUYWhb28TwJ+YIFsal8oNhwps1S0vjKtkJGQGH06pLaDh0752bp+wdWiVI26iXQ16pYjgUga26JDNZiG9pjT6phZfd7askaVB7etxp1e1qb8D2zktFdSAWVf9dL9JESWvCv302AvyUHkTKD39Cb95YkSAsruA+1AnCkva2XPseyh9UDY7vn2Yg48GcCxZpsfi2XhekqWdX+YAcrFoE/HpNCqREp1c+62pqhSYFQCahuPU5TfabE3clAe35mRlMIGd17xxAUXqBwddLSMhoyOv3okUG8k0QBmQq/IBsG4cyL9/31i+w346DD+gGQhmy6d4klaMtcYT9ljvkWzQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3692.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(366004)(346002)(376002)(39860400002)(396003)(966005)(316002)(54906003)(66476007)(26005)(6506007)(33656002)(66946007)(6916009)(2906002)(9686003)(55236004)(66556008)(76116006)(66446008)(55016002)(478600001)(64756008)(15650500001)(186003)(7696005)(86362001)(8676002)(52536014)(8936002)(4326008)(71200400001)(83380400001)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: Mdceu0boJZ7ajwIjuSRaV4LlfmM+5CmFumsDz7poFwP2rITsdpseCI/JY/cgJGUW+ZaHyFnwNMhOyDOv3jdHcSI2EJ/agy+BpdbieYeXAhRbMaMHIc0VHopMH1jTsKPTeF3PcVDpf/0/xXbNOug5nIBhcRxeiOCc/LMqcrVFBTjC6iGXR9RHBg0u0+eb5o6Y4PIIhHpn0sVsc598/DG2tqxGKOaegxWJzzkXirZKFPsR3AUj8wJ0mWXVAvJOHRbXopJDdKyvsJ6v3CVir08SeUGbvz+bUb8Gd0cwBnyOUQgt4gMYyXsrc0j5JWnkw8SZO3XJAOhXh4pnaPYGw1X53JaXJFR2fFbPoykCrHRHx2zZm+q34AYSSXubbqY4Zjn55AAUSN3QUbNcuIGQbj2m/I8zGrIPusBJe0rOoba60ioYw4CWjq7I9zWyUJczhZCcOJQs6pxKh+ufV/5Ckn0ryAj2L7F+ea5LT3IYkoB2mG9D3d+1oiHStxPlaoyV/FgB
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593397711; bh=DeTOvgGx0JLkiA+WHeFmx2Voym9GjZi724XC1XCiwp0=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=WFIghWOCSZ9Z/MTbHmKsAQoxkhSTXp62cWPPS+j2ppeMkI9pesENyEA7BzOkxb4yk
-         cF9PLH1vOa/P1GIdA2/K+aNDbqqdT8jh5Pxxku9rbjEOJcbeJkDrkK7BQuxxkipSFR
-         N/d2wXQ4TRnYxisDmMVjcZspAXALycLKFaGegk1BDGMsJEHzDcaRhX4aUYB8FjSyYE
-         Lymow5O1O8PcYHz5cvyTGOTRanC6PQocYd0TDay+LCHc8gjsNQNaA0n42Lil0IrkXA
-         i8NtXgEuH+p5scebLmYBPTjJRm9pE9AvQ+2ASRJXkgpE770D3yQS/csv66OxKgtZ/v
-         Lv+QSUgAGcd1Q==
-To:     unlisted-recipients:; (no To-header on input)
+MIME-Version: 1.0
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3692.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 24f1ac22-98a8-4c64-db0d-08d81bd60f67
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2020 02:42:26.7241
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Z0YuvJaDWUIKOB4/uw8AZlh2TW27np0WUqjR9hbx/yJbyqpUcZ3spJKkgh9G4vh+1Um/iRs3XPywiEv53YzSROQZFOF5qeuc9S3XScingldcINYnoMHkeW/MaeCUof0r
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB3645
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add global/context fault hooks to allow NVIDIA SMMU implementation
-handle faults across multiple SMMUs.
+Hi Mark,
 
-Signed-off-by: Krishna Reddy <vdumpa@nvidia.com>
----
- drivers/iommu/arm-smmu-nvidia.c | 101 +++++++++++++++++++++++++++++++-
- drivers/iommu/arm-smmu.c        |  17 +++++-
- drivers/iommu/arm-smmu.h        |   3 +
- 3 files changed, 118 insertions(+), 3 deletions(-)
+> From: Mark Brown, Sent: Friday, June 26, 2020 11:39 PM
+>=20
+> On Fri, Jun 26, 2020 at 06:32:20PM +0900, Yoshihiro Shimoda wrote:
+>=20
+> > +static int reg_is_enabled(struct regulator_dev *rdev)
+> > +{
+> > +	struct fixed_voltage_data *priv =3D rdev_get_drvdata(rdev);
+> > +
+> > +	return !priv->disabled_in_suspend;
+> > +}
+>=20
+> This is broken, the state of the regualtor during system runtime need
+> have no connection with the state of the regulator during system
+> suspend.
+>=20
+> > +static int reg_prepare_disable(struct regulator_dev *rdev)
+> > +{
+> > +	struct fixed_voltage_data *priv =3D rdev_get_drvdata(rdev);
+> > +
+> > +	priv->disabled_in_suspend =3D true;
+> > +
+> > +	return 0;
+> > +}
+>=20
+> According to the changelog this is all about reflecting changes in the
+> system state done by firmware but there's no interaction with firmware
+> here which means this will be at best fragile.  If we need to reflect
+> changes in firmware configuration I'd expect there to be some
+> interaction with firmware about how it is configured, or at least that
+> the configuration would come from the same source.
 
-diff --git a/drivers/iommu/arm-smmu-nvidia.c b/drivers/iommu/arm-smmu-nvidi=
-a.c
-index b73c483fa3376..7276bb203ae79 100644
---- a/drivers/iommu/arm-smmu-nvidia.c
-+++ b/drivers/iommu/arm-smmu-nvidia.c
-@@ -147,6 +147,102 @@ static int nvidia_smmu_reset(struct arm_smmu_device *=
-smmu)
- 	return 0;
- }
-=20
-+static struct arm_smmu_domain *to_smmu_domain(struct iommu_domain *dom)
-+{
-+	return container_of(dom, struct arm_smmu_domain, domain);
-+}
-+
-+static irqreturn_t nvidia_smmu_global_fault_inst(int irq,
-+					       struct arm_smmu_device *smmu,
-+					       int inst)
-+{
-+	u32 gfsr, gfsynr0, gfsynr1, gfsynr2;
-+	void __iomem *gr0_base =3D nvidia_smmu_page(smmu, inst, 0);
-+
-+	gfsr =3D readl_relaxed(gr0_base + ARM_SMMU_GR0_sGFSR);
-+	gfsynr0 =3D readl_relaxed(gr0_base + ARM_SMMU_GR0_sGFSYNR0);
-+	gfsynr1 =3D readl_relaxed(gr0_base + ARM_SMMU_GR0_sGFSYNR1);
-+	gfsynr2 =3D readl_relaxed(gr0_base + ARM_SMMU_GR0_sGFSYNR2);
-+
-+	if (!gfsr)
-+		return IRQ_NONE;
-+
-+	dev_err_ratelimited(smmu->dev,
-+		"Unexpected global fault, this could be serious\n");
-+	dev_err_ratelimited(smmu->dev,
-+		"\tGFSR 0x%08x, GFSYNR0 0x%08x, GFSYNR1 0x%08x, GFSYNR2 0x%08x\n",
-+		gfsr, gfsynr0, gfsynr1, gfsynr2);
-+
-+	writel_relaxed(gfsr, gr0_base + ARM_SMMU_GR0_sGFSR);
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t nvidia_smmu_global_fault(int irq, void *dev)
-+{
-+	int inst;
-+	irqreturn_t irq_ret =3D IRQ_NONE;
-+	struct arm_smmu_device *smmu =3D dev;
-+	struct nvidia_smmu *nvidia_smmu =3D to_nvidia_smmu(smmu);
-+
-+	for (inst =3D 0; inst < nvidia_smmu->num_inst; inst++) {
-+		irq_ret =3D nvidia_smmu_global_fault_inst(irq, smmu, inst);
-+		if (irq_ret =3D=3D IRQ_HANDLED)
-+			return irq_ret;
-+	}
-+
-+	return irq_ret;
-+}
-+
-+static irqreturn_t nvidia_smmu_context_fault_bank(int irq,
-+					    struct arm_smmu_device *smmu,
-+					    int idx, int inst)
-+{
-+	u32 fsr, fsynr, cbfrsynra;
-+	unsigned long iova;
-+	void __iomem *gr1_base =3D nvidia_smmu_page(smmu, inst, 1);
-+	void __iomem *cb_base =3D nvidia_smmu_page(smmu, inst, smmu->numpage + id=
-x);
-+
-+	fsr =3D arm_smmu_cb_read(smmu, idx, ARM_SMMU_CB_FSR);
-+	if (!(fsr & ARM_SMMU_FSR_FAULT))
-+		return IRQ_NONE;
-+
-+	fsynr =3D readl_relaxed(cb_base + ARM_SMMU_CB_FSYNR0);
-+	iova =3D readq_relaxed(cb_base + ARM_SMMU_CB_FAR);
-+	cbfrsynra =3D readl_relaxed(gr1_base + ARM_SMMU_GR1_CBFRSYNRA(idx));
-+
-+	dev_err_ratelimited(smmu->dev,
-+	"Unhandled context fault: fsr=3D0x%x, iova=3D0x%08lx, fsynr=3D0x%x, cbfrs=
-ynra=3D0x%x, cb=3D%d\n",
-+			    fsr, iova, fsynr, cbfrsynra, idx);
-+
-+	writel_relaxed(fsr, cb_base + ARM_SMMU_CB_FSR);
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t nvidia_smmu_context_fault(int irq, void *dev)
-+{
-+	int inst, idx;
-+	irqreturn_t irq_ret =3D IRQ_NONE;
-+	struct iommu_domain *domain =3D dev;
-+	struct arm_smmu_domain *smmu_domain =3D to_smmu_domain(domain);
-+	struct arm_smmu_device *smmu =3D smmu_domain->smmu;
-+
-+	for (inst =3D 0; inst < to_nvidia_smmu(smmu)->num_inst; inst++) {
-+		/*
-+		 * Interrupt line shared between all context faults.
-+		 * Check for faults across all contexts.
-+		 */
-+		for (idx =3D 0; idx < smmu->num_context_banks; idx++) {
-+			irq_ret =3D nvidia_smmu_context_fault_bank(irq, smmu,
-+								 idx, inst);
-+
-+			if (irq_ret =3D=3D IRQ_HANDLED)
-+				return irq_ret;
-+		}
-+	}
-+
-+	return irq_ret;
-+}
-+
- static const struct arm_smmu_impl nvidia_smmu_impl =3D {
- 	.read_reg =3D nvidia_smmu_read_reg,
- 	.write_reg =3D nvidia_smmu_write_reg,
-@@ -154,6 +250,8 @@ static const struct arm_smmu_impl nvidia_smmu_impl =3D =
-{
- 	.write_reg64 =3D nvidia_smmu_write_reg64,
- 	.reset =3D nvidia_smmu_reset,
- 	.tlb_sync =3D nvidia_smmu_tlb_sync,
-+	.global_fault =3D nvidia_smmu_global_fault,
-+	.context_fault =3D nvidia_smmu_context_fault,
- };
-=20
- struct arm_smmu_device *nvidia_smmu_impl_init(struct arm_smmu_device *smmu=
-)
-@@ -185,7 +283,8 @@ struct arm_smmu_device *nvidia_smmu_impl_init(struct ar=
-m_smmu_device *smmu)
- 	}
-=20
- 	nvidia_smmu->smmu.impl =3D &nvidia_smmu_impl;
--	/* Free the arm_smmu_device struct allocated in arm-smmu.c.
-+	/*
-+	 * Free the arm_smmu_device struct allocated in arm-smmu.c.
- 	 * Once this function returns, arm-smmu.c would use arm_smmu_device
- 	 * allocated as part of nvidia_smmu struct.
- 	 */
-diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-index 243bc4cb2705b..3bb0aba15a356 100644
---- a/drivers/iommu/arm-smmu.c
-+++ b/drivers/iommu/arm-smmu.c
-@@ -673,6 +673,7 @@ static int arm_smmu_init_domain_context(struct iommu_do=
-main *domain,
- 	enum io_pgtable_fmt fmt;
- 	struct arm_smmu_domain *smmu_domain =3D to_smmu_domain(domain);
- 	struct arm_smmu_cfg *cfg =3D &smmu_domain->cfg;
-+	irqreturn_t (*context_fault)(int irq, void *dev);
-=20
- 	mutex_lock(&smmu_domain->init_mutex);
- 	if (smmu_domain->smmu)
-@@ -835,7 +836,13 @@ static int arm_smmu_init_domain_context(struct iommu_d=
-omain *domain,
- 	 * handler seeing a half-initialised domain state.
- 	 */
- 	irq =3D smmu->irqs[smmu->num_global_irqs + cfg->irptndx];
--	ret =3D devm_request_irq(smmu->dev, irq, arm_smmu_context_fault,
-+
-+	if (smmu->impl && smmu->impl->context_fault)
-+		context_fault =3D smmu->impl->context_fault;
-+	else
-+		context_fault =3D arm_smmu_context_fault;
-+
-+	ret =3D devm_request_irq(smmu->dev, irq, context_fault,
- 			       IRQF_SHARED, "arm-smmu-context-fault", domain);
- 	if (ret < 0) {
- 		dev_err(smmu->dev, "failed to request context IRQ %d (%u)\n",
-@@ -2107,6 +2114,7 @@ static int arm_smmu_device_probe(struct platform_devi=
-ce *pdev)
- 	struct arm_smmu_device *smmu;
- 	struct device *dev =3D &pdev->dev;
- 	int num_irqs, i, err;
-+	irqreturn_t (*global_fault)(int irq, void *dev);
-=20
- 	smmu =3D devm_kzalloc(dev, sizeof(*smmu), GFP_KERNEL);
- 	if (!smmu) {
-@@ -2193,9 +2201,14 @@ static int arm_smmu_device_probe(struct platform_dev=
-ice *pdev)
- 		smmu->num_context_irqs =3D smmu->num_context_banks;
- 	}
-=20
-+	if (smmu->impl && smmu->impl->global_fault)
-+		global_fault =3D smmu->impl->global_fault;
-+	else
-+		global_fault =3D arm_smmu_global_fault;
-+
- 	for (i =3D 0; i < smmu->num_global_irqs; ++i) {
- 		err =3D devm_request_irq(smmu->dev, smmu->irqs[i],
--				       arm_smmu_global_fault,
-+				       global_fault,
- 				       IRQF_SHARED,
- 				       "arm-smmu global fault",
- 				       smmu);
-diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
-index 8cf1511ed9874..8b330076ff2af 100644
---- a/drivers/iommu/arm-smmu.h
-+++ b/drivers/iommu/arm-smmu.h
-@@ -18,6 +18,7 @@
- #include <linux/io-64-nonatomic-hi-lo.h>
- #include <linux/io-pgtable.h>
- #include <linux/iommu.h>
-+#include <linux/irqreturn.h>
- #include <linux/mutex.h>
- #include <linux/spinlock.h>
- #include <linux/types.h>
-@@ -387,6 +388,8 @@ struct arm_smmu_impl {
- 	void (*tlb_sync)(struct arm_smmu_device *smmu, int page, int sync,
- 			 int status);
- 	int (*def_domain_type)(struct device *dev);
-+	irqreturn_t (*global_fault)(int irq, void *dev);
-+	irqreturn_t (*context_fault)(int irq, void *dev);
- };
-=20
- static inline void __iomem *arm_smmu_page(struct arm_smmu_device *smmu, in=
-t n)
---=20
-2.26.2
+I should have described background of previous patch series though,
+according to previous discussion [1] the firmware side (like PSCI) is
+also fragile unfortunately... So, I thought using regulator-off-in-suspend
+in a regulator was better.
+
+On other hand, Ulf is talking about either adding a property (perhaps like
+regulator-off-in-suspend) into a regulator or just adding a new property
+into MMC [2]. What do you think about Ulf' comment? I'm thinking
+adding a new property "full-pwr-cycle-in-suspend" is the best solution.
+This is because using a regulator property and reflecting a state of regula=
+tor without
+firmware is fragile, as you said.
+
+[1]
+https://lore.kernel.org/linux-renesas-soc/CAMuHMdXjU7N4oG89YsozGijMpjgKGN6e=
+zw2qm6FeGX=3DJyRhsvg@mail.gmail.com/
+
+[2]
+https://lore.kernel.org/linux-renesas-soc/CAPDyKFpiBU1D+a7zb+Ggm0_HZ+YR4=3D=
+LXJZ5MPytXtT=3DuBEdjPA@mail.gmail.com/
+
+Best regards,
+Yoshihiro Shimoda
 
