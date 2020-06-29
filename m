@@ -2,59 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7DA920D301
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AFF520D2E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgF2Syu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40032 "EHLO
+        id S1729843AbgF2SxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729802AbgF2Swv (ORCPT
+        with ESMTP id S1729816AbgF2Sww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:51 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEA9C00F816
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:21 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l17so15223812wmj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:21 -0700 (PDT)
+        Mon, 29 Jun 2020 14:52:52 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1449C00F819
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:24 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z15so5092936wrl.8
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 05:32:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NcJWzHYOpdeqh8qGaDVcQ5xRq4JhsD2PhceqG1yeYgA=;
-        b=Q366rrasZM+J0LbW/35YiKvihiuoapb6NfN+Zb4zZsqCvq9+SkLa23MzIyUfk8kh5e
-         Tfzz+oPvckK85IfjKcsT2gzRYKGkjA9x48l/nKQyaBoJf04WdVxDuu5uycO/0JeIVv7l
-         lOtSMb0HK9cCkVoeyc2/p1hyWjQjR6EecqDrCwB0F4vdpGgomiwLq5Ge5NkeB38l2s9p
-         /RPpmnw26+sNuVt41FF5MJ94lR5+1+dlEqGMEV38RM0R9mtgMDHgqIuG7D8kGbWJx/HQ
-         SSsL2oC165G4yp4HZa8wpyhQ42TMENenXjRufPEz16j5xH7YcPE37CvTwtIEREwDv7Hd
-         yPOg==
+        bh=Gy5XGROE42zu/OtGr1HVd4C1Erola+sMm0BAiQi5EAg=;
+        b=EOEH+B4YAdFOH+2/KoijG8knN+YekUDS5ypT4nuQN27G/Jo02pRILBXHZJ5OmgwIYl
+         UXsWDmJqnNK01epEhCxiKDeVnprl7cvBLEDFzU4upD4QbgxddQsrVIua0JmkNof+T46p
+         K4zlsTPn6Bij6eu47CcKTpCxVL9+YccP45x5lupJxTtdoYfeNot2cE6OHksag/TRXaqi
+         06zg1uc9lqpWNIqi73eXK1RH6cHkXEcQJrBllza8pnEY9j2cpAsvJZntWUYfLzaQRLFA
+         LLLRkYrwGcKoLxgpMvKoMT3wFIdZx25ikmSAn6bQ0J3daVmzMXFMs3VR36S7QYHogK+u
+         IpsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NcJWzHYOpdeqh8qGaDVcQ5xRq4JhsD2PhceqG1yeYgA=;
-        b=VVfZILbmcYV9fQiQV5z8I8TnZ9+XyDXuZXU7KxXdwaZRIbBfSI2OSnpm/dPlIsJAEZ
-         eIDK9JpwpeqQYVQIggcCwb5F0MqWtyI1Z2pIhoedBfoEFHOYN4L+NnjrGZ+cHi/FgmdR
-         NtAcWSa+8msGj72nvf3PKBYa43rT0CfpvoDx4U0ju9WCMqrDADNGumNKKmVz48d9CJoE
-         BV/64gf8361wpNpIJPdCWjTIkEhs5MRjRcGDfrjV68h1Ekw+35nsxCynB7LTq3ckOWXT
-         XMBuIP3/9qRexse2jcc9lVP3hIgS9cnndMlrXNySiSpkJ963TKXc5bNIw0bPLLMnNReI
-         CpqA==
-X-Gm-Message-State: AOAM531eKjYHkD/X5AlmfDqtLVjzS3HwM/Osh86Af3GVR2l4VrPPXSg7
-        pb7tl5dD2z44NJn4IeFDPgkjRg==
-X-Google-Smtp-Source: ABdhPJx4+0k8HqfmTYlIin6K3HPVFB67u5CbChkf/P40Ljl2tLMP9fSC9+ZutsjMFevxWA0Kb++IlQ==
-X-Received: by 2002:a1c:9cd3:: with SMTP id f202mr15608911wme.64.1593433940462;
-        Mon, 29 Jun 2020 05:32:20 -0700 (PDT)
+        bh=Gy5XGROE42zu/OtGr1HVd4C1Erola+sMm0BAiQi5EAg=;
+        b=iiU3vKsoYHzV7nEtRFpOTLyfPbQxbkgUGUsC/SCfd9bWQLhIuskq+9CBAn9K4ZJyl+
+         jdF13EasHF6amqBHH0P0aYM+VHMGwF8xWjJWV1MOVTFfk+VofTG8ehBqfyzWCwq6mC9q
+         8RFR6Lb4vBqfr/agpF1o5elceKE4kUytk3qfNh0W12wBi35LiU+bCdkVATCBpe5qVifZ
+         Ute4wxhrfOv73mIiGbfanjV9uaBexuWyL0fu+Rq/qA8CuYLsH8czzv8PdflItllOqxlF
+         iZ3qR4N5GGpDsU1QRRbu3KGc0vFd6EEu03LvLUM0fGRDwL8NKTulAgJCM30rDIlV7ch6
+         yFFw==
+X-Gm-Message-State: AOAM531Kv5l4BOE0G7U7vSM6auDRwCGg62r7TwQt49EkxJWje8GJiFP2
+        mTA2LcjArhzwOxn1b3q79dKTwD1fOII=
+X-Google-Smtp-Source: ABdhPJzx1S6JaOHDpOE7Um5NlUKwwsXS6LziGKVWvGGhJ+ABrjXd+W/9XaQZh6Ee4qGBqKImmEb7XQ==
+X-Received: by 2002:adf:f842:: with SMTP id d2mr18183246wrq.55.1593433943756;
+        Mon, 29 Jun 2020 05:32:23 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id d201sm28064111wmd.34.2020.06.29.05.32.18
+        by smtp.gmail.com with ESMTPSA id d201sm28064111wmd.34.2020.06.29.05.32.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 05:32:19 -0700 (PDT)
+        Mon, 29 Jun 2020 05:32:23 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andrey Smirnov <andrew.smirnov@gmail.com>
-Subject: [PATCH 1/5] mfd: si476x-cmd: Add missing documentation for si476x_cmd_fm_rds_status()'s arg 'report'
-Date:   Mon, 29 Jun 2020 13:32:11 +0100
-Message-Id: <20200629123215.1014747-2-lee.jones@linaro.org>
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Subject: [PATCH 4/5] mfd: sprd-sc27xx-spi: Fix divide by zero when allocating register offset/mask
+Date:   Mon, 29 Jun 2020 13:32:14 +0100
+Message-Id: <20200629123215.1014747-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629123215.1014747-1-lee.jones@linaro.org>
 References: <20200629123215.1014747-1-lee.jones@linaro.org>
@@ -65,33 +67,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kerneldoc syntax is used, but not complete.
+Since ddata->irqs[] is already zeroed when allocated by devm_kcalloc() and
+dividing 0 by anything is still 0, there is no need to re-assign
+ddata->irqs[i].* values.  Instead, it should be safe to begin at 1.
 
-Descriptions are required for all arguments.
+This fixes the following W=1 warning:
 
-Fixes the following W=1 build warning:
+ drivers/mfd/sprd-sc27xx-spi.c:255 sprd_pmic_probe() debug: sval_binop_unsigned: divide by zero
 
- drivers/mfd/si476x-cmd.c:907: warning: Function parameter or member 'report' not described in 'si476x_core_cmd_fm_rds_status'
-
-Cc: Andrey Smirnov <andrew.smirnov@gmail.com>
+Cc: Orson Zhai <orsonzhai@gmail.com>
+Cc: Baolin Wang <baolin.wang7@gmail.com>
+Cc: Chunyan Zhang <zhang.lyra@gmail.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mfd/si476x-cmd.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mfd/sprd-sc27xx-spi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/si476x-cmd.c b/drivers/mfd/si476x-cmd.c
-index 0a40c5cb751db..d15b3e7833692 100644
---- a/drivers/mfd/si476x-cmd.c
-+++ b/drivers/mfd/si476x-cmd.c
-@@ -892,6 +892,8 @@ EXPORT_SYMBOL_GPL(si476x_core_cmd_fm_seek_start);
-  *                rest RDS data contains the last valid info received
-  * @mtfifo: if set the command clears RDS receive FIFO
-  * @intack: if set the command clards the RDSINT bit.
-+ * @report: - all signal quality information retured by the command
-+ *           (if NULL then the output of the command is ignored)
-  *
-  * Function returns 0 on success and negative error code on failure
-  */
+diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
+index c305e941e435c..694a7d429ccff 100644
+--- a/drivers/mfd/sprd-sc27xx-spi.c
++++ b/drivers/mfd/sprd-sc27xx-spi.c
+@@ -251,7 +251,7 @@ static int sprd_pmic_probe(struct spi_device *spi)
+ 		return -ENOMEM;
+ 
+ 	ddata->irq_chip.irqs = ddata->irqs;
+-	for (i = 0; i < pdata->num_irqs; i++) {
++	for (i = 1; i < pdata->num_irqs; i++) {
+ 		ddata->irqs[i].reg_offset = i / pdata->num_irqs;
+ 		ddata->irqs[i].mask = BIT(i % pdata->num_irqs);
+ 	}
 -- 
 2.25.1
 
