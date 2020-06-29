@@ -2,174 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8006620D35E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C0720D441
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730246AbgF2S6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:58:19 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:46869 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730220AbgF2S6Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:58:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593457095;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Oy5l01hfztOMplxTNHhOMx7JM2vgkWGI3b7lgHWBSLA=;
-        b=ICVLkiQ5mbdv4StNz03UrThm2RjOefTyhg8tJVwN9hv9LZdmrmsbmCEfbrYURGkPy6xvdQ
-        RKgPIyovulq75JoheXAlS1AXYR2MCN8IJhB+8++bxjxzYOW0vD/BxLG16SwkR2XehmCSJJ
-        QFVRf+5abnDnK1MbrGIBb+ioOhJ+gek=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-250-3e0fpTl_PO2jJZ5DMEbpVw-1; Mon, 29 Jun 2020 11:57:22 -0400
-X-MC-Unique: 3e0fpTl_PO2jJZ5DMEbpVw-1
-Received: by mail-wm1-f71.google.com with SMTP id g124so18607743wmg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:57:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Oy5l01hfztOMplxTNHhOMx7JM2vgkWGI3b7lgHWBSLA=;
-        b=oXOoYTGWqUXK9aHrDdYJgh2corT366fDFkGwFy5ISLYp5eUbf8ax3fjaetocf/1nZx
-         IRKzRYrXybLJefo4xZc41M2DZ0ghWc3hCBKFHOpvdSyTy3320+txRVZyor38QIp7vDIb
-         yxoRvz3YWuXSDcB0XHeVUjQlTGZp8qhz3qw/JrrZzedavZ4Xrenlz47yT0Q4uJA4+zw9
-         wYsPC5tEvlRSEZFAHJXG3vggeK8+JU/0KPEj0tTUnRJYRRP92q7ZRrEAnLx1EpSKTsKz
-         gtKXc2bEdShAwsD+9RdwR8z/RSj+DLgWyOIwOUm0J0fvgvlN6C5zkO0vCB23uXAeCGYi
-         zsnA==
-X-Gm-Message-State: AOAM5308XKRSDJoULvOAriCfFRqohL9w3LLy+I7cWku4krNytzb18KA9
-        2NSf1k/r3NaE1pxTvdxV2Nd64ONwYYTeYUhA2R3/YmyI0Fgllmd7d2H01kzaMhTFzupMbYeQwAi
-        2n7IBro3BoV/04iaXAcLAWcSB
-X-Received: by 2002:a1c:a589:: with SMTP id o131mr16317487wme.12.1593446241167;
-        Mon, 29 Jun 2020 08:57:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx3Q991U1StDDA7B+9BT+HZk+cVYRj7n2VJpgHLiwVYyouUoA4w6BqhRBNFB4h0zTI9ALDIzg==
-X-Received: by 2002:a1c:a589:: with SMTP id o131mr16317466wme.12.1593446240963;
-        Mon, 29 Jun 2020 08:57:20 -0700 (PDT)
-Received: from redhat.com (bzq-79-182-31-92.red.bezeqint.net. [79.182.31.92])
-        by smtp.gmail.com with ESMTPSA id d18sm241639wrj.8.2020.06.29.08.57.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 08:57:17 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 11:57:14 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Pierre Morel <pmorel@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, jasowang@redhat.com,
-        cohuck@redhat.com, kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
-        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v3 1/1] s390: virtio: let arch accept devices without
- IOMMU feature
-Message-ID: <20200629115651-mutt-send-email-mst@kernel.org>
-References: <1592390637-17441-1-git-send-email-pmorel@linux.ibm.com>
- <1592390637-17441-2-git-send-email-pmorel@linux.ibm.com>
+        id S1730788AbgF2TGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:06:40 -0400
+Received: from mga17.intel.com ([192.55.52.151]:62620 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730770AbgF2TGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:06:35 -0400
+IronPort-SDR: ZFS0/pA/eyFFSPj2DcQb3oDKDr9FwB09wtoHw/UXtuMf2idZPT73wKAVaNFeBE6SZWl6CSA1rv
+ i2thgjnyQ4SQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="126138403"
+X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
+   d="scan'208";a="126138403"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 09:05:08 -0700
+IronPort-SDR: OqLpBVE0oER3NZTuAfsg1sBle2mfPBr2qnWfQzlpNVzZSFDgxX7e7v1yz+hdXM4zuhXNkvvsDl
+ ynI9Ra8r1jxQ==
+X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
+   d="scan'208";a="454241879"
+Received: from tclumbax-mobl2.gar.corp.intel.com (HELO [10.255.1.194]) ([10.255.1.194])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 09:05:06 -0700
+Subject: Re: [PATCH] mm/vmscan: restore zone_reclaim_mode ABI
+To:     Daniel Wagner <dwagner@suse.de>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        ben.widawsky@intel.com, alex.shi@linux.alibaba.com,
+        tobin@kernel.org, cl@linux.com, akpm@linux-foundation.org,
+        stable@kernel.org
+References: <20200626003459.D8E015CA@viggo.jf.intel.com>
+ <20200626075918.dj6ioaon5iuhtg6k@beryllium.lan>
+ <83731eeb-1f64-50b7-41e9-5b7114678533@intel.com>
+ <20200629071338.m4veigbp4tu45gbz@beryllium.lan>
+ <c9a24700-7ec8-2bf8-1a13-c3ddf249a1a0@intel.com>
+ <20200629155302.6okkufqmj3kupvzw@beryllium.lan>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5d568f0d-b49b-6c31-db6c-02cb26c3b8a2@intel.com>
+Date:   Mon, 29 Jun 2020 09:05:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1592390637-17441-2-git-send-email-pmorel@linux.ibm.com>
+In-Reply-To: <20200629155302.6okkufqmj3kupvzw@beryllium.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 12:43:57PM +0200, Pierre Morel wrote:
-> An architecture protecting the guest memory against unauthorized host
-> access may want to enforce VIRTIO I/O device protection through the
-> use of VIRTIO_F_IOMMU_PLATFORM.
+On 6/29/20 8:53 AM, Daniel Wagner wrote:
+> On Mon, Jun 29, 2020 at 07:36:15AM -0700, Dave Hansen wrote:
+>> On 6/29/20 12:13 AM, Daniel Wagner wrote:
+>>> I went to go add a new RECLAIM_* mode for the zone_reclaim_mode
+>>> sysctl.
+>>
+>> This conveys my motivation.
 > 
-> Let's give a chance to the architecture to accept or not devices
-> without VIRTIO_F_IOMMU_PLATFORM.
+> You don't need to tell a story. 
+
+Interesting!  I literally tell folks all the time that their changelogs
+*should* tell a story. :)
+
+I think this is clearly a case where you and I have differing personal
+opinions on style.  I understand what you are asking for, and this is
+usually a case where our friendly maintainers can help out of they have
+a strong preference either way.
+
+> As explained in the documetation 'Describe your changes', describe
+> your change in imperative mood, e.g. something like
 > 
-> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
-> Acked-by: Jason Wang <jasowang@redhat.com>
-> Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
-> ---
->  arch/s390/mm/init.c     |  6 ++++++
->  drivers/virtio/virtio.c | 22 ++++++++++++++++++++++
->  include/linux/virtio.h  |  2 ++
->  3 files changed, 30 insertions(+)
-> 
-> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-> index 6dc7c3b60ef6..215070c03226 100644
-> --- a/arch/s390/mm/init.c
-> +++ b/arch/s390/mm/init.c
-> @@ -45,6 +45,7 @@
->  #include <asm/kasan.h>
->  #include <asm/dma-mapping.h>
->  #include <asm/uv.h>
-> +#include <linux/virtio.h>
->  
->  pgd_t swapper_pg_dir[PTRS_PER_PGD] __section(.bss..swapper_pg_dir);
->  
-> @@ -161,6 +162,11 @@ bool force_dma_unencrypted(struct device *dev)
->  	return is_prot_virt_guest();
->  }
->  
-> +int arch_needs_virtio_iommu_platform(struct virtio_device *dev)
-> +{
-> +	return is_prot_virt_guest();
-> +}
-> +
->  /* protected virtualization */
->  static void pv_init(void)
->  {
-> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-> index a977e32a88f2..aa8e01104f86 100644
-> --- a/drivers/virtio/virtio.c
-> +++ b/drivers/virtio/virtio.c
-> @@ -167,6 +167,21 @@ void virtio_add_status(struct virtio_device *dev, unsigned int status)
->  }
->  EXPORT_SYMBOL_GPL(virtio_add_status);
->  
-> +/*
-> + * arch_needs_virtio_iommu_platform - provide arch specific hook when finalizing
-> + *				      features for VIRTIO device dev
-> + * @dev: the VIRTIO device being added
-> + *
-> + * Permits the platform to provide architecture specific functionality when
-> + * devices features are finalized. This is the default implementation.
-> + * Architecture implementations can override this.
-> + */
-> +
-> +int __weak arch_needs_virtio_iommu_platform(struct virtio_device *dev)
-> +{
-> +	return 0;
-> +}
-> +
->  int virtio_finalize_features(struct virtio_device *dev)
->  {
->  	int ret = dev->config->finalize_features(dev);
-> @@ -179,6 +194,13 @@ int virtio_finalize_features(struct virtio_device *dev)
->  	if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1))
->  		return 0;
->  
-> +	if (arch_needs_virtio_iommu_platform(dev) &&
-> +		!virtio_has_feature(dev, VIRTIO_F_IOMMU_PLATFORM)) {
-> +		dev_warn(&dev->dev,
-> +			 "virtio: device must provide VIRTIO_F_IOMMU_PLATFORM\n");
-> +		return -ENODEV;
-> +	}
-> +
->  	virtio_add_status(dev, VIRTIO_CONFIG_S_FEATURES_OK);
->  	status = dev->config->get_status(dev);
->  	if (!(status & VIRTIO_CONFIG_S_FEATURES_OK)) {
+>   "Add RECLAIM_* mode for the the zone_reclaim_mode sysctl."
 
-Well don't you need to check it *before* VIRTIO_F_VERSION_1, not after?
+This is my personal opinion, but I think this interpretation takes the
+documentation a bit too literally.  The documentation speaking about
+"imperative mood" applies specifically to the language about your fix,
+it does not apply to the background.
 
+It is there to encourage contributors to avoid some of the more passive
+language like:
 
-
-> diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-> index a493eac08393..e8526ae3463e 100644
-> --- a/include/linux/virtio.h
-> +++ b/include/linux/virtio.h
-> @@ -195,4 +195,6 @@ void unregister_virtio_driver(struct virtio_driver *drv);
->  #define module_virtio_driver(__virtio_driver) \
->  	module_driver(__virtio_driver, register_virtio_driver, \
->  			unregister_virtio_driver)
-> +
-> +int arch_needs_virtio_iommu_platform(struct virtio_device *dev);
->  #endif /* _LINUX_VIRTIO_H */
-> -- 
-> 2.25.1
+	This patch does blah....  This patch fixes blah...
 
