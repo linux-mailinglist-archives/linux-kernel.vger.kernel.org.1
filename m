@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57DA20DE34
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C7520DDC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732664AbgF2UXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 16:23:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37066 "EHLO mail.kernel.org"
+        id S2388658AbgF2USp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:18:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732566AbgF2TZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:25:32 -0400
+        id S1730593AbgF2TZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:25:41 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5932325378;
-        Mon, 29 Jun 2020 15:40:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB774252FE;
+        Mon, 29 Jun 2020 15:38:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593445242;
-        bh=hqaq0wA3RTshUAgU5UIX03B8XFtT0KgmASFI8o55E18=;
+        s=default; t=1593445128;
+        bh=5sygOEUEHK7dK3X8fR8FlA4NhqPgFJ3+yDxttz1/BtQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iZEx+LudwDf4XTBxYOOors32XJ5o27pNn4aULZgOEJ8y/2zDlryoaWV4NKbnJKrDZ
-         yfYMxUwxthexxbsrC7Vd+nGZ5CoWQein/qOUU4P3D4X7pYFI7tH2x4suqwMXywlbj8
-         k5VnxardLtHDNeX23/CWs8tVGP2iAVbJhscjdiJU=
+        b=oTgSKb0/Bb3NsW+HSodVYoFKhQMrNTFMkmQMUEu68TxXjDyKoULifhsmCcm6Kty47
+         mNEcK/AqhB/XFlMb9Z4dI6PvAyZbX5rThhDjRp/btPIPP3d31JU46PT33tvQ3V5+aF
+         tkToTICTnmPxHsMEmdPv3RtwPk5h70C6xqLBQUmk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alexander Tsoy <alexander@tsoy.me>, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 026/191] ALSA: usb-audio: Improve frames size computation
-Date:   Mon, 29 Jun 2020 11:37:22 -0400
-Message-Id: <20200629154007.2495120-27-sashal@kernel.org>
+Cc:     Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 35/78] ALSA: usb-audio: Clean up mixer element list traverse
+Date:   Mon, 29 Jun 2020 11:37:23 -0400
+Message-Id: <20200629153806.2494953-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200629154007.2495120-1-sashal@kernel.org>
-References: <20200629154007.2495120-1-sashal@kernel.org>
+In-Reply-To: <20200629153806.2494953-1-sashal@kernel.org>
+References: <20200629153806.2494953-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.229-rc1.gz
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.186-rc1.gz
 X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.9.y
+X-KernelTest-Branch: linux-4.14.y
 X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.9.229-rc1
-X-KernelTest-Deadline: 2020-07-01T15:39+00:00
+X-KernelTest-Version: 4.14.186-rc1
+X-KernelTest-Deadline: 2020-07-01T15:38+00:00
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -48,165 +47,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Tsoy <alexander@tsoy.me>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit f0bd62b64016508938df9babe47f65c2c727d25c ]
+[ Upstream commit 8c558076c740e8009a96c6fdc3d4245dde62be77 ]
 
-For computation of the the next frame size current value of fs/fps and
-accumulated fractional parts of fs/fps are used, where values are stored
-in Q16.16 format. This is quite natural for computing frame size for
-asynchronous endpoints driven by explicit feedback, since in this case
-fs/fps is a value provided by the feedback endpoint and it's already in
-the Q format. If an error is accumulated over time, the device can
-adjust fs/fps value to prevent buffer overruns/underruns.
+Introduce a new macro for iterating over mixer element list for
+avoiding the open codes in many places.  Also the open-coded
+container_of() and the forced cast to struct usb_mixer_elem_info are
+replaced with another simple macro, too.
 
-But for synchronous endpoints the accuracy provided by these computations
-is not enough. Due to accumulated error the driver periodically produces
-frames with incorrect size (+/- 1 audio sample).
+No functional changes but just readability improvement.
 
-This patch fixes this issue by implementing a different algorithm for
-frame size computation. It is based on accumulating of the remainders
-from division fs/fps and it doesn't accumulate errors over time. This
-new method is enabled for synchronous and adaptive playback endpoints.
-
-Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
-Link: https://lore.kernel.org/r/20200424022449.14972-1-alexander@tsoy.me
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/card.h     |  4 ++++
- sound/usb/endpoint.c | 43 ++++++++++++++++++++++++++++++++++++++-----
- sound/usb/endpoint.h |  1 +
- sound/usb/pcm.c      |  2 ++
- 4 files changed, 45 insertions(+), 5 deletions(-)
+ sound/usb/mixer.c          | 20 +++++++++-----------
+ sound/usb/mixer.h          |  6 ++++++
+ sound/usb/mixer_quirks.c   |  2 +-
+ sound/usb/mixer_scarlett.c |  6 ++----
+ 4 files changed, 18 insertions(+), 16 deletions(-)
 
-diff --git a/sound/usb/card.h b/sound/usb/card.h
-index 111b0f009afa4..c4599cf0ddc94 100644
---- a/sound/usb/card.h
-+++ b/sound/usb/card.h
-@@ -80,6 +80,10 @@ struct snd_usb_endpoint {
- 	dma_addr_t sync_dma;		/* DMA address of syncbuf */
- 
- 	unsigned int pipe;		/* the data i/o pipe */
-+	unsigned int framesize[2];	/* small/large frame sizes in samples */
-+	unsigned int sample_rem;	/* remainder from division fs/fps */
-+	unsigned int sample_accum;	/* sample accumulator */
-+	unsigned int fps;		/* frames per second */
- 	unsigned int freqn;		/* nominal sampling rate in fs/fps in Q16.16 format */
- 	unsigned int freqm;		/* momentary sampling rate in fs/fps in Q16.16 format */
- 	int	   freqshift;		/* how much to shift the feedback value to get Q16.16 */
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 30aa5f2df6da5..b5207e71ed720 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -137,12 +137,12 @@ int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep)
- 
- /*
-  * For streaming based on information derived from sync endpoints,
-- * prepare_outbound_urb_sizes() will call next_packet_size() to
-+ * prepare_outbound_urb_sizes() will call slave_next_packet_size() to
-  * determine the number of samples to be sent in the next packet.
-  *
-- * For implicit feedback, next_packet_size() is unused.
-+ * For implicit feedback, slave_next_packet_size() is unused.
-  */
--int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep)
-+int snd_usb_endpoint_slave_next_packet_size(struct snd_usb_endpoint *ep)
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 33deb5ec8b7a1..1a8d706491e65 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -2403,9 +2403,9 @@ void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid)
  {
- 	unsigned long flags;
- 	int ret;
-@@ -159,6 +159,29 @@ int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep)
- 	return ret;
- }
+ 	struct usb_mixer_elem_list *list;
  
-+/*
-+ * For adaptive and synchronous endpoints, prepare_outbound_urb_sizes()
-+ * will call next_packet_size() to determine the number of samples to be
-+ * sent in the next packet.
-+ */
-+int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep)
-+{
-+	int ret;
-+
-+	if (ep->fill_max)
-+		return ep->maxframesize;
-+
-+	ep->sample_accum += ep->sample_rem;
-+	if (ep->sample_accum >= ep->fps) {
-+		ep->sample_accum -= ep->fps;
-+		ret = ep->framesize[1];
-+	} else {
-+		ret = ep->framesize[0];
-+	}
-+
-+	return ret;
-+}
-+
- static void retire_outbound_urb(struct snd_usb_endpoint *ep,
- 				struct snd_urb_ctx *urb_ctx)
+-	for (list = mixer->id_elems[unitid]; list; list = list->next_id_elem) {
++	for_each_mixer_elem(list, mixer, unitid) {
+ 		struct usb_mixer_elem_info *info =
+-			(struct usb_mixer_elem_info *)list;
++			mixer_elem_list_to_info(list);
+ 		/* invalidate cache, so the value is read from the device */
+ 		info->cached = 0;
+ 		snd_ctl_notify(mixer->chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
+@@ -2416,7 +2416,7 @@ void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid)
+ static void snd_usb_mixer_dump_cval(struct snd_info_buffer *buffer,
+ 				    struct usb_mixer_elem_list *list)
  {
-@@ -203,6 +226,8 @@ static void prepare_silent_urb(struct snd_usb_endpoint *ep,
+-	struct usb_mixer_elem_info *cval = (struct usb_mixer_elem_info *)list;
++	struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
+ 	static char *val_types[] = {"BOOLEAN", "INV_BOOLEAN",
+ 				    "S8", "U8", "S16", "U16"};
+ 	snd_iprintf(buffer, "    Info: id=%i, control=%i, cmask=0x%x, "
+@@ -2442,8 +2442,7 @@ static void snd_usb_mixer_proc_read(struct snd_info_entry *entry,
+ 				mixer->ignore_ctl_error);
+ 		snd_iprintf(buffer, "Card: %s\n", chip->card->longname);
+ 		for (unitid = 0; unitid < MAX_ID_ELEMS; unitid++) {
+-			for (list = mixer->id_elems[unitid]; list;
+-			     list = list->next_id_elem) {
++			for_each_mixer_elem(list, mixer, unitid) {
+ 				snd_iprintf(buffer, "  Unit: %i\n", list->id);
+ 				if (list->kctl)
+ 					snd_iprintf(buffer,
+@@ -2473,19 +2472,19 @@ static void snd_usb_mixer_interrupt_v2(struct usb_mixer_interface *mixer,
+ 		return;
+ 	}
  
- 		if (ctx->packet_size[i])
- 			counts = ctx->packet_size[i];
-+		else if (ep->sync_master)
-+			counts = snd_usb_endpoint_slave_next_packet_size(ep);
- 		else
- 			counts = snd_usb_endpoint_next_packet_size(ep);
+-	for (list = mixer->id_elems[unitid]; list; list = list->next_id_elem)
++	for_each_mixer_elem(list, mixer, unitid)
+ 		count++;
  
-@@ -875,10 +900,17 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
- 	ep->maxpacksize = fmt->maxpacksize;
- 	ep->fill_max = !!(fmt->attributes & UAC_EP_CS_ATTR_FILL_MAX);
+ 	if (count == 0)
+ 		return;
  
--	if (snd_usb_get_speed(ep->chip->dev) == USB_SPEED_FULL)
-+	if (snd_usb_get_speed(ep->chip->dev) == USB_SPEED_FULL) {
- 		ep->freqn = get_usb_full_speed_rate(rate);
--	else
-+		ep->fps = 1000;
-+	} else {
- 		ep->freqn = get_usb_high_speed_rate(rate);
-+		ep->fps = 8000;
-+	}
+-	for (list = mixer->id_elems[unitid]; list; list = list->next_id_elem) {
++	for_each_mixer_elem(list, mixer, unitid) {
+ 		struct usb_mixer_elem_info *info;
+ 
+ 		if (!list->kctl)
+ 			continue;
+ 
+-		info = (struct usb_mixer_elem_info *)list;
++		info = mixer_elem_list_to_info(list);
+ 		if (count > 1 && info->control != control)
+ 			continue;
+ 
+@@ -2705,7 +2704,7 @@ int snd_usb_mixer_suspend(struct usb_mixer_interface *mixer)
+ 
+ static int restore_mixer_value(struct usb_mixer_elem_list *list)
+ {
+-	struct usb_mixer_elem_info *cval = (struct usb_mixer_elem_info *)list;
++	struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
+ 	int c, err, idx;
+ 
+ 	if (cval->cmask) {
+@@ -2741,8 +2740,7 @@ int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
+ 	if (reset_resume) {
+ 		/* restore cached mixer values */
+ 		for (id = 0; id < MAX_ID_ELEMS; id++) {
+-			for (list = mixer->id_elems[id]; list;
+-			     list = list->next_id_elem) {
++			for_each_mixer_elem(list, mixer, id) {
+ 				if (list->resume) {
+ 					err = list->resume(list);
+ 					if (err < 0)
+diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
+index ba27f7ade670e..e02653465e292 100644
+--- a/sound/usb/mixer.h
++++ b/sound/usb/mixer.h
+@@ -53,6 +53,12 @@ struct usb_mixer_elem_list {
+ 	usb_mixer_elem_resume_func_t resume;
+ };
+ 
++/* iterate over mixer element list of the given unit id */
++#define for_each_mixer_elem(list, mixer, id)	\
++	for ((list) = (mixer)->id_elems[id]; (list); (list) = (list)->next_id_elem)
++#define mixer_elem_list_to_info(list) \
++	container_of(list, struct usb_mixer_elem_info, head)
 +
-+	ep->sample_rem = rate % ep->fps;
-+	ep->framesize[0] = rate / ep->fps;
-+	ep->framesize[1] = (rate + (ep->fps - 1)) / ep->fps;
+ struct usb_mixer_elem_info {
+ 	struct usb_mixer_elem_list head;
+ 	unsigned int control;	/* CS or ICN (high byte) */
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index b9ea4a42aee4e..ead0456a747c2 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -1171,7 +1171,7 @@ void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
+ 	int unitid = 12; /* SamleRate ExtensionUnit ID */
  
- 	/* calculate the frequency in 16.16 format */
- 	ep->freqm = ep->freqn;
-@@ -937,6 +969,7 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
- 	ep->active_mask = 0;
- 	ep->unlink_mask = 0;
- 	ep->phase = 0;
-+	ep->sample_accum = 0;
+ 	list_for_each_entry(mixer, &chip->mixer_list, list) {
+-		cval = (struct usb_mixer_elem_info *)mixer->id_elems[unitid];
++		cval = mixer_elem_list_to_info(mixer->id_elems[unitid]);
+ 		if (cval) {
+ 			snd_usb_mixer_set_ctl_value(cval, UAC_SET_CUR,
+ 						    cval->control << 8,
+diff --git a/sound/usb/mixer_scarlett.c b/sound/usb/mixer_scarlett.c
+index c33e2378089d5..4aeb9488a0c99 100644
+--- a/sound/usb/mixer_scarlett.c
++++ b/sound/usb/mixer_scarlett.c
+@@ -287,8 +287,7 @@ static int scarlett_ctl_switch_put(struct snd_kcontrol *kctl,
  
- 	snd_usb_endpoint_start_quirk(ep);
+ static int scarlett_ctl_resume(struct usb_mixer_elem_list *list)
+ {
+-	struct usb_mixer_elem_info *elem =
+-		container_of(list, struct usb_mixer_elem_info, head);
++	struct usb_mixer_elem_info *elem = mixer_elem_list_to_info(list);
+ 	int i;
  
-diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
-index 584f295d7c773..4aad49cbeb5f1 100644
---- a/sound/usb/endpoint.h
-+++ b/sound/usb/endpoint.h
-@@ -27,6 +27,7 @@ void snd_usb_endpoint_release(struct snd_usb_endpoint *ep);
- void snd_usb_endpoint_free(struct snd_usb_endpoint *ep);
+ 	for (i = 0; i < elem->channels; i++)
+@@ -447,8 +446,7 @@ static int scarlett_ctl_enum_put(struct snd_kcontrol *kctl,
  
- int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep);
-+int snd_usb_endpoint_slave_next_packet_size(struct snd_usb_endpoint *ep);
- int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep);
+ static int scarlett_ctl_enum_resume(struct usb_mixer_elem_list *list)
+ {
+-	struct usb_mixer_elem_info *elem =
+-		container_of(list, struct usb_mixer_elem_info, head);
++	struct usb_mixer_elem_info *elem = mixer_elem_list_to_info(list);
  
- void snd_usb_handle_sync_urb(struct snd_usb_endpoint *ep,
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 9bc995f9b4e17..615213aeda338 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -1483,6 +1483,8 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
- 	for (i = 0; i < ctx->packets; i++) {
- 		if (ctx->packet_size[i])
- 			counts = ctx->packet_size[i];
-+		else if (ep->sync_master)
-+			counts = snd_usb_endpoint_slave_next_packet_size(ep);
- 		else
- 			counts = snd_usb_endpoint_next_packet_size(ep);
- 
+ 	if (elem->cached)
+ 		snd_usb_set_cur_mix_value(elem, 0, 0, *elem->cache_val);
 -- 
 2.25.1
 
