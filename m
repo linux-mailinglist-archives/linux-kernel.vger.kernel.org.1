@@ -2,103 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8847120E45B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A02120E278
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388192AbgF2VYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:24:23 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:34467 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729349AbgF2SuQ (ORCPT
+        id S1731298AbgF2VFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731093AbgF2TMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:50:16 -0400
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 05T63kQL2014575, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 05T63kQL2014575
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 29 Jun 2020 14:03:46 +0800
-Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 29 Jun 2020 14:03:46 +0800
-Received: from localhost.localdomain (172.21.87.237) by
- RTEXMB04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 29 Jun 2020 14:03:46 +0800
-From:   <hildawu@realtek.com>
-To:     <marcel@holtmann.org>
-CC:     <johan.hedberg@gmail.com>, <matthias.bgg@gmail.com>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <max.chou@realtek.com>,
-        <alex_lu@realsil.com.cn>, <kidman@realtek.com>
-Subject: [PATCH] Bluetooth: btusb: WBS support USB alternate setting 1
-Date:   Mon, 29 Jun 2020 14:03:38 +0800
-Message-ID: <20200629060338.10705-1-hildawu@realtek.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 29 Jun 2020 15:12:43 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB07C08EAFD
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:18:49 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id c1so307000pja.5
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:18:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Sx4qtxhnzkaAUuvKla0BBnxBLtInQMeed/tdFBRnaf0=;
+        b=SPivvXbhkz1HNs4hv3hB3lAGf7mxY7QzuyuiHLUvE2NTzUDgKcMtvoCr5OvTnpEGNI
+         BKEe727LLu354Czz0UrLwsb8Oq9z1awx0ZhcCb/nUDxWPW65pd8mBz8whR+nh3hBfift
+         6e7dxeB4Nqxb9mSsbs5XD4usOXZc+u6wbNETc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Sx4qtxhnzkaAUuvKla0BBnxBLtInQMeed/tdFBRnaf0=;
+        b=Oc2YsfW7kFA6zDPAXcIEc/ot5VTskJjDHV9MaAzXF1V6tJSku6NyNwP2+AVH7Es0RU
+         VpsUy6kojZSgIXRH93DsMPS2rtrKGf4xC1om0TXLvIYvRrs/gPVxCcpjCBp+RLb4K6Ns
+         /Dh2s64RsjgiOtES1Ed+NpSxKaqWsZixUzNtMJJVvaZZT1CUfgsNoUdI/9SmwsbGKvZr
+         i+JWZIw+asZ5Q4R7w8N9VL6CRmz/vz6XRpjWyusFCjwml4DUr0NwJC6UMgaFendvrQ/V
+         P5xkr+FgfP0GqhTirbb9FCy4o4yN5lHkJL5Fxo6xSdWKVOPNm7E/lUr36+ZDOU6uZwOE
+         MFkg==
+X-Gm-Message-State: AOAM531tXXao//rE4Piq24p/2hKkgLpHi2xPXHqR8/HP1/tYdNcgxhs5
+        YAc+QoDO8MQpMFS9zrwE0nQGeQ==
+X-Google-Smtp-Source: ABdhPJwNi3xJzPNT7Gdq2Pw3b3VdTrLvNjNwn9RzBwTGL5D87SEILQ2r1+XLJOB0Z/PotUqW7oYIyg==
+X-Received: by 2002:a17:902:6945:: with SMTP id k5mr11956092plt.336.1593411529540;
+        Sun, 28 Jun 2020 23:18:49 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id n65sm32225037pfn.17.2020.06.28.23.18.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jun 2020 23:18:47 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Atish Patra <atish.patra@wdc.com>, linux-efi@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 06/17] efi/libstub: Disable -mbranch-protection
+Date:   Sun, 28 Jun 2020 23:18:29 -0700
+Message-Id: <20200629061840.4065483-7-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200629061840.4065483-1-keescook@chromium.org>
+References: <20200629061840.4065483-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.21.87.237]
-X-ClientProxiedBy: RTEXMB02.realtek.com.tw (172.21.6.95) To
- RTEXMB04.realtek.com.tw (172.21.6.97)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hilda Wu <hildawu@realtek.com>
+In preparation for adding --orphan-handling=warn to more architectures,
+this disables -mbranch-protection, as EFI does not yet support it[1].
+This was noticed due to it producing unwanted .note.gnu.property sections
+(prefixed with .init due to the objcopy build step).
 
-For WBS support, btusb driver could be set to alternate setting 1.
+[1] https://lore.kernel.org/lkml/CAMj1kXHck12juGi=E=P4hWP_8vQhQ+-x3vBMc3TGeRWdQ-XkxQ@mail.gmail.com
 
-Signed-off-by: Hilda Wu <hildawu@realtek.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Arvind Sankar <nivedita@alum.mit.edu>
+Cc: Atish Patra <atish.patra@wdc.com>
+Cc: linux-efi@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/bluetooth/btusb.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/firmware/efi/libstub/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index c7cc8e594166..7942f9314fd7 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -453,6 +453,7 @@ static const struct dmi_system_id btusb_needs_reset_resume_table[] = {
- #define BTUSB_HW_RESET_ACTIVE	12
- #define BTUSB_TX_WAIT_VND_EVT	13
- #define BTUSB_WAKEUP_DISABLE	14
-+#define BTUSB_WBS_ALT1		15
- 
- struct btusb_data {
- 	struct hci_dev       *hdev;
-@@ -1666,14 +1667,18 @@ static void btusb_work(struct work_struct *work)
- 				new_alts = data->sco_num;
- 			}
- 		} else if (data->air_mode == HCI_NOTIFY_ENABLE_SCO_TRANSP) {
--
--			data->usb_alt6_packet_flow = true;
--
- 			/* Check if Alt 6 is supported for Transparent audio */
--			if (btusb_find_altsetting(data, 6))
-+			if (btusb_find_altsetting(data, 6)) {
-+				data->usb_alt6_packet_flow = true;
- 				new_alts = 6;
--			else
-+			} else if (test_bit(BTUSB_WBS_ALT1, &data->flags)) {
-+				if (btusb_find_altsetting(data, 1))
-+					new_alts = 1;
-+				else
-+					bt_dev_err(hdev, "Device does not support ALT setting 1");
-+			} else {
- 				bt_dev_err(hdev, "Device does not support ALT setting 6");
-+			}
- 		}
- 
- 		if (btusb_switch_alt_setting(hdev, new_alts) < 0)
-@@ -3965,6 +3970,7 @@ static int btusb_probe(struct usb_interface *intf,
- 		 * (DEVICE_REMOTE_WAKEUP)
- 		 */
- 		set_bit(BTUSB_WAKEUP_DISABLE, &data->flags);
-+		set_bit(BTUSB_WBS_ALT1, &data->flags);
- 
- 		err = usb_autopm_get_interface(intf);
- 		if (err < 0)
+diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
+index 75daaf20374e..10fa342ef40c 100644
+--- a/drivers/firmware/efi/libstub/Makefile
++++ b/drivers/firmware/efi/libstub/Makefile
+@@ -18,7 +18,8 @@ cflags-$(CONFIG_X86)		+= -m$(BITS) -D__KERNEL__ \
+ # arm64 uses the full KBUILD_CFLAGS so it's necessary to explicitly
+ # disable the stackleak plugin
+ cflags-$(CONFIG_ARM64)		:= $(subst $(CC_FLAGS_FTRACE),,$(KBUILD_CFLAGS)) \
+-				   -fpie $(DISABLE_STACKLEAK_PLUGIN)
++				   -fpie $(DISABLE_STACKLEAK_PLUGIN) \
++				   $(call cc-option,-mbranch-protection=none)
+ cflags-$(CONFIG_ARM)		:= $(subst $(CC_FLAGS_FTRACE),,$(KBUILD_CFLAGS)) \
+ 				   -fno-builtin -fpic \
+ 				   $(call cc-option,-mno-single-pic-base)
 -- 
-2.17.1
+2.25.1
 
