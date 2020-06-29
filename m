@@ -2,146 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E9720D244
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3A520D22C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729252AbgF2Sr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729347AbgF2Srp (ORCPT
+        id S1728987AbgF2SrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:47:12 -0400
+Received: from outbound-smtp53.blacknight.com ([46.22.136.237]:42629 "EHLO
+        outbound-smtp53.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728632AbgF2SqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:47:45 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E1C4C02F03B
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:08:19 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id f5so2525840ljj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 08:08:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4y8exEch/tKRaBNQLAYeMwPWRyiMK4ptsIMntud+MXQ=;
-        b=b+6OvY9YlTc7zqY/dztuJpoG/Rv3+LKyJYRaT9JZUTlOOz5S6O+nibuvuEAc7YH4R5
-         p59Xsu5A4V+/Qsk1kPh/N9fgolUhsZ+2QA+HeMokBeO282fNXdRE/jANuB5jHB192oEv
-         PMTWsCVzoYA9gu3qEVo1Hha7S/egJkuclC6IqoKGdIo++WnYpU1Nyt5aIJcJwsivQ6Ik
-         q/tumWzrZitYPNEG/gjTnW8ntJZLaOIdAxPYtdDxrUXvpUE9EIrhHfdPRZLqkG77NRZb
-         zgROIf7E1KgZT6xHXEK5dY8ZmHHPSKVpM/Ko4YGOPgD4iv1cF8wg0NKgbYDsn/4mOTf2
-         K4mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4y8exEch/tKRaBNQLAYeMwPWRyiMK4ptsIMntud+MXQ=;
-        b=B/a2plcfwJpQRBd1OdRUxU3XyvuQ2yhNtmMrw2WiFrSLK2mFH7Q1h6bYHsFs0ye0u4
-         Cq8MvGmJaFf7KcAbvFYwsg62ELTznlpojOmygBiQSOfhBVPRKzzSF4QTiV46D0STMy96
-         IRqZ6nB6xrELZJZ49ezPipjYNUJx67X1nwNSaRyBt+IkbQLcadyS/EeHu0RpFoM/FfGy
-         15H6YygVWQZxGrQoUwaI/pQWRJPudlLbuXdgb4hK1cPrR0WlngEpNNe6uQ723Su7wn0Y
-         J2Y/VvUtt87BwuwHPztVSrzTnqza26q204S5O/FBMxv6/8o74kIqMm7K6gszMjP1wJ/G
-         md/w==
-X-Gm-Message-State: AOAM533gCg20nu0pTqe460UwRRz7ecXxHMBhU8gjCZIUBDsfE7jUNZ+u
-        BrJU+vTQQmYbgJpbK6KWEdZo1JRijkrqTJjG25Y=
-X-Google-Smtp-Source: ABdhPJyzuVnCp/IYxWb/rQdTa6stFTpO6vvTzoA5WVDttSSlYl7UQTLv5fL2Anu57Te3t2p3SwVk9oc4eWWgyBGD/T8=
-X-Received: by 2002:a2e:b4ec:: with SMTP id s12mr8535217ljm.155.1593443297962;
- Mon, 29 Jun 2020 08:08:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200629123215.1014747-1-lee.jones@linaro.org>
- <20200629123215.1014747-5-lee.jones@linaro.org> <20200629130644.GU3334@localhost>
- <20200629140137.GK177734@dell> <CADBw62r_tkGEr9kHpojAi+fJ+qUqbsc-DQgG1TUAwOdbDXTgNQ@mail.gmail.com>
- <20200629144325.GV3334@localhost>
-In-Reply-To: <20200629144325.GV3334@localhost>
-From:   Baolin Wang <baolin.wang7@gmail.com>
-Date:   Mon, 29 Jun 2020 23:08:06 +0800
-Message-ID: <CADBw62oFcDVcQMRx+F3omCsYYGeuw+-X2zGt_tm+T5mJ6Vaqjw@mail.gmail.com>
-Subject: Re: [PATCH 4/5] mfd: sprd-sc27xx-spi: Fix divide by zero when
- allocating register offset/mask
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, Orson Zhai <orsonzhai@gmail.com>,
+        Mon, 29 Jun 2020 14:46:24 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp53.blacknight.com (Postfix) with ESMTPS id 72326FB182
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 16:08:09 +0100 (IST)
+Received: (qmail 27903 invoked from network); 29 Jun 2020 15:08:09 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.18.5])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 29 Jun 2020 15:08:09 -0000
+Date:   Mon, 29 Jun 2020 16:08:07 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Martin Steigerwald <martin@lichtvoll.de>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [REGRESSION] 5.8-rc3: seccomp crash with Chromium, QtWebEngine
+ and related browsers: seccomp-bpf failure in syscall 0072
+Message-ID: <20200629150807.GB3183@techsingularity.net>
+References: <2293324.KF7j4Pszzj@merkaba>
+ <202006290739.8AB49B15@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <202006290739.8AB49B15@keescook>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 10:43 PM Johan Hovold <johan@kernel.org> wrote:
->
-> On Mon, Jun 29, 2020 at 10:35:06PM +0800, Baolin Wang wrote:
-> > On Mon, Jun 29, 2020 at 10:01 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > >
-> > > On Mon, 29 Jun 2020, Johan Hovold wrote:
-> > >
-> > > > On Mon, Jun 29, 2020 at 01:32:14PM +0100, Lee Jones wrote:
-> > > > > Since ddata->irqs[] is already zeroed when allocated by devm_kcalloc() and
-> > > > > dividing 0 by anything is still 0, there is no need to re-assign
-> > > > > ddata->irqs[i].* values.  Instead, it should be safe to begin at 1.
-> > > > >
-> > > > > This fixes the following W=1 warning:
-> > > > >
-> > > > >  drivers/mfd/sprd-sc27xx-spi.c:255 sprd_pmic_probe() debug: sval_binop_unsigned: divide by zero
-> > > > >
-> > > > > Cc: Orson Zhai <orsonzhai@gmail.com>
-> > > > > Cc: Baolin Wang <baolin.wang7@gmail.com>
-> > > > > Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > > > ---
-> > > > >  drivers/mfd/sprd-sc27xx-spi.c | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
-> > > > > index c305e941e435c..694a7d429ccff 100644
-> > > > > --- a/drivers/mfd/sprd-sc27xx-spi.c
-> > > > > +++ b/drivers/mfd/sprd-sc27xx-spi.c
-> > > > > @@ -251,7 +251,7 @@ static int sprd_pmic_probe(struct spi_device *spi)
-> > > > >             return -ENOMEM;
-> > > > >
-> > > > >     ddata->irq_chip.irqs = ddata->irqs;
-> > > > > -   for (i = 0; i < pdata->num_irqs; i++) {
-> > > > > +   for (i = 1; i < pdata->num_irqs; i++) {
-> > > > >             ddata->irqs[i].reg_offset = i / pdata->num_irqs;
-> > > > >             ddata->irqs[i].mask = BIT(i % pdata->num_irqs);
-> > > > >     }
-> > > >
-> > > > This doesn't look right either.
-> > > >
-> > > > First, the loop is never executed if num_irqs is zero.
-> > >
-> > > The point of the patch is that 0 entries are never processed.
->
-> So what's the problem? There's no division by zero here.
->
-> And what compiler are you using, Lee? Seems broken.
->
-> > > > Second, the current code looks bogus too as reg_offset is always set to
-> > > > zero and mask to BIT(i)...
-> >
-> > Now the result is correct, since all PMIC irq mask bits are in one
-> > register now, which means the reg_offset is always 0 can work well.
-> > But I think the logics still can be improved if our PMIC irq numbers
-> > are larger than 32 in future.
->
-> The code is still bogus as pointed out above. Why do you bother to
-> divide by num_irqs at all?
+On Mon, Jun 29, 2020 at 07:41:56AM -0700, Kees Cook wrote:
+> On Mon, Jun 29, 2020 at 11:08:10AM +0200, Martin Steigerwald wrote:
+> > Dear Andy, Kees, Will, dear kernel community,
+> > 
+> > With 5.8-rc3 there is a seccomp related crash which prevents Chromium and
+> > QtWebEngine from starting:
+> > 
+> > Bug 208369 - seccomp crash with Chromium, QtWebEngine and related browsers: seccomp-bpf failure in syscall 0072
+> > 
+> > https://bugzilla.kernel.org/show_bug.cgi?id=208369
+> > 
+> > Reverting to 5.8-rc2 fixes the issue.
+> 
+> Hi,
+> 
+> It looks like this is from e9c15badbb7b ("fs: Do not check if there is a
+> fsnotify watcher on pseudo inodes")
+> 
+> Currently being discussed here:
+> https://lore.kernel.org/lkml/7b4aa1e985007c6d582fffe5e8435f8153e28e0f.camel@redhat.com/#r
+> 
 
-Right, no need to divide by num_irqs, can be simplified as below. Lee,
-care to resend your patch with simplifying the code? Or you want me to
-send a patch?
-diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
-index 33336cde4724..2ed5f3a4e79c 100644
---- a/drivers/mfd/sprd-sc27xx-spi.c
-+++ b/drivers/mfd/sprd-sc27xx-spi.c
-@@ -250,10 +250,8 @@ static int sprd_pmic_probe(struct spi_device *spi)
-                return -ENOMEM;
-
-        ddata->irq_chip.irqs = ddata->irqs;
--       for (i = 0; i < pdata->num_irqs; i++) {
--               ddata->irqs[i].reg_offset = i / pdata->num_irqs;
--               ddata->irqs[i].mask = BIT(i % pdata->num_irqs);
--       }
-+       for (i = 0; i < pdata->num_irqs; i++)
-+               ddata->irqs[i].mask = BIT(i);
+It's a definite problem. I've sent a revert but it hasn't hit lkml yet
+for whatever reason.
 
 -- 
-Baolin Wang
+Mel Gorman
+SUSE Labs
