@@ -2,100 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 849DA20E42A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1C620E531
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730114AbgF2VVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729767AbgF2Swn (ORCPT
+        id S1728626AbgF2VeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:34:08 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:39055 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1728611AbgF2Sk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:43 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27425C031C58
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:37:24 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id l6so16021789qkc.6
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:37:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gX63ojcBTGYgpVQDnPBqhrIrSpeuTImvwcad9Nat98g=;
-        b=a+Nlvf8b0GAArIMrvHg0EqEamnQp9ja+U/Uaeg7YODf1sy6MdhXEIbIC32Z9sDUOi1
-         n0YTthCuO1TCQA9Gzu9gdMfESJL1GeRhxHUT5p3EQI87TVgx1NNb13ujax0hp50ZogcJ
-         aF7GNAKqkDl24FtYhc1YG1eiDGxe/idMS4E9EP3/SB84Y5mO2I5eNGd+tzlL9pJroJfe
-         udmz34RIobKyserhWvMPiFQwaQxXynM9r2sJ0ecK2CcGyL5m3mtv3P35aXs4rPoKs0cb
-         ajDa4SmE0yv8vLaOdd76VlRleFAgNw48fp+Nj4vHQ4VJJQKY/gRToo7RdOUsg5NMN62E
-         O3qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gX63ojcBTGYgpVQDnPBqhrIrSpeuTImvwcad9Nat98g=;
-        b=KDBc9dqOU0asuzIX4ZIWZK1I+3BkloMky4TgSb2G7VKNbSBAUjRQOsWBgFFfqr5AKl
-         BIKLFrbBfKhYel2AgF37NBXy5W4BO5tuahLTUaOS0jFxpghQXFG9TDdy1KegLguAGXrq
-         hsA7r98cPkwlw8Q+Vs3fs2SVVkKbCRdEVLJXLFoMBon65UmwcId6GsutjfcWXPelfx1s
-         eD7GqnjYVnAROEUoTsqinF0X3PzVT9SPGPFmLPdWvvLN3zHeKG/F2Z9gCTaI29Sgglrb
-         mL5n12cdeyDA5vk04bZ8dbaMcj0gOyf1wo4za+t3vObO9J6y9I3mYV1LL9c7LdWMvjkB
-         mrAQ==
-X-Gm-Message-State: AOAM533xj1ihkR6FMluR1jRm4PHF3WLTCBc44O5JD/62su8qJrbSr+YD
-        k3aocfjlXb0x0tj/OKKyh/8=
-X-Google-Smtp-Source: ABdhPJx+LIz0P/8LenwLfgW7Ca7V5ftnp3ugGg/IPNoNTAFicH4tYhzrZM00ANPF8tSjhiRWFCtTWw==
-X-Received: by 2002:a05:620a:2051:: with SMTP id d17mr16203522qka.237.1593452243400;
-        Mon, 29 Jun 2020 10:37:23 -0700 (PDT)
-Received: from mooncell.myfiosgateway.com (pool-173-75-208-99.phlapa.fios.verizon.net. [173.75.208.99])
-        by smtp.gmail.com with ESMTPSA id s46sm355282qts.85.2020.06.29.10.37.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 10:37:22 -0700 (PDT)
-From:   Brooke Basile <brookebasile@gmail.com>
-To:     Larry.Finger@lwfinger.net, gregkh@linuxfoundation.org,
-        straube.linux@gmail.com, yepeilin.cs@gmail.com,
-        colin.king@canonical.com
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Brooke Basile <brookebasile@gmail.com>
-Subject: [PATCH v2] staging: rtl8188eu: Replace function name with __func__
-Date:   Mon, 29 Jun 2020 13:37:11 -0400
-Message-Id: <20200629173711.5158-1-brookebasile@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 29 Jun 2020 14:40:58 -0400
+Received: (qmail 410173 invoked by uid 1000); 29 Jun 2020 13:40:55 -0400
+Date:   Mon, 29 Jun 2020 13:40:55 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Martin Kepplinger <martin.kepplinger@puri.sm>, jejb@linux.ibm.com,
+        Can Guo <cang@codeaurora.org>, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm
+Subject: Re: [PATCH] scsi: sd: add runtime pm to open / release
+Message-ID: <20200629174055.GA408860@rowland.harvard.edu>
+References: <20200623111018.31954-1-martin.kepplinger@puri.sm>
+ <ed9ae198-4c68-f82b-04fc-2299ab16df96@acm.org>
+ <eccacce9-393c-ca5d-e3b3-09961340e0db@puri.sm>
+ <1379e21d-c51a-3710-e185-c2d7a9681fb7@acm.org>
+ <20200626154441.GA296771@rowland.harvard.edu>
+ <c19f1938-ae47-2357-669d-5b4021aec154@puri.sm>
+ <20200629161536.GA405175@rowland.harvard.edu>
+ <df54c02f-dbe9-08d5-fec8-835788caf164@acm.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <df54c02f-dbe9-08d5-fec8-835788caf164@acm.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following checkpatch warning:
-	WARNING: Prefer using '"%s...", __func__' to using 'rtw_get_bcn_info', this function's name, in a string
+On Mon, Jun 29, 2020 at 09:56:49AM -0700, Bart Van Assche wrote:
+> On 2020-06-29 09:15, Alan Stern wrote:
+> > Aha.  Looking at this more closely, it's apparent that the code in 
+> > blk-core.c contains a logic bug: It assumes that if the BLK_MQ_REQ_PREEMPT 
+> > flag is set then the request can be issued regardless of the queue's 
+> > runtime status.  That is not correct when the queue is suspended.
+> 
+> Please clarify why this is not correct.
 
-Signed-off-by: Brooke Basile <brookebasile@gmail.com>
----
-Changes in v2:
-	- This should fix the previous issue that caused the patch to
-	  fail to apply. 
+As I understand it, BLK_MQ_REQ_PREEMPT is supposed to mean (among other 
+things) that this request may be issued as part of the procedure for 
+putting a device into a low-power state or returning it to a high-power 
+state.  Consequently, requests with that flag set must be allowed while 
+the queue is in the RPM_SUSPENDING or RPM_RESUMING runtime states -- as 
+opposed to ordinary requests, which are allowed only in the RPM_ACTIVE 
+state.
 
- drivers/staging/rtl8188eu/core/rtw_ieee80211.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+In the RPM_SUSPENDED state, however, the queue is entirely inactive.  Even 
+if a request were to be issued somehow, it would fail because the system 
+would not be able to transmit it to the device.  In other words, when the 
+queue is in the RPM_SUSPENDED state, a resume must be requested before 
+_any_ request can be issued.
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_ieee80211.c b/drivers/staging/rtl8188eu/core/rtw_ieee80211.c
-index 3316059238e0..b80273611fb8 100644
---- a/drivers/staging/rtl8188eu/core/rtw_ieee80211.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_ieee80211.c
-@@ -987,10 +987,10 @@ void rtw_get_bcn_info(struct wlan_network *pnetwork)
- 		if (bencrypt)
- 			pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_WEP;
- 	}
--	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: pnetwork->encryp_protocol is %x\n",
--						       pnetwork->BcnInfo.encryp_protocol));
--	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: pnetwork->encryp_protocol is %x\n",
--						       pnetwork->BcnInfo.encryp_protocol));
-+	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("%s: pnetwork->encryp_protocol is %x\n",
-+							__func__, pnetwork->BcnInfo.encryp_protocol));
-+	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("%s: pnetwork->encryp_protocol is %x\n",
-+							__func__, pnetwork->BcnInfo.encryp_protocol));
- 	rtw_get_cipher_info(pnetwork);
- 
- 	/* get bwmode and ch_offset */
--- 
-2.27.0
+> > Index: usb-devel/block/blk-core.c
+> > ===================================================================
+> > --- usb-devel.orig/block/blk-core.c
+> > +++ usb-devel/block/blk-core.c
+> > @@ -423,7 +423,8 @@ int blk_queue_enter(struct request_queue
+> >  			 * responsible for ensuring that that counter is
+> >  			 * globally visible before the queue is unfrozen.
+> >  			 */
+> > -			if (pm || !blk_queue_pm_only(q)) {
+> > +			if ((pm && q->rpm_status != RPM_SUSPENDED) ||
+> > +			    !blk_queue_pm_only(q)) {
+> >  				success = true;
+> >  			} else {
+> >  				percpu_ref_put(&q->q_usage_counter);
+> 
+> Does the above change make it impossible to bring a suspended device
+> back to the RPM_ACTIVE state if the BLK_MQ_REQ_NOWAIT flag is set?
 
+The only case affected by this change is when BLK_MQ_REQ_PREEMPT is set 
+and the queue is in the RPM_SUSPENDED state.  If BLK_MQ_REQ_NOWAIT was 
+also set, the original code would set "success" to true, allowing the 
+request to proceed even though it could not be carried out immediately -- 
+a bug.
+
+With the patch, such a request will fail without resuming the device.  I 
+don't know whether that is the desired behavior or not, but at least it's 
+not obviously a bug.
+
+It does seem odd that blk_queue_enter() tests the queue's pm_only status 
+and the request flag in two different spots (here and below).  Why does it 
+do this?  It seems like an invitation for bugs.
+
+> > @@ -448,8 +449,7 @@ int blk_queue_enter(struct request_queue
+> >  
+> >  		wait_event(q->mq_freeze_wq,
+> >  			   (!q->mq_freeze_depth &&
+> > -			    (pm || (blk_pm_request_resume(q),
+> > -				    !blk_queue_pm_only(q)))) ||
+> > +			    blk_pm_resume_queue(pm, q)) ||
+> >  			   blk_queue_dying(q));
+> >  		if (blk_queue_dying(q))
+> >  			return -ENODEV;
+> > Index: usb-devel/block/blk-pm.h
+> > ===================================================================
+> > --- usb-devel.orig/block/blk-pm.h
+> > +++ usb-devel/block/blk-pm.h
+> > @@ -6,11 +6,14 @@
+> >  #include <linux/pm_runtime.h>
+> >  
+> >  #ifdef CONFIG_PM
+> > -static inline void blk_pm_request_resume(struct request_queue *q)
+> > +static inline int blk_pm_resume_queue(const bool pm, struct request_queue *q)
+> >  {
+> > -	if (q->dev && (q->rpm_status == RPM_SUSPENDED ||
+> > -		       q->rpm_status == RPM_SUSPENDING))
+> > -		pm_request_resume(q->dev);
+> > +	if (!q->dev || !blk_queue_pm_only(q))
+> > +		return 1;	/* Nothing to do */
+> > +	if (pm && q->rpm_status != RPM_SUSPENDED)
+> > +		return 1;	/* Request allowed */
+> > +	pm_request_resume(q->dev);
+> > +	return 0;
+> >  }
+> 
+> Does the above change, especially the " && q->rpm_status !=
+> RPM_SUSPENDED" part, make it impossible to bring a suspended device back
+> to the RPM_ACTIVE state?
+
+Just the opposite -- the change makes it _possible_ for a 
+BLK_MQ_REQ_PREEMPT request to bring a suspended device back to the 
+RPM_ACTIVE state.
+
+Look at the existing code: If pm is true then blk_pm_request_resume() will 
+be skipped, so the device won't be resumed.  With this patch -- in 
+particular with the "&& q->rpm_status != RPM_SUSPENDED" part added -- the 
+call won't be skipped and so the resume will take place.
+
+The rather complicated syntax of the wait_event() call in the existing 
+code contributes to this confusion.  One of the things my patch tries to 
+do is make the code more straightforward and easier to grasp.
+
+I admit that there are parts to this thing I don't understand.  The 
+wait_event() call in blk_queue_enter(), for example: If we are waiting for 
+the device to leave the RPM_SUSPENDED state (or enter the RPM_ACTIVE 
+state), where does q->mq_freeze_wq get woken up?  There's no obvious spot 
+in blk_{pre|post}_runtime_resume().
+
+Alan Stern
