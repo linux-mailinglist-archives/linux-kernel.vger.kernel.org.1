@@ -2,158 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84EE120E226
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0913A20E0C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 23:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732342AbgF2VCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:02:45 -0400
+        id S2389363AbgF2Utf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 16:49:35 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731160AbgF2TMt (ORCPT
+        with ESMTP id S1731487AbgF2TNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:12:49 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B7AC0076FA;
-        Mon, 29 Jun 2020 04:25:07 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id i14so16179619ejr.9;
-        Mon, 29 Jun 2020 04:25:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=twf//RldOgxncn/3LQYhKedjeWngP2CVDq9dznPpIUk=;
-        b=ia0B667JCeMfjKiPdQMBP0fMuEfSykAiIMFO+nrs7Pmddd/ia1zR2kPh+1UFtZc0rG
-         N6qrMQw1C7z1U6hvpQaipSEvu86uiL+36eRWfxGqQNZeJgJJ92Rv55XSP2NtBiOvVcef
-         uo9yG9cSC9lvt8rQTjwqoV2Dx0tpdCRombUjjZ9IwJDIYcs8oA2Z2i5Re/djcpSbDjwj
-         3DFzET9jfqVRkKOFa5V553mJt3Eagb6xNbJ1enwHaq/Qk84wZx50eIZrNXU3eMIf2Thl
-         QxKpZrS4EAgUMrGNA/tvphCPLrJE+EcUpIqagaDBatXoSNPNJH/KwoVpwBbF7Vf+v3hD
-         tkAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=twf//RldOgxncn/3LQYhKedjeWngP2CVDq9dznPpIUk=;
-        b=U89Fg3P9o4gNQZTrPSTXrIaNWx7J5TPQZ3qcWfwngTZCy/kg5Gtf4YZkwhsrOKf2wK
-         APcGIdZmcmSfBN2l1zVFWR33/P5xWTdJb5Pb0MCMeFuBtbDQ5FqfElGor5R45r0XCn8f
-         BhBmvEDEIWNObATW+owurgS8H/Y4qzrb6lKYGUgIx2kUaJsPrqffUsLjIa6wdDmtdLvS
-         tJlb4OXONH8aDiRb0gKI3qa6+Za8WUxzdy4p14EeLqUtRxekhGEy1NCbRsYavL6txmFC
-         WN/dNVSVR1shiUvk8z+xSf5Gc9Tt75qZV4WveOTiilRMbn2Aw/nlXsL+M7W4ZxKkx/vB
-         KXmA==
-X-Gm-Message-State: AOAM533YVANxZrkkIIpFvZZytSV3yx0p6VM7LLkYnTjZPZQQvuOKeGQP
-        ztEjGw+hBkff7IiDhAe6Dvs=
-X-Google-Smtp-Source: ABdhPJxfzBjp+rimy0f7Lsn2I1LIphbpq0jKdNkGT5Lrev5SL2F7eby0iO+T+MDFBcn6vVKMgBzuLg==
-X-Received: by 2002:a17:906:f2c1:: with SMTP id gz1mr14020443ejb.88.1593429906122;
-        Mon, 29 Jun 2020 04:25:06 -0700 (PDT)
-Received: from ubuntu-laptop ([2a01:598:b88e:dd15:40fc:c0bc:1cfd:2755])
-        by smtp.googlemail.com with ESMTPSA id f17sm12039192ejr.71.2020.06.29.04.25.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 29 Jun 2020 04:25:05 -0700 (PDT)
-Message-ID: <60647cf00d9db6818488a714b48b9b6e2a1eb728.camel@gmail.com>
-Subject: Re: [RFC PATCH v3 0/5] scsi: ufs: Add Host Performance Booster
- Support
-From:   Bean Huo <huobean@gmail.com>
-To:     daejun7.park@samsung.com,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Date:   Mon, 29 Jun 2020 13:25:03 +0200
-In-Reply-To: <336371513.41593411482259.JavaMail.epsvc@epcpadp2>
-References: <948f573d136b39410f7d610e5019aafc9c04fe62.camel@gmail.com>
-         <963815509.21592879582091.JavaMail.epsvc@epcpadp2>
-         <CGME20200623010201epcms2p11aebdf1fbc719b409968cba997507114@epcms2p3>
-         <336371513.41593411482259.JavaMail.epsvc@epcpadp2>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+        Mon, 29 Jun 2020 15:13:40 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA57C0076FC;
+        Mon, 29 Jun 2020 04:26:43 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 6C20C2A2236
+Subject: Re: [PATCH v2] PM / devfreq: rk3399_dmc: Fix kernel oops when
+ rockchip,pmu is absent
+To:     Chanwoo Choi <cw00.choi@samsung.com>, Marc Zyngier <maz@kernel.org>
+Cc:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        kernel-team@android.com,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <CGME20200622152844epcas1p2309f34247eb9653acdfd3818b7e6a569@epcas1p2.samsung.com>
+ <20200622152824.1054946-1-maz@kernel.org>
+ <784808d7-8943-44ab-f15a-34821e6d4d5f@samsung.com>
+ <87tuyue142.wl-maz@kernel.org>
+ <c1a5b730-0554-bb90-9d8d-b50390482e96@samsung.com>
+ <3de68490-d788-e416-dd5f-d4d6e7eca61a@collabora.com>
+ <154fe5b6-6a05-c2b7-3014-2f7b9c2049f9@samsung.com>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <267623b3-9fc5-886e-3554-b86fa1e57ccb@collabora.com>
+Date:   Mon, 29 Jun 2020 13:26:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <154fe5b6-6a05-c2b7-3014-2f7b9c2049f9@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daejun
+Hi Chanwoo,
 
-On Mon, 2020-06-29 at 15:15 +0900, Daejun Park wrote:
-> > Seems you intentionally ignored to give you comments on my
-> > suggestion.
-> > let me provide the reason.
+On 29/6/20 13:29, Chanwoo Choi wrote:
+> Hi Enric and Mark,
 > 
-> Sorry! I replied to your comment (
-> https://lkml.org/lkml/2020/6/15/1492),
-> but you didn't reply on that. I thought you agreed because you didn't
-> send
-> any more comments.
+> On 6/29/20 8:05 PM, Enric Balletbo i Serra wrote:
+>> Hi Chanwoo and Marc,
+>>
+>> On 29/6/20 13:09, Chanwoo Choi wrote:
+>>> Hi Enric,
+>>>
+>>> Could you check this issue? Your patch[1] causes this issue.
+>>> As Marc mentioned, although rk3399-dmc.c handled 'rockchip,pmu'
+>>> as the mandatory property, your patch[1] didn't add the 'rockchip,pmu'
+>>> property to the documentation. 
+>>>
+>>
+>> I think the problem is that the DT binding patch, for some reason, was missed
+>> and didn't land. The patch seems to have all the required reviews and acks.
+>>
+>>   https://patchwork.kernel.org/patch/10901593/
+>>
+>> Sorry because I didn't notice this issue when 9173c5ceb035 landed. And thanks
+>> for fixing the issue.
 > 
+> If the 'rockchip,pmu' propery is mandatory, instead of Mark's patch,
+> we better to require the merge of patch[1] to DT maintainer.
 > 
-> > Before submitting your next version patch, please check your L2P
-> > mapping HPB reqeust submission logical algorithem. I have did
-> 
-> We are also reviewing the code that you submitted before.
-> It seems to be a performance improvement as it sends a map request
-> directly.
-> 
-> > performance comparison testing on 4KB, there are about 13%
-> > performance
-> > drop. Also the hit count is lower. I don't know if this is related
-> > to
-> 
-> It is interesting that there is actually a performance improvement. 
-> Could you share the test environment, please? However, I think
-> stability is
-> important to HPB driver. We have tested our method with the real
-> products and
-> the HPB 1.0 driver is based on that.
-
-I just run fio benchmark tool with --rw=randread, --bs=4kb, --
-size=8G/10G/64G/100G. and see what performance diff with the direct
-submission approach.
-
-> After this patch, your approach can be done as an incremental patch?
-> I would
-> like to test the patch that you submitted and verify it.
-> 
-> > your current work queue scheduling, since you didn't add the timer
-> > for
-> > each HPB request.
+> [1] https://patchwork.kernel.org/patch/10901593/
 > 
 
-Taking into consideration of the HPB 2.0, can we submit the HPB write
-request to the SCSI layer? if not, it will be a direct submission way.
-why not directly use direct way? or maybe you have a more advisable
-approach to work around this. would you please share with us.
-appreciate.
+Give me some time to double check, because I think that at this point, is needed
+on some devices with old firmware but not now. It's been a while since I worked
+on this, but I suspect that being optional is the right way.
 
-
-> There was Bart's comment that it was not good add an arbitrary
-> timeout value
-> to the request. (please refer to: 
-> https://lkml.org/lkml/2020/6/11/1043)
-> When no timer is added to the request, the SD timout will be set as
-> default
-> timeout at the block layer.
-> 
-
-I saw that, so I should add a timer in order to optimise HPB reqeust
-scheduling/completition. this is ok so far.
-
-> Thanks,
-> Daejun
+Maybe Heiko, who IIRC worked on TF-A has a more clear thought on this?
 
 Thanks,
-Bean
+ Enric
 
-
+>>
+>> Best regards,
+>>  Enric
+>>
+>>> [1] 9173c5ceb035 ("PM / devfreq: rk3399_dmc: Pass ODT
+>>> and auto power down parameters to TF-A.")
+>>>
+>>>
+>>> On 6/29/20 5:18 PM, Marc Zyngier wrote:
+>>>> Hi Chanwoo,
+>>>>
+>>>> On Mon, 29 Jun 2020 03:43:37 +0100,
+>>>> Chanwoo Choi <cw00.choi@samsung.com> wrote:
+>>>>>
+>>>>> Hi Marc,
+>>>>>
+>>>>> On 6/23/20 12:28 AM, Marc Zyngier wrote:
+>>>>
+>>>> [...]
+>>>>
+>>>>> It looks good to me. But, I think that it is not necessary
+>>>>> fully kernel panic log about NULL pointer. It is enoughspsp
+>>>>> just mentioning the NULL pointer issue without full kernel panic log.
+>>>>
+>>>> I personally find the backtrace useful as it allows people with the
+>>>> same issue to trawl the kernel log and find whether it has already be
+>>>> fixed upstream. But it's only me, and I'm not attached to it.
+>>>>
+>>>>> So, how about editing the patch description as following or others simply?
+>>>>> and we need to add 'stable@vger.kernel.org' to Cc list for applying it
+>>>>> to stable branch.
+>>>>
+>>>> Looks good to me.
+>>>>
+>>>>>
+>>>>>
+>>>>>   PM / devfreq: rk3399_dmc: Fix kernel oops when rockchip,pmu is absent
+>>>>>
+>>>>>     Booting a recent kernel on a rk3399-based system (nanopc-t4),
+>>>>>     equipped with a recent u-boot and ATF results in the kernel panic
+>>>>>     about NULL pointer issue.
+>>>>
+>>>> nit: "results in a kernel panic on dereferencing a NULL pointer".
+>>>>
+>>>>>
+>>>>>     This turns out to be due to the rk3399-dmc driver looking for
+>>>>>     an *undocumented* property (rockchip,pmu), and happily using
+>>>>>     a NULL pointer when the property isn't there.
+>>>>>
+>>>>>     Instead, make most of what was brought in with 9173c5ceb035
+>>>>>     ("PM / devfreq: rk3399_dmc: Pass ODT and auto power down parameters
+>>>>>     to TF-A.") conditioned on finding this property in the device-tree,
+>>>>>     preventing the driver from exploding.
+>>>>>
+>>>>>     Fixes: 9173c5ceb035 ("PM / devfreq: rk3399_dmc: Pass ODT and auto power down parameters to TF-A.")
+>>>>>     Signed-off-by: Marc Zyngier <maz@kernel.org>
+>>>>>     Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+>>>>
+>>>>
+>>>> Note that the biggest issue is still there: the driver is using an
+>>>> undocumented property, and this patch is just papering over it.
+>>>> Since I expect this property to be useful for something, it would be
+>>>> good for whoever knows what it does to document it.
+>>>
+>>> Hi Marc,
+>>>
+>>> You are right. We have to do two step:
+>>> 1. Add missing explanation of 'rockchip,pmu' property to dt-binding document
+>>> 2. If possible, add 'rockchip,pmu' property node to rk3399_dmc dt node.
+>>>
+>>> When I tried to find usage example of 'rockchip,pmu' property,
+>>> I found them as following: The 'rockchip,pmu' property[2] indicates
+>>> 'PMU (Power Management Unit)'. 
+>>>
+>>> $ grep -rn "rockchip,pmu" arch/arm64/boot/dts/
+>>> arch/arm64/boot/dts/rockchip/px30.dtsi:1211:		rockchip,pmu = <&pmugrf>;
+>>> arch/arm64/boot/dts/rockchip/rk3399.dtsi:1909:		rockchip,pmu = <&pmugrf>;
+>>> arch/arm64/boot/dts/rockchip/rk3368.dtsi:807:		rockchip,pmu = <&pmugrf>;
+>>>
+>>> [2] the description of 'rockchip,pmu' property
+>>> - https://protect2.fireeye.com/url?k=e55f0ba3-b8384f85-e55e80ec-0cc47a31384a-d9c5f6b28aba9be6&q=1&u=https%3A%2F%2Felixir.bootlin.com%2Flinux%2Fv5.7.2%2Fsource%2FDocumentation%2Fdevicetree%2Fbindings%2Fpinctrl%2Frockchip%2Cpinctrl.txt%23L40
+>>>
+>>>
+>>> If don't receive the any reply, I'll add as following:
+>>>
+>>> cwchoi00@chan-linux-pc:~/kernel/git.kernel/linux.chanwoo$ d
+>>> diff --git a/Documentation/devicetree/bindings/devfreq/rk3399_dmc.txt b/Documentation/devicetree/bindings/devfreq/rk3399_dmc.txt
+>>> index 0ec68141f85a..161e60ea874b 100644
+>>> --- a/Documentation/devicetree/bindings/devfreq/rk3399_dmc.txt
+>>> +++ b/Documentation/devicetree/bindings/devfreq/rk3399_dmc.txt
+>>> @@ -18,6 +18,8 @@ Optional properties:
+>>>                          format depends on the interrupt controller.
+>>>                          It should be a DCF interrupt. When DDR DVFS finishes
+>>>                          a DCF interrupt is triggered.
+>>> +- rockchip,pmu:                 Phandle to the syscon managing the "pmu general
+>>> +                        register files".
+>>>  
+>>>  Following properties relate to DDR timing:
+>>>  
+>>>
+>>>
+>>
+>>
+> 
+> 
