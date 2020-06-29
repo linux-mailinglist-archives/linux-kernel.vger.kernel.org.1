@@ -2,185 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA6C20D386
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4551420D53D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730287AbgF2S7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:59:53 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:19840 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728460AbgF2S7n (ORCPT
+        id S1731703AbgF2TP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731777AbgF2TOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:59:43 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05T5qBlq008728
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 22:55:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=LMXoHFeYD1SRI2JRp/FowRzsgayo8g+979xURW23qz8=;
- b=IBbygPifhYrbrDshoexHPwvlmW3AILeEaol5TYNFOaM9TG99uDrDYuHnK/LPA4DjeD5A
- 8G0RETsEg6LEIAA8R7++5oAiuJpH3EEQlsxaxEY+FdZqAlYDn5YEllMstfN/3KJvT1mh
- IuJVPGOQ7T4pjH1ZZYMVw3nI0NKEbpYnge0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 31xntbjwtr-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 22:55:45 -0700
-Received: from intmgw004.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sun, 28 Jun 2020 22:55:43 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id B662762E5213; Sun, 28 Jun 2020 22:55:41 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <peterz@infradead.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <kernel-team@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@chromium.org>, Song Liu <songliubraving@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v4 bpf-next 4/4] selftests/bpf: add bpf_iter test with bpf_get_task_stack()
-Date:   Sun, 28 Jun 2020 22:55:30 -0700
-Message-ID: <20200629055530.3244342-5-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200629055530.3244342-1-songliubraving@fb.com>
-References: <20200629055530.3244342-1-songliubraving@fb.com>
+        Mon, 29 Jun 2020 15:14:22 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26D8C08EAC8
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:16:42 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id t6so7836176pgq.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Jun 2020 23:16:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4irVPvy6SLfIHJxFGOTl27eLkGNjnPf7i0OL+P/LA5k=;
+        b=gvy6L2gNxq9EwuQLge3KvNqHHwK00gDANooUZvO4v6O5WkSzyTrdIQh/0aKfX2EltN
+         BC+F/sMOwIeTzytYh6C+biD3Z0k6ukqbdDxfzaddghnTjVpA5NWIn66UJGhUQht65PyZ
+         UeQC58uEadA2EDA5nxAwZTOmY1XiiRXMAqh4qZqk5F0ktgOQ4Giv/rDvhNJX+IvYgcRF
+         uyUIijuxIyKFEY98uEPgkKkWVz1lx7Yn194BvXvE9VqaqfoT3h524c71kZLvLyv0Y3xD
+         Y9evO5z8oHOrC+f8Jlfh91dni7AyjZR5XVxyL1Ss6Xooxx2IhT7B1txyR0AIA+/7u5mi
+         FGzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4irVPvy6SLfIHJxFGOTl27eLkGNjnPf7i0OL+P/LA5k=;
+        b=msXr0nHsQGlhIJl8LFNq/n8ETtu9nIaPgemG++ywxtHX3VGe+v0hG/seBd5vXoqoXd
+         2MBLUobclwwtMZW1LL9nTmhs6S8CT5zL8DY9w5aKXpSwzA14t+9nX3R37hHzRfmi5+oc
+         WdHu4s3s9kMfwQY3b64b50m750Sju4xpwwE7pzOJkcL6nDvab2lgI2jax6KsiLi4bHzO
+         CTUDU3Gnll0HtOSmQL04BS0SH2RalUL+I2UhPCVwXzY5VHJauM0u3vi0WFR3NtkUQhoW
+         nLQ10y6pI97EgeHQlJ/aZ+KS5+ov+UdOXn/0n8A1Ft5vPoIzgV6Z/bzXFUJzB2tUxfSW
+         vTPQ==
+X-Gm-Message-State: AOAM531llzO5SXAfoe911zzs9WCuBOGnYbSTp2NhHC5cPIYw9o+XZDMx
+        ugO6LpiVN3j6CTOYvvIqjBxh4g==
+X-Google-Smtp-Source: ABdhPJyWU8GRq0w0MyNAiW2bszj3RcxuYIa7V3PZhOEGRHvN2Ts53LH/NqZxHeCX7T8Kw8KhW0DfLg==
+X-Received: by 2002:a63:182:: with SMTP id 124mr8482105pgb.288.1593411402221;
+        Sun, 28 Jun 2020 23:16:42 -0700 (PDT)
+Received: from localhost ([122.172.127.76])
+        by smtp.gmail.com with ESMTPSA id m20sm34111505pfk.52.2020.06.28.23.16.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 28 Jun 2020 23:16:41 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 11:46:39 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sumit Gupta <sumitg@nvidia.com>
+Cc:     rjw@rjwysocki.net, catalin.marinas@arm.com, will@kernel.org,
+        thierry.reding@gmail.com, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, jonathanh@nvidia.com, talho@nvidia.com,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bbasu@nvidia.com, mperttunen@nvidia.com
+Subject: Re: [TEGRA194_CPUFREQ PATCH v4 3/4] cpufreq: Add Tegra194 cpufreq
+ driver
+Message-ID: <20200629061639.7cwxfi64drkof6yu@vireshk-i7>
+References: <1593186236-12760-1-git-send-email-sumitg@nvidia.com>
+ <1593186236-12760-4-git-send-email-sumitg@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-29_04:2020-06-26,2020-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- cotscore=-2147483648 lowpriorityscore=0 mlxscore=0 clxscore=1015
- bulkscore=0 spamscore=0 suspectscore=8 impostorscore=0 priorityscore=1501
- adultscore=0 mlxlogscore=999 phishscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006290042
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1593186236-12760-4-git-send-email-sumitg@nvidia.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new test is similar to other bpf_iter tests. It dumps all
-/proc/<pid>/stack to a seq_file. Here is some example output:
+On 26-06-20, 21:13, Sumit Gupta wrote:
+> +static int tegra194_cpufreq_probe(struct platform_device *pdev)
+> +{
+> +	struct tegra194_cpufreq_data *data;
+> +	struct tegra_bpmp *bpmp;
+> +	int err, i;
+> +
+> +	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	data->num_clusters = MAX_CLUSTERS;
+> +	data->tables = devm_kcalloc(&pdev->dev, data->num_clusters,
+> +				    sizeof(*data->tables), GFP_KERNEL);
+> +	if (!data->tables)
+> +		return -ENOMEM;
+> +
+> +	platform_set_drvdata(pdev, data);
+> +
+> +	bpmp = tegra_bpmp_get(&pdev->dev);
+> +	if (IS_ERR(bpmp))
+> +		return PTR_ERR(bpmp);
+> +
+> +	read_counters_wq = alloc_workqueue("read_counters_wq", __WQ_LEGACY, 1);
+> +	if (!read_counters_wq) {
+> +		dev_err(&pdev->dev, "fail to create_workqueue\n");
+> +		err = -EINVAL;
+> +		goto put_bpmp;
 
-pid:     2873 num_entries:        3
-[<0>] worker_thread+0xc6/0x380
-[<0>] kthread+0x135/0x150
-[<0>] ret_from_fork+0x22/0x30
+This will call destroy_workqueue() eventually and it will crash your
+kernel.
 
-pid:     2874 num_entries:        9
-[<0>] __bpf_get_stack+0x15e/0x250
-[<0>] bpf_prog_22a400774977bb30_dump_task_stack+0x4a/0xb3c
-[<0>] bpf_iter_run_prog+0x81/0x170
-[<0>] __task_seq_show+0x58/0x80
-[<0>] bpf_seq_read+0x1c3/0x3b0
-[<0>] vfs_read+0x9e/0x170
-[<0>] ksys_read+0xa7/0xe0
-[<0>] do_syscall_64+0x4c/0xa0
-[<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Apart from this, this stuff looks okay. Don't resend the patch just
+yet (and if required, send only this patch using --in-reply-to flag
+for git send email). Lets wait for an Ack from Rob for the first two
+patches.
 
-Note: To print the output, it is necessary to modify the selftest.
+> +	}
+> +
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_iter.c       | 17 +++++++++
- .../selftests/bpf/progs/bpf_iter_task_stack.c | 37 +++++++++++++++++++
- 2 files changed, 54 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_stack=
-.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-index 1e2e0fced6e81..fed42755416db 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -5,6 +5,7 @@
- #include "bpf_iter_netlink.skel.h"
- #include "bpf_iter_bpf_map.skel.h"
- #include "bpf_iter_task.skel.h"
-+#include "bpf_iter_task_stack.skel.h"
- #include "bpf_iter_task_file.skel.h"
- #include "bpf_iter_tcp4.skel.h"
- #include "bpf_iter_tcp6.skel.h"
-@@ -110,6 +111,20 @@ static void test_task(void)
- 	bpf_iter_task__destroy(skel);
- }
-=20
-+static void test_task_stack(void)
-+{
-+	struct bpf_iter_task_stack *skel;
-+
-+	skel =3D bpf_iter_task_stack__open_and_load();
-+	if (CHECK(!skel, "bpf_iter_task_stack__open_and_load",
-+		  "skeleton open_and_load failed\n"))
-+		return;
-+
-+	do_dummy_read(skel->progs.dump_task_stack);
-+
-+	bpf_iter_task_stack__destroy(skel);
-+}
-+
- static void test_task_file(void)
- {
- 	struct bpf_iter_task_file *skel;
-@@ -452,6 +467,8 @@ void test_bpf_iter(void)
- 		test_bpf_map();
- 	if (test__start_subtest("task"))
- 		test_task();
-+	if (test__start_subtest("task_stack"))
-+		test_task_stack();
- 	if (test__start_subtest("task_file"))
- 		test_task_file();
- 	if (test__start_subtest("tcp4"))
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c b/to=
-ols/testing/selftests/bpf/progs/bpf_iter_task_stack.c
-new file mode 100644
-index 0000000000000..e40d32a2ed93d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+#include "bpf_iter.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+#define MAX_STACK_TRACE_DEPTH   64
-+unsigned long entries[MAX_STACK_TRACE_DEPTH];
-+#define SIZE_OF_ULONG (sizeof(unsigned long))
-+
-+SEC("iter/task")
-+int dump_task_stack(struct bpf_iter__task *ctx)
-+{
-+	struct seq_file *seq =3D ctx->meta->seq;
-+	struct task_struct *task =3D ctx->task;
-+	long i, retlen;
-+
-+	if (task =3D=3D (void *)0)
-+		return 0;
-+
-+	retlen =3D bpf_get_task_stack(task, entries,
-+				    MAX_STACK_TRACE_DEPTH * SIZE_OF_ULONG, 0);
-+	if (retlen < 0)
-+		return 0;
-+
-+	BPF_SEQ_PRINTF(seq, "pid: %8u num_entries: %8u\n", task->pid,
-+		       retlen / SIZE_OF_ULONG);
-+	for (i =3D 0; i < MAX_STACK_TRACE_DEPTH; i++) {
-+		if (retlen > i * SIZE_OF_ULONG)
-+			BPF_SEQ_PRINTF(seq, "[<0>] %pB\n", (void *)entries[i]);
-+	}
-+	BPF_SEQ_PRINTF(seq, "\n");
-+
-+	return 0;
-+}
---=20
-2.24.1
-
+-- 
+viresh
