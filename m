@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305CF20E5E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F311720E60A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391392AbgF2Vmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
+        id S2404007AbgF2Vnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727888AbgF2Shy (ORCPT
+        with ESMTP id S1727847AbgF2Shs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:54 -0400
+        Mon, 29 Jun 2020 14:37:48 -0400
 Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691ACC03141C
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:21:01 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id c139so15928712qkg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:21:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE00C031420
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:21:02 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id r22so15927063qke.13
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 10:21:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NKjRYvSAJqWIMQCbW26UX9pAyMFbyr2ycBY9k4qgOjc=;
-        b=TFteUP+PzrABsrT7Iqmoia3CSf9TxnsyR7tM4s01yJ9Y0F72qWSUFcstAAR2MiIg3V
-         cGfBV4wBCvubSaPwKtkOTkxZOarQFXy2Mt/t4AvMMXqPg6u1Woiy0pXijB7gF3CyawL7
-         YUkGv4xdYXQYTXCnwKCP0B4dnsz12vt1fawA6iX+v/OLstJhQcpqELJkg6+u7O4go3FO
-         gd8u821HbYFQsjDUBQt2D0VYoL+e8okCAxc6WCxiaNjLlyoDEqL+04clH04PCTMJQp23
-         45wTUGNsd0nuXP/ZOaM/QKRFQHQRRXpBAkTzY9N6uG1f1980TMKOcRUc4saNxGrtK/LD
-         d7ng==
+        bh=fem3XNP+K3JU9MCaDCRGbzpn3Qjj+S6fTPpAXuau47M=;
+        b=IXmyZM/yRnHMX0W2VsnzlDaWZI/gIrdOGnVPWgA+2Kxtlsm4yBGwSUeP2xGUDv1KYx
+         ysOEPUN0Yf1dqDn3fjal1FFDnykYcc3fT8m1LMbYmnJ8CNQrn90e8PjsxNEWrn0fVA0h
+         lJk/GqLz6CmqU1mS/49tGnXa7GVxX3PRcW+YfeBzAPwpO86IUfVtSRYapv8eyk+gissX
+         in9N5q8c6+M6KL58t09k47Q5dcwMInAFOEFjr37pQ6Njfopi7K6y5rCTvKyjmaWA3Jmo
+         HPr2+RQ2/30V9ckiCKd+BkFCselNoTY+vcSiaP2qs3iVoEn5dEkE0ilLhDgW3Sw5wXoD
+         79AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NKjRYvSAJqWIMQCbW26UX9pAyMFbyr2ycBY9k4qgOjc=;
-        b=O9unKgDfftAS3W7w17uJJOsgTpbFrrZ/q2PtgJCUtqN/RVA+PfO70DZy7Y9O41/yeP
-         D0aM53wqE0HSmM0YNlzwJ6GR4sqi//n/3z1y2LXU4Y15+NDOsrtNyfpxlPBmqFJNg/EM
-         gSpPSnhBTeJU3YA250ZrZ5s6R76YmDmqgtNqUsJsVqpV4+PCtx6xZ79GddtL8JpsJbXY
-         zS+o64YSAQbDZQaxOoAkOx9EkcprNsaQaKdE6PI75mRsaPdPv/8VzCE8Wlyik48HtXgi
-         hCsE+vCSunKgMVudMp7+DERRf+WZsBjAkq9WsK+BEZk9RWAHLc3Njrp8YxdC1ST9a34D
-         solw==
-X-Gm-Message-State: AOAM5316XqAYHKTQw/sn/UJB/9igvubWQLPO7/1mJDOiNVm9iLJ4NTZU
-        wyAgVZco+Gx+0p+RZ0aWsk4qpA==
-X-Google-Smtp-Source: ABdhPJyGf8Cj/3C59Fd+/iwH3VAZ/Okqfp0p6Q7w43DVzio9qxfdfPPMKZGAwA7optdr6wEe7s2fDw==
-X-Received: by 2002:a05:620a:1275:: with SMTP id b21mr15667265qkl.4.1593451260707;
-        Mon, 29 Jun 2020 10:21:00 -0700 (PDT)
+        bh=fem3XNP+K3JU9MCaDCRGbzpn3Qjj+S6fTPpAXuau47M=;
+        b=nsEscSg4QvlnuyZjHrdMXbO7NzJ6Y5LJtvVcL2ttmuNKspRys7gHs9pnBzrlSXfINe
+         s7YSe011xb3Yfs0SDdFE9rUImxTpgQOcIPLANzGukEXERqw0mAC0JHnX0e237KTrl3jT
+         8KzuxLmMJ/6t8L9np0cHy+VclEnflYuCFogHLGhxruEjoEvCuHU7sTaUftvpKQoJtBwL
+         0k533EheuEWtWWhSLoAt9khjLpycpmq9fzI03Im8nGD85pa43pziD58hKPy+FoHqZtDB
+         l6QPkbsWVz7gB8lNEsdfyFKMjmHR+F8AyMPmVWfmLJQC+itwC34CQG25tNG9XqkWpZTp
+         wQUw==
+X-Gm-Message-State: AOAM533P3oID+Vki4GxkaNwuRlQqaz6TQKIMnAvr+VxH3wtiYJpcXhhG
+        iNaoZK5dNUoUNXEikF/Hus9Zwg==
+X-Google-Smtp-Source: ABdhPJxy3AW0ebQa1q0sqz4u/+GdjEeyX7bZO37gJSu74AUtCI+D1DWF+pQRCB+c38adJFkCFtGJJg==
+X-Received: by 2002:a37:e4e:: with SMTP id 75mr16083443qko.81.1593451262110;
+        Mon, 29 Jun 2020 10:21:02 -0700 (PDT)
 Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id q5sm408363qtf.12.2020.06.29.10.20.59
+        by smtp.gmail.com with ESMTPSA id q5sm408363qtf.12.2020.06.29.10.21.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 10:21:00 -0700 (PDT)
+        Mon, 29 Jun 2020 10:21:01 -0700 (PDT)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Deepak Katragadda <dkatraga@codeaurora.org>,
+        Taniya Das <tdas@codeaurora.org>,
         linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 01/13] clk: qcom: gcc: fix sm8150 GPU and NPU clocks
-Date:   Mon, 29 Jun 2020 13:20:31 -0400
-Message-Id: <20200629172049.30452-2-jonathan@marek.ca>
+Subject: [PATCH v2 02/13] clk: qcom: clk-alpha-pll: remove unused/incorrect PLL_CAL_VAL
+Date:   Mon, 29 Jun 2020 13:20:32 -0400
+Message-Id: <20200629172049.30452-3-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200629172049.30452-1-jonathan@marek.ca>
 References: <20200629172049.30452-1-jonathan@marek.ca>
@@ -69,69 +71,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the parents and set BRANCH_HALT_SKIP. From the downstream driver it
-should be a 500us delay and not skip, however this matches what was done
-for other clocks that had 500us delay in downstream.
+0x44 isn't a register offset, it is the value that goes into CAL_L_VAL.
 
-Fixes: f73a4230d5bb ("clk: qcom: gcc: Add GPU and NPU clocks for SM8150")
+Fixes: 548a909597d5 ("clk: qcom: clk-alpha-pll: Add support for Trion PLLs")
 
 Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 ---
- drivers/clk/qcom/gcc-sm8150.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/clk/qcom/clk-alpha-pll.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/clk/qcom/gcc-sm8150.c b/drivers/clk/qcom/gcc-sm8150.c
-index 72524cf11048..55e9d6d75a0c 100644
---- a/drivers/clk/qcom/gcc-sm8150.c
-+++ b/drivers/clk/qcom/gcc-sm8150.c
-@@ -1617,6 +1617,7 @@ static struct clk_branch gcc_gpu_cfg_ahb_clk = {
- };
+diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+index 9b2dfa08acb2..1325139173c9 100644
+--- a/drivers/clk/qcom/clk-alpha-pll.c
++++ b/drivers/clk/qcom/clk-alpha-pll.c
+@@ -56,7 +56,6 @@
+ #define PLL_STATUS(p)		((p)->offset + (p)->regs[PLL_OFF_STATUS])
+ #define PLL_OPMODE(p)		((p)->offset + (p)->regs[PLL_OFF_OPMODE])
+ #define PLL_FRAC(p)		((p)->offset + (p)->regs[PLL_OFF_FRAC])
+-#define PLL_CAL_VAL(p)		((p)->offset + (p)->regs[PLL_OFF_CAL_VAL])
  
- static struct clk_branch gcc_gpu_gpll0_clk_src = {
-+	.halt_check = BRANCH_HALT_SKIP,
- 	.clkr = {
- 		.enable_reg = 0x52004,
- 		.enable_mask = BIT(15),
-@@ -1632,13 +1633,14 @@ static struct clk_branch gcc_gpu_gpll0_clk_src = {
- };
- 
- static struct clk_branch gcc_gpu_gpll0_div_clk_src = {
-+	.halt_check = BRANCH_HALT_SKIP,
- 	.clkr = {
- 		.enable_reg = 0x52004,
- 		.enable_mask = BIT(16),
- 		.hw.init = &(struct clk_init_data){
- 			.name = "gcc_gpu_gpll0_div_clk_src",
- 			.parent_hws = (const struct clk_hw *[]){
--				&gcc_gpu_gpll0_clk_src.clkr.hw },
-+				&gpll0_out_even.clkr.hw },
- 			.num_parents = 1,
- 			.flags = CLK_SET_RATE_PARENT,
- 			.ops = &clk_branch2_ops,
-@@ -1729,6 +1731,7 @@ static struct clk_branch gcc_npu_cfg_ahb_clk = {
- };
- 
- static struct clk_branch gcc_npu_gpll0_clk_src = {
-+	.halt_check = BRANCH_HALT_SKIP,
- 	.clkr = {
- 		.enable_reg = 0x52004,
- 		.enable_mask = BIT(18),
-@@ -1744,13 +1747,14 @@ static struct clk_branch gcc_npu_gpll0_clk_src = {
- };
- 
- static struct clk_branch gcc_npu_gpll0_div_clk_src = {
-+	.halt_check = BRANCH_HALT_SKIP,
- 	.clkr = {
- 		.enable_reg = 0x52004,
- 		.enable_mask = BIT(19),
- 		.hw.init = &(struct clk_init_data){
- 			.name = "gcc_npu_gpll0_div_clk_src",
- 			.parent_hws = (const struct clk_hw *[]){
--				&gcc_npu_gpll0_clk_src.clkr.hw },
-+				&gpll0_out_even.clkr.hw },
- 			.num_parents = 1,
- 			.flags = CLK_SET_RATE_PARENT,
- 			.ops = &clk_branch2_ops,
+ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
+ 	[CLK_ALPHA_PLL_TYPE_DEFAULT] =  {
+@@ -115,7 +114,6 @@ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
+ 		[PLL_OFF_STATUS] = 0x30,
+ 		[PLL_OFF_OPMODE] = 0x38,
+ 		[PLL_OFF_ALPHA_VAL] = 0x40,
+-		[PLL_OFF_CAL_VAL] = 0x44,
+ 	},
+ 	[CLK_ALPHA_PLL_TYPE_LUCID] =  {
+ 		[PLL_OFF_L_VAL] = 0x04,
 -- 
 2.26.1
 
