@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8877B20D43E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AADEA20D440
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730762AbgF2TGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:06:33 -0400
-Received: from mga17.intel.com ([192.55.52.151]:62621 "EHLO mga17.intel.com"
+        id S1730786AbgF2TGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:06:38 -0400
+Received: from mga17.intel.com ([192.55.52.151]:62620 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730523AbgF2TG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:06:29 -0400
-IronPort-SDR: avHOxCyaMxH47z3257V8Qd/6fZ0BEtvTxD2IlF+DAUb9GSz91fbvjCh33rypwz0YX8MSynMu4q
- fvWODqqDLAQA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="126075721"
+        id S1730266AbgF2TGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:06:34 -0400
+IronPort-SDR: FIGKWO91R3zr8k5X9AUH4xn6JFnFDqeYWRqHIwlD+n9oCePsMtFbXSHd+s1HxLMFWEvyTWOrRf
+ d65IKmnryDug==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="126075726"
 X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
-   d="scan'208";a="126075721"
+   d="scan'208";a="126075726"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 02:20:35 -0700
-IronPort-SDR: nLpGrcumA+6GC498ABBr/dkx2dEJmkIN/APYDCN5/QDH/Zxi7OURf41G2yPvYoG5OkEQgOrQXE
- To5dQOC5ULFA==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 02:20:38 -0700
+IronPort-SDR: NDYKaM6CLSGEW0MTqi9U3mVb3TT9hfe/kst4wiBSW3tvGIgJ74WE04p8LkizDDC2fNYu4bstem
+ M5i03pX40wDg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
-   d="scan'208";a="303001166"
+   d="scan'208";a="303001173"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.73])
-  by fmsmga004.fm.intel.com with ESMTP; 29 Jun 2020 02:20:33 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 29 Jun 2020 02:20:35 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/6] perf scripts python: export-to-postgresql.py: Fix struct.pack() int argument
-Date:   Mon, 29 Jun 2020 12:19:50 +0300
-Message-Id: <20200629091955.17090-2-adrian.hunter@intel.com>
+Subject: [PATCH 2/6] perf record: Fix duplicated sideband events with Intel PT system wide tracing
+Date:   Mon, 29 Jun 2020 12:19:51 +0300
+Message-Id: <20200629091955.17090-3-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200629091955.17090-1-adrian.hunter@intel.com>
 References: <20200629091955.17090-1-adrian.hunter@intel.com>
@@ -42,62 +42,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Python 3.8 is requiring that arguments being packed as integers are
-also integers.  Add int() accordingly.
+Commit 0a892c1c9472 ("perf record: Add dummy event during system wide
+synthesis") reveals an issue with Intel PT system wide tracing.
+Specifically that Intel PT already adds a dummy tracking event, and it is
+not the first event.  Adding another dummy tracking event causes duplicated
+sideband events.  Fix by checking for an existing dummy tracking event
+first.
+
+Example showing duplicated switch events:
 
  Before:
 
-   $ perf record -e intel_pt//u uname
-   $ perf script --itrace=bep -s ~/libexec/perf-core/scripts/python/export-to-postgresql.py perf_data_db branches calls
-   2020-06-25 16:09:10.547256 Creating database...
-   2020-06-25 16:09:10.733185 Writing to intermediate files...
-   Traceback (most recent call last):
-     File "/home/ahunter/libexec/perf-core/scripts/python/export-to-postgresql.py", line 1106, in synth_data
-       cbr(id, raw_buf)
-     File "/home/ahunter/libexec/perf-core/scripts/python/export-to-postgresql.py", line 1058, in cbr
-       value = struct.pack("!hiqiiiiii", 4, 8, id, 4, cbr, 4, MHz, 4, percent)
-   struct.error: required argument is not an integer
-   Fatal Python error: problem in Python trace event handler
-   Python runtime state: initialized
-
-   Current thread 0x00007f35d3695780 (most recent call first):
-   <no Python frame>
-   Aborted (core dumped)
+   # perf record -a -e intel_pt//u uname
+   Linux
+   [ perf record: Woken up 1 times to write data ]
+   [ perf record: Captured and wrote 0.895 MB perf.data ]
+   # perf script --no-itrace --show-switch-events | head
+            swapper     0 [007]  6390.516222: PERF_RECORD_SWITCH_CPU_WIDE OUT preempt  next pid/tid:    11/11
+            swapper     0 [007]  6390.516222: PERF_RECORD_SWITCH_CPU_WIDE OUT preempt  next pid/tid:    11/11
+          rcu_sched    11 [007]  6390.516223: PERF_RECORD_SWITCH_CPU_WIDE IN           prev pid/tid:     0/0
+          rcu_sched    11 [007]  6390.516224: PERF_RECORD_SWITCH_CPU_WIDE IN           prev pid/tid:     0/0
+          rcu_sched    11 [007]  6390.516227: PERF_RECORD_SWITCH_CPU_WIDE OUT          next pid/tid:     0/0
+          rcu_sched    11 [007]  6390.516227: PERF_RECORD_SWITCH_CPU_WIDE OUT          next pid/tid:     0/0
+            swapper     0 [007]  6390.516228: PERF_RECORD_SWITCH_CPU_WIDE IN           prev pid/tid:    11/11
+            swapper     0 [007]  6390.516228: PERF_RECORD_SWITCH_CPU_WIDE IN           prev pid/tid:    11/11
+            swapper     0 [002]  6390.516415: PERF_RECORD_SWITCH_CPU_WIDE OUT preempt  next pid/tid:  5556/5559
+            swapper     0 [002]  6390.516416: PERF_RECORD_SWITCH_CPU_WIDE OUT preempt  next pid/tid:  5556/5559
 
  After:
 
-   $ dropdb perf_data_db
-   $ rm -rf perf_data_db-perf-data
-   $ perf script --itrace=bep -s ~/libexec/perf-core/scripts/python/export-to-postgresql.py perf_data_db branches calls
-   2020-06-25 16:09:40.990267 Creating database...
-   2020-06-25 16:09:41.207009 Writing to intermediate files...
-   2020-06-25 16:09:41.270915 Copying to database...
-   2020-06-25 16:09:41.382030 Removing intermediate files...
-   2020-06-25 16:09:41.384630 Adding primary keys
-   2020-06-25 16:09:41.541894 Adding foreign keys
-   2020-06-25 16:09:41.677044 Dropping unused tables
-   2020-06-25 16:09:41.703761 Done
+   # perf record -a -e intel_pt//u uname
+   Linux
+   [ perf record: Woken up 1 times to write data ]
+   [ perf record: Captured and wrote 0.868 MB perf.data ]
+   #  perf script --no-itrace --show-switch-events | head
+            swapper     0 [005]  6450.567013: PERF_RECORD_SWITCH_CPU_WIDE OUT preempt  next pid/tid:  7179/7181
+               perf  7181 [005]  6450.567014: PERF_RECORD_SWITCH_CPU_WIDE IN           prev pid/tid:     0/0
+               perf  7181 [005]  6450.567028: PERF_RECORD_SWITCH_CPU_WIDE OUT          next pid/tid:     0/0
+            swapper     0 [005]  6450.567029: PERF_RECORD_SWITCH_CPU_WIDE IN           prev pid/tid:  7179/7181
+            swapper     0 [005]  6450.571699: PERF_RECORD_SWITCH_CPU_WIDE OUT preempt  next pid/tid:    11/11
+          rcu_sched    11 [005]  6450.571700: PERF_RECORD_SWITCH_CPU_WIDE IN           prev pid/tid:     0/0
+          rcu_sched    11 [005]  6450.571702: PERF_RECORD_SWITCH_CPU_WIDE OUT          next pid/tid:     0/0
+            swapper     0 [005]  6450.571703: PERF_RECORD_SWITCH_CPU_WIDE IN           prev pid/tid:    11/11
+            swapper     0 [005]  6450.579703: PERF_RECORD_SWITCH_CPU_WIDE OUT preempt  next pid/tid:    11/11
+          rcu_sched    11 [005]  6450.579704: PERF_RECORD_SWITCH_CPU_WIDE IN           prev pid/tid:     0/0
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Fixes: aba44287a224 ("perf scripts python: export-to-postgresql.py: Export Intel PT power and ptwrite events")
-Cc: stable@vger.kernel.org
 ---
- tools/perf/scripts/python/export-to-postgresql.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/builtin-record.c | 18 +++++++++---------
+ tools/perf/util/evlist.c    | 12 ++++++++++++
+ tools/perf/util/evlist.h    |  1 +
+ tools/perf/util/evsel.c     |  8 +-------
+ tools/perf/util/evsel.h     |  6 ++++++
+ 5 files changed, 29 insertions(+), 16 deletions(-)
 
-diff --git a/tools/perf/scripts/python/export-to-postgresql.py b/tools/perf/scripts/python/export-to-postgresql.py
-index 7bd73a904b4e..d187e46c2683 100644
---- a/tools/perf/scripts/python/export-to-postgresql.py
-+++ b/tools/perf/scripts/python/export-to-postgresql.py
-@@ -1055,7 +1055,7 @@ def cbr(id, raw_buf):
- 	cbr = data[0]
- 	MHz = (data[4] + 500) / 1000
- 	percent = ((cbr * 1000 / data[2]) + 5) / 10
--	value = struct.pack("!hiqiiiiii", 4, 8, id, 4, cbr, 4, MHz, 4, percent)
-+	value = struct.pack("!hiqiiiiii", 4, 8, id, 4, cbr, 4, int(MHz), 4, int(percent))
- 	cbr_file.write(value)
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index e108d90ae2ed..a37e7910e9e9 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -852,20 +852,20 @@ static int record__open(struct record *rec)
+ 	 * event synthesis.
+ 	 */
+ 	if (opts->initial_delay || target__has_cpu(&opts->target)) {
+-		if (perf_evlist__add_dummy(evlist))
+-			return -ENOMEM;
++		pos = perf_evlist__get_tracking_event(evlist);
++		if (!evsel__is_dummy_event(pos)) {
++			/* Set up dummy event. */
++			if (perf_evlist__add_dummy(evlist))
++				return -ENOMEM;
++			pos = evlist__last(evlist);
++			perf_evlist__set_tracking_event(evlist, pos);
++		}
  
- def mwait(id, raw_buf):
+-		/* Disable tracking of mmaps on lead event. */
+-		pos = evlist__first(evlist);
+-		pos->tracking = 0;
+-		/* Set up dummy event. */
+-		pos = evlist__last(evlist);
+-		pos->tracking = 1;
+ 		/*
+ 		 * Enable the dummy event when the process is forked for
+ 		 * initial_delay, immediately for system wide.
+ 		 */
+-		if (opts->initial_delay)
++		if (opts->initial_delay && !pos->immediate)
+ 			pos->core.attr.enable_on_exec = 1;
+ 		else
+ 			pos->immediate = 1;
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 173b4f0e0e6e..ab48be4cf258 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -1566,6 +1566,18 @@ void perf_evlist__to_front(struct evlist *evlist,
+ 	list_splice(&move, &evlist->core.entries);
+ }
+ 
++struct evsel *perf_evlist__get_tracking_event(struct evlist *evlist)
++{
++	struct evsel *evsel;
++
++	evlist__for_each_entry(evlist, evsel) {
++		if (evsel->tracking)
++			return evsel;
++	}
++
++	return evlist__first(evlist);
++}
++
+ void perf_evlist__set_tracking_event(struct evlist *evlist,
+ 				     struct evsel *tracking_evsel)
+ {
+diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+index b6f325dfb4d2..a8081dfc19cf 100644
+--- a/tools/perf/util/evlist.h
++++ b/tools/perf/util/evlist.h
+@@ -335,6 +335,7 @@ void perf_evlist__to_front(struct evlist *evlist,
+ 	evlist__cpu_iter_start(evlist);			\
+ 	perf_cpu_map__for_each_cpu (cpu, index, (evlist)->core.all_cpus)
+ 
++struct evsel *perf_evlist__get_tracking_event(struct evlist *evlist);
+ void perf_evlist__set_tracking_event(struct evlist *evlist,
+ 				     struct evsel *tracking_evsel);
+ 
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 96e5171dce41..a68ac3632ae6 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -898,12 +898,6 @@ static void evsel__apply_config_terms(struct evsel *evsel,
+ 	}
+ }
+ 
+-static bool is_dummy_event(struct evsel *evsel)
+-{
+-	return (evsel->core.attr.type == PERF_TYPE_SOFTWARE) &&
+-	       (evsel->core.attr.config == PERF_COUNT_SW_DUMMY);
+-}
+-
+ struct evsel_config_term *__evsel__get_config_term(struct evsel *evsel, enum evsel_term_type type)
+ {
+ 	struct evsel_config_term *term, *found_term = NULL;
+@@ -1161,7 +1155,7 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
+ 	 * The software event will trigger -EOPNOTSUPP error out,
+ 	 * if BRANCH_STACK bit is set.
+ 	 */
+-	if (is_dummy_event(evsel))
++	if (evsel__is_dummy_event(evsel))
+ 		evsel__reset_sample_bit(evsel, BRANCH_STACK);
+ }
+ 
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index 0f963c2a88a5..35e3f6d66085 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -399,6 +399,12 @@ static inline bool evsel__has_br_stack(const struct evsel *evsel)
+ 	       evsel->synth_sample_type & PERF_SAMPLE_BRANCH_STACK;
+ }
+ 
++static inline bool evsel__is_dummy_event(struct evsel *evsel)
++{
++	return (evsel->core.attr.type == PERF_TYPE_SOFTWARE) &&
++	       (evsel->core.attr.config == PERF_COUNT_SW_DUMMY);
++}
++
+ struct perf_env *evsel__env(struct evsel *evsel);
+ 
+ int evsel__store_ids(struct evsel *evsel, struct evlist *evlist);
 -- 
 2.17.1
 
