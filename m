@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D3620D43F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF5920D44F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730775AbgF2TGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:06:35 -0400
+        id S1730688AbgF2THN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:07:13 -0400
 Received: from mga17.intel.com ([192.55.52.151]:62624 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730746AbgF2TGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730747AbgF2TGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Jun 2020 15:06:31 -0400
-IronPort-SDR: cbnbV7y5l/A+uFDMe2bjIvrmdArFAYnGAixf8oYrwC31xIwg4dsuFonPY1asx7NJhmaCAURv/M
- fIDuAl67l4qg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="126075730"
+IronPort-SDR: nDZAJXTGs8YDnpkZuWwEyX8liZUwtFgYIBvKZQBU/vLJzG6Io084Dm8Rf7avhZyp/M7HkRfSPh
+ T/Smze7tyEcA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="126075735"
 X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
-   d="scan'208";a="126075730"
+   d="scan'208";a="126075735"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 02:20:40 -0700
-IronPort-SDR: AsSGtkdWOa2qxEbqaLBflRNT8XLcMAwbD8j9BHwcHpOPqiD2foFJEId+ZuNeax53C4aKHvYpnd
- vuroXo/rXe+w==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 02:20:42 -0700
+IronPort-SDR: WkTPs9khza8W+fPOqa6OvMgTsbmQqG18xd/ECRJgOyDqD6Fm2LkalLuHIh6ezNR0M5pKNmKB63
+ Ws1mPxUqJ6Mw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
-   d="scan'208";a="303001178"
+   d="scan'208";a="303001182"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.73])
-  by fmsmga004.fm.intel.com with ESMTP; 29 Jun 2020 02:20:38 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 29 Jun 2020 02:20:40 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/6] perf scripts python: exported-sql-viewer.py: Fix unexpanded 'Find' result
-Date:   Mon, 29 Jun 2020 12:19:52 +0300
-Message-Id: <20200629091955.17090-4-adrian.hunter@intel.com>
+Subject: [PATCH 4/6] perf scripts python: exported-sql-viewer.py: Fix zero id in call graph 'Find' result
+Date:   Mon, 29 Jun 2020 12:19:53 +0300
+Message-Id: <20200629091955.17090-5-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200629091955.17090-1-adrian.hunter@intel.com>
 References: <20200629091955.17090-1-adrian.hunter@intel.com>
@@ -42,8 +42,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using Python version 3.8.2 and PySide2 version 5.14.0, ctrl-F ('Find')
-would not expand the tree to the result. Fix by using setExpanded().
+Using ctrl-F ('Find') would not find 'unknown' because it matches id zero.
+Fix by excluding id zero from selection.
 
 Example:
  $ perf record -e intel_pt//u uname
@@ -58,33 +58,35 @@ Example:
  2020-06-26 15:32:15.549716 Done
  $ python3 ~/libexec/perf-core/scripts/python/exported-sql-viewer.py perf.data.db
 
- Select: Reports -> Context-Sensitive Call Graph    or     Reports -> Call Tree
+ Select: Reports -> Context-Sensitive Call Graph
  Press: Ctrl-F
- Enter: main
+ Enter: unknown
  Press: Enter
 
- Before: line showing 'main' does not display
- After: tree is expanded to line showing 'main'
+ Before: gets stuck
+ After: tree is expanded to line showing 'unknown'
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Fixes:; ebd70c7dc2f5f ("perf scripts python: exported-sql-viewer.py: Add ability to find symbols in the call-graph")
+Fixes: 254c0d820b86d ("perf scripts python: exported-sql-viewer.py: Factor out CallGraphModelBase")
 Cc: stable@vger.kernel.org
 ---
- tools/perf/scripts/python/exported-sql-viewer.py | 1 +
- 1 file changed, 1 insertion(+)
+ tools/perf/scripts/python/exported-sql-viewer.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/tools/perf/scripts/python/exported-sql-viewer.py b/tools/perf/scripts/python/exported-sql-viewer.py
-index 26d7be785288..4be7cb68c8bb 100755
+index 4be7cb68c8bb..e0c90aeff15e 100755
 --- a/tools/perf/scripts/python/exported-sql-viewer.py
 +++ b/tools/perf/scripts/python/exported-sql-viewer.py
-@@ -1050,6 +1050,7 @@ class TreeWindowBase(QMdiSubWindow):
- 				child = self.model.index(row, 0, parent)
- 				if child.internalPointer().dbid == dbid:
- 					found = True
-+					self.view.setExpanded(parent, True)
- 					self.view.setCurrentIndex(child)
- 					parent = child
- 					break
+@@ -768,7 +768,8 @@ class CallGraphModel(CallGraphModelBase):
+ 						" FROM calls"
+ 						" INNER JOIN call_paths ON calls.call_path_id = call_paths.id"
+ 						" INNER JOIN symbols ON call_paths.symbol_id = symbols.id"
+-						" WHERE symbols.name" + match +
++						" WHERE calls.id <> 0"
++						" AND symbols.name" + match +
+ 						" GROUP BY comm_id, thread_id, call_path_id"
+ 						" ORDER BY comm_id, thread_id, call_path_id")
+ 
 -- 
 2.17.1
 
