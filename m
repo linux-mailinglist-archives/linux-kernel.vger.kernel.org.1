@@ -2,78 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E36920E4FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A0720E432
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390989AbgF2VbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:31:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728814AbgF2SlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:41:17 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A881B23CD3;
-        Mon, 29 Jun 2020 11:53:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593431599;
-        bh=QifnuQ3OqevnySCb9bfo+3KcLPSxAMMMZIagAZ6227s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e0aWtAUPAo87GHfZKyQbhiRqWa3TOxxpCGs+PthoYpE3SRwz9IL9vDqQ0KlAdyPtP
-         n4ZFnebis5MOWojN2HFXlCLy1nXDZPuw/hP353dnE/d0Vo0OSHmufFYbQ0YJ6uT7E/
-         vhLIv/zXwk8VMLcqD1NnztBgdw/i1JRu28SeW2RE=
-Date:   Mon, 29 Jun 2020 12:53:17 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, swboyd@chromium.org,
-        Dilip Kota <dkota@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH] spi: spi-geni-qcom: Don't set the cs if it was already
- right
-Message-ID: <20200629115316.GB5499@sirena.org.uk>
-References: <20200626151946.1.I06134fd669bf91fd387dc6ecfe21d44c202bd412@changeid>
+        id S2390964AbgF2VWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:22:20 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:52597 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730572AbgF2VWL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 17:22:11 -0400
+Received: from mail-qk1-f172.google.com ([209.85.222.172]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MDv1A-1jiCrd0EKK-00A1GE for <linux-kernel@vger.kernel.org>; Mon, 29 Jun
+ 2020 13:54:01 +0200
+Received: by mail-qk1-f172.google.com with SMTP id e11so14934554qkm.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 04:54:00 -0700 (PDT)
+X-Gm-Message-State: AOAM530VGvvB5fkMRMjDUeJj9aDLE47Y+6lLHa+oUn8CFAkbksOym1Er
+        76fNb0cx8XAOeXkQ+4a8n+NcRl4669mfr8rlViU=
+X-Google-Smtp-Source: ABdhPJwtBbHqFdSpCDwcXLaF0RSEsXGs33hzlBafcTQfeX/aXKD8IfSc9Jxe9Akfl5VitHcd5Y1zZ6gLJV9ZpAZ843A=
+X-Received: by 2002:a37:9dd6:: with SMTP id g205mr15063847qke.352.1593431639955;
+ Mon, 29 Jun 2020 04:53:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="XOIedfhf+7KOe/yw"
-Content-Disposition: inline
-In-Reply-To: <20200626151946.1.I06134fd669bf91fd387dc6ecfe21d44c202bd412@changeid>
-X-Cookie: Real programs don't eat cache.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1593425623-31810-1-git-send-email-Anson.Huang@nxp.com>
+ <1593425623-31810-2-git-send-email-Anson.Huang@nxp.com> <CAK8P3a31coESQTssW1mndGuZ1pvxXSRRpY=XT1ZO+pkj9aabxg@mail.gmail.com>
+ <DB3PR0402MB3916987E13C37013ACF59EB1F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+In-Reply-To: <DB3PR0402MB3916987E13C37013ACF59EB1F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 29 Jun 2020 13:53:44 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3Ar3TnSuxpUUMj4NjCK0Qb0pD9cVbcFUcdeGa85m2fUQ@mail.gmail.com>
+Message-ID: <CAK8P3a3Ar3TnSuxpUUMj4NjCK0Qb0pD9cVbcFUcdeGa85m2fUQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm64: defconfig: Select CONFIG_RESET_IMX7 by default
+To:     Anson Huang <anson.huang@nxp.com>
+Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Stefan Agner <stefan.agner@toradex.com>,
+        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Olof Johansson <olof@lixom.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:NIOSdfESoXFSE8b/DuYR3KL4+W+WZjWDOStjhIIYEq3ceB+isZb
+ Eiq1GkmUNJPAj68nWgC7PYKycit+ZrxUAdM/2CKx1wrGKhXDtCi6zlwSOl69jUHNXsEmCe7
+ R25isb36HglKPLXxIIzWGVRSKQXj2BzB1KA0dkVL9LmYThRrK0f0MkdH8tQhHMOvxffyHVI
+ blL85jSVrgafEUnJ8rSFQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:GIwaNzaF97M=:6INQF6qF6yeJQlhCQ4O+W1
+ +AHvlspnFmowebU86qfyDbkZ3+rGbzf1hIIOQUxo49v8CbDRRcVGEqZpM17VzHrP7ID4cHCXA
+ Hhghh+z8FrdvEXG9YGWWFbOdww6AFpaFfDNPq2GwT47CSz6K6/bnN7d2DgwhW3IBpdYAoERiB
+ foAW/29+wgSomKuLULrWbqMtT2djCiZ44/iZmypUCa/9V7m0R8FEkbEGOIO81RyV10BemSiS7
+ TnhUoOgzXQb/JXVtnIwW7y7UsOt99CjwOvuD4sxxcgiQT29TfBDb/V3ysGyZ2sLOl/XwtnR8d
+ vMB7UDoHf1Cs5bBzXePg5LP7KOElbG2R++/PNPoV+BXNGfgvLt5VZVZCL104qcN481OfREmDb
+ i97qTfbSDR6Qey35DA+8DfGf5mf/sjImXRnmgAWUVerilm6W5jeSq5lynyResp5wMp60zI/2g
+ 7BW6OUpXwdP4lT9CLeYdYSD+yKPA5txOE2TevkFd0f7ohBv8/k6B4oIUgqHsv6kjhSCoFGTlX
+ 9FpE2liUP0jkUBOi/kNf5n7VWi/rdgCVkcAT7vzaPlWm9ImUPLj10PrbqIhGi5Wxc+OHzjnbx
+ z4kaRn+qbeCgNNOkCW+m5IogeP90bvOraYqWoP1eccXrmkxcwpO/g2y9iF120MrwAEnGLu0fv
+ xmTmYqwnpFnyXnIInkPj1kRP2QDn6aBoeV2GEHMVlmlmVgNwgEGsOj4/nhqDIWSeyUnta2OqQ
+ vWbJIXF5ucYKAMckXSgGTrTKj+3KUqLT5NzBw8QeaULfxh8ooMSewdgyiVZTkgUOygEjZBgDk
+ Io2XUNYzZZckSiQKw6LIi7JAVQNebpxSl4/g1+tWe6FrwZ061k=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 29, 2020 at 1:34 PM Anson Huang <anson.huang@nxp.com> wrote:
+> > Subject: Re: [PATCH 2/3] arm64: defconfig: Select CONFIG_RESET_IMX7 by
+> > default
+> >
+> > On Mon, Jun 29, 2020 at 12:25 PM Anson Huang <Anson.Huang@nxp.com>
+> > wrote:
+> > >
+> > > i.MX7 reset driver now supports module build, it is no longer built in
+> > > by default, need to select it explicitly.
+> > >
+> > > Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> >
+> > Why not make it =m now that this is possible?
+>
+> It is because some drivers depends on this reset driver to work, such as PCIe,
+> If by default make it =m, it may impact PCIe's function, adding module support
+> at this point is try to provide function of loadable module for Android, but don't
+> want to impact any function which is working previously.
 
---XOIedfhf+7KOe/yw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It sounds like your patch 1/3 is not ready to be merged then.
 
-On Fri, Jun 26, 2020 at 03:19:50PM -0700, Douglas Anderson wrote:
-> Setting the chip select on the Qualcomm geni SPI controller isn't
-> exactly cheap.  Let's cache the current setting and avoid setting the
-> chip select if it's already right.
+Please make sure that loading it later does not break other drivers
+that depend on it. Other drivers don't have to be able to deal with
+missing dependencies if this one is never loaded or disabled at
+compile-time. However before you make it possible to turn this into
+a loadable module, anything that depends on it must be able to
+deal with the modules getting loaded in a random order first.
 
-Seems like it'd be worth pushing this up to the core - if we're
-constantly setting the same CS value then perhaps we ought to just stop
-doing that?
-
---XOIedfhf+7KOe/yw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl751iwACgkQJNaLcl1U
-h9AU/wf/bpfHFtT9ACyBIK96npjnnQz/vQ3t3lRL7uqyIfHIA/19K26V0j6Dbvwd
-aBYPo5xPqYDwqUHbobABbdZ5O1N6trSA8IO0I9+9MvV9vH0velLuDQIcsGEkVv8p
-8U+JrjDe2kjr7hRrqlYJvvFpbeT81Rcii6tN8cqz/Ek+eaRl7+ZOwOvanyYnzC8Y
-P5GZaxID2aTSx31RjkXiTsVzivPbZdRpQ8bE2MqhnGgyOsBVSpqOqYxLy6laSITN
-DCEwaCo+0FK+B9Fwy1/CjR4DAprkpm4tC1C3yw9Lyw1JVA9asTU4f8cG5MmiEDTT
-4XADNhyWNp+53XX+tudxCtkO84nsfQ==
-=Hcvu
------END PGP SIGNATURE-----
-
---XOIedfhf+7KOe/yw--
+       Arnd
