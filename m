@@ -2,115 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE8320D471
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0924120D432
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 21:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729244AbgF2TIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 15:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41738 "EHLO
+        id S1730734AbgF2TGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 15:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729229AbgF2TCn (ORCPT
+        with ESMTP id S1730529AbgF2TCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Jun 2020 15:02:43 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9E3C031C5D;
-        Mon, 29 Jun 2020 10:43:32 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id 35so7387270ple.0;
-        Mon, 29 Jun 2020 10:43:32 -0700 (PDT)
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B5BC031C5E;
+        Mon, 29 Jun 2020 10:44:03 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 67so4131721pfg.5;
+        Mon, 29 Jun 2020 10:44:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=zajKLFBWYvbR/dn70eWOQZrMNaJGoW21UItsytAj4Pg=;
+        b=tUchiO1ZmHPcMUQ6nb6f+GBa4GwRs+UmAyEev+2pWA7R/2ylJcq4ZTXHOQeyLtbtKC
+         7YJaKxcjh5GVMzls4Q0y2vp3h7D94xr91HPZHTYdn3HRQgzE3dF8791jm9A3v6tBOYqe
+         WN40ApOIzVoFRQK49V44l03voWX+TUL36q1dDsY4yrM2g6KHfASEnDkSdp5miGCDrg3+
+         PqVW30sWMvrXokrQORmke/VQMfqTpNs7Ifvm3EwToEa83E23Sy5TQACWtjB4RMpJgQPl
+         5SmtFPk5qWymIYKBXzKyeUZl7u0NABgETrEC4t95CUwAH4Rcq+4JnrfPp4X4iM/CKla8
+         k0ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wwO/+1x3ujsY+tBQxjynuoHG+S+oW8bGQ0JEGfkKl18=;
-        b=q6VTKnjrIQ9GZwtHp6W8lnaBCt0D7cnVX6zRR8zbRsgPRvWzkckmhVQnxhqhf2SztQ
-         +rk54A5VZ9T4y8tgIPDQb2TK0x30Gc2bxIHNeCV0+k/5JB2Qr8S31+9nzkZBv4H8B1dZ
-         S7Nx4knFUO5IYs75LGDNQGVYwC5/HUd+5nFVLyNwxvBUTDWBLKcOMr+cfrw2308dlldI
-         WrqpGGQ1IqKJYywRAR3S7h1nqCGSB1qKSb+phXXH60lUsIejGQpbomdqL9cK9Pvyslbk
-         Bs7T7ZU5e11Xcs+YQNk7qBcKT8bG04FCbxH16bkFyZa/Mw58JAhLh7JMcLNIom4umbOz
-         8tYg==
-X-Gm-Message-State: AOAM531FeqTpQdRePUJND4B+dv1KI7Dv6qrhGRy6ZmJ4M4L9UEoNnusq
-        4lvR0Io1hgJZb7GOeKItGzSoD7l6
-X-Google-Smtp-Source: ABdhPJwBT8x6FA0IDZEkNk2enlT2SeUgMHnfKY6ICLSCwyeYI5Ca9yC95pTwUTqHMsvKBPHYnrf8pw==
-X-Received: by 2002:a17:90a:70c6:: with SMTP id a6mr16987836pjm.16.1593452612181;
-        Mon, 29 Jun 2020 10:43:32 -0700 (PDT)
-Received: from sultan-box.localdomain ([89.46.114.241])
-        by smtp.gmail.com with ESMTPSA id m14sm353976pgn.83.2020.06.29.10.43.30
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=zajKLFBWYvbR/dn70eWOQZrMNaJGoW21UItsytAj4Pg=;
+        b=Hiyg0VM7FzFORSv7WbPWk/zWDfzusT9C853x3QcYrGF7uSB/PlrwIkjfMc8BqteZPi
+         D4w1WwunePVvphKkDXbkdZ1KPgSKMM1kC8xRVVGZ88xjj5r20t3RtsBQ/Xm3gn6QXfOw
+         jGOGeI4JmWLhBq5c1tyjr1wrobWBaxWmLOArhMTTo2VUA9xEgUzG1Otot38bWyooYI39
+         vWZN5BX18fE66alc6jSYnRmvQocfSicozZ3by9E6WChqQExTvlI3BWQ94u4m9MzoR25h
+         BvMm6y+GvyfH/JrsDX7w1ALlQtzzD9U8Rwab6YZszybK+6+gWH5PwFIudxWed2P6BB+U
+         h2Cg==
+X-Gm-Message-State: AOAM533Vqzx7Cl9NrhPmxMljb5ImMXuuZ3ljDs6nuyTFrzllL1Cb2aAz
+        hieoQKu/lihXeBu8EtCNIns=
+X-Google-Smtp-Source: ABdhPJzBcLLzwLTBp+SADDEiJRBUHsSxdEdo7/SpaPcZ8T2RJtU5PzmMtmzfSCa+VgpSvypvEpCRVA==
+X-Received: by 2002:a63:d74c:: with SMTP id w12mr11600066pgi.260.1593452642988;
+        Mon, 29 Jun 2020 10:44:02 -0700 (PDT)
+Received: from localhost ([160.16.113.140])
+        by smtp.gmail.com with ESMTPSA id j2sm202778pjf.4.2020.06.29.10.44.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 10:43:31 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 10:43:28 -0700
-From:   Sultan Alsawaf <sultan@kerneltoast.com>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc:     aaron.ma@canonical.com, admin@kryma.net,
-        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
-        hdegoede@redhat.com, hn.chen@weidahitech.com, jikos@kernel.org,
-        kai.heng.feng@canonical.com, linux-i2c@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com,
-        wsa@kernel.org
-Subject: Re: [PATCH v2] HID: i2c-hid: Use block reads when possible to save
- power
-Message-ID: <20200629174328.GB1646@sultan-box.localdomain>
-References: <c4373272-e656-773c-dfd2-0efc4c53c92d@linux.intel.com>
- <20200616154951.3050-1-sultan@kerneltoast.com>
- <37ceaf7a-3421-e305-4355-a6b40ae54843@linux.intel.com>
+        Mon, 29 Jun 2020 10:44:02 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Tue, 30 Jun 2020 01:43:52 +0800
+To:     Benjamin Poirier <benjamin.poirier@gmail.com>
+Cc:     devel@driverdev.osuosl.org, joe@perches.com,
+        dan.carpenter@oracle.com, gregkh@linuxfoundation.org,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/4] staging: qlge: replace pr_err with netdev_err
+Message-ID: <20200629174352.euw4lckze2k7xtbm@Rk>
+References: <20200627145857.15926-1-coiby.xu@gmail.com>
+ <20200627145857.15926-5-coiby.xu@gmail.com>
+ <20200629053004.GA6165@f3>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <37ceaf7a-3421-e305-4355-a6b40ae54843@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200629053004.GA6165@f3>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 02:17:19PM +0300, Jarkko Nikula wrote:
-> On 6/16/20 6:49 PM, Sultan Alsawaf wrote:
-> > From: Sultan Alsawaf <sultan@kerneltoast.com>
-> > 
-> > We have no way of knowing how large an incoming payload is going to be,
-> > so the only strategy available up until now has been to always retrieve
-> > the maximum possible report length over i2c, which can be quite
-> > inefficient. For devices that send reports in block read format, the i2c
-> > controller driver can read the payload length on the fly and terminate
-> > the i2c transaction early, resulting in considerable power savings.
-> > 
-> > On a Dell Precision 15 5540 with an i9-9880H, resting my finger on the
-> > touchpad causes psys power readings to go up by about 4W and hover there
-> > until I remove my finger. With this patch, my psys readings go from 4.7W
-> > down to 3.1W, yielding about 1.6W in savings. This is because my
-> > touchpad's max report length is 60 bytes, but all of the regular reports
-> > it sends for touch events are only 32 bytes, so the i2c transfer is
-> > roughly halved for the common case.
-> > 
-> > Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
-> > ---
-> > Jarkko, could you try this?
-> >   drivers/hid/i2c-hid/i2c-hid-core.c | 5 ++++-
-> >   1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-> > index 294c84e136d7..739dccfc57e1 100644
-> > --- a/drivers/hid/i2c-hid/i2c-hid-core.c
-> > +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-> > @@ -472,11 +472,14 @@ static void i2c_hid_get_input(struct i2c_hid *ihid)
-> >   	int ret;
-> >   	u32 ret_size;
-> >   	int size = le16_to_cpu(ihid->hdesc.wMaxInputLength);
-> > +	u16 flags;
-> >   	if (size > ihid->bufsize)
-> >   		size = ihid->bufsize;
-> > -	ret = i2c_master_recv(ihid->client, ihid->inbuf, size);
-> > +	/* Try to do a block read if the size fits in one byte */
-> > +	flags = size > 255 ? I2C_M_RD : I2C_M_RD | I2C_M_RECV_LEN;
-> > +	ret = i2c_transfer_buffer_flags(ihid->client, ihid->inbuf, size, flags);
-> >   	if (ret != size) {
-> >   		if (ret < 0)
-> >   			return;
-> 
-> This still causes a regression for me.
+On Mon, Jun 29, 2020 at 02:30:04PM +0900, Benjamin Poirier wrote:
+>On 2020-06-27 22:58 +0800, Coiby Xu wrote:
+>[...]
+>>  void ql_dump_qdev(struct ql_adapter *qdev)
+>>  {
+>> @@ -1611,99 +1618,100 @@ void ql_dump_qdev(struct ql_adapter *qdev)
+>>  #ifdef QL_CB_DUMP
+>>  void ql_dump_wqicb(struct wqicb *wqicb)
+>>  {
+>> -	pr_err("Dumping wqicb stuff...\n");
+>> -	pr_err("wqicb->len = 0x%x\n", le16_to_cpu(wqicb->len));
+>> -	pr_err("wqicb->flags = %x\n", le16_to_cpu(wqicb->flags));
+>> -	pr_err("wqicb->cq_id_rss = %d\n",
+>> -	       le16_to_cpu(wqicb->cq_id_rss));
+>> -	pr_err("wqicb->rid = 0x%x\n", le16_to_cpu(wqicb->rid));
+>> -	pr_err("wqicb->wq_addr = 0x%llx\n",
+>> -	       (unsigned long long)le64_to_cpu(wqicb->addr));
+>> -	pr_err("wqicb->wq_cnsmr_idx_addr = 0x%llx\n",
+>> -	       (unsigned long long)le64_to_cpu(wqicb->cnsmr_idx_addr));
+>> +	netdev_err(qdev->ndev, "Dumping wqicb stuff...\n");
+>
+>drivers/staging/qlge/qlge_dbg.c:1621:13: error: ‘qdev’ undeclared (first use in this function); did you mean ‘cdev’?
+> 1621 |  netdev_err(qdev->ndev, "Dumping wqicb stuff...\n");
+>      |             ^~~~
+>      |             cdev
+>
+>[...]
+>and many more like that
+>
+>Anyways, qlge_dbg.h is a dumpster. It has hundreds of lines of code
+>bitrotting away in ifdef land. See this comment from David Miller on the
+>topic of ifdef'ed debugging code:
+>https://lore.kernel.org/netdev/20200303.145916.1506066510928020193.davem@davemloft.net/
 
-Hmm, for some reason in 5.8 I get the same problem, but 5.7 is fine. Could you
-try this on 5.7 and see if it works?
+Thank you for spotting this problem! This issue could be fixed by
+passing qdev to ql_dump_wqicb. Or are you suggesting we completely
+remove qlge_dbg since it's only for the purpose of debugging the driver
+by the developer?
 
-In the meantime I'll bisect 5.8 to see why it's causing problems for me...
+Btw, I'm curious how you make this compiling error occur. Do you manually trigger
+it via "QL_CB_DUMP=1 make M=drivers/staging/qlge" or use some automate
+tools?
 
-Sultan
+--
+Best regards,
+Coiby
