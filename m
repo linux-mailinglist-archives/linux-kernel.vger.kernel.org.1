@@ -2,66 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427ED20E52F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25E820E58D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 00:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728616AbgF2VeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 17:34:00 -0400
-Received: from mga06.intel.com ([134.134.136.31]:13469 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728630AbgF2Vd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:33:57 -0400
-IronPort-SDR: W4F/L96Wg6shjp4F5mUwljVkF0dflLaPEeXoEROxvUO1Qnv5eCHg1/dHkZxYTXnMG2m4fOYoG9
- yq9bh+wOTOOQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="207599721"
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="207599721"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 14:33:55 -0700
-IronPort-SDR: +eiATfBA9bo4hucX3V0Y+/dJ1kiHgE21TReelGbH2BmoL+HHo566d99Q+X53f2SfpaqLtk32vm
- xUxRiyZKWw5w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="277215572"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
-  by orsmga003.jf.intel.com with ESMTP; 29 Jun 2020 14:33:54 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id 959A7301BA3; Mon, 29 Jun 2020 14:33:54 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 14:33:54 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [RFC 00/10] perf tools: Add support to reuse metric
-Message-ID: <20200629213354.GH818054@tassilo.jf.intel.com>
-References: <20200626194720.2915044-1-jolsa@kernel.org>
- <b1fd3b2d-9312-bbb1-7803-426dbb737866@huawei.com>
+        id S1731795AbgF2Vi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 17:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731536AbgF2Vhn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 17:37:43 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55A1C03E979
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:37:42 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id t27so10876743ill.9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 14:37:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qO4ruJi3PkHIFqtk9SeCvrzbofsNNbj7BYEByAmu5bA=;
+        b=Gey87y3jt6nWsaveT2OTLNBOEHZawnXKmUWQlevdIEUWRgf7sOubP1TcMEKCXTj9mV
+         r2nQ2Sv2HcbBNenrKbZ1479H4nyPjZrjXMRmrzt++sVcPCB8WUAyE5kpthQ0y51XWQnC
+         52YdiC9EC7f7tw+/ap9OBgWfnPJ41THUCNJjzBRPFyRR46bi0VOYecwH3M1IWfpDKKez
+         pLXpYNsZLLfJuA0LEvIib0MhoG6GpTsg41hdSI6esuIkD/gUA+LuDlhMZF8DJ+nflAKA
+         uJaSZpGRFCS1nw3Jt0JwxZb1jowvkIYE7pBQ0xGKE4GcGhdzfc/438Hkbt1Oq9ORh+nP
+         wjgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qO4ruJi3PkHIFqtk9SeCvrzbofsNNbj7BYEByAmu5bA=;
+        b=KZLR3ZGb/F4bcF5u2eLUk1AC+wUvdusZ8Nav5ZJK//y2IEyzszooZfFtyoZVgdiehv
+         1NBOtZptbTA5ljUDVgZOLIJjdk17niz4PBXzNs0z5oSZM4F4q0Q5FjHoaQNujRrSwDqf
+         3fmyNqCsOVLZZSPYlhuaIW45V6VLegPJVKtsSZYnm+EelIBfWasIc43pRXryu9vBG2gs
+         3odBPezAxSQGtVNrXhPskRwN+YC0ez2Kk1VMfxBxVUWH5Db8ZohwSuNMsCuTjKWdN7dU
+         Es7wqJVF++E9vg3VQVyfP0n+O22vCSxxTVu7RVgeXcI2huo0maNk3Rdy6fWyT6WP3YYc
+         H/Dw==
+X-Gm-Message-State: AOAM531v7OX9d3whoMDAjioZ/3ADSWtH3ZcAJ1DJbyzmk8T2pABuPwug
+        wbjfv3nL3lGuLyHcvfjTHYFGhHOiT+g=
+X-Google-Smtp-Source: ABdhPJwm4KYV+HQnzhOwU7UoeEZy92fwTDCelEPfXe7+2jgZFqpJkhmsmTWJh970ZUwuXV2rqJv/Gg==
+X-Received: by 2002:a92:bb91:: with SMTP id x17mr16714746ilk.156.1593466662318;
+        Mon, 29 Jun 2020 14:37:42 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id u6sm571353ilg.32.2020.06.29.14.37.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 14:37:41 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/3] net: ipa: small improvements
+Date:   Mon, 29 Jun 2020 16:37:35 -0500
+Message-Id: <20200629213738.1180618-1-elder@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b1fd3b2d-9312-bbb1-7803-426dbb737866@huawei.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I'm guessing that those metric JSONs are human generated, so would be
-> suitable; unlike the regular JSONs, which are automated.
+This series contains two patches that improve the error output
+that's reported when an error occurs while changing the state of a
+GSI channel or event ring.  The first ensures all such error
+conditions report an error, and the second simplifies the messages a
+little and ensures they are all consistent.
 
-The x86 metrics are auto generated too.
+A third (indepenedent) patch gets rid of an unused symbol in the
+microcontroller code.
 
-That's why you see the repetition.
+					-Alex
 
--Andi
+Alex Elder (3):
+  net: ipa: always report GSI state errors
+  net: ipa: standarize more GSI error messages
+  net: ipa: kill IPA_MEM_UC_OFFSET
+
+ drivers/net/ipa/gsi.c    | 111 +++++++++++++++++++++------------------
+ drivers/net/ipa/ipa_uc.c |  10 ++--
+ 2 files changed, 63 insertions(+), 58 deletions(-)
+
+-- 
+2.25.1
+
