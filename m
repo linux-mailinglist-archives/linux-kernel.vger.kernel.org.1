@@ -2,118 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB70B20D2A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E4920D2AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Jun 2020 20:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729319AbgF2SvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 14:51:08 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:1073 "EHLO pegase1.c-s.fr"
+        id S1729618AbgF2Svb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 14:51:31 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:42396 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729354AbgF2Su4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:50:56 -0400
+        id S1727986AbgF2SvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:51:00 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49wPzT6MWWz9tyrL;
-        Mon, 29 Jun 2020 13:15:17 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 49wPzW0x6Rz9tyrM;
+        Mon, 29 Jun 2020 13:15:19 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id MTFRV6BJdewt; Mon, 29 Jun 2020 13:15:17 +0200 (CEST)
+        with ESMTP id cKlGC0OSkxdq; Mon, 29 Jun 2020 13:15:19 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49wPzT5F5Yz9tyqw;
-        Mon, 29 Jun 2020 13:15:17 +0200 (CEST)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49wPzV70Lcz9tyqw;
+        Mon, 29 Jun 2020 13:15:18 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1785E8B79E;
-        Mon, 29 Jun 2020 13:15:24 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 42A3D8B7A0;
+        Mon, 29 Jun 2020 13:15:25 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id KIh9pwSoMCUv; Mon, 29 Jun 2020 13:15:24 +0200 (CEST)
+        with ESMTP id xebvCT7XwNct; Mon, 29 Jun 2020 13:15:25 +0200 (CEST)
 Received: from pc16570vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.105])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id ECE6B8B799;
-        Mon, 29 Jun 2020 13:15:23 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 00C338B799;
+        Mon, 29 Jun 2020 13:15:24 +0200 (CEST)
 Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id EC4CE65B29; Mon, 29 Jun 2020 11:15:23 +0000 (UTC)
-Message-Id: <b38b52cd8dabbb56fbd6f9219d6f3cdccbb43b44.1593428200.git.christophe.leroy@csgroup.eu>
+        id 0000565B29; Mon, 29 Jun 2020 11:15:24 +0000 (UTC)
+Message-Id: <893425e32cd0a003539573b2d115e0ffa98bc26c.1593428200.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <cover.1593428200.git.christophe.leroy@csgroup.eu>
 References: <cover.1593428200.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 4/6] powerpc/32: Set user/kernel boundary at TASK_SIZE
- instead of PAGE_OFFSET
+Subject: [PATCH v2 5/6] powerpc/32s: Kernel space starts at TASK_SIZE
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 29 Jun 2020 11:15:23 +0000 (UTC)
+Date:   Mon, 29 Jun 2020 11:15:24 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-User space stops at TASK_SIZE. At the moment, kernel space starts
-at PAGE_OFFSET.
-
-In order to use space between TASK_SIZE and PAGE_OFFSET for modules,
-make TASK_SIZE the limit between user and kernel space.
-
-Note that fault.c already considers TASK_SIZE as the boundary between
-user and kernel space.
+Kernel space starts at TASK_SIZE. Select kernel page table
+when address is over TASK_SIZE.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/include/asm/page.h | 4 +++-
- arch/powerpc/mm/ptdump/ptdump.c | 8 ++++++--
- 2 files changed, 9 insertions(+), 3 deletions(-)
+ arch/powerpc/kernel/head_32.S       | 12 ++++++------
+ arch/powerpc/mm/book3s32/hash_low.S |  2 +-
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/page.h b/arch/powerpc/include/asm/page.h
-index a63fe6f3a0ff..254687258f42 100644
---- a/arch/powerpc/include/asm/page.h
-+++ b/arch/powerpc/include/asm/page.h
-@@ -255,8 +255,10 @@ static inline bool pfn_valid(unsigned long pfn)
-  */
- #ifdef CONFIG_PPC_BOOK3E_64
- #define is_kernel_addr(x)	((x) >= 0x8000000000000000ul)
--#else
-+#elif defined(CONFIG_PPC_BOOK3S_64)
- #define is_kernel_addr(x)	((x) >= PAGE_OFFSET)
-+#else
-+#define is_kernel_addr(x)	((x) >= TASK_SIZE)
+diff --git a/arch/powerpc/kernel/head_32.S b/arch/powerpc/kernel/head_32.S
+index 705c042309d8..bbef6ce8322b 100644
+--- a/arch/powerpc/kernel/head_32.S
++++ b/arch/powerpc/kernel/head_32.S
+@@ -474,7 +474,7 @@ InstructionTLBMiss:
+ 	/* Get PTE (linux-style) and check access */
+ 	mfspr	r3,SPRN_IMISS
+ #if defined(CONFIG_MODULES) || defined(CONFIG_DEBUG_PAGEALLOC)
+-	lis	r1,PAGE_OFFSET@h		/* check if kernel address */
++	lis	r1, TASK_SIZE@h		/* check if kernel address */
+ 	cmplw	0,r1,r3
  #endif
- 
- #ifndef CONFIG_PPC_BOOK3S_64
-diff --git a/arch/powerpc/mm/ptdump/ptdump.c b/arch/powerpc/mm/ptdump/ptdump.c
-index de6e05ef871c..9d942136c7be 100644
---- a/arch/powerpc/mm/ptdump/ptdump.c
-+++ b/arch/powerpc/mm/ptdump/ptdump.c
-@@ -348,7 +348,11 @@ static void populate_markers(void)
- {
- 	int i = 0;
- 
-+#ifdef CONFIG_PPC64
- 	address_markers[i++].start_address = PAGE_OFFSET;
-+#else
-+	address_markers[i++].start_address = TASK_SIZE;
-+#endif
- 	address_markers[i++].start_address = VMALLOC_START;
- 	address_markers[i++].start_address = VMALLOC_END;
- #ifdef CONFIG_PPC64
-@@ -385,7 +389,7 @@ static int ptdump_show(struct seq_file *m, void *v)
- 	struct pg_state st = {
- 		.seq = m,
- 		.marker = address_markers,
--		.start_address = PAGE_OFFSET,
-+		.start_address = IS_ENABLED(CONFIG_PPC64) ? PAGE_OFFSET : TASK_SIZE,
- 	};
- 
- #ifdef CONFIG_PPC64
-@@ -429,7 +433,7 @@ void ptdump_check_wx(void)
- 		.seq = NULL,
- 		.marker = address_markers,
- 		.check_wx = true,
--		.start_address = PAGE_OFFSET,
-+		.start_address = IS_ENABLED(CONFIG_PPC64) ? PAGE_OFFSET : TASK_SIZE,
- 	};
- 
- #ifdef CONFIG_PPC64
+ 	mfspr	r2, SPRN_SPRG_PGDIR
+@@ -484,7 +484,7 @@ InstructionTLBMiss:
+ 	li	r1,_PAGE_PRESENT | _PAGE_EXEC
+ #endif
+ #if defined(CONFIG_MODULES) || defined(CONFIG_DEBUG_PAGEALLOC)
+-	bge-	112f
++	bgt-	112f
+ 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
+ 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+ #endif
+@@ -541,7 +541,7 @@ DataLoadTLBMiss:
+  */
+ 	/* Get PTE (linux-style) and check access */
+ 	mfspr	r3,SPRN_DMISS
+-	lis	r1,PAGE_OFFSET@h		/* check if kernel address */
++	lis	r1, TASK_SIZE@h		/* check if kernel address */
+ 	cmplw	0,r1,r3
+ 	mfspr	r2, SPRN_SPRG_PGDIR
+ #ifdef CONFIG_SWAP
+@@ -549,7 +549,7 @@ DataLoadTLBMiss:
+ #else
+ 	li	r1, _PAGE_PRESENT
+ #endif
+-	bge-	112f
++	bgt-	112f
+ 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
+ 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+ 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
+@@ -621,7 +621,7 @@ DataStoreTLBMiss:
+  */
+ 	/* Get PTE (linux-style) and check access */
+ 	mfspr	r3,SPRN_DMISS
+-	lis	r1,PAGE_OFFSET@h		/* check if kernel address */
++	lis	r1, TASK_SIZE@h		/* check if kernel address */
+ 	cmplw	0,r1,r3
+ 	mfspr	r2, SPRN_SPRG_PGDIR
+ #ifdef CONFIG_SWAP
+@@ -629,7 +629,7 @@ DataStoreTLBMiss:
+ #else
+ 	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT
+ #endif
+-	bge-	112f
++	bgt-	112f
+ 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
+ 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+ 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
+diff --git a/arch/powerpc/mm/book3s32/hash_low.S b/arch/powerpc/mm/book3s32/hash_low.S
+index 923ad8f374eb..1690d369688b 100644
+--- a/arch/powerpc/mm/book3s32/hash_low.S
++++ b/arch/powerpc/mm/book3s32/hash_low.S
+@@ -62,7 +62,7 @@ _GLOBAL(hash_page)
+ 	isync
+ #endif
+ 	/* Get PTE (linux-style) and check access */
+-	lis	r0,KERNELBASE@h		/* check if kernel address */
++	lis	r0, TASK_SIZE@h		/* check if kernel address */
+ 	cmplw	0,r4,r0
+ 	ori	r3,r3,_PAGE_USER|_PAGE_PRESENT /* test low addresses as user */
+ 	mfspr	r5, SPRN_SPRG_PGDIR	/* phys page-table root */
 -- 
 2.25.0
 
