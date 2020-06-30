@@ -2,125 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3224E20FB42
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB6920FB47
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390583AbgF3SBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 14:01:45 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:43655 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388845AbgF3SBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 14:01:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593540100; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=+G0qzjq7xTY88X7OcBYQaImWxX0IMwWEgRF+hWEiQZg=; b=gzug9RXYHXl1G9j0OlovNBtCFii9hwJGR3sPZv/mIhoKFKYqVMh0yYDjyxgIz+ZDodlG2jSh
- 6+Ke3PkGH9sYaX9cT5s+4LEM6yLVBy4OfGUYoPh5oyTDqrijnNCyJUfvhatrbj8mbplkMO3x
- Q3LUr9puly7S5IqRpCdH+C7UXNc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n20.prod.us-east-1.postgun.com with SMTP id
- 5efb7df98fe116ddd9429650 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Jun 2020 18:01:29
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2C129C433CA; Tue, 30 Jun 2020 18:01:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 72BCCC433C6;
-        Tue, 30 Jun 2020 18:01:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 72BCCC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, Jeffrey Hugo <jhugo@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCH 3/3] arm64: Add KRYO4XX silver CPU cores to erratum list 1530923 and 1024718
-Date:   Tue, 30 Jun 2020 23:30:55 +0530
-Message-Id: <7013e8a3f857ca7e82863cc9e34a614293d7f80c.1593539394.git.saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1593539394.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1593539394.git.saiprakash.ranjan@codeaurora.org>
+        id S2390598AbgF3SCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 14:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733028AbgF3SCp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 14:02:45 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA62C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 11:02:44 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id n23so23690779ljh.7
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 11:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EqFV+aEDatN0MsHX/XVi1DRPrONFdIa6+nFfBujC0Ls=;
+        b=EAqU11uCdQrt1ChMpyrd1RyBBFe0OAzwEp6hoTYE3znu9IrZKk9Lxqzpw/zhMs/WG/
+         1Fu9mNvA4GmzPvgEzbUH/6PKTyphxwGgiTmYgvN5IJHzv/19hx1/p/A2WZMFVwjSn5yf
+         QwgHOMAQzURaBa3LMGZGKMxqjyv6QB89tVz54=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EqFV+aEDatN0MsHX/XVi1DRPrONFdIa6+nFfBujC0Ls=;
+        b=S1zu6y5UuKzsuDPh3OE9AMVU45VpSFo2MaXvT+uElLE4Y8eO3GLwJupqWXP9C6RZDJ
+         SdiXRMOi5nDFSYXc8sqKT/f7IuLvB+ddqS/+apUe4E4WcJ3ATXd66h/T0+91/LRmxXxg
+         gqNfCWQnaaPSLGs6qrBugYthH0ZnlHq7uinSeGFEU4ajmZnYllJhSPy1Se6xEn6J91xm
+         4Cz5GfUIqHKz+1+iNCf9KUy1EpJYu7vp7Yg5WFkfjwxijVJGsG+Kdfb6F9E3icGplrZ6
+         pJbmJipxuN1zBC2gQRPF2t0FJ0+6bX0g0H0dNwixvliUvOFHBJpl9B7ahgjgLZ8H3k4J
+         Ql/Q==
+X-Gm-Message-State: AOAM5307WxE3NH//OEvNq+tAZnDtv/XdOUeJp4BEIahJ5FbSU9vGcUZV
+        h7h65ernwqEuMiPpuugoq1pPhyj1M44=
+X-Google-Smtp-Source: ABdhPJx0SdnXIJTEd5ZXHyZ061XniEZnVisQ3u93Ryl5qVYYHuVOd+TchJUJlWj1FVmsiooP8eVq5A==
+X-Received: by 2002:a2e:854b:: with SMTP id u11mr7840354ljj.99.1593540162778;
+        Tue, 30 Jun 2020 11:02:42 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id i8sm1081704lja.18.2020.06.30.11.02.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jun 2020 11:02:40 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id k15so11919891lfc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 11:02:40 -0700 (PDT)
+X-Received: by 2002:ac2:5093:: with SMTP id f19mr12738963lfm.10.1593540159598;
+ Tue, 30 Jun 2020 11:02:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAHk-=wjJA2Z3kUFb-5s=6+n0qbTs8ELqKFt9B3pH85a8fGD73w@mail.gmail.com>
+ <20200626154313.GI4817@hirez.programming.kicks-ass.net> <CAHk-=whvVWNXPJq1k566zn4SfXAifXtiA7T+7JFweR3rQ0nc9A@mail.gmail.com>
+ <1593396958.ydiznwsuu8.astroid@bobo.none> <20200629140245.GB20323@redhat.com>
+ <1593482844.k3rh7s05o8.astroid@bobo.none> <20200630061708.GA21263@redhat.com>
+ <1593505946.t0nxq8q8kj.astroid@bobo.none> <20200630105354.GB23871@redhat.com>
+ <20200630113637.GC23871@redhat.com> <20200630115052.GD23871@redhat.com>
+In-Reply-To: <20200630115052.GD23871@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 30 Jun 2020 11:02:23 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgfjK_-Wfkb6yXYpB5WfOv5yP2NiFO68yQfBfnzRu4yYQ@mail.gmail.com>
+Message-ID: <CAHk-=wgfjK_-Wfkb6yXYpB5WfOv5yP2NiFO68yQfBfnzRu4yYQ@mail.gmail.com>
+Subject: Re: wait_on_page_bit_common(TASK_KILLABLE, EXCLUSIVE) can miss wakeup?
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>, Jan Kara <jack@suse.cz>,
+        Lukas Czerner <lczerner@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KRYO4XX silver/LITTLE CPU cores with revision r1p0 are affected by
-erratum 1530923 and 1024718, so add them to the respective list.
-The variant and revision bits are implementation defined and are
-different from the their Cortex CPU counterparts on which they are
-based on, i.e., r1p0 is equivalent to rdpe.
+On Tue, Jun 30, 2020 at 4:51 AM Oleg Nesterov <oleg@redhat.com> wrote:
+>
+> On 06/30, Oleg Nesterov wrote:
+> >
+> > may be someting like this
+>
+> or this ...
 
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- Documentation/arm64/silicon-errata.rst | 4 ++++
- arch/arm64/kernel/cpu_errata.c         | 2 ++
- arch/arm64/kernel/cpufeature.c         | 2 ++
- 3 files changed, 8 insertions(+)
+Guys, I'd suggest we either
 
-diff --git a/Documentation/arm64/silicon-errata.rst b/Documentation/arm64/silicon-errata.rst
-index f3c0c4393e7e..3f7c3a7e8a2b 100644
---- a/Documentation/arm64/silicon-errata.rst
-+++ b/Documentation/arm64/silicon-errata.rst
-@@ -151,6 +151,10 @@ stable kernels.
- +----------------+-----------------+-----------------+-----------------------------+
- | Qualcomm Tech. | Kryo4xx Gold    | N/A             | ARM64_ERRATUM_1418040       |
- +----------------+-----------------+-----------------+-----------------------------+
-+| Qualcomm Tech. | Kryo4xx Silver  | N/A             | ARM64_ERRATUM_1530923       |
-++----------------+-----------------+-----------------+-----------------------------+
-+| Qualcomm Tech. | Kryo4xx Silver  | N/A             | ARM64_ERRATUM_1024718       |
-++----------------+-----------------+-----------------+-----------------------------+
- +----------------+-----------------+-----------------+-----------------------------+
- | Fujitsu        | A64FX           | E#010001        | FUJITSU_ERRATUM_010001      |
- +----------------+-----------------+-----------------+-----------------------------+
-diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
-index 044f1d7aebdf..8e302dc093d0 100644
---- a/arch/arm64/kernel/cpu_errata.c
-+++ b/arch/arm64/kernel/cpu_errata.c
-@@ -769,6 +769,8 @@ static const struct midr_range erratum_speculative_at_list[] = {
- #ifdef CONFIG_ARM64_ERRATUM_1530923
- 	/* Cortex A55 r0p0 to r2p0 */
- 	MIDR_RANGE(MIDR_CORTEX_A55, 0, 0, 2, 0),
-+	/* Kryo4xx Silver (rdpe => r1p0) */
-+	MIDR_REV(MIDR_QCOM_KRYO_4XX_SILVER, 0xd, 0xe),
- #endif
- 	{},
- };
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 9f63053a63a9..9fae0efc80c1 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1408,6 +1408,8 @@ static bool cpu_has_broken_dbm(void)
- 	static const struct midr_range cpus[] = {
- #ifdef CONFIG_ARM64_ERRATUM_1024718
- 		MIDR_RANGE(MIDR_CORTEX_A55, 0, 0, 1, 0),  // A55 r0p0 -r1p0
-+		/* Kryo4xx Silver (rdpe => r1p0) */
-+		MIDR_REV(MIDR_QCOM_KRYO_4XX_SILVER, 0xd, 0xe),
- #endif
- 		{},
- 	};
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+ (a) do the minimal ugly one-liner workaround
 
+or
+
+ (b) do something *much* more radical.
+
+What would that "radical" thing be? Just move the "behavior" bit into
+the "struct wait_page_key" itself, and handle it at wakeup time!
+
+Right now we have
+
+ - wake_page_function() basically tests that it's the right bit and
+page, and that the bit has actually cleared
+
+ - then it calls "autoremove_wake_function()" to wake things up and
+remove you from the wait list if that wqoke you up.
+
+I would suggest that if we want to clean this up, we do
+
+ - add "behavior" to  "struct wait_page_key"
+
+ - now, for the "exclusive" case, instead of doing
+
+        if (test_bit(key->bit_nr, &key->page->flags))
+                return -1;
+
+   the wake_page_function() would actually do
+
+        if (test_and_set_bit(key->bit_nr, &key->page->flags))
+                return -1;
+        /*
+         * Careful, careful: we need to make sure that the *last*
+         * thing that touches 'wq_entry' is setting WQ_FLAG_WOKEN
+         */
+        list_del_init(&wq_entry->entry);
+        default_wake_function(wq_entry, mode, sync, key);
+        smp_store_release(&wq_entry->flags, WQ_FLAG_WOKEN);
+
+        /* No point in waking up anybody else */
+        return -1;
+
+while for the SHARED and DROP cases it would do
+
+        if (test_bit(key->bit_nr, &key->page->flags))
+                return -1;
+        list_del_init(&wq_entry->entry);
+        default_wake_function(wq_entry, mode, sync, key);
+        smp_store_release(&wq_entry->flags, WQ_FLAG_WOKEN);
+
+        return 0;
+
+and now the actual _waiting_ side can basically just do
+
+        /* All the wait-queue setup is done outside the loop */
+        wait_page.behavior = behavior;
+
+        spin_lock_irq(&q->lock);
+        .. test the big again here, do the rigth thing for mode, exit if done ..
+        __add_wait_queue_entry_tail(q, wait);
+        SetPageWaiters(page);
+        set_current_state(state);
+        spin_unlock_irq(&q->lock);
+
+        for (;;) {
+                set_current_state(state);
+
+                /*
+                 * Have we already been woken and are all done?
+                 * We don't even need to remove ourselves from the
+                 * wait-queues, that's been done for us.
+                 */
+                if (wait->flags & WQ_FLAG_WOKEN)
+                        return 0;
+
+                if (signal_pending_state(state, current))
+                         break;
+
+                io_schedule();
+        }
+        /* We got interrupted by a signal? */
+        finish_wait(q, wait);
+
+        /* But maybe we raced with being woken and are all done? */
+        if (wait->flags & WQ_FLAG_WOKEN)
+                        return 0;
+
+        return -EINTR;
+
+NOTE! The above doesn't do the thrashing/delayacct handling, and that
+was intentional for clarity, because I actually think that should be
+done in an outer function that just calls this actual "do the
+lock/wait"
+
+Look, doesn't that seem *much* simpler and clearer? Having that flag
+in the wait-queue (that stays around even after it's been removed from
+the list) shows that the state we're testing for - or the state we
+wanted - is already ours.
+
+Note that we have a "woken_wake_function()" that does that
+WQ_FLAG_WOKEN thing, but I don't think it's careful about that final
+WQ_FLAG_WOKEN bit setting, and the above function cares about that
+(notice how it checks WQ_FLAG_WOKEN without ever taking the spinlock
+that protects the other members of it, so the stack space can get
+deallocated immediately once it sees that flag.
+
+The above code has been written in my MUA, it may be entirely broken,
+but it _feels_ right to me.
+
+And yes, it's a lot bigger change than my one-liner. But honestly,
+this is the kind of thing that the whole "struct wait_page_key" thing
+is all about and exists for.
+
+What do people think? I think it clarifies the logic and makes things
+potentially much clearer. In fact, now the actual _waiting_ code never
+looks at the struct page at all, so it can drop the reference to the
+page early, outside the loop, adn that "drop" thing doesn't even have
+to be visible on the waker side either (the wakeup logic is the same
+as SHARED)
+
+Hmm?
+
+              Linus
