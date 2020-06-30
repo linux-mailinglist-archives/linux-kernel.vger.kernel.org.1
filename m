@@ -2,88 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2D920FD01
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 21:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 101A420FD09
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 21:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728670AbgF3TtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 15:49:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40208 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728560AbgF3TtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 15:49:02 -0400
-Received: from localhost (p54b336a9.dip0.t-ipconnect.de [84.179.54.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79D6120772;
-        Tue, 30 Jun 2020 19:49:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593546541;
-        bh=IWxlISulah6RhOy6J2vA8oMb7rvC2fwPEgBQsTsQizI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q5XFm/l9zfm54VE+Z58NhezTyC1ubjIl/uMEXXqS1qb3eBA3LvtgfwX7BBVWCKfkG
-         ynklWkwfiHHvG1HcSyGnCEKWWzTVfqj8tfS1OnSZfP/O00HzZYbBNNQTKirWYthLPu
-         VtZJLxyG3QdzZ1vaPFBMx6D4zPkwdJkib3K4IcVs=
-Date:   Tue, 30 Jun 2020 21:48:58 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>
-Subject: Re: RFC: a failing pm_runtime_get increases the refcnt?
-Message-ID: <20200630194858.GC999@ninjato>
-References: <20200614090751.GA2878@kunai>
- <CAHp75Vc2RV1daOHMM1zAT2P_YpFzYq=_NVXnagq7qBCS9En04g@mail.gmail.com>
- <CAHp75VdtJN4KbsWgP3G40P4giPGgPE6gdr0CDqOXQjp2wK+i+g@mail.gmail.com>
- <CAMuHMdUadYRNYdJ9JUX90Z1jvtHZmSS4gM+JKft4x-BK2Ry4zQ@mail.gmail.com>
- <CAJZ5v0i87NGcy9+kxubScdPDyByr8ypQWcGgBFn+V-wDd69BHQ@mail.gmail.com>
- <20200614140717.heceqlwq75w5if5s@katana>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="t0UkRYy7tHLRMCai"
-Content-Disposition: inline
-In-Reply-To: <20200614140717.heceqlwq75w5if5s@katana>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728465AbgF3TvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 15:51:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726618AbgF3TvC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 15:51:02 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D450DC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 12:51:01 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x11so8891653plo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 12:51:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=es-iitr-ac-in.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=ZBKhPH2eOj78fdRxQESh5z9MefWxohtucDof9Au70c8=;
+        b=oCSHK38qHA3h7x8nQ3ie1Ji+667P+uNGr518mAyd4wB1cfXINEPL4Awq7DVvOwoC4D
+         sTdvHKxf2wjy8ksGkoGNm8G/if3JRZW716VZ50wyRtVdvlef7Dscsdw+xew8eydpY2nA
+         gS1bo5p4xDkd61yoqeedcGy2TG1837VlugsRkdKpiU0/uXcOpV+W5aD8HI8O3Yi2kT4A
+         Zid02nGJhcDAyIIyO0Khb9p5dc2CFr7bKDc+oYhm1t9Ig+vd7kWsZgmJ+ACbSIYFeA5q
+         y1WO2eqVvdrNTCtUNFDp2kD/UmON/ciq4l9QqXQrXAganlR/RPqr15WP4Uop0U+WZ3Ym
+         uB+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ZBKhPH2eOj78fdRxQESh5z9MefWxohtucDof9Au70c8=;
+        b=PBaYFAvDsKUI4mc1zeGLncBmXgmRI63aiw9FqDy74O8BJHifgjb1ogxWUrS3+e2Z8E
+         ahkxP8kEfPdM2B2g6sbtPNBqCu617oSaT9EBKdZXJvnxKgFdiXUteNpgPnuFtdTiPwHF
+         LdGH7CXPrC+6rOYQ2VdHaTs3lp8XNbMDIvCJVZYyN8g07CgyXnqNqqnKSwoX1c8muvUF
+         OBoX6esi+fcZNIaHcr+7TROgtQp/AcaL+EMSjNJEQE6lGzHD7NFykqFkRJSGyk6uJHcg
+         ZOi10SDX7717YT8ZQM8ahrtp6zyahRxhTfGtDeXjbFiDYqgbGj+MDk/1Hct6VmctlEHe
+         PY8w==
+X-Gm-Message-State: AOAM531G3bNxl8t8IvQ+3fa03vQjstk9b5yDNqwNbqIf6aYPt+TLjfPj
+        WYvp43+0Z2egLPrl+IL/dN6Lzg==
+X-Google-Smtp-Source: ABdhPJxpLnqqCjd7c5irLWhkJ3MT7ltWgE1cp48scosszOeV4cAuiYu60P4/diMi7vVTrWghSeFGDg==
+X-Received: by 2002:a17:90a:ac0a:: with SMTP id o10mr933122pjq.235.1593546661311;
+        Tue, 30 Jun 2020 12:51:01 -0700 (PDT)
+Received: from kaaira-HP-Pavilion-Notebook ([103.113.213.178])
+        by smtp.gmail.com with ESMTPSA id s188sm3337163pfb.118.2020.06.30.12.50.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 12:51:00 -0700 (PDT)
+From:   Kaaira Gupta <kgupta@es.iitr.ac.in>
+To:     Helen Koike <helen.koike@collabora.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hverkuil@xs4all.nl,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Kaaira Gupta <kgupta@es.iitr.ac.in>
+Subject: [PATCH v8 0/3] media: Add colors' order and other info over test image
+Date:   Wed,  1 Jul 2020 01:20:49 +0530
+Message-Id: <20200630195052.23880-1-kgupta@es.iitr.ac.in>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset aims to add a method to display the correct order of
+colors for a test image generated. It does so by adding a function
+which returns a string of correct order of the colors for a test
+pattern. It then adds a control in vimc which displays the string
+over test image. It also displays some other information like saturation,
+hue, contrast brightness and time since the stream started over test
+image generated by vimc.
 
---t0UkRYy7tHLRMCai
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Changes since v7:
+	In patch 3:
+	- Use fallthrough; to indicate a fall through in switch-case
+	- Use enum type instead of int for osd_value
+	- Change varaible to osd_value instead of osd_mode as the enum
+	  osd_mode defines the modes.
 
+Changes since v6:
+        In patch 3:
+        - Use switch case instead of if()
+        - reorder declarartions.
 
-> However, that probably means that for most patches I am getting, the
-> better fix would be to remove the error checking? (I assume most people
-> put the error check in there to be on the "safe side" without having a
-> real argument to really do it.)
+Changes since v5:
+        In patch 2:
+        - Add missing EXPORT_SYMBOL_GPL()
+        In patch 3:
+        - Renamed varaibles.
+        - use u64 instead of int for getting current time in
+          nanoseconds.
+        - Use enum instead of numbers to describe the state of osd_mode
+          control in code.
 
-Kindly asking for more input here: A better answer to all these patches
-is to ask if the error checking could not be removed instead?
+Changes since v4:
+        - Add another patch which changes char argument to const char
+        in function tpg_gen_text()
+        - Return const char * from function tpg_g_color_order() in patch
+          2
+        In 3rd patch:
+        - Check font in probe() instead of s_stream()
+        - Use dev_err instead of pr_err
+        - Fix errors in commit message.
+        - Base VIMC_CID_SHOW_INFO on VIVID_CID_OSD_TEXT_MODE
 
+Changes since v3:
+        In 1st patch:
+        -Improved formatting of returned string.
 
---t0UkRYy7tHLRMCai
-Content-Type: application/pgp-signature; name="signature.asc"
+        In 2nd patch:
+         - Add CID prefix in control name and change it to a more
+           generic name.
+         - Rename bool variable to a generic name.
+         - Disable text rendering instead of stopping stream if no
+           font found.
+         - Display more info like VIVID in VIMC.
 
------BEGIN PGP SIGNATURE-----
+Changes since v2:
+        In 1st patch:
+        - Create a 'define' to prevent repetition of the common color
+          sequence string.
+        - Use 'fallthrough' on case statement to prevent repetition of
+          code.
 
-iQIyBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl77lyoACgkQFA3kzBSg
-KbbYBQ/4kl7hil6kXJQiXTJJG7bJbwvLI47wU99AL7CPa0o48iaHvxp1BOQXRabH
-uCLCDQeV/YzlFkyj/xtDmlEe0O443L/kID51YCXnNAn0dkIrXSOG3fdqfL4UsHIq
-B/3Zedoss/BeYjpGm7h0Nyp68OtdMbSn8Z1z7HyRSgaKjVRLiaLfS17GExnwLrHw
-chdFpTGxqb8XfxHHWc+T67XJwKx0EbflyDQSlM9PoZDr2RMFGp7z7q5XkkJXY4Ca
-8DCLSABYm9NcbguH8Lrim7o8YTqAgOVNOGYZ/Mhi0MPgofQ67nE9StC/anKAplub
-8heBmgPbZbCOaTa7uCzyXlAiQfZ2T1rdcdyJqlTDrLv8OOaSul+kIa2l8COrkROW
-qxARuW5FpHpndWXm/VfjdZTKxeTYm6QAgr26BFgkxkYfGO/9NJv+Chp1OMRchNx+
-w2iBRCa5RzDZK7D+8Y0mq4mEeo+YwZOngvJIY4t90+1yIClj5zIPLTAyPk7VeAb9
-51v0h5YZ4WmLwoK2NZBu9y14AJJ75j2D/lfNBekFfCa8FdckgHCRSAhB+HN/OdAH
-CN4uEmq3m2xyx+OjgqBkLwPVzaBFplACLnfgW4YucD3orFOvbPl/GjQz36NzrHiQ
-KOdmguoTnktGqe3FLMSBpIFqgGY3/D+iHo8ZYNGsBM7R7wP9qQ==
-=1R6k
------END PGP SIGNATURE-----
+Changes since v1:
+        - Divided the patch into two patches.
+        - Returned NULL for patterns whose color order cannot be
+          defined. (Reported-by: kernel test robot <lkp@intel.com>)
+        - Made separate switch cases for separate test patterns
+         (Reported-by: kernel test robot <lkp@intel.com>)
+        - Renamed variables from camelcase to use '_'
+        - prefixed 'media' to the patches.
 
---t0UkRYy7tHLRMCai--
+Kaaira Gupta (3):
+  media: tpg: change char argument to const char
+  media: tpg: Add function to return colors' order of test image
+  media: vimc: Add a control to display info on test image
+
+ drivers/media/common/v4l2-tpg/v4l2-tpg-core.c | 40 +++++++++--
+ drivers/media/test-drivers/vimc/Kconfig       |  2 +
+ drivers/media/test-drivers/vimc/vimc-common.h |  1 +
+ drivers/media/test-drivers/vimc/vimc-core.c   | 10 +++
+ drivers/media/test-drivers/vimc/vimc-sensor.c | 67 +++++++++++++++++++
+ include/media/tpg/v4l2-tpg.h                  |  3 +-
+ 6 files changed, 115 insertions(+), 8 deletions(-)
+
+-- 
+2.17.1
+
