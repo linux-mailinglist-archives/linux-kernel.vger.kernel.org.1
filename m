@@ -2,60 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218BA20E9FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 02:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3BC20EA03
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 02:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728498AbgF3AKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 20:10:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726182AbgF3AKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 20:10:48 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1701820780;
-        Tue, 30 Jun 2020 00:10:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593475848;
-        bh=yFS0VJadwhKck6VDo5N1DabnFiD0iq24T0FTT68BaQI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=alcA1coVQsr2zF44KCWnETZZRs0osgtGigVDpRiyAXIpcaLxZA1WrM416Z+lzjP/G
-         UchNn4pGeVK3cw8bzt3+9jdhOLA0uUyvPETsTGufDVEb+MygmmFIFtYV8aEHRauVOx
-         VJG8tTSUlDvf7GKaEyFBCl1vEdOZ1q1wFKH0TP64=
-Date:   Mon, 29 Jun 2020 17:10:46 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 2/3] net: ipa: no checksum offload for SDM845 LAN RX
-Message-ID: <20200629171046.4b3ed68c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200629212038.1153054-3-elder@linaro.org>
-References: <20200629212038.1153054-1-elder@linaro.org>
-        <20200629212038.1153054-3-elder@linaro.org>
+        id S1728558AbgF3AKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 20:10:54 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10209 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728500AbgF3AKx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 20:10:53 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5efa82ff0001>; Mon, 29 Jun 2020 17:10:39 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 29 Jun 2020 17:10:52 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 29 Jun 2020 17:10:52 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 30 Jun
+ 2020 00:10:50 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Tue, 30 Jun 2020 00:10:50 +0000
+Received: from vdumpa-ubuntu.nvidia.com (Not Verified[172.17.173.140]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5efa83090000>; Mon, 29 Jun 2020 17:10:50 -0700
+From:   Krishna Reddy <vdumpa@nvidia.com>
+CC:     <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <treding@nvidia.com>,
+        <yhsu@nvidia.com>, <snikam@nvidia.com>, <praithatha@nvidia.com>,
+        <talho@nvidia.com>, <bbiswas@nvidia.com>, <mperttunen@nvidia.com>,
+        <nicolinc@nvidia.com>, <bhuntsman@nvidia.com>,
+        <nicoleotsuka@gmail.com>, Krishna Reddy <vdumpa@nvidia.com>
+Subject: [PATCH v8 0/3] Nvidia Arm SMMUv2 Implementation
+Date:   Mon, 29 Jun 2020 17:10:48 -0700
+Message-ID: <20200630001051.12350-1-vdumpa@nvidia.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1593475839; bh=A/DY8WfS/ePl/C6tRJmTrHqrrBEogIsRd+4oj+0xSTA=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=lGhEO/9E2j7hRcPdFudAxb/eK0vwaElmUAjU13AvIaUJc3ZwS//D+u2EEKmJqrG0M
+         naWxl9V51xSUFkiBqsACvrb+V6Tbb3fjJCu8moZ6hepC9rYzzNPSUUNUaverbuqOGg
+         DMACFX8Uqx3EIKYYvIZqZmB+uT02YZ/4DxkPoAgZOdCzzPmAquBVqrEalWfDL46+eJ
+         nfks+f1bmAdz7M/ECpxgxsKd5qUhm3IhSep5L6HeWxqiDMEKiZws1PpC+af4T2FR+o
+         ZcWqUcJvo1BKS2y2eHYTUUUvBpvt1bUNzOSJL7lyb3bOvmex2m/o4wTN3ZOFvw2FuD
+         5x0Xrg4Jdh1TA==
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Jun 2020 16:20:37 -0500 Alex Elder wrote:
-> The AP LAN RX endpoint should not have download checksum offload
-> enabled.
-> 
-> The receive handler does properly accomodate the trailer that's
-> added by the hardware, but we ignore it.
-> 
-> Signed-off-by: Alex Elder <elder@linaro.org>
+Changes in v8:
+Fixed incorrect CB_FSR read issue during context bank fault.
+Rebased and validated patches on top of git://git.kernel.org/pub/scm/linux/=
+kernel/git/joro/iommu.git next
 
-For this net series - would you mind adding Fixes tags to each patch?
+v7 - https://lkml.org/lkml/2020/6/28/347
+v6 - https://lkml.org/lkml/2020/6/4/1018
+v5 - https://lkml.org/lkml/2020/5/21/1114
+v4 - https://lkml.org/lkml/2019/10/30/1054
+v3 - https://lkml.org/lkml/2019/10/18/1601
+v2 - https://lkml.org/lkml/2019/9/2/980
+v1 - https://lkml.org/lkml/2019/8/29/1588
 
-Also checkpatch sayeth:
+Krishna Reddy (3):
+  iommu/arm-smmu: add NVIDIA implementation for dual ARM MMU-500 usage
+  dt-bindings: arm-smmu: Add binding for Tegra194 SMMU
+  iommu/arm-smmu: Add global/context fault implementation hooks
 
-WARNING: 'accomodate' may be misspelled - perhaps 'accommodate'?
-#10: 
-The receive handler does properly accomodate the trailer that's
+ .../devicetree/bindings/iommu/arm,smmu.yaml   |   5 +
+ MAINTAINERS                                   |   2 +
+ drivers/iommu/Makefile                        |   2 +-
+ drivers/iommu/arm-smmu-impl.c                 |   3 +
+ drivers/iommu/arm-smmu-nvidia.c               | 294 ++++++++++++++++++
+ drivers/iommu/arm-smmu.c                      |  17 +-
+ drivers/iommu/arm-smmu.h                      |   4 +
+ 7 files changed, 324 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/iommu/arm-smmu-nvidia.c
+
+
+base-commit: 48f0bcfb7aad2c6eb4c1e66476b58475aa14393e
+--=20
+2.26.2
 
