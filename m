@@ -2,180 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC6420ECE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 06:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C15D20ECED
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 06:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729514AbgF3EuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 00:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
+        id S1729553AbgF3EvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 00:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729497AbgF3EuC (ORCPT
+        with ESMTP id S1728909AbgF3EvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 00:50:02 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337F8C03E97A
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 21:50:02 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id cl23so4880817pjb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 21:50:02 -0700 (PDT)
+        Tue, 30 Jun 2020 00:51:11 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51F0C03E979
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 21:51:11 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id z63so17436477qkb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 21:51:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=arista.com; s=googlenew;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4vDncP2teZqEXBfb800/aEh0NO8oHsdmcXXXRRGWulY=;
-        b=qKfJwCm7AT0BlfktAUmwXkHFpGx7Oh79bjH+pxC9SFGuzzGtOsIQxWs5Yj5phY/cqR
-         45gYinm4T35G4tjqFwkV9aSr7wWQxsY1P4wUDPVSLq7L144QzVPw9Je6ohlEDpSLC9nm
-         Uqd6Gb5/YhRsTodxBhPYntMsn2Gfo/0bCSgfjk2MiN5Cc3Bivrb2skYwEKddwTq9qSSj
-         31cbZbHQz15k9yatl1muDzJiSkFI+87X7Xa5iBSnZami9myyuYwEW/ifoFJAh5sMur4H
-         zysOT+Xrvm66HaayFqV0f6nbFP2WrzQBAb4HBOufuAhGFqxcrqI+6IeKEiNqG8A/jaLj
-         KggQ==
+        bh=zCaps0loQaEmR/b2P5B3LXujzdso5k67v4HcTYc+GR8=;
+        b=SzPJFfIcOzkcEYGA5v9ELeSfWERhjHPdjUj+Nvn1dSi0ZNyXp3B5TJjdq6S8/qq6NM
+         MObyQPupwPQ94gzOYT3piiHl/suxo+twRdybak+evrIGY2afwXFKaJg0T2TdJa+QWGbY
+         Tu2zbOgHLVwAHmYeDTm8zzrCFZrA+V8rG9G3dt53CdRnL+F/ou52CAMIEjcJUMMgW2uY
+         AFXgTEzAQdXPos6Zngn1kQjD4qX+FMMb6JQnuN4azoc5ArC5CeKxSSbXcAWfkFeU3xeY
+         7BfZKszqNNDiHTTGuFHPDefnVeq2lygo+b/kAKQuh6Yl4yTwamXJwBfOOOHKISJdJKTZ
+         jA8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=4vDncP2teZqEXBfb800/aEh0NO8oHsdmcXXXRRGWulY=;
-        b=beXHrhf3psz4kE1gt/nXBADAHI7e0mkO2soVhuh5oXZMKoOzBgcmsU/lzKXhADBBGP
-         eeMHwZUp1ogjTfI8w6jeRXn6SqnezRGIpuaogHiuXEUcKMm+HDJj+TZu8qEodd0wUmlX
-         nS3B/nyuSa3pAomYWoQbAsHZDiaSP6PEFDom6WRfVg7dqm2Vz2wQ9K5OTHxT2vreWd4X
-         X4FcmgDwEPA+9ODRdKZ7nFlhhmiybE5W9mpn9uCx91W5UPEXHBQ1hvFu3ge5QqTxms2o
-         HppyBwFGQsyFC+duh4ZXoLDFnbwibGtj3U/2P4c2/xXhYpd+IH/zFh86oouQD0SGXafQ
-         dgZw==
-X-Gm-Message-State: AOAM532HftOhQYIgMExX5LgvD5rYhk2bFtuJlYUlovORyAX4vZDJ8ztR
-        eyDk5MlUHepI+qhkvcEZyzg+4cbrcNdD
-X-Google-Smtp-Source: ABdhPJy7/9qcpqbednFkmBX9y9QX6DThdAm5Y+t91G8xTDRUtBBKWkL0VbqPTiirQl0bhQoYHnqP79Ft+Iel
-X-Received: by 2002:a17:90a:304:: with SMTP id 4mr20033768pje.219.1593492601508;
- Mon, 29 Jun 2020 21:50:01 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 21:49:43 -0700
-In-Reply-To: <20200630044943.3425049-1-rajatja@google.com>
-Message-Id: <20200630044943.3425049-8-rajatja@google.com>
-Mime-Version: 1.0
-References: <20200630044943.3425049-1-rajatja@google.com>
-X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
-Subject: [PATCH v2 7/7] PCI: Add parameter to disable attaching external devices
-From:   Rajat Jain <rajatja@google.com>
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org, Raj Ashok <ashok.raj@intel.com>,
-        lalithambika.krishnakumar@intel.com,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Prashant Malani <pmalani@google.com>,
-        Benson Leung <bleung@google.com>,
-        Todd Broch <tbroch@google.com>,
-        Alex Levin <levinale@google.com>,
-        Mattias Nissler <mnissler@google.com>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Bernie Keany <bernie.keany@intel.com>,
-        Aaron Durbin <adurbin@google.com>,
-        Diego Rivas <diegorivas@google.com>,
-        Duncan Laurie <dlaurie@google.com>,
-        Furquan Shaikh <furquan@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Christian Kellner <christian@kellner.me>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        oohall@gmail.com, Saravana Kannan <saravanak@google.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Rajat Jain <rajatja@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zCaps0loQaEmR/b2P5B3LXujzdso5k67v4HcTYc+GR8=;
+        b=ueAVnySG+Y5KiWDtksaJHQVMVyhmlNGE0bp4XM3pC/mxJUg8tyBx8FA3SUrblG7vGk
+         pAuS15Lk2EQQeRA/IExQQdhGy61VV7OizRuOXAC8MS+J3hv9v4dRJfGAUJBOth7imGcW
+         hQHoPBCeS2NAq++AkKk9HxGgEh88J0/RL2XZw46K2hr7vgzm5mvNqQEbYztew3LLJ/7+
+         jkZjyzLVIDFeD+bH49VSCexDH6FQkDdPBvcJGp2YMvXOIJ8ANtYg3zkx4Hm4+H5pSr30
+         kaOBza6t8PNvv9YtAVlC0B8XzBbUbXIqyflFKJpwb0yR9yWYiIXrRvYZ9h06hbzfj95W
+         0kww==
+X-Gm-Message-State: AOAM530esFbS//KIa+gbWX/UcUHNEsdLkYg6qtKMDeheXUyRomD72hc/
+        WbkXZzR38kN1/GrKeig7z7cPJ+jWHS8to3WgyH3u0Q==
+X-Google-Smtp-Source: ABdhPJw17VDeB/8CSFZtI1dZDGngtZx5LKNRhxlkstFd7Z07UhFZgOrAGsTMwXB66P4UhkkHf9YFAHtAUqayNpl+n6Q=
+X-Received: by 2002:a05:620a:1273:: with SMTP id b19mr18111737qkl.10.1593492670843;
+ Mon, 29 Jun 2020 21:51:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200629211801.C3D7095C0900@us180.sjc.aristanetworks.com> <20200629171612.49efbdaa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200629171612.49efbdaa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Francesco Ruggeri <fruggeri@arista.com>
+Date:   Mon, 29 Jun 2020 21:50:59 -0700
+Message-ID: <CA+HUmGjHQPUh1frfy5E28Om9WTVr0W+UQVDsm99beC_mbTeMog@mail.gmail.com>
+Subject: Re: [PATCH] igb: reinit_locked() should be called with rtnl_lock
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        intel-wired-lan@lists.osuosl.org,
+        David Miller <davem@davemloft.net>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a PCI parameter that disables the automatic attachment of
-external devices to their drivers.
+> Would you mind adding a fixes tag here? Probably:
+>
+> Fixes: 9d5c824399de ("igb: PCI-Express 82575 Gigabit Ethernet driver")
 
-This is needed to allow an admin to control which drivers he wants to
-allow on external ports. For more context, see threads at:
-https://lore.kernel.org/linux-pci/20200609210400.GA1461839@bjorn-Precision-5520/
-https://lore.kernel.org/linux-pci/CACK8Z6H-DZQYBMqtU5_H5TTwwn35Q7Yysm9a7Wj0twfQP8QBzA@mail.gmail.com/
+That seems to be the commit that introduced the driver in 2.6.25.
+I am not familiar with the history of the driver to tell if this was a day 1
+problem or if it became an issue later.
 
-drivers_autoprobe can only be disabled after userspace comes up. So
-any external devices that were plugged in before boot may still bind
-to drivers before userspace gets a chance to clear drivers_autoprobe.
-Another problem is that even with drivers_autoprobe=0, the hot-added
-PCI devices are bound to drivers because PCI explicitly calls
-device_attach() asking driver core to find and attach a driver. This
-patch helps with both of these problems.
+>
+> And as a matter of fact it looks like e1000e and e1000 have the same
+> bug :/ Would you mind checking all Intel driver producing matches for
+> all the affected ones?
 
-Signed-off-by: Rajat Jain <rajatja@google.com>
----
-v2: Use the newly introduced dev_is_external() from device core
-    commit log elaborated
+Do you mean identify all Intel drivers that may have the same issue?
 
- drivers/pci/bus.c | 11 ++++++++---
- drivers/pci/pci.c |  9 +++++++++
- drivers/pci/pci.h |  1 +
- 3 files changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
-index 3cef835b375fd..c11725bccffb0 100644
---- a/drivers/pci/bus.c
-+++ b/drivers/pci/bus.c
-@@ -321,9 +321,14 @@ void pci_bus_add_device(struct pci_dev *dev)
- 	pci_bridge_d3_update(dev);
- 
- 	dev->match_driver = true;
--	retval = device_attach(&dev->dev);
--	if (retval < 0 && retval != -EPROBE_DEFER)
--		pci_warn(dev, "device attach failed (%d)\n", retval);
-+
-+	if (pci_dont_attach_external_devs && dev_is_external(&dev->dev)) {
-+		pci_info(dev, "not attaching external device\n");
-+	} else {
-+		retval = device_attach(&dev->dev);
-+		if (retval < 0 && retval != -EPROBE_DEFER)
-+			pci_warn(dev, "device attach failed (%d)\n", retval);
-+	}
- 
- 	pci_dev_assign_added(dev, true);
- }
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 35f25ac39167b..3ebcfa8b33178 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -128,6 +128,13 @@ static bool pcie_ats_disabled;
- /* If set, the PCI config space of each device is printed during boot. */
- bool pci_early_dump;
- 
-+/*
-+ * If set, the devices behind external-facing bridges (as marked by firmware)
-+ * shall not be attached automatically. Userspace will need to attach them
-+ * manually: echo <pci device>  > /sys/bus/pci/drivers/<driver>/bind
-+ */
-+bool pci_dont_attach_external_devs;
-+
- bool pci_ats_disabled(void)
- {
- 	return pcie_ats_disabled;
-@@ -6539,6 +6546,8 @@ static int __init pci_setup(char *str)
- 				pci_add_flags(PCI_SCAN_ALL_PCIE_DEVS);
- 			} else if (!strncmp(str, "disable_acs_redir=", 18)) {
- 				disable_acs_redir_param = str + 18;
-+			} else if (!strcmp(str, "dont_attach_external_devs")) {
-+				pci_dont_attach_external_devs = true;
- 			} else {
- 				pr_err("PCI: Unknown option `%s'\n", str);
- 			}
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 12fb79fbe29d3..875fecb9b2612 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -13,6 +13,7 @@
- 
- extern const unsigned char pcie_link_speed[];
- extern bool pci_early_dump;
-+extern bool pci_dont_attach_external_devs;
- 
- bool pcie_cap_has_lnkctl(const struct pci_dev *dev);
- bool pcie_cap_has_rtctl(const struct pci_dev *dev);
--- 
-2.27.0.212.ge8ba1cc988-goog
-
+Francesco
