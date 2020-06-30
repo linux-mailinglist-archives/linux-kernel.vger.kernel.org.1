@@ -2,116 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD94920F5F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA8920F606
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387661AbgF3Nl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 09:41:57 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:32377 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733290AbgF3Nl4 (ORCPT
+        id S2388314AbgF3Npl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 09:45:41 -0400
+Received: from esa4.microchip.iphmx.com ([68.232.154.123]:12907 "EHLO
+        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726876AbgF3Npk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:41:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593524515;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ipmBc6HojCARbwllHbnHwrqfgLM8sbDtOUTY+0qFSa4=;
-        b=Z/CHPW7ZPP/7DqQL7QBywU2imJQfVQVCVhiGszwxdE+XTac8ieWa82DlRDrV7FLRUQi5L7
-        /gouPBo2Iylppv9iOIR5bwvKy1A63u+1GPN7i0JDhep+sd1qaB8QDOnRz5+CT4e9sBr4K7
-        pVOWFx2ldTQa/jmyAY5enmyPu8sRgAc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-53-4OQ2FzdZMgiVBtD4MAQSww-1; Tue, 30 Jun 2020 09:41:53 -0400
-X-MC-Unique: 4OQ2FzdZMgiVBtD4MAQSww-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8596880183C;
-        Tue, 30 Jun 2020 13:41:52 +0000 (UTC)
-Received: from starship (unknown [10.35.206.251])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EBCB71001B0B;
-        Tue, 30 Jun 2020 13:41:50 +0000 (UTC)
-Message-ID: <08986e161635cc83d2d96b9729257dec91fc4562.camel@redhat.com>
-Subject: Re: [PATCH 2/2] kvm/x86: don't expose MSR_IA32_UMWAIT_CONTROL
- unconditionally
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, Tao Xu <tao3.xu@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 30 Jun 2020 16:41:49 +0300
-In-Reply-To: <3642373d-8d1d-de80-d3db-e835a8f29449@redhat.com>
-References: <20200520160740.6144-1-mlevitsk@redhat.com>
-         <20200520160740.6144-3-mlevitsk@redhat.com>
-         <b8ca9ea1-2958-3ab4-2e86-2edbee1ca9d9@redhat.com>
-         <81228a0e-7797-4f34-3d6d-5b0550c10a8f@intel.com>
-         <c1cbcfe4-07a1-a166-afaf-251cc0319aad@intel.com>
-         <ad6c9663-2d9d-cfbd-f10d-5745731488fa@intel.com>
-         <6c99b807-fe67-23b5-3332-b7200bf5d639@intel.com>
-         <3642373d-8d1d-de80-d3db-e835a8f29449@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Tue, 30 Jun 2020 09:45:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1593524740; x=1625060740;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=DT8RPyRP9mmuQ6a31TkFhh6MXoc72CoyHoSonfX6oCE=;
+  b=xrZ0sg8i0PhCsg11vxAhZLUQE9CdRAp8Yt/9/fM+tvQ4ob32GhzdefqY
+   amfZK9Xi22mS4OpcyVoBl9dcvfcbuP8qlosrItIg/8mXdUZZZqb1iSF3U
+   4zGUoLv3eGixV4p3bvdYdGiuLRnmW6PGsMIxzPWrkbYkvNc89IGGibYSS
+   EY1gDtZoOLT1bHBaVoBGD4Swg3ZzDXmpYW6hKAA+k/F0nJNjnlyYi8zY0
+   Cqh8T+CHRtl+xgcGw/foLKHRQolGfJPOJzW0HmfkyW7NkrisIoPTA6f1d
+   Iss23yQMNuJsTVaZYIngOL4EfuDnfh5lam8GQXarztX+MqEo5gMOAhPmQ
+   Q==;
+IronPort-SDR: k278jIGgNuSItG6ZZMWkoL5B3lvaDH1hn94M2bDyspiat0WYQmNDp7nlHxWw1NM47bGAm3nnHu
+ q1rwsu8vqYenlV82/jNO6Dot6H+SdojwUHLup6McjCW48AlXmenFAOcnbUGM2yuQCR24REEuWR
+ HLoJ+KIdTZIx7KTBPCsk9443DHn2aajPxyx7mWleGMu+6L/5ln7BqVqKAp8LBFTLqqqkrGDF7F
+ uh3X2vyb+FyB25xMi61T/+3YVxZBZwO2qONRXZj1+PFBmYYoriIqVod/7q1ZSIDaSuCrmjNr7/
+ jxc=
+X-IronPort-AV: E=Sophos;i="5.75,297,1589266800"; 
+   d="scan'208";a="78274295"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Jun 2020 06:45:39 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 30 Jun 2020 06:45:21 -0700
+Received: from soft-dev3.localdomain (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 30 Jun 2020 06:45:36 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <nikolay@cumulusnetworks.com>, <roopa@cumulusnetworks.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <jiri@mellanox.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>, <UNGLinuxDriver@microchip.com>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net-next 0/3] bridge: mrp: Add support for getting the status
+Date:   Tue, 30 Jun 2020 15:44:21 +0200
+Message-ID: <20200630134424.4114086-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-05-21 at 10:40 +0200, Paolo Bonzini wrote:
-> On 21/05/20 08:44, Tao Xu wrote:
-> > I am sorry, I mean:
-> > By default, we don't expose WAITPKG to guest. For QEMU, we can use
-> > "-overcommit cpu-pm=on" to use WAITPKG.
-> 
-> But UMONITOR, UMWAIT and TPAUSE are not NOPs on older processors (which
-> I should have checked before committing your patch, I admit).  So you
-> have broken "-cpu host -overcommit cpu-pm=on" on any processor that
-> doesn't have WAITPKG.  I'll send a patch.
-> 
-> Paolo
-> 
-Any update on that?
+This patch series extends the MRP netlink interface to allow the userspace
+daemon to get the status of the MRP instances in the kernel.
 
-I accidently hit this today while updating my guest's kernel.
-Turns out I had '-overcommit cpu-pm=on' enabled and -cpu host,
-and waitpkg (which my AMD cpu doesn't have by any means) was silently
-exposed to the guest but it didn't use it, but the mainline kernel started
-using it and so it crashes.
-Took me some time to realize that I am hitting this issue.
+Horatiu Vultur (3):
+  bridge: uapi: mrp: Extend MRP attributes to get the status
+  bridge: mrp: Add br_mrp_fill_info
+  bridge: Extend br_fill_ifinfo to return MPR status
 
+ include/uapi/linux/if_bridge.h | 17 ++++++++++
+ include/uapi/linux/rtnetlink.h |  1 +
+ net/bridge/br_mrp_netlink.c    | 57 ++++++++++++++++++++++++++++++++++
+ net/bridge/br_netlink.c        | 29 ++++++++++++++++-
+ net/bridge/br_private.h        |  7 +++++
+ 5 files changed, 110 insertions(+), 1 deletion(-)
 
-The CPUID_7_0_ECX_WAITPKG is indeed cleared in KVM_GET_SUPPORTED_CPUID,
-and code in qemu sets/clears it depending on 'cpu-pm' value.
-
-This patch (copy-pasted so probably not to apply) works for me regardless if we want to fix the KVM_GET_SUPPORTED_CPUID
-returned value (which I think we should).
-It basically detects the presence of the UMWAIT by presense of MSR_IA32_UMWAIT_CONTROL
-in the global KVM_GET_MSR_INDEX_LIST, which I recently fixed too, to not return this
-msr if the host CPUID doesn't support it.
-So this works but is a bit ugly IMHO.
-
-diff --git a/target/i386/kvm.c b/target/i386/kvm.c
-index 6adbff3d74..e9933d2e68 100644
---- a/target/i386/kvm.c
-+++ b/target/i386/kvm.c
-@@ -412,7 +412,7 @@ uint32_t kvm_arch_get_supported_cpuid(KVMState *s, uint32_t function,
-             ret &= ~(CPUID_7_0_EBX_RTM | CPUID_7_0_EBX_HLE);
-         }
-     } else if (function == 7 && index == 0 && reg == R_ECX) {
--        if (enable_cpu_pm) {
-+        if (enable_cpu_pm && has_msr_umwait) {
-             ret |= CPUID_7_0_ECX_WAITPKG;
-         } else {
-             ret &= ~CPUID_7_0_ECX_WAITPKG;
 -- 
-
-Should I send this patch officially?
-
-Best regards,
-	Maxim Levitsky
-
+2.27.0
 
