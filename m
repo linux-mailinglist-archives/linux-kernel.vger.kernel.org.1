@@ -2,105 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3C620FE77
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D01620FE5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728646AbgF3VF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 17:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726084AbgF3VF4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 17:05:56 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39903C061755;
-        Tue, 30 Jun 2020 14:05:56 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id gc9so3522805pjb.2;
-        Tue, 30 Jun 2020 14:05:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7YJzM68xF5+T7oFwixHoGmxrMD80y0Idtu8GDH5eoGs=;
-        b=Ll1q8Q6NPvtJ9gux80N+4epUWpVp2kVuyAmSUrOnAccbgOaadBM1J1JxWdB8LnXk3L
-         xBDAb/6LnxpFIoTJ3Xmmxx/gIIKMZV/REgqy7Aljk1jeGpL8i9h95WanWPhLo/Dya49b
-         xxei+axxgXCcBJ11NXuf3fcgD0t/sEWCowtnvD+x6sPJJjAh0FwFvN7gGocoUaeE+bgv
-         TL8SM8OdEs/5Q20aVXsWF6IPCoi2kZa4UhBrGu/qKhTxTxqZvc7tFpzV9F1l5RuRcpoR
-         0AI7iw/EzbjU53mPOjAVYnTLxIWdd846zHX9vK1Wl2Z8bLB5daSfY8hdOmClHP7G5zj7
-         LU+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7YJzM68xF5+T7oFwixHoGmxrMD80y0Idtu8GDH5eoGs=;
-        b=dwBVzjy3ymMaco+OSIDpLbN4mDTGHxNjOrsYL6k1TLnQTsEM3GbulNIeUojgZWg2nZ
-         CZi6pLnsi9XjOaCrqxklWYZ0NIpdJmEswwqUrAUzaMFquJJHolAnkz7fqghhVI2uiK1k
-         6y3aUf35Xq93lFslqXeXf38K8OeyN1E+k9rnKVgmrTUTEcMJDgf3NIOuQHch5bFlzoWT
-         GowX6+eCmqm9YTecwwRO9YihO7oEaWPz+aBTyk07UgyaS+8iO8+UMug5Nu9DAVHIkk2+
-         34bJCoVERbG+Uc0Zbm/aPp3UYSKv3pKDkDK9N1KPW/aTCRG4PJUNJqinsEG007Kn5P2F
-         zYEA==
-X-Gm-Message-State: AOAM533B+9eCJQ1YtJ0yFQ9V7VpsOvvECjVVs96ZbVgQFSRd17KYlKLF
-        1TSC+fazyTFn4JR0tXqOrcM=
-X-Google-Smtp-Source: ABdhPJxeLJp0yfbLRrAt4jASBtFaw2qen6+OCgR/gSCl/omhdWgXqt/uF6uRIbULcUTrjMLFU8/qnQ==
-X-Received: by 2002:a17:90a:d709:: with SMTP id y9mr24500675pju.30.1593551155767;
-        Tue, 30 Jun 2020 14:05:55 -0700 (PDT)
-Received: from ubuntu-s3-xlarge-x86 ([2604:1380:1000:7a00::1])
-        by smtp.gmail.com with ESMTPSA id w1sm3615703pfq.53.2020.06.30.14.05.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 14:05:55 -0700 (PDT)
-Date:   Tue, 30 Jun 2020 14:05:53 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] IB/hfi1: Add explicit cast OPA_MTU_8192 to 'enum ib_mtu'
-Message-ID: <20200630210553.GB3710423@ubuntu-s3-xlarge-x86>
-References: <20200623005224.492239-1-natechancellor@gmail.com>
- <5f98c547-1bac-bb05-1c75-cefb8616964a@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f98c547-1bac-bb05-1c75-cefb8616964a@intel.com>
+        id S1728104AbgF3VB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 17:01:27 -0400
+Received: from mga09.intel.com ([134.134.136.24]:26203 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727800AbgF3VBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 17:01:07 -0400
+IronPort-SDR: hcrVbj4dn4yiegO9XhpvrocQpZpEkmal6ZOsP/jxOKzcbg/68SvDWEOdHPm8/cc2fuAk0V1xfo
+ UqLSXsuT+qtQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="147935004"
+X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
+   d="scan'208";a="147935004"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 14:01:05 -0700
+IronPort-SDR: yETbtdM0jc0glKQU6iGOOpflx13N+0/kfuQWSpAlJHwZkS4t3OAQuR8VyXVC/vwz8VTCWrXwPv
+ V3jQHPlWgG0A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
+   d="scan'208";a="425337223"
+Received: from jacob-builder.jf.intel.com ([10.7.199.155])
+  by orsmga004.jf.intel.com with ESMTP; 30 Jun 2020 14:01:05 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: [PATCH v2 0/7] iommu/vt-d: Misc tweaks and fixes for vSVA
+Date:   Tue, 30 Jun 2020 14:07:31 -0700
+Message-Id: <1593551258-39854-1-git-send-email-jacob.jun.pan@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 02:22:08PM -0400, Dennis Dalessandro wrote:
-> On 6/22/2020 8:52 PM, Nathan Chancellor wrote:
-> > Clang warns:
-> > 
-> > drivers/infiniband/hw/hfi1/qp.c:198:9: warning: implicit conversion from
-> > enumeration type 'enum opa_mtu' to different enumeration type 'enum
-> > ib_mtu' [-Wenum-conversion]
-> >                  mtu = OPA_MTU_8192;
-> >                      ~ ^~~~~~~~~~~~
-> > 1 warning generated.
-> > 
-> > enum opa_mtu extends enum ib_mtu. There are typically two ways to deal
-> > with this:
-> > 
-> > * Remove the expected types and just use 'int' for all parameters and
-> >    types.
-> > 
-> > * Explicitly cast the enums between each other.
-> > 
-> > This driver chooses to do the later so do the same thing here.
-> > 
-> > Fixes: 6d72344cf6c4 ("IB/ipoib: Increase ipoib Datagram mode MTU's upper limit")
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1062
-> > Link: https://lore.kernel.org/linux-rdma/20200527040350.GA3118979@ubuntu-s3-xlarge-x86/
-> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > ---
-> 
-> Acked-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-> 
+Hi Baolu and all,
 
-Thanks! Who should pick up this patch? This warning is in mainline now,
-it would be nice if this could go via an -rc branch but if it is too
-late for that, I understand.
+This is a series to address some of the issues we found in vSVA support.
+Most of the patches deal with exception handling, we also removed some bits
+that are not currently supported.
 
-Cheers,
-Nathan
+Many thanks to Kevin Tian's review.
+
+Jacob & Yi
+
+
+Changelog:
+
+v2 Address reviews from Baolu
+	- Fixed addr field in devTLB flush (5/7)
+	- Assign address for single page devTLB invalidation (4/7)
+	- Coding style tweaks
+
+Jacob Pan (4):
+  iommu/vt-d: Remove global page support in devTLB flush
+  iommu/vt-d: Fix PASID devTLB invalidation
+  iommu/vt-d: Warn on out-of-range invalidation address
+  iommu/vt-d: Disable multiple GPASID-dev bind
+
+Liu Yi L (3):
+  iommu/vt-d: Enforce PASID devTLB field mask
+  iommu/vt-d: Handle non-page aligned address
+  iommu/vt-d: Fix devTLB flush for vSVA
+
+ drivers/iommu/intel/dmar.c  | 24 +++++++++++++++++++-----
+ drivers/iommu/intel/iommu.c | 37 ++++++++++++++++++++++---------------
+ drivers/iommu/intel/pasid.c | 11 ++++++++++-
+ drivers/iommu/intel/svm.c   | 22 +++++++++-------------
+ include/linux/intel-iommu.h |  5 ++---
+ 5 files changed, 62 insertions(+), 37 deletions(-)
+
+-- 
+2.7.4
+
