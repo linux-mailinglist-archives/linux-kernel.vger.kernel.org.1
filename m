@@ -2,174 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B18E20EA37
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 02:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 097FF20EA40
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 02:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728657AbgF3Aa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 20:30:28 -0400
-Received: from mail-bn7nam10on2072.outbound.protection.outlook.com ([40.107.92.72]:6191
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726119AbgF3AaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 20:30:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GrtECbstmkIz4vOHNZOiceAXr8fMEIkAJG6AkPTCmWAw+25jH9sVTsMghcebCYBZmjBiGnUCDRv6CC9TAZ0VKLUepyFIWfxTn8RDwuIuKxHxGHAvZeCtL1GJs+81Bkr4oDT8yKMUn8pVmVcOfSd1YR1Phmr9eIWI1xhlnIebl5Jz1QzKkqyLsk+suoDDIzmUg1lVq3BmUEWBQIqFt0Mjr726ou3CUyLmSZaQwmeTpPTGCYBApbVfa8MumSFz5Y2vxjwy22xetvCoDLaqvH1A8m+pjAliKBG8bZlrhStpnWtRsoIuRc9cJ1ArALsU4dE2+LjTlk95S3rh7kt3rgs1ng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rwRMnH0svoTSDNBAdtT+uCArF6YTouahzWByTwT9074=;
- b=SfuoGTr6PQVh7Pc6zeX0PXxJBOR5+NAZVBArlD43oAe3WcMYlNZpSDLVyRPkTNQaDACFDyvjPSqbh5wFplBXjjfSXiVMOlAc9JRa2AIvoME/kQlfhnjAmYd2FJj2WJMRMDzLcaOcxwzRN5oICmXeYfwO989VQa+A5ga6cfuffF4qHGNBZ5o0EO577ENkjhHmSXwWw5KX20+nROhUkvY0irE1z3CYrMi6EEsAnNDus1YAwGSxqMU7o4XjFHmgVikJL8qAwqbeFVbNhVHun4ESotW/RuTrFvZW1y/ghvqQ7W0UgQcYTDIyr/5Dx76nBVVwNf8Sua+aylTyS86qG6L6aA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.60.83) smtp.rcpttodomain=baylibre.com smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rwRMnH0svoTSDNBAdtT+uCArF6YTouahzWByTwT9074=;
- b=pPdTYfKjr4BzUjgFoWGUeyb5Of2mk3VvLTeeGYwf5Nc9YlOuGoSPwEg1TaPaXF0NQoq97oes+VX0hI9syBdk5ovviuJb3w4YzH4HJmRO92RMq4ZIn1K4RJQM65d8jzNK/18VtgKJgGTClubjwVTB8htNs8HK2GXJwN5gC3TGapU=
-Received: from DM3PR12CA0124.namprd12.prod.outlook.com (2603:10b6:0:51::20) by
- DM5PR02MB3372.namprd02.prod.outlook.com (2603:10b6:4:63::26) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3131.26; Tue, 30 Jun 2020 00:30:18 +0000
-Received: from CY1NAM02FT061.eop-nam02.prod.protection.outlook.com
- (2603:10b6:0:51:cafe::d1) by DM3PR12CA0124.outlook.office365.com
- (2603:10b6:0:51::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21 via Frontend
- Transport; Tue, 30 Jun 2020 00:30:18 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
- smtp.mailfrom=xilinx.com; baylibre.com; dkim=none (message not signed)
- header.d=none;baylibre.com; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- CY1NAM02FT061.mail.protection.outlook.com (10.152.75.30) with Microsoft SMTP
- Server id 15.20.3131.20 via Frontend Transport; Tue, 30 Jun 2020 00:30:18
- +0000
-Received: from [149.199.38.66] (port=58356 helo=xsj-pvapsmtp01)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
-        (envelope-from <amit.sunil.dhamne@xilinx.com>)
-        id 1jq48u-000545-NN; Mon, 29 Jun 2020 17:28:56 -0700
-Received: from [127.0.0.1] (helo=localhost)
-        by xsj-pvapsmtp01 with smtp (Exim 4.63)
-        (envelope-from <amit.sunil.dhamne@xilinx.com>)
-        id 1jq4AE-0005bY-5V; Mon, 29 Jun 2020 17:30:18 -0700
-Received: from [10.18.5.8] (helo=xsjamitsuni51.xilinx.com)
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <amit.sunil.dhamne@xilinx.com>)
-        id 1jq4AC-0005YJ-8C; Mon, 29 Jun 2020 17:30:16 -0700
-From:   Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
-To:     mturquette@baylibre.com, sboyd@codeaurora.org, sboyd@kernel.org,
-        michal.simek@xilinx.com, mark.rutland@arm.com,
-        linux-clk@vger.kernel.org
-Cc:     rajanv@xilinx.com, jollys@xilinx.com, tejasp@xilinx.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
-Subject: [PATCH 3/3] clk: zynqmp: Use firmware specific mux clock flags
-Date:   Mon, 29 Jun 2020 17:30:14 -0700
-Message-Id: <1593477014-18443-4-git-send-email-amit.sunil.dhamne@xilinx.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593477014-18443-1-git-send-email-amit.sunil.dhamne@xilinx.com>
-References: <1593477014-18443-1-git-send-email-amit.sunil.dhamne@xilinx.com>
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(39860400002)(346002)(396003)(376002)(136003)(46966005)(107886003)(356005)(9786002)(7696005)(8936002)(26005)(47076004)(81166007)(82310400002)(82740400003)(186003)(478600001)(426003)(336012)(5660300002)(2616005)(83380400001)(4326008)(36756003)(54906003)(70586007)(316002)(8676002)(2906002)(70206006);DIR:OUT;SFP:1101;
-X-MS-PublicTrafficType: Email
+        id S1728721AbgF3Aa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 20:30:58 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:50175 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728514AbgF3Aa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 20:30:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593477056; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=YGZplpevsAJGqU+ves7XOl3Kq4U+OLQbZO9OWSW49L4=; b=qpX4P9Gh5OkYtb3R9AsBj6nDFNxnyjGSN4pHVzOuZXVozG2+c9wqbtq7LENRfAt38yFYzXch
+ XTzxPPETZRUT1bRee36gXJ8/eMQ/NDbOLnPbOKIVifROaooyrnLv6fOWGvO3Kzc8dzE9HuhQ
+ MV2uuEa7TtzWNZpL1lY4eeFiCmE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5efa87baa6e154319f357ad5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Jun 2020 00:30:50
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A2745C433AD; Tue, 30 Jun 2020 00:30:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mdtipton-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdtipton)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F111FC433C6;
+        Tue, 30 Jun 2020 00:30:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F111FC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mdtipton@codeaurora.org
+From:   Mike Tipton <mdtipton@codeaurora.org>
+To:     sboyd@kernel.org, mturquette@baylibre.com
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tdas@codeaurora.org, Mike Tipton <mdtipton@codeaurora.org>
+Subject: [PATCH] clk: Add support for enabling/disabling clocks from debugfs
+Date:   Mon, 29 Jun 2020 17:30:24 -0700
+Message-Id: <20200630003024.6282-1-mdtipton@codeaurora.org>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 969e3e5c-e76d-4ce4-d340-08d81c8cc422
-X-MS-TrafficTypeDiagnostic: DM5PR02MB3372:
-X-Microsoft-Antispam-PRVS: <DM5PR02MB337250E15AE51FD17D606A8BA76F0@DM5PR02MB3372.namprd02.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:415;
-X-Forefront-PRVS: 0450A714CB
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WIhrX6uzMK2EamhVbj0KhuzWLgNGtBtvUoV3uYv9A0pzvkW4JUDxZaUcvmg18R4ABEdpEB0ONstxGWPFAMe36ZNWGd11Y3JS/8q4ptgL/KoyAxVzgGyhqysP2GHS+Fq8HD+8OD6yKxNLZzlUawoSCltIuxBjEBF6dHNnCOwBcmi/ufxDJbDzLn2r4Cd1XlBlF4iUxh5yOfzxpIqkYwimoCd5Kuhjy6SKog/vrqFW8pLJdyrZT3HLFbq46MaucWAJ3iyGWZkwL7onUZI6T+DqqRgZbVcXfWi+YvOMiiLEL2LD6eozl2hXRBsLICbpvnyRosWSdRPg4TwSIoJaLcHGLe1ikmMibZmuq0/PTpNVUEqk/jphZGZ77IhP8BPURkuoxQKedrHiFZG74nwy+/5oBQ==
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2020 00:30:18.4441
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 969e3e5c-e76d-4ce4-d340-08d81c8cc422
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT061.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR02MB3372
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajan Vaja <rajan.vaja@xilinx.com>
+For test and debug purposes, it's often necessary to enable or disable
+clocks from shell. Add a new debugfs file (clk_prepare_enable) that
+calls clk_prepare_enable() when writing "1" and clk_disable_unprepare()
+when writing "0".
 
-Use ZynqMP specific mux clock flags instead of using CCF flags.
+This can have security implications, so only support it when the code
+has been modified to #define CLOCK_ALLOW_WRITE_DEBUGS.
 
-Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
-Signed-off-by: Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
+Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
 ---
- drivers/clk/zynqmp/clk-mux-zynqmp.c | 14 +++++++++++++-
- drivers/clk/zynqmp/clk-zynqmp.h     |  8 ++++++++
- 2 files changed, 21 insertions(+), 1 deletion(-)
+ drivers/clk/clk.c | 38 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 34 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clk/zynqmp/clk-mux-zynqmp.c b/drivers/clk/zynqmp/clk-m=
-ux-zynqmp.c
-index 0619414..9e365e7 100644
---- a/drivers/clk/zynqmp/clk-mux-zynqmp.c
-+++ b/drivers/clk/zynqmp/clk-mux-zynqmp.c
-@@ -123,7 +123,19 @@ struct clk_hw *zynqmp_clk_register_mux(const char *nam=
-e, u32 clk_id,
-        init.flags =3D nodes->flag;
-        init.parent_names =3D parents;
-        init.num_parents =3D num_parents;
--       mux->flags =3D nodes->type_flag;
-+       mux->flags =3D 0;
-+       mux->flags |=3D (nodes->type_flag & ZYNQMP_CLK_MUX_INDEX_ONE) ?
-+                     CLK_MUX_INDEX_ONE : 0;
-+       mux->flags |=3D (nodes->type_flag & ZYNQMP_CLK_MUX_INDEX_BIT) ?
-+                     CLK_MUX_INDEX_BIT : 0;
-+       mux->flags |=3D (nodes->type_flag & ZYNQMP_CLK_MUX_HIWORD_MASK) ?
-+                     CLK_MUX_HIWORD_MASK : 0;
-+       mux->flags |=3D (nodes->type_flag & ZYNQMP_CLK_MUX_READ_ONLY) ?
-+                     CLK_MUX_READ_ONLY : 0;
-+       mux->flags |=3D (nodes->type_flag & ZYNQMP_CLK_MUX_ROUND_CLOSEST) ?
-+                     CLK_MUX_ROUND_CLOSEST : 0;
-+       mux->flags |=3D (nodes->type_flag & ZYNQMP_CLK_MUX_BIG_ENDIAN) ?
-+                     CLK_MUX_BIG_ENDIAN : 0;
-        mux->hw.init =3D &init;
-        mux->clk_id =3D clk_id;
-
-diff --git a/drivers/clk/zynqmp/clk-zynqmp.h b/drivers/clk/zynqmp/clk-zynqm=
-p.h
-index ade5e9e..a29ab43 100644
---- a/drivers/clk/zynqmp/clk-zynqmp.h
-+++ b/drivers/clk/zynqmp/clk-zynqmp.h
-@@ -41,6 +41,14 @@
- #define ZYNQMP_CLK_DIVIDER_READ_ONLY           BIT(5)
- #define ZYNQMP_CLK_DIVIDER_MAX_AT_ZERO         BIT(6)
-
-+/* Type Flags for mux clock */
-+#define ZYNQMP_CLK_MUX_INDEX_ONE               BIT(0)
-+#define ZYNQMP_CLK_MUX_INDEX_BIT               BIT(1)
-+#define ZYNQMP_CLK_MUX_HIWORD_MASK             BIT(2)
-+#define ZYNQMP_CLK_MUX_READ_ONLY               BIT(3)
-+#define ZYNQMP_CLK_MUX_ROUND_CLOSEST           BIT(4)
-+#define ZYNQMP_CLK_MUX_BIG_ENDIAN              BIT(5)
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 236923b25543..3640bbc56870 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -3034,13 +3034,14 @@ static int clk_dump_show(struct seq_file *s, void *data)
+ }
+ DEFINE_SHOW_ATTRIBUTE(clk_dump);
+ 
+-#undef CLOCK_ALLOW_WRITE_DEBUGFS
+-#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
+ /*
+- * This can be dangerous, therefore don't provide any real compile time
+- * configuration option for this feature.
++ * These features can be dangerous, therefore don't provide any real compile
++ * time configuration option for them.
+  * People who want to use this will need to modify the source code directly.
+  */
++#undef CLOCK_ALLOW_WRITE_DEBUGFS
++#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
 +
- enum topology_type {
-        TYPE_INVALID,
-        TYPE_MUX,
---
-2.7.4
+ static int clk_rate_set(void *data, u64 val)
+ {
+ 	struct clk_core *core = data;
+@@ -3054,6 +3055,31 @@ static int clk_rate_set(void *data, u64 val)
+ }
+ 
+ #define clk_rate_mode	0644
++
++static int clk_prepare_enable_set(void *data, u64 val)
++{
++	struct clk_core *core = data;
++	int ret = 0;
++
++	if (val)
++		ret = clk_prepare_enable(core->hw->clk);
++	else
++		clk_disable_unprepare(core->hw->clk);
++
++	return ret;
++}
++
++static int clk_prepare_enable_get(void *data, u64 *val)
++{
++	struct clk_core *core = data;
++
++	*val = core->enable_count && core->prepare_count;
++	return 0;
++}
++
++DEFINE_DEBUGFS_ATTRIBUTE(clk_prepare_enable_fops, clk_prepare_enable_get,
++			 clk_prepare_enable_set, "%llu\n");
++
+ #else
+ #define clk_rate_set	NULL
+ #define clk_rate_mode	0444
+@@ -3231,6 +3257,10 @@ static void clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
+ 	debugfs_create_u32("clk_notifier_count", 0444, root, &core->notifier_count);
+ 	debugfs_create_file("clk_duty_cycle", 0444, root, core,
+ 			    &clk_duty_cycle_fops);
++#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
++	debugfs_create_file("clk_prepare_enable", 0644, root, core,
++			    &clk_prepare_enable_fops);
++#endif
+ 
+ 	if (core->num_parents > 0)
+ 		debugfs_create_file("clk_parent", 0444, root, core,
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-This email and any attachments are intended for the sole use of the named r=
-ecipient(s) and contain(s) confidential information that may be proprietary=
-, privileged or copyrighted under applicable law. If you are not the intend=
-ed recipient, do not read, copy, or forward this email message or any attac=
-hments. Delete this email message and any attachments immediately.
