@@ -2,127 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A5720FCAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 21:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0887420FCB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 21:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgF3TXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 15:23:18 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:33181 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726283AbgF3TXP (ORCPT
+        id S1727887AbgF3TX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 15:23:26 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:38908 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726283AbgF3TX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 15:23:15 -0400
-Received: by mail-pg1-f196.google.com with SMTP id o13so7432903pgf.0;
-        Tue, 30 Jun 2020 12:23:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=QZj82NExrpqYflGaBGVJcXnUJ+dW5BAAUFbwh+Xp7LQ=;
-        b=R+7mCDgQh+w1hRzONP69RgRvJesLAmf7fQduJrPWLPYnkQX2co6khxzc/a1l5lfChV
-         c7oaYsqN1cijlu5pbCs9uzQSmXpu9XH5/ftrep4fMOkk8lIpyNfzlBDKCcCaL9gHM91Y
-         1tc7D4AcJMjgPngKvxNHnPe0UPjKN40qZpX2A8AHgVN/ucu6gVHLNl3d2+kkIGPqAwoT
-         WL2+twvrjtJTFJQTWihlI1yszf8stei94QrTZAHK0rAZE4tTbaQyoR+2Tl+CDrDgaqvN
-         0f/omCx1EpKGZ7+T1YebfZREzM4DU2P7CI5dI4VNYEebaxtsotxEX9aGIrHD1KIs9mlJ
-         uvsQ==
-X-Gm-Message-State: AOAM5325Tjnw4tw0oVxLXz2I6WwjrY1kT35IPEE0UtayeMqR5/2U4HPL
-        mJnrnzAIShhzV1WvX/o/ViXTFZPs
-X-Google-Smtp-Source: ABdhPJy6ltsGoEORnSiK/nWRrBOWV5/GjQVTUu0isSo6QlXsWUDfPgUgPSrSJxRzqCV+GTP2Gu40LQ==
-X-Received: by 2002:a62:e206:: with SMTP id a6mr13526628pfi.24.1593544995157;
-        Tue, 30 Jun 2020 12:23:15 -0700 (PDT)
-Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id o2sm2880575pjp.53.2020.06.30.12.23.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jun 2020 12:23:14 -0700 (PDT)
-Subject: Re: [PATCH] scsi: sd: add runtime pm to open / release
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Martin Kepplinger <martin.kepplinger@puri.sm>, jejb@linux.ibm.com,
-        Can Guo <cang@codeaurora.org>, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@puri.sm
-References: <20200623111018.31954-1-martin.kepplinger@puri.sm>
- <ed9ae198-4c68-f82b-04fc-2299ab16df96@acm.org>
- <eccacce9-393c-ca5d-e3b3-09961340e0db@puri.sm>
- <1379e21d-c51a-3710-e185-c2d7a9681fb7@acm.org>
- <20200626154441.GA296771@rowland.harvard.edu>
- <c19f1938-ae47-2357-669d-5b4021aec154@puri.sm>
- <20200629161536.GA405175@rowland.harvard.edu>
- <5231c57d-3f4e-1853-d4d5-cf7f04a32246@acm.org>
- <20200630180255.GA459638@rowland.harvard.edu>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <1804723c-4aaf-a820-d3ef-e70125017cad@acm.org>
-Date:   Tue, 30 Jun 2020 12:23:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Tue, 30 Jun 2020 15:23:26 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 36EC020B717A;
+        Tue, 30 Jun 2020 12:23:24 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 36EC020B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1593545005;
+        bh=/73jWX48iDgfnF6CKgFhER3y8ByMtAjJCLEbLzm/Tko=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s34WJzeT3xk/6f6Z8xCg7w6XoAIkynJE92+HKDEMZdPJZJi8PJ06GLuxZ8Tewp1Rc
+         VKZeGQ2OpWEFFDhwSynqTVjWpV8Hbk6+gvrwi61j1lGZj3WGu8le6HHGJFJBBANOAV
+         uNhU/U2+T0B7WFKmQSqWbgZDDRJpiEVlnCBedYLg=
+Date:   Tue, 30 Jun 2020 14:23:22 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Peter Jones <pjones@redhat.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Matthew Garrett <mjg59@google.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Petr Vandrovec <petr@vmware.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tpm: Require that all digests are present in
+ TCG_PCR_EVENT2 structures
+Message-ID: <20200630192322.GF4694@sequoia>
+References: <20200615232504.1848159-1-tyhicks@linux.microsoft.com>
+ <CAMj1kXHJbsxA2-jqpbLnUeeNfM0oC8Sh70+axOKoBCFMJ8+jKQ@mail.gmail.com>
+ <20200630185327.pasrylg7og7rlno3@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200630180255.GA459638@rowland.harvard.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200630185327.pasrylg7og7rlno3@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-30 11:02, Alan Stern wrote:
-> Right now there doesn't seem to be any mechanism for resuming the queue 
-> if an REQ_PREEMPT request is added while the queue is suspended.
+On 2020-06-30 14:53:28, Peter Jones wrote:
+> On Tue, Jun 16, 2020 at 11:08:38AM +0200, Ard Biesheuvel wrote:
+> > (cc Matthew and Peter)
+> > 
+> > On Tue, 16 Jun 2020 at 01:28, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
+> > >
+> > > Require that the TCG_PCR_EVENT2.digests.count value strictly matches the
+> > > value of TCG_EfiSpecIdEvent.numberOfAlgorithms in the event field of the
+> > > TCG_PCClientPCREvent event log header. Also require that
+> > > TCG_EfiSpecIdEvent.numberOfAlgorithms is non-zero.
+> > >
+> > > The TCG PC Client Platform Firmware Profile Specification section 9.1
+> > > (Family "2.0", Level 00 Revision 1.04) states:
+> > >
+> > >  For each Hash algorithm enumerated in the TCG_PCClientPCREvent entry,
+> > >  there SHALL be a corresponding digest in all TCG_PCR_EVENT2 structures.
+> > >  Note: This includes EV_NO_ACTION events which do not extend the PCR.
+> > >
+> > > Section 9.4.5.1 provides this description of
+> > > TCG_EfiSpecIdEvent.numberOfAlgorithms:
+> > >
+> > >  The number of Hash algorithms in the digestSizes field. This field MUST
+> > >  be set to a value of 0x01 or greater.
+> > >
+> > > Enforce these restrictions, as required by the above specification, in
+> > > order to better identify and ignore invalid sequences of bytes at the
+> > > end of an otherwise valid TPM2 event log. Firmware doesn't always have
+> > > the means necessary to inform the kernel of the actual event log size so
+> > > the kernel's event log parsing code should be stringent when parsing the
+> > > event log for resiliency against firmware bugs. This is true, for
+> > > example, when firmware passes the event log to the kernel via a reserved
+> > > memory region described in device tree.
+> > >
+> > 
+> > When does this happen? Do we have code in mainline that does this?
+> > 
+> > > Prior to this patch, a single bit set in the offset corresponding to
+> > > either the TCG_PCR_EVENT2.eventType or TCG_PCR_EVENT2.eventSize fields,
+> > > after the last valid event log entry, could confuse the parser into
+> > > thinking that an additional entry is present in the event log. This
+> > > patch raises the bar on how difficult it is for stale memory to confuse
+> > > the kernel's event log parser but there's still a reliance on firmware
+> > > to properly initialize the remainder of the memory region reserved for
+> > > the event log as the parser cannot be expected to detect a stale but
+> > > otherwise properly formatted firmware event log entry.
+> > >
+> > > Fixes: fd5c78694f3f ("tpm: fix handling of the TPM 2.0 event logs")
+> > > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > > ---
+> > 
+> > I am all for stringent checks, but this could potentially break
+> > measured boot on systems that are working fine today, right?
+> 
+> Seems like in that case our measurement is unreliable and can't really
+> be trusted.  That said, having things that were using the measurements
+> before this suddenly stop being able to access sealed secrets is not a
+> great experience for the user who unwittingly bought the junk hardware.
 
-I do not agree with the above statement. My understanding is that resuming
-happens as follows if a request is submitted against a runtime suspended
-queue owned by a SCSI LLD:
+I haven't seen where anyone has suggested that such junk hardware
+exists. Do you know of or expect any firmware that has mismatched
+TCG_PCR_EVENT2.digests.count and TCG_EfiSpecIdEvent.numberOfAlgorithms
+values?
 
-blk_queue_enter()
-  -> blk_pm_request_resume()
-    -> pm_request_resume(dev)
-      -> __pm_runtime_resume(dev, RPM_ASYNC)
-        -> rpm_resume(dev, RPM_ASYNC)
-          -> dev->power.request = RPM_REQ_RESUME;
-          -> queue_work(pm_wq, &dev->power.work)
-            -> pm_runtime_work()
-              -> rpm_resume(dev, RPM_NOWAIT)
-                -> callback = scsi_runtime_resume;
-                -> rpm_callback(callback, dev);
-                  -> scsi_runtime_resume(dev);
-                    -> sdev_runtime_resume(dev);
-                      -> blk_pre_runtime_resume(sdev->request_queue);
-                        -> q->rpm_status = RPM_RESUMING;
-                      -> sd_resume(dev);
-                        -> sd_start_stop_device(sdkp);
-                          -> sd_pm_ops.runtime_resume == scsi_execute(sdp, START);
-                            -> blk_get_request(..., ..., BLK_MQ_REQ_PREEMPT)
-                              -> blk_mq_alloc_request()
-                                -> blk_queue_enter()
-                                -> __blk_mq_alloc_request()
-                            -> blk_execute_rq()
-                            -> blk_put_request()
-                      -> blk_post_runtime_resume(sdev->request_queue);
-                        -> q->rpm_status = RPM_ACTIVE;
-                        -> pm_runtime_mark_last_busy(q->dev);
-                        -> pm_request_autosuspend(q->dev);
+I would think that the userspace code that's parsing
+/sys/kernel/security/tpm0/binary_bios_measurements would also have
+issues with such an event log.
 
-Bart.
+> Same with the zero-supported-hashes case.
+
+Small but important correction: it is a zero-hashes case, not a
+zero-supported-hashes case
+
+There's no handshake involved or anything like that. This would only
+cause problems if the firmware provided no hashes, which means the
+firmware event log is unusable, anyways.
+
+Tyler
+
+> It would be nice to at log it and have a way for them to opt-in to
+> allowing the old measurement to go through, so they can recover their
+> data, though I don't know what that method would be if the measured
+> command line is one of their dependencies.
+> 
+> -- 
+>         Peter
