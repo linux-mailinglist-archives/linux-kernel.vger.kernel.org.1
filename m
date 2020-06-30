@@ -2,148 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E8B20FAF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1617F20FAF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388245AbgF3RoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:44:25 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:42010 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730386AbgF3RoV (ORCPT
+        id S1732828AbgF3Rqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 13:46:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726813AbgF3Rqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:44:21 -0400
-Received: by mail-ej1-f66.google.com with SMTP id i14so21522513ejr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:44:19 -0700 (PDT)
+        Tue, 30 Jun 2020 13:46:53 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB00C061755;
+        Tue, 30 Jun 2020 10:46:53 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id s9so23558703ljm.11;
+        Tue, 30 Jun 2020 10:46:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tjMV2HhxwqIY48F0IP3MOiKFidan1PF9zaHZx5HX7l0=;
+        b=tjY1jjdEVyJZGgANPC64TKpHUZrkSS8EEBBY/YSYskUqJ4iHiJyvY/SRKdbUQ+i8A6
+         mKZGquZKcCYFChv95JDvgtkN3ZV/xibcDqKYEEHIpMJi/A6cAJZGE6pZhE171nGMtmAA
+         nodVM9EiODNeIbtgN3HbrGNAFmMg6N/7B6AzBwFaweyZLIhRUFG+yAwcZWD13JLlh+i0
+         OZ1CEWk/Wj8zu1vB4nlqcy7Xn1NsxZjROarkiYk+/vU/ui4t6L9I0QuT/GLPP4zUT4cf
+         ZsQtGTxKQOVJoHF5wbc0na/+t70V/horF7+xmrRSJ+LCxEtZNCscsWvKeg5fkcmngreJ
+         JhPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=A5m4iIJZB8g0jtmUtDpb9yGTt+vhjXl0DvXeBfp21DY=;
-        b=EXMscsB+lamX2FZP93m9eXhjDCirDCPmvgtbShBOgTRtzObntoEtZmynpmAevVfN+E
-         mkIDdiQ6pCsq38nPODOphMZTI6wqPkg+5ZFVpedrQsqWp+sz3iKUYaW2fIm/Jf22QnfL
-         fJ5nsN86xMxVn3o6uhRwwDu/Wdn3wBoTxmZclxl3NIdMZI4HhJ3pLLMbJlzxy12McDmG
-         PuOj7QUlUGPyIg2bp9xAAAskgXz7ZI8AWWXP35J+AYiqu8Sm73xHqsuJFemeeALZkvhS
-         +umBwiCTWOpE+ClkFANyiUjRPqLxmGrHrcJ/b39mQAYsrKgqlSZQXfsqBqumWN2wgPBR
-         16EQ==
-X-Gm-Message-State: AOAM533AlOV8j4WosRvQhBanUtGbsV+piiX3NuJVFCQlQxx9RS1BHbrM
-        +pEsYg6rGM3TNzRk5bAJrjpMA24lqAQ=
-X-Google-Smtp-Source: ABdhPJxUaqM/iJdLSAxeMt09Wp9qhA1Z1WMtMWevGkkfRG7LbW+Qe2cOaM2HmISXWMUJeRr1kCWK5g==
-X-Received: by 2002:a17:906:364e:: with SMTP id r14mr8680093ejb.258.1593539058617;
-        Tue, 30 Jun 2020 10:44:18 -0700 (PDT)
-Received: from darkstar ([2a04:ee41:4:5025:8295:1d2:ca0d:985e])
-        by smtp.gmail.com with ESMTPSA id j24sm3452711edp.22.2020.06.30.10.44.16
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tjMV2HhxwqIY48F0IP3MOiKFidan1PF9zaHZx5HX7l0=;
+        b=EWI5fQpaxAaujw/K+alYLCcPAVae6BxmveHPcs1us9GsKT4GcK2ArKl5fZducDhvHk
+         ss9/Q4/PdNK7NV47tuAjoSp6T/pacvuIQqscAVKSl7f9nc2lt3/gFBGHWC7lRfFdAsd1
+         bL1o9nKlnBQ+MEXZC+8KagjTCvsea5vr3THNFzckBeOf4PV68XaiEBoaAB7yWUP18Yx/
+         UmAr3oSlzDeKliaWa0q4ChDxK0pIiqXOGaEGYLDSmGEEMuuyvItJgGj7GPY/7c15ewT/
+         zOAXxDQJcflsnp6HblGVxKyYk7Ba54iFN0uaCGOWAjEnA3nHKxs+l4ODHCBVvDKEFqWw
+         V7UQ==
+X-Gm-Message-State: AOAM533Cwx9bCXDzDDy3J5lpcLyIDCEY8v1u/nO+rvHCKH2YWGTcqUca
+        Ppz5UPbVPXLWegLzmWnFHIbs1ScTaw+bhQ==
+X-Google-Smtp-Source: ABdhPJyeD0L2OQDPsATlLehiaJUOlO6qfctubWWbNJHqTUbySuntBVH0jItLh5nWGXKBUGu1EU7PZw==
+X-Received: by 2002:a2e:9b94:: with SMTP id z20mr9220985lji.404.1593539211578;
+        Tue, 30 Jun 2020 10:46:51 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id y24sm1042122lfy.49.2020.06.30.10.46.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 10:44:17 -0700 (PDT)
-References: <20200629162633.8800-1-qais.yousef@arm.com> <20200629162633.8800-3-qais.yousef@arm.com> <87366dnfaq.derkling@matbug.net> <20200630094623.hnlqtgavauqlsuyd@e107158-lin.cambridge.arm.com> <87zh8kmwlt.derkling@matbug.net> <20200630154033.5r6zi7ajgag7jlec@e107158-lin.cambridge.arm.com>
-User-agent: mu4e 1.4.10; emacs 26.3
-From:   Patrick Bellasi <patrick.bellasi@matbug.net>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Chris Redpath <chris.redpath@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] sched/uclamp: Protect uclamp fast path code with static key
-In-reply-to: <20200630154033.5r6zi7ajgag7jlec@e107158-lin.cambridge.arm.com>
-Message-ID: <87wo3omot7.derkling@matbug.net>
-Date:   Tue, 30 Jun 2020 19:44:04 +0200
+        Tue, 30 Jun 2020 10:46:49 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Tue, 30 Jun 2020 19:46:47 +0200
+To:     linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
+        vbabka@suse.cz, mhocko@suse.com
+Cc:     Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        RCU <rcu@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH v2 09/16] rcu/tree: Maintain separate array for vmalloc
+ ptrs
+Message-ID: <20200630174647.GA27057@pc636>
+References: <20200618183448.GA15136@pc636>
+ <20200618190359.GU2723@paulmck-ThinkPad-P72>
+ <20200618203557.GB16976@pc636>
+ <20200618203821.GU8681@bombadil.infradead.org>
+ <20200618211709.GA17263@pc636>
+ <20200618213427.GV2723@paulmck-ThinkPad-P72>
+ <20200619154652.GA19990@pc636>
+ <20200619162555.GJ2723@paulmck-ThinkPad-P72>
+ <20200622190406.GA3787@pc636>
+ <20200622195329.GN9247@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200622195329.GN9247@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 22, 2020 at 12:53:29PM -0700, Paul E. McKenney wrote:
+> On Mon, Jun 22, 2020 at 09:04:06PM +0200, Uladzislau Rezki wrote:
+> > > > > 
+> > > > > Very good.  When does kfree_rcu() and friends move out of kernel/rcu?
+> > > > > 
+> > > > Do you mean to move the whole logic of kfree_rcu() from top to down to mm/?
+> > > 
+> > > I do mean exactly that.
+> > > 
+> > > That was my goal some years back when Rao Shoaib was making the first
+> > > attempt along these lines, and it remains my goal.  After all, if this
+> > > effort is at all successful, the coupling between kfree_rcu() with
+> > > slab/slob/slub will become much tighter than that between kfree_rcu()
+> > > and RCU.
+> > > 
+> > > There will need to be some additional RCU APIs used by kfree_rcu(),
+> > > for example, something to tell RCU how many blocks are awaiting a
+> > > grace period.  But these are narrow and easily defined APIs.
+> > >
+> > I also think that k[v]free_rcu() should reside somewhere under "mm/".
+> > Currently they are defined as macros under "linux/rcupdate.h". So i
+> > am not sure if definitions should stay there or moved also.
+> 
+> I am not as worried about the high-level macros as I am about the code
+> that does the bulk of the work, but they should still move as well.
+> Otherwise, changes involving both the macros and the underlying
+> implementation are harder than needed.
+> 
+> > Implementation of the k[v]free_rcu() is under rcu/tree.c and for tiny
+> > variant is under rcutiny.h. It can be moved to the mm/slab_common.c
+> > or independent files can be created. I think, mm people should consult
+> > what is the best way to go :)
+> > 
+> > Any thoughts on it?
+> 
+> I don't have any opinion on exactly where in mm the underlying
+> implementation code should go.  You suggestion of mm/slab_common.c
+> seems fine to me.  ;-)
+> 
+OK :)
 
-On Tue, Jun 30, 2020 at 17:40:34 +0200, Qais Yousef <qais.yousef@arm.com> wrote...
+Then i would like to hear an opinion from the "mm" people where
+kfree_rcu() and friends could potentially be moved.
 
-> Hi Patrick
->
-> On 06/30/20 16:55, Patrick Bellasi wrote:
->> 
->> Hi Qais,
->> sorry for commenting on v5 with a v6 already posted, but...
->> ... I cannot keep up with your re-spinning rate ;)
->
-> I classified that as a nit really and doesn't affect correctness. We have
-> different subjective view on what is better here. I did all the work in the
-> past 2 weeks and I think as the author of this patch I have the right to keep
-> my preference on subjective matters. I did consider your feedback and didn't
-> ignore it and improved the naming and added a comment to make sure there's no
-> confusion.
->
-> We could nitpick the best name forever, but is it really that important?
+Matthew, Michal, Vlastimil could you please share your view?
 
-Which leans toward confirming the impression I had while reading your
-previous response, i.e. you stopped reading at the name change
-observation, which would be _just_ a nit-picking, although still worth
-IMHO.
+Thanks!
 
-Instead, I went further and asked you to consider a different approach:
-not adding a new kernel symbol to represent a concept already there.
-
-> I really don't see any added value for one approach or another here to start
-> a long debate about it.
-
-Then you could have just called out that instead of silently ignoring
-the comment/proposal.
-
-> The comments were small enough that I didn't see any controversy that
-> warrants holding the patches longer. I agreed with your proposal to use
-> uc_se->active and clarified why your other suggestions don't hold.
->
-> You pointed that uclamp_is_enabled() confused you; and I responded that I'll
-> change the name.
-
-Perhaps it would not confuse only me having 'something_enabled()'
-referring to 'something_used'.
-
-> Sorry for not being explicit about answering the below, but
-> I thought my answer implied that I don't prefer it.
-
-Your answer was about a name change, don't see correlation with a
-different approach... but should be just me.
-
->> >> Thus, perhaps we can just use the same pattern used by the
->> >> sched_numa_balancing static key:
->> >> 
->> >>   $ git grep sched_numa_balancing
->> >>   kernel/sched/core.c:DEFINE_STATIC_KEY_FALSE(sched_numa_balancing);
->> >>   kernel/sched/core.c:            static_branch_enable(&sched_numa_balancing);
->> >>   kernel/sched/core.c:            static_branch_disable(&sched_numa_balancing);
->> >>   kernel/sched/core.c:    int state = static_branch_likely(&sched_numa_balancing);
->> >>   kernel/sched/fair.c:    if (!static_branch_likely(&sched_numa_balancing))
->> >>   kernel/sched/fair.c:    if (!static_branch_likely(&sched_numa_balancing))
->> >>   kernel/sched/fair.c:    if (!static_branch_likely(&sched_numa_balancing))
->> >>   kernel/sched/fair.c:    if (static_branch_unlikely(&sched_numa_balancing))
->> >>   kernel/sched/sched.h:extern struct static_key_false sched_numa_balancing;
->> >> 
->> >> IOW: unconditionally define sched_uclamp_used as non static in core.c,
->> >> and use it directly on schedutil too.
->> 
->> So, what about this instead of adding the (renamed) method above?
->
-> I am sorry there's no written rule that says one should do it in a specific
-> way. And AFAIK both way are implemented in the kernel. I appreciate your
-> suggestion but as the person who did all the hard work, I think my preference
-> matters here too.
-
-You sure know that sometime reviewing code can be an "hard work" too, so I
-would not go down that way at all with the discussion. Quite likely I
-have a different "subjective" view on how Open Source development works.
-
-> And actually with my approach when uclamp is not compiled in there's no need to
-> define an extra variable; and since uclamp_is_used() is defined as false for
-> !CONFIG_UCLAMP_TASK, it'll help with DCE, so less likely to end up with dead
-> code that'll never run in the final binary.
-
-Good, this is the simple and small reply I've politely asked for.
-
-Best,
-Patrick
-
+--
+Vlad Rezki
