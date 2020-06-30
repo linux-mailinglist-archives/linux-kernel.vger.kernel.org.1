@@ -2,129 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838E220EA7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 02:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEAB20EA32
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 02:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727069AbgF3Asz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 20:48:55 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6880 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726056AbgF3Asz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 20:48:55 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 53CFF9DD4C284405C498;
-        Mon, 29 Jun 2020 17:01:50 +0800 (CST)
-Received: from [127.0.0.1] (10.67.76.251) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Mon, 29 Jun 2020
- 17:01:41 +0800
-Subject: Re: [Patch v3 1/3] lib: Restrict cpumask_local_spread to houskeeping
- CPUs
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Nitesh Narayan Lal <nitesh@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        <frederic@kernel.org>, <mtosatti@redhat.com>,
-        <juri.lelli@redhat.com>, <abelits@marvell.com>,
-        <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <rostedt@goodmis.org>, <mingo@kernel.org>, <peterz@infradead.org>,
-        <tglx@linutronix.de>, <davem@davemloft.net>,
-        <sfr@canb.auug.org.au>, <stephen@networkplumber.org>,
-        <rppt@linux.vnet.ibm.com>, yuqi jin <jinyuqi@huawei.com>
-References: <20200623192331.215557-1-nitesh@redhat.com>
- <20200623192331.215557-2-nitesh@redhat.com>
- <20200624122647.766bec7760d9197ba71a58c4@linux-foundation.org>
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-Message-ID: <e6c261a1-1fec-3faf-c49c-51a88a7f521c@hisilicon.com>
-Date:   Mon, 29 Jun 2020 17:01:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1727106AbgF3AaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 20:30:16 -0400
+Received: from mga06.intel.com ([134.134.136.31]:25884 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726119AbgF3AaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 20:30:13 -0400
+IronPort-SDR: gzZe2t9FbF9vdH+k+xWyKUHGvxyUbY/qlrld2kMBAaSeYj0RYX2htU0KvYFmZ+8wdMyaBrzwBq
+ TUOGEsqKP0+A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="207626205"
+X-IronPort-AV: E=Sophos;i="5.75,296,1589266800"; 
+   d="scan'208";a="207626205"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 17:30:12 -0700
+IronPort-SDR: nEyz01hyNnqJMsRF4MVP7RQLEpWQpV9kfeu/z2g6UKfbjDr0+abK97ipTl9QvRzquqAd4D3x1Q
+ xBbfQeIDVmRQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,296,1589266800"; 
+   d="scan'208";a="266336505"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.3]) ([10.239.13.3])
+  by fmsmga008.fm.intel.com with ESMTP; 29 Jun 2020 17:30:09 -0700
+Subject: Re: [kbuild-all] Re: [PATCH] ARM: dts: omap3: Migrate AES from hwmods
+ to sysc-omap2
+To:     Tony Lindgren <tony@atomide.com>, kernel test robot <lkp@intel.com>
+Cc:     Adam Ford <aford173@gmail.com>, linux-omap@vger.kernel.org,
+        kbuild-all@lists.01.org, aford@beaconembedded.com,
+        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul@pwsan.com>,
+        Russell King <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200617105840.22138-1-aford173@gmail.com>
+ <202006180107.6NIzI00f%lkp@intel.com> <20200629181250.GY37466@atomide.com>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <c30dd2e4-0f80-9caf-0cfa-45a60a2d1319@intel.com>
+Date:   Tue, 30 Jun 2020 08:29:43 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20200624122647.766bec7760d9197ba71a58c4@linux-foundation.org>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.76.251]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200629181250.GY37466@atomide.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
 
-ÔÚ 2020/6/25 3:26, Andrew Morton Ð´µÀ:
-> On Tue, 23 Jun 2020 15:23:29 -0400 Nitesh Narayan Lal <nitesh@redhat.com> wrote:
-> 
->> From: Alex Belits <abelits@marvell.com>
+
+On 6/30/20 2:12 AM, Tony Lindgren wrote:
+> * kernel test robot <lkp@intel.com> [200617 17:28]:
+>> Hi Adam,
 >>
->> The current implementation of cpumask_local_spread() does not respect the
->> isolated CPUs, i.e., even if a CPU has been isolated for Real-Time task,
->> it will return it to the caller for pinning of its IRQ threads. Having
->> these unwanted IRQ threads on an isolated CPU adds up to a latency
->> overhead.
+>> Thank you for the patch! Yet something to improve:
 >>
->> Restrict the CPUs that are returned for spreading IRQs only to the
->> available housekeeping CPUs.
->>
->> ...
->>
->> --- a/lib/cpumask.c
->> +++ b/lib/cpumask.c
->> @@ -6,6 +6,7 @@
->>  #include <linux/export.h>
->>  #include <linux/memblock.h>
->>  #include <linux/numa.h>
->> +#include <linux/sched/isolation.h>
->>  
->>  /**
->>   * cpumask_next - get the next cpu in a cpumask
->> @@ -205,22 +206,27 @@ void __init free_bootmem_cpumask_var(cpumask_var_t mask)
->>   */
->>  unsigned int cpumask_local_spread(unsigned int i, int node)
->>  {
->> -	int cpu;
->> +	int cpu, hk_flags;
->> +	const struct cpumask *mask;
->>  
->> +	hk_flags = HK_FLAG_DOMAIN | HK_FLAG_WQ;
->> +	mask = housekeeping_cpumask(hk_flags);
->>  	/* Wrap: we always want a cpu. */
->> -	i %= num_online_cpus();
->> +	i %= cpumask_weight(mask);
->>  
->>  	if (node == NUMA_NO_NODE) {
->> -		for_each_cpu(cpu, cpu_online_mask)
->> +		for_each_cpu(cpu, mask) {
->>  			if (i-- == 0)
->>  				return cpu;
->> +		}
->>  	} else {
->>  		/* NUMA first. */
->> -		for_each_cpu_and(cpu, cpumask_of_node(node), cpu_online_mask)
->> +		for_each_cpu_and(cpu, cpumask_of_node(node), mask) {
->>  			if (i-- == 0)
->>  				return cpu;
->> +		}
->>  
->> -		for_each_cpu(cpu, cpu_online_mask) {
->> +		for_each_cpu(cpu, mask) {
->>  			/* Skip NUMA nodes, done above. */
->>  			if (cpumask_test_cpu(cpu, cpumask_of_node(node)))
->>  				continue;
-> 
-> Are you aware of these changes to cpu_local_spread()?
-> https://lore.kernel.org/lkml/1582768688-2314-1-git-send-email-zhangshaokun@hisilicon.com/
-> 
-> I don't see a lot of overlap but it would be nice for you folks to
+>> [auto build test ERROR on omap/for-next]
+>> [cannot apply to balbi-usb/testing/next]
+>> [if your patch is applied to the wrong git tree, please drop us a note to help
+>> improve the system. BTW, we also suggest to use '--base' option to specify the
+>> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+> This applies to v5.8-rc1, so the error above can be ignored now.
+>
+> Applying patch into omap-for-v5.9/ti-sysc-drop-pdata.
 
-Yeah, it's a different issue from Nitesh. About our's patch, it has been
-linux-next long time, will it be merged in Linus's tree?
+Hi Tony,
 
-Thanks,
-Shaokun
+Thanks for the feedback, we'll fix the wrong base.
 
-> check each other's homework ;)
-> 
-> 
-> 
-> .
-> 
-
+Best Regards,
+Rong Chen
