@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF2420FDF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 22:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E3B20FE14
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 22:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730124AbgF3Up2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 16:45:28 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44806 "EHLO
+        id S1730001AbgF3UrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 16:47:04 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:29871 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729669AbgF3UpR (ORCPT
+        with ESMTP id S1730024AbgF3UpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 16:45:17 -0400
+        Tue, 30 Jun 2020 16:45:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593549915;
+        s=mimecast20190719; t=1593549917;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding;
-        bh=6LDTI5CbN1iafPepx0N8aCOkAEGCgmTd74bKKgxee6w=;
-        b=CHeAmYkvdhPFXSGU7WZlBrAhoypk7tXCOepRT0CVrDPLsYUFPr88LKxhSVeD20cI8OfHQf
-        ZyS3eO2GTCBl3bv0v7RjrLXMHd5/PuKJ1UhVq9w+EXlnHWjzcRsfmGqJcRLYtcA9hZhMVN
-        dwmioW1S2AdKe4Lpa7T79WWWEu5/XAA=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-215-iTOSt3wjOaG1Jjs1895ETQ-1; Tue, 30 Jun 2020 16:45:14 -0400
-X-MC-Unique: iTOSt3wjOaG1Jjs1895ETQ-1
-Received: by mail-qt1-f198.google.com with SMTP id u48so15277690qth.17
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 13:45:14 -0700 (PDT)
+        bh=D8OdeaID5or5gsgcWoj3vmPJjBIrXv0E7kOuYlamE1o=;
+        b=IUV4XzuAa+Di+IOfIipqCZhNxKCivOXjwVDeztpqSuFabQL3alc6Wa43fJNEnzRXO7HN5K
+        PViGzJTsEwGgOw94nfADkhJp8+ajQvgR+rcaq6kkfKPNv/fAjo3LtNTQZQI2X9qQ86uuk9
+        SaNmg69EbSdTTSGByMFKAiuDlj08WNw=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-3-dZfhhqFPPqeEckBkZSw9hA-1; Tue, 30 Jun 2020 16:45:15 -0400
+X-MC-Unique: dZfhhqFPPqeEckBkZSw9hA-1
+Received: by mail-qv1-f70.google.com with SMTP id g17so12884937qvw.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 13:45:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=6LDTI5CbN1iafPepx0N8aCOkAEGCgmTd74bKKgxee6w=;
-        b=s2qy034D3W9xK3/868vQqpX4RqbbfyuREx3qUV4+SbxkpFnkswoonkhBxJaWUFf7mV
-         ibIIZXToYiVv7JZHrZX5igK/dXuQ0rPcfPCF6VvcakMNnxzlZCYMtfh4QwqEM2s1Jrgn
-         5d8kUE3a8we+BhJGWBlzwRQKebqpLVTV7P1rqdZVxth7dz5AGM8S45MXywMKfy2jAVsh
-         O6hAdsOu82SdqKzZnLdq4CF+PNJQoyGVu50jkqJRLHDz4Ik5ovMGZqIR7MNIOomp5wND
-         bdRtxvDWXul8Pa+duYTNCpJCfhMrmvJFoewDH2B2wL2Gz2HgUKGYzC/IEQmHbyxSrGeN
-         h+TA==
-X-Gm-Message-State: AOAM533i/XLdyKIk70iblGH/Qkp6a5ImEiLTM80AmlRZsqlZe1+RJIGQ
-        B/27HjbNBRpZJUayjxzJeRuzl+xV4cGVSMYC3E+Dg43wIy/soWeb/VQ+Z7Vl5kSgFtWE7jikwue
-        vicK6Tsn4XofsSMBhCQFp0MDT
-X-Received: by 2002:a05:620a:1035:: with SMTP id a21mr20501595qkk.321.1593549913127;
-        Tue, 30 Jun 2020 13:45:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx+kaBc9/kmTr6BNHfQkL+ErMO1IOKMu40pdoPLe9ogbLzCBmnzOfYZlcKb4wfLKTS9uQhctA==
-X-Received: by 2002:a05:620a:1035:: with SMTP id a21mr20501496qkk.321.1593549911595;
-        Tue, 30 Jun 2020 13:45:11 -0700 (PDT)
+        bh=D8OdeaID5or5gsgcWoj3vmPJjBIrXv0E7kOuYlamE1o=;
+        b=Hg3FPpocs+gk+l8AbAL6l+fLRrDCQSU5GucfsVEM6E9qerXnGr0jET0Wx4j9oyzWtt
+         Bf3GWmKexsf37dzQhZj1cH5r2kX1jp6FRBO0Ww68k5vkzWaN7RtNdvvjA4AIeo6z7BUp
+         7Y/UGs+KNsJUQQ4ybhrVhoAp/Uk3mrLYKgtAoAuz2TF/xMFVBrFedf6olvurmWgWFg6c
+         d72Od4pSpkrtucgFVnxTROP+bq402zWf9MnNJkgH+l28II2M23KFvTPQZKAk/LajlfXg
+         hGvAWyzLujVMUP3dWnetOD6ShS3CXSxMnfh+WXmgu8K8uG7wqcmX7uwYxrNKUHnzzHEY
+         NCHA==
+X-Gm-Message-State: AOAM533CTuvSD9XUSvgBxu1p/lyDjpJ8pPSZ8MwxigzDmhYAlVVKCNAc
+        L/W9b67m7VOjbVVovK4omando0Smqwa5b2jJbwL6MhkV43rF5QBisCbew1n1jJVHDXYFG3XIvn5
+        TguGEI3LBAlkqfGGLlEoVW7M7
+X-Received: by 2002:a0c:aa41:: with SMTP id e1mr7773816qvb.117.1593549914664;
+        Tue, 30 Jun 2020 13:45:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwyi+ZiCgpgJNPiRGb/lHwsXU/ArQZuHKcbcZdE9UMPtaTClSVeehVA8eVoAkqIf1DOQolAKg==
+X-Received: by 2002:a0c:aa41:: with SMTP id e1mr7773775qvb.117.1593549914158;
+        Tue, 30 Jun 2020 13:45:14 -0700 (PDT)
 Received: from xz-x1.redhat.com ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id x26sm3658652qtr.4.2020.06.30.13.45.10
+        by smtp.gmail.com with ESMTPSA id p80sm3991738qke.19.2020.06.30.13.45.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 13:45:11 -0700 (PDT)
+        Tue, 30 Jun 2020 13:45:13 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
@@ -59,11 +59,11 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
         Andrea Arcangeli <aarcange@redhat.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Will Deacon <will@kernel.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        linux-snps-arc@lists.infradead.org
-Subject: [PATCH v4 03/26] mm/arc: Use general page fault accounting
-Date:   Tue, 30 Jun 2020 16:45:09 -0400
-Message-Id: <20200630204509.38615-1-peterx@redhat.com>
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v4 04/26] mm/arm: Use general page fault accounting
+Date:   Tue, 30 Jun 2020 16:45:11 -0400
+Message-Id: <20200630204511.38663-1-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -74,63 +74,85 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Use the general page fault accounting by passing regs into handle_mm_fault().
 It naturally solve the issue of multiple page fault accounting when page fault
-retry happened.
+retry happened.  To do this, we need to pass the pt_regs pointer into
+__do_page_fault().
 
 Fix PERF_COUNT_SW_PAGE_FAULTS perf event manually for page fault retries, by
 moving it before taking mmap_sem.
 
-CC: Vineet Gupta <vgupta@synopsys.com>
-CC: linux-snps-arc@lists.infradead.org
+CC: Russell King <linux@armlinux.org.uk>
+CC: Will Deacon <will@kernel.org>
+CC: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- arch/arc/mm/fault.c | 18 +++---------------
- 1 file changed, 3 insertions(+), 15 deletions(-)
+ arch/arm/mm/fault.c | 25 ++++++-------------------
+ 1 file changed, 6 insertions(+), 19 deletions(-)
 
-diff --git a/arch/arc/mm/fault.c b/arch/arc/mm/fault.c
-index 1b178dc147fd..5601dec319b5 100644
---- a/arch/arc/mm/fault.c
-+++ b/arch/arc/mm/fault.c
-@@ -106,6 +106,7 @@ void do_page_fault(unsigned long address, struct pt_regs *regs)
- 	if (write)
- 		flags |= FAULT_FLAG_WRITE;
+diff --git a/arch/arm/mm/fault.c b/arch/arm/mm/fault.c
+index 01a8e0f8fef7..efa402025031 100644
+--- a/arch/arm/mm/fault.c
++++ b/arch/arm/mm/fault.c
+@@ -202,7 +202,8 @@ static inline bool access_error(unsigned int fsr, struct vm_area_struct *vma)
  
-+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
- retry:
- 	mmap_read_lock(mm);
- 
-@@ -131,7 +132,7 @@ void do_page_fault(unsigned long address, struct pt_regs *regs)
- 		goto bad_area;
+ static vm_fault_t __kprobes
+ __do_page_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
+-		unsigned int flags, struct task_struct *tsk)
++		unsigned int flags, struct task_struct *tsk,
++		struct pt_regs *regs)
+ {
+ 	struct vm_area_struct *vma;
+ 	vm_fault_t fault;
+@@ -224,7 +225,7 @@ __do_page_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
+ 		goto out;
  	}
  
--	fault = handle_mm_fault(vma, address, flags, NULL);
-+	fault = handle_mm_fault(vma, address, flags, regs);
+-	return handle_mm_fault(vma, addr & PAGE_MASK, flags, NULL);
++	return handle_mm_fault(vma, addr & PAGE_MASK, flags, regs);
  
- 	/* Quick path to respond to signals */
- 	if (fault_signal_pending(fault, regs)) {
-@@ -156,22 +157,9 @@ void do_page_fault(unsigned long address, struct pt_regs *regs)
- 	 * Major/minor page fault accounting
- 	 * (in case of retry we only land here once)
- 	 */
--	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+ check_stack:
+ 	/* Don't allow expansion below FIRST_USER_ADDRESS */
+@@ -266,6 +267,8 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
+ 	if ((fsr & FSR_WRITE) && !(fsr & FSR_CM))
+ 		flags |= FAULT_FLAG_WRITE;
+ 
++	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
++
+ 	/*
+ 	 * As per x86, we may deadlock here.  However, since the kernel only
+ 	 * validly references user space from well defined areas of the code,
+@@ -290,7 +293,7 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
+ #endif
+ 	}
+ 
+-	fault = __do_page_fault(mm, addr, fsr, flags, tsk);
++	fault = __do_page_fault(mm, addr, fsr, flags, tsk, regs);
+ 
+ 	/* If we need to retry but a fatal signal is pending, handle the
+ 	 * signal first. We do not need to release the mmap_lock because
+@@ -302,23 +305,7 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
+ 		return 0;
+ 	}
+ 
+-	/*
+-	 * Major/minor page fault accounting is only done on the
+-	 * initial attempt. If we go through a retry, it is extremely
+-	 * likely that the page will be found in page cache at that point.
+-	 */
 -
--	if (likely(!(fault & VM_FAULT_ERROR))) {
+-	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
+ 	if (!(fault & VM_FAULT_ERROR) && flags & FAULT_FLAG_ALLOW_RETRY) {
 -		if (fault & VM_FAULT_MAJOR) {
 -			tsk->maj_flt++;
 -			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1,
--				      regs, address);
+-					regs, addr);
 -		} else {
 -			tsk->min_flt++;
 -			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1,
--				      regs, address);
+-					regs, addr);
 -		}
--
-+	if (likely(!(fault & VM_FAULT_ERROR)))
- 		/* Normal return path: fault Handled Gracefully */
- 		return;
--	}
- 
- 	if (!user_mode(regs))
- 		goto no_context;
+ 		if (fault & VM_FAULT_RETRY) {
+ 			flags |= FAULT_FLAG_TRIED;
+ 			goto retry;
 -- 
 2.26.2
 
