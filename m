@@ -2,160 +2,639 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7D020F756
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33A820F764
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389040AbgF3Ogq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 10:36:46 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:42780 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726672AbgF3Ogp (ORCPT
+        id S2389049AbgF3Ojg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 10:39:36 -0400
+Received: from outils.crapouillou.net ([89.234.176.41]:51130 "EHLO
+        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728636AbgF3Ojf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 10:36:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593527803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Tue, 30 Jun 2020 10:39:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1593527972; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=6IqDHRPzq4Cb1ncXM0mH420D0ByCqixt566jX7k62W4=;
-        b=ao863BwvW23wUHg6Ut4eZDbcLD3akt6yMat0vMH1dHTbDH/uxfMDYcQQlRbzScOFFJp1Ke
-        UJsF/YB1bcBTbIpHxLH1sfdltRL/Ed3/SI3U36izEe2pPsBwVxptWjjxrXLwfC1HdF0X+s
-        IlXmEyw5qg9/NQzr1hYMLwiElr7Oxvk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-261-L4jfmIcgO7axwsI04ka3hg-1; Tue, 30 Jun 2020 10:36:39 -0400
-X-MC-Unique: L4jfmIcgO7axwsI04ka3hg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B98BE18FE867;
-        Tue, 30 Jun 2020 14:36:37 +0000 (UTC)
-Received: from [10.36.114.56] (ovpn-114-56.ams2.redhat.com [10.36.114.56])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C5CF25C1B0;
-        Tue, 30 Jun 2020 14:36:35 +0000 (UTC)
-Subject: Re: [PATCH] mm: util: update the kerneldoc for kstrdup_const()
-To:     Joe Perches <joe@perches.com>, Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-References: <20200628152500.17916-1-brgl@bgdev.pl>
- <693db5a878ac09994e2a27c64cb14c0e552f3f50.camel@perches.com>
- <7f1439be-75c4-3a07-ab7b-f4505bf30c48@redhat.com>
- <644c67ae316bde28669f660aa5aade274d19a2d0.camel@perches.com>
- <98163576-c98e-77f7-17a7-efd04dc2e86f@redhat.com>
- <b370f8bfbf2bfc958b15ce6f6d138bec64972183.camel@perches.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
-Organization: Red Hat GmbH
-Message-ID: <9dfad174-4e8b-c733-b529-5c86a34333d4@redhat.com>
-Date:   Tue, 30 Jun 2020 16:36:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+         in-reply-to:in-reply-to:references:references;
+        bh=F4JdLZF8aOmJqaBMAyUE1KSq9Zs1SRVZRjDKFXNAkX4=;
+        b=bLdiJz6pdBNGjfpeKKpVAJi3c2K+LxkxMxgdVpCBowfKb/Ssu2sDcMMkKyJZqwykOpAgub
+        NWhR+YxXzVLF02JEqA55LB9nXrdoIOS6z6xmAbUqDhSBBiFJv9dUKRxduVbqlRk4o6u1eZ
+        6ksF4GYlEROt5mq2+6ApKcVLtaLZgV0=
+Date:   Tue, 30 Jun 2020 16:39:21 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v2 08/10] drm/ingenic: Add support for OSD mode
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, od@zcrc.me
+Message-Id: <L1UQCQ.949D9CHUW4H1@crapouillou.net>
+In-Reply-To: <20200630120518.GD560155@ravnborg.org>
+References: <20200629235210.441709-1-paul@crapouillou.net>
+        <20200629235210.441709-8-paul@crapouillou.net>
+        <20200630120518.GD560155@ravnborg.org>
 MIME-Version: 1.0
-In-Reply-To: <b370f8bfbf2bfc958b15ce6f6d138bec64972183.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.06.20 16:14, Joe Perches wrote:
-> On Tue, 2020-06-30 at 10:57 +0200, David Hildenbrand wrote:
->> On 29.06.20 21:21, Joe Perches wrote:
->>> On Mon, 2020-06-29 at 12:54 +0200, David Hildenbrand wrote:
->>>> On 28.06.20 19:37, Joe Perches wrote:
->>>>> On Sun, 2020-06-28 at 17:25 +0200, Bartosz Golaszewski wrote:
->>>>>> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>>>>>
->>>>>> Memory allocated with kstrdup_const() must not be passed to regular
->>>>>> krealloc() as it is not aware of the possibility of the chunk residing
->>>>>> in .rodata. Since there are no potential users of krealloc_const()
->>>>>> at the moment, let's just update the doc to make it explicit.
->>>>>
->>>>> Another option would be to return NULL if it's
->>>>> used from krealloc with a pointer into rodata
->>> []
->>>>> diff --git a/mm/slab_common.c b/mm/slab_common.c
->>> []
->>>>> @@ -1683,6 +1683,9 @@ static __always_inline void *__do_krealloc(const void *p, size_t new_size,
->>>>>   * @new_size: how many bytes of memory are required.
->>>>>   * @flags: the type of memory to allocate.
->>>>>   *
->>>>> + * If the object pointed to is in rodata (likely from kstrdup_const)
->>>>> + * %NULL is returned.
->>>>> + *
->>> []
->>>> Won't we have similar issues if somebody would do a kfree() instead of a
->>>> kfree_const()? So I think the original patch makes sense.
->>>
->>> Which is why I also suggested making kfree work for
->>> more types of memory freeing earlier this month.
->>>
->>> https://lore.kernel.org/lkml/573b3fbd5927c643920e1364230c296b23e7584d.camel@perches.com/
-> []
->> what's the real benefit that is worth spending extra runtime cycles?
-> 
-> I very much doubt there is an actual instance
-> where the runtime cycles matter.  Where could
-> there be a fast-path instance of free?
+Hi Sam,
 
-Well, looking at kfree() I can directly spot "unlikely()", which sounds
-like somebody cares about branch prediction in the slab.
+Le mar. 30 juin 2020 =E0 14:05, Sam Ravnborg <sam@ravnborg.org> a =E9crit=20
+:
+> Hi Paul.
+>=20
+> On Tue, Jun 30, 2020 at 01:52:08AM +0200, Paul Cercueil wrote:
+>>  All Ingenic SoCs starting from the JZ4725B support OSD mode.
+>>=20
+>>  In this mode, two separate planes can be used. They can have=20
+>> different
+>>  positions and sizes, and one can be overlayed on top of the other.
+>>=20
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>=20
+> OSD? On screen Display?
 
-Once you have cases that can happen equally likely it most certainly
-degrades performance. The question is if we care.
+Yes... That's how it's called in the programming manual.
 
-Coming back to my question, so the major benefit you see is coding
-simplicity, correct?
+I believe it's because this mode adds the possibility to create OSDs=20
+with the overlay plane.
 
--- 
-Thanks,
+> Some random comments in the following - from my attempt to follow the
+> code.
+>=20
+> 	Sam
+>=20
+>=20
+>>  ---
+>>=20
+>>  Notes:
+>>      v2: Use fallthrough; instead of /* fall-through */
+>>=20
+>>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 271=20
+>> +++++++++++++++++-----
+>>   drivers/gpu/drm/ingenic/ingenic-drm.h     |  35 +++
+>>   2 files changed, 254 insertions(+), 52 deletions(-)
+>>=20
+>>  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c=20
+>> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  index 6590b61cb915..a8573da1d577 100644
+>>  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  @@ -43,12 +43,13 @@ struct ingenic_dma_hwdesc {
+>>=20
+>>   struct jz_soc_info {
+>>   	bool needs_dev_clk;
+>>  +	bool has_osd;
+>>   	unsigned int max_width, max_height;
+>>   };
+>>=20
+>>   struct ingenic_drm {
+>>   	struct drm_device drm;
+>>  -	struct drm_plane primary;
+>>  +	struct drm_plane f0, f1;
+>=20
+> A small comment about when f0 and f1 is used and how they are the
+> primary plane would be good here.
 
-David / dhildenb
+Right.
+
+>=20
+>>   	struct drm_crtc crtc;
+>>   	struct drm_encoder encoder;
+>>=20
+>>  @@ -57,8 +58,8 @@ struct ingenic_drm {
+>>   	struct clk *lcd_clk, *pix_clk;
+>>   	const struct jz_soc_info *soc_info;
+>>=20
+>>  -	struct ingenic_dma_hwdesc *dma_hwdesc;
+>>  -	dma_addr_t dma_hwdesc_phys;
+>>  +	struct ingenic_dma_hwdesc *dma_hwdesc[2];
+>>  +	dma_addr_t dma_hwdesc_phys[2];
+>>=20
+>>   	bool panel_is_sharp;
+>>   };
+>>  @@ -90,7 +91,7 @@ static const struct regmap_config=20
+>> ingenic_drm_regmap_config =3D {
+>>   	.val_bits =3D 32,
+>>   	.reg_stride =3D 4,
+>>=20
+>>  -	.max_register =3D JZ_REG_LCD_CMD1,
+>>  +	.max_register =3D JZ_REG_LCD_SIZE1,
+>>   	.writeable_reg =3D ingenic_drm_writeable_reg,
+>>   };
+>>=20
+>>  @@ -110,11 +111,6 @@ drm_encoder_get_priv(struct drm_encoder=20
+>> *encoder)
+>>   	return container_of(encoder, struct ingenic_drm, encoder);
+>>   }
+>>=20
+>>  -static inline struct ingenic_drm *drm_plane_get_priv(struct=20
+>> drm_plane *plane)
+>>  -{
+>>  -	return container_of(plane, struct ingenic_drm, primary);
+>>  -}
+>>  -
+>>   static void ingenic_drm_crtc_atomic_enable(struct drm_crtc *crtc,
+>>   					   struct drm_crtc_state *state)
+>>   {
+>>  @@ -185,34 +181,17 @@ static void=20
+>> ingenic_drm_crtc_update_timings(struct ingenic_drm *priv,
+>>   		regmap_write(priv->map, JZ_REG_LCD_SPL, hpe << 16 | (hpe + 1));
+>>   		regmap_write(priv->map, JZ_REG_LCD_REV, mode->htotal << 16);
+>>   	}
+>>  -}
+>>  -
+>>  -static void ingenic_drm_crtc_update_ctrl(struct ingenic_drm *priv,
+>>  -					 const struct drm_format_info *finfo)
+>>  -{
+>>  -	unsigned int ctrl =3D JZ_LCD_CTRL_OFUP | JZ_LCD_CTRL_BURST_16;
+>>  -
+>>  -	switch (finfo->format) {
+>>  -	case DRM_FORMAT_XRGB1555:
+>>  -		ctrl |=3D JZ_LCD_CTRL_RGB555;
+>>  -		/* fall-through */
+>>  -	case DRM_FORMAT_RGB565:
+>>  -		ctrl |=3D JZ_LCD_CTRL_BPP_15_16;
+>>  -		break;
+>>  -	case DRM_FORMAT_XRGB8888:
+>>  -		ctrl |=3D JZ_LCD_CTRL_BPP_18_24;
+>>  -		break;
+>>  -	}
+>>=20
+>>   	regmap_update_bits(priv->map, JZ_REG_LCD_CTRL,
+>>  -			   JZ_LCD_CTRL_OFUP | JZ_LCD_CTRL_BURST_16 |
+>>  -			   JZ_LCD_CTRL_BPP_MASK, ctrl);
+>>  +			   JZ_LCD_CTRL_OFUP | JZ_LCD_CTRL_BURST_16,
+>>  +			   JZ_LCD_CTRL_OFUP | JZ_LCD_CTRL_BURST_16);
+> It looks like regmap_update_bits() is no longer the best choice here.
+
+I see that regmap_set_bits() appeared in 5.8, I'll just use that.
+
+>>   }
+>>=20
+>>   static int ingenic_drm_crtc_atomic_check(struct drm_crtc *crtc,
+>>   					 struct drm_crtc_state *state)
+>>   {
+>>   	struct ingenic_drm *priv =3D drm_crtc_get_priv(crtc);
+>>  +	struct drm_plane_state *f1_state, *f0_state;
+>>   	long rate;
+>>=20
+>>   	if (!drm_atomic_crtc_needs_modeset(state))
+>>  @@ -227,6 +206,15 @@ static int=20
+>> ingenic_drm_crtc_atomic_check(struct drm_crtc *crtc,
+>>   	if (rate < 0)
+>>   		return rate;
+>>=20
+>>  +	if (priv->soc_info->has_osd) {
+>>  +		f1_state =3D drm_atomic_get_plane_state(state->state, &priv->f1);
+>>  +		f0_state =3D drm_atomic_get_plane_state(state->state, &priv->f0);
+>>  +
+>>  +		/* If all the planes are disabled, we won't get a VBLANK IRQ */
+>>  +		if (!f1_state->fb && !f0_state->fb)
+>>  +			state->no_vblank =3D true;
+>>  +	}
+>>  +
+>>   	return 0;
+>>   }
+>>=20
+>>  @@ -236,14 +224,9 @@ static void=20
+>> ingenic_drm_crtc_atomic_flush(struct drm_crtc *crtc,
+>>   	struct ingenic_drm *priv =3D drm_crtc_get_priv(crtc);
+>>   	struct drm_crtc_state *state =3D crtc->state;
+>>   	struct drm_pending_vblank_event *event =3D state->event;
+>>  -	struct drm_framebuffer *drm_fb =3D crtc->primary->state->fb;
+>>  -	const struct drm_format_info *finfo;
+>>=20
+>>   	if (drm_atomic_crtc_needs_modeset(state)) {
+>>  -		finfo =3D drm_format_info(drm_fb->format->format);
+>>  -
+>>   		ingenic_drm_crtc_update_timings(priv, &state->mode);
+>>  -		ingenic_drm_crtc_update_ctrl(priv, finfo);
+>>=20
+>>   		clk_set_rate(priv->pix_clk, state->adjusted_mode.clock * 1000);
+>>   	}
+>>  @@ -260,12 +243,149 @@ static void=20
+>> ingenic_drm_crtc_atomic_flush(struct drm_crtc *crtc,
+>>   	}
+>>   }
+>>=20
+>>  +static int ingenic_drm_plane_atomic_check(struct drm_plane *plane,
+>>  +					  struct drm_plane_state *state)
+>>  +{
+>>  +	struct ingenic_drm *priv =3D drm_device_get_priv(plane->dev);
+>>  +	struct drm_crtc_state *crtc_state;
+>>  +	struct drm_crtc *crtc =3D state->crtc ?: plane->state->crtc;
+>>  +	int ret;
+>>  +
+>>  +	if (!crtc)
+>>  +		return 0;
+>>  +
+>>  +	crtc_state =3D drm_atomic_get_existing_crtc_state(state->state,=20
+>> crtc);
+>>  +	if (WARN_ON(!crtc_state))
+>>  +		return -EINVAL;
+>>  +
+>>  +	ret =3D drm_atomic_helper_check_plane_state(state, crtc_state,
+>>  +						  DRM_PLANE_HELPER_NO_SCALING,
+>>  +						  DRM_PLANE_HELPER_NO_SCALING,
+>>  +						  priv->soc_info->has_osd,
+>>  +						  true);
+>>  +	if (ret)
+>>  +		return ret;
+>>  +
+>>  +	if (!priv->soc_info->has_osd &&
+>>  +	    (state->src_x !=3D 0 ||
+>>  +	     (state->src_w >> 16) !=3D state->crtc_w ||
+>>  +	     (state->src_h >> 16) !=3D state->crtc_h))
+>>  +		return -EINVAL;
+> This check could bebefit from a small comment.
+> I cannot see the purpose of " >> 16" on the src_* fields...
+
+I can add a comment, yes.
+
+The src_* fields of a drm_plane are in 16.16 fixed-point format, hence=20
+the >>16. I didn't invent that here.
+
+>>  +
+>>  +	/*
+>>  +	 * Require full modeset if if enabling or disabling a plane, or=20
+>> changing
+> Too many ifs?
+>=20
+>>  +	 * its position, size or depth.
+>>  +	 */
+>>  +	if (priv->soc_info->has_osd &&
+>>  +	    (!plane->state->fb || !state->fb ||
+>>  +	     plane->state->crtc_x !=3D state->crtc_x ||
+>>  +	     plane->state->crtc_y !=3D state->crtc_y ||
+>>  +	     plane->state->crtc_w !=3D state->crtc_w ||
+>>  +	     plane->state->crtc_h !=3D state->crtc_h ||
+>>  +	     plane->state->fb->format->format !=3D=20
+>> state->fb->format->format))
+>>  +		crtc_state->mode_changed =3D true;
+>>  +
+>>  +	return 0;
+>>  +}
+>>  +
+>>  +static void ingenic_drm_plane_enable(struct ingenic_drm *priv,
+>>  +				      struct drm_plane *plane)
+>>  +{
+>>  +	unsigned int en_bit;
+>>  +
+>>  +	if (priv->soc_info->has_osd) {
+>>  +		if (plane->type =3D=3D DRM_PLANE_TYPE_PRIMARY)
+>>  +			en_bit =3D JZ_LCD_OSDC_F1EN;
+>>  +		else
+>>  +			en_bit =3D JZ_LCD_OSDC_F0EN;
+>>  +
+>>  +		regmap_update_bits(priv->map, JZ_REG_LCD_OSDC, en_bit, en_bit);
+> I think you can use a more direct way to do the assignment.
+> Like before where the same pattern was used (last two arguments the
+> same).
+>=20
+>>  +	}
+>>  +}
+>>  +
+>>  +static void ingenic_drm_plane_atomic_disable(struct drm_plane=20
+>> *plane,
+>>  +					     struct drm_plane_state *old_state)
+>>  +{
+>>  +	struct ingenic_drm *priv =3D drm_device_get_priv(plane->dev);
+>>  +	unsigned int en_bit;
+>>  +
+>>  +	if (priv->soc_info->has_osd) {
+>>  +		if (plane->type =3D=3D DRM_PLANE_TYPE_PRIMARY)
+>>  +			en_bit =3D JZ_LCD_OSDC_F1EN;
+>>  +		else
+>>  +			en_bit =3D JZ_LCD_OSDC_F0EN;
+>>  +
+>>  +		regmap_update_bits(priv->map, JZ_REG_LCD_OSDC, en_bit, 0);
+>>  +	}
+>>  +}
+>>  +
+>>  +static void ingenic_drm_plane_config(struct ingenic_drm *priv,
+>>  +				     struct drm_plane *plane, u32 fourcc)
+>>  +{
+>>  +	struct drm_plane_state *state =3D plane->state;
+>>  +	unsigned int xy_reg, size_reg;
+>>  +	unsigned int ctrl =3D 0;
+>>  +
+>>  +	ingenic_drm_plane_enable(priv, plane);
+>>  +
+>>  +	if (priv->soc_info->has_osd &&
+>>  +	    plane->type =3D=3D DRM_PLANE_TYPE_PRIMARY) {
+>>  +		switch (fourcc) {
+>>  +		case DRM_FORMAT_XRGB1555:
+>>  +			ctrl |=3D JZ_LCD_OSDCTRL_RGB555;
+>>  +			fallthrough;
+>>  +		case DRM_FORMAT_RGB565:
+>>  +			ctrl |=3D JZ_LCD_OSDCTRL_BPP_15_16;
+>>  +			break;
+>>  +		case DRM_FORMAT_XRGB8888:
+>>  +			ctrl |=3D JZ_LCD_OSDCTRL_BPP_18_24;
+>>  +			break;
+>>  +		}
+>>  +
+>>  +		regmap_update_bits(priv->map, JZ_REG_LCD_OSDCTRL,
+>>  +				   JZ_LCD_OSDCTRL_BPP_MASK, ctrl);
+>>  +	} else {
+>>  +		switch (fourcc) {
+>>  +		case DRM_FORMAT_XRGB1555:
+>>  +			ctrl |=3D JZ_LCD_CTRL_RGB555;
+>>  +			fallthrough;
+>>  +		case DRM_FORMAT_RGB565:
+>>  +			ctrl |=3D JZ_LCD_CTRL_BPP_15_16;
+>>  +			break;
+>>  +		case DRM_FORMAT_XRGB8888:
+>>  +			ctrl |=3D JZ_LCD_CTRL_BPP_18_24;
+>>  +			break;
+>>  +		}
+>>  +
+>>  +		regmap_update_bits(priv->map, JZ_REG_LCD_CTRL,
+>>  +				   JZ_LCD_CTRL_BPP_MASK, ctrl);
+>>  +	}
+>>  +
+>>  +	if (priv->soc_info->has_osd) {
+>>  +		if (plane->type =3D=3D DRM_PLANE_TYPE_PRIMARY) {
+>>  +			xy_reg =3D JZ_REG_LCD_XYP1;
+>>  +			size_reg =3D JZ_REG_LCD_SIZE1;
+>>  +		} else {
+>>  +			xy_reg =3D JZ_REG_LCD_XYP0;
+>>  +			size_reg =3D JZ_REG_LCD_SIZE0;
+>>  +		}
+>>  +
+>>  +		regmap_write(priv->map, xy_reg,
+>>  +			     state->crtc_x << JZ_LCD_XYP01_XPOS_LSB |
+>>  +			     state->crtc_y << JZ_LCD_XYP01_YPOS_LSB);
+>>  +		regmap_write(priv->map, size_reg,
+>>  +			     state->crtc_w << JZ_LCD_SIZE01_WIDTH_LSB |
+>>  +			     state->crtc_h << JZ_LCD_SIZE01_HEIGHT_LSB);
+>>  +	}
+>>  +}
+>>  +
+>>   static void ingenic_drm_plane_atomic_update(struct drm_plane=20
+>> *plane,
+>>   					    struct drm_plane_state *oldstate)
+>>   {
+>>  -	struct ingenic_drm *priv =3D drm_plane_get_priv(plane);
+>>  +	struct ingenic_drm *priv =3D drm_device_get_priv(plane->dev);
+>>   	struct drm_plane_state *state =3D plane->state;
+>>   	unsigned int width, height, cpp;
+>>  +	unsigned int hwdesc_idx;
+>>   	dma_addr_t addr;
+>>=20
+>>   	if (state && state->fb) {
+>>  @@ -274,9 +394,18 @@ static void=20
+>> ingenic_drm_plane_atomic_update(struct drm_plane *plane,
+>>   		height =3D state->src_h >> 16;
+>>   		cpp =3D state->fb->format->cpp[0];
+>>=20
+>>  -		priv->dma_hwdesc->addr =3D addr;
+>>  -		priv->dma_hwdesc->cmd =3D width * height * cpp / 4;
+>>  -		priv->dma_hwdesc->cmd |=3D JZ_LCD_CMD_EOF_IRQ;
+>>  +		if (!priv->soc_info->has_osd)
+>>  +			hwdesc_idx =3D 0;
+>>  +		else
+>=20
+>>  +			hwdesc_idx =3D plane->type =3D=3D DRM_PLANE_TYPE_PRIMARY;
+> This looks ugly.
+> "plane->type =3D=3D DRM_PLANE_TYPE_PRIMARY" evaluates to a boolean.
+> This is then ocnverted to an int used as index to an array later.
+> Something a bit more explicit would be more readable.
+
+I'll come up with something better.
+
+>>  +
+>>  +		priv->dma_hwdesc[hwdesc_idx]->addr =3D addr;
+>>  +		priv->dma_hwdesc[hwdesc_idx]->cmd =3D width * height * cpp / 4;
+>>  +		priv->dma_hwdesc[hwdesc_idx]->cmd |=3D JZ_LCD_CMD_EOF_IRQ;
+>>  +
+>>  +		if (drm_atomic_crtc_needs_modeset(state->crtc->state))
+>>  +			ingenic_drm_plane_config(priv, plane,
+>>  +						 state->fb->format->format);
+>>   	}
+>>   }
+>>=20
+>>  @@ -437,6 +566,8 @@ static const struct drm_crtc_funcs=20
+>> ingenic_drm_crtc_funcs =3D {
+>>=20
+>>   static const struct drm_plane_helper_funcs=20
+>> ingenic_drm_plane_helper_funcs =3D {
+>>   	.atomic_update		=3D ingenic_drm_plane_atomic_update,
+>>  +	.atomic_check		=3D ingenic_drm_plane_atomic_check,
+>>  +	.atomic_disable		=3D ingenic_drm_plane_atomic_disable,
+>>   	.prepare_fb		=3D drm_gem_fb_prepare_fb,
+>>   };
+>>=20
+>>  @@ -463,8 +594,10 @@ static void ingenic_drm_free_dma_hwdesc(void=20
+>> *d)
+>>   {
+>>   	struct ingenic_drm *priv =3D d;
+>>=20
+>>  -	dma_free_coherent(priv->dev, sizeof(*priv->dma_hwdesc),
+>>  -			  priv->dma_hwdesc, priv->dma_hwdesc_phys);
+>>  +	dma_free_coherent(priv->dev, sizeof(*priv->dma_hwdesc[0]),
+>>  +			  priv->dma_hwdesc[0], priv->dma_hwdesc_phys[0]);
+>>  +	dma_free_coherent(priv->dev, sizeof(*priv->dma_hwdesc[1]),
+>>  +			  priv->dma_hwdesc[1], priv->dma_hwdesc_phys[1]);
+>>   }
+>>=20
+>>   static int ingenic_drm_probe(struct platform_device *pdev)
+>>  @@ -549,23 +682,32 @@ static int ingenic_drm_probe(struct=20
+>> platform_device *pdev)
+>>   		bridge =3D devm_drm_panel_bridge_add_typed(dev, panel,
+>>   							 DRM_MODE_CONNECTOR_DPI);
+>>=20
+>>  -	priv->dma_hwdesc =3D dma_alloc_coherent(dev,=20
+>> sizeof(*priv->dma_hwdesc),
+>>  -					      &priv->dma_hwdesc_phys,
+>>  -					      GFP_KERNEL);
+>>  -	if (!priv->dma_hwdesc)
+>>  +	priv->dma_hwdesc[0] =3D dma_alloc_coherent(dev,=20
+>> sizeof(*priv->dma_hwdesc[0]),
+>>  +						 &priv->dma_hwdesc_phys[0],
+>>  +						 GFP_KERNEL);
+>>  +	if (!priv->dma_hwdesc[0])
+>>  +		return -ENOMEM;
+>>  +
+>>  +	priv->dma_hwdesc[0]->next =3D priv->dma_hwdesc_phys[0];
+>>  +	priv->dma_hwdesc[0]->id =3D 0xdeafbead;
+>>  +
+>>  +	priv->dma_hwdesc[1] =3D dma_alloc_coherent(dev,=20
+>> sizeof(*priv->dma_hwdesc[1]),
+>>  +						 &priv->dma_hwdesc_phys[1],
+>>  +						 GFP_KERNEL);
+>>  +	if (!priv->dma_hwdesc[1])
+>>   		return -ENOMEM;
+> Here you should undo the first allocation??
+> I think the code could benefit from using dmam_alloc_coherent().
+
+Right, good catch.
+
+Thanks for the review!
+
+Cheers,
+-Paul
+
+>=20
+>>=20
+>>  +	priv->dma_hwdesc[1]->next =3D priv->dma_hwdesc_phys[1];
+>>  +	priv->dma_hwdesc[1]->id =3D 0xdeadbabe;
+>>  +
+>>   	ret =3D devm_add_action_or_reset(dev, ingenic_drm_free_dma_hwdesc,=20
+>> priv);
+>>   	if (ret)
+>>   		return ret;
+>>=20
+>>  -	priv->dma_hwdesc->next =3D priv->dma_hwdesc_phys;
+>>  -	priv->dma_hwdesc->id =3D 0xdeafbead;
+>>  -
+>>  -	drm_plane_helper_add(&priv->primary,=20
+>> &ingenic_drm_plane_helper_funcs);
+>>  +	drm_plane_helper_add(&priv->f1, &ingenic_drm_plane_helper_funcs);
+>>=20
+>>  -	ret =3D drm_universal_plane_init(drm, &priv->primary,
+>>  -				       0, &ingenic_drm_primary_plane_funcs,
+>>  +	ret =3D drm_universal_plane_init(drm, &priv->f1, 1,
+>>  +				       &ingenic_drm_primary_plane_funcs,
+>>   				       ingenic_drm_primary_formats,
+>>   				       ARRAY_SIZE(ingenic_drm_primary_formats),
+>>   				       NULL, DRM_PLANE_TYPE_PRIMARY, NULL);
+>>  @@ -576,13 +718,30 @@ static int ingenic_drm_probe(struct=20
+>> platform_device *pdev)
+>>=20
+>>   	drm_crtc_helper_add(&priv->crtc, &ingenic_drm_crtc_helper_funcs);
+>>=20
+>>  -	ret =3D drm_crtc_init_with_planes(drm, &priv->crtc, &priv->primary,
+>>  +	ret =3D drm_crtc_init_with_planes(drm, &priv->crtc, &priv->f1,
+>>   					NULL, &ingenic_drm_crtc_funcs, NULL);
+>>   	if (ret) {
+>>   		dev_err(dev, "Failed to init CRTC: %i\n", ret);
+>>   		return ret;
+>>   	}
+>>=20
+>>  +	if (soc_info->has_osd) {
+>>  +		drm_plane_helper_add(&priv->f0,
+>>  +				     &ingenic_drm_plane_helper_funcs);
+>>  +
+>>  +		ret =3D drm_universal_plane_init(drm, &priv->f0, 1,
+>>  +					       &ingenic_drm_primary_plane_funcs,
+>>  +					       ingenic_drm_primary_formats,
+>>  +					       ARRAY_SIZE(ingenic_drm_primary_formats),
+>>  +					       NULL, DRM_PLANE_TYPE_OVERLAY,
+>>  +					       NULL);
+>>  +		if (ret) {
+>>  +			dev_err(dev, "Failed to register overlay plane: %i\n",
+>>  +				ret);
+>>  +			return ret;
+>>  +		}
+>>  +	}
+>>  +
+>>   	priv->encoder.possible_crtcs =3D 1;
+>>=20
+>>   	drm_encoder_helper_add(&priv->encoder,
+>>  @@ -644,7 +803,12 @@ static int ingenic_drm_probe(struct=20
+>> platform_device *pdev)
+>>   	}
+>>=20
+>>   	/* Set address of our DMA descriptor chain */
+>>  -	regmap_write(priv->map, JZ_REG_LCD_DA0, priv->dma_hwdesc_phys);
+>>  +	regmap_write(priv->map, JZ_REG_LCD_DA0, priv->dma_hwdesc_phys[0]);
+>>  +	regmap_write(priv->map, JZ_REG_LCD_DA1, priv->dma_hwdesc_phys[1]);
+>>  +
+>>  +	/* Enable OSD if available */
+>>  +	if (soc_info->has_osd)
+>>  +		regmap_write(priv->map, JZ_REG_LCD_OSDC, JZ_LCD_OSDC_OSDEN);
+>>=20
+>>   	ret =3D drm_dev_register(drm, 0);
+>>   	if (ret) {
+>>  @@ -680,18 +844,21 @@ static int ingenic_drm_remove(struct=20
+>> platform_device *pdev)
+>>=20
+>>   static const struct jz_soc_info jz4740_soc_info =3D {
+>>   	.needs_dev_clk =3D true,
+>>  +	.has_osd =3D false,
+>>   	.max_width =3D 800,
+>>   	.max_height =3D 600,
+>>   };
+>>=20
+>>   static const struct jz_soc_info jz4725b_soc_info =3D {
+>>   	.needs_dev_clk =3D false,
+>>  +	.has_osd =3D true,
+>>   	.max_width =3D 800,
+>>   	.max_height =3D 600,
+>>   };
+>>=20
+>>   static const struct jz_soc_info jz4770_soc_info =3D {
+>>   	.needs_dev_clk =3D false,
+>>  +	.has_osd =3D true,
+>>   	.max_width =3D 1280,
+>>   	.max_height =3D 720,
+>>   };
+>>  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.h=20
+>> b/drivers/gpu/drm/ingenic/ingenic-drm.h
+>>  index cb578cff7bb1..d0b827a9fe83 100644
+>>  --- a/drivers/gpu/drm/ingenic/ingenic-drm.h
+>>  +++ b/drivers/gpu/drm/ingenic/ingenic-drm.h
+>>  @@ -30,6 +30,18 @@
+>>   #define JZ_REG_LCD_SA1				0x54
+>>   #define JZ_REG_LCD_FID1				0x58
+>>   #define JZ_REG_LCD_CMD1				0x5C
+>>  +#define JZ_REG_LCD_OSDC				0x100
+>>  +#define JZ_REG_LCD_OSDCTRL			0x104
+>>  +#define JZ_REG_LCD_OSDS				0x108
+>>  +#define JZ_REG_LCD_BGC				0x10c
+>>  +#define JZ_REG_LCD_KEY0				0x110
+>>  +#define JZ_REG_LCD_KEY1				0x114
+>>  +#define JZ_REG_LCD_ALPHA			0x118
+>>  +#define JZ_REG_LCD_IPUR				0x11c
+>>  +#define JZ_REG_LCD_XYP0				0x120
+>>  +#define JZ_REG_LCD_XYP1				0x124
+>>  +#define JZ_REG_LCD_SIZE0			0x128
+>>  +#define JZ_REG_LCD_SIZE1			0x12c
+>>=20
+>>   #define JZ_LCD_CFG_SLCD				BIT(31)
+>>   #define JZ_LCD_CFG_PS_DISABLE			BIT(23)
+>>  @@ -123,4 +135,27 @@
+>>   #define JZ_LCD_STATE_SOF_IRQ			BIT(4)
+>>   #define JZ_LCD_STATE_DISABLED			BIT(0)
+>>=20
+>>  +#define JZ_LCD_OSDC_OSDEN			BIT(0)
+>>  +#define JZ_LCD_OSDC_F0EN			BIT(3)
+>>  +#define JZ_LCD_OSDC_F1EN			BIT(4)
+>>  +
+>>  +#define JZ_LCD_OSDCTRL_IPU			BIT(15)
+>>  +#define JZ_LCD_OSDCTRL_RGB555			BIT(4)
+>>  +#define JZ_LCD_OSDCTRL_CHANGE			BIT(3)
+>>  +#define JZ_LCD_OSDCTRL_BPP_15_16		0x4
+>>  +#define JZ_LCD_OSDCTRL_BPP_18_24		0x5
+>>  +#define JZ_LCD_OSDCTRL_BPP_30			0x7
+>>  +#define JZ_LCD_OSDCTRL_BPP_MASK			(JZ_LCD_OSDCTRL_RGB555 | 0x7)
+>>  +
+>>  +#define JZ_LCD_OSDS_READY			BIT(0)
+>>  +
+>>  +#define JZ_LCD_IPUR_IPUREN			BIT(31)
+>>  +#define JZ_LCD_IPUR_IPUR_LSB			0
+>>  +
+>>  +#define JZ_LCD_XYP01_XPOS_LSB			0
+>>  +#define JZ_LCD_XYP01_YPOS_LSB			16
+>>  +
+>>  +#define JZ_LCD_SIZE01_WIDTH_LSB			0
+>>  +#define JZ_LCD_SIZE01_HEIGHT_LSB		16
+>>  +
+>>   #endif /* DRIVERS_GPU_DRM_INGENIC_INGENIC_DRM_H */
+>>  --
+>>  2.27.0
+>>=20
+>>  _______________________________________________
+>>  dri-devel mailing list
+>>  dri-devel@lists.freedesktop.org
+>>  https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
 
