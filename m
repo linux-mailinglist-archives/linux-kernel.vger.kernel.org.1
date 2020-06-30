@@ -2,87 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9196D20F463
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 14:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F3620F483
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 14:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387402AbgF3MSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 08:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732509AbgF3MSR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 08:18:17 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531FEC061755;
-        Tue, 30 Jun 2020 05:18:17 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id u12so15315764qth.12;
-        Tue, 30 Jun 2020 05:18:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=vOMMQVIga0beBT3w7vXuKPKMQNuuOqyf8on6+kC9jVU=;
-        b=nlg+lxzE0jp5jmPKZfHKLR3+9sM6BtieN520qJBBFjy4xLQBqYJwAayqpptHcFFOh6
-         VajWH/M5J9BeACaUfzglsvSrAgiID/iFlood3g+kRCRnd6XbXdajaZD9dAFDoYOt+Hqu
-         bbtNY7FZHyTT+uSIqytmr2EuFsQzkhVp8IvNwbJfzCPgc0+0JB9xcifsO1jWNvLIo2ye
-         rnRpXfTW0cOP0l7fxbLCTGj35zu1P4rSAf8dcee2oscshEslcMhAF1hQFb/a1DIpXSd0
-         ewgPnZgMkPJEGG7qLssMNhQjsWhODU9NZDA+8tPRk68IWGWcTruw8A1yKG53PK5Wrbbb
-         AqUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=vOMMQVIga0beBT3w7vXuKPKMQNuuOqyf8on6+kC9jVU=;
-        b=YEhdj6BgqRp8mn2Xj3AZV3HepLYUkjuaz88unmXlIby+kEpMoZVKrguzLLvW+jxU84
-         PCo0lJ5cknz+jZPIMCLZU1TwtX3otvpDuxkyLRNXmZLaXW8qV1hIy9ruo8qoxU9SBNgg
-         OZviR8EGD0WS8D5odwojaE3tCMLk0Jw5zqo+JjprAdeDWOhaOXs35EP8uadSh4cPfHFg
-         b9KeXGn+RzSEN9zUyZoCvLYBpCkN3KC+1Hn6nqs1iaS6BO0DuPhrBeynaO0LK8Fm29df
-         Xoqnw/Pty4ZCck8DAFVhaxDnFB+Z0Y9rwcZILk9Xt+SmRWyamewNQJ2ZdO9Kf+keXHhP
-         ERpA==
-X-Gm-Message-State: AOAM533Zw0MItcU5I6r4T9ZrVTJjvZE3tB4T6qhucxl8UhPWohI99gi/
-        hHMCnHeFgxx1Oh1JqixTYvjNmp0+QeQ=
-X-Google-Smtp-Source: ABdhPJxkZfDQqtr0npeZl1dS+FUq7vXS0nVwrVCawTiGkteXTN50Z1H97zhn/mmvohszMxIyd+rQFw==
-X-Received: by 2002:ac8:2af0:: with SMTP id c45mr20371651qta.296.1593519496475;
-        Tue, 30 Jun 2020 05:18:16 -0700 (PDT)
-Received: from localhost.localdomain ([2804:14c:482:92b:d42f:2bc1:abe3:59f0])
-        by smtp.gmail.com with ESMTPSA id r2sm2738129qtn.27.2020.06.30.05.18.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 05:18:15 -0700 (PDT)
-From:   Fabio Estevam <festevam@gmail.com>
-To:     robh+dt@kernel.org
-Cc:     amit.kucheria@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] dt-bindings: thermal: Remove soc unit address
-Date:   Tue, 30 Jun 2020 09:18:04 -0300
-Message-Id: <20200630121804.27887-1-festevam@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S2387638AbgF3MWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 08:22:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32884 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387629AbgF3MWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 08:22:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B1D1DB020;
+        Tue, 30 Jun 2020 12:22:40 +0000 (UTC)
+Date:   Tue, 30 Jun 2020 14:22:39 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Raul Rangel <rrangel@google.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        kurt@linutronix.de, "S, Shirish" <Shirish.S@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: UART/TTY console deadlock
+Message-ID: <20200630122239.GD6173@alley>
+References: <CAHQZ30BnfX+gxjPm1DUd5psOTqbyDh4EJE=2=VAMW_VDafctkA@mail.gmail.com>
+ <CAHp75Vd8nTzmZdnhpTDChdc11zyCaSfeigbxaCpOWZ1Lv9ZBMw@mail.gmail.com>
+ <20200630035816.GA21591@jagdpanzerIV.localdomain>
+ <20200630102141.GA11587@alley>
+ <20200630105512.GA530@jagdpanzerIV.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200630105512.GA530@jagdpanzerIV.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the soc unit address to fix the following warning seen with
-'make dt_binding_check':
+On Tue 2020-06-30 19:55:12, Sergey Senozhatsky wrote:
+> On (20/06/30 12:21), Petr Mladek wrote:
+> > Anyway, I believe that this is a false positive. If I get it correctly
+> > serial8250_do_startup() must be called before the serial port could
+> > be registered as a console. It means that it could not be called
+> > from inside printk().
+> 
+> >From my understanding, I'm afraid we are talking about actual deadlock
+> here, not about false positive report. Quoting the original email:
 
-Documentation/devicetree/bindings/thermal/thermal-sensor.example.dts:22.20-49.11: Warning (unit_address_vs_reg): /example-0/soc@0: node has a unit name, but no reg or ranges property
+IMHO, it is not clear. The log contains lockdep report. It does not mean
+the deadlock really happened. The lockdep reports cyclic dependency but it
+is not able to say if the related code chains might be called at the
+same time in reality.
 
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
----
- Documentation/devicetree/bindings/thermal/thermal-sensor.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+And this combination has signs of false positives. As I said, I think
+that the serial console could not be registered by printk() before
+serial8250_do_startup() has finished.
 
-diff --git a/Documentation/devicetree/bindings/thermal/thermal-sensor.yaml b/Documentation/devicetree/bindings/thermal/thermal-sensor.yaml
-index fcd25a0af38c..727d04550324 100644
---- a/Documentation/devicetree/bindings/thermal/thermal-sensor.yaml
-+++ b/Documentation/devicetree/bindings/thermal/thermal-sensor.yaml
-@@ -41,7 +41,7 @@ examples:
-     #include <dt-bindings/interrupt-controller/arm-gic.h>
- 
-     // Example 1: SDM845 TSENS
--    soc: soc@0 {
-+    soc: soc {
-             #address-cells = <2>;
-             #size-cells = <2>;
- 
--- 
-2.17.1
+Also there are some unrelated messages after the last backtrace.
 
+Finally. we would be able to see the messages only when panic() was
+called and oops_in_progress set. And there is nothing about panic().
+
+
+>  : We are trying an S3 suspend stress test and occasionally while
+>  : entering S3 we get a console deadlock.
+
+Raul, have the system really died or have you just seen the lockdep
+report, please?
+
+
+> [..]
+> 
+> > >  drivers/tty/serial/8250/8250_port.c | 11 +++++++----
+> > >  1 file changed, 7 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+> > > index d64ca77d9cfa..ad30991e1b3b 100644
+> > > --- a/drivers/tty/serial/8250/8250_port.c
+> > > +++ b/drivers/tty/serial/8250/8250_port.c
+> > > @@ -2275,6 +2275,11 @@ int serial8250_do_startup(struct uart_port *port)
+> > >  
+> > >  	if (port->irq && !(up->port.flags & UPF_NO_THRE_TEST)) {
+> > >  		unsigned char iir1;
+> > > +		bool irq_shared = up->port.irqflags & IRQF_SHARED;
+> > > +
+> > > +		if (irq_shared)
+> > > +			disable_irq_nosync(port->irq);
+> > > +
+> > >  		/*
+> > >  		 * Test for UARTs that do not reassert THRE when the
+> > >  		 * transmitter is idle and the interrupt has already
+> > > @@ -2284,8 +2289,6 @@ int serial8250_do_startup(struct uart_port *port)
+> > >  		 * allow register changes to become visible.
+> > >  		 */
+> > >  		spin_lock_irqsave(&port->lock, flags);
+> > > -		if (up->port.irqflags & IRQF_SHARED)
+> > > -			disable_irq_nosync(port->irq);
+> > >  
+> > >  		wait_for_xmitr(up, UART_LSR_THRE);
+> > >  		serial_port_out_sync(port, UART_IER, UART_IER_THRI);
+> > > @@ -2297,9 +2300,9 @@ int serial8250_do_startup(struct uart_port *port)
+> > >  		iir = serial_port_in(port, UART_IIR);
+> > >  		serial_port_out(port, UART_IER, 0);
+> > >  
+> > > -		if (port->irqflags & IRQF_SHARED)
+> > > -			enable_irq(port->irq);
+> > >  		spin_unlock_irqrestore(&port->lock, flags);
+> > > +		if (irq_shared)
+> > > +			enable_irq(port->irq);
+> > >  
+> > >  		/*
+> > >  		 * If the interrupt is not reasserted, or we otherwise
+> > 
+> > I think that it might be safe but I am not 100% sure, sigh.
+> 
+> Yeah, I'm not 100%, but I'd give it a try.
+
+I do not feel brave enough to ack it today. But I am all for trying it
+if anyone more familiar with the code is fine with it.
+
+Best Regards,
+Petr
