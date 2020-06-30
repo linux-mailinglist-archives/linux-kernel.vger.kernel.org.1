@@ -2,114 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D3920FB65
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 072A720FB8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390381AbgF3SJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 14:09:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728566AbgF3SJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 14:09:19 -0400
-Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 482EB206C0;
-        Tue, 30 Jun 2020 18:09:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593540558;
-        bh=5WVwI9V0bvuYlDJK1bD7y8a6tFTxacqy/VIWlu5mFkE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=V5InnpzvN8ngt1Mwy7cPok3fE5TO7AU5KiaG7dHHaCoJc/shrphDd/wgvAEd9cJpp
-         Hvv2A6/GvWO8Cr9C7dxiXsYRzpq0kfRCezleNguJFFwf+gQLY+ox8D6y0arhjM0NqA
-         ZbNB9kMvPCQDC5OHV0/KvcRAhMrsHnN281jEL/4Y=
-Date:   Tue, 30 Jun 2020 13:09:17 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     bhelgaas@google.com, corbet@lwn.net, robh+dt@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, kishon@ti.com, lorenzo.pieralisi@arm.com,
-        hongxing.zhu@nxp.com, l.stach@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, m-karicheri2@ti.com, songxiaowei@hisilicon.com,
-        wangbinghui@hisilicon.com, amurray@thegoodpenguin.co.uk,
-        sathyanarayanan.kuppuswamy@linux.intel.com, hkallweit1@gmail.com,
-        rafael.j.wysocki@intel.com, rdunlap@infradead.org,
-        linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: PCI: Replace lkml.org, spinics, gmane with lore.kernel.org
-Message-ID: <20200630180917.GA3455699@bjorn-Precision-5520>
+        id S2390679AbgF3SRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 14:17:19 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:36953 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726736AbgF3SRS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 14:17:18 -0400
+Received: by mail-ed1-f65.google.com with SMTP id g20so16886070edm.4;
+        Tue, 30 Jun 2020 11:17:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y5Mt3w62B3XQY5/QbJq7kcGTRM0kicJutPXBswps/no=;
+        b=LixeDIWeBO2lXyjxh7/Jrnlr6UUty9VwyYbRtnI1VgxGIelaNVVqk08FScFtmw4+PO
+         v1iXrN26gf8mFnd8lE7aNSl++IFff5vq8S3hMAvAxKVI5h1alkcx/Hw0LPaYrOjBRMGO
+         wqRUFZcpYCTud9ep/yyi8ZUUl73nGfNgkK0O6Y1QGMk3eI+t4kk/xqTPcJ0iYKTA9occ
+         A+4xdJbEwxL4AGlHeQAPH86Y9VjpoDUC+UUNXxwj8DS7EUPY+ctjS4spxRHfTeUTuBbz
+         nc4y1Hhj09Ovl0/zTZ450hWKcE9vxT5pfKrQ4vyhzfXYqK1mWM8wkJ7v2itQIs+HR/Me
+         Bt7Q==
+X-Gm-Message-State: AOAM532YAkER3VLqlLnu82LQp9woWQfmiqlT/NBf2XK/msqMQ1Dlj7kj
+        V7NJizv3oVKndFxumwpxLY6mLVvF9pB8wA==
+X-Google-Smtp-Source: ABdhPJygbteH4H2nIDkfpYZxCZ8uRZYxp+ahdHSeCt3jc1NsBgprYHwwComNsOJMHASjwjgb5C2K7w==
+X-Received: by 2002:a17:906:7283:: with SMTP id b3mr20095438ejl.163.1593540577182;
+        Tue, 30 Jun 2020 11:09:37 -0700 (PDT)
+Received: from msft-t490s.lan ([2001:b07:5d26:7f46:d7c1:f090:1563:f81f])
+        by smtp.gmail.com with ESMTPSA id d13sm2492313ejj.95.2020.06.30.11.09.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 11:09:36 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Sven Auhagen <sven.auhagen@voleatech.de>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Stefan Chulski <stefanc@marvell.com>,
+        Marcin Wojtas <mw@semihalf.com>, maxime.chevallier@bootlin.com,
+        antoine.tenart@bootlin.com, thomas.petazzoni@bootlin.com
+Subject: [PATCH net-next 0/4] mvpp2: XDP support
+Date:   Tue, 30 Jun 2020 20:09:26 +0200
+Message-Id: <20200630180930.87506-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200627103050.71712-1-grandmaster@al2klimov.de>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PCI: Replace lkml.org, spinics, gmane with lore.kernel.org
+From: Matteo Croce <mcroce@microsoft.com>
 
-The lkml.org, spinics.net, and gmane.org archives are not very reliable
-and, in some cases, not even easily accessible.  Replace links to them with
-links to lore.kernel.org, the archives hosted by kernel.org.
+Add XDP support to mvpp2. This series converts the driver to the
+page_pool API for RX buffer management, and adds native XDP support.
 
-I found the gmane items via the Wayback Machine archive at
-https://web.archive.org/.
+These are the performance numbers, as measured by Sven:
 
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+SKB fwd page pool:
+Rx bps     390.38 Mbps
+Rx pps     762.46 Kpps
 
-diff --git a/Documentation/PCI/pci.rst b/Documentation/PCI/pci.rst
-index d2815d735c86..281d8a241eae 100644
---- a/Documentation/PCI/pci.rst
-+++ b/Documentation/PCI/pci.rst
-@@ -214,7 +214,7 @@ the PCI device by calling pci_enable_device(). This will:
-    problem and unlikely to get fixed soon.
- 
-    This has been discussed before but not changed as of 2.6.19:
--   http://lkml.org/lkml/2006/3/2/194
-+   https://lore.kernel.org/r/20060302180025.GC28895@flint.arm.linux.org.uk/
- 
- 
- pci_set_master() will enable DMA by setting the bus master bit
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 54ebbef850be..9d7a43261613 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3549,7 +3549,7 @@ static void quirk_no_bus_reset(struct pci_dev *dev)
-  * The device will throw a Link Down error on AER-capable systems and
-  * regardless of AER, config space of the device is never accessible again
-  * and typically causes the system to hang or reset when access is attempted.
-- * http://www.spinics.net/lists/linux-pci/msg34797.html
-+ * https://lore.kernel.org/r/20140923210318.498dacbd@dualc.maya.org/
-  */
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0030, quirk_no_bus_reset);
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0032, quirk_no_bus_reset);
-@@ -4378,9 +4378,9 @@ static int pci_acs_ctrl_enabled(u16 acs_ctrl_req, u16 acs_ctrl_ena)
-  * redirect (CR) since all transactions are redirected to the upstream
-  * root complex.
-  *
-- * http://permalink.gmane.org/gmane.comp.emulators.kvm.devel/94086
-- * http://permalink.gmane.org/gmane.comp.emulators.kvm.devel/94102
-- * http://permalink.gmane.org/gmane.comp.emulators.kvm.devel/99402
-+ * https://lore.kernel.org/r/201207111426.q6BEQTbh002928@mail.maya.org/
-+ * https://lore.kernel.org/r/20120711165854.GM25282@amd.com/
-+ * https://lore.kernel.org/r/20121005130857.GX4009@amd.com/
-  *
-  * 1002:4385 SBx00 SMBus Controller
-  * 1002:439c SB7x0/SB8x0/SB9x0 IDE Controller
-diff --git a/drivers/pci/setup-res.c b/drivers/pci/setup-res.c
-index d21fa04fa44d..43eda101fcf4 100644
---- a/drivers/pci/setup-res.c
-+++ b/drivers/pci/setup-res.c
-@@ -73,7 +73,8 @@ static void pci_std_update_resource(struct pci_dev *dev, int resno)
- 		/*
- 		 * Apparently some Matrox devices have ROM BARs that read
- 		 * as zero when disabled, so don't update ROM BARs unless
--		 * they're enabled.  See https://lkml.org/lkml/2005/8/30/138.
-+		 * they're enabled.  See
-+		 * https://lore.kernel.org/r/43147B3D.1030309@vc.cvut.cz/
- 		 */
- 		if (!(res->flags & IORESOURCE_ROM_ENABLE))
- 			return;
+XDP fwd:
+Rx bps     1.39 Gbps
+Rx pps     2.72 Mpps
+
+XDP Drop:
+eth0: 12.9 Mpps
+eth1: 4.1 Mpps
+
+Matteo Croce (4):
+  mvpp2: refactor BM pool init percpu code
+  mvpp2: use page_pool allocator
+  mvpp2: add basic XDP support
+  mvpp2: XDP TX support
+
+ drivers/net/ethernet/marvell/Kconfig          |   1 +
+ drivers/net/ethernet/marvell/mvpp2/mvpp2.h    |  49 +-
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 600 ++++++++++++++++--
+ 3 files changed, 588 insertions(+), 62 deletions(-)
+
+-- 
+2.26.2
+
