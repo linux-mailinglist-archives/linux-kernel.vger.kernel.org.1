@@ -2,148 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9493520F86A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 17:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E7020F866
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 17:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389553AbgF3Pcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 11:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389385AbgF3Pcw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 11:32:52 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B066C061755;
-        Tue, 30 Jun 2020 08:32:52 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id c16so21441371ioi.9;
-        Tue, 30 Jun 2020 08:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fTZIk7o4I3v9sDO1ioQg65WFbAcbrwuzrZp6bqG2TZs=;
-        b=SLNEacNnXUaOSknJvbz9ftmBYbhGROQqfmRN2jCu+oUjMlkNVC7L0DnsVQmrHBlaRI
-         5t9+YaZ3fxK4ku6fb+GPJKRfCG+Gps1qplj+0digh8uJn+GB+1JCG9Wzyl02o25PGelP
-         jjz8iA9Z0KkEkHWlrSiPsWZQGxioYTjb69FIRUrryO7BtD4wWSjN4SSDkRErIBuVuxNx
-         0Er+SiLvwIuVSKl+6GUCUZEwRsO/ajwCcaiu8dXRPPfPul65ngxfwh8CITu5HLwJg6k5
-         BnZwSlDfE/HqcS6lphCwBhiU+2Md/l2E9L4RXlcd7S2l5erQM1rZl/g1zIVhMlCkQRPN
-         8Fyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fTZIk7o4I3v9sDO1ioQg65WFbAcbrwuzrZp6bqG2TZs=;
-        b=eDWu1cO+h9sgD3JUlOYZdyKrMGzcWBm30s7QG7b3ZWu8MsIuCZDpBud5Bsl7Py+NKT
-         T1YlVCYDsGB7feBUY+JFuB8RuV/UH/0OPuszkWtJl9cyFzp8x1zOVhxEVCRhnszPkJR6
-         q0+ZI0gD3R4kePaHoKcHfnyJfBWjjdeUtHX/kjBikUlmBDjw5MC+PgVWD+g2jfIYuPva
-         IymUwpp2ls8ZzQpNcou6SjbZ2uPN25p2CzemiJItyHh5MNbs8zZWCryFsbWaeNL3SpI8
-         ePAYTNTOdT+MmVXLWZZM67EcTBeKvYoayly/tUDtamqrOdx3MQBIgrJBXiVNY9DtGAAH
-         8jMg==
-X-Gm-Message-State: AOAM531S2Kh13P0CAYJgSqScd2iMvEEIj/cUMmhyl3ipqxxkWCS7buY2
-        5tV2Lb/WLTf9jcmjA3BAqn8qXdk8fo1DpjS/8GI=
-X-Google-Smtp-Source: ABdhPJwmeqxFiF/UYomtYzSa1zyensrGB2NlVyhR0lNiVAk/rpt8vIaIoeUrWdkkS5pkKyqbHpik7IWOHz0pvwB/6Z8=
-X-Received: by 2002:a02:6d27:: with SMTP id m39mr24703937jac.10.1593531171771;
- Tue, 30 Jun 2020 08:32:51 -0700 (PDT)
+        id S2389534AbgF3PcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 11:32:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389467AbgF3PcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 11:32:23 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72B5D20760;
+        Tue, 30 Jun 2020 15:32:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593531143;
+        bh=X9DhlaL3h3M6dHLQYSpCp1s//BjVGMTXEFW1olrYlVY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cGmgcwpjkbNw52cCa7kRC/GPrkFsOqVEstQkyXvVZSV5xfX3TDwLBGaCURvEU0t5J
+         025muooT8Nw9JkjVoawTY13UY5CS39I1DCSxV8E++nanIFjyfYf2b5mkS5P4oQgLsh
+         spZcFcj44mNzi0dHHjyA82NYyDTZtJ89hsbkAFBI=
+Date:   Tue, 30 Jun 2020 16:32:20 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        perex@perex.cz, tiwai@suse.com, robh+dt@kernel.org,
+        lgirdwood@gmail.com, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, digetx@gmail.com,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sharadg@nvidia.com,
+        mkumard@nvidia.com, viswanathl@nvidia.com, rlokhande@nvidia.com,
+        dramesh@nvidia.com, atalambedu@nvidia.com, nwartikar@nvidia.com,
+        swarren@nvidia.com, nicoleotsuka@gmail.com
+Subject: Re: Re: [PATCH v4 12/23] ASoC: simple-card: Support DPCM DAI link
+ with multiple Codecs
+Message-ID: <20200630153220.GL5272@sirena.org.uk>
+References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
+ <1593233625-14961-13-git-send-email-spujar@nvidia.com>
+ <874kqu1x70.wl-kuninori.morimoto.gx@renesas.com>
+ <1e0cf6d1-bf4e-8808-5390-c8a3b7c7fe7e@nvidia.com>
+ <87mu4lz6pt.wl-kuninori.morimoto.gx@renesas.com>
+ <1d7888c7-a8cc-e891-01aa-016e31cc9113@nvidia.com>
+ <87ftadyrec.wl-kuninori.morimoto.gx@renesas.com>
+ <492079e9-4518-78ba-a227-859d31594369@nvidia.com>
+ <20200630110100.GH5272@sirena.org.uk>
+ <81d106c0-e1c8-a79a-8caf-1f3be0d61f0c@nvidia.com>
 MIME-Version: 1.0
-References: <1590378348-8115-1-git-send-email-dillon.minfei@gmail.com>
- <1590378348-8115-7-git-send-email-dillon.minfei@gmail.com>
- <CAHp75VebSZa6mwAETnM0t42RQCp4iM6_SNjmy3TB48ixsGKV8g@mail.gmail.com>
- <CAL9mu0+jmcivC6zAXxK0-oXy3n44pAU1QGD7BDq=CT2D7twROQ@mail.gmail.com> <c085e8f5-f626-28a9-1d3f-a1c277ec5052@tronnes.org>
-In-Reply-To: <c085e8f5-f626-28a9-1d3f-a1c277ec5052@tronnes.org>
-From:   dillon min <dillon.minfei@gmail.com>
-Date:   Tue, 30 Jun 2020 23:32:15 +0800
-Message-ID: <CAL9mu0LPuqRn-tKWWzyUWnOE2h-w7F3-6HTYv15QcUYWBroXZw@mail.gmail.com>
-Subject: Re: [PATCH v5 6/8] drm/panel: Add ilitek ili9341 panel driver
-To:     =?UTF-8?Q?Noralf_Tr=C3=B8nnes?= <noralf@tronnes.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9/GiYV45wF7IL3Iq"
+Content-Disposition: inline
+In-Reply-To: <81d106c0-e1c8-a79a-8caf-1f3be0d61f0c@nvidia.com>
+X-Cookie: Walk softly and carry a megawatt laser.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy, Noralf,
 
-gentle ping for this patch set,
-do we have any new structure, or idea to support both dpi and dbi
-interface by one drm panel driver?
-from this thread
-https://lists.freedesktop.org/archives/dri-devel/2020-May/267031.html
-, it's seems
-discussing was stopped at may 25.
+--9/GiYV45wF7IL3Iq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-if there are any new information about this topic, please feel free to
-let me know. hope i can make some
-progress on it.
+On Tue, Jun 30, 2020 at 06:23:49PM +0530, Sameer Pujar wrote:
+> On 6/30/2020 4:31 PM, Mark Brown wrote:
 
-thanks,
+> > Why simple-card and not audio-graph-card?
 
-Dillon,
+> Frankly speaking I have not used audio-graph-card before. I had a brief look
+> at the related binding. It seems it can use similar DT properties that
+> simple-card uses, although the binding style appears to be different.
+> However I am not sure if it offers better solutions to the problems I am
+> facing. For example, the ability to connect or form a chain of components to
+> realize more complicated use cases with DPCM, some of which were discussed
+> in [0]. Can you please help me understand why it could be preferred?
 
-best regards
+> [0] https://lkml.org/lkml/2020/4/30/519
 
-On Tue, May 26, 2020 at 6:38 PM Noralf Tr=C3=B8nnes <noralf@tronnes.org> wr=
-ote:
->
->
->
-> Den 26.05.2020 11.08, skrev dillon min:
-> > Hi Andy,
-> >
-> > Thanks for input.
-> >
-> > On Tue, May 26, 2020 at 3:46 PM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> >>
-> >> On Mon, May 25, 2020 at 6:46 AM <dillon.minfei@gmail.com> wrote:
-> >>>
-> >>> From: dillon min <dillon.minfei@gmail.com>
-> >>>
-> >>>     This driver combine tiny/ili9341.c mipi_dbi_interface driver
-> >>>     with mipi_dpi_interface driver, can support ili9341 with serial
-> >>>     mode or parallel rgb interface mode by register configuration.
-> >>
-> >> Noralf told once that this driver should be unified with mi0283qt.c.
-> >>
-> >> So, what should we do here?
-> >>
-> >> --
-> >> With Best Regards,
-> >> Andy Shevchenko
-> >
-> > from sam's suggestion, we can't setup two drivers to support one panel
-> > in the tree. so, i copy the mipi dbi part from tiny/ili9341.c. to this =
-driver
-> > from register settings and dts binding is keep the same to tiny/ili9341=
-.c.
-> >
-> > so, in my opinion if tiny/ili9341.c is unified with mi0283qt.c, this
-> > driver should be
-> > too.
-> >
->
-> There's a discussion about MIPI DBI panels here:
->
-> MIPI DSI, DBI, and tinydrm drivers
-> https://lists.freedesktop.org/archives/dri-devel/2020-May/267031.html
->
-> Noralf.
->
-> > thanks.
-> >
-> > best regards,
-> >
-> > Dillon,
-> >
+It's the more modern thing which covers everything simple-card does and
+more, I'd expect new development to go into that rather than
+simple-card.
+
+--9/GiYV45wF7IL3Iq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl77WwMACgkQJNaLcl1U
+h9BoOgf8CqlyK9s07Hb+/KSOYbf63ZpZ3dwuHoWv8+gtnKh+DZIH3KN07uHzVHXw
+q3NUE8wJkGfYijU49aUjB5lRw4KNjXtAUMUHNAKlzmjQM+cxlEj6nZOGWAFrHyYo
+0rzPMLRbmsHTp9dcKdr7c/AXqYB8vgW+aYo6j76+W7fNvgW3thQllyW9ZKkvzQmz
+7TePVknBmz5ov6rTQSau7p314ZBcJEYL74ANMr0LxKKe5TSv/xHLQM9WeEDdkMUE
+kELoYHwZrWvOFUfy1nCl+uPqvUr+ciJD5gW5+PQvKnV0nAaVA2jW0RE3KMWKRu/S
+PZJLfFNr7vFTIsIU0YMidjDYelIA0A==
+=8bSR
+-----END PGP SIGNATURE-----
+
+--9/GiYV45wF7IL3Iq--
