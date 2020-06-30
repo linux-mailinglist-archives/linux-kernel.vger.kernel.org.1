@@ -2,138 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471DC20EFB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA9F20EFBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731131AbgF3Hm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 03:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731090AbgF3Hm3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 03:42:29 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC05C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 00:42:28 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l2so17086839wmf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 00:42:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=EbxmwuEjQQfl0DLnt0sNJ+F2kmsq43FibPJ5cYs3dqE=;
-        b=yqLdN9FSFlc2kfZ0HaUeSh6+xZMoG7a9hzTaXM0IMMK5oWr68ppNQrgeClaW4VtRUD
-         rFYlYSf6VHD56zsg9coVkWgeRcWacQzlqPnh/db28TtnLyJ8TpO7cot2Jp6WWPSnqj9V
-         VKIQCL8OCCYRTJ21S8wEgG0mnhAkrxCUAdTtuj1Qra7KRs9FwPRqSTIpW1CYXVaMfG46
-         Y815eVv61K0j/7D463kGd6fefzG3ZSlikA0ypDPxzl8tWlCufEbnpnlBJhlIs7dwOFA6
-         ZD0+aXK4MYWSJmdqYHlONh1MTPhdc2VevfIjQLiHbpnjJrXZfpkUATo6S9GZ/a3axCg3
-         jivw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=EbxmwuEjQQfl0DLnt0sNJ+F2kmsq43FibPJ5cYs3dqE=;
-        b=SMNTzIiiYcKLBd95PWaMwsN0CJw78yrnsnDTgyWBrU4MOIaQV3znkB6rF7Z5jcIULv
-         b4Y6i2cbzz52FV6XQP3V4DRh2gG+38aaOyqZtBKZuWT1OrtHHsOsDPwkI0XHkk5IdTem
-         YaLTRpt4Jji/LvdxIF7CNYk5Gm/OCxEujFBv3H9Dmw4g6LzohnaMJxJOzdxQV3u+8NN0
-         SKtSdfUWjvIGbAnJ4EPDJzkixj2xtbxPct/lRPHxADI+/4WWPkRZda8NIMOHcb7XVEhi
-         ef7wCxBqV24FyvO2WHCQ+qADjaUTBw+NAiv3+jd0Ye/1VnbCcF+Ib5GfoOqOqGVCIgSl
-         ii5g==
-X-Gm-Message-State: AOAM533vSP39UpQbS4LsPc9R5nxKtqnNJfBh0fn0qg48OMhm13b7QDf2
-        ELzYH3dUpHqUMnO7ciFnf7SnzA==
-X-Google-Smtp-Source: ABdhPJynBs/c9Tpp0cRBlrxHe3SOKjg30fkelhIJdotq3aQy3/38ta6zFfmNTfQnAoNndEXyGBNB4w==
-X-Received: by 2002:a05:600c:28d:: with SMTP id 13mr19908915wmk.30.1593502947403;
-        Tue, 30 Jun 2020 00:42:27 -0700 (PDT)
-Received: from dell ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id g3sm2848943wrb.46.2020.06.30.00.42.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 00:42:26 -0700 (PDT)
-Date:   Tue, 30 Jun 2020 08:42:24 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     haver <haver@linux.vnet.ibm.com>
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Michael Jung <mijung@gmx.net>,
-        Michael Ruettger <michael@ibmra.de>,
-        Frank Haverkamp <haver@linux.ibm.com>,
-        Joerg-Stephan Vogt <jsvogt@de.ibm.com>
-Subject: Re: [PATCH 16/20] misc: genwqe: card_base: Remove set but unused
- variable 'rc'
-Message-ID: <20200630074224.GH1179328@dell>
-References: <20200629140442.1043957-1-lee.jones@linaro.org>
- <20200629140442.1043957-17-lee.jones@linaro.org>
- <fff00e6667c442cac13147ee5095430a@linux.vnet.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fff00e6667c442cac13147ee5095430a@linux.vnet.ibm.com>
+        id S1731217AbgF3HnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 03:43:19 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:43078 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731198AbgF3HnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 03:43:16 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-05 (Coremail) with SMTP id zQCowADHFCQD7fpeXVqiAQ--.32278S2;
+        Tue, 30 Jun 2020 15:42:59 +0800 (CST)
+From:   Chen Ni <vulab@iscas.ac.cn>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH] kernel: events: use offset_in_page macro
+Date:   Tue, 30 Jun 2020 07:42:58 +0000
+Message-Id: <20200630074258.8301-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowADHFCQD7fpeXVqiAQ--.32278S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJrWfCF47KFy3KF1ftFWxtFb_yoW8JFWfpF
+        45Ja98tw43K3W8Ka47Ar1kuw15twn7KrW8ta42k34F9r1vgw1rZ3WxGr47XFWFg392gr4U
+        ta1DWr98Aa1kZ3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1q6rW5McIj6I8E87Iv67AKxVWaoVW8JcWlOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GF4l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUFID7DUUUU
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCAIDA102YPg8PQAAs4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Jun 2020, haver wrote:
+From: Xu Wang <vulab@iscas.ac.cn>
 
-> On 2020-06-29 16:04, Lee Jones wrote:
-> > Variable 'rc' hasn't been checked since the driver's inception
-> > in 2013.  If it hasn't caused any issues since then, it's unlikely
-> > to in the future.  Let's take it out for now.
-> > 
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/misc/genwqe/card_base.c: In function
-> > ‘genwqe_health_check_stop’:
-> > 
-> > /home/lee/projects/linux/kernel/drivers/misc/genwqe/card_base.c:1046:6:
-> > warning: variable ‘rc’ set but not used
-> > [-Wunused-but-set-variable]
-> >  1046 | int rc;
-> >  | ^~
-> > 
-> > Cc: Michael Jung <mijung@gmx.net>
-> > Cc: Michael Ruettger <michael@ibmra.de>
-> > Cc: Frank Haverkamp <haver@linux.ibm.com>
-> > Cc: Joerg-Stephan Vogt <jsvogt@de.ibm.com>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/misc/genwqe/card_base.c | 4 +---
-> >  1 file changed, 1 insertion(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/misc/genwqe/card_base.c
-> > b/drivers/misc/genwqe/card_base.c
-> > index 1dc6c7c5cbce9..bceebf49de2d5 100644
-> > --- a/drivers/misc/genwqe/card_base.c
-> > +++ b/drivers/misc/genwqe/card_base.c
-> > @@ -1043,12 +1043,10 @@ static int genwqe_health_thread_running(struct
-> > genwqe_dev *cd)
-> > 
-> >  static int genwqe_health_check_stop(struct genwqe_dev *cd)
-> >  {
-> > -	int rc;
-> > -
-> >  	if (!genwqe_health_thread_running(cd))
-> >  		return -EIO;
-> > 
-> > -	rc = kthread_stop(cd->health_thread);
-> > +	kthread_stop(cd->health_thread);
-> >  	cd->health_thread = NULL;
-> >  	return 0;
-> >  }
-> 
-> Good idea. Let's remove it Thanks for the contribution.
+Use offset_in_page macro instead of (addr & ~PAGE_MASK).
 
-No problem, and you are welcome.
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ kernel/events/uprobes.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> Signed-off-by: Frank Haverkamp <haver@linux.ibm.com>
-
-Just as an aside, this should be Acked-by, unless you either
-contributed to the patch directly or are in the delivery path i.e. you
-plan to pick the patch and send it to, say Linus, via a pull-request.
-
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index bb0862873dba..44d175d81ed6 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -244,14 +244,14 @@ bool __weak is_trap_insn(uprobe_opcode_t *insn)
+ static void copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len)
+ {
+ 	void *kaddr = kmap_atomic(page);
+-	memcpy(dst, kaddr + (vaddr & ~PAGE_MASK), len);
++	memcpy(dst, kaddr + offset_in_page(vaddr), len);
+ 	kunmap_atomic(kaddr);
+ }
+ 
+ static void copy_to_page(struct page *page, unsigned long vaddr, const void *src, int len)
+ {
+ 	void *kaddr = kmap_atomic(page);
+-	memcpy(kaddr + (vaddr & ~PAGE_MASK), src, len);
++	memcpy(kaddr + offset_in_page(vaddr), src, len);
+ 	kunmap_atomic(kaddr);
+ }
+ 
+@@ -387,7 +387,7 @@ __update_ref_ctr(struct mm_struct *mm, unsigned long vaddr, short d)
+ 	}
+ 
+ 	kaddr = kmap_atomic(page);
+-	ptr = kaddr + (vaddr & ~PAGE_MASK);
++	ptr = kaddr + offset_in_page(vaddr);
+ 
+ 	if (unlikely(*ptr + d < 0)) {
+ 		pr_warn("ref_ctr going negative. vaddr: 0x%lx, "
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.17.1
+
