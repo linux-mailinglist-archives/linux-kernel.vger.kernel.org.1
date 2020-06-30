@@ -2,76 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F44520EEFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4F820EEEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730647AbgF3HIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 03:08:05 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:45858 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725440AbgF3HIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 03:08:04 -0400
-Received: from localhost (unknown [159.226.5.99])
-        by APP-03 (Coremail) with SMTP id rQCowAC3OPjl4_peKEhOAQ--.46047S2;
-        Tue, 30 Jun 2020 15:04:05 +0800 (CST)
-From:   Chen Ni <vulab@iscas.ac.cn>
-To:     dsd@gentoo.org, kune@deine-taler.de, kvalo@codeaurora.org,
-        davem@davemloft.net, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
-Subject: [PATCH] net: zydas: remove needless check before usb_free_coherent()
-Date:   Tue, 30 Jun 2020 07:04:04 +0000
-Message-Id: <20200630070404.8207-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: rQCowAC3OPjl4_peKEhOAQ--.46047S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFWrZw4UGr47GFWDGFyDWrg_yoWfKrg_Gr
-        Z7WFnxXry5Jw109rWUAay3Z39Yya93Xws5WrsaqrW5Wayjq3sxAw1jyry7JrsrGFnYvFnx
-        Gw1kJFW8JFySqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbfxYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z2
-        80aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
-        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_ZcC_Gr8dMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjcxG6xCI17CEII8vrVW3JVW8
-        Jr1lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8CwCF04k20xvY0x0EwIxGrw
-        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-        14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-        IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxK
-        x2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0ziiIDnUUUUU=
-X-Originating-IP: [159.226.5.99]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAxADA13qZLQmfQAAsv
+        id S1730604AbgF3HEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 03:04:40 -0400
+Received: from verein.lst.de ([213.95.11.211]:34880 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730570AbgF3HEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 03:04:38 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 5597F68AFE; Tue, 30 Jun 2020 09:04:34 +0200 (CEST)
+Date:   Tue, 30 Jun 2020 09:04:34 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        David Laight <David.Laight@aculab.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 03/11] fs: add new read_uptr and write_uptr file
+ operations
+Message-ID: <20200630070434.GA28654@lst.de>
+References: <20200624175548.GA25939@lst.de> <CAHk-=wi_51SPWQFhURtMBGh9xgdo74j1gMpuhdkddA2rDMrt1Q@mail.gmail.com> <f50b9afa5a2742babe0293d9910e6bf4@AcuMS.aculab.com> <CAHk-=wjxQczqZ96esvDrH5QZsLg6azXCGDgo+Bmm6r8t2ssasg@mail.gmail.com> <20200629152912.GA26172@lst.de> <CAHk-=wj_Br5dQt0GnMjHooSvBbVXwtGRVKQNkpCLwWjYko-4Zw@mail.gmail.com> <20200629180730.GA4600@lst.de> <CAHk-=whzz81Cjfn+SNbLT8WvRxfQYbiAemKrQ5jpNAgxxDQhZA@mail.gmail.com> <20200629183636.GA6539@lst.de> <CAHk-=whE2_YcRRQhJ73s4kYqTNDkYqq2HHtieQ-R1J+Awgk=nA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whE2_YcRRQhJ73s4kYqTNDkYqq2HHtieQ-R1J+Awgk=nA@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xu Wang <vulab@iscas.ac.cn>
+Next fund one, in net/ipv6/ip6_flowlabel.c:ipv6_flowlabel_opt() we
+have this gem toward the end:
 
-usb_free_coherent() is safe with NULL addr and this check is
-not required.
+		if (!freq->flr_label) {
+			if (copy_to_user(&((struct in6_flowlabel_req __user *)optval)->flr_label,
+					 &fl->label, sizeof(fl->label))) {
+				/* Intentionally ignore fault. */
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/net/wireless/zydas/zd1211rw/zd_usb.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/zydas/zd1211rw/zd_usb.c b/drivers/net/wireless/zydas/zd1211rw/zd_usb.c
-index 8ff0374126e4..65b5985ad402 100644
---- a/drivers/net/wireless/zydas/zd1211rw/zd_usb.c
-+++ b/drivers/net/wireless/zydas/zd1211rw/zd_usb.c
-@@ -600,9 +600,7 @@ void zd_usb_disable_int(struct zd_usb *usb)
- 	dev_dbg_f(zd_usb_dev(usb), "urb %p killed\n", urb);
- 	usb_free_urb(urb);
- 
--	if (buffer)
--		usb_free_coherent(udev, USB_MAX_EP_INT_BUFFER,
--				  buffer, buffer_dma);
-+	usb_free_coherent(udev, USB_MAX_EP_INT_BUFFER, buffer, buffer_dma);
- }
- 
- static void handle_rx_packet(struct zd_usb *usb, const u8 *buffer,
--- 
-2.17.1
-
+so it writes back to what was supposed to be the input parameter,
+and only does it for a partial region.  Not sure how we could handle
+that with any kind of copy to kernel in the caller scheme?
