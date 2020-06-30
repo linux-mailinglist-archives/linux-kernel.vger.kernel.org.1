@@ -2,164 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC61220FA59
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EAB20FA84
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390187AbgF3RRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:17:23 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54151 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2390153AbgF3RRX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:17:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593537441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=n3ZPjfnJ/ASkDBGa8iMOc6QkfcTimtat1V0+GirAcgg=;
-        b=FKxB00K0BSdi8KOjD64w17APJrz6XhnnJvzWCAriiNB23p+I9cHhOme54E8ZQDa6fx1vJ6
-        m9KVP3aoTuZcE82MWSyekmJBx/678YxyX+DPFeg6ncChT21uI/mO9jhnci/k48oLNG8/kg
-        Ck+XBbccwWdHrwPTn1+n/DFThs2Aqr8=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-129-blXYnQGiNdyPsD_eMxordQ-1; Tue, 30 Jun 2020 13:17:19 -0400
-X-MC-Unique: blXYnQGiNdyPsD_eMxordQ-1
-Received: by mail-qv1-f72.google.com with SMTP id v10so4134118qvm.17
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:17:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=n3ZPjfnJ/ASkDBGa8iMOc6QkfcTimtat1V0+GirAcgg=;
-        b=LiVgx2xDfR94tSIPd5xG3KMPvgiWBJ05Kcx6P4waT15ykjboPQQa4TlSobLaphacsM
-         QN0NkB8KJya0Tm2rVhTONvZQp6KM/caRZIrLXTRjhAhtIvWPH3hMFWze/qBiqV8BzRfD
-         0BBG95uPtj0JZ/BawK67c7QMWKDiwnJymmd4a0fxB//i5vHxS+EX/jwV+UuuzwOWb2bD
-         st2y4rvvTcbZ1+5Zxgzh4aTQbw+XAnb50U5RZKWACR2dKE5V7HIyx6sZ+Dbx4naA2HlX
-         A1gyPDF4lm1sV8kP0CaFiHzdFKWKOqs5Fc2r/j7RVwxtxZIq44Y+Pu2cHom67rKRIO4v
-         rJaA==
-X-Gm-Message-State: AOAM532ORlGK2UvN0cUYOXuUWBCSamsdOf6V7NHl0iNPuNsXiZuaYPYZ
-        QJqhMDp6aF3ey0NYZIpXLymw0+r6yPSSDZPp6SfVFwf5vq89tZTReG8uxk7o20/WQx0thqhQw0n
-        9Iu9TeacW6vBC4pqsufOWCSjB
-X-Received: by 2002:ae9:ef83:: with SMTP id d125mr20933794qkg.287.1593537439264;
-        Tue, 30 Jun 2020 10:17:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx4Rf6dlYjlg1ZOz83/bf/I+qHA2gJJyZcdyRaH7/vXLLfV7DTSG6gGjxZZf5mVUAEO1jvfJQ==
-X-Received: by 2002:ae9:ef83:: with SMTP id d125mr20933758qkg.287.1593537438856;
-        Tue, 30 Jun 2020 10:17:18 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id w44sm3790774qtb.22.2020.06.30.10.17.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 10:17:18 -0700 (PDT)
-From:   trix@redhat.com
-To:     hao.wu@intel.com, mdf@kernel.org, corbet@lwn.net
-Cc:     linux-fpga@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [RFC 1/1] fpga: dfl: RFC PCI config
-Date:   Tue, 30 Jun 2020 10:16:56 -0700
-Message-Id: <20200630171656.20151-2-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
-In-Reply-To: <20200630171656.20151-1-trix@redhat.com>
-References: <20200630171656.20151-1-trix@redhat.com>
+        id S2390337AbgF3R1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 13:27:04 -0400
+Received: from mga06.intel.com ([134.134.136.31]:3228 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390325AbgF3R1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 13:27:01 -0400
+IronPort-SDR: kCtanIoavveucYJWOOgyx2YDmpAADwhbLYdubUMBZaa6NhqX3RmHHurb4+A/FRXXwnE4jLq5Ii
+ EBJLvaqmRMGA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="207832996"
+X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
+   d="scan'208";a="207832996"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 10:27:00 -0700
+IronPort-SDR: Z7x4fpl5QBPCt0yGQhLxehb9wwa3icsJnhTonGBQYdcWh4ESmn32vMryMjX4d1BR7rQyQsa5TY
+ 7XQYwNFkx4CA==
+X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
+   d="scan'208";a="281307477"
+Received: from dnoeunx-mobl.amr.corp.intel.com (HELO [10.254.77.113]) ([10.254.77.113])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 10:26:59 -0700
+Subject: Re: [PATCH 8/9] soundwire: intel: add wake interrupt support
+To:     Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
+        jank@cadence.com, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
+        hui.wang@canonical.com, sanyog.r.kale@intel.com,
+        slawomir.blauciak@intel.com, mengdong.lin@intel.com,
+        bard.liao@intel.com
+References: <20200623173546.21870-1-yung-chuan.liao@linux.intel.com>
+ <20200623173546.21870-9-yung-chuan.liao@linux.intel.com>
+ <20200630165126.GT2599@vkoul-mobl>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <a69aa5d0-613a-6ef6-9263-378b1e99770a@linux.intel.com>
+Date:   Tue, 30 Jun 2020 12:18:51 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200630165126.GT2599@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
 
-Create some top level configs the map to dfl pci cards.
 
-Autoselect the parts of fpga that are needed to run these cards
-as well as the other subsystem configs to the card's subdevices.
+On 6/30/20 11:51 AM, Vinod Koul wrote:
+> On 24-06-20, 01:35, Bard Liao wrote:
+>> From: Rander Wang <rander.wang@intel.com>
+>>
+>> When system is suspended in clock stop mode on intel platforms, both
+>> master and slave are in clock stop mode and soundwire bus is taken
+>> over by a glue hardware. The bus message for jack event is processed
+>> by this glue hardware, which will trigger an interrupt to resume audio
+>> pci device. Then audio pci driver will resume soundwire master and slave,
+>> transfer bus ownership to master, finally slave will report jack event
+>> to master and codec driver is triggered to check jack status.
+>>
+>> if a slave has been attached to a bus, the slave->dev_num_sticky
+>> should be non-zero, so we can check this value to skip the
+>> ghost devices defined in ACPI table but not populated in hardware.
+>>
+>> Signed-off-by: Rander Wang <rander.wang@intel.com>
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+>> ---
+>>   drivers/soundwire/intel.c      | 48 +++++++++++++++++++++++++++++++++-
+>>   drivers/soundwire/intel.h      |  1 +
+>>   drivers/soundwire/intel_init.c | 22 ++++++++++++++++
+>>   3 files changed, 70 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+>> index 06c553d94890..22d9fd3e34fa 100644
+>> --- a/drivers/soundwire/intel.c
+>> +++ b/drivers/soundwire/intel.c
+>> @@ -13,6 +13,7 @@
+>>   #include <linux/io.h>
+>>   #include <linux/platform_device.h>
+>>   #include <sound/pcm_params.h>
+>> +#include <linux/pm_runtime.h>
+>>   #include <sound/soc.h>
+>>   #include <linux/soundwire/sdw_registers.h>
+>>   #include <linux/soundwire/sdw.h>
+>> @@ -436,7 +437,7 @@ static int intel_shim_init(struct sdw_intel *sdw, bool clock_stop)
+>>   	return ret;
+>>   }
+>>   
+>> -static void __maybe_unused intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
+>> +static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
+> 
+> why drop __maybe?
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- Documentation/fpga/dfl.rst | 33 +++++++++++++++++++++++++++++++++
- drivers/fpga/Kconfig       | 28 ++++++++++++++++++++++++++++
- 2 files changed, 61 insertions(+)
+the __maybe was used in previous patches to avoid throwing 'defined but 
+not used' errors.
 
-diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-index d7648d7c7eee..3a872bc8e3d3 100644
---- a/Documentation/fpga/dfl.rst
-+++ b/Documentation/fpga/dfl.rst
-@@ -500,6 +500,39 @@ Developer only needs to provide a sub feature driver with matched feature id.
- FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
- could be a reference.
- 
-+Kernel configuration
-+====================
-+
-+While it is possible to manually setup a configuration to match your device,
-+there are some top level configurations that collect configuations for
-+some reference pci cards.  Below descibes these configuration as well as
-+what other kernel configs are needed for proper configuration.
-+
-+FPGA_DFL_PAC10
-+Intel Arria 10 GX PCI card, PCI id 0X09C4
-+Depends on
-+  SPI_ALTERA
-+  MFD_INTEL_M10_BMC
-+  MFD_INTEL_M10_BMC_SECURE
-+  SENSORS_INTEL_M10_BMC_HWMON
-+
-+FPGA_DFL_D5005
-+Intel Stratix 10, D5005 PCI card, PCI id 0X0B2B
-+Depends on
-+  SPI_ALTERA
-+  MFD_INTEL_M10_BMC
-+  MFD_INTEL_M10_BMC_SECURE
-+  SENSORS_INTEL_M10_BMC_HWMON
-+  INTEL_S10_PHY
-+
-+FPGA_DFL_N3000
-+Intel Network Accelerator, N3000 PCI card, PCI id 0X0B30
-+Depends on
-+  SPI_ALTERA
-+  MFD_INTEL_M10_BMC
-+  MFD_INTEL_M10_BMC_SECURE
-+  SENSORS_INTEL_M10_BMC_HWMON
-+  INTEL_LL_10G_MAC
- 
- Open discussion
- ===============
-diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-index 9d53bd9094e2..b657de20bc98 100644
---- a/drivers/fpga/Kconfig
-+++ b/drivers/fpga/Kconfig
-@@ -138,6 +138,34 @@ config OF_FPGA_REGION
- 	  Support for loading FPGA images by applying a Device Tree
- 	  overlay.
- 
-+config FPGA_DFL_PAC10
-+	tristate "Intel Arria 10 GX PCI card"
-+	select SPI_ALTERA
-+	select MFD_INTEL_M10_BMC
-+	select MFD_INTEL_M10_BMC_SECURE
-+	select SENSORS_INTEL_M10_BMC_HWMON
-+	select FPGA_DFL
-+	select FPGA_DFL_FME
-+	select FPGA_DFL_FME_MGR
-+	select FPGA_DFL_FME_BRIDGE
-+	select FPGA_DFL_FME_REGION
-+	select FPGA_DFL_AFU
-+	select FPGA_DFL_SPI_ALTERA
-+	select FPGA_DFL_PCI
-+	select IFPGA_SEC_MGR
-+
-+config FPGA_DFL_D5005
-+	tristate "Intel Stratix 10, D5005 PCI card"
-+	select FPGA_DFL_PAC10
-+	select INTEL_S10_PHY
-+	select FPGA_DFl_HSSI
-+
-+config FPGA_DFL_N3000
-+	tristate "Intel Network Accelerator, N3000 PCI card"
-+	select FPGA_DFL_PAC10
-+	select INTEL_LL_10G_MAC
-+	select FPGA_DFL_N3000_NIOS
-+
- config FPGA_DFL
- 	tristate "FPGA Device Feature List (DFL) support"
- 	select FPGA_BRIDGE
--- 
-2.18.1
+In this patch this function is actually used so there's no longer a 
+reason to keep it.
+
+>>   {
+>>   	void __iomem *shim = sdw->link_res->shim;
+>>   	unsigned int link_id = sdw->instance;
+>> @@ -1337,6 +1338,51 @@ static int intel_master_remove(struct platform_device *pdev)
+>>   	return 0;
+>>   }
+>>   
+>> +int intel_master_process_wakeen_event(struct platform_device *pdev)
+>> +{
+>> +	struct device *dev = &pdev->dev;
+>> +	struct sdw_intel *sdw;
+>> +	struct sdw_bus *bus;
+>> +	struct sdw_slave *slave;
+>> +	void __iomem *shim;
+>> +	u16 wake_sts;
+>> +
+>> +	sdw = platform_get_drvdata(pdev);
+>> +	bus = &sdw->cdns.bus;
+>> +
+>> +	if (bus->prop.hw_disabled) {
+>> +		dev_dbg(dev,
+>> +			"SoundWire master %d is disabled, ignoring\n",
+>> +			bus->link_id);
+> 
+> single line pls
+
+ok
+
+>> +		return 0;
+>> +	}
+>> +
+>> +	shim = sdw->link_res->shim;
+>> +	wake_sts = intel_readw(shim, SDW_SHIM_WAKESTS);
+>> +
+>> +	if (!(wake_sts & BIT(sdw->instance)))
+>> +		return 0;
+>> +
+>> +	/* disable WAKEEN interrupt ASAP to prevent interrupt flood */
+>> +	intel_shim_wake(sdw, false);
+> 
+> when & where is this enabled?
+
+in follow-up patches where the clock-stop mode is enabled.
+
+	} else if (clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET ||
+		   !clock_stop_quirks) {
+
+		ret = sdw_cdns_clock_stop(cdns, true);
+		if (ret < 0) {
+			dev_err(dev, "cannot enable clock stop on suspend\n");
+			return ret;
+		}
+
+		ret = sdw_cdns_enable_interrupt(cdns, false);
+		if (ret < 0) {
+			dev_err(dev, "cannot disable interrupts on suspend\n");
+			return ret;
+		}
+
+		ret = intel_link_power_down(sdw);
+		if (ret) {
+			dev_err(dev, "Link power down failed: %d", ret);
+			return ret;
+		}
+
+		intel_shim_wake(sdw, true);
+
+>> +
+>> +	/*
+>> +	 * wake up master and slave so that slave can notify master
+>> +	 * the wakeen event and let codec driver check codec status
+>> +	 */
+>> +	list_for_each_entry(slave, &bus->slaves, node) {
+>> +		/*
+>> +		 * discard devices that are defined in ACPI tables but
+>> +		 * not physically present and devices that cannot
+>> +		 * generate wakes
+>> +		 */
+>> +		if (slave->dev_num_sticky && slave->prop.wake_capable)
+>> +			pm_request_resume(&slave->dev);
+> 
+> Hmmm, shouldn't slave do this? would it not make sense to notify the
+> slave thru callback and then slave decides to resume or not..?
+
+In this mode, the bus is clock-stop mode, and events are detected with 
+level detector tied to PCI events. The master and slave devices are all 
+in pm_runtime suspended states. The codec cannot make any decisions on 
+its own since the bus is stopped, it needs to first resume, which 
+assumes that the master resumes first and the enumeration re-done before 
+it can access any of its registers.
+
+By looping through the list of devices that can generate events, you 
+end-up first forcing the master to resume, and then each slave resumes 
+and can check who generated the event and what happened while suspended. 
+if the codec didn't generate the event it will go back to suspended mode 
+after the usual timeout.
+
+We can add a callback but that callback would only be used for Intel 
+solutions, but internally it would only do a pm_request_resume() since 
+the codec cannot make any decisions before first resuming. In other 
+words, it would be an Intel-specific callback that is implemented using 
+generic resume operations. It's probably better to keep this in 
+Intel-specific code, no?
+
+
 
