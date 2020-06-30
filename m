@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C274210403
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 08:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13873210400
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 08:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727948AbgGAGir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 02:38:47 -0400
-Received: from mga03.intel.com ([134.134.136.65]:38225 "EHLO mga03.intel.com"
+        id S1727900AbgGAGij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 02:38:39 -0400
+Received: from mga03.intel.com ([134.134.136.65]:38242 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgGAGie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 02:38:34 -0400
-IronPort-SDR: db/Uf1/R3YxCfBIZylSwOZt+QGCH1bTeNz2lOsu+AiJeDamFzvOIKvPQ3JT7eibbBSNQV4/Iat
- zbAgOQh4AqqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="146485958"
+        id S1727876AbgGAGih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 02:38:37 -0400
+IronPort-SDR: 8qgrdjH7CGY28IjXm2KsxFxuQLVB6sCoN139a0JnVeObeLzmgPUPV2R0ObYLSU1IYbNOsN+u2r
+ TJqd8sSZnzqw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="146485965"
 X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
-   d="scan'208";a="146485958"
+   d="scan'208";a="146485965"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 23:38:32 -0700
-IronPort-SDR: th0Rc9ycr4PsgW9J+Ta1FX/TTYaedarOg0luY5rG0+CFLagN/tW7/uXKl5pTu2QS6QOBX4U7Dq
- fCjck19EBfTg==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 23:38:36 -0700
+IronPort-SDR: eqYGQQd709q3rzrNxl2K3eQUl8IEWAC5nYrSvQ/PPtWAvZpcpSOkpDcA3FFXIUWB6Co2cS3rn5
+ 4N+ulvVItb0g==
 X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
-   d="scan'208";a="454946858"
+   d="scan'208";a="454946965"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 23:38:28 -0700
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 23:38:32 -0700
 From:   Bard Liao <yung-chuan.liao@linux.intel.com>
 To:     alsa-devel@alsa-project.org, vkoul@kernel.org
 Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
@@ -35,9 +35,9 @@ Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         slawomir.blauciak@intel.com, mengdong.lin@intel.com,
         bard.liao@intel.com
-Subject: [PATCH v2 3/5] soundwire: intel: remove stream allocation/free
-Date:   Wed,  1 Jul 2020 02:43:54 +0800
-Message-Id: <20200630184356.24939-4-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 4/5] soundwire: cadence: allocate/free dma_data in set_sdw_stream
+Date:   Wed,  1 Jul 2020 02:43:55 +0800
+Message-Id: <20200630184356.24939-5-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200630184356.24939-1-yung-chuan.liao@linux.intel.com>
 References: <20200630184356.24939-1-yung-chuan.liao@linux.intel.com>
@@ -48,97 +48,91 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-To support streaming across multiple links, the stream allocation/free
-needs to be at the dailink level, not the dai.
+The current memory allocation is somewhat strange: the dma_data is
+allocated in set_sdw_stream, but released in the intel DAI
+shutdown. This no longer works with the multi-cpu implementation,
+since the dma_data is released in the dai shutdown which takes place
+before the dailink shutdown.
+
+Move to a more symmetric allocation where the dma_data is allocated
+with non-NULL SoundWire stream, and conversely released when a NULL
+stream is provided - for consistency with the stream startup and
+shutdown operations.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 57 +--------------------------------------
- 1 file changed, 1 insertion(+), 56 deletions(-)
+ drivers/soundwire/cadence_master.c | 52 ++++++++++++++++++++++--------
+ 1 file changed, 38 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 3f2f23cf8020..2e1e1088a743 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -625,57 +625,6 @@ static int intel_post_bank_switch(struct sdw_bus *bus)
-  * DAI routines
-  */
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index 9ea87538b9ef..613dbd415b91 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -1437,25 +1437,49 @@ int cdns_set_sdw_stream(struct snd_soc_dai *dai,
+ 	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
+ 	struct sdw_cdns_dma_data *dma;
  
--static int sdw_stream_setup(struct snd_pcm_substream *substream,
--			    struct snd_soc_dai *dai)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct sdw_stream_runtime *sdw_stream = NULL;
--	char *name;
--	int i, ret;
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		name = kasprintf(GFP_KERNEL, "%s-Playback", dai->name);
--	else
--		name = kasprintf(GFP_KERNEL, "%s-Capture", dai->name);
--
--	if (!name)
+-	dma = kzalloc(sizeof(*dma), GFP_KERNEL);
+-	if (!dma)
 -		return -ENOMEM;
--
--	sdw_stream = sdw_alloc_stream(name);
--	if (!sdw_stream) {
--		dev_err(dai->dev, "alloc stream failed for DAI %s", dai->name);
--		ret = -ENOMEM;
--		goto error;
--	}
--
--	/* Set stream pointer on CPU DAI */
--	ret = snd_soc_dai_set_sdw_stream(dai, sdw_stream, substream->stream);
--	if (ret < 0) {
--		dev_err(dai->dev, "failed to set stream pointer on cpu dai %s",
--			dai->name);
--		goto release_stream;
--	}
--
--	/* Set stream pointer on all CODEC DAIs */
--	for (i = 0; i < rtd->num_codecs; i++) {
--		ret = snd_soc_dai_set_sdw_stream(asoc_rtd_to_codec(rtd, i), sdw_stream,
--						 substream->stream);
--		if (ret < 0) {
--			dev_err(dai->dev, "failed to set stream pointer on codec dai %s",
--				asoc_rtd_to_codec(rtd, i)->name);
--			goto release_stream;
--		}
--	}
--
--	return 0;
--
--release_stream:
--	sdw_release_stream(sdw_stream);
--error:
--	kfree(name);
--	return ret;
--}
--
- static int intel_startup(struct snd_pcm_substream *substream,
- 			 struct snd_soc_dai *dai)
- {
-@@ -683,8 +632,7 @@ static int intel_startup(struct snd_pcm_substream *substream,
- 	 * TODO: add pm_runtime support here, the startup callback
- 	 * will make sure the IP is 'active'
- 	 */
--
--	return sdw_stream_setup(substream, dai);
-+	return 0;
- }
++	if (stream) {
++		/* first paranoia check */
++		if (direction == SNDRV_PCM_STREAM_PLAYBACK)
++			dma = dai->playback_dma_data;
++		else
++			dma = dai->capture_dma_data;
  
- static int intel_hw_params(struct snd_pcm_substream *substream,
-@@ -852,9 +800,6 @@ intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- 		return ret;
- 	}
+-	if (pcm)
+-		dma->stream_type = SDW_STREAM_PCM;
+-	else
+-		dma->stream_type = SDW_STREAM_PDM;
++		if (dma) {
++			dev_err(dai->dev,
++				"dma_data already allocated for dai %s\n",
++				dai->name);
++			return -EINVAL;
++		}
  
--	kfree(dma->stream->name);
--	sdw_release_stream(dma->stream);
--
+-	dma->bus = &cdns->bus;
+-	dma->link_id = cdns->instance;
++		/* allocate and set dma info */
++		dma = kzalloc(sizeof(*dma), GFP_KERNEL);
++		if (!dma)
++			return -ENOMEM;
+ 
+-	dma->stream = stream;
++		if (pcm)
++			dma->stream_type = SDW_STREAM_PCM;
++		else
++			dma->stream_type = SDW_STREAM_PDM;
+ 
+-	if (direction == SNDRV_PCM_STREAM_PLAYBACK)
+-		dai->playback_dma_data = dma;
+-	else
+-		dai->capture_dma_data = dma;
++		dma->bus = &cdns->bus;
++		dma->link_id = cdns->instance;
+ 
++		dma->stream = stream;
++
++		if (direction == SNDRV_PCM_STREAM_PLAYBACK)
++			dai->playback_dma_data = dma;
++		else
++			dai->capture_dma_data = dma;
++	} else {
++		/* for NULL stream we release allocated dma_data */
++		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
++			kfree(dai->playback_dma_data);
++			dai->playback_dma_data = NULL;
++		} else {
++			kfree(dai->capture_dma_data);
++			dai->capture_dma_data = NULL;
++		}
++	}
  	return 0;
  }
- 
+ EXPORT_SYMBOL(cdns_set_sdw_stream);
 -- 
 2.17.1
 
