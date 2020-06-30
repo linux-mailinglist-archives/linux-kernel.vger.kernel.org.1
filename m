@@ -2,140 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE21B20F6B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3598520F69E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731729AbgF3OH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 10:07:59 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:33004 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731085AbgF3OH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 10:07:59 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E65DA1A0480;
-        Tue, 30 Jun 2020 16:07:56 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 26BAD1A046C;
-        Tue, 30 Jun 2020 16:07:52 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 45150402D0;
-        Tue, 30 Jun 2020 22:07:46 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] ASoC: fsl_asrc: Add an option to select internal ratio mode
-Date:   Tue, 30 Jun 2020 21:56:07 +0800
-Message-Id: <1593525367-23221-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2388763AbgF3OAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 10:00:11 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:33840 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388626AbgF3OAH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 10:00:07 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: koike)
+        with ESMTPSA id 73A412A0CD7
+Subject: Re: [PATCH v7 3/3] media: vimc: Add a control to display info on test
+ image
+To:     kieran.bingham@ideasonboard.com,
+        Kaaira Gupta <kgupta@es.iitr.ac.in>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hverkuil@xs4all.nl
+References: <20200626130700.2453-1-kgupta@es.iitr.ac.in>
+ <20200626130700.2453-4-kgupta@es.iitr.ac.in>
+ <1409b37e-f03d-cca8-c4a7-e1454f1da910@collabora.com>
+ <20200630132510.GA12353@kaaira-HP-Pavilion-Notebook>
+ <56cdfc6a-fdd1-bba7-a479-3b7741d8e011@collabora.com>
+ <8cd2320f-ec2e-7a59-de60-e6765f9ea3ba@ideasonboard.com>
+From:   Helen Koike <helen.koike@collabora.com>
+Message-ID: <08a54915-b7be-d3e9-5885-178e2ace6ec0@collabora.com>
+Date:   Tue, 30 Jun 2020 11:00:00 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <8cd2320f-ec2e-7a59-de60-e6765f9ea3ba@ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ASRC not only supports ideal ratio mode, but also supports
-internal ratio mode.
 
-For internal rato mode, the rate of clock source should be divided
-with no remainder by sample rate, otherwise there is sound
-distortion.
 
-Add function fsl_asrc_select_clk() to find proper clock source for
-internal ratio mode, if the clock source is available then internal
-ratio mode will be selected.
+On 6/30/20 10:52 AM, Kieran Bingham wrote:
+> Hi Helen, Kaaira,
+> 
+> On 30/06/2020 14:46, Helen Koike wrote:
+>> Hi Kaaira,
+>>
+>> On 6/30/20 10:25 AM, Kaaira Gupta wrote:
+>>> On Fri, Jun 26, 2020 at 01:01:03PM -0300, Helen Koike wrote:
+>>>> Hi Kaaira,
+>>>>
+>>>> On 6/26/20 10:07 AM, Kaaira Gupta wrote:
+>>>>> Add a control in VIMC to display information such as the correct order of
+>>>>> colors for a given test pattern, brightness, hue, saturation, contrast,
+>>>>> width and height at sensor over test image.
+>>>>>
+>>>>> Signed-off-by: Kaaira Gupta <kgupta@es.iitr.ac.in>
+>>>>> ---
+>>>>>  drivers/media/test-drivers/vimc/Kconfig       |  2 +
+>>>>>  drivers/media/test-drivers/vimc/vimc-common.h |  1 +
+>>>>>  drivers/media/test-drivers/vimc/vimc-core.c   | 10 +++
+>>>>>  drivers/media/test-drivers/vimc/vimc-sensor.c | 70 +++++++++++++++++++
+>>>>>  4 files changed, 83 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/media/test-drivers/vimc/Kconfig b/drivers/media/test-drivers/vimc/Kconfig
+>>>>> index 4068a67585f9..da4b2ad6e40c 100644
+>>>>> --- a/drivers/media/test-drivers/vimc/Kconfig
+>>>>> +++ b/drivers/media/test-drivers/vimc/Kconfig
+>>>>> @@ -2,6 +2,8 @@
+>>>>>  config VIDEO_VIMC
+>>>>>  	tristate "Virtual Media Controller Driver (VIMC)"
+>>>>>  	depends on VIDEO_DEV && VIDEO_V4L2
+>>>>> +	select FONT_SUPPORT
+>>>>> +	select FONT_8x16
+>>>>>  	select MEDIA_CONTROLLER
+>>>>>  	select VIDEO_V4L2_SUBDEV_API
+>>>>>  	select VIDEOBUF2_VMALLOC
+>>>>> diff --git a/drivers/media/test-drivers/vimc/vimc-common.h b/drivers/media/test-drivers/vimc/vimc-common.h
+>>>>> index ae163dec2459..a289434e75ba 100644
+>>>>> --- a/drivers/media/test-drivers/vimc/vimc-common.h
+>>>>> +++ b/drivers/media/test-drivers/vimc/vimc-common.h
+>>>>> @@ -20,6 +20,7 @@
+>>>>>  #define VIMC_CID_VIMC_CLASS		(0x00f00000 | 1)
+>>>>>  #define VIMC_CID_TEST_PATTERN		(VIMC_CID_VIMC_BASE + 0)
+>>>>>  #define VIMC_CID_MEAN_WIN_SIZE		(VIMC_CID_VIMC_BASE + 1)
+>>>>> +#define VIMC_CID_OSD_TEXT_MODE		(VIMC_CID_VIMC_BASE + 2)
+>>>>>  
+>>>>>  #define VIMC_FRAME_MAX_WIDTH 4096
+>>>>>  #define VIMC_FRAME_MAX_HEIGHT 2160
+>>>>> diff --git a/drivers/media/test-drivers/vimc/vimc-core.c b/drivers/media/test-drivers/vimc/vimc-core.c
+>>>>> index 11210aaa2551..4b0ae6f51d76 100644
+>>>>> --- a/drivers/media/test-drivers/vimc/vimc-core.c
+>>>>> +++ b/drivers/media/test-drivers/vimc/vimc-core.c
+>>>>> @@ -5,10 +5,12 @@
+>>>>>   * Copyright (C) 2015-2017 Helen Koike <helen.fornazier@gmail.com>
+>>>>>   */
+>>>>>  
+>>>>> +#include <linux/font.h>
+>>>>>  #include <linux/init.h>
+>>>>>  #include <linux/module.h>
+>>>>>  #include <linux/platform_device.h>
+>>>>>  #include <media/media-device.h>
+>>>>> +#include <media/tpg/v4l2-tpg.h>
+>>>>>  #include <media/v4l2-device.h>
+>>>>>  
+>>>>>  #include "vimc-common.h"
+>>>>> @@ -263,11 +265,19 @@ static int vimc_register_devices(struct vimc_device *vimc)
+>>>>>  
+>>>>>  static int vimc_probe(struct platform_device *pdev)
+>>>>>  {
+>>>>> +	const struct font_desc *font = find_font("VGA8x16");
+>>>>>  	struct vimc_device *vimc;
+>>>>>  	int ret;
+>>>>>  
+>>>>>  	dev_dbg(&pdev->dev, "probe");
+>>>>>  
+>>>>> +	if (!font) {
+>>>>> +		dev_err(&pdev->dev, "could not find font\n");
+>>>>> +		return -ENODEV;
+>>>>> +	}
+>>>>> +
+>>>>> +	tpg_set_font(font->data);
+>>>>> +
+>>>>>  	vimc = kzalloc(sizeof(*vimc), GFP_KERNEL);
+>>>>>  	if (!vimc)
+>>>>>  		return -ENOMEM;
+>>>>> diff --git a/drivers/media/test-drivers/vimc/vimc-sensor.c b/drivers/media/test-drivers/vimc/vimc-sensor.c
+>>>>> index a2f09ac9a360..9e4fb3f4d60d 100644
+>>>>> --- a/drivers/media/test-drivers/vimc/vimc-sensor.c
+>>>>> +++ b/drivers/media/test-drivers/vimc/vimc-sensor.c
+>>>>> @@ -19,6 +19,8 @@ struct vimc_sen_device {
+>>>>>  	struct v4l2_subdev sd;
+>>>>>  	struct tpg_data tpg;
+>>>>>  	u8 *frame;
+>>>>> +	unsigned int osd_mode;
+>>>>
+>>>> If you declare the enum outside the below function, this could be type osd_mode instead of unsigned int, what do you think?
+>>>>
+>>>>> +	u64 start_stream_ts;
+>>>>>  	/* The active format */
+>>>>>  	struct v4l2_mbus_framefmt mbus_format;
+>>>>>  	struct v4l2_ctrl_handler hdl;
+>>>>> @@ -187,8 +189,54 @@ static void *vimc_sen_process_frame(struct vimc_ent_device *ved,
+>>>>>  {
+>>>>>  	struct vimc_sen_device *vsen = container_of(ved, struct vimc_sen_device,
+>>>>>  						    ved);
+>>>>> +	enum osd_mode {OSD_SHOW_ALL = 0, OSD_SHOW_COUNTERS = 1, OSD_SHOW_NONE = 2};
+>>>>> +	const unsigned int line_height = 16;
+>>>>> +	u8 *basep[TPG_MAX_PLANES][2];
+>>>>> +	unsigned int line = 1;
+>>>>> +	char str[100];
+>>>>>  
+>>>>>  	tpg_fill_plane_buffer(&vsen->tpg, 0, 0, vsen->frame);
+>>>>> +	tpg_calc_text_basep(&vsen->tpg, basep, 0, vsen->frame);
+>>>>> +	switch (vsen->osd_mode) {
+>>>>> +	case OSD_SHOW_ALL:
+>>>>> +		{
+>>>>
+>>>> Usually we don't use this curly braces in a case statement, please, check other examples in the code,
+>>>
+>>> I have declared variables inside the cases,hence they are not just
+>>> statements, so I need to use them I think
+>>
+>> Doing this grep:
+>>
+>> git grep -A1 "case.*:" drivers/media | grep -B1 -P "\tstruct"
+> 
+> Aha, yes - they might indeed be needed then because of the local scope
+> variables...
+> 
+>>
+>> I see that the standard is to place the curly braces in the same line of the case statement,
+>> example: https://elixir.bootlin.com/linux/latest/source/drivers/media/v4l2-core/v4l2-subdev.c#L469
+>>
+>>>
+>>>>
+>>>>> +			const char *order = tpg_g_color_order(&vsen->tpg);
+>>>>
+>>>> You also don't need this level of identation.
+>>>
+>>> I used it because of the braces
+>>
+>> Please check the example above
+>>
+>>>
+>>>>
+>>>>> +
+>>>>> +			tpg_gen_text(&vsen->tpg, basep,
+>>>>> +				     line++ * line_height, 16, order);
+>>>>> +			snprintf(str, sizeof(str),
+>>>>> +				 "brightness %3d, contrast %3d, saturation %3d, hue %d ",
+>>>>> +				 vsen->tpg.brightness,
+>>>>> +				 vsen->tpg.contrast,
+>>>>> +				 vsen->tpg.saturation,
+>>>>> +				 vsen->tpg.hue);
+>>>>> +			tpg_gen_text(&vsen->tpg, basep, line++ * line_height,
+>>>>> +				     16, str);
+>>>>> +			snprintf(str, sizeof(str), "sensor size: %dx%d",
+>>>>> +				 vsen->mbus_format.width,
+>>>>> +				 vsen->mbus_format.height);
+>>>>> +			tpg_gen_text(&vsen->tpg, basep, line++ * line_height,
+>>>>> +				     16, str);
+>>>>> +		}
+>>>>> +	case OSD_SHOW_COUNTERS:
+>>>>
+>>>> Checkpatch gives this error:
+>>>>
+>>>> WARNING: Possible switch case/default not preceded by break or fallthrough comment
+>>>>
+>>>> You need to add a fallthrough comment (grep for fallthrough to find other examples)
+>>>
+>>> Okay, I will add that
+>>>
+>>>>
+>>>>> +		{
+>>>>> +			unsigned int ms;
+>>>>> +
+>>>>> +			ms = (ktime_get_ns() - vsen->start_stream_ts) / 1000000;
+>>>>> +			snprintf(str, sizeof(str), "%02d:%02d:%02d:%03d",
+>>>>> +				 (ms / (60 * 60 * 1000)) % 24,
+>>>>> +				 (ms / (60 * 1000)) % 60,
+>>>>> +				 (ms / 1000) % 60,
+>>>>> +				 ms % 1000);
+>>>>> +			tpg_gen_text(&vsen->tpg, basep, line++ * line_height,
+>>>>> +				     16, str);
+>>>>> +			break;
+>>>>> +		}
+>>>>> +	case OSD_SHOW_NONE:
+>>>>
+>>>> No need this case statement if you have the default below.
+>>>
+>>> I added it to make it clearer what default does, should I remove it?
+>>
+>> hmm, I think this depends on your style, but to me, just the "default" statement below makes it
+>> clear that options not listed above do nothing.
+>> I think you would also need to add a fallthtough comment.
+> 
+> Consecutive case statements (or the default) statement should not need a
+> /* fallthrough */. I believe it's only if there is a code block it
+> becomes required.
 
-With change, the ideal ratio mode is not the only option for user.
+Ok, cool, I don't mind keeping like this then.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
-changes in v3
-- convert fsl_asrc_select_clk to void type
+Regards,
+Helen
 
-changes in v2
-- update according to Nicolin's comments
-
- sound/soc/fsl/fsl_asrc.c | 46 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 44 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 95f6a9617b0b..462ce9f9ab48 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -582,11 +582,51 @@ static int fsl_asrc_dai_startup(struct snd_pcm_substream *substream,
- 			SNDRV_PCM_HW_PARAM_RATE, &fsl_asrc_rate_constraints);
- }
- 
-+/* Select proper clock source for internal ratio mode */
-+static void fsl_asrc_select_clk(struct fsl_asrc_priv *asrc_priv,
-+				struct fsl_asrc_pair *pair,
-+				int in_rate,
-+				int out_rate)
-+{
-+	struct fsl_asrc_pair_priv *pair_priv = pair->private;
-+	struct asrc_config *config = pair_priv->config;
-+	int rate[2], select_clk[2]; /* Array size 2 means IN and OUT */
-+	int clk_rate, clk_index;
-+	int i = 0, j = 0;
-+
-+	rate[IN] = in_rate;
-+	rate[OUT] = out_rate;
-+
-+	/* Select proper clock source for internal ratio mode */
-+	for (j = 0; j < 2; j++) {
-+		for (i = 0; i < ASRC_CLK_MAP_LEN; i++) {
-+			clk_index = asrc_priv->clk_map[j][i];
-+			clk_rate = clk_get_rate(asrc_priv->asrck_clk[clk_index]);
-+			/* Only match a perfect clock source with no remainder */
-+			if (clk_rate != 0 && (clk_rate / rate[j]) <= 1024 &&
-+			    (clk_rate % rate[j]) == 0)
-+				break;
-+		}
-+
-+		select_clk[j] = i;
-+	}
-+
-+	/* Switch to ideal ratio mode if there is no proper clock source */
-+	if (select_clk[IN] == ASRC_CLK_MAP_LEN || select_clk[OUT] == ASRC_CLK_MAP_LEN) {
-+		select_clk[IN] = INCLK_NONE;
-+		select_clk[OUT] = OUTCLK_ASRCK1_CLK;
-+	}
-+
-+	config->inclk = select_clk[IN];
-+	config->outclk = select_clk[OUT];
-+}
-+
- static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
- 				  struct snd_pcm_hw_params *params,
- 				  struct snd_soc_dai *dai)
- {
- 	struct fsl_asrc *asrc = snd_soc_dai_get_drvdata(dai);
-+	struct fsl_asrc_priv *asrc_priv = asrc->private;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct fsl_asrc_pair *pair = runtime->private_data;
- 	struct fsl_asrc_pair_priv *pair_priv = pair->private;
-@@ -605,8 +645,6 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
- 
- 	config.pair = pair->index;
- 	config.channel_num = channels;
--	config.inclk = INCLK_NONE;
--	config.outclk = OUTCLK_ASRCK1_CLK;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		config.input_format   = params_format(params);
-@@ -620,6 +658,10 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
- 		config.output_sample_rate = rate;
- 	}
- 
-+	fsl_asrc_select_clk(asrc_priv, pair,
-+			    config.input_sample_rate,
-+			    config.output_sample_rate);
-+
- 	ret = fsl_asrc_config_pair(pair, false);
- 	if (ret) {
- 		dev_err(dai->dev, "fail to config asrc pair\n");
--- 
-2.21.0
-
+> 
+> --
+> Kieran
+> 
+> 
+>>
+>> Or you could just add a comment instead of the case statement in the code, like:
+>>
+>> 	/* case OSD_SHOW_NONE: */
+>>
+>> So it would be clear what this option does.
+>>
+>> Regards,
+>> Helen
+>>
+>>>
+>>>>
+>>>> Regards,
+>>>> Helen
+>>>>
+>>>>> +	default:
+>>>>> +		break;
+>>>>> +	}
+>>>>> +
+>>>>>  	return vsen->frame;
+>>>>>  }
+>>>>>  
+>>>>> @@ -201,6 +249,8 @@ static int vimc_sen_s_stream(struct v4l2_subdev *sd, int enable)
+>>>>>  		const struct vimc_pix_map *vpix;
+>>>>>  		unsigned int frame_size;
+>>>>>  
+>>>>> +		vsen->start_stream_ts = ktime_get_ns();
+>>>>> +
+>>>>>  		/* Calculate the frame size */
+>>>>>  		vpix = vimc_pix_map_by_code(vsen->mbus_format.code);
+>>>>>  		frame_size = vsen->mbus_format.width * vpix->bpp *
+>>>>> @@ -269,6 +319,9 @@ static int vimc_sen_s_ctrl(struct v4l2_ctrl *ctrl)
+>>>>>  	case V4L2_CID_SATURATION:
+>>>>>  		tpg_s_saturation(&vsen->tpg, ctrl->val);
+>>>>>  		break;
+>>>>> +	case VIMC_CID_OSD_TEXT_MODE:
+>>>>> +		vsen->osd_mode = ctrl->val;
+>>>>> +		break;
+>>>>>  	default:
+>>>>>  		return -EINVAL;
+>>>>>  	}
+>>>>> @@ -307,6 +360,22 @@ static const struct v4l2_ctrl_config vimc_sen_ctrl_test_pattern = {
+>>>>>  	.qmenu = tpg_pattern_strings,
+>>>>>  };
+>>>>>  
+>>>>> +static const char * const vimc_ctrl_osd_mode_strings[] = {
+>>>>> +	"All",
+>>>>> +	"Counters Only",
+>>>>> +	"None",
+>>>>> +	NULL,
+>>>>> +};
+>>>>> +
+>>>>> +static const struct v4l2_ctrl_config vimc_sen_ctrl_osd_mode = {
+>>>>> +	.ops = &vimc_sen_ctrl_ops,
+>>>>> +	.id = VIMC_CID_OSD_TEXT_MODE,
+>>>>> +	.name = "Show Information",
+>>>>> +	.type = V4L2_CTRL_TYPE_MENU,
+>>>>> +	.max = ARRAY_SIZE(vimc_ctrl_osd_mode_strings) - 2,
+>>>>> +	.qmenu = vimc_ctrl_osd_mode_strings,
+>>>>> +};
+>>>>> +
+>>>>>  static struct vimc_ent_device *vimc_sen_add(struct vimc_device *vimc,
+>>>>>  					    const char *vcfg_name)
+>>>>>  {
+>>>>> @@ -323,6 +392,7 @@ static struct vimc_ent_device *vimc_sen_add(struct vimc_device *vimc,
+>>>>>  
+>>>>>  	v4l2_ctrl_new_custom(&vsen->hdl, &vimc_sen_ctrl_class, NULL);
+>>>>>  	v4l2_ctrl_new_custom(&vsen->hdl, &vimc_sen_ctrl_test_pattern, NULL);
+>>>>> +	v4l2_ctrl_new_custom(&vsen->hdl, &vimc_sen_ctrl_osd_mode, NULL);
+>>>>>  	v4l2_ctrl_new_std(&vsen->hdl, &vimc_sen_ctrl_ops,
+>>>>>  			  V4L2_CID_VFLIP, 0, 1, 1, 0);
+>>>>>  	v4l2_ctrl_new_std(&vsen->hdl, &vimc_sen_ctrl_ops,
+>>>>>
+> 
