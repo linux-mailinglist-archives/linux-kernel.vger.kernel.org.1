@@ -2,64 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BB920FF69
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F21A20FF6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729348AbgF3VqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 17:46:14 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:53630 "EHLO
+        id S1729580AbgF3Vqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 17:46:38 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:53674 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728109AbgF3VqN (ORCPT
+        with ESMTP id S1726841AbgF3Vqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 17:46:13 -0400
+        Tue, 30 Jun 2020 17:46:37 -0400
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 548E51C0C0F; Tue, 30 Jun 2020 23:46:10 +0200 (CEST)
-Date:   Tue, 30 Jun 2020 23:46:09 +0200
+        id 1E3111C0C22; Tue, 30 Jun 2020 23:46:35 +0200 (CEST)
+Date:   Tue, 30 Jun 2020 23:46:34 +0200
 From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rajat Jain <rajatja@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Prashant Malani <pmalani@google.com>,
-        Benson Leung <bleung@google.com>,
-        Todd Broch <tbroch@google.com>,
-        Alex Levin <levinale@google.com>,
-        Mattias Nissler <mnissler@google.com>,
-        Zubin Mithra <zsm@google.com>,
-        Bernie Keany <bernie.keany@intel.com>,
-        Aaron Durbin <adurbin@google.com>,
-        Diego Rivas <diegorivas@google.com>,
-        Duncan Laurie <dlaurie@google.com>,
-        Furquan Shaikh <furquan@google.com>,
-        Christian Kellner <christian@kellner.me>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] Restrict the untrusted devices, to bind to only a set of
- "whitelisted" drivers
-Message-ID: <20200630214609.GB7113@duo.ucw.cz>
-References: <20200603121613.GA1488883@kroah.com>
- <CACK8Z6EOGduHX1m7eyhFgsGV7CYiVN0en4U0cM4BEWJwk2bmoA@mail.gmail.com>
- <20200605080229.GC2209311@kroah.com>
- <CACK8Z6GR7-wseug=TtVyRarVZX_ao2geoLDNBwjtB+5Y7VWNEQ@mail.gmail.com>
- <20200607113632.GA49147@kroah.com>
- <CAJmaN=m5cGc8019LocvHTo-1U6beA9-h=T-YZtQEYEb_ry=b+Q@mail.gmail.com>
- <20200608175015.GA457685@kroah.com>
- <CAJmaN=mvnrLLkJC=6ddO_Rj+1FpRHoQzWFo9W3AZmsW_qS5CYQ@mail.gmail.com>
- <CACK8Z6GZprVZMM=JQ-9zjosYQ6OLpifp_g8RmSTa3HwWWTB8Lw@mail.gmail.com>
- <20200609095444.GA533843@kroah.com>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.9 00/59] 4.9.226-rc2 review
+Message-ID: <20200630214634.GC7113@duo.ucw.cz>
+References: <20200602101841.662517961@linuxfoundation.org>
+ <3c900c0e-b15c-da05-d3d8-e68acf660076@roeck-us.net>
+ <20200602163346.GQ1407771@sasha-vm>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="i0/AhcQY5QxfSsSZ"
+        protocol="application/pgp-signature"; boundary="aT9PWwzfKXlsBJM1"
 Content-Disposition: inline
-In-Reply-To: <20200609095444.GA533843@kroah.com>
+In-Reply-To: <20200602163346.GQ1407771@sasha-vm>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -67,45 +40,38 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---i0/AhcQY5QxfSsSZ
+--aT9PWwzfKXlsBJM1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Hi!
 
-> > > I think that's inherently platform specific to some extent.  We can do
-> > > it with our coreboot based firmware, but there's no guarantee other
-> > > vendors will adopt the same approach.  But I think at least for the
-> > > ChromeOS ecosystem we can come up with something that'll work, and
-> > > allow us to dtrt in userspace wrt driver binding.
-> >=20
-> > Agree, we can work with our firmware teams to get that right, and then
-> > expose it from kernel to userspace to help it implement the policy we
-> > want.
+> >FWIW, if we need/want to use unified assembler in v4.9.y, shouldn't all =
+unified
+> >assembler patches be applied ?
 >=20
-> This is already in the spec for USB, I suggest working to get this added
-> to the other bus type specs that you care about as well (UEFI, PCI,
-> etc.)
+> We don't - I took 71f8af111010 as a dependency rather than on its own
+> merit.
 
-Note that "you can only use authorized SSD and authorized WIFI card in
-this notebook" was done before, but is considered antisocial.
+Would it be possible to somehow mark patches that are "dependency"
+rather than "on their own"? It would make review easier...
 
-Best regards,
+Thanks,
 									Pavel
 --=20
 (english) http://www.livejournal.com/~pavelmachek
 (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
 g.html
 
---i0/AhcQY5QxfSsSZ
+--aT9PWwzfKXlsBJM1
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXvuyoQAKCRAw5/Bqldv6
-8j0rAKC4LyPWWRgo5jJUMBzipeCr9oLP5ACgryNN8BQa2ntWgS4kMWPf54Ue+Os=
-=cD1f
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXvuyugAKCRAw5/Bqldv6
+8iO5AJ9XuAJo4ZWaeXYBiOAnD+HhWlXGjgCgty3sJ8+qdw0rtpH4fB7+DHjUNgk=
+=rFA0
 -----END PGP SIGNATURE-----
 
---i0/AhcQY5QxfSsSZ--
+--aT9PWwzfKXlsBJM1--
