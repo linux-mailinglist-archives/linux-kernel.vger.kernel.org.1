@@ -2,119 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8159A20F3C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DEB20F3C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733110AbgF3Lsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 07:48:35 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:40398 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728419AbgF3Lse (ORCPT
+        id S1733097AbgF3Lqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 07:46:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731944AbgF3Lqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 07:48:34 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05UBgPfe196081;
-        Tue, 30 Jun 2020 11:48:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=uxq/cKx519UunETtqtXYq6fCE8XXU5EvXIx0epdZCQQ=;
- b=0PNp5hsOdKn/2ZW4WNcy+g0QBDBJFtgNvFg2QdwkyrVFYC00HITHoZC2+Ru7jzyzpjj7
- 02TYcGSIw8YNNP1HxahgRhEJBFUxJSeW/rpv0flsj56YnPmokDRU8D5QF6DTPCYlUk3Z
- QBTTwpF6ERCpZDJDVhUqs20Ej0M4L9GTQM095rcvjsSpnxmzgrwcRnj7BK0JLoSIu169
- YfW9wautb92/9mRca/RpT8MJJVz1Ij41RQ7o3A/cP8pjoehGwc2ebpct8Nh+3aZK9gJc
- Gh+YJN2WGtDIvQyeX5HHQ9rsRBj34qHzQf+WMCGFb9QWo/Ucx/8vcw64EgeGaStGyfkV Jg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 31xx1dru06-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 30 Jun 2020 11:48:25 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05UBgYO4189853;
-        Tue, 30 Jun 2020 11:46:25 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 31y52hrqxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 30 Jun 2020 11:46:25 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05UBkMau003808;
-        Tue, 30 Jun 2020 11:46:23 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 30 Jun 2020 11:46:22 +0000
-Date:   Tue, 30 Jun 2020 14:46:15 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Wang Wenhu <wenhu.wang@vivo.com>,
-        Wen Gong <wgong@codeaurora.org>,
-        Carl Huang <cjhuang@codeaurora.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: [PATCH net] net: qrtr: Fix an out of bounds read qrtr_endpoint_post()
-Message-ID: <20200630114615.GA21891@mwanda>
+        Tue, 30 Jun 2020 07:46:32 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9938C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 04:46:31 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id q7so8832187ljm.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 04:46:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sFhX7QV1ZJHlGJSXvrR+TtCCSjWX8gXgJM2sQ/0NzMQ=;
+        b=azIpapjSNCTUdv0mtHkly/y2XXN947eAPmIZuK8SfeXM1VHpZP9cHWZ5oGzUX0rlST
+         sajoLuEIiLdBKscbgH5D7Sy15AY04RIhKOi6OJ+OBVk8ys2xViLzu0+KrkuoxzuYCPtb
+         nQst/6BNoaMcf39ngth3XHDQmjUjU8CxZeO8Jc59KpXOmP6gaLejwMUajk+l8igKNirA
+         GWXcX4L3LELlT8PWPYoOKAC7GIgnFJHi+LOBSG7a0ByQQgHA7ENhjrtbEYM+Mk/RD73S
+         MslyP0qTOcy9o+M6bbj9ruF301TueNMmSihmEgvd+Phm+4VLaukfFXuqGjcxaX7DGrO3
+         UHRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sFhX7QV1ZJHlGJSXvrR+TtCCSjWX8gXgJM2sQ/0NzMQ=;
+        b=ZGHz3D8PAY02HQvcZ+Jmqo5r/acbnMMOk9OqKv+7Exf1ZHSrBd6RA0wqAkS58eEI+y
+         fMxR1E4x5FA1a/2F9T11moBgFWx26Cr0Z1a1JV8oU+oNitqY1q9hXq7EnETgQulcRYJ4
+         4X8qRPlh/CXsSgdBAo4v7c5MmulEv60Pzn1IMGHiu3Ol7ghL0X5jRssa3Kg1pz+HNPir
+         sEbZ+BKpwOUlcXvdTM0tP+Pm9RGMHGUgoLYUtNCLrAPsiwmcAsW2phxEsqV7mKweg+9c
+         JT7aS51OaTrGWddEdOr4//l2DXRqZ8JExXV9mWPM2PsFPv8iZIueGZBHfYmpqJOgXkhD
+         RpQA==
+X-Gm-Message-State: AOAM533MV179aZ5g1XbtdxQfN5HzJ7GpImw+2/NdV4IRpOP8Jnr8ugZH
+        AtNti36HIk7kgGH1FOgxrU8Y6e9yINPDF1m4+dnqCA==
+X-Google-Smtp-Source: ABdhPJwznset+KDtI0yZGVRi0+xkPKFKcnVg5Ufvb7fhILr2kGyutkQzLR/OehI81NBp/Jz5b+IrlDSmHjljk0cyy0E=
+X-Received: by 2002:a2e:8855:: with SMTP id z21mr5660314ljj.325.1593517590395;
+ Tue, 30 Jun 2020 04:46:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200628104623.GA3357@Mani-XPS-13-9360>
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9667 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 mlxscore=0
- adultscore=0 suspectscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006300087
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9667 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011 adultscore=0
- suspectscore=0 mlxlogscore=999 cotscore=-2147483648 lowpriorityscore=0
- malwarescore=0 phishscore=0 impostorscore=0 mlxscore=0 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006300087
+References: <20200625144509.17918-1-daniel.lezcano@linaro.org>
+In-Reply-To: <20200625144509.17918-1-daniel.lezcano@linaro.org>
+From:   Amit Kucheria <amit.kucheria@linaro.org>
+Date:   Tue, 30 Jun 2020 17:16:19 +0530
+Message-ID: <CAP245DVy+Z9D+6=-cX4TaGFoK-e2N+mWwOvNYOe_E9Fh=7vnaA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] thermal: core: Add helpers to browse the cdev, tz
+ and governor list
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Ram Chandrasekar <rkumbako@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code assumes that the user passed in enough data for a
-qrtr_hdr_v1 or qrtr_hdr_v2 struct, but it's not necessarily true.  If
-the buffer is too small then it will read beyond the end.
+On Thu, Jun 25, 2020 at 8:15 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> The cdev, tz and governor list, as well as their respective locks are
+> statically defined in the thermal_core.c file.
+>
+> In order to give a sane access to these list, like browsing all the
+> thermal zones or all the cooling devices, let's define a set of
+> helpers where we pass a callback as a parameter to be called for each
+> thermal entity.
+>
+> We keep the self-encapsulation and ensure the locks are correctly
+> taken when looking at the list.
+>
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> ---
+>  drivers/thermal/thermal_core.c | 51 ++++++++++++++++++++++++++++++++++
 
-Reported-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Reported-by: syzbot+b8fe393f999a291a9ea6@syzkaller.appspotmail.com
-Fixes: 194ccc88297a ("net: qrtr: Support decoding incoming v2 packets")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- net/qrtr/qrtr.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Is the idea to not use thermal_helpers.c from now on? It fits
+perfectly with a patch I have to merge all its contents to
+thermal_core.c :-)
 
-diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
-index 2d8d6131bc5f..7eccbbf6f8ad 100644
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -427,7 +427,7 @@ int qrtr_endpoint_post(struct qrtr_endpoint *ep, const void *data, size_t len)
- 	unsigned int ver;
- 	size_t hdrlen;
- 
--	if (len & 3)
-+	if (len == 0 || len & 3)
- 		return -EINVAL;
- 
- 	skb = netdev_alloc_skb(NULL, len);
-@@ -441,6 +441,8 @@ int qrtr_endpoint_post(struct qrtr_endpoint *ep, const void *data, size_t len)
- 
- 	switch (ver) {
- 	case QRTR_PROTO_VER_1:
-+		if (len < sizeof(*v1))
-+			goto err;
- 		v1 = data;
- 		hdrlen = sizeof(*v1);
- 
-@@ -454,6 +456,8 @@ int qrtr_endpoint_post(struct qrtr_endpoint *ep, const void *data, size_t len)
- 		size = le32_to_cpu(v1->size);
- 		break;
- 	case QRTR_PROTO_VER_2:
-+		if (len < sizeof(*v2))
-+			goto err;
- 		v2 = data;
- 		hdrlen = sizeof(*v2) + v2->optlen;
- 
--- 
-2.27.0
 
+>  drivers/thermal/thermal_core.h |  9 ++++++
+>  2 files changed, 60 insertions(+)
+>
+> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> index 2a3f83265d8b..e2f8d2550ecd 100644
+> --- a/drivers/thermal/thermal_core.c
+> +++ b/drivers/thermal/thermal_core.c
+> @@ -611,6 +611,57 @@ void thermal_zone_device_rebind_exception(struct thermal_zone_device *tz,
+>         mutex_unlock(&thermal_list_lock);
+>  }
+>
+> +int for_each_thermal_governor(int (*cb)(struct thermal_governor *, void *),
+> +                             void *data)
+
+
+> +{
+> +       struct thermal_governor *gov;
+> +       int ret = 0;
+> +
+> +       mutex_lock(&thermal_governor_lock);
+> +       list_for_each_entry(gov, &thermal_governor_list, governor_list) {
+> +               ret = cb(gov, data);
+> +               if (ret)
+> +                       break;
+> +       }
+> +       mutex_unlock(&thermal_governor_lock);
+> +
+> +       return ret;
+> +}
+> +
+> +int for_each_thermal_cooling_device(int (*cb)(struct thermal_cooling_device *,
+> +                                             void *), void *data)
+> +{
+> +       struct thermal_cooling_device *cdev;
+> +       int ret = 0;
+> +
+> +       mutex_lock(&thermal_list_lock);
+> +       list_for_each_entry(cdev, &thermal_cdev_list, node) {
+> +               ret = cb(cdev, data);
+> +               if (ret)
+> +                       break;
+> +       }
+> +       mutex_unlock(&thermal_list_lock);
+> +
+> +       return ret;
+> +}
+> +
+> +int for_each_thermal_zone(int (*cb)(struct thermal_zone_device *, void *),
+> +                         void *data)
+> +{
+> +       struct thermal_zone_device *tz;
+> +       int ret = 0;
+> +
+> +       mutex_lock(&thermal_list_lock);
+> +       list_for_each_entry(tz, &thermal_tz_list, node) {
+> +               ret = cb(tz, data);
+> +               if (ret)
+> +                       break;
+> +       }
+> +       mutex_unlock(&thermal_list_lock);
+> +
+> +       return ret;
+> +}
+> +
+>  void thermal_zone_device_unbind_exception(struct thermal_zone_device *tz,
+>                                           const char *cdev_type, size_t size)
+>  {
+> diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
+> index 4e271016b7a9..bb8f8aee79eb 100644
+> --- a/drivers/thermal/thermal_core.h
+> +++ b/drivers/thermal/thermal_core.h
+> @@ -41,6 +41,15 @@ extern struct thermal_governor *__governor_thermal_table_end[];
+>              __governor < __governor_thermal_table_end; \
+>              __governor++)
+>
+> +int for_each_thermal_zone(int (*cb)(struct thermal_zone_device *, void *),
+> +                         void *);
+> +
+> +int for_each_thermal_cooling_device(int (*cb)(struct thermal_cooling_device *,
+> +                                             void *), void *);
+> +
+> +int for_each_thermal_governor(int (*cb)(struct thermal_governor *, void *),
+> +                             void *thermal_governor);
+> +
+>  struct thermal_attr {
+>         struct device_attribute attr;
+>         char name[THERMAL_NAME_LENGTH];
+> --
+> 2.17.1
+>
