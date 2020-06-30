@@ -2,79 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EB820FF3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B3220FF59
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726274AbgF3VcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 17:32:00 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:45118 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726285AbgF3VaK (ORCPT
+        id S1729814AbgF3Vht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 17:37:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726907AbgF3Vhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 17:30:10 -0400
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id E17508011F;
-        Wed,  1 Jul 2020 09:30:06 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1593552606;
-        bh=a9s+V2nzli8tsrcb0f2+rV3tw5YwE41Dqit8SLbbkqE=;
-        h=From:To:Cc:Subject:Date;
-        b=Ca7KOSLa8qcaM7G6uXP/Uf6OcU2/o107X/xBAUZuN7VCfORCIXCCKOGRmyBKkH06B
-         PSijTfk35h8DoUScsrf6RBRQzV5VoAouAXyF5jSsk2TOspkWF6fFN5dXzbRzlsVPyk
-         MAVlfRLd3tzRddhPTWHJqV8aARHBcYfsO+ER0jxTxSVPScgq+YojlCpPOviLc1/PhP
-         N/gKzJHmzcQQ6P0StzYI4KKaW1mGxiS2sZ3Rv5LNXKH7jJCNZhio3Llx6EsvObUyC1
-         ZDT+zSHhzo00z/mOPJEhoYo364AxoW6GAguzY3EpedrcPcO/t6fMQbnOSfOcdHFuVe
-         XP4P93b7DPyFg==
-Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5efbaeda0000>; Wed, 01 Jul 2020 09:30:06 +1200
-Received: from markto-dl.ws.atlnz.lc (markto-dl.ws.atlnz.lc [10.33.23.25])
-        by smtp (Postfix) with ESMTP id CC9E013EF9B;
-        Wed,  1 Jul 2020 09:30:00 +1200 (NZST)
-Received: by markto-dl.ws.atlnz.lc (Postfix, from userid 1155)
-        id D06D333E9BD; Wed,  1 Jul 2020 09:30:01 +1200 (NZST)
-From:   Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-To:     rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, linus.walleij@linaro.org,
-        linux-gpio@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Subject: [PATCH] pinctrl: initialise nsp-mux earlier.
-Date:   Wed,  1 Jul 2020 09:29:58 +1200
-Message-Id: <20200630212958.24030-1-mark.tomlinson@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.27.0
+        Tue, 30 Jun 2020 17:37:48 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271E3C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:30:21 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id l6so20171906qkc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:30:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c5EMuGF306H+8MVBaWM0r+rGzFzFrlYDXGMThC9HfD4=;
+        b=CVuzlkRbGxcrGQk88QUs7Tk5iS78bBLcpFuKyvp3XajOVHCPbZdyPTp86/unda5k5j
+         dzghI3xEj/ExjNk4Ne2mTEsY63nRHrFuQfaIcZrV+6MflMDNZBcbhLZmAI/WwWlNCjsz
+         2M87hwgFPODrfWf196lE2NAcze08Hd/lyoeNAwDHnPJW0inSlI6ufZDuFeQV6L0HTBTT
+         i6Vgax5ZiWEscxUdrX9hLY5wOPxD1CGs7ImMfiecSMcE+KMVdvxTcP/NZe7poOhqK7XM
+         dGTKgpf2cIL38jvWVIfLUAz2UhW/Ee9VExtEnkl31piwwc1/OtbcFu+1IJZ2wsbFi9Oa
+         NxBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c5EMuGF306H+8MVBaWM0r+rGzFzFrlYDXGMThC9HfD4=;
+        b=IFRxFWX2sLoFgy6xmLP6zPx85olsJHa1ka+5Fr3ZS4PqDqrA3SeuCFr48ZS0UZhnVy
+         RU0NjfpCwMME3ZF6LTDK4c1zhGJZEg3ICP2WEiNCbsMCSSq5h8UDTbYNTEjorOigOw4d
+         WDoYDGYeePfm4BN26aAFoPHIMaWMW3XVlHF4fBCF2mXhYkSupzwXNvk0rAvsMrY+sv0J
+         nYRharjLv6ZwuZOOf9tP4tSGr0vpKcnYAxfeLEMqHRJ1DX+O64RWTefdwoxZjaf5T+oG
+         DPohXTmnzyxVqDgOP9sFJtvHBUAtLIF30JThsqWyQ+bPWAbLkP2P3pj5XP9Qvdmji+Kb
+         6xlg==
+X-Gm-Message-State: AOAM532GQ65KZHVY3op1q9ZQvZf2tzal3RsT9dMt+ejbCo5nos+9qWHZ
+        87FAqtE6YEMZcIf+yrguRcXN+yxqH5LXYP3ND1VZtw==
+X-Google-Smtp-Source: ABdhPJwWO1R9i1wl8MgcDzCK99YlU9Z+CbqF2VkRE+FU0jHeiGGtc1krNP9QFqj9mxYwxQ/bQKqY86nI0ZiWwDimUnA=
+X-Received: by 2002:ae9:ed86:: with SMTP id c128mr22482794qkg.475.1593552620158;
+ Tue, 30 Jun 2020 14:30:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-x-atlnz-ls: pat
+References: <20200630143525.13869-1-quentin@isovalent.com> <39ba164ba44be848feac831f2f21effca92bfc96.camel@perches.com>
+ <CAC3GErHpyyA8eQUyP6s_H6csvbKfHXHi50Ky6A1PhU+A6waCeQ@mail.gmail.com>
+In-Reply-To: <CAC3GErHpyyA8eQUyP6s_H6csvbKfHXHi50Ky6A1PhU+A6waCeQ@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Date:   Tue, 30 Jun 2020 22:30:09 +0100
+Message-ID: <CACdoK4Kqx3e5om=OH2D4QWSSHp-y0AOakiPjDG-ViqHz27d_=w@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: prevent reporting C99_COMMENTS error for SPDX
+ tag in .c file
+To:     Vadim Bendebury <vbendeb@chromium.org>,
+        Joe Perches <joe@perches.com>
+Cc:     Andy Whitcroft <apw@canonical.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The GPIO specified in the DTS file references the pinctrl, which is
-specified after the GPIO. If the GPIO is initialised before pinctrl,
-an error message for the -EPROBE_DEFER ends up in the kernel log. Even
-though the probe will succeed when the driver is re-initialised, the
-error can be scary to end users. To fix this, change the time the
-pinctrl is probed, so that it is always before the GPIO driver.
+On Tue, 30 Jun 2020 at 18:20, Vadim Bendebury <vbendeb@chromium.org> wrote:
+>
+> On Tue, Jun 30, 2020 at 7:47 AM Joe Perches <joe@perches.com> wrote:
+> >
+> > (adding Vadem Bendebury who added the tolerance test)
+> >
+> > On Tue, 2020-06-30 at 15:35 +0100, Quentin Monnet wrote:
+> > > When checkpatch.pl is invoked with "--ignore C99_COMMENT_TOLERANCE", it
+> > > reports C99-style comments found in the code, by matching on the
+> > > double-slash pattern "//". This includes the leading slashes before the
+> > > SPDX tags that are now used in a majority of C files.
+> > >
+> > > Such tags are commented with the double-slash on purpose, and should not
+> > > trigger errors from checkpatch. Let's ignore them when searching for
+> > > C99-style comments to report.
+> > >
+> > > Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> >
+> > I think this unnecessary as perhaps those that want no
+> > c99 comments likely _really_ want no c99 comments.
+> >
+> > > ---
+> > >  scripts/checkpatch.pl | 5 ++++-
+> > >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > > index 3cacc122c528..67f350c580ea 100755
+> > > --- a/scripts/checkpatch.pl
+> > > +++ b/scripts/checkpatch.pl
+> > > @@ -3983,7 +3983,10 @@ sub process {
+> > >               }
+> > >
+> > >  # no C99 // comments
+> > > -             if ($line =~ m{//}) {
+> > > +             if ($line =~ m{//} &&
+> > > +                 !($rawline =~ m{// SPDX-License-Identifier:} &&
+> > > +                   $realfile =~ /\.c$/ &&
+> Do I understand this right that with this change in the check would be
+> applied to .c files only? .h files should be included.
 
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
----
- drivers/pinctrl/bcm/pinctrl-nsp-mux.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The idea is to exclude (from the search for C99-style comments) the
+SPDX tags at the top of source code files. The convention in kernel
+code is that .c files use C99 comments for those tags, but .h files do
+not and use "/* */" comments instead (details and motivation in
+Documentation/process/license-rules.rst). So having "//" at the top of
+a .h file is not conventional and should always be reported; whereas
+the idea for the current patch was to ignore it for .c files.
 
-diff --git a/drivers/pinctrl/bcm/pinctrl-nsp-mux.c b/drivers/pinctrl/bcm/=
-pinctrl-nsp-mux.c
-index f1d60a708815..7586949f83ec 100644
---- a/drivers/pinctrl/bcm/pinctrl-nsp-mux.c
-+++ b/drivers/pinctrl/bcm/pinctrl-nsp-mux.c
-@@ -639,4 +639,4 @@ static int __init nsp_pinmux_init(void)
- {
- 	return platform_driver_register(&nsp_pinmux_driver);
- }
--arch_initcall(nsp_pinmux_init);
-+postcore_initcall(nsp_pinmux_init);
---=20
-2.27.0
+All "//" comments not identified as an SPDX tag would still be
+reported by checkpatch, whether in a .c or in a .h file.
 
+> > > +                   $realline == $checklicenseline)) {
+> What is the purpose of the above check?
+
+This is for the "at the top" part. Because the SPDX tag is expected to
+be at the top of the file (Unless I am mistaken, $checklicenseline
+typically equals 1 for .c files). So with the patch, we consider a "//
+SPDX-License-Identifier:" string at the top of the .c file as a SPDX
+tag (and do not report a C99_COMMENTS error), but not if it is in the
+middle of a file.
+
+[...]
+
+Thank you Joe and Vadim for your feedback. My intent is to use
+checkpatch on a third-party repository where we mostly follow kernel
+style (including for SPDX tags) and do not desire "//" comments. I
+found it strange to have this option to report C99_COMMENTS errors
+that would raise a high number of false positives on the kernel
+repository (or for the repo I work with), hence the patch.
+
+But if the feeling is that there is too little value in the change, or
+if it goes against the intent of the reports for C99-style comments,
+there's not much to do but to drop the patch. I can't imagine adding
+new command line options for such a corner case.
+
+Regards,
+Quentin
