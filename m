@@ -2,154 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4655620F4A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 14:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E171220F4AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 14:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387692AbgF3Mbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 08:31:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730095AbgF3Mbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 08:31:47 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B08BC20780;
-        Tue, 30 Jun 2020 12:31:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593520306;
-        bh=PhXZOiHYFfQIlVAYlW6qFnQSXZojRskUV7lRHqn16QI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cqHNnvn1lWCLKzNx58COqIF64R7i6pFEt/4LFtvh1Ej/N2dgN/Q+MWsoWC3ZNu5Fr
-         fJcY48jSvAkZZNEUk3EkwlqRFhITTJKiKqMCke3rrxcBk83U0HF0I1+QBipkFT1oEp
-         Q/L7EyKjSyu+aoYwUk/9qDLLHmTudgKe/qVS3pFo=
-Received: by pali.im (Postfix)
-        id 944ED81A; Tue, 30 Jun 2020 14:31:44 +0200 (CEST)
-Date:   Tue, 30 Jun 2020 14:31:44 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        Remi Pommarel <repk@triplefau.lt>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Xogium <contact@xogium.me>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: aardvark: Don't touch PCIe registers if no card
- connected
-Message-ID: <20200630123144.vllnun266i6n5q4d@pali>
-References: <20200528163809.54f5ldvphrjg3zg3@pali>
- <20200528164938.GA325239@bjorn-Precision-5520>
- <20200529083013.5cg7tvfemomnmvjd@pali>
+        id S2387721AbgF3Mdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 08:33:39 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18824 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732042AbgF3Mdh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 08:33:37 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05UCWcBc034487;
+        Tue, 30 Jun 2020 08:33:30 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3204yvh57b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Jun 2020 08:33:30 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05UCX8r6039165;
+        Tue, 30 Jun 2020 08:33:29 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3204yvh553-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Jun 2020 08:33:29 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05UCGQOu007689;
+        Tue, 30 Jun 2020 12:33:27 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06fra.de.ibm.com with ESMTP id 31wwcgsq0s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Jun 2020 12:33:27 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05UCXOV365077476
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 30 Jun 2020 12:33:24 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4FA0311C04C;
+        Tue, 30 Jun 2020 12:33:24 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8310A11C05B;
+        Tue, 30 Jun 2020 12:33:23 +0000 (GMT)
+Received: from localhost (unknown [9.145.78.150])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 30 Jun 2020 12:33:23 +0000 (GMT)
+Date:   Tue, 30 Jun 2020 14:33:20 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>
+Subject: Re: [PATCH] mm/page_alloc: silence a KASAN false positive
+Message-ID: <your-ad-here.call-01593520400-ext-3384@work.hours>
+References: <20200610052154.5180-1-cai@lca.pw>
+ <CACT4Y+Ze=cddKcU_bYf4L=GaHuJRUjY=AdFFpM7aKy2+aZrmyQ@mail.gmail.com>
+ <20200610122600.GB954@lca.pw>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200529083013.5cg7tvfemomnmvjd@pali>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20200610122600.GB954@lca.pw>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-06-30_06:2020-06-30,2020-06-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 suspectscore=21
+ clxscore=1011 malwarescore=0 phishscore=0 adultscore=0 bulkscore=0
+ impostorscore=0 cotscore=-2147483648 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006300090
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On Friday 29 May 2020 10:30:13 Pali Rohár wrote:
-> On Thursday 28 May 2020 11:49:38 Bjorn Helgaas wrote:
-> > On Thu, May 28, 2020 at 06:38:09PM +0200, Pali Rohár wrote:
-> > > On Thursday 28 May 2020 11:26:04 Bjorn Helgaas wrote:
-> > > > On Thu, May 28, 2020 at 04:31:41PM +0200, Pali Rohár wrote:
-> > > > > When there is no PCIe card connected and advk_pcie_rd_conf() or
-> > > > > advk_pcie_wr_conf() is called for PCI bus which doesn't belong to emulated
-> > > > > root bridge, the aardvark driver throws the following error message:
-> > > > > 
-> > > > >   advk-pcie d0070000.pcie: config read/write timed out
-> > > > > 
-> > > > > Obviously accessing PCIe registers of disconnected card is not possible.
-> > > > > 
-> > > > > Extend check in advk_pcie_valid_device() function for validating
-> > > > > availability of PCIe bus. If PCIe link is down, then the device is marked
-> > > > > as Not Found and the driver does not try to access these registers.
-> > > > > 
-> > > > > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > > > > ---
-> > > > >  drivers/pci/controller/pci-aardvark.c | 3 +++
-> > > > >  1 file changed, 3 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-> > > > > index 90ff291c24f0..53a4cfd7d377 100644
-> > > > > --- a/drivers/pci/controller/pci-aardvark.c
-> > > > > +++ b/drivers/pci/controller/pci-aardvark.c
-> > > > > @@ -644,6 +644,9 @@ static bool advk_pcie_valid_device(struct advk_pcie *pcie, struct pci_bus *bus,
-> > > > >  	if ((bus->number == pcie->root_bus_nr) && PCI_SLOT(devfn) != 0)
-> > > > >  		return false;
-> > > > >  
-> > > > > +	if (bus->number != pcie->root_bus_nr && !advk_pcie_link_up(pcie))
-> > > > > +		return false;
-> > > > 
-> > > > I don't think this is the right fix.  This makes it racy because the
-> > > > link may go down after we call advk_pcie_valid_device() but before we
-> > > > perform the config read.
-> > > 
-> > > Yes, it is racy, but I do not think it cause problems. Trying to read
-> > > PCIe registers when device is not connected cause just those timeouts,
-> > > printing error message and increased delay in advk_pcie_wait_pio() due
-> > > to polling loop. This patch reduce unnecessary access to PCIe registers
-> > > when advk_pcie_wait_pio() polling just fail.
-> > > 
-> > > I think it is a good idea to not call blocking advk_pcie_wait_pio() when
-> > > it is not needed. We could have faster enumeration of PCIe buses when
-> > > card is not connected.
+On Wed, Jun 10, 2020 at 08:26:00AM -0400, Qian Cai wrote:
+> On Wed, Jun 10, 2020 at 07:54:50AM +0200, Dmitry Vyukov wrote:
+> > On Wed, Jun 10, 2020 at 7:22 AM Qian Cai <cai@lca.pw> wrote:
+> > >
+> > > kernel_init_free_pages() will use memset() on s390 to clear all pages
+> > > from kmalloc_order() which will override KASAN redzones because a
+> > > redzone was setup from the end of the allocation size to the end of the
+> > > last page. Silence it by not reporting it there. An example of the
+> > > report is,
 > > 
-> > Maybe advk_pcie_check_pio_status() and advk_pcie_wait_pio() could be
-> > combined so we could get the correct error status as soon as it's
-> > available, without waiting for a timeout?
+> > Interesting. The reason why we did not hit it on x86_64 is because
+> > clear_page is implemented in asm (arch/x86/lib/clear_page_64.S) and
+> > thus is not instrumented. Arm64 probably does the same. However, on
+> > s390 clear_page is defined to memset.
+> > clear_[high]page are pretty extensively used in the kernel.
+> > We can either do this, or make clear_page non instrumented on s390 as
+> > well to match the existing implicit assumption. The benefit of the
+> > current approach is that we can find some real use-after-free's and
+> > maybe out-of-bounds on clear_page. The downside is that we may need
+> > more of these annotations. Thoughts?
 > 
-> Any idea how to achieve it?
+> Since we had already done the same thing in poison_page(), I suppose we
+> could do the same here. Also, clear_page() has been used in many places
+> on s390, and it is not clear to me if those are all safe like this.
 > 
-> First call is polling function advk_pcie_wait_pio() and second call is
-> advk_pcie_check_pio_status() which just reads status register and prints
-> error message to dmesg.
+> There might be more annotations required, so it probably up to s390
+> maintainers (CC'ed) if they prefer not instrumenting clear_page() like
+> other arches.
 > 
-> So for me it looks like that combining these two functions into one does
-> not change anything. We always need to call polling code prior to
-> checking status register. And therefore need to wait for timeout. Unless
-> something like in this proposed patch is not used (to skip whole
-> register access if it would fail).
 
-So to answer your question, correct status is possible to retrieve only
-after waiting for timeout. As status would be available only after
-timeout expires.
+Sorry for delay. I assume you tested it without CONFIG_JUMP_LABEL.
+I had to fix couple of things before I was able to use init_on_alloc=1
+and init_on_free=1 boot options on s390 to reproduce KASAN problem:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.8-rc3&id=998f5bbe3dbdab81c1cfb1aef7c3892f5d24f6c7
+https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git/commit/?h=fixes&id=95e61b1b5d6394b53d147c0fcbe2ae70fbe09446
+https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git/commit/?h=fixes&id=d6df52e9996dcc2062c3d9c9123288468bb95b52
 
-Therefore my proposed patch in this (or some other) form is needed if we
-want to prevent trying to read from registers and waiting for answer
-when card is disconnected.
+Back to clear_page - we could certainly make it non-instrumented. But
+it didn't cause any problems so far. And as Dmitry pointed out we
+could potentially find additional bugs with it. So, I'm leaning
+towards original solution proposed. For that you have my
 
-I would really like to see this issue fixed, so booting linux kernel on
-board without connected PCIe card would not be delayed.
+Acked-by: Vasily Gorbik <gor@linux.ibm.com>
+Tested-by: Vasily Gorbik <gor@linux.ibm.com>
 
-Thomas, Lorenzo, Bjorn: do you have any idea how to fix it differently?
-Or if not, could be my proposed patch accepted in some form?
+Thank you for looking into this!
 
-> > In any event, the "return PCIBIOS_SET_FAILED" needs to be fixed.  Most
-> > callers of config read do not check for failure, but most of the ones
-> > that do, check for "val == ~0".  Only a few check for a status of
-> > other than PCIBIOS_SUCCESSFUL.
-> > 
-> > > > I have no objection to removing the "config read/write timed out"
-> > > > message.  The "return PCIBIOS_SET_FAILED" in the read case probably
-> > > > should be augmented by setting "*val = 0xffffffff".
-> 
-> Now I see, "*val = 0xffffffff" should be really set when function
-> advk_pcie_rd_conf() fails.
+Andrew, would you pick this change up?
+Thank you
 
-I have already sent separate patch which fixes this issue.
-
-> > > > >  	return true;
-> > > > >  }
-> > > > >  
-> > > > > -- 
-> > > > > 2.20.1
-> > > > > 
+Vasily
