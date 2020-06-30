@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB71420F5EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F1720F5E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387515AbgF3NkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 09:40:25 -0400
-Received: from mga14.intel.com ([192.55.52.115]:31774 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387436AbgF3NkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:40:20 -0400
-IronPort-SDR: Xu5+rj1INv2FSyJLFxcPyO1z8dL85ntSQFWrEyDZqC4JHWaHJEXfwMaMkpgZgQA9XfGbKMOrUi
- br89fQTlRwZQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="145302186"
-X-IronPort-AV: E=Sophos;i="5.75,297,1589266800"; 
-   d="scan'208";a="145302186"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 06:40:19 -0700
-IronPort-SDR: WhmhY/uTaHjqbMXqU5dHE5uThuyZUu8NJQ4UG0NjYKLyGTZfhIE83j80Dv/0//8rPfw0cZnDCR
- bpY33Rv5trqQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,297,1589266800"; 
-   d="scan'208";a="425207212"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.73])
-  by orsmga004.jf.intel.com with ESMTP; 30 Jun 2020 06:40:17 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        Luwei Kang <luwei.kang@intel.com>
-Subject: [PATCH 3/3] perf intel-pt: Fix PEBS sample for XMM registers
-Date:   Tue, 30 Jun 2020 16:39:35 +0300
-Message-Id: <20200630133935.11150-4-adrian.hunter@intel.com>
+        id S1732830AbgF3Njq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 09:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728808AbgF3Njq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 09:39:46 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A54D9C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:39:45 -0700 (PDT)
+Received: from ramsan ([IPv6:2a02:1810:ac12:ed20:503c:ab8:1424:9638])
+        by albert.telenet-ops.be with bizsmtp
+        id xRfi2200L49uj5306Rfi1w; Tue, 30 Jun 2020 15:39:44 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jqGUA-0005AS-Jj; Tue, 30 Jun 2020 15:39:42 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jqGUA-0007Ta-F3; Tue, 30 Jun 2020 15:39:42 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Olivier Sobrie <olivier.sobrie@silexinsight.com>,
+        Waleed Ziad <waleed94ziad@gmail.com>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] hwrng: ba431 - HW_RANDOM_BA431 should not default to y
+Date:   Tue, 30 Jun 2020 15:39:41 +0200
+Message-Id: <20200630133941.28696-1-geert+renesas@glider.be>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200630133935.11150-1-adrian.hunter@intel.com>
-References: <20200630133935.11150-1-adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The condition to add XMM registers was missing, the regs array needed to be
-in the outer scope, and the size of the regs array was too small.
+As HW_RANDOM_BA431 does not have any platform dependency, it should not
+default to enabled.
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Fixes: 143d34a6b387b ("perf intel-pt: Add XMM registers to synthesized PEBS sample")
+Fixes: 0289e9be5dc26d84 ("hwrng: ba431 - add support for BA431 hwrng")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- tools/perf/util/intel-pt.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/char/hw_random/Kconfig | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-index e4dd8bf610ce..cb3c1e569a2d 100644
---- a/tools/perf/util/intel-pt.c
-+++ b/tools/perf/util/intel-pt.c
-@@ -1735,6 +1735,7 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
- 	u64 sample_type = evsel->core.attr.sample_type;
- 	u64 id = evsel->core.id[0];
- 	u8 cpumode;
-+	u64 regs[8 * sizeof(sample.intr_regs.mask)];
+diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+index 7b876dfdbaafe7ad..9e91c556942b1c94 100644
+--- a/drivers/char/hw_random/Kconfig
++++ b/drivers/char/hw_random/Kconfig
+@@ -76,7 +76,6 @@ config HW_RANDOM_ATMEL
  
- 	if (intel_pt_skip_event(pt))
- 		return 0;
-@@ -1784,8 +1785,8 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
- 	}
+ config HW_RANDOM_BA431
+ 	tristate "Silex Insight BA431 Random Number Generator support"
+-	default HW_RANDOM
+ 	help
+ 	  This driver provides kernel-side support for the Random Number
+ 	  Generator hardware based on Silex Insight BA431 IP.
+@@ -84,8 +83,6 @@ config HW_RANDOM_BA431
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called ba431-rng.
  
- 	if (sample_type & PERF_SAMPLE_REGS_INTR &&
--	    items->mask[INTEL_PT_GP_REGS_POS]) {
--		u64 regs[sizeof(sample.intr_regs.mask)];
-+	    (items->mask[INTEL_PT_GP_REGS_POS] ||
-+	     items->mask[INTEL_PT_XMM_POS])) {
- 		u64 regs_mask = evsel->core.attr.sample_regs_intr;
- 		u64 *pos;
- 
+-	  If unsure, say Y.
+-
+ config HW_RANDOM_BCM2835
+ 	tristate "Broadcom BCM2835/BCM63xx Random Number Generator support"
+ 	depends on ARCH_BCM2835 || ARCH_BCM_NSP || ARCH_BCM_5301X || \
 -- 
 2.17.1
 
