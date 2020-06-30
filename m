@@ -2,207 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9EA520FD69
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 22:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA3A20FD75
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 22:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729196AbgF3UHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 16:07:01 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36100 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726642AbgF3UHB (ORCPT
+        id S1729282AbgF3UM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 16:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726642AbgF3UM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 16:07:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593547619;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9jfmIqGlvg6L8cUMcSx5GNUe0sJOHSYjN99uBm+lyzk=;
-        b=GN8muGlOUdn7FkbRhq6avX7m89AtZy7YTGpSY0b6edckNN9ECedbVnt89iW07fAV/nLPWS
-        QyE3lsiAmcXcAei2fr+5SXRDSJZcngNtjEQcVVFbRmuKjf02rj19idyB+uTnTaEXYVu0yP
-        YuLOUGV32RPV6TVX7hsTE/MDlu6ucWg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-402-XTtdO96KOjq2od_fCRPCmg-1; Tue, 30 Jun 2020 16:06:47 -0400
-X-MC-Unique: XTtdO96KOjq2od_fCRPCmg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 347831005512;
-        Tue, 30 Jun 2020 20:06:46 +0000 (UTC)
-Received: from cantor.redhat.com (ovpn-115-86.phx2.redhat.com [10.3.115.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AD6FB7BEA0;
-        Tue, 30 Jun 2020 20:06:45 +0000 (UTC)
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Subject: [PATCH v2 2/2] iommu/amd: Move Kconfig and Makefile bits down into amd directory
-Date:   Tue, 30 Jun 2020 13:06:36 -0700
-Message-Id: <20200630200636.48600-3-jsnitsel@redhat.com>
-In-Reply-To: <20200630200636.48600-1-jsnitsel@redhat.com>
-References: <20200630200636.48600-1-jsnitsel@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Tue, 30 Jun 2020 16:12:27 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CECC061755;
+        Tue, 30 Jun 2020 13:12:26 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 1064F1276FD8A;
+        Tue, 30 Jun 2020 13:12:26 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 13:12:25 -0700 (PDT)
+Message-Id: <20200630.131225.725818527836821241.davem@davemloft.net>
+To:     elder@linaro.org
+Cc:     kuba@kernel.org, evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v2 0/3] net: ipa: three bug fixes
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200630124444.1240107-1-elder@linaro.org>
+References: <20200630124444.1240107-1-elder@linaro.org>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 30 Jun 2020 13:12:26 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move AMD Kconfig and Makefile bits down into the amd directory
-with the rest of the AMD specific files.
+From: Alex Elder <elder@linaro.org>
+Date: Tue, 30 Jun 2020 07:44:41 -0500
 
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
----
- drivers/iommu/Kconfig      | 45 +-------------------------------------
- drivers/iommu/Makefile     |  5 +----
- drivers/iommu/amd/Kconfig  | 44 +++++++++++++++++++++++++++++++++++++
- drivers/iommu/amd/Makefile |  4 ++++
- 4 files changed, 50 insertions(+), 48 deletions(-)
- create mode 100644 drivers/iommu/amd/Kconfig
- create mode 100644 drivers/iommu/amd/Makefile
+> This series contains three bug fixes for the Qualcomm IPA driver.
+> In practice these bugs are unlikke.y to be harmful, but they do
+> represent incorrect code.
+> 
+> Version 2 adds "Fixes" tags to two of the patches and fixes a typo
+> in one (found by checkpatch.pl).
 
-diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-index 281cd6bd0fe0..24000e7ed0fa 100644
---- a/drivers/iommu/Kconfig
-+++ b/drivers/iommu/Kconfig
-@@ -132,50 +132,7 @@ config IOMMU_PGTABLES_L2
- 	def_bool y
- 	depends on MSM_IOMMU && MMU && SMP && CPU_DCACHE_DISABLE=n
- 
--# AMD IOMMU support
--config AMD_IOMMU
--	bool "AMD IOMMU support"
--	select SWIOTLB
--	select PCI_MSI
--	select PCI_ATS
--	select PCI_PRI
--	select PCI_PASID
--	select IOMMU_API
--	select IOMMU_IOVA
--	select IOMMU_DMA
--	depends on X86_64 && PCI && ACPI
--	help
--	  With this option you can enable support for AMD IOMMU hardware in
--	  your system. An IOMMU is a hardware component which provides
--	  remapping of DMA memory accesses from devices. With an AMD IOMMU you
--	  can isolate the DMA memory of different devices and protect the
--	  system from misbehaving device drivers or hardware.
--
--	  You can find out if your system has an AMD IOMMU if you look into
--	  your BIOS for an option to enable it or if you have an IVRS ACPI
--	  table.
--
--config AMD_IOMMU_V2
--	tristate "AMD IOMMU Version 2 driver"
--	depends on AMD_IOMMU
--	select MMU_NOTIFIER
--	help
--	  This option enables support for the AMD IOMMUv2 features of the IOMMU
--	  hardware. Select this option if you want to use devices that support
--	  the PCI PRI and PASID interface.
--
--config AMD_IOMMU_DEBUGFS
--	bool "Enable AMD IOMMU internals in DebugFS"
--	depends on AMD_IOMMU && IOMMU_DEBUGFS
--	help
--	  !!!WARNING!!!  !!!WARNING!!!  !!!WARNING!!!  !!!WARNING!!!
--
--	  DO NOT ENABLE THIS OPTION UNLESS YOU REALLY, -REALLY- KNOW WHAT YOU ARE DOING!!!
--	  Exposes AMD IOMMU device internals in DebugFS.
--
--	  This option is -NOT- intended for production environments, and should
--	  not generally be enabled.
--
-+source "drivers/iommu/amd/Kconfig"
- source "drivers/iommu/intel/Kconfig"
- 
- config IRQ_REMAP
-diff --git a/drivers/iommu/Makefile b/drivers/iommu/Makefile
-index 71dd2f382e78..f356bc12b1c7 100644
---- a/drivers/iommu/Makefile
-+++ b/drivers/iommu/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
--obj-y += intel/
-+obj-y += amd/ intel/
- obj-$(CONFIG_IOMMU_API) += iommu.o
- obj-$(CONFIG_IOMMU_API) += iommu-traces.o
- obj-$(CONFIG_IOMMU_API) += iommu-sysfs.o
-@@ -12,9 +12,6 @@ obj-$(CONFIG_IOASID) += ioasid.o
- obj-$(CONFIG_IOMMU_IOVA) += iova.o
- obj-$(CONFIG_OF_IOMMU)	+= of_iommu.o
- obj-$(CONFIG_MSM_IOMMU) += msm_iommu.o
--obj-$(CONFIG_AMD_IOMMU) += amd/iommu.o amd/init.o amd/quirks.o
--obj-$(CONFIG_AMD_IOMMU_DEBUGFS) += amd/debugfs.o
--obj-$(CONFIG_AMD_IOMMU_V2) += amd/iommu_v2.o
- obj-$(CONFIG_ARM_SMMU) += arm_smmu.o
- arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-qcom.o
- obj-$(CONFIG_ARM_SMMU_V3) += arm-smmu-v3.o
-diff --git a/drivers/iommu/amd/Kconfig b/drivers/iommu/amd/Kconfig
-new file mode 100644
-index 000000000000..1f061d91e0b8
---- /dev/null
-+++ b/drivers/iommu/amd/Kconfig
-@@ -0,0 +1,44 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+# AMD IOMMU support
-+config AMD_IOMMU
-+	bool "AMD IOMMU support"
-+	select SWIOTLB
-+	select PCI_MSI
-+	select PCI_ATS
-+	select PCI_PRI
-+	select PCI_PASID
-+	select IOMMU_API
-+	select IOMMU_IOVA
-+	select IOMMU_DMA
-+	depends on X86_64 && PCI && ACPI
-+	help
-+	  With this option you can enable support for AMD IOMMU hardware in
-+	  your system. An IOMMU is a hardware component which provides
-+	  remapping of DMA memory accesses from devices. With an AMD IOMMU you
-+	  can isolate the DMA memory of different devices and protect the
-+	  system from misbehaving device drivers or hardware.
-+
-+	  You can find out if your system has an AMD IOMMU if you look into
-+	  your BIOS for an option to enable it or if you have an IVRS ACPI
-+	  table.
-+
-+config AMD_IOMMU_V2
-+	tristate "AMD IOMMU Version 2 driver"
-+	depends on AMD_IOMMU
-+	select MMU_NOTIFIER
-+	help
-+	  This option enables support for the AMD IOMMUv2 features of the IOMMU
-+	  hardware. Select this option if you want to use devices that support
-+	  the PCI PRI and PASID interface.
-+
-+config AMD_IOMMU_DEBUGFS
-+	bool "Enable AMD IOMMU internals in DebugFS"
-+	depends on AMD_IOMMU && IOMMU_DEBUGFS
-+	help
-+	  !!!WARNING!!!  !!!WARNING!!!  !!!WARNING!!!  !!!WARNING!!!
-+
-+	  DO NOT ENABLE THIS OPTION UNLESS YOU REALLY, -REALLY- KNOW WHAT YOU ARE DOING!!!
-+	  Exposes AMD IOMMU device internals in DebugFS.
-+
-+	  This option is -NOT- intended for production environments, and should
-+	  not generally be enabled.
-diff --git a/drivers/iommu/amd/Makefile b/drivers/iommu/amd/Makefile
-new file mode 100644
-index 000000000000..dc5a2fa4fd37
---- /dev/null
-+++ b/drivers/iommu/amd/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+obj-$(CONFIG_AMD_IOMMU) += iommu.o init.o quirks.o
-+obj-$(CONFIG_AMD_IOMMU_DEBUGFS) += debugfs.o
-+obj-$(CONFIG_AMD_IOMMU_V2) += iommu_v2.o
--- 
-2.27.0
-
+Series applied and queued up for v5.7 -stable, thanks.
