@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824B620F64F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B2E20F64B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388640AbgF3NxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 09:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
+        id S2388624AbgF3Nw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 09:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388431AbgF3Nvd (ORCPT
+        with ESMTP id S2388433AbgF3Nve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:51:33 -0400
+        Tue, 30 Jun 2020 09:51:34 -0400
 Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE65C03E97A
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:32 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id j4so17829271wrp.10
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC82C08C5DC
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:33 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id k6so20291842wrn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Wk9/DzLGRf8KDCzfvt/GOgByrJsxT/fIOxcZPlWq/CY=;
-        b=YTFr/Jhv0IxMRjGJfO5vfcAWzDDEhJZD1S9kEdXHCGlHd/6sUL1vsEErzCACCcBSFZ
-         u9zv/VeGKVgLS7CL/GgMyWr+1k2OoHi3Qi/KMvnIfmHQY11q3i/qb/Ya2PfwKSxM0MvQ
-         7MET2nVm3HQiCnM1TKCWe4be8nmhxtDblN53F96eJHD4KUFAszWEBwfOFiBDyFH83Rpm
-         BwbKrOCzmPjfD0ZcjdF8HnYbO5GQWMBJVexLMX+zq3SrVUPZPEIXRjFVQW/Djc8XleSB
-         kVaBGlxwFPf+nsWc+In+cyqgu62pjiTY2num8107Z0kEYZ4UGRhZEnG3z4xKrocL0IpZ
-         xhlQ==
+        bh=GHtif/VrKAdzD8tANDBuK+rW4l81OqvLbxPsir5m1XU=;
+        b=BuGM2xep6RhwyJLaKYzA1LY0lnzmDeGISBQyDgjvCCdB4uSlbOdhNjGAIySKO9kXcw
+         EH5QjQGaJnt54u7lAG8VzxejktsK+98Wo5238OHW0RywWUP5rBq2uyhK/qSQHmIwsBg2
+         jrEMTHQ5+VsIcWGiCUsmbojJN34+WqZ9qjPytbo4FwL2egqnP/No/6NFT6lmqv0+yiwS
+         Qpv4gaucJzpQNMNKa/p+tsrpe8i84+0GV1LqzrHqVpfwVDLzCjesyVU7P8PECRQpmdM3
+         UkLtQ42eRaVhx+y7ydAuqsU/5zQa3TrZiLpMyY3/0iiOwVnw8XocpSuHG5POF1wpRtJ2
+         rxtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Wk9/DzLGRf8KDCzfvt/GOgByrJsxT/fIOxcZPlWq/CY=;
-        b=aPitzfVBineXZcqdpFqxu39pBNxsBTMFWj9iiRwHmTofoWnyZO3/LAQd7uH4BK1Pus
-         82BowV1i2iyfplXsI1CFaEJQGGKk0yr9rxJd/pCG7f0G/o8tO7ZyFiKr4j//daNrfTyB
-         1Es/MHFGml4XmqNXc24AtFZZEsGVc5trK5AtLZEvWRAFeeyvJ/7FzDptJipzi+qG2xt2
-         txaxW5OhBn6GPTSYB4oZdINQBz8MXw3QF+6wpWwYuEijsGdupDxjzzKm/XfIA48L1sct
-         oTbGgA6xCYxI/yv9OOZ0/QgKqi5erweJmYMuRwFVVdvJROkNPyjRklNJhUKZW5Pk1wi/
-         +jsA==
-X-Gm-Message-State: AOAM532005js+rzAqK2n43ib+ku5ab1W6BXk6mjD9gRLhsoMalmsaOaq
-        fKl3wSwb+e9u5DwFy6II+iV2iQ==
-X-Google-Smtp-Source: ABdhPJy+tsRYfnowp6Jy74IXc5vBXoUVMYXIcAJJ6qCYOHFM4FMkD6FU1i2uxa+KqN5jXoQvqqo3FQ==
-X-Received: by 2002:a05:6000:128c:: with SMTP id f12mr22618875wrx.67.1593525091335;
-        Tue, 30 Jun 2020 06:51:31 -0700 (PDT)
+        bh=GHtif/VrKAdzD8tANDBuK+rW4l81OqvLbxPsir5m1XU=;
+        b=kaBF7bpiQ+zcPIU1X8BuG1WiBfFLfkCps9cbY99AYmBAxbqiQCU2X2gEUYVI5yzWwV
+         BRVaHi6WFKLJR+8kGxf3dvNEyYNuP0whM5Unh0SMGRrRH++k57f/rSP87CM/H3IR9jpm
+         /tH4gHUJn635M9dUG2SbZ70HiCimqXv/niUMzO/gWq9IdWCCVYNRpf3L+Bn1MRkiiB8g
+         se1aKqc/jMj6e17AsfZu3j2Yi0NEkCjyaJtBkp2f6eWD2lPs+Fe6NoSvYsJeTloiGjdY
+         tqYuMfS85KoaFJu0n2lwXgd1AtzwvmlaiOlWigggxcY2KkM0XDQw/3orNwTimWfPySrO
+         zOCA==
+X-Gm-Message-State: AOAM531mFpvpeo8zBWoPS2quKnjl7eeio2JsmfygRa1qi1Y4FpUHTK7c
+        EKKpAFFSr6xXCUSZ3HAai+PjLQ==
+X-Google-Smtp-Source: ABdhPJwW+1Hk4BGrbmmXevBy2713hmUjyPmxt1lmCevbhbcXJYipCFBTuWS3WioQoS/mcYj09qQiXw==
+X-Received: by 2002:a5d:56d0:: with SMTP id m16mr21150324wrw.194.1593525092319;
+        Tue, 30 Jun 2020 06:51:32 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id t4sm3876746wmf.4.2020.06.30.06.51.30
+        by smtp.gmail.com with ESMTPSA id t4sm3876746wmf.4.2020.06.30.06.51.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 06:51:30 -0700 (PDT)
+        Tue, 30 Jun 2020 06:51:31 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 16/30] misc: mic: scif: scif_ports: Fix copy 'n' paste error
-Date:   Tue, 30 Jun 2020 14:50:56 +0100
-Message-Id: <20200630135110.2236389-17-lee.jones@linaro.org>
+Subject: [PATCH 17/30] misc: mic: cosm: cosm_debugfs: Demote function headers from kerneldoc
+Date:   Tue, 30 Jun 2020 14:50:57 +0100
+Message-Id: <20200630135110.2236389-18-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200630135110.2236389-1-lee.jones@linaro.org>
 References: <20200630135110.2236389-1-lee.jones@linaro.org>
@@ -65,50 +65,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__scif_get_port() has never taken 'port' as an argument since
-its inception back in 2015.  Probably document the proper arguments
-expected 'start' and 'end'.
+The correct format is not used and no attempt has been made
+to document the function arguments.  Makes sense to just demote
+the header back down to a simple comment.
 
-Fixes the following W=1 kernel build warnings:
+Fixes the following W=1 warnings:
 
- drivers/misc/mic/scif/scif_ports.c:36: warning: Function parameter or member 'start' not described in '__scif_get_port
- drivers/misc/mic/scif/scif_ports.c:36: warning: Function parameter or member 'end' not described in '__scif_get_port'
- drivers/misc/mic/scif/scif_ports.c:36: warning: Excess function parameter 'port' description in '__scif_get_port'
+ drivers/misc/mic/cosm/cosm_debugfs.c:25: warning: Function parameter or member 's' not described in 'log_buf_show'
+ drivers/misc/mic/cosm/cosm_debugfs.c:25: warning: Function parameter or member 'unused' not described in 'log_buf_show'
+ drivers/misc/mic/cosm/cosm_debugfs.c:78: warning: Function parameter or member 's' not described in 'force_reset_show'
+ drivers/misc/mic/cosm/cosm_debugfs.c:78: warning: Function parameter or member 'pos' not described in 'force_reset_show'
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/mic/scif/scif_ports.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/misc/mic/cosm/cosm_debugfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/mic/scif/scif_ports.c b/drivers/misc/mic/scif/scif_ports.c
-index 547a71285069a..4bdb5ef9a1399 100644
---- a/drivers/misc/mic/scif/scif_ports.c
-+++ b/drivers/misc/mic/scif/scif_ports.c
-@@ -14,11 +14,11 @@
+diff --git a/drivers/misc/mic/cosm/cosm_debugfs.c b/drivers/misc/mic/cosm/cosm_debugfs.c
+index 68a731fd86dee..cb55653cf1f92 100644
+--- a/drivers/misc/mic/cosm/cosm_debugfs.c
++++ b/drivers/misc/mic/cosm/cosm_debugfs.c
+@@ -15,7 +15,7 @@
+ /* Debugfs parent dir */
+ static struct dentry *cosm_dbg;
  
- struct idr scif_ports;
+-/**
++/*
+  * log_buf_show - Display MIC kernel log buffer
+  *
+  * log_buf addr/len is read from System.map by user space
+@@ -68,7 +68,7 @@ static int log_buf_show(struct seq_file *s, void *unused)
  
--/*
-+/**
-  * struct scif_port - SCIF port information
+ DEFINE_SHOW_ATTRIBUTE(log_buf);
+ 
+-/**
++/*
+  * force_reset_show - Force MIC reset
   *
-- * @ref_cnt - Reference count since there can be multiple endpoints
-- *		created via scif_accept(..) simultaneously using a port.
-+ * @ref_cnt:  Reference count since there can be multiple endpoints
-+ *	      created via scif_accept(..) simultaneously using a port.
-  */
- struct scif_port {
- 	int ref_cnt;
-@@ -27,7 +27,8 @@ struct scif_port {
- /**
-  * __scif_get_port - Reserve a specified port # for SCIF and add it
-  * to the global list.
-- * @port : port # to be reserved.
-+ * @start: lowest port # to be reserved (inclusive).
-+ * @end:   highest port # to be reserved (exclusive).
-  *
-  * @return : Allocated SCIF port #, or -ENOSPC if port unavailable.
-  *		On memory allocation failure, returns -ENOMEM.
+  * Invokes the force_reset COSM bus op instead of the standard reset
 -- 
 2.25.1
 
