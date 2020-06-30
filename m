@@ -2,158 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C3620FC2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F87D20FC33
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgF3SuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 14:50:05 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:37917 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726577AbgF3SuE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 14:50:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593543003;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=ILNVKniPuWCOaWJSWnYpx92u7nfQ4dnGhDKgu/Th5Fo=;
-        b=SYycrEdB7ftJQ7h4oKhKYTBwhKDcgWmYzgH+2voTbYWDTEQSkl9AVeV2d+veXTKeHkuSwQ
-        TXhtVr5EzzOER7EZPZ7ihPqmLk8cGifNJDz9IhbLIg0oawCPZkPN1EULvUIZVavSON2K4A
-        yIC4/MWk2hhln6iTNe/6iSZ2nUpQMj8=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-152-uDV7wNVhN0utfhhN1TVrPg-1; Tue, 30 Jun 2020 14:50:00 -0400
-X-MC-Unique: uDV7wNVhN0utfhhN1TVrPg-1
-Received: by mail-qk1-f200.google.com with SMTP id s75so15292535qka.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 11:50:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ILNVKniPuWCOaWJSWnYpx92u7nfQ4dnGhDKgu/Th5Fo=;
-        b=uDYOTx78bVSUPi7x33Ry8YexoR0idUMA8S17iraHFnJcu/3BMg5HO86Axxnqh03+4/
-         z5vi6FlRJwvxbuJmmuu9OzvcHMsIdX1sA+pvEGWvXdWkEJfCnrZZhou3sEukmPnFzcNJ
-         /CTk9M1QJzcFzWH+eaAM7UPFanMI74V+8nU3r1xBJlo0sOOT2zcjAfYvqEhf0v7FCNt+
-         EF1uYJ6VHVA2opRABS6rf882cTDLCJMzDFqyNO7ofOg5hfs49uXBWoYgSM8W9clsv3wk
-         POO6JZM3NvYEuwTYqlt0Ld6HanBD7sSxr6/B84alsScY+HEzVQV9N3sYQoiCG4+q1ad3
-         /EZw==
-X-Gm-Message-State: AOAM532EnU0E81def5fpXmgHM6toePMGuVCmW8hMd4vkllC8LWSpW3oi
-        SkZ8UT7H7lmd5evQBJHi6agSRysAF3+nQ+bM/ke+2MmfROegLn3QftlTXjtJGTDfcsHLDSdOghy
-        NBfMZ6lv1JXqEsPvTXfw2SOha
-X-Received: by 2002:ac8:774d:: with SMTP id g13mr21842270qtu.317.1593542999897;
-        Tue, 30 Jun 2020 11:49:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzOfMipnw5vbBXdCY5Q+BjXTkajzbWmU1TAYr4mNpQfWkuqZDJBk6gfVOWRsXKjiG1BhXvUJQ==
-X-Received: by 2002:ac8:774d:: with SMTP id g13mr21842251qtu.317.1593542999620;
-        Tue, 30 Jun 2020 11:49:59 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id b10sm3410280qkh.124.2020.06.30.11.49.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 11:49:59 -0700 (PDT)
-From:   trix@redhat.com
-To:     hao.wu@intel.com, mdf@kernel.org, corbet@lwn.net
-Cc:     linux-fpga@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [RFC v2] fpga: dfl: RFC PCI config
-Date:   Tue, 30 Jun 2020 11:49:50 -0700
-Message-Id: <20200630184950.950-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        id S1726395AbgF3Svk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 14:51:40 -0400
+Received: from mga06.intel.com ([134.134.136.31]:10517 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726038AbgF3Svj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 14:51:39 -0400
+IronPort-SDR: fNHHmdi6Hbd1z9CsI7hRDxiaYL7vHkBuAiVm0D6v+CNBvTqoWj3Ptd4hynXp8D5sZdvyL2KS6/
+ xWhVpn5cl3EQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="207868480"
+X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
+   d="scan'208";a="207868480"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 11:51:37 -0700
+IronPort-SDR: ZkYpj/mLUXbIPst+h4Nv36ush6kgRuICq8OnjtDynfAa3Bw9mWpB2GwnuT1iLFa2O2wdAg1fNy
+ c2cGuFf3v/Lw==
+X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
+   d="scan'208";a="454711215"
+Received: from timfergu-mobl.amr.corp.intel.com (HELO [10.255.1.246]) ([10.255.1.246])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 11:51:36 -0700
+Subject: Re: [RFC][PATCH 0/8] Migrate Pages in lieu of discard
+To:     Shakeel Butt <shakeelb@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20200629234503.749E5340@viggo.jf.intel.com>
+ <CALvZod55OFzOozsDbyTkUh1uZEobo4CZ=+8JgrJJHw8QuWh0hw@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <654d785f-3fe5-d8bd-86bf-bf7431527184@intel.com>
+Date:   Tue, 30 Jun 2020 11:51:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <CALvZod55OFzOozsDbyTkUh1uZEobo4CZ=+8JgrJJHw8QuWh0hw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On 6/30/20 11:36 AM, Shakeel Butt wrote:
+>> This is part of a larger patch set.  If you want to apply these or
+>> play with them, I'd suggest using the tree from here.  It includes
+>> autonuma-based hot page promotion back to DRAM:
+>>
+>>         http://lkml.kernel.org/r/c3d6de4d-f7c3-b505-2e64-8ee5f70b2118@intel.com
+>>
+>> This is also all based on an upstream mechanism that allows
+>> persistent memory to be onlined and used as if it were volatile:
+>>
+>>         http://lkml.kernel.org/r/20190124231441.37A4A305@viggo.jf.intel.com
+>>
+> I have a high level question. Given a reclaim request for a set of
+> nodes, if there is no demotion path out of that set, should the kernel
+> still consider the migrations within the set of nodes? 
 
-Create some top level configs the map to dfl pci cards.
+OK, to be specific, we're talking about a case where we've arrived at
+try_to_free_pages() and, say, all of the nodes on the system are set in
+sc->nodemask?  Isn't the common case that all nodes are set in
+sc->nodemask?  Since there is never a demotion path out of the set of
+all nodes, the common case would be that there is no demotion path out
+of a reclaim node set.
 
-Autoselect the parts of fpga that are needed to run these cards
-as well as the defining the other subsystem dependencies.
-
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- v1 change subsystem selects to depends
-
- Documentation/fpga/dfl.rst | 30 ++++++++++++++++++++++++++++++
- drivers/fpga/Kconfig       | 27 +++++++++++++++++++++++++++
- 2 files changed, 57 insertions(+)
-
-diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-index d7648d7c7eee..c1ae6b539f08 100644
---- a/Documentation/fpga/dfl.rst
-+++ b/Documentation/fpga/dfl.rst
-@@ -500,6 +500,36 @@ Developer only needs to provide a sub feature driver with matched feature id.
- FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
- could be a reference.
- 
-+Kernel configuration
-+====================
-+
-+While it is possible to manually setup a configuration to match your device,
-+there are some top level configurations that collect configurations for
-+some reference PCI cards.  Below describes these configuration as well as
-+what other kernel configs are needed for proper configuration.
-+
-+FPGA_DFL_PAC10
-+Intel Arria 10 GX PCI card, PCI id 0X09C4
-+Depends on
-+  SPI_ALTERA
-+  MFD_INTEL_M10_BMC
-+  SENSORS_INTEL_M10_BMC_HWMON
-+
-+FPGA_DFL_D5005
-+Intel Stratix 10, D5005 PCI card, PCI id 0X0B2B
-+Depends on
-+  SPI_ALTERA
-+  MFD_INTEL_M10_BMC
-+  SENSORS_INTEL_M10_BMC_HWMON
-+  INTEL_S10_PHY
-+
-+FPGA_DFL_N3000
-+Intel Network Accelerator, N3000 PCI card, PCI id 0X0B30
-+Depends on
-+  SPI_ALTERA
-+  MFD_INTEL_M10_BMC
-+  SENSORS_INTEL_M10_BMC_HWMON
-+  INTEL_LL_10G_MAC
- 
- Open discussion
- ===============
-diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-index 9d53bd9094e2..96603b1f6ff5 100644
---- a/drivers/fpga/Kconfig
-+++ b/drivers/fpga/Kconfig
-@@ -138,6 +138,33 @@ config OF_FPGA_REGION
- 	  Support for loading FPGA images by applying a Device Tree
- 	  overlay.
- 
-+config FPGA_DFL_PAC10
-+	tristate "Intel Arria 10 GX PCI card"
-+	depends on SPI_ALTERA
-+	depends on SENSORS_INTEL_M10_BMC_HWMON
-+	depends on MFD_INTEL_M10_BMC
-+	select FPGA_DFL
-+	select FPGA_DFL_FME
-+	select FPGA_DFL_FME_MGR
-+	select FPGA_DFL_FME_BRIDGE
-+	select FPGA_DFL_FME_REGION
-+	select FPGA_DFL_AFU
-+	select FPGA_DFL_SPI_ALTERA
-+	select FPGA_DFL_PCI
-+	select IFPGA_SEC_MGR
-+
-+config FPGA_DFL_D5005
-+	tristate "Intel Stratix 10, D5005 PCI card"
-+	depends on INTEL_S10_PHY
-+	select FPGA_DFL_PAC10
-+	select FPGA_DFl_HSSI
-+
-+config FPGA_DFL_N3000
-+	tristate "Intel Network Accelerator, N3000 PCI card"
-+	depends on INTEL_LL_10G_MAC
-+	select FPGA_DFL_PAC10
-+	select FPGA_DFL_N3000_NIOS
-+
- config FPGA_DFL
- 	tristate "FPGA Device Feature List (DFL) support"
- 	select FPGA_BRIDGE
--- 
-2.18.1
-
+If that's true, I'd say that the kernel still needs to consider
+migrations even within the set.
