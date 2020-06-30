@@ -2,159 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F35E20F407
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CCE620F40C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 14:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732809AbgF3L6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 07:58:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732517AbgF3L6s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 07:58:48 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522ECC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 04:58:48 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f7so16832811wrw.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 04:58:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zMgLLB+598P0Iwp/1mLhAQ3r7/OgN8nusdD6icBCvtw=;
-        b=AmAE7w5oqwI11OWu3owKDkvOa88BlDd7rXcHIDQLSzjmUhdlgXLL+TAbRwVVwm2sat
-         UwLJsaIJM/xu0P8S2TFiUPm2/miFEZimCTrskbUYw2XkotPhZWRORxSr6sUZFWloor7d
-         RcscNVNW6iy8YhURPRUDSeuQ4/5L4ktp9hXy5Xn6sWlm98N+aXnT4gQ/WVBrFExOJqJ+
-         PpfjnBriCzFlwvNo9jNn83Im2bscKyMvLG6CUmxQ7jCJc9uzc6cbmBF+cHmA3NyjxPdJ
-         Zp5PDFFVQui08yCOFg1KsE05WmAZrjtm4XYcXCsQSuRaWZpbShBIFdFXMhoWk6tv4kfh
-         e1CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zMgLLB+598P0Iwp/1mLhAQ3r7/OgN8nusdD6icBCvtw=;
-        b=iMfchuzmX1FeQGxKEXQu9p8z1Yg/Z9Pvz/3NIJyO5tNXYolF8yZ/v3KEp8KiqrwbuP
-         wBBr2izZer60RQudq0gVfXCR9ZmgNcIvvAWZ+R8s6YxwEKzya9Wt37iaAYn3Ft5eRPzR
-         Y6Z7E5D07lezibgP0kvqxCZiAPnwqKaCT8Cphqim/pfz1vTZKqeZJKbgWqlDAxGLsC+n
-         yRgcTQYNFBifMgtWDk79E7saHvKO/ENv+RkquW2bMUMxqpslZDjJ1YpMltadbCY6nKoA
-         d0/cwuOZv6EVhUQ35nCFwfHcDvQq5Y1JX7BcPLzZP4kXWDXQQ0IVPaHUs+fSBe1wwAa9
-         g6TQ==
-X-Gm-Message-State: AOAM533iB+lQjQ/IubOGxe8pYtD4D2o9rTNfbt4r040Ux5W9fm8jQCp3
-        NPOMuXiBjnudJvAqheKuznQFBICrFyA=
-X-Google-Smtp-Source: ABdhPJw6SThH2f9ZDJgnSwBOwc7JBbw648pryQfkzpPsmAHggWB61FjIutKLuVhBtuwMn6zv1kz0TQ==
-X-Received: by 2002:adf:f546:: with SMTP id j6mr21303570wrp.167.1593518326725;
-        Tue, 30 Jun 2020 04:58:46 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:54f4:a99f:ab88:bc07? ([2a01:e34:ed2f:f020:54f4:a99f:ab88:bc07])
-        by smtp.googlemail.com with ESMTPSA id f12sm3507711wrj.48.2020.06.30.04.58.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jun 2020 04:58:46 -0700 (PDT)
-Subject: Re: [PATCH v2 5/5] thermal: core: Add notifications call in the
- framework
-To:     Amit Kucheria <amit.kucheria@linaro.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200625144509.17918-1-daniel.lezcano@linaro.org>
- <20200625144509.17918-5-daniel.lezcano@linaro.org>
- <CAP245DVDMNisH1BavQuKwmxOefgG=Pw_RFBhyiecQ44g1gLZig@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <1ad5743c-9405-9860-f835-6053f86b6590@linaro.org>
-Date:   Tue, 30 Jun 2020 13:58:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <CAP245DVDMNisH1BavQuKwmxOefgG=Pw_RFBhyiecQ44g1gLZig@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+        id S1733270AbgF3L7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 07:59:54 -0400
+Received: from mail-eopbgr10116.outbound.protection.outlook.com ([40.107.1.116]:6650
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732517AbgF3L7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 07:59:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f0GrAZqxsHH+Hq1WnJC5EHZMvlwqVLrMffbeg893g5te3tx5dntZkpMNIZDcgFR7n7Yi0/AjVRIVHPDN0pIRjJOs7pwKdo7rNmh5QKC9JlS+uHghoA/hscIQsjUpuS/m8buusj6x1EwC1mDW5Ts7bRyScC+Gki3JbgyA5K4cMCNhzUaPrPZNjhm3T+EZ5bcm8xz+flfqCc1JtqkRi1Gg8m0GIUQqrFMqi4hDmL56PVhB7EH3rRvLIT9UuKlKaWLt3/h1zpKjNJVPAO5GXzpwaFpDontior/SWBmUDGP/7tm4Mt0ussTRAik2T1vxfaKkG7dJYpR16UwxHeHz9rgOeA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/REsA/HYJJW9vkoLvs1KQYg2W9V6STOoMSFWIq0T7RE=;
+ b=jUu1aiEtpHG8qWdBzI5+3EV5Am5XoAHjI7sqHwnfjbv9aFbgdjpuc59uF8OaeSZ5/q+i86OeSioM6r5Zo1LSAddzfF6phMCBU8sKtln9nwk7I8Jzw5H99PYDwaqqTc0QTAIerq+qTTgZ9qsTLJMkzm7ldE1fzdxArusfRzl9B1SlLxJXMklX2yzxqhuqQTDdzOJqnSlSYOELkXLbqcMds73vp/nUwexW5scc0ZX8uokAncUAlKLh7ZBhGHhVTbF2SlRjLuienADkVM3ipvz8CeaEeRU5f4QVj4CSpbME4Nkc6oqOrnlYcG1Z3X8QDxsk2DON6sTzuzmIX/BBvoa2Bg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
+ dkim=pass header.d=toradex.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/REsA/HYJJW9vkoLvs1KQYg2W9V6STOoMSFWIq0T7RE=;
+ b=q3y81mZfczG/2LZtRtG8xSP52TasiXkdAGZkRa5e615qPSBzCqsChJg1YmUXCef/ZHLYXWA5682iCaUq8nF/nmBc/mzy6NbnXkSTP4Z7HVb6SN6lw46ePn8KG1yXb2O1asU1qsPTead1NyfKix1ES44LAEIZlEVWrQqOSTAKEvk=
+Received: from DB8PR05MB6122.eurprd05.prod.outlook.com (2603:10a6:10:b1::15)
+ by DB8PR05MB6715.eurprd05.prod.outlook.com (2603:10a6:10:142::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.23; Tue, 30 Jun
+ 2020 11:59:49 +0000
+Received: from DB8PR05MB6122.eurprd05.prod.outlook.com
+ ([fe80::9597:6323:8607:3eed]) by DB8PR05MB6122.eurprd05.prod.outlook.com
+ ([fe80::9597:6323:8607:3eed%3]) with mapi id 15.20.3131.028; Tue, 30 Jun 2020
+ 11:59:49 +0000
+From:   Philippe Schenker <philippe.schenker@toradex.com>
+To:     "peter.chen@nxp.com" <peter.chen@nxp.com>
+CC:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Stefan Agner <stefan.agner@toradex.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb: chipidea: fix ci_irq for role-switching use-case
+Thread-Topic: [PATCH] usb: chipidea: fix ci_irq for role-switching use-case
+Thread-Index: AQHWS6lpDotuJDHYTE6xfL+NZ7/3sKjvNfGAgAAsA4CAAPWIAIAAvRgA
+Date:   Tue, 30 Jun 2020 11:59:49 +0000
+Message-ID: <7ee055810cb7c4a06bf978f3d443c908f237c006.camel@toradex.com>
+References: <20200626110311.221596-1-philippe.schenker@toradex.com>
+         <20200629072703.GC30684@b29397-desktop>
+         <88f0a5bf564eded8b210457204facdf2c7a9c5dc.camel@toradex.com>
+         <20200630004323.GA12443@b29397-desktop>
+In-Reply-To: <20200630004323.GA12443@b29397-desktop>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.3 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=toradex.com;
+x-originating-ip: [31.10.206.124]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8fd67e31-8e71-443e-7f4f-08d81ced1726
+x-ms-traffictypediagnostic: DB8PR05MB6715:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB8PR05MB6715C647238509B2208B75A3F46F0@DB8PR05MB6715.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0450A714CB
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: LxSO5RN5VXQAeypoR/6Zx3T9oSLxGZOtpccmttqVt85ZvfLSVcI0zYJy8mlok6mru5HoE1DTVOWObR689FksdQBWbaNfnGBOBST90Y3xcSqgEHGEHdhcn8WNQoSXgST4Rdqb4YFYsHKXC9+KoszG+xAbI3JP4hafPaLV+h+LsyzmqATrOKLQeOmtKCa/zWiXmgAeFj/vXdU4s8FhzEHtu0BhdWp0seA/X4of5yC1cvGVGo28wvcoP73HuDsyOSLgu9T7t3pygiIWcjehyLkRLWdeuwvtRFdeJYrSA3/V/n2fgKxNlfsDJ8S3OijhaPfoDmkDrenavK6yNxBJnRsEUg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR05MB6122.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39850400004)(396003)(376002)(366004)(346002)(136003)(6506007)(86362001)(186003)(6512007)(478600001)(53546011)(83380400001)(2616005)(5660300002)(8936002)(26005)(71200400001)(66946007)(2906002)(66556008)(64756008)(66446008)(66476007)(36756003)(6486002)(76116006)(91956017)(44832011)(4326008)(54906003)(6916009)(8676002)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: evwS1JgN/FMzdRJfMmWUvyxnV8yTItDjKtFwAfdddl6poSdiZYzXu9LpQhxrVNK23VF4kv0rfhwMF444wgYeD3P4Z2V1OwAFKQdtssB2k4JhOVEWfiBN19QfQM6b0ubiTn1MmIN/qv55pTT85ROSeSIkpAHc7HqLF+Oge8firMTgYUzi1YQK35haOLk0Ekz24i1BXA8HKu68/liGnY1DOCKjjnCP1vFVHkkLqrteigCtMZnKX1xAaMR+yXHOpQBPgC4e6mzDX3PyZJ05MZzq62c2sce8O+brOKopppMbfLlU7VWO29Bm0sp/JxuiweWGq3s9CU2quPQfbrrATw7lLiVum4T9Y7w4Deoj1tHfw1JeO7X/A5xUhYTWdEbHMb3ynqDVUMlHwomddhaQgZa4f5aZrcIDrijiPDACb0pyeZFsfxscnV/5l4Wok7L8JJ1eI86W92zenBZz0DP/xUaxn2BhJF6k9VURkYZaa1pgSxA=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F8A9469E6860D44C9B5E821FC7DE0287@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: toradex.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR05MB6122.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8fd67e31-8e71-443e-7f4f-08d81ced1726
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jun 2020 11:59:49.2691
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d9995866-0d9b-4251-8315-093f062abab4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cK6iKYhI0BZ422cOl2kd/MX++h4CWkUKv5l7wsFmuHtqTlpwm5ghiKJi0Cc3xuFqNTSgYM4z3hn2tXU/K8RaYslus4wECjhFnO109X0EOyY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR05MB6715
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/06/2020 13:49, Amit Kucheria wrote:
-> On Thu, Jun 25, 2020 at 8:15 PM Daniel Lezcano
-> <daniel.lezcano@linaro.org> wrote:
->>
->> The generic netlink protocol is implemented but the different
->> notification functions are not yet connected to the core code.
->>
->> These changes add the notification calls in the different
->> corresponding places.
->>
->> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->> ---
->>  drivers/thermal/thermal_core.c    | 21 +++++++++++++++++++++
->>  drivers/thermal/thermal_helpers.c | 11 +++++++++--
->>  drivers/thermal/thermal_sysfs.c   | 15 ++++++++++++++-
->>  3 files changed, 44 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
->> index 58c95aeafb7f..1388c03d1190 100644
->> --- a/drivers/thermal/thermal_core.c
->> +++ b/drivers/thermal/thermal_core.c
->> @@ -215,6 +215,8 @@ int thermal_zone_device_set_policy(struct thermal_zone_device *tz,
->>         mutex_unlock(&tz->lock);
->>         mutex_unlock(&thermal_governor_lock);
->>
->> +       thermal_notify_tz_gov_change(tz->id, policy);
->> +
->>         return ret;
->>  }
->>
->> @@ -406,12 +408,25 @@ static void handle_critical_trips(struct thermal_zone_device *tz,
->>  static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
->>  {
->>         enum thermal_trip_type type;
->> +       int trip_temp, hyst = 0;
->>
->>         /* Ignore disabled trip points */
->>         if (test_bit(trip, &tz->trips_disabled))
->>                 return;
->>
->> +       tz->ops->get_trip_temp(tz, trip, &trip_temp);
->>         tz->ops->get_trip_type(tz, trip, &type);
->> +       if (tz->ops->get_trip_hyst)
->> +               tz->ops->get_trip_hyst(tz, trip, &hyst);
->> +
->> +       if (tz->last_temperature != THERMAL_TEMP_INVALID) {
->> +               if (tz->last_temperature < trip_temp &&
->> +                   tz->temperature >= trip_temp)
->> +                       thermal_notify_tz_trip_up(tz->id, trip);
->> +               if (tz->last_temperature >= trip_temp &&
->> +                   tz->temperature < (trip_temp - hyst))
->> +                       thermal_notify_tz_trip_down(tz->id, trip);
->> +       }
->>
->>         if (type == THERMAL_TRIP_CRITICAL || type == THERMAL_TRIP_HOT)
->>                 handle_critical_trips(tz, trip, type);
->> @@ -443,6 +458,8 @@ static void update_temperature(struct thermal_zone_device *tz)
->>         mutex_unlock(&tz->lock);
->>
->>         trace_thermal_temperature(tz);
->> +
->> +       thermal_genl_sampling_temp(tz->id, temp);
-> 
-> Does this need any rate limiting? How many times is update_temperature
-> called on a platform with a dozen sensors?
-
-Assuming they are all in polling mode, it is dozen messages average per
-second.
-
-If *all* sensors are doing passive cooling with 100ms, then it is around
-120 messages per second in the very worst case (fast polling, all above
-the trip point).
-
-We do not need any rate limiting ATM. If we reach this limit in the
-future we can improve the notification.
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+T24gVHVlLCAyMDIwLTA2LTMwIGF0IDAwOjQzICswMDAwLCBQZXRlciBDaGVuIHdyb3RlOg0KPiBP
+biAyMC0wNi0yOSAxMDowNDoxMywgUGhpbGlwcGUgU2NoZW5rZXIgd3JvdGU6DQo+ID4gT24gTW9u
+LCAyMDIwLTA2LTI5IGF0IDA3OjI2ICswMDAwLCBQZXRlciBDaGVuIHdyb3RlOg0KPiA+ID4gT24g
+MjAtMDYtMjYgMTM6MDM6MTEsIFBoaWxpcHBlIFNjaGVua2VyIHdyb3RlOg0KPiA+ID4gPiBJZiB0
+aGUgaGFyZHdhcmUgaXMgaW4gbG93LXBvd2VyLW1vZGUgYW5kIG9uZSBwbHVncyBpbiBkZXZpY2Ug
+b3INCj4gPiA+ID4gaG9zdA0KPiA+ID4gPiBpdCBkaWQgbm90IHN3aXRjaCB0aGUgbW9kZSBkdWUg
+dG8gdGhlIGVhcmx5IGV4aXQgb3V0IG9mIHRoZQ0KPiA+ID4gPiBpbnRlcnJ1cHQuDQo+ID4gPiAN
+Cj4gPiA+IERvIHlvdSBtZWFuIHRoZXJlIGlzIG5vIGNvbWluZyBjYWxsIGZvciByb2xlLXN3aXRj
+aD8gQ291bGQgeW91DQo+ID4gPiBwbGVhc2UNCj4gPiA+IHNoYXJlDQo+ID4gPiB5b3VyIGR0cyBj
+aGFuZ2VzPyBUcnkgYmVsb3cgcGF0Y2g6DQo+ID4gDQo+ID4gSGVyZSBhcmUgbXkgRFRTIGNoYW5n
+ZXM6DQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2Jvb3QvZHRzL2lteDctY29saWJy
+aS1ldmFsLXYzLmR0c2kNCj4gPiBiL2FyY2gvYXJtL2Jvb3QvZHRzL2lteDctY29saWJyaS1ldmFs
+LXYzLmR0c2kNCj4gPiBpbmRleCA5NzYwMTM3NWYyNjQwLi5jNDI0ZjcwN2ExYWZhIDEwMDY0NA0K
+PiA+IC0tLSBhL2FyY2gvYXJtL2Jvb3QvZHRzL2lteDctY29saWJyaS1ldmFsLXYzLmR0c2kNCj4g
+PiArKysgYi9hcmNoL2FybS9ib290L2R0cy9pbXg3LWNvbGlicmktZXZhbC12My5kdHNpDQo+ID4g
+QEAgLTEzLDYgKzEzLDEzIEBADQo+ID4gICAgICAgICAgICAgICAgIHN0ZG91dC1wYXRoID0gInNl
+cmlhbDA6MTE1MjAwbjgiOw0KPiA+ICAgICAgICAgfTsNCj4gPiAgDQo+ID4gKyAgICAgICBleHRj
+b25fdXNiY19kZXQ6IHVzYmNfZGV0IHsNCj4gPiArICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9
+ICJsaW51eCxleHRjb24tdXNiLWdwaW8iOw0KPiA+ICsgICAgICAgICAgICAgICBpZC1ncGlvID0g
+PCZncGlvNyAxNCBHUElPX0FDVElWRV9ISUdIPjsNCj4gPiArICAgICAgICAgICAgICAgcGluY3Ry
+bC1uYW1lcyA9ICJkZWZhdWx0IjsNCj4gPiArICAgICAgICAgICAgICAgcGluY3RybC0wID0gPCZw
+aW5jdHJsX3VzYmNfZGV0PjsNCj4gPiArICAgICAgIH07DQo+ID4gKw0KPiA+ICAgICAgICAgLyog
+Zml4ZWQgY3J5c3RhbCBkZWRpY2F0ZWQgdG8gbXBjMjU4eCAqLw0KPiA+ICAgICAgICAgY2xrMTZt
+OiBjbGsxNm0gew0KPiA+ICAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0gImZpeGVkLWNsb2Nr
+IjsNCj4gPiBAQCAtMTc0LDYgKzE4MSw3IEBADQo+ID4gIH07DQo+ID4gIA0KPiA+ICAmdXNib3Rn
+MSB7DQo+ID4gKyAgICAgICBleHRjb24gPSA8JmV4dGNvbl91c2JjX2RldD4sIDwmZXh0Y29uX3Vz
+YmNfZGV0PjsNCj4gDQo+IElmIHlvdSBoYXZlIG9ubHkgSUQgZXh0Y29uLCBidXQgbm8gVkJVUyBl
+eHRjb24sIHlvdSBvbmx5IG5lZWQgdG8NCj4gYWRkIG9ubHkgcGhhbmRsZSwgc2VlIGR0LWJpbmRp
+bmcgZm9yIGRldGFpbCBwbGVhc2UuDQoNCllvdSB3aGVyZSByaWdodCBhZ2FpbiEgVGhhbmtzLCB0
+aGlzIGFjdHVhbGx5IHNvbHZlcyB0aGUgUk5ESVMgaXNzdWUgZm9yDQpvdXIgY29saWJyaS1pbXg3
+IGJvYXJkOg0KDQorICAgICAgIGV4dGNvbiA9IDwwPiwgPCZleHRjb25fdXNiY19kZXQ+Ow0KDQpI
+b3dldmV2ZXIgb24gdGhpcyBpTVg3IGJvYXJkIHdlIGhhdmUgVkJVUyBob29rZWQgdXAgdG8gdGhl
+IFNvQywgdGhhdCdzDQp3aHkgaXQgd29ya3Mgb25seSB3aXRoIElELg0KDQpPbiBDb2xpYnJpLWlN
+WDZVTEwgd2UgZG8gbm90IGhhdmUgVkJVUyBob29rZWQgdXAuIFNvIGRldmljZS9ob3N0DQpzd2l0
+Y2hpbmcgd29ya3Mgb25seSB3aXRoICdleHRjb24gPSA8JmV4dGNvbl91c2JjX2RldD4sDQo8JmV4
+dGNvbl91c2JjX2RldD47JyBidXQgdGhlbiBSTkRJUyBhbmQgYWxzbyBhIG5vcm1hbCB0aHVtYi1k
+cml2ZSBkb2VzDQpub3Qgd29yay4gSG93IGNvdWxkIEkgd29yayBhcm91bmQgdGhpcyBmYWN0PyBB
+IGR1bW15LWdwaW8gdGhhdCB3b3VsZA0KYWx3YXlzIHJlYWQgImhpZ2giIGZvciB2YnVzIHdvdWxk
+IGJlIGEgc29sdXRpb24gZm9yIG1lLg0KDQpQaGlsaXBwZQ0KDQo+IA0KPiA+ICAgICAgICAgc3Rh
+dHVzID0gIm9rYXkiOw0KPiA+ICB9Ow0KPiA+ICANCj4gPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm0v
+Ym9vdC9kdHMvaW14Ny1jb2xpYnJpLmR0c2kNCj4gPiBiL2FyY2gvYXJtL2Jvb3QvZHRzL2lteDct
+Y29saWJyaS5kdHNpDQo+ID4gaW5kZXggZTE4ZTg5ZGVjODc5Mi4uY2FlYTkwZDI0MjFmZCAxMDA2
+NDQNCj4gPiAtLS0gYS9hcmNoL2FybS9ib290L2R0cy9pbXg3LWNvbGlicmkuZHRzaQ0KPiA+ICsr
+KyBiL2FyY2gvYXJtL2Jvb3QvZHRzL2lteDctY29saWJyaS5kdHNpDQo+ID4gQEAgLTQ1Nyw3ICs0
+NTcsNyBAQA0KPiA+ICB9Ow0KPiA+ICANCj4gPiAgJnVzYm90ZzEgew0KPiA+IC0gICAgICAgZHJf
+bW9kZSA9ICJob3N0IjsNCj4gPiArICAgICAgIGRyX21vZGUgPSAib3RnIjsNCj4gPiAgfTsNCj4g
+PiAgDQo+ID4gICZ1c2RoYzEgew0KPiA+IEBAIC00ODYsNyArNDg2LDcgQEANCj4gPiAgJmlvbXV4
+YyB7DQo+ID4gICAgICAgICBwaW5jdHJsLW5hbWVzID0gImRlZmF1bHQiOw0KPiA+ICAgICAgICAg
+cGluY3RybC0wID0gPCZwaW5jdHJsX2dwaW8xICZwaW5jdHJsX2dwaW8yICZwaW5jdHJsX2dwaW8z
+DQo+ID4gJnBpbmN0cmxfZ3BpbzQNCj4gPiAtICAgICAgICAgICAgICAgICAgICAmcGluY3RybF9n
+cGlvNyAmcGluY3RybF91c2JjX2RldD47DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgJnBpbmN0
+cmxfZ3Bpbzc+Ow0KPiA+ICANCj4gPiAgICAgICAgIHBpbmN0cmxfZ3BpbzE6IGdwaW8xLWdycCB7
+DQo+ID4gICAgICAgICAgICAgICAgIGZzbCxwaW5zID0gPA0KPiA+IA0KPiA+ID4gDQo+ID4gPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvY2hpcGlkZWEvY29yZS5jDQo+ID4gPiBiL2RyaXZlcnMv
+dXNiL2NoaXBpZGVhL2NvcmUuYw0KPiA+ID4gaW5kZXggZThjZTMwMGFkNDkwLi45ZTEwZGNmZWI5
+OGYgMTAwNjQ0DQo+ID4gPiAtLS0gYS9kcml2ZXJzL3VzYi9jaGlwaWRlYS9jb3JlLmMNCj4gPiA+
+ICsrKyBiL2RyaXZlcnMvdXNiL2NoaXBpZGVhL2NvcmUuYw0KPiA+ID4gQEAgLTEzMTMsNiArMTMx
+MywyOSBAQCBzdGF0aWMgdm9pZCBjaV9jb250cm9sbGVyX3N1c3BlbmQoc3RydWN0DQo+ID4gPiBj
+aV9oZHJjICpjaSkNCj4gPiA+ICAJZW5hYmxlX2lycShjaS0+aXJxKTsNCj4gPiA+ICB9DQo+ID4g
+PiAgDQo+ID4gPiArLyoNCj4gPiA+ICsgKiBIYW5kbGUgdGhlIHdha2V1cCBpbnRlcnJ1cHQgdHJp
+Z2dlcmVkIGJ5IGV4dGNvbiBjb25uZWN0b3INCj4gPiA+ICsgKiBXZSBuZWVkIHRvIGNhbGwgY2lf
+aXJxIGFnYWluIGZvciBleHRjb24gc2luY2UgdGhlIGZpcnN0DQo+ID4gPiArICogaW50ZXJydXB0
+ICh3YWtldXAgaW50KSBvbmx5IGxldCB0aGUgY29udHJvbGxlciBiZSBvdXQgb2YNCj4gPiA+ICsg
+KiBsb3cgcG93ZXIgbW9kZSwgYnV0IG5vdCBoYW5kbGUgYW55IGludGVycnVwdHMuDQo+ID4gPiAr
+ICovDQo+ID4gPiArc3RhdGljIHZvaWQgY2lfZXh0Y29uX3dha2V1cF9pbnQoc3RydWN0IGNpX2hk
+cmMgKmNpKQ0KPiA+ID4gK3sNCj4gPiA+ICsJc3RydWN0IGNpX2hkcmNfY2FibGUgKmNhYmxlX2lk
+LCAqY2FibGVfdmJ1czsNCj4gPiA+ICsJdTMyIG90Z3NjID0gaHdfcmVhZF9vdGdzYyhjaSwgfjAp
+Ow0KPiA+ID4gKw0KPiA+ID4gKwljYWJsZV9pZCA9ICZjaS0+cGxhdGRhdGEtPmlkX2V4dGNvbjsN
+Cj4gPiA+ICsJY2FibGVfdmJ1cyA9ICZjaS0+cGxhdGRhdGEtPnZidXNfZXh0Y29uOw0KPiA+ID4g
+Kw0KPiA+ID4gKwlpZiAoIUlTX0VSUihjYWJsZV9pZC0+ZWRldikgJiYgY2ktPmlzX290ZyAmJg0K
+PiA+ID4gKwkJKG90Z3NjICYgT1RHU0NfSURJRSkgJiYgKG90Z3NjICYgT1RHU0NfSURJUykpDQo+
+ID4gPiArCQljaV9pcnEoY2ktPmlycSwgY2kpOw0KPiA+ID4gKw0KPiA+ID4gKwlpZiAoIUlTX0VS
+UihjYWJsZV92YnVzLT5lZGV2KSAmJiBjaS0+aXNfb3RnICYmDQo+ID4gPiArCQkob3Rnc2MgJiBP
+VEdTQ19CU1ZJRSkgJiYgKG90Z3NjICYgT1RHU0NfQlNWSVMpKQ0KPiA+ID4gKwkJY2lfaXJxKGNp
+LT5pcnEsIGNpKTsNCj4gPiA+ICt9DQo+ID4gPiArDQo+ID4gPiAgc3RhdGljIGludCBjaV9jb250
+cm9sbGVyX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4gPiAgew0KPiA+ID4gIAlzdHJ1
+Y3QgY2lfaGRyYyAqY2kgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsNCj4gPiA+IEBAIC0xMzQzLDYg
+KzEzNjYsNyBAQCBzdGF0aWMgaW50IGNpX2NvbnRyb2xsZXJfcmVzdW1lKHN0cnVjdA0KPiA+ID4g
+ZGV2aWNlDQo+ID4gPiAqZGV2KQ0KPiA+ID4gIAkJZW5hYmxlX2lycShjaS0+aXJxKTsNCj4gPiA+
+ICAJCWlmIChjaV9vdGdfaXNfZnNtX21vZGUoY2kpKQ0KPiA+ID4gIAkJCWNpX290Z19mc21fd2Fr
+ZXVwX2J5X3NycChjaSk7DQo+ID4gPiArCQljaV9leHRjb25fd2FrZXVwX2ludChjaSk7DQo+ID4g
+PiAgCX0NCj4gPiA+ICANCj4gPiA+ICAJcmV0dXJuIDA7DQo+ID4gDQo+ID4gVGhhbmtzIGZvciBj
+cmVhdGluZyB0aGlzIHBhdGNoISBJIHdhbnRlZCBhbHNvIHNvbWV0aGluZyBsaWtlIHRoYXQsDQo+
+ID4gYnV0DQo+ID4gY291bGRuJ3QgZmluZCBvdXQgd2hlcmUgdG8gcHV0IGl0LiANCj4gPiANCj4g
+PiBJIHRyaWVkIHRoaXMgcGF0Y2ggYW5kIHdpdGggdGhlIGFib3ZlIGRldmljZXRyZWUgY2hhbmdl
+cyB0aGlzIHdvcmtzDQo+ID4gcGVyZmVjdGx5ISBUaGFua3MgUGV0ZXIhDQo+ID4gDQo+ID4gU2hv
+dWxkIEkgc2VuZCB0aGUgcGF0Y2ggd2l0aCB5b3UgYXMgdGhlICJTdWdnZXN0ZWQtYnkiIG9yIGRv
+IHlvdQ0KPiA+IHdhbnQgdG8NCj4gPiBzZW5kIHRoZSBwYXRjaCBzbyB5b3UgYXJlIHRoZSBBdXRo
+b3I/IEkgd291bGQgaGF2ZSBpdCByZWFkeSBpbiBteQ0KPiA+IGdpdA0KPiA+IHJlcG8uDQo+IA0K
+PiBUaGlzIHBhdGNoIHdhcyBhIHBhcnQgb2Ygb25lIHBhdGNoIGF0IGRvd25zdHJlYW0sIEkgd2ls
+bCBzdWJtaXQgb25lDQo+IGFuZA0KPiBhZGQgeW91ciB0YWdzLg0KDQpQZXJmZWN0LCB0aGFuayB5
+b3UhDQo+IA0KPiA+ID4gPiBIaSBQZXRlcg0KPiA+ID4gPiANCj4gPiA+ID4gRHVyaW5nIG15IGlu
+dmVzdGlnYXRpb24gSSBmb3VuZCBhIGJ1ZyBpbiBjaV9pcnEuIEkgd291bGQNCj4gPiA+ID4gYXBw
+cmVjaWF0ZQ0KPiA+ID4gPiBpZiB5b3UgY291bGQgcmV2aWV3IHRoaXMuIEZyb20gd2hhdCBJIHNl
+ZSB0aGlzIHBhdGNoIHNob3VsZCBiZQ0KPiA+ID4gPiBzYXZlDQo+ID4gPiA+IHRvIGFwcGx5Lg0K
+PiA+ID4gPiANCj4gPiA+ID4gVGhpcyBwYXRjaCBkb2VzIG5vdCBzb2x2ZSBhbGwgb2Ygb3VyIGlz
+c3Vlcy4gV2hlbiBJIGhhdmUNCj4gPiA+ID4gUlVOVElNRV9QTQ0KPiA+ID4gPiBlbmFibGVkIG9u
+IGlteDZ1bGwgb3IgaW14Ny4gUk5ESVMgc3RpbGwgZG9lcyBub3QgY29tZSB1cC4gU28NCj4gPiA+
+ID4gdGhlcmUNCj4gPiA+ID4gaGFzIHRvIGJlIGFub3RoZXIgYnVnIGhpZGluZyBzb21ld2hlcmUg
+aW4gdGhlIFJ1bnRpbWUgUE0gY29kZSB0bw0KPiA+ID4gPiBwcmV2ZW50DQo+ID4gPiA+IFJORElT
+IGZyb20gd29ya2luZyBwcm9wZXJseS4gSSBxdWlja2x5IGxvb2tlZCB0aHJvdWdoIHlvdXINCj4g
+PiA+ID4gcGF0Y2hlcw0KPiA+ID4gPiB0aGF0IGFkZGVkIHRoaXMgc3R1ZmYgYmFjayBpbiAyMDE1
+IGJ1dCBjb3VsZG4ndCBzcG90IGFueXRoaW5nDQo+ID4gPiA+IHJlbGF0ZWQgdG8NCj4gPiA+ID4g
+dXNiIGdhZGdldC1tb2RlLg0KPiA+ID4gPiANCj4gPiA+ID4gSWYgeW91IHJpZ2h0IGF3YXkga25v
+dyB3aGVyZSB0aGUgcHJvYmxlbSBjb3VsZCBiZSBoaWRpbmcgaXRzZWxmLA0KPiA+ID4gPiBJIHdv
+dWxkIGFwcHJlY2lhdGUgYSBoaW50Lg0KPiA+ID4gPiANCj4gPiA+IA0KPiA+ID4gSSBuZWVkIGlu
+Zm9ybWF0aW9uIGZvciBjYWxsIHRyYWNlIGZvciBmdXJ0aGVyIHN1Z2dlc3Rpb24uDQo+IA0KPiBX
+aXRoIHRoaXMgcGF0Y2gsIGRvZXMgeW91ciBSTkRJUyBpc3N1ZSBiZSBmaXhlZCBvciBzdGlsbCBu
+b3Q/DQo+IA0KPiBQZXRlcg0KPiA+ID4gUGV0ZXINCj4gPiA+IA0KPiA+ID4gPiAtLS0NCj4gPiA+
+ID4gDQo+ID4gPiA+ICBkcml2ZXJzL3VzYi9jaGlwaWRlYS9jb3JlLmMgfCAyICstDQo+ID4gPiA+
+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gPiA+ID4g
+DQo+ID4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9jaGlwaWRlYS9jb3JlLmMNCj4gPiA+
+ID4gYi9kcml2ZXJzL3VzYi9jaGlwaWRlYS9jb3JlLmMNCj4gPiA+ID4gaW5kZXggOWE3YzUzZDA5
+YWI0Li41MTU5NDIwYTIzYTQgMTAwNjQ0DQo+ID4gPiA+IC0tLSBhL2RyaXZlcnMvdXNiL2NoaXBp
+ZGVhL2NvcmUuYw0KPiA+ID4gPiArKysgYi9kcml2ZXJzL3VzYi9jaGlwaWRlYS9jb3JlLmMNCj4g
+PiA+ID4gQEAgLTUxOCw3ICs1MTgsNyBAQCBzdGF0aWMgaXJxcmV0dXJuX3QgY2lfaXJxKGludCBp
+cnEsIHZvaWQNCj4gPiA+ID4gKmRhdGEpDQo+ID4gPiA+ICAJCWRpc2FibGVfaXJxX25vc3luYyhp
+cnEpOw0KPiA+ID4gPiAgCQljaS0+d2FrZXVwX2ludCA9IHRydWU7DQo+ID4gPiA+ICAJCXBtX3J1
+bnRpbWVfZ2V0KGNpLT5kZXYpOw0KPiA+ID4gPiAtCQlyZXR1cm4gSVJRX0hBTkRMRUQ7DQo+ID4g
+PiA+ICsJCXJldCA9IElSUV9IQU5ETEVEOw0KPiA+ID4gPiAgCX0NCj4gPiA+ID4gIA0KPiA+ID4g
+PiAgCWlmIChjaS0+aXNfb3RnKSB7DQo+ID4gPiA+IC0tIA0KPiA+ID4gPiAyLjI3LjANCj4gPiA+
+ID4gDQo=
