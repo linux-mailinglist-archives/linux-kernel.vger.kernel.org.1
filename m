@@ -2,111 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1C620F6AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 199FE20F6BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388402AbgF3OEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 10:04:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49740 "EHLO mail.kernel.org"
+        id S2388350AbgF3OIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 10:08:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727796AbgF3OEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 10:04:24 -0400
-Received: from pali.im (pali.im [31.31.79.79])
+        id S1731084AbgF3OIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 10:08:48 -0400
+Received: from dhcp-10-100-145-180.wdl.wdc.com (unknown [199.255.45.60])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07375206BE;
-        Tue, 30 Jun 2020 14:04:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 564562072D;
+        Tue, 30 Jun 2020 14:08:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593525863;
-        bh=SqVQK1p3HM5Lh8t8VwYGyeSHYFj1rCTiTIyGwW608xs=;
+        s=default; t=1593526127;
+        bh=Bir2/g52+uKiDFsLqGocRSdaGam+HlMfWXbv0m+pQTQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VC9amz8/vWzYBN4hRZC3Fmfd1OnVrNc3D+bbz2VFBnUOAutjh7xGXV5DKIW1hs9x/
-         HNYKmJFG5bIzc5eV2VqXVanjn29mwmp5zBt4ERRU0LYhgEJ3p1I8SJ4FHD7aa2ob6H
-         74dXi4rrFfcqNx5SAki+O5xSv50INVKkNsGBGn1o=
-Received: by pali.im (Postfix)
-        id C08AA81A; Tue, 30 Jun 2020 16:04:20 +0200 (CEST)
-Date:   Tue, 30 Jun 2020 16:04:20 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        Remi Pommarel <repk@triplefau.lt>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Xogium <contact@xogium.me>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: aardvark: Don't touch PCIe registers if no card
- connected
-Message-ID: <20200630140420.7qkuq7wturmaafzf@pali>
-References: <20200528163809.54f5ldvphrjg3zg3@pali>
- <20200630135127.GA3414186@bjorn-Precision-5520>
+        b=xPEECGY0ZlkfbVu8+/j9jkZcaX0C2kOSAHGXacxSdFt9J8gIYxRvW7wHdzyn/pE1X
+         zVD5xi+yzQAdu6qncSpabQ6z+OnBQy1TYoy4WYvEula16bQGttes3jHQo1Mca0Ra2v
+         VOO7tM+zk8gtePRfyFMNIQRgZN5HG+Mcr18CIYKk=
+Date:   Tue, 30 Jun 2020 07:08:45 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     Maximilian Heyne <mheyne@amazon.de>
+Cc:     Christoph Hellwig <hch@lst.de>, Amit Shah <aams@amazon.de>,
+        stable@vger.kernel.org, Jens Axboe <axboe@fb.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nvme: validate cntlid's only for nvme >= 1.1.0
+Message-ID: <20200630140845.GA1987534@dhcp-10-100-145-180.wdl.wdc.com>
+References: <20200630122923.70282-1-mheyne@amazon.de>
+ <20200630133358.GA20602@lst.de>
+ <20200630133609.GA20809@lst.de>
+ <b3b621d9-b653-45c4-4164-f5a492cabd6a@amazon.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200630135127.GA3414186@bjorn-Precision-5520>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <b3b621d9-b653-45c4-4164-f5a492cabd6a@amazon.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 30 June 2020 08:51:27 Bjorn Helgaas wrote:
-> On Thu, May 28, 2020 at 06:38:09PM +0200, Pali Rohár wrote:
-> > On Thursday 28 May 2020 11:26:04 Bjorn Helgaas wrote:
-> > > On Thu, May 28, 2020 at 04:31:41PM +0200, Pali Rohár wrote:
-> > > > When there is no PCIe card connected and advk_pcie_rd_conf() or
-> > > > advk_pcie_wr_conf() is called for PCI bus which doesn't belong to emulated
-> > > > root bridge, the aardvark driver throws the following error message:
-> > > > 
-> > > >   advk-pcie d0070000.pcie: config read/write timed out
-> > > > 
-> > > > Obviously accessing PCIe registers of disconnected card is not possible.
-> > > > 
-> > > > Extend check in advk_pcie_valid_device() function for validating
-> > > > availability of PCIe bus. If PCIe link is down, then the device is marked
-> > > > as Not Found and the driver does not try to access these registers.
-> > > > 
-> > > > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > > > ---
-> > > >  drivers/pci/controller/pci-aardvark.c | 3 +++
-> > > >  1 file changed, 3 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-> > > > index 90ff291c24f0..53a4cfd7d377 100644
-> > > > --- a/drivers/pci/controller/pci-aardvark.c
-> > > > +++ b/drivers/pci/controller/pci-aardvark.c
-> > > > @@ -644,6 +644,9 @@ static bool advk_pcie_valid_device(struct advk_pcie *pcie, struct pci_bus *bus,
-> > > >  	if ((bus->number == pcie->root_bus_nr) && PCI_SLOT(devfn) != 0)
-> > > >  		return false;
-> > > >  
-> > > > +	if (bus->number != pcie->root_bus_nr && !advk_pcie_link_up(pcie))
-> > > > +		return false;
-> > > 
-> > > I don't think this is the right fix.  This makes it racy because the
-> > > link may go down after we call advk_pcie_valid_device() but before we
-> > > perform the config read.
+On Tue, Jun 30, 2020 at 04:01:45PM +0200, Maximilian Heyne wrote:
+> On 6/30/20 3:36 PM, Christoph Hellwig wrote:
+> > And actually - 1.0 did not have the concept of a subsystem.  So having
+> > a duplicate serial number for a 1.0 controller actually is a pretty
+> > nasty bug.  Can you point me to this broken controller?  Do you think
+> > the OEM could fix it up to report a proper version number and controller
+> > ID?
 > > 
-> > Yes, it is racy, but I do not think it cause problems. Trying to read
-> > PCIe registers when device is not connected cause just those timeouts,
-> > printing error message and increased delay in advk_pcie_wait_pio() due
-> > to polling loop. This patch reduce unnecessary access to PCIe registers
-> > when advk_pcie_wait_pio() polling just fail.
 > 
-> What happens when the device is removed after advk_pcie_link_up()
-> returns true, but before we actually do the config access?
+> I meant that the VF NVMe controllers will all land in the same subsystem from
+> the kernel's point of view, because, as you said, there was no idea of different
+> subsystems in the 1.0 spec.
 
-Do you mean to remove device physically at runtime? I was told that our
-board would crash or issue reset. Removing device from mini PCIe slot
-without power off is not supported.
+Each controller should have landed in its own subsystem in this case
+rather than the same subsystem.
 
-Anyway, currently we are trying to read from device registers even when
-no device is connected. So when advk_pcie_link_up() returns true and
-after that device is not connected (somehow board and kernel would be
-still alive) I guess that it would behave as without applying this
-patch. So kernel starts reading from register and would wait until
-timeout expires. As device is not connected there would be no answer,
-so kernel print error message to dmesg (same as in commit message) and
-returns error that read failed.
+> It's an older in-house controller. Seems to set the same serial number for all
+> VF's. Should the firmware set unique serials for the VF's instead?
+
+Yes, the driver shouldn't be finding duplicate serial numbers.
