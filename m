@@ -2,108 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A348120FC01
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA02A20FC2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgF3SqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 14:46:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36768 "EHLO
+        id S1727873AbgF3Sta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 14:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726213AbgF3SqX (ORCPT
+        with ESMTP id S1726577AbgF3St1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 14:46:23 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AFDC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 11:46:22 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id g139so11991878lfd.10
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 11:46:22 -0700 (PDT)
+        Tue, 30 Jun 2020 14:49:27 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD1EFC03E97B
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 11:49:27 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id m7so15791542pgv.12
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 11:49:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vFuGFxLjY8MbMo7U24jI5f07679fmJ9gh5uKn5H5mfc=;
-        b=WrlziTiDeexaiFvnx66t1nVCdoYMolZgaOuLsj7EplpI+pSGit3wIf1JizoglqrsY4
-         qaGF8w9bIsV4V9LvA5f5vxhmTVrKoQ/0OJHe9t2+PT/EutbJPMzH0b9GDY2YfHyRVIJm
-         uOLw5Qrr16/ElSYa7syx4MmOoAq8fMrqyUoG8SNntv/+f67ctqm3adHunkhzrVEPtD+C
-         1RDDiZak0T9QY0pDEjCai0NpXszVGkg6mIwDuG4IrDhGzQIyyXuLAZEch1RVShDcdt5z
-         kEJoa6cOl6UYxHsEyNCp3h35mW3XxVmTCfnDmdPlsW4YVKjzJ28eDqPbQCa8RVSySyUK
-         XhSw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=LEHppYXCQPcRgd0zlbLe7CmHbNbqX0AwBnt1nKT8kmo=;
+        b=gDKmgaxn/Cl6wcc1lPhuw4d+qqZAEQfqpIWDlxkB2OP7eOtiDx3WCaV9AFMCtBGcEW
+         6y4r4V13gqh1xMTARtmFL7ye+2ccgbPwchESgvOexvYAy6hhtgrGLCKG6QC3Vkrev2y+
+         IcxsPM4HEFx4vUl3Trmszcq2jN0HtzaH7vyAMM+/hVR7gCA6JLkndlLF4fRw/mi2fYa/
+         rqJwYliZI3TiCxV3OBUl6aFdha/b4dwy17RorxyAwRczDrSXGLV+oykGuVWj1ZNTPbvv
+         I1GjO7O7ckRnbMSSppCivAiy/2XvKnfWVijFknFlTXq65JbU2aUhnsfHnxvk6sQUTHLf
+         fWoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vFuGFxLjY8MbMo7U24jI5f07679fmJ9gh5uKn5H5mfc=;
-        b=eemQ9BvxAYqxYSX8Z8RJFIGQRlyjPnVbL9WKzyNg2gT8zC4e/D1pJyfMQZISn7QvRY
-         QsDlwX7gquNmD7hksDbqm5IVT4uMATQ7tyKJJa4jKp567sb984Hef7c0l42PjRSAKdaH
-         rOkI8tCHQ+q/W94HjoU0UgBlw9wjf/o7KSvXEF8pva1IOAdMjZJrtXHL0OgRgnsZIdC5
-         wdHhmwdA8udGlyJdaIamgd+pKn3ymaLJlGjXUSCpPCDjh/T1ExeLUTFsoMpC8FscoFp1
-         XCHIg+7Lpss0exwN5qz/7b113fpBS57z1xi4arUfhX/WZBME4z8BS/RXl91YEqelGbt5
-         pZTA==
-X-Gm-Message-State: AOAM530DY4yw1heLuH+Ej5m+hCAaC4xvxmx9Lr/xUGE/NtuSFMGXrKZo
-        j7MkgB/3MkEl5+vTzkQWtzIlC7YzTiQo/Y5gZiELx7rW
-X-Google-Smtp-Source: ABdhPJyuD/QmkIZ4GaET8YqyAzhOCbA1xOtAHYtLjnr4JcUmIvOqYdaFhjNiECjG8mm30iJ0MnsggSH5efYy/WQESn0=
-X-Received: by 2002:a05:6512:31d5:: with SMTP id j21mr1815560lfe.83.1593542781204;
- Tue, 30 Jun 2020 11:46:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200625144509.17918-1-daniel.lezcano@linaro.org>
- <CAP245DVy+Z9D+6=-cX4TaGFoK-e2N+mWwOvNYOe_E9Fh=7vnaA@mail.gmail.com> <bed1d41f81f369e7123a2eab7fde3e81a3b063aa.camel@intel.com>
-In-Reply-To: <bed1d41f81f369e7123a2eab7fde3e81a3b063aa.camel@intel.com>
-From:   Amit Kucheria <amit.kucheria@linaro.org>
-Date:   Wed, 1 Jul 2020 00:16:09 +0530
-Message-ID: <CAP245DW4ntkK9rWCZT8KX07tBJoHaUkXPVRH4Vp2yRHi=m6JCg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] thermal: core: Add helpers to browse the cdev, tz
- and governor list
-To:     Zhang Rui <rui.zhang@intel.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=LEHppYXCQPcRgd0zlbLe7CmHbNbqX0AwBnt1nKT8kmo=;
+        b=m31xZ18NJgEvT3/yAa5fU4uvFNPDxfjDwvbeXjk9522dgAw4UbwAkXqDKw2Mpinamm
+         MejTPkNv3r7XPlApU36nKMJS9IDq9seWj6hpw9f7mu483nxINjU6hpxXoDQihz1ZXMEZ
+         Ru8fbXvzMmD7Vg4UJ1QlgF476ZqtGXyTpdTm4x7TVTZjkrAGjrfsk+IJG9GMViqf/PZp
+         umZqYnZZJowzwI/uxCz67r5rowovAmFhwvGyUOACtu1v7j9Ijqc68krv04relPe0reSw
+         rt/Ku+btR0oHFhiCbpHlHeyceBKeviyhZjel4l5+TPoeMI+nNbupu788zwXgg9bcaTxd
+         wcoQ==
+X-Gm-Message-State: AOAM533jRgUMOeR70/uXjQ79XmIIcAXTtRU3DZLgWOcboKhlMyrXMBcc
+        SNVl1j/U4s9PEIB2CXnDSsQPDmqUBbA=
+X-Google-Smtp-Source: ABdhPJwRys7ufIj6Wc7BHqYbfXPqG7SI1+88BKjiZMcxuVaaHmLS3yYhRz/blmSR7Scygm3uV5jRzePkDzQ=
+X-Received: by 2002:ad4:4105:: with SMTP id i5mr11143826qvp.170.1593542965986;
+ Tue, 30 Jun 2020 11:49:25 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 11:49:22 -0700
+Message-Id: <20200630184922.455439-1-haoluo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
+Subject: [PATCH bpf-next] selftests/bpf: Switch test_vmlinux to use hrtimer_range_start_ns.
+From:   Hao Luo <haoluo@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-kselftest@vger.kernel.org
+Cc:     sdf@google.com, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 8:40 PM Zhang Rui <rui.zhang@intel.com> wrote:
->
-> Hi, Daniel,
->
-> seems that you forgot to cc linux-pm mailing list.
->
-> On Tue, 2020-06-30 at 17:16 +0530, Amit Kucheria wrote:
-> > On Thu, Jun 25, 2020 at 8:15 PM Daniel Lezcano
-> > <daniel.lezcano@linaro.org> wrote:
-> > >
-> > > The cdev, tz and governor list, as well as their respective locks
-> > > are
-> > > statically defined in the thermal_core.c file.
-> > >
-> > > In order to give a sane access to these list, like browsing all the
-> > > thermal zones or all the cooling devices, let's define a set of
-> > > helpers where we pass a callback as a parameter to be called for
-> > > each
-> > > thermal entity.
-> > >
-> > > We keep the self-encapsulation and ensure the locks are correctly
-> > > taken when looking at the list.
-> > >
-> > > Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> > > ---
-> > >  drivers/thermal/thermal_core.c | 51
-> > > ++++++++++++++++++++++++++++++++++
-> >
-> > Is the idea to not use thermal_helpers.c from now on? It fits
-> > perfectly with a patch I have to merge all its contents to
-> > thermal_core.c :-)
->
-> I agree these changes should be in thermal_helper.c
+The test_vmlinux test uses hrtimer_nanosleep as hook to test tracing
+programs. But it seems Clang may have done an aggressive optimization,
+causing fentry and kprobe to not hook on this function properly on a
+Clang build kernel.
 
-I was actually serious about killing thermal_helper.c :-)
+A possible fix is switching to use a more reliable function, e.g. the
+ones exported to kernel modules such as hrtimer_range_start_ns. After
+we switch to using hrtimer_range_start_ns, the test passes again even
+on a clang build kernel.
 
-What is the reason for those 5-6 functions to live outside
-thermal_core.c? Functions in thermal_helper.c are called by governors
-and drivers, just like the functions in thermal_core.c. I couldn't
-find a pattern.
+Tested:
+ In a clang build kernel, the test fail even when the flags
+ {fentry, kprobe}_called are set unconditionally in handle__kprobe()
+ and handle__fentry(), which implies the programs do not hook on
+ hrtimer_nanosleep() properly. This could be because clang's code
+ transformation is too aggressive.
 
-Regards,
-Amit
+ test_vmlinux:PASS:skel_open 0 nsec
+ test_vmlinux:PASS:skel_attach 0 nsec
+ test_vmlinux:PASS:tp 0 nsec
+ test_vmlinux:PASS:raw_tp 0 nsec
+ test_vmlinux:PASS:tp_btf 0 nsec
+ test_vmlinux:FAIL:kprobe not called
+ test_vmlinux:FAIL:fentry not called
+
+ After we switch to hrtimer_range_start_ns, the test passes.
+
+ test_vmlinux:PASS:skel_open 0 nsec
+ test_vmlinux:PASS:skel_attach 0 nsec
+ test_vmlinux:PASS:tp 0 nsec
+ test_vmlinux:PASS:raw_tp 0 nsec
+ test_vmlinux:PASS:tp_btf 0 nsec
+ test_vmlinux:PASS:kprobe 0 nsec
+ test_vmlinux:PASS:fentry 0 nsec
+
+Signed-off-by: Hao Luo <haoluo@google.com>
+---
+ tools/testing/selftests/bpf/progs/test_vmlinux.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/progs/test_vmlinux.c b/tools/testing/selftests/bpf/progs/test_vmlinux.c
+index 5611b564d3b1..29fa09d6a6c6 100644
+--- a/tools/testing/selftests/bpf/progs/test_vmlinux.c
++++ b/tools/testing/selftests/bpf/progs/test_vmlinux.c
+@@ -63,20 +63,20 @@ int BPF_PROG(handle__tp_btf, struct pt_regs *regs, long id)
+ 	return 0;
+ }
+ 
+-SEC("kprobe/hrtimer_nanosleep")
+-int BPF_KPROBE(handle__kprobe,
+-	       ktime_t rqtp, enum hrtimer_mode mode, clockid_t clockid)
++SEC("kprobe/hrtimer_start_range_ns")
++int BPF_KPROBE(handle__kprobe, struct hrtimer *timer, ktime_t tim, u64 delta_ns,
++	       const enum hrtimer_mode mode)
+ {
+-	if (rqtp == MY_TV_NSEC)
++	if (tim == MY_TV_NSEC)
+ 		kprobe_called = true;
+ 	return 0;
+ }
+ 
+-SEC("fentry/hrtimer_nanosleep")
+-int BPF_PROG(handle__fentry,
+-	     ktime_t rqtp, enum hrtimer_mode mode, clockid_t clockid)
++SEC("fentry/hrtimer_start_range_ns")
++int BPF_PROG(handle__fentry, struct hrtimer *timer, ktime_t tim, u64 delta_ns,
++	     const enum hrtimer_mode mode)
+ {
+-	if (rqtp == MY_TV_NSEC)
++	if (tim == MY_TV_NSEC)
+ 		fentry_called = true;
+ 	return 0;
+ }
+-- 
+2.27.0.212.ge8ba1cc988-goog
+
