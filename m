@@ -2,104 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4291E20FE93
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117C220FE97
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729447AbgF3VRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 17:17:48 -0400
-Received: from mail.efficios.com ([167.114.26.124]:48592 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgF3VRs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 17:17:48 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 125932C72E3;
-        Tue, 30 Jun 2020 17:17:47 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id dX8LJcERVS4j; Tue, 30 Jun 2020 17:17:46 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B14522C7393;
-        Tue, 30 Jun 2020 17:17:46 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B14522C7393
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1593551866;
-        bh=dzOtmJ7mD/siyGoPxQC/+AbiDTyc52D1unXi3sYhHw4=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=BMWsT4ae0NFCJ7Ar9Wj/SDYypbB4SF4CqanRW+dwWOnP+GK8ukFotA8/0X3ZNkB/T
-         1V95PFBjmkA5EYmVmvP3OKlTGV7mLADFG4gJ62Nm2NV4PQCGiBWaRktNCvUmZlckwu
-         r7ZWl5ZhfWVO8a3kcgf9YovcOjsHZ/HYtGUAxThOmKOvsnsmtBlN5hz8RRoNR3zdEv
-         MolT2QWCjHCKHUoyJkeBtPOXhn2r+G4/sT+OaxU3KE9i4psxZ02NjnPLQuBJST3H5f
-         jIU1V9zvvQyWxBuezPLl8Tv38IGeQlrelEw8V7iNEUrUu2Vwtjs9kTtUP8j00T3SMb
-         tuMOsYxVkRlEw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id RjPVrSqWHdX1; Tue, 30 Jun 2020 17:17:46 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 9DE582C71DC;
-        Tue, 30 Jun 2020 17:17:46 -0400 (EDT)
-Date:   Tue, 30 Jun 2020 17:17:46 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Yuchung Cheng <ycheng@google.com>,
-        Jonathan Rajotte-Julien <joraj@efficios.com>
-Message-ID: <474095696.17969.1593551866537.JavaMail.zimbra@efficios.com>
-In-Reply-To: <CANn89i+b-LeaPvaaHvj0yc0mJ2qwZ0981fQHVp0+sqXYp=kdkA@mail.gmail.com>
-References: <CAHk-=wjEghg5_pX_GhNP+BfcUK6CRZ+4mh3bciitm9JwXvR7aQ@mail.gmail.com> <312079189.17903.1593549293094.JavaMail.zimbra@efficios.com> <CANn89iJ+rkMrLrHrKXO-57frXNb32epB93LYLRuHX00uWc-0Uw@mail.gmail.com> <20200630.134429.1590957032456466647.davem@davemloft.net> <CANn89i+b-LeaPvaaHvj0yc0mJ2qwZ0981fQHVp0+sqXYp=kdkA@mail.gmail.com>
-Subject: Re: [regression] TCP_MD5SIG on established sockets
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3945 (ZimbraWebClient - FF77 (Linux)/8.8.15_GA_3928)
-Thread-Topic: TCP_MD5SIG on established sockets
-Thread-Index: bT5tgAuCnz/dlB46lWW2qWJ3mIXuLQ==
+        id S1730031AbgF3VSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 17:18:45 -0400
+Received: from gate.crashing.org ([63.228.1.57]:48640 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725805AbgF3VSo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 17:18:44 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 05ULIIPG003747;
+        Tue, 30 Jun 2020 16:18:18 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 05ULIHW0003746;
+        Tue, 30 Jun 2020 16:18:17 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Tue, 30 Jun 2020 16:18:17 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] powerpc/uaccess: Use flexible addressing with __put_user()/__get_user()
+Message-ID: <20200630211817.GZ3598@gate.crashing.org>
+References: <c2addbd9d76212242d3d8554a2f7ff849fb08b85.1587040754.git.christophe.leroy@c-s.fr> <7b916759-1683-b4df-0d4b-b04b3fcd9a02@csgroup.eu> <878sg6862r.fsf@mpe.ellerman.id.au> <875zb98i5a.fsf@mpe.ellerman.id.au> <311c3471-cad7-72d5-a5e6-04cf892c5e41@csgroup.eu> <20200630163324.GW3598@gate.crashing.org> <f8819fa4-94e3-4bf9-4b60-c57d2804e529@csgroup.eu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f8819fa4-94e3-4bf9-4b60-c57d2804e529@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jun 30, 2020, at 4:56 PM, Eric Dumazet edumazet@google.com wrote:
+Hi again,
 
-> On Tue, Jun 30, 2020 at 1:44 PM David Miller <davem@davemloft.net> wrote:
->>
->> From: Eric Dumazet <edumazet@google.com>
->> Date: Tue, 30 Jun 2020 13:39:27 -0700
->>
->> > The (C) & (B) case are certainly doable.
->> >
->> > A) case is more complex, I have no idea of breakages of various TCP
->> > stacks if a flow got SACK
->> > at some point (in 3WHS) but suddenly becomes Reno.
->>
->> I agree that C and B are the easiest to implement without having to
->> add complicated code to handle various negotiated TCP option
->> scenerios.
->>
->> It does seem to be that some entities do A, or did I misread your
->> behavioral analysis of various implementations Mathieu?
->>
->> Thanks.
+Thanks for your work so far!
+
+On Tue, Jun 30, 2020 at 06:53:39PM +0000, Christophe Leroy wrote:
+> On 06/30/2020 04:33 PM, Segher Boessenkool wrote:
+> >>>+ make -s CC=powerpc64-linux-gnu-gcc -j 160
+> >>>In file included from /linux/include/linux/uaccess.h:11:0,
+> >>>                  from /linux/include/linux/sched/task.h:11,
+> >>>                  from /linux/include/linux/sched/signal.h:9,
+> >>>                  from /linux/include/linux/rcuwait.h:6,
+> >>>                  from /linux/include/linux/percpu-rwsem.h:7,
+> >>>                  from /linux/include/linux/fs.h:33,
+> >>>                  from /linux/include/linux/huge_mm.h:8,
+> >>>                  from /linux/include/linux/mm.h:675,
+> >>>                  from /linux/arch/powerpc/kernel/signal_32.c:17:
+> >>>/linux/arch/powerpc/kernel/signal_32.c: In function
+> >>>'save_user_regs.isra.14.constprop':
+> >>>/linux/arch/powerpc/include/asm/uaccess.h:161:2: error: 'asm' operand has
+> >>>impossible constraints
+> >>>   __asm__ __volatile__(     \
+> >>>   ^
+> >>>/linux/arch/powerpc/include/asm/uaccess.h:197:12: note: in expansion of
+> >>>macro '__put_user_asm'
+> >>>     case 4: __put_user_asm(x, ptr, retval, "stw"); break; \
+> >>>             ^
+> >>>/linux/arch/powerpc/include/asm/uaccess.h:206:2: note: in expansion of
+> >>>macro '__put_user_size_allowed'
+> >>>   __put_user_size_allowed(x, ptr, size, retval);  \
+> >>>   ^
+> >>>/linux/arch/powerpc/include/asm/uaccess.h:220:2: note: in expansion of
+> >>>macro '__put_user_size'
+> >>>   __put_user_size(__pu_val, __pu_addr, __pu_size, __pu_err); \
+> >>>   ^
+> >>>/linux/arch/powerpc/include/asm/uaccess.h:96:2: note: in expansion of
+> >>>macro '__put_user_nocheck'
+> >>>   __put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
+> >>>   ^
+> >>>/linux/arch/powerpc/kernel/signal_32.c:120:7: note: in expansion of macro
+> >>>'__put_user'
+> >>>    if (__put_user((unsigned int)gregs[i], &frame->mc_gregs[i]))
+> >>>        ^
+> >
+> >Can we see what that was after the macro jungle?  Like, the actual
+> >preprocessed code?
 > 
-> Yes, another question about Mathieu cases is do determine the behavior
-> of all these stacks vs :
-> SACK option
-> TCP TS option.
+> Sorry for previous misunderstanding
+> 
+> Here is the code:
+> 
+> #define __put_user_asm(x, addr, err, op)			\
+> 	__asm__ __volatile__(					\
+> 		"1:	" op "%U2%X2 %1,%2	# put_user\n"	\
+> 		"2:\n"						\
+> 		".section .fixup,\"ax\"\n"			\
+> 		"3:	li %0,%3\n"				\
+> 		"	b 2b\n"					\
+> 		".previous\n"					\
+> 		EX_TABLE(1b, 3b)				\
+> 		: "=r" (err)					\
+> 		: "r" (x), "m<>" (*addr), "i" (-EFAULT), "0" (err))
 
-I will ask my customer's networking team to investigate these behaviors,
-which will allow me to prepare a thorough reply to the questions raised
-by Eric and David. I expect to have an answer within 2-3 weeks at most.
+Yeah I don't see it.  I'll have to look at compiler debug dumps, but I
+don't have any working 4.9 around, and I cannot reproduce this with
+either older or newer compilers.
 
-Thank you!
+It is complainig that constrain_operands just does not work *at all* on
+this "m<>" constraint apparently, which doesn't make much sense.
 
-Mathieu
+I'll try later when I have more time, sorry :-/
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+
+Segher
