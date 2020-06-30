@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2780D210035
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 00:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF22721003A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 00:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbgF3Wt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 18:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46436 "EHLO
+        id S1726514AbgF3Wv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 18:51:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726135AbgF3Wtz (ORCPT
+        with ESMTP id S1726117AbgF3Wv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 18:49:55 -0400
+        Tue, 30 Jun 2020 18:51:58 -0400
 Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90254C061755;
-        Tue, 30 Jun 2020 15:49:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8703C061755;
+        Tue, 30 Jun 2020 15:51:57 -0700 (PDT)
 Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
         (using TLSv1 with cipher AES256-SHA (256/256 bits))
         (Client did not present a certificate)
         (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 8320F127BE1A0;
-        Tue, 30 Jun 2020 15:49:53 -0700 (PDT)
-Date:   Tue, 30 Jun 2020 15:49:52 -0700 (PDT)
-Message-Id: <20200630.154952.639740134458057752.davem@davemloft.net>
-To:     elder@linaro.org
-Cc:     kuba@kernel.org, evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/5] net: ipa: head-of-line block registers
- are RX only
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 11DD8127BE1B6;
+        Tue, 30 Jun 2020 15:51:57 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 15:51:56 -0700 (PDT)
+Message-Id: <20200630.155156.750535691940577187.davem@davemloft.net>
+To:     alobakin@marvell.com
+Cc:     kuba@kernel.org, irusskikh@marvell.com,
+        michal.kalderon@marvell.com, aelior@marvell.com,
+        GR-everest-linux-l2@marvell.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 0/6] net: qed/qede: license cleanup
 From:   David Miller <davem@davemloft.net>
-In-Reply-To: <95f96c77-6dce-8626-9951-124610cf4c31@linaro.org>
-References: <825816f3-5797-bbcf-571b-c6a7a6821397@linaro.org>
-        <20200630.122114.69420116631257185.davem@davemloft.net>
-        <95f96c77-6dce-8626-9951-124610cf4c31@linaro.org>
+In-Reply-To: <20200629110512.1812-1-alobakin@marvell.com>
+References: <20200629110512.1812-1-alobakin@marvell.com>
 X-Mailer: Mew version 6.8 on Emacs 26.3
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 30 Jun 2020 15:49:53 -0700 (PDT)
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 30 Jun 2020 15:51:57 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder <elder@linaro.org>
-Date: Tue, 30 Jun 2020 17:41:44 -0500
+From: Alexander Lobakin <alobakin@marvell.com>
+Date: Mon, 29 Jun 2020 14:05:06 +0300
 
-> My point was to try to isolate the damage done to the IPA device and
-> driver, rather than killing the system.
+> QLogic QED drivers source code is dual licensed under
+> GPL-2.0/BSD-3-Clause.
+> 
+> Correct already existing but wrong SPDX tags to match the actual
+> license.
+> Remove the license boilerplates and replace them with the correct
+> SPDX tag.
+> Update copyright years in all source files.
 
-Excellent, then we are both on the same page.
+Series applied to net-next, thanks.
