@@ -2,89 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51BF22100A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 01:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0622100AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 01:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbgF3Xpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 19:45:43 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:40718 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726837AbgF3Xpg (ORCPT
+        id S1727790AbgF3XqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 19:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726855AbgF3Xpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 19:45:36 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05UNh9VK030919;
-        Tue, 30 Jun 2020 23:45:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=+WucHskJg3QFtvF4MbKQVLD+ZxodWXbuWkDZ04zp8RQ=;
- b=X75Kmn4NnDg221chyxgibM/KpJ8nVUFAQ2AWi20xpxeCT8KoPpBkhiFiZ5alc+i2GNrR
- SjwMkK64vatsryC0ziqyP2NUmDuXsZT05fgsg2tD6nNnF9DS3vZgu5wBBTJMRTunuHc5
- M3Olt51hGSkFaIiEvabxuWACIptxwEBXhBtZrz1BmqTW7giBfNo6Gr+/amiw8gHffCOq
- NGZOZPFcKAlGDNc8r6W0SR5QZMjdHKtXOiehcWVo7kIcK7qkqx4wxpYXI+49IG7dsm7T
- EiRfHRtLal2GviWbSrF5pZ95I4N/IkyCd2DfgR4TvEzxqazeOlwRE/PMbuZt/XbVfbjh tg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 31wxrn7csy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 30 Jun 2020 23:45:19 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05UNcdLK059805;
-        Tue, 30 Jun 2020 23:45:18 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 31y52jjbb1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 30 Jun 2020 23:45:18 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05UNjETr013266;
-        Tue, 30 Jun 2020 23:45:15 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 30 Jun 2020 23:45:14 +0000
-Subject: Re: [PATCH v3 02/15] mm, hwpoison: remove recalculating hpage
-To:     nao.horiguchi@gmail.com, linux-mm@kvack.org
-Cc:     mhocko@kernel.org, akpm@linux-foundation.org, osalvador@suse.de,
-        tony.luck@intel.com, david@redhat.com,
-        aneesh.kumar@linux.vnet.ibm.com, zeil@yandex-team.ru,
-        naoya.horiguchi@nec.com, linux-kernel@vger.kernel.org
-References: <20200624150137.7052-1-nao.horiguchi@gmail.com>
- <20200624150137.7052-3-nao.horiguchi@gmail.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <abf6b82d-ced9-4457-5145-a46d808e83fc@oracle.com>
-Date:   Tue, 30 Jun 2020 16:45:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Tue, 30 Jun 2020 19:45:49 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DFEDC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 16:45:49 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id u8so9874282pje.4
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 16:45:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=z9hrflkjZ1SE3c/jCUth43iNN1iz+IaXdB4/4fx+a/U=;
+        b=C5ddrq+a30EL/pmhVV17A12x7EVAGhtOhZ2a4Y2VUNFSdKNwcDwRUq4blrozmAgG0Q
+         /kB2O63nZtN5a+rfpz1POtIlCmC2KfAVFtbuMJlsLnWdUxdE9u8ZEr15gb34cuvTGZqJ
+         nb320LlvaOFDByGglISvO9JtSp8F4uKDOe2U8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z9hrflkjZ1SE3c/jCUth43iNN1iz+IaXdB4/4fx+a/U=;
+        b=VzhkSusPY0qregwpU3vwr/0R1CDXkQq0wOtg0LxizlkmBNp/rC5/v3/UhmTL6+Xucq
+         4ZRrbp1bGKN/zNunvxmT4qb6b024li+ByfYKn3xOuTQg8c0eudbJACLSE5gZqqm6zlW4
+         aNzOcE+f1wk5SKON3Dor+9doV3vroS01nyjdPH2fF00BL52f3u225Y5OOtNQDk/QHHX5
+         nVB33sV6mvWGLoSLHV/lLtei2YqHooCPzHX1JY70uCGHLpv0bzlDT5Ua7AQsWExKTd5Z
+         +wYWgdjY8PjF7wYCQaIupHPazS0+CFNCyk4AmInSxAFFTPwf1NbCw3cu9sj8T0nKw5Hm
+         lzTQ==
+X-Gm-Message-State: AOAM532AgTQqWZoGqOAr0YJWwOJVfOwZ2g+++NyiVXGuG2At8/pjgwFQ
+        e5eajvXagk75KEZG6SEWP6X37A==
+X-Google-Smtp-Source: ABdhPJz/cQKDQr9LzDIzVxWX8iD6uKjC55b5Arumpo/AtSDFDspksBkcdE2KuF44RiswvvNC5AvUQQ==
+X-Received: by 2002:a17:90b:a56:: with SMTP id gw22mr14665075pjb.52.1593560748813;
+        Tue, 30 Jun 2020 16:45:48 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id o186sm3721391pgo.65.2020.06.30.16.45.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jun 2020 16:45:48 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 16:45:47 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] arm64: dts: sc7180: Add sdhc opps and power-domains
+Message-ID: <20200630234547.GL39073@google.com>
+References: <1593506712-24557-1-git-send-email-rnayak@codeaurora.org>
+ <1593506712-24557-5-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20200624150137.7052-3-nao.horiguchi@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9668 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 mlxscore=0
- adultscore=0 suspectscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006300164
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9668 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 bulkscore=0 clxscore=1015
- malwarescore=0 phishscore=0 adultscore=0 cotscore=-2147483648
- lowpriorityscore=0 suspectscore=0 spamscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006300164
+Content-Disposition: inline
+In-Reply-To: <1593506712-24557-5-git-send-email-rnayak@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/24/20 8:01 AM, nao.horiguchi@gmail.com wrote:
-> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+On Tue, Jun 30, 2020 at 02:15:12PM +0530, Rajendra Nayak wrote:
+> Add the power domain supporting performance state and the corresponding
+> OPP tables for the sdhc device on sc7180.
 > 
-> hpage is never used after try_to_split_thp_page() in memory_failure(),
-> so we don't have to update hpage.  So let's not recalculate/use hpage.
-> 
-> Suggested-by: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
--- 
-Mike Kravetz
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
