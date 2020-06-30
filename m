@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3879420F670
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD96B20F67B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733034AbgF3N5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 09:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731327AbgF3N5c (ORCPT
+        id S2388090AbgF3N7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 09:59:16 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:45463 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727053AbgF3N7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:57:32 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E8CC03E979
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:57:32 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id j4so8513103plk.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:57:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6WoGClip/9lIMADlW96b66URAMpf8agavloV0J0+6z0=;
-        b=NpTXHg4eLKIDB3B017yOQCnwb3dBSkBllVoAHChdp1FGoCyQ19eq1VXevMLSrM/lhD
-         bQk0yrTpC1Irq2MNTGh49jfpD7zqgiVbJtqJYeruoqyJ31uUsOmkXd433JMWP+NtSVov
-         ZzGBWe4xhNJRj47E5aARYY/9uUmyXWiWjg1l6pljN4nXRLoWQN1OJ6HHzWlN6uNS1Lvc
-         bcrSTvkHyH7MDnkYvBu1O0JOQIAWVJgUutILN7WG8Di8qKlewR28Ariy+ojttBxfAl/B
-         FxzoT9uIuyEQaP+UAHq4/tgN7PJVGPmfXaxyS6AW/qEEAuiLEhHfUD+LyDQfCVGwqwpj
-         3wAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6WoGClip/9lIMADlW96b66URAMpf8agavloV0J0+6z0=;
-        b=KSVR+sqH/JSjQG+TDlDrfSr+EVhrA4RfnL3nLkTytkwgE7HDYLxPK7R8A5ZfUg5lfd
-         vu9M8hqol4rfZDch5AwM9wMMuFiYMyxuRiydDUqZ5Cf8mOIQlcTIOMvF/pg8dY8CklUq
-         Ts4rnCJfMnbBM2K+iW7F6G8A6Pl382c0wfSr3XVtjzOQ7E7bdt8EMGtin91yWjTU+cCr
-         M61zYyM9+AtTX5p8YybGWRqORxiUtQLMnxGo6sU6Vahj07bxEvVYc069T3XZIgdDKbmk
-         VkzaAif07a2vJcsd5k9Q4Nip/ob8ft2kFhPjIngY5UO3PACWx4qoeXwIE9DeSVSjCyhY
-         eneg==
-X-Gm-Message-State: AOAM5332yqXjJhENs085Sb8N9sBdWoSABz1S/nsYWkPKNx3WyGM5pnde
-        dmWGaD7ulVdyla6VNd1k1bd75A==
-X-Google-Smtp-Source: ABdhPJxkJrJtaSOyTXzA8zW0V7qLT6cuFQyL+FUGsc5/cLMGVxoMFOJShXuR+F2LWbUj8PAuD022LQ==
-X-Received: by 2002:a17:90a:ec13:: with SMTP id l19mr20004827pjy.81.1593525452289;
-        Tue, 30 Jun 2020 06:57:32 -0700 (PDT)
-Received: from ?IPv6:2605:e000:100e:8c61:4113:50ea:3eb3:a39b? ([2605:e000:100e:8c61:4113:50ea:3eb3:a39b])
-        by smtp.gmail.com with ESMTPSA id m140sm2896019pfd.195.2020.06.30.06.57.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jun 2020 06:57:31 -0700 (PDT)
-Subject: Re: rename ->make_request_fn and move it to the
- block_device_operations
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-xtensa@linux-xtensa.org,
-        drbd-dev@lists.linbit.com, linuxppc-dev@lists.ozlabs.org,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-nvme@lists.infradead.org,
-        linux-s390@vger.kernel.org
-References: <20200629193947.2705954-1-hch@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <bd1443c0-be37-115b-1110-df6f0e661a50@kernel.dk>
-Date:   Tue, 30 Jun 2020 07:57:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 30 Jun 2020 09:59:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593525554;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rx2Ty9dbcHfa4jUKO+LyJ3ZRouWvsmFljH2KKyJISoI=;
+        b=A9a8CSGIVmzLCQ9etgVwwlyUqNcMPpMzu6HhfSj/x075+WCA9+DZGVWO+IwajBpc6tf+kL
+        okKOLEXIbqIBOEqVkbRSLUObocqOVl3OfnJkQnC8rUTskhmF39gX2YopTNbRvKTd8PmWex
+        nJ7M+lZPu43BSHAWw3G7GjBv++mXj7k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-199-p2dogTSgNMutjGXsZe6rpA-1; Tue, 30 Jun 2020 09:59:10 -0400
+X-MC-Unique: p2dogTSgNMutjGXsZe6rpA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D17CD8C5A73;
+        Tue, 30 Jun 2020 13:57:37 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C79547BEAF;
+        Tue, 30 Jun 2020 13:57:34 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 05UDvY55016787;
+        Tue, 30 Jun 2020 09:57:34 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 05UDvYBS016783;
+        Tue, 30 Jun 2020 09:57:34 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Tue, 30 Jun 2020 09:57:34 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Eric Biggers <ebiggers@kernel.org>
+cc:     Mike Snitzer <msnitzer@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Zaibo Xu <xuzaibo@huawei.com>, linux-kernel@vger.kernel.org,
+        Wei Xu <xuwei5@hisilicon.com>, dm-devel@redhat.com,
+        George Cherian <gcherian@marvell.com>,
+        linux-crypto@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Milan Broz <mbroz@redhat.com>
+Subject: Re: [dm-devel] [PATCH 1/3 v2] crypto: introduce the flag
+ CRYPTO_ALG_ALLOCATES_MEMORY
+In-Reply-To: <20200628195035.GD11197@sol.localdomain>
+Message-ID: <alpine.LRH.2.02.2006300957020.15237@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2006161101080.28052@file01.intranet.prod.int.rdu2.redhat.com> <20200616173620.GA207319@gmail.com> <alpine.LRH.2.02.2006171107220.18714@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2006171108440.18714@file01.intranet.prod.int.rdu2.redhat.com>
+ <20200626044534.GA2870@gondor.apana.org.au> <alpine.LRH.2.02.2006261109520.11899@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2006261215480.13882@file01.intranet.prod.int.rdu2.redhat.com> <20200626164617.GA211634@gmail.com>
+ <20200626170039.GB211634@gmail.com> <alpine.LRH.2.02.2006281505530.347@file01.intranet.prod.int.rdu2.redhat.com> <20200628195035.GD11197@sol.localdomain>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-In-Reply-To: <20200629193947.2705954-1-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/29/20 1:39 PM, Christoph Hellwig wrote:
-> Hi Jens,
+
+
+On Sun, 28 Jun 2020, Eric Biggers wrote:
+
+> On Sun, Jun 28, 2020 at 03:07:49PM -0400, Mikulas Patocka wrote:
+> > 
+> > > Also, "seqiv" instances can be created without CRYPTO_ALG_ALLOCATES_MEMORY set,
+> > > despite seqiv_aead_encrypt() allocating memory.
+> > > 
 > 
-> this series moves the make_request_fn method into block_device_operations
-> with the much more descriptive ->submit_bio name.  It then also gives
-> generic_make_request a more descriptive name, and further optimize the
-> path to issue to blk-mq, removing the need for the direct_make_request
-> bypass.
+> This comment wasn't addressed.
+> 
+> - Eric
 
-Looks good to me, and it's a nice cleanup as well. Applied.
+I've sent version 4 of the patch that adds CRYPTO_ALG_ALLOCATES_MEMORY to 
+seqiv.
 
--- 
-Jens Axboe
+Mikulas
 
