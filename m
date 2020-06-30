@@ -2,106 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E3020EC12
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 05:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DCB520EC18
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 05:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729215AbgF3Dfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 23:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728949AbgF3Dfu (ORCPT
+        id S1729221AbgF3Dho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 23:37:44 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:16508 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728930AbgF3Dhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 23:35:50 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6D0C061755;
-        Mon, 29 Jun 2020 20:35:49 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id l12so18955467ejn.10;
-        Mon, 29 Jun 2020 20:35:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aJmSmwrsaH1bBcOCXi7RMW99NT7rqTSYgM8PKCwsCVQ=;
-        b=qDEvnMum80gV5DvWSU5LwQhbLXk5TfinUIQ/IMpus0k6Rw+VScCW9Yv1HA7db8lJ8E
-         sS0nOnrkDYcOTrQ7N55qSxOB+vBYLLNN5+f7ee8WhBC0DIvpmoujM4v/TXmTo7RCb211
-         b1qW0H1YU2AGgcLuswKtS/A+kAdIrTbKnNhRGaOR7OEuN40xea79yJxzoSEIn4rUmcK1
-         xEt1v/X1I1X0FDC2+42Q7u2bczAIjNLPly7sSY/lwpdQnDpYdUXfh3olM3AQeJaHTqfE
-         SFoebc9xy3rDlLgua88QRc+TiL/NDg1ZZezu+PnwlPtUY6LOIeCDthEY5hSDFQkdcYYh
-         houA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aJmSmwrsaH1bBcOCXi7RMW99NT7rqTSYgM8PKCwsCVQ=;
-        b=gM9aAjdK7VIN31271KVcyM2jvf9W4b/CBJFmubQjQKIaxiFlwd8BGGydkpj7/Uk96v
-         o0a+e5ymnE1z+c4/Hq3RY7AGJl5FMou5R+wObvD1QzSq+v2dA/C05ZYrMX13/JXvW5Gy
-         toOEhmVk4av18e2o8FHse0O9Osp+hdtnWFGJl1GVsmnnBDLYxpDTpBFHSaI/gCw9+SaL
-         TZN99n/oF+V37xhcfxA/b9/+VZr975BeSt1HmiSqY+RfsC0dAlKaVNpSZLiDGjuHc7jU
-         cC0N9vA0b3vJkda2qfJyEO9EFzfy4uqyyArFVz1Kb7tuU8o9gvWgkHc+shjdqZaRD/Yx
-         1E/A==
-X-Gm-Message-State: AOAM533T7LCteTF+waItVhG8wzWUVV/DIu4gyAGUE3oh+fsrhdDdUrtS
-        aC1v/xfsx0QLAgvuui1ldEOu1d2wWRfzunYi5yw=
-X-Google-Smtp-Source: ABdhPJxIln0jXR4HaSVjKUP56QmC1imF/pnulXgJu7ASsZsBlTWTXsrX/u1Fk9SDVfSNOKBCkCqdGImbFFK86KhXx1Y=
-X-Received: by 2002:a17:906:ca4c:: with SMTP id jx12mr15323864ejb.231.1593488148574;
- Mon, 29 Jun 2020 20:35:48 -0700 (PDT)
+        Mon, 29 Jun 2020 23:37:43 -0400
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 05U3b4hN008783;
+        Tue, 30 Jun 2020 12:37:05 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 05U3b4hN008783
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1593488225;
+        bh=HQ6KnmOwOmCLPqo+IgJmQaK1v7heWShiK/BACFB0v+g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=xXeJUSWuOMrr7z3lfv7Cday+TcjdR3ts3dYt/FdSZ6wQqlB3S/hsRU1lkbaX7JUs/
+         QSJF/NzSRLj4+v/KkooT2i3Bb/5DhE8Uenl2bcGz2VgAvMc+e+qWRwPPwu4o7ZHmnt
+         MdV9+QqZrSpBgHzFjJEs5Wxr49ypSeRli8krOpMtlQZ2kAFWWMQW3Az7/6q3FS1Ihq
+         f8gnDPHQoNA3nnVmqVSG/SIO+v+gVAsON2T5DC0YCJ9XmHXz/9Xb/Y19dniR/z0ikU
+         wOV7p4kt1gpLC4wYA+QyfZ0Anp3ECYSVUjdO5b0NEOu9IGULRLi6a04fVh4pxH6dO+
+         BIg+qLSiYPjGw==
+X-Nifty-SrcIP: [209.85.217.41]
+Received: by mail-vs1-f41.google.com with SMTP id m25so10406617vsp.8;
+        Mon, 29 Jun 2020 20:37:05 -0700 (PDT)
+X-Gm-Message-State: AOAM531gwZvFfheLfc4in2cYkTCuERIw0JwiQ18b4tU5DBYcVwE6ALZf
+        6k+ICfdO9YxI/JC5QPtrirT2+fw1YQNFOgMeu58=
+X-Google-Smtp-Source: ABdhPJyos1ORrGzmRbsRpSUTJzytWNoRffnYrImYzuBLzAg+8UwkZPH2/UbDxOJw3n1p73IsJwOIwI/sy3tWJk7tOm4=
+X-Received: by 2002:a67:2e4d:: with SMTP id u74mr4608864vsu.215.1593488224012;
+ Mon, 29 Jun 2020 20:37:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200629234921.3511-1-jonathan@marek.ca>
-In-Reply-To: <20200629234921.3511-1-jonathan@marek.ca>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 29 Jun 2020 20:36:18 -0700
-Message-ID: <CAF6AEGtEbAKo21YNMrV58FWiXSSKR7odycXYp=cW9Mso=qFATA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] drm/msm/a6xx: add A640/A650 hwcg
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     freedreno <freedreno@lists.freedesktop.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Brian Masney <masneyb@onstation.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>, Eric Anholt <eric@anholt.net>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Wambui Karuga <wambui.karugax@gmail.com>
+References: <cover.1593423060.git.mchehab+huawei@kernel.org> <45fa5ad583de1766de6169366df1df5837c5dc7c.1593423060.git.mchehab+huawei@kernel.org>
+In-Reply-To: <45fa5ad583de1766de6169366df1df5837c5dc7c.1593423060.git.mchehab+huawei@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 30 Jun 2020 12:36:27 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASbWXkRZ3OrmDSXj4jfu6jGcMnjnOOJ4+cV22fweJ9OJA@mail.gmail.com>
+Message-ID: <CAK7LNASbWXkRZ3OrmDSXj4jfu6jGcMnjnOOJ4+cV22fweJ9OJA@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] kconfig: qconf: navigate menus on hyperlinks
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 4:49 PM Jonathan Marek <jonathan@marek.ca> wrote:
+On Mon, Jun 29, 2020 at 6:35 PM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
 >
-> Initialize hardware clock-gating registers on A640 and A650 GPUs.
+> Instead of just changing the helper window to show a
+> dependency, also navigate to it at the config and menu
+> widgets.
 >
-> I put the hwcg tables in adreno_device.c, but maybe it makes more
-> sense to keep them in a6xx_gpu.c? (this would allow switching a5xx
-> to use the gpulist too.. it isn't possible to include both a6xx.xml.h
-> and a5xx.xml.h in adreno_device.c)
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
 
 
-yeah, I've kinda tried to avoid "crossing the streams".. maybe these
-should move to adreno_gpu
+I noticed a regression.
 
-BR,
--R
+Visit "Networking support",
+and click "select: BPF"
+from the window at the bottom.
 
+Nothing happens except the following error message
+in the console:
+
+Clicked menu is invalid: ^BPF$
+
+
+If I apply only 1-4 in this series,
+this works fine.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>  scripts/kconfig/qconf.cc | 24 +++++-------------------
+>  1 file changed, 5 insertions(+), 19 deletions(-)
 >
-> Jonathan Marek (2):
->   drm/msm/a6xx: hwcg tables in gpulist
->   drm/msm/a6xx: add A640/A650 hwcg
+> diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
+> index 49f0688fceb8..d8870b15a178 100644
+> --- a/scripts/kconfig/qconf.cc
+> +++ b/scripts/kconfig/qconf.cc
+> @@ -1232,7 +1232,6 @@ void ConfigInfoView::clicked(const QUrl &url)
+>         char *data = new char[count + 1];
+>         struct symbol **result;
+>         struct menu *m = NULL;
+> -       char type;
 >
->  drivers/gpu/drm/msm/adreno/a6xx.xml.h      |   8 +
->  drivers/gpu/drm/msm/adreno/a6xx_gpu.c      | 140 ++-----------
->  drivers/gpu/drm/msm/adreno/adreno_device.c | 219 +++++++++++++++++++++
->  drivers/gpu/drm/msm/adreno/adreno_gpu.h    |   7 +
->  4 files changed, 251 insertions(+), 123 deletions(-)
+>         if (count < 1) {
+>                 qInfo() << "Clicked link is empty";
+> @@ -1242,7 +1241,6 @@ void ConfigInfoView::clicked(const QUrl &url)
 >
+>         memcpy(data, str.constData(), count);
+>         data[count] = '\0';
+> -       type = data[0];
+>
+>         /* Seek for exact match */
+>         data[0] = '^';
+> @@ -1255,15 +1253,8 @@ void ConfigInfoView::clicked(const QUrl &url)
+>         }
+>
+>         sym = *result;
+> -       if (type == 's') {
+> -               symbolInfo();
+> -               emit showDebugChanged(true);
+> -               free(result);
+> -               delete data;
+> -               return;
+> -       }
+>
+> -       /* URL is a menu */
+> +       /* Seek for the menu which holds the symbol */
+>         for (struct property *prop = sym->prop; prop; prop = prop->next) {
+>                     if (prop->type != P_PROMPT && prop->type != P_MENU)
+>                             continue;
+> @@ -1271,17 +1262,11 @@ void ConfigInfoView::clicked(const QUrl &url)
+>                     break;
+>         }
+>
+> -       if (!m) {
+> +       if (!m)
+>                 qInfo() << "Clicked menu is invalid:" << data;
+> -               free(result);
+> -               delete data;
+> -               return;
+> -       }
+> +       else
+> +               emit menuSelected(m);
+>
+> -       _menu = m;
+> -       menuInfo();
+> -
+> -       emit showDebugChanged(true);
+>         free(result);
+>         delete data;
+>  }
+> @@ -1750,6 +1735,7 @@ void ConfigMainWindow::setMenuLink(struct menu *menu)
+>                         item->setSelected(true);
+>                         list->scrollToItem(item);
+>                         list->setFocus();
+> +                       helpText->setInfo(menu);
+>                 }
+>         }
+>  }
 > --
-> 2.26.1
+> 2.26.2
 >
+
+
+-- 
+Best Regards
+Masahiro Yamada
