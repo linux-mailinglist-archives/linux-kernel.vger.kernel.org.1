@@ -2,117 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2081620FA8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF4620FA9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387513AbgF3R20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:28:26 -0400
-Received: from mga14.intel.com ([192.55.52.115]:57664 "EHLO mga14.intel.com"
+        id S2387711AbgF3Rc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 13:32:29 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:37581 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725872AbgF3R2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:28:25 -0400
-IronPort-SDR: Nmkk3N//AC0X3k+hiW2X4zMPymTWirWOy6Jf4s2zOEs7g2P665Rk9Zjqk7e7tgKT1LnTB0Vqnq
- cgwKMelKULag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="145389860"
-X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="145389860"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 10:28:25 -0700
-IronPort-SDR: iic3PxhGJrZzMZYF5AwBTrPWKPYtdK4G0iPGGe2A6J+qfv6LgmwGkl419RUyX7A2ZrQIO75+Ds
- 5vmxmwbb6IwQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="277496676"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga003.jf.intel.com with ESMTP; 30 Jun 2020 10:28:24 -0700
-Date:   Tue, 30 Jun 2020 10:34:59 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH 6/7] iommu/vt-d: Warn on out-of-range invalidation
- address
-Message-ID: <20200630103459.6c99c961@jacob-builder>
-In-Reply-To: <d87d15fd-71d5-6735-74df-583024826ab0@linux.intel.com>
-References: <1592926996-47914-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1592926996-47914-7-git-send-email-jacob.jun.pan@linux.intel.com>
-        <d87d15fd-71d5-6735-74df-583024826ab0@linux.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1730171AbgF3Rc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 13:32:28 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593538347; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=ZFcSwfI5UdhOXhdrQZvHHPaea1ggOYoJbFhXiurrIwM=; b=Iq79rUu7QvScRzXQSAihxZlTWaKL5YIbxMXOFJJ6oMzDswFbZgW3r3IeEKZnxlOB+5O/mwf3
+ 0JR3My1K5F21+l/z2k+92/MuqQG8iqF3J2+QiDheA2E+rVdY/FvGSuDkXmVIC/Htdchzx4Ll
+ 8SUyx6Ek69TD2m0QzqnlszJCF0c=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n11.prod.us-west-2.postgun.com with SMTP id
+ 5efb772aad153efa34f14356 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Jun 2020 17:32:26
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E593CC433CA; Tue, 30 Jun 2020 17:32:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.8.176] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D29B9C433C8;
+        Tue, 30 Jun 2020 17:32:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D29B9C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [PATCH v2] scsi: ufs: Disable WriteBooster capability in
+ non-supported UFS device
+To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, avri.altman@wdc.com,
+        alim.akhtar@samsung.com, jejb@linux.ibm.com
+Cc:     beanhuo@micron.com, cang@codeaurora.org, matthias.bgg@gmail.com,
+        bvanassche@acm.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com
+References: <20200624074110.21919-1-stanley.chu@mediatek.com>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <7f826f0c-6ed1-b3a3-72c9-aae0a1680e23@codeaurora.org>
+Date:   Tue, 30 Jun 2020 10:32:23 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200624074110.21919-1-stanley.chu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Jun 2020 18:10:43 +0800
-Lu Baolu <baolu.lu@linux.intel.com> wrote:
+On 6/24/2020 12:41 AM, Stanley Chu wrote:
+> If UFS device is not qualified to enter the detection of WriteBooster
+> probing by disallowed UFS version or device quirks, then WriteBooster
+> capability in host shall be disabled to prevent any WriteBooster
+> operations in the future.
+> 
+> Fixes: 3d17b9b5ab11 ("scsi: ufs: Add write booster feature support")
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+> ---
+>   drivers/scsi/ufs/ufshcd.c | 35 +++++++++++++++++++----------------
+>   1 file changed, 19 insertions(+), 16 deletions(-)
+> 
+Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
 
-> Hi,
-> 
-> On 2020/6/23 23:43, Jacob Pan wrote:
-> > For guest requested IOTLB invalidation, address and mask are
-> > provided as part of the invalidation data. VT-d HW silently ignores
-> > any address bits below the mask. SW shall also allow such case but
-> > give warning if address does not align with the mask. This patch
-> > relax the fault handling from error to warning and proceed with
-> > invalidation request with the given mask.
-> > 
-> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > ---
-> >   drivers/iommu/intel/iommu.c | 7 +++----
-> >   1 file changed, 3 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/iommu/intel/iommu.c
-> > b/drivers/iommu/intel/iommu.c index 5ea5732d5ec4..50fc62413a35
-> > 100644 --- a/drivers/iommu/intel/iommu.c
-> > +++ b/drivers/iommu/intel/iommu.c
-> > @@ -5439,13 +5439,12 @@ intel_iommu_sva_invalidate(struct
-> > iommu_domain *domain, struct device *dev, 
-> >   		switch (BIT(cache_type)) {
-> >   		case IOMMU_CACHE_INV_TYPE_IOTLB:
-> > +			/* HW will ignore LSB bits based on
-> > address mask */ if (inv_info->granularity == IOMMU_INV_GRANU_ADDR &&
-> >   			    size &&
-> >   			    (inv_info->addr_info.addr &
-> > ((BIT(VTD_PAGE_SHIFT + size)) - 1))) {
-> > -				pr_err_ratelimited("Address out of
-> > range, 0x%llx, size order %llu\n",
-> > -
-> > inv_info->addr_info.addr, size);
-> > -				ret = -ERANGE;
-> > -				goto out_unlock;
-> > +				WARN_ONCE(1, "Address out of
-> > range, 0x%llx, size order %llu\n",
-> > +
-> > inv_info->addr_info.addr, size);  
-> 
-> I don't think WARN_ONCE() is suitable here. It makes users think it's
-> a kernel bug. How about pr_warn_ratelimited()?
-> 
-I think pr_warn_ratelimited might still be too chatty. There is no
-functional issues, we just don't to silently ignore it. Perhaps just
-say:
-WARN_ONCE(1, "User provided address not page aligned, alignment forced")
-?
 
-> Best regards,
-> baolu
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index f173ad1bd79f..c62bd47beeaa 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -6847,21 +6847,31 @@ static int ufshcd_scsi_add_wlus(struct ufs_hba *hba)
+>   
+>   static void ufshcd_wb_probe(struct ufs_hba *hba, u8 *desc_buf)
+>   {
+> +	struct ufs_dev_info *dev_info = &hba->dev_info;
+>   	u8 lun;
+>   	u32 d_lu_wb_buf_alloc;
+>   
+>   	if (!ufshcd_is_wb_allowed(hba))
+>   		return;
+> +	/*
+> +	 * Probe WB only for UFS-2.2 and UFS-3.1 (and later) devices or
+> +	 * UFS devices with quirk UFS_DEVICE_QUIRK_SUPPORT_EXTENDED_FEATURES
+> +	 * enabled
+> +	 */
+> +	if (!(dev_info->wspecversion >= 0x310 ||
+> +	      dev_info->wspecversion == 0x220 ||
+> +	     (hba->dev_quirks & UFS_DEVICE_QUIRK_SUPPORT_EXTENDED_FEATURES)))
+> +		goto wb_disabled;
+>   
+>   	if (hba->desc_size[QUERY_DESC_IDN_DEVICE] <
+>   	    DEVICE_DESC_PARAM_EXT_UFS_FEATURE_SUP + 4)
+>   		goto wb_disabled;
+>   
+> -	hba->dev_info.d_ext_ufs_feature_sup =
+> +	dev_info->d_ext_ufs_feature_sup =
+>   		get_unaligned_be32(desc_buf +
+>   				   DEVICE_DESC_PARAM_EXT_UFS_FEATURE_SUP);
+>   
+> -	if (!(hba->dev_info.d_ext_ufs_feature_sup & UFS_DEV_WRITE_BOOSTER_SUP))
+> +	if (!(dev_info->d_ext_ufs_feature_sup & UFS_DEV_WRITE_BOOSTER_SUP))
+>   		goto wb_disabled;
+>   
+>   	/*
+> @@ -6870,17 +6880,17 @@ static void ufshcd_wb_probe(struct ufs_hba *hba, u8 *desc_buf)
+>   	 * a max of 1 lun would have wb buffer configured.
+>   	 * Now only shared buffer mode is supported.
+>   	 */
+> -	hba->dev_info.b_wb_buffer_type =
+> +	dev_info->b_wb_buffer_type =
+>   		desc_buf[DEVICE_DESC_PARAM_WB_TYPE];
+>   
+> -	hba->dev_info.b_presrv_uspc_en =
+> +	dev_info->b_presrv_uspc_en =
+>   		desc_buf[DEVICE_DESC_PARAM_WB_PRESRV_USRSPC_EN];
+>   
+> -	if (hba->dev_info.b_wb_buffer_type == WB_BUF_MODE_SHARED) {
+> -		hba->dev_info.d_wb_alloc_units =
+> +	if (dev_info->b_wb_buffer_type == WB_BUF_MODE_SHARED) {
+> +		dev_info->d_wb_alloc_units =
+>   		get_unaligned_be32(desc_buf +
+>   				   DEVICE_DESC_PARAM_WB_SHARED_ALLOC_UNITS);
+> -		if (!hba->dev_info.d_wb_alloc_units)
+> +		if (!dev_info->d_wb_alloc_units)
+>   			goto wb_disabled;
+>   	} else {
+>   		for (lun = 0; lun < UFS_UPIU_MAX_WB_LUN_ID; lun++) {
+> @@ -6891,7 +6901,7 @@ static void ufshcd_wb_probe(struct ufs_hba *hba, u8 *desc_buf)
+>   					(u8 *)&d_lu_wb_buf_alloc,
+>   					sizeof(d_lu_wb_buf_alloc));
+>   			if (d_lu_wb_buf_alloc) {
+> -				hba->dev_info.wb_dedicated_lu = lun;
+> +				dev_info->wb_dedicated_lu = lun;
+>   				break;
+>   			}
+>   		}
+> @@ -6977,14 +6987,7 @@ static int ufs_get_device_desc(struct ufs_hba *hba)
+>   
+>   	ufs_fixup_device_setup(hba);
+>   
+> -	/*
+> -	 * Probe WB only for UFS-3.1 devices or UFS devices with quirk
+> -	 * UFS_DEVICE_QUIRK_SUPPORT_EXTENDED_FEATURES enabled
+> -	 */
+> -	if (dev_info->wspecversion >= 0x310 ||
+> -	    dev_info->wspecversion == 0x220 ||
+> -	    (hba->dev_quirks & UFS_DEVICE_QUIRK_SUPPORT_EXTENDED_FEATURES))
+> -		ufshcd_wb_probe(hba, desc_buf);
+> +	ufshcd_wb_probe(hba, desc_buf);
+>   
+>   	/*
+>   	 * ufshcd_read_string_desc returns size of the string
 > 
-> >   			}
-> >   
-> >   			/*
-> >   
 
-[Jacob Pan]
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
