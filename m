@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD0C20F636
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3A320F640
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388511AbgF3Nv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 09:51:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
+        id S2388546AbgF3NwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 09:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388456AbgF3Nvl (ORCPT
+        with ESMTP id S2388459AbgF3Nvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:51:41 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BE0C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:40 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id f7so17275182wrw.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:40 -0700 (PDT)
+        Tue, 30 Jun 2020 09:51:42 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D500EC03E979
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:41 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id g75so18883709wme.5
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WbXNfDHMBERrHFjsyxyOToTajDh8zV3mfokRINKpnhg=;
-        b=LYXvdcqDzA2qwHzkZ1KiY139X2ckq17/1uJ6MncswuJ14+qyU1/l+amCCdwI3ZI8+I
-         mchIzeCBvkv4eAojs/t6eHfgwtVGlgbLhVLiGvmRCZBQb1T9UCg/rDSh7NrQuemXCeja
-         EPC8Gveblq/YRqoMvNdbnOIRANIOeT99Ukar2pZrQu/kcIzpQTO+4/Q2jSW/sjdVzkMp
-         8Ku7LlikoumI8Cl5D6NtE9RLxUOFH87HIO6YqnrPNQFUa5lZB/S5xU4qBV+S0cWAt26k
-         oRtkQCDoMnnEt3xBs9Y15PQvtkMjqkSoIVRgcjYxfCZujByshyOi+7FbcL/umevJ80Rd
-         XwIA==
+        bh=y1zDXtnu4nYqM822JS90Uin0HwiZbzzdDBFpt66EWWs=;
+        b=d7k/5kR1qiJB9I8wUeO83oekbSzZU46dMeScb0EzHVURvCyrbXk22BSOWM13XyQfXA
+         L3RPHyLinXF2f6JXJeD2Fg1c6YkaXr7SR3yfuhwD2YXqQhVqJ9YX4k8AjZsbGyp4FGQZ
+         BzvEp6WPUEno848z2J9xukGRDZ7BFdONeFmHe0p3+qPu7B9kHH4RBtMrYlGJsbmkWDCV
+         y7jAs2hIF5HP+6I81qf2QOcBLnlVbmEU4BzDpO0o1Hnb67F4ZTc/SIqxJRriKk7MbTfu
+         y8wY4Rz8ziEOXnTvSEN0ADNEg+jEFmj9Hj+jdifuGZusImdpAjBegKAr2hdrfDYj8RzI
+         C5pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WbXNfDHMBERrHFjsyxyOToTajDh8zV3mfokRINKpnhg=;
-        b=VCV1NhJmw4oed+pdDJBViovX9LtImrrOmEmJifj5gR6oTplBxVnyZGbXFxRqpNe9oo
-         cX34s/g15CDKJFqxhoMVO0/zBG0FcjQGheGEIp501BL4SmTFiWaYRsYCfnWHaQAymJMW
-         dmE1tLlnCkzQnlCTXoh72bqyeGvZjDop13pJvaKS7Pqh+3on6qqEJzGfgWLvpfU4h8am
-         2aiEpfSl0gr5LKfeMQunTT8+eT0RS+7yVK82baHaKiD9g0kARtQQqE25bkNgV3lZb4vZ
-         z7YnV8BppvliP3lE0DfVS98ntLAASrvPUkTxAT1jbZpZtF4G1MnV39igHhzrrsk6Zm3y
-         jYnw==
-X-Gm-Message-State: AOAM532R07Vusf46NV7AEgsAJV2RMPeI72r8c3gf6oVgfK4OuiYZ0VMH
-        4zj02NPWdemo1Od55Zn8j8tlgw==
-X-Google-Smtp-Source: ABdhPJys4mwAgYke7AvLq6KmzbX8oSCnKjm8Sx7aH4Z47QBuT+4/XDTnm3Z3UpmhYRqg7Un1vAYsDg==
-X-Received: by 2002:adf:aad3:: with SMTP id i19mr22175200wrc.359.1593525099374;
-        Tue, 30 Jun 2020 06:51:39 -0700 (PDT)
+        bh=y1zDXtnu4nYqM822JS90Uin0HwiZbzzdDBFpt66EWWs=;
+        b=nE09fnQ+SZXRkJadMaVoJ62AWi5P+E8PpXhAgIMlwdPLx4FkHpjbTv1e32N8gvSwte
+         mPlVzwQ+TavvE+8IC5P2TS+St3uFlReh8/tVCr8aefWTIZSMvxwxc2caq9UPmATws64p
+         OAGnGAgd9td839SU1OivTxk15FJ6Lic4CpARv9mDy7sZEqw/wzst6EKjUGZaGuSHMweS
+         outriaoO4Zuj6HsEqXvExdRQusumfx81dK7v0Ktg4QnhSeLHkgROAShaNR82f4MFc5T/
+         7rmZxDd/SdvgGmivKiVxy3bEooyG7Bw2QLacJ5qomq71j0/6fjuhMtST4jNNoNArjhMP
+         E7IQ==
+X-Gm-Message-State: AOAM531zG9CgWGhDrqKqG8MsQHeklRE4F151YTGPDBy5Sq9MKoYGgooz
+        VzY+ioQtv/aGRZ9XzG53QU2W0Q==
+X-Google-Smtp-Source: ABdhPJzsUzBMER02528kWrOC9qgDSaXSh2ak8iFAlndL0t+7FKAxkUl019ETK2s+ggIgnhv+g5sDVQ==
+X-Received: by 2002:a1c:98cc:: with SMTP id a195mr21391693wme.89.1593525100565;
+        Tue, 30 Jun 2020 06:51:40 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id t4sm3876746wmf.4.2020.06.30.06.51.38
+        by smtp.gmail.com with ESMTPSA id t4sm3876746wmf.4.2020.06.30.06.51.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 06:51:38 -0700 (PDT)
+        Tue, 30 Jun 2020 06:51:39 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
         Sudeep Dutt <sudeep.dutt@intel.com>,
         Ashutosh Dixit <ashutosh.dixit@intel.com>
-Subject: [PATCH 24/30] misc: mic: scif: scif_fence: Fix a bunch of different documentation issues
-Date:   Tue, 30 Jun 2020 14:51:04 +0100
-Message-Id: <20200630135110.2236389-25-lee.jones@linaro.org>
+Subject: [PATCH 25/30] misc: mic: scif: scif_rma: Repair a bunch of kerneldoc issues
+Date:   Tue, 30 Jun 2020 14:51:05 +0100
+Message-Id: <20200630135110.2236389-26-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200630135110.2236389-1-lee.jones@linaro.org>
 References: <20200630135110.2236389-1-lee.jones@linaro.org>
@@ -67,145 +67,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Firstly add missing descriptions for every use of 'scifdev', then
-correct incorrect formatting of existing function argument descriptions
-changing to the expected format of '@.*: ', finally add missing
-description for function argument 'mark'.
+Firstly, for some reason documentation of all 'scifdev' arguments
+are missing, so apply those.  Also remove 2 descriptions of 'ep'
+which appear to document non-existent function arguments.
 
-Fixes the following W=1 warnings:
-
- drivers/misc/mic/scif/scif_fence.c:19: warning: Function parameter or member 'scifdev' not described in 'scif_recv_mark'
- drivers/misc/mic/scif/scif_fence.c:41: warning: Function parameter or member 'scifdev' not described in 'scif_recv_mark_resp'
- drivers/misc/mic/scif/scif_fence.c:64: warning: Function parameter or member 'scifdev' not described in 'scif_recv_wait'
- drivers/misc/mic/scif/scif_fence.c:101: warning: Function parameter or member 'scifdev' not described in 'scif_recv_wait_resp'
- drivers/misc/mic/scif/scif_fence.c:122: warning: Function parameter or member 'scifdev' not described in 'scif_recv_sig_local'
- drivers/misc/mic/scif/scif_fence.c:143: warning: Function parameter or member 'scifdev' not described in 'scif_recv_sig_remote'
- drivers/misc/mic/scif/scif_fence.c:164: warning: Function parameter or member 'scifdev' not described in 'scif_recv_sig_resp'
- drivers/misc/mic/scif/scif_fence.c:515: warning: Function parameter or member 'epd' not described in 'scif_send_fence_signal'
- drivers/misc/mic/scif/scif_fence.c:515: warning: Function parameter or member 'roff' not described in 'scif_send_fence_signal'
- drivers/misc/mic/scif/scif_fence.c:515: warning: Function parameter or member 'rval' not described in 'scif_send_fence_signal'
- drivers/misc/mic/scif/scif_fence.c:515: warning: Function parameter or member 'loff' not described in 'scif_send_fence_signal'
- drivers/misc/mic/scif/scif_fence.c:515: warning: Function parameter or member 'lval' not described in 'scif_send_fence_signal'
- drivers/misc/mic/scif/scif_fence.c:515: warning: Function parameter or member 'flags' not described in 'scif_send_fence_signal'
+ drivers/misc/mic/scif/scif_rma.c:468: warning: Function parameter or member 'scifdev' not described in 'scif_create_remote_window'
+ drivers/misc/mic/scif/scif_rma.c:468: warning: Excess function parameter 'ep' description in 'scif_create_remote_window'
+ drivers/misc/mic/scif/scif_rma.c:510: warning: Excess function parameter 'ep' description in 'scif_destroy_remote_window'
+ drivers/misc/mic/scif/scif_rma.c:1045: warning: Function parameter or member 'scifdev' not described in 'scif_alloc_req'
+ drivers/misc/mic/scif/scif_rma.c:1080: warning: Function parameter or member 'scifdev' not described in 'scif_alloc_gnt_rej'
+ drivers/misc/mic/scif/scif_rma.c:1104: warning: Function parameter or member 'scifdev' not described in 'scif_free_virt'
+ drivers/misc/mic/scif/scif_rma.c:1142: warning: Function parameter or member 'scifdev' not described in 'scif_recv_reg'
+ drivers/misc/mic/scif/scif_rma.c:1178: warning: Function parameter or member 'scifdev' not described in 'scif_recv_unreg'
+ drivers/misc/mic/scif/scif_rma.c:1243: warning: Function parameter or member 'scifdev' not described in 'scif_recv_reg_ack'
+ drivers/misc/mic/scif/scif_rma.c:1262: warning: Function parameter or member 'scifdev' not described in 'scif_recv_reg_nack'
+ drivers/misc/mic/scif/scif_rma.c:1280: warning: Function parameter or member 'scifdev' not described in 'scif_recv_unreg_ack'
+ drivers/misc/mic/scif/scif_rma.c:1299: warning: Function parameter or member 'scifdev' not described in 'scif_recv_unreg_nack'
 
 Cc: Sudeep Dutt <sudeep.dutt@intel.com>
 Cc: Ashutosh Dixit <ashutosh.dixit@intel.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/mic/scif/scif_fence.c | 34 ++++++++++++++++++------------
- 1 file changed, 21 insertions(+), 13 deletions(-)
+ drivers/misc/mic/scif/scif_rma.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/mic/scif/scif_fence.c b/drivers/misc/mic/scif/scif_fence.c
-index 657fd4a206565..4fedf6183951c 100644
---- a/drivers/misc/mic/scif/scif_fence.c
-+++ b/drivers/misc/mic/scif/scif_fence.c
-@@ -11,6 +11,7 @@
+diff --git a/drivers/misc/mic/scif/scif_rma.c b/drivers/misc/mic/scif/scif_rma.c
+index 406cd5abfa726..de8f61efaef5c 100644
+--- a/drivers/misc/mic/scif/scif_rma.c
++++ b/drivers/misc/mic/scif/scif_rma.c
+@@ -458,7 +458,7 @@ static void scif_destroy_remote_lookup(struct scif_dev *remote_dev,
  
  /**
-  * scif_recv_mark: Handle SCIF_MARK request
-+ * @scifdev:	SCIF device
-  * @msg:	Interrupt message
+  * scif_create_remote_window:
+- * @ep: end point
++ * @scifdev:  SCIF device
+  * @nr_pages: number of pages in window
   *
-  * The peer has requested a mark.
-@@ -33,6 +34,7 @@ void scif_recv_mark(struct scif_dev *scifdev, struct scifmsg *msg)
+  * Allocate and prepare a remote registration window.
+@@ -500,7 +500,6 @@ scif_create_remote_window(struct scif_dev *scifdev, int nr_pages)
  
  /**
-  * scif_recv_mark_resp: Handle SCIF_MARK_(N)ACK messages.
-+ * @scifdev:	SCIF device
-  * @msg:	Interrupt message
+  * scif_destroy_remote_window:
+- * @ep: end point
+  * @window: remote registration window
   *
-  * The peer has responded to a SCIF_MARK message.
-@@ -56,6 +58,7 @@ void scif_recv_mark_resp(struct scif_dev *scifdev, struct scifmsg *msg)
+  * Deallocate resources for remote window.
+@@ -1037,6 +1036,7 @@ void scif_free_window_offset(struct scif_endpt *ep,
  
  /**
-  * scif_recv_wait: Handle SCIF_WAIT request
-+ * @scifdev:	SCIF device
-  * @msg:	Interrupt message
+  * scif_alloc_req: Respond to SCIF_ALLOC_REQ interrupt message
++ * @scifdev:    SCIF device
+  * @msg:        Interrupt message
   *
-  * The peer has requested waiting on a fence.
-@@ -93,6 +96,7 @@ void scif_recv_wait(struct scif_dev *scifdev, struct scifmsg *msg)
+  * Remote side is requesting a memory allocation.
+@@ -1072,6 +1072,7 @@ void scif_alloc_req(struct scif_dev *scifdev, struct scifmsg *msg)
  
  /**
-  * scif_recv_wait_resp: Handle SCIF_WAIT_(N)ACK messages.
-+ * @scifdev:	SCIF device
-  * @msg:	Interrupt message
+  * scif_alloc_gnt_rej: Respond to SCIF_ALLOC_GNT/REJ interrupt message
++ * @scifdev:    SCIF device
+  * @msg:        Interrupt message
   *
-  * The peer has responded to a SCIF_WAIT message.
-@@ -114,6 +118,7 @@ void scif_recv_wait_resp(struct scif_dev *scifdev, struct scifmsg *msg)
+  * Remote side responded to a memory allocation.
+@@ -1096,6 +1097,7 @@ void scif_alloc_gnt_rej(struct scif_dev *scifdev, struct scifmsg *msg)
  
  /**
-  * scif_recv_sig_local: Handle SCIF_SIG_LOCAL request
-+ * @scifdev:	SCIF device
-  * @msg:	Interrupt message
+  * scif_free_virt: Respond to SCIF_FREE_VIRT interrupt message
++ * @scifdev:    SCIF device
+  * @msg:        Interrupt message
   *
-  * The peer has requested a signal on a local offset.
-@@ -135,6 +140,7 @@ void scif_recv_sig_local(struct scif_dev *scifdev, struct scifmsg *msg)
+  * Free up memory kmalloc'd earlier.
+@@ -1134,6 +1136,7 @@ scif_fixup_aper_base(struct scif_dev *dev, struct scif_window *window)
  
  /**
-  * scif_recv_sig_remote: Handle SCIF_SIGNAL_REMOTE request
-+ * @scifdev:	SCIF device
-  * @msg:	Interrupt message
+  * scif_recv_reg: Respond to SCIF_REGISTER interrupt message
++ * @scifdev:    SCIF device
+  * @msg:        Interrupt message
   *
-  * The peer has requested a signal on a remote offset.
-@@ -156,6 +162,7 @@ void scif_recv_sig_remote(struct scif_dev *scifdev, struct scifmsg *msg)
+  * Update remote window list with a new registered window.
+@@ -1170,6 +1173,7 @@ void scif_recv_reg(struct scif_dev *scifdev, struct scifmsg *msg)
  
  /**
-  * scif_recv_sig_resp: Handle SCIF_SIG_(N)ACK messages.
-+ * @scifdev:	SCIF device
-  * @msg:	Interrupt message
+  * scif_recv_unreg: Respond to SCIF_UNREGISTER interrupt message
++ * @scifdev:    SCIF device
+  * @msg:        Interrupt message
   *
-  * The peer has responded to a signal request.
-@@ -280,12 +287,12 @@ static int _scif_prog_signal(scif_epd_t epd, dma_addr_t dst, u64 val)
- 	return err;
- }
- 
--/*
-+/**
-  * scif_prog_signal:
-- * @epd - Endpoint Descriptor
-- * @offset - registered address to write @val to
-- * @val - Value to be written at @offset
-- * @type - Type of the window.
-+ * @epd: Endpoint Descriptor
-+ * @offset: registered address to write @val to
-+ * @val: Value to be written at @offset
-+ * @type: Type of the window.
-  *
-  * Arrange to write a value to the registered offset after ensuring that the
-  * offset provided is indeed valid.
-@@ -501,12 +508,12 @@ static int _scif_send_fence_signal_wait(struct scif_endpt *ep,
+  * Remove window from remote registration list;
+@@ -1235,6 +1239,7 @@ void scif_recv_unreg(struct scif_dev *scifdev, struct scifmsg *msg)
  
  /**
-  * scif_send_fence_signal:
-- * @epd - endpoint descriptor
-- * @loff - local offset
-- * @lval - local value to write to loffset
-- * @roff - remote offset
-- * @rval - remote value to write to roffset
-- * @flags - flags
-+ * @epd: endpoint descriptor
-+ * @loff: local offset
-+ * @lval: local value to write to loffset
-+ * @roff: remote offset
-+ * @rval: remote value to write to roffset
-+ * @flags: flags
+  * scif_recv_reg_ack: Respond to SCIF_REGISTER_ACK interrupt message
++ * @scifdev:    SCIF device
+  * @msg:        Interrupt message
   *
-  * Sends a remote fence signal request
-  */
-@@ -577,10 +584,11 @@ static void scif_fence_mark_cb(void *arg)
- 	atomic_dec(&ep->rma_info.fence_refcount);
- }
+  * Wake up the window waiting to complete registration.
+@@ -1253,6 +1258,7 @@ void scif_recv_reg_ack(struct scif_dev *scifdev, struct scifmsg *msg)
  
--/*
-+/**
-  * _scif_fence_mark:
-+ * @epd: endpoint descriptor
-+ * @mark: DMA mark to set-up
+ /**
+  * scif_recv_reg_nack: Respond to SCIF_REGISTER_NACK interrupt message
++ * @scifdev:    SCIF device
+  * @msg:        Interrupt message
   *
-- * @epd - endpoint descriptor
-  * Set up a mark for this endpoint and return the value of the mark.
-  */
- int _scif_fence_mark(scif_epd_t epd, int *mark)
+  * Wake up the window waiting to inform it that registration
+@@ -1272,6 +1278,7 @@ void scif_recv_reg_nack(struct scif_dev *scifdev, struct scifmsg *msg)
+ 
+ /**
+  * scif_recv_unreg_ack: Respond to SCIF_UNREGISTER_ACK interrupt message
++ * @scifdev:    SCIF device
+  * @msg:        Interrupt message
+  *
+  * Wake up the window waiting to complete unregistration.
+@@ -1290,6 +1297,7 @@ void scif_recv_unreg_ack(struct scif_dev *scifdev, struct scifmsg *msg)
+ 
+ /**
+  * scif_recv_unreg_nack: Respond to SCIF_UNREGISTER_NACK interrupt message
++ * @scifdev:    SCIF device
+  * @msg:        Interrupt message
+  *
+  * Wake up the window waiting to inform it that unregistration
 -- 
 2.25.1
 
