@@ -2,124 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D535120FA42
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF6A20FA47
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390096AbgF3ROC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388029AbgF3ROC (ORCPT
+        id S2390112AbgF3RP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 13:15:56 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:36760 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726642AbgF3RPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:14:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C0CC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:14:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=h9dCCR3Sj6ij6SAKyMivwVidTMWb8VV+xdCxCmwqbSc=; b=fXh+iFaNONuimn4tWMRlR/6hmp
-        NY/76oKPggzRBi/jIsdgk7mvxkr0cwOqMmnpVpVU5Q1+lDO+heYD0v6KI7lN2X2jo+d7eXCCCCeQR
-        JsQzfndrVwIGu8KrfiV3lYN77kstxuFLTQlUGqXcIkpASY2Boh2233xagOBrkyGnSoBpROnzu+5Js
-        cHoTDWjyZe8O7Yt/YOlbriW0qp3LBYN9FbDUYDUiFPgCu/AMchFgbWDiGDKhYZbCIeiDoxxMM/njk
-        Y/8Ns5hf97hfID3VfOxJkSUcnPQQNFNTmCuaFZe2JF2B1X9W1EcVQoC3KE/qeC2cipS8AKuEjFkKL
-        t+7HwSig==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jqJpP-0003YN-Lz; Tue, 30 Jun 2020 17:13:52 +0000
-Date:   Tue, 30 Jun 2020 18:13:51 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Long Li <lonuxli.64@gmail.com>
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm, slab: Check GFP_SLAB_BUG_MASK before alloc_pages
- in kmalloc_order
-Message-ID: <20200630171351.GO25523@casper.infradead.org>
-References: <20200630145155.GA52108@lilong>
+        Tue, 30 Jun 2020 13:15:55 -0400
+Received: by mail-ot1-f66.google.com with SMTP id 72so19033175otc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:15:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZokXo4CHe7szjergvzRgNL3erxTR0QJ+oxc1DQHyuTU=;
+        b=chrZuKFJcjd8AS3ZxuItEq+Ds+4dMMh5loozVEnX2rArcCN3hBqH6YHYIuOjE2Lyo7
+         GSsIa7Kp/9546KGUjLuRRdehQ9PFrKSTx1IOnU1xbctdP//1n4sEMumqD7+Hhwh4jLsX
+         Pm6TNkAcjGuR47yCrCdc2e5bL7iNTlYlT9Bm+Knx6xzXyfekB2SUjUzHQ2kdGbMGOetC
+         SRHB0VTxXEpRBi7+h90cS9z49xm7q0fA5hV8DL17EXSPQ8atkZgeDJfRJeMjJBG1qK/3
+         j1RHX4qQzlTnrtWwf2WK6MwEt5r50npy45v4gQR0hV1gIxJks2ucszxQL4MdwGlb1wXk
+         u6Iw==
+X-Gm-Message-State: AOAM532X8Ev6pipcYORCCXNvPGHKpWc50+Bgj9XZtSWJF/SJpGgs9sik
+        SK0PXY8Q6X4+j2Ewxfck2q5gJ6bmginuB8gRHmo=
+X-Google-Smtp-Source: ABdhPJyxlbGwNwrnlDTcecZPx36RN1c5XCg7iMeUeozOeBhXalx950BDlVY50YGrPgnAnbB5E0DneOO3LhSCfA/KUWY=
+X-Received: by 2002:a9d:1c82:: with SMTP id l2mr1402042ota.167.1593537354222;
+ Tue, 30 Jun 2020 10:15:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200630145155.GA52108@lilong>
+References: <CAJZ5v0i=riYAA1wnuDBhBLfWQiGnaRW8fxkCU5X-3=noqSEhrQ@mail.gmail.com>
+ <CAGETcx8J5fs42_HMVyYvbX1=gqGTnavEuDOH+LHprZYRbXvUzw@mail.gmail.com>
+ <CAJZ5v0i-ySdNmToh=ExT9H_88bhHVeUNfTNWxXG1SzaP8a5j-w@mail.gmail.com>
+ <CAGETcx9iLH8fBEA0a9=iPsObzaePg9Zj0A9T_7NSKH6KSq3vFg@mail.gmail.com>
+ <CAJZ5v0iONFBX00NqzUaZ9kNWr6yLBNtLnA+sF-Ge-QNtY9qSug@mail.gmail.com>
+ <CAGETcx-YqJDnc6fNu5dncc=DSHwS_=-uOMHvR8V=b-QQJ7HOcA@mail.gmail.com>
+ <CAJZ5v0ju58LxvRckv2T=H0D=aDooGUoGfqFze5zWQ1ARAAJcag@mail.gmail.com>
+ <CAGETcx8KknvzZxfW4o=siswB__c9yeh=1wOVyvtM2112WEBizQ@mail.gmail.com>
+ <CAMuHMdXbzXnWQSaQ44p-cL9TA=ng20UB=vjscRDjpf7N=S4fjg@mail.gmail.com>
+ <CAJZ5v0joi2YDgAPrPhT8SMXTu-Va7s9DXVs7YDYf87JY_ntONQ@mail.gmail.com>
+ <20200630153850.GE1785141@kroah.com> <CAJZ5v0jQYK8LHaaJ4-GeJpzGdGY2Csmp_jmHfgc7BOaXyfsZCg@mail.gmail.com>
+ <CAGETcx9xCvjZiht4Z_pnFVdaYp9vLPybwZTKNZ9wHGRRCi6VuA@mail.gmail.com>
+In-Reply-To: <CAGETcx9xCvjZiht4Z_pnFVdaYp9vLPybwZTKNZ9wHGRRCi6VuA@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 30 Jun 2020 19:15:42 +0200
+Message-ID: <CAJZ5v0janAmg8j_ZC6Qw+QE5hJaGSQxpiAjwxWDw1jQs=mRkTw@mail.gmail.com>
+Subject: Re: [PATCH v1] driver core: Fix suspend/resume order issue with
+ deferred probe
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 02:51:55PM +0000, Long Li wrote:
-> In the ARM32 environment with highmem enabled. Using flag of kmalloc()
-> with __GFP_HIGHMEM to allocate large memory, it will go through the
-> kmalloc_order() path and return NULL. The __GFP_HIGHMEM flag will
-> cause alloc_pages() to allocate highmem memory and pages cannot be
-> directly converted to a virtual address, kmalloc_order() will return
-> NULL and the page has been allocated.
-> 
-> After modification, GFP_SLAB_BUG_MASK has been checked before
-> allocating pages, refer to the new_slab().
-> 
-> Signed-off-by: Long Li <lonuxli.64@gmail.com>
-> ---
-> 
-> Changes in v2:
-> - patch is rebased againest "[PATCH] mm: Free unused pages in
-> kmalloc_order()" [1]
-> - check GFP_SLAB_BUG_MASK and generate warnings before alloc_pages
-> in kmalloc_order()
-> 
-> [1] https://lkml.org/lkml/2020/6/27/16
-> 
->  mm/slab_common.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index a143a8c8f874..3548f4f8374b 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -27,6 +27,7 @@
->  #include <trace/events/kmem.h>
->  
->  #include "slab.h"
-> +#include "internal.h"
->  
->  enum slab_state slab_state;
->  LIST_HEAD(slab_caches);
-> @@ -815,6 +816,15 @@ void *kmalloc_order(size_t size, gfp_t flags, unsigned int order)
->  	void *ret = NULL;
->  	struct page *page;
->  
-> +	if (unlikely(flags & GFP_SLAB_BUG_MASK)) {
-> +		gfp_t invalid_mask = flags & GFP_SLAB_BUG_MASK;
-> +
-> +		flags &= ~GFP_SLAB_BUG_MASK;
-> +		pr_warn("Unexpected gfp: %#x (%pGg). Fixing up to gfp: %#x (%pGg). Fix your code!\n",
-> +				invalid_mask, &invalid_mask, flags, &flags);
-> +		dump_stack();
-> +	}
-> +
->  	flags |= __GFP_COMP;
+On Tue, Jun 30, 2020 at 7:11 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Tue, Jun 30, 2020 at 9:11 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Tue, Jun 30, 2020 at 5:39 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Tue, Jun 30, 2020 at 03:50:58PM +0200, Rafael J. Wysocki wrote:
+> > > > On Fri, Jun 26, 2020 at 10:53 PM Geert Uytterhoeven
+> > > > <geert@linux-m68k.org> wrote:
+> > > > >
+> > > > > Hi Saravana,
+> > > > >
+> > > > > On Fri, Jun 26, 2020 at 10:34 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > > > > On Fri, Jun 26, 2020 at 4:27 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > > > On Thu, Jun 25, 2020 at 7:52 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > > > > > > On Thu, Jun 25, 2020 at 10:47 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > > > > > Note that deferred probing gets in the way here and so the problem is
+> > > > > > > > > related to it.
+> > > > > > > >
+> > > > > > > > I mean, we officially support deferred probing. Shouldn't we fix it so
+> > > > > > > > that it doesn't break suspend/resume?
+> > > > > > >
+> > > > > > > Yes, we should fix deferred probing.
+> > > > >
+> > > > > Please take into account that breakage is an actual regression.
+> > > > >
+> > > > > > > > Also, it's pretty easy to have
+> > > > > > > > cases where one module probes multiple device instances and loading it
+> > > > > > > > in one order would break dpm_list order for one device and loading it
+> > > > > > > > in another order would break it for another device. And there would be
+> > > > > > > > no "proper" order to load modules (because module order != device
+> > > > > > > > order).
+> > > > > > >
+> > > > > > > I'm not saying that the current code is perfect.  I'm saying that the
+> > > > > > > fix as proposed adds too much cost for everybody who may not care IMO.
+> > > > > >
+> > > > > > Ok, how about I don't do this reordering until we see the first
+> > > > > > deferred probe request? Will that work for you? In that case, systems
+> > > > > > with no deferred probing will not incur any reordering cost. Or if
+> > > > > > reordering starts only towards the end, all the previous probes won't
+> > > > > > incur reordering cost.
+> > > > >
+> > > > > That first deferred probe request is more or less as of the first probe,
+> > > > > since commit 93d2e4322aa74c1a ("of: platform: Batch fwnode parsing when
+> > > > > adding all top level devices"), at least on DT systems.
+> > > >
+> > > > The deferred probe reordering of devices to the end of dpm_list
+> > > > started in 2012, so it is nothing new, and it demonstrably works for
+> > > > devices where the dependencies are known to the driver core.
+>
+> Isn't "where the dependencies are known to the driver core" this a big caveat?
+>
+> > > >
+> > > > That said, in the cases when the dependencies are known to the driver
+> > > > core, it is also unnecessary to reorder dpm_list in
+> > > > deferred_probe_work_func(), because the right ordering of it is going
+> > > > to be determined elsewhere.
+>
+> Until driver core knows about 100% of the dependencies, we still need
+> to do some kind of dpm_list reordering to have correct ordering. Even
+> with fw_devlink=on, I'd imagine it'd be difficult to achieve 100%
+> dependency being known to driver core.
+>
+> > > >
+> > > > Also commit 494fd7b7ad10 ("PM / core: fix deferred probe breaking
+> > > > suspend resume order") is not the source of the problem here, because
+> > > > the problem would have still been there without it, due to the
+> > > > device_pm_move_last() that was there before, so the Fixes: tag
+> > > > pointing to that commit is misleading.
+> > > >
+> > > > Now, because 716a7a259690 ("driver core: fw_devlink: Add support for
+> > > > batching fwnode parsing") is an optimization and the regression is
+> > > > present because of it AFAICS, the best way to address it at that point
+> > > > would be to revert commit 716a7a259690 for 5.8 and maybe do the
+> > > > optimization more carefully.
+>
+> No, this patch is not adding any new issues to deferred probe. It just
+> increases the probability of reproducing the issue. That's exactly why
+> I wrote the commit text for this patch without the fwnode batch
+> processing example. Even if you revert the patch, suspend/resume
+> ordering is broken if deferred probe happens.
+>
+> > > >
+> > > > Greg, what do you think?
+> > >
+> > > I've been ignoreing this and letting you all sort it out :)
+> > >
+> > > But if you think that patch should be reverted, I'll not object and will
+> > > be glad to to it if this solves the issue.
+> >
+> > Well, if Geert can confirm that reverting commit 716a7a259690 makes
+> > the problem go away, IMO this would be the most reasonable thing to do
+> > at this stage of the cycle without risking that more regressions will
+> > be introduced.
+>
+> I already have a patch to avoid deferred probe during batch fwnode
+> parsing. I'm trying to do a few more tests before I send it out. So,
+> it'd be nice if we don't revert it right now and give me some time to
+> finish testing.
 
-Oh, this is really good!  I hadn't actually looked at how slab/slub handle
-GFP_SLAB_BUG_MASK.  If you don't mind though, I would suggest that this
-code should all be in one place.  Perhaps:
-
-gfp_t kmalloc_invalid_flags(gfp_t flags)
-{
-	gfp_t invalid_mask = flags & GFP_SLAB_BUG_MASK;
-
-	flags &= ~GFP_SLAB_BUG_MASK;
-	pr_warn("Unexpected gfp: %#x (%pGg). Fixing up to gfp: %#x (%pGg). Fix your code!\n",
-			invalid_mask, &invalid_mask, flags, &flags);
-	dump_stack();
-
-	return flags;
-}
-
-and then call it from the three places?
-
-Also, the changelog could do with a bit of work.  Perhaps:
-
-kmalloc cannot allocate memory from HIGHMEM.  Allocating large amounts of
-memory currently bypasses the check and will simply leak the memory when
-page_address() returns NULL.  To fix this, factor the GFP_SLAB_BUG_MASK
-check out of slab & slub, and call it from kmalloc_order() as well.
-
+If you have an alternative fix, let's see it before deciding what to do.
