@@ -2,166 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8024F20FA4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0D020FA53
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390125AbgF3RQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:16:20 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:41648 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726642AbgF3RQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:16:19 -0400
-Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5efb735f0000>; Wed, 01 Jul 2020 01:16:16 +0800
-Received: from HKMAIL101.nvidia.com ([10.18.16.10])
-  by hkpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 30 Jun 2020 10:16:16 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate102.nvidia.com on Tue, 30 Jun 2020 10:16:16 -0700
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 30 Jun
- 2020 17:16:12 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.176)
- by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 30 Jun 2020 17:16:12 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A+fUZABkWpK08pLQEbOIHGY8XLy0B+RHNHSnGUoS+NGKOXf8VGFqopWTYz9cuAFyqRpncySLiTlKNNacmi68EoZ/7v6jyTbIaQl2VyjSORWaLU4FBqpOzYTmdm3q/xUWf+YRWsvQ+sugeJhjw/JA/QE7g/0lwIryzlQowdOkE6a2MiN+4g3DmYGQisEGaAezbXp6ziNBB2vt8aJiqqKMA/CCJX3MbdJ9iIPIqpMwXiDCHkLtYVbGfCXzkKVz51atfwySjQNt5ocDPFTdsKkGlN4ME8zqcAdajW0HS9zxlPbEEjTu7e3h0ieRGX5LYMwPY3r1LEwIvGUkZiA/NEJLVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/rpWkPa4G2BpSb5xcr1KVEdWuniqSALHDaJZNgqVOac=;
- b=WtKai+0yi7qx7YDoCK/TguEaYfMHhtKCT4C1FXjRsHesEXdBtSeNvmOb0fg5MJHB3EgILGJ38ZCDakkQlsEzEoFitHRc0BbVg50dOy5UBbr/hxnY3GErCGcW2lsnoJnhdLaGug2la5+PyX6HZVHyEcLUKnSPf8Y0jUgvC83xFuc9WiqednKQL7XgU8VZYoMibMmgmKUCWin3910im1RQjO6WOxS+GR9t2H89UPdjcYiekO3XxtQ14rOY1dRj71lNN1IKT4HPFddTbOQdvrNHeojrhaze/JW1XC2/HccgnFxR2QrdPkogNiJ68FZJaloZ8SfH7mEdoAVkBTqjtMYI0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from BYAPR12MB2822.namprd12.prod.outlook.com (2603:10b6:a03:9a::17)
- by BYAPR12MB3126.namprd12.prod.outlook.com (2603:10b6:a03:df::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21; Tue, 30 Jun
- 2020 17:16:10 +0000
-Received: from BYAPR12MB2822.namprd12.prod.outlook.com
- ([fe80::70bd:803f:78b6:ebf2]) by BYAPR12MB2822.namprd12.prod.outlook.com
- ([fe80::70bd:803f:78b6:ebf2%2]) with mapi id 15.20.3131.027; Tue, 30 Jun 2020
- 17:16:09 +0000
-From:   Krishna Reddy <vdumpa@nvidia.com>
-To:     Jonathan Hunter <jonathanh@nvidia.com>
-CC:     "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        Thierry Reding <treding@nvidia.com>,
-        "Yu-Huan Hsu" <YHsu@nvidia.com>, Sachin Nikam <Snikam@nvidia.com>,
-        Pritesh Raithatha <praithatha@nvidia.com>,
-        Timo Alho <talho@nvidia.com>,
-        Bitan Biswas <bbiswas@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Bryan Huntsman <bhuntsman@nvidia.com>,
-        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>
-Subject: RE: [PATCH v8 1/3] iommu/arm-smmu: add NVIDIA implementation for dual
- ARM MMU-500 usage
-Thread-Topic: [PATCH v8 1/3] iommu/arm-smmu: add NVIDIA implementation for
- dual ARM MMU-500 usage
-Thread-Index: AQHWTnLtXe5vi7jgbE2pRnyepolCC6jw8nYAgABivFCAAAYNgIAAA0WAgAAGCAA=
-Date:   Tue, 30 Jun 2020 17:16:09 +0000
-Message-ID: <BYAPR12MB2822B43B0218F6E55C97451BB36F0@BYAPR12MB2822.namprd12.prod.outlook.com>
-References: <20200630001051.12350-1-vdumpa@nvidia.com>
- <20200630001051.12350-2-vdumpa@nvidia.com>
- <e6da9661-4e62-6e34-ac21-63ff993ca8bc@nvidia.com>
- <BYAPR12MB282210677459B8D62623C642B36F0@BYAPR12MB2822.namprd12.prod.outlook.com>
- <4037efc7-fbed-e8cf-dac7-212c65014e4e@nvidia.com>
- <eb0ffc7e-f41b-d17c-6a90-049335098cd2@nvidia.com>
-In-Reply-To: <eb0ffc7e-f41b-d17c-6a90-049335098cd2@nvidia.com>
-Accept-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_Enabled=True;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_SiteId=43083d15-7273-40c1-b7db-39efd9ccc17a;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_Owner=VDUMPA@nvidia.com;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_SetDate=2020-06-30T17:16:08.1378150Z;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_Name=Unrestricted;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_ActionId=9312166d-7c3d-4376-93ca-0c1bb1b6d0ee;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_Extended_MSFT_Method=Automatic
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [216.228.112.22]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 49c3dc5a-94f8-4b05-3ef7-08d81d194875
-x-ms-traffictypediagnostic: BYAPR12MB3126:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR12MB31267AEF461B142437C9446DB36F0@BYAPR12MB3126.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0450A714CB
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eoZSV0Jgzs5uYk/Hdd0uSh8EsZvevrHBZ+AUcR3+z7sjftWvQObYM9JxyRmNdLGWYSiW7EnupfO/U0tYdSO9n0G2g1UDRD0QuUmGBp/ea5SnNU4HXaGz5O1bdkys8B9niCwHhe6hPYr9xea+kIdUQ7J6KUatjHqMJI9F7LFlwPaS3SLmNuINnyWOisiWAPmhETTiV0hceDSRQFPTblDs8BYeR0SW90vCtf5gIQr5FMeow7WXD1ahTg2W/awAatixTTK1B/GWGg44DcrxRFVKvE2i/0EF+WbCukSLDMsJht4ydTnrmb/IKWbWQXsJrUi8EZvO4EQM3kiuCvv167NALg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2822.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(366004)(376002)(396003)(346002)(9686003)(7696005)(6636002)(6506007)(86362001)(4744005)(8936002)(71200400001)(33656002)(5660300002)(478600001)(2906002)(8676002)(54906003)(4326008)(66446008)(26005)(6862004)(316002)(55016002)(76116006)(66946007)(66556008)(66476007)(64756008)(52536014)(186003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ffo5rliOMSfvJ2bDNl0uodDl+d6TocgWCq8GIFaxaXVu9Gl5RHzthZgQoeuAwJVYsDVAKH9ri88H+NOhY4/Y/5BfdDovSyUmFCcDwFHpNWhPvFPI5H+Brc//ZNCjP5UbGsFcCnMARJWVHBQZcn41qdSO/yGrJeJFVilS3PQ6jZN/zq8ZsbXoWFSNkulMssWyvrcDIZDVl2cyRdtmpStkrme8ddxs+FiqBHglM2SKorAag47ixZ6rPJ6+MaG/em+vdB84gYLyvRPnqZtexbRLgswZiWjTv0iXVVuq/NUx78xoTHPXqZy31yJ2PjTJGkrHzRBGoMyv7rcZzYS97gYGNun0lUolksua1j6dwdh98zZzNSnafM0HD5ZkZfTQew3l7Qp7wi7fdDD7w42xeMKWADlc7z7X+t+HGrSaRh4u/0ZuMqxQYFedW/BB3oMfKfhTM5wjtmkELObyiyCX9/Hj3Vg335SK0TJZ4gFYUPlkZlyB7r8dJOs2dyQNneaLRiwT
+        id S2390170AbgF3RQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 13:16:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390143AbgF3RQc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 13:16:32 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528F9C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:16:32 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id o22so4695258pjw.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:16:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=RCoSlvYpwE4xm9GGAZDoA+vu8+wYaZp5AwN6JLLP7E0=;
+        b=VER2Btoh3kFyWbOJUwuHhFAoku5RHQcrAHEgHlOk2KpdI1XvAIM5WmdjrU0AqDlWqV
+         cXRVRGgot1W90G6PZMfN5BDxuSIDQl8MTqI/8+dMZQsCcorEhBUz6nRzZGQ2w+668kLj
+         CJ5s+9A2ezgfmv8iVqwPSynrgjvnMFrooa8jq2GiXiYP4E5FaFn9rygxFAc15MSEFtit
+         UBjZ2UPOlDuvEZuD8Fo7fbwMCABJ5xvPRmOK3i3a+SBFILX4ESV1RRqyIuz8Y9tQ2kVu
+         P/mUcdGRxs7hqpTOX2H96AyTfgHEZaApf+8zBn2tFCoxE8GToE0Yay1O3vIV6hOLRh7m
+         fY0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=RCoSlvYpwE4xm9GGAZDoA+vu8+wYaZp5AwN6JLLP7E0=;
+        b=GD76kBZigzLBn1+xBJL3BJpYOK2/WcB35EaNoC0SmuZsIzwOmy/2+wSqdKRiLRsR95
+         Zftl1MKOlchNyAjlDlxl/CRdBPYTmzLvo0ClRIsfBgXFjMvIoB0TbVD/gNCZVG7laMCi
+         Jc1V9PXbb2iieGtWVe3B+LEh5NFGh6eBhAd/TQRkSGUaoF8N3ezDsqgBALvi6x081Tv0
+         NcgVf1j8/s9PRotZlnGLC5VYlaLNdSgr3lGKAa4N4F1IW1rj3Q3VE2mROXbAL9XBNakR
+         1ajSLOq6NetA8InTUV1hlV4cjeO8fG8WJlY6YA3PfgFlhkwfmFQS1UdTHmqwINo0KE0W
+         G49w==
+X-Gm-Message-State: AOAM533G0Kh2SslGUV6pwuDrwQGq7dnu0ianchmmlvrVxeU+Crxa6a/Y
+        mV1DBx/hbF6/XoHm+YEgXGcUGw==
+X-Google-Smtp-Source: ABdhPJwTQKG+yNabwbiBqTlw7Ts5bhbBBqIBDsA+fvfKLo/ggAj6ZDNQuOqsHxH+g9mLpbTcyYOwgw==
+X-Received: by 2002:a17:90b:11c9:: with SMTP id gv9mr6903719pjb.177.1593537391735;
+        Tue, 30 Jun 2020 10:16:31 -0700 (PDT)
+Received: from hermes.lan (204-195-22-127.wavecable.com. [204.195.22.127])
+        by smtp.gmail.com with ESMTPSA id q39sm2885094pja.30.2020.06.30.10.16.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 10:16:31 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 10:16:21 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Andres Beltran <lkmlabelt@gmail.com>
+Cc:     t-mabelt@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
+        sthemmin@microsoft.com, wei.liu@kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mikelley@microsoft.com, parri.andrea@gmail.com,
+        skarade@microsoft.com, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v3 0/3] Drivers: hv: vmbus: vmbus_requestor data
+ structure for VMBus hardening
+Message-ID: <20200630101621.0f4d9dba@hermes.lan>
+In-Reply-To: <20200630153200.1537105-1-lkmlabelt@gmail.com>
+References: <20200630153200.1537105-1-lkmlabelt@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2822.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 49c3dc5a-94f8-4b05-3ef7-08d81d194875
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jun 2020 17:16:09.7947
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Wr4H5bsA5FtAIF0kmWiL6iiIYHO28paKasv6WgqZQZvE1MQ+KWF9SXd6rK494r8nQdJJHJyWay+NSY5WlY14+g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3126
-X-OriginatorOrg: Nvidia.com
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593537376; bh=/rpWkPa4G2BpSb5xcr1KVEdWuniqSALHDaJZNgqVOac=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:From:To:CC:Subject:Thread-Topic:
-         Thread-Index:Date:Message-ID:References:In-Reply-To:
-         Accept-Language:X-MS-Has-Attach:X-MS-TNEF-Correlator:msip_labels:
-         authentication-results:x-originating-ip:x-ms-publictraffictype:
-         x-ms-office365-filtering-correlation-id:x-ms-traffictypediagnostic:
-         x-ms-exchange-transport-forked:x-microsoft-antispam-prvs:
-         x-ms-oob-tlc-oobclassifiers:x-forefront-prvs:
-         x-ms-exchange-senderadcheck:x-microsoft-antispam:
-         x-microsoft-antispam-message-info:x-forefront-antispam-report:
-         x-ms-exchange-antispam-messagedata:MIME-Version:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-originalarrivaltime:
-         X-MS-Exchange-CrossTenant-fromentityheader:
-         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-         X-MS-Exchange-CrossTenant-userprincipalname:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg:
-         Content-Language:Content-Type:Content-Transfer-Encoding;
-        b=PsL9QixBsP51o7ATracMVmH1L2RSjzITpziJo81J/oGMjvJ7XhQohBdYXs7bC1/I2
-         rlvSHLB04gRQPm8a5F/3hIIGhN5+NHlvWVg4W7xu3farHJfrbgr6G3kJyvr9TRwdKn
-         jYCWnrcQPZiZuWz7DMdyM/F2vOYRH0eUoyILgdND3GCpbS6J0rpjg1qhmB/YE0LBVp
-         dQXrNeo3LNdrd21xON4c2qMTJ0VpCbHKXMkdjfWkUnTkSTKKZEgG4ukeUo+vfVZOi/
-         zBFlcJpW72wHRo0GVtD2VXOE1mSfuMZdOX5+arcOmmH8PzbjKkYmAhdrGf0Qf/95wX
-         AZpvLlmiAhudg==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pk9LLCB3ZWxsIEkgc2VlIHdoYXQgeW91IGFyZSBzYXlpbmcsIGJ1dCBpZiB3ZSBpbnRlbmRlZCB0
-byBzdXBwb3J0IGFsbCAzIGZvciBUZWdyYTE5NCwgdGhlbiB3ZSBzaG91bGQgZW5zdXJlIGFsbCAz
-IGFyZSBpbml0aWFsaXNlZCBjb3JyZWN0bHkuDQoNClRoZSBkcml2ZXIgaW50ZW5kIHRvIHN1cHBv
-cnQgdXAgdG8gMyBpbnN0YW5jZXMuIEl0IGRvZXNuJ3QgcmVhbGx5IG1hbmRhdGUgdGhhdCBhbGwg
-dGhyZWUgaW5zdGFuY2VzIGJlIHByZXNlbnQgaW4gc2FtZSBEVCBub2RlLg0KRWFjaCBtbWlvIGFw
-ZXJ0dXJlIGluICJyZWciIHByb3BlcnR5IGlzIGFuIGluc3RhbmNlIGhlcmUuIHJlZyA9IDxpbnN0
-MF9iYXNlLCBzaXplPiwgPGluc3QxX2Jhc2UsIHNpemU+LCA8aW5zdDJfYmFzZSwgc2l6ZT47DQpU
-aGUgcmVnIGNhbiBoYXZlIGFsbCB0aHJlZSBvciBsZXNzIGFuZCBkcml2ZXIganVzdCBjb25maWd1
-cmVzIGJhc2VkIG9uIHJlZyBhbmQgaXQgd29ya3MgZmluZS4NCg0KPkl0IHdvdWxkIGJlIGJldHRl
-ciB0byBxdWVyeSB0aGUgbnVtYmVyIG9mIFNNTVVzIHBvcHVsYXRlZCBpbiBkZXZpY2UtdHJlZSBh
-bmQgdGhlbiBlbnN1cmUgdGhhdCBhbGwgYXJlIGluaXRpYWxpc2VkIGNvcnJlY3RseS4NCg0KR2V0
-dGluZyB0aGUgSU9SRVNPVVJDRV9NRU0gaXMgdGhlIHdheSB0byBjb3VudCB0aGUgaW5zdGFuY2Vz
-IGRyaXZlciBuZWVkIHRvIHN1cHBvcnQuICANCkluIGEgd2F5LCBJdCBpcyBhbHJlYWR5IHF1ZXJ5
-aW5nIHRocm91Z2ggSU9SRVNPVVJDRV9NRU0gaGVyZS4gDQoNCg0KLUtSDQoNCg==
+On Tue, 30 Jun 2020 11:31:57 -0400
+Andres Beltran <lkmlabelt@gmail.com> wrote:
+
+> Currently, VMbus drivers use pointers into guest memory as request IDs
+> for interactions with Hyper-V. To be more robust in the face of errors
+> or malicious behavior from a compromised Hyper-V, avoid exposing
+> guest memory addresses to Hyper-V. Also avoid Hyper-V giving back a
+> bad request ID that is then treated as the address of a guest data
+> structure with no validation. Instead, encapsulate these memory
+> addresses and provide small integers as request IDs.
+> 
+> The first patch creates the definitions for the data structure, provides
+> helper methods to generate new IDs and retrieve data, and
+> allocates/frees the memory needed for vmbus_requestor.
+> 
+> The second and third patches make use of vmbus_requestor to send request
+> IDs to Hyper-V in storvsc and netvsc respectively.
+> 
+> Thanks.
+> Andres Beltran
+> 
+> Tested-by: Andrea Parri <parri.andrea@gmail.com>
+> 
+> Cc: linux-scsi@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: James E.J. Bottomley <jejb@linux.ibm.com>
+> Cc: Martin K. Petersen <martin.petersen@oracle.com>
+> Cc: David S. Miller <davem@davemloft.net>
+> 
+> Andres Beltran (3):
+>   Drivers: hv: vmbus: Add vmbus_requestor data structure for VMBus
+>     hardening
+>   scsi: storvsc: Use vmbus_requestor to generate transaction IDs for
+>     VMBus hardening
+>   hv_netvsc: Use vmbus_requestor to generate transaction IDs for VMBus
+>     hardening
+> 
+>  drivers/hv/channel.c              | 154 ++++++++++++++++++++++++++++++
+>  drivers/net/hyperv/hyperv_net.h   |  13 +++
+>  drivers/net/hyperv/netvsc.c       |  79 ++++++++++++---
+>  drivers/net/hyperv/rndis_filter.c |   1 +
+>  drivers/scsi/storvsc_drv.c        |  85 ++++++++++++++---
+>  include/linux/hyperv.h            |  22 +++++
+>  6 files changed, 329 insertions(+), 25 deletions(-)
+> 
+
+How does this interact with use of the vmbus in usermode by DPDK through hv_uio_generic?
+Will it still work?
