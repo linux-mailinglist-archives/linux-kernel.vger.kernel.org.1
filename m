@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BE620FF44
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C808420FF46
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728326AbgF3VdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 17:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34392 "EHLO
+        id S1728754AbgF3Vdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 17:33:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728033AbgF3VdV (ORCPT
+        with ESMTP id S1728355AbgF3VdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 17:33:21 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E92C03E97A
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:33:21 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id j4so9017711plk.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:33:21 -0700 (PDT)
+        Tue, 30 Jun 2020 17:33:25 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3EA9C03E97A
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:33:25 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id u9so5402091pls.13
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:33:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=digitalocean.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :in-reply-to:references;
-        bh=p3fES35YITsidZ4eGLne/2ofjR3Ab7HGCf2PrO4zrIE=;
-        b=gugh5DJ6sIVVBrAwPiy1GUqAB9GtT/TRlyBP1Igs9PIF65ybl/IAgLezi+690CMUg7
-         nboZgWjgClg73e3TqH0YqOeqKB8F32t3oj6tlGF6JRID4e+ouRS5QkZC2wSpatqVT86Y
-         uKxoXFOLbgvMq6nxW9C8N6ZaUvZKI7TvHUBpc=
+        bh=Cr71jjQ/0KHbNw4r32FwzsU3ycONNJB1pF/DSmi83z0=;
+        b=EaqM02cZrOujI1gzsLoc0k0YlRiXcoYxCps/8WpIo7sKejMqezwjkOvx78jbgxdk4J
+         wiiPtUdd1lZNCjDRBRBDX2c6NIt0q8Rjm2AWxHQJRXNTWpZ1SxrFC5f58nitz5yCeqcS
+         CmScyNKVK6jGnKdCTSL7w28vtoi02qhbNemZM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:in-reply-to:references;
-        bh=p3fES35YITsidZ4eGLne/2ofjR3Ab7HGCf2PrO4zrIE=;
-        b=CDBUzfVCVr4WAsn/FTy1kUmLLy11QWnyckzW0aEH7ecuj7mmql9CMoIgk0yylrOQaA
-         XVAaOqkN9qTFrLu6h9VMPswTH9GMA6XHo3fOgLzLei9zrzzdCIgBJkrRsvmnzdQ1eMlK
-         9ZFDQE2Yl/ffHJFXESV6jKYQux0K4kNB/gJ8KKM+M4YxVMiR6dGRahYma2C1/B7NJhtl
-         R3FTY9Ur0tO1Tn0Y9nykXpIG7DgKInjOaqPBMsLfxPR2tR9P8lQ+uaF16IU9bplPijmM
-         jNwsoIrfZgWqgyD5IB343wKoZWtXWRgtatyfO+n1AvBCZbT2mY7LK9E3PKUKG22v1rWn
-         E8jQ==
-X-Gm-Message-State: AOAM532VEUBDAuaA0kc7sj7W2HLkj/wJREba9yL88EETP8RnZgQhq94o
-        Oi8qbbugl4H3PwVNjJVnwFzARw==
-X-Google-Smtp-Source: ABdhPJz4FyDNGiv3OQLIB/KtU/jnyRzOszvtSrYbjsiyRgAVDuZysxEX51x/OYeGYXJ8DX5x2BzRFw==
-X-Received: by 2002:a17:90a:17ab:: with SMTP id q40mr22174737pja.152.1593552800477;
-        Tue, 30 Jun 2020 14:33:20 -0700 (PDT)
+        bh=Cr71jjQ/0KHbNw4r32FwzsU3ycONNJB1pF/DSmi83z0=;
+        b=jYxXbzjbNkwaORN2yjraOSupaF6FKDuxGATZNcsoB6AIl99+xRS1Dn/05qms2uUEIo
+         +HI5lP2Pgez3rhzClpanfbMftuk7v4ZzCss/3HuoqyONJt7wCC795Q0Zee6MbKicgkqG
+         dCv9rgVSKZiktNklC8U64k7t/fIW1V8m7HQcLzfqXIuKjn+F4Xg/M+UTFXz+AEesR15U
+         ikICyxJwnJKU5UXuTbg+MZGeR72aU2Y/xa2ArYWhCxUwIh1O0iSNA6rEIx35LmCiFNi1
+         o9DuGBJZtX+BmP8jx+OCCNBq70akmKK9RwKr6RwTCqbHBkqpX6NXc42uAyJAM7K7VXKu
+         qNSg==
+X-Gm-Message-State: AOAM532sdcS5oI1Y7MbMgixNEMZeWrh4Gdri1Ys339kD626TCbymcULm
+        nk4T9wjH8lV60oTyWntqM+PUlQ==
+X-Google-Smtp-Source: ABdhPJxlIm2dz57cLMb/j0Vv1TLP0inL1eeWkABgZqfZD1Q68vmjtFb6q4xjXhDvomWF0hRU3GHxyQ==
+X-Received: by 2002:a17:90a:1748:: with SMTP id 8mr19269341pjm.131.1593552805041;
+        Tue, 30 Jun 2020 14:33:25 -0700 (PDT)
 Received: from vpillai-dev.sfo2.internal.digitalocean.com ([138.68.32.68])
-        by smtp.gmail.com with ESMTPSA id e16sm3594311pff.180.2020.06.30.14.33.19
+        by smtp.gmail.com with ESMTPSA id b191sm3611103pga.13.2020.06.30.14.33.23
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 30 Jun 2020 14:33:20 -0700 (PDT)
+        Tue, 30 Jun 2020 14:33:24 -0700 (PDT)
 From:   Vineeth Remanan Pillai <vpillai@digitalocean.com>
 To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Tim Chen <tim.c.chen@linux.intel.com>, mingo@kernel.org,
         tglx@linutronix.de, pjt@google.com, torvalds@linux-foundation.org
-Cc:     vpillai <vpillai@digitalocean.com>, linux-kernel@vger.kernel.org,
-        subhra.mazumdar@oracle.com, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
+Cc:     Aaron Lu <aaron.lu@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, subhra.mazumdar@oracle.com,
+        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
         Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
         Aubrey Li <aubrey.intel@gmail.com>,
         Valentin Schneider <valentin.schneider@arm.com>,
@@ -62,10 +62,11 @@ Cc:     vpillai <vpillai@digitalocean.com>, linux-kernel@vger.kernel.org,
         Paolo Bonzini <pbonzini@redhat.com>,
         Joel Fernandes <joelaf@google.com>, joel@joelfernandes.org,
         vineethrp@gmail.com, Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [RFC PATCH 07/16] sched/fair: Fix forced idle sibling starvation corner case
-Date:   Tue, 30 Jun 2020 21:32:28 +0000
-Message-Id: <d8ff57c098623e701cc3a8b37f667542f9b8d218.1593530334.git.vpillai@digitalocean.com>
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Aaron Lu <ziqian.lzq@antfin.com>
+Subject: [RFC PATCH 08/16] sched/fair: wrapper for cfs_rq->min_vruntime
+Date:   Tue, 30 Jun 2020 21:32:29 +0000
+Message-Id: <1d25a94f2ffc6d7ea1373d0e9ad44bc30781f255.1593530334.git.vpillai@digitalocean.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1593530334.git.vpillai@digitalocean.com>
 References: <cover.1593530334.git.vpillai@digitalocean.com>
@@ -76,78 +77,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: vpillai <vpillai@digitalocean.com>
+From: Aaron Lu <aaron.lu@linux.alibaba.com>
 
-If there is only one long running local task and the sibling is
-forced idle, it  might not get a chance to run until a schedule
-event happens on any cpu in the core.
+Add a wrapper function cfs_rq_min_vruntime(cfs_rq) to
+return cfs_rq->min_vruntime.
 
-So we check for this condition during a tick to see if a sibling
-is starved and then give it a chance to schedule.
+It will be used in the following patch, no functionality
+change.
 
-Signed-off-by: Vineeth Remanan Pillai <vpillai@digitalocean.com>
-Signed-off-by: Julien Desfossez <jdesfossez@digitalocean.com>
+Signed-off-by: Aaron Lu <ziqian.lzq@antfin.com>
 ---
- kernel/sched/fair.c | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ kernel/sched/fair.c | 27 ++++++++++++++++-----------
+ 1 file changed, 16 insertions(+), 11 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index ae17507533a0..49fb93296e35 100644
+index 49fb93296e35..61d19e573443 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -10613,6 +10613,40 @@ static void rq_offline_fair(struct rq *rq)
+@@ -462,6 +462,11 @@ find_matching_se(struct sched_entity **se, struct sched_entity **pse)
  
- #endif /* CONFIG_SMP */
+ #endif	/* CONFIG_FAIR_GROUP_SCHED */
  
-+#ifdef CONFIG_SCHED_CORE
-+static inline bool
-+__entity_slice_used(struct sched_entity *se)
++static inline u64 cfs_rq_min_vruntime(struct cfs_rq *cfs_rq)
 +{
-+	return (se->sum_exec_runtime - se->prev_sum_exec_runtime) >
-+		sched_slice(cfs_rq_of(se), se);
++	return cfs_rq->min_vruntime;
 +}
 +
-+/*
-+ * If runqueue has only one task which used up its slice and if the sibling
-+ * is forced idle, then trigger schedule to give forced idle task a chance.
-+ */
-+static void resched_forceidle_sibling(struct rq *rq, struct sched_entity *se)
-+{
-+	int cpu = cpu_of(rq), sibling_cpu;
-+
-+	if (rq->cfs.nr_running > 1 || !__entity_slice_used(se))
-+		return;
-+
-+	for_each_cpu(sibling_cpu, cpu_smt_mask(cpu)) {
-+		struct rq *sibling_rq;
-+		if (sibling_cpu == cpu)
-+			continue;
-+		if (cpu_is_offline(sibling_cpu))
-+			continue;
-+
-+		sibling_rq = cpu_rq(sibling_cpu);
-+		if (sibling_rq->core_forceidle) {
-+			resched_curr(sibling_rq);
-+		}
-+	}
-+}
-+#endif
-+
- /*
-  * scheduler tick hitting a task of our scheduling class.
-  *
-@@ -10636,6 +10670,11 @@ static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
+ static __always_inline
+ void account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec);
  
- 	update_misfit_status(curr, rq);
- 	update_overutilized_status(task_rq(curr));
-+
-+#ifdef CONFIG_SCHED_CORE
-+	if (sched_core_enabled(rq))
-+		resched_forceidle_sibling(rq, &curr->se);
-+#endif
+@@ -498,7 +503,7 @@ static void update_min_vruntime(struct cfs_rq *cfs_rq)
+ 	struct sched_entity *curr = cfs_rq->curr;
+ 	struct rb_node *leftmost = rb_first_cached(&cfs_rq->tasks_timeline);
+ 
+-	u64 vruntime = cfs_rq->min_vruntime;
++	u64 vruntime = cfs_rq_min_vruntime(cfs_rq);
+ 
+ 	if (curr) {
+ 		if (curr->on_rq)
+@@ -518,7 +523,7 @@ static void update_min_vruntime(struct cfs_rq *cfs_rq)
+ 	}
+ 
+ 	/* ensure we never gain time by being placed backwards. */
+-	cfs_rq->min_vruntime = max_vruntime(cfs_rq->min_vruntime, vruntime);
++	cfs_rq->min_vruntime = max_vruntime(cfs_rq_min_vruntime(cfs_rq), vruntime);
+ #ifndef CONFIG_64BIT
+ 	smp_wmb();
+ 	cfs_rq->min_vruntime_copy = cfs_rq->min_vruntime;
+@@ -4026,7 +4031,7 @@ static inline void update_misfit_status(struct task_struct *p, struct rq *rq) {}
+ static void check_spread(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ {
+ #ifdef CONFIG_SCHED_DEBUG
+-	s64 d = se->vruntime - cfs_rq->min_vruntime;
++	s64 d = se->vruntime - cfs_rq_min_vruntime(cfs_rq);
+ 
+ 	if (d < 0)
+ 		d = -d;
+@@ -4039,7 +4044,7 @@ static void check_spread(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ static void
+ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
+ {
+-	u64 vruntime = cfs_rq->min_vruntime;
++	u64 vruntime = cfs_rq_min_vruntime(cfs_rq);
+ 
+ 	/*
+ 	 * The 'current' period is already promised to the current tasks,
+@@ -4133,7 +4138,7 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 	 * update_curr().
+ 	 */
+ 	if (renorm && curr)
+-		se->vruntime += cfs_rq->min_vruntime;
++		se->vruntime += cfs_rq_min_vruntime(cfs_rq);
+ 
+ 	update_curr(cfs_rq);
+ 
+@@ -4144,7 +4149,7 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 	 * fairness detriment of existing tasks.
+ 	 */
+ 	if (renorm && !curr)
+-		se->vruntime += cfs_rq->min_vruntime;
++		se->vruntime += cfs_rq_min_vruntime(cfs_rq);
+ 
+ 	/*
+ 	 * When enqueuing a sched_entity, we must:
+@@ -4263,7 +4268,7 @@ dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 	 * can move min_vruntime forward still more.
+ 	 */
+ 	if (!(flags & DEQUEUE_SLEEP))
+-		se->vruntime -= cfs_rq->min_vruntime;
++		se->vruntime -= cfs_rq_min_vruntime(cfs_rq);
+ 
+ 	/* return excess runtime on last dequeue */
+ 	return_cfs_rq_runtime(cfs_rq);
+@@ -6700,7 +6705,7 @@ static void migrate_task_rq_fair(struct task_struct *p, int new_cpu)
+ 			min_vruntime = cfs_rq->min_vruntime;
+ 		} while (min_vruntime != min_vruntime_copy);
+ #else
+-		min_vruntime = cfs_rq->min_vruntime;
++		min_vruntime = cfs_rq_min_vruntime(cfs_rq);
+ #endif
+ 
+ 		se->vruntime -= min_vruntime;
+@@ -10709,7 +10714,7 @@ static void task_fork_fair(struct task_struct *p)
+ 		resched_curr(rq);
+ 	}
+ 
+-	se->vruntime -= cfs_rq->min_vruntime;
++	se->vruntime -= cfs_rq_min_vruntime(cfs_rq);
+ 	rq_unlock(rq, &rf);
  }
  
- /*
+@@ -10832,7 +10837,7 @@ static void detach_task_cfs_rq(struct task_struct *p)
+ 		 * cause 'unlimited' sleep bonus.
+ 		 */
+ 		place_entity(cfs_rq, se, 0);
+-		se->vruntime -= cfs_rq->min_vruntime;
++		se->vruntime -= cfs_rq_min_vruntime(cfs_rq);
+ 	}
+ 
+ 	detach_entity_cfs_rq(se);
+@@ -10846,7 +10851,7 @@ static void attach_task_cfs_rq(struct task_struct *p)
+ 	attach_entity_cfs_rq(se);
+ 
+ 	if (!vruntime_normalized(p))
+-		se->vruntime += cfs_rq->min_vruntime;
++		se->vruntime += cfs_rq_min_vruntime(cfs_rq);
+ }
+ 
+ static void switched_from_fair(struct rq *rq, struct task_struct *p)
 -- 
 2.17.1
 
