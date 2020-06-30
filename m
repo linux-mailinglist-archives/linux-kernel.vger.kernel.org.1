@@ -2,82 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2F6210059
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 01:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D20F3210067
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 01:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgF3XMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 19:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49912 "EHLO
+        id S1726219AbgF3X2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 19:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726135AbgF3XMn (ORCPT
+        with ESMTP id S1725791AbgF3X2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 19:12:43 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90BD0C061755;
-        Tue, 30 Jun 2020 16:12:43 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a1so22408510ejg.12;
-        Tue, 30 Jun 2020 16:12:43 -0700 (PDT)
+        Tue, 30 Jun 2020 19:28:03 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C826EC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 16:28:02 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id c139so20417281qkg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 16:28:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EEziaIM/P7+22lxNofy08U1YgTxMBEFHBjSY3HZLox8=;
-        b=U13XQ12RtySqRFFcdAgVVayD93hsV5QjurKvCaIPjTMREpQsx3IQt4i7+vB+/1hohA
-         h9cZs7pdDcaPptjlXXYOP2CGaXtSG/jt1rRJuPGmOHgfLCwReY4AtBtqTzNOtDAnWK3V
-         VGdXHZnqK0vO7NJp0JDlnNCAYvvxI7tLA+EnX3JsUjXfPnroG7VFEMlYkKfdox2bnLmI
-         tpBjAPEq/U15BCusKwJcc0rsLqUxKIwbOgk9VI6jpPJBSi7Er8NBQt0fNHT3ectSqID1
-         LYfEyFhhLHwEkCrL2Zi3evslp+ZoE3PDAhJjPukqpHJnItQ1iYrKm80RXqhFAKgZQ34c
-         tmpQ==
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iirypFBp2xtegwS2Iq4B1iPUgMABexUaf6RMKakBSKI=;
+        b=D+w4anAV9FqpiC8o3zpYnCH9ve8Tz0CdVll9wHtzOiCDDAZWWgSfDolrIa+ceJvU+y
+         EWtPGt9GK0Eg56kfb2X3t8Xj7kzm9nLcgwKr8zlWkRE/fUP+RDaAk4QD3iMU4Oi/IAXG
+         dGbgfTBrlhi3c9aLE6INbEnFr8lWSXaDpdMQ5g6JSZYUUG6LbXpX496c41z48vDLMRXh
+         Y3CiV775LOD8komjPGlDaV1pJKecdBr4LohTHFmv3wNs7pS/krHJlawVB2jMZUmHOeOu
+         LxbKeErT2KLqfvA5rNdaoIdsmAVvtcjFR2e8Jr2tedwCHuC5aMdU/5Md+gVyNo+/5N9R
+         EJCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EEziaIM/P7+22lxNofy08U1YgTxMBEFHBjSY3HZLox8=;
-        b=n5qYMKJoqNm1DnpvxdUkyzhNSqL3X+7QVregikh7sNNdD6Iwjuxq/5xVTQcgNOZINg
-         FKQWX3OIqjgiyHiQ0mDvc/kZHgzTA96fSGw46LtVuCFNR2p+FAx3PaGUG7vvON/ZVrjG
-         Su/ofEIpUxJbDMQSX0g/C50FRLEYBZ7o7EELJihAbNgSS/TSm1IzxKrzOPUmjPEDok9l
-         /zGToo82/s7XPLQPrZRJMIROE81Kl+f2emo8RHNhm6CWIVq1efGcuealNPaFidaL9EYx
-         DsqqcnJ6YwaCdQV6q7HTf2IxqNNuFNq8tG2hWDYMv2vbZzqzuxxRaXUAm/Ku7Ye1R6or
-         BXfA==
-X-Gm-Message-State: AOAM533QF5XKgMk+ko7ThNZSdPfRhChz89Ug26cOiZ9ThlXcXE3K9WF+
-        oeo901tG3eY7nV4keT3b2oNdcHKlPfqYdTGQkqEJZF1t
-X-Google-Smtp-Source: ABdhPJyfoxgKsOwNFi4UiM4o394ThnPEmsLIf5RI7arVjkMCEBGVByy0HnH8XipAyieXjvVmACz92Ad9o0yYQwdYmMM=
-X-Received: by 2002:a17:906:fcab:: with SMTP id qw11mr20041483ejb.456.1593558762319;
- Tue, 30 Jun 2020 16:12:42 -0700 (PDT)
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=iirypFBp2xtegwS2Iq4B1iPUgMABexUaf6RMKakBSKI=;
+        b=NPr4wKr9H9yihK/b8av29b97Jr5Y94717h2vd3wUGCM6LghsJkyCHNHPm/nQxenZSl
+         D4YLCcURINesQzfUC1hDUgxpXGycy5tZqeW31YtuvbmorzQecbkDr4jj0cpJE/6X3sSa
+         5IfAtodMNNeg9CNp25R+hv//tBXRnz9LgpyPCxYxho6NI1FqV1odcnitHxtrHkEtn3Gt
+         S3yRTtl9cnIJQwkDniyR0EOSN6LQFGLoWweijLN7JM2xBWxY2/N1IMmUu0abUWR4RdEb
+         8uDunmFqWx1uskUagPi24wCFDLL2+ZBaokNzuEJHDkIbA1oDLi9qmpxncEMEIpGT4l5h
+         8NUA==
+X-Gm-Message-State: AOAM533XAd/6+oDpcrQJSsHvlPWK8VVlvydqPX53S8hmSyTL6itAhmAi
+        lgSUDPcCe4mKdnfT9/m9FGc=
+X-Google-Smtp-Source: ABdhPJwjmCFf0FSJ9sq3xPbIH6a6uMutO+swEhEFAoU5cSvs0hsfpCCdfwJGGVjUVa5/m4fbCAn6vA==
+X-Received: by 2002:a37:4c0d:: with SMTP id z13mr21851974qka.170.1593559681849;
+        Tue, 30 Jun 2020 16:28:01 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id x13sm3868567qkx.10.2020.06.30.16.28.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 16:28:01 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 30 Jun 2020 19:27:59 -0400
+To:     Fangrui Song <maskray@google.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H . J . Lu" <hjl@sourceware.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 7/7] x86/boot: Check that there are no runtime
+ relocations
+Message-ID: <20200630232759.GA2641539@rani.riverdale.lan>
+References: <202006290907.E5EF18A@keescook>
+ <CAMj1kXFge5aWL2BY8Y1=m1TonB+SrDq6p7TQWuO5JkzcR2dhjQ@mail.gmail.com>
+ <202006290919.93C759C62@keescook>
+ <20200629165603.GD900899@rani.riverdale.lan>
+ <20200629173735.l3ssrj7m3q5swfup@google.com>
+ <CAMj1kXHaXzYFkW_H=w36vMb1qPpuZXsnTd_giq4vsh0bw3S3eA@mail.gmail.com>
+ <20200629233405.n56yb4xwlgxrt3fn@google.com>
+ <CAMj1kXGTOdNiuU70pFB74UJ6z43AM-UViTSd3=ATV=94W+f1RA@mail.gmail.com>
+ <20200630175408.GA2301688@rani.riverdale.lan>
+ <20200630220043.4snabunhgvfdktte@google.com>
 MIME-Version: 1.0
-References: <20200515163956.GA2158595@mit.edu>
-In-Reply-To: <20200515163956.GA2158595@mit.edu>
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Wed, 1 Jul 2020 09:12:31 +1000
-Message-ID: <CAPM=9tz3heu1-xTyYDA4huszt3LLgF87pKcifc+OCFqJv-KWdA@mail.gmail.com>
-Subject: Re: Maintainers / Kernel Summit 2020 planning kick-off
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     LKML <linux-kernel@vger.kernel.org>, inux-fsdevel@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-block@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200630220043.4snabunhgvfdktte@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 May 2020 at 02:41, Theodore Y. Ts'o <tytso@mit.edu> wrote:
->
-> [ Feel free to forward this to other Linux kernel mailing lists as
->   appropriate -- Ted ]
->
-> This year, the Maintainers and Kernel Summit will NOT be held in
-> Halifax, August 25 -- 28th, as a result of the COVID-19 pandemic.
-> Instead, we will be pursuing a virtual conference format for both the
-> Maintainers and Kernel Summit, around the last week of August.
->
-> As in previous years, the Maintainers Summit is invite-only, where the
-> primary focus will be process issues around Linux Kernel Development.
-> It will be limited to 30 invitees and a handful of sponsored
-> attendees.
+On Tue, Jun 30, 2020 at 03:00:43PM -0700, Fangrui Song wrote:
+> * Ard Biesheuvel
+> > On Tue, 30 Jun 2020 at 01:34, Fangrui Song <maskray@google.com> wrote:
+> 
+> If the executable is purely static, it does not need to have PLT. All
+> calls to a PLT can be redirected to the function itself.  Some range
+> extension thunks (other terms: stub groups, veneers, etc) may still be
+> needed if the distance is too large.
+> 
+> There are cases where a GOT cannot be avoided, e.g.
+> 
+> extern char foo[] __attribute__((weak, visibility("hidden")));
+> char *fun() { return foo; }
+> 
+> If foo is a SHN_ABS, `movq foo@GOTPCREL(%rip), %rax` can't be optimized
+> by GOTPCRELX (https://sourceware.org/bugzilla/show_bug.cgi?id=25749 binutils>=2.35 will be good)
+> Many other architectures don't even have a GOT optimization.
 
-What timezone are the conferences being held in? It impacts on what I
-can attend quite heavily :-)
+Urk -- the example given in that bug report isn't even weak. Are you
+guys proposing to pessimize every access to a global symbol, regardless
+of visibility, by going through the GOT on the off chance that somebody
+might define one of them as SHN_ABS? Can we at least gate it behind
+something like __attribute__((might_be_shn_abs))?
 
-Dave.
+> 
+> >I don't think it's really relevant for the kernel build -- all we get is
+> >ld -static --no-dynamic-linker, all -static does is prevent searching
+> >shared libraries, and we already pass --no-dynamic-linker if it's
+> >supported.
+> >
+> >[0] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81498
