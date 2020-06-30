@@ -2,118 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B8E20EF34
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17F320EF54
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730871AbgF3HVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 03:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730637AbgF3HVm (ORCPT
+        id S1731005AbgF3Har (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 03:30:47 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:34217 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726943AbgF3Har (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 03:21:42 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D6FC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 00:21:41 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id y13so10724742lfe.9
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 00:21:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V3VDYgt1zTFMdABjQ8B+qkXvuWVdNTswZvSgfcJ5ZfU=;
-        b=PprvlrpbinByF4TFkGGycc90/2r42FHT5UVS3tEzsUBzG/xaCTpG788raEyTTMlN1O
-         h4D0KagKUnuaMgjUGd3vvbNG42kDf5lGRhhjmXFRyjBwFD6yzJI1PE+Xh5jfyCgFNerh
-         750MnbWvRWbk7isk9GiI92InbTEd0yLVQt3sGAYtvSWU7PZ/qdRFdm5kykHRKQPF5uRm
-         s31W94kUBakZI1XuTPCzEyKJeEosYMA15WMTK1IKzl8A4V9LDPfDAmNks3tmpU9MRxL5
-         zyYwdFuHL7fXvS7VbAJBfKOpfoHkNkM3OJxb7KB7i6Y0SVluEcZDLSdrnasKDSR84lI7
-         9ZIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V3VDYgt1zTFMdABjQ8B+qkXvuWVdNTswZvSgfcJ5ZfU=;
-        b=ZeXZfTvTlaSpRvmDmTaNhapjq5pe6QkusXFbhuAFhW7boPdr22z5CZt1GLoShrXbs+
-         xz74L56U+8LWpg0OCRqPuWDxEDj6CMOynIsWIrqTOOk4lnJOVH5PUZUx0Y87NX1HTk4X
-         OUntCxjzlFCSX9M2rjJOxrLf7QnOuCw1pTg249nMH6UbhFm9a8U9G5z9DL6yYHI7JF/z
-         jvNr9dfrv+JJ25eEV7u7kK57kETne6z50oODH92yjRVrwTN8ckxECd3TlyBGLriE6f4v
-         RQxzA7JyKC4mmod1/v+zKU01HW5zh7DGA66U55bUjCrG/HEqGmwi6H9XI6hIKraQE5Od
-         sn+w==
-X-Gm-Message-State: AOAM533y0yKT1Et/qe0hMiGnZ4t0COMxSTGpBD0Qj2cAB2RBz89TKuUE
-        XT6xKKFm7fmUl0g0qOc9inxkn8bZmQA02MEKS/0=
-X-Google-Smtp-Source: ABdhPJzfnYZJ+FpolUHdlpEl9/AZXSN2liVUehp9/X6K4o90BRCqYWVJ7LAGfE/KlEjoh8jtgnuvmK5vwYiZFuCtkHo=
-X-Received: by 2002:a19:b07:: with SMTP id 7mr11415981lfl.38.1593501700365;
- Tue, 30 Jun 2020 00:21:40 -0700 (PDT)
+        Tue, 30 Jun 2020 03:30:47 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 04B83882;
+        Tue, 30 Jun 2020 03:30:43 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 30 Jun 2020 03:30:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=QLnlN1GIamFpAnpFCQURrJYtNy5
+        7NrXSIOmRV8y9wUQ=; b=JKF2RLxIBXte86OafrU1CczjM7wWmITOnY9j6EQiyh5
+        oSql38PtjeMbOMzdI1J/cHnSu3VGniq0Ynf6Lqmr6eNRMSNoaXktJc2/lP420gN7
+        LjJzidoSBSWxFImJiVr9SH+aZdrGLCLEgWGIjg4pT3OrEIAcTtikSnSBYd3iwL1/
+        YI/95CcUACkFObnta6KT5HaJ+MmZmtfkxtBJs8JPYMVYLGK0nj5MqRlAKSpi66y0
+        sPWWzQ4l+gD71UtXH/XE5qSjwWs4HSUD2d6wAotYI8nqgyJPpmA7hFCoX8Ww6MID
+        QK2XuuElENbTiLGrB3Fqxn8n03l1gFPgU+UTFv7/h8Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=QLnlN1
+        GIamFpAnpFCQURrJYtNy57NrXSIOmRV8y9wUQ=; b=AtwYEx3ucEB9E+0uMzHvA5
+        hBUFzf4DxPQBa1/IZXAexFcW08u3w/JwlH4C/cYllTW/7usQxQL9knN/rsHftvEh
+        WwTvsfqsc0nFRSuaNERTH2PSaKKPINuaokfwZZciA31pGLvyd1Gpfp7SFEm7Sza+
+        khjdoi4F+JLhEjjSMsCavQyNVT3JDrKN+3QUxT1jB+Vk0infVVRxW1UER8uoWKOo
+        NPfG8uwLTQjQ1AdiCKxIBeHkUKFIX7ixvhV5Cr6WZixMfG/pYzgCw5+a7fBoO/5P
+        xFgT+rBcH+gffQUBZErPAOTRQO1MrAMzfLkQjtOpmf54yRI8nKG3eGbb//yFgRnA
+        ==
+X-ME-Sender: <xms:I-r6XiusM8TAxYDB6oPtHE1yNYVFSZtJWD7unqnIMj7WgzaitngYsQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrvddttddguddvfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
+    heegudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:I-r6XncMSUAYpIG0ckwaMJDG-XHcRQS9zM0laKvzuuD-ngk85iLC2A>
+    <xmx:I-r6XtyQYadn044eZFyYfk29n0i-2Pg2jyCOtxhCoJR9oy_UINb3MQ>
+    <xmx:I-r6XtPBY4ReJfJO41cPLwmzktTJWawBjvE8dTP8EaVJqmoI_DgTrQ>
+    <xmx:I-r6XkLB9toL2myt6Bvvi3mG-Ddw8RqCa9XurJw7vREaW0XVLwWWug>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id B902F3280059;
+        Tue, 30 Jun 2020 03:30:42 -0400 (EDT)
+Date:   Tue, 30 Jun 2020 09:30:40 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     wens@csie.org, kishon@ti.com, vkoul@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] phy: allwinner: phy-sun6i-mipi-dphy: Constify structs
+Message-ID: <20200630073040.t7mrd4jwldfgqov5@gilmour.lan>
+References: <20200629195727.9717-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
-References: <1592362839-4050-1-git-send-email-jrdr.linux@gmail.com> <CAFqt6zbQ-AJK_3NHmaOVXYUaD7ajvEvogMAOrse-99+vPi7xNw@mail.gmail.com>
-In-Reply-To: <CAFqt6zbQ-AJK_3NHmaOVXYUaD7ajvEvogMAOrse-99+vPi7xNw@mail.gmail.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Tue, 30 Jun 2020 12:59:56 +0530
-Message-ID: <CAFqt6zZeXeEb1KfPTuNb2R5GQdPpPPJ5JFY8KuErUUV4DdOTnw@mail.gmail.com>
-Subject: Re: [PATCH v2] drivers/virt/fsl_hypervisor: Correcting error handling path
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, mchehab+samsung@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-kernel@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="wlgtdw6dwhcbgcba"
+Content-Disposition: inline
+In-Reply-To: <20200629195727.9717-1-rikard.falkeborn@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 10:05 PM Souptick Joarder <jrdr.linux@gmail.com> wrote:
->
-> On Wed, Jun 17, 2020 at 8:22 AM Souptick Joarder <jrdr.linux@gmail.com> wrote:
-> >
-> > First, when memory allocation for sg_list_unaligned failed, there
-> > is no point of calling put_pages() as we haven't pinned any pages.
-> >
-> > Second, if get_user_pages_fast() failed we should unpinned num_pinned
-> > pages, no point of checking till num_pages.
-> >
-> > This will address both.
-> >
-> > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> > Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > Cc: John Hubbard <jhubbard@nvidia.com>
->
-> Any suggestion, what is the right tree to take this patch forward ?
 
-If no further comment, can we get this patch in queue for 5.9 ?
+--wlgtdw6dwhcbgcba
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> > ---
-> > v2:
-> >         Added review tag.
-> >
-> >  drivers/virt/fsl_hypervisor.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/virt/fsl_hypervisor.c b/drivers/virt/fsl_hypervisor.c
-> > index 1b0b11b..ea344d7 100644
-> > --- a/drivers/virt/fsl_hypervisor.c
-> > +++ b/drivers/virt/fsl_hypervisor.c
-> > @@ -157,7 +157,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
-> >
-> >         unsigned int i;
-> >         long ret = 0;
-> > -       int num_pinned; /* return value from get_user_pages() */
-> > +       int num_pinned = 0; /* return value from get_user_pages() */
-> >         phys_addr_t remote_paddr; /* The next address in the remote buffer */
-> >         uint32_t count; /* The number of bytes left to copy */
-> >
-> > @@ -293,7 +293,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
-> >
-> >  exit:
-> >         if (pages) {
-> > -               for (i = 0; i < num_pages; i++)
-> > +               for (i = 0; i < num_pinned; i++)
-> >                         if (pages[i])
-> >                                 put_page(pages[i]);
-> >         }
-> > --
-> > 1.9.1
-> >
+On Mon, Jun 29, 2020 at 09:57:27PM +0200, Rikard Falkeborn wrote:
+> sun6i_dphy_ops and sun6i_dphy_regmap_config are not modified so make them
+> const structs to allow the compiler to put them in read-only memory.
+>=20
+> Before:
+>    text    data     bss     dec     hex filename
+>    4407    1944      64    6415    190f drivers/phy/allwinner/phy-sun6i-m=
+ipi-dphy.o
+>=20
+> After:
+>    text    data     bss     dec     hex filename
+>    4835    1496      64    6395    18fb drivers/phy/allwinner/phy-sun6i-m=
+ipi-dphy.o
+>=20
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+
+Acked-by: Maxime Ripard <mripard@kernel.org>
+
+Thanks!
+Maxime
+
+--wlgtdw6dwhcbgcba
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXvrqIAAKCRDj7w1vZxhR
+xfZ8AP9tdMkrg9oG7LM4vUF/Iy0hPfSCqDBI9oYxGR7atDeCjgEAtv6SPo9jII4a
+j55hopR07Yh3O2qa9eqIlPbKd5rMvwA=
+=QrJC
+-----END PGP SIGNATURE-----
+
+--wlgtdw6dwhcbgcba--
