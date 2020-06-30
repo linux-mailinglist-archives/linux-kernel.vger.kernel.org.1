@@ -2,103 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9A020F76F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C41420F780
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389062AbgF3On7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 10:43:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58852 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726072AbgF3On7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 10:43:59 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 06EF1AB3D;
-        Tue, 30 Jun 2020 14:43:57 +0000 (UTC)
-Date:   Tue, 30 Jun 2020 16:43:55 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Mike Snitzer <snitzer@redhat.com>
-Cc:     Mikulas Patocka <mpatocka@redhat.com>, linux-nvdimm@lists.01.org,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Jan Kara <jack@suse.cz>, Alasdair Kergon <agk@redhat.com>,
-        dm-devel@redhat.com, "Michael S. Tsirkin" <mst@redhat.com>,
-        Yuval Shaia <yuval.shaia@oracle.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Jakub Staron <jstaron@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: dm writecache: reject asynchronous pmem.
-Message-ID: <20200630144355.GA21462@kitsune.suse.cz>
-References: <20200630123528.29660-1-msuchanek@suse.de>
- <alpine.LRH.2.02.2006300929580.4801@file01.intranet.prod.int.rdu2.redhat.com>
- <20200630141022.GZ21462@kitsune.suse.cz>
- <20200630133546.GA20439@redhat.com>
+        id S2389083AbgF3OrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 10:47:01 -0400
+Received: from smtprelay0080.hostedemail.com ([216.40.44.80]:59642 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727016AbgF3OrB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 10:47:01 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 15CD8100E7B40;
+        Tue, 30 Jun 2020 14:47:00 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3865:3866:3867:3868:3870:3871:3872:3874:4321:4605:5007:6117:6691:7901:7903:7904:10004:10400:10848:11232:11473:11658:11914:12048:12297:12438:12555:12740:12760:12895:13069:13255:13311:13357:13439:14181:14659:14721:21080:21324:21451:21627:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: scarf61_370d38626e78
+X-Filterd-Recvd-Size: 2299
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 30 Jun 2020 14:46:58 +0000 (UTC)
+Message-ID: <39ba164ba44be848feac831f2f21effca92bfc96.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: prevent reporting C99_COMMENTS error for
+ SPDX tag in .c file
+From:   Joe Perches <joe@perches.com>
+To:     Quentin Monnet <quentin@isovalent.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vadim Bendebury <vbendeb@chromium.org>
+Cc:     linux-kernel@vger.kernel.org
+Date:   Tue, 30 Jun 2020 07:46:57 -0700
+In-Reply-To: <20200630143525.13869-1-quentin@isovalent.com>
+References: <20200630143525.13869-1-quentin@isovalent.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200630133546.GA20439@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 09:36:33AM -0400, Mike Snitzer wrote:
-> On Tue, Jun 30 2020 at 10:10am -0400,
-> Michal Suchánek <msuchanek@suse.de> wrote:
+(adding Vadem Bendebury who added the tolerance test)
+
+On Tue, 2020-06-30 at 15:35 +0100, Quentin Monnet wrote:
+> When checkpatch.pl is invoked with "--ignore C99_COMMENT_TOLERANCE", it
+> reports C99-style comments found in the code, by matching on the
+> double-slash pattern "//". This includes the leading slashes before the
+> SPDX tags that are now used in a majority of C files.
 > 
-> > On Tue, Jun 30, 2020 at 09:32:01AM -0400, Mikulas Patocka wrote:
-> > > 
-> > > 
-> > > On Tue, 30 Jun 2020, Michal Suchanek wrote:
-> > > 
-> > > > The writecache driver does not handle asynchronous pmem. Reject it when
-> > > > supplied as cache.
-> > > > 
-> > > > Link: https://lore.kernel.org/linux-nvdimm/87lfk5hahc.fsf@linux.ibm.com/
-> > > > Fixes: 6e84200c0a29 ("virtio-pmem: Add virtio pmem driver")
-> > > > 
-> > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > > > ---
-> > > >  drivers/md/dm-writecache.c | 6 ++++++
-> > > >  1 file changed, 6 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/md/dm-writecache.c b/drivers/md/dm-writecache.c
-> > > > index 30505d70f423..57b0a972f6fd 100644
-> > > > --- a/drivers/md/dm-writecache.c
-> > > > +++ b/drivers/md/dm-writecache.c
-> > > > @@ -2277,6 +2277,12 @@ static int writecache_ctr(struct dm_target *ti, unsigned argc, char **argv)
-> > > >  
-> > > >  		wc->memory_map_size -= (uint64_t)wc->start_sector << SECTOR_SHIFT;
-> > > >  
-> > > > +		if (!dax_synchronous(wc->ssd_dev->dax_dev)) {
-> > > > +			r = -EOPNOTSUPP;
-> > > > +			ti->error = "Asynchronous persistent memory not supported as pmem cache";
-> > > > +			goto bad;
-> > > > +		}
-> > > > +
-> > > >  		bio_list_init(&wc->flush_list);
-> > > >  		wc->flush_thread = kthread_create(writecache_flush_thread, wc, "dm_writecache_flush");
-> > > >  		if (IS_ERR(wc->flush_thread)) {
-> > > > -- 
-> > > 
-> > > Hi
-> > > 
-> > > Shouldn't this be in the "if (WC_MODE_PMEM(wc))" block?
-> > That should be always the case at this point.
-> > > 
-> > > WC_MODE_PMEM(wc) retrurns true if we are using persistent memory as a 
-> > > cache device, otherwise we are using generic block device as a cache 
-> > > device.
-> >
-> > This is to prevent the situation where we have WC_MODE_PMEM(wc) but
-> > cannot guarantee consistency because the async flush is not handled.
+> Such tags are commented with the double-slash on purpose, and should not
+> trigger errors from checkpatch. Let's ignore them when searching for
+> C99-style comments to report.
 > 
-> The writecache operates in 2 modes.  SSD or PMEM.  Mikulas is saying
-> your dax_synchronous() check should go within a WC_MODE_PMEM(wc) block
-> because it doesn't make sense to do the check when in SSD mode.
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 
-Indeed, it's in the wrong if/else branch.
+I think this unnecessary as perhaps those that want no
+c99 comments likely _really_ want no c99 comments.
 
-Thanks
+> ---
+>  scripts/checkpatch.pl | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 3cacc122c528..67f350c580ea 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3983,7 +3983,10 @@ sub process {
+>  		}
+>  
+>  # no C99 // comments
+> -		if ($line =~ m{//}) {
+> +		if ($line =~ m{//} &&
+> +		    !($rawline =~ m{// SPDX-License-Identifier:} &&
+> +		      $realfile =~ /\.c$/ &&
+> +		      $realline == $checklicenseline)) {
+>  			if (ERROR("C99_COMMENTS",
+>  				  "do not use C99 // comments\n" . $herecurr) &&
+>  			    $fix) {
 
-Michal
