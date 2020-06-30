@@ -2,272 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C9B20F09F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69D520F0A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731546AbgF3Ih2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 04:37:28 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17597 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731476AbgF3Ih0 (ORCPT
+        id S1731563AbgF3IiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 04:38:17 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:40575 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731458AbgF3IiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 04:37:26 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5efaf9950000>; Tue, 30 Jun 2020 01:36:37 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 30 Jun 2020 01:37:26 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 30 Jun 2020 01:37:26 -0700
-Received: from [10.26.75.203] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 30 Jun
- 2020 08:37:18 +0000
-Subject: Re: [PATCH v8 3/3] iommu/arm-smmu: Add global/context fault
- implementation hooks
-To:     Krishna Reddy <vdumpa@nvidia.com>
-CC:     <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <treding@nvidia.com>,
-        <yhsu@nvidia.com>, <snikam@nvidia.com>, <praithatha@nvidia.com>,
-        <talho@nvidia.com>, <bbiswas@nvidia.com>, <mperttunen@nvidia.com>,
-        <nicolinc@nvidia.com>, <bhuntsman@nvidia.com>,
-        <nicoleotsuka@gmail.com>
-References: <20200630001051.12350-1-vdumpa@nvidia.com>
- <20200630001051.12350-4-vdumpa@nvidia.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <4b4b20af-7baa-0987-e40d-af74235153f6@nvidia.com>
-Date:   Tue, 30 Jun 2020 09:37:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 30 Jun 2020 04:38:17 -0400
+Received: by mail-lj1-f193.google.com with SMTP id n23so21503330ljh.7
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 01:38:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=EbYeb+xUSTFe+QxI4hQUUuiFupYXSj7BZsfh1VgaQ5I=;
+        b=Ggl1IOtScH4+WJxrgYxHM/g5rkiaZWv76iNpgzMg+7Nyxvey5stRL+yVgHBnEtt/w5
+         k6TbZzzreHngcbLMXnhcNGAVE8oH3sJkLrAwnBEfqE21nq4rT6krCKP6R1DnK7dc8EdR
+         8lMhNKes6V0T/pbIamxwFlbBvYilURhCfU9bmW9n1pRHuKnp9i5nBpsk3f6i8IGbn2oM
+         kYdKGQQPMIoEChdlawILXLEOTJyRZA1nCxiYd9bVdTl6hiGdhdKemBqJC4N4mQOjGk38
+         3augH7w46nXVva6dRA7QWILJ/Kn59FSt0oUD3bh4Xpemsx68SI9N2pH9R5RvoTTdFPjj
+         t7ug==
+X-Gm-Message-State: AOAM530x3fZT1hqH8WIb8iJ3zY3M0Kag5Kfw7ayXxvbrYjCdjmMl90gD
+        z41aGxgHE7vjR1Tr0kvm1cA=
+X-Google-Smtp-Source: ABdhPJxhA/FhqB07otgT2WGiw0kWHtHCtxa3xrejsmVvGZcRGAWXYVzCO1KjTEu3bs0EUHFbt6elcg==
+X-Received: by 2002:a2e:b8c4:: with SMTP id s4mr9673092ljp.374.1593506294828;
+        Tue, 30 Jun 2020 01:38:14 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id w6sm510268ljw.11.2020.06.30.01.38.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 01:38:13 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1jqBmM-0001nh-86; Tue, 30 Jun 2020 10:38:11 +0200
+Date:   Tue, 30 Jun 2020 10:38:10 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Johan Hovold <johan@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <jhovold@gmail.com>
+Subject: Re: [PATCH 2/5] mfd: lm3533-ctrlbank: Cap BRIGHTNESS_MAX to 127
+ since API uses u8 as carrier
+Message-ID: <20200630083810.GY3334@localhost>
+References: <20200629123215.1014747-1-lee.jones@linaro.org>
+ <20200629123215.1014747-3-lee.jones@linaro.org>
+ <20200629125102.GT3334@localhost>
+ <20200629132506.GJ177734@dell>
 MIME-Version: 1.0
-In-Reply-To: <20200630001051.12350-4-vdumpa@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593506197; bh=72sjvS5OeRNzGJemrzzyR9F18Oc7fZfIj/1NnRKYpRE=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=ET617ItKPJmQZ4OggW+dP3YjoRaXe52rJ9jAGLKIQUJy3aEXp6LQk9LWIE9mhYvtx
-         42FDez1ciM7+tNTX9sCKur+62GgByXXDNzH2mVGcydjTQZGYRJ1348qS3XKDWAEkSu
-         yjye/IuiSPNEHXDvKoMrCboVoHHl42o5pDmKa4lKtXrKHPxdutKHGRy3vAwlR3XtmQ
-         KPV/ed3C1AfrJ6wWbxg0QxUsAE70geTiHmAk5GjlTxfy8KRxClCPfx6gjNSCntjBhE
-         DvJTvpQVVKFnK0nMk1vN+xTfnFeHZ2akRuCIchO5eWm7cFi1wNHaQlcknIiWe2A9VS
-         tZV0G0cQJ85tw==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200629132506.GJ177734@dell>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 30/06/2020 01:10, Krishna Reddy wrote:
-> Add global/context fault hooks to allow NVIDIA SMMU implementation
-> handle faults across multiple SMMUs.
-
-Nit ... this is not just for NVIDIA, but this allows anyone to add
-custom global/context and fault hooks. So I think that the changelog
-should be clear that this change permits custom fault hooks and that
-custom fault hooks are needed for the Tegra194 SMMU. You may also want
-to say why.
-
+On Mon, Jun 29, 2020 at 02:25:06PM +0100, Lee Jones wrote:
+> On Mon, 29 Jun 2020, Johan Hovold wrote:
 > 
-> Signed-off-by: Krishna Reddy <vdumpa@nvidia.com>
-> ---
->  drivers/iommu/arm-smmu-nvidia.c | 98 +++++++++++++++++++++++++++++++++
->  drivers/iommu/arm-smmu.c        | 17 +++++-
->  drivers/iommu/arm-smmu.h        |  3 +
->  3 files changed, 116 insertions(+), 2 deletions(-)
+> > On Mon, Jun 29, 2020 at 01:32:12PM +0100, Lee Jones wrote:
+> > > Since its conception in 2012 brightness has been artificially capped
+> > > at 127 since the variable carrying the value is u8.  We could go to
+> > > the trouble of changing the whole API (crossing 3 different subsystems),
+> > > but clearly this hasn't bothered anyone in the best part of a decade.
+> > > 
+> > > Simply, cap BRIGHTNESS_MAX to 127 instead (for now at least).
+> > 
+> > Hmm. This patch is clearly broken and would contrary to the claim be
+> > introducing an artificial cap at half brightness. u8 can hold the max
+> > brightness value 255 just fine.
 > 
-> diff --git a/drivers/iommu/arm-smmu-nvidia.c b/drivers/iommu/arm-smmu-nvidia.c
-> index 1124f0ac1823a..c9423b4199c65 100644
-> --- a/drivers/iommu/arm-smmu-nvidia.c
-> +++ b/drivers/iommu/arm-smmu-nvidia.c
-> @@ -147,6 +147,102 @@ static int nvidia_smmu_reset(struct arm_smmu_device *smmu)
->  	return 0;
->  }
->  
-> +static struct arm_smmu_domain *to_smmu_domain(struct iommu_domain *dom)
-> +{
-> +	return container_of(dom, struct arm_smmu_domain, domain);
-> +}
-> +
-> +static irqreturn_t nvidia_smmu_global_fault_inst(int irq,
-> +					       struct arm_smmu_device *smmu,
-> +					       int inst)
-> +{
-> +	u32 gfsr, gfsynr0, gfsynr1, gfsynr2;
-> +	void __iomem *gr0_base = nvidia_smmu_page(smmu, inst, 0);
-> +
-> +	gfsr = readl_relaxed(gr0_base + ARM_SMMU_GR0_sGFSR);
-> +	if (!gfsr)
-> +		return IRQ_NONE;
-> +
-> +	gfsynr0 = readl_relaxed(gr0_base + ARM_SMMU_GR0_sGFSYNR0);
-> +	gfsynr1 = readl_relaxed(gr0_base + ARM_SMMU_GR0_sGFSYNR1);
-> +	gfsynr2 = readl_relaxed(gr0_base + ARM_SMMU_GR0_sGFSYNR2);
-> +
-> +	dev_err_ratelimited(smmu->dev,
-> +		"Unexpected global fault, this could be serious\n");
-> +	dev_err_ratelimited(smmu->dev,
-> +		"\tGFSR 0x%08x, GFSYNR0 0x%08x, GFSYNR1 0x%08x, GFSYNR2 0x%08x\n",
-> +		gfsr, gfsynr0, gfsynr1, gfsynr2);
-> +
-> +	writel_relaxed(gfsr, gr0_base + ARM_SMMU_GR0_sGFSR);
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static irqreturn_t nvidia_smmu_global_fault(int irq, void *dev)
-> +{
-> +	int inst;
+> Yes, of course it can.  Senior moment on my account.
+> 
+> > > Fixes the following W=1 warning(s):
+> > > 
+> > >  drivers/mfd/lm3533-ctrlbank.c: In function ‘lm3533_ctrlbank_set_brightness’:
+> > >  drivers/mfd/lm3533-ctrlbank.c:98:10: warning: comparison is always false due to limited range of data type [-Wtype-limits]
+> > >  98 | if (val > LM3533_##_NAME##_MAX) | ^
+> > >  drivers/mfd/lm3533-ctrlbank.c:125:1: note: in expansion of macro ‘lm3533_ctrlbank_set’
+> > >  125 | lm3533_ctrlbank_set(brightness, BRIGHTNESS);
+> > >  | ^~~~~~~~~~~~~~~~~~~
+> > 
+> > This warning is benign. The same macro is used to defined two function
+> > where in one case the max value coincides with U8_MAX so that the sanity
+> > check becomes redundant.
+> 
+> A benign warning, as most W=1 warnings are, is still a warning.
 
-Should be unsigned
+Not every warning needs to be addressed, there's a reason some of these
+are hidden behind W=1 or higher.
 
-> +	irqreturn_t irq_ret = IRQ_NONE;
-> +	struct arm_smmu_device *smmu = dev;
-> +	struct nvidia_smmu *nvidia_smmu = to_nvidia_smmu(smmu);
-> +
-> +	for (inst = 0; inst < nvidia_smmu->num_inst; inst++) {
-> +		irq_ret = nvidia_smmu_global_fault_inst(irq, smmu, inst);
-> +		if (irq_ret == IRQ_HANDLED)
-> +			return irq_ret;
+> So how do you propose we fix it?
+> 
+> Is 255 a valid and used brightness level?
 
-Any chance there could be more than one SMMU faulting by the time we
-service the interrupt?
+Yes.
 
-> +	}
-> +
-> +	return irq_ret;
-> +}
-> +
-> +static irqreturn_t nvidia_smmu_context_fault_bank(int irq,
-> +					    struct arm_smmu_device *smmu,
-> +					    int idx, int inst)
-> +{
-> +	u32 fsr, fsynr, cbfrsynra;
-> +	unsigned long iova;
-> +	void __iomem *gr1_base = nvidia_smmu_page(smmu, inst, 1);
-> +	void __iomem *cb_base = nvidia_smmu_page(smmu, inst, smmu->numpage + idx);
-> +
-> +	fsr = readl_relaxed(cb_base + ARM_SMMU_CB_FSR);
-> +	if (!(fsr & ARM_SMMU_FSR_FAULT))
-> +		return IRQ_NONE;
-> +
-> +	fsynr = readl_relaxed(cb_base + ARM_SMMU_CB_FSYNR0);
-> +	iova = readq_relaxed(cb_base + ARM_SMMU_CB_FAR);
-> +	cbfrsynra = readl_relaxed(gr1_base + ARM_SMMU_GR1_CBFRSYNRA(idx));
-> +
-> +	dev_err_ratelimited(smmu->dev,
-> +	"Unhandled context fault: fsr=0x%x, iova=0x%08lx, fsynr=0x%x, cbfrsynra=0x%x, cb=%d\n",
-> +			    fsr, iova, fsynr, cbfrsynra, idx);
-> +
-> +	writel_relaxed(fsr, cb_base + ARM_SMMU_CB_FSR);
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static irqreturn_t nvidia_smmu_context_fault(int irq, void *dev)
-> +{
-> +	int inst, idx;
+> If so, how do you feel about:
+> 
+>   /* Avoid 'always false' check '(u8) > 255' */
+>   if (LM3533_##_NAME##_MAX != 0xff && val > LM3533_##_NAME##_MAX)
+>           return -EINVAL;        
 
-Unsigned
+I'm afraid that's not sufficient to shut the compiler up.
 
-> +	irqreturn_t irq_ret = IRQ_NONE;
-> +	struct iommu_domain *domain = dev;
-> +	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
-> +	struct arm_smmu_device *smmu = smmu_domain->smmu;
-> +
-> +	for (inst = 0; inst < to_nvidia_smmu(smmu)->num_inst; inst++) {
-> +		/*
-> +		 * Interrupt line shared between all context faults.
-> +		 * Check for faults across all contexts.
-> +		 */
-> +		for (idx = 0; idx < smmu->num_context_banks; idx++) {
-> +			irq_ret = nvidia_smmu_context_fault_bank(irq, smmu,
-> +								 idx, inst);
-> +
-> +			if (irq_ret == IRQ_HANDLED)
-> +				return irq_ret;
+I'll send you patch expanding these accessors instead. Having exported
+functions implemented by macros is particularly nice (hard to grep for
+etc). There are a couple of more sets of control-bank registers that
+could potentially have shared the implementation and which motivated the
+use of macros, but it does not seem very likely that we'll be adding
+those anytime soon anyway.
 
-Any reason why we don't check all banks?
-
-> +		}
-> +	}
-> +
-> +	return irq_ret;
-> +}
-> +
->  static const struct arm_smmu_impl nvidia_smmu_impl = {
->  	.read_reg = nvidia_smmu_read_reg,
->  	.write_reg = nvidia_smmu_write_reg,
-> @@ -154,6 +250,8 @@ static const struct arm_smmu_impl nvidia_smmu_impl = {
->  	.write_reg64 = nvidia_smmu_write_reg64,
->  	.reset = nvidia_smmu_reset,
->  	.tlb_sync = nvidia_smmu_tlb_sync,
-> +	.global_fault = nvidia_smmu_global_fault,
-> +	.context_fault = nvidia_smmu_context_fault,
->  };
->  
->  struct arm_smmu_device *nvidia_smmu_impl_init(struct arm_smmu_device *smmu)
-> diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-> index 243bc4cb2705b..3bb0aba15a356 100644
-> --- a/drivers/iommu/arm-smmu.c
-> +++ b/drivers/iommu/arm-smmu.c
-> @@ -673,6 +673,7 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
->  	enum io_pgtable_fmt fmt;
->  	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
->  	struct arm_smmu_cfg *cfg = &smmu_domain->cfg;
-> +	irqreturn_t (*context_fault)(int irq, void *dev);
->  
->  	mutex_lock(&smmu_domain->init_mutex);
->  	if (smmu_domain->smmu)
-> @@ -835,7 +836,13 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
->  	 * handler seeing a half-initialised domain state.
->  	 */
->  	irq = smmu->irqs[smmu->num_global_irqs + cfg->irptndx];
-> -	ret = devm_request_irq(smmu->dev, irq, arm_smmu_context_fault,
-> +
-> +	if (smmu->impl && smmu->impl->context_fault)
-> +		context_fault = smmu->impl->context_fault;
-> +	else
-> +		context_fault = arm_smmu_context_fault;
-
-Why not see the default smmu->impl->context_fault to
-arm_smmu_context_fault in arm_smmu_impl_init() and then allow the
-various implementations to override as necessary? Then you can get rid
-of this context_fault variable here and just use
-smmu->impl->context_fault below.
-
-> +
-> +	ret = devm_request_irq(smmu->dev, irq, context_fault,
->  			       IRQF_SHARED, "arm-smmu-context-fault", domain);
->  	if (ret < 0) {
->  		dev_err(smmu->dev, "failed to request context IRQ %d (%u)\n",
-> @@ -2107,6 +2114,7 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
->  	struct arm_smmu_device *smmu;
->  	struct device *dev = &pdev->dev;
->  	int num_irqs, i, err;
-> +	irqreturn_t (*global_fault)(int irq, void *dev);
->  
->  	smmu = devm_kzalloc(dev, sizeof(*smmu), GFP_KERNEL);
->  	if (!smmu) {
-> @@ -2193,9 +2201,14 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
->  		smmu->num_context_irqs = smmu->num_context_banks;
->  	}
->  
-> +	if (smmu->impl && smmu->impl->global_fault)
-> +		global_fault = smmu->impl->global_fault;
-> +	else
-> +		global_fault = arm_smmu_global_fault;
-> +
-
-Same here.
-
-Jon
-
--- 
-nvpublic
+Johan
