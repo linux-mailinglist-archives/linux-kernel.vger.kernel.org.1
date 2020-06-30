@@ -2,141 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4617220F8AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 17:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 860CF20F8BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 17:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389668AbgF3Png (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 11:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389653AbgF3Pne (ORCPT
+        id S2389707AbgF3PoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 11:44:14 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29820 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2389617AbgF3PoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 11:43:34 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478A4C03E97A
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 08:43:34 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id f3so10142092pgr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 08:43:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Czyj7qztvQ/ET90pA6Cgm802J9mg/c4CrHX1EyYszQQ=;
-        b=GFGPy40KuPsHkZUJdbeyZcQSvGfgs5FvnkigPPk9SV7CG59Zt39VKpM1zlVSVXoRDt
-         yCeVdinmT/3C3Jtmhrs/ytEmj7Wsnn2qAcbIAA0lgRJAkDSMH3qtVX2x5ups9P63e9d7
-         P9x2xILnsZVnyM3LolHHJ5MFrhP7fYB+ZvvgJsDeODXoJ2PGrPKhFRUVpy4BweeZ7T88
-         7TInXYSLaUF36rQyQh/ug2yeZtWjhx06VQWrVd2dOvf947KJmX/LErgbh6FwQ3ULFM07
-         +NsZiEDxchja6NsLMdoWiv7fTvOttuxXSfOyaHVhHUidelj6tLF2XevCAgd1imXsny29
-         D7Hg==
+        Tue, 30 Jun 2020 11:44:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593531851;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=g+7JZMmEMWPm9TcnXCXFzCXeXPgv7LEiZobSQGLUt4c=;
+        b=IfwJae+M2aGa3GlnEIb2oQas55fDDGCS0TQiF685YKehOUQrTyFUXUCbsRLUifaPC8YC3s
+        YoeXQGn28QSNmSFnuHFOjoC9GA6C9FsqUOM3e5bnxxiFdRzcla4gKuVira131VQw0ft7ot
+        uDMqfUhNE6GAGHpxTB17Sem0Sceep+U=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-42-SRPiOL1MPj2l3OTDwGLi4Q-1; Tue, 30 Jun 2020 11:43:58 -0400
+X-MC-Unique: SRPiOL1MPj2l3OTDwGLi4Q-1
+Received: by mail-ej1-f72.google.com with SMTP id f11so2844062ejb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 08:43:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Czyj7qztvQ/ET90pA6Cgm802J9mg/c4CrHX1EyYszQQ=;
-        b=T7HodZsFOZo3qXA1oXkoEOeVV3tDRJuDLHpW/oPidxXXufMRo/0W3QRfpJn+k5GLy7
-         eBhz9MVatSwfiinR794qh+NSQXT0/sMin7CWgnJcZmcnrUq1c/n3bGlD0GLtpVbBPn1f
-         qgCGmXtj8zxV2cDGbu98I1E3s5U+blatnWcj5D0L1NzL1vftSpYyTGXkBMeq/0/vpOND
-         6dakc2425oRuVPdxjs3dsEHcxtk09CpoRY1DojL5ghFBwHAVi+p3Dn0wRbNgJ7ySLk/6
-         GJbO8t77pImJR8G/Ik3JsmeAprzCfVoIJBboOSPQ80Bl5AlTkfQL4EE6EkAPVmpT8hsW
-         K8pg==
-X-Gm-Message-State: AOAM532iZha5Ry+y/gl5/iThZ9SIEnF3bmOqOjgsVDLGUi75v8e5JBS7
-        fzF7kpmQL87D7SaL40MvurDo/w==
-X-Google-Smtp-Source: ABdhPJx6lEIGGyQAAazhh6sEGODM0EvGn2wcc8uAkFeSAVS9hqQhG93iUqi0nvo2CJcI+RwKQRfdOw==
-X-Received: by 2002:a65:5a0f:: with SMTP id y15mr15197406pgs.6.1593531813542;
-        Tue, 30 Jun 2020 08:43:33 -0700 (PDT)
-Received: from ?IPv6:2605:e000:100e:8c61:4113:50ea:3eb3:a39b? ([2605:e000:100e:8c61:4113:50ea:3eb3:a39b])
-        by smtp.gmail.com with ESMTPSA id w68sm3185027pff.191.2020.06.30.08.43.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jun 2020 08:43:32 -0700 (PDT)
-Subject: Re: rename ->make_request_fn and move it to the
- block_device_operations
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-xtensa@linux-xtensa.org,
-        drbd-dev@lists.linbit.com, linuxppc-dev@lists.ozlabs.org,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-nvme@lists.infradead.org,
-        linux-s390@vger.kernel.org
-References: <20200629193947.2705954-1-hch@lst.de>
- <bd1443c0-be37-115b-1110-df6f0e661a50@kernel.dk>
-Message-ID: <6ddbe343-0fc2-58c8-3726-c4ba9952994f@kernel.dk>
-Date:   Tue, 30 Jun 2020 09:43:31 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=g+7JZMmEMWPm9TcnXCXFzCXeXPgv7LEiZobSQGLUt4c=;
+        b=Nh6nLhkTGbqKwbZqEgKnZb0cf7A/qAfn9HwkSqShDNXtw+RZMU8H7H9VrhxBpxFskw
+         CquLOobZtukFcdxvnVhAlgT4AEEkgxLDk4JHR0hCRmuy0foUnTou46HOUm7AxZajoBfq
+         a0sRqf76dMGPlGcNNYEQaF/ujGenizMF58A7MuenjmzViTgAcN9a4vdzJknLG0MnmStn
+         k5q6kg0zHtP1eykAS+1WL73Obn6MM/sRktqYkJ3rnE2XEoQnPN7NCNs73Wz2xS2lRVtA
+         SoWEZwly2S3TASbF6AluvwTbifazbkLUE9b8kOv7allLaqy/KohV83gqOpMpyamxzJYj
+         qbmQ==
+X-Gm-Message-State: AOAM532TQFl9Ae6XGLOwAqicuxr7+Tlgnzruo8b6LAXFlqfE02bzGYhD
+        Ya4ucPjNN9Z8CefjPcK0YODR302+TRGYdiEjYRphkDnysB/VX291FtuFkqytXyS0P/MZcQvj5HD
+        hFtmdOi4pdiM12sr4lfeo9v/h
+X-Received: by 2002:a17:906:6a14:: with SMTP id o20mr19371694ejr.128.1593531836505;
+        Tue, 30 Jun 2020 08:43:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwN5020D0g4+WwC4BExYGDMsxQNa0UsSFFuaNfKIVU9PWBDqP5EAnwkz46NPYCIlmVoziF18w==
+X-Received: by 2002:a17:906:6a14:: with SMTP id o20mr19371673ejr.128.1593531836311;
+        Tue, 30 Jun 2020 08:43:56 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id w18sm2247913ejc.62.2020.06.30.08.43.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 08:43:55 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     kvm@vger.kernel.org, virtio-fs@redhat.com, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] kvm,x86: Exit to user space in case of page fault error
+In-Reply-To: <20200630152529.GC322149@redhat.com>
+References: <20200625214701.GA180786@redhat.com> <87lfkach6o.fsf@vitty.brq.redhat.com> <20200626150303.GC195150@redhat.com> <874kqtd212.fsf@vitty.brq.redhat.com> <20200629220353.GC269627@redhat.com> <87sgecbs9w.fsf@vitty.brq.redhat.com> <20200630145303.GB322149@redhat.com> <87mu4kbn7x.fsf@vitty.brq.redhat.com> <20200630152529.GC322149@redhat.com>
+Date:   Tue, 30 Jun 2020 17:43:54 +0200
+Message-ID: <87k0zobltx.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <bd1443c0-be37-115b-1110-df6f0e661a50@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/30/20 7:57 AM, Jens Axboe wrote:
-> On 6/29/20 1:39 PM, Christoph Hellwig wrote:
->> Hi Jens,
->>
->> this series moves the make_request_fn method into block_device_operations
->> with the much more descriptive ->submit_bio name.  It then also gives
->> generic_make_request a more descriptive name, and further optimize the
->> path to issue to blk-mq, removing the need for the direct_make_request
->> bypass.
-> 
-> Looks good to me, and it's a nice cleanup as well. Applied.
+Vivek Goyal <vgoyal@redhat.com> writes:
 
-Dropped, insta-crashes with dm:
+> On Tue, Jun 30, 2020 at 05:13:54PM +0200, Vitaly Kuznetsov wrote:
+>> 
+>> > - If you retry in kernel, we will change the context completely that
+>> >   who was trying to access the gfn in question. We want to retain
+>> >   the real context and retain information who was trying to access
+>> >   gfn in question.
+>> 
+>> (Just so I understand the idea better) does the guest context matter to
+>> the host? Or, more specifically, are we going to do anything besides
+>> get_user_pages() which will actually analyze who triggered the access
+>> *in the guest*?
+>
+> When we exit to user space, qemu prints bunch of register state. I am
+> wondering what does that state represent. Does some of that traces
+> back to the process which was trying to access that hva? I don't
+> know.
 
-[   10.240134] BUG: kernel NULL pointer dereference, address: 0000000000000000
-[   10.241000] #PF: supervisor instruction fetch in kernel mode
-[   10.241666] #PF: error_code(0x0010) - not-present page
-[   10.242280] PGD 0 P4D 0 
-[   10.242600] Oops: 0010 [#1] PREEMPT SMP
-[   10.243073] CPU: 1 PID: 2110 Comm: systemd-udevd Not tainted 5.8.0-rc3+ #6655
-[   10.243939] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
-[   10.245012] RIP: 0010:0x0
-[   10.245322] Code: Bad RIP value.
-[   10.245695] RSP: 0018:ffffc900002f7af8 EFLAGS: 00010246
-[   10.246333] RAX: ffffffff81c83520 RBX: ffff8881b805dea8 RCX: ffff88819e844070
-[   10.247227] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88819e844070
-[   10.248112] RBP: ffffc900002f7b48 R08: ffff8881b6f38800 R09: ffff88818ff0ea58
-[   10.248994] R10: 0000000000000000 R11: ffff88818ff0ea58 R12: ffff88819e844070
-[   10.250077] R13: 00000000ffffffff R14: 0000000000000000 R15: ffff888107812948
-[   10.251168] FS:  00007f5c3ed66a80(0000) GS:ffff8881b9c80000(0000) knlGS:0000000000000000
-[   10.252161] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   10.253189] CR2: ffffffffffffffd6 CR3: 00000001b2953003 CR4: 00000000001606e0
-[   10.254157] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   10.255279] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   10.256365] Call Trace:
-[   10.256781]  submit_bio_noacct+0x1f6/0x3d0
-[   10.257297]  submit_bio+0x37/0x130
-[   10.257780]  ? guard_bio_eod+0x2e/0x70
-[   10.258418]  mpage_readahead+0x13c/0x180
-[   10.259096]  ? blkdev_direct_IO+0x490/0x490
-[   10.259654]  read_pages+0x68/0x2d0
-[   10.260051]  page_cache_readahead_unbounded+0x1b7/0x220
-[   10.260818]  generic_file_buffered_read+0x865/0xc80
-[   10.261587]  ? _copy_to_user+0x6d/0x80
-[   10.262171]  ? cp_new_stat+0x119/0x130
-[   10.262680]  new_sync_read+0xfe/0x170
-[   10.263155]  vfs_read+0xc8/0x180
-[   10.263647]  ksys_read+0x53/0xc0
-[   10.264209]  do_syscall_64+0x3c/0x70
-[   10.264759]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   10.265200] RIP: 0033:0x7f5c3fcc9ab2
-[   10.265510] Code: Bad RIP value.
-[   10.265775] RSP: 002b:00007ffc8e0cf9c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[   10.266426] RAX: ffffffffffffffda RBX: 000055d5eca76c68 RCX: 00007f5c3fcc9ab2
-[   10.267012] RDX: 0000000000000040 RSI: 000055d5eca76c78 RDI: 0000000000000006
-[   10.267591] RBP: 000055d5eca44890 R08: 000055d5eca76c50 R09: 00007f5c3fd99a40
-[   10.268168] R10: 0000000000000008 R11: 0000000000000246 R12: 000000003bd90000
-[   10.268744] R13: 0000000000000040 R14: 000055d5eca76c50 R15: 000055d5eca448e0
-[   10.269319] Modules linked in:
-[   10.269562] CR2: 0000000000000000
-[   10.269845] ---[ end trace f09b8963e5a3593b ]---
+We can get the full CPU state when the fault happens if we need to but
+generally we are not analyzing it. I can imagine looking at CPL, for
+example, but trying to distinguish guest's 'process A' from 'process B'
+may not be simple.
+
+>
+> I think keeping a cache of error gfns might not be too bad from
+> implemetation point of view. I will give it a try and see how
+> bad does it look.
+
+Right; I'm only worried about the fact that every cache (or hash) has a
+limited size and under certain curcumstances we may overflow it. When an
+overflow happens, we will follow the APF path again and this can go over
+and over. Maybe we can punch a hole in EPT/NPT making the PFN reserved/
+not-present so when the guest tries to access it again we trap the
+access in KVM and, if the error persists, don't follow the APF path?
 
 -- 
-Jens Axboe
+Vitaly
 
