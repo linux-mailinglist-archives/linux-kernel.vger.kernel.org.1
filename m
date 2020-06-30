@@ -2,65 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF5920F937
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 18:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D4B20F945
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 18:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732342AbgF3QOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 12:14:45 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:60452 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728998AbgF3QOo (ORCPT
+        id S1732826AbgF3QSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 12:18:12 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.164]:15318 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726736AbgF3QSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 12:14:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593533682;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sUPToEOX4B/mGCL1pbKHYVjaKfSmKgEu2oySIFoO2KI=;
-        b=b863bcVyBkq9b575jzRJWBhz9juylcJK1VZceUEO+YAhlzR9e5Xuk43ByYxpHjujJePegK
-        iB3nijwyLhFiQEW9xz68XwCbKzVECs8BgOY3Z0oK604osYy+8C3+aieSDc+tPOus6eJV2w
-        +KiEi6ToR+9Kf57ncWotG8DDHKmNXk4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-19-6SsKhYcYPXW-9xb2cIECEg-1; Tue, 30 Jun 2020 12:14:38 -0400
-X-MC-Unique: 6SsKhYcYPXW-9xb2cIECEg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3426587950E;
-        Tue, 30 Jun 2020 16:14:37 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 376197FEA9;
-        Tue, 30 Jun 2020 16:14:27 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 05UGEQBl030308;
-        Tue, 30 Jun 2020 12:14:26 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 05UGEQ44030304;
-        Tue, 30 Jun 2020 12:14:26 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Tue, 30 Jun 2020 12:14:26 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Michal Suchanek <msuchanek@suse.de>
-cc:     linux-nvdimm@lists.01.org,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Jan Kara <jack@suse.cz>, Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Jakub Staron <jstaron@google.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Yuval Shaia <yuval.shaia@oracle.com>,
-        Cornelia Huck <cohuck@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] dm writecache: reject asynchronous pmem.
-In-Reply-To: <alpine.LRH.2.02.2006301210270.24082@file01.intranet.prod.int.rdu2.redhat.com>
-Message-ID: <alpine.LRH.2.02.2006301213080.24082@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2006301101210.24028@file01.intranet.prod.int.rdu2.redhat.com> <20200630154924.3283-1-msuchanek@suse.de> <alpine.LRH.2.02.2006301210270.24082@file01.intranet.prod.int.rdu2.redhat.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        Tue, 30 Jun 2020 12:18:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1593533888;
+        s=strato-dkim-0002; d=hartkopp.net;
+        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=UQbMuL5GteFYcEkQVqGEO+2ozDFITfnMDX6You1TvZU=;
+        b=D0eos3IUHG5uubRZ+jZO3w6c6Cgjodi3EbvzlvLP7Kh00+RMtr1p9Y1YFESL+mJfNh
+        7VxsPXR5ZBvTaD8bGAI8723TM8isoqHnNHbXqs5/IfVUVovms85w0TsEiQAqnP1oyxce
+        Z0G1NSj2SRtCKgnodsdBDsqnnf06rosREbS3QYj+2eOCnY2+OO+pqPJeWaPbelxJibLh
+        29hrwtbHXk7W4T2OJdim8D97at4YrXRrma+hRmVYjyX3tTUELRKl7Sx6EyWD1snVU7f/
+        wuUjX+KGQX8eD8wZ5IFHAbLUjJDWe0Mc0WkToZv/emCiKTnWxhnJK/gt5sT6u5JX6LPE
+        KwyA==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3PMaViOoLMJV8h7kyA="
+X-RZG-CLASS-ID: mo00
+Received: from [192.168.50.177]
+        by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
+        with ESMTPSA id R09ac6w5UGF6I1A
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Tue, 30 Jun 2020 18:15:06 +0200 (CEST)
+Subject: Re: [PATCH 2/2] can: flexcan: add support for ISO CAN-FD
+To:     Michael Walle <michael@walle.cc>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+References: <20200629181809.25338-1-michael@walle.cc>
+ <20200629181809.25338-3-michael@walle.cc>
+ <DB8PR04MB679504980A67DB8B1EEC8386E66F0@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <a42e035c8ee3334a721a089b5f8f0580@walle.cc>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+Message-ID: <5f6e0843-8504-e941-b6a3-1dc8599db39e@hartkopp.net>
+Date:   Tue, 30 Jun 2020 18:15:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <a42e035c8ee3334a721a089b5f8f0580@walle.cc>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -68,49 +62,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On Tue, 30 Jun 2020, Mikulas Patocka wrote:
-
+On 30.06.20 07:53, Michael Walle wrote:
+> [+ Oliver]
 > 
+> Hi Joakim,
 > 
-> On Tue, 30 Jun 2020, Michal Suchanek wrote:
+> Am 2020-06-30 04:42, schrieb Joakim Zhang:
+>>> -----Original Message-----
+>>> From: Michael Walle <michael@walle.cc>
+>>> Sent: 2020年6月30日 2:18
+>>> To: linux-can@vger.kernel.org; netdev@vger.kernel.org;
+>>> linux-kernel@vger.kernel.org
+>>> Cc: Wolfgang Grandegger <wg@grandegger.com>; Marc Kleine-Budde
+>>> <mkl@pengutronix.de>; David S . Miller <davem@davemloft.net>; Jakub
+>>> Kicinski <kuba@kernel.org>; Joakim Zhang <qiangqing.zhang@nxp.com>;
+>>> dl-linux-imx <linux-imx@nxp.com>; Michael Walle <michael@walle.cc>
+>>> Subject: [PATCH 2/2] can: flexcan: add support for ISO CAN-FD
+>>>
+>>> Up until now, the controller used non-ISO CAN-FD mode, although it 
+>>> supports it.
+>>> Add support for ISO mode, too. By default the hardware is in non-ISO 
+>>> mode and
+>>> an enable bit has to be explicitly set.
+>>>
+>>> Signed-off-by: Michael Walle <michael@walle.cc>
+>>> ---
+>>>  drivers/net/can/flexcan.c | 19 ++++++++++++++++---
+>>>  1 file changed, 16 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c index
+>>> 183e094f8d66..a92d3cdf4195 100644
+>>> --- a/drivers/net/can/flexcan.c
+>>> +++ b/drivers/net/can/flexcan.c
+>>> @@ -94,6 +94,7 @@
+>>>  #define FLEXCAN_CTRL2_MRP        BIT(18)
+>>>  #define FLEXCAN_CTRL2_RRS        BIT(17)
+>>>  #define FLEXCAN_CTRL2_EACEN        BIT(16)
+>>> +#define FLEXCAN_CTRL2_ISOCANFDEN    BIT(12)
+>>>
+>>>  /* FLEXCAN memory error control register (MECR) bits */
+>>>  #define FLEXCAN_MECR_ECRWRDIS        BIT(31)
+>>> @@ -1344,14 +1345,25 @@ static int flexcan_chip_start(struct net_device
+>>> *dev)
+>>>      else
+>>>          reg_mcr |= FLEXCAN_MCR_SRX_DIS;
+>>>
+>>> -    /* MCR - CAN-FD */
+>>> -    if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
+>>> +    /* MCR, CTRL2
+>>> +     *
+>>> +     * CAN-FD mode
+>>> +     * ISO CAN-FD mode
+>>> +     */
+>>> +    reg_ctrl2 = priv->read(&regs->ctrl2);
+>>> +    if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
+>>>          reg_mcr |= FLEXCAN_MCR_FDEN;
+>>> -    else
+>>> +        reg_ctrl2 |= FLEXCAN_CTRL2_ISOCANFDEN;
+>>> +    } else {
+>>>          reg_mcr &= ~FLEXCAN_MCR_FDEN;
+>>> +    }
+>>> +
+>>> +    if (priv->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO)
+>>> +        reg_ctrl2 &= ~FLEXCAN_CTRL2_ISOCANFDEN;
+>>
+>>
 > 
-> > The writecache driver does not handle asynchronous pmem. Reject it when
-> > supplied as cache.
-> > 
-> > Link: https://lore.kernel.org/linux-nvdimm/87lfk5hahc.fsf@linux.ibm.com/
-> > Fixes: 6e84200c0a29 ("virtio-pmem: Add virtio pmem driver")
-> > 
-> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> [..]
+>> ip link set can0 up type can bitrate 1000000 dbitrate 5000000 fd on
+>> ip link set can0 up type can bitrate 1000000 dbitrate 5000000 fd on \
+>>    fd-non-iso on
 > 
-> Acked-by: Mikulas Patocka <mpatocka@redhat.com>
-
-BTW, we should also add
-
-Cc: stable@vger.kernel.org	# v5.3+
-
-> > ---
-> >  drivers/md/dm-writecache.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/drivers/md/dm-writecache.c b/drivers/md/dm-writecache.c
-> > index 30505d70f423..5358894bb9fd 100644
-> > --- a/drivers/md/dm-writecache.c
-> > +++ b/drivers/md/dm-writecache.c
-> > @@ -2266,6 +2266,12 @@ static int writecache_ctr(struct dm_target *ti, unsigned argc, char **argv)
-> >  	}
-> >  
-> >  	if (WC_MODE_PMEM(wc)) {
-> > +		if (!dax_synchronous(wc->ssd_dev->dax_dev)) {
-> > +			r = -EOPNOTSUPP;
-> > +			ti->error = "Asynchronous persistent memory not supported as pmem cache";
-> > +			goto bad;
-> > +		}
-> > +
-> >  		r = persistent_memory_claim(wc);
-> >  		if (r) {
-> >  			ti->error = "Unable to map persistent memory for cache";
-> > -- 
-> > 2.26.2
-> > 
+> vs.
 > 
+>> ip link set can0 up type can bitrate 1000000 dbitrate 5000000 
+>> fd-non-iso on
+> 
+> I haven't found anything if CAN_CTRLMODE_FD_NON_ISO depends on
+> CAN_CTRLMODE_FD. I.e. wether CAN_CTRLMODE_FD_NON_ISO can only be set if
+> CAN_CTRLMODE_FD is also set.
+> 
+> Only the following piece of code, which might be a hint that you
+> have to set CAN_CTRLMODE_FD if you wan't to use CAN_CTRLMODE_FD_NON_ISO:
+> 
+> drivers/net/can/dev.c:
+>    /* do not check for static fd-non-iso if 'fd' is disabled */
+>    if (!(maskedflags & CAN_CTRLMODE_FD))
+>            ctrlstatic &= ~CAN_CTRLMODE_FD_NON_ISO;
+> 
+> If CAN_CTRLMODE_FD_NON_ISO can be set without CAN_CTRLMODE_FD, what
+> should be the mode if both are set at the same time?
 
+CAN_CTRLMODE_FD_NON_ISO is only relevant when CAN_CTRLMODE_FD is set.
+
+So in the example from above
+
+ip link set can0 up type can bitrate 1000000 dbitrate 5000000 fd-non-iso on
+
+either the setting of 'dbitrate 5000000' and 'fd-non-iso on' is pointless.
+
+When switching to FD-mode with 'fd on' the FD relevant settings need to 
+be applied.
+
+FD ISO is the default.
+
+Did this help or did I get anything wrong?
+
+Best,
+Oliver
