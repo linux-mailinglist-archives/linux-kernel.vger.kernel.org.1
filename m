@@ -2,168 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966F020EFBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440DB20EFCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731230AbgF3HnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 03:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47448 "EHLO
+        id S1731199AbgF3Hpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 03:45:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731204AbgF3HnQ (ORCPT
+        with ESMTP id S1731143AbgF3Hpm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 03:43:16 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7EEBC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 00:43:15 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z13so19067845wrw.5
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 00:43:15 -0700 (PDT)
+        Tue, 30 Jun 2020 03:45:42 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A1BC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 00:45:41 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id y18so10757530lfh.11
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 00:45:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=ZoRd38QGQrdDNG7r8luBguRXWeU+EfCI/iTGstHyFCU=;
-        b=vzMYZKamDpf4KUnrtaCbdUxNpLq+lxCT8bXztObsjLvBanF9bvOldNXUPoSGHXnmE9
-         dc2KjRbgrSHCUH/oSEZSN4B/lUlcjzLBkIPNS2K4kMXgYr1lkRS1xr8Hw2135D7ZVysd
-         tiSNA9MD2XMKGaBPWeQNmfVOOS0+SuPUIdJGkcX54QjTB8/GyLe4ptJdu5IeZar5cXvO
-         LegC4hGPOmkViJkQ9p9Z+QhM/T3NRadhGoegnJQiuS0rYhOKB1qObJutORQ87eg+rtPN
-         Z0pg8ze/1KuNEi7v8MU2x+amzhFvLL1EZUZ5uKmxQsSUpGSQbW/5SSaVFiIBdFQl80gW
-         3DDg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=aby7tMI/7Qek+geP8T3b8SZIhiOoFIotWz0ecg3N6fE=;
+        b=oOyIZzNAYzMKfQYUr1FjUFgGccp10sq5gT2sbYPUiG02DmoOj+0mqGizsH8pXNlaOE
+         r3NziXpBdKECtCYKWlT3EaxlHnvOzU932AzaF+pIZIweENnTZavpvEG/R8x8XDZ/Ke3K
+         hrUl0LhYQU8Vi9odF53uNBlbCL48I0oEwHDm3zZpFPAYQoF+y9LNwyTqX4uBkY1WeZMI
+         LQWfXFi259wNZniWz+P939zDcMj9YgD/HfAfDGy8tD5Aq1jX7B6z3t+fEtcywP3LxL4C
+         QIFoGqApgd22dJafVQ16vZUnENcSeC8Lk5iVr6UTYn8Go+MvoFk2ywD7S6NS3yuFNWF3
+         cNfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=ZoRd38QGQrdDNG7r8luBguRXWeU+EfCI/iTGstHyFCU=;
-        b=JzhtXkzANxre+ZNwNyaqBqZqHAxtNkCGEisPLGvX284mTD0YnW3G4ppeVgyacwiWSI
-         DKi19iCppzrS2qEsSvPy+eUWH6MdcMFO2Xb+EEvmQjPivgZNzst5mN0YGoY92oGMX7jN
-         /E/f+OHwp2QbmarwT3dJZlla3qemth2vBBjYxXmfGiL8UkJSM+EUxfqOZRFssLD8HIJf
-         /phkJH1FbkNJRjSeqHXsiWMe41LIi8SEoMn1K0CfW0W8D+bz8GLNX2hSAESWFVyKYqqA
-         X2nURe6jFvOS8ybp36e/+1XASMK4sdzagX1Eh82aW8OXDqy7h31Vk5HG33SIHZsj3AwZ
-         Pa8w==
-X-Gm-Message-State: AOAM530UrJpDn5dWOXnYXsSwExKTz+z+s2ZJmCKGTu/M8/3ZlVTGYgMJ
-        i/hCK/JEbtMDY29hf6vzCKogdA==
-X-Google-Smtp-Source: ABdhPJzlvkoJ7saZmHoJaFfgOMAemjtl3gOSLNuSoZPni4qpP36E2hSzZ02xX0WSbXP/a9yDE4Cr6w==
-X-Received: by 2002:adf:fe0b:: with SMTP id n11mr20436694wrr.245.1593502994105;
-        Tue, 30 Jun 2020 00:43:14 -0700 (PDT)
-Received: from vingu-book ([2a01:e0a:f:6020:bcb2:95cf:b364:c337])
-        by smtp.gmail.com with ESMTPSA id x185sm2595188wmg.41.2020.06.30.00.43.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 30 Jun 2020 00:43:13 -0700 (PDT)
-Date:   Tue, 30 Jun 2020 09:43:11 +0200
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Cc:     Tao Zhou <ouwen210@hotmail.com>, linux-kernel@vger.kernel.org,
-        Hillf Danton <hdanton@sina.com>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [LKP] [sched/fair] 6c8116c914: stress-ng.mmapfork.ops_per_sec
- -38.0% regression
-Message-ID: <20200630074311.GA12788@vingu-book>
-References: <20200421004749.GC26573@shao2-debian>
- <20200425012306.13516-1-hdanton@sina.com>
- <20200426124208.8872-1-hdanton@sina.com>
- <20200427113533.4688-1-hdanton@sina.com>
- <CAKfTPtABxPBmS6=qn96=7X5vfF0ae15M+RAiduH0sb11+gyKew@mail.gmail.com>
- <d50c9467-7b1b-346b-d4ab-107253a0a3ae@linux.intel.com>
- <BL0PR14MB377940B17C0889D725FF78599A9C0@BL0PR14MB3779.namprd14.prod.outlook.com>
- <d0faca7b-641a-e0e6-db89-443d88e2b3d8@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aby7tMI/7Qek+geP8T3b8SZIhiOoFIotWz0ecg3N6fE=;
+        b=ZB3cqjPsGNaD34K7TYLX1y8APkNjHFziIFXgXWvFBfIvufnFsouqPpwOGJgLXbeoHW
+         tO20Ml3ZVxSKyL2ihcku8IS6x8jV7Kk4M/jZMrElpdTGSABtaDtCpE//+DCk+Gl3nlBO
+         +HGqAk9CwldrFVtcFgy/KlYCvifS/ftK7nqOM4rJSmM3pkCyY6Jf9j0pbiDEgZQMW4nd
+         BrkJ8irckaKv1WdTINC6PYkPAH/qYvvLjo26rIiRrRldqf0YW0IZ89n4Kz1FnVmCqtpp
+         x8Lw3Xd7fhbSwE1/N8rdr476xjHgLivIIPjFkYfLFV4vb5LeiuvZHnCuWbSz0UrdVcQX
+         n66A==
+X-Gm-Message-State: AOAM532Cx34y7t/Q+SBF6/Kp+Pnt2SCxxaVpKaIWpWgTpq51qQvCmTu6
+        Ej4LeIy4v8JqRNfgfNkvMfbQwgghk+DmUGLHQxRHWRcMef72Ig==
+X-Google-Smtp-Source: ABdhPJyKM+fYc4VIv2+DWIxNNmFxTpQ19J2hKSpg9c6Z8goxsVLCJkW6KpBXrwLaIltVxi1rRTS57P/7NtlV0IKZpVc=
+X-Received: by 2002:ac2:5226:: with SMTP id i6mr11442262lfl.55.1593503139917;
+ Tue, 30 Jun 2020 00:45:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d0faca7b-641a-e0e6-db89-443d88e2b3d8@linux.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200629154007.2495120-1-sashal@kernel.org>
+In-Reply-To: <20200629154007.2495120-1-sashal@kernel.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 30 Jun 2020 13:15:28 +0530
+Message-ID: <CA+G9fYsKK_XhNA80ojV6V08F0GGAFVNyFVRF7RVR6jswkR15GQ@mail.gmail.com>
+Subject: Re: [PATCH 4.9 000/191] 4.9.229-rc1 review
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tao,
+On Mon, 29 Jun 2020 at 21:10, Sasha Levin <sashal@kernel.org> wrote:
+>
+>
+> This is the start of the stable review cycle for the 4.9.229 release.
+> There are 191 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed 01 Jul 2020 03:40:00 PM UTC.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git/patch/?id=3Dlinux-4.9.y&id2=3Dv4.9.228
+>
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> --
+> Thanks,
+> Sasha
 
-Le lundi 15 juin 2020 à 16:14:01 (+0800), Xing Zhengjun a écrit :
-> 
-> 
-> On 6/15/2020 1:18 PM, Tao Zhou wrote:
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-...
+Summary
+------------------------------------------------------------------------
 
-> I apply the patch based on v5.7, the regression still existed.
+kernel: 4.9.229-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.9.y
+git commit: 082e807235d793b91b22c2e836fbea167c5cd6a0
+git describe: v4.9.228-191-g082e807235d7
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.9-oe/bui=
+ld/v4.9.228-191-g082e807235d7
 
+No regressions (compared to build v4.9.228)
 
-Could you try the patch below  ? This patch is not a real fix because it impacts performance of others benchmarks but it will at least narrow your problem.
+No fixes (compared to build v4.9.228)
 
+Ran 33260 total tests in the following environments and test suites.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 9f78eb76f6fb..a4d8614b1854 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -8915,9 +8915,9 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
-                 * and consider staying local.
-                 */
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+- x86-kasan
 
--               if ((sd->flags & SD_NUMA) &&
--                   ((idlest_sgs.avg_load + imbalance) >= local_sgs.avg_load))
--                       return NULL;
-+//             if ((sd->flags & SD_NUMA) &&
-+//                 ((idlest_sgs.avg_load + imbalance) >= local_sgs.avg_load))
-+//                     return NULL;
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* v4l2-compliance
+* kvm-unit-tests
+* network-basic-tests
+* ltp-open-posix-tests
+* kselftest/net
 
-                /*
-                 * If the local group is less loaded than the selected
-
---
-
-
-> =========================================================================================
-> tbox_group/testcase/rootfs/kconfig/compiler/nr_threads/disk/sc_pid_max/testtime/class/cpufreq_governor/ucode:
-> 
-> lkp-bdw-ep6/stress-ng/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/100%/1HDD/4194304/1s/scheduler/performance/0xb000038
-> 
-> commit:
->   e94f80f6c49020008e6fa0f3d4b806b8595d17d8
->   6c8116c914b65be5e4d6f66d69c8142eb0648c22
->   v5.7
->   c7e6d37f60da32f808140b1b7dabcc3cde73c4cc  (Tao's patch)
-> 
-> e94f80f6c4902000 6c8116c914b65be5e4d6f66d69c                        v5.7
-> c7e6d37f60da32f808140b1b7da
-> ---------------- --------------------------- ---------------------------
-> ---------------------------
->          %stddev     %change         %stddev     %change %stddev     %change
-> %stddev
->              \          |                \          |                \
-> |                \
->     819250 ±  5%     -10.1%     736616 ±  8%     +41.2%    1156877 ± 3%
-> +43.6%    1176246 ±  5%  stress-ng.futex.ops
->     818985 ±  5%     -10.1%     736460 ±  8%     +41.2%    1156215 ± 3%
-> +43.6%    1176055 ±  5%  stress-ng.futex.ops_per_sec
->       1551 ±  3%      -3.4%       1498 ±  5%      -4.6%       1480 ± 5%
-> -14.3%       1329 ± 11%  stress-ng.inotify.ops
->       1547 ±  3%      -3.5%       1492 ±  5%      -4.8%       1472 ± 5%
-> -14.3%       1326 ± 11%  stress-ng.inotify.ops_per_sec
->      11292 ±  8%      -2.8%      10974 ±  8%      -9.4%      10225 ± 6%
-> -10.1%      10146 ±  6%  stress-ng.kill.ops
->      11317 ±  8%      -2.6%      11023 ±  8%      -9.1%      10285 ± 5%
-> -10.3%      10154 ±  6%  stress-ng.kill.ops_per_sec
->      28.20 ±  4%     -35.4%      18.22           -33.4%      18.77
-> -27.7%      20.40 ±  9%  stress-ng.mmapfork.ops_per_sec
->    2999012 ± 21%     -10.1%    2696954 ± 22%     -88.5%     344447 ± 11%
-> -87.8%     364932        stress-ng.tee.ops_per_sec
->       7882 ±  3%      -5.4%       7458 ±  4%      -2.0%       7724 ± 3%
-> -2.2%       7709 ±  4%  stress-ng.vforkmany.ops
->       7804 ±  3%      -5.2%       7400 ±  4%      -2.0%       7647 ± 3%
-> -2.1%       7636 ±  4%  stress-ng.vforkmany.ops_per_sec
->   46745421 ±  3%      -8.1%   42938569 ±  3%      -5.2%   44312072 ± 4%
-> -2.3%   45648193        stress-ng.yield.ops
->   46734472 ±  3%      -8.1%   42926316 ±  3%      -5.2%   44290338 ± 4%
-> -2.4%   45627571        stress-ng.yield.ops_per_sec
-> 
-> 
-> 
-
-...
-
-> -- 
-> Zhengjun Xing
+--=20
+Linaro LKFT
+https://lkft.linaro.org
