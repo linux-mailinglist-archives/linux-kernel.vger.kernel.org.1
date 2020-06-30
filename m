@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35EF20F5D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02EE20F5B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388279AbgF3Ney (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 09:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44940 "EHLO
+        id S2388184AbgF3Nd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 09:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388080AbgF3Ndu (ORCPT
+        with ESMTP id S2388139AbgF3Ndw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:33:50 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBFDC03E979
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:33:49 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id q15so18836112wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:33:49 -0700 (PDT)
+        Tue, 30 Jun 2020 09:33:52 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4CE8C03E97A
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:33:51 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 22so18846295wmg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:33:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g/OBCOZny1ndsw3tmtK3a2umBUo6+P4OiGX2ORUOTVo=;
-        b=SOwYxgcVaWP69efaAXz9BhJcmlTyK1GZqGNK1MqJgMhuxbrP1cUHlsGK2XYPEVuoot
-         KTtEe9qq6HGV8fCOc+8e5ors98U36q7Ke+yVpoP8mVeODUQU4Dqiojr2Lr68JuvxfcIT
-         9u7cxUHcLRvtnCsd4woz3jbfJZ7xySd6MHAlwOphAAEb0h58APo9daYXwxoXL9yRDl9M
-         HkKFTYCyGu/mFr9dVcsDrxBPS3yaAATySXjSSLERl93KVRUu2daqu4B988sR46gWzz1z
-         T9HbXAn8MX+UcCVy8IcimypeXTMbCfyv1yFHF5YHpvWxE5T+N02+l6NAA5EsSo1+jBC4
-         iUmQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zyIUTlmpGUcnH+LiKgtC/ATIX5960EbAPmpzyReDmls=;
+        b=Q6mGE5E3X/8/+zlhENHURAJbLrEQhKKP61fNSre5+zd/awBDhaniAZCqLJv3T/K+xB
+         LLaHcTkwe5z7mGfkbouNMs2GcI+AqRHhuq6Gz1QCCRJe0Y+hn/YHQuGUZWAqb7RUpdaE
+         70+NaU99UEzrWJmcUxMJBjS1r9r8XFy8753y04wH/FBtreZ39DbEg4yxDeqSHADl49s1
+         crYCHpqzEp8rRerMgtEmyT9czhG4JiM8cwA7eHXPiSnTgDUgjm80qrR51MCfCoBh7bds
+         M2AxS/fr2tEVYfL0+cYxhEvrKD3lrdVVxo3BgjB+eZHFrUSXOVioVHn0oc/fAVoRStuq
+         SWvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g/OBCOZny1ndsw3tmtK3a2umBUo6+P4OiGX2ORUOTVo=;
-        b=QTUPd4FrjGolAdPEGwQHmOMdhm6shjZ0tgssbDkwtPIzbMiWy4EUzvarQFqJa7UgC4
-         XPZMnSQXa/pwgrhdv0xxgpxqT1nWpBNCiOro1/SeD33tENrPRN60KeIdKSeScRwawmb3
-         5QB6qGenXmNWpou7vahOIAmg9mT4ov/xjC1aHWpjdso4LUGHbVg5bbiH+Plvw+zM5Miu
-         18UF5blyH10ms8k269fZn2UKwfRekDopA2RoYxm50ieBncQJQfRgClcOGHTBq7vlgbbp
-         yPLza73H4TDih4Uc/jekfn8vbN0MzNxi3eYMTDz9HgkjxD1wUh9NrvRPIlgptf7823Yl
-         hiNA==
-X-Gm-Message-State: AOAM532RsobiQ6Jxpj9HKhV8ykuqYovzY6trpCmRvPNIl76oxvo2IWeY
-        AL4nhX2MnEZ9IpD/VAdkK2todw==
-X-Google-Smtp-Source: ABdhPJwIF8ribrbnToYRwN/u2AGBLiHFeuBSCLm3XU+lxTFxPc4lFfZzghG4zloc1akGtH8+Nhr4Pw==
-X-Received: by 2002:a7b:c0da:: with SMTP id s26mr20301556wmh.96.1593524028491;
-        Tue, 30 Jun 2020 06:33:48 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zyIUTlmpGUcnH+LiKgtC/ATIX5960EbAPmpzyReDmls=;
+        b=YkmoKsZyD/Nr9vhoFzbY4doDSZlPeOqf7XfOsbbLJrCosMFZwvh3LEvjNx8S6Es2WJ
+         JWQFQbVYPeBE8bs6E2MUk8uo4ALi5gH6P+b3BnAzRZJE/mSoP0R3Zi+IzRshAtwYn1ff
+         s+EB4EV2IBYclxzmVBMO0Ayf5zg4HxuEu10GjjxekrF4Z4wB4fBEZ7Dj5XpeF3qrbAvK
+         Hm31/OwZoLiHuMGyhA2HuTTSTOwlK9mVp6C/Uta5/krVaBv+xBgdMvke5jmRW1WPPIru
+         N7mI68tqP6h5AnuTGMDTNxEKyLMpeTvALFUnv5kJ3YKKwSTJaJSLtRmXf9cFFovstTbT
+         JnkQ==
+X-Gm-Message-State: AOAM5315lgTRHQ3uU1JjxSyCjjhLfXIqT1WWUBcnjJip9HhvpIZnL5E2
+        dQUPohca5rsOmolVOgCzx1m39A==
+X-Google-Smtp-Source: ABdhPJw7St3BA3NSrWMeVnDiPKDDzNpn3UpLraNAHGKv+8L6f1Y/qEVIk8Dy7tAqPKp72fwVAxdgCg==
+X-Received: by 2002:a05:600c:2058:: with SMTP id p24mr21449910wmg.74.1593524029704;
+        Tue, 30 Jun 2020 06:33:49 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id z16sm3682464wrr.35.2020.06.30.06.33.47
+        by smtp.gmail.com with ESMTPSA id z16sm3682464wrr.35.2020.06.30.06.33.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 06:33:47 -0700 (PDT)
+        Tue, 30 Jun 2020 06:33:49 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 00/10] Clean GPIO of W=1 warnings
-Date:   Tue, 30 Jun 2020 14:33:35 +0100
-Message-Id: <20200630133345.2232932-1-lee.jones@linaro.org>
+        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Anton Vorontsov <avorontsov@ru.mvista.com>
+Subject: [PATCH 01/10] gpio: gpiolib-of: Provide documentation for of_gpio_spi_cs_get_count()
+Date:   Tue, 30 Jun 2020 14:33:36 +0100
+Message-Id: <20200630133345.2232932-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200630133345.2232932-1-lee.jones@linaro.org>
+References: <20200630133345.2232932-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
+Descriptions for of_gpio_spi_cs_get_count()'s 2 arguments are
+missing.  Document both 'dev' and 'con_id'.
 
-Lee Jones (10):
-  gpio: gpiolib-of: Provide documentation for of_gpio_spi_cs_get_count()
-  gpio: gpio-altera: Add missing kerneldoc entry and demote comment
-  gpio: gpio-ml-ioh: Fix missing ':' in 'struct ioh_gpio_reg_data
-  gpio: gpio-pmic-eic-sprd: Fix incorrectly named property 'map'
-  gpio: gpio-sama5d2-piobu: Demote all kerneldoc headers to basic
-    comment blocks
-  gpio: gpio-syscon: Fix formatting issues which confuse kerneldoc
-  gpio: gpio-it87: Fix formatting issues which confuse kerneldoc
-  gpio: gpio-mlxbf: Tell the compiler that ACPI functions may not be
-    used
-  gpio: gpio-mlxbf2: Tell the compiler that ACPI functions may not be
-    use
-  gpio: gpio-mlxbf2.c: Provide __releases() annotation to stop confusing
-    Sparse
+Fixes the following W=1 kernel build warnings:
 
- drivers/gpio/gpio-altera.c        |  3 ++-
- drivers/gpio/gpio-it87.c          | 14 +++++++-------
- drivers/gpio/gpio-ml-ioh.c        |  2 +-
- drivers/gpio/gpio-mlxbf.c         |  2 +-
- drivers/gpio/gpio-mlxbf2.c        |  4 +++-
- drivers/gpio/gpio-pmic-eic-sprd.c |  2 +-
- drivers/gpio/gpio-sama5d2-piobu.c | 16 ++++++++--------
- drivers/gpio/gpio-syscon.c        | 12 ++++++------
- drivers/gpio/gpiolib-of.c         |  3 +++
- 9 files changed, 32 insertions(+), 26 deletions(-)
+ drivers/gpio/gpiolib-of.c:36: warning: Function parameter or member 'dev' not described in 'of_gpio_spi_cs_get_count'
+ drivers/gpio/gpiolib-of.c:36: warning: Function parameter or member 'con_id' not described in 'of_gpio_spi_cs_get_count'
 
+Cc: Anton Vorontsov <avorontsov@ru.mvista.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/gpio/gpiolib-of.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/gpio/gpiolib-of.c b/drivers/gpio/gpiolib-of.c
+index 219eb00542334..236985714ea92 100644
+--- a/drivers/gpio/gpiolib-of.c
++++ b/drivers/gpio/gpiolib-of.c
+@@ -25,6 +25,9 @@
+ 
+ /**
+  * of_gpio_spi_cs_get_count() - special GPIO counting for SPI
++ * @dev:    Consuming device
++ * @con_id: Function within the GPIO consumer
++ *
+  * Some elder GPIO controllers need special quirks. Currently we handle
+  * the Freescale GPIO controller with bindings that doesn't use the
+  * established "cs-gpios" for chip selects but instead rely on
 -- 
 2.25.1
 
