@@ -2,265 +2,453 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D0220FFDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 00:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE5A20FFD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 00:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgF3WGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 18:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726074AbgF3WGo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 18:06:44 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 444F6C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 15:06:44 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id i4so10112740pjd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 15:06:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JRbK+0YHHIIsxTnbZ87llwjlpqpRQpEg9t8681tVnaU=;
-        b=P1jN7hrTy263FT44RDpDA65u3Rpzfknem+XD+OMM/9oElVw4mULSi4D0lEO0eRmOKF
-         Jpl22NVra0Z4yS6qM/4cEqrsqHE11VDz0LW/TJdwENjM1XKwAxuc/zx6jHtYKPYVcPNc
-         bJ7DBiyCYCw9FVrxk51YTI/1Jr9v5yYigqgM/V/5y6GrMWXfD1H5uF9L+FlTvRT/dgtf
-         J9wm9fmOxRDyaq52BfrTDqEBgkYyr7pErzDIR0IPGZIoHHi/1vmIek/VZuJjyz9UlOxn
-         W8TJsKUJJGU5n71KbMM76zZ4x8usO3ozwR7Kp/9dVjoMdwJpAkFF0Wgl3Wv5kKl6u8NI
-         el8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JRbK+0YHHIIsxTnbZ87llwjlpqpRQpEg9t8681tVnaU=;
-        b=W8QlVARmdLl3goydo3Ldaduklw2+lZtXC9XGhIeN38qUay9yAp8eDsg7w6fi68cgxi
-         UsSsk5d1LM3hS0bra2dZImCx8ibQiQI1pEUIkJuIWMjC1OgV0nZnUxK0il4mQVp9Egmi
-         Fmo2+4gK5Q0O8WNrgi3aqt0w6DArR8romAbq153TjzRlgsbSWBqEZlIh+XD9onA7CjjM
-         tN732zIB6sGvhJHwOyd8sXTbKD3ujvvcv8Gbkmse/N9o9K5r5cjzNUEShlKB4F11wvd1
-         IiKjKrZKXkyZ8lYV+wGbauC3E0Z0ZvplfXyenFq46io2R2JksErCQQT+ILrqsvIATU0P
-         1htA==
-X-Gm-Message-State: AOAM53368wqH/f8njQrI4Kbd6AVsGseUqcBUPlhMEZhL9lx5c9x/HN2u
-        pqAexjhhk/S9ebHwTP4eG+SBM4EpnmnJ5Q==
-X-Google-Smtp-Source: ABdhPJxDxtDfZTSAkX+NxphzmnffBhNbntenBaLW+fAJ6PwpAxKSAhUSQAvDZVk7p8m8JKlS3dSElw==
-X-Received: by 2002:a17:902:c697:: with SMTP id r23mr9815458plx.35.1593554447222;
-        Tue, 30 Jun 2020 15:00:47 -0700 (PDT)
-Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
-        by smtp.gmail.com with ESMTPSA id s131sm3658364pgc.30.2020.06.30.15.00.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 15:00:46 -0700 (PDT)
-Date:   Tue, 30 Jun 2020 15:00:43 -0700
-From:   Fangrui Song <maskray@google.com>
-To:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 7/7] x86/boot: Check that there are no runtime
- relocations
-Message-ID: <20200630220043.4snabunhgvfdktte@google.com>
-References: <20200629140928.858507-8-nivedita@alum.mit.edu>
- <202006290907.E5EF18A@keescook>
- <CAMj1kXFge5aWL2BY8Y1=m1TonB+SrDq6p7TQWuO5JkzcR2dhjQ@mail.gmail.com>
- <202006290919.93C759C62@keescook>
- <20200629165603.GD900899@rani.riverdale.lan>
- <20200629173735.l3ssrj7m3q5swfup@google.com>
- <CAMj1kXHaXzYFkW_H=w36vMb1qPpuZXsnTd_giq4vsh0bw3S3eA@mail.gmail.com>
- <20200629233405.n56yb4xwlgxrt3fn@google.com>
- <CAMj1kXGTOdNiuU70pFB74UJ6z43AM-UViTSd3=ATV=94W+f1RA@mail.gmail.com>
- <20200630175408.GA2301688@rani.riverdale.lan>
+        id S1726247AbgF3WCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 18:02:51 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:23499 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726033AbgF3WCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 18:02:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593554569; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=1i8M/sNwdLERiaBp02XBSSbUjMTGVJbBimX0448lpCE=; b=ABBFLq27X6MQgqMb4Yf7Mtc7bARXsNU0XORyN9XwcahwH1Gh3Y1YtK04YNy9gCZSsZOPTOLn
+ rJsUtbQgI8czbeTBgFIvABpgiDzl4/CYQqfXj+R+0u5iIuPu8AJQEWF4afgIjP5TmdWzHNOM
+ +hI185NswNBzN6eImSSVCaO8vuU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
+ 5efbb681e144dd511562ddcc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Jun 2020 22:02:41
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E1A50C43391; Tue, 30 Jun 2020 22:02:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.10] (cpe-70-95-5-60.san.res.rr.com [70.95.5.60])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D2F97C433C8;
+        Tue, 30 Jun 2020 22:02:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D2F97C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sidgup@codeaurora.org
+Subject: Re: [PATCH v3 1/2] remoteproc: Add remoteproc character device
+ interface
+To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>,
+        "rishabhb@codeaurora.org" <rishabhb@codeaurora.org>
+Cc:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "tsoni@codeaurora.org" <tsoni@codeaurora.org>,
+        "psodagud@codeaurora.org" <psodagud@codeaurora.org>,
+        "linux-remoteproc-owner@vger.kernel.org" 
+        <linux-remoteproc-owner@vger.kernel.org>
+References: <1587492618-15896-1-git-send-email-rishabhb@codeaurora.org>
+ <1587492618-15896-2-git-send-email-rishabhb@codeaurora.org>
+ <d72ead5a-b25a-d4e2-4bbf-1790d2a64fb8@st.com>
+ <d9a477cbbf19ed50af49aee7c6699e09@codeaurora.org>
+ <3738198d-53d4-2fe6-a92b-2db0cd0afa68@st.com>
+ <83c70517-32e4-9ce0-e1b4-2ed7a8b5c506@codeaurora.org>
+ <94541ff3-ba34-3a08-f989-6e1a0a88fbf2@st.com>
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+Message-ID: <d194ff3e-ef61-6e58-b684-f8144bc5dec8@codeaurora.org>
+Date:   Tue, 30 Jun 2020 15:02:38 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200630175408.GA2301688@rani.riverdale.lan>
+In-Reply-To: <94541ff3-ba34-3a08-f989-6e1a0a88fbf2@st.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Ard Biesheuvel
-> On Tue, 30 Jun 2020 at 01:34, Fangrui Song <maskray@google.com> wrote:
-> >
-> > On 2020-06-29, Ard Biesheuvel wrote:
-> > >On Mon, 29 Jun 2020 at 19:37, Fangrui Song <maskray@google.com> wrote:
-> > >>
-> > >> On 2020-06-29, Arvind Sankar wrote:
-> > >> >On Mon, Jun 29, 2020 at 09:20:31AM -0700, Kees Cook wrote:
-> > >> >> On Mon, Jun 29, 2020 at 06:11:59PM +0200, Ard Biesheuvel wrote:
-> > >> >> > On Mon, 29 Jun 2020 at 18:09, Kees Cook <keescook@chromium.org> wrote:
-> > >> >> > >
-> > >> >> > > On Mon, Jun 29, 2020 at 10:09:28AM -0400, Arvind Sankar wrote:
-> > >> >> > > > Add a linker script check that there are no runtime relocations, and
-> > >> >> > > > remove the old one that tries to check via looking for specially-named
-> > >> >> > > > sections in the object files.
-> > >> >> > > >
-> > >> >> > > > Drop the tests for -fPIE compiler option and -pie linker option, as they
-> > >> >> > > > are available in all supported gcc and binutils versions (as well as
-> > >> >> > > > clang and lld).
-> > >> >> > > >
-> > >> >> > > > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> > >> >> > > > Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-> > >> >> > > > Reviewed-by: Fangrui Song <maskray@google.com>
-> > >> >> > > > ---
-> > >> >> > > >  arch/x86/boot/compressed/Makefile      | 28 +++-----------------------
-> > >> >> > > >  arch/x86/boot/compressed/vmlinux.lds.S |  8 ++++++++
-> > >> >> > > >  2 files changed, 11 insertions(+), 25 deletions(-)
-> > >> >> > >
-> > >> >> > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > >> >> > >
-> > >> >> > > question below ...
-> > >> >> > >
-> > >> >> > > > diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-> > >> >> > > > index a4a4a59a2628..a78510046eec 100644
-> > >> >> > > > --- a/arch/x86/boot/compressed/vmlinux.lds.S
-> > >> >> > > > +++ b/arch/x86/boot/compressed/vmlinux.lds.S
-> > >> >> > > > @@ -42,6 +42,12 @@ SECTIONS
-> > >> >> > > >               *(.rodata.*)
-> > >> >> > > >               _erodata = . ;
-> > >> >> > > >       }
-> > >> >> > > > +     .rel.dyn : {
-> > >> >> > > > +             *(.rel.*)
-> > >> >> > > > +     }
-> > >> >> > > > +     .rela.dyn : {
-> > >> >> > > > +             *(.rela.*)
-> > >> >> > > > +     }
-> > >> >> > > >       .got : {
-> > >> >> > > >               *(.got)
-> > >> >> > > >       }
-> > >> >> > >
-> > >> >> > > Should these be marked (INFO) as well?
-> > >> >> > >
-> > >> >> >
-> > >> >> > Given that sections marked as (INFO) will still be emitted into the
-> > >> >> > ELF image, it does not really make a difference to do this for zero
-> > >> >> > sized sections.
-> > >> >>
-> > >> >> Oh, I misunderstood -- I though they were _not_ emitted; I see now what
-> > >> >> you said was not allocated. So, disk space used for the .got.plt case,
-> > >> >> but not memory space used. Sorry for the confusion!
-> > >> >>
-> > >> >> -Kees
-> > >>
-> > >> About output section type (INFO):
-> > >> https://sourceware.org/binutils/docs/ld/Output-Section-Type.html#Output-Section-Type
-> > >> says "These type names are supported for backward compatibility, and are
-> > >> rarely used."
-> > >>
-> > >> If all input section don't have the SHF_ALLOC flag, the output section
-> > >> will not have this flag as well. This type is not useful...
-> > >>
-> > >> If .got and .got.plt were used, they should be considered dynamic
-> > >> relocations which should be part of the loadable image. So they should
-> > >> have the SHF_ALLOC flag. (INFO) will not be applicable anyway.
-> > >>
-> > >
-> > >I don't care deeply either way, but Kees indicated that he would like
-> > >to get rid of the 24 bytes of .got.plt magic entries that we have no
-> > >need for.
-> > >
-> > >In fact, a lot of this mangling is caused by the fact that the linker
-> > >is creating a relocatable binary, and assumes that it is a hosted
-> > >binary that is loaded by a dynamic loader. It would actually be much
-> > >better if the compiler and linker would take -ffreestanding into
-> > >account, and suppress GOT entries, PLTs, dynamic program headers for
-> > >shared libraries altogether.
-> >
-> > Linkers (GNU ld and LLD) don't create .got or .got.plt just because the linker
-> > command line has -pie or -shared.  They create .got or .got.plt if there are
-> > specific needs.
-> >
-> > For .got.plt, if there is (1) any .plt/.iplt entry, (2) any .got.plt based
-> > relocation (e.g. R_X86_64_GOTPC32 on x86-64), or (3) if _GLOBAL_OFFSET_TABLE_ is
-> > referenced, .got.plt will be created (both GNU ld and LLD) with usually 3
-> > entries (for ld.so purposes).
-> >
-> 
-> This is not the case for AArch64. There, __GLOBAL_OFFSET_TABLE__ is
-> always emitted, along with the magic .got.plt entries, regardless of
-> the input.
-> 
-> As for the input objects - why is '#pragma GCC visibility(hidden)' not
-> the default for -ffreestanding builds? This suppresses any GOT entries
-> emitted by the compiler, but the only way to get this behavior is
-> through the #pragma, which is how we ended up with '-include hidden.h'
-> in a couple of places.
 
-A -ffreestanding build may provide a shared object used by other
-applications. For example, musl (libc)'s CFLAGS has -ffreestanding.
-
-> IOW, if the toolchain behavior was not 100% geared towards shared
-> executables as it is today, we would not need the hacks that we need
-> to apply to get a relocatable bare metal binary like we need for the
-> KASLR kernel.
-
-My mere concern regarding "geared towards shared objects" is that ELF
-assumes symbols of default visibility are preemptible by default.
-
-So unfortunately it is difficult to make -fno-semantic-interposition the
-default.
-
-> If (1) is not satisfied, the created .got.plt is just served as an anchor for
-> things that want to reference (the distance from GOT base to some point). The
-> linker will still reserve 3 words but the words are likely not needed.
+On 6/30/2020 12:43 AM, Arnaud POULIQUEN wrote:
 >
-> I don't think there is a specific need for another option to teach the linker
-> (GNU ld or LLD) that this is a kernel link.  For -ffreestanding builds, cc
-> -static (ld -no-pie))/-static-pie (-pie) already work quite well.
-
-On 2020-06-30, Arvind Sankar wrote:
->On Tue, Jun 30, 2020 at 06:26:43PM +0200, Ard Biesheuvel wrote:
->> On Tue, 30 Jun 2020 at 01:34, Fangrui Song <maskray@google.com> wrote:
+> On 6/30/20 7:38 AM, Siddharth Gupta wrote:
+>> On 6/17/2020 1:44 AM, Arnaud POULIQUEN wrote:
+>>> On 6/16/20 9:56 PM, rishabhb@codeaurora.org wrote:
+>>>> On 2020-04-30 01:30, Arnaud POULIQUEN wrote:
+>>>>> Hi Rishabh,
+>>>>>
+>>>>>
+>>>>> On 4/21/20 8:10 PM, Rishabh Bhatnagar wrote:
+>>>>>> Add the character device interface into remoteproc framework.
+>>>>>> This interface can be used in order to boot/shutdown remote
+>>>>>> subsystems and provides a basic ioctl based interface to implement
+>>>>>> supplementary functionality. An ioctl call is implemented to enable
+>>>>>> the shutdown on release feature which will allow remote processors to
+>>>>>> be shutdown when the controlling userpsace application crashes or
+>>>>>> hangs.
+>>>>>>
+>>>>> Thanks for intruducing Ioctl, this will help for future evolutions.
+>>>>>
+>>>>>> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+>>>>>> ---
+>>>>>>    Documentation/userspace-api/ioctl/ioctl-number.rst |   1 +
+>>>>>>    drivers/remoteproc/Kconfig                         |   9 ++
+>>>>>>    drivers/remoteproc/Makefile                        |   1 +
+>>>>>>    drivers/remoteproc/remoteproc_cdev.c               | 143
+>>>>>> +++++++++++++++++++++
+>>>>>>    drivers/remoteproc/remoteproc_internal.h           |  21 +++
+>>>>>>    include/linux/remoteproc.h                         |   3 +
+>>>>>>    include/uapi/linux/remoteproc_cdev.h               |  20 +++
+>>>>>>    7 files changed, 198 insertions(+)
+>>>>>>    create mode 100644 drivers/remoteproc/remoteproc_cdev.c
+>>>>>>    create mode 100644 include/uapi/linux/remoteproc_cdev.h
+>>>>>>
+>>>>>> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst
+>>>>>> b/Documentation/userspace-api/ioctl/ioctl-number.rst
+>>>>>> index 2e91370..412b2a0 100644
+>>>>>> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+>>>>>> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+>>>>>> @@ -337,6 +337,7 @@ Code  Seq#    Include File
+>>>>>>                     Comments
+>>>>>>    0xB4  00-0F  linux/gpio.h
+>>>>>> <mailto:linux-gpio@vger.kernel.org>
+>>>>>>    0xB5  00-0F  uapi/linux/rpmsg.h
+>>>>>> <mailto:linux-remoteproc@vger.kernel.org>
+>>>>>>    0xB6  all    linux/fpga-dfl.h
+>>>>>> +0xB7  all    uapi/linux/remoteproc_cdev.h			
+>>>>>> <mailto:linux-remoteproc@vger.kernel.org>
+>>>>>>    0xC0  00-0F  linux/usb/iowarrior.h
+>>>>>>    0xCA  00-0F  uapi/misc/cxl.h
+>>>>>>    0xCA  10-2F  uapi/misc/ocxl.h
+>>>>>> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+>>>>>> index de3862c..6374b79 100644
+>>>>>> --- a/drivers/remoteproc/Kconfig
+>>>>>> +++ b/drivers/remoteproc/Kconfig
+>>>>>> @@ -14,6 +14,15 @@ config REMOTEPROC
+>>>>>>
+>>>>>>    if REMOTEPROC
+>>>>>>
+>>>>>> +config REMOTEPROC_CDEV
+>>>>>> +	bool "Remoteproc character device interface"
+>>>>>> +	help
+>>>>>> +	  Say y here to have a character device interface for Remoteproc
+>>>>>> +	  framework. Userspace can boot/shutdown remote processors through
+>>>>>> +	  this interface.
+>>>>>> +
+>>>>>> +	  It's safe to say N if you don't want to use this interface.
+>>>>>> +
+>>>>>>    config IMX_REMOTEPROC
+>>>>>>    	tristate "IMX6/7 remoteproc support"
+>>>>>>    	depends on ARCH_MXC
+>>>>>> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+>>>>>> index e30a1b1..b7d4f77 100644
+>>>>>> --- a/drivers/remoteproc/Makefile
+>>>>>> +++ b/drivers/remoteproc/Makefile
+>>>>>> @@ -9,6 +9,7 @@ remoteproc-y				+= remoteproc_debugfs.o
+>>>>>>    remoteproc-y				+= remoteproc_sysfs.o
+>>>>>>    remoteproc-y				+= remoteproc_virtio.o
+>>>>>>    remoteproc-y				+= remoteproc_elf_loader.o
+>>>>>> +obj-$(CONFIG_REMOTEPROC_CDEV)		+= remoteproc_cdev.o
+>>>>>>    obj-$(CONFIG_IMX_REMOTEPROC)		+= imx_rproc.o
+>>>>>>    obj-$(CONFIG_MTK_SCP)			+= mtk_scp.o mtk_scp_ipi.o
+>>>>>>    obj-$(CONFIG_OMAP_REMOTEPROC)		+= omap_remoteproc.o
+>>>>>> diff --git a/drivers/remoteproc/remoteproc_cdev.c
+>>>>>> b/drivers/remoteproc/remoteproc_cdev.c
+>>>>>> new file mode 100644
+>>>>>> index 0000000..65142ec
+>>>>>> --- /dev/null
+>>>>>> +++ b/drivers/remoteproc/remoteproc_cdev.c
+>>>>>> @@ -0,0 +1,143 @@
+>>>>>> +// SPDX-License-Identifier: GPL-2.0-only
+>>>>>> +/*
+>>>>>> + * Character device interface driver for Remoteproc framework.
+>>>>>> + *
+>>>>>> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
+>>>>>> + */
+>>>>>> +
+>>>>>> +#include <linux/cdev.h>
+>>>>>> +#include <linux/fs.h>
+>>>>>> +#include <linux/module.h>
+>>>>>> +#include <linux/mutex.h>
+>>>>>> +#include <linux/remoteproc.h>
+>>>>>> +#include <uapi/linux/remoteproc_cdev.h>
+>>>>>> +#include <linux/uaccess.h>
+>>>>>> +
+>>>>>> +#include "remoteproc_internal.h"
+>>>>>> +
+>>>>>> +#define NUM_RPROC_DEVICES	64
+>>>>>> +static dev_t rproc_major;
+>>>>>> +
+>>>>>> +static ssize_t rproc_cdev_write(struct file *filp, const char __user
+>>>>>> *buf,
+>>>>>> +				 size_t len, loff_t *pos)
+>>>>>> +{
+>>>>>> +	struct rproc *rproc = container_of(filp->f_inode->i_cdev,
+>>>>>> +					   struct rproc, char_dev);
+>>>>>> +	int ret = 0;
+>>>>>> +	char cmd[10];
+>>>>>> +
+>>>>>> +	if (!len || len > sizeof(cmd))
+>>>>>> +		return -EINVAL;
+>>>>>> +
+>>>>>> +	ret = copy_from_user(cmd, buf, sizeof(cmd));
+>>>>>> +	if (ret)
+>>>>>> +		return -EFAULT;
+>>>>>> +
+>>>>>> +	if (sysfs_streq(cmd, "start")) {
+>>>>>> +		if (rproc->state == RPROC_RUNNING)
+>>>>>> +			return -EBUSY;
+>>>>>> +
+>>>>>> +		ret = rproc_boot(rproc);
+>>>>>> +		if (ret)
+>>>>>> +			dev_err(&rproc->dev, "Boot failed:%d\n", ret);
+>>>>>> +	} else if (sysfs_streq(cmd, "stop")) {
+>>>>>> +		if (rproc->state == RPROC_OFFLINE)
+>>>>>> +			return -ENXIO;
+>>>>> returning ENXIO in this case seems to me no appropriate , what about
+>>>>> EPERM or
+>>>>> EINVAL (rproc_sysfs) ?
+>> I think EPERM would indicate the operation is not permitted on the
+>> device, and
+>> EINVAL would indicate that the command/string they wrote to the char device
+>> is not a valid command/string. I guess even ENXIO may not be appropriate?
 >>
->> > If (1) is not satisfied, the created .got.plt is just served as an anchor for
->> > things that want to reference (the distance from GOT base to some point). The
->> > linker will still reserve 3 words but the words are likely not needed.
->> >
->> > I don't think there is a specific need for another option to teach the linker
->> > (GNU ld or LLD) that this is a kernel link.  For -ffreestanding builds, cc
->> > -static (ld -no-pie))/-static-pie (-pie) already work quite well.
+>> In that case we could use EHOSTDOWN or ESHUTDOWN, thoughts?
+> Regarding remoteproc_sysfs.c[1], seems that the -EINVAL return would be coherent.
+Okay sure.
+> It would probably also be better to replace your condition with
+> 	if (rproc->state != RPROC_RUNNING)
+Will do.
+>   
+>
+> [1] https://elixir.bootlin.com/linux/latest/source/drivers/remoteproc/remoteproc_sysfs.c#L104
+>
+> Regards,
+> Arnaud
+>
+>> Thanks,
+>> Sid
 >>
->> You mean 'ld -static -pie' right? That seems to work. Is that a recent
->> invention?
->
->gcc -static-pie is fairly recent [0], but it just influences how the
->linker is invoked AFAIK (at least for gcc) -- in addition to passing
->some linker flags, it will change what startup files get linked in (for
->non-freestanding). It does not even imply -fPIE to the compiler, which
->is confusing as hell. It _would_ be nice if this also told the compiler
->that all symbols (perhaps unless explicitly marked) will be resolved at
->static link time, so there is no need to use the GOT or PLT for globals.
->
->As it stands, the executable can still have relocations, GOT and PLT, it
->just needs to have startup code to handle them (provided by libc
->typically) instead of relying on an external dynamic linker.
+>>>>>> +
+>>>>>> +		rproc_shutdown(rproc);
+>>>>>> +	} else {
+>>>>>> +		dev_err(&rproc->dev, "Unrecognized option\n");
+>>>>>> +		ret = -EINVAL;
+>>>>>> +	}
+>>>>>> +
+>>>>>> +	return ret ? ret : len;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static long rproc_device_ioctl(struct file *filp, unsigned int ioctl,
+>>>>>> +				unsigned long arg)
+>>>>>> +{
+>>>>>> +	struct rproc *rproc = container_of(filp->f_inode->i_cdev,
+>>>>>> +					   struct rproc, char_dev);
+>>>>>> +	void __user *argp = (void __user *)arg;
+>>>>>> +	int ret;
+>>>>>> +	bool param;
+>>>>>> +
+>>>>>> +	switch (ioctl) {
+>>>>>> +	case RPROC_SET_SHUTDOWN_ON_RELEASE:
+>>>>>> +		ret = copy_from_user(&param, argp, sizeof(bool));
+>>>>>> +		if (ret) {
+>>>>>> +			dev_err(&rproc->dev, "Data copy from userspace failed\n");
+>>>>>> +			return -EINVAL;
+>>>>>> +		}
+>>>>>> +		rproc->cdev_put_on_release = param;
+>>>>> argp is an void value, where cdev_put_on_release is a bool a check or
+>>>>> a conversion  seems
+>>>>> missing
+>>>>>
+>>>>>> +		break;
+>>>>>> +	case RPROC_GET_SHUTDOWN_ON_RELEASE:
+>>>>>> +		ret = copy_to_user(argp, &rproc->cdev_put_on_release,
+>>>>>> +				   sizeof(bool));
+>>>>>> +		if (ret) {
+>>>>>> +			dev_err(&rproc->dev, "Data copy to userspace failed\n");
+>>>>>> +			return -EINVAL;
+>>>>>> +		}
+>>>>>> +		break;
+>>>>>> +	default:
+>>>>>> +		dev_err(&rproc->dev, "Unsupported ioctl\n");
+>>>>>> +		return -EINVAL;
+>>>>>> +	}
+>>>>>> +	return 0;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static int rproc_cdev_release(struct inode *inode, struct file *filp)
+>>>>>> +{
+>>>>>> +	struct rproc *rproc = container_of(inode->i_cdev, struct rproc,
+>>>>>> +					   char_dev);
+>>>>>> +
+>>>>>> +	if (rproc->cdev_put_on_release && rproc->state != RPROC_OFFLINE)
+>>>>>> +		rproc_shutdown(rproc);
+>>>>>> +
+>>>>>> +	return 0;
+>>>>>> +}
+>>>>>> +
+>>>>>> +
+>>>>>> +static const struct file_operations rproc_fops = {
+>>>>>> +	.write = rproc_cdev_write,
+>>>>>> +	.unlocked_ioctl = rproc_device_ioctl,
+>>>>>> +	.release = rproc_cdev_release,
+>>>>>> +};
+>>>>>> +
+>>>>>> +int rproc_char_device_add(struct rproc *rproc)
+>>>>>> +{
+>>>>>> +	int ret;
+>>>>>> +	dev_t cdevt;
+>>>>>> +
+>>>>>> +	cdev_init(&rproc->char_dev, &rproc_fops);
+>>>>>> +	rproc->char_dev.owner = THIS_MODULE;
+>>>>>> +
+>>>>>> +	cdevt = MKDEV(MAJOR(rproc_major), rproc->index);
+>>>>>> +	ret = cdev_add(&rproc->char_dev, cdevt, 1);
+>>>>>> +	if (ret < 0)
+>>>>>> +		goto out;
+>>>>>> +
+>>>>>> +	rproc->dev.devt = cdevt;
+>>>>>> +out:
+>>>>>> +	return ret;
+>>>>>> +}
+>>>>>> +
+>>>>>> +void rproc_char_device_remove(struct rproc *rproc)
+>>>>>> +{
+>>>>>> +	__unregister_chrdev(MAJOR(rproc->dev.devt), rproc->index, 1,
+>>>>>> "rproc");
+>>>>>> +}
+>>>>>> +
+>>>>>> +void __init rproc_init_cdev(void)
+>>>>>> +{
+>>>>>> +	int ret;
+>>>>>> +
+>>>>>> +	ret = alloc_chrdev_region(&rproc_major, 0, NUM_RPROC_DEVICES,
+>>>>>> "rproc");
+>>>>> "remoteproc"instead of "rproc" (in line with sysfs and debugfs naming)
+>>>>> .
+>>>>>
+>>>>>> +	if (ret < 0)
+>>>>>> +		pr_err("Failed to alloc rproc_cdev region, err %d\n", ret);
+>>>>>> +}
+>>>>>> +
+>>>>>> +void __exit rproc_exit_cdev(void)
+>>>>>> +{
+>>>>>> +	unregister_chrdev_region(MKDEV(MAJOR(rproc_major), 0),
+>>>>>> +				 NUM_RPROC_DEVICES);
+>>>>>> +}
+>>>>>> diff --git a/drivers/remoteproc/remoteproc_internal.h
+>>>>>> b/drivers/remoteproc/remoteproc_internal.h
+>>>>>> index 493ef92..fb9d891 100644
+>>>>>> --- a/drivers/remoteproc/remoteproc_internal.h
+>>>>>> +++ b/drivers/remoteproc/remoteproc_internal.h
+>>>>>> @@ -47,6 +47,27 @@ struct dentry *rproc_create_trace_file(const char
+>>>>>> *name, struct rproc *rproc,
+>>>>>>    int rproc_init_sysfs(void);
+>>>>>>    void rproc_exit_sysfs(void);
+>>>>>>
+>>>>>> +#ifdef CONFIG_REMOTEPROC_CDEV
+>>>>>> +void rproc_init_cdev(void);
+>>>>>> +void rproc_exit_cdev(void);
+>>>>>> +int rproc_char_device_add(struct rproc *rproc);
+>>>>>> +void rproc_char_device_remove(struct rproc *rproc);
+>>>>>> +#else
+>>>>>> +static inline void rproc_init_cdev(void)
+>>>>>> +{
+>>>>>> +}
+>>>>>> +static inline void rproc_exit_cdev(void)
+>>>>>> +{
+>>>>>> +}
+>>>>>> +static inline int rproc_char_device_add(struct rproc *rproc)
+>>>>>> +{
+>>>>>> +	return 0;
+>>>>>> +}
+>>>>>> +static inline void  rproc_char_device_remove(struct rproc *rproc)
+>>>>>> +{
+>>>>>> +}
+>>>>>> +#endif
+>>>>>> +
+>>>>>>    void rproc_free_vring(struct rproc_vring *rvring);
+>>>>>>    int rproc_alloc_vring(struct rproc_vdev *rvdev, int i);
+>>>>>>
+>>>>>> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+>>>>>> index 16ad666..9bd2ff5 100644
+>>>>>> --- a/include/linux/remoteproc.h
+>>>>>> +++ b/include/linux/remoteproc.h
+>>>>>> @@ -40,6 +40,7 @@
+>>>>>>    #include <linux/virtio.h>
+>>>>>>    #include <linux/completion.h>
+>>>>>>    #include <linux/idr.h>
+>>>>>> +#include <linux/cdev.h>
+>>>>>>    #include <linux/of.h>
+>>>>>>
+>>>>>>    /**
+>>>>>> @@ -514,6 +515,8 @@ struct rproc {
+>>>>>>    	bool auto_boot;
+>>>>>>    	struct list_head dump_segments;
+>>>>>>    	int nb_vdev;
+>>>>>> +	struct cdev char_dev;
+>>>>>> +	bool cdev_put_on_release;
+>>>>>>    };
+>>>>> These parameters are local variables of rproc_cdev. Could be defined
+>>>>> in a separate structure.
+>>>>> with a pointer in rproc to this structure.
+>>>>>
+>>>>>>    /**
+>>>>>> diff --git a/include/uapi/linux/remoteproc_cdev.h
+>>>>>> b/include/uapi/linux/remoteproc_cdev.h
+>>>>>> new file mode 100644
+>>>>>> index 0000000..3975120
+>>>>>> --- /dev/null
+>>>>>> +++ b/include/uapi/linux/remoteproc_cdev.h
+>>>>>> @@ -0,0 +1,20 @@
+>>>>>> +/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
+>>>>>> +/*
+>>>>>> + * IOCTLs for Remoteproc's character device interface.
+>>>>>> + *
+>>>>>> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
+>>>>>> + */
+>>>>>> +
+>>>>>> +
+>>>>>> +#ifndef _UAPI_REMOTEPROC_CDEV_H_
+>>>>>> +#define _UAPI_REMOTEPROC_CDEV_H_
+>>>>>> +
+>>>>>> +#include <linux/ioctl.h>
+>>>>>> +#include <linux/types.h>
+>>>>>> +
+>>>>>> +#define RPROC_MAGIC	0xB7
+>>>>>> +
+>>>>>> +#define RPROC_SET_SHUTDOWN_ON_RELEASE _IOW(RPROC_MAGIC, 1, int)
+>>>>>> +#define RPROC_GET_SHUTDOWN_ON_RELEASE _IOR(RPROC_MAGIC, 2, int)
+>>>>>> +
+>>>>>> +#endif
+>>>>>>
+>>>>> IOCTLs should probaly be documented.
+>>>> I have added documentation to
+>>>> Documentation/userspace-api/ioctl/ioctl-number.rst
+>>>> Is there another place where I need to add documentation for this?
+>>> Could you add in this file comments that describe
+>>> the IOCTL usage and associated parameter?
+>>>
+>>> Regards,
+>>> Arnaud
 
-If the executable is purely static, it does not need to have PLT. All
-calls to a PLT can be redirected to the function itself.  Some range
-extension thunks (other terms: stub groups, veneers, etc) may still be
-needed if the distance is too large.
+I don't see any for of comments that describe in detail the IOCTL usage, 
+i.e.,
+input parameters, etc. Could you provide an example so I can follow it?
 
-There are cases where a GOT cannot be avoided, e.g.
+If not, should I instead put them in Documentation/remoteproc.txt?
 
-extern char foo[] __attribute__((weak, visibility("hidden")));
-char *fun() { return foo; }
+Thanks,
+Sid
 
-If foo is a SHN_ABS, `movq foo@GOTPCREL(%rip), %rax` can't be optimized
-by GOTPCRELX (https://sourceware.org/bugzilla/show_bug.cgi?id=25749 binutils>=2.35 will be good)
-Many other architectures don't even have a GOT optimization.
-
->I don't think it's really relevant for the kernel build -- all we get is
->ld -static --no-dynamic-linker, all -static does is prevent searching
->shared libraries, and we already pass --no-dynamic-linker if it's
->supported.
->
->[0] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81498
+>>>
+>>>>> Thanks,
+>>>>> Arnaud
