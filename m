@@ -2,150 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD14A20EE9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 08:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4BF20EEA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 08:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730294AbgF3Ggo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 02:36:44 -0400
-Received: from mail-eopbgr50041.outbound.protection.outlook.com ([40.107.5.41]:51426
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730002AbgF3Ggo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 02:36:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A1scRed7bNUL14y2YFNTudodjcnPGVO/KEa/mq4MvkGrXjxbcoiulcWMtue9zW/Q/RU6uJHd9YQS7f0CEwwEDe+bNE4hxruGT95MyMs7vn6/SG8Wy5nJvTANVNiCbl7O40GvTxChyHbQFvnzjsMSjyWcvevHhqFBRDbs3Zfd6EcxZ3n4AaRUwulAq9gl8ujKoHBotZ5Jzr86ANmyGqRWp5nTokKuBraEC3Asq7tNuS7aW8qrTwuzQ4iy9lObVKD2l5VyE8IFBpeUr5s6CaIeLclXZAOWTaE/L8TPaWUvnwCts6HMGJ+kV9EPBFdWfGMVBGJPtzUJMdEUDbDwrKFD7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NCSqCdFF71MkEbcJ74sy+rfHlf/NXtUr6N7sgoSzqJk=;
- b=jfs5WhaRijDc/RoRlxVsN2on9bcRfMgi26QW1gzcBu8qkxB1Ie7aD9EGXjuBDtH6lUQcIUHMlFFeiXMrwrItOIH2cx6r4Z9mJyMku4mUvFjPy74xU4WxbAAfkOlfS0DBtcjOLsaQasYxfNaeNh8KKwl83mc2WMswScneXRGzG42Mo0VCcO8xtd58cWXH/94Q9ovJ1FmrgEJSmtGogiitrxrVIQZa34Yky5B3eH9twbMdmhmEDM1Et9aIhtcNFgddX34QW/+c8k+PcOPZL9rxQvLm7N4/l58bmrwvhujFpgpM3P8jEI2nRJERv0xRyrzc12rwik/WmETRnjjrh7Dx9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NCSqCdFF71MkEbcJ74sy+rfHlf/NXtUr6N7sgoSzqJk=;
- b=YmR4enYDliLWoW24lyXQ/h9Otpl5botuyd932pScHG0xaY9D/jZQJgJKqJj2EXbB1syRmEsQVBGNkykxzNAe9dAlhpvbkjnH1pR/dnxNaIpQ2vS8l/wJiiYOjSJvcM+hht8YYwAMbqO42phA2bagab8/DvpvBhuYnWFZmx4o2HA=
-Received: from AM6PR0402MB3607.eurprd04.prod.outlook.com
- (2603:10a6:209:12::18) by AM6PR04MB5896.eurprd04.prod.outlook.com
- (2603:10a6:20b:a8::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20; Tue, 30 Jun
- 2020 06:36:39 +0000
-Received: from AM6PR0402MB3607.eurprd04.prod.outlook.com
- ([fe80::35f8:f020:9b47:9aa1]) by AM6PR0402MB3607.eurprd04.prod.outlook.com
- ([fe80::35f8:f020:9b47:9aa1%7]) with mapi id 15.20.3131.027; Tue, 30 Jun 2020
- 06:36:39 +0000
-From:   Andy Duan <fugang.duan@nxp.com>
-To:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>
-CC:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: RE: [EXT] Re: [PATCH v4 2/2] ARM: imx6plus: enable internal routing
- of clk_enet_ref where possible
-Thread-Topic: [EXT] Re: [PATCH v4 2/2] ARM: imx6plus: enable internal routing
- of clk_enet_ref where possible
-Thread-Index: AQHWThag/tmWe004ek+eXrutuxE1fajvmZEAgAAMoQCAAAM9gIABCdjw
-Date:   Tue, 30 Jun 2020 06:36:39 +0000
-Message-ID: <AM6PR0402MB36077C422DABCB4F2EA650A0FF6F0@AM6PR0402MB3607.eurprd04.prod.outlook.com>
-References: <20200625140105.14999-1-TheSven73@gmail.com>
- <20200625140105.14999-2-TheSven73@gmail.com>
- <CAOMZO5AWiHWSLAcd=dj9dDFj8jLPAVAuoiOAJ8qKGPwRq1Q41g@mail.gmail.com>
- <CAGngYiXJy4ASTNfT+R+qzJ3wA=Wy2h6XZm+8oo09sD+Jmse02w@mail.gmail.com>
- <CAOMZO5Cr3k+oy_Sf0kL9gge7bwqkvJR8BQhY-FvxVXN00A2ARw@mail.gmail.com>
- <CAGngYiW=Pc_QjsjCv4Pc_R9OZk7nOAKm=k=b4TMbYRZ-08zKrQ@mail.gmail.com>
-In-Reply-To: <CAGngYiW=Pc_QjsjCv4Pc_R9OZk7nOAKm=k=b4TMbYRZ-08zKrQ@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 746e5fba-e8bc-4db5-764e-08d81cbff206
-x-ms-traffictypediagnostic: AM6PR04MB5896:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB58967F3BC8A68C517762A210FF6F0@AM6PR04MB5896.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 0450A714CB
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: CUNkNrGK26ck5NVFxPmxWEdAi0+TIZZyUtlhHef/LAAjsqe/bvN4xzBsDHumFip4pvbW5KjXWaP35WJUVGouLBvl8KHO1G2eUewlXt8viEgk9rRFg3HRgVqaD9gUeRSBkgYh1Hcy3Dl8CiJK5pqAOYBEJWDgjA38lFflsckjTR4ZkA0sF8MzC8oFR4FfkGOxxuDOP2ZxkRjz54nh0TrP99142RLHy5fB5Fe3Xz6V8lNJwNArZaYkl769PX+y24kry7YRM5f5jId0G2vdlUzz4+OxexXormvDSQDNpFGvL9/zNXNjHsPvowY0DCYHECopRcFfGavN5baZf6JhhecvaA4mxvMuXfh2DsA4vISKmgogPBW0dIwvL7SCTsiPh4rLAq/q05IvB16HlvYzs3oMBCYB+CvzytGXxlJLAl51YOspo1JYVgYqpIJjcn8JO1VpvhXOQmfWU/U8Z04hyTtUpw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR0402MB3607.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(136003)(366004)(346002)(376002)(83380400001)(66556008)(66476007)(66446008)(64756008)(66946007)(9686003)(55016002)(8936002)(5660300002)(52536014)(8676002)(45080400002)(71200400001)(2906002)(6506007)(966005)(76116006)(86362001)(4326008)(83080400001)(7696005)(186003)(478600001)(110136005)(26005)(53546011)(33656002)(54906003)(316002)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: rnk0ssSaU/uNCsoyicvJkCNWEdRDnEJF+cY/7TK9ReoK2rvSLiSyngJ/QEitQjJaqHhN5r5jbR7reH7Qi4o9OXT2NMu2H3HwlzgCvg04KBiHTAfVKHNydnUhrJFOLdY1R4XpnwM3p4h64KvNWJnYwuFYDtK2QGhC71jJaHMRaAa1FRlkV4AwqlfhGHGatjFpQ9yec8V4p7ltZ5Oaujw3xmMvezeq+rdw5+RSxsdre08L00H7jkadxJo/unXwqzbLIg1fMjr6A53OLlZ9R23U7VImtZ41ctIBmSlEvHiIzyBbSH7WzDJ+kKgnNH4HuLKZmoeqwFK97lt8UfA1UhT73nOja4pLFlt12glVdlbaPj6gnfxDRyVYOBZPQSDjbjSpH8QA5Le4j9Z8fAj6S6DtMEJi+knQotaNzVDOD7KI+4d8ObgeOdNaQ/990gkbJeQoBG58Zca1Ygrp7mxtpLiXh93nSb/ANRGJw46Rc6KlLu2vpIAJUGToWZ45FHftB4Xi
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1730403AbgF3GhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 02:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730386AbgF3GhP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 02:37:15 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEADC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 23:37:14 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 72so17580694otc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 23:37:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QkjCMEhelPuir6tJNrGPv5JSjPKA0iYWqx+HiSFw4CM=;
+        b=afwd75JWFLA1yb9zL4acHZ7SMaN1NprTUO6FOx4gQfPSiMQowVLZwmxHGRCuy/N0w5
+         3y0Ld60YONgaGAiyb1g9uhKnN0jdfERPxLDVKJosENeG1C0if/ejAw2VCtUXHPAeoI9X
+         oCMVfQloTHOKh1DFR9mPVOMAkh4pQLKnKobWaXOo6iIC8ctoqD6w7iVfANJXL1KtSKb3
+         U/ihaO/7xx82qvWt/Qf4vCREEAUkzSqaKtO7lsFZHQ1xGtYvsEcbg9cB+SKJhw6KVSSk
+         3+XhQxpN422g5ySs7I17x4GKsmc3s9BqPUj29Jl4ixlMLxvewtMmrgQrtMY7TRN+vg80
+         Aeeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QkjCMEhelPuir6tJNrGPv5JSjPKA0iYWqx+HiSFw4CM=;
+        b=A9GmjHlxT3LRfnFB6BEaxjPpa+KUVCch7Ww5sZSUhHkiExsk6WVEHwN+bGKZp1aRca
+         dhuZjO1Rtjlaxl1PA876YGAbzPJd4F2T4Cf8FE+u94HIW0BYoQBVzzIqU1+Hx5741oeK
+         8LfntSh8agSVvxpjyQ7KABsZciUaaza3IkNfcNORJJ/15vJjeFeCR0T2uaqTKS1GRiwf
+         3XJzumdDwCONCqwiu18mUfxfZNzjqnUPrTfqw7n+1yUq3oV2pe7IFasjOsTOafwvR7K+
+         HkCKYCkukgmSky/x92R9VzYyixN0qRVRPXObYOxlwv0nb3jpyRcb3ES95eCZbM4JcwGU
+         NaJw==
+X-Gm-Message-State: AOAM533dgugs0E0qIe/TFpO0ROYkBpgIAzrjz08naMysXpSPOxDJlKUt
+        fupmfASoi/2Uz4ve4CZVAbcpZummQoTo3ZLiaI5W79dzwl8=
+X-Google-Smtp-Source: ABdhPJx4mdHrEiTKaeKy3dwowu1dmSH/c8pKR5jBjqHLXF39fN4+Oc02y1xGUuamTIyRpf7y//Mfpg8TzxVJVUDUvxI=
+X-Received: by 2002:a9d:186:: with SMTP id e6mr16894916ote.33.1593499034050;
+ Mon, 29 Jun 2020 23:37:14 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR0402MB3607.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 746e5fba-e8bc-4db5-764e-08d81cbff206
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jun 2020 06:36:39.6937
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jq8fQxTztKKziWrFohkNvriKUudEEuJa67gSiKPqFIpkpXLi2LlRRRL9M5gFnVns0sTuOzCuY9bKo8Eo6/F64Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5896
+References: <cover.1593397455.git.zong.li@sifive.com> <CAAhSdy1uFt3rqf8cSHqS=W90AoeQjo10R_Ak4Cknb_QUvH1SPQ@mail.gmail.com>
+ <CANXhq0p_HoD6npHmoxxYHohBsgihfe5S-0DG04xLpQ3VO1w7oQ@mail.gmail.com>
+ <CAAhSdy0Ed8zQ5LVZva6p2TWqTOzrDRtL0JJkAdmpzWFhzJLUfg@mail.gmail.com>
+ <CANXhq0o9BMe6G6kv-zO7OvLTfKsz-4XKsoZJe3nxvX9_6uunvw@mail.gmail.com> <CAAhSdy1fEge0AbKH6B72SwVHM-heN0QJPO0rQuCK5QhXq3uA0g@mail.gmail.com>
+In-Reply-To: <CAAhSdy1fEge0AbKH6B72SwVHM-heN0QJPO0rQuCK5QhXq3uA0g@mail.gmail.com>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Tue, 30 Jun 2020 14:37:02 +0800
+Message-ID: <CANXhq0ojMx2c+OJ56YWiQG-6iHa0XvU=4qzdOvKL2_iUzwF20A@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/6] Support raw event and DT for perf on RISC-V
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Alan Kao <alankao@andestech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogU3ZlbiBWYW4gQXNicm9lY2sgPHRoZXN2ZW43M0BnbWFpbC5jb20+IFNlbnQ6IE1vbmRh
-eSwgSnVuZSAyOSwgMjAyMCAxMDozNyBQTQ0KPiBPbiBNb24sIEp1biAyOSwgMjAyMCBhdCAxMDoy
-NiBBTSBGYWJpbyBFc3RldmFtIDxmZXN0ZXZhbUBnbWFpbC5jb20+DQo+IHdyb3RlOg0KPiA+DQo+
-ID4gSnVzdCB0ZXN0ZWQgNS40LjI0XzIuMS4wIG9uIGFuIGlteDZxcCBzYWJyZXNkIGFuZCBESENQ
-IGFsc28gZmFpbHMgdGhlcmUuDQo+IA0KPiBJIHRoaW5rIEkgZGlzY292ZXJlZCB0aGUgcHJvYmxl
-bSAhDQo+IA0KPiBXaGVuIEkgY29tcGFyZSB0aGUgc2FicmVzZCBkZXZpY2V0cmVlIG9uIG1haW5s
-aW5lIHdpdGggdGhlIGFjdHVhbCBzYWJyZXNkDQo+IHNjaGVtYXRpY3MsIHRoZSBkZXZpY2V0cmVl
-IGlzIGluY29ycmVjdCAhIFRoaW5ncyBzdGlsbCB3b3JrLCBidXQgb25seSBieQ0KPiBhY2NpZGVu
-dC4NCj4gDQo+IFRoZSBzYWJyZXNkIGhhcyBhbiBBUjgxMzEgUEhZLCB3aGljaCBnZW5lcmF0ZXMg
-dGhlIGVuZXQgcmVmIGNsb2NrLCBub3QgdGhlDQo+IGlteDYuIFNvIG9uIHRoZSBzY2hlbWF0aWMg
-d2Ugc2VlIHRoYXQgdGhlIGNsb2NrIG91dHB1dCBvZiB0aGUgUEhZIGlzIHdpcmVkIHRvDQo+IGlt
-eDYgRU5FVF9SRUZfQ0xLLCBzbyBpdCBjYW4gYmUgdXNlZCBhcyBhIGNsb2NrIHNvdXJjZS4gQW5k
-IEdQSU9fMTYgaXMNCj4gZGlzY29ubmVjdGVkLCBhcyBpdCBzaG91bGQsIGJlY2F1c2UgdGhlIGlt
-eDYgaXMgbm90IGdlbmVyYXRpbmcgdGhlIHJlZiBjbGsuDQo+IA0KPiBCdXQgdGhlIGRldmljZXRy
-ZWUgaXMgd3JpdHRlbiBhcyBpZiB0aGUgaW14NiBpcyBwcm92aWRpbmcgdGhlIGNsb2NrICEgU2Vl
-DQo+IGhlcmU6DQo+IA0KPiBodHRwczovL2V1cjAxLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxv
-b2suY29tLz91cmw9aHR0cHMlM0ElMkYlMkZnaXQua2VyDQo+IG5lbC5vcmclMkZwdWIlMkZzY20l
-MkZsaW51eCUyRmtlcm5lbCUyRmdpdCUyRnN0YWJsZSUyRmxpbnV4LmdpdCUyRnRyDQo+IGVlJTJG
-YXJjaCUyRmFybSUyRmJvb3QlMkZkdHMlMkZpbXg2cWRsLXNhYnJlc2QuZHRzaSUzRmglM0R2NS43
-LjYNCj4gJTIzbjUxMyZhbXA7ZGF0YT0wMiU3QzAxJTdDZnVnYW5nLmR1YW4lNDBueHAuY29tJTdD
-MTZjNDNlOGQ5ZA0KPiA4ZTRmZjBiOWVlMDhkODFjMzlmN2YyJTdDNjg2ZWExZDNiYzJiNGM2ZmE5
-MmNkOTljNWMzMDE2MzUlN0MwJTcNCj4gQzAlN0M2MzcyOTAzODI1ODg3NTE4ODcmYW1wO3NkYXRh
-PWhDUk5HYTlXclF6UTBYWXdSJTJGUVRROGgNCj4galk3Q0RIamhJYlhyMEwzM2ZyJTJCYyUzRCZh
-bXA7cmVzZXJ2ZWQ9MA0KPiANCj4gQWxzbyB0aGVyZSBpcyBubyBvdmVycmlkZSBvZiB0aGUgZmVj
-IFBUUCBjbG9jazoNCj4gaHR0cHM6Ly9ldXIwMS5zYWZlbGlua3MucHJvdGVjdGlvbi5vdXRsb29r
-LmNvbS8/dXJsPWh0dHBzJTNBJTJGJTJGZ2l0Lmtlcg0KPiBuZWwub3JnJTJGcHViJTJGc2NtJTJG
-bGludXglMkZrZXJuZWwlMkZnaXQlMkZzdGFibGUlMkZsaW51eC5naXQlMkZ0cg0KPiBlZSUyRmFy
-Y2glMkZhcm0lMkZib290JTJGZHRzJTJGaW14NnFkbC1zYWJyZXNkLmR0c2klM0ZoJTNEdjUuNy42
-DQo+ICUyM24yMDImYW1wO2RhdGE9MDIlN0MwMSU3Q2Z1Z2FuZy5kdWFuJTQwbnhwLmNvbSU3QzE2
-YzQzZThkOWQNCj4gOGU0ZmYwYjllZTA4ZDgxYzM5ZjdmMiU3QzY4NmVhMWQzYmMyYjRjNmZhOTJj
-ZDk5YzVjMzAxNjM1JTdDMCU3DQo+IEMwJTdDNjM3MjkwMzgyNTg4NzUxODg3JmFtcDtzZGF0YT1x
-T2ZpTHMlMkZHaTAxaDloU0E3ODdQSGZHeFRODQo+IGJmWVdGWFZBM0loVUI1NTNRJTNEJmFtcDty
-ZXNlcnZlZD0wDQo+IA0KPiBBbHRob3VnaCBTaGF3bidzIG1haW5saW5lIHBhdGNoIG1hbmRhdGVz
-IHRoaXM/DQo+IGh0dHBzOi8vZXVyMDEuc2FmZWxpbmtzLnByb3RlY3Rpb24ub3V0bG9vay5jb20v
-P3VybD1odHRwcyUzQSUyRiUyRmdpdC5rZXINCj4gbmVsLm9yZyUyRnB1YiUyRnNjbSUyRmxpbnV4
-JTJGa2VybmVsJTJGZ2l0JTJGc3RhYmxlJTJGbGludXguZ2l0JTJGY28NCj4gbW1pdCUyRiUzRmgl
-M0R2NS43LjYlMjZpZCUzRDgxMGMwY2E4NzkwOThhOTkzZTJjZTBhMTkwZDI0ZDExYw0KPiAxN2Rm
-NzQ4JmFtcDtkYXRhPTAyJTdDMDElN0NmdWdhbmcuZHVhbiU0MG54cC5jb20lN0MxNmM0M2U4ZDlk
-OA0KPiBlNGZmMGI5ZWUwOGQ4MWMzOWY3ZjIlN0M2ODZlYTFkM2JjMmI0YzZmYTkyY2Q5OWM1YzMw
-MTYzNSU3QzAlN0MNCj4gMCU3QzYzNzI5MDM4MjU4ODc1MTg4NyZhbXA7c2RhdGE9M1BpQW5EbHhP
-OGlxc1ZSNllRV2pDazF4c2c4aVcNCj4gUks4VFNHZWU0TGhrakklM0QmYW1wO3Jlc2VydmVkPTAN
-Cj4gDQo+IFRoaXMgd2lsbCB3b3JrLCBidXQgb25seSBieSBhY2NpZGVudC4gU28gb24gYSBwbHVz
-LCB3aGVuIHdlDQo+IChpbmNvcnJlY3RseSkgc3dpdGNoIHRoZQ0KPiBieXBhc3MgYml0IG9uLCB0
-aGluZ3Mgc3RvcCB3b3JraW5nLg0KDQpGYWJpbywgb3VyIFFBIGRvdWJsZSB2ZXJpZnkgNS40LjI0
-XzIuMS4wLCBubyBtYXR0ZXIgU0QgYm9vdCBvciB0ZnRwL25mcyBib290LA0KYm90aCB3b3JrIGZp
-bmUgb24gaS5NWDZRUCBzYWJyZXNkIGJvYXJkLCAgcGxlYXNlIGRvdWJsZSBjaGVjayB5b3VyIGVu
-dmlyb25tZW50Lg0KDQpTdmVuLCBubyBtYXR0ZXIgUEhZIHN1cHBseSAxMjVNaHogY2xvY2sgdG8g
-cGFkIG9yIG5vdCwgIEdQUjVbOV0gaXMgdG8gc2VsZWN0IFJHTUlJDQpndHggY2xvY2sgc291cmNl
-IGZyb206DQotIDAgQ2xvY2sgZnJvbSBwYWQNCi0gMSBDbG9jayBmcm9tIFBMTA0KDQpTaW5jZSBp
-Lk1YNlFQIGNhbiBpbnRlcm5hbGx5IHN1cHBseSBjbG9jayB0byBNQUMsIHdlIGNhbiBzZXQgR1BS
-NVs5XSBiaXQgYnkgZGVmYXVsdC4NCg==
+On Mon, Jun 29, 2020 at 9:23 PM Anup Patel <anup@brainfault.org> wrote:
+>
+> On Mon, Jun 29, 2020 at 6:23 PM Zong Li <zong.li@sifive.com> wrote:
+> >
+> > On Mon, Jun 29, 2020 at 4:28 PM Anup Patel <anup@brainfault.org> wrote:
+> > >
+> > > On Mon, Jun 29, 2020 at 11:22 AM Zong Li <zong.li@sifive.com> wrote:
+> > > >
+> > > > On Mon, Jun 29, 2020 at 12:53 PM Anup Patel <anup@brainfault.org> wrote:
+> > > > >
+> > > > > On Mon, Jun 29, 2020 at 8:49 AM Zong Li <zong.li@sifive.com> wrote:
+> > > > > >
+> > > > > > This patch set adds raw event support on RISC-V. In addition, we
+> > > > > > introduce the DT mechanism to make our perf more generic and common.
+> > > > > >
+> > > > > > Currently, we set the hardware events by writing the mhpmeventN CSRs, it
+> > > > > > would raise an illegal instruction exception and trap into m-mode to
+> > > > > > emulate event selector CSRs access. It doesn't make sense because we
+> > > > > > shouldn't write the m-mode CSRs in s-mode. Ideally, we should set event
+> > > > > > selector through standard SBI call or the shadow CSRs of s-mode. We have
+> > > > > > prepared a proposal of a new SBI extension, called "PMU SBI extension",
+> > > > > > but we also discussing the feasibility of accessing these PMU CSRs on
+> > > > > > s-mode at the same time, such as delegation mechanism, so I was
+> > > > > > wondering if we could use SBI calls first and make the PMU SBI extension
+> > > > > > as legacy when s-mode access mechanism is accepted by Foundation? or
+> > > > > > keep the current situation to see what would happen in the future.
+> > > > > >
+> > > > > > This patch set also introduces the DT mechanism, we don't want to add too
+> > > > > > much platform-dependency code in perf like other architectures, so we
+> > > > > > put the mapping of generic hardware events to DT, then we can easy to
+> > > > > > transfer generic hardware events to vendor's own hardware events without
+> > > > > > any platfrom-dependency stuff in our perf.
+> > > > >
+> > > > > Please re-write this series to have RISC-V PMU driver as a regular
+> > > > > platform driver as drivers/perf/riscv_pmu.c.
+> > > > >
+> > > > > The PMU related sources will have to be removed from arch/riscv.
+> > > > >
+> > > > > Based on implementation of final drivers/perf/riscv_pmu.c we will
+> > > > > come-up with drivers/perf/riscv_sbi_pmu.c driver for SBI perf counters.
+> > > > >
+> > > >
+> > > > There are some different ways to implement perf, and current
+> > > > implementation seems to be consensus when perf was introduced at the
+> > > > beginning [0][1]. I don't persist to which one, I could change the
+> > > > implementation as you mentioned if it is a new consensus one.
+> > > >
+> > > > [0] https://github.com/riscv/riscv-linux/pull/124#issuecomment-367563910
+> > >
+> > > I would not recommend taking the original RISC-V linux fork as reference.
+> > >
+> > > Rather we should study how things are done on other architectures.
+> > >
+> > > I really appreciate the attempt to make RISC-V PMU driver depend on DT
+> > > but if we are going this route then we should maximize the use of Linux
+> > > platform driver framework. In fact, whenever possible we should integrate
+> > > RISC-V features as platform drivers under the drivers/ directory.
+> > >
+> >
+> > OK, I would change the implementation to platform driver if there is no
+> > other voice.
+> >
+> > > I thought about SBI PMU counters as well. In future, we can easily
+> > > expose SBI PMU counters as RAW events in the same RISC-V PMU
+> > > driver. The sbi_probe_extension() can be used in RISC-V PMU driver
+> > > to check for SBI PMU counters so no special provisions needed in DT
+> > > for SBI PMU counters.
+> > >
+> >
+> > I thought about probing raw events by SBI extension too, I'm interested if you
+> > have more detail about this.
+> >
+> > It seems to me that it is a little bit hard to return all events
+> > through one SBI call,
+> > so I thought we could map the generic hardware events and maintain their own
+> > raw events by each platform in OpenSBI. But eventually, I thought the
+> > DT mechanism
+> > is more clear and easy than that. Let me know if you have any ideas about
+> > probe function. Thanks.
+>
+> We can design SBI calls such that no SBI call is required to read
+> the perf counter.
+>
+> The sbi_probe_extension() will only be used to check whether
+> underlying SBI implementation supports SBI PMU extension.
+>
+> As-per my initial thoughts, we can potentially have the following SBI calls:
+>
+> 1. SBI_PMU_NUM_COUNTERS
+>     This call will return the number of SBI PMU counters
+> 2. SBI_PMU_COUNTER_DESCRIBE
+>    This call takes two parameters: 1) physical address 2) counter index
+>     It will write the description of SBI PMU counter at specified
+> physical address.
+>     The details of the SBI PMU counter will include name, type, etc
+
+The main things are that we need to pass the information of raw events
+and the information of mapping of generic hardware events. Maybe
+this information could be passed by this SBI call.
+
+> 3. SBI_PMU_COUNTER_START
+>     This call takes two parameters: 1) physical address 2) counter index
+>     It will inform SBI implementation to start counting specified counter on the
+>     calling HART. The counter value will be written to the specified physical
+>     address whenever it changes.
+
+I would prefer to read the counter directly on s-mode. Spec already defines the
+mechanism to allow that. But this way would still work if we couldn't
+read counters
+on s-mode.
+
+> 4. SBI_PMU_COUNTER_STOP
+>     This call takes one parameter: 1) counter index
+>     It will inform SBI implementation to stop counting specified counters on
+>     the calling HART.
+>
+> The above calls are generic enough to support any number of counters
+> and we don't need any SBI call to read the counter. We can also assume
+> all counters to be of fixed 64bit width. In fact, even Hypervisors can support
+> it's own SBI PMU counters with SBI PMU extension.
+>
+> We still need to think more about the above calls because above SBI
+> calls are just initial ideas.
+>
+
+We also need a SBI call to set the event selector to specify which event
+is monitored.
+
+> Maybe you can refine the above ideas and send a proposal to the
+> UnixPlatformSpec mailing list ??
+>
+
+Ok, let us talk about the details in that.
+
+
+> Regards,
+> Anup
+>
+> >
+> > > Also, the RISC-V PMU driver can be implemented such that it will
+> > > work for RV32, RV64, NoMMU RV32, and NoMMU RV64.
+> > >
+> > > Regards,
+> > > Anup
+> > >
+> > > > [1] https://groups.google.com/a/groups.riscv.org/g/sw-dev/c/f19TmCNP6yA
+> > > >
+> > > > > Regards,
+> > > > > Anup
+> > > > >
+> > > > > >
+> > > > > > Zong Li (6):
+> > > > > >   dt-bindings: riscv: Add YAML documentation for PMU
+> > > > > >   riscv: dts: sifive: Add DT support for PMU
+> > > > > >   riscv: add definition of hpmcounter CSRs
+> > > > > >   riscv: perf: Add raw event support
+> > > > > >   riscv: perf: introduce DT mechanism
+> > > > > >   riscv: remove PMU menu of Kconfig
+> > > > > >
+> > > > > >  .../devicetree/bindings/riscv/pmu.yaml        |  59 +++
+> > > > > >  arch/riscv/Kconfig                            |  13 -
+> > > > > >  arch/riscv/boot/dts/sifive/fu540-c000.dtsi    |  13 +
+> > > > > >  arch/riscv/include/asm/csr.h                  |  58 +++
+> > > > > >  arch/riscv/include/asm/perf_event.h           | 100 ++--
+> > > > > >  arch/riscv/kernel/Makefile                    |   2 +-
+> > > > > >  arch/riscv/kernel/perf_event.c                | 471 +++++++++++-------
+> > > > > >  7 files changed, 471 insertions(+), 245 deletions(-)
+> > > > > >  create mode 100644 Documentation/devicetree/bindings/riscv/pmu.yaml
+> > > > > >
+> > > > > > --
+> > > > > > 2.27.0
+> > > > > >
