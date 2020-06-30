@@ -2,158 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AC020F269
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 12:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F02820F257
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 12:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732346AbgF3KPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 06:15:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47728 "EHLO mail.kernel.org"
+        id S1732247AbgF3KLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 06:11:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:34892 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731155AbgF3KPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 06:15:45 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 310812073E;
-        Tue, 30 Jun 2020 10:15:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593512144;
-        bh=AnrGPXZ0L3XFWcwycTfoFtiR62BIC4cXUJGTL2T6Ymk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=poSpxfVsPFzdrIYdiHqRbaXPpyDLpWpyCa/T+q7RuCj//1Y90s/jNdAltWjoJqTv5
-         xU3qD4C0ZpR+CUSfhDjWssLQ3KHLbtjZGOx2lOH60RKvc23lPiTTD9CCbrkIX/bqvw
-         2YKqpUMLl4yxpzXAH3qYmxrRyes8clDAaQsKJYc4=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jqDIk-007i3h-O9; Tue, 30 Jun 2020 11:15:42 +0100
+        id S1730237AbgF3KLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 06:11:39 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CDAEB30E;
+        Tue, 30 Jun 2020 03:11:38 -0700 (PDT)
+Received: from [10.37.12.90] (unknown [10.37.12.90])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1205A3F68F;
+        Tue, 30 Jun 2020 03:11:36 -0700 (PDT)
+Subject: Re: [PATCH] arm64/cpufeature: Validate feature bits spacing in
+ arm64_ftr_regs[]
+To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, broonie@kernel.org,
+        mark.rutland@arm.com, linux-kernel@vger.kernel.org
+References: <1592274331-19006-1-git-send-email-anshuman.khandual@arm.com>
+ <ec04ed20-1ad8-6130-ebd9-0157e5753ef6@arm.com>
+ <25fd985f-65b8-3884-02f4-10311d3f55fe@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <9c2a5410-044e-03cb-9233-900389d0dfea@arm.com>
+Date:   Tue, 30 Jun 2020 11:16:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 30 Jun 2020 11:15:42 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, kernel-team@android.com
-Subject: Re: [PATCH v2 06/17] irqchip/gic-v3: Configure SGIs as standard
- interrupts
-In-Reply-To: <jhjimffgfyt.mognet@arm.com>
-References: <20200624195811.435857-1-maz@kernel.org>
- <20200624195811.435857-7-maz@kernel.org> <jhjimffgfyt.mognet@arm.com>
-User-Agent: Roundcube Webmail/1.4.5
-Message-ID: <f9502c41d941e56ffcc30c51f2d23ab9@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, linux@arm.linux.org.uk, tglx@linutronix.de, jason@lakedaemon.net, sumit.garg@linaro.org, f.fainelli@gmail.com, gregory.clement@bootlin.com, andrew@lunn.ch, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <25fd985f-65b8-3884-02f4-10311d3f55fe@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-25 19:25, Valentin Schneider wrote:
-> On 24/06/20 20:58, Marc Zyngier wrote:
->> Change the way we deal with GICv3 SGIs by turning them into proper
->> IRQs, and calling into the arch code to register the interrupt range
->> instead of a callback.
->> 
->> Signed-off-by: Marc Zyngier <maz@kernel.org>
->> ---
->>  drivers/irqchip/irq-gic-v3.c | 81 
->> +++++++++++++++++++-----------------
->>  1 file changed, 43 insertions(+), 38 deletions(-)
->> 
->> diff --git a/drivers/irqchip/irq-gic-v3.c 
->> b/drivers/irqchip/irq-gic-v3.c
->> index 19b294ed48ba..d275e9b9533d 100644
->> --- a/drivers/irqchip/irq-gic-v3.c
->> +++ b/drivers/irqchip/irq-gic-v3.c
->> @@ -36,6 +36,8 @@
->>  #define FLAGS_WORKAROUND_GICR_WAKER_MSM8996	(1ULL << 0)
->>  #define FLAGS_WORKAROUND_CAVIUM_ERRATUM_38539	(1ULL << 1)
->> 
->> +#define GIC_IRQ_TYPE_PARTITION	(GIC_IRQ_TYPE_LPI + 1)
->> +
+On 06/30/2020 02:49 AM, Anshuman Khandual wrote:
 > 
-> Nit: this piqued my interest but ended up being just a define shuffle; 
-> As a
-> member of the git speleologists' guild, I'd be overjoyed with having a
-> small notion of that in the changelog.
-
-Fair enough.
-
 > 
->>  struct redist_region {
->>       void __iomem		*redist_base;
->>       phys_addr_t		phys_base;
->> @@ -657,38 +659,14 @@ static asmlinkage void __exception_irq_entry 
->> gic_handle_irq(struct pt_regs *regs
->>       if ((irqnr >= 1020 && irqnr <= 1023))
->>               return;
->> 
->> -	/* Treat anything but SGIs in a uniform way */
->> -	if (likely(irqnr > 15)) {
->> -		int err;
->> -
->> -		if (static_branch_likely(&supports_deactivate_key))
->> -			gic_write_eoir(irqnr);
->> -		else
->> -			isb();
->> -
->> -		err = handle_domain_irq(gic_data.domain, irqnr, regs);
->> -		if (err) {
->> -			WARN_ONCE(true, "Unexpected interrupt received!\n");
->> -			gic_deactivate_unhandled(irqnr);
->> -		}
->> -		return;
->> -	}
->> -	if (irqnr < 16) {
->> +	if (static_branch_likely(&supports_deactivate_key))
->>               gic_write_eoir(irqnr);
->> -		if (static_branch_likely(&supports_deactivate_key))
->> -			gic_write_dir(irqnr);
->> -#ifdef CONFIG_SMP
->> -		/*
->> -		 * Unlike GICv2, we don't need an smp_rmb() here.
->> -		 * The control dependency from gic_read_iar to
->> -		 * the ISB in gic_write_eoir is enough to ensure
->> -		 * that any shared data read by handle_IPI will
->> -		 * be read after the ACK.
->> -		 */
+> On 06/29/2020 04:12 PM, Suzuki K Poulose wrote:
+>> On 06/16/2020 03:25 AM, Anshuman Khandual wrote:
+>>> arm64_feature_bits for a register in arm64_ftr_regs[] are in a descending
+>>> order as per their shift values. Validate that these features bits are
+>>> defined correctly and do not overlap with each other. This check protects
+>>> against any inadvertent erroneous changes to the register definitions.
+>>>
+>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>> Cc: Will Deacon <will@kernel.org>
+>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>> Cc: Mark Brown <broonie@kernel.org>
+>>> Cc: Mark Rutland <mark.rutland@arm.com>
+>>> Cc: linux-arm-kernel@lists.infradead.org
+>>> Cc: linux-kernel@vger.kernel.org
+>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> ---
+>>> Applies on 5.8-rc1.
+>>>
+>>>    arch/arm64/kernel/cpufeature.c | 45 +++++++++++++++++++++++++++++++---
+>>>    1 file changed, 42 insertions(+), 3 deletions(-)
+
+>>> +        }
+>>>    -    /* Check that the array is sorted so that we can do the binary search */
+>>> -    for (i = 1; i < ARRAY_SIZE(arm64_ftr_regs); i++)
+>>> +        /*
+>>> +         * Skip the first register. There is nothing to
+>>> +         * compare against for now.
+>>> +         */
+>>> +        if (i == 0)
+>>> +            continue;
+>>
+>> You are starting at 1 already, so you may skip this check.
 > 
-> Isn't that still relevant?
+> Actually, now we are starting with 0 instead for both i and j.
+> Hence this check would be required.
 
-It is. It is just that there is no really good place to put it.
-I may end-up just leaving it where it is.
+Sorry, ignore that.
 
-> Also, while staring at this it dawned on me that IPI's don't need the
-> eoimode=0 isb(): due to how the IPI flow-handler is structured, we'll 
-> get a
-> gic_eoi_irq() just before calling into the irqaction. Dunno how much we
-> care about it.
+Suzuki
 
-That's interesting. This ISB is a leftover from the loop we had before
-the pseudo-NMI code, where we had to make sure the write to EOIR was
-ordered with the read from IAR.
 
-Given that we have an exception return right after the interrupt
-handling, I *think* we could get rid of it (but that would need
-mode checking on broken systems such as TX1...).  I don't think
-this is specific to IPIs though.
 
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
