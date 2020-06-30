@@ -2,102 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F379C20F332
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 12:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A76D620F33D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 12:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732707AbgF3Kzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 06:55:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732641AbgF3Kzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 06:55:35 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6367C2067D;
-        Tue, 30 Jun 2020 10:55:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593514535;
-        bh=wWEquVMFKXy588FnMroMAEIB7yZ2El1wF3pvAg8G+us=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NQ4PP3lA+9OQXQXTKh9wAZLuw5BlWl3O8LNVmIN+HRZd1eYn6Rhr+lkn1m5+1yi8w
-         9Yql01aDsfT08gki7cfAonM/MG2NmByEPY39KRuJ6ZpmTVLhi4cedXQS6qnqXY9kzd
-         5dXxbh8MIwmxGK/dxGK9SO8pPCVVpVanMwriZsA4=
-Date:   Tue, 30 Jun 2020 11:55:32 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        perex@perex.cz, tiwai@suse.com, robh+dt@kernel.org,
-        lgirdwood@gmail.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, digetx@gmail.com,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sharadg@nvidia.com,
-        mkumard@nvidia.com, viswanathl@nvidia.com, rlokhande@nvidia.com,
-        dramesh@nvidia.com, atalambedu@nvidia.com, nwartikar@nvidia.com,
-        swarren@nvidia.com, nicoleotsuka@gmail.com
-Subject: Re: [PATCH v4 11/23] ASoC: simple-card: Loop over all children for
- 'mclk-fs'
-Message-ID: <20200630105532.GG5272@sirena.org.uk>
-References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
- <1593233625-14961-12-git-send-email-spujar@nvidia.com>
- <875zba1y28.wl-kuninori.morimoto.gx@renesas.com>
- <58000bd3-861c-bbc2-75e1-128cf0199a76@nvidia.com>
- <87lfk5z4ov.wl-kuninori.morimoto.gx@renesas.com>
- <b33d5a1b-ecd5-3618-4894-c3ab0f4b077d@nvidia.com>
+        id S1732743AbgF3K5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 06:57:11 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:34286 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732636AbgF3K5K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 06:57:10 -0400
+X-UUID: 6fbe4a790cc44e3facaeb035874a41e4-20200630
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=dyBf/FOqBOKM8w25J19ReW9jhDIjCt4TCH41lbsQigU=;
+        b=GwdTNCVDrzvcWIsIQhFKt0D9lvK8U3eiFw+ANGTRuHBpRYpPcxYalBKe/PE6vSMNQvFEh6vf6HCX+1seZHoXJtidGk1nhzgkWD8pkBq33VVNqRzW+JLJmk4MhEb84XHa5HPEEbM2KzE5+KOqVA9A0s9k81T19um+ZAK4mbuVhfQ=;
+X-UUID: 6fbe4a790cc44e3facaeb035874a41e4-20200630
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 640312049; Tue, 30 Jun 2020 18:57:03 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N2.mediatek.inc
+ (172.27.4.72) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 30 Jun
+ 2020 18:57:01 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 30 Jun 2020 18:56:58 +0800
+Message-ID: <1593514600.24171.26.camel@mhfsdcap03>
+Subject: Re: [PATCH v5 03/10] iommu/mediatek: Modify the usage of
+ mtk_iommu_plat_data structure
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Chao Hao <chao.hao@mediatek.com>
+CC:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Evan Green <evgreen@chromium.org>,
+        <iommu@lists.linux-foundation.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        FY Yang <fy.yang@mediatek.com>
+Date:   Tue, 30 Jun 2020 18:56:40 +0800
+In-Reply-To: <20200629071310.1557-4-chao.hao@mediatek.com>
+References: <20200629071310.1557-1-chao.hao@mediatek.com>
+         <20200629071310.1557-4-chao.hao@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="64j1qyTOoGvYcHb1"
-Content-Disposition: inline
-In-Reply-To: <b33d5a1b-ecd5-3618-4894-c3ab0f4b077d@nvidia.com>
-X-Cookie: Walk softly and carry a megawatt laser.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-SNTS-SMTP: E569C367CB152C27234DE089D55991412047532CEA7DCF42A63DDE8E08E5260F2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+SGkgQ2hhbywNCg0KVGhpcyBpcyBhbHNvIG9rIGZvciBtZS4gT25seSB0d28gZm9ybWF0IG5pdHBp
+Y2suDQoNCk9uIE1vbiwgMjAyMC0wNi0yOSBhdCAxNToxMyArMDgwMCwgQ2hhbyBIYW8gd3JvdGU6
+DQo+IEdpdmVuIHRoZSBmYWN0IHRoYXQgd2UgYXJlIGFkZGluZyBtb3JlIGFuZCBtb3JlIHBsYXRf
+ZGF0YSBib29sIHZhbHVlcywNCj4gaXQgd291bGQgbWFrZSBzZW5zZSB0byB1c2UgYSB1MzIgZmxh
+Z3MgcmVnaXN0ZXIgYW5kIGFkZCB0aGUgYXBwcm9wcmlhdGUNCj4gbWFjcm8gZGVmaW5pdGlvbnMg
+dG8gc2V0IGFuZCBjaGVjayBmb3IgYSBmbGFnIHByZXNlbnQuDQo+IE5vIGZ1bmN0aW9uYWwgY2hh
+bmdlLg0KPiANCj4gU3VnZ2VzdGVkLWJ5OiBNYXR0aGlhcyBCcnVnZ2VyIDxtYXR0aGlhcy5iZ2dA
+Z21haWwuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBDaGFvIEhhbyA8Y2hhby5oYW9AbWVkaWF0ZWsu
+Y29tPg0KPiAtLS0NCg0KW3NuaXBdDQoNCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2lvbW11
+X3BsYXRfZGF0YSBtdDI3MTJfZGF0YSA9IHsNCj4gIAkubTR1X3BsYXQgICAgID0gTTRVX01UMjcx
+MiwNCj4gLQkuaGFzXzRnYl9tb2RlID0gdHJ1ZSwNCj4gLQkuaGFzX2JjbGsgICAgID0gdHJ1ZSwN
+Cj4gLQkuaGFzX3ZsZF9wYV9ybmcgICA9IHRydWUsDQo+ICsJLmZsYWdzICAgICAgICA9IEhBU180
+R0JfTU9ERSB8DQo+ICsJCQlIQVNfQkNMSyB8DQo+ICsJCQlIQVNfVkxEX1BBX1JORywNCg0Kc2hv
+cnQgZW5vdWdoLiB3ZSBjYW4gcHV0IGl0IGluIG9uZSBsaW5lPw0KDQo+ICAJLmxhcmJpZF9yZW1h
+cCA9IHswLCAxLCAyLCAzLCA0LCA1LCA2LCA3LCA4LCA5fSwNCj4gIH07DQo+ICANCj4gIHN0YXRp
+YyBjb25zdCBzdHJ1Y3QgbXRrX2lvbW11X3BsYXRfZGF0YSBtdDgxNzNfZGF0YSA9IHsNCj4gIAku
+bTR1X3BsYXQgICAgID0gTTRVX01UODE3MywNCj4gLQkuaGFzXzRnYl9tb2RlID0gdHJ1ZSwNCj4g
+LQkuaGFzX2JjbGsgICAgID0gdHJ1ZSwNCj4gLQkucmVzZXRfYXhpICAgID0gdHJ1ZSwNCj4gKwku
+ZmxhZ3MJICAgICAgPSBIQVNfNEdCX01PREUgfA0KPiArCQkJSEFTX0JDTEsgfA0KPiArCQkJUkVT
+RVRfQVhJLA0KPiAgCS5sYXJiaWRfcmVtYXAgPSB7MCwgMSwgMiwgMywgNCwgNX0sIC8qIExpbmVh
+ciBtYXBwaW5nLiAqLw0KPiAgfTsNCj4gIA0KPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfaW9t
+bXVfcGxhdF9kYXRhIG10ODE4M19kYXRhID0gew0KPiAgCS5tNHVfcGxhdCAgICAgPSBNNFVfTVQ4
+MTgzLA0KPiAtCS5yZXNldF9heGkgICAgPSB0cnVlLA0KPiArCS5mbGFncyAgICAgICAgPSBSRVNF
+VF9BWEksDQo+ICAJLmxhcmJpZF9yZW1hcCA9IHswLCA0LCA1LCA2LCA3LCAyLCAzLCAxfSwNCj4g
+IH07DQo+ICANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW9tbXUvbXRrX2lvbW11LmggYi9kcml2
+ZXJzL2lvbW11L210a19pb21tdS5oDQo+IGluZGV4IDFiNmVhODM5YjkyYy4uN2NjMzlmNzI5MjYz
+IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2lvbW11L210a19pb21tdS5oDQo+ICsrKyBiL2RyaXZl
+cnMvaW9tbXUvbXRrX2lvbW11LmgNCj4gQEAgLTE3LDYgKzE3LDE1IEBADQo+ICAjaW5jbHVkZSA8
+bGludXgvc3BpbmxvY2suaD4NCj4gICNpbmNsdWRlIDxzb2MvbWVkaWF0ZWsvc21pLmg+DQo+ICAN
+Cj4gKyNkZWZpbmUgSEFTXzRHQl9NT0RFCQkJQklUKDApDQo+ICsvKiBIVyB3aWxsIHVzZSB0aGUg
+RU1JIGNsb2NrIGlmIHRoZXJlIGlzbid0IHRoZSAiYmNsayIuICovDQo+ICsjZGVmaW5lIEhBU19C
+Q0xLCQkJQklUKDEpDQo+ICsjZGVmaW5lIEhBU19WTERfUEFfUk5HCQkJQklUKDIpDQo+ICsjZGVm
+aW5lIFJFU0VUX0FYSQkJCUJJVCgzKQ0KPiArDQo+ICsjZGVmaW5lIE1US19JT01NVV9IQVNfRkxB
+RyhwZGF0YSwgX3gpIFwNCj4gKwkJKCgoKHBkYXRhKS0+ZmxhZ3MpICYgKF94KSkgPT0gKF94KSkN
+Cg0KSWYgdGhlc2UgZGVmaW5pdGlvbnMgYXJlIG5vdCB1c2VkIGluIG10a19pb21tdV92MS5jKGFs
+c28gbm8gdGhpcyBwbGFuKSwNCnRoZW4gd2UgY2FuIHB1dCB0aGVtIGluIHRoZSBtdGtfaW9tbXUu
+Yy4NCg0KDQpCVFcsIHRoZSBwYXRjaCB0aXRsZSAibW9kaWZ5IHRoZSB1c2FnZSBvZiBtdGtfaW9t
+bXVfcGxhdF9kYXRhIHN0cnVjdHVyZSINCmlzbid0IHNvIGNsZWFyLCB3ZSBjb3VsZCB3cml0ZSB3
+aGF0IHRoZSBkZXRhaWxlZCBtb2RpZmljYXRpb24gaXMuDQpzb21ldGhpbmcgbGlrZToNCmlvbW11
+L21lZGlhdGVrOiBVc2UgYSB1MzIgZmxhZ3MgdG8gZGVzY3JpYmUgZGlmZmVyZW50IEhXIGZlYXR1
+cmVzDQoNCj4gKw0KPiAgc3RydWN0IG10a19pb21tdV9zdXNwZW5kX3JlZyB7DQo+ICAJdTMyCQkJ
+CW1pc2NfY3RybDsNCj4gIAl1MzIJCQkJZGNtX2RpczsNCj4gQEAgLTM2LDEyICs0NSw3IEBAIGVu
+dW0gbXRrX2lvbW11X3BsYXQgew0KPiAgDQo+ICBzdHJ1Y3QgbXRrX2lvbW11X3BsYXRfZGF0YSB7
+DQo+ICAJZW51bSBtdGtfaW9tbXVfcGxhdCBtNHVfcGxhdDsNCj4gLQlib29sICAgICAgICAgICAg
+ICAgIGhhc180Z2JfbW9kZTsNCj4gLQ0KPiAtCS8qIEhXIHdpbGwgdXNlIHRoZSBFTUkgY2xvY2sg
+aWYgdGhlcmUgaXNuJ3QgdGhlICJiY2xrIi4gKi8NCj4gLQlib29sICAgICAgICAgICAgICAgIGhh
+c19iY2xrOw0KPiAtCWJvb2wgICAgICAgICAgICAgICAgaGFzX3ZsZF9wYV9ybmc7DQo+IC0JYm9v
+bCAgICAgICAgICAgICAgICByZXNldF9heGk7DQo+ICsJdTMyICAgICAgICAgICAgICAgICBmbGFn
+czsNCj4gIAl1bnNpZ25lZCBjaGFyICAgICAgIGxhcmJpZF9yZW1hcFtNVEtfTEFSQl9OUl9NQVhd
+Ow0KPiAgfTsNCj4gIA0KDQo=
 
---64j1qyTOoGvYcHb1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jun 30, 2020 at 09:53:13AM +0530, Sameer Pujar wrote:
-> On 6/30/2020 7:38 AM, Kuninori Morimoto wrote:
-> > External email: Use caution opening links or attachments
-
-> > > > > +     if (cpu != codec)
-> > > > > +             of_property_read_u32(codec, prop, &props->mclk_fs);
-
-> Sorry if I was not clear before.
-
-I agree with Moromito-san that the new code (especially the above bit)
-is very confusing, I'm not sure how the reader is supposed to figure out
-what the purpose of the check is or how the CPU could ever be the CODEC.
-
-> simple_parse_mclk_fs() is used by both simple_dai_link_of_dpcm() and
-> simple_dai_link_of(). To make the same API work for both the cases, I had to
-> use (A) in DPCM function. Now (B) does not get used for
-> simple_dai_link_of_dpcm(), but will get used by simple_dai_link_of().
-
-> If it is simpler I will just avoid 'cpu != codec' check and keep the
-> function simple_parse_mclk_fs() as it is.
-
-That'd definitely be simpler, or supporting this with a CPU node as
-well.
-
---64j1qyTOoGvYcHb1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl77GiQACgkQJNaLcl1U
-h9ARuwf9F6cRaR8lFHxz06jNWSZeUUWjcGZNbZVTPkDMRXKH+RKTvtX5ac3/WiX1
-NjQFs+TK8LV6s36/D9pbDL+8tWytYKpmU5R4T82nWEl2QJLpcn+baR5mZ74u5ZUH
-HyUKVyPr/xujUOBmFCLBZkLexA+f8pICIwqskTUefJe9yJwvTj2wTtj9zD85PaMz
-2Mu+EtDEvw1/2bvn1jaHvpYHmhDqHALoExw6AIRiuWSdOBNESBMksOE0Cn/qBuwA
-BsOQz+jwqyAGR0K8VpGGhFnt7xXCRK0eFWzD95FIxpQnq3CqLrphjK6wA5nL+vV1
-4n4ZkVcumkebzoPUrfnpt3DSzYCwbg==
-=gAuw
------END PGP SIGNATURE-----
-
---64j1qyTOoGvYcHb1--
