@@ -2,125 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E9720FDEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 22:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 720C920FDF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 22:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729973AbgF3Uot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 16:44:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728340AbgF3Uos (ORCPT
+        id S1730028AbgF3UpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 16:45:14 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:37281 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729669AbgF3UpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 16:44:48 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF36AC061755;
-        Tue, 30 Jun 2020 13:44:48 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: koike)
-        with ESMTPSA id 7C68426D012
-Subject: Re: [PATCH v8 1/3] media: tpg: change char argument to const char
-To:     Kaaira Gupta <kgupta@es.iitr.ac.in>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hverkuil@xs4all.nl,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-References: <20200630195052.23880-1-kgupta@es.iitr.ac.in>
- <20200630195052.23880-2-kgupta@es.iitr.ac.in>
-From:   Helen Koike <helen.koike@collabora.com>
-Message-ID: <94403bfb-6fb5-55b7-72ad-2e4afc74aa1e@collabora.com>
-Date:   Tue, 30 Jun 2020 17:44:39 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 30 Jun 2020 16:45:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593549908;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XecCxqNuikt/ufBD1g6ZnLJJZQJ5oET93VAWNtvus80=;
+        b=JsqITsJVSoaHImJ78ovmSWATaXgcJ1U99Fr7kaKUC8mGvv+QGp1KNak27Pnni0uX3loOZk
+        8isOKIXP9CqLGDd2MznkKGaApVLxx8VdzJfzWtkhJwgjCtSqOerBswD59rOD8no3uTGaRu
+        b0Wae2qm3ccXpg1/yf/5vgFbFVNnc0g=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-226-dsMhog3XN_qZ-SKEveoa0w-1; Tue, 30 Jun 2020 16:45:05 -0400
+X-MC-Unique: dsMhog3XN_qZ-SKEveoa0w-1
+Received: by mail-qv1-f72.google.com with SMTP id j18so14679196qvk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 13:45:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XecCxqNuikt/ufBD1g6ZnLJJZQJ5oET93VAWNtvus80=;
+        b=J+rV3pojJ+dVEb13tRI0BKBz+gvpBlEUFf4JJRAKiyLNP7FWm3MbpOZqmoZz7IyX3/
+         pad0ElHg/MAQLWYHWMKfxWbZBzmNmlPIOrRaTZmIAV3R3oe+H6DbOJyVJw1J2zUeb8Ix
+         6wqp6paDP4hk/9KD4bHKiHjgkRCxd/16KwT36mDNaIXAc6o6g81vdVBwpTxwObcwM2At
+         kp7TBWTrFizPIJ66e0MhvyyxoqZYuM4XaMTCaZOPoRR8bdE+qB9qduwK82PRn0xFRX0e
+         FRqepDwoHmsu66Hb62U5aKvufB7vf03W4LAWmPNy78Yx0yHn4D1v9N8Jkewz+E/o15ry
+         aLLQ==
+X-Gm-Message-State: AOAM530dtRCTC+85m8baC2mcsj0NKce2pZF1E6cF8B6wKlKXfr6EoIhq
+        nOblXvx9jKdl4jf1qIW5TLFIipYEX/PFzDMoOHCsHbOTe5Zd5JiQexNoi/89qeaovt9MHbTGDMD
+        sAJMfV2TQ8C8YOvedtdH4tpt+
+X-Received: by 2002:ac8:4f13:: with SMTP id b19mr12344912qte.146.1593549903930;
+        Tue, 30 Jun 2020 13:45:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxnjeNgGb3VgyiWRazZJnXpk1WXkLvNRxZ6+DixPQ/oofTuS8GpnF0F4qDUmW3N1xOBIVbE8A==
+X-Received: by 2002:ac8:4f13:: with SMTP id b19mr12344886qte.146.1593549903608;
+        Tue, 30 Jun 2020 13:45:03 -0700 (PDT)
+Received: from xz-x1.redhat.com ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id p63sm4105395qkc.80.2020.06.30.13.45.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 13:45:02 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH v4 00/26] mm: Page fault accounting cleanups
+Date:   Tue, 30 Jun 2020 16:45:01 -0400
+Message-Id: <20200630204501.38468-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20200630195052.23880-2-kgupta@es.iitr.ac.in>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+v4:=0D
+- rebase to linux-next/akpm=0D
+- picked one more r-b=0D
+=0D
+v3:=0D
+- comment fixes [Gerald]=0D
+- check VM_FAULT_ERROR too [Gerald]=0D
+- collect r-b=0D
+=0D
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D cover letter f=
+or v2 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=0D
+=0D
+This is v2 of the pf accounting cleanup series.  It originates from Gerald=
+=0D
+Schaefer's report on an issue a week ago regarding to incorrect page fault=
+=0D
+accountings for retried page fault after commit 4064b9827063 ("mm: allow=0D
+VM_FAULT_RETRY for multiple times"):=0D
+=0D
+  https://lore.kernel.org/lkml/20200610174811.44b94525@thinkpad/=0D
+=0D
+This version used a better approach suggested by Linus so that we do accoun=
+ting=0D
+directly in handle_mm_fault().  Moreover, we'll cover some special accounti=
+ng=0D
+too like gup or IOMMU fault requests on process page tables.  The outcome o=
+f=0D
+this series is to keep all the pf accountings in handle_mm_fault() (besides=
+=0D
+PERF_COUNT_SW_PAGE_FAULTS, which is still done in per-arch #pf handlers).=0D
+=0D
+Since v2 changed quite a lot from v1, changelog is omitted, and I also didn=
+'t=0D
+have a chance to pick up any r-b in previous version.  I really appreciate=
+=0D
+anyone who has looked at v1.  V1 for reference:=0D
+=0D
+  https://lore.kernel.org/lkml/20200615221607.7764-1-peterx@redhat.com/=0D
+=0D
+What this series did:=0D
+=0D
+  - Correct page fault accounting: we do accounting for a page fault (no ma=
+tter=0D
+    whether it's from #PF handling, or gup, or anything else) only with the=
+ one=0D
+    that completed the fault.  For example, page fault retries should not b=
+e=0D
+    counted in page fault counters.  Same to the perf events.=0D
+=0D
+  - Unify definition of PERF_COUNT_SW_PAGE_FAULTS: currently this perf even=
+t is=0D
+    used in an adhoc way across different archs.=0D
+=0D
+    Case (1): for many archs it's done at the entry of a page fault handler=
+, so=0D
+    that it will also cover e.g. errornous faults.=0D
+=0D
+    Case (2): for some other archs, it is only accounted when the page faul=
+t is=0D
+    resolved successfully.=0D
+=0D
+    Case (3): there're still quite some archs that have not enabled this pe=
+rf event.=0D
+=0D
+    Since this series will touch merely all the archs, we unify this perf e=
+vent=0D
+    to always follow case (1), which is the one that makes most sense.  And=
+=0D
+    since we moved the accounting into handle_mm_fault, the other two MAJ/M=
+IN=0D
+    perf events are well taken care of naturally.=0D
+=0D
+  - Unify definition of "major faults": the definition of "major fault" is=
+=0D
+    slightly changed when used in accounting (not VM_FAULT_MAJOR).  More=0D
+    information in patch 1.=0D
+=0D
+  - Always account the page fault onto the one that triggered the page faul=
+t.=0D
+    This does not matter much for #PF handlings, but mostly for gup.  More=
+=0D
+    information on this in patch 25.=0D
+=0D
+Patchset layout:=0D
+=0D
+Patch 1:     Introduced the accounting in handle_mm_fault(), not enabled.=0D
+Patch 2-24:  Enable the new accounting for arch #PF handlers one by one.=0D
+Patch 25:    Enable the new accounting for the rest outliers (gup, iommu, e=
+tc.)=0D
+Patch 26:    Cleanup GUP task_struct pointer since it's not needed any more=
+=0D
+=0D
+For each of the patch that fixes a specific arch, I'm CCing the maintainers=
+ and=0D
+the arch list if there is.  Besides, I only lightly tested this series on x=
+86.=0D
+=0D
+Please have a look, thanks.=0D
+=0D
+Peter Xu (26):=0D
+  mm: Do page fault accounting in handle_mm_fault=0D
+  mm/alpha: Use general page fault accounting=0D
+  mm/arc: Use general page fault accounting=0D
+  mm/arm: Use general page fault accounting=0D
+  mm/arm64: Use general page fault accounting=0D
+  mm/csky: Use general page fault accounting=0D
+  mm/hexagon: Use general page fault accounting=0D
+  mm/ia64: Use general page fault accounting=0D
+  mm/m68k: Use general page fault accounting=0D
+  mm/microblaze: Use general page fault accounting=0D
+  mm/mips: Use general page fault accounting=0D
+  mm/nds32: Use general page fault accounting=0D
+  mm/nios2: Use general page fault accounting=0D
+  mm/openrisc: Use general page fault accounting=0D
+  mm/parisc: Use general page fault accounting=0D
+  mm/powerpc: Use general page fault accounting=0D
+  mm/riscv: Use general page fault accounting=0D
+  mm/s390: Use general page fault accounting=0D
+  mm/sh: Use general page fault accounting=0D
+  mm/sparc32: Use general page fault accounting=0D
+  mm/sparc64: Use general page fault accounting=0D
+  mm/unicore32: Use general page fault accounting=0D
+  mm/x86: Use general page fault accounting=0D
+  mm/xtensa: Use general page fault accounting=0D
+  mm: Clean up the last pieces of page fault accountings=0D
+  mm/gup: Remove task_struct pointer for all gup code=0D
+=0D
+ arch/alpha/mm/fault.c                       |   8 +-=0D
+ arch/arc/kernel/process.c                   |   2 +-=0D
+ arch/arc/mm/fault.c                         |  18 +---=0D
+ arch/arm/mm/fault.c                         |  25 ++---=0D
+ arch/arm64/mm/fault.c                       |  29 ++----=0D
+ arch/csky/mm/fault.c                        |  13 +--=0D
+ arch/hexagon/mm/vm_fault.c                  |   9 +-=0D
+ arch/ia64/mm/fault.c                        |   9 +-=0D
+ arch/m68k/mm/fault.c                        |  14 +--=0D
+ arch/microblaze/mm/fault.c                  |   9 +-=0D
+ arch/mips/mm/fault.c                        |  14 +--=0D
+ arch/nds32/mm/fault.c                       |  19 +---=0D
+ arch/nios2/mm/fault.c                       |  14 +--=0D
+ arch/openrisc/mm/fault.c                    |   9 +-=0D
+ arch/parisc/mm/fault.c                      |   8 +-=0D
+ arch/powerpc/mm/copro_fault.c               |   7 +-=0D
+ arch/powerpc/mm/fault.c                     |  11 +-=0D
+ arch/riscv/mm/fault.c                       |  16 +--=0D
+ arch/s390/kvm/interrupt.c                   |   2 +-=0D
+ arch/s390/kvm/kvm-s390.c                    |   2 +-=0D
+ arch/s390/kvm/priv.c                        |   8 +-=0D
+ arch/s390/mm/fault.c                        |  16 +--=0D
+ arch/s390/mm/gmap.c                         |   4 +-=0D
+ arch/sh/mm/fault.c                          |  11 +-=0D
+ arch/sparc/mm/fault_32.c                    |  13 +--=0D
+ arch/sparc/mm/fault_64.c                    |  11 +-=0D
+ arch/um/kernel/trap.c                       |   6 +-=0D
+ arch/unicore32/mm/fault.c                   |  14 +--=0D
+ arch/x86/mm/fault.c                         |  17 +--=0D
+ arch/xtensa/mm/fault.c                      |  15 +--=0D
+ drivers/gpu/drm/i915/gem/i915_gem_userptr.c |   2 +-=0D
+ drivers/infiniband/core/umem_odp.c          |   2 +-=0D
+ drivers/iommu/amd/iommu_v2.c                |   2 +-=0D
+ drivers/iommu/intel/svm.c                   |   3 +-=0D
+ drivers/vfio/vfio_iommu_type1.c             |   4 +-=0D
+ fs/exec.c                                   |   2 +-=0D
+ include/linux/mm.h                          |  16 +--=0D
+ kernel/events/uprobes.c                     |   6 +-=0D
+ kernel/futex.c                              |   2 +-=0D
+ mm/gup.c                                    | 109 +++++++-------------=0D
+ mm/hmm.c                                    |   3 +-=0D
+ mm/ksm.c                                    |   3 +-=0D
+ mm/memory.c                                 |  69 ++++++++++++-=0D
+ mm/process_vm_access.c                      |   2 +-=0D
+ security/tomoyo/domain.c                    |   2 +-=0D
+ virt/kvm/async_pf.c                         |   2 +-=0D
+ virt/kvm/kvm_main.c                         |   2 +-=0D
+ 47 files changed, 222 insertions(+), 362 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-
-On 6/30/20 4:50 PM, Kaaira Gupta wrote:
-> Change the argument of type char * to const char * for function
-> tpg_gen_text().
-
-I don't think it is required for this version, but it would be nicer
-if you could add an explanation regarding why you are doing this change :)
-
-> 
-> Signed-off-by: Kaaira Gupta <kgupta@es.iitr.ac.in>
-
-lgtm
-
-Reviewed-by: Helen Koike <helen.koike@collabora.com>
-
-Thanks
-Helen
-
-> ---
->  drivers/media/common/v4l2-tpg/v4l2-tpg-core.c | 10 +++++-----
->  include/media/tpg/v4l2-tpg.h                  |  2 +-
->  2 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-> index 50f1e0b28b25..dde22a4cbd6c 100644
-> --- a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-> +++ b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-> @@ -1927,34 +1927,34 @@ typedef struct { u16 __; u8 _; } __packed x24;
->  
->  static noinline void tpg_print_str_2(const struct tpg_data *tpg, u8 *basep[TPG_MAX_PLANES][2],
->  			unsigned p, unsigned first, unsigned div, unsigned step,
-> -			int y, int x, char *text, unsigned len)
-> +			int y, int x, const char *text, unsigned len)
->  {
->  	PRINTSTR(u8);
->  }
->  
->  static noinline void tpg_print_str_4(const struct tpg_data *tpg, u8 *basep[TPG_MAX_PLANES][2],
->  			unsigned p, unsigned first, unsigned div, unsigned step,
-> -			int y, int x, char *text, unsigned len)
-> +			int y, int x, const char *text, unsigned len)
->  {
->  	PRINTSTR(u16);
->  }
->  
->  static noinline void tpg_print_str_6(const struct tpg_data *tpg, u8 *basep[TPG_MAX_PLANES][2],
->  			unsigned p, unsigned first, unsigned div, unsigned step,
-> -			int y, int x, char *text, unsigned len)
-> +			int y, int x, const char *text, unsigned len)
->  {
->  	PRINTSTR(x24);
->  }
->  
->  static noinline void tpg_print_str_8(const struct tpg_data *tpg, u8 *basep[TPG_MAX_PLANES][2],
->  			unsigned p, unsigned first, unsigned div, unsigned step,
-> -			int y, int x, char *text, unsigned len)
-> +			int y, int x, const char *text, unsigned len)
->  {
->  	PRINTSTR(u32);
->  }
->  
->  void tpg_gen_text(const struct tpg_data *tpg, u8 *basep[TPG_MAX_PLANES][2],
-> -		  int y, int x, char *text)
-> +		  int y, int x, const char *text)
->  {
->  	unsigned step = V4L2_FIELD_HAS_T_OR_B(tpg->field) ? 2 : 1;
->  	unsigned div = step;
-> diff --git a/include/media/tpg/v4l2-tpg.h b/include/media/tpg/v4l2-tpg.h
-> index eb191e85d363..9749ed409856 100644
-> --- a/include/media/tpg/v4l2-tpg.h
-> +++ b/include/media/tpg/v4l2-tpg.h
-> @@ -241,7 +241,7 @@ void tpg_log_status(struct tpg_data *tpg);
->  
->  void tpg_set_font(const u8 *f);
->  void tpg_gen_text(const struct tpg_data *tpg,
-> -		u8 *basep[TPG_MAX_PLANES][2], int y, int x, char *text);
-> +		u8 *basep[TPG_MAX_PLANES][2], int y, int x, const char *text);
->  void tpg_calc_text_basep(struct tpg_data *tpg,
->  		u8 *basep[TPG_MAX_PLANES][2], unsigned p, u8 *vbuf);
->  unsigned tpg_g_interleaved_plane(const struct tpg_data *tpg, unsigned buf_line);
-> 
