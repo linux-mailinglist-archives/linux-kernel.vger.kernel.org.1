@@ -2,188 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0682120FC8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 21:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB0820FC99
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 21:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726714AbgF3TPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 15:15:36 -0400
-Received: from outils.crapouillou.net ([89.234.176.41]:52892 "EHLO
-        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726217AbgF3TPg (ORCPT
+        id S1727081AbgF3TTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 15:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727059AbgF3TTk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 15:15:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1593544533; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zyzWH6/6MTK+rTxq8XDIprmsIZUC3mOvx5/gSWX5RU8=;
-        b=gKHdRUe5icVdTNy4SwD7Ti8ml9qLxB56EZX3c9BlcAZGFT1A0WA2UptnBHuIvikc8nsN8N
-        qtzWKUrU1a2gYB8NlYn0gGotbADHD3N6M5scnB0RXSysaepRpjN4bWig3mKo2ddOkJDwSy
-        HeD9n6CYSII4P6FpvlinY6Z+0YlajSM=
-Date:   Tue, 30 Jun 2020 21:15:21 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 1/2] dt-bindings: timer: Add Ingenic X1000 OST
- bindings.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        daniel.lezcano@linaro.org, tglx@linutronix.de, robh+dt@kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Message-Id: <LT6RCQ.V5ANBLLSA4OD3@crapouillou.net>
-In-Reply-To: <20200630171553.70670-2-zhouyanjie@wanyeetech.com>
-References: <20200630171553.70670-1-zhouyanjie@wanyeetech.com>
-        <20200630171553.70670-2-zhouyanjie@wanyeetech.com>
+        Tue, 30 Jun 2020 15:19:40 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE40C03E97B
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 12:19:39 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id q15so19867942wmj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 12:19:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+SWuClaaDOYjnOgTPZaQNynsf/0FUgaUl6LbycKFTXY=;
+        b=p1ZTo7sqWt0hVOCPEQgh4KonD/ze3MFi/Yo01MsLgVJf5FMsIFlA6JW4xVwwRJLlvb
+         2LGkFLB4TzM0dvjc8XtPJfVJhY8j+voxfHGY5wyBtTX1C+ZACZgqKm0vEVfpHx7NWev/
+         lcBMgEAqWixQZY8F67ZRGbDhWdhv/yhtFew6T+y/MorkhkJgTBklhLRQcuC4gHDG6Oma
+         5i9nqG9qYH/2KTAQvzLCjszZz0sf7Mhc082rZwllvHEn17zE65LAchhrPt5sAy6Dzzit
+         PtTeeRPqNlzXbRW/+6N4LbmHjg3QifubG2x60lzfsOi+sgYvSO6qM++fCjJ07Ct2wEA1
+         NugQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+SWuClaaDOYjnOgTPZaQNynsf/0FUgaUl6LbycKFTXY=;
+        b=LPFOufxrln4AAXI3VN2p3OxyPwu7Qna2MJ4GUiqadyv7qM6H6khOJOuPAJCRR3VKgI
+         WhKZDAOCRFbEK7oyXTYnggNv3Klk6eGn3xOlI68C1pTRRsme56a7X4rJd0bw+1+tBYeW
+         q6MQnvNZdjp6fGfi40wW57DE8zFLTh1D9FcJtdPTGoSczCuP0oqfqQ4SlpAN0SxoKEfq
+         OKR7045sCJ4NWLTlWP+Is+5+hcvafQuf0oSd0bgN3zqQhUBfWLwmP0E5ME8DHgpzN/5H
+         BGTvYDSSajYjuT3NlQeKdpgFSdiuhM9xiTsmp99X4HeFwt+AjjOqj3jXCN6mXK2ffDOJ
+         gVjg==
+X-Gm-Message-State: AOAM53024Bx8cWBq/ylqGjBuPKIy5LkMu06B0RpIvwVBMr4q8UXzyk9/
+        4tFQTCmhAkb1s0r+abQL0HA1cQ==
+X-Google-Smtp-Source: ABdhPJy/PenvvC1HqQRiXc5HwQSjowSzX2eTbOpk9cYcS6/u9DHLBqXXZHK4LjdBVn6FouYmSayxcQ==
+X-Received: by 2002:a1c:3286:: with SMTP id y128mr21486460wmy.29.1593544778240;
+        Tue, 30 Jun 2020 12:19:38 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id h14sm4799958wrt.36.2020.06.30.12.19.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 12:19:37 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 21:19:31 +0200
+From:   Marco Elver <elver@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Subject: Re: [PATCH 00/22] add support for Clang LTO
+Message-ID: <20200630191931.GA884155@elver.google.com>
+References: <20200624203200.78870-1-samitolvanen@google.com>
+ <20200624211540.GS4817@hirez.programming.kicks-ass.net>
+ <CAKwvOdmxz91c-M8egR9GdR1uOjeZv7-qoTP=pQ55nU8TCpkK6g@mail.gmail.com>
+ <20200625080313.GY4817@hirez.programming.kicks-ass.net>
+ <20200625082433.GC117543@hirez.programming.kicks-ass.net>
+ <20200625085745.GD117543@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200625085745.GD117543@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.13.2 (2019-12-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
+I was asked for input on this, and after a few days digging through some
+history, thought I'd comment. Hope you don't mind.
 
-Le mer. 1 juil. 2020 =C3=A0 1:15, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie)=
-=20
-<zhouyanjie@wanyeetech.com> a =C3=A9crit :
-> Add the OST bindings for the X10000 SoC from Ingenic.
->=20
-> Tested-by: =E5=91=A8=E6=AD=A3 (Zhou Zheng) <sernia.zhou@foxmail.com>
-> Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wany=
-eetech.com>
-> ---
->=20
-> Notes:
->     v1->v2:
->     No change.
->=20
->     v2->v3:
->     Fix wrong parameters in "clocks".
->=20
->  .../devicetree/bindings/timer/ingenic,ost.yaml     | 61=20
-> ++++++++++++++++++++++
->  include/dt-bindings/clock/ingenic,ost.h            | 12 +++++
+On Thu, Jun 25, 2020 at 10:57AM +0200, Peter Zijlstra wrote:
+> On Thu, Jun 25, 2020 at 10:24:33AM +0200, Peter Zijlstra wrote:
+> > On Thu, Jun 25, 2020 at 10:03:13AM +0200, Peter Zijlstra wrote:
+> > > I'm sure Will will respond, but the basic issue is the trainwreck C11
+> > > made of dependent loads.
+> > > 
+> > > Anyway, here's a link to the last time this came up:
+> > > 
+> > >   https://lore.kernel.org/linux-arm-kernel/20171116174830.GX3624@linux.vnet.ibm.com/
+> > 
+> > Another good read:
+> > 
+> >   https://lore.kernel.org/lkml/20150520005510.GA23559@linux.vnet.ibm.com/
+[...]
+> Because now the machine can speculate and load now before seq, breaking
+> the ordering.
 
-Please name them ingenic,sysost.yaml and ingenic,sysost.h, to=20
-differenciate with the OST that is in the JZ SoCs.
+First of all, I agree with the concerns, but not because of LTO.
 
->  2 files changed, 73 insertions(+)
->  create mode 100644=20
-> Documentation/devicetree/bindings/timer/ingenic,ost.yaml
->  create mode 100644 include/dt-bindings/clock/ingenic,ost.h
->=20
-> diff --git a/Documentation/devicetree/bindings/timer/ingenic,ost.yaml=20
-> b/Documentation/devicetree/bindings/timer/ingenic,ost.yaml
-> new file mode 100644
-> index 000000000000..459dd3d161c2
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/timer/ingenic,ost.yaml
-> @@ -0,0 +1,61 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/timer/ingenic,ost.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Bindings for SYSOST in Ingenic XBurst family SoCs
-> +
-> +maintainers:
-> +  - =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wanyeetech.com=
->
-> +
-> +description:
-> +  The SYSOST in an Ingenic SoC provides one 64bit timer for=20
-> clocksource
-> +  and one or more than one 32bit timers for clockevent.
+To set the stage better, and summarize the fundamental problem again:
+we're in the unfortunate situation that no compiler today has a way to
+_efficiently_ deal with C11's memory_order_consume
+[https://lwn.net/Articles/588300/]. If we did, we could just use that
+and be done with it. But, sadly, that doesn't seem possible right now --
+compilers just say consume==acquire. Will suggests doing the same in the
+kernel: https://lkml.kernel.org/r/20200630173734.14057-19-will@kernel.org
 
-"and one or more than one" -> "and one or more"
+What we're most worried about right now is the existence of compiler
+transformations that could break data dependencies by e.g. turning them
+into control dependencies.
 
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +
-> +      - description: SYSOST in Ingenic XBurst family SoCs
+If this is a real worry, I don't think LTO is the magical feature that
+will uncover those optimizations. If these compiler transformations are
+real, they also exist in a normal build! And if we are worried about
+them, we need to stop relying on dependent load ordering across the
+board; or switch to -O0 for everything. Clearly, we don't want either.
 
-XBurst is the name of the CPU, not a SoC family, so you would just=20
-write 'Ingenic SoCs'. But just drop the description alltogether, it=20
-does not add anything valuable.
+Why do we think LTO is special?
 
-> +        enum:
-> +          - ingenic,x1000-ost
-> +          - ingenic,x2000-ost
+With LTO, Clang just emits LLVM bitcode instead of ELF objects, and
+during the linker stage intermodular optimizations across translation
+unit boundaries are done that might not be possible otherwise
+[https://llvm.org/docs/LinkTimeOptimization.html]. From the memory model
+side of things, if we could fully convey our intent to the compiler (the
+imaginary consume), there would be no problem, because all optimization
+stages from bitcode generation to the final machine code generation
+after LTO know about the intended semantics. (Also, keep in mind that
+LTO is _not_ doing post link optimization of machine code binaries!)
 
-You have "ingenic,x2000-ost" as a compatible string, but your driver=20
-(in patch [2/2]) only handles the first compatible string. Either they=20
-are different, in this case the driver should handle both, or they work=20
-the same, and in the case the "ingenic,x2000-ost" string should use=20
-"ingenic,x1000-ost" as a fallback string.
+But as far as we can tell, there is no evidence of the dreaded "data
+dependency to control dependency" conversion with LTO that isn't there
+in non-LTO builds, if it's even there at all. Has the data to control
+dependency conversion been encountered in the wild? If not, is the
+resulting reaction an overreaction? If so, we need to be careful blaming
+LTO for something that it isn't even guilty of.
 
-Cheers,
--Paul
+So, we are probably better off untangling LTO from the story:
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    const: ost
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +required:
-> +  - "#clock-cells"
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - interrupts
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/x1000-cgu.h>
-> +
-> +    ost: timer@12000000 {
-> +    		compatible =3D "ingenic,x1000-ost";
-> +    		reg =3D <0x12000000 0x3c>;
-> +
-> +    		#clock-cells =3D <1>;
-> +
-> +    		clocks =3D <&cgu X1000_CLK_OST>;
-> +    		clock-names =3D "ost";
-> +
-> +    		interrupt-parent =3D <&cpuintc>;
-> +    		interrupts =3D <3>;
-> +    	};
-> +...
-> diff --git a/include/dt-bindings/clock/ingenic,ost.h=20
-> b/include/dt-bindings/clock/ingenic,ost.h
-> new file mode 100644
-> index 000000000000..9ac88e90babf
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/ingenic,ost.h
-> @@ -0,0 +1,12 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * This header provides clock numbers for the ingenic,tcu DT binding.
-> + */
-> +
-> +#ifndef __DT_BINDINGS_CLOCK_INGENIC_OST_H__
-> +#define __DT_BINDINGS_CLOCK_INGENIC_OST_H__
-> +
-> +#define OST_CLK_PERCPU_TIMER	0
-> +#define OST_CLK_GLOBAL_TIMER	1
-> +
-> +#endif /* __DT_BINDINGS_CLOCK_INGENIC_OST_H__ */
-> --
-> 2.11.0
->=20
+1. LTO or no LTO does not matter. The LTO series should not get tangled
+   up with memory model issues.
 
+2. The memory model question and problems need to be answered and
+   addressed separately.
 
+Thoughts?
+
+Thanks,
+-- Marco
