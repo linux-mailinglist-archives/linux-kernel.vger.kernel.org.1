@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46AF20FE37
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 22:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA7020FE05
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 22:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgF3Uwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 16:52:51 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47373 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726268AbgF3Uwv (ORCPT
+        id S1726067AbgF3UqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 16:46:17 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50391 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726330AbgF3UqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 16:52:51 -0400
+        Tue, 30 Jun 2020 16:46:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593550370;
+        s=mimecast20190719; t=1593549968;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding;
-        bh=ZuPZYk0Ns+MCrJXk2nN23I5YsKRR2oHib+g0ZYAxJ90=;
-        b=ZECID6VoxlCL7Qy7W/xFloMHsRzLsiO9T9FvkdLyPcrKoWvCTM6A2KEr5T2ScS6thUkk8n
-        p7mOfQ2ZevBYlT+UqVzzMLJysC6EIwNNqKZSJGZJYvRDALoFHG0uX3GwAWsGO5HW+VeLQx
-        1jOqorkjJMCcDbYvXkGtx4SBHGqaYsE=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-171-AfF42e-JNS-LfOnRu7eEIg-1; Tue, 30 Jun 2020 16:52:47 -0400
-X-MC-Unique: AfF42e-JNS-LfOnRu7eEIg-1
-Received: by mail-pg1-f198.google.com with SMTP id o15so16079161pgn.15
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 13:52:47 -0700 (PDT)
+        bh=nRL7j1WwZNqVLuKE8r33la3T5z/V/hLFvWs36l0m98c=;
+        b=e5ltbR964Sgw6f1CmZBHWIx9cv5ff+Up9WQnfVxASv22V231o5cOo/gaqtCXJSE8Tm+5MQ
+        FJQowzGlVPBwj7KCoFCcfutohV8+vDMbCpiZcIlmtFz0t9RrGJ7VFvbG8EIzMxZwyjsRUK
+        bshufPe9YVkZCusl2IdUVLLDKjyWZrI=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-443-j_-v3lPcOrCERMPP0tfX1A-1; Tue, 30 Jun 2020 16:46:04 -0400
+X-MC-Unique: j_-v3lPcOrCERMPP0tfX1A-1
+Received: by mail-qv1-f70.google.com with SMTP id r19so14511369qvz.7
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 13:46:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ZuPZYk0Ns+MCrJXk2nN23I5YsKRR2oHib+g0ZYAxJ90=;
-        b=jxzd90bPE2MdY1/EXBR2usogNWGTGH6SBotcaJcilBNJ4rAtA5ntZcWhLNioShHCbp
-         6ruKsyucu6BK2/LOBEjhdihGXmTyDxW5xdoe7iOvB9fzZEjgRwm68EHYo9hCzgRFilXe
-         6ref60TgUUv9frDqn0SsK1DFrxbYgX0TtJwyy1ydVwgnukRaOyO1swbEwpViy0bZqBq7
-         C9O6WwmQy5+s2m/V8Jh4nmaHeQ4n1tFiH238zqaduEl6J6y7E/877jfqcnN9edAE06mZ
-         63+iLrsdAiV+I62MROiazapOmvRiNLC/ZG7P5UBfRwAMsSGCMqlKTyjLqxgwA/rOyIUa
-         nwkA==
-X-Gm-Message-State: AOAM532zO9GeMWqLE/2IS7gExyyW98Cr3nQOANBIm/MieSJIrHSHRt9n
-        wQXa9LLBXOLjdqhV4ZclwM79pNZ0aIiGz3TZB+SHeZZQjo77UBLm1X8WcCrg7QNQdoZzJNBN5KI
-        J4w9i508AmutNOrE/DWV/72rO
-X-Received: by 2002:a05:6214:1586:: with SMTP id m6mr20808923qvw.171.1593549956468;
-        Tue, 30 Jun 2020 13:45:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyNcVTxS1nLn72PqQ6RmcgCA2jlQ+iPsG1/Q8+SmC7pwUxqSCsBS9tibh2g1OtZBBb74J0RnA==
-X-Received: by 2002:a05:6214:1586:: with SMTP id m6mr20808902qvw.171.1593549956202;
-        Tue, 30 Jun 2020 13:45:56 -0700 (PDT)
+        bh=nRL7j1WwZNqVLuKE8r33la3T5z/V/hLFvWs36l0m98c=;
+        b=fh12lXPN03oEMaGPXihr/he7SFXsR40Qhtm9BB1pwitXQ/LhTjl4LXSRcPXVHB51T+
+         ZWV4qQg6qFpM1NFQWpBR0xF5Ubqv+oNT5A7btwu9bAkg3WEYh5j44gpPFBuhLwSx/gaK
+         kX5iiQnYc5+QkHTEZXFeNPaJkPeDBzt9x6rD0DxYxVUrnN/soEMjZQqPNhrG288gyfj9
+         1IsxesebFd3AFoLpJH2HJpeGr3RgbRxfg77ef45iq0lfpb1+eCJ9SOwE3o1ETmxTrM5X
+         /sewXSQeSEm8C4T4pKI2/aEkeh6ePxxNI06X2b8oKDNb8UUsFbiJ3Cl6KBPFKZn27Lxz
+         /pJg==
+X-Gm-Message-State: AOAM531WBZYkIStmeMXKeQJz9TCcUrhPHIEIl7S5DSeGs7WWJmaOOlGW
+        FA8AcyO2HAeelF02THRvBGIBhM1utZ8/VW8zy26fc3x17liz6sHJ7HkVvAPjdvAeqeqYDUiw8qO
+        oGUbyV/ZHUgMvzkXiYhTWufbU
+X-Received: by 2002:a05:620a:635:: with SMTP id 21mr22244592qkv.491.1593549961986;
+        Tue, 30 Jun 2020 13:46:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwlUPsr/W+WeZFM6KWdqEHBVB5RxdLgehVJ6NhUZN7D0mYiZYTZhpM7moIljz6u9XaYXW1fJQ==
+X-Received: by 2002:a05:620a:635:: with SMTP id 21mr22244374qkv.491.1593549958835;
+        Tue, 30 Jun 2020 13:45:58 -0700 (PDT)
 Received: from xz-x1.redhat.com ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id v184sm3850652qki.12.2020.06.30.13.45.54
+        by smtp.gmail.com with ESMTPSA id f18sm4467263qtc.28.2020.06.30.13.45.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 13:45:55 -0700 (PDT)
+        Tue, 30 Jun 2020 13:45:58 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
@@ -61,9 +61,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
         Will Deacon <will@kernel.org>,
         "David S . Miller" <davem@davemloft.net>,
         sparclinux@vger.kernel.org
-Subject: [PATCH v4 20/26] mm/sparc32: Use general page fault accounting
-Date:   Tue, 30 Jun 2020 16:45:53 -0400
-Message-Id: <20200630204553.39442-1-peterx@redhat.com>
+Subject: [PATCH v4 21/26] mm/sparc64: Use general page fault accounting
+Date:   Tue, 30 Jun 2020 16:45:56 -0400
+Message-Id: <20200630204556.39491-1-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -80,23 +80,23 @@ CC: David S. Miller <davem@davemloft.net>
 CC: sparclinux@vger.kernel.org
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- arch/sparc/mm/fault_32.c | 11 +----------
+ arch/sparc/mm/fault_64.c | 11 +----------
  1 file changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/arch/sparc/mm/fault_32.c b/arch/sparc/mm/fault_32.c
-index 06af03db4417..8071bfd72349 100644
---- a/arch/sparc/mm/fault_32.c
-+++ b/arch/sparc/mm/fault_32.c
-@@ -234,7 +234,7 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
- 	 * make sure we exit gracefully rather than endlessly redo
- 	 * the fault.
- 	 */
+diff --git a/arch/sparc/mm/fault_64.c b/arch/sparc/mm/fault_64.c
+index 9ebee14ee893..0a6bcc85fba7 100644
+--- a/arch/sparc/mm/fault_64.c
++++ b/arch/sparc/mm/fault_64.c
+@@ -422,7 +422,7 @@ asmlinkage void __kprobes do_sparc64_fault(struct pt_regs *regs)
+ 			goto bad_area;
+ 	}
+ 
 -	fault = handle_mm_fault(vma, address, flags, NULL);
 +	fault = handle_mm_fault(vma, address, flags, regs);
  
  	if (fault_signal_pending(fault, regs))
- 		return;
-@@ -250,15 +250,6 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
+ 		goto exit_exception;
+@@ -438,15 +438,6 @@ asmlinkage void __kprobes do_sparc64_fault(struct pt_regs *regs)
  	}
  
  	if (flags & FAULT_FLAG_ALLOW_RETRY) {
