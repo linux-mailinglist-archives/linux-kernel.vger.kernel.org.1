@@ -2,121 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D3920F0F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C7320F0FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731708AbgF3I4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 04:56:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729992AbgF3I4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 04:56:45 -0400
-Received: from localhost (unknown [84.241.197.94])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 544B220759;
-        Tue, 30 Jun 2020 08:56:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593507405;
-        bh=RMkfOv+c5EL2QlsPXrFbfPa5buPm5V8aN83cTazCr9s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sORZvxL8YlMIovX+fTWnmJeH68eF70iC78FC6rsnRerQnoEzU9MGmg4rOEWWS5RvC
-         0Z3kPFW6XcRofM0kLRef2FUs9aES0j3+1rOdb5JAeT2bs4iShNlnkg9EuHDXDT/T+n
-         JI1+Zdsxm3TAYyyirQ/hC2Se4wpZQVq5B12o2NGU=
-Date:   Tue, 30 Jun 2020 10:56:41 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Gutson <daniel.gutson@eclypsium.com>
-Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Richard Hughes <hughsient@gmail.com>,
-        Alex Bazhaniuk <alex@eclypsium.com>
-Subject: Re: [PATCH] SPI LPC information kernel module
-Message-ID: <20200630085641.GD637809@kroah.com>
-References: <20200629225932.5036-1-daniel.gutson@eclypsium.com>
+        id S1731767AbgF3I5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 04:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731639AbgF3I5J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 04:57:09 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA24EC03E979
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 01:57:08 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id z63so17827726qkb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 01:57:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uLfyA6kwAk3sFKrISr9s3SubY2mEnwLHD2Bu93ov3kU=;
+        b=b43IWOnxRsypW3ZvtE6GOdHeSq1it21xnZfm11oR1prYjnkDmCgV5GI51EaOc9852V
+         61fm//3tcUCZ+FHey/EAdlCAcAo90oHSIuxxp9cBo7XEDz0kSmkjixQwrI+Et0UpR7bh
+         DJpLgzaBmvF+VzLb5QJeSpgNobbLekRrbWNVmxSEfxclrZhNJrCOdA8xj8YRCjvL1Egk
+         zrY5fXKqAg/4t4zZo/1D2odDdaSMrIfS2ROO0J/S8yVDV4ZNkMtBvmzBDoho9cLrl/c7
+         5XdqGnX6Z8Sun+Kzw/3ApvKk9X/jm27KJ+E5qFo/HYhsgGG3Jq4PpK4mBAP94J1KGn1X
+         BCzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uLfyA6kwAk3sFKrISr9s3SubY2mEnwLHD2Bu93ov3kU=;
+        b=Q2dvSbx03J85AvDmi498suWD6eHbjW1xcnG65xIhoD4yYWO/+PCe3y63C+k6uDV0zN
+         mFT9m9wCzwp3MejZoFYOF7J1ga2arHwKk+D/yK6yJQ4P9icKQMfcT2S59RTLp+TDTZQb
+         E22reK5W1iYbW9liCSnaPc0+cLkz2kSn8grvX5friKCWnxD5JOo4YmdZ2YIcsRdeLHJl
+         xspvHkRKSfQndhJbxfBSzYBbL9Qof7wV1KbZmxssrzEyK7DOSTT7wv1umF2F9HiKs7X8
+         n+bsAPGrKPY2DwIPbKHuSi1Er+ay+xDLhnyXu1u2J0TTdFl5o38rlUNxirt0tnKM+MHk
+         EyVw==
+X-Gm-Message-State: AOAM531G6NFZ35m4Dcp6Up6ugSkrf2/QrFXJIba80ApB/n/hb9FveFUZ
+        cDGtiyzy6j73RTWVd/167iAI8+V3q/MyqzCDViqxhQ==
+X-Google-Smtp-Source: ABdhPJzps1YB8ezGIBmRJ3hfs+iy1hFiHLPHFZxcAaGXZRtoWn4YonE9966faoaFJCS+TsMSaqxR6nyw0IsMbP1OWOc=
+X-Received: by 2002:a37:7741:: with SMTP id s62mr6662405qkc.263.1593507428004;
+ Tue, 30 Jun 2020 01:57:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629225932.5036-1-daniel.gutson@eclypsium.com>
+References: <20200623040107.22270-1-warthog618@gmail.com> <20200623040107.22270-12-warthog618@gmail.com>
+In-Reply-To: <20200623040107.22270-12-warthog618@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 30 Jun 2020 10:56:57 +0200
+Message-ID: <CAMpxmJUDvfaFJSma642BAyprugae16Nag5zSVuApNPakiR-O3w@mail.gmail.com>
+Subject: Re: [PATCH 11/22] gpiolib: cdev: remove recalculation of offset
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 07:59:32PM -0300, Daniel Gutson wrote:
-> This kernel module exports configuration attributes for the
-> system SPI chip.
-> This initial version exports the BIOS Write Enable (bioswe),
-> BIOS Lock Enable (ble), and the SMM Bios Write Protect (SMM_BWP)
-> fields of the Bios Control register. The idea is to keep adding more
-> flags, not only from the BC but also from other registers in following
-> versions.
-> 
-> The goal is that the attributes are avilable to fwupd when SecureBoot
-> is turned on.
-> 
-> A technical note: I check if *ppos == BUFFER_SIZE in the reading function
-> to exit early and avoid an extra access to the HW, for example when using
-> the 'cat' command, which causes two read operations.
+On Tue, Jun 23, 2020 at 6:02 AM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> Remove recalculation of offset from desc, where desc itself was calculated
+> from offset.
+>
+> There is no benefit from for the desc -> hwgpio conversion in this
+> context. The only implicit benefit of the offset -> desc -> hwgpio is
+> the range check in the offset -> desc, but where desc is required you
+> still get that, and where desc isn't required it is simpler to perform
+> the range check directly.
+>
+> Signed-off-by: Kent Gibson <warthog618@gmail.com>
 
-Why not use the simple_* functions which should prevent that type of
-thing?
-
-
-
-> 
-> Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
-> ---
->  Documentation/ABI/stable/securityfs-spi-lpc |  23 +
-
-Why is this going in securityfs at all?  Why not just sysfs as it is a
-CPU attribute, right?
-
-
->  MAINTAINERS                                 |   6 +
->  drivers/misc/Kconfig                        |   1 +
->  drivers/misc/Makefile                       |   1 +
->  drivers/misc/spi_lpc/Kconfig                |  20 +
->  drivers/misc/spi_lpc/Makefile               |   8 +
->  drivers/misc/spi_lpc/bios_data_access.c     | 559 +++++++++++++++++++
->  drivers/misc/spi_lpc/bios_data_access.h     | 181 +++++++
->  drivers/misc/spi_lpc/low_level_access.c     |  59 ++
->  drivers/misc/spi_lpc/low_level_access.h     |  21 +
->  drivers/misc/spi_lpc/spi_lpc_main.c         | 176 ++++++
->  drivers/misc/spi_lpc/viddid_arch_map.c      | 566 ++++++++++++++++++++
->  drivers/misc/spi_lpc/viddid_arch_map.h      |  17 +
->  13 files changed, 1638 insertions(+)
->  create mode 100644 Documentation/ABI/stable/securityfs-spi-lpc
->  create mode 100644 drivers/misc/spi_lpc/Kconfig
->  create mode 100644 drivers/misc/spi_lpc/Makefile
->  create mode 100644 drivers/misc/spi_lpc/bios_data_access.c
->  create mode 100644 drivers/misc/spi_lpc/bios_data_access.h
->  create mode 100644 drivers/misc/spi_lpc/low_level_access.c
->  create mode 100644 drivers/misc/spi_lpc/low_level_access.h
->  create mode 100644 drivers/misc/spi_lpc/spi_lpc_main.c
->  create mode 100644 drivers/misc/spi_lpc/viddid_arch_map.c
->  create mode 100644 drivers/misc/spi_lpc/viddid_arch_map.h
-> 
-> diff --git a/Documentation/ABI/stable/securityfs-spi-lpc b/Documentation/ABI/stable/securityfs-spi-lpc
-> new file mode 100644
-> index 000000000000..22660a7fd914
-> --- /dev/null
-> +++ b/Documentation/ABI/stable/securityfs-spi-lpc
-> @@ -0,0 +1,23 @@
-> +What:		/sys/kernel/security/firmware/bioswe
-> +Date:		June 2020
-> +KernelVersion:	5.8.0
-> +Contact:	daniel.gutson@eclypsium.com
-> +Description:	If the system firmware set BIOS Write Enable.
-> +		0: writes disabled, 1: writes enabled.
-
-THis is very x86-specific, what about ARM/MIPS/anything else?  Perhaps a
-cpu/arch-specific thing instead?
-
-Again, which makes it seem like securityfs is not the thing for this, as
-it describes the hardware, not a security model which is what securityfs
-has been for in the past, right?
-
-thanks,
-
-greg k-h
+Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
