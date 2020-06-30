@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A688C20F652
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218FE20F62F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388669AbgF3NxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 09:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47680 "EHLO
+        id S2388409AbgF3Nv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 09:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388389AbgF3NvW (ORCPT
+        with ESMTP id S2388313AbgF3NvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:51:22 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5B6C03E979
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:21 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id j4so17828546wrp.10
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:21 -0700 (PDT)
+        Tue, 30 Jun 2020 09:51:23 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5507C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:22 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id l2so18190993wmf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KJS/keN17J0QH5GuMuvB98PgdVtEKXtUDk7tuwa3qBk=;
-        b=XFCjAT0Fm2Ktek2vUmuOq+8tn3ROAtbgpJk64jEsnz+2NgMKEmCjQVVJiJw26bM0Jp
-         jU+fBCIwnQ6kZyreKOOLT9bP2ruK+Lv/HnpktY370ivsAanhrBUWmAPNLh0s8vnVerwO
-         atcn4KvjOovczEXJuU9OrLI34JUVUq0ZZ3hoAd3yw77gPdqsSoLmX+hUivb8eEwk9oI+
-         mHsFEavVDJuvmzCMV7qeQ9C8td2nhnr8vG+MVxa7jOsrGmGKWTqoEqyia6KKpCHhpxPs
-         oQbx8xurNvuThuNuImiFXtrfph9OG4buS8F9VlXr3Zianl+H0ZpJKydwEo0E/oKpTULn
-         e5QQ==
+        bh=xbSUqKBCxymsC6lBBef3Qyn0QkDTIAKXJyfnYrQoXC8=;
+        b=JROVTSMxcYpya04e8YJ8NvbOL9s6Y8mdWsTPgTWrjU6LHmLpBqI+RWcUkPq3iU12Ce
+         Oh+Byu/dqxO3e7TDVyj21qrQM80IuHA9vi8gT+czeAw1IWM5YBrS1FjDXkUkeNGpb8n7
+         0inwVFXMPKT5ghvUXxvbM3OAEBSbZHRjzhzoV8JDCRs+tFLRv3Ky7RDB+6PglnHeMFpo
+         9n4VRksZq8uKFBm3VX8GA8J/ivxO+xegMzjP84WffpO7u/NoT6bFy73L5ljK2jAry31O
+         BOKtaDEWKMnua+idVaSdZsHXOC0ejVXpf2SeDpzPJ5molGB5WIftQn0uGLBaqVmDfG/D
+         fidw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KJS/keN17J0QH5GuMuvB98PgdVtEKXtUDk7tuwa3qBk=;
-        b=DpjvMtsgfegFwB8Bl0jRvcJlbK9cbn8k+j8BcpnxAuhTRg/9BRWiStZiTQ6YrQsRzR
-         8GU8MxewVFxL7rOfvBL56eSxYVhfH++lFVJtkEB+JeIadwQzavliAm0StUaQQwO48LQA
-         PTncudDWOQGYeaQ69r45EeqeJbL5CzkPKQC9946mWz6ULou/+m2oS/DMQooaVDmI7wPw
-         /QDc1ieE9KGZzmnDDd7DgcfUwADgLm7la9Q2QLM76vfeb2Hv7STm6hJphLeiQc+IWpHQ
-         5glky86bloiZ0z9pnmGCc64Yb5xYfU3kz7W2f6/+3LQ+IE125azMKyb1DMOi3cWKE3n5
-         uQMw==
-X-Gm-Message-State: AOAM5329WB7iZB83r9S7c+ksmx5qjDa8/jZtwddA4E4iWCZoi7h1Hhup
-        0PaVDgyhvVBr+qbyJ8dPefLiCDnglUs=
-X-Google-Smtp-Source: ABdhPJy9deKfqIJP8pIRE38cgy1gIRpXGQWSZKp0s1rjHDZKFWj+i5L71stp9jmlT9v2RxSlGNzVYA==
-X-Received: by 2002:adf:c44d:: with SMTP id a13mr22553613wrg.205.1593525080501;
-        Tue, 30 Jun 2020 06:51:20 -0700 (PDT)
+        bh=xbSUqKBCxymsC6lBBef3Qyn0QkDTIAKXJyfnYrQoXC8=;
+        b=pPOstOrSRYFCzfeoehzDJgQQOA4rzn35l1FRNzj16RvwgjU/6gTRG79yQ1FVO7TYjM
+         bc86AW3LyWZ+rSvsXtLVipTsBV3jHu+9Ax65GdE1taBVSMFBauLyETqnA2YCeKssJBDG
+         PuSupAArqhYGF7QQu6zeiD3TLkodBhVEe5IZx8zB1Rtha69fdgj8S4TdSL1CT+ztoMz0
+         NgnlCLpaUsf2UwNEkviiwp1S/ukxY4Exgx7nNEFHQk9Z3rEmqA11m47vREZ0IsFvGSYJ
+         L90MgrWnfcV9VCKM+qU/kfjpL3PNbbm99Bo4K5jTG+uRV5GRojp8oimYF6dr5dsvOSrR
+         Md/Q==
+X-Gm-Message-State: AOAM5333Yel6XuQpXjBipYqdALKYIIYlndmau23ua33H7QQMLHx7NNwS
+        uCLJDYtR1Hh/hNXaWjNDeJj7RxQzq7M=
+X-Google-Smtp-Source: ABdhPJw0jWJJPA9KNfsgcxxlrnj5t8iBR+bMqFMhI7nW9X7rHQGhd1hfd2q0Q1rm2llFxBbChW9waA==
+X-Received: by 2002:a1c:e285:: with SMTP id z127mr21764312wmg.162.1593525081517;
+        Tue, 30 Jun 2020 06:51:21 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id t4sm3876746wmf.4.2020.06.30.06.51.19
+        by smtp.gmail.com with ESMTPSA id t4sm3876746wmf.4.2020.06.30.06.51.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 06:51:19 -0700 (PDT)
+        Tue, 30 Jun 2020 06:51:20 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?q?Max=20Asb=C3=B6ck?= <amax@us.ibm.com>
-Subject: [PATCH 06/30] misc: ibmasm: command: Demote function headers from kerneldoc
-Date:   Tue, 30 Jun 2020 14:50:46 +0100
-Message-Id: <20200630135110.2236389-7-lee.jones@linaro.org>
+        George Zhang <georgezhang@vmware.com>
+Subject: [PATCH 07/30] misc: vmw_vmci_defs: 'struct vmci_handle VMCI_ANON_SRC_HANDLE' cannot be static
+Date:   Tue, 30 Jun 2020 14:50:47 +0100
+Message-Id: <20200630135110.2236389-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200630135110.2236389-1-lee.jones@linaro.org>
 References: <20200630135110.2236389-1-lee.jones@linaro.org>
@@ -67,57 +67,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The correct format is not used and no attempt has been made
-to document the function arguments.  Makes sense to just demote
-the header back down to a simple comment.
+This header file is included into source files which do not make
+use to 'struct vmci_handle VMCI_ANON_SRC_HANDLE' which results in
+the following W=1 warnings:
 
-Fixes the following W=1 warnings:
+ In file included from drivers/misc/vmw_vmci/vmci_context.c:8:
+ include/linux/vmw_vmci_defs.h:162:33: warning: ‘VMCI_ANON_SRC_HANDLE’ defined but not used [-Wunused-const-variable=]
+ 162 | static const struct vmci_handle VMCI_ANON_SRC_HANDLE = {
+ | ^~~~~~~~~~~~~~~~~~~~
+ In file included from drivers/misc/vmw_vmci/vmci_datagram.c:8:
+ include/linux/vmw_vmci_defs.h:162:33: warning: ‘VMCI_ANON_SRC_HANDLE’ defined but not used [-Wunused-const-variable=]
+ 162 | static const struct vmci_handle VMCI_ANON_SRC_HANDLE = {
+| ^~~~~~~~~~~~~~~~~~~~
 
- drivers/misc/ibmasm/command.c:106: warning: Function parameter or member 'sp' not described in 'ibmasm_exec_command'
- drivers/misc/ibmasm/command.c:106: warning: Function parameter or member 'cmd' not described in 'ibmasm_exec_command'
- drivers/misc/ibmasm/command.c:149: warning: Function parameter or member 'cmd' not described in 'ibmasm_wait_for_response'
- drivers/misc/ibmasm/command.c:149: warning: Function parameter or member 'timeout' not described in 'ibmasm_wait_for_response'
- drivers/misc/ibmasm/command.c:162: warning: Function parameter or member 'sp' not described in 'ibmasm_receive_command_response'
- drivers/misc/ibmasm/command.c:162: warning: Function parameter or member 'response' not described in 'ibmasm_receive_command_response'
- drivers/misc/ibmasm/command.c:162: warning: Function parameter or member 'size' not described in 'ibmasm_receive_command_response'
-
-Cc: "Max Asböck" <amax@us.ibm.com>
+Cc: George Zhang <georgezhang@vmware.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/ibmasm/command.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/vmw_vmci_defs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/ibmasm/command.c b/drivers/misc/ibmasm/command.c
-index 2863657fa2683..733dd30fbaccf 100644
---- a/drivers/misc/ibmasm/command.c
-+++ b/drivers/misc/ibmasm/command.c
-@@ -94,7 +94,7 @@ static inline void do_exec_command(struct service_processor *sp)
- 	}
- }
- 
--/**
-+/*
-  * exec_command
-  * send a command to a service processor
-  * Commands are executed sequentially. One command (sp->current_command)
-@@ -140,7 +140,7 @@ static void exec_next_command(struct service_processor *sp)
- 	}
- }
- 
--/**
-+/*
-  * Sleep until a command has failed or a response has been received
-  * and the command status been updated by the interrupt handler.
-  * (see receive_response).
-@@ -153,7 +153,7 @@ void ibmasm_wait_for_response(struct command *cmd, int timeout)
- 				timeout * HZ);
- }
- 
--/**
-+/*
-  * receive_command_response
-  * called by the interrupt handler when a dot command of type command_response
-  * was received.
+diff --git a/include/linux/vmw_vmci_defs.h b/include/linux/vmw_vmci_defs.h
+index fefb5292403bc..0374dd3cda3df 100644
+--- a/include/linux/vmw_vmci_defs.h
++++ b/include/linux/vmw_vmci_defs.h
+@@ -159,7 +159,7 @@ static inline bool vmci_handle_is_invalid(struct vmci_handle h)
+  */
+ #define VMCI_ANON_SRC_CONTEXT_ID   VMCI_INVALID_ID
+ #define VMCI_ANON_SRC_RESOURCE_ID  VMCI_INVALID_ID
+-static const struct vmci_handle VMCI_ANON_SRC_HANDLE = {
++const struct vmci_handle VMCI_ANON_SRC_HANDLE = {
+ 	.context = VMCI_ANON_SRC_CONTEXT_ID,
+ 	.resource = VMCI_ANON_SRC_RESOURCE_ID
+ };
 -- 
 2.25.1
 
