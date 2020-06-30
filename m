@@ -2,148 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B718B20F359
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDF020F367
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732840AbgF3LEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 07:04:54 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:35377 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729924AbgF3LEe (ORCPT
+        id S1732870AbgF3LJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 07:09:04 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:44873 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732666AbgF3LJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 07:04:34 -0400
-Received: by mail-oi1-f195.google.com with SMTP id k4so17089222oik.2;
-        Tue, 30 Jun 2020 04:04:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vXIRIHHncqo0zBLK3dtMRuMsQ9p5Az0FH+7MVXNOGgk=;
-        b=K5bwXcOtIDbWYFJlyEiw59h4My36mdbLWRkhv3MFfX+NYheBF5pZfd2BGi3ClR3hEu
-         hLDVBqU/tSrTKlkdPywoXRo/+PwakNZ//my+yhx7JCwud5WYcSzkrvBKfShFuIz9l8iN
-         3EopntkNX19JvqoroTbhpOWzW82mUXdSs7XaVZJbZomdo/AMJgRp5Np7OhJr0bfI2Cv1
-         lp2ea7eJtltKrrPDn1SxJ4CC614Ggge4UvltBeydnZcTbanvP1pPPQD2LuCAlF+DmKun
-         Q2yDo4GSMlbeO+jI1cdKcoaWB73dePvWRKpAo6SAblx103jV0hr1YWGmGA6np7nEZyft
-         gysw==
-X-Gm-Message-State: AOAM532h4iok/G8EI4d3+U0rUKmuPbUPvZWlzEU+ovbY9F8cqXTjZJJC
-        CKgz5edLrPGRtJbJ7yhqfhiJxUfk7RvSSbmIOgI=
-X-Google-Smtp-Source: ABdhPJyrXV+odnKMMsJSNg1252EbQtYugp1MCGhfn0n9yvdE0dCa6B3S5wf96DbBHiDa3tUn2DkDotITWi/UNHXvnXk=
-X-Received: by 2002:a54:4585:: with SMTP id z5mr16015967oib.110.1593515073282;
- Tue, 30 Jun 2020 04:04:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com>
- <2713141.s8EVnczdoM@kreacher> <2788992.3K7huLjdjL@kreacher>
- <CAPcyv4hXkzpTr3bif7zyVx5EqoWTwLgYrt87Aj2=gVMo+jtUyg@mail.gmail.com>
- <CAJZ5v0h4Hj4ax1mmMJn3z3VGtVWkoXzO0kOQ7CYnFKJV2cUGzw@mail.gmail.com> <CAPcyv4iZA6hHH=sh=CZPJ-6skJfeuAVRVAuMeTdD5LYVPRrTqQ@mail.gmail.com>
-In-Reply-To: <CAPcyv4iZA6hHH=sh=CZPJ-6skJfeuAVRVAuMeTdD5LYVPRrTqQ@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 30 Jun 2020 13:04:21 +0200
-Message-ID: <CAJZ5v0g8=tXU8HHkoXSOwSmRhTgwb5rW8N8QQga6AU91kp1dVw@mail.gmail.com>
-Subject: Re: [RFT][PATCH v3 0/4] ACPI: ACPICA / OSL: Avoid unmapping ACPI
- memory inside of the AML interpreter
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Rafael J Wysocki <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Ira Weiny <ira.weiny@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Bob Moore <robert.moore@intel.com>
+        Tue, 30 Jun 2020 07:09:03 -0400
+X-UUID: 13a1312f612746c6baad6853361ab0ad-20200630
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=39/WvHSlJfaFdr2D13fz2nqg2RkI5zVNbDVhi335aSs=;
+        b=CruyKFrhtCHKIxEwxVegZqp5ApeNXLIS/1KR07KpaemHNJSXWk2RLJUSAGu9JFxqOwQKl5lWiU0li9covL0TxtVwInJRwcluJmgv/apfMXW3hNVHctclb54MyLM80fvKYuPLb7VtLcpkDj5jOPKOqkye6x2IWSdazkPjPpIh/0A=;
+X-UUID: 13a1312f612746c6baad6853361ab0ad-20200630
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <chao.hao@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1858030806; Tue, 30 Jun 2020 19:08:58 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 30 Jun 2020 19:08:52 +0800
+Received: from [10.15.20.246] (10.15.20.246) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 30 Jun 2020 19:08:52 +0800
+Message-ID: <1593515273.26985.0.camel@mbjsdccf07>
+Subject: Re: [PATCH v5 06/10] iommu/mediatek: Add sub_comm id in translation
+ fault
+From:   chao hao <Chao.Hao@mediatek.com>
+To:     Yong Wu <yong.wu@mediatek.com>
+CC:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Evan Green <evgreen@chromium.org>,
+        <iommu@lists.linux-foundation.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        FY Yang <fy.yang@mediatek.com>,
+        Chao Hao <chao.hao@mediatek.com>
+Date:   Tue, 30 Jun 2020 19:07:53 +0800
+In-Reply-To: <1593514516.24171.25.camel@mhfsdcap03>
+References: <20200629071310.1557-1-chao.hao@mediatek.com>
+         <20200629071310.1557-7-chao.hao@mediatek.com>
+         <1593514516.24171.25.camel@mhfsdcap03>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 10:46 PM Dan Williams <dan.j.williams@intel.com> wrote:
->
-> On Sun, Jun 28, 2020 at 10:09 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Fri, Jun 26, 2020 at 8:41 PM Dan Williams <dan.j.williams@intel.com> wrote:
-> > >
-> > > On Fri, Jun 26, 2020 at 10:34 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> > > >
-> > > > Hi All,
-> > > >
-> > > > On Monday, June 22, 2020 3:50:42 PM CEST Rafael J. Wysocki wrote:
-> > > > > Hi All,
-> > > > >
-> > > > > This series is to address the problem with RCU synchronization occurring,
-> > > > > possibly relatively often, inside of acpi_ex_system_memory_space_handler(),
-> > > > > when the namespace and interpreter mutexes are held.
-> > > > >
-> > > > > Like I said before, I had decided to change the approach used in the previous
-> > > > > iteration of this series and to allow the unmap operations carried out by
-> > > > > acpi_ex_system_memory_space_handler() to be deferred in the first place,
-> > > > > which is done in patches [1-2/4].
-> > > >
-> > > > In the meantime I realized that calling syncrhonize_rcu_expedited() under the
-> > > > "tables" mutex within ACPICA is not quite a good idea too and that there is no
-> > > > reason for any users of acpi_os_unmap_memory() in the tree to use the "sync"
-> > > > variant of unmapping.
-> > > >
-> > > > So, unless I'm missing something, acpi_os_unmap_memory() can be changed to
-> > > > always defer the final unmapping and the only ACPICA change needed to support
-> > > > that is the addition of the acpi_os_release_unused_mappings() call to get rid
-> > > > of the unused mappings when leaving the interpreter (module the extra call in
-> > > > the debug code for consistency).
-> > > >
-> > > > So patches [1-2/4] have been changed accordingly.
-> > > >
-> > > > > However, it turns out that the "fast-path" mapping is still useful on top of
-> > > > > the above to reduce the number of ioremap-iounmap cycles for the same address
-> > > > > range and so it is introduced by patches [3-4/4].
-> > > >
-> > > > Patches [3-4/4] still do what they did, but they have been simplified a bit
-> > > > after rebasing on top of the new [1-2/4].
-> > > >
-> > > > The below information is still valid, but it applies to the v3, of course.
-> > > >
-> > > > > For details, please refer to the patch changelogs.
-> > > > >
-> > > > > The series is available from the git branch at
-> > > > >
-> > > > >  git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
-> > > > >  acpica-osl
-> > > > >
-> > > > > for easier testing.
-> > > >
-> > > > Also the series have been tested locally.
-> > >
-> > > Ok, I'm still trying to get the original reporter to confirm this
-> > > reduces the execution time for ASL routines with a lot of OpRegion
-> > > touches. Shall I rebuild that test kernel with these changes, or are
-> > > the results from the original RFT still interesting?
-> >
-> > I'm mostly interested in the results with the v3 applied.
-> >
->
-> Ok, I just got feedback on v2 and it still showed the 30 minute
-> execution time where 7 minutes was achieved previously.
+T24gVHVlLCAyMDIwLTA2LTMwIGF0IDE4OjU1ICswODAwLCBZb25nIFd1IHdyb3RlOg0KPiBPbiBN
+b24sIDIwMjAtMDYtMjkgYXQgMTU6MTMgKzA4MDAsIENoYW8gSGFvIHdyb3RlOg0KPiA+IFRoZSBt
+YXggbGFyYiBudW1iZXIgdGhhdCBhIGlvbW11IEhXIHN1cHBvcnQgaXMgOChsYXJiMH5sYXJiNyBp
+biB0aGUgYmVsb3cNCj4gPiBkaWFncmFtKS4NCj4gPiBJZiB0aGUgbGFyYidzIG51bWJlciBpcyBv
+dmVyIDgsIHdlIHVzZSBhIHN1Yl9jb21tb24gZm9yIG1lcmdpbmcNCj4gPiBzZXZlcmFsIGxhcmJz
+IGludG8gb25lIGxhcmIuIEF0IHRoaXMgY2FzZSwgd2Ugd2lsbCBleHRlbmQgbGFyYl9pZDoNCj4g
+PiBiaXRbMTE6OV0gbWVhbnMgY29tbW9uLWlkOw0KPiA+IGJpdFs4OjddIG1lYW5zIHN1YmNvbW1v
+bi1pZDsNCj4gPiBGcm9tIHRoZXNlIHR3byB2YXJpYWJsZXMsIHdlIGNvdWxkIGdldCB0aGUgcmVh
+bCBsYXJiIG51bWJlciB3aGVuDQo+ID4gdHJhbnNsYXRpb24gZmF1bHQgaGFwcGVuLg0KPiA+IFRo
+ZSBkaWFncmFtIGlzIGFzIGJlbG93Og0KPiA+IAkJIEVNSQ0KPiA+IAkJICB8DQo+ID4gCQlJT01N
+VQ0KPiA+IAkJICB8DQo+ID4gICAgICAgICAgICAtLS0tLS0tLS0tLS0tLS0tLQ0KPiA+IAkgICB8
+ICAgICAgICAgICAgICAgfA0KPiA+IAljb21tb24xICAgCWNvbW1vbjANCj4gPiAJICAgfAkJICAg
+fA0KPiA+IAkgICAtLS0tLS0tLS0tLS0tLS0tLQ0KPiA+IAkJICB8DQo+ID4gICAgICAgICAgICAg
+IHNtaSBjb21tb24NCj4gPiAJCSAgfA0KPiA+ICAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tDQo+ID4gICB8ICAgICAgIHwgICAgICAgfCAgICAgICB8ICAgICB8ICAgIHwNCj4g
+PiAgMydkMCAgICAzJ2QxICAgIDMnZDIgICAgMydkMyAgLi4uICAzJ2Q3ICAgPC1jb21tb25faWQo
+bWF4IGlzIDgpDQo+ID4gICB8ICAgICAgIHwgICAgICAgfCAgICAgICB8ICAgICB8ICAgIHwNCj4g
+PiBMYXJiMCAgIExhcmIxICAgICB8ICAgICBMYXJiMyAgLi4uIExhcmI3DQo+ID4gCQkgIHwNCj4g
+PiAJICAgIHNtaSBzdWIgY29tbW9uDQo+ID4gCQkgIHwNCj4gPiAgICAgIC0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tDQo+ID4gICAgICB8ICAgICAgICB8ICAgICAgIHwgICAgICAgfA0KPiA+ICAg
+ICAyJ2QwICAgICAyJ2QxICAgIDInZDIgICAgMidkMyAgIDwtc3ViX2NvbW1vbl9pZChtYXggaXMg
+NCkNCj4gPiAgICAgIHwgICAgICAgIHwgICAgICAgfCAgICAgICB8DQo+ID4gICAgTGFyYjggICAg
+TGFyYjkgICBMYXJiMTAgIExhcmIxMQ0KPiA+IA0KPiA+IEluIHRoaXMgcGF0Y2ggd2UgZXh0ZW5k
+IGxhcmJfcmVtYXBbXSB0byBsYXJiX3JlbWFwWzhdWzRdIGZvciB0aGlzLg0KPiA+IGxhcmJfcmVt
+YXBbeF1beV06IHggbWVhbnMgY29tbW9uLWlkIGFib3ZlLCB5IG1lYW5zIHN1YmNvbW1vbl9pZCBh
+Ym92ZS4NCj4gPiANCj4gPiBXZSBjYW4gYWxzbyBkaXN0aW5ndWlzaCBpZiB0aGUgTTRVIEhXIGhh
+cyBzdWJfY29tbW9uIGJ5IEhBU19TVUJfQ09NTQ0KPiA+IG1hY3JvLg0KPiA+IA0KPiA+IENjOiBN
+YXR0aGlhcyBCcnVnZ2VyIDxtYXR0aGlhcy5iZ2dAZ21haWwuY29tPg0KPiA+IFNpZ25lZC1vZmYt
+Ynk6IENoYW8gSGFvIDxjaGFvLmhhb0BtZWRpYXRlay5jb20+DQo+ID4gUmV2aWV3ZWQtYnk6IFlv
+bmcgV3UgPHlvbmcud3VAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL2lvbW11
+L210a19pb21tdS5jICB8IDIwICsrKysrKysrKysrKystLS0tLS0tDQo+ID4gIGRyaXZlcnMvaW9t
+bXUvbXRrX2lvbW11LmggIHwgIDMgKystDQo+ID4gIGluY2x1ZGUvc29jL21lZGlhdGVrL3NtaS5o
+IHwgIDIgKysNCj4gPiAgMyBmaWxlcyBjaGFuZ2VkLCAxNyBpbnNlcnRpb25zKCspLCA4IGRlbGV0
+aW9ucygtKQ0KPiANCj4gW3NuaXBdDQo+IA0KPiA+IEBAIC00OCw3ICs0OSw3IEBAIHN0cnVjdCBt
+dGtfaW9tbXVfcGxhdF9kYXRhIHsNCj4gPiAgCWVudW0gbXRrX2lvbW11X3BsYXQgbTR1X3BsYXQ7
+DQo+ID4gIAl1MzIgICAgICAgICAgICAgICAgIGZsYWdzOw0KPiA+ICAJdTMyICAgICAgICAgICAg
+ICAgICBpbnZfc2VsX3JlZzsNCj4gPiAtCXVuc2lnbmVkIGNoYXIgICAgICAgbGFyYmlkX3JlbWFw
+W01US19MQVJCX05SX01BWF07DQo+ID4gKwl1bnNpZ25lZCBjaGFyICAgICAgIGxhcmJpZF9yZW1h
+cFtNVEtfTEFSQl9DT01fTUFYXVtNVEtfTEFSQl9TVUJDT01fTUFYXTsNCj4gPiAgfTsNCj4gPiAg
+DQo+ID4gIHN0cnVjdCBtdGtfaW9tbXVfZG9tYWluOw0KPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRl
+L3NvYy9tZWRpYXRlay9zbWkuaCBiL2luY2x1ZGUvc29jL21lZGlhdGVrL3NtaS5oDQo+ID4gaW5k
+ZXggNWEzNGI4N2Q4OWUzLi5mYTY1YTU1NDY4ZTIgMTAwNjQ0DQo+ID4gLS0tIGEvaW5jbHVkZS9z
+b2MvbWVkaWF0ZWsvc21pLmgNCj4gPiArKysgYi9pbmNsdWRlL3NvYy9tZWRpYXRlay9zbWkuaA0K
+PiA+IEBAIC0xMiw2ICsxMiw4IEBADQo+ID4gICNpZmRlZiBDT05GSUdfTVRLX1NNSQ0KPiA+ICAN
+Cj4gPiAgI2RlZmluZSBNVEtfTEFSQl9OUl9NQVgJCTE2DQo+ID4gKyNkZWZpbmUgTVRLX0xBUkJf
+Q09NX01BWAk4DQo+ID4gKyNkZWZpbmUgTVRLX0xBUkJfU1VCQ09NX01BWAk0DQo+IA0KPiBCb3Ro
+IGFyZSBvbmx5IHVzZWQgaW4gbXRrX2lvbW11LmgsIGFuZCBJIGRvbid0IHRoaW5rIHNtaSBoYXMg
+cGxhbiB0byB1c2UNCj4gdGhlbS4gdGh1cyB3ZSBjb3VsZCBtb3ZlIHRoZW0gaW50byBtdGtfaW9t
+bXUuaA0KPiANCm9rLCBnb3QgaXQuIFRoYW5rcyBmb3IgeW91ciBhZHZpY2UuDQoNCj4gPiAgDQo+
+ID4gICNkZWZpbmUgTVRLX1NNSV9NTVVfRU4ocG9ydCkJQklUKHBvcnQpDQo+ID4gIA0KPiANCj4g
+DQoNCg==
 
-This probably means that "transient" memory opregions, which appear
-and go away during the AML execution, are involved and so moving the
-RCU synchronization outside of the interpreter and namespace locks is
-not enough to cover this case.
-
-It should be covered by the v4
-(https://lore.kernel.org/linux-acpi/1666722.UopIai5n7p@kreacher/T/#u),
-though, because the unmapping is completely asynchronous in there and
-it doesn't add any significant latency to the interpreter exit path.
-So I would expect to see much better results with the v4, so I'd
-recommend testing this one next.
-
-> > Also it would be good to check the impact of the first two patches
-> > alone relative to all four.
->
-> I'll start with the full set and see if they can also support the
-> "first 2" experiment.
-
-In the v4 there are just two patches, so it should be straightforward
-enough to test with and without the top-most one. :-)
