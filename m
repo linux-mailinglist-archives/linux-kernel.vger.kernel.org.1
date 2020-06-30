@@ -2,111 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F0A20F49B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 14:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FA320F4B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 14:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387611AbgF3M3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 08:29:43 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:3750 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730095AbgF3M3m (ORCPT
+        id S2387733AbgF3MeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 08:34:19 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:40866 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732042AbgF3MeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 08:29:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1593520181; x=1625056181;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=1SYBHjTB+q5E+ZB8QENYuEXlQudyQrqQO5pO6Am+EEU=;
-  b=H2gEzFv0kVTs7zN9dem+WBaSAh/9oFVo0mO+eDE3d7n+zPvwGeS0grV/
-   zBUFkFHBSXAaaWrYTinmEcyIxPM8Jeit5zAww9HJFp1USU8yiwc7JToPV
-   FTwQbL3GyalSH86SK/gHo9rQIVZVxZBSD7dS7F57vlb4EjtoOmqPAOOmp
-   8=;
-IronPort-SDR: 24GE8aKjT5T9+JGempUpxCY0xCGWdMUQzMqL9jkMNbtduu4ZyyCdQF6qGsE8klTAMuwe714Jgk
- xvtVzeu8wrVQ==
-X-IronPort-AV: E=Sophos;i="5.75,297,1589241600"; 
-   d="scan'208";a="39354207"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-69849ee2.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 30 Jun 2020 12:29:39 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-69849ee2.us-west-2.amazon.com (Postfix) with ESMTPS id DD6ADA23B6;
-        Tue, 30 Jun 2020 12:29:38 +0000 (UTC)
-Received: from EX13D18EUC001.ant.amazon.com (10.43.164.108) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 30 Jun 2020 12:29:38 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
- EX13D18EUC001.ant.amazon.com (10.43.164.108) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 30 Jun 2020 12:29:37 +0000
-Received: from dev-dsk-mheyne-60001.pdx1.corp.amazon.com (10.184.85.242) by
- mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 30 Jun 2020 12:29:36 +0000
-Received: by dev-dsk-mheyne-60001.pdx1.corp.amazon.com (Postfix, from userid 5466572)
-        id 92633222EA; Tue, 30 Jun 2020 12:29:35 +0000 (UTC)
-From:   Maximilian Heyne <mheyne@amazon.de>
-CC:     Amit Shah <aams@amazon.de>, Maximilian Heyne <mheyne@amazon.de>,
-        <stable@vger.kernel.org>, Keith Busch <kbusch@kernel.org>,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] nvme: validate cntlid's only for nvme >= 1.1.0
-Date:   Tue, 30 Jun 2020 12:29:23 +0000
-Message-ID: <20200630122923.70282-1-mheyne@amazon.de>
-X-Mailer: git-send-email 2.16.6
+        Tue, 30 Jun 2020 08:34:14 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jqFSi-0001Uj-5e; Tue, 30 Jun 2020 06:34:08 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jqFSh-0004Zz-8C; Tue, 30 Jun 2020 06:34:07 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200625095725.GA3303921@kroah.com>
+        <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+        <20200625120725.GA3493334@kroah.com>
+        <20200625.123437.2219826613137938086.davem@davemloft.net>
+        <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+        <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+        <87y2oac50p.fsf@x220.int.ebiederm.org>
+        <87bll17ili.fsf_-_@x220.int.ebiederm.org>
+        <20200629221231.jjc2czk3ul2roxkw@ast-mbp.dhcp.thefacebook.com>
+Date:   Tue, 30 Jun 2020 07:29:34 -0500
+In-Reply-To: <20200629221231.jjc2czk3ul2roxkw@ast-mbp.dhcp.thefacebook.com>
+        (Alexei Starovoitov's message of "Mon, 29 Jun 2020 15:12:31 -0700")
+Message-ID: <87eepwzqhd.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
-To:     unlisted-recipients:; (no To-header on input)
+X-XM-SPF: eid=1jqFSh-0004Zz-8C;;;mid=<87eepwzqhd.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18taL0yKPCpx2MTSwFOdv2sl/sVvNIlmuU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa08 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Alexei Starovoitov <alexei.starovoitov@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 468 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 12 (2.5%), b_tie_ro: 10 (2.1%), parse: 1.13
+        (0.2%), extract_message_metadata: 4.1 (0.9%), get_uri_detail_list:
+        1.75 (0.4%), tests_pri_-1000: 4.6 (1.0%), tests_pri_-950: 1.47 (0.3%),
+        tests_pri_-900: 1.29 (0.3%), tests_pri_-90: 187 (39.9%), check_bayes:
+        184 (39.4%), b_tokenize: 8 (1.6%), b_tok_get_all: 21 (4.5%),
+        b_comp_prob: 3.9 (0.8%), b_tok_touch_all: 146 (31.2%), b_finish: 1.35
+        (0.3%), tests_pri_0: 239 (51.1%), check_dkim_signature: 0.78 (0.2%),
+        check_dkim_adsp: 2.9 (0.6%), poll_dns_idle: 1.26 (0.3%), tests_pri_10:
+        2.4 (0.5%), tests_pri_500: 7 (1.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 00/15] Make the user mode driver code a better citizen
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Controller ID's (cntlid) for NVMe devices were introduced in version
-1.1.0 of the specification. Controllers that follow the older 1.0.0 spec
-don't set this field so it doesn't make sense to validate it. On the
-contrary, when using SR-IOV this check breaks VFs as they are all part
-of the same NVMe subsystem.
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
-Cc: <stable@vger.kernel.org> # 5.4+
----
- drivers/nvme/host/core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+2> On Mon, Jun 29, 2020 at 02:55:05PM -0500, Eric W. Biederman wrote:
+>> 
+>> I have tested thes changes by booting with the code compiled in and
+>> by killing "bpfilter_umh" and running iptables -vnL to restart
+>> the userspace driver.
+>> 
+>> I have compiled tested each change with and without CONFIG_BPFILTER
+>> enabled.
+>
+> With
+> CONFIG_BPFILTER=y
+> CONFIG_BPFILTER_UMH=m
+> it doesn't build:
+>
+> ERROR: modpost: "kill_pid_info" [net/bpfilter/bpfilter.ko] undefined!
+>
+> I've added:
+> +EXPORT_SYMBOL(kill_pid_info);
+> to continue testing...
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 28f4388c1337..c4a991acc949 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -2773,7 +2773,8 @@ static int nvme_init_subsystem(struct nvme_ctrl *ctrl, struct nvme_id_ctrl *id)
- 		put_device(&subsys->dev);
- 		subsys = found;
+I am rather surprised I thought Tetsuo had already compile tested
+modules.
+
+
+> I suspect patch 13 is somehow responsible:
+> +	if (tgid) {
+> +		kill_pid_info(SIGKILL, SEND_SIG_PRIV, tgid);
+> +		wait_event(tgid->wait_pidfd, !pid_task(tgid, PIDTYPE_TGID));
+> +		bpfilter_umh_cleanup(info);
+> +	}
+>
+> I cannot figure out why it hangs. Some sort of race ?
+> Since adding short delay between kill and wait makes it work.
+
+Having had a chance to sleep kill_pid_info was a thinko, as was
+!pid_task.  It should have been !pid_has_task as that takes the proper
+rcu locking.
+
+I don't know if that is going to be enough to fix the wait_event
+but those are obvious bugs that need to be fixed.
+
+diff --git a/net/bpfilter/bpfilter_kern.c b/net/bpfilter/bpfilter_kern.c
+index 91474884ddb7..3e1874030daa 100644
+--- a/net/bpfilter/bpfilter_kern.c
++++ b/net/bpfilter/bpfilter_kern.c
+@@ -19,8 +19,8 @@ static void shutdown_umh(void)
+        struct pid *tgid = info->tgid;
  
--		if (!nvme_validate_cntlid(subsys, ctrl, id)) {
-+		if (ctrl->vs >= NVME_VS(1, 1, 0) &&
-+		    !nvme_validate_cntlid(subsys, ctrl, id)) {
- 			ret = -EINVAL;
- 			goto out_put_subsystem;
- 		}
-@@ -2883,7 +2884,7 @@ int nvme_init_identify(struct nvme_ctrl *ctrl)
- 			goto out_free;
- 	}
- 
--	if (!(ctrl->ops->flags & NVME_F_FABRICS))
-+	if (!(ctrl->ops->flags & NVME_F_FABRICS) && ctrl->vs >= NVME_VS(1, 1, 0))
- 		ctrl->cntlid = le16_to_cpu(id->cntlid);
- 
- 	if (!ctrl->identified) {
--- 
-2.16.6
+        if (tgid) {
+-               kill_pid_info(SIGKILL, SEND_SIG_PRIV, tgid);
+-               wait_event(tgid->wait_pidfd, !pid_task(tgid, PIDTYPE_TGID));
++               kill_pid(tgid, SIGKILL, 1);
++               wait_event(tgid->wait_pidfd, !pid_has_task(tgid, PIDTYPE_TGID));
+                bpfilter_umh_cleanup(info);
+        }
+ }
 
+> And then did:
+> while true; do iptables -L;rmmod bpfilter; done
+>  
+> Unfortunately sometimes 'rmmod bpfilter' hangs in wait_event().
 
+Hmm.  The wake up happens just of tgid->wait_pidfd happens just before
+release_task is called so there is a race.  As it is possible to wake
+up and then go back to sleep before pid_has_task becomes false.
 
+So I think I need a friendly helper that does:
 
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
+bool task_has_exited(struct pid *tgid)
+{
+	bool exited = false;
 
+	rcu_read_lock();
+        tsk = pid_task(tgid, PIDTYPE_TGID);
+        exited = !!tsk;
+        if (tsk) {
+        	exited = !!tsk->exit_state;
+out:
+	rcu_unlock();
+	return exited;
+}
+
+There should be a sensible way to do that.
+
+Eric
 
 
