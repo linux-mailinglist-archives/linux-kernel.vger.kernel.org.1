@@ -2,119 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720D320EC59
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 06:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6022E20EC5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 06:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726108AbgF3EIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 00:08:36 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:12523 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgF3EIf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 00:08:35 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5efaba610000>; Mon, 29 Jun 2020 21:06:57 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Mon, 29 Jun 2020 21:08:35 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Mon, 29 Jun 2020 21:08:35 -0700
-Received: from [10.25.97.62] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 30 Jun
- 2020 04:08:26 +0000
-CC:     <spujar@nvidia.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <robh+dt@kernel.org>, <lgirdwood@gmail.com>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <digetx@gmail.com>, <alsa-devel@alsa-project.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
-        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
-        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
-        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
-        <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH v4 12/23] ASoC: simple-card: Support DPCM DAI link with
- multiple Codecs
-To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
- <1593233625-14961-13-git-send-email-spujar@nvidia.com>
- <874kqu1x70.wl-kuninori.morimoto.gx@renesas.com>
- <1e0cf6d1-bf4e-8808-5390-c8a3b7c7fe7e@nvidia.com>
- <87mu4lz6pt.wl-kuninori.morimoto.gx@renesas.com>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <1d7888c7-a8cc-e891-01aa-016e31cc9113@nvidia.com>
-Date:   Tue, 30 Jun 2020 09:38:22 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726338AbgF3EK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 00:10:57 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:32880 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725809AbgF3EK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 00:10:56 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1jq7bJ-00083u-S7; Tue, 30 Jun 2020 14:10:30 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 30 Jun 2020 14:10:29 +1000
+Date:   Tue, 30 Jun 2020 14:10:29 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 1/1] crypto: ux500: hash: Add namespacing to hash_init()
+Message-ID: <20200630041029.GA20892@gondor.apana.org.au>
+References: <20200629123003.1014387-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <87mu4lz6pt.wl-kuninori.morimoto.gx@renesas.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593490017; bh=XIVR0uF6KmslDb3mY0ekre9vEG+3ksH8GQ6MbptjlEc=;
-        h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=F0MySOhe6yO6KPj5IaF6+GycjZ9dQaX6EVlNjVRiTj1KhlACYxEQT6//yLp9pflkA
-         aHe5WkiyvkVh6L/nzLh+E7XoHF4jyAmHPyuLeJlb6+3icHJVe3q3uwqtGkr0+aWRxA
-         k8SAqyT77QYJ7Lmxb3ndAK+ObYvOyGirdjykkoUz29JW8gtPa5uhKD+ADYmj8FKWNw
-         auxoyN3jxb3A7qUW9iDp/16yau95yEt37uNl6sXeEjzdU/g7jXb/Evi3zotg5dkzNS
-         xf1ivyHaHZpkEHBbev20cF72YlKBHoy4eOgv5e/8HOVN95ErgGzIy2M+hbSgsr+Mxc
-         +rSBx3vbV0z5g==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629123003.1014387-1-lee.jones@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/30/2020 6:54 AM, Kuninori Morimoto wrote:
-> External email: Use caution opening links or attachments
->
->
-> Hi Sameer
->
->>> Maybe base issue for multiple codec support
->>> is that simple_for_each_link() is caring first codec only ?
-> (snip)
->> Ideally I wanted to remove above two lines and allow empty codec
->> list. But some users may expect the parsing to fail if no 'Codec' is
->> found in the DAI link, hence did not remove above. If it is fine to
->> remove above two lines it would be simpler. The loop inside
->> simple_for_each_link() would anyway loop for each child node of DAI
->> link and simple_dai_link_of_dpcm() can parse each 'np'.
-
-> Current simple-card is not assuming multi Codec,
-> thus, we need to update it correctly, not quick-hack.
->
-> I'm not sure how to do it, but it seems we need to update
-> many functions to support it, not only simple-card driver.
-> For example, simple-card-utils, soc-core, etc, etc...
->
-> I'm not sure, this is just my guess.
-> I'm happy if we can support it more easily :)
-Right now I am trying re-use simple-card driver as much as possible and 
-still make it work for flexible sound cards. I will be happy to discuss 
-and improve the patch wherever necessary. Please help me understand 
-which part you think looks to be hacky.
-
-> But, if it was difficult to keep compatibility on simple-card,
-> we/you need to have new one.
-Patch 17/23 and 18/23 introduce new compatible 'simple-cc-audio-card'. 
-Idea was to use component chaining which allows connection of FE<->BE 
-and multiple BE<->BE components along the DAPM path (patch 16/23). Do 
-you think it would be fine?
-
-> Actually, I had a plan to create more flexible sound card
-> driver, but it is not hi priority for me in these days.
->
-> Thank you for your help !!
->
-> Best regards
+On Mon, Jun 29, 2020 at 01:30:03PM +0100, Lee Jones wrote:
+> A recent change to the Regulator consumer API (which this driver
+> utilises) add prototypes for the some suspend functions.  These
+> functions require including header file include/linux/suspend.h.
+> 
+> The following tree of includes affecting this driver will be
+> present:
+> 
+>    In file included from include/linux/elevator.h:6,
+>                     from include/linux/blkdev.h:288,
+>                     from include/linux/blk-cgroup.h:23,
+>                     from include/linux/writeback.h:14,
+>                     from include/linux/memcontrol.h:22,
+>                     from include/linux/swap.h:9,
+>                     from include/linux/suspend.h:5,
+>                     from include/linux/regulator/consumer.h:35,
+>                     from drivers/crypto/ux500/hash/hash_core.c:28:
+> 
+> include/linux/elevator.h pulls in include/linux/hashtable.h which
+> contains its own version of hash_init().  This confuses the build
+> system and results in the following error (amongst others):
+> 
+>  drivers/crypto/ux500/hash/hash_core.c:1362:19: error: passing argument 1 of '__hash_init' from incompatible pointer type [-Werror=incompatible-pointer-types]
+>  1362 |  return hash_init(req);
+> 
+> Fix this by namespacing the local hash_init() such that the
+> source of confusion is removed.
+> 
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: linux-crypto@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
-> Kuninori Morimoto
+> 
+> Ideally this should go into v5.8's -rcs else it runs the risk of
+> breaking when Linus pulls everything in for v5.9-rc1.
 
+I have no objections to this patch.  However, I'd rather put
+it on a topic branch which you could pull rather than pushing
+it into 5.8 straight away.
+
+I also dislike pulling in the kitchen sink when all you need in
+consumer.h is the definition of suspend_state_t.  A better solution
+would be to move the definition of suspend_state_t into linux/types.h
+and including that instead of suspend.h in consumer.h.
+
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
