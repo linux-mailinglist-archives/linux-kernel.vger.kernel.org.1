@@ -2,111 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9746620FA22
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6161720FA0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390019AbgF3RHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49752 "EHLO
+        id S2389952AbgF3RAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 13:00:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390009AbgF3RHN (ORCPT
+        with ESMTP id S1727850AbgF3RAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:07:13 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B45C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:07:13 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id p20so21364454ejd.13
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:07:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ep4v7Sgk0x30ZAXgHmmvI+chKVNBUjoHn6j3LyL4OVk=;
-        b=bDLuMC1J3ipv5oxg6WsuGLNLBbaQ55mOuGN9gmYd6tux50ZveMInMrUVjkMhagmtQ5
-         qLh1w/kcYRGFnMfNjLBP+bjgbKz0yTX5dUcCzabJRir+X9IwGpmmbEP2RWkxzYIDhJt9
-         UTsF2pc9EMEECfBDdQEKoYZ3atlchjta3NnSs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ep4v7Sgk0x30ZAXgHmmvI+chKVNBUjoHn6j3LyL4OVk=;
-        b=DfXRkDwEuevk7v/xqwAqJ5YVist0V3QX+032P0LuiDpAtmlsBGi5s44AzFVDzqRlF+
-         E7Lbzi52HBalu0l2ymIbUAo4oFFxqvnjKBeksVNzRV5R0hbyIraRq4F7F8BJFwIH0VHL
-         96kbC5iXBaTF7f8ZcsVJXcnJKqT0Iz41zjFvBa1TrDqlSxcoUcm+FvBu9wZOZJpXUG2C
-         C54pIrIjO2loLBXvSlOCoyn+BfSFz/xRmcLQK/W4As94MFfwnWb2T+eDXMKdpEmOVaby
-         1ouIns4bQbCEqPe0wPOyg1iCOnaaEo+ogDQOcbJBVhIY+czLWP8HAa5wIKTqtcJfM3E2
-         YcPw==
-X-Gm-Message-State: AOAM531tA2AkR+wtRn/i5jYVygSp4HFVVf9IBNEkKRKi+Xfg/VOsyvXA
-        srESH+P6NehxVJzXm3ohYiaDlSNJlc0=
-X-Google-Smtp-Source: ABdhPJzfKIbubclSByFT+bzw+5SmbKGKGx1qIPUqdPZcfjPSiM4mp4xR87NWu2VFLgYsAhaYbrKKvw==
-X-Received: by 2002:a17:907:1051:: with SMTP id oy17mr19928994ejb.394.1593536832204;
-        Tue, 30 Jun 2020 10:07:12 -0700 (PDT)
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com. [209.85.221.45])
-        by smtp.gmail.com with ESMTPSA id b98sm3486762edf.24.2020.06.30.10.07.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jun 2020 10:07:12 -0700 (PDT)
-Received: by mail-wr1-f45.google.com with SMTP id s10so20900023wrw.12
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:07:11 -0700 (PDT)
-X-Received: by 2002:a2e:999a:: with SMTP id w26mr5624686lji.371.1593536343609;
- Tue, 30 Jun 2020 09:59:03 -0700 (PDT)
+        Tue, 30 Jun 2020 13:00:31 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E81C061755;
+        Tue, 30 Jun 2020 10:00:31 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id AC28422F53;
+        Tue, 30 Jun 2020 19:00:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1593536427;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UDbH7pLz+12WxuhpnPo2DJiE1S7gV9ax36puEK6+/QY=;
+        b=oc98M6IfaUjWWnZvhfzupxBBG5qhZ9Uk28Ad8ZN4cLXuQ+UU3G4zUr1YS0/Y9L9rJwGDlN
+        Mfa5ibwsl2C4NvLtQc8g3+FBXRJRBGVZzCxlRaUevToaAUiU2k/jGWkOhO7jP61kjTRqxL
+        sDWxJ1RonQP9IApCA+hxEbLXmn3B3pQ=
 MIME-Version: 1.0
-References: <20200625095725.GA3303921@kroah.com> <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
- <20200625120725.GA3493334@kroah.com> <20200625.123437.2219826613137938086.davem@davemloft.net>
- <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
- <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org> <87y2oac50p.fsf@x220.int.ebiederm.org>
- <87bll17ili.fsf_-_@x220.int.ebiederm.org> <87imf963s6.fsf_-_@x220.int.ebiederm.org>
-In-Reply-To: <87imf963s6.fsf_-_@x220.int.ebiederm.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 30 Jun 2020 09:58:47 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wihqhksXHkcjuTrYmC-vajeRcNh3s6eeoJNxS7wp77dFQ@mail.gmail.com>
-Message-ID: <CAHk-=wihqhksXHkcjuTrYmC-vajeRcNh3s6eeoJNxS7wp77dFQ@mail.gmail.com>
-Subject: Re: [PATCH v2 05/15] umh: Separate the user mode driver and the user
- mode helper support
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Tue, 30 Jun 2020 19:00:26 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH 2/2] can: flexcan: add support for ISO CAN-FD
+In-Reply-To: <5f6e0843-8504-e941-b6a3-1dc8599db39e@hartkopp.net>
+References: <20200629181809.25338-1-michael@walle.cc>
+ <20200629181809.25338-3-michael@walle.cc>
+ <DB8PR04MB679504980A67DB8B1EEC8386E66F0@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <a42e035c8ee3334a721a089b5f8f0580@walle.cc>
+ <5f6e0843-8504-e941-b6a3-1dc8599db39e@hartkopp.net>
+User-Agent: Roundcube Webmail/1.4.6
+Message-ID: <e5b56262c291422160e822e4a378dd2c@walle.cc>
+X-Sender: michael@walle.cc
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 1:05 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> This makes it clear which code is part of the core user mode
-> helper support and which code is needed to implement user mode
-> drivers.
->
->  kernel/umd.c             | 146 +++++++++++++++++++++++++++++++++++++++
->  kernel/umh.c             | 139 -------------------------------------
+Am 2020-06-30 18:15, schrieb Oliver Hartkopp:
+> On 30.06.20 07:53, Michael Walle wrote:
+>> [+ Oliver]
+>> 
+>> Hi Joakim,
+>> 
+>> Am 2020-06-30 04:42, schrieb Joakim Zhang:
+>>>> -----Original Message-----
+>>>> From: Michael Walle <michael@walle.cc>
+>>>> Sent: 2020年6月30日 2:18
+>>>> To: linux-can@vger.kernel.org; netdev@vger.kernel.org;
+>>>> linux-kernel@vger.kernel.org
+>>>> Cc: Wolfgang Grandegger <wg@grandegger.com>; Marc Kleine-Budde
+>>>> <mkl@pengutronix.de>; David S . Miller <davem@davemloft.net>; Jakub
+>>>> Kicinski <kuba@kernel.org>; Joakim Zhang <qiangqing.zhang@nxp.com>;
+>>>> dl-linux-imx <linux-imx@nxp.com>; Michael Walle <michael@walle.cc>
+>>>> Subject: [PATCH 2/2] can: flexcan: add support for ISO CAN-FD
+>>>> 
+>>>> Up until now, the controller used non-ISO CAN-FD mode, although it 
+>>>> supports it.
+>>>> Add support for ISO mode, too. By default the hardware is in non-ISO 
+>>>> mode and
+>>>> an enable bit has to be explicitly set.
+>>>> 
+>>>> Signed-off-by: Michael Walle <michael@walle.cc>
+>>>> ---
+>>>>  drivers/net/can/flexcan.c | 19 ++++++++++++++++---
+>>>>  1 file changed, 16 insertions(+), 3 deletions(-)
+>>>> 
+>>>> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c 
+>>>> index
+>>>> 183e094f8d66..a92d3cdf4195 100644
+>>>> --- a/drivers/net/can/flexcan.c
+>>>> +++ b/drivers/net/can/flexcan.c
+>>>> @@ -94,6 +94,7 @@
+>>>>  #define FLEXCAN_CTRL2_MRP        BIT(18)
+>>>>  #define FLEXCAN_CTRL2_RRS        BIT(17)
+>>>>  #define FLEXCAN_CTRL2_EACEN        BIT(16)
+>>>> +#define FLEXCAN_CTRL2_ISOCANFDEN    BIT(12)
+>>>> 
+>>>>  /* FLEXCAN memory error control register (MECR) bits */
+>>>>  #define FLEXCAN_MECR_ECRWRDIS        BIT(31)
+>>>> @@ -1344,14 +1345,25 @@ static int flexcan_chip_start(struct 
+>>>> net_device
+>>>> *dev)
+>>>>      else
+>>>>          reg_mcr |= FLEXCAN_MCR_SRX_DIS;
+>>>> 
+>>>> -    /* MCR - CAN-FD */
+>>>> -    if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
+>>>> +    /* MCR, CTRL2
+>>>> +     *
+>>>> +     * CAN-FD mode
+>>>> +     * ISO CAN-FD mode
+>>>> +     */
+>>>> +    reg_ctrl2 = priv->read(&regs->ctrl2);
+>>>> +    if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
+>>>>          reg_mcr |= FLEXCAN_MCR_FDEN;
+>>>> -    else
+>>>> +        reg_ctrl2 |= FLEXCAN_CTRL2_ISOCANFDEN;
+>>>> +    } else {
+>>>>          reg_mcr &= ~FLEXCAN_MCR_FDEN;
+>>>> +    }
+>>>> +
+>>>> +    if (priv->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO)
+>>>> +        reg_ctrl2 &= ~FLEXCAN_CTRL2_ISOCANFDEN;
 
-I certainly don't object to the split, but I hate the name.
+[1]
 
-We have uml, umd and umh for user mode {linux, drivers, helper}
-respectively.And honestly, I don't see the point in using an obscure
-and unreadable TLA for something like this.
+>> [..]
+>>> ip link set can0 up type can bitrate 1000000 dbitrate 5000000 fd on
+>>> ip link set can0 up type can bitrate 1000000 dbitrate 5000000 fd on \
+>>>    fd-non-iso on
+>> 
+>> vs.
+>> 
+>>> ip link set can0 up type can bitrate 1000000 dbitrate 5000000 
+>>> fd-non-iso on
+>> 
+>> I haven't found anything if CAN_CTRLMODE_FD_NON_ISO depends on
+>> CAN_CTRLMODE_FD. I.e. wether CAN_CTRLMODE_FD_NON_ISO can only be set 
+>> if
+>> CAN_CTRLMODE_FD is also set.
+>> 
+>> Only the following piece of code, which might be a hint that you
+>> have to set CAN_CTRLMODE_FD if you wan't to use 
+>> CAN_CTRLMODE_FD_NON_ISO:
+>> 
+>> drivers/net/can/dev.c:
+>>    /* do not check for static fd-non-iso if 'fd' is disabled */
+>>    if (!(maskedflags & CAN_CTRLMODE_FD))
+>>            ctrlstatic &= ~CAN_CTRLMODE_FD_NON_ISO;
+>> 
+>> If CAN_CTRLMODE_FD_NON_ISO can be set without CAN_CTRLMODE_FD, what
+>> should be the mode if both are set at the same time?
+> 
+> CAN_CTRLMODE_FD_NON_ISO is only relevant when CAN_CTRLMODE_FD is set.
+> 
+> So in the example from above
+> 
+> ip link set can0 up type can bitrate 1000000 dbitrate 5000000 
+> fd-non-iso on
+> 
+> either the setting of 'dbitrate 5000000' and 'fd-non-iso on' is 
+> pointless.
+> 
+> When switching to FD-mode with 'fd on' the FD relevant settings need
+> to be applied.
+> 
+> FD ISO is the default.
+> 
+> Did this help or did I get anything wrong?
 
-I really don't think it would hurt to write out even the full name
-with "usermode_driver.c" or something like that, would it?
+Thanks for the explanation. Yes this helped a great deal and this
+patch should be correct; it sets ISO mode if CAN_CTRLMODE_FD is set
+and masks it again if CAN_CTRLMODE_FD_NON_ISO is set. See [1].
 
-Then "umd" could be continued to be used as a prefix for the helper
-functions, by all means, but if we startv renaming files, can we do it
-properly?
-
-                   Linus
+-michael
