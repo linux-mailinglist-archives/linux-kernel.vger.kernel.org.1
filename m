@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5AA20EF40
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E34C20EF46
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730923AbgF3HYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 03:24:16 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45996 "EHLO
+        id S1730938AbgF3HZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 03:25:57 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63888 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730636AbgF3HYQ (ORCPT
+        by vger.kernel.org with ESMTP id S1726943AbgF3HZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 03:24:16 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05U727k4162982;
-        Tue, 30 Jun 2020 03:24:06 -0400
+        Tue, 30 Jun 2020 03:25:57 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05U73Ron112395;
+        Tue, 30 Jun 2020 03:25:47 -0400
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31ydmr8167-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31y3xd6gky-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 30 Jun 2020 03:24:06 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05U72jPN166786;
-        Tue, 30 Jun 2020 03:24:06 -0400
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31ydmr815n-1
+        Tue, 30 Jun 2020 03:25:47 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05U74LfH117394;
+        Tue, 30 Jun 2020 03:25:46 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31y3xd6gkh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 30 Jun 2020 03:24:06 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05U7Ka9U010784;
-        Tue, 30 Jun 2020 07:24:04 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma04wdc.us.ibm.com with ESMTP id 31x5vx3tmy-1
+        Tue, 30 Jun 2020 03:25:46 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05U7GKlH031827;
+        Tue, 30 Jun 2020 07:25:45 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma03dal.us.ibm.com with ESMTP id 31wwr8knfp-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 30 Jun 2020 07:24:04 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05U7O4VT44302720
+        Tue, 30 Jun 2020 07:25:45 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05U7Pg7010486354
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 30 Jun 2020 07:24:04 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5A42CB2064;
-        Tue, 30 Jun 2020 07:24:04 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 99EB8B205F;
-        Tue, 30 Jun 2020 07:24:03 +0000 (GMT)
+        Tue, 30 Jun 2020 07:25:42 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DDF9813605D;
+        Tue, 30 Jun 2020 07:25:43 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8AE9113604F;
+        Tue, 30 Jun 2020 07:25:43 +0000 (GMT)
 Received: from ltc.linux.ibm.com (unknown [9.16.170.189])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 30 Jun 2020 07:24:03 +0000 (GMT)
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 30 Jun 2020 07:25:43 +0000 (GMT)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 30 Jun 2020 09:24:03 +0200
+Date:   Tue, 30 Jun 2020 09:25:43 +0200
 From:   haver <haver@linux.vnet.ibm.com>
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
@@ -59,68 +59,72 @@ Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
         Michael Ruettger <michael@ibmra.de>,
         Frank Haverkamp <haver@linux.ibm.com>,
         Joerg-Stephan Vogt <jsvogt@de.ibm.com>
-Subject: Re: [PATCH 18/20] misc: genwqe: card_base: Whole host of kerneldoc
+Subject: Re: [PATCH 19/20] misc: genwqe: card_dev: Whole host of kerneldoc
  fixes
-In-Reply-To: <20200629140442.1043957-19-lee.jones@linaro.org>
+In-Reply-To: <20200629140442.1043957-20-lee.jones@linaro.org>
 References: <20200629140442.1043957-1-lee.jones@linaro.org>
- <20200629140442.1043957-19-lee.jones@linaro.org>
-Message-ID: <ecadaa11d1c45974a31efa2c6b25e1ba@linux.vnet.ibm.com>
+ <20200629140442.1043957-20-lee.jones@linaro.org>
+Message-ID: <ee07c5e22bd8c42afdce7a59e93d8fcf@linux.vnet.ibm.com>
 X-Sender: haver@linux.vnet.ibm.com
 User-Agent: Roundcube Webmail/1.0.1
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-06-30_01:2020-06-30,2020-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- spamscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
- mlxlogscore=999 adultscore=0 clxscore=1015 priorityscore=1501
- suspectscore=2 mlxscore=0 cotscore=-2147483648 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006300048
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=2
+ cotscore=-2147483648 clxscore=1015 impostorscore=0 lowpriorityscore=0
+ phishscore=0 bulkscore=0 adultscore=0 priorityscore=1501 malwarescore=0
+ spamscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006300049
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 2020-06-29 16:04, Lee Jones wrote:
-> From missing documentation for function arguments, to promotion
-> obvious kerneldoc headers and incorrectly named arguments.
+> Including; add missing documentation for function arguments, 
+> re-ordering
+> of #defines i.e. not placed between kerneldoc headers and the functions
+> they are documenting, demotion of file header/comment from kerneldoc
+> format and removal of documentation for non-existent args.
 > 
-> Fixes the following W=1 warnings:
+> Fixes the following W=1 kernel build warnings:
 > 
->  drivers/misc/genwqe/card_base.c:175: warning: Function parameter or
-> member 'cd' not described in 'genwqe_bus_reset'
->  drivers/misc/genwqe/card_base.c:272: warning: Function parameter or
-> member 'cd' not described in 'genwqe_recovery_on_fatal_gfir_required'
->  drivers/misc/genwqe/card_base.c:293: warning: Function parameter or
-> member 'cd' not described in 'genwqe_T_psec'
->  drivers/misc/genwqe/card_base.c:314: warning: Function parameter or
-> member 'cd' not described in 'genwqe_setup_pf_jtimer'
->  drivers/misc/genwqe/card_base.c:334: warning: Function parameter or
-> member 'cd' not described in 'genwqe_setup_vf_jtimer'
->  drivers/misc/genwqe/card_base.c:557: warning: Function parameter or
-> member 'cd' not described in 'genwqe_stop'
->  drivers/misc/genwqe/card_base.c:617: warning: Function parameter or
-> member 'cd' not described in 'genwqe_fir_checking'
->  drivers/misc/genwqe/card_base.c:760: warning: Function parameter or
-> member 'pci_dev' not described in 'genwqe_pci_fundamental_reset'
->  drivers/misc/genwqe/card_base.c:889: warning: Function parameter or
-> member 'data' not described in 'genwqe_health_thread'
->  drivers/misc/genwqe/card_base.c:1046: warning: Function parameter or
-> member 'cd' not described in 'genwqe_pci_setup'
->  drivers/misc/genwqe/card_base.c:1131: warning: Function parameter or
-> member 'cd' not described in 'genwqe_pci_remove'
->  drivers/misc/genwqe/card_base.c:1151: warning: Function parameter or
-> member 'pci_dev' not described in 'genwqe_probe'
->  drivers/misc/genwqe/card_base.c:1151: warning: Function parameter or
-> member 'id' not described in 'genwqe_probe'
->  drivers/misc/genwqe/card_base.c:1151: warning: Excess function
-> parameter 'pdev' description in 'genwqe_probe'
->  drivers/misc/genwqe/card_base.c:1207: warning: Function parameter or
-> member 'pci_dev' not described in 'genwqe_remove'
->  drivers/misc/genwqe/card_base.c:1336: warning: Function parameter or
-> member 'dev' not described in 'genwqe_devnode'
->  drivers/misc/genwqe/card_base.c:1336: warning: Function parameter or
-> member 'mode' not described in 'genwqe_devnode'
+>  drivers/misc/genwqe/card_dev.c:33: warning: Function parameter or
+> member 'cd' not described in 'genwqe_open_files'
+>  drivers/misc/genwqe/card_dev.c:98: warning: Function parameter or
+> member 'virt_addr' not described in 'genwqe_search_pin'
+>  drivers/misc/genwqe/card_dev.c:98: warning: Excess function parameter
+> 'dma_addr' description in 'genwqe_search_pin'
+>  drivers/misc/genwqe/card_dev.c:154: warning: Function parameter or
+> member 'virt_addr' not described in '__genwqe_search_mapping'
+>  drivers/misc/genwqe/card_dev.c:256: warning: Function parameter or
+> member 'cd' not described in 'genwqe_kill_fasync'
+>  drivers/misc/genwqe/card_dev.c:256: warning: Function parameter or
+> member 'sig' not described in 'genwqe_kill_fasync'
+>  drivers/misc/genwqe/card_dev.c:387: warning: Function parameter or
+> member 'vma' not described in 'genwqe_vma_close'
+>  drivers/misc/genwqe/card_dev.c:430: warning: Function parameter or
+> member 'filp' not described in 'genwqe_mmap'
+>  drivers/misc/genwqe/card_dev.c:430: warning: Function parameter or
+> member 'vma' not described in 'genwqe_mmap'
+>  drivers/misc/genwqe/card_dev.c:495: warning: Excess function
+> parameter 'cd' description in 'FLASH_BLOCK'
+>  drivers/misc/genwqe/card_dev.c:495: warning: Excess function
+> parameter 'load' description in 'FLASH_BLOCK'
+>  drivers/misc/genwqe/card_dev.c:827: warning: Function parameter or
+> member 'cfile' not described in 'ddcb_cmd_cleanup'
+>  drivers/misc/genwqe/card_dev.c:827: warning: Function parameter or
+> member 'req' not described in 'ddcb_cmd_cleanup'
+>  drivers/misc/genwqe/card_dev.c:854: warning: Function parameter or
+> member 'cfile' not described in 'ddcb_cmd_fixups'
+>  drivers/misc/genwqe/card_dev.c:854: warning: Function parameter or
+> member 'req' not described in 'ddcb_cmd_fixups'
+>  drivers/misc/genwqe/card_dev.c:984: warning: Function parameter or
+> member 'cfile' not described in 'genwqe_execute_ddcb'
+>  drivers/misc/genwqe/card_dev.c:984: warning: Function parameter or
+> member 'cmd' not described in 'genwqe_execute_ddcb'
+>  drivers/misc/genwqe/card_dev.c:1350: warning: Function parameter or
+> member 'cd' not described in 'genwqe_device_remove'
 > 
 > Cc: Michael Jung <mijung@gmx.net>
 > Cc: Michael Ruettger <michael@ibmra.de>
@@ -128,171 +132,134 @@ On 2020-06-29 16:04, Lee Jones wrote:
 > Cc: Joerg-Stephan Vogt <jsvogt@de.ibm.com>
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  drivers/misc/genwqe/card_base.c | 24 +++++++++++++++++++++---
->  1 file changed, 21 insertions(+), 3 deletions(-)
+>  drivers/misc/genwqe/card_dev.c | 24 ++++++++++++++++++------
+>  1 file changed, 18 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/misc/genwqe/card_base.c 
-> b/drivers/misc/genwqe/card_base.c
-> index 809a6f46f6de3..93d2ed91c85b2 100644
-> --- a/drivers/misc/genwqe/card_base.c
-> +++ b/drivers/misc/genwqe/card_base.c
-> @@ -165,6 +165,7 @@ static void genwqe_dev_free(struct genwqe_dev *cd)
-> 
->  /**
->   * genwqe_bus_reset() - Card recovery
-> + * @cd: GenWQE device information
+> diff --git a/drivers/misc/genwqe/card_dev.c 
+> b/drivers/misc/genwqe/card_dev.c
+> index 040a0bda31254..55fc5b80e649f 100644
+> --- a/drivers/misc/genwqe/card_dev.c
+> +++ b/drivers/misc/genwqe/card_dev.c
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+> -/**
+> +/*
+>   * IBM Accelerator Family 'GenWQE'
 >   *
->   * pci_reset_function() will recover the device and ensure that the
->   * registers are accessible again when it completes with success. If
-> @@ -262,6 +263,7 @@ static void genwqe_tweak_hardware(struct genwqe_dev 
-> *cd)
-> 
->  /**
->   * genwqe_recovery_on_fatal_gfir_required() - Version depended actions
-> + * @cd: GenWQE device information
+>   * (C) Copyright IBM Corp. 2013
+> @@ -87,7 +87,7 @@ static int genwqe_del_pin(struct genwqe_file *cfile,
+> struct dma_mapping *m)
+>   * @cfile:	Descriptor of opened file
+>   * @u_addr:	User virtual address
+>   * @size:	Size of buffer
+> - * @dma_addr:	DMA address to be updated
+> + * @virt_addr:	Virtual address to be updated
 >   *
->   * Bitstreams older than 2013-02-17 have a bug where fatal GFIRs must
->   * be ignored. This is e.g. true for the bitstream we gave to the card
-> @@ -280,6 +282,7 @@ int genwqe_flash_readback_fails(struct genwqe_dev 
-> *cd)
-> 
->  /**
->   * genwqe_T_psec() - Calculate PF/VF timeout register content
-> + * @cd: GenWQE device information
->   *
->   * Note: From a design perspective it turned out to be a bad idea to
->   * use codes here to specifiy the frequency/speed values. An old
-> @@ -303,6 +306,7 @@ static int genwqe_T_psec(struct genwqe_dev *cd)
-> 
->  /**
->   * genwqe_setup_pf_jtimer() - Setup PF hardware timeouts for DDCB 
-> execution
-> + * @cd: GenWQE device information
->   *
->   * Do this _after_ card_reset() is called. Otherwise the values will
->   * vanish. The settings need to be done when the queues are inactive.
-> @@ -329,6 +333,7 @@ static bool genwqe_setup_pf_jtimer(struct 
-> genwqe_dev *cd)
-> 
->  /**
->   * genwqe_setup_vf_jtimer() - Setup VF hardware timeouts for DDCB 
-> execution
-> + * @cd: GenWQE device information
+>   * Return: Pointer to the corresponding mapping	NULL if not found
 >   */
->  static bool genwqe_setup_vf_jtimer(struct genwqe_dev *cd)
->  {
-> @@ -543,6 +548,7 @@ static int genwqe_start(struct genwqe_dev *cd)
+> @@ -144,6 +144,7 @@ static void __genwqe_del_mapping(struct genwqe_file 
+> *cfile,
+>   * @u_addr:	user virtual address
+>   * @size:	size of buffer
+>   * @dma_addr:	DMA address to be updated
+> + * @virt_addr:	Virtual address to be updated
+>   * Return: Pointer to the corresponding mapping	NULL if not found
+>   */
+>  static struct dma_mapping *__genwqe_search_mapping(struct genwqe_file 
+> *cfile,
+> @@ -249,6 +250,8 @@ static void genwqe_remove_pinnings(struct
+> genwqe_file *cfile)
 > 
 >  /**
->   * genwqe_stop() - Stop card operation
+>   * genwqe_kill_fasync() - Send signal to all processes with open 
+> GenWQE files
 > + * @cd: GenWQE device information
+> + * @sig: Signal to send out
 >   *
->   * Recovery notes:
->   *   As long as genwqe_thread runs we might access registers during
-> @@ -606,6 +612,7 @@ static int genwqe_health_check_cond(struct
-> genwqe_dev *cd, u64 *gfir)
+>   * E.g. genwqe_send_signal(cd, SIGIO);
+>   */
+> @@ -380,6 +383,7 @@ static void genwqe_vma_open(struct vm_area_struct 
+> *vma)
 > 
 >  /**
->   * genwqe_fir_checking() - Check the fault isolation registers of the 
-> card
-> + * @cd: GenWQE device information
+>   * genwqe_vma_close() - Called each time when vma is unmapped
+> + * @vma: VMA area to close
 >   *
->   * If this code works ok, can be tried out with help of the 
-> genwqe_poke tool:
->   *   sudo ./tools/genwqe_poke 0x8 0xfefefefefef
-> @@ -750,6 +757,7 @@ static u64 genwqe_fir_checking(struct genwqe_dev 
-> *cd)
+>   * Free memory which got allocated by GenWQE mmap().
+>   */
+> @@ -416,6 +420,8 @@ static const struct vm_operations_struct 
+> genwqe_vma_ops = {
 > 
 >  /**
->   * genwqe_pci_fundamental_reset() - trigger a PCIe fundamental reset
-> on the slot
-> + * @pci_dev:	PCI device information struct
+>   * genwqe_mmap() - Provide contignous buffers to userspace
+> + * @filp:	File pointer (unused)
+> + * @vma:	VMA area to map
 >   *
->   * Note: pci_set_pcie_reset_state() is not implemented on all archs, 
-> so this
->   * reset method will not work in all cases.
-> @@ -814,8 +822,9 @@ static int genwqe_platform_recovery(struct 
-> genwqe_dev *cd)
+>   * We use mmap() to allocate contignous buffers used for DMA
+>   * transfers. After the buffer is allocated we remap it to user-space
+> @@ -484,16 +490,15 @@ static int genwqe_mmap(struct file *filp, struct
+> vm_area_struct *vma)
 >  	return rc;
 >  }
 > 
-> -/*
-> +/**
->   * genwqe_reload_bistream() - reload card bitstream
-> + * @cd: GenWQE device information
->   *
->   * Set the appropriate register and call fundamental reset to reaload 
-> the card
->   * bitstream.
-> @@ -868,6 +877,7 @@ static int genwqe_reload_bistream(struct genwqe_dev 
-> *cd)
-> 
+> +#define	FLASH_BLOCK	0x40000	/* we use 256k blocks */
+> +
 >  /**
->   * genwqe_health_thread() - Health checking thread
-> + * @data: GenWQE device information
+>   * do_flash_update() - Excute flash update (write image or CVPD)
+> - * @cd:        genwqe device
+> + * @cfile:	Descriptor of opened file
+>   * @load:      details about image load
 >   *
->   * This thread is only started for the PF of the card.
->   *
-> @@ -1041,6 +1051,7 @@ static int genwqe_health_check_stop(struct 
-> genwqe_dev *cd)
-> 
->  /**
->   * genwqe_pci_setup() - Allocate PCIe related resources for our card
-> + * @cd: GenWQE device information
+>   * Return: 0 if successful
 >   */
->  static int genwqe_pci_setup(struct genwqe_dev *cd)
+> -
+> -#define	FLASH_BLOCK	0x40000	/* we use 256k blocks */
+> -
+>  static int do_flash_update(struct genwqe_file *cfile,
+>  			   struct genwqe_bitstream *load)
 >  {
-> @@ -1126,6 +1137,7 @@ static int genwqe_pci_setup(struct genwqe_dev 
-> *cd)
+> @@ -820,6 +825,8 @@ static int genwqe_unpin_mem(struct genwqe_file
+> *cfile, struct genwqe_mem *m)
 > 
 >  /**
->   * genwqe_pci_remove() - Free PCIe related resources for our card
+>   * ddcb_cmd_cleanup() - Remove dynamically created fixup entries
+> + * @cfile:	Descriptor of opened file
+> + * @req:	DDCB work request
+>   *
+>   * Only if there are any. Pinnings are not removed.
+>   */
+> @@ -844,6 +851,8 @@ static int ddcb_cmd_cleanup(struct genwqe_file
+> *cfile, struct ddcb_requ *req)
+> 
+>  /**
+>   * ddcb_cmd_fixups() - Establish DMA fixups/sglists for user memory 
+> references
+> + * @cfile:	Descriptor of opened file
+> + * @req:	DDCB work request
+>   *
+>   * Before the DDCB gets executed we need to handle the fixups. We
+>   * replace the user-space addresses with DMA addresses or do
+> @@ -974,6 +983,8 @@ static int ddcb_cmd_fixups(struct genwqe_file
+> *cfile, struct ddcb_requ *req)
+> 
+>  /**
+>   * genwqe_execute_ddcb() - Execute DDCB using userspace address fixups
+> + * @cfile:	Descriptor of opened file
+> + * @cmd:        Command identifier (passed from user)
+>   *
+>   * The code will build up the translation tables or lookup the
+>   * contignous memory allocation table to find the right translations
+> @@ -1339,6 +1350,7 @@ static int
+> genwqe_inform_and_stop_processes(struct genwqe_dev *cd)
+> 
+>  /**
+>   * genwqe_device_remove() - Remove genwqe's char device
 > + * @cd: GenWQE device information
->   */
->  static void genwqe_pci_remove(struct genwqe_dev *cd)
->  {
-> @@ -1140,7 +1152,8 @@ static void genwqe_pci_remove(struct genwqe_dev 
-> *cd)
-> 
->  /**
->   * genwqe_probe() - Device initialization
-> - * @pdev:	PCI device information struct
-> + * @pci_dev:	PCI device information struct
-> + * @id:		PCI device ID
 >   *
->   * Callable for multiple cards. This function is called on bind.
->   *
-> @@ -1200,6 +1213,7 @@ static int genwqe_probe(struct pci_dev *pci_dev,
-> 
->  /**
->   * genwqe_remove() - Called when device is removed (hot-plugable)
-> + * @pci_dev:	PCI device information struct
->   *
->   * Or when driver is unloaded respecitively when unbind is done.
->   */
-> @@ -1219,8 +1233,10 @@ static void genwqe_remove(struct pci_dev 
-> *pci_dev)
->  	genwqe_dev_free(cd);
->  }
-> 
-> -/*
-> +/**
->   * genwqe_err_error_detected() - Error detection callback
-> + * @pci_dev:	PCI device information struct
-> + * @state:	PCI channel state
->   *
->   * This callback is called by the PCI subsystem whenever a PCI bus
->   * error is detected.
-> @@ -1328,6 +1344,8 @@ static struct pci_driver genwqe_driver = {
-> 
->  /**
->   * genwqe_devnode() - Set default access mode for genwqe devices.
-> + * @dev:	Pointer to device (unused)
-> + * @mode:	Carrier to pass-back given mode (permissions)
->   *
->   * Default mode should be rw for everybody. Do not change default
->   * device name.
+>   * This function must be called after the client devices are removed
+>   * because it will free the major/minor number range for the genwqe
 
-Thanks for adding the documentation.
+
+Ok.
 
 Signed-off-by: Frank Haverkamp <haver@linux.ibm.com>
