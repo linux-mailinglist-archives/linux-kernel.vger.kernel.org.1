@@ -2,387 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8696A20F058
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72D820F065
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731343AbgF3IT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 04:19:28 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18594 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730934AbgF3IT0 (ORCPT
+        id S1731390AbgF3IUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 04:20:35 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:37706 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727919AbgF3IUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 04:19:26 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5efaf5810000>; Tue, 30 Jun 2020 01:19:13 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 30 Jun 2020 01:19:26 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 30 Jun 2020 01:19:26 -0700
-Received: from [10.26.75.203] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 30 Jun
- 2020 08:19:17 +0000
-Subject: Re: [PATCH v8 1/3] iommu/arm-smmu: add NVIDIA implementation for dual
- ARM MMU-500 usage
-To:     Krishna Reddy <vdumpa@nvidia.com>
-CC:     <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <treding@nvidia.com>,
-        <yhsu@nvidia.com>, <snikam@nvidia.com>, <praithatha@nvidia.com>,
-        <talho@nvidia.com>, <bbiswas@nvidia.com>, <mperttunen@nvidia.com>,
-        <nicolinc@nvidia.com>, <bhuntsman@nvidia.com>,
-        <nicoleotsuka@gmail.com>
-References: <20200630001051.12350-1-vdumpa@nvidia.com>
- <20200630001051.12350-2-vdumpa@nvidia.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <53bfa5c8-c32d-6fa3-df60-a18ab33ca1c2@nvidia.com>
-Date:   Tue, 30 Jun 2020 09:19:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200630001051.12350-2-vdumpa@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 30 Jun 2020 04:20:30 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05U8H1nK018416;
+        Tue, 30 Jun 2020 01:19:34 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=proofpoint;
+ bh=SNQC+xgsW4mZIXXqZCx1wLjkiVPDuvcjUKTHNqkx3Nw=;
+ b=kCIegd/QEAQQ5rCtZjBOy5W9GsKpMKotVN0HyjjOHgskeWfjgVMXzf15y7cVZBXhLyQm
+ KgP0Zn2Ofhe2c32hCtX0XnHtDemOatstfWF7s0TtyStfJ03SeqkFRKEpx3+CrilFx8i/
+ YHaBB8f7fSOnfg3uOIecru5OlPApd0Iqkd9pE3X8DTECNrrEikLBRBubHbeRj2AROSPh
+ 8gr78LVQJZnJxVLA8lVLyjMcEP78N70mt+rcTilDiZuOb78+ftCbhq3H5IYBmklop5Ey
+ CqirN9cEKZ3VDgDx2VFD+g3N2689I1DwfwF+zozLAkk/PnoxGgUXlpf2kMQVCGYz83PI eA== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2174.outbound.protection.outlook.com [104.47.58.174])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 31x2nxsecv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Jun 2020 01:19:34 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=az975eDY0IBpVHHuN6Kl971tC5Gui+/7km0nlYy4uW/mBr22wK7jXA+y79ef8WHtiq6fbQh6RCLofBaUxGmDQtnQYggUGjxQbtN4K+hXn0tZX/fomgSHMRJ7LAxHRogFQfXK0UbI2iqruXjV/42L2x2D8HfUonq7ci9Pgeed3tONFYafsoL+pW7wMZ357V9uemuPbl/rOnIKCuNeZq7KxkNfhGYKv4Ms9gdsA/lNH16o/sdvHAS3oyn+elLA7+/bmU0kYnE7Afab7z1eyPwbovu9RBh9Yi6oiH9Az4sgO28EDscFc5F5Y8OBCBhMwgfRpIjtBxm3bnetUE1mBpGujw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SNQC+xgsW4mZIXXqZCx1wLjkiVPDuvcjUKTHNqkx3Nw=;
+ b=MW8jLJ6xgpWZ+tk38v/IXzs4LpIElDg+IcHxzqpPc0x8szFvBDeCbJ/6HrFa6cAIffPsPH9I24mHuY8HunOB2qMdpb8cteAB82FyCdnsG3G46/7qaDNMlTtco/gvYFf/BysoryQnPUeJHl79wgWMqsGatLdChn/cAZWQfzpMF7d8xBUSyZhvQl3dVFJxoAFYoybOg2JjfY1UgjovnSAjktGqj1508U49QBywydygypep/6ucGOGR4AOoTJyfVVX7zTXx0yJKTUPRhSHJvscz9rpWRID1oKEr06XLIg+6f/rVlFg0FxeS6WPz+MoedVT2wJJ7sa4u05idxGgCqq8lMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
+ dkim=pass header.d=cadence.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SNQC+xgsW4mZIXXqZCx1wLjkiVPDuvcjUKTHNqkx3Nw=;
+ b=mhN7s0/bk7BXFje8/ePHEKbmspf74hJ5JEBwfXSDZj+qaDkoc8jziIpjqwkiPEcIzZqXrxpcusNgYfDd9V09N9yvhNcVfrieYSYL3uFUsVXFFuS0+h0wUMTfgS/T/05jB8LLpNoY7o9WY0olCepBnYRbH1Jsgk6nMh9CE9BKK/M=
+Received: from DM6PR07MB5529.namprd07.prod.outlook.com (2603:10b6:5:7a::30) by
+ DM6PR07MB5833.namprd07.prod.outlook.com (2603:10b6:5:15d::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3131.21; Tue, 30 Jun 2020 08:19:31 +0000
+Received: from DM6PR07MB5529.namprd07.prod.outlook.com
+ ([fe80::f447:6767:a746:9699]) by DM6PR07MB5529.namprd07.prod.outlook.com
+ ([fe80::f447:6767:a746:9699%7]) with mapi id 15.20.3131.027; Tue, 30 Jun 2020
+ 08:19:31 +0000
+From:   Pawel Laszczak <pawell@cadence.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "ben.dooks@codethink.co.uk" <ben.dooks@codethink.co.uk>,
+        Jayshri Dajiram Pawar <jpawar@cadence.com>,
+        Sanket Parmar <sparmar@cadence.com>,
+        "weiyongjun1@huawei.com" <weiyongjun1@huawei.com>,
+        "rogerq@ti.com" <rogerq@ti.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "colin.king@canonical.com" <colin.king@canonical.com>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        Rahul Kumar <kurahul@cadence.com>,
+        "peter.chen@nxp.com" <peter.chen@nxp.com>
+Subject: RE: [PATCH RFC 1/5] dt-bindings: add binding for CDNSP-DRD controller
+Thread-Topic: [PATCH RFC 1/5] dt-bindings: add binding for CDNSP-DRD
+ controller
+Thread-Index: AQHWS3YaUXR5UoRWjU+yxJTU8QCwxqjwK00AgACovcA=
+Date:   Tue, 30 Jun 2020 08:19:31 +0000
+Message-ID: <DM6PR07MB5529615EED6E4A4322481383DD6F0@DM6PR07MB5529.namprd07.prod.outlook.com>
+References: <20200626045450.10205-1-pawell@cadence.com>
+ <20200626045450.10205-2-pawell@cadence.com> <20200629220326.GA3017609@bogus>
+In-Reply-To: <20200629220326.GA3017609@bogus>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593505153; bh=eI2tv3wTofqv6YlCkNI6JW/hkggCc4NSMZWlVcFoYcc=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=n3HvGgxTNxjzNxFkMcJYuzsKY7AhGEioDH7DyV5nNPjti+3gb3iacyjWkpcBK7NLW
-         XElM1CDSEmkL6UkeOp2lJw7k4WOCcKMzd/oEOcazYEK9PXne3qsNt61BQunweG+nZ3
-         +VOiPIQZgM5IlvDF8NbFKGmwrZVejxrF4gfHxlJY5decjKIqIcKEfY9ae3rV/kaTIv
-         2Sckt/DHYrM6DzGKm0YQo6XDRh0IIlocwB0KNDiyJpwU6ze8c9upZYTT9PuNlIpJrN
-         9VJnd4suIBXS3T8D0OBrkwMnCMeiPKXn7/oCotx/fSDnbVJZaZuuATVujoRNfwjx7e
-         tEI1LJmzX/e/Q==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccGF3ZWxsXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctNmE3NDA3NmQtYmFhYS0xMWVhLTg3NjctMWM0ZDcwMWRmYmE0XGFtZS10ZXN0XDZhNzQwNzZlLWJhYWEtMTFlYS04NzY3LTFjNGQ3MDFkZmJhNGJvZHkudHh0IiBzej0iMjA0OCIgdD0iMTMyMzc5Nzg3NjkyMTU1MDk2IiBoPSJEYWRrdFA0aW5iV1lwdnVWdmluRVgzME5EYVU9IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
+x-dg-rorf: true
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=cadence.com;
+x-originating-ip: [185.217.253.59]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c6b939d7-717f-44cc-1001-08d81cce5095
+x-ms-traffictypediagnostic: DM6PR07MB5833:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR07MB5833AF451277119152DA4980DD6F0@DM6PR07MB5833.namprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0450A714CB
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: gFZSfe3z7s4TL6eY6pPQoEu87lVRtdGDLQtUniJ2GjjDZJr0MUzsnvW72sVg+TvhdRipo1dshnSkE9/wcn6UQh09X79gpTxPmZqWT4kOLk9Iytvlf8fe90YYuIUA5zj8hioyF3+qvJeQUaBmbtaivDbtFiJCJmUjj/LGiml5eRRBmLIzjZndow5fKSLfLu454MIY65fStyRSzZY1NrWshwXFQqkGSOUqTw4n3DwcldI7weTzj88YBql+FPnB9RQ3ttCNj0P1kVaSHtLT1CP5YC/o9S6fUUeos8xRq+89BW2FieqzgwtFrWoB4De/Q6RrpAoZNUsHeQBnt9mgzE4fVgwyoLE5CGO2VSmfYW+6nITOHWxrJ/O55fKoDqyXzLCu7Hlmo9JNzIzAWfQzWXcyRTxurWj2Ee5nMojUo42/ySvVs/sg38j7X9EzThuM1+mwo+gdTgGX/cxWdvEyluUxTA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR07MB5529.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(136003)(376002)(396003)(346002)(39860400002)(36092001)(966005)(478600001)(52536014)(26005)(9686003)(55016002)(186003)(86362001)(33656002)(7416002)(71200400001)(8676002)(6916009)(54906003)(6506007)(7696005)(2906002)(4326008)(66556008)(64756008)(66446008)(66476007)(66946007)(8936002)(5660300002)(83380400001)(316002)(76116006);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: Qv3yDTTbpoYdPvVR2ySi6Tx/s7RP/ejF5MRQCDc471VxBa7qWIxebPs+H/LTXIvmQ0h+4Jpug8+jEjGU87Yir5vN2liwOeata7hJ2VmQAEnGErDDkKfRIoO9oeKWUKIoQqlmp8tBANq5pchewLoiwxsYNALwGrEiz6hHR4h9XWc+GRrp9mQmS9gREHFV/UbbGtuNQTJ0HgKT1+0LcPaXS4+scRAckZMB2EIj6GEgNJfqKqzyMeiH8mKE9KJ9iKOPw1Zd/7FvJrpEZWMeSPUiL24jEDYU0mnhl/HlMZTW6YG/8a4J0ddEj/9PjHJAd5LoMYuvEmkPjZeDD/NPovohKVi3G7ZIWAihaEq8FXk97mujlGmQ+bRHEZQpHUn07LJ3WeTeiWC+BtHhp52fOvYYted11MzVnCJp7G8afCx11hjVyuyC8KXgo3rv38Ad2wRZ5PPcwMrgOpl/KT8WeWrBAY9c7/g4Zv9JcCXlw2/UKZ432QYL3GovfwG2Bdql+5aL
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR07MB5529.namprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c6b939d7-717f-44cc-1001-08d81cce5095
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jun 2020 08:19:31.2622
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cl94vE5oQP9jvj5xigXS7g1mlm4MtHAQnkd2i9ZpuD5MeCB3Vog/msz08EW9JOVLBkLbemoeZJe2+e5YshZYBTvIqkMr9BiATyXO2iENVCI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR07MB5833
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-06-30_02:2020-06-30,2020-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 clxscore=1011
+ impostorscore=0 priorityscore=1501 malwarescore=0 phishscore=0
+ cotscore=-2147483648 mlxlogscore=907 bulkscore=0 suspectscore=0
+ adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006300060
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+H Rob
 
-On 30/06/2020 01:10, Krishna Reddy wrote:
-> NVIDIA's Tegra194 SoC uses two ARM MMU-500s together to interleave
-> IOVA accesses across them.
-> Add NVIDIA implementation for dual ARM MMU-500s and add new compatible
-> string for Tegra194 SoC SMMU topology.
+Yes, I see the same issue.  As you wrote probably dt-schema was not up to d=
+ata.=20
 
-There is no description here of the 3rd SMMU that you mention below.
-I think that we should describe the full picture here.
- 
-> Signed-off-by: Krishna Reddy <vdumpa@nvidia.com>
-> ---
->  MAINTAINERS                     |   2 +
->  drivers/iommu/Makefile          |   2 +-
->  drivers/iommu/arm-smmu-impl.c   |   3 +
->  drivers/iommu/arm-smmu-nvidia.c | 196 ++++++++++++++++++++++++++++++++
->  drivers/iommu/arm-smmu.h        |   1 +
->  5 files changed, 203 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/iommu/arm-smmu-nvidia.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7b5ffd646c6b9..64c37dbdd4426 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -16808,8 +16808,10 @@ F:	drivers/i2c/busses/i2c-tegra.c
->  
->  TEGRA IOMMU DRIVERS
->  M:	Thierry Reding <thierry.reding@gmail.com>
-> +R:	Krishna Reddy <vdumpa@nvidia.com>
->  L:	linux-tegra@vger.kernel.org
->  S:	Supported
-> +F:	drivers/iommu/arm-smmu-nvidia.c
->  F:	drivers/iommu/tegra*
->  
->  TEGRA KBC DRIVER
-> diff --git a/drivers/iommu/Makefile b/drivers/iommu/Makefile
-> index 342190196dfb0..2b8203db73ec3 100644
-> --- a/drivers/iommu/Makefile
-> +++ b/drivers/iommu/Makefile
-> @@ -15,7 +15,7 @@ obj-$(CONFIG_AMD_IOMMU) += amd/iommu.o amd/init.o amd/quirks.o
->  obj-$(CONFIG_AMD_IOMMU_DEBUGFS) += amd/debugfs.o
->  obj-$(CONFIG_AMD_IOMMU_V2) += amd/iommu_v2.o
->  obj-$(CONFIG_ARM_SMMU) += arm_smmu.o
-> -arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-qcom.o
-> +arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-nvidia.o arm-smmu-qcom.o
->  obj-$(CONFIG_ARM_SMMU_V3) += arm-smmu-v3.o
->  obj-$(CONFIG_DMAR_TABLE) += intel/dmar.o
->  obj-$(CONFIG_INTEL_IOMMU) += intel/iommu.o intel/pasid.o
-> diff --git a/drivers/iommu/arm-smmu-impl.c b/drivers/iommu/arm-smmu-impl.c
-> index c75b9d957b702..70f7318017617 100644
-> --- a/drivers/iommu/arm-smmu-impl.c
-> +++ b/drivers/iommu/arm-smmu-impl.c
-> @@ -171,6 +171,9 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
->  	if (of_property_read_bool(np, "calxeda,smmu-secure-config-access"))
->  		smmu->impl = &calxeda_impl;
->  
-> +	if (of_device_is_compatible(smmu->dev->of_node, "nvidia,tegra194-smmu"))
-> +		return nvidia_smmu_impl_init(smmu);
-> +
->  	if (of_device_is_compatible(np, "qcom,sdm845-smmu-500") ||
->  	    of_device_is_compatible(np, "qcom,sc7180-smmu-500"))
->  		return qcom_smmu_impl_init(smmu);
-> diff --git a/drivers/iommu/arm-smmu-nvidia.c b/drivers/iommu/arm-smmu-nvidia.c
-> new file mode 100644
-> index 0000000000000..1124f0ac1823a
-> --- /dev/null
-> +++ b/drivers/iommu/arm-smmu-nvidia.c
-> @@ -0,0 +1,196 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +// NVIDIA ARM SMMU v2 implementation quirks
-> +// Copyright (C) 2019-2020 NVIDIA CORPORATION.  All rights reserved.
-> +
-> +#include <linux/bitfield.h>
-> +#include <linux/delay.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +
-> +#include "arm-smmu.h"
-> +
-> +/*
-> + * Tegra194 has three ARM MMU-500 Instances.
-> + * Two of them are used together for interleaved IOVA accesses and
-> + * used by non-isochronous HW devices for SMMU translations.
-> + * Third one is used for SMMU translations from isochronous HW devices.
-> + * It is possible to use this implementation to program either
-> + * all three or two of the instances identically as desired through
-> + * DT node.
-> + *
-> + * Programming all the three instances identically comes with redundant TLB
-> + * invalidations as all three never need to be TLB invalidated for a HW device.
-> + *
-> + * When Linux kernel supports multiple SMMU devices, the SMMU device used for
-> + * isochornous HW devices should be added as a separate ARM MMU-500 device
-> + * in DT and be programmed independently for efficient TLB invalidates.
-> + */
-> +#define MAX_SMMU_INSTANCES 3
-> +
-> +#define TLB_LOOP_TIMEOUT_IN_US		1000000	/* 1s! */
-> +#define TLB_SPIN_COUNT			10
-> +
-> +struct nvidia_smmu {
-> +	struct arm_smmu_device	smmu;
-> +	unsigned int		num_inst;
-> +	void __iomem		*bases[MAX_SMMU_INSTANCES];
-> +};
-> +
-> +static inline struct nvidia_smmu *to_nvidia_smmu(struct arm_smmu_device *smmu)
-> +{
-> +	return container_of(smmu, struct nvidia_smmu, smmu);
-> +}
-> +
-> +static inline void __iomem *nvidia_smmu_page(struct arm_smmu_device *smmu,
-> +			       unsigned int inst, int page)
+I have fresh system, and I had problem with running 'make dt_binding_check'=
+=20
 
-If you run checkpatch --strict on these you will get a lot of ...
+The script complain for:
+dtc needs libyaml for DT schema validation support. Install the necessary l=
+ibyaml development package
+but in reality it was lacking pkg-config.
 
-CHECK: Alignment should match open parenthesis
-#116: FILE: drivers/iommu/arm-smmu-nvidia.c:46:
-+static inline void __iomem *nvidia_smmu_page(struct arm_smmu_device *smmu,
-+			       unsigned int inst, int page)
+It could be good to add some information about this package in documentatio=
+n or some checking in script.=20
 
-We should fix these.
+I leave it to your decision.
 
-> +{
-> +	struct nvidia_smmu *nvidia_smmu = to_nvidia_smmu(smmu);
-> +
-> +	if (!nvidia_smmu->bases[0])
-> +		nvidia_smmu->bases[0] = smmu->base;
-> +
-> +	return nvidia_smmu->bases[inst] + (page << smmu->pgshift);
-> +}
-> +
-> +static u32 nvidia_smmu_read_reg(struct arm_smmu_device *smmu,
-> +			      int page, int offset)
-> +{
-> +	void __iomem *reg = nvidia_smmu_page(smmu, 0, page) + offset;
-> +
-> +	return readl_relaxed(reg);
-> +}
-> +
-> +static void nvidia_smmu_write_reg(struct arm_smmu_device *smmu,
-> +			    int page, int offset, u32 val)
-> +{
-> +	unsigned int i;
-> +	struct nvidia_smmu *nvidia_smmu = to_nvidia_smmu(smmu);
-> +
-> +	for (i = 0; i < nvidia_smmu->num_inst; i++) {
-> +		void __iomem *reg = nvidia_smmu_page(smmu, i, page) + offset;
+>
+>
+>On Fri, 26 Jun 2020 06:54:46 +0200, Pawel Laszczak wrote:
+>> This patch aim at documenting USB related dt-bindings for the
+>> Cadence CDNSP-DRD controller.
+>>
+>> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+>> ---
+>>  .../devicetree/bindings/usb/cdns-cdnsp.yaml   | 104 ++++++++++++++++++
+>>  1 file changed, 104 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/usb/cdns-cdnsp.yam=
+l
+>>
+>
+>
+>My bot found errors running 'make dt_binding_check' on your patch:
+>
+>/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/c=
+dns-cdnsp.example.dt.yaml: example-0:
+>usb@f3000000:reg:0: [0, 29437952, 0, 1024] is too long
+>/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/c=
+dns-cdnsp.example.dt.yaml: example-0:
+>usb@f3000000:reg:1: [0, 4076929024, 0, 65536] is too long
+>/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/c=
+dns-cdnsp.example.dt.yaml: example-0:
+>usb@f3000000:reg:2: [0, 4076994560, 0, 65536] is too long
+>
+>
+>See https://urldefense.com/v3/__https://patchwork.ozlabs.org/patch/1317380=
+__;!!EHscmS1ygiU1lA!THRFzEi4Bx7XfHahLfM_Oo53V-
+>hW49AW-xHAcJ7J53DIaLVRbpAOTe92Jrsu6A$
+>
+>If you already ran 'make dt_binding_check' and didn't see the above
+>error(s), then make sure dt-schema is up to date:
+>
+>pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --=
+upgrade
+>
+>Please check and re-submit.
 
-Personally, I would declare 'reg' outside of the loop as I feel it will make
-the code cleaner and easier to read.
-
-> +
-> +		writel_relaxed(val, reg);
-> +	}
-> +}
-> +
-> +static u64 nvidia_smmu_read_reg64(struct arm_smmu_device *smmu,
-> +				int page, int offset)
-> +{
-> +	void __iomem *reg = nvidia_smmu_page(smmu, 0, page) + offset;
-> +
-> +	return readq_relaxed(reg);
-> +}
-> +
-> +static void nvidia_smmu_write_reg64(struct arm_smmu_device *smmu,
-> +				  int page, int offset, u64 val)
-> +{
-> +	unsigned int i;
-> +	struct nvidia_smmu *nvidia_smmu = to_nvidia_smmu(smmu);
-> +
-> +	for (i = 0; i < nvidia_smmu->num_inst; i++) {
-> +		void __iomem *reg = nvidia_smmu_page(smmu, i, page) + offset;
-> +
-> +		writeq_relaxed(val, reg);
-> +	}
-> +}
-> +
-> +static void nvidia_smmu_tlb_sync(struct arm_smmu_device *smmu, int page,
-> +			   int sync, int status)
-> +{
-> +	unsigned int delay;
-> +
-> +	arm_smmu_writel(smmu, page, sync, 0);
-> +
-> +	for (delay = 1; delay < TLB_LOOP_TIMEOUT_IN_US; delay *= 2) {
-
-So we are doubling the delay every time? Is this better than just using
-the same on each loop? 
-
-> +		unsigned int spin_cnt;
-> +
-> +		for (spin_cnt = TLB_SPIN_COUNT; spin_cnt > 0; spin_cnt--) {
-> +			u32 val = 0;
-> +			unsigned int i;
-> +			struct nvidia_smmu *nvidia_smmu = to_nvidia_smmu(smmu);
-
-Why not do this once at the beginning of the function? 
-
-> +
-> +			for (i = 0; i < nvidia_smmu->num_inst; i++) {
-> +				void __iomem *reg =
-> +					nvidia_smmu_page(smmu, i, page) + status;
-> +
-> +				val |= readl_relaxed(reg);
-> +			}
-> +
-> +			if (!(val & ARM_SMMU_sTLBGSTATUS_GSACTIVE))
-> +				return;
-> +
-> +			cpu_relax();
-> +		}
-> +
-> +		udelay(delay);
-> +	}
-> +
-> +	dev_err_ratelimited(smmu->dev,
-> +			    "TLB sync timed out -- SMMU may be deadlocked\n");
-> +}
-> +
-> +static int nvidia_smmu_reset(struct arm_smmu_device *smmu)
-> +{
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < to_nvidia_smmu(smmu)->num_inst; i++) {
-> +		u32 val;
-> +		void __iomem *reg = nvidia_smmu_page(smmu, i, ARM_SMMU_GR0) +
-> +				    ARM_SMMU_GR0_sGFSR;
-
-I feel that declaring variables here clutters the code.
- 
-> +
-> +		/* clear global FSR */
-> +		val = readl_relaxed(reg);
-> +		writel_relaxed(val, reg);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct arm_smmu_impl nvidia_smmu_impl = {
-> +	.read_reg = nvidia_smmu_read_reg,
-> +	.write_reg = nvidia_smmu_write_reg,
-> +	.read_reg64 = nvidia_smmu_read_reg64,
-> +	.write_reg64 = nvidia_smmu_write_reg64,
-> +	.reset = nvidia_smmu_reset,
-> +	.tlb_sync = nvidia_smmu_tlb_sync,
-> +};
-> +
-> +struct arm_smmu_device *nvidia_smmu_impl_init(struct arm_smmu_device *smmu)
-> +{
-> +	unsigned int i;
-> +	struct nvidia_smmu *nvidia_smmu;
-> +	struct platform_device *pdev = to_platform_device(smmu->dev);
-> +
-> +	nvidia_smmu = devm_kzalloc(smmu->dev, sizeof(*nvidia_smmu), GFP_KERNEL);
-> +	if (!nvidia_smmu)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	nvidia_smmu->smmu = *smmu;
-> +	/* Instance 0 is ioremapped by arm-smmu.c after this function returns */
-> +	nvidia_smmu->num_inst = 1;
-> +
-> +	for (i = 1; i < MAX_SMMU_INSTANCES; i++) {
-> +		struct resource *res;
-> +
-> +		res = platform_get_resource(pdev, IORESOURCE_MEM, i);
-> +		if (!res)
-> +			break;
-> +
-> +		nvidia_smmu->bases[i] = devm_ioremap_resource(smmu->dev, res);
-> +		if (IS_ERR(nvidia_smmu->bases[i]))
-> +			return ERR_CAST(nvidia_smmu->bases[i]);
-> +
-> +		nvidia_smmu->num_inst++;
-> +	}
-> +
-> +	nvidia_smmu->smmu.impl = &nvidia_smmu_impl;
-> +	/*
-> +	 * Free the arm_smmu_device struct allocated in arm-smmu.c.
-> +	 * Once this function returns, arm-smmu.c would use arm_smmu_device
-> +	 * allocated as part of nvidia_smmu struct.
-> +	 */
-> +	devm_kfree(smmu->dev, smmu);
-
-Why don't we just store the pointer of the smmu struct passed to this function
-in the nvidia_smmu struct and then we do not need to free this here. In other
-words make ...
-
- struct nvidia_smmu {
-	struct arm_smmu_device	*smmu;
-	unsigned int		num_inst;
-	void __iomem		*bases[MAX_SMMU_INSTANCES];
- };  
-
-This seems more appropriate, than copying the struct and freeing memory
-allocated else-where.
- 
-> +
-> +	return &nvidia_smmu->smmu;
-> +}
-> diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
-> index d172c024be618..8cf1511ed9874 100644
-> --- a/drivers/iommu/arm-smmu.h
-> +++ b/drivers/iommu/arm-smmu.h
-> @@ -450,6 +450,7 @@ static inline void arm_smmu_writeq(struct arm_smmu_device *smmu, int page,
->  	arm_smmu_writeq((s), ARM_SMMU_CB((s), (n)), (o), (v))
->  
->  struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu);
-> +struct arm_smmu_device *nvidia_smmu_impl_init(struct arm_smmu_device *smmu);
->  struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu);
->  
->  int arm_mmu500_reset(struct arm_smmu_device *smmu);
-> 
-
-Cheers
-Jon
-
--- 
-nvpublic
+thanks,
+pawell=20
