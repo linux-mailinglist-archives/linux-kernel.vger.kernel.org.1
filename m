@@ -2,80 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C15D20ECED
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 06:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 595EC20ECFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 06:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729553AbgF3EvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 00:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728909AbgF3EvL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 00:51:11 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51F0C03E979
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 21:51:11 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id z63so17436477qkb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 21:51:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=googlenew;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zCaps0loQaEmR/b2P5B3LXujzdso5k67v4HcTYc+GR8=;
-        b=SzPJFfIcOzkcEYGA5v9ELeSfWERhjHPdjUj+Nvn1dSi0ZNyXp3B5TJjdq6S8/qq6NM
-         MObyQPupwPQ94gzOYT3piiHl/suxo+twRdybak+evrIGY2afwXFKaJg0T2TdJa+QWGbY
-         Tu2zbOgHLVwAHmYeDTm8zzrCFZrA+V8rG9G3dt53CdRnL+F/ou52CAMIEjcJUMMgW2uY
-         AFXgTEzAQdXPos6Zngn1kQjD4qX+FMMb6JQnuN4azoc5ArC5CeKxSSbXcAWfkFeU3xeY
-         7BfZKszqNNDiHTTGuFHPDefnVeq2lygo+b/kAKQuh6Yl4yTwamXJwBfOOOHKISJdJKTZ
-         jA8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zCaps0loQaEmR/b2P5B3LXujzdso5k67v4HcTYc+GR8=;
-        b=ueAVnySG+Y5KiWDtksaJHQVMVyhmlNGE0bp4XM3pC/mxJUg8tyBx8FA3SUrblG7vGk
-         pAuS15Lk2EQQeRA/IExQQdhGy61VV7OizRuOXAC8MS+J3hv9v4dRJfGAUJBOth7imGcW
-         hQHoPBCeS2NAq++AkKk9HxGgEh88J0/RL2XZw46K2hr7vgzm5mvNqQEbYztew3LLJ/7+
-         jkZjyzLVIDFeD+bH49VSCexDH6FQkDdPBvcJGp2YMvXOIJ8ANtYg3zkx4Hm4+H5pSr30
-         kaOBza6t8PNvv9YtAVlC0B8XzBbUbXIqyflFKJpwb0yR9yWYiIXrRvYZ9h06hbzfj95W
-         0kww==
-X-Gm-Message-State: AOAM530esFbS//KIa+gbWX/UcUHNEsdLkYg6qtKMDeheXUyRomD72hc/
-        WbkXZzR38kN1/GrKeig7z7cPJ+jWHS8to3WgyH3u0Q==
-X-Google-Smtp-Source: ABdhPJw17VDeB/8CSFZtI1dZDGngtZx5LKNRhxlkstFd7Z07UhFZgOrAGsTMwXB66P4UhkkHf9YFAHtAUqayNpl+n6Q=
-X-Received: by 2002:a05:620a:1273:: with SMTP id b19mr18111737qkl.10.1593492670843;
- Mon, 29 Jun 2020 21:51:10 -0700 (PDT)
+        id S1729466AbgF3Eyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 00:54:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725805AbgF3Eyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 00:54:31 -0400
+Received: from localhost (unknown [122.182.251.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FDEA206A1;
+        Tue, 30 Jun 2020 04:54:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593492871;
+        bh=iUL0HzRFaOYTRUyFURJ92azHcCmB0zlQui/uvTPtioc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HZABgPCGAudx4VuJtLiLRoLEutKQ0W1Ulfm1VV6VNR94Xj8TKWywqAHrnhAeHdWo3
+         0OdrU47BSwGh7jCS/H0scAaNhDvnHcdeKjO3qrvP4zWObanp2nrpF1dgSIHn3ts0nC
+         2u0QW/9dx+4/gK9SMYwsHEWi2OMBzfoyx8Xlqcew=
+Date:   Tue, 30 Jun 2020 10:24:26 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] phy: qcom: remove ufs qmp phy driver
+Message-ID: <20200630045426.GO2599@vkoul-mobl>
+References: <20200629145452.123035-1-vkoul@kernel.org>
+ <20200629192416.GJ388985@builder.lan>
 MIME-Version: 1.0
-References: <20200629211801.C3D7095C0900@us180.sjc.aristanetworks.com> <20200629171612.49efbdaa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200629171612.49efbdaa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Francesco Ruggeri <fruggeri@arista.com>
-Date:   Mon, 29 Jun 2020 21:50:59 -0700
-Message-ID: <CA+HUmGjHQPUh1frfy5E28Om9WTVr0W+UQVDsm99beC_mbTeMog@mail.gmail.com>
-Subject: Re: [PATCH] igb: reinit_locked() should be called with rtnl_lock
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        intel-wired-lan@lists.osuosl.org,
-        David Miller <davem@davemloft.net>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629192416.GJ388985@builder.lan>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Would you mind adding a fixes tag here? Probably:
->
-> Fixes: 9d5c824399de ("igb: PCI-Express 82575 Gigabit Ethernet driver")
+Hi Bjorn,
 
-That seems to be the commit that introduced the driver in 2.6.25.
-I am not familiar with the history of the driver to tell if this was a day 1
-problem or if it became an issue later.
+On 29-06-20, 12:24, Bjorn Andersson wrote:
+> On Mon 29 Jun 07:54 PDT 2020, Vinod Koul wrote:
+> 
+> > UFS QMP phy drivers are duplicate as we are supposed to use common QMP
+> > phy driver which is working fine on various platforms. So remove the
+> > unused driver
+> > 
+> 
+> This describes the current state, but the UFS QMP driver had a purpose
+> not that long ago and I would like the commit message to describe what
+> changed and why it's now fine to remove the driver.
 
->
-> And as a matter of fact it looks like e1000e and e1000 have the same
-> bug :/ Would you mind checking all Intel driver producing matches for
-> all the affected ones?
+Would below look better, also feel free to suggest as you have the
+more history on this :)
 
-Do you mean identify all Intel drivers that may have the same issue?
+"UFS QMP driver is dedicated driver for QMP phy for UFS variant. We
+also have a common QMP phy driver which works not only for UFS but
+USB and PCIe as well, so retire this driver in favour of the common
+driver"
 
-Francesco
+> 
+> I'm happy with the patch itself (i.e. the removal of the driver) though.
+
+Thanks
+-- 
+~Vinod
