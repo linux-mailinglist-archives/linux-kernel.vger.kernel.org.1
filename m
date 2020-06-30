@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA6520FC7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 21:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA0D20FC7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 21:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbgF3TK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 15:10:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726347AbgF3TKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 15:10:24 -0400
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82CF4206A1;
-        Tue, 30 Jun 2020 19:10:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593544223;
-        bh=bvlrBIfobkJqYUwxFksgp5a8Mp33hFTvnGQJoruLeuY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ydWGPy5P0M/MOtzOb7cUumHcgEcBKEz3HcrctoB7EZjLFRYWjETnvQegJG24Fg8zO
-         xdATpa8ivXsc6/01zIHIA/AoOIV2O+3HuDASjsb0d3HqK5nNymjAeV/55d0zIGRmBR
-         vKzo0Veies9WvUU+irZ5vR96h9P95/xMpmqmR+oQ=
-Received: by mail-ot1-f52.google.com with SMTP id t18so6510720otq.5;
-        Tue, 30 Jun 2020 12:10:23 -0700 (PDT)
-X-Gm-Message-State: AOAM530xR4yAenqF71g56/6apwLmanOn1fvEmNcQQsOvPM+50Cx0My/k
-        KlxUIXiA5sxaAwv3kDgkbwzt52xQwEuYzFbkTI8=
-X-Google-Smtp-Source: ABdhPJxyBSIMgPHRikk+QNpo1LzL2zQLLth65d1YiWHuRfZ5Bbyrei2mNQsDdeewN/53+vnvUBS3wNYrt0lG66uBKBo=
-X-Received: by 2002:a9d:4a8f:: with SMTP id i15mr20375352otf.77.1593544222958;
- Tue, 30 Jun 2020 12:10:22 -0700 (PDT)
+        id S1726767AbgF3TLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 15:11:52 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:52685 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgF3TLv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 15:11:51 -0400
+Received: from mail-qv1-f49.google.com ([209.85.219.49]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MauFB-1jDymc2bnf-00cU4W; Tue, 30 Jun 2020 21:11:49 +0200
+Received: by mail-qv1-f49.google.com with SMTP id e3so3479829qvo.10;
+        Tue, 30 Jun 2020 12:11:49 -0700 (PDT)
+X-Gm-Message-State: AOAM532tWlQGGtiLhBMJs2XEsARZS2BVbCoeRzEIL1e5ypc4cfTz7vDu
+        t/w4RhvExJnp4KMu8Mt/1P7ZURTpacmGBOKR3Fk=
+X-Google-Smtp-Source: ABdhPJy8Dn8rL1I0U5RYNNkDb6apYhSxF/cek48EVCvK4tcGtsr9BI41NIYfCMTIzNjQg3sijIRh8LwqEplBMOYW8s8=
+X-Received: by 2002:a05:6214:846:: with SMTP id dg6mr20327019qvb.210.1593544308407;
+ Tue, 30 Jun 2020 12:11:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200615232504.1848159-1-tyhicks@linux.microsoft.com>
- <CAMj1kXHJbsxA2-jqpbLnUeeNfM0oC8Sh70+axOKoBCFMJ8+jKQ@mail.gmail.com> <20200630185327.pasrylg7og7rlno3@redhat.com>
-In-Reply-To: <20200630185327.pasrylg7og7rlno3@redhat.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 30 Jun 2020 21:10:11 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFtC+2VQxg8nqZL3+88nC5CT+smhibB8KgvMMTOhgtU3A@mail.gmail.com>
-Message-ID: <CAMj1kXFtC+2VQxg8nqZL3+88nC5CT+smhibB8KgvMMTOhgtU3A@mail.gmail.com>
-Subject: Re: [PATCH] tpm: Require that all digests are present in
- TCG_PCR_EVENT2 structures
-To:     Peter Jones <pjones@redhat.com>
-Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Petr Vandrovec <petr@vmware.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200630173734.14057-1-will@kernel.org> <20200630173734.14057-3-will@kernel.org>
+In-Reply-To: <20200630173734.14057-3-will@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 30 Jun 2020 21:11:32 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a136e2k-iGoJ4X51mnj0f0KSLJKOw6b=s4F2QHHeyAMEQ@mail.gmail.com>
+Message-ID: <CAK8P3a136e2k-iGoJ4X51mnj0f0KSLJKOw6b=s4F2QHHeyAMEQ@mail.gmail.com>
+Subject: Re: [PATCH 02/18] compiler.h: Split {READ,WRITE}_ONCE definitions out
+ into rwonce.h
+To:     Will Deacon <will@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Richard Henderson <rth@twiddle.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Android Kernel Team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:LnFDDIjRuXDckRiBaZGfmiG7HaTrrU39Wjww08d3sBPpTh0bBiC
+ R18dhZQINNcBZ60ocsHkZQTFVn5tMd7QDCWiaBczDXRBCaIJYO2+OSoII+r0REMFq66/K1L
+ JrRxCeJARV3JI27LVClu+VT9mpBekIzD1BccLbfV033oyigdtOGqzvrUfNDxQzH6vHslkIw
+ lzDlRev00L4nSdR0SKE1g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:C8esC7patGM=:rsYR3CSmcrTZb51jltms7E
+ po6GEFUweLiWLa6MnwKz6jP1OvSdinAWuRgL4RxGqEjTcIUqnIZtM9zZ8N5rlkYImj2FVoD1u
+ DmCgeGWYe8RYHp8F2FOvsw44SD4KEEU2CuYPn1z7ob4JIC0iN5g3NPGAmdS6pbfgq9rPTCmfr
+ G/ddu0SYVF1xX7fhdgkpxA1H8GpGJabJYFMXu/2NDCUk3LSaAjkkVuh5/L1kUgQmv8LiQoHqq
+ 2LfkIooHR3zbPRDj6VvPw5z748NrIo8ZIsnYlKql+I8FTl6FYhemIZ8sDbwz5LqWbRod/u3F5
+ 1IBJyjRgeC/7ISLQSSJZRX/yARVVmpMNPMyoPGUohK7Pnb3bFP6md/u7B/nXn2qyhht1NxC1w
+ vE0vWzuFbRK9JzEAEIszGHDOX+QEMG8xDtPDAqyFpdSySWcgrJ9+NTCZoluVO7sO3ZibJTAwv
+ /ymcT4QaME2TufvzqfhIDfSPjbniAZXLl6vvaOr0scExlP216N/eIU1bsZ7oxLppWcnZjzQ1d
+ tD8BklSxYbvCyMjPl6WjHjA9cBNlYTVR6qyjQjVT4dQ1/0SFDLYXKzDglb9WPTw4vzRx9Iw97
+ fZlVMA6tVeZm2ruZWTWpDlDUzrbWk4kKVtI/Lub0lUpE9T/3vfGKWlpRxPRIXZrY+HDJADtr9
+ Tbb27S5WPrZJwTUTzEMLtrUz9gilecIsnLmYJI/L4SudOR1NnU2/AsdX0bB5spWf8HZ0SJCZc
+ JlYtUxUKOk19jiVdO7wf+DXqGJ6VPrhajSLSZn4Vcvhfx+cDR8dlfCBU02D91pglFtBgNIkPX
+ T3c54PQc87+m0oiZtyuWd4k7cPYZQrgc2yd7vllilybPnTROJ4=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Jun 2020 at 20:53, Peter Jones <pjones@redhat.com> wrote:
+On Tue, Jun 30, 2020 at 7:37 PM Will Deacon <will@kernel.org> wrote:
 >
-> On Tue, Jun 16, 2020 at 11:08:38AM +0200, Ard Biesheuvel wrote:
-> > (cc Matthew and Peter)
-> >
-> > On Tue, 16 Jun 2020 at 01:28, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
-> > >
-> > > Require that the TCG_PCR_EVENT2.digests.count value strictly matches the
-> > > value of TCG_EfiSpecIdEvent.numberOfAlgorithms in the event field of the
-> > > TCG_PCClientPCREvent event log header. Also require that
-> > > TCG_EfiSpecIdEvent.numberOfAlgorithms is non-zero.
-> > >
-> > > The TCG PC Client Platform Firmware Profile Specification section 9.1
-> > > (Family "2.0", Level 00 Revision 1.04) states:
-> > >
-> > >  For each Hash algorithm enumerated in the TCG_PCClientPCREvent entry,
-> > >  there SHALL be a corresponding digest in all TCG_PCR_EVENT2 structures.
-> > >  Note: This includes EV_NO_ACTION events which do not extend the PCR.
-> > >
-> > > Section 9.4.5.1 provides this description of
-> > > TCG_EfiSpecIdEvent.numberOfAlgorithms:
-> > >
-> > >  The number of Hash algorithms in the digestSizes field. This field MUST
-> > >  be set to a value of 0x01 or greater.
-> > >
-> > > Enforce these restrictions, as required by the above specification, in
-> > > order to better identify and ignore invalid sequences of bytes at the
-> > > end of an otherwise valid TPM2 event log. Firmware doesn't always have
-> > > the means necessary to inform the kernel of the actual event log size so
-> > > the kernel's event log parsing code should be stringent when parsing the
-> > > event log for resiliency against firmware bugs. This is true, for
-> > > example, when firmware passes the event log to the kernel via a reserved
-> > > memory region described in device tree.
-> > >
-> >
-> > When does this happen? Do we have code in mainline that does this?
-> >
-> > > Prior to this patch, a single bit set in the offset corresponding to
-> > > either the TCG_PCR_EVENT2.eventType or TCG_PCR_EVENT2.eventSize fields,
-> > > after the last valid event log entry, could confuse the parser into
-> > > thinking that an additional entry is present in the event log. This
-> > > patch raises the bar on how difficult it is for stale memory to confuse
-> > > the kernel's event log parser but there's still a reliance on firmware
-> > > to properly initialize the remainder of the memory region reserved for
-> > > the event log as the parser cannot be expected to detect a stale but
-> > > otherwise properly formatted firmware event log entry.
-> > >
-> > > Fixes: fd5c78694f3f ("tpm: fix handling of the TPM 2.0 event logs")
-> > > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > > ---
-> >
-> > I am all for stringent checks, but this could potentially break
-> > measured boot on systems that are working fine today, right?
+> In preparation for allowing architectures to define their own
+> implementation of the READ_ONCE() macro, move the generic
+> {READ,WRITE}_ONCE() definitions out of the unwieldy 'linux/compiler.h'
+> file and into a new 'rwonce.h' header under 'asm-generic'.
 >
-> Seems like in that case our measurement is unreliable and can't really
-> be trusted.  That said, having things that were using the measurements
-> before this suddenly stop being able to access sealed secrets is not a
-> great experience for the user who unwittingly bought the junk hardware.
-> Same with the zero-supported-hashes case.  It would be nice to at log it
-> and have a way for them to opt-in to allowing the old measurement to go
-> through, so they can recover their data, though I don't know what that
-> method would be if the measured command line is one of their
-> dependencies.
->
+> Acked-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  include/asm-generic/Kbuild   |  1 +
+>  include/asm-generic/rwonce.h | 91 ++++++++++++++++++++++++++++++++++++
+>  include/linux/compiler.h     | 83 +-------------------------------
 
-Maybe use a EFI variable?
+Very nice, this has the added benefit of allowing us to stop including
+asm/barrier.h once linux/compiler.h gets changed to not include
+asm/rwonce.h.
+
+The asm/barrier.h header has a circular dependency, pulling in
+linux/compiler.h itself.
+
+       Arnd
