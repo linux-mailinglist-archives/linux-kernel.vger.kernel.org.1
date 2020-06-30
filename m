@@ -2,87 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8885620EEEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F44520EEFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730592AbgF3HE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 03:04:28 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:39226 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730386AbgF3HE1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 03:04:27 -0400
-X-UUID: 24aee6f623034ba788fcf49abffd2938-20200630
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=85Y8+6bkZLH5yMFgsr9O3/8M6UcByJwt+cBROWXTJxI=;
-        b=P+OSWT6F21j9ksS46fSGcHQdhA/2bejizLU1uJCuAa9XA+6VnvoNpdrGX/F2dNeBvm2rymKbuIQcALj8BS374rJgdXYcXX5pgeQ+0rUDU9GTRmVJ8Qz4fZDThMywhMIayoVtk5luXCsbQPHhbqWQ01EnbfSRB7Hd66Hq8FcktwY=;
-X-UUID: 24aee6f623034ba788fcf49abffd2938-20200630
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 2056151911; Tue, 30 Jun 2020 15:04:12 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 30 Jun
- 2020 15:04:10 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 30 Jun 2020 15:04:09 +0800
-Message-ID: <1593500631.3798.9.camel@mhfsdcap03>
-Subject: Re: [PATCH 1/2] usb: mtu3: disable USB2 LPM
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Peter Chen <hzpeterchen@gmail.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        USB list <linux-usb@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Tue, 30 Jun 2020 15:03:51 +0800
-In-Reply-To: <CAL411-qVjxYk7f+b74XHfj7jpxALS4LYUKe0XdSfwRZcQibNfA@mail.gmail.com>
-References: <1593410434-19406-1-git-send-email-chunfeng.yun@mediatek.com>
-         <CAL411-qVjxYk7f+b74XHfj7jpxALS4LYUKe0XdSfwRZcQibNfA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: FC147824681EC42AD367BF2416B37B5EB0CDBAF9C30100AADD32FDD739E780162000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        id S1730647AbgF3HIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 03:08:05 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:45858 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725440AbgF3HIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 03:08:04 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-03 (Coremail) with SMTP id rQCowAC3OPjl4_peKEhOAQ--.46047S2;
+        Tue, 30 Jun 2020 15:04:05 +0800 (CST)
+From:   Chen Ni <vulab@iscas.ac.cn>
+To:     dsd@gentoo.org, kune@deine-taler.de, kvalo@codeaurora.org,
+        davem@davemloft.net, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH] net: zydas: remove needless check before usb_free_coherent()
+Date:   Tue, 30 Jun 2020 07:04:04 +0000
+Message-Id: <20200630070404.8207-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowAC3OPjl4_peKEhOAQ--.46047S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKFWrZw4UGr47GFWDGFyDWrg_yoWfKrg_Gr
+        Z7WFnxXry5Jw109rWUAay3Z39Yya93Xws5WrsaqrW5Wayjq3sxAw1jyry7JrsrGFnYvFnx
+        Gw1kJFW8JFySqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbfxYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z2
+        80aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
+        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_ZcC_Gr8dMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjcxG6xCI17CEII8vrVW3JVW8
+        Jr1lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8CwCF04k20xvY0x0EwIxGrw
+        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
+        14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
+        IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxK
+        x2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0ziiIDnUUUUU=
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAxADA13qZLQmfQAAsv
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTA2LTI5IGF0IDE1OjM3ICswODAwLCBQZXRlciBDaGVuIHdyb3RlOg0KPiBP
-biBNb24sIEp1biAyOSwgMjAyMCBhdCAyOjA0IFBNIENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVu
-QG1lZGlhdGVrLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBBIFN1cGVyU3BlZWQgZGV2aWNlIHNoYWxs
-IGluY2x1ZGUgdGhlIFVTQiAyLjAgZXh0ZW5zaW9uIGRlc2NyaXB0b3INCj4gPiBhbmQgc2hhbGwg
-c3VwcG9ydCBMUE0gd2hlbiBvcGVyYXRpbmcgaW4gVVNCIDIuMCBIUyBtb2RlKHNlZSB1c2IzLjIN
-Cj4gPiBzcGVjOS42LjIuMSkuIEJ1dCB3ZSBhbHdheXMgZG9uJ3Qgc3VwcG9ydCBpdCwgc28gZGlz
-YWJsZSBpdCBieQ0KPiA+IGRlZmF1bHQsIG90aGVyd2lzZSBkZXZpY2Ugd2lsbCBlbnRlciBMUE0g
-c3VzcGVuZCBtb2RlIHdoZW4NCj4gPiBjb25uZWN0ZWQgdG8gV2luMTAgc3lzdGVtLg0KPiANCj4g
-TGludXggYWxzbyBzdXBwb3J0cyBVU0IyIExQTS4gQmVzaWRlcywgVVNCLUlGIENIOSB0ZXN0IHdp
-bGwgY2hlY2sNCj4gTFBNIHN1cHBvcnQgaWYgdGhlIGRldmljZSBpcyBVU0IgMi4xLCBob3cgY291
-bGQgeW91IGRlYWwgd2l0aCBpdD8NCkluZGVlZCBuZWVkIHN1cHBvcnQgaXQgZm9yIFNTIGRldmlj
-ZSwgSSdsbCBjaGVjayBpdCBhZ2FpbiwgdGhhbmtzIGEgbG90DQoNCj4gDQo+IFBldGVyDQo+IA0K
-PiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0
-ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3VzYi9tdHUzL210dTNfY29yZS5jIHwgMiAr
-Kw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspDQo+ID4NCj4gPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy91c2IvbXR1My9tdHUzX2NvcmUuYyBiL2RyaXZlcnMvdXNiL210dTMvbXR1
-M19jb3JlLmMNCj4gPiBpbmRleCA5ZGQwMjE2Li41MGQ2YTQwIDEwMDY0NA0KPiA+IC0tLSBhL2Ry
-aXZlcnMvdXNiL210dTMvbXR1M19jb3JlLmMNCj4gPiArKysgYi9kcml2ZXJzL3VzYi9tdHUzL210
-dTNfY29yZS5jDQo+ID4gQEAgLTYwNCw2ICs2MDQsOCBAQCBzdGF0aWMgdm9pZCBtdHUzX3JlZ3Nf
-aW5pdChzdHJ1Y3QgbXR1MyAqbXR1KQ0KPiA+ICAgICAgICAgbXR1M19jbHJiaXRzKG1iYXNlLCBV
-M0RfTUlTQ19DVFJMLCBWQlVTX0ZSQ19FTiB8IFZCVVNfT04pOw0KPiA+ICAgICAgICAgLyogZW5h
-YmxlIGF1dG9tYXRpY2FsIEhXUlcgZnJvbSBMMSAqLw0KPiA+ICAgICAgICAgbXR1M19zZXRiaXRz
-KG1iYXNlLCBVM0RfUE9XRVJfTUFOQUdFTUVOVCwgTFBNX0hSV0UpOw0KPiA+ICsgICAgICAgLyog
-YWx3YXlzIHJlamVjdCBMUE0gcmVxdWVzdCAqLw0KPiA+ICsgICAgICAgbXR1M19zZXRiaXRzKG1i
-YXNlLCBVM0RfUE9XRVJfTUFOQUdFTUVOVCwgTFBNX01PREUoMSkpOw0KPiA+DQo+ID4gICAgICAg
-ICAvKiB1c2UgbmV3IFFNVSBmb3JtYXQgd2hlbiBIVyB2ZXJzaW9uID49IDB4MTAwMyAqLw0KPiA+
-ICAgICAgICAgaWYgKG10dS0+Z2VuMmNwKQ0KPiA+IC0tDQo+ID4gMS45LjENCj4gPiBfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiA+IGxpbnV4LWFybS1r
-ZXJuZWwgbWFpbGluZyBsaXN0DQo+ID4gbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQu
-b3JnDQo+ID4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1hcm0ta2VybmVsDQoNCg==
+From: Xu Wang <vulab@iscas.ac.cn>
+
+usb_free_coherent() is safe with NULL addr and this check is
+not required.
+
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/net/wireless/zydas/zd1211rw/zd_usb.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/zydas/zd1211rw/zd_usb.c b/drivers/net/wireless/zydas/zd1211rw/zd_usb.c
+index 8ff0374126e4..65b5985ad402 100644
+--- a/drivers/net/wireless/zydas/zd1211rw/zd_usb.c
++++ b/drivers/net/wireless/zydas/zd1211rw/zd_usb.c
+@@ -600,9 +600,7 @@ void zd_usb_disable_int(struct zd_usb *usb)
+ 	dev_dbg_f(zd_usb_dev(usb), "urb %p killed\n", urb);
+ 	usb_free_urb(urb);
+ 
+-	if (buffer)
+-		usb_free_coherent(udev, USB_MAX_EP_INT_BUFFER,
+-				  buffer, buffer_dma);
++	usb_free_coherent(udev, USB_MAX_EP_INT_BUFFER, buffer, buffer_dma);
+ }
+ 
+ static void handle_rx_packet(struct zd_usb *usb, const u8 *buffer,
+-- 
+2.17.1
 
