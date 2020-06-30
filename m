@@ -2,52 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E6C20F5D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70C520F5E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733018AbgF3Ng1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 09:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726033AbgF3Ng0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:36:26 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54525C061755;
-        Tue, 30 Jun 2020 06:36:26 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jqGQr-002oZE-KJ; Tue, 30 Jun 2020 13:36:17 +0000
-Date:   Tue, 30 Jun 2020 14:36:17 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org
-Subject: Re: linux-next: build failures after merge of the vfs tree
-Message-ID: <20200630133617.GG2786714@ZenIV.linux.org.uk>
-References: <20200616010502.GA28834@gondor.apana.org.au>
- <20200616033849.GL23230@ZenIV.linux.org.uk>
- <20200616143807.GA1359@gondor.apana.org.au>
- <20200617165715.577aa76d@canb.auug.org.au>
- <20200617070316.GA30348@gondor.apana.org.au>
- <20200617173102.2b91c32d@canb.auug.org.au>
- <20200617073845.GA20077@gondor.apana.org.au>
- <20200618100851.0f77ed52@canb.auug.org.au>
- <20200630115857.48eab55d@canb.auug.org.au>
- <20200630021401.GA20427@gondor.apana.org.au>
+        id S1733173AbgF3Ni3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 09:38:29 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6788 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732994AbgF3NiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 09:38:24 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 62F8ABE43F81FB854361;
+        Tue, 30 Jun 2020 21:38:19 +0800 (CST)
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.226) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 30 Jun 2020 21:38:12 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <maz@kernel.org>, <tglx@linutronix.de>, <jason@lakedaemon.net>,
+        <wanghaibin.wang@huawei.com>, <kuhn.chenqun@huawei.com>,
+        <wangjingyi11@huawei.com>, Zenghui Yu <yuzenghui@huawei.com>
+Subject: [PATCH] irqchip/gic-v4.1: Use GFP_ATOMIC flag in allocate_vpe_l1_table()
+Date:   Tue, 30 Jun 2020 21:37:46 +0800
+Message-ID: <20200630133746.816-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200630021401.GA20427@gondor.apana.org.au>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.185.226]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 12:14:01PM +1000, Herbert Xu wrote:
+Booting the latest kernel with DEBUG_ATOMIC_SLEEP=y on a GICv4.1 enabled
+box, I get the following kernel splat:
 
-> Could you please fold these changes into your tree?
+[    0.053766] BUG: sleeping function called from invalid context at mm/slab.h:567
+[    0.053767] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 0, name: swapper/1
+[    0.053769] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.8.0-rc3+ #23
+[    0.053770] Call trace:
+[    0.053774]  dump_backtrace+0x0/0x218
+[    0.053775]  show_stack+0x2c/0x38
+[    0.053777]  dump_stack+0xc4/0x10c
+[    0.053779]  ___might_sleep+0xfc/0x140
+[    0.053780]  __might_sleep+0x58/0x90
+[    0.053782]  slab_pre_alloc_hook+0x7c/0x90
+[    0.053783]  kmem_cache_alloc_trace+0x60/0x2f0
+[    0.053785]  its_cpu_init+0x6f4/0xe40
+[    0.053786]  gic_starting_cpu+0x24/0x38
+[    0.053788]  cpuhp_invoke_callback+0xa0/0x710
+[    0.053789]  notify_cpu_starting+0xcc/0xd8
+[    0.053790]  secondary_start_kernel+0x148/0x200
 
-Done and pushed.  Sorry, had been buried in the regset mess
-lately... ;-/
+ # ./scripts/faddr2line vmlinux its_cpu_init+0x6f4/0xe40
+its_cpu_init+0x6f4/0xe40:
+allocate_vpe_l1_table at drivers/irqchip/irq-gic-v3-its.c:2818
+(inlined by) its_cpu_init_lpis at drivers/irqchip/irq-gic-v3-its.c:3138
+(inlined by) its_cpu_init at drivers/irqchip/irq-gic-v3-its.c:5166
+
+It turned out that we're allocating memory using GFP_KERNEL (may sleep)
+within the CPU hotplug notifier, which is indeed an atomic context. Bad
+thing may happen if we're playing on a system with more than a single
+CommonLPIAff group. Avoid it by turning this into an atomic allocation.
+
+Fixes: 5e5168461c22 ("irqchip/gic-v4.1: VPE table (aka GICR_VPROPBASER) allocation")
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+---
+ drivers/irqchip/irq-gic-v3-its.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index 6a5a87fc4601..b66eeca442c4 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -2814,7 +2814,7 @@ static int allocate_vpe_l1_table(void)
+ 	if (val & GICR_VPROPBASER_4_1_VALID)
+ 		goto out;
+ 
+-	gic_data_rdist()->vpe_table_mask = kzalloc(sizeof(cpumask_t), GFP_KERNEL);
++	gic_data_rdist()->vpe_table_mask = kzalloc(sizeof(cpumask_t), GFP_ATOMIC);
+ 	if (!gic_data_rdist()->vpe_table_mask)
+ 		return -ENOMEM;
+ 
+@@ -2881,7 +2881,7 @@ static int allocate_vpe_l1_table(void)
+ 
+ 	pr_debug("np = %d, npg = %lld, psz = %d, epp = %d, esz = %d\n",
+ 		 np, npg, psz, epp, esz);
+-	page = alloc_pages(GFP_KERNEL | __GFP_ZERO, get_order(np * PAGE_SIZE));
++	page = alloc_pages(GFP_ATOMIC | __GFP_ZERO, get_order(np * PAGE_SIZE));
+ 	if (!page)
+ 		return -ENOMEM;
+ 
+-- 
+2.19.1
+
