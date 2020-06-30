@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218FE20F62F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDF020F630
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388409AbgF3Nv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 09:51:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
+        id S2388427AbgF3Nvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 09:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388313AbgF3NvX (ORCPT
+        with ESMTP id S2388395AbgF3NvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:51:23 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5507C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:22 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id l2so18190993wmf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:22 -0700 (PDT)
+        Tue, 30 Jun 2020 09:51:25 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2F0C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:23 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id w3so7223000wmi.4
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xbSUqKBCxymsC6lBBef3Qyn0QkDTIAKXJyfnYrQoXC8=;
-        b=JROVTSMxcYpya04e8YJ8NvbOL9s6Y8mdWsTPgTWrjU6LHmLpBqI+RWcUkPq3iU12Ce
-         Oh+Byu/dqxO3e7TDVyj21qrQM80IuHA9vi8gT+czeAw1IWM5YBrS1FjDXkUkeNGpb8n7
-         0inwVFXMPKT5ghvUXxvbM3OAEBSbZHRjzhzoV8JDCRs+tFLRv3Ky7RDB+6PglnHeMFpo
-         9n4VRksZq8uKFBm3VX8GA8J/ivxO+xegMzjP84WffpO7u/NoT6bFy73L5ljK2jAry31O
-         BOKtaDEWKMnua+idVaSdZsHXOC0ejVXpf2SeDpzPJ5molGB5WIftQn0uGLBaqVmDfG/D
-         fidw==
+        bh=0HQs0EX6y4pWd4N+iRFQEBAE/mvgYPFVjycd+tHmjaQ=;
+        b=sK/MjBLnUjG8NYp5Oa/pEOupOcPm/ZEJfX5LnNv64UNaye7QtI6qhMXXu5yhPadFKO
+         slhHIIMGRHslLQUhQw0nGrvcB2csGQrLajPzJws3XAbX+dSqe+64BeuOrd2V4sa1KDlM
+         qwewlAHNNakuxpilJrs56Kd+6HnPc/0FW/QpbIcrX0HsO/Js14vmF7Tl508WyfN4TGfC
+         j+bx/2GEUtQGnpfOLnqKFS45PXFGGEaf4H79E8BMcD6o0gmc+cw89fIaEX2oR/pmOtxm
+         DpCvADMUFGfO24Z8Ib1xpuo/06RZGIX45/BRDt8vBw0P2IXU+DfVDDcX5IqjHPTf/hmg
+         75FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xbSUqKBCxymsC6lBBef3Qyn0QkDTIAKXJyfnYrQoXC8=;
-        b=pPOstOrSRYFCzfeoehzDJgQQOA4rzn35l1FRNzj16RvwgjU/6gTRG79yQ1FVO7TYjM
-         bc86AW3LyWZ+rSvsXtLVipTsBV3jHu+9Ax65GdE1taBVSMFBauLyETqnA2YCeKssJBDG
-         PuSupAArqhYGF7QQu6zeiD3TLkodBhVEe5IZx8zB1Rtha69fdgj8S4TdSL1CT+ztoMz0
-         NgnlCLpaUsf2UwNEkviiwp1S/ukxY4Exgx7nNEFHQk9Z3rEmqA11m47vREZ0IsFvGSYJ
-         L90MgrWnfcV9VCKM+qU/kfjpL3PNbbm99Bo4K5jTG+uRV5GRojp8oimYF6dr5dsvOSrR
-         Md/Q==
-X-Gm-Message-State: AOAM5333Yel6XuQpXjBipYqdALKYIIYlndmau23ua33H7QQMLHx7NNwS
-        uCLJDYtR1Hh/hNXaWjNDeJj7RxQzq7M=
-X-Google-Smtp-Source: ABdhPJw0jWJJPA9KNfsgcxxlrnj5t8iBR+bMqFMhI7nW9X7rHQGhd1hfd2q0Q1rm2llFxBbChW9waA==
-X-Received: by 2002:a1c:e285:: with SMTP id z127mr21764312wmg.162.1593525081517;
-        Tue, 30 Jun 2020 06:51:21 -0700 (PDT)
+        bh=0HQs0EX6y4pWd4N+iRFQEBAE/mvgYPFVjycd+tHmjaQ=;
+        b=Y79I0FssVPVrvUnjYpciq99zrcSSaomPFBycS3TDzVN1+byguawRkfyaVTCIk3YVUy
+         T5NG5lrAnQRWYPghTmZmS7KzA8jw2jerpUM66nKkysdBz/0hYinpJcBXHroK8vJFvi1f
+         tLcv7Huz5bSpKRY0C5wvTYv9LUJmnTjrIcwxdighAL/ERzrlWcliA1gtC7RBPtBQsTF1
+         7iFamYPFLdo3DIUNa+z/GoTxM9ICbIVBqeChyGbI2OyerW8LCuuIbZbICl0fCFA05jg3
+         f2oyMKWmUuLqy4aNLorqZdJ4MlYhlY17axSecq4dKdHZMm7xfbMDTYE8llJ+vuBmSpZ1
+         cDkg==
+X-Gm-Message-State: AOAM53012UH51kI5UB5zcJkejCJXQV+KxZoGuyCx6ytXHlkpzph1h9Nm
+        WKLSwbRMyHTRh0HbHrIX1t3Kpw==
+X-Google-Smtp-Source: ABdhPJw0TifXBK9AOZnXWLaDXMh1MZL4Xz0zESP5aT8WW2ZN59Rj/jcbvhPgWlb4zVF2mMhmDW6lag==
+X-Received: by 2002:a7b:cf10:: with SMTP id l16mr21845849wmg.93.1593525082614;
+        Tue, 30 Jun 2020 06:51:22 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id t4sm3876746wmf.4.2020.06.30.06.51.20
+        by smtp.gmail.com with ESMTPSA id t4sm3876746wmf.4.2020.06.30.06.51.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 06:51:20 -0700 (PDT)
+        Tue, 30 Jun 2020 06:51:22 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        George Zhang <georgezhang@vmware.com>
-Subject: [PATCH 07/30] misc: vmw_vmci_defs: 'struct vmci_handle VMCI_ANON_SRC_HANDLE' cannot be static
-Date:   Tue, 30 Jun 2020 14:50:47 +0100
-Message-Id: <20200630135110.2236389-8-lee.jones@linaro.org>
+        =?UTF-8?q?Max=20Asb=C3=B6ck?= <amax@us.ibm.com>
+Subject: [PATCH 08/30] misc: ibmasm: r_heartbeat: Demote function headers from kerneldoc
+Date:   Tue, 30 Jun 2020 14:50:48 +0100
+Message-Id: <20200630135110.2236389-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200630135110.2236389-1-lee.jones@linaro.org>
 References: <20200630135110.2236389-1-lee.jones@linaro.org>
@@ -67,38 +67,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This header file is included into source files which do not make
-use to 'struct vmci_handle VMCI_ANON_SRC_HANDLE' which results in
-the following W=1 warnings:
+The correct format is not used and no attempt has been made
+to document the function arguments.  Makes sense to just demote
+the header back down to a simple comment.
 
- In file included from drivers/misc/vmw_vmci/vmci_context.c:8:
- include/linux/vmw_vmci_defs.h:162:33: warning: ‘VMCI_ANON_SRC_HANDLE’ defined but not used [-Wunused-const-variable=]
- 162 | static const struct vmci_handle VMCI_ANON_SRC_HANDLE = {
- | ^~~~~~~~~~~~~~~~~~~~
- In file included from drivers/misc/vmw_vmci/vmci_datagram.c:8:
- include/linux/vmw_vmci_defs.h:162:33: warning: ‘VMCI_ANON_SRC_HANDLE’ defined but not used [-Wunused-const-variable=]
- 162 | static const struct vmci_handle VMCI_ANON_SRC_HANDLE = {
-| ^~~~~~~~~~~~~~~~~~~~
+Fixes the following W=1 warnings:
 
-Cc: George Zhang <georgezhang@vmware.com>
+ drivers/misc/ibmasm/r_heartbeat.c:49: warning: Function parameter or member 'sp' not described in 'ibmasm_start_reverse_heartbeat'
+ drivers/misc/ibmasm/r_heartbeat.c:49: warning: Function parameter or member 'rhb' not described in 'ibmasm_start_reverse_heartbeat'
+
+Cc: "Max Asböck" <amax@us.ibm.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- include/linux/vmw_vmci_defs.h | 2 +-
+ drivers/misc/ibmasm/r_heartbeat.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/vmw_vmci_defs.h b/include/linux/vmw_vmci_defs.h
-index fefb5292403bc..0374dd3cda3df 100644
---- a/include/linux/vmw_vmci_defs.h
-+++ b/include/linux/vmw_vmci_defs.h
-@@ -159,7 +159,7 @@ static inline bool vmci_handle_is_invalid(struct vmci_handle h)
-  */
- #define VMCI_ANON_SRC_CONTEXT_ID   VMCI_INVALID_ID
- #define VMCI_ANON_SRC_RESOURCE_ID  VMCI_INVALID_ID
--static const struct vmci_handle VMCI_ANON_SRC_HANDLE = {
-+const struct vmci_handle VMCI_ANON_SRC_HANDLE = {
- 	.context = VMCI_ANON_SRC_CONTEXT_ID,
- 	.resource = VMCI_ANON_SRC_RESOURCE_ID
- };
+diff --git a/drivers/misc/ibmasm/r_heartbeat.c b/drivers/misc/ibmasm/r_heartbeat.c
+index 6567df638ea93..21c9b6a6f2c36 100644
+--- a/drivers/misc/ibmasm/r_heartbeat.c
++++ b/drivers/misc/ibmasm/r_heartbeat.c
+@@ -39,7 +39,7 @@ void ibmasm_init_reverse_heartbeat(struct service_processor *sp, struct reverse_
+ 	rhb->stopped = 0;
+ }
+ 
+-/**
++/*
+  * start_reverse_heartbeat
+  * Loop forever, sending a reverse heartbeat dot command to the service
+  * processor, then sleeping. The loop comes to an end if the service
 -- 
 2.25.1
 
