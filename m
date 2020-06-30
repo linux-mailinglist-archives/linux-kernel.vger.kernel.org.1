@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8866220FE53
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE4220FE7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727846AbgF3VBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 17:01:09 -0400
-Received: from mga09.intel.com ([134.134.136.24]:26203 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726997AbgF3VBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 17:01:06 -0400
-IronPort-SDR: sEpKqU0EMBjDgNWsTZhIxpsgnA2bqa8W0/jMqfo1jbdEMNcu9RBnqFl9rZYMU0g+ewQgkqpZ7P
- UMvNNCahD0bQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="147935011"
-X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="147935011"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 14:01:05 -0700
-IronPort-SDR: /wmag5B4Ql9P15sI9srtqyRDa0eh7ubLTsJmfUYXd82SUf6Tho+/plx1WvmKmMlYKGjq3oA2u7
- sxgXik/19Wag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="425337243"
-Received: from jacob-builder.jf.intel.com ([10.7.199.155])
-  by orsmga004.jf.intel.com with ESMTP; 30 Jun 2020 14:01:05 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>
-Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH v2 7/7] iommu/vt-d: Disable multiple GPASID-dev bind
-Date:   Tue, 30 Jun 2020 14:07:38 -0700
-Message-Id: <1593551258-39854-8-git-send-email-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593551258-39854-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1593551258-39854-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        id S1728578AbgF3VHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 17:07:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726084AbgF3VHw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 17:07:52 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038EBC061755;
+        Tue, 30 Jun 2020 14:07:51 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x72so519590pfc.6;
+        Tue, 30 Jun 2020 14:07:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=GU6vPKQf4uXQIkirjbYE3xtNV9UQ8YIx9I4Z3o6US34=;
+        b=LKhpFwpKGk2r98ftbnVNAdzfHUcOB+/gdY2agjd4zGB1qP+EkUM8q0WGmOVglXGU10
+         PuCvLSxCjltm3ohKZgn9jTkjp4DcY7eosb1ZTk10BM25+y01VHExjshJKRureC1F+nce
+         v0xad9veeijdnaDqA1UgCl0nk76gQra0hPvGncwykvVKjK1gMNa+uyfE+WFQft3csldf
+         aaeyfNB3/FRVlNORJ73r+TViuXB2et4HHKMPIvIHJyVLGe7HaDIlVnM+Yu7oMtbmW/Lj
+         se/DGk4xFdQ7jpSbNYnafeYtsQQnoc9NpYJpvVuv4GkI5PT8YH738mVFqY8xsbIJvOUS
+         rnZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=GU6vPKQf4uXQIkirjbYE3xtNV9UQ8YIx9I4Z3o6US34=;
+        b=rg7jtwGrR04Mwp5p52pTYjclTFkv1cFj2Vi54xye9M8KMaFctw5BFJjVTE7aPuNQus
+         Ks0iKdMylcT6Rp4ntf1WgvxJ0IcOUtFLqGxDzzURVWmUwvLSeq8iwhTIrqL4/kizD+LT
+         K2Tout55lU+tidHfZKSdvwDW4ve+SqmvxM/07twQTS4KOfBASDF1/b/Tc9/yf6mqAzfc
+         xsK7YLI+osR/lSTszhOGw40S2icBG8uQ3Y/Po2j/GK+bSZ9wwDgeYzwljvfptJFZC9oc
+         qrVy7C5l5au5OzPvakvELKW7+KAKGRmBQmgrZZP8E41V67TJiiqqRpAy6nBt1vr9R+rn
+         WDqA==
+X-Gm-Message-State: AOAM532ArxP39ddUlcRc/BiGIZ6JCm9rpvpl5wZ3VblnE4GPuYZHqZHp
+        ppo1cTjZh0kBc/sc5H/LeZI=
+X-Google-Smtp-Source: ABdhPJyTuPK8hg3+kUrbWtvwAIvHSm7IDUVa3HMy1BhtYmQLCeYg7eVD4HxiPCBvSbSG9UgK4phH+g==
+X-Received: by 2002:a63:7d16:: with SMTP id y22mr15792454pgc.136.1593551271458;
+        Tue, 30 Jun 2020 14:07:51 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b11sm3649839pfr.179.2020.06.30.14.07.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 30 Jun 2020 14:07:50 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 14:07:49 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Giel van Schijndel <me@mortis.eu>,
+        linux-watchdog@vger.kernel.org, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 3/8] watchdog: f71808e_wdt: remove use of wrong
+ watchdog_info option
+Message-ID: <20200630210749.GA22948@roeck-us.net>
+References: <20200611191750.28096-1-a.fatoum@pengutronix.de>
+ <20200611191750.28096-4-a.fatoum@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200611191750.28096-4-a.fatoum@pengutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the unlikely use case where multiple aux domains from the same pdev
-are attached to a single guest and then bound to a single process
-(thus same PASID) within that guest, we cannot easily support this case
-by refcounting the number of users. As there is only one SL page table
-per PASID while we have multiple aux domains thus multiple SL page tables
-for the same PASID.
+On Thu, Jun 11, 2020 at 09:17:44PM +0200, Ahmad Fatoum wrote:
+> The flags that should be or-ed into the watchdog_info.options by drivers
+> all start with WDIOF_, e.g. WDIOF_SETTIMEOUT, which indicates that the
+> driver's watchdog_ops has a usable set_timeout.
+> 
+> WDIOC_SETTIMEOUT was used instead, which expands to 0xc0045706, which
+> equals:
+> 
+>    WDIOF_FANFAULT | WDIOF_EXTERN1 | WDIOF_PRETIMEOUT | WDIOF_ALARMONLY |
+>    WDIOF_MAGICCLOSE | 0xc0045000
+> 
+> These were so far indicated to userspace on WDIOC_GETSUPPORT.
+> As the driver has not yet been migrated to the new watchdog kernel API,
+> the constant can just be dropped without substitute.
+> 
+> Fixes: 96cb4eb019ce ("watchdog: f71808e_wdt: new watchdog driver for
+>        Fintek F71808E and F71882FG")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-Extra unbinding guest PASID can happen due to race between normal and
-exception cases. Termination of one aux domain may affect others unless
-we actively track and switch aux domains to ensure the validity of SL
-page tables and TLB states in the shared PASID entry.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Support for sharing second level PGDs across domains can reduce the
-complexity but this is not available due to the limitations on VFIO
-container architecture. We can revisit this decision once sharing PGDs
-are available.
-
-Overall, the complexity and potential glitch do not warrant this unlikely
-use case thereby removed by this patch.
-
-Fixes: 56722a4398a30 ("iommu/vt-d: Add bind guest PASID support")
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Kevin Tian <kevin.tian@intel.com>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>
-Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
----
- drivers/iommu/intel/svm.c | 22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 6c87c807a0ab..d386853121a2 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -277,20 +277,16 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
- 			goto out;
- 		}
- 
-+		/*
-+		 * Do not allow multiple bindings of the same device-PASID since
-+		 * there is only one SL page tables per PASID. We may revisit
-+		 * once sharing PGD across domains are supported.
-+		 */
- 		for_each_svm_dev(sdev, svm, dev) {
--			/*
--			 * For devices with aux domains, we should allow
--			 * multiple bind calls with the same PASID and pdev.
--			 */
--			if (iommu_dev_feature_enabled(dev,
--						      IOMMU_DEV_FEAT_AUX)) {
--				sdev->users++;
--			} else {
--				dev_warn_ratelimited(dev,
--						     "Already bound with PASID %u\n",
--						     svm->pasid);
--				ret = -EBUSY;
--			}
-+			dev_warn_ratelimited(dev,
-+					     "Already bound with PASID %u\n",
-+					     svm->pasid);
-+			ret = -EBUSY;
- 			goto out;
- 		}
- 	} else {
--- 
-2.7.4
-
+> ---
+>  drivers/watchdog/f71808e_wdt.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/watchdog/f71808e_wdt.c b/drivers/watchdog/f71808e_wdt.c
+> index c8ce80c13403..8e5584c54423 100644
+> --- a/drivers/watchdog/f71808e_wdt.c
+> +++ b/drivers/watchdog/f71808e_wdt.c
+> @@ -690,8 +690,7 @@ static int __init watchdog_init(int sioaddr)
+>  	 * into the module have been registered yet.
+>  	 */
+>  	watchdog.sioaddr = sioaddr;
+> -	watchdog.ident.options = WDIOC_SETTIMEOUT
+> -				| WDIOF_MAGICCLOSE
+> +	watchdog.ident.options = WDIOF_MAGICCLOSE
+>  				| WDIOF_KEEPALIVEPING
+>  				| WDIOF_CARDRESET;
+>  
