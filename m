@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A0120FD04
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 21:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99FA820FCFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 21:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728698AbgF3Tt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 15:49:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:33002 "EHLO foss.arm.com"
+        id S1728634AbgF3TtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 15:49:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:33008 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728536AbgF3Ts5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 15:48:57 -0400
+        id S1728543AbgF3Ts7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 15:48:59 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 247DD139F;
-        Tue, 30 Jun 2020 12:48:57 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B82E13A1;
+        Tue, 30 Jun 2020 12:48:58 -0700 (PDT)
 Received: from seattle-bionic.arm.com.Home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39D813F73C;
-        Tue, 30 Jun 2020 12:48:56 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 59B933F73C;
+        Tue, 30 Jun 2020 12:48:57 -0700 (PDT)
 From:   Oliver Swede <oli.swede@arm.com>
 To:     Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>
 Cc:     Robin Murphy <robin.murphy@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 12/14] arm64: Add fixup routines for usercopy load exceptions
-Date:   Tue, 30 Jun 2020 19:48:20 +0000
-Message-Id: <20200630194822.1082-13-oli.swede@arm.com>
+Subject: [PATCH v4 13/14] arm64: Add fixup routines for usercopy store exceptions
+Date:   Tue, 30 Jun 2020 19:48:21 +0000
+Message-Id: <20200630194822.1082-14-oli.swede@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200630194822.1082-1-oli.swede@arm.com>
 References: <20200630194822.1082-1-oli.swede@arm.com>
@@ -33,219 +33,258 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the fixup routines for exceptions that occur on load
+This adds the fixup routines for exceptions that occur on store
 operations while copying, by providing the calling code with a more
-accurate value for the number of bytes that failed to copy.
+accurate value for the number of bytes that failed to copy, rather
+than returning the full buffer width.
 
-The three routines for load exceptions work together to analyse
+The three routines for store exceptions work together to analyse
 the position of the fault relative to the start or the end of the
 buffer, and backtrack from the optimized memcpy algorithm to
 determine if some number of bytes has already been successfully
 copied.
 
-The new template uses out-of-order copying, and this fixup routine is
-specific to the latest memcpy implementation. It is assumed there is
-no requirement to follow through with the copying of data that may
-reside in temporary registers on a fault, as this would greatly
-increase the fixup's complexity.
+The store operations occur mostly in-order, with the exception of
+a few copy size ranges - this is specific to the new copy template,
+which uses the latest memcpy implementation.
 
 Signed-off-by: Oliver Swede <oli.swede@arm.com>
 ---
- arch/arm64/lib/copy_user_fixup.S | 172 ++++++++++++++++++++++++++++++-
- 1 file changed, 168 insertions(+), 4 deletions(-)
+ arch/arm64/lib/copy_user_fixup.S | 217 ++++++++++++++++++++++++++++++-
+ 1 file changed, 215 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/lib/copy_user_fixup.S b/arch/arm64/lib/copy_user_fixup.S
-index f878c8831b14..ae94b492129d 100644
+index ae94b492129d..37ca3d99a02a 100644
 --- a/arch/arm64/lib/copy_user_fixup.S
 +++ b/arch/arm64/lib/copy_user_fixup.S
-@@ -3,19 +3,183 @@
- addr	.req	x15
- .section .fixup,"ax"
- .align	2
-+
-+/*
-+ * These fixup routines assume no requirements to follow through
-+ * with copying any intermediate data in registers.
-+ *
-+ * The fixup subroutine that is directed to depends on the
-+ * characteristics of the target address in the faulting instruction:
-+ * if it is an address specified relative to the start or end of the
-+ * buffer, and (in the case of copy sizes >128B) if the target address
-+ * is 16-byte aligned.
-+ */
-+
-+/*
-+ * The following three routines are directed to from faults on load
-+ * instructions. For 9993, 9994 and 9995, in each case nothing has
-+ * been copied if either:
-+ *	a) the copy size is less than 128 bytes - the algorithm does
-+ *	   not interleave load/store instructions and starts with the
-+ *	   load instructions, so for these sizes nothing has been
-+ *	   copied on a load fault and the full buffer width srcend-src
-+ *	   can be returned, or
-+ *	b) the copy size is greater than or equal to 128 bytes and the
-+ *	   src and dst buffers overlap - this would result in a
-+ *	   backwards copy, however the calling code expects the return
-+ *	   value, the numbwe of bytes not copied, to be from an in-order
-+ *	   perspective.
-+ */
- 9993:
-+	/*
-+	 * This is reached from load instructions that are specified
-+	 * relative to the start of a user space memory buffer, and
-+	 * provide target addresses that are 16-byte aligned.
-+	 */
-+
-+	/* Retrieve original params from stack */
-+	ldp	dst, src, [sp], #16	// dst: x3, src: x1
-+	ldr	count, [sp], #16	// count: x2
-+	add	srcend, src, count
-+	add	dstend, dst, count
-+
-+	/*
-+	 * If the fault occurred with a copy size larger than 128 bytes,
-+	 * and if the buffers do not overlap (where it would start copying
-+	 * from the end), it still has not copied anything at this point
-+	 * as the fault occurred at the start of the algorithm's subroutine
-+	 * for long forward copies, and no bytes have been stored at this
-+	 * point.
-+	 */
-+	b	L(none_copied)
- 9994:
-+	/*
-+	 * This is reached from load instructions that are specified
-+	 * relative to the end of a user space memory buffer, and
-+	 * where the store targets are not guaranteed to be 16-byte
-+	 * aligned.
-+	 */
-+
-+	/* Save the current (adjusted) dst for later restoration */
-+	mov	tmp1, dst
-+
-+	/* Retrieve original params from stack */
-+	ldp	dst, src, [sp], #16	// dst: x3, src: x1
-+	ldr	count, [sp], #16	// count: x2
-+	add	srcend, src, count
-+	add	dstend, dst, count
-+
-+	/* Copy size <= 128 bytes */
-+	cmp	count, 128
-+	b.le	L(none_copied)
-+
-+	/*
-+	 * Overlapping buffers:
-+	 * (src <= dst && dst < srcend) || (dst <= src && src < dstend)
-+	 */
-+	cmp	src, dst
-+	ccmp	dst, srcend, #0, le
-+	b.lt	L(none_copied)
-+	cmp	dst, src
-+	ccmp	src, dstend, #0, le
-+	b.lt	L(none_copied)
-+
-+	/*
-+	 * In a long copy over 128B, in the case of a fault at an
-+	 * address relative to the end of the buffer, this will
-+	 * occur in copy64_from_end() and thus the last 64 bytes.
-+	 *
-+	 * The algorithm first copies 16 bytes, and then aligns dst
-+	 * to 16 bytes for the rest of the copy.
-+	 * At the end of each loop64(), dst is incremented by 64.
-+	 *
-+	 * This takes the minimum of (16, max((current_dst + 16 - original_dst), 16) 
-+	 */
-+
-+	/* already copied max((tmp1 + 16 - dst), 16) */
-+	add	tmp1, tmp1, 16
-+	sub	tmp1, tmp1, dst
-+	mov	x0, 16
-+	cmp	x0, tmp1
-+	csel	tmp1, x0, tmp1, ge // threshold it has copied up to
-+	sub	x0, srcend, 64 // base of final 64 bytes
-+	sub	x0, addr, x0 // fault offset in final 64 bytes
-+	bic	x0, x0, 15 // discard bytes between target and fault addr)
-+	add	x0, x0, tmp1 // copied up to here
-+	sub	x0, count, x0
-+	b	L(end_fixup)
-+
- 9995:
-+	/*
-+	 * This is reached from load instructions that are specified
-+	 * relative to the start of a user space memory buffer, and
-+	 * where the store targets are guaranteed to be 16-byte aligned.
-+	 */
-+	
-+	/* Save the current (adjusted) dst for later restoration */
-+	mov	tmp1, dst
-+
-+	/* Retrieve original params from stack */
-+	ldp	dst, src, [sp], #16	// dst: x3, src: x1
-+	ldr	count, [sp], #16	// count: x2
-+	add	srcend, src, count
-+	add	dstend, dst, count
-+
-+	/* Copy size <= 128 bytes */
-+	cmp	count, 128
-+	b.le	L(none_copied)
-+
-+	/*
-+	 * Overlapping buffers:
-+	 * (src <= dst && dst < srcend) || (dst <= src && src < dstend)
-+	 */
-+	cmp	src, dst
-+	ccmp	dst, srcend, #0, le
-+	b.lt	L(none_copied)
-+	cmp	dst, src
-+	ccmp	src, dstend, #0, le
-+	b.lt	L(none_copied)
-+
-+	/*
-+	 * These stores provide target addresses that are 16-byte
-+	 * aligned, and this allows for a mapping:
-+	 */
-+	and	x0, dst, 15
-+	sub	x0, src, x0 // aligned src: (src - (dst & 15))
-+	sub	x0, addr, src // offset of fault relative to aligned src
-+	bic	x0, x0, 15 // round down to base of faulting 16B chunk
-+	mov	tmp1, 16
-+	cmp	x0, tmp1
-+	/* fault_offset < 32 -> count */
-+	b.le	L(none_copied)
-+	mov	tmp1, 64
-+	cmp	x0, tmp1
-+	mov	tmp1, x0
-+	sub	x0, count, 16
-+	/* 32 <= fault_offset < 80 -> count-16 */
-+	b.le	L(end_fixup)
-+	mov	x0, tmp1
-+	sub	x0, x0, 48 /* faulted in a loop64 subroutine */
-+	and	tmp1, dst, 15
-+	sub	x0, x0, tmp1
-+	sub	x0, count, x0
-+	/*
-+	 * fault_offset >= 80 ->
-+	 * count-((fault_offset&~15)-48)-(dst & 15))
-+	 */
-+	b	L(end_fixup)
-+	
- 9996:
- 9997:
- 9998:
--	/* Retrieve useful information & free the stack area */
--	ldr	count, [sp, #16]	// x2
-+	/* Retrieve info from stack */
-+	ldr	count, [sp], #16	// count: x2
- 	add	sp, sp, 32
-+L(none_copied):
- 	/*
--	 * Return the initial count as the (under-estimated) number
-+	 * Return the initial count as the number
- 	 * of bytes that failed to copy
+@@ -169,12 +169,225 @@ addr	.req	x15
  	 */
- 	mov	x0, count
-+L(end_fixup):
- 	ret
--
+ 	b	L(end_fixup)
+ 	
++/*
++ * The following three routines are directed to from faults
++ * on store instructions.
++ */
+ 9996:
++	/*
++	 * This routine is reached from faults on store instructions
++	 * where the target address has been specified relative to the
++	 * start of the user space memory buffer, and is also not
++	 * guaranteed to be 16-byte aligned.
++	 *
++	 * For copy sizes <= 128 bytes, the stores occur in-order,
++	 * so it has copied up to (addr-dst)&~15.
++	 * For copy sizes > 128 bytes, this should only be directed
++	 * to from a fault on the first store of the long copy, before
++	 * the algorithm aligns dst to 16B, so no bytes have copied at
++	 * this point.
++	 */
++
++	/* Retrieve original params from stack */
++	ldr	dst, [sp], #16	// dst: x3, src: x1
++	ldr	count, [sp], #16	// count: x2
++	add	srcend, src, count
++	add	dstend, dst, count
++
++	/* count <= 3 -> count - (addr-dst) */
++	cmp	count, 3
++	sub	x0, addr, dst // relative fault offset in buffer
++	sub	x0, count, x0 // bytes yet to copy
++	b.le	L(end_fixup)
++        /* 3 < count <= 32 -> count - (addr-dst) */
++	cmp	count, 32
++	b.le	L(none_copied)
++	/* 32 < count < 128 -> count - ((addr-dst)&15) */
++	cmp	count, 128
++	sub	x0, addr, dst // relative fault offset
++	bic	x0, x0, 15 // bytes already copied (steps of 16B stores)
++	sub	x0, count, x0 // bytes yet to copy
++	b.le	L(end_fixup)
++	/* 128 < count -> count */
++	b	L(none_copied)
++
+ 9997:
++	/*
++	 * This routine is reached from faults on store instructions
++	 * where the target address has been specified relative to
++	 * the end of the user space memory buffer and is also not
++	 * guaranteed to be 16-byte aligned.
++	 *
++	 * In this scenario, the copy is close to completion and
++	 * has occurred in-order, so it is straightforward to
++	 * calculate the remaining bytes.
++	 *
++	 * The algorithm increments dst by 64B for each loop64()
++	 * subroutine, and tmp1 stores its latest value, which
++	 * allows for the calculation of a threshold that it has
++	 * copied up to.
++	 * 
++	 * To account for faults on data that has already been copied
++	 * (which can occur due to the way the algorithm uses
++	 * overlapping copies within a buffer), this threshold can be
++	 * subtracted from the copy size and the result compared
++	 * against the remaining bytes after the fault offset in the
++	 * last 64B; the minimum of the two can then be taken for the
++	 * return value.
++	 */
++
++	/* Save the current (adjusted) dst for later restoration */
++	mov	tmp1, dst
++
++	/* Retrieve original params from stack */
++	ldp	dst, src, [sp], #16	// dst: x3, src: x1
++	ldr	count, [sp], #16	// count: x2
++	add	srcend, src, count
++	add	dstend, dst, count	
++
++	/*
++	 * Overlapping buffers:
++	 * (src <= dst && dst < srcend) || (dst <= src && src < dstend)
++	 */
++	cmp	src, dst
++	ccmp	dst, srcend, #0, le
++	b.lt	L(none_copied)
++	cmp	dst, src
++	ccmp	src, dstend, #0, le
++	b.lt	L(none_copied)
++	
++	/*
++	 * For copy size >128 bytes, select max of
++	 * { tmp1-dst+80, ((addr-dstend+64)&15) }
++	 */
++	sub	tmp1, tmp1, dst // relative position of new dst
++	add	tmp1, tmp1, 80 // copied up to here
++	sub	tmp1, count, tmp1 // remaining bytes after non-overlapping section
++	sub	x0, dstend, 64
++	sub	x0, addr, x0
++	bic	x0, x0, 15 // fault offset within dest. buffer
++	add	x0, dstend, x0
++	sub	x0, x0, 64
++	sub	x0, dstend, x0 // remaining bytes in final (overlapping) 64B
++	cmp	x0, tmp1
++	csel	x0, x0, tmp1, lt
++	cmp	count, 128
++	b.gt	L(end_fixup)
++
++	cmp	count, 2
++	b.le	L(none_copied)
++	cmp	count, 3 // one byte left
++	mov	x0, 1
++	b.eq	L(end_fixup)
++	cmp	count, 7 // four bytes left
++	sub	x0, count, 4
++	b.le	L(end_fixup)
++	cmp	count, 15 // eight bytes left
++	sub	x0, count, 8
++	b.le	L(end_fixup)
++	cmp	count, 32 // 16 bytes left
++	sub	x0, count, 16	
++	b.le	L(end_fixup)
++	/*
++	 * For copy size 33..64 select min of
++	 * {(32 - fault_offset), (count-32)}
++	 * as copy may overlap
++	 */
++	sub	tmp1, dstend, 32
++	sub	tmp1, addr, tmp1
++	bic	tmp1, tmp1, 15
++	mov	x0, 32
++	sub	tmp1, x0, tmp1
++	sub	x0, count, 32
++	cmp	x0, tmp1
++	csel	x0, x0, tmp1, lt
++	cmp	count, 64
++	b.le	L(end_fixup)
++	/* For copy size 65..96 select min of
++	 * {(count - fault_offset), (count-64)}
++	 * as copy may overlap
++	 */
++	sub	tmp1, dstend, 32
++	sub	tmp1, addr, tmp1
++	bic	tmp1, tmp1, 15
++	mov	x0, 32
++	sub	tmp1, x0, tmp1
++	sub	x0, count, 64
++	cmp	x0, tmp1
++	csel	x0, x0, tmp1, lt
++	cmp	count, 96
++	b.lt	L(end_fixup)
++	/*
++	 * For copy size 97..128 same as above, but account for
++	 * out-of-order initial stores, where no bytes have been
++	 * copied on those faults
++	 */
++	sub	tmp1, dstend, 64
++	sub	tmp1, addr, tmp1
++	bic	tmp1, tmp1, 15
++	mov	x0, 64
++	sub	tmp1, x0, tmp1
++	cmp	count, 128
++	mov	x0, 32
++	ccmp	tmp1, x0, #0, le
++	b.gt	L(none_copied) // none copied if faults in first or second chunk
++	sub	x0, count, 64
++	cmp	x0, tmp1
++	csel	x0, x0, tmp1, lt
++	cmp	count, 128
++	b.le	L(end_fixup)
++
++	b	L(none_copied)
++
+ 9998:
+-	/* Retrieve info from stack */
++	/*
++	 * This routine is reached from faults on store instructions
++	 * where the target address has been specified relative to the
++	 * start of the user space memory buffer, and is also
++	 * guaranteed to be 16-byte aligned.
++	 *
++	 * These instrucions occur after the algorithm aligns dst
++	 * to 16B, which is after the very first store in a long copy.
++	 * It then continues copying from dst+16 onwards.
++	 *
++	 * This could result in the second store attempting to copy
++	 * data that has already been copied, as there would be an
++	 * overlap in the buffer if the original dst is not 16 bytes
++	 * aligned. In this case we report that 16 bytes has already
++	 * already been copied, so it must take the minimum of the
++	 * two values.
++	 */
++
++	/* Retrieve original params from stack */
++	ldp	dst, src, [sp], #16	// dst: x3, src: x1
+ 	ldr	count, [sp], #16	// count: x2
+-	add	sp, sp, 32
++	add	srcend, src, count
++	add	dstend, dst, count	
++
++	/*
++	 * Overlapping buffers:
++	 * (src <= dst && dst < srcend) || (dst <= src && src < dstend)
++	 */
++	cmp	src, dst
++	ccmp	dst, srcend, #0, le
++	b.lt	L(none_copied)
++	cmp	dst, src
++	ccmp	src, dstend, #0, le
++	b.lt	L(none_copied)
++
++	/* Take the min from {16,(fault_addr&15)-(dst&15)}
++	 * and subtract from count to obtain the return value */
++	bic	tmp1, dst, 15 // aligned dst
++	bic	x0, addr, 15
++	sub	x0, x0, tmp1 // relative fault offset
++	cmp	x0, 16
++	bic	x0, addr, 15
++	sub	x0, x0, dst
++	sub	x0, count, x0
++	b.gt	L(end_fixup)
++	sub	x0, count, 16
++	b	L(end_fixup) // initial unaligned chunk copied
++
+ L(none_copied):
+ 	/*
+ 	 * Return the initial count as the number
 -- 
 2.17.1
 
