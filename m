@@ -2,139 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4144A20FA26
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BF320FA32
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387428AbgF3RJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50062 "EHLO
+        id S2390054AbgF3RLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 13:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726875AbgF3RJO (ORCPT
+        with ESMTP id S1731558AbgF3RLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:09:14 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0420BC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:09:15 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id h17so18122868oie.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:09:14 -0700 (PDT)
+        Tue, 30 Jun 2020 13:11:38 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD64DC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:11:38 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id t198so5558672oie.7
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:11:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k6xOYRCnbnCwhMTbrNVFqeA6/rrYwhxJ6Anj7rJmp94=;
-        b=hNKvEm91oQmOFCsp4nHDM2vQ1IeL/5wqVTenZfCJwm/PaIRy5sw9Sr9QXeUCXb7X/N
-         zSkHn4sc7qcLAUG7t0S1TKARQuToYGIShoF06c9yuTqP2Jmdo/d0iGp6GgHgV0OWCQAF
-         p0t25gUazhHNUZb+LmidFPdxmqGrryNu10gykMTqHHkLwnwSpUPE792ykmyN4KltwAT+
-         db1wv9lqRDpGDxWIJZIi2Scv/D5bWkyANMr2yh0ViilSqJOgxN0hctDncCs2uk1ism0H
-         RyOWc4BsAmf6GKD7hbYbLtKTmnEWSwVthGOMtcvP+olRGpimGH8Cl1FayO9m3NkDzf68
-         PFTw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Nlz3IYhLj8X/C/CdHWoWLrX6TvhRJRs5bnOoBz59zM4=;
+        b=EfJt6ItLsIHCQC5cFmpWKuMcDX+NThFBION7s0OvNnFrEBzDZeiS0AtYtqv5nKQgGW
+         N6G5cVkLCO3YdP+wlKn7U9pScLN+/x7oWQxmsG0Lk2y18Yh1jr+yv4pagfRpBGJhBnqP
+         XGFXf5/k0F1IGLssGUhMLlNvSGEd9yXKDtRMz3kciW2YioeSQlXeNzUdUkO4Pl+zKhNg
+         NU4UT8AYfic+XKV/YHknLlAl9bTBi0x22ZjN8CWxJVZ5L6NhTt0xzB/UUG+8czD8XhPw
+         xPvF20zyyaeUTh/HwS4rfeUPS/GyG+ijNnTz9PtTH7pzdR0kpDiQT/jfE3CWRMlLdGYp
+         NOeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k6xOYRCnbnCwhMTbrNVFqeA6/rrYwhxJ6Anj7rJmp94=;
-        b=ZQmPV9Qj8mciT9KXAvQDigO0PP1oXLF8lt88EzybM76X0wjw6pH1cFgW+89DPD7sjA
-         zIETCCgsWKI/BLcyu3mJNIpPUT0dcrvbikVKMlqWAZxRNyZ/oFzy6mqR4yVESOxQQufa
-         R2gs0gLh7QgHOcdLSjgjgbthBl3f3MYIdg6/h88GPwAOsDZy0PAzzNFFPccYpiYAlzus
-         P0+/PPr+HPcPDJXcOprqn+cqyjJGiXEAQZ8bILgyW1PFTbZM9wmU0NoknLPpkmM7BZtN
-         fBM7oq4EYUmKyw9kVdx2oomPdd46FocELRAQAvO0QJaVfHFn7MKJWdhbq8RYoWNXNgc9
-         x8Vg==
-X-Gm-Message-State: AOAM531AoxDea+UV4i8oUMTw9urdPQRpGL6W0q/oWr1svn6Z/K7nZj/v
-        0DarsUavgizEXe0ZneaJlwU=
-X-Google-Smtp-Source: ABdhPJw0YqnH4tYDVvxI2wrN373sX59dCUnOJErGJHHo5pDbdtIG5QeqewqAo1b5hSsSZiUASLNiPw==
-X-Received: by 2002:aca:a88a:: with SMTP id r132mr9061725oie.48.1593536954218;
-        Tue, 30 Jun 2020 10:09:14 -0700 (PDT)
-Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0:d2d5:b03d:84f7:d145])
-        by smtp.googlemail.com with ESMTPSA id a204sm800995oii.34.2020.06.30.10.09.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 10:09:13 -0700 (PDT)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v2] kernel/module:  add name size info to pr_debug() calls
-Date:   Tue, 30 Jun 2020 11:09:03 -0600
-Message-Id: <20200630170903.1320459-1-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Nlz3IYhLj8X/C/CdHWoWLrX6TvhRJRs5bnOoBz59zM4=;
+        b=R07qq2+YQR/Dm8S9zrT5EZ82vsZKb4hWYrX7E+Le2kFLGB7/ZGawTaonEe7oXEJZUJ
+         Tn9Ecow8H/j9M7fjkzxgukB0py5G/VzVLyzwiUKJgvNcPou4/iOlchN+nbxLNDB0+mNL
+         sK18SQMiLXm4q67Mn92XweMdDQP0FUafm9OTruPYCCtZD2fCqdLCUHszaUFo5oWLMF9w
+         rxUTUHOfR7K5y8Bd+h/Wy2xqR2Eu2vvKjbdSiu2cYh/Rz5/oLu0idfouXA4VJBDSfoYd
+         WafFlYHgEOmDlamJfZJ5/xt6Dzz/BMzYXTn+s12g/rQh/jcb0KBfdwdYW12Gsp0omjHx
+         ulag==
+X-Gm-Message-State: AOAM533XeIUJDIHNfN7h1vXyKI2w0w76ZHkfWh37Lk5yXQIzVMcnQiaO
+        maiBp0HTTVkfTAvhFFY8QeMVey52dQ7Cjy5GRNJ9Uw==
+X-Google-Smtp-Source: ABdhPJyDvCOUuCMcsb8eHwKXW658wARZhTWPeAr0lruXFN1/ikggmzdsxQf0h/4zX8cUdk/Tuvn2K6R/osMjqUT61oM=
+X-Received: by 2002:aca:cf4f:: with SMTP id f76mr12264266oig.172.1593537097229;
+ Tue, 30 Jun 2020 10:11:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAJZ5v0i=riYAA1wnuDBhBLfWQiGnaRW8fxkCU5X-3=noqSEhrQ@mail.gmail.com>
+ <CAGETcx8J5fs42_HMVyYvbX1=gqGTnavEuDOH+LHprZYRbXvUzw@mail.gmail.com>
+ <CAJZ5v0i-ySdNmToh=ExT9H_88bhHVeUNfTNWxXG1SzaP8a5j-w@mail.gmail.com>
+ <CAGETcx9iLH8fBEA0a9=iPsObzaePg9Zj0A9T_7NSKH6KSq3vFg@mail.gmail.com>
+ <CAJZ5v0iONFBX00NqzUaZ9kNWr6yLBNtLnA+sF-Ge-QNtY9qSug@mail.gmail.com>
+ <CAGETcx-YqJDnc6fNu5dncc=DSHwS_=-uOMHvR8V=b-QQJ7HOcA@mail.gmail.com>
+ <CAJZ5v0ju58LxvRckv2T=H0D=aDooGUoGfqFze5zWQ1ARAAJcag@mail.gmail.com>
+ <CAGETcx8KknvzZxfW4o=siswB__c9yeh=1wOVyvtM2112WEBizQ@mail.gmail.com>
+ <CAMuHMdXbzXnWQSaQ44p-cL9TA=ng20UB=vjscRDjpf7N=S4fjg@mail.gmail.com>
+ <CAJZ5v0joi2YDgAPrPhT8SMXTu-Va7s9DXVs7YDYf87JY_ntONQ@mail.gmail.com>
+ <20200630153850.GE1785141@kroah.com> <CAJZ5v0jQYK8LHaaJ4-GeJpzGdGY2Csmp_jmHfgc7BOaXyfsZCg@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jQYK8LHaaJ4-GeJpzGdGY2Csmp_jmHfgc7BOaXyfsZCg@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 30 Jun 2020 10:11:01 -0700
+Message-ID: <CAGETcx9xCvjZiht4Z_pnFVdaYp9vLPybwZTKNZ9wHGRRCi6VuA@mail.gmail.com>
+Subject: Re: [PATCH v1] driver core: Fix suspend/resume order issue with
+ deferred probe
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the kernel is booted with arg: module.dyndbg=+p, dmesg gets
-volumes of info about layout details of loaded modules.  This adds
-module & symbol names to those messages, and sizes where pertinent.
-Since these are debug messages, I thought sizes might be useful to
-somebody, without adding clutter or or too much info.
+On Tue, Jun 30, 2020 at 9:11 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Tue, Jun 30, 2020 at 5:39 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Tue, Jun 30, 2020 at 03:50:58PM +0200, Rafael J. Wysocki wrote:
+> > > On Fri, Jun 26, 2020 at 10:53 PM Geert Uytterhoeven
+> > > <geert@linux-m68k.org> wrote:
+> > > >
+> > > > Hi Saravana,
+> > > >
+> > > > On Fri, Jun 26, 2020 at 10:34 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > > > On Fri, Jun 26, 2020 at 4:27 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > > On Thu, Jun 25, 2020 at 7:52 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > > > > > On Thu, Jun 25, 2020 at 10:47 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > > > > Note that deferred probing gets in the way here and so the problem is
+> > > > > > > > related to it.
+> > > > > > >
+> > > > > > > I mean, we officially support deferred probing. Shouldn't we fix it so
+> > > > > > > that it doesn't break suspend/resume?
+> > > > > >
+> > > > > > Yes, we should fix deferred probing.
+> > > >
+> > > > Please take into account that breakage is an actual regression.
+> > > >
+> > > > > > > Also, it's pretty easy to have
+> > > > > > > cases where one module probes multiple device instances and loading it
+> > > > > > > in one order would break dpm_list order for one device and loading it
+> > > > > > > in another order would break it for another device. And there would be
+> > > > > > > no "proper" order to load modules (because module order != device
+> > > > > > > order).
+> > > > > >
+> > > > > > I'm not saying that the current code is perfect.  I'm saying that the
+> > > > > > fix as proposed adds too much cost for everybody who may not care IMO.
+> > > > >
+> > > > > Ok, how about I don't do this reordering until we see the first
+> > > > > deferred probe request? Will that work for you? In that case, systems
+> > > > > with no deferred probing will not incur any reordering cost. Or if
+> > > > > reordering starts only towards the end, all the previous probes won't
+> > > > > incur reordering cost.
+> > > >
+> > > > That first deferred probe request is more or less as of the first probe,
+> > > > since commit 93d2e4322aa74c1a ("of: platform: Batch fwnode parsing when
+> > > > adding all top level devices"), at least on DT systems.
+> > >
+> > > The deferred probe reordering of devices to the end of dpm_list
+> > > started in 2012, so it is nothing new, and it demonstrably works for
+> > > devices where the dependencies are known to the driver core.
 
-Now a reader can know which module's info they're looking at, or which
-2 modules they are comparing.
+Isn't "where the dependencies are known to the driver core" this a big caveat?
 
---
-v2 has:
-better commit message
-s/:%s/%s:/
-s/final/Final/
+> > >
+> > > That said, in the cases when the dependencies are known to the driver
+> > > core, it is also unnecessary to reorder dpm_list in
+> > > deferred_probe_work_func(), because the right ordering of it is going
+> > > to be determined elsewhere.
 
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
----
- kernel/module.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+Until driver core knows about 100% of the dependencies, we still need
+to do some kind of dpm_list reordering to have correct ordering. Even
+with fw_devlink=on, I'd imagine it'd be difficult to achieve 100%
+dependency being known to driver core.
 
-diff --git a/kernel/module.c b/kernel/module.c
-index 0c6573b98c36..809490145b77 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2294,8 +2294,8 @@ static int simplify_symbols(struct module *mod, const struct load_info *info)
- 
- 		case SHN_ABS:
- 			/* Don't need to do anything */
--			pr_debug("Absolute symbol: 0x%08lx\n",
--			       (long)sym[i].st_value);
-+			pr_debug("Absolute symbol: 0x%08lx %s\n",
-+				 (long)sym[i].st_value, name);
- 			break;
- 
- 		case SHN_LIVEPATCH:
-@@ -2409,7 +2409,7 @@ static void layout_sections(struct module *mod, struct load_info *info)
- 	for (i = 0; i < info->hdr->e_shnum; i++)
- 		info->sechdrs[i].sh_entsize = ~0UL;
- 
--	pr_debug("Core section allocation order:\n");
-+	pr_debug("Core section allocation order for %s:\n", mod->name);
- 	for (m = 0; m < ARRAY_SIZE(masks); ++m) {
- 		for (i = 0; i < info->hdr->e_shnum; ++i) {
- 			Elf_Shdr *s = &info->sechdrs[i];
-@@ -2442,7 +2442,7 @@ static void layout_sections(struct module *mod, struct load_info *info)
- 		}
- 	}
- 
--	pr_debug("Init section allocation order:\n");
-+	pr_debug("Init section allocation order for %s:\n", mod->name);
- 	for (m = 0; m < ARRAY_SIZE(masks); ++m) {
- 		for (i = 0; i < info->hdr->e_shnum; ++i) {
- 			Elf_Shdr *s = &info->sechdrs[i];
-@@ -3278,7 +3278,7 @@ static int move_module(struct module *mod, struct load_info *info)
- 		mod->init_layout.base = NULL;
- 
- 	/* Transfer each section which specifies SHF_ALLOC */
--	pr_debug("final section addresses:\n");
-+	pr_debug("Final section addresses for %s:\n", mod->name);
- 	for (i = 0; i < info->hdr->e_shnum; i++) {
- 		void *dest;
- 		Elf_Shdr *shdr = &info->sechdrs[i];
-@@ -3296,8 +3296,8 @@ static int move_module(struct module *mod, struct load_info *info)
- 			memcpy(dest, (void *)shdr->sh_addr, shdr->sh_size);
- 		/* Update sh_addr to point to copy in image. */
- 		shdr->sh_addr = (unsigned long)dest;
--		pr_debug("\t0x%lx %s\n",
--			 (long)shdr->sh_addr, info->secstrings + shdr->sh_name);
-+		pr_debug("\t0x%lx 0x%.8lx %s\n", (long)shdr->sh_addr,
-+			 (long)shdr->sh_size, info->secstrings + shdr->sh_name);
- 	}
- 
- 	return 0;
--- 
-2.26.2
+> > >
+> > > Also commit 494fd7b7ad10 ("PM / core: fix deferred probe breaking
+> > > suspend resume order") is not the source of the problem here, because
+> > > the problem would have still been there without it, due to the
+> > > device_pm_move_last() that was there before, so the Fixes: tag
+> > > pointing to that commit is misleading.
+> > >
+> > > Now, because 716a7a259690 ("driver core: fw_devlink: Add support for
+> > > batching fwnode parsing") is an optimization and the regression is
+> > > present because of it AFAICS, the best way to address it at that point
+> > > would be to revert commit 716a7a259690 for 5.8 and maybe do the
+> > > optimization more carefully.
 
+No, this patch is not adding any new issues to deferred probe. It just
+increases the probability of reproducing the issue. That's exactly why
+I wrote the commit text for this patch without the fwnode batch
+processing example. Even if you revert the patch, suspend/resume
+ordering is broken if deferred probe happens.
+
+> > >
+> > > Greg, what do you think?
+> >
+> > I've been ignoreing this and letting you all sort it out :)
+> >
+> > But if you think that patch should be reverted, I'll not object and will
+> > be glad to to it if this solves the issue.
+>
+> Well, if Geert can confirm that reverting commit 716a7a259690 makes
+> the problem go away, IMO this would be the most reasonable thing to do
+> at this stage of the cycle without risking that more regressions will
+> be introduced.
+
+I already have a patch to avoid deferred probe during batch fwnode
+parsing. I'm trying to do a few more tests before I send it out. So,
+it'd be nice if we don't revert it right now and give me some time to
+finish testing.
+
+-Saravana
