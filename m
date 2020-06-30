@@ -2,245 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1604C20F95E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 18:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1491C20F964
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 18:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387622AbgF3QYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 12:24:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44612 "EHLO mail.kernel.org"
+        id S2387758AbgF3Q0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 12:26:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:41240 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387536AbgF3QYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 12:24:53 -0400
-Received: from localhost (unknown [122.182.251.219])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8BA22074F;
-        Tue, 30 Jun 2020 16:24:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593534292;
-        bh=CA3nHyfxTt5b1R32rWUTSv3+CAfH63brn8Mthhcj5GY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X5lsBO7eBmQN0ZvntviXS602smRp2C8rAqVZdsdqUO9nGyAejBF+LOBiHRNsxv2wk
-         1ws6EOhs9mxfKon7LaUP/KeC3ckDEw4XWAlmNEtqEjUy93K8ybjaRD5FxTiqa4C+xA
-         osGXLf+A+HzRDVguyAiliwW7hY9xTtHyhh1X9PYE=
-Date:   Tue, 30 Jun 2020 21:54:48 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jank@cadence.com, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
-        sanyog.r.kale@intel.com, slawomir.blauciak@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: Re: [PATCH 7/9] soundwire: intel/cadence: merge Soundwire interrupt
- handlers/threads
-Message-ID: <20200630162448.GS2599@vkoul-mobl>
-References: <20200623173546.21870-1-yung-chuan.liao@linux.intel.com>
- <20200623173546.21870-8-yung-chuan.liao@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200623173546.21870-8-yung-chuan.liao@linux.intel.com>
+        id S2387434AbgF3Q0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 12:26:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D828330E;
+        Tue, 30 Jun 2020 09:26:14 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 28A1C3F68F;
+        Tue, 30 Jun 2020 09:26:14 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, cristian.marussi@arm.com
+Subject: [PATCH] firmware: arm_scmi: fix notifications macros argument reuse
+Date:   Tue, 30 Jun 2020 17:25:47 +0100
+Message-Id: <20200630162547.40824-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-06-20, 01:35, Bard Liao wrote:
-> The existing code uses one pair of interrupt handler/thread per link
-> but at the hardware level the interrupt is shared. This works fine for
-> legacy PCI interrupts, but leads to timeouts in MSI (Message-Signaled
-> Interrupt) mode, likely due to edges being lost.
-> 
-> This patch unifies interrupt handling for all links. The dedicated
-> handler is removed since we use a common one for all shared interrupt
-> sources, and the thread function takes care of dealing with interrupt
-> sources. This partition follows the model used for the SOF IPC on
-> HDaudio platforms, where similar timeout issues were noticed and doing
-> all the interrupt handling/clearing in the thread improved
-> reliability/stability.
-> 
-> Validation results with 4 links active in parallel show a night-and-day
-> improvement with no timeouts noticed even during stress tests. Latency
-> and quality of service are not affected by the change - mostly because
-> events on a SoundWire link are throttled by the bus frame rate
-> (typically 8..48kHz).
-> 
-> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  drivers/soundwire/cadence_master.c | 18 ++++++++++--------
->  drivers/soundwire/cadence_master.h |  4 ++++
->  drivers/soundwire/intel.c          | 15 ---------------
->  drivers/soundwire/intel.h          |  4 ++++
->  drivers/soundwire/intel_init.c     | 19 +++++++++++++++++++
->  5 files changed, 37 insertions(+), 23 deletions(-)
-> 
-> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-> index 613dbd415b91..24eafe0aa1c3 100644
-> --- a/drivers/soundwire/cadence_master.c
-> +++ b/drivers/soundwire/cadence_master.c
-> @@ -17,6 +17,7 @@
->  #include <linux/soundwire/sdw.h>
->  #include <sound/pcm_params.h>
->  #include <sound/soc.h>
-> +#include <linux/workqueue.h>
->  #include "bus.h"
->  #include "cadence_master.h"
->  
-> @@ -790,7 +791,7 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
->  			     CDNS_MCP_INT_SLAVE_MASK, 0);
->  
->  		int_status &= ~CDNS_MCP_INT_SLAVE_MASK;
-> -		ret = IRQ_WAKE_THREAD;
-> +		schedule_work(&cdns->work);
->  	}
->  
->  	cdns_writel(cdns, CDNS_MCP_INTSTAT, int_status);
-> @@ -799,13 +800,15 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
->  EXPORT_SYMBOL(sdw_cdns_irq);
->  
->  /**
-> - * sdw_cdns_thread() - Cadence irq thread handler
-> - * @irq: irq number
-> - * @dev_id: irq context
-> + * To update slave status in a work since we will need to handle
-> + * other interrupts eg. CDNS_MCP_INT_RX_WL during the update slave
-> + * process.
-> + * @work: cdns worker thread
->   */
-> -irqreturn_t sdw_cdns_thread(int irq, void *dev_id)
-> +static void cdns_update_slave_status_work(struct work_struct *work)
->  {
-> -	struct sdw_cdns *cdns = dev_id;
-> +	struct sdw_cdns *cdns =
-> +		container_of(work, struct sdw_cdns, work);
->  	u32 slave0, slave1;
->  
->  	dev_dbg_ratelimited(cdns->dev, "Slave status change\n");
-> @@ -822,9 +825,7 @@ irqreturn_t sdw_cdns_thread(int irq, void *dev_id)
->  	cdns_updatel(cdns, CDNS_MCP_INTMASK,
->  		     CDNS_MCP_INT_SLAVE_MASK, CDNS_MCP_INT_SLAVE_MASK);
->  
-> -	return IRQ_HANDLED;
->  }
-> -EXPORT_SYMBOL(sdw_cdns_thread);
->  
->  /*
->   * init routines
-> @@ -1427,6 +1428,7 @@ int sdw_cdns_probe(struct sdw_cdns *cdns)
->  	init_completion(&cdns->tx_complete);
->  	cdns->bus.port_ops = &cdns_port_ops;
->  
-> +	INIT_WORK(&cdns->work, cdns_update_slave_status_work);
->  	return 0;
->  }
->  EXPORT_SYMBOL(sdw_cdns_probe);
-> diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
-> index b410656f8194..7638858397df 100644
-> --- a/drivers/soundwire/cadence_master.h
-> +++ b/drivers/soundwire/cadence_master.h
-> @@ -129,6 +129,10 @@ struct sdw_cdns {
->  
->  	bool link_up;
->  	unsigned int msg_count;
-> +
-> +	struct work_struct work;
-> +
-> +	struct list_head list;
->  };
->  
->  #define bus_to_cdns(_bus) container_of(_bus, struct sdw_cdns, bus)
-> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index 0a4fc7f65743..06c553d94890 100644
-> --- a/drivers/soundwire/intel.c
-> +++ b/drivers/soundwire/intel.c
-> @@ -1258,21 +1258,7 @@ static int intel_master_probe(struct platform_device *pdev)
->  			 "SoundWire master %d is disabled, will be ignored\n",
->  			 bus->link_id);
->  
-> -	/* Acquire IRQ */
-> -	ret = request_threaded_irq(sdw->link_res->irq,
-> -				   sdw_cdns_irq, sdw_cdns_thread,
-> -				   IRQF_SHARED, KBUILD_MODNAME, cdns);
-> -	if (ret < 0) {
-> -		dev_err(dev, "unable to grab IRQ %d, disabling device\n",
-> -			sdw->link_res->irq);
-> -		goto err_init;
-> -	}
-> -
->  	return 0;
-> -
-> -err_init:
-> -	sdw_bus_master_delete(bus);
-> -	return ret;
->  }
->  
->  int intel_master_startup(struct platform_device *pdev)
-> @@ -1344,7 +1330,6 @@ static int intel_master_remove(struct platform_device *pdev)
->  	if (!bus->prop.hw_disabled) {
->  		intel_debugfs_exit(sdw);
->  		sdw_cdns_enable_interrupt(cdns, false);
-> -		free_irq(sdw->link_res->irq, sdw);
->  		snd_soc_unregister_component(dev);
->  	}
->  	sdw_bus_master_delete(bus);
-> diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-> index d6bdd4d63e08..bf127c88eb51 100644
-> --- a/drivers/soundwire/intel.h
-> +++ b/drivers/soundwire/intel.h
-> @@ -17,6 +17,8 @@
->   * @dev: device implementing hw_params and free callbacks
->   * @shim_lock: mutex to handle access to shared SHIM registers
->   * @shim_mask: global pointer to check SHIM register initialization
-> + * @cdns: Cadence master descriptor
-> + * @list: used to walk-through all masters exposed by the same controller
->   */
->  struct sdw_intel_link_res {
->  	struct platform_device *pdev;
-> @@ -29,6 +31,8 @@ struct sdw_intel_link_res {
->  	struct device *dev;
->  	struct mutex *shim_lock; /* protect shared registers */
->  	u32 *shim_mask;
-> +	struct sdw_cdns *cdns;
-> +	struct list_head list;
->  };
->  
->  struct sdw_intel {
-> diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-> index ad3175272e88..63b3beda443d 100644
-> --- a/drivers/soundwire/intel_init.c
-> +++ b/drivers/soundwire/intel_init.c
-> @@ -9,6 +9,7 @@
->  
->  #include <linux/acpi.h>
->  #include <linux/export.h>
-> +#include <linux/interrupt.h>
->  #include <linux/io.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
-> @@ -166,6 +167,19 @@ void sdw_intel_enable_irq(void __iomem *mmio_base, bool enable)
->  }
->  EXPORT_SYMBOL_NS(sdw_intel_enable_irq, SOUNDWIRE_INTEL_INIT);
->  
-> +irqreturn_t sdw_intel_thread(int irq, void *dev_id)
-> +{
-> +	struct sdw_intel_ctx *ctx = dev_id;
-> +	struct sdw_intel_link_res *link;
-> +
-> +	list_for_each_entry(link, &ctx->link_list, list)
-> +		sdw_cdns_irq(irq, link->cdns);
-> +
-> +	sdw_intel_enable_irq(ctx->mmio_base, true);
-> +	return IRQ_HANDLED;
-> +}
-> +EXPORT_SYMBOL(sdw_intel_thread);
+Checkpatch --strict reports some possible side-effects related to argument
+reuse in some SCMI Notification Core macros: these are indeed false flags
+in the context of actual macros invocations.
 
-Who will call this API? Also don't see header for this..
-Is this called from irq context or irq thread or something else?
+Nevertheless cleanup fixing all the warnings.
 
-Also no EXPORT_SYMBOL_NS() for this one?
+No functional change.
 
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+---
+ drivers/firmware/arm_scmi/notify.c | 48 ++++++++++++++++++++----------
+ 1 file changed, 32 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
+index b5b449f70605..bf8b3430c801 100644
+--- a/drivers/firmware/arm_scmi/notify.c
++++ b/drivers/firmware/arm_scmi/notify.c
+@@ -122,10 +122,13 @@
+  */
+ #define KEY_FIND(__ht, __obj, __k)				\
+ ({								\
+-	hash_for_each_possible((__ht), (__obj), hash, (__k))	\
+-		if (likely((__obj)->key == (__k)))		\
++	typeof(__k) k_ = __k;					\
++	typeof(__obj) obj_;					\
++								\
++	hash_for_each_possible((__ht), obj_, hash, k_)		\
++		if (likely(obj_->key == k_))			\
+ 			break;					\
+-	__obj;							\
++	__obj = obj_;						\
+ })
+ 
+ #define KEY_XTRACT_PROTO_ID(key)	FIELD_GET(PROTO_ID_MASK, (key))
+@@ -140,19 +143,22 @@
+  */
+ #define SCMI_GET_PROTO(__ni, __pid)					\
+ ({									\
++	typeof(__ni) ni_ = __ni;					\
+ 	struct scmi_registered_events_desc *__pd = NULL;		\
+ 									\
+-	if ((__ni))							\
+-		__pd = READ_ONCE((__ni)->registered_protocols[(__pid)]);\
++	if (ni_)							\
++		__pd = READ_ONCE(ni_->registered_protocols[(__pid)]);	\
+ 	__pd;								\
+ })
+ 
+ #define SCMI_GET_REVT_FROM_PD(__pd, __eid)				\
+ ({									\
++	typeof(__pd) pd_ = __pd;					\
++	typeof(__eid) eid_ = __eid;					\
+ 	struct scmi_registered_event *__revt = NULL;			\
+ 									\
+-	if ((__pd) && (__eid) < (__pd)->num_events)			\
+-		__revt = READ_ONCE((__pd)->registered_events[(__eid)]);	\
++	if (pd_ && eid_ < pd_->num_events)				\
++		__revt = READ_ONCE(pd_->registered_events[eid_]);	\
+ 	__revt;								\
+ })
+ 
+@@ -167,15 +173,25 @@
+ })
+ 
+ /* A couple of utility macros to limit cruft when calling protocols' helpers */
+-#define REVT_NOTIFY_ENABLE(revt, eid, sid)				       \
+-	((revt)->proto->ops->set_notify_enabled((revt)->proto->ni->handle,     \
+-						(eid), (sid), true))
+-#define REVT_NOTIFY_DISABLE(revt, eid, sid)				       \
+-	((revt)->proto->ops->set_notify_enabled((revt)->proto->ni->handle,     \
+-						(eid), (sid), false))
+-#define REVT_FILL_REPORT(revt, ...)					       \
+-	((revt)->proto->ops->fill_custom_report((revt)->proto->ni->handle,     \
+-						__VA_ARGS__))
++#define REVT_NOTIFY_SET_STATUS(revt, eid, sid, state)		\
++({								\
++	typeof(revt) r = revt;					\
++	r->proto->ops->set_notify_enabled(r->proto->ni->handle,	\
++					(eid), (sid), (state));	\
++})
++
++#define REVT_NOTIFY_ENABLE(revt, eid, sid)			\
++	REVT_NOTIFY_SET_STATUS((revt), (eid), (sid), true)
++
++#define REVT_NOTIFY_DISABLE(revt, eid, sid)			\
++	REVT_NOTIFY_SET_STATUS((revt), (eid), (sid), false)
++
++#define REVT_FILL_REPORT(revt, ...)				\
++({								\
++	typeof(revt) r = revt;					\
++	r->proto->ops->fill_custom_report(r->proto->ni->handle,	\
++					  __VA_ARGS__);		\
++})
+ 
+ #define SCMI_PENDING_HASH_SZ		4
+ #define SCMI_REGISTERED_HASH_SZ		6
 -- 
-~Vinod
+2.17.1
+
