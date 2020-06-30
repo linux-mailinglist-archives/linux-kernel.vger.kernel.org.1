@@ -2,131 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3995120EE55
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 08:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE2620EE5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 08:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730179AbgF3G1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 02:27:11 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:46904 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730159AbgF3G1D (ORCPT
+        id S1730218AbgF3G13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 02:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729901AbgF3G12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 02:27:03 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200630062702euoutp011ad33b7fc74e2b0d5b1717f596b9d351~dPl9KPwkZ0984009840euoutp01j
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:27:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200630062702euoutp011ad33b7fc74e2b0d5b1717f596b9d351~dPl9KPwkZ0984009840euoutp01j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593498422;
-        bh=837mH5WoZoAfjQ/qyJerBSqKjDYL+ctM09x1q/ySjVk=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=Rb0Eu3zsNasSuDi2YnKXoNpZfNPm2JbY6puzIMp6Hbd/9H8o5wAJ4Ls/3CILmhIb5
-         Qpp/L1KoFzzu+nGgqoBMTfOuhxtNE8qMqyVENcKE0fveHZPW7THZVD/8l9ELbdO/Tv
-         wrc7oKXFFfar1RMmRB3aEepCOElr7Vksmo3qYZa0=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200630062701eucas1p1b691c1894216947d32cca0a029408300~dPl8eZ-jt1426414264eucas1p1Y;
-        Tue, 30 Jun 2020 06:27:01 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id C1.4D.06318.53BDAFE5; Tue, 30
-        Jun 2020 07:27:01 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200630062700eucas1p26889ded55f324aa745bc914dcd1faed4~dPl79WWlp2732027320eucas1p2F;
-        Tue, 30 Jun 2020 06:27:00 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200630062700eusmtrp2f1d0f04afba5316efc4a2f294370e3ba~dPl78ncSS3011830118eusmtrp2c;
-        Tue, 30 Jun 2020 06:27:00 +0000 (GMT)
-X-AuditID: cbfec7f5-371ff700000018ae-38-5efadb35f8aa
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 84.0A.06017.43BDAFE5; Tue, 30
-        Jun 2020 07:27:00 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200630062700eusmtip1dcf28c8e096329f4a9f6145f772ef6f5~dPl7SBLzl0872808728eusmtip1X;
-        Tue, 30 Jun 2020 06:27:00 +0000 (GMT)
-Subject: Re: [PATCH v2] ARM: dts: exynos: Fix missing empty reg/ranges
- property regulators on Trats
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Pankaj Dubey <pankaj.dubey@samsung.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <97651868-30f3-6b91-1ea2-551ee1ebad8f@samsung.com>
-Date:   Tue, 30 Jun 2020 08:27:01 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.9.0
+        Tue, 30 Jun 2020 02:27:28 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDFFC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 23:27:28 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id a127so8955621pfa.12
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 23:27:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hg7CQ36HAUaDvVl3zakOjg0qflU7yL+WVY/tnMLNwI8=;
+        b=VQLPANUcPwGyfihSpiowndFQuKQQlvaJDJVH+Xj9W82xesq8Lxh0JcEYDFqaOm/ffp
+         31I1pWYeloSOSrQLqcckVP9O/0F6SXSCVCGgqXXHFt6gqvNCTOW33usD/xRTNRheGE69
+         r8FNBfYSleHJnpgxYpjkABIdOagdhvwZPTEFY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hg7CQ36HAUaDvVl3zakOjg0qflU7yL+WVY/tnMLNwI8=;
+        b=hiq8/3HXXSaePI3FYcR4Rnm6XANCWhIa5xs4TudR2N1/MZ14ZBzUkmRRDffI7hmy7j
+         VKS6bQY8DBxnmOKBlprL1RylRH+0Y3pM5dByEFT9H0V/m/w6GltZoH6b+gA40hoASlbN
+         oyFU5SfPymBN09wSWwoOIuUcY0lLF0xgH0s78Bma9PC3liUif9Lh/1Ebt1iinmkcV20a
+         LANYLN46YGmWyuGnGE7KwNsT3u3Rw8MWBARdSTxsHNP2zbtEADhGZbii1BXXCjLz/RIY
+         z/njh6ZQnB5oZPgdSW2Q+2pxqhzLJADVYPVNF4XfjBHUnHXzcyKd0fxiJqTZpKx2Vy9w
+         K3dA==
+X-Gm-Message-State: AOAM533crWm7OKdcbU+uFCBaBr34tTn4SIQGqXEzXp3z2QiCRfAK1RTq
+        EeKhjuMRbihU8/p5CEJHFVlI/A==
+X-Google-Smtp-Source: ABdhPJzv0kiTrJPLtzkcKyiSl8wmXSRMplwPojwu7/9fWXDbT6YJQ4ox4bXbQCWa5+f/h9RXQiPz8w==
+X-Received: by 2002:a65:664a:: with SMTP id z10mr13445440pgv.352.1593498447562;
+        Mon, 29 Jun 2020 23:27:27 -0700 (PDT)
+Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:93d9:de4d:e834:3086])
+        by smtp.gmail.com with ESMTPSA id d1sm1463366pfq.113.2020.06.29.23.27.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 23:27:26 -0700 (PDT)
+From:   Alexandre Courbot <acourbot@chromium.org>
+To:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Rui Wang <gtk_ruiwang@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Maoguang Meng <maoguang.meng@mediatek.com>
+Cc:     linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Alexandre Courbot <acourbot@chromium.org>
+Subject: [PATCH 0/9] media: mtk-vcodec: vdec: support for MT8183
+Date:   Tue, 30 Jun 2020 15:27:02 +0900
+Message-Id: <20200630062711.4169601-1-acourbot@chromium.org>
+X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
 MIME-Version: 1.0
-In-Reply-To: <20200629205948.32250-1-krzk@kernel.org>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa2xLYRjO13PantYq347VXiZIk80l2YaZHCGyiR8lEUQiIVbKjlm03dLa
-        jEjsQlndSiKtGruwaJrsVlZMLNkxKxmtdNjCwlixmkZil24zRnuM/Xve532e73ne5KMIulk4
-        m8rWHWT1OrVGIZKSrrZRT2LqmzHVkmGHnOm55hIxDdY6IdM5+FnIlLd6hMz53n6C8XrrxYyz
-        95WQ6WgqEzFWb7OAqWocFDMnHrSKmZMfA0RalNLpKBUpb904pjx324GUA865m8kd0tWZrCY7
-        n9Unr9kt3d9Z9J3MDQkL2rmngkI0QpqQhAK8HH51NApNSErR2I7gR+EtET8MIvCVDAvCKhoP
-        IPh2ctmko8UVQrzoJoLHodNifviGoN/ujThmYBZeFdcQYRyDt0Eo8DjyLIHHBTDy5q0ovBDh
-        pWAKmiJYhtdAF1caMZA4HiotzyIF5TgDzlVX/NVEw5PL/j88RUlwKpiD+8I0gefBnWAZweNY
-        eO0vF4SzAPvE8OK6T8DXXgeWPjPB4xnwxX1bzOM5MHFv0lCC4L2nRswPZxB0FFsRr1oF3Z4x
-        UTiZwIugrimZp9Oh+8KYOEwDng5dwWi+xHS46LIQPC2DU0aaVyeAzV37L7bluY8wI4VtymW2
-        KefYppxj+59bgUgHimXzDNos1pCiYw8lGdRaQ54uK2lvjtaJ/vyq9l/uobuoeXwPhzCFFFGy
-        3Z5RFS1U5xsOazkEFKGIka191q6iZZnqw0dYfc4ufZ6GNXAojiIVsbKUqkAGjbPUB9kDLJvL
-        6ie3AkoyuxA9vEOrMlHasUDnzk/pwyuS7HTaUe5+QeuCoZWKCZtRdbyNbLpedmljQjWncebU
-        c3V3N1ji46XrTWetukcp282s2z7ta4/xim8TSU+Le+DvspuXp17NlY9LEt/5G7S9C7lt8p/p
-        3saXRa/z+7ZU9httH+bN2rP1fdnM+bUl6iFCQRr2q5cuJvQG9W/pUwM2UQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPIsWRmVeSWpSXmKPExsVy+t/xu7omt3/FGXzbYWDxYN42NouNM9az
-        Wlz/8pzVYv6Rc6wW/Y9fM1ucP7+B3WLT42usFpd3zWGzmHF+H5PFoq1f2C1a9x5ht2h/+pLZ
-        gcdj06pONo/NS+o9+rasYvT4vEkugCVKz6Yov7QkVSEjv7jEVina0MJIz9DSQs/IxFLP0Ng8
-        1srIVEnfziYlNSezLLVI3y5BL+N64yeWgu+sFacPnWFqYPzB0sXIySEhYCJxcNt3RhBbSGAp
-        o8Trs/4QcRmJk9MaWCFsYYk/17rYuhi5gGreMkpMmLSaCSQhLJAqca1pLXMXIweHiECYxNpV
-        5iA1zAJ/mCQ23HvDCNHQwSix/nsPG0gDm4ChRNfbLjCbV8BO4sahTmYQm0VAVWLh9LNgF4kK
-        xEp8u7cFqkZQ4uTMJywgCzgFTCUmvE0DCTMLmEnM2/yQGcKWl9j+dg6ULS5x68l8pgmMQrOQ
-        dM9C0jILScssJC0LGFlWMYqklhbnpucWG+kVJ+YWl+al6yXn525iBEbmtmM/t+xg7HoXfIhR
-        gINRiYc34dzPOCHWxLLiytxDjBIczEoivE5nT8cJ8aYkVlalFuXHF5XmpBYfYjQF+m0is5Ro
-        cj4waeSVxBuaGppbWBqaG5sbm1koifN2CByMERJITyxJzU5NLUgtgulj4uCUamDc3rSoX+qh
-        lcVz4wa2R//WLn56efMkrY0fdhssfHU75KVNrdZTF7Zfd1d9n3e7mDH6npNFyNYFYo82HUg8
-        IHjc4Umb3dbSy0xOPf68kvv3HnqfLv9M3V79c8SJUj6V6hRO/3nbG0pP7ut61bq6dHJios0G
-        0wt5lZcduw/wb1gulPU6h+3OugobJZbijERDLeai4kQADzbOMeICAAA=
-X-CMS-MailID: 20200630062700eucas1p26889ded55f324aa745bc914dcd1faed4
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200629210025eucas1p219a52e75ecce9e813aa80f0126780189
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200629210025eucas1p219a52e75ecce9e813aa80f0126780189
-References: <CGME20200629210025eucas1p219a52e75ecce9e813aa80f0126780189@eucas1p2.samsung.com>
-        <20200629205948.32250-1-krzk@kernel.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+This patch series adds support for the H.264 stateless decoder found in MT8183.
+It depends on the MT8183 encoder support series [1] and should thus be applied
+on top of it.
 
-On 29.06.2020 22:59, Krzysztof Kozlowski wrote:
-> Remove the regulators node entirely because its children do not have any
-> unit addresses.  This fixes DTC warning:
->
->      Warning (simple_bus_reg): /regulators/regulator-0: missing or empty reg/ranges property
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Contrary to MT8173 which is stateful, MT8183 is a stateless decoder. So the
+first patches take care of splitting the stateful-relevant code into its own
+source file, and to add support for the stateless API. Then support for sending
+the H.264 decoder is added, taking advantage of the H.264 helper functions to
+build the reference lists.
 
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+No regressions to v4l2-compliance have been introduced by this series for
+MT8173, and we could also confirm that decoding was still working as expected
+on this chip. Following this series will be another one that fixes the remaining
+v4l2-compliance issues for both encoder and decoder.
 
-What about removing the regulators node from other boards: 
-exynos4412-origen.dts, exynos5420-smdk5420.dts and exynos5250-arndale.dts?
+[1] https://lkml.org/lkml/2020/6/26/152
 
-On the other hand, maybe it would be really easier to add missing 
-address/size-cells properties to exynos4210-trats.dts/regulators node?
+Alexandre Courbot (4):
+  media: mtk-vcodec: vdec: handle firmware version field
+  media: mtk-vcodec: support version 2 of decoder firmware ABI
+  media: add Mediatek's MM21 format
+  dt-bindings: media: document mediatek,mt8183-vcodec-dec
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+Yunfei Dong (5):
+  media: mtk-vcodec: vdec: move stateful ops into their own file
+  media: mtk-vcodec: vdec: support stateless API
+  media: mtk-vcodec: vdec: support stateless H.264 decoding
+  media: mtk-vcodec: vdec: add media device if using stateless api
+  media: mtk-vcodec: enable MT8183 decoder
+
+ .../bindings/media/mediatek-vcodec.txt        |   1 +
+ drivers/media/platform/Kconfig                |   2 +
+ drivers/media/platform/mtk-vcodec/Makefile    |   3 +
+ .../platform/mtk-vcodec/mtk_vcodec_dec.c      | 763 +++--------------
+ .../platform/mtk-vcodec/mtk_vcodec_dec.h      |  28 +-
+ .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  |  54 +-
+ .../mtk-vcodec/mtk_vcodec_dec_stateful.c      | 634 ++++++++++++++
+ .../mtk-vcodec/mtk_vcodec_dec_stateless.c     | 469 ++++++++++
+ .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  50 ++
+ .../mtk-vcodec/vdec/vdec_h264_req_if.c        | 802 ++++++++++++++++++
+ .../media/platform/mtk-vcodec/vdec_drv_if.c   |   3 +
+ .../media/platform/mtk-vcodec/vdec_drv_if.h   |   1 +
+ .../media/platform/mtk-vcodec/vdec_ipi_msg.h  |  23 +-
+ .../media/platform/mtk-vcodec/vdec_vpu_if.c   |  43 +-
+ .../media/platform/mtk-vcodec/vdec_vpu_if.h   |   5 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |   1 +
+ include/uapi/linux/videodev2.h                |   1 +
+ 17 files changed, 2226 insertions(+), 657 deletions(-)
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateless.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
+
+--
+2.27.0.212.ge8ba1cc988-goog
 
