@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F388620F751
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD4520F754
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389017AbgF3Ofn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 10:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54630 "EHLO
+        id S2389038AbgF3Ofy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 10:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731427AbgF3Ofm (ORCPT
+        with ESMTP id S1731427AbgF3Ofv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 10:35:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3D8C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 07:35:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=msmi1zI7qJmIO1xU9ZUIcrr2D+GhO7V+5RJpm/YLang=; b=jkaecJKRZofrkbCxWq9hxE9DRZ
-        n3MUA5fvMNsvXDPWnDT4XugDA1B5p4HLY3LouFyiPGaCUN0BAtz2SUb3d4MnPH9fxi5Lx+I9g8H6C
-        5lCJar8YRINo1qhn4AP6ID514IJZiMxnxroOn+5QuU7eQU0CM/oEAjPdgG6PH4nkRLb6mr8EKFtBi
-        2IYQU4NRRBoJuEwSkOQV60JT7MfA1B2W6+2bjFPszRZ2KW9HvaLNyfwKEWp4Ta5rDazKuGiJss4wd
-        IU+Gtdx+DwKKww4lLqzFR1OTgKFbxtH2LjS9iNiy9GBAhoS0AiZXOdBzg22v3M3guJ7Mbq0z9LuyT
-        y654MGTw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jqHLl-0003Ky-FQ; Tue, 30 Jun 2020 14:35:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7F0F6303CE9;
-        Tue, 30 Jun 2020 16:35:04 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 72BCE20CF397A; Tue, 30 Jun 2020 16:35:04 +0200 (CEST)
-Date:   Tue, 30 Jun 2020 16:35:04 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     kernel test robot <lkp@intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        lkp@lists.01.org, keescook@chromium.org, hjl.tools@gmail.com
-Subject: Re: [sched] c3a340f7e7: invalid_opcode:#[##]
-Message-ID: <20200630143504.GI117543@hirez.programming.kicks-ass.net>
-References: <20200629003127.GB5535@shao2-debian>
- <20200630124628.GV4817@hirez.programming.kicks-ass.net>
- <5b7286c9-ef4f-c1d0-fae3-ebb198aa0742@rasmusvillemoes.dk>
- <20200630140231.GW4817@hirez.programming.kicks-ass.net>
+        Tue, 30 Jun 2020 10:35:51 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920C9C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 07:35:50 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z15so9175829wrl.8
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 07:35:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9ehSuH0Ppvr3SarHPimFMKCcDFvWk7d98TWdLgtUAdk=;
+        b=EEH5gsyRve5CqoVSk9842wt6lCZaD9pqW/LmrXByhYGDb7lv2/0AB1uRi8n9uZrgnl
+         zbRJ3gPUiiszSXRu4zBUFqoQ7ZKqWf07Rvy1dvUDsOtJwcVhCROYD3Gi/mS4J1qp8cZm
+         O7Ngg/PDJPUoU+wNFXqad0N+bR9LJzVdE9c1ZM1674YTjLKD+VAtUeSgNVD07yKdCbNK
+         OmGdTamj+OtzMshlITGU4dYjOmQaTaRjGDvzWIq3A38ZSegGUjJMK6lPzjnpoRakFmB3
+         k8+NgjPmiBgALA+4PkjQ3ASBNovCRcdpSrsRF4WNQyHQ5KPqKYUlrtKk+ENfIXa2BGPs
+         oUPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9ehSuH0Ppvr3SarHPimFMKCcDFvWk7d98TWdLgtUAdk=;
+        b=DW9S2IccnoF+/kW4+F+hATd9U4wUUna9v3/Ce4CUZKE1MAbjkXkh/VtQJDZ96Gdeb8
+         +JaLbOTFRAgkn0b2TPkESGGFXWHT+J1qCDrhjSqv/4tknb1oGr3083USF0iaMH8bQVT6
+         NrLr6ZWHuciJZC7xctcRI9/09ZctINgoJchLtlD36PAeT8B0MsiPsjoIABJBqXrpdwag
+         uzwpLwKsN/qaLAOkMeK5HwhWy8eYTqA7vKA+9pEufS2ywyMIav7VOngm073eJH7KFl59
+         it8IYfSDzI75xmUCGa+hF5a9DT4bo6PqurOIT4H8cwbuAj8jjArKAjppHCKlK4MKF4wJ
+         NYiQ==
+X-Gm-Message-State: AOAM533w18ml51cIkK12vWMWZqLBmX5T4cb8ex6baJIavEJ65T39eWMY
+        DOYeNRhCacUo+sel6Bx9Sn4Syg==
+X-Google-Smtp-Source: ABdhPJxfreHHCSgkoRRa5/FN8jXyQ3dmNAYhdiaG0ZWp6lK21+Bv13m6PRC1LeUucj5OreEAxBU7ow==
+X-Received: by 2002:a5d:55c9:: with SMTP id i9mr21721835wrw.404.1593527749296;
+        Tue, 30 Jun 2020 07:35:49 -0700 (PDT)
+Received: from localhost.localdomain ([194.35.116.93])
+        by smtp.gmail.com with ESMTPSA id g16sm4317837wrh.91.2020.06.30.07.35.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 07:35:48 -0700 (PDT)
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH] checkpatch: prevent reporting C99_COMMENTS error for SPDX tag in .c file
+Date:   Tue, 30 Jun 2020 15:35:25 +0100
+Message-Id: <20200630143525.13869-1-quentin@isovalent.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200630140231.GW4817@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 04:02:31PM +0200, Peter Zijlstra wrote:
-> On Tue, Jun 30, 2020 at 03:55:05PM +0200, Rasmus Villemoes wrote:
-> 
-> > > Consistently so with GCC-4.9. Any other GCC I tried does the sane thing.
-> > 
-> > Does that include gcc 4.8, or is it only "anything newer than 4.9"?
-> 
-> It includes 4.8 :-)
-> 
-> > so the section it was put in has an alignment of 64. The generated
-> > assembly is indeed
-> > 
-> >         .globl  fair_sched_class
-> >         .section        __fair_sched_class,"a",@progbits
-> >         .align 64
-> > 
-> > /me goes brew coffee
-> 
-> Right.. so I now have the below patch, and with that I get:
-> 
-> 62931: c1e62c20     0 NOTYPE  GLOBAL DEFAULT    2 __begin_sched_classes
-> 65736: c1e62e40   128 OBJECT  GLOBAL DEFAULT    2 stop_sched_class
-> 71813: c1e62cc0   128 OBJECT  GLOBAL DEFAULT    2 fair_sched_class
-> 78689: c1e62c40   128 OBJECT  GLOBAL DEFAULT    2 idle_sched_class
-> 78953: c1e62ec0     0 NOTYPE  GLOBAL DEFAULT    2 __end_sched_classes
-> 79090: c1e62d40   128 OBJECT  GLOBAL DEFAULT    2 rt_sched_class
-> 79431: c1e62dc0   128 OBJECT  GLOBAL DEFAULT    2 dl_sched_class
-> 
-> 
-> Which has me stumped on __begin_sched_classes being on a 32byte edge
-> (and crashes differently due to that).
+When checkpatch.pl is invoked with "--ignore C99_COMMENT_TOLERANCE", it
+reports C99-style comments found in the code, by matching on the
+double-slash pattern "//". This includes the leading slashes before the
+SPDX tags that are now used in a majority of C files.
 
-OK, when I look at defconfig-build/arch/x86/kernel/vmlinux.lds I get:
+Such tags are commented with the double-slash on purpose, and should not
+trigger errors from checkpatch. Let's ignore them when searching for
+C99-style comments to report.
 
-. = ALIGN(32); *(__dummy_sched_class) __begin_sched_classes = .;
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+---
+ scripts/checkpatch.pl | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-So I'm thinking the GCC_VERSION thing works for sched.h but not for
-arch//x86/kernel/vmlinux.lds.S, lovely. Let me try and figure out why.
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 3cacc122c528..67f350c580ea 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3983,7 +3983,10 @@ sub process {
+ 		}
+ 
+ # no C99 // comments
+-		if ($line =~ m{//}) {
++		if ($line =~ m{//} &&
++		    !($rawline =~ m{// SPDX-License-Identifier:} &&
++		      $realfile =~ /\.c$/ &&
++		      $realline == $checklicenseline)) {
+ 			if (ERROR("C99_COMMENTS",
+ 				  "do not use C99 // comments\n" . $herecurr) &&
+ 			    $fix) {
+-- 
+2.20.1
+
