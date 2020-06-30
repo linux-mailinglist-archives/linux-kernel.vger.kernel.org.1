@@ -2,184 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FA320F4B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 14:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADFD20F49E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 14:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387733AbgF3MeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 08:34:19 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:40866 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732042AbgF3MeO (ORCPT
+        id S2387675AbgF3Mag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 08:30:36 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:58610 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730095AbgF3Maf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 08:34:14 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jqFSi-0001Uj-5e; Tue, 30 Jun 2020 06:34:08 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jqFSh-0004Zz-8C; Tue, 30 Jun 2020 06:34:07 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20200625095725.GA3303921@kroah.com>
-        <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
-        <20200625120725.GA3493334@kroah.com>
-        <20200625.123437.2219826613137938086.davem@davemloft.net>
-        <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
-        <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
-        <87y2oac50p.fsf@x220.int.ebiederm.org>
-        <87bll17ili.fsf_-_@x220.int.ebiederm.org>
-        <20200629221231.jjc2czk3ul2roxkw@ast-mbp.dhcp.thefacebook.com>
-Date:   Tue, 30 Jun 2020 07:29:34 -0500
-In-Reply-To: <20200629221231.jjc2czk3ul2roxkw@ast-mbp.dhcp.thefacebook.com>
-        (Alexei Starovoitov's message of "Mon, 29 Jun 2020 15:12:31 -0700")
-Message-ID: <87eepwzqhd.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 30 Jun 2020 08:30:35 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05UCUP88019337;
+        Tue, 30 Jun 2020 07:30:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1593520225;
+        bh=EQaiKYjbNB8HuWa8sKmWUugU4qHf1DWCOZOkP4WeozE=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=f1+k9zM/36lJdPIRS8gFxcSqGMIxVd0UCp5ElLP8pLL7qaaXTe3SIKaj7wBs4Pcx5
+         3g2eX0O4IatLF2thOPiDorUTsNZkGGeuSBQ2wFcVhX27+RFP5OduqGzrhHIMs3uJPk
+         8buDOcxXgfTeDbJFZnvJ9AWoSWqD8xAl3aGKwHDg=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05UCUPL8124644;
+        Tue, 30 Jun 2020 07:30:25 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 30
+ Jun 2020 07:30:14 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 30 Jun 2020 07:30:14 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05UCUC24033373;
+        Tue, 30 Jun 2020 07:30:12 -0500
+Subject: Re: DMA Engine: Transfer From Userspace
+To:     Thomas Ruf <freelancer@rufusul.de>, Vinod Koul <vkoul@kernel.org>
+CC:     Federico Vaga <federico.vaga@cern.ch>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <5614531.lOV4Wx5bFT@harkonnen>
+ <fe199e18-be45-cadc-8bad-4a83ed87bfba@intel.com>
+ <20200621072457.GA2324254@vkoul-mobl>
+ <20200621203634.y3tejmh6j4knf5iz@cwe-513-vol689.cern.ch>
+ <20200622044733.GB2324254@vkoul-mobl>
+ <419762761.402939.1592827272368@mailbusiness.ionos.de>
+ <20200622155440.GM2324254@vkoul-mobl>
+ <1835214773.354594.1592843644540@mailbusiness.ionos.de>
+ <2077253476.601371.1592991035969@mailbusiness.ionos.de>
+ <20200624093800.GV2324254@vkoul-mobl>
+ <3a4b1b55-7bce-2c48-b897-51e23e850127@ti.com>
+ <1666251320.1024432.1593007095381@mailbusiness.ionos.de>
+ <1a610c67-73a4-f66d-877a-5c4d35cbf76a@ti.com>
+ <1819433567.1017000.1593443883087@mailbusiness.ionos.de>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+X-Pep-Version: 2.0
+Message-ID: <391e0aee-e35b-fa39-ab86-18fe33a776ee@ti.com>
+Date:   Tue, 30 Jun 2020 15:31:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jqFSh-0004Zz-8C;;;mid=<87eepwzqhd.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18taL0yKPCpx2MTSwFOdv2sl/sVvNIlmuU=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa08 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Alexei Starovoitov <alexei.starovoitov@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 468 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 12 (2.5%), b_tie_ro: 10 (2.1%), parse: 1.13
-        (0.2%), extract_message_metadata: 4.1 (0.9%), get_uri_detail_list:
-        1.75 (0.4%), tests_pri_-1000: 4.6 (1.0%), tests_pri_-950: 1.47 (0.3%),
-        tests_pri_-900: 1.29 (0.3%), tests_pri_-90: 187 (39.9%), check_bayes:
-        184 (39.4%), b_tokenize: 8 (1.6%), b_tok_get_all: 21 (4.5%),
-        b_comp_prob: 3.9 (0.8%), b_tok_touch_all: 146 (31.2%), b_finish: 1.35
-        (0.3%), tests_pri_0: 239 (51.1%), check_dkim_signature: 0.78 (0.2%),
-        check_dkim_adsp: 2.9 (0.6%), poll_dns_idle: 1.26 (0.3%), tests_pri_10:
-        2.4 (0.5%), tests_pri_500: 7 (1.5%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v2 00/15] Make the user mode driver code a better citizen
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <1819433567.1017000.1593443883087@mailbusiness.ionos.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-
-2> On Mon, Jun 29, 2020 at 02:55:05PM -0500, Eric W. Biederman wrote:
->> 
->> I have tested thes changes by booting with the code compiled in and
->> by killing "bpfilter_umh" and running iptables -vnL to restart
->> the userspace driver.
->> 
->> I have compiled tested each change with and without CONFIG_BPFILTER
->> enabled.
->
-> With
-> CONFIG_BPFILTER=y
-> CONFIG_BPFILTER_UMH=m
-> it doesn't build:
->
-> ERROR: modpost: "kill_pid_info" [net/bpfilter/bpfilter.ko] undefined!
->
-> I've added:
-> +EXPORT_SYMBOL(kill_pid_info);
-> to continue testing...
-
-I am rather surprised I thought Tetsuo had already compile tested
-modules.
 
 
-> I suspect patch 13 is somehow responsible:
-> +	if (tgid) {
-> +		kill_pid_info(SIGKILL, SEND_SIG_PRIV, tgid);
-> +		wait_event(tgid->wait_pidfd, !pid_task(tgid, PIDTYPE_TGID));
-> +		bpfilter_umh_cleanup(info);
-> +	}
->
-> I cannot figure out why it hangs. Some sort of race ?
-> Since adding short delay between kill and wait makes it work.
+On 29/06/2020 18.18, Thomas Ruf wrote:
+>=20
+>> On 26 June 2020 at 12:29 Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:=
 
-Having had a chance to sleep kill_pid_info was a thinko, as was
-!pid_task.  It should have been !pid_has_task as that takes the proper
-rcu locking.
+>>
+>> On 24/06/2020 16.58, Thomas Ruf wrote:
+>>>
+>>>> On 24 June 2020 at 14:07 Peter Ujfalusi <peter.ujfalusi@ti.com> wrot=
+e:
+>>>> On 24/06/2020 12.38, Vinod Koul wrote:
+>>>>> On 24-06-20, 11:30, Thomas Ruf wrote:
+>>>>>
+>>>>>> To make it short - i have two questions:
+>>>>>> - what are the chances to revive DMA_SG?
+>>>>>
+>>>>> 100%, if we have a in-kernel user
+>>>>
+>>>> Most DMAs can not handle differently provisioned sg_list for src and=
+ dst.
+>>>> Even if they could handle non symmetric SG setup it requires entirel=
+y
+>>>> different setup (two independent channels sending the data to each
+>>>> other, one reads, the other writes?).
+>>>
+>>> Ok, i implemented that using zynqmp_dma on a Xilinx Zynq platform (ob=
+viously ;-) and it works nicely for us.
+>>
+>> I see, if the HW does not support it then something along the lines of=
 
-I don't know if that is going to be enough to fix the wait_event
-but those are obvious bugs that need to be fixed.
+>> what the atc_prep_dma_sg did can be implemented for most engines.
+>>
+>> In essence: create a new set of sg_list which is symmetric.
+>=20
+> Sorry, not sure if i understand you right?
+> You suggest that in case DMA_SG gets revived we should restrict the sup=
+port to symmetric sg_lists?
 
-diff --git a/net/bpfilter/bpfilter_kern.c b/net/bpfilter/bpfilter_kern.c
-index 91474884ddb7..3e1874030daa 100644
---- a/net/bpfilter/bpfilter_kern.c
-+++ b/net/bpfilter/bpfilter_kern.c
-@@ -19,8 +19,8 @@ static void shutdown_umh(void)
-        struct pid *tgid = info->tgid;
- 
-        if (tgid) {
--               kill_pid_info(SIGKILL, SEND_SIG_PRIV, tgid);
--               wait_event(tgid->wait_pidfd, !pid_task(tgid, PIDTYPE_TGID));
-+               kill_pid(tgid, SIGKILL, 1);
-+               wait_event(tgid->wait_pidfd, !pid_has_task(tgid, PIDTYPE_TGID));
-                bpfilter_umh_cleanup(info);
-        }
- }
+No, not at all. That would not make much sense.
 
-> And then did:
-> while true; do iptables -L;rmmod bpfilter; done
->  
-> Unfortunately sometimes 'rmmod bpfilter' hangs in wait_event().
+> Just had a glance at the deleted code and the *_prep_dma_sg of these dr=
+ivers had code to support asymmetric lists and by that "unaligend" memory=
+ (relative to page start):
+> at_hdmac.c        =20
+> dmaengine.c       =20
+> dmatest.c         =20
+> fsldma.c          =20
+> mv_xor.c          =20
+> nbpfaxi.c         =20
+> ste_dma40.c       =20
+> xgene-dma.c       =20
+> xilinx/zynqmp_dma.c
+>=20
+> Why not just revive that and keep this nice functionality? ;-)
 
-Hmm.  The wake up happens just of tgid->wait_pidfd happens just before
-release_task is called so there is a race.  As it is possible to wake
-up and then go back to sleep before pid_has_task becomes false.
+What I'm saying is that the drivers (at least at_hdmac) in essence
+creates aligned sg_list out from the received non aligned ones.
+It does this w/o actually creating the sg_list itself, but that's just a
+small detail.
 
-So I think I need a friendly helper that does:
+In a longer run what might make sense is to have a helper function to
+convert two non symmetric sg_list into two symmetric ones so drivers
+will not have to re-implement the same code and they will only need to
+care about symmetric sg lists.
 
-bool task_has_exited(struct pid *tgid)
-{
-	bool exited = false;
+Note, some DMAs can actually handle non symmetric src and dst lists, but
+I believe it is rare.
 
-	rcu_read_lock();
-        tsk = pid_task(tgid, PIDTYPE_TGID);
-        exited = !!tsk;
-        if (tsk) {
-        	exited = !!tsk->exit_state;
-out:
-	rcu_unlock();
-	return exited;
-}
+>> What might be plausible is to introduce hw offloading support for memc=
+py
+>> type of operations in a similar fashion how for example crypto does it=
+?
+>=20
+> Sounds good to me, my proxy driver implementation could be a good start=
+ for that, too!
 
-There should be a sensible way to do that.
+It needs to find it's place as well... I'm not sure where that would be.
+Simple block-copy offload, sg copy offload, interleaved offload (frame
+extraction) offload, dmabuf copy offload comes to mind as candidates.
 
-Eric
+>> The issue with a user space implemented logic is that it is not portab=
+le
+>> between systems with different DMAs. It might be that on one DMA the
+>> setup takes longer than do a CPU copy of X bytes, on the other DMA it
+>> might be significantly less or higher.
+>=20
+> Fully agree with that!
+> I was also unsure how my approach will perform but in our case the late=
+ncy was increased by ~20%, cpu load roughly stayed the same, of course th=
+is was the benchmark from user memory to user memory.
+> From uncached to user memory the DMA was around 15 times faster.
 
+It depends on the size of the transfer. Lots of small individual
+transfers might be worst via DMA do the the setup time, completion
+handling, etc.
+
+>> Using CPU vs DMA for a copy in certain lengths and setups should not b=
+e
+>> a concern of the user space.
+>=20
+> Also fully agree with that!
+
+There is one and big issue with the fallback to CPU copy... If you used
+DMA then you might need to do cache operation to get things in their
+right place.
+If you have done it with CPU then you most like do not need to care
+about it.
+Handling this should be done in level where we are aware which path is
+taken.
+
+>> Yes, you have a closed system with controlled parameters, but a generi=
+c
+>> mem2mem_offload framework should be usable on other setups and the sam=
+e
+>> binary should be working on different DMAs where one is not efficient
+>> for <512 bytes, the other shows benefits under 128bytes.
+>=20
+> Usable: of course
+> "Faster": not necessarily as long as it is an option
+>=20
+> Thanks for your valuable input and suggestions!
+>=20
+> best regards,
+> Thomas
+>=20
+
+- P=C3=A9ter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
