@@ -2,136 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B2E20FA5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB48420FA25
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390215AbgF3RSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:18:05 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:29917 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387957AbgF3RSE (ORCPT
+        id S2390025AbgF3RIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 13:08:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728906AbgF3RIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:18:04 -0400
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200630171802epoutp04f389bee4277a2f270ec0ccc8a25a868a~dYeW7Le_U2857828578epoutp04F
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 17:18:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200630171802epoutp04f389bee4277a2f270ec0ccc8a25a868a~dYeW7Le_U2857828578epoutp04F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593537482;
-        bh=OFIZvdJMTjnrR5aLpvP6crNuAA9jAjOdnPgXyf5Kgw8=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=UZ7f1qkh4Ov5VTJffYzQD6xW/GJUh1NU1mvj5ucQcUaWLiIAjjxpjIcGMpQYSw24I
-         hKGPJeX0vLvm42Dv7dk141p1GCIBJzhOnb+4J6xuWfdqDzwu0rLc1lyEAtfkIhRDYo
-         nRztSNBEStrK+arPJNR/7K4UeAkuuzaJ+KV1YbNw=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-        20200630171802epcas5p4d4829c628a0621f1e6a13d9210ad65b4~dYeWmJ-vN1379113791epcas5p4R;
-        Tue, 30 Jun 2020 17:18:02 +0000 (GMT)
-X-AuditID: b6c32a4b-39fff70000002503-e4-5efb73caa5e2
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2F.17.09475.AC37BFE5; Wed,  1 Jul 2020 02:18:02 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: (2) [PATCH] fs: fat: add check for dir size in
- fat_calc_dir_size
-Reply-To: a.sahrawat@samsung.com
-From:   AMIT SAHRAWAT <a.sahrawat@samsung.com>
-To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-CC:     Anupam Aggarwal <anupam.al@samsung.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <875zb8o6zh.fsf@mail.parknet.co.jp>
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20200630170748epcms5p87fa9b4348c1448d2d5a5f6cdddbc021e@epcms5p8>
-Date:   Tue, 30 Jun 2020 22:37:48 +0530
-X-CMS-MailID: 20200630170748epcms5p87fa9b4348c1448d2d5a5f6cdddbc021e
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLIsWRmVeSWpSXmKPExsWy7bCmpu6p4t9xBg+WsFi8b7jCbjF97gYW
-        i8u75rA5MHvcf5vo0bdlFaPH501yAcxRXDYpqTmZZalF+nYJXBmH191nLtirWNF516aB8axC
-        FyMnh4SAicSiC/tZuhi5OIQEdjNKvJ/7n7WLkYODV0BQ4u8OYZAaYQF/iSO/TrCD2EICChK7
-        595gh4jrSfyat5UVxGYT0JFo613IBmKLCBhIPFx+BMxmFsiRmHyyiwViF6/EjPanULa0xPbl
-        WxlBbE6g+rvLtzBBxEUlbq5+yw5jvz82nxHCFpFovXeWGcIWlHjwczcjyJkgc54cZwY5X0Kg
-        mVFi1vVuRghnBqNE35cpUEPNJXZvmMcC8ZevxPaXdSBhFgFViQPHjrFDzHGRODKZFeJkbYll
-        C18zg4SZBTQl1u/ShxgiKzH11DomiBI+id7fT5hgvtoxD8QGmaIi8X6yDkRYSqK9cwrUwR4S
-        kzdPZYcE8lwmid/XLrBNYFSYhQjnWUgWz0JYvICReRWjZGpBcW56arFpgXFearlecWJucWle
-        ul5yfu4mRnCK0PLewfjowQe9Q4xMHIyHGCU4mJVEeE8b/IoT4k1JrKxKLcqPLyrNSS0+xCjN
-        waIkzqv040yckEB6YklqdmpqQWoRTJaJg1OqgalqosDnSr3GTxmfb6od3SSqeWTpD8Ocdpa/
-        7txVeWX1E2x7oxk4O4/M++D9MWm/bMySVU6Rurmvwj+fK89b+bvtmtFT13W1WwIvS1zjNQ6/
-        3PNg6mrhk+zLUk+wSAsXNip0nVExztnbryqRsXThebb0RUv6L1vd7ZtnpR1xOa/M6dKOyh8Z
-        f7e8vuWXWJT9p4E7/nymyvT48E33TrZKX3989YqOeGNUZ85meS5bRcYYyXC+/24vnPh1NFMu
-        Me0vM1n3J+W8T98zpXVRf7k5mgqurVew+yryajOf+Y/kT5X6n2pS3keE73vvbWVqytQmx8tc
-        Xiw58RbLyQC3jckPX6cnt+YERBULMXreEBFRYinOSDTUYi4qTgQANkWVVoADAAA=
-X-CMS-RootMailID: 20200629110320epcas5p34ccccc7c293f077b34b350935c328215
-References: <875zb8o6zh.fsf@mail.parknet.co.jp>
-        <87ftacolpf.fsf@mail.parknet.co.jp>
-        <1593428559-13920-1-git-send-email-anupam.al@samsung.com>
-        <20200630123355epcms5p602efe0e4ceedcfe11eae2153c8466678@epcms5p6>
-        <CGME20200629110320epcas5p34ccccc7c293f077b34b350935c328215@epcms5p8>
+        Tue, 30 Jun 2020 13:08:17 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF4E0C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:08:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6RvaZ6HYLRvAKD3a9BOgZ2QI0Vb9cyS65MB8Cxo+mxY=; b=cB1GP3AQYB1xjPe/bGVy/XyVLd
+        1YYSPjv+SaRwEMOWgOIOtgsHy0+WzXSJtFLpnr/w0P4qtXTOAHZP6IIEtYHodqy3bckEBy+nK2t3/
+        xJ9fokeR5EH9nxn3vT18pXsbKmTS3b3ycfHV5zCfDd24hqevEOBIV6zKSp3i3I/bLgtRGTvoMRl8C
+        3OpWCZaqcNd9KxsfSzvR39LuRi64/HYu9WJ8KNgQ1pJzeSqSQaTnG5s4MvjKH5QAL7n7DhfXOdRg5
+        +EBdK+LB4G5HRng3rlNJiBTD1Zqq69+9CeUh+WbWGm0FAwdfgm8/wOtseAI1BSm0dYkbDcSEWXHqn
+        p35Lyc0g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jqJjf-0006Ob-Eb; Tue, 30 Jun 2020 17:07:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 511FF3011B2;
+        Tue, 30 Jun 2020 19:07:51 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 19FAE213D7D64; Tue, 30 Jun 2020 19:07:51 +0200 (CEST)
+Date:   Tue, 30 Jun 2020 19:07:51 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Chris Redpath <chris.redpath@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 2/2] sched/uclamp: Protect uclamp fast path code with
+ static key
+Message-ID: <20200630170751.GA4817@hirez.programming.kicks-ass.net>
+References: <20200630112123.12076-1-qais.yousef@arm.com>
+ <20200630112123.12076-3-qais.yousef@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200630112123.12076-3-qais.yousef@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=C2=A0=0D=0A>=C2=A0There=C2=A0are=C2=A0many=C2=A0implementation=C2=A0that=
-=C2=A0doesn't=C2=A0follow=C2=A0the=C2=A0spec=C2=A0strictly.=C2=A0And=0D=0A>=
-=C2=A0when=C2=A0I=C2=A0tested=C2=A0in=C2=A0past,=C2=A0Windows=C2=A0also=C2=
-=A0allowed=C2=A0to=C2=A0read=C2=A0the=C2=A0directory=C2=A0beyond=0D=0A>=C2=
-=A0that=C2=A0limit.=C2=A0I=C2=A0can't=C2=A0recall=C2=A0though=C2=A0if=C2=A0=
-there=C2=A0is=C2=A0in=C2=A0real=C2=A0case=C2=A0or=C2=A0just=C2=A0test=0D=0A=
->=C2=A0case=C2=A0though.=0D=0A>>>=C2=A0Thanks=C2=A0Ogawa,=C2=A0yes=C2=A0the=
-re=C2=A0are=C2=A0many=C2=A0implementations,=C2=A0preferably=C2=A0going=C2=
-=A0around=C2=A0with=C2=A0different=C2=A0variants.=0D=0A>=C2=A0But,=C2=A0usi=
-ng=C2=A0standard=C2=A0linux=C2=A0version=C2=A0on=C2=A0the=C2=A0systems=C2=
-=A0and=C2=A0having=C2=A0such=C2=A0USB=C2=A0connected=C2=A0on=C2=A0such=C2=
-=A0systems=C2=A0is=C2=A0introducing=C2=A0issues(importantly=C2=A0because=C2=
-=A0these=C2=A0being=C2=A0used=C2=A0on=C2=A0Windows=C2=A0also=C2=A0by=C2=A0u=
-sers).=0D=0A>=C2=A0I=C2=A0am=C2=A0not=C2=A0sure,=C2=A0if=C2=A0this=C2=A0is=
-=C2=A0something=C2=A0which=C2=A0is=C2=A0new=C2=A0from=C2=A0Windows=C2=A0par=
-t.=0D=0A>=C2=A0But,=C2=A0surely=C2=A0extending=C2=A0the=C2=A0directory=C2=
-=A0beyond=C2=A0limit=C2=A0is=C2=A0causing=C2=A0regression=C2=A0with=C2=A0FA=
-T=C2=A0usage=C2=A0on=C2=A0linux.=0D=0A=C2=A0=0D=0Aregression=C2=A0from=C2=
-=A0what?=0D=0A=C2=A0=0D=0A>=C2=A0It=C2=A0is=C2=A0making=C2=A0FAT=C2=A0files=
-ystem=C2=A0related=C2=A0storage=C2=A0virtually=C2=A0unresponsive=C2=A0for=
-=C2=A0minutes=C2=A0in=C2=A0these=C2=A0cases,=0D=0A>=C2=A0and=C2=A0important=
-ly=C2=A0keep=C2=A0on=C2=A0putting=C2=A0pressure=C2=A0on=C2=A0memory=C2=A0du=
-e=C2=A0to=C2=A0increasing=C2=A0buffer=C2=A0heads=C2=A0(already=C2=A0a=C2=A0=
-known=C2=A0one=C2=A0with=C2=A0FAT=C2=A0fs).=0D=0A=C2=A0=0D=0AI'm=C2=A0confu=
-sed.=C2=A0What=C2=A0happen=C2=A0actually?=C2=A0Now=C2=A0looks=C2=A0like=C2=
-=A0you=C2=A0are=C2=A0saying=C2=A0the=0D=0Aissue=C2=A0is=C2=A0extending=C2=
-=A0size=C2=A0beyond=C2=A0limit.=C2=A0But=C2=A0previously=C2=A0it=C2=A0said=
-=C2=A0the=C2=A0corruption.=0D=0A=C2=A0=0D=0AAre=C2=A0you=C2=A0saying=C2=A0=
-=22beyond=C2=A0that=C2=A0limit=22=C2=A0is=C2=A0the=C2=A0fs=C2=A0corruption?=
-=0D=0A=C2=A0=0D=0AI.e.=C2=A0did=C2=A0you=C2=A0met=C2=A0real=C2=A0directory=
-=C2=A0corruption?=C2=A0or=C2=A0you=C2=A0are=C2=A0trying=C2=A0to=C2=A0limit=
-=0D=0Abecause=C2=A0slowness=C2=A0on=C2=A0big=C2=A0directory?=0D=0A>>>=20Wil=
-l=20try=20to=20arrange=20the=20fsck/chkdsk=20output=20for=20the=20related=
-=20to=20disk,=20to=20highlight=20the=20concerns.=0D=0A=0D=0A=C2=A0=0D=0A>=
-=C2=A0So=C2=A0if=C2=A0there=C2=A0is=C2=A0no=C2=A0strong=C2=A0reason=C2=A0to=
-=C2=A0apply=C2=A0the=C2=A0limit,=C2=A0I=C2=A0don't=C2=A0think=C2=A0it=C2=A0=
-is=0D=0A>=C2=A0good=C2=A0to=C2=A0limit=C2=A0it.=C2=A0=0D=0A>>>=C2=A0The=C2=
-=A0reason=C2=A0for=C2=A0us=C2=A0to=C2=A0share=C2=A0this=C2=A0is=C2=A0becaus=
-e=C2=A0of=C2=A0the=C2=A0unresponsive=C2=A0behaviour=C2=A0observed=C2=A0with=
-=C2=A0FAT=C2=A0fs=C2=A0on=C2=A0our=C2=A0systems.=0D=0A>=C2=A0This=C2=A0is=
-=C2=A0not=C2=A0a=C2=A0new=C2=A0issue,=C2=A0we=C2=A0have=C2=A0been=C2=A0obse=
-rving=C2=A0this=C2=A0for=C2=A0quite=C2=A0sometime=C2=A0(may=C2=A0be=C2=A0ar=
-ound=C2=A01year+).=0D=0A>=C2=A0Finally,=C2=A0we=C2=A0got=C2=A0hold=C2=A0of=
-=C2=A0disk=C2=A0which=C2=A0is=C2=A0making=C2=A0this=C2=A0100%=C2=A0reproduc=
-ible.=0D=0A>=C2=A0We=C2=A0thought=C2=A0of=C2=A0applying=C2=A0this=C2=A0to=
-=C2=A0the=C2=A0mainline,=C2=A0as=C2=A0our=C2=A0FAT=C2=A0is=C2=A0aligned=C2=
-=A0with=C2=A0main=C2=A0kernel.=0D=0A=C2=A0=0D=0ASo=C2=A0what=C2=A0was=C2=A0=
-the=C2=A0root=C2=A0cause=C2=A0of=C2=A0slowness=C2=A0on=C2=A0big=C2=A0direct=
-ory?=0D=0A>>>=20Root=20cause=20was=20the=20continous=20FAT=20chain=20walk=
-=20through=20for=20that=20directory=20and=20making=20the=20corresponding=20=
-applications=20to=20stuck.=0D=0AIt=20keeps=20going=20on,=20so=20eventually=
-=20the=20application=20had=20to=20be=20terminated.=0D=0AMay=20be=20arraning=
-=20corresponding=20metadata=20dump=20related=20with=20this=20might=20help=
-=20in=20clearing=20doubts.=0D=0AI=20Hope=20to=20arrange=20them=20soon.=0D=
-=0A=C2=A0=0D=0AThanks.=0D=0A--=C2=A0=0D=0AOGAWA=C2=A0Hirofumi=C2=A0<hirofum=
-i=40mail.parknet.co.jp>=0D=0A=C2=A0
+On Tue, Jun 30, 2020 at 12:21:23PM +0100, Qais Yousef wrote:
+> @@ -993,10 +1013,38 @@ static inline void uclamp_rq_dec_id(struct rq *rq, struct task_struct *p,
+>  
+>  	lockdep_assert_held(&rq->lock);
+>  
+> +	/*
+> +	 * If sched_uclamp_used was enabled after task @p was enqueued,
+> +	 * we could end up with unbalanced call to uclamp_rq_dec_id().
+> +	 *
+> +	 * In this case the uc_se->active flag should be false since no uclamp
+> +	 * accounting was performed at enqueue time and we can just return
+> +	 * here.
+> +	 *
+> +	 * Need to be careful of the following enqeueue/dequeue ordering
+> +	 * problem too
+> +	 *
+> +	 *	enqueue(taskA)
+> +	 *	// sched_uclamp_used gets enabled
+> +	 *	enqueue(taskB)
+> +	 *	dequeue(taskA)
+> +	 *	// Must not decrement bukcet->tasks here
+> +	 *	dequeue(taskB)
+> +	 *
+> +	 * where we could end up with stale data in uc_se and
+> +	 * bucket[uc_se->bucket_id].
+> +	 *
+> +	 * The following check here eliminates the possibility of such race.
+> +	 */
+> +	if (unlikely(!uc_se->active))
+> +		return;
+> +
+>  	bucket = &uc_rq->bucket[uc_se->bucket_id];
+> +
+>  	SCHED_WARN_ON(!bucket->tasks);
+>  	if (likely(bucket->tasks))
+>  		bucket->tasks--;
+> +
+>  	uc_se->active = false;
+>  
+>  	/*
+
+> @@ -1221,6 +1289,8 @@ static void __setscheduler_uclamp(struct task_struct *p,
+>  	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
+>  		return;
+>  
+> +	static_branch_enable(&sched_uclamp_used);
+> +
+>  	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+>  		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
+>  			      attr->sched_util_min, true);
+> @@ -7387,6 +7457,8 @@ static ssize_t cpu_uclamp_write(struct kernfs_open_file *of, char *buf,
+>  	if (req.ret)
+>  		return req.ret;
+>  
+> +	static_branch_enable(&sched_uclamp_used);
+> +
+>  	mutex_lock(&uclamp_mutex);
+>  	rcu_read_lock();
+>  
+
+There's a fun race described in 9107c89e269d ("perf: Fix race between
+event install and jump_labels"), are we sure this isn't also susceptible
+to something similar?
+
+I suspect not, but I just wanted to make sure.
