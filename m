@@ -2,68 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CF920EF50
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B8E20EF34
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730996AbgF3H3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 03:29:24 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:2851 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726943AbgF3H3Y (ORCPT
+        id S1730871AbgF3HVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 03:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730637AbgF3HVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 03:29:24 -0400
-X-UUID: bdfb1f422f734719ba678fd10bf1da45-20200630
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=HAx+5BTPXfGNqdXAn2CnRwU8idpAgHvW4EJmH0eOK5s=;
-        b=hALw+ltjvCgo8K/x7tJTs59w+VHEF1BeidKYbG+3dl16gCt4nF5/f+X3+aoZYd2nxcqrWle0FDoYIqIDtNXQqCaNLwwJk+SrF8+z4sgg6gB3/qRd+M6ebb8nciyv0bU/mC7oJM/WQ2YD0q6iJIVtLof9BCfu4/HkqN4ogCvrBCM=;
-X-UUID: bdfb1f422f734719ba678fd10bf1da45-20200630
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 762714230; Tue, 30 Jun 2020 15:29:19 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31DR.mediatek.inc
- (172.27.6.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 30 Jun
- 2020 15:29:18 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 30 Jun 2020 15:29:17 +0800
-Message-ID: <1593502139.23885.5.camel@mhfsdcap03>
-Subject: Re: [PATCH 2/2] usb: mtu3: fix NULL pointer dereference
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Markus Elfring <Markus.Elfring@web.de>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        Colin Ian King <colin.king@canonical.com>
-Date:   Tue, 30 Jun 2020 15:28:59 +0800
-In-Reply-To: <99fc1f6e-7907-6723-612a-8b68ffa871e5@web.de>
-References: <1593410434-19406-1-git-send-email-chunfeng.yun@mediatek.com>
-         <1593410434-19406-2-git-send-email-chunfeng.yun@mediatek.com>
-         <99fc1f6e-7907-6723-612a-8b68ffa871e5@web.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 30 Jun 2020 03:21:42 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D6FC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 00:21:41 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id y13so10724742lfe.9
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 00:21:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V3VDYgt1zTFMdABjQ8B+qkXvuWVdNTswZvSgfcJ5ZfU=;
+        b=PprvlrpbinByF4TFkGGycc90/2r42FHT5UVS3tEzsUBzG/xaCTpG788raEyTTMlN1O
+         h4D0KagKUnuaMgjUGd3vvbNG42kDf5lGRhhjmXFRyjBwFD6yzJI1PE+Xh5jfyCgFNerh
+         750MnbWvRWbk7isk9GiI92InbTEd0yLVQt3sGAYtvSWU7PZ/qdRFdm5kykHRKQPF5uRm
+         s31W94kUBakZI1XuTPCzEyKJeEosYMA15WMTK1IKzl8A4V9LDPfDAmNks3tmpU9MRxL5
+         zyYwdFuHL7fXvS7VbAJBfKOpfoHkNkM3OJxb7KB7i6Y0SVluEcZDLSdrnasKDSR84lI7
+         9ZIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V3VDYgt1zTFMdABjQ8B+qkXvuWVdNTswZvSgfcJ5ZfU=;
+        b=ZeXZfTvTlaSpRvmDmTaNhapjq5pe6QkusXFbhuAFhW7boPdr22z5CZt1GLoShrXbs+
+         xz74L56U+8LWpg0OCRqPuWDxEDj6CMOynIsWIrqTOOk4lnJOVH5PUZUx0Y87NX1HTk4X
+         OUntCxjzlFCSX9M2rjJOxrLf7QnOuCw1pTg249nMH6UbhFm9a8U9G5z9DL6yYHI7JF/z
+         jvNr9dfrv+JJ25eEV7u7kK57kETne6z50oODH92yjRVrwTN8ckxECd3TlyBGLriE6f4v
+         RQxzA7JyKC4mmod1/v+zKU01HW5zh7DGA66U55bUjCrG/HEqGmwi6H9XI6hIKraQE5Od
+         sn+w==
+X-Gm-Message-State: AOAM533y0yKT1Et/qe0hMiGnZ4t0COMxSTGpBD0Qj2cAB2RBz89TKuUE
+        XT6xKKFm7fmUl0g0qOc9inxkn8bZmQA02MEKS/0=
+X-Google-Smtp-Source: ABdhPJzfnYZJ+FpolUHdlpEl9/AZXSN2liVUehp9/X6K4o90BRCqYWVJ7LAGfE/KlEjoh8jtgnuvmK5vwYiZFuCtkHo=
+X-Received: by 2002:a19:b07:: with SMTP id 7mr11415981lfl.38.1593501700365;
+ Tue, 30 Jun 2020 00:21:40 -0700 (PDT)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: C01562A8C5541EC7257F9E298FE7512CE55EAEBA0420D98040392F23F24A9DAF2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <1592362839-4050-1-git-send-email-jrdr.linux@gmail.com> <CAFqt6zbQ-AJK_3NHmaOVXYUaD7ajvEvogMAOrse-99+vPi7xNw@mail.gmail.com>
+In-Reply-To: <CAFqt6zbQ-AJK_3NHmaOVXYUaD7ajvEvogMAOrse-99+vPi7xNw@mail.gmail.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Tue, 30 Jun 2020 12:59:56 +0530
+Message-ID: <CAFqt6zZeXeEb1KfPTuNb2R5GQdPpPPJ5JFY8KuErUUV4DdOTnw@mail.gmail.com>
+Subject: Re: [PATCH v2] drivers/virt/fsl_hypervisor: Correcting error handling path
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, mchehab+samsung@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-kernel@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTA2LTI5IGF0IDEwOjAwICswMjAwLCBNYXJrdXMgRWxmcmluZyB3cm90ZToN
-Cj4gPiBTb21lIHBvaW50ZXJzIGFyZSBkZXJlZmVyZW5jZWQgYmVmb3JlIHN1Y2Nlc3NmdWwgY2hl
-Y2tzLg0KPiANCj4gSSBzdWdnZXN0IHRvIHJlY29uc2lkZXIgYW5kIGltcHJvdmUgdGhlIGNoYW5n
-ZSBkZXNjcmlwdGlvbi4NCj4gDQo+ICogV291bGQgYSBudWxsIHBvaW50ZXIgZGVyZWZlcmVuY2Ug
-YmUgcG9zc2libGUgb25seSB3aXRoIHRoZSB2YXJpYWJsZXMg4oCcbWVw4oCdDQo+ICAgYW5kIOKA
-nG1yZXHigJ0gaW4gdGhlIGltcGxlbWVudGF0aW9uIG9mIHRoZSBmdW5jdGlvbiDigJxtdHUzX2dh
-ZGdldF9kZXF1ZXVl4oCdPw0KPiANCj4gKiBIb3cgZG8geW91IHRoaW5rIGFib3V0IHRvIGFkanVz
-dCBhbnkgbW9yZSB2YXJpYWJsZSBpbml0aWFsaXNhdGlvbnM/DQpZZXMsIEknbGwgZG8gaXQgaWYg
-bmVlZCwgdGhhbmtzDQoNCj4gDQo+ICogV2lsbCBpdCBiZWNvbWUgaGVscGZ1bCB0byBhZGQgdGhl
-IHRhZyDigJxGaXhlc+KAnSB0byB0aGUgY29tbWl0IG1lc3NhZ2U/DQpNYXliZSBuZWVkbid0DQoN
-Cj4gDQo+IFJlZ2FyZHMsDQo+IE1hcmt1cw0KDQo=
+On Mon, Jun 22, 2020 at 10:05 PM Souptick Joarder <jrdr.linux@gmail.com> wrote:
+>
+> On Wed, Jun 17, 2020 at 8:22 AM Souptick Joarder <jrdr.linux@gmail.com> wrote:
+> >
+> > First, when memory allocation for sg_list_unaligned failed, there
+> > is no point of calling put_pages() as we haven't pinned any pages.
+> >
+> > Second, if get_user_pages_fast() failed we should unpinned num_pinned
+> > pages, no point of checking till num_pages.
+> >
+> > This will address both.
+> >
+> > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> > Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > Cc: John Hubbard <jhubbard@nvidia.com>
+>
+> Any suggestion, what is the right tree to take this patch forward ?
 
+If no further comment, can we get this patch in queue for 5.9 ?
+
+>
+> > ---
+> > v2:
+> >         Added review tag.
+> >
+> >  drivers/virt/fsl_hypervisor.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/virt/fsl_hypervisor.c b/drivers/virt/fsl_hypervisor.c
+> > index 1b0b11b..ea344d7 100644
+> > --- a/drivers/virt/fsl_hypervisor.c
+> > +++ b/drivers/virt/fsl_hypervisor.c
+> > @@ -157,7 +157,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+> >
+> >         unsigned int i;
+> >         long ret = 0;
+> > -       int num_pinned; /* return value from get_user_pages() */
+> > +       int num_pinned = 0; /* return value from get_user_pages() */
+> >         phys_addr_t remote_paddr; /* The next address in the remote buffer */
+> >         uint32_t count; /* The number of bytes left to copy */
+> >
+> > @@ -293,7 +293,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+> >
+> >  exit:
+> >         if (pages) {
+> > -               for (i = 0; i < num_pages; i++)
+> > +               for (i = 0; i < num_pinned; i++)
+> >                         if (pages[i])
+> >                                 put_page(pages[i]);
+> >         }
+> > --
+> > 1.9.1
+> >
