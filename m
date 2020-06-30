@@ -2,118 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E1420F709
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD24C20F710
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388827AbgF3OXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 10:23:44 -0400
-Received: from mga03.intel.com ([134.134.136.65]:25713 "EHLO mga03.intel.com"
+        id S2388847AbgF3OYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 10:24:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726796AbgF3OXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 10:23:44 -0400
-IronPort-SDR: BO+84pG9wX0V3yzmmBnaBG0J22TZtWHaDhQIUAiYWtSB30VOp3x6SljS199lm0i3BZpnrNThAj
- jIl2ztrXk3Zg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="146226364"
-X-IronPort-AV: E=Sophos;i="5.75,297,1589266800"; 
-   d="scan'208";a="146226364"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 07:23:42 -0700
-IronPort-SDR: 8/vYlNUih71TH5mZdt+Sy56pLFMlWldhDqN48xdbXSa5o0JjX1wFk0EcNTCgIuUdA7Mw7lMcxc
- 7Tz6uW4WBHYQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,297,1589266800"; 
-   d="scan'208";a="386709302"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 30 Jun 2020 07:23:40 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 30 Jun 2020 17:23:39 +0300
-Date:   Tue, 30 Jun 2020 17:23:39 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <groeck@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: Re: [PATCH v4 2/2] platform/chrome: cros_ec_typec: Add PM support
-Message-ID: <20200630142339.GE856968@kuha.fi.intel.com>
-References: <20200629211329.2185342-1-pmalani@chromium.org>
- <20200629211329.2185342-2-pmalani@chromium.org>
+        id S1728909AbgF3OYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 10:24:32 -0400
+Received: from localhost (unknown [122.182.251.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 41D7720672;
+        Tue, 30 Jun 2020 14:24:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593527072;
+        bh=ge1JjR8yCKRp2SCQdixfwB2tfDCzu96qp1bblnzo3MY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Qq+285ULYVSVmGGKvuGr5XnuXZMuyUROGjNId+dkUNPMw5K1hiSmZev8R46Ydkia1
+         Ljkn6bPbDnvHp5z/eiHxGVXQCKTpv/cMXe+gndtgIWRYRL44My8agPHpLIyzAS2MYt
+         WrmY7cIyTsbSSEnixH18uvI9PlcMgxoTMDvdf11A=
+Date:   Tue, 30 Jun 2020 19:54:27 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Amit Tomer <amittomer25@gmail.com>
+Cc:     Andre Przywara <andre.przywara@arm.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        dan.j.williams@intel.com, cristian.ciocaltea@gmail.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-actions@lists.infradead.org
+Subject: Re: [PATCH v4 02/10] dmaengine: Actions: Add support for S700 DMA
+ engine
+Message-ID: <20200630142427.GP2599@vkoul-mobl>
+References: <1591697830-16311-1-git-send-email-amittomer25@gmail.com>
+ <1591697830-16311-3-git-send-email-amittomer25@gmail.com>
+ <20200624061529.GF2324254@vkoul-mobl>
+ <CABHD4K-Z7_MkG-j1uAt6XGnz4zWzNYeuEgq=BwE=NXPwY6gb6g@mail.gmail.com>
+ <20200629095207.GG2599@vkoul-mobl>
+ <CABHD4K9VOWpC7=o2VKrqoxEtMQ2gFv_Qs885dBKL1o+B_fe_3g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200629211329.2185342-2-pmalani@chromium.org>
+In-Reply-To: <CABHD4K9VOWpC7=o2VKrqoxEtMQ2gFv_Qs885dBKL1o+B_fe_3g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 02:13:29PM -0700, Prashant Malani wrote:
-> Define basic suspend resume functions for cros-ec-typec. On suspend, we
-> simply ensure that any pending port update work is completed, and on
-> resume, we re-poll the port state to account for any
-> changes/disconnections that might have occurred during suspend.
+On 30-06-20, 15:17, Amit Tomer wrote:
+> Hi Vinod,
 > 
-> Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> Reviewed-by: Guenter Roeck <groeck@chromium.org>
+> On Mon, Jun 29, 2020 at 3:22 PM Vinod Koul <vkoul@kernel.org> wrote:
+> 
+> > If you use of_device_get_match_data() you will not fall into this :)
+> 
+> But again, of_device_get_match_data() returns void *, and we need
+> "uintptr_t" in order to type cast it properly (at-least without
+> warning).
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Not really, you can cast from void * to you own structure.. btw why do
+you need uintptr_t?
 
-> ---
 > 
-> Changes in v4:
-> - No changes (added Reviewed-by received in v3).
-> 
-> Changes in v3:
-> - Remove superfluous DEV_PM_OPS #define.
-> 
-> Changes in v2:
-> - Remove #ifdef-ery, add __maybe_unused tag to functions.
-> 
->  drivers/platform/chrome/cros_ec_typec.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> index 69c4118e280c..cb95d190f06a 100644
-> --- a/drivers/platform/chrome/cros_ec_typec.c
-> +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -720,11 +720,35 @@ static int cros_typec_probe(struct platform_device *pdev)
->  	return ret;
->  }
->  
-> +static int __maybe_unused cros_typec_suspend(struct device *dev)
-> +{
-> +	struct cros_typec_data *typec = dev_get_drvdata(dev);
-> +
-> +	cancel_work_sync(&typec->port_work);
-> +
-> +	return 0;
-> +}
-> +
-> +static int __maybe_unused cros_typec_resume(struct device *dev)
-> +{
-> +	struct cros_typec_data *typec = dev_get_drvdata(dev);
-> +
-> +	/* Refresh port state. */
-> +	schedule_work(&typec->port_work);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct dev_pm_ops cros_typec_pm_ops = {
-> +	SET_SYSTEM_SLEEP_PM_OPS(cros_typec_suspend, cros_typec_resume)
-> +};
-> +
->  static struct platform_driver cros_typec_driver = {
->  	.driver	= {
->  		.name = DRV_NAME,
->  		.acpi_match_table = ACPI_PTR(cros_typec_acpi_id),
->  		.of_match_table = of_match_ptr(cros_typec_of_match),
-> +		.pm = &cros_typec_pm_ops,
->  	},
->  	.probe = cros_typec_probe,
->  };
+> Also, while looking around found the similar warning for other file
+> where it uses " of_device_get_match_data()"
+> drivers/pci/controller/pcie-iproc-platform.c:56:15: warning: cast to
+> smaller integer type 'enum iproc_pcie_type' from 'const void *'
+> [-Wvoid-pointer-to-enum-cast]
+>         pcie->type = (enum iproc_pcie_type) of_device_get_match_data(dev);
 
-thanks,
+The problem is a pointer to enum conversion :) I think the right way
+would be to do would be below
 
+        soc_type =  (enum foo)of_device_get_match_data(dev);
+
+or
+        soc_type =  (unsigned long) of_device_get_match_data(dev);
+
+which I think should be fine in gcc, but possibly give you above warning
+in clang.. but i thought that was fixed in clang https://reviews.llvm.org/D75758
+
+Thanks
 -- 
-heikki
+~Vinod
