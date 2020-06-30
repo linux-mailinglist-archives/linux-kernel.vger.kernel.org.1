@@ -2,56 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEDA20FE36
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 22:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBFA20FE3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 22:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgF3Uwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 16:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56284 "EHLO
+        id S1727027AbgF3U4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 16:56:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726268AbgF3Uwi (ORCPT
+        with ESMTP id S1726097AbgF3U4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 16:52:38 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DB0C061755;
-        Tue, 30 Jun 2020 13:52:38 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 06AED12786C13;
-        Tue, 30 Jun 2020 13:52:37 -0700 (PDT)
-Date:   Tue, 30 Jun 2020 13:52:37 -0700 (PDT)
-Message-Id: <20200630.135237.1160983148962711910.davem@davemloft.net>
-To:     peterx@redhat.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, jhubbard@nvidia.com, mpe@ellerman.id.au,
-        gerald.schaefer@de.ibm.com, aarcange@redhat.com,
-        torvalds@linux-foundation.org, will@kernel.org,
-        sparclinux@vger.kernel.org
-Subject: Re: [PATCH v4 21/26] mm/sparc64: Use general page fault accounting
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200630204556.39491-1-peterx@redhat.com>
-References: <20200630204556.39491-1-peterx@redhat.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 30 Jun 2020 13:52:38 -0700 (PDT)
+        Tue, 30 Jun 2020 16:56:23 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02BDFC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 13:56:23 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id p204so6971971ybc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 13:56:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lTz7GqcDwurWAANYbVdiGG5v7StqCSKnvTD7ZYiQAT4=;
+        b=Zo5pyCgoQQhsEk+lR79XTHQe/3DF+GG97O9/mQ3PYTb4SUZ40fjJrZoVgJd+IOH5VX
+         CLN7PDArP5pqpykX2PomyAxddIFF0fzfSSPSl09d2ZuieD7QrEHw9WWcURjmi4Y38PsK
+         S6NETrYKOyvK85MEc9aIo7wOiq/M5d0gPj5WH1yG8Ajs67NOBMZ82AYJICY06eSZW11m
+         q5QLcmfjBVgUqanwxd4u0Q6yPJ+DHRKApaFsNUcOR+UjdTo0QK3jVczenT4pRpEvzp8E
+         1SyA9BXHyeN70WbNaDvJE8GMPicyyq2B5iy7ApGc9k7VMfh/Lz1RxwFaa5xuMWAHeSDa
+         bJOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lTz7GqcDwurWAANYbVdiGG5v7StqCSKnvTD7ZYiQAT4=;
+        b=hBARbHiKGmKiYWC4isdrQcUQqLaA2flUYdeTxjgRiuKErcYvXvE3FwoizvYmMZPZhx
+         zducW2CWzZAFEn1oh9iE/dDrFHKSkN1fVKrAPrP0TZCAh91w5PF0xk2oMowfsAJdIbLZ
+         XiDXE/11XYQNz3nX2gSRzOt+vDjh3JUEoKE16dA3OSuuSIP01RSu4QIBil4NghIubtZk
+         9EIQFv+Up0MNhaggdsypuhi0a/mPED5RQ4zkmW807dV9d9AGz9+SL0SMACbj6epmjp0I
+         BdHiDgRNr/xkrhSYnGR8dbAxihuy70A3jRGJ7q9+gSy/saK/W/YARYZkFQiVutmyH0af
+         Mqig==
+X-Gm-Message-State: AOAM530ViwW4Lq1qpUCIleODgvdYPpvxS6D/kQTY3FwEIuisN/hjBq1v
+        Libl1PC85Hl7mvphOjVijpC3lyzbcCmdEEKadPsLyg==
+X-Google-Smtp-Source: ABdhPJzTJIY/4bZuSGrofTXLrB83Ak49AR2hs1sGOhNuXjZkCj6/L3gA+M0RjOasX0deVY7WAFybgHRMeiMUpfyWKzE=
+X-Received: by 2002:a25:941:: with SMTP id u1mr39107661ybm.274.1593550581808;
+ Tue, 30 Jun 2020 13:56:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAHk-=wjEghg5_pX_GhNP+BfcUK6CRZ+4mh3bciitm9JwXvR7aQ@mail.gmail.com>
+ <312079189.17903.1593549293094.JavaMail.zimbra@efficios.com>
+ <CANn89iJ+rkMrLrHrKXO-57frXNb32epB93LYLRuHX00uWc-0Uw@mail.gmail.com> <20200630.134429.1590957032456466647.davem@davemloft.net>
+In-Reply-To: <20200630.134429.1590957032456466647.davem@davemloft.net>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 30 Jun 2020 13:56:10 -0700
+Message-ID: <CANn89i+b-LeaPvaaHvj0yc0mJ2qwZ0981fQHVp0+sqXYp=kdkA@mail.gmail.com>
+Subject: Re: [regression] TCP_MD5SIG on established sockets
+To:     David Miller <davem@davemloft.net>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Jonathan Rajotte-Julien <joraj@efficios.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Xu <peterx@redhat.com>
-Date: Tue, 30 Jun 2020 16:45:56 -0400
+On Tue, Jun 30, 2020 at 1:44 PM David Miller <davem@davemloft.net> wrote:
+>
+> From: Eric Dumazet <edumazet@google.com>
+> Date: Tue, 30 Jun 2020 13:39:27 -0700
+>
+> > The (C) & (B) case are certainly doable.
+> >
+> > A) case is more complex, I have no idea of breakages of various TCP
+> > stacks if a flow got SACK
+> > at some point (in 3WHS) but suddenly becomes Reno.
+>
+> I agree that C and B are the easiest to implement without having to
+> add complicated code to handle various negotiated TCP option
+> scenerios.
+>
+> It does seem to be that some entities do A, or did I misread your
+> behavioral analysis of various implementations Mathieu?
+>
+> Thanks.
 
-> Use the general page fault accounting by passing regs into handle_mm_fault().
-> It naturally solve the issue of multiple page fault accounting when page fault
-> retry happened.
-> 
-> CC: David S. Miller <davem@davemloft.net>
-> CC: sparclinux@vger.kernel.org
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-
-Acked-by: David S. Miller <davem@davemloft.net>
+Yes, another question about Mathieu cases is do determine the behavior
+of all these stacks vs :
+SACK option
+TCP TS option.
