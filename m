@@ -2,114 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C0720EF36
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC2D20EF3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730882AbgF3HW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 03:22:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45340 "EHLO mail.kernel.org"
+        id S1730913AbgF3HX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 03:23:57 -0400
+Received: from mga03.intel.com ([134.134.136.65]:54572 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730636AbgF3HW2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 03:22:28 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 75C8C20759;
-        Tue, 30 Jun 2020 07:22:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593501747;
-        bh=AGvlLNBlx3bbxyvR44zntByoYH0BX9djo9ELlICoPJE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ot+WEl+7LPutY0WbZaf9ShIjKm24najLyECN/GK/osKG3Q/D41WMnDCzYDmTjKoVE
-         HyXs0Fjf7WRV2gskteKcNP47JGRO+xZo1u+96m5BNlSDpQgVggOLihuBVtX6isZstq
-         TzldNymbQVPR27djSf7i3snjb3X42AQ/VHiQmnmk=
-Date:   Tue, 30 Jun 2020 08:22:22 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     "liwei (GF)" <liwei391@huawei.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, liwei1412@163.com
-Subject: Re: [PATCH 0/4] arm64: kgdb/kdb: Fix single-step debugging issues
-Message-ID: <20200630072221.GA13332@willie-the-truck>
-References: <20200509214159.19680-1-liwei391@huawei.com>
- <CAD=FV=Xv6xgj_M9tYjHzmW4UZD2RdH2c5=dagNybSkdfBabYZw@mail.gmail.com>
- <a20ee677-495b-9336-a329-eabd50dd1cad@huawei.com>
- <CAD=FV=WYBAJB_nWxUAAVgV26e4CTzJeizZtxpwus6REi3j2meA@mail.gmail.com>
+        id S1730636AbgF3HX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 03:23:57 -0400
+IronPort-SDR: nD8nU9PpePdJU10+I3ie3f73Xq44tuqACJgNSjAGNDcmffV+h5srK0sYMGND0uzOONNTUKeZ9I
+ 4eQ4TxG7PmbA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="146156727"
+X-IronPort-AV: E=Sophos;i="5.75,296,1589266800"; 
+   d="scan'208";a="146156727"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 00:23:56 -0700
+IronPort-SDR: Z6DVSBBxWsVOci4JsTvqEKZXhdZXf5Uajw2oR9kiGKT0GW/O0dJ9ZVWvcxtMUc5qdfBUd/n45p
+ 6TvlR8tQXI2A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,296,1589266800"; 
+   d="scan'208";a="480837296"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.23])
+  by fmsmga006.fm.intel.com with ESMTP; 30 Jun 2020 00:23:54 -0700
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <yang.shi@linux.alibaba.com>, <rientjes@google.com>,
+        <dan.j.williams@intel.com>
+Subject: Re: [RFC][PATCH 8/8] mm/numa: new reclaim mode to enable reclaim-based migration
+References: <20200629234503.749E5340@viggo.jf.intel.com>
+        <20200629234517.A7EC4BD3@viggo.jf.intel.com>
+Date:   Tue, 30 Jun 2020 15:23:53 +0800
+In-Reply-To: <20200629234517.A7EC4BD3@viggo.jf.intel.com> (Dave Hansen's
+        message of "Mon, 29 Jun 2020 16:45:17 -0700")
+Message-ID: <87v9j9ow3a.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=WYBAJB_nWxUAAVgV26e4CTzJeizZtxpwus6REi3j2meA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=ascii
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 02:20:11PM -0700, Doug Anderson wrote:
-> On Sat, May 16, 2020 at 1:20 AM liwei (GF) <liwei391@huawei.com> wrote:
-> > On 2020/5/14 8:34, Doug Anderson wrote:
-> > > On Sat, May 9, 2020 at 6:49 AM Wei Li <liwei391@huawei.com> wrote:
-> > >>
-> > >> This patch set is to fix several issues of single-step debugging
-> > >> in kgdb/kdb on arm64.
-> > >>
-> > >> It seems that these issues have been shelved a very long time,
-> > >> but i still hope to solve them, as the single-step debugging
-> > >> is an useful feature.
-> > >>
-> > >> Note:
-> > >> Based on patch "arm64: cacheflush: Fix KGDB trap detection",
-> > >> https://www.spinics.net/lists/arm-kernel/msg803741.html
-> > >>
-> > >> Wei Li (4):
-> > >>   arm64: kgdb: Fix single-step exception handling oops
-> > >>   arm64: Extract kprobes_save_local_irqflag() and
-> > >>     kprobes_restore_local_irqflag()
-> > >>   arm64: kgdb: Fix single-stepping into the irq handler wrongly
-> > >>   arm64: kgdb: Set PSTATE.SS to 1 to reenable single-step
-> > >>
-> > >>  arch/arm64/include/asm/debug-monitors.h |  6 ++++++
-> > >>  arch/arm64/kernel/debug-monitors.c      | 28 ++++++++++++++++++++++++-
-> > >>  arch/arm64/kernel/kgdb.c                | 16 +++++++++++---
-> > >>  arch/arm64/kernel/probes/kprobes.c      | 28 ++-----------------------
-> > >>  4 files changed, 48 insertions(+), 30 deletions(-)
-> > >
-> > > Just an overall note that I'm very happy that you posted this patch
-> > > series!  It's always been a thorn in my side that stepping and
-> > > breakpoints were so broken on arm64 and I'm really excited that you're
-> > > fixing them.  Now I'll have to get in the habit of using kgdb for more
-> > > than just debugging crashes and maybe I can use it more for exploring
-> > > how functions work more.  :-)
-> > > > I'll also note that with your patch series I'm even seeing the "call"
-> > > feature of gdb working now.  That has always been terribly broken for
-> > > me.
-> > >
-> > Thanks for reviewing and testing this series.
-> > Enjoy exploring the kernel with kgdb/kdb! :-)
-> 
-> I'm curious to know if you plan another spin.  The feedback you
-> received was fairly minor so it hopefully shouldn't be too hard.  I'd
-> very much like to get your patches landed and I'd be happy to try to
-> address the feedback and spin them myself if you're no longer
-> available for it.
+Hi, Dave,
 
-I'd welcome some feedback on the proposal I sent out at the end of last
-week:
+Dave Hansen <dave.hansen@linux.intel.com> writes:
 
-https://lore.kernel.org/r/20200626095551.GA9312@willie-the-truck
+> From: Dave Hansen <dave.hansen@linux.intel.com>
+>
+> Some method is obviously needed to enable reclaim-based migration.
+>
+> Just like traditional autonuma, there will be some workloads that
+> will benefit like workloads with more "static" configurations where
+> hot pages stay hot and cold pages stay cold.  If pages come and go
+> from the hot and cold sets, the benefits of this approach will be
+> more limited.
+>
+> The benefits are truly workload-based and *not* hardware-based.
+> We do not believe that there is a viable threshold where certain
+> hardware configurations should have this mechanism enabled while
+> others do not.
+>
+> To be conservative, earlier work defaulted to disable reclaim-
+> based migration and did not include a mechanism to enable it.
+> This propses extending the existing "zone_reclaim_mode" (now
+> now really node_reclaim_mode) as a method to enable it.
+>
+> We are open to any alternative that allows end users to enable
+> this mechanism or disable it it workload harm is detected (just
+> like traditional autonuma).
+>
+> The implementation here is pretty simple and entirely unoptimized.
+> On any memory hotplug events, assume that a node was added or
+> removed and recalculate all migration targets.  This ensures that
+> the node_demotion[] array is always ready to be used in case the
+> new reclaim mode is enabled.  This recalculation is far from
+> optimal, most glaringly that it does not even attempt to figure
+> out if nodes are actually coming or going.
+>
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Yang Shi <yang.shi@linux.alibaba.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> ---
+>
+>  b/Documentation/admin-guide/sysctl/vm.rst |    9 ++++
+>  b/mm/migrate.c                            |   61 +++++++++++++++++++++++++++++-
+>  b/mm/vmscan.c                             |    7 +--
+>  3 files changed, 73 insertions(+), 4 deletions(-)
+>
+> diff -puN Documentation/admin-guide/sysctl/vm.rst~enable-numa-demotion Documentation/admin-guide/sysctl/vm.rst
+> --- a/Documentation/admin-guide/sysctl/vm.rst~enable-numa-demotion	2020-06-29 16:35:01.012312549 -0700
+> +++ b/Documentation/admin-guide/sysctl/vm.rst	2020-06-29 16:35:01.021312549 -0700
+> @@ -941,6 +941,7 @@ This is value OR'ed together of
+>  1	(bit currently ignored)
+>  2	Zone reclaim writes dirty pages out
+>  4	Zone reclaim swaps pages
+> +8	Zone reclaim migrates pages
+>  =	===================================
+>  
+>  zone_reclaim_mode is disabled by default.  For file servers or workloads
+> @@ -965,3 +966,11 @@ of other processes running on other node
+>  Allowing regular swap effectively restricts allocations to the local
+>  node unless explicitly overridden by memory policies or cpuset
+>  configurations.
+> +
+> +Page migration during reclaim is intended for systems with tiered memory
+> +configurations.  These systems have multiple types of memory with varied
+> +performance characteristics instead of plain NUMA systems where the same
+> +kind of memory is found at varied distances.  Allowing page migration
+> +during reclaim enables these systems to migrate pages from fast tiers to
+> +slow tiers when the fast tier is under pressure.  This migration is
+> +performed before swap.
+> diff -puN mm/migrate.c~enable-numa-demotion mm/migrate.c
+> --- a/mm/migrate.c~enable-numa-demotion	2020-06-29 16:35:01.015312549 -0700
+> +++ b/mm/migrate.c	2020-06-29 16:35:01.022312549 -0700
+> @@ -49,6 +49,7 @@
+>  #include <linux/sched/mm.h>
+>  #include <linux/ptrace.h>
+>  #include <linux/oom.h>
+> +#include <linux/memory.h>
+>  
+>  #include <asm/tlbflush.h>
+>  
+> @@ -3165,6 +3166,10 @@ void set_migration_target_nodes(void)
+>  	 * Avoid any oddities like cycles that could occur
+>  	 * from changes in the topology.  This will leave
+>  	 * a momentary gap when migration is disabled.
+> +	 *
+> +	 * This is superfluous for memory offlining since
+> +	 * MEM_GOING_OFFLINE does it independently, but it
+> +	 * does not hurt to do it a second time.
+>  	 */
+>  	disable_all_migrate_targets();
+>  
+> @@ -3211,6 +3216,60 @@ again:
+>  	/* Is another pass necessary? */
+>  	if (!nodes_empty(next_pass))
+>  		goto again;
+> +}
+>  
+> -	put_online_mems();
+> +/*
+> + * React to hotplug events that might online or offline
+> + * NUMA nodes.
+> + *
+> + * This leaves migrate-on-reclaim transiently disabled
+> + * between the MEM_GOING_OFFLINE and MEM_OFFLINE events.
+> + * This runs whether RECLAIM_MIGRATE is enabled or not.
+> + * That ensures that the user can turn RECLAIM_MIGRATE
+> + * without needing to recalcuate migration targets.
+> + */
+> +#if defined(CONFIG_MEMORY_HOTPLUG)
+> +static int __meminit migrate_on_reclaim_callback(struct notifier_block *self,
+> +						 unsigned long action, void *arg)
+> +{
+> +	switch (action) {
+> +	case MEM_GOING_OFFLINE:
+> +		/*
+> +		 * Make sure there are not transient states where
+> +		 * an offline node is a migration target.  This
+> +		 * will leave migration disabled until the offline
+> +		 * completes and the MEM_OFFLINE case below runs.
+> +		 */
+> +		disable_all_migrate_targets();
+> +		break;
+> +	case MEM_OFFLINE:
+> +	case MEM_ONLINE:
+> +		/*
+> +		 * Recalculate the target nodes once the node
+> +		 * reaches its final state (online or offline).
+> +		 */
+> +		set_migration_target_nodes();
+> +		break;
+> +	case MEM_CANCEL_OFFLINE:
+> +		/*
+> +		 * MEM_GOING_OFFLINE disabled all the migration
+> +		 * targets.  Reenable them.
+> +		 */
+> +		set_migration_target_nodes();
+> +		break;
+> +	case MEM_GOING_ONLINE:
+> +	case MEM_CANCEL_ONLINE:
+> +		break;
+> +	}
+> +
+> +	return notifier_from_errno(0);
+>  }
+> +
+> +static int __init migrate_on_reclaim_init(void)
+> +{
+> +	hotplug_memory_notifier(migrate_on_reclaim_callback, 100);
+> +	return 0;
+> +}
+> +late_initcall(migrate_on_reclaim_init);
+> +#endif /* CONFIG_MEMORY_HOTPLUG */
+> +
+> diff -puN mm/vmscan.c~enable-numa-demotion mm/vmscan.c
+> --- a/mm/vmscan.c~enable-numa-demotion	2020-06-29 16:35:01.017312549 -0700
+> +++ b/mm/vmscan.c	2020-06-29 16:35:01.023312549 -0700
+> @@ -4165,9 +4165,10 @@ int node_reclaim_mode __read_mostly;
+>   * These bit locations are exposed in the vm.zone_reclaim_mode sysctl
+>   * ABI.  New bits are OK, but existing bits can never change.
+>   */
+> -#define RECLAIM_RSVD  (1<<0)	/* (currently ignored/unused) */
+> -#define RECLAIM_WRITE (1<<1)	/* Writeout pages during reclaim */
+> -#define RECLAIM_UNMAP (1<<2)	/* Unmap pages during reclaim */
+> +#define RECLAIM_RSVD	(1<<0)	/* (currently ignored/unused) */
+> +#define RECLAIM_WRITE	(1<<1)	/* Writeout pages during reclaim */
+> +#define RECLAIM_UNMAP	(1<<2)	/* Unmap pages during reclaim */
+> +#define RECLAIM_MIGRATE	(1<<3)	/* Migrate pages during reclaim */
+>  
+>  /*
+>   * Priority for NODE_RECLAIM. This determines the fraction of pages
 
-which looks to solve some (all?) of these issues slightly differently,
-because it turns out we need to perform some low-level surgery for
-preempt-rt *anyway*...
+I found that RECLAIM_MIGRATE is defined but never referenced in the
+patch.
 
-I'm particularly keen to hear any thoughts concerning the reschedule on
-return to EL1 after handling an interrupt that hit during a step.
+If my understanding of the code were correct, shrink_do_demote_mapping()
+is called by shrink_page_list(), which is used by kswapd and direct
+reclaim.  So as long as the persistent memory node is onlined,
+reclaim-based migration will be enabled regardless of node reclaim mode.
 
-Will
+Best Regards,
+Huang, Ying
