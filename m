@@ -2,169 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DCB520EC18
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 05:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78CD520EC32
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 05:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729221AbgF3Dho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 23:37:44 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:16508 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728930AbgF3Dhn (ORCPT
+        id S1729297AbgF3Dul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 23:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726686AbgF3Duk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 23:37:43 -0400
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 05U3b4hN008783;
-        Tue, 30 Jun 2020 12:37:05 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 05U3b4hN008783
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1593488225;
-        bh=HQ6KnmOwOmCLPqo+IgJmQaK1v7heWShiK/BACFB0v+g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=xXeJUSWuOMrr7z3lfv7Cday+TcjdR3ts3dYt/FdSZ6wQqlB3S/hsRU1lkbaX7JUs/
-         QSJF/NzSRLj4+v/KkooT2i3Bb/5DhE8Uenl2bcGz2VgAvMc+e+qWRwPPwu4o7ZHmnt
-         MdV9+QqZrSpBgHzFjJEs5Wxr49ypSeRli8krOpMtlQZ2kAFWWMQW3Az7/6q3FS1Ihq
-         f8gnDPHQoNA3nnVmqVSG/SIO+v+gVAsON2T5DC0YCJ9XmHXz/9Xb/Y19dniR/z0ikU
-         wOV7p4kt1gpLC4wYA+QyfZ0Anp3ECYSVUjdO5b0NEOu9IGULRLi6a04fVh4pxH6dO+
-         BIg+qLSiYPjGw==
-X-Nifty-SrcIP: [209.85.217.41]
-Received: by mail-vs1-f41.google.com with SMTP id m25so10406617vsp.8;
-        Mon, 29 Jun 2020 20:37:05 -0700 (PDT)
-X-Gm-Message-State: AOAM531gwZvFfheLfc4in2cYkTCuERIw0JwiQ18b4tU5DBYcVwE6ALZf
-        6k+ICfdO9YxI/JC5QPtrirT2+fw1YQNFOgMeu58=
-X-Google-Smtp-Source: ABdhPJyos1ORrGzmRbsRpSUTJzytWNoRffnYrImYzuBLzAg+8UwkZPH2/UbDxOJw3n1p73IsJwOIwI/sy3tWJk7tOm4=
-X-Received: by 2002:a67:2e4d:: with SMTP id u74mr4608864vsu.215.1593488224012;
- Mon, 29 Jun 2020 20:37:04 -0700 (PDT)
+        Mon, 29 Jun 2020 23:50:40 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B59C061755;
+        Mon, 29 Jun 2020 20:50:40 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id dg28so14827196edb.3;
+        Mon, 29 Jun 2020 20:50:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q0B1RnHxaLtY6cPxcW/Ojh88m5bGWKbr1d+gTGuWAH4=;
+        b=UHgFgfX7LZ4HvRfMESq2Kq8n0hJPcIL804yKZ55/1FpVeZjsjDu3/v0ekUElUaBrwC
+         E2lOhbXNVHnWJdE4+QBO76QdX3lETzQdqjCoWiDj+j01cPw/AKE7n8qTlFNit9skHKvn
+         f/cF4+zHTicz1LcoxUhBXinMrXP+Bqwex0rVjYYBgwpSiAUFz0ESDiTIx3Z1pt48Lz86
+         2IykvzdL475X5mqDgDMGKtqXZeNhzglhOkviJvmU+Tgl15O7xhgbfC+2fYIpOd36BFxk
+         /ZYYoLnk5JLiIxuzQ/RQqM73ypMCZsx2pyNkTFEKUjnCuf5dXvR2WeJn4Jwuj5Et92jV
+         8mPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q0B1RnHxaLtY6cPxcW/Ojh88m5bGWKbr1d+gTGuWAH4=;
+        b=IrtVY2OX01vWk2Et0oakxHf0ajVrJaIvZU02Ukgr6bUf9oduPC9F73R+63ihTU1hwz
+         d26d04KsoAoYbcX7YYFSkefCzC6K0ZYfQbtCEgkGpOVQF3qBXPeJvb5Li0/RqSJvJDc5
+         b4lHGtN4R+HwhpHhv8tF0bTbc2dv7ua6mB74LMMFqWPFpTEbvumkVqHkUyYNnAuATuiD
+         ONW0Ke7gbs0Qo3LhSCutOfvNChTlG3TSHpORGuXeZxs4B7Xbp9J8IzIxRkhdcf0fhc9V
+         DVnQ64jPzxKw7OL9Z2KBi/QWuz9WtrAdcbBedhSE4klLUqj3SLLFIHUBo0VhyiJGDzXs
+         5P4A==
+X-Gm-Message-State: AOAM531dmUQz5rUiRbUwdb99XtBpjUpMPds3aVJ9uJdCHS2q5nDo2JjI
+        MiRsW0K8EhP2woYzHvvULjxBLKtEV73+TYcyIsw=
+X-Google-Smtp-Source: ABdhPJyt6zfNzsijRYETNxn9IquHDb/jeqHEdhWfn/iIC7aKhhL00f8sPA87FaGF6UnN/wQZvzTddaNlsz/XIeu8nrc=
+X-Received: by 2002:a50:f08c:: with SMTP id v12mr20517050edl.119.1593489038902;
+ Mon, 29 Jun 2020 20:50:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1593423060.git.mchehab+huawei@kernel.org> <45fa5ad583de1766de6169366df1df5837c5dc7c.1593423060.git.mchehab+huawei@kernel.org>
-In-Reply-To: <45fa5ad583de1766de6169366df1df5837c5dc7c.1593423060.git.mchehab+huawei@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 30 Jun 2020 12:36:27 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASbWXkRZ3OrmDSXj4jfu6jGcMnjnOOJ4+cV22fweJ9OJA@mail.gmail.com>
-Message-ID: <CAK7LNASbWXkRZ3OrmDSXj4jfu6jGcMnjnOOJ4+cV22fweJ9OJA@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] kconfig: qconf: navigate menus on hyperlinks
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com>
+ <1593410042-10598-5-git-send-email-Anson.Huang@nxp.com> <CAK8P3a2yXFbGxuSRoC5_dYBujnAtVoEMXe50V7QYjPYhqra7nA@mail.gmail.com>
+ <DB3PR0402MB39160335642AFBAC4B38C511F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CAK8P3a0CcijnVxJws_kMiaOBbc4Uox40W4=-dX+BG6OeMYtFpw@mail.gmail.com>
+In-Reply-To: <CAK8P3a0CcijnVxJws_kMiaOBbc4Uox40W4=-dX+BG6OeMYtFpw@mail.gmail.com>
+From:   Dong Aisheng <dongas86@gmail.com>
+Date:   Tue, 30 Jun 2020 11:36:40 +0800
+Message-ID: <CAA+hA=TXQkaFGDv4fQ57Tuj7vUEOM4qUi1i74p8G9KGzmAr4Hw@mail.gmail.com>
+Subject: Re: [PATCH V3 04/10] clk: imx: Support building SCU clock driver as module
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Anson Huang <anson.huang@nxp.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
+        Stefan Agner <stefan.agner@toradex.com>,
+        Peng Fan <peng.fan@nxp.com>, Abel Vesa <abel.vesa@nxp.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        Andy Duan <fugang.duan@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 6:35 PM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
+On Tue, Jun 30, 2020 at 3:36 AM Arnd Bergmann <arnd@arndb.de> wrote:
 >
-> Instead of just changing the helper window to show a
-> dependency, also navigate to it at the config and menu
-> widgets.
+> On Mon, Jun 29, 2020 at 2:53 PM Anson Huang <anson.huang@nxp.com> wrote:
+> > > Subject: Re: [PATCH V3 04/10] clk: imx: Support building SCU clock driver as
+> > > module
+> > >
+> > > On Mon, Jun 29, 2020 at 8:06 AM Anson Huang <Anson.Huang@nxp.com>
+> > > wrote:
+> > >
+> > > > --- a/drivers/clk/imx/Makefile
+> > > > +++ b/drivers/clk/imx/Makefile
+> > > > @@ -21,9 +21,9 @@ obj-$(CONFIG_MXC_CLK) += \
+> > > >         clk-sscg-pll.o \
+> > > >         clk-pll14xx.o
+> > > >
+> > > > -obj-$(CONFIG_MXC_CLK_SCU) += \
+> > > > -       clk-scu.o \
+> > > > -       clk-lpcg-scu.o
+> > > > +mxc-clk-scu-objs += clk-lpcg-scu.o
+> > > > +mxc-clk-scu-objs += clk-scu.o
+> > > > +obj-$(CONFIG_MXC_CLK_SCU) += mxc-clk-scu.o
+> > >
+> > > It looks like the two modules are tightly connected, one is useless without the
+> > > other. How about linking them into a combined module and dropping the
+> > > export statement?
+> > >
+> >
+> > From HW perspective, the SCU clock driver and LPCG SCU clock driver are different,
+> > SCU clock driver is for those clocks controlled by system controller (M4 which runs a firmware),
+> > while LPCG SCU clock is for those clock gates inside module, which means AP core can
+> > control it directly via register access, no need to via SCU API.
 >
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
-
-
-I noticed a regression.
-
-Visit "Networking support",
-and click "select: BPF"
-from the window at the bottom.
-
-Nothing happens except the following error message
-in the console:
-
-Clicked menu is invalid: ^BPF$
-
-
-If I apply only 1-4 in this series,
-this works fine.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
->  scripts/kconfig/qconf.cc | 24 +++++-------------------
->  1 file changed, 5 insertions(+), 19 deletions(-)
+> Sorry, I misread the patch in multiple ways. First of all, you already put
+> clk-scu.o and clk-lpcg-scu.o files into a combined loadable module, and
+> I had only looked at clk-scu.c.
 >
-> diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
-> index 49f0688fceb8..d8870b15a178 100644
-> --- a/scripts/kconfig/qconf.cc
-> +++ b/scripts/kconfig/qconf.cc
-> @@ -1232,7 +1232,6 @@ void ConfigInfoView::clicked(const QUrl &url)
->         char *data = new char[count + 1];
->         struct symbol **result;
->         struct menu *m = NULL;
-> -       char type;
->
->         if (count < 1) {
->                 qInfo() << "Clicked link is empty";
-> @@ -1242,7 +1241,6 @@ void ConfigInfoView::clicked(const QUrl &url)
->
->         memcpy(data, str.constData(), count);
->         data[count] = '\0';
-> -       type = data[0];
->
->         /* Seek for exact match */
->         data[0] = '^';
-> @@ -1255,15 +1253,8 @@ void ConfigInfoView::clicked(const QUrl &url)
->         }
->
->         sym = *result;
-> -       if (type == 's') {
-> -               symbolInfo();
-> -               emit showDebugChanged(true);
-> -               free(result);
-> -               delete data;
-> -               return;
-> -       }
->
-> -       /* URL is a menu */
-> +       /* Seek for the menu which holds the symbol */
->         for (struct property *prop = sym->prop; prop; prop = prop->next) {
->                     if (prop->type != P_PROMPT && prop->type != P_MENU)
->                             continue;
-> @@ -1271,17 +1262,11 @@ void ConfigInfoView::clicked(const QUrl &url)
->                     break;
->         }
->
-> -       if (!m) {
-> +       if (!m)
->                 qInfo() << "Clicked menu is invalid:" << data;
-> -               free(result);
-> -               delete data;
-> -               return;
-> -       }
-> +       else
-> +               emit menuSelected(m);
->
-> -       _menu = m;
-> -       menuInfo();
-> -
-> -       emit showDebugChanged(true);
->         free(result);
->         delete data;
->  }
-> @@ -1750,6 +1735,7 @@ void ConfigMainWindow::setMenuLink(struct menu *menu)
->                         item->setSelected(true);
->                         list->scrollToItem(item);
->                         list->setFocus();
-> +                       helpText->setInfo(menu);
->                 }
->         }
->  }
-> --
-> 2.26.2
->
+> What I actually meant here was to link clk-scu.o together with clk-imx8qxp.o
+> (and possibly future chip-specific files) into a loadable module and drop
+> the export.
 
+It sounds like a good idea to me.
+Actually I planned to combine them into one driver in the future.
 
--- 
-Best Regards
-Masahiro Yamada
+Regards
+Aisheng
+
+>
+> > So, I think it is NOT that tightly connected, it is because they are both for i.MX8 SoCs with SCU
+> > inside, so they are put together in the Makefile.
+> >
+> > If the export statement is acceptable, I think it is better to just keep it, make sense?
+>
+> There is nothing wrong with the export as such, this was just an
+> idea to simplify the logic.
+>
+>       Arnd
