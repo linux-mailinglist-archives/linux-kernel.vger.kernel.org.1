@@ -2,91 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8F220F6DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05EA20F6E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388798AbgF3OK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 10:10:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40940 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731123AbgF3OKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 10:10:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DC17FB614;
-        Tue, 30 Jun 2020 14:10:23 +0000 (UTC)
-Date:   Tue, 30 Jun 2020 16:10:22 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     linux-nvdimm@lists.01.org,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Jan Kara <jack@suse.cz>, Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Pankaj Gupta <pagupta@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Yuval Shaia <yuval.shaia@oracle.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Jakub Staron <jstaron@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dm writecache: reject asynchronous pmem.
-Message-ID: <20200630141022.GZ21462@kitsune.suse.cz>
-References: <20200630123528.29660-1-msuchanek@suse.de>
- <alpine.LRH.2.02.2006300929580.4801@file01.intranet.prod.int.rdu2.redhat.com>
+        id S2388804AbgF3OLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 10:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729908AbgF3OLa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 10:11:30 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F7BC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 07:11:30 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id h19so22728655ljg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 07:11:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KaJ8A/mtp7tiazUWqWYM9IFm5G1Nvqs2cqWvKn5WT8o=;
+        b=ok0vl9AxjEtaqLYePLsNsU1F7UuQ/mCyacTbBucXkiBM5MoPdlgeD8vCjscO6H/YoO
+         g1Y3tdvyyEKK9q2yfyRX9/W8woqV+6qqe1GPTYjJkO9URBKyG+2vC45bHjhFP+Sighy2
+         dcI8F8s5Vfo8GRj3oMeByIZH7a/604pe6LCm/s6p1IQsq5+qrX/E6xr9jj/E9WES9Zng
+         GiWCiezZOrh0uh1CoZcuMKEdEiqSdgeXf23b5DujkEjlrgSSWrX93szxwsGoC+pad/wM
+         3rIglYZoPvhcbPpRVHCSSeoloCgm6pd895s39sP/y8I08clro7W8b/Nj6lHf1jboCDy2
+         6uag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KaJ8A/mtp7tiazUWqWYM9IFm5G1Nvqs2cqWvKn5WT8o=;
+        b=o195wWeaHrxrWIsZWoboNQrfJ83IMj0g3wlgdx4KFm2X+GuD2ZMjB16w6ZI52XTyLv
+         VW+hJ8e8dz8dGHQa9jujndNK90PqIs1ghX80fD9ugTEWCTZm1LwverG82w589jtdHdUK
+         9ZHo52j0o/Fx/hbHZWw053HIBAUpq6eKsCCbT1w89NZ6D6jWurcU0rAQuLZEydg7YbIl
+         70z0dLf1dY+QQthqiavWYmwqvIkzDKawnLeppG34H5uhFLQedl163cSdUQzIFZ2WQxGM
+         ki9pyJ8T0GF5j3m00Uk1Q9weji1VtS2pA1M3cXxdHbJPrFd5Jy3p332737UrYTczArQN
+         DYRg==
+X-Gm-Message-State: AOAM530C65ejT1FRyp9Bo9AKXOVdWDoe8w9P//lYR+QvLpTpgRQS7FCp
+        9IbvT3CMov2R05s7WdEKrAgzYmY3h7nAB0ytmc4=
+X-Google-Smtp-Source: ABdhPJz5MIpXGlHgP1fvLS1Lh6z16GezmdUmGLLPMdcG9JOfzkS5KaVN414xdFAZLh68lRYnPXjkaFaK/PAFHUS7YMU=
+X-Received: by 2002:a2e:880e:: with SMTP id x14mr978719ljh.218.1593526288891;
+ Tue, 30 Jun 2020 07:11:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.02.2006300929580.4801@file01.intranet.prod.int.rdu2.redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1593525367-23221-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1593525367-23221-1-git-send-email-shengjiu.wang@nxp.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 30 Jun 2020 11:11:17 -0300
+Message-ID: <CAOMZO5CZ2NhbFJJj8OAeJonA--ZfbfUWqhWCYRqeJE_v8QdKFQ@mail.gmail.com>
+Subject: Re: [PATCH v3] ASoC: fsl_asrc: Add an option to select internal ratio mode
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 09:32:01AM -0400, Mikulas Patocka wrote:
-> 
-> 
-> On Tue, 30 Jun 2020, Michal Suchanek wrote:
-> 
-> > The writecache driver does not handle asynchronous pmem. Reject it when
-> > supplied as cache.
-> > 
-> > Link: https://lore.kernel.org/linux-nvdimm/87lfk5hahc.fsf@linux.ibm.com/
-> > Fixes: 6e84200c0a29 ("virtio-pmem: Add virtio pmem driver")
-> > 
-> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > ---
-> >  drivers/md/dm-writecache.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/drivers/md/dm-writecache.c b/drivers/md/dm-writecache.c
-> > index 30505d70f423..57b0a972f6fd 100644
-> > --- a/drivers/md/dm-writecache.c
-> > +++ b/drivers/md/dm-writecache.c
-> > @@ -2277,6 +2277,12 @@ static int writecache_ctr(struct dm_target *ti, unsigned argc, char **argv)
-> >  
-> >  		wc->memory_map_size -= (uint64_t)wc->start_sector << SECTOR_SHIFT;
-> >  
-> > +		if (!dax_synchronous(wc->ssd_dev->dax_dev)) {
-> > +			r = -EOPNOTSUPP;
-> > +			ti->error = "Asynchronous persistent memory not supported as pmem cache";
-> > +			goto bad;
-> > +		}
-> > +
-> >  		bio_list_init(&wc->flush_list);
-> >  		wc->flush_thread = kthread_create(writecache_flush_thread, wc, "dm_writecache_flush");
-> >  		if (IS_ERR(wc->flush_thread)) {
-> > -- 
-> 
-> Hi
-> 
-> Shouldn't this be in the "if (WC_MODE_PMEM(wc))" block?
-That should be always the case at this point.
-> 
-> WC_MODE_PMEM(wc) retrurns true if we are using persistent memory as a 
-> cache device, otherwise we are using generic block device as a cache 
-> device.
-This is to prevent the situation where we have WC_MODE_PMEM(wc) but
-cannot guarantee consistency because the async flush is not handled.
+On Tue, Jun 30, 2020 at 11:07 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
+>
+> The ASRC not only supports ideal ratio mode, but also supports
+> internal ratio mode.
+>
+> For internal rato mode, the rate of clock source should be divided
+> with no remainder by sample rate, otherwise there is sound
+> distortion.
+>
+> Add function fsl_asrc_select_clk() to find proper clock source for
+> internal ratio mode, if the clock source is available then internal
+> ratio mode will be selected.
+>
+> With change, the ideal ratio mode is not the only option for user.
+>
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-Thanks
-
-Michal
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
