@@ -2,132 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2405820F3E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C065120F3F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733191AbgF3LzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 07:55:10 -0400
-Received: from outils.crapouillou.net ([89.234.176.41]:57292 "EHLO
-        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729580AbgF3LzG (ORCPT
+        id S1733222AbgF3L5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 07:57:00 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:5571 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732587AbgF3L44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 07:55:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1593518102; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iLivQZbuAtImOA556A9/GwUMm1HUXka6DPlyQAzwKuo=;
-        b=Q/LSsYXZWBuyh3RUShBSmnkCNm3OyljvBxuq7YsUziu9aEZs299XhTkBGr9tr0Vk/6OK0l
-        0ehGwufTYFqKBASWXDhdCexfbuQqnfAcYbmJZLcPrEdMC6yBgFauZJXyceTNFvTKj/2stY
-        u8pTDrig8VjQB57LdZpNC3n9/a9sxxo=
-Date:   Tue, 30 Jun 2020 13:54:51 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 06/10] drm/ingenic: Set DMA descriptor chain address in
- probe
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, od@zcrc.me
-Message-Id: <FFMQCQ.LQ37IHUC6U3Z@crapouillou.net>
-In-Reply-To: <20200630114453.GB560155@ravnborg.org>
-References: <20200629235210.441709-1-paul@crapouillou.net>
-        <20200629235210.441709-6-paul@crapouillou.net>
-        <20200630114453.GB560155@ravnborg.org>
+        Tue, 30 Jun 2020 07:56:56 -0400
+X-UUID: acbe87f48cc347faa2897a3ee950e7a3-20200630
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=HEj432Y5eOzIfGm1gnGAexzqR2J4nebaJR/lmOThafM=;
+        b=is6ty48ih2i0o2tplaZwkH9HMVsOctHzwh1CUBQWFymJsZXADP4tnSdXSuELridBfLddbYj9XlDc45k8T7sxynQsg9HSRnKKNHYyfIvQzBVKpig/wlmO3Qez05Lgrdun28+VNUpGL4A4rWgS+jTGO24eWG16Xbgl9o6034KEkOk=;
+X-UUID: acbe87f48cc347faa2897a3ee950e7a3-20200630
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <chao.hao@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 962540657; Tue, 30 Jun 2020 19:56:52 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 30 Jun 2020 19:56:47 +0800
+Received: from [10.15.20.246] (10.15.20.246) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 30 Jun 2020 19:56:47 +0800
+Message-ID: <1593518147.7022.3.camel@mbjsdccf07>
+Subject: Re: [PATCH v5 03/10] iommu/mediatek: Modify the usage of
+ mtk_iommu_plat_data structure
+From:   chao hao <Chao.Hao@mediatek.com>
+To:     Yong Wu <yong.wu@mediatek.com>
+CC:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Evan Green <evgreen@chromium.org>,
+        <iommu@lists.linux-foundation.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        FY Yang <fy.yang@mediatek.com>,
+        Chao Hao <chao.hao@mediatek.com>
+Date:   Tue, 30 Jun 2020 19:55:47 +0800
+In-Reply-To: <1593514600.24171.26.camel@mhfsdcap03>
+References: <20200629071310.1557-1-chao.hao@mediatek.com>
+         <20200629071310.1557-4-chao.hao@mediatek.com>
+         <1593514600.24171.26.camel@mhfsdcap03>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+X-TM-SNTS-SMTP: 09C13065B4FA34BD99E063267093959635537950F689927C89C089AD58FAF52D2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sam,
-
-Le mar. 30 juin 2020 =E0 13:44, Sam Ravnborg <sam@ravnborg.org> a =E9crit=20
-:
-> Hi Paul.
->=20
-> On Tue, Jun 30, 2020 at 01:52:06AM +0200, Paul Cercueil wrote:
->>  The address of the DMA descriptor never changes. It can therefore=20
->> be set
->>  in the probe function.
->>=20
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
->>=20
->>  Notes:
->>      v2: No change
->>=20
->>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 5 +++--
->>   1 file changed, 3 insertions(+), 2 deletions(-)
->>=20
->>  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c=20
->> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  index 924c8daf071a..f7b0c5dc8cd8 100644
->>  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  @@ -358,8 +358,6 @@ static void=20
->> ingenic_drm_crtc_atomic_flush(struct drm_crtc *crtc,
->>   		ingenic_drm_crtc_update_ctrl(priv, finfo);
->>=20
->>   		clk_set_rate(priv->pix_clk, state->adjusted_mode.clock * 1000);
->>  -
->>  -		regmap_write(priv->map, JZ_REG_LCD_DA0, priv->dma_hwdesc->next);
->>   	}
->>=20
->>   	if (event) {
->>  @@ -757,6 +755,9 @@ static int ingenic_drm_probe(struct=20
->> platform_device *pdev)
->>   		}
->>   	}
->>=20
->>  +	/* Set address of our DMA descriptor chain */
->>  +	regmap_write(priv->map, JZ_REG_LCD_DA0, priv->dma_hwdesc_phys);
->>  +
->=20
->=20
-> What is the purpose of this code after the assignment was moved:
->=20
-> static int ingenic_drm_probe(struct platform_device *pdev)
-> {
-> ...
-> 	priv->dma_hwdesc->next =3D priv->dma_hwdesc_phys;
->=20
-> I do not see ->next used anymore.
-> Could this assignment be dropped?
->=20
->=20
-> And the following line:
-> 	priv->dma_hwdesc->id =3D 0xdeafbead;
->=20
-> I can only see ->id be assingned, it is never referenced??
->=20
-> Maybe this is all related to the structure assumed by the data pointed
-> to by JZ_REG_LCD_DA0?
-
-As its name suggests, 'dma_hwdesc' points to a DMA hardware descriptor.=20
-Setting ->next sets the address of the next descriptor (which is itself=20
-since we only use one descriptor). The 'id' field will be copied by the=20
-hardware to a register when the DMA descriptor is loaded, so we can=20
-know from userspace (debugfs) what DMA descriptors are loaded by=20
-looking up the IDs.
-
--Paul
-
-> 	Sam
->=20
->>   	ret =3D drm_dev_register(drm, 0);
->>   	if (ret) {
->>   		dev_err(dev, "Failed to register DRM driver\n");
->>  --
->>  2.27.0
->>=20
->>  _______________________________________________
->>  dri-devel mailing list
->>  dri-devel@lists.freedesktop.org
->>  https://lists.freedesktop.org/mailman/listinfo/dri-devel
-
+T24gVHVlLCAyMDIwLTA2LTMwIGF0IDE4OjU2ICswODAwLCBZb25nIFd1IHdyb3RlOg0KPiBIaSBD
+aGFvLA0KPiANCj4gVGhpcyBpcyBhbHNvIG9rIGZvciBtZS4gT25seSB0d28gZm9ybWF0IG5pdHBp
+Y2suDQo+IA0KPiBPbiBNb24sIDIwMjAtMDYtMjkgYXQgMTU6MTMgKzA4MDAsIENoYW8gSGFvIHdy
+b3RlOg0KPiA+IEdpdmVuIHRoZSBmYWN0IHRoYXQgd2UgYXJlIGFkZGluZyBtb3JlIGFuZCBtb3Jl
+IHBsYXRfZGF0YSBib29sIHZhbHVlcywNCj4gPiBpdCB3b3VsZCBtYWtlIHNlbnNlIHRvIHVzZSBh
+IHUzMiBmbGFncyByZWdpc3RlciBhbmQgYWRkIHRoZSBhcHByb3ByaWF0ZQ0KPiA+IG1hY3JvIGRl
+ZmluaXRpb25zIHRvIHNldCBhbmQgY2hlY2sgZm9yIGEgZmxhZyBwcmVzZW50Lg0KPiA+IE5vIGZ1
+bmN0aW9uYWwgY2hhbmdlLg0KPiA+IA0KPiA+IFN1Z2dlc3RlZC1ieTogTWF0dGhpYXMgQnJ1Z2dl
+ciA8bWF0dGhpYXMuYmdnQGdtYWlsLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBDaGFvIEhhbyA8
+Y2hhby5oYW9AbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiANCj4gW3NuaXBdDQo+IA0KPiA+ICBz
+dGF0aWMgY29uc3Qgc3RydWN0IG10a19pb21tdV9wbGF0X2RhdGEgbXQyNzEyX2RhdGEgPSB7DQo+
+ID4gIAkubTR1X3BsYXQgICAgID0gTTRVX01UMjcxMiwNCj4gPiAtCS5oYXNfNGdiX21vZGUgPSB0
+cnVlLA0KPiA+IC0JLmhhc19iY2xrICAgICA9IHRydWUsDQo+ID4gLQkuaGFzX3ZsZF9wYV9ybmcg
+ICA9IHRydWUsDQo+ID4gKwkuZmxhZ3MgICAgICAgID0gSEFTXzRHQl9NT0RFIHwNCj4gPiArCQkJ
+SEFTX0JDTEsgfA0KPiA+ICsJCQlIQVNfVkxEX1BBX1JORywNCj4gDQo+IHNob3J0IGVub3VnaC4g
+d2UgY2FuIHB1dCBpdCBpbiBvbmUgbGluZT8NCg0Kb2ssIEkgd2lsbCB0cnkgdG8gcHV0IGl0IGlu
+IG9uZSBsaW5lIGluIG5leHQgdmVyc2lvbiwgdGhhbmtzDQoNCj4gDQo+ID4gIAkubGFyYmlkX3Jl
+bWFwID0gezAsIDEsIDIsIDMsIDQsIDUsIDYsIDcsIDgsIDl9LA0KPiA+ICB9Ow0KPiA+ICANCj4g
+PiAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfaW9tbXVfcGxhdF9kYXRhIG10ODE3M19kYXRhID0g
+ew0KPiA+ICAJLm00dV9wbGF0ICAgICA9IE00VV9NVDgxNzMsDQo+ID4gLQkuaGFzXzRnYl9tb2Rl
+ID0gdHJ1ZSwNCj4gPiAtCS5oYXNfYmNsayAgICAgPSB0cnVlLA0KPiA+IC0JLnJlc2V0X2F4aSAg
+ICA9IHRydWUsDQo+ID4gKwkuZmxhZ3MJICAgICAgPSBIQVNfNEdCX01PREUgfA0KPiA+ICsJCQlI
+QVNfQkNMSyB8DQo+ID4gKwkJCVJFU0VUX0FYSSwNCj4gPiAgCS5sYXJiaWRfcmVtYXAgPSB7MCwg
+MSwgMiwgMywgNCwgNX0sIC8qIExpbmVhciBtYXBwaW5nLiAqLw0KPiA+ICB9Ow0KPiA+ICANCj4g
+PiAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfaW9tbXVfcGxhdF9kYXRhIG10ODE4M19kYXRhID0g
+ew0KPiA+ICAJLm00dV9wbGF0ICAgICA9IE00VV9NVDgxODMsDQo+ID4gLQkucmVzZXRfYXhpICAg
+ID0gdHJ1ZSwNCj4gPiArCS5mbGFncyAgICAgICAgPSBSRVNFVF9BWEksDQo+ID4gIAkubGFyYmlk
+X3JlbWFwID0gezAsIDQsIDUsIDYsIDcsIDIsIDMsIDF9LA0KPiA+ICB9Ow0KPiA+ICANCj4gPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuaCBiL2RyaXZlcnMvaW9tbXUvbXRr
+X2lvbW11LmgNCj4gPiBpbmRleCAxYjZlYTgzOWI5MmMuLjdjYzM5ZjcyOTI2MyAxMDA2NDQNCj4g
+PiAtLS0gYS9kcml2ZXJzL2lvbW11L210a19pb21tdS5oDQo+ID4gKysrIGIvZHJpdmVycy9pb21t
+dS9tdGtfaW9tbXUuaA0KPiA+IEBAIC0xNyw2ICsxNywxNSBAQA0KPiA+ICAjaW5jbHVkZSA8bGlu
+dXgvc3BpbmxvY2suaD4NCj4gPiAgI2luY2x1ZGUgPHNvYy9tZWRpYXRlay9zbWkuaD4NCj4gPiAg
+DQo+ID4gKyNkZWZpbmUgSEFTXzRHQl9NT0RFCQkJQklUKDApDQo+ID4gKy8qIEhXIHdpbGwgdXNl
+IHRoZSBFTUkgY2xvY2sgaWYgdGhlcmUgaXNuJ3QgdGhlICJiY2xrIi4gKi8NCj4gPiArI2RlZmlu
+ZSBIQVNfQkNMSwkJCUJJVCgxKQ0KPiA+ICsjZGVmaW5lIEhBU19WTERfUEFfUk5HCQkJQklUKDIp
+DQo+ID4gKyNkZWZpbmUgUkVTRVRfQVhJCQkJQklUKDMpDQo+ID4gKw0KPiA+ICsjZGVmaW5lIE1U
+S19JT01NVV9IQVNfRkxBRyhwZGF0YSwgX3gpIFwNCj4gPiArCQkoKCgocGRhdGEpLT5mbGFncykg
+JiAoX3gpKSA9PSAoX3gpKQ0KPiANCj4gSWYgdGhlc2UgZGVmaW5pdGlvbnMgYXJlIG5vdCB1c2Vk
+IGluIG10a19pb21tdV92MS5jKGFsc28gbm8gdGhpcyBwbGFuKSwNCj4gdGhlbiB3ZSBjYW4gcHV0
+IHRoZW0gaW4gdGhlIG10a19pb21tdS5jLg0KPiANCg0Kb2ssIG10a19pb21tdV92MS5jIGRvZXNu
+J3QgdXNlIHRoZXNlIGRlZmluaXRpb25zLg0KSSB3aWxsIG1vdmUgdGhlbSB0byBtdGtfaW9tbXUu
+YyBpbiBuZXh0IHZlcnNpb24sIHRoYW5rcy4NCg0KPiANCj4gQlRXLCB0aGUgcGF0Y2ggdGl0bGUg
+Im1vZGlmeSB0aGUgdXNhZ2Ugb2YgbXRrX2lvbW11X3BsYXRfZGF0YSBzdHJ1Y3R1cmUiDQo+IGlz
+bid0IHNvIGNsZWFyLCB3ZSBjb3VsZCB3cml0ZSB3aGF0IHRoZSBkZXRhaWxlZCBtb2RpZmljYXRp
+b24gaXMuDQo+IHNvbWV0aGluZyBsaWtlOg0KPiBpb21tdS9tZWRpYXRlazogVXNlIGEgdTMyIGZs
+YWdzIHRvIGRlc2NyaWJlIGRpZmZlcmVudCBIVyBmZWF0dXJlcw0KPiANCmdvdCBpdCAsIHRoYW5r
+cyBmb3IgeW91IGFkdmljZS4NCg0KDQo+ID4gKw0KPiA+ICBzdHJ1Y3QgbXRrX2lvbW11X3N1c3Bl
+bmRfcmVnIHsNCj4gPiAgCXUzMgkJCQltaXNjX2N0cmw7DQo+ID4gIAl1MzIJCQkJZGNtX2RpczsN
+Cj4gPiBAQCAtMzYsMTIgKzQ1LDcgQEAgZW51bSBtdGtfaW9tbXVfcGxhdCB7DQo+ID4gIA0KPiA+
+ICBzdHJ1Y3QgbXRrX2lvbW11X3BsYXRfZGF0YSB7DQo+ID4gIAllbnVtIG10a19pb21tdV9wbGF0
+IG00dV9wbGF0Ow0KPiA+IC0JYm9vbCAgICAgICAgICAgICAgICBoYXNfNGdiX21vZGU7DQo+ID4g
+LQ0KPiA+IC0JLyogSFcgd2lsbCB1c2UgdGhlIEVNSSBjbG9jayBpZiB0aGVyZSBpc24ndCB0aGUg
+ImJjbGsiLiAqLw0KPiA+IC0JYm9vbCAgICAgICAgICAgICAgICBoYXNfYmNsazsNCj4gPiAtCWJv
+b2wgICAgICAgICAgICAgICAgaGFzX3ZsZF9wYV9ybmc7DQo+ID4gLQlib29sICAgICAgICAgICAg
+ICAgIHJlc2V0X2F4aTsNCj4gPiArCXUzMiAgICAgICAgICAgICAgICAgZmxhZ3M7DQo+ID4gIAl1
+bnNpZ25lZCBjaGFyICAgICAgIGxhcmJpZF9yZW1hcFtNVEtfTEFSQl9OUl9NQVhdOw0KPiA+ICB9
+Ow0KPiA+ICANCj4gDQo+IA0KDQo=
 
