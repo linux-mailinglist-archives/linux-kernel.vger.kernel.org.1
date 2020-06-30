@@ -2,146 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9504C20F059
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7079520F068
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731351AbgF3ITs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 04:19:48 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:32814 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730861AbgF3ITp (ORCPT
+        id S1731398AbgF3IVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 04:21:22 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18705 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727919AbgF3IVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 04:19:45 -0400
-Received: by mail-ej1-f67.google.com with SMTP id n26so5645280ejx.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 01:19:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hvNDb619PND9BSnOO/FTgYwwF+7N75fMEl+ZD4EKqsM=;
-        b=eMWO5dMpyuuKoC1e3H/9ut0wE3rsfuQc1TdA6U+47Ka3S1BXmH0febTyfL7ODEZ9U6
-         /PvdRkUcK28YmLGj1STJsT510Ys3Ld4MXYbrtFDmEVMnA4jVuDLde//gehcXTVZQ5c/j
-         AB2MY7zkzMXZjlcWZ7mQ0SQtJNM2nSQr2yBVSpdT2HwUdvGWcrXak+NMyOUDam9jcCBQ
-         iBRve8SFn6OQz+SBQCcEb0UCv2Jhy+lwKi0ufnBAwg4RrnQouYHgcQCJg6MYYShpqlc9
-         5NKzEG+BhfTGtQKqcaA16XNdmYtFlUemfO8E8XtzqoX3/BGC7fhRYpjnUK+bwXBAA6DV
-         GboQ==
-X-Gm-Message-State: AOAM533/prxHtrU/ZdIeczcvefDckW95KxTnRxTR8vTHF7UQZ/toZBe6
-        l2uXjDt08JML+TR/xKpVsxI=
-X-Google-Smtp-Source: ABdhPJx1S2bMBQqMtx4WXGh/d/lkwjOBn+S/nzIRGYuA9KRMjCqnTzm3OP/1N3JVGlohhgDY6AJQBw==
-X-Received: by 2002:a17:907:7283:: with SMTP id dt3mr17835137ejc.195.1593505183733;
-        Tue, 30 Jun 2020 01:19:43 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id w8sm1999763eds.41.2020.06.30.01.19.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jun 2020 01:19:43 -0700 (PDT)
-Subject: Re: [PATCH v1 4/5] misc/phantom.c: use generic power management
-To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Dubov <oakad@yahoo.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org
-References: <20200629081531.214734-1-vaibhavgupta40@gmail.com>
- <20200629081531.214734-5-vaibhavgupta40@gmail.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <164d7366-27f5-c764-3122-5c4a0239e66f@kernel.org>
-Date:   Tue, 30 Jun 2020 10:19:42 +0200
+        Tue, 30 Jun 2020 04:21:21 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5efaf5f40000>; Tue, 30 Jun 2020 01:21:08 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Tue, 30 Jun 2020 01:21:21 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Tue, 30 Jun 2020 01:21:21 -0700
+Received: from [10.26.75.203] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 30 Jun
+ 2020 08:21:16 +0000
+Subject: Re: [PATCH v8 2/3] dt-bindings: arm-smmu: Add binding for Tegra194
+ SMMU
+To:     Krishna Reddy <vdumpa@nvidia.com>
+CC:     <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <treding@nvidia.com>,
+        <yhsu@nvidia.com>, <snikam@nvidia.com>, <praithatha@nvidia.com>,
+        <talho@nvidia.com>, <bbiswas@nvidia.com>, <mperttunen@nvidia.com>,
+        <nicolinc@nvidia.com>, <bhuntsman@nvidia.com>,
+        <nicoleotsuka@gmail.com>
+References: <20200630001051.12350-1-vdumpa@nvidia.com>
+ <20200630001051.12350-3-vdumpa@nvidia.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <06f4e802-11a2-3fb3-e334-9ba8533c9bcf@nvidia.com>
+Date:   Tue, 30 Jun 2020 09:21:14 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200629081531.214734-5-vaibhavgupta40@gmail.com>
-Content-Type: text/plain; charset=iso-8859-2
+In-Reply-To: <20200630001051.12350-3-vdumpa@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1593505268; bh=DQaMRKB84VIKK0yEyIitEMeud5u93A+msqcYYHv6p/c=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=ScsXCOaLR7lc84hWPVEkKR7E/79SU8nX+bqRxSLfL/2V4nL+Zx/gBQ+Vwu19FaVh8
+         y3vbFKJNcnF3Z1Z3KCH7OFroY7Et5HnG7MW+4fky7SqrHTGcv+fO17r6Yo3sxM5TwP
+         n7Wf4FBuEZlJZA1ulq60Je/Fv/stOxXCoRHkCyE5giLyo/1Epac4aHJI1JPPdlWtDq
+         VKlUSdI+yAkt5YCoBV4JVO5desmwc/UFk3A4JGtO0JvjmKX+jz37tJXtMhkzH93O3a
+         Aah61KXLRl3NUSrR7YeGq18JT/vR8IewKg1lV2exSe/BVCVxTWm8ICICHMq6lTCHH8
+         kQ/MrXaQMQGmQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29. 06. 20, 10:15, Vaibhav Gupta wrote:
-> With the support of generic PM callbacks, drivers no longer need to use
-> legacy .suspend() and .resume() in which they had to maintain PCI states
-> changes and device's power state themselves. All required operations are
-> done by PCI core.
-> 
-> Driver needs to do only device-specific operations.
-> 
-> Compile-tested only.
-> 
-> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
 
-From the driver's POV:
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
-
+On 30/06/2020 01:10, Krishna Reddy wrote:
+> Add binding for NVIDIA's Tegra194 SoC SMMU topology that is based
+> on ARM MMU-500.
+> 
+> Signed-off-by: Krishna Reddy <vdumpa@nvidia.com>
 > ---
->  drivers/misc/phantom.c | 20 ++++++++------------
->  1 file changed, 8 insertions(+), 12 deletions(-)
+>  Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> diff --git a/drivers/misc/phantom.c b/drivers/misc/phantom.c
-> index 6a5ed0e25ff1..ce72e46a2e73 100644
-> --- a/drivers/misc/phantom.c
-> +++ b/drivers/misc/phantom.c
-> @@ -457,31 +457,26 @@ static void phantom_remove(struct pci_dev *pdev)
->  	pci_disable_device(pdev);
->  }
->  
-> -#ifdef CONFIG_PM
-> -static int phantom_suspend(struct pci_dev *pdev, pm_message_t state)
-> +static int __maybe_unused phantom_suspend(struct device *dev_d)
->  {
-> -	struct phantom_device *dev = pci_get_drvdata(pdev);
-> +	struct phantom_device *dev = dev_get_drvdata(dev_d);
->  
->  	iowrite32(0, dev->caddr + PHN_IRQCTL);
->  	ioread32(dev->caddr + PHN_IRQCTL); /* PCI posting */
->  
-> -	synchronize_irq(pdev->irq);
-> +	synchronize_irq(to_pci_dev(dev_d)->irq);
->  
->  	return 0;
->  }
->  
-> -static int phantom_resume(struct pci_dev *pdev)
-> +static int __maybe_unused phantom_resume(struct device *dev_d)
->  {
-> -	struct phantom_device *dev = pci_get_drvdata(pdev);
-> +	struct phantom_device *dev = dev_get_drvdata(dev_d);
->  
->  	iowrite32(0, dev->caddr + PHN_IRQCTL);
->  
->  	return 0;
->  }
-> -#else
-> -#define phantom_suspend	NULL
-> -#define phantom_resume	NULL
-> -#endif
->  
->  static struct pci_device_id phantom_pci_tbl[] = {
->  	{ .vendor = PCI_VENDOR_ID_PLX, .device = PCI_DEVICE_ID_PLX_9050,
-> @@ -491,13 +486,14 @@ static struct pci_device_id phantom_pci_tbl[] = {
->  };
->  MODULE_DEVICE_TABLE(pci, phantom_pci_tbl);
->  
-> +static SIMPLE_DEV_PM_OPS(phantom_pm_ops, phantom_suspend, phantom_resume);
-> +
->  static struct pci_driver phantom_pci_driver = {
->  	.name = "phantom",
->  	.id_table = phantom_pci_tbl,
->  	.probe = phantom_probe,
->  	.remove = phantom_remove,
-> -	.suspend = phantom_suspend,
-> -	.resume = phantom_resume
-> +	.driver.pm = &phantom_pm_ops,
->  };
->  
->  static CLASS_ATTR_STRING(version, 0444, PHANTOM_VERSION);
-> 
+> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> index d7ceb4c34423b..5b2586ac715ed 100644
+> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> @@ -38,6 +38,11 @@ properties:
+>                - qcom,sc7180-smmu-500
+>                - qcom,sdm845-smmu-500
+>            - const: arm,mmu-500
+> +      - description: NVIDIA SoCs that use more than one "arm,mmu-500"
+> +        items:
+> +          - enum:
+> +              - nvdia,tegra194-smmu
 
+s/nvdia/nvidia
+
+Jon
 
 -- 
-js
+nvpublic
