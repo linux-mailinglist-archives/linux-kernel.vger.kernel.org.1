@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355CC20FEAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9276420FEA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729838AbgF3VZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 17:25:34 -0400
-Received: from mga02.intel.com ([134.134.136.20]:43377 "EHLO mga02.intel.com"
+        id S1730469AbgF3VZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 17:25:30 -0400
+Received: from mga02.intel.com ([134.134.136.20]:43380 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730358AbgF3VZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730376AbgF3VZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 30 Jun 2020 17:25:28 -0400
-IronPort-SDR: uokXXvGJZMbKtjWjojvTQITMQUXpRU0ICWeeDH9ufBLLpRXZZjHNDgfmJmASlnzE59Es2Osxab
- o/IoaFWpVlgQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="134676818"
+IronPort-SDR: e/4eHNX08WzayR0hovcQGTiYGuDWrzaNmEM5zxOtCuVTIJ6Oxbf5Y0GCSq6ddnm5dzQat1Kuab
+ oj4QO4UY1PJg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="134676819"
 X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="134676818"
+   d="scan'208";a="134676819"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 14:25:25 -0700
-IronPort-SDR: 4+7cRLuAWyAT8sTbObsbjZgxHy7VffO0F4uOKj3ndsLDqqlKVCgamUHtvDiFuekZHQLoLUR5I0
- ZtfbCNfNp09Q==
+IronPort-SDR: jiH7xBlVLhLIbymLk1VPjHyNfRig7LjaND1D47uVIY79yl6f1VN84qqwM4SZDL/oeYdj6uXFnR
+ nc9G6savvdFA==
 X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="481336277"
+   d="scan'208";a="481336282"
 Received: from schittin-mobl.amr.corp.intel.com (HELO bwidawsk-mobl5.local) ([10.252.132.42])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 14:25:24 -0700
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 14:25:25 -0700
 From:   Ben Widawsky <ben.widawsky@intel.com>
 To:     linux-mm <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
 Cc:     Michal Hocko <mhocko@kernel.org>,
         Dave Hansen <dave.hansen@intel.com>,
         Ben Widawsky <ben.widawsky@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: [PATCH 07/12] mm/mempolicy: handle MPOL_PREFERRED_MANY like BIND
-Date:   Tue, 30 Jun 2020 14:25:12 -0700
-Message-Id: <20200630212517.308045-8-ben.widawsky@intel.com>
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH 08/12] mm/mempolicy: Create a page allocator for policy
+Date:   Tue, 30 Jun 2020 14:25:13 -0700
+Message-Id: <20200630212517.308045-9-ben.widawsky@intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200630212517.308045-1-ben.widawsky@intel.com>
 References: <20200630212517.308045-1-ben.widawsky@intel.com>
@@ -46,146 +46,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch begins the real plumbing for handling this new policy. Now
-that the internal representation for preferred nodes and bound nodes is
-the same, and we can envision what multiple preferred nodes will behave
-like, there are obvious places where we can simply reuse the bind
-behavior.
+This patch adds a helper function which takes care of handling multiple
+preferred nodes. It will be called by future patches that need to handle
+this, specifically VMA based page allocation, and task based page
+allocation. Huge pages don't quite fit the same pattern because they use
+different underlying page allocation functions. This consumes the
+previous interleave policy specific allocation function to make a one
+stop shop for policy based allocation.
 
-In v1 of this series, the moral equivalent was:
-"mm: Finish handling MPOL_PREFERRED_MANY". Like that, this attempts to
-implement the easiest spots for the new policy. Unlike that, this just
-reuses BIND.
+For now, only interleaved policy will be used so there should be no
+functional change yet. However, if bisection points to issues in the
+next few commits, it was likely the fault of this patch.
+
+Similar functionality is offered via policy_node() and
+policy_nodemask(). By themselves however, neither can achieve this
+fallback style of sets of nodes.
 
 Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: Michal Hocko <mhocko@kernel.org>
+CC: Vlastimil Babka <vbabka@suse.cz>
 Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
 ---
- mm/mempolicy.c | 23 ++++++++---------------
- 1 file changed, 8 insertions(+), 15 deletions(-)
+ mm/mempolicy.c | 60 +++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 47 insertions(+), 13 deletions(-)
 
 diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index e71ebc906ff0..3b38c9c4e580 100644
+index 3b38c9c4e580..1009cf90ad37 100644
 --- a/mm/mempolicy.c
 +++ b/mm/mempolicy.c
-@@ -950,8 +950,6 @@ static void get_policy_nodemask(struct mempolicy *p, nodemask_t *nodes)
- 	switch (p->mode) {
- 	case MPOL_BIND:
- 	case MPOL_INTERLEAVE:
--		*nodes = p->nodes;
--		break;
- 	case MPOL_PREFERRED_MANY:
- 		*nodes = p->nodes;
- 		break;
-@@ -1938,7 +1936,8 @@ static int apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
- static nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
+@@ -2199,22 +2199,56 @@ bool mempolicy_nodemask_intersects(struct task_struct *tsk,
+ 	return ret;
+ }
+ 
+-/* Allocate a page in interleaved policy.
+-   Own path because it needs to do special accounting. */
+-static struct page *alloc_page_interleave(gfp_t gfp, unsigned order,
+-					unsigned nid)
++/* Handle page allocation for all but interleaved policies */
++static struct page *alloc_pages_policy(struct mempolicy *pol, gfp_t gfp,
++				       unsigned int order, int preferred_nid)
  {
- 	/* Lower zones don't get a nodemask applied for MPOL_BIND */
--	if (unlikely(policy->mode == MPOL_BIND) &&
-+	if (unlikely(policy->mode == MPOL_BIND ||
-+		     policy->mode == MPOL_PREFERRED_MANY) &&
- 	    apply_policy_zone(policy, gfp_zone(gfp)) &&
- 	    cpuset_nodemask_valid_mems_allowed(&policy->nodes))
- 		return &policy->nodes;
-@@ -1995,7 +1994,6 @@ unsigned int mempolicy_slab_node(void)
- 		return node;
+ 	struct page *page;
++	gfp_t gfp_mask = gfp;
  
- 	switch (policy->mode) {
--	case MPOL_PREFERRED_MANY:
- 	case MPOL_PREFERRED:
- 		/*
- 		 * handled MPOL_F_LOCAL above
-@@ -2005,6 +2003,7 @@ unsigned int mempolicy_slab_node(void)
- 	case MPOL_INTERLEAVE:
- 		return interleave_nodes(policy);
- 
-+	case MPOL_PREFERRED_MANY:
- 	case MPOL_BIND: {
- 		struct zoneref *z;
- 
-@@ -2020,6 +2019,7 @@ unsigned int mempolicy_slab_node(void)
- 		return z->zone ? zone_to_nid(z->zone) : node;
+-	page = __alloc_pages(gfp, order, nid);
+-	/* skip NUMA_INTERLEAVE_HIT counter update if numa stats is disabled */
+-	if (!static_branch_likely(&vm_numa_stat_key))
++	if (pol->mode == MPOL_INTERLEAVE) {
++		page = __alloc_pages(gfp, order, preferred_nid);
++		/* skip NUMA_INTERLEAVE_HIT counter update if numa stats is disabled */
++		if (!static_branch_likely(&vm_numa_stat_key))
++			return page;
++		if (page && page_to_nid(page) == preferred_nid) {
++			preempt_disable();
++			__inc_numa_state(page_zone(page), NUMA_INTERLEAVE_HIT);
++			preempt_enable();
++		}
+ 		return page;
+-	if (page && page_to_nid(page) == nid) {
+-		preempt_disable();
+-		__inc_numa_state(page_zone(page), NUMA_INTERLEAVE_HIT);
+-		preempt_enable();
  	}
- 
 +
- 	default:
- 		BUG();
++	VM_BUG_ON(preferred_nid != NUMA_NO_NODE);
++
++	preferred_nid = numa_node_id();
++
++	/*
++	 * There is a two pass approach implemented here for
++	 * MPOL_PREFERRED_MANY. In the first pass we pretend the preferred nodes
++	 * are bound, but allow the allocation to fail. The below table explains
++	 * how this is achieved.
++	 *
++	 * | Policy                        | preferred nid | nodemask   |
++	 * |-------------------------------|---------------|------------|
++	 * | MPOL_DEFAULT                  | local         | NULL       |
++	 * | MPOL_PREFERRED                | best          | NULL       |
++	 * | MPOL_INTERLEAVE               | ERR           | ERR        |
++	 * | MPOL_BIND                     | local         | pol->nodes |
++	 * | MPOL_PREFERRED_MANY           | best          | pol->nodes |
++	 * | MPOL_PREFERRED_MANY (round 2) | local         | NULL       |
++	 * +-------------------------------+---------------+------------+
++	 */
++	if (pol->mode == MPOL_PREFERRED_MANY)
++		gfp_mask |= __GFP_RETRY_MAYFAIL;
++
++	page = __alloc_pages_nodemask(gfp_mask, order,
++				      policy_node(gfp, pol, preferred_nid),
++				      policy_nodemask(gfp, pol));
++
++	if (unlikely(!page && pol->mode == MPOL_PREFERRED_MANY))
++		page = __alloc_pages_nodemask(gfp, order, preferred_nid, NULL);
++
+ 	return page;
+ }
+ 
+@@ -2256,8 +2290,8 @@ alloc_pages_vma(gfp_t gfp, int order, struct vm_area_struct *vma,
+ 		unsigned nid;
+ 
+ 		nid = interleave_nid(pol, vma, addr, PAGE_SHIFT + order);
++		page = alloc_pages_policy(pol, gfp, order, nid);
+ 		mpol_cond_put(pol);
+-		page = alloc_page_interleave(gfp, order, nid);
+ 		goto out;
  	}
-@@ -2130,9 +2130,6 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
- 	task_lock(current);
- 	mempolicy = current->mempolicy;
- 	switch (mempolicy->mode) {
--	case MPOL_PREFERRED_MANY:
--		*mask = mempolicy->nodes;
--		break;
- 	case MPOL_PREFERRED:
- 		if (mempolicy->flags & MPOL_F_LOCAL)
- 			nid = numa_node_id();
-@@ -2143,6 +2140,7 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
  
- 	case MPOL_BIND:
- 	case MPOL_INTERLEAVE:
-+	case MPOL_PREFERRED_MANY:
- 		*mask = mempolicy->nodes;
- 		break;
- 
-@@ -2186,12 +2184,11 @@ bool mempolicy_nodemask_intersects(struct task_struct *tsk,
- 		 * Thus, it's possible for tsk to have allocated memory from
- 		 * nodes in mask.
- 		 */
--		break;
--	case MPOL_PREFERRED_MANY:
- 		ret = nodes_intersects(mempolicy->nodes, *mask);
- 		break;
- 	case MPOL_BIND:
- 	case MPOL_INTERLEAVE:
-+	case MPOL_PREFERRED_MANY:
- 		ret = nodes_intersects(mempolicy->nodes, *mask);
- 		break;
- 	default:
-@@ -2415,7 +2412,6 @@ bool __mpol_equal(struct mempolicy *a, struct mempolicy *b)
- 	switch (a->mode) {
- 	case MPOL_BIND:
- 	case MPOL_INTERLEAVE:
--		return !!nodes_equal(a->nodes, b->nodes);
- 	case MPOL_PREFERRED_MANY:
- 		return !!nodes_equal(a->nodes, b->nodes);
- 	case MPOL_PREFERRED:
-@@ -2569,6 +2565,7 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
- 			polnid = first_node(pol->nodes);
- 		break;
- 
-+	case MPOL_PREFERRED_MANY:
- 	case MPOL_BIND:
- 
- 		/*
-@@ -2585,8 +2582,6 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
- 		polnid = zone_to_nid(z->zone);
- 		break;
- 
--	/* case MPOL_PREFERRED_MANY: */
--
- 	default:
- 		BUG();
- 	}
-@@ -3099,15 +3094,13 @@ void mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol)
- 	switch (mode) {
- 	case MPOL_DEFAULT:
- 		break;
--	case MPOL_PREFERRED_MANY:
--		WARN_ON(flags & MPOL_F_LOCAL);
--		fallthrough;
- 	case MPOL_PREFERRED:
- 		if (flags & MPOL_F_LOCAL)
- 			mode = MPOL_LOCAL;
- 		else
- 			nodes_or(nodes, nodes, pol->nodes);
- 		break;
-+	case MPOL_PREFERRED_MANY:
- 	case MPOL_BIND:
- 	case MPOL_INTERLEAVE:
- 		nodes = pol->nodes;
+@@ -2341,7 +2375,7 @@ struct page *alloc_pages_current(gfp_t gfp, unsigned order)
+ 	 * nor system default_policy
+ 	 */
+ 	if (pol->mode == MPOL_INTERLEAVE)
+-		page = alloc_page_interleave(gfp, order, interleave_nodes(pol));
++		page = alloc_pages_policy(pol, gfp, order, interleave_nodes(pol));
+ 	else
+ 		page = __alloc_pages_nodemask(gfp, order,
+ 				policy_node(gfp, pol, numa_node_id()),
 -- 
 2.27.0
 
