@@ -2,183 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF1320F247
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 12:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88FC20F24C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 12:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732295AbgF3KJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 06:09:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729259AbgF3KJf (ORCPT
+        id S1732319AbgF3KJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 06:09:57 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:36994 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729259AbgF3KJw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 06:09:35 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281D0C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 03:09:35 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id g2so11027806lfb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 03:09:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qmWg/+jpbOxQ2F1Zn/eg6jJ0YSCVNYZ/cm+95B4TJCY=;
-        b=GUqTDJ9KLKN9o+dp11x/jJH6eyI5mdjgZqCufGPzCAeE0W2ZtXNIeQrA52zabXMd9k
-         aNihOto2tdj+oHp8IuRNwTIJqph1SNFhyi+1nC544G+9LLbmx1NVOiaNsJrmLBopA18/
-         gc5lbnRDSEbwDgP73uE38AAmenOGm5QAT9c6XtiV+lDofflh/kMhCJKDFt+uO8qs4bfb
-         jWt5sSOrcTsJQBMul/qSQSRhiOvOvZG+yRAwSqoghKCe8E2SSQL4MWjLlXM+klJePrYU
-         75CIcj+94wTwNNY6ImSdHqXeOXKRjSsUlWewSuoBqDKfacM1gfhmoI4BzSzy6qtaPOZq
-         +L0g==
+        Tue, 30 Jun 2020 06:09:52 -0400
+Received: by mail-wm1-f65.google.com with SMTP id o2so19025486wmh.2;
+        Tue, 30 Jun 2020 03:09:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qmWg/+jpbOxQ2F1Zn/eg6jJ0YSCVNYZ/cm+95B4TJCY=;
-        b=A4qfHJ3Rwh+UNZt2//Oc4kcDUfDfHcijJH+jHzervs98PD7CBOARsN1t6qlrCQaOjT
-         4W7jh009k4jdIrN2WEbGSvdAzBzJkGw1ObmUoql2URLJGRAuw4ORyoH8igBFPrX4ZdeF
-         zpFpPMQK3bCDKlilEK3aDZc4jvrU0dmAseHqcPNdpl/914Ry1wUSAW1f/RiBRHTi7PiW
-         1PqcumoreDXD99brJteSdDJN9Mn6nIxn/oV9VeUEaL6aIBA3mYNGFRTPvUBXEy2BB7+R
-         /CpQuGAUTOnOAX0d5nCrAH2UIAKJoAv28ZWng/CBtFU/3p0ngu/znhg2tgVPkuA0aqif
-         OS7g==
-X-Gm-Message-State: AOAM532Ba48EBM72ZcGEvqDIKJma3eCINxV7rLuJfVgyBO4fXOsIFxfB
-        6Q//h7Qggm4plK/ykUz7ItsC5Q==
-X-Google-Smtp-Source: ABdhPJySik5PUCHYPI0zhpnvXdET33Ycn7xwDFaHIxLodpL5XimXyR5OUblyqsatUY4l9OE3msdbwg==
-X-Received: by 2002:ac2:5f04:: with SMTP id 4mr11471273lfq.140.1593511773581;
-        Tue, 30 Jun 2020 03:09:33 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id f5sm657759ljc.99.2020.06.30.03.09.32
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FmgTlr1OUfzWlhUsAL1GTZuUCBabwqeOyGOtajhoirQ=;
+        b=EGwQrarNa7eldcF4apU8+zEYGdpHn9CPOdd3ex1uRl1NEqymzypbVmuiNdeUxKko+g
+         sQDr3Tqv5sb6xmP3qD04rXs2k6dLh991CmzUlapRRYhQR3RW9ysgneROhXTnwomDDEUE
+         hZuss+zd+1jLNCTGFPmYFQmSU4WWpmZuxoZARamOzXOysM3MUN7psm7lRARisf6/QGnh
+         UeZUUbDx0tgon3oYGNax9S1jQUnGFhJZ0l8r/RI5G6TF7iCSCK78gtJUmeFokAN3tJJu
+         Mj8jSPHFJxIf8Tg+6sboxeyrchrTTfMG+4BNpln5L7YIP1DoHLxB0jkQmMxXSFI9brD6
+         5aUA==
+X-Gm-Message-State: AOAM533JtQqde37AIbZB+DGqtMiWgobOsqxLMuVYS5nlXCLs1M0CuumA
+        Effz0mTacU4MVgZVWWCeZyysXCIZ
+X-Google-Smtp-Source: ABdhPJy+aXijd9fIQwT0tlDlZSipBkcgGurxofJYrYtqvqycPmTkeQu/oZXt6qGsVq3jreRJAGtepw==
+X-Received: by 2002:a7b:ca59:: with SMTP id m25mr21927020wml.151.1593511789246;
+        Tue, 30 Jun 2020 03:09:49 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id c70sm2965796wme.32.2020.06.30.03.09.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 03:09:32 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 5793D101187; Tue, 30 Jun 2020 13:09:40 +0300 (+03)
-Date:   Tue, 30 Jun 2020 13:09:40 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Bibo Mao <maobibo@loongson.cn>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Daniel Silsby <dansilsby@gmail.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/3] mm: set page fault address for update_mmu_cache_pmd
-Message-ID: <20200630100940.wo5l5fcs44xhrqo7@box>
-References: <1592990792-1923-1-git-send-email-maobibo@loongson.cn>
+        Tue, 30 Jun 2020 03:09:47 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 10:09:45 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Andres Beltran <lkmlabelt@gmail.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Andres Beltran <t-mabelt@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Kelley <mikelley@microsoft.com>,
+        Andrea Parri <parri.andrea@gmail.com>
+Subject: Re: [PATCH v2 1/3] Drivers: hv: vmbus: Add vmbus_requestor data
+ structure for VMBus hardening
+Message-ID: <20200630100945.jzl2a2plw2gsnkyw@liuwe-devbox-debian-v2>
+References: <20200629200227.1518784-1-lkmlabelt@gmail.com>
+ <20200629200227.1518784-2-lkmlabelt@gmail.com>
+ <20200629204653.o6q3a2fufgq62pzo@liuwe-devbox-debian-v2>
+ <CAGpZZ6sUXOnggeQyPfxkdK50=1AhTUqbvBvc2bEs4qwwk+rSPg@mail.gmail.com>
+ <20200629222040.bh7tkkridwt7sdlw@liuwe-devbox-debian-v2>
+ <CAGpZZ6teQ1KDKZ28Q50DSOZ3dF4oqEHagC2YSkb9WjKZ1io5Mw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1592990792-1923-1-git-send-email-maobibo@loongson.cn>
+In-Reply-To: <CAGpZZ6teQ1KDKZ28Q50DSOZ3dF4oqEHagC2YSkb9WjKZ1io5Mw@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 05:26:30PM +0800, Bibo Mao wrote:
-> update_mmu_cache_pmd is used to update tlb for the pmd entry by
-> software. On MIPS system, the tlb entry indexed by page fault
-> address maybe exists already, only that tlb entry may be small
-> page, also it may be huge page. Before updating pmd entry with
-> huge page size, older tlb entry need to be invalidated.
+On Mon, Jun 29, 2020 at 07:45:00PM -0400, Andres Beltran wrote:
+> On Mon, Jun 29, 2020 at 6:20 PM Wei Liu <wei.liu@kernel.org> wrote:
+> >
+> > On Mon, Jun 29, 2020 at 05:51:05PM -0400, Andres Beltran wrote:
+> > > On Mon, Jun 29, 2020 at 4:46 PM Wei Liu <wei.liu@kernel.org> wrote:
+> > > >
+> > > > On Mon, Jun 29, 2020 at 04:02:25PM -0400, Andres Beltran wrote:
+> > > > > Currently, VMbus drivers use pointers into guest memory as request IDs
+> > > > > for interactions with Hyper-V. To be more robust in the face of errors
+> > > > > or malicious behavior from a compromised Hyper-V, avoid exposing
+> > > > > guest memory addresses to Hyper-V. Also avoid Hyper-V giving back a
+> > > > > bad request ID that is then treated as the address of a guest data
+> > > > > structure with no validation. Instead, encapsulate these memory
+> > > > > addresses and provide small integers as request IDs.
+> > > > >
+> > > > > Signed-off-by: Andres Beltran <lkmlabelt@gmail.com>
+> > > > > ---
+> > > > > Changes in v2:
+> > > > >       - Get rid of "rqstor" variable in __vmbus_open().
+> > > > >
+> > > > >  drivers/hv/channel.c   | 146 +++++++++++++++++++++++++++++++++++++++++
+> > > > >  include/linux/hyperv.h |  21 ++++++
+> > > > >  2 files changed, 167 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
+> > > > > index 3ebda7707e46..c89d57d0c2d2 100644
+> > > > > --- a/drivers/hv/channel.c
+> > > > > +++ b/drivers/hv/channel.c
+> > > > > @@ -112,6 +112,70 @@ int vmbus_alloc_ring(struct vmbus_channel *newchannel,
+> > > > >  }
+> > > > >  EXPORT_SYMBOL_GPL(vmbus_alloc_ring);
+> > > > >
+> > > > > +/**
+> > > > > + * request_arr_init - Allocates memory for the requestor array. Each slot
+> > > > > + * keeps track of the next available slot in the array. Initially, each
+> > > > > + * slot points to the next one (as in a Linked List). The last slot
+> > > > > + * does not point to anything, so its value is U64_MAX by default.
+> > > > > + * @size The size of the array
+> > > > > + */
+> > > > > +static u64 *request_arr_init(u32 size)
+> > > > > +{
+> > > > > +     int i;
+> > > > > +     u64 *req_arr;
+> > > > > +
+> > > > > +     req_arr = kcalloc(size, sizeof(u64), GFP_KERNEL);
+> > > > > +     if (!req_arr)
+> > > > > +             return NULL;
+> > > > > +
+> > > > > +     for (i = 0; i < size - 1; i++)
+> > > > > +             req_arr[i] = i + 1;
+> > > > > +
+> > > > > +     /* Last slot (no more available slots) */
+> > > > > +     req_arr[i] = U64_MAX;
+> > > > > +
+> > > > > +     return req_arr;
+> > > > > +}
+> > > > > +
+> > > > > +/*
+> > > > > + * vmbus_alloc_requestor - Initializes @rqstor's fields.
+> > > > > + * Slot at index 0 is the first free slot.
+> > > > > + * @size: Size of the requestor array
+> > > > > + */
+> > > > > +static int vmbus_alloc_requestor(struct vmbus_requestor *rqstor, u32 size)
+> > > > > +{
+> > > > > +     u64 *rqst_arr;
+> > > > > +     unsigned long *bitmap;
+> > > > > +
+> > > > > +     rqst_arr = request_arr_init(size);
+> > > > > +     if (!rqst_arr)
+> > > > > +             return -ENOMEM;
+> > > > > +
+> > > > > +     bitmap = bitmap_zalloc(size, GFP_KERNEL);
+> > > > > +     if (!bitmap) {
+> > > > > +             kfree(rqst_arr);
+> > > > > +             return -ENOMEM;
+> > > > > +     }
+> > > > > +
+> > > > > +     rqstor->req_arr = rqst_arr;
+> > > > > +     rqstor->req_bitmap = bitmap;
+> > > > > +     rqstor->size = size;
+> > > > > +     rqstor->next_request_id = 0;
+> > > > > +     spin_lock_init(&rqstor->req_lock);
+> > > > > +
+> > > > > +     return 0;
+> > > > > +}
+> > > > > +
+> > > > > +/*
+> > > > > + * vmbus_free_requestor - Frees memory allocated for @rqstor
+> > > > > + * @rqstor: Pointer to the requestor struct
+> > > > > + */
+> > > > > +static void vmbus_free_requestor(struct vmbus_requestor *rqstor)
+> > > > > +{
+> > > > > +     kfree(rqstor->req_arr);
+> > > > > +     bitmap_free(rqstor->req_bitmap);
+> > > > > +}
+> > > > > +
+> > > > >  static int __vmbus_open(struct vmbus_channel *newchannel,
+> > > > >                      void *userdata, u32 userdatalen,
+> > > > >                      void (*onchannelcallback)(void *context), void *context)
+> > > > > @@ -132,6 +196,12 @@ static int __vmbus_open(struct vmbus_channel *newchannel,
+> > > > >       if (newchannel->state != CHANNEL_OPEN_STATE)
+> > > > >               return -EINVAL;
+> > > > >
+> > > > > +     /* Create and init requestor */
+> > > > > +     if (newchannel->rqstor_size) {
+> > > > > +             if (vmbus_alloc_requestor(&newchannel->requestor, newchannel->rqstor_size))
+> > > > > +                     return -ENOMEM;
+> > > > > +     }
+> > > > > +
+> > > >
+> > > > Sorry for not noticing this in the last round: this infrastructure is
+> > > > initialized conditionally but used unconditionally.
+> > > >
+> > > > I can think of two options here:
+> > > >
+> > > >   1. Mandate rqstor_size to be non-zero. Always initialize this
+> > > >      infra.
+> > > >   2. Modify vmbus_next_request_id and vmbus_request_addr to deal with
+> > > >      uninitialized state.
+> > > >
+> > > > For #2, you can simply check rqstor->size _before_ taking the lock
+> > > > (because it may be uninitialized, and the assumption is ->size will not
+> > > > change during the channel's lifetime, hence no lock is needed) and
+> > > > simply return the same value to the caller.
+> > > >
+> > > > Wei.
+> > >
+> > > Right. I think option #2 would be preferable in this case, because #1 works
+> > > if we had a default non-zero size for cases where rqstor_size has not been
+> > > set to a non-zero value before calling vmbus_alloc_requestor(). For #2, what
+> > > do you mean by "same value"? I think we would need to return
+> > > VMBUS_RQST_ERROR if the size is 0, because otherwise we would be
+> > > returning the same guest memory address which we don't want to expose.
+> >
+> > By "same value", I meant reverting back to using guest memory address.
+> > I thought downgrading gracefully is better than making the driver stop
+> > working.
+> >
+> > If exposing guest address is not acceptable, you can return
+> > VMBUS_RQST_ERROR -- but at the point you may as well mandate requestor
+> > infrastructure to be always initialized, right?
+> >
 > 
-> Here page fault address is passed to function update_mmu_cache_pmd,
-> rather than pmd huge page start address. The page fault address
-> can be used for invalidating older tlb entry.
+> If the allocation of the requestor fails during runtime, vmbus_open()
+> fails too and therefore,
+> the channel and the requestor will not be created. So, the 2 functions
+> (next_id, requestor_addr)
+> will never get called, right? The only case in which we hit this edge
+> case is if a driver is using this
+> mechanism with a size of 0 (i.e. rqstor_size is not set to a non-zero
+> value before calling vmbus_open()),
+
+Right. This is what I was getting at. Setting the size to 0 effectively
+makes the driver unusable. And per your design, it should be considered
+a bug.
+
+> but that would be more like a coding bug. So, I think it would be
+> better to return VMBUS_RQST_ERROR
+> as a way to assert that there is a bug in the code. I don't know if
+> I'm missing something here.
+
+Since we know setting size to 0 is a bug, you can actually just do the
+following in the __vmbus_open function instead of going through all the
+initialization with the knowledge vmbus_next_request_id & co will fail.
+
+    /* Create and init requestor */
+    if (!newchannel->rqstor_size)
+          return an error to caller here
+
+    vmbus_alloc_requestor(...);
+
+
+Wei.
+
 > 
-> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
-> ---
->  arch/mips/include/asm/pgtable.h | 9 +++++++++
->  mm/huge_memory.c                | 7 ++++---
->  mm/memory.c                     | 2 +-
->  3 files changed, 14 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-> index dd7a0f5..bd81661 100644
-> --- a/arch/mips/include/asm/pgtable.h
-> +++ b/arch/mips/include/asm/pgtable.h
-> @@ -554,11 +554,20 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
->  #define	__HAVE_ARCH_UPDATE_MMU_TLB
->  #define update_mmu_tlb	update_mmu_cache
->  
-> +extern void local_flush_tlb_page(struct vm_area_struct *vma,
-> +				unsigned long page);
->  static inline void update_mmu_cache_pmd(struct vm_area_struct *vma,
->  	unsigned long address, pmd_t *pmdp)
->  {
->  	pte_t pte = *(pte_t *)pmdp;
->  
-> +	/*
-> +	 * If pmd_none is true, older tlb entry will be normal page.
-> +	 * here to invalidate older tlb entry indexed by address
-> +	 * parameter address must be page fault address rather than
-> +	 * start address of pmd huge page
-> +	 */
-> +	local_flush_tlb_page(vma, address);
-
-Can't say I follow what is going on.
-
-Why local? What happens on SMP?
-
-And don't you want to flush PMD_SIZE range around the address?
-
->  	__update_tlb(vma, address, pte);
->  }
->  
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 78c84be..0f9187b 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -780,6 +780,7 @@ static void insert_pfn_pmd(struct vm_area_struct *vma, unsigned long addr,
->  		pgtable_t pgtable)
->  {
->  	struct mm_struct *mm = vma->vm_mm;
-> +	unsigned long start = addr & PMD_MASK;
->  	pmd_t entry;
->  	spinlock_t *ptl;
->  
-> @@ -792,7 +793,7 @@ static void insert_pfn_pmd(struct vm_area_struct *vma, unsigned long addr,
->  			}
->  			entry = pmd_mkyoung(*pmd);
->  			entry = maybe_pmd_mkwrite(pmd_mkdirty(entry), vma);
-> -			if (pmdp_set_access_flags(vma, addr, pmd, entry, 1))
-> +			if (pmdp_set_access_flags(vma, start, pmd, entry, 1))
->  				update_mmu_cache_pmd(vma, addr, pmd);
->  		}
->  
-> @@ -813,7 +814,7 @@ static void insert_pfn_pmd(struct vm_area_struct *vma, unsigned long addr,
->  		pgtable = NULL;
->  	}
->  
-> -	set_pmd_at(mm, addr, pmd, entry);
-> +	set_pmd_at(mm, start, pmd, entry);
->  	update_mmu_cache_pmd(vma, addr, pmd);
->  
->  out_unlock:
-> @@ -864,7 +865,7 @@ vm_fault_t vmf_insert_pfn_pmd_prot(struct vm_fault *vmf, pfn_t pfn,
->  
->  	track_pfn_insert(vma, &pgprot, pfn);
->  
-> -	insert_pfn_pmd(vma, addr, vmf->pmd, pfn, pgprot, write, pgtable);
-> +	insert_pfn_pmd(vma, vmf->address, vmf->pmd, pfn, pgprot, write, pgtable);
->  	return VM_FAULT_NOPAGE;
->  }
->  EXPORT_SYMBOL_GPL(vmf_insert_pfn_pmd_prot);
-> diff --git a/mm/memory.c b/mm/memory.c
-> index dc7f354..c703458 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3592,7 +3592,7 @@ static vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
->  
->  	set_pmd_at(vma->vm_mm, haddr, vmf->pmd, entry);
->  
-> -	update_mmu_cache_pmd(vma, haddr, vmf->pmd);
-> +	update_mmu_cache_pmd(vma, vmf->address, vmf->pmd);
->  
->  	/* fault is handled */
->  	ret = 0;
-> -- 
-> 1.8.3.1
-> 
-> 
-
--- 
- Kirill A. Shutemov
+> Andres.
