@@ -2,119 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FE520FA3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D535120FA42
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390079AbgF3RNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:13:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387878AbgF3RNO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:13:14 -0400
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5445920826
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 17:13:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593537193;
-        bh=diSO1CamvrQdtfEI+H7me6fxh/KtADWecbcfO1/wVoo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=g0VCHu5yhHihJYjJCE25aVIaqOgxXTAQluoAB712i8ttmyZBEH9ahl4xnIRcJWtkS
-         iVwKR3YMRuPh4XPkXtCRNRTnWn9b1ECnWaMeQehaphzIFVerVBpEe7M17DThvkJ1sZ
-         P3nA8JAbWGtM8U7nCzhsIFDigcair9/tQBjbwc0U=
-Received: by mail-wm1-f46.google.com with SMTP id q15so19534006wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:13:13 -0700 (PDT)
-X-Gm-Message-State: AOAM530e/enI6/AE4C7tLif5horTVuyn6KKKlkp7G7P/V0ERZq8FGrkC
-        9AbjTJaRfyVF0fcLiZgjAcvMk8NgddzOt0qWZxXITg==
-X-Google-Smtp-Source: ABdhPJx13kM5LtvGGzUYGYkwAaAat6ZRo22ztI1o1g0eif8uiHVa9Xl3dnH22Xl8NV08uj/0CSG98+0e/i94UHndbTI=
-X-Received: by 2002:a1c:a304:: with SMTP id m4mr23802567wme.49.1593537191719;
- Tue, 30 Jun 2020 10:13:11 -0700 (PDT)
+        id S2390096AbgF3ROC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 13:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388029AbgF3ROC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 13:14:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C0CC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:14:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=h9dCCR3Sj6ij6SAKyMivwVidTMWb8VV+xdCxCmwqbSc=; b=fXh+iFaNONuimn4tWMRlR/6hmp
+        NY/76oKPggzRBi/jIsdgk7mvxkr0cwOqMmnpVpVU5Q1+lDO+heYD0v6KI7lN2X2jo+d7eXCCCCeQR
+        JsQzfndrVwIGu8KrfiV3lYN77kstxuFLTQlUGqXcIkpASY2Boh2233xagOBrkyGnSoBpROnzu+5Js
+        cHoTDWjyZe8O7Yt/YOlbriW0qp3LBYN9FbDUYDUiFPgCu/AMchFgbWDiGDKhYZbCIeiDoxxMM/njk
+        Y/8Ns5hf97hfID3VfOxJkSUcnPQQNFNTmCuaFZe2JF2B1X9W1EcVQoC3KE/qeC2cipS8AKuEjFkKL
+        t+7HwSig==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jqJpP-0003YN-Lz; Tue, 30 Jun 2020 17:13:52 +0000
+Date:   Tue, 30 Jun 2020 18:13:51 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Long Li <lonuxli.64@gmail.com>
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm, slab: Check GFP_SLAB_BUG_MASK before alloc_pages
+ in kmalloc_order
+Message-ID: <20200630171351.GO25523@casper.infradead.org>
+References: <20200630145155.GA52108@lilong>
 MIME-Version: 1.0
-References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
- <20200617220844.57423-13-jarkko.sakkinen@linux.intel.com> <20200629160242.GB32176@zn.tnic>
- <20200629220400.GI12312@linux.intel.com> <20200630084956.GB1093@zn.tnic> <20200630142027.GA7733@linux.intel.com>
-In-Reply-To: <20200630142027.GA7733@linux.intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 30 Jun 2020 10:13:00 -0700
-X-Gmail-Original-Message-ID: <CALCETrVD2suWEx7ysJCpOE39Ds7-TpBaGo6KjEbq=EenaHkQ_g@mail.gmail.com>
-Message-ID: <CALCETrVD2suWEx7ysJCpOE39Ds7-TpBaGo6KjEbq=EenaHkQ_g@mail.gmail.com>
-Subject: Re: [PATCH v33 12/21] x86/sgx: Allow a limited use of
- ATTRIBUTE.PROVISIONKEY for attestation
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, "Xing, Cedric" <cedric.xing@intel.com>,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, Dave Hansen <dave.hansen@intel.com>,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, kmoy@google.com,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>, npmccallum@redhat.com,
-        puiterwijk@redhat.com, David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200630145155.GA52108@lilong>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 7:20 AM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> On Tue, Jun 30, 2020 at 10:49:56AM +0200, Borislav Petkov wrote:
-> > On Mon, Jun 29, 2020 at 03:04:00PM -0700, Sean Christopherson wrote:
-> > > /dev/sgx/provision is root-only by default, the expectation is that the admin
-> > > will configure the system to grant only specific enclaves access to the
-> > > PROVISION_KEY.
-> >
-> > Uuh, I don't like "the expectation is" - the reality happens to turn
-> > differently, more often than not.
->
-> Would it help if I worded it as "only root should ever be able to run an
-> enclave with access to PROVISION_KEY"?  We obviously can't control what
-> admins actually do, hence my wording of it as the expected behavior.
->
-> > > In this series, access is fairly binary, i.e. there's no additional kernel
-> > > infrastructure to help userspace make per-enclave decisions.  There have been
-> > > more than a few proposals on how to extend the kernel to help provide better
-> > > granularity, e.g. LSM hooks, but it was generally agreed to punt that stuff
-> > > to post-upstreaming to keep things "simple" once we went far enough down
-> > > various paths to ensure we weren't painting ourselves into a corner.
-> >
-> > So this all sounds to me like we should not upstream /dev/sgx/provision
-> > now but delay it until the infrastructure for that has been made more
-> > concrete. We can always add it then. Changing it after the fact -
-> > if we have to and for whatever reason - would be a lot harder for a
-> > user-visible interface which someone has started using already.
->
-> The userspace and attestation infrastructure is very concrete, i.e. the
-> need for userspace to be able to access PROVISION_KEY is there, as is the
-> desire to be able to restrict access to PROVISION_KEY, e.g. I believe Andy
-> Lutomirski originally requested the ability to restrict access.
->
-> The additional infrastructure for per-enclave decisions is somewhat
-> orthogonal to the PROVISION_KEY, e.g. they won't necessarily be employed
-> by everyone running enclaves, and environments that do have per-enclave
-> policies would still likely want the extra layer of restriction for
-> PROVISION_KEY.  I only brought the additional policy crud to call out that
-> we've done enough path-finding on additional restrictions to have strong
-> confidence that adding /dev/sgx/provision won't prevent us from adding more
-> fine grained control in the future.
+On Tue, Jun 30, 2020 at 02:51:55PM +0000, Long Li wrote:
+> In the ARM32 environment with highmem enabled. Using flag of kmalloc()
+> with __GFP_HIGHMEM to allocate large memory, it will go through the
+> kmalloc_order() path and return NULL. The __GFP_HIGHMEM flag will
+> cause alloc_pages() to allocate highmem memory and pages cannot be
+> directly converted to a virtual address, kmalloc_order() will return
+> NULL and the page has been allocated.
+> 
+> After modification, GFP_SLAB_BUG_MASK has been checked before
+> allocating pages, refer to the new_slab().
+> 
+> Signed-off-by: Long Li <lonuxli.64@gmail.com>
+> ---
+> 
+> Changes in v2:
+> - patch is rebased againest "[PATCH] mm: Free unused pages in
+> kmalloc_order()" [1]
+> - check GFP_SLAB_BUG_MASK and generate warnings before alloc_pages
+> in kmalloc_order()
+> 
+> [1] https://lkml.org/lkml/2020/6/27/16
+> 
+>  mm/slab_common.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index a143a8c8f874..3548f4f8374b 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -27,6 +27,7 @@
+>  #include <trace/events/kmem.h>
+>  
+>  #include "slab.h"
+> +#include "internal.h"
+>  
+>  enum slab_state slab_state;
+>  LIST_HEAD(slab_caches);
+> @@ -815,6 +816,15 @@ void *kmalloc_order(size_t size, gfp_t flags, unsigned int order)
+>  	void *ret = NULL;
+>  	struct page *page;
+>  
+> +	if (unlikely(flags & GFP_SLAB_BUG_MASK)) {
+> +		gfp_t invalid_mask = flags & GFP_SLAB_BUG_MASK;
+> +
+> +		flags &= ~GFP_SLAB_BUG_MASK;
+> +		pr_warn("Unexpected gfp: %#x (%pGg). Fixing up to gfp: %#x (%pGg). Fix your code!\n",
+> +				invalid_mask, &invalid_mask, flags, &flags);
+> +		dump_stack();
+> +	}
+> +
+>  	flags |= __GFP_COMP;
 
-I agree.
+Oh, this is really good!  I hadn't actually looked at how slab/slub handle
+GFP_SLAB_BUG_MASK.  If you don't mind though, I would suggest that this
+code should all be in one place.  Perhaps:
 
-I anticipate that most of the nasty fine-grained stuff will end up in
-userspace down the road.  Systems can be configured such that
-provisioning is done as root, or systems can end up with fancy SELinux
-rules or daemons that pass around fds or whatever, but all of this can
-be done with the kernel code in this patchset.
+gfp_t kmalloc_invalid_flags(gfp_t flags)
+{
+	gfp_t invalid_mask = flags & GFP_SLAB_BUG_MASK;
+
+	flags &= ~GFP_SLAB_BUG_MASK;
+	pr_warn("Unexpected gfp: %#x (%pGg). Fixing up to gfp: %#x (%pGg). Fix your code!\n",
+			invalid_mask, &invalid_mask, flags, &flags);
+	dump_stack();
+
+	return flags;
+}
+
+and then call it from the three places?
+
+Also, the changelog could do with a bit of work.  Perhaps:
+
+kmalloc cannot allocate memory from HIGHMEM.  Allocating large amounts of
+memory currently bypasses the check and will simply leak the memory when
+page_address() returns NULL.  To fix this, factor the GFP_SLAB_BUG_MASK
+check out of slab & slub, and call it from kmalloc_order() as well.
+
