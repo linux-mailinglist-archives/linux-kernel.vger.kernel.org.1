@@ -2,79 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65BD420FB49
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F2620FB4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390605AbgF3SC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 14:02:57 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:51905 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1733028AbgF3SC4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 14:02:56 -0400
-Received: (qmail 460459 invoked by uid 1000); 30 Jun 2020 14:02:55 -0400
-Date:   Tue, 30 Jun 2020 14:02:55 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Martin Kepplinger <martin.kepplinger@puri.sm>, jejb@linux.ibm.com,
-        Can Guo <cang@codeaurora.org>, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@puri.sm
-Subject: Re: [PATCH] scsi: sd: add runtime pm to open / release
-Message-ID: <20200630180255.GA459638@rowland.harvard.edu>
-References: <20200623111018.31954-1-martin.kepplinger@puri.sm>
- <ed9ae198-4c68-f82b-04fc-2299ab16df96@acm.org>
- <eccacce9-393c-ca5d-e3b3-09961340e0db@puri.sm>
- <1379e21d-c51a-3710-e185-c2d7a9681fb7@acm.org>
- <20200626154441.GA296771@rowland.harvard.edu>
- <c19f1938-ae47-2357-669d-5b4021aec154@puri.sm>
- <20200629161536.GA405175@rowland.harvard.edu>
- <5231c57d-3f4e-1853-d4d5-cf7f04a32246@acm.org>
+        id S2389633AbgF3SER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 14:04:17 -0400
+Received: from muru.com ([72.249.23.125]:60076 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729105AbgF3SER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 14:04:17 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id D27D78164;
+        Tue, 30 Jun 2020 18:05:06 +0000 (UTC)
+Date:   Tue, 30 Jun 2020 11:04:11 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Pavel Machek <pavel@denx.de>,
+        Merlijn Wajer <merlijn@wizzup.org>, jikos@suse.cz,
+        vojtech@suse.cz,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Beno??t Cousson <bcousson@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mattias Jacobsson <2pi@mok.nu>,
+        Mark Gross <mgross@linux.intel.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        "open list:OMAP DEVICE TREE SUPPORT" <linux-omap@vger.kernel.org>,
+        "open list:OMAP DEVICE TREE SUPPORT" <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:INPUT (KEYBOARD, MOUSE, JOYSTICK, TOUCHSCREEN)..." 
+        <linux-input@vger.kernel.org>
+Subject: Re: input maintainer -- are you there? was Re: [PATCH 1/2] Input:
+ add `SW_MACHINE_COVER`
+Message-ID: <20200630180411.GE37466@atomide.com>
+References: <20200612125402.18393-1-merlijn@wizzup.org>
+ <20200612125402.18393-2-merlijn@wizzup.org>
+ <20200616105045.GB1718@bug>
+ <fef69c79-9943-7bd1-5c51-101f551cf2c8@wizzup.org>
+ <20200629133644.GA22227@amd>
+ <20200630052212.GH248110@dtor-ws>
+ <20200630175853.GA15783@duo.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5231c57d-3f4e-1853-d4d5-cf7f04a32246@acm.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200630175853.GA15783@duo.ucw.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 08:59:00AM -0700, Bart Van Assche wrote:
-> On 2020-06-29 09:15, Alan Stern wrote:
-> > Aha.  Looking at this more closely, it's apparent that the code in 
-> > blk-core.c contains a logic bug: It assumes that if the BLK_MQ_REQ_PREEMPT 
-> > flag is set then the request can be issued regardless of the queue's 
-> > runtime status.  That is not correct when the queue is suspended.
+* Pavel Machek <pavel@ucw.cz> [200630 17:59]:
+> Hi!
 > 
-> Are you sure of this? In the past (legacy block layer) no requests were
-> processed for queues in state RPM_SUSPENDED. However, that function and
-> its successor blk_pm_allow_request() are gone. The following code was
-> removed by commit 7cedffec8e75 ("block: Make blk_get_request() block for
-> non-PM requests while suspended").
+> > > > Looks like we're blocking on this input patch.
+> > > > 
+> > > > On 16/06/2020 12:50, Pavel Machek wrote:
+> > > > > On Fri 2020-06-12 14:53:58, Merlijn Wajer wrote:
+> > > > >> This event code represents the state of a removable cover of a device.
+> > > > >> Value 0 means that the cover is open or removed, value 1 means that the
+> > > > >> cover is closed.
+> > > > >>
+> > > > >> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com> Acked-by: Tony Lindgren 
+> > > > >> <tony@atomide.com> Signed-off-by: Merlijn Wajer <merlijn@wizzup.org> ---
+> > > > > 
+> > > > > Dmitry, can we get some kind of comment here, or better yet can we get you to apply this?
+> > > > 
+> > > > This is part of a patch series to resolve problems with the Nokia N900
+> > > > not booting when the cover is removed (making the cover be the card
+> > > > detect was also just weird IMHO). Just removing the card-detect from the
+> > > > DTS is fine, but it was suggested that we expose the data instead as
+> > > > input event. And that's gotten no response for about four months.
+> > > > 
+> > > > Should we just drop the feature and only remove the cd-gpios line from
+> > > > the DTS, assuming upstream doesn't want this SW_MACHINE_COVER code?
+> > > 
+> > > I believe series is good, lets keep it. Changing now will only delay
+> > > it a bit more. Let me try to get Dmitry's attention...
+> > > 
+> > > If that does not work, we can get Linus' attention :-).
+> > > 
+> > > If that does not work, umm, there are some other options.
+> > 
+> > Sorry, am really swamped the last couple months. I can pick up the input
+> > code, do you want me to pick up DTS as well?
 > 
-> static struct request *blk_pm_peek_request(struct request_queue *q,
->                                            struct request *rq)
-> {
->         if (q->dev && (q->rpm_status == RPM_SUSPENDED ||
->             (q->rpm_status != RPM_ACTIVE && !(rq->cmd_flags & REQ_PM))))
->                 return NULL;
->         else
->                 return rq;
-> }
+> No problem, sorry for being pushy.
+> 
+> If you could pick up just the input one-liner, that would be best. It
+> is not risky.
+> 
+> OMAP people will take care of the DTS, I believe, and we can iterate
+> if it does not work at the first try.
 
-No, it wasn't.  Another routine, blk_pm_allow_request(), was removed by 
-that commit, but almost no other code was deleted.  Maybe you're thinking 
-of a different commit?
+I already acked the dts change a while back, please just queue them
+together. Or if you want me to pick it up, please set up an immutable
+branch for me against v5.8-rc1 to also merge in :)
 
-In any case, I don't understand the point you're trying to make.
+Regards,
 
-Here's what I _do_ understand: While the queue is in the RPM_SUSPENDED 
-state, it can't carry out any requests at all.  If a request is added to 
-the queue, the queue must be resumed before the request can be issued to 
-the lower-layer drivers -- no matter what flags are set in the request.
-
-Right now there doesn't seem to be any mechanism for resuming the queue 
-if an REQ_PREEMPT request is added while the queue is suspended.
-
-Alan Stern
+Tony
