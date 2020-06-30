@@ -2,215 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7EAB20FA84
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B60E20FA41
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390337AbgF3R1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:27:04 -0400
-Received: from mga06.intel.com ([134.134.136.31]:3228 "EHLO mga06.intel.com"
+        id S2390088AbgF3RNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 13:13:19 -0400
+Received: from mga07.intel.com ([134.134.136.100]:27572 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390325AbgF3R1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:27:01 -0400
-IronPort-SDR: kCtanIoavveucYJWOOgyx2YDmpAADwhbLYdubUMBZaa6NhqX3RmHHurb4+A/FRXXwnE4jLq5Ii
- EBJLvaqmRMGA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="207832996"
+        id S2390030AbgF3RNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 13:13:15 -0400
+IronPort-SDR: 16OMpXsvA6yv64Vtzj4TtXQreaAHkMTbxogX0dsD6KMsURyQ0/f6TmIfuk22ctUzXBaXKDJu1a
+ BmY2HgtDqxEA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9667"; a="211373811"
 X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="207832996"
+   d="scan'208";a="211373811"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 10:27:00 -0700
-IronPort-SDR: Z7x4fpl5QBPCt0yGQhLxehb9wwa3icsJnhTonGBQYdcWh4ESmn32vMryMjX4d1BR7rQyQsa5TY
- 7XQYwNFkx4CA==
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 10:13:13 -0700
+IronPort-SDR: 02/sNAp9zxcbNDgk0wY96H4wgE8bWPD+nyuqc3fkfHghfvTs9QAEy0jZmbyhLaA5SUeQKekZ9B
+ ALY3a5bgxuTQ==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="281307477"
-Received: from dnoeunx-mobl.amr.corp.intel.com (HELO [10.254.77.113]) ([10.254.77.113])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 10:26:59 -0700
-Subject: Re: [PATCH 8/9] soundwire: intel: add wake interrupt support
-To:     Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jank@cadence.com, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, sanyog.r.kale@intel.com,
-        slawomir.blauciak@intel.com, mengdong.lin@intel.com,
-        bard.liao@intel.com
-References: <20200623173546.21870-1-yung-chuan.liao@linux.intel.com>
- <20200623173546.21870-9-yung-chuan.liao@linux.intel.com>
- <20200630165126.GT2599@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <a69aa5d0-613a-6ef6-9263-378b1e99770a@linux.intel.com>
-Date:   Tue, 30 Jun 2020 12:18:51 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+   d="scan'208";a="355837194"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga001.jf.intel.com with ESMTP; 30 Jun 2020 10:13:12 -0700
+Date:   Tue, 30 Jun 2020 10:19:47 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 4/7] iommu/vt-d: Handle non-page aligned address
+Message-ID: <20200630101947.1d45ac94@jacob-builder>
+In-Reply-To: <037cb7cf-1336-f546-7f45-c35caf19930f@linux.intel.com>
+References: <1592926996-47914-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1592926996-47914-5-git-send-email-jacob.jun.pan@linux.intel.com>
+        <037cb7cf-1336-f546-7f45-c35caf19930f@linux.intel.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200630165126.GT2599@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 25 Jun 2020 18:05:52 +0800
+Lu Baolu <baolu.lu@linux.intel.com> wrote:
 
-
-On 6/30/20 11:51 AM, Vinod Koul wrote:
-> On 24-06-20, 01:35, Bard Liao wrote:
->> From: Rander Wang <rander.wang@intel.com>
->>
->> When system is suspended in clock stop mode on intel platforms, both
->> master and slave are in clock stop mode and soundwire bus is taken
->> over by a glue hardware. The bus message for jack event is processed
->> by this glue hardware, which will trigger an interrupt to resume audio
->> pci device. Then audio pci driver will resume soundwire master and slave,
->> transfer bus ownership to master, finally slave will report jack event
->> to master and codec driver is triggered to check jack status.
->>
->> if a slave has been attached to a bus, the slave->dev_num_sticky
->> should be non-zero, so we can check this value to skip the
->> ghost devices defined in ACPI table but not populated in hardware.
->>
->> Signed-off-by: Rander Wang <rander.wang@intel.com>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
->> ---
->>   drivers/soundwire/intel.c      | 48 +++++++++++++++++++++++++++++++++-
->>   drivers/soundwire/intel.h      |  1 +
->>   drivers/soundwire/intel_init.c | 22 ++++++++++++++++
->>   3 files changed, 70 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
->> index 06c553d94890..22d9fd3e34fa 100644
->> --- a/drivers/soundwire/intel.c
->> +++ b/drivers/soundwire/intel.c
->> @@ -13,6 +13,7 @@
->>   #include <linux/io.h>
->>   #include <linux/platform_device.h>
->>   #include <sound/pcm_params.h>
->> +#include <linux/pm_runtime.h>
->>   #include <sound/soc.h>
->>   #include <linux/soundwire/sdw_registers.h>
->>   #include <linux/soundwire/sdw.h>
->> @@ -436,7 +437,7 @@ static int intel_shim_init(struct sdw_intel *sdw, bool clock_stop)
->>   	return ret;
->>   }
->>   
->> -static void __maybe_unused intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
->> +static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
+> Hi,
 > 
-> why drop __maybe?
-
-the __maybe was used in previous patches to avoid throwing 'defined but 
-not used' errors.
-
-In this patch this function is actually used so there's no longer a 
-reason to keep it.
-
->>   {
->>   	void __iomem *shim = sdw->link_res->shim;
->>   	unsigned int link_id = sdw->instance;
->> @@ -1337,6 +1338,51 @@ static int intel_master_remove(struct platform_device *pdev)
->>   	return 0;
->>   }
->>   
->> +int intel_master_process_wakeen_event(struct platform_device *pdev)
->> +{
->> +	struct device *dev = &pdev->dev;
->> +	struct sdw_intel *sdw;
->> +	struct sdw_bus *bus;
->> +	struct sdw_slave *slave;
->> +	void __iomem *shim;
->> +	u16 wake_sts;
->> +
->> +	sdw = platform_get_drvdata(pdev);
->> +	bus = &sdw->cdns.bus;
->> +
->> +	if (bus->prop.hw_disabled) {
->> +		dev_dbg(dev,
->> +			"SoundWire master %d is disabled, ignoring\n",
->> +			bus->link_id);
+> On 2020/6/23 23:43, Jacob Pan wrote:
+> > From: Liu Yi L <yi.l.liu@intel.com>
+> > 
+> > Address information for device TLB invalidation comes from userspace
+> > when device is directly assigned to a guest with vIOMMU support.
+> > VT-d requires page aligned address. This patch checks and enforce
+> > address to be page aligned, otherwise reserved bits can be set in
+> > the invalidation descriptor. Unrecoverable fault will be reported
+> > due to non-zero value in the reserved bits.
+> > 
+> > Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > ---
+> >   drivers/iommu/intel/dmar.c | 19 +++++++++++++++++--
+> >   1 file changed, 17 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+> > index d9f973fa1190..53f4e5003620 100644
+> > --- a/drivers/iommu/intel/dmar.c
+> > +++ b/drivers/iommu/intel/dmar.c
+> > @@ -1455,9 +1455,24 @@ void qi_flush_dev_iotlb_pasid(struct
+> > intel_iommu *iommu, u16 sid, u16 pfsid,
+> >   	 * Max Invs Pending (MIP) is set to 0 for now until we
+> > have DIT in
+> >   	 * ECAP.
+> >   	 */
+> > -	desc.qw1 |= addr & ~mask;
+> > -	if (size_order)
+> > +	if (addr & ~VTD_PAGE_MASK)
+> > +		pr_warn_ratelimited("Invalidate non-page aligned
+> > address %llx\n", addr); +
+> > +	if (size_order) {
+> > +		/* Take page address */
+> > +		desc.qw1 |= QI_DEV_EIOTLB_ADDR(addr);  
 > 
-> single line pls
-
-ok
-
->> +		return 0;
->> +	}
->> +
->> +	shim = sdw->link_res->shim;
->> +	wake_sts = intel_readw(shim, SDW_SHIM_WAKESTS);
->> +
->> +	if (!(wake_sts & BIT(sdw->instance)))
->> +		return 0;
->> +
->> +	/* disable WAKEEN interrupt ASAP to prevent interrupt flood */
->> +	intel_shim_wake(sdw, false);
+> If size_order == 0 (that means only a single page is about to be
+> invalidated), do you still need to set ADDR field of the descriptor?
 > 
-> when & where is this enabled?
-
-in follow-up patches where the clock-stop mode is enabled.
-
-	} else if (clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET ||
-		   !clock_stop_quirks) {
-
-		ret = sdw_cdns_clock_stop(cdns, true);
-		if (ret < 0) {
-			dev_err(dev, "cannot enable clock stop on suspend\n");
-			return ret;
-		}
-
-		ret = sdw_cdns_enable_interrupt(cdns, false);
-		if (ret < 0) {
-			dev_err(dev, "cannot disable interrupts on suspend\n");
-			return ret;
-		}
-
-		ret = intel_link_power_down(sdw);
-		if (ret) {
-			dev_err(dev, "Link power down failed: %d", ret);
-			return ret;
-		}
-
-		intel_shim_wake(sdw, true);
-
->> +
->> +	/*
->> +	 * wake up master and slave so that slave can notify master
->> +	 * the wakeen event and let codec driver check codec status
->> +	 */
->> +	list_for_each_entry(slave, &bus->slaves, node) {
->> +		/*
->> +		 * discard devices that are defined in ACPI tables but
->> +		 * not physically present and devices that cannot
->> +		 * generate wakes
->> +		 */
->> +		if (slave->dev_num_sticky && slave->prop.wake_capable)
->> +			pm_request_resume(&slave->dev);
+Good catch! we should always set addr. I will move addr assignment out
+of the if condition.
+ .
+> Best regards,
+> baolu
 > 
-> Hmmm, shouldn't slave do this? would it not make sense to notify the
-> slave thru callback and then slave decides to resume or not..?
+> > +		/*
+> > +		 * Existing 0s in address below size_order may be
+> > the least
+> > +		 * significant bit, we must set them to 1s to
+> > avoid having
+> > +		 * smaller size than desired.
+> > +		 */
+> > +		desc.qw1 |= GENMASK_ULL(size_order +
+> > VTD_PAGE_SHIFT,
+> > +					VTD_PAGE_SHIFT);
+> > +		/* Clear size_order bit to indicate size */
+> > +		desc.qw1 &= ~mask;
+> > +		/* Set the S bit to indicate flushing more than 1
+> > page */ desc.qw1 |= QI_DEV_EIOTLB_SIZE;
+> > +	}
+> >   
+> >   	qi_submit_sync(iommu, &desc, 1, 0);
+> >   }
+> >   
 
-In this mode, the bus is clock-stop mode, and events are detected with 
-level detector tied to PCI events. The master and slave devices are all 
-in pm_runtime suspended states. The codec cannot make any decisions on 
-its own since the bus is stopped, it needs to first resume, which 
-assumes that the master resumes first and the enumeration re-done before 
-it can access any of its registers.
-
-By looping through the list of devices that can generate events, you 
-end-up first forcing the master to resume, and then each slave resumes 
-and can check who generated the event and what happened while suspended. 
-if the codec didn't generate the event it will go back to suspended mode 
-after the usual timeout.
-
-We can add a callback but that callback would only be used for Intel 
-solutions, but internally it would only do a pm_request_resume() since 
-the codec cannot make any decisions before first resuming. In other 
-words, it would be an Intel-specific callback that is implemented using 
-generic resume operations. It's probably better to keep this in 
-Intel-specific code, no?
-
-
-
+[Jacob Pan]
