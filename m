@@ -2,77 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B88220F0BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FBD20F10C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731656AbgF3Ip1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 04:45:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54140 "EHLO mail.kernel.org"
+        id S1731835AbgF3I7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 04:59:46 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:43896 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731592AbgF3Ip0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 04:45:26 -0400
-Received: from localhost (unknown [84.241.197.94])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F47D20768;
-        Tue, 30 Jun 2020 08:45:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593506725;
-        bh=iCDG5t6pi57MoyB91cUN21i5duN5jXpRfPSFAuFxS18=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gyvLRhOabyVbn+eU/kHBK4TPsidN4UbIDrW3Zi8KxGa1cx+wJbLjCh9gFbb+1N4py
-         Y+0kUzWS9Tbe0/5h2KqnNNKXr7gCMS8KjvuKsBPGZASdAu0wYK6jbjOrvpQidLimFo
-         toHkvKPKESrTKNDs9Sb0/tPk2zyZkB9pG92dlzpo=
-Date:   Tue, 30 Jun 2020 10:45:22 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux-kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [RFC PATCH 1/2] Explicitly include linux/major.h where it is
- needed
-Message-ID: <20200630084522.GB637565@kroah.com>
-References: <20200617092614.7897ccb2@canb.auug.org.au>
- <20200617092747.0cadb2de@canb.auug.org.au>
- <20200617055843.GB25631@kroah.com>
- <20200630091203.55cdd5d9@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200630091203.55cdd5d9@canb.auug.org.au>
+        id S1731591AbgF3I7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 04:59:45 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 73145201338;
+        Tue, 30 Jun 2020 10:59:43 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BA2B8201345;
+        Tue, 30 Jun 2020 10:59:38 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id D653040287;
+        Tue, 30 Jun 2020 16:59:32 +0800 (SGT)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org,
+        alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ASoC: fsl_asrc: Add an option to select internal ratio mode
+Date:   Tue, 30 Jun 2020 16:47:56 +0800
+Message-Id: <1593506876-14599-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 09:12:03AM +1000, Stephen Rothwell wrote:
-> Hi Greg,
-> 
-> On Wed, 17 Jun 2020 07:58:43 +0200 Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Jun 17, 2020 at 09:27:47AM +1000, Stephen Rothwell wrote:
-> > > This is in preparation for removing the include of major.h where it is
-> > > not needed.
-> > > 
-> > > These files were found using
-> > > 
-> > > 	grep -E -L '[<"](uapi/)?linux/major\.h' $(git grep -l -w -f /tmp/xx)
-> > > 
-> > > where /tmp/xx contains all the symbols defined in major.h.  There were
-> > > a couple of files in that list that did not need the include since the
-> > > references are in comments.
-> > > 
-> > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>  
-> > 
-> > Any reason this had an RFC, but patch 2/2 did not?
-> > 
-> > They look good to me, I will be glad to take these, but do you still
-> > want reviews from others for this?  It seems simple enough to me...
-> 
-> I am going to do another round of this patchset splitting out most of
-> the "safe" removals that can be done anytime so other maintainers can
-> take them.  Then there will be the left over order dependent changes at
-> the end.
+The ASRC not only supports ideal ratio mode, but also supports
+internal ratio mode.
 
-Ok, I'll wait for the next round of patches, thanks.
+For internal rato mode, the rate of clock source should be divided
+with no remainder by sample rate, otherwise there is sound
+distortion.
 
-greg k-h
+Add function fsl_asrc_select_clk() to find proper clock source for
+internal ratio mode, if the clock source is available then internal
+ratio mode will be selected.
+
+With change, the ideal ratio mode is not the only option for user.
+
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+changes in v2
+- update according to Nicolin's comments
+
+ sound/soc/fsl/fsl_asrc.c | 54 ++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 52 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 95f6a9617b0b..4105ef2c4f99 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -582,11 +582,55 @@ static int fsl_asrc_dai_startup(struct snd_pcm_substream *substream,
+ 			SNDRV_PCM_HW_PARAM_RATE, &fsl_asrc_rate_constraints);
+ }
+ 
++/**
++ * Select proper clock source for internal ratio mode
++ */
++static int fsl_asrc_select_clk(struct fsl_asrc_priv *asrc_priv,
++			       struct fsl_asrc_pair *pair,
++			       int in_rate,
++			       int out_rate)
++{
++	struct fsl_asrc_pair_priv *pair_priv = pair->private;
++	struct asrc_config *config = pair_priv->config;
++	int rate[2], select_clk[2]; /* Array size 2 means IN and OUT */
++	int clk_rate, clk_index;
++	int i = 0, j = 0;
++
++	rate[0] = in_rate;
++	rate[1] = out_rate;
++
++	/* Select proper clock source for internal ratio mode */
++	for (j = 0; j < 2; j++) {
++		for (i = 0; i < ASRC_CLK_MAP_LEN; i++) {
++			clk_index = asrc_priv->clk_map[j][i];
++			clk_rate = clk_get_rate(asrc_priv->asrck_clk[clk_index]);
++			/* Only match a perfect clock source with no remainder */
++			if (clk_rate != 0 && (clk_rate / rate[j]) <= 1024 &&
++			    (clk_rate % rate[j]) == 0)
++				break;
++		}
++
++		select_clk[j] = i;
++	}
++
++	/* Switch to ideal ratio mode if there is no proper clock source */
++	if (select_clk[IN] == ASRC_CLK_MAP_LEN || select_clk[OUT] == ASRC_CLK_MAP_LEN) {
++		select_clk[IN] = INCLK_NONE;
++		select_clk[OUT] = OUTCLK_ASRCK1_CLK;
++	}
++
++	config->inclk = select_clk[IN];
++	config->outclk = select_clk[OUT];
++
++	return 0;
++}
++
+ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+ 				  struct snd_pcm_hw_params *params,
+ 				  struct snd_soc_dai *dai)
+ {
+ 	struct fsl_asrc *asrc = snd_soc_dai_get_drvdata(dai);
++	struct fsl_asrc_priv *asrc_priv = asrc->private;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_asrc_pair *pair = runtime->private_data;
+ 	struct fsl_asrc_pair_priv *pair_priv = pair->private;
+@@ -605,8 +649,6 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	config.pair = pair->index;
+ 	config.channel_num = channels;
+-	config.inclk = INCLK_NONE;
+-	config.outclk = OUTCLK_ASRCK1_CLK;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		config.input_format   = params_format(params);
+@@ -620,6 +662,14 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+ 		config.output_sample_rate = rate;
+ 	}
+ 
++	ret = fsl_asrc_select_clk(asrc_priv, pair,
++				  config.input_sample_rate,
++				  config.output_sample_rate);
++	if (ret) {
++		dev_err(dai->dev, "fail to select clock\n");
++		return ret;
++	}
++
+ 	ret = fsl_asrc_config_pair(pair, false);
+ 	if (ret) {
+ 		dev_err(dai->dev, "fail to config asrc pair\n");
+-- 
+2.21.0
+
