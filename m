@@ -2,114 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82C120F730
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7ECD20F75B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388965AbgF3O2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 10:28:24 -0400
-Received: from mga12.intel.com ([192.55.52.136]:43334 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388830AbgF3O2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 10:28:22 -0400
-IronPort-SDR: oEXIa0yuHXVKasftCNfTFZ5qpMTHrHNzjDy6a95ea5eMI6qSpdCZGTQFnFcr6OjDKzWRteCXsP
- v1+6cLvb4EEg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="125879733"
-X-IronPort-AV: E=Sophos;i="5.75,297,1589266800"; 
-   d="scan'208";a="125879733"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 07:28:22 -0700
-IronPort-SDR: DiUkHxYp5vLUZI3vrieeMntI/HQf/d/c7I0BaeJTj3UN4eaUHzbwZX28RuajZbArD8Jg7aUOcT
- 3PNpHOYYHAmw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,297,1589266800"; 
-   d="scan'208";a="312380211"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by orsmga008.jf.intel.com with ESMTP; 30 Jun 2020 07:28:20 -0700
-Subject: Re: [PATCH] xhci: Make debug message consistent with bus and port
- number
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        "open list:USB XHCI DRIVER" <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200507061755.13280-1-kai.heng.feng@canonical.com>
- <20200507064510.GA787064@kroah.com>
- <C4A734C8-D1C6-45BC-9C0A-92364EAEE3C0@canonical.com>
- <20200507073119.GA876666@kroah.com>
- <90D5B23E-B037-49D2-BD44-7F9B0B2FC155@canonical.com>
- <20200507082149.GE1024567@kroah.com>
- <938b0ce5-cb56-a356-dec8-3a6adc502752@linux.intel.com>
- <E6AD21DC-A086-44B9-98F5-7FB320E9B457@canonical.com>
- <dd75ab92-cb02-4a7d-0a03-f105878f71cd@linux.intel.com>
- <2542B92A-9E0B-4907-BF29-EA244597CC7B@canonical.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
- 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 fiD/
-Message-ID: <b2bb44c1-d52a-166e-a82a-6c7fd814f563@linux.intel.com>
-Date:   Tue, 30 Jun 2020 17:31:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S2388951AbgF3OiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 10:38:03 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:24377 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726672AbgF3OiD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 10:38:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593527882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VM53FIbl2A/0M0Rm8pcUNmxr8EzWR7FcO9KwzPs/7X0=;
+        b=FaK676B0NvsavQdXtVGdeVAzfC7hke+/FR4OxLv5Nvd3eyUlrSj235ang4kwWcLmJwH544
+        gO2RKSLs29WavxNSay0u4zkqr03QZVn3l3KLj03tkVh+dTQwekeBHD9IoYPS73FyNzCN3u
+        hvzqDAox3g/fo8s5W4az14lZCw5dOrg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-14-MC3MYsXGOoqGuodmnJV90A-1; Tue, 30 Jun 2020 10:38:00 -0400
+X-MC-Unique: MC3MYsXGOoqGuodmnJV90A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 941FB100CCC0;
+        Tue, 30 Jun 2020 14:37:58 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E33DE7169B;
+        Tue, 30 Jun 2020 14:37:52 +0000 (UTC)
+Date:   Tue, 30 Jun 2020 09:36:33 -0400
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+Cc:     Mikulas Patocka <mpatocka@redhat.com>, linux-nvdimm@lists.01.org,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Jan Kara <jack@suse.cz>, Alasdair Kergon <agk@redhat.com>,
+        dm-devel@redhat.com, "Michael S. Tsirkin" <mst@redhat.com>,
+        Yuval Shaia <yuval.shaia@oracle.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Jakub Staron <jstaron@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: dm writecache: reject asynchronous pmem.
+Message-ID: <20200630133546.GA20439@redhat.com>
+References: <20200630123528.29660-1-msuchanek@suse.de>
+ <alpine.LRH.2.02.2006300929580.4801@file01.intranet.prod.int.rdu2.redhat.com>
+ <20200630141022.GZ21462@kitsune.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <2542B92A-9E0B-4907-BF29-EA244597CC7B@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200630141022.GZ21462@kitsune.suse.cz>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.6.2020 14.46, Kai-Heng Feng wrote:
-> 
->>
->> Added to my for-usb-next branch, (which I'll need to rebase on 5.8-rc1 once released)
-> 
-> Hmm, not seeing this patch from mainline, next or xhci tree..
-> 
+On Tue, Jun 30 2020 at 10:10am -0400,
+Michal Suchánek <msuchanek@suse.de> wrote:
 
-Apparently I never pushed it to kernel.org, now it should be in my for-usb-next branch
+> On Tue, Jun 30, 2020 at 09:32:01AM -0400, Mikulas Patocka wrote:
+> > 
+> > 
+> > On Tue, 30 Jun 2020, Michal Suchanek wrote:
+> > 
+> > > The writecache driver does not handle asynchronous pmem. Reject it when
+> > > supplied as cache.
+> > > 
+> > > Link: https://lore.kernel.org/linux-nvdimm/87lfk5hahc.fsf@linux.ibm.com/
+> > > Fixes: 6e84200c0a29 ("virtio-pmem: Add virtio pmem driver")
+> > > 
+> > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > > ---
+> > >  drivers/md/dm-writecache.c | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > > 
+> > > diff --git a/drivers/md/dm-writecache.c b/drivers/md/dm-writecache.c
+> > > index 30505d70f423..57b0a972f6fd 100644
+> > > --- a/drivers/md/dm-writecache.c
+> > > +++ b/drivers/md/dm-writecache.c
+> > > @@ -2277,6 +2277,12 @@ static int writecache_ctr(struct dm_target *ti, unsigned argc, char **argv)
+> > >  
+> > >  		wc->memory_map_size -= (uint64_t)wc->start_sector << SECTOR_SHIFT;
+> > >  
+> > > +		if (!dax_synchronous(wc->ssd_dev->dax_dev)) {
+> > > +			r = -EOPNOTSUPP;
+> > > +			ti->error = "Asynchronous persistent memory not supported as pmem cache";
+> > > +			goto bad;
+> > > +		}
+> > > +
+> > >  		bio_list_init(&wc->flush_list);
+> > >  		wc->flush_thread = kthread_create(writecache_flush_thread, wc, "dm_writecache_flush");
+> > >  		if (IS_ERR(wc->flush_thread)) {
+> > > -- 
+> > 
+> > Hi
+> > 
+> > Shouldn't this be in the "if (WC_MODE_PMEM(wc))" block?
+> That should be always the case at this point.
+> > 
+> > WC_MODE_PMEM(wc) retrurns true if we are using persistent memory as a 
+> > cache device, otherwise we are using generic block device as a cache 
+> > device.
+>
+> This is to prevent the situation where we have WC_MODE_PMEM(wc) but
+> cannot guarantee consistency because the async flush is not handled.
 
--Mathias
+The writecache operates in 2 modes.  SSD or PMEM.  Mikulas is saying
+your dax_synchronous() check should go within a WC_MODE_PMEM(wc) block
+because it doesn't make sense to do the check when in SSD mode.
+
+Mike
+
