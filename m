@@ -2,282 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2398920FF5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE7FD20FF3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729866AbgF3Vhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 17:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35100 "EHLO
+        id S1726553AbgF3VcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 17:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729580AbgF3Vhs (ORCPT
+        with ESMTP id S1726081AbgF3Vb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 17:37:48 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2870EC03E979;
-        Tue, 30 Jun 2020 14:30:32 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id z5so10551936pgb.6;
-        Tue, 30 Jun 2020 14:30:32 -0700 (PDT)
+        Tue, 30 Jun 2020 17:31:59 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF11C03E97B
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:31:59 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id i14so22147403ejr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:31:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U5xBvyLpKOr/G1/pIFdkzOP1KvMJUbskSgpplnzTGZI=;
-        b=gevpHk/D1CiRUe+JiEVZKBwZOlT3CTqvldVFKaCoAWevvxp+XA4korqzj0TRMUe+GH
-         ROtO1q5n35lNEaUWn/Xh15IBjZbXom5TnEBdzyMqDelZ8M1uLtOoLxs6MnxxPWFNPthD
-         W/zEuJjuIvRoXqavNpwVtPMzERJ9wi/tSR2U51AakuS6Na/FgE9Ej0/odVcxc7100bDi
-         MB5hVx5O1AA8BHcbuc7lShjAHIuXE4CARRd8+UrZhpK2yq0SHu0pazrfpqe6DQwayhAL
-         ZVBmqw/AoCf6S6aji47kWb+RqNVCerXFqmiY6vX4M1oxX5qR6eGNNdSlKFbsKf7+HnAO
-         P2cQ==
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OTyuzRBwiZ4dXubOgCDgCwxBVHhrMMATaeMU0+yD1UU=;
+        b=POTTToxPzO774WR4CwnAbOgWTAfQI7Cfssb9XB6FW1Yf6+jKtJ2Z54oPc8BR2f1eqV
+         N94ZydqFmUAjG0mZN5gDTYE9VCrxt40nUojaAecQPu6i1OpQ2OwP0wTt2bpkl5N4sqaS
+         d0dwW33cnFDgikEsbxRFfN0rbDxxm5FN9qBl9Dudx87c7sJoDXTMzfB/uv83+ClsPpRb
+         qbKnQcn+HNGDkbW4CizE86wkBruzvPNnWCowdagsIZtw/fBicvPiV9sQ/AngVPayBhBq
+         gCc4kxeHxRUeF23qyYAHBac8dS2+Tv9MCqgA9Gcc+zwnfoeqNf50iVYjXMdnHPeSwCmD
+         aXrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U5xBvyLpKOr/G1/pIFdkzOP1KvMJUbskSgpplnzTGZI=;
-        b=btu8o+JMu0YthnU7sjHB64EO57nS9ckUpaQ7XLJ4FXARQ0RoDTd8yEfnBXR6G9tllu
-         JxVJyhq3cK7AAcZt8rW1QSi6+t4kC1ayEpnPnZXNnPStdpFFw9L0eFSG8/gH4B5G1cqV
-         5P1k6eV9MUokbQgxIR1vuC6rZ4MAC8juWVi9d7zhXrx2acKYsU6tMzvALZ8dnN/4y7UN
-         yleUKLV7Mr0jIYvut3ZuRfuPjazIgJogaPfj24eSXuFNZmjonaq4RGJ3Y5UNyI8hycZx
-         pGe3fGJD+UmiZnfBNe58sVX53WdAb1VOQyNQFABdlOvYY0diqxWPEcUton+mpAnDfiGO
-         mNIA==
-X-Gm-Message-State: AOAM533OIhAXt9VHDtrHaNXx7Gg3M9HmyAPCfHHQGc2ACGJ67x6ochzu
-        m1i3G7Po2V0IZioJ5DTc5VVp/yQlx7SwJaflggw=
-X-Google-Smtp-Source: ABdhPJzbOoHlqgM660bd9qepiHFkNNh62/L3fKtE0vDOVY0GuMzH3AFdRlI4do6SnkdmD9SmwSBIoq+4vBUsVd7s8qs=
-X-Received: by 2002:a62:7657:: with SMTP id r84mr20132713pfc.130.1593552631611;
- Tue, 30 Jun 2020 14:30:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OTyuzRBwiZ4dXubOgCDgCwxBVHhrMMATaeMU0+yD1UU=;
+        b=tgzc+b5fQp5K25fmbDHNYERB3CHlxdDhEQxotZX5ZhPNacoAN25YSoYdWJpi8vEDSG
+         80BCStJnLy7Tw2z6jg6Qc0FcqKb3u2ELS5Cbh/MPY9nQB/XxUd90taZYAAX8jNaXWftp
+         VaYXuBfUpwX3UC1zI8t4ssu79s+GA4iLbl8jtgztKnw3DQWHYuL/r8GBU+eKUZ+LZdXQ
+         PdR0xr1b6HcYnUfozzARO0JbjmVk2+3nlP0ttYpWwl8WvABRCBlKNoNkdU7sX9eVS21r
+         QhbV/gXBXwc8FxnRi8vcUXgQrXeBWuhgY+1y+OhVX0kcgCkLC+9Wb09xUoHTo+4h89DL
+         8opQ==
+X-Gm-Message-State: AOAM531uTHhWwZ257ITgqs8TKx/vxKeM5iyvtExiD7sj5as7BzyA7VjD
+        cB5to1PDZj2VdW0ZG3X8uxfD/Q==
+X-Google-Smtp-Source: ABdhPJyzdsv/4R92kRhkKbD+QzdCB5VchGWxCIO09/RLTW8Oj7bNRwTahUiPmsKbW4g6u1nloAD4qQ==
+X-Received: by 2002:a17:906:8401:: with SMTP id n1mr19745399ejx.479.1593552718200;
+        Tue, 30 Jun 2020 14:31:58 -0700 (PDT)
+Received: from x1 ([2001:16b8:5c28:7601:2d3c:7dcb:fbf0:3875])
+        by smtp.gmail.com with ESMTPSA id v24sm4051404eds.71.2020.06.30.14.31.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 14:31:57 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 23:31:55 +0200
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, bcousson@baylibre.com,
+        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v2] ARM: dts: am335x-pocketbeagle: set default mux for
+ gpio pins
+Message-ID: <20200630213155.GA115731@x1>
+References: <20200628152442.322593-1-drew@beagleboard.org>
+ <20200629170358.GT37466@atomide.com>
+ <20200630020102.GA45128@x1>
+ <20200630182037.GF37466@atomide.com>
 MIME-Version: 1.0
-References: <20200630160736.1196697-1-mans0n@gorani.run>
-In-Reply-To: <20200630160736.1196697-1-mans0n@gorani.run>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 1 Jul 2020 00:30:15 +0300
-Message-ID: <CAHp75VfuvuMQ3r_SHSUzE78TViQMqDCqPLEZ4eUjLVUpNHj7kA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] gpio: add GPO driver for PCA9570
-To:     Sungbo Eo <mans0n@gorani.run>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michael Walle <michael@walle.cc>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200630182037.GF37466@atomide.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 7:08 PM Sungbo Eo <mans0n@gorani.run> wrote:
->
-> NXP PCA9570 is 4-bit I2C GPO expander without interrupt functionality.
-> Its ports are controlled only by a data byte without register address.
->
-> As there is no other driver similar enough to be adapted for it, a new
-> driver is introduced here.
->
+On Tue, Jun 30, 2020 at 11:20:37AM -0700, Tony Lindgren wrote:
+> * Drew Fustini <drew@beagleboard.org> [200630 02:02]:
+> > On Mon, Jun 29, 2020 at 10:03:58AM -0700, Tony Lindgren wrote:
+> > > Hi,
+> > > 
+> > > * Drew Fustini <drew@beagleboard.org> [200628 08:26]:
+> > > > v2 changes:
+> > > > - change default mux from output to input.  Input is safer as it does
+> > > >   not drive the line.  If the user wants output, they will need to edit
+> > > >   this device tree.
+> > > 
+> > > So can you please clarify this a bit, are you saying that gpio output can't
+> > > be done via userspace?
+> > 
+> > As it stands, there is no way for userspace to change a pin from gpio 
+> > input to gpio output as it is based on the reciever active bit in the
+> > pin control register (table 9-60 in the AM3358 datasheet [0]).
+> 
+> OK. I guess one not so nice option would be to enable receiver active
+> for all the gpio pins.. But this also affects power consumption a little.
+> 
+> > I thought it would be useful to at least define the GPIOs available for
+> > use on the PocketBeagle by default (and eventually the other BeagleBone
+> > device trees).  Input seems to be the safest value.  This patch at least
+> > makes it more clear where the user should edit to switch from input to
+> > output.
+> 
+> Some TI TRMs actually have tables listing the preferred mux logic
+> for unused pins. I recall safe mode input pull down being one of the
+> preferred modes. Sorry not sure which TRM that is, maybe omap3 or
+> omap4 or omap5?
 
-It looks good, but I would add ->get() to return buffered value.
+Yes, the AM3358 will default to mode 7 for all of these pins and the
+receiver will be enabled (e.g. input).
 
-> Signed-off-by: Sungbo Eo <mans0n@gorani.run>
-> ---
-> v3:
-> * remove mutex
-> * rename buffer to out
-> * simplify return statements
-> * replace ->probe() to ->probe_new()
-> * move ngpio to driver_data
->   (PCA9571 is 8-bit so I thought making ngpio configurable is a good idea)
->
-> v2:
-> * move the direction functions below the set functions
-> * use devm_gpiochip_add_data() and remove the remove callback
->
-> v1:
-> Tested in kernel 5.4 on an ipq40xx platform.
->
-> This is my first time submitting a whole driver patch, and I'm not really
-> familiar with this PCA expander series.
-> Please let me know how I can improve this patch further.
->
-> FYI there's an unmerged patch for this chip.
-> http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2017-May/105602.html
-> I don't have PCA9571 either so I didn't add support for it.
-> ---
->  drivers/gpio/Kconfig        |   8 +++
->  drivers/gpio/Makefile       |   1 +
->  drivers/gpio/gpio-pca9570.c | 131 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 140 insertions(+)
->  create mode 100644 drivers/gpio/gpio-pca9570.c
->
-> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-> index c6b5c65c8405..d10dcb81b841 100644
-> --- a/drivers/gpio/Kconfig
-> +++ b/drivers/gpio/Kconfig
-> @@ -962,6 +962,14 @@ config GPIO_PCA953X_IRQ
->           Say yes here to enable the pca953x to be used as an interrupt
->           controller. It requires the driver to be built in the kernel.
->
-> +config GPIO_PCA9570
-> +       tristate "PCA9570 4-Bit I2C GPO expander"
-> +       help
-> +         Say yes here to enable the GPO driver for the NXP PCA9570 chip.
-> +
-> +         To compile this driver as a module, choose M here: the module will
-> +         be called gpio-pca9570.
-> +
->  config GPIO_PCF857X
->         tristate "PCF857x, PCA{85,96}7x, and MAX732[89] I2C GPIO expanders"
->         select GPIOLIB_IRQCHIP
-> diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-> index 1e4894e0bf0f..33cb40c28a61 100644
-> --- a/drivers/gpio/Makefile
-> +++ b/drivers/gpio/Makefile
-> @@ -110,6 +110,7 @@ obj-$(CONFIG_GPIO_OCTEON)           += gpio-octeon.o
->  obj-$(CONFIG_GPIO_OMAP)                        += gpio-omap.o
->  obj-$(CONFIG_GPIO_PALMAS)              += gpio-palmas.o
->  obj-$(CONFIG_GPIO_PCA953X)             += gpio-pca953x.o
-> +obj-$(CONFIG_GPIO_PCA9570)             += gpio-pca9570.o
->  obj-$(CONFIG_GPIO_PCF857X)             += gpio-pcf857x.o
->  obj-$(CONFIG_GPIO_PCH)                 += gpio-pch.o
->  obj-$(CONFIG_GPIO_PCIE_IDIO_24)                += gpio-pcie-idio-24.o
-> diff --git a/drivers/gpio/gpio-pca9570.c b/drivers/gpio/gpio-pca9570.c
-> new file mode 100644
-> index 000000000000..3898d1c6f407
-> --- /dev/null
-> +++ b/drivers/gpio/gpio-pca9570.c
-> @@ -0,0 +1,131 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Driver for PCA9570 I2C GPO expander
-> + *
-> + * Copyright (C) 2020 Sungbo Eo <mans0n@gorani.run>
-> + *
-> + * Based on gpio-tpic2810.c
-> + * Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com/
-> + *     Andrew F. Davis <afd@ti.com>
-> + */
-> +
-> +#include <linux/gpio/driver.h>
-> +#include <linux/i2c.h>
-> +#include <linux/module.h>
-> +
-> +/**
-> + * struct pca9570 - GPIO driver data
-> + * @chip: GPIO controller chip
-> + * @client: I2C device pointer
-> + * @out: Buffer for device register
-> + */
-> +struct pca9570 {
-> +       struct gpio_chip chip;
-> +       struct i2c_client *client;
-> +       u8 out;
-> +};
-> +
-> +static void pca9570_set_mask_bits(struct gpio_chip *chip, u8 mask, u8 bits)
-> +{
-> +       struct pca9570 *gpio = gpiochip_get_data(chip);
-> +       u8 buffer;
-> +       int err;
-> +
-> +       buffer = (gpio->out & ~mask) | (bits & mask);
-> +
-> +       err = i2c_smbus_write_byte(gpio->client, buffer);
-> +       if (err)
-> +               return;
-> +
-> +       gpio->out = buffer;
-> +}
-> +
-> +static void pca9570_set(struct gpio_chip *chip, unsigned offset, int value)
-> +{
-> +       pca9570_set_mask_bits(chip, BIT(offset), value ? BIT(offset) : 0);
-> +}
-> +
-> +static void pca9570_set_multiple(struct gpio_chip *chip, unsigned long *mask,
-> +                                unsigned long *bits)
-> +{
-> +       pca9570_set_mask_bits(chip, *mask, *bits);
-> +}
-> +
-> +static int pca9570_get_direction(struct gpio_chip *chip,
-> +                                unsigned offset)
-> +{
-> +       /* This device always output */
-> +       return GPIO_LINE_DIRECTION_OUT;
-> +}
-> +
-> +static int pca9570_direction_input(struct gpio_chip *chip,
-> +                                  unsigned offset)
-> +{
-> +       /* This device is output only */
-> +       return -EINVAL;
-> +}
-> +
-> +static int pca9570_direction_output(struct gpio_chip *chip,
-> +                                   unsigned offset, int value)
-> +{
-> +       /* This device always output */
-> +       pca9570_set(chip, offset, value);
-> +       return 0;
-> +}
-> +
-> +static const struct gpio_chip template_chip = {
-> +       .label                  = "pca9570",
-> +       .owner                  = THIS_MODULE,
-> +       .get_direction          = pca9570_get_direction,
-> +       .direction_input        = pca9570_direction_input,
-> +       .direction_output       = pca9570_direction_output,
-> +       .set                    = pca9570_set,
-> +       .set_multiple           = pca9570_set_multiple,
-> +       .base                   = -1,
-> +       .can_sleep              = true,
-> +};
-> +
-> +static const struct i2c_device_id pca9570_id_table[] = {
-> +       { "pca9570", 4 },
-> +       { /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(i2c, pca9570_id_table);
-> +
-> +static const struct of_device_id pca9570_of_match_table[] = {
-> +       { .compatible = "nxp,pca9570" },
-> +       { /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, pca9570_of_match_table);
-> +
-> +static int pca9570_probe(struct i2c_client *client)
-> +{
-> +       struct pca9570 *gpio;
-> +
-> +       gpio = devm_kzalloc(&client->dev, sizeof(*gpio), GFP_KERNEL);
-> +       if (!gpio)
-> +               return -ENOMEM;
-> +
-> +       gpio->chip = template_chip;
-> +       gpio->chip.parent = &client->dev;
-> +       gpio->chip.ngpio = i2c_match_id(pca9570_id_table, client)->driver_data;
-> +
-> +       gpio->client = client;
-> +
-> +       i2c_set_clientdata(client, gpio);
-> +
-> +       return devm_gpiochip_add_data(&client->dev, &gpio->chip, gpio);
-> +}
-> +
-> +static struct i2c_driver pca9570_driver = {
-> +       .driver = {
-> +               .name = "pca9570",
-> +               .of_match_table = pca9570_of_match_table,
-> +       },
-> +       .probe_new = pca9570_probe,
-> +       .id_table = pca9570_id_table,
-> +};
-> +module_i2c_driver(pca9570_driver);
-> +
-> +MODULE_AUTHOR("Sungbo Eo <mans0n@gorani.run>");
-> +MODULE_DESCRIPTION("GPIO expander driver for PCA9570");
-> +MODULE_LICENSE("GPL v2");
-> --
-> 2.27.0
->
+So maybe it is redundant for me to specify in DT what is already the
+hardware reset default?
 
+I thought it might be helpful to at least show where the user should
+edit to change it from the default reset behavior.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> > > Needing to change the dts does not sound good to me.. But maybe you mean
+> > > this is needed until the gpio-omap and pinctrl-single patches are merged?
+> >
+> > I agree that I would like for userspace to be able to do run-time
+> > changes.  However, I think something would need to be added to the
+> > pinconf support in pinctrl-single for that to be possible.  There are
+> > bias properties but non for receiver enable.
+> > 
+> > Does it seem sensible to add that?
+> 
+> Well let's see with Linus W says. To me it seems this might be a good
+> reason to allow a sysfs interface to change the pinctrl if we don't
+> have it yet? With the proper gpio line naming it should be quite simple
+> to use too :)
+
+I think if pinctrl-single allowed mux to be set through debugfs that
+could be one solution to the use case of users prototyping with a
+beaglebone.  Maybe that could be acceptable?
+
+Thanks,
+Drew
+
+> 
+> Regards,
+> 
+> Tony
