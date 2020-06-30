@@ -2,335 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4482120F3C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8159A20F3C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733091AbgF3LqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 07:46:16 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:43228 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733080AbgF3LqP (ORCPT
+        id S1733110AbgF3Lsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 07:48:35 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:40398 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728419AbgF3Lse (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 07:46:15 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 9A64880535;
-        Tue, 30 Jun 2020 13:46:09 +0200 (CEST)
-Date:   Tue, 30 Jun 2020 13:46:08 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, od@zcrc.me
-Subject: Re: [PATCH v2 07/10] drm/ingenic: Move register definitions to
- ingenic-drm.h
-Message-ID: <20200630114608.GC560155@ravnborg.org>
-References: <20200629235210.441709-1-paul@crapouillou.net>
- <20200629235210.441709-7-paul@crapouillou.net>
+        Tue, 30 Jun 2020 07:48:34 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05UBgPfe196081;
+        Tue, 30 Jun 2020 11:48:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=uxq/cKx519UunETtqtXYq6fCE8XXU5EvXIx0epdZCQQ=;
+ b=0PNp5hsOdKn/2ZW4WNcy+g0QBDBJFtgNvFg2QdwkyrVFYC00HITHoZC2+Ru7jzyzpjj7
+ 02TYcGSIw8YNNP1HxahgRhEJBFUxJSeW/rpv0flsj56YnPmokDRU8D5QF6DTPCYlUk3Z
+ QBTTwpF6ERCpZDJDVhUqs20Ej0M4L9GTQM095rcvjsSpnxmzgrwcRnj7BK0JLoSIu169
+ YfW9wautb92/9mRca/RpT8MJJVz1Ij41RQ7o3A/cP8pjoehGwc2ebpct8Nh+3aZK9gJc
+ Gh+YJN2WGtDIvQyeX5HHQ9rsRBj34qHzQf+WMCGFb9QWo/Ucx/8vcw64EgeGaStGyfkV Jg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 31xx1dru06-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 30 Jun 2020 11:48:25 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05UBgYO4189853;
+        Tue, 30 Jun 2020 11:46:25 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 31y52hrqxw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 30 Jun 2020 11:46:25 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05UBkMau003808;
+        Tue, 30 Jun 2020 11:46:23 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 30 Jun 2020 11:46:22 +0000
+Date:   Tue, 30 Jun 2020 14:46:15 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Wang Wenhu <wenhu.wang@vivo.com>,
+        Wen Gong <wgong@codeaurora.org>,
+        Carl Huang <cjhuang@codeaurora.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: [PATCH net] net: qrtr: Fix an out of bounds read qrtr_endpoint_post()
+Message-ID: <20200630114615.GA21891@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200629235210.441709-7-paul@crapouillou.net>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=aP3eV41m c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=ER_8r6IbAAAA:8 a=7gkXJVJtAAAA:8 a=e5mUnYsNAAAA:8
-        a=8_MGJwbRltm55tZ9CNwA:9 a=CjuIK1q_8ugA:10 a=9LHmKk7ezEChjTCyhBa9:22
-        a=E9Po1WZjFZOl8hwRPBS3:22 a=Vxmtnl_E_bksehYqCbjh:22
-        a=pHzHmUro8NiASowvMSCR:22 a=nt3jZW36AmriUCFCBwmW:22
+In-Reply-To: <20200628104623.GA3357@Mani-XPS-13-9360>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9667 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 mlxscore=0
+ adultscore=0 suspectscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006300087
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9667 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011 adultscore=0
+ suspectscore=0 mlxlogscore=999 cotscore=-2147483648 lowpriorityscore=0
+ malwarescore=0 phishscore=0 impostorscore=0 mlxscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006300087
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 01:52:07AM +0200, Paul Cercueil wrote:
-> Move the register definitions to ingenic-drm.h, to keep
-> ingenic-drm-drv.c tidy.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
-> ---
-> 
-> Notes:
->     v2: Fix SPDX license tag
-> 
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 116 +-------------------
->  drivers/gpu/drm/ingenic/ingenic-drm.h     | 126 ++++++++++++++++++++++
->  2 files changed, 128 insertions(+), 114 deletions(-)
->  create mode 100644 drivers/gpu/drm/ingenic/ingenic-drm.h
-> 
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index f7b0c5dc8cd8..6590b61cb915 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -4,6 +4,8 @@
->  //
->  // Copyright (C) 2019, Paul Cercueil <paul@crapouillou.net>
->  
-> +#include "ingenic-drm.h"
-> +
->  #include <linux/clk.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/module.h>
-> @@ -32,120 +34,6 @@
->  #include <drm/drm_simple_kms_helper.h>
->  #include <drm/drm_vblank.h>
->  
-> -#define JZ_REG_LCD_CFG				0x00
-> -#define JZ_REG_LCD_VSYNC			0x04
-> -#define JZ_REG_LCD_HSYNC			0x08
-> -#define JZ_REG_LCD_VAT				0x0C
-> -#define JZ_REG_LCD_DAH				0x10
-> -#define JZ_REG_LCD_DAV				0x14
-> -#define JZ_REG_LCD_PS				0x18
-> -#define JZ_REG_LCD_CLS				0x1C
-> -#define JZ_REG_LCD_SPL				0x20
-> -#define JZ_REG_LCD_REV				0x24
-> -#define JZ_REG_LCD_CTRL				0x30
-> -#define JZ_REG_LCD_STATE			0x34
-> -#define JZ_REG_LCD_IID				0x38
-> -#define JZ_REG_LCD_DA0				0x40
-> -#define JZ_REG_LCD_SA0				0x44
-> -#define JZ_REG_LCD_FID0				0x48
-> -#define JZ_REG_LCD_CMD0				0x4C
-> -#define JZ_REG_LCD_DA1				0x50
-> -#define JZ_REG_LCD_SA1				0x54
-> -#define JZ_REG_LCD_FID1				0x58
-> -#define JZ_REG_LCD_CMD1				0x5C
-> -
-> -#define JZ_LCD_CFG_SLCD				BIT(31)
-> -#define JZ_LCD_CFG_PS_DISABLE			BIT(23)
-> -#define JZ_LCD_CFG_CLS_DISABLE			BIT(22)
-> -#define JZ_LCD_CFG_SPL_DISABLE			BIT(21)
-> -#define JZ_LCD_CFG_REV_DISABLE			BIT(20)
-> -#define JZ_LCD_CFG_HSYNCM			BIT(19)
-> -#define JZ_LCD_CFG_PCLKM			BIT(18)
-> -#define JZ_LCD_CFG_INV				BIT(17)
-> -#define JZ_LCD_CFG_SYNC_DIR			BIT(16)
-> -#define JZ_LCD_CFG_PS_POLARITY			BIT(15)
-> -#define JZ_LCD_CFG_CLS_POLARITY			BIT(14)
-> -#define JZ_LCD_CFG_SPL_POLARITY			BIT(13)
-> -#define JZ_LCD_CFG_REV_POLARITY			BIT(12)
-> -#define JZ_LCD_CFG_HSYNC_ACTIVE_LOW		BIT(11)
-> -#define JZ_LCD_CFG_PCLK_FALLING_EDGE		BIT(10)
-> -#define JZ_LCD_CFG_DE_ACTIVE_LOW		BIT(9)
-> -#define JZ_LCD_CFG_VSYNC_ACTIVE_LOW		BIT(8)
-> -#define JZ_LCD_CFG_18_BIT			BIT(7)
-> -#define JZ_LCD_CFG_PDW				(BIT(5) | BIT(4))
-> -
-> -#define JZ_LCD_CFG_MODE_GENERIC_16BIT		0
-> -#define JZ_LCD_CFG_MODE_GENERIC_18BIT		BIT(7)
-> -#define JZ_LCD_CFG_MODE_GENERIC_24BIT		BIT(6)
-> -
-> -#define JZ_LCD_CFG_MODE_SPECIAL_TFT_1		1
-> -#define JZ_LCD_CFG_MODE_SPECIAL_TFT_2		2
-> -#define JZ_LCD_CFG_MODE_SPECIAL_TFT_3		3
-> -
-> -#define JZ_LCD_CFG_MODE_TV_OUT_P		4
-> -#define JZ_LCD_CFG_MODE_TV_OUT_I		6
-> -
-> -#define JZ_LCD_CFG_MODE_SINGLE_COLOR_STN	8
-> -#define JZ_LCD_CFG_MODE_SINGLE_MONOCHROME_STN	9
-> -#define JZ_LCD_CFG_MODE_DUAL_COLOR_STN		10
-> -#define JZ_LCD_CFG_MODE_DUAL_MONOCHROME_STN	11
-> -
-> -#define JZ_LCD_CFG_MODE_8BIT_SERIAL		12
-> -#define JZ_LCD_CFG_MODE_LCM			13
-> -
-> -#define JZ_LCD_VSYNC_VPS_OFFSET			16
-> -#define JZ_LCD_VSYNC_VPE_OFFSET			0
-> -
-> -#define JZ_LCD_HSYNC_HPS_OFFSET			16
-> -#define JZ_LCD_HSYNC_HPE_OFFSET			0
-> -
-> -#define JZ_LCD_VAT_HT_OFFSET			16
-> -#define JZ_LCD_VAT_VT_OFFSET			0
-> -
-> -#define JZ_LCD_DAH_HDS_OFFSET			16
-> -#define JZ_LCD_DAH_HDE_OFFSET			0
-> -
-> -#define JZ_LCD_DAV_VDS_OFFSET			16
-> -#define JZ_LCD_DAV_VDE_OFFSET			0
-> -
-> -#define JZ_LCD_CTRL_BURST_4			(0x0 << 28)
-> -#define JZ_LCD_CTRL_BURST_8			(0x1 << 28)
-> -#define JZ_LCD_CTRL_BURST_16			(0x2 << 28)
-> -#define JZ_LCD_CTRL_RGB555			BIT(27)
-> -#define JZ_LCD_CTRL_OFUP			BIT(26)
-> -#define JZ_LCD_CTRL_FRC_GRAYSCALE_16		(0x0 << 24)
-> -#define JZ_LCD_CTRL_FRC_GRAYSCALE_4		(0x1 << 24)
-> -#define JZ_LCD_CTRL_FRC_GRAYSCALE_2		(0x2 << 24)
-> -#define JZ_LCD_CTRL_PDD_MASK			(0xff << 16)
-> -#define JZ_LCD_CTRL_EOF_IRQ			BIT(13)
-> -#define JZ_LCD_CTRL_SOF_IRQ			BIT(12)
-> -#define JZ_LCD_CTRL_OFU_IRQ			BIT(11)
-> -#define JZ_LCD_CTRL_IFU0_IRQ			BIT(10)
-> -#define JZ_LCD_CTRL_IFU1_IRQ			BIT(9)
-> -#define JZ_LCD_CTRL_DD_IRQ			BIT(8)
-> -#define JZ_LCD_CTRL_QDD_IRQ			BIT(7)
-> -#define JZ_LCD_CTRL_REVERSE_ENDIAN		BIT(6)
-> -#define JZ_LCD_CTRL_LSB_FISRT			BIT(5)
-> -#define JZ_LCD_CTRL_DISABLE			BIT(4)
-> -#define JZ_LCD_CTRL_ENABLE			BIT(3)
-> -#define JZ_LCD_CTRL_BPP_1			0x0
-> -#define JZ_LCD_CTRL_BPP_2			0x1
-> -#define JZ_LCD_CTRL_BPP_4			0x2
-> -#define JZ_LCD_CTRL_BPP_8			0x3
-> -#define JZ_LCD_CTRL_BPP_15_16			0x4
-> -#define JZ_LCD_CTRL_BPP_18_24			0x5
-> -#define JZ_LCD_CTRL_BPP_MASK			(JZ_LCD_CTRL_RGB555 | (0x7 << 0))
-> -
-> -#define JZ_LCD_CMD_SOF_IRQ			BIT(31)
-> -#define JZ_LCD_CMD_EOF_IRQ			BIT(30)
-> -#define JZ_LCD_CMD_ENABLE_PAL			BIT(28)
-> -
-> -#define JZ_LCD_SYNC_MASK			0x3ff
-> -
-> -#define JZ_LCD_STATE_EOF_IRQ			BIT(5)
-> -#define JZ_LCD_STATE_SOF_IRQ			BIT(4)
-> -#define JZ_LCD_STATE_DISABLED			BIT(0)
-> -
->  struct ingenic_dma_hwdesc {
->  	u32 next;
->  	u32 addr;
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.h b/drivers/gpu/drm/ingenic/ingenic-drm.h
-> new file mode 100644
-> index 000000000000..cb578cff7bb1
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm.h
-> @@ -0,0 +1,126 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +//
-> +// Ingenic JZ47xx KMS driver - Register definitions and private API
-> +//
-> +// Copyright (C) 2020, Paul Cercueil <paul@crapouillou.net>
-> +
-> +#ifndef DRIVERS_GPU_DRM_INGENIC_INGENIC_DRM_H
-> +#define DRIVERS_GPU_DRM_INGENIC_INGENIC_DRM_H
-> +
-> +#include <linux/bitops.h>
-> +
-> +#define JZ_REG_LCD_CFG				0x00
-> +#define JZ_REG_LCD_VSYNC			0x04
-> +#define JZ_REG_LCD_HSYNC			0x08
-> +#define JZ_REG_LCD_VAT				0x0C
-> +#define JZ_REG_LCD_DAH				0x10
-> +#define JZ_REG_LCD_DAV				0x14
-> +#define JZ_REG_LCD_PS				0x18
-> +#define JZ_REG_LCD_CLS				0x1C
-> +#define JZ_REG_LCD_SPL				0x20
-> +#define JZ_REG_LCD_REV				0x24
-> +#define JZ_REG_LCD_CTRL				0x30
-> +#define JZ_REG_LCD_STATE			0x34
-> +#define JZ_REG_LCD_IID				0x38
-> +#define JZ_REG_LCD_DA0				0x40
-> +#define JZ_REG_LCD_SA0				0x44
-> +#define JZ_REG_LCD_FID0				0x48
-> +#define JZ_REG_LCD_CMD0				0x4C
-> +#define JZ_REG_LCD_DA1				0x50
-> +#define JZ_REG_LCD_SA1				0x54
-> +#define JZ_REG_LCD_FID1				0x58
-> +#define JZ_REG_LCD_CMD1				0x5C
-> +
-> +#define JZ_LCD_CFG_SLCD				BIT(31)
-> +#define JZ_LCD_CFG_PS_DISABLE			BIT(23)
-> +#define JZ_LCD_CFG_CLS_DISABLE			BIT(22)
-> +#define JZ_LCD_CFG_SPL_DISABLE			BIT(21)
-> +#define JZ_LCD_CFG_REV_DISABLE			BIT(20)
-> +#define JZ_LCD_CFG_HSYNCM			BIT(19)
-> +#define JZ_LCD_CFG_PCLKM			BIT(18)
-> +#define JZ_LCD_CFG_INV				BIT(17)
-> +#define JZ_LCD_CFG_SYNC_DIR			BIT(16)
-> +#define JZ_LCD_CFG_PS_POLARITY			BIT(15)
-> +#define JZ_LCD_CFG_CLS_POLARITY			BIT(14)
-> +#define JZ_LCD_CFG_SPL_POLARITY			BIT(13)
-> +#define JZ_LCD_CFG_REV_POLARITY			BIT(12)
-> +#define JZ_LCD_CFG_HSYNC_ACTIVE_LOW		BIT(11)
-> +#define JZ_LCD_CFG_PCLK_FALLING_EDGE		BIT(10)
-> +#define JZ_LCD_CFG_DE_ACTIVE_LOW		BIT(9)
-> +#define JZ_LCD_CFG_VSYNC_ACTIVE_LOW		BIT(8)
-> +#define JZ_LCD_CFG_18_BIT			BIT(7)
-> +#define JZ_LCD_CFG_PDW				(BIT(5) | BIT(4))
-> +
-> +#define JZ_LCD_CFG_MODE_GENERIC_16BIT		0
-> +#define JZ_LCD_CFG_MODE_GENERIC_18BIT		BIT(7)
-> +#define JZ_LCD_CFG_MODE_GENERIC_24BIT		BIT(6)
-> +
-> +#define JZ_LCD_CFG_MODE_SPECIAL_TFT_1		1
-> +#define JZ_LCD_CFG_MODE_SPECIAL_TFT_2		2
-> +#define JZ_LCD_CFG_MODE_SPECIAL_TFT_3		3
-> +
-> +#define JZ_LCD_CFG_MODE_TV_OUT_P		4
-> +#define JZ_LCD_CFG_MODE_TV_OUT_I		6
-> +
-> +#define JZ_LCD_CFG_MODE_SINGLE_COLOR_STN	8
-> +#define JZ_LCD_CFG_MODE_SINGLE_MONOCHROME_STN	9
-> +#define JZ_LCD_CFG_MODE_DUAL_COLOR_STN		10
-> +#define JZ_LCD_CFG_MODE_DUAL_MONOCHROME_STN	11
-> +
-> +#define JZ_LCD_CFG_MODE_8BIT_SERIAL		12
-> +#define JZ_LCD_CFG_MODE_LCM			13
-> +
-> +#define JZ_LCD_VSYNC_VPS_OFFSET			16
-> +#define JZ_LCD_VSYNC_VPE_OFFSET			0
-> +
-> +#define JZ_LCD_HSYNC_HPS_OFFSET			16
-> +#define JZ_LCD_HSYNC_HPE_OFFSET			0
-> +
-> +#define JZ_LCD_VAT_HT_OFFSET			16
-> +#define JZ_LCD_VAT_VT_OFFSET			0
-> +
-> +#define JZ_LCD_DAH_HDS_OFFSET			16
-> +#define JZ_LCD_DAH_HDE_OFFSET			0
-> +
-> +#define JZ_LCD_DAV_VDS_OFFSET			16
-> +#define JZ_LCD_DAV_VDE_OFFSET			0
-> +
-> +#define JZ_LCD_CTRL_BURST_4			(0x0 << 28)
-> +#define JZ_LCD_CTRL_BURST_8			(0x1 << 28)
-> +#define JZ_LCD_CTRL_BURST_16			(0x2 << 28)
-> +#define JZ_LCD_CTRL_RGB555			BIT(27)
-> +#define JZ_LCD_CTRL_OFUP			BIT(26)
-> +#define JZ_LCD_CTRL_FRC_GRAYSCALE_16		(0x0 << 24)
-> +#define JZ_LCD_CTRL_FRC_GRAYSCALE_4		(0x1 << 24)
-> +#define JZ_LCD_CTRL_FRC_GRAYSCALE_2		(0x2 << 24)
-> +#define JZ_LCD_CTRL_PDD_MASK			(0xff << 16)
-> +#define JZ_LCD_CTRL_EOF_IRQ			BIT(13)
-> +#define JZ_LCD_CTRL_SOF_IRQ			BIT(12)
-> +#define JZ_LCD_CTRL_OFU_IRQ			BIT(11)
-> +#define JZ_LCD_CTRL_IFU0_IRQ			BIT(10)
-> +#define JZ_LCD_CTRL_IFU1_IRQ			BIT(9)
-> +#define JZ_LCD_CTRL_DD_IRQ			BIT(8)
-> +#define JZ_LCD_CTRL_QDD_IRQ			BIT(7)
-> +#define JZ_LCD_CTRL_REVERSE_ENDIAN		BIT(6)
-> +#define JZ_LCD_CTRL_LSB_FISRT			BIT(5)
-> +#define JZ_LCD_CTRL_DISABLE			BIT(4)
-> +#define JZ_LCD_CTRL_ENABLE			BIT(3)
-> +#define JZ_LCD_CTRL_BPP_1			0x0
-> +#define JZ_LCD_CTRL_BPP_2			0x1
-> +#define JZ_LCD_CTRL_BPP_4			0x2
-> +#define JZ_LCD_CTRL_BPP_8			0x3
-> +#define JZ_LCD_CTRL_BPP_15_16			0x4
-> +#define JZ_LCD_CTRL_BPP_18_24			0x5
-> +#define JZ_LCD_CTRL_BPP_MASK			(JZ_LCD_CTRL_RGB555 | 0x7)
-> +
-> +#define JZ_LCD_CMD_SOF_IRQ			BIT(31)
-> +#define JZ_LCD_CMD_EOF_IRQ			BIT(30)
-> +#define JZ_LCD_CMD_ENABLE_PAL			BIT(28)
-> +
-> +#define JZ_LCD_SYNC_MASK			0x3ff
-> +
-> +#define JZ_LCD_STATE_EOF_IRQ			BIT(5)
-> +#define JZ_LCD_STATE_SOF_IRQ			BIT(4)
-> +#define JZ_LCD_STATE_DISABLED			BIT(0)
-> +
-> +#endif /* DRIVERS_GPU_DRM_INGENIC_INGENIC_DRM_H */
-> -- 
-> 2.27.0
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+This code assumes that the user passed in enough data for a
+qrtr_hdr_v1 or qrtr_hdr_v2 struct, but it's not necessarily true.  If
+the buffer is too small then it will read beyond the end.
+
+Reported-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Reported-by: syzbot+b8fe393f999a291a9ea6@syzkaller.appspotmail.com
+Fixes: 194ccc88297a ("net: qrtr: Support decoding incoming v2 packets")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ net/qrtr/qrtr.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
+index 2d8d6131bc5f..7eccbbf6f8ad 100644
+--- a/net/qrtr/qrtr.c
++++ b/net/qrtr/qrtr.c
+@@ -427,7 +427,7 @@ int qrtr_endpoint_post(struct qrtr_endpoint *ep, const void *data, size_t len)
+ 	unsigned int ver;
+ 	size_t hdrlen;
+ 
+-	if (len & 3)
++	if (len == 0 || len & 3)
+ 		return -EINVAL;
+ 
+ 	skb = netdev_alloc_skb(NULL, len);
+@@ -441,6 +441,8 @@ int qrtr_endpoint_post(struct qrtr_endpoint *ep, const void *data, size_t len)
+ 
+ 	switch (ver) {
+ 	case QRTR_PROTO_VER_1:
++		if (len < sizeof(*v1))
++			goto err;
+ 		v1 = data;
+ 		hdrlen = sizeof(*v1);
+ 
+@@ -454,6 +456,8 @@ int qrtr_endpoint_post(struct qrtr_endpoint *ep, const void *data, size_t len)
+ 		size = le32_to_cpu(v1->size);
+ 		break;
+ 	case QRTR_PROTO_VER_2:
++		if (len < sizeof(*v2))
++			goto err;
+ 		v2 = data;
+ 		hdrlen = sizeof(*v2) + v2->optlen;
+ 
+-- 
+2.27.0
+
