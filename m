@@ -2,122 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE0920FCF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 21:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5106820FD05
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 21:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728424AbgF3Tso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 15:48:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:32882 "EHLO foss.arm.com"
+        id S1728447AbgF3Tsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 15:48:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:32894 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728407AbgF3Tso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728428AbgF3Tso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 30 Jun 2020 15:48:44 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C47931B;
-        Tue, 30 Jun 2020 12:48:43 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6EC6A1045;
+        Tue, 30 Jun 2020 12:48:44 -0700 (PDT)
 Received: from seattle-bionic.arm.com.Home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5819D3F73C;
-        Tue, 30 Jun 2020 12:48:42 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8087C3F73C;
+        Tue, 30 Jun 2020 12:48:43 -0700 (PDT)
 From:   Oliver Swede <oli.swede@arm.com>
 To:     Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>
 Cc:     Robin Murphy <robin.murphy@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 00/14] arm64: Optimise and update memcpy, user copy and string routines
-Date:   Tue, 30 Jun 2020 19:48:08 +0000
-Message-Id: <20200630194822.1082-1-oli.swede@arm.com>
+Subject: [PATCH v4 01/14] arm64: Allow passing fault address to fixup handlers
+Date:   Tue, 30 Jun 2020 19:48:09 +0000
+Message-Id: <20200630194822.1082-2-oli.swede@arm.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200630194822.1082-1-oli.swede@arm.com>
+References: <20200630194822.1082-1-oli.swede@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Sam Tebbs <sam.tebbs@arm.com>
 
-This contains an update to the cortex-strings patchset: the
-correctness of the fixup routines are improved, with the aim being to
-return the exact number of remaining bytes for all copy sizes.
-To ensure they are exact - which the current fixups are not for some
-copy sizes and are off by a few byes - is an extension to the
-original intention of fixing an issue reported by an LTP run last
-year, where the fixup routine in v2 of this patchset (which was
-importing the cortex-strings memcpy implementation) would over-report
-the number of bytes that successfully copied.
-Version 3 addressed this but I later found some issues with the fixup
-correctness after further testing, and have partially re-written them
-here, and addressed some other behaviours of the copy algorithm.
+Extend fixup_exception() to optionally place the faulting address in a
+register when returning to a fixup handler. Since A64 instructions must
+be 4-byte-aligned, we can mimic the IA-64 implementation and encode a
+flag in the lower bits of the offset field to indicate handlers which
+expect an address. This will allow us to use more efficient offset
+addressing modes in usercopy routines, rather than updating the base
+register on every access just for the sake of inferring where a fault
+occurred in order to compute the return value upon failure.
 
-Comments welcome,
+The choice of x15 is somewhat arbitrary, but with the consideration that
+as the highest-numbered temporary register with no possible 'special'
+role in the ABI, it is most likely not used by hand-written assembly
+code, and thus a minimally-invasive option for imported routines.
 
-Thanks
-Oliver
+Signed-off-by: Sam Tebbs <sam.tebbs@arm.com>
+[ rm: split into separate patch, use UL(), expand commit message ]
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: Oliver Swede <oli.swede@arm.com>
+---
+ arch/arm64/include/asm/assembler.h |  9 +++++++++
+ arch/arm64/include/asm/extable.h   | 10 +++++++++-
+ arch/arm64/mm/extable.c            | 13 +++++++++----
+ arch/arm64/mm/fault.c              |  2 +-
+ 4 files changed, 28 insertions(+), 6 deletions(-)
 
-v1: https://lore.kernel.org/linux-arm-kernel/cover.1571073960.git.robin.murphy@arm.com/
-v2: https://lore.kernel.org/linux-arm-kernel/cover.1571421836.git.robin.murphy@arm.com/
-v3: https://lore.kernel.org/linux-arm-kernel/20200514143227.605-1-oli.swede@arm.com/
-
-Changes since v3:
-* Improves the accuracy of the fixups in response to issues that
-  arose during futher testing
-* Accounts for faults on store instructions on systems with UAO
-  enabled
-* Expands on comments detailing the implementation
-
-Changes since v2:
-* Adds Robin's separate patch that fixes a compilation issue with
-  KProbes fixup [1]
-* Imports the most recent memcpy implementation by updating Sam's
-  patch (and moves this patch to occur after the cortex-strings
-  importing so that it's closer to the patches containing its 
-  corresponding fixups)
-* Uses the stack to preserve the initial parameters
-* Replaces the usercopy fixup routine in v2 with multiple longer
-  fixups that each make use of the fault address to return the exact
-  number of bytes that haven't yet copied.
-
-[1] https://lore.kernel.org/linux-arm-kernel/e70f7b9de7e601b9e4a6fedad8eaf64d304b1637.1571326276.git.robin.murphy@arm.com/
-
-Oliver Swede (5):
-  arm64: Store the arguments to copy_*_user on the stack
-  arm64: Use additional memcpy macros and fixups
-  arm64: Add fixup routines for usercopy load exceptions
-  arm64: Add fixup routines for usercopy store exceptions
-  arm64: Improve accuracy of fixup for UAO cases
-
-Robin Murphy (2):
-  arm64: kprobes: Drop open-coded exception fixup
-  arm64: Tidy up _asm_extable_faultaddr usage
-
-Sam Tebbs (7):
-  arm64: Allow passing fault address to fixup handlers
-  arm64: Import latest version of Cortex Strings' memcmp
-  arm64: Import latest version of Cortex Strings' memmove
-  arm64: Import latest version of Cortex Strings' strcmp
-  arm64: Import latest version of Cortex Strings' strlen
-  arm64: Import latest version of Cortex Strings' strncmp
-  arm64: Import latest optimization of memcpy
-
- arch/arm64/include/asm/alternative.h |  36 ---
- arch/arm64/include/asm/assembler.h   |  13 +
- arch/arm64/include/asm/extable.h     |  10 +-
- arch/arm64/kernel/probes/kprobes.c   |   7 -
- arch/arm64/lib/copy_from_user.S      | 272 +++++++++++++++--
- arch/arm64/lib/copy_in_user.S        | 287 ++++++++++++++++--
- arch/arm64/lib/copy_template.S       | 377 +++++++++++++----------
- arch/arm64/lib/copy_template_user.S  |  50 ++++
- arch/arm64/lib/copy_to_user.S        | 273 +++++++++++++++--
- arch/arm64/lib/copy_user_fixup.S     | 433 +++++++++++++++++++++++++++
- arch/arm64/lib/memcmp.S              | 333 ++++++++------------
- arch/arm64/lib/memcpy.S              | 127 ++++++--
- arch/arm64/lib/memmove.S             | 232 +++++---------
- arch/arm64/lib/strcmp.S              | 272 +++++++----------
- arch/arm64/lib/strlen.S              | 247 ++++++++++-----
- arch/arm64/lib/strncmp.S             | 363 ++++++++++------------
- arch/arm64/mm/extable.c              |  13 +-
- arch/arm64/mm/fault.c                |   2 +-
- 18 files changed, 2228 insertions(+), 1119 deletions(-)
- create mode 100644 arch/arm64/lib/copy_template_user.S
- create mode 100644 arch/arm64/lib/copy_user_fixup.S
-
+diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+index 54d181177656..438382a277c8 100644
+--- a/arch/arm64/include/asm/assembler.h
++++ b/arch/arm64/include/asm/assembler.h
+@@ -18,6 +18,7 @@
+ #include <asm/cpufeature.h>
+ #include <asm/cputype.h>
+ #include <asm/debug-monitors.h>
++#include <asm/extable.h>
+ #include <asm/page.h>
+ #include <asm/pgtable-hwdef.h>
+ #include <asm/ptrace.h>
+@@ -129,6 +130,14 @@ alternative_endif
+ 	.popsection
+ 	.endm
+ 
++/*
++ * Emit an entry into the exception table.
++ * The fixup handler will receive the faulting address in x15
++ */
++	.macro		_asm_extable_faultaddr, from, to
++	_asm_extable	\from, \to + FIXUP_WITH_ADDR
++	.endm
++
+ #define USER(l, x...)				\
+ 9999:	x;					\
+ 	_asm_extable	9999b, l
+diff --git a/arch/arm64/include/asm/extable.h b/arch/arm64/include/asm/extable.h
+index 56a4f68b262e..4c4955f2bb44 100644
+--- a/arch/arm64/include/asm/extable.h
++++ b/arch/arm64/include/asm/extable.h
+@@ -2,6 +2,12 @@
+ #ifndef __ASM_EXTABLE_H
+ #define __ASM_EXTABLE_H
+ 
++#include <linux/const.h>
++
++#define FIXUP_WITH_ADDR UL(1)
++
++#ifndef __ASSEMBLY__
++
+ /*
+  * The exception table consists of pairs of relative offsets: the first
+  * is the relative offset to an instruction that is allowed to fault,
+@@ -22,5 +28,7 @@ struct exception_table_entry
+ 
+ #define ARCH_HAS_RELATIVE_EXTABLE
+ 
+-extern int fixup_exception(struct pt_regs *regs);
++extern int fixup_exception(struct pt_regs *regs, unsigned long addr);
++
++#endif
+ #endif
+diff --git a/arch/arm64/mm/extable.c b/arch/arm64/mm/extable.c
+index 81e694af5f8c..e6578c2814b5 100644
+--- a/arch/arm64/mm/extable.c
++++ b/arch/arm64/mm/extable.c
+@@ -6,13 +6,18 @@
+ #include <linux/extable.h>
+ #include <linux/uaccess.h>
+ 
+-int fixup_exception(struct pt_regs *regs)
++int fixup_exception(struct pt_regs *regs, unsigned long addr)
+ {
+ 	const struct exception_table_entry *fixup;
+ 
+ 	fixup = search_exception_tables(instruction_pointer(regs));
+-	if (fixup)
+-		regs->pc = (unsigned long)&fixup->fixup + fixup->fixup;
+-
++	if (fixup) {
++		unsigned long offset = fixup->fixup;
++		if (offset & FIXUP_WITH_ADDR) {
++			regs->regs[15] = addr;
++			offset &= ~FIXUP_WITH_ADDR;
++		}
++		regs->pc = (unsigned long)&fixup->fixup + offset;
++	}
+ 	return fixup != NULL;
+ }
+diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+index 8afb238ff335..f80e299dc91b 100644
+--- a/arch/arm64/mm/fault.c
++++ b/arch/arm64/mm/fault.c
+@@ -303,7 +303,7 @@ static void __do_kernel_fault(unsigned long addr, unsigned int esr,
+ 	 * Are we prepared to handle this kernel fault?
+ 	 * We are almost certainly not prepared to handle instruction faults.
+ 	 */
+-	if (!is_el1_instruction_abort(esr) && fixup_exception(regs))
++	if (!is_el1_instruction_abort(esr) && fixup_exception(regs, addr))
+ 		return;
+ 
+ 	if (WARN_RATELIMIT(is_spurious_el1_translation_fault(addr, esr, regs),
 -- 
 2.17.1
 
