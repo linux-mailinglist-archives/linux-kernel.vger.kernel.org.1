@@ -2,265 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDAA21005F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 01:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E35E021004E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 01:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726154AbgF3XW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 19:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725791AbgF3XWz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 19:22:55 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36C2C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 16:22:55 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id t198so6383068oie.7
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 16:22:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=digitalocean.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=M2AlFniLC0kBVOSqvZsiNJKzo1s4AyhyVTej75b08JQ=;
-        b=LA3iexWHGft4HqzQaLw4Iy0oVDcCqp4l0yAn0B4e6+nrsDnBL+4PY9AE1/+9IzjhNO
-         UZ58vLJ7q7BcpIlSrI+rkJ0DACI4eS1XyM/X0CSEc972hPjOvbNy7pevazcAv4FUkdCw
-         tZxJmMGNPsEP/J5VZ7bmDxeloCo9GS8MesmRA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=M2AlFniLC0kBVOSqvZsiNJKzo1s4AyhyVTej75b08JQ=;
-        b=LeB6tQP15B/72Dt/yitWVKxTqgonM8W0k6CHUdhFezBGE5+1pffI8kUhPbSbkkLW2u
-         hXmZ8MIhdBHA3ZB2diRYL2r0mcyu041UXCS7mQ69hAVZKjYaBsRiYaAyjGyeUuW3Q0p3
-         53WkWg12RxPHc1XbruFBoJ6KBZVqcJgEqiOSrJXnyUrF+x0g3AQoF+y4H01aho0ejQJh
-         hk7JdDZcJDRCjXN83vU5HkjRAITL2JYpYuvSOS8w2x8NKm0sePAvddXF6PUVY1uZQ0L+
-         AEdAgn9uqPAt1MWMoiaYpDr/HZ7A+ykP/HEFE6Vt38fBVvrpi/8rTdIKmYv6v/Jwy1jT
-         FANg==
-X-Gm-Message-State: AOAM5307NsQY8slpTBtOkPoFCtYETcq/PD6GvmkNQzpmDfySrcDJIgvi
-        Sg8ihmBKqDKCQFJ9C6gzi9lUje+nz7hzjg==
-X-Google-Smtp-Source: ABdhPJw10YIJXH4Pp3Ed59sQx/p5fmJ4ExeHyvqVWy4c+GORCiQqxo+yhETqaiESD3M7Q303e1dW7A==
-X-Received: by 2002:a17:90a:65c9:: with SMTP id i9mr24998521pjs.201.1593552818704;
-        Tue, 30 Jun 2020 14:33:38 -0700 (PDT)
-Received: from vpillai-dev.sfo2.internal.digitalocean.com ([138.68.32.68])
-        by smtp.gmail.com with ESMTPSA id q14sm3585152pgk.86.2020.06.30.14.33.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 30 Jun 2020 14:33:38 -0700 (PDT)
-From:   Vineeth Remanan Pillai <vpillai@digitalocean.com>
-To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>, mingo@kernel.org,
-        tglx@linutronix.de, pjt@google.com, torvalds@linux-foundation.org
-Cc:     Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org,
-        subhra.mazumdar@oracle.com, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>, joel@joelfernandes.org,
-        vineethrp@gmail.com, Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Vineeth Remanan Pillai <vpillai@digitalocean.com>
-Subject: [RFC PATCH 11/16] sched: migration changes for core scheduling
-Date:   Tue, 30 Jun 2020 21:32:32 +0000
-Message-Id: <9044a2ebde089483d45c091752d208a878c604ac.1593530334.git.vpillai@digitalocean.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1593530334.git.vpillai@digitalocean.com>
-References: <cover.1593530334.git.vpillai@digitalocean.com>
-In-Reply-To: <cover.1593530334.git.vpillai@digitalocean.com>
-References: <cover.1593530334.git.vpillai@digitalocean.com>
+        id S1726237AbgF3XCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 19:02:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725791AbgF3XCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 19:02:40 -0400
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D92B2078B
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 23:02:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593558159;
+        bh=QkyR9JiwolvElGEGF/cV1+0xBBGtnLf0/3SbL34qgpI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bsZzqAs/CQsUje3SYIxEeJr3nJwN9lvEK2Iun7NjgBPNamVd8XFpfPejuEpSIMq3t
+         vfgKg02hOmdYFmlosepYDy8AGJY4hWVus/w4WzEMGu+Sc2qy2GtyGpQwlr76Hck1tN
+         NnBOtgNtnFVYnjmr0VSn4OsE6HJRVzE+hhaCrlok=
+Received: by mail-ed1-f43.google.com with SMTP id by13so7968022edb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 16:02:39 -0700 (PDT)
+X-Gm-Message-State: AOAM5324fI5m3yPCAiN/yQvOEzhiLh0JBNXGHwX/d/H4TOS1tZwt+1WF
+        Q1pqEadcNP+9wSKlu7cR43+tlCesSOAK0TpMKQ==
+X-Google-Smtp-Source: ABdhPJyd7wUB7S5V0t31ySZM0YeWDlaeEMvY3ludSAy+MeqYX3ItuaiYsdmmkpUrY0ZQ3WoSwWDazpYXnVgFsZwNSzI=
+X-Received: by 2002:a05:6402:203c:: with SMTP id ay28mr15041128edb.271.1593558158062;
+ Tue, 30 Jun 2020 16:02:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200615203108.786083-1-enric.balletbo@collabora.com>
+ <20200620213302.GC74146@ravnborg.org> <593a4666-d6aa-7d16-f3a0-ba3713047d84@collabora.com>
+ <CAAOTY_9ZHemp0U76_oPjwy-XoTRXW108UMD_9JVnNXndNNsiTw@mail.gmail.com> <43e5b273-d156-beea-bcfb-cc61b190a671@collabora.com>
+In-Reply-To: <43e5b273-d156-beea-bcfb-cc61b190a671@collabora.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 1 Jul 2020 07:02:27 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__633cG2ki088ozN3f_seLBv9MkRSSsGudCWgP2GBKGmg@mail.gmail.com>
+Message-ID: <CAAOTY__633cG2ki088ozN3f_seLBv9MkRSSsGudCWgP2GBKGmg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v4 0/7] Convert mtk-dsi to drm_bridge API and get
+ EDID for ps8640 bridge
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aubrey Li <aubrey.li@intel.com>
+Hi, Enric:
 
- - Don't migrate if there is a cookie mismatch
-     Load balance tries to move task from busiest CPU to the
-     destination CPU. When core scheduling is enabled, if the
-     task's cookie does not match with the destination CPU's
-     core cookie, this task will be skipped by this CPU. This
-     mitigates the forced idle time on the destination CPU.
+Enric Balletbo i Serra <enric.balletbo@collabora.com> =E6=96=BC 2020=E5=B9=
+=B47=E6=9C=881=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=885:02=E5=AF=AB=
+=E9=81=93=EF=BC=9A
+>
+> Hi Chun-Kuang,
+>
+> On 30/6/20 18:26, Chun-Kuang Hu wrote:
+> > Hi, Enric:
+> >
+> > Enric Balletbo i Serra <enric.balletbo@collabora.com> =E6=96=BC 2020=E5=
+=B9=B46=E6=9C=8830=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8810:34=E5=
+=AF=AB=E9=81=93=EF=BC=9A
+> >>
+> >> Hi Sam, Chun-Kuan,
+> >>
+> >> On 20/6/20 23:33, Sam Ravnborg wrote:
+> >>> Hi Enric
+> >>>
+> >>> On Mon, Jun 15, 2020 at 10:31:01PM +0200, Enric Balletbo i Serra wrot=
+e:
+> >>>> (This resend is to fix some trivial conflicts due the merge window)
+> >>>>
+> >>>> The PS8640 dsi-to-eDP bridge driver is using the panel bridge API,
+> >>>> however, not all the components in the chain have been ported to the
+> >>>> drm_bridge API. Actually, when a panel is attached the default panel=
+'s mode
+> >>>> is used, but in some cases we can't get display up if mode getting f=
+rom
+> >>>> eDP control EDID is not chosen.
+> >>>>
+> >>>> This series address that problem, first implements the .get_edid()
+> >>>> callback in the PS8640 driver (which is not used until the conversio=
+n is
+> >>>> done) and then, converts the Mediatek DSI driver to use the drm_brid=
+ge
+> >>>> API.
+> >>>>
+> >>>> As far as I know, we're the only users of the mediatek dsi driver in
+> >>>> mainline, so should be safe to switch to the new chain of drm_bridge=
+ API
+> >>>> unconditionally.
+> >>>>
+> >>>> The patches has been tested on a Acer Chromebook R13 (Elm) running a
+> >>>> Chrome OS userspace and checking that the valid EDID mode reported b=
+y
+> >>>> the bridge is selected.
+> >>>>
+> >>>> Changes in v4:
+> >>>> - Remove double call to drm_encoder_init(). (Chun-Kuang Hu)
+> >>>> - Cleanup the encoder in mtk_dsi_unbind(). (Chun-Kuang Hu)
+> >>>>
+> >>>> Changes in v3:
+> >>>> - Replace s/bridge/next bridge/ for comment. (Laurent Pinchart)
+> >>>> - Add the bridge.type. (Laurent Pinchart)
+> >>>> - Use next_bridge field to store the panel bridge. (Laurent Pinchart=
+)
+> >>>> - Add the bridge.type field. (Laurent Pinchart)
+> >>>> - This patch requires https://lkml.org/lkml/2020/4/16/2080 to work
+> >>>>   properly.
+> >>>> - Move the bridge.type line to the patch that adds drm_bridge suppor=
+t. (Laurent Pinchart)
+> >>>>
+> >>>> Changes in v2:
+> >>>> - Do not set connector_type for panel here. (Sam Ravnborg)
+> >>>>
+> >>>> Enric Balletbo i Serra (7):
+> >>>>   drm/bridge: ps8640: Get the EDID from eDP control
+> >>>>   drm/bridge_connector: Set default status connected for eDP connect=
+ors
+> >>>>   drm/mediatek: mtk_dsi: Rename bridge to next_bridge
+> >>>>   drm/mediatek: mtk_dsi: Convert to bridge driver
+> >>>>   drm/mediatek: mtk_dsi: Use simple encoder
+> >>>>   drm/mediatek: mtk_dsi: Use the drm_panel_bridge API
+> >>>>   drm/mediatek: mtk_dsi: Create connector for bridges
+> >>>
+> >>> Patch seems ready to apply. Will they be applied to a mediatek tree
+> >>> or to drm-misc-next?
+> >>> Or shall we take the first two patches via drm-misc-next, and the
+> >>> remaning via a mediatek tree? (I hope not)
+> >>>
+> >>
+> >> I think the only concern is from Chun-Kuan regarding patch 7/7 "drm/me=
+diatek:
+> >> mtk_dsi: Create connector for bridges" whether we should support the o=
+ld API or
+> >> not, but the discussion stalled.
+> >>
+> >
+> > I get more clear now. In patch 7/7,
+> >
+> > ret =3D drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL,
+> >                                         DRM_BRIDGE_ATTACH_NO_CONNECTOR)=
+;
+> >
+> > this would call into mtk_dsi_bridge_attach() first, and then call into
+> > panel_bridge_attach() next. So panel_bridge_attach() would receive
+> > DRM_BRIDGE_ATTACH_NO_CONNECTOR and it return immediately so it does
+> > not call drm_panel_attach(). So where do you call drm_panel_attach()?
+> >
+>
+> Why I need to call drm_panel_attach?
+>
+> I believe drm_panel_attach() was to attach a panel to a connector, but we=
+ don't
+> need to do this with the new API as the connector is already created and
+> attached to the "dummy" encoder.
+>
+> Makes that sense to you? What do you think will not work if I don't call
+> drm_panel_attach?
+>
+> [1]
+> https://elixir.bootlin.com/linux/v5.8-rc3/source/drivers/gpu/drm/drm_pane=
+l.c#L101
+>
 
- - Select cookie matched idle CPU
-     In the fast path of task wakeup, select the first cookie matched
-     idle CPU instead of the first idle CPU.
+Sorry, I do not notice this. So for patch 7/7,
 
- - Find cookie matched idlest CPU
-     In the slow path of task wakeup, find the idlest CPU whose core
-     cookie matches with task's cookie
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
- - Don't migrate task if cookie not match
-     For the NUMA load balance, don't migrate task to the CPU whose
-     core cookie does not match with task's cookie
+and I would take this series into my tree later, thanks.
 
-Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
-Signed-off-by: Vineeth Remanan Pillai <vpillai@digitalocean.com>
+Regards,
+Chun-Kuang.
+
+> Regards,
+>  Enric
+>
+>
+> > Regards,
+> > Chun-Kuang.
+> >
+> >> Thanks,
+> >>  Enric
+> >>
+> >>
+> >>
+> >>>       Sam
+> >>>
+> >>>
+> >>>>
+> >>>>  drivers/gpu/drm/bridge/parade-ps8640.c |  12 ++
+> >>>>  drivers/gpu/drm/drm_bridge_connector.c |   1 +
+> >>>>  drivers/gpu/drm/mediatek/mtk_dsi.c     | 269 ++++++++--------------=
 ---
- kernel/sched/fair.c  | 64 ++++++++++++++++++++++++++++++++++++++++----
- kernel/sched/sched.h | 29 ++++++++++++++++++++
- 2 files changed, 88 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index d16939766361..33dc4bf01817 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -2051,6 +2051,15 @@ static void task_numa_find_cpu(struct task_numa_env *env,
- 		if (!cpumask_test_cpu(cpu, env->p->cpus_ptr))
- 			continue;
- 
-+#ifdef CONFIG_SCHED_CORE
-+		/*
-+		 * Skip this cpu if source task's cookie does not match
-+		 * with CPU's core cookie.
-+		 */
-+		if (!sched_core_cookie_match(cpu_rq(cpu), env->p))
-+			continue;
-+#endif
-+
- 		env->dst_cpu = cpu;
- 		if (task_numa_compare(env, taskimp, groupimp, maymove))
- 			break;
-@@ -5963,11 +5972,17 @@ find_idlest_group_cpu(struct sched_group *group, struct task_struct *p, int this
- 
- 	/* Traverse only the allowed CPUs */
- 	for_each_cpu_and(i, sched_group_span(group), p->cpus_ptr) {
-+		struct rq *rq = cpu_rq(i);
-+
-+#ifdef CONFIG_SCHED_CORE
-+		if (!sched_core_cookie_match(rq, p))
-+			continue;
-+#endif
-+
- 		if (sched_idle_cpu(i))
- 			return i;
- 
- 		if (available_idle_cpu(i)) {
--			struct rq *rq = cpu_rq(i);
- 			struct cpuidle_state *idle = idle_get_state(rq);
- 			if (idle && idle->exit_latency < min_exit_latency) {
- 				/*
-@@ -6224,8 +6239,18 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 	for_each_cpu_wrap(cpu, cpus, target) {
- 		if (!--nr)
- 			return -1;
--		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
--			break;
-+
-+		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu)) {
-+#ifdef CONFIG_SCHED_CORE
-+			/*
-+			 * If Core Scheduling is enabled, select this cpu
-+			 * only if the process cookie matches core cookie.
-+			 */
-+			if (sched_core_enabled(cpu_rq(cpu)) &&
-+			    p->core_cookie == cpu_rq(cpu)->core->core_cookie)
-+#endif
-+				break;
-+		}
- 	}
- 
- 	time = cpu_clock(this) - time;
-@@ -7609,8 +7634,9 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
- 	 * We do not migrate tasks that are:
- 	 * 1) throttled_lb_pair, or
- 	 * 2) cannot be migrated to this CPU due to cpus_ptr, or
--	 * 3) running (obviously), or
--	 * 4) are cache-hot on their current CPU.
-+	 * 3) task's cookie does not match with this CPU's core cookie
-+	 * 4) running (obviously), or
-+	 * 5) are cache-hot on their current CPU.
- 	 */
- 	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
- 		return 0;
-@@ -7645,6 +7671,15 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
- 		return 0;
- 	}
- 
-+#ifdef CONFIG_SCHED_CORE
-+	/*
-+	 * Don't migrate task if the task's cookie does not match
-+	 * with the destination CPU's core cookie.
-+	 */
-+	if (!sched_core_cookie_match(cpu_rq(env->dst_cpu), p))
-+		return 0;
-+#endif
-+
- 	/* Record that we found atleast one task that could run on dst_cpu */
- 	env->flags &= ~LBF_ALL_PINNED;
- 
-@@ -8857,6 +8892,25 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p,
- 					p->cpus_ptr))
- 			continue;
- 
-+#ifdef CONFIG_SCHED_CORE
-+		if (sched_core_enabled(cpu_rq(this_cpu))) {
-+			int i = 0;
-+			bool cookie_match = false;
-+
-+			for_each_cpu(i, sched_group_span(group)) {
-+				struct rq *rq = cpu_rq(i);
-+
-+				if (sched_core_cookie_match(rq, p)) {
-+					cookie_match = true;
-+					break;
-+				}
-+			}
-+			/* Skip over this group if no cookie matched */
-+			if (!cookie_match)
-+				continue;
-+		}
-+#endif
-+
- 		local_group = cpumask_test_cpu(this_cpu,
- 					       sched_group_span(group));
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 464559676fd2..875796d43fca 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1089,6 +1089,35 @@ static inline raw_spinlock_t *rq_lockp(struct rq *rq)
- bool cfs_prio_less(struct task_struct *a, struct task_struct *b);
- void sched_core_adjust_sibling_vruntime(int cpu, bool coresched_enabled);
- 
-+/*
-+ * Helper to check if the CPU's core cookie matches with the task's cookie
-+ * when core scheduling is enabled.
-+ * A special case is that the task's cookie always matches with CPU's core
-+ * cookie if the CPU is in an idle core.
-+ */
-+static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
-+{
-+	bool idle_core = true;
-+	int cpu;
-+
-+	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
-+	if (!sched_core_enabled(rq))
-+		return true;
-+
-+	for_each_cpu(cpu, cpu_smt_mask(cpu_of(rq))) {
-+		if (!available_idle_cpu(cpu)) {
-+			idle_core = false;
-+			break;
-+		}
-+	}
-+
-+	/*
-+	 * A CPU in an idle core is always the best choice for tasks with
-+	 * cookies.
-+	 */
-+	return idle_core || rq->core->core_cookie == p->core_cookie;
-+}
-+
- extern void queue_core_balance(struct rq *rq);
- 
- #else /* !CONFIG_SCHED_CORE */
--- 
-2.17.1
-
+> >>>>  3 files changed, 97 insertions(+), 185 deletions(-)
+> >>>>
+> >>>> --
+> >>>> 2.27.0
+> >>>>
+> >>>> _______________________________________________
+> >>>> dri-devel mailing list
+> >>>> dri-devel@lists.freedesktop.org
+> >>>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> >>>
+> >
