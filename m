@@ -2,160 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F67A20EE80
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 08:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3EC20EE85
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 08:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730205AbgF3GaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 02:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730015AbgF3GaU (ORCPT
+        id S1730271AbgF3GbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 02:31:22 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:33714 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730199AbgF3GbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 02:30:20 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E4FC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 23:30:19 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id u12so14752941qth.12
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 23:30:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=M+zspVXwnwUugMmyg5Fs3M9A6bC6GD++C9bM08ArZgg=;
-        b=f2/CKotSjqcsnXiEcvEANGrGuhkmMjbqSVhnnN0h6sFpMhuHMPMh5qlekepWmX8PaP
-         sJ54X8bMgjoIcA1iBpqYifYP/KEb+1N1QFF2Fv737NYGBR2pH6e3Z/oKsnWlDWz1hSwh
-         ZyeibuRav446yaRj7Gmlqiz/aTHdpEKt7dLSn3xDlqYiLsdDI26229eunGtgoSCsj7Uy
-         CpcPA6vNGjK95pgUBBWTqDpJXUV835DKBy3Qvz/Z+tnNgdmJxKvq/mogXxgHnhkNMNp2
-         036doAGMPNMZbBmQTBVsX35UUIb7kukEdzk4ho7IJ6O2URXsaX99oAnopgUnK4E2sP1i
-         66lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=M+zspVXwnwUugMmyg5Fs3M9A6bC6GD++C9bM08ArZgg=;
-        b=PltNZNmexQ0JwSxcId2skDKY8V7pHoRGYWpPtNkpSamo3HQwiXgye2VIHB5N2F2cIg
-         3NssncuMeVXZZwSKvbpjyjfvdJ1rh5/yrQPkE93VivznRU9fTuMd8RSpThyOEbNp+oP7
-         5E701cMx5V0feafNMqNS4ZMzPzK+DTmaFUIIAhER9PNsCB0Esw2QYy9lNueFVXHG4gwb
-         EkwqHMDJQi5wQk3CaBmu5Nb0pjT9YkvMQP/ijJB7MOLuWGm+libkLUOsHezhFtXA0fyL
-         CcGoppvh56ysWZYrc5y/Cw1YrC9dTHvmoVizuyLq3pH3BFTOn5Lc5tYTL8ct9ZqfBbu6
-         G2Pg==
-X-Gm-Message-State: AOAM531qeQ7tPp8nRgWCXpw1rWamfZRDjDQ8qSIKdNBYXqsuND+Y7w9Q
-        75JThnnebn3GeVfv10kE+3SEH5JWIMHk2Mm6cZc=
-X-Google-Smtp-Source: ABdhPJytcCX9uk4lRHAQ9+sawDM4yk/IJQ6L6CiGTHW7F7hHyMnhniT/t40xGLm7iZ6SFMd/cjKJUYt23tDU9UpehAc=
-X-Received: by 2002:ac8:4f49:: with SMTP id i9mr19435424qtw.65.1593498619002;
- Mon, 29 Jun 2020 23:30:19 -0700 (PDT)
+        Tue, 30 Jun 2020 02:31:20 -0400
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 05U6UgIb011232;
+        Tue, 30 Jun 2020 15:30:42 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 05U6UgIb011232
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1593498643;
+        bh=hWw/PnfkqdzxZlXBfdr5ZsRULyy797gdejQ+pX6AzaU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZhAbYh7zx1kczWaedEG6cKzY69GueVLOcznv9ldVPHTsWHek3NL2YwuGkV7kFDLGb
+         rQ5l8dVh5CvsJuOb1srMpPqZWRgRMoK9XMkZ+kR8BOisxy5RRixhan8Di1eMdS70DG
+         eXQL+diXuQWzA+yu+sapyFhsvHF+sDUGvy0dwyOe4lFIey6+M+3iBzGbIEMBOiJsv5
+         pBK5sCVtscl3TgYquXJkI/OjtavekrEye92GSHIP/NYQ2KuOvgWq8W2KHHerjjRxJ0
+         bUo+IVFBqiZNVhF17AEz79MgMIj/ZkC4gM/aET2SMUSqSNo7cOdqmefnUN+yB7YAVx
+         jHxb8KRPbWGUw==
+X-Nifty-SrcIP: [209.85.222.51]
+Received: by mail-ua1-f51.google.com with SMTP id z47so6122322uad.5;
+        Mon, 29 Jun 2020 23:30:42 -0700 (PDT)
+X-Gm-Message-State: AOAM5325Udae0HlR72Y6pRI2WvJ7cLJfoiMJc/1E7rjJpBkfJAtOedQ1
+        gG6+3TxHQwzkxEoWy7dJZ5cRf6wxdqQgm/irAKA=
+X-Google-Smtp-Source: ABdhPJw4WXNDTVroElfgeqLVDMNI7bd4mrYrp5LWdLRuCY5G094o1kEYH5ERVBEamOeUfiHOcfZYY7koTqlFDLQ6t3M=
+X-Received: by 2002:ab0:156d:: with SMTP id p42mr13408863uae.121.1593498641294;
+ Mon, 29 Jun 2020 23:30:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <1592892828-1934-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1592892828-1934-5-git-send-email-iamjoonsoo.kim@lge.com> <20200625115422.GE1320@dhcp22.suse.cz>
- <CAAmzW4MHuRhNqVXMntLAc_x4kJgkgQ-pD5GfFxRxJRchrEFr9g@mail.gmail.com>
- <20200626072324.GT1320@dhcp22.suse.cz> <CAAmzW4NLVwvqtoUb+JJ+WV=7_n800vA+YYC0LyrDS6iQ7wxcdg@mail.gmail.com>
- <20200629075510.GA32461@dhcp22.suse.cz>
-In-Reply-To: <20200629075510.GA32461@dhcp22.suse.cz>
-From:   Joonsoo Kim <js1304@gmail.com>
+References: <20200423073929.127521-1-masahiroy@kernel.org> <20200423073929.127521-5-masahiroy@kernel.org>
+ <20200608115628.osizkpo76cgn2ci7@lion.mk-sys.cz>
+In-Reply-To: <20200608115628.osizkpo76cgn2ci7@lion.mk-sys.cz>
+From:   Masahiro Yamada <masahiroy@kernel.org>
 Date:   Tue, 30 Jun 2020 15:30:04 +0900
-Message-ID: <CAAmzW4PFEEs0FGe+XMHzRdXr0LpdF3TZZG2L3E+opRyZWDZ48A@mail.gmail.com>
-Subject: Re: [PATCH v3 4/8] mm/hugetlb: make hugetlb migration callback CMA aware
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+X-Gmail-Original-Message-ID: <CAK7LNARGKCyWbfWUOX3nLLOBS3gi1QU3acdXLPVK4C+ErMDLpA@mail.gmail.com>
+Message-ID: <CAK7LNARGKCyWbfWUOX3nLLOBS3gi1QU3acdXLPVK4C+ErMDLpA@mail.gmail.com>
+Subject: Re: [PATCH 04/16] net: bpfilter: use 'userprogs' syntax to build bpfilter_umh
+To:     Michal Kubecek <mkubecek@suse.cz>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020=EB=85=84 6=EC=9B=94 29=EC=9D=BC (=EC=9B=94) =EC=98=A4=ED=9B=84 4:55, M=
-ichal Hocko <mhocko@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+Hi Michal, Alexei,
+
+On Mon, Jun 8, 2020 at 8:56 PM Michal Kubecek <mkubecek@suse.cz> wrote:
 >
-> On Mon 29-06-20 15:27:25, Joonsoo Kim wrote:
-> [...]
-> > Solution that Introduces a new
-> > argument doesn't cause this problem while avoiding CMA regions.
+> On Thu, Apr 23, 2020 at 04:39:17PM +0900, Masahiro Yamada wrote:
+> > The user mode helper should be compiled for the same architecture as
+> > the kernel.
+> >
+> > This Makefile reuses the 'hostprogs' syntax by overriding HOSTCC with CC.
+> >
+> > Now that Kbuild provides the syntax 'userprogs', use it to fix the
+> > Makefile mess.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > Reported-by: kbuild test robot <lkp@intel.com>
+> > ---
+> >
+> >  net/bpfilter/Makefile | 11 ++++-------
+> >  1 file changed, 4 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/net/bpfilter/Makefile b/net/bpfilter/Makefile
+> > index 36580301da70..6ee650c6badb 100644
+> > --- a/net/bpfilter/Makefile
+> > +++ b/net/bpfilter/Makefile
+> > @@ -3,17 +3,14 @@
+> >  # Makefile for the Linux BPFILTER layer.
+> >  #
+> >
+> > -hostprogs := bpfilter_umh
+> > +userprogs := bpfilter_umh
+> >  bpfilter_umh-objs := main.o
+> > -KBUILD_HOSTCFLAGS += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
+> > -HOSTCC := $(CC)
+> > +user-ccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
+> >
+> > -ifeq ($(CONFIG_BPFILTER_UMH), y)
+> > -# builtin bpfilter_umh should be compiled with -static
+> > +# builtin bpfilter_umh should be linked with -static
+> >  # since rootfs isn't mounted at the time of __init
+> >  # function is called and do_execv won't find elf interpreter
+> > -KBUILD_HOSTLDFLAGS += -static
+> > -endif
+> > +bpfilter_umh-ldflags += -static
+> >
+> >  $(obj)/bpfilter_umh_blob.o: $(obj)/bpfilter_umh
 >
-> My primary argument is that there is no real reason to treat hugetlb
-> dequeing somehow differently. So if we simply exclude __GFP_MOVABLE for
-> _any_ other allocation then this certainly has some drawbacks on the
-> usable memory for the migration target and it can lead to allocation
-> failures (especially on movable_node setups where the amount of movable
-> memory might be really high) and therefore longterm gup failures. And
-> yes those failures might be premature. But my point is that the behavior
-> would be _consistent_. So a user wouldn't see random failures for some
-> types of pages while a success for others.
-
-Hmm... I don't agree with your argument. Excluding __GFP_MOVABLE is
-a *work-around* way to exclude CMA regions. Implementation for dequeuing
-in this patch is a right way to exclude CMA regions. Why do we use a work-a=
-round
-for this case? To be consistent is important but it's only meaningful
-if it is correct.
-It should not disrupt to make a better code. And, dequeing is already a spe=
-cial
-process that is only available for hugetlb. I think that using
-different (correct)
-implementations there doesn't break any consistency.
-
-> Let's have a look at this patch. It is simply working that around the
-> restriction for a very limited types of pages - only hugetlb pages
-> which have reserves in non-cma movable pools. I would claim that many
-> setups will simply not have many (if any) spare hugetlb pages in the
-> pool except for temporary time periods when a workload is (re)starting
-> because this would be effectively a wasted memory.
-
-This can not be a stopper to make the correct code.
-
-> The patch is adding a special case flag to claim what the code already
-> does by memalloc_nocma_{save,restore} API so the information is already
-> there. Sorry I didn't bring this up earlier but I have completely forgot
-> about its existence. With that one in place I do agree that dequeing
-> needs a fixup but that should be something like the following instead.
-
-Thanks for letting me know. I don't know it until now. It looks like it's
-better to use this API rather than introducing a new argument.
-
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 57ece74e3aae..c1595b1d36f3 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1092,10 +1092,14 @@ static struct page *dequeue_huge_page_nodemask(st=
-ruct hstate *h, gfp_t gfp_mask,
->  /* Movability of hugepages depends on migration support. */
->  static inline gfp_t htlb_alloc_mask(struct hstate *h)
->  {
-> +       gfp_t gfp;
-> +
->         if (hugepage_movable_supported(h))
-> -               return GFP_HIGHUSER_MOVABLE;
-> +               gfp =3D GFP_HIGHUSER_MOVABLE;
->         else
-> -               return GFP_HIGHUSER;
-> +               gfp =3D GFP_HIGHUSER;
-> +
-> +       return current_gfp_context(gfp);
->  }
+> Hello,
 >
->  static struct page *dequeue_huge_page_vma(struct hstate *h,
+> I just noticed that this patch (now in mainline as commit 8a2cc0505cc4)
+> drops the test if CONFIG_BPFILTER_UMH is "y" so that -static is now
+> passed to the linker even if bpfilter_umh is built as a module which
+> wasn't the case in v5.7.
 >
-> If we even fix this general issue for other allocations and allow a
-> better CMA exclusion then it would be implemented consistently for
-> everybody.
+> This is not mentioned in the commit message and the comment still says
+> "*builtin* bpfilter_umh should be linked with -static" so this change
+> doesn't seem to be intentional. Did I miss something?
+>
+> Michal Kubecek
 
-Yes, I have reviewed the memalloc_nocma_{} APIs and found the better way
-for CMA exclusion. I will do it after this patch is finished.
+I was away for a while from this because I saw long discussion in
+"net/bpfilter: Remove this broken and apparently unmaintained"
 
-> Does this make more sense to you are we still not on the same page wrt
-> to the actual problem?
 
-Yes, but we have different opinions about it. As said above, I will make
-a patch for better CMA exclusion after this patchset. It will make
-code consistent.
-I'd really appreciate it if you wait until then.
+Please let me resume this topic now.
 
-Thanks.
+
+The original behavior of linking umh was like this:
+  - If CONFIG_BPFILTER_UMH=y, bpfilter_umh was linked with -static
+  - If CONFIG_BPFILTER_UMH=m, bpfilter_umh was linked without -static
+
+
+
+Restoring the original behavior will add more complexity because
+now we have CONFIG_CC_CAN_LINK and CONFIG_CC_CAN_LINK_STATIC
+since commit b1183b6dca3e0d5
+
+If CONFIG_BPFILTER_UMH=y, we need to check CONFIG_CC_CAN_LINK_STATIC.
+If CONFIG_BPFILTER_UMH=m, we need to check CONFIG_CC_CAN_LINK.
+This would make the Kconfig dependency logic too complicated.
+
+
+To make it simpler, I'd like to suggest two options.
+
+
+
+Idea 1:
+
+  Always use -static irrespective of whether
+  CONFIG_BPFILTER_UMH is y or m.
+
+  Add two more lines to clarify this
+  in the comment in net/bpfilter/Makefile:
+
+  # builtin bpfilter_umh should be linked with -static
+  # since rootfs isn't mounted at the time of __init
+  # function is called and do_execv won't find elf interpreter.
+  # Static linking is not required when bpfilter is modular, but
+  # we always pass -static to keep the 'depends on' in Kconfig simple.
+
+
+
+Idea 2:
+
+   Allow umh to become only modular,
+   and drop -static flag entirely.
+
+   If you look at net/bpfilter/Kconfig,
+   BPFILTER_UMH already has 'default m'.
+   So, I assume the most expected use-case
+   is modular.
+
+   My suggestion is to replace 'default m' with 'depends on m'.
+
+   config BPFILTER_UMH
+           tristate "bpfilter kernel module with user mode helper"
+           depends on CC_CAN_LINK
+           depends on m
+
+   Then BPFILTER_UMH will be restricted to either m or n.
+   Link umh dynamically because we can expect rootfs
+   is already mounted for the module case.
+
+
+
+
+
+
+Comments are appreciated.
+
+
+-- 
+Best Regards
+Masahiro Yamada
