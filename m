@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397C120F658
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 898FF20F654
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388686AbgF3Nxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 09:53:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47670 "EHLO
+        id S2388676AbgF3NxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 09:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388307AbgF3NvU (ORCPT
+        with ESMTP id S2388328AbgF3NvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:51:20 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94DA7C03E979
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:19 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id l2so18190802wmf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:19 -0700 (PDT)
+        Tue, 30 Jun 2020 09:51:21 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EBE4C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:20 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id l2so18190878wmf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pdyAQzGUZDqA1eYmqwW6m9OLrHYQ+P2llVYkgd4FTX8=;
-        b=hE2Pt8S5AwVId23lueZ+yGkCmFFu1fwqVco8jIyW78nKWJrFIXetTc/yR8eI75Qaii
-         DZpmTa2uqeBD3NInvTdZwjioXVxtLMKc8X4u26l6uSI/75D1uyTpO025wnpR0iaZ2Hi2
-         E9c9ug48gYEzm+iqkA5vWqwYR5ysKX3KR0IBKmuPeJuEgCMBT/ohlaEGU7xdSXeLJuRj
-         ZiL06zeczxfeLENngMMFJ39X2w9Ana3Fjp96qLbPBaK289XrSa0JuRngxygQielOT8CF
-         /n7wqCVtFgLRLEIVy5oF/pNZL9x6K3JMBMI4JN1+z862FsxVi1viaR8mdbr83VZ1HZQf
-         K2Gg==
+        bh=zimOoN2kqyjp0StchByfx/9jGDhP6/dApme8q5aFBgg=;
+        b=C3JufE1Vbw703iYTl6sZac2o77v/HxfiLUxfLsvV7rf63VdFwoY8pZRLVXzmFORdiP
+         tnIsWGaURHCqIdQWcy2O/ujeJUPkWtg9KM2i50TVu04acdEVD6YhMrv63V596iYirxpW
+         8aPANMM6SZqICnuKyCCV1BBYzbEv2gRX4A9nxB384FenhAFSBg7YuXubRgcDV293nK3S
+         JDEHR1xB0VkC3vFYwM1sIuI+Z8VdjtWiR2aqO1+IVoXiNDIEeFDObePM0b3ousVgsu2g
+         aLM05GkJa08x2XJ/KUFghTV+6cdM78kxQUwHXmTO94P/5TAriG4BTtKSi7YRpni66COw
+         uxHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pdyAQzGUZDqA1eYmqwW6m9OLrHYQ+P2llVYkgd4FTX8=;
-        b=lbHw/5G4fvoBOfGar75ELSzwOTrcs67zpUEzsc5JhMZYYqD8wv7iXyGlRRoDcEJ5qd
-         oyYIdfzbW8+emfzYBUIsVV4AdBM8SmzP1Q3aOECRcKzXo+b/0utwO8q0SXKuPZqr/LPk
-         5aeHKnbJPCdhDWAU2/g6U5X3yXe3qJJ7fToq+V3PTBi42ce2s1P1H0b2kloGtnhmpb9Q
-         kVY3CMD4T928IefaP5qK0GVdFWAqZujWn72PYTpsYT93fVRG88qxldHrvmSHAD5A7zKl
-         GkIHj8K8hLne22GEs85wmVwejNHvwWLL0VLKALASC7uEBeOqkRGFl7mAFMO605I6TSx7
-         pLMQ==
-X-Gm-Message-State: AOAM530t+rKiJDTucolGEs7KFVW3TMVVhJhke4rGRLBN/fTlFZgjEzai
-        TzRYImUK4SWor7/JTnuwWmP+8Q==
-X-Google-Smtp-Source: ABdhPJzZkUhnaiYGoKU11zPHejuow+g7olSZe4Bhiz8EWdA1f4D4IouDADVj35YoDpJMGYofe2mbZw==
-X-Received: by 2002:a1c:de07:: with SMTP id v7mr22001147wmg.56.1593525078259;
-        Tue, 30 Jun 2020 06:51:18 -0700 (PDT)
+        bh=zimOoN2kqyjp0StchByfx/9jGDhP6/dApme8q5aFBgg=;
+        b=Vgkzhb3k6iBmpEcTV+B8xQLyH6LtvDzVuJrb+LKi/2nb067cL5kdYqAoVPHr4iNYT+
+         TjaCamdGnNeGJeV/JGNUStLueVMBYRyLTD0rT5rNrdks75PA9cR/tIp43e6W0t5L3sIw
+         7cKClCjbalWwTdVeFwsuN/hUAhEe7AIFUSvTNk3n4qA5TJyM2/gAkrCP2SKhUdohMnhe
+         ABAkR9PSOwaHJcJVqiBH/tfnW63WsX84TgXHJR/R9PnMA9c8HFjU3A2ungPknsUnc+48
+         5I6cCm/OyH+6xI7ThkFCyLJNp1MWtqg4qILPyRKFuH0udA+9CD88j5kc2jwUwUDy6MW1
+         8DOw==
+X-Gm-Message-State: AOAM533DZxHCoqM128OgAYxwWw/t/LuGKu7KrWB3MFJ7WAbkPhsSJSZy
+        GUI9K8aAPZJdElzEHHHDs1rucw==
+X-Google-Smtp-Source: ABdhPJztSC+qO8Bs60jiFpwOyAyS3D8NxgvpHTcxkBciCImutF2lsX+GPC6MWhWkOcraBY8wceqZLw==
+X-Received: by 2002:a1c:e209:: with SMTP id z9mr21891607wmg.153.1593525079340;
+        Tue, 30 Jun 2020 06:51:19 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id t4sm3876746wmf.4.2020.06.30.06.51.17
+        by smtp.gmail.com with ESMTPSA id t4sm3876746wmf.4.2020.06.30.06.51.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 06:51:17 -0700 (PDT)
+        Tue, 30 Jun 2020 06:51:18 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>, Cliff Whickman <cpw@sgi.com>,
-        Robin Holt <robinmholt@gmail.com>, Dean Nelson <dcn@sgi.com>
-Subject: [PATCH 04/30] misc: sgi-xp: xp_main: Staticify local functions xp_init() and xp_exit()
-Date:   Tue, 30 Jun 2020 14:50:44 +0100
-Message-Id: <20200630135110.2236389-5-lee.jones@linaro.org>
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?q?Max=20Asb=C3=B6ck?= <amax@us.ibm.com>
+Subject: [PATCH 05/30] misc: ibmasm: event: Demote function headers from kerneldoc
+Date:   Tue, 30 Jun 2020 14:50:45 +0100
+Message-Id: <20200630135110.2236389-6-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200630135110.2236389-1-lee.jones@linaro.org>
 References: <20200630135110.2236389-1-lee.jones@linaro.org>
@@ -67,47 +67,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These functions are not exported and no external prototypes exist
+The correct format is not used and no attempt has been made
+to document the function arguments.  Makes sense to just demote
+the header back down to a simple comment.
 
-Fixes W=1 kernel build warning(s):
+Fixes the following W=1 warnings:
 
- drivers/misc/sgi-xp/xp_main.c:227:1: warning: no previous prototype for ‘xp_init’ [-Wmissing-prototypes]
- 227 | xp_init(void)
- | ^~~~~~~
- drivers/misc/sgi-xp/xp_main.c:250:1: warning: no previous prototype for ‘xp_exit’ [-Wmissing-prototypes]
- 250 | xp_exit(void)
- | ^~~~~~~
+ drivers/misc/ibmasm/event.c:44: warning: Function parameter or member 'sp' not described in 'ibmasm_receive_event'
+ drivers/misc/ibmasm/event.c:44: warning: Function parameter or member 'data' not described in 'ibmasm_receive_event'
+ drivers/misc/ibmasm/event.c:44: warning: Function parameter or member 'data_size' not described in 'ibmasm_receive_event'
+ drivers/misc/ibmasm/event.c:78: warning: Function parameter or member 'sp' not described in 'ibmasm_get_next_event'
+ drivers/misc/ibmasm/event.c:78: warning: Function parameter or member 'reader' not described in 'ibmasm_get_next_event'
 
-Cc: Cliff Whickman <cpw@sgi.com>
-Cc: Robin Holt <robinmholt@gmail.com>
-Cc: Dean Nelson <dcn@sgi.com>
+Cc: "Max Asböck" <amax@us.ibm.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/sgi-xp/xp_main.c | 4 ++--
+ drivers/misc/ibmasm/event.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/sgi-xp/xp_main.c b/drivers/misc/sgi-xp/xp_main.c
-index 5fd94d8360707..61b03fcefb134 100644
---- a/drivers/misc/sgi-xp/xp_main.c
-+++ b/drivers/misc/sgi-xp/xp_main.c
-@@ -223,7 +223,7 @@ xpc_disconnect(int ch_number)
+diff --git a/drivers/misc/ibmasm/event.c b/drivers/misc/ibmasm/event.c
+index 974d63f5a4dda..40ce75f8970c1 100644
+--- a/drivers/misc/ibmasm/event.c
++++ b/drivers/misc/ibmasm/event.c
+@@ -31,7 +31,7 @@ static void wake_up_event_readers(struct service_processor *sp)
+                 wake_up_interruptible(&reader->wait);
  }
- EXPORT_SYMBOL_GPL(xpc_disconnect);
  
--int __init
-+static int __init
- xp_init(void)
- {
- 	enum xp_retval ret;
-@@ -246,7 +246,7 @@ xp_init(void)
+-/**
++/*
+  * receive_event
+  * Called by the interrupt handler when a dot command of type sp_event is
+  * received.
+@@ -68,7 +68,7 @@ static inline int event_available(struct event_buffer *b, struct event_reader *r
+ 	return (r->next_serial_number < b->next_serial_number);
+ }
  
- module_init(xp_init);
- 
--void __exit
-+static void __exit
- xp_exit(void)
- {
- 	if (is_uv())
+-/**
++/*
+  * get_next_event
+  * Called by event readers (initiated from user space through the file
+  * system).
 -- 
 2.25.1
 
