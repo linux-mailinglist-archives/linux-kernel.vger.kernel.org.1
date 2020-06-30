@@ -2,121 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6141220FFDC
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 00:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E6520FFDE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 00:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgF3WFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 18:05:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39494 "EHLO
+        id S1726319AbgF3WHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 18:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726503AbgF3WFE (ORCPT
+        with ESMTP id S1726074AbgF3WHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 18:05:04 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B9EC03E97A
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 15:05:04 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id h22so17337606lji.9
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 15:05:04 -0700 (PDT)
+        Tue, 30 Jun 2020 18:07:21 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB86FC03E979
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 15:07:20 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id e197so6857029yba.5
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 15:07:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=2sdEB61RJtM8BDd2CIWT1nB0HX2JryiKHhO/D2jAqk8=;
-        b=IV8PI5CQ8lFS8fDfntNPJAhkpzSbt1Sm0P3/RptH8g9/vYG9k0my4HasL3nqVUOM6E
-         Z5JLQXxOZWuWYPQqwFoTxmJla02+XbIFy6jJHuFywI1neiPX9qTdmmFwGweyD4GIXb+d
-         Wt9SbMg05AucKleo3PjcbXcoEr7Q9oqNvTSz8oQP7JcV3RjS0kWe5dqMsptWNnX74pgs
-         og+43De9aCjqCRk4Y7Ejihdak8GdolWxyynHKVpLve61H8jJ1bf0kiWT7IVGNAtG8Sdq
-         2Be+5dTKLJdx5QqLam5VrTE7NAOKYbungLUKRSYE6oErMmBdzPFiH76AlVh7cnYST0ef
-         Mb5g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=691b3xWfqIBa1A1wsIV3iMy/Zs9rJUYoT5w1uX/0Ctk=;
+        b=W96sXiTMhMyQM40ezkwKcWl+p3JTm44BhAl41PNAbXajbsh/879d3cx2+T9sAzP+XT
+         JInNu1eWE2g6KkBE9tWdwMFUn4Pb3EcbVu481NVBBPvKEyHQ9QoxwM5YglPpX6lXnIa2
+         pCX/l1f+52YbVGxWAoTB0TLJ7xIOrob1omaNexPwajinFg79X46+HciWQip+quBCUA7d
+         7Wn6PSer4JQVFVWgV6S5CbxtVzbWXivtUynxAMqr83qN0NCEdJYl1utckMyy6yd37CC2
+         q3lAflfTPwKgL9c2XUdrhu/z1niqzutO7Ohw/g9g029a+f9PrqJeiB3eBWejrqvRHozr
+         Ntbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=2sdEB61RJtM8BDd2CIWT1nB0HX2JryiKHhO/D2jAqk8=;
-        b=MccaMtc4oe3//QvOl1j5ApN4uTmGAjfNvBgbnykyLfycHCdfUBq1QqIMVS9DpIpecn
-         j5lYNA7XJXMJOwkPdQr/XVU62KEc3sXQBN9UE/msxt7/ko1T3fSI3J8pFdyQ8IgCTUUJ
-         Z6CPDKYR7Sjddt/vqjdUHEdCFhmVagcDEdHteQItR/FN4TMW7JDsFrdTFTyBljAtaY1l
-         XWcO3rDwdbvjRPa1dzb74DPQhXuawHF7nHJQ/YVmqlCCr1/H0DgzJczrsbUzsEGfvUOv
-         g4EB6MqEuc8KlNtQIOCc8FaXe61uIvQlFX15R+T//D67Yf1r2D7x/+O5gnKmk9OZsGGQ
-         70PQ==
-X-Gm-Message-State: AOAM531bruXu8JL4aeY8yqphDljPGkmxZ7pHK8A5SuZbmWZApdhaHx+q
-        a7OL+58At6D9fEArxVG0WmxA2w==
-X-Google-Smtp-Source: ABdhPJzuCDzU6N0J+RjoUepz5/Fcr5Ej88rFAeg0TRp0twjz7ihjFHu7iKSNwBUrjZzoNQiBPpno/Q==
-X-Received: by 2002:a2e:3a17:: with SMTP id h23mr11076513lja.7.1593554703070;
-        Tue, 30 Jun 2020 15:05:03 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id t15sm1135067lji.49.2020.06.30.15.05.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 15:05:02 -0700 (PDT)
-Date:   Wed, 1 Jul 2020 00:05:02 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Suresh Udipi <sudipi@jp.adit-jv.com>
-Cc:     mrodin@de.adit-jv.com, akiyama@nds-osk.co.jp,
-        efriedrich@de.adit-jv.com, erosca@de.adit-jv.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, mchehab@kernel.org,
-        michael@rodin.online, securitycheck@denso.co.jp
-Subject: Re: [PATCH v8 2/3] media: rcar-csi2: Add warning for PHY speed less
- than minimum
-Message-ID: <20200630220502.GK2365286@oden.dyn.berto.se>
-References: <20200617133705.GA88066@vmlxhi-121.adit-jv.com>
- <1592476472-26235-1-git-send-email-sudipi@jp.adit-jv.com>
- <1592476472-26235-2-git-send-email-sudipi@jp.adit-jv.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=691b3xWfqIBa1A1wsIV3iMy/Zs9rJUYoT5w1uX/0Ctk=;
+        b=GTI/FNg0Fl67T9epGzDswSdxBmFi4JaNv9ZTnaPWRgtW4CI7tSRv8SCfBIj1A2IsIw
+         1/JAu04soFpVkaMaqFgcuJd22Q7E/qGc65lZ1Czq5p2auUEH9JdBakom1ZsQ/kX7WkN0
+         JppZlnTImcMA90WazsFigEr0GvrgGEI36wQDha0O6I/7blm1gOUI5ujt0aHF5RVeeTWa
+         58QCO9vkoRcCAN9n46TkLjHXIv00aKj9K9x+31izn19uKHv900hn4gIBp+3UB9A9M7oM
+         +Z8LEQq/zu9sT9YWvG7bC3tijxh1HJlHT+CCROg9uUo4ZdCkwGM5iAb0IV5eN3GKyoPb
+         NOmA==
+X-Gm-Message-State: AOAM530bBmITA7roXCdFvSccgzz43WvjJVNXsPbNP+t/OAy7I0Xs81RX
+        nI27yb9JH9bmFUfsclyTihzHRJxmWdfAuxyKp7JByw==
+X-Google-Smtp-Source: ABdhPJzkTS1NFp9xnWmvdli40oBisekjgROtD4WCRD1u3n3F6Pj+65dZ+aHyhk2C+MrAMHUg/GQrEl59+6qXz/hixL8=
+X-Received: by 2002:a25:ec0d:: with SMTP id j13mr35035984ybh.364.1593554839938;
+ Tue, 30 Jun 2020 15:07:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1592476472-26235-2-git-send-email-sudipi@jp.adit-jv.com>
+References: <CAHk-=wjEghg5_pX_GhNP+BfcUK6CRZ+4mh3bciitm9JwXvR7aQ@mail.gmail.com>
+ <312079189.17903.1593549293094.JavaMail.zimbra@efficios.com>
+ <CANn89iJ+rkMrLrHrKXO-57frXNb32epB93LYLRuHX00uWc-0Uw@mail.gmail.com>
+ <20200630.134429.1590957032456466647.davem@davemloft.net> <CANn89i+b-LeaPvaaHvj0yc0mJ2qwZ0981fQHVp0+sqXYp=kdkA@mail.gmail.com>
+ <474095696.17969.1593551866537.JavaMail.zimbra@efficios.com>
+ <CANn89iKK2+pznYZoKZzdCu4qkA7BjJZFqc6ABof4iaS-T-9_aw@mail.gmail.com> <CANn89i+_DUrKROb1Zkk_nmngkD=oy9UjbxwnkgyzGB=z+SKg3g@mail.gmail.com>
+In-Reply-To: <CANn89i+_DUrKROb1Zkk_nmngkD=oy9UjbxwnkgyzGB=z+SKg3g@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 30 Jun 2020 15:07:08 -0700
+Message-ID: <CANn89iJJ_WR-jGQogU3-arjD6=xcU9VWzJYSOLbyD94JQo-zAQ@mail.gmail.com>
+Subject: Re: [regression] TCP_MD5SIG on established sockets
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Jonathan Rajotte-Julien <joraj@efficios.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suresh,
+On Tue, Jun 30, 2020 at 2:54 PM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Tue, Jun 30, 2020 at 2:23 PM Eric Dumazet <edumazet@google.com> wrote:
+> >
+> > On Tue, Jun 30, 2020 at 2:17 PM Mathieu Desnoyers
+> > <mathieu.desnoyers@efficios.com> wrote:
+> > >
+> > > ----- On Jun 30, 2020, at 4:56 PM, Eric Dumazet edumazet@google.com wrote:
+> > >
+> > > > On Tue, Jun 30, 2020 at 1:44 PM David Miller <davem@davemloft.net> wrote:
+> > > >>
+> > > >> From: Eric Dumazet <edumazet@google.com>
+> > > >> Date: Tue, 30 Jun 2020 13:39:27 -0700
+> > > >>
+> > > >> > The (C) & (B) case are certainly doable.
+> > > >> >
+> > > >> > A) case is more complex, I have no idea of breakages of various TCP
+> > > >> > stacks if a flow got SACK
+> > > >> > at some point (in 3WHS) but suddenly becomes Reno.
+> > > >>
+> > > >> I agree that C and B are the easiest to implement without having to
+> > > >> add complicated code to handle various negotiated TCP option
+> > > >> scenerios.
+> > > >>
+> > > >> It does seem to be that some entities do A, or did I misread your
+> > > >> behavioral analysis of various implementations Mathieu?
+> > > >>
+> > > >> Thanks.
+> > > >
+> > > > Yes, another question about Mathieu cases is do determine the behavior
+> > > > of all these stacks vs :
+> > > > SACK option
+> > > > TCP TS option.
+> > >
+> > > I will ask my customer's networking team to investigate these behaviors,
+> > > which will allow me to prepare a thorough reply to the questions raised
+> > > by Eric and David. I expect to have an answer within 2-3 weeks at most.
+> > >
+> > > Thank you!
+> >
+> >
+> > Great, I am working on adding back support for (B) & (C) by the end of
+> > this week.
+>
+> Note that the security issue (of sending uninit bytes to the wire) has
+> been independently fixed with [1]
+>
+> This means syzbot was able to have MD5+TS+SACK  ~6 months ago.
+>
+> It seems we (linux) do not enable this combination for PASSIVE flows,
+> (according to tcp_synack_options()),
+> but  for ACTIVE flows we do nothing special.
+>
+> So maybe code in tcp_synack_options() should be mirrored to
+> tcp_syn_options() for consistency.
+> (disabling TS if  both MD5 and SACK are enabled)
 
-Thanks for your patch.
+Oh well, tcp_syn_options() is supposed to have the same logic.
 
-On 2020-06-18 19:34:31 +0900, Suresh Udipi wrote:
-> Add a warning message when the selected PHY speed is less
-> than supported minimum PHY speed given in the hsfreq table[1].
-> 
-> For raspberry pi camera capture on Kingfisher board with resolution
-> 640x480, the calculated PHY speed is 48 mbps which is less than
-> the minimum PHY speed 80 Mbps from the table[1]. But in this cases
-> capture is successful.
-> 
-> [1] specs r19uh0105ej0200-r-car-3rd-generation.pdf [Table 25.9]
-> 
-> Signed-off-by: Suresh Udipi <sudipi@jp.adit-jv.com>
-> Signed-off-by: Michael Rodin <mrodin@de.adit-jv.com>
+Maybe we have an issue with SYNCOOKIES (with MD5 + TS + SACK)
 
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Nice can of worms.
 
-> ---
->  drivers/media/platform/rcar-vin/rcar-csi2.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> index f18dedc..1184527 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> @@ -433,6 +433,10 @@ static int rcsi2_set_phypll(struct rcar_csi2 *priv, unsigned int mbps)
->  	const struct rcsi2_mbps_reg *hsfreq;
->  	const struct rcsi2_mbps_reg *hsfreq_prev = NULL;
->  
-> +	if (mbps < priv->info->hsfreqrange->mbps)
-> +		dev_warn(priv->dev, "%u Mbps less than min PHY speed %u Mbps",
-> +			 mbps, priv->info->hsfreqrange->mbps);
-> +
->  	for (hsfreq = priv->info->hsfreqrange; hsfreq->mbps != 0; hsfreq++) {
->  		if (hsfreq->mbps >= mbps)
->  			break;
-> -- 
-> 2.7.4
-> 
-
--- 
-Regards,
-Niklas Söderlund
+>
+> [1]
+>
+> commit 9424e2e7ad93ffffa88f882c9bc5023570904b55
+> Author: Eric Dumazet <edumazet@google.com>
+> Date:   Thu Dec 5 10:10:15 2019 -0800
+>
+>     tcp: md5: fix potential overestimation of TCP option space
+>
+>     Back in 2008, Adam Langley fixed the corner case of packets for flows
+>     having all of the following options : MD5 TS SACK
+>
+>     Since MD5 needs 20 bytes, and TS needs 12 bytes, no sack block
+>     can be cooked from the remaining 8 bytes.
+>
+>     tcp_established_options() correctly sets opts->num_sack_blocks
+>     to zero, but returns 36 instead of 32.
+>
+>     This means TCP cooks packets with 4 extra bytes at the end
+>     of options, containing unitialized bytes.
+>
+>     Fixes: 33ad798c924b ("tcp: options clean up")
+>     Signed-off-by: Eric Dumazet <edumazet@google.com>
+>     Reported-by: syzbot <syzkaller@googlegroups.com>
+>     Acked-by: Neal Cardwell <ncardwell@google.com>
+>     Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
+>     Signed-off-by: David S. Miller <davem@davemloft.net>
+>
+> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+> index be6d22b8190fa375074062032105879270af4be5..b184f03d743715ef4b2d166ceae651529be77953
+> 100644
+> --- a/net/ipv4/tcp_output.c
+> +++ b/net/ipv4/tcp_output.c
+> @@ -755,8 +755,9 @@ static unsigned int tcp_established_options(struct
+> sock *sk, struct sk_buff *skb
+>                         min_t(unsigned int, eff_sacks,
+>                               (remaining - TCPOLEN_SACK_BASE_ALIGNED) /
+>                               TCPOLEN_SACK_PERBLOCK);
+> -               size += TCPOLEN_SACK_BASE_ALIGNED +
+> -                       opts->num_sack_blocks * TCPOLEN_SACK_PERBLOCK;
+> +               if (likely(opts->num_sack_blocks))
+> +                       size += TCPOLEN_SACK_BASE_ALIGNED +
+> +                               opts->num_sack_blocks * TCPOLEN_SACK_PERBLOCK;
+>         }
+>
+>         return size;
