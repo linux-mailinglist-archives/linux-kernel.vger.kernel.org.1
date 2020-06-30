@@ -2,157 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143A120FBFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A348120FC01
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726464AbgF3Spe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 14:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36628 "EHLO
+        id S1726586AbgF3SqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 14:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726301AbgF3Sp2 (ORCPT
+        with ESMTP id S1726213AbgF3SqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 14:45:28 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547DCC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 11:45:28 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id 35so8834096ple.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 11:45:28 -0700 (PDT)
+        Tue, 30 Jun 2020 14:46:23 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AFDC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 11:46:22 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id g139so11991878lfd.10
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 11:46:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=d7I8pJNhdwZ1WVh11yPP8w2P3ehbAYaUNBi/wYOdLCg=;
-        b=HSk0m6OAx02qjZfQmduXnzb3y/Zvo3RqE2TrMcht6FFY5929bole20JFYDkJPGw3bn
-         clGaHf63I3JOJ1BFn4RDRVUt8bIjo4uCO13XQKHZ4A4fuopAi6K8wmFC2UYQGOPdmRLs
-         le4f0NAps3BnQxaJVEWu21quUgQ5rMAj4zvh4dgSY2a2gdDyr1GTUIuk4TOyoDPUPEf6
-         kjwn1mpfFCwql+rYMIJbcQ9zbJW3UykvfMkP3xf5EAVSOPBHBI+u0n2NljT1fTbwlZHs
-         P9DjQCDGzkG+c2WLBoM2Bf0liJqD/i8DtX47x81UxGEKZ21NJ3oO6bv/RCaoZ9Ukdutn
-         nyRA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vFuGFxLjY8MbMo7U24jI5f07679fmJ9gh5uKn5H5mfc=;
+        b=WrlziTiDeexaiFvnx66t1nVCdoYMolZgaOuLsj7EplpI+pSGit3wIf1JizoglqrsY4
+         qaGF8w9bIsV4V9LvA5f5vxhmTVrKoQ/0OJHe9t2+PT/EutbJPMzH0b9GDY2YfHyRVIJm
+         uOLw5Qrr16/ElSYa7syx4MmOoAq8fMrqyUoG8SNntv/+f67ctqm3adHunkhzrVEPtD+C
+         1RDDiZak0T9QY0pDEjCai0NpXszVGkg6mIwDuG4IrDhGzQIyyXuLAZEch1RVShDcdt5z
+         kEJoa6cOl6UYxHsEyNCp3h35mW3XxVmTCfnDmdPlsW4YVKjzJ28eDqPbQCa8RVSySyUK
+         XhSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=d7I8pJNhdwZ1WVh11yPP8w2P3ehbAYaUNBi/wYOdLCg=;
-        b=K3pd6welgeEJmj2MJgzo4J8FKngACDXcSqcMOn0Ifyp/G/wZSG7u5klXdJdLeqyKIQ
-         NXuI7afm/13O8A/jng5gxa3ERlElzTmA21b+NRE+tm+s2FMeFlw0DNnvJwjj1QUS5v1M
-         kcDx7D+n6nCdrvb41b6M1u9bv+l8A+iPZUKE7qpEb0+70jVlkPu78glZo3Ia5N0m760z
-         tYSEFTp5wx5aIptIxyWpk+vEmQiWoF7JxPGaFz6TRXeGhEXy7iBec31i3XNTKacdHwrI
-         Y254JWkGPrWFaHDoGMnViMvAseM4ooymv/3xNSs36o2pDINNIIjLJUWEUB0wQwoWd1FS
-         S4Vw==
-X-Gm-Message-State: AOAM532ZtX/AqoK3QFWGygba3lgxJ77tzUIdy+ieMISzw/9EqeYLRbTV
-        7UnVhrVWbX0WjVomg8fS9m/Y6w==
-X-Google-Smtp-Source: ABdhPJxr0QgHgqzll8LBSzmH1eUWXWQWL85e5LF5vnDi6zMASgXc9Z3ZRlNOENIQZU56fRYo+kHaaw==
-X-Received: by 2002:a17:90a:f2c3:: with SMTP id gt3mr6259782pjb.92.1593542727849;
-        Tue, 30 Jun 2020 11:45:27 -0700 (PDT)
-Received: from localhost.localdomain ([2605:e000:100e:8c61:4113:50ea:3eb3:a39b])
-        by smtp.gmail.com with ESMTPSA id n7sm2898108pjq.22.2020.06.30.11.45.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 11:45:27 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     io-uring@vger.kernel.org
-Cc:     oleg@redhat.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        stable@vger.kernel.org
-Subject: [PATCH 2/2] io_uring: use signal based task_work running
-Date:   Tue, 30 Jun 2020 12:45:18 -0600
-Message-Id: <20200630184518.696101-3-axboe@kernel.dk>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200630184518.696101-1-axboe@kernel.dk>
-References: <20200630184518.696101-1-axboe@kernel.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vFuGFxLjY8MbMo7U24jI5f07679fmJ9gh5uKn5H5mfc=;
+        b=eemQ9BvxAYqxYSX8Z8RJFIGQRlyjPnVbL9WKzyNg2gT8zC4e/D1pJyfMQZISn7QvRY
+         QsDlwX7gquNmD7hksDbqm5IVT4uMATQ7tyKJJa4jKp567sb984Hef7c0l42PjRSAKdaH
+         rOkI8tCHQ+q/W94HjoU0UgBlw9wjf/o7KSvXEF8pva1IOAdMjZJrtXHL0OgRgnsZIdC5
+         wdHhmwdA8udGlyJdaIamgd+pKn3ymaLJlGjXUSCpPCDjh/T1ExeLUTFsoMpC8FscoFp1
+         XCHIg+7Lpss0exwN5qz/7b113fpBS57z1xi4arUfhX/WZBME4z8BS/RXl91YEqelGbt5
+         pZTA==
+X-Gm-Message-State: AOAM530DY4yw1heLuH+Ej5m+hCAaC4xvxmx9Lr/xUGE/NtuSFMGXrKZo
+        j7MkgB/3MkEl5+vTzkQWtzIlC7YzTiQo/Y5gZiELx7rW
+X-Google-Smtp-Source: ABdhPJyuD/QmkIZ4GaET8YqyAzhOCbA1xOtAHYtLjnr4JcUmIvOqYdaFhjNiECjG8mm30iJ0MnsggSH5efYy/WQESn0=
+X-Received: by 2002:a05:6512:31d5:: with SMTP id j21mr1815560lfe.83.1593542781204;
+ Tue, 30 Jun 2020 11:46:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200625144509.17918-1-daniel.lezcano@linaro.org>
+ <CAP245DVy+Z9D+6=-cX4TaGFoK-e2N+mWwOvNYOe_E9Fh=7vnaA@mail.gmail.com> <bed1d41f81f369e7123a2eab7fde3e81a3b063aa.camel@intel.com>
+In-Reply-To: <bed1d41f81f369e7123a2eab7fde3e81a3b063aa.camel@intel.com>
+From:   Amit Kucheria <amit.kucheria@linaro.org>
+Date:   Wed, 1 Jul 2020 00:16:09 +0530
+Message-ID: <CAP245DW4ntkK9rWCZT8KX07tBJoHaUkXPVRH4Vp2yRHi=m6JCg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] thermal: core: Add helpers to browse the cdev, tz
+ and governor list
+To:     Zhang Rui <rui.zhang@intel.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Ram Chandrasekar <rkumbako@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since 5.7, we've been using task_work to trigger async running of
-requests in the context of the original task. This generally works
-great, but there's a case where if the task is currently blocked
-in the kernel waiting on a condition to become true, it won't process
-task_work. Even though the task is woken, it just checks whatever
-condition it's waiting on, and goes back to sleep if it's still false.
+On Tue, Jun 30, 2020 at 8:40 PM Zhang Rui <rui.zhang@intel.com> wrote:
+>
+> Hi, Daniel,
+>
+> seems that you forgot to cc linux-pm mailing list.
+>
+> On Tue, 2020-06-30 at 17:16 +0530, Amit Kucheria wrote:
+> > On Thu, Jun 25, 2020 at 8:15 PM Daniel Lezcano
+> > <daniel.lezcano@linaro.org> wrote:
+> > >
+> > > The cdev, tz and governor list, as well as their respective locks
+> > > are
+> > > statically defined in the thermal_core.c file.
+> > >
+> > > In order to give a sane access to these list, like browsing all the
+> > > thermal zones or all the cooling devices, let's define a set of
+> > > helpers where we pass a callback as a parameter to be called for
+> > > each
+> > > thermal entity.
+> > >
+> > > We keep the self-encapsulation and ensure the locks are correctly
+> > > taken when looking at the list.
+> > >
+> > > Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> > > ---
+> > >  drivers/thermal/thermal_core.c | 51
+> > > ++++++++++++++++++++++++++++++++++
+> >
+> > Is the idea to not use thermal_helpers.c from now on? It fits
+> > perfectly with a patch I have to merge all its contents to
+> > thermal_core.c :-)
+>
+> I agree these changes should be in thermal_helper.c
 
-This is a problem if that very condition only becomes true when that
-task_work is run. An example of that is the task registering an eventfd
-with io_uring, and it's now blocked waiting on an eventfd read. That
-read could depend on a completion event, and that completion event
-won't get trigged until task_work has been run.
+I was actually serious about killing thermal_helper.c :-)
 
-Use the TWA_SIGNAL notification for task_work, so that we ensure that
-the task always runs the work when queued.
+What is the reason for those 5-6 functions to live outside
+thermal_core.c? Functions in thermal_helper.c are called by governors
+and drivers, just like the functions in thermal_core.c. I couldn't
+find a pattern.
 
-Cc: stable@vger.kernel.org # v5.7
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
----
- fs/io_uring.c | 30 ++++++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index e507737f044e..476f03b42777 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -4072,6 +4072,23 @@ struct io_poll_table {
- 	int error;
- };
- 
-+static int io_req_task_work_add(struct io_kiocb *req, struct callback_head *cb,
-+				int notify)
-+{
-+	const bool is_sqthread = (req->ctx->flags & IORING_SETUP_SQPOLL) != 0;
-+	struct task_struct *tsk = req->task;
-+	int ret;
-+
-+	if (is_sqthread)
-+		notify = 0;
-+
-+	ret = task_work_add(tsk, cb, notify);
-+
-+	if (!ret && is_sqthread)
-+		wake_up_process(tsk);
-+	return ret;
-+}
-+
- static int __io_async_wake(struct io_kiocb *req, struct io_poll_iocb *poll,
- 			   __poll_t mask, task_work_func_t func)
- {
-@@ -4095,13 +4112,13 @@ static int __io_async_wake(struct io_kiocb *req, struct io_poll_iocb *poll,
- 	 * of executing it. We can't safely execute it anyway, as we may not
- 	 * have the needed state needed for it anyway.
- 	 */
--	ret = task_work_add(tsk, &req->task_work, true);
-+	ret = io_req_task_work_add(req, &req->task_work, TWA_SIGNAL);
- 	if (unlikely(ret)) {
- 		WRITE_ONCE(poll->canceled, true);
- 		tsk = io_wq_get_task(req->ctx->io_wq);
--		task_work_add(tsk, &req->task_work, true);
-+		task_work_add(tsk, &req->task_work, 0);
-+		wake_up_process(tsk);
- 	}
--	wake_up_process(tsk);
- 	return 1;
- }
- 
-@@ -6182,15 +6199,16 @@ static int io_cqring_wait(struct io_ring_ctx *ctx, int min_events,
- 	do {
- 		prepare_to_wait_exclusive(&ctx->wait, &iowq.wq,
- 						TASK_INTERRUPTIBLE);
-+		/* make sure we run task_work before checking for signals */
- 		if (current->task_works)
- 			task_work_run();
--		if (io_should_wake(&iowq, false))
--			break;
--		schedule();
- 		if (signal_pending(current)) {
- 			ret = -EINTR;
- 			break;
- 		}
-+		if (io_should_wake(&iowq, false))
-+			break;
-+		schedule();
- 	} while (1);
- 	finish_wait(&ctx->wait, &iowq.wq);
- 
--- 
-2.27.0
-
+Regards,
+Amit
