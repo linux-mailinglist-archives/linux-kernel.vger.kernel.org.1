@@ -2,123 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD5720EB18
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 03:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B907520EB27
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 03:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728524AbgF3BwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 21:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgF3BwO (ORCPT
+        id S1727020AbgF3Bzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 21:55:54 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34015 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726003AbgF3Bzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 21:52:14 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E9EC061755;
-        Mon, 29 Jun 2020 18:52:14 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Mon, 29 Jun 2020 21:55:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593482151;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bEQQaNPX5G3qAOWZhGlH8NtJDgMROrPMCFF25IlDv5U=;
+        b=WslN3y8aGkQVR7H1h4cDrKTzM2fTbvDeOKfgI/2XX5AooEXnnYSZu73WRnHr8NWkqKJLLz
+        /Si22t/SGJ1DEJOncaCem+oBGyBufaKENw883cwDw0aqxZcrjhslXnARU5yb4HEIh27Vs1
+        mcJUjPqq/PvNfVYHBQ4M9M6FfkaPpaU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-ZjWjyPAkOiml5GfSgpvgJw-1; Mon, 29 Jun 2020 21:55:37 -0400
+X-MC-Unique: ZjWjyPAkOiml5GfSgpvgJw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49wnR86K8Nz9sDX;
-        Tue, 30 Jun 2020 11:52:03 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1593481930;
-        bh=haJsUCTl3HXOuqQW+RwIUPwO3u5ZbxUOYuPPlYz2MkY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Fm8s6BH4ANPG1t7ms3hWULh21qdZu2xbZ5RHbUmbonZe7c+S7kuPYBBpGuqW3E9de
-         R2RvxspH7pqkmVwAFrplgYuAoFaFZKHbWFA7uahGEOtTCi9glUvC6vpGd1Ks5WdtMO
-         8Z1QiikuaOjAO3sQFailjKePovZSpgOIv5NKM/A1kt0F9mTBOXHwQTKe963wNOPMxR
-         wxY7zLp5W5T3Kx/XCzayaNuwURIvAynjPpOQWfNot42qJqZ+7Di2QwZTmhgqF9f3z8
-         PEXxdEyfWUaNc8MvDlylYM2GAV0psJrFz0KpWLzdJ4cpY7Ast7dvNJKexm58kCIwHm
-         urNbzzKGheFgw==
-Date:   Tue, 30 Jun 2020 11:52:02 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Colin Xu <colin.xu@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Dave Airlie <airlied@linux.ie>
-Subject: linux-next: manual merge of the drm-intel tree with the
- drm-intel-fixes tree
-Message-ID: <20200630115202.04c39f9b@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CA34A80058A;
+        Tue, 30 Jun 2020 01:55:35 +0000 (UTC)
+Received: from [10.72.13.159] (ovpn-13-159.pek2.redhat.com [10.72.13.159])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3F22C7BEA1;
+        Tue, 30 Jun 2020 01:55:24 +0000 (UTC)
+Subject: Re: [PATCH RFC 4/5] vhost-vdpa: support IOTLB batching hints
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, lulu@redhat.com,
+        shahafs@mellanox.com, hanand@xilinx.com, mhabets@solarflare.com,
+        gdawar@xilinx.com, saugatm@xilinx.com, vmireyno@marvell.com,
+        zhangweining@ruijie.com.cn, eli@mellanox.com
+References: <20200618055626.25660-1-jasowang@redhat.com>
+ <20200618055626.25660-5-jasowang@redhat.com>
+ <20200628054940-mutt-send-email-mst@kernel.org>
+ <a2216693-cdba-ff53-46f9-abaf47789f5a@redhat.com>
+ <20200629114607-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <45bea43a-7404-c0f4-49d8-10a849588c0a@redhat.com>
+Date:   Tue, 30 Jun 2020 09:55:23 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4fPofAu7Md8T4NHp79C0oXC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20200629114607-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/4fPofAu7Md8T4NHp79C0oXC
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On 2020/6/29 下午11:49, Michael S. Tsirkin wrote:
+> On Mon, Jun 29, 2020 at 05:26:03PM +0800, Jason Wang wrote:
+>> On 2020/6/28 下午5:58, Michael S. Tsirkin wrote:
+>>> On Thu, Jun 18, 2020 at 01:56:25PM +0800, Jason Wang wrote:
+>>>> This patches extend the vhost IOTLB API to accept batch updating hints
+>>>> form userspace. When userspace wants update the device IOTLB in a
+>>>> batch, it may do:
+>>>>
+>>>> 1) Write vhost_iotlb_msg with VHOST_IOTLB_BATCH_BEGIN flag
+>>>> 2) Perform a batch of IOTLB updating via VHOST_IOTLB_UPDATE/INVALIDATE
+>>>> 3) Write vhost_iotlb_msg with VHOST_IOTLB_BATCH_END flag
+>>> As long as we are extending the interface,
+>>> is there some way we could cut down the number of system calls needed
+>>> here?
+>>
+>> I'm not sure it's worth to do that since usually we only have less than 10
+>> regions.
+>
+> Well with a guest iommu I'm guessing it can go up significantly, right?
 
-Today's linux-next merge of the drm-intel tree got a conflict in:
 
-  drivers/gpu/drm/i915/gvt/handlers.c
+The batching flag is not mandatory, so userspace can still choose to 
+update a single IOTLB mapping through a single system call without batch 
+flag.
 
-between commit:
 
-  fc1e3aa0337c ("drm/i915/gvt: Fix incorrect check of enabled bits in mask =
-registers")
+>
+>> A possible method is to carry multiple vhost_iotlb_message in one system
+>> call.
+> That's an option.
+> Also, can kernel handle a batch that is too large by applying
+> parts of it iteratively?
 
-from the drm-intel-fixes tree and commit:
 
-  5f4ae2704d59 ("drm/i915: Identify Cometlake platform")
+I think so, we can iterate a vhost iotlb message one by one through iov 
+iterator.
 
-from the drm-intel tree.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+> Or must all changes take place atomically after BATCH_END?
 
---=20
-Cheers,
-Stephen Rothwell
 
-diff --cc drivers/gpu/drm/i915/gvt/handlers.c
-index fadd2adb8030,26cae4846c82..000000000000
---- a/drivers/gpu/drm/i915/gvt/handlers.c
-+++ b/drivers/gpu/drm/i915/gvt/handlers.c
-@@@ -1731,8 -1734,9 +1734,9 @@@ static int ring_mode_mmio_write(struct=20
-  		return 0;
-  	}
- =20
-- 	if (IS_COFFEELAKE(vgpu->gvt->gt->i915) &&
-+ 	if ((IS_COFFEELAKE(vgpu->gvt->gt->i915) ||
-+ 	     IS_COMETLAKE(vgpu->gvt->gt->i915)) &&
- -	    data & _MASKED_BIT_ENABLE(2)) {
- +	    IS_MASKED_BITS_ENABLED(data, 2)) {
-  		enter_failsafe_mode(vgpu, GVT_FAILSAFE_UNSUPPORTED_GUEST);
-  		return 0;
-  	}
+For changes:
 
---Sig_/4fPofAu7Md8T4NHp79C0oXC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+- if you mean the changes in vhost IOTLB, it's not atomically
+- if you mean the mapping seen by vDPA device driver, it could be 
+atomically for the device driver that implements set_map() method, since 
+we pass a interval tree to the device.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl76msIACgkQAVBC80lX
-0GxjXAf+PDgs9BZ4I0/T1J1Jwnp4cQHq+tdnzow+RsWfWh57G8b6de2+iWwGoOZ5
-AtAIEWvlxl8NLPqpislhRpx9hBk3Aob/SLYAuQL94xD3stAqm5HnpprFxtKNLC6X
-30oiw0K12JvOfTZ7KqzCCh1LrbERmhgx4+DJBqv/hy3L3Okg6MPfoMEX3p0kHn01
-udqw1vlTf9ruOwMVIX69mLAr3E2Q3iMXbbwhXPiQPxby1ZkmGfGtGUfLesYxKp13
-umLi0qe7AQxO27lAtDLxL0yvWEP94iH1VuhQtWG9XhMO1gU7+hvrBmjRmzxJF0Xq
-GxkdgTRtqBENst7A35lvATu1OzdhmA==
-=GyE7
------END PGP SIGNATURE-----
+> If atomically, we might need to limit batch size to make
+> sure kernel can keep a copy in memory.
 
---Sig_/4fPofAu7Md8T4NHp79C0oXC--
+
+It's the responsibility of guest driver to make sure there won't be a 
+race condition between DMA and map updating. So it looks to me we don't 
+need to care about that.
+
+
+>
+>
+>>>
+>>>> Vhost-vdpa may decide to batch the IOMMU/IOTLB updating in step 3 when
+>>>> vDPA device support set_map() ops. This is useful for the vDPA device
+>>>> that want to know all the mappings to tweak their own DMA translation
+>>>> logic.
+>>>>
+>>>> For vDPA device that doesn't require set_map(), no behavior changes.
+>>>>
+>>>> This capability is advertised via VHOST_BACKEND_F_IOTLB_BATCH capability.
+>>>>
+>>>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+>>>> ---
+>>>>    drivers/vhost/vdpa.c             | 30 +++++++++++++++++++++++-------
+>>>>    include/uapi/linux/vhost.h       |  2 ++
+>>>>    include/uapi/linux/vhost_types.h |  7 +++++++
+>>>>    3 files changed, 32 insertions(+), 7 deletions(-)
+>>>>
+>>>> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+>>>> index 453057421f80..8f624bbafee7 100644
+>>>> --- a/drivers/vhost/vdpa.c
+>>>> +++ b/drivers/vhost/vdpa.c
+>>>> @@ -56,7 +56,9 @@ enum {
+>>>>    };
+>>>>    enum {
+>>>> -	VHOST_VDPA_BACKEND_FEATURES = (1ULL << VHOST_BACKEND_F_IOTLB_MSG_V2)
+>>>> +	VHOST_VDPA_BACKEND_FEATURES =
+>>>> +	(1ULL << VHOST_BACKEND_F_IOTLB_MSG_V2) |
+>>>> +	(1ULL << VHOST_BACKEND_F_IOTLB_BATCH),
+>>>>    };
+>>>>    /* Currently, only network backend w/o multiqueue is supported. */
+>>>> @@ -77,6 +79,7 @@ struct vhost_vdpa {
+>>>>    	int virtio_id;
+>>>>    	int minor;
+>>>>    	struct eventfd_ctx *config_ctx;
+>>>> +	int in_batch;
+>>>>    };
+>>>>    static DEFINE_IDA(vhost_vdpa_ida);
+>>>> @@ -125,6 +128,7 @@ static void vhost_vdpa_reset(struct vhost_vdpa *v)
+>>>>    	const struct vdpa_config_ops *ops = vdpa->config;
+>>>>    	ops->set_status(vdpa, 0);
+>>>> +	v->in_batch = 0;
+>>>>    }
+>>>>    static long vhost_vdpa_get_device_id(struct vhost_vdpa *v, u8 __user *argp)
+>>>> @@ -540,9 +544,10 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
+>>>>    	if (ops->dma_map)
+>>>>    		r = ops->dma_map(vdpa, iova, size, pa, perm);
+>>>> -	else if (ops->set_map)
+>>>> -		r = ops->set_map(vdpa, dev->iotlb);
+>>>> -	else
+>>>> +	else if (ops->set_map) {
+>>>> +		if (!v->in_batch)
+>>>> +			r = ops->set_map(vdpa, dev->iotlb);
+>>>> +	} else
+>>>>    		r = iommu_map(v->domain, iova, pa, size,
+>>>>    			      perm_to_iommu_flags(perm));
+>>>> @@ -559,9 +564,10 @@ static void vhost_vdpa_unmap(struct vhost_vdpa *v, u64 iova, u64 size)
+>>>>    	if (ops->dma_map)
+>>>>    		ops->dma_unmap(vdpa, iova, size);
+>>>> -	else if (ops->set_map)
+>>>> -		ops->set_map(vdpa, dev->iotlb);
+>>>> -	else
+>>>> +	else if (ops->set_map) {
+>>>> +		if (!v->in_batch)
+>>>> +			ops->set_map(vdpa, dev->iotlb);
+>>>> +	} else
+>>>>    		iommu_unmap(v->domain, iova, size);
+>>>>    }
+>>>> @@ -655,6 +661,8 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev,
+>>>>    					struct vhost_iotlb_msg *msg)
+>>>>    {
+>>>>    	struct vhost_vdpa *v = container_of(dev, struct vhost_vdpa, vdev);
+>>>> +	struct vdpa_device *vdpa = v->vdpa;
+>>>> +	const struct vdpa_config_ops *ops = vdpa->config;
+>>>>    	int r = 0;
+>>>>    	r = vhost_dev_check_owner(dev);
+>>>> @@ -668,6 +676,14 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev,
+>>>>    	case VHOST_IOTLB_INVALIDATE:
+>>>>    		vhost_vdpa_unmap(v, msg->iova, msg->size);
+>>>>    		break;
+>>>> +	case VHOST_IOTLB_BATCH_BEGIN:
+>>>> +		v->in_batch = true;
+>>>> +		break;
+>>>> +	case VHOST_IOTLB_BATCH_END:
+>>>> +		if (v->in_batch && ops->set_map)
+>>>> +			ops->set_map(vdpa, dev->iotlb);
+>>>> +		v->in_batch = false;
+>>>> +		break;
+>>>>    	default:
+>>>>    		r = -EINVAL;
+>>>>    		break;
+>>>> diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
+>>>> index 0c2349612e77..565da96f55d5 100644
+>>>> --- a/include/uapi/linux/vhost.h
+>>>> +++ b/include/uapi/linux/vhost.h
+>>>> @@ -91,6 +91,8 @@
+>>>>    /* Use message type V2 */
+>>>>    #define VHOST_BACKEND_F_IOTLB_MSG_V2 0x1
+>>>> +/* IOTLB can accpet batching hints */
+>>> typo
+>>
+>> Will fix.
+>>
+>>
+>>>> +#define VHOST_BACKEND_F_IOTLB_BATCH  0x2
+>>>>    #define VHOST_SET_BACKEND_FEATURES _IOW(VHOST_VIRTIO, 0x25, __u64)
+>>>>    #define VHOST_GET_BACKEND_FEATURES _IOR(VHOST_VIRTIO, 0x26, __u64)
+>>>> diff --git a/include/uapi/linux/vhost_types.h b/include/uapi/linux/vhost_types.h
+>>>> index 669457ce5c48..5c12faffdde9 100644
+>>>> --- a/include/uapi/linux/vhost_types.h
+>>>> +++ b/include/uapi/linux/vhost_types.h
+>>>> @@ -60,6 +60,13 @@ struct vhost_iotlb_msg {
+>>>>    #define VHOST_IOTLB_UPDATE         2
+>>>>    #define VHOST_IOTLB_INVALIDATE     3
+>>>>    #define VHOST_IOTLB_ACCESS_FAIL    4
+>>>> +/* VHOST_IOTLB_BATCH_BEGIN is a hint that userspace will update
+>>>> + * several mappings afterwards. VHOST_IOTLB_BATCH_END is a hint that
+>>>> + * userspace had finished the mapping updating.
+>>> Well not just hints - in fact updates do not take place
+>>> until _END.
+>>>
+>>> How about:
+>>>
+>>> /* VHOST_IOTLB_BATCH_BEGIN and VHOST_IOTLB_BATCH_END allow modifying
+>>>    * multiple mappings in one go: beginning with
+>>>    * VHOST_IOTLB_BATCH_BEGIN, followed by any number of
+>>>      VHOST_IOTLB_UPDATE messages, and ending with VHOST_IOTLB_BATCH_END.
+>>>    */
+>>
+>> That's better.
+>
+> Is there a guarantee that these changes take place atomically?
+> Let's document that.
+
+
+There's no guarantee. Will document this.
+
+Thanks
+
+
+>
+>>>
+>>>> When those two flags
+>>>> + * were set, kernel will ignore the rest fileds of the IOTLB message.
+>>> how about:
+>>>
+>>> when one of these two values is used as the message type, the
+>>> rest of the fields in the message are ignored.
+>>
+>> Yes.
+>>
+>> Will fix.
+>>
+>> Thanks
+>>
+>>
+>>>> + */
+>>>> +#define VHOST_IOTLB_BATCH_BEGIN    5
+>>>> +#define VHOST_IOTLB_BATCH_END      6
+>>>>    	__u8 type;
+>>>>    };
+>>>> -- 
+>>>> 2.20.1
+
