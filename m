@@ -2,108 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6350D20F061
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9504C20F059
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731087AbgF3IUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 04:20:22 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:24724 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727919AbgF3IUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 04:20:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593505219; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=c70MMxXQxL9Q0nDICJFkGeCgnQoGRAhYSDB6a9QVanY=; b=UeEp+5tkO9aJViNi4zZ8wF32GBbEeYS0GSrZhb6rH7W19MJSwzjioFsSL0wse4NrosuS2l3B
- 5CpxjNmrXLeDO4wbyXqf768RHB/5Coh10n3xd3HPtZabaFD08UClQLgypLH7KMCOaFtC5JNh
- d/ZDadQ4Y5+2YcEFqxYqUaQpdNk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n11.prod.us-east-1.postgun.com with SMTP id
- 5efaf5b186de6ccd44d461b5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Jun 2020 08:20:01
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B3007C433A1; Tue, 30 Jun 2020 08:20:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 97CBBC433C6;
-        Tue, 30 Jun 2020 08:19:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 97CBBC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sibis@codeaurora.org
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, will@kernel.org,
-        saiprakash.ranjan@codeaurora.org, robh+dt@kernel.org,
-        evgreen@chromium.org, dianders@chromium.org, mka@chromium.org,
-        devicetree@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: sc7180: Drop the unused non-MSA SID
-Date:   Tue, 30 Jun 2020 13:49:38 +0530
-Message-Id: <20200630081938.8131-1-sibis@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
+        id S1731351AbgF3ITs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 04:19:48 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:32814 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730861AbgF3ITp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 04:19:45 -0400
+Received: by mail-ej1-f67.google.com with SMTP id n26so5645280ejx.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 01:19:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hvNDb619PND9BSnOO/FTgYwwF+7N75fMEl+ZD4EKqsM=;
+        b=eMWO5dMpyuuKoC1e3H/9ut0wE3rsfuQc1TdA6U+47Ka3S1BXmH0febTyfL7ODEZ9U6
+         /PvdRkUcK28YmLGj1STJsT510Ys3Ld4MXYbrtFDmEVMnA4jVuDLde//gehcXTVZQ5c/j
+         AB2MY7zkzMXZjlcWZ7mQ0SQtJNM2nSQr2yBVSpdT2HwUdvGWcrXak+NMyOUDam9jcCBQ
+         iBRve8SFn6OQz+SBQCcEb0UCv2Jhy+lwKi0ufnBAwg4RrnQouYHgcQCJg6MYYShpqlc9
+         5NKzEG+BhfTGtQKqcaA16XNdmYtFlUemfO8E8XtzqoX3/BGC7fhRYpjnUK+bwXBAA6DV
+         GboQ==
+X-Gm-Message-State: AOAM533/prxHtrU/ZdIeczcvefDckW95KxTnRxTR8vTHF7UQZ/toZBe6
+        l2uXjDt08JML+TR/xKpVsxI=
+X-Google-Smtp-Source: ABdhPJx1S2bMBQqMtx4WXGh/d/lkwjOBn+S/nzIRGYuA9KRMjCqnTzm3OP/1N3JVGlohhgDY6AJQBw==
+X-Received: by 2002:a17:907:7283:: with SMTP id dt3mr17835137ejc.195.1593505183733;
+        Tue, 30 Jun 2020 01:19:43 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id w8sm1999763eds.41.2020.06.30.01.19.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jun 2020 01:19:43 -0700 (PDT)
+Subject: Re: [PATCH v1 4/5] misc/phantom.c: use generic power management
+To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alex Dubov <oakad@yahoo.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org
+References: <20200629081531.214734-1-vaibhavgupta40@gmail.com>
+ <20200629081531.214734-5-vaibhavgupta40@gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <164d7366-27f5-c764-3122-5c4a0239e66f@kernel.org>
+Date:   Tue, 30 Jun 2020 10:19:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200629081531.214734-5-vaibhavgupta40@gmail.com>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Having a non-MSA (Modem Self-Authentication) SID bypassed breaks modem
-sandboxing i.e if a transaction were to originate from it, the hardware
-memory protections units (XPUs) would fail to flag them (any transaction
-originating from modem are historically termed as an MSA transaction).
-Drop the unused non-MSA modem SID on SC7180 SoCs and cheza so that SMMU
-continues to block them.
+On 29. 06. 20, 10:15, Vaibhav Gupta wrote:
+> With the support of generic PM callbacks, drivers no longer need to use
+> legacy .suspend() and .resume() in which they had to maintain PCI states
+> changes and device's power state themselves. All required operations are
+> done by PCI core.
+> 
+> Driver needs to do only device-specific operations.
+> 
+> Compile-tested only.
+> 
+> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
 
-Fixes: bec71ba243e95 ("arm64: dts: qcom: sc7180: Update Q6V5 MSS node")
-Fixes: 68aee4af5f620 ("arm64: dts: qcom: sdm845-cheza: Add iommus property")
-Cc: stable@vger.kernel.org
-Reported-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7180-idp.dts    | 2 +-
- arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+From the driver's POV:
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-index 39dbfc89689e8..141de49a1b7d6 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-@@ -312,7 +312,7 @@ &qupv3_id_1 {
- &remoteproc_mpss {
- 	status = "okay";
- 	compatible = "qcom,sc7180-mss-pil";
--	iommus = <&apps_smmu 0x460 0x1>, <&apps_smmu 0x444 0x3>;
-+	iommus = <&apps_smmu 0x461 0x0>, <&apps_smmu 0x444 0x3>;
- 	memory-region = <&mba_mem &mpss_mem>;
- };
- 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-index 70466cc4b4055..64fc1bfd66fad 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-@@ -634,7 +634,7 @@ &mdss_mdp {
- };
- 
- &mss_pil {
--	iommus = <&apps_smmu 0x780 0x1>,
-+	iommus = <&apps_smmu 0x781 0x0>,
- 		 <&apps_smmu 0x724 0x3>;
- };
- 
+> ---
+>  drivers/misc/phantom.c | 20 ++++++++------------
+>  1 file changed, 8 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/misc/phantom.c b/drivers/misc/phantom.c
+> index 6a5ed0e25ff1..ce72e46a2e73 100644
+> --- a/drivers/misc/phantom.c
+> +++ b/drivers/misc/phantom.c
+> @@ -457,31 +457,26 @@ static void phantom_remove(struct pci_dev *pdev)
+>  	pci_disable_device(pdev);
+>  }
+>  
+> -#ifdef CONFIG_PM
+> -static int phantom_suspend(struct pci_dev *pdev, pm_message_t state)
+> +static int __maybe_unused phantom_suspend(struct device *dev_d)
+>  {
+> -	struct phantom_device *dev = pci_get_drvdata(pdev);
+> +	struct phantom_device *dev = dev_get_drvdata(dev_d);
+>  
+>  	iowrite32(0, dev->caddr + PHN_IRQCTL);
+>  	ioread32(dev->caddr + PHN_IRQCTL); /* PCI posting */
+>  
+> -	synchronize_irq(pdev->irq);
+> +	synchronize_irq(to_pci_dev(dev_d)->irq);
+>  
+>  	return 0;
+>  }
+>  
+> -static int phantom_resume(struct pci_dev *pdev)
+> +static int __maybe_unused phantom_resume(struct device *dev_d)
+>  {
+> -	struct phantom_device *dev = pci_get_drvdata(pdev);
+> +	struct phantom_device *dev = dev_get_drvdata(dev_d);
+>  
+>  	iowrite32(0, dev->caddr + PHN_IRQCTL);
+>  
+>  	return 0;
+>  }
+> -#else
+> -#define phantom_suspend	NULL
+> -#define phantom_resume	NULL
+> -#endif
+>  
+>  static struct pci_device_id phantom_pci_tbl[] = {
+>  	{ .vendor = PCI_VENDOR_ID_PLX, .device = PCI_DEVICE_ID_PLX_9050,
+> @@ -491,13 +486,14 @@ static struct pci_device_id phantom_pci_tbl[] = {
+>  };
+>  MODULE_DEVICE_TABLE(pci, phantom_pci_tbl);
+>  
+> +static SIMPLE_DEV_PM_OPS(phantom_pm_ops, phantom_suspend, phantom_resume);
+> +
+>  static struct pci_driver phantom_pci_driver = {
+>  	.name = "phantom",
+>  	.id_table = phantom_pci_tbl,
+>  	.probe = phantom_probe,
+>  	.remove = phantom_remove,
+> -	.suspend = phantom_suspend,
+> -	.resume = phantom_resume
+> +	.driver.pm = &phantom_pm_ops,
+>  };
+>  
+>  static CLASS_ATTR_STRING(version, 0444, PHANTOM_VERSION);
+> 
+
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+js
