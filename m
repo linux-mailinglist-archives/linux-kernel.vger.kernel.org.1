@@ -2,145 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FBD20F10C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8FF20F0D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731835AbgF3I7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 04:59:46 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:43896 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731591AbgF3I7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 04:59:45 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 73145201338;
-        Tue, 30 Jun 2020 10:59:43 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BA2B8201345;
-        Tue, 30 Jun 2020 10:59:38 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id D653040287;
-        Tue, 30 Jun 2020 16:59:32 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: fsl_asrc: Add an option to select internal ratio mode
-Date:   Tue, 30 Jun 2020 16:47:56 +0800
-Message-Id: <1593506876-14599-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1731730AbgF3Is1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 04:48:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728132AbgF3IsZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 04:48:25 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38A4C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 01:48:24 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id e4so21528110ljn.4
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 01:48:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6fsC+acqOWGmffLGOO9jUUTQnpmWJlfaJA/k6/maTXQ=;
+        b=jwhzWOYTDIWkGYCjUjnh/hwQSfIQFakAv6CQUjqEt4lGOfycy+SXqpkauASE8Uv9mR
+         HQv/CFC25aFyJGL1zaWOskY9nxqomD8anB5SgT41JK2+NAhLoVv/V7kapQtj1LprizUz
+         9NWgdrg5DV/8QYEDqTeEoQBll6ZNiEtOUu9LIYIqDwuaV90Hauso9TljSKrWlRjz1xmS
+         5k/P3sBGk/fhl23Y3JhxJup+qF6wPjQBiJmZFPfu+b47V4hlKIbXN9MJiKdk/p4O6ugh
+         FfkzZelWVMWID7VeVmDc58BAsTKDDi1fjv0yA5t2BtW/F2wHXOgM/ab7n3m4BpJJL7ol
+         t/LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6fsC+acqOWGmffLGOO9jUUTQnpmWJlfaJA/k6/maTXQ=;
+        b=QkNIk1RVO19b3y15Zt6YbsnR9oUtaICfVTQg12iV/by24jaJuxDnikY6lcXVb7e5M3
+         yXzLRm1yv+Ndjq9xozRBjsX+/SmlRGEPqXwfz61190xH+dkdlun0vqkcEJxx3IcDL1Jc
+         N6XEC57+CMGInFRt/397MCSyqs8FPyADdQjMfLLdxBKTVUZnkV2vr5ud1ZgXYt8nAuAF
+         LbAt97IqmKFLcsjxPEi1YehSKPKdFzno9BVJTpss7313/52s46yShbnbFirn8NOCqqTi
+         jSHfCFEWMoAlR0fHHUuYuM/CvWrSQKhFo0X5XU16pBE7N6NRjtBUVMi0QDcSB94svwLX
+         jOXw==
+X-Gm-Message-State: AOAM531W7OLuO5aOrXOzGDQJMY671gzuQ2Bs3pztD7djF6zyPO1IussR
+        l+yO+H8RQ/DiUs3fVoTwxe9yv9vszulAF1O4biI/hw==
+X-Google-Smtp-Source: ABdhPJwX4BRg7XNjPqa+bGRmf7a5TT5LE3ptad/uzUQ2PEfbNV+nz2O7wy3pdPl3lEJ0PbZmgV66tY8SYz/nHrGnDlw=
+X-Received: by 2002:a2e:9ed0:: with SMTP id h16mr10660397ljk.366.1593506903171;
+ Tue, 30 Jun 2020 01:48:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <CA+G9fYvHFs5Yx8TnT6VavtfjMN8QLPuXg6us-dXVJqUUt68adA@mail.gmail.com>
+ <20200622224920.GA4332@42.do-not-panic.com> <CA+G9fYsXDZUspc5OyfqrGZn=k=2uRiGzWY_aPePK2C_kZ+dYGQ@mail.gmail.com>
+ <20200623064056.GA8121@gondor.apana.org.au> <20200623170217.GB150582@gmail.com>
+ <20200626062948.GA25285@gondor.apana.org.au>
+In-Reply-To: <20200626062948.GA25285@gondor.apana.org.au>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 30 Jun 2020 14:18:11 +0530
+Message-ID: <CA+G9fYutuU55iL_6Qrk3oG3iq-37PaxvtA4KnEQHuLH9YpH-QA@mail.gmail.com>
+Subject: Re: [PATCH] crypto: af_alg - Fix regression on empty requests
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        LTP List <ltp@lists.linux.it>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        lkft-triage@lists.linaro.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Jan Stancek <jstancek@redhat.com>, chrubis <chrubis@suse.cz>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        David Howells <dhowells@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ASRC not only supports ideal ratio mode, but also supports
-internal ratio mode.
+On Fri, 26 Jun 2020 at 12:00, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Tue, Jun 23, 2020 at 10:02:17AM -0700, Eric Biggers wrote:
+> >
+> > The source code for the two failing AF_ALG tests is here:
+> >
+> > https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/crypto/af_alg02.c
+> > https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/crypto/af_alg05.c
+> >
+> > They use read() and write(), not send() and recv().
+> >
+> > af_alg02 uses read() to read from a "salsa20" request socket without writing
+> > anything to it.  It is expected that this returns 0, i.e. that behaves like
+> > encrypting an empty message.
 
-For internal rato mode, the rate of clock source should be divided
-with no remainder by sample rate, otherwise there is sound
-distortion.
+Since we are on this subject,
+LTP af_alg02  test case fails on stable 4.9 and stable 4.4
+This is not a regression because the test case has been failing from
+the beginning.
 
-Add function fsl_asrc_select_clk() to find proper clock source for
-internal ratio mode, if the clock source is available then internal
-ratio mode will be selected.
+Is this test case expected to fail on stable 4.9 and 4.4 ?
+or any chance to fix this on these older branches ?
 
-With change, the ideal ratio mode is not the only option for user.
+Test output:
+af_alg02.c:52: BROK: Timed out while reading from request socket.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
-changes in v2
-- update according to Nicolin's comments
+ref:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-4.9-oe/build/v4.9.228-191-g082e807235d7/testrun/2884917/suite/ltp-crypto-tests/test/af_alg02/history/
+https://qa-reports.linaro.org/lkft/linux-stable-rc-4.9-oe/build/v4.9.228-191-g082e807235d7/testrun/2884606/suite/ltp-crypto-tests/test/af_alg02/log
 
- sound/soc/fsl/fsl_asrc.c | 54 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 52 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 95f6a9617b0b..4105ef2c4f99 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -582,11 +582,55 @@ static int fsl_asrc_dai_startup(struct snd_pcm_substream *substream,
- 			SNDRV_PCM_HW_PARAM_RATE, &fsl_asrc_rate_constraints);
- }
- 
-+/**
-+ * Select proper clock source for internal ratio mode
-+ */
-+static int fsl_asrc_select_clk(struct fsl_asrc_priv *asrc_priv,
-+			       struct fsl_asrc_pair *pair,
-+			       int in_rate,
-+			       int out_rate)
-+{
-+	struct fsl_asrc_pair_priv *pair_priv = pair->private;
-+	struct asrc_config *config = pair_priv->config;
-+	int rate[2], select_clk[2]; /* Array size 2 means IN and OUT */
-+	int clk_rate, clk_index;
-+	int i = 0, j = 0;
-+
-+	rate[0] = in_rate;
-+	rate[1] = out_rate;
-+
-+	/* Select proper clock source for internal ratio mode */
-+	for (j = 0; j < 2; j++) {
-+		for (i = 0; i < ASRC_CLK_MAP_LEN; i++) {
-+			clk_index = asrc_priv->clk_map[j][i];
-+			clk_rate = clk_get_rate(asrc_priv->asrck_clk[clk_index]);
-+			/* Only match a perfect clock source with no remainder */
-+			if (clk_rate != 0 && (clk_rate / rate[j]) <= 1024 &&
-+			    (clk_rate % rate[j]) == 0)
-+				break;
-+		}
-+
-+		select_clk[j] = i;
-+	}
-+
-+	/* Switch to ideal ratio mode if there is no proper clock source */
-+	if (select_clk[IN] == ASRC_CLK_MAP_LEN || select_clk[OUT] == ASRC_CLK_MAP_LEN) {
-+		select_clk[IN] = INCLK_NONE;
-+		select_clk[OUT] = OUTCLK_ASRCK1_CLK;
-+	}
-+
-+	config->inclk = select_clk[IN];
-+	config->outclk = select_clk[OUT];
-+
-+	return 0;
-+}
-+
- static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
- 				  struct snd_pcm_hw_params *params,
- 				  struct snd_soc_dai *dai)
- {
- 	struct fsl_asrc *asrc = snd_soc_dai_get_drvdata(dai);
-+	struct fsl_asrc_priv *asrc_priv = asrc->private;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct fsl_asrc_pair *pair = runtime->private_data;
- 	struct fsl_asrc_pair_priv *pair_priv = pair->private;
-@@ -605,8 +649,6 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
- 
- 	config.pair = pair->index;
- 	config.channel_num = channels;
--	config.inclk = INCLK_NONE;
--	config.outclk = OUTCLK_ASRCK1_CLK;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		config.input_format   = params_format(params);
-@@ -620,6 +662,14 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
- 		config.output_sample_rate = rate;
- 	}
- 
-+	ret = fsl_asrc_select_clk(asrc_priv, pair,
-+				  config.input_sample_rate,
-+				  config.output_sample_rate);
-+	if (ret) {
-+		dev_err(dai->dev, "fail to select clock\n");
-+		return ret;
-+	}
-+
- 	ret = fsl_asrc_config_pair(pair, false);
- 	if (ret) {
- 		dev_err(dai->dev, "fail to config asrc pair\n");
--- 
-2.21.0
-
+- Naresh
