@@ -2,129 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D1220FAF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1632E20FAFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388474AbgF3RsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56086 "EHLO
+        id S2388645AbgF3RtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 13:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388388AbgF3RsY (ORCPT
+        with ESMTP id S1726047AbgF3RtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:48:24 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8AC9C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:48:24 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id o22so4732620pjw.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:48:24 -0700 (PDT)
+        Tue, 30 Jun 2020 13:49:15 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15A3C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:49:15 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id h22so9795761pjf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:49:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GVyu4MkDCd3TIFlywfkImC8tPFKpiToQftsagCmrcyk=;
-        b=r0nhWvvR4ZEsZyGSBSYNZjS9fQWc2mt+iW5c7JX+9ptNSQmv95N2j+GXJ98c3/DRff
-         akz3I90Ypz4aGS1FKLRH+kVK1hpeMcNd2CjAeTyjQF1EwlU/QGQyojp8GI5Nm2SwdvDw
-         MpRMo+I9DVCCCjfKea8j4Tp48KXM3Xgh+1lp5KKb/2QMIv0JqY6Cv5U8oQH+aPNLnXrI
-         /u7Jf4sxVITDIXDc5ZEEnd5CqBz0sKXMt/7ScN9EeIo+v06mDwRlKK3vN+XfOHmCC43r
-         VE0X7xBqhzsb2oMDtQj0WEjtNrGfuSeowUK4+wWDh9uo52p5G+inviGYwDvGwiHW6Gvw
-         ULCA==
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=0nUrGiUjexkgTjbObRwhZnqCGv//XrYLqiXL9DqI6n0=;
+        b=oJwiWX8YK+9bf2WRtly6zpZAMEumScCqL08kbgZgXpgN0it2aGlRmlfOEUtLvXeuzL
+         71cn/CUemuQRtTm5ukFtxf0wwmRZ4s0V5dZ7vpcOjbPxNh0Vmqwy5nvBKegaxMKf9jS4
+         N+eyhAp8Uwa4hTric+6fZGZ1q8b381Ufecd+mRoFRqGLAKPKv7z299gESxitGtdHnG49
+         MZ32HmpWb7aZtDBxBgmzv/G28wjBY4Nr2KPOUGkW+npW13mnl+Rk7CR+Ta1thHrVHn4M
+         pWDwv8NIEfrIEF9Eqf1C0MJTs4vsyGmp6IMGkCS4lu1Z6wcr/Nr3ee5jp0ToTxtDujcr
+         OJ0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=GVyu4MkDCd3TIFlywfkImC8tPFKpiToQftsagCmrcyk=;
-        b=HMQGOGf5R2yFxYTvvwUOjT0XDRh0FqsxCzSGxeFbIAYuwvGzD3rWEOi2Vhj+ZZlzlm
-         otkzOEpO+BnBnCKibINW/X5JXiGyYV2ZGmREn3WJIMdXD0g6rVPkevScFJRXJe7tfq5D
-         oJWiPC5r/FKW7N7R82UAx9V2bZCP9/cjDldlMiV08Em71S//N0vscRTGUAk/wIhzdfds
-         AdyqhOIHCoI9kpqan4kKFiCAbfki5PJf2/YdM9T0/tAqgkyWiyGPiK4oHaiK+EUvy4/w
-         1jA12hnhGMWr1ucZ2ZPZI9mI7NOnSpSCh75vB15BZiOz+4jPKFxh6bLXckrzxw0aGi4C
-         y51Q==
-X-Gm-Message-State: AOAM532028j6421rBMkkZ278RVbU/SnlAX/E+a5fJVMKQ3OcH8JBkV4a
-        ggJZPOXeLI0kzDn4/WAFVws=
-X-Google-Smtp-Source: ABdhPJyUEKimrT6OQmmT7k2agUYP9qT1ov1wWmypDoKRrIYmejaqOT6asz9QGEdmx6ou3+uHT1rLYQ==
-X-Received: by 2002:a17:90a:b295:: with SMTP id c21mr23491540pjr.120.1593539304254;
-        Tue, 30 Jun 2020 10:48:24 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u74sm3296106pgc.58.2020.06.30.10.48.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 30 Jun 2020 10:48:23 -0700 (PDT)
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Ingo Molnar <mingo@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v2] sched: Declare sched_rt_bandwidth_account() in include file
-Date:   Tue, 30 Jun 2020 10:48:21 -0700
-Message-Id: <20200630174821.5780-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=0nUrGiUjexkgTjbObRwhZnqCGv//XrYLqiXL9DqI6n0=;
+        b=FAByDhQzI2WRL87/yBFwtYmhr8B2gxL/6duQz/PfDqbdcMjN7It72DZIO1k6vW6JF8
+         zQOB6oD3fBw7o4rFpQ0qIng0GA0qp9g6hlspyZ/lCLj8mg7soLZ3W3oqvH2zhlTQTmZY
+         HN4CqJ8Rue6koMufsUME977Tlk3lqiWwv0ivbWFYD/P5b+ReGvmZBe590oQwcjDvvUtm
+         YnVdIHX1nHXi8UgPhVoZapp+3KrHxsctELee0bLcceJLkBOAic7W4q4JRFq+w4ENDcFs
+         2uLZ2ML0mna/L39g72jl+Y4xfJxsFmEZ5bAmViJn8ouJdw7BVb/1dQ9omSG3VVTHVRrY
+         1D9Q==
+X-Gm-Message-State: AOAM532CX4+4P8buVThvdEch80iH9quwZOdIxxoJWWlBmjqsGaBxaHX5
+        HSwdYnF0sl9ztRIyq+c0CHyOJyZeflj4nWzttY92ig==
+X-Google-Smtp-Source: ABdhPJzJNfOck99CUCFRcyYg2T1YlkQfR6eKwzFu2R2KuXy2scReiDiWH05bbRDynNZzsdy3+oAlM4k3wVbm27TM3kM=
+X-Received: by 2002:a17:90a:30ea:: with SMTP id h97mr23503177pjb.32.1593539355035;
+ Tue, 30 Jun 2020 10:49:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 30 Jun 2020 10:49:03 -0700
+Message-ID: <CAKwvOdmu2Yi=SdR+ftnnfX_HNTfri-MPmzA7kxNzjwuuk=5R3w@mail.gmail.com>
+Subject: Clang Build Linux presentations + demos
+To:     clang-built-linux <clang-built-linux@googlegroups.com>
+Cc:     Mathieu Acher <mathieu.acher@irisa.fr>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-gcc reports:
+(bcc a few lists)
 
-kernel/sched/rt.c:626:6: warning:
-		no previous prototype for ‘sched_rt_bandwidth_account’
+Hello,
+For tomorrow's bi-weekly meeting [0][1], we have two guest presentations:
 
-Let's declare it, and remove the declaration from the source file
-where it is called.
+Prof. Mathieu Acher, an associate professor from the University of
+Rennes, will be discussing with us about the Linux kernel's
+configuration space.  A common question we get is "does the kernel
+build with Clang?"  "Depends on the config" is just the tip of the
+iceberg.  For a sneak peak of his and his team's work, please see
+[2][3][4][5].
 
-Fixes: faa5993736d9 ("sched/deadline: Prevent rt_time growth to infinity")
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-v2: sched_rt_bandwidth_account() is declared and used unconditionally.
+Nathan Huckleberry is a Comp. Sci. undergrad at the University of
+Texas at Austin and a Google summer intern.  Nathan is working on
+instrumenting Clang and LLVM in order for us to start measuring,
+investigating, and improving compile time performance.  Nathan will be
+demoing an RFC he plans to send out later that day.
 
- kernel/sched/deadline.c | 2 --
- kernel/sched/sched.h    | 4 +++-
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index f63f337c7147..68587e72182d 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1131,8 +1131,6 @@ int dl_runtime_exceeded(struct sched_dl_entity *dl_se)
- 	return (dl_se->runtime <= 0);
- }
- 
--extern bool sched_rt_bandwidth_account(struct rt_rq *rt_rq);
--
- /*
-  * This function implements the GRUB accounting rule:
-  * according to the GRUB reclaiming algorithm, the runtime is
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 877fb08eb1b0..82d4754a0e0e 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -317,6 +317,8 @@ bool __dl_overflow(struct dl_bw *dl_b, int cpus, u64 old_bw, u64 new_bw)
- 	       dl_b->bw * cpus < dl_b->total_bw - old_bw + new_bw;
- }
- 
-+struct rt_rq;
-+
- extern void init_dl_bw(struct dl_bw *dl_b);
- extern int  sched_dl_global_validate(void);
- extern void sched_dl_do_global(void);
-@@ -328,6 +330,7 @@ extern bool dl_param_changed(struct task_struct *p, const struct sched_attr *att
- extern int  dl_task_can_attach(struct task_struct *p, const struct cpumask *cs_cpus_allowed);
- extern int  dl_cpuset_cpumask_can_shrink(const struct cpumask *cur, const struct cpumask *trial);
- extern bool dl_cpu_busy(unsigned int cpu);
-+extern bool sched_rt_bandwidth_account(struct rt_rq *rt_rq);
- 
- #ifdef CONFIG_CGROUP_SCHED
- 
-@@ -335,7 +338,6 @@ extern bool dl_cpu_busy(unsigned int cpu);
- #include <linux/psi.h>
- 
- struct cfs_rq;
--struct rt_rq;
- 
- extern struct list_head task_groups;
- 
+[0] https://calendar.google.com/calendar/embed?src=google.com_bbf8m6m4n8nq5p2bfjpele0n5s%40group.calendar.google.com
+[1] https://meet.google.com/yjf-jyqk-iaz
+[2] https://www.youtube.com/watch?v=UBghs-cwQX4
+[3] https://hal.inria.fr/hal-02147012v2/document
+[4] https://hal.inria.fr/hal-02314830/document
+[5] https://www.mathieuacher.com/
 -- 
-2.17.1
-
+Thanks,
+~Nick Desaulniers
