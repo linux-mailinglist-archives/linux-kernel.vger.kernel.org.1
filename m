@@ -2,212 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D060120F853
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 17:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26EF020F85C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 17:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389462AbgF3Pbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 11:31:35 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41589 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725872AbgF3Pbe (ORCPT
+        id S2389484AbgF3PcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 11:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389403AbgF3PcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 11:31:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593531092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PBKI1wC0EuMeGlMbsqBq9OEOnaCFXkQPIi7EgKbzMjY=;
-        b=FITHPolaPaePnODpPoD2ugghgTwlBozXZrpVisyoyYslACWfOvFSr8im0d75s1qDHxIt5y
-        seBkvI8DJMhKsp/1sd3jy59Jn7az5CJCW5GxSasiTmxJavWpzfgTM5JxXm13vY3Bupdugs
-        23xV3C4K4E8r9AM1RYEP+Tb/X2VsfHM=
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
- [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-158-W9pE3VMSMFmWgMnOfAaw_A-1; Tue, 30 Jun 2020 11:31:30 -0400
-X-MC-Unique: W9pE3VMSMFmWgMnOfAaw_A-1
-Received: by mail-ot1-f69.google.com with SMTP id l32so13473200otc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 08:31:30 -0700 (PDT)
+        Tue, 30 Jun 2020 11:32:08 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E148C061755;
+        Tue, 30 Jun 2020 08:32:08 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id t6so10129951pgq.1;
+        Tue, 30 Jun 2020 08:32:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version:reply-to
+         :content-transfer-encoding;
+        bh=MkaGNDtMY/NRjHtJ37AHiDdfQpm5dAJJXn18jrcf3a0=;
+        b=t81FJtYHDU1oMziHtEQddR8ifoGMD/S3rfdbwL0W9hzjL5KMbw1Rh+vhMsBDxwMQSd
+         hBf2mL5chtfCyG+W3F8V+3yjtXPlelee6+tyV4CGMYCepdnJz6CD1Ec6b9wj23zMEDHC
+         RR5pYGTPkuh8egT/qdjvZhNuatHwsR7hdVbKLmwaLSxxghv7ZCVm+CCsNljmyC72qe3P
+         GR02iT15ifnSaZJf36C+VymnzWDHNIbmih0RadoKUcvhht01bzfnNNRPwDbOhpAhrMv5
+         4wpN1l1afxo64RXLzCSpAzzU6XDdK7EpGFEwP4ayArDKfoaO8+7aHEe4Hsu61y6gF8BC
+         YLyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PBKI1wC0EuMeGlMbsqBq9OEOnaCFXkQPIi7EgKbzMjY=;
-        b=SwoMbHtk/5inVY3cRRoUDI1XaqHhhRJqg4VtvhN0JceCCwlGBbp9vRq9SJMHc16PgE
-         OKer/esROQRrOSOPu23wC9iXx3gVmT3daeYCFHXDZLkMwlGjk9g6XDcNyi53P6EwQcDJ
-         rdgKPBoUVaOYc5V4NJMSGLE2hSTF4OVqYgPp0NQu7Nq7F6JdsZVZ5dSRPQf7MnbirFno
-         UhdqCcA/kPVT/9o5boEbXZwoy63mNGzeqeq216cwEZMqNvfv192lfXJrOqkV+A/KYToE
-         JtWt6EDtcCm9y+mPnUiEcdocG0kGiYWD7C53b2pqbvVC+hwng1oNzjmdECb1t08CduC8
-         s70Q==
-X-Gm-Message-State: AOAM531jW+avyL1Q8i2TWQfePZjilstRtJM5+lZcL1KkjLM2KTXwOhz2
-        BAufmX5A7vznBRYkXli2ctY0yzhIb+t+a2n04Y6lvbZ84PCogbEjRFYxf+X2WqZUP9m2L7vT7FS
-        MinaqyCiE6kGSBwg2W6GcP6Be
-X-Received: by 2002:a9d:904:: with SMTP id 4mr18989714otp.339.1593531089416;
-        Tue, 30 Jun 2020 08:31:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxUIjP8aNkaGnNl54laVK9WUVYeVxAerVTjXDpA8fj551U6q8mWoUYLYsFhCJT6XWllk8jyZg==
-X-Received: by 2002:a9d:904:: with SMTP id 4mr18989675otp.339.1593531089054;
-        Tue, 30 Jun 2020 08:31:29 -0700 (PDT)
-Received: from localhost (c-67-165-232-89.hsd1.co.comcast.net. [67.165.232.89])
-        by smtp.gmail.com with ESMTPSA id y14sm767795ooq.24.2020.06.30.08.31.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :reply-to:content-transfer-encoding;
+        bh=MkaGNDtMY/NRjHtJ37AHiDdfQpm5dAJJXn18jrcf3a0=;
+        b=Ewm91QXTEEOjAg5SEnS/1IKpt07shoYhe7Pf6S0mqghbHZ9zaCzl0lzdtiLtK3LHRu
+         T+zD532GKyNnJSCXt3TuRk6EzonwTZXy3N27eIvwEs8A+mCrFA2VsnTxDoR68GIR1eKB
+         hVG0NyDf9Kug++kWIafx7CBYDw0Lg89KMS3bTpDKtK+mOAYdVHn+sjVxbzBW9KDJNFiR
+         EI7uMSdyPYSuGVK6kJuGGpzoXa4KjHTFsRjX3+r8Pc0xxJiEt/pcrhIH9C3F8K4YjYP2
+         RZ3fpNo/haWMijVroJN4QtsGLWXetYSvwkQq91fjQmy0qOCPEVoBhLQ2FuEXJvQ9XKFU
+         qTLQ==
+X-Gm-Message-State: AOAM533raV7Zjo+CG7TvFZ0TV+E5fS4kvLhyHw/8OIjo68fznT9M8gZV
+        w0Rvf3RYQ3GCTS21Xgl8W3s=
+X-Google-Smtp-Source: ABdhPJwRsXEuMGybs81Dv5ER0nufXLdqv1A8Hw5GNQ9lgs8VOgl+sBpBo332N7IT3uzVbb623krG5g==
+X-Received: by 2002:a63:6e08:: with SMTP id j8mr15426916pgc.187.1593531127662;
+        Tue, 30 Jun 2020 08:32:07 -0700 (PDT)
+Received: from localhost.localdomain ([131.107.174.194])
+        by smtp.gmail.com with ESMTPSA id 140sm3067433pfz.154.2020.06.30.08.32.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 08:31:28 -0700 (PDT)
-Date:   Tue, 30 Jun 2020 09:31:27 -0600
-From:   Al Stone <ahs3@redhat.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Ira Weiny <ira.weiny@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        Bob Moore <robert.moore@intel.com>
-Subject: Re: [PATCH v4 2/2] ACPICA: Preserve memory opregion mappings
-Message-ID: <20200630153127.GP1237914@redhat.com>
-References: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com>
- <2788992.3K7huLjdjL@kreacher>
- <1666722.UopIai5n7p@kreacher>
- <1794490.F2OrUDcHQn@kreacher>
- <20200629205708.GK1237914@redhat.com>
- <CAJZ5v0hiAVfgWTLcP2N5PWLsqL7mpHbuL1_de79svYYhd3R57A@mail.gmail.com>
+        Tue, 30 Jun 2020 08:32:07 -0700 (PDT)
+From:   Andres Beltran <lkmlabelt@gmail.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mikelley@microsoft.com, parri.andrea@gmail.com,
+        skarade@microsoft.com, Andres Beltran <lkmlabelt@gmail.com>,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH v3 0/3] Drivers: hv: vmbus: vmbus_requestor data structure for VMBus hardening
+Date:   Tue, 30 Jun 2020 11:31:57 -0400
+Message-Id: <20200630153200.1537105-1-lkmlabelt@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hiAVfgWTLcP2N5PWLsqL7mpHbuL1_de79svYYhd3R57A@mail.gmail.com>
-User-Agent: Mutt/1.14.0 (2020-05-02)
+Reply-To: t-mabelt@microsoft.com
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30 Jun 2020 13:44, Rafael J. Wysocki wrote:
-> On Mon, Jun 29, 2020 at 10:57 PM Al Stone <ahs3@redhat.com> wrote:
-> >
-> > On 29 Jun 2020 18:33, Rafael J. Wysocki wrote:
-> > > From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-> > >
-> > > The ACPICA's strategy with respect to the handling of memory mappings
-> > > associated with memory operation regions is to avoid mapping the
-> > > entire region at once which may be problematic at least in principle
-> > > (for example, it may lead to conflicts with overlapping mappings
-> > > having different attributes created by drivers).  It may also be
-> > > wasteful, because memory opregions on some systems take up vast
-> > > chunks of address space while the fields in those regions actually
-> > > accessed by AML are sparsely distributed.
-> > >
-> > > For this reason, a one-page "window" is mapped for a given opregion
-> > > on the first memory access through it and if that "window" does not
-> > > cover an address range accessed through that opregion subsequently,
-> > > it is unmapped and a new "window" is mapped to replace it.  Next,
-> > > if the new "window" is not sufficient to acess memory through the
-> > > opregion in question in the future, it will be replaced with yet
-> > > another "window" and so on.  That may lead to a suboptimal sequence
-> > > of memory mapping and unmapping operations, for example if two fields
-> > > in one opregion separated from each other by a sufficiently wide
-> > > chunk of unused address space are accessed in an alternating pattern.
-> > >
-> > > The situation may still be suboptimal if the deferred unmapping
-> > > introduced previously is supported by the OS layer.  For instance,
-> > > the alternating memory access pattern mentioned above may produce
-> > > a relatively long list of mappings to release with substantial
-> > > duplication among the entries in it, which could be avoided if
-> > > acpi_ex_system_memory_space_handler() did not release the mapping
-> > > used by it previously as soon as the current access was not covered
-> > > by it.
-> > >
-> > > In order to improve that, modify acpi_ex_system_memory_space_handler()
-> > > to preserve all of the memory mappings created by it until the memory
-> > > regions associated with them go away.
-> > >
-> > > Accordingly, update acpi_ev_system_memory_region_setup() to unmap all
-> > > memory associated with memory opregions that go away.
-> > >
-> > > Reported-by: Dan Williams <dan.j.williams@intel.com>
-> > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > ---
-> > >  drivers/acpi/acpica/evrgnini.c | 14 ++++----
-> > >  drivers/acpi/acpica/exregion.c | 65 ++++++++++++++++++++++++----------
-> > >  include/acpi/actypes.h         | 12 +++++--
-> > >  3 files changed, 64 insertions(+), 27 deletions(-)
-> > >
-> > > diff --git a/drivers/acpi/acpica/evrgnini.c b/drivers/acpi/acpica/evrgnini.c
-> > > index aefc0145e583..89be3ccdad53 100644
-> > > --- a/drivers/acpi/acpica/evrgnini.c
-> > > +++ b/drivers/acpi/acpica/evrgnini.c
-> > > @@ -38,6 +38,7 @@ acpi_ev_system_memory_region_setup(acpi_handle handle,
-> > >       union acpi_operand_object *region_desc =
-> > >           (union acpi_operand_object *)handle;
-> > >       struct acpi_mem_space_context *local_region_context;
-> > > +     struct acpi_mem_mapping *mm;
-> > >
-> > >       ACPI_FUNCTION_TRACE(ev_system_memory_region_setup);
-> > >
-> > > @@ -46,13 +47,14 @@ acpi_ev_system_memory_region_setup(acpi_handle handle,
-> > >                       local_region_context =
-> > >                           (struct acpi_mem_space_context *)*region_context;
-> > >
-> > > -                     /* Delete a cached mapping if present */
-> > > +                     /* Delete memory mappings if present */
-> > >
-> > > -                     if (local_region_context->mapped_length) {
-> > > -                             acpi_os_unmap_memory(local_region_context->
-> > > -                                                  mapped_logical_address,
-> > > -                                                  local_region_context->
-> > > -                                                  mapped_length);
-> > > +                     while (local_region_context->first_mm) {
-> > > +                             mm = local_region_context->first_mm;
-> > > +                             local_region_context->first_mm = mm->next_mm;
-> > > +                             acpi_os_unmap_memory(mm->logical_address,
-> > > +                                                  mm->length);
-> > > +                             ACPI_FREE(mm);
-> > >                       }
-> > >                       ACPI_FREE(local_region_context);
-> > >                       *region_context = NULL;
-> > > diff --git a/drivers/acpi/acpica/exregion.c b/drivers/acpi/acpica/exregion.c
-> > > index d15a66de26c0..fd68f2134804 100644
-> > > --- a/drivers/acpi/acpica/exregion.c
-> > > +++ b/drivers/acpi/acpica/exregion.c
-> > > @@ -41,6 +41,7 @@ acpi_ex_system_memory_space_handler(u32 function,
-> > >       acpi_status status = AE_OK;
-> > >       void *logical_addr_ptr = NULL;
-> > >       struct acpi_mem_space_context *mem_info = region_context;
-> > > +     struct acpi_mem_mapping *mm = mem_info->cur_mm;
-> > >       u32 length;
-> > >       acpi_size map_length;
-> >
-> > I think this needs to be:
-> >
-> >         acpi_size map_length = mem_info->length;
-> >
-> > since it now gets used in the ACPI_ERROR() call below.
-> 
-> No, it's better to print the length value in the message.
+Currently, VMbus drivers use pointers into guest memory as request IDs
+for interactions with Hyper-V. To be more robust in the face of errors
+or malicious behavior from a compromised Hyper-V, avoid exposing
+guest memory addresses to Hyper-V. Also avoid Hyper-V giving back a
+bad request ID that is then treated as the address of a guest data
+structure with no validation. Instead, encapsulate these memory
+addresses and provide small integers as request IDs.
 
-Yeah, that was the other option.
+The first patch creates the definitions for the data structure, provides
+helper methods to generate new IDs and retrieve data, and
+allocates/frees the memory needed for vmbus_requestor.
 
-> >  I'm getting a "maybe used unitialized" error on compilation.
-> 
-> Thanks for reporting!
-> 
-> I've updated the commit in the acpica-osl branch with the fix.
+The second and third patches make use of vmbus_requestor to send request
+IDs to Hyper-V in storvsc and netvsc respectively.
 
-Thanks, Rafael.
+Thanks.
+Andres Beltran
 
-Do you have a generic way of testing this?  I can see a way to do it
--- timing a call of a method in a dynamically loaded SSDT -- but if
-you had a test case laying around, I could continue to be lazy :).
+Tested-by: Andrea Parri <parri.andrea@gmail.com>
+
+Cc: linux-scsi@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: James E.J. Bottomley <jejb@linux.ibm.com>
+Cc: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: David S. Miller <davem@davemloft.net>
+
+Andres Beltran (3):
+  Drivers: hv: vmbus: Add vmbus_requestor data structure for VMBus
+    hardening
+  scsi: storvsc: Use vmbus_requestor to generate transaction IDs for
+    VMBus hardening
+  hv_netvsc: Use vmbus_requestor to generate transaction IDs for VMBus
+    hardening
+
+ drivers/hv/channel.c              | 154 ++++++++++++++++++++++++++++++
+ drivers/net/hyperv/hyperv_net.h   |  13 +++
+ drivers/net/hyperv/netvsc.c       |  79 ++++++++++++---
+ drivers/net/hyperv/rndis_filter.c |   1 +
+ drivers/scsi/storvsc_drv.c        |  85 ++++++++++++++---
+ include/linux/hyperv.h            |  22 +++++
+ 6 files changed, 329 insertions(+), 25 deletions(-)
 
 -- 
-ciao,
-al
------------------------------------
-Al Stone
-Software Engineer
-Red Hat, Inc.
-ahs3@redhat.com
------------------------------------
+2.25.1
 
