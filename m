@@ -2,216 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A100820FEAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F61920FEB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730560AbgF3VZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 17:25:35 -0400
-Received: from mga02.intel.com ([134.134.136.20]:43377 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730491AbgF3VZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 17:25:31 -0400
-IronPort-SDR: 5h2NL3S7mdVoPIQCRWEM2x2Khb4j+Tgjx2EUKg7Xqmt8+6At5PhhxnkrS+UQFYd+bAfsBpmDRW
- xZfvI0JasEbQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="134676823"
-X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="134676823"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 14:25:28 -0700
-IronPort-SDR: lBRKYoXUCC2RmEUqQaIYtSw4X7CkNrmpTVmHCVJnCTEUTGlhmqSEzAPmsg9RwPdKsgBB7E/V++
- c0+QGy1TPooA==
-X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="481336307"
-Received: from schittin-mobl.amr.corp.intel.com (HELO bwidawsk-mobl5.local) ([10.252.132.42])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 14:25:27 -0700
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     linux-mm <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH 12/12] mm/mempolicy: Advertise new MPOL_PREFERRED_MANY
-Date:   Tue, 30 Jun 2020 14:25:17 -0700
-Message-Id: <20200630212517.308045-13-ben.widawsky@intel.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200630212517.308045-1-ben.widawsky@intel.com>
-References: <20200630212517.308045-1-ben.widawsky@intel.com>
+        id S1730716AbgF3V0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 17:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730694AbgF3V0e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 17:26:34 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138CBC061755;
+        Tue, 30 Jun 2020 14:26:34 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id 80so20159881qko.7;
+        Tue, 30 Jun 2020 14:26:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u6QrfK0w5ybbH9fi34xXU8b52YrlyrA/11EhFWPjHcY=;
+        b=CqI5q8x8tEfzpcgQJRXsrlzwKqVx+wSi8n79eup4ry7b6IboG8x3Mo5ta+oAtr6eao
+         1am7Wn0i/Uv0SJ6VTpa5eBmBnp+9xy/x+bEisQE5ZlhxVjJWCyOa4cDwY+hue3zb2+j5
+         j+h6l6giCeAFx5TefdU1ML9TNV4SFpFD91ZvzwAxHPj2Gm2frJI+s+JacWMiAKVnNHVp
+         OhoZhO5O6ui0V4njxE3Pg+SFDtt9Rpo5cKZZQ3UNYJRgXEdJW08Sx82AIQrZI7uouNUw
+         sM1Vt2FerL4pXP5AQu6BVts9FOnYKboA+BPb8w2Ed3J7+aD5NlhNJRkvTxi9d/tLDKnk
+         51Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u6QrfK0w5ybbH9fi34xXU8b52YrlyrA/11EhFWPjHcY=;
+        b=UI5tSun2jrcj88D91B5J+fXwmpgUmN4QPlAoVvU1yfoh6qojEXvIPeReH2VtywhZVA
+         Y5zurzQBlj/4d6A3iJDMtefGhSrRF3hdwYcu8LqeA15Kt8R2pO2FAVVO5bxI0uaCnVN+
+         +pBsgNmcV32++UiZRDLrHSK02IOA8RDvPz/00o5VNAXZz/yV6KdKhsoCV6A7GJXh/VX+
+         c4o3xmTs66YJS9Bo3Wm8PsDPmsNk8D3QgqhnIhXQ4tTG/qBV/rcRlacXiCFfSkXS3hyr
+         qIgbzoNymK0g3LJSrcwOBV7s7oPeROGJLqA7sOqvb1HP7fGBySDGh6QHAAaQUpIyZnft
+         5Cdg==
+X-Gm-Message-State: AOAM533fNLeFO3C1E+TGEqnfKYaajboPX3feKrQ0PuZYCnQq3EFdqrxU
+        o8Me8C+ga3RtBMkSudhkKUNbgtrHu4mZJur83Zk=
+X-Google-Smtp-Source: ABdhPJzNTMwPYp9iv+oRxOsQCp2yESwoibyek38j7BPYdMXfXDzKD6C5b60bb9+VFoBgf+eNaEiI78MjsxtvU5aRFpY=
+X-Received: by 2002:a37:270e:: with SMTP id n14mr20807794qkn.92.1593552393299;
+ Tue, 30 Jun 2020 14:26:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200630184922.455439-1-haoluo@google.com>
+In-Reply-To: <20200630184922.455439-1-haoluo@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 30 Jun 2020 14:26:21 -0700
+Message-ID: <CAEf4BzaH3TJWMsNHFPUTgEotErX0WS8R8ds1LYs6eXvLy1YbxQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Switch test_vmlinux to use hrtimer_range_start_ns.
+To:     Hao Luo <haoluo@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a new mode to the existing mempolicy modes,
-MPOL_PREFERRED_MANY.
+On Tue, Jun 30, 2020 at 1:47 PM Hao Luo <haoluo@google.com> wrote:
+>
+> The test_vmlinux test uses hrtimer_nanosleep as hook to test tracing
+> programs. But it seems Clang may have done an aggressive optimization,
+> causing fentry and kprobe to not hook on this function properly on a
+> Clang build kernel.
+>
+> A possible fix is switching to use a more reliable function, e.g. the
+> ones exported to kernel modules such as hrtimer_range_start_ns. After
+> we switch to using hrtimer_range_start_ns, the test passes again even
+> on a clang build kernel.
+>
+> Tested:
+>  In a clang build kernel, the test fail even when the flags
+>  {fentry, kprobe}_called are set unconditionally in handle__kprobe()
+>  and handle__fentry(), which implies the programs do not hook on
+>  hrtimer_nanosleep() properly. This could be because clang's code
+>  transformation is too aggressive.
+>
+>  test_vmlinux:PASS:skel_open 0 nsec
+>  test_vmlinux:PASS:skel_attach 0 nsec
+>  test_vmlinux:PASS:tp 0 nsec
+>  test_vmlinux:PASS:raw_tp 0 nsec
+>  test_vmlinux:PASS:tp_btf 0 nsec
+>  test_vmlinux:FAIL:kprobe not called
+>  test_vmlinux:FAIL:fentry not called
+>
+>  After we switch to hrtimer_range_start_ns, the test passes.
+>
+>  test_vmlinux:PASS:skel_open 0 nsec
+>  test_vmlinux:PASS:skel_attach 0 nsec
+>  test_vmlinux:PASS:tp 0 nsec
+>  test_vmlinux:PASS:raw_tp 0 nsec
+>  test_vmlinux:PASS:tp_btf 0 nsec
+>  test_vmlinux:PASS:kprobe 0 nsec
+>  test_vmlinux:PASS:fentry 0 nsec
+>
+> Signed-off-by: Hao Luo <haoluo@google.com>
+> ---
 
-MPOL_PREFERRED_MANY will be adequately documented in the internal
-admin-guide with this patch. Eventually, the man pages for mbind(2),
-get_mempolicy(2), set_mempolicy(2) and numactl(8) will also have text
-about this mode.  Those shall contain the canonical reference.
+Took me a bit of jumping around to find how it is related to nanosleep
+call :) But seems like it's unconditionally called, so should be fine.
 
-NUMA systems continue to become more prevalent. New technologies like
-PMEM make finer grain control over memory access patterns increasingly
-desirable. MPOL_PREFERRED_MANY allows userspace to specify a set of
-nodes that will be tried first when performing allocations. If those
-allocations fail, all remaining nodes will be tried. It's a straight
-forward API which solves many of the presumptive needs of system
-administrators wanting to optimize workloads on such machines. The mode
-will work either per VMA, or per thread.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-Generally speaking, this is similar to the way MPOL_BIND works, except
-the user will only get a SIGSEGV if all nodes in the system are unable
-to satisfy the allocation request.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
----
- .../admin-guide/mm/numa_memory_policy.rst        | 16 ++++++++++++----
- include/uapi/linux/mempolicy.h                   |  6 +++---
- mm/hugetlb.c                                     |  4 ++--
- mm/mempolicy.c                                   | 14 ++++++--------
- 4 files changed, 23 insertions(+), 17 deletions(-)
+>  tools/testing/selftests/bpf/progs/test_vmlinux.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
 
-diff --git a/Documentation/admin-guide/mm/numa_memory_policy.rst b/Documentation/admin-guide/mm/numa_memory_policy.rst
-index 1ad020c459b8..b69963a37fc8 100644
---- a/Documentation/admin-guide/mm/numa_memory_policy.rst
-+++ b/Documentation/admin-guide/mm/numa_memory_policy.rst
-@@ -245,6 +245,14 @@ MPOL_INTERLEAVED
- 	address range or file.  During system boot up, the temporary
- 	interleaved system default policy works in this mode.
- 
-+MPOL_PREFERRED_MANY
-+        This mode specifies that the allocation should be attempted from the
-+        nodemask specified in the policy. If that allocation fails, the kernel
-+        will search other nodes, in order of increasing distance from the first
-+        set bit in the nodemask based on information provided by the platform
-+        firmware. It is similar to MPOL_PREFERRED with the main exception that
-+        is is an error to have an empty nodemask.
-+
- NUMA memory policy supports the following optional mode flags:
- 
- MPOL_F_STATIC_NODES
-@@ -253,10 +261,10 @@ MPOL_F_STATIC_NODES
- 	nodes changes after the memory policy has been defined.
- 
- 	Without this flag, any time a mempolicy is rebound because of a
--	change in the set of allowed nodes, the node (Preferred) or
--	nodemask (Bind, Interleave) is remapped to the new set of
--	allowed nodes.  This may result in nodes being used that were
--	previously undesired.
-+        change in the set of allowed nodes, the preferred nodemask (Preferred
-+        Many), preferred node (Preferred) or nodemask (Bind, Interleave) is
-+        remapped to the new set of allowed nodes.  This may result in nodes
-+        being used that were previously undesired.
- 
- 	With this flag, if the user-specified nodes overlap with the
- 	nodes allowed by the task's cpuset, then the memory policy is
-diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
-index 3354774af61e..ad3eee651d4e 100644
---- a/include/uapi/linux/mempolicy.h
-+++ b/include/uapi/linux/mempolicy.h
-@@ -16,13 +16,13 @@
-  */
- 
- /* Policies */
--enum {
--	MPOL_DEFAULT,
-+enum { MPOL_DEFAULT,
- 	MPOL_PREFERRED,
- 	MPOL_BIND,
- 	MPOL_INTERLEAVE,
- 	MPOL_LOCAL,
--	MPOL_MAX,	/* always last member of enum */
-+	MPOL_PREFERRED_MANY,
-+	MPOL_MAX, /* always last member of enum */
- };
- 
- /* Flags for set_mempolicy */
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 46e94675de44..7b75231fe277 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1124,7 +1124,7 @@ static struct page *dequeue_huge_page_vma(struct hstate *h,
- 
- 	gfp_mask = htlb_alloc_mask(h);
- 	nid = huge_node(vma, address, gfp_mask, &mpol, &nodemask);
--	if (mpol->mode != MPOL_BIND && nodemask) { /* AKA MPOL_PREFERRED_MANY */
-+	if (mpol->mode == MPOL_PREFERRED_MANY) {
- 		page = dequeue_huge_page_nodemask(h, gfp_mask | __GFP_RETRY_MAYFAIL,
- 						  nid, nodemask);
- 		if (!page)
-@@ -1979,7 +1979,7 @@ struct page *alloc_buddy_huge_page_with_mpol(struct hstate *h,
- 	nodemask_t *nodemask;
- 
- 	nid = huge_node(vma, addr, gfp_mask, &mpol, &nodemask);
--	if (mpol->mode != MPOL_BIND && nodemask) { /* AKA MPOL_PREFERRED_MANY */
-+	if (mpol->mode != MPOL_PREFERRED_MANY) {
- 		page = alloc_surplus_huge_page(h, gfp_mask | __GFP_RETRY_MAYFAIL,
- 					       nid, nodemask);
- 		if (!page)
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 53390c2e0aca..b2a4c07cf811 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -108,8 +108,6 @@
- 
- #include "internal.h"
- 
--#define MPOL_PREFERRED_MANY MPOL_MAX
--
- /* Internal flags */
- #define MPOL_MF_DISCONTIG_OK (MPOL_MF_INTERNAL << 0)	/* Skip checks for continuous vmas */
- #define MPOL_MF_INVERT (MPOL_MF_INTERNAL << 1)		/* Invert check for nodemask */
-@@ -180,7 +178,7 @@ struct mempolicy *get_task_policy(struct task_struct *p)
- static const struct mempolicy_operations {
- 	int (*create)(struct mempolicy *pol, const nodemask_t *nodes);
- 	void (*rebind)(struct mempolicy *pol, const nodemask_t *nodes);
--} mpol_ops[MPOL_MAX + 1];
-+} mpol_ops[MPOL_MAX];
- 
- static inline int mpol_store_user_nodemask(const struct mempolicy *pol)
- {
-@@ -385,8 +383,8 @@ static void mpol_rebind_preferred_common(struct mempolicy *pol,
- }
- 
- /* MPOL_PREFERRED_MANY allows multiple nodes to be set in 'nodes' */
--static void __maybe_unused mpol_rebind_preferred_many(struct mempolicy *pol,
--						      const nodemask_t *nodes)
-+static void mpol_rebind_preferred_many(struct mempolicy *pol,
-+				       const nodemask_t *nodes)
- {
- 	mpol_rebind_preferred_common(pol, nodes, nodes);
- }
-@@ -448,7 +446,7 @@ void mpol_rebind_mm(struct mm_struct *mm, nodemask_t *new)
- 	mmap_write_unlock(mm);
- }
- 
--static const struct mempolicy_operations mpol_ops[MPOL_MAX + 1] = {
-+static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
- 	[MPOL_DEFAULT] = {
- 		.rebind = mpol_rebind_default,
- 	},
-@@ -466,8 +464,8 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX + 1] = {
- 	},
- 	/* [MPOL_LOCAL] - see mpol_new() */
- 	[MPOL_PREFERRED_MANY] = {
--		.create = NULL,
--		.rebind = NULL,
-+		.create = mpol_new_preferred_many,
-+		.rebind = mpol_rebind_preferred_many,
- 	},
- };
- 
--- 
-2.27.0
-
+[...]
