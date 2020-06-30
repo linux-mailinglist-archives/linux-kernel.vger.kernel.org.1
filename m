@@ -2,154 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1F720FB37
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF5620FB53
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390540AbgF3R7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:59:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390531AbgF3R7L (ORCPT
+        id S2389701AbgF3SFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 14:05:01 -0400
+Received: from forward101o.mail.yandex.net ([37.140.190.181]:36437 "EHLO
+        forward101o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729105AbgF3SFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:59:11 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDADC061755;
-        Tue, 30 Jun 2020 10:59:10 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id bj10so3540010plb.11;
-        Tue, 30 Jun 2020 10:59:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FF1CCKbtJtqt6Q/pYRKenLml0HvaHdcmKl2JhZVArNM=;
-        b=T2FDMCanxrLjiStIVNFqHMes676MPRpLG5S6N5caQna9whxiW/FqrzPgIl6R481yy3
-         f6fciCq2zxl1JC/JhDp0qygodCtFnzTzWBnJ7HEBgiHN0sSeYEyRsx53buUc2OyX2gOC
-         P+6O4SuMULSXQtHyJKmM/uC336E+aE8tzkMlcP4AADVF4vQODda6Tet9hVnadbMbCFqW
-         wzpHG6GLbHpwXojLfrf2pnKepTil4NTG590nuMFhUZ0OB+ZcikJkqxaNYakXZqZNYvYZ
-         4KtXNumpZHRu03pR6zV1jUSDv2w+tExTRLQ3WFCcCcfb41MjLt5JXE3aj620Kf3DLuvD
-         q6LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FF1CCKbtJtqt6Q/pYRKenLml0HvaHdcmKl2JhZVArNM=;
-        b=IM8W0eTfvbUx5wZexugCFAPOUfQg7PVdkuojgTKdR2X48Ol0g56G4yYGI+dih9KS/g
-         BdEUQ7GFtrcQ38G+mzcDSpujoR54MAZ554z+7czQUg3LfU33UOykKof5CklEnzqnNKB/
-         XeD8GBqNzMBd8YpAxVYAUvNzz/6B8m6o/jDdvrENgqJcUNggpVJVOYU7B+r7OC1gTe/K
-         H3LyNuJ9rc2NBBn5ZbmKb51wiqvfWHEakFcZQTjqzu2n4SSewmt1L9xbWBmK4C69lGu3
-         FBhlXM5rtCsdHTUK596VrKTVJ0N6/0iE+xSXaFRT7Fh9IJ7XQc8q7lkJxk96V2JArmwN
-         RMkQ==
-X-Gm-Message-State: AOAM5329UXai3h/xyI+rf2qvR/FvbXHS93FMj3NkJf6F+mYBM6zyEP/Z
-        8OAxNadbXQAquP1TSKs7CJOn+3ww
-X-Google-Smtp-Source: ABdhPJx9G5bEpO+CfPHgGFPB2meXHaGqAf+bkXDYsH/t9yhybRklN/TL2ddXax2r2Mpafaqja+/drg==
-X-Received: by 2002:a17:90a:c087:: with SMTP id o7mr20465792pjs.37.1593539950495;
-        Tue, 30 Jun 2020 10:59:10 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t29sm3357251pfq.50.2020.06.30.10.59.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 30 Jun 2020 10:59:10 -0700 (PDT)
-Date:   Tue, 30 Jun 2020 10:59:08 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Chu Lin <linchuyuan@google.com>
-Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jasonling@google.com,
-        belgaied@google.com, zhongqil@google.com
-Subject: Re: [PATCH] hwmon:max6697: Allow max6581 to set temperature read
- offset
-Message-ID: <20200630175908.GG629@roeck-us.net>
-References: <linchuyuan@google.com>
- <20200630174350.2842555-1-linchuyuan@google.com>
+        Tue, 30 Jun 2020 14:05:00 -0400
+X-Greylist: delayed 481 seconds by postgrey-1.27 at vger.kernel.org; Tue, 30 Jun 2020 14:04:59 EDT
+Received: from mxback24g.mail.yandex.net (mxback24g.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b7:324])
+        by forward101o.mail.yandex.net (Yandex) with ESMTP id 01E3E3C0040B;
+        Tue, 30 Jun 2020 20:56:57 +0300 (MSK)
+Received: from myt5-ca5ec8faf378.qloud-c.yandex.net (myt5-ca5ec8faf378.qloud-c.yandex.net [2a02:6b8:c12:2514:0:640:ca5e:c8fa])
+        by mxback24g.mail.yandex.net (mxback/Yandex) with ESMTP id v85Grp0WyM-uuhagsZ7;
+        Tue, 30 Jun 2020 20:56:56 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1593539816;
+        bh=IJcV8VMIHicqFXlSQM92CzBLaL8TW0Er/AJNF1POiuA=;
+        h=Subject:To:From:Cc:Date:Message-Id;
+        b=KPjg9wkdi+ipotCp/pZuU0AfxxHxRzZTZmOQRKHT6JYHWCtwNpxY+CEHmZaIhGTqm
+         51c/ugkX/aEJRBvNcGtddimLN8iJuWlxEczTzWWfdRcxJE/U3glvMqyh/lWyi95NAc
+         Pz4U2WSNlZv7IpVaDNFZKeI8HsoB9mzsfhBQZZxE=
+Authentication-Results: mxback24g.mail.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by myt5-ca5ec8faf378.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id 7Bay8XZxwY-uul0thte;
+        Tue, 30 Jun 2020 20:56:56 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Vasiliy Kupriakov <rublag-ns@yandex.ru>
+To:     Corentin Chary <corentin.chary@gmail.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>
+Cc:     Vasiliy Kupriakov <rublag-ns@yandex.ru>,
+        acpi4asus-user@lists.sourceforge.net (open list:ASUS NOTEBOOKS AND
+        EEEPC ACPI/WMI EXTRAS DRIVERS),
+        platform-driver-x86@vger.kernel.org (open list:ASUS NOTEBOOKS AND EEEPC
+        ACPI/WMI EXTRAS DRIVERS), linux-kernel@vger.kernel.org (open list)
+Subject: 
+Date:   Tue, 30 Jun 2020 20:56:01 +0300
+Message-Id: <20200630175559.23966-1-rublag-ns@yandex.ru>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200630174350.2842555-1-linchuyuan@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 05:43:50PM +0000, Chu Lin wrote:
-> Per max6581, reg 4d and reg 4e is used for temperature read offset.
-> This patch will let the user specify the temperature read offset for
-> max6581. This patch is tested on max6581 and only applies to max6581.
-> 
-> Testing:
-> dts: temperature-read-offset = <0xde 0x0>;
+Subject: [PATCH] platform/x86: asus-wmi: allow BAT1 battery name
 
-This should not be implemented this way. Instead, the standard tempX_offset
-attribute should be used, with appropriate code to determine affected
-channels (since there is only one offset value, and since it can be enabled
-per channel). A secondary question is if and how to set the temperature
-offset via devicetree; that will have to be documented and approved by a
-DT maintainer.  I would think, though, that the offset should be specified
-in milli-degrees C and not as raw chip data.
+The battery on my laptop ASUS TUF Gaming FX706II is named BAT1.
+This patch allows battery extension to load.
 
-Thanks,
-Guenter
+Signed-off-by: Vasiliy Kupriakov <rublag-ns@yandex.ru>
+---
+ drivers/platform/x86/asus-wmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> verify: iotools smbus_read8 <vbus> 0x4d 0x4e
-> 0x6F
-> 
-> Signed-off-by: Chu Lin <linchuyuan@google.com>
-> ---
->  drivers/hwmon/max6697.c               | 19 +++++++++++++++++--
->  include/linux/platform_data/max6697.h |  4 ++++
->  2 files changed, 21 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/hwmon/max6697.c b/drivers/hwmon/max6697.c
-> index 743752a2467a..16c0f0995a12 100644
-> --- a/drivers/hwmon/max6697.c
-> +++ b/drivers/hwmon/max6697.c
-> @@ -493,8 +493,13 @@ static void max6697_get_config_of(struct device_node *node,
->  	}
->  	prop = of_get_property(node, "transistor-ideality", &len);
->  	if (prop && len == 2 * sizeof(u32)) {
-> -			pdata->ideality_mask = be32_to_cpu(prop[0]);
-> -			pdata->ideality_value = be32_to_cpu(prop[1]);
-> +		pdata->ideality_mask = be32_to_cpu(prop[0]);
-> +		pdata->ideality_value = be32_to_cpu(prop[1]);
-> +	}
-> +	prop = of_get_property(node, "temperature-read-offset", &len);
-> +	if  (prop && len == 2 * sizeof(u32)) {
-> +		pdata->offset_mask = be32_to_cpu(prop[0]);
-> +		pdata->offset_value = be32_to_cpu(prop[1]);
->  	}
->  }
->  
-> @@ -586,6 +591,16 @@ static int max6697_init_chip(struct max6697_data *data,
->  						pdata->ideality_mask >> 1);
->  		if (ret < 0)
->  			return ret;
-> +		ret = i2c_smbus_write_byte_data(client,
-> +						MAX6581_REG_OFFSET,
-> +						pdata->offset_value);
-> +		if (ret < 0)
-> +			return ret;
-> +		ret = i2c_smbus_write_byte_data(client,
-> +						MAX6581_REG_OFFSET_SELECT,
-> +						pdata->offset_mask >> 1);
-> +		if (ret < 0)
-> +			return ret;
->  	}
->  done:
->  	data->update_interval = factor * MAX6697_CONV_TIME;
-> diff --git a/include/linux/platform_data/max6697.h b/include/linux/platform_data/max6697.h
-> index 6fbb70005541..ff98adfe9d8d 100644
-> --- a/include/linux/platform_data/max6697.h
-> +++ b/include/linux/platform_data/max6697.h
-> @@ -28,6 +28,10 @@ struct max6697_platform_data {
->  	u8 ideality_value;		/* transistor ideality as per
->  					 * MAX6581 datasheet
->  					 */
-> +	u8 offset_mask;			/* set bit to 0 to disable */
-> +	u8 offset_value;		/* temperature read offset as
-> +					 * MAX6581 datasheet
-> +					 */
->  };
->  
->  #endif /* MAX6697_H */
-> -- 
-> 2.27.0.212.ge8ba1cc988-goog
-> 
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index 877aade19497..8f4acdc06b13 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -441,6 +441,7 @@ static int asus_wmi_battery_add(struct power_supply *battery)
+ 	 * battery is named BATT.
+ 	 */
+ 	if (strcmp(battery->desc->name, "BAT0") != 0 &&
++	    strcmp(battery->desc->name, "BAT1") != 0 &&
+ 	    strcmp(battery->desc->name, "BATT") != 0)
+ 		return -ENODEV;
+ 
+-- 
+2.27.0
+
