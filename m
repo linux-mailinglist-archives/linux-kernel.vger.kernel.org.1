@@ -2,137 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6468720FDFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 22:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B348520FDFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 22:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730265AbgF3Upr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 16:45:47 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:36235 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730209AbgF3Upj (ORCPT
+        id S1730244AbgF3Upp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 16:45:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729952AbgF3Upk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 16:45:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593549938;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/WN5suCL4vjaI1eJdzhaIBmykla0j2zqu4dhyFqEqPg=;
-        b=gYvKyLAy9dwjdxKRxMWnFTFyz3O57KW4iPVSwYrq6dhx3Xk10PtNitnbuS620dIRZs/9BV
-        WgOoJWjhH/Mgb1SLTZM53mvd7BkLITdEa2V3uVQOYirJDT0c96UmbeHvZzQgT6wVH7mDi7
-        Jh3H22zcc3HxSVjmO3SNACwXSlKiwlU=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-QmogM6A_P_u1PaEI8_YbXw-1; Tue, 30 Jun 2020 16:45:37 -0400
-X-MC-Unique: QmogM6A_P_u1PaEI8_YbXw-1
-Received: by mail-qk1-f200.google.com with SMTP id 16so15463421qka.15
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 13:45:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/WN5suCL4vjaI1eJdzhaIBmykla0j2zqu4dhyFqEqPg=;
-        b=mhSW28Z/J7jfK4NkBvue00Z/8U1leW9RGA3p4Ev0e4N0UK799L5TGPTAI9nZS7INpn
-         B7pi4duh/AWruj5wweXe+3dmxQZHXpZPiPvkyREezRX47ZLIY+9iv5XScN7jabVpefC5
-         aR/GT95IncVClN1eZ12xrwm42Tla+W8N1HtU4G0gQx/h4Wr7q6AaZ6sAKo02Q1RVj/Vg
-         yjFZDLtElmTu/mnPXYVudRmmGYIvaX+LZtzxa/h0fQXlWikdZWNRTIkxprKjbdTzzALI
-         X6s9dDpmRwErE0QLApq2awnOl/8USk6t6NAWwzhjiumczwgGD+u02XfZG30aOspHCp5G
-         dpDg==
-X-Gm-Message-State: AOAM532f9j2mlHqwtOgpaIAzk9Y6JMCYTWHW8lsFCViKLpH5A3YPyBOP
-        x7vjG2Mowk0MTA6icI/HOBr+OdMFPQ2SEsnv/XBJ+a++9tXIjX/9EORkdPz7drDMnVjq7uSjevp
-        FssZeKFvRxVjzqM0wbS6kbLhR
-X-Received: by 2002:a37:9384:: with SMTP id v126mr21406133qkd.279.1593549935998;
-        Tue, 30 Jun 2020 13:45:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyl0r385bL1CCQ43sCi04YewH2j6MjNKst8FXnzcKtfYGfPRrvD9MYri9EdNQZ89OEEZX5aig==
-X-Received: by 2002:a37:9384:: with SMTP id v126mr21406084qkd.279.1593549935438;
-        Tue, 30 Jun 2020 13:45:35 -0700 (PDT)
-Received: from xz-x1.redhat.com ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id u6sm4405162qtk.9.2020.06.30.13.45.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 13:45:34 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>
-Subject: [PATCH v4 12/26] mm/nds32: Use general page fault accounting
-Date:   Tue, 30 Jun 2020 16:45:33 -0400
-Message-Id: <20200630204533.39053-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 30 Jun 2020 16:45:40 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B0CC061755;
+        Tue, 30 Jun 2020 13:45:39 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: koike)
+        with ESMTPSA id 316F32A02B3
+Subject: Re: [PATCH v8 3/3] media: vimc: Add a control to display info on test
+ image
+To:     Kaaira Gupta <kgupta@es.iitr.ac.in>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hverkuil@xs4all.nl,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+References: <20200630195052.23880-1-kgupta@es.iitr.ac.in>
+ <20200630195052.23880-4-kgupta@es.iitr.ac.in>
+From:   Helen Koike <helen.koike@collabora.com>
+Message-ID: <365c7b32-cfc3-2a56-9f79-9c5ed14be45e@collabora.com>
+Date:   Tue, 30 Jun 2020 17:45:33 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200630195052.23880-4-kgupta@es.iitr.ac.in>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the general page fault accounting by passing regs into handle_mm_fault().
-It naturally solve the issue of multiple page fault accounting when page fault
-retry happened.
+Hi Kaaira,
 
-Fix PERF_COUNT_SW_PAGE_FAULTS perf event manually for page fault retries, by
-moving it before taking mmap_sem.
+On 6/30/20 4:50 PM, Kaaira Gupta wrote:
+> Add a control in VIMC to display information such as the correct order of
+> colors for a given test pattern, counter, brightness, hue, saturation,
+> contrast, width and height at sensor over test image.
+> 
+> Signed-off-by: Kaaira Gupta <kgupta@es.iitr.ac.in>
+> ---
+>  drivers/media/test-drivers/vimc/Kconfig       |  2 +
+>  drivers/media/test-drivers/vimc/vimc-common.h |  1 +
+>  drivers/media/test-drivers/vimc/vimc-core.c   | 10 +++
+>  drivers/media/test-drivers/vimc/vimc-sensor.c | 67 +++++++++++++++++++
+>  4 files changed, 80 insertions(+)
+> 
+> diff --git a/drivers/media/test-drivers/vimc/Kconfig b/drivers/media/test-drivers/vimc/Kconfig
+> index 4068a67585f9..da4b2ad6e40c 100644
+> --- a/drivers/media/test-drivers/vimc/Kconfig
+> +++ b/drivers/media/test-drivers/vimc/Kconfig
+> @@ -2,6 +2,8 @@
+>  config VIDEO_VIMC
+>  	tristate "Virtual Media Controller Driver (VIMC)"
+>  	depends on VIDEO_DEV && VIDEO_V4L2
+> +	select FONT_SUPPORT
+> +	select FONT_8x16
+>  	select MEDIA_CONTROLLER
+>  	select VIDEO_V4L2_SUBDEV_API
+>  	select VIDEOBUF2_VMALLOC
+> diff --git a/drivers/media/test-drivers/vimc/vimc-common.h b/drivers/media/test-drivers/vimc/vimc-common.h
+> index ae163dec2459..a289434e75ba 100644
+> --- a/drivers/media/test-drivers/vimc/vimc-common.h
+> +++ b/drivers/media/test-drivers/vimc/vimc-common.h
+> @@ -20,6 +20,7 @@
+>  #define VIMC_CID_VIMC_CLASS		(0x00f00000 | 1)
+>  #define VIMC_CID_TEST_PATTERN		(VIMC_CID_VIMC_BASE + 0)
+>  #define VIMC_CID_MEAN_WIN_SIZE		(VIMC_CID_VIMC_BASE + 1)
+> +#define VIMC_CID_OSD_TEXT_MODE		(VIMC_CID_VIMC_BASE + 2)
+>  
+>  #define VIMC_FRAME_MAX_WIDTH 4096
+>  #define VIMC_FRAME_MAX_HEIGHT 2160
+> diff --git a/drivers/media/test-drivers/vimc/vimc-core.c b/drivers/media/test-drivers/vimc/vimc-core.c
+> index 11210aaa2551..4b0ae6f51d76 100644
+> --- a/drivers/media/test-drivers/vimc/vimc-core.c
+> +++ b/drivers/media/test-drivers/vimc/vimc-core.c
+> @@ -5,10 +5,12 @@
+>   * Copyright (C) 2015-2017 Helen Koike <helen.fornazier@gmail.com>
+>   */
+>  
+> +#include <linux/font.h>
+>  #include <linux/init.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <media/media-device.h>
+> +#include <media/tpg/v4l2-tpg.h>
+>  #include <media/v4l2-device.h>
+>  
+>  #include "vimc-common.h"
+> @@ -263,11 +265,19 @@ static int vimc_register_devices(struct vimc_device *vimc)
+>  
+>  static int vimc_probe(struct platform_device *pdev)
+>  {
+> +	const struct font_desc *font = find_font("VGA8x16");
+>  	struct vimc_device *vimc;
+>  	int ret;
+>  
+>  	dev_dbg(&pdev->dev, "probe");
+>  
+> +	if (!font) {
+> +		dev_err(&pdev->dev, "could not find font\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	tpg_set_font(font->data);
+> +
+>  	vimc = kzalloc(sizeof(*vimc), GFP_KERNEL);
+>  	if (!vimc)
+>  		return -ENOMEM;
+> diff --git a/drivers/media/test-drivers/vimc/vimc-sensor.c b/drivers/media/test-drivers/vimc/vimc-sensor.c
+> index a2f09ac9a360..ec9ddd42984c 100644
+> --- a/drivers/media/test-drivers/vimc/vimc-sensor.c
+> +++ b/drivers/media/test-drivers/vimc/vimc-sensor.c
+> @@ -14,11 +14,15 @@
+>  
+>  #include "vimc-common.h"
+>  
+> +enum osd_mode {OSD_SHOW_ALL = 0, OSD_SHOW_COUNTERS = 1, OSD_SHOW_NONE = 2};
 
-CC: Nick Hu <nickhu@andestech.com>
-CC: Greentime Hu <green.hu@gmail.com>
-CC: Vincent Chen <deanbo422@gmail.com>
-Acked-by: Greentime Hu <green.hu@gmail.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- arch/nds32/mm/fault.c | 19 +++----------------
- 1 file changed, 3 insertions(+), 16 deletions(-)
+Just a nit, I would prefer if you declare like:
 
-diff --git a/arch/nds32/mm/fault.c b/arch/nds32/mm/fault.c
-index d0ecc8fb5b23..f02524eb6d56 100644
---- a/arch/nds32/mm/fault.c
-+++ b/arch/nds32/mm/fault.c
-@@ -121,6 +121,8 @@ void do_page_fault(unsigned long entry, unsigned long addr,
- 	if (unlikely(faulthandler_disabled() || !mm))
- 		goto no_context;
- 
-+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
-+
- 	/*
- 	 * As per x86, we may deadlock here. However, since the kernel only
- 	 * validly references user space from well defined areas of the code,
-@@ -206,7 +208,7 @@ void do_page_fault(unsigned long entry, unsigned long addr,
- 	 * the fault.
- 	 */
- 
--	fault = handle_mm_fault(vma, addr, flags, NULL);
-+	fault = handle_mm_fault(vma, addr, flags, regs);
- 
- 	/*
- 	 * If we need to retry but a fatal signal is pending, handle the
-@@ -228,22 +230,7 @@ void do_page_fault(unsigned long entry, unsigned long addr,
- 			goto bad_area;
- 	}
- 
--	/*
--	 * Major/minor page fault accounting is only done on the initial
--	 * attempt. If we go through a retry, it is extremely likely that the
--	 * page will be found in page cache at that point.
--	 */
--	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
- 	if (flags & FAULT_FLAG_ALLOW_RETRY) {
--		if (fault & VM_FAULT_MAJOR) {
--			tsk->maj_flt++;
--			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ,
--				      1, regs, addr);
--		} else {
--			tsk->min_flt++;
--			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN,
--				      1, regs, addr);
--		}
- 		if (fault & VM_FAULT_RETRY) {
- 			flags |= FAULT_FLAG_TRIED;
- 
--- 
-2.26.2
+enum vimc_sen_osd_mode {
+	VIMC_SEN_OSD_SHOW_ALL = 0,
+	VIMC_SEN_OSD_SHOW_COUNTERS = 1,
+	VIMC_SEN_OSD_SHOW_NONE = 2
+};
 
+> +
+>  struct vimc_sen_device {
+>  	struct vimc_ent_device ved;
+>  	struct v4l2_subdev sd;
+>  	struct tpg_data tpg;
+>  	u8 *frame;
+> +	enum osd_mode osd_value;
+> +	u64 start_stream_ts;
+>  	/* The active format */
+>  	struct v4l2_mbus_framefmt mbus_format;
+>  	struct v4l2_ctrl_handler hdl;
+> @@ -187,8 +191,49 @@ static void *vimc_sen_process_frame(struct vimc_ent_device *ved,
+>  {
+>  	struct vimc_sen_device *vsen = container_of(ved, struct vimc_sen_device,
+>  						    ved);
+> +	const unsigned int line_height = 16;
+> +	u8 *basep[TPG_MAX_PLANES][2];
+> +	unsigned int line = 1;
+> +	char str[100];
+>  
+>  	tpg_fill_plane_buffer(&vsen->tpg, 0, 0, vsen->frame);
+> +	tpg_calc_text_basep(&vsen->tpg, basep, 0, vsen->frame);
+> +	switch (vsen->osd_value) {
+> +	case OSD_SHOW_ALL: {
+> +		const char *order = tpg_g_color_order(&vsen->tpg);
+> +
+> +		tpg_gen_text(&vsen->tpg, basep, line++ * line_height,
+> +			     16, order);
+> +		snprintf(str, sizeof(str),
+> +			 "brightness %3d, contrast %3d, saturation %3d, hue %d ",
+> +			 vsen->tpg.brightness,
+> +			 vsen->tpg.contrast,
+> +			 vsen->tpg.saturation,
+> +			 vsen->tpg.hue);
+> +		tpg_gen_text(&vsen->tpg, basep, line++ * line_height, 16, str);
+> +		snprintf(str, sizeof(str), "sensor size: %dx%d",
+> +			 vsen->mbus_format.width,
+> +			 vsen->mbus_format.height);
+> +		tpg_gen_text(&vsen->tpg, basep, line++ * line_height, 16, str);
+> +	fallthrough;
+
+Nice! I didn't wasn't aware about this macro. Could you just align with the previous like?
+If I understand corretly from the its docs [1], it should be used the same way "break;" is used.
+
+[1] https://elixir.bootlin.com/linux/latest/source/include/linux/compiler_attributes.h#L190
+
+With these changes:
+
+Acked-by: Helen Koike <helen.koike@collabora.com>
+
+Thanks
+Helen
+
+> +	}
+> +	case OSD_SHOW_COUNTERS: {
+> +		unsigned int ms;
+> +
+> +		ms = (ktime_get_ns() - vsen->start_stream_ts) / 1000000;
+> +		snprintf(str, sizeof(str), "%02d:%02d:%02d:%03d",
+> +			 (ms / (60 * 60 * 1000)) % 24,
+> +			 (ms / (60 * 1000)) % 60,
+> +			 (ms / 1000) % 60,
+> +			 ms % 1000);
+> +		tpg_gen_text(&vsen->tpg, basep, line++ * line_height, 16, str);
+> +		break;
+> +	}
+> +	case OSD_SHOW_NONE:
+> +	default:
+> +		break;
+> +	}
+> +
+>  	return vsen->frame;
+>  }
+>  
+> @@ -201,6 +246,8 @@ static int vimc_sen_s_stream(struct v4l2_subdev *sd, int enable)
+>  		const struct vimc_pix_map *vpix;
+>  		unsigned int frame_size;
+>  
+> +		vsen->start_stream_ts = ktime_get_ns();
+> +
+>  		/* Calculate the frame size */
+>  		vpix = vimc_pix_map_by_code(vsen->mbus_format.code);
+>  		frame_size = vsen->mbus_format.width * vpix->bpp *
+> @@ -269,6 +316,9 @@ static int vimc_sen_s_ctrl(struct v4l2_ctrl *ctrl)
+>  	case V4L2_CID_SATURATION:
+>  		tpg_s_saturation(&vsen->tpg, ctrl->val);
+>  		break;
+> +	case VIMC_CID_OSD_TEXT_MODE:
+> +		vsen->osd_value = ctrl->val;
+> +		break;
+>  	default:
+>  		return -EINVAL;
+>  	}
+> @@ -307,6 +357,22 @@ static const struct v4l2_ctrl_config vimc_sen_ctrl_test_pattern = {
+>  	.qmenu = tpg_pattern_strings,
+>  };
+>  
+> +static const char * const vimc_ctrl_osd_mode_strings[] = {
+> +	"All",
+> +	"Counters Only",
+> +	"None",
+> +	NULL,
+> +};
+> +
+> +static const struct v4l2_ctrl_config vimc_sen_ctrl_osd_mode = {
+> +	.ops = &vimc_sen_ctrl_ops,
+> +	.id = VIMC_CID_OSD_TEXT_MODE,
+> +	.name = "Show Information",
+> +	.type = V4L2_CTRL_TYPE_MENU,
+> +	.max = ARRAY_SIZE(vimc_ctrl_osd_mode_strings) - 2,
+> +	.qmenu = vimc_ctrl_osd_mode_strings,
+> +};
+> +
+>  static struct vimc_ent_device *vimc_sen_add(struct vimc_device *vimc,
+>  					    const char *vcfg_name)
+>  {
+> @@ -323,6 +389,7 @@ static struct vimc_ent_device *vimc_sen_add(struct vimc_device *vimc,
+>  
+>  	v4l2_ctrl_new_custom(&vsen->hdl, &vimc_sen_ctrl_class, NULL);
+>  	v4l2_ctrl_new_custom(&vsen->hdl, &vimc_sen_ctrl_test_pattern, NULL);
+> +	v4l2_ctrl_new_custom(&vsen->hdl, &vimc_sen_ctrl_osd_mode, NULL);
+>  	v4l2_ctrl_new_std(&vsen->hdl, &vimc_sen_ctrl_ops,
+>  			  V4L2_CID_VFLIP, 0, 1, 1, 0);
+>  	v4l2_ctrl_new_std(&vsen->hdl, &vimc_sen_ctrl_ops,
+> 
