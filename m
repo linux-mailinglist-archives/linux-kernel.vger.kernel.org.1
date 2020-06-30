@@ -2,154 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABCF20F7AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A7D20F7B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389143AbgF3OzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 10:55:07 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:11333 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729260AbgF3OzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 10:55:06 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49x6pZ5Tr4z9twdq;
-        Tue, 30 Jun 2020 16:55:02 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id DW2g8NlcVvk7; Tue, 30 Jun 2020 16:55:02 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49x6pZ0L9vz9tvrw;
-        Tue, 30 Jun 2020 16:55:02 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 269198B7E4;
-        Tue, 30 Jun 2020 16:55:04 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id yCXNo6XMiDNf; Tue, 30 Jun 2020 16:55:04 +0200 (CEST)
-Received: from [10.25.210.22] (po15451.idsi0.si.c-s.fr [10.25.210.22])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D96818B7DE;
-        Tue, 30 Jun 2020 16:55:03 +0200 (CEST)
-Subject: Re: [PATCH v2] powerpc/uaccess: Use flexible addressing with
- __put_user()/__get_user()
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com,
-        segher@kernel.crashing.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <c2addbd9d76212242d3d8554a2f7ff849fb08b85.1587040754.git.christophe.leroy@c-s.fr>
- <7b916759-1683-b4df-0d4b-b04b3fcd9a02@csgroup.eu>
- <878sg6862r.fsf@mpe.ellerman.id.au> <875zb98i5a.fsf@mpe.ellerman.id.au>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <311c3471-cad7-72d5-a5e6-04cf892c5e41@csgroup.eu>
-Date:   Tue, 30 Jun 2020 16:55:05 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S2389158AbgF3Oz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 10:55:58 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:37638 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729260AbgF3Oz6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 10:55:58 -0400
+Received: by mail-ed1-f67.google.com with SMTP id g20so16305075edm.4
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 07:55:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=LRlTz/DoSdGeE0PKox/YqTRF8d9xjO56YImrwMYM7ck=;
+        b=F7kz+gdoWnyIb3wDLor1vqirnm/RK6cF4y/9b9YzI2p7BHaLqqmdb20sD8krxyOslR
+         KHVD8epR7NpW8X72n5fBB6cPXjekKcQXwVaGne1eRtJTu59PwMM8bQelPf5TEndW4afv
+         BzVmk3AMLirRS2xgRzdqHOojrsxzyrJROXNyF5CTRifki7779z+yy75jxzHP1fpzMdAM
+         hkmjFJ9+Fvrv1VCKOT8mviqC0glHNhVGzgojvraNQL/cvOSYk5QdwSy22kX1cvYG6Goz
+         XwQQmMbQeh59sX4FZF39DBESNIZL4TTIoWOZrOZJl6iScgcQdb3wM4x58FdGi+EeTXkg
+         a23g==
+X-Gm-Message-State: AOAM531lfCPPfpVvEj1ERi/YmYo162J+i9WMQ6Og2sbRp8sgqfwToTWu
+        Mn9VHPXP1HFY4vaz/8BtuKj6DHvXevw=
+X-Google-Smtp-Source: ABdhPJyrcIQSOJ4j8u0X6wQj4NfrkkkYfLiuvCIQI50ZdXQ7ihNvwsVs8V8r/ViyBrbf1JYnYP75CA==
+X-Received: by 2002:a05:6402:203a:: with SMTP id ay26mr12564870edb.276.1593528955733;
+        Tue, 30 Jun 2020 07:55:55 -0700 (PDT)
+Received: from darkstar ([2a04:ee41:4:5025:8295:1d2:ca0d:985e])
+        by smtp.gmail.com with ESMTPSA id t6sm2244842ejc.40.2020.06.30.07.55.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 07:55:54 -0700 (PDT)
+References: <20200629162633.8800-1-qais.yousef@arm.com> <20200629162633.8800-3-qais.yousef@arm.com> <87366dnfaq.derkling@matbug.net> <20200630094623.hnlqtgavauqlsuyd@e107158-lin.cambridge.arm.com>
+User-agent: mu4e 1.4.10; emacs 26.3
+From:   Patrick Bellasi <patrick.bellasi@matbug.net>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Chris Redpath <chris.redpath@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] sched/uclamp: Protect uclamp fast path code with static key
+In-reply-to: <20200630094623.hnlqtgavauqlsuyd@e107158-lin.cambridge.arm.com>
+Message-ID: <87zh8kmwlt.derkling@matbug.net>
+Date:   Tue, 30 Jun 2020 16:55:42 +0200
 MIME-Version: 1.0
-In-Reply-To: <875zb98i5a.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Hi Qais,
+sorry for commenting on v5 with a v6 already posted, but...
+... I cannot keep up with your re-spinning rate ;)
 
-Le 30/06/2020 à 03:19, Michael Ellerman a écrit :
-> Michael Ellerman <mpe@ellerman.id.au> writes:
->> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>> Hi Michael,
->>>
->>> I see this patch is marked as "defered" in patchwork, but I can't see
->>> any related discussion. Is it normal ?
->>
->> Because it uses the "m<>" constraint which didn't work on GCC 4.6.
->>
->> https://github.com/linuxppc/issues/issues/297
->>
->> So we should be able to pick it up for v5.9 hopefully.
-> 
-> It seems to break the build with the kernel.org 4.9.4 compiler and
-> corenet64_smp_defconfig:
+More importantly, perhaps you missed to comment on one of my previous
+points.
 
-Looks like 4.9.4 doesn't accept "m<>" constraint either.
-Changing it to "m" make it build.
+Will have a better look at the rest of v6 later today.
 
-Christophe
+Cheers,
+Patrick
 
-> 
-> + make -s CC=powerpc64-linux-gnu-gcc -j 160
-> In file included from /linux/include/linux/uaccess.h:11:0,
->                   from /linux/include/linux/sched/task.h:11,
->                   from /linux/include/linux/sched/signal.h:9,
->                   from /linux/include/linux/rcuwait.h:6,
->                   from /linux/include/linux/percpu-rwsem.h:7,
->                   from /linux/include/linux/fs.h:33,
->                   from /linux/include/linux/huge_mm.h:8,
->                   from /linux/include/linux/mm.h:675,
->                   from /linux/arch/powerpc/kernel/signal_32.c:17:
-> /linux/arch/powerpc/kernel/signal_32.c: In function 'save_user_regs.isra.14.constprop':
-> /linux/arch/powerpc/include/asm/uaccess.h:161:2: error: 'asm' operand has impossible constraints
->    __asm__ __volatile__(     \
->    ^
-> /linux/arch/powerpc/include/asm/uaccess.h:197:12: note: in expansion of macro '__put_user_asm'
->      case 4: __put_user_asm(x, ptr, retval, "stw"); break; \
->              ^
-> /linux/arch/powerpc/include/asm/uaccess.h:206:2: note: in expansion of macro '__put_user_size_allowed'
->    __put_user_size_allowed(x, ptr, size, retval);  \
->    ^
-> /linux/arch/powerpc/include/asm/uaccess.h:220:2: note: in expansion of macro '__put_user_size'
->    __put_user_size(__pu_val, __pu_addr, __pu_size, __pu_err); \
->    ^
-> /linux/arch/powerpc/include/asm/uaccess.h:96:2: note: in expansion of macro '__put_user_nocheck'
->    __put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
->    ^
-> /linux/arch/powerpc/kernel/signal_32.c:120:7: note: in expansion of macro '__put_user'
->     if (__put_user((unsigned int)gregs[i], &frame->mc_gregs[i]))
->         ^
-> /linux/scripts/Makefile.build:280: recipe for target 'arch/powerpc/kernel/signal_32.o' failed
-> make[3]: *** [arch/powerpc/kernel/signal_32.o] Error 1
-> make[3]: *** Waiting for unfinished jobs....
-> In file included from /linux/include/linux/uaccess.h:11:0,
->                   from /linux/include/linux/sched/task.h:11,
->                   from /linux/include/linux/sched/signal.h:9,
->                   from /linux/include/linux/rcuwait.h:6,
->                   from /linux/include/linux/percpu-rwsem.h:7,
->                   from /linux/include/linux/fs.h:33,
->                   from /linux/include/linux/huge_mm.h:8,
->                   from /linux/include/linux/mm.h:675,
->                   from /linux/arch/powerpc/kernel/signal_64.c:12:
-> /linux/arch/powerpc/kernel/signal_64.c: In function '__se_sys_swapcontext':
-> /linux/arch/powerpc/include/asm/uaccess.h:319:2: error: 'asm' operand has impossible constraints
->    __asm__ __volatile__(    \
->    ^
-> /linux/arch/powerpc/include/asm/uaccess.h:359:10: note: in expansion of macro '__get_user_asm'
->    case 1: __get_user_asm(x, (u8 __user *)ptr, retval, "lbz"); break; \
->            ^
-> /linux/arch/powerpc/include/asm/uaccess.h:370:2: note: in expansion of macro '__get_user_size_allowed'
->    __get_user_size_allowed(x, ptr, size, retval);  \
->    ^
-> /linux/arch/powerpc/include/asm/uaccess.h:393:3: note: in expansion of macro '__get_user_size'
->     __get_user_size(__gu_val, __gu_addr, __gu_size, __gu_err); \
->     ^
-> /linux/arch/powerpc/include/asm/uaccess.h:94:2: note: in expansion of macro '__get_user_nocheck'
->    __get_user_nocheck((x), (ptr), sizeof(*(ptr)), true)
->    ^
-> /linux/arch/powerpc/kernel/signal_64.c:672:9: note: in expansion of macro '__get_user'
->        || __get_user(tmp, (u8 __user *) new_ctx + ctx_size - 1))
->           ^
-> /linux/scripts/Makefile.build:280: recipe for target 'arch/powerpc/kernel/signal_64.o' failed
-> make[3]: *** [arch/powerpc/kernel/signal_64.o] Error 1
-> /linux/scripts/Makefile.build:497: recipe for target 'arch/powerpc/kernel' failed
-> make[2]: *** [arch/powerpc/kernel] Error 2
-> /linux/Makefile:1756: recipe for target 'arch/powerpc' failed
-> make[1]: *** [arch/powerpc] Error 2
-> Makefile:185: recipe for target '__sub-make' failed
-> make: *** [__sub-make] Error 2
-> 
-> 
-> cheers
-> 
+On Tue, Jun 30, 2020 at 11:46:24 +0200, Qais Yousef <qais.yousef@arm.com> wrote...
+> On 06/30/20 10:11, Patrick Bellasi wrote:
+>> On Mon, Jun 29, 2020 at 18:26:33 +0200, Qais Yousef <qais.yousef@arm.com> wrote...
+
+[...]
+
+>> > +
+>> > +static inline bool uclamp_is_enabled(void)
+>> > +{
+>> > +	return static_branch_likely(&sched_uclamp_used);
+>> > +}
+>> 
+>> Looks like here we mix up terms, which can be confusing.
+>> AFAIKS, we use:
+>> - *_enabled for the sched class flags (compile time)
+>> - *_used    for the user-space opting in (run time)
+>
+> I wanted to add a comment here.
+>
+> I can rename it to uclamp_is_used() if you want.
+
+In my previous message I was mostly asking about this:
+
+>> Thus, perhaps we can just use the same pattern used by the
+>> sched_numa_balancing static key:
+>> 
+>>   $ git grep sched_numa_balancing
+>>   kernel/sched/core.c:DEFINE_STATIC_KEY_FALSE(sched_numa_balancing);
+>>   kernel/sched/core.c:            static_branch_enable(&sched_numa_balancing);
+>>   kernel/sched/core.c:            static_branch_disable(&sched_numa_balancing);
+>>   kernel/sched/core.c:    int state = static_branch_likely(&sched_numa_balancing);
+>>   kernel/sched/fair.c:    if (!static_branch_likely(&sched_numa_balancing))
+>>   kernel/sched/fair.c:    if (!static_branch_likely(&sched_numa_balancing))
+>>   kernel/sched/fair.c:    if (!static_branch_likely(&sched_numa_balancing))
+>>   kernel/sched/fair.c:    if (static_branch_unlikely(&sched_numa_balancing))
+>>   kernel/sched/sched.h:extern struct static_key_false sched_numa_balancing;
+>> 
+>> IOW: unconditionally define sched_uclamp_used as non static in core.c,
+>> and use it directly on schedutil too.
+
+So, what about this instead of adding the (renamed) method above?
+
