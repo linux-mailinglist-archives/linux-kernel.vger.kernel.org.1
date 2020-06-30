@@ -2,180 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EDA20FA1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B2E20FA5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390007AbgF3REW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:04:22 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:12446 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389947AbgF3REV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:04:21 -0400
-Received: from hkpgpgate101.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5efb70920001>; Wed, 01 Jul 2020 01:04:18 +0800
-Received: from HKMAIL103.nvidia.com ([10.18.16.12])
-  by hkpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 30 Jun 2020 10:04:18 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate101.nvidia.com on Tue, 30 Jun 2020 10:04:18 -0700
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 30 Jun
- 2020 17:04:16 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.171)
- by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 30 Jun 2020 17:04:16 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sz8ogrX3yphWMmj28G0zrl7DPe4pQhteLVAFJ3I7kQ/KJhO2Wozbv7gXfv0VOT0uNlCGFrkGAzvQSrJnu7uPIt6dD9qkAgv/ULGMdoXkZlobPv4m9H07jXhb8bgVVOPdufivUVKCJubKB8KwQtWWejli8KS7PdAdaPsgssrIsxNM1zvT+vlbgRNmIg4Z7am6TGfGdPSNptIG7JpyccEYwOtcvH9dyzLYU8RvV/yvoQKoEx2pV6njMdSvBguj5DwTiMCE9g2B0H6xsQxLhlUZo4dPOBK25H3d4IxZmUQF1iZbVFmY8w68WJmkptXZa52Zy8TetqORzTfULfo3SWb3Vg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PjNOaagwuwlxcGNhARe11W8Vg/6fDbq00jf8kXsGFpM=;
- b=Hju9NBO0NoH2/YFmcfONRsocQFUHlElkjYrLSMDnKKm4220o/Ds2hBurjMQLjk+dqGyh92EqG5b+aE4yCmfZHNgN4x3QpRaSeMq+c6GxI2pa7OFnhmkXadc86P9VQYMGjM9eRSv7QbRnsNU/jzjCV2VewQ6VqP23K7HtIA/dfRhVt3RZjGKPthQUE/xy6e3A1+SwkHiKi5a2lxoUHX4WvpwUo5twCm5Uz8wrAtXGN0eO9i57X3qpEtB3N1Xr17DvSg8aHQqmKgPcyDgZN98Vu+qfOigXtGmUe2ytdcsHxbQb9+mhAD5F1vsxmTUO/xA3ORw6dGDBS7+EkXojsAoYRA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from BYAPR12MB2822.namprd12.prod.outlook.com (2603:10b6:a03:9a::17)
- by BYAPR12MB3415.namprd12.prod.outlook.com (2603:10b6:a03:d5::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.25; Tue, 30 Jun
- 2020 17:04:14 +0000
-Received: from BYAPR12MB2822.namprd12.prod.outlook.com
- ([fe80::70bd:803f:78b6:ebf2]) by BYAPR12MB2822.namprd12.prod.outlook.com
- ([fe80::70bd:803f:78b6:ebf2%2]) with mapi id 15.20.3131.027; Tue, 30 Jun 2020
- 17:04:14 +0000
-From:   Krishna Reddy <vdumpa@nvidia.com>
-To:     Jonathan Hunter <jonathanh@nvidia.com>
-CC:     "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        Thierry Reding <treding@nvidia.com>,
-        "Yu-Huan Hsu" <YHsu@nvidia.com>, Sachin Nikam <Snikam@nvidia.com>,
-        Pritesh Raithatha <praithatha@nvidia.com>,
-        Timo Alho <talho@nvidia.com>,
-        Bitan Biswas <bbiswas@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Bryan Huntsman <bhuntsman@nvidia.com>,
-        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>
-Subject: RE: [PATCH v8 1/3] iommu/arm-smmu: add NVIDIA implementation for dual
- ARM MMU-500 usage
-Thread-Topic: [PATCH v8 1/3] iommu/arm-smmu: add NVIDIA implementation for
- dual ARM MMU-500 usage
-Thread-Index: AQHWTnLtXe5vi7jgbE2pRnyepolCC6jw0WKAgACIGaA=
-Date:   Tue, 30 Jun 2020 17:04:14 +0000
-Message-ID: <BYAPR12MB2822A100F2BE2D8141F0B585B36F0@BYAPR12MB2822.namprd12.prod.outlook.com>
-References: <20200630001051.12350-1-vdumpa@nvidia.com>
- <20200630001051.12350-2-vdumpa@nvidia.com>
- <53bfa5c8-c32d-6fa3-df60-a18ab33ca1c2@nvidia.com>
-In-Reply-To: <53bfa5c8-c32d-6fa3-df60-a18ab33ca1c2@nvidia.com>
-Accept-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_Enabled=True;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_SiteId=43083d15-7273-40c1-b7db-39efd9ccc17a;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_Owner=VDUMPA@nvidia.com;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_SetDate=2020-06-30T17:04:11.9890059Z;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_Name=Unrestricted;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_ActionId=1317b412-78b4-4c24-ad7a-bf78d36dcba8;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_Extended_MSFT_Method=Automatic
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [216.228.112.22]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1bf44a11-efd4-4268-871c-08d81d179def
-x-ms-traffictypediagnostic: BYAPR12MB3415:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR12MB34154605E88379628E115FC5B36F0@BYAPR12MB3415.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0450A714CB
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: z7c10Hx2l3Ev3xlDCp68s7kxv9uT+ln8wmM49Rs5d9HWAm6bLtccoHC45IZklzUuMavhS7IJGKObnf7+KsO5QzSYCmWCtMz9y88zkdsBOF7rxJvEKY/XvI6dJ57uDN6uXxI7/ifnNlAk+Mfub+vKupYQLoUoJkMHbCSG+yJg7W88Tyfon0TiEWuCViIPfNja89d2gK5NsjjtG5Q2r6JIYEliYb357lmmwpz7YrYO/l3M2WmmKrIlz5RjR3g4DyzM/zWTOzT8qVswqID3BzsBugzoxcESvqjls7IaD8Op2N43VFSfFOhdHCqSninTRraR2EKiJa5EBNe7/a5xslmA/A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2822.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(136003)(346002)(366004)(39860400002)(396003)(33656002)(478600001)(52536014)(316002)(5660300002)(54906003)(4326008)(71200400001)(6862004)(86362001)(66946007)(83380400001)(66556008)(76116006)(186003)(8676002)(6506007)(6636002)(55016002)(8936002)(9686003)(66476007)(64756008)(26005)(2906002)(66446008)(7696005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 2vnzISzZQpZYaqDlxu9/jD4BcEO30jDyrtwkZb3Z1X85yCR3spEOplLKKFUZzVDK1olYyuOhkK+ntaymhnG+x1r+TJMajYrNqw+XCiP84OKIsKsGiMgrUtcthSVwaHdCBWx4bgb1HA2fnDiHX9ERKRpprS0pD6GXhhhBrvSByYU6m+jvOgE8DcD5tLq+Bac9uvSvCVvcJRT64RcHWDsDiVRqvuezfeQ7YC3ejvsa1/JkD2ulHOCJJ939MdhyAjfESm9+20ZnlsC1xBzBQ2MuVHJlV6W6vRCSVhpmHsPw2fs8gKcTjkeFQtfZfA54wt62ka1Df1bniCa2TIro2tVrFJoLfqFoBrYNsDChdkB8aO5/en+MUJef8QvvyPnM25nrmzxoY1VhdGnUjAYFirMcSNB1877VQMwvS+iXH/cYQ0UI4P+AddFY6Bey+0IeDt7Zuzcoe0sxKxyiGU8bActWRJ3eptSyF+CyduHKpkLwX7Uu9BL8hZ0M4BcTLO/QV+5T
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2822.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1bf44a11-efd4-4268-871c-08d81d179def
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jun 2020 17:04:14.2559
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4T/k9HB8ANt54+6wzcq2P4uBbQZC6nZcPS/uI8zN5sA2GnKRFygrgOPfUlACApHLTo0nnPcNoH4JGxz1p0ya3g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3415
-X-OriginatorOrg: Nvidia.com
-Content-Language: en-US
+        id S2390215AbgF3RSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 13:18:05 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:29917 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387957AbgF3RSE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 13:18:04 -0400
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200630171802epoutp04f389bee4277a2f270ec0ccc8a25a868a~dYeW7Le_U2857828578epoutp04F
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 17:18:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200630171802epoutp04f389bee4277a2f270ec0ccc8a25a868a~dYeW7Le_U2857828578epoutp04F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593537482;
+        bh=OFIZvdJMTjnrR5aLpvP6crNuAA9jAjOdnPgXyf5Kgw8=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=UZ7f1qkh4Ov5VTJffYzQD6xW/GJUh1NU1mvj5ucQcUaWLiIAjjxpjIcGMpQYSw24I
+         hKGPJeX0vLvm42Dv7dk141p1GCIBJzhOnb+4J6xuWfdqDzwu0rLc1lyEAtfkIhRDYo
+         nRztSNBEStrK+arPJNR/7K4UeAkuuzaJ+KV1YbNw=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20200630171802epcas5p4d4829c628a0621f1e6a13d9210ad65b4~dYeWmJ-vN1379113791epcas5p4R;
+        Tue, 30 Jun 2020 17:18:02 +0000 (GMT)
+X-AuditID: b6c32a4b-39fff70000002503-e4-5efb73caa5e2
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2F.17.09475.AC37BFE5; Wed,  1 Jul 2020 02:18:02 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: (2) [PATCH] fs: fat: add check for dir size in
+ fat_calc_dir_size
+Reply-To: a.sahrawat@samsung.com
+From:   AMIT SAHRAWAT <a.sahrawat@samsung.com>
+To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+CC:     Anupam Aggarwal <anupam.al@samsung.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <875zb8o6zh.fsf@mail.parknet.co.jp>
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20200630170748epcms5p87fa9b4348c1448d2d5a5f6cdddbc021e@epcms5p8>
+Date:   Tue, 30 Jun 2020 22:37:48 +0530
+X-CMS-MailID: 20200630170748epcms5p87fa9b4348c1448d2d5a5f6cdddbc021e
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593536658; bh=PjNOaagwuwlxcGNhARe11W8Vg/6fDbq00jf8kXsGFpM=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:From:To:CC:Subject:Thread-Topic:
-         Thread-Index:Date:Message-ID:References:In-Reply-To:
-         Accept-Language:X-MS-Has-Attach:X-MS-TNEF-Correlator:msip_labels:
-         authentication-results:x-originating-ip:x-ms-publictraffictype:
-         x-ms-office365-filtering-correlation-id:x-ms-traffictypediagnostic:
-         x-ms-exchange-transport-forked:x-microsoft-antispam-prvs:
-         x-ms-oob-tlc-oobclassifiers:x-forefront-prvs:
-         x-ms-exchange-senderadcheck:x-microsoft-antispam:
-         x-microsoft-antispam-message-info:x-forefront-antispam-report:
-         x-ms-exchange-antispam-messagedata:MIME-Version:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-originalarrivaltime:
-         X-MS-Exchange-CrossTenant-fromentityheader:
-         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-         X-MS-Exchange-CrossTenant-userprincipalname:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg:
-         Content-Language:Content-Type:Content-Transfer-Encoding;
-        b=q+4aMz5Qz5bkS1AddwShxE8G6xtJksYT9+3ID/I7SVXJJw6t7JZR7wtvj08qrMSUr
-         l0vvKl7YlyGXkb0BPUzxAGN2JFbXoXSf4qY8dbQIQ+G2tGwPA7bj88NVefwft007Ce
-         ltfPru16byiZkAIEspWN6szfEO2B2T7cMNSHMKgSxXSviaw31LJS0bTyMjAhAuki/k
-         ahuYDch9nEyKRkveshf7CHiMiNzjbDpgunEuxE/DiK0Oi95s5V+JbP2AlXmxaeHB9i
-         RGpf4sbVcTZovXfHhn2XAO9cq6dxujYpm2HDCD8iZiWCl7L345KVilgvDCc5my8ZXA
-         iTCUS87vbwTfw==
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLIsWRmVeSWpSXmKPExsWy7bCmpu6p4t9xBg+WsFi8b7jCbjF97gYW
+        i8u75rA5MHvcf5vo0bdlFaPH501yAcxRXDYpqTmZZalF+nYJXBmH191nLtirWNF516aB8axC
+        FyMnh4SAicSiC/tZuhi5OIQEdjNKvJ/7n7WLkYODV0BQ4u8OYZAaYQF/iSO/TrCD2EICChK7
+        595gh4jrSfyat5UVxGYT0JFo613IBmKLCBhIPFx+BMxmFsiRmHyyiwViF6/EjPanULa0xPbl
+        WxlBbE6g+rvLtzBBxEUlbq5+yw5jvz82nxHCFpFovXeWGcIWlHjwczcjyJkgc54cZwY5X0Kg
+        mVFi1vVuRghnBqNE35cpUEPNJXZvmMcC8ZevxPaXdSBhFgFViQPHjrFDzHGRODKZFeJkbYll
+        C18zg4SZBTQl1u/ShxgiKzH11DomiBI+id7fT5hgvtoxD8QGmaIi8X6yDkRYSqK9cwrUwR4S
+        kzdPZYcE8lwmid/XLrBNYFSYhQjnWUgWz0JYvICReRWjZGpBcW56arFpgXFearlecWJucWle
+        ul5yfu4mRnCK0PLewfjowQe9Q4xMHIyHGCU4mJVEeE8b/IoT4k1JrKxKLcqPLyrNSS0+xCjN
+        waIkzqv040yckEB6YklqdmpqQWoRTJaJg1OqgalqosDnSr3GTxmfb6od3SSqeWTpD8Ocdpa/
+        7txVeWX1E2x7oxk4O4/M++D9MWm/bMySVU6Rurmvwj+fK89b+bvtmtFT13W1WwIvS1zjNQ6/
+        3PNg6mrhk+zLUk+wSAsXNip0nVExztnbryqRsXThebb0RUv6L1vd7ZtnpR1xOa/M6dKOyh8Z
+        f7e8vuWXWJT9p4E7/nymyvT48E33TrZKX3989YqOeGNUZ85meS5bRcYYyXC+/24vnPh1NFMu
+        Me0vM1n3J+W8T98zpXVRf7k5mgqurVew+yryajOf+Y/kT5X6n2pS3keE73vvbWVqytQmx8tc
+        Xiw58RbLyQC3jckPX6cnt+YERBULMXreEBFRYinOSDTUYi4qTgQANkWVVoADAAA=
+X-CMS-RootMailID: 20200629110320epcas5p34ccccc7c293f077b34b350935c328215
+References: <875zb8o6zh.fsf@mail.parknet.co.jp>
+        <87ftacolpf.fsf@mail.parknet.co.jp>
+        <1593428559-13920-1-git-send-email-anupam.al@samsung.com>
+        <20200630123355epcms5p602efe0e4ceedcfe11eae2153c8466678@epcms5p6>
+        <CGME20200629110320epcas5p34ccccc7c293f077b34b350935c328215@epcms5p8>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pj4gTlZJRElBJ3MgVGVncmExOTQgU29DIHVzZXMgdHdvIEFSTSBNTVUtNTAwcyB0b2dldGhlciB0
-byBpbnRlcmxlYXZlIA0KPj4gSU9WQSBhY2Nlc3NlcyBhY3Jvc3MgdGhlbS4NCj4+IEFkZCBOVklE
-SUEgaW1wbGVtZW50YXRpb24gZm9yIGR1YWwgQVJNIE1NVS01MDBzIGFuZCBhZGQgbmV3IGNvbXBh
-dGlibGUgDQo+PiBzdHJpbmcgZm9yIFRlZ3JhMTk0IFNvQyBTTU1VIHRvcG9sb2d5Lg0KDQo+VGhl
-cmUgaXMgbm8gZGVzY3JpcHRpb24gaGVyZSBvZiB0aGUgM3JkIFNNTVUgdGhhdCB5b3UgbWVudGlv
-biBiZWxvdy4NCj5JIHRoaW5rIHRoYXQgd2Ugc2hvdWxkIGRlc2NyaWJlIHRoZSBmdWxsIHBpY3R1
-cmUgaGVyZS4NCg0KVGhpcyBkcml2ZXIgaXMgcHJpbWFyaWx5IGZvciBkdWFsIFNNTVUgY29uZmln
-LiAgU28sIEl0IGlzIGF2b2lkZWQgaW4gdGhlIGNvbW1pdCBtZXNzYWdlLg0KSG93ZXZlciwgSW1w
-bGVtZW50YXRpb24gc3VwcG9ydHMgb3B0aW9uIHRvIGNvbmZpZ3VyZSAzIGluc3RhbmNlcyBpZGVu
-dGljYWxseSB3aXRoIG9uZSBTTU1VIERUIG5vZGUNCmFuZCBpcyBkb2N1bWVudGVkIGluIHRoZSBp
-bXBsZW1lbnRhdGlvbi4NCg0KPj4gKw0KPj4gK3N0YXRpYyBpbmxpbmUgdm9pZCBfX2lvbWVtICpu
-dmlkaWFfc21tdV9wYWdlKHN0cnVjdCBhcm1fc21tdV9kZXZpY2UgKnNtbXUsDQo+PiArCQkJICAg
-ICAgIHVuc2lnbmVkIGludCBpbnN0LCBpbnQgcGFnZSkNCg0KPklmIHlvdSBydW4gY2hlY2twYXRj
-aCAtLXN0cmljdCBvbiB0aGVzZSB5b3Ugd2lsbCBnZXQgYSBsb3Qgb2YgLi4uDQoNCj5DSEVDSzog
-QWxpZ25tZW50IHNob3VsZCBtYXRjaCBvcGVuIHBhcmVudGhlc2lzDQo+IzExNjogRklMRTogZHJp
-dmVycy9pb21tdS9hcm0tc21tdS1udmlkaWEuYzo0NjoNCj4rc3RhdGljIGlubGluZSB2b2lkIF9f
-aW9tZW0gKm52aWRpYV9zbW11X3BhZ2Uoc3RydWN0IGFybV9zbW11X2RldmljZSAqc21tdSwNCj4r
-CQkJICAgICAgIHVuc2lnbmVkIGludCBpbnN0LCBpbnQgcGFnZSkNCg0KPldlIHNob3VsZCBmaXgg
-dGhlc2UuDQoNCkkgd2lsbCBmaXggdGhlc2UgaWYgSSBuZWVkIHRvIHB1c2ggYSBuZXcgcGF0Y2gg
-c2V0Lg0KDQo+PiArc3RhdGljIHZvaWQgbnZpZGlhX3NtbXVfd3JpdGVfcmVnKHN0cnVjdCBhcm1f
-c21tdV9kZXZpY2UgKnNtbXUsDQo+PiArCQkJICAgIGludCBwYWdlLCBpbnQgb2Zmc2V0LCB1MzIg
-dmFsKSB7DQo+PiArCXVuc2lnbmVkIGludCBpOw0KPj4gKwlzdHJ1Y3QgbnZpZGlhX3NtbXUgKm52
-aWRpYV9zbW11ID0gdG9fbnZpZGlhX3NtbXUoc21tdSk7DQo+PiArDQo+PiArCWZvciAoaSA9IDA7
-IGkgPCBudmlkaWFfc21tdS0+bnVtX2luc3Q7IGkrKykgew0KPj4gKwkJdm9pZCBfX2lvbWVtICpy
-ZWcgPSBudmlkaWFfc21tdV9wYWdlKHNtbXUsIGksIHBhZ2UpICsgb2Zmc2V0Ow0KDQo+UGVyc29u
-YWxseSwgSSB3b3VsZCBkZWNsYXJlICdyZWcnIG91dHNpZGUgb2YgdGhlIGxvb3AgYXMgSSBmZWVs
-IGl0IHdpbGwgbWFrZSB0aGUgY29kZSBjbGVhbmVyIGFuZCBlYXNpZXIgdG8gcmVhZC4NCg0KSXQg
-d2FzIGxpa2UgdGhhdCBiZWZvcmUgYW5kIGlzIHVwZGF0ZWQgdG8gaXRzIGN1cnJlbnQgZm9ybSB0
-byBsaW1pdCB0aGUgc2NvcGUgb2YgdmFyaWFibGVzIGFzIHBlciBUaGllcnJ5J3MgY29tbWVudHMg
-aW4gdjYuIA0KV2UgY2FuIGp1c3QgbGVhdmUgaXQgYXMgaXQgaXMgYXMgdGhlcmUgaXMgbm8gdGVj
-aG5pY2FsIGlzc3VlIGhlcmUuDQoNCi1LUg0KDQotLQ0KbnZwdWJsaWMNCg==
+=C2=A0=0D=0A>=C2=A0There=C2=A0are=C2=A0many=C2=A0implementation=C2=A0that=
+=C2=A0doesn't=C2=A0follow=C2=A0the=C2=A0spec=C2=A0strictly.=C2=A0And=0D=0A>=
+=C2=A0when=C2=A0I=C2=A0tested=C2=A0in=C2=A0past,=C2=A0Windows=C2=A0also=C2=
+=A0allowed=C2=A0to=C2=A0read=C2=A0the=C2=A0directory=C2=A0beyond=0D=0A>=C2=
+=A0that=C2=A0limit.=C2=A0I=C2=A0can't=C2=A0recall=C2=A0though=C2=A0if=C2=A0=
+there=C2=A0is=C2=A0in=C2=A0real=C2=A0case=C2=A0or=C2=A0just=C2=A0test=0D=0A=
+>=C2=A0case=C2=A0though.=0D=0A>>>=C2=A0Thanks=C2=A0Ogawa,=C2=A0yes=C2=A0the=
+re=C2=A0are=C2=A0many=C2=A0implementations,=C2=A0preferably=C2=A0going=C2=
+=A0around=C2=A0with=C2=A0different=C2=A0variants.=0D=0A>=C2=A0But,=C2=A0usi=
+ng=C2=A0standard=C2=A0linux=C2=A0version=C2=A0on=C2=A0the=C2=A0systems=C2=
+=A0and=C2=A0having=C2=A0such=C2=A0USB=C2=A0connected=C2=A0on=C2=A0such=C2=
+=A0systems=C2=A0is=C2=A0introducing=C2=A0issues(importantly=C2=A0because=C2=
+=A0these=C2=A0being=C2=A0used=C2=A0on=C2=A0Windows=C2=A0also=C2=A0by=C2=A0u=
+sers).=0D=0A>=C2=A0I=C2=A0am=C2=A0not=C2=A0sure,=C2=A0if=C2=A0this=C2=A0is=
+=C2=A0something=C2=A0which=C2=A0is=C2=A0new=C2=A0from=C2=A0Windows=C2=A0par=
+t.=0D=0A>=C2=A0But,=C2=A0surely=C2=A0extending=C2=A0the=C2=A0directory=C2=
+=A0beyond=C2=A0limit=C2=A0is=C2=A0causing=C2=A0regression=C2=A0with=C2=A0FA=
+T=C2=A0usage=C2=A0on=C2=A0linux.=0D=0A=C2=A0=0D=0Aregression=C2=A0from=C2=
+=A0what?=0D=0A=C2=A0=0D=0A>=C2=A0It=C2=A0is=C2=A0making=C2=A0FAT=C2=A0files=
+ystem=C2=A0related=C2=A0storage=C2=A0virtually=C2=A0unresponsive=C2=A0for=
+=C2=A0minutes=C2=A0in=C2=A0these=C2=A0cases,=0D=0A>=C2=A0and=C2=A0important=
+ly=C2=A0keep=C2=A0on=C2=A0putting=C2=A0pressure=C2=A0on=C2=A0memory=C2=A0du=
+e=C2=A0to=C2=A0increasing=C2=A0buffer=C2=A0heads=C2=A0(already=C2=A0a=C2=A0=
+known=C2=A0one=C2=A0with=C2=A0FAT=C2=A0fs).=0D=0A=C2=A0=0D=0AI'm=C2=A0confu=
+sed.=C2=A0What=C2=A0happen=C2=A0actually?=C2=A0Now=C2=A0looks=C2=A0like=C2=
+=A0you=C2=A0are=C2=A0saying=C2=A0the=0D=0Aissue=C2=A0is=C2=A0extending=C2=
+=A0size=C2=A0beyond=C2=A0limit.=C2=A0But=C2=A0previously=C2=A0it=C2=A0said=
+=C2=A0the=C2=A0corruption.=0D=0A=C2=A0=0D=0AAre=C2=A0you=C2=A0saying=C2=A0=
+=22beyond=C2=A0that=C2=A0limit=22=C2=A0is=C2=A0the=C2=A0fs=C2=A0corruption?=
+=0D=0A=C2=A0=0D=0AI.e.=C2=A0did=C2=A0you=C2=A0met=C2=A0real=C2=A0directory=
+=C2=A0corruption?=C2=A0or=C2=A0you=C2=A0are=C2=A0trying=C2=A0to=C2=A0limit=
+=0D=0Abecause=C2=A0slowness=C2=A0on=C2=A0big=C2=A0directory?=0D=0A>>>=20Wil=
+l=20try=20to=20arrange=20the=20fsck/chkdsk=20output=20for=20the=20related=
+=20to=20disk,=20to=20highlight=20the=20concerns.=0D=0A=0D=0A=C2=A0=0D=0A>=
+=C2=A0So=C2=A0if=C2=A0there=C2=A0is=C2=A0no=C2=A0strong=C2=A0reason=C2=A0to=
+=C2=A0apply=C2=A0the=C2=A0limit,=C2=A0I=C2=A0don't=C2=A0think=C2=A0it=C2=A0=
+is=0D=0A>=C2=A0good=C2=A0to=C2=A0limit=C2=A0it.=C2=A0=0D=0A>>>=C2=A0The=C2=
+=A0reason=C2=A0for=C2=A0us=C2=A0to=C2=A0share=C2=A0this=C2=A0is=C2=A0becaus=
+e=C2=A0of=C2=A0the=C2=A0unresponsive=C2=A0behaviour=C2=A0observed=C2=A0with=
+=C2=A0FAT=C2=A0fs=C2=A0on=C2=A0our=C2=A0systems.=0D=0A>=C2=A0This=C2=A0is=
+=C2=A0not=C2=A0a=C2=A0new=C2=A0issue,=C2=A0we=C2=A0have=C2=A0been=C2=A0obse=
+rving=C2=A0this=C2=A0for=C2=A0quite=C2=A0sometime=C2=A0(may=C2=A0be=C2=A0ar=
+ound=C2=A01year+).=0D=0A>=C2=A0Finally,=C2=A0we=C2=A0got=C2=A0hold=C2=A0of=
+=C2=A0disk=C2=A0which=C2=A0is=C2=A0making=C2=A0this=C2=A0100%=C2=A0reproduc=
+ible.=0D=0A>=C2=A0We=C2=A0thought=C2=A0of=C2=A0applying=C2=A0this=C2=A0to=
+=C2=A0the=C2=A0mainline,=C2=A0as=C2=A0our=C2=A0FAT=C2=A0is=C2=A0aligned=C2=
+=A0with=C2=A0main=C2=A0kernel.=0D=0A=C2=A0=0D=0ASo=C2=A0what=C2=A0was=C2=A0=
+the=C2=A0root=C2=A0cause=C2=A0of=C2=A0slowness=C2=A0on=C2=A0big=C2=A0direct=
+ory?=0D=0A>>>=20Root=20cause=20was=20the=20continous=20FAT=20chain=20walk=
+=20through=20for=20that=20directory=20and=20making=20the=20corresponding=20=
+applications=20to=20stuck.=0D=0AIt=20keeps=20going=20on,=20so=20eventually=
+=20the=20application=20had=20to=20be=20terminated.=0D=0AMay=20be=20arraning=
+=20corresponding=20metadata=20dump=20related=20with=20this=20might=20help=
+=20in=20clearing=20doubts.=0D=0AI=20Hope=20to=20arrange=20them=20soon.=0D=
+=0A=C2=A0=0D=0AThanks.=0D=0A--=C2=A0=0D=0AOGAWA=C2=A0Hirofumi=C2=A0<hirofum=
+i=40mail.parknet.co.jp>=0D=0A=C2=A0
