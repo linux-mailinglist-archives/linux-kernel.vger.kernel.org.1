@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15EA20F3EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CE820F408
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733195AbgF3L4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 07:56:45 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:17957 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729580AbgF3L4p (ORCPT
+        id S1733265AbgF3L7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 07:59:06 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:57291 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732517AbgF3L7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 07:56:45 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5efb286e0001>; Tue, 30 Jun 2020 04:56:32 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 30 Jun 2020 04:56:44 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 30 Jun 2020 04:56:44 -0700
-Received: from [10.25.97.62] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 30 Jun
- 2020 11:56:35 +0000
-CC:     <spujar@nvidia.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        <perex@perex.cz>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <lgirdwood@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <digetx@gmail.com>,
-        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
-        <mkumard@nvidia.com>, <viswanathl@nvidia.com>,
-        <rlokhande@nvidia.com>, <dramesh@nvidia.com>,
-        <atalambedu@nvidia.com>, <nwartikar@nvidia.com>,
-        <swarren@nvidia.com>, <nicoleotsuka@gmail.com>
-Subject: Re: Re: [PATCH v4 11/23] ASoC: simple-card: Loop over all children
- for 'mclk-fs'
-To:     Mark Brown <broonie@kernel.org>
-References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
- <1593233625-14961-12-git-send-email-spujar@nvidia.com>
- <875zba1y28.wl-kuninori.morimoto.gx@renesas.com>
- <58000bd3-861c-bbc2-75e1-128cf0199a76@nvidia.com>
- <87lfk5z4ov.wl-kuninori.morimoto.gx@renesas.com>
- <b33d5a1b-ecd5-3618-4894-c3ab0f4b077d@nvidia.com>
- <20200630105532.GG5272@sirena.org.uk>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <8b264575-08e7-64c5-fd7c-3109a0a36ce8@nvidia.com>
-Date:   Tue, 30 Jun 2020 17:26:32 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Tue, 30 Jun 2020 07:59:05 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MQuwR-1jUbpB2phn-00O0Fd; Tue, 30 Jun 2020 13:58:38 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Sylvain Lemieux <slemieux.tyco@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] udc: lpc32xx: mark local function static
+Date:   Tue, 30 Jun 2020 13:58:15 +0200
+Message-Id: <20200630115836.1283978-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200630105532.GG5272@sirena.org.uk>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593518192; bh=kRg7pU3gJSgsCt5OO4SsNHbiLgeij8sbJesDlJdXIC8=;
-        h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=QLp5BLjW8+idyvq+WuWlIPC61zDNT6Kje7XkXi8kNAoSVMwbMbbWavQJ6WlfZibDw
-         CQ0Sw4x9eV/JAKfaSJkPtWlcoWgibJd7FnDyn16roIHIEhdb/lahy1dJSa9iApPDxN
-         7wM2JeXbdjR+YTnTJ7G+ol6+c9mzd+lGqBHOx736znHl/t8p5Wmx60beRaUHXBUMLQ
-         6huyFzHmpjRQ6I8UeUpoGcv7Mf9kKFqrz5Gk5IxkEtEz6u0I7IyJBcpXmZKqbAp3RF
-         sIaAFK0ql04TSyxYZlSAYaN3OLETqq/Lpllw0DTtRQuIlPq6ejNhtzpO/Bz60Rlfqn
-         SokJqLJ4GVZ4g==
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:veseWBWr1h5vpkppXNC/0CmWqCIFH50Srfs8LPsw5xH/JdVmkgX
+ sejJf0abhmbrS9AYLMm/Sj5uVMzCbA4TtKcgK1Unm6zyyDZzCz5wkeySLEDQA8DmnHMeamE
+ hF5MvVdhAXWySGe1eBjylbtP/fYK70Ua/aAp+cCqFh6TasJvTjA0FnncHPzkc86tXVz6YXq
+ VP/TGHYu23YysT8LVNHAA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7T6V5aSeTAs=:yJ8wghqXSVPKlr7tAlROEt
+ rmI8tWkpNOImq4me4JBuv3h/w5RoAidkAuFxaO0YhclkFqg53dcd7rEj9IyVUpOi9P1gGkfMl
+ Iu52sA7n75Jk8w1dA8BIugJ0XK6kpVwro+lIb3sa9pbFGNDdnhjqbA16ZV+S1ZK4zf9KJ7uI5
+ tP8djaRtyV/00QsQwjRD6bcnnenifrkflKYgUmJ2GolntzrOAxisySifXcYb1l5ayVQvF+w3p
+ M60Pa5A5XWJwbeF5hL8O6ePVUAmJe9uSjZzTC9Y5GstwoCUltovKdvpwwtWFJoKDOiWJu3Tql
+ pbB9CYn5T4RjN5nSXGElEJ+pvyop9a2zCskD3wiK37CSj+FwMpSiNUNmFOalOEQ32RdO2mXps
+ btMvhvk/r9Fy3K2PBvfcCfHWELIg5tUlztTFaFAQcXyJ347IaOZUufKG2C6yVeXgzoVvHsHg2
+ CHIKRJS0kroSlZclNQNPbpg+wq04O+/fmC3sPDd7u96/YLon9oDt9dFqLX/xLxbxh9A4t6UDj
+ TxskZ/bhg3kNaZh8UZvJuJgk02ODW1LJfgxktnDQbRfLIl7EpMdLKXGkW7LSMwLYIWcjb72vp
+ YcgSq8qFdzOgujt76GhE1QFk7VeGlbl2dWouO0mi8hNgJqczSm87TSgjYRhkR2avU+izyfyF4
+ nMmvg7GoqQg04covHnIzI9GM7dvUXiZHcpBJ0EmPi+8v84MysYrhUSgLeg0i3CfPwX/EniiVc
+ bScdziPooi9MX1v3Y8ipQf3zXnQJsmVtxXTyPkcWyYqxArC2h0qwoJFc30JQXlcuewNGzhLUa
+ Ll0SLMtCZ1Xr7dlLy3Mx7gzpg2KDLNAK3eswA7mpRGI3XYv204=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The kernel test robot reports two functions that should be marked
+static:
 
+>> drivers/usb/gadget/udc/lpc32xx_udc.c:1928:6: warning: no previous prototype for 'udc_send_in_zlp' [-Wmissing-prototypes]
+    1928 | void udc_send_in_zlp(struct lpc32xx_udc *udc, struct lpc32xx_ep *ep)
+>> drivers/usb/gadget/udc/lpc32xx_udc.c:1942:6: warning: no previous prototype for 'udc_handle_eps' [-Wmissing-prototypes]
+    1942 | void udc_handle_eps(struct lpc32xx_udc *udc, struct lpc32xx_ep *ep)
 
-On 6/30/2020 4:25 PM, Mark Brown wrote:
-> On Tue, Jun 30, 2020 at 09:53:13AM +0530, Sameer Pujar wrote:
->> On 6/30/2020 7:38 AM, Kuninori Morimoto wrote:
->>> External email: Use caution opening links or attachments
->>>>>> +     if (cpu != codec)
->>>>>> +             of_property_read_u32(codec, prop, &props->mclk_fs);
->> Sorry if I was not clear before.
-> I agree with Moromito-san that the new code (especially the above bit)
-> is very confusing, I'm not sure how the reader is supposed to figure out
-> what the purpose of the check is or how the CPU could ever be the CODEC.
->
->> simple_parse_mclk_fs() is used by both simple_dai_link_of_dpcm() and
->> simple_dai_link_of(). To make the same API work for both the cases, I had to
->> use (A) in DPCM function. Now (B) does not get used for
->> simple_dai_link_of_dpcm(), but will get used by simple_dai_link_of().
->> If it is simpler I will just avoid 'cpu != codec' check and keep the
->> function simple_parse_mclk_fs() as it is.
-> That'd definitely be simpler, or supporting this with a CPU node as
-> well.
+This showed up after my commit 792e559e94bc ("udc: lpc32xx: fix 64-bit
+compiler warning") made it possible to build the driver on x86-64.
 
-OK. I will keep it simple.
+Fix the warning as suggested.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/usb/gadget/udc/lpc32xx_udc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/gadget/udc/lpc32xx_udc.c b/drivers/usb/gadget/udc/lpc32xx_udc.c
+index 465d0b7c6522..4a112670cc6c 100644
+--- a/drivers/usb/gadget/udc/lpc32xx_udc.c
++++ b/drivers/usb/gadget/udc/lpc32xx_udc.c
+@@ -1926,7 +1926,7 @@ static const struct usb_ep_ops lpc32xx_ep_ops = {
+ };
+ 
+ /* Send a ZLP on a non-0 IN EP */
+-void udc_send_in_zlp(struct lpc32xx_udc *udc, struct lpc32xx_ep *ep)
++static void udc_send_in_zlp(struct lpc32xx_udc *udc, struct lpc32xx_ep *ep)
+ {
+ 	/* Clear EP status */
+ 	udc_clearep_getsts(udc, ep->hwep_num);
+@@ -1940,7 +1940,7 @@ void udc_send_in_zlp(struct lpc32xx_udc *udc, struct lpc32xx_ep *ep)
+  * This function will only be called when a delayed ZLP needs to be sent out
+  * after a DMA transfer has filled both buffers.
+  */
+-void udc_handle_eps(struct lpc32xx_udc *udc, struct lpc32xx_ep *ep)
++static void udc_handle_eps(struct lpc32xx_udc *udc, struct lpc32xx_ep *ep)
+ {
+ 	u32 epstatus;
+ 	struct lpc32xx_request *req;
+-- 
+2.27.0
 
