@@ -2,60 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D940020F8EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 17:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03AB320F8F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 17:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389811AbgF3Pyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 11:54:45 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50838 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389385AbgF3Pyp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 11:54:45 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jqIan-00061G-GZ; Tue, 30 Jun 2020 15:54:41 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] blk-cgroup: clean up indentation
-Date:   Tue, 30 Jun 2020 16:54:41 +0100
-Message-Id: <20200630155441.518850-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        id S2389830AbgF3P5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 11:57:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730478AbgF3P5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 11:57:33 -0400
+Received: from localhost (unknown [122.182.251.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E20BE2068F;
+        Tue, 30 Jun 2020 15:57:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593532652;
+        bh=9Gn86c0eaFtjRePihFDUtEKyfWZ/egWqKrd+Msf1fJA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MOZJJD3ekIMjv9Q3vcG6xeGRAGvGu3G/QtP7hzgydRVMLYVutKSb0opJ7xD3SJGzh
+         cc3pb7HS2Vo3xz9N8x6PrU36mdmSWpY8PRiasyt7/6pMJiMfvW88DFKRnYRWl5PqDG
+         aL5aj+iT5bzACtTyJMj0P/YrxnQ04sAEOuVNVbbU=
+Date:   Tue, 30 Jun 2020 21:27:28 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
+        jank@cadence.com, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
+        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
+        sanyog.r.kale@intel.com, slawomir.blauciak@intel.com,
+        mengdong.lin@intel.com, bard.liao@intel.com
+Subject: Re: [PATCH 0/4] soundwire: add SoundWire 1.2 spec support
+Message-ID: <20200630155728.GQ2599@vkoul-mobl>
+References: <20200608205436.2402-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200608205436.2402-1-yung-chuan.liao@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 09-06-20, 04:54, Bard Liao wrote:
+> This series adds basic support for SoundWire 1.2.
 
-There is a statement that is indented one level too deeply, fix it
-by removing a tab.
+Applied, thanks
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- block/blk-cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 1ce94afc03bc..748c4b2a9273 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -1837,7 +1837,7 @@ void blk_cgroup_bio_start(struct bio *bio)
- 	 */
- 	if (!bio_flagged(bio, BIO_CGROUP_ACCT)) {
- 		bio_set_flag(bio, BIO_CGROUP_ACCT);
--			bis->cur.bytes[rwd] += bio->bi_iter.bi_size;
-+		bis->cur.bytes[rwd] += bio->bi_iter.bi_size;
- 	}
- 	bis->cur.ios[rwd]++;
- 
 -- 
-2.27.0
-
+~Vinod
