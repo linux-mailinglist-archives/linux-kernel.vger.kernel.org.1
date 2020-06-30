@@ -2,76 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF5620FB53
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F6220FB3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389701AbgF3SFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 14:05:01 -0400
-Received: from forward101o.mail.yandex.net ([37.140.190.181]:36437 "EHLO
-        forward101o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729105AbgF3SFA (ORCPT
+        id S2390545AbgF3SAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 14:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388845AbgF3SAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 14:05:00 -0400
-X-Greylist: delayed 481 seconds by postgrey-1.27 at vger.kernel.org; Tue, 30 Jun 2020 14:04:59 EDT
-Received: from mxback24g.mail.yandex.net (mxback24g.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b7:324])
-        by forward101o.mail.yandex.net (Yandex) with ESMTP id 01E3E3C0040B;
-        Tue, 30 Jun 2020 20:56:57 +0300 (MSK)
-Received: from myt5-ca5ec8faf378.qloud-c.yandex.net (myt5-ca5ec8faf378.qloud-c.yandex.net [2a02:6b8:c12:2514:0:640:ca5e:c8fa])
-        by mxback24g.mail.yandex.net (mxback/Yandex) with ESMTP id v85Grp0WyM-uuhagsZ7;
-        Tue, 30 Jun 2020 20:56:56 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1593539816;
-        bh=IJcV8VMIHicqFXlSQM92CzBLaL8TW0Er/AJNF1POiuA=;
-        h=Subject:To:From:Cc:Date:Message-Id;
-        b=KPjg9wkdi+ipotCp/pZuU0AfxxHxRzZTZmOQRKHT6JYHWCtwNpxY+CEHmZaIhGTqm
-         51c/ugkX/aEJRBvNcGtddimLN8iJuWlxEczTzWWfdRcxJE/U3glvMqyh/lWyi95NAc
-         Pz4U2WSNlZv7IpVaDNFZKeI8HsoB9mzsfhBQZZxE=
-Authentication-Results: mxback24g.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by myt5-ca5ec8faf378.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id 7Bay8XZxwY-uul0thte;
-        Tue, 30 Jun 2020 20:56:56 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-From:   Vasiliy Kupriakov <rublag-ns@yandex.ru>
-To:     Corentin Chary <corentin.chary@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>
-Cc:     Vasiliy Kupriakov <rublag-ns@yandex.ru>,
-        acpi4asus-user@lists.sourceforge.net (open list:ASUS NOTEBOOKS AND
-        EEEPC ACPI/WMI EXTRAS DRIVERS),
-        platform-driver-x86@vger.kernel.org (open list:ASUS NOTEBOOKS AND EEEPC
-        ACPI/WMI EXTRAS DRIVERS), linux-kernel@vger.kernel.org (open list)
-Subject: 
-Date:   Tue, 30 Jun 2020 20:56:01 +0300
-Message-Id: <20200630175559.23966-1-rublag-ns@yandex.ru>
-X-Mailer: git-send-email 2.27.0
+        Tue, 30 Jun 2020 14:00:33 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51385C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 11:00:33 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id s21so3430346ilk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 11:00:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O7oL8VGd8A63dQhiVKi3PUjT96u+CwH07OR1iL+5qx4=;
+        b=LXxLlaqy8X7luV1H2JLKSLljqApL0A04Nf577TG6L7GJB83ghE594x1YcLOVh8FDVH
+         nSuQC0sjMcndgu5UByNZAeT4oyKGQoHtNjxOhZ+WmCKcVdyUbye3RqazYnnCyLmfwP/Q
+         s+ksI2t5EMUOleIESpSn3+jyUTmwolmprisrKI0rniHWFpDHrL7bWtz6NR8QXz3cLOI1
+         xtrkNIxMgc18pplFyCBd81sFvXGYk6f1mT3EiQgfUOotg2u+lC981oiFyWRvqNIE9sne
+         2JXvfhtTQzheVn+GanB5HwVzngV7NjrR1J3tuOH95UPWfNrkyFYPJWteALL2gdG8tncY
+         ziGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O7oL8VGd8A63dQhiVKi3PUjT96u+CwH07OR1iL+5qx4=;
+        b=kKwUOIX56Qls6qv+LLMdxtaiyN3+NS/UdST/nAc8br6ZbktpmNeBtog9e1L8w1oL0h
+         zkA8Rr/5HnNwLzyLA0TJUVxjrMIMV5rUIIxyfJruAIviuJNUtr+wFfgQaGFH55oJTUjE
+         T5kxpzBumHJIQ0IIK7kVEwdBLH780XOxJdZJgIEYC9r0HOYR5E2J5Jzv+zwXdF1eVQz9
+         kw8n4zZ/LtNtM550qziacVCGa16Ud7h8xOVm+kvZNX0fkGeGf19i5qgRgNFjOYfzn/GN
+         ADF/idJXfWvidxkGPNznLAHSg1PIO2WMKFWp985g/BPUFCMdAtXbCkwaAuZHxpVV6/At
+         UXaw==
+X-Gm-Message-State: AOAM5304FdTSwJMsz6wsZCtsZM/RdKVRSqub/Qv5x3iYjbxZ3nxQcEan
+        L9q6Q/+uUIb86uUnIrjVwZbmcBev1ZZx1FfpUJo=
+X-Google-Smtp-Source: ABdhPJx6lNSWEJoftbLz5gNw9hGNEAozoi4443nPKEgIfccHPGmzI05rQic143M7ShtfqDQkwHVgsssevtWA1CT4g78=
+X-Received: by 2002:a92:9f96:: with SMTP id z22mr719638ilk.266.1593540032392;
+ Tue, 30 Jun 2020 11:00:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200626100103.18879-1-a.hajda@samsung.com> <CGME20200626100110eucas1p2c5b91f2c98a5c6e5739f5af3207d192e@eucas1p2.samsung.com>
+ <20200626100103.18879-3-a.hajda@samsung.com> <5f159e00-44fd-515b-dd8c-4db9845dc9e6@ti.com>
+ <7e3c924b-c025-a829-6868-78e2935c70eb@samsung.com> <66faa188-5ef6-d449-07fe-28c8be5e559c@ti.com>
+ <21f5ec9c-2d1d-5f28-5aeb-ac0db144a55e@samsung.com>
+In-Reply-To: <21f5ec9c-2d1d-5f28-5aeb-ac0db144a55e@samsung.com>
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Date:   Tue, 30 Jun 2020 11:00:21 -0700
+Message-ID: <CAKdAkRRLBLCLGH2qhEjaVnt8wNjoyGAfQimNWHZUvzx2m6Mwng@mail.gmail.com>
+Subject: Re: [PATCH v6 2/4] driver core: add deferring probe reason to
+ devices_deferred property
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subject: [PATCH] platform/x86: asus-wmi: allow BAT1 battery name
+On Tue, Jun 30, 2020 at 8:42 AM Andrzej Hajda <a.hajda@samsung.com> wrote:
+>
+>
+> On 30.06.2020 10:59, Grygorii Strashko wrote:
+> > Hi
+> >
+> > On 29/06/2020 14:28, Andrzej Hajda wrote:
+> >> Hi Grygorii,
+> >>
+> >> (...)
+> >>
+> >>>>    /*
+> >>>>     * deferred_devs_show() - Show the devices in the deferred probe
+> >>>> pending list.
+> >>>>     */
+> >>>> @@ -221,7 +241,8 @@ static int deferred_devs_show(struct seq_file *s,
+> >>>> void *data)
+> >>>>        mutex_lock(&deferred_probe_mutex);
+> >>>>          list_for_each_entry(curr, &deferred_probe_pending_list,
+> >>>> deferred_probe)
+> >>>> -        seq_printf(s, "%s\n", dev_name(curr->device));
+> >>>> +        seq_printf(s, "%s\t%s", dev_name(curr->device),
+> >>>> + curr->device->p->deferred_probe_reason ?: "\n");
+> >>>>          mutex_unlock(&deferred_probe_mutex);
+> >>>>
+> >>>
+> >>> Sry, may be i missing smth, but shouldn't it be optional
+> >>> (CONFIG_DEBUG_FS is probably too generic).
+> >>>
+> >>
+> >> I am not sure what exactly are you referring to, but this patch does not
+> >> add new property, it just extends functionality of existing one.
+> >
+> > Sry, needed to be more specific.
+> >
+> > You've added  device_set_deferred_probe_reson(dev, &vaf);
+> > which expected to be used on every EPROBE_DEFER in dev_err_probe() in
+> > combination with
+> >
+> > +       } else {
+> > +               device_set_deferred_probe_reson(dev, &vaf);
+> >                 dev_dbg(dev, "error %d: %pV", err, &vaf);
+> >
+> > ^^ dev_dbg() does not add any runtime overhead during boot unless enabled
+> > +       }
+> >
+> > But:
+> >
+> > +void device_set_deferred_probe_reson(const struct device *dev, struct
+> > va_format *vaf)
+> > +{
+> > +       const char *drv = dev_driver_string(dev);
+> > +
+> > +       mutex_lock(&deferred_probe_mutex);
+> > +
+> > +       kfree(dev->p->deferred_probe_reason);
+> > +       dev->p->deferred_probe_reason = kasprintf(GFP_KERNEL, "%s:
+> > %pV", drv, vaf);
+> > +
+> > +       mutex_unlock(&deferred_probe_mutex);
+> > +}
+> >
+> > ^^ Adds locking, kfree() and kasprintf() for every deferred probe
+> > during boot and can't be disabled.
+> >
+> > Right?
+>
+>
+> Right, but usually the burden should be insignificant in comparison to
+> probe time, so I do not think it is worth optimizing.
 
-The battery on my laptop ASUS TUF Gaming FX706II is named BAT1.
-This patch allows battery extension to load.
+I do not think this is going to take. You are suggesting that we
+modify pretty much every driver to supply this deferral reason, and I
+doubt it will happen. Can we put this burden on providers that raise
+the deferral? I.e. majority of code are using devm API now, so we most
+likely know the device for which deferral is being raised. We can have
+a list of deferral reasons and their devices and when in device code
+once probe is done we could try reconciling it with the deferred
+devicelist, and this would mean you only need to implement this in
+gpiolib, regulator core, clocks core, etc.
 
-Signed-off-by: Vasiliy Kupriakov <rublag-ns@yandex.ru>
----
- drivers/platform/x86/asus-wmi.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks.
 
-diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index 877aade19497..8f4acdc06b13 100644
---- a/drivers/platform/x86/asus-wmi.c
-+++ b/drivers/platform/x86/asus-wmi.c
-@@ -441,6 +441,7 @@ static int asus_wmi_battery_add(struct power_supply *battery)
- 	 * battery is named BATT.
- 	 */
- 	if (strcmp(battery->desc->name, "BAT0") != 0 &&
-+	    strcmp(battery->desc->name, "BAT1") != 0 &&
- 	    strcmp(battery->desc->name, "BATT") != 0)
- 		return -ENODEV;
- 
 -- 
-2.27.0
-
+Dmitry
