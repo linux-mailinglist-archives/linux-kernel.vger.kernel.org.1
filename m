@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E27420FF4B
+	by mail.lfdr.de (Postfix) with ESMTP id D19F220FF4C
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729367AbgF3VeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 17:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34492 "EHLO
+        id S1729418AbgF3VeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 17:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729206AbgF3Vdx (ORCPT
+        with ESMTP id S1729316AbgF3Vd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 17:33:53 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297E9C03E97A
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:33:53 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id t11so5123688pfq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:33:53 -0700 (PDT)
+        Tue, 30 Jun 2020 17:33:58 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFECC03E97A
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:33:58 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 207so9799062pfu.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:33:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=digitalocean.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :in-reply-to:references;
-        bh=Bqi959xnSqAIvbvkP4R1c1lQ3QAOYRVWRkTRYXzoITI=;
-        b=NV4gSMLED+doZhmcc9osdmLk9/CCT7Xsy96VEOibTAGuOJ+Fo2sCw3ERJELbSCMHtM
-         0amHS87oXHNwSrDk8MEKVIUaM05rLiuzWz0ZZIl40cnLPXz09WBbzVnBMCsaxn8nbGzM
-         WzeEDYQT1HP2mCT4BRgtGIOmZwepi6eEH1TtA=
+        bh=+w1t38b3w4AZT1Xc7eDxHzeTTLA5N812ElI9LsAJM04=;
+        b=CWbPUwdTJ5g8URhIJnHeNITo0nZAednz9PBOyw+NOwDt34Tl6Dv1qG37QkcSv9uHni
+         8jIYe7VVkhwY7cVmSwqUeQFMIb0QxWFtGn3RgWGBiMWw0HSxUc8+zbzK+JOF+787t1xS
+         siMTK876xjOjOY5yePv1tse1Sd3CiY8Bo/k3M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:in-reply-to:references;
-        bh=Bqi959xnSqAIvbvkP4R1c1lQ3QAOYRVWRkTRYXzoITI=;
-        b=pHecjmPJxdvLKmnuLbMilB0GXowW8XLpAIkT1iJxpztDV7Tc2gjmz6v5cV2++v9J+y
-         /LWQiMJldCBpbrNuA2gsIzjY8zZ0d0iFxCE/bK4/Emi+lyLjZCW3sVvjgG8ZeofiabOD
-         dq6whJebtLPRs1dxiR6XLkNoLfHxRsvMIZkPfMDMxgWhv8O7xjwv0byFrKJJxyUGmWFV
-         CqrvSx4MNBFQEiBCgrHvRjHPbkzO/o1W3nVACz7eAFpk3/5tLmv2cmLLUvN/55wQcll4
-         8SkoH55AD22usfTK50Oi5Y77ATpBVceR3eDWeox94RjYOJAmS5CYHDLgWAOF1R9snyAp
-         3/mw==
-X-Gm-Message-State: AOAM532kJXZwbhhaaNnxv6VSV8YZvInyd7Z9gtRPip31dfX8lhNl9T7l
-        TeCihAHYUf5pxSUJ9rGJygNdKg==
-X-Google-Smtp-Source: ABdhPJyDV6wPGfkIOUIUTOWAwlEp/sE3gpAQdRf9YaoXmKfVe9+Z0ujbYRO4ooneICnlE3C1Q3eMzA==
-X-Received: by 2002:a05:6a00:10:: with SMTP id h16mr19191176pfk.214.1593552832558;
-        Tue, 30 Jun 2020 14:33:52 -0700 (PDT)
+        bh=+w1t38b3w4AZT1Xc7eDxHzeTTLA5N812ElI9LsAJM04=;
+        b=dDr+ZXyF6GvskZ6kcCMBLD8x5lv0iX2eqeUF7RM9J6zP8g4rjL+2BeE2UZ3Exu/X+U
+         xC2sKF2dX7jbfxMenOHZeTLFoDvnHsJTV9d8FrPj7QB517eoTADjpBjP8mAqNIzSCXWR
+         /TiR6yTsTmyyJWXodA/VihHDaU7vl4i4wiqhw4+ah8xVbwAf88QIal+KvC9hWL6B+XYZ
+         2/jGPuSiMmbavQQ/0uVGz4jWIUCok4r8D00ARB50yi0O/OxvdK+81mNOHKejcITnQHEf
+         Gaycf/PBVZsgwnAnNrOfXYhcZ5EZYbyL5Icd+wO/Q4RNGrFx2cW7Y2ZqytpXj0nHr/WZ
+         RUnw==
+X-Gm-Message-State: AOAM533JxSTNSJ3tRl5cvSIP7TuY1P9rsZZg4tzcS5oy79JhmnFDz+i/
+        iP+NHwzhSFQsiplD/xQC7fWA5w==
+X-Google-Smtp-Source: ABdhPJzQo06WEmHbQlIFOVFLF21yx4EtdquddIGnFn2n7lVJENb+c7lLklgXArXV0Lg06ek42CF31g==
+X-Received: by 2002:aa7:98c6:: with SMTP id e6mr21195759pfm.17.1593552837673;
+        Tue, 30 Jun 2020 14:33:57 -0700 (PDT)
 Received: from vpillai-dev.sfo2.internal.digitalocean.com ([138.68.32.68])
-        by smtp.gmail.com with ESMTPSA id n7sm3068650pjq.22.2020.06.30.14.33.51
+        by smtp.gmail.com with ESMTPSA id j19sm3518695pfn.109.2020.06.30.14.33.56
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 30 Jun 2020 14:33:52 -0700 (PDT)
+        Tue, 30 Jun 2020 14:33:57 -0700 (PDT)
 From:   Vineeth Remanan Pillai <vpillai@digitalocean.com>
 To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>,
@@ -63,13 +63,10 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Joel Fernandes <joelaf@google.com>, vineethrp@gmail.com,
         Chen Yu <yu.c.chen@intel.com>,
         Christian Brauner <christian.brauner@ubuntu.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Vineeth Pillai <vpillai@digitalocean.com>
-Subject: [RFC PATCH 14/16] irq: Add support for core-wide protection of IRQ and softirq
-Date:   Tue, 30 Jun 2020 21:32:35 +0000
-Message-Id: <c783b3890b6df669a72c7c4a3012950d009b8034.1593530334.git.vpillai@digitalocean.com>
+        Vineeth Remanan Pillai <vpillai@digitalocean.com>
+Subject: [RFC PATCH 15/16] Documentation: Add documentation on core scheduling
+Date:   Tue, 30 Jun 2020 21:32:36 +0000
+Message-Id: <d56b05f13860db5cf844c6c72138b4d2d512d632.1593530334.git.vpillai@digitalocean.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1593530334.git.vpillai@digitalocean.com>
 References: <cover.1593530334.git.vpillai@digitalocean.com>
@@ -82,410 +79,270 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-With current core scheduling patchset, non-threaded IRQ and softirq
-victims can leak data from its hyperthread to a sibling hyperthread
-running an attacker.
-
-For MDS, it is possible for the IRQ and softirq handlers to leak data to
-either host or guest attackers. For L1TF, it is possible to leak to
-guest attackers. There is no possible mitigation involving flushing of
-buffers to avoid this since the execution of attacker and victims happen
-concurrently on 2 or more HTs.
-
-The solution in this patch is to monitor the outer-most core-wide
-irq_enter() and irq_exit() executed by any sibling. In between these
-two, we mark the core to be in a special core-wide IRQ state.
-
-In the IRQ entry, if we detect that the sibling is running untrusted
-code, we send a reschedule IPI so that the sibling transitions through
-the sibling's irq_exit() to do any waiting there, till the IRQ being
-protected finishes.
-
-We also monitor the per-CPU outer-most irq_exit(). If during the per-cpu
-outer-most irq_exit(), the core is still in the special core-wide IRQ
-state, we perform a busy-wait till the core exits this state. This
-combination of per-cpu and core-wide IRQ states helps to handle any
-combination of irq_entry()s and irq_exit()s happening on all of the
-siblings of the core in any order.
-
-Lastly, we also check in the schedule loop if we are about to schedule
-an untrusted process while the core is in such a state. This is possible
-if a trusted thread enters the scheduler by way of yielding CPU. This
-would involve no transitions through the irq_exit() point to do any
-waiting, so we have to explicitly do the waiting there.
-
-Every attempt is made to prevent a busy-wait unnecessarily, and in
-testing on real-world ChromeOS usecases, it has not shown a performance
-drop. In ChromeOS, with this and the rest of the core scheduling
-patchset, we see around a 300% improvement in key press latencies into
-Google docs when Camera streaming is running simulatenously (90th
-percentile latency of ~150ms drops to ~50ms).
-
-This fetaure is controlled by the build time config option
-CONFIG_SCHED_CORE_IRQ_PAUSE and is enabled by default. There is also a
-kernel boot parameter 'sched_core_irq_pause' to enable/disable the
-feature at boot time. Default is enabled at boot time.
-
-Cc: Julien Desfossez <jdesfossez@digitalocean.com>
-Cc: Tim Chen <tim.c.chen@linux.intel.com>
-Cc: Aaron Lu <aaron.lwe@gmail.com>
-Cc: Aubrey Li <aubrey.li@linux.intel.com>
-Cc: Tim Chen <tim.c.chen@intel.com>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Co-developed-by: Vineeth Pillai <vpillai@digitalocean.com>
-Signed-off-by: Vineeth Pillai <vpillai@digitalocean.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Vineeth Remanan Pillai <vpillai@digitalocean.com>
 ---
- .../admin-guide/kernel-parameters.txt         |   9 +
- include/linux/sched.h                         |   5 +
- kernel/Kconfig.preempt                        |  13 ++
- kernel/sched/core.c                           | 161 ++++++++++++++++++
- kernel/sched/sched.h                          |   7 +
- kernel/softirq.c                              |  46 +++++
- 6 files changed, 241 insertions(+)
+ .../admin-guide/hw-vuln/core-scheduling.rst   | 241 ++++++++++++++++++
+ Documentation/admin-guide/hw-vuln/index.rst   |   1 +
+ 2 files changed, 242 insertions(+)
+ create mode 100644 Documentation/admin-guide/hw-vuln/core-scheduling.rst
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 5e2ce88d6eda..d44d7a997610 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4445,6 +4445,15 @@
- 
- 	sbni=		[NET] Granch SBNI12 leased line adapter
- 
-+	sched_core_irq_pause=
-+			[SCHED_CORE, SCHED_CORE_IRQ_PAUSE] Pause SMT siblings
-+			of a core if atleast one of the siblings of the core
-+			is running nmi/irq/softirq. This is to guarentee that
-+			kernel data is not leaked to tasks which are not trusted
-+			by the kernel.
-+			This feature is valid only when Core scheduling is
-+			enabled(SCHED_CORE).
+diff --git a/Documentation/admin-guide/hw-vuln/core-scheduling.rst b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+new file mode 100644
+index 000000000000..275568162a74
+--- /dev/null
++++ b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+@@ -0,0 +1,241 @@
++Core Scheduling
++================
++MDS and L1TF mitigations do not protect from cross-HT attacks (attacker running
++on one HT with victim running on another). For proper mitigation of this,
++core scheduling support is available via the ``CONFIG_SCHED_CORE`` config option.
++Using this feature, userspace defines groups of tasks that trust each other.
++The core scheduler uses this information to make sure that tasks that do not
++trust each other will never run simultaneously on a core while ensuring trying
++to maintain and ensure scheduler properties and requirements.
 +
- 	sched_debug	[KNL] Enables verbose scheduler debug messages.
- 
- 	schedstats=	[KNL,X86] Enable or disable scheduled statistics.
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 4f9edf013df3..097746a9f260 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -2025,4 +2025,9 @@ int sched_trace_rq_cpu(struct rq *rq);
- 
- const struct cpumask *sched_trace_rd_span(struct root_domain *rd);
- 
-+#ifdef CONFIG_SCHED_CORE_IRQ_PAUSE
-+void sched_core_irq_enter(void);
-+void sched_core_irq_exit(void);
-+#endif
++Usage
++-----
++The user-interface to this feature is not yet finalized. CUrrent implementation
++uses CPU controller cgroup. Core scheduling adds a ``cpu.tag`` file to the CPU
++controller CGroup. If the content of this file is 1, then all the tasks in this
++CGroup trust each other and are allowed to run concurrently on the siblings of
++a core.
 +
- #endif
-diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
-index 4488fbf4d3a8..59094a66a987 100644
---- a/kernel/Kconfig.preempt
-+++ b/kernel/Kconfig.preempt
-@@ -86,3 +86,16 @@ config SCHED_CORE
- 	default y
- 	depends on SCHED_SMT
- 
-+config SCHED_CORE_IRQ_PAUSE
-+	bool "Pause siblings on entering irq/softirq during core-scheduling"
-+	default y
-+	depends on SCHED_CORE
-+	help
-+	  This option enables pausing all SMT siblings of a core when atleast
-+	  one of the siblings in the core is in nmi/irq/softirq. This is to
-+	  enforce security such that information from kernel is not leaked to
-+	  non-trusted tasks running on siblings. This option is valid only if
-+	  Core Scheduling(CONFIG_SCHED_CORE) is enabled.
++This interface has drawbacks. Trusted tasks has to be grouped into one CPU CGroup
++and this is not always possible based on system's existing Cgroup configuration,
++where trusted tasks could already be in different CPU Cgroups. Also, this feature
++will have a hard dependency on CGroups and systems with CGroups disabled would not
++be able to use core scheduling. See `Future work`_ for other API proposals.
 +
-+	  If in doubt, select 'Y' when CONFIG_SCHED_CORE=y
++Design/Implementation
++---------------------
++Tasks are grouped as mentioned in `Usage`_ and tasks that trust each other
++share the same cookie value(in task_struct).
 +
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index ede86fb37b4e..2ec56970d6bb 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4252,6 +4252,155 @@ static inline bool cookie_match(struct task_struct *a, struct task_struct *b)
- 	return a->core_cookie == b->core_cookie;
- }
- 
-+#ifdef CONFIG_SCHED_CORE_IRQ_PAUSE
-+/*
-+ * Helper function to pause the caller's hyperthread until the core exits the
-+ * core-wide IRQ state. Obviously the CPU calling this function should not be
-+ * responsible for the core being in the core-wide IRQ state otherwise it will
-+ * deadlock. This function should be called from irq_exit() and from schedule().
-+ * It is upto the callers to decide if calling here is necessary.
-+ */
-+static inline void sched_core_sibling_irq_pause(struct rq *rq)
-+{
-+	/*
-+	 * Wait till the core of this HT is not in a core-wide IRQ state.
-+	 *
-+	 * Pair with smp_store_release() in sched_core_irq_exit().
-+	 */
-+	while (smp_load_acquire(&rq->core->core_irq_nest) > 0)
-+		cpu_relax();
-+}
++The basic idea is that, every schedule event tries to select tasks for all the
++siblings of a core such that all the selected tasks are trusted(same cookie).
 +
-+/*
-+ * Enter the core-wide IRQ state. Sibling will be paused if it is running
-+ * 'untrusted' code, until sched_core_irq_exit() is called. Every attempt to
-+ * avoid sending useless IPIs is made. Must be called only from hard IRQ
-+ * context.
-+ */
-+void sched_core_irq_enter(void)
-+{
-+	int i, cpu = smp_processor_id();
-+	struct rq *rq = cpu_rq(cpu);
-+	const struct cpumask *smt_mask;
++During a schedule event on any sibling of a core, the highest priority task for
++that core is picked and assigned to the sibling which has it enqueued. For rest of
++the siblings in the core, highest priority task with the same cookie is selected if
++there is one runnable in the run queue. If a task with same cookie is not available,
++idle task is selected. Idle task is globally trusted.
 +
-+	if (!sched_core_enabled(rq))
-+		return;
++Once a task has been selected for all the siblings in the core, an IPI is sent to
++all the siblings who has a new task selected. Siblings on receiving the IPI, will
++switch to the new task immediately.
 +
-+	/* Count irq_enter() calls received without irq_exit() on this CPU. */
-+	rq->core_this_irq_nest++;
++Force-idling of tasks
++---------------------
++The scheduler tries its best to find tasks that trust each other such that all
++tasks selected to be scheduled are of the highest priority in that runqueue.
++However, this is not always possible. Favoring security over fairness, one or
++more siblings could be forced to select a lower priority task if the highest
++priority task is not trusted with respect to the core wide highest priority task.
++If a sibling does not have a trusted task to run, it will be forced idle by the
++scheduler(idle thread is scheduled to run).
 +
-+	/* If not outermost irq_enter(), do nothing. */
-+	if (WARN_ON_ONCE(rq->core->core_this_irq_nest == UINT_MAX) ||
-+	    rq->core_this_irq_nest != 1)
-+		return;
++When the highest priorty task is selected to run, a reschedule-IPI is sent to
++the sibling to force it into idle. This results in 4 cases which need to be
++considered depending on whether a VM or a regular usermode process was running
++on either HT:
 +
-+	raw_spin_lock(rq_lockp(rq));
-+	smt_mask = cpu_smt_mask(cpu);
++::
++          HT1 (attack)            HT2 (victim)
++   
++   A      idle -> user space      user space -> idle
++   
++   B      idle -> user space      guest -> idle
++   
++   C      idle -> guest           user space -> idle
++   
++   D      idle -> guest           guest -> idle
 +
-+	/* Contribute this CPU's irq_enter() to core-wide irq_enter() count. */
-+	WRITE_ONCE(rq->core->core_irq_nest, rq->core->core_irq_nest + 1);
-+	if (WARN_ON_ONCE(rq->core->core_irq_nest == UINT_MAX))
-+		goto unlock;
++Note that for better performance, we do not wait for the destination CPU
++(victim) to enter idle mode.  This is because the sending of the IPI would
++bring the destination CPU immediately into kernel mode from user space, or
++VMEXIT from guests. At best, this would only leak some scheduler metadata which
++may not be worth protecting.
 +
-+	if (rq->core_pause_pending) {
-+		/*
-+		 * Do nothing more since we are in a 'reschedule IPI' sent from
-+		 * another sibling. That sibling would have sent IPIs to all of
-+		 * the HTs.
-+		 */
-+		goto unlock;
-+	}
++Protection against interrupts using IRQ pausing
++-----------------------------------------------
++The scheduler on its own cannot protect interrupt data. This is because the
++scheduler is unaware of interrupts at scheduling time. To mitigate this, we
++send an IPI to siblings on IRQ entry. This IPI handler busy-waits until the IRQ
++on the sending HT exits. For good performance, we send an IPI only if it is
++detected that the core is running tasks that have been marked for
++core scheduling. Both interrupts and softirqs are protected.
 +
-+	/*
-+	 * If we are not the first ones on the core to enter core-wide IRQ
-+	 * state, do nothing.
-+	 */
-+	if (rq->core->core_irq_nest > 1)
-+		goto unlock;
++This protection can be disabled by disabling ``CONFIG_SCHED_CORE_IRQ_PAUSE`` or
++through the ``sched_core_irq_pause`` boot parameter.
 +
-+	/* Do nothing more if the core is not tagged. */
-+	if (!rq->core->core_cookie)
-+		goto unlock;
++If it is desired to disable IRQ pausing, other mitigation methods can be considered:
 +
-+	for_each_cpu(i, smt_mask) {
-+		struct rq *srq = cpu_rq(i);
++1. Changing interrupt affinities to a trusted core which does not execute untrusted tasks
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++By changing the interrupt affinities to a designated safe-CPU which runs
++only trusted tasks, IRQ data can be protected. One issue is this involves
++giving up a full CPU core of the system to run safe tasks. Another is that,
++per-cpu interrupts such as the local timer interrupt cannot have their
++affinity changed. also, sensitive timer callbacks such as the random entropy timer
++can run in softirq on return from these interrupts and expose sensitive
++data. In the future, that could be mitigated by forcing softirqs into threaded
++mode by utilizing a mechanism similar to ``PREEMPT_RT``.
 +
-+		if (i == cpu || cpu_is_offline(i))
-+			continue;
++Yet another issue with this is, for multiqueue devices with managed
++interrupts, the IRQ affinities cannot be changed however it could be
++possible to force a reduced number of queues which would in turn allow to
++shield one or two CPUs from such interrupts and queue handling for the price
++of indirection.
 +
-+		if (!srq->curr->mm || is_idle_task(srq->curr))
-+			continue;
++2. Running IRQs as threaded-IRQs
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++This would result in forcing IRQs into the scheduler which would then provide
++the process-context mitigation. However, not all interrupts can be threaded.
 +
-+		/* Skip if HT is not running a tagged task. */
-+		if (!srq->curr->core_cookie && !srq->core_pick)
-+			continue;
++Trust model
++-----------
++Core scheduling understands trust relationships by assignment of a cookie to
++related tasks using the above mentioned interface.  When a system with core
++scheduling boots, all tasks are considered to trust each other. This is because
++the scheduler does not have information about trust relationships. That is, all
++tasks have a default cookie value of 0. This cookie value is also considered
++the system-wide cookie value and the IRQ-pausing mitigation is avoided if
++siblings are running these cookie-0 tasks.
 +
-+		/* IPI only if previous IPI was not pending. */
-+		if (!srq->core_pause_pending) {
-+			srq->core_pause_pending = 1;
-+			smp_send_reschedule(i);
-+		}
-+	}
-+unlock:
-+	raw_spin_unlock(rq_lockp(rq));
-+}
++By default, all system processes on boot are considered trusted and userspace
++has to explicitly use the interfaces mentioned above to group sets of tasks.
++Tasks within the group trust each other, but not those outside. Tasks outside
++the group don't trust the task inside.
 +
-+/*
-+ * Process any work need for either exiting the core-wide IRQ state, or for
-+ * waiting on this hyperthread if the core is still in this state.
-+ */
-+void sched_core_irq_exit(void)
-+{
-+	int cpu = smp_processor_id();
-+	struct rq *rq = cpu_rq(cpu);
-+	bool wait_here = false;
-+	unsigned int nest;
++Limitations
++-----------
++Core scheduling tries to guarentee that only trusted tasks run concurrently on a
++core. But there could be small window of time during which untrusted tasks run
++concurrently or kernel could be running concurrently with a task not trusted by
++kernel.
 +
-+	/* Do nothing if core-sched disabled. */
-+	if (!sched_core_enabled(rq))
-+		return;
++1. IPI processing delays
++^^^^^^^^^^^^^^^^^^^^^^^^
++Core scheduling selects only trusted tasks to run together. IPI is used to notify
++the siblings to switch to the new task. But there could be hardware delays in
++receiving of the IPI on some arch (on x86, this has not been observed). This may
++cause an attacker task to start running on a cpu before its siblings receive the
++IPI. Even though cache is flushed on entry to user mode, victim tasks on siblings
++may populate data in the cache and micro acrhitectural buffers after the attacker
++starts to run and this is a possibility for data leak.
 +
-+	rq->core_this_irq_nest--;
++2. Asynchronous Kernel entries
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++A task can switch to kernel any time due to events like irqs, system calls etc.
++Since core scheduling synchronizes only during a schedule event, kernel can run
++along with a task that it doesn't trust. The IRQ pause mechanism mentioned above,
++provides protection during nmi/irq/softirqs. But tasks could still enter kernel
++mode via system calls and this is not currently protected.
 +
-+	/* If not outermost on this CPU, do nothing. */
-+	if (WARN_ON_ONCE(rq->core_this_irq_nest == UINT_MAX) ||
-+	    rq->core_this_irq_nest > 0)
-+		return;
++There are ideas about mitigating this:
++ - Kernel Address Space Isolation: System calls could run in a much restricted
++   address space which is guarenteed not to leak any sensitive data. There are
++   practical limitation in implementing this - the main concern being how to
++   decided on an address space that is guarenteed to not have any sensitive
++   data
++ - On a system call, change the cookie to the system trusted cookie and initiate
++   a schedule event. This would be better than pausing all the siblings during
++   the entire duration for the system call, but still would be a huge hit to the
++   performance.
 +
-+	raw_spin_lock(rq_lockp(rq));
-+	/*
-+	 * Core-wide nesting counter can never be 0 because we are
-+	 * still in it on this CPU.
-+	 */
-+	nest = rq->core->core_irq_nest;
-+	WARN_ON_ONCE(!nest);
++Open cross-HT issues that core scheduling does not solve
++--------------------------------------------------------
++1. For MDS
++^^^^^^^^^^
++Core scheduling cannot protect against MDS attacks between an HT running in
++user mode and another running in kernel mode. Even though both HTs run tasks
++which trust each other, kernel memory is still considered untrusted. Such
++attacks are possible for any combination of sibling CPU modes (host or guest mode).
 +
-+	/*
-+	 * If we still have other CPUs in IRQs, we have to wait for them.
-+	 * Either here, or in the scheduler.
-+	 */
-+	if (rq->core->core_cookie && nest > 1) {
-+		/*
-+		 * If we are entering the scheduler anyway, we can just wait
-+		 * there for ->core_irq_nest to reach 0. If not, just wait here.
-+		 */
-+		if (!tif_need_resched()) {
-+			wait_here = true;
-+		}
-+	}
++2. For L1TF
++^^^^^^^^^^^
++Core scheduling cannot protect against a L1TF guest attackers exploiting a
++guest or host victim. This is because the guest attacker can craft invalid
++PTEs which are not inverted due to a vulnerable guest kernel. The only
++solution is to disable EPT.
 +
-+	if (rq->core_pause_pending)
-+		rq->core_pause_pending = 0;
++For both MDS and L1TF, if the guest vCPU is configured to not trust each
++other (by tagging separately), then the guest to guest attacks would go away.
++Or it could be a system admin policy which considers guest to guest attacks as
++a guest problem.
 +
-+	/* Pair with smp_load_acquire() in sched_core_sibling_irq_pause(). */
-+	smp_store_release(&rq->core->core_irq_nest, nest - 1);
-+	raw_spin_unlock(rq_lockp(rq));
++Another approach to resolve these would be to make every untrusted task on the
++system to not trust every other untrusted task. While this could reduce
++parallelism of the untrusted tasks, it would still solve the above issues while
++allowing system processes (trusted tasks) to share a core.
 +
-+	if (wait_here)
-+		sched_core_sibling_irq_pause(rq);
-+}
-+#endif /* CONFIG_SCHED_CORE_IRQ_PAUSE */
++Use cases
++---------
++The main use case for Core scheduling is mitigating the cross-HT vulnerabilities
++with SMT enabled. There are other use cases where this feature could be used:
 +
- // XXX fairness/fwd progress conditions
- /*
-  * Returns
-@@ -4732,6 +4881,18 @@ static void __sched notrace __schedule(bool preempt)
- 		rq_unlock_irq(rq, &rf);
- 	}
- 
-+#ifdef CONFIG_SCHED_CORE_IRQ_PAUSE
-+	/*
-+	 * If a CPU  that was running a trusted task entered the scheduler, and
-+	 * the next task is untrusted, then check if waiting for core-wide IRQ
-+	 * state to cease is needed since we would not have been able to get
-+	 * the services of irq_exit() to do that waiting.
-+	 */
-+	if (sched_core_enabled(rq) &&
-+	    !is_idle_task(next) && next->mm && next->core_cookie)
-+		sched_core_sibling_irq_pause(rq);
-+#endif
++- Isolating tasks that needs a whole core: Examples include realtime tasks, tasks
++  that uses SIMD instructions etc.
++- Gang scheduling: Requirements for a group of tasks that needs to be scheduled
++  together could also be realized using core scheduling. One example is vcpus of
++  a VM.
 +
- 	balance_callback(rq);
- }
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index a5450886c4e4..6445943d3215 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1041,11 +1041,18 @@ struct rq {
- 	unsigned int		core_sched_seq;
- 	struct rb_root		core_tree;
- 	unsigned char		core_forceidle;
-+	unsigned char		core_pause_pending;
-+#ifdef CONFIG_SCHED_CORE_IRQ_PAUSE
-+	unsigned int		core_this_irq_nest;
-+#endif
- 
- 	/* shared state */
- 	unsigned int		core_task_seq;
- 	unsigned int		core_pick_seq;
- 	unsigned long		core_cookie;
-+#ifdef CONFIG_SCHED_CORE_IRQ_PAUSE
-+	unsigned int		core_irq_nest;
-+#endif
- #endif
- };
- 
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index a47c6dd57452..0745f1c6b352 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -246,6 +246,24 @@ static inline bool lockdep_softirq_start(void) { return false; }
- static inline void lockdep_softirq_end(bool in_hardirq) { }
- #endif
- 
-+#ifdef CONFIG_SCHED_CORE_IRQ_PAUSE
-+DEFINE_STATIC_KEY_TRUE(sched_core_irq_pause);
-+static int __init set_sched_core_irq_pause(char *str)
-+{
-+	unsigned long val = 0;
-+	if (!str)
-+		return 0;
++Future work
++-----------
++1. API Proposals
++^^^^^^^^^^^^^^^^
 +
-+	val = simple_strtoul(str, &str, 0);
++As mentioned in `Usage`_ section, various API proposals are listed here:
 +
-+	if (val == 0)
-+		static_branch_disable(&sched_core_irq_pause);
++- ``prctl`` : We can pass in a tag and all tasks with same tag set by prctl forms
++  a trusted group.
 +
-+	return 1;
-+}
-+__setup("sched_core_irq_pause=", set_sched_core_irq_pause);
-+#endif
++- ``sched_setattr`` : Similar to prctl, but has the advantage that tasks could be
++  tagged by other tasks with appropriate permissions.
 +
- asmlinkage __visible void __softirq_entry __do_softirq(void)
- {
- 	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
-@@ -273,6 +291,16 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
- 	/* Reset the pending bitmask before enabling irqs */
- 	set_softirq_pending(0);
- 
-+#ifdef CONFIG_SCHED_CORE_IRQ_PAUSE
-+	/*
-+	 * Core scheduling mitigations require entry into softirq to send stall
-+	 * IPIs to sibling hyperthreads if needed (ex, sibling is running
-+	 * untrusted task). If we are here from irq_exit(), no IPIs are sent.
-+	 */
-+	if (static_branch_likely(&sched_core_irq_pause))
-+		sched_core_irq_enter();
-+#endif
++- ``Auto Tagging`` : Related tasks are tagged automatically. Relation could be,
++  threads of the same process, tasks by a user, group or session etc.
 +
- 	local_irq_enable();
- 
- 	h = softirq_vec;
-@@ -305,6 +333,12 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
- 		rcu_softirq_qs();
- 	local_irq_disable();
- 
-+#ifdef CONFIG_SCHED_CORE_IRQ_PAUSE
-+	/* Inform the scheduler about exit from softirq. */
-+	if (static_branch_likely(&sched_core_irq_pause))
-+		sched_core_irq_exit();
-+#endif
++- Dedicated cgroup or procfs/sysfs interface for grouping trusted tasks. This could
++  be combined with prctl/sched_setattr as well.
 +
- 	pending = local_softirq_pending();
- 	if (pending) {
- 		if (time_before(jiffies, end) && !need_resched() &&
-@@ -345,6 +379,12 @@ asmlinkage __visible void do_softirq(void)
- void irq_enter(void)
- {
- 	rcu_irq_enter();
++2. Auto-tagging of KVM vCPU threads
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++To make configuration easier, it would be great if KVM auto-tags vCPU threads
++such that a given VM only trusts other vCPUs of the same VM. Or something more
++aggressive like assiging a vCPU thread a unique tag.
 +
-+#ifdef CONFIG_SCHED_CORE_IRQ_PAUSE
-+	if (static_branch_likely(&sched_core_irq_pause))
-+		sched_core_irq_enter();
-+#endif
++3. Auto-tagging of processes by default
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++Currently core scheduling does not prevent 'unconfigured' tasks from being
++co-scheduled on the same core. In other words, everything trusts everything
++else by default. If a user wants everything default untrusted, a CONFIG option
++could be added to assign every task with a unique tag by default.
 +
- 	if (is_idle_task(current) && !in_interrupt()) {
- 		/*
- 		 * Prevent raise_softirq from needlessly waking up ksoftirqd
-@@ -413,6 +453,12 @@ void irq_exit(void)
- 		invoke_softirq();
- 
- 	tick_irq_exit();
++4. Auto-tagging on fork
++^^^^^^^^^^^^^^^^^^^^^^^
++Currently, on fork a thread is added to the same trust-domain as the parent. For
++systems which want all tasks to have a unique tag, it could be desirable to assign
++a unique tag to a task so that the parent does not trust the child by default.
 +
-+#ifdef CONFIG_SCHED_CORE_IRQ_PAUSE
-+	if (static_branch_likely(&sched_core_irq_pause))
-+		sched_core_irq_exit();
-+#endif
-+
- 	rcu_irq_exit();
- 	 /* must be last! */
- 	lockdep_hardirq_exit();
++5. Skipping per-HT mitigations if task is trusted
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++If core scheduling is enabled, by default all tasks trust each other as
++mentioned above. In such scenario, it may be desirable to skip the same-HT
++mitigations on return to the trusted user-mode to improve performance.
+diff --git a/Documentation/admin-guide/hw-vuln/index.rst b/Documentation/admin-guide/hw-vuln/index.rst
+index ca4dbdd9016d..f12cda55538b 100644
+--- a/Documentation/admin-guide/hw-vuln/index.rst
++++ b/Documentation/admin-guide/hw-vuln/index.rst
+@@ -15,3 +15,4 @@ are configurable at compile, boot or run time.
+    tsx_async_abort
+    multihit.rst
+    special-register-buffer-data-sampling.rst
++   core-scheduling.rst
 -- 
 2.17.1
 
