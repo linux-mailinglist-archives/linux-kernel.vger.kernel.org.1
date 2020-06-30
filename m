@@ -2,107 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCC020FF57
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2DE20FF5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729788AbgF3Vhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 17:37:41 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:52816 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726907AbgF3Vhl (ORCPT
+        id S1729876AbgF3Vls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 17:41:48 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:32278 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726831AbgF3Vls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 17:37:41 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id D52471C0C0F; Tue, 30 Jun 2020 23:37:38 +0200 (CEST)
-Date:   Tue, 30 Jun 2020 23:37:38 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     kernel list <linux-kernel@vger.kernel.org>,
-        chris@chris-wilson.co.uk, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com
-Subject: 5.8-rc2: X hangs due to drm problem (on thinkpad x220)
-Message-ID: <20200630213738.GA6288@duo.ucw.cz>
+        Tue, 30 Jun 2020 17:41:48 -0400
+X-UUID: 451adc818a6b41f58505f996fb0cc72f-20200701
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=my6niiLx0nSCCSrHDeMum2DvSxJq/ewHLuqNctNA8Dw=;
+        b=jyYJZQ9M9uLaWb8ieiKNYR3VipyDLMNsHY6ZZ3DT67ZbfhbWLYZCFjLx/tMeCU/lSSQcj33HWFYZ30MQ0Zf+UDL5sgL9nl4Cbd0wVzJENpgzE7mf/BnWIPpYZfBwp4CSMZzIrX4EvSsVkI/gsMJigXODK4FGQa5IOoGSC7KvnTA=;
+X-UUID: 451adc818a6b41f58505f996fb0cc72f-20200701
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        (envelope-from <sean.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 395041119; Wed, 01 Jul 2020 05:41:41 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 1 Jul 2020 05:41:39 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 1 Jul 2020 05:41:36 +0800
+From:   <sean.wang@mediatek.com>
+To:     <lorenzo@kernel.org>
+CC:     <nbd@nbd.name>, <Sean.Wang@mediatek.com>,
+        <lorenzo.bianconi@redhat.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <Ryder.Lee@mediatek.com>,
+        <linux-wireless@vger.kernel.org>,
+        Sean Wang <sean.wang@mediatek.com>
+Subject: Re: [PATCH 1/3] mt76: mt7663u: fix memory leak in set key
+Date:   Wed, 1 Jul 2020 05:41:37 +0800
+Message-ID: <1593553297-25352-1-git-send-email-sean.wang@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
+In-Reply-To: <20200630072429.GD2169@localhost.localdomain>
+References: <20200630072429.GD2169@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="J/dobhs11T7y2rNN"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 2C9B81AFE1CDC18AA22159E30B7F248C76E4B6EC919E3865F543F070162C8ACD2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+RnJvbTogU2VhbiBXYW5nIDxzZWFuLndhbmdAbWVkaWF0ZWsuY29tPg0KDQpUaGFua3MsIEknbGwg
+aGF2ZSB0aGUgbmV4dCB2ZXJzaW9uIHRvIHJlbW92ZSB0aGUgdW5uZWVkZWQga2ZyZWUuDQoNCj4N
+Cj4+ICsNCj4+ICsJcmV0dXJuIGVycjsNCj4+ICB9DQo+Pg0KPj4gIHZvaWQgbXQ3NjYzdV93dGJs
+X3dvcmsoc3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKQ0K
 
---J/dobhs11T7y2rNN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-
-[221198.058766] oom-kill:constraint=3DCONSTRAINT_NONE,nodemask=3D(null),tas=
-k=3Dchromium,pid=3D3612,uid=3D1000
-[221198.058804] Out of memory: Killed process 3612 (chromium) total-vm:2677=
-236kB, anon-rss:95868kB, file-rss:0kB, shmem-rss:1390212kB, UID:1000 pgtabl=
-es:4104kB oom_score_adj:200
-[221198.123441] oom_reaper: reaped process 3612 (chromium), now anon-rss:16=
-kB, file-rss:0kB, shmem-rss:1380368kB
-[223149.407523] perf: interrupt took too long (10405 > 10375), lowering ker=
-nel.perf_event_max_sample_rate to 19000
-[223351.853087] perf: interrupt took too long (13074 > 13006), lowering ker=
-nel.perf_event_max_sample_rate to 15250
-[223652.320162] perf: interrupt took too long (16350 > 16342), lowering ker=
-nel.perf_event_max_sample_rate to 12000
-[223998.558829] perf: interrupt took too long (20625 > 20437), lowering ker=
-nel.perf_event_max_sample_rate to 9500
-[224119.659585] Adding 1681428k swap on /dev/sda1.  Priority:-2 extents:1 a=
-cross:1681428k=20
-[224452.285193] perf: interrupt took too long (25999 > 25781), lowering ker=
-nel.perf_event_max_sample_rate to 7500
-[225248.349100] i915 0000:00:02.0: [drm] Resetting chip for stopped heartbe=
-at on rcs0
-[225248.452665] i915 0000:00:02.0: [drm] chromium[719] context reset due to=
- GPU hang
-
-Ok, so... cat drm/card0/error, they said? Well... no. It says "can not
-allocate memory". Swap is unused and there are 3.5G free AFAICT.
-
-pavel@duo:~$ sudo cat /sys/devices/pci0000:00/0000:00:02.0/drm/card0/error
-cat: '/sys/devices/pci0000:00/0000:00:02.0/drm/card0/error': Cannot allocat=
-e memory
-
-pavel@duo:~$ free
-              total        used        free      shared  buff/cache   avail=
-able
-Mem:        5973704     1802036      987008      430904     3184660     365=
-4380
-Swap:       1681428           8     1681420
-
-(And yes, this is same machine from [Intel-gfx] v5.8-rc1 on thinkpad
-x220, intel graphics: interface frozen, can still switch to text
-console thread, and hang looks very similar).
-
-Any ideas?
-
-Is it possible that there's some kind of memory leak in graphics
-subsystem? I suspected leak in chromium, but this time I restarted
-chromium, and did swapoff / swapon, and machine was ... still pretty
-unusable, culminating with hang of graphics. Text console still works.
-
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---J/dobhs11T7y2rNN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXvuwogAKCRAw5/Bqldv6
-8vh8AJ4scbz0dhJv1T0im0HIMLjhltwH+QCfY8flqZQMd46etkq2GXhhfdtx/hE=
-=q1QL
------END PGP SIGNATURE-----
-
---J/dobhs11T7y2rNN--
