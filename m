@@ -2,83 +2,392 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453A420F0BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFDD20F0C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731668AbgF3Ipu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 04:45:50 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:52745 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731635AbgF3Ipt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 04:45:49 -0400
+        id S1731671AbgF3Ip7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 04:45:59 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:13974 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731592AbgF3Ipy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 04:45:54 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593506748; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=rAKtccetH34TV6x/upG9acuC1zVPFGS1zzbOIvOup1g=; b=UuSCTSw6VBnFVqEhc82YooldmPAFnTdVuq2PvKrZtxJjYM94JdqlKsDJSBtiyPitnhnEe5hN
- wGG9UAW0lP67ZtFLpVqlrq1FywM/hShzUB62oagkDJubPFAZ503TD4BB6Thli5p3Ne+vq1Dj
- Iu0+aV1g8sdEZVkofQdWJrtcnJw=
-X-Mailgun-Sending-Ip: 69.72.43.7
+ s=smtp; t=1593506753; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=l9ItpkNgEFg7AW5D6ruwHuUdehgxWiwYJLmtblpRJqo=; b=YUZKfYHW0tL52z6qFszTvzPKfB+dJl3lWDiFB4GhYpfB4Doiamjovnt/Xe0nD6vpWZbkFpIk
+ XbOBZUQAHQ8jBMijzXbT+aRJfqOmeS72fzDrB/XDp6FBBnRjE24tA2gNacpWMpAIgBm4urHz
+ X1SYn9SmVcHZNO0EKRiGQwtsTmE=
+X-Mailgun-Sending-Ip: 104.130.122.29
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
- 5efafbac86de6ccd44db6f96 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Jun 2020 08:45:32
+ smtp-out-n19.prod.us-east-1.postgun.com with SMTP id
+ 5efafbb08fe116ddd9dc8385 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Jun 2020 08:45:36
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DAF28C43395; Tue, 30 Jun 2020 08:45:31 +0000 (UTC)
+        id 63A3FC433CB; Tue, 30 Jun 2020 08:45:35 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3C108C433C8;
-        Tue, 30 Jun 2020 08:45:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3C108C433C8
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DFD56C433A0;
+        Tue, 30 Jun 2020 08:45:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DFD56C433A0
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
 From:   Rajendra Nayak <rnayak@codeaurora.org>
 To:     agross@kernel.org, bjorn.andersson@linaro.org
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, mka@chromium.org,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH 0/4] sdm845/sc7180: Add OPP tables to support IO DVFS
-Date:   Tue, 30 Jun 2020 14:15:08 +0530
-Message-Id: <1593506712-24557-1-git-send-email-rnayak@codeaurora.org>
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Subject: [PATCH 1/4] arm64: dts: sdm845: Add OPP table for all qup devices
+Date:   Tue, 30 Jun 2020 14:15:09 +0530
+Message-Id: <1593506712-24557-2-git-send-email-rnayak@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1593506712-24557-1-git-send-email-rnayak@codeaurora.org>
+References: <1593506712-24557-1-git-send-email-rnayak@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Driver changes to support DVFS for sdhc and qup (uart and spi) have been merged.
-Add OPP tables and power-domains in device tree to enable support for
-DVFS in these devices, on sdm845 and sc7180 SoC platforms.
+qup has a requirement to vote on the performance state of the CX domain
+in sdm845 devices. Add OPP tables for these and also add power-domains
+property for all qup instances for uart and spi.
+i2c does not support scaling and uses a fixed clock.
 
-These were posted earlier and reviewed [1] and later dropped by me to first
-get the driver changes merged in.
-The last outstanding comment on these was from Matthias to move the
-OPP tables inside of the node which uses them. I have done that for sdhc,
-but left the qup tables outside as its a common table used across many
-nodes, and it just gets more confusing adding it elsewhere.
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 83 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 83 insertions(+)
 
-Patches are rebased and should apply cleanly on for-next of the msm tree.
-
-[1] https://lkml.org/lkml/2020/4/28/561
-
-Rajendra Nayak (4):
-  arm64: dts: sdm845: Add OPP table for all qup devices
-  arm64: dts: sc7180: Add OPP table for all qup devices
-  arm64: dts: sdm845: Add sdhc opps and power-domains
-  arm64: dts: sc7180: Add sdhc opps and power-domains
-
- arch/arm64/boot/dts/qcom/sc7180.dtsi |  91 +++++++++++++++++++++++++++++
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 109 +++++++++++++++++++++++++++++++++++
- 2 files changed, 200 insertions(+)
-
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index 8eb5a31..db1f82b 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -805,6 +805,25 @@
+ 			clock-names = "core";
+ 		};
+ 
++		qup_opp_table: qup-opp-table {
++			compatible = "operating-points-v2";
++
++			opp-19200000 {
++				opp-hz = /bits/ 64 <19200000>;
++				required-opps = <&rpmhpd_opp_min_svs>;
++			};
++
++			opp-75000000 {
++				opp-hz = /bits/ 64 <75000000>;
++				required-opps = <&rpmhpd_opp_low_svs>;
++			};
++
++			opp-100000000 {
++				opp-hz = /bits/ 64 <100000000>;
++				required-opps = <&rpmhpd_opp_svs>;
++			};
++		};
++
+ 		qupv3_id_0: geniqup@8c0000 {
+ 			compatible = "qcom,geni-se-qup";
+ 			reg = <0 0x008c0000 0 0x6000>;
+@@ -839,6 +858,8 @@
+ 				interrupts = <GIC_SPI 601 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -850,6 +871,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart0_default>;
+ 				interrupts = <GIC_SPI 601 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -876,6 +899,8 @@
+ 				interrupts = <GIC_SPI 602 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -887,6 +912,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart1_default>;
+ 				interrupts = <GIC_SPI 602 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -913,6 +940,8 @@
+ 				interrupts = <GIC_SPI 603 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -924,6 +953,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart2_default>;
+ 				interrupts = <GIC_SPI 603 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -950,6 +981,8 @@
+ 				interrupts = <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -961,6 +994,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart3_default>;
+ 				interrupts = <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -987,6 +1022,8 @@
+ 				interrupts = <GIC_SPI 605 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -998,6 +1035,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart4_default>;
+ 				interrupts = <GIC_SPI 605 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1024,6 +1063,8 @@
+ 				interrupts = <GIC_SPI 606 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1035,6 +1076,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart5_default>;
+ 				interrupts = <GIC_SPI 606 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1061,6 +1104,8 @@
+ 				interrupts = <GIC_SPI 607 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1072,6 +1117,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart6_default>;
+ 				interrupts = <GIC_SPI 607 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1098,6 +1145,8 @@
+ 				interrupts = <GIC_SPI 608 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1109,6 +1158,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart7_default>;
+ 				interrupts = <GIC_SPI 608 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 		};
+@@ -1147,6 +1198,8 @@
+ 				interrupts = <GIC_SPI 353 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1158,6 +1211,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart8_default>;
+ 				interrupts = <GIC_SPI 353 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1184,6 +1239,8 @@
+ 				interrupts = <GIC_SPI 354 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1195,6 +1252,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart9_default>;
+ 				interrupts = <GIC_SPI 354 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1221,6 +1280,8 @@
+ 				interrupts = <GIC_SPI 355 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1232,6 +1293,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart10_default>;
+ 				interrupts = <GIC_SPI 355 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1258,6 +1321,8 @@
+ 				interrupts = <GIC_SPI 356 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1269,6 +1334,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart11_default>;
+ 				interrupts = <GIC_SPI 356 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1295,6 +1362,8 @@
+ 				interrupts = <GIC_SPI 357 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1306,6 +1375,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart12_default>;
+ 				interrupts = <GIC_SPI 357 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1332,6 +1403,8 @@
+ 				interrupts = <GIC_SPI 358 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1343,6 +1416,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart13_default>;
+ 				interrupts = <GIC_SPI 358 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1369,6 +1444,8 @@
+ 				interrupts = <GIC_SPI 359 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1380,6 +1457,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart14_default>;
+ 				interrupts = <GIC_SPI 359 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1406,6 +1485,8 @@
+ 				interrupts = <GIC_SPI 360 IRQ_TYPE_LEVEL_HIGH>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1417,6 +1498,8 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&qup_uart15_default>;
+ 				interrupts = <GIC_SPI 360 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SDM845_CX>;
++				operating-points-v2 = <&qup_opp_table>;
+ 				status = "disabled";
+ 			};
+ 		};
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
 of Code Aurora Forum, hosted by The Linux Foundation
