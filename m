@@ -2,90 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5552620FC82
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 21:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D80020FC8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 21:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726922AbgF3TNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 15:13:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726324AbgF3TNH (ORCPT
+        id S1727004AbgF3TQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 15:16:14 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:29496 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725862AbgF3TQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 15:13:07 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D3BC061755;
-        Tue, 30 Jun 2020 12:13:06 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id g2so12060037lfb.0;
-        Tue, 30 Jun 2020 12:13:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qh5qpq0DRF5ItkAziSeZrTjhiLljM/TKCiqFCudwnKM=;
-        b=XOd0G8vhwKM7selbWtFimmDM/t7yIBdIbFHaIpaOZDjzlFp/okhd6dlzL/sbJGEbQX
-         pcAsfzq7TpGSA68FtpbIm5sxxeIin/i9ENVGMlnKvFiYwh69RUnFvt4qWuVG/My88Vy7
-         gtCLu7aUzXUEKTUcBSbxBJ4mg2fYWpRRXukG7mvtoL7NRog9XjT9XBS5dcJZ3Xs0Mr6W
-         4EGLzQ9CJ9PI0CAcePP6J7OMOfXMBWh5f1e2cBDXK/U959+zti4VXqIRRwfXGVb0wHcc
-         3+DJWEsAwwuJq8UOnEqbXMk0AHa+4XDV9TlIjeZLofvXlMsCfzOzaX57ZD+CbGjjorYn
-         xsHQ==
+        Tue, 30 Jun 2020 15:16:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593544571;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:in-reply-to:in-reply-to:  references:references;
+        bh=Mwn+YbY3lCFD0nRhYZ0J/9ZQb28iUEBrVkjj0x5okkw=;
+        b=ejk0jYimK5o3BZkJ7Nkk53GnQPl4pXyuz26lTycrqdcbO05hbM5xAA+qRTXDbhfcK1b+Bh
+        Bg7V0vKeZeZ7Yacih3W14l2NpDKyHjV2JJCnum+p6Wt5Ej8YkmguSBA/zN5O3yPUWhC+Ma
+        OxI5Eoq/AQsrAr4bDkT7/sr69bvzjwk=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-151-mOSIwN6xP3u9d9Z16cLovQ-1; Tue, 30 Jun 2020 15:15:18 -0400
+X-MC-Unique: mOSIwN6xP3u9d9Z16cLovQ-1
+Received: by mail-qk1-f198.google.com with SMTP id 13so503941qks.11
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 12:15:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qh5qpq0DRF5ItkAziSeZrTjhiLljM/TKCiqFCudwnKM=;
-        b=ecFhUsPzaf5JI0U8iBZmtd+l5F6sXjV5U/Zd0FZGnvdLuxJWecMkv39RE1kzINFjDC
-         imqXE9Ku2ixDAMDG+gk1Hkc3BeSgb4Dxv1aQds9vAM8rK0kTFkEmosqHwtnxbrz1wCN1
-         FNaQ+ap16s6nv0Qno76npNcabIPMwoHRnKlxU5IjsFZXpKY6W1tkRnBenH8pxtWLf7PO
-         Di9Ln+EXTsgGFGkLR9JRZdBA+r0ZgdRdala4qFgDTV90jFHX7boJDOhtfQvL527Vgl+j
-         h58yDTJYmfWBwjDTK1oj05HWM6NGaNUw3M4nfRC4tVhnRt2kGdK1E9fkLp83EOd/4wME
-         X3Ag==
-X-Gm-Message-State: AOAM533au4Y+SJf9QwpYQlrG4KTuBHTaC76UV28r6q27VzG/TtGMz2EE
-        DGiIr7ogzaKjni21QyY1nkBQ8uYFDfIE7LbQxcoTaQ==
-X-Google-Smtp-Source: ABdhPJwQe6pLq/YzqmjnIc7IaWJPawPhkGrywWgSTur5Pcmb3rRRjEPqThtHf7kj9EHlaRsXb/uVLoOMP4jScwen3IY=
-X-Received: by 2002:ac2:46f0:: with SMTP id q16mr12862291lfo.51.1593544385174;
- Tue, 30 Jun 2020 12:13:05 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=Mwn+YbY3lCFD0nRhYZ0J/9ZQb28iUEBrVkjj0x5okkw=;
+        b=DoVNBRVi5wBJJXqg2NGa9Ue567D4Wmy75VR+cIpDpKIHVBhVfPVNVFX11tDugRtGfW
+         V/Ns6xxJzXpB0U7w9+IZcSiJgXMhjhA6V/DT3pp7Xje7EXhaupVInvGdHmFBKtgPzzte
+         wsM4kakkHeSUcGBEEZxvzhzPvlGcKLEZxOUJZtqSMMu02CMT4fQl0uHYTdObJGALMD+c
+         nbuR749jNlA4CmAcKpQtR4j0eaKNTW61pTj5kPKIfKmDQSfVKXD18T6Fh+kZb1uz0c8p
+         2KiqepRvdvEOClIS5UDQNHTb15rIi8ZSd/H0pObs7UJmAebSUTGilm/S+RiuwRQg8X58
+         pa4g==
+X-Gm-Message-State: AOAM531Fvx2/Zu8t7b90zW19zskRT15s/7P8v5TYUbFLWJlUOn/FQHtx
+        fNRqLotui7VmQ2I4+sJI0rS/0F/n5vvGT/uSZ73RIocZsjQPliFj6AHeuFz2YxEMXShKfueiquI
+        N2aPBvLreG8GSUM62OzIM1zZO
+X-Received: by 2002:ac8:b4c:: with SMTP id m12mr1796489qti.321.1593544517990;
+        Tue, 30 Jun 2020 12:15:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwHjEeEV/Zp7eB4dHo6T90utCK96FWHB2uNZoUKDQzH4ehEwW36m6TcSOBtvR80+MWgIMg8vw==
+X-Received: by 2002:ac8:b4c:: with SMTP id m12mr1796465qti.321.1593544517659;
+        Tue, 30 Jun 2020 12:15:17 -0700 (PDT)
+Received: from localhost (ip70-163-223-149.ph.ph.cox.net. [70.163.223.149])
+        by smtp.gmail.com with ESMTPSA id u6sm3840440qtc.34.2020.06.30.12.15.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 12:15:16 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 12:15:15 -0700
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-integrity@vger.kernel.org,
+        Kylene Jo Hall <kjhall@us.ibm.com>,
+        "Ferry Toth :" <ferry.toth@elsinga.info>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@osdl.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] tpm_tis: Remove the HID IFX0102
+Message-ID: <20200630191515.m3hi6gmn4ya7hvji@cantor>
+Reply-To: Jerry Snitselaar <jsnitsel@redhat.com>
+Mail-Followup-To: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        linux-integrity@vger.kernel.org, Kylene Jo Hall <kjhall@us.ibm.com>,
+        "Ferry Toth :" <ferry.toth@elsinga.info>,
+        Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@osdl.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200625023111.270458-1-jarkko.sakkinen@linux.intel.com>
+ <20200625062150.idm6j3vm2neyt4sh@cantor>
+ <20200625210202.GA20341@linux.intel.com>
+ <20200625211923.2jirvix6zbrbgj6e@cantor>
+ <20200626130851.GA7853@linux.intel.com>
 MIME-Version: 1.0
-References: <20200629085911.1676554-1-masahiroy@kernel.org>
- <CAKwvOd=qe5KE1vdUYQmpsW2zmDbk5i-MgRujs9B7wqnAj+af0w@mail.gmail.com> <CAK7LNAR49jFZkEmBqpACE0V_-VyCXfFRcKe1Zq+cqO65QX1ozg@mail.gmail.com>
-In-Reply-To: <CAK7LNAR49jFZkEmBqpACE0V_-VyCXfFRcKe1Zq+cqO65QX1ozg@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 30 Jun 2020 21:12:54 +0200
-Message-ID: <CANiq72nE+1F3yM+e9XzfphzOe3mb9DUcRCAtPuLMyFE4Rh38pg@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: make Clang build userprogs for target architecture
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200626130851.GA7853@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 6:26 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Fri Jun 26 20, Jarkko Sakkinen wrote:
+>On Thu, Jun 25, 2020 at 02:19:23PM -0700, Jerry Snitselaar wrote:
+>> On Fri Jun 26 20, Jarkko Sakkinen wrote:
+>> > On Wed, Jun 24, 2020 at 11:21:50PM -0700, Jerry Snitselaar wrote:
+>> > > On Thu Jun 25 20, Jarkko Sakkinen wrote:
+>> > > > Acer C720 running Linux v5.3 reports this in klog:
+>> > > >
+>> > > > tpm_tis: 1.2 TPM (device-id 0xB, rev-id 16)
+>> > > > tpm tpm0: tpm_try_transmit: send(): error -5
+>> > > > tpm tpm0: A TPM error (-5) occurred attempting to determine the timeouts
+>> > > > tpm_tis tpm_tis: Could not get TPM timeouts and durations
+>> > > > tpm_tis 00:08: 1.2 TPM (device-id 0xB, rev-id 16)
+>> > > > tpm tpm0: tpm_try_transmit: send(): error -5
+>> > > > tpm tpm0: A TPM error (-5) occurred attempting to determine the timeouts
+>> > > > tpm_tis 00:08: Could not get TPM timeouts and durations
+>> > > > ima: No TPM chip found, activating TPM-bypass!
+>> > > > tpm_inf_pnp 00:08: Found TPM with ID IFX0102
+>> > > >
+>> > > > % git --no-pager grep IFX0102 drivers/char/tpm
+>> > > > drivers/char/tpm/tpm_infineon.c:	{"IFX0102", 0},
+>> > > > drivers/char/tpm/tpm_tis.c:	{"IFX0102", 0},		/* Infineon */
+>> > > >
+>> > > > Obviously IFX0102 was added to the HID table for the TCG TIS driver by
+>> > > > mistake.
+>> > > >
+>> > > > Fixes: 93e1b7d42e1e ("[PATCH] tpm: add HID module parameter")
+>> > > > Link: https://bugzilla.kernel.org/show_bug.cgi?id=203877
+>> > > > Cc: Kylene Jo Hall <kjhall@us.ibm.com>
+>> > > > Reported-by: Ferry Toth: <ferry.toth@elsinga.info>
+>> > > > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+>> > >
+>> > > Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+>> >
+>> > Bugzilla has an example of similar behavior with v4.15. I'll apply this
+>> > asap.
+>> >
+>> > /Jarkko
+>> >
+>>
+>> Any idea what happened to git.infradead.org? It was offline the other day,
+>> and at the moment not all repos from before seem to be there.
 >
-> I can reproduce this in the following
-> simple test code:
+>Now the kernel tree is back online.
 >
+>/Jarkko
 >
-> ----------------->8----------------
-> #include <stdio.h>
->
-> int main(void)
-> {
->         ssize_t x = 1;
->
->         printf("%zd", x);
->
->         return 0;
-> }
-> --------------->8-------------------
 
-That is the old implicit int rule. Try including sys/types.h or
-compiling with a standard like -std=c99 for instance.
+Hi Jarkko, I still see your linux-tpmdd repository as not being online:
 
-Cheers,
-Miguel
+git remote show tpmdd
+fatal: remote error: access denied or repository not exported: /users/jjs/linux-tpmdd.git
+
+Regards,
+Jerry
+
