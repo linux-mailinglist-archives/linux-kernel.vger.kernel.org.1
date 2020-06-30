@@ -2,234 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5861F20FFC5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 00:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D0220FFDD
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 00:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726177AbgF3WAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 18:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38718 "EHLO
+        id S1726203AbgF3WGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 18:06:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725845AbgF3WAG (ORCPT
+        with ESMTP id S1726074AbgF3WGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 18:00:06 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC87C061755;
-        Tue, 30 Jun 2020 15:00:05 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id i14so22246340ejr.9;
-        Tue, 30 Jun 2020 15:00:05 -0700 (PDT)
+        Tue, 30 Jun 2020 18:06:44 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 444F6C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 15:06:44 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id i4so10112740pjd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 15:06:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YFQlDTghlkbpqPTlqYX4IEPkU3DdZpQuqq3tMuWnogA=;
-        b=uM7mB6nSzZ9YKykxHJrlBz8Z48Udfh8xpMtjW6EtSz6JnH/LaAQ0/9HsBTTUEMNU0d
-         eu7LL0JmSrnIS3HoIDQtiSCrtcF0ff0DqKarMfomM7JVF316RCKaGnvaQRQBWn9Mxgd2
-         RfxoY22uujR2ef6RXQqZK952Nv9LpVxT+UQ0Or8tYHaKqOLLabyoYpXieNA0HSL2QiwI
-         q9bib5a8rcz8YVIVN0l+zmop/AO9dZUfF+JAaTXGId2dq7HJtQ7doJf8um/O2XgQR9/o
-         sZPpC6UHcc2+IsGMU/IGlEyDDIT/lnKeystZ0bM2NFLFRIQbZUID6mS+JcG0QlJqPUPP
-         ENVw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JRbK+0YHHIIsxTnbZ87llwjlpqpRQpEg9t8681tVnaU=;
+        b=P1jN7hrTy263FT44RDpDA65u3Rpzfknem+XD+OMM/9oElVw4mULSi4D0lEO0eRmOKF
+         Jpl22NVra0Z4yS6qM/4cEqrsqHE11VDz0LW/TJdwENjM1XKwAxuc/zx6jHtYKPYVcPNc
+         bJ7DBiyCYCw9FVrxk51YTI/1Jr9v5yYigqgM/V/5y6GrMWXfD1H5uF9L+FlTvRT/dgtf
+         J9wm9fmOxRDyaq52BfrTDqEBgkYyr7pErzDIR0IPGZIoHHi/1vmIek/VZuJjyz9UlOxn
+         W8TJsKUJJGU5n71KbMM76zZ4x8usO3ozwR7Kp/9dVjoMdwJpAkFF0Wgl3Wv5kKl6u8NI
+         el8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YFQlDTghlkbpqPTlqYX4IEPkU3DdZpQuqq3tMuWnogA=;
-        b=jd0IPQYdymLyEwmmbcm9RpPi+6n/6p5ndcYucjpdjgfAzT1Axp5RI2haSf+ZsW3HZt
-         srLAPbHFJlRo/wULXvJ3lW/0aCjffJro9PSyRj/pRGSPGhKoVeyuEJYefRg1yGJKuRAX
-         ckWay5rBAHHCkRiBgVrAaNbQ8A9MdVqePueHDkn9nvu+Hk5hblJ1h17KycdE60fvuoMk
-         OxCdnXNtyLtLqGytJMSa1mv5nsqQlJti4UQLSrzEEzQqPlHjNOQWOBlvd/To9Hv+7FuC
-         dzVaY8lz8GLX+hupoeSmE0Jrr9ybhmWNfomw4PBIbTQQJQElhOFqKth2YxyIwHU3mc8A
-         jkgQ==
-X-Gm-Message-State: AOAM533xJseVXeAUHlAx7+40Uow6ZPuaO8z1ukS+VrsKZsUmPBc5176U
-        RlRvZKgQDVynf0Zw3qVrgaE=
-X-Google-Smtp-Source: ABdhPJwb21fJPOORLVvALB66TC9K+b0XWQvEKPRO8p5hquCLfTsC2G7WYqHBhsIQtyBKN9dh4OUmkw==
-X-Received: by 2002:a17:906:694d:: with SMTP id c13mr19281327ejs.337.1593554400137;
-        Tue, 30 Jun 2020 15:00:00 -0700 (PDT)
-Received: from ubuntu-laptop (ip5f5bfcc0.dynamic.kabel-deutschland.de. [95.91.252.192])
-        by smtp.googlemail.com with ESMTPSA id d5sm4316826eds.40.2020.06.30.14.59.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 30 Jun 2020 14:59:59 -0700 (PDT)
-Message-ID: <e6747623cd82152a7175d5fb1e1fd1a1cbd1d5f6.camel@gmail.com>
-Subject: Re: [RFC PATCH v3 0/5] scsi: ufs: Add Host Performance Booster
- Support
-From:   Bean Huo <huobean@gmail.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Date:   Tue, 30 Jun 2020 23:59:58 +0200
-In-Reply-To: <SN6PR04MB46409E7CE538F158387615A6FC6F0@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <60647cf00d9db6818488a714b48b9b6e2a1eb728.camel@gmail.com>
-         <948f573d136b39410f7d610e5019aafc9c04fe62.camel@gmail.com>
-         <963815509.21592879582091.JavaMail.epsvc@epcpadp2>
-         <336371513.41593411482259.JavaMail.epsvc@epcpadp2>
-         <CGME20200623010201epcms2p11aebdf1fbc719b409968cba997507114@epcms2p1>
-         <231786897.01593479281798.JavaMail.epsvc@epcpadp2>
-         <SN6PR04MB46409E7CE538F158387615A6FC6F0@SN6PR04MB4640.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JRbK+0YHHIIsxTnbZ87llwjlpqpRQpEg9t8681tVnaU=;
+        b=W8QlVARmdLl3goydo3Ldaduklw2+lZtXC9XGhIeN38qUay9yAp8eDsg7w6fi68cgxi
+         UsSsk5d1LM3hS0bra2dZImCx8ibQiQI1pEUIkJuIWMjC1OgV0nZnUxK0il4mQVp9Egmi
+         Fmo2+4gK5Q0O8WNrgi3aqt0w6DArR8romAbq153TjzRlgsbSWBqEZlIh+XD9onA7CjjM
+         tN732zIB6sGvhJHwOyd8sXTbKD3ujvvcv8Gbkmse/N9o9K5r5cjzNUEShlKB4F11wvd1
+         IiKjKrZKXkyZ8lYV+wGbauC3E0Z0ZvplfXyenFq46io2R2JksErCQQT+ILrqsvIATU0P
+         1htA==
+X-Gm-Message-State: AOAM53368wqH/f8njQrI4Kbd6AVsGseUqcBUPlhMEZhL9lx5c9x/HN2u
+        pqAexjhhk/S9ebHwTP4eG+SBM4EpnmnJ5Q==
+X-Google-Smtp-Source: ABdhPJxDxtDfZTSAkX+NxphzmnffBhNbntenBaLW+fAJ6PwpAxKSAhUSQAvDZVk7p8m8JKlS3dSElw==
+X-Received: by 2002:a17:902:c697:: with SMTP id r23mr9815458plx.35.1593554447222;
+        Tue, 30 Jun 2020 15:00:47 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
+        by smtp.gmail.com with ESMTPSA id s131sm3658364pgc.30.2020.06.30.15.00.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 15:00:46 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 15:00:43 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H . J . Lu" <hjl@sourceware.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 7/7] x86/boot: Check that there are no runtime
+ relocations
+Message-ID: <20200630220043.4snabunhgvfdktte@google.com>
+References: <20200629140928.858507-8-nivedita@alum.mit.edu>
+ <202006290907.E5EF18A@keescook>
+ <CAMj1kXFge5aWL2BY8Y1=m1TonB+SrDq6p7TQWuO5JkzcR2dhjQ@mail.gmail.com>
+ <202006290919.93C759C62@keescook>
+ <20200629165603.GD900899@rani.riverdale.lan>
+ <20200629173735.l3ssrj7m3q5swfup@google.com>
+ <CAMj1kXHaXzYFkW_H=w36vMb1qPpuZXsnTd_giq4vsh0bw3S3eA@mail.gmail.com>
+ <20200629233405.n56yb4xwlgxrt3fn@google.com>
+ <CAMj1kXGTOdNiuU70pFB74UJ6z43AM-UViTSd3=ATV=94W+f1RA@mail.gmail.com>
+ <20200630175408.GA2301688@rani.riverdale.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200630175408.GA2301688@rani.riverdale.lan>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-06-30 at 06:39 +0000, Avri Altman wrote:
-> Hi,
->  
-> > 
-> > Hi Bean,
-> > > On Mon, 2020-06-29 at 15:15 +0900, Daejun Park wrote:
-> > > > > Seems you intentionally ignored to give you comments on my
-> > > > > suggestion.
-> > > > > let me provide the reason.
-> > > > 
-> > > > Sorry! I replied to your comment (
-> > > > https://protect2.fireeye.com/url?k=be575021-e3854728-be56db6e-
-> > 
-> > 0cc47a31cdf8-
-> > 6c7d0e1e42762b92&q=1&u=https%3A%2F%2Flkml.org%2Flkml%2F2020%2F6%
-> > 2F15%2F1492),
-> > > > but you didn't reply on that. I thought you agreed because you
-> > > > didn't
-> > > > send
-> > > > any more comments.
-> > > > 
-> > > > 
-> > > > > Before submitting your next version patch, please check your
-> > > > > L2P
-> > > > > mapping HPB reqeust submission logical algorithem. I have did
-> > > > 
-> > > > We are also reviewing the code that you submitted before.
-> > > > It seems to be a performance improvement as it sends a map
-> > > > request
-> > > > directly.
-> > > > 
-> > > > > performance comparison testing on 4KB, there are about 13%
-> > > > > performance
-> > > > > drop. Also the hit count is lower. I don't know if this is
-> > > > > related
-> > > > > to
-> > > > 
-> > > > It is interesting that there is actually a performance
-> > > > improvement.
-> > > > Could you share the test environment, please? However, I think
-> > > > stability is
-> > > > important to HPB driver. We have tested our method with the
-> > > > real
-> > > > products and
-> > > > the HPB 1.0 driver is based on that.
-> > > 
-> > > I just run fio benchmark tool with --rw=randread, --bs=4kb, --
-> > > size=8G/10G/64G/100G. and see what performance diff with the
-> > > direct
-> > > submission approach.
-> > 
-> > Thanks!
-> > 
-> > > > After this patch, your approach can be done as an incremental
-> > > > patch?
-> > > > I would
-> > > > like to test the patch that you submitted and verify it.
-> > > > 
-> > > > > your current work queue scheduling, since you didn't add the
-> > > > > timer
-> > > > > for
-> > > > > each HPB request.
-> > > 
-> > > Taking into consideration of the HPB 2.0, can we submit the HPB
-> > > write
-> > > request to the SCSI layer? if not, it will be a direct submission
-> > > way.
-> > > why not directly use direct way? or maybe you have a more
-> > > advisable
-> > > approach to work around this. would you please share with us.
-> > > appreciate.
-> > 
-> > I am considering a direct submission way for the next version.
-> > We will implement the write buffer command of HPB 2.0, after
-> > patching HPB
-> > 1.0.
-> > 
-> > As for the direct submission of HPB releated command including HPB
-> > write
-> > buffer, I think we'd better discuss the right approach in depth
-> > before
-> > moving on to the next step.
+* Ard Biesheuvel
+> On Tue, 30 Jun 2020 at 01:34, Fangrui Song <maskray@google.com> wrote:
+> >
+> > On 2020-06-29, Ard Biesheuvel wrote:
+> > >On Mon, 29 Jun 2020 at 19:37, Fangrui Song <maskray@google.com> wrote:
+> > >>
+> > >> On 2020-06-29, Arvind Sankar wrote:
+> > >> >On Mon, Jun 29, 2020 at 09:20:31AM -0700, Kees Cook wrote:
+> > >> >> On Mon, Jun 29, 2020 at 06:11:59PM +0200, Ard Biesheuvel wrote:
+> > >> >> > On Mon, 29 Jun 2020 at 18:09, Kees Cook <keescook@chromium.org> wrote:
+> > >> >> > >
+> > >> >> > > On Mon, Jun 29, 2020 at 10:09:28AM -0400, Arvind Sankar wrote:
+> > >> >> > > > Add a linker script check that there are no runtime relocations, and
+> > >> >> > > > remove the old one that tries to check via looking for specially-named
+> > >> >> > > > sections in the object files.
+> > >> >> > > >
+> > >> >> > > > Drop the tests for -fPIE compiler option and -pie linker option, as they
+> > >> >> > > > are available in all supported gcc and binutils versions (as well as
+> > >> >> > > > clang and lld).
+> > >> >> > > >
+> > >> >> > > > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > >> >> > > > Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+> > >> >> > > > Reviewed-by: Fangrui Song <maskray@google.com>
+> > >> >> > > > ---
+> > >> >> > > >  arch/x86/boot/compressed/Makefile      | 28 +++-----------------------
+> > >> >> > > >  arch/x86/boot/compressed/vmlinux.lds.S |  8 ++++++++
+> > >> >> > > >  2 files changed, 11 insertions(+), 25 deletions(-)
+> > >> >> > >
+> > >> >> > > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > >> >> > >
+> > >> >> > > question below ...
+> > >> >> > >
+> > >> >> > > > diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
+> > >> >> > > > index a4a4a59a2628..a78510046eec 100644
+> > >> >> > > > --- a/arch/x86/boot/compressed/vmlinux.lds.S
+> > >> >> > > > +++ b/arch/x86/boot/compressed/vmlinux.lds.S
+> > >> >> > > > @@ -42,6 +42,12 @@ SECTIONS
+> > >> >> > > >               *(.rodata.*)
+> > >> >> > > >               _erodata = . ;
+> > >> >> > > >       }
+> > >> >> > > > +     .rel.dyn : {
+> > >> >> > > > +             *(.rel.*)
+> > >> >> > > > +     }
+> > >> >> > > > +     .rela.dyn : {
+> > >> >> > > > +             *(.rela.*)
+> > >> >> > > > +     }
+> > >> >> > > >       .got : {
+> > >> >> > > >               *(.got)
+> > >> >> > > >       }
+> > >> >> > >
+> > >> >> > > Should these be marked (INFO) as well?
+> > >> >> > >
+> > >> >> >
+> > >> >> > Given that sections marked as (INFO) will still be emitted into the
+> > >> >> > ELF image, it does not really make a difference to do this for zero
+> > >> >> > sized sections.
+> > >> >>
+> > >> >> Oh, I misunderstood -- I though they were _not_ emitted; I see now what
+> > >> >> you said was not allocated. So, disk space used for the .got.plt case,
+> > >> >> but not memory space used. Sorry for the confusion!
+> > >> >>
+> > >> >> -Kees
+> > >>
+> > >> About output section type (INFO):
+> > >> https://sourceware.org/binutils/docs/ld/Output-Section-Type.html#Output-Section-Type
+> > >> says "These type names are supported for backward compatibility, and are
+> > >> rarely used."
+> > >>
+> > >> If all input section don't have the SHF_ALLOC flag, the output section
+> > >> will not have this flag as well. This type is not useful...
+> > >>
+> > >> If .got and .got.plt were used, they should be considered dynamic
+> > >> relocations which should be part of the loadable image. So they should
+> > >> have the SHF_ALLOC flag. (INFO) will not be applicable anyway.
+> > >>
+> > >
+> > >I don't care deeply either way, but Kees indicated that he would like
+> > >to get rid of the 24 bytes of .got.plt magic entries that we have no
+> > >need for.
+> > >
+> > >In fact, a lot of this mangling is caused by the fact that the linker
+> > >is creating a relocatable binary, and assumes that it is a hosted
+> > >binary that is loaded by a dynamic loader. It would actually be much
+> > >better if the compiler and linker would take -ffreestanding into
+> > >account, and suppress GOT entries, PLTs, dynamic program headers for
+> > >shared libraries altogether.
+> >
+> > Linkers (GNU ld and LLD) don't create .got or .got.plt just because the linker
+> > command line has -pie or -shared.  They create .got or .got.plt if there are
+> > specific needs.
+> >
+> > For .got.plt, if there is (1) any .plt/.iplt entry, (2) any .got.plt based
+> > relocation (e.g. R_X86_64_GOTPC32 on x86-64), or (3) if _GLOBAL_OFFSET_TABLE_ is
+> > referenced, .got.plt will be created (both GNU ld and LLD) with usually 3
+> > entries (for ld.so purposes).
+> >
 > 
-> I vote to stay with the current implementation because:
-> 1) Bean is probably right about 2.0, but it's out of scope for now - 
->     there is a long way to go before we'll need to worry about it
-> 2) For now, we should focus on the functional flows. 
->     Performance issues, should such issues indeed exists, can be
-> dealt with  later.  And,
-> 3) The current code base is running in production for more than 3
-> years now.
->      I am not so eager to dump a robust, well debugged code unless it
-> absolutely necessary.
+> This is not the case for AArch64. There, __GLOBAL_OFFSET_TABLE__ is
+> always emitted, along with the magic .got.plt entries, regardless of
+> the input.
 > 
-> Thanks,
-> Avri
-> 
-> 
-Hi Avri
-Thanks, appreciate you shared your position on this topic. I don't know
-how I can convince you to change your opinion.
-Let me try.
+> As for the input objects - why is '#pragma GCC visibility(hidden)' not
+> the default for -ffreestanding builds? This suppresses any GOT entries
+> emitted by the compiler, but the only way to get this behavior is
+> through the #pragma, which is how we ended up with '-include hidden.h'
+> in a couple of places.
 
-1. HPB 2.0 is not out of scope.
-HPB 1.0 only supports 4KB read length, which is useless. I don't know
-if there will be users who want to use HPB driver only supports 4KB
-chunk size. I think, we all know that some smartphone vendors have
-already use HPB 2.0, even HPB 2.0 has not been released yet. you
-mentioned this in your before emails. HPB 1.0 is just a
-transition(limited) version, we need to think about the HPB 2.0 support
-when we develop the HPB 1.0 driver.
-To say the least, if we don't think about HPB 2.0 support, and just
-focus HPB 1.0, in the end, after HPB 2.0 releasing, we need to return
-original point, re-do lots thing, why we cannot fix it now and think
-one step further.
+A -ffreestanding build may provide a shared object used by other
+applications. For example, musl (libc)'s CFLAGS has -ffreestanding.
 
-2. The major goal of the HPB feature is to improve random read
-performance, and HPB device mode implementing flow is now already very
-clear enough. I don't know what the functional flows you mentioned.
-if it is HPB host mode, no, this is another big topic, I think we'd
-better not add in current driver until we all have a final approach.
+> IOW, if the toolchain behavior was not 100% geared towards shared
+> executables as it is today, we would not need the hacks that we need
+> to apply to get a relocatable bare metal binary like we need for the
+> KASLR kernel.
 
-3. Regarding the Daejun's HPB driver used age, I can't easily jump to a
-conclusion. But for sure, before he disclosed his HPB driver and
-submitted to the community, he did lots of changes and deletions. That
-means it still needs lots of tests.
+My mere concern regarding "geared towards shared objects" is that ELF
+assumes symbols of default visibility are preemptible by default.
 
+So unfortunately it is difficult to make -fno-semantic-interposition the
+default.
 
-I didn't mean to disrupt Daejun's patch upstreaming. If Daejun can
-consider HPB 2.0 support while developing HPB 1.0 patch, that is super.
-Thus we can quickly add HPB 2.0 support once HPB 2.0 Spec released.
-Think about that who is now using HPB 1.0?
+> If (1) is not satisfied, the created .got.plt is just served as an anchor for
+> things that want to reference (the distance from GOT base to some point). The
+> linker will still reserve 3 words but the words are likely not needed.
+>
+> I don't think there is a specific need for another option to teach the linker
+> (GNU ld or LLD) that this is a kernel link.  For -ffreestanding builds, cc
+> -static (ld -no-pie))/-static-pie (-pie) already work quite well.
 
-Thanks,
-Bean
+On 2020-06-30, Arvind Sankar wrote:
+>On Tue, Jun 30, 2020 at 06:26:43PM +0200, Ard Biesheuvel wrote:
+>> On Tue, 30 Jun 2020 at 01:34, Fangrui Song <maskray@google.com> wrote:
+>>
+>> > If (1) is not satisfied, the created .got.plt is just served as an anchor for
+>> > things that want to reference (the distance from GOT base to some point). The
+>> > linker will still reserve 3 words but the words are likely not needed.
+>> >
+>> > I don't think there is a specific need for another option to teach the linker
+>> > (GNU ld or LLD) that this is a kernel link.  For -ffreestanding builds, cc
+>> > -static (ld -no-pie))/-static-pie (-pie) already work quite well.
+>>
+>> You mean 'ld -static -pie' right? That seems to work. Is that a recent
+>> invention?
+>
+>gcc -static-pie is fairly recent [0], but it just influences how the
+>linker is invoked AFAIK (at least for gcc) -- in addition to passing
+>some linker flags, it will change what startup files get linked in (for
+>non-freestanding). It does not even imply -fPIE to the compiler, which
+>is confusing as hell. It _would_ be nice if this also told the compiler
+>that all symbols (perhaps unless explicitly marked) will be resolved at
+>static link time, so there is no need to use the GOT or PLT for globals.
+>
+>As it stands, the executable can still have relocations, GOT and PLT, it
+>just needs to have startup code to handle them (provided by libc
+>typically) instead of relying on an external dynamic linker.
 
+If the executable is purely static, it does not need to have PLT. All
+calls to a PLT can be redirected to the function itself.  Some range
+extension thunks (other terms: stub groups, veneers, etc) may still be
+needed if the distance is too large.
 
+There are cases where a GOT cannot be avoided, e.g.
 
+extern char foo[] __attribute__((weak, visibility("hidden")));
+char *fun() { return foo; }
 
- 
+If foo is a SHN_ABS, `movq foo@GOTPCREL(%rip), %rax` can't be optimized
+by GOTPCRELX (https://sourceware.org/bugzilla/show_bug.cgi?id=25749 binutils>=2.35 will be good)
+Many other architectures don't even have a GOT optimization.
 
-
-
-
-
+>I don't think it's really relevant for the kernel build -- all we get is
+>ld -static --no-dynamic-linker, all -static does is prevent searching
+>shared libraries, and we already pass --no-dynamic-linker if it's
+>supported.
+>
+>[0] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81498
