@@ -2,97 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41DEF20F362
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11EBD20F36C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732860AbgF3LIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 07:08:17 -0400
-Received: from mail.parknet.co.jp ([210.171.160.6]:37534 "EHLO
-        mail.parknet.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728534AbgF3LIP (ORCPT
+        id S1732889AbgF3LKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 07:10:15 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:58355 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728534AbgF3LKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 07:08:15 -0400
-Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
-        by mail.parknet.co.jp (Postfix) with ESMTPSA id B2E2F1B405B;
-        Tue, 30 Jun 2020 20:08:13 +0900 (JST)
-Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
-        by ibmpc.myhome.or.jp (8.15.2/8.15.2/Debian-19) with ESMTPS id 05UB8C1E115375
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Tue, 30 Jun 2020 20:08:13 +0900
-Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
-        by devron.myhome.or.jp (8.15.2/8.15.2/Debian-19) with ESMTPS id 05UB8CXh1272933
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Tue, 30 Jun 2020 20:08:12 +0900
-Received: (from hirofumi@localhost)
-        by devron.myhome.or.jp (8.15.2/8.15.2/Submit) id 05UB8CsR1272932;
-        Tue, 30 Jun 2020 20:08:12 +0900
-From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-To:     Anupam Aggarwal <anupam.al@samsung.com>
-Cc:     linux-kernel@vger.kernel.org, a.sahrawat@samsung.com
-Subject: Re: [PATCH] fs: fat: add check for dir size in fat_calc_dir_size
-References: <CGME20200629110320epcas5p34ccccc7c293f077b34b350935c328215@epcas5p3.samsung.com>
-        <1593428559-13920-1-git-send-email-anupam.al@samsung.com>
-Date:   Tue, 30 Jun 2020 20:08:12 +0900
-In-Reply-To: <1593428559-13920-1-git-send-email-anupam.al@samsung.com> (Anupam
-        Aggarwal's message of "Mon, 29 Jun 2020 16:32:39 +0530")
-Message-ID: <87ftacolpf.fsf@mail.parknet.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        Tue, 30 Jun 2020 07:10:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593515409;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=msnFaJYZDu81wFuqZFTp1ZOR5QC4oyv6dPxquziRN8w=;
+        b=HytoAQ3l5t4/mzUdrDO+1cm6r5p4j9FTs+iOJXMGAtfWT7bvzmhuGh8N5rxbmjSU3jE+mT
+        qO1fuvk8/H7yjzVvex5h6Jkk1rLPAzpm02tar+MXSeaVXG/D5AoS7AxJKZxBqMYCxn0RZg
+        SQAeR0W0uvLd9C9tVh9/WaOVioOUIDI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-378-VBh_BiGdOGuDy8VESVo1Dw-1; Tue, 30 Jun 2020 07:10:07 -0400
+X-MC-Unique: VBh_BiGdOGuDy8VESVo1Dw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B4C28015F4;
+        Tue, 30 Jun 2020 11:10:06 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 171861001901;
+        Tue, 30 Jun 2020 11:10:06 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org, Nadav Amit <namit@vmware.com>
+Subject: [PATCH] KVM: x86: bit 8 of non-leaf PDPEs is not reserved
+Date:   Tue, 30 Jun 2020 07:10:05 -0400
+Message-Id: <20200630111005.457029-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Anupam Aggarwal <anupam.al@samsung.com> writes:
+Bit 8 would be the "global" bit, which does not quite make sense for non-leaf
+page table entries.  Intel ignores it; AMD ignores it in PDEs and PDPEs, but
+reserves it in PML4Es.
 
-> Max directory size of FAT filesystem is FAT_MAX_DIR_SIZE(2097152 bytes)
-> It is possible that, due to corruption, directory size calculated in
-> fat_calc_dir_size() can be greater than FAT_MAX_DIR_SIZE, i.e.
-> can be in GBs, hence directory traversal can take long time.
-> for example when command "ls -lR" is executed on corrupted FAT
-> formatted USB, fat_search_long() function will lookup for a filename from
-> position 0 till end of corrupted directory size, multiple such lookups
-> will lead to long directory traversal
->
-> Added sanity check for directory size fat_calc_dir_size(),
-> and return EIO error, which will prevent lookup in corrupted directory
->
-> Signed-off-by: Anupam Aggarwal <anupam.al@samsung.com>
-> Signed-off-by: Amit Sahrawat <a.sahrawat@samsung.com>
+Probably, earlier versions of the AMD manual documented it as reserved in PDPEs
+as well, and that behavior made it into KVM as well as kvm-unit-tests; fix it.
 
-There are many implementation that doesn't follow the spec strictly. And
-when I tested in past, Windows also allowed to read the directory beyond
-that limit. I can't recall though if there is in real case or just test
-case though.
+Cc: stable@vger.kernel.org
+Reported-by: Nadav Amit <namit@vmware.com>
+Fixes: a0c0feb57992 ("KVM: x86: reserve bit 8 of non-leaf PDPEs and PML4Es in 64-bit mode on AMD", 2014-09-03)
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/mmu/mmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So if there is no strong reason to apply the limit, I don't think it is
-good to limit it. (btw, the current code should detect the corruption of
-infinite loop already)
-
-Thanks.
-
-> ---
->  fs/fat/inode.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/fs/fat/inode.c b/fs/fat/inode.c
-> index a0cf99d..9b2e81e 100644
-> --- a/fs/fat/inode.c
-> +++ b/fs/fat/inode.c
-> @@ -490,6 +490,13 @@ static int fat_calc_dir_size(struct inode *inode)
->  		return ret;
->  	inode->i_size = (fclus + 1) << sbi->cluster_bits;
->  
-> +	if (i_size_read(inode) > FAT_MAX_DIR_SIZE) {
-> +		fat_fs_error(inode->i_sb,
-> +			     "%s corrupted directory (invalid size %lld)\n",
-> +			     __func__, i_size_read(inode));
-> +		return -EIO;
-> +	}
-> +
->  	return 0;
->  }
-
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 76817d13c86e..6d6a0ae7800c 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4449,7 +4449,7 @@ __reset_rsvds_bits_mask(struct kvm_vcpu *vcpu,
+ 			nonleaf_bit8_rsvd | rsvd_bits(7, 7) |
+ 			rsvd_bits(maxphyaddr, 51);
+ 		rsvd_check->rsvd_bits_mask[0][2] = exb_bit_rsvd |
+-			nonleaf_bit8_rsvd | gbpages_bit_rsvd |
++			gbpages_bit_rsvd |
+ 			rsvd_bits(maxphyaddr, 51);
+ 		rsvd_check->rsvd_bits_mask[0][1] = exb_bit_rsvd |
+ 			rsvd_bits(maxphyaddr, 51);
 -- 
-OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+2.26.2
+
