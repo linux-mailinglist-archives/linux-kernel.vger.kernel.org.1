@@ -2,148 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0746720EBC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 05:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18DC20EBBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 05:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728986AbgF3DCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 23:02:12 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6786 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728049AbgF3DCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 23:02:11 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id DC56E6EA0334CAF29281;
-        Tue, 30 Jun 2020 11:00:59 +0800 (CST)
-Received: from [10.174.185.226] (10.174.185.226) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 30 Jun 2020 11:00:53 +0800
-Subject: Re: [BUG] irqchip/gic-v4.1: sleeping function called from invalid
- context
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <wanghaibin.wang@huawei.com>, <kuhn.chenqun@huawei.com>,
-        <wangjingyi11@huawei.com>
-References: <1d673e99-0dd2-d287-aedf-65686eed5194@huawei.com>
- <c401871295f68391473f2e522b920719@kernel.org>
-From:   Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <63fa30f0-4d9a-aa15-7f42-db09587c43e2@huawei.com>
-Date:   Tue, 30 Jun 2020 11:00:53 +0800
+        id S1728935AbgF3DB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 23:01:26 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:26431 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728895AbgF3DBU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 23:01:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593486080; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=TmTHo9sjEwFtDvDXBnSxvr/8LyWkD3WRp2zUg0bfLGM=; b=aYM2zylMXrwdEWeU3BLV/0uXtpbZRAKpdbWJ3AbppkpDnS/JhFyyyU6azJG/tQZZUWr9IYKW
+ JxuG/NeOGn2wMXS6WNk0Qtwi2KiUctKo+J6eNk3WLdkmIlEJ7NuzGQNKvbE24AAsMapH0o4r
+ lVXKciYt8LZWXZh1DR/QHjoMPOI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
+ 5efaaaf7356bcc26ab438f63 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Jun 2020 03:01:11
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DD401C433AF; Tue, 30 Jun 2020 03:01:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.50.61.98] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2C142C433CA;
+        Tue, 30 Jun 2020 03:01:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2C142C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v6 1/6] tty: serial: qcom_geni_serial: Use OPP API to set
+ clk/perf state
+To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robdclark@chromium.org,
+        robdclark@gmail.com, stanimir.varbanov@linaro.org
+Cc:     viresh.kumar@linaro.org, mka@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        linux-serial@vger.kernel.org
+References: <1592222564-13556-1-git-send-email-rnayak@codeaurora.org>
+ <1592222564-13556-2-git-send-email-rnayak@codeaurora.org>
+ <159347264530.1987609.11350620235820019545@swboyd.mtv.corp.google.com>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <a3d53f82-b29d-97ef-3ba1-ca9bd650d354@codeaurora.org>
+Date:   Tue, 30 Jun 2020 08:31:02 +0530
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <c401871295f68391473f2e522b920719@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <159347264530.1987609.11350620235820019545@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.185.226]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
 
-On 2020/6/29 22:01, Marc Zyngier wrote:
-> Hi Zenghui,
+
+On 6/30/2020 4:47 AM, Stephen Boyd wrote:
+> Quoting Rajendra Nayak (2020-06-15 05:02:39)
+>> diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
+>> index 457c0bf..a90f8ec 100644
+>> --- a/drivers/tty/serial/qcom_geni_serial.c
+>> +++ b/drivers/tty/serial/qcom_geni_serial.c
+>> @@ -9,6 +9,7 @@
+>>   #include <linux/module.h>
+>>   #include <linux/of.h>
+>>   #include <linux/of_device.h>
+>> +#include <linux/pm_opp.h>
+>>   #include <linux/platform_device.h>
+>>   #include <linux/pm_runtime.h>
+>>   #include <linux/pm_wakeirq.h>
+>> @@ -962,7 +963,7 @@ static void qcom_geni_serial_set_termios(struct uart_port *uport,
+>>                  goto out_restart_rx;
+>>   
+>>          uport->uartclk = clk_rate;
+>> -       clk_set_rate(port->se.clk, clk_rate);
+>> +       dev_pm_opp_set_rate(uport->dev, clk_rate);
 > 
-> On 2020-06-29 10:39, Zenghui Yu wrote:
->> Hi All,
->>
->> Booting the latest kernel with DEBUG_ATOMIC_SLEEP=y on a GICv4.1 enabled
->> box, I get the following kernel splat:
->>
->> [    0.053766] BUG: sleeping function called from invalid context at
->> mm/slab.h:567
->> [    0.053767] in_atomic(): 1, irqs_disabled(): 128, non_block: 0,
->> pid: 0, name: swapper/1
->> [    0.053769] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.8.0-rc3+ #23
->> [    0.053770] Call trace:
->> [    0.053774]  dump_backtrace+0x0/0x218
->> [    0.053775]  show_stack+0x2c/0x38
->> [    0.053777]  dump_stack+0xc4/0x10c
->> [    0.053779]  ___might_sleep+0xfc/0x140
->> [    0.053780]  __might_sleep+0x58/0x90
->> [    0.053782]  slab_pre_alloc_hook+0x7c/0x90
->> [    0.053783]  kmem_cache_alloc_trace+0x60/0x2f0
->> [    0.053785]  its_cpu_init+0x6f4/0xe40
->> [    0.053786]  gic_starting_cpu+0x24/0x38
->> [    0.053788]  cpuhp_invoke_callback+0xa0/0x710
->> [    0.053789]  notify_cpu_starting+0xcc/0xd8
->> [    0.053790]  secondary_start_kernel+0x148/0x200
->>
->> # ./scripts/faddr2line vmlinux its_cpu_init+0x6f4/0xe40
->> its_cpu_init+0x6f4/0xe40:
->> allocate_vpe_l1_table at drivers/irqchip/irq-gic-v3-its.c:2818
->> (inlined by) its_cpu_init_lpis at drivers/irqchip/irq-gic-v3-its.c:3138
->> (inlined by) its_cpu_init at drivers/irqchip/irq-gic-v3-its.c:5166
-> 
-> Let me guess: a system with more than a single CommonLPIAff group?
+> If there isn't an OPP table for the device because it is optional then
+> how can we unconditionally call dev_pm_opp_set_rate()?
 
-I *think* you're right. E.g., when we're allocating vpe_table_mask for
-the first CPU of the second CommonLPIAff group.
+because we have 'aca48b6 opp: Manage empty OPP tables with clk handle' to handle this.
 
-The truth is that all the GICv4.1 boards I'm having on hand only have a
-single CommonLPIAff group. Just to get the above backtrace, I did some
-crazy hacking on my 920 and pretend it as v4.1 capable (well, please
-ignore me). Hopefully I can get a new GICv4.1 board with more than one
-CommonLPIAff group next month and do more tests.
-
->> I've tried to replace GFP_KERNEL flag with GFP_ATOMIC to allocate memory
->> in this atomic context, and the splat disappears. But after a quick look
->> at [*], it seems not a good idea to allocate memory within the CPU
->> hotplug notifier. I really don't know much about it, please have a look.
->>
->> [*]
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=11e37d357f6ba7a9af850a872396082cc0a0001f 
->>
-> 
-> The allocation of the cpumask is pretty benign, and could either be
-> allocated upfront for all RDs (and freed on detecting that we share
-> the same CommonLPIAff group) or made atomic.
-> 
-> The much bigger issue is the alloc_pages call just after. Allocating this
-> upfront probably is the wrong thing to do, as you are likely to allocate
-> way too much memory, even if you free it quickly afterwards.
-> 
-> At this stage, I'd rather we turn this into an atomic allocation. A 
-> notifier
-> is just another atomic context, and if this fails at such an early stage,
-> then the CPU is unlikely to continue booting...
-
-Got it.
-
-> Would you like to write a patch for this? Given that you have tested
-> something, it probably already exists. Or do you want me to do it?
-
-Yes, I had written something like below. I will add a commit message and
-send it out today.
-
-diff --git a/drivers/irqchip/irq-gic-v3-its.c 
-b/drivers/irqchip/irq-gic-v3-its.c
-index 6a5a87fc4601..b66eeca442c4 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -2814,7 +2814,7 @@ static int allocate_vpe_l1_table(void)
-  	if (val & GICR_VPROPBASER_4_1_VALID)
-  		goto out;
-
--	gic_data_rdist()->vpe_table_mask = kzalloc(sizeof(cpumask_t), GFP_KERNEL);
-+	gic_data_rdist()->vpe_table_mask = kzalloc(sizeof(cpumask_t), GFP_ATOMIC);
-  	if (!gic_data_rdist()->vpe_table_mask)
-  		return -ENOMEM;
-
-@@ -2881,7 +2881,7 @@ static int allocate_vpe_l1_table(void)
-
-  	pr_debug("np = %d, npg = %lld, psz = %d, epp = %d, esz = %d\n",
-  		 np, npg, psz, epp, esz);
--	page = alloc_pages(GFP_KERNEL | __GFP_ZERO, get_order(np * PAGE_SIZE));
-+	page = alloc_pages(GFP_ATOMIC | __GFP_ZERO, get_order(np * PAGE_SIZE));
-  	if (!page)
-  		return -ENOMEM;
-
-
-Thanks,
-Zenghui
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
