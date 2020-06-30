@@ -2,142 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B3220FF59
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE8120FF6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729814AbgF3Vht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 17:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726907AbgF3Vhs (ORCPT
+        id S1729861AbgF3VrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 17:47:04 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:53926 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726841AbgF3VrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 17:37:48 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271E3C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:30:21 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id l6so20171906qkc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:30:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c5EMuGF306H+8MVBaWM0r+rGzFzFrlYDXGMThC9HfD4=;
-        b=CVuzlkRbGxcrGQk88QUs7Tk5iS78bBLcpFuKyvp3XajOVHCPbZdyPTp86/unda5k5j
-         dzghI3xEj/ExjNk4Ne2mTEsY63nRHrFuQfaIcZrV+6MflMDNZBcbhLZmAI/WwWlNCjsz
-         2M87hwgFPODrfWf196lE2NAcze08Hd/lyoeNAwDHnPJW0inSlI6ufZDuFeQV6L0HTBTT
-         i6Vgax5ZiWEscxUdrX9hLY5wOPxD1CGs7ImMfiecSMcE+KMVdvxTcP/NZe7poOhqK7XM
-         dGTKgpf2cIL38jvWVIfLUAz2UhW/Ee9VExtEnkl31piwwc1/OtbcFu+1IJZ2wsbFi9Oa
-         NxBQ==
+        Tue, 30 Jun 2020 17:47:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593553621;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nixTOEgW0Ceg9ragNEY0z/vysduzB+SPEPITIinZzc4=;
+        b=a/R0HvxKl8trzdZqLLPqrSNM8wWVDsKhPq1ei/7QihFKNCwNxA+HabkFFnxGvgEY3ytmF0
+        0aHvn8+VghMS8kC+VHmR9g4Xpr21WwkP0WcK/nK/4M79jsGxd8y8Y6sE3NLxmZVZNQVUeF
+        sEamrywks0qirY5zN7C1iRcLCg0pQk4=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-481-ZP5vjGLGMm2MWeF0i7MGPw-1; Tue, 30 Jun 2020 17:30:12 -0400
+X-MC-Unique: ZP5vjGLGMm2MWeF0i7MGPw-1
+Received: by mail-qt1-f197.google.com with SMTP id h10so1853009qtc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:30:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c5EMuGF306H+8MVBaWM0r+rGzFzFrlYDXGMThC9HfD4=;
-        b=IFRxFWX2sLoFgy6xmLP6zPx85olsJHa1ka+5Fr3ZS4PqDqrA3SeuCFr48ZS0UZhnVy
-         RU0NjfpCwMME3ZF6LTDK4c1zhGJZEg3ICP2WEiNCbsMCSSq5h8UDTbYNTEjorOigOw4d
-         WDoYDGYeePfm4BN26aAFoPHIMaWMW3XVlHF4fBCF2mXhYkSupzwXNvk0rAvsMrY+sv0J
-         nYRharjLv6ZwuZOOf9tP4tSGr0vpKcnYAxfeLEMqHRJ1DX+O64RWTefdwoxZjaf5T+oG
-         DPohXTmnzyxVqDgOP9sFJtvHBUAtLIF30JThsqWyQ+bPWAbLkP2P3pj5XP9Qvdmji+Kb
-         6xlg==
-X-Gm-Message-State: AOAM532GQ65KZHVY3op1q9ZQvZf2tzal3RsT9dMt+ejbCo5nos+9qWHZ
-        87FAqtE6YEMZcIf+yrguRcXN+yxqH5LXYP3ND1VZtw==
-X-Google-Smtp-Source: ABdhPJwWO1R9i1wl8MgcDzCK99YlU9Z+CbqF2VkRE+FU0jHeiGGtc1krNP9QFqj9mxYwxQ/bQKqY86nI0ZiWwDimUnA=
-X-Received: by 2002:ae9:ed86:: with SMTP id c128mr22482794qkg.475.1593552620158;
- Tue, 30 Jun 2020 14:30:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200630143525.13869-1-quentin@isovalent.com> <39ba164ba44be848feac831f2f21effca92bfc96.camel@perches.com>
- <CAC3GErHpyyA8eQUyP6s_H6csvbKfHXHi50Ky6A1PhU+A6waCeQ@mail.gmail.com>
-In-Reply-To: <CAC3GErHpyyA8eQUyP6s_H6csvbKfHXHi50Ky6A1PhU+A6waCeQ@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Date:   Tue, 30 Jun 2020 22:30:09 +0100
-Message-ID: <CACdoK4Kqx3e5om=OH2D4QWSSHp-y0AOakiPjDG-ViqHz27d_=w@mail.gmail.com>
-Subject: Re: [PATCH] checkpatch: prevent reporting C99_COMMENTS error for SPDX
- tag in .c file
-To:     Vadim Bendebury <vbendeb@chromium.org>,
-        Joe Perches <joe@perches.com>
-Cc:     Andy Whitcroft <apw@canonical.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nixTOEgW0Ceg9ragNEY0z/vysduzB+SPEPITIinZzc4=;
+        b=KwbkAORVjxfbspQ0mMUDnFOEBRIAbhv3uUDAqO6uoNof4AVO1JKz5iDNc5OKHGiNZS
+         95wgoVLdUSCZpw5MrwhHwEMd5Gv+nF9vV0e2Ot7TXdawemaih5OgX7wngIsCfOF12YpK
+         dvg+ohHVI408L4xFAnU4dzrx+GP46JckpGS3L9kojLmDKaqzhvLQC2y75elemxzjgGaB
+         /MMKe3VaJ7t/5ExxziiU6N5OF41p6s/pfA/iyi14LAeKYnWm2anrbiP+zZejkkEldjBI
+         TNuqoF3PTDlP2/m0BD6nVnGFEOCDbfZdikBmgtaBMV6jK2ZlMaDNhtiPoGhqV+r6j4h6
+         uTxg==
+X-Gm-Message-State: AOAM532xQaul3W5WiX1927fzlV/r92DZEmOg6cgPvpe5i7d1jEFt/jWg
+        rei+y2j+cVmMVKFau2WhQJMCdT2uPJtGjPXrj4WJC7o1wF5aVdsZeuhXA3IYNLZSDL1M1GnXbkj
+        QjXCyv9m1lSEcNHtUEo2nIX2e
+X-Received: by 2002:a0c:b520:: with SMTP id d32mr21988724qve.6.1593552611742;
+        Tue, 30 Jun 2020 14:30:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxr4obTuj/cs4C2lP57Bc/3hny00QnJmyUX9M22AqhyXRRhcvUT43X97TBWfW0aa3cCoD4fGA==
+X-Received: by 2002:a0c:b520:: with SMTP id d32mr21988692qve.6.1593552611371;
+        Tue, 30 Jun 2020 14:30:11 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id t48sm4416862qtb.50.2020.06.30.14.30.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 14:30:10 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 17:30:09 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     David Rientjes <rientjes@google.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        John Hubbard <jhubbard@nvidia.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v4 01/26] mm: Do page fault accounting in handle_mm_fault
+Message-ID: <20200630213009.GB40675@xz-x1>
+References: <20200630204504.38516-1-peterx@redhat.com>
+ <alpine.DEB.2.22.394.2006301401560.1512657@chino.kir.corp.google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2006301401560.1512657@chino.kir.corp.google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Jun 2020 at 18:20, Vadim Bendebury <vbendeb@chromium.org> wrote:
->
-> On Tue, Jun 30, 2020 at 7:47 AM Joe Perches <joe@perches.com> wrote:
-> >
-> > (adding Vadem Bendebury who added the tolerance test)
-> >
-> > On Tue, 2020-06-30 at 15:35 +0100, Quentin Monnet wrote:
-> > > When checkpatch.pl is invoked with "--ignore C99_COMMENT_TOLERANCE", it
-> > > reports C99-style comments found in the code, by matching on the
-> > > double-slash pattern "//". This includes the leading slashes before the
-> > > SPDX tags that are now used in a majority of C files.
-> > >
-> > > Such tags are commented with the double-slash on purpose, and should not
-> > > trigger errors from checkpatch. Let's ignore them when searching for
-> > > C99-style comments to report.
-> > >
-> > > Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> >
-> > I think this unnecessary as perhaps those that want no
-> > c99 comments likely _really_ want no c99 comments.
-> >
-> > > ---
-> > >  scripts/checkpatch.pl | 5 ++++-
-> > >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > > index 3cacc122c528..67f350c580ea 100755
-> > > --- a/scripts/checkpatch.pl
-> > > +++ b/scripts/checkpatch.pl
-> > > @@ -3983,7 +3983,10 @@ sub process {
-> > >               }
-> > >
-> > >  # no C99 // comments
-> > > -             if ($line =~ m{//}) {
-> > > +             if ($line =~ m{//} &&
-> > > +                 !($rawline =~ m{// SPDX-License-Identifier:} &&
-> > > +                   $realfile =~ /\.c$/ &&
-> Do I understand this right that with this change in the check would be
-> applied to .c files only? .h files should be included.
+Hi, David,
 
-The idea is to exclude (from the search for C99-style comments) the
-SPDX tags at the top of source code files. The convention in kernel
-code is that .c files use C99 comments for those tags, but .h files do
-not and use "/* */" comments instead (details and motivation in
-Documentation/process/license-rules.rst). So having "//" at the top of
-a .h file is not conventional and should always be reported; whereas
-the idea for the current patch was to ignore it for .c files.
+On Tue, Jun 30, 2020 at 02:05:24PM -0700, David Rientjes wrote:
+> On Tue, 30 Jun 2020, Peter Xu wrote:
+> 
+> > @@ -4408,6 +4440,34 @@ vm_fault_t handle_mm_fault(struct vm_area_struct *vma, unsigned long address,
+> >  			mem_cgroup_oom_synchronize(false);
+> >  	}
+> >  
+> > +	if (ret & (VM_FAULT_RETRY | VM_FAULT_ERROR))
+> > +		return ret;
+> > +
+> > +	/*
+> > +	 * Do accounting in the common code, to avoid unnecessary
+> > +	 * architecture differences or duplicated code.
+> > +	 *
+> > +	 * We arbitrarily make the rules be:
+> > +	 *
+> > +	 *  - Unsuccessful faults do not count (e.g. when the address wasn't
+> > +	 *    valid). That includes arch_vma_access_permitted() failing above.
+> > +	 *
+> > +	 *    So this is expressly not a "this many hardware page faults"
+> > +	 *    counter. Use the hw profiling for that.
+> > +	 *
+> > +	 *  - Incomplete faults do not count (e.g. RETRY).  They will only
+> > +	 *    count once completed.
+> > +	 *
+> > +	 *  - The fault counts as a "major" fault when the final successful
+> > +	 *    fault is VM_FAULT_MAJOR, or if it was a retry (which implies that
+> > +	 *    we couldn't handle it immediately previously).
+> > +	 *
+> > +	 *  - If the fault is done for GUP, regs will be NULL and no accounting
+> > +	 *    will be done.
+> > +	 */
+> > +	mm_account_fault(regs, address, (ret & VM_FAULT_MAJOR) ||
+> > +			 (flags & FAULT_FLAG_TRIED));
+> > +
+> >  	return ret;
+> >  }
+> >  EXPORT_SYMBOL_GPL(handle_mm_fault);
+> 
+> Just a nit, likely not important: I wonder if it would be cleaner to pass 
+> the vm_fault_t into mm_account_fault() and then do the VM_FAULT_RETRY and
+> VM_FAULT_ERROR checks there as well as putting the comment about how 
+> accounting is handled in that function.  Your comment is great.
 
-All "//" comments not identified as an SPDX tag would still be
-reported by checkpatch, whether in a .c or in a .h file.
+Yes that seems to be cleaner so handle_mm_fault is shorter (btw, I "stole" the
+comment block majorly from Linus :).
 
-> > > +                   $realline == $checklicenseline)) {
-> What is the purpose of the above check?
+But this change will also need to touch patch 25 again or it won't apply
+cleanly.  So I think I'll see whether Andrew would like me to repost the whole
+series then I'll adopt the change when I repost, or another alternative is
+maybe we can also do that on top, depending on whether there's further
+comments..
 
-This is for the "at the top" part. Because the SPDX tag is expected to
-be at the top of the file (Unless I am mistaken, $checklicenseline
-typically equals 1 for .c files). So with the patch, we consider a "//
-SPDX-License-Identifier:" string at the top of the .c file as a SPDX
-tag (and do not report a C99_COMMENTS error), but not if it is in the
-middle of a file.
+Thanks!
 
-[...]
+-- 
+Peter Xu
 
-Thank you Joe and Vadim for your feedback. My intent is to use
-checkpatch on a third-party repository where we mostly follow kernel
-style (including for SPDX tags) and do not desire "//" comments. I
-found it strange to have this option to report C99_COMMENTS errors
-that would raise a high number of false positives on the kernel
-repository (or for the repo I work with), hence the patch.
-
-But if the feeling is that there is too little value in the change, or
-if it goes against the intent of the reports for C99-style comments,
-there's not much to do but to drop the patch. I can't imagine adding
-new command line options for such a corner case.
-
-Regards,
-Quentin
