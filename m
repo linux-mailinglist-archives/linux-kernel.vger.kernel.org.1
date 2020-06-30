@@ -2,107 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5CA20EBEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 05:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EFA20EBF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 05:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729015AbgF3DTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 23:19:01 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:46007 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728901AbgF3DTB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 23:19:01 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0U175Gc6_1593487136;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U175Gc6_1593487136)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 30 Jun 2020 11:18:56 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        akpm@linux-foundation.org
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [PATCH] mm: define pte_add_end for consistency
-Date:   Tue, 30 Jun 2020 11:18:52 +0800
-Message-Id: <20200630031852.45383-1-richard.weiyang@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1729111AbgF3D0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 23:26:21 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:54720 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728956AbgF3D0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 23:26:20 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E52CD20128A;
+        Tue, 30 Jun 2020 05:26:17 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 93BAF20128B;
+        Tue, 30 Jun 2020 05:26:14 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 54FAA40287;
+        Tue, 30 Jun 2020 11:26:10 +0800 (SGT)
+From:   andy.tang@nxp.com
+To:     shawnguo@kernel.org
+Cc:     leoyang.li@nxp.com, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yuantian Tang <andy.tang@nxp.com>
+Subject: [PATCH 1/2] arm64: dts: ls1088a: add more thermal zone support
+Date:   Tue, 30 Jun 2020 11:20:13 +0800
+Message-Id: <20200630032014.22956-1-andy.tang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When walking page tables, we define several helpers to get the address of
-the next boundary. But we don't have one for pte level.
+From: Yuantian Tang <andy.tang@nxp.com>
 
-Let's define it and consolidate the code in several places.
+There are 2 thermal zones in ls1088a soc. Add the other thermal zone
+node to enable it.
+Also update the values in calibration table to make the temperatures
+monitored more precise.
 
-Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+Signed-off-by: Yuantian Tang <andy.tang@nxp.com>
 ---
- arch/x86/mm/init_64.c   | 6 ++----
- include/linux/pgtable.h | 7 +++++++
- mm/kasan/init.c         | 4 +---
- 3 files changed, 10 insertions(+), 7 deletions(-)
+ .../arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 100 +++++++++++-------
+ 1 file changed, 62 insertions(+), 38 deletions(-)
 
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index dbae185511cd..f902fbd17f27 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -973,9 +973,7 @@ remove_pte_table(pte_t *pte_start, unsigned long addr, unsigned long end,
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+index 36a799554620..ccbbc23e6c85 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+@@ -129,19 +129,19 @@
+ 	};
  
- 	pte = pte_start + pte_index(addr);
- 	for (; addr < end; addr = next, pte++) {
--		next = (addr + PAGE_SIZE) & PAGE_MASK;
--		if (next > end)
--			next = end;
-+		next = pte_addr_end(addr, end);
+ 	thermal-zones {
+-		cpu_thermal: cpu-thermal {
++		core-cluster {
+ 			polling-delay-passive = <1000>;
+ 			polling-delay = <5000>;
+ 			thermal-sensors = <&tmu 0>;
  
- 		if (!pte_present(*pte))
- 			continue;
-@@ -1558,7 +1556,7 @@ void register_page_bootmem_memmap(unsigned long section_nr,
- 		get_page_bootmem(section_nr, pud_page(*pud), MIX_SECTION_INFO);
+ 			trips {
+-				cpu_alert: cpu-alert {
++				core_cluster_alert: core-cluster-alert {
+ 					temperature = <85000>;
+ 					hysteresis = <2000>;
+ 					type = "passive";
+ 				};
  
- 		if (!boot_cpu_has(X86_FEATURE_PSE)) {
--			next = (addr + PAGE_SIZE) & PAGE_MASK;
-+			next = pte_addr_end(addr, end);
- 			pmd = pmd_offset(pud, addr);
- 			if (pmd_none(*pmd))
- 				continue;
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 32b6c52d41b9..0de09c6c89d2 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -706,6 +706,13 @@ static inline pgprot_t pgprot_modify(pgprot_t oldprot, pgprot_t newprot)
- })
- #endif
+-				cpu_crit: cpu-crit {
++				core_cluster_crit: core-cluster-crit {
+ 					temperature = <95000>;
+ 					hysteresis = <2000>;
+ 					type = "critical";
+@@ -150,7 +150,7 @@
  
-+#ifndef pte_addr_end
-+#define pte_addr_end(addr, end)						\
-+({	unsigned long __boundary = ((addr) + PAGE_SIZE) & PAGE_MASK;	\
-+	(__boundary - 1 < (end) - 1) ? __boundary : (end);		\
-+})
-+#endif
+ 			cooling-maps {
+ 				map0 {
+-					trip = <&cpu_alert>;
++					trip = <&core_cluster_alert>;
+ 					cooling-device =
+ 						<&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+ 						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+@@ -163,6 +163,26 @@
+ 				};
+ 			};
+ 		};
 +
- /*
-  * When walking page tables, we usually want to skip any p?d_none entries;
-  * and any p?d_bad entries - reporting the error before resetting to none.
-diff --git a/mm/kasan/init.c b/mm/kasan/init.c
-index fe6be0be1f76..89f748601f74 100644
---- a/mm/kasan/init.c
-+++ b/mm/kasan/init.c
-@@ -349,9 +349,7 @@ static void kasan_remove_pte_table(pte_t *pte, unsigned long addr,
- 	unsigned long next;
++		soc {
++			polling-delay-passive = <1000>;
++			polling-delay = <5000>;
++			thermal-sensors = <&tmu 1>;
++
++			trips {
++				soc-alert {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				soc-crit {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "critical";
++				};
++			};
++		};
+ 	};
  
- 	for (; addr < end; addr = next, pte++) {
--		next = (addr + PAGE_SIZE) & PAGE_MASK;
--		if (next > end)
--			next = end;
-+		next = pte_addr_end(addr, end);
- 
- 		if (!pte_present(*pte))
- 			continue;
+ 	timer {
+@@ -209,45 +229,49 @@
+ 			compatible = "fsl,qoriq-tmu";
+ 			reg = <0x0 0x1f80000 0x0 0x10000>;
+ 			interrupts = <0 23 0x4>;
+-			fsl,tmu-range = <0xb0000 0x9002a 0x6004c 0x30062>;
++			fsl,tmu-range = <0xb0000 0x9002a 0x6004c 0x70062>;
+ 			fsl,tmu-calibration =
+ 				/* Calibration data group 1 */
+-				<0x00000000 0x00000026
+-				0x00000001 0x0000002d
+-				0x00000002 0x00000032
+-				0x00000003 0x00000039
+-				0x00000004 0x0000003f
+-				0x00000005 0x00000046
+-				0x00000006 0x0000004d
+-				0x00000007 0x00000054
+-				0x00000008 0x0000005a
+-				0x00000009 0x00000061
+-				0x0000000a 0x0000006a
+-				0x0000000b 0x00000071
++				<0x00000000 0x00000023
++				0x00000001 0x0000002a
++				0x00000002 0x00000030
++				0x00000003 0x00000037
++				0x00000004 0x0000003d
++				0x00000005 0x00000044
++				0x00000006 0x0000004a
++				0x00000007 0x00000051
++				0x00000008 0x00000057
++				0x00000009 0x0000005e
++				0x0000000a 0x00000064
++				0x0000000b 0x0000006b
+ 				/* Calibration data group 2 */
+-				0x00010000 0x00000025
+-				0x00010001 0x0000002c
+-				0x00010002 0x00000035
+-				0x00010003 0x0000003d
+-				0x00010004 0x00000045
+-				0x00010005 0x0000004e
+-				0x00010006 0x00000057
+-				0x00010007 0x00000061
+-				0x00010008 0x0000006b
+-				0x00010009 0x00000076
++				0x00010000 0x00000022
++				0x00010001 0x0000002a
++				0x00010002 0x00000032
++				0x00010003 0x0000003a
++				0x00010004 0x00000042
++				0x00010005 0x0000004a
++				0x00010006 0x00000052
++				0x00010007 0x0000005a
++				0x00010008 0x00000062
++				0x00010009 0x0000006a
+ 				/* Calibration data group 3 */
+-				0x00020000 0x00000029
+-				0x00020001 0x00000033
+-				0x00020002 0x0000003d
+-				0x00020003 0x00000049
+-				0x00020004 0x00000056
+-				0x00020005 0x00000061
+-				0x00020006 0x0000006d
++				0x00020000 0x00000021
++				0x00020001 0x0000002b
++				0x00020002 0x00000035
++				0x00020003 0x00000040
++				0x00020004 0x0000004a
++				0x00020005 0x00000054
++				0x00020006 0x0000005e
+ 				/* Calibration data group 4 */
+-				0x00030000 0x00000021
+-				0x00030001 0x0000002a
+-				0x00030002 0x0000003c
+-				0x00030003 0x0000004e>;
++				0x00030000 0x00000010
++				0x00030001 0x0000001c
++				0x00030002 0x00000027
++				0x00030003 0x00000032
++				0x00030004 0x0000003e
++				0x00030005 0x00000049
++				0x00030006 0x00000054
++				0x00030007 0x00000060>;
+ 			little-endian;
+ 			#thermal-sensor-cells = <1>;
+ 		};
 -- 
-2.20.1 (Apple Git-117)
+2.17.1
 
