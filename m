@@ -2,91 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEAEB20F083
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F49920F086
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731504AbgF3I3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 04:29:47 -0400
-Received: from mx.socionext.com ([202.248.49.38]:39572 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727059AbgF3I3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 04:29:47 -0400
-Received: from unknown (HELO kinkan-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 30 Jun 2020 17:29:45 +0900
-Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
-        by kinkan-ex.css.socionext.com (Postfix) with ESMTP id 1E273180B3C;
-        Tue, 30 Jun 2020 17:29:45 +0900 (JST)
-Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Tue, 30 Jun 2020 17:29:45 +0900
-Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
-        by iyokan.css.socionext.com (Postfix) with ESMTP id 8DADB40362;
-        Tue, 30 Jun 2020 17:29:44 +0900 (JST)
-Received: from [10.213.29.165] (unknown [10.213.29.165])
-        by yuzu.css.socionext.com (Postfix) with ESMTP id 23E46120415;
-        Tue, 30 Jun 2020 17:29:44 +0900 (JST)
-Subject: Re: [PATCH 1/2] dt-bindings: phy: Add UniPhier AHCI PHY description
-To:     Rob Herring <robh@kernel.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-References: <1592534207-13550-1-git-send-email-hayashi.kunihiko@socionext.com>
- <1592534207-13550-2-git-send-email-hayashi.kunihiko@socionext.com>
- <20200629215520.GA2998145@bogus>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <329e5fb4-7fad-3d67-a797-5f31cf7ab9d7@socionext.com>
-Date:   Tue, 30 Jun 2020 17:29:43 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1731527AbgF3IaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 04:30:21 -0400
+Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:19703 "EHLO
+        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727059AbgF3IaU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 04:30:20 -0400
+Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: vJWCbZ24qNBCnRa1jeMfzFihapPAEXWOb/MH/cTYYQUyip68MUIwSFss/OBbvXPJYIxsyk1cMP
+ fykjYjWPPolzXUfAKEKbi8v5e6uTYPGHa6se6prvblrrjZ315fDhXE1Ldp+PwYlfxKFSuTxQzJ
+ fPz8b/Ptrkeq2wV7Rn+c0mEizLc08zRTfpE0PDc/3s/85ulln/xVa/ZpKNcjFMEisNHCGoh3Sk
+ yQnP6MGeMNavHGNxNXThtwWpJyX4Yohpdvq55ZlG0FcG1zCwqQ5tX3XMLY0i4aQJXKK1yVMij0
+ oLM=
+X-SBRS: 2.7
+X-MesageID: 21593289
+X-Ironport-Server: esa6.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.75,296,1589256000"; 
+   d="scan'208";a="21593289"
+Date:   Tue, 30 Jun 2020 10:30:06 +0200
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     Anchal Agarwal <anchalag@amazon.com>
+CC:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "Kamata, Munehisa" <kamatam@amazon.com>,
+        "sstabellini@kernel.org" <sstabellini@kernel.org>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "len.brown@intel.com" <len.brown@intel.com>,
+        "pavel@ucw.cz" <pavel@ucw.cz>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "Valentin, Eduardo" <eduval@amazon.com>,
+        "Singh, Balbir" <sblbir@amazon.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>
+Subject: Re: [PATCH 06/12] xen-blkfront: add callbacks for PM suspend and
+ hibernation]
+Message-ID: <20200630083006.GJ735@Air-de-Roger>
+References: <20200604070548.GH1195@Air-de-Roger>
+ <20200616214925.GA21684@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <20200617083528.GW735@Air-de-Roger>
+ <20200619234312.GA24846@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <20200622083846.GF735@Air-de-Roger>
+ <20200623004314.GA28586@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <20200623081903.GP735@Air-de-Roger>
+ <20200625183659.GA26586@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <20200626091239.GA735@Air-de-Roger>
+ <20200629192035.GA13195@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <20200629215520.GA2998145@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200629192035.GA13195@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+X-ClientProxiedBy: AMSPEX02CAS02.citrite.net (10.69.22.113) To
+ AMSPEX02CL02.citrite.net (10.69.22.126)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Mon, Jun 29, 2020 at 07:20:35PM +0000, Anchal Agarwal wrote:
+> On Fri, Jun 26, 2020 at 11:12:39AM +0200, Roger Pau Monné wrote:
+> > So the frontend should do:
+> > 
+> > - Switch to Closed state (and cleanup everything required).
+> > - Wait for backend to switch to Closed state (must be done
+> >   asynchronously, handled in blkback_changed).
+> > - Switch frontend to XenbusStateInitialising, that will in turn force
+> >   the backend to switch to XenbusStateInitWait.
+> > - After that it should just follow the normal connection procedure.
+> > 
+> > I think the part that's missing is the frontend doing the state change
+> > to XenbusStateInitialising when the backend switches to the Closed
+> > state.
+> > 
+> > > I was of the view we may just want to mark frontend closed which should do
+> > > the job of freeing resources and then following the same flow as
+> > > blkfront_restore. That does not seems to work correctly 100% of the time.
+> > 
+> > I think the missing part is that you must wait for the backend to
+> > switch to the Closed state, or else the switch to
+> > XenbusStateInitialising won't be picked up correctly by the backend
+> > (because it's still doing it's cleanup).
+> > 
+> > Using blkfront_restore might be an option, but you need to assert the
+> > backend is in the initial state before using that path.
+> >
+> Yes, I agree and I make sure that XenbusStateInitialising only triggers
+> on frontend once backend is disconnected. msleep in a loop not that graceful but
+> works.
+> Frontend only switches to XenbusStateInitialising once it sees backend
+> as Closed. The issue here is and may require more debugging is:
+> 1. Hibernate instance->Closing failed, artificially created situation by not
+> marking frontend Closed in the first place during freezing.
+> 2. System comes back up fine restored to 'backend connected'.
 
-On 2020/06/30 6:55, Rob Herring wrote:
-> On Fri, 19 Jun 2020 11:36:46 +0900, Kunihiko Hayashi wrote:
->> Add DT bindings for PHY interface built into ahci controller implemented
->> in UniPhier SoCs.
->>
->> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
->> ---
->>   .../bindings/phy/socionext,uniphier-ahci-phy.yaml  | 76 ++++++++++++++++++++++
->>   1 file changed, 76 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.yaml
->>
-> 
-> 
-> My bot found errors running 'make dt_binding_check' on your patch:
-> 
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.yaml: properties:reset-names: [{'items': [{'const': 'link'}, {'const': 'phy'}]}] is not of type 'object', 'boolean'
-> Documentation/devicetree/bindings/Makefile:20: recipe for target 'Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.example.dts' failed
-> make[1]: *** [Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.example.dts] Error 1
-> make[1]: *** Waiting for unfinished jobs....
-> Makefile:1347: recipe for target 'dt_binding_check' failed
-> make: *** [dt_binding_check] Error 2
-> 
-> 
-> See https://patchwork.ozlabs.org/patch/1312535
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure dt-schema is up to date:
-> 
-> pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-> 
-> Please check and re-submit.
+I'm not sure I'm following what is happening here, what should happen
+IMO is that the backend will eventually reach the Closed state? Ie:
+the frontend has initiated the disconnection from the backend by
+setting the Closing state, and the backend will have to eventually
+reach the Closed state.
 
-I made a mistake when creating the patch.
-I've found where it is wrong, so fix it in v2.
+At that point the frontend can initiate a reconnection by switching to
+the Initialising state.
 
-Thank you,
+> 3. Re-run (1) again without reboot
+> 4. (4) fails to recover basically freezing does not fail at all which is weird
+>    because it should timeout as it passes through same path. It hits a BUG in
+>    talk_to_blkback() and instance crashes.
 
----
-Best Regards
-Kunihiko Hayashi
+It's hard to tell exactly. I guess you would have to figure what makes
+the frontend not get stuck at the same place as the first attempt.
+
+Roger.
