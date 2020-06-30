@@ -2,177 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B0020FA83
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9746620FA22
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390329AbgF3R1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:27:03 -0400
-Received: from mga06.intel.com ([134.134.136.31]:3228 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390317AbgF3R07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:26:59 -0400
-IronPort-SDR: Z49gx/cuGn+9GqJgWA1GrBNwaKk47bVqNPUNQq886ewPM3CkElcCVTGqdwJKQ/Ah8q5C3b1lXH
- CBYw6LKjHJsQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="207832985"
-X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="207832985"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 10:26:58 -0700
-IronPort-SDR: +/Du3clL+kH8j47dZMptzCZN9CWuzz08ZNLzFF6N/wHXdhzwOhFNUNkIIvEMqSe5Ny45BzUyyt
- pphR8thsCiPA==
-X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="281307459"
-Received: from dnoeunx-mobl.amr.corp.intel.com (HELO [10.254.77.113]) ([10.254.77.113])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 10:26:57 -0700
-Subject: Re: [PATCH 2/5] soundwire: stream: add helper to startup/shutdown
- streams
-To:     Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        broonie@kernel.org, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, mengdong.lin@intel.com,
-        slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20200622212332.16277-1-yung-chuan.liao@linux.intel.com>
- <20200622212332.16277-3-yung-chuan.liao@linux.intel.com>
- <20200630160349.GR2599@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <5123471d-92f3-8f49-7a2c-d7b70bf442af@linux.intel.com>
-Date:   Tue, 30 Jun 2020 11:58:41 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2390019AbgF3RHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 13:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390009AbgF3RHN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 13:07:13 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B45C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:07:13 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id p20so21364454ejd.13
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:07:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ep4v7Sgk0x30ZAXgHmmvI+chKVNBUjoHn6j3LyL4OVk=;
+        b=bDLuMC1J3ipv5oxg6WsuGLNLBbaQ55mOuGN9gmYd6tux50ZveMInMrUVjkMhagmtQ5
+         qLh1w/kcYRGFnMfNjLBP+bjgbKz0yTX5dUcCzabJRir+X9IwGpmmbEP2RWkxzYIDhJt9
+         UTsF2pc9EMEECfBDdQEKoYZ3atlchjta3NnSs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ep4v7Sgk0x30ZAXgHmmvI+chKVNBUjoHn6j3LyL4OVk=;
+        b=DfXRkDwEuevk7v/xqwAqJ5YVist0V3QX+032P0LuiDpAtmlsBGi5s44AzFVDzqRlF+
+         E7Lbzi52HBalu0l2ymIbUAo4oFFxqvnjKBeksVNzRV5R0hbyIraRq4F7F8BJFwIH0VHL
+         96kbC5iXBaTF7f8ZcsVJXcnJKqT0Iz41zjFvBa1TrDqlSxcoUcm+FvBu9wZOZJpXUG2C
+         C54pIrIjO2loLBXvSlOCoyn+BfSFz/xRmcLQK/W4As94MFfwnWb2T+eDXMKdpEmOVaby
+         1ouIns4bQbCEqPe0wPOyg1iCOnaaEo+ogDQOcbJBVhIY+czLWP8HAa5wIKTqtcJfM3E2
+         YcPw==
+X-Gm-Message-State: AOAM531tA2AkR+wtRn/i5jYVygSp4HFVVf9IBNEkKRKi+Xfg/VOsyvXA
+        srESH+P6NehxVJzXm3ohYiaDlSNJlc0=
+X-Google-Smtp-Source: ABdhPJzfKIbubclSByFT+bzw+5SmbKGKGx1qIPUqdPZcfjPSiM4mp4xR87NWu2VFLgYsAhaYbrKKvw==
+X-Received: by 2002:a17:907:1051:: with SMTP id oy17mr19928994ejb.394.1593536832204;
+        Tue, 30 Jun 2020 10:07:12 -0700 (PDT)
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com. [209.85.221.45])
+        by smtp.gmail.com with ESMTPSA id b98sm3486762edf.24.2020.06.30.10.07.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jun 2020 10:07:12 -0700 (PDT)
+Received: by mail-wr1-f45.google.com with SMTP id s10so20900023wrw.12
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:07:11 -0700 (PDT)
+X-Received: by 2002:a2e:999a:: with SMTP id w26mr5624686lji.371.1593536343609;
+ Tue, 30 Jun 2020 09:59:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200630160349.GR2599@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200625095725.GA3303921@kroah.com> <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+ <20200625120725.GA3493334@kroah.com> <20200625.123437.2219826613137938086.davem@davemloft.net>
+ <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+ <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org> <87y2oac50p.fsf@x220.int.ebiederm.org>
+ <87bll17ili.fsf_-_@x220.int.ebiederm.org> <87imf963s6.fsf_-_@x220.int.ebiederm.org>
+In-Reply-To: <87imf963s6.fsf_-_@x220.int.ebiederm.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 30 Jun 2020 09:58:47 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wihqhksXHkcjuTrYmC-vajeRcNh3s6eeoJNxS7wp77dFQ@mail.gmail.com>
+Message-ID: <CAHk-=wihqhksXHkcjuTrYmC-vajeRcNh3s6eeoJNxS7wp77dFQ@mail.gmail.com>
+Subject: Re: [PATCH v2 05/15] umh: Separate the user mode driver and the user
+ mode helper support
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Vinod for the review.
+On Mon, Jun 29, 2020 at 1:05 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> This makes it clear which code is part of the core user mode
+> helper support and which code is needed to implement user mode
+> drivers.
+>
+>  kernel/umd.c             | 146 +++++++++++++++++++++++++++++++++++++++
+>  kernel/umh.c             | 139 -------------------------------------
 
->> --- a/drivers/soundwire/stream.c
->> +++ b/drivers/soundwire/stream.c
->> @@ -13,6 +13,9 @@
->>   #include <linux/slab.h>
->>   #include <linux/soundwire/sdw_registers.h>
->>   #include <linux/soundwire/sdw.h>
->> +#include <sound/core.h>
-> 
-> Do we really need core header?
+I certainly don't object to the split, but I hate the name.
 
-No we don't, the only thing needed in sound/soc.h it seems.
+We have uml, umd and umh for user mode {linux, drivers, helper}
+respectively.And honestly, I don't see the point in using an obscure
+and unreadable TLA for something like this.
 
->> +#include <sound/pcm.h>
->> +#include <sound/soc.h>
->>   #include "bus.h"
->>   
->>   /*
->> @@ -1826,3 +1829,90 @@ int sdw_deprepare_stream(struct sdw_stream_runtime *stream)
->>   	return ret;
->>   }
->>   EXPORT_SYMBOL(sdw_deprepare_stream);
->> +
->> +static int set_stream(struct snd_pcm_substream *substream,
->> +		      struct sdw_stream_runtime *sdw_stream)
-> 
-> sdw_set_stream() please
+I really don't think it would hurt to write out even the full name
+with "usermode_driver.c" or something like that, would it?
 
-it's an internal helper not exported, the choice of not adding a prefix 
-was intentional to avoid confusion with exported ones.
+Then "umd" could be continued to be used as a prefix for the helper
+functions, by all means, but if we startv renaming files, can we do it
+properly?
 
->> +{
->> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->> +	struct snd_soc_dai *dai;
->> +	int ret = 0;
->> +	int i;
->> +
->> +	/* Set stream pointer on all DAIs */
->> +	for_each_rtd_dais(rtd, i, dai) {
->> +		ret = snd_soc_dai_set_sdw_stream(dai, sdw_stream,
->> +						 substream->stream);
->> +		if (ret < 0) {
->> +			dev_err(rtd->dev,
->> +				"failed to set stream pointer on dai %s",
->> +				dai->name);
-> 
-> lets use one line and shiny new 100 char limit, would make code read
-> better!
-
-yes
-
->> +			break;
-> 
-> So on error should unset of stream pointer be done?
-
-it's already done below, see [1]
-
->> +		}
->> +	}
->> +
->> +	return ret;
->> +}
->> +
->> +int sdw_startup_stream(void *sdw_substream)
-> 
-> Can we have kernel doc style Documentation for exported APIs?
-
-yes, that's a miss indeed.
-
-Though if we follow the existing examples it's not going to be very 
-informative, e.g.
-
-/**
-  * sdw_disable_stream() - Disable SoundWire stream
-  *
-  * @stream: Soundwire stream
-  *
-  * Documentation/driver-api/soundwire/stream.rst explains this API in 
-detail
-  */
-
->> +{
->> +	struct snd_pcm_substream *substream = sdw_substream;
->> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->> +	struct sdw_stream_runtime *sdw_stream;
->> +	char *name;
->> +	int ret;
->> +
->> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
->> +		name = kasprintf(GFP_KERNEL, "%s-Playback", substream->name);
->> +	else
->> +		name = kasprintf(GFP_KERNEL, "%s-Capture", substream->name);
->> +
->> +	if (!name)
->> +		return -ENOMEM;
->> +
->> +	sdw_stream = sdw_alloc_stream(name);
->> +	if (!sdw_stream) {
->> +		dev_err(rtd->dev, "alloc stream failed for substream DAI %s",
->> +			substream->name);
->> +		ret = -ENOMEM;
->> +		goto error;
->> +	}
->> +
->> +	ret = set_stream(substream, sdw_stream);
->> +	if (ret < 0)
->> +		goto release_stream;
-
-[1]
-
->> +	return 0;
->> +
->> +release_stream:
->> +	sdw_release_stream(sdw_stream);
->> +	set_stream(substream, NULL);
->> +error:
->> +	kfree(name);
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL(sdw_startup_stream);
+                   Linus
