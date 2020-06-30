@@ -2,126 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E3120F442
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 14:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B06B820F465
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 14:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387543AbgF3MO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 08:14:29 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:32906 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732036AbgF3MO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 08:14:28 -0400
-Received: from [10.130.0.52] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT2ifLPte1wpNAA--.794S3;
-        Tue, 30 Jun 2020 20:14:23 +0800 (CST)
-Subject: Re: [PATCH] gpu/drm: Replace "%p" with "%pK"
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-References: <1593502561-15190-1-git-send-email-yangtiezhu@loongson.cn>
- <26fcd5ec-4e90-8b98-8fbb-605f5906ad75@amd.com>
-Cc:     amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <286d0a26-c0bd-f151-12c7-dafb34016230@loongson.cn>
-Date:   Tue, 30 Jun 2020 20:14:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S2387617AbgF3MTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 08:19:08 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:33564 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732509AbgF3MTH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 08:19:07 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jqFE5-00081m-AD; Tue, 30 Jun 2020 06:19:01 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jqFE0-00084E-2g; Tue, 30 Jun 2020 06:19:01 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200625095725.GA3303921@kroah.com>
+        <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+        <20200625120725.GA3493334@kroah.com>
+        <20200625.123437.2219826613137938086.davem@davemloft.net>
+        <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+        <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+        <87y2oac50p.fsf@x220.int.ebiederm.org>
+        <87bll17ili.fsf_-_@x220.int.ebiederm.org>
+        <87lfk54p0m.fsf_-_@x220.int.ebiederm.org>
+        <20200630054313.GB27221@infradead.org>
+Date:   Tue, 30 Jun 2020 07:14:23 -0500
+In-Reply-To: <20200630054313.GB27221@infradead.org> (Christoph Hellwig's
+        message of "Tue, 30 Jun 2020 06:43:13 +0100")
+Message-ID: <87a70k21k0.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <26fcd5ec-4e90-8b98-8fbb-605f5906ad75@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9DxT2ifLPte1wpNAA--.794S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxAr4fGF47Aw1fWrWrGFyrCrg_yoW5Wr1kpF
-        4xGFyYkr95Zw1j9347AFyUAFyFyw47Xay8GF1UC34S9w15ZF4jkF13Jr47XrW8XFs2yr42
-        qr1Uuay5WF1jkrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l
-        c2xSY4AK67AK6ryUMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-        0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
-        AVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
-        CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf
-        9x07j7F4iUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Type: text/plain
+X-XM-SPF: eid=1jqFE0-00084E-2g;;;mid=<87a70k21k0.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18dJcHLmm8/3QJGbuxrMA4/Ld4nXUEMj/w=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4944]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Christoph Hellwig <hch@infradead.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 4796 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 9 (0.2%), b_tie_ro: 7 (0.2%), parse: 0.88 (0.0%),
+        extract_message_metadata: 11 (0.2%), get_uri_detail_list: 0.73 (0.0%),
+        tests_pri_-1000: 6 (0.1%), tests_pri_-950: 1.27 (0.0%),
+        tests_pri_-900: 1.03 (0.0%), tests_pri_-90: 167 (3.5%), check_bayes:
+        165 (3.4%), b_tokenize: 7 (0.1%), b_tok_get_all: 7 (0.1%),
+        b_comp_prob: 1.91 (0.0%), b_tok_touch_all: 146 (3.0%), b_finish: 0.86
+        (0.0%), tests_pri_0: 221 (4.6%), check_dkim_signature: 0.54 (0.0%),
+        check_dkim_adsp: 2.3 (0.0%), poll_dns_idle: 4353 (90.8%),
+        tests_pri_10: 2.2 (0.0%), tests_pri_500: 4374 (91.2%), rewrite_mail:
+        0.00 (0.0%)
+Subject: Re: [PATCH v2 10/15] exec: Remove do_execve_file
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/30/2020 04:05 PM, Christian König wrote:
-> Am 30.06.20 um 09:36 schrieb Tiezhu Yang:
->> When I update the latest kernel, I see the following "____ptrval____" 
->> boot
->> messages. Use "%pK" instead of "%p" so that the cpu address can be 
->> printed
->> when the kptr_restrict sysctl is set to 1.
->>
->> Both radeon_fence_driver_start_ring() and 
->> amdgpu_fence_driver_start_ring()
->> have this similar issue, fix them.
->>
->> [    1.872600] radeon 0000:01:05.0: fence driver on ring 0 use gpu 
->> addr 0x0000000048000c00 and cpu addr 0x(____ptrval____)
->> [    1.879095] radeon 0000:01:05.0: fence driver on ring 5 use gpu 
->> addr 0x0000000040056038 and cpu addr 0x(____ptrval____)
->
-> We can probably just completely drop the CPU address here.
+Christoph Hellwig <hch@infradead.org> writes:
 
-OK, maybe the CPU address is not much useful. If nobody has any objections,
-I will send v2 to remove the debug info about CPU address.
+> FYI, this clashes badly with my exec rework.  I'd suggest you
+> drop everything touching exec here for now, and I can then
+> add the final file based exec removal to the end of my series.
 
-Thanks,
-Tiezhu
+I have looked and I haven't even seen any exec work.  Where can it be
+found?
 
->
-> Christian.
->
->>
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c | 5 ++---
->>   drivers/gpu/drm/radeon/radeon_fence.c     | 2 +-
->>   2 files changed, 3 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c 
->> b/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
->> index d878fe7..d4d1e8c 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
->> @@ -422,9 +422,8 @@ int amdgpu_fence_driver_start_ring(struct 
->> amdgpu_ring *ring,
->>       ring->fence_drv.irq_type = irq_type;
->>       ring->fence_drv.initialized = true;
->>   -    DRM_DEV_DEBUG(adev->dev, "fence driver on ring %s use gpu addr "
->> -              "0x%016llx, cpu addr 0x%p\n", ring->name,
->> -              ring->fence_drv.gpu_addr, ring->fence_drv.cpu_addr);
->> +    DRM_DEV_DEBUG(adev->dev, "fence driver on ring %s use gpu addr 
->> 0x%016llx, cpu addr 0x%pK\n",
->> +              ring->name, ring->fence_drv.gpu_addr, 
->> ring->fence_drv.cpu_addr);
->>       return 0;
->>   }
->>   diff --git a/drivers/gpu/drm/radeon/radeon_fence.c 
->> b/drivers/gpu/drm/radeon/radeon_fence.c
->> index 43f2f93..c51b094 100644
->> --- a/drivers/gpu/drm/radeon/radeon_fence.c
->> +++ b/drivers/gpu/drm/radeon/radeon_fence.c
->> @@ -865,7 +865,7 @@ int radeon_fence_driver_start_ring(struct 
->> radeon_device *rdev, int ring)
->>       }
->>       radeon_fence_write(rdev, 
->> atomic64_read(&rdev->fence_drv[ring].last_seq), ring);
->>       rdev->fence_drv[ring].initialized = true;
->> -    dev_info(rdev->dev, "fence driver on ring %d use gpu addr 
->> 0x%016llx and cpu addr 0x%p\n",
->> +    dev_info(rdev->dev, "fence driver on ring %d use gpu addr 
->> 0x%016llx and cpu addr 0x%pK\n",
->>            ring, rdev->fence_drv[ring].gpu_addr, 
->> rdev->fence_drv[ring].cpu_addr);
->>       return 0;
->>   }
+I have working and cleaning up exec for what 3 cycles now.  There is
+still quite a ways to go before it becomes possible to fix some of the
+deep problems in exec.  Removing all of these broken exec special cases
+is quite frankly the entire point of this patchset.
+
+Sight unseen I suggest you send me your exec work and I can merge it
+into my branch if we are going to conflict badly.
+
+Eric
 
