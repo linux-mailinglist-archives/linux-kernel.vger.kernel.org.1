@@ -2,126 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B60E20FA41
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07DB120FA65
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390088AbgF3RNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:13:19 -0400
-Received: from mga07.intel.com ([134.134.136.100]:27572 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390030AbgF3RNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:13:15 -0400
-IronPort-SDR: 16OMpXsvA6yv64Vtzj4TtXQreaAHkMTbxogX0dsD6KMsURyQ0/f6TmIfuk22ctUzXBaXKDJu1a
- BmY2HgtDqxEA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9667"; a="211373811"
-X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="211373811"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 10:13:13 -0700
-IronPort-SDR: 02/sNAp9zxcbNDgk0wY96H4wgE8bWPD+nyuqc3fkfHghfvTs9QAEy0jZmbyhLaA5SUeQKekZ9B
- ALY3a5bgxuTQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="355837194"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga001.jf.intel.com with ESMTP; 30 Jun 2020 10:13:12 -0700
-Date:   Tue, 30 Jun 2020 10:19:47 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH 4/7] iommu/vt-d: Handle non-page aligned address
-Message-ID: <20200630101947.1d45ac94@jacob-builder>
-In-Reply-To: <037cb7cf-1336-f546-7f45-c35caf19930f@linux.intel.com>
-References: <1592926996-47914-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1592926996-47914-5-git-send-email-jacob.jun.pan@linux.intel.com>
-        <037cb7cf-1336-f546-7f45-c35caf19930f@linux.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S2390204AbgF3RUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 13:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730584AbgF3RUF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 13:20:05 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13F7C061755;
+        Tue, 30 Jun 2020 10:20:04 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id i4so9763366pjd.0;
+        Tue, 30 Jun 2020 10:20:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6t7g+Ebmk3HWeCBQ3UwI9AfnBADQabi1L2XSE+VG9QQ=;
+        b=HG/P2MUaGllU2YggEaqw5S2Ed9YCQywfjXkDCwcl/C9W2st5LlXxHG9/wFflQBTkv2
+         1vc4i3D+irlmIzYjIFMy1x7mIdoPkt/OzOw3pob5vRsoBYkBHPUwmkCEDjz7CJpVzai9
+         G9tyhTTpTRxUj14fzsjIsg4Ra9MzcbpL4aBobLxlCs6EL2Zm1JyonuFW2rNKLF/YDHMc
+         t02tyPMCClir+5Hqw1//xelYONyNGALoXGSsAclccntyWD/6gitq7p/wfbjNaREbG2uT
+         fGhuLpx4VzGj9k+dWmS3A391JYSLderL8pD2D3rWy9uDP1f0JQc+LnVC12UWZNXfhsKd
+         I5Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6t7g+Ebmk3HWeCBQ3UwI9AfnBADQabi1L2XSE+VG9QQ=;
+        b=j1Xk20HwFPr3CrGLyFOtshY+Kexok3ESpILC/MGNmOPXe+HbnHLECUIrVZD70d55aI
+         7wuR0aQfEth2XVKW7/ss1W/2JOr0VqnKAvJTyxOHHVwFMecLg1q9de7CVlO7uK8QbYPd
+         Od8d/1J1kB3y7mbk7CvquA1Gkbzl12eOejPKworriIPcbmHe1+IIM1ry6oe3UD+VaiWy
+         /cfNg7OLKP/YctfLaEx/r9M+fBavUopNkDGWMGRuAODOSIH6hxy2vWuAoYw3+4ZPEh93
+         jSx5vZtCjPgxQsN0YRiY/mQwkdLEy+cGGZD7HNjPQt0Ew6ZeCVh1rYgwIvKvYCeFbGXm
+         5YWg==
+X-Gm-Message-State: AOAM530acBj4ykAJUdBJOyj4+MQbS6awlQWiTFb9BQx5b4h8IplRjnzp
+        3JS0BB+oZTOL+5p6yF1fRoLQnuh/
+X-Google-Smtp-Source: ABdhPJxkCqbDyJLorhIgDocL6i3VNst5UG+PxsvNnrC2Qnwyx0zDdco3jdZy6lgp3juHQgD7ex9Fmw==
+X-Received: by 2002:a17:90b:3612:: with SMTP id ml18mr10686088pjb.193.1593537604500;
+        Tue, 30 Jun 2020 10:20:04 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id bg6sm2833718pjb.51.2020.06.30.10.20.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 30 Jun 2020 10:20:03 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 10:20:02 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org
+Subject: Re: [PATCH 4.4 000/135] 4.4.229-rc1 review
+Message-ID: <20200630172002.GA629@roeck-us.net>
+References: <20200629155309.2495516-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629155309.2495516-1-sashal@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Jun 2020 18:05:52 +0800
-Lu Baolu <baolu.lu@linux.intel.com> wrote:
+On Mon, Jun 29, 2020 at 11:50:54AM -0400, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 4.4.229 release.
+> There are 135 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed 01 Jul 2020 03:53:07 PM UTC.
+> Anything received after that time might be too late.
+> 
 
-> Hi,
-> 
-> On 2020/6/23 23:43, Jacob Pan wrote:
-> > From: Liu Yi L <yi.l.liu@intel.com>
-> > 
-> > Address information for device TLB invalidation comes from userspace
-> > when device is directly assigned to a guest with vIOMMU support.
-> > VT-d requires page aligned address. This patch checks and enforce
-> > address to be page aligned, otherwise reserved bits can be set in
-> > the invalidation descriptor. Unrecoverable fault will be reported
-> > due to non-zero value in the reserved bits.
-> > 
-> > Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > ---
-> >   drivers/iommu/intel/dmar.c | 19 +++++++++++++++++--
-> >   1 file changed, 17 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-> > index d9f973fa1190..53f4e5003620 100644
-> > --- a/drivers/iommu/intel/dmar.c
-> > +++ b/drivers/iommu/intel/dmar.c
-> > @@ -1455,9 +1455,24 @@ void qi_flush_dev_iotlb_pasid(struct
-> > intel_iommu *iommu, u16 sid, u16 pfsid,
-> >   	 * Max Invs Pending (MIP) is set to 0 for now until we
-> > have DIT in
-> >   	 * ECAP.
-> >   	 */
-> > -	desc.qw1 |= addr & ~mask;
-> > -	if (size_order)
-> > +	if (addr & ~VTD_PAGE_MASK)
-> > +		pr_warn_ratelimited("Invalidate non-page aligned
-> > address %llx\n", addr); +
-> > +	if (size_order) {
-> > +		/* Take page address */
-> > +		desc.qw1 |= QI_DEV_EIOTLB_ADDR(addr);  
-> 
-> If size_order == 0 (that means only a single page is about to be
-> invalidated), do you still need to set ADDR field of the descriptor?
-> 
-Good catch! we should always set addr. I will move addr assignment out
-of the if condition.
- .
-> Best regards,
-> baolu
-> 
-> > +		/*
-> > +		 * Existing 0s in address below size_order may be
-> > the least
-> > +		 * significant bit, we must set them to 1s to
-> > avoid having
-> > +		 * smaller size than desired.
-> > +		 */
-> > +		desc.qw1 |= GENMASK_ULL(size_order +
-> > VTD_PAGE_SHIFT,
-> > +					VTD_PAGE_SHIFT);
-> > +		/* Clear size_order bit to indicate size */
-> > +		desc.qw1 &= ~mask;
-> > +		/* Set the S bit to indicate flushing more than 1
-> > page */ desc.qw1 |= QI_DEV_EIOTLB_SIZE;
-> > +	}
-> >   
-> >   	qi_submit_sync(iommu, &desc, 1, 0);
-> >   }
-> >   
+Build results:
+	total: 169 pass: 169 fail: 0
+Qemu test results:
+	total: 331 pass: 331 fail: 0
 
-[Jacob Pan]
+Guenter
