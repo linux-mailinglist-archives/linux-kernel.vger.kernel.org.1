@@ -2,115 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED5120E9F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 02:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C2B20E9FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 02:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbgF3AJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 20:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34068 "EHLO
+        id S1728388AbgF3AJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 20:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728048AbgF3AJG (ORCPT
+        with ESMTP id S1728025AbgF3AJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 20:09:06 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D00C03E97A;
-        Mon, 29 Jun 2020 17:09:06 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id t6so9083256pgq.1;
-        Mon, 29 Jun 2020 17:09:06 -0700 (PDT)
+        Mon, 29 Jun 2020 20:09:05 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB31C03E979;
+        Mon, 29 Jun 2020 17:09:04 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id k71so5214552pje.0;
+        Mon, 29 Jun 2020 17:09:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=b+IGZ6PpnygOrvzFHrSSaDrACHYYVu9vYgrcmIAaoTc=;
-        b=NuiSCbQ0oSqAv7iiF5qikfnPTsQDbEqi6aWPQHuzs/QkcqQ98qHp6wBqkD6XbBmDWk
-         e82jReIUedwdHPM2bp/XHgPj8lOQUCRvzlE5Fpg93YgFr7BXdMuQmLA9Auf0CnmqCfnm
-         JqZ9ExcPRomIBC5CqFQUyzTuF8/X+2uGLVZykeKD/ezb5WDzVxA3GJnQa5tSDieA2l3W
-         /b/GVoFztFSupMHDyP84VziMeiYX9O2gKaU//U6xfzhxTVQ/nkULYGYsHI7BeVlJqsUG
-         SJ8ynf2K3TM5BEJl5vWtijOHjiEHHk5dLXkHbfdj0QIOLkyxwKTidE+OD8Lqy/D5SjOV
-         RQkg==
+        h=from:content-transfer-encoding:mime-version:subject:message-id:date
+         :cc:to;
+        bh=N2ghh+x2mnd38hUoBxoJrOWkNTcIvZQjlTMkdavqdz0=;
+        b=oNBgUBpj+1ShUQHnAs8/BfFKffFhuDXBkCS4kUeTG6jYJZc6oVuHHgkNayMtpXVkaK
+         Ddf0CbIS5TRiP0N6DWUTRTenBe3xIo2k1o3Owu005rLGa4LlCNpPKiRM9aLu2WdyOaRu
+         TGtHJ6hvP6+zqgChWUyaqU8REFQj7EBnih6jhAQ9DXjZ4HrrguaEThBfzng6VP3qmp7B
+         6XZMyBKvQVpYNoOBL7euZysd6KD2ZjzHSu4Q8v3hj87fNU2CyAQC77brwIyewPQSqmgc
+         BNWFy1cyZfJzlXmSegSSvlmbt/wDIgDOZiW06r4uBb/7vgsIGr6oY1W73Y36hfWWF43o
+         jJOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=b+IGZ6PpnygOrvzFHrSSaDrACHYYVu9vYgrcmIAaoTc=;
-        b=lx1V8irN/cGEZ+rHdKEZuhLOZ0WdYw0y7aFBHBT2fDRrbsMFOlq2Rfilygvf6yxwkK
-         j+qpSUIbe64RREa0ghk0uNoocPO0cxl74jB3vBHxBwe6v2JPJcTA3wz5XrTFIFWy7Rqd
-         EuwPKQa3mdQrwjDkRgNikTkjECemSZmkSTLVNKM4AB8bjtQk/LF8dmZ1PRGTsqjX3ZGx
-         COHGFuK3YV/GX6TxepGgzGIuV5B1ulKY8HiY+9wMMuF9o0pMQtRiHvp/+ZzAGkawBhC2
-         lQbEFf+TKOGsHEg0WJELvBUyR0AWzTjHP6LZBwpY/xfmMyLWIgYatRbsaCCrWssB69No
-         oi6Q==
-X-Gm-Message-State: AOAM530XtjthSuB8FNg3zB4EQ3THFeaLUwvbhaEoLeaVWHMYBLX74nND
-        ne89VF3TwGcQt/ggqpY7mhI=
-X-Google-Smtp-Source: ABdhPJxJlzhlDCwbl4BKRLwMmmx7nhtrQm6pzWRE2A58IuRaPXG5n4u144jDdYNAnyapV80N6ZKJag==
-X-Received: by 2002:a65:63ca:: with SMTP id n10mr12762077pgv.252.1593475745495;
-        Mon, 29 Jun 2020 17:09:05 -0700 (PDT)
-Received: from taoren-ubuntu-R90MNF91.thefacebook.com (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id m9sm754600pgq.61.2020.06.29.17.09.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 17:09:05 -0700 (PDT)
-From:   rentao.bupt@gmail.com
-To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, taoren@fb.com
-Cc:     Tao Ren <rentao.bupt@gmail.com>
-Subject: [PATCH 3/3] ARM: dts: aspeed: wedge40: enable pwm_tacho device
-Date:   Mon, 29 Jun 2020 17:08:51 -0700
-Message-Id: <20200630000851.26879-4-rentao.bupt@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200630000851.26879-1-rentao.bupt@gmail.com>
-References: <20200630000851.26879-1-rentao.bupt@gmail.com>
+        h=x-gm-message-state:from:content-transfer-encoding:mime-version
+         :subject:message-id:date:cc:to;
+        bh=N2ghh+x2mnd38hUoBxoJrOWkNTcIvZQjlTMkdavqdz0=;
+        b=Q93WzTGytfcwAhol2SX70aqGGtGqWuqQcKCI2IqehmMjE8UGkKYZ6AhNt3YGTnkpFX
+         DWxfaG5Zd8xtTV/ruUUtzMYRZkGkFha3rz1a5xICCwcvB8xcxMzzd5/m59XaRCSjEngj
+         EkZiq/dN66qbEDchRY88bAXgQuejO4Pxw6oK5SQ7D0UM6+g394qaO8eRbgGvdfPUeGmR
+         Vn/p8/2HIlFu5UoqBYpBNIWbAyn8GLT57ypiBJ2Tgut3eEeZzzfAKds/UgrXMD8tYHBw
+         n7A2Hgpwd4cDx9JBoj4wM5qVpcJpkouGjs/j1MTSctnD6wuc9ORmIuyEcGxrvglnQ4zY
+         +mhA==
+X-Gm-Message-State: AOAM5321vz8LiNNTrXBmLpCbLxYGHesg2TY/WpxiXBZ1MWp9/b46TbC+
+        cD/kbxkX7Tugeh3Kb2hvovQ=
+X-Google-Smtp-Source: ABdhPJzGefNdqarPqnCe1jKaGTGJasxjDFy43fWwUBKu6Jg3mnRjOYWTkeNA+C6ITaCW43nMnHDFjA==
+X-Received: by 2002:a17:902:8e8c:: with SMTP id bg12mr11255411plb.202.1593475744522;
+        Mon, 29 Jun 2020 17:09:04 -0700 (PDT)
+Received: from [127.0.0.1] ([47.244.202.117])
+        by smtp.gmail.com with ESMTPSA id c207sm688780pfb.159.2020.06.29.17.09.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 29 Jun 2020 17:09:04 -0700 (PDT)
+From:   hackapple <2538082724huangjinhai@gmail.com>
+X-Google-Original-From: hackapple <2538082724@qq.com>
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [RFC PATCH 1/7] x86/cpufeatures: add X86_FEATURE_SCI
+Message-Id: <94E40D06-B481-45B7-A929-CC324F5B856B@qq.com>
+Date:   Tue, 30 Jun 2020 08:08:59 +0800
+Cc:     James.Bottomley@hansenpartnership.com,
+        alexandre.chartre@oracle.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, jwadams@google.com,
+        keescook@chromium.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        luto@kernel.org, mingo@redhat.com, peterz@infradead.org,
+        pjt@google.com, tglx@linutronix.de, x86@kernel.org
+To:     rppt@linux.ibm.com
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tao Ren <rentao.bupt@gmail.com>
-
-Enable pwm_tacho device for fan control and monitoring in Wedge40.
-
-Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
----
- .../boot/dts/aspeed-bmc-facebook-wedge40.dts  | 29 +++++++++++++++++++
- 1 file changed, 29 insertions(+)
-
-diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-wedge40.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-wedge40.dts
-index 1049cfa80ac2..8ac23ff6b09e 100644
---- a/arch/arm/boot/dts/aspeed-bmc-facebook-wedge40.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-facebook-wedge40.dts
-@@ -135,3 +135,32 @@
- &adc {
- 	status = "okay";
- };
-+
-+&pwm_tacho {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm0_default
-+		     &pinctrl_pwm1_default
-+		     &pinctrl_pwm6_default
-+		     &pinctrl_pwm7_default>;
-+
-+	fan@0 {
-+		reg = <0x00>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x00 0x01>;
-+	};
-+
-+	fan@1 {
-+		reg = <0x01>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x02 0x03>;
-+	};
-+
-+	fan@6 {
-+		reg = <0x06>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x04 0x05>;
-+	};
-+
-+	fan@7 {
-+		reg = <0x07>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x06 0x07>;
-+	};
-+};
--- 
-2.17.1
-
+What=E2=80=99s the version of kernel?=
