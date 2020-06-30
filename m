@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A4520F989
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 18:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BDBF20F988
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 18:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388938AbgF3Qd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 12:33:59 -0400
-Received: from gate.crashing.org ([63.228.1.57]:47874 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726639AbgF3Qd7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 12:33:59 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 05UGXQQP021824;
-        Tue, 30 Jun 2020 11:33:26 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 05UGXOLS021820;
-        Tue, 30 Jun 2020 11:33:24 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Tue, 30 Jun 2020 11:33:24 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] powerpc/uaccess: Use flexible addressing with __put_user()/__get_user()
-Message-ID: <20200630163324.GW3598@gate.crashing.org>
-References: <c2addbd9d76212242d3d8554a2f7ff849fb08b85.1587040754.git.christophe.leroy@c-s.fr> <7b916759-1683-b4df-0d4b-b04b3fcd9a02@csgroup.eu> <878sg6862r.fsf@mpe.ellerman.id.au> <875zb98i5a.fsf@mpe.ellerman.id.au> <311c3471-cad7-72d5-a5e6-04cf892c5e41@csgroup.eu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <311c3471-cad7-72d5-a5e6-04cf892c5e41@csgroup.eu>
-User-Agent: Mutt/1.4.2.3i
+        id S2388063AbgF3Qdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 12:33:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726639AbgF3Qdk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 12:33:40 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55451C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 09:33:40 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id gc15so2089674pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 09:33:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=44pqrC2yRpDehPbtI/Pe45QSqCWTT0Z+AjklNNIBgdc=;
+        b=lDIciUgslLn2irsF6HK/HYZ2lAgrpsAgtRGi8unBlIyxT/9CMZ1NZcAUAiZgo5fqTG
+         EWmMbbvAT+0BXadkTqNgSN59t2CHgV7frk8bzWuvhiecpSBbAfIZwQGE+4zI+sh1CWXQ
+         m/oGrhPzr11ZZt5w+hMfU2sJ7ucz9QD1pIHVVKo8SoSmoAHHHjQrHJhPNjldMChgrSsY
+         Zpg065c5CDYJwgh3rB9JreWfcrxoNwxJzlKsTGZgEmGtLi0ISpBsD4nCRXHxzvr92KmJ
+         GLuNFwhWTH7fmBID19t3Kz4F6u4SfFouZ7VG4yqbjhtRNmS2nGSxyvByoMYP6R427ZOV
+         Aleg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=44pqrC2yRpDehPbtI/Pe45QSqCWTT0Z+AjklNNIBgdc=;
+        b=h0TrsjOII5taGs3Qk3SdPmR+VF4mwTBsarw1pbOiuGCahDHg2gc0ajofHPbhSprl8p
+         K79IdhmqW4wRSAh+v0aAYD93aNNZUae4DYh8nsjZYUiL3Ge19QBfeUrKZVTlhPdzvyF4
+         AL2ThgKQH25yuSGDM/Rc4qSscZ2KyLS6xt4zPoZDFEVRDuOUMa4h7x+6CPHOgNIOKiLV
+         EOpOPzsUmHXg96myiF9e7jdMiOWImR9PAP3RDTgggUoPnYrh1H+ebJH7bhEWiphfltXS
+         a7FKY3ENt+z0CmBP99JOQWNRuL4WCmKUUbzHUHoxwrKR+NLHEIk3dNijxYWSviM/DWDw
+         9h5Q==
+X-Gm-Message-State: AOAM532S5uiZlxyopBHJ2RJalf4n20Tp1nE6fQjRGk6KE7jSYYBwhQPE
+        OQo4SDitW4BE6Vo4B8yxF7mJHjbJmJCk3DPfNg4=
+X-Google-Smtp-Source: ABdhPJxMKdgkAKkkJBCWRg0QTULi4vhRGhQkRZ8zU63jKw6oJXjJLI4wZzhKQQaj824uSAkCT4mls1go9mTHs7OvW+w=
+X-Received: by 2002:a17:90a:c207:: with SMTP id e7mr15228544pjt.49.1593534819417;
+ Tue, 30 Jun 2020 09:33:39 -0700 (PDT)
+MIME-Version: 1.0
+Reply-To: mralfredstephen@gmail.com
+Received: by 2002:a17:90a:bb96:0:0:0:0 with HTTP; Tue, 30 Jun 2020 09:33:38
+ -0700 (PDT)
+From:   Mr Alfred Stephen <mralfredstepen@gmail.com>
+Date:   Tue, 30 Jun 2020 18:33:38 +0200
+X-Google-Sender-Auth: OcZdSF8HAxbI6Eq57HH1YU0AoLY
+Message-ID: <CAHQgbWuYMD_h4gQusS6pyz8-VHHcZFqQGyo23Tu048G6HqoDBg@mail.gmail.com>
+Subject: YOUR CO-OPERATION IS NEEDED
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 04:55:05PM +0200, Christophe Leroy wrote:
-> Le 30/06/2020 à 03:19, Michael Ellerman a écrit :
-> >Michael Ellerman <mpe@ellerman.id.au> writes:
-> >>Because it uses the "m<>" constraint which didn't work on GCC 4.6.
-> >>
-> >>https://github.com/linuxppc/issues/issues/297
-> >>
-> >>So we should be able to pick it up for v5.9 hopefully.
-> >
-> >It seems to break the build with the kernel.org 4.9.4 compiler and
-> >corenet64_smp_defconfig:
-> 
-> Looks like 4.9.4 doesn't accept "m<>" constraint either.
+Greeting my dear Friend,
 
-The evidence contradicts this assertion.
+How are you today?
 
-> Changing it to "m" make it build.
+This is the second time i am sending you this same vital communication
+hoping to hear from you but you never respond. So i summon courage and
+resend again today believing you are busy.
 
-But that just means something else is wrong.
+I never want to disturb you at all but will like you give me your
+attention please. I need a matured and capable hand in a business deal
+of $10.5 million US dollars. (Ten Million Five Hundred Thousand USA
+Dollars).
 
-> >+ make -s CC=powerpc64-linux-gnu-gcc -j 160
-> >In file included from /linux/include/linux/uaccess.h:11:0,
-> >                  from /linux/include/linux/sched/task.h:11,
-> >                  from /linux/include/linux/sched/signal.h:9,
-> >                  from /linux/include/linux/rcuwait.h:6,
-> >                  from /linux/include/linux/percpu-rwsem.h:7,
-> >                  from /linux/include/linux/fs.h:33,
-> >                  from /linux/include/linux/huge_mm.h:8,
-> >                  from /linux/include/linux/mm.h:675,
-> >                  from /linux/arch/powerpc/kernel/signal_32.c:17:
-> >/linux/arch/powerpc/kernel/signal_32.c: In function 
-> >'save_user_regs.isra.14.constprop':
-> >/linux/arch/powerpc/include/asm/uaccess.h:161:2: error: 'asm' operand has 
-> >impossible constraints
-> >   __asm__ __volatile__(     \
-> >   ^
-> >/linux/arch/powerpc/include/asm/uaccess.h:197:12: note: in expansion of 
-> >macro '__put_user_asm'
-> >     case 4: __put_user_asm(x, ptr, retval, "stw"); break; \
-> >             ^
-> >/linux/arch/powerpc/include/asm/uaccess.h:206:2: note: in expansion of 
-> >macro '__put_user_size_allowed'
-> >   __put_user_size_allowed(x, ptr, size, retval);  \
-> >   ^
-> >/linux/arch/powerpc/include/asm/uaccess.h:220:2: note: in expansion of 
-> >macro '__put_user_size'
-> >   __put_user_size(__pu_val, __pu_addr, __pu_size, __pu_err); \
-> >   ^
-> >/linux/arch/powerpc/include/asm/uaccess.h:96:2: note: in expansion of 
-> >macro '__put_user_nocheck'
-> >   __put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
-> >   ^
-> >/linux/arch/powerpc/kernel/signal_32.c:120:7: note: in expansion of macro 
-> >'__put_user'
-> >    if (__put_user((unsigned int)gregs[i], &frame->mc_gregs[i]))
-> >        ^
+I belief you are suitable to handle such project perfectly. This fund
+is an abandoned amount that belongs to our late foreign bank customer
+where i am fully employed. I want you to claim it on our behalf as his
+beneficiary.
 
-Can we see what that was after the macro jungle?  Like, the actual
-preprocessed code?
+I will appreciate your urgent response so that I will give you more
+details concerning this transaction.
 
-Also, what GCC version *does* work on this?
+Please indicate your willingness by sending the below information for
+more clarification and easy communication. For more details, Contact
+me for more details through my other email address:{
+mralfredstephen@post.cz }
 
+(1) Your full name...............................
+(2) Your age and sex............................
+(3) Your private phone number..........
+(4) Your country of origin..................
+(5) Your occupation.........................
 
-Segher
+Your prompt response will be highly appreciated
+
+My regards,
+Mr. Alfred Stephen
