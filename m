@@ -2,62 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B96920F591
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 635BF20F595
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731804AbgF3NZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 09:25:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:50936 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731475AbgF3NZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:25:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7236C1FB;
-        Tue, 30 Jun 2020 06:25:17 -0700 (PDT)
-Received: from bogus (unknown [10.37.8.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F255E3F71E;
-        Tue, 30 Jun 2020 06:25:14 -0700 (PDT)
-Date:   Tue, 30 Jun 2020 14:25:12 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>
-Cc:     Francois Ozog <francois.ozog@linaro.org>,
-        Jose Marinho <jose.marinho@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-kernel@vger.kernel.org, harb@amperecomputing.com,
-        Etienne Carriere <etienne.carriere@st.com>
-Subject: Re: [PATCH v3] firmware: smccc: Add ARCH_SOC_ID support
-Message-ID: <20200630132512.GB4188@bogus>
-References: <20200625095939.50861-1-sudeep.holla@arm.com>
+        id S1732007AbgF3N1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 09:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729539AbgF3N1H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 09:27:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A07C03E979
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:27:06 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1jqGHt-0000M5-TH; Tue, 30 Jun 2020 15:27:01 +0200
+Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1jqGHs-0004tI-Eq; Tue, 30 Jun 2020 15:27:00 +0200
+Date:   Tue, 30 Jun 2020 15:27:00 +0200
+From:   Michael Tretter <m.tretter@pengutronix.de>
+To:     Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
+Cc:     mturquette@baylibre.com, sboyd@codeaurora.org, sboyd@kernel.org,
+        michal.simek@xilinx.com, mark.rutland@arm.com,
+        linux-clk@vger.kernel.org, Rajan Vaja <rajan.vaja@xilinx.com>,
+        tejasp@xilinx.com, linux-kernel@vger.kernel.org, jollys@xilinx.com,
+        rajanv@xilinx.com, linux-arm-kernel@lists.infradead.org,
+        kernel@pengutronix.de
+Subject: Re: [PATCH 1/3] clk: zynqmp: Use firmware specific common clock flags
+Message-ID: <20200630132700.GA15753@pengutronix.de>
+References: <1593477014-18443-1-git-send-email-amit.sunil.dhamne@xilinx.com>
+ <1593477014-18443-2-git-send-email-amit.sunil.dhamne@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200625095939.50861-1-sudeep.holla@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1593477014-18443-2-git-send-email-amit.sunil.dhamne@xilinx.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 15:13:03 up 131 days, 20:43, 122 users,  load average: 0.08, 0.15,
+ 0.16
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mtr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
-
-On Thu, Jun 25, 2020 at 10:59:39AM +0100, Sudeep Holla wrote:
-> SMCCC v1.2 adds a new optional function SMCCC_ARCH_SOC_ID to obtain a
-> SiP defined SoC identification value. Add support for the same.
+On Mon, 29 Jun 2020 17:30:12 -0700, Amit Sunil Dhamne wrote:
+> From: Rajan Vaja <rajan.vaja@xilinx.com>
 > 
-> Also using the SoC bus infrastructure, let us expose the platform
-> specific SoC atrributes under sysfs.
+> Currently firmware passes CCF specific flags to ZynqMP clock driver.
+> So firmware needs to be updated if CCF flags are changed. The firmware
+> should have its own 'flag number space' that is distinct from the
+> common clk framework's 'flag number space'. So define and use ZynqMP
+> specific common clock flags instead of using CCF flags.
 > 
-> There are various ways in which it can be represented in shortened form
-> for efficiency and ease of parsing for userspace. The chosen form is
-> described in the ABI document.
+> Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
+> Signed-off-by: Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
+> ---
+>  drivers/clk/zynqmp/clk-zynqmp.h | 22 ++++++++++++++++++++++
+>  drivers/clk/zynqmp/clkc.c       | 25 +++++++++++++++++++++++--
+>  2 files changed, 45 insertions(+), 2 deletions(-)
 > 
+> diff --git a/drivers/clk/zynqmp/clk-zynqmp.h b/drivers/clk/zynqmp/clk-zynqmp.h
+> index 5beeb41..d8e580b 100644
+> --- a/drivers/clk/zynqmp/clk-zynqmp.h
+> +++ b/drivers/clk/zynqmp/clk-zynqmp.h
+> @@ -10,6 +10,28 @@
+> 
+>  #include <linux/firmware/xlnx-zynqmp.h>
+> 
+> +/* Common Flags */
+> +/* must be gated across rate change */
+> +#define ZYNQMP_CLK_SET_RATE_GATE       BIT(0)
+> +/* must be gated across re-parent */
+> +#define ZYNQMP_CLK_SET_PARENT_GATE     BIT(1)
+> +/* propagate rate change up one level */
+> +#define ZYNQMP_CLK_SET_RATE_PARENT     BIT(2)
+> +/* do not gate even if unused */
+> +#define ZYNQMP_CLK_IGNORE_UNUSED       BIT(3)
+> +/* do not use the cached clk rate */
+> +#define ZYNQMP_CLK_GET_RATE_NOCACHE    BIT(6)
+> +/* don't re-parent on rate change */
+> +#define ZYNQMP_CLK_SET_RATE_NO_REPARENT        BIT(7)
+> +/* do not use the cached clk accuracy */
+> +#define ZYNQMP_CLK_GET_ACCURACY_NOCACHE        BIT(8)
+> +/* recalc rates after notifications */
+> +#define ZYNQMP_CLK_RECALC_NEW_RATES    BIT(9)
+> +/* clock needs to run to set rate */
+> +#define ZYNQMP_CLK_SET_RATE_UNGATE     BIT(10)
+> +/* do not gate, ever */
+> +#define ZYNQMP_CLK_IS_CRITICAL         BIT(11)
+> +
+>  enum topology_type {
+>         TYPE_INVALID,
+>         TYPE_MUX,
+> diff --git a/drivers/clk/zynqmp/clkc.c b/drivers/clk/zynqmp/clkc.c
+> index db8d0d7..8663587 100644
+> --- a/drivers/clk/zynqmp/clkc.c
+> +++ b/drivers/clk/zynqmp/clkc.c
+> @@ -385,14 +385,35 @@ static int __zynqmp_clock_get_topology(struct clock_topology *topology,
+>  {
+>         int i;
+>         u32 type;
+> +       u32 flag;
+> 
+>         for (i = 0; i < ARRAY_SIZE(response->topology); i++) {
+>                 type = FIELD_GET(CLK_TOPOLOGY_TYPE, response->topology[i]);
+>                 if (type == TYPE_INVALID)
+>                         return END_OF_TOPOLOGY_NODE;
+>                 topology[*nnodes].type = type;
+> -               topology[*nnodes].flag = FIELD_GET(CLK_TOPOLOGY_FLAGS,
+> -                                                  response->topology[i]);
+> +               flag = FIELD_GET(CLK_TOPOLOGY_FLAGS, response->topology[i]);
+> +               topology[*nnodes].flag = 0;
+> +               topology[*nnodes].flag |= (flag & ZYNQMP_CLK_SET_RATE_GATE) ?
+> +                                          CLK_SET_RATE_GATE : 0;
+> +               topology[*nnodes].flag |= (flag & ZYNQMP_CLK_SET_RATE_PARENT) ?
+> +                                          CLK_SET_RATE_PARENT : 0;
+> +               topology[*nnodes].flag |= (flag & ZYNQMP_CLK_IGNORE_UNUSED) ?
+> +                                          CLK_IGNORE_UNUSED : 0;
+> +               topology[*nnodes].flag |= (flag & ZYNQMP_CLK_GET_RATE_NOCACHE) ?
+> +                                          CLK_GET_RATE_NOCACHE : 0;
+> +               topology[*nnodes].flag |= (flag &
+> +                                          ZYNQMP_CLK_SET_RATE_NO_REPARENT) ?
+> +                                          CLK_SET_RATE_NO_REPARENT : 0;
+> +               topology[*nnodes].flag |= (flag &
+> +                                          ZYNQMP_CLK_GET_ACCURACY_NOCACHE) ?
+> +                                          CLK_GET_ACCURACY_NOCACHE : 0;
+> +               topology[*nnodes].flag |= (flag & ZYNQMP_CLK_RECALC_NEW_RATES) ?
+> +                                          CLK_RECALC_NEW_RATES : 0;
+> +               topology[*nnodes].flag |= (flag & ZYNQMP_CLK_SET_RATE_UNGATE) ?
+> +                                          CLK_SET_RATE_UNGATE : 0;
+> +               topology[*nnodes].flag |= (flag & ZYNQMP_CLK_IS_CRITICAL) ?
+> +                                          CLK_IS_CRITICAL : 0;
 
-If you happy with this version, I can send PR for this along with the
-clean up series that Greg and others have acked [1]
+I don't think that this is the right location for converting the ZYNQMP_CLK_*
+flags to CLK_* flags. Here we are writing the flags to the struct
+clock_topology, which is still ZynqMP specific. The conversion should rather
+happen in the zynqmp_clk_register_*() functions, because these functions write
+the flags to struct clk_init_data, which is part of the common clock
+framework.
 
--- 
-Regards,
-Sudeep
+Maybe you could also add a helper function for converting the flags to make
+this more readable.
 
-[1] https://lore.kernel.org/linux-arm-kernel/20200527165238.GA21440@bogus
+Michael
+
+>                 topology[*nnodes].type_flag =
+>                                 FIELD_GET(CLK_TOPOLOGY_TYPE_FLAGS,
+>                                           response->topology[i]);
+> --
+> 2.7.4
+> 
+> This email and any attachments are intended for the sole use of the named recipient(s) and contain(s) confidential information that may be proprietary, privileged or copyrighted under applicable law. If you are not the intended recipient, do not read, copy, or forward this email message or any attachments. Delete this email message and any attachments immediately.
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
