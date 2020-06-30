@@ -2,199 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A4A20F253
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 12:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6D420F25A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 12:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732327AbgF3KKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 06:10:25 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:34554 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732310AbgF3KKY (ORCPT
+        id S1732338AbgF3KLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 06:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730237AbgF3KLx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 06:10:24 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id BFA4B80522;
-        Tue, 30 Jun 2020 12:10:20 +0200 (CEST)
-Date:   Tue, 30 Jun 2020 12:10:19 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, od@zcrc.me
-Subject: Re: [PATCH v2 04/10] drm/ingenic: Add missing CR in debug strings
-Message-ID: <20200630101019.GC553950@ravnborg.org>
-References: <20200629235210.441709-1-paul@crapouillou.net>
- <20200629235210.441709-4-paul@crapouillou.net>
+        Tue, 30 Jun 2020 06:11:53 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A98D4C061755;
+        Tue, 30 Jun 2020 03:11:52 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 10:11:49 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1593511910;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=x9Kx/vy/1w4IrADsqyxp3ADoc04m1/GxSgLtI8leJRo=;
+        b=yqm00unww/tf7emFMmRYcQoP6G3pW/OPW7pAHNa9NzGrPtYx7NQtA4KhxQbH6Pdmw/LAoK
+        L53w72+fbN511Uepel2XoECfdNQy509NqY6vjV0A9Hrr27LBEc+Ma++/42zuYmBWM2J1CG
+        9ThWcKC2ib2qgMScwT2yeV4gO67nK7vj1JkU7g8ffjXjqA8rviX8yCNZKU3GoDkDTmeehD
+        EtLIy9MP8BFXhQ8hNJM07Qp+MrBclgxi0lm8P5b2Y7BKO7Wunvm/lFcrTR4YGpqcidCEs3
+        4NaCVnJw6/S/JX7shRF/YuSSrXpc2LM1m8421SnAAU4AuJ/2KrVN0KTisKtIcw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1593511910;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=x9Kx/vy/1w4IrADsqyxp3ADoc04m1/GxSgLtI8leJRo=;
+        b=056MC/Zex643vEKzRVSxcolTlGKjRDPUzzlCVSnhCXGPSX+RqYaye02aJcatO7OuSLnmRD
+        iwphyka5gwGV0kBw==
+From:   "tip-bot2 for Marc Zyngier" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/urgent] irqchip/gic: Atomically update affinity
+Cc:     stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629235210.441709-4-paul@crapouillou.net>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=aP3eV41m c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=ER_8r6IbAAAA:8 a=7gkXJVJtAAAA:8 a=e5mUnYsNAAAA:8
-        a=O7-e7zmCaJ8UY64ll6EA:9 a=CjuIK1q_8ugA:10 a=9LHmKk7ezEChjTCyhBa9:22
-        a=E9Po1WZjFZOl8hwRPBS3:22 a=Vxmtnl_E_bksehYqCbjh:22
-        a=pHzHmUro8NiASowvMSCR:22 a=nt3jZW36AmriUCFCBwmW:22
+Message-ID: <159351190922.4006.6997590439954706407.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 01:52:04AM +0200, Paul Cercueil wrote:
-> If you pass a string that is not terminated with a carriage return to
-> dev_err(), it will eventually be printed with a carriage return, but
-> not right away, since the kernel will wait for a pr_cont().
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+The following commit has been merged into the irq/urgent branch of tip:
 
-It would have been nice if most was converted to drm_err() and friends
-when touching these.
-That may come later..
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
+Commit-ID:     005c34ae4b44f085120d7f371121ec7ded677761
+Gitweb:        https://git.kernel.org/tip/005c34ae4b44f085120d7f371121ec7ded677761
+Author:        Marc Zyngier <maz@kernel.org>
+AuthorDate:    Sun, 21 Jun 2020 14:43:15 +01:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Sun, 21 Jun 2020 15:24:46 +01:00
 
-> ---
-> 
-> Notes:
->     v2: New patch
-> 
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 30 +++++++++++------------
->  1 file changed, 15 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index 16f0740df507..a15f9a1940c6 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -623,14 +623,14 @@ static int ingenic_drm_probe(struct platform_device *pdev)
->  
->  	base = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(base)) {
-> -		dev_err(dev, "Failed to get memory resource");
-> +		dev_err(dev, "Failed to get memory resource\n");
->  		return PTR_ERR(base);
->  	}
->  
->  	priv->map = devm_regmap_init_mmio(dev, base,
->  					  &ingenic_drm_regmap_config);
->  	if (IS_ERR(priv->map)) {
-> -		dev_err(dev, "Failed to create regmap");
-> +		dev_err(dev, "Failed to create regmap\n");
->  		return PTR_ERR(priv->map);
->  	}
->  
-> @@ -641,21 +641,21 @@ static int ingenic_drm_probe(struct platform_device *pdev)
->  	if (soc_info->needs_dev_clk) {
->  		priv->lcd_clk = devm_clk_get(dev, "lcd");
->  		if (IS_ERR(priv->lcd_clk)) {
-> -			dev_err(dev, "Failed to get lcd clock");
-> +			dev_err(dev, "Failed to get lcd clock\n");
->  			return PTR_ERR(priv->lcd_clk);
->  		}
->  	}
->  
->  	priv->pix_clk = devm_clk_get(dev, "lcd_pclk");
->  	if (IS_ERR(priv->pix_clk)) {
-> -		dev_err(dev, "Failed to get pixel clock");
-> +		dev_err(dev, "Failed to get pixel clock\n");
->  		return PTR_ERR(priv->pix_clk);
->  	}
->  
->  	ret = drm_of_find_panel_or_bridge(dev->of_node, 0, 0, &panel, &bridge);
->  	if (ret) {
->  		if (ret != -EPROBE_DEFER)
-> -			dev_err(dev, "Failed to get panel handle");
-> +			dev_err(dev, "Failed to get panel handle\n");
->  		return ret;
->  	}
->  
-> @@ -684,7 +684,7 @@ static int ingenic_drm_probe(struct platform_device *pdev)
->  				       ARRAY_SIZE(ingenic_drm_primary_formats),
->  				       NULL, DRM_PLANE_TYPE_PRIMARY, NULL);
->  	if (ret) {
-> -		dev_err(dev, "Failed to register primary plane: %i", ret);
-> +		dev_err(dev, "Failed to register primary plane: %i\n", ret);
->  		return ret;
->  	}
->  
-> @@ -693,7 +693,7 @@ static int ingenic_drm_probe(struct platform_device *pdev)
->  	ret = drm_crtc_init_with_planes(drm, &priv->crtc, &priv->primary,
->  					NULL, &ingenic_drm_crtc_funcs, NULL);
->  	if (ret) {
-> -		dev_err(dev, "Failed to init CRTC: %i", ret);
-> +		dev_err(dev, "Failed to init CRTC: %i\n", ret);
->  		return ret;
->  	}
->  
-> @@ -705,25 +705,25 @@ static int ingenic_drm_probe(struct platform_device *pdev)
->  	ret = drm_simple_encoder_init(drm, &priv->encoder,
->  				      DRM_MODE_ENCODER_DPI);
->  	if (ret) {
-> -		dev_err(dev, "Failed to init encoder: %i", ret);
-> +		dev_err(dev, "Failed to init encoder: %i\n", ret);
->  		return ret;
->  	}
->  
->  	ret = drm_bridge_attach(&priv->encoder, bridge, NULL, 0);
->  	if (ret) {
-> -		dev_err(dev, "Unable to attach bridge");
-> +		dev_err(dev, "Unable to attach bridge\n");
->  		return ret;
->  	}
->  
->  	ret = drm_irq_install(drm, irq);
->  	if (ret) {
-> -		dev_err(dev, "Unable to install IRQ handler");
-> +		dev_err(dev, "Unable to install IRQ handler\n");
->  		return ret;
->  	}
->  
->  	ret = drm_vblank_init(drm, 1);
->  	if (ret) {
-> -		dev_err(dev, "Failed calling drm_vblank_init()");
-> +		dev_err(dev, "Failed calling drm_vblank_init()\n");
->  		return ret;
->  	}
->  
-> @@ -731,7 +731,7 @@ static int ingenic_drm_probe(struct platform_device *pdev)
->  
->  	ret = clk_prepare_enable(priv->pix_clk);
->  	if (ret) {
-> -		dev_err(dev, "Unable to start pixel clock");
-> +		dev_err(dev, "Unable to start pixel clock\n");
->  		return ret;
->  	}
->  
-> @@ -746,20 +746,20 @@ static int ingenic_drm_probe(struct platform_device *pdev)
->  		 */
->  		ret = clk_set_rate(priv->lcd_clk, parent_rate);
->  		if (ret) {
-> -			dev_err(dev, "Unable to set LCD clock rate");
-> +			dev_err(dev, "Unable to set LCD clock rate\n");
->  			goto err_pixclk_disable;
->  		}
->  
->  		ret = clk_prepare_enable(priv->lcd_clk);
->  		if (ret) {
-> -			dev_err(dev, "Unable to start lcd clock");
-> +			dev_err(dev, "Unable to start lcd clock\n");
->  			goto err_pixclk_disable;
->  		}
->  	}
->  
->  	ret = drm_dev_register(drm, 0);
->  	if (ret) {
-> -		dev_err(dev, "Failed to register DRM driver");
-> +		dev_err(dev, "Failed to register DRM driver\n");
->  		goto err_devclk_disable;
->  	}
->  
-> -- 
-> 2.27.0
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+irqchip/gic: Atomically update affinity
+
+The GIC driver uses a RMW sequence to update the affinity, and
+relies on the gic_lock_irqsave/gic_unlock_irqrestore sequences
+to update it atomically.
+
+But these sequences only expand into anything meaningful if
+the BL_SWITCHER option is selected, which almost never happens.
+
+It also turns out that using a RMW and locks is just as silly,
+as the GIC distributor supports byte accesses for the GICD_TARGETRn
+registers, which when used make the update atomic by definition.
+
+Drop the terminally broken code and replace it by a byte write.
+
+Fixes: 04c8b0f82c7d ("irqchip/gic: Make locking a BL_SWITCHER only feature")
+Cc: stable@vger.kernel.org
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ drivers/irqchip/irq-gic.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+index 00de05a..c17fabd 100644
+--- a/drivers/irqchip/irq-gic.c
++++ b/drivers/irqchip/irq-gic.c
+@@ -329,10 +329,8 @@ static int gic_irq_set_vcpu_affinity(struct irq_data *d, void *vcpu)
+ static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
+ 			    bool force)
+ {
+-	void __iomem *reg = gic_dist_base(d) + GIC_DIST_TARGET + (gic_irq(d) & ~3);
+-	unsigned int cpu, shift = (gic_irq(d) % 4) * 8;
+-	u32 val, mask, bit;
+-	unsigned long flags;
++	void __iomem *reg = gic_dist_base(d) + GIC_DIST_TARGET + gic_irq(d);
++	unsigned int cpu;
+ 
+ 	if (!force)
+ 		cpu = cpumask_any_and(mask_val, cpu_online_mask);
+@@ -342,13 +340,7 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
+ 	if (cpu >= NR_GIC_CPU_IF || cpu >= nr_cpu_ids)
+ 		return -EINVAL;
+ 
+-	gic_lock_irqsave(flags);
+-	mask = 0xff << shift;
+-	bit = gic_cpu_map[cpu] << shift;
+-	val = readl_relaxed(reg) & ~mask;
+-	writel_relaxed(val | bit, reg);
+-	gic_unlock_irqrestore(flags);
+-
++	writeb_relaxed(gic_cpu_map[cpu], reg);
+ 	irq_data_update_effective_affinity(d, cpumask_of(cpu));
+ 
+ 	return IRQ_SET_MASK_OK_DONE;
