@@ -2,133 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC1320EAC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 03:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE4C20EACF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 03:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbgF3BRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 21:17:17 -0400
-Received: from ozlabs.org ([203.11.71.1]:53977 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726612AbgF3BRR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 21:17:17 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49wmfz2qYRz9sDX;
-        Tue, 30 Jun 2020 11:17:15 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1593479835;
-        bh=c1L8DnWKBEK734+NRCMwarazgG4eaw4rI7iix+fR1fM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=kDtop+xDEp6QqlXkx0SzTxPfqSZeaL8NAwcqTcjv6q34IAtCPjulKUhhnD+7SnUFj
-         6woeh33FoYTtI5Rd9M5jonIDa+nbkhTKULpPQ/XjloHpjsVMpNakgC96oS3KmmI74a
-         y5j0ZZNyacS46inOgRddJS7op0JOxbQc5nrAcHPzFbax0A5KX5Mdk46P2PPz0zR6SP
-         0E7Td3Cs41zmvcYGpYbbI0N5Hlkv2HZd+OrBxphVRpmm3IX0C3e0EinfIokcfq/BuM
-         lAYkckZwFbZfYIPagygrZ9AZin/b0DoRct0tdVRTR8J9WZ1NppEaXJlTOxKn80dNfB
-         5Vktad6YByV0w==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com,
-        segher@kernel.crashing.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] powerpc/uaccess: Use flexible addressing with __put_user()/__get_user()
-In-Reply-To: <878sg6862r.fsf@mpe.ellerman.id.au>
-References: <c2addbd9d76212242d3d8554a2f7ff849fb08b85.1587040754.git.christophe.leroy@c-s.fr> <7b916759-1683-b4df-0d4b-b04b3fcd9a02@csgroup.eu> <878sg6862r.fsf@mpe.ellerman.id.au>
-Date:   Tue, 30 Jun 2020 11:19:29 +1000
-Message-ID: <875zb98i5a.fsf@mpe.ellerman.id.au>
+        id S1728431AbgF3BTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 21:19:36 -0400
+Received: from mail-bn8nam11on2051.outbound.protection.outlook.com ([40.107.236.51]:26438
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726436AbgF3BTe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 21:19:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dfdq/wKBl/ZZuIOO2odQ0BOycGr1QVOXP8LuhV8dwo7x/JmYzqirR9hfEd2JamDceT1zrVtcHLu2IoFw/x4ct/1HiywrVfJBJer2OP9HlDhCfB7fBUs5Gy29gCrOeNE5QUzNwQ8i/eY50NksTaLU+cWAd61oeyOuI2AHsttItx/zvyV57gJ7/mOYjU5LrSWktxFi1XALYS9IPjBi6blkwsxrxGNyBQaL1Yfjb3j5obwMMmq1nM5/pr4zjlGpXYt3KCJ+00tDKfUTM++HvHD2ZvvqsBLRQXBx4d5XnLfCLxmV46w9bSpvF5AOOfGgGPnKNompXB1CaMgMw5BTrGynWQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WyZHVaOHgdyT9xunGQ0c3lauNf0VHuCVzT6JwK1gXHc=;
+ b=Y+qzC6NbO0Yi1uFtt4bGoB8IpOnkiRyF5DlivZJxtuHpeELabtcvSOIt6q4iOGXQTcAUankrfKDa3Vo8B6+/DXL7eibZueMg5IRJB4Vku1GuC00HxWE8KJfY0bxZooif+K5JcGWtso7Xq/Q3KUAjf+WhsRsYRI4SUp2gLyA6ZaJkmx8sE3z914mYkP76RjFjYwq8x/kQHqr+zj+1sPqXrxKN0nEpi0CNqI/D+barfxCPxUgdYxbmLll+8gx4uebFYuRsPQAYkJV/5dbHCon5JfyR/HTaJWk6fmr9MTE8NN8I1gg7iT5vAOL9TNt6AV1iJLpakc4vppK41nV9qPaoWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WyZHVaOHgdyT9xunGQ0c3lauNf0VHuCVzT6JwK1gXHc=;
+ b=pTxMyJPdocSRNEIAiN+t48EAxWlHy9LwbLM6XSihJocUQwXs1MqWobtPbsI2xN9FPs4rFknS/bH6ZhC2gwDAfc+0ku+UCLX4nGk4BdVBvoj8DoFLwWTrMJCcZN8pRQKw2VqrxYuEmtuZVZfL+3ubcX15Ry8302gVxqvIkm6xsn0=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BYAPR11MB3446.namprd11.prod.outlook.com (2603:10b6:a03:1a::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.26; Tue, 30 Jun
+ 2020 01:19:30 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::3d7d:dfc1:b35d:63d1]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::3d7d:dfc1:b35d:63d1%7]) with mapi id 15.20.3131.027; Tue, 30 Jun 2020
+ 01:19:30 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     "balbi@kernel.org" <balbi@kernel.org>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?u9i4tDogW1BBVENIXSB1c2I6IGdhZGdldDogZnVuY3Rpb246IHByaW50ZXI6?=
+ =?gb2312?B?IFRoZSBkZXZpY2UgaW50ZXJmYWNlIGlzIHJlc2V0IGFuZCBzaG91bGQgcmV0?=
+ =?gb2312?Q?urn_error_code?=
+Thread-Topic: [PATCH] usb: gadget: function: printer: The device interface is
+ reset and should return error code
+Thread-Index: AQHWTO4m/7Kq2lPOa0yJ5PnFdxMxZ6jwXoAy
+Date:   Tue, 30 Jun 2020 01:19:30 +0000
+Message-ID: <BYAPR11MB26324061D80BDE1CCCD2B409FF6F0@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <20200628015731.16566-1-qiang.zhang@windriver.com>
+In-Reply-To: <20200628015731.16566-1-qiang.zhang@windriver.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
+x-originating-ip: [60.247.85.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7caaadca-7ed0-481a-6969-08d81c93a3b8
+x-ms-traffictypediagnostic: BYAPR11MB3446:
+x-microsoft-antispam-prvs: <BYAPR11MB3446A9F5FD12CA7542A335C8FF6F0@BYAPR11MB3446.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3173;
+x-forefront-prvs: 0450A714CB
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Q8l8IVAyrD/8cXyFJbCwdgMX/reEjML2ku+IhUEN20cGWnKXEMPAxQVqLVG6PBrB+H1T3kdwxaTchyiO0dImAw5Fi1XgQfXHAHsjHdnznrmU9YmlZOhkJXA32TgGZsjVNAhhKlKO+1yOPLt/drEFgmWpAE6E+kVkjtzQdqLscCu/+7H6yvD6gX1O2UViHBB1jif5fBLXD4R+dgVvv3tAuP8FGrlFlkTQye1H8+xe/+ZOyQImWfB7ZbZasLLbX+cEeSez8e5Q2gwuTtmiGKNZ5e777IhhpjdoP0obw1Hz6e6mrQWwUT1KFF8zlArKlPPvKPVtPq7mKTEdh6xCfsAawg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39850400004)(346002)(376002)(136003)(396003)(366004)(9686003)(55016002)(86362001)(52536014)(66446008)(64756008)(66946007)(76116006)(91956017)(66556008)(66476007)(71200400001)(5660300002)(6916009)(224303003)(83380400001)(6506007)(8936002)(7696005)(186003)(4326008)(478600001)(26005)(316002)(2906002)(33656002)(54906003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: D7tDNaKAPGBUkNPP6C7zkliDzK7gfvupN5d5zl+51iOYlg4kKR4WNFep69A5faObPzmh+o4EI1g0rBwv5y1EYlSLJvXHRYvYsJBHKLdjOEPQDYtQQrjJo8RevQqhyiiqvD5+A+LEC4kjONwz9FF2oDHSVbp6jRiXNN1LMDlg9jSOru9kvzyVtGhx8eo5I1RQBsZ+WJgiL6VoT/cJqLXn9zD6jhdTK65vmBUnrjfsP4t3LR613ppsN050msxcCgnuwS6o3wPwMwoNo+j9AcjPPPYRJNt8pIq1F+86nf1GKMEEnywiC7YlY5e7cqiIUAU9PXswnwGQnjWE+I62Um1EkGdhEetQ4Yu4yTqIaDzAG7fjj2xQGE6uiVFyCL7XPwgappmCC5CVsnGKM2vJtpYxdGgaL4ZMpxeCfA9OHTc5Cy2+YiQpc9kWdQ5WncS8x8f1WkdKmp2oKob5mUteHPqRALj3Mz+F320HKevTVlDT/Zo=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7caaadca-7ed0-481a-6969-08d81c93a3b8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jun 2020 01:19:30.3748
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bdFI9eh7CO2U8aMXFZNA1zP6ULF07B2/GMju69PTYU4pQoBMNb5bE7EffiABZ2fvL4knzvMHtYvtIOBfQQ7fDpUnN5mD/E2XCi5irC6emxc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3446
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael Ellerman <mpe@ellerman.id.au> writes:
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->> Hi Michael,
->>
->> I see this patch is marked as "defered" in patchwork, but I can't see 
->> any related discussion. Is it normal ?
->
-> Because it uses the "m<>" constraint which didn't work on GCC 4.6.
->
-> https://github.com/linuxppc/issues/issues/297
->
-> So we should be able to pick it up for v5.9 hopefully.
-
-It seems to break the build with the kernel.org 4.9.4 compiler and
-corenet64_smp_defconfig:
-
-+ make -s CC=powerpc64-linux-gnu-gcc -j 160
-In file included from /linux/include/linux/uaccess.h:11:0,
-                 from /linux/include/linux/sched/task.h:11,
-                 from /linux/include/linux/sched/signal.h:9,
-                 from /linux/include/linux/rcuwait.h:6,
-                 from /linux/include/linux/percpu-rwsem.h:7,
-                 from /linux/include/linux/fs.h:33,
-                 from /linux/include/linux/huge_mm.h:8,
-                 from /linux/include/linux/mm.h:675,
-                 from /linux/arch/powerpc/kernel/signal_32.c:17:
-/linux/arch/powerpc/kernel/signal_32.c: In function 'save_user_regs.isra.14.constprop':
-/linux/arch/powerpc/include/asm/uaccess.h:161:2: error: 'asm' operand has impossible constraints
-  __asm__ __volatile__(     \
-  ^
-/linux/arch/powerpc/include/asm/uaccess.h:197:12: note: in expansion of macro '__put_user_asm'
-    case 4: __put_user_asm(x, ptr, retval, "stw"); break; \
-            ^
-/linux/arch/powerpc/include/asm/uaccess.h:206:2: note: in expansion of macro '__put_user_size_allowed'
-  __put_user_size_allowed(x, ptr, size, retval);  \
-  ^
-/linux/arch/powerpc/include/asm/uaccess.h:220:2: note: in expansion of macro '__put_user_size'
-  __put_user_size(__pu_val, __pu_addr, __pu_size, __pu_err); \
-  ^
-/linux/arch/powerpc/include/asm/uaccess.h:96:2: note: in expansion of macro '__put_user_nocheck'
-  __put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
-  ^
-/linux/arch/powerpc/kernel/signal_32.c:120:7: note: in expansion of macro '__put_user'
-   if (__put_user((unsigned int)gregs[i], &frame->mc_gregs[i]))
-       ^
-/linux/scripts/Makefile.build:280: recipe for target 'arch/powerpc/kernel/signal_32.o' failed
-make[3]: *** [arch/powerpc/kernel/signal_32.o] Error 1
-make[3]: *** Waiting for unfinished jobs....
-In file included from /linux/include/linux/uaccess.h:11:0,
-                 from /linux/include/linux/sched/task.h:11,
-                 from /linux/include/linux/sched/signal.h:9,
-                 from /linux/include/linux/rcuwait.h:6,
-                 from /linux/include/linux/percpu-rwsem.h:7,
-                 from /linux/include/linux/fs.h:33,
-                 from /linux/include/linux/huge_mm.h:8,
-                 from /linux/include/linux/mm.h:675,
-                 from /linux/arch/powerpc/kernel/signal_64.c:12:
-/linux/arch/powerpc/kernel/signal_64.c: In function '__se_sys_swapcontext':
-/linux/arch/powerpc/include/asm/uaccess.h:319:2: error: 'asm' operand has impossible constraints
-  __asm__ __volatile__(    \
-  ^
-/linux/arch/powerpc/include/asm/uaccess.h:359:10: note: in expansion of macro '__get_user_asm'
-  case 1: __get_user_asm(x, (u8 __user *)ptr, retval, "lbz"); break; \
-          ^
-/linux/arch/powerpc/include/asm/uaccess.h:370:2: note: in expansion of macro '__get_user_size_allowed'
-  __get_user_size_allowed(x, ptr, size, retval);  \
-  ^
-/linux/arch/powerpc/include/asm/uaccess.h:393:3: note: in expansion of macro '__get_user_size'
-   __get_user_size(__gu_val, __gu_addr, __gu_size, __gu_err); \
-   ^
-/linux/arch/powerpc/include/asm/uaccess.h:94:2: note: in expansion of macro '__get_user_nocheck'
-  __get_user_nocheck((x), (ptr), sizeof(*(ptr)), true)
-  ^
-/linux/arch/powerpc/kernel/signal_64.c:672:9: note: in expansion of macro '__get_user'
-      || __get_user(tmp, (u8 __user *) new_ctx + ctx_size - 1))
-         ^
-/linux/scripts/Makefile.build:280: recipe for target 'arch/powerpc/kernel/signal_64.o' failed
-make[3]: *** [arch/powerpc/kernel/signal_64.o] Error 1
-/linux/scripts/Makefile.build:497: recipe for target 'arch/powerpc/kernel' failed
-make[2]: *** [arch/powerpc/kernel] Error 2
-/linux/Makefile:1756: recipe for target 'arch/powerpc' failed
-make[1]: *** [arch/powerpc] Error 2
-Makefile:185: recipe for target '__sub-make' failed
-make: *** [__sub-make] Error 2
-
-
-cheers
+SGkgRmVsaXBlLAoKUGxlYXNlIGNoZWNrIHRoaXMgcGF0Y2ggYW5kIG1ha2Ugc3VnZ2VzdGlvbnMg
+LgoKVGhhbmtzClpxaWFuZwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Xwq3orz+yMs6IGxpbnV4LXVzYi1vd25lckB2Z2VyLmtlcm5lbC5vcmcgPGxpbnV4LXVzYi1vd25l
+ckB2Z2VyLmtlcm5lbC5vcmc+ILT6se0gcWlhbmcuemhhbmdAd2luZHJpdmVyLmNvbSA8cWlhbmcu
+emhhbmdAd2luZHJpdmVyLmNvbT4Kt6LLzcqxvOQ6IDIwMjDE6jbUwjI4yNUgOTo1NwrK1bz+yMs6
+IGZlbGlwZS5iYWxiaUBsaW51eC5pbnRlbC5jb20Ks63LzTogZ3JlZ2toQGxpbnV4Zm91bmRhdGlv
+bi5vcmc7IGxpbnV4LXVzYkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5l
+bC5vcmcK1vfM4jogW1BBVENIXSB1c2I6IGdhZGdldDogZnVuY3Rpb246IHByaW50ZXI6IFRoZSBk
+ZXZpY2UgaW50ZXJmYWNlIGlzIHJlc2V0IGFuZCBzaG91bGQgcmV0dXJuIGVycm9yIGNvZGUKCkZy
+b206IFpxaWFuZyA8cWlhbmcuemhhbmdAd2luZHJpdmVyLmNvbT4KCkFmdGVyIHRoZSBkZXZpY2Ug
+aXMgZGlzY29ubmVjdGVkIGZyb20gdGhlIGhvc3Qgc2lkZSwgdGhlIGludGVyZmFjZSBvZgp0aGUg
+ZGV2aWNlIGlzIHJlc2V0LiBJZiB0aGUgdXNlcnNwYWNlIG9wZXJhdGVzIHRoZSBkZXZpY2UgYWdh
+aW4sCmFuIGVycm9yIGNvZGUgc2hvdWxkIGJlIHJldHVybmVkLgoKU2lnbmVkLW9mZi1ieTogWnFp
+YW5nIDxxaWFuZy56aGFuZ0B3aW5kcml2ZXIuY29tPgotLS0KIGRyaXZlcnMvdXNiL2dhZGdldC9m
+dW5jdGlvbi9mX3ByaW50ZXIuYyB8IDM2ICsrKysrKysrKysrKysrKysrKysrKysrKysKIDEgZmls
+ZSBjaGFuZ2VkLCAzNiBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZ2Fk
+Z2V0L2Z1bmN0aW9uL2ZfcHJpbnRlci5jIGIvZHJpdmVycy91c2IvZ2FkZ2V0L2Z1bmN0aW9uL2Zf
+cHJpbnRlci5jCmluZGV4IDljN2VkMjUzOWZmNy4uMmI0NWE2MWU0MjEzIDEwMDY0NAotLS0gYS9k
+cml2ZXJzL3VzYi9nYWRnZXQvZnVuY3Rpb24vZl9wcmludGVyLmMKKysrIGIvZHJpdmVycy91c2Iv
+Z2FkZ2V0L2Z1bmN0aW9uL2ZfcHJpbnRlci5jCkBAIC0zMzgsNiArMzM4LDExIEBAIHByaW50ZXJf
+b3BlbihzdHJ1Y3QgaW5vZGUgKmlub2RlLCBzdHJ1Y3QgZmlsZSAqZmQpCgogICAgICAgIHNwaW5f
+bG9ja19pcnFzYXZlKCZkZXYtPmxvY2ssIGZsYWdzKTsKCisgICAgICAgaWYgKGRldi0+aW50ZXJm
+YWNlIDwgMCkgeworICAgICAgICAgICAgICAgc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmZGV2LT5s
+b2NrLCBmbGFncyk7CisgICAgICAgICAgICAgICByZXR1cm4gLUVOT0RFVjsKKyAgICAgICB9CisK
+ICAgICAgICBpZiAoIWRldi0+cHJpbnRlcl9jZGV2X29wZW4pIHsKICAgICAgICAgICAgICAgIGRl
+di0+cHJpbnRlcl9jZGV2X29wZW4gPSAxOwogICAgICAgICAgICAgICAgZmQtPnByaXZhdGVfZGF0
+YSA9IGRldjsKQEAgLTQzMCw2ICs0MzUsMTIgQEAgcHJpbnRlcl9yZWFkKHN0cnVjdCBmaWxlICpm
+ZCwgY2hhciBfX3VzZXIgKmJ1Ziwgc2l6ZV90IGxlbiwgbG9mZl90ICpwdHIpCiAgICAgICAgbXV0
+ZXhfbG9jaygmZGV2LT5sb2NrX3ByaW50ZXJfaW8pOwogICAgICAgIHNwaW5fbG9ja19pcnFzYXZl
+KCZkZXYtPmxvY2ssIGZsYWdzKTsKCisgICAgICAgaWYgKGRldi0+aW50ZXJmYWNlIDwgMCkgewor
+ICAgICAgICAgICAgICAgc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmZGV2LT5sb2NrLCBmbGFncyk7
+CisgICAgICAgICAgICAgICBtdXRleF91bmxvY2soJmRldi0+bG9ja19wcmludGVyX2lvKTsKKyAg
+ICAgICAgICAgICAgIHJldHVybiAtRU5PREVWOworICAgICAgIH0KKwogICAgICAgIC8qIFdlIHdp
+bGwgdXNlIHRoaXMgZmxhZyBsYXRlciB0byBjaGVjayBpZiBhIHByaW50ZXIgcmVzZXQgaGFwcGVu
+ZWQKICAgICAgICAgKiBhZnRlciB3ZSB0dXJuIGludGVycnVwdHMgYmFjayBvbi4KICAgICAgICAg
+Ki8KQEAgLTU2MSw2ICs1NzIsMTIgQEAgcHJpbnRlcl93cml0ZShzdHJ1Y3QgZmlsZSAqZmQsIGNv
+bnN0IGNoYXIgX191c2VyICpidWYsIHNpemVfdCBsZW4sIGxvZmZfdCAqcHRyKQogICAgICAgIG11
+dGV4X2xvY2soJmRldi0+bG9ja19wcmludGVyX2lvKTsKICAgICAgICBzcGluX2xvY2tfaXJxc2F2
+ZSgmZGV2LT5sb2NrLCBmbGFncyk7CgorICAgICAgIGlmIChkZXYtPmludGVyZmFjZSA8IDApIHsK
+KyAgICAgICAgICAgICAgIHNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmRldi0+bG9jaywgZmxhZ3Mp
+OworICAgICAgICAgICAgICAgbXV0ZXhfdW5sb2NrKCZkZXYtPmxvY2tfcHJpbnRlcl9pbyk7Cisg
+ICAgICAgICAgICAgICByZXR1cm4gLUVOT0RFVjsKKyAgICAgICB9CisKICAgICAgICAvKiBDaGVj
+ayBpZiBhIHByaW50ZXIgcmVzZXQgaGFwcGVucyB3aGlsZSB3ZSBoYXZlIGludGVycnVwdHMgb24g
+Ki8KICAgICAgICBkZXYtPnJlc2V0X3ByaW50ZXIgPSAwOwoKQEAgLTY2Nyw2ICs2ODQsMTMgQEAg
+cHJpbnRlcl9mc3luYyhzdHJ1Y3QgZmlsZSAqZmQsIGxvZmZfdCBzdGFydCwgbG9mZl90IGVuZCwg
+aW50IGRhdGFzeW5jKQoKICAgICAgICBpbm9kZV9sb2NrKGlub2RlKTsKICAgICAgICBzcGluX2xv
+Y2tfaXJxc2F2ZSgmZGV2LT5sb2NrLCBmbGFncyk7CisKKyAgICAgICBpZiAoZGV2LT5pbnRlcmZh
+Y2UgPCAwKSB7CisgICAgICAgICAgICAgICBzcGluX3VubG9ja19pcnFyZXN0b3JlKCZkZXYtPmxv
+Y2ssIGZsYWdzKTsKKyAgICAgICAgICAgICAgIGlub2RlX3VubG9jayhpbm9kZSk7CisgICAgICAg
+ICAgICAgICByZXR1cm4gLUVOT0RFVjsKKyAgICAgICB9CisKICAgICAgICB0eF9saXN0X2VtcHR5
+ID0gKGxpa2VseShsaXN0X2VtcHR5KCZkZXYtPnR4X3JlcXMpKSk7CiAgICAgICAgc3Bpbl91bmxv
+Y2tfaXJxcmVzdG9yZSgmZGV2LT5sb2NrLCBmbGFncyk7CgpAQCAtNjg5LDYgKzcxMywxMyBAQCBw
+cmludGVyX3BvbGwoc3RydWN0IGZpbGUgKmZkLCBwb2xsX3RhYmxlICp3YWl0KQoKICAgICAgICBt
+dXRleF9sb2NrKCZkZXYtPmxvY2tfcHJpbnRlcl9pbyk7CiAgICAgICAgc3Bpbl9sb2NrX2lycXNh
+dmUoJmRldi0+bG9jaywgZmxhZ3MpOworCisgICAgICAgaWYgKGRldi0+aW50ZXJmYWNlIDwgMCkg
+eworICAgICAgICAgICAgICAgc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmZGV2LT5sb2NrLCBmbGFn
+cyk7CisgICAgICAgICAgICAgICBtdXRleF91bmxvY2soJmRldi0+bG9ja19wcmludGVyX2lvKTsK
+KyAgICAgICAgICAgICAgIHJldHVybiBFUE9MTEVSUiB8IEVQT0xMSFVQOworICAgICAgIH0KKwog
+ICAgICAgIHNldHVwX3J4X3JlcXMoZGV2KTsKICAgICAgICBzcGluX3VubG9ja19pcnFyZXN0b3Jl
+KCZkZXYtPmxvY2ssIGZsYWdzKTsKICAgICAgICBtdXRleF91bmxvY2soJmRldi0+bG9ja19wcmlu
+dGVyX2lvKTsKQEAgLTcyMiw2ICs3NTMsMTEgQEAgcHJpbnRlcl9pb2N0bChzdHJ1Y3QgZmlsZSAq
+ZmQsIHVuc2lnbmVkIGludCBjb2RlLCB1bnNpZ25lZCBsb25nIGFyZykKCiAgICAgICAgc3Bpbl9s
+b2NrX2lycXNhdmUoJmRldi0+bG9jaywgZmxhZ3MpOwoKKyAgICAgICBpZiAoZGV2LT5pbnRlcmZh
+Y2UgPCAwKSB7CisgICAgICAgICAgICAgICBzcGluX3VubG9ja19pcnFyZXN0b3JlKCZkZXYtPmxv
+Y2ssIGZsYWdzKTsKKyAgICAgICAgICAgICAgIHJldHVybiAtRU5PREVWOworICAgICAgIH0KKwog
+ICAgICAgIHN3aXRjaCAoY29kZSkgewogICAgICAgIGNhc2UgR0FER0VUX0dFVF9QUklOVEVSX1NU
+QVRVUzoKICAgICAgICAgICAgICAgIHN0YXR1cyA9IChpbnQpZGV2LT5wcmludGVyX3N0YXR1czsK
+LS0KMi4yNC4xCgo=
