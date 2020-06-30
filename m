@@ -2,124 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9951320ECEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 06:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB1320ED01
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 06:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729543AbgF3Eub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 00:50:31 -0400
-Received: from mga05.intel.com ([192.55.52.43]:40274 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729247AbgF3Eua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 00:50:30 -0400
-IronPort-SDR: ZqaF6jYvOZBVcYViMez1UQkcq3L1iaiu69bVe0T+tAsEqY0W5YloNkailibrgo/MQbONpQz1zG
- ZM42McaMn/TQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="230995301"
-X-IronPort-AV: E=Sophos;i="5.75,296,1589266800"; 
-   d="scan'208";a="230995301"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 21:50:29 -0700
-IronPort-SDR: YDVA/aYnL+AdORxJOcaUrm4P4FFEuhV5QspBKdyUg1K4nteR2qMdYjvlk2FSnc5Jyy7DWQ8nB+
- fnfawDMxGVjw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,296,1589266800"; 
-   d="scan'208";a="313280347"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Jun 2020 21:50:28 -0700
-Date:   Mon, 29 Jun 2020 21:57:03 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH 3/7] iommu/vt-d: Fix PASID devTLB invalidation
-Message-ID: <20200629215703.4858896d@jacob-builder>
-In-Reply-To: <57091f4a-fb53-40a4-6a28-a498f548f8b8@linux.intel.com>
-References: <1592926996-47914-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1592926996-47914-4-git-send-email-jacob.jun.pan@linux.intel.com>
-        <57091f4a-fb53-40a4-6a28-a498f548f8b8@linux.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1729641AbgF3EzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 00:55:01 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:39596 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729572AbgF3Eyx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 00:54:53 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05U4nx7W007827;
+        Tue, 30 Jun 2020 00:54:37 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-00128a01.pphosted.com with ESMTP id 31wyy6837e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Jun 2020 00:54:37 -0400
+Received: from m0167088.ppops.net (m0167088.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05U4sbRM022171;
+        Tue, 30 Jun 2020 00:54:37 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 31wyy68377-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Jun 2020 00:54:37 -0400
+Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 05U4sZLh056034
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 30 Jun 2020 00:54:35 -0400
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 29 Jun 2020 21:54:34 -0700
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 29 Jun 2020 21:54:33 -0700
+Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Mon, 29 Jun 2020 21:54:33 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 05U4sPIm018305;
+        Tue, 30 Jun 2020 00:54:30 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
+        <knaack.h@gmx.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH v4 3/7] iio: core: remove padding from private information
+Date:   Tue, 30 Jun 2020 07:57:04 +0300
+Message-ID: <20200630045708.14166-4-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200630045708.14166-1-alexandru.ardelean@analog.com>
+References: <20200630045708.14166-1-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-06-29_21:2020-06-29,2020-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ cotscore=-2147483648 adultscore=0 mlxlogscore=999 malwarescore=0
+ bulkscore=0 phishscore=0 impostorscore=0 clxscore=1015 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006300035
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Jun 2020 15:25:57 +0800
-Lu Baolu <baolu.lu@linux.intel.com> wrote:
+There was a recent discussion about this code:
+  https://lore.kernel.org/linux-iio/20200322165317.0b1f0674@archlinux/
 
-> On 2020/6/23 23:43, Jacob Pan wrote:
-> > DevTLB flush can be used for both DMA request with and without
-> > PASIDs. The former uses PASID#0 (RID2PASID), latter uses non-zero
-> > PASID for SVA usage.
-> > 
-> > This patch adds a check for PASID value such that devTLB flush with
-> > PASID is used for SVA case. This is more efficient in that multiple
-> > PASIDs can be used by a single device, when tearing down a PASID
-> > entry we shall flush only the devTLB specific to a PASID.
-> > 
-> > Fixes: 6f7db75e1c46 ("iommu/vt-d: Add second level page table")
-> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > ---
-> >   drivers/iommu/intel/pasid.c | 11 ++++++++++-
-> >   1 file changed, 10 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/iommu/intel/pasid.c
-> > b/drivers/iommu/intel/pasid.c index c81f0f17c6ba..3991a24539a1
-> > 100644 --- a/drivers/iommu/intel/pasid.c
-> > +++ b/drivers/iommu/intel/pasid.c
-> > @@ -486,7 +486,16 @@ devtlb_invalidation_with_pasid(struct
-> > intel_iommu *iommu, qdep = info->ats_qdep;
-> >   	pfsid = info->pfsid;
-> >   
-> > -	qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0, 64 -
-> > VTD_PAGE_SHIFT);
-> > +	/*
-> > +	 * When PASID 0 is used, it indicates RID2PASID(DMA
-> > request w/o PASID),
-> > +	 * devTLB flush w/o PASID should be used. For non-zero
-> > PASID under
-> > +	 * SVA usage, device could do DMA with multiple PASIDs. It
-> > is more
-> > +	 * efficient to flush devTLB specific to the PASID.
-> > +	 */
-> > +	if (pasid)  
-> 
-> How about
-> 
-> 	if (pasid == PASID_RID2PASID)
-> 		qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0, 64 -
-> VTD_PAGE_SHIFT); else
-> 		qi_flush_dev_iotlb_pasid(iommu, sid, pfsid, pasid,
-> qdep, 0, 64 - VTD_PAGE_SHIFT);
-> 
-> ?
-> 
-> It makes the code more readable and still works even we reassign
-> another pasid for RID2PASID.
-> 
-agreed, thanks.
+This looks like a good time to removed this, since any issues about it
+should pop-up under testing, because the iio_dev is having a bit of an
+overhaul and stuff being moved to iio_dev_opaque.
 
-> Best regards,
-> baolu
-> 
-> > +		qi_flush_dev_iotlb_pasid(iommu, sid, pfsid, pasid,
-> > qdep, 0, 64 - VTD_PAGE_SHIFT);
-> > +	else
-> > +		qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0, 64
-> > - VTD_PAGE_SHIFT); }
-> >   
-> >   void intel_pasid_tear_down_entry(struct intel_iommu *iommu,
-> > struct device *dev, 
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+---
+ drivers/iio/industrialio-core.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-[Jacob Pan]
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index 33e2953cf021..27005ba4d09c 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -1507,8 +1507,6 @@ struct iio_dev *iio_device_alloc(struct device *parent, int sizeof_priv)
+ 		alloc_size = ALIGN(alloc_size, IIO_ALIGN);
+ 		alloc_size += sizeof_priv;
+ 	}
+-	/* ensure 32-byte alignment of whole construct ? */
+-	alloc_size += IIO_ALIGN - 1;
+ 
+ 	iio_dev_opaque = kzalloc(alloc_size, GFP_KERNEL);
+ 	if (!iio_dev_opaque)
+-- 
+2.17.1
+
