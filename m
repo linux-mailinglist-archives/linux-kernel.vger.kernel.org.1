@@ -2,151 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B0F20F793
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1106220F795
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731932AbgF3Otq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 10:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727016AbgF3Otq (ORCPT
+        id S2389089AbgF3Ovb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 10:51:31 -0400
+Received: from smtprelay0035.hostedemail.com ([216.40.44.35]:60966 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727016AbgF3Ovb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 10:49:46 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B30BFC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 07:49:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XuIrTfd6FKIWnhjMqRUNR92xxhPWX2ZGaRHGeZHKxck=; b=pls34hdQZzDFvIgK2hrNq2xmHP
-        9yVquCEfjxxJPPQnG6RK7FqZneaNBKDzwoQK59KwjS1eqxWO1pqM+lDO6rsyZSEvkT8MqGMCw1N5o
-        H9LoYs6D3CpwyywdpS4hrbH5lEGtD7w4DYt1chMjW55jgkeNjQIMie2tGQWifkqnkWAKjtwNwtUuV
-        lsZKDspozuzHadruj0xv+p0AdkK3ceFjT+AZLzNYezzBla6sr1y0MhmaCL9LxZVLsFd/B1/71gGm2
-        FKU3SMW3i4c2MylYMa0bnSx43xnfcjsj0PXVD7nLwADH/GQDM3YK1nUCAPBFvId3PvWn5ygIn51KO
-        8zUiHNbQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jqHZL-0006PY-JJ; Tue, 30 Jun 2020 14:49:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CC92F3011B2;
-        Tue, 30 Jun 2020 16:49:05 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B804B20CF3986; Tue, 30 Jun 2020 16:49:05 +0200 (CEST)
-Date:   Tue, 30 Jun 2020 16:49:05 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        lkp@lists.01.org, keescook@chromium.org, hjl.tools@gmail.com,
-        linux@rasmusvillemoes.dk
-Subject: Re: [sched] c3a340f7e7: invalid_opcode:#[##]
-Message-ID: <20200630144905.GX4817@hirez.programming.kicks-ass.net>
-References: <20200629003127.GB5535@shao2-debian>
- <20200630124628.GV4817@hirez.programming.kicks-ass.net>
+        Tue, 30 Jun 2020 10:51:31 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id E1342100E7B42;
+        Tue, 30 Jun 2020 14:51:29 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:966:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1605:1711:1730:1747:1777:1792:2196:2199:2393:2525:2560:2563:2682:2685:2828:2859:2895:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3866:3867:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4385:5007:6119:7576:7903:9025:10004:10400:10450:10455:10848:11232:11473:11658:11914:12043:12050:12297:12438:12555:12740:12760:12895:13141:13153:13228:13230:13439:14040:14096:14097:14181:14659:14721:19904:19999:21063:21080:21324:21451:21627:21740:21811:21990:30041:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: boat72_610e0a526e78
+X-Filterd-Recvd-Size: 3843
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 30 Jun 2020 14:51:28 +0000 (UTC)
+Message-ID: <c0be072fee83719c74249d603cccf7fa59f9d3cf.camel@perches.com>
+Subject: Re: [PATCH] mm: util: update the kerneldoc for kstrdup_const()
+From:   Joe Perches <joe@perches.com>
+To:     David Hildenbrand <david@redhat.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 30 Jun 2020 07:51:27 -0700
+In-Reply-To: <9dfad174-4e8b-c733-b529-5c86a34333d4@redhat.com>
+References: <20200628152500.17916-1-brgl@bgdev.pl>
+         <693db5a878ac09994e2a27c64cb14c0e552f3f50.camel@perches.com>
+         <7f1439be-75c4-3a07-ab7b-f4505bf30c48@redhat.com>
+         <644c67ae316bde28669f660aa5aade274d19a2d0.camel@perches.com>
+         <98163576-c98e-77f7-17a7-efd04dc2e86f@redhat.com>
+         <b370f8bfbf2bfc958b15ce6f6d138bec64972183.camel@perches.com>
+         <9dfad174-4e8b-c733-b529-5c86a34333d4@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200630124628.GV4817@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 02:46:28PM +0200, Peter Zijlstra wrote:
-> On Mon, Jun 29, 2020 at 08:31:27AM +0800, kernel test robot wrote:
-> > Greeting,
+On Tue, 2020-06-30 at 16:36 +0200, David Hildenbrand wrote:
+> On 30.06.20 16:14, Joe Perches wrote:
+> > On Tue, 2020-06-30 at 10:57 +0200, David Hildenbrand wrote:
+> > > On 29.06.20 21:21, Joe Perches wrote:
+> > > > On Mon, 2020-06-29 at 12:54 +0200, David Hildenbrand wrote:
+> > > > > On 28.06.20 19:37, Joe Perches wrote:
+> > > > > > On Sun, 2020-06-28 at 17:25 +0200, Bartosz Golaszewski wrote:
+> > > > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > > > > > 
+> > > > > > > Memory allocated with kstrdup_const() must not be passed to regular
+> > > > > > > krealloc() as it is not aware of the possibility of the chunk residing
+> > > > > > > in .rodata. Since there are no potential users of krealloc_const()
+> > > > > > > at the moment, let's just update the doc to make it explicit.
+> > > > > > 
+> > > > > > Another option would be to return NULL if it's
+> > > > > > used from krealloc with a pointer into rodata
+> > > > []
+> > > > > > diff --git a/mm/slab_common.c b/mm/slab_common.c
+> > > > []
+> > > > > > @@ -1683,6 +1683,9 @@ static __always_inline void *__do_krealloc(const void *p, size_t new_size,
+> > > > > >   * @new_size: how many bytes of memory are required.
+> > > > > >   * @flags: the type of memory to allocate.
+> > > > > >   *
+> > > > > > + * If the object pointed to is in rodata (likely from kstrdup_const)
+> > > > > > + * %NULL is returned.
+> > > > > > + *
+> > > > []
+> > > > > Won't we have similar issues if somebody would do a kfree() instead of a
+> > > > > kfree_const()? So I think the original patch makes sense.
+> > > > 
+> > > > Which is why I also suggested making kfree work for
+> > > > more types of memory freeing earlier this month.
+> > > > 
+> > > > https://lore.kernel.org/lkml/573b3fbd5927c643920e1364230c296b23e7584d.camel@perches.com/
+> > []
+> > > what's the real benefit that is worth spending extra runtime cycles?
 > > 
-> > FYI, we noticed the following commit (built with gcc-4.9):
-> > 
-> > commit: c3a340f7e7eadac7662ab104ceb16432e5a4c6b2 ("sched: Have sched_class_highest define by vmlinux.lds.h")
+> > I very much doubt there is an actual instance
+> > where the runtime cycles matter.  Where could
+> > there be a fast-path instance of free?
 > 
-> > [    1.840970] kernel BUG at kernel/sched/core.c:6652!
-> 
-> W T H
-> 
-> $ readelf -Wa defconfig-build/vmlinux | grep sched_class
-> 62931: c1e62d20     0 NOTYPE  GLOBAL DEFAULT    2 __begin_sched_classes
-> 65736: c1e62f40    96 OBJECT  GLOBAL DEFAULT    2 stop_sched_class
-> 71813: c1e62dc0    96 OBJECT  GLOBAL DEFAULT    2 fair_sched_class
-> 78689: c1e62d40    96 OBJECT  GLOBAL DEFAULT    2 idle_sched_class
-> 78953: c1e62fa0     0 NOTYPE  GLOBAL DEFAULT    2 __end_sched_classes
-> 79090: c1e62e40    96 OBJECT  GLOBAL DEFAULT    2 rt_sched_class
-> 79431: c1e62ec0    96 OBJECT  GLOBAL DEFAULT    2 dl_sched_class
-> 
-> $ printf "%d\n" $((0xc1e62dc0 - 0xc1e62d40))
-> 128
-> 
-> So even though the object is 96 bytes in size, has an explicit 32 byte
-> alignment, the array ends up with a stride of 128 bytes !?!?!
-> 
-> Consistently so with GCC-4.9. Any other GCC I tried does the sane thing.
-> 
-> Full patch included below.
-> 
-> Anybody any clue wth 4.9 is doing crazy things like this?
-> 
-> ---
+> Well, looking at kfree() I can directly spot "unlikely()", which sounds
+> like somebody cares about branch prediction in the slab.
 
-This seems to make everything work, it builds and boots for 4.9 and
-builds x86_64-defconfig with clang11 (just to check a !GCC compiler).
+Or is telling the compiler of a 95%+ likely case.
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 66fb84c3dc7ee..49a9aaa1e2424 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -108,6 +108,17 @@
- #define SBSS_MAIN .sbss
- #endif
- 
-+/*
-+ * Align to a 32 byte boundary equal to the
-+ * alignment gcc 4.5 uses for a struct
-+ */
-+#if __GNUC__ == 4 && __GNUC_MINOR__ == 9
-+#define STRUCT_ALIGNMENT 64
-+#else
-+#define STRUCT_ALIGNMENT 32
-+#endif
-+#define STRUCT_ALIGN() . = ALIGN(STRUCT_ALIGNMENT)
-+
- /*
-  * The order of the sched class addresses are important, as they are
-  * used to determine the order of the priority of each sched class in
-@@ -123,13 +134,6 @@
- 	*(__stop_sched_class)			\
- 	__end_sched_classes = .;
- 
--/*
-- * Align to a 32 byte boundary equal to the
-- * alignment gcc 4.5 uses for a struct
-- */
--#define STRUCT_ALIGNMENT 32
--#define STRUCT_ALIGN() . = ALIGN(STRUCT_ALIGNMENT)
--
- /* The actual configuration determine if the init/exit sections
-  * are handled as text/data or they can be discarded (which
-  * often happens at runtime)
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 4165c06d1d7bd..33251d0ab62e7 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -67,6 +67,7 @@
- #include <linux/tsacct_kern.h>
- 
- #include <asm/tlb.h>
-+#include <asm-generic/vmlinux.lds.h>
- 
- #ifdef CONFIG_PARAVIRT
- # include <asm/paravirt.h>
-@@ -1811,7 +1812,7 @@ struct sched_class {
- #ifdef CONFIG_FAIR_GROUP_SCHED
- 	void (*task_change_group)(struct task_struct *p, int type);
- #endif
--} __aligned(32); /* STRUCT_ALIGN(), vmlinux.lds.h */
-+} __aligned(STRUCT_ALIGNMENT); /* STRUCT_ALIGN(), vmlinux.lds.h */
- 
- static inline void put_prev_task(struct rq *rq, struct task_struct *prev)
- {
+> Once you have cases that can happen equally likely it most certainly
+> degrades performance. The question is if we care.
+
+Right.
+
+Does 4 additional tests in what appears to be almost
+exclusively non-fast paths matter?
+
+> Coming back to my question, so the major benefit you see is coding
+> simplicity, correct?
+
+Yes.
+
+
