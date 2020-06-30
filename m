@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70C520F5E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35F320F5DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733173AbgF3Ni3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 09:38:29 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6788 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732994AbgF3NiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:38:24 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 62F8ABE43F81FB854361;
-        Tue, 30 Jun 2020 21:38:19 +0800 (CST)
-Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.226) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 30 Jun 2020 21:38:12 +0800
-From:   Zenghui Yu <yuzenghui@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <maz@kernel.org>, <tglx@linutronix.de>, <jason@lakedaemon.net>,
-        <wanghaibin.wang@huawei.com>, <kuhn.chenqun@huawei.com>,
-        <wangjingyi11@huawei.com>, Zenghui Yu <yuzenghui@huawei.com>
-Subject: [PATCH] irqchip/gic-v4.1: Use GFP_ATOMIC flag in allocate_vpe_l1_table()
-Date:   Tue, 30 Jun 2020 21:37:46 +0800
-Message-ID: <20200630133746.816-1-yuzenghui@huawei.com>
-X-Mailer: git-send-email 2.23.0.windows.1
+        id S1732836AbgF3NiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 09:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726033AbgF3NiO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 09:38:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079BAC061755;
+        Tue, 30 Jun 2020 06:38:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=peNiu7obudJ+iIiHoebhj0Cx80UUqQKMz/3V6VsewcA=; b=OfGszqe3liARav2iSE515YirEx
+        Rnqq9NA3fuI8sdsGAgobESsESiY51vgA7FJAtE7nA/mdf2yKvas0Wre3fDlcxa0AiDIRWiDQZ4/Le
+        PPcntnez3mv8Otw7TG8VEuAHY7nKnbCiH13UrvVGGrnNYNdQIZxhscd/odT1lWDwV1aHMYRIoZ7wp
+        EXVQA+L0Ai1FffXuWtoGkeISpyfPunrQcV1gy/602zLdFjQxzHGHK95DEs0Y+ZJ2foV0oRE8K2eki
+        YL7fHzkJ9ZnyfXddig2AIiS5XQ2K0fp+mv6+0l4DFT+PGnICeJjFMwPARJldzwSa9tLr+wZNX7PQw
+        142+hsbw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jqGSY-0007s1-CQ; Tue, 30 Jun 2020 13:38:02 +0000
+Date:   Tue, 30 Jun 2020 14:38:02 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 10/15] exec: Remove do_execve_file
+Message-ID: <20200630133802.GA30093@infradead.org>
+References: <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+ <20200625120725.GA3493334@kroah.com>
+ <20200625.123437.2219826613137938086.davem@davemloft.net>
+ <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+ <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+ <87y2oac50p.fsf@x220.int.ebiederm.org>
+ <87bll17ili.fsf_-_@x220.int.ebiederm.org>
+ <87lfk54p0m.fsf_-_@x220.int.ebiederm.org>
+ <20200630054313.GB27221@infradead.org>
+ <87a70k21k0.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.185.226]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a70k21k0.fsf@x220.int.ebiederm.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Booting the latest kernel with DEBUG_ATOMIC_SLEEP=y on a GICv4.1 enabled
-box, I get the following kernel splat:
+On Tue, Jun 30, 2020 at 07:14:23AM -0500, Eric W. Biederman wrote:
+> Christoph Hellwig <hch@infradead.org> writes:
+> 
+> > FYI, this clashes badly with my exec rework.  I'd suggest you
+> > drop everything touching exec here for now, and I can then
+> > add the final file based exec removal to the end of my series.
+> 
+> I have looked and I haven't even seen any exec work.  Where can it be
+> found?
+> 
+> I have working and cleaning up exec for what 3 cycles now.  There is
+> still quite a ways to go before it becomes possible to fix some of the
+> deep problems in exec.  Removing all of these broken exec special cases
+> is quite frankly the entire point of this patchset.
+> 
+> Sight unseen I suggest you send me your exec work and I can merge it
+> into my branch if we are going to conflict badly.
 
-[    0.053766] BUG: sleeping function called from invalid context at mm/slab.h:567
-[    0.053767] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 0, name: swapper/1
-[    0.053769] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.8.0-rc3+ #23
-[    0.053770] Call trace:
-[    0.053774]  dump_backtrace+0x0/0x218
-[    0.053775]  show_stack+0x2c/0x38
-[    0.053777]  dump_stack+0xc4/0x10c
-[    0.053779]  ___might_sleep+0xfc/0x140
-[    0.053780]  __might_sleep+0x58/0x90
-[    0.053782]  slab_pre_alloc_hook+0x7c/0x90
-[    0.053783]  kmem_cache_alloc_trace+0x60/0x2f0
-[    0.053785]  its_cpu_init+0x6f4/0xe40
-[    0.053786]  gic_starting_cpu+0x24/0x38
-[    0.053788]  cpuhp_invoke_callback+0xa0/0x710
-[    0.053789]  notify_cpu_starting+0xcc/0xd8
-[    0.053790]  secondary_start_kernel+0x148/0x200
-
- # ./scripts/faddr2line vmlinux its_cpu_init+0x6f4/0xe40
-its_cpu_init+0x6f4/0xe40:
-allocate_vpe_l1_table at drivers/irqchip/irq-gic-v3-its.c:2818
-(inlined by) its_cpu_init_lpis at drivers/irqchip/irq-gic-v3-its.c:3138
-(inlined by) its_cpu_init at drivers/irqchip/irq-gic-v3-its.c:5166
-
-It turned out that we're allocating memory using GFP_KERNEL (may sleep)
-within the CPU hotplug notifier, which is indeed an atomic context. Bad
-thing may happen if we're playing on a system with more than a single
-CommonLPIAff group. Avoid it by turning this into an atomic allocation.
-
-Fixes: 5e5168461c22 ("irqchip/gic-v4.1: VPE table (aka GICR_VPROPBASER) allocation")
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
----
- drivers/irqchip/irq-gic-v3-its.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index 6a5a87fc4601..b66eeca442c4 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -2814,7 +2814,7 @@ static int allocate_vpe_l1_table(void)
- 	if (val & GICR_VPROPBASER_4_1_VALID)
- 		goto out;
- 
--	gic_data_rdist()->vpe_table_mask = kzalloc(sizeof(cpumask_t), GFP_KERNEL);
-+	gic_data_rdist()->vpe_table_mask = kzalloc(sizeof(cpumask_t), GFP_ATOMIC);
- 	if (!gic_data_rdist()->vpe_table_mask)
- 		return -ENOMEM;
- 
-@@ -2881,7 +2881,7 @@ static int allocate_vpe_l1_table(void)
- 
- 	pr_debug("np = %d, npg = %lld, psz = %d, epp = %d, esz = %d\n",
- 		 np, npg, psz, epp, esz);
--	page = alloc_pages(GFP_KERNEL | __GFP_ZERO, get_order(np * PAGE_SIZE));
-+	page = alloc_pages(GFP_ATOMIC | __GFP_ZERO, get_order(np * PAGE_SIZE));
- 	if (!page)
- 		return -ENOMEM;
- 
--- 
-2.19.1
-
+https://lore.kernel.org/linux-fsdevel/20200627072704.2447163-1-hch@lst.de/T/#t
