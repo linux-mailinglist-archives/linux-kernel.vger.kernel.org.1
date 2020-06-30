@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6734120F632
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD6B20F635
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388460AbgF3Nvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 09:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47706 "EHLO
+        id S2388499AbgF3Nvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 09:51:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388415AbgF3Nv3 (ORCPT
+        with ESMTP id S2388417AbgF3Nva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:51:29 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C8DC03E97E
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:28 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id s10so20236143wrw.12
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:28 -0700 (PDT)
+        Tue, 30 Jun 2020 09:51:30 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B386C08C5DB
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:29 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id r12so20215674wrj.13
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:51:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PcEwXK0xNmm8KLbdljUMIqWDcW1MZg3tkSRXZHPr9pQ=;
-        b=sd4ljwqmp/zYlzEoyZu1xy0nSWXuHKG4YDJ8lnb8YsfDmzJwM0MYDZEmm+1XCWSUer
-         kEcYOjz7nPz45b2R1EaJZoW1wAI9UIwneyJO56ceV1BdxO3seNPw/q3Yf0qJZ2sM+dXF
-         Zr39Osy771y39P14DYzfnfHvyUTVYsS5B13UlvieqiYUEek39OqnSmcL9pS0C1N6PAx5
-         ycM5xQ2Vp7wOT0V7xpt8oRAWeptXJLiTuEkBkKCsI/CZLRgrEUGZpIaUJNiMAB0pQVev
-         pwLjI03jAZ0xVV8yfggMZ0IQCjTTutEPkZ4T5h2Ry/WRKyV8nLkk5Ua9TTJ81pphvVfo
-         XNWw==
+        bh=3Rr7wa1veduLhh9ZAr39E4g8k4FtFNV6OceNUbS0RKk=;
+        b=l0ql2sn5FiL9hzSkQ+yI7cAzJkka4RsC7ibUvZkRg88BN0zPoJVj2CCmPhRVJEhMTZ
+         ZvqLmbJcCy3t1cMqYZjp5vBNBLBLZAL6f+qmWr/k4xb5m2BwaOqi3jrX9vQ8JIBumN60
+         Sj/oB1X6FT9XUFRqZGk3DUe003hWauUxsyLPQqaAx+R3E8GWf28kU5e8iOq2QuiUeNu1
+         N35lUJPUUNmq+fYpMdZsUEhZ1SJUgI8i3+FL3Xit6O96cnfeTh9+/o4CNMxkpSGfcKs6
+         xexXuKA6fhyFqlmlsLD+5QaIs7CrHlxjcrLfgIQMJrafOsQ5vIAzkkEtDcRDyNXHpyT8
+         w4cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PcEwXK0xNmm8KLbdljUMIqWDcW1MZg3tkSRXZHPr9pQ=;
-        b=Dxo+YmQZOKyHuRHO+yI5meZ+9Ky3tgriIzfYRB9sRQFZYtlxQoaO1DII73aOTrtD4N
-         aOvPazWppf1EvAbzOV8CUzNmuOjdSwfuJQetP8CBfj0X4rqX56bw8FaZor2cSuxNIgH4
-         Glqaae0y+/r1+urMzHM4GtfrAPRjxnKl+jkeV7XzKGfUe1K1LiqX4A6aKO6GzY6dOgw6
-         1vjX/XJhNRa3YUVn/4wvRttqAhefjiG4eo3hFZ1XdlN1pazT0FWGDJriota/MxWl+RP6
-         m5unp0VXFWdk7tOKF+6PvMsig+URFkhfeszX2m/xMGct+fo8R6orLgIW8NX1NcYaia7T
-         Brkw==
-X-Gm-Message-State: AOAM533Fm6OeX2t+cibd23swlaAQrPxi6SBuzNzxnGRt2kB/JDhuD6nt
-        l4KKyDCk5IWr8B4nHUEcHo9xb+lqWMA=
-X-Google-Smtp-Source: ABdhPJxZLNyr0uQ8NR+OdfFIu/76siTbfZmzTER0rduvkESdd8zMDl2QiaPTsICt2/mN/E+Xl8xGcg==
-X-Received: by 2002:adf:c382:: with SMTP id p2mr21631803wrf.283.1593525086937;
-        Tue, 30 Jun 2020 06:51:26 -0700 (PDT)
+        bh=3Rr7wa1veduLhh9ZAr39E4g8k4FtFNV6OceNUbS0RKk=;
+        b=YKhLCiimHiVWx0JqQkvjupMC9tC8KSt0iGV8jFtVV+aRFCcV9LOkAhIzzRqB50oi45
+         7i0yhEIJPQiy0mqlWGXQ5hBdjvzaccSpCp8y63sDazzz0w21Ljh1ggAUmNOSy7D9RTm7
+         tqaTtCmIt+h8h3N8Dcxe7+YoFIZqjccsYNqL2jiLNZebOmRltQmyuV+0HyP1x/A2Ip+M
+         AI5uCPykxaZ8dpWjMSz/4UKvcr8WPPhXjdcFvkNUOQrcEBjvaJFrRdIiAi71GhEpdKCD
+         1hOlkZbiy7HxYORfrfqUDY6QLLgbL4CFTOerGdBFEusPRVriyhAiEUAJ7ZZJOAVlPeKx
+         n2KQ==
+X-Gm-Message-State: AOAM5334sCGH7zX+SLIML0CMe9k/BmfTOZMSQCEBr5WEjRbMcXE8JFJE
+        F8MnWhWuo9Z0MBEO1zcMK/oRfw==
+X-Google-Smtp-Source: ABdhPJx7RZSCG6MhccQsVv6Y1Q3D48aKEAlqzGQWs/ITBqKeYmpx867Pcfq0L5FYO9K0o9jZk5hI7Q==
+X-Received: by 2002:a5d:40cb:: with SMTP id b11mr22580348wrq.263.1593525088326;
+        Tue, 30 Jun 2020 06:51:28 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id t4sm3876746wmf.4.2020.06.30.06.51.25
+        by smtp.gmail.com with ESMTPSA id t4sm3876746wmf.4.2020.06.30.06.51.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 06:51:26 -0700 (PDT)
+        Tue, 30 Jun 2020 06:51:27 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
         Sudeep Dutt <sudeep.dutt@intel.com>,
         Ashutosh Dixit <ashutosh.dixit@intel.com>
-Subject: [PATCH 12/30] misc: mic: host: mic_x100: Add missing descriptions to kerneldoc headers
-Date:   Tue, 30 Jun 2020 14:50:52 +0100
-Message-Id: <20200630135110.2236389-13-lee.jones@linaro.org>
+Subject: [PATCH 13/30] misc: mic: card: mic_debugfs: Demote function headers from kerneldoc
+Date:   Tue, 30 Jun 2020 14:50:53 +0100
+Message-Id: <20200630135110.2236389-14-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200630135110.2236389-1-lee.jones@linaro.org>
 References: <20200630135110.2236389-1-lee.jones@linaro.org>
@@ -67,49 +67,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The correct format is not used and no attempt has been made
+to document the function arguments.  Makes sense to just demote
+the headers back down to simple comments.
+
 Fixes the following W=1 warnings:
 
- drivers/misc/mic/host/mic_x100.c:127: warning: Function parameter or member 'doorbell' not described in 'mic_x100_send_sbox_intr'
- drivers/misc/mic/host/mic_x100.c:148: warning: Function parameter or member 'doorbell' not described in 'mic_x100_send_rdmasr_intr'
- drivers/misc/mic/host/mic_x100.c:511: warning: Function parameter or member 'dma_addr' not described in 'mic_x100_smpt_set'
- drivers/misc/mic/host/mic_x100.c:511: warning: Function parameter or member 'index' not described in 'mic_x100_smpt_set'
+ drivers/misc/mic/card/mic_debugfs.c:31: warning: Function parameter or member 's' not described in 'mic_intr_show'
+ drivers/misc/mic/card/mic_debugfs.c:31: warning: Function parameter or member 'unused' not described in 'mic_intr_show'
+ drivers/misc/mic/card/mic_debugfs.c:53: warning: Function parameter or member 'mdrv' not described in 'mic_create_card_debug_dir'
+ drivers/misc/mic/card/mic_debugfs.c:67: warning: Function parameter or member 'mdrv' not described in 'mic_delete_card_debug_dir'
 
 Cc: Sudeep Dutt <sudeep.dutt@intel.com>
 Cc: Ashutosh Dixit <ashutosh.dixit@intel.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/mic/host/mic_x100.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/misc/mic/card/mic_debugfs.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/misc/mic/host/mic_x100.c b/drivers/misc/mic/host/mic_x100.c
-index 843ce13750158..f5536c1ad6071 100644
---- a/drivers/misc/mic/host/mic_x100.c
-+++ b/drivers/misc/mic/host/mic_x100.c
-@@ -121,6 +121,7 @@ static void mic_x100_disable_interrupts(struct mic_device *mdev)
- /**
-  * mic_x100_send_sbox_intr - Send an MIC_X100_SBOX interrupt to MIC.
-  * @mdev: pointer to mic_device instance
-+ * @doorbell: doorbell number
+diff --git a/drivers/misc/mic/card/mic_debugfs.c b/drivers/misc/mic/card/mic_debugfs.c
+index b58608829b180..4c326e8f4d993 100644
+--- a/drivers/misc/mic/card/mic_debugfs.c
++++ b/drivers/misc/mic/card/mic_debugfs.c
+@@ -24,7 +24,7 @@
+ /* Debugfs parent dir */
+ static struct dentry *mic_dbg;
+ 
+-/**
++/*
+  * mic_intr_show - Send interrupts to host.
   */
- static void mic_x100_send_sbox_intr(struct mic_device *mdev,
- 				    int doorbell)
-@@ -142,6 +143,7 @@ static void mic_x100_send_sbox_intr(struct mic_device *mdev,
- /**
-  * mic_x100_send_rdmasr_intr - Send an RDMASR interrupt to MIC.
-  * @mdev: pointer to mic_device instance
-+ * @doorbell: doorbell number
+ static int mic_intr_show(struct seq_file *s, void *unused)
+@@ -46,7 +46,7 @@ static int mic_intr_show(struct seq_file *s, void *unused)
+ 
+ DEFINE_SHOW_ATTRIBUTE(mic_intr);
+ 
+-/**
++/*
+  * mic_create_card_debug_dir - Initialize MIC debugfs entries.
   */
- static void mic_x100_send_rdmasr_intr(struct mic_device *mdev,
- 				      int doorbell)
-@@ -503,6 +505,8 @@ static u32 mic_x100_get_postcode(struct mic_device *mdev)
- /**
-  * mic_x100_smpt_set - Update an SMPT entry with a DMA address.
-  * @mdev: pointer to mic_device instance
-+ * @dma_addr: DMA address to use
-+ * @index: entry to write to
-  *
-  * RETURNS: none.
+ void __init mic_create_card_debug_dir(struct mic_driver *mdrv)
+@@ -60,7 +60,7 @@ void __init mic_create_card_debug_dir(struct mic_driver *mdrv)
+ 			    &mic_intr_fops);
+ }
+ 
+-/**
++/*
+  * mic_delete_card_debug_dir - Uninitialize MIC debugfs entries.
   */
+ void mic_delete_card_debug_dir(struct mic_driver *mdrv)
+@@ -68,7 +68,7 @@ void mic_delete_card_debug_dir(struct mic_driver *mdrv)
+ 	debugfs_remove_recursive(mdrv->dbg_dir);
+ }
+ 
+-/**
++/*
+  * mic_init_card_debugfs - Initialize global debugfs entry.
+  */
+ void __init mic_init_card_debugfs(void)
+@@ -76,7 +76,7 @@ void __init mic_init_card_debugfs(void)
+ 	mic_dbg = debugfs_create_dir(KBUILD_MODNAME, NULL);
+ }
+ 
+-/**
++/*
+  * mic_exit_card_debugfs - Uninitialize global debugfs entry
+  */
+ void mic_exit_card_debugfs(void)
 -- 
 2.25.1
 
