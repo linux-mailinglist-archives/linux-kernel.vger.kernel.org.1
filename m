@@ -2,163 +2,429 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89F620FD72
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 22:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B4920FD4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 22:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729269AbgF3UJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 16:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726642AbgF3UJp (ORCPT
+        id S1729103AbgF3UBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 16:01:17 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:42586 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726084AbgF3UBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 16:09:45 -0400
-X-Greylist: delayed 1135 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 30 Jun 2020 13:09:45 PDT
-Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [IPv6:2620:100:9001:583::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59822C061755;
-        Tue, 30 Jun 2020 13:09:45 -0700 (PDT)
-Received: from pps.filterd (m0050095.ppops.net [127.0.0.1])
-        by m0050095.ppops.net-00190b01. (8.16.0.42/8.16.0.42) with SMTP id 05UJD2IK027472;
-        Tue, 30 Jun 2020 20:14:54 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=jan2016.eng;
- bh=bVP5ypWXAi0CpwJzPFqGoTF0Ap0CFnkaqrsAmt7JRUI=;
- b=il4eBA6WhTVnJ8iz/JMtwA0dLIcs78fsTNtFb+W9s4zY1zP2qSFne9Xt7o2uMsBgwqLA
- y6/syezfjZEVsJH9i62bRbX6LASSdPShcoxqLc1aiLPwOYCVZc5rLXM8JF9DYGRE0hzy
- moBVQ5i5HNX3VqYW+qSp4PKmMwA1t9QHj81epXZr6MxvEPDj0djsF67THnpcMVwz5m+L
- K5SKdLB8QALsHYrmXu4/Hx/Z/u4PR4VpE7dNGMG5nwJ9BNchuEOe6CQ9dBlR2fMDxoY7
- IcB+x9f6j11gjBZl32IhmlCpMd9906VqR0u2sQ4PzNXPKQhapgoIEsUl2kkdwQ9qfe6D 2Q== 
-Received: from prod-mail-ppoint2 (prod-mail-ppoint2.akamai.com [184.51.33.19] (may be forged))
-        by m0050095.ppops.net-00190b01. with ESMTP id 31wwnf6dq5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 30 Jun 2020 20:14:54 +0100
-Received: from pps.filterd (prod-mail-ppoint2.akamai.com [127.0.0.1])
-        by prod-mail-ppoint2.akamai.com (8.16.0.42/8.16.0.42) with SMTP id 05UIkDj3004340;
-        Tue, 30 Jun 2020 15:14:52 -0400
-Received: from prod-mail-relay19.dfw02.corp.akamai.com ([172.27.165.173])
-        by prod-mail-ppoint2.akamai.com with ESMTP id 31x1f0b4fm-1;
-        Tue, 30 Jun 2020 15:14:52 -0400
-Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
-        by prod-mail-relay19.dfw02.corp.akamai.com (Postfix) with ESMTP id E24ED607FE;
-        Tue, 30 Jun 2020 19:14:50 +0000 (GMT)
-Subject: Re: Packet gets stuck in NOLOCK pfifo_fast qdisc
-To:     jonas.bonn@netrounds.com, pabeni@redhat.com
-Cc:     Michael Zhivich <mzhivich@akamai.com>, davem@davemloft.net,
-        john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <465a540e-5296-32e7-f6a6-79942dfe2618@netrounds.com>
- <20200623134259.8197-1-mzhivich@akamai.com>
-From:   Josh Hunt <johunt@akamai.com>
-Message-ID: <1849b74f-163c-8cfa-baa5-f653159fefd4@akamai.com>
-Date:   Tue, 30 Jun 2020 12:14:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 30 Jun 2020 16:01:16 -0400
+Received: by mail-il1-f196.google.com with SMTP id t27so13958128ill.9;
+        Tue, 30 Jun 2020 13:01:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TJmbtey+in3rh5OrOGAFbpkrYEFdNgFz53SELbvo7pI=;
+        b=c1I/euqbGSzaXU0w//+hRDPR+MqaPiZJPRxDzZxt3L2VwUIqtT4oTI7Ar1w92NL5Vm
+         ZT7rQYC1ObSCRRMndptOn4abSDfW0MaLXCVzi45I7v9ICeLUPPequycP8PNImmr4OOIC
+         +JqoDoTA3qA11ZLxQuE1xmuRuiV596snaFUz4j/WOpTSlhJzY/lzsIg0dTd8pVv5+ifc
+         PbQjOoXobtHzvqG3rf+Y4UY/PfzrhUvc7Xbjx47UkAfzTYEFowwppL4XKFO7MNrj+gm8
+         s70VTAwALjtlXgxJZRXZhcnnN1qCy826dzOwlbMku7tQcZElPcjmvt0CO8wyBFTYifa+
+         isEQ==
+X-Gm-Message-State: AOAM5326aSblHTtpKoIxUjQyrWmWYayFs6wPkxPQeTX2OeOyERw2L48l
+        H34IbB4Gumus0p0uOiVDsQK5pHTR7w==
+X-Google-Smtp-Source: ABdhPJzOZqAnFhmOj5zoR361SpSTOH4mm82LRU11Kwi8yb9blcWPjPvQkl8BUC6oxQqhR4EclYj2+Q==
+X-Received: by 2002:a05:6e02:dc4:: with SMTP id l4mr3366218ilj.134.1593547273202;
+        Tue, 30 Jun 2020 13:01:13 -0700 (PDT)
+Received: from xps15.herring.priv ([64.188.179.255])
+        by smtp.googlemail.com with ESMTPSA id v16sm2063415iow.19.2020.06.30.13.01.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 13:01:12 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Subject: [PATCH v2] dt-bindings: backlight: Convert common backlight bindings to DT schema
+Date:   Tue, 30 Jun 2020 14:01:11 -0600
+Message-Id: <20200630200111.1170742-1-robh@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200623134259.8197-1-mzhivich@akamai.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-06-30_06:2020-06-30,2020-06-30 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 malwarescore=0
- phishscore=0 suspectscore=2 mlxscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006300127
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-06-30_06:2020-06-30,2020-06-30 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 malwarescore=0
- suspectscore=2 mlxscore=0 mlxlogscore=999 priorityscore=1501 phishscore=0
- spamscore=0 lowpriorityscore=0 cotscore=-2147483648 impostorscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006300129
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/20 6:42 AM, Michael Zhivich wrote:
->> From: Jonas Bonn <jonas.bonn@netrounds.com>
->> To: Paolo Abeni <pabeni@redhat.com>,
->> 	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
->> 	LKML <linux-kernel@vger.kernel.org>,
->> 	"David S . Miller" <davem@davemloft.net>,
->> 	John Fastabend <john.fastabend@gmail.com>
->> Subject: Re: Packet gets stuck in NOLOCK pfifo_fast qdisc
->> Date: Fri, 11 Oct 2019 02:39:48 +0200
->> Message-ID: <465a540e-5296-32e7-f6a6-79942dfe2618@netrounds.com> (raw)
->> In-Reply-To: <95c5a697932e19ebd6577b5dac4d7052fe8c4255.camel@redhat.com>
->>
->> Hi Paolo,
->>
->> On 09/10/2019 21:14, Paolo Abeni wrote:
->>> Something alike the following code - completely untested - can possibly
->>> address the issue, but it's a bit rough and I would prefer not adding
->>> additonal complexity to the lockless qdiscs, can you please have a spin
->>> a it?
->>
->> We've tested a couple of variants of this patch today, but unfortunately
->> it doesn't fix the problem of packets getting stuck in the queue.
->>
->> A couple of comments:
->>
->> i) On 5.4, there is the BYPASS path that also needs the same treatment
->> as it's essentially replicating the behavour of qdisc_run, just without
->> the queue/dequeue steps
->>
->> ii)  We are working a lot with the 4.19 kernel so I backported to the
->> patch to this version and tested there.  Here the solution would seem to
->> be more robust as the BYPASS path does not exist.
->>
->> Unfortunately, in both cases we continue to see the issue of the "last
->> packet" getting stuck in the queue.
->>
->> /Jonas
-> 
-> Hello Jonas, Paolo,
-> 
-> We have observed the same problem with pfifo_fast qdisc when sending periodic small
-> packets on a TCP flow with multiple simultaneous connections on a 4.19.75
-> kernel.  We've been able to catch it in action using perf probes (see trace
-> below).  For qdisc = 0xffff900d7c247c00, skb = 0xffff900b72c334f0,
-> it takes 200270us to traverse the networking stack on a system that's not otherwise busy.
-> qdisc only resumes processing when another enqueued packet comes in,
-> so the packet could have been stuck indefinitely.
-> 
->     proc-19902 19902 [032] 580644.045480: probe:pfifo_fast_dequeue_end: (ffffffff9b69d99d) qdisc=0xffff900d7c247c00 skb=0xffff900bfc294af0 band=2 atomic_qlen=0
->     proc-19902 19902 [032] 580644.045480:     probe:pfifo_fast_dequeue: (ffffffff9b69d8c0) qdisc=0xffff900d7c247c00 skb=0xffffffff9b69d8c0 band=2
->     proc-19927 19927 [014] 580644.045480:      probe:tcp_transmit_skb2: (ffffffff9b6dc4e5) skb=0xffff900b72c334f0 sk=0xffff900d62958040 source=0x4b4e dest=0x9abe
->     proc-19902 19902 [032] 580644.045480: probe:pfifo_fast_dequeue_end: (ffffffff9b69d99d) qdisc=0xffff900d7c247c00 skb=0x0 band=3 atomic_qlen=0
->     proc-19927 19927 [014] 580644.045481:      probe:ip_finish_output2: (ffffffff9b6bc650) net=0xffffffff9c107c80 sk=0xffff900d62958040 skb=0xffff900b72c334f0 __func__=0x0
->     proc-19902 19902 [032] 580644.045481:        probe:sch_direct_xmit: (ffffffff9b69e570) skb=0xffff900bfc294af0 q=0xffff900d7c247c00 dev=0xffff900d6a140000 txq=0xffff900d6a181180 root_lock=0x0 validate=1 ret=-1 again=155
->     proc-19927 19927 [014] 580644.045481:            net:net_dev_queue: dev=eth0 skbaddr=0xffff900b72c334f0 len=115
->     proc-19902 19902 [032] 580644.045482:     probe:pfifo_fast_dequeue: (ffffffff9b69d8c0) qdisc=0xffff900d7c247c00 skb=0xffffffff9b69d8c0 band=1
->     proc-19927 19927 [014] 580644.045483:     probe:pfifo_fast_enqueue: (ffffffff9b69d9f0) skb=0xffff900b72c334f0 qdisc=0xffff900d7c247c00 to_free=18446622925407304000
->     proc-19902 19902 [032] 580644.045483: probe:pfifo_fast_dequeue_end: (ffffffff9b69d99d) qdisc=0xffff900d7c247c00 skb=0x0 band=3 atomic_qlen=0
->     proc-19927 19927 [014] 580644.045483: probe:pfifo_fast_enqueue_end: (ffffffff9b69da9f) skb=0xffff900b72c334f0 qdisc=0xffff900d7c247c00 to_free=0xffff91d0f67ab940 atomic_qlen=1
->     proc-19902 19902 [032] 580644.045484:          probe:__qdisc_run_2: (ffffffff9b69ea5a) q=0xffff900d7c247c00 packets=1
->     proc-19927 19927 [014] 580644.245745:     probe:pfifo_fast_enqueue: (ffffffff9b69d9f0) skb=0xffff900d98fdf6f0 qdisc=0xffff900d7c247c00 to_free=18446622925407304000
->     proc-19927 19927 [014] 580644.245745: probe:pfifo_fast_enqueue_end: (ffffffff9b69da9f) skb=0xffff900d98fdf6f0 qdisc=0xffff900d7c247c00 to_free=0xffff91d0f67ab940 atomic_qlen=2
->     proc-19927 19927 [014] 580644.245746:     probe:pfifo_fast_dequeue: (ffffffff9b69d8c0) qdisc=0xffff900d7c247c00 skb=0xffffffff9b69d8c0 band=0
->     proc-19927 19927 [014] 580644.245746: probe:pfifo_fast_dequeue_end: (ffffffff9b69d99d) qdisc=0xffff900d7c247c00 skb=0xffff900b72c334f0 band=2 atomic_qlen=1
->     proc-19927 19927 [014] 580644.245747:     probe:pfifo_fast_dequeue: (ffffffff9b69d8c0) qdisc=0xffff900d7c247c00 skb=0xffffffff9b69d8c0 band=2
->     proc-19927 19927 [014] 580644.245747: probe:pfifo_fast_dequeue_end: (ffffffff9b69d99d) qdisc=0xffff900d7c247c00 skb=0xffff900d98fdf6f0 band=2 atomic_qlen=0
->     proc-19927 19927 [014] 580644.245748:     probe:pfifo_fast_dequeue: (ffffffff9b69d8c0) qdisc=0xffff900d7c247c00 skb=0xffffffff9b69d8c0 band=2
->     proc-19927 19927 [014] 580644.245748: probe:pfifo_fast_dequeue_end: (ffffffff9b69d99d) qdisc=0xffff900d7c247c00 skb=0x0 band=3 atomic_qlen=0
->     proc-19927 19927 [014] 580644.245749:          qdisc:qdisc_dequeue: dequeue ifindex=5 qdisc handle=0x0 parent=0xF txq_state=0x0 packets=2 skbaddr=0xffff900b72c334f0
->     proc-19927 19927 [014] 580644.245749:        probe:sch_direct_xmit: (ffffffff9b69e570) skb=0xffff900b72c334f0 q=0xffff900d7c247c00 dev=0xffff900d6a140000 txq=0xffff900d6a181180 root_lock=0x0 validate=1 ret=-1 again=155
->     proc-19927 19927 [014] 580644.245750:       net:net_dev_start_xmit: dev=eth0 queue_mapping=14 skbaddr=0xffff900b72c334f0 vlan_tagged=0 vlan_proto=0x0000 vlan_tci=0x0000 protocol=0x0800 ip_summed=3 len=115 data_len=0 network_offset=14 transport_offset_valid=1 transport_offset=34 tx_flags=0 gso_size=0 gso_segs=1 gso_type=0x1
-> 
-> I was wondering if you had any more luck in finding a solution or workaround for this problem
-> (that is, aside from switching to a different qdisc)?
-> 
-> Thanks,
-> ~ Michael
-> 
+Convert the common GPIO, LED, and PWM backlight bindings to DT schema
+format.
 
-Jonas/Paolo
+Given there's only 2 common properties and the descriptions are slightly
+different, I opted to not create a common backlight schema.
 
-Do either of you know if there's been any development on a fix for this 
-issue? If not we can propose something.
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Daniel Thompson <daniel.thompson@linaro.org>
+Cc: Jingoo Han <jingoohan1@gmail.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+v2:
+- Reformat descriptions
+- drop default-brightness-level dependency on brightness-levels for
+  led-backlight
+---
+ .../leds/backlight/gpio-backlight.txt         |  16 ---
+ .../leds/backlight/gpio-backlight.yaml        |  41 +++++++
+ .../bindings/leds/backlight/led-backlight.txt |  28 -----
+ .../leds/backlight/led-backlight.yaml         |  57 ++++++++++
+ .../bindings/leds/backlight/pwm-backlight.txt |  61 ----------
+ .../leds/backlight/pwm-backlight.yaml         | 104 ++++++++++++++++++
+ 6 files changed, 202 insertions(+), 105 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/leds/backlight/gpio-backlight.txt
+ create mode 100644 Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml
+ delete mode 100644 Documentation/devicetree/bindings/leds/backlight/led-backlight.txt
+ create mode 100644 Documentation/devicetree/bindings/leds/backlight/led-backlight.yaml
+ delete mode 100644 Documentation/devicetree/bindings/leds/backlight/pwm-backlight.txt
+ create mode 100644 Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml
 
-Thanks
-Josh
+diff --git a/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.txt b/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.txt
+deleted file mode 100644
+index 321be6640533..000000000000
+--- a/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.txt
++++ /dev/null
+@@ -1,16 +0,0 @@
+-gpio-backlight bindings
+-
+-Required properties:
+-  - compatible: "gpio-backlight"
+-  - gpios: describes the gpio that is used for enabling/disabling the backlight.
+-    refer to bindings/gpio/gpio.txt for more details.
+-
+-Optional properties:
+-  - default-on: enable the backlight at boot.
+-
+-Example:
+-	backlight {
+-		compatible = "gpio-backlight";
+-		gpios = <&gpio3 4 GPIO_ACTIVE_HIGH>;
+-		default-on;
+-	};
+diff --git a/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml
+new file mode 100644
+index 000000000000..75cc569b9c55
+--- /dev/null
++++ b/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml
+@@ -0,0 +1,41 @@
++# SPDX-License-Identifier: GPL-2.0-only
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/leds/backlight/gpio-backlight.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: gpio-backlight bindings
++
++maintainers:
++  - Lee Jones <lee.jones@linaro.org>
++  - Daniel Thompson <daniel.thompson@linaro.org>
++  - Jingoo Han <jingoohan1@gmail.com>
++
++properties:
++  compatible:
++    const: gpio-backlight
++
++  gpios:
++    description: The gpio that is used for enabling/disabling the backlight.
++    maxItems: 1
++
++  default-on:
++    description: enable the backlight at boot.
++    type: boolean
++
++required:
++  - compatible
++  - gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    backlight {
++        compatible = "gpio-backlight";
++        gpios = <&gpio3 4 GPIO_ACTIVE_HIGH>;
++        default-on;
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/leds/backlight/led-backlight.txt b/Documentation/devicetree/bindings/leds/backlight/led-backlight.txt
+deleted file mode 100644
+index 4c7dfbe7f67a..000000000000
+--- a/Documentation/devicetree/bindings/leds/backlight/led-backlight.txt
++++ /dev/null
+@@ -1,28 +0,0 @@
+-led-backlight bindings
+-
+-This binding is used to describe a basic backlight device made of LEDs.
+-It can also be used to describe a backlight device controlled by the output of
+-a LED driver.
+-
+-Required properties:
+-  - compatible: "led-backlight"
+-  - leds: a list of LEDs
+-
+-Optional properties:
+-  - brightness-levels: Array of distinct brightness levels. The levels must be
+-                       in the range accepted by the underlying LED devices.
+-                       This is used to translate a backlight brightness level
+-                       into a LED brightness level. If it is not provided, the
+-                       identity mapping is used.
+-
+-  - default-brightness-level: The default brightness level.
+-
+-Example:
+-
+-	backlight {
+-		compatible = "led-backlight";
+-
+-		leds = <&led1>, <&led2>;
+-		brightness-levels = <0 4 8 16 32 64 128 255>;
+-		default-brightness-level = <6>;
+-	};
+diff --git a/Documentation/devicetree/bindings/leds/backlight/led-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/led-backlight.yaml
+new file mode 100644
+index 000000000000..625082bf3892
+--- /dev/null
++++ b/Documentation/devicetree/bindings/leds/backlight/led-backlight.yaml
+@@ -0,0 +1,57 @@
++# SPDX-License-Identifier: GPL-2.0-only
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/leds/backlight/led-backlight.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: led-backlight bindings
++
++maintainers:
++  - Lee Jones <lee.jones@linaro.org>
++  - Daniel Thompson <daniel.thompson@linaro.org>
++  - Jingoo Han <jingoohan1@gmail.com>
++
++description:
++  This binding is used to describe a basic backlight device made of LEDs. It
++  can also be used to describe a backlight device controlled by the output of
++  a LED driver.
++
++properties:
++  compatible:
++    const: led-backlight
++
++  leds:
++    description: A list of LED nodes
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++
++  brightness-levels:
++    description:
++      Array of distinct brightness levels. The levels must be in the range
++      accepted by the underlying LED devices. This is used to translate a
++      backlight brightness level into a LED brightness level. If it is not
++      provided, the identity mapping is used.
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++
++  default-brightness-level:
++    description:
++      The default brightness level (index into the array defined by the
++      "brightness-levels" property).
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++required:
++  - compatible
++  - leds
++
++additionalProperties: false
++
++examples:
++  - |
++    backlight {
++        compatible = "led-backlight";
++
++        leds = <&led1>, <&led2>;
++        brightness-levels = <0 4 8 16 32 64 128 255>;
++        default-brightness-level = <6>;
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.txt b/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.txt
+deleted file mode 100644
+index 64fa2fbd98c9..000000000000
+--- a/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.txt
++++ /dev/null
+@@ -1,61 +0,0 @@
+-pwm-backlight bindings
+-
+-Required properties:
+-  - compatible: "pwm-backlight"
+-  - pwms: OF device-tree PWM specification (see PWM binding[0])
+-  - power-supply: regulator for supply voltage
+-
+-Optional properties:
+-  - pwm-names: a list of names for the PWM devices specified in the
+-               "pwms" property (see PWM binding[0])
+-  - enable-gpios: contains a single GPIO specifier for the GPIO which enables
+-                  and disables the backlight (see GPIO binding[1])
+-  - post-pwm-on-delay-ms: Delay in ms between setting an initial (non-zero) PWM
+-                          and enabling the backlight using GPIO.
+-  - pwm-off-delay-ms: Delay in ms between disabling the backlight using GPIO
+-                      and setting PWM value to 0.
+-  - brightness-levels: Array of distinct brightness levels. Typically these
+-                       are in the range from 0 to 255, but any range starting at
+-                       0 will do. The actual brightness level (PWM duty cycle)
+-                       will be interpolated from these values. 0 means a 0% duty
+-                       cycle (darkest/off), while the last value in the array
+-                       represents a 100% duty cycle (brightest).
+-  - default-brightness-level: The default brightness level (index into the
+-                              array defined by the "brightness-levels" property).
+-  - num-interpolated-steps: Number of interpolated steps between each value
+-                            of brightness-levels table. This way a high
+-                            resolution pwm duty cycle can be used without
+-                            having to list out every possible value in the
+-                            brightness-level array.
+-
+-[0]: Documentation/devicetree/bindings/pwm/pwm.txt
+-[1]: Documentation/devicetree/bindings/gpio/gpio.txt
+-
+-Example:
+-
+-	backlight {
+-		compatible = "pwm-backlight";
+-		pwms = <&pwm 0 5000000>;
+-
+-		brightness-levels = <0 4 8 16 32 64 128 255>;
+-		default-brightness-level = <6>;
+-
+-		power-supply = <&vdd_bl_reg>;
+-		enable-gpios = <&gpio 58 0>;
+-		post-pwm-on-delay-ms = <10>;
+-		pwm-off-delay-ms = <10>;
+-	};
+-
+-Example using num-interpolation-steps:
+-
+-	backlight {
+-		compatible = "pwm-backlight";
+-		pwms = <&pwm 0 5000000>;
+-
+-		brightness-levels = <0 2048 4096 8192 16384 65535>;
+-		num-interpolated-steps = <2048>;
+-		default-brightness-level = <4096>;
+-
+-		power-supply = <&vdd_bl_reg>;
+-		enable-gpios = <&gpio 58 0>;
+-	};
+diff --git a/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml
+new file mode 100644
+index 000000000000..fcb8429f3088
+--- /dev/null
++++ b/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml
+@@ -0,0 +1,104 @@
++# SPDX-License-Identifier: GPL-2.0-only
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/leds/backlight/pwm-backlight.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: pwm-backlight bindings
++
++maintainers:
++  - Lee Jones <lee.jones@linaro.org>
++  - Daniel Thompson <daniel.thompson@linaro.org>
++  - Jingoo Han <jingoohan1@gmail.com>
++
++properties:
++  compatible:
++    const: pwm-backlight
++
++  pwms:
++    maxItems: 1
++
++  pwm-names: true
++
++  power-supply:
++    description: regulator for supply voltage
++
++  enable-gpios:
++    description:
++      Contains a single GPIO specifier for the GPIO which enables and disables
++      the backlight.
++    maxItems: 1
++
++  post-pwm-on-delay-ms:
++    description:
++      Delay in ms between setting an initial (non-zero) PWM and enabling the
++      backlight using GPIO.
++
++  pwm-off-delay-ms:
++    description:
++      Delay in ms between disabling the backlight using GPIO and setting PWM
++      value to 0.
++
++  brightness-levels:
++    description:
++      Array of distinct brightness levels. Typically these are in the range
++      from 0 to 255, but any range starting at 0 will do. The actual brightness
++      level (PWM duty cycle) will be interpolated from these values. 0 means a
++      0% duty cycle (darkest/off), while the last value in the array represents
++      a 100% duty cycle (brightest).
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++
++  default-brightness-level:
++    description:
++      The default brightness level (index into the array defined by the
++      "brightness-levels" property).
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  num-interpolated-steps:
++    description:
++      Number of interpolated steps between each value of brightness-levels
++      table. This way a high resolution pwm duty cycle can be used without
++      having to list out every possible value in the brightness-level array.
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++dependencies:
++  default-brightness-level: [brightness-levels]
++  num-interpolated-steps: [brightness-levels]
++
++required:
++  - compatible
++  - pwms
++  - power-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    backlight {
++        compatible = "pwm-backlight";
++        pwms = <&pwm 0 5000000>;
++
++        brightness-levels = <0 4 8 16 32 64 128 255>;
++        default-brightness-level = <6>;
++
++        power-supply = <&vdd_bl_reg>;
++        enable-gpios = <&gpio 58 0>;
++        post-pwm-on-delay-ms = <10>;
++        pwm-off-delay-ms = <10>;
++    };
++
++  - |
++    // Example using num-interpolation-steps:
++    backlight {
++        compatible = "pwm-backlight";
++        pwms = <&pwm 0 5000000>;
++
++        brightness-levels = <0 2048 4096 8192 16384 65535>;
++        num-interpolated-steps = <2048>;
++        default-brightness-level = <4096>;
++
++        power-supply = <&vdd_bl_reg>;
++        enable-gpios = <&gpio 58 0>;
++    };
++
++...
+-- 
+2.25.1
+
