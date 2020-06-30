@@ -2,245 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF8120ED13
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 06:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4283B20ECF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 06:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729483AbgF3E61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 00:58:27 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:50384 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725440AbgF3E60 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 00:58:26 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05U4o39A008055;
-        Tue, 30 Jun 2020 00:58:09 -0400
-Received: from nam04-sn1-obe.outbound.protection.outlook.com (mail-sn1nam04lp2054.outbound.protection.outlook.com [104.47.44.54])
-        by mx0a-00128a01.pphosted.com with ESMTP id 31wyy683fc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 30 Jun 2020 00:58:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iTY9X2MLsOu2e7Fh5XowFd0FOqCsNwC0L/7OZZk5H1MNcw+NJt5vLvj4rbfdMYtTVOCfCpxb6CW7X8d5DkwuCyaXBG1/2qPPtS+VZ6TD8jrpacelTo4/hSxwxZcIX+Qotmihz/3gWr1MTkjrEmLOFDTwjfeOJcuhRzHC2HZkHe8Ds0m/RoB4nhq3J+FtNGHc8atRfaRXbxji9G2ASVhbBSd6UNWMUW+/IlVXVEOL+IjY1kMPWplKPV77q9MHwOD9am0/uZXLLdFPJjJp69Qkx+aSACCmS9PaPUgG4iHdcVlrgCM8WhW+8Rv4MHSEQQljYeW1EjwmUf9j51DMFrlbbg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a4j6tJgBZcWKGmyD82cLJ2v47w07YDhDdnJJI8y8ViI=;
- b=OlvkgIZpXUzIZbAOZVV+3UX8avVA+pOIaisUyMF3yAry7OGLXmcF+jmb6iPnXMpoMThk+kve8sbVR2tER7vBL2Q8k3bLrWmWU7EFV36Vbif6A9VU9iShGhW8eA6q2fWLudToPUa3ynqVO+8ACv8Qo9ZKi2NlFsmpC3u86ejZ/CppksxY3mT7OkHQYLBmSOe5gkf7xQ5dGIRST+1YtWdmiJ9JwV9ruvK+BeIoxBfPC6GL8VgWWGZgBJiB9TveCThqgg3yXfnYylW6RZQABnj9mWOOZtSc8Mtgph7uYskhqcvEKIcbn1O7VSDgHjv+QlhW89cvpJyx20mRcniqrSl8Tg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
- dkim=pass header.d=analog.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a4j6tJgBZcWKGmyD82cLJ2v47w07YDhDdnJJI8y8ViI=;
- b=SeegGRcTAsegT5pfi0AeJwQcCm0zNLAlwbRENTlSscQtWrcfZqBwa+3TmVw5sCrZMK0O5RIMMbaIzPeha9Cuy0rF4EJv5xHO8JcvJg7hhEQgtdvJvIBPRoOnzMocrxn9pUAQGAgGdnPAM2/cADyk8+BzqFMnHj+QAQyDWLxS6uU=
-Received: from DM6PR03MB4411.namprd03.prod.outlook.com (2603:10b6:5:10f::14)
- by DM6PR03MB3691.namprd03.prod.outlook.com (2603:10b6:5:ab::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21; Tue, 30 Jun
- 2020 04:58:07 +0000
-Received: from DM6PR03MB4411.namprd03.prod.outlook.com
- ([fe80::e02f:b3c0:d1e9:5eaf]) by DM6PR03MB4411.namprd03.prod.outlook.com
- ([fe80::e02f:b3c0:d1e9:5eaf%3]) with mapi id 15.20.3131.028; Tue, 30 Jun 2020
- 04:58:07 +0000
-From:   "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>
-CC:     "jic23@kernel.org" <jic23@kernel.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>,
-        "knaack.h@gmx.de" <knaack.h@gmx.de>
-Subject: Re: [PATCH v4 4/7] iio: core: move debugfs data on the private iio
- dev info
-Thread-Topic: [PATCH v4 4/7] iio: core: move debugfs data on the private iio
- dev info
-Thread-Index: AQHWTpqNHBc+KTQIJEatj/5USzngZajwmOAA
-Date:   Tue, 30 Jun 2020 04:58:06 +0000
-Message-ID: <3ad8e37bc439f0619f63010809fb0080b61a1b56.camel@analog.com>
-References: <20200630045708.14166-1-alexandru.ardelean@analog.com>
-         <20200630045708.14166-5-alexandru.ardelean@analog.com>
-In-Reply-To: <20200630045708.14166-5-alexandru.ardelean@analog.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=analog.com;
-x-originating-ip: [188.27.128.12]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 2edfc555-2dca-4028-c1cb-08d81cb22dcb
-x-ms-traffictypediagnostic: DM6PR03MB3691:
-x-microsoft-antispam-prvs: <DM6PR03MB36915603318546B94554532EF96F0@DM6PR03MB3691.namprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0450A714CB
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JD4peMv6xFJ5IhYUK5zthiIlXjFdVxpWZkU+JZ+49IglqFOspXMcNKD7OZZtEfXXBE3ob77ALgRrpvCrRmp9+TKJvKWzELEymmXzE6k5mD7A/2EAA8SJXy5D5UzJJiQVPqCEHbgexhtsdDG1LscQ7hPnipYDHeLCPTNl/RlCxpMTbaoNkRZnNPf009TcRu6pXe516qD5bBD98CpTkWGwJ43zxti8MJ+aaiUa9guCxUY8wKU63scaxqxLoPfTbkzigtiU9W0hzqy76maad32HfVKvGzEpGgWEd9OClWkRCEWdU8KUSraeGcvhkTAe74M+6Dz3ZiIRoTFafJPKiMDNcg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4411.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(39860400002)(366004)(376002)(396003)(346002)(2906002)(86362001)(110136005)(186003)(26005)(83380400001)(4326008)(6486002)(6506007)(5660300002)(478600001)(54906003)(71200400001)(66446008)(76116006)(66476007)(64756008)(66556008)(66946007)(6512007)(2616005)(8676002)(36756003)(8936002)(91956017)(316002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: gNCqeeRc5JWVEgSWFcu+HCaAzKACqZIDrGke+t8ArBQBInu/3Mvujlo4SjZoHswAj0us2X3N772H4R01nnWJNE/hHOp5z4l6jwWLQ/oh7pXPnHgN898hvJZKV1E7kfHFHT8tnUIMxERLgWWiVgfghFJMwgg+4ZcRFRneU6g5nKERuZfA1+stVWnuKKLg5jE0fWFRxfkKeuUvgkO53a8KbaY8FNPo9Fcj206ih7RS5EY0GmSpGm8NBvnMhjsdyKR/uUpIt9amHd1PkwrGDyoOSokX8uKfRscKWvWetn3FeSxOFf4P6n5I3RX+uVSDJ+sdK92rI48En13qihsxbcOLGAInrSdMxe0Uym3ocgFOMkAg5uEfirPRvngMTMeI89nbrkpwslZc+0wqHA1nZ0SfmWXbqdTccAKbs+L0DwPznAGzSDwKogyx9mmQDnObfxYS1wx+0t7ARzb9bxPefZxQS26Ox1eiCx8qUKu5EXRpaa4=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <36E39D81C8C12B49A60007C03DD5D96A@namprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1729452AbgF3Ew0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 00:52:26 -0400
+Received: from mga07.intel.com ([134.134.136.100]:31809 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729247AbgF3Ew0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 00:52:26 -0400
+IronPort-SDR: 0KfgEll8BdbkxncNWd7XlqilxdLgjxnAsiXyqbWGg9OGlXnP9mRGW7tiUOP0E8MuFRfjXpk5sQ
+ ylfwk+2EHxfQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="211212338"
+X-IronPort-AV: E=Sophos;i="5.75,296,1589266800"; 
+   d="scan'208";a="211212338"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 21:52:25 -0700
+IronPort-SDR: RyWkr2yLsEsNdGwGzcOcboY81WbqM1TJ/ogxyjZ3qBfuynpJ6GsURPpS4OcRCYxnFnVR4fuBQD
+ 3VgTIHGUOPCw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,296,1589266800"; 
+   d="scan'208";a="277305843"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga003.jf.intel.com with ESMTP; 29 Jun 2020 21:52:25 -0700
+Date:   Mon, 29 Jun 2020 21:58:59 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Eric Auger" <eric.auger@redhat.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 3/7] iommu/vt-d: Fix PASID devTLB invalidation
+Message-ID: <20200629215859.3ab77421@jacob-builder>
+In-Reply-To: <MWHPR11MB1645B3CAC72D63AD535FD6DC8C6F0@MWHPR11MB1645.namprd11.prod.outlook.com>
+References: <1592926996-47914-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1592926996-47914-4-git-send-email-jacob.jun.pan@linux.intel.com>
+        <57091f4a-fb53-40a4-6a28-a498f548f8b8@linux.intel.com>
+        <MWHPR11MB1645B3CAC72D63AD535FD6DC8C6F0@MWHPR11MB1645.namprd11.prod.outlook.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-OriginatorOrg: analog.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4411.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2edfc555-2dca-4028-c1cb-08d81cb22dcb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jun 2020 04:58:06.9760
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZqSFF5VoRynvt9TPd3YdnZFjN8refNMbPo/HgbLZ3/BJ6+a3UsjZFZS7dyM8/WFhXW/tcWEfOxulYpnXjdGFp7bOzjh51qRnGeuc5OTrTgI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB3691
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-06-29_21:2020-06-29,2020-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- cotscore=-2147483648 adultscore=0 mlxlogscore=999 malwarescore=0
- bulkscore=0 phishscore=0 impostorscore=0 clxscore=1015 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006300035
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTA2LTMwIGF0IDA3OjU3ICswMzAwLCBBbGV4YW5kcnUgQXJkZWxlYW4gd3Jv
-dGU6DQo+IFRoaXMgY2hhbmdlIG1vdmVzIGFsbCBpaW9fZGV2IGRlYnVnZnMgZmllbGRzIHRvIHRo
-ZSBpaW9fZGV2X3ByaXYgb2JqZWN0Lg0KPiBJdCdzIG5vdCB0aGUgYmlnZ2VzdCBhZHZhbnRhZ2Ug
-eWV0ICh0byB0aGUgd2hvbGUgdGhpbmcgb2YNCj4gYWJzdHJhY3RpemF0aW9uKQ0KPiBidXQgaXQn
-cyBhIHN0YXJ0Lg0KPiANCj4gVGhlIGlpb19nZXRfZGVidWdmc19kZW50cnkoKSBmdW5jdGlvbiAo
-d2hpY2ggaXMgbW92ZWQgaW4NCj4gaW5kdXN0cmlhbGlvLWNvcmUuYykgbmVlZHMgdG8gYWxzbyBi
-ZSBndWFyZGVkIGFnYWluc3QgdGhlIENPTkZJR19ERUJVR19GUw0KPiBzeW1ib2wsIHdoZW4gaXQg
-aXNuJ3QgZGVmaW5lZC4gV2UgZG8gd2FudCB0byBrZWVwIHRoZSBpbmxpbmUgZGVmaW5pdGlvbg0K
-PiBpbg0KPiB0aGUgaWlvLmggaGVhZGVyLCBzbyB0aGF0IHRoZSBjb21waWxlciBjYW4gYmV0dGVy
-IGluZmVyIHdoZW4gdG8gY29tcGlsZQ0KPiBvdXQNCj4gZGVidWdmcyBjb2RlIHRoYXQgaXMgcmVs
-YXRlZCB0byB0aGUgSUlPIGRlYnVnZnMgZGlyZWN0b3J5Lg0KPiANCg0KV2VsbCwgcHJldHR5IG11
-Y2ggb25seSB0aGlzIHBhdGNoIGNoYW5nZWQgc2luY2UgVjMuDQpJIHRob3VnaHQgYWJvdXQgbWF5
-YmUgcmUtZG9pbmcganVzdCB0aGlzIHBhdGNoLCB0aGVuIEkgdGhvdWdodCBtYXliZSBJJ2QNCmdl
-dCBhIG1pbm9yIGNvbXBsYWludCB0aGF0IEkgc2hvdWxkIHJlLXNlbmQgdGhlIHNlcmllcy4NCg0K
-RWl0aGVyIHdheSwgSSBwcmVmZXIgYSBjb21wbGFpbnQgb24gdGhpcyBWNCBzZXJpZXMtcmUtc2Vu
-ZCB0aGFuIGlmIEkgd2VyZQ0KdG8gaGF2ZSByZS1zZW50IGp1c3QgdGhpcyBwYXRjaC4NCg0KDQo+
-IFNpZ25lZC1vZmYtYnk6IEFsZXhhbmRydSBBcmRlbGVhbiA8YWxleGFuZHJ1LmFyZGVsZWFuQGFu
-YWxvZy5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9paW8vaW5kdXN0cmlhbGlvLWNvcmUuYyB8IDQ2
-ICsrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLQ0KPiAgaW5jbHVkZS9saW51eC9paW8v
-aWlvLW9wYXF1ZS5oICB8IDEwICsrKysrKysNCj4gIGluY2x1ZGUvbGludXgvaWlvL2lpby5oICAg
-ICAgICAgfCAxMyArLS0tLS0tLS0tDQo+ICAzIGZpbGVzIGNoYW5nZWQsIDQ0IGluc2VydGlvbnMo
-KyksIDI1IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaWlvL2luZHVz
-dHJpYWxpby1jb3JlLmMgYi9kcml2ZXJzL2lpby9pbmR1c3RyaWFsaW8tDQo+IGNvcmUuYw0KPiBp
-bmRleCAyNzAwNWJhNGQwOWMuLjY0MTc0MDUyNjQxYSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9p
-aW8vaW5kdXN0cmlhbGlvLWNvcmUuYw0KPiArKysgYi9kcml2ZXJzL2lpby9pbmR1c3RyaWFsaW8t
-Y29yZS5jDQo+IEBAIC0xNjUsNiArMTY1LDE5IEBAIHN0YXRpYyBjb25zdCBjaGFyICogY29uc3Qg
-aWlvX2NoYW5faW5mb19wb3N0Zml4W10gPQ0KPiB7DQo+ICAJW0lJT19DSEFOX0lORk9fVEhFUk1P
-Q09VUExFX1RZUEVdID0gInRoZXJtb2NvdXBsZV90eXBlIiwNCj4gIH07DQo+ICANCj4gKyNpZiAh
-ZGVmaW5lZChDT05GSUdfREVCVUdfRlMpDQo+ICsvKioNCj4gKyAqIFRoZXJlJ3MgYWxzbyBhIENP
-TkZJR19ERUJVR19GUyBndWFyZCBpbiBpbmNsdWRlL2xpbnV4L2lpby9paW8uaCBmb3INCj4gKyAq
-IGlpb19nZXRfZGVidWdmc19kZW50cnkoKSB0byBtYWtlIGl0IGlubGluZSBpZiBDT05GSUdfREVC
-VUdfRlMgaXMNCj4gdW5kZWZpbmVkDQo+ICsgKi8NCj4gK3N0cnVjdCBkZW50cnkgKmlpb19nZXRf
-ZGVidWdmc19kZW50cnkoc3RydWN0IGlpb19kZXYgKmluZGlvX2RldikNCj4gK3sNCj4gKwlzdHJ1
-Y3QgaWlvX2Rldl9vcGFxdWUgKmlpb19kZXZfb3BhcXVlID0NCj4gdG9faWlvX2Rldl9vcGFxdWUo
-aW5kaW9fZGV2KTsNCj4gKwlyZXR1cm4gaWlvX2Rldl9vcGFxdWUtPmRlYnVnZnNfZGVudHJ5Ow0K
-PiArfQ0KPiArRVhQT1JUX1NZTUJPTF9HUEwoaWlvX2dldF9kZWJ1Z2ZzX2RlbnRyeSk7DQo+ICsj
-ZW5kaWYNCj4gKw0KPiAgLyoqDQo+ICAgKiBpaW9fZmluZF9jaGFubmVsX2Zyb21fc2koKSAtIGdl
-dCBjaGFubmVsIGZyb20gaXRzIHNjYW4gaW5kZXgNCj4gICAqIEBpbmRpb19kZXY6CQlkZXZpY2UN
-Cj4gQEAgLTMwOCwzNSArMzIxLDM3IEBAIHN0YXRpYyBzc2l6ZV90IGlpb19kZWJ1Z2ZzX3JlYWRf
-cmVnKHN0cnVjdCBmaWxlDQo+ICpmaWxlLCBjaGFyIF9fdXNlciAqdXNlcmJ1ZiwNCj4gIAkJCSAg
-ICAgIHNpemVfdCBjb3VudCwgbG9mZl90ICpwcG9zKQ0KPiAgew0KPiAgCXN0cnVjdCBpaW9fZGV2
-ICppbmRpb19kZXYgPSBmaWxlLT5wcml2YXRlX2RhdGE7DQo+ICsJc3RydWN0IGlpb19kZXZfb3Bh
-cXVlICppaW9fZGV2X29wYXF1ZSA9DQo+IHRvX2lpb19kZXZfb3BhcXVlKGluZGlvX2Rldik7DQo+
-ICAJdW5zaWduZWQgdmFsID0gMDsNCj4gIAlpbnQgcmV0Ow0KPiAgDQo+ICAJaWYgKCpwcG9zID4g
-MCkNCj4gIAkJcmV0dXJuIHNpbXBsZV9yZWFkX2Zyb21fYnVmZmVyKHVzZXJidWYsIGNvdW50LCBw
-cG9zLA0KPiAtCQkJCQkgICAgICAgaW5kaW9fZGV2LT5yZWFkX2J1ZiwNCj4gLQkJCQkJICAgICAg
-IGluZGlvX2Rldi0+cmVhZF9idWZfbGVuKTsNCj4gKwkJCQkJICAgICAgIGlpb19kZXZfb3BhcXVl
-LT5yZWFkX2J1ZiwNCj4gKwkJCQkJICAgICAgIGlpb19kZXZfb3BhcXVlLQ0KPiA+cmVhZF9idWZf
-bGVuKTsNCj4gIA0KPiAgCXJldCA9IGluZGlvX2Rldi0+aW5mby0+ZGVidWdmc19yZWdfYWNjZXNz
-KGluZGlvX2RldiwNCj4gLQkJCQkJCSAgaW5kaW9fZGV2LQ0KPiA+Y2FjaGVkX3JlZ19hZGRyLA0K
-PiArCQkJCQkJICBpaW9fZGV2X29wYXF1ZS0NCj4gPmNhY2hlZF9yZWdfYWRkciwNCj4gIAkJCQkJ
-CSAgMCwgJnZhbCk7DQo+ICAJaWYgKHJldCkgew0KPiAgCQlkZXZfZXJyKGluZGlvX2Rldi0+ZGV2
-LnBhcmVudCwgIiVzOiByZWFkIGZhaWxlZFxuIiwNCj4gX19mdW5jX18pOw0KPiAgCQlyZXR1cm4g
-cmV0Ow0KPiAgCX0NCj4gIA0KPiAtCWluZGlvX2Rldi0+cmVhZF9idWZfbGVuID0gc25wcmludGYo
-aW5kaW9fZGV2LT5yZWFkX2J1ZiwNCj4gLQkJCQkJICAgc2l6ZW9mKGluZGlvX2Rldi0+cmVhZF9i
-dWYpLA0KPiAtCQkJCQkgICAiMHglWFxuIiwgdmFsKTsNCj4gKwlpaW9fZGV2X29wYXF1ZS0+cmVh
-ZF9idWZfbGVuID0gc25wcmludGYoaWlvX2Rldl9vcGFxdWUtPnJlYWRfYnVmLA0KPiArCQkJCQkg
-ICAgICBzaXplb2YoaWlvX2Rldl9vcGFxdWUtDQo+ID5yZWFkX2J1ZiksDQo+ICsJCQkJCSAgICAg
-ICIweCVYXG4iLCB2YWwpOw0KPiAgDQo+ICAJcmV0dXJuIHNpbXBsZV9yZWFkX2Zyb21fYnVmZmVy
-KHVzZXJidWYsIGNvdW50LCBwcG9zLA0KPiAtCQkJCSAgICAgICBpbmRpb19kZXYtPnJlYWRfYnVm
-LA0KPiAtCQkJCSAgICAgICBpbmRpb19kZXYtPnJlYWRfYnVmX2xlbik7DQo+ICsJCQkJICAgICAg
-IGlpb19kZXZfb3BhcXVlLT5yZWFkX2J1ZiwNCj4gKwkJCQkgICAgICAgaWlvX2Rldl9vcGFxdWUt
-PnJlYWRfYnVmX2xlbik7DQo+ICB9DQo+ICANCj4gIHN0YXRpYyBzc2l6ZV90IGlpb19kZWJ1Z2Zz
-X3dyaXRlX3JlZyhzdHJ1Y3QgZmlsZSAqZmlsZSwNCj4gIAkJICAgICBjb25zdCBjaGFyIF9fdXNl
-ciAqdXNlcmJ1Ziwgc2l6ZV90IGNvdW50LCBsb2ZmX3QNCj4gKnBwb3MpDQo+ICB7DQo+ICAJc3Ry
-dWN0IGlpb19kZXYgKmluZGlvX2RldiA9IGZpbGUtPnByaXZhdGVfZGF0YTsNCj4gKwlzdHJ1Y3Qg
-aWlvX2Rldl9vcGFxdWUgKmlpb19kZXZfb3BhcXVlID0NCj4gdG9faWlvX2Rldl9vcGFxdWUoaW5k
-aW9fZGV2KTsNCj4gIAl1bnNpZ25lZCByZWcsIHZhbDsNCj4gIAljaGFyIGJ1Zls4MF07DQo+ICAJ
-aW50IHJldDsNCj4gQEAgLTM1MSwxMCArMzY2LDEwIEBAIHN0YXRpYyBzc2l6ZV90IGlpb19kZWJ1
-Z2ZzX3dyaXRlX3JlZyhzdHJ1Y3QgZmlsZQ0KPiAqZmlsZSwNCj4gIA0KPiAgCXN3aXRjaCAocmV0
-KSB7DQo+ICAJY2FzZSAxOg0KPiAtCQlpbmRpb19kZXYtPmNhY2hlZF9yZWdfYWRkciA9IHJlZzsN
-Cj4gKwkJaWlvX2Rldl9vcGFxdWUtPmNhY2hlZF9yZWdfYWRkciA9IHJlZzsNCj4gIAkJYnJlYWs7
-DQo+ICAJY2FzZSAyOg0KPiAtCQlpbmRpb19kZXYtPmNhY2hlZF9yZWdfYWRkciA9IHJlZzsNCj4g
-KwkJaWlvX2Rldl9vcGFxdWUtPmNhY2hlZF9yZWdfYWRkciA9IHJlZzsNCj4gIAkJcmV0ID0gaW5k
-aW9fZGV2LT5pbmZvLT5kZWJ1Z2ZzX3JlZ19hY2Nlc3MoaW5kaW9fZGV2LCByZWcsDQo+ICAJCQkJ
-CQkJICB2YWwsIE5VTEwpOw0KPiAgCQlpZiAocmV0KSB7DQo+IEBAIC0zNzgsMjMgKzM5MywyOCBA
-QCBzdGF0aWMgY29uc3Qgc3RydWN0IGZpbGVfb3BlcmF0aW9ucw0KPiBpaW9fZGVidWdmc19yZWdf
-Zm9wcyA9IHsNCj4gIA0KPiAgc3RhdGljIHZvaWQgaWlvX2RldmljZV91bnJlZ2lzdGVyX2RlYnVn
-ZnMoc3RydWN0IGlpb19kZXYgKmluZGlvX2RldikNCj4gIHsNCj4gLQlkZWJ1Z2ZzX3JlbW92ZV9y
-ZWN1cnNpdmUoaW5kaW9fZGV2LT5kZWJ1Z2ZzX2RlbnRyeSk7DQo+ICsJc3RydWN0IGlpb19kZXZf
-b3BhcXVlICppaW9fZGV2X29wYXF1ZSA9DQo+IHRvX2lpb19kZXZfb3BhcXVlKGluZGlvX2Rldik7
-DQo+ICsJZGVidWdmc19yZW1vdmVfcmVjdXJzaXZlKGlpb19kZXZfb3BhcXVlLT5kZWJ1Z2ZzX2Rl
-bnRyeSk7DQo+ICB9DQo+ICANCj4gIHN0YXRpYyB2b2lkIGlpb19kZXZpY2VfcmVnaXN0ZXJfZGVi
-dWdmcyhzdHJ1Y3QgaWlvX2RldiAqaW5kaW9fZGV2KQ0KPiAgew0KPiArCXN0cnVjdCBpaW9fZGV2
-X29wYXF1ZSAqaWlvX2Rldl9vcGFxdWU7DQo+ICsNCj4gIAlpZiAoaW5kaW9fZGV2LT5pbmZvLT5k
-ZWJ1Z2ZzX3JlZ19hY2Nlc3MgPT0gTlVMTCkNCj4gIAkJcmV0dXJuOw0KPiAgDQo+ICAJaWYgKCFp
-aW9fZGVidWdmc19kZW50cnkpDQo+ICAJCXJldHVybjsNCj4gIA0KPiAtCWluZGlvX2Rldi0+ZGVi
-dWdmc19kZW50cnkgPQ0KPiArCWlpb19kZXZfb3BhcXVlID0gdG9faWlvX2Rldl9vcGFxdWUoaW5k
-aW9fZGV2KTsNCj4gKw0KPiArCWlpb19kZXZfb3BhcXVlLT5kZWJ1Z2ZzX2RlbnRyeSA9DQo+ICAJ
-CWRlYnVnZnNfY3JlYXRlX2RpcihkZXZfbmFtZSgmaW5kaW9fZGV2LT5kZXYpLA0KPiAgCQkJCSAg
-IGlpb19kZWJ1Z2ZzX2RlbnRyeSk7DQo+ICANCj4gIAlkZWJ1Z2ZzX2NyZWF0ZV9maWxlKCJkaXJl
-Y3RfcmVnX2FjY2VzcyIsIDA2NDQsDQo+IC0JCQkgICAgaW5kaW9fZGV2LT5kZWJ1Z2ZzX2RlbnRy
-eSwgaW5kaW9fZGV2LA0KPiArCQkJICAgIGlpb19kZXZfb3BhcXVlLT5kZWJ1Z2ZzX2RlbnRyeSwg
-aW5kaW9fZGV2LA0KPiAgCQkJICAgICZpaW9fZGVidWdmc19yZWdfZm9wcyk7DQo+ICB9DQo+ICAj
-ZWxzZQ0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9paW8vaWlvLW9wYXF1ZS5oIGIvaW5j
-bHVkZS9saW51eC9paW8vaWlvLQ0KPiBvcGFxdWUuaA0KPiBpbmRleCAxMzc1Njc0ZjE0Y2QuLmIz
-ZjIzNGI0YzFlOSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9paW8vaWlvLW9wYXF1ZS5o
-DQo+ICsrKyBiL2luY2x1ZGUvbGludXgvaWlvL2lpby1vcGFxdWUuaA0KPiBAQCAtNiw5ICs2LDE5
-IEBADQo+ICAvKioNCj4gICAqIHN0cnVjdCBpaW9fZGV2X29wYXF1ZSAtIGluZHVzdHJpYWwgSS9P
-IGRldmljZSBvcGFxdWUgaW5mb3JtYXRpb24NCj4gICAqIEBpbmRpb19kZXY6CQkJcHVibGljIGlu
-ZHVzdHJpYWwgSS9PIGRldmljZQ0KPiBpbmZvcm1hdGlvbg0KPiArICogQGRlYnVnZnNfZGVudHJ5
-OgkJZGV2aWNlIHNwZWNpZmljIGRlYnVnZnMgZGVudHJ5DQo+ICsgKiBAY2FjaGVkX3JlZ19hZGRy
-OgkJY2FjaGVkIHJlZ2lzdGVyIGFkZHJlc3MgZm9yIGRlYnVnZnMgcmVhZHMNCj4gKyAqIEByZWFk
-X2J1ZjoJCQlyZWFkIGJ1ZmZlciB0byBiZSB1c2VkIGZvciB0aGUNCj4gaW5pdGlhbCByZWcgcmVh
-ZA0KPiArICogQHJlYWRfYnVmX2xlbjoJCWRhdGEgbGVuZ3RoIGluIEByZWFkX2J1Zg0KPiAgICov
-DQo+ICBzdHJ1Y3QgaWlvX2Rldl9vcGFxdWUgew0KPiAgCXN0cnVjdCBpaW9fZGV2CQkJaW5kaW9f
-ZGV2Ow0KPiArI2lmIGRlZmluZWQoQ09ORklHX0RFQlVHX0ZTKQ0KPiArCXN0cnVjdCBkZW50cnkJ
-CQkqZGVidWdmc19kZW50cnk7DQo+ICsJdW5zaWduZWQJCQljYWNoZWRfcmVnX2FkZHI7DQo+ICsJ
-Y2hhcgkJCQlyZWFkX2J1ZlsyMF07DQo+ICsJdW5zaWduZWQgaW50CQkJcmVhZF9idWZfbGVuOw0K
-PiArI2VuZGlmDQo+ICB9Ow0KPiAgDQo+ICAjZGVmaW5lIHRvX2lpb19kZXZfb3BhcXVlKGluZGlv
-X2RldikJCVwNCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvaWlvL2lpby5oIGIvaW5jbHVk
-ZS9saW51eC9paW8vaWlvLmgNCj4gaW5kZXggODYxMTJlMzVhZTVmLi5iYjBhYWUxMWExMTEgMTAw
-NjQ0DQo+IC0tLSBhL2luY2x1ZGUvbGludXgvaWlvL2lpby5oDQo+ICsrKyBiL2luY2x1ZGUvbGlu
-dXgvaWlvL2lpby5oDQo+IEBAIC01MjAsOCArNTIwLDYgQEAgc3RydWN0IGlpb19idWZmZXJfc2V0
-dXBfb3BzIHsNCj4gICAqIEBncm91cHM6CQlbSU5URVJOXSBhdHRyaWJ1dGUgZ3JvdXBzDQo+ICAg
-KiBAZ3JvdXBjb3VudGVyOglbSU5URVJOXSBpbmRleCBvZiBuZXh0IGF0dHJpYnV0ZSBncm91cA0K
-PiAgICogQGZsYWdzOgkJW0lOVEVSTl0gZmlsZSBvcHMgcmVsYXRlZCBmbGFncyBpbmNsdWRpbmcg
-YnVzeQ0KPiBmbGFnLg0KPiAtICogQGRlYnVnZnNfZGVudHJ5OglbSU5URVJOXSBkZXZpY2Ugc3Bl
-Y2lmaWMgZGVidWdmcyBkZW50cnkuDQo+IC0gKiBAY2FjaGVkX3JlZ19hZGRyOglbSU5URVJOXSBj
-YWNoZWQgcmVnaXN0ZXIgYWRkcmVzcyBmb3IgZGVidWdmcyByZWFkcy4NCj4gICAqIEBwcml2OgkJ
-W0RSSVZFUl0gcmVmZXJlbmNlIHRvIGRyaXZlcidzIHByaXZhdGUgaW5mb3JtYXRpb24NCj4gICAq
-CQkJKipNVVNUKiogYmUgYWNjZXNzZWQgKipPTkxZKiogdmlhIGlpb19wcml2KCkgaGVscGVyDQo+
-ICAgKi8NCj4gQEAgLTU2NywxMiArNTY1LDYgQEAgc3RydWN0IGlpb19kZXYgew0KPiAgCWludAkJ
-CQlncm91cGNvdW50ZXI7DQo+ICANCj4gIAl1bnNpZ25lZCBsb25nCQkJZmxhZ3M7DQo+IC0jaWYg
-ZGVmaW5lZChDT05GSUdfREVCVUdfRlMpDQo+IC0Jc3RydWN0IGRlbnRyeQkJCSpkZWJ1Z2ZzX2Rl
-bnRyeTsNCj4gLQl1bnNpZ25lZAkJCWNhY2hlZF9yZWdfYWRkcjsNCj4gLQljaGFyCQkJCXJlYWRf
-YnVmWzIwXTsNCj4gLQl1bnNpZ25lZCBpbnQJCQlyZWFkX2J1Zl9sZW47DQo+IC0jZW5kaWYNCj4g
-IAl2b2lkCQkJCSpwcml2Ow0KPiAgfTsNCj4gIA0KPiBAQCAtNzI3LDEwICs3MTksNyBAQCBzdGF0
-aWMgaW5saW5lIGJvb2wgaWlvX2J1ZmZlcl9lbmFibGVkKHN0cnVjdCBpaW9fZGV2DQo+ICppbmRp
-b19kZXYpDQo+ICAgKiBAaW5kaW9fZGV2OgkJSUlPIGRldmljZSBzdHJ1Y3R1cmUgZm9yIGRldmlj
-ZQ0KPiAgICoqLw0KPiAgI2lmIGRlZmluZWQoQ09ORklHX0RFQlVHX0ZTKQ0KPiAtc3RhdGljIGlu
-bGluZSBzdHJ1Y3QgZGVudHJ5ICppaW9fZ2V0X2RlYnVnZnNfZGVudHJ5KHN0cnVjdCBpaW9fZGV2
-DQo+ICppbmRpb19kZXYpDQo+IC17DQo+IC0JcmV0dXJuIGluZGlvX2Rldi0+ZGVidWdmc19kZW50
-cnk7DQo+IC19DQo+ICtzdHJ1Y3QgZGVudHJ5ICppaW9fZ2V0X2RlYnVnZnNfZGVudHJ5KHN0cnVj
-dCBpaW9fZGV2ICppbmRpb19kZXYpOw0KPiAgI2Vsc2UNCj4gIHN0YXRpYyBpbmxpbmUgc3RydWN0
-IGRlbnRyeSAqaWlvX2dldF9kZWJ1Z2ZzX2RlbnRyeShzdHJ1Y3QgaWlvX2Rldg0KPiAqaW5kaW9f
-ZGV2KQ0KPiAgew0K
+On Tue, 30 Jun 2020 03:01:29 +0000
+"Tian, Kevin" <kevin.tian@intel.com> wrote:
+
+> > From: Lu Baolu <baolu.lu@linux.intel.com>
+> > Sent: Thursday, June 25, 2020 3:26 PM
+> > 
+> > On 2020/6/23 23:43, Jacob Pan wrote:  
+> > > DevTLB flush can be used for both DMA request with and without
+> > > PASIDs. The former uses PASID#0 (RID2PASID), latter uses non-zero
+> > > PASID for SVA usage.
+> > >
+> > > This patch adds a check for PASID value such that devTLB flush
+> > > with PASID is used for SVA case. This is more efficient in that
+> > > multiple PASIDs can be used by a single device, when tearing down
+> > > a PASID entry we shall flush only the devTLB specific to a PASID.
+> > >
+> > > Fixes: 6f7db75e1c46 ("iommu/vt-d: Add second level page table")  
+> 
+> btw is it really a fix? From the description it's more like an
+> optimization...
+> 
+I guess it depends on how the issue is perceived. There is no
+functional problem but the flush is too coarse w/o this patch.
+
+> > > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > > ---
+> > >   drivers/iommu/intel/pasid.c | 11 ++++++++++-
+> > >   1 file changed, 10 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/iommu/intel/pasid.c
+> > > b/drivers/iommu/intel/pasid.c index c81f0f17c6ba..3991a24539a1
+> > > 100644 --- a/drivers/iommu/intel/pasid.c
+> > > +++ b/drivers/iommu/intel/pasid.c
+> > > @@ -486,7 +486,16 @@ devtlb_invalidation_with_pasid(struct  
+> > intel_iommu *iommu,  
+> > >   	qdep = info->ats_qdep;
+> > >   	pfsid = info->pfsid;
+> > >
+> > > -	qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0, 64 -
+> > > VTD_PAGE_SHIFT);
+> > > +	/*
+> > > +	 * When PASID 0 is used, it indicates RID2PASID(DMA
+> > > request w/o  
+> > PASID),  
+> > > +	 * devTLB flush w/o PASID should be used. For non-zero
+> > > PASID under
+> > > +	 * SVA usage, device could do DMA with multiple PASIDs.
+> > > It is more
+> > > +	 * efficient to flush devTLB specific to the PASID.
+> > > +	 */
+> > > +	if (pasid)  
+> > 
+> > How about
+> > 
+> > 	if (pasid == PASID_RID2PASID)
+> > 		qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0, 64 -
+> > VTD_PAGE_SHIFT);
+> > 	else
+> > 		qi_flush_dev_iotlb_pasid(iommu, sid, pfsid, pasid,
+> > qdep, 0, 64 -
+> > VTD_PAGE_SHIFT);
+> > 
+> > ?
+> > 
+> > It makes the code more readable and still works even we reassign
+> > another pasid for RID2PASID.
+> > 
+> > Best regards,
+> > baolu
+> >   
+> > > +		qi_flush_dev_iotlb_pasid(iommu, sid, pfsid,
+> > > pasid, qdep, 0,  
+> > 64 - VTD_PAGE_SHIFT);  
+> > > +	else
+> > > +		qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0,
+> > > 64 -  
+> > VTD_PAGE_SHIFT);  
+> > >   }
+> > >
+> > >   void intel_pasid_tear_down_entry(struct intel_iommu *iommu,
+> > > struct  
+> > device *dev,  
+> > >  
+
+[Jacob Pan]
