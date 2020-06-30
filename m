@@ -2,140 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7179920F3C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7973320F3CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733102AbgF3Lrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 07:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728419AbgF3Lre (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 07:47:34 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11D5C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 04:47:33 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id u25so11179488lfm.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 04:47:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TFC+WBq7XDcW3TVW9x+KN+I5qxP4pcdSU4SbEe6OPp0=;
-        b=d68s4qdCmK1TtORh+eQRf0S7WXOcI+wvGvLs0azHsmlx3wZ3fI54RdBA5MqjXEH0p+
-         Dno6/2KH6VsHo19RJMbFwmdFbzQMnSLyHtrAwgCBbwyjgEzbuLqg9DKsoJh7YhxkHfbm
-         tUL3kppZ8Sk8n2Af1NYQHQcMuczHcJ3e4AOZZpCTh+/uiCYXxwhp3IHzo4bKbUiJc1QQ
-         1ArdlHjQ0zEZBV3RpZBrpGl6hTIjj1jY0wI3SkzUY3vg+qU7IchTcVxls8NUWxD1QXk1
-         +du+8q924Xyfm35vp3ktf98nOwNKpTPgL2hUzZf++WzzPjFbIjwGpoLqiIcJN6Q8GN12
-         DjMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TFC+WBq7XDcW3TVW9x+KN+I5qxP4pcdSU4SbEe6OPp0=;
-        b=HEixW+QJtGoK3ncXnhSkk4dvbAUAmTJmoGHZ34/jnJN2oV611X5OM3fPj+/b5mpopz
-         dKOvxvMbLliqBa3XzbrnB1dTgIU/j2hEoxgplpypJU+Hbzb3uoHXSzqmP20SBh4EqGGn
-         C7rvDIpF9MdBCjC0eYWKLnK22OG20fWHCB7oBTJG+n0/Cjtt3wdzMg5eoIwD4vMNuEDk
-         tYpBAKe8jK0RQ9XBrgHh76Q5dzDNpLqNsQDWH4ExYHR98tFg63QqenQGlTWN15ECe0PG
-         1ym7wnnJ6VeS2gysIws1Tuh8V5CoJxUuZ7eizcnUveXv4ROBD+uRCz56m76LvzaAppbr
-         cqnw==
-X-Gm-Message-State: AOAM533pfZFlV8xXUKL8SuZTDTfoN9bNuRfRHEDGzrkhyQ8iIIE9GdJM
-        gpTQLISdUpYfvW5lsr2xg6H1mihAzBl7spj7s06/0bQI
-X-Google-Smtp-Source: ABdhPJwt26oQzvsh96ZHTy2TwPcowmHp/AIV+YTF2oMGp3rjnTbFRwFrzSq6RtZFwbFkyJsPWznIdHy8/vEzrb45av8=
-X-Received: by 2002:a19:c797:: with SMTP id x145mr11835531lff.143.1593517652008;
- Tue, 30 Jun 2020 04:47:32 -0700 (PDT)
+        id S1733114AbgF3Lsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 07:48:55 -0400
+Received: from mga11.intel.com ([192.55.52.93]:38196 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728419AbgF3Lsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 07:48:55 -0400
+IronPort-SDR: g68+hleK2PBihtnis3D2iThpaLCWSXzz2pPSTs37mN1vKvAinIucUHE2cgsQRHbVwPbLpoGYb4
+ sqQoQKNpdPBw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="144393104"
+X-IronPort-AV: E=Sophos;i="5.75,297,1589266800"; 
+   d="scan'208";a="144393104"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 04:48:54 -0700
+IronPort-SDR: ihgcD26HSd3er82WHpBPNsTmfMXWuX0VTAgCQbXncFKlSOgMMooZOmtHqZSTtOqA03umGNVwON
+ cM8cyw3LULCw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,297,1589266800"; 
+   d="scan'208";a="386674833"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001.fm.intel.com with ESMTP; 30 Jun 2020 04:48:52 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jqEkv-00Gpqe-Gf; Tue, 30 Jun 2020 14:48:53 +0300
+Date:   Tue, 30 Jun 2020 14:48:53 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Cengiz Can <cengiz@kernel.wtf>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH v3] kdb: remove unnecessary null check of dbg_io_ops
+Message-ID: <20200630114853.GS3703480@smile.fi.intel.com>
+References: <CAFA6WYNpCG2xPERd=NeKf+EthbX+1R4iieOL52kWnBp8y_+Nbw@mail.gmail.com>
+ <20200630082922.28672-1-cengiz@kernel.wtf>
+ <CAFA6WYPDTKQ4cm+TMmRt+qDiF+s3gggCsW1gfzCaaOdP9rJgdQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200625144509.17918-1-daniel.lezcano@linaro.org> <20200625144509.17918-3-daniel.lezcano@linaro.org>
-In-Reply-To: <20200625144509.17918-3-daniel.lezcano@linaro.org>
-From:   Amit Kucheria <amit.kucheria@linaro.org>
-Date:   Tue, 30 Jun 2020 17:17:20 +0530
-Message-ID: <CAP245DUMjTQr2vKirZ+FxEYWC=VQ_k+OegxQgXcKDU8ThWuCsQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] thermal: core: Remove old uapi generic netlink
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFA6WYPDTKQ4cm+TMmRt+qDiF+s3gggCsW1gfzCaaOdP9rJgdQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 8:15 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
-> In order to set the scene for the new generic netlink thermal
-> management and notifications, let remove the old dead code remaining
+On Tue, Jun 30, 2020 at 05:06:31PM +0530, Sumit Garg wrote:
+> On Tue, 30 Jun 2020 at 14:00, Cengiz Can <cengiz@kernel.wtf> wrote:
+> >
+> > `kdb_msg_write` operates on a global `struct kgdb_io *` called
+> > `dbg_io_ops`.
+> >
+> > It's initialized in `debug_core.c` and checked throughout the debug
+> > flow.
+> >
+> > There's a null check in `kdb_msg_write` which triggers static analyzers
+> > and gives the (almost entirely wrong) impression that it can be null.
+> >
+> > Coverity scanner caught this as CID 1465042.
+> >
+> > I have removed the unnecessary null check and eliminated false-positive
+> > forward null dereference warning.
 
-s/management/management api/
+> > -               while (len--) {
+> > -                       dbg_io_ops->write_char(*cp);
+> > -                       cp++;
+> > -               }
+> > +       while (len--) {
+> > +               dbg_io_ops->write_char(*cp);
+> > +               cp++;
+> >         }
 
-s/let/let's/
+Despite being in the original code this can be simple done in two lines:
 
-> in the uapi headers.
->
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->  include/linux/thermal.h      |  5 -----
->  include/uapi/linux/thermal.h | 12 +-----------
->  2 files changed, 1 insertion(+), 16 deletions(-)
->
-> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-> index faf7ad031e42..fc93a6348082 100644
-> --- a/include/linux/thermal.h
-> +++ b/include/linux/thermal.h
-> @@ -302,11 +302,6 @@ struct thermal_zone_params {
->         int offset;
->  };
->
-> -struct thermal_genl_event {
-> -       u32 orig;
-> -       enum events event;
-> -};
-> -
->  /**
->   * struct thermal_zone_of_device_ops - scallbacks for handling DT based zones
->   *
-> diff --git a/include/uapi/linux/thermal.h b/include/uapi/linux/thermal.h
-> index 96218378dda8..22df67ed9e9c 100644
-> --- a/include/uapi/linux/thermal.h
-> +++ b/include/uapi/linux/thermal.h
-> @@ -6,21 +6,12 @@
->
->  /* Adding event notification support elements */
->  #define THERMAL_GENL_FAMILY_NAME                "thermal_event"
-> -#define THERMAL_GENL_VERSION                    0x01
-> +#define THERMAL_GENL_VERSION                    0x02
+	while (len--)
+		dbg_io_ops->write_char(*cp++);
 
-This hunk should be removed since you set version back to 1 in the
-next patch and we don't actually intend to bump the version yet.
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
->  #define THERMAL_GENL_MCAST_GROUP_NAME           "thermal_mc_grp"
->
-> -/* Events supported by Thermal Netlink */
-> -enum events {
-> -       THERMAL_AUX0,
-> -       THERMAL_AUX1,
-> -       THERMAL_CRITICAL,
-> -       THERMAL_DEV_FAULT,
-> -};
-> -
->  /* attributes of thermal_genl_family */
->  enum {
->         THERMAL_GENL_ATTR_UNSPEC,
-> -       THERMAL_GENL_ATTR_EVENT,
->         __THERMAL_GENL_ATTR_MAX,
->  };
->  #define THERMAL_GENL_ATTR_MAX (__THERMAL_GENL_ATTR_MAX - 1)
-> @@ -28,7 +19,6 @@ enum {
->  /* commands supported by the thermal_genl_family */
->  enum {
->         THERMAL_GENL_CMD_UNSPEC,
-> -       THERMAL_GENL_CMD_EVENT,
->         __THERMAL_GENL_CMD_MAX,
->  };
->  #define THERMAL_GENL_CMD_MAX (__THERMAL_GENL_CMD_MAX - 1)
-> --
-> 2.17.1
->
