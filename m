@@ -2,171 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AAE20F6D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8F220F6DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388785AbgF3OKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 10:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388729AbgF3OJu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 10:09:50 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B5BC061755;
-        Tue, 30 Jun 2020 07:09:49 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id b15so16357922edy.7;
-        Tue, 30 Jun 2020 07:09:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fZ6EA5FNrJjXMrMBZwxAfBnL6L5p1y0KiK8AwGx10HQ=;
-        b=tv8C/UYYGPn7oGsWntvdusvYlJg7c33gM2oBNJAgGEDWQ/mDXtwVH4M8u8sDE5hMEh
-         yc1ESDsG95rSCqFCRJ68ggKSyVuLB6/7HB2FAh3Us74P4DUKItUas7un7ve2NPdQ0snD
-         xjfLeraiBmdHFpO4ZdeqzZroe8/BVFTqSas6MZLGuBg/8FjfY+mhu9YbL20BxOMYm39q
-         MxQaMM7vGHddChXTRz6fq2CfiDy/jvqxSNdDD74w6Ti8V2T3OrYt5LRZUN+FinTx/igc
-         p9GDSAjkWgkbZjN9GtiuMZsAqXDP0vQpfXyiv55SQCQ1hCP5fn9SBra4IGRodO3PuJ5X
-         Y/NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fZ6EA5FNrJjXMrMBZwxAfBnL6L5p1y0KiK8AwGx10HQ=;
-        b=fanM4ZZhAERBwvEj1XNBqjJcDnHATHk7ajxgG5IYsBfkuSikCYpEQ9qIR2i/J8WrsG
-         Oo+JTJabXeX3kLHT1cCUTiA7Nq9piY3lPzeMIC0GKh0oS0XeH140jrKS5jDt9MXdhabO
-         T++Q5Ky2QwnFB8pGC06us9Zj65MKZq3GFwO8VPHn0VJBOIEk5NXgTT4ttV4EYediuhuG
-         l91qoXwFQ2QQZBTonne77eam8gw86cHQ6Afjk5796hZZNuJkbmGbxwPJh116FiJFlT77
-         3rx6fgWXJvRkoimBS4WRFlmoiTCU9ajAFI7fMXZzrPe6Ag1MV5Y+bOr0nTZ5JTnKfLGD
-         lEhg==
-X-Gm-Message-State: AOAM530OjIhduC2bB6yQUVgW9HW3JYn7ijt9z7kx+tfRmNlsKOxCs78h
-        vOHNBWib8Aw2LlVhUtnaG8w=
-X-Google-Smtp-Source: ABdhPJzUc/AlPUjCu8xEJyv2O/B2cKzBvviK5uXiBogcMciemzbbhXPpqbyrUBv3NJ+NxHkAdd6Gvw==
-X-Received: by 2002:a05:6402:1597:: with SMTP id c23mr22301422edv.243.1593526188104;
-        Tue, 30 Jun 2020 07:09:48 -0700 (PDT)
-Received: from localhost ([213.191.183.145])
-        by smtp.gmail.com with ESMTPSA id d24sm2564876edp.83.2020.06.30.07.09.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jun 2020 07:09:47 -0700 (PDT)
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        linux-arm-msm@vger.kernel.org,
-        Iskren Chernev <iskren.chernev@gmail.com>
-Subject: [PATCH 7/7] ARM: dts: qcom: msm8974-klte: Add support for SD card
-Date:   Tue, 30 Jun 2020 17:09:12 +0300
-Message-Id: <20200630140912.260294-8-iskren.chernev@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200630140912.260294-1-iskren.chernev@gmail.com>
-References: <20200630140912.260294-1-iskren.chernev@gmail.com>
+        id S2388798AbgF3OK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 10:10:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40940 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731123AbgF3OKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 10:10:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DC17FB614;
+        Tue, 30 Jun 2020 14:10:23 +0000 (UTC)
+Date:   Tue, 30 Jun 2020 16:10:22 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     linux-nvdimm@lists.01.org,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Jan Kara <jack@suse.cz>, Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Pankaj Gupta <pagupta@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Yuval Shaia <yuval.shaia@oracle.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Jakub Staron <jstaron@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dm writecache: reject asynchronous pmem.
+Message-ID: <20200630141022.GZ21462@kitsune.suse.cz>
+References: <20200630123528.29660-1-msuchanek@suse.de>
+ <alpine.LRH.2.02.2006300929580.4801@file01.intranet.prod.int.rdu2.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LRH.2.02.2006300929580.4801@file01.intranet.prod.int.rdu2.redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Samsung Galaxy S5 (klte), has 3 SDHCI nodes used for internal
-storage, WiFi, external SD card slot. The external SD card slot is
-similar to the internal storage.
+On Tue, Jun 30, 2020 at 09:32:01AM -0400, Mikulas Patocka wrote:
+> 
+> 
+> On Tue, 30 Jun 2020, Michal Suchanek wrote:
+> 
+> > The writecache driver does not handle asynchronous pmem. Reject it when
+> > supplied as cache.
+> > 
+> > Link: https://lore.kernel.org/linux-nvdimm/87lfk5hahc.fsf@linux.ibm.com/
+> > Fixes: 6e84200c0a29 ("virtio-pmem: Add virtio pmem driver")
+> > 
+> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > ---
+> >  drivers/md/dm-writecache.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/drivers/md/dm-writecache.c b/drivers/md/dm-writecache.c
+> > index 30505d70f423..57b0a972f6fd 100644
+> > --- a/drivers/md/dm-writecache.c
+> > +++ b/drivers/md/dm-writecache.c
+> > @@ -2277,6 +2277,12 @@ static int writecache_ctr(struct dm_target *ti, unsigned argc, char **argv)
+> >  
+> >  		wc->memory_map_size -= (uint64_t)wc->start_sector << SECTOR_SHIFT;
+> >  
+> > +		if (!dax_synchronous(wc->ssd_dev->dax_dev)) {
+> > +			r = -EOPNOTSUPP;
+> > +			ti->error = "Asynchronous persistent memory not supported as pmem cache";
+> > +			goto bad;
+> > +		}
+> > +
+> >  		bio_list_init(&wc->flush_list);
+> >  		wc->flush_thread = kthread_create(writecache_flush_thread, wc, "dm_writecache_flush");
+> >  		if (IS_ERR(wc->flush_thread)) {
+> > -- 
+> 
+> Hi
+> 
+> Shouldn't this be in the "if (WC_MODE_PMEM(wc))" block?
+That should be always the case at this point.
+> 
+> WC_MODE_PMEM(wc) retrurns true if we are using persistent memory as a 
+> cache device, otherwise we are using generic block device as a cache 
+> device.
+This is to prevent the situation where we have WC_MODE_PMEM(wc) but
+cannot guarantee consistency because the async flush is not handled.
 
-The device has support for CD (card detect), but if enabled, the card is
-not initialized properly if present during startup. That is why CD is
-disabled and polling is used instead. Related thread [1]
+Thanks
 
-[1] https://lore.kernel.org/linux-mmc/491cfef4-4a97-b6e8-0f41-d44e1c73eea4@gmail.com/
-
-Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
----
- .../boot/dts/qcom-msm8974-samsung-klte.dts    | 44 ++++++++++++++++++-
- 1 file changed, 43 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-index 989447beb4319..b0899107f3ced 100644
---- a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-+++ b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-@@ -12,6 +12,8 @@ / {
-
- 	aliases {
- 		serial0 = &blsp1_uart1;
-+		sdhc1 = &sdhc_1; /* SDC1 eMMC slot */
-+		sdhc2 = &sdhc_2; /* SDC2 SD card slot */
- 	};
-
- 	chosen {
-@@ -161,6 +163,9 @@ pma8084_l20: l20 {
- 					pma8084_l21: l21 {
- 						regulator-min-microvolt = <2950000>;
- 						regulator-max-microvolt = <2950000>;
-+
-+						regulator-allow-set-load;
-+						regulator-system-load = <200000>;
- 					};
-
- 					pma8084_l22: l22 {
-@@ -349,6 +354,24 @@ cmd-data {
- 			};
- 		};
-
-+		sdhc2_pin_a: sdhc2-pin-active {
-+			clk-cmd-data {
-+				pins = "gpio35", "gpio36", "gpio37", "gpio38",
-+					"gpio39", "gpio40";
-+				function = "sdc3";
-+				drive-strength = <8>;
-+				bias-disable;
-+			};
-+		};
-+
-+		sdhc2_cd_pin: sdhc2-cd {
-+			pins = "gpio62";
-+			function = "gpio";
-+
-+			drive-strength = <2>;
-+			bias-disable;
-+		};
-+
- 		sdhc3_pin_a: sdhc3-pin-active {
- 			clk {
- 				pins = "sdc2_clk";
-@@ -422,7 +445,7 @@ int {
- 		};
- 	};
-
--	sdhci@f9824900 {
-+	sdhc_1: sdhci@f9824900 {
- 		status = "ok";
-
- 		vmmc-supply = <&pma8084_l20>;
-@@ -435,6 +458,25 @@ sdhci@f9824900 {
- 		pinctrl-0 = <&sdhc1_pin_a>;
- 	};
-
-+	sdhc_2: sdhci@f9864900 {
-+		status = "ok";
-+
-+		max-frequency = <100000000>;
-+
-+		vmmc-supply = <&pma8084_l21>;
-+		vqmmc-supply = <&pma8084_l13>;
-+
-+		bus-width = <4>;
-+
-+		/* cd-gpio is intentionally disabled. If enabled, an SD card
-+		 * present during boot is not initialized correctly. Without
-+		 * cd-gpios the driver resorts to polling, so hotplug works.
-+		 */
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&sdhc2_pin_a /* &sdhc2_cd_pin */>;
-+		// cd-gpios = <&msmgpio 62 GPIO_ACTIVE_LOW>;
-+	};
-+
- 	sdhci@f98a4900 {
- 		status = "okay";
-
---
-2.27.0
-
+Michal
