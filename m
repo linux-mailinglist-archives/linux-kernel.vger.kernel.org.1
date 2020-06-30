@@ -2,202 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5A320FAEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD3920FAF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 19:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgF3RoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 13:44:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55444 "EHLO
+        id S2388140AbgF3RoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 13:44:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730386AbgF3RoO (ORCPT
+        with ESMTP id S1730989AbgF3RoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:44:14 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F1BC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:44:14 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id d4so19113078otk.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:44:14 -0700 (PDT)
+        Tue, 30 Jun 2020 13:44:15 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168F4C03E97B
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:44:15 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id i6so12539948plt.4
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 10:44:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=pvrPSyad64a06y3emmBaHBraeMnCfgt6QtYJn+H41Ho=;
-        b=AIvFwiVmHfWa0dr/Zj/nl3/Gf+Dd7lJR5y4sPWVHQ6irUWAzRxeWoOb/p2Glgrk5x7
-         TDEjkGmBqHJFS3FeMsKSUuM+D3gUcPWXfX8izqzDYuu0i5RlpD4ZYEGNnt5HD5TFGK/4
-         +VZg7MDSEIbgEZSrQtROVsWPTIRaGegwbqGtn6aYm7ZDVsTuiNa6Vz1uvzRXOMzrKN6M
-         vrZA71ayaPMxJ7T9dyamhd8XLmDYQA3mCTowCoZLR+iNzAZTh88X+FxrewQAkskd6ncd
-         EOt1xr66NGeLzGOPzxdLzf+Wr/iHl7eww9QdEkZ4ZlS5fCywYXwwCJ9aTWMyMziBOyS6
-         r9rA==
+        bh=7SURRzjjRGTOX0xlarMdKzVc2kBvlyxgGqiauUMeAgI=;
+        b=ciNqqkMhKnSEhDrkiyicRV+B2fw/aWLtyBFS44cYqMU9/hk4YoHYAoOzmrmLeE1JTs
+         hMI9APJYDNxFDlNQpcWYNUJRE7yfuHyn3fU33gxVS1g/sM656Z3VhRTA4Cgxvtl0XTgH
+         bSLnAN6AEeH7ff/rAJRzU753rbcdrnIciPgVYaXAWO9HIBFZvlT+39JCkf9Pz1SSG8l4
+         olMkZzDaxXJIfnYvOSReQzleJDzzFa0ep8CFo6+JjdehiVeHh5c7WoNrFW8GiPFrhFQA
+         /tKo1DM+Ek1xkOvXKWduALkTHu1UGQ5Gb4ZqhbgXruX8S49IhfmJpkZh15ZuvTprZx6/
+         yPbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pvrPSyad64a06y3emmBaHBraeMnCfgt6QtYJn+H41Ho=;
-        b=RnHIhj+iYdfBi5wuNJ16oSIOcrSz5j/XguGE9rLBFC2UR4dMizJFK3TLXhIOaz35PP
-         7ZZlpfxNawuDaqtKwnWBi/W25y4jvfm3Tpo4DodoDAgGVuYIXCOxiKhrvqtUgU1k/V/B
-         IjKHZx1+B64tbJflrxDxuYkTT6X2odQowE88jU3dmaXJERmunSFmj2B0ngn6dZlvUwZV
-         OLYTxEjcTbS4/QLZ1woWQflZZueWBTMFTuFp79D4eLRn5dm0xnZ5kwvn4G090sHqp5Eu
-         Es9R4Q6BmZaamA4e7wiyjERNG2Mv4wkwUAgUeSdZ73aTRaW/caebWwdW31KBMn4TcucN
-         MV1w==
-X-Gm-Message-State: AOAM5300W2mdsVYPngnwhk+izk2azftY8vQ9XLLCSMdiieY+WsNvmpYX
-        jeXFh3UWPLNwsLP54UhFbbc4A71jerfTDhLOQ0wC/Q==
-X-Google-Smtp-Source: ABdhPJxvmOdBgLv+Am0qzfX+NxBE+/4lC8/0GP2QXouYO+Xni8icBayVXFLmI+l2lGzBS6ZBGHtQIVdLNxB8n7tHCR8=
-X-Received: by 2002:a9d:8ea:: with SMTP id 97mr11889961otf.231.1593539053111;
- Tue, 30 Jun 2020 10:44:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200630044943.3425049-1-rajatja@google.com> <20200630044943.3425049-6-rajatja@google.com>
-In-Reply-To: <20200630044943.3425049-6-rajatja@google.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 30 Jun 2020 10:43:37 -0700
-Message-ID: <CAGETcx9hgV70DVdbOvCF+tO4b-6+1JzN1_OmPmnWjj9qJhB_dw@mail.gmail.com>
-Subject: Re: [PATCH v2 5/7] driver core: Add device location to "struct
- device" and expose it in sysfs
-To:     Rajat Jain <rajatja@google.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        lalithambika.krishnakumar@intel.com,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Prashant Malani <pmalani@google.com>,
-        Benson Leung <bleung@google.com>,
-        Todd Broch <tbroch@google.com>,
-        Alex Levin <levinale@google.com>,
-        Mattias Nissler <mnissler@google.com>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Bernie Keany <bernie.keany@intel.com>,
-        Aaron Durbin <adurbin@google.com>,
-        Diego Rivas <diegorivas@google.com>,
-        Duncan Laurie <dlaurie@google.com>,
-        Furquan Shaikh <furquan@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Christian Kellner <christian@kellner.me>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        oohall@gmail.com, Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=7SURRzjjRGTOX0xlarMdKzVc2kBvlyxgGqiauUMeAgI=;
+        b=LiIJOjynlNGiYu4rMI0Nhe/McNjSjpH8EnPus6shOH1S3w08MGtcBO5a9gVJuoY0G9
+         OG4MVBq3fmUVn5acqQd0DwCTCRe9EcIDwCANcfOK9JuA7XFZuXe6Ba2/LZiXmezL25Ev
+         wblEgkLywOoOxIVZ/9OP/SlEKJUddzA2eHYsXSVEPHLCDQDpf2uKof8pzKV54hNJ1kp8
+         X2Zs1Hx0QrXjtPVJvvXg1e47ibB9ORxSgoh36Wv8520zUgDcwRDpEiJmPpp8P73hA4op
+         CRwnHKLOEkmkZj8txdAulydd8dYbTINsq9ZqEFVAgqnX9aziA3P4zA6BPvrxaR6RrhfF
+         9vig==
+X-Gm-Message-State: AOAM533mtfwPlpIx337fRydbVMQL+N7c1V+z/uXICW9Qyo61oizNxIQk
+        WqwIOQWWjE8LTBdNKFFb2DHeNJvuhtmxkHnr
+X-Google-Smtp-Source: ABdhPJwPGsUvzBGkF/3Z5B2RfmdKVtbm0PtCRn/ARFI6s5uasiK3vHNKYRUI6swXWVIB3MhtxgqwE0kg1LIWpgLm
+X-Received: by 2002:a63:a352:: with SMTP id v18mr16922694pgn.453.1593539054539;
+ Tue, 30 Jun 2020 10:44:14 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 17:43:50 +0000
+In-Reply-To: <linchuyuan@google.com>
+Message-Id: <20200630174350.2842555-1-linchuyuan@google.com>
+Mime-Version: 1.0
+References: <linchuyuan@google.com>
+X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
+Subject: [PATCH] hwmon:max6697: Allow max6581 to set temperature read offset
+From:   Chu Lin <linchuyuan@google.com>
+To:     linux@roeck-us.net, jdelvare@suse.com, linchuyuan@google.com,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jasonling@google.com, belgaied@google.com, zhongqil@google.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 9:49 PM Rajat Jain <rajatja@google.com> wrote:
->
-> Add a new (optional) field to denote the physical location of a device
-> in the system, and expose it in sysfs. This was discussed here:
-> https://lore.kernel.org/linux-acpi/20200618184621.GA446639@kroah.com/
->
-> (The primary choice for attribute name i.e. "location" is already
-> exposed as an ABI elsewhere, so settled for "site"). Individual buses
-> that want to support this new attribute can opt-in by setting a flag in
-> bus_type, and then populating the location of device while enumerating
-> it.
->
-> Signed-off-by: Rajat Jain <rajatja@google.com>
-> ---
-> v2: (Initial version)
->
->  drivers/base/core.c        | 35 +++++++++++++++++++++++++++++++
->  include/linux/device.h     | 42 ++++++++++++++++++++++++++++++++++++++
->  include/linux/device/bus.h |  8 ++++++++
->  3 files changed, 85 insertions(+)
->
+Per max6581, reg 4d and reg 4e is used for temperature read offset.
+This patch will let the user specify the temperature read offset for
+max6581. This patch is tested on max6581 and only applies to max6581.
 
-<snip> I'm not CC'ed in 4/7, so just replying
+Testing:
+dts: temperature-read-offset = <0xde 0x0>;
 
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index 15460a5ac024a..a4143735ae712 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -428,6 +428,31 @@ enum dl_dev_state {
->         DL_DEV_UNBINDING,
->  };
->
-> +/**
-> + * enum device_site - Physical location of the device in the system.
-> + * The semantics of values depend on subsystem / bus:
-> + *
-> + * @SITE_UNKNOWN:  Location is Unknown (default)
-> + *
-> + * @SITE_INTERNAL: Device is internal to the system, and cannot be (easily)
-> + *                 removed. E.g. SoC internal devices, onboard soldered
-> + *                 devices, internal M.2 cards (that cannot be removed
-> + *                 without opening the chassis).
-> + * @SITE_EXTENDED: Device sits an extension of the system. E.g. devices
-> + *                 on external PCIe trays, docking stations etc. These
-> + *                 devices may be removable, but are generally housed
-> + *                 internally on an extension board, so they are removed
-> + *                 only when that whole extension board is removed.
-> + * @SITE_EXTERNAL: Devices truly external to the system (i.e. plugged on
-> + *                 an external port) that may be removed or added frequently.
-> + */
-> +enum device_site {
-> +       SITE_UNKNOWN = 0,
-> +       SITE_INTERNAL,
-> +       SITE_EXTENDED,
-> +       SITE_EXTERNAL,
-> +};
-> +
->  /**
->   * struct dev_links_info - Device data related to device links.
->   * @suppliers: List of links to supplier devices.
-> @@ -513,6 +538,7 @@ struct dev_links_info {
->   *             device (i.e. the bus driver that discovered the device).
->   * @iommu_group: IOMMU group the device belongs to.
->   * @iommu:     Per device generic IOMMU runtime data
-> + * @site:      Physical location of the device w.r.t. the system
->   *
->   * @offline_disabled: If set, the device is permanently online.
->   * @offline:   Set after successful invocation of bus type's .offline().
-> @@ -613,6 +639,8 @@ struct device {
->         struct iommu_group      *iommu_group;
->         struct dev_iommu        *iommu;
->
-> +       enum device_site        site;   /* Device physical location */
-> +
->         bool                    offline_disabled:1;
->         bool                    offline:1;
->         bool                    of_node_reused:1;
-> @@ -806,6 +834,20 @@ static inline bool dev_has_sync_state(struct device *dev)
->         return false;
->  }
->
-> +static inline int dev_set_site(struct device *dev, enum device_site site)
-> +{
-> +       if (site < SITE_UNKNOWN || site > SITE_EXTERNAL)
-> +               return -EINVAL;
-> +
-> +       dev->site = site;
-> +       return 0;
-> +}
-> +
-> +static inline bool dev_is_external(struct device *dev)
-> +{
-> +       return dev->site == SITE_EXTERNAL;
-> +}
+verify: iotools smbus_read8 <vbus> 0x4d 0x4e
+0x6F
 
-I'm not CC'ed in the rest of the patches in this series, so just
-responding here. I see you use this function in patch 6/7 to decide if
-the PCI device is trusted. Anything other than EXTERNAL is being
-treated as trusted. I'd argue that anything that's not internal should
-be distrusted. For example, I can have a hacked up laptop dock that I
-can share with you when you visit my home/office and now you are
-trusting it when you shouldn't be.
+Signed-off-by: Chu Lin <linchuyuan@google.com>
+---
+ drivers/hwmon/max6697.c               | 19 +++++++++++++++++--
+ include/linux/platform_data/max6697.h |  4 ++++
+ 2 files changed, 21 insertions(+), 2 deletions(-)
 
-Also, "UNKNOWN" is treated as trusted in patch 6/7. I'm guessing this
-is because some of the devices might not have the info in their
-firmware? At which point, this feature isn't even protecting all the
-PCI ports properly? This adds to Greg point that this should be a
-userspace policy so that it can override whatever is wrong/missing in
-the firmware.
+diff --git a/drivers/hwmon/max6697.c b/drivers/hwmon/max6697.c
+index 743752a2467a..16c0f0995a12 100644
+--- a/drivers/hwmon/max6697.c
++++ b/drivers/hwmon/max6697.c
+@@ -493,8 +493,13 @@ static void max6697_get_config_of(struct device_node *node,
+ 	}
+ 	prop = of_get_property(node, "transistor-ideality", &len);
+ 	if (prop && len == 2 * sizeof(u32)) {
+-			pdata->ideality_mask = be32_to_cpu(prop[0]);
+-			pdata->ideality_value = be32_to_cpu(prop[1]);
++		pdata->ideality_mask = be32_to_cpu(prop[0]);
++		pdata->ideality_value = be32_to_cpu(prop[1]);
++	}
++	prop = of_get_property(node, "temperature-read-offset", &len);
++	if  (prop && len == 2 * sizeof(u32)) {
++		pdata->offset_mask = be32_to_cpu(prop[0]);
++		pdata->offset_value = be32_to_cpu(prop[1]);
+ 	}
+ }
+ 
+@@ -586,6 +591,16 @@ static int max6697_init_chip(struct max6697_data *data,
+ 						pdata->ideality_mask >> 1);
+ 		if (ret < 0)
+ 			return ret;
++		ret = i2c_smbus_write_byte_data(client,
++						MAX6581_REG_OFFSET,
++						pdata->offset_value);
++		if (ret < 0)
++			return ret;
++		ret = i2c_smbus_write_byte_data(client,
++						MAX6581_REG_OFFSET_SELECT,
++						pdata->offset_mask >> 1);
++		if (ret < 0)
++			return ret;
+ 	}
+ done:
+ 	data->update_interval = factor * MAX6697_CONV_TIME;
+diff --git a/include/linux/platform_data/max6697.h b/include/linux/platform_data/max6697.h
+index 6fbb70005541..ff98adfe9d8d 100644
+--- a/include/linux/platform_data/max6697.h
++++ b/include/linux/platform_data/max6697.h
+@@ -28,6 +28,10 @@ struct max6697_platform_data {
+ 	u8 ideality_value;		/* transistor ideality as per
+ 					 * MAX6581 datasheet
+ 					 */
++	u8 offset_mask;			/* set bit to 0 to disable */
++	u8 offset_value;		/* temperature read offset as
++					 * MAX6581 datasheet
++					 */
+ };
+ 
+ #endif /* MAX6697_H */
+-- 
+2.27.0.212.ge8ba1cc988-goog
 
--Saravana
