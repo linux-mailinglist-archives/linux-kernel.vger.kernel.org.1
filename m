@@ -2,94 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8A020F3B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB27220F3BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 13:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733052AbgF3Lo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 07:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730225AbgF3Loz (ORCPT
+        id S1733074AbgF3LpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 07:45:09 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:44102 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733050AbgF3LpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 07:44:55 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6E4C061755;
-        Tue, 30 Jun 2020 04:44:54 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id j80so18205562qke.0;
-        Tue, 30 Jun 2020 04:44:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=WTlfR6UYku/WsXJmWLdLkNeTBNSHfzrCWj49YXg6FX4=;
-        b=HjdFdCHeNG5nSwIBlIe5sqleDI8IXYCBlhSvWIGcRBFUPiTeG8MeTFl4DeTEfTVFgi
-         LvWWGMrWiy0QNbCzHJseGA9p3os+NRj0StvEpKbSG11ho5qCdH+Oj8T0FgPcq8aL5mDW
-         +8MiiJQi5+r8voU3GgKhUkM+zk0w7UyyKJEc/Pk3PlIXerlZFMVwEZMWwlmTWKu1KC+S
-         xwDBkh/cJ2cCXiHZY615RI/9xqmhG0cacyRh0gaQEDz2I8mNc+VsN0QUe8zt6RUUyEuL
-         0nRFpTQ0aXvR2em5kLnUzQcbRAsjL/ijWz6JkOzhQ9OXC1M2YbOgCtOAyROVQT0aq0ls
-         kFtg==
+        Tue, 30 Jun 2020 07:45:05 -0400
+Received: by mail-oi1-f195.google.com with SMTP id k6so13283772oij.11;
+        Tue, 30 Jun 2020 04:45:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=WTlfR6UYku/WsXJmWLdLkNeTBNSHfzrCWj49YXg6FX4=;
-        b=OqsgsK0uAPpgWQ6Y/liZ1nUY4UfD7OvFUiywS05tJF/mBNPogJlIX4jqqE4deee/3N
-         eNGPU5DVE03U/z8uiWM23XDdEH/xIBcHv3jeyhFv/YgVtH8nIEAp2+Qhb8Kjx/7Hvn26
-         CEqOa+Mt24R46GCG8um188s0p6DZIhVaGgS9FNdxxT5bh8jBa+lSybzaj3i7PH/gqo+a
-         bmNEQB+GbC5AmdEvGg9/KLc4xxkLGUjVDqwHU3avCDFSESDeRSqVpFspTMe29SpMrbw0
-         Za3XspTpHmoshQVNYozX14dJz9q9cPmyck/lulq+zO9eTh0eaTHtqi7+EcS1jKBlhzGs
-         jy8A==
-X-Gm-Message-State: AOAM530DRagZVjNrNPJhZP8mA8W3zBnOdyFw5AC8z2890VR7MNzdPcq4
-        zUeVbLe45xXqMRUb/IEOXFk=
-X-Google-Smtp-Source: ABdhPJzuiJ0gpGbMOpAqXquDKD4CvabrxLl8YTRauEEFPMj26k4aBQ9eN4DWf4qneJrroIG9QRncYg==
-X-Received: by 2002:a05:620a:635:: with SMTP id 21mr19760883qkv.491.1593517493723;
-        Tue, 30 Jun 2020 04:44:53 -0700 (PDT)
-Received: from localhost.localdomain ([2804:14c:482:92b:d42f:2bc1:abe3:59f0])
-        by smtp.gmail.com with ESMTPSA id i8sm2613647qtr.90.2020.06.30.04.44.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 04:44:52 -0700 (PDT)
-From:   Fabio Estevam <festevam@gmail.com>
-To:     robh+dt@kernel.org
-Cc:     lee.jones@linaro.org, benjamin.gaignard@st.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] dt-bindings: mfd: st,stmfx: Remove extra additionalProperties
-Date:   Tue, 30 Jun 2020 08:44:43 -0300
-Message-Id: <20200630114443.26414-1-festevam@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bsb4MIquaSTYBlodVHOtWcad2ied9oc2sDMq3Pcztr8=;
+        b=RgSem/6hKZyL5bnr0I6wtLTuCIU5eROtT/fbswHXXSku/UQ2FfVFZVCMp9r9nr9WQB
+         aec61BhzkmYKzfgrzP/DgGQnP6lMtJ2RzTCuUjCsN/m3xcPqTweGY5HNprJ94XpnDNb5
+         NgpWcDcMcf5c7UdTeqbyIRuun0aiNR2LyPxYzbxB3NFhqqciSD/THcuqUeRMuK/dyD05
+         R10iqJK12/QJp6atG70VOckH6wasXnGiKf53Rn632euLG8nJVHNubwJ5jaNVC6A4Qu/C
+         Z8rE0b5OmY4VfWXnqCPyg5MLrGew7UlpzjInvJOf7dkGLohNgsjNS923/KOb4jxdPmJ3
+         1nHA==
+X-Gm-Message-State: AOAM532WGeazL+Lr7cNC8mtMi8z16lbjGa3pZ+i49gOkzewesTYPr6kz
+        lr0pzGQySBaixg6WdH+xapZ+SeRmJ3+rxsXIyh8=
+X-Google-Smtp-Source: ABdhPJwFw2GAEuZCNbPr0iNOFM+E2OWBK7BzCaHpl9FhHHuLN3NQg/TnqaWOD86/EaQux1Nj8hPKxgTGiCH4OqeDwRQ=
+X-Received: by 2002:aca:f58a:: with SMTP id t132mr9785173oih.68.1593517504450;
+ Tue, 30 Jun 2020 04:45:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <2788992.3K7huLjdjL@kreacher> <1666722.UopIai5n7p@kreacher>
+ <1794490.F2OrUDcHQn@kreacher> <20200629205708.GK1237914@redhat.com>
+In-Reply-To: <20200629205708.GK1237914@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 30 Jun 2020 13:44:52 +0200
+Message-ID: <CAJZ5v0hiAVfgWTLcP2N5PWLsqL7mpHbuL1_de79svYYhd3R57A@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] ACPICA: Preserve memory opregion mappings
+To:     Al Stone <ahs3@redhat.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Ira Weiny <ira.weiny@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        Bob Moore <robert.moore@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following build error is seen with 'make dt_binding_check':
+On Mon, Jun 29, 2020 at 10:57 PM Al Stone <ahs3@redhat.com> wrote:
+>
+> On 29 Jun 2020 18:33, Rafael J. Wysocki wrote:
+> > From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> >
+> > The ACPICA's strategy with respect to the handling of memory mappings
+> > associated with memory operation regions is to avoid mapping the
+> > entire region at once which may be problematic at least in principle
+> > (for example, it may lead to conflicts with overlapping mappings
+> > having different attributes created by drivers).  It may also be
+> > wasteful, because memory opregions on some systems take up vast
+> > chunks of address space while the fields in those regions actually
+> > accessed by AML are sparsely distributed.
+> >
+> > For this reason, a one-page "window" is mapped for a given opregion
+> > on the first memory access through it and if that "window" does not
+> > cover an address range accessed through that opregion subsequently,
+> > it is unmapped and a new "window" is mapped to replace it.  Next,
+> > if the new "window" is not sufficient to acess memory through the
+> > opregion in question in the future, it will be replaced with yet
+> > another "window" and so on.  That may lead to a suboptimal sequence
+> > of memory mapping and unmapping operations, for example if two fields
+> > in one opregion separated from each other by a sufficiently wide
+> > chunk of unused address space are accessed in an alternating pattern.
+> >
+> > The situation may still be suboptimal if the deferred unmapping
+> > introduced previously is supported by the OS layer.  For instance,
+> > the alternating memory access pattern mentioned above may produce
+> > a relatively long list of mappings to release with substantial
+> > duplication among the entries in it, which could be avoided if
+> > acpi_ex_system_memory_space_handler() did not release the mapping
+> > used by it previously as soon as the current access was not covered
+> > by it.
+> >
+> > In order to improve that, modify acpi_ex_system_memory_space_handler()
+> > to preserve all of the memory mappings created by it until the memory
+> > regions associated with them go away.
+> >
+> > Accordingly, update acpi_ev_system_memory_region_setup() to unmap all
+> > memory associated with memory opregions that go away.
+> >
+> > Reported-by: Dan Williams <dan.j.williams@intel.com>
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >  drivers/acpi/acpica/evrgnini.c | 14 ++++----
+> >  drivers/acpi/acpica/exregion.c | 65 ++++++++++++++++++++++++----------
+> >  include/acpi/actypes.h         | 12 +++++--
+> >  3 files changed, 64 insertions(+), 27 deletions(-)
+> >
+> > diff --git a/drivers/acpi/acpica/evrgnini.c b/drivers/acpi/acpica/evrgnini.c
+> > index aefc0145e583..89be3ccdad53 100644
+> > --- a/drivers/acpi/acpica/evrgnini.c
+> > +++ b/drivers/acpi/acpica/evrgnini.c
+> > @@ -38,6 +38,7 @@ acpi_ev_system_memory_region_setup(acpi_handle handle,
+> >       union acpi_operand_object *region_desc =
+> >           (union acpi_operand_object *)handle;
+> >       struct acpi_mem_space_context *local_region_context;
+> > +     struct acpi_mem_mapping *mm;
+> >
+> >       ACPI_FUNCTION_TRACE(ev_system_memory_region_setup);
+> >
+> > @@ -46,13 +47,14 @@ acpi_ev_system_memory_region_setup(acpi_handle handle,
+> >                       local_region_context =
+> >                           (struct acpi_mem_space_context *)*region_context;
+> >
+> > -                     /* Delete a cached mapping if present */
+> > +                     /* Delete memory mappings if present */
+> >
+> > -                     if (local_region_context->mapped_length) {
+> > -                             acpi_os_unmap_memory(local_region_context->
+> > -                                                  mapped_logical_address,
+> > -                                                  local_region_context->
+> > -                                                  mapped_length);
+> > +                     while (local_region_context->first_mm) {
+> > +                             mm = local_region_context->first_mm;
+> > +                             local_region_context->first_mm = mm->next_mm;
+> > +                             acpi_os_unmap_memory(mm->logical_address,
+> > +                                                  mm->length);
+> > +                             ACPI_FREE(mm);
+> >                       }
+> >                       ACPI_FREE(local_region_context);
+> >                       *region_context = NULL;
+> > diff --git a/drivers/acpi/acpica/exregion.c b/drivers/acpi/acpica/exregion.c
+> > index d15a66de26c0..fd68f2134804 100644
+> > --- a/drivers/acpi/acpica/exregion.c
+> > +++ b/drivers/acpi/acpica/exregion.c
+> > @@ -41,6 +41,7 @@ acpi_ex_system_memory_space_handler(u32 function,
+> >       acpi_status status = AE_OK;
+> >       void *logical_addr_ptr = NULL;
+> >       struct acpi_mem_space_context *mem_info = region_context;
+> > +     struct acpi_mem_mapping *mm = mem_info->cur_mm;
+> >       u32 length;
+> >       acpi_size map_length;
+>
+> I think this needs to be:
+>
+>         acpi_size map_length = mem_info->length;
+>
+> since it now gets used in the ACPI_ERROR() call below.
 
-  CHKDT   Documentation/devicetree/bindings/mfd/st,stmfx.yaml
-/home/fabio/linux-next/Documentation/devicetree/bindings/mfd/st,stmfx.yaml: properties:pinctrl:patternProperties: {'enum': ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'deprecated', 'description', 'else', 'enum', 'if', 'items', 'maxItems', 'maximum', 'minItems', 'minimum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'propertyNames', 'required', 'then', 'unevaluatedProperties']} is not allowed for 'additionalProperties'
+No, it's better to print the length value in the message.
 
-Remove the extra 'additionalProperties' to pass the build.
+>  I'm getting a "maybe used unitialized" error on compilation.
 
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
-Changes since RFC:
-- Added Rob's Reviewed-by
-- Added lkml on Cc
+Thanks for reporting!
 
- Documentation/devicetree/bindings/mfd/st,stmfx.yaml | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mfd/st,stmfx.yaml b/Documentation/devicetree/bindings/mfd/st,stmfx.yaml
-index 0ce56a0da553..bed22d4abffb 100644
---- a/Documentation/devicetree/bindings/mfd/st,stmfx.yaml
-+++ b/Documentation/devicetree/bindings/mfd/st,stmfx.yaml
-@@ -73,8 +73,6 @@ properties:
-           output-high: true
-           output-low: true
- 
--      additionalProperties: false
--
-     additionalProperties: false
- 
-     required:
--- 
-2.17.1
-
+I've updated the commit in the acpica-osl branch with the fix.
