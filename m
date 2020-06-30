@@ -2,90 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435AF20FEA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E58F520FEA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729923AbgF3VYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 17:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgF3VYF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 17:24:05 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B0BC061755;
-        Tue, 30 Jun 2020 14:24:05 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id o13so7582930pgf.0;
-        Tue, 30 Jun 2020 14:24:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hIPfO7ux9DNr6HYEXTRvYHtolE2zfLDOhNyZZg0neiU=;
-        b=l6IbFr4lB10a6avSIpBkHukmvsF7G+Pa3+nFsF43/+EvA/lHbqde5uyHkmEQmbhWQi
-         gzEvYjUi198wq2shdVl+NYnidqLtlARhuL3JFWlTkPqCK+kXjoFuhUfI3wdXYpKjeR/y
-         AvrGhJKF2TtuMX4MjuTTH54IOyj16SSWwwSDU8XiR7P8JpTzObyVBBzNMm5pVn9i7vy4
-         myEXPf0E6MOBUGwCQH0NfvOIhbDCukLi+hHl3oWks9goEeF962Vwf38BdMzNt0Xz7Uh2
-         1IUCAZs4Atrj4mnoffhwMiXP8s0HNRrpXO5lgcaD2p4ARfkHZ8JdtHqrEAuvd81cx99n
-         RARg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hIPfO7ux9DNr6HYEXTRvYHtolE2zfLDOhNyZZg0neiU=;
-        b=ndBpO/1C5e71sPMla+AFf3vptmHXtkV7seGstxF1wxHxCtAn6dKArZTr2rv+hWprzv
-         YEhC1BekBuck9TscORe1r58iFpvDKqvu1H7jYhoCZdORnPMOaxHK1BpEAzeyp0lYkZuM
-         4Rg8hn6g2ZtW05CYNIbLyJcA0SHPmfWJfFEGAF/s8FojGytwPVSX3oAeyLPrSmtPZHyQ
-         bgBFVM0gnugufMHglBAilmn9z2GT++tRt+L3repC6I4d+pUuDGycKVCIxx+0bn9gqUuc
-         pFYmzlS5S90mVfoAPvBhyXIFLQkAp0GOp4JkZXDZ9XpuG20/Z9CCLwplYFsMIGalBo/Z
-         IoSg==
-X-Gm-Message-State: AOAM533yTr0MOYs5+abmgRnDm4jY/uRUhTY4TWDFucvcSGhSkOvNjMFD
-        wMedhQbH9y5JeKE2pxzosUQ6Tr/9p5sAknIeXEB9kHch
-X-Google-Smtp-Source: ABdhPJxS+NqNFjrvVBjxUI6LilnL2HGF9aURL8vCDDdZpShiQWILIkcjBH2JoHLsAvpyGq9STgQ1iO0jJxtZ4UvOZVI=
-X-Received: by 2002:a63:a05f:: with SMTP id u31mr11014041pgn.4.1593552244686;
- Tue, 30 Jun 2020 14:24:04 -0700 (PDT)
+        id S1730024AbgF3VZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 17:25:23 -0400
+Received: from mga02.intel.com ([134.134.136.20]:43377 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725805AbgF3VZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 17:25:22 -0400
+IronPort-SDR: scSEToNKF/P2RDY2Jubk+jC0OeBE/cSfMyU7civbMfNfxI0zXesHqcMxujQoUTX0717folzSnF
+ EhBCimRmfLcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="134676809"
+X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
+   d="scan'208";a="134676809"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 14:25:21 -0700
+IronPort-SDR: 0Dm7H4ot46cFuHqYGR1zawviMVBVZ6zULCwfW/37YAiNCyvgOB21iihkeWg2qne9LL4zO5dY6y
+ +0Tmf1IM+tRg==
+X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
+   d="scan'208";a="481336247"
+Received: from schittin-mobl.amr.corp.intel.com (HELO bwidawsk-mobl5.local) ([10.252.132.42])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 14:25:20 -0700
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     linux-mm <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH v2 00/12] Introduced multi-preference mempolicy
+Date:   Tue, 30 Jun 2020 14:25:05 -0700
+Message-Id: <20200630212517.308045-1-ben.widawsky@intel.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200625075805.363918-1-mans0n@gorani.run> <CAMpxmJXDHX-U-HWR8093orBU1ZxEeWp_r2Xar+k5FMoZ1pS78Q@mail.gmail.com>
- <CAHp75VdNh8nFNqZxSD0g7ADD8GvY+Dmbfg8xc6LW94hw_Brwew@mail.gmail.com> <c7fd2365-0f47-b2c8-4085-020928c79254@gorani.run>
-In-Reply-To: <c7fd2365-0f47-b2c8-4085-020928c79254@gorani.run>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 1 Jul 2020 00:23:48 +0300
-Message-ID: <CAHp75VcA-kmJHyuZOMs-BDqhQ7FszZti=uHmSs-NCH2F6e_c4A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] gpio: add GPO driver for PCA9570
-To:     Sungbo Eo <mans0n@gorani.run>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 7:11 PM Sungbo Eo <mans0n@gorani.run> wrote:
->
-> Thanks for all the reviews! I've updated the patch, please have a look.
->
-> And I have something to ask.
->
-> # echo 1 > gpio408/value
-> # cat gpio408/value
-> cat: read error: I/O error
-> # cat gpio408/direction
-> out
-> # echo out > gpio408/direction
-> # echo in > gpio408/direction
-> [   91.006691] gpio-408 (sysfs): gpiod_direction_input: missing get()
-> but have direction_input()
-> ash: write error: I/O error
->
-> I've never dealt with GPO expander before, so this seems a bit odd to me.
-> Is it perfectly okay to leave get() and direction_input() unimplemented?
+Significant changes since v1:
+* Dropped patch to replace numa_node_id in some places (mhocko)
+* Dropped all the page allocation patches in favor of new mechanism to use
+  fallbacks. (mhocko)
+* Dropped the special snowflake preferred node algorithm (bwidawsk)
+* If the preferred node fails, ALL nodes are rechecked instead of just the
+  non-preferred nodes.
 
-Actually it would be better to return the value you set for output in ->get().
+In v1, Andi Kleen brought up reusing MPOL_PREFERRED as the mode for the API.
+There wasn't consensus around this, so I've left the existing API as it was. I'm
+open to more feedback here, but my slight preference is to use a new API as it
+ensures if people are using it, they are entirely aware of what they're doing
+and not accidentally misusing the old interface. (In a similar way to how
+MPOL_LOCAL was introduced).
 
+In v1, Michal also brought up renaming this MPOL_PREFERRED_MASK. I'm equally
+fine with that change, but I hadn't heard much emphatic support for one way or
+another, so I've left that too.
+
+v2 Summary:
+1: Random fix I found along the way
+2-5: Represent node preference as a mask internally
+6-7: Tread many preferred like bind
+8-11: Handle page allocation for the new policy
+12: Enable the uapi
+
+This patch series introduces the concept of the MPOL_PREFERRED_MANY mempolicy.
+This mempolicy mode can be used with either the set_mempolicy(2) or mbind(2)
+interfaces. Like the MPOL_PREFERRED interface, it allows an application to set a
+preference for nodes which will fulfil memory allocation requests. Unlike the
+MPOL_PREFERRED mode, it takes a set of nodes. Like the MPOL_BIND interface, it
+works over a set of nodes. Unlike MPOL_BIND, it will not cause a SIGSEGV or
+invoke the OOM killer if those preferred nodes are not available.
+
+Along with these patches are patches for libnuma, numactl, numademo, and memhog.
+They still need some polish, but can be found here:
+https://gitlab.com/bwidawsk/numactl/-/tree/prefer-many
+It allows new usage: `numactl -P 0,3,4`
+
+The goal of the new mode is to enable some use-cases when using tiered memory
+usage models which I've lovingly named.
+1a. The Hare - The interconnect is fast enough to meet bandwidth and latency
+requirements allowing preference to be given to all nodes with "fast" memory.
+1b. The Indiscriminate Hare - An application knows it wants fast memory (or
+perhaps slow memory), but doesn't care which node it runs on. The application
+can prefer a set of nodes and then xpu bind to the local node (cpu, accelerator,
+etc). This reverses the nodes are chosen today where the kernel attempts to use
+local memory to the CPU whenever possible. This will attempt to use the local
+accelerator to the memory.
+2. The Tortoise - The administrator (or the application itself) is aware it only
+needs slow memory, and so can prefer that.
+
+Much of this is almost achievable with the bind interface, but the bind
+interface suffers from an inability to fallback to another set of nodes if
+binding fails to all nodes in the nodemask.
+
+Like MPOL_BIND a nodemask is given. Inherently this removes ordering from the
+preference.
+
+> /* Set first two nodes as preferred in an 8 node system. */
+> const unsigned long nodes = 0x3
+> set_mempolicy(MPOL_PREFER_MANY, &nodes, 8);
+
+> /* Mimic interleave policy, but have fallback *.
+> const unsigned long nodes = 0xaa
+> set_mempolicy(MPOL_PREFER_MANY, &nodes, 8);
+
+Some internal discussion took place around the interface. There are two
+alternatives which we have discussed, plus one I stuck in:
+1. Ordered list of nodes. Currently it's believed that the added complexity is
+   nod needed for expected usecases.
+2. A flag for bind to allow falling back to other nodes. This confuses the
+   notion of binding and is less flexible than the current solution.
+3. Create flags or new modes that helps with some ordering. This offers both a
+   friendlier API as well as a solution for more customized usage. It's unknown
+   if it's worth the complexity to support this. Here is sample code for how
+   this might work:
+
+> // Prefer specific nodes for some something wacky
+> set_mempolicy(MPOL_PREFER_MANY, 0x17c, 1024);
+>
+> // Default
+> set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_SOCKET, NULL, 0);
+> // which is the same as
+> set_mempolicy(MPOL_DEFAULT, NULL, 0);
+>
+> // The Hare
+> set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_TYPE, NULL, 0);
+>
+> // The Tortoise
+> set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_TYPE_REV, NULL, 0);
+>
+> // Prefer the fast memory of the first two sockets
+> set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_TYPE, -1, 2);
+>
+
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+
+
+Ben Widawsky (8):
+  mm/mempolicy: Add comment for missing LOCAL
+  mm/mempolicy: kill v.preferred_nodes
+  mm/mempolicy: handle MPOL_PREFERRED_MANY like BIND
+  mm/mempolicy: Create a page allocator for policy
+  mm/mempolicy: Thread allocation for many preferred
+  mm/mempolicy: VMA allocation for many preferred
+  mm/mempolicy: huge-page allocation for many preferred
+  mm/mempolicy: Advertise new MPOL_PREFERRED_MANY
+
+Dave Hansen (4):
+  mm/mempolicy: convert single preferred_node to full nodemask
+  mm/mempolicy: Add MPOL_PREFERRED_MANY for multiple preferred nodes
+  mm/mempolicy: allow preferred code to take a nodemask
+  mm/mempolicy: refactor rebind code for PREFERRED_MANY
+
+ .../admin-guide/mm/numa_memory_policy.rst     |  22 +-
+ include/linux/mempolicy.h                     |   6 +-
+ include/uapi/linux/mempolicy.h                |   6 +-
+ mm/hugetlb.c                                  |  20 +-
+ mm/mempolicy.c                                | 273 ++++++++++++------
+ 5 files changed, 222 insertions(+), 105 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.27.0
+
