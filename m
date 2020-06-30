@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C613C20F5AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D35EF20F5D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388058AbgF3Ndc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 09:33:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
+        id S2388279AbgF3Ney (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 09:34:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387561AbgF3NdO (ORCPT
+        with ESMTP id S2388080AbgF3Ndu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:33:14 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD628C03E97E
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:33:13 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id x9so17734596ila.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:33:13 -0700 (PDT)
+        Tue, 30 Jun 2020 09:33:50 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBFDC03E979
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:33:49 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id q15so18836112wmj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 06:33:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NLGLXbQMNnc8WjfyUZyG3CP5YRJLw4TctWKcG9p/1fY=;
-        b=Og34JDlmtuj4ZWyd3kF6svBJGNitRgk6p5FKsa/nN75Ah9a3Es3O+eZM45muel+Rhk
-         dleUbXgNYLtuEu1EZhtXgIohsx1jZkZShfZo42mG8DCqJhU0xFQzto/2o+ZbGDXBYHk1
-         AVqPGWNnIHeMOhdemIMtMrRAXGDaH4D8dUUd5TjvCS7pKPEAzsYqIU7pmeIY2sOJBMiP
-         BgejmR7zkKReFMxWg7zwE03VaaPK2SW/Pl9iKISDjDuGn+lGXm4YjDOgjSR7FHVGVEo7
-         1b+HDCEPXjfzWLI+SyDHcekCsXTeFmOi6fKfP6gQfm6Yi2Z7JLZcbSBhGUR+xTlTiEZI
-         Bkxg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g/OBCOZny1ndsw3tmtK3a2umBUo6+P4OiGX2ORUOTVo=;
+        b=SOwYxgcVaWP69efaAXz9BhJcmlTyK1GZqGNK1MqJgMhuxbrP1cUHlsGK2XYPEVuoot
+         KTtEe9qq6HGV8fCOc+8e5ors98U36q7Ke+yVpoP8mVeODUQU4Dqiojr2Lr68JuvxfcIT
+         9u7cxUHcLRvtnCsd4woz3jbfJZ7xySd6MHAlwOphAAEb0h58APo9daYXwxoXL9yRDl9M
+         HkKFTYCyGu/mFr9dVcsDrxBPS3yaAATySXjSSLERl93KVRUu2daqu4B988sR46gWzz1z
+         T9HbXAn8MX+UcCVy8IcimypeXTMbCfyv1yFHF5YHpvWxE5T+N02+l6NAA5EsSo1+jBC4
+         iUmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NLGLXbQMNnc8WjfyUZyG3CP5YRJLw4TctWKcG9p/1fY=;
-        b=g9A7c2+a8K4oF/OoiShtNWY9LMXGK79dGco5cEWOJHewc0DV6jkpJVGxLvMPep9Ssv
-         lkMFveyqCD5SJGv2vOAYPU7YhvMQMVU0R8UqlDMvRB2ZaaALBfO3s388+dGn2k27mh42
-         94k4VrEw586Hiu0VBEZL+szLOAnfrHOsc4Bc8xo7zIDav0eEaPwmD3+FT0znXxn8ty1I
-         dmRIUMysQs1SFBWcyBzABjgjYUE/xdW3pJL4nRcy8nIGoeIUQjMq087FjU6J/H5/Luvi
-         +eQzqC9HvDwIo3gYFRbFuRDd8mFxpLvbuLPDTfvYt44BAxAAm4FVogK7/klxGeDF4El1
-         I8Bw==
-X-Gm-Message-State: AOAM533mn4mAv7uml8kHa2zHAM2FDf7L4/u7YwfumhJE2OFEIdxNC2DC
-        XjVxj940EmBbo5GO5PxnQJVwre09z5I=
-X-Google-Smtp-Source: ABdhPJw66g+pzD6SChh6fz8L9HaekvjhhDK3h3faS6u77tdaxPXovHmZ0aCeUuLIB3ugdqbs5445Gw==
-X-Received: by 2002:a92:9f0e:: with SMTP id u14mr2460094ili.277.1593523993143;
-        Tue, 30 Jun 2020 06:33:13 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id u15sm1538776iog.18.2020.06.30.06.33.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g/OBCOZny1ndsw3tmtK3a2umBUo6+P4OiGX2ORUOTVo=;
+        b=QTUPd4FrjGolAdPEGwQHmOMdhm6shjZ0tgssbDkwtPIzbMiWy4EUzvarQFqJa7UgC4
+         XPZMnSQXa/pwgrhdv0xxgpxqT1nWpBNCiOro1/SeD33tENrPRN60KeIdKSeScRwawmb3
+         5QB6qGenXmNWpou7vahOIAmg9mT4ov/xjC1aHWpjdso4LUGHbVg5bbiH+Plvw+zM5Miu
+         18UF5blyH10ms8k269fZn2UKwfRekDopA2RoYxm50ieBncQJQfRgClcOGHTBq7vlgbbp
+         yPLza73H4TDih4Uc/jekfn8vbN0MzNxi3eYMTDz9HgkjxD1wUh9NrvRPIlgptf7823Yl
+         hiNA==
+X-Gm-Message-State: AOAM532RsobiQ6Jxpj9HKhV8ykuqYovzY6trpCmRvPNIl76oxvo2IWeY
+        AL4nhX2MnEZ9IpD/VAdkK2todw==
+X-Google-Smtp-Source: ABdhPJwIF8ribrbnToYRwN/u2AGBLiHFeuBSCLm3XU+lxTFxPc4lFfZzghG4zloc1akGtH8+Nhr4Pw==
+X-Received: by 2002:a7b:c0da:: with SMTP id s26mr20301556wmh.96.1593524028491;
+        Tue, 30 Jun 2020 06:33:48 -0700 (PDT)
+Received: from localhost.localdomain ([2.27.35.144])
+        by smtp.gmail.com with ESMTPSA id z16sm3682464wrr.35.2020.06.30.06.33.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 06:33:12 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 5/5] net: ipa: HOL_BLOCK_EN_FMASK is a 1-bit mask
-Date:   Tue, 30 Jun 2020 08:33:04 -0500
-Message-Id: <20200630133304.1331058-6-elder@linaro.org>
+        Tue, 30 Jun 2020 06:33:47 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 00/10] Clean GPIO of W=1 warnings
+Date:   Tue, 30 Jun 2020 14:33:35 +0100
+Message-Id: <20200630133345.2232932-1-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200630133304.1331058-1-elder@linaro.org>
-References: <20200630133304.1331058-1-elder@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The convention throughout the IPA driver is to directly use
-single-bit field mask values, rather than using (for example)
-u32_encode_bits() to set or clear them.
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-Fix the one place that doesn't follow that convention, which sets
-HOL_BLOCK_EN_FMASK in ipa_endpoint_init_hol_block_enable().
+Lee Jones (10):
+  gpio: gpiolib-of: Provide documentation for of_gpio_spi_cs_get_count()
+  gpio: gpio-altera: Add missing kerneldoc entry and demote comment
+  gpio: gpio-ml-ioh: Fix missing ':' in 'struct ioh_gpio_reg_data
+  gpio: gpio-pmic-eic-sprd: Fix incorrectly named property 'map'
+  gpio: gpio-sama5d2-piobu: Demote all kerneldoc headers to basic
+    comment blocks
+  gpio: gpio-syscon: Fix formatting issues which confuse kerneldoc
+  gpio: gpio-it87: Fix formatting issues which confuse kerneldoc
+  gpio: gpio-mlxbf: Tell the compiler that ACPI functions may not be
+    used
+  gpio: gpio-mlxbf2: Tell the compiler that ACPI functions may not be
+    use
+  gpio: gpio-mlxbf2.c: Provide __releases() annotation to stop confusing
+    Sparse
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
-v2: No change from version 1.
+ drivers/gpio/gpio-altera.c        |  3 ++-
+ drivers/gpio/gpio-it87.c          | 14 +++++++-------
+ drivers/gpio/gpio-ml-ioh.c        |  2 +-
+ drivers/gpio/gpio-mlxbf.c         |  2 +-
+ drivers/gpio/gpio-mlxbf2.c        |  4 +++-
+ drivers/gpio/gpio-pmic-eic-sprd.c |  2 +-
+ drivers/gpio/gpio-sama5d2-piobu.c | 16 ++++++++--------
+ drivers/gpio/gpio-syscon.c        | 12 ++++++------
+ drivers/gpio/gpiolib-of.c         |  3 +++
+ 9 files changed, 32 insertions(+), 26 deletions(-)
 
- drivers/net/ipa/ipa_endpoint.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index 566ff6a09e65..0332dcbcaaae 100644
---- a/drivers/net/ipa/ipa_endpoint.c
-+++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -671,7 +671,7 @@ ipa_endpoint_init_hol_block_enable(struct ipa_endpoint *endpoint, bool enable)
- 	u32 offset;
- 	u32 val;
- 
--	val = u32_encode_bits(enable ? 1 : 0, HOL_BLOCK_EN_FMASK);
-+	val = enable ? HOL_BLOCK_EN_FMASK : 0;
- 	offset = IPA_REG_ENDP_INIT_HOL_BLOCK_EN_N_OFFSET(endpoint_id);
- 	iowrite32(val, endpoint->ipa->reg_virt + offset);
- }
 -- 
 2.25.1
 
