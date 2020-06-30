@@ -2,146 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A852120EFCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F1720EFE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 09:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731291AbgF3Hoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 03:44:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731077AbgF3Hof (ORCPT
+        id S1731308AbgF3Hwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 03:52:42 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:14827 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726038AbgF3Hwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 03:44:35 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDFBC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 00:44:35 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id k1so8156866pls.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 00:44:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=sVK5V/4PBzeYWjMj+/BOipu6Mqur09tAOGAuoqIzEPw=;
-        b=bHwvxnfk/4rv5l902jpKhPfmpGks9NYfD6z8bU6lXaQ++Ss8cARLGhUr1mCI299/Ri
-         MtjVixl0k6CTlphPiWnx+fWwIkhbH0TQfZsUO1eRNpjf1/trfVLP1WW49zCv8Kb9qPvz
-         F5269NB9yyeOS1agBK2DXaTVHESxtI5v4Ftp5vlhuIJbmUQysIA5qSYdawgrZkFqnWFo
-         1vTIocvjWkkyX5r/m9lJrfXiIyuZwWKOdvWDkVAnWtHgOTirKfmd2gxLZwFl0Wghu3NV
-         /U1JYNWVbDDsxT9UOgCd30DPK1nH7WhKzfs603mT1OrF/Pald320eI/bbe2EE/zMfrR5
-         IKkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=sVK5V/4PBzeYWjMj+/BOipu6Mqur09tAOGAuoqIzEPw=;
-        b=cW38ksxMfZRk6IM/GJ9EpAuTtMTOZUpQLANTNtrbcKYRbY0id3auP8/TKDCpwUvbeU
-         QqHhNgd8az5ZgQn3mgXsn1//KmabrELpScsE/hn4s6HOZmnIeM7el1+TbAKGM+d3XGXo
-         jiRur8d3o3jUYE3LGVw1BAa+33U8+O04mYN9Y5CwYSrouuJnFo1jJefLO5u9ZOgYkVaF
-         Vm9k4lPR3rgJ2D30d5pdxdUyVrjASMeHB8CxxXF4G3l1Ho9Tv+VX/9eLBFyQTRkf5G2t
-         ilUNGt91rADJBOSuFSLpmjrEjg2e/e+naAw2zuf1blnCYpTiCxiv5wVt/nqy9P+GddVC
-         up/g==
-X-Gm-Message-State: AOAM531pJnPjzEjrV2yTX2UuykPfm4BAi11Q5kqmF4VO3gJ6Q2XUbv2w
-        YE0fcY8GpZi+oL9MMM9hL8Y=
-X-Google-Smtp-Source: ABdhPJzq1rYQk6wf24CmsFZCONIfWMH8K7yvJ9eYrKxRrMFc52O14Ueg3KnsHOsz4Um9iK1YNuhxIw==
-X-Received: by 2002:a17:902:6945:: with SMTP id k5mr16235242plt.336.1593503075145;
-        Tue, 30 Jun 2020 00:44:35 -0700 (PDT)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.182.225.143])
-        by smtp.gmail.com with ESMTPSA id w1sm1754276pfq.53.2020.06.30.00.44.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 30 Jun 2020 00:44:34 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     jane.pnx9@gmail.com, ldufour@linux.ibm.com,
-        gregkh@linuxfoundation.org, harshjain32@gmail.com, pakki001@umn.edu
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Bharath Vedartham <linux.bhar@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH v2 4/4] staging: kpc2000: kpc_dma: Remove additional goto statements
-Date:   Tue, 30 Jun 2020 13:22:19 +0530
-Message-Id: <1593503539-18649-5-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1593503539-18649-1-git-send-email-jrdr.linux@gmail.com>
-References: <1593503539-18649-1-git-send-email-jrdr.linux@gmail.com>
+        Tue, 30 Jun 2020 03:52:41 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5efaef170000>; Tue, 30 Jun 2020 00:51:51 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 30 Jun 2020 00:52:40 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 30 Jun 2020 00:52:40 -0700
+Received: from [10.25.97.62] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 30 Jun
+ 2020 07:52:33 +0000
+CC:     <spujar@nvidia.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <robh+dt@kernel.org>, <lgirdwood@gmail.com>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <digetx@gmail.com>, <alsa-devel@alsa-project.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
+        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
+        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
+        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
+        <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH v4 12/23] ASoC: simple-card: Support DPCM DAI link with
+ multiple Codecs
+To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
+ <1593233625-14961-13-git-send-email-spujar@nvidia.com>
+ <874kqu1x70.wl-kuninori.morimoto.gx@renesas.com>
+ <1e0cf6d1-bf4e-8808-5390-c8a3b7c7fe7e@nvidia.com>
+ <87mu4lz6pt.wl-kuninori.morimoto.gx@renesas.com>
+ <1d7888c7-a8cc-e891-01aa-016e31cc9113@nvidia.com>
+ <87ftadyrec.wl-kuninori.morimoto.gx@renesas.com>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <492079e9-4518-78ba-a227-859d31594369@nvidia.com>
+Date:   Tue, 30 Jun 2020 13:22:29 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <87ftadyrec.wl-kuninori.morimoto.gx@renesas.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1593503511; bh=inFa19J1yaZD5c+k8GDWrSjXHyj3mNBTgOyUpUgXV0E=;
+        h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=idWCh/s5jCqd2g/xEk4fW5rOko1xeDBq5QTGJJEIvlyHWyI6tJqFBb6ST1LIz54+P
+         vJ9xvFQ2lXR6tjQ9FCBV9A7WSsM5R/N6NwAG/162sKiJaNWijh+9xpmVzdk1zbvnp1
+         me/CQTqUq+V+VYTYCDUcaxuouJOYk5lzUi0Cb3NxbJbKC4JqwpUDNpsipiOadKcPVW
+         D458mDYm3cIMLtBu36aMyOyUZJDCSKMxPmD0VgvbnwiWVx+RGWrfwRaBgE8RN8fWwS
+         Sr1STgi7Qtl/2buW4Z+XT3gENrqBQbLjV6m/VkoAk65u2bFuFghaQBECAB4U3yOedR
+         NIklI8ar5x3sg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As 3 goto level referring to same common code, those can be
-accomodated with a single goto level and renameing it to
-unpin_pages. Set the -ERRNO when returning partial mapped
-pages in more appropriate place.
 
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Bharath Vedartham <linux.bhar@gmail.com>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/staging/kpc2000/kpc_dma/fileops.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/staging/kpc2000/kpc_dma/fileops.c b/drivers/staging/kpc2000/kpc_dma/fileops.c
-index 8cd20ad..d21a4fd 100644
---- a/drivers/staging/kpc2000/kpc_dma/fileops.c
-+++ b/drivers/staging/kpc2000/kpc_dma/fileops.c
-@@ -35,7 +35,7 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
- 			    unsigned long iov_base, size_t iov_len)
- {
- 	unsigned int i = 0;
--	int rv = 0;
-+	int rv = 0, nr_pages = 0;
- 	struct kpc_dma_device *ldev;
- 	struct aio_cb_data *acd;
- 	DECLARE_COMPLETION_ONSTACK(done);
-@@ -79,22 +79,27 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
- 	rv = pin_user_pages(iov_base, acd->page_count, FOLL_TOUCH | FOLL_WRITE, acd->user_pages, NULL);
- 	mmap_read_unlock(current->mm);        /*  release the semaphore */
- 	if (rv != acd->page_count) {
-+		nr_pages = rv;
-+		if (rv > 0)
-+			rv = -EFAULT;
-+
- 		dev_err(&priv->ldev->pldev->dev, "Couldn't pin_user_pages (%d)\n", rv);
--		goto err_get_user_pages;
-+		goto unpin_pages;
- 	}
-+	nr_pages = acd->page_count;
- 
- 	// Allocate and setup the sg_table (scatterlist entries)
- 	rv = sg_alloc_table_from_pages(&acd->sgt, acd->user_pages, acd->page_count, iov_base & (PAGE_SIZE - 1), iov_len, GFP_KERNEL);
- 	if (rv) {
- 		dev_err(&priv->ldev->pldev->dev, "Couldn't alloc sg_table (%d)\n", rv);
--		goto err_alloc_sg_table;
-+		goto unpin_pages;
- 	}
- 
- 	// Setup the DMA mapping for all the sg entries
- 	acd->mapped_entry_count = dma_map_sg(&ldev->pldev->dev, acd->sgt.sgl, acd->sgt.nents, ldev->dir);
- 	if (acd->mapped_entry_count <= 0) {
- 		dev_err(&priv->ldev->pldev->dev, "Couldn't dma_map_sg (%d)\n", acd->mapped_entry_count);
--		goto err_dma_map_sg;
-+		goto unpin_pages;
- 	}
- 
- 	// Calculate how many descriptors are actually needed for this transfer.
-@@ -187,15 +192,10 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
- 	unlock_engine(ldev);
- 	dma_unmap_sg(&ldev->pldev->dev, acd->sgt.sgl, acd->sgt.nents, ldev->dir);
- 	sg_free_table(&acd->sgt);
-- err_dma_map_sg:
-- err_alloc_sg_table:
--	unpin_user_pages(acd->user_pages, acd->page_count);
- 
-- err_get_user_pages:
--	if (rv > 0) {
--		unpin_user_pages(acd->user_pages, rv);
--		rv = -EFAULT;
--	}
-+ unpin_pages:
-+	if (nr_pages > 0)
-+		unpin_user_pages(acd->user_pages, nr_pages);
- 	kfree(acd->user_pages);
-  err_alloc_userpages:
- 	kfree(acd);
--- 
-1.9.1
+On 6/30/2020 12:25 PM, Kuninori Morimoto wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> Hi Sameer
+>
+> Thank you for explaining detail at off-list mail.
+>
+> Your issue happen on (C) case, and you are tring to solve it.
+> It is easy to understand if it was indicated at log area.
+> I have imagined other system from "multiple CPU/Codec support".
+>
+>          (A)    (B)
+>          FE <-> BE
+>
+>          (C)    (D)
+>          BE <-> BE
+>
+>>> I'm not sure, this is just my guess.
+>>> I'm happy if we can support it more easily :)
+>> Right now I am trying re-use simple-card driver as much as possible
+>> and still make it work for flexible sound cards. I will be happy to
+>> discuss and improve the patch wherever necessary. Please help me
+>> understand which part you think looks to be hacky.
+>>> But, if it was difficult to keep compatibility on simple-card,
+>>> we/you need to have new one.
+>> Patch 17/23 and 18/23 introduce new compatible
+>> 'simple-cc-audio-card'. Idea was to use component chaining which
+>> allows connection of FE<->BE and multiple BE<->BE components along the
+>> DAPM path (patch 16/23). Do you think it would be fine?
+> This seems very complex system for current simple-card.
+> "concept" of simple-card is simple (but "code" is not so simple...)
+> Because of it, it doesn't assume flexible connection.
+>
+> Maybe your patch works for you, but might breaks other systems.
+> Or, makes code or DT settings more complex/ununderstandable.
+> Not sure, but my guess.
+Yes there are complex use cases, but if we look at the amount of changes 
+required in simple-card driver that is not too much. Existing binding 
+for simple-card driver would still work fine for our cases. Yes there 
+are some deviations and we don't want to break existing users, that is 
+why a *new* compatible was introduced and specific items can be pushed 
+under it. Majority of the simple-card driver is getting re-used here. We 
+just need to make sure it does not affect anyone else.
+
+>
+> Using cpu@0 node for BE is the 1st confusable point for me.
+Don't we use the same methodology for CODEC<->CODEC link and still 
+describe the DAI link with 'cpu@0' and 'codec@0'?
+
+> Using fe/be instead of cpu/codec is easy to understand.
+I guess you are referring to DT binding part. The parsing code 
+specifically looks for "codec" sub node and thus present conventions had 
+to be used.
+
+>
+> Thank you for your help !!
+>
+> Best regards
+> ---
+> Kuninori Morimoto
 
