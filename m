@@ -2,614 +2,532 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F78E20FB84
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B090920FB6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 20:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390730AbgF3SOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 14:14:50 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:34043 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730017AbgF3SOs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 14:14:48 -0400
-Received: by mail-ej1-f67.google.com with SMTP id y10so21614268eje.1;
-        Tue, 30 Jun 2020 11:14:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=y/I9lxA8TnppKpHWyJ953K6Ajo6KrVHdtGBG6Hewqz0=;
-        b=NA5/M7ArobCCItM5Ph8hx+RGl/z+kZ184xsqBkSuVSM9zwiTufJdyVOLLqtXfQIEqz
-         T2+cG33Fsz13LCx5uhSIL9VqcDHcR72SvtwuP5QxIeR/eYElHcWdturBEa+IcUtYnisF
-         4hb8GMFIZu8hBV7Md6SJriPAaSj4Cv9+dVMm4LKSLVBlze8DxqOcLsYvYWG97IN7gct0
-         x0+wIacS6SRPKAOennSpIzcej6iQhshd2quxfAiNNfxB3KqaTw1/8p7vRsLz5gE7siGp
-         KHFYpBbrWGif7Je5mlYcuMjN+n3NtGfFRC9I61S9nUhVF0P+ubRXUkx1piZl+LUzzwMA
-         k6Mw==
-X-Gm-Message-State: AOAM530svlbWYSt26w7MJiGRMmR5SaT5TgK8i6zzY+SEGUK9s9GOdtTM
-        /OTk9sP+tE/peUAdcQHWMGFTGZgrZoYOCg==
-X-Google-Smtp-Source: ABdhPJx+uY4G2ulZBUIugDtsnT+eEUEtt1pm5DyXas/v24eaxdeyBrVp9aDyRNhUowlWHHzNIPo9Mg==
-X-Received: by 2002:a17:906:eb93:: with SMTP id mh19mr18859098ejb.552.1593540880947;
-        Tue, 30 Jun 2020 11:14:40 -0700 (PDT)
-Received: from msft-t490s.lan ([2001:b07:5d26:7f46:d7c1:f090:1563:f81f])
-        by smtp.gmail.com with ESMTPSA id d13sm2492313ejj.95.2020.06.30.11.14.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 11:14:40 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Sven Auhagen <sven.auhagen@voleatech.de>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Stefan Chulski <stefanc@marvell.com>,
-        Marcin Wojtas <mw@semihalf.com>, maxime.chevallier@bootlin.com,
-        antoine.tenart@bootlin.com, thomas.petazzoni@bootlin.com
-Subject: [PATCH net-next 4/4] mvpp2: XDP TX support
-Date:   Tue, 30 Jun 2020 20:09:30 +0200
-Message-Id: <20200630180930.87506-5-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200630180930.87506-1-mcroce@linux.microsoft.com>
-References: <20200630180930.87506-1-mcroce@linux.microsoft.com>
+        id S2390624AbgF3SLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 14:11:54 -0400
+Received: from mga12.intel.com ([192.55.52.136]:3014 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726831AbgF3SLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 14:11:54 -0400
+IronPort-SDR: DMrA/USVcG6NdvW+PxZH6a6mVdQfL3oDQ2DIewRZJvYnmasWR8+NAsPie0sF+wb+NfLfba+h2i
+ P8piHnOSoDow==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="125970407"
+X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
+   d="gz'50?scan'50,208,50";a="125970407"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 11:11:37 -0700
+IronPort-SDR: FSb/ZDP4OIoahNJurelXiMvfXHO+iaSlOHLSJLDeM5DbQHFg0ZaN38jcw+C+dUEJ3TE74yUaSx
+ ALIUP/EFd6OA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
+   d="gz'50?scan'50,208,50";a="277508079"
+Received: from lkp-server01.sh.intel.com (HELO 28879958b202) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 30 Jun 2020 11:11:34 -0700
+Received: from kbuild by 28879958b202 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jqKjF-0001mC-Rr; Tue, 30 Jun 2020 18:11:33 +0000
+Date:   Wed, 1 Jul 2020 02:11:10 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>,
+        dan.j.williams@intel.com, akpm@linux-foundation.org
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: Re: [PATCH] mm/sparse: only sub-section aligned range would be
+ populated
+Message-ID: <202007010217.Rut2zTnF%lkp@intel.com>
+References: <20200630021436.43281-1-richard.weiyang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="h31gzZEtNLTqOjlF"
+Content-Disposition: inline
+In-Reply-To: <20200630021436.43281-1-richard.weiyang@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
 
-Add the transmit part of XDP support, which includes:
-- support for XDP_TX in mvpp2_xdp()
-- .ndo_xdp_xmit hook for AF_XDP and XDP_REDIRECT with mvpp2 as destination
+--h31gzZEtNLTqOjlF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-mvpp2_xdp_submit_frame() is a generic function which is called by
-mvpp2_xdp_xmit_back() when doing XDP_TX, and by mvpp2_xdp_xmit when
-doing AF_XDP or XDP_REDIRECT target.
+Hi Wei,
 
-The buffer allocation has been reworked to be able to map the buffers
-as DMA_FROM_DEVICE or DMA_BIDIRECTIONAL depending if a BPF program
-is loaded or not.
+Thank you for the patch! Perhaps something to improve:
 
-Co-developed-by: Sven Auhagen <sven.auhagen@voleatech.de>
-Signed-off-by: Sven Auhagen <sven.auhagen@voleatech.de>
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+[auto build test WARNING on mmotm/master]
+
+url:    https://github.com/0day-ci/linux/commits/Wei-Yang/mm-sparse-only-sub-section-aligned-range-would-be-populated/20200630-101713
+base:   git://git.cmpxchg.org/linux-mmotm.git master
+config: x86_64-allnoconfig (attached as .config)
+compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project cf1d04484344be52ada8178e41d18fd15a9b880c)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install x86_64 cross compiling tool for clang build
+        # apt-get install binutils-x86-64-linux-gnu
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+   include/linux/signal.h:137:2: note: expanded from macro '_SIG_SET_BINOP'
+   case 1: ^
+   include/linux/signal.h:177:1: warning: unannotated fall-through between switch labels
+   _SIG_SET_OP(signotset, _sig_not)
+   ^
+   include/linux/signal.h:167:2: note: expanded from macro '_SIG_SET_OP'
+   case 2: = ^
+   include/linux/signal.h:177:1: warning: unannotated fall-through between switch labels
+   include/linux/signal.h:169:2: note: expanded from macro '_SIG_SET_OP'
+   case 1: = ^
+   include/linux/signal.h:190:2: warning: unannotated fall-through between switch labels
+   case 1: = 0;
+   ^
+   include/linux/jhash.h:95:2: note: insert '__attribute__((fallthrough));' to silence this warning
+   case 6: b += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   __attribute__((fallthrough));
+   include/linux/jhash.h:95:2: note: insert 'break;' to avoid fall-through
+   case 6: b += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   break;
+   include/linux/jhash.h:96:2: warning: unannotated fall-through between switch labels
+   case 5: b += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   15include/linux/signal.h:190:2: note: insert '__attribute__((fallthrough));' to silence this warning
+   case 1: = 0;
+   ^
+   __attribute__((fallthrough));
+   include/linux/signal.h:190:2: note: insert 'break;' to avoid fall-through
+   case 1: = 0;
+   ^
+   break;
+   include/linux/signal.h:203:2: warninginclude/linux/jhash.h:96:2: note: insert '__attribute__((fallthrough));' to silence this warning
+   case 5: b += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   __attribute__((fallthrough));
+   include/linux/jhash.h:96:2: note: insert 'break;' to avoid fall-through
+   case 5: b += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   break;
+   include/linux/jhash.h:97:2: warning: unannotated fall-through between switch labels
+   case 4: a += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   : unannotated fall-through between switch labels
+   case 1: = -1;
+   ^
+   warnings generated.
+   include/linux/signal.h:203:2: note: insert '__attribute__((fallthrough));' to silence this warning
+   case 1: = -1;
+   ^
+   __attribute__((fallthrough));
+   include/linux/signal.h:15203:2: note: insert 'break;' to avoid fall-through
+   case 1: = -1;
+   ^
+   break;
+   include/linux/jhash.h:97:2: note: insert '__attribute__((fallthrough));' to silence this warning
+   case 4: a += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   __attribute__((fallthrough));
+   include/linux/jhash.h:97:2: note: insert 'break;' to avoid fall-through
+   case 4: a += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   break;
+   include/linux/jhash.h:98:2: warning: unannotated fall-through between switch labels
+   case 3: a += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   include/linux/signal.h:233:2: warning: unannotated fall-through between switch labels
+   case 1: ;
+   ^
+   warnings generated.
+   In file included from kernel/printk/printk.c:61:
+   kernel/printk/internal.h:54:20: warninginclude/linux/jhash.h:98:2: note: insert '__attribute__((fallthrough));' to silence this warning
+   case 3: a += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   __attribute__((fallthrough));
+   include/linux/jhash.h:98:2: note: no previous prototype for function 'vprintk_func'
+   __printf(1, 0) int vprintk_func(const char va_list args) { return 0; }
+   ^
+   kernel/printk/internal.h: insert 'break;' to avoid fall-through
+   case 3: a += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   break;
+   include/linux/jhash.h:99:2: warning: unannotated fall-through between switch labels
+   case 2: a += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   :54:16: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   __printf(1, 0) int vprintk_func(const char va_list args) { return 0; }
+   ^
+   static
+   kernel/printk/printk.cinclude/linux/signal.h:233:2: note: insert '__attribute__((fallthrough));' to silence this warning
+   case 1: ;
+   ^
+   __attribute__((fallthrough));
+   include/linux/signal.h:233:2: note: insert 'break;' to avoid fall-through
+   case 1: ;
+   ^
+   break;
+   include/linux/signal.h:245:2: warning: unannotated fall-through between switch labels
+   case 1: ;
+   ^
+>> :165:5: warning: no previous prototype for function 'devkmsg_sysctl_set_loglvl'
+   int devkmsg_sysctl_set_loglvl(struct ctl_table int write,
+   ^
+   kernel/printk/printk.c:165:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   int devkmsg_sysctl_set_loglvl(struct ctl_table int write,
+   ^
+   static
+   include/linux/jhash.h:99:2: note: insert '__attribute__((fallthrough));' to silence this warning
+   case 2: a += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   __attribute__((fallthrough));
+   include/linux/jhash.h:99:2: note: insert 'break;' to avoid fall-through
+   case 2: a += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   break;
+   include/linux/jhash.h:100:2: warning: unannotated fall-through between switch labels
+   case 1: a +=
+   ^
+   include/linux/signal.h:245:2: note: insert '__attribute__((fallthrough));' to silence this warning
+   case 1: ;
+   ^
+   __attribute__((fallthrough));
+   include/linux/signal.h:245:2: note: insert 'break;' to avoid fall-through
+   case 1: ;
+   ^
+   break;
+   kernel/printk/printk.cinclude/linux/jhash.h:100:2: note: insert '__attribute__((fallthrough));' to silence this warning
+   case 1: a +=
+   ^
+   __attribute__((fallthrough));
+   include/linux/jhash.h:100:2: note: insert 'break;' to avoid fall-through
+   case 1: a +=
+   ^
+   break;
+   include/linux/jhash.h:102:2: warning: unannotated fall-through between switch labels
+   case 0: /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var Nothing left to add arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   include/linux/jhash.h:102:2: note: insert 'break;' to avoid fall-through
+   case 0: /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var Nothing left to add arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   break;
+   :2406:10: warning: 'sprintf' will always overflow; destination buffer has size 0, but format string expands to at least 33
+   len = sprintf(text,
+   ^
+   include/linux/jhash.h:136:2: warning: unannotated fall-through between switch labels
+   case 2: b += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   include/linux/jhash.h:136:2: note: insert '__attribute__((fallthrough));' to silence this warning
+   case 2: b += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   __attribute__((fallthrough));
+   include/linux/jhash.h:136:2: note: insert 'break;' to avoid fall-through
+   case 2: b += /Dockerfile /Gemfile /Gemfile.lock /bin /boot /c /cephfs /dev /etc /home /htmldocs /include /kbuild /lib /lib32 /lib64 /libx32 /lkp-cloud /lkp-src /media /mnt /opt /patch /pkg /proc /root /run /sbin /share /srv /sys /tmp /usr /var fall through arch/ block/ certs/ crypto/ drivers/ fs/ include/ init/ ipc/ kernel/ lib/ mm/ net/ scripts/ security/ sound/ source/ tools/ usr/ virt/
+   ^
+   break;
+   include/linux/jhash.h:137:2: warning: unannotated fall-through between switch labels
+   case 1: a +=
+   ^
+   In file included from kernel/capability.c:13:
+   In file included from include/linux/audit.h:13:
+   In file included from include/linux/ptrace.h:7:
+   In file included from include/linux/sched/signal.h:6:
+   include/linux/signal.h:147:1: warning: unannotated fall-through between switch labels
+   _SIG_SET_BINOP(sigorsets, _sig_or)
+   ^
+   include/linux/signal.h:133:2: note: expanded from macro '_SIG_SET_BINOP'
+   case 2: ^
+   include/linux/signal.h:147:1: warning: unannotated fall-through between switch labels
+   include/linux/signal.h:137:2: note: expanded from macro '_SIG_SET_BINOP'
+   case 1: ^
+   include/linux/signal.h:150:1: warning: unannotated fall-through between switch labels
+   _SIG_SET_BINOP(sigandsets, _sig_and)
+   ^
+   include/linux/signal.h:133:2:In file included from note: expanded from macro '_SIG_SET_BINOP'
+   case 2: ^
+   include/linux/signal.h:150:1: warning: unannotated fall-through between switch labels
+   include/linux/signal.h:137:2: note: expanded from macro '_SIG_SET_BINOP'
+   case 1: ^
+   include/linux/signal.h:153:1: warning: unannotated fall-through between switch labels
+   _SIG_SET_BINOP(sigandnsets, _sig_andn)
+   ^
+   include/linux/signal.h:133:2: note: expanded from macro '_SIG_SET_BINOP'
+   case 2: kernel/sysctl_binary.c:15:
+   In file included from include/linux/netdevice.h:37:
+   In file included from include/linux/ethtool.h:18:
+   In file included from include/uapi/linux/ethtool.h:19:
+   In file included from include/linux/if_ether.h:19:
+   include/linux/skbuff.h:3690:2: warning: unannotated fall-through between switch labels
+   case 24: diffs |= __it_diff(a, b, 64);
+   ^
+--
+           ^
+           __attribute__((fallthrough)); 
+   include/linux/mm.h:166:2: note: insert 'break;' to avoid fall-through
+           case 56:
+           ^
+           break; 
+   In file included from kernel/printk/printk.c:36:
+   In file included from include/linux/syscalls.h:76:
+   include/linux/signal.h:147:1: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+   _SIG_SET_BINOP(sigorsets, _sig_or)
+   ^
+   include/linux/signal.h:133:2: note: expanded from macro '_SIG_SET_BINOP'
+           case 2:                                                         \
+           ^
+   include/linux/signal.h:147:1: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+   include/linux/signal.h:137:2: note: expanded from macro '_SIG_SET_BINOP'
+           case 1:                                                         \
+           ^
+   include/linux/signal.h:150:1: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+   _SIG_SET_BINOP(sigandsets, _sig_and)
+   ^
+   include/linux/signal.h:133:2: note: expanded from macro '_SIG_SET_BINOP'
+           case 2:                                                         \
+           ^
+   include/linux/signal.h:150:1: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+   include/linux/signal.h:137:2: note: expanded from macro '_SIG_SET_BINOP'
+           case 1:                                                         \
+           ^
+   include/linux/signal.h:153:1: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+   _SIG_SET_BINOP(sigandnsets, _sig_andn)
+   ^
+   include/linux/signal.h:133:2: note: expanded from macro '_SIG_SET_BINOP'
+           case 2:                                                         \
+           ^
+   include/linux/signal.h:153:1: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+   include/linux/signal.h:137:2: note: expanded from macro '_SIG_SET_BINOP'
+           case 1:                                                         \
+           ^
+   include/linux/signal.h:177:1: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+   _SIG_SET_OP(signotset, _sig_not)
+   ^
+   include/linux/signal.h:167:2: note: expanded from macro '_SIG_SET_OP'
+           case 2: set->sig[1] = op(set->sig[1]);                          \
+           ^
+   include/linux/signal.h:177:1: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+   include/linux/signal.h:169:2: note: expanded from macro '_SIG_SET_OP'
+           case 1: set->sig[0] = op(set->sig[0]);                          \
+           ^
+   include/linux/signal.h:190:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+           case 1: set->sig[0] = 0;
+           ^
+   include/linux/signal.h:190:2: note: insert '__attribute__((fallthrough));' to silence this warning
+           case 1: set->sig[0] = 0;
+           ^
+           __attribute__((fallthrough)); 
+   include/linux/signal.h:190:2: note: insert 'break;' to avoid fall-through
+           case 1: set->sig[0] = 0;
+           ^
+           break; 
+   include/linux/signal.h:203:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+           case 1: set->sig[0] = -1;
+           ^
+   include/linux/signal.h:203:2: note: insert '__attribute__((fallthrough));' to silence this warning
+           case 1: set->sig[0] = -1;
+           ^
+           __attribute__((fallthrough)); 
+   include/linux/signal.h:203:2: note: insert 'break;' to avoid fall-through
+           case 1: set->sig[0] = -1;
+           ^
+           break; 
+   include/linux/signal.h:233:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+           case 1: ;
+           ^
+   include/linux/signal.h:233:2: note: insert '__attribute__((fallthrough));' to silence this warning
+           case 1: ;
+           ^
+           __attribute__((fallthrough)); 
+   include/linux/signal.h:233:2: note: insert 'break;' to avoid fall-through
+           case 1: ;
+           ^
+           break; 
+   include/linux/signal.h:245:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+           case 1: ;
+           ^
+   include/linux/signal.h:245:2: note: insert '__attribute__((fallthrough));' to silence this warning
+           case 1: ;
+           ^
+           __attribute__((fallthrough)); 
+   include/linux/signal.h:245:2: note: insert 'break;' to avoid fall-through
+           case 1: ;
+           ^
+           break; 
+   In file included from kernel/printk/printk.c:61:
+   kernel/printk/internal.h:54:20: warning: no previous prototype for function 'vprintk_func' [-Wmissing-prototypes]
+   __printf(1, 0) int vprintk_func(const char *fmt, va_list args) { return 0; }
+                      ^
+   kernel/printk/internal.h:54:16: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   __printf(1, 0) int vprintk_func(const char *fmt, va_list args) { return 0; }
+                  ^
+                  static 
+>> kernel/printk/printk.c:165:5: warning: no previous prototype for function 'devkmsg_sysctl_set_loglvl' [-Wmissing-prototypes]
+   int devkmsg_sysctl_set_loglvl(struct ctl_table *table, int write,
+       ^
+   kernel/printk/printk.c:165:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   int devkmsg_sysctl_set_loglvl(struct ctl_table *table, int write,
+   ^
+   static 
+   kernel/printk/printk.c:2406:10: warning: 'sprintf' will always overflow; destination buffer has size 0, but format string expands to at least 33 [-Wfortify-source]
+                           len = sprintf(text,
+                                 ^
+   18 warnings generated.
+
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h    |  13 +-
- .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 312 +++++++++++++++---
- 2 files changed, 280 insertions(+), 45 deletions(-)
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-index f351e41c9da6..c52955b33fab 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-@@ -1082,9 +1082,20 @@ struct mvpp2_rx_desc {
- 	};
- };
- 
-+enum mvpp2_tx_buf_type {
-+	MVPP2_TYPE_SKB,
-+	MVPP2_TYPE_XDP_TX,
-+	MVPP2_TYPE_XDP_NDO,
-+};
-+
- struct mvpp2_txq_pcpu_buf {
-+	enum mvpp2_tx_buf_type type;
-+
- 	/* Transmitted SKB */
--	struct sk_buff *skb;
-+	union {
-+		struct xdp_frame *xdpf;
-+		struct sk_buff *skb;
-+	};
- 
- 	/* Physical address of transmitted buffer */
- 	dma_addr_t dma;
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 864d4789a0b3..ffc2a220613d 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -97,7 +97,8 @@ static inline u32 mvpp2_cpu_to_thread(struct mvpp2 *priv, int cpu)
- }
- 
- static struct page_pool *
--mvpp2_create_page_pool(struct device *dev, int num, int len)
-+mvpp2_create_page_pool(struct device *dev, int num, int len,
-+		       enum dma_data_direction dma_dir)
- {
- 	struct page_pool_params pp_params = {
- 		/* internal DMA mapping in page_pool */
-@@ -105,7 +106,7 @@ mvpp2_create_page_pool(struct device *dev, int num, int len)
- 		.pool_size = num,
- 		.nid = NUMA_NO_NODE,
- 		.dev = dev,
--		.dma_dir = DMA_FROM_DEVICE,
-+		.dma_dir = dma_dir,
- 		.offset = MVPP2_SKB_HEADROOM,
- 		.max_len = len,
- 	};
-@@ -299,12 +300,17 @@ static void mvpp2_txq_inc_get(struct mvpp2_txq_pcpu *txq_pcpu)
- 
- static void mvpp2_txq_inc_put(struct mvpp2_port *port,
- 			      struct mvpp2_txq_pcpu *txq_pcpu,
--			      struct sk_buff *skb,
--			      struct mvpp2_tx_desc *tx_desc)
-+			      void *data,
-+			      struct mvpp2_tx_desc *tx_desc,
-+			      enum mvpp2_tx_buf_type buf_type)
- {
- 	struct mvpp2_txq_pcpu_buf *tx_buf =
- 		txq_pcpu->buffs + txq_pcpu->txq_put_index;
--	tx_buf->skb = skb;
-+	tx_buf->type = buf_type;
-+	if (buf_type == MVPP2_TYPE_SKB)
-+		tx_buf->skb = data;
-+	else
-+		tx_buf->xdpf = data;
- 	tx_buf->size = mvpp2_txdesc_size_get(port, tx_desc);
- 	tx_buf->dma = mvpp2_txdesc_dma_addr_get(port, tx_desc) +
- 		mvpp2_txdesc_offset_get(port, tx_desc);
-@@ -528,9 +534,6 @@ static int mvpp2_bm_pool_destroy(struct device *dev, struct mvpp2 *priv,
- 	int buf_num;
- 	u32 val;
- 
--	if (priv->percpu_pools)
--		page_pool_destroy(priv->page_pool[bm_pool->id]);
--
- 	buf_num = mvpp2_check_hw_buf_num(priv, bm_pool);
- 	mvpp2_bm_bufs_free(dev, priv, bm_pool, buf_num);
- 
-@@ -546,6 +549,9 @@ static int mvpp2_bm_pool_destroy(struct device *dev, struct mvpp2 *priv,
- 	val |= MVPP2_BM_STOP_MASK;
- 	mvpp2_write(priv, MVPP2_BM_POOL_CTRL_REG(bm_pool->id), val);
- 
-+	if (priv->percpu_pools)
-+		page_pool_destroy(priv->page_pool[bm_pool->id]);
-+
- 	dma_free_coherent(dev, bm_pool->size_bytes,
- 			  bm_pool->virt_addr,
- 			  bm_pool->dma_addr);
-@@ -581,9 +587,19 @@ static int mvpp2_bm_pools_init(struct device *dev, struct mvpp2 *priv)
- 
- static int mvpp2_bm_init(struct device *dev, struct mvpp2 *priv)
- {
-+	enum dma_data_direction dma_dir = DMA_FROM_DEVICE;
- 	int i, err, poolnum = MVPP2_BM_POOLS_NUM;
-+	struct mvpp2_port *port;
- 
- 	if (priv->percpu_pools) {
-+		for (i = 0; i < priv->port_count; i++) {
-+			port = priv->port_list[i];
-+			if (port->xdp_prog) {
-+				dma_dir = DMA_BIDIRECTIONAL;
-+				break;
-+			}
-+		}
-+
- 		poolnum = mvpp2_get_nrxqs(priv) * 2;
- 		for (i = 0; i < poolnum; i++) {
- 			/* the pool in use */
-@@ -592,7 +608,8 @@ static int mvpp2_bm_init(struct device *dev, struct mvpp2 *priv)
- 			priv->page_pool[i] =
- 				mvpp2_create_page_pool(dev,
- 						       mvpp2_pools[pn].buf_num,
--						       mvpp2_pools[pn].pkt_size);
-+						       mvpp2_pools[pn].pkt_size,
-+						       dma_dir);
- 			if (IS_ERR(priv->page_pool[i]))
- 				return PTR_ERR(priv->page_pool[i]);
- 		}
-@@ -2319,11 +2336,15 @@ static void mvpp2_txq_bufs_free(struct mvpp2_port *port,
- 		struct mvpp2_txq_pcpu_buf *tx_buf =
- 			txq_pcpu->buffs + txq_pcpu->txq_get_index;
- 
--		if (!IS_TSO_HEADER(txq_pcpu, tx_buf->dma))
-+		if (!IS_TSO_HEADER(txq_pcpu, tx_buf->dma) &&
-+		    tx_buf->type != MVPP2_TYPE_XDP_TX)
- 			dma_unmap_single(port->dev->dev.parent, tx_buf->dma,
- 					 tx_buf->size, DMA_TO_DEVICE);
--		if (tx_buf->skb)
-+		if (tx_buf->type == MVPP2_TYPE_SKB && tx_buf->skb)
- 			dev_kfree_skb_any(tx_buf->skb);
-+		else if (tx_buf->type == MVPP2_TYPE_XDP_TX ||
-+			 tx_buf->type == MVPP2_TYPE_XDP_NDO)
-+			xdp_return_frame(tx_buf->xdpf);
- 
- 		mvpp2_txq_inc_get(txq_pcpu);
- 	}
-@@ -2809,7 +2830,7 @@ static int mvpp2_setup_rxqs(struct mvpp2_port *port)
- static int mvpp2_setup_txqs(struct mvpp2_port *port)
- {
- 	struct mvpp2_tx_queue *txq;
--	int queue, err, cpu;
-+	int queue, err;
- 
- 	for (queue = 0; queue < port->ntxqs; queue++) {
- 		txq = port->txqs[queue];
-@@ -2818,8 +2839,8 @@ static int mvpp2_setup_txqs(struct mvpp2_port *port)
- 			goto err_cleanup;
- 
- 		/* Assign this queue to a CPU */
--		cpu = queue % num_present_cpus();
--		netif_set_xps_queue(port->dev, cpumask_of(cpu), queue);
-+		if (queue < num_possible_cpus())
-+			netif_set_xps_queue(port->dev, cpumask_of(queue), queue);
- 	}
- 
- 	if (port->has_tx_irqs) {
-@@ -3038,6 +3059,165 @@ static u32 mvpp2_skb_tx_csum(struct mvpp2_port *port, struct sk_buff *skb)
- 	return MVPP2_TXD_L4_CSUM_NOT | MVPP2_TXD_IP_CSUM_DISABLE;
- }
- 
-+static void mvpp2_xdp_finish_tx(struct mvpp2_port *port, u16 txq_id, int nxmit, int nxmit_byte)
-+{
-+	unsigned int thread = mvpp2_cpu_to_thread(port->priv, smp_processor_id());
-+	struct mvpp2_pcpu_stats *stats = per_cpu_ptr(port->stats, thread);
-+	struct mvpp2_tx_queue *aggr_txq;
-+	struct mvpp2_txq_pcpu *txq_pcpu;
-+	struct mvpp2_tx_queue *txq;
-+	struct netdev_queue *nq;
-+
-+	txq = port->txqs[txq_id];
-+	txq_pcpu = per_cpu_ptr(txq->pcpu, thread);
-+	nq = netdev_get_tx_queue(port->dev, txq_id);
-+	aggr_txq = &port->priv->aggr_txqs[thread];
-+
-+	txq_pcpu->reserved_num -= nxmit;
-+	txq_pcpu->count += nxmit;
-+	aggr_txq->count += nxmit;
-+
-+	/* Enable transmit */
-+	wmb();
-+	mvpp2_aggr_txq_pend_desc_add(port, nxmit);
-+
-+	if (txq_pcpu->count >= txq_pcpu->stop_threshold)
-+		netif_tx_stop_queue(nq);
-+
-+	u64_stats_update_begin(&stats->syncp);
-+	stats->tx_bytes += nxmit_byte;
-+	stats->tx_packets += nxmit;
-+	u64_stats_update_end(&stats->syncp);
-+
-+	/* Finalize TX processing */
-+	if (!port->has_tx_irqs && txq_pcpu->count >= txq->done_pkts_coal)
-+		mvpp2_txq_done(port, txq, txq_pcpu);
-+}
-+
-+static int
-+mvpp2_xdp_submit_frame(struct mvpp2_port *port, u16 txq_id,
-+		       struct xdp_frame *xdpf, bool dma_map)
-+{
-+	struct mvpp2_tx_desc *tx_desc;
-+	struct mvpp2_tx_queue *aggr_txq;
-+	struct mvpp2_tx_queue *txq;
-+	struct mvpp2_txq_pcpu *txq_pcpu;
-+	dma_addr_t dma_addr;
-+	u32 tx_cmd = MVPP2_TXD_L4_CSUM_NOT | MVPP2_TXD_IP_CSUM_DISABLE |
-+		     MVPP2_TXD_F_DESC | MVPP2_TXD_L_DESC;
-+	enum mvpp2_tx_buf_type buf_type;
-+	int ret = MVPP2_XDP_TX;
-+
-+	unsigned int thread = mvpp2_cpu_to_thread(port->priv, smp_processor_id());
-+
-+	txq = port->txqs[txq_id];
-+	txq_pcpu = per_cpu_ptr(txq->pcpu, thread);
-+	aggr_txq = &port->priv->aggr_txqs[thread];
-+
-+	/* Check number of available descriptors */
-+	if (mvpp2_aggr_desc_num_check(port, aggr_txq, 1) ||
-+	    mvpp2_txq_reserved_desc_num_proc(port, txq, txq_pcpu, 1)) {
-+		ret = MVPP2_XDP_DROPPED;
-+		goto out;
-+	}
-+
-+	/* Get a descriptor for the first part of the packet */
-+	tx_desc = mvpp2_txq_next_desc_get(aggr_txq);
-+	mvpp2_txdesc_txq_set(port, tx_desc, txq->id);
-+	mvpp2_txdesc_size_set(port, tx_desc, xdpf->len);
-+
-+	if (dma_map) {
-+		/* XDP_REDIRECT or AF_XDP */
-+		dma_addr = dma_map_single(port->dev->dev.parent, xdpf->data,
-+					  xdpf->len, DMA_TO_DEVICE);
-+
-+		if (unlikely(dma_mapping_error(port->dev->dev.parent, dma_addr))) {
-+			mvpp2_txq_desc_put(txq);
-+			ret = MVPP2_XDP_DROPPED;
-+			goto out;
-+		}
-+
-+		buf_type = MVPP2_TYPE_XDP_NDO;
-+	} else {
-+		/* XDP_TX */
-+		struct page *page = virt_to_page(xdpf->data);
-+
-+		dma_addr = page_pool_get_dma_addr(page) +
-+			   sizeof(*xdpf) + xdpf->headroom;
-+		dma_sync_single_for_device(port->dev->dev.parent, dma_addr,
-+					   xdpf->len, DMA_BIDIRECTIONAL);
-+
-+		buf_type = MVPP2_TYPE_XDP_TX;
-+	}
-+
-+	mvpp2_txdesc_dma_addr_set(port, tx_desc, dma_addr);
-+
-+	mvpp2_txdesc_cmd_set(port, tx_desc, tx_cmd);
-+	mvpp2_txq_inc_put(port, txq_pcpu, xdpf, tx_desc, buf_type);
-+
-+out:
-+	return ret;
-+}
-+
-+static int
-+mvpp2_xdp_xmit_back(struct mvpp2_port *port, struct xdp_buff *xdp)
-+{
-+	struct xdp_frame *xdpf;
-+	u16 txq_id;
-+	int ret;
-+
-+	xdpf = xdp_convert_buff_to_frame(xdp);
-+	if (unlikely(!xdpf))
-+		return MVPP2_XDP_DROPPED;
-+
-+	/* The first of the TX queues are used for XPS,
-+	 * the second half for XDP_TX
-+	 */
-+	txq_id = mvpp2_cpu_to_thread(port->priv, smp_processor_id()) + (port->ntxqs / 2);
-+
-+	ret = mvpp2_xdp_submit_frame(port, txq_id, xdpf, false);
-+	if (ret == MVPP2_XDP_TX)
-+		mvpp2_xdp_finish_tx(port, txq_id, 1, xdpf->len);
-+
-+	return ret;
-+}
-+
-+static int
-+mvpp2_xdp_xmit(struct net_device *dev, int num_frame,
-+	       struct xdp_frame **frames, u32 flags)
-+{
-+	struct mvpp2_port *port = netdev_priv(dev);
-+	int i, nxmit_byte = 0, nxmit = num_frame;
-+	u32 ret;
-+	u16 txq_id;
-+
-+	if (unlikely(test_bit(0, &port->state)))
-+		return -ENETDOWN;
-+
-+	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
-+		return -EINVAL;
-+
-+	/* The first of the TX queues are used for XPS,
-+	 * the second half for XDP_TX
-+	 */
-+	txq_id = mvpp2_cpu_to_thread(port->priv, smp_processor_id()) + (port->ntxqs / 2);
-+
-+	for (i = 0; i < num_frame; i++) {
-+		ret = mvpp2_xdp_submit_frame(port, txq_id, frames[i], true);
-+		if (ret == MVPP2_XDP_TX) {
-+			nxmit_byte += frames[i]->len;
-+		} else {
-+			xdp_return_frame_rx_napi(frames[i]);
-+			nxmit--;
-+		}
-+	}
-+
-+	if (nxmit > 0)
-+		mvpp2_xdp_finish_tx(port, txq_id, nxmit, nxmit_byte);
-+
-+	return nxmit;
-+}
-+
- static int
- mvpp2_run_xdp(struct mvpp2_port *port, struct mvpp2_rx_queue *rxq,
- 	      struct bpf_prog *prog, struct xdp_buff *xdp,
-@@ -3068,6 +3248,13 @@ mvpp2_run_xdp(struct mvpp2_port *port, struct mvpp2_rx_queue *rxq,
- 			ret = MVPP2_XDP_REDIR;
- 		}
- 		break;
-+	case XDP_TX:
-+		ret = mvpp2_xdp_xmit_back(port, xdp);
-+		if (ret != MVPP2_XDP_TX) {
-+			page = virt_to_head_page(xdp->data);
-+			page_pool_put_page(pp, page, sync, true);
-+		}
-+		break;
- 	default:
- 		bpf_warn_invalid_xdp_action(act);
- 		fallthrough;
-@@ -3089,6 +3276,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 		    int rx_todo, struct mvpp2_rx_queue *rxq)
- {
- 	struct net_device *dev = port->dev;
-+	enum dma_data_direction dma_dir;
- 	struct bpf_prog *xdp_prog;
- 	struct xdp_buff xdp;
- 	int rx_received;
-@@ -3138,13 +3326,19 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 		if (rx_status & MVPP2_RXD_ERR_SUMMARY)
- 			goto err_drop_frame;
- 
-+		if (port->priv->percpu_pools) {
-+			pp = port->priv->page_pool[pool];
-+			dma_dir = page_pool_get_dma_dir(pp);
-+		} else {
-+			dma_dir = DMA_FROM_DEVICE;
-+		}
-+
- 		dma_sync_single_for_cpu(dev->dev.parent, dma_addr,
- 					rx_bytes + MVPP2_MH_SIZE,
--					DMA_FROM_DEVICE);
--		prefetch(data);
-+					dma_dir);
- 
--		if (port->priv->percpu_pools)
--			pp = port->priv->page_pool[pool];
-+		/* Prefetch header */
-+		prefetch(data);
- 
- 		if (bm_pool->frag_size > PAGE_SIZE)
- 			frag_size = 0;
-@@ -3217,6 +3411,9 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 
- 	rcu_read_unlock();
- 
-+	if (xdp_ret & MVPP2_XDP_REDIR)
-+		xdp_do_flush_map();
-+
- 	if (rcvd_pkts) {
- 		struct mvpp2_pcpu_stats *stats = this_cpu_ptr(port->stats);
- 
-@@ -3283,11 +3480,11 @@ static int mvpp2_tx_frag_process(struct mvpp2_port *port, struct sk_buff *skb,
- 			/* Last descriptor */
- 			mvpp2_txdesc_cmd_set(port, tx_desc,
- 					     MVPP2_TXD_L_DESC);
--			mvpp2_txq_inc_put(port, txq_pcpu, skb, tx_desc);
-+			mvpp2_txq_inc_put(port, txq_pcpu, skb, tx_desc, MVPP2_TYPE_SKB);
- 		} else {
- 			/* Descriptor in the middle: Not First, Not Last */
- 			mvpp2_txdesc_cmd_set(port, tx_desc, 0);
--			mvpp2_txq_inc_put(port, txq_pcpu, NULL, tx_desc);
-+			mvpp2_txq_inc_put(port, txq_pcpu, NULL, tx_desc, MVPP2_TYPE_SKB);
- 		}
- 	}
- 
-@@ -3325,7 +3522,7 @@ static inline void mvpp2_tso_put_hdr(struct sk_buff *skb,
- 	mvpp2_txdesc_cmd_set(port, tx_desc, mvpp2_skb_tx_csum(port, skb) |
- 					    MVPP2_TXD_F_DESC |
- 					    MVPP2_TXD_PADDING_DISABLE);
--	mvpp2_txq_inc_put(port, txq_pcpu, NULL, tx_desc);
-+	mvpp2_txq_inc_put(port, txq_pcpu, NULL, tx_desc, MVPP2_TYPE_SKB);
- }
- 
- static inline int mvpp2_tso_put_data(struct sk_buff *skb,
-@@ -3354,14 +3551,14 @@ static inline int mvpp2_tso_put_data(struct sk_buff *skb,
- 	if (!left) {
- 		mvpp2_txdesc_cmd_set(port, tx_desc, MVPP2_TXD_L_DESC);
- 		if (last) {
--			mvpp2_txq_inc_put(port, txq_pcpu, skb, tx_desc);
-+			mvpp2_txq_inc_put(port, txq_pcpu, skb, tx_desc, MVPP2_TYPE_SKB);
- 			return 0;
- 		}
- 	} else {
- 		mvpp2_txdesc_cmd_set(port, tx_desc, 0);
- 	}
- 
--	mvpp2_txq_inc_put(port, txq_pcpu, NULL, tx_desc);
-+	mvpp2_txq_inc_put(port, txq_pcpu, NULL, tx_desc, MVPP2_TYPE_SKB);
- 	return 0;
- }
- 
-@@ -3474,12 +3671,12 @@ static netdev_tx_t mvpp2_tx(struct sk_buff *skb, struct net_device *dev)
- 		/* First and Last descriptor */
- 		tx_cmd |= MVPP2_TXD_F_DESC | MVPP2_TXD_L_DESC;
- 		mvpp2_txdesc_cmd_set(port, tx_desc, tx_cmd);
--		mvpp2_txq_inc_put(port, txq_pcpu, skb, tx_desc);
-+		mvpp2_txq_inc_put(port, txq_pcpu, skb, tx_desc, MVPP2_TYPE_SKB);
- 	} else {
- 		/* First but not Last */
- 		tx_cmd |= MVPP2_TXD_F_DESC | MVPP2_TXD_PADDING_DISABLE;
- 		mvpp2_txdesc_cmd_set(port, tx_desc, tx_cmd);
--		mvpp2_txq_inc_put(port, txq_pcpu, NULL, tx_desc);
-+		mvpp2_txq_inc_put(port, txq_pcpu, NULL, tx_desc, MVPP2_TYPE_SKB);
- 
- 		/* Continue with other skb fragments */
- 		if (mvpp2_tx_frag_process(port, skb, aggr_txq, txq)) {
-@@ -4158,6 +4355,39 @@ static int mvpp2_change_mtu(struct net_device *dev, int mtu)
- 	return err;
- }
- 
-+static int mvpp2_check_pagepool_dma(struct mvpp2_port *port)
-+{
-+	enum dma_data_direction dma_dir = DMA_FROM_DEVICE;
-+	struct mvpp2 *priv = port->priv;
-+	struct page_pool *page_pool;
-+	int err = -1, i;
-+
-+	if (!priv->percpu_pools) {
-+		netdev_warn(port->dev, "can not change pagepool it is not enabled");
-+	} else {
-+		for (i = 0; i < priv->port_count; i++) {
-+			port = priv->port_list[i];
-+			if (port->xdp_prog) {
-+				dma_dir = DMA_BIDIRECTIONAL;
-+				break;
-+			}
-+		}
-+
-+		if (!priv->page_pool)
-+			return -ENOMEM;
-+
-+		/* All pools are equal in terms of dma direction */
-+		page_pool = priv->page_pool[0];
-+
-+		if (page_pool->p.dma_dir != dma_dir) {
-+			netdev_info(port->dev, "Changing pagepool dma to %d\n", dma_dir);
-+			err = mvpp2_bm_switch_buffers(priv, true);
-+		}
-+	}
-+
-+	return err;
-+}
-+
- static void
- mvpp2_get_stats64(struct net_device *dev, struct rtnl_link_stats64 *stats)
- {
-@@ -4268,13 +4498,16 @@ static int mvpp2_xdp_setup(struct mvpp2_port *port, struct netdev_bpf *bpf)
- 		return -EOPNOTSUPP;
- 	}
- 
--	/* device is up and bpf is added/removed, must setup the RX queues */
--	if (running && reset) {
--		mvpp2_stop_dev(port);
--		mvpp2_cleanup_rxqs(port);
--		mvpp2_cleanup_txqs(port);
-+	if (port->ntxqs < num_possible_cpus() * 2) {
-+		netdev_err(port->dev, "XDP_TX needs twice the CPU TX queues, but only %d queues available.\n",
-+			   port->ntxqs);
-+		return -EOPNOTSUPP;
- 	}
- 
-+	/* device is up and bpf is added/removed, must setup the RX queues */
-+	if (running && reset)
-+		mvpp2_stop(port->dev);
-+
- 	old_prog = xchg(&port->xdp_prog, prog);
- 	if (old_prog)
- 		bpf_prog_put(old_prog);
-@@ -4284,21 +4517,11 @@ static int mvpp2_xdp_setup(struct mvpp2_port *port, struct netdev_bpf *bpf)
- 		return 0;
- 
- 	/* device was up, restore the link */
--	if (running) {
--		int ret = mvpp2_setup_rxqs(port);
--
--		if (ret) {
--			netdev_err(port->dev, "mvpp2_setup_rxqs failed\n");
--			return ret;
--		}
--		ret = mvpp2_setup_txqs(port);
--		if (ret) {
--			netdev_err(port->dev, "mvpp2_setup_txqs failed\n");
--			return ret;
--		}
-+	if (running)
-+		mvpp2_open(port->dev);
- 
--		mvpp2_start_dev(port);
--	}
-+	/* Check Page Pool DMA Direction */
-+	mvpp2_check_pagepool_dma(port);
- 
- 	return 0;
- }
-@@ -4669,6 +4892,7 @@ static const struct net_device_ops mvpp2_netdev_ops = {
- 	.ndo_vlan_rx_kill_vid	= mvpp2_vlan_rx_kill_vid,
- 	.ndo_set_features	= mvpp2_set_features,
- 	.ndo_bpf		= mvpp2_xdp,
-+	.ndo_xdp_xmit		= mvpp2_xdp_xmit,
- };
- 
- static const struct ethtool_ops mvpp2_eth_tool_ops = {
--- 
-2.26.2
+--h31gzZEtNLTqOjlF
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+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
+h1fuKnTTRtuMoZrgKz8Bp4Ul1XZpAAA=
+
+--h31gzZEtNLTqOjlF--
