@@ -2,169 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE05120FE4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 22:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2ED320FE7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgF3U6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 16:58:20 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:50413 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726392AbgF3U6T (ORCPT
+        id S1728879AbgF3VIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 17:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726084AbgF3VIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 16:58:19 -0400
-Received: from mail-lf1-f41.google.com ([209.85.167.41]) by
- mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1N49xZ-1iqOsL3Upd-0106Tf for <linux-kernel@vger.kernel.org>; Tue, 30 Jun
- 2020 22:58:16 +0200
-Received: by mail-lf1-f41.google.com with SMTP id u25so12249884lfm.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 13:58:16 -0700 (PDT)
-X-Gm-Message-State: AOAM533cd0cnHOcf34k50qmPJjdIavBkXzY6BvmWVv2+Doe03YCwGqka
-        z2hvWMquqbKvXDBZvhmBRruKpCBwAqxdhglIfDc=
-X-Google-Smtp-Source: ABdhPJwbSqt9LN3Uw1yBCPaf8HBqECdZSB91uozzccAL2xYxsVAx61lvqVZFqCfvTc7pG7h4rvywCV/pS+rFxt51ZaA=
-X-Received: by 2002:a19:ca48:: with SMTP id h8mr12970399lfj.161.1593550696202;
- Tue, 30 Jun 2020 13:58:16 -0700 (PDT)
+        Tue, 30 Jun 2020 17:08:13 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE4E5C061755;
+        Tue, 30 Jun 2020 14:08:13 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id k5so469525pjg.3;
+        Tue, 30 Jun 2020 14:08:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mOueOrU/MztlC+Mzo/PRCS1EQQCyJoQy2Oc5pG3fIVA=;
+        b=OAc2dXOYyTgHX8CbckWVMX+g5e2DIRNsIh3tm9tesxal8k1M2pmB3ehGHr2b0TlLNb
+         udnji61Gjyx7Dz5dnC2lmVyBGt5/LTNLtk8Q2lXc4br5QvNGFT+ZP8IglhemBw/i+OQC
+         Bu2/DsMDzAgb/pSfxO+wBEhSU49MdgK00/wd9e/z7hOvepqfovUgWZ8t4Xh6bD4PlyN/
+         EgAFNYlkI/SOPBDZ6oK09ELznXM/GK7qIxFMANKqKlhSava+gus//XIq7z1SDC5HvlZl
+         HJ2ra9VjWALHcWzm6CQcIUc5KSx/z0pEz96UhsNAkkd6HRNnu4X4iGHBXSCi6eMoT1dA
+         mbLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mOueOrU/MztlC+Mzo/PRCS1EQQCyJoQy2Oc5pG3fIVA=;
+        b=kbZKyLaqvAvCuy4aOAdmcmprqn2fGFzm3psB6B/L4KyTXIBVv+pW2Nt2BrRLKjg/pi
+         MN91DJGPaY0a87wuQF7HldDZxkJeQceQr5OB+CApbd1BDd0TMXGEuWjezOMkzeQUVSCt
+         DToKh92GC9ksrxOWVzFgtecuvuu5k3DamwOhcBglJZnSRrX/e31m5Vf3LazZAN2o1nZS
+         PRkuHgVtzM/8Fi80SIJ69huq1YlnbfBQ+RqHYEHUT7X6L6KaoRvt0CjvBnKZkX1ZzGea
+         spZAfZ0LYYo+u1vggrGHxjIbJZQ9UP02n/at5EQCEEwuZzomoGTXd/mIuW2rMKPIt5Nf
+         0Ujw==
+X-Gm-Message-State: AOAM532P/+IkTMBlloO/+dw+6AfmBVA6mXCR2x5GZE/8O6eqbyYTFCN8
+        LtDOlJTIAz2m1H+DGv2tegoMzL6R
+X-Google-Smtp-Source: ABdhPJx0zpNbTsl97R86OZuv72rXcejwkzxEuv8JklwnYbg1G+787xwpu7eZxV3mMuOa/SQBU4kxKQ==
+X-Received: by 2002:a17:902:aa0c:: with SMTP id be12mr19635013plb.45.1593550868913;
+        Tue, 30 Jun 2020 14:01:08 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:1000:7a00::1])
+        by smtp.gmail.com with ESMTPSA id c19sm3070079pjs.11.2020.06.30.14.01.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 14:01:08 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Don Fry <pcnet32@frontier.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH net-next 1/2] amd8111e: Mark PM functions as __maybe_unused
+Date:   Tue, 30 Jun 2020 14:00:33 -0700
+Message-Id: <20200630210034.3624587-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200629225932.5036-1-daniel.gutson@eclypsium.com>
- <CAK8P3a2zzXHNB7CX8efpKeQF2gJkF2J4FwafU58wT2RGvjjTxw@mail.gmail.com> <CAFmMkTHrQ4LZk4+-3kdJ+dc47MXR1Jd76AXbO-ceT2zsfDRFGQ@mail.gmail.com>
-In-Reply-To: <CAFmMkTHrQ4LZk4+-3kdJ+dc47MXR1Jd76AXbO-ceT2zsfDRFGQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 30 Jun 2020 22:57:59 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1bbpmD0wJkhkjqW9YttBpMmdn8Z5oTLm0cr-0gjyU2zA@mail.gmail.com>
-Message-ID: <CAK8P3a1bbpmD0wJkhkjqW9YttBpMmdn8Z5oTLm0cr-0gjyU2zA@mail.gmail.com>
-Subject: Re: [PATCH] SPI LPC information kernel module
-To:     Daniel Gutson <daniel@eclypsium.com>
-Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Richard Hughes <hughsient@gmail.com>,
-        Alex Bazhaniuk <alex@eclypsium.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:nrsMriwznsm44FAhieNgecKX4Bh0Daeo89xvPyHRsDokUcblcnB
- gUtURX+snIroJ7if7AKDMnQSNp7QueBhXiEMrQRX6u/ZIzwmbV697cIpVTecIT8mHONa+R3
- APSVxzmQIlbMaLvROdzVbLoRBm8q4W2RY8oorUm7yn8P15T3pUhTufDmO9xz0u3I2Bd/FW3
- bs9F3T93C2KHLMAqD2OVQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JcuE5QM5PZA=:wvrNAqCvaJIc1/HiUVo2Yh
- Oxb+LM82Ed/fICvka8+l1FgG242Sv16lyc7mpMYXhLPRqAG4DJieZgbrHgSF+LP5rPGb5Ew0C
- bKxiw+D816d59XS8YAUmyIFNN0PLzUUoHHbbVRd4e0/S8QWrJ2fLgZO37Dg5kY//SwecQ1VBF
- jTSBUS/2mZV+abl/AZFLrOi27oiVfRCL09CZntHaQ+qMHDOFBzi7nIUKt0MBOr42dkxM4DskH
- fuDJtwV9KiNRqOKJnEAbfeWy21jb8xmUv9B96Y6HeVts55rb0PChTcKivuj0Z8FpHKvj1a8C0
- 2IAFmc3a4xCrCy/goGAIfV5kw9IJuIdVRytPh/8SlzOE+BMEVXn3HvQj/TESAn6s+0ajv5Pb+
- yf/1YU/qB1yhD9xmeb5ChegjXF7LF8a1cx8NTdVNemApSWlhoNQQQhy5lC0qPKKH9cxi6T/kA
- qkB2ZlvNhQI1nkOkEdfXp2JLbEFGAU9KpF6jLgHRk/aOv9gWfcnIEE54kbAXhJUINN7+kQpso
- eBSBJSy7jygZNPH0UFB0DWAJ28zmdfFtb5ZKNBsDQZ6fAhS7172ZTxHFE9zIjt00z1mwNIcx3
- /4dVRtFuQADuXK4wBD8Xwd33RmVcexK9OHdldrwwTzlRr8BPDextLt3KblqbiUa6j+8y2SzB8
- mXhTfug241X73J5GyVGH5LSWNJyeHqlDSxg7Bjrw3NhvMf8iye3zKENosAjTL8CDumdLvjeOS
- f58LH88XRBfyb506uCeVBG3mX9iE07BTPKfP/bv9r2p8p2Lw2jZtz+TV05d2QOCFv3LdWKg8N
- ipOJuqTgx47nYuEmefm7GsQidUJWHiY6N4RsTvjb5AVayZfR/s=
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 9:08 PM Daniel Gutson <daniel@eclypsium.com> wrote:
-> On Tue, Jun 30, 2020 at 5:58 AM Arnd Bergmann <arnd@arndb.de> wrote:
->> On Tue, Jun 30, 2020 at 12:59 AM Daniel Gutson <daniel.gutson@eclypsium.com> wrote:
->> The description should start with a little more background for those that
->> don't already know what this driver is for. What is a "system SPI chip"?
->> Is this an SPI host connected over LPC, or an LPC bus connected over
->> SPI? Is there a particular spec that this follows?
->
->
-> "System SPI chip" refers to the main system firmware, which is accessed through an SPI interface.
-> AFAIK there's no spec for this, though it's a de-facto standard applying to the earliest days of legacy BIOS.
-> This driver provides visibility to the system firmware configuration access.
+In certain configurations without power management support, the
+following warnings happen:
 
-Oh, so it isn't even the SPI controller, just a flash chip hanging off
-a random SPI controller, or possibly something else. I suppose it could
-be any MFD device, or possibly something different.
+../drivers/net/ethernet/amd/amd8111e.c:1623:12: warning:
+'amd8111e_resume' defined but not used [-Wunused-function]
+ 1623 | static int amd8111e_resume(struct device *dev_d)
+      |            ^~~~~~~~~~~~~~~
+../drivers/net/ethernet/amd/amd8111e.c:1584:12: warning:
+'amd8111e_suspend' defined but not used [-Wunused-function]
+ 1584 | static int amd8111e_suspend(struct device *dev_d)
+      |            ^~~~~~~~~~~~~~~~
 
->> > +int spi_read_sbase(enum PCH_Arch pch_arch __maybe_unused,
->> > +                  enum CPU_Arch cpu_arch, struct spi_sbase *reg)
->> > +{
->> > +       int ret = 0;
->> > +
->> > +       reg->register_arch.source = RegSource_CPU;
->> > +       reg->register_arch.cpu_arch = cpu_arch;
->> > +
->> > +       switch (cpu_arch) {
->> > +       case cpu_avn:
->> > +       case cpu_byt:
->> > +               ret = read_sbase_atom_avn_byt(&reg->cpu_byt);
->> > +               break;
->> > +       default:
->> > +               ret = -EIO;
->> > +       }
->> > +       return ret;
->> > +}
->> > +EXPORT_SYMBOL_GPL(spi_read_sbase);
->>
->> This function seems to be Intel Atom specific but has a rather generic
->> name for an exported symbol.
->
->
-> It 'currently' is atom specific, but as I mentioned in the mail, the idea was
-> to submit an initial patch with some attributes. The more platforms and fields
-> I need, this switch will get more and more populated. This is about reading the
->  SBASE register, which in my current state, is only used for Atom. I can submit
-> a driver with more fields where these switches get more populated, but I
-> thought it would be easier starting with three fields only.
->
-> Anyways I'll give up on the exports for now until a kernel module shows up needing the reading layer.
+Mark these functions as __maybe_unused to make it clear to the compiler
+that this is going to happen based on the configuration, which is the
+standard for these types of functions.
 
-The problem is more the namespace: as the driver has almost nothing
-to do with spi, this is not what the function should be named. The other
-problem is that the function should not really exist in the first place,
-as no driver has any business reading the register base of a random
-other device that already has a driver.
+Fixes: 2caf751fe080 ("amd8111e: Convert to generic power management")
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ drivers/net/ethernet/amd/amd8111e.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->> > +enum CPU_Arch {
->> > +       cpu_none,
->> > +       cpu_bdw,
->> > +       cpu_bdx,
->> > +       cpu_hsw,
->> > +       cpu_hsx,
->> > +       cpu_ivt,
->> > +       cpu_jkt,
->>
->> You might want to avoid having a central instance listing all possible
->> CPUs. Instead, structure it so that the common parts know nothing
->> about a specific implementation and each one can be kept in a separate
->> file for easier extension.
->
->
-> CPUs differ in register structure, not only extending, but having different fields too.
-> All this information comes from datasheets that don't tell "this is CPU XX with these extensions",
-> so sometimes it is easier to copy what the datasheet says.
-> I didn't understand what's wrong with having a central enumeration of all available CPUs?
+diff --git a/drivers/net/ethernet/amd/amd8111e.c b/drivers/net/ethernet/amd/amd8111e.c
+index c6591b33abcc..5d389a984394 100644
+--- a/drivers/net/ethernet/amd/amd8111e.c
++++ b/drivers/net/ethernet/amd/amd8111e.c
+@@ -1581,7 +1581,7 @@ static void amd8111e_tx_timeout(struct net_device *dev, unsigned int txqueue)
+ 		netif_wake_queue(dev);
+ }
+ 
+-static int amd8111e_suspend(struct device *dev_d)
++static int __maybe_unused amd8111e_suspend(struct device *dev_d)
+ {
+ 	struct net_device *dev = dev_get_drvdata(dev_d);
+ 	struct amd8111e_priv *lp = netdev_priv(dev);
+@@ -1620,7 +1620,7 @@ static int amd8111e_suspend(struct device *dev_d)
+ 	return 0;
+ }
+ 
+-static int amd8111e_resume(struct device *dev_d)
++static int __maybe_unused amd8111e_resume(struct device *dev_d)
+ {
+ 	struct net_device *dev = dev_get_drvdata(dev_d);
+ 	struct amd8111e_priv *lp = netdev_priv(dev);
 
-> This is a way of polymorphism, where I can just do a single
-> read_[register](struct register* register) and then "browse" inside the register definition by knowing the architecture.
-> Could you please explain your alternative with more detail? The user wants its architecture's definition, and will not
-...
->> The driver that owns the MMIO region normally maps it once during its
->> probe() function and then keeps a pointer around
->
->
-> This case is different. Please note that this is not a "device driver",
-> that's why it doesn't own the MMIO region. This driver gathers information
-> from the SPI controller only in the current state (it will be expanded).
-> That's why it maps and then unmaps in the same operation.
+base-commit: ff91e9292fc5aafd9ee1dc44c03cff69a3b0f39f
+-- 
+2.27.0
 
-To answer all the above points: This needs to be in a driver, and
-in case of pch, that driver is drivers/mtd/spi-nor/intel-spi.c.
-
-This driver already has access to the registers you need, and the
-information you pass corresponds to the devices that this driver
-manages, which in turn is where user space would logically search
-for it. You can read the registers in the intel_spi_probe() function
-and then add attributes to the mtd device in sysfs.
-
-I think a good way to handle this in a generic way would be to add
-members to the mtd_info structure and then have the attributes
-created by the mtd core code for any device that initializes those
-struct members, along with the existing 'type', 'size', 'flags',  etc
-attributes.
-
-     Arnd
