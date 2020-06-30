@@ -2,83 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBCB20F10B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 10:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F94920F110
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 11:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731827AbgF3I7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 04:59:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57418 "EHLO mail.kernel.org"
+        id S1731847AbgF3I7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 04:59:51 -0400
+Received: from mx.socionext.com ([202.248.49.38]:40028 "EHLO mx.socionext.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731591AbgF3I7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 04:59:35 -0400
-Received: from localhost (unknown [84.241.197.94])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65C2F206BE;
-        Tue, 30 Jun 2020 08:59:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593507575;
-        bh=EV9ZqH5oEK7a6YYZW6fTv1AYKNoaDzHSVlCdKDobGyA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eZgC5J/RTiX2Kxby20jQ3LqKRg2WX+fffLCY591ZMMHOM4ZBNx/7+JyTOxaM/JNFe
-         xptiNdXp9BZqYNrz6MW+K/SSzC7wP/VFMofmr64tsYMWIdK1+xjilUzrISRxJZLNrA
-         KvB6oSajBv02CVQ0WL0vDGblfwfeLAioc2ODlgVg=
-Date:   Tue, 30 Jun 2020 10:59:32 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Gutson <daniel.gutson@eclypsium.com>
-Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Richard Hughes <hughsient@gmail.com>,
-        Alex Bazhaniuk <alex@eclypsium.com>
-Subject: Re: [PATCH] SPI LPC information kernel module
-Message-ID: <20200630085932.GF637809@kroah.com>
-References: <20200629225932.5036-1-daniel.gutson@eclypsium.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629225932.5036-1-daniel.gutson@eclypsium.com>
+        id S1731749AbgF3I7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 04:59:45 -0400
+Received: from unknown (HELO iyokan-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 30 Jun 2020 17:59:44 +0900
+Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
+        by iyokan-ex.css.socionext.com (Postfix) with ESMTP id 6D3DB60060;
+        Tue, 30 Jun 2020 17:59:44 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Tue, 30 Jun 2020 17:59:44 +0900
+Received: from plum.e01.socionext.com (unknown [10.213.132.32])
+        by kinkan.css.socionext.com (Postfix) with ESMTP id 21AB71A0508;
+        Tue, 30 Jun 2020 17:59:44 +0900 (JST)
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Subject: [PATCH v2 0/2] Add new UniPhier AHCI PHY driver
+Date:   Tue, 30 Jun 2020 17:59:32 +0900
+Message-Id: <1593507574-10007-1-git-send-email-hayashi.kunihiko@socionext.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 07:59:32PM -0300, Daniel Gutson wrote:
-> This kernel module exports configuration attributes for the
-> system SPI chip.
-> This initial version exports the BIOS Write Enable (bioswe),
-> BIOS Lock Enable (ble), and the SMM Bios Write Protect (SMM_BWP)
-> fields of the Bios Control register. The idea is to keep adding more
-> flags, not only from the BC but also from other registers in following
-> versions.
-> 
-> The goal is that the attributes are avilable to fwupd when SecureBoot
-> is turned on.
-> 
-> A technical note: I check if *ppos == BUFFER_SIZE in the reading function
-> to exit early and avoid an extra access to the HW, for example when using
-> the 'cat' command, which causes two read operations.
-> 
-> Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
-> ---
->  Documentation/ABI/stable/securityfs-spi-lpc |  23 +
->  MAINTAINERS                                 |   6 +
->  drivers/misc/Kconfig                        |   1 +
->  drivers/misc/Makefile                       |   1 +
->  drivers/misc/spi_lpc/Kconfig                |  20 +
->  drivers/misc/spi_lpc/Makefile               |   8 +
->  drivers/misc/spi_lpc/bios_data_access.c     | 559 +++++++++++++++++++
->  drivers/misc/spi_lpc/bios_data_access.h     | 181 +++++++
->  drivers/misc/spi_lpc/low_level_access.c     |  59 ++
->  drivers/misc/spi_lpc/low_level_access.h     |  21 +
->  drivers/misc/spi_lpc/spi_lpc_main.c         | 176 ++++++
->  drivers/misc/spi_lpc/viddid_arch_map.c      | 566 ++++++++++++++++++++
->  drivers/misc/spi_lpc/viddid_arch_map.h      |  17 +
->  13 files changed, 1638 insertions(+)
+This series adds support for AHCI PHY interface implemented in Socionext
+UniPhier SoCs. This driver supports PXs2 and PXs3 SoCs.
 
-A single driver that is 1500 lines long is fine, why split this up into
-tiny pieces?
+Changes since v1:
+- dt-bindings: Fix items in reset-names
 
-thanks,
+Kunihiko Hayashi (2):
+  dt-bindings: phy: Add UniPhier AHCI PHY description
+  phy: socionext: Add UniPhier AHCI PHY driver support
 
-greg k-h
+ .../bindings/phy/socionext,uniphier-ahci-phy.yaml  |  76 +++++
+ drivers/phy/socionext/Kconfig                      |  10 +
+ drivers/phy/socionext/Makefile                     |   1 +
+ drivers/phy/socionext/phy-uniphier-ahci.c          | 335 +++++++++++++++++++++
+ 4 files changed, 422 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.yaml
+ create mode 100644 drivers/phy/socionext/phy-uniphier-ahci.c
+
+-- 
+2.7.4
+
