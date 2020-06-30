@@ -2,61 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B0120F5EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D4320F5EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 15:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732540AbgF3NkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 09:40:15 -0400
+        id S2387438AbgF3NkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 09:40:20 -0400
 Received: from mga14.intel.com ([192.55.52.115]:31774 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728651AbgF3NkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:40:14 -0400
-IronPort-SDR: k3t3bH4XVwYHtrM4+25tiM8ZqPwgL+r8CrWbMIHDDU8R76wIVHCcHc3TBCuyegPNZ9XHtdI+UQ
- IMl7zUva1qAg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="145302173"
+        id S1728651AbgF3NkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 09:40:16 -0400
+IronPort-SDR: QXk1B417Zw9MSA9cPb0kTYE6qrtbJ4f0lmMj2q9LeAc/YMFUl5Vohw097wDGHM0XEpKqP5Euun
+ NRBParKNd/pQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="145302176"
 X-IronPort-AV: E=Sophos;i="5.75,297,1589266800"; 
-   d="scan'208";a="145302173"
+   d="scan'208";a="145302176"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 06:40:13 -0700
-IronPort-SDR: STWRW55HtaBObb/Cxk3VvcsjQSJA2zFwfKXo9Fsy0Ayq912iaOUPHhwSINFzhfdTwg2LnTQii4
- pMPBOTXdiLOg==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 06:40:15 -0700
+IronPort-SDR: y6eBT4xEjJ2Z85sJb6xs7/KFvbutpwcKoxkePjqb3fHAd0bE3ruKKEb+XnrHJPtqttkNztYY9o
+ DqzV6GVwMuIQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,297,1589266800"; 
-   d="scan'208";a="425207181"
+   d="scan'208";a="425207190"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.73])
-  by orsmga004.jf.intel.com with ESMTP; 30 Jun 2020 06:40:12 -0700
+  by orsmga004.jf.intel.com with ESMTP; 30 Jun 2020 06:40:14 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
         Luwei Kang <luwei.kang@intel.com>
-Subject: [PATCH 0/3] perf intel-pt: Fix PEBS-via-PT with registers
-Date:   Tue, 30 Jun 2020 16:39:32 +0300
-Message-Id: <20200630133935.11150-1-adrian.hunter@intel.com>
+Subject: [PATCH 1/3] perf intel-pt: Fix recording PEBS-via-PT with registers
+Date:   Tue, 30 Jun 2020 16:39:33 +0300
+Message-Id: <20200630133935.11150-2-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200630133935.11150-1-adrian.hunter@intel.com>
+References: <20200630133935.11150-1-adrian.hunter@intel.com>
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+When recording PEBS-via-PT, the kernel will not accept the intel_pt event
+with register sampling e.g.
 
-Here are some more Intel PT fixes for v5.8.
+ # perf record --kcore -c 10000 -e '{intel_pt/branch=0/,branch-loads/aux-output/ppp}' -I -- ls -l
+ Error:
+ intel_pt/branch=0/: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'
 
+Fix by suppressing register sampling on the intel_pt evsel.
 
-Adrian Hunter (3):
-      perf intel-pt: Fix recording PEBS-via-PT with registers
-      perf intel-pt: Fix displaying PEBS-via-PT with registers
-      perf intel-pt: Fix PEBS sample for XMM registers
-
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: 9e64cefe4335b ("perf intel-pt: Process options for PEBS event synthesis")
+---
  tools/perf/arch/x86/util/intel-pt.c | 1 +
- tools/perf/builtin-script.c         | 2 +-
  tools/perf/util/evsel.c             | 4 ++--
- tools/perf/util/intel-pt.c          | 5 +++--
- 4 files changed, 7 insertions(+), 5 deletions(-)
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
+diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
+index 839ef52c1ac2..6ce451293634 100644
+--- a/tools/perf/arch/x86/util/intel-pt.c
++++ b/tools/perf/arch/x86/util/intel-pt.c
+@@ -641,6 +641,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+ 			}
+ 			evsel->core.attr.freq = 0;
+ 			evsel->core.attr.sample_period = 1;
++			evsel->no_aux_samples = true;
+ 			intel_pt_evsel = evsel;
+ 			opts->full_auxtrace = true;
+ 		}
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index a68ac3632ae6..ef802f6d40c1 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1014,12 +1014,12 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
+ 	if (callchain && callchain->enabled && !evsel->no_aux_samples)
+ 		evsel__config_callchain(evsel, opts, callchain);
+ 
+-	if (opts->sample_intr_regs) {
++	if (opts->sample_intr_regs && !evsel->no_aux_samples) {
+ 		attr->sample_regs_intr = opts->sample_intr_regs;
+ 		evsel__set_sample_bit(evsel, REGS_INTR);
+ 	}
+ 
+-	if (opts->sample_user_regs) {
++	if (opts->sample_user_regs && !evsel->no_aux_samples) {
+ 		attr->sample_regs_user |= opts->sample_user_regs;
+ 		evsel__set_sample_bit(evsel, REGS_USER);
+ 	}
+-- 
+2.17.1
 
-Regards
-Adrian
