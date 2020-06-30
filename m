@@ -2,146 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B90A20F4E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 14:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A229B20F4E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 14:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387800AbgF3MmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 08:42:21 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:51756 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728016AbgF3MmS (ORCPT
+        id S2387821AbgF3MnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 08:43:02 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1396 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728016AbgF3MnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 08:42:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1593520939; x=1625056939;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=KB9LwajWz+3hH1uGt5TzLC/6j8nCDqQP6vXPPclvPfY=;
-  b=BqpmJ9MwW/p/+k6k+w8oSmIMnL2TM33RUUdSR3c+4YhE+HGLZz3sjbqB
-   gCyxtaUwQHMLU5yobkCYHvVw++htMZ7NSJ48+eLSNdxDlBZP6TT/wlz/s
-   QeJ9UjLiRI4vx0K0qkKZGib31UwKDx2SSXbXsg24w8fRsrbRtTWN5tbIX
-   y9rMOFRJCpvJCLhBrF9b65pAVFLv0UhvR37tCARlvqONKk4qKxylvBSNo
-   WFTu71a8YDafO5g0RYOQwQdiK8Y7eVXGqcD/et/vMNcfxMPkPPkzM0ZiA
-   kvqXqEz3wtWtrVpMFHy4Fn8o6UrHqHXtMNOYo4blgSDZ86P5mURrjLGW/
-   g==;
-IronPort-SDR: UafUUWrJ+annlDH23dzZM+m1EEQG+L0kgUSgUt/OLL4v1ZFs4yl3mFlZcsKGul0dpluQkCpGY0
- 8Mxrd72GevyDb7sk/nJj2y8TXjdCG2/xDQliyevmugrWGWSZYe1gp6EAQgcOjHaAA66/PETcgf
- MARzPMd2T8IcVMFq3C6frOF3zJVlAAxm2SfY7uMmXq0BZ0uKmSwHbsY8z6nzONeNxBClYW3v+1
- 7SaX6UHBUxxqimMx1AEcAyle+32BolRWGU2DUK7ctW19PzEcVz5jN2l9F1GRm6G6VOJkKvlfj4
- eWQ=
-X-IronPort-AV: E=Sophos;i="5.75,297,1589212800"; 
-   d="scan'208";a="244296776"
-Received: from mail-co1nam11lp2168.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.168])
-  by ob1.hgst.iphmx.com with ESMTP; 30 Jun 2020 20:42:16 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hmU/T+I2PhNnpFAZ6TYOZOVU+Y75VAZhRkP6+Bd6iB/tvnPAJWMFLyCQ3o5THsMnBLYxafFWi4wjt66hixBLl/qyPvXHlj4y5xP1hHGT1hx4ivKg1XM0cvcUvmY2zb9dgmk+y4bJ/Ccf/gStvsyHlKw5CbgSUvVOCOvUxSbmKSlxQ2GoiwEi3xJVa7bTy9rPUNgI+8eqLpMIA3H+dvR8ZNKGFbnZCeSAgmGCxOFKIIG3mwFRiVjLUTUeciXa7opA/Oc6i6C7Cfpt2ha8AYXEraOKg+CCKipI8FBy5A5Lql5Z5xgEmI7/XrCg7lv5VLW0pLIFDXJtS4Ok0W+bvQ84oQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KB9LwajWz+3hH1uGt5TzLC/6j8nCDqQP6vXPPclvPfY=;
- b=KvqPzn14piivC7/79wFcj4L29sLoUzsRpyJfoDBM+AH2AFQVVsjqfONrDFoJG20jCLZUm/LcD2Ud2c8cN6mMSHzAic+lz/VJSmSuuWx94nhb/TjUFzja+ryJF3LXWHgHdbU8aZVaqeK2UGFfSnF4i0B/ZSHIFSiVnixhLuxMtdbl4oerQ0lQ59tJebcZbeGsvyz7LU8zkYPN+uXXSllaCSKJjrkFttm9FGMh1cOxEbWP03UVD9f7CH1GG4WjM36zEXpM7HHGfhLG1K4rK4rGknKjiP5bBD3q3Xm+SUO9ODnAioWtoVWq3FTEl7lzH6StOJaO11tT4ig8VR+YfnUhKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KB9LwajWz+3hH1uGt5TzLC/6j8nCDqQP6vXPPclvPfY=;
- b=ag2Zs8qU4mUyDvWoTOvg36rymcZNCgGGWIGHg19aKwBmSgVVT45Eqfm3Qiy3zcPc0iNRID6VpWU7YDSmzA3iIzX365TZu9R+FxZuJiyyrPf0BzMGYjeXwwXTh2H/E7fSZmychEhjPrXsSnERpsgtB7HzWDi1h1WIzGws0znkrgc=
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
- by SN6PR04MB4077.namprd04.prod.outlook.com (2603:10b6:805:47::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.23; Tue, 30 Jun
- 2020 12:42:13 +0000
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::9cbe:995f:c25f:d288]) by SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::9cbe:995f:c25f:d288%6]) with mapi id 15.20.3131.027; Tue, 30 Jun 2020
- 12:42:13 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Subject: RE: [PATCH v4 4/5] scsi: ufs: L2P map management for HPB read
-Thread-Topic: [PATCH v4 4/5] scsi: ufs: L2P map management for HPB read
-Thread-Index: AQHWTebYpX5BfvKkoU2xgSP8E9mBaKjxGyDw
-Date:   Tue, 30 Jun 2020 12:42:13 +0000
-Message-ID: <SN6PR04MB4640BCE167B108B74D5042E5FC6F0@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <1239183618.61593413882377.JavaMail.epsvc@epcpadp2>
-        <963815509.21593413582881.JavaMail.epsvc@epcpadp2>
-        <1239183618.61593413402991.JavaMail.epsvc@epcpadp1>
-        <231786897.01593413281727.JavaMail.epsvc@epcpadp2>
-        <CGME20200629064323epcms2p787baba58a416fef7fdd3927f8da701da@epcms2p2>
- <963815509.21593415684555.JavaMail.epsvc@epcpadp2>
-In-Reply-To: <963815509.21593415684555.JavaMail.epsvc@epcpadp2>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: samsung.com; dkim=none (message not signed)
- header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: c101fa71-8e62-4976-aa12-08d81cf303be
-x-ms-traffictypediagnostic: SN6PR04MB4077:
-x-microsoft-antispam-prvs: <SN6PR04MB4077A9B8399F7EBA9086D5B3FC6F0@SN6PR04MB4077.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:229;
-x-forefront-prvs: 0450A714CB
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4xy7pJ3UVVcd3xUrzswt3omXyMNmV5BbOxQOUdFjdm9H2wg+njNhK/ogmyALHvk7fb3/e25HfI7P/HBViONxHx5aDzfFOE+NcdqAANRcXaQJ68mI+Nmwmqj6Qv6FGWaZ/pawdJK9Xb4IMnOy5YuyYJ1FwgQK71j1YrKnpOErWqj5pdDwNlLlZ8cSF/qBB56O2oVwl6M0g65JCJaHCEt86alHN4kj2M/Yx8Se2XGIDXjs8bg4W1yVeRkTJJ94b0NbODhgbhAfgdFsxsBQRDqq9Ju+PWHPPbOHMtUPbatK+/wsywRn5S2mTHHxNPyDA7REz1tt9AOTpgHcJ9c/BjbdyOEiYC8u6MgrpxeEq4R5Ornmp4UCSAWJEfZ9dcgWkJ4i
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(366004)(396003)(346002)(376002)(66946007)(9686003)(7696005)(4744005)(71200400001)(52536014)(83380400001)(8936002)(76116006)(86362001)(5660300002)(4326008)(66446008)(478600001)(55016002)(64756008)(66476007)(66556008)(33656002)(2906002)(110136005)(54906003)(316002)(6506007)(186003)(26005)(7416002)(8676002)(921003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: ENa1Qohy0Dzos3YiMRvTrJd/bT7g51Pri071A1cluTa+aDMobPbGEHeCyR9NUhQ0YFxdTwZxaOYWVan5QLMyEQImFsd3YhUpcP5S1qCRRblu2WoYhqsTQlXY850H38JsH4RdnPIRd+HFhfQLkLhYza34/nReMob2C5rjavBbW3yleGXBV7kUnCGY1cC0Lqder74F+vt8Rd0UxWS/5Hc7y3KHfCPBDRQxsuMLqvWTHg+6+X7aTYXx/uE6f/SOJ/p+eoe5OOL6nb8MKNr2V+JrSVUWEggfo+nuAaAb3lTTTG8CIGRQEE6j2bGjXo1tNjy+EAUBwdNlzzg/3n5uy4AZeGm70nnJthTGkzc9IRtZzSZLEdLnvT9Nj3O7K9Yul3jLvQnCB6nrlliHa6myhqPa56+XUDJ+mTXWONfXdD+Bx8mKYMdG71xbmqX3RDLe0IsIGs4FoS7QtlP2JOidEPm/EEaG0CEkWPasdJe+gks3dNE=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 30 Jun 2020 08:43:01 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5efb33240000>; Tue, 30 Jun 2020 05:42:12 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Tue, 30 Jun 2020 05:43:01 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Tue, 30 Jun 2020 05:43:01 -0700
+Received: from [10.26.75.203] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 30 Jun
+ 2020 12:42:54 +0000
+Subject: Re: [PATCH v8 3/3] iommu/arm-smmu: Add global/context fault
+ implementation hooks
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Krishna Reddy <vdumpa@nvidia.com>
+CC:     <snikam@nvidia.com>, <nicoleotsuka@gmail.com>,
+        <mperttunen@nvidia.com>, <bhuntsman@nvidia.com>, <will@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <praithatha@nvidia.com>,
+        <talho@nvidia.com>, <iommu@lists.linux-foundation.org>,
+        <nicolinc@nvidia.com>, <linux-tegra@vger.kernel.org>,
+        <yhsu@nvidia.com>, <treding@nvidia.com>,
+        <linux-arm-kernel@lists.infradead.org>, <bbiswas@nvidia.com>
+References: <20200630001051.12350-1-vdumpa@nvidia.com>
+ <20200630001051.12350-4-vdumpa@nvidia.com>
+ <4b4b20af-7baa-0987-e40d-af74235153f6@nvidia.com>
+ <6c2ce909-c71b-351f-79f5-b1a4b4c0e4ac@arm.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <fd1f1102-ab05-002a-a86a-d3c6cef21e01@nvidia.com>
+Date:   Tue, 30 Jun 2020 13:42:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR04MB4640.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c101fa71-8e62-4976-aa12-08d81cf303be
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jun 2020 12:42:13.6274
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fWa9gdynk29vJOGWkyayEKW++2RzpYkvZF5UIuwb+9Qgup9ygJiLddYxPghOvh8LuYd++0370xqGWZBtVjosqg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4077
+In-Reply-To: <6c2ce909-c71b-351f-79f5-b1a4b4c0e4ac@arm.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1593520932; bh=hK3xWsoaF4cxDik6Mhq5qaTx82gKOLvVl8GbV1br+EM=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=puWqgxQA8yIruffJjHDVkJAi+UFOYN1pn9OAiXwGvywkKRxjWFtBhUaip1YoThldr
+         i6NHZ/dtKAjI+ln4Q1pE/KqNNlnUyluMJWqRyzuo/t91r1WMqbicqPfWCCQfx+fvuQ
+         9NXOzVNUNZWMkxYN5++mPnQCMwjlfc9ZOiifR0/dSrwRbbHDHUpyGt6S6pI2K1RXDB
+         xuE3VAKgS4D2NXdlBAtGsx9f6aNRLRdRZV1Cq3f/maRdn2uW4ti2PRd18RZPpqrg4e
+         LqvR5JhOSxqw0tbBOpNj9MgYkrYITBUBAcsKIlpbugPsPSgP09fFVixBvKQSSvPNMp
+         STDwB7x62E+0g==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiArc3RhdGljIGludCB1ZnNocGJfaXNzdWVfbWFwX3JlcShzdHJ1Y3QgdWZzaHBiX2x1ICpocGIs
-DQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IHVmc2hwYl9yZWdpb24g
-KnJnbiwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgdWZzaHBiX3N1
-YnJlZ2lvbiAqc3JnbikNCj4gK3sNCg0KDQo+ICsNCj4gKyAgICAgICByZXQgPSB1ZnNocGJfbHVf
-Z2V0KGhwYik7DQo+ICsgICAgICAgaWYgKHVubGlrZWx5KHJldCkpIHsNCj4gKyAgICAgICAgICAg
-ICAgIGRldl9ub3RpY2UoJmhwYi0+aHBiX2x1X2RldiwNCj4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIiVzOiB1ZnNocGJfbHVfZ2V0IGZhaWxlZDogJWQiLCBfX2Z1bmNfXywgcmV0KTsNCj4g
-KyAgICAgICAgICAgICAgIGdvdG8gZnJlZV9tYXBfcmVxOw0KPiArICAgICAgIH0NCj4gKw0KPiAr
-ICAgICAgIHJldCA9IHVmc2hwYl9leGVjdXRlX21hcF9yZXEoaHBiLCBtYXBfcmVxKTsNCj4gKyAg
-ICAgICBpZiAocmV0KSB7DQo+ICsgICAgICAgICAgICAgICBkZXZfbm90aWNlKCZocGItPmhwYl9s
-dV9kZXYsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICIlczogaXNzdWUgbWFwX3JlcSBm
-YWlsZWQ6ICVkLCByZWdpb24gJWQgLSAlZFxuIiwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgX19mdW5jX18sIHJldCwgc3Jnbi0+cmduX2lkeCwgc3Jnbi0+c3Jnbl9pZHgpOw0KPiArICAg
-ICAgICAgICAgICAgdWZzaHBiX2x1X3B1dChocGIpOw0KPiArICAgICAgICAgICAgICAgZ290byBm
-cmVlX21hcF9yZXE7DQo+ICsgICAgICAgfQ0KTWlzc2luZyBjbG9zaW5nIHVmc2hwYl9sdV9wdXQ/
-DQoNCj4gKyAgICAgICByZXR1cm4gMDsNCg==
+
+On 30/06/2020 13:13, Robin Murphy wrote:
+> On 2020-06-30 09:37, Jon Hunter wrote:
+>>
+>> On 30/06/2020 01:10, Krishna Reddy wrote:
+>>> Add global/context fault hooks to allow NVIDIA SMMU implementation
+>>> handle faults across multiple SMMUs.
+>>
+>> Nit ... this is not just for NVIDIA, but this allows anyone to add
+>> custom global/context and fault hooks. So I think that the changelog
+>> should be clear that this change permits custom fault hooks and that
+>> custom fault hooks are needed for the Tegra194 SMMU. You may also want
+>> to say why.
+>>
+>>>
+>>> Signed-off-by: Krishna Reddy <vdumpa@nvidia.com>
+>>> ---
+>>> =C2=A0 drivers/iommu/arm-smmu-nvidia.c | 98 +++++++++++++++++++++++++++=
+++++++
+>>> =C2=A0 drivers/iommu/arm-smmu.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 | 17 +++++-
+>>> =C2=A0 drivers/iommu/arm-smmu.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 |=C2=A0 3 +
+>>> =C2=A0 3 files changed, 116 insertions(+), 2 deletions(-)
+
+...
+
+>>> @@ -835,7 +836,13 @@ static int arm_smmu_init_domain_context(struct
+>>> iommu_domain *domain,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * handler seeing a half-initialise=
+d domain state.
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 irq =3D smmu->irqs[smmu->num_global_irqs=
+ + cfg->irptndx];
+>>> -=C2=A0=C2=A0=C2=A0 ret =3D devm_request_irq(smmu->dev, irq, arm_smmu_c=
+ontext_fault,
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 if (smmu->impl && smmu->impl->context_fault)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 context_fault =3D smmu->imp=
+l->context_fault;
+>>> +=C2=A0=C2=A0=C2=A0 else
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 context_fault =3D arm_smmu_=
+context_fault;
+>>
+>> Why not see the default smmu->impl->context_fault to
+>> arm_smmu_context_fault in arm_smmu_impl_init() and then allow the
+>> various implementations to override as necessary? Then you can get rid
+>> of this context_fault variable here and just use
+>> smmu->impl->context_fault below.
+>=20
+> Because the default smmu->impl is NULL. And as I've said before, NAK to
+> forcing the common case to allocate a set of "quirks" purely to override
+> the default IRQ handler with the default IRQ handler ;)
+
+
+Ah OK, makes sense. Sorry I am a bit late to the review :-)
+
+Jon
+
+--=20
+nvpublic
