@@ -2,116 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED9320EC37
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 05:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF96E20EC3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 05:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729244AbgF3Dx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 23:53:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:60194 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726710AbgF3Dx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 23:53:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2739030E;
-        Mon, 29 Jun 2020 20:53:58 -0700 (PDT)
-Received: from [10.163.84.101] (unknown [10.163.84.101])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5EE3D3F73C;
-        Mon, 29 Jun 2020 20:53:47 -0700 (PDT)
-Subject: Re: [PATCH V3 0/4] mm/debug_vm_pgtable: Add some more tests
-To:     linux-mm@kvack.org
-Cc:     christophe.leroy@c-s.fr, ziy@nvidia.com,
-        gerald.schaefer@de.ibm.com, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org,
-        linux-doc@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
-        Qian Cai <cai@lca.pw>
-References: <1592192277-8421-1-git-send-email-anshuman.khandual@arm.com>
- <70ddc7dd-b688-b73e-642a-6363178c8cdd@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <1ed72a76-9f20-0169-4c16-c1d8808690eb@arm.com>
-Date:   Tue, 30 Jun 2020 09:23:35 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1729300AbgF3DzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 23:55:15 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:58356 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726710AbgF3DzO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 23:55:14 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1jq7MM-0006ta-Uk; Mon, 29 Jun 2020 23:55:02 -0400
+Message-ID: <6917929c7dd7786b5b673743ce45bbcd56e6b1f1.camel@surriel.com>
+Subject: Re: XHCI vs PCM2903B/PCM2904 part 2
+From:   Rik van Riel <riel@surriel.com>
+To:     Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     linux-usb <linux-usb@vger.kernel.org>, alsa-devel@alsa-project.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Date:   Mon, 29 Jun 2020 23:55:02 -0400
+In-Reply-To: <b98bfefc2911e5265b6c28d9730a18e7953b847c.camel@surriel.com>
+References: <273cc1c074cc4a4058f31afe487fb233f5cf0351.camel@surriel.com>
+         <20200520163840.GA11084@rowland.harvard.edu>
+         <667d8d156fa5d8420ef1c3b1d08b94a10d2398cc.camel@surriel.com>
+         <20200520203417.GA23602@rowland.harvard.edu>
+         <d75c3a3cda51149a054838652243de2b8ac20854.camel@surriel.com>
+         <059878e7-75b8-e033-ec9f-7e6b73df8f78@linux.intel.com>
+         <b98bfefc2911e5265b6c28d9730a18e7953b847c.camel@surriel.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-ZRKuGvfuaKsRX315ie48"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <70ddc7dd-b688-b73e-642a-6363178c8cdd@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--=-ZRKuGvfuaKsRX315ie48
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 06/24/2020 08:43 AM, Anshuman Khandual wrote:
-> 
-> 
-> On 06/15/2020 09:07 AM, Anshuman Khandual wrote:
->> This series adds some more arch page table helper validation tests which
->> are related to core and advanced memory functions. This also creates a
->> documentation, enlisting expected semantics for all page table helpers as
->> suggested by Mike Rapoport previously (https://lkml.org/lkml/2020/1/30/40).
->>
->> There are many TRANSPARENT_HUGEPAGE and ARCH_HAS_TRANSPARENT_HUGEPAGE_PUD
->> ifdefs scattered across the test. But consolidating all the fallback stubs
->> is not very straight forward because ARCH_HAS_TRANSPARENT_HUGEPAGE_PUD is
->> not explicitly dependent on ARCH_HAS_TRANSPARENT_HUGEPAGE.
->>
->> Tested on arm64, x86 platforms but only build tested on all other enabled
->> platforms through ARCH_HAS_DEBUG_VM_PGTABLE i.e powerpc, arc, s390. The
->> following failure on arm64 still exists which was mentioned previously. It
->> will be fixed with the upcoming THP migration on arm64 enablement series.
->>
->> WARNING .... mm/debug_vm_pgtable.c:860 debug_vm_pgtable+0x940/0xa54
->> WARN_ON(!pmd_present(pmd_mkinvalid(pmd_mkhuge(pmd))))
->>
->> This series is based on v5.8-rc1.
->>
->> Changes in V3:
->>
->> - Replaced HAVE_ARCH_SOFT_DIRTY with MEM_SOFT_DIRTY
->> - Added HAVE_ARCH_HUGE_VMAP checks in pxx_huge_tests() per Gerald
->> - Updated documentation for pmd_thp_tests() per Zi Yan
->> - Replaced READ_ONCE() with huge_ptep_get() per Gerald
->> - Added pte_mkhuge() and masking with PMD_MASK per Gerald
->> - Replaced pte_same() with holding pfn check in pxx_swap_tests()
->> - Added documentation for all (#ifdef #else #endif) per Gerald
->> - Updated pmd_protnone_tests() per Gerald
->> - Updated HugeTLB PTE creation in hugetlb_advanced_tests() per Gerald
->> - Replaced [pmd|pud]_mknotpresent() with [pmd|pud]_mkinvalid()
->> - Added has_transparent_hugepage() check for PMD and PUD tests
->> - Added a patch which debug prints all individual tests being executed
->> - Updated documentation for renamed [pmd|pud]_mkinvalid() helpers
-> 
-> Hello Gerald/Christophe/Vineet,
-> 
-> It would be really great if you could give this series a quick test
-> on s390/ppc/arc platforms respectively. Thank you.
+On Mon, 2020-06-29 at 23:21 -0400, Rik van Riel wrote:
 
-Thanks Alexander, Gerald and Christophe for testing this out on s390
-and ppc32 platforms. Probably Vineet and Qian (any other volunteers)
-could help us with arc and ppc64 platforms, which I would appreciate.
+> > Could you add the code below and take new traces, it will show the
+> > endpoint
+> > state after the Babble error.
+>=20
+> Hi Mathias,
+>=20
+> I have finally rebooted into a kernel with your tracepoint.
+> After a babble error, I get the following info in the trace.
+>=20
+> [  556.716334] xhci_hcd 0000:00:14.0: Babble error for slot 13 ep 8
+> on
+> endpoint
+>=20
+>  28672.016 :0/0 xhci-hcd:xhci_handle_tx_event(info: 196609, info2:
+> 12845096, deq: 69501877488, tx_info: 12845252)
+>  34816.037 :0/0 xhci-hcd:xhci_handle_tx_event(info: 196609, info2:
+> 12845096, deq: 69501877856, tx_info: 12845252)
+>  38912.043 :0/0 xhci-hcd:xhci_handle_tx_event(info: 196609, info2:
+> 12845096, deq: 69501870176, tx_info: 12845252)
+
+OK, this is strange indeed.
+info: 0x30001
+info2: 0xc40028
+tx_info: c400c4
+
+That suggests the device state is EP_STATE_DISABLED, but
+we never got the error from the EP_STATE_DISABLED test near
+the start of handle_tx_event(). If we had, the big switch
+statement containing the code below would have been bypassed.
+
+Unless I am mistaken, does that mean the endpoint context
+(*ep_ctx) got modified while the code was in the middle of
+handle_tx_event()?
+
+What would cause that? A subsequent transfer to an endpoint
+while it is in EP_STATE_HALTED, which the comment suggests=20
+is the expected endpoint state for a babble error?
+
+> > diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-
+> > ring.c
+> > index 0fda0c0f4d31..373d89ef7275 100644
+> > --- a/drivers/usb/host/xhci-ring.c
+> > +++ b/drivers/usb/host/xhci-ring.c
+> > @@ -2455,6 +2455,7 @@ static int handle_tx_event(struct xhci_hcd
+> > *xhci,
+> >  	case COMP_BABBLE_DETECTED_ERROR:
+> >  		xhci_dbg(xhci, "Babble error for slot %u ep %u on
+> > endpoint\n",
+> >  			 slot_id, ep_index);
+> > +		trace_xhci_handle_tx_event(ep_ctx);
+> >  		status =3D -EOVERFLOW;
+> >  		break;
+> >  	/* Completion codes for endpoint error state */
+> > diff --git a/drivers/usb/host/xhci-trace.h b/drivers/usb/host/xhci-
+> > trace.h
+> > index b19582b2a72c..5081df079f4a 100644
+> > --- a/drivers/usb/host/xhci-trace.h
+> > +++ b/drivers/usb/host/xhci-trace.h
+> > @@ -360,6 +360,11 @@ DEFINE_EVENT(xhci_log_ep_ctx,
+> > xhci_add_endpoint,
+> >  	TP_ARGS(ctx)
+> >  );
+> > =20
+> > +DEFINE_EVENT(xhci_log_ep_ctx, xhci_handle_tx_event,
+> > +	TP_PROTO(struct xhci_ep_ctx *ctx),
+> > +	TP_ARGS(ctx)
+> > +);
+> > +
+> >  DECLARE_EVENT_CLASS(xhci_log_slot_ctx,
+> >  	TP_PROTO(struct xhci_slot_ctx *ctx),
+> >  	TP_ARGS(ctx),
+> >=20
+> >=20
+> >=20
+--=20
+All Rights Reversed.
+
+--=-ZRKuGvfuaKsRX315ie48
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl76t5YACgkQznnekoTE
+3oM51wf+IDH4yBPUjkRX/nVrBrZmFVKaBY8Tlnvrh9/2TO3yFreONlaz/te9FHcj
+8Q85/ykFQZZ6qKohlJZ8vIcIx49kiuotuzQnoyF3Uo5MyyVjbJKVezxEJcbuiZLu
+BWg90C6vgRyBr202vA72pcHek7oL5vz5J0+QXYuH21xeioKoD0PcP2919erBqXOs
+/vxEGnhKIdd8V2AixZdi/SytlFiUkxD6nxHqzSnv7d0vkSIqojtAHzainNv0yDZC
+MlwdTG49W0YYS4h9Id3AvP89xAwdXOSkyC2OCiDA2WllGO8lRpN5GYb3OaFd/iGh
+Qru+7Fiu6PS7Y1eVnmIolXKhMeEnTA==
+=HhVq
+-----END PGP SIGNATURE-----
+
+--=-ZRKuGvfuaKsRX315ie48--
+
