@@ -2,68 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D029020F878
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 17:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA3D20F8B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 17:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389561AbgF3Pf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 11:35:29 -0400
-Received: from mga01.intel.com ([192.55.52.88]:56113 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389472AbgF3Pf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 11:35:29 -0400
-IronPort-SDR: 9MUvMHsr+nQVQOOATKbmBJyddW8PFJ2VP7+1K9Vt7djZX8tOf0O3mLo+11OUGy9X+1Bqucd7hI
- bGUN2E8ZVtgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="164275162"
-X-IronPort-AV: E=Sophos;i="5.75,297,1589266800"; 
-   d="scan'208";a="164275162"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 08:35:28 -0700
-IronPort-SDR: G7tKrINYbzcvfvWHznr2coYdrUvsO33iueotv+iah3XwelwKpr0gtEss5dWDi5JDf83IkdA4I/
- VADAlDox4ueg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,297,1589266800"; 
-   d="scan'208";a="481231881"
-Received: from unknown (HELO linuxpc.iind.intel.com) ([10.223.107.108])
-  by fmsmga005.fm.intel.com with ESMTP; 30 Jun 2020 08:35:26 -0700
-From:   Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
-To:     rafael.j.wysocki@intel.com, srinivas.pandruvada@linux.intel.com,
-        andriy.shevchenko@intel.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rui.zhang@intel.com, sumeet.r.pawnikar@intel.com
-Subject: [PATCH] ACPI: fan: fix: Update Tiger Lake ACPI device ID
-Date:   Tue, 30 Jun 2020 21:11:49 +0530
-Message-Id: <1593531709-21749-1-git-send-email-sumeet.r.pawnikar@intel.com>
-X-Mailer: git-send-email 1.7.9.5
+        id S2389696AbgF3PoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 11:44:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389655AbgF3PoB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 11:44:01 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C833EC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 08:44:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OQxTXNj9yDq06FjwILkGgyBd+fyQSISd2el9foUvjmY=; b=OdpXLhqmUTkQpG7XO1b4vM2siS
+        LFD48OPxmpiQ1k/FJWZRuQNCjQQnUoe0X9k8ddv79/uljEi9sxD1111DCbMvEXycp8wcxTWcO1mK9
+        KRQzy/tHwt0XIw7lL62vuKr0LY9AvqcnxsdD1BgSDc9pXU4EmE2ytWGPDvO6YfK6/1uP2tThFQ/Uk
+        yluCvkQpfaEFS66KAYfsNV/C8EQHT6kSDaJAZ/ntsj+7lt8mBXFzKzF5a0sMOCz/gWtAkQtr8nVKW
+        bnOaRFOOQ0qoJc3twdZXS3IApeVQ3HNiWoHR5Etd1AqSFMIcqP2648EgviZ4TM4jVY1JUxaphRrvY
+        VuGpRCpg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jqIPy-0003te-3d; Tue, 30 Jun 2020 15:43:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C4B3230015A;
+        Tue, 30 Jun 2020 17:43:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B164B20CF3979; Tue, 30 Jun 2020 17:43:26 +0200 (CEST)
+Date:   Tue, 30 Jun 2020 17:43:26 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@redhat.com, acme@kernel.org, tglx@linutronix.de,
+        bp@alien8.de, x86@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, dave.hansen@intel.com,
+        yu-cheng.yu@intel.com, bigeasy@linutronix.de, gorcunov@gmail.com,
+        hpa@zytor.com, alexey.budankov@linux.intel.com, eranian@google.com,
+        ak@linux.intel.com, like.xu@linux.intel.com,
+        yao.jin@linux.intel.com, wei.w.wang@intel.com
+Subject: Re: [PATCH V2 13/23] perf/x86/intel/lbr: Factor out
+ intel_pmu_store_lbr
+Message-ID: <20200630154326.GT4781@hirez.programming.kicks-ass.net>
+References: <1593195620-116988-1-git-send-email-kan.liang@linux.intel.com>
+ <1593195620-116988-14-git-send-email-kan.liang@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1593195620-116988-14-git-send-email-kan.liang@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tiger Lake's new unique ACPI device ID for Fan is not valid
-because of missing 'C' in the ID. Fix this Fan ID by updating it.
+On Fri, Jun 26, 2020 at 11:20:10AM -0700, kan.liang@linux.intel.com wrote:
+> -static inline u64 rdlbr_from(unsigned int idx)
+> +static inline u64 rdlbr_from(unsigned int idx, struct lbr_entry *lbr)
+>  {
+>  	u64 val;
+>  
+> +	if (lbr)
+> +		return lbr->from;
+> +
+>  	rdmsrl(x86_pmu.lbr_from + idx, val);
+>  
+>  	return lbr_from_signext_quirk_rd(val);
+>  }
+>  
+> -static inline u64 rdlbr_to(unsigned int idx)
+> +static inline u64 rdlbr_to(unsigned int idx, struct lbr_entry *lbr)
+>  {
+>  	u64 val;
+>  
+> +	if (lbr)
+> +		return lbr->to;
+> +
+>  	rdmsrl(x86_pmu.lbr_to + idx, val);
+>  
+>  	return val;
+>  }
+>  
+> -static inline u64 rdlbr_info(unsigned int idx)
+> +static inline u64 rdlbr_info(unsigned int idx, struct lbr_entry *lbr)
+>  {
+>  	u64 val;
+>  
+> +	if (lbr)
+> +		return lbr->info;
+> +
+>  	rdmsrl(x86_pmu.lbr_info + idx, val);
+>  
+>  	return val;
 
-Fixes: c248dfe7e0ca ("ACPI: fan: Add Tiger Lake ACPI device ID")
-Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
----
- drivers/acpi/fan.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/acpi/fan.c b/drivers/acpi/fan.c
-index 873e039ad4b7..62873388b24f 100644
---- a/drivers/acpi/fan.c
-+++ b/drivers/acpi/fan.c
-@@ -25,8 +25,8 @@
- 
- static const struct acpi_device_id fan_device_ids[] = {
- 	{"PNP0C0B", 0},
--	{"INT1044", 0},
- 	{"INT3404", 0},
-+	{"INTC1044", 0},
- 	{"", 0},
- };
- MODULE_DEVICE_TABLE(acpi, fan_device_ids);
--- 
-1.7.9.5
+These should probably be __always_inline, just to make sure the compiler
+doesn't do anything stupid.
 
