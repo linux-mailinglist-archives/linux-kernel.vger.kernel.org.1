@@ -2,72 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284BB20EB8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 04:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0D620EB98
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 04:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728671AbgF3Cn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 22:43:59 -0400
-Received: from mga09.intel.com ([134.134.136.24]:35120 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725988AbgF3Cn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 22:43:58 -0400
-IronPort-SDR: 0eYd3uo7oYVeK9QNa+JpdZYu4vtcc4UN4h5UmBJOI9f0IHvoVSMK+dmMz0d744792hiVfHlq1x
- gq1Bp1oChEUg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="147678580"
-X-IronPort-AV: E=Sophos;i="5.75,296,1589266800"; 
-   d="scan'208";a="147678580"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 19:43:58 -0700
-IronPort-SDR: xkDX+TYq9LZuJz0dItZ/6FPZqkq5q9DFqkIgenfjuiSfv3L+nY4EJ+S8HK+UDM0w5GDCRebgZ6
- T7ze+QW53OxQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,296,1589266800"; 
-   d="scan'208";a="425040347"
-Received: from lkp-server01.sh.intel.com (HELO 28879958b202) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 29 Jun 2020 19:43:56 -0700
-Received: from kbuild by 28879958b202 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jq6FX-0001IQ-V5; Tue, 30 Jun 2020 02:43:55 +0000
-Date:   Tue, 30 Jun 2020 10:43:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     alexandru.tachici@analog.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, robh+dt@kernel.org, linux@roeck-us.net,
-        Alexandru Tachici <alexandru.tachici@analog.com>
-Subject: [RFC PATCH] hwmon: pmbus: adm1266: pmbus_block_xfer() can be static
-Message-ID: <20200630024310.GA23779@89284d6ea506>
-References: <20200624151736.95785-3-alexandru.tachici@analog.com>
+        id S1728769AbgF3Cts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 22:49:48 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:54410 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728665AbgF3Cti (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 22:49:38 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05U2nPWg105154;
+        Mon, 29 Jun 2020 21:49:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1593485365;
+        bh=l3dJNMTnCJS2Tr9Fc2NBXAUcVx30a2Jtr1XirbH4bSQ=;
+        h=From:To:CC:Subject:Date;
+        b=uynyKw0k0VUCxZ8VoF8w9a5ttM0x+3lkNoX3+8nbl9b8VCUX/xl2sx3fFFxrhO5Zl
+         ooL9/3dSSZVmBSa790/YlF0ul2FU6N1qBrhgRJrAZNROK25XX0sYRSmoVkGMJaElE8
+         W3RaSDFOgI14SBY+2YuEZuohJnFxAyxZEXSYG9jE=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05U2nPS5048597
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 29 Jun 2020 21:49:25 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 29
+ Jun 2020 21:49:25 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 29 Jun 2020 21:49:25 -0500
+Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05U2nPFt075189;
+        Mon, 29 Jun 2020 21:49:25 -0500
+Received: from localhost ([10.250.48.148])
+        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 05U2nPFT029139;
+        Mon, 29 Jun 2020 21:49:25 -0500
+From:   Suman Anna <s-anna@ti.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
+Subject: [PATCH v2 0/4] TI K3 R5F remoteproc support
+Date:   Mon, 29 Jun 2020 21:49:18 -0500
+Message-ID: <20200630024922.32491-1-s-anna@ti.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200624151736.95785-3-alexandru.tachici@analog.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi All,
 
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- adm1266.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The following is v2 of the TI K3 R5F remoteproc driver series supporting all
+the R5F processor clusters/subsystems on TI AM65x and J721E SoCs. Please
+see the v1 cover-letter [1] for the features supported on these R5F
+processors.
 
-diff --git a/drivers/hwmon/pmbus/adm1266.c b/drivers/hwmon/pmbus/adm1266.c
-index 381d89a8569f2..1aa3f0a738151 100644
---- a/drivers/hwmon/pmbus/adm1266.c
-+++ b/drivers/hwmon/pmbus/adm1266.c
-@@ -24,8 +24,8 @@ DECLARE_CRC8_TABLE(pmbus_crc_table);
-  * followed by a Read Block without the Read-Block command field and the
-  * Write-Block STOP bit.
-  */
--int pmbus_block_xfer(struct i2c_client *client, u8 cmd, u8 w_len,
--		     u8 *data_w, u8 *data_r)
-+static int pmbus_block_xfer(struct i2c_client *client, u8 cmd, u8 w_len,
-+			    u8 *data_w, u8 *data_r)
- {
- 	u8 write_buf[ADM1266_PMBUS_BLOCK_MAX + 2];
- 	struct i2c_msg msgs[2] = {
+The patches are based off 5.8-rc1 and now sit on top of the v3 K3 DSP C66x
+and C71x remoteproc driver series [2][3] (v1 had R5F followed by DSPs).
+
+The v2 version now only has 4 patches instead of the 7 patches in v1. The
+first 2 patches from v1 are already part of 5.8-rc1 and the third patch is
+moved to the K3 DSP C66x series [4].
+
+The following is the summary of the main changes in v2:
+ - Reworked bindings patch (patch #1) to leverage a new common ti-sci-proc
+   yaml bindings file introduced in the K3 DSP C66x series.
+ - K3 R5F remoteproc driver revised to leverage more devm_ API and
+   address all Mathieu's comments. 
+
+Please see the individual patches for detailed delta differences.
+
+regards
+Suman
+
+[1] R5F v1: https://patchwork.kernel.org/cover/11456367/
+[2] C66x v3: https://patchwork.kernel.org/cover/11602331/
+[3] C71x v3: https://patchwork.kernel.org/cover/11602345/
+[4] https://patchwork.kernel.org/patch/11602329/
+
+Suman Anna (4):
+  dt-bindings: remoteproc: Add bindings for R5F subsystem on TI K3 SoCs
+  remoteproc: k3-r5: Add a remoteproc driver for R5F subsystem
+  remoteproc: k3-r5: Initialize TCM memories for ECC
+  remoteproc: k3-r5: Add loading support for on-chip SRAM regions
+
+ .../bindings/remoteproc/ti,k3-r5f-rproc.yaml  |  278 ++++
+ drivers/remoteproc/Kconfig                    |   13 +
+ drivers/remoteproc/Makefile                   |    1 +
+ drivers/remoteproc/ti_k3_r5_remoteproc.c      | 1396 +++++++++++++++++
+ 4 files changed, 1688 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
+ create mode 100644 drivers/remoteproc/ti_k3_r5_remoteproc.c
+
+-- 
+2.26.0
+
