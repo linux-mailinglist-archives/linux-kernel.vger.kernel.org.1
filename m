@@ -2,135 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE8120FF6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2398920FF5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 23:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729861AbgF3VrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 17:47:04 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:53926 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726841AbgF3VrD (ORCPT
+        id S1729866AbgF3Vhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 17:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729580AbgF3Vhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 17:47:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593553621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nixTOEgW0Ceg9ragNEY0z/vysduzB+SPEPITIinZzc4=;
-        b=a/R0HvxKl8trzdZqLLPqrSNM8wWVDsKhPq1ei/7QihFKNCwNxA+HabkFFnxGvgEY3ytmF0
-        0aHvn8+VghMS8kC+VHmR9g4Xpr21WwkP0WcK/nK/4M79jsGxd8y8Y6sE3NLxmZVZNQVUeF
-        sEamrywks0qirY5zN7C1iRcLCg0pQk4=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-481-ZP5vjGLGMm2MWeF0i7MGPw-1; Tue, 30 Jun 2020 17:30:12 -0400
-X-MC-Unique: ZP5vjGLGMm2MWeF0i7MGPw-1
-Received: by mail-qt1-f197.google.com with SMTP id h10so1853009qtc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 14:30:12 -0700 (PDT)
+        Tue, 30 Jun 2020 17:37:48 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2870EC03E979;
+        Tue, 30 Jun 2020 14:30:32 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id z5so10551936pgb.6;
+        Tue, 30 Jun 2020 14:30:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U5xBvyLpKOr/G1/pIFdkzOP1KvMJUbskSgpplnzTGZI=;
+        b=gevpHk/D1CiRUe+JiEVZKBwZOlT3CTqvldVFKaCoAWevvxp+XA4korqzj0TRMUe+GH
+         ROtO1q5n35lNEaUWn/Xh15IBjZbXom5TnEBdzyMqDelZ8M1uLtOoLxs6MnxxPWFNPthD
+         W/zEuJjuIvRoXqavNpwVtPMzERJ9wi/tSR2U51AakuS6Na/FgE9Ej0/odVcxc7100bDi
+         MB5hVx5O1AA8BHcbuc7lShjAHIuXE4CARRd8+UrZhpK2yq0SHu0pazrfpqe6DQwayhAL
+         ZVBmqw/AoCf6S6aji47kWb+RqNVCerXFqmiY6vX4M1oxX5qR6eGNNdSlKFbsKf7+HnAO
+         P2cQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nixTOEgW0Ceg9ragNEY0z/vysduzB+SPEPITIinZzc4=;
-        b=KwbkAORVjxfbspQ0mMUDnFOEBRIAbhv3uUDAqO6uoNof4AVO1JKz5iDNc5OKHGiNZS
-         95wgoVLdUSCZpw5MrwhHwEMd5Gv+nF9vV0e2Ot7TXdawemaih5OgX7wngIsCfOF12YpK
-         dvg+ohHVI408L4xFAnU4dzrx+GP46JckpGS3L9kojLmDKaqzhvLQC2y75elemxzjgGaB
-         /MMKe3VaJ7t/5ExxziiU6N5OF41p6s/pfA/iyi14LAeKYnWm2anrbiP+zZejkkEldjBI
-         TNuqoF3PTDlP2/m0BD6nVnGFEOCDbfZdikBmgtaBMV6jK2ZlMaDNhtiPoGhqV+r6j4h6
-         uTxg==
-X-Gm-Message-State: AOAM532xQaul3W5WiX1927fzlV/r92DZEmOg6cgPvpe5i7d1jEFt/jWg
-        rei+y2j+cVmMVKFau2WhQJMCdT2uPJtGjPXrj4WJC7o1wF5aVdsZeuhXA3IYNLZSDL1M1GnXbkj
-        QjXCyv9m1lSEcNHtUEo2nIX2e
-X-Received: by 2002:a0c:b520:: with SMTP id d32mr21988724qve.6.1593552611742;
-        Tue, 30 Jun 2020 14:30:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxr4obTuj/cs4C2lP57Bc/3hny00QnJmyUX9M22AqhyXRRhcvUT43X97TBWfW0aa3cCoD4fGA==
-X-Received: by 2002:a0c:b520:: with SMTP id d32mr21988692qve.6.1593552611371;
-        Tue, 30 Jun 2020 14:30:11 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id t48sm4416862qtb.50.2020.06.30.14.30.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 14:30:10 -0700 (PDT)
-Date:   Tue, 30 Jun 2020 17:30:09 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     David Rientjes <rientjes@google.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v4 01/26] mm: Do page fault accounting in handle_mm_fault
-Message-ID: <20200630213009.GB40675@xz-x1>
-References: <20200630204504.38516-1-peterx@redhat.com>
- <alpine.DEB.2.22.394.2006301401560.1512657@chino.kir.corp.google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U5xBvyLpKOr/G1/pIFdkzOP1KvMJUbskSgpplnzTGZI=;
+        b=btu8o+JMu0YthnU7sjHB64EO57nS9ckUpaQ7XLJ4FXARQ0RoDTd8yEfnBXR6G9tllu
+         JxVJyhq3cK7AAcZt8rW1QSi6+t4kC1ayEpnPnZXNnPStdpFFw9L0eFSG8/gH4B5G1cqV
+         5P1k6eV9MUokbQgxIR1vuC6rZ4MAC8juWVi9d7zhXrx2acKYsU6tMzvALZ8dnN/4y7UN
+         yleUKLV7Mr0jIYvut3ZuRfuPjazIgJogaPfj24eSXuFNZmjonaq4RGJ3Y5UNyI8hycZx
+         pGe3fGJD+UmiZnfBNe58sVX53WdAb1VOQyNQFABdlOvYY0diqxWPEcUton+mpAnDfiGO
+         mNIA==
+X-Gm-Message-State: AOAM533OIhAXt9VHDtrHaNXx7Gg3M9HmyAPCfHHQGc2ACGJ67x6ochzu
+        m1i3G7Po2V0IZioJ5DTc5VVp/yQlx7SwJaflggw=
+X-Google-Smtp-Source: ABdhPJzbOoHlqgM660bd9qepiHFkNNh62/L3fKtE0vDOVY0GuMzH3AFdRlI4do6SnkdmD9SmwSBIoq+4vBUsVd7s8qs=
+X-Received: by 2002:a62:7657:: with SMTP id r84mr20132713pfc.130.1593552631611;
+ Tue, 30 Jun 2020 14:30:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2006301401560.1512657@chino.kir.corp.google.com>
+References: <20200630160736.1196697-1-mans0n@gorani.run>
+In-Reply-To: <20200630160736.1196697-1-mans0n@gorani.run>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 1 Jul 2020 00:30:15 +0300
+Message-ID: <CAHp75VfuvuMQ3r_SHSUzE78TViQMqDCqPLEZ4eUjLVUpNHj7kA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] gpio: add GPO driver for PCA9570
+To:     Sungbo Eo <mans0n@gorani.run>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Michael Walle <michael@walle.cc>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, David,
+On Tue, Jun 30, 2020 at 7:08 PM Sungbo Eo <mans0n@gorani.run> wrote:
+>
+> NXP PCA9570 is 4-bit I2C GPO expander without interrupt functionality.
+> Its ports are controlled only by a data byte without register address.
+>
+> As there is no other driver similar enough to be adapted for it, a new
+> driver is introduced here.
+>
 
-On Tue, Jun 30, 2020 at 02:05:24PM -0700, David Rientjes wrote:
-> On Tue, 30 Jun 2020, Peter Xu wrote:
-> 
-> > @@ -4408,6 +4440,34 @@ vm_fault_t handle_mm_fault(struct vm_area_struct *vma, unsigned long address,
-> >  			mem_cgroup_oom_synchronize(false);
-> >  	}
-> >  
-> > +	if (ret & (VM_FAULT_RETRY | VM_FAULT_ERROR))
-> > +		return ret;
-> > +
-> > +	/*
-> > +	 * Do accounting in the common code, to avoid unnecessary
-> > +	 * architecture differences or duplicated code.
-> > +	 *
-> > +	 * We arbitrarily make the rules be:
-> > +	 *
-> > +	 *  - Unsuccessful faults do not count (e.g. when the address wasn't
-> > +	 *    valid). That includes arch_vma_access_permitted() failing above.
-> > +	 *
-> > +	 *    So this is expressly not a "this many hardware page faults"
-> > +	 *    counter. Use the hw profiling for that.
-> > +	 *
-> > +	 *  - Incomplete faults do not count (e.g. RETRY).  They will only
-> > +	 *    count once completed.
-> > +	 *
-> > +	 *  - The fault counts as a "major" fault when the final successful
-> > +	 *    fault is VM_FAULT_MAJOR, or if it was a retry (which implies that
-> > +	 *    we couldn't handle it immediately previously).
-> > +	 *
-> > +	 *  - If the fault is done for GUP, regs will be NULL and no accounting
-> > +	 *    will be done.
-> > +	 */
-> > +	mm_account_fault(regs, address, (ret & VM_FAULT_MAJOR) ||
-> > +			 (flags & FAULT_FLAG_TRIED));
-> > +
-> >  	return ret;
-> >  }
-> >  EXPORT_SYMBOL_GPL(handle_mm_fault);
-> 
-> Just a nit, likely not important: I wonder if it would be cleaner to pass 
-> the vm_fault_t into mm_account_fault() and then do the VM_FAULT_RETRY and
-> VM_FAULT_ERROR checks there as well as putting the comment about how 
-> accounting is handled in that function.  Your comment is great.
+It looks good, but I would add ->get() to return buffered value.
 
-Yes that seems to be cleaner so handle_mm_fault is shorter (btw, I "stole" the
-comment block majorly from Linus :).
+> Signed-off-by: Sungbo Eo <mans0n@gorani.run>
+> ---
+> v3:
+> * remove mutex
+> * rename buffer to out
+> * simplify return statements
+> * replace ->probe() to ->probe_new()
+> * move ngpio to driver_data
+>   (PCA9571 is 8-bit so I thought making ngpio configurable is a good idea)
+>
+> v2:
+> * move the direction functions below the set functions
+> * use devm_gpiochip_add_data() and remove the remove callback
+>
+> v1:
+> Tested in kernel 5.4 on an ipq40xx platform.
+>
+> This is my first time submitting a whole driver patch, and I'm not really
+> familiar with this PCA expander series.
+> Please let me know how I can improve this patch further.
+>
+> FYI there's an unmerged patch for this chip.
+> http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2017-May/105602.html
+> I don't have PCA9571 either so I didn't add support for it.
+> ---
+>  drivers/gpio/Kconfig        |   8 +++
+>  drivers/gpio/Makefile       |   1 +
+>  drivers/gpio/gpio-pca9570.c | 131 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 140 insertions(+)
+>  create mode 100644 drivers/gpio/gpio-pca9570.c
+>
+> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+> index c6b5c65c8405..d10dcb81b841 100644
+> --- a/drivers/gpio/Kconfig
+> +++ b/drivers/gpio/Kconfig
+> @@ -962,6 +962,14 @@ config GPIO_PCA953X_IRQ
+>           Say yes here to enable the pca953x to be used as an interrupt
+>           controller. It requires the driver to be built in the kernel.
+>
+> +config GPIO_PCA9570
+> +       tristate "PCA9570 4-Bit I2C GPO expander"
+> +       help
+> +         Say yes here to enable the GPO driver for the NXP PCA9570 chip.
+> +
+> +         To compile this driver as a module, choose M here: the module will
+> +         be called gpio-pca9570.
+> +
+>  config GPIO_PCF857X
+>         tristate "PCF857x, PCA{85,96}7x, and MAX732[89] I2C GPIO expanders"
+>         select GPIOLIB_IRQCHIP
+> diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+> index 1e4894e0bf0f..33cb40c28a61 100644
+> --- a/drivers/gpio/Makefile
+> +++ b/drivers/gpio/Makefile
+> @@ -110,6 +110,7 @@ obj-$(CONFIG_GPIO_OCTEON)           += gpio-octeon.o
+>  obj-$(CONFIG_GPIO_OMAP)                        += gpio-omap.o
+>  obj-$(CONFIG_GPIO_PALMAS)              += gpio-palmas.o
+>  obj-$(CONFIG_GPIO_PCA953X)             += gpio-pca953x.o
+> +obj-$(CONFIG_GPIO_PCA9570)             += gpio-pca9570.o
+>  obj-$(CONFIG_GPIO_PCF857X)             += gpio-pcf857x.o
+>  obj-$(CONFIG_GPIO_PCH)                 += gpio-pch.o
+>  obj-$(CONFIG_GPIO_PCIE_IDIO_24)                += gpio-pcie-idio-24.o
+> diff --git a/drivers/gpio/gpio-pca9570.c b/drivers/gpio/gpio-pca9570.c
+> new file mode 100644
+> index 000000000000..3898d1c6f407
+> --- /dev/null
+> +++ b/drivers/gpio/gpio-pca9570.c
+> @@ -0,0 +1,131 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Driver for PCA9570 I2C GPO expander
+> + *
+> + * Copyright (C) 2020 Sungbo Eo <mans0n@gorani.run>
+> + *
+> + * Based on gpio-tpic2810.c
+> + * Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com/
+> + *     Andrew F. Davis <afd@ti.com>
+> + */
+> +
+> +#include <linux/gpio/driver.h>
+> +#include <linux/i2c.h>
+> +#include <linux/module.h>
+> +
+> +/**
+> + * struct pca9570 - GPIO driver data
+> + * @chip: GPIO controller chip
+> + * @client: I2C device pointer
+> + * @out: Buffer for device register
+> + */
+> +struct pca9570 {
+> +       struct gpio_chip chip;
+> +       struct i2c_client *client;
+> +       u8 out;
+> +};
+> +
+> +static void pca9570_set_mask_bits(struct gpio_chip *chip, u8 mask, u8 bits)
+> +{
+> +       struct pca9570 *gpio = gpiochip_get_data(chip);
+> +       u8 buffer;
+> +       int err;
+> +
+> +       buffer = (gpio->out & ~mask) | (bits & mask);
+> +
+> +       err = i2c_smbus_write_byte(gpio->client, buffer);
+> +       if (err)
+> +               return;
+> +
+> +       gpio->out = buffer;
+> +}
+> +
+> +static void pca9570_set(struct gpio_chip *chip, unsigned offset, int value)
+> +{
+> +       pca9570_set_mask_bits(chip, BIT(offset), value ? BIT(offset) : 0);
+> +}
+> +
+> +static void pca9570_set_multiple(struct gpio_chip *chip, unsigned long *mask,
+> +                                unsigned long *bits)
+> +{
+> +       pca9570_set_mask_bits(chip, *mask, *bits);
+> +}
+> +
+> +static int pca9570_get_direction(struct gpio_chip *chip,
+> +                                unsigned offset)
+> +{
+> +       /* This device always output */
+> +       return GPIO_LINE_DIRECTION_OUT;
+> +}
+> +
+> +static int pca9570_direction_input(struct gpio_chip *chip,
+> +                                  unsigned offset)
+> +{
+> +       /* This device is output only */
+> +       return -EINVAL;
+> +}
+> +
+> +static int pca9570_direction_output(struct gpio_chip *chip,
+> +                                   unsigned offset, int value)
+> +{
+> +       /* This device always output */
+> +       pca9570_set(chip, offset, value);
+> +       return 0;
+> +}
+> +
+> +static const struct gpio_chip template_chip = {
+> +       .label                  = "pca9570",
+> +       .owner                  = THIS_MODULE,
+> +       .get_direction          = pca9570_get_direction,
+> +       .direction_input        = pca9570_direction_input,
+> +       .direction_output       = pca9570_direction_output,
+> +       .set                    = pca9570_set,
+> +       .set_multiple           = pca9570_set_multiple,
+> +       .base                   = -1,
+> +       .can_sleep              = true,
+> +};
+> +
+> +static const struct i2c_device_id pca9570_id_table[] = {
+> +       { "pca9570", 4 },
+> +       { /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(i2c, pca9570_id_table);
+> +
+> +static const struct of_device_id pca9570_of_match_table[] = {
+> +       { .compatible = "nxp,pca9570" },
+> +       { /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, pca9570_of_match_table);
+> +
+> +static int pca9570_probe(struct i2c_client *client)
+> +{
+> +       struct pca9570 *gpio;
+> +
+> +       gpio = devm_kzalloc(&client->dev, sizeof(*gpio), GFP_KERNEL);
+> +       if (!gpio)
+> +               return -ENOMEM;
+> +
+> +       gpio->chip = template_chip;
+> +       gpio->chip.parent = &client->dev;
+> +       gpio->chip.ngpio = i2c_match_id(pca9570_id_table, client)->driver_data;
+> +
+> +       gpio->client = client;
+> +
+> +       i2c_set_clientdata(client, gpio);
+> +
+> +       return devm_gpiochip_add_data(&client->dev, &gpio->chip, gpio);
+> +}
+> +
+> +static struct i2c_driver pca9570_driver = {
+> +       .driver = {
+> +               .name = "pca9570",
+> +               .of_match_table = pca9570_of_match_table,
+> +       },
+> +       .probe_new = pca9570_probe,
+> +       .id_table = pca9570_id_table,
+> +};
+> +module_i2c_driver(pca9570_driver);
+> +
+> +MODULE_AUTHOR("Sungbo Eo <mans0n@gorani.run>");
+> +MODULE_DESCRIPTION("GPIO expander driver for PCA9570");
+> +MODULE_LICENSE("GPL v2");
+> --
+> 2.27.0
+>
 
-But this change will also need to touch patch 25 again or it won't apply
-cleanly.  So I think I'll see whether Andrew would like me to repost the whole
-series then I'll adopt the change when I repost, or another alternative is
-maybe we can also do that on top, depending on whether there's further
-comments..
-
-Thanks!
 
 -- 
-Peter Xu
-
+With Best Regards,
+Andy Shevchenko
