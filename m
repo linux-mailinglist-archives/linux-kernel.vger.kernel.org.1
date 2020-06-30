@@ -2,144 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626EC20EAAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 03:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF58F20EA9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 03:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728178AbgF3BHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Jun 2020 21:07:38 -0400
-Received: from mga05.intel.com ([192.55.52.43]:23695 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726713AbgF3BHi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Jun 2020 21:07:38 -0400
-IronPort-SDR: 53mf9w8FfSoIP3vhlKdpOoIaQRWSO4Br3dHpnwmKyzyq9+Hr3C4mF5rGJLasCfREHWkkYIjZOI
- zheaixob2dJg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="230966044"
-X-IronPort-AV: E=Sophos;i="5.75,296,1589266800"; 
-   d="scan'208";a="230966044"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 18:07:37 -0700
-IronPort-SDR: kGRx+YEb453Pvy0g34UT43n3nzebgsN3dhv0bzJr1xJsVPwByS5GbjR+8qM+7tv+pkXsq5gbxp
- UJ+wLUq786mQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,296,1589266800"; 
-   d="scan'208";a="264981824"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga007.fm.intel.com with ESMTP; 29 Jun 2020 18:07:34 -0700
-Cc:     baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, kvm@vger.kernel.org,
-        Cornelia Huck <cohuck@redhat.com>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Subject: Re: [PATCH 1/2] iommu: Add iommu_group_get/set_domain()
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>
-References: <20200627031532.28046-1-baolu.lu@linux.intel.com>
- <acc0a8fd-bd23-fc34-aecc-67796ab216e7@arm.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <5dc1cece-6111-9b56-d04c-9553d592675b@linux.intel.com>
-Date:   Tue, 30 Jun 2020 09:03:11 +0800
+        id S1726560AbgF3BDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Jun 2020 21:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726015AbgF3BD2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Jun 2020 21:03:28 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DF1C03E979
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 18:03:28 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id a12so19248127ion.13
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Jun 2020 18:03:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aUKINyRCcoVQnAAUj66cT/hdbbLTmUEKaTLIk1C+bzY=;
+        b=WJHrQSYEfA4X5EFmtDe9jbFY9aZT+nTWxDMZmLz0AUJd15mGOahtGNLjk99YVgkTH9
+         s7wnYkYxZHIC/XH1BgzLNVOwdfmGbH2dziAeeT4RMpwQLqTc3Pm9ynDKXP/ZKJKfzlEM
+         8nzFjlzMGmqsQsv5gkLAnHGFSckgHoMIiB0lGhkafhJu7/cZaL+7HZ98ZvCsvjGv+YnQ
+         rphuYOZuh7qKZEwcSy4Yvil11mSh5dYO+8UIXVVzTMfzv2Mt/hHf9GC8Dni3ISp8IGE+
+         5QEzlxRacR+HWGiur2eobXSrbwsN2JQYEN8QhSaOjmRRK6GAxVFI5RbOKHYJP95dmc6o
+         Lruw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aUKINyRCcoVQnAAUj66cT/hdbbLTmUEKaTLIk1C+bzY=;
+        b=r8ZKHRj02IVuwL0DlaxcuDzV1GwT3ibMpJRNPyUgcBueY12cQpoHU7/i+Wib/gdeq5
+         eoyeL+4PAYbo3Lz1w4SKK2Rxl1ccHtvrWlpCmSQ4khCNUQ4hA3puJKmCm4dWc2F8QIPm
+         LVUNvQ8AbX+ysRU3kU+BJnvd+iPCbJZeUiiq6yZvufIp1B7pfiynOT4CXdyUB1jvEY14
+         X2tXSLZYQRzTbf1rko7gdQS0J2AaMhweKzZRmXI96SUZSqIq2xE49zVT5FR1kv4zbPnD
+         Ekig2WcvVwt0udZPh2CK11uvRulUTFl7B7+06I5B7AQ8yEpYKpFL4KtdZcYdTXYVZ15V
+         /f0w==
+X-Gm-Message-State: AOAM530/R0o56JAQJotdtLULVudlb/u9yiO9QNROKlyuCggvaus4QBQB
+        j1tltJCPtmIxNGivQbOAiuUTZjnghyo=
+X-Google-Smtp-Source: ABdhPJwentt0cKMDEsu9rT9oUSTBpWdmkqFUmo628dp6U8zA96yEiANErt1telr45qCiv8IDu94fBw==
+X-Received: by 2002:a6b:661a:: with SMTP id a26mr19625657ioc.197.1593479007622;
+        Mon, 29 Jun 2020 18:03:27 -0700 (PDT)
+Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id v13sm715255iox.12.2020.06.29.18.03.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jun 2020 18:03:27 -0700 (PDT)
+Subject: Re: [PATCH net-next 1/3] net: ipa: always report GSI state errors
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200629213738.1180618-1-elder@linaro.org>
+ <20200629213738.1180618-2-elder@linaro.org>
+ <20200629170912.39188c5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <6b5baacc-3ae0-e801-1db7-d40dae560094@linaro.org>
+Date:   Mon, 29 Jun 2020 20:03:26 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <acc0a8fd-bd23-fc34-aecc-67796ab216e7@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200629170912.39188c5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
-
-On 6/29/20 7:56 PM, Robin Murphy wrote:
-> On 2020-06-27 04:15, Lu Baolu wrote:
->> The hardware assistant vfio mediated device is a use case of iommu
->> aux-domain. The interactions between vfio/mdev and iommu during mdev
->> creation and passthr are:
+On 6/29/20 7:09 PM, Jakub Kicinski wrote:
+> On Mon, 29 Jun 2020 16:37:36 -0500 Alex Elder wrote:
+>> We check the state of an event ring or channel both before and after
+>> any GSI command issued that will change that state.  In most--but
+>> not all--cases, if the state is something different than expected we
+>> report an error message.
 >>
->> - Create a group for mdev with iommu_group_alloc();
->> - Add the device to the group with
->>          group = iommu_group_alloc();
->>          if (IS_ERR(group))
->>                  return PTR_ERR(group);
+>> Add error messages where missing, so that all unexpected states
+>> provide information about what went wrong.  Drop the parentheses
+>> around the state value shown in all cases.
 >>
->>          ret = iommu_group_add_device(group, &mdev->dev);
->>          if (!ret)
->>                  dev_info(&mdev->dev, "MDEV: group_id = %d\n",
->>                           iommu_group_id(group));
->> - Allocate an aux-domain
->>     iommu_domain_alloc()
->> - Attach the aux-domain to the physical device from which the mdev is
->>    created.
->>     iommu_aux_attach_device()
->>
->> In the whole process, an iommu group was allocated for the mdev and an
->> iommu domain was attached to the group, but the group->domain leaves
->> NULL. As the result, iommu_get_domain_for_dev() doesn't work anymore.
->>
->> This adds iommu_group_get/set_domain() so that group->domain could be
->> managed whenever a domain is attached or detached through the aux-domain
->> api's.
+>> Signed-off-by: Alex Elder <elder@linaro.org>
 > 
-> Letting external callers poke around directly in the internals of 
-> iommu_group doesn't look right to me.
+> nit:
 
-Unfortunately, it seems that the vifo iommu abstraction is deeply bound
-to the IOMMU subsystem. We can easily find other examples:
+Sorry about that.  I'll fix this and run checkpatch on v2.
 
-iommu_group_get/set_iommudata()
-iommu_group_get/set_name()
-...
+Thanks for your quick review.
+					-Alex
 
+> CHECK: Alignment should match open parenthesis
+> #105: FILE: drivers/net/ipa/gsi.c:1673:
+> +		dev_warn(dev,
+> +			"limiting to %u channels; hardware supports %u\n",
 > 
-> If a regular device is attached to one or more aux domains for PASID 
-> use, iommu_get_domain_for_dev() is still going to return the primary 
-> domain, so why should it be expected to behave differently for mediated
-
-Unlike the normal device attach, we will encounter two devices when it
-comes to aux-domain.
-
-- Parent physical device - this might be, for example, a PCIe device
-with PASID feature support, hence it is able to tag an unique PASID
-for DMA transfers originated from its subset. The device driver hence
-is able to wrapper this subset into an isolated:
-
-- Mediated device - a fake device created by the device driver mentioned
-above.
-
-Yes. All you mentioned are right for the parent device. But for mediated
-device, iommu_get_domain_for_dev() doesn't work even it has an valid
-iommu_group and iommu_domain.
-
-iommu_get_domain_for_dev() is a necessary interface for device drivers
-which want to support aux-domain. For example,
-
-           struct iommu_domain *domain;
-           struct device *dev = mdev_dev(mdev);
-	  unsigned long pasid;
-
-           domain = iommu_get_domain_for_dev(dev);
-           if (!domain)
-                   return -ENODEV;
-
-           pasid = iommu_aux_get_pasid(domain, dev->parent);
-	  if (pasid == IOASID_INVALID)
-		  return -EINVAL;
-
-	  /* Program the device context with the PASID value */
-	  ....
-
-Without this fix, iommu_get_domain_for_dev() always returns NULL and the
-device driver has no means to support aux-domain.
-
-Best regards,
-baolu
-
-> devices? AFAICS it's perfectly legitimate to have no primary domain if 
-> traffic-without-PASID is invalid.
+> CHECK: Alignment should match open parenthesis
+> #120: FILE: drivers/net/ipa/gsi.c:1685:
+> +		dev_warn(dev,
+> +			"limiting to %u event rings; hardware supports %u\n",
 > 
-> Robin.
+
