@@ -2,257 +2,411 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FAF220F7AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 470DE20F79B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 16:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389135AbgF3Oyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 10:54:39 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:49654 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729260AbgF3Oyi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 10:54:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593528876;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pQ69M6N/CBlBbtoEYAg2r+Q8b1zzN/C+ADvt98vtzbc=;
-        b=Jidy+bGOC9UALHdf5LsLbWvUWgk8yCXMwj6dT8yd1xchtmob3N6HwUXhHzQq6wWx9qk4VH
-        5qRtp357ZtcP7AepPuRSpCYFylPWMqXwcN0L3ZEb0Hqbho1C6w5FFL1wsB+fqYZP6Co16Q
-        6BQevIsuyJA1xB6e6RxL7sKiDGYUwus=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-176-IUCsFLbsOj2ELx2jclk_2A-1; Tue, 30 Jun 2020 10:53:37 -0400
-X-MC-Unique: IUCsFLbsOj2ELx2jclk_2A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 703211906800;
-        Tue, 30 Jun 2020 14:53:34 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-113-245.rdu2.redhat.com [10.10.113.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C3B1A70100;
-        Tue, 30 Jun 2020 14:53:03 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 3D903220C58; Tue, 30 Jun 2020 10:53:03 -0400 (EDT)
-Date:   Tue, 30 Jun 2020 10:53:03 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, virtio-fs@redhat.com, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] kvm,x86: Exit to user space in case of page fault
- error
-Message-ID: <20200630145303.GB322149@redhat.com>
-References: <20200625214701.GA180786@redhat.com>
- <87lfkach6o.fsf@vitty.brq.redhat.com>
- <20200626150303.GC195150@redhat.com>
- <874kqtd212.fsf@vitty.brq.redhat.com>
- <20200629220353.GC269627@redhat.com>
- <87sgecbs9w.fsf@vitty.brq.redhat.com>
+        id S2389108AbgF3OxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 10:53:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:60310 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726839AbgF3OxT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 10:53:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6CF6030E;
+        Tue, 30 Jun 2020 07:53:18 -0700 (PDT)
+Received: from [10.57.21.32] (unknown [10.57.21.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F8DD3F71E;
+        Tue, 30 Jun 2020 07:53:13 -0700 (PDT)
+Subject: Re: [PATCH v8 1/3] iommu/arm-smmu: add NVIDIA implementation for dual
+ ARM MMU-500 usage
+To:     Jon Hunter <jonathanh@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>
+Cc:     snikam@nvidia.com, nicoleotsuka@gmail.com, mperttunen@nvidia.com,
+        bhuntsman@nvidia.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, praithatha@nvidia.com,
+        talho@nvidia.com, iommu@lists.linux-foundation.org,
+        nicolinc@nvidia.com, linux-tegra@vger.kernel.org, yhsu@nvidia.com,
+        treding@nvidia.com, linux-arm-kernel@lists.infradead.org,
+        bbiswas@nvidia.com
+References: <20200630001051.12350-1-vdumpa@nvidia.com>
+ <20200630001051.12350-2-vdumpa@nvidia.com>
+ <53bfa5c8-c32d-6fa3-df60-a18ab33ca1c2@nvidia.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <d59b7220-168c-419f-db16-194307e11065@arm.com>
+Date:   Tue, 30 Jun 2020 15:53:11 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sgecbs9w.fsf@vitty.brq.redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <53bfa5c8-c32d-6fa3-df60-a18ab33ca1c2@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 03:24:43PM +0200, Vitaly Kuznetsov wrote:
-> Vivek Goyal <vgoyal@redhat.com> writes:
+On 2020-06-30 09:19, Jon Hunter wrote:
 > 
-> > On Mon, Jun 29, 2020 at 10:56:25PM +0200, Vitaly Kuznetsov wrote:
-> >> Vivek Goyal <vgoyal@redhat.com> writes:
-> >> 
-> >> > On Fri, Jun 26, 2020 at 11:25:19AM +0200, Vitaly Kuznetsov wrote:
-> >> >
-> >> > [..]
-> >> >> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> >> >> > index 76817d13c86e..a882a6a9f7a7 100644
-> >> >> > --- a/arch/x86/kvm/mmu/mmu.c
-> >> >> > +++ b/arch/x86/kvm/mmu/mmu.c
-> >> >> > @@ -4078,7 +4078,7 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
-> >> >> >  	if (!async)
-> >> >> >  		return false; /* *pfn has correct page already */
-> >> >> >  
-> >> >> > -	if (!prefault && kvm_can_do_async_pf(vcpu)) {
-> >> >> > +	if (!prefault && kvm_can_do_async_pf(vcpu, cr2_or_gpa >> PAGE_SHIFT)) {
-> >> >> 
-> >> >> gpa_to_gfn(cr2_or_gpa) ?
-> >> >
-> >> > Will do.
-> >> >
-> >> > [..]
-> >> >> > -bool kvm_can_do_async_pf(struct kvm_vcpu *vcpu)
-> >> >> > +bool kvm_can_do_async_pf(struct kvm_vcpu *vcpu, gfn_t gfn)
-> >> >> >  {
-> >> >> >  	if (unlikely(!lapic_in_kernel(vcpu) ||
-> >> >> >  		     kvm_event_needs_reinjection(vcpu) ||
-> >> >> > @@ -10504,7 +10506,13 @@ bool kvm_can_do_async_pf(struct kvm_vcpu *vcpu)
-> >> >> >  	 * If interrupts are off we cannot even use an artificial
-> >> >> >  	 * halt state.
-> >> >> >  	 */
-> >> >> > -	return kvm_arch_interrupt_allowed(vcpu);
-> >> >> > +	if (!kvm_arch_interrupt_allowed(vcpu))
-> >> >> > +		return false;
-> >> >> > +
-> >> >> > +	if (vcpu->arch.apf.error_gfn == gfn)
-> >> >> > +		return false;
-> >> >> > +
-> >> >> > +	return true;
-> >> >> >  }
-> >> >> >  
-> >> >> >  bool kvm_arch_async_page_not_present(struct kvm_vcpu *vcpu,
-> >> >> 
-> >> >> I'm a little bit afraid that a single error_gfn may not give us
-> >> >> deterministric behavior. E.g. when we have a lot of faulting processes
-> >> >> it may take many iterations to hit 'error_gfn == gfn' because we'll
-> >> >> always be overwriting 'error_gfn' with new values and waking up some
-> >> >> (random) process.
-> >> >> 
-> >> >> What if we just temporary disable the whole APF mechanism? That would
-> >> >> ensure we're making forward progress. Something like (completely
-> >> >> untested):
-> >> >> 
-> >> >> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> >> >> index f8998e97457f..945b3d5a2796 100644
-> >> >> --- a/arch/x86/include/asm/kvm_host.h
-> >> >> +++ b/arch/x86/include/asm/kvm_host.h
-> >> >> @@ -778,6 +778,7 @@ struct kvm_vcpu_arch {
-> >> >>  		unsigned long nested_apf_token;
-> >> >>  		bool delivery_as_pf_vmexit;
-> >> >>  		bool pageready_pending;
-> >> >> +		bool error_pending;
-> >> >>  	} apf;
-> >> >>  
-> >> >>  	/* OSVW MSRs (AMD only) */
-> >> >> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> >> >> index fdd05c233308..e5f04ae97e91 100644
-> >> >> --- a/arch/x86/kvm/mmu/mmu.c
-> >> >> +++ b/arch/x86/kvm/mmu/mmu.c
-> >> >> @@ -4124,8 +4124,18 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
-> >> >>  	if (try_async_pf(vcpu, prefault, gfn, gpa, &pfn, write, &map_writable))
-> >> >>  		return RET_PF_RETRY;
-> >> >>  
-> >> >> -	if (handle_abnormal_pfn(vcpu, is_tdp ? 0 : gpa, gfn, pfn, ACC_ALL, &r))
-> >> >> +	if (handle_abnormal_pfn(vcpu, is_tdp ? 0 : gpa, gfn, pfn, ACC_ALL, &r)) {
-> >> >> +		/*
-> >> >> +		 * In case APF mechanism was previously disabled due to an error
-> >> >> +		 * we are ready to re-enable it here as we're about to inject an
-> >> >> +		 * error to userspace. There is no guarantee we are handling the
-> >> >> +		 * same GFN which failed in APF here but at least we are making
-> >> >> +		 * forward progress.
-> >> >> +		 */
-> >> >> +
-> >> >> +		vcpu->arch.apf.error_pending = false;
-> >> >
-> >> > I like this idea. It is simple. But I have a concern with it though.
-> >> >
-> >> > - Can it happen that we never retry faulting in error pfn.  Say a process
-> >> >   accessed a pfn, we set error_pending, and then process got killed due
-> >> >   to pending signal. Now process will not retry error pfn. And
-> >> >   error_pending will remain set and we completely disabled APF
-> >> >   mechanism till next error happens (if it happens).
-> >> 
-> >> Can a process in kvm_async_pf_task_wait_schedule() get killed? I don't
-> >> see us checking signals/... in the loop, just 'if
-> >> (hlist_unhashed(&n.link))' -- and this only happens when APF task
-> >> completes. I don't know much about processes to be honest, could easily
-> >> be wrong completely :-)
-> >
-> > I think a waiting process will be woken up and scheduled again. And
-> > when it is starts running again and goes back to user space (faulting
-> > instruction was in user space), then we should check for pending SIGNAL
-> > and kill it.
-> >
-> > That's how my patches for sending SIGBUS were working. I queued SIGBUS
-> > and then when process got scheduled, it got SIGBUS and got killed and
-> > stopped retrying instruction. (Otherwise this fault cycle will never
-> > end).
-> >
-> > Hence, I think it is possible. Another process can send SIGKILL to
-> > this process which is waiting for APF. Once APF page ready event
-> > comes in, process will be killed after that without retrying the
-> > instruct. I will be glad to be corrected if I understood it wrong.
-> >
+> On 30/06/2020 01:10, Krishna Reddy wrote:
+>> NVIDIA's Tegra194 SoC uses two ARM MMU-500s together to interleave
+>> IOVA accesses across them.
+>> Add NVIDIA implementation for dual ARM MMU-500s and add new compatible
+>> string for Tegra194 SoC SMMU topology.
 > 
-> It's probably me who's missing something important here :-) but I think
-> you describe how it *should* work as I'm not seeing how we can leave the
-> loop in kvm_async_pf_task_wait_schedule() other than by 
-> "if (hlist_unhashed(&n.link)) break;" and this only happens when APF
-> completes.
+> There is no description here of the 3rd SMMU that you mention below.
+> I think that we should describe the full picture here.
+>   
+>> Signed-off-by: Krishna Reddy <vdumpa@nvidia.com>
+>> ---
+>>   MAINTAINERS                     |   2 +
+>>   drivers/iommu/Makefile          |   2 +-
+>>   drivers/iommu/arm-smmu-impl.c   |   3 +
+>>   drivers/iommu/arm-smmu-nvidia.c | 196 ++++++++++++++++++++++++++++++++
+>>   drivers/iommu/arm-smmu.h        |   1 +
+>>   5 files changed, 203 insertions(+), 1 deletion(-)
+>>   create mode 100644 drivers/iommu/arm-smmu-nvidia.c
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 7b5ffd646c6b9..64c37dbdd4426 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -16808,8 +16808,10 @@ F:	drivers/i2c/busses/i2c-tegra.c
+>>   
+>>   TEGRA IOMMU DRIVERS
+>>   M:	Thierry Reding <thierry.reding@gmail.com>
+>> +R:	Krishna Reddy <vdumpa@nvidia.com>
+>>   L:	linux-tegra@vger.kernel.org
+>>   S:	Supported
+>> +F:	drivers/iommu/arm-smmu-nvidia.c
+>>   F:	drivers/iommu/tegra*
+>>   
+>>   TEGRA KBC DRIVER
+>> diff --git a/drivers/iommu/Makefile b/drivers/iommu/Makefile
+>> index 342190196dfb0..2b8203db73ec3 100644
+>> --- a/drivers/iommu/Makefile
+>> +++ b/drivers/iommu/Makefile
+>> @@ -15,7 +15,7 @@ obj-$(CONFIG_AMD_IOMMU) += amd/iommu.o amd/init.o amd/quirks.o
+>>   obj-$(CONFIG_AMD_IOMMU_DEBUGFS) += amd/debugfs.o
+>>   obj-$(CONFIG_AMD_IOMMU_V2) += amd/iommu_v2.o
+>>   obj-$(CONFIG_ARM_SMMU) += arm_smmu.o
+>> -arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-qcom.o
+>> +arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-nvidia.o arm-smmu-qcom.o
+>>   obj-$(CONFIG_ARM_SMMU_V3) += arm-smmu-v3.o
+>>   obj-$(CONFIG_DMAR_TABLE) += intel/dmar.o
+>>   obj-$(CONFIG_INTEL_IOMMU) += intel/iommu.o intel/pasid.o
+>> diff --git a/drivers/iommu/arm-smmu-impl.c b/drivers/iommu/arm-smmu-impl.c
+>> index c75b9d957b702..70f7318017617 100644
+>> --- a/drivers/iommu/arm-smmu-impl.c
+>> +++ b/drivers/iommu/arm-smmu-impl.c
+>> @@ -171,6 +171,9 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
+>>   	if (of_property_read_bool(np, "calxeda,smmu-secure-config-access"))
+>>   		smmu->impl = &calxeda_impl;
+>>   
+>> +	if (of_device_is_compatible(smmu->dev->of_node, "nvidia,tegra194-smmu"))
 
-We don't leave loop in kvm_async_pf_task_wait_schedule(). It will happen
-before you return to user space.
+Nit: please use "np" like all the surrounding code does.
 
-I have not looked too closely but I think following code path might be taken
-after aync PF has completed.
+>> +		return nvidia_smmu_impl_init(smmu);
+>> +
+>>   	if (of_device_is_compatible(np, "qcom,sdm845-smmu-500") ||
+>>   	    of_device_is_compatible(np, "qcom,sc7180-smmu-500"))
+>>   		return qcom_smmu_impl_init(smmu);
+>> diff --git a/drivers/iommu/arm-smmu-nvidia.c b/drivers/iommu/arm-smmu-nvidia.c
+>> new file mode 100644
+>> index 0000000000000..1124f0ac1823a
+>> --- /dev/null
+>> +++ b/drivers/iommu/arm-smmu-nvidia.c
+>> @@ -0,0 +1,196 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +// NVIDIA ARM SMMU v2 implementation quirks
+>> +// Copyright (C) 2019-2020 NVIDIA CORPORATION.  All rights reserved.
+>> +
+>> +#include <linux/bitfield.h>
+>> +#include <linux/delay.h>
+>> +#include <linux/of.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/slab.h>
+>> +
+>> +#include "arm-smmu.h"
+>> +
+>> +/*
+>> + * Tegra194 has three ARM MMU-500 Instances.
+>> + * Two of them are used together for interleaved IOVA accesses and
+>> + * used by non-isochronous HW devices for SMMU translations.
+>> + * Third one is used for SMMU translations from isochronous HW devices.
+>> + * It is possible to use this implementation to program either
+>> + * all three or two of the instances identically as desired through
+>> + * DT node.
+>> + *
+>> + * Programming all the three instances identically comes with redundant TLB
+>> + * invalidations as all three never need to be TLB invalidated for a HW device.
+>> + *
+>> + * When Linux kernel supports multiple SMMU devices, the SMMU device used for
+>> + * isochornous HW devices should be added as a separate ARM MMU-500 device
+>> + * in DT and be programmed independently for efficient TLB invalidates.
 
-__kvm_handle_async_pf()
-  idtentry_exit_cond_rcu()
-    prepare_exit_to_usermode()
-      __prepare_exit_to_usermode()
-        exit_to_usermode_loop()
-	  do_signal()
+I don't understand the "When" there - the driver has always supported 
+multiple independent SMMUs, and it's not something that could be 
+configured out or otherwise disabled. Plus I really don't see why you 
+would ever want to force unrelated SMMUs to be programmed together - 
+beyond the TLB thing mentioned it would also waste precious context bank 
+resources and might lead to weird device grouping via false stream ID 
+aliasing, with no obvious upside at all.
 
-So once you have been woken up (because APF completed), you will
-return to user space and before that you will check if there are
-pending signals and handle that signal first before user space
-gets a chance to run again and retry faulting instruction.
+>> + */
+>> +#define MAX_SMMU_INSTANCES 3
+>> +
+>> +#define TLB_LOOP_TIMEOUT_IN_US		1000000	/* 1s! */
+>> +#define TLB_SPIN_COUNT			10
+>> +
+>> +struct nvidia_smmu {
+>> +	struct arm_smmu_device	smmu;
+>> +	unsigned int		num_inst;
+>> +	void __iomem		*bases[MAX_SMMU_INSTANCES];
+>> +};
+>> +
+>> +static inline struct nvidia_smmu *to_nvidia_smmu(struct arm_smmu_device *smmu)
+>> +{
+>> +	return container_of(smmu, struct nvidia_smmu, smmu);
+>> +}
+>> +
+>> +static inline void __iomem *nvidia_smmu_page(struct arm_smmu_device *smmu,
+>> +			       unsigned int inst, int page)
+> 
+> If you run checkpatch --strict on these you will get a lot of ...
+> 
+> CHECK: Alignment should match open parenthesis
+> #116: FILE: drivers/iommu/arm-smmu-nvidia.c:46:
+> +static inline void __iomem *nvidia_smmu_page(struct arm_smmu_device *smmu,
+> +			       unsigned int inst, int page)
+> 
+> We should fix these.
+> 
+>> +{
+>> +	struct nvidia_smmu *nvidia_smmu = to_nvidia_smmu(smmu);
+>> +
+>> +	if (!nvidia_smmu->bases[0])
+>> +		nvidia_smmu->bases[0] = smmu->base;
+>> +
+>> +	return nvidia_smmu->bases[inst] + (page << smmu->pgshift);
+>> +}
+>> +
+>> +static u32 nvidia_smmu_read_reg(struct arm_smmu_device *smmu,
+>> +			      int page, int offset)
+>> +{
+>> +	void __iomem *reg = nvidia_smmu_page(smmu, 0, page) + offset;
+>> +
+>> +	return readl_relaxed(reg);
+>> +}
+>> +
+>> +static void nvidia_smmu_write_reg(struct arm_smmu_device *smmu,
+>> +			    int page, int offset, u32 val)
+>> +{
+>> +	unsigned int i;
+>> +	struct nvidia_smmu *nvidia_smmu = to_nvidia_smmu(smmu);
+>> +
+>> +	for (i = 0; i < nvidia_smmu->num_inst; i++) {
+>> +		void __iomem *reg = nvidia_smmu_page(smmu, i, page) + offset;
+> 
+> Personally, I would declare 'reg' outside of the loop as I feel it will make
+> the code cleaner and easier to read.
+> 
+>> +
+>> +		writel_relaxed(val, reg);
+>> +	}
+>> +}
+>> +
+>> +static u64 nvidia_smmu_read_reg64(struct arm_smmu_device *smmu,
+>> +				int page, int offset)
+>> +{
+>> +	void __iomem *reg = nvidia_smmu_page(smmu, 0, page) + offset;
+>> +
+>> +	return readq_relaxed(reg);
+>> +}
+>> +
+>> +static void nvidia_smmu_write_reg64(struct arm_smmu_device *smmu,
+>> +				  int page, int offset, u64 val)
+>> +{
+>> +	unsigned int i;
+>> +	struct nvidia_smmu *nvidia_smmu = to_nvidia_smmu(smmu);
+>> +
+>> +	for (i = 0; i < nvidia_smmu->num_inst; i++) {
+>> +		void __iomem *reg = nvidia_smmu_page(smmu, i, page) + offset;
+>> +
+>> +		writeq_relaxed(val, reg);
+>> +	}
+>> +}
+>> +
+>> +static void nvidia_smmu_tlb_sync(struct arm_smmu_device *smmu, int page,
+>> +			   int sync, int status)
+>> +{
+>> +	unsigned int delay;
+>> +
+>> +	arm_smmu_writel(smmu, page, sync, 0);
+>> +
+>> +	for (delay = 1; delay < TLB_LOOP_TIMEOUT_IN_US; delay *= 2) {
+> 
+> So we are doubling the delay every time? Is this better than just using
+> the same on each loop?
+
+This is the same logic as the main driver (see 8513c8930069) - the sync 
+is expected to complete relatively quickly, hence why we have the inner 
+spin loop to avoid the delay entirely in the typical case, and the 
+longer it's taking, the more likely it is that something's wrong and it 
+will never complete anyway. Realistically, a heavily loaded SMMU at a 
+modest clock rate might take us through a couple of iterations of the 
+outer loop, but beyond that we're pretty much just killing time until we 
+declare it wedged and give up, and by then there's not much point in 
+burning power frantically hamering on the interconnect.
 
 > 
-> >> 
-> >> >
-> >> > In another idea, we could think of maintaining another hash of error
-> >> > gfns. Similar to "vcpu->arch.apf.gfns[]". Say "vgpu->arch.apf.error_gfns[]"
-> >> >
-> >> > - When error happens on a gfn, add it to hash. If slot is busy, overwrite
-> >> >   it.
-> >> >
-> >> > - When kvm_can_do_async_pf(gfn) is called, check if this gfn is present
-> >> >   in error_gfn, if yes, clear it and force sync fault.
-> >> >
-> >> > This is more complicated but should take care of your concerns. Also 
-> >> > even if process never retries that gfn, we are fine. At max that
-> >> > gfn will remain error_gfn array but will not disable APF completely.
-> >> 
-> >> Yes, we can do that but I'm not sure it wouldn't be an overkill: we are
-> >> not trying to protect the mechanism against a malicious guest. Using APF
-> >> is guest's choice anyway so even if there's going to be an easy way to
-> >> disable it completely (poke an address and never retry upon wakeup) from
-> >> guest's side it doesn't sound like a big deal.
-> >
-> > Sure but if guest chose APF and then it got disabled completely
-> > intentionally, then its a probelm, isn't it. This is just a race
-> > condition which can disable APF unintentionally and leave it like
-> > that till next error happens. 
-> >
-> >> 
-> >> Also, we can introduce a status bit in the APF 'page ready' notification
-> >> stating that the page is actually NOT ready and the mecanism was blocked
-> >> because if that, the guest will have to access the GFN to get the error
-> >> injected (and unblock the mechanism).
-> >
-> > I am not sure how will we force guest to access that pfn if accessing
-> > process gets killed. This actually feels like least preferred of all
-> > options.
+>> +		unsigned int spin_cnt;
+>> +
+>> +		for (spin_cnt = TLB_SPIN_COUNT; spin_cnt > 0; spin_cnt--) {
+>> +			u32 val = 0;
+>> +			unsigned int i;
+>> +			struct nvidia_smmu *nvidia_smmu = to_nvidia_smmu(smmu);
 > 
-> When guest receives the 'page ready' event with an error it (like for
-> every other 'page ready' event) tries to wake up the corresponding
-> process but if the process is dead already it can do in-kernel probing
-> of the GFN, this way we guarantee that the error is always injected. I'm
-> not sure if it is needed though but in case it is, this can be a
-> solution. We can add a new feature bit and only deliver errors when the
-> guest indicates that it knows what to do with them.
+> Why not do this once at the beginning of the function?
+> 
+>> +
+>> +			for (i = 0; i < nvidia_smmu->num_inst; i++) {
+>> +				void __iomem *reg =
+>> +					nvidia_smmu_page(smmu, i, page) + status;
+>> +
+>> +				val |= readl_relaxed(reg);
+>> +			}
+>> +
+>> +			if (!(val & ARM_SMMU_sTLBGSTATUS_GSACTIVE))
+>> +				return;
+>> +
+>> +			cpu_relax();
+>> +		}
+>> +
+>> +		udelay(delay);
+>> +	}
+>> +
+>> +	dev_err_ratelimited(smmu->dev,
+>> +			    "TLB sync timed out -- SMMU may be deadlocked\n");
+>> +}
+>> +
+>> +static int nvidia_smmu_reset(struct arm_smmu_device *smmu)
+>> +{
+>> +	unsigned int i;
+>> +
+>> +	for (i = 0; i < to_nvidia_smmu(smmu)->num_inst; i++) {
+>> +		u32 val;
+>> +		void __iomem *reg = nvidia_smmu_page(smmu, i, ARM_SMMU_GR0) +
+>> +				    ARM_SMMU_GR0_sGFSR;
+> 
+> I feel that declaring variables here clutters the code.
+>   
+>> +
+>> +		/* clear global FSR */
+>> +		val = readl_relaxed(reg);
+>> +		writel_relaxed(val, reg);
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct arm_smmu_impl nvidia_smmu_impl = {
+>> +	.read_reg = nvidia_smmu_read_reg,
+>> +	.write_reg = nvidia_smmu_write_reg,
+>> +	.read_reg64 = nvidia_smmu_read_reg64,
+>> +	.write_reg64 = nvidia_smmu_write_reg64,
+>> +	.reset = nvidia_smmu_reset,
+>> +	.tlb_sync = nvidia_smmu_tlb_sync,
+>> +};
+>> +
+>> +struct arm_smmu_device *nvidia_smmu_impl_init(struct arm_smmu_device *smmu)
+>> +{
+>> +	unsigned int i;
+>> +	struct nvidia_smmu *nvidia_smmu;
+>> +	struct platform_device *pdev = to_platform_device(smmu->dev);
+>> +
+>> +	nvidia_smmu = devm_kzalloc(smmu->dev, sizeof(*nvidia_smmu), GFP_KERNEL);
+>> +	if (!nvidia_smmu)
+>> +		return ERR_PTR(-ENOMEM);
+>> +
+>> +	nvidia_smmu->smmu = *smmu;
+>> +	/* Instance 0 is ioremapped by arm-smmu.c after this function returns */
+>> +	nvidia_smmu->num_inst = 1;
+>> +
+>> +	for (i = 1; i < MAX_SMMU_INSTANCES; i++) {
+>> +		struct resource *res;
+>> +
+>> +		res = platform_get_resource(pdev, IORESOURCE_MEM, i);
+>> +		if (!res)
+>> +			break;
+>> +
+>> +		nvidia_smmu->bases[i] = devm_ioremap_resource(smmu->dev, res);
+>> +		if (IS_ERR(nvidia_smmu->bases[i]))
+>> +			return ERR_CAST(nvidia_smmu->bases[i]);
+>> +
+>> +		nvidia_smmu->num_inst++;
+>> +	}
+>> +
+>> +	nvidia_smmu->smmu.impl = &nvidia_smmu_impl;
+>> +	/*
+>> +	 * Free the arm_smmu_device struct allocated in arm-smmu.c.
+>> +	 * Once this function returns, arm-smmu.c would use arm_smmu_device
+>> +	 * allocated as part of nvidia_smmu struct.
+>> +	 */
+>> +	devm_kfree(smmu->dev, smmu);
+> 
+> Why don't we just store the pointer of the smmu struct passed to this function
+> in the nvidia_smmu struct and then we do not need to free this here. In other
+> words make ...
+> 
+>   struct nvidia_smmu {
+> 	struct arm_smmu_device	*smmu;
+> 	unsigned int		num_inst;
+> 	void __iomem		*bases[MAX_SMMU_INSTANCES];
+>   };
+> 
+> This seems more appropriate, than copying the struct and freeing memory
+> allocated else-where.
 
-- Process will be delivered singal after async PF completion and during
-  returning to user space. You have lost control by then.
+But then how do you get back to struct nvidia_smmu given just a pointer 
+to struct arm_smmu_device?
 
-- If you retry in kernel, we will change the context completely that
-  who was trying to access the gfn in question. We want to retain
-  the real context and retain information who was trying to access
-  gfn in question.
+I'll admit my quickly-hacked-up design for post-hoc subclassing isn't 
+the prettiest, but in fairness it was only ever intended for a couple of 
+exceptional cases. I guess it would be equally possible to wrap struct 
+arm_smmu_impl, and container_of() back to the private data from 
+smmu->impl itself, which avoids the minor weirdness of reassigning the 
+smmu pointer in the middle of probing, but then you'd have to store the 
+function pointers in writeable memory, which in principle might make the 
+integrity folks pull a sad face.
 
-Vivek
+The aim was to avoid the non-architectural stuff cluttering up the main 
+driver as far as possible, which is why I preferred a subclassing 
+approach over cramming more random pointers into struct arm_smmu_device. 
+Not to say it can't be changed if you've got a really solid idea for an 
+alternative...
 
+Robin.
+
+>   
+>> +
+>> +	return &nvidia_smmu->smmu;
+>> +}
+>> diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
+>> index d172c024be618..8cf1511ed9874 100644
+>> --- a/drivers/iommu/arm-smmu.h
+>> +++ b/drivers/iommu/arm-smmu.h
+>> @@ -450,6 +450,7 @@ static inline void arm_smmu_writeq(struct arm_smmu_device *smmu, int page,
+>>   	arm_smmu_writeq((s), ARM_SMMU_CB((s), (n)), (o), (v))
+>>   
+>>   struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu);
+>> +struct arm_smmu_device *nvidia_smmu_impl_init(struct arm_smmu_device *smmu);
+>>   struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu);
+>>   
+>>   int arm_mmu500_reset(struct arm_smmu_device *smmu);
+>>
+> 
+> Cheers
+> Jon
+> 
