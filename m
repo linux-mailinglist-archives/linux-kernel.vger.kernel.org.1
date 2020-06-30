@@ -2,100 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93BB20F141
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 11:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C3D20F148
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Jun 2020 11:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730304AbgF3JN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 05:13:29 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2725 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726404AbgF3JN2 (ORCPT
+        id S1730915AbgF3JNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 05:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730650AbgF3JNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 05:13:28 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5efb022b0001>; Tue, 30 Jun 2020 02:13:15 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 30 Jun 2020 02:13:28 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 30 Jun 2020 02:13:28 -0700
-Received: from [10.26.75.203] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 30 Jun
- 2020 09:13:26 +0000
-Subject: Re: [PATCH 4.4 000/135] 4.4.229-rc1 review
-To:     Sasha Levin <sashal@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20200629155309.2495516-1-sashal@kernel.org>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <3b34e3f2-6d78-d42f-7358-86fe430db1eb@nvidia.com>
-Date:   Tue, 30 Jun 2020 10:13:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 30 Jun 2020 05:13:43 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00044C03E979
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 02:13:42 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id j10so14982706qtq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 02:13:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NiaAQZb6e16RNNwC58Ig+5aKFcoVz1kh1EE7z1LSbO0=;
+        b=rftMDQzUsnWJRbvKE710N3N7H9ymntoND40Bj8Ft2pc4kSO8W04Lgrv1xzvY4J1Bl3
+         +UWCCL6JciQsaoJ9MYKzReREtjBH/5Vl3Ud5qy7a4wEeAYLdv6wj91fUKIrLN8n7/ezw
+         +Ltt3x9iRmvM3jA9EIlBfNtZgnKX81F5Z7I5V+V3WCZjT2UJICp+to6FrKLrVor2qhwr
+         GNl7MdqXujhtJRgAOotb0YWeIIB1l4mYzYdh1+htIRnPUUSrWMDhrr+c/VxhbE6LQtlj
+         34481H7fX2umXtLGDhf4IQzN82CzNThDoMuanmdbBt6GDpPV7h5przEpZXJ5xZgfIKCH
+         BsoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NiaAQZb6e16RNNwC58Ig+5aKFcoVz1kh1EE7z1LSbO0=;
+        b=fwazgiiqJ05wMzIGH9WiiXP0VadxPRw5U23mbmyDNgRhTIKGNNDyladg7hkcatWI5j
+         Am74pZVgdVOpk+PHtqDLKkDl0GDNK0mXI78xtWHBAfN7fJCXsxqNkjZtGygxcVlWuxuI
+         x5twhoi0YrMLg+JKq09EKppMUzl9adJSW90+ann3XEEp2mBx4wofE+sqx3gUWqVgjc5f
+         2YZWFd5LoI6bw7qBv23GR1RindJFA9ax/UDzq3sI1620PUNc5z5GD1QBa0YHmpvWLf4j
+         8z/LFT37MfdWGO2XW0qtTvB48yizTMp4fIUSbCCllXyRGFpmY0VT9gRqmIn45oXng0KD
+         nBdw==
+X-Gm-Message-State: AOAM530eNxXE+Er+AxvCTeNDWBRuP3EPAF021FLVQIePJ4tnNS6q2fUQ
+        zM4T3k2T7HitMYpYRQHYRc2DJZUBHnFxXuHt8ergJQ==
+X-Google-Smtp-Source: ABdhPJzDAAzCHsuXTek0a114336cynJGittTkzm51tTWGOlNq0w2PjNG7rgt5mcKicjSeSki0XFVAa7qvDKPbbdt2IY=
+X-Received: by 2002:aed:2a75:: with SMTP id k50mr19148818qtf.27.1593508422149;
+ Tue, 30 Jun 2020 02:13:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200629155309.2495516-1-sashal@kernel.org>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593508395; bh=RLxH6xnLK8ZOVtLH6xC/l0Kl5rUluekML1u1TVcJxMo=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=LH3BBRfLXZ+4a+jHU9VrZykPGlA9l/TX+75XMTCqM/jLNzqZ0iZLD7XdNfELFAuEO
-         ZNPy/5pWmiP5ZbU6O4IxgurqHO+rfgA0+GrykZ1NjXJfs0Yy48iSgfq65t40BfbDLr
-         7xR/9S7ZzBDYIldoN4gmRXZoi95I6If4DqCkS3WYPs/3y5t/s1D6sIqVUKbOYIpkrH
-         It6zt4zyze6Ipsnjc5FJXWec/D87bjP3veLlMzxW4J8WrylXkFEF6ZVnDZYQ/RQjMB
-         Tk/eBiV2xITWb4mhUsH40lVG918wYX7LmAcxvuIJY0miw5r/71F9Yni63NN8AoiyOT
-         OuT95KTSVwhfg==
+References: <20200503105453.23658-1-miquel.raynal@bootlin.com>
+ <20200629160844.6ecf79c1@xps13> <20200629195044.uvgma53cajiko3gf@pengutronix.de>
+ <20200630085828.1aebdf99@xps13>
+In-Reply-To: <20200630085828.1aebdf99@xps13>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 30 Jun 2020 11:13:31 +0200
+Message-ID: <CAMpxmJUHy+5ynmsU6FhX=MJR6XbwoNr65NGqzuAd0Bm-JS1kWw@mail.gmail.com>
+Subject: Re: [PATCH v6] gpio: pca953x: Add Maxim MAX7313 PWM support
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-pwm@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 29/06/2020 16:50, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 4.4.229 release.
-> There are 135 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed 01 Jul 2020 03:53:07 PM UTC.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.4.y&id2=v4.4.228
-> 
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
-> 
-> --
+On Tue, Jun 30, 2020 at 8:58 AM Miquel Raynal <miquel.raynal@bootlin.com> w=
+rote:
+>
+> Hi Uwe,
+>
+> Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de> wrote on Mon, 29 J=
+un
+> 2020 21:50:44 +0200:
+>
+> > On Mon, Jun 29, 2020 at 04:08:44PM +0200, Miquel Raynal wrote:
+> > > Hello Uwe, Thierry,
+> > >
+> > > Miquel Raynal <miquel.raynal@bootlin.com> wrote on Sun,  3 May 2020
+> > > 12:54:53 +0200:
+> > >
+> > > > The MAX7313 chip is fully compatible with the PCA9535 on its basic
+> > > > functions but can also manage the intensity on each of its ports wi=
+th
+> > > > PWM. Each output is independent and may be tuned with 16 values (4
+> > > > bits per output). The period is always 32kHz, only the duty-cycle m=
+ay
+> > > > be changed. One can use any output as GPIO or PWM.
+> > > >
+> > > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > > ---
+> > >
+> > > Can I have a status on this patch please?
+> > >
+> > > If it was forgotten, I would be good to have it queued now, otherwise=
+,
+> > > may I know the reason?
+> >
+> > You could reply to my feedback ... If you could say there: "What you
+> > want isn't possible" I'd count this as a strong indication to not ask t=
+o
+> > implement Andy's suggestion. (Even if this would be possible, I'm not
+> > sure this is a good idea, but still ...)
+>
+> Sorry for the misunderstanding, but I already replied twice to Andy
+> about this. Once in October, again in November, then I gave a shot to
+> the idea of splitting the drivers (GPIO vs. PWM) in January. So I
+> thought you were sharing your thoughts out loud but was not expecting
+> any specific feedback on it.
+>
+> So, no, even if the idea might make sense, it is not doable in a
+> reasonable amount of time. I am not saying it is impossible, but someone
+> has to think about it deeper and propose a core structure to handle it
+> in a generic and clean way so that other drivers sharing the same
+> properties can rely on it. I am not qualified enough to do it the proper
+> way in a reasonable time frame.
+>
 > Thanks,
-> Sasha
+> Miqu=C3=A8l
 
+Hi Miqu=C3=A8l,
 
-All tests are passing for Tegra ...
+I can't find anything in any of the previous threads. What was the
+reason to not go the MFD way here?
 
-Test results for stable-v4.4:
-    6 builds:	6 pass, 0 fail
-    12 boots:	12 pass, 0 fail
-    25 tests:	25 pass, 0 fail
-
-Linux version:	4.4.229-rc1-g136455f30e39
-Boards tested:	tegra124-jetson-tk1, tegra20-ventana,
-                tegra30-cardhu-a04
-
-Cheers
-Jon
-
--- 
-nvpublic
+Bartosz
