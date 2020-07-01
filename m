@@ -2,83 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B06211137
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 18:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D7321113C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 18:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732724AbgGAQxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 12:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732564AbgGAQxa (ORCPT
+        id S1732749AbgGAQxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 12:53:47 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:35638 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732376AbgGAQxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 12:53:30 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652C6C08C5DB
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 09:53:30 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id u185so9214465pfu.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 09:53:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BaZwJStCKTwWav0ryjMZZK4OAhmZE1ocGk8G4wNBCcg=;
-        b=KV9sDYfQt8i6bcWQYVOXUpa52LDHOx4jbjmJjzxRfMBvjz7w86fXpeqlk7POGl7Sov
-         UpIwQ49CaZUr0I1DmuRlvOsMrXYuKox0gDb+MGbx/x6e6C7b0/E8naxTgXHrn065HltO
-         ECztFHj58l7091xWrKwqO0+/eYp0NZvR6iQ1Q0DkkWUZbkfGLoSaxzRENwFTqwgFE4tu
-         7inJK1Bf2fOSFgfFKvtufKOg5VseRtqHMsMBgqA9lsyM0zX5ofSW/v+TBi42BSCqEOUL
-         pczORKL9PhlhhN2W32YC5dODi6u5a18YlsHAmuOdryeL1rgN7VXfK6npKFue9E0J7eYr
-         Pbgg==
+        Wed, 1 Jul 2020 12:53:44 -0400
+Received: by mail-wr1-f66.google.com with SMTP id z2so2556407wrp.2;
+        Wed, 01 Jul 2020 09:53:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BaZwJStCKTwWav0ryjMZZK4OAhmZE1ocGk8G4wNBCcg=;
-        b=GUuV9ldc3t8ojiqesxek+4Sd2958+o8wghGjvPkSD9GQqbuwdUJeQB+PflcVeS1hBo
-         WBKUE3ObuIpOi09vi7MaA5fP50vrEjQBIT6m5RsGmnffzc5Jt50nSPdXuc3C0JOZ2y5j
-         ILFsKTNvrK/F6evvi8WUyEASONlobFX1CiLaLkBHECx6n9IrQiKAr/sn5HzpWmUZkJng
-         F196ERIzZCv1jdSGiHW97lAF84EYydzB+u2sePjldhXprX1yQkk9Z9cIVsenY7t0nSez
-         11+9aD1Y4gT9pOYyqyGJHA3Rtp+HPS1szKkV12DY7vpU2G6QXwtXFph/REtLlyhnF6Jd
-         3l/w==
-X-Gm-Message-State: AOAM531xn18aYNDG7T0L2J7XK5JQyRQ6+o81xotZg9+M1QxilKTFK3nZ
-        ETdRclBDHdnQIBjgD06q/M2wVw==
-X-Google-Smtp-Source: ABdhPJxVgsahckfB+Z5tVK0G18UWeGL0p2gtnmnPJ6s4JxBARSk1QzOGw1lpdWQ6rXkSJaPFgoYMvQ==
-X-Received: by 2002:a05:6a00:15c3:: with SMTP id o3mr23997329pfu.304.1593622409934;
-        Wed, 01 Jul 2020 09:53:29 -0700 (PDT)
-Received: from ?IPv6:2605:e000:100e:8c61:a48e:6306:8f4:9d74? ([2605:e000:100e:8c61:a48e:6306:8f4:9d74])
-        by smtp.gmail.com with ESMTPSA id k7sm6478422pgh.46.2020.07.01.09.53.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Jul 2020 09:53:29 -0700 (PDT)
-Subject: Re: [PATCH] sbitmap: Consider cleared bits in sbitmap_bitmap_show()
-To:     John Garry <john.garry@huawei.com>
-Cc:     bvanassche@acm.org, osandov@fb.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hare@suse.com
-References: <1593590785-191512-1-git-send-email-john.garry@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <122e0d4d-d9b2-a81e-b8ce-fa8636eabe1b@kernel.dk>
-Date:   Wed, 1 Jul 2020 10:53:28 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=W4aGIA2sVJUTFvh2lVc0/GV3kZcbHmAaStG8roUdCNw=;
+        b=gIrprbonIy7G7RMYu/VoAhSVIYYfOEP67ud/4mRHrbK1r4VScHIPT8STviwrB4D7f8
+         q29TzkF1sx5IWkB9esI5lATDeFyJijcIyDvhprWshxFKwURC2iKD4xP5wVpk0dla4PRw
+         tejf0L4GOs6rhCM7Prxib05+270pzwp4v+hPHAcBsixD8lMcUyE465ASvtU8SDwoLY00
+         2cqKqAqKWvwCMYB76DjH/udHBaVNT80bYX2n4MeOEzC81UJJC6m6X0vxXlLpeU7/AVFw
+         cz3o+fYlfm21GeyZZxBSZN4dkQJ+giRonaHnfoXeVEg/SOoFWtTge8ODLDt7JfD4BOlw
+         y4rA==
+X-Gm-Message-State: AOAM533/HdQz1PTMu4YMcj788w80Sy3wZWFqwHTuOYhI/vW8kC28UnHQ
+        tnEIG4rIn/NHwjLyU0sSXGE=
+X-Google-Smtp-Source: ABdhPJwDeOcChvL4k1hvA2Wrl3bOGcuv+/K+qh4jbWPUqi49VCCIXQ4o5bN2tWQsS2duRI5B5elz0g==
+X-Received: by 2002:a5d:458a:: with SMTP id p10mr27066648wrq.184.1593622421731;
+        Wed, 01 Jul 2020 09:53:41 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id n14sm8290457wro.81.2020.07.01.09.53.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jul 2020 09:53:41 -0700 (PDT)
+Date:   Wed, 1 Jul 2020 16:53:39 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     t-mabelt@microsoft.com
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
+        parri.andrea@gmail.com, Andres Beltran <lkmlabelt@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] scsi: storvsc: Use vmbus_requestor to generate
+ transaction IDs for VMBus hardening
+Message-ID: <20200701165339.chtxkixnkocnjw5u@liuwe-devbox-debian-v2>
+References: <20200701001221.2540-1-lkmlabelt@gmail.com>
+ <20200701001221.2540-3-lkmlabelt@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1593590785-191512-1-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200701001221.2540-3-lkmlabelt@gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/1/20 2:06 AM, John Garry wrote:
-> sbitmap works by maintaining separate bitmaps of set and cleared bits.
-> The set bits are cleared in a batch, to save the burden of continuously
-> locking the "word" map to unset.
+On Tue, Jun 30, 2020 at 08:12:20PM -0400, Andres Beltran wrote:
+> Currently, pointers to guest memory are passed to Hyper-V as
+> transaction IDs in storvsc. In the face of errors or malicious
+> behavior in Hyper-V, storvsc should not expose or trust the transaction
+> IDs returned by Hyper-V to be valid guest memory addresses. Instead,
+> use small integers generated by vmbus_requestor as requests
+> (transaction) IDs.
 > 
-> sbitmap_bitmap_show() only shows the set bits (in "word"), which is not
-> too much use, so mask out the cleared bits.
+> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+> Cc: linux-scsi@vger.kernel.org
 
-Applied, thanks.
+James and Martin, FYI I'm going to take this patch via hyperv tree
+because it depends on the first patch.
 
--- 
-Jens Axboe
-
+Wei.
