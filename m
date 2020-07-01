@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B79C21064F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B15D421064E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728809AbgGAIbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 04:31:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51382 "EHLO
+        id S1728793AbgGAIbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 04:31:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728753AbgGAIb3 (ORCPT
+        with ESMTP id S1726972AbgGAIba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 04:31:29 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5AFC03E979
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 01:31:29 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f18so14820976wrs.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 01:31:29 -0700 (PDT)
+        Wed, 1 Jul 2020 04:31:30 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837B8C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 01:31:30 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z2so621627wrp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 01:31:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zQGzW5dI+CJY57UuhEAmK6g60SBrVTGRjgbtv0HdhAY=;
-        b=QTpb8B/buegH+6omxpYaoAObszOPgF7xUMlbSW0UDKpIXPfAygnrp33VIpquVvoegv
-         aCPep4Qoq3bIoi9jwJQDnYPbgoiXGWacaD/Argorz0Nekv0eUjpiao0Y3ypg52/zKql/
-         Rnn2ZXLrfM4AEzfPwjJ9sccJ29ChmQIya6PRQn0C4/W7IWGFekPoKpcBfRkHPaHrovyD
-         Z+/NmBf+8ZOk6vN15REkauAo5fuSoPCQ3LdXrYfDA2BRv0rGjWdCpXHbr9DN0hYjBzVA
-         HlbTht0DY48QbaElngIUwGOaZfswS4EL3dOS6GiK6Lav+QQcCuo6duN4owle0LQLHC/a
-         sXhw==
+        bh=pdyAQzGUZDqA1eYmqwW6m9OLrHYQ+P2llVYkgd4FTX8=;
+        b=gIPs+WpOisWYzVI85xj2tWSQIjYJARS6BWS56jsrBGs2mUxI8p1Q10NmhZwxQ3oKp0
+         Z6fLAcH3O+E6uAQ6xqNJf6MixV13xwGg7Z0Af+EumRBu4cyW5qffSF3TdBI05K6lVCfe
+         u6PP8PRLsLREA5Or5q7kA9XM5e8UptU0i8FCcvuS9ORvpf9PBpchVBOflq2VipJ0Xubk
+         +n/dNjI+BJty8qg/Z6xo/Xzq53gaV8D1282M5y+aUiYZGo5DnYyMTPrVcEwGK1c8IRbb
+         iYJNjcRA0Un95iZLXTU4Uv6IAvJ1NxA5ZOlyrINAw3inr0ossGnNZOYuInoOTFXarSS6
+         +t7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zQGzW5dI+CJY57UuhEAmK6g60SBrVTGRjgbtv0HdhAY=;
-        b=daHeM6E2Ps9j0Cjlez+CqNqd/b/WA1sji6kXjt/VuWrcBEOvOJg9Dr6xMBIfBuIqNr
-         HOskUB34bZlXengI+r55zMmxkz7Gd5O7MAEWls1tn4YskJo2wZy9T0kA6VYtWvZbuXY+
-         pNFu22kPGLrggWRQRANK06uazCfL6ETISfMTub0GkiXhVxXMdVSMqGKNtj/uDfp0+Df2
-         lp5csYxY+7mC8WC1yothBEqbYVzxYcTFTEuGOHbNQnKjKdwArIDYF3O1F3cLA73yIPwQ
-         xITrTdhU8dKSNWaUnN+X2WnLUeQQrDCWsylqIPG1VtlXTMgBa6hTKrBoMmj/YNnLUE1U
-         vehw==
-X-Gm-Message-State: AOAM531pgA1UtmuPMNiTNecOOf7o3pLfzuB1PaUhJmmBN3IYGXTunHde
-        Ylotco5gYnh1yf5RwwxZBz8e0w==
-X-Google-Smtp-Source: ABdhPJx5r04ELeAmRfKOhnl+9IfC17CSfM9WTFiXGvrQFe/oCg5kSBRL0G1ibSvTibPuv85/+jv9Yg==
-X-Received: by 2002:adf:eec2:: with SMTP id a2mr25133148wrp.127.1593592288154;
-        Wed, 01 Jul 2020 01:31:28 -0700 (PDT)
+        bh=pdyAQzGUZDqA1eYmqwW6m9OLrHYQ+P2llVYkgd4FTX8=;
+        b=kgSQcrWyEYgnIVLlVDmUdCnJTxD3sHmErq/PhfGogbW2e9XsebjAxe/z53ipdZ1zeR
+         rYmofZi+LXZ6C3XHLAXzJcPvVSLBI58TP9JydYzFNXei8bZhGru+7UqIZ6G7ag87H4FA
+         ELFyBVrtnhJnTLy9Vvc/eOqyS4XCS2S7bF3l81YG3ZCb4deGq5R15Cv3iCZc++KbKGOi
+         lLHOYW6cnC1nKmxhKjvMn9P1CFWuKgc8wVqnKhiWOb8V6v2XPHP4p88hieThQtbVv2hR
+         JVO5NHZNTp06xx87Nu4ExKp9MbY6LYqAv2/Ef+8e4LoQvNJF8l1WW5RocLMBZ/BNLkig
+         JwSg==
+X-Gm-Message-State: AOAM531pmhtd6xrp94T0GR8I3ugTCGKemjVd2RuD83mcCac33k0HDU5A
+        SKNUaZCtM5dwYLomfTV1vfaf6Q==
+X-Google-Smtp-Source: ABdhPJySuW4/1ooV7a2fazAlt7N4HD24EgrmkwnofxeJdZ4KO7z/IEUUWxMP6NBitxCt1ja4kazfzA==
+X-Received: by 2002:adf:a49c:: with SMTP id g28mr27602202wrb.118.1593592289275;
+        Wed, 01 Jul 2020 01:31:29 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id 59sm6717816wrj.37.2020.07.01.01.31.27
+        by smtp.gmail.com with ESMTPSA id 59sm6717816wrj.37.2020.07.01.01.31.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 01:31:27 -0700 (PDT)
+        Wed, 01 Jul 2020 01:31:28 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Michael Jung <mijung@gmx.net>,
-        Michael Ruettger <michael@ibmra.de>,
-        Frank Haverkamp <haver@linux.ibm.com>,
-        Joerg-Stephan Vogt <jsvogt@de.ibm.com>
-Subject: [PATCH v2 03/30] misc: genwqe: card_debugfs: Demote file header from kerneldoc
-Date:   Wed,  1 Jul 2020 09:30:51 +0100
-Message-Id: <20200701083118.45744-4-lee.jones@linaro.org>
+        Cliff Whickman <cpw@sgi.com>,
+        Robin Holt <robinmholt@gmail.com>, Dean Nelson <dcn@sgi.com>
+Subject: [PATCH v2 04/30] misc: sgi-xp: xp_main: Staticify local functions xp_init() and xp_exit()
+Date:   Wed,  1 Jul 2020 09:30:52 +0100
+Message-Id: <20200701083118.45744-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200701083118.45744-1-lee.jones@linaro.org>
 References: <20200701083118.45744-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kerneldoc does not understand file headers.  There is therefor
-no reason for them to use the syntax.
+These functions are not exported and no external prototypes exist
 
-Fixes the following W=1 kernel build warnings:
+Fixes W=1 kernel build warning(s):
 
- drivers/misc/genwqe/card_debugfs.c:30: warning: Function parameter or member 's' not described in 'dbg_uidn_show'
- drivers/misc/genwqe/card_debugfs.c:30: warning: Function parameter or member 'regs' not described in 'dbg_uidn_show'
- drivers/misc/genwqe/card_debugfs.c:30: warning: Function parameter or member 'entries' not described in 'dbg_uidn_show'
+ drivers/misc/sgi-xp/xp_main.c:227:1: warning: no previous prototype for ‘xp_init’ [-Wmissing-prototypes]
+ 227 | xp_init(void)
+ | ^~~~~~~
+ drivers/misc/sgi-xp/xp_main.c:250:1: warning: no previous prototype for ‘xp_exit’ [-Wmissing-prototypes]
+ 250 | xp_exit(void)
+ | ^~~~~~~
 
-Cc: Michael Jung <mijung@gmx.net>
-Cc: Michael Ruettger <michael@ibmra.de>
-Cc: Frank Haverkamp <haver@linux.ibm.com>
-Cc: Joerg-Stephan Vogt <jsvogt@de.ibm.com>
+Cc: Cliff Whickman <cpw@sgi.com>
+Cc: Robin Holt <robinmholt@gmail.com>
+Cc: Dean Nelson <dcn@sgi.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/genwqe/card_debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/misc/sgi-xp/xp_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/genwqe/card_debugfs.c b/drivers/misc/genwqe/card_debugfs.c
-index 1b5b82e652687..491fb4482da29 100644
---- a/drivers/misc/genwqe/card_debugfs.c
-+++ b/drivers/misc/genwqe/card_debugfs.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * IBM Accelerator Family 'GenWQE'
-  *
-  * (C) Copyright IBM Corp. 2013
+diff --git a/drivers/misc/sgi-xp/xp_main.c b/drivers/misc/sgi-xp/xp_main.c
+index 5fd94d8360707..61b03fcefb134 100644
+--- a/drivers/misc/sgi-xp/xp_main.c
++++ b/drivers/misc/sgi-xp/xp_main.c
+@@ -223,7 +223,7 @@ xpc_disconnect(int ch_number)
+ }
+ EXPORT_SYMBOL_GPL(xpc_disconnect);
+ 
+-int __init
++static int __init
+ xp_init(void)
+ {
+ 	enum xp_retval ret;
+@@ -246,7 +246,7 @@ xp_init(void)
+ 
+ module_init(xp_init);
+ 
+-void __exit
++static void __exit
+ xp_exit(void)
+ {
+ 	if (is_uv())
 -- 
 2.25.1
 
