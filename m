@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F35E2101D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 04:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0322101DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 04:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgGACQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 22:16:53 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:47714 "EHLO loongson.cn"
+        id S1726993AbgGACRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 22:17:14 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:47694 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726744AbgGACQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 22:16:37 -0400
+        id S1726726AbgGACQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 22:16:36 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxz2r68fteU2dNAA--.5801S8;
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxz2r68fteU2dNAA--.5801S9;
         Wed, 01 Jul 2020 10:16:29 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -20,17 +20,17 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         Marc Zyngier <maz@kernel.org>
 Cc:     linux-kernel@vger.kernel.org,
         Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH v4 06/14] irqchip/digicolor: Fix potential resource leaks
-Date:   Wed,  1 Jul 2020 10:16:18 +0800
-Message-Id: <1593569786-11500-7-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH v4 07/14] irqchip/dw-apb-ictl: Fix potential resource leaks
+Date:   Wed,  1 Jul 2020 10:16:19 +0800
+Message-Id: <1593569786-11500-8-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
 In-Reply-To: <1593569786-11500-1-git-send-email-yangtiezhu@loongson.cn>
 References: <1593569786-11500-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxz2r68fteU2dNAA--.5801S8
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFW8AFW5Cr43trWruw1kAFb_yoW8uryUpF
-        WUGa9IgrWIvw4xWF1vkFyUZF98Kr4xKa9ru3yxC3Z2vrn5C34qkFyUAF1j9FyrArWxZa1j
-        vFs7tFy8C3WUKaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBSb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
+X-CM-TRANSID: AQAAf9Dxz2r68fteU2dNAA--.5801S9
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFW8Jr1fWrWrJrW7WryfJFb_yoW8AF4kpF
+        4rW39akryfJF17XFn5CrWUX3say3W8tay7C3yIkan3Zr9xC34DCr1rtFyjyF15AFWxGa1a
+        9F4vyFy8Ca1DJa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBSb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
         0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
         8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28C
         jxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI
@@ -41,69 +41,68 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7AFW8AFW5Cr43trWruw1kAFb_yoW8uryUpF
         IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
         0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
         IF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
-        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcRwZDUUUU
+        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87
+        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4eMKDUUUU
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function digicolor_of_init(), system resources "reg_base" and
-"digicolor_irq_domain" were not released in a few error cases. Thus
-add jump targets for the completion of the desired exception handling.
+In the function dw_apb_ictl_init(), system resources "irq" and "domain"
+were not released in a few error cases. Thus add jump targets for the
+completion of the desired exception handling.
 
-Fixes: 8041dfbd31cf ("irqchip: Conexant CX92755 interrupts controller driver")
+Fixes: 350d71b94fc9 ("irqchip: add DesignWare APB ICTL interrupt controller")
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- drivers/irqchip/irq-digicolor.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/irqchip/irq-dw-apb-ictl.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/irqchip/irq-digicolor.c b/drivers/irqchip/irq-digicolor.c
-index fc38d2d..18c6e77 100644
---- a/drivers/irqchip/irq-digicolor.c
-+++ b/drivers/irqchip/irq-digicolor.c
-@@ -89,7 +89,8 @@ static int __init digicolor_of_init(struct device_node *node,
- 	ucregs = syscon_regmap_lookup_by_phandle(node, "syscon");
- 	if (IS_ERR(ucregs)) {
- 		pr_err("%pOF: unable to map UC registers\n", node);
--		return PTR_ERR(ucregs);
-+		ret = PTR_ERR(ucregs);
-+		goto err_iounmap;
- 	}
- 	/* channel 1, regular IRQs */
- 	regmap_write(ucregs, UC_IRQ_CONTROL, 1);
-@@ -98,7 +99,8 @@ static int __init digicolor_of_init(struct device_node *node,
- 		irq_domain_add_linear(node, 64, &irq_generic_chip_ops, NULL);
- 	if (!digicolor_irq_domain) {
- 		pr_err("%pOF: unable to create IRQ domain\n", node);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto err_iounmap;
+diff --git a/drivers/irqchip/irq-dw-apb-ictl.c b/drivers/irqchip/irq-dw-apb-ictl.c
+index e4550e9..bc9b750 100644
+--- a/drivers/irqchip/irq-dw-apb-ictl.c
++++ b/drivers/irqchip/irq-dw-apb-ictl.c
+@@ -86,12 +86,13 @@ static int __init dw_apb_ictl_init(struct device_node *np,
+ 	ret = of_address_to_resource(np, 0, &r);
+ 	if (ret) {
+ 		pr_err("%pOF: unable to get resource\n", np);
+-		return ret;
++		goto err_irq_dispose;
  	}
  
- 	ret = irq_alloc_domain_generic_chips(digicolor_irq_domain, 32, 1,
-@@ -106,7 +108,7 @@ static int __init digicolor_of_init(struct device_node *node,
- 					     clr, 0, 0);
+ 	if (!request_mem_region(r.start, resource_size(&r), np->full_name)) {
+ 		pr_err("%pOF: unable to request mem region\n", np);
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto err_irq_dispose;
+ 	}
+ 
+ 	iobase = ioremap(r.start, resource_size(&r));
+@@ -133,7 +134,7 @@ static int __init dw_apb_ictl_init(struct device_node *np,
+ 					     IRQ_GC_INIT_MASK_CACHE);
  	if (ret) {
- 		pr_err("%pOF: unable to allocate IRQ gc\n", node);
--		return ret;
+ 		pr_err("%pOF: unable to alloc irq domain gc\n", np);
+-		goto err_unmap;
 +		goto err_domain_remove;
  	}
  
- 	digicolor_set_gc(reg_base, 0, IC_INT0ENABLE_LO, IC_FLAG_CLEAR_LO);
-@@ -115,5 +117,11 @@ static int __init digicolor_of_init(struct device_node *node,
- 	set_handle_irq(digicolor_handle_irq);
+ 	for (i = 0; i < DIV_ROUND_UP(nrirqs, 32); i++) {
+@@ -150,10 +151,14 @@ static int __init dw_apb_ictl_init(struct device_node *np,
  
  	return 0;
-+
+ 
 +err_domain_remove:
-+	irq_domain_remove(digicolor_irq_domain);
-+err_iounmap:
-+	iounmap(reg_base);
-+	return ret;
++	irq_domain_remove(domain);
+ err_unmap:
+ 	iounmap(iobase);
+ err_release:
+ 	release_mem_region(r.start, resource_size(&r));
++err_irq_dispose:
++	irq_dispose_mapping(irq);
+ 	return ret;
  }
- IRQCHIP_DECLARE(conexant_digicolor_ic, "cnxt,cx92755-ic", digicolor_of_init);
+ IRQCHIP_DECLARE(dw_apb_ictl,
 -- 
 2.1.0
 
