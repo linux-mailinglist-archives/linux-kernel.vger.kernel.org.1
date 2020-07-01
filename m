@@ -2,50 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B842115C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 00:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195BB2115C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 00:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbgGAWWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 18:22:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49700 "EHLO mail.kernel.org"
+        id S1727063AbgGAWWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 18:22:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726404AbgGAWWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 18:22:38 -0400
+        id S1726404AbgGAWWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 18:22:43 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D78220780;
-        Wed,  1 Jul 2020 22:22:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77574207E8;
+        Wed,  1 Jul 2020 22:22:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593642157;
-        bh=mxx7Gg/ZIeVDV4tXevq1kBD2WMrxAhSo/UjofIGOOwU=;
+        s=default; t=1593642163;
+        bh=cJ/E7eJozKmA8owHe5A5Mzv6L3LI8x9nRfUS77HPINA=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=04e4khGICYM7F2fV318l7QGiET8eig6XK+gokuFooZFgBJouu8gJBd14/TIBQ+mpv
-         UblTZxZI4UIzLu5D+bDdMao2CAFWavi/aJo7FRezwwFJsbLKP9Ot1rvINT9cGhR1eh
-         xjrE1pqQI/7VEA7Ht2y6mPk1Zc4zXv7HCyhsAZf4=
-Date:   Wed, 01 Jul 2020 23:22:35 +0100
+        b=eoZetv183/MwvWt4g9XDdVjYYsLTKM3H+xWZ9H88Ciadikq8X5B7IjbZPxke7OytK
+         0khhZ0pQ70pTNdYl1Wko3KkJCe4bG+XwA2DNLuFlfOs/+1Oa5euSv4F5l2qhUSjjCZ
+         eYZ09tWNMNXg6H1ACS8jpDmejaNm2KrM+ZcGDXSU=
+Date:   Wed, 01 Jul 2020 23:22:40 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     perex@perex.cz, alsa-devel@alsa-project.org, tiwai@suse.com,
-        Xiubo.Lee@gmail.com, timur@kernel.org, lgirdwood@gmail.com,
-        festevam@gmail.com, nicoleotsuka@gmail.com,
-        Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1593525367-23221-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1593525367-23221-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH v3] ASoC: fsl_asrc: Add an option to select internal ratio mode
-Message-Id: <159364215575.10630.16163829958912302210.b4-ty@kernel.org>
+To:     lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        robh+dt@kernel.org
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+In-Reply-To: <20200630125843.11561-1-peter.ujfalusi@ti.com>
+References: <20200630125843.11561-1-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v4 0/3] ASoC: ti: Add support for audio on J721e EVM
+Message-Id: <159364215574.10630.2058528286314798186.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Jun 2020 21:56:07 +0800, Shengjiu Wang wrote:
-> The ASRC not only supports ideal ratio mode, but also supports
-> internal ratio mode.
+On Tue, 30 Jun 2020 15:58:40 +0300, Peter Ujfalusi wrote:
+> Changes since v3:
+> - Fix the single clock source handling and typo
 > 
-> For internal rato mode, the rate of clock source should be divided
-> with no remainder by sample rate, otherwise there is sound
-> distortion.
+> Changes since v2:
+> - DT binding:
+>  - use proper (?) patch subject for the binding docuemtn patch
+>  - drop pll4 and pll15 from DT - driver should check the rate via
+>    clk_get_parent. If it is not available (as it is not currently) then use the
+>    match_data provided rates.
+>  - add simple explanation for the clocking setup
+>  - Use descriptive names for clocks: cpb/ivi-mcasp-auxclk and cpb/ivi-codec-scki
+>  - dt_binding_check shows no errors/warnings
+> - ASoC machine driver:
+>  - Try to read the PLL4/15 rate with clk API (parent of the two clock divider)
+>    if it is not available then use the match_data provided numbers.
+>  - Support for single PLL setup
 > 
 > [...]
 
@@ -55,8 +64,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl_asrc: Add an option to select internal ratio mode
-      commit: d0250cf4f2abfbea64ed247230f08f5ae23979f0
+[1/3] ASoC: ti: davinci-mcasp: Specify stream_name for playback/capture
+      commit: ef3ab250aad9920fa7fd6280051c92a488109b87
+[2/3] ASoC: dt-bindings: Add documentation for TI j721e EVM (CPB and IVI)
+      commit: 8142500e7dc0d214e3c7a22788116f71cd84f07b
+[3/3] ASoC: ti: Add custom machine driver for j721e EVM (CPB and IVI)
+      commit: 6748d05590594837e42dfa975879fb275099f0b2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
