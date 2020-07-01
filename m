@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EDC4210154
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 03:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401FA210152
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 03:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726842AbgGABLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 21:11:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57104 "EHLO mail.kernel.org"
+        id S1726808AbgGABKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 21:10:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726736AbgGABKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 21:10:49 -0400
+        id S1726752AbgGABKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 21:10:51 -0400
 Received: from lenoir.home (lfbn-ncy-1-996-218.w90-101.abo.wanadoo.fr [90.101.73.218])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9030820780;
-        Wed,  1 Jul 2020 01:10:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AB2620781;
+        Wed,  1 Jul 2020 01:10:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593565848;
-        bh=N+mVRYojS/sgF3AShn1/nfVqZdHfXdbQ40Gc/VFNccg=;
+        s=default; t=1593565850;
+        bh=TkNGgrqX4DuoPRYiKCidraOvpBZ4CbPraEJ/I0LaPyE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aBaweMGX+MlYORgKOWNtedK0Onh/3xY654VISkwQWX2lCCTWiwjzzpjVROyvq7SYY
-         UB7XCxdbABHhZUdXxNTFubDysvFWDTZe/VTvm7SqeplJcBHxLDXS4z44y+2wPMU3Tt
-         0tX4+HbIp4PfWNPBwj32o+UI5F8MQDKHca/wmzEw=
+        b=jRiNtFGLBYAD1ceOu7EAcw7jxUF/h1Ttyyc5IBKihSkH1ccgg0O24b3asC1GfqCxY
+         wNCBaM2fjKXE75uxitiaco25IV3Jivdi+V1g7c/hxXz/BE5yh813x81aVVuq6j81EA
+         PiuKf+vvm6JLWOkbAJgjrrxFrVhVJahJuTKhLTNM=
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -30,9 +30,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Anna-Maria Gleixner <anna-maria@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>
-Subject: [RFC PATCH 08/10] timer: Spare timer softirq until next expiry
-Date:   Wed,  1 Jul 2020 03:10:28 +0200
-Message-Id: <20200701011030.14324-9-frederic@kernel.org>
+Subject: [RFC PATCH 09/10] timer: Remove must_forward_clk
+Date:   Wed,  1 Jul 2020 03:10:29 +0200
+Message-Id: <20200701011030.14324-10-frederic@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200701011030.14324-1-frederic@kernel.org>
 References: <20200701011030.14324-1-frederic@kernel.org>
@@ -43,116 +43,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the core timer infrastructure doesn't depend anymore on
-periodic base->clk increments, even when the CPU is not in NO_HZ mode,
-we can delay the timer softirqs until we have actual timers to expire.
-
-Some spurious softirqs can still remain since base->next_expiry doesn't
-keep track of canceled timers but we are still way ahead of the
-unconditional periodic softirqs (~15 times less of them with 1000 Hz
-and ~5 times less with 100 Hz).
+There is no reason to keep this guard around. The code makes sure that
+base->clk remains sane and won't be forwarded beyond jiffies nor set
+backward.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Anna-Maria Gleixner <anna-maria@linutronix.de>
 Cc: Juri Lelli <juri.lelli@redhat.com>
 ---
- kernel/time/timer.c | 49 ++++++++-------------------------------------
- 1 file changed, 8 insertions(+), 41 deletions(-)
+ kernel/time/timer.c | 22 ++++++----------------
+ 1 file changed, 6 insertions(+), 16 deletions(-)
 
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 6c021be0e76f..95f51b646447 100644
+index 95f51b646447..439fee098e76 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -1449,10 +1449,10 @@ static void expire_timers(struct timer_base *base, struct hlist_head *head)
- 	}
- }
+@@ -204,7 +204,6 @@ struct timer_base {
+ 	unsigned long		next_expiry;
+ 	unsigned int		cpu;
+ 	bool			is_idle;
+-	bool			must_forward_clk;
+ 	DECLARE_BITMAP(pending_map, WHEEL_SIZE);
+ 	struct hlist_head	vectors[WHEEL_SIZE];
+ } ____cacheline_aligned;
+@@ -877,12 +876,13 @@ get_target_base(struct timer_base *base, unsigned tflags)
  
--static int __collect_expired_timers(struct timer_base *base,
--				    struct hlist_head *heads)
-+static int collect_expired_timers(struct timer_base *base,
-+				  struct hlist_head *heads)
+ static inline void forward_timer_base(struct timer_base *base)
  {
--	unsigned long clk = base->clk;
-+	unsigned long clk = base->clk = base->next_expiry;
- 	struct hlist_head *vec;
- 	int i, levels = 0;
- 	unsigned int idx;
-@@ -1675,40 +1675,6 @@ void timer_clear_idle(void)
- 	 */
- 	base->is_idle = false;
- }
--
--static int collect_expired_timers(struct timer_base *base,
--				  struct hlist_head *heads)
--{
--	unsigned long now = READ_ONCE(jiffies);
--
--	/*
--	 * NOHZ optimization. After a long idle sleep we need to forward the
--	 * base to current jiffies. Avoid a loop by searching the bitfield for
--	 * the next expiring timer.
--	 */
--	if ((long)(now - base->clk) > 2) {
--		/*
--		 * If the next timer is ahead of time forward to current
--		 * jiffies, otherwise forward to the next expiry time:
--		 */
--		if (time_after(base->next_expiry, now)) {
--			/*
--			 * The call site will increment base->clk and then
--			 * terminate the expiry loop immediately.
--			 */
--			base->clk = now;
--			return 0;
--		}
--		base->clk = base->next_expiry;
--	}
--	return __collect_expired_timers(base, heads);
--}
--#else
--static inline int collect_expired_timers(struct timer_base *base,
--					 struct hlist_head *heads)
--{
--	return __collect_expired_timers(base, heads);
--}
- #endif
+-	unsigned long jnow;
++	unsigned long jnow = READ_ONCE(jiffies);
  
- /*
-@@ -1741,7 +1707,7 @@ static inline void __run_timers(struct timer_base *base)
- 	struct hlist_head heads[LVL_DEPTH];
- 	int levels;
- 
--	if (!time_after_eq(jiffies, base->clk))
-+	if (time_before(jiffies, base->next_expiry))
+-	if (!base->must_forward_clk)
+-		return;
+-
+-	jnow = READ_ONCE(jiffies);
++	/*
++	 * No need to forward if we are close enough below jiffies.
++	 * Also while executing timers, base->clk is 1 offset ahead
++	 * of jiffies to avoid endless requeuing to current jffies.
++	 */
+ 	if ((long)(jnow - base->clk) < 2)
  		return;
  
+@@ -1713,16 +1713,8 @@ static inline void __run_timers(struct timer_base *base)
  	timer_base_lock_expiry(base);
-@@ -1754,7 +1720,8 @@ static inline void __run_timers(struct timer_base *base)
- 	 */
- 	base->must_forward_clk = false;
+ 	raw_spin_lock_irq(&base->lock);
  
--	while (time_after_eq(jiffies, base->clk)) {
-+	while (time_after_eq(jiffies, base->clk) &&
-+	       time_after_eq(jiffies, base->next_expiry)) {
- 
+-	/*
+-	 * timer_base::must_forward_clk must be cleared before running
+-	 * timers so that any timer functions that call mod_timer() will
+-	 * not try to forward the base.
+-	 */
+-	base->must_forward_clk = false;
+-
+ 	while (time_after_eq(jiffies, base->clk) &&
+ 	       time_after_eq(jiffies, base->next_expiry)) {
+-
  		levels = collect_expired_timers(base, heads);
  		base->clk++;
-@@ -1789,12 +1756,12 @@ void run_local_timers(void)
- 
- 	hrtimer_run_queues();
- 	/* Raise the softirq only if required. */
--	if (time_before(jiffies, base->clk)) {
-+	if (time_before(jiffies, base->next_expiry)) {
- 		if (!IS_ENABLED(CONFIG_NO_HZ_COMMON))
- 			return;
- 		/* CPU is awake, so check the deferrable base. */
- 		base++;
--		if (time_before(jiffies, base->clk))
-+		if (time_before(jiffies, base->next_expiry))
- 			return;
+ 		base->next_expiry = __next_timer_interrupt(base);
+@@ -1730,7 +1722,6 @@ static inline void __run_timers(struct timer_base *base)
+ 		while (levels--)
+ 			expire_timers(base, heads + levels);
  	}
- 	raise_softirq(TIMER_SOFTIRQ);
+-	base->must_forward_clk = true;
+ 	raw_spin_unlock_irq(&base->lock);
+ 	timer_base_unlock_expiry(base);
+ }
+@@ -1926,7 +1917,6 @@ int timers_prepare_cpu(unsigned int cpu)
+ 		base->clk = jiffies;
+ 		base->next_expiry = base->clk + NEXT_TIMER_MAX_DELTA;
+ 		base->is_idle = false;
+-		base->must_forward_clk = true;
+ 	}
+ 	return 0;
+ }
 -- 
 2.26.2
 
