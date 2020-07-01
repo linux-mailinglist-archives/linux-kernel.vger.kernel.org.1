@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABFC210F38
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD24210F33
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732041AbgGAP1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 11:27:50 -0400
-Received: from mga17.intel.com ([192.55.52.151]:54837 "EHLO mga17.intel.com"
+        id S1732039AbgGAP1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 11:27:32 -0400
+Received: from mga17.intel.com ([192.55.52.151]:54845 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732004AbgGAP1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 11:27:25 -0400
-IronPort-SDR: 1lKOYQEx6jjlc7iAAJFMMwz/Q99Q7cNox9+cUXWwZe6PsSgian1z0C2o6o0O60pcVGMn2dJ+io
- lUFLthEI61DQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="126699717"
+        id S1732020AbgGAP11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 11:27:27 -0400
+IronPort-SDR: e+l5XVcHnigrybTT5CrhRLaOvspNfkBo8nJePwZ1hhhaQfB+NgkouXXHF8UNvxEiWV2tYYeF00
+ 43XhSJugr+9Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="126699720"
 X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
-   d="scan'208";a="126699717"
+   d="scan'208";a="126699720"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 08:27:22 -0700
-IronPort-SDR: u9h00Dj0YFmtIgKW1YoQHXAnJsnfhOsoXn8xVha87V1+qfbpWl7YNx/mN8KRBgu0o4amTw1zLf
- ywszPxoX+Lew==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 08:27:23 -0700
+IronPort-SDR: GxdWpZ0Y0N+xwpRynhx+NrXdSsENAkVY3eb84chB8hIF7ZSPq6sX5tk1chxg1x/GIet7ja0GFh
+ ExjsjVwOhy/w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
-   d="scan'208";a="295591646"
+   d="scan'208";a="295591650"
 Received: from jacob-builder.jf.intel.com ([10.7.199.155])
   by orsmga002.jf.intel.com with ESMTP; 01 Jul 2020 08:27:22 -0700
 From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
@@ -37,9 +37,9 @@ Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
         Raj Ashok <ashok.raj@intel.com>,
         Eric Auger <eric.auger@redhat.com>,
         Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH v3 3/7] iommu/vt-d: Fix PASID devTLB invalidation
-Date:   Wed,  1 Jul 2020 08:33:52 -0700
-Message-Id: <1593617636-79385-4-git-send-email-jacob.jun.pan@linux.intel.com>
+Subject: [PATCH v3 4/7] iommu/vt-d: Handle non-page aligned address
+Date:   Wed,  1 Jul 2020 08:33:53 -0700
+Message-Id: <1593617636-79385-5-git-send-email-jacob.jun.pan@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1593617636-79385-1-git-send-email-jacob.jun.pan@linux.intel.com>
 References: <1593617636-79385-1-git-send-email-jacob.jun.pan@linux.intel.com>
@@ -48,43 +48,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DevTLB flush can be used for both DMA request with and without PASIDs.
-The former uses PASID#0 (RID2PASID), latter uses non-zero PASID for SVA
-usage.
+From: Liu Yi L <yi.l.liu@intel.com>
 
-This patch adds a check for PASID value such that devTLB flush with
-PASID is used for SVA case. This is more efficient in that multiple
-PASIDs can be used by a single device, when tearing down a PASID entry
-we shall flush only the devTLB specific to a PASID.
+Address information for device TLB invalidation comes from userspace
+when device is directly assigned to a guest with vIOMMU support.
+VT-d requires page aligned address. This patch checks and enforce
+address to be page aligned, otherwise reserved bits can be set in the
+invalidation descriptor. Unrecoverable fault will be reported due to
+non-zero value in the reserved bits.
 
-Fixes: 6f7db75e1c46 ("iommu/vt-d: Add second level page table")
+Fixes: 61a06a16e36d8 ("iommu/vt-d: Support flushing more translation
+cache types")
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+
 Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
 ---
- drivers/iommu/intel/pasid.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/iommu/intel/dmar.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-index c81f0f17c6ba..fa0154cce537 100644
---- a/drivers/iommu/intel/pasid.c
-+++ b/drivers/iommu/intel/pasid.c
-@@ -486,7 +486,16 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
- 	qdep = info->ats_qdep;
- 	pfsid = info->pfsid;
+diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+index d9f973fa1190..3899f3161071 100644
+--- a/drivers/iommu/intel/dmar.c
++++ b/drivers/iommu/intel/dmar.c
+@@ -1455,9 +1455,25 @@ void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu, u16 sid, u16 pfsid,
+ 	 * Max Invs Pending (MIP) is set to 0 for now until we have DIT in
+ 	 * ECAP.
+ 	 */
+-	desc.qw1 |= addr & ~mask;
+-	if (size_order)
++	if (addr & ~VTD_PAGE_MASK)
++		pr_warn_ratelimited("Invalidate non-page aligned address %llx\n", addr);
++
++	/* Take page address */
++	desc.qw1 |= QI_DEV_EIOTLB_ADDR(addr);
++
++	if (size_order) {
++		/*
++		 * Existing 0s in address below size_order may be the least
++		 * significant bit, we must set them to 1s to avoid having
++		 * smaller size than desired.
++		 */
++		desc.qw1 |= GENMASK_ULL(size_order + VTD_PAGE_SHIFT,
++					VTD_PAGE_SHIFT);
++		/* Clear size_order bit to indicate size */
++		desc.qw1 &= ~mask;
++		/* Set the S bit to indicate flushing more than 1 page */
+ 		desc.qw1 |= QI_DEV_EIOTLB_SIZE;
++	}
  
--	qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0, 64 - VTD_PAGE_SHIFT);
-+	/*
-+	 * When PASID 0 is used, it indicates RID2PASID(DMA request w/o PASID),
-+	 * devTLB flush w/o PASID should be used. For non-zero PASID under
-+	 * SVA usage, device could do DMA with multiple PASIDs. It is more
-+	 * efficient to flush devTLB specific to the PASID.
-+	 */
-+	if (pasid == PASID_RID2PASID)
-+		qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0, 64 - VTD_PAGE_SHIFT);
-+	else
-+		qi_flush_dev_iotlb_pasid(iommu, sid, pfsid, pasid, qdep, 0, 64 - VTD_PAGE_SHIFT);
+ 	qi_submit_sync(iommu, &desc, 1, 0);
  }
- 
- void intel_pasid_tear_down_entry(struct intel_iommu *iommu, struct device *dev,
 -- 
 2.7.4
 
