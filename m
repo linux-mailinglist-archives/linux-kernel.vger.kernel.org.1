@@ -2,270 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C16210F1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F83F210F3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731877AbgGAP1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 11:27:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56092 "EHLO mail.kernel.org"
+        id S1732093AbgGAP2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 11:28:00 -0400
+Received: from mga11.intel.com ([192.55.52.93]:55082 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731648AbgGAP1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 11:27:00 -0400
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C11FB20760;
-        Wed,  1 Jul 2020 15:26:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593617219;
-        bh=Oa6a2Qzn/MoTE1lw9BpNRadpq5vVpTNDMhhVIVB/lwg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=M5yhaRzNZGUMYUaKz0WPmaLoe0gifX7v1ow+0tBxtC1LqmUc16dy4CdDVQnYBxU8N
-         cfDVcdmi/eFGdPEmxiSLR+aZGFuZ8CcCf7XKIUo7AXyN7D+0035rKLpGHDUb/KPE0c
-         0aLN8oqQiS77R2sn5Ev83eRMAKFB9E3wxLFFDgws=
-Received: by mail-ot1-f49.google.com with SMTP id t18so8904586otq.5;
-        Wed, 01 Jul 2020 08:26:59 -0700 (PDT)
-X-Gm-Message-State: AOAM533IzNHwrSJykwDdJVmCxn1ru5cfo36Fud6OTvhLWyIC9iebHR9P
-        RcpXkwZoBsJ00Bi8XaD1WDpDk37MeBZIM31jBfQ=
-X-Google-Smtp-Source: ABdhPJyahO/wcWQVnijMmvCodpjFNvQCPdX712m6C0Xc5vU0yi6HM40sjEnEH31hr1/ixPIqFNDEC6IPfxNOFVu/POo=
-X-Received: by 2002:a9d:4a8f:: with SMTP id i15mr24510513otf.77.1593617218421;
- Wed, 01 Jul 2020 08:26:58 -0700 (PDT)
+        id S1732001AbgGAP1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 11:27:55 -0400
+IronPort-SDR: LoS762vxAk/BUwawcP/tLvgibULz793n6r9EuzCRLgCq//vIp+IiAe7ekgY93HyM/KMIYGqsDh
+ DIfPFFU2eMsw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="144781854"
+X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
+   d="scan'208";a="144781854"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 08:27:49 -0700
+IronPort-SDR: gZOr6WplbAdaFEtI9Fphq38WUDpez5cC1wI9i10yj5Oh4vVivr7dEpwEBrBILABux695POnPVu
+ AZs8NsCbWfPw==
+X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
+   d="scan'208";a="455141064"
+Received: from rapyeatx-mobl3.amr.corp.intel.com (HELO [10.255.2.31]) ([10.255.2.31])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 08:27:47 -0700
+Subject: Re: [PATCH] mm/vmscan: restore zone_reclaim_mode ABI
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Baoquan He <bhe@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        ben.widawsky@intel.com, alex.shi@linux.alibaba.com,
+        dwagner@suse.de, tobin@kernel.org, cl@linux.com
+References: <20200626003459.D8E015CA@viggo.jf.intel.com>
+ <20200629065203.GJ3346@MiWiFi-R3L-srv>
+ <3ba94f19-3b18-9d52-a070-f652620c88e6@intel.com>
+ <20200629233043.GK3346@MiWiFi-R3L-srv>
+ <791c47ad-5a6b-1f1b-c34b-d8bbf7722957@intel.com>
+ <20200630194755.61f56a55d46222f8d0c84bdd@linux-foundation.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5dc16fdf-21bf-403d-240a-0f11df1b2af5@intel.com>
+Date:   Wed, 1 Jul 2020 08:27:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200701141731.377252388@hpe.com> <20200701141732.832256169@hpe.com>
-In-Reply-To: <20200701141732.832256169@hpe.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 1 Jul 2020 17:26:47 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEKoa=TpzPHP1TGx7-Fe4NkegN7EcunGUUPbpP9w3FACg@mail.gmail.com>
-Message-ID: <CAMj1kXEKoa=TpzPHP1TGx7-Fe4NkegN7EcunGUUPbpP9w3FACg@mail.gmail.com>
-Subject: Re: [patch 11/13] Remove references to no-longer-used efi_have_uv1_memmap()
-To:     Steve Wahl <steve.wahl@hpe.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Benjamin Thiel <b.thiel@posteo.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        James Morris <jmorris@namei.org>,
-        David Howells <dhowells@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Dave Young <dyoung@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Austin Kim <austindh.kim@gmail.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Russ Anderson <rja@hpe.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200630194755.61f56a55d46222f8d0c84bdd@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Jul 2020 at 16:18, <steve.wahl@hpe.com> wrote:
->
-> In removing UV1 support, efi_have_uv1_memmap is no longer used.
->
-> Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
+On 6/30/20 7:47 PM, Andrew Morton wrote:
+>> Oh, that's a very good point.  There are a couple of those around.  Let
+>> me circle back and update the documentation and the variable name.  I'll
+>> send out another version.
+> Was the omission of cc:stable deliberate?
 
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-
-> ---
->  arch/x86/kernel/kexec-bzimage64.c |    9 ---------
->  arch/x86/platform/efi/efi.c       |   14 +++-----------
->  arch/x86/platform/efi/efi_64.c    |   38 +++-----------------------------------
->  arch/x86/platform/efi/quirks.c    |    8 --------
->  4 files changed, 6 insertions(+), 63 deletions(-)
->
-> --- linux.orig/arch/x86/kernel/kexec-bzimage64.c        2020-06-25 13:17:57.780344455 -0500
-> +++ linux/arch/x86/kernel/kexec-bzimage64.c     2020-06-25 14:13:03.012966676 -0500
-> @@ -170,15 +170,6 @@ setup_efi_state(struct boot_params *para
->         if (!current_ei->efi_memmap_size)
->                 return 0;
->
-> -       /*
-> -        * If 1:1 mapping is not enabled, second kernel can not setup EFI
-> -        * and use EFI run time services. User space will have to pass
-> -        * acpi_rsdp=<addr> on kernel command line to make second kernel boot
-> -        * without efi.
-> -        */
-> -       if (efi_have_uv1_memmap())
-> -               return 0;
-> -
->         params->secure_boot = boot_params.secure_boot;
->         ei->efi_loader_signature = current_ei->efi_loader_signature;
->         ei->efi_systab = current_ei->efi_systab;
-> --- linux.orig/arch/x86/platform/efi/efi.c      2020-06-25 13:17:57.780344455 -0500
-> +++ linux/arch/x86/platform/efi/efi.c   2020-06-25 15:44:12.355019679 -0500
-> @@ -648,7 +648,7 @@ static inline void *efi_map_next_entry_r
->   */
->  static void *efi_map_next_entry(void *entry)
->  {
-> -       if (!efi_have_uv1_memmap() && efi_enabled(EFI_64BIT)) {
-> +       if (efi_enabled(EFI_64BIT)) {
->                 /*
->                  * Starting in UEFI v2.5 the EFI_PROPERTIES_TABLE
->                  * config table feature requires us to map all entries
-> @@ -777,11 +777,9 @@ static void __init kexec_enter_virtual_m
->
->         /*
->          * We don't do virtual mode, since we don't do runtime services, on
-> -        * non-native EFI. With the UV1 memmap, we don't do runtime services in
-> -        * kexec kernel because in the initial boot something else might
-> -        * have been mapped at these virtual addresses.
-> +        * non-native EFI.
->          */
-> -       if (efi_is_mixed() || efi_have_uv1_memmap()) {
-> +       if (efi_is_mixed()) {
->                 efi_memmap_unmap();
->                 clear_bit(EFI_RUNTIME_SERVICES, &efi.flags);
->                 return;
-> @@ -832,12 +830,6 @@ static void __init kexec_enter_virtual_m
->   * has the runtime attribute bit set in its memory descriptor into the
->   * efi_pgd page table.
->   *
-> - * The old method which used to update that memory descriptor with the
-> - * virtual address obtained from ioremap() is still supported when the
-> - * kernel is booted on SG1 UV1 hardware. Same old method enabled the
-> - * runtime services to be called without having to thunk back into
-> - * physical mode for every invocation.
-> - *
->   * The new method does a pagetable switch in a preemption-safe manner
->   * so that we're in a different address space when calling a runtime
->   * function. For function arguments passing we do copy the PUDs of the
-> --- linux.orig/arch/x86/platform/efi/efi_64.c   2020-06-25 13:17:57.780344455 -0500
-> +++ linux/arch/x86/platform/efi/efi_64.c        2020-06-25 14:13:03.044966641 -0500
-> @@ -74,9 +74,6 @@ int __init efi_alloc_page_tables(void)
->         pud_t *pud;
->         gfp_t gfp_mask;
->
-> -       if (efi_have_uv1_memmap())
-> -               return 0;
-> -
->         gfp_mask = GFP_KERNEL | __GFP_ZERO;
->         efi_pgd = (pgd_t *)__get_free_pages(gfp_mask, PGD_ALLOCATION_ORDER);
->         if (!efi_pgd)
-> @@ -115,9 +112,6 @@ void efi_sync_low_kernel_mappings(void)
->         pud_t *pud_k, *pud_efi;
->         pgd_t *efi_pgd = efi_mm.pgd;
->
-> -       if (efi_have_uv1_memmap())
-> -               return;
-> -
->         /*
->          * We can share all PGD entries apart from the one entry that
->          * covers the EFI runtime mapping space.
-> @@ -206,9 +200,6 @@ int __init efi_setup_page_tables(unsigne
->         unsigned npages;
->         pgd_t *pgd = efi_mm.pgd;
->
-> -       if (efi_have_uv1_memmap())
-> -               return 0;
-> -
->         /*
->          * It can happen that the physical address of new_memmap lands in memory
->          * which is not mapped in the EFI page table. Therefore we need to go
-> @@ -315,9 +306,6 @@ void __init efi_map_region(efi_memory_de
->         unsigned long size = md->num_pages << PAGE_SHIFT;
->         u64 pa = md->phys_addr;
->
-> -       if (efi_have_uv1_memmap())
-> -               return old_map_region(md);
-> -
->         /*
->          * Make sure the 1:1 mappings are present as a catch-all for b0rked
->          * firmware which doesn't update all internal pointers after switching
-> @@ -420,12 +408,6 @@ void __init efi_runtime_update_mappings(
->  {
->         efi_memory_desc_t *md;
->
-> -       if (efi_have_uv1_memmap()) {
-> -               if (__supported_pte_mask & _PAGE_NX)
-> -                       runtime_code_page_mkexec();
-> -               return;
-> -       }
-> -
->         /*
->          * Use the EFI Memory Attribute Table for mapping permissions if it
->          * exists, since it is intended to supersede EFI_PROPERTIES_TABLE.
-> @@ -474,10 +456,7 @@ void __init efi_runtime_update_mappings(
->  void __init efi_dump_pagetable(void)
->  {
->  #ifdef CONFIG_EFI_PGT_DUMP
-> -       if (efi_have_uv1_memmap())
-> -               ptdump_walk_pgd_level(NULL, &init_mm);
-> -       else
-> -               ptdump_walk_pgd_level(NULL, &efi_mm);
-> +       ptdump_walk_pgd_level(NULL, &efi_mm);
->  #endif
->  }
->
-> @@ -849,21 +828,13 @@ efi_set_virtual_address_map(unsigned lon
->         const efi_system_table_t *systab = (efi_system_table_t *)systab_phys;
->         efi_status_t status;
->         unsigned long flags;
-> -       pgd_t *save_pgd = NULL;
->
->         if (efi_is_mixed())
->                 return efi_thunk_set_virtual_address_map(memory_map_size,
->                                                          descriptor_size,
->                                                          descriptor_version,
->                                                          virtual_map);
-> -
-> -       if (efi_have_uv1_memmap()) {
-> -               save_pgd = efi_uv1_memmap_phys_prolog();
-> -               if (!save_pgd)
-> -                       return EFI_ABORTED;
-> -       } else {
-> -               efi_switch_mm(&efi_mm);
-> -       }
-> +       efi_switch_mm(&efi_mm);
->
->         kernel_fpu_begin();
->
-> @@ -879,10 +850,7 @@ efi_set_virtual_address_map(unsigned lon
->         /* grab the virtually remapped EFI runtime services table pointer */
->         efi.runtime = READ_ONCE(systab->runtime);
->
-> -       if (save_pgd)
-> -               efi_uv1_memmap_phys_epilog(save_pgd);
-> -       else
-> -               efi_switch_mm(efi_scratch.prev_mm);
-> +       efi_switch_mm(efi_scratch.prev_mm);
->
->         return status;
->  }
-> --- linux.orig/arch/x86/platform/efi/quirks.c   2020-06-25 14:11:39.301053295 -0500
-> +++ linux/arch/x86/platform/efi/quirks.c        2020-06-25 14:13:03.048966638 -0500
-> @@ -381,14 +381,6 @@ static void __init efi_unmap_pages(efi_m
->         u64 va = md->virt_addr;
->
->         /*
-> -        * To Do: Remove this check after adding functionality to unmap EFI boot
-> -        * services code/data regions from direct mapping area because the UV1
-> -        * memory map maps EFI regions in swapper_pg_dir.
-> -        */
-> -       if (efi_have_uv1_memmap())
-> -               return;
-> -
-> -       /*
->          * EFI mixed mode has all RAM mapped to access arguments while making
->          * EFI runtime calls, hence don't unmap EFI boot services code/data
->          * regions.
->
+Nope, it was an accidental stable@kernel.org instead of stable@vger.
+<Sigh> Not the first time I've done that...  I'll fix it up in the resend.
