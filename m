@@ -2,101 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F44210C23
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 15:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 280B7210C2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 15:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731025AbgGANZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 09:25:55 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:55088 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729429AbgGANZs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 09:25:48 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 061DNu0B002951;
-        Wed, 1 Jul 2020 15:25:34 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=iGCDghN3T5Y00zNouGbtPQSvGhwl/OIHxAZ2MQmEADQ=;
- b=SlTrvQVScc0paz0KUHSSgoPv64yGY4gUSVrH8laNP6ydD02PqtL9poRU29vPFY1TY75a
- yd7/ahvhn0zpAZn6zy+fQfOHzXmZPtViqV2oFB+bAGME2RaxSsD518GRnJbuipjZ0jzU
- IIyyJAmneT1ZJlrR44/X+3QMUkhqoHc9k7LyJ6wmaArPZcsH+NBbRM1pGj2lEIMFn5PJ
- TKp+L4ccq2yWDyAeXHCPCuN694Hwz7x1Ggta6E0WBpHAAfai2JMfu1IO30CkFgiWYk2N
- QWpEfUQ3BnedetLIIaqRpI1QJ307p/jU/Oag+AvOfjJxBuZHMrk2yuh9B4LwQZ2+gGAT 5w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31wuk1j93w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Jul 2020 15:25:34 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EB39510002A;
-        Wed,  1 Jul 2020 15:25:33 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node3.st.com [10.75.127.9])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DE7132B6DD6;
-        Wed,  1 Jul 2020 15:25:33 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG3NODE3.st.com (10.75.127.9)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 1 Jul 2020 15:25:33
- +0200
-From:   Benjamin Gaignard <benjamin.gaignard@st.com>
-To:     <robh+dt@kernel.org>, <mcoquelin.stm32@gmail.com>,
-        <alexandre.torgue@st.com>, <linus.walleij@linaro.org>,
-        <gregkh@linuxfoundation.org>
-CC:     <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <stefano.stabellini@xilinx.com>,
-        <tomase@xilinx.com>, <devicetree@vger.kernel.org>,
-        Benjamin Gaignard <benjamin.gaignard@st.com>
-Subject: [PATCH v4 5/5] ARM: dts: stm32: Use ETZPC firewall bus
-Date:   Wed, 1 Jul 2020 15:25:23 +0200
-Message-ID: <20200701132523.32533-6-benjamin.gaignard@st.com>
-X-Mailer: git-send-email 2.15.0
-In-Reply-To: <20200701132523.32533-1-benjamin.gaignard@st.com>
-References: <20200701132523.32533-1-benjamin.gaignard@st.com>
+        id S1731083AbgGAN0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 09:26:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729429AbgGAN0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 09:26:20 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF20D206BE;
+        Wed,  1 Jul 2020 13:26:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593609980;
+        bh=+PuAt1GcsWcVCIdMAT4isueNwyuOKhwz5N/3g/TfwlQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uLYN4dQVt/Vf2Ju08hqrAZSstU94sGlP+YeVgHDJVsEAapNbPEIhiORBA1axBTBbJ
+         sBYnQPztCertMJJxQQEsyKf5JxbmnTv6RhDra/C9xROCHD5zWzwNkVE+/LV7tE2b2X
+         r1V+jnl9LEQIAyBOQ838GzFOd+1q2+HnqWxFr8+Y=
+Date:   Wed, 1 Jul 2020 15:26:06 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel Winkler <danielwinkler@google.com>
+Cc:     linux-serial@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        chromeos-bluetooth-upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        Aaron Sierra <asierra@xes-inc.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jslaby@suse.com>, Lukas Wunner <lukas@wunner.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "serial: 8250: Fix max baud limit in generic 8250
+ port"
+Message-ID: <20200701132606.GA2363542@kroah.com>
+References: <20200630164204.1.I2cc415fa5793b3e55acfd521ba8f0a71e79aa5f1@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG4NODE1.st.com (10.75.127.10) To SFHDAG3NODE3.st.com
- (10.75.127.9)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-01_08:2020-07-01,2020-07-01 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200630164204.1.I2cc415fa5793b3e55acfd521ba8f0a71e79aa5f1@changeid>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow STM32 ETZPC to check firewall configuration before populating
-the platform bus.
+On Tue, Jun 30, 2020 at 04:42:11PM -0700, Daniel Winkler wrote:
+> This reverts commit 0eeaf62981ecc79e8395ca8caa1570eaf3a12257.
+> 
+> The change regresses the QCA6174A-3 bluetooth chip, preventing
+> firmware from being properly loaded. We have verified that without
+> this patch, the chip works as intended.
+> 
+> Signed-off-by: Daniel Winkler <danielwinkler@google.com>
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
----
- arch/arm/boot/dts/stm32mp151.dtsi | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+No cc: stable?  No Fixes: tag?
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index 3ea05ba48215..0290eb6f3c35 100644
---- a/arch/arm/boot/dts/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -4,6 +4,7 @@
-  * Author: Ludovic Barre <ludovic.barre@st.com> for STMicroelectronics.
-  */
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/bus/stm32/stm32-etzpc.h>
- #include <dt-bindings/clock/stm32mp1-clks.h>
- #include <dt-bindings/reset/stm32mp1-resets.h>
- 
-@@ -110,8 +111,10 @@
- 		status = "disabled";
- 	};
- 
--	soc {
--		compatible = "simple-bus";
-+	etzpc_bus: soc@5c007000 {
-+		compatible = "st,stm32-etzpc-bus", "simple-bus";
-+		reg = <0x5c007000 0x400>;
-+		#firewall-cells = <2>;
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		interrupt-parent = <&intc>;
--- 
-2.15.0
+{sigh}
 
