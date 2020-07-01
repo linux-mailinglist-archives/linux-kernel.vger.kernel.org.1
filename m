@@ -2,93 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E64210546
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 09:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD64210548
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 09:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728340AbgGAHrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 03:47:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728327AbgGAHrl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 03:47:41 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F44C03E979
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 00:47:40 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id t9so13016287lfl.5
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 00:47:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iIDLsMEqEu6N2jaXdTulWkfEp7Kjn/2oh7q3WmCmgLs=;
-        b=jhCYCyy9yFVY5gCDiHwYz6PmY8nom9rH+nB33U4cwyxeYk0JH44YqUgWCKpCsd4xvx
-         YUbMO4iv6azZgxYQ7mQONcO+cCE+pUzwPohi2QRpvYKkg0vFWNCmZoKQlsKx1Iy8xJJ8
-         BzmfQTT1ieWTFOWsU9Ny/q6AGkOL65X/9oqAlBhS/AG18zF7XMgKv/4YAgtqKG/Rxgeu
-         FzXwgMxo15sq56v3jmlYvaq10jiYxNWryCh/oOQQV+wmai6gXYp7aNs6u8Wp3CyApTOf
-         fsZXJy9R8HmnGvqrOXXE5NYgQjX/vfRyyb+RHcZDaffzcNCqar/xwgWB2YqZpwqPcGYC
-         os5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iIDLsMEqEu6N2jaXdTulWkfEp7Kjn/2oh7q3WmCmgLs=;
-        b=MDp50MkZTC6IESzJINRIFKti/FH43X5mm1qWsNZCluM4MIRILFZ/OkQk7etaydG6xv
-         xVwKqFc7KExADu8cCNGz6kZn/SYjXHupVszSDx63ye0PC7emaEPUyVlEtULu9RUSseFN
-         ICgceUVSBSK8Lb4NqcNPOLSTTG7P9cbVL/5X1YRysY1h5SOrkPYeYYjBKvj1CSYoRtht
-         ElPRkcfcYEeiTiZ3UOeI+0xLbRCEAalJzApxbvEGLRC8mvqegLrdx7HtqjPNQOKM3l+/
-         tHZ0iteUdFzjG4WvKavHdNrtumUF9Yw69WQLv6ign4q6gZdhjivSd2wMhYb7lEJ4vHNA
-         Y9IQ==
-X-Gm-Message-State: AOAM533pTLxq0V3xOlHrfnFPFejUysgYhB6xHdnu03Xi1m5PISpEJdQR
-        Y4+83r93pc9GXD5EAcG16nrjVgxdDxB9+EdW30Oeyg==
-X-Google-Smtp-Source: ABdhPJxuQhh9QuZuUqJPJjuR/b+dDLREBTmySJg4FX0sMHHxmx5c080ySCLZHwPZqCVaSh9Yel1Lc9f0B5OJmbWs5U4=
-X-Received: by 2002:a05:6512:3150:: with SMTP id s16mr3346458lfi.47.1593589659102;
- Wed, 01 Jul 2020 00:47:39 -0700 (PDT)
+        id S1728356AbgGAHsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 03:48:08 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7327 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728294AbgGAHsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 03:48:07 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id CD71E9B8C42A25890AA8;
+        Wed,  1 Jul 2020 15:48:04 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 1 Jul 2020
+ 15:48:00 +0800
+Subject: Re: [f2fs-dev] [PATCH v3] f2fs: avoid readahead race condition
+From:   Chao Yu <yuchao0@huawei.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>
+CC:     <kernel-team@android.com>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20200624012148.180050-1-jaegeuk@kernel.org>
+ <20200629150323.GA3293033@google.com> <20200629202720.GA230664@google.com>
+ <20200630204348.GA2504307@ubuntu-s3-xlarge-x86>
+ <20200630205635.GB1396584@google.com>
+ <285a4e16-2cbc-d1e9-8464-8a06bacbaaa0@huawei.com>
+Message-ID: <d496f4b9-e4fa-1366-61a9-38ee59c20e15@huawei.com>
+Date:   Wed, 1 Jul 2020 15:47:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <20200626005601.241022-1-megous@megous.com> <20200626005601.241022-5-megous@megous.com>
-In-Reply-To: <20200626005601.241022-5-megous@megous.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 1 Jul 2020 09:47:28 +0200
-Message-ID: <CACRpkdbJqFHCGkLgMM3pzgE4kYL7wH2FyK0fpOf1Gva1xicxuA@mail.gmail.com>
-Subject: Re: [PATCH v5 04/13] drm/panel: rocktech-jh057n00900: Rename the
- driver to st7703
-To:     Ondrej Jirman <megous@megous.com>
-Cc:     linux-sunxi <linux-sunxi@googlegroups.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        Purism Kernel Team <kernel@puri.sm>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Icenowy Zheng <icenowy@aosc.io>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Martijn Braam <martijn@brixit.nl>, Luca Weiss <luca@z3ntu.xyz>,
-        Bhushan Shah <bshah@kde.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <285a4e16-2cbc-d1e9-8464-8a06bacbaaa0@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 2:56 AM Ondrej Jirman <megous@megous.com> wrote:
+On 2020/7/1 9:59, Chao Yu wrote:
+> On 2020/7/1 4:56, Jaegeuk Kim wrote:
+>> On 06/30, Nathan Chancellor wrote:
+>>> On Mon, Jun 29, 2020 at 01:27:20PM -0700, Jaegeuk Kim wrote:
+>>>> If two readahead threads having same offset enter in readpages, every read
+>>>> IOs are split and issued to the disk which giving lower bandwidth.
+>>>>
+>>>> This patch tries to avoid redundant readahead calls.
+>>>>
+>>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>>>> ---
+>>>> v3:
+>>>>  - use READ|WRITE_ONCE
+>>>> v2:
+>>>>   - add missing code to bypass read
+>>>>  
+>>>>  fs/f2fs/data.c  | 18 ++++++++++++++++++
+>>>>  fs/f2fs/f2fs.h  |  1 +
+>>>>  fs/f2fs/super.c |  2 ++
+>>>>  3 files changed, 21 insertions(+)
+>>>>
+>>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+>>>> index 995cf78b23c5e..360b4c9080d97 100644
+>>>> --- a/fs/f2fs/data.c
+>>>> +++ b/fs/f2fs/data.c
+>>>> @@ -2296,6 +2296,7 @@ static int f2fs_mpage_readpages(struct inode *inode,
+>>>>  	unsigned nr_pages = rac ? readahead_count(rac) : 1;
+>>>>  	unsigned max_nr_pages = nr_pages;
+>>>>  	int ret = 0;
+>>>> +	bool drop_ra = false;
+>>>>  
+>>>>  	map.m_pblk = 0;
+>>>>  	map.m_lblk = 0;
+>>>> @@ -2306,10 +2307,24 @@ static int f2fs_mpage_readpages(struct inode *inode,
+>>>>  	map.m_seg_type = NO_CHECK_TYPE;
+>>>>  	map.m_may_create = false;
+>>>>  
+>>>> +	/*
+>>>> +	 * Two readahead threads for same address range can cause race condition
+>>>> +	 * which fragments sequential read IOs. So let's avoid each other.
+>>>> +	 */
+>>>> +	if (rac && readahead_count(rac)) {
+>>>> +		if (READ_ONCE(F2FS_I(inode)->ra_offset) == readahead_index(rac))
+>>>> +			drop_ra = true;
+>>>> +		else
+>>>> +			WRITE_ONCE(F2FS_I(inode)->ra_offset,
+>>>> +						readahead_index(rac));
+>>>> +	}
+>>>> +
+>>>>  	for (; nr_pages; nr_pages--) {
+>>>>  		if (rac) {
+>>>>  			page = readahead_page(rac);
+>>>>  			prefetchw(&page->flags);
+>>>> +			if (drop_ra)
+>>>> +				goto next_page;
+>>>
+>>> When CONFIG_F2FS_FS_COMPRESSION is not set (i.e. x86_64 defconfig +
+>>> CONFIG_F2FS_FS=y):
+>>>
+>>> $ make -skj"$(nproc)" O=out distclean defconfig fs/f2fs/data.o
+>>> ../fs/f2fs/data.c: In function ‘f2fs_mpage_readpages’:
+>>> ../fs/f2fs/data.c:2327:5: error: label ‘next_page’ used but not defined
+>>>  2327 |     goto next_page;
+>>>       |     ^~~~
+>>> ...
+>>
+>> Thanks. I pushed the fix for -next.
+>> https://lore.kernel.org/linux-f2fs-devel/1be18397-7fc6-703e-121b-e210e101357f@infradead.org/T/#t
 
-> This rename is done so that the driver matches the name of the
-> display controller and in preparation for adding support for more
-> panels to the driver.
->
-> This is just a basic file rename, with no code changes.
->
-> Signed-off-by: Ondrej Jirman <megous@megous.com>
+It will hang the kernel because we missed to unlock those cached pages,
+I changed to 'goto set_error_page', the issue was gone.
 
-This is the right thing to do.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Thanks,
 
-Yours,
-Linus Walleij
+> 
+> Reviewed-by: Chao Yu <yuchao0@huawei.com>
+> 
+> Thanks,
+> 
+>>
+>> Thanks,
+>>
+>>>
+>>> Cheers,
+>>> Nathan
+>>>
+>>>
+>>> _______________________________________________
+>>> Linux-f2fs-devel mailing list
+>>> Linux-f2fs-devel@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>
+>>
+>> _______________________________________________
+>> Linux-f2fs-devel mailing list
+>> Linux-f2fs-devel@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> 
