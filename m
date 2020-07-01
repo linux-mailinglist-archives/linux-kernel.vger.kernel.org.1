@@ -2,138 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F7D210797
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E2A21079C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729353AbgGAJHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 05:07:21 -0400
-Received: from mail-eopbgr1410080.outbound.protection.outlook.com ([40.107.141.80]:52578
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729135AbgGAJHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 05:07:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gOEVFv4jpPvadTXQo02Gg6dNUke18Ao2UUB/iYIFfepFHNEpJhqw2NIO2Wwfd5FtQmmCI5ESL+Eeg3KmJDZIz9Bi/fa8FGdXESB7669cAlZPAjq3+YqtwCn8sDYe2ub+1WbJVCYQtWtYidGx2akMbdK2mGos9fcOYn6rJMHpOlz1KWdUeOIZ42LrkJy1Aa0W8KloVzNJzrOga251hjTevf2nQOfBegN6KlBXnwQiw/G621aKSXP+TgpOxHFFge59LMC7gqjIKBwQZsuOfEHsJjqcDTFziD9NmvKWlNqgpRzZDxBWAMO6b2q9h7Qy50gbLTvQDmk3M8RqCQ6uqamyug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6qzlVdU50cU988s4dTuwRa2jX9D9+Sz0r1Yp26W9N3A=;
- b=MbQSX75lg3e347mkPTXktyq8LGLjt+vXmg7WWsCFGdwCFGfQAFQy8vXIY8WCh/fNJA54RMY+l1O0rc14qna3NVWR24BOoGIOhtl0u/mFvmF1ZojfZV1OWUlEx6gycm/d7+F/ediMJsroxSfq9E+LSFnlxHeZ4jSHcd2SYyszgE4ILeQXruXG76jDKqqR01AGq2TRuxOb5/kR/Bft/kEyFz0bh8VetCH3OVMKRITGOA15sWPmUdQ5OA8bCgHi5m0BGkT7UX0S0dTuZXTq603ll30tl5SvldFX7xoFsY+EMlZp8awQ4SJkFr8Wo2H74n84jf4AF+LHovfqb/8ZHI1tSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
- header.d=nec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=necglobal.onmicrosoft.com; s=selector1-necglobal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6qzlVdU50cU988s4dTuwRa2jX9D9+Sz0r1Yp26W9N3A=;
- b=tq7RHdk6oa3JlYHWzT9gXSd9yeg0dzUqEmMB9CEQtrYlYdErvUgJd4VpUnWw7eTMXPtLOGUp/kStTbm7qENUPLScvWNg0K16nrSH5TQ5CBqMuv7p8szbxEm8fjxa++t0AUW2V6o6rk4jp4mKqyI1Ff6/Ky3G+vJri5hIDIPjreE=
-Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com (2603:1096:404:74::14)
- by TYAPR01MB4239.jpnprd01.prod.outlook.com (2603:1096:404:c9::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20; Wed, 1 Jul
- 2020 09:07:15 +0000
-Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com
- ([fe80::3841:ec9f:5cdf:f58]) by TY2PR01MB3210.jpnprd01.prod.outlook.com
- ([fe80::3841:ec9f:5cdf:f58%5]) with mapi id 15.20.3131.026; Wed, 1 Jul 2020
- 09:07:15 +0000
-From:   =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
-        <naoya.horiguchi@nec.com>
-To:     Oscar Salvador <osalvador@suse.de>
-CC:     Qian Cai <cai@lca.pw>,
-        "nao.horiguchi@gmail.com" <nao.horiguchi@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "aneesh.kumar@linux.vnet.ibm.com" <aneesh.kumar@linux.vnet.ibm.com>,
-        "zeil@yandex-team.ru" <zeil@yandex-team.ru>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 00/15] HWPOISON: soft offline rework
-Thread-Topic: [PATCH v3 00/15] HWPOISON: soft offline rework
-Thread-Index: AQHWTpx4zbVjN5u0REi9+svCvkNClajws/sAgAGwNoCAAAybAA==
-Date:   Wed, 1 Jul 2020 09:07:15 +0000
-Message-ID: <20200701090714.GA16045@hori.linux.bs1.fc.nec.co.jp>
-References: <20200624150137.7052-1-nao.horiguchi@gmail.com>
- <20200630050803.GA2747@lca.pw> <1593498910.3046.2.camel@suse.de>
- <1593591727.3586.2.camel@suse.de>
-In-Reply-To: <1593591727.3586.2.camel@suse.de>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.de; dkim=none (message not signed)
- header.d=none;suse.de; dmarc=none action=none header.from=nec.com;
-x-originating-ip: [165.225.110.205]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 93cd0000-a857-4a89-9e9e-08d81d9e2601
-x-ms-traffictypediagnostic: TYAPR01MB4239:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TYAPR01MB4239E3FF06D5E6EEC5EF323DE76C0@TYAPR01MB4239.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 04519BA941
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: VlyBpwJA/OK5XnqVsfC2N5QgffKgXV2hMssnr9ybKg6/3xaep8G0t38uZAXuRKaSpCHMs1ogtZdb2pspkreKEI9dr960IGU0THWSR9i6g/dAc3JDXo0z568jWBz/YkhWpkDkPS+uH6Cymmh12b7N8BP1vSlRbEBnRKv1a80mzYzMizoMy+naBOUr0UwAy9BmLXjTM+oxStulgocrHemYwCmnDYxJPthMl4EVSbS6WnoRKWNUTBFDMl0sbwn4OrUgdCaAgaI69Dbj4k0520ElnY80RVH2Fnh3xLvSCdGz53h4dbjDZX2yen3aa08VX0AYL+D642r7jvJazAAU/HIx5ErL6yx+/RXnbvf3rk9oBptzUx1itq62x8ZlVv+konPq3kDdlfCwQXtKAtpC9Gj9gA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3210.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(136003)(366004)(396003)(376002)(346002)(66446008)(55236004)(66556008)(33656002)(66476007)(76116006)(5660300002)(85182001)(8676002)(66946007)(71200400001)(478600001)(2906002)(186003)(966005)(8936002)(4326008)(6916009)(26005)(6512007)(316002)(64756008)(9686003)(7416002)(1076003)(86362001)(54906003)(6486002)(6506007)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 4Kah06zRKzj9ZhgWlTUnuUIgiZxbXe6gQVJI+0hqHjlQM3tRaC+YIWt7ZeahsYfihbAGD9UVII0Tf0DrRxCQ4plSwufcUqpTxJi6nRNnGpspTJisisH/lkZjA6FyBfuzpIqfa8Q3Bhglv8LMB8uoCaMQoDailxNX+J7y/I6p2YVNUSI5wn2/78aULc+MQIxOHTk0k/nt3VNV73mKoxWfqFtU9hFRhg0fbTfcwN16mQupeL48Jsb5giMvU2RNzvjQRm/E+a9IFbeRXCUq/95TEuvqnoFwWgkijkIa/hh0fFP/467bf4mm5deS6uxmrkj+XC0hSXdNS8n8z09Fy6WV+uJsdD79z7sVW6L8hXMQyEp5ViezcubBWUESKn47b+sRo/yG4zhQsz/X/Rj1h9QZossETdRpd+fMg0xkq8Vi3ER5pQb2Gyjk4XAPTzGMp85tH7HbKZt4jNdSLPFUZN7nGTGsprE4lWH94yzSI3sij3MX7OYR6El3hLXLgX1degvm
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <9D7E9CC20CEAFC49AAFE36939CF69E59@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: nec.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3210.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 93cd0000-a857-4a89-9e9e-08d81d9e2601
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jul 2020 09:07:15.2044
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kcyZ3cm/BIXPquVEehWf3HI+L+2rvK/xPfPbBBt5cXu+0BKJhVbMZFzZg4CITFrsurnfGnrFxp1vh0ZWTGBzPA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB4239
+        id S1729135AbgGAJJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 05:09:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:47698 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726255AbgGAJJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 05:09:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A0E331B;
+        Wed,  1 Jul 2020 02:09:04 -0700 (PDT)
+Received: from e108754-lin.cambridge.arm.com (unknown [10.1.198.53])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 619D23F68F;
+        Wed,  1 Jul 2020 02:09:02 -0700 (PDT)
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        catalin.marinas@arm.com, sudeep.holla@arm.com, will@kernel.org,
+        linux@armlinux.org.uk, valentin.schneider@arm.com
+Cc:     mingo@redhat.com, peterz@infradead.org, dietmar.eggemann@arm.com,
+        ionela.voinescu@arm.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/8] cpufreq: improve frequency invariance support
+Date:   Wed,  1 Jul 2020 10:07:43 +0100
+Message-Id: <20200701090751.7543-1-ionela.voinescu@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 10:22:07AM +0200, Oscar Salvador wrote:
-> On Tue, 2020-06-30 at 08:35 +0200, Oscar Salvador wrote:
-> > > Even after applied the compling fix,
-> > >=20
-> > > https://lore.kernel.org/linux-mm/20200628065409.GA546944@u2004/
-> > >=20
-> > > madvise(MADV_SOFT_OFFLINE) will fail with EIO with hugetlb where it
-> > > would succeed without this series. Steps:
-> > >=20
-> > > # git clone https://github.com/cailca/linux-mm
-> > > # cd linux-mm; make
-> > > # ./random 1 (Need at least two NUMA memory nodes)
-> > >  start: migrate_huge_offline
-> > > - use NUMA nodes 0,4.
-> > > - mmap and free 8388608 bytes hugepages on node 0
-> > > - mmap and free 8388608 bytes hugepages on node 4
-> > > madvise: Input/output error
-> >=20
-> > I think I know why.
-> > It's been a while since I took a look, but I compared the posted
-> > patchset with my newest patchset I had ready and I saw I made some
-> > changes with regard of hugetlb pages.
-> >=20
-> > I will be taking a look, although it might be better to re-post the
-> > patchset instead of adding a fix on top since the changes are a bit
-> > substantial.
->=20
-> Yap, I just confirmed this.
+Hi guys,
 
-I've reproduced the EIO, but still not sure how this happens ...
+I've combined in this series some recent work on Frequency Invariance
+(FI) from Valentin and myself to create what we believe to be some nice
+improvements which also enable the adoption of schedutil as the default
+cpufreq governor for arm and arm64.
 
-> Posted version had some flaws wrt. hugetlb pages, that is why I was
-> working on a v3.
-> I am rebasing my v3 on top of the mm with the posted patchset reverted.
+Therefore, the series is structured as follows:
+  - (1) patches 1-3 move the frequency scaling updates from the cpufreq
+    drivers to the cpufreq core,
+  - (2) patch 4 fixes the FI scale factor setting for the vexpress-spc
+    driver, also showing that this driver is atypical,
+  - (3) patches 5-7 enable proper reporting on whether the system
+    supports frequency invariance (either cpufreq or counter-driven),
+  - (4) patch 8 makes schedutil the default governor for arm and arm64
+    systems.
 
-OK, thank you for offering to work for v4, so I'll wait for it for testing.
+Additionally, I will submit separately patches that condition Energy
+Aware Scheduling (EAS) enablement on FI support. For now I've kept them
+out of this series to keep it focused mostly on cpufreq.
 
-Thanks,
-Naoya Horiguchi=
+The need for (1) is two-fold: 
+ - First of all, the call to arch_set_freq_scale(), the update function
+   for the Frequency Invariance Enging (FIE) scale factor, is often
+   forgotten by cpufreq drivers as this link to the scheduler does not
+   seem as a logical step to consider in its implementation.
+   (for example 
+    commit ada54f35b227 ("cpufreq: qcom-hw: invoke frequency-invariance
+     setter function"))
+
+   Therefore, given that a majority of drivers already provide the
+   information needed by this function call back to the cpufreq core,
+   moving it there provides by default the functionality that the
+   scheduler's FIE needs.
+
+ - Secondly, this enables cpufreq to report support for FI (3).
+
+The patch at (2) provides a fix for the vexpress-spc driver, when the
+big.LITTLE switcher is enabled, also showing that this case is atypical
+and cannot benefit from the move of the FI scale setting to the cpufreq
+core. For this reason, a new flag is introduced to allow drivers to
+flag custom support for FI. While other drivers could benefit from the
+presence of this flag as described in patch 2/8, it would be good to
+reflect on whether this old functionality deserves us to introduce an
+additional flag in cpufreq. Until this is discussed, I've chosen to
+handle and fix this driver in this series as well.
+
+The functionality at (3) fixes a silent issue for arm and arm64 systems:
+if we look at the definition of arch_scale_freq_invariant(), schedutil
+considers these systems frequency invariant because they #define
+arch_scale_freq_capacity(), even for cases where the cpufreq driver in
+use doesn't drive the frequency invariance engine (FIE), i.e. calls
+arch_set_freq_scale().
+
+Therefore the patches at (3) are necessary to be able to switch to
+schedutil as the default governor (4) and to later condition EAS
+enablement, with the confidence that arch_scale_freq_invariant() now
+properly reports FI support.
+
+Given that this functionality touches multiple cpufreq drivers, I've
+tested on a range of platforms to ensure that functionality is
+maintained.
+
+This series applies on linux-next-20200629.
+
+Testing:
+
+Preliminary tests on all patches: build tests for multiple architectures,
+sparse static analysis, LTP tests, LISA synthetics (test suite detailed
+at [1]).
+
+Other tests on affected platforms:
+
+ - Juno (R0) - scpi-cpufreq
+   root@buildroot:~# dmesg | grep -i invariance
+   [    5.376523] cpufreq: cpufreq_register_driver: Driver scpi-cpufreq can provide frequency invariance
+   root@buildroot:~# cd /sys/devices/system/cpu/cpufreq/policy0
+   root@buildroot:~# cat scaling_governor
+   userspace
+   root@buildroot:~# cat scaling_available_frequencies
+   450000 575000 700000 775000 850000
+   root@buildroot:~# echo 450000 > scaling_setspeed
+   [  953.861317] Scale for cpus 0,3-5: 542
+   root@buildroot:~# echo 850000 > scaling_setspeed
+   [  971.780739] Scale for cpus 0,3-5: 1024
+   root@buildroot:~# cd ../policy1
+   root@buildroot:~# cat scaling_available_frequencies
+   450000 625000 800000 950000 1100000
+   root@buildroot:~# echo 450000 > scaling_setspeed
+   [ 1084.867760] Scale for cpus 1-2: 418
+   root@buildroot:~# echo 1100000 > scaling_setspeed
+   [ 1094.447724] Scale for cpus 1-2: 1024
+
+ - Juno (R2) - scmi (cpufreq driver)
+   root@buildroot:~# dmesg | grep scmi
+   [    5.707341] arm-scmi firmware:scmi: SCMI Protocol v1.0 'arm:arm' Firmware version 0x2060000
+   [    5.987594] cpufreq: cpufreq_register_driver: Driver scmi can provide frequency invariance
+   root@buildroot:~# dmesg | grep -i invariance
+   [    5.987594] cpufreq: cpufreq_register_driver: Driver scmi can provide frequency invariance
+   root@buildroot:~# cd /sys/devices/system/cpu/cpufreq/policy0
+   root@buildroot:~# cat scaling_available_frequencies
+   450000 800000 950000
+   root@buildroot:~# echo 450000 > scaling_setspeed
+   [   65.691303] Scale for cpus 0,3-5: 485
+   root@buildroot:~# echo 850000 > scaling_setspeed
+   [  697.538250] Scale for cpus 0,3-5: 1024
+   root@buildroot:~# cd ../policy1
+   root@buildroot:~# cat scaling_available_frequencies
+   600000 1000000 1200000
+   root@buildroot:~# echo 600000 > scaling_setspeed
+   [  711.874918] Scale for cpus 1-2: 512
+   root@buildroot:~# echo 1200000 > scaling_setspeed
+   [  715.955159] Scale for cpus 1-2: 1024
+
+ - DB845c - qcom-cpufreq-hw
+   root@buildroot:~# dmesg | grep -i invariance
+   [    5.136076] cpufreq: cpufreq_register_driver: Driver qcom-cpufreq-hw can provide frequency invariance
+   root@buildroot:~# cd /sys/devices/system/cpu/cpufreq/policy0
+   root@buildroot:~# cat scaling_available_frequencies
+   300000 403200 480000 576000 652800 748800 825600 902400 979200 1056000 1132800 1228800 1324800 1420800 1516800 1612800 1689600 1766400
+   root@buildroot:~# echo 300000 > scaling_setspeed
+   [   94.027825] Scale for cpus 0-3: 173
+   root@buildroot:~# echo 1766400 > scaling_setspeed
+   [  119.680565] Scale for cpus 0-3: 1024
+   root@buildroot:~# cd ../policy4/
+   root@buildroot:~# cat scaling_available_frequencies
+   825600 902400 979200 1056000 1209600 1286400 1363200 1459200 1536000 1612800 1689600 1766400 1843200 1920000 1996800 2092800 2169600 2246400 2323200 2400000 2476800 2553600 2649600
+   root@buildroot:~# echo 825600 > scaling_setspeed
+   [  158.759343] Scale for cpus 4-7: 319
+   root@buildroot:~# echo 2649600 > scaling_setspeed
+   [  160.766545] Scale for cpus 4-7: 1024
+
+ - Hikey960 - cpufreq-dt
+   root@buildroot:~# dmesg | grep -i invariance
+   [    4.706909] cpufreq: cpufreq_register_driver: Driver cpufreq-dt can provide frequency invariance
+   root@buildroot:~# cd /sys/devices/system/cpu/cpufreq/policy0
+   root@buildroot:~# cat scaling_available_frequencies
+   533000 999000 1402000 1709000 1844000
+   root@buildroot:~# echo 533000 > scaling_setspeed
+   [   56.732673] Scale for cpus 0-3: 295
+   root@buildroot:~# echo 1844000 > scaling_setspeed
+   [   64.657238] Scale for cpus 0-3: 1024
+   root@buildroot:~# cd ../policy4/
+   root@buildroot:~# cat scaling_available_frequencies
+   903000 1421000 1805000 2112000 2362000
+   root@buildroot:~# echo 903000 > scaling_setspeed
+   [   79.847937] Scale for cpus 4-7: 391
+   root@buildroot:~# echo 2362000 > scaling_setspeed
+   [   90.545476] Scale for cpus 4-7: 1024
+
+ - TC2 - vexpress-spc (!bL switcher enabled)
+   root@buildroot:~# dmesg | grep -i invariance
+   [    9.250942] cpufreq: cpufreq_register_driver: Driver vexpress-spc can provide frequency invariance
+   root@buildroot:~# cd /sys/devices/system/cpu/cpufreq/policy0
+   root@buildroot:~# cat scaling_governor
+   userspace
+   root@buildroot:~# cat scaling_available_frequencies
+   350000 400000 500000 600000 700000 800000 900000 1000000
+   root@buildroot:~# echo 350000 > scaling_setspeed
+   [  809.254517] Scale for cpus 0,3-4: 358
+   root@buildroot:~# echo 1000000 > scaling_setspeed
+   [  818.744782] Scale for cpus 0,3-4: 1024
+   root@buildroot:~# cd ../policy1/
+   root@buildroot:~# cat scaling_available_frequencies
+   500000 600000 700000 800000 900000 1000000 1100000 1200000
+   root@buildroot:~# echo 500000 > scaling_setspeed
+   [ 1173.785907] Scale for cpus 1-2: 426
+   root@buildroot:~# echo 1200000 > scaling_setspeed
+   [ 1180.177035] Scale for cpus 1-2: 1024
+
+ - TC2 - vexpress-spc (bL switcher enabled)
+
+   before patches:
+    root@buster-armhf:~# echo 175000 > policy0/scaling_setspeed
+    [  376.515629] vexpress_spc_cpufreq: Setting freq scale 0: 175000*1024/1200000=149 (when it should be 350000*1024/1000000=358)
+    --> still using the little CPU from the pair (0 - LITTLE, 1 - big)
+
+    root@buster-armhf:~# echo 175000 > policy3/scaling_setspeed
+    [  400.765352] vexpress_spc_cpufreq: Setting freq scale 3: 175000*1024/1200000=149 (when it should be 350000*1024/1000000=358)
+    --> still using the little CPU in the pair (3 - LITTLE, 2 - big)
+
+    root@buster-armhf:~# echo 300000 > policy0/scaling_setspeed
+    [  456.155104] vexpress_spc_cpufreq: Setting freq scale 0: 300000*1024/1200000=256 (when it should be 600000*1024/1000000=614)
+    --> Still using the little CPU in the pair (0 - LITTLE, 1 - big)
+    --> Now policy 0 requested 300000 while policy1 requested 175000.
+    The rate in the clock domain is now virtual-300000 = 600000.
+
+    root@buster-armhf:~# echo 700000 > policy0/scaling_setspeed
+    [  506.617496] vexpress_spc_cpufreq: Setting freq scale 0: 700000*1024/1200000 - correct.
+    --> Switch to using the big CPU in the pair. The virtual frequency
+    is equal to the actual frequency and the scale factor is correct.
+    --> But, the request of virtual-300000 from this group on the
+    little clock domain goes away, so the rate should reduce to
+    virtual-175000 = 350000.
+    [  506.578275] vexpress_spc_cpufreq: ve_spc_cpufreq_set_rate recalc: clk_set_rate DONE: 0, new_cluster 0 old cluster: 1 rate 700000 new_rate 350000.
+    --> arch_set_freq_scale() should be called here to reduce
+    the scale of pair (0, 1) but it is not.
+
+   after patches:
+    root@buildroot:~# echo 175000 > policy0/scaling_setspeed
+    [  520.078181] Scale changed for CPU 0 to 358
+    [  520.130559] Scale changed for CPU 3 to 853
+    --> Default was 1000000/1200000 which is why CPU 3 is at 853
+    root@buildroot:~# echo 175000 > policy3/scaling_setspeed
+    [  577.250912] Scale changed for CPU 3 to 358
+    root@buildroot:~# echo 300000 > policy0/scaling_setspeed
+    [  670.716195] Scale changed for CPU 0 to 614
+    [  670.747971] Scale changed for CPU 3 to 614
+    root@buildroot:~# echo 700000 > policy0/scaling_setspeed
+    [  710.746860] Scale changed for CPU 0 to 597
+    [  710.836288] Scale changed for CPU 3 to 358
+
+
+[1] https://developer.arm.com/tools-and-software/open-source-software/linux-kernel/energy-aware-scheduling/eas-mainline-development
+
+Ionela Voinescu (4):
+  cpufreq: allow drivers to flag custom support for freq invariance
+  cpufreq,drivers: remove setting of frequency scale factor
+  cpufreq,vexpress-spc: fix Frequency Invariance (FI) for bL switching
+  cpufreq: report whether cpufreq supports Frequency Invariance (FI)
+
+Valentin Schneider (4):
+  cpufreq: move invariance setter calls in cpufreq core
+  arch_topology,cpufreq,sched/core: constify arch_* cpumasks
+  arch_topology,arm64: define arch_scale_freq_invariant()
+  cpufreq: make schedutil the default for arm and arm64
+
+ arch/arm64/kernel/topology.c           |  9 ++++-
+ drivers/base/arch_topology.c           | 10 ++++-
+ drivers/cpufreq/Kconfig                |  2 +-
+ drivers/cpufreq/cpufreq-dt.c           | 10 +----
+ drivers/cpufreq/cpufreq.c              | 51 +++++++++++++++++++++++---
+ drivers/cpufreq/qcom-cpufreq-hw.c      |  9 +----
+ drivers/cpufreq/scmi-cpufreq.c         | 18 +++------
+ drivers/cpufreq/scpi-cpufreq.c         |  3 --
+ drivers/cpufreq/vexpress-spc-cpufreq.c | 26 ++++++++++++-
+ include/linux/arch_topology.h          |  8 +++-
+ include/linux/cpufreq.h                | 18 ++++++++-
+ kernel/sched/core.c                    |  2 +-
+ 12 files changed, 117 insertions(+), 49 deletions(-)
+
+
+base-commit: c28e58ee9dadc99f79cf16ca805221feddd432ad
+-- 
+2.17.1
+
