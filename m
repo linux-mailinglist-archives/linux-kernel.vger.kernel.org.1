@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E61521168B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 01:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17FA21168D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 01:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgGAXST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 19:18:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59680 "EHLO mail.kernel.org"
+        id S1728002AbgGAXS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 19:18:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726607AbgGAXR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726679AbgGAXR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 1 Jul 2020 19:17:57 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14BEE208DB;
+        by mail.kernel.org (Postfix) with ESMTPSA id 34AF9208E4;
         Wed,  1 Jul 2020 23:17:57 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jqlzI-0048z4-3u; Wed, 01 Jul 2020 19:17:56 -0400
-Message-ID: <20200701231756.001863687@goodmis.org>
+        id 1jqlzI-0048za-8m; Wed, 01 Jul 2020 19:17:56 -0400
+Message-ID: <20200701231756.145707520@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 01 Jul 2020 19:17:20 -0400
+Date:   Wed, 01 Jul 2020 19:17:21 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "John Warthog9 Hawley" <warthog9@kernel.org>
-Subject: [for-next][PATCH 3/8] ktest.pl: Define PRE_TEST_DIE to kill the test if the PRE_TEST fails
+Subject: [for-next][PATCH 4/8] ktest.pl: Add a NOT operator
 References: <20200701231717.757834010@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -36,65 +36,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Currently, if a PRE_TEST is defined and ran, but fails, there's nothing
-currently available to make the test fail too. Add a PRE_TEST_DIE option that
-when set, if a PRE_TEST is defined and fails, the test will die too.
+There is a NOT DEFINED operator, but there is not an operator that can
+negate any other expression.
+
+ For example: NOT (${FOO} == boot || ${BAR} == run)
+
+Add the keyword NOT to allow the ktest.pl config files to negate operators.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tools/testing/ktest/ktest.pl    | 8 +++++++-
- tools/testing/ktest/sample.conf | 5 +++++
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ tools/testing/ktest/ktest.pl | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/tools/testing/ktest/ktest.pl b/tools/testing/ktest/ktest.pl
-index 5d5cf3e1e81a..f99cf633ed84 100755
+index f99cf633ed84..0d04b8a2b5a2 100755
 --- a/tools/testing/ktest/ktest.pl
 +++ b/tools/testing/ktest/ktest.pl
-@@ -98,6 +98,7 @@ my $final_post_ktest;
- my $pre_ktest;
- my $post_ktest;
- my $pre_test;
-+my $pre_test_die;
- my $post_test;
- my $pre_build;
- my $post_build;
-@@ -273,6 +274,7 @@ my %option_map = (
-     "PRE_KTEST"			=> \$pre_ktest,
-     "POST_KTEST"		=> \$post_ktest,
-     "PRE_TEST"			=> \$pre_test,
-+    "PRE_TEST_DIE"		=> \$pre_test_die,
-     "POST_TEST"			=> \$post_test,
-     "BUILD_TYPE"		=> \$build_type,
-     "BUILD_OPTIONS"		=> \$build_options,
-@@ -4347,7 +4349,11 @@ for (my $i = 1; $i <= $opt{"NUM_TESTS"}; $i++) {
-     doprint "RUNNING TEST $i of $opt{NUM_TESTS}$name with option $test_type $run_type$installme\n\n";
- 
-     if (defined($pre_test)) {
--	run_command $pre_test;
-+	my $ret = run_command $pre_test;
-+	if (!$ret && defined($pre_test_die) &&
-+	    $pre_test_die) {
-+	    dodie "failed to pre_test\n";
-+	}
+@@ -911,6 +911,12 @@ sub process_expression {
+ 	}
      }
  
-     unlink $dmesg;
-diff --git a/tools/testing/ktest/sample.conf b/tools/testing/ktest/sample.conf
-index 27666b8007ed..cb8227fbd01e 100644
---- a/tools/testing/ktest/sample.conf
-+++ b/tools/testing/ktest/sample.conf
-@@ -557,6 +557,11 @@
- # default (undefined)
- #PRE_TEST = ${SSH} reboot_to_special_kernel
- 
-+# To kill the entire test if PRE_TEST is defined but fails set this
-+# to 1.
-+# (default 0)
-+#PRE_TEST_DIE = 1
++    if ($val =~ s/^\s*NOT\s+(.*)//) {
++	my $express = $1;
++	my $ret = process_expression($name, $express);
++	return !$ret;
++    }
 +
- # If there is a command you want to run after the individual test case
- # completes, then you can set this option.
- #
+     if ($val =~ /^\s*0\s*$/) {
+ 	return 0;
+     } elsif ($val =~ /^\s*\d+\s*$/) {
 -- 
 2.26.2
 
