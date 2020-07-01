@@ -2,109 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E572F21133E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 21:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C62211348
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 21:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgGATHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 15:07:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:39848 "EHLO foss.arm.com"
+        id S1726338AbgGATKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 15:10:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726885AbgGATH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 15:07:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BDE04D6E;
-        Wed,  1 Jul 2020 12:07:28 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BF1CB3F68F;
-        Wed,  1 Jul 2020 12:07:27 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        morten.rasmussen@arm.com
-Subject: [PATCH v3 7/7] sched/topology: Use prebuilt SD flag degeneration mask
-Date:   Wed,  1 Jul 2020 20:06:55 +0100
-Message-Id: <20200701190656.10126-8-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200701190656.10126-1-valentin.schneider@arm.com>
-References: <20200701190656.10126-1-valentin.schneider@arm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1725915AbgGATKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 15:10:02 -0400
+Subject: Re: [GIT PULL] integrity additional change v5.8 (#2)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593630602;
+        bh=KSzNcvkSZ2fcrLzdKJeEuHsZ7IwBwv1LiSYsa4NZWFg=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=oWFj7PQhAniSqkKYKtn1npTAZDIqGYcTHfalrE7x9yBKIsEfzWh8zI3moy/IJxQDi
+         tW+Roch2kEB9nLzyCsJW+jlL5YvDf5V+pUw5JXNhLL8ZBV3+XatO7kdH9vzWyRUn/D
+         Cgm0Kp5LQdanN4/9M0m3l2hNs+7OrYhmn0bQu4Sw=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <1593444433.5085.15.camel@linux.ibm.com>
+References: <1593444433.5085.15.camel@linux.ibm.com>
+X-PR-Tracked-List-Id: <linux-integrity.vger.kernel.org>
+X-PR-Tracked-Message-Id: <1593444433.5085.15.camel@linux.ibm.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
+ tags/integrity-v5.8-fix-2
+X-PR-Tracked-Commit-Id: 20c59ce010f84300f6c655d32db2610d3433f85c
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b13f40bc69a16e465d21e23ca5adf4bf26365815
+Message-Id: <159363060238.32760.8714686643697642393.pr-tracker-bot@kernel.org>
+Date:   Wed, 01 Jul 2020 19:10:02 +0000
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Maurizio Drocco <maurizio.drocco@ibm.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Leverage SD_DEGENERATE_GROUPS_MASK in sd_degenerate() and
-sd_degenerate_parent().
+The pull request you sent on Mon, 29 Jun 2020 11:27:13 -0400:
 
-Note that this changes sd_degenerate() somewhat: I'm using the negation of
-SD_DEGENERATE_GROUPS_MASK as the mask of flags not requiring groups, which
-is equivalent to:
+> git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.8-fix-2
 
-SD_WAKE_AFFINE | SD_SERIALIZE | SD_NUMA
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b13f40bc69a16e465d21e23ca5adf4bf26365815
 
-whereas the current mask for that is simply
+Thank you!
 
-SD_WAKE_AFFINE
-
-I played with a few toy NUMA topologies on QEMU and couldn't cause a
-different degeneration than what mainline does currently. If that is deemed
-too risky, we can go back to using SD_WAKE_AFFINE explicitly.
-
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- kernel/sched/topology.c | 24 +++---------------------
- 1 file changed, 3 insertions(+), 21 deletions(-)
-
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index fe393b295444..a135a0c99b16 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -160,22 +160,13 @@ static int sd_degenerate(struct sched_domain *sd)
- 		return 1;
- 
- 	/* Following flags need at least 2 groups */
--	if (sd->flags & (SD_BALANCE_NEWIDLE |
--			 SD_BALANCE_WAKE |
--			 SD_BALANCE_FORK |
--			 SD_BALANCE_EXEC |
--			 SD_ASYM_PACKING |
--			 SD_SHARE_CPUCAPACITY |
--			 SD_ASYM_CPUCAPACITY |
--			 SD_SHARE_PKG_RESOURCES |
--			 SD_OVERLAP |
--			 SD_PREFER_SIBLING)) {
-+	if (sd->flags & SD_DEGENERATE_GROUPS_MASK) {
- 		if (sd->groups != sd->groups->next)
- 			return 0;
- 	}
- 
- 	/* Following flags don't use groups */
--	if (sd->flags & (SD_WAKE_AFFINE))
-+	if (sd->flags & ~SD_DEGENERATE_GROUPS_MASK)
- 		return 0;
- 
- 	return 1;
-@@ -194,16 +185,7 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
- 
- 	/* Flags needing groups don't count if only 1 group in parent */
- 	if (parent->groups == parent->groups->next) {
--		pflags &= ~(SD_BALANCE_NEWIDLE |
--			    SD_BALANCE_WAKE |
--			    SD_BALANCE_FORK |
--			    SD_BALANCE_EXEC |
--			    SD_ASYM_PACKING |
--			    SD_ASYM_CPUCAPACITY |
--			    SD_SHARE_CPUCAPACITY |
--			    SD_SHARE_PKG_RESOURCES |
--			    SD_OVERLAP |
--			    SD_PREFER_SIBLING);
-+		pflags &= ~SD_DEGENERATE_GROUPS_MASK;
- 		if (nr_node_ids == 1)
- 			pflags &= ~SD_SERIALIZE;
- 	}
 -- 
-2.27.0
-
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
