@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EEE32103E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 08:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE372103D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 08:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbgGAGXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 02:23:37 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:57654 "EHLO
+        id S1727784AbgGAGXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 02:23:14 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:1278 "EHLO
         mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727845AbgGAGXZ (ORCPT
+        by vger.kernel.org with ESMTP id S1727071AbgGAGXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 02:23:25 -0400
+        Wed, 1 Jul 2020 02:23:13 -0400
 Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0616H8i8014514;
+        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0616HC8q014545;
         Tue, 30 Jun 2020 23:22:57 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=proofpoint;
- bh=glIcFcCBnE/kWZjNZISuj/oddo60+Gb0CBumRR6l66c=;
- b=PiTdnBm0r3cvDg1NPdITY1B0G1QBOOqS4753Yn2hBA3Osbmcu1Y7I9LU8vcE1HhKivA/
- Os88vVL2PAe8yTcH/jt1QkjQVqrKIzexS8PTZp2apQlfSxGGmkGNLslF+VgxHaXfEvBW
- 8MmVQ24pqT7aZmRT97zYexiaBSXsjCDbOxpVNJpJgW/JVjE6I3RdDEdWBYgl1axy6uYW
- pKMq2oz3439j0ZD/9+1BI7EUOOUCPoMuFTE2/WYYF1BYFDmdjPT3w3kAPCe2rb1kgezz
- ZzbjKNgZXqy1HkqBUNX5QM66rvskdGjPw8xSVJ8EEFtYZWo7OG/Mb1fupGY2iCnBaDH3 1Q== 
-Received: from nam04-co1-obe.outbound.protection.outlook.com (mail-co1nam04lp2059.outbound.protection.outlook.com [104.47.45.59])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 31x2nxxa8j-1
+ bh=kpI9AXyfpjA4dbJZklM0CwGjby9vJInyNJP4bZPsXDQ=;
+ b=S1EhlMI9mgNf4ZMR4MYzuLSt4SUlFZohJtZElzvrPXwUKlk7m5GpAMxTtvhVbvmJxSyH
+ 2fteLy0biTaSQClkXDRIeiLFDiyUk5WctGxLtKaUCJfXwavdZkTuLlWYyusv2nHc3fyp
+ 33CXG7BX7USTUbnZYZhonGXQaMpRMwL+kjXZSSp3poVglOpMG2f46hy/+DxByjsD6z/f
+ UUktcb5EEuOKCXcU4KjnbEY492JzmEY7dQrE/0sIOMFIDo1ZbCBtoquE6dHQnnedZjyN
+ V4ShjUX5IWMtysJUizYQx5JvemIqRV7IUtNh+9iXdrm4LpM25T677CWOxi0n3KGXkpLU RA== 
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2175.outbound.protection.outlook.com [104.47.56.175])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 31x2nxxa8k-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 30 Jun 2020 23:22:56 -0700
+        Tue, 30 Jun 2020 23:22:57 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gaiENie34PiCtDcAbRMC1+wN0BOc4/xz3UiXH/PCz+36UDYuimj3n0PLhniGDwl7t4NFsP7a1xEawShwHGlVM2V4ql2VlzKXPUaE3jaUz9Z1g1XoyY6//NLoh+mjDQLosx8rAOeDUbd46j4ajQEq5yQiatcGb9Jh00GaLU5Fi3S3YofE24/o1yv+NKvpFrwB/PjuqKSqkUpjRVLFZYXeZQlTKyuos67FoubSk6dTFSIErF6D7FiMVeicw4QjuU0tkPXQMPT6TFBmMxSZKkqRFCIna/3pAjAbgARzbVmcvwax3r9xmcyOJ3+KKrYTcHUg8ChdFUyu7gB2FLY3jwHsmw==
+ b=IJFauT391Vtc3VHdGiYzarf0675KbS/8hALnCdkZI0j0iUIVBpRp0JJGz7NeshX44xXhw7hLLRwb2W8D2fRfm5pZspjChYzHkZUHprv1hJd/9cHvttBSsbUhjko/SBgcfrsEAHmw5ezlsJ6KLnFlkKMCR+CxGVB4mxuZQZXF3hc5FOsdbGam3BRM7QIVEdwlU2lxSXWENdiWLxBylnoO9F0/eNyTeTDJS6M0Xm3ZaUKmyZAg7jBSyPwQ0Ue9ZX858QS2bZr+12qbjDp015lJSdrO9H39u8optlCtWdTc9Ulxa8vlgDvwZMuOKhdN9tlGkYVMeZRq08hZfR5kSFmXzA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=glIcFcCBnE/kWZjNZISuj/oddo60+Gb0CBumRR6l66c=;
- b=MV91qjdQX6K2+LBKL5pJNdn1gyuHVuB+PRP7pxQ3Vlo92Ndmj/SZxgm7rnWuutTOSSXPzaSv+P79+GqOhGU6S0gMaxKX7cWqj8ZWaP8lDl06fcenprr88A6OH3mEXK+pHFRagXVIv36td+T1AjKfNI3kvwMuDAs90tsrda3WivcMfEcSiTPw25Kb8jIJCGsQQegnz8xz/t3SlbWYK4zaTi3ei68vYDEQ06W/sjySQsyPK6m4JoM3UH6Xcv/tqP81Npar7/CqC7C170DyITRuPoLHt0lHsYF7vqie62QqvqTgjR/aJJI26bzqg+JsWSrOpBA/z9zLBb3qMMxS5xhllA==
+ bh=kpI9AXyfpjA4dbJZklM0CwGjby9vJInyNJP4bZPsXDQ=;
+ b=U/ais9Gg40BsRcVGo1dE0GX0M1VUUL+dYC985T4lgaxwhWrheLkAD5AO44BmK1qVXM6VNMEhuyjhPpR4TSaTeyAEazzETI8ZSULVgjOLEIHlXLSqZbQmaq3X/OIKBbYlYoJSLGZ6iP2Jcxp91SGp+3XeMl+Cvu0TJYkvp78YC6Ii3YlqEA4050snMfeU8/EdN0D/PdTX3Kl6z5PY4qMhJWPzZx+68z+2yItAuqoqKE8nK84HVzmw+YsWJ96iSFUEZzJG5adr/YpslPbxu8hFivHtRkbxnDkFumMB3236lNBOMMaK+95Xp9LPkDvxkTkVxnx/OmC+kQmjGwz59mvEVg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  64.207.220.244) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=cadence.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
@@ -42,17 +42,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=glIcFcCBnE/kWZjNZISuj/oddo60+Gb0CBumRR6l66c=;
- b=JQgIevwy0OAHa1ai8oq618sRIdnR5dn9wmu3qtB+J68egRcKl/BAtJGpC4xBFZcC8fF/UhA/5aahLHK+KIa3JGwRwyAfljFibLnvLuP06zNm6keDSqlFRkj6exvpoJtl8UPqXdzW4MU77d7XMubvD+b760X+CPF1v2YHQeBwwiY=
-Received: from BN4PR12CA0023.namprd12.prod.outlook.com (2603:10b6:403:2::33)
- by BN8PR07MB6338.namprd07.prod.outlook.com (2603:10b6:408:b8::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.20; Wed, 1 Jul
+ bh=kpI9AXyfpjA4dbJZklM0CwGjby9vJInyNJP4bZPsXDQ=;
+ b=UPjH4ZgiDY9uWAp5wwebAFNGMY/T/kirqeXwLV2bX5YH36Oms4Z4QzIVtb5W2/rA/pwcm4S1h+kQrQu7ZMaiNDwbAfXXibsiNuoeYbwbv3teZVpPJ115VmL7N2xXgfoMXXj1z8BPv62mNnt9plIRGhMxspgFH1/2otBGEYvqHxo=
+Received: from BN6PR2001CA0035.namprd20.prod.outlook.com
+ (2603:10b6:405:16::21) by BYAPR07MB6312.namprd07.prod.outlook.com
+ (2603:10b6:a03:118::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.24; Wed, 1 Jul
  2020 06:22:54 +0000
-Received: from BN8NAM12FT046.eop-nam12.prod.protection.outlook.com
- (2603:10b6:403:2:cafe::97) by BN4PR12CA0023.outlook.office365.com
- (2603:10b6:403:2::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21 via Frontend
+Received: from BN8NAM12FT025.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:405:16:cafe::ab) by BN6PR2001CA0035.outlook.office365.com
+ (2603:10b6:405:16::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.20 via Frontend
  Transport; Wed, 1 Jul 2020 06:22:54 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 64.207.220.244)
  smtp.mailfrom=cadence.com; vger.kernel.org; dkim=none (message not signed)
@@ -62,13 +62,13 @@ Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
  64.207.220.244 as permitted sender) receiver=protection.outlook.com;
  client-ip=64.207.220.244; helo=wcmailrelayl01.cadence.com;
 Received: from wcmailrelayl01.cadence.com (64.207.220.244) by
- BN8NAM12FT046.mail.protection.outlook.com (10.13.183.148) with Microsoft SMTP
+ BN8NAM12FT025.mail.protection.outlook.com (10.13.183.228) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3153.16 via Frontend Transport; Wed, 1 Jul 2020 06:22:51 +0000
+ 15.20.3153.17 via Frontend Transport; Wed, 1 Jul 2020 06:22:52 +0000
 Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by wcmailrelayl01.cadence.com (8.14.7/8.14.4) with ESMTP id 0616MjiT092304
+        by wcmailrelayl01.cadence.com (8.14.7/8.14.4) with ESMTP id 0616MjiU092304
         (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=OK);
-        Tue, 30 Jun 2020 23:22:50 -0700
+        Tue, 30 Jun 2020 23:22:51 -0700
 X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
 Received: from maileu3.global.cadence.com (10.160.88.99) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
@@ -77,10 +77,10 @@ Received: from vleu-orange.cadence.com (10.160.88.83) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
  15.0.1367.3 via Frontend Transport; Wed, 1 Jul 2020 08:22:45 +0200
 Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 0616Mjep030611;
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 0616Mjvj030615;
         Wed, 1 Jul 2020 08:22:45 +0200
 Received: (from pawell@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 0616MjHm030610;
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 0616MjXq030614;
         Wed, 1 Jul 2020 08:22:45 +0200
 From:   Pawel Laszczak <pawell@cadence.com>
 To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
@@ -90,9 +90,9 @@ CC:     <dan.carpenter@oracle.com>, <heikki.krogerus@linux.intel.com>,
         <colin.king@canonical.com>, <jpawar@cadence.com>,
         <ben.dooks@codethink.co.uk>, <kurahul@cadence.com>,
         <sparmar@cadence.com>, Pawel Laszczak <pawell@cadence.com>
-Subject: [PATCH 7/9] usb: cdns3: Improvement: removed 'goto not_otg'
-Date:   Wed, 1 Jul 2020 08:20:02 +0200
-Message-ID: <20200701062004.29908-8-pawell@cadence.com>
+Subject: [PATCH 8/9] usb: cdns3: Improvement: removed overwriting some error code
+Date:   Wed, 1 Jul 2020 08:20:03 +0200
+Message-ID: <20200701062004.29908-9-pawell@cadence.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20200701062004.29908-1-pawell@cadence.com>
 References: <20200701062004.29908-1-pawell@cadence.com>
@@ -100,31 +100,31 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-OrganizationHeadersPreserved: maileu3.global.cadence.com
 X-EOPAttributedMessage: 0
-X-Forefront-Antispam-Report: CIP:64.207.220.244;CTRY:CN;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:wcmailrelayl01.cadence.com;PTR:ErrorRetry;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(396003)(39860400002)(136003)(36092001)(46966005)(81166007)(82310400002)(83380400001)(82740400003)(47076004)(8676002)(8936002)(86362001)(7416002)(54906003)(478600001)(316002)(110136005)(36906005)(42186006)(356005)(107886003)(2906002)(1076003)(26005)(36756003)(4326008)(186003)(426003)(6666004)(2616005)(336012)(70206006)(70586007)(5660300002);DIR:OUT;SFP:1101;
+X-Forefront-Antispam-Report: CIP:64.207.220.244;CTRY:CN;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:wcmailrelayl01.cadence.com;PTR:ErrorRetry;CAT:NONE;SFTY:;SFS:(4636009)(376002)(136003)(39860400002)(396003)(346002)(36092001)(46966005)(86362001)(2616005)(5660300002)(36756003)(42186006)(1076003)(426003)(110136005)(4326008)(6666004)(336012)(36906005)(316002)(54906003)(8936002)(81166007)(83380400001)(2906002)(47076004)(356005)(82740400003)(82310400002)(26005)(7416002)(186003)(478600001)(8676002)(107886003)(70206006)(70586007);DIR:OUT;SFP:1101;
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 88dae4e6-c7b7-4cdc-3601-08d81d872f11
-X-MS-TrafficTypeDiagnostic: BN8PR07MB6338:
-X-Microsoft-Antispam-PRVS: <BN8PR07MB633862413F974E0CB5D9DB3ADD6C0@BN8PR07MB6338.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:820;
+X-MS-Office365-Filtering-Correlation-Id: f1b33b78-872e-416b-5add-08d81d872f66
+X-MS-TrafficTypeDiagnostic: BYAPR07MB6312:
+X-Microsoft-Antispam-PRVS: <BYAPR07MB63123A77758098C195D1538DDD6C0@BYAPR07MB6312.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:421;
 X-Forefront-PRVS: 04519BA941
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ILGtKNxW8tcV9Jwl6eUZvDZ273Vk2KKwx3TOJ4xwN9T2DaeUfFQOfk42wb97PLP86oGDnFR8onT1CWWJWeJBtmQmkqdcl6fstJLE4m/Vf2XTzo+rkxmLfla8oO0LxqKrasBMykmnOls7+AUf+oKNXUkQQMcIOAzXnvVUGhjXl5En/J1m6tOr9k9YHKCioXz+/0r/ejKZSirh/1kqEPeW8DoEIAhH1H3IbztwxtGOzd+NU2KeUfR/SQQHvDpAq7HgTxWYluWA6gXmRvSoapqmKyoLErOOn8K7N8DRc66pX5MGP4WmpnLUJsv/YuwgYOyOhHmrjD79YsPVJvMUwsO2qnSsHP/05K0RaNTAqSgHqeViCTSxIWCfzv25eOVhcJXETkeNu4+wimTWH0xw4sm9ygrNZaXDraCNEV3VCrdxB6U=
+X-Microsoft-Antispam-Message-Info: CoscXcAXH16AxEHZBbOOeskD5P5bFV/Jq4X+8qP382SUFb0E7mtfPCXjkvXdlXSPPNMx7rxMAKcYZWm4xHLsRv4zuBysleYPGge+FNa/bTpU8HkirT86p8EPEcSVzwOQ/X8yYcE24UTMWBPRJyeCkI+4so1scotlbvVI7P/5Zb432cW9z4X6wf4E/hNOkuagtEIMJaSJQYa9mGKtyM8nVnQvn0Jloko/SvjueJNp7ke5aeOjJj7Vj6WuMi3f8lDDRV+9FrdEHrxpIikm0e58dxXiBwu37QPP+owoVuDZtmh+JdJO9U9PaVK3RiqFARUrcqY2SrqSL9Zd5IkXhZrfS2cKZzC8sKjfbHaJ+PAwSh7ZCi7NsQ3MNuxV4d4bigrWBaXNc8rXL9ZiVEUU2/CHHSklJRs31psIIbXX8zhE01w=
 X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2020 06:22:51.8833
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2020 06:22:52.4443
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 88dae4e6-c7b7-4cdc-3601-08d81d872f11
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1b33b78-872e-416b-5add-08d81d872f66
 X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[64.207.220.244];Helo=[wcmailrelayl01.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT046.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT025.eop-nam12.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR07MB6338
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR07MB6312
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-01_03:2020-07-01,2020-07-01 signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 clxscore=1015
  impostorscore=0 priorityscore=1501 malwarescore=0 phishscore=0
- cotscore=-2147483648 mlxlogscore=776 bulkscore=0 suspectscore=0
+ cotscore=-2147483648 mlxlogscore=951 bulkscore=0 suspectscore=0
  adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0 classifier=spam
  adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
  definitions=main-2007010045
@@ -133,54 +133,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch removes 'goto not_otg' instruction from
- cdnsp_hw_role_state_machine function.
+Some error code can be preserved, so we can remove overwriting
+error code returned by some functions.
 
 Signed-off-by: Pawel Laszczak <pawell@cadence.com>
 ---
- drivers/usb/cdns3/core.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+ drivers/usb/cdns3/core.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
-index c3dac945f63d..591186987245 100644
+index 591186987245..01155ab73930 100644
 --- a/drivers/usb/cdns3/core.c
 +++ b/drivers/usb/cdns3/core.c
-@@ -191,11 +191,17 @@ static int cdns3_core_init_role(struct cdns3 *cdns)
-  */
- static enum usb_role cdns3_hw_role_state_machine(struct cdns3 *cdns)
- {
--	enum usb_role role;
-+	enum usb_role role = USB_ROLE_NONE;
- 	int id, vbus;
+@@ -347,7 +347,6 @@ static int cdns3_role_set(struct usb_role_switch *sw, enum usb_role role)
+ 		case USB_ROLE_HOST:
+ 			break;
+ 		default:
+-			ret = -EPERM;
+ 			goto pm_put;
+ 		}
+ 	}
+@@ -358,17 +357,14 @@ static int cdns3_role_set(struct usb_role_switch *sw, enum usb_role role)
+ 		case USB_ROLE_DEVICE:
+ 			break;
+ 		default:
+-			ret = -EPERM;
+ 			goto pm_put;
+ 		}
+ 	}
  
--	if (cdns->dr_mode != USB_DR_MODE_OTG)
--		goto not_otg;
-+	if (cdns->dr_mode != USB_DR_MODE_OTG) {
-+		if (cdns3_is_host(cdns))
-+			role = USB_ROLE_HOST;
-+		if (cdns3_is_device(cdns))
-+			role = USB_ROLE_DEVICE;
-+
-+		return role;
-+	}
+ 	cdns3_role_stop(cdns);
+ 	ret = cdns3_role_start(cdns, role);
+-	if (ret) {
++	if (ret)
+ 		dev_err(cdns->dev, "set role %d has failed\n", role);
+-		ret = -EPERM;
+-	}
  
- 	id = cdns3_get_id(cdns);
- 	vbus = cdns3_get_vbus(cdns);
-@@ -232,14 +238,6 @@ static enum usb_role cdns3_hw_role_state_machine(struct cdns3 *cdns)
- 	dev_dbg(cdns->dev, "role %d -> %d\n", cdns->role, role);
+ pm_put:
+ 	pm_runtime_put_sync(cdns->dev);
+@@ -393,7 +389,7 @@ static int cdns3_probe(struct platform_device *pdev)
+ 	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
+ 	if (ret) {
+ 		dev_err(dev, "error setting dma mask: %d\n", ret);
+-		return -ENODEV;
++		return ret;
+ 	}
  
- 	return role;
--
--not_otg:
--	if (cdns3_is_host(cdns))
--		role = USB_ROLE_HOST;
--	if (cdns3_is_device(cdns))
--		role = USB_ROLE_DEVICE;
--
--	return role;
- }
- 
- static int cdns3_idle_role_start(struct cdns3 *cdns)
+ 	cdns = devm_kzalloc(dev, sizeof(*cdns), GFP_KERNEL);
 -- 
 2.17.1
 
