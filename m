@@ -2,249 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B5321061B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D7D21062A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728604AbgGAI1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 04:27:41 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:51161 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728450AbgGAI1k (ORCPT
+        id S1728701AbgGAI3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 04:29:20 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:36763 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728479AbgGAI3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 04:27:40 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jqY5F-0001ea-FF; Wed, 01 Jul 2020 08:27:09 +0000
-Date:   Wed, 1 Jul 2020 10:27:08 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Adrian Reber <areber@redhat.com>
-Cc:     Eric Biederman <ebiederm@xmission.com>,
-        Pavel Emelyanov <ovzxemul@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        =?utf-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>,
-        Kamil Yurtsever <kyurtsever@google.com>,
-        Dirk Petersen <dipeit@gmail.com>,
-        Christine Flood <chf@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Radostin Stoyanov <rstoyanov1@gmail.com>,
-        Cyrill Gorcunov <gorcunov@openvz.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
-        Eric Paris <eparis@parisplace.org>,
-        Jann Horn <jannh@google.com>, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] capabilities: Introduce CAP_CHECKPOINT_RESTORE
-Message-ID: <20200701082708.pgfskg7hrsnfi36k@wittgenstein>
-References: <20200701064906.323185-1-areber@redhat.com>
- <20200701064906.323185-2-areber@redhat.com>
+        Wed, 1 Jul 2020 04:29:19 -0400
+X-UUID: da12142992034fe6a5aad2f959570786-20200701
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ztRvUe6maw4K5J0mLsNUiEF/XJyXyzIsD70QTdze/u0=;
+        b=fl6bw1HsIspDehZFHhMXdEON0WajZMCqMFlAibIl1V0rWJ38jS2Q4J/s4UXL/jLJlXfm14M88JXY7EYsg2Nt8k792D/3kzGVyyKKbFcxyePvRojPw9Eb647wdfAFsgjyTZKakbzRBFR+YZs/B+alxy4cUVX1FgxziYTpZ5U5DDs=;
+X-UUID: da12142992034fe6a5aad2f959570786-20200701
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <xia.jiang@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 1016517585; Wed, 01 Jul 2020 16:29:03 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 1 Jul
+ 2020 16:29:02 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 1 Jul 2020 16:29:02 +0800
+Message-ID: <1593592121.4007.33.camel@mhfsdcap03>
+Subject: Re: [PATCH RESEND v9 18/18] media: platform: Add jpeg enc feature
+From:   Xia Jiang <xia.jiang@mediatek.com>
+To:     Tomasz Figa <tfiga@chromium.org>
+CC:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Rick Chang <rick.chang@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        <srv_heupstream@mediatek.com>, <senozhatsky@chromium.org>,
+        <mojahsu@chromium.org>, <drinkcat@chromium.org>,
+        <maoguang.meng@mediatek.com>, <sj.huang@mediatek.com>
+Date:   Wed, 1 Jul 2020 16:28:41 +0800
+In-Reply-To: <20200630165301.GA1212092@chromium.org>
+References: <20200604090553.10861-1-xia.jiang@mediatek.com>
+         <20200604090553.10861-20-xia.jiang@mediatek.com>
+         <20200611184640.GC8694@chromium.org> <1593485781.20112.43.camel@mhfsdcap03>
+         <20200630165301.GA1212092@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200701064906.323185-2-areber@redhat.com>
+X-TM-SNTS-SMTP: 9E4036093C74344F963CB6D47F8BC74ACCC1D11247ACEF84E17A6A25A5B782D52000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 08:49:04AM +0200, Adrian Reber wrote:
-> This patch introduces CAP_CHECKPOINT_RESTORE, a new capability facilitating
-> checkpoint/restore for non-root users.
-> 
-> Over the last years, The CRIU (Checkpoint/Restore In Userspace) team has been
-> asked numerous times if it is possible to checkpoint/restore a process as
-> non-root. The answer usually was: 'almost'.
-> 
-> The main blocker to restore a process as non-root was to control the PID of the
-> restored process. This feature available via the clone3 system call, or via
-> /proc/sys/kernel/ns_last_pid is unfortunately guarded by CAP_SYS_ADMIN.
-> 
-> In the past two years, requests for non-root checkpoint/restore have increased
-> due to the following use cases:
-> * Checkpoint/Restore in an HPC environment in combination with a resource
->   manager distributing jobs where users are always running as non-root.
->   There is a desire to provide a way to checkpoint and restore long running
->   jobs.
-> * Container migration as non-root
-> * We have been in contact with JVM developers who are integrating
->   CRIU into a Java VM to decrease the startup time. These checkpoint/restore
->   applications are not meant to be running with CAP_SYS_ADMIN.
-> 
-> We have seen the following workarounds:
-> * Use a setuid wrapper around CRIU:
->   See https://github.com/FredHutch/slurm-examples/blob/master/checkpointer/lib/checkpointer/checkpointer-suid.c
-> * Use a setuid helper that writes to ns_last_pid.
->   Unfortunately, this helper delegation technique is impossible to use with
->   clone3, and is thus prone to races.
->   See https://github.com/twosigma/set_ns_last_pid
-> * Cycle through PIDs with fork() until the desired PID is reached:
->   This has been demonstrated to work with cycling rates of 100,000 PIDs/s
->   See https://github.com/twosigma/set_ns_last_pid
-> * Patch out the CAP_SYS_ADMIN check from the kernel
-> * Run the desired application in a new user and PID namespace to provide
->   a local CAP_SYS_ADMIN for controlling PIDs. This technique has limited use in
->   typical container environments (e.g., Kubernetes) as /proc is
->   typically protected with read-only layers (e.g., /proc/sys) for hardening
->   purposes. Read-only layers prevent additional /proc mounts (due to proc's
->   SB_I_USERNS_VISIBLE property), making the use of new PID namespaces limited as
->   certain applications need access to /proc matching their PID namespace.
-> 
-> The introduced capability allows to:
-> * Control PIDs when the current user is CAP_CHECKPOINT_RESTORE capable
->   for the corresponding PID namespace via ns_last_pid/clone3.
-> * Open files in /proc/pid/map_files when the current user is
->   CAP_CHECKPOINT_RESTORE capable in the root namespace, useful for recovering
->   files that are unreachable via the file system such as deleted files, or memfd
->   files.
-> 
-> See corresponding selftest for an example with clone3().
-> 
-> Signed-off-by: Adrian Reber <areber@redhat.com>
-> Signed-off-by: Nicolas Viennot <Nicolas.Viennot@twosigma.com>
-> ---
+T24gVHVlLCAyMDIwLTA2LTMwIGF0IDE2OjUzICswMDAwLCBUb21hc3ogRmlnYSB3cm90ZToNCj4g
+SGkgWGlhLA0KPiANCj4gT24gVHVlLCBKdW4gMzAsIDIwMjAgYXQgMTA6NTY6MjFBTSArMDgwMCwg
+WGlhIEppYW5nIHdyb3RlOg0KPiA+IE9uIFRodSwgMjAyMC0wNi0xMSBhdCAxODo0NiArMDAwMCwg
+VG9tYXN6IEZpZ2Egd3JvdGU6DQo+ID4gPiBIaSBYaWEsDQo+ID4gPiANCj4gPiA+IE9uIFRodSwg
+SnVuIDA0LCAyMDIwIGF0IDA1OjA1OjUzUE0gKzA4MDAsIFhpYSBKaWFuZyB3cm90ZToNCj4gW3Nu
+aXBdDQo+ID4gPiA+ICtzdGF0aWMgdm9pZCBtdGtfanBlZ19lbmNfZGV2aWNlX3J1bih2b2lkICpw
+cml2KQ0KPiA+ID4gPiArew0KPiA+ID4gPiArCXN0cnVjdCBtdGtfanBlZ19jdHggKmN0eCA9IHBy
+aXY7DQo+ID4gPiA+ICsJc3RydWN0IG10a19qcGVnX2RldiAqanBlZyA9IGN0eC0+anBlZzsNCj4g
+PiA+ID4gKwlzdHJ1Y3QgdmIyX3Y0bDJfYnVmZmVyICpzcmNfYnVmLCAqZHN0X2J1ZjsNCj4gPiA+
+ID4gKwllbnVtIHZiMl9idWZmZXJfc3RhdGUgYnVmX3N0YXRlID0gVkIyX0JVRl9TVEFURV9FUlJP
+UjsNCj4gPiA+ID4gKwl1bnNpZ25lZCBsb25nIGZsYWdzOw0KPiA+ID4gPiArCXN0cnVjdCBtdGtf
+anBlZ19zcmNfYnVmICpqcGVnX3NyY19idWY7DQo+ID4gPiA+ICsJc3RydWN0IG10a19qcGVnX2Vu
+Y19icyBlbmNfYnM7DQo+ID4gPiA+ICsJaW50IHJldDsNCj4gPiA+ID4gKw0KPiA+ID4gPiArCXNy
+Y19idWYgPSB2NGwyX20ybV9uZXh0X3NyY19idWYoY3R4LT5maC5tMm1fY3R4KTsNCj4gPiA+ID4g
+Kwlkc3RfYnVmID0gdjRsMl9tMm1fbmV4dF9kc3RfYnVmKGN0eC0+ZmgubTJtX2N0eCk7DQo+ID4g
+PiA+ICsJanBlZ19zcmNfYnVmID0gbXRrX2pwZWdfdmIyX3RvX3NyY2J1Zigmc3JjX2J1Zi0+dmIy
+X2J1Zik7DQo+ID4gPiA+ICsNCj4gPiA+ID4gKwlyZXQgPSBwbV9ydW50aW1lX2dldF9zeW5jKGpw
+ZWctPmRldik7DQo+ID4gPiA+ICsJaWYgKHJldCA8IDApDQo+ID4gPiA+ICsJCWdvdG8gZW5jX2Vu
+ZDsNCj4gPiA+ID4gKw0KPiA+ID4gPiArCXNwaW5fbG9ja19pcnFzYXZlKCZqcGVnLT5od19sb2Nr
+LCBmbGFncyk7DQo+ID4gPiA+ICsNCj4gPiA+ID4gKwkvKg0KPiA+ID4gPiArCSAqIFJlc2V0dGlu
+ZyB0aGUgaGFyZHdhcmUgZXZlcnkgZnJhbWUgaXMgdG8gZW5zdXJlIHRoYXQgYWxsIHRoZQ0KPiA+
+ID4gPiArCSAqIHJlZ2lzdGVycyBhcmUgY2xlYXJlZC4gVGhpcyBpcyBhIGhhcmR3YXJlIHJlcXVp
+cmVtZW50Lg0KPiA+ID4gPiArCSAqLw0KPiA+ID4gPiArCW10a19qcGVnX2VuY19yZXNldChqcGVn
+LT5yZWdfYmFzZSk7DQo+ID4gPiA+ICsNCj4gPiA+ID4gKwltdGtfanBlZ19zZXRfZW5jX2RzdChj
+dHgsIGpwZWctPnJlZ19iYXNlLCAmZHN0X2J1Zi0+dmIyX2J1ZiwgJmVuY19icyk7DQo+ID4gPiA+
+ICsJbXRrX2pwZWdfc2V0X2VuY19zcmMoY3R4LCBqcGVnLT5yZWdfYmFzZSwgJnNyY19idWYtPnZi
+Ml9idWYpOw0KPiA+ID4gPiArCW10a19qcGVnX2VuY19zZXRfY29uZmlnKGpwZWctPnJlZ19iYXNl
+LCBjdHgtPm91dF9xLmZtdC0+aHdfZm9ybWF0LA0KPiA+ID4gPiArCQkJCWN0eC0+ZW5hYmxlX2V4
+aWYsIGN0eC0+ZW5jX3F1YWxpdHksDQo+ID4gPiA+ICsJCQkJY3R4LT5yZXN0YXJ0X2ludGVydmFs
+KTsNCj4gPiA+ID4gKwltdGtfanBlZ19lbmNfc3RhcnQoanBlZy0+cmVnX2Jhc2UpOw0KPiA+ID4g
+DQo+ID4gPiBDb3VsZCB3ZSBqdXN0IG1vdmUgdGhlIGFib3ZlIDUgZnVuY3Rpb25zIGludG8gb25l
+IGZ1bmN0aW9uIGluc2lkZQ0KPiA+ID4gbXRrX2pwZWdfZW5jX2h3LmMgdGhhdCB0YWtlcyBtdGtf
+anBlZ19kZXYgcG9pbnRlciBhcyBpdHMgYXJndW1lbnQsIGxldCdzDQo+ID4gPiBzYXkgbXRrX2pw
+ZWdfZW5jX2h3X3J1bigpIGFuZCBzaW1wbHkgcHJvZ3JhbSBhbGwgdGhlIGRhdGEgdG8gdGhlIHJl
+Z2lzdGVycw0KPiA+ID4gZGlyZWN0bHksIHdpdGhvdXQgdGhlIGV4dHJhIGxldmVsIG9mIGFic3Ry
+YWN0aW9ucz8NCj4gPiBJIGNhbiBtb3ZlIHRoZSA1IGZ1bmN0aW9ucyBpbnRvIG9uZSBmdW5jdGlv
+bihtdGtfanBlZ19lbmNfaHdfcnVuKCkpLCBidXQNCj4gPiB0aGlzIGZ1bmN0aW9uIHdpbGwgYmUg
+dmVyeSBsb25nLCBiZWNhdXNlIGl0IGNvbnRhaW5zIGNvbXB1dGF0aW9uIGNvZGUNCj4gPiBzdWNo
+IGFzIHNldHRpbmcgZHN0IGFkZHIsIGJsa19udW0sIHF1YWxpdHkuDQo+ID4gSW4gdjQsIHlvdSBo
+YXZlIGFkdmljZWQgdGhlIGZvbGxvd2luZyBhcmNoaXRlY3R1cmU6DQo+ID4gSG93IGFib3V0IHRo
+ZSBmb2xsb3dpbmcgbW9kZWwsIGFzIHVzZWQgYnkgbWFueSBvdGhlciBkcml2ZXJzOg0KPiA+IA0K
+PiA+IG10a19qcGVnX2VuY19zZXRfc3JjKCkNCj4gPiB7DQo+ID4gICAgICAgICAvLyBTZXQgYW55
+IHJlZ2lzdGVycyByZWxhdGVkIHRvIHNvdXJjZSBmb3JtYXQgYW5kIGJ1ZmZlcg0KPiA+IH0NCj4g
+PiANCj4gPiBtdGtfanBlZ19lbmNfc2V0X2RzdCgpDQo+ID4gew0KPiA+ICAgICAgICAgLy8gU2V0
+IGFueSByZWdpc3RlcnMgcmVsYXRlZCB0byBkZXN0aW5hdGlvbiBmb3JtYXQgYW5kIGJ1ZmZlcg0K
+PiA+IH0NCj4gPiANCj4gPiBtdGtfanBlZ19lbmNfc2V0X3BhcmFtcygpDQo+ID4gew0KPiA+ICAg
+ICAgICAgLy8gU2V0IGFueSByZWdpc3RlcnMgcmVsYXRlZCB0byBhZGRpdGlvbmFsIGVuY29kaW5n
+IHBhcmFtZXRlcnMNCj4gPiB9DQo+ID4gDQo+ID4gbXRrX2pwZWdfZW5jX2RldmljZV9ydW4oZW5j
+LCBjdHgpDQo+ID4gew0KPiA+ICAgICAgICAgbXRrX2pwZWdfZW5jX3NldF9zcmMoZW5jLCBzcmNf
+YnVmLCBzcmNfZm10KTsNCj4gPiAgICAgICAgIG10a19qcGVnX2VuY19zZXRfZHN0KGVuYywgZHN0
+X2J1ZiwgZHN0X2ZtdCk7DQo+ID4gICAgICAgICBtdGtfanBlZ19lbmNfc2V0X3BhcmFtcyhlbmMs
+IGN0eCk7DQo+ID4gICAgICAgICAvLyBUcmlnZ2VyIHRoZSBoYXJkd2FyZSBydW4NCj4gPiB9DQo+
+ID4gSSB0aGluayB0aGF0IHRoaXMgYXJjaGl0ZWN0dXJlIGlzIG1vcmUgY2xlYXIobXRrX2pwZWdf
+ZW5jX3NldF9jb25maWcgaXMNCj4gPiBlcXVpdmFsZW50IHRvIG10a19qcGVnX2VuY19zZXRfcGFy
+YW1zKS4NCj4gPiBTaG91bGQgSSBrZWVwIHRoZSBvcmlnaW5hbCBhcmNoaXRlY3R1cmUgb3IgbW92
+ZSA1IGZ1bmN0aW9ucyBpbnRvDQo+ID4gbXRrX2pwZWdfZW5jX2h3X3J1bj8NCj4gDQo+IFNvdW5k
+cyBnb29kIHRvIG1lLg0KPiANCj4gTXkgYmlnZ2VzdCBpc3N1ZSB3aXRoIHRoZSBjb2RlIHRoYXQg
+aXQgZW5kcyB1cCBpbnRyb2R1Y2luZyBvbmUgbW9yZQ0KPiBsZXZlbCBvZiBhYnN0cmFjdGlvbiwg
+YnV0IHdpdGggdGhlIGFwcHJvYWNoIHlvdSBzdWdnZXN0ZWQsIHRoZSBhcmd1bWVudHMNCj4ganVz
+dCBhY2NlcHQgc3RhbmRhcmQgc3RydWN0cywgd2hpY2ggYXZvaWRzIHRoYXQgcHJvYmxlbS4NCkRl
+YXIgVG9tYXN6LA0KDQpTb3JyeSBmb3IgdGhhdCBJIGRpZG4ndCB1bmRlcnN0YW5kIHlvdXIgZmlu
+YWwgcHJlZmVyZW5jZS4NCg0KQXMgeW91IG1lbnRpb25lZCwgdXNpbmcgbXRrX2pwZWdfZGV2IHBv
+aW50ZXIgYXMgaXRzIGFyZ3VtZW50LCBidXQgc29tZQ0KYXJndW1lbnRzIGNvbWUgZnJvbSBtdGtf
+anBlZ19jdHggcG9pbnRlciwgc3VjaCBhcyBjdHgtPmVuYWJsZV9leGlmLw0KY3R4LT5lbmNfcXVh
+bGl0eS9jdHgtPnJlc3RhcnRfaW50ZXJ2YWwuIFNob3VsZCB3ZSB1c2UgIG10a19qcGVnX2N0eA0K
+cG9pbnRlciBhcyBpdHMgYXJndW1lbnQ/IFNob3VsZCB3ZSB1c2Ugc3JjX2RtYV9hZGRyL2RzdF9k
+bWFfYWRkciBhcyBpdHMNCmFyZ3VtZW50cyB0b28/IEJlY2F1c2UgdGhhdCBzcmNfZG1hX2FkZHIv
+ZHN0X2RtYV9hZGRyIG5lZWQgdG8gYmUgZ2V0dGVkDQpieSB2NGwyIGludGVyZmFjZXMoDQpzcmNf
+YnVmPXY0bDJfbTJtX25leHRfc3JjX2J1ZigpOw0Kc3JjX2RtYV9kZHI9dmIyX2RtYV9jb250aWdf
+cGxhbmVfZG1hX2FkZHIoKTspLiANClVzaW5nIFY0TDIgaW50ZXJmYWNlcyBpbiBtdGtfanBlZ19l
+bmNfaHcuYyBkb2Vzbid0IHNlZW0gcmVhc29uYWJsZS4NCg0Kc29sdXRpb24gMToNCm10a19qcGVn
+X2VuY19od19ydW4oY3R4LCBzcmNfZG1hX2FkZHIsIGRzdF9kbWFfYWRkcikNCnsNCgkvL1NldCBh
+bGwgdGhlIHJlZ2lzdGVycw0Kd2l0aG91dCBvbmUgbW9yZSBsZXZlbCBvZiBhYnN0cmFjdGlvbg0K
+fQ0KDQpzb2x1dGlvbiAyOg0KbXRrX2pwZWdfZW5jX3Jlc2V0KGpwZWcpDQp7DQoJLy9zZXQgdGhl
+IHJlc2V0IHJlZ2lzdGVyDQp9DQoNCm10a19qcGVnX3NldF9lbmNfZHN0KGN0eCwgZHN0X2RtYV9h
+ZGRyKQ0Kew0KCQ0KCS8vU2V0IGFueSByZWdpc3RlcnMgcmVsYXRlZCB0byBkZXN0aW5hdGlvbiBm
+b3JtYXQgYW5kIGJ1ZmZlcg0Kd2l0aG91dCBvbmUgbW9yZSBsZXZlbCBvZiBhYnN0cmFjdGlvbg0K
+fQ0KbXRrX2pwZWdfc2V0X2VuY19zcmMoY3R4LCBzcmNfZG1hX2FkZHIpDQp7DQoNCgkvL1NldCBh
+bnkgcmVnaXN0ZXJzIHJlbGF0ZWQgdG8gc291cmNlIGZvcm1hdCBhbmQgYnVmZmVyICAgICB3aXRo
+b3V0IG9uZQ0KbW9yZSBsZXZlbCBvZiBhYnN0cmFjdGlvbg0KfQ0KbXRrX2pwZWdfZW5jX3NldF9j
+b25maWcoY3R4KQ0Kew0KCS8vIFNldCBhbnkgcmVnaXN0ZXJzIHJlbGF0ZWQgdG8gYWRkaXRpb25h
+bCBlbmNvZGluZyBwYXJhbWV0ZXJzDQp3aXRob3V0IG9uZSBtb3JlIGxldmVsIG9mIGFic3RyYWN0
+aW9uDQp9DQptdGtfanBlZ19lbmNfc3RhcnQoanBlZykNCnsNCgkvL3NldCB0aGUgdHJpZ2dlciBy
+ZWdpc3Rlcg0KfQ0KDQpTb2x1dGlvbiAxIG9yIFNvbHV0aW9uIDI/DQoNCkJlc3QgUmVnYXJkcywN
+ClhpYSBKaWFuZw0KPiANCj4gW3NuaXBdDQo+ID4gPiA+ICsNCj4gPiA+ID4gKwljdHgtPmZoLmN0
+cmxfaGFuZGxlciA9ICZjdHgtPmN0cmxfaGRsOw0KPiA+ID4gPiArCWN0eC0+Y29sb3JzcGFjZSA9
+IFY0TDJfQ09MT1JTUEFDRV9KUEVHLA0KPiA+ID4gPiArCWN0eC0+eWNiY3JfZW5jID0gVjRMMl9Z
+Q0JDUl9FTkNfREVGQVVMVDsNCj4gPiA+ID4gKwljdHgtPnF1YW50aXphdGlvbiA9IFY0TDJfUVVB
+TlRJWkFUSU9OX0RFRkFVTFQ7DQo+ID4gPiA+ICsJY3R4LT54ZmVyX2Z1bmMgPSBWNEwyX1hGRVJf
+RlVOQ19ERUZBVUxUOw0KPiA+ID4gDQo+ID4gPiBTaW5jZSB3ZSBhbHJlYWR5IGhhdmUgYSB2NGwy
+X3BpeF9mb3JtYXRfbXBsYW5lIHN0cnVjdCB3aGljaCBoYXMgZmllbGRzIGZvcg0KPiA+ID4gdGhl
+IGFib3ZlIDQgdmFsdWVzLCBjb3VsZCB3ZSBqdXN0IHN0b3JlIHRoZW0gdGhlcmU/DQo+ID4gPiAN
+Cj4gPiA+IEFsc28sIEkgZG9uJ3Qgc2VlIHRoaXMgZHJpdmVyIGhhbmRsaW5nIHRoZSBjb2xvcnNw
+YWNlcyBpbiBhbnkgd2F5LCBidXQgaXQNCj4gPiA+IHNlZW1zIHRvIGFsbG93IGNoYW5naW5nIHRo
+ZW0gZnJvbSB0aGUgdXNlcnNwYWNlLiBUaGlzIGlzIGluY29ycmVjdCwgYmVjYXVzZQ0KPiA+ID4g
+dGhlIHVzZXJzcGFjZSBoYXMgbm8gd2F5IHRvIGtub3cgdGhhdCB0aGUgY29sb3JzcGFjZSBpcyBu
+b3QgaGFuZGxlZC4NCj4gPiA+IEluc3RlYWQsIHRoZSB0cnlfZm10IGltcGxlbWVudGF0aW9uIHNo
+b3VsZCBhbHdheXMgb3ZlcnJpZGUgdGhlDQo+ID4gPiB1c2Vyc3BhY2UtcHJvdmlkZWQgY29sb3Jz
+cGFjZSBjb25maWd1cmF0aW9uIHdpdGggdGhlIG9uZXMgdGhhdCB0aGUgZHJpdmVyDQo+ID4gPiBh
+c3N1bWVzLg0KPiA+ID4gDQo+ID4gPiA+ICsJcGl4X21wLT53aWR0aCA9IE1US19KUEVHX01JTl9X
+SURUSDsNCj4gPiA+ID4gKwlwaXhfbXAtPmhlaWdodCA9IE1US19KUEVHX01JTl9IRUlHSFQ7DQo+
+ID4gPiA+ICsNCj4gPiA+ID4gKwlxLT5mbXQgPSBtdGtfanBlZ19maW5kX2Zvcm1hdChWNEwyX1BJ
+WF9GTVRfWVVZViwNCj4gPiA+ID4gKwkJCQkgICAgICBNVEtfSlBFR19GTVRfRkxBR19FTkNfT1VU
+UFVUKTsNCj4gPiA+ID4gKwl2aWRpb2NfdHJ5X2ZtdChjb250YWluZXJfb2YocGl4X21wLCBzdHJ1
+Y3QgdjRsMl9mb3JtYXQsDQo+ID4gPiA+ICsJCQkJICAgIGZtdC5waXhfbXApLCBxLT5mbXQpOw0K
+PiA+ID4gPiArCXEtPncgPSBwaXhfbXAtPndpZHRoOw0KPiA+ID4gPiArCXEtPmggPSBwaXhfbXAt
+PmhlaWdodDsNCj4gPiA+ID4gKwlxLT5jcm9wX3JlY3Qud2lkdGggPSBwaXhfbXAtPndpZHRoOw0K
+PiA+ID4gPiArCXEtPmNyb3BfcmVjdC5oZWlnaHQgPSBwaXhfbXAtPmhlaWdodDsNCj4gPiA+ID4g
+KwlxLT5zaXplaW1hZ2VbMF0gPSBwaXhfbXAtPnBsYW5lX2ZtdFswXS5zaXplaW1hZ2U7DQo+ID4g
+PiA+ICsJcS0+Ynl0ZXNwZXJsaW5lWzBdID0gcGl4X21wLT5wbGFuZV9mbXRbMF0uYnl0ZXNwZXJs
+aW5lOw0KPiA+ID4gDQo+ID4gPiBBY3R1YWxseSwgZG8gd2UgbmVlZCB0aGlzIGN1c3RvbSBtdGtf
+anBlZ19xX2RhdGEgc3RydWN0PyBXaHkgY291bGRuJ3Qgd2UNCj4gPiA+IGp1c3Qga2VlcCB0aGUg
+c2FtZSB2YWx1ZXMgaW5zaWRlIHRoZSBzdGFuZGFyZCB2NGwyX3BpeF9mb3JtYXRfbXBsYW5lDQo+
+ID4gPiBzdHJ1Y3Q/DQo+ID4gSSB0aGluayB0aGF0IHdlIG5lZWQgbXRrX2pwZWdfcV9kYXRhIHN0
+cnVjdC5JZiB3ZSBkZWxldGUgaXQsIGhvdyBjYW4gd2UNCj4gPiBrbm93IHRoZXNlIHZhbHVlcyh3
+LCBoLCBzaXplaW1hZ2UsIGJ5dGVzcGVybGluZSwgbXRrX2pwZWdfZm10KSBiZWxvbmcgdG8NCj4g
+PiBvdXRwdXQgb3IgY2FwdHVyZShvdXRwdXQgYW5kIGNhcHR1cmUncyBzaXplaW1hZ2VzIGFyZSBk
+aWZmZXJlbnQsIHdpZHRoDQo+ID4gYW5kIGhlaWdodCBhcmUgZGlmZmVybnQgdG9vIGZvciBqcGVn
+IGRlYyApP1dlIGhhdmUNCj4gPiBzX2ZtdF92aWRfb3V0X21wbGFuZS9jYXBfbXBsYW5lIGZ1bmN0
+aW9uIHRvIHNldCB0aGVzZSB2YWx1ZXMuDQo+ID4gDQo+ID4gQnV0IHdlIGNhbiB1c2Ugc3RhbmRh
+cmQgdjRsMl9waXhfZm9ybWF0X21wbGFuZSBzdHJ1Y3QgcmVwbGFjaW5nIHRoZSB3LCBoDQo+ID4g
+Ynl0ZXNwZXJsaW5lLCBzaXplaW1hZ2UgaW4gbXRrX2pwZWdfcV9kYXRhIHN0cnVjdCBsaWtlIHRo
+aXM6DQo+ID4gc3RydWN0IG10a19qcGVnX3FfZGF0YXsNCj4gPiAJc3RydWN0IG10a19qcGVnX2Zt
+dCAqZm10Ow0KPiA+IAlzdHJ1Y3QgdjRsMl9waXhfZm9ybWF0X21wbGFuZSBwaXhfbXA7DQo+ID4g
+CXN0cnVjdCB2NGwyX3JlY3QgZW5jX2Nyb3BfcmVjdA0KPiA+IH0NCj4gPiBUaGVuIGRlbGV0ZSBj
+dHgtPmNvbG9yc3BhY2UgY3R4LT55Y2Jjcl9lbmMgY3R4LT5xdWFudGl6YXRpb24NCj4gPiBjdHgt
+PnhmZXJfZnVuYywgYmVjdWFzZSB2NGwyX3BpeF9mb3JtYXRfbXBsYW5lIGluIHFfZGF0YSBoYXMg
+Y29udGFpbmVkDQo+ID4gdGhlbSBhbmQgYXNzaWduIHRoZW0gZm9yIG91dF9xIGFuZCBjYXBfcSBz
+ZXBhcmF0ZWx5Lg0KPiA+IA0KPiA+IFdEWVQ/DQo+IA0KPiBTb3VuZHMgZ29vZCB0byBtZS4gSSB3
+YXMgY29uc2lkZXJpbmcganVzdCBtYWtpbmcgaXQgbGlrZQ0KPiANCj4gc3RydWN0IG10a19qcGVn
+X2N0eCB7DQo+IAlzdHJ1Y3QgbXRrX2pwZWdfZm10ICpzcmNfZm10Ow0KPiAJc3RydWN0IHY0bDJf
+cGl4X2Zvcm1hdF9tcGxhbmUgc3JjX3BpeF9tcDsNCj4gCXN0cnVjdCB2NGwyX3JlY3Qgc3JjX2Ny
+b3A7DQo+IA0KPiAJc3RydWN0IG10a19qcGVnX2ZtdCAqZHN0X2ZtdDsNCj4gCXN0cnVjdCB2NGwy
+X3BpeF9mb3JtYXRfbXBsYW5lIGRzdF9waXhfbXA7DQo+IAlzdHJ1Y3QgdjRsMl9yZWN0IGRzdF9j
+cm9wOw0KPiB9Ow0KPiANCj4gYnV0IEkgbGlrZSB5b3VyIHN1Z2dlc3Rpb24gYXMgd2VsbCwgYXMg
+bG9uZyBhcyBjdXN0b20gZGF0YSBzdHJ1Y3R1cmVzDQo+IGFyZSBub3QgdXNlZCB0byBzdG9yZSBz
+dGFuZGFyZCBpbmZvcm1hdGlvbi4NCj4gW3NuaXBdDQo+ID4gPiA+IEBAIC0xMDQyLDggKzE2MTks
+MTIgQEAgc3RhdGljIGludCBtdGtfanBlZ19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpw
+ZGV2KQ0KPiA+ID4gPiAgCQlyZXR1cm4ganBlZ19pcnE7DQo+ID4gPiA+ICAJfQ0KPiA+ID4gPiAg
+DQo+ID4gPiA+IC0JcmV0ID0gZGV2bV9yZXF1ZXN0X2lycSgmcGRldi0+ZGV2LCBqcGVnX2lycSwg
+bXRrX2pwZWdfZGVjX2lycSwgMCwNCj4gPiA+ID4gLQkJCSAgICAgICBwZGV2LT5uYW1lLCBqcGVn
+KTsNCj4gPiA+ID4gKwlpZiAoanBlZy0+dmFyaWFudC0+aXNfZW5jb2RlcikNCj4gPiA+ID4gKwkJ
+cmV0ID0gZGV2bV9yZXF1ZXN0X2lycSgmcGRldi0+ZGV2LCBqcGVnX2lycSwgbXRrX2pwZWdfZW5j
+X2lycSwNCj4gPiA+ID4gKwkJCQkgICAgICAgMCwgcGRldi0+bmFtZSwganBlZyk7DQo+ID4gPiA+
+ICsJZWxzZQ0KPiA+ID4gPiArCQlyZXQgPSBkZXZtX3JlcXVlc3RfaXJxKCZwZGV2LT5kZXYsIGpw
+ZWdfaXJxLCBtdGtfanBlZ19kZWNfaXJxLA0KPiA+ID4gPiArCQkJCSAgICAgICAwLCBwZGV2LT5u
+YW1lLCBqcGVnKTsNCj4gPiA+IA0KPiA+ID4gUmF0aGVyIHRoYW4gaGF2aW5nICJpc19lbmNvZGVy
+IiBpbiB0aGUgdmFyaWFudCBzdHJ1Y3QsIHdvdWxkIGl0IG1ha2UgbW9yZQ0KPiA+ID4gc2Vuc2Ug
+dG8gaGF2ZSAiaXJxX2hhbmRsZXIiIGluc3RlYWQ/IFRoYXQgd291bGQgYXZvaWQgdGhlIGV4cGxp
+Y2l0IGlmLg0KPiA+IERvIHlvdSBtZWFuIHRvIGRlbGV0ZSAiaXNfZW5jb2RlciI/IEl0IGlzIHVz
+ZWQgOCB0aW1lcyBpbiB0aGUNCj4gPiBkcml2ZXIuU2hvdWxkIEkgbW92ZSB0aGVtIGFsbCB0byB0
+aGUgbWF0Y2ggZGF0YT8NCj4gDQo+IFllcy4gSXQgd291bGQgbWFrZSB0aGUgY29kZSBsaW5lYXIg
+YW5kIHRoZSB2YXJhYmlsaXR5IGJldHdlZW4gdGhlDQo+IGRlY29kZXIgYW5kIGVuY29kZXIgd291
+bGQgYmUgc2VsZi1jb250YWluZWQgaW4gdGhlIHZhcmlhbnQgc3RydWN0Lg0KPiANCj4gQmVzdCBy
+ZWdhcmRzLA0KPiBUb21hc3oNCg0K
 
-I think that now looks reasonable. A few comments.
-
-Before we proceed, please split the addition of
-checkpoint_restore_ns_capable() out into a separate patch.
-In fact, I think the cleanest way of doing this would be:
-- 0/n capability: add CAP_CHECKPOINT_RESTORE
-- 1/n pid: use checkpoint_restore_ns_capable() for set_tid
-- 2/n pid_namespace: use checkpoint_restore_ns_capable() for ns_last_pid
-- 3/n: proc: require checkpoint_restore_ns_capable() in init userns for map_files
-
-(commit subjects up to you of course) and a nice commit message for each
-time we relax a permissions on something so we have a clear separate
-track record for each change in case we need to revert something. Then
-the rest of the patches in this series. Testing patches probably last.
-
->  fs/proc/base.c                      | 8 ++++----
->  include/linux/capability.h          | 6 ++++++
->  include/uapi/linux/capability.h     | 9 ++++++++-
->  kernel/pid.c                        | 2 +-
->  kernel/pid_namespace.c              | 2 +-
->  security/selinux/include/classmap.h | 5 +++--
->  6 files changed, 23 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/proc/base.c b/fs/proc/base.c
-> index d86c0afc8a85..ad806069c778 100644
-> --- a/fs/proc/base.c
-> +++ b/fs/proc/base.c
-> @@ -2189,16 +2189,16 @@ struct map_files_info {
->  };
->  
->  /*
-> - * Only allow CAP_SYS_ADMIN to follow the links, due to concerns about how the
-> - * symlinks may be used to bypass permissions on ancestor directories in the
-> - * path to the file in question.
-> + * Only allow CAP_SYS_ADMIN and CAP_CHECKPOINT_RESTORE to follow the links, due
-> + * to concerns about how the symlinks may be used to bypass permissions on
-> + * ancestor directories in the path to the file in question.
->   */
->  static const char *
->  proc_map_files_get_link(struct dentry *dentry,
->  			struct inode *inode,
->  		        struct delayed_call *done)
->  {
-> -	if (!capable(CAP_SYS_ADMIN))
-> +	if (!capable(CAP_SYS_ADMIN) && !capable(CAP_CHECKPOINT_RESTORE))
->  		return ERR_PTR(-EPERM);
-
-I think it's clearer if you just use:
-checkpoint_restore_ns_capable(&init_user_ns)
-
-> +static inline bool checkpoint_restore_ns_capable(struct user_namespace *ns)
-
->  
->  	return proc_pid_get_link(dentry, inode, done);
-> diff --git a/include/linux/capability.h b/include/linux/capability.h
-> index b4345b38a6be..1e7fe311cabe 100644
-> --- a/include/linux/capability.h
-> +++ b/include/linux/capability.h
-> @@ -261,6 +261,12 @@ static inline bool bpf_capable(void)
->  	return capable(CAP_BPF) || capable(CAP_SYS_ADMIN);
->  }
->  
-> +static inline bool checkpoint_restore_ns_capable(struct user_namespace *ns)
-> +{
-> +	return ns_capable(ns, CAP_CHECKPOINT_RESTORE) ||
-> +		ns_capable(ns, CAP_SYS_ADMIN);
-> +}
-> +
->  /* audit system wants to get cap info from files as well */
->  extern int get_vfs_caps_from_disk(const struct dentry *dentry, struct cpu_vfs_cap_data *cpu_caps);
->  
-> diff --git a/include/uapi/linux/capability.h b/include/uapi/linux/capability.h
-> index 48ff0757ae5e..395dd0df8d08 100644
-> --- a/include/uapi/linux/capability.h
-> +++ b/include/uapi/linux/capability.h
-> @@ -408,7 +408,14 @@ struct vfs_ns_cap_data {
->   */
->  #define CAP_BPF			39
->  
-> -#define CAP_LAST_CAP         CAP_BPF
-> +
-> +/* Allow checkpoint/restore related operations */
-> +/* Allow PID selection during clone3() */
-> +/* Allow writing to ns_last_pid */
-> +
-> +#define CAP_CHECKPOINT_RESTORE	40
-> +
-> +#define CAP_LAST_CAP         CAP_CHECKPOINT_RESTORE
->  
->  #define cap_valid(x) ((x) >= 0 && (x) <= CAP_LAST_CAP)
->  
-> diff --git a/kernel/pid.c b/kernel/pid.c
-> index 5799ae54b89e..2d0a97b7ed7a 100644
-> --- a/kernel/pid.c
-> +++ b/kernel/pid.c
-> @@ -198,7 +198,7 @@ struct pid *alloc_pid(struct pid_namespace *ns, pid_t *set_tid,
->  			if (tid != 1 && !tmp->child_reaper)
->  				goto out_free;
->  			retval = -EPERM;
-> -			if (!ns_capable(tmp->user_ns, CAP_SYS_ADMIN))
-> +			if (!checkpoint_restore_ns_capable(tmp->user_ns))
->  				goto out_free;
->  			set_tid_size--;
->  		}
-> diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
-> index 0e5ac162c3a8..ac135bd600eb 100644
-> --- a/kernel/pid_namespace.c
-> +++ b/kernel/pid_namespace.c
-> @@ -269,7 +269,7 @@ static int pid_ns_ctl_handler(struct ctl_table *table, int write,
->  	struct ctl_table tmp = *table;
->  	int ret, next;
->  
-> -	if (write && !ns_capable(pid_ns->user_ns, CAP_SYS_ADMIN))
-> +	if (write && !checkpoint_restore_ns_capable(pid_ns->user_ns))
->  		return -EPERM;
->  
->  	/*
-> diff --git a/security/selinux/include/classmap.h b/security/selinux/include/classmap.h
-> index 98e1513b608a..40cebde62856 100644
-> --- a/security/selinux/include/classmap.h
-> +++ b/security/selinux/include/classmap.h
-> @@ -27,9 +27,10 @@
->  	    "audit_control", "setfcap"
->  
->  #define COMMON_CAP2_PERMS  "mac_override", "mac_admin", "syslog", \
-> -		"wake_alarm", "block_suspend", "audit_read", "perfmon", "bpf"
-> +		"wake_alarm", "block_suspend", "audit_read", "perfmon", "bpf", \
-> +		"checkpoint_restore"
->  
-> -#if CAP_LAST_CAP > CAP_BPF
-> +#if CAP_LAST_CAP > CAP_CHECKPOINT_RESTORE
->  #error New capability defined, please update COMMON_CAP2_PERMS.
->  #endif
->  
-> -- 
-> 2.26.2
-> 
