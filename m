@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF44B210B42
+	by mail.lfdr.de (Postfix) with ESMTP id 63B0D210B41
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 14:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730748AbgGAMrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 08:47:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34820 "EHLO
+        id S1730740AbgGAMrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 08:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730651AbgGAMrT (ORCPT
+        with ESMTP id S1730660AbgGAMrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 08:47:19 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A41AC03E979
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 05:47:18 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z2so1402933wrp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 05:47:18 -0700 (PDT)
+        Wed, 1 Jul 2020 08:47:20 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E29C03E97B
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 05:47:19 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id w3so10635248wmi.4
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 05:47:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=N515jYO+XViE4rxUKT5HCQLZtJJRT/LcfFcciYDmBeM=;
-        b=hvlv+tX5KbtfpPHuAr/9nPcfbWbt2OM+cAiArO7rBU+Y2+hvUnLaSo0jEyJTSCNtqf
-         /BDU4lYL9oLCcqTop/giUBCPoSMdBObVhCbOzDajIg7Xy6OW+ZanytcIK27fFPUGoSVU
-         2HU2a9hqOlOZrJOszUR6SdV2AyaDNo6lSEkB+ew6DMnwFNMd/BNLqTiFAHq1aJUyK533
-         vZApsJFvDH9s4cvNsik/dIsdQTNB9Xgck4l+CjFOQg+hSyhnw/3cQ4TbqOVFFZ9q5zuU
-         Hx3f33mBeGd2YAWoPZsDHGAAQN8Ba5WzdLuFqKRs0IHGKbASYvKxZqTge82v1stAPd6T
-         vuAA==
+        bh=dBwifa0ZuoxuR9zanjCi/SQC3HxVrP+0TUYJWPy9rp0=;
+        b=Vmuk3iCY78/WlEtcAdEexKWZcshcQ4CAc2QtQlIooAG1Sjzo7f922rZ5uu3Btw42mG
+         pof4skzNtKjDAQ2V7hlvDc8qTUDRiAuUwOspjGY68c8ASAmQJZzYuw1DqpPM8TI+tbYk
+         GA04r/sV9cy1DJ0+stgXKyLbOfzThikzkPVRIvV6m9L9IDgbCUeUCf5TPNOjaSYqNQDt
+         /gJn0pdOlKPAceJRAr9sgb4pG0FQSmGa7l9+UIMmmI63BXVj+eiObd+MyXCYC2uFsXEb
+         eSkxfH1EoY2oa1tfhAac2VmwXB4gICM7NLjLUlvi4MHodiQa5hiCYFQ+KVUpjcjAR7OV
+         YM4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=N515jYO+XViE4rxUKT5HCQLZtJJRT/LcfFcciYDmBeM=;
-        b=NmMe37MpYalPfVjEFuvuJhxcoqz3G/frUYCaLfZvImwXtFsaqbL1j8Nfj75HQXovck
-         IzHj2WBZrblBDQ8YIejrFD4CidOhR58rUJefW3vWrPY9utNig6HNFDcxNvqhGSORuXyu
-         HSkc2j54SabVLmy/O64Qjh+FXaF2Tt62rttT/07Q9R0BUdumsySkh9H+ycT5roMGs416
-         qSf5yZR0MwMRknSOWUNPI/2It/PQhOf6/5rLZMMp5onGv1M7Ex4yAZGu+yQJGpjf9aFm
-         /wA7SSjT8cfjfCyRVz+152F2sufp4Cuifjkr2Ex5ZuLWYQXM+dycuHsyKL0ldSXo6YOx
-         iroQ==
-X-Gm-Message-State: AOAM5339xqGC9PiRqTu+Tr18h+sdhSa0U2Vd4YYIdPaS+zYWdZoZjM+O
-        BS5OqM/eHRTQhmyHE2BhMJlygw==
-X-Google-Smtp-Source: ABdhPJzwL6sUJakVeaCCVt1EjUi0Pfn7s08Z72vAPl3BEm+TB/R6hwjCzAdHY66m8bbVha8qFfoZlg==
-X-Received: by 2002:adf:8168:: with SMTP id 95mr27049461wrm.104.1593607637328;
-        Wed, 01 Jul 2020 05:47:17 -0700 (PDT)
+        bh=dBwifa0ZuoxuR9zanjCi/SQC3HxVrP+0TUYJWPy9rp0=;
+        b=HK69b2FQaniqnO+QcwNi7gs/u50BDdqv1BUoUra8H58kOpJfrKN/tLWkih+Mu0sff+
+         oi6kOkrNOFh1EtmgymgxpI3HAQPeeaZ9eTVW/vBkSGUnNm3lPUJo3Du6pQkAzncFwSie
+         IQaZnwhTOAvOFLhjZ5LNTx25nXxW+K0JNyd6WjZ8yDVkohpE+ceCYRudt+5wFrwTlFdx
+         79tT98SGft+EBcJluEFlqrvi1eQ2YCXh/d/HOA5ejivrXF5L12y/8FHF/koyIieHcX1g
+         JRy40QhfIYjCj9HgJ8JgyBhyHbLzrZV220Hvu0LhAlatO65AaJiNTNRnbtl11cKdzX4A
+         ZMoA==
+X-Gm-Message-State: AOAM531xE6Ix3qwEMO6zvwH7DuxEQ5sud2++HzRjVq1IqEOI7ko462AV
+        xjKdGu1Oe2ZI6o6JeRQ9vn8vFw==
+X-Google-Smtp-Source: ABdhPJyRlpTGWtkkPDEX2Kbq6J1uY8YesgkaBwFXFyeaq+IHUPNxOc1d79VYpEMGSjz+hU5Plde7oA==
+X-Received: by 2002:a1c:f301:: with SMTP id q1mr26418165wmq.110.1593607638527;
+        Wed, 01 Jul 2020 05:47:18 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id o29sm7817862wra.5.2020.07.01.05.47.16
+        by smtp.gmail.com with ESMTPSA id o29sm7817862wra.5.2020.07.01.05.47.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 05:47:16 -0700 (PDT)
+        Wed, 01 Jul 2020 05:47:17 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     ulf.hansson@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Wei WANG <wei_wang@realsil.com.cn>
-Subject: [PATCH 09/15] mmc: host: rtsx_pci_sdmmc: Remove set but unused variable 'err'
-Date:   Wed,  1 Jul 2020 13:46:56 +0100
-Message-Id: <20200701124702.908713-10-lee.jones@linaro.org>
+        Roger Tseng <rogerable@realtek.com>
+Subject: [PATCH 10/15] mmc: host: rtsx_usb_sdmmc: Remove set but unused variable 'err'
+Date:   Wed,  1 Jul 2020 13:46:57 +0100
+Message-Id: <20200701124702.908713-11-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200701124702.908713-1-lee.jones@linaro.org>
 References: <20200701124702.908713-1-lee.jones@linaro.org>
@@ -74,32 +74,33 @@ the assignment and definition of 'err'.
 
 Squashes the following W=1 kernel build warning:
 
- drivers/mmc/host/rtsx_pci_sdmmc.c: In function ‘sd_wait_data_idle’:
- drivers/mmc/host/rtsx_pci_sdmmc.c:678:6: warning: variable ‘err’ set but not used [-Wunused-but-set-variable]
- 678 | int err, i;
+ drivers/mmc/host/rtsx_usb_sdmmc.c: In function ‘sd_wait_data_idle’:
+ drivers/mmc/host/rtsx_usb_sdmmc.c:657:6: warning: variable ‘err’ set but not used [-Wunused-but-set-variable]
+ 657 | int err, i;
  | ^~~
 
-Cc: Wei WANG <wei_wang@realsil.com.cn>
+Cc: Roger Tseng <rogerable@realtek.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mmc/host/rtsx_pci_sdmmc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mmc/host/rtsx_usb_sdmmc.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
-index 5a71f6678fd3a..dc0dbd64a2a78 100644
---- a/drivers/mmc/host/rtsx_pci_sdmmc.c
-+++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
-@@ -675,11 +675,11 @@ static u8 sd_search_final_phase(struct realtek_pci_sdmmc *host, u32 phase_map)
+diff --git a/drivers/mmc/host/rtsx_usb_sdmmc.c b/drivers/mmc/host/rtsx_usb_sdmmc.c
+index a7084c50ad65f..7225d9312af8c 100644
+--- a/drivers/mmc/host/rtsx_usb_sdmmc.c
++++ b/drivers/mmc/host/rtsx_usb_sdmmc.c
+@@ -654,12 +654,11 @@ static u8 sd_search_final_phase(struct rtsx_usb_sdmmc *host, u32 phase_map)
  
- static void sd_wait_data_idle(struct realtek_pci_sdmmc *host)
+ static void sd_wait_data_idle(struct rtsx_usb_sdmmc *host)
  {
 -	int err, i;
 +	int i;
  	u8 val = 0;
  
  	for (i = 0; i < 100; i++) {
--		err = rtsx_pci_read_register(host->pcr, SD_DATA_STATE, &val);
-+		rtsx_pci_read_register(host->pcr, SD_DATA_STATE, &val);
+-		err = rtsx_usb_ep0_read_register(host->ucr,
+-				SD_DATA_STATE, &val);
++		rtsx_usb_ep0_read_register(host->ucr, SD_DATA_STATE, &val);
  		if (val & SD_DATA_IDLE)
  			return;
  
