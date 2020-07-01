@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7704210E44
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD080210E46
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731701AbgGAPCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1731684AbgGAPCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 1 Jul 2020 11:02:33 -0400
-Received: from first.geanix.com ([116.203.34.67]:51102 "EHLO first.geanix.com"
+Received: from first.geanix.com ([116.203.34.67]:51098 "EHLO first.geanix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731518AbgGAPCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727124AbgGAPCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 1 Jul 2020 11:02:31 -0400
+X-Greylist: delayed 329 seconds by postgrey-1.27 at vger.kernel.org; Wed, 01 Jul 2020 11:02:30 EDT
 Received: from localhost (unknown [193.163.1.7])
-        by first.geanix.com (Postfix) with ESMTPSA id 729292243300;
-        Wed,  1 Jul 2020 14:57:02 +0000 (UTC)
+        by first.geanix.com (Postfix) with ESMTPSA id C31832243302;
+        Wed,  1 Jul 2020 14:57:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1593615422; bh=bVYNtopJ04VZEaf1UkhnNm6KZD1lcCfOyd/wbyQDgnI=;
+        t=1593615423; bh=VCNbg8KAWx3WCHakE9UqNr62DnfO64KL9n8mC4ADfdA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=NLm6qUfcMrMT4EehNEWaUPrLuDhC8zyspMuBJU9QwcTvAemifn1RvwhhwMitCk0zr
-         GgiGxWTn1JOAtERQaQf9KTU15nqXOfcWkbPeM/wv+FsG3EPJ0A3W3Q/lI7WUve0Vrb
-         7ZfI3flAT/xFC0Hw8vzg/ekNLBbgP0JpGVWZ+kcvqw1Cd21vCZ9GQMKxzyET1Sm1o6
-         a2GfNkHiSnPY/g9CoBiy247z52+DVhXuu7HYEQ/XQWo3FH2mxXAHy9iYZjAENcE8lG
-         vvXw44LtkK6eBQNqJG0MUSCyZYngP92kOVsu8ozyrT6qCS3G1zMdRYEcqEBTQisIXE
-         YqILsh30udQGg==
+        b=bPdVAqgYWpxE6wwb4vEtZS+OtqJwEKf5eE6nTdMnUSvsDTCyw6OP0RObYaOhHB85i
+         nKSq80rAZ/3yjwYkkjg15qL1g9YYNHtaIUdR6lC7TFprTbHH5bg8TKtbqujzDv2LI6
+         i2L4jNoiYQPKCbPn1bbm9bfgyuKX2rfNWQz+HSxqVQi6Fhh8im84+f/BmG0dwAIAXy
+         RWqDLe2MjsACnEXWHwqRQWDnye53fgpVxNxHwrGBgN1o0hpl06vkbI23laZ/18u8oO
+         9inM496APTLIC180EC48nYmpMDkzYdLyYQ2UWY5PkHRiDmXiVuiuIeP9jh1KAet09I
+         35BRCZFMlMmkg==
 From:   Esben Haabendal <esben@geanix.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH 2/3] uio_pdrv_genirq: fix use without device tree and no interrupt
-Date:   Wed,  1 Jul 2020 16:56:58 +0200
-Message-Id: <20200701145659.3978-3-esben@geanix.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 3/3] uio_pdrv_genirq: Allow use with non-page-aligned memory resources
+Date:   Wed,  1 Jul 2020 16:56:59 +0200
+Message-Id: <20200701145659.3978-4-esben@geanix.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200701145659.3978-1-esben@geanix.com>
 References: <20200701145659.3978-1-esben@geanix.com>
@@ -43,38 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While e3a3c3a20555 ("UIO: fix uio_pdrv_genirq with device tree but no
-interrupt") added support for using uio_pdrv_genirq for devices without
-interrupt for device tree platforms, the removal of uio_pdrv in
-26dac3c49d56 ("uio: Remove uio_pdrv and use uio_pdrv_genirq instead")
-broke the support for non device tree platforms.
+Similar to the changes made in 270579d95f82 ("uio_mf624: Align memory
+regions to page size and set correct offsets"), this will allow
+uio_pdrv_genirq devices to expose memory regions that is not page-aligned,
+requiring the users to respect the offset sysfs attribute (as implemented
+in libuio).
 
-This change fixes this, so that uio_pdrv_genirq can be used without
-interrupt on all platforms.
-
-This still leaves the support that uio_pdrv had for custom interrupt
-handler lacking, as uio_pdrv_genirq does not handle it (yet).
-
-Fixes: 26dac3c49d56 ("uio: Remove uio_pdrv and use uio_pdrv_genirq instead")
 Signed-off-by: Esben Haabendal <esben@geanix.com>
-Cc: stable@vger.kernel.org
 ---
- drivers/uio/uio_pdrv_genirq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/uio/uio_pdrv_genirq.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/uio/uio_pdrv_genirq.c b/drivers/uio/uio_pdrv_genirq.c
-index 1d69dd49c6d2..b60173bc93ce 100644
+index b60173bc93ce..86f75a4fe0e3 100644
 --- a/drivers/uio/uio_pdrv_genirq.c
 +++ b/drivers/uio/uio_pdrv_genirq.c
-@@ -161,7 +161,7 @@ static int uio_pdrv_genirq_probe(struct platform_device *pdev)
- 	if (!uioinfo->irq) {
- 		ret = platform_get_irq_optional(pdev, 0);
- 		uioinfo->irq = ret;
--		if (ret == -ENXIO && pdev->dev.of_node)
-+		if (ret == -ENXIO)
- 			uioinfo->irq = UIO_IRQ_NONE;
- 		else if (ret == -EPROBE_DEFER)
- 			return ret;
+@@ -187,8 +187,10 @@ static int uio_pdrv_genirq_probe(struct platform_device *pdev)
+ 		}
+ 
+ 		uiomem->memtype = UIO_MEM_PHYS;
+-		uiomem->addr = r->start;
+-		uiomem->size = resource_size(r);
++		uiomem->addr = r->start & PAGE_MASK;
++		uiomem->offs = r->start & ~PAGE_MASK;
++		uiomem->size = (uiomem->offs + resource_size(r)
++				+ PAGE_SIZE - 1) & PAGE_MASK;
+ 		uiomem->name = r->name;
+ 		++uiomem;
+ 	}
 -- 
 2.4.11
 
