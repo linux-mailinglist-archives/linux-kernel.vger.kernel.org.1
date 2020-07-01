@@ -2,67 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA56421025C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 05:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A923210260
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 05:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbgGADK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 23:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58048 "EHLO
+        id S1726726AbgGADLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 23:11:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgGADK2 (ORCPT
+        with ESMTP id S1726035AbgGADL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 23:10:28 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18EBC03E979
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 20:10:27 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id v19so17358770qtq.10
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 20:10:27 -0700 (PDT)
+        Tue, 30 Jun 2020 23:11:29 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90AEDC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 20:11:29 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id b185so10286674qkg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 20:11:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=lsG0/vZrFsbUfKMaszn0w2LlEErj8aBW/8Ir/pz3OGU=;
-        b=k2b3NgAcITe6TyGQHN9BCCJhiQXvuAoeVzfKtvyoSmJgWi8jJF0AMFjlTCh3kwIv+X
-         haarJdYqFvdWs3JzwZBovese0hmZb5eKO8olFoXh8krhzwPKD+22sHoW+zu2hHq6A9NA
-         MqqElaJZeyXyqlV+mPCmIJrZIUwkj3WYL9YngExLzxBkl7s2k5aUT5/U2ONFWf+6Fgxz
-         H6BSC0sjIx6bDb5Pj6Ud57QK3GH9iksxg0GSk9JyMOHZDAT69Yr6Y3XCYmpFM51CVwfA
-         d3QmrhfH/PnJqSnM8PXxc+Q74T1PbSs8u2BiJlTg8wMRO+sUc6NcSkkymgP20aZ7b1JB
-         v4mA==
+        bh=lPKcsn1Zg7byMoVV6H8vhXEqRTFirUJz5P7vuG1x+2o=;
+        b=SawHkKa/kuqLOkRUBkvd8HoYa9gml32y4fAI3rpF/uzqhtlUwhUqBi8NemMpM7NfiG
+         rU2R+qjmF65r98Xkm7raD2/qmh71x5R+vkhQuv/a296LccDmG6MWwEMVYnukMiAKin/3
+         Pd+N1xuniy/hXXCqxxrUr75pEABwzRr6u+ar/0OkaDQhAi1o1ddZe+h8wlwENpJmkbCf
+         kNLbYzC6KzVwPPIvBR1oqXT0T6k6o4Ls8/JRRcxyFKKO6KCTaN4qp7dK7QGonljLmyqQ
+         Lui1NDOyvqZ0G3agm+1Bwc5AVU89OKTbcBiDRCH9Wwev5Raa4rKXNCED80HjVLE4esv/
+         +8tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=lsG0/vZrFsbUfKMaszn0w2LlEErj8aBW/8Ir/pz3OGU=;
-        b=SKiiLo4W9Xddgo31amhIXJEVnPFu3ftyRRdZwPPhaam2efBpprFy4KPZD8y+9cEBlx
-         SXhyQtJitIAo0/PL1AQuV87BNc3nehnyhO2ik++1Cda1+6vxas2IJkPcSarafEI5xZMe
-         I6mJmmIimll78zI96fh9LgFWSHPkCgE9W4TZvs7gEkOqGl/ExcdAmy1YzcW7naCDyDCC
-         OqtpLi8Y/sAEW1mNgCT1vZusvvlDsrxEOs1HQhLceAemCd3LwBpaUAwEtrXAqEzjjghB
-         MjKAhSGvbNzfZK8FfFxFB/wSoek6wlb3MpKvysnWI2+H5jqPfN6mEZs6btnxHrh0MFLP
-         xuMw==
-X-Gm-Message-State: AOAM532tTXFj+QnEMuxJR0cvacF4pgqh8PvH5DQX0cKST77du9c2Di9/
-        a90uetD6DPdonK/qJue2NeTe2w==
-X-Google-Smtp-Source: ABdhPJxC8b4XsFFiHjxlqHTC3hjSOcLyAEEBDq59JntLmlgh6Yq4M83KNcLLHHfgnTn8UXfVaA2mvw==
-X-Received: by 2002:ac8:5048:: with SMTP id h8mr23325058qtm.81.1593573026817;
-        Tue, 30 Jun 2020 20:10:26 -0700 (PDT)
+        bh=lPKcsn1Zg7byMoVV6H8vhXEqRTFirUJz5P7vuG1x+2o=;
+        b=KUI7J480lazITims4S2KDBQDBqRmmZiIs7Udsuxe9Rj3RVNPzJGxeN6BEtN8N8DGaq
+         5483VHuI3bwBLxH6Xo7zVYuJjXOtQxRr7NnwWf2jP+fZs1cjvcmlOk+vNpT6Aid0c79h
+         7Zt6fKPjYCq/CPHo79Z3NdwHc7RWR1MRDR0N5NjvX+sUpekoelFvHXoeB/lsk4o6DZjB
+         4zLNUSxzhK/htzfTSwAdPtKyZfawlDKZZAZaP5nnoP1w1oJRN/DK0jYCOjcaD9yzlSpb
+         r6wbapbiA/vzykQji7zmMcXvtwehtWxlW7+FQe+4yMIs5QignNWpZciEFiDRcduI8NgH
+         M9tg==
+X-Gm-Message-State: AOAM5303hHQiwJmbAZDpoxZU2bxIqIOsWDCv2Z4srNPqSQkHeKS4/WkW
+        mef1+KQBCzc6fbPKS/ZWaqJm9w==
+X-Google-Smtp-Source: ABdhPJxWhEMsOmrKUaIJxfYdW3ssU1UbLHlNNxkCQp8/6PkQ9tPWrmggcT57mh7M1RuZuG/g7eOfDg==
+X-Received: by 2002:a37:b83:: with SMTP id 125mr22257396qkl.96.1593573088847;
+        Tue, 30 Jun 2020 20:11:28 -0700 (PDT)
 Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id r188sm4436866qkf.128.2020.06.30.20.10.25
+        by smtp.gmail.com with ESMTPSA id d14sm4728530qti.41.2020.06.30.20.11.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 20:10:26 -0700 (PDT)
+        Tue, 30 Jun 2020 20:11:28 -0700 (PDT)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     freedreno@lists.freedesktop.org
 Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         Jordan Crouse <jcrouse@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Brian Masney <masneyb@onstation.org>,
-        Fabio Estevam <festevam@gmail.com>,
+        kbuild test robot <lkp@intel.com>,
         linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
         dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
         GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm: handle for EPROBE_DEFER for of_icc_get
-Date:   Tue, 30 Jun 2020 23:08:41 -0400
-Message-Id: <20200701030842.24395-1-jonathan@marek.ca>
+Subject: [PATCH] drm/msm/a6xx: add build_bw_table for A640/A650
+Date:   Tue, 30 Jun 2020 23:09:57 -0400
+Message-Id: <20200701030958.24466-1-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -71,80 +69,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check for EPROBE_DEFER instead of silently not using icc if the msm driver
-probes before the interconnect driver.
+This sets up bw tables for A640/A650 similar to A618/A630, 0 DDR bandwidth
+vote, and the CNOC vote. A640 has the same CNOC addresses as A630 and was
+working, but this is required for A650 to work.
 
-Only check for EPROBE_DEFER because of_icc_get can return other errors that
-we want to ignore (ENODATA).
-
-Remove the WARN_ON in msm_gpu_cleanup because INIT_LIST_HEAD won't have
-been called on the list yet when going through the defer error path.
+Eventually the bw table should be filled by querying the interconnect
+driver for each BW in the dts, but use these dummy tables for now.
 
 Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 ---
- drivers/gpu/drm/msm/adreno/adreno_gpu.c | 17 ++++++++++++++---
- drivers/gpu/drm/msm/msm_gpu.c           |  2 --
- 2 files changed, 14 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/msm/adreno/a6xx_hfi.c | 74 +++++++++++++++++++++++++++
+ 1 file changed, 74 insertions(+)
 
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-index 89673c7ed473..393c00425d68 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-@@ -940,12 +940,20 @@ static int adreno_get_pwrlevels(struct device *dev,
- 		 */
- 		gpu->icc_path = of_icc_get(dev, NULL);
- 	}
--	if (IS_ERR(gpu->icc_path))
-+	if (IS_ERR(gpu->icc_path)) {
-+		ret = PTR_ERR(gpu->icc_path);
- 		gpu->icc_path = NULL;
-+		if (ret == -EPROBE_DEFER)
-+			return ret;
-+	}
- 
- 	gpu->ocmem_icc_path = of_icc_get(dev, "ocmem");
--	if (IS_ERR(gpu->ocmem_icc_path))
-+	if (IS_ERR(gpu->ocmem_icc_path)) {
-+		ret = PTR_ERR(gpu->ocmem_icc_path);
- 		gpu->ocmem_icc_path = NULL;
-+		if (ret == -EPROBE_DEFER)
-+			return ret;
-+	}
- 
- 	return 0;
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_hfi.c b/drivers/gpu/drm/msm/adreno/a6xx_hfi.c
+index 9921e632f1ca..ccd44d0418f8 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_hfi.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_hfi.c
+@@ -281,6 +281,76 @@ static void a618_build_bw_table(struct a6xx_hfi_msg_bw_table *msg)
+ 	msg->cnoc_cmds_data[1][0] =  0x60000001;
  }
-@@ -996,6 +1004,7 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
- 	struct adreno_platform_config *config = pdev->dev.platform_data;
- 	struct msm_gpu_config adreno_gpu_config  = { 0 };
- 	struct msm_gpu *gpu = &adreno_gpu->base;
-+	int ret;
  
- 	adreno_gpu->funcs = funcs;
- 	adreno_gpu->info = adreno_info(config->rev);
-@@ -1007,7 +1016,9 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
++static void a640_build_bw_table(struct a6xx_hfi_msg_bw_table *msg)
++{
++	/*
++	 * Send a single "off" entry just to get things running
++	 * TODO: bus scaling
++	 */
++	msg->bw_level_num = 1;
++
++	msg->ddr_cmds_num = 3;
++	msg->ddr_wait_bitmask = 0x01;
++
++	msg->ddr_cmds_addrs[0] = 0x50000;
++	msg->ddr_cmds_addrs[1] = 0x5003c;
++	msg->ddr_cmds_addrs[2] = 0x5000c;
++
++	msg->ddr_cmds_data[0][0] =  0x40000000;
++	msg->ddr_cmds_data[0][1] =  0x40000000;
++	msg->ddr_cmds_data[0][2] =  0x40000000;
++
++	/*
++	 * These are the CX (CNOC) votes - these are used by the GMU but the
++	 * votes are known and fixed for the target
++	 */
++	msg->cnoc_cmds_num = 3;
++	msg->cnoc_wait_bitmask = 0x01;
++
++	msg->cnoc_cmds_addrs[0] = 0x50034;
++	msg->cnoc_cmds_addrs[1] = 0x5007c;
++	msg->cnoc_cmds_addrs[2] = 0x5004c;
++
++	msg->cnoc_cmds_data[0][0] =  0x40000000;
++	msg->cnoc_cmds_data[0][1] =  0x00000000;
++	msg->cnoc_cmds_data[0][2] =  0x40000000;
++
++	msg->cnoc_cmds_data[1][0] =  0x60000001;
++	msg->cnoc_cmds_data[1][1] =  0x20000001;
++	msg->cnoc_cmds_data[1][2] =  0x60000001;
++}
++
++static void a650_build_bw_table(struct a6xx_hfi_msg_bw_table *msg)
++{
++	/*
++	 * Send a single "off" entry just to get things running
++	 * TODO: bus scaling
++	 */
++	msg->bw_level_num = 1;
++
++	msg->ddr_cmds_num = 3;
++	msg->ddr_wait_bitmask = 0x01;
++
++	msg->ddr_cmds_addrs[0] = 0x50000;
++	msg->ddr_cmds_addrs[1] = 0x50004;
++	msg->ddr_cmds_addrs[2] = 0x5007c;
++
++	msg->ddr_cmds_data[0][0] =  0x40000000;
++	msg->ddr_cmds_data[0][1] =  0x40000000;
++	msg->ddr_cmds_data[0][2] =  0x40000000;
++
++	/*
++	 * These are the CX (CNOC) votes - these are used by the GMU but the
++	 * votes are known and fixed for the target
++	 */
++	msg->cnoc_cmds_num = 1;
++	msg->cnoc_wait_bitmask = 0x01;
++
++	msg->cnoc_cmds_addrs[0] = 0x500a4;
++	msg->cnoc_cmds_data[0][0] =  0x40000000;
++	msg->cnoc_cmds_data[1][0] =  0x60000001;
++}
++
+ static void a6xx_build_bw_table(struct a6xx_hfi_msg_bw_table *msg)
+ {
+ 	/* Send a single "off" entry since the 630 GMU doesn't do bus scaling */
+@@ -327,6 +397,10 @@ static int a6xx_hfi_send_bw_table(struct a6xx_gmu *gmu)
  
- 	adreno_gpu_config.nr_rings = nr_rings;
+ 	if (adreno_is_a618(adreno_gpu))
+ 		a618_build_bw_table(&msg);
++	else if (adreno_is_a640(adreno_gpu))
++		a640_build_bw_table(&msg);
++	else if (adreno_is_a650(adreno_gpu))
++		a650_build_bw_table(&msg);
+ 	else
+ 		a6xx_build_bw_table(&msg);
  
--	adreno_get_pwrlevels(&pdev->dev, gpu);
-+	ret = adreno_get_pwrlevels(&pdev->dev, gpu);
-+	if (ret)
-+		return ret;
- 
- 	pm_runtime_set_autosuspend_delay(&pdev->dev,
- 		adreno_gpu->info->inactive_period);
-diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-index a22d30622306..ccf9a0dd9706 100644
---- a/drivers/gpu/drm/msm/msm_gpu.c
-+++ b/drivers/gpu/drm/msm/msm_gpu.c
-@@ -959,8 +959,6 @@ void msm_gpu_cleanup(struct msm_gpu *gpu)
- 
- 	DBG("%s", gpu->name);
- 
--	WARN_ON(!list_empty(&gpu->active_list));
--
- 	for (i = 0; i < ARRAY_SIZE(gpu->rb); i++) {
- 		msm_ringbuffer_destroy(gpu->rb[i]);
- 		gpu->rb[i] = NULL;
 -- 
 2.26.1
 
