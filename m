@@ -2,149 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A637B2107C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1ADE2107B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728967AbgGAJNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 05:13:31 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:37644 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726715AbgGAJNb (ORCPT
+        id S1729538AbgGAJK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 05:10:29 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:51060 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729087AbgGAJK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 05:13:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593594809;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ANjSp1CGZSsGz6Jj2Dxzgjt9bQwE2jGuP+C3WvRPMLM=;
-        b=DK2XChVbBzQSUMziLJZ/gzur00uyarb+Vz2bfZDMxmF4XE2+XAl8fi/9ojsP6FbT9EJgui
-        +Q7R4Sa/q2nbEs6G/jA7AScaJmwamff75bZcg/xULlsOYdK7v+f5tf1agJ7Ec6Nmxp/pyh
-        GxNDmFCjSpok6j+FDBs3Pr/o+5e7a3g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-485-yv45vbF_PWiasw5_gEzo8Q-1; Wed, 01 Jul 2020 05:13:26 -0400
-X-MC-Unique: yv45vbF_PWiasw5_gEzo8Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 1 Jul 2020 05:10:29 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 516B6BFC0;
-        Wed,  1 Jul 2020 09:13:24 +0000 (UTC)
-Received: from jason-ThinkPad-X1-Carbon-6th.redhat.com (ovpn-13-177.pek2.redhat.com [10.72.13.177])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E08CD9035F;
-        Wed,  1 Jul 2020 09:12:02 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     rob.miller@broadcom.com, lingshan.zhu@intel.com,
-        eperezma@redhat.com, lulu@redhat.com, shahafs@mellanox.com,
-        hanand@xilinx.com, mhabets@solarflare.com, gdawar@xilinx.com,
-        saugatm@xilinx.com, vmireyno@marvell.com,
-        zhangweining@ruijie.com.cn, eli@mellanox.com,
-        Jason Wang <jasowang@redhat.com>
-Subject: [PATCH 5/5] vdpasim: support batch updating
-Date:   Wed,  1 Jul 2020 17:08:39 +0800
-Message-Id: <20200701090839.12994-6-jasowang@redhat.com>
-In-Reply-To: <20200701090839.12994-1-jasowang@redhat.com>
-References: <20200701090839.12994-1-jasowang@redhat.com>
+        by asavdk4.altibox.net (Postfix) with ESMTPS id ABAC480503;
+        Wed,  1 Jul 2020 11:10:22 +0200 (CEST)
+Date:   Wed, 1 Jul 2020 11:10:21 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Guenter Roeck <linux@roeck-us.net>, g@ravnborg.org
+Cc:     Joel Stanley <joel@jms.id.au>, linux-aspeed@lists.ozlabs.org,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Andrew Jeffery <andrew@aj.id.au>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] drm/aspeed: Call drm_fbdev_generic_setup after
+ drm_dev_register
+Message-ID: <20200701091021.GA266726@ravnborg.org>
+References: <20200701001002.74997-1-linux@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200701001002.74997-1-linux@roeck-us.net>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=aP3eV41m c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=_jlGtV7tAAAA:8 a=7gkXJVJtAAAA:8 a=e5mUnYsNAAAA:8
+        a=nW2F_NLVUAjoHKN5T9EA:9 a=CjuIK1q_8ugA:10 a=nlm17XC03S6CtCLSeiRr:22
+        a=E9Po1WZjFZOl8hwRPBS3:22 a=Vxmtnl_E_bksehYqCbjh:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vDPA simulator support both set_map() and dma_map()/dma_unmap()
-operations. But vhost-vdpa can only use one of them. So this patch
-introduce a module parameter (batch_mapping) that let vpda_sim to
-support only one of those dma operations. The batched mapping via
-set_map() is enabled by default.
+Hi Guenter.
 
-Signed-off-by: Jason Wang <jasowang@redhat.com>
----
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 40 +++++++++++++++++++++++++++++---
- 1 file changed, 37 insertions(+), 3 deletions(-)
+On Tue, Jun 30, 2020 at 05:10:02PM -0700, Guenter Roeck wrote:
+> The following backtrace is seen when running aspeed G5 kernels.
+> 
+> WARNING: CPU: 0 PID: 1 at drivers/gpu/drm/drm_fb_helper.c:2233 drm_fbdev_generic_setup+0x138/0x198
+> aspeed_gfx 1e6e6000.display: Device has not been registered.
+> CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.8.0-rc3 #1
+> Hardware name: Generic DT based system
+> Backtrace:
+> [<8010d6d0>] (dump_backtrace) from [<8010d9b8>] (show_stack+0x20/0x24)
+> r7:00000009 r6:60000153 r5:00000000 r4:8119fa94
+> [<8010d998>] (show_stack) from [<80b8cb98>] (dump_stack+0xcc/0xec)
+> [<80b8cacc>] (dump_stack) from [<80123ef0>] (__warn+0xd8/0xfc)
+> r7:00000009 r6:80e62ed0 r5:00000000 r4:974c3ccc
+> [<80123e18>] (__warn) from [<80123f98>] (warn_slowpath_fmt+0x84/0xc4)
+> r9:00000009 r8:806a0140 r7:000008b9 r6:80e62ed0 r5:80e631f8 r4:974c2000
+> [<80123f18>] (warn_slowpath_fmt) from [<806a0140>] (drm_fbdev_generic_setup+0x138/0x198)
+> r9:00000001 r8:9758fc10 r7:9758fc00 r6:00000000 r5:00000020 r4:9768a000
+> [<806a0008>] (drm_fbdev_generic_setup) from [<806d4558>] (aspeed_gfx_probe+0x204/0x32c)
+> r7:9758fc00 r6:00000000 r5:00000000 r4:9768a000
+> [<806d4354>] (aspeed_gfx_probe) from [<806dfca0>] (platform_drv_probe+0x58/0xa8)
+> 
+> Since commit 1aed9509b29a6 ("drm/fb-helper: Remove return value from
+> drm_fbdev_generic_setup()"), drm_fbdev_generic_setup() must be called
+> after drm_dev_register() to avoid the warning. Do that.
+> 
+> Fixes: 1aed9509b29a6 ("drm/fb-helper: Remove return value from drm_fbdev_generic_setup()")
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index c7334cc65bb2..a7a0962ed8a8 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -33,6 +33,10 @@
- #define DRV_DESC     "vDPA Device Simulator"
- #define DRV_LICENSE  "GPL v2"
- 
-+static int batch_mapping = 1;
-+module_param(batch_mapping, int, 0444);
-+MODULE_PARM_DESC(batch_mapping, "Batched mapping 1 -Enable; 0 - Disable");
-+
- struct vdpasim_virtqueue {
- 	struct vringh vring;
- 	struct vringh_kiov iov;
-@@ -303,16 +307,22 @@ static const struct dma_map_ops vdpasim_dma_ops = {
- };
- 
- static const struct vdpa_config_ops vdpasim_net_config_ops;
-+static const struct vdpa_config_ops vdpasim_net_batch_config_ops;
- 
- static struct vdpasim *vdpasim_create(void)
- {
-+	const struct vdpa_config_ops *ops;
- 	struct virtio_net_config *config;
- 	struct vdpasim *vdpasim;
- 	struct device *dev;
- 	int ret = -ENOMEM;
- 
--	vdpasim = vdpa_alloc_device(struct vdpasim, vdpa, NULL,
--				    &vdpasim_net_config_ops);
-+	if (batch_mapping)
-+		ops = &vdpasim_net_batch_config_ops;
-+	else
-+		ops = &vdpasim_net_config_ops;
-+
-+	vdpasim = vdpa_alloc_device(struct vdpasim, vdpa, NULL, ops);
- 	if (!vdpasim)
- 		goto err_alloc;
- 
-@@ -597,12 +607,36 @@ static const struct vdpa_config_ops vdpasim_net_config_ops = {
- 	.get_config             = vdpasim_get_config,
- 	.set_config             = vdpasim_set_config,
- 	.get_generation         = vdpasim_get_generation,
--	.set_map                = vdpasim_set_map,
- 	.dma_map                = vdpasim_dma_map,
- 	.dma_unmap              = vdpasim_dma_unmap,
- 	.free                   = vdpasim_free,
- };
- 
-+static const struct vdpa_config_ops vdpasim_net_batch_config_ops = {
-+	.set_vq_address         = vdpasim_set_vq_address,
-+	.set_vq_num             = vdpasim_set_vq_num,
-+	.kick_vq                = vdpasim_kick_vq,
-+	.set_vq_cb              = vdpasim_set_vq_cb,
-+	.set_vq_ready           = vdpasim_set_vq_ready,
-+	.get_vq_ready           = vdpasim_get_vq_ready,
-+	.set_vq_state           = vdpasim_set_vq_state,
-+	.get_vq_state           = vdpasim_get_vq_state,
-+	.get_vq_align           = vdpasim_get_vq_align,
-+	.get_features           = vdpasim_get_features,
-+	.set_features           = vdpasim_set_features,
-+	.set_config_cb          = vdpasim_set_config_cb,
-+	.get_vq_num_max         = vdpasim_get_vq_num_max,
-+	.get_device_id          = vdpasim_get_device_id,
-+	.get_vendor_id          = vdpasim_get_vendor_id,
-+	.get_status             = vdpasim_get_status,
-+	.set_status             = vdpasim_set_status,
-+	.get_config             = vdpasim_get_config,
-+	.set_config             = vdpasim_set_config,
-+	.get_generation         = vdpasim_get_generation,
-+	.set_map                = vdpasim_set_map,
-+	.free                   = vdpasim_free,
-+};
-+
- static int __init vdpasim_dev_init(void)
- {
- 	vdpasim_dev = vdpasim_create();
--- 
-2.20.1
+I thought we had this fixed already - but could not find the patch.
+Must have been another driver then.
 
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
+
+I assume Joel Stanley will pick up this patch.
+
+	Sam
+
+> ---
+>  drivers/gpu/drm/aspeed/aspeed_gfx_drv.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
+> index 6b27242b9ee3..bca3fcff16ec 100644
+> --- a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
+> +++ b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
+> @@ -173,8 +173,6 @@ static int aspeed_gfx_load(struct drm_device *drm)
+>  
+>  	drm_mode_config_reset(drm);
+>  
+> -	drm_fbdev_generic_setup(drm, 32);
+> -
+>  	return 0;
+>  }
+>  
+> @@ -225,6 +223,7 @@ static int aspeed_gfx_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto err_unload;
+>  
+> +	drm_fbdev_generic_setup(&priv->drm, 32);
+>  	return 0;
+>  
+>  err_unload:
+> -- 
+> 2.17.1
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
