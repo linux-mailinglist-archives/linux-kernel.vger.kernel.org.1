@@ -2,100 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E1D2111D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 19:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F85D2111D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 19:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732594AbgGARUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 13:20:49 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44329 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726432AbgGARUs (ORCPT
+        id S1732746AbgGARVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 13:21:51 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:39070 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726432AbgGARVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 13:20:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593624047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=jwLHgKRr0xCpf9rk2C/KLIQVKmaCEwU7VXYHf/GlC48=;
-        b=Qno/W7pt9EJliSLV5aLU0Z27gowklt4hSnO3xOchTLKME+isxXdA9pZUKUKv24CN4zeV8N
-        F8NfLI48rKY2QsTGch5l0GDPkbt0fN4hwFrfBGmiDw5jSlvd7lQZWIyxjnDJVVkGgcv/Xa
-        tbswpCgBpV+gykfb02ifzj1mErM92CQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-389-8w-8z3phOLOsMhUMAseRcg-1; Wed, 01 Jul 2020 13:20:46 -0400
-X-MC-Unique: 8w-8z3phOLOsMhUMAseRcg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 93EDA80183C;
-        Wed,  1 Jul 2020 17:20:44 +0000 (UTC)
-Received: from npache.remote.csb (ovpn-113-77.rdu2.redhat.com [10.10.113.77])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A67CF100238C;
-        Wed,  1 Jul 2020 17:20:43 +0000 (UTC)
-From:   Nico Pache <npache@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-crypto@vger.kernel.org, steffen.klassert@secunet.com,
-        daniel.m.jordan@oracle.com, npache@redhat.com
-Subject: [PATCH] Remove __init from padata_do_multithreaded and padata_mt_helper
-Date:   Wed,  1 Jul 2020 13:20:26 -0400
-Message-Id: <20200701172026.14426-1-npache@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Wed, 1 Jul 2020 13:21:50 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=yang.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U1PXvC4_1593624102;
+Received: from US-143344MP.local(mailfrom:yang.shi@linux.alibaba.com fp:SMTPD_---0U1PXvC4_1593624102)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 02 Jul 2020 01:21:44 +0800
+Subject: Re: [RFC][PATCH 3/8] mm/vmscan: Attempt to migrate page in lieu of
+ discard
+To:     David Rientjes <rientjes@google.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kbusch@kernel.org, ying.huang@intel.com, dan.j.williams@intel.com
+References: <20200629234503.749E5340@viggo.jf.intel.com>
+ <20200629234509.8F89C4EF@viggo.jf.intel.com>
+ <alpine.DEB.2.22.394.2006301732010.1644114@chino.kir.corp.google.com>
+ <039a5704-4468-f662-d660-668071842ca3@linux.alibaba.com>
+ <alpine.DEB.2.22.394.2006302208460.1685201@chino.kir.corp.google.com>
+From:   Yang Shi <yang.shi@linux.alibaba.com>
+Message-ID: <33028a57-24fd-e618-7d89-5f35a35a6314@linux.alibaba.com>
+Date:   Wed, 1 Jul 2020 10:21:24 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:52.0)
+ Gecko/20100101 Thunderbird/52.7.0
+MIME-Version: 1.0
+In-Reply-To: <alpine.DEB.2.22.394.2006302208460.1685201@chino.kir.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow padata_do_multithreaded function to be called after bootstrap.
 
-Signed-off-by: Nico Pache <npache@redhat.com>
----
- include/linux/padata.h | 2 +-
- kernel/padata.c        | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/padata.h b/include/linux/padata.h
-index 7302efff5..2e7d92e80 100644
---- a/include/linux/padata.h
-+++ b/include/linux/padata.h
-@@ -201,7 +201,7 @@ extern void padata_free_shell(struct padata_shell *ps);
- extern int padata_do_parallel(struct padata_shell *ps,
- 			      struct padata_priv *padata, int *cb_cpu);
- extern void padata_do_serial(struct padata_priv *padata);
--extern void __init padata_do_multithreaded(struct padata_mt_job *job);
-+extern void padata_do_multithreaded(struct padata_mt_job *job);
- extern int padata_set_cpumask(struct padata_instance *pinst, int cpumask_type,
- 			      cpumask_var_t cpumask);
- extern int padata_start(struct padata_instance *pinst);
-diff --git a/kernel/padata.c b/kernel/padata.c
-index 4373f7ada..2c0efab81 100644
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -58,7 +58,7 @@ struct padata_mt_job_state {
- };
- 
- static void padata_free_pd(struct parallel_data *pd);
--static void __init padata_mt_helper(struct work_struct *work);
-+static void padata_mt_helper(struct work_struct *work);
- 
- static int padata_index_to_cpu(struct parallel_data *pd, int cpu_index)
- {
-@@ -463,7 +463,7 @@ static int pd_setup_cpumasks(struct parallel_data *pd,
- 	return err;
- }
- 
--static void __init padata_mt_helper(struct work_struct *w)
-+static void padata_mt_helper(struct work_struct *w)
- {
- 	struct padata_work *pw = container_of(w, struct padata_work, pw_work);
- 	struct padata_mt_job_state *ps = pw->pw_data;
-@@ -503,7 +503,7 @@ static void __init padata_mt_helper(struct work_struct *w)
-  *
-  * See the definition of struct padata_mt_job for more details.
-  */
--void __init padata_do_multithreaded(struct padata_mt_job *job)
-+void padata_do_multithreaded(struct padata_mt_job *job)
- {
- 	/* In case threads finish at different times. */
- 	static const unsigned long load_balance_factor = 4;
--- 
-2.18.1
+On 6/30/20 10:41 PM, David Rientjes wrote:
+> On Tue, 30 Jun 2020, Yang Shi wrote:
+>
+>>>> From: Dave Hansen <dave.hansen@linux.intel.com>
+>>>>
+>>>> If a memory node has a preferred migration path to demote cold pages,
+>>>> attempt to move those inactive pages to that migration node before
+>>>> reclaiming. This will better utilize available memory, provide a faster
+>>>> tier than swapping or discarding, and allow such pages to be reused
+>>>> immediately without IO to retrieve the data.
+>>>>
+>>>> When handling anonymous pages, this will be considered before swap if
+>>>> enabled. Should the demotion fail for any reason, the page reclaim
+>>>> will proceed as if the demotion feature was not enabled.
+>>>>
+>>> Thanks for sharing these patches and kick-starting the conversation, Dave.
+>>>
+>>> Could this cause us to break a user's mbind() or allow a user to
+>>> circumvent their cpuset.mems?
+>>>
+>>> Because we don't have a mapping of the page back to its allocation
+>>> context (or the process context in which it was allocated), it seems like
+>>> both are possible.
+>> Yes, this could break the memory placement policy enforced by mbind and
+>> cpuset. I discussed this with Michal on mailing list and tried to find a way
+>> to solve it, but unfortunately it seems not easy as what you mentioned above.
+>> The memory policy and cpuset is stored in task_struct rather than mm_struct.
+>> It is not easy to trace back to task_struct from page (owner field of
+>> mm_struct might be helpful, but it depends on CONFIG_MEMCG and is not
+>> preferred way).
+>>
+> Yeah, and Ying made a similar response to this message.
+>
+> We can do this if we consider pmem not to be a separate memory tier from
+> the system perspective, however, but rather the socket perspective.  In
+> other words, a node can only demote to a series of exclusive pmem ranges
+> and promote to the same series of ranges in reverse order.  So DRAM node 0
+> can only demote to PMEM node 2 while DRAM node 1 can only demote to PMEM
+> node 3 -- a pmem range cannot be demoted to, or promoted from, more than
+> one DRAM node.
+>
+> This naturally takes care of mbind() and cpuset.mems if we consider pmem
+> just to be slower volatile memory and we don't need to deal with the
+> latency concerns of cross socket migration.  A user page will never be
+> demoted to a pmem range across the socket and will never be promoted to a
+> different DRAM node that it doesn't have access to.
+
+But I don't see too much benefit to limit the migration target to the 
+so-called *paired* pmem node. IMHO it is fine to migrate to a remote (on 
+a different socket) pmem node since even the cross socket access should 
+be much faster then refault or swap from disk.
+
+>
+> That can work with the NUMA abstraction for pmem, but it could also
+> theoretically be a new memory zone instead.  If all memory living on pmem
+> is migratable (the natural way that memory hotplug is done, so we can
+> offline), this zone would live above ZONE_MOVABLE.  Zonelist ordering
+> would determine whether we can allocate directly from this memory based on
+> system config or a new gfp flag that could be set for users of a mempolicy
+> that allows allocations directly from pmem.  If abstracted as a NUMA node
+> instead, interleave over nodes {0,2,3} or a cpuset.mems of {0,2,3} doesn't
+> make much sense.
+>
+> Kswapd would need to be enlightened for proper pgdat and pmem balancing
+> but in theory it should be simpler because it only has its own node to
+> manage.  Existing per-zone watermarks might be easy to use to fine tune
+> the policy from userspace: the scale factor determines how much memory we
+> try to keep free on DRAM for migration from pmem, for example.  We also
+> wouldn't have to deal with node hotplug or updating of demotion/promotion
+> node chains.
+>
+> Maybe the strongest advantage of the node abstraction is the ability to
+> use autonuma and migrate_pages()/move_pages() API for moving pages
+> explicitly?  Mempolicies could be used for migration to "top-tier" memory,
+> i.e. ZONE_NORMAL or ZONE_MOVABLE, instead.
+
+I think using pmem as a node is more natural than zone and less 
+intrusive since we can just reuse all the numa APIs. If we treat pmem as 
+a new zone I think the implementation may be more intrusive and 
+complicated (i.e. need a new gfp flag) and user can't control the memory 
+placement.
+
+Actually there had been such proposal before, please see 
+https://www.spinics.net/lists/linux-mm/msg151788.html
+
 
