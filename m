@@ -2,76 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9748D210646
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6653210666
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729077AbgGAIci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 04:32:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51586 "EHLO
+        id S1728857AbgGAIf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 04:35:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729047AbgGAIc3 (ORCPT
+        with ESMTP id S1728612AbgGAIf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 04:32:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B13C03E979;
-        Wed,  1 Jul 2020 01:32:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vXiGSDx0OBTNUoDDVLCHJpE3R5npVOLQYlpMjYD89gk=; b=qdapIMox4Ek2eTE/n0txbbOjGF
-        oJGKiOEgDQ9amafICkn7wMpGQazpixnCsCP9vzB1sWllWfYlQ8DIw/BDrv8it538xchboPP1a3fnT
-        /r7lFtLJtFEe6qnkJAw62zmPT8rzrymyJ0nyAnw3cv66pExz0H6f2mtFbMKtbsSNR4N0LR36rhtwO
-        F0i0ZUtDzzu+A9TrM/ZBHha+soKQAt4lO4WQQDJtMr2tjHFNu5+PkR/hO/DfBja+fSrsZGFpUIUZL
-        IBFfzOqiowRXWGc4J2ORzoUaahAdW3PFVchNzsU3fVXrakWnQC9lWtXr6awjsuselgLhI1YRCo/YC
-        rWe3CgMQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jqYAK-0006UI-BJ; Wed, 01 Jul 2020 08:32:24 +0000
-Date:   Wed, 1 Jul 2020 09:32:24 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Eric Sandeen <sandeen@sandeen.net>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Eric Sandeen <sandeen@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH] doc: cgroup: add f2fs and xfs to supported list for
- writeback
-Message-ID: <20200701083224.GI20101@infradead.org>
-References: <c8271324-9132-388c-5242-d7699f011892@redhat.com>
- <20200630054217.GA27221@infradead.org>
- <59265a9d-ee0f-4432-3f86-00d076aeb8e8@sandeen.net>
+        Wed, 1 Jul 2020 04:35:56 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A922FC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 01:35:56 -0700 (PDT)
+Date:   Wed, 1 Jul 2020 10:35:53 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1593592555;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LFia8MivRxV7u9Ly6ju5ELq3Qzf1QD4CMLWdNVkzCTM=;
+        b=M6i/pD9i9uXW4Ed/VrVjoYK97wsCG31H7MLC65pLZje9vH+B0vh/7I0/fWOlA0EQPJKqGF
+        u0INOzb7FB2MfEUFshoyi/4RflPRIWNnfmR0iBlVB19XkAIFg9+DSdcVKy5dqVeXRqsUS0
+        LKG9Ag62MFiUaIdpoqHbapFGyMDIr6lOfMvhyxcf/3H3kaY/cZlg8z1p0kVR3i6BncEVdI
+        egpJkTr1YQO7+/5zqJiu7KbcQnooMSpUw+VO+w+/bX+CIyA3qjAUprhMg82FbDDjBTwuZg
+        wRjVMAfIh4eXCJJrl5fC/bkCOxD/yxNuTpa8yno5V9fgzDrGyyWfnMuRkI7F5A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1593592555;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LFia8MivRxV7u9Ly6ju5ELq3Qzf1QD4CMLWdNVkzCTM=;
+        b=OOb0yIKmBEhb1K6p9Nv2perDWtgKjoQwkSjTqh7MgwDA8dYkRIYncjsNRUvyA8dTlVrfju
+        ilWmid67+9b3uWBQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin " <hpa@zytor.com>
+Subject: [PATCH v2] x86/entry: Use should_resched() in
+ idtentry_exit_cond_resched()
+Message-ID: <20200701083553.fuy42cllxvx3bkzp@linutronix.de>
+References: <20200630102209.1143072-1-bigeasy@linutronix.de>
+ <20200630102209.1143072-2-bigeasy@linutronix.de>
+ <20200630111012.GM4800@hirez.programming.kicks-ass.net>
+ <20200630120059.x5p6uh4hzgqrgwuo@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <59265a9d-ee0f-4432-3f86-00d076aeb8e8@sandeen.net>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200630120059.x5p6uh4hzgqrgwuo@linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 08:59:34AM -0500, Eric Sandeen wrote:
-> On 6/30/20 12:42 AM, Christoph Hellwig wrote:
-> > On Mon, Jun 29, 2020 at 02:08:09PM -0500, Eric Sandeen wrote:
-> >> f2fs and xfs have both added support for cgroup writeback:
-> >>
-> >> 578c647 f2fs: implement cgroup writeback support
-> >> adfb5fb xfs: implement cgroup aware writeback
-> >>
-> >> so add them to the supported list in the docs.
-> >>
-> >> Signed-off-by: Eric Sandeen <sandeen@redhat.com>
-> >> ---
-> >>
-> >> TBH I wonder about the wisdom of having this detail in
-> >> the doc, as it apparently gets missed quite often ...
-> > 
-> > I'd rather remove the list of file systems.  It has no chance of
-> > staying uptodate.
-> 
-> Is there any way for a user to know whether a filesytem does or doesn't
-> support it, in practice?
+The TIF_NEED_RESCHED bit is inlined on x86 into the preemption counter.
+By using should_resched(0) instead of need_resched() the same check can
+be performed which uses the same variable as 'preempt_count()` which was
+issued before.
 
-git-grep SB_I_CGROUPWB
+Use should_resched(0) instead need_resched().
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+v1=E2=80=A6v2: Use should_resched() but keep the !preempt_count() check.
+
+ arch/x86/entry/common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index bd3f14175193c..0bb6966f62738 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -615,11 +615,11 @@ static void idtentry_exit_cond_resched(struct pt_regs=
+ *regs, bool may_sched)
+ 	if (may_sched && !preempt_count()) {
+ 		/* Sanity check RCU and thread stack */
+ 		rcu_irq_exit_check_preempt();
+ 		if (IS_ENABLED(CONFIG_DEBUG_ENTRY))
+ 			WARN_ON_ONCE(!on_thread_stack());
+-		if (need_resched())
++		if (should_resched(0))
+ 			preempt_schedule_irq();
+ 	}
+ 	/* Covers both tracing and lockdep */
+ 	trace_hardirqs_on();
+ }
+--=20
+2.27.0
+
