@@ -2,213 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4B92101FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 04:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 388F82101FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 04:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgGACYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 22:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726888AbgGACYC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 22:24:02 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3151C03E979;
-        Tue, 30 Jun 2020 19:24:00 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id t25so20499366lji.12;
-        Tue, 30 Jun 2020 19:24:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=37Z3HYJxY12m2q1zLLMVAo9a4Krobq6zohBrdzALyVQ=;
-        b=qFD+B4QikxOPYBwCWRO9sRvcJ2ylNeF6BprSPGFu5CmB/30cJbPc09FTRF2BC4pN6d
-         qMk0PmA+6quTB3ZITKmCox3cQiCpeQ1BVxZHQWhtHRVbSATljqc3zXQzaV9vDjh0yc5y
-         K4XIHbtjgDPD5W/9k01ErjNXGiaOMwoXrSioPERhYLJOG6RPeAP4IbX72j/cbt0w6/JK
-         DBB6BR1FGiOzc83lxK/Qu4+2NQb4Ry5iao5zlNNiOUcwuq0tQ0i4KheOcf+jSOTjKEhI
-         VcuMYNeZtCUh7Nqm6EIYFMWiWkvGO/RAthl0raQ3TDh9Rb65bDaJml3dEHL6I6oQ25x2
-         m/hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=37Z3HYJxY12m2q1zLLMVAo9a4Krobq6zohBrdzALyVQ=;
-        b=C92xQjOJ6AlXRHKbyg42oBARh8NkjD3rEHDqdmwKWF9JarBORUUgBjt/FOUHn8OX8j
-         8/+JlFqvLVwGpcVN59Fcn+NjQo7hNzkVJg+gJOTqmYKT4mH4S1njoLFfOweNrp/M+ybI
-         5YsLBagIvyDdJWGwVzd4chqEuKoZmXznsE5v2QmxGdYF20pG3YVjFNe5+X+WQiS/gDlh
-         jnRyzf+IrL/cpQWHriB8KBI5c6gK5x91upD6iDVi3hUB93svj51FOrtkTUoTW57hmV1+
-         lswuozHyGBSipMn/DcdqJqaKEHfsNyP564kSWERuMpBckGeOX3NvEoAyNdMLTfdPmeHD
-         wO0A==
-X-Gm-Message-State: AOAM530aa6QWSzEnaI12zrf5blCaEAoacoL02I2i2DtkRFqOV8nJ0iRK
-        dQWX4zWr0v6IRpnye3DSQG8=
-X-Google-Smtp-Source: ABdhPJxo1aYYW2nGVu0mj1YJyPlgU5yUWa8RQdGqU5qZJuAQjK37DvU9T6Hbv4tlibV9uHbzIp8naQ==
-X-Received: by 2002:a2e:81c4:: with SMTP id s4mr8902702ljg.284.1593570239143;
-        Tue, 30 Jun 2020 19:23:59 -0700 (PDT)
-Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.gmail.com with ESMTPSA id f21sm1303557ljj.121.2020.06.30.19.23.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 19:23:58 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v9 4/4] drm/tegra: output: rgb: Wrap directly-connected panel into DRM bridge
-Date:   Wed,  1 Jul 2020 05:21:28 +0300
-Message-Id: <20200701022128.12968-5-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200701022128.12968-1-digetx@gmail.com>
-References: <20200701022128.12968-1-digetx@gmail.com>
+        id S1727007AbgGACYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 22:24:19 -0400
+Received: from mga09.intel.com ([134.134.136.24]:49619 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726955AbgGACYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 22:24:14 -0400
+IronPort-SDR: gc0SX2He3yxN1ITHL+xwa4oZq+752+7aVWDsJJF8ij0VFpLgVCfd7d0PfBj0/DbPeeAbNVx9KN
+ XytpkkP06gJA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="147992808"
+X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
+   d="scan'208";a="147992808"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 19:24:12 -0700
+IronPort-SDR: Sgp81RKLPMZ4/nH1D7ZciI8ToGHFOJTS/nzbTgyqqZ4H+xAR1OpnYBcch+QZ/gTKCdrAKN7mHE
+ S/CMs4cpjUEw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
+   d="scan'208";a="321605461"
+Received: from lkp-server01.sh.intel.com (HELO 28879958b202) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 30 Jun 2020 19:24:11 -0700
+Received: from kbuild by 28879958b202 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jqSPy-0002L1-K7; Wed, 01 Jul 2020 02:24:10 +0000
+Date:   Wed, 01 Jul 2020 10:22:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/fpu] BUILD SUCCESS
+ 4185b3b92792eaec5869266e594338343421ffb0
+Message-ID: <5efbf365.NV6HoYoBazd1zeAD%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently Tegra DRM driver manually manages display panel, but this
-management could be moved out into DRM core if we'll wrap panel into
-DRM bridge. This patch wraps RGB panel into a DRM bridge and removes
-manual handling of the panel from the RGB output code.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/fpu
+branch HEAD: 4185b3b92792eaec5869266e594338343421ffb0  selftests/fpu: Add an FPU selftest
 
-Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+elapsed time: 2529m
+
+configs tested: 186
+configs skipped: 13
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+mips                         tb0287_defconfig
+powerpc                  mpc866_ads_defconfig
+mips                      pistachio_defconfig
+sparc64                          allyesconfig
+s390                             alldefconfig
+riscv                          rv32_defconfig
+m68k                             alldefconfig
+arm                         socfpga_defconfig
+mips                              allnoconfig
+arm                         s3c2410_defconfig
+openrisc                 simple_smp_defconfig
+m68k                          hp300_defconfig
+sh                             espt_defconfig
+arm                           stm32_defconfig
+sparc                       sparc64_defconfig
+m68k                              allnoconfig
+arm                    vt8500_v6_v7_defconfig
+arm                           corgi_defconfig
+m68k                        m5307c3_defconfig
+powerpc                          g5_defconfig
+arm                           u8500_defconfig
+sparc                       sparc32_defconfig
+sh                          landisk_defconfig
+sh                         apsh4a3a_defconfig
+arm                          badge4_defconfig
+arm                          lpd270_defconfig
+sh                           se7724_defconfig
+mips                  maltasmvp_eva_defconfig
+mips                 pnx8335_stb225_defconfig
+s390                              allnoconfig
+mips                         tb0219_defconfig
+powerpc                      mgcoge_defconfig
+nds32                             allnoconfig
+arm                          pcm027_defconfig
+mips                         mpc30x_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                             pxa_defconfig
+mips                      pic32mzda_defconfig
+mips                           xway_defconfig
+sh                      rts7751r2d1_defconfig
+arm                           viper_defconfig
+powerpc                      ppc44x_defconfig
+arm                          moxart_defconfig
+sh                        sh7763rdp_defconfig
+arm                        mvebu_v7_defconfig
+arm                          exynos_defconfig
+c6x                        evmc6474_defconfig
+arm                            pleb_defconfig
+arm                             ezx_defconfig
+xtensa                       common_defconfig
+powerpc                          allyesconfig
+arm                         orion5x_defconfig
+arm                         nhk8815_defconfig
+sh                                  defconfig
+m68k                          amiga_defconfig
+m68k                          sun3x_defconfig
+mips                  mips_paravirt_defconfig
+sh                     sh7710voipgw_defconfig
+i386                              allnoconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+sh                               allmodconfig
+mips                             allyesconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20200630
+i386                 randconfig-a003-20200630
+i386                 randconfig-a002-20200630
+i386                 randconfig-a004-20200630
+i386                 randconfig-a005-20200630
+i386                 randconfig-a006-20200630
+i386                 randconfig-a002-20200701
+i386                 randconfig-a001-20200701
+i386                 randconfig-a006-20200701
+i386                 randconfig-a005-20200701
+i386                 randconfig-a004-20200701
+i386                 randconfig-a003-20200701
+i386                 randconfig-a006-20200629
+i386                 randconfig-a002-20200629
+i386                 randconfig-a003-20200629
+i386                 randconfig-a001-20200629
+i386                 randconfig-a005-20200629
+i386                 randconfig-a004-20200629
+x86_64               randconfig-a011-20200629
+x86_64               randconfig-a012-20200629
+x86_64               randconfig-a013-20200629
+x86_64               randconfig-a014-20200629
+x86_64               randconfig-a015-20200629
+x86_64               randconfig-a016-20200629
+x86_64               randconfig-a011-20200630
+x86_64               randconfig-a014-20200630
+x86_64               randconfig-a013-20200630
+x86_64               randconfig-a015-20200630
+x86_64               randconfig-a016-20200630
+x86_64               randconfig-a012-20200630
+x86_64               randconfig-a012-20200701
+x86_64               randconfig-a016-20200701
+x86_64               randconfig-a014-20200701
+x86_64               randconfig-a011-20200701
+x86_64               randconfig-a015-20200701
+x86_64               randconfig-a013-20200701
+i386                 randconfig-a013-20200629
+i386                 randconfig-a016-20200629
+i386                 randconfig-a014-20200629
+i386                 randconfig-a012-20200629
+i386                 randconfig-a015-20200629
+i386                 randconfig-a011-20200629
+i386                 randconfig-a011-20200630
+i386                 randconfig-a016-20200630
+i386                 randconfig-a015-20200630
+i386                 randconfig-a014-20200630
+i386                 randconfig-a013-20200630
+i386                 randconfig-a012-20200630
+i386                 randconfig-a011-20200701
+i386                 randconfig-a015-20200701
+i386                 randconfig-a014-20200701
+i386                 randconfig-a016-20200701
+i386                 randconfig-a012-20200701
+i386                 randconfig-a013-20200701
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+
 ---
- drivers/gpu/drm/tegra/rgb.c | 70 ++++++++++---------------------------
- 1 file changed, 18 insertions(+), 52 deletions(-)
-
-diff --git a/drivers/gpu/drm/tegra/rgb.c b/drivers/gpu/drm/tegra/rgb.c
-index 9a7024ec96bc..4142a56ca764 100644
---- a/drivers/gpu/drm/tegra/rgb.c
-+++ b/drivers/gpu/drm/tegra/rgb.c
-@@ -8,7 +8,6 @@
- 
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_bridge_connector.h>
--#include <drm/drm_panel.h>
- #include <drm/drm_simple_kms_helper.h>
- 
- #include "drm.h"
-@@ -86,45 +85,13 @@ static void tegra_dc_write_regs(struct tegra_dc *dc,
- 		tegra_dc_writel(dc, table[i].value, table[i].offset);
- }
- 
--static const struct drm_connector_funcs tegra_rgb_connector_funcs = {
--	.reset = drm_atomic_helper_connector_reset,
--	.detect = tegra_output_connector_detect,
--	.fill_modes = drm_helper_probe_single_connector_modes,
--	.destroy = tegra_output_connector_destroy,
--	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
--	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
--};
--
--static enum drm_mode_status
--tegra_rgb_connector_mode_valid(struct drm_connector *connector,
--			       struct drm_display_mode *mode)
--{
--	/*
--	 * FIXME: For now, always assume that the mode is okay. There are
--	 * unresolved issues with clk_round_rate(), which doesn't always
--	 * reliably report whether a frequency can be set or not.
--	 */
--	return MODE_OK;
--}
--
--static const struct drm_connector_helper_funcs tegra_rgb_connector_helper_funcs = {
--	.get_modes = tegra_output_connector_get_modes,
--	.mode_valid = tegra_rgb_connector_mode_valid,
--};
--
- static void tegra_rgb_encoder_disable(struct drm_encoder *encoder)
- {
- 	struct tegra_output *output = encoder_to_output(encoder);
- 	struct tegra_rgb *rgb = to_rgb(output);
- 
--	if (output->panel)
--		drm_panel_disable(output->panel);
--
- 	tegra_dc_write_regs(rgb->dc, rgb_disable, ARRAY_SIZE(rgb_disable));
- 	tegra_dc_commit(rgb->dc);
--
--	if (output->panel)
--		drm_panel_unprepare(output->panel);
- }
- 
- static void tegra_rgb_encoder_enable(struct drm_encoder *encoder)
-@@ -133,9 +100,6 @@ static void tegra_rgb_encoder_enable(struct drm_encoder *encoder)
- 	struct tegra_rgb *rgb = to_rgb(output);
- 	u32 value;
- 
--	if (output->panel)
--		drm_panel_prepare(output->panel);
--
- 	tegra_dc_write_regs(rgb->dc, rgb_enable, ARRAY_SIZE(rgb_enable));
- 
- 	value = DE_SELECT_ACTIVE | DE_CONTROL_NORMAL;
-@@ -157,9 +121,6 @@ static void tegra_rgb_encoder_enable(struct drm_encoder *encoder)
- 	tegra_dc_writel(rgb->dc, value, DC_DISP_SHIFT_CLOCK_OPTIONS);
- 
- 	tegra_dc_commit(rgb->dc);
--
--	if (output->panel)
--		drm_panel_enable(output->panel);
- }
- 
- static int
-@@ -278,6 +239,23 @@ int tegra_dc_rgb_init(struct drm_device *drm, struct tegra_dc *dc)
- 	drm_encoder_helper_add(&output->encoder,
- 			       &tegra_rgb_encoder_helper_funcs);
- 
-+	/*
-+	 * Wrap directly-connected panel into DRM bridge in order to let
-+	 * DRM core to handle panel for us.
-+	 */
-+	if (output->panel) {
-+		output->bridge = devm_drm_panel_bridge_add(output->dev,
-+							   output->panel);
-+		if (IS_ERR(output->bridge)) {
-+			dev_err(output->dev,
-+				"failed to wrap panel into bridge: %pe\n",
-+				output->bridge);
-+			return PTR_ERR(output->bridge);
-+		}
-+
-+		output->panel = NULL;
-+	}
-+
- 	/*
- 	 * Tegra devices that have LVDS panel utilize LVDS encoder bridge
- 	 * for converting up to 28 LCD LVTTL lanes into 5/4 LVDS lanes that
-@@ -292,8 +270,7 @@ int tegra_dc_rgb_init(struct drm_device *drm, struct tegra_dc *dc)
- 	 * Newer device-trees utilize LVDS encoder bridge, which provides
- 	 * us with a connector and handles the display panel.
- 	 *
--	 * For older device-trees we fall back to our own connector and use
--	 * nvidia,panel phandle.
-+	 * For older device-trees we wrapped panel into the panel-bridge.
- 	 */
- 	if (output->bridge) {
- 		err = drm_bridge_attach(&output->encoder, output->bridge,
-@@ -313,17 +290,6 @@ int tegra_dc_rgb_init(struct drm_device *drm, struct tegra_dc *dc)
- 		}
- 
- 		drm_connector_attach_encoder(connector, &output->encoder);
--	} else {
--		drm_connector_init(drm, &output->connector,
--				   &tegra_rgb_connector_funcs,
--				   DRM_MODE_CONNECTOR_LVDS);
--		drm_connector_helper_add(&output->connector,
--					 &tegra_rgb_connector_helper_funcs);
--		output->connector.dpms = DRM_MODE_DPMS_OFF;
--
--		drm_connector_attach_encoder(&output->connector,
--					     &output->encoder);
--		drm_connector_register(&output->connector);
- 	}
- 
- 	err = tegra_output_init(drm, output);
--- 
-2.26.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
