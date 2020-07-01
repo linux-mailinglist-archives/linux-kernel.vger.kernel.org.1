@@ -2,112 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E602D210B37
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 14:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF44B210B42
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 14:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730661AbgGAMrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 08:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34826 "EHLO
+        id S1730748AbgGAMrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 08:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730622AbgGAMrS (ORCPT
+        with ESMTP id S1730651AbgGAMrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 08:47:18 -0400
+        Wed, 1 Jul 2020 08:47:19 -0400
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C18DC03E97A
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 05:47:17 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id o11so23669076wrv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 05:47:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A41AC03E979
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 05:47:18 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z2so1402933wrp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 05:47:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Yd63tKAD8TEw//9s1TXw4/kd8gj1ZByx7XV4rk7dLd0=;
-        b=c9lB95ZlSkCDr8FrC6iJ4ySeiJo/PwpxEuvTW8mPxbMi7ihPg/iN9Ag0/siQ+aqpIN
-         lJhnsv+KPo9I9zWCV2sxE1dhJLOJGFRNycvWH0auT6M8XZ7Mm/CEmwTqIi/r6BvFoFbn
-         ZF67z9oamZZJ9uq+qhic/shA3dVgWeBSmdEv+aV9UMhqA1T2lxOnICn52HaGh14Z8zLs
-         JlM+mZTh/a6C65EV3n2CX9SPSXdqj7qDRm8JgZVHxNSzK4s2KBtcxSMAE3tkpiwImxEL
-         DLIl0Ew6S3oRNZnBNegDJAc0B6jWmDJxM/kmE9KyRsqZ+dUn1sLkGLyi21Q94OtsfMI6
-         T5RA==
+        bh=N515jYO+XViE4rxUKT5HCQLZtJJRT/LcfFcciYDmBeM=;
+        b=hvlv+tX5KbtfpPHuAr/9nPcfbWbt2OM+cAiArO7rBU+Y2+hvUnLaSo0jEyJTSCNtqf
+         /BDU4lYL9oLCcqTop/giUBCPoSMdBObVhCbOzDajIg7Xy6OW+ZanytcIK27fFPUGoSVU
+         2HU2a9hqOlOZrJOszUR6SdV2AyaDNo6lSEkB+ew6DMnwFNMd/BNLqTiFAHq1aJUyK533
+         vZApsJFvDH9s4cvNsik/dIsdQTNB9Xgck4l+CjFOQg+hSyhnw/3cQ4TbqOVFFZ9q5zuU
+         Hx3f33mBeGd2YAWoPZsDHGAAQN8Ba5WzdLuFqKRs0IHGKbASYvKxZqTge82v1stAPd6T
+         vuAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Yd63tKAD8TEw//9s1TXw4/kd8gj1ZByx7XV4rk7dLd0=;
-        b=Jlx9ZgVwyFg4neYuPkLs4SsaHHCYbFU08JRTHjraSflfGOZOEZT+rF3Fqz5U3GvipP
-         tXhcY0w3Fh1Ee62J5Zy6rhUr6lYjaUl262lS8xjCWhSYsOvkuzN0c8f6LaO5uFJQrB9P
-         q1V0zjLIpy42Kp3ANIU64006polG88K0VCUOww+osejgAN3Kn4GeeQFgcTfr+shBTCbt
-         iV2TJAa+h/Q+AgQRRsqnDj/GOWOgllPHBa17HcWCakX0c8FMxq99lZfNr2/4Bf6O2WQs
-         x7bvr5fILb0niJq152AnZj2P8x9JSr0CN2MOP5W76i+2KJhySEsh//qdhBpqIYb+zBcX
-         dRKA==
-X-Gm-Message-State: AOAM533RXudR6BpfLh2NjqJ8yB7yHIFeitCGMZlXBKre8ofEthPdE/jb
-        G+BQI2dOXkjrrR8VUzo7XKhlnw==
-X-Google-Smtp-Source: ABdhPJwshEQk22UxiuotqnoaKHFLuGrVwcP2gpb1t5Bt9UatQsrYDEIsRgMqxO9yunUFcwD7M//wEQ==
-X-Received: by 2002:a5d:420b:: with SMTP id n11mr26559514wrq.91.1593607636400;
-        Wed, 01 Jul 2020 05:47:16 -0700 (PDT)
+        bh=N515jYO+XViE4rxUKT5HCQLZtJJRT/LcfFcciYDmBeM=;
+        b=NmMe37MpYalPfVjEFuvuJhxcoqz3G/frUYCaLfZvImwXtFsaqbL1j8Nfj75HQXovck
+         IzHj2WBZrblBDQ8YIejrFD4CidOhR58rUJefW3vWrPY9utNig6HNFDcxNvqhGSORuXyu
+         HSkc2j54SabVLmy/O64Qjh+FXaF2Tt62rttT/07Q9R0BUdumsySkh9H+ycT5roMGs416
+         qSf5yZR0MwMRknSOWUNPI/2It/PQhOf6/5rLZMMp5onGv1M7Ex4yAZGu+yQJGpjf9aFm
+         /wA7SSjT8cfjfCyRVz+152F2sufp4Cuifjkr2Ex5ZuLWYQXM+dycuHsyKL0ldSXo6YOx
+         iroQ==
+X-Gm-Message-State: AOAM5339xqGC9PiRqTu+Tr18h+sdhSa0U2Vd4YYIdPaS+zYWdZoZjM+O
+        BS5OqM/eHRTQhmyHE2BhMJlygw==
+X-Google-Smtp-Source: ABdhPJzwL6sUJakVeaCCVt1EjUi0Pfn7s08Z72vAPl3BEm+TB/R6hwjCzAdHY66m8bbVha8qFfoZlg==
+X-Received: by 2002:adf:8168:: with SMTP id 95mr27049461wrm.104.1593607637328;
+        Wed, 01 Jul 2020 05:47:17 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id o29sm7817862wra.5.2020.07.01.05.47.14
+        by smtp.gmail.com with ESMTPSA id o29sm7817862wra.5.2020.07.01.05.47.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 05:47:15 -0700 (PDT)
+        Wed, 01 Jul 2020 05:47:16 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     ulf.hansson@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Thomas Abraham <thomas.ab@samsung.com>,
-        linux-samsung-soc@vger.kernel.org
-Subject: [PATCH 08/15] mmc: host: dw_mmc-exynos: Add kerneldoc descriptions of for 'dev' args
-Date:   Wed,  1 Jul 2020 13:46:55 +0100
-Message-Id: <20200701124702.908713-9-lee.jones@linaro.org>
+        Wei WANG <wei_wang@realsil.com.cn>
+Subject: [PATCH 09/15] mmc: host: rtsx_pci_sdmmc: Remove set but unused variable 'err'
+Date:   Wed,  1 Jul 2020 13:46:56 +0100
+Message-Id: <20200701124702.908713-10-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200701124702.908713-1-lee.jones@linaro.org>
 References: <20200701124702.908713-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide missing documentation for dw_mci_exynos_suspend_noirq() and
-dw_mci_exynos_resume_noirq() function headers.
+Seeing as sd_wait_data_idle() returns void and only a very specific
+read value is checked, there doesn't seem to be a good reason to
+check the return value of rtsx_pci_read_register().  So remove
+the assignment and definition of 'err'.
 
-Fixes the following W=1 kernel build warnings:
+Squashes the following W=1 kernel build warning:
 
- drivers/mmc/host/dw_mmc-exynos.c:184: warning: Function parameter or member 'dev' not described in 'dw_mci_exynos_suspend_noirq'
- drivers/mmc/host/dw_mmc-exynos.c:200: warning: Function parameter or member 'dev' not described in 'dw_mci_exynos_resume_noirq'
+ drivers/mmc/host/rtsx_pci_sdmmc.c: In function ‘sd_wait_data_idle’:
+ drivers/mmc/host/rtsx_pci_sdmmc.c:678:6: warning: variable ‘err’ set but not used [-Wunused-but-set-variable]
+ 678 | int err, i;
+ | ^~~
 
-Cc: Jaehoon Chung <jh80.chung@samsung.com>
-Cc: Kukjin Kim <kgene@kernel.org>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Thomas Abraham <thomas.ab@samsung.com>
-Cc: linux-samsung-soc@vger.kernel.org
+Cc: Wei WANG <wei_wang@realsil.com.cn>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mmc/host/dw_mmc-exynos.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mmc/host/rtsx_pci_sdmmc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/dw_mmc-exynos.c b/drivers/mmc/host/dw_mmc-exynos.c
-index 5e3d95b636769..bd59186f59b39 100644
---- a/drivers/mmc/host/dw_mmc-exynos.c
-+++ b/drivers/mmc/host/dw_mmc-exynos.c
-@@ -176,6 +176,7 @@ static int dw_mci_exynos_runtime_resume(struct device *dev)
- #ifdef CONFIG_PM_SLEEP
- /**
-  * dw_mci_exynos_suspend_noirq - Exynos-specific suspend code
-+ * @dev: Device to suspend (this device)
-  *
-  * This ensures that device will be in runtime active state in
-  * dw_mci_exynos_resume_noirq after calling pm_runtime_force_resume()
-@@ -188,6 +189,7 @@ static int dw_mci_exynos_suspend_noirq(struct device *dev)
+diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
+index 5a71f6678fd3a..dc0dbd64a2a78 100644
+--- a/drivers/mmc/host/rtsx_pci_sdmmc.c
++++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
+@@ -675,11 +675,11 @@ static u8 sd_search_final_phase(struct realtek_pci_sdmmc *host, u32 phase_map)
  
- /**
-  * dw_mci_exynos_resume_noirq - Exynos-specific resume code
-+ * @dev: Device to resume (this device)
-  *
-  * On exynos5420 there is a silicon errata that will sometimes leave the
-  * WAKEUP_INT bit in the CLKSEL register asserted.  This bit is 1 to indicate
+ static void sd_wait_data_idle(struct realtek_pci_sdmmc *host)
+ {
+-	int err, i;
++	int i;
+ 	u8 val = 0;
+ 
+ 	for (i = 0; i < 100; i++) {
+-		err = rtsx_pci_read_register(host->pcr, SD_DATA_STATE, &val);
++		rtsx_pci_read_register(host->pcr, SD_DATA_STATE, &val);
+ 		if (val & SD_DATA_IDLE)
+ 			return;
+ 
 -- 
 2.25.1
 
