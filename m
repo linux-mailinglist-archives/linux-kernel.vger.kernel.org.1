@@ -2,129 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D3E210D27
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 16:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59666210D34
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 16:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731357AbgGAOJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 10:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728021AbgGAOJS (ORCPT
+        id S1731397AbgGAOKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 10:10:34 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:45886 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731222AbgGAOKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 10:09:18 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C37C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 07:09:18 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 92F0F556;
-        Wed,  1 Jul 2020 16:09:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1593612556;
-        bh=VauXx+GOvJlFO5tYh3rnSCU/l69PGg+UrYNd7Mwc0Fg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JT7DYgmKkgYKPd0i6/F9mW5xc6Vzcspm2nW8w6bo0Yny2pYBvkFWFAwmVa23X9E0D
-         qiBXqjtZi8ikXUVtHbVkVGVe1o82SgQzlMTX8W9GPlYdMdHuQA5hzHiswW+S0nMH16
-         GPeHMClQElrhJVPCLzPTprux8zLz3scAy6pzY90w=
-Date:   Wed, 1 Jul 2020 17:09:13 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Tobias Klauser <tklauser@distanz.ch>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] phy: zynqmp: Fix unused-function compiler warning
-Message-ID: <20200701140913.GG27013@pendragon.ideasonboard.com>
-References: <20200701090438.21224-1-tklauser@distanz.ch>
- <20200701131902.GC27013@pendragon.ideasonboard.com>
- <20200701133643.GZ2599@vkoul-mobl>
- <20200701134443.GE27013@pendragon.ideasonboard.com>
- <20200701140026.ziplawf6oimjyssh@distanz.ch>
- <20200701140108.GF27013@pendragon.ideasonboard.com>
- <20200701140709.kq7eauyrm5lqozsr@distanz.ch>
+        Wed, 1 Jul 2020 10:10:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593612630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=khW6d9Ym4bkQrcnO5y03gt6SBZFm61i7mNPGes2rY08=;
+        b=gvkMcSfeXUYGkYM6n4mm9gc7Iyg+lG4AowwLdeMmNqO4Oc6u0u/gwr0nomtfiM5z4hynFL
+        7xqpCxjcVtY1eNkWentWXhFppD649Mjag00VIUCQ1vuwVcLs+ZZnHkwPeeVA8C160Rx77W
+        W7opfrES5Hz3qlH2ecMNLZ3nVH40uyY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-75JDQkjAMjuLA30dqQbpWg-1; Wed, 01 Jul 2020 10:10:12 -0400
+X-MC-Unique: 75JDQkjAMjuLA30dqQbpWg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 324DA8015CE;
+        Wed,  1 Jul 2020 14:10:11 +0000 (UTC)
+Received: from [10.72.12.71] (ovpn-12-71.pek2.redhat.com [10.72.12.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9BE105C1C5;
+        Wed,  1 Jul 2020 14:09:55 +0000 (UTC)
+Subject: Re: [PATCH RFC v8 02/11] vhost: use batched get_vq_desc version
+To:     Eugenio Perez Martin <eperezma@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+References: <20200611113404.17810-1-mst@redhat.com>
+ <20200611113404.17810-3-mst@redhat.com>
+ <20200611152257.GA1798@char.us.oracle.com>
+ <CAJaqyWdwXMX0JGhmz6soH2ZLNdaH6HEdpBM8ozZzX9WUu8jGoQ@mail.gmail.com>
+ <CAJaqyWdwgy0fmReOgLfL4dAv-E+5k_7z3d9M+vHqt0aO2SmOFg@mail.gmail.com>
+ <20200622114622-mutt-send-email-mst@kernel.org>
+ <CAJaqyWfrf94Gc-DMaXO+f=xC8eD3DVCD9i+x1dOm5W2vUwOcGQ@mail.gmail.com>
+ <20200622122546-mutt-send-email-mst@kernel.org>
+ <CAJaqyWfbouY4kEXkc6sYsbdCAEk0UNsS5xjqEdHTD7bcTn40Ow@mail.gmail.com>
+ <CAJaqyWefMHPguj8ZGCuccTn0uyKxF9ZTEi2ASLtDSjGNb1Vwsg@mail.gmail.com>
+ <419cc689-adae-7ba4-fe22-577b3986688c@redhat.com>
+ <CAJaqyWedEg9TBkH1MxGP1AecYHD-e-=ugJ6XUN+CWb=rQGf49g@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <0a83aa03-8e3c-1271-82f5-4c07931edea3@redhat.com>
+Date:   Wed, 1 Jul 2020 22:09:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <CAJaqyWedEg9TBkH1MxGP1AecYHD-e-=ugJ6XUN+CWb=rQGf49g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200701140709.kq7eauyrm5lqozsr@distanz.ch>
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tobias,
 
-On Wed, Jul 01, 2020 at 04:07:09PM +0200, Tobias Klauser wrote:
-> On 2020-07-01 at 16:01:08 +0200, Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
-> > On Wed, Jul 01, 2020 at 04:00:26PM +0200, Tobias Klauser wrote:
-> >> On 2020-07-01 at 15:44:43 +0200, Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
-> >>> On Wed, Jul 01, 2020 at 07:06:43PM +0530, Vinod Koul wrote:
-> >>>> On 01-07-20, 16:19, Laurent Pinchart wrote:
-> >>>>> On Wed, Jul 01, 2020 at 11:04:38AM +0200, Tobias Klauser wrote:
-> >>>>>> This fixes the following compiler warning when building with
-> >>>>>> CONFIG_PM && !CONFIG_PM_SLEEP:
-> >>>>>> 
-> >>>>>> drivers/phy/xilinx/phy-zynqmp.c:830:12: warning: ‘xpsgtr_resume’ defined but not used [-Wunused-function]
-> >>>>>>   830 | static int xpsgtr_resume(struct device *dev)
-> >>>>>>       |            ^~~~~~~~~~~~~
-> >>>>>> drivers/phy/xilinx/phy-zynqmp.c:819:12: warning: ‘xpsgtr_suspend’ defined but not used [-Wunused-function]
-> >>>>>>   819 | static int xpsgtr_suspend(struct device *dev)
-> >>>>>>       |            ^~~~~~~~~~~~~~
-> >>>>> 
-> >>>>> Oops :-S Sorry about that.
-> >>>>> 
-> >>>>> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> >> 
-> >> Thanks for the review Laurent.
-> >> 
-> >>>>> Vinod or Kishon, can you pick this patch up, or do I need to send a pull
-> >>>>> request ? (It's my first driver in the PHY subsystem so I don't know
-> >>>>> what the usual practices are there)
-> >>>> 
-> >>>> patches are welcome :-)
-> >>>> 
-> >>>>> 
-> >>>>>> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
-> >>>>>> ---
-> >>>>>>  drivers/phy/xilinx/phy-zynqmp.c | 4 ++--
-> >>>>>>  1 file changed, 2 insertions(+), 2 deletions(-)
-> >>>>>> 
-> >>>>>> diff --git a/drivers/phy/xilinx/phy-zynqmp.c b/drivers/phy/xilinx/phy-zynqmp.c
-> >>>>>> index 8babee2ce9ec..22a0ae635797 100644
-> >>>>>> --- a/drivers/phy/xilinx/phy-zynqmp.c
-> >>>>>> +++ b/drivers/phy/xilinx/phy-zynqmp.c
-> >>>>>> @@ -815,7 +815,7 @@ static struct phy *xpsgtr_xlate(struct device *dev,
-> >>>>>>   * Power Management
-> >>>>>>   */
-> >>>>>>  
-> >>>>>> -#ifdef CONFIG_PM
-> >>>>>> +#ifdef CONFIG_PM_SLEEP
-> >>>> 
-> >>>> How about marking it as __maybe_unused instead?
-> >>> 
-> >>> I don't mind either, I'll let Tobias decide, but his patch seems fine,
-> >>> is there a drawback in his approach ? If it's just a matter of personal
-> >>> preference, I'd rather not require a v2.
-> >> 
-> >> I don't mind either, it was just what seemed the more straight-forward
-> >> fix. On the other hand, it seems that marking these functions as
-> >> __maybe_unused is the more widely used method in other PHY drivers. In
-> >> addition it would have the nice side-effect of the code always being
-> >> compile-checked regardless of the value of CONFIG_PM_SLEEP.
-> > 
-> > That's a good point, haven't thought about it.
-> > 
-> >> Will send a v2 using __maybe_unused and will let you decide which one to
-> >> pick :)
-> > 
-> > You can keep my R-b :-)
-> 
-> Thanks :) FWIW, I'd also drop the #ifdef CONFIG_PM in the same patch for
-> the same reason. Is that OK with you as well?
+On 2020/7/1 下午9:04, Eugenio Perez Martin wrote:
+> On Wed, Jul 1, 2020 at 2:40 PM Jason Wang <jasowang@redhat.com> wrote:
+>>
+>> On 2020/7/1 下午6:43, Eugenio Perez Martin wrote:
+>>> On Tue, Jun 23, 2020 at 6:15 PM Eugenio Perez Martin
+>>> <eperezma@redhat.com> wrote:
+>>>> On Mon, Jun 22, 2020 at 6:29 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>>>>> On Mon, Jun 22, 2020 at 06:11:21PM +0200, Eugenio Perez Martin wrote:
+>>>>>> On Mon, Jun 22, 2020 at 5:55 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>>>>>>> On Fri, Jun 19, 2020 at 08:07:57PM +0200, Eugenio Perez Martin wrote:
+>>>>>>>> On Mon, Jun 15, 2020 at 2:28 PM Eugenio Perez Martin
+>>>>>>>> <eperezma@redhat.com> wrote:
+>>>>>>>>> On Thu, Jun 11, 2020 at 5:22 PM Konrad Rzeszutek Wilk
+>>>>>>>>> <konrad.wilk@oracle.com> wrote:
+>>>>>>>>>> On Thu, Jun 11, 2020 at 07:34:19AM -0400, Michael S. Tsirkin wrote:
+>>>>>>>>>>> As testing shows no performance change, switch to that now.
+>>>>>>>>>> What kind of testing? 100GiB? Low latency?
+>>>>>>>>>>
+>>>>>>>>> Hi Konrad.
+>>>>>>>>>
+>>>>>>>>> I tested this version of the patch:
+>>>>>>>>> https://lkml.org/lkml/2019/10/13/42
+>>>>>>>>>
+>>>>>>>>> It was tested for throughput with DPDK's testpmd (as described in
+>>>>>>>>> http://doc.dpdk.org/guides/howto/virtio_user_as_exceptional_path.html)
+>>>>>>>>> and kernel pktgen. No latency tests were performed by me. Maybe it is
+>>>>>>>>> interesting to perform a latency test or just a different set of tests
+>>>>>>>>> over a recent version.
+>>>>>>>>>
+>>>>>>>>> Thanks!
+>>>>>>>> I have repeated the tests with v9, and results are a little bit different:
+>>>>>>>> * If I test opening it with testpmd, I see no change between versions
+>>>>>>> OK that is testpmd on guest, right? And vhost-net on the host?
+>>>>>>>
+>>>>>> Hi Michael.
+>>>>>>
+>>>>>> No, sorry, as described in
+>>>>>> http://doc.dpdk.org/guides/howto/virtio_user_as_exceptional_path.html.
+>>>>>> But I could add to test it in the guest too.
+>>>>>>
+>>>>>> These kinds of raw packets "bursts" do not show performance
+>>>>>> differences, but I could test deeper if you think it would be worth
+>>>>>> it.
+>>>>> Oh ok, so this is without guest, with virtio-user.
+>>>>> It might be worth checking dpdk within guest too just
+>>>>> as another data point.
+>>>>>
+>>>> Ok, I will do it!
+>>>>
+>>>>>>>> * If I forward packets between two vhost-net interfaces in the guest
+>>>>>>>> using a linux bridge in the host:
+>>>>>>> And here I guess you mean virtio-net in the guest kernel?
+>>>>>> Yes, sorry: Two virtio-net interfaces connected with a linux bridge in
+>>>>>> the host. More precisely:
+>>>>>> * Adding one of the interfaces to another namespace, assigning it an
+>>>>>> IP, and starting netserver there.
+>>>>>> * Assign another IP in the range manually to the other virtual net
+>>>>>> interface, and start the desired test there.
+>>>>>>
+>>>>>> If you think it would be better to perform then differently please let me know.
+>>>>> Not sure why you bother with namespaces since you said you are
+>>>>> using L2 bridging. I guess it's unimportant.
+>>>>>
+>>>> Sorry, I think I should have provided more context about that.
+>>>>
+>>>> The only reason to use namespaces is to force the traffic of these
+>>>> netperf tests to go through the external bridge. To test netperf
+>>>> different possibilities than the testpmd (or pktgen or others "blast
+>>>> of frames unconditionally" tests).
+>>>>
+>>>> This way, I make sure that is the same version of everything in the
+>>>> guest, and is a little bit easier to manage cpu affinity, start and
+>>>> stop testing...
+>>>>
+>>>> I could use a different VM for sending and receiving, but I find this
+>>>> way a faster one and it should not introduce a lot of noise. I can
+>>>> test with two VM if you think that this use of network namespace
+>>>> introduces too much noise.
+>>>>
+>>>> Thanks!
+>>>>
+>>>>>>>>     - netperf UDP_STREAM shows a performance increase of 1.8, almost
+>>>>>>>> doubling performance. This gets lower as frame size increase.
+>>> Regarding UDP_STREAM:
+>>> * with event_idx=on: The performance difference is reduced a lot if
+>>> applied affinity properly (manually assigning CPU on host/guest and
+>>> setting IRQs on guest), making them perform equally with and without
+>>> the patch again. Maybe the batching makes the scheduler perform
+>>> better.
+>>
+>> Note that for UDP_STREAM, the result is pretty trick to be analyzed. E.g
+>> setting a sndbuf for TAP may help for the performance (reduce the drop).
+>>
+> Ok, will add that to the test. Thanks!
 
-Sure.
 
--- 
-Regards,
+Actually, it's better to skip the UDP_STREAM test since:
 
-Laurent Pinchart
+- My understanding is very few application is using raw UDP stream
+- It's hard to analyze (usually you need to count the drop ratio etc)
+
+
+>
+>>>>>>>>     - rests of the test goes noticeably worse: UDP_RR goes from ~6347
+>>>>>>>> transactions/sec to 5830
+>>> * Regarding UDP_RR, TCP_STREAM, and TCP_RR, proper CPU pinning makes
+>>> them perform similarly again, only a very small performance drop
+>>> observed. It could be just noise.
+>>> ** All of them perform better than vanilla if event_idx=off, not sure
+>>> why. I can try to repeat them if you suspect that can be a test
+>>> failure.
+>>>
+>>> * With testpmd and event_idx=off, if I send from the VM to host, I see
+>>> a performance increment especially in small packets. The buf api also
+>>> increases performance compared with only batching: Sending the minimum
+>>> packet size in testpmd makes pps go from 356kpps to 473 kpps.
+>>
+>> What's your setup for this. The number looks rather low. I'd expected
+>> 1-2 Mpps at least.
+>>
+> Intel(R) Xeon(R) CPU E5-2650 v4 @ 2.20GHz, 2 NUMA nodes of 16G memory
+> each, and no device assigned to the NUMA node I'm testing in. Too low
+> for testpmd AF_PACKET driver too?
+
+
+I don't test AF_PACKET, I guess it should use the V3 which mmap based 
+zerocopy interface.
+
+And it might worth to check the cpu utilization of vhost thread. It's 
+required to stress it as 100% otherwise there could be a bottleneck 
+somewhere.
+
+
+>
+>>> Sending
+>>> 1024 length UDP-PDU makes it go from 570kpps to 64 kpps.
+>>>
+>>> Something strange I observe in these tests: I get more pps the bigger
+>>> the transmitted buffer size is. Not sure why.
+>>>
+>>> ** Sending from the host to the VM does not make a big change with the
+>>> patches in small packets scenario (minimum, 64 bytes, about 645
+>>> without the patch, ~625 with batch and batch+buf api). If the packets
+>>> are bigger, I can see a performance increase: with 256 bits,
+>>
+>> I think you meant bytes?
+>>
+> Yes, sorry.
+>
+>>>    it goes
+>>> from 590kpps to about 600kpps, and in case of 1500 bytes payload it
+>>> gets from 348kpps to 528kpps, so it is clearly an improvement.
+>>>
+>>> * with testpmd and event_idx=on, batching+buf api perform similarly in
+>>> both directions.
+>>>
+>>> All of testpmd tests were performed with no linux bridge, just a
+>>> host's tap interface (<interface type='ethernet'> in xml),
+>>
+>> What DPDK driver did you use in the test (AF_PACKET?).
+>>
+> Yes, both testpmd are using AF_PACKET driver.
+
+
+I see, using AF_PACKET means extra layers of issues need to be analyzed 
+which is probably not good.
+
+
+>
+>>> with a
+>>> testpmd txonly and another in rxonly forward mode, and using the
+>>> receiving side packets/bytes data. Guest's rps, xps and interrupts,
+>>> and host's vhost threads affinity were also tuned in each test to
+>>> schedule both testpmd and vhost in different processors.
+>>
+>> My feeling is that if we start from simple setup, it would be more
+>> easier as a start. E.g start without an VM.
+>>
+>> 1) TX: testpmd(txonly) -> virtio-user -> vhost_net -> XDP_DROP on TAP
+>> 2) RX: pkgetn -> TAP -> vhost_net -> testpmd(rxonly)
+>>
+> Got it. Is there a reason to prefer pktgen over testpmd?
+
+
+I think the reason is using testpmd you must use a userspace kernel 
+interface (AF_PACKET), and it could not be as fast as pktgen since:
+
+- it talks directly to xmit of TAP
+- skb can be cloned
+
+Thanks
+
+
+>
+>> Thanks
+>>
+>>
+>>> I will send the v10 RFC with the small changes requested by Stefan and Jason.
+>>>
+>>> Thanks!
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>>>>> OK so it seems plausible that we still have a bug where an interrupt
+>>>>>>> is delayed. That is the main difference between pmd and virtio.
+>>>>>>> Let's try disabling event index, and see what happens - that's
+>>>>>>> the trickiest part of interrupts.
+>>>>>>>
+>>>>>> Got it, will get back with the results.
+>>>>>>
+>>>>>> Thank you very much!
+>>>>>>
+>>>>>>>>     - TCP_STREAM goes from ~10.7 gbps to ~7Gbps
+>>>>>>>>     - TCP_RR from 6223.64 transactions/sec to 5739.44
+
