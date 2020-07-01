@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC69E21157D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 23:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CA5211578
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 23:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728017AbgGAV4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 17:56:40 -0400
-Received: from o1.b.az.sendgrid.net ([208.117.55.133]:31529 "EHLO
+        id S1727926AbgGAV42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 17:56:28 -0400
+Received: from o1.b.az.sendgrid.net ([208.117.55.133]:38124 "EHLO
         o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgGAV4X (ORCPT
+        with ESMTP id S1727883AbgGAV4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 17:56:23 -0400
+        Wed, 1 Jul 2020 17:56:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
         h=from:subject:in-reply-to:references:to:cc:content-type:
         content-transfer-encoding;
-        s=001; bh=/hlV6hA1ZYGaBqGX5CuSHDD8AHkJj9B4bVowPHBuF0Q=;
-        b=i+PDCCR8woDXP8XrEH2UmLpPM6mRLNVRXMfs5Z6ZmR3uT69GaxtZxBEC2ao+Yt9lnwsJ
-        dFSIdyQlo4NLkXXk+O95MmSRRR+xCNG18pric39pl+jjqHlBYEDbSbjp69lGJsQ1eRZHP8
-        qqIQZaGcImcRG+mF1wxtfSUqe5kH1Q+E8=
-Received: by filterdrecv-p3iad2-5b55dcd864-blwjn with SMTP id filterdrecv-p3iad2-5b55dcd864-blwjn-19-5EFD0686-18
-        2020-07-01 21:56:22.338823217 +0000 UTC m=+449226.382650002
+        s=001; bh=/kf+DgEQfccGmOQpRGQluHKkxKxHGjeyjl28PXeTLHA=;
+        b=fbJOow/Kyq6m/BaOllNH7UijxKvDyqrzXueyGElviEkhkSruFOOBOy7ENfJi/e18UEc8
+        8mPpVZQM+WRsHUCvtpHPw6nEbkpguHiuHdZU+viJ4vecZ92kbz3DOwd2pJMyS6SHkK3Ld/
+        1M4NF/+9DHJl7Hp9qhiQNQuKeZGSSji/A=
+Received: by filterdrecv-p3iad2-5b55dcd864-622mb with SMTP id filterdrecv-p3iad2-5b55dcd864-622mb-16-5EFD0687-3E
+        2020-07-01 21:56:23.740186832 +0000 UTC m=+449224.049633056
 Received: from bionic.localdomain (unknown)
         by ismtpd0001p1lon1.sendgrid.net (SG) with ESMTP
-        id f6p5tSF0SMyqCKQjV1K26Q
-        Wed, 01 Jul 2020 21:56:22.083 +0000 (UTC)
+        id Kl5Ab2oCTJay-_iVs6EVRw
+        Wed, 01 Jul 2020 21:56:23.480 +0000 (UTC)
 From:   Jonas Karlman <jonas@kwiboo.se>
-Subject: [PATCH 4/9] media: rkvdec: h264: Fix bit depth wrap in pps packet
-Date:   Wed, 01 Jul 2020 21:56:22 +0000 (UTC)
-Message-Id: <20200701215616.30874-5-jonas@kwiboo.se>
+Subject: [PATCH 7/9] media: rkvdec: h264: Use bytesperline and buffer height
+ to calculate stride
+Date:   Wed, 01 Jul 2020 21:56:23 +0000 (UTC)
+Message-Id: <20200701215616.30874-8-jonas@kwiboo.se>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200701215616.30874-1-jonas@kwiboo.se>
 References: <20200701215616.30874-1-jonas@kwiboo.se>
 X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0hzj4dPdmtAAZkhLfl?=
- =?us-ascii?Q?L19oMHdMci4bWAbRSDQ9w19LQaxlqG0eCicKN=2F0?=
- =?us-ascii?Q?KUuxS7ZdMw2eVEhP2W6v0bnkNIY+u8OC9=2Fn3sW1?=
- =?us-ascii?Q?1KzIy+EigF+JWgbyk=2FHDEsUG=2FkZI3HAsIrtBheQ?=
- =?us-ascii?Q?6CRWzrI6uSsFnp1r8wpx+ljCnCzV54SNJG+ClS+?=
- =?us-ascii?Q?VhlDbHGcqiyNYHc7Jibpw=3D=3D?=
+ =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h9JlvUyM0eNLDAPYx?=
+ =?us-ascii?Q?UCjj2=2F7+awfXtB3T1u=2FXc+vBDSChPf5Kecrrq3+?=
+ =?us-ascii?Q?NUvAeCoaMUEJlCOUreeFM8hfV8q7NFIijdYdJ40?=
+ =?us-ascii?Q?2ZKluLlun1ICRX0CB3DpfO53SPfb89UWpJWr4lC?=
+ =?us-ascii?Q?Dlg89O4X5QvYpgRoqlirf9iIN1jmPsdW3OLU1DE?=
+ =?us-ascii?Q?reAgO6ffPA=2F4LB1ebyB8w=3D=3D?=
 To:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
         linux-kernel@vger.kernel.org
 Cc:     Jonas Karlman <jonas@kwiboo.se>,
@@ -54,32 +55,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The luma and chroma bit depth fields in the pps packet is 3 bits wide.
-8 is wrongly added to the bit depth value written to these 3-bit fields.
-Because only the 3 LSB is written the hardware is configured correctly.
+Use bytesperline and buffer height to calculate the strides configured.
 
-Correct this by not adding 8 to the luma and chroma bit depth value.
+This does not really change anything other than ensuring the bytesperline
+that is signaled to userspace matches was is configured in HW.
 
 Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
 ---
- drivers/staging/media/rkvdec/rkvdec-h264.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/media/rkvdec/rkvdec-h264.c | 27 +++++++++++++---------
+ 1 file changed, 16 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging/media/rkvdec/rkvdec-h264.c
-index c9aebeb8f9b3..9c8e49642cd9 100644
+index 9c8e49642cd9..1cb6af590138 100644
 --- a/drivers/staging/media/rkvdec/rkvdec-h264.c
 +++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
-@@ -662,8 +662,8 @@ static void assemble_hw_pps(struct rkvdec_ctx *ctx,
- 	WRITE_PPS(0xff, PROFILE_IDC);
- 	WRITE_PPS(1, CONSTRAINT_SET3_FLAG);
- 	WRITE_PPS(sps->chroma_format_idc, CHROMA_FORMAT_IDC);
--	WRITE_PPS(sps->bit_depth_luma_minus8 + 8, BIT_DEPTH_LUMA);
--	WRITE_PPS(sps->bit_depth_chroma_minus8 + 8, BIT_DEPTH_CHROMA);
-+	WRITE_PPS(sps->bit_depth_luma_minus8, BIT_DEPTH_LUMA);
-+	WRITE_PPS(sps->bit_depth_chroma_minus8, BIT_DEPTH_CHROMA);
- 	WRITE_PPS(0, QPPRIME_Y_ZERO_TRANSFORM_BYPASS_FLAG);
- 	WRITE_PPS(sps->log2_max_frame_num_minus4, LOG2_MAX_FRAME_NUM_MINUS4);
- 	WRITE_PPS(sps->max_num_ref_frames, MAX_NUM_REF_FRAMES);
+@@ -891,10 +891,11 @@ static void config_registers(struct rkvdec_ctx *ctx,
+ 	dma_addr_t rlc_addr;
+ 	dma_addr_t refer_addr;
+ 	u32 rlc_len;
+-	u32 hor_virstride = 0;
+-	u32 ver_virstride = 0;
+-	u32 y_virstride = 0;
+-	u32 yuv_virstride = 0;
++	u32 hor_virstride;
++	u32 ver_virstride;
++	u32 y_virstride;
++	u32 uv_virstride;
++	u32 yuv_virstride;
+ 	u32 offset;
+ 	dma_addr_t dst_addr;
+ 	u32 reg, i;
+@@ -904,16 +905,20 @@ static void config_registers(struct rkvdec_ctx *ctx,
+ 
+ 	f = &ctx->decoded_fmt;
+ 	dst_fmt = &f->fmt.pix_mp;
+-	hor_virstride = (sps->bit_depth_luma_minus8 + 8) * dst_fmt->width / 8;
+-	ver_virstride = round_up(dst_fmt->height, 16);
++	hor_virstride = dst_fmt->plane_fmt[0].bytesperline;
++	ver_virstride = dst_fmt->height;
+ 	y_virstride = hor_virstride * ver_virstride;
+ 
+-	if (sps->chroma_format_idc == 0)
+-		yuv_virstride = y_virstride;
+-	else if (sps->chroma_format_idc == 1)
+-		yuv_virstride += y_virstride + y_virstride / 2;
++	if (sps->chroma_format_idc == 1)
++		uv_virstride = y_virstride / 2;
+ 	else if (sps->chroma_format_idc == 2)
+-		yuv_virstride += 2 * y_virstride;
++		uv_virstride = y_virstride;
++	else if (sps->chroma_format_idc == 3)
++		uv_virstride = 2 * y_virstride;
++	else
++		uv_virstride = 0;
++
++	yuv_virstride = y_virstride + uv_virstride;
+ 
+ 	reg = RKVDEC_Y_HOR_VIRSTRIDE(hor_virstride / 16) |
+ 	      RKVDEC_UV_HOR_VIRSTRIDE(hor_virstride / 16) |
 -- 
 2.17.1
 
