@@ -2,175 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC1021111F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 18:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B06211137
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 18:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732589AbgGAQvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 12:51:42 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:59557 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732578AbgGAQvj (ORCPT
+        id S1732724AbgGAQxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 12:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732564AbgGAQxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 12:51:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1593622299; x=1625158299;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=KtFvv4njZRd4RUyqHqCrtp8f+r4C5L+zEXOcmypW9aY=;
-  b=hjQlQBiXXwe6X91Juq0GhrCpk9/OWtCqC8k1eT64+BtfnIZ7uC6F4vb/
-   CW26FoWQBL6Fgpf0m+qEr1HvEZQee+sLeaq5acDBX8tovhaBn2e/2JbOd
-   tk2MrPEknDHAghvPjB3xE+D+agn3yC3LRvOUpLonmNGpddyc2Ez+skUDw
-   CoFwarinbNWD2WuFAld5js6vt04BRE8HwqalHLnUqWZOWpI8hCRLAH7GB
-   2YBZs5XW/eL0llAoaBS4gSPHYEdHUCjXr9xdU+HN7mLT6mQPPUdAjnvss
-   LcRFJQa05dvxFImWZxqPXbi3EjG0IA7AMgE5mNPcFw3j/xvhaQHmqiyMv
-   w==;
-IronPort-SDR: 8RLMovVziAW+boUG/RB7ra2K2nTbM7GMGiexCzt67DidZVnC4U6A5RbOaWQfbIWpjXEHHD7cyo
- r9TkqjwUaiT6PPnBObeoAsYN8MSxT40QB2BB0AbkEXzuG8v8qQggD6PkoxWTu+OOm9vvJhiOMz
- rJAwiuQko8zGGT0oRqbrH2zFHDs20WMxLmBbkAF5C7ZG5jRzqJDwSrce/KMOVj4WY5OFKyIFyB
- WNCb/xKdgC4obd1uZoDNLwo0ZsMFuip0YA2UKp0rhRet3CjdMIDRDTRWYB8S91tio2RHFDGyWN
- dAM=
-X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; 
-   d="scan'208";a="82247352"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Jul 2020 09:51:39 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 1 Jul 2020 09:51:19 -0700
-Received: from rob-ult-m19940.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 1 Jul 2020 09:51:15 -0700
-From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <woojung.huh@microchip.com>, <UNGLinuxDriver@microchip.com>,
-        <andrew@lunn.ch>, <vivien.didelot@gmail.com>,
-        <f.fainelli@gmail.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <nicolas.ferre@microchip.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: [PATCH 2/2] net: dsa: microchip: split adjust_link() in phylink_mac_link_{up|down}()
-Date:   Wed, 1 Jul 2020 19:51:28 +0300
-Message-ID: <20200701165128.1213447-2-codrin.ciubotariu@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200701165128.1213447-1-codrin.ciubotariu@microchip.com>
-References: <20200701165128.1213447-1-codrin.ciubotariu@microchip.com>
+        Wed, 1 Jul 2020 12:53:30 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652C6C08C5DB
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 09:53:30 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id u185so9214465pfu.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 09:53:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BaZwJStCKTwWav0ryjMZZK4OAhmZE1ocGk8G4wNBCcg=;
+        b=KV9sDYfQt8i6bcWQYVOXUpa52LDHOx4jbjmJjzxRfMBvjz7w86fXpeqlk7POGl7Sov
+         UpIwQ49CaZUr0I1DmuRlvOsMrXYuKox0gDb+MGbx/x6e6C7b0/E8naxTgXHrn065HltO
+         ECztFHj58l7091xWrKwqO0+/eYp0NZvR6iQ1Q0DkkWUZbkfGLoSaxzRENwFTqwgFE4tu
+         7inJK1Bf2fOSFgfFKvtufKOg5VseRtqHMsMBgqA9lsyM0zX5ofSW/v+TBi42BSCqEOUL
+         pczORKL9PhlhhN2W32YC5dODi6u5a18YlsHAmuOdryeL1rgN7VXfK6npKFue9E0J7eYr
+         Pbgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BaZwJStCKTwWav0ryjMZZK4OAhmZE1ocGk8G4wNBCcg=;
+        b=GUuV9ldc3t8ojiqesxek+4Sd2958+o8wghGjvPkSD9GQqbuwdUJeQB+PflcVeS1hBo
+         WBKUE3ObuIpOi09vi7MaA5fP50vrEjQBIT6m5RsGmnffzc5Jt50nSPdXuc3C0JOZ2y5j
+         ILFsKTNvrK/F6evvi8WUyEASONlobFX1CiLaLkBHECx6n9IrQiKAr/sn5HzpWmUZkJng
+         F196ERIzZCv1jdSGiHW97lAF84EYydzB+u2sePjldhXprX1yQkk9Z9cIVsenY7t0nSez
+         11+9aD1Y4gT9pOYyqyGJHA3Rtp+HPS1szKkV12DY7vpU2G6QXwtXFph/REtLlyhnF6Jd
+         3l/w==
+X-Gm-Message-State: AOAM531xn18aYNDG7T0L2J7XK5JQyRQ6+o81xotZg9+M1QxilKTFK3nZ
+        ETdRclBDHdnQIBjgD06q/M2wVw==
+X-Google-Smtp-Source: ABdhPJxVgsahckfB+Z5tVK0G18UWeGL0p2gtnmnPJ6s4JxBARSk1QzOGw1lpdWQ6rXkSJaPFgoYMvQ==
+X-Received: by 2002:a05:6a00:15c3:: with SMTP id o3mr23997329pfu.304.1593622409934;
+        Wed, 01 Jul 2020 09:53:29 -0700 (PDT)
+Received: from ?IPv6:2605:e000:100e:8c61:a48e:6306:8f4:9d74? ([2605:e000:100e:8c61:a48e:6306:8f4:9d74])
+        by smtp.gmail.com with ESMTPSA id k7sm6478422pgh.46.2020.07.01.09.53.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Jul 2020 09:53:29 -0700 (PDT)
+Subject: Re: [PATCH] sbitmap: Consider cleared bits in sbitmap_bitmap_show()
+To:     John Garry <john.garry@huawei.com>
+Cc:     bvanassche@acm.org, osandov@fb.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hare@suse.com
+References: <1593590785-191512-1-git-send-email-john.garry@huawei.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <122e0d4d-d9b2-a81e-b8ce-fa8636eabe1b@kernel.dk>
+Date:   Wed, 1 Jul 2020 10:53:28 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <1593590785-191512-1-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DSA subsystem moved to phylink and adjust_link() became deprecated in
-the process. This patch removes adjust_link from the KSZ DSA switches and
-adds phylink_mac_link_up() and phylink_mac_link_down().
+On 7/1/20 2:06 AM, John Garry wrote:
+> sbitmap works by maintaining separate bitmaps of set and cleared bits.
+> The set bits are cleared in a batch, to save the burden of continuously
+> locking the "word" map to unset.
+> 
+> sbitmap_bitmap_show() only shows the set bits (in "word"), which is not
+> too much use, so mask out the cleared bits.
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
- drivers/net/dsa/microchip/ksz8795.c    |  3 ++-
- drivers/net/dsa/microchip/ksz9477.c    |  3 ++-
- drivers/net/dsa/microchip/ksz_common.c | 32 ++++++++++++++++----------
- drivers/net/dsa/microchip/ksz_common.h |  7 ++++--
- 4 files changed, 29 insertions(+), 16 deletions(-)
+Applied, thanks.
 
-diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index b0227b0e31e6..d07231d1def5 100644
---- a/drivers/net/dsa/microchip/ksz8795.c
-+++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -1111,7 +1111,8 @@ static const struct dsa_switch_ops ksz8795_switch_ops = {
- 	.setup			= ksz8795_setup,
- 	.phy_read		= ksz_phy_read16,
- 	.phy_write		= ksz_phy_write16,
--	.adjust_link		= ksz_adjust_link,
-+	.phylink_mac_link_down	= ksz_mac_link_down,
-+	.phylink_mac_link_up	= ksz_mac_link_up,
- 	.port_enable		= ksz_enable_port,
- 	.port_disable		= ksz_disable_port,
- 	.get_strings		= ksz8795_get_strings,
-diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
-index 833cf3763000..162f2bd84774 100644
---- a/drivers/net/dsa/microchip/ksz9477.c
-+++ b/drivers/net/dsa/microchip/ksz9477.c
-@@ -1399,7 +1399,8 @@ static const struct dsa_switch_ops ksz9477_switch_ops = {
- 	.setup			= ksz9477_setup,
- 	.phy_read		= ksz9477_phy_read16,
- 	.phy_write		= ksz9477_phy_write16,
--	.adjust_link		= ksz_adjust_link,
-+	.phylink_mac_link_down	= ksz_mac_link_down,
-+	.phylink_mac_link_up	= ksz_mac_link_up,
- 	.port_enable		= ksz_enable_port,
- 	.port_disable		= ksz_disable_port,
- 	.get_strings		= ksz9477_get_strings,
-diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index 4a41f0c7dbbc..a35d6ba8dd8a 100644
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -135,26 +135,34 @@ int ksz_phy_write16(struct dsa_switch *ds, int addr, int reg, u16 val)
- }
- EXPORT_SYMBOL_GPL(ksz_phy_write16);
- 
--void ksz_adjust_link(struct dsa_switch *ds, int port,
--		     struct phy_device *phydev)
-+void ksz_mac_link_down(struct dsa_switch *ds, int port, unsigned int mode,
-+		       phy_interface_t interface)
- {
- 	struct ksz_device *dev = ds->priv;
- 	struct ksz_port *p = &dev->ports[port];
- 
- 	/* Read all MIB counters when the link is going down. */
--	if (!phydev->link) {
--		p->read = true;
--		schedule_delayed_work(&dev->mib_read, 0);
--	}
-+	p->read = true;
-+	schedule_delayed_work(&dev->mib_read, 0);
-+
-+	mutex_lock(&dev->dev_mutex);
-+	dev->live_ports &= ~(1 << port);
-+	mutex_unlock(&dev->dev_mutex);
-+}
-+EXPORT_SYMBOL_GPL(ksz_mac_link_down);
-+
-+void ksz_mac_link_up(struct dsa_switch *ds, int port, unsigned int mode,
-+		     phy_interface_t interface, struct phy_device *phydev,
-+		     int speed, int duplex, bool tx_pause, bool rx_pause)
-+{
-+	struct ksz_device *dev = ds->priv;
-+
-+	/* Remember which port is connected and active. */
- 	mutex_lock(&dev->dev_mutex);
--	if (!phydev->link)
--		dev->live_ports &= ~(1 << port);
--	else
--		/* Remember which port is connected and active. */
--		dev->live_ports |= (1 << port) & dev->on_ports;
-+	dev->live_ports |= (1 << port) & dev->on_ports;
- 	mutex_unlock(&dev->dev_mutex);
- }
--EXPORT_SYMBOL_GPL(ksz_adjust_link);
-+EXPORT_SYMBOL_GPL(ksz_mac_link_up);
- 
- int ksz_sset_count(struct dsa_switch *ds, int port, int sset)
- {
-diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
-index 785702514a46..b1c468713609 100644
---- a/drivers/net/dsa/microchip/ksz_common.h
-+++ b/drivers/net/dsa/microchip/ksz_common.h
-@@ -160,8 +160,11 @@ void ksz_init_mib_timer(struct ksz_device *dev);
- 
- int ksz_phy_read16(struct dsa_switch *ds, int addr, int reg);
- int ksz_phy_write16(struct dsa_switch *ds, int addr, int reg, u16 val);
--void ksz_adjust_link(struct dsa_switch *ds, int port,
--		     struct phy_device *phydev);
-+void ksz_mac_link_down(struct dsa_switch *ds, int port, unsigned int mode,
-+		       phy_interface_t interface);
-+void ksz_mac_link_up(struct dsa_switch *ds, int port, unsigned int mode,
-+		     phy_interface_t interface, struct phy_device *phydev,
-+		     int speed, int duplex, bool tx_pause, bool rx_pause);
- int ksz_sset_count(struct dsa_switch *ds, int port, int sset);
- void ksz_get_ethtool_stats(struct dsa_switch *ds, int port, uint64_t *buf);
- int ksz_port_bridge_join(struct dsa_switch *ds, int port,
 -- 
-2.25.1
+Jens Axboe
 
