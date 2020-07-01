@@ -2,157 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBA42100F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 02:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2048210118
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 02:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726273AbgGAA33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 20:29:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60194 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725930AbgGAA32 (ORCPT
+        id S1726199AbgGAAsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 20:48:05 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:37545 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgGAAsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 20:29:28 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06103Cui003802;
-        Tue, 30 Jun 2020 20:29:12 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31ycjagr6t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 30 Jun 2020 20:29:12 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0610HYUc048543;
-        Tue, 30 Jun 2020 20:29:12 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31ycjagr6c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 30 Jun 2020 20:29:12 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0610Gn9V032016;
-        Wed, 1 Jul 2020 00:29:10 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 31wwch3y1n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Jul 2020 00:29:10 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0610T8IR55246888
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 1 Jul 2020 00:29:08 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E648042041;
-        Wed,  1 Jul 2020 00:29:07 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 666004203F;
-        Wed,  1 Jul 2020 00:29:06 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.162.223])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  1 Jul 2020 00:29:06 +0000 (GMT)
-Message-ID: <1593563340.5057.14.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 00/11] ima: Fix rule parsing bugs and extend
- KEXEC_CMDLINE rule support
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Prakhar Srivastava <prsriva02@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Janne Karhunen <janne.karhunen@gmail.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        kexec@lists.infradead.org, Casey Schaufler <casey@schaufler-ca.com>
-Date:   Tue, 30 Jun 2020 20:29:00 -0400
-In-Reply-To: <20200626223900.253615-1-tyhicks@linux.microsoft.com>
-References: <20200626223900.253615-1-tyhicks@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
+        Tue, 30 Jun 2020 20:48:04 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200701004802epoutp01ff477028b46a52f388277585125141d1~denQmqhaH1643816438epoutp01C
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 00:48:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200701004802epoutp01ff477028b46a52f388277585125141d1~denQmqhaH1643816438epoutp01C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593564482;
+        bh=p9VUtG0Pl4OAt33Q8oqrQYwJIVcPUptVSmvz8dDBKP4=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=dev+K1dN86XDSXmAJA+j6jTzZIa5ONQtLz1/BzGmafeUgOpDJyYDZV1NrDLyTjjXs
+         5BNmzbO7oRYL93/2TwJ0bm8bNxZkiAPqVSQM/tp9mylyviT59jzdX44hDAP0wFQR2/
+         jLTRZcLG0+N3lJc/Jk4PnIrtyUhdzmat4AcRR0HY=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p4.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200701004801epcas1p42eded001b132633c434c069a35b775bf~denQJsVTe0428504285epcas1p4B;
+        Wed,  1 Jul 2020 00:48:01 +0000 (GMT)
 Mime-Version: 1.0
+Subject: RE: [PATCH v4 4/5] scsi: ufs: L2P map management for HPB read
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <SN6PR04MB4640BCE167B108B74D5042E5FC6F0@SN6PR04MB4640.namprd04.prod.outlook.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <231786897.01593564481923.JavaMail.epsvc@epcpadp2>
+Date:   Wed, 01 Jul 2020 09:11:09 +0900
+X-CMS-MailID: 20200701001109epcms2p30f3a97297ba6c56fe12c68978af952fe
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-06-30_06:2020-06-30,2020-06-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
- priorityscore=1501 phishscore=0 suspectscore=2 adultscore=0
- cotscore=-2147483648 bulkscore=0 clxscore=1015 mlxscore=0 classifier=spam
- adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006300167
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200629064323epcms2p787baba58a416fef7fdd3927f8da701da
+References: <SN6PR04MB4640BCE167B108B74D5042E5FC6F0@SN6PR04MB4640.namprd04.prod.outlook.com>
+        <1239183618.61593413882377.JavaMail.epsvc@epcpadp2>
+        <963815509.21593413582881.JavaMail.epsvc@epcpadp2>
+        <1239183618.61593413402991.JavaMail.epsvc@epcpadp1>
+        <231786897.01593413281727.JavaMail.epsvc@epcpadp2>
+        <963815509.21593415684555.JavaMail.epsvc@epcpadp2>
+        <CGME20200629064323epcms2p787baba58a416fef7fdd3927f8da701da@epcms2p3>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-06-26 at 17:38 -0500, Tyler Hicks wrote:
-> This series ultimately extends the supported IMA rule conditionals for
-> the KEXEC_CMDLINE hook function. As of today, there's an imbalance in
-> IMA language conditional support for KEXEC_CMDLINE rules in comparison
-> to KEXEC_KERNEL_CHECK and KEXEC_INITRAMFS_CHECK rules. The KEXEC_CMDLINE
-> rules do not support *any* conditionals so you cannot have a sequence of
-> rules like this:
+> +static int ufshpb_issue_map_req(struct ufshpb_lu *hpb,
+> > +                               struct ufshpb_region *rgn,
+> > +                               struct ufshpb_subregion *srgn)
+> > +{
 > 
->  dont_measure func=KEXEC_KERNEL_CHECK obj_type=foo_t
->  dont_measure func=KEXEC_INITRAMFS_CHECK obj_type=foo_t
->  dont_measure func=KEXEC_CMDLINE obj_type=foo_t
->  measure func=KEXEC_KERNEL_CHECK
->  measure func=KEXEC_INITRAMFS_CHECK
->  measure func=KEXEC_CMDLINE
 > 
-> Instead, KEXEC_CMDLINE rules can only be measured or not measured and
-> there's no additional flexibility in today's implementation of the
-> KEXEC_CMDLINE hook function.
-> 
-> With this series, the above sequence of rules becomes valid and any
-> calls to kexec_file_load() with a kernel and initramfs inode type of
-> foo_t will not be measured (that includes the kernel cmdline buffer)
-> while all other objects given to a kexec_file_load() syscall will be
-> measured. There's obviously not an inode directly associated with the
-> kernel cmdline buffer but this patch series ties the inode based
-> decision making for KEXEC_CMDLINE to the kernel's inode. I think this
-> will be intuitive to policy authors.
-> 
-> While reading IMA code and preparing to make this change, I realized
-> that the buffer based hook functions (KEXEC_CMDLINE and KEY_CHECK) are
-> quite special in comparison to longer standing hook functions. These
-> buffer based hook functions can only support measure actions and there
-> are some restrictions on the conditionals that they support. However,
-> the rule parser isn't enforcing any of those restrictions and IMA policy
-> authors wouldn't have any immediate way of knowing that the policy that
-> they wrote is invalid. For example, the sequence of rules above parses
-> successfully in today's kernel but the
-> "dont_measure func=KEXEC_CMDLINE ..." rule is incorrectly handled in
-> ima_match_rules(). The dont_measure rule is *always* considered to be a
-> match so, surprisingly, no KEXEC_CMDLINE measurements are made.
-> 
-> While making the rule parser more strict, I realized that the parser
-> does not correctly free all of the allocated memory associated with an
-> ima_rule_entry when going down some error paths. Invalid policy loaded
-> by the policy administrator could result in small memory leaks.
-> 
-> I envision patches 1-6 going to stable. The series is ordered in a way
-> that has all the fixes up front, followed by cleanups, followed by the
-> feature patch. The breakdown of patches looks like so:
-> 
->  Memory leak fixes: 1-3
->  Parser strictness fixes: 4-6
->  Code cleanups made possible by the fixes: 7-10
->  Extend KEXEC_CMDLINE rule support: 11
-> 
-> Perhaps the most logical ordering for code review is:
-> 
->  1, 2, 3, 7, 8, 4, 5, 6, 9, 10, 11
-> 
-> If you'd like me to re-order or split up the series, just let me know.
-> Thanks for considering these patches!
-> 
-> * Series-wide v2 changes
->   - Rebased onto next-integrity-testing
->   - Squashed patches 2 and 3 from v1
->     + Updated this cover letter to account for changes to patch index
->       changes
->     + See patch 2 for specific code changes
+> > +
+> > +       ret = ufshpb_lu_get(hpb);
+> > +       if (unlikely(ret)) {
+> > +               dev_notice(&hpb->hpb_lu_dev,
+> > +                          "%s: ufshpb_lu_get failed: %d", __func__, ret);
+> > +               goto free_map_req;
+> > +       }
+> > +
+> > +       ret = ufshpb_execute_map_req(hpb, map_req);
+> > +       if (ret) {
+> > +               dev_notice(&hpb->hpb_lu_dev,
+> > +                          "%s: issue map_req failed: %d, region %d - %d\n",
+> > +                          __func__, ret, srgn->rgn_idx, srgn->srgn_idx);
+> > +               ufshpb_lu_put(hpb);
+> > +               goto free_map_req;
+> > +       }
+> Missing closing ufshpb_lu_put?
 
-Other than the comment on 9/11 the patch set looks good.
+ufshpb_lu_put() is called at ufshpb_map_req_compl_fn() which is completed
+callback function. Callilng ufshpb_lu_put() in ufshpb_issue_map_req() is
+used for error handling.
 
-thanks!
-
-Mimi
+Thanks,
+Daejun
