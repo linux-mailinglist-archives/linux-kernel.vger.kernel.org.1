@@ -2,57 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED3121146E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 22:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB97C211473
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 22:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgGAUaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 16:30:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725535AbgGAUaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 16:30:09 -0400
-Subject: Re: [GIT PULL] Hyper-V fixes for 5.8-rc4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593635409;
-        bh=u3FKsCqugYWXHKHrtra0Rp85HDVEGDHNUweEPevDvaw=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=u7Y/+01XvDa9rJ5atsT+OwYbjOPoqEBUz1olStUpcbacpGvBuWpJdUwPq6CobfvVU
-         7emAWcDMZ5iW9e8/9Ty7pvy7RTnboskQW9yDqAqJQ5b06AF+yWfjLw8Vg18pQ3CkmP
-         DSt/Qv+eFkCnbLqR3nt6nBZAngCeyW4c3uFdOdHQ=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200701182855.l5xdgglmctv3otvb@liuwe-devbox-debian-v2>
-References: <20200701182855.l5xdgglmctv3otvb@liuwe-devbox-debian-v2>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200701182855.l5xdgglmctv3otvb@liuwe-devbox-debian-v2>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git
- tags/hyperv-fixes-signed
-X-PR-Tracked-Commit-Id: 77b48bea2fee47c15a835f6725dd8df0bc38375a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cd77006e01b3198c75fb7819b3d0ff89709539bb
-Message-Id: <159363540943.27033.4409656844682147101.pr-tracker-bot@kernel.org>
-Date:   Wed, 01 Jul 2020 20:30:09 +0000
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
-        sthemmin@microsoft.com, haiyangz@microsoft.com,
-        Michael Kelley <mikelley@microsoft.com>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>
+        id S1727022AbgGAUcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 16:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgGAUcX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 16:32:23 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D5FC08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 13:32:22 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id m26so14481732lfo.13
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 13:32:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yQTuuRnTRD5guY+N3kjgnPLHXT6P3qZiYHrrKJ47r1w=;
+        b=M5E2TfLcC3cfW8OMyrKhXxxtIvY0Y104cXmmv3Q4raTCa6ajB/XOROYaclyuBwWh+A
+         QwyVYKRQgeqALuvdcW7sv0dw33dOl/5F5gCyZFcJBfQqk4HuU7lj0CC2aelEfwTDdC0Y
+         4kjCbqfpjXn7jho9KN1KvD2s7uo+DH0VG6r6M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yQTuuRnTRD5guY+N3kjgnPLHXT6P3qZiYHrrKJ47r1w=;
+        b=Y+YKMPt/XgPI+KAyaiiU7dQgIP8GVZLBt195B8BeMLqva41m82EwjeuEioFQv6jRDS
+         qBRd3kK5NVOD9pS1vQuYwW+q62r55UK0D/OalIUqUAG67kX5wqGn7+zbgB9ZovNI7NPP
+         /M8xI6edEU4ia361JbPFnYbIQvYb34hxRlZnVyrfap+MlOF0WwFOQQpSSL1NGSckWqZF
+         FrQbbtZg+wENn7x3eGkbLA+qGcQ1VF6Sea7+uTu/ofIVnfcwwJmZGOKjsH26RDcQgoXM
+         JnCs1a/Ai/KQUs2kWd01+NWLCfY1fHibWojvBKn/LmKB5MLChbkEtn9CcTBEIHVtUHvF
+         Z2Ig==
+X-Gm-Message-State: AOAM5301iG7J7xDoxtziJdkbfUX/3ZfFhVqNVvW5sd35DWQEUgkmDPxH
+        +YeftlFG3bvqq95ir9iE+WPpXbCmKi8=
+X-Google-Smtp-Source: ABdhPJyOYnk6uLMcLOASgxkqyM6qlRYozO2BuVhU56QjaGbC5WV2VEXuNqfhdaAjXMfHaak7mljgDw==
+X-Received: by 2002:ac2:548a:: with SMTP id t10mr16396959lfk.142.1593635540816;
+        Wed, 01 Jul 2020 13:32:20 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id f4sm2045002lfh.38.2020.07.01.13.32.19
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Jul 2020 13:32:19 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id u25so14524873lfm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 13:32:19 -0700 (PDT)
+X-Received: by 2002:a19:8a07:: with SMTP id m7mr16119813lfd.31.1593635539128;
+ Wed, 01 Jul 2020 13:32:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200624161335.1810359-14-hch@lst.de> <20200701091943.GC3874@shao2-debian>
+ <20200701121344.GA14149@lst.de>
+In-Reply-To: <20200701121344.GA14149@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 1 Jul 2020 13:32:03 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whYihRm0brAXPc0dFcsU2M+FA4VoOiwGGdVLC_sHT=M1g@mail.gmail.com>
+Message-ID: <CAHk-=whYihRm0brAXPc0dFcsU2M+FA4VoOiwGGdVLC_sHT=M1g@mail.gmail.com>
+Subject: Re: [fs] 140402bab8: stress-ng.splice.ops_per_sec -100.0% regression
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kernel test robot <rong.a.chen@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>, lkp@lists.01.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 1 Jul 2020 18:28:55 +0000:
+On Wed, Jul 1, 2020 at 5:13 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> FYI, this is because stress-nh tests splice using /dev/null.  Which
+> happens to actually have the iter ops, but doesn't have explicit
+> splice_read operation.
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed
+Heh. I guess a splice op for /dev/null should be fairly trivial to implement..
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cd77006e01b3198c75fb7819b3d0ff89709539bb
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+               Linus
