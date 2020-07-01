@@ -2,59 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D489210B38
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 14:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E602D210B37
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 14:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730679AbgGAMrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 08:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34820 "EHLO
+        id S1730661AbgGAMrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 08:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730647AbgGAMrR (ORCPT
+        with ESMTP id S1730622AbgGAMrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 08:47:17 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29880C03E979
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 05:47:16 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id b6so23637032wrs.11
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 05:47:16 -0700 (PDT)
+        Wed, 1 Jul 2020 08:47:18 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C18DC03E97A
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 05:47:17 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id o11so23669076wrv.9
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 05:47:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=phaHepEqEbU60VSdrxFqwpC3YbwLDxmZYay7m2R57bw=;
-        b=JQJdL1orTD6yrnvu+G+Eb/HXTwwA1BYCd5yp8o/2fk74PgM7jUblE5zVqfHqU3Swq7
-         EnCEMIFQOVslHGPA3VVxtzqf50unu1X/ugYbWoRwdC2gV8eLP194tZwfLF3qdwhMqiFC
-         XuW41gKAyIJu/cpdbgQOOiGHnPuS7UP3a7vc8kC1P/O2/4VyLf1l+mZfUR2zrhp1/n9M
-         UB7CHbqjd0FS0AytCmPJ8qTC0izQZsLz/vA6FYkp5RESKM1pgkjbWCafgr78ZiIIi2BK
-         4GAoFq2K2JGd0y83LhXd8gmI4GDS7sNs/TacfyBk/2+G9VMK3lvuLTwVgcf6Lrq/13xl
-         qpug==
+        bh=Yd63tKAD8TEw//9s1TXw4/kd8gj1ZByx7XV4rk7dLd0=;
+        b=c9lB95ZlSkCDr8FrC6iJ4ySeiJo/PwpxEuvTW8mPxbMi7ihPg/iN9Ag0/siQ+aqpIN
+         lJhnsv+KPo9I9zWCV2sxE1dhJLOJGFRNycvWH0auT6M8XZ7Mm/CEmwTqIi/r6BvFoFbn
+         ZF67z9oamZZJ9uq+qhic/shA3dVgWeBSmdEv+aV9UMhqA1T2lxOnICn52HaGh14Z8zLs
+         JlM+mZTh/a6C65EV3n2CX9SPSXdqj7qDRm8JgZVHxNSzK4s2KBtcxSMAE3tkpiwImxEL
+         DLIl0Ew6S3oRNZnBNegDJAc0B6jWmDJxM/kmE9KyRsqZ+dUn1sLkGLyi21Q94OtsfMI6
+         T5RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=phaHepEqEbU60VSdrxFqwpC3YbwLDxmZYay7m2R57bw=;
-        b=R0HLfBsx4W/UDYzKVLODUx7wYXJrDMDtI1NsRxltYAPheRzd6WqTK81j+Mvwgytq/5
-         /AmaFSU5vbxQD4X0H2yNbIT2zgdq73SSZYYeICDQyHSQc4lgncHW909AyxQIeMub4Qto
-         d++Thux8N1SWgNuErAZrd6b/rdmjHzR1kY3O6aQ7Iv/OjeALjIP9ELkg09dF/Z1x2MVb
-         9vdWzEuY/V/uy9pjHTXDrYEKBT2KOEEtsM6F6hZNH04TCaV4cOjwRFxisN+PeH+Aui1O
-         vppIRzECUVRFLqFOksw10WW8s3SRdDdYTx5EX+AK5lkiIXI6cOheNpEYnqDOZGD4tbwx
-         mnAQ==
-X-Gm-Message-State: AOAM530ToXSBncIkauTqLE0DGcnSswjrRQrfngEuFce7o2XjrrmF9gze
-        dEaHYsjNv+uyQbR7LLzBETJ7Ow==
-X-Google-Smtp-Source: ABdhPJwgwINDi8Vx2k78e0LUbFfG5zxBt7MBPPGrr1Hcrg1wwapdPMMvrt5k5hC8U/MQ7E7z0g1dog==
-X-Received: by 2002:adf:e701:: with SMTP id c1mr27181289wrm.350.1593607634878;
-        Wed, 01 Jul 2020 05:47:14 -0700 (PDT)
+        bh=Yd63tKAD8TEw//9s1TXw4/kd8gj1ZByx7XV4rk7dLd0=;
+        b=Jlx9ZgVwyFg4neYuPkLs4SsaHHCYbFU08JRTHjraSflfGOZOEZT+rF3Fqz5U3GvipP
+         tXhcY0w3Fh1Ee62J5Zy6rhUr6lYjaUl262lS8xjCWhSYsOvkuzN0c8f6LaO5uFJQrB9P
+         q1V0zjLIpy42Kp3ANIU64006polG88K0VCUOww+osejgAN3Kn4GeeQFgcTfr+shBTCbt
+         iV2TJAa+h/Q+AgQRRsqnDj/GOWOgllPHBa17HcWCakX0c8FMxq99lZfNr2/4Bf6O2WQs
+         x7bvr5fILb0niJq152AnZj2P8x9JSr0CN2MOP5W76i+2KJhySEsh//qdhBpqIYb+zBcX
+         dRKA==
+X-Gm-Message-State: AOAM533RXudR6BpfLh2NjqJ8yB7yHIFeitCGMZlXBKre8ofEthPdE/jb
+        G+BQI2dOXkjrrR8VUzo7XKhlnw==
+X-Google-Smtp-Source: ABdhPJwshEQk22UxiuotqnoaKHFLuGrVwcP2gpb1t5Bt9UatQsrYDEIsRgMqxO9yunUFcwD7M//wEQ==
+X-Received: by 2002:a5d:420b:: with SMTP id n11mr26559514wrq.91.1593607636400;
+        Wed, 01 Jul 2020 05:47:16 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
         by smtp.gmail.com with ESMTPSA id o29sm7817862wra.5.2020.07.01.05.47.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 05:47:14 -0700 (PDT)
+        Wed, 01 Jul 2020 05:47:15 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     ulf.hansson@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 07/15] mmc: core: queue: Correct misspelling of 'mq' in mmc_init_request()'s docs
-Date:   Wed,  1 Jul 2020 13:46:54 +0100
-Message-Id: <20200701124702.908713-8-lee.jones@linaro.org>
+        Lee Jones <lee.jones@linaro.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Thomas Abraham <thomas.ab@samsung.com>,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH 08/15] mmc: host: dw_mmc-exynos: Add kerneldoc descriptions of for 'dev' args
+Date:   Wed,  1 Jul 2020 13:46:55 +0100
+Message-Id: <20200701124702.908713-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200701124702.908713-1-lee.jones@linaro.org>
 References: <20200701124702.908713-1-lee.jones@linaro.org>
@@ -65,29 +70,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correcting this misspelling squashes the following W=1 build warning(s):
+Provide missing documentation for dw_mci_exynos_suspend_noirq() and
+dw_mci_exynos_resume_noirq() function headers.
 
- mmc/core/queue.c:212: warning: Function parameter or member 'mq' not described in '__mmc_init_request'
- mmc/core/queue.c:212: warning: Excess function parameter 'q' description in '__mmc_init_request'
+Fixes the following W=1 kernel build warnings:
 
+ drivers/mmc/host/dw_mmc-exynos.c:184: warning: Function parameter or member 'dev' not described in 'dw_mci_exynos_suspend_noirq'
+ drivers/mmc/host/dw_mmc-exynos.c:200: warning: Function parameter or member 'dev' not described in 'dw_mci_exynos_resume_noirq'
+
+Cc: Jaehoon Chung <jh80.chung@samsung.com>
+Cc: Kukjin Kim <kgene@kernel.org>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Thomas Abraham <thomas.ab@samsung.com>
+Cc: linux-samsung-soc@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mmc/core/queue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mmc/host/dw_mmc-exynos.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-index 4b1eb89b401d9..6c022ef0f84d7 100644
---- a/drivers/mmc/core/queue.c
-+++ b/drivers/mmc/core/queue.c
-@@ -203,7 +203,7 @@ static unsigned int mmc_get_max_segments(struct mmc_host *host)
+diff --git a/drivers/mmc/host/dw_mmc-exynos.c b/drivers/mmc/host/dw_mmc-exynos.c
+index 5e3d95b636769..bd59186f59b39 100644
+--- a/drivers/mmc/host/dw_mmc-exynos.c
++++ b/drivers/mmc/host/dw_mmc-exynos.c
+@@ -176,6 +176,7 @@ static int dw_mci_exynos_runtime_resume(struct device *dev)
+ #ifdef CONFIG_PM_SLEEP
+ /**
+  * dw_mci_exynos_suspend_noirq - Exynos-specific suspend code
++ * @dev: Device to suspend (this device)
+  *
+  * This ensures that device will be in runtime active state in
+  * dw_mci_exynos_resume_noirq after calling pm_runtime_force_resume()
+@@ -188,6 +189,7 @@ static int dw_mci_exynos_suspend_noirq(struct device *dev)
  
  /**
-  * mmc_init_request() - initialize the MMC-specific per-request data
-- * @q: the request queue
-+ * @mq: the request queue
-  * @req: the request
-  * @gfp: memory allocation policy
-  */
+  * dw_mci_exynos_resume_noirq - Exynos-specific resume code
++ * @dev: Device to resume (this device)
+  *
+  * On exynos5420 there is a silicon errata that will sometimes leave the
+  * WAKEUP_INT bit in the CLKSEL register asserted.  This bit is 1 to indicate
 -- 
 2.25.1
 
