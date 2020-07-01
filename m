@@ -2,123 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27707215B5C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 18:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29044215B7E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 18:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729429AbgGFQAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 12:00:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:52050 "EHLO foss.arm.com"
+        id S1729571AbgGFQJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 12:09:15 -0400
+Received: from colon.ran.es ([212.34.128.5]:57380 "EHLO colon.ran.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729297AbgGFQA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 12:00:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 659CB1FB;
-        Mon,  6 Jul 2020 09:00:28 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A61A23F68F;
-        Mon,  6 Jul 2020 09:00:25 -0700 (PDT)
-Date:   Mon, 6 Jul 2020 17:00:23 +0100
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matt Turner <mattst88@gmail.com>, kernel-team@android.com,
-        Marco Elver <elver@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        linux-arm-kernel@lists.infradead.org,
-        Richard Henderson <rth@twiddle.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org
-Subject: Re: [PATCH 18/18] arm64: lto: Strengthen READ_ONCE() to acquire when
- CLANG_LTO=y
-Message-ID: <20200706160023.GB10992@arm.com>
-References: <20200630173734.14057-1-will@kernel.org>
- <20200630173734.14057-19-will@kernel.org>
- <20200701170722.4rte5ssnmrn2uqzg@bakewell.cambridge.arm.com>
- <20200702072301.GA15963@willie-the-truck>
+        id S1729408AbgGFQJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 12:09:14 -0400
+Received: from User ([185.36.81.174])
+        by colon.ran.es (8.13.8/8.13.8/Debian-3+etch1) with SMTP id 061Mc9Ot026909;
+        Thu, 2 Jul 2020 00:38:10 +0200
+Message-Id: <202007012238.061Mc9Ot026909@colon.ran.es>
+Reply-To: <makatiemeka101@yahoo.com>
+From:   "Mr Peter Owen" <compras@sambau.com>
+Subject: <<<<Message from Mr Peter Owen>>>
+Date:   Thu, 2 Jul 2020 00:38:25 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702072301.GA15963@willie-the-truck>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+To:     undisclosed-recipients:;
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 08:23:02AM +0100, Will Deacon wrote:
-> On Wed, Jul 01, 2020 at 06:07:25PM +0100, Dave P Martin wrote:
-> > On Tue, Jun 30, 2020 at 06:37:34PM +0100, Will Deacon wrote:
-> > > When building with LTO, there is an increased risk of the compiler
-> > > converting an address dependency headed by a READ_ONCE() invocation
-> > > into a control dependency and consequently allowing for harmful
-> > > reordering by the CPU.
-> > > 
-> > > Ensure that such transformations are harmless by overriding the generic
-> > > READ_ONCE() definition with one that provides acquire semantics when
-> > > building with LTO.
-> > > 
-> > > Signed-off-by: Will Deacon <will@kernel.org>
-> > > ---
-> > >  arch/arm64/include/asm/rwonce.h   | 63 +++++++++++++++++++++++++++++++
-> > >  arch/arm64/kernel/vdso/Makefile   |  2 +-
-> > >  arch/arm64/kernel/vdso32/Makefile |  2 +-
-> > >  3 files changed, 65 insertions(+), 2 deletions(-)
-> > >  create mode 100644 arch/arm64/include/asm/rwonce.h
-> > > 
-> > > diff --git a/arch/arm64/include/asm/rwonce.h b/arch/arm64/include/asm/rwonce.h
-> > > new file mode 100644
-> > > index 000000000000..515e360b01a1
-> > > --- /dev/null
-> > > +++ b/arch/arm64/include/asm/rwonce.h
-> > > @@ -0,0 +1,63 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > +/*
-> > > + * Copyright (C) 2020 Google LLC.
-> > > + */
-> > > +#ifndef __ASM_RWONCE_H
-> > > +#define __ASM_RWONCE_H
-> > > +
-> > > +#ifdef CONFIG_CLANG_LTO
-> > 
-> > Don't we have a generic option for LTO that's not specific to Clang.
-> 
-> /me looks at the LTO series some more
-> 
-> Oh yeah, there's CONFIG_LTO which is selected by CONFIG_LTO_CLANG, which is
-> the non-typoed version of the above. I can switch this to CONFIG_LTO.
-> 
-> > Also, can you illustrate code that can only be unsafe with Clang LTO?
-> 
-> I don't have a concrete example, but it's an ongoing concern over on the LTO
-> thread [1], so I cooked this to show one way we could deal with it. The main
-> concern is that the whole-program optimisations enabled by LTO may allow the
-> compiler to enumerate possible values for a pointer at link time and replace
-> an address dependency between two loads with a control dependency instead,
-> defeating the dependency ordering within the CPU.
+Good Day,
+I hope this meets you well.I have a proposed BUSINESS DEAL that will be Beneficial to both parties.Please consider it legitimate,legal as your REPUTATION will not be compromised.Please Reply to me ONLY if you are interested and consider your self WORTHY to handle for details.
 
-Why can't that happen without LTO?
+Sincerely,
 
-> We likely won't realise if/when this goes wrong, other than impossible to
-> debug, subtle breakage that crops up seemingly randomly. Ideally, we'd be
-> able to detect this sort of thing happening at build time, and perhaps
-> even prevent it with compiler options or annotations, but none of that is
-> close to being available and I'm keen to progress the LTO patches in the
-> meantime because they are a requirement for CFI.
-
-My concern was not so much why LTO makes things dangerous, as why !LTO
-makes things safe...
-
-Cheers
----Dave
+Peter OWEN
