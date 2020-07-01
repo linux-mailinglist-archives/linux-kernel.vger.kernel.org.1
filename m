@@ -2,102 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEEAD21117B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 19:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3397B211187
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 19:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732207AbgGARDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 13:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46684 "EHLO
+        id S1732653AbgGARE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 13:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730955AbgGARDB (ORCPT
+        with ESMTP id S1732571AbgGARE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 13:03:01 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1719C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 10:03:00 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id g20so20479758edm.4
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 10:03:00 -0700 (PDT)
+        Wed, 1 Jul 2020 13:04:57 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A020C08C5DB
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 10:04:57 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id h23so19047416qtr.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 10:04:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sXLocZuYa5LyRW+7c8dY9wi1ppvduxYFU7Sa4aAHUQ0=;
-        b=FNRiKjGOLujr2GHcouB/onGnSBkqERG4/SfGtF+Ui+ASREDVq0YOFGgipw9Hvu1XeC
-         q8heD9a6c0iKic1AFiHslIDWRsk3kJuygMm66NNQI3CKH+rjWm7qheoPxrMSMqJirLId
-         u0O6QB0nEFLdDv+1vKCf2hb9UR/WD5bow+KZtf+Yai71jqQEIysBGBLVTL5bXK91wveb
-         aW19JVd27lMuXuDtDqanawo4WQLJ1PS+jkTc68VMGHm6mJimVzgSBzRTHIDNYK5Wuy8e
-         MdEyachNYELHOsU4Av3kBkd99S9yklbFxhFQ6+0bJLfrFOw8CzsQH0eP8+R4xf2mYRJs
-         VJTw==
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=CN+fMZHjRz6cQZ6By1KV3J/CB1Q6jvTnPN3oKiEz6+E=;
+        b=ewfXnkAqVEr73ZZ+221DRIwPImdL/mndMfhyS721xbdHnW1G6sWfGUF6mriUkt0j8b
+         WSNomjCz0BZF9dJrkASd4vEFnELdLcrDW58mTCvuTlczzQNnr1moiHmv6uxL/eGNKS9l
+         J6dxAmh9SUqKqEY7zvajME5nA+2fntrOAKJwTx7MuNZcAYlhGD2mzOxYZ1sm9Tl1sKTN
+         yyqhmKTAetfeCecpjZqDaHbvwYalF9oHml8/h9LYK1a3vvjEr+om8x4NEumvHc+j3bEp
+         zKSE664voxBy2j4jJRLzf1AVB7zvdclcOxtPBRv2I92u3DlV1T0VpppKA1D6FqQeTe7X
+         yIHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sXLocZuYa5LyRW+7c8dY9wi1ppvduxYFU7Sa4aAHUQ0=;
-        b=KU3YbJwO2OlJ8F5TLmfcsau2Jo3Pkn/FsKfhAES51Bl0pqxeJIitmtZ0xFGv3oXe8L
-         ewNvpQ2QzhDd5/MDsN6UnyOCTr+q7q4Dy+oY5P9+4l3qElorx3OCaGGN6tBCXcYFRowL
-         02P84Qugxv+mtJByu9hbmKZEczQBbcBhXt9iNQahx09FPWdt/7X0K4u+MpfJgHygjyJT
-         sZYrjs2XEGGE8wLlaaATgmAP1B6nKaEIFErhCLLMqaRdfQcRsTBDPBiZRxFMbAMn0+wm
-         JSApzhwVAUwAWJuZeD53IkR3PWW+mEp4Pd17V94UwwjhOmoWpAzTrjhzoa7PgSuNQeic
-         Df6w==
-X-Gm-Message-State: AOAM533YKq+6pQh9xASO0rttFLa0zCw58RJrPraiZY6ILt3DylAyUDYB
-        oS3fQnd4qxnxzLj+e/2HBi5VvJE8WrJj3iuzRo3MCw==
-X-Google-Smtp-Source: ABdhPJx8LUrrdnwmBIDiSNRuGB4f6C/45FYDSPt9e8ZYnDUngrST9sVe5bZuefihx+MmlBauk2XZmDEsc574ZFY6EU0=
-X-Received: by 2002:a50:c355:: with SMTP id q21mr27751649edb.121.1593622979559;
- Wed, 01 Jul 2020 10:02:59 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CN+fMZHjRz6cQZ6By1KV3J/CB1Q6jvTnPN3oKiEz6+E=;
+        b=RxznuC/7tsbhTRub6M9vJoxnEF0lFl+01aPnfVO1Qp5xEGaUkGCZEdFZdRvtImOxx0
+         6oXSv8HnOCbiplTBqSPBaVQLr/v2diwiBMZKV5mVhh1WwVFDi68BfZxNHoc6GYbVtWqP
+         VKQCwoh6eGU9gkwwe2O6o0hPkoEizL2gMd3mJRH0KTCc/1YfcVvGP8sCvu9GVyEikiO9
+         WdcZNnR0+t5nKgEfeGXV2wXdJO8lVgQb+mzTXkL+1DJRj0qbhAu7NyTpoyM3ahi3yHsq
+         Dt/E9aqLWM3dIgyAOQNpBhL2JFKbPshdhDXSY5sJgCZwC9vBD+Rt6Hvl3mtmEl4/4JEe
+         sNBA==
+X-Gm-Message-State: AOAM530C467lLkYwxjCgHYextupo5OFSdk8k2IhAMeb0kO1CYxaJppBO
+        KF4miwu7Mxc3RGrf4FvKObpl9w==
+X-Google-Smtp-Source: ABdhPJwXo9kSffKLrPPQIOK7rHILdvBMLIyVKGq9lzhY/udOhfuTBecFsZrL0mUqUoFypHQql+VjjA==
+X-Received: by 2002:ac8:378f:: with SMTP id d15mr26658349qtc.256.1593623096432;
+        Wed, 01 Jul 2020 10:04:56 -0700 (PDT)
+Received: from [192.168.0.189] ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id q5sm7041265qtf.12.2020.07.01.10.04.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Jul 2020 10:04:55 -0700 (PDT)
+Subject: Re: [RFC PATCH] interconnect: qcom: add functions to query addr/cmds
+ for a path
+To:     linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        kbuild test robot <lkp@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        "open list:INTERCONNECT API" <linux-pm@vger.kernel.org>
+References: <20200701042528.12321-1-jonathan@marek.ca>
+ <20200701165628.GA19996@jcrouse1-lnx.qualcomm.com>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <7c1f9635-f4d5-a977-905d-3d7cc9d74ec2@marek.ca>
+Date:   Wed, 1 Jul 2020 13:03:48 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-References: <20200630184922.455439-1-haoluo@google.com> <49df8306-ecc7-b979-d887-b023275e4842@fb.com>
- <CA+khW7iJu2tzcz36XzL6gBq4poq+5Qt0vbrmPRdYuvC-c5U4_A@mail.gmail.com>
- <CA+khW7jNqVMqq2dzf6Dy0pWCZYjHrG7Vm_sUEKKLS-L-ptzEtQ@mail.gmail.com> <46fc8e13-fb3e-6464-b794-60cf90d16543@fb.com>
-In-Reply-To: <46fc8e13-fb3e-6464-b794-60cf90d16543@fb.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Wed, 1 Jul 2020 10:02:48 -0700
-Message-ID: <CA+khW7hLL+=sZwCT_6gHHjHTZnmbNk5Pju9vsLOJF4VjyHY-iA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Switch test_vmlinux to use hrtimer_range_start_ns.
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-kselftest@vger.kernel.org,
-        Stanislav Fomichev <sdf@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Bill Wendling <morbo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200701165628.GA19996@jcrouse1-lnx.qualcomm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 7:26 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 6/30/20 5:10 PM, Hao Luo wrote:
-> > Ok, with the help of my colleague Ian Rogers, I think we solved the
-> > mystery. Clang actually inlined hrtimer_nanosleep() inside
-> > SyS_nanosleep(), so there is no call to that function throughout the
-> > path of the nanosleep syscall. I've been looking at the function body
-> > of hrtimer_nanosleep for quite some time, but clearly overlooked the
-> > caller of hrtimer_nanosleep. hrtimer_nanosleep is pretty short and
-> > there are many constants, inlining would not be too surprising.
->
-> Oh thanks for explanation. inlining makes sense. We have many other
-> instances like this in the past where kprobe won't work properly.
->
-> Could you reword your commit message then?
->
->  > causing fentry and kprobe to not hook on this function properly on a
->  > Clang build kernel.
->
-> The above is a little vague on what happens. What really happens is
-> fentry/kprobe does hook on this function but has no effect since
-> its caller has inlined the function.
+On 7/1/20 12:56 PM, Jordan Crouse wrote:
+> On Wed, Jul 01, 2020 at 12:25:25AM -0400, Jonathan Marek wrote:
+>> The a6xx GMU can vote for ddr and cnoc bandwidth, but it needs to be able
+>> to query the interconnect driver for bcm addresses and commands.
+>>
+>> I'm not sure what is the best way to go about implementing this, this is
+>> what I came up with.
+>>
+>> I included a quick example of how this can be used by the a6xx driver to
+>> fill out the GMU bw_table (two ddr bandwidth levels in this example, note
+>> this would be using the frequency table in dts and not hardcoded values).
+> 
+> I would like to add my enthusiasm for this idea but I'm not much of an
+> interconnect or RPMh expert so I would defer to them to be sure that the APIs
+> are robust enough to cover all the corner cases.
+> 
+>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>> ---
+>>   drivers/gpu/drm/msm/adreno/a6xx_hfi.c | 20 ++++-------
+>>   drivers/interconnect/qcom/icc-rpmh.c  | 50 +++++++++++++++++++++++++++
+>>   include/soc/qcom/icc.h                | 11 ++++++
+>>   3 files changed, 68 insertions(+), 13 deletions(-)
+>>   create mode 100644 include/soc/qcom/icc.h
+>>
+>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_hfi.c b/drivers/gpu/drm/msm/adreno/a6xx_hfi.c
+>> index ccd44d0418f8..1fb8f0480be3 100644
+>> --- a/drivers/gpu/drm/msm/adreno/a6xx_hfi.c
+>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_hfi.c
+>> @@ -4,6 +4,7 @@
+>>   #include <linux/completion.h>
+>>   #include <linux/circ_buf.h>
+>>   #include <linux/list.h>
+>> +#include <soc/qcom/icc.h>
+>>   
+>>   #include "a6xx_gmu.h"
+>>   #include "a6xx_gmu.xml.h"
+>> @@ -320,24 +321,18 @@ static void a640_build_bw_table(struct a6xx_hfi_msg_bw_table *msg)
+>>   	msg->cnoc_cmds_data[1][2] =  0x60000001;
+>>   }
+>>   
+>> -static void a650_build_bw_table(struct a6xx_hfi_msg_bw_table *msg)
+>> +static void a650_build_bw_table(struct a6xx_hfi_msg_bw_table *msg, struct icc_path *path)
+>>   {
+>>   	/*
+>>   	 * Send a single "off" entry just to get things running
+>>   	 * TODO: bus scaling
+>>   	 */
+>> -	msg->bw_level_num = 1;
+>> -
+>> -	msg->ddr_cmds_num = 3;
+>> +	msg->bw_level_num = 2;
+>>   	msg->ddr_wait_bitmask = 0x01;
+> 
+> We're going to need a API function for the wait bitmask too.
+>   
+>> -	msg->ddr_cmds_addrs[0] = 0x50000;
+>> -	msg->ddr_cmds_addrs[1] = 0x50004;
+>> -	msg->ddr_cmds_addrs[2] = 0x5007c;
+>> -
+>> -	msg->ddr_cmds_data[0][0] =  0x40000000;
+>> -	msg->ddr_cmds_data[0][1] =  0x40000000;
+>> -	msg->ddr_cmds_data[0][2] =  0x40000000;
+>> +	msg->ddr_cmds_num = qcom_icc_query_addr(path, msg->ddr_cmds_addrs);
+>> +	qcom_icc_query_cmd(path, msg->ddr_cmds_data[0], 0, 0);
+>> +	qcom_icc_query_cmd(path, msg->ddr_cmds_data[1], 0, 7216000);
+>>   
+>>   	/*
+>>   	 * These are the CX (CNOC) votes - these are used by the GMU but the
+>> @@ -388,7 +383,6 @@ static void a6xx_build_bw_table(struct a6xx_hfi_msg_bw_table *msg)
+>>   	msg->cnoc_cmds_data[1][2] =  0x60000001;
+>>   }
+>>   
+>> -
+>>   static int a6xx_hfi_send_bw_table(struct a6xx_gmu *gmu)
+>>   {
+>>   	struct a6xx_hfi_msg_bw_table msg = { 0 };
+>> @@ -400,7 +394,7 @@ static int a6xx_hfi_send_bw_table(struct a6xx_gmu *gmu)
+>>   	else if (adreno_is_a640(adreno_gpu))
+>>   		a640_build_bw_table(&msg);
+>>   	else if (adreno_is_a650(adreno_gpu))
+>> -		a650_build_bw_table(&msg);
+>> +		a650_build_bw_table(&msg, adreno_gpu->base.icc_path);
+>>   	else
+>>   		a6xx_build_bw_table(&msg);
+>>   
+>> diff --git a/drivers/interconnect/qcom/icc-rpmh.c b/drivers/interconnect/qcom/icc-rpmh.c
+>> index 3ac5182c9ab2..3ce2920330f9 100644
+>> --- a/drivers/interconnect/qcom/icc-rpmh.c
+>> +++ b/drivers/interconnect/qcom/icc-rpmh.c
+>> @@ -9,6 +9,7 @@
+>>   
+>>   #include "bcm-voter.h"
+>>   #include "icc-rpmh.h"
+>> +#include "../internal.h"
+>>   
+>>   /**
+>>    * qcom_icc_pre_aggregate - cleans up stale values from prior icc_set
+>> @@ -92,6 +93,55 @@ int qcom_icc_set(struct icc_node *src, struct icc_node *dst)
+>>   }
+>>   EXPORT_SYMBOL_GPL(qcom_icc_set);
+>>   
+>> +static u32 bcm_query(struct qcom_icc_bcm *bcm, u64 sum_avg, u64 max_peak)
+>> +{
+>> +	u64 temp, agg_peak = 0;
+>> +	int i;
+>> +
+>> +	for (i = 0; i < bcm->num_nodes; i++) {
+>> +		temp = max_peak * bcm->aux_data.width;
+>> +		do_div(temp, bcm->nodes[i]->buswidth);
+>> +		agg_peak = max(agg_peak, temp);
+>> +	}
+>> +
+>> +	temp = agg_peak * 1000ULL;
+>> +	do_div(temp, bcm->aux_data.unit);
+>> +
+>> +	// TODO vote_x
+>> +
+>> +	return BCM_TCS_CMD(true, temp != 0, 0, temp);
+>> +}
+>> +
+>> +int qcom_icc_query_addr(struct icc_path *path, u32 *addr)
+> 
+> The leaf driver won't know the size of the path, so we'll likely need to kmalloc
+> and return the array or allow addr to be NULL and have the leaf driver do the
+> allocation itself once it knows what k is.
+> 
 
-Sure, sending a v2 with a more accurate description of the issue.
+In the a6xx gpu case, the a6xx_hfi_msg_bw_table has a fixed array size 
+(allows up to 8 commands for ddr and 6 for cnoc), so there shouldn't be 
+a need for any allocation.
 
-Hao
+Allowing addr to be NULL to get the # of addrs/cmds (so the a6xx driver 
+can bail out if it can't fit, although that should never happen) would 
+be OK (or having an array size parameter so the function can return an 
+error), but IMO not needed for the "qcom_icc_query_cmd" function below, 
+since it returns the same number of commands the "qcom_icc_query_addr" 
+returns addresses.
+
+>> +{
+>> +	struct qcom_icc_node *qn;
+>> +	int i, j, k = 0;
+>> +
+>> +	for (i = 0; i < path->num_nodes; i++) {
+>> +		qn = path->reqs[i].node->data;
+>> +		for (j = 0; j < qn->num_bcms; j++, k++)
+>> +			addr[k] = qn->bcms[j]->addr;
+>> +	}
+>> +
+>> +	return k;
+>> +}
+>> +EXPORT_SYMBOL_GPL(qcom_icc_query_addr);
+>> +
+>> +int qcom_icc_query_cmd(struct icc_path *path, u32 *cmd, u64 avg, u64 max)
+>> +{
+>> +	struct qcom_icc_node *qn;
+>> +	int i, j, k = 0;
+>> +
+>> +	for (i = 0; i < path->num_nodes; i++) {
+>> +		qn = path->reqs[i].node->data;
+>> +		for (j = 0; j < qn->num_bcms; j++, k++)
+>> +			cmd[k] = bcm_query(qn->bcms[j], avg, max);
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+> 
+> Same as above.  When downstream did this for their old bespoke bus API they had
+> one function returns a struct with addrs / commands / wait bitmask.
+> 
+> I don't mind splitting up the function, but either way something is going to
+> have to query the number of commands in the path and allocate the buffers.
+> 
+> Jordan
+> 
+>> +EXPORT_SYMBOL_GPL(qcom_icc_query_cmd);
+>> +
+>>   /**
+>>    * qcom_icc_bcm_init - populates bcm aux data and connect qnodes
+>>    * @bcm: bcm to be initialized
+>> diff --git a/include/soc/qcom/icc.h b/include/soc/qcom/icc.h
+>> new file mode 100644
+>> index 000000000000..8d0ddde49739
+>> --- /dev/null
+>> +++ b/include/soc/qcom/icc.h
+>> @@ -0,0 +1,11 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +
+>> +#ifndef __SOC_QCOM_ICC_H__
+>> +#define __SOC_QCOM_ICC_H__
+>> +
+>> +#include <linux/interconnect.h>
+>> +
+>> +int qcom_icc_query_addr(struct icc_path *path, u32 *addr);
+>> +int qcom_icc_query_cmd(struct icc_path *path, u32 *cmd, u64 avg, u64 max);
+>> +
+>> +#endif /* __SOC_QCOM_ICC_H__ */
+>> -- 
+>> 2.26.1
+>>
+> 
