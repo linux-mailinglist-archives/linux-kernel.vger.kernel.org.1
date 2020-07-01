@@ -2,168 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B6F210A78
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 13:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758FB210A7E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 13:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730451AbgGALmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 07:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730364AbgGALmT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 07:42:19 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 356F0C03E97A
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 04:42:19 -0700 (PDT)
-Received: from ramsan ([IPv6:2a02:1810:ac12:ed20:503c:ab8:1424:9638])
-        by laurent.telenet-ops.be with bizsmtp
-        id xniG2200249uj5301niG47; Wed, 01 Jul 2020 13:42:16 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jqb84-0006Pu-92; Wed, 01 Jul 2020 13:42:16 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jqb84-0002EF-73; Wed, 01 Jul 2020 13:42:16 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2 2/2] gpio: aggregator: Use bitmap_parselist() for parsing GPIO offsets
-Date:   Wed,  1 Jul 2020 13:42:12 +0200
-Message-Id: <20200701114212.8520-3-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200701114212.8520-1-geert+renesas@glider.be>
-References: <20200701114212.8520-1-geert+renesas@glider.be>
+        id S1730368AbgGALnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 07:43:47 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:32123 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730289AbgGALnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 07:43:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593603826; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=ZxvZ3ZHrYJEH6ORrIltAoxRTJ6ts5ysgirylJWWdaHQ=; b=cs4f4QilY8NYtPC2c5mpg/7Wmjhfw0fVfk0QZpbconxCPKmf++YeMFSxrCvvt0fbZ9w3ycLU
+ 1O5iEcwiByfPrx+/GW0c/WGdlM2Vw1lFVArOgB5tpe4LOi0mD/OzloQPCqx8lANTvSWkpEQ8
+ 0GT4r3sIcG1ITl/lBGFsPtu1UQE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
+ 5efc76edad153efa3468cb64 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 01 Jul 2020 11:43:41
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 042CBC433A1; Wed,  1 Jul 2020 11:43:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.231.195.151] (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: zijuhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6725DC433C8;
+        Wed,  1 Jul 2020 11:43:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6725DC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=zijuhu@codeaurora.org
+Subject: Re: [PATCH v1] sched/cfs: Fix pick_next_entity() implementation error
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1593598026-2451-1-git-send-email-zijuhu@codeaurora.org>
+ <CAKfTPtBn0Bh4DjSs_nATYPvRt5Ks2Dg8n0TH7vuxtFfKFTxG5A@mail.gmail.com>
+From:   Zijun Hu <zijuhu@codeaurora.org>
+Message-ID: <a2134b46-88b5-9260-1b6f-60f5b189e86c@codeaurora.org>
+Date:   Wed, 1 Jul 2020 19:43:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAKfTPtBn0Bh4DjSs_nATYPvRt5Ks2Dg8n0TH7vuxtFfKFTxG5A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the custom code to parse GPIO offsets and/or GPIO offset ranges
-by a call to bitmap_parselist(), and an iteration over the returned bit
-mask.
+thanks for your explanation.
+you are right. @lest should be used as reference point to compare.
+Please ignore this patch.
 
-This should have no impact on the format of the configuration parameters
-written to the "new_device" virtual file in sysfs.
-
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v2:
-  - Rename mask to bitmap,
-  - Allocate bitmap dynamically.
----
- drivers/gpio/gpio-aggregator.c | 59 +++++++++++++++-------------------
- 1 file changed, 26 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/gpio/gpio-aggregator.c b/drivers/gpio/gpio-aggregator.c
-index 62a3fcbd4b4bb106..424a3d25350bf50d 100644
---- a/drivers/gpio/gpio-aggregator.c
-+++ b/drivers/gpio/gpio-aggregator.c
-@@ -10,6 +10,7 @@
- #include <linux/bitmap.h>
- #include <linux/bitops.h>
- #include <linux/ctype.h>
-+#include <linux/gpio.h>
- #include <linux/gpio/consumer.h>
- #include <linux/gpio/driver.h>
- #include <linux/gpio/machine.h>
-@@ -111,55 +112,45 @@ static int aggr_add_gpio(struct gpio_aggregator *aggr, const char *key,
- 
- static int aggr_parse(struct gpio_aggregator *aggr)
- {
--	unsigned int first_index, last_index, i, n = 0;
--	char *name, *offsets, *first, *last, *next;
- 	char *args = aggr->args;
--	int error;
-+	unsigned long *bitmap;
-+	unsigned int i, n = 0;
-+	char *name, *offsets;
-+	int error = 0;
-+
-+	bitmap = bitmap_alloc(ARCH_NR_GPIOS, GFP_KERNEL);
-+	if (!bitmap)
-+		return -ENOMEM;
- 
- 	for (name = get_arg(&args), offsets = get_arg(&args); name;
- 	     offsets = get_arg(&args)) {
- 		if (IS_ERR(name)) {
- 			pr_err("Cannot get GPIO specifier: %pe\n", name);
--			return PTR_ERR(name);
-+			error = PTR_ERR(name);
-+			goto free_bitmap;
- 		}
- 
- 		if (!isrange(offsets)) {
- 			/* Named GPIO line */
- 			error = aggr_add_gpio(aggr, name, U16_MAX, &n);
- 			if (error)
--				return error;
-+				goto free_bitmap;
- 
- 			name = offsets;
- 			continue;
- 		}
- 
- 		/* GPIO chip + offset(s) */
--		for (first = offsets; *first; first = next) {
--			next = strchrnul(first, ',');
--			if (*next)
--				*next++ = '\0';
--
--			last = strchr(first, '-');
--			if (last)
--				*last++ = '\0';
--
--			if (kstrtouint(first, 10, &first_index)) {
--				pr_err("Cannot parse GPIO index %s\n", first);
--				return -EINVAL;
--			}
--
--			if (!last) {
--				last_index = first_index;
--			} else if (kstrtouint(last, 10, &last_index)) {
--				pr_err("Cannot parse GPIO index %s\n", last);
--				return -EINVAL;
--			}
--
--			for (i = first_index; i <= last_index; i++) {
--				error = aggr_add_gpio(aggr, name, i, &n);
--				if (error)
--					return error;
--			}
-+		error = bitmap_parselist(offsets, bitmap, ARCH_NR_GPIOS);
-+		if (error) {
-+			pr_err("Cannot parse %s: %d\n", offsets, error);
-+			goto free_bitmap;
-+		}
-+
-+		for_each_set_bit(i, bitmap, ARCH_NR_GPIOS) {
-+			error = aggr_add_gpio(aggr, name, i, &n);
-+			if (error)
-+				goto free_bitmap;
- 		}
- 
- 		name = get_arg(&args);
-@@ -167,10 +158,12 @@ static int aggr_parse(struct gpio_aggregator *aggr)
- 
- 	if (!n) {
- 		pr_err("No GPIOs specified\n");
--		return -EINVAL;
-+		error = -EINVAL;
- 	}
- 
--	return 0;
-+free_bitmap:
-+	bitmap_free(bitmap);
-+	return error;
- }
- 
- static ssize_t new_device_store(struct device_driver *driver, const char *buf,
--- 
-2.17.1
-
+On 7/1/2020 6:47 PM, Vincent Guittot wrote:
+> On Wed, 1 Jul 2020 at 12:07, Zijun Hu <zijuhu@codeaurora.org> wrote:
+>>
+>> sched_entity @se not static @left should be compared
+>> to pick up @cfs_rq->next.
+> 
+> Could you elaborate why ?
+> 
+> left is the leftmost sched_entity and the one that should be used.
+> 
+> se != left means that left should be skipped after a yield and the
+> next se in the rbtree is not "far" from left although it has higher
+> vruntime
+> 
+> if we finally want to use last or next instead of se, we must ensure
+> that they are still not "far" from left otherwise you can promote a
+> sched entity that ends up having a really high vruntime
+> 
+>>
+>> Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+>> ---
+>>  kernel/sched/fair.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 658aa7a2ae6f..4790f2d851ad 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -4452,13 +4452,13 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
+>>         /*
+>>          * Prefer last buddy, try to return the CPU to a preempted task.
+>>          */
+>> -       if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, left) < 1)
+>> +       if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, se) < 1)
+>>                 se = cfs_rq->last;
+>>
+>>         /*
+>>          * Someone really wants this to run. If it's not unfair, run it.
+>>          */
+>> -       if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1)
+>> +       if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, se) < 1)
+>>                 se = cfs_rq->next;
+>>
+>>         clear_buddies(cfs_rq, se);
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+>>
