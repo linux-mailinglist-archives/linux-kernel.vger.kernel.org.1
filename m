@@ -2,224 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C2621019A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 03:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC43D2101A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 03:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726033AbgGABkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 21:40:35 -0400
-Received: from mga09.intel.com ([134.134.136.24]:46617 "EHLO mga09.intel.com"
+        id S1726171AbgGABuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 21:50:07 -0400
+Received: from mga05.intel.com ([192.55.52.43]:25314 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725763AbgGABke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 21:40:34 -0400
-IronPort-SDR: WWu0jK0TnpNnF/vx/CrL3bxyzQgo0XFdOjfuB9suyO8zJ0mBHt9uh9/aeofZ18LiNcgmnqENUQ
- 3lvlxhnRgl+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="147985230"
+        id S1725763AbgGABuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 21:50:07 -0400
+IronPort-SDR: Z8R1RR7l14pHRT+G/L9/3SmR/5gsKibzUIXsvpNUVP0mtwXCkNeUawjVm/xtsdsyalHUcZR09T
+ dZbg/afpgjHQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="231299498"
 X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="147985230"
+   d="scan'208";a="231299498"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 18:40:28 -0700
-IronPort-SDR: z3ow3w6GrhlQoJF4D6rgjhTSef8gpxhMB55XL31ON4rO1sZ49JUOyfJ1fRHX8xvsFGr0daed29
- 0494EltF4cbg==
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 18:50:06 -0700
+IronPort-SDR: P4q4STTHl8YHwzmESTyZkAcHTorHeACpmx8HN8RxpEoXVDCH+UGwm/Gnmgu6+NNvxTc3I6e5OM
+ YRTDZXbcRj9A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="481128227"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.23])
-  by fmsmga006.fm.intel.com with ESMTP; 30 Jun 2020 18:40:26 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     David Rientjes <rientjes@google.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <kbusch@kernel.org>, <yang.shi@linux.alibaba.com>,
-        <dan.j.williams@intel.com>
-Subject: Re: [RFC][PATCH 3/8] mm/vmscan: Attempt to migrate page in lieu of discard
-References: <20200629234503.749E5340@viggo.jf.intel.com>
-        <20200629234509.8F89C4EF@viggo.jf.intel.com>
-        <alpine.DEB.2.22.394.2006301732010.1644114@chino.kir.corp.google.com>
-Date:   Wed, 01 Jul 2020 09:40:25 +0800
-In-Reply-To: <alpine.DEB.2.22.394.2006301732010.1644114@chino.kir.corp.google.com>
-        (David Rientjes's message of "Tue, 30 Jun 2020 17:47:34 -0700")
-Message-ID: <87a70knhbq.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+   d="scan'208";a="265268574"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga007.fm.intel.com with ESMTP; 30 Jun 2020 18:50:03 -0700
+Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Eric Auger <eric.auger@redhat.com>
+Subject: Re: [PATCH 6/7] iommu/vt-d: Warn on out-of-range invalidation address
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+References: <1592926996-47914-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1592926996-47914-7-git-send-email-jacob.jun.pan@linux.intel.com>
+ <d87d15fd-71d5-6735-74df-583024826ab0@linux.intel.com>
+ <20200630103459.6c99c961@jacob-builder>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <f5a2ffda-a243-ed20-63e0-50d784d3af71@linux.intel.com>
+Date:   Wed, 1 Jul 2020 09:45:40 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+In-Reply-To: <20200630103459.6c99c961@jacob-builder>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Rientjes <rientjes@google.com> writes:
+Hi Jacob,
 
-> On Mon, 29 Jun 2020, Dave Hansen wrote:
->
->> From: Dave Hansen <dave.hansen@linux.intel.com>
->> 
->> If a memory node has a preferred migration path to demote cold pages,
->> attempt to move those inactive pages to that migration node before
->> reclaiming. This will better utilize available memory, provide a faster
->> tier than swapping or discarding, and allow such pages to be reused
->> immediately without IO to retrieve the data.
->> 
->> When handling anonymous pages, this will be considered before swap if
->> enabled. Should the demotion fail for any reason, the page reclaim
->> will proceed as if the demotion feature was not enabled.
->> 
->
-> Thanks for sharing these patches and kick-starting the conversation, Dave.
->
-> Could this cause us to break a user's mbind() or allow a user to 
-> circumvent their cpuset.mems?
->
-> Because we don't have a mapping of the page back to its allocation 
-> context (or the process context in which it was allocated), it seems like 
-> both are possible.
+On 7/1/20 1:34 AM, Jacob Pan wrote:
+> On Thu, 25 Jun 2020 18:10:43 +0800
+> Lu Baolu<baolu.lu@linux.intel.com>  wrote:
+> 
+>> Hi,
+>>
+>> On 2020/6/23 23:43, Jacob Pan wrote:
+>>> For guest requested IOTLB invalidation, address and mask are
+>>> provided as part of the invalidation data. VT-d HW silently ignores
+>>> any address bits below the mask. SW shall also allow such case but
+>>> give warning if address does not align with the mask. This patch
+>>> relax the fault handling from error to warning and proceed with
+>>> invalidation request with the given mask.
+>>>
+>>> Signed-off-by: Jacob Pan<jacob.jun.pan@linux.intel.com>
+>>> ---
+>>>    drivers/iommu/intel/iommu.c | 7 +++----
+>>>    1 file changed, 3 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/iommu/intel/iommu.c
+>>> b/drivers/iommu/intel/iommu.c index 5ea5732d5ec4..50fc62413a35
+>>> 100644 --- a/drivers/iommu/intel/iommu.c
+>>> +++ b/drivers/iommu/intel/iommu.c
+>>> @@ -5439,13 +5439,12 @@ intel_iommu_sva_invalidate(struct
+>>> iommu_domain *domain, struct device *dev,
+>>>    		switch (BIT(cache_type)) {
+>>>    		case IOMMU_CACHE_INV_TYPE_IOTLB:
+>>> +			/* HW will ignore LSB bits based on
+>>> address mask */ if (inv_info->granularity == IOMMU_INV_GRANU_ADDR &&
+>>>    			    size &&
+>>>    			    (inv_info->addr_info.addr &
+>>> ((BIT(VTD_PAGE_SHIFT + size)) - 1))) {
+>>> -				pr_err_ratelimited("Address out of
+>>> range, 0x%llx, size order %llu\n",
+>>> -
+>>> inv_info->addr_info.addr, size);
+>>> -				ret = -ERANGE;
+>>> -				goto out_unlock;
+>>> +				WARN_ONCE(1, "Address out of
+>>> range, 0x%llx, size order %llu\n",
+>>> +
+>>> inv_info->addr_info.addr, size);
+>> I don't think WARN_ONCE() is suitable here. It makes users think it's
+>> a kernel bug. How about pr_warn_ratelimited()?
+>>
+> I think pr_warn_ratelimited might still be too chatty. There is no
+> functional issues, we just don't to silently ignore it. Perhaps just
+> say:
+> WARN_ONCE(1, "User provided address not page aligned, alignment forced")
+> ?
+> 
 
-For mbind, I think we don't have enough information during reclaim to
-enforce the node binding policy.  But for cpuset, if cgroup v2 (with the
-unified hierarchy) is used, it's possible to get the node binding policy
-via something like,
+WARN() is normally used for reporting a kernel bug. It dumps kernel
+trace. And the users will report bug through bugzilla.kernel.org.
 
-  cgroup_get_e_css(page->mem_cgroup, &cpuset_cgrp_subsys)
+In this case, it's actually an unexpected user input, we shouldn't
+treat it as a kernel bug and pr_err_ratelimited() is enough?
 
-> So let's assume that migration nodes cannot be other DRAM nodes.  
-> Otherwise, memory pressure could be intentionally or unintentionally 
-> induced to migrate these pages to another node.  Do we have such a 
-> restriction on migration nodes?
->
->> Some places we would like to see this used:
->> 
->>   1. Persistent memory being as a slower, cheaper DRAM replacement
->>   2. Remote memory-only "expansion" NUMA nodes
->>   3. Resolving memory imbalances where one NUMA node is seeing more
->>      allocation activity than another.  This helps keep more recent
->>      allocations closer to the CPUs on the node doing the allocating.
->> 
->
-> (3) is the concerning one given the above if we are to use 
-> migrate_demote_mapping() for DRAM node balancing.
->
->> Yang Shi's patches used an alternative approach where to-be-discarded
->> pages were collected on a separate discard list and then discarded
->> as a batch with migrate_pages().  This results in simpler code and
->> has all the performance advantages of batching, but has the
->> disadvantage that pages which fail to migrate never get swapped.
->> 
->> #Signed-off-by: Keith Busch <keith.busch@intel.com>
->> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
->> Cc: Keith Busch <kbusch@kernel.org>
->> Cc: Yang Shi <yang.shi@linux.alibaba.com>
->> Cc: David Rientjes <rientjes@google.com>
->> Cc: Huang Ying <ying.huang@intel.com>
->> Cc: Dan Williams <dan.j.williams@intel.com>
->> ---
->> 
->>  b/include/linux/migrate.h        |    6 ++++
->>  b/include/trace/events/migrate.h |    3 +-
->>  b/mm/debug.c                     |    1 
->>  b/mm/migrate.c                   |   52 +++++++++++++++++++++++++++++++++++++++
->>  b/mm/vmscan.c                    |   25 ++++++++++++++++++
->>  5 files changed, 86 insertions(+), 1 deletion(-)
->> 
->> diff -puN include/linux/migrate.h~0008-mm-vmscan-Attempt-to-migrate-page-in-lieu-of-discard include/linux/migrate.h
->> --- a/include/linux/migrate.h~0008-mm-vmscan-Attempt-to-migrate-page-in-lieu-of-discard	2020-06-29 16:34:38.950312604 -0700
->> +++ b/include/linux/migrate.h	2020-06-29 16:34:38.963312604 -0700
->> @@ -25,6 +25,7 @@ enum migrate_reason {
->>  	MR_MEMPOLICY_MBIND,
->>  	MR_NUMA_MISPLACED,
->>  	MR_CONTIG_RANGE,
->> +	MR_DEMOTION,
->>  	MR_TYPES
->>  };
->>  
->> @@ -78,6 +79,7 @@ extern int migrate_huge_page_move_mappin
->>  				  struct page *newpage, struct page *page);
->>  extern int migrate_page_move_mapping(struct address_space *mapping,
->>  		struct page *newpage, struct page *page, int extra_count);
->> +extern int migrate_demote_mapping(struct page *page);
->>  #else
->>  
->>  static inline void putback_movable_pages(struct list_head *l) {}
->> @@ -104,6 +106,10 @@ static inline int migrate_huge_page_move
->>  	return -ENOSYS;
->>  }
->>  
->> +static inline int migrate_demote_mapping(struct page *page)
->> +{
->> +	return -ENOSYS;
->> +}
->>  #endif /* CONFIG_MIGRATION */
->>  
->>  #ifdef CONFIG_COMPACTION
->> diff -puN include/trace/events/migrate.h~0008-mm-vmscan-Attempt-to-migrate-page-in-lieu-of-discard include/trace/events/migrate.h
->> --- a/include/trace/events/migrate.h~0008-mm-vmscan-Attempt-to-migrate-page-in-lieu-of-discard	2020-06-29 16:34:38.952312604 -0700
->> +++ b/include/trace/events/migrate.h	2020-06-29 16:34:38.963312604 -0700
->> @@ -20,7 +20,8 @@
->>  	EM( MR_SYSCALL,		"syscall_or_cpuset")		\
->>  	EM( MR_MEMPOLICY_MBIND,	"mempolicy_mbind")		\
->>  	EM( MR_NUMA_MISPLACED,	"numa_misplaced")		\
->> -	EMe(MR_CONTIG_RANGE,	"contig_range")
->> +	EM( MR_CONTIG_RANGE,	"contig_range")			\
->> +	EMe(MR_DEMOTION,	"demotion")
->>  
->>  /*
->>   * First define the enums in the above macros to be exported to userspace
->> diff -puN mm/debug.c~0008-mm-vmscan-Attempt-to-migrate-page-in-lieu-of-discard mm/debug.c
->> --- a/mm/debug.c~0008-mm-vmscan-Attempt-to-migrate-page-in-lieu-of-discard	2020-06-29 16:34:38.954312604 -0700
->> +++ b/mm/debug.c	2020-06-29 16:34:38.963312604 -0700
->> @@ -25,6 +25,7 @@ const char *migrate_reason_names[MR_TYPE
->>  	"mempolicy_mbind",
->>  	"numa_misplaced",
->>  	"cma",
->> +	"demotion",
->>  };
->>  
->>  const struct trace_print_flags pageflag_names[] = {
->> diff -puN mm/migrate.c~0008-mm-vmscan-Attempt-to-migrate-page-in-lieu-of-discard mm/migrate.c
->> --- a/mm/migrate.c~0008-mm-vmscan-Attempt-to-migrate-page-in-lieu-of-discard	2020-06-29 16:34:38.956312604 -0700
->> +++ b/mm/migrate.c	2020-06-29 16:34:38.964312604 -0700
->> @@ -1151,6 +1151,58 @@ int next_demotion_node(int node)
->>  	return node;
->>  }
->>  
->> +static struct page *alloc_demote_node_page(struct page *page, unsigned long node)
->> +{
->> +	/*
->> +	 * 'mask' targets allocation only to the desired node in the
->> +	 * migration path, and fails fast if the allocation can not be
->> +	 * immediately satisfied.  Reclaim is already active and heroic
->> +	 * allocation efforts are unwanted.
->> +	 */
->> +	gfp_t mask = GFP_NOWAIT | __GFP_NOWARN | __GFP_NORETRY |
->> +			__GFP_NOMEMALLOC | __GFP_THISNODE | __GFP_HIGHMEM |
->> +			__GFP_MOVABLE;
->
-> GFP_NOWAIT has the side-effect that it does __GFP_KSWAPD_RECLAIM: do we 
-> actually want to kick kswapd on the pmem node?
-
-I think it should be a good idea to kick kswapd on the PMEM node.
-Because otherwise, we will discard more pages in DRAM node.  And in
-general, the DRAM pages are hotter than the PMEM pages, because the cold
-DRAM pages are migrated to the PMEM node.
-
-> If not, GFP_TRANSHUGE_LIGHT does a trick where it does 
-> GFP_HIGHUSER_MOVABLE & ~__GFP_RECLAIM.  You could probably do the same 
-> here although the __GFP_IO and __GFP_FS would be unnecessary (but not 
-> harmful).
->
->> +	struct page *newpage;
->> +
->> +	if (PageTransHuge(page)) {
->> +		mask |= __GFP_COMP;
->> +		newpage = alloc_pages_node(node, mask, HPAGE_PMD_ORDER);
->> +		if (newpage)
->> +			prep_transhuge_page(newpage);
->> +	} else
->> +		newpage = alloc_pages_node(node, mask, 0);
->> +
->> +	return newpage;
->> +}
->> +
-
-Best Regards,
-Huang, Ying
+Best regards,
+baolu
