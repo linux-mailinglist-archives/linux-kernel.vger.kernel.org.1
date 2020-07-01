@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4AEE210F93
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A3A210F9F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731736AbgGAPmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 11:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728796AbgGAPmu (ORCPT
+        id S1731966AbgGAPrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 11:47:35 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:59015 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731519AbgGAPre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 11:42:50 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1609EC08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 08:42:50 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id e64so20574859iof.12
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 08:42:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hvie/6BG7o1swX84/UM5fLpFCqjSlLJ7YxyaK37mWfQ=;
-        b=Bq1vY63RSI+AVQWedtGjs4OUW2V0itIttXR/Ci9bU+UKtI2BWdpUf4sDz96BGrSGyR
-         V/UHlS3aV5SiS1fho1aDTwbVxTp9t9zupgusW9YlBOKSFD1s5HwzZCEnfkzKUo4houln
-         Cb9GusQWPx+4H9uO3kYPoNxDNhXwNZRfOArcBfdPzeZujuNW7QbqNM+E5s1nPvPswtiE
-         yalC+9Rq/obRStT18qIsbrsHaiLJfmIufmx2kDpKPpibWV64gwBlaNJtvv+rkyGKxq/D
-         QNlSZpiBWDiBf25Mu9KGz+xPLsEN9KPmrpg9RuyfbJ9gKv5/mawluJJ9fmVMi2Zym+aS
-         HSIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hvie/6BG7o1swX84/UM5fLpFCqjSlLJ7YxyaK37mWfQ=;
-        b=emcheIFaZps05u2zdXWq/0lf1dgu9VCjv3Dc5bebFRQEuzlumNREiChDIpnRGf9cXq
-         2YkY109LTHpn4eS0o7n7/K/PFWZaRcba62/e1io6AgQO10DqspqXCrCxE//lZfCGL+6Y
-         YoukYT/Z2IwcWiXmo4UH7ycyEPD+P5p8g165ggFf48QeGxinHUO8rYGnpRKhvNfeZG7e
-         UQ2c2pi535ODnR9Z1UoVuQzRg3CmbfgbU5luhYEwyYfm+TFlmGiiWCQ1fdTSQydYjuAH
-         Zgw6D5tCidWHu2Ja9z4Tfi5gDKuDbFo2xcZhWtGwzc2VMsbM3LYuAGrHK6CYA7HINDkA
-         txDw==
-X-Gm-Message-State: AOAM532fb/rD/wKcKN7mSyUgCnHsMn+s7hhnpVaW1PVfdEMqQQ9OidO8
-        QyPdUq6trCsEboosYIz6qkCd6oqVprF+egn3BgVH
-X-Google-Smtp-Source: ABdhPJwY58186upJGjF+++Cg40KulQrFPTck9+8exmcfwwDU6enLRHtvLKw+YqEw0n/2SyAqb90qlC0X5+uiFSQ+OaU=
-X-Received: by 2002:a5e:d90c:: with SMTP id n12mr2832816iop.144.1593618168297;
- Wed, 01 Jul 2020 08:42:48 -0700 (PDT)
+        Wed, 1 Jul 2020 11:47:34 -0400
+Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com [209.85.217.46]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 061Fl7NF003090
+        for <linux-kernel@vger.kernel.org>; Thu, 2 Jul 2020 00:47:07 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 061Fl7NF003090
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1593618428;
+        bh=DAwQW/iKms2Pd5SxjfNrAxgMBpgB3wuUDGSw/2ikg0w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WfcpXwhMfxGovAbt204Xh7ug7fFQv5h2nEgLS7kG1ZYqP0/YsTen/hhpvAC42YsNF
+         jz+Jkf8NBaON4pyr/0CG6aaDEx0v4Gz74hE02pdfCBc+zEaoAsdk2sl5QmRlSALXSW
+         NAQYS+KbYev9G5ZN/0B1IzM0gJwI2e9w/BkOtyt6jpNqjq5E1YjFDD02hq2F2cuPhF
+         N5T9/Ov8F0gBDP2IVH03iU5KcSEKdjUPu11NaCvf3rFb7K5RSCPIPbUOVVOZEzpaiT
+         l6xRv+F7T6SZxcgfen1PqssSjNW+ZOXoajNf7iWNnTY0ElkBZLBTzJSEFy32m6441L
+         +3Meic2THJV/A==
+X-Nifty-SrcIP: [209.85.217.46]
+Received: by mail-vs1-f46.google.com with SMTP id x13so8813758vsx.13
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 08:47:07 -0700 (PDT)
+X-Gm-Message-State: AOAM531NDjFfWpC5yt6IgfD9hOvFWAnZlrrurXxfzlBIBe4AB7t0tny6
+        VXmigs/De2HoRyWjZ4CI+SB5zwbFS9HIoX3C9ts=
+X-Google-Smtp-Source: ABdhPJzB1vl8xD2N6vsVCpQAw+0Y9VboCtD5BhKxqQPhn3odFuKVp7dIo0dsORdnOtk8/amr/wIne1V8Q7+nUvvXNnY=
+X-Received: by 2002:a67:22c7:: with SMTP id i190mr19510608vsi.179.1593618426679;
+ Wed, 01 Jul 2020 08:47:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1593191971.git.luto@kernel.org> <947880c41ade688ff4836f665d0c9fcaa9bd1201.1593191971.git.luto@kernel.org>
-In-Reply-To: <947880c41ade688ff4836f665d0c9fcaa9bd1201.1593191971.git.luto@kernel.org>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Wed, 1 Jul 2020 11:42:37 -0400
-Message-ID: <CAMzpN2iW4XD1Gsgq0ZeeH2eewLO+9Mk6eyk0LnbF-kP3v=smLg@mail.gmail.com>
-Subject: Re: [PATCH 3/6] x86/entry/64/compat: Fix Xen PV SYSENTER frame setup
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel <xen-devel@lists.xenproject.org>
+References: <20200630142653.10375-1-pmenzel@molgen.mpg.de>
+In-Reply-To: <20200630142653.10375-1-pmenzel@molgen.mpg.de>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 2 Jul 2020 00:46:29 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ79EYXMgRC2uexXAbgA7uUa7SoMKu+00qRvqJCv5+C1Q@mail.gmail.com>
+Message-ID: <CAK7LNAQ79EYXMgRC2uexXAbgA7uUa7SoMKu+00qRvqJCv5+C1Q@mail.gmail.com>
+Subject: Re: [PATCH] .gitignore: Do not track `defconfig` from `make savedefconfig`
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 1:30 PM Andy Lutomirski <luto@kernel.org> wrote:
+On Tue, Jun 30, 2020 at 11:27 PM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
 >
-> The SYSENTER frame setup was nonsense.  It worked by accident
-> because the normal code into which the Xen asm jumped
-> (entry_SYSENTER_32/compat) threw away SP without touching the stack.
-> entry_SYSENTER_compat was recently modified such that it relied on
-> having a valid stack pointer, so now the Xen asm needs to invoke it
-> with a valid stack.
->
-> Fix it up like SYSCALL: use the Xen-provided frame and skip the bare
-> metal prologue.
->
-> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Cc: Juergen Gross <jgross@suse.com>
-> Cc: Stefano Stabellini <sstabellini@kernel.org>
-> Cc: xen-devel@lists.xenproject.org
-> Fixes: 1c3e5d3f60e2 ("x86/entry: Make entry_64_compat.S objtool clean")
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
 > ---
->  arch/x86/entry/entry_64_compat.S |  1 +
->  arch/x86/xen/xen-asm_64.S        | 20 ++++++++++++++++----
->  2 files changed, 17 insertions(+), 4 deletions(-)
+>  .gitignore | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
-> index 7b9d8150f652..381a6de7de9c 100644
-> --- a/arch/x86/entry/entry_64_compat.S
-> +++ b/arch/x86/entry/entry_64_compat.S
-> @@ -79,6 +79,7 @@ SYM_CODE_START(entry_SYSENTER_compat)
->         pushfq                          /* pt_regs->flags (except IF = 0) */
->         pushq   $__USER32_CS            /* pt_regs->cs */
->         pushq   $0                      /* pt_regs->ip = 0 (placeholder) */
-> +SYM_INNER_LABEL(entry_SYSENTER_compat_after_hwframe, SYM_L_GLOBAL)
+> diff --git a/.gitignore b/.gitignore
+> index 87b9dd8a163b..5c1a5349852b 100644
+> --- a/.gitignore
+> +++ b/.gitignore
+> @@ -142,6 +142,7 @@ x509.genkey
+>  /allno.config
+>  /allrandom.config
+>  /allyes.config
+> +/defconfig
+>
+>  # Kdevelop4
+>  *.kdev4
+> --
+> 2.27.0
+>
 
-This skips over the section that truncates the syscall number to
-32-bits.  The comments present some doubt that it is actually
-necessary, but the Xen path shouldn't differ from native.  That code
-should be moved after this new label.
+
+all*.config files are used as Kconfig presets,
+but 'defconfig' does not belong to them.
+
+
+
+Better to update the comment line above?
+
+
+For example,
+
+   # Kconfig presets
+
+-->
+
+  # Kconfig presets, savedefconfg output
+
+
+
+
 
 --
-Brian Gerst
+Best Regards
+Masahiro Yamada
