@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6A3211072
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 18:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527CE211077
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 18:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732364AbgGAQSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 12:18:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45544 "EHLO mail.kernel.org"
+        id S1732243AbgGAQT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 12:19:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732298AbgGAQSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 12:18:33 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        id S1729019AbgGAQT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 12:19:28 -0400
+Received: from localhost (unknown [104.132.1.66])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 215CB2080D;
-        Wed,  1 Jul 2020 16:18:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DDAC7207BB;
+        Wed,  1 Jul 2020 16:19:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593620313;
-        bh=/WuA5zewzHKvbAPia2dkg6Y/bc4K4QKZQSJbdXtaQio=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MHLDxf/FS3X1ObYlTdGOqzhDOJLpfVP6rASe63G7FaJZtn3g6PwufhS/woQAi0vgz
-         oVf+RQaT6MThWModZW9SnAk7kK5IZlq2EfWcOwtnn3e7kJXO+ey6gjUlpLL7ZIb8Km
-         rWDgYsQNKCWFtN0xNpukkS4+dotBqTeiIT5PbVFE=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jqfRP-0087Zf-LM; Wed, 01 Jul 2020 17:18:31 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: [PATCH 3/3] arm64: timers: Disable the compat vdso for cores affected by ARM64_WORKAROUND_1418040
-Date:   Wed,  1 Jul 2020 17:18:24 +0100
-Message-Id: <20200701161824.1346732-4-maz@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200701161824.1346732-1-maz@kernel.org>
-References: <20200701161824.1346732-1-maz@kernel.org>
+        s=default; t=1593620368;
+        bh=2zNupGrsJWVvIy1EGdDug2tvMr8j7918+kyHDf++ejA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KHDPOc0FLDP3WLnhF3VbexIDJ4vOZBhmmYCWfOGkeAvEzeZAlnQFI9ozskQG1IBio
+         c0UByb07z0wVjS5DmK3dTO14yPvWnf5hFOz7qdeQMQcOBfWfPFvNEXweF6F3J5pImm
+         /jMBf9Kpd7HLKQKcvg4J3TLlnnZg7dOBAbWdCRVo=
+Date:   Wed, 1 Jul 2020 09:19:27 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org
+Subject: Re: [PATCH RFC 2/5] f2fs: record average update time of segment
+Message-ID: <20200701161927.GD1724572@google.com>
+References: <20200630100428.19105-1-yuchao0@huawei.com>
+ <20200630100428.19105-2-yuchao0@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com, daniel.lezcano@linaro.org, vincenzo.frascino@arm.com, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200630100428.19105-2-yuchao0@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ARM64_WORKAROUND_1418040 requires that AArch32 EL0 accesses to
-the virtual counter register are trapped and emulated by the kernel.
-This makes the vdso pretty pointless, and in some cases livelock
-prone.
+On 06/30, Chao Yu wrote:
+> Previously, once we update one block in segment, we will update mtime of
+> segment to last time, making aged segment becoming freshest, result in
+> that GC with cost benefit algorithm missing such segment, So this patch
+> changes to record mtime as average block updating time instead of last
+> updating time.
+> 
+> It's not needed to reset mtime for prefree segment, as se->valid_blocks
+> is zero, then old se->mtime won't take any weight with below calculation:
+> 
+> 	se->mtime = (se->mtime * se->valid_blocks + mtime) /
+> 				(se->valid_blocks + 1);
+> 
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> ---
+>  fs/f2fs/segment.c | 21 ++++++++++++++++++---
+>  1 file changed, 18 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index 863ec6f1fb87..906c313835ad 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -2150,6 +2150,22 @@ static void __set_sit_entry_type(struct f2fs_sb_info *sbi, int type,
+>  		__mark_sit_entry_dirty(sbi, segno);
+>  }
+>  
+> +static void update_segment_mtime(struct f2fs_sb_info *sbi, block_t blkaddr)
+> +{
+> +	unsigned int segno = GET_SEGNO(sbi, blkaddr);
+> +	struct seg_entry *se = get_seg_entry(sbi, segno);
+> +	unsigned long long mtime = get_mtime(sbi, false);
+> +
+> +	if (!se->mtime) {
 
-Provide a workaround entry that limits the vdso to 64bit tasks.
+Don't need {}.
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- drivers/clocksource/arm_arch_timer.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-index f828835c568f..9c61252e7d99 100644
---- a/drivers/clocksource/arm_arch_timer.c
-+++ b/drivers/clocksource/arm_arch_timer.c
-@@ -480,6 +480,14 @@ static const struct arch_timer_erratum_workaround ool_workarounds[] = {
- 		.set_next_event_virt = erratum_set_next_event_tval_virt,
- 	},
- #endif
-+#ifdef CONFIG_ARM64_ERRATUM_1418040
-+	{
-+		.match_type = ate_match_local_cap_id,
-+		.id = (void *)ARM64_WORKAROUND_1418040,
-+		.desc = "ARM erratum 1418040",
-+		.vdso_clock_mode = VDSO_CLOCKMODE_ARCHTIMER_NOCOMPAT,
-+	},
-+#endif
- };
- 
- typedef bool (*ate_match_fn_t)(const struct arch_timer_erratum_workaround *,
--- 
-2.27.0
-
+> +		se->mtime = mtime;
+> +	} else {
+> +		se->mtime = (se->mtime * se->valid_blocks + mtime) /
+> +						(se->valid_blocks + 1);
+> +	}
+> +	if (mtime > SIT_I(sbi)->max_mtime)
+> +		SIT_I(sbi)->max_mtime = mtime;
+> +}
+> +
+>  static void update_sit_entry(struct f2fs_sb_info *sbi, block_t blkaddr, int del)
+>  {
+>  	struct seg_entry *se;
+> @@ -2169,10 +2185,9 @@ static void update_sit_entry(struct f2fs_sb_info *sbi, block_t blkaddr, int del)
+>  	f2fs_bug_on(sbi, (new_vblocks >> (sizeof(unsigned short) << 3) ||
+>  				(new_vblocks > sbi->blocks_per_seg)));
+>  
+> +	update_segment_mtime(sbi, blkaddr);
+> +
+>  	se->valid_blocks = new_vblocks;
+> -	se->mtime = get_mtime(sbi, false);
+> -	if (se->mtime > SIT_I(sbi)->max_mtime)
+> -		SIT_I(sbi)->max_mtime = se->mtime;
+>  
+>  	/* Update valid block bitmap */
+>  	if (del > 0) {
+> -- 
+> 2.26.2
