@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F19E210A5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 13:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5470D210A68
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 13:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730358AbgGALki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 07:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730196AbgGALkh (ORCPT
+        id S1730395AbgGALlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 07:41:08 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:41039 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730374AbgGALlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 07:40:37 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB77C061755;
-        Wed,  1 Jul 2020 04:40:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HcAuVDWEpmiLqpe0YNpYLGZ4fmq8QzKs/ZIuj2kkH8Y=; b=RPefHxRrCTySSxthpCiwJtUQ3p
-        sehdVUh/OXlcD2v/g6AxiKxksqOrSjRiJ3RqUoq5JvswSrlFwUahiev5FWK/uvACmhnWZcX96iaAj
-        WVqWxdhoftAZ4iiqY0ToHDJjZkiN1ml6ykH6Gd0nxYOevhI98eCLIhsTljU6lq3B56wQQRmi47Kgn
-        2LXfsp8FLDVW0Y91r/ZhmJ1DxlRIfNCq4WjGOYr1KTJtkpVrIUjrB3ZLhTgikLeGURhbDlKKsizky
-        W2kk0nblBpf9RF7AABwI4KnH5A2qlS/QhSpfLWCJdNS/WllrJd29THxB6xyaqhGxdP1buQGCuqnSh
-        sM+SK4uQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jqb6M-0005ut-DO; Wed, 01 Jul 2020 11:40:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ECCE9301AC6;
-        Wed,  1 Jul 2020 13:40:27 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D969D2BB58971; Wed,  1 Jul 2020 13:40:27 +0200 (CEST)
-Date:   Wed, 1 Jul 2020 13:40:27 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marco Elver <elver@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Subject: Re: [PATCH 00/22] add support for Clang LTO
-Message-ID: <20200701114027.GO4800@hirez.programming.kicks-ass.net>
-References: <20200624203200.78870-1-samitolvanen@google.com>
- <20200624211540.GS4817@hirez.programming.kicks-ass.net>
- <CAKwvOdmxz91c-M8egR9GdR1uOjeZv7-qoTP=pQ55nU8TCpkK6g@mail.gmail.com>
- <20200625080313.GY4817@hirez.programming.kicks-ass.net>
- <20200625082433.GC117543@hirez.programming.kicks-ass.net>
- <20200625085745.GD117543@hirez.programming.kicks-ass.net>
- <20200630191931.GA884155@elver.google.com>
- <20200630201243.GD4817@hirez.programming.kicks-ass.net>
- <20200630203016.GI9247@paulmck-ThinkPad-P72>
- <CANpmjNP+7TtE0WPU=nX5zs3T2+4hPkkm08meUm2VDVY3RgsHDw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNP+7TtE0WPU=nX5zs3T2+4hPkkm08meUm2VDVY3RgsHDw@mail.gmail.com>
+        Wed, 1 Jul 2020 07:41:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593603665; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=jqNdzefTAdehLQ8LTA4BvpPDcWAceoPTN9qIVHE8Vu0=; b=lW266t73eCNLql6AjS7xEVqfYtL5sbUciwTl99D7WTJbzmJuC4mweNISCfFhekWwrFQNfFly
+ 76B6cII11DKLELePambV7azqcXMo4kODHFDy/NPejY4eiT3zy0v2AVl7ic9YJGCa+trkYc4Z
+ 1w0m5lj4mcE3UYVuLiC7naKYCDw=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n19.prod.us-east-1.postgun.com with SMTP id
+ 5efc7647bfb34e631ca9a0de (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 01 Jul 2020 11:40:55
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6D5A7C4339C; Wed,  1 Jul 2020 11:40:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4DBFCC433C8;
+        Wed,  1 Jul 2020 11:40:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4DBFCC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     stanimir.varbanov@linaro.org, agross@kernel.org,
+        bjorn.andersson@linaro.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH 0/3] DVFS support for Venus
+Date:   Wed,  1 Jul 2020 17:10:35 +0530
+Message-Id: <1593603638-19296-1-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 11:41:17AM +0200, Marco Elver wrote:
-> On Tue, 30 Jun 2020 at 22:30, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > On Tue, Jun 30, 2020 at 10:12:43PM +0200, Peter Zijlstra wrote:
-> > > On Tue, Jun 30, 2020 at 09:19:31PM +0200, Marco Elver wrote:
+These patches add DVFS support for Venus. Where posted
+earlier as part of a series with multiple different drivers [1]
+I have split them into specific driver changes in order to avoid
+confusion on dependencies. Also added the corresponding device tree
+changes for sdm845 and sc7180 platforms.
 
-> > > > Thoughts?
-> > >
-> > > How hard would it be to creates something that analyzes a build and
-> > > looks for all 'dependent load -> control dependency' transformations
-> > > headed by a volatile (and/or from asm) load and issues a warning for
-> > > them?
-> 
-> I was thinking about this, but in the context of the "auto-promote to
-> acquire" which you didn't like. Issuing a warning should certainly be
-> simpler.
-> 
-> I think there is no one place where we know these transformations
-> happen, but rather, need to analyze the IR before transformations,
-> take note of all the dependent loads headed by volatile+asm, and then
-> run an analysis after optimizations checking the dependencies are
-> still there.
+These patches are dependent on the bindings update [2] which is still
+pending an ack from Rob.
 
-Urgh, that sounds nasty. The thing is, as I've hinted at in my other
-reply, I would really like a compiler switch to disable this
-optimization entirely -- knowing how relevant the trnaformation is, is
-simply a first step towards that.
+Patch 1/3 will need to be picked by Stan and pushed via the linux-media tree.
 
-In order to control the tranformation, you have to actually know where
-in the optimization passes it happens.
+DT patches (2/3 and 3/3) will need to land via the msm tree.
 
-Also, if (big if in my book) we find the optimization is actually
-beneficial, we can invert the warning when using the switch and warn
-about lost optimization possibilities and manually re-write the code to
-use control deps.
+[1] https://lkml.org/lkml/2020/6/15/535
+[2] https://lore.kernel.org/patchwork/patch/1241077/
 
-> > > This would give us an indication of how valuable this transformation is
-> > > for the kernel. I'm hoping/expecting it's vanishingly rare, but what do
-> > > I know.
-> >
-> > This could be quite useful!
-> 
-> We might then even be able to say, "if you get this warning, turn on
-> CONFIG_ACQUIRE_READ_DEPENDENCIES" (or however the option will be
-> named). 
+Rajendra Nayak (3):
+  media: venus: core: Add support for opp tables/perf voting
+  arm64: dts: sdm845: Add OPP tables and power-domains for venus
+  arm64: dts: sc7180: Add OPP tables and power-domains for venus
 
-I was going to suggest: if this happens, employ -fno-wreck-dependencies
-:-)
+ arch/arm64/boot/dts/qcom/sc7180.dtsi           | 35 ++++++++++++++++-
+ arch/arm64/boot/dts/qcom/sdm845.dtsi           | 40 ++++++++++++++++++-
+ drivers/media/platform/qcom/venus/core.c       | 43 +++++++++++++++++---
+ drivers/media/platform/qcom/venus/core.h       |  5 +++
+ drivers/media/platform/qcom/venus/pm_helpers.c | 54 ++++++++++++++++++++++++--
+ 5 files changed, 163 insertions(+), 14 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
