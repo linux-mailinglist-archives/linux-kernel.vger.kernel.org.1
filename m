@@ -2,132 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15DB21081E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32422210804
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729441AbgGAJ33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 05:29:29 -0400
-Received: from conuserg-12.nifty.com ([210.131.2.79]:46839 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728982AbgGAJ32 (ORCPT
+        id S1729281AbgGAJ0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 05:26:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729016AbgGAJ0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 05:29:28 -0400
-X-Greylist: delayed 97089 seconds by postgrey-1.27 at vger.kernel.org; Wed, 01 Jul 2020 05:29:27 EDT
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 0619QqhQ002765;
-        Wed, 1 Jul 2020 18:26:53 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 0619QqhQ002765
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1593595614;
-        bh=5we+5c718gKlOfNkIYOvekscGTKtWBtNSwI5Fr+6doc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GZN+JENCwEH5hIIAA5OAA6SiwDSbWFSaHKX9f4TdgmuZDiYDeGmIadJKSPba3wD4T
-         ybgOM8V3CHbP2S48ZrQkw8/RhIJNzN5ECtSKZ/tgc/8k+JTmsO6E/e96fzcn9l/pd7
-         BmU0+lSIOJCigxHBdsG9WTlo0hiani9w65gI9r9anD4wPx8DfkHtDfwBBjQSYeQm+8
-         y5T6NDLZCXLgS5Sx9ZxX8dx+Myww98wU5bELOBFrSDC8AJRNQLP+Muu+CdRuQErEh4
-         Zs7ibFUXfzrXiPD6CeCeEhNJQi6/LxgwxXl/lS94IfZcCiUvuIQcp1ZgKfJOKsQxDZ
-         CLApO9/M/F5wg==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     linux-kbuild@vger.kernel.org, Michal Kubecek <mkubecek@suse.cz>,
-        linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Song Liu <songliubraving@fb.com>,
-        =?UTF-8?q?Valdis=20Kl=20=C4=93=20tnieks?= <valdis.kletnieks@vt.edu>,
-        Yonghong Song <yhs@fb.com>
-Subject: [PATCH] bpfilter: allow to build bpfilter_umh as a module without static library
-Date:   Wed,  1 Jul 2020 18:26:44 +0900
-Message-Id: <20200701092644.762234-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 1 Jul 2020 05:26:54 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1999CC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 02:26:54 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id o2so22463827wmh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 02:26:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hUqP04YbnIwknTm25effbuWO4Fx8xD8mWeeTwAQWJ1k=;
+        b=S8DlUbKMA94Ob94Q5pmfff7dxw2dHdo+tp3UfhnZZhTyJpoPTyd0j1KPNFY+KG8/WY
+         s04uykNl0+C86O2unYLbmerYwfXi5J5eskUkYGmwH/dZgnXMjhqm+zjlxk3aiJmHpwl7
+         NaZgMR1g92MYOG+Lg2Z2glRJzn9Sddzrmvfku/RInTTMo3eaIhv9SW8FdL2Wko7e3/QW
+         Rb5I2EyHOgXzL+7bZDVSFNSXlHx1PxDCgQ7cJGPfSizPO/mZI52RUe5/YOOAzSjLMlVH
+         GWgXNiUxXog0QMISs7yqGO2Sdxy9ZIBbN27cGunxxIhm5Qa8d7M+xSO2ZM/456LrcPqM
+         EpUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hUqP04YbnIwknTm25effbuWO4Fx8xD8mWeeTwAQWJ1k=;
+        b=Crcccn8BbhllsDgrdfb/xRrDz2/KRCtVoUbGRECT2ykFC2mxvFkxDUc1LF5V2qmlvA
+         KG1/AeEjUaFODp9tRnI+XHp9ry3KGFF3SkszoFC2gT93jzisgcqmMgC+xgx/kHdd7TIM
+         avAU24/K6UI8HXunWu5FJ0iUpcU2MVvkXqxQzO8dKIXULcALvCY9BB0EDpsFdB73SDKF
+         O/evYinRWXGbzTNAkoDm0ygHwxDr2dmyG8ZqekHkAZaLcMEhPWQhF8UIZDMM1BEPIB3d
+         CyUUwgEndBtQ2UCuNh0WR1g3F7BuVRjXXnp2fGglVxJ7wmAGDFYPdKuaECkR9UgvZIYn
+         yQHQ==
+X-Gm-Message-State: AOAM530gf+jgJP64wsh+exw1jOXcrVD+4eihDzNYEJjJC6hHl/xsJwjf
+        eqJL2katMWdfrKmjADa7iG37ZYS8qms=
+X-Google-Smtp-Source: ABdhPJxh3sI68EELjTYoOdn5y3/6haBcMClOegGIqbUzYO4FQMFbIStEfUoItGSre94GqfV5Sb11oQ==
+X-Received: by 2002:a05:600c:2317:: with SMTP id 23mr26569747wmo.72.1593595611735;
+        Wed, 01 Jul 2020 02:26:51 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:54f4:a99f:ab88:bc07? ([2a01:e34:ed2f:f020:54f4:a99f:ab88:bc07])
+        by smtp.googlemail.com with ESMTPSA id n125sm6528524wme.30.2020.07.01.02.26.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Jul 2020 02:26:51 -0700 (PDT)
+Subject: Re: [PATCH v2 3/5] thermal: core: Remove old uapi generic netlink
+To:     Amit Kucheria <amit.kucheria@linaro.org>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Ram Chandrasekar <rkumbako@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200625144509.17918-1-daniel.lezcano@linaro.org>
+ <20200625144509.17918-3-daniel.lezcano@linaro.org>
+ <CAP245DUMjTQr2vKirZ+FxEYWC=VQ_k+OegxQgXcKDU8ThWuCsQ@mail.gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <0fe6837f-9b44-4578-23f2-3e4932d01122@linaro.org>
+Date:   Wed, 1 Jul 2020 11:26:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <CAP245DUMjTQr2vKirZ+FxEYWC=VQ_k+OegxQgXcKDU8ThWuCsQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Originally, bpfilter_umh was linked with -static only when
-CONFIG_BPFILTER_UMH=y.
+On 30/06/2020 13:47, Amit Kucheria wrote:
+> On Thu, Jun 25, 2020 at 8:15 PM Daniel Lezcano
+> <daniel.lezcano@linaro.org> wrote:
+>>
+>> In order to set the scene for the new generic netlink thermal
+>> management and notifications, let remove the old dead code remaining
+> 
+> s/management/management api/
+> 
+> s/let/let's/
+> 
+>> in the uapi headers.
+>>
+>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>> ---
+>>  include/linux/thermal.h      |  5 -----
+>>  include/uapi/linux/thermal.h | 12 +-----------
+>>  2 files changed, 1 insertion(+), 16 deletions(-)
+>>
+>> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+>> index faf7ad031e42..fc93a6348082 100644
+>> --- a/include/linux/thermal.h
+>> +++ b/include/linux/thermal.h
+>> @@ -302,11 +302,6 @@ struct thermal_zone_params {
+>>         int offset;
+>>  };
+>>
+>> -struct thermal_genl_event {
+>> -       u32 orig;
+>> -       enum events event;
+>> -};
+>> -
+>>  /**
+>>   * struct thermal_zone_of_device_ops - scallbacks for handling DT based zones
+>>   *
+>> diff --git a/include/uapi/linux/thermal.h b/include/uapi/linux/thermal.h
+>> index 96218378dda8..22df67ed9e9c 100644
+>> --- a/include/uapi/linux/thermal.h
+>> +++ b/include/uapi/linux/thermal.h
+>> @@ -6,21 +6,12 @@
+>>
+>>  /* Adding event notification support elements */
+>>  #define THERMAL_GENL_FAMILY_NAME                "thermal_event"
+>> -#define THERMAL_GENL_VERSION                    0x01
+>> +#define THERMAL_GENL_VERSION                    0x02
+> 
+> This hunk should be removed since you set version back to 1 in the
+> next patch and we don't actually intend to bump the version yet.
 
-Commit 8a2cc0505cc4 ("bpfilter: use 'userprogs' syntax to build
-bpfilter_umh") silently, accidentally dropped the CONFIG_BPFILTER_UMH=y
-test in the Makefile. Revive it in order to link it dynamically when
-CONFIG_BPFILTER_UMH=m.
+Well, I've been very strict here for git-bisecting.
 
-Since commit b1183b6dca3e ("bpfilter: check if $(CC) can link static
-libc in Kconfig"), the compiler must be capable of static linking to
-enable CONFIG_BPFILTER_UMH, but it requires more than needed.
+I move to V2 because of the removal, but when adding the new genetlink
+code, the family name changed, so we returned back to the V1 as it is a
+new genetlink thermal brand.
 
-To loosen the compiler requirement, I changed the dependency as follows:
+The name is change because it is no longer event based but also sampling
+and commands.
 
-    depends on CC_CAN_LINK
-    depends on m || CC_CAN_LINK_STATIC
+>>  #define THERMAL_GENL_MCAST_GROUP_NAME           "thermal_mc_grp"
+>>
+>> -/* Events supported by Thermal Netlink */
+>> -enum events {
+>> -       THERMAL_AUX0,
+>> -       THERMAL_AUX1,
+>> -       THERMAL_CRITICAL,
+>> -       THERMAL_DEV_FAULT,
+>> -};
+>> -
+>>  /* attributes of thermal_genl_family */
+>>  enum {
+>>         THERMAL_GENL_ATTR_UNSPEC,
+>> -       THERMAL_GENL_ATTR_EVENT,
+>>         __THERMAL_GENL_ATTR_MAX,
+>>  };
+>>  #define THERMAL_GENL_ATTR_MAX (__THERMAL_GENL_ATTR_MAX - 1)
+>> @@ -28,7 +19,6 @@ enum {
+>>  /* commands supported by the thermal_genl_family */
+>>  enum {
+>>         THERMAL_GENL_CMD_UNSPEC,
+>> -       THERMAL_GENL_CMD_EVENT,
+>>         __THERMAL_GENL_CMD_MAX,
+>>  };
+>>  #define THERMAL_GENL_CMD_MAX (__THERMAL_GENL_CMD_MAX - 1)
+>> --
+>> 2.17.1
+>>
 
-If CONFIG_CC_CAN_LINK_STATIC in unset, CONFIG_BPFILTER_UMH is restricted
-to 'm' or 'n'.
 
-In theory, CONFIG_CC_CAN_LINK is not required for CONFIG_BPFILTER_UMH=y,
-but I did not come up with a good way to describe it.
-
-Fixes: 8a2cc0505cc4 ("bpfilter: use 'userprogs' syntax to build bpfilter_umh")
-Reported-by: Michal Kubecek <mkubecek@suse.cz>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- net/bpfilter/Kconfig  | 10 ++++++----
- net/bpfilter/Makefile |  2 ++
- 2 files changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/net/bpfilter/Kconfig b/net/bpfilter/Kconfig
-index 84015ef3ee27..73d0b12789f1 100644
---- a/net/bpfilter/Kconfig
-+++ b/net/bpfilter/Kconfig
-@@ -9,12 +9,14 @@ menuconfig BPFILTER
- if BPFILTER
- config BPFILTER_UMH
- 	tristate "bpfilter kernel module with user mode helper"
--	depends on CC_CAN_LINK_STATIC
-+	depends on CC_CAN_LINK
-+	depends on m || CC_CAN_LINK_STATIC
- 	default m
- 	help
- 	  This builds bpfilter kernel module with embedded user mode helper
- 
--	  Note: your toolchain must support building static binaries, since
--	  rootfs isn't mounted at the time when __init functions are called
--	  and do_execv won't be able to find the elf interpreter.
-+	  Note: To compile this as built-in, your toolchain must support
-+	  building static binaries, since rootfs isn't mounted at the time
-+	  when __init functions are called and do_execv won't be able to find
-+	  the elf interpreter.
- endif
-diff --git a/net/bpfilter/Makefile b/net/bpfilter/Makefile
-index f23b53294fba..cdac82b8c53a 100644
---- a/net/bpfilter/Makefile
-+++ b/net/bpfilter/Makefile
-@@ -7,10 +7,12 @@ userprogs := bpfilter_umh
- bpfilter_umh-objs := main.o
- userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
- 
-+ifeq ($(CONFIG_BPFILTER_UMH), y)
- # builtin bpfilter_umh should be linked with -static
- # since rootfs isn't mounted at the time of __init
- # function is called and do_execv won't find elf interpreter
- userldflags += -static
-+endif
- 
- $(obj)/bpfilter_umh_blob.o: $(obj)/bpfilter_umh
- 
 -- 
-2.25.1
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
