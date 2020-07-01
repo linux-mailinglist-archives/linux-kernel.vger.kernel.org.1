@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B4A211219
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 19:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DF02111F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 19:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732791AbgGARmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 13:42:32 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42222 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729871AbgGARmb (ORCPT
+        id S1732637AbgGARbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 13:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731542AbgGARbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 13:42:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593625350;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wobg33Jd/mLzwVfLH+qw23dgCxhuXQvI8VYke7pyLt8=;
-        b=PRzGm0c1rXHn/qNPwxz/BOJMt7y0gIewcLkBsWBqyFh+ZhrfeT4OdmF/uqhRBsVkWONTXs
-        WFtWmz2gCvv/yKDpLSnvO3j9WDn3F88E3QTb3vYEnYzKPzLaX549IFdRzjL4W3KVU02zv6
-        ewD8hmWoWOegpYL1OkU8S+scBAy/RDw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-237-kaM7C-6POYeJEkH2MyXrxA-1; Wed, 01 Jul 2020 13:42:28 -0400
-X-MC-Unique: kaM7C-6POYeJEkH2MyXrxA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C53871940920;
-        Wed,  1 Jul 2020 17:42:26 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B13D379220;
-        Wed,  1 Jul 2020 17:42:23 +0000 (UTC)
-Date:   Wed, 1 Jul 2020 12:41:03 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-raid@vger.kernel.org,
-        linux-mm@kvack.org, linux-bcache@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        drbd-dev@tron.linbit.com, dm-devel@redhat.com,
-        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: remove dead bdi congestion leftovers
-Message-ID: <20200701164103.GC27063@redhat.com>
-References: <20200701090622.3354860-1-hch@lst.de>
+        Wed, 1 Jul 2020 13:31:40 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12686C08C5DB
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 10:31:40 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id t11so6433643pfq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 10:31:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4fNzrypwA+h6/cDmXnWYSRWs2TnExn3KjSMmEODDS5k=;
+        b=eij/r8Vh/rQed6wZTqGpOc18VEuPZcxNJDWCztfwt/yJl5o9O50Y0Kioeg4lEoOUYf
+         b5COS9gDdoCUd6jRHA4b8V3qeWtiUT35a4EVNWIv1kVBLT60wpQew/R3aqshKT3jEnh2
+         6uh9PjDzwpNLFb86pW5QGPdxBz12d7V2eGx48=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4fNzrypwA+h6/cDmXnWYSRWs2TnExn3KjSMmEODDS5k=;
+        b=J2n3gh0+AQTycYkpsBSORtgrJOFwTkNRu726W422fI4I41txkiuWmZ59WLv/JsU3JV
+         CX3x3IFDjlxqEMq4Xa6fCzpdDtWG3Ex6SCRkpcT3hWpZm5jtzCr8xgOQh5NjJ7wyTUIN
+         YbOfRHvLh2lS72cErCHhfXnTV49MGKNHeQ5+exv3PWrW20tWVJKVPbgrS0w81fJB2eey
+         VEl1EhT5pOsus7dV3yexlEBnB9wrCBM97UR80zkLURutI6hpNHxeLcMevOm0+iWpM9ia
+         a6cH6/m9mWvMe2u9pOfT7yEPV6oYB/CsNxfPu3EVZsDtOy6Y1HQVU9fumrTYny5PvH8W
+         yQFA==
+X-Gm-Message-State: AOAM533X2+U19yQawRJc9vrS1AHWh4O9P/FeDbCKQV1H4LdYe8SUZnna
+        ywuWx9kUoNeyG7Q019Tfkk8C8A==
+X-Google-Smtp-Source: ABdhPJxDxBe8JvlXms+W1hWSshtDpF7DzlWzhcD8TjKp0cMR4Tp3lor5DHtOOMRLn11J3GiOW8kXnQ==
+X-Received: by 2002:a63:fc43:: with SMTP id r3mr20981507pgk.423.1593624699558;
+        Wed, 01 Jul 2020 10:31:39 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id 21sm6435524pfu.124.2020.07.01.10.31.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Jul 2020 10:31:38 -0700 (PDT)
+Date:   Wed, 1 Jul 2020 10:31:37 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Brian Masney <masneyb@onstation.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/msm: handle for EPROBE_DEFER for of_icc_get
+Message-ID: <20200701173137.GD3191083@google.com>
+References: <20200701030842.24395-1-jonathan@marek.ca>
+ <20200701171228.GC3191083@google.com>
+ <49af8f44-51d4-aded-a34e-55c7c5780008@marek.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200701090622.3354860-1-hch@lst.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <49af8f44-51d4-aded-a34e-55c7c5780008@marek.ca>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 01 2020 at  5:06am -0400,
-Christoph Hellwig <hch@lst.de> wrote:
-
-> Hi Jens,
+On Wed, Jul 01, 2020 at 01:13:34PM -0400, Jonathan Marek wrote:
+> On 7/1/20 1:12 PM, Matthias Kaehlcke wrote:
+> > Hi Jonathan,
+> > 
+> > On Tue, Jun 30, 2020 at 11:08:41PM -0400, Jonathan Marek wrote:
+> > > Check for EPROBE_DEFER instead of silently not using icc if the msm driver
+> > > probes before the interconnect driver.
+> > 
+> > Agreed with supporting deferred ICC probing.
+> > 
+> > > Only check for EPROBE_DEFER because of_icc_get can return other errors that
+> > > we want to ignore (ENODATA).
+> > 
+> > What would be the -ENODATA case?
+> > 
 > 
-> we have a lot of bdi congestion related code that is left around without
-> any use.  This series removes it in preparation of sorting out the bdi
-> lifetime rules properly.
+> The of_icc_get for the ocmem_icc_path can return -ENODATA when the ocmem
+> path is not specified (it is optional and only relevant for a3xx/a4xx).
 
-I could do some git archeology to see what the fs, mm and block core
-changes were to stop using bdi congested but a pointer to associated
-changes (or quick recap) would save me some time.
+Thanks for the clarification!
 
-Also, curious to know how back-pressure should be felt back up the IO
-stack now? (apologies if these are well worn topics, I haven't been
-tracking this area of development).
-
-Thanks,
-Mike
-
+In this case it seems reasonable to me to return any error for the
+'gfx-mem' path and all errors except -ENODATA for 'ocmem'.
