@@ -2,91 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4595D21096A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 12:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E81BD210975
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 12:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730118AbgGAKcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 06:32:14 -0400
-Received: from vps.xff.cz ([195.181.215.36]:42548 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729985AbgGAKbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 06:31:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1593599495; bh=mqI4DMxpU5nv3gGp6GplYAwWUJ0ad4+0Fg/Z0K5Wudc=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=FHBeQ5nFreZDNM/2l/SYGog3iYLNPDSfkXOtAYK1Yz5XNjf2LVKMIpAto++BlDQqw
-         N6kczy9TekXltpwUeR34bXP1B8iCG2G0phR9JtIpxL5pAPtyxK2E4CIGLQ46zY9oRF
-         Y2UrLFQKlLmaZnQiOx89ytpZIhLjU4VL6R0VbEQA=
-From:   Ondrej Jirman <megous@megous.com>
-To:     linux-sunxi@googlegroups.com,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
-        Purism Kernel Team <kernel@puri.sm>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Icenowy Zheng <icenowy@aosc.io>
-Cc:     Ondrej Jirman <megous@megous.com>, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Samuel Holland <samuel@sholland.org>,
-        Martijn Braam <martijn@brixit.nl>, Luca Weiss <luca@z3ntu.xyz>,
-        Bhushan Shah <bshah@kde.org>
-Subject: [PATCH v6 13/13] arm64: dts: sun50i-a64-pinephone: Add touchscreen support
-Date:   Wed,  1 Jul 2020 12:31:26 +0200
-Message-Id: <20200701103126.1512615-14-megous@megous.com>
-In-Reply-To: <20200701103126.1512615-1-megous@megous.com>
-References: <20200701103126.1512615-1-megous@megous.com>
+        id S1729889AbgGAKd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 06:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729180AbgGAKdz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 06:33:55 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD75C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 03:33:55 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id w3so10210854wmi.4
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 03:33:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=hewe4JI7d2uWaZ6U5ruXrOYCzIOeGQYejvEgeCsdjtE=;
+        b=ZfTd6y8QgSzsSH6FxtqUI4HgS6iNRziQFdUNWniFv0dcZrF2Uf7IOWnfoZHcs2SHBj
+         NXBPF9sea7VKntNrEAX9DcjoJBpspfjOIxX5g4ChLSjvdMMyxwoZwaISmb2cU3ASNxow
+         HBnsQC2cJc7O0EOYrG3qdmgepvyxyiH3B3nf+Ao5IKRF8bb1egF+O/fAH6coHzppvApg
+         AF1gKcE5KjvYAZ9voIdY2UT26quq00pVp4qjUWrKVvBU1nF3aVeBFP/CAK6qfLqLh67B
+         9mTHuhhY9HbUbkBqcQt81sbJrYL1YXi4JwrR85xKcScm3GulxP1CcOuXNfM1ixq9Stfi
+         Unrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=hewe4JI7d2uWaZ6U5ruXrOYCzIOeGQYejvEgeCsdjtE=;
+        b=gWerq1SOYmkc70IIQ96PZ4on6sh0N+/biQSXHcvh8lUteTchBeIKsiEqQ7YXILY1Z/
+         YeWn3rYG1QzpHI8zMm8wshIGiEKuXgudKn+cEZHMvjMzEBJ9/Ip/KPS/YdqFnd3ItyD2
+         4PSmrcNOvwbBzY/Veub9coN4RNtgByApP6H2/OH/ogFEKZ8ZrHZw6wLt0lR62+1bJ9FT
+         TnTaHFVJMl3aM8Bp2Pw/Dfq9j/CmSaUkb85HwistYqNKX1cVt1urKiViS3xG6bJXRRia
+         vt6AziSU027P0N6bOuH+f9egYJaO8wR2W8n9/98/M1CT4lpYbvH15Iqej2x5QRynsWoB
+         El1A==
+X-Gm-Message-State: AOAM53369BFH1GXONQHWhzVjpHkxV6PV5VmqPD7HPX9Fe6PqgeHCHuy1
+        hpXpED5qMs5cuQgskovUAYQUIwiss0g=
+X-Google-Smtp-Source: ABdhPJz7JIgkZAG8K6/gyDFLRFcHusOCn5Tb1ln0F2cKOhJl1bhSZP7Oe2blmfhX1Yphbq8H68qZzA==
+X-Received: by 2002:a1c:a589:: with SMTP id o131mr24537790wme.12.1593599634210;
+        Wed, 01 Jul 2020 03:33:54 -0700 (PDT)
+Received: from dell ([2.27.35.144])
+        by smtp.gmail.com with ESMTPSA id i17sm7177549wrc.34.2020.07.01.03.33.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jul 2020 03:33:53 -0700 (PDT)
+Date:   Wed, 1 Jul 2020 11:33:51 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, George Zhang <georgezhang@vmware.com>
+Subject: Re: [PATCH v2 07/30] misc: vmw_vmci_defs: Mark 'struct vmci_handle
+ VMCI_ANON_SRC_HANDLE' as __maybe_unused
+Message-ID: <20200701103351.GE1179328@dell>
+References: <20200701083118.45744-1-lee.jones@linaro.org>
+ <20200701083118.45744-8-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200701083118.45744-8-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pinephone has a Goodix GT917S capacitive touchscreen controller on
-I2C0 bus. Add support for it.
+On Wed, 01 Jul 2020, Lee Jones wrote:
 
-Signed-off-by: Ondrej Jirman <megous@megous.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
----
- .../dts/allwinner/sun50i-a64-pinephone.dtsi   | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+> vmw_vmci_defs.h is included by multiple source files.  Some of which
+> do not make use of 'struct vmci_handle VMCI_ANON_SRC_HANDLE' rendering
+> it unused.  Ensure the compiler knows that this is in fact intentional
+> by marking it as __maybe_unused.  This fixes the following W=1 warnings:
+> 
+>  In file included from drivers/misc/vmw_vmci/vmci_context.c:8:
+>  include/linux/vmw_vmci_defs.h:162:33: warning: ‘VMCI_ANON_SRC_HANDLE’ defined but not used [-Wunused-const-variable=]
+>  162 | static const struct vmci_handle VMCI_ANON_SRC_HANDLE = {
+>  | ^~~~~~~~~~~~~~~~~~~~
+>  In file included from drivers/misc/vmw_vmci/vmci_datagram.c:8:
+>  include/linux/vmw_vmci_defs.h:162:33: warning: ‘VMCI_ANON_SRC_HANDLE’ defined but not used [-Wunused-const-variable=]
+>  162 | static const struct vmci_handle VMCI_ANON_SRC_HANDLE = {
+> | ^~~~~~~~~~~~~~~~~~~~
+> 
+> Cc: George Zhang <georgezhang@vmware.com>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  arch/arm/mach-omap2/mmc.h              | 4 ----
+>  drivers/mmc/host/omap.c                | 1 -
+>  include/linux/platform_data/mmc-omap.h | 3 +++
+>  include/linux/vmw_vmci_defs.h          | 2 +-
+>  4 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-index 85a7aa5efd32..2d5694446d17 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-@@ -123,6 +123,25 @@ &ehci1 {
- 	status = "okay";
- };
- 
-+&i2c0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c0_pins>;
-+	status = "okay";
-+
-+	touchscreen@5d {
-+		compatible = "goodix,gt917s", "goodix,gt911";
-+		reg = <0x5d>;
-+		interrupt-parent = <&pio>;
-+		interrupts = <7 4 IRQ_TYPE_LEVEL_HIGH>; /* PH4 */
-+		irq-gpios = <&pio 7 4 GPIO_ACTIVE_HIGH>; /* PH4 */
-+		reset-gpios = <&pio 7 11 GPIO_ACTIVE_HIGH>; /* PH11 */
-+		AVDD28-supply = <&reg_ldo_io0>;
-+		VDDIO-supply = <&reg_ldo_io0>;
-+		touchscreen-size-x = <720>;
-+		touchscreen-size-y = <1440>;
-+	};
-+};
-+
- &i2c1 {
- 	status = "okay";
- 
+Drop this please.  Something went wrong.
+
+I will resend it separately in a few days.
+
 -- 
-2.27.0
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
