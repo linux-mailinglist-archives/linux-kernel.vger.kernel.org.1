@@ -2,163 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F022114E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 23:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE592114EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 23:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgGAVVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 17:21:40 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:60074 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727076AbgGAVVi (ORCPT
+        id S1727858AbgGAVWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 17:22:18 -0400
+Received: from rnd-relay.smtp.broadcom.com ([192.19.229.170]:43312 "EHLO
+        rnd-relay.smtp.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726942AbgGAVWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 17:21:38 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 061LLXxS130492;
-        Wed, 1 Jul 2020 16:21:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1593638493;
-        bh=rLRInyM1HUBSe42k9HXIZL+IrIZT1shCKCGOH7tBuOA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=NQvtGT/ZG8cPpHc0YuQ+p+9b1vhq5YCipHI6/SYBsD7VZ89xI6JSjhmmGAZ3vdfRM
-         pAvBkzy2HXQ83NEJmgL6ed2dSkMGtGuXurAmgiFyd9+N30wGt6Ik5/KIlaGzKUDZVs
-         S6rQR1fmb7ywdo1URRKpUo5B6uPA4rE0bXwvKf7c=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 061LLXCX129314
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 1 Jul 2020 16:21:33 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 1 Jul
- 2020 16:21:33 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 1 Jul 2020 16:21:33 -0500
-Received: from [10.250.70.56] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 061LLWww081460;
-        Wed, 1 Jul 2020 16:21:32 -0500
-Subject: Re: [PATCH 2/2] Revert "remoteproc: Add support for runtime PM"
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>, <ohad@wizery.com>,
-        <bjorn.andersson@linaro.org>, <paul@crapouillou.net>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200630163118.3830422-1-mathieu.poirier@linaro.org>
- <20200630163118.3830422-3-mathieu.poirier@linaro.org>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <14cdd336-a2d9-537d-cc61-f47e01f89e9c@ti.com>
-Date:   Wed, 1 Jul 2020 16:21:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200630163118.3830422-3-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Wed, 1 Jul 2020 17:22:13 -0400
+Received: from mail-irv-17.broadcom.com (mail-irv-17.lvn.broadcom.net [10.75.242.48])
+        by rnd-relay.smtp.broadcom.com (Postfix) with ESMTP id 66F4630C05C;
+        Wed,  1 Jul 2020 14:22:12 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 rnd-relay.smtp.broadcom.com 66F4630C05C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1593638532;
+        bh=GSqFzmHeOiSek+62bFpDJcfrtOQWQUrThlJG71lclKo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=tEB1dOdB4mCMT/CINRpEULUdgrBzSMGdrPnFaguWD+zq2PGPPc2KRaPMxUJnM5BIE
+         8WfvQseprpaf1c62YJzJf5yn1keBiaxCazW3+mhdI5vNurr5GqXxSX7kk1ZOvvm/ga
+         HzWCJ5Vg3HtPXYEO1RGkVI4+1ceqFocOrzOv53dI=
+Received: from stbsrv-and-01.and.broadcom.net (stbsrv-and-01.and.broadcom.net [10.28.16.211])
+        by mail-irv-17.broadcom.com (Postfix) with ESMTP id A198514008B;
+        Wed,  1 Jul 2020 14:22:10 -0700 (PDT)
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+To:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
+Cc:     Jim Quinlan <james.quinlan@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM7XXX
+        ARM ARCHITECTURE),
+        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v6 03/12] dt-bindings: PCI: Add bindings for more Brcmstb chips
+Date:   Wed,  1 Jul 2020 17:21:33 -0400
+Message-Id: <20200701212155.37830-4-james.quinlan@broadcom.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200701212155.37830-1-james.quinlan@broadcom.com>
+References: <20200701212155.37830-1-james.quinlan@broadcom.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+From: Jim Quinlan <jquinlan@broadcom.com>
 
-On 6/30/20 11:31 AM, Mathieu Poirier wrote:
-> This reverts commit a99a37f6cd5a74d5b22c08544aa6c5890813c8ba.
-> 
-> Removing PM runtime operations from the remoteproc core in order to:
-> 
-> 1) Keep all power management operations in platform drivers.  That way we
-> do not loose flexibility in an area that is very HW specific.
-> 
-> 2) Avoid making the support for remote processor managed by external
-> entities more complex that it already is.
-> 
-> 3) Fix regression introduced for the Omap remoteproc driver.
+- Add compatible strings for three more Broadcom STB chips: 7278, 7216,
+  7211 (STB version of RPi4).
+- Add new property 'brcm,scb-sizes'.
+- Add new property 'resets'.
+- Add new property 'reset-names' for 7216 only.
+- Allow 'ranges' and 'dma-ranges' to have more than one item and update
+  the example to show this.
 
-Thanks for following up on the discussion, I have verified that the 
-autosuspend regression is fixed.
+Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ .../bindings/pci/brcm,stb-pcie.yaml           | 56 ++++++++++++++++---
+ 1 file changed, 49 insertions(+), 7 deletions(-)
 
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
-Tested-by: Suman Anna <s-anna@ti.com>
-Acked-by: Suman Anna <s-anna@ti.com>
-
-regards
-Suman
-
-> ---
->   drivers/remoteproc/remoteproc_core.c | 17 +----------------
->   1 file changed, 1 insertion(+), 16 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index 9f04c30c4aaf..0f95e025ba03 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -29,7 +29,6 @@
->   #include <linux/devcoredump.h>
->   #include <linux/rculist.h>
->   #include <linux/remoteproc.h>
-> -#include <linux/pm_runtime.h>
->   #include <linux/iommu.h>
->   #include <linux/idr.h>
->   #include <linux/elf.h>
-> @@ -1383,12 +1382,6 @@ static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
->   	if (ret)
->   		return ret;
->   
-> -	ret = pm_runtime_get_sync(dev);
-> -	if (ret < 0) {
-> -		dev_err(dev, "pm_runtime_get_sync failed: %d\n", ret);
-> -		return ret;
-> -	}
-> -
->   	dev_info(dev, "Booting fw image %s, size %zd\n", name, fw->size);
->   
->   	/*
-> @@ -1398,7 +1391,7 @@ static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
->   	ret = rproc_enable_iommu(rproc);
->   	if (ret) {
->   		dev_err(dev, "can't enable iommu: %d\n", ret);
-> -		goto put_pm_runtime;
-> +		return ret;
->   	}
->   
->   	/* Prepare rproc for firmware loading if needed */
-> @@ -1452,8 +1445,6 @@ static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
->   	rproc_unprepare_device(rproc);
->   disable_iommu:
->   	rproc_disable_iommu(rproc);
-> -put_pm_runtime:
-> -	pm_runtime_put(dev);
->   	return ret;
->   }
->   
-> @@ -1891,8 +1882,6 @@ void rproc_shutdown(struct rproc *rproc)
->   
->   	rproc_disable_iommu(rproc);
->   
-> -	pm_runtime_put(dev);
-> -
->   	/* Free the copy of the resource table */
->   	kfree(rproc->cached_table);
->   	rproc->cached_table = NULL;
-> @@ -2183,9 +2172,6 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
->   
->   	rproc->state = RPROC_OFFLINE;
->   
-> -	pm_runtime_no_callbacks(&rproc->dev);
-> -	pm_runtime_enable(&rproc->dev);
-> -
->   	return rproc;
->   
->   put_device:
-> @@ -2205,7 +2191,6 @@ EXPORT_SYMBOL(rproc_alloc);
->    */
->   void rproc_free(struct rproc *rproc)
->   {
-> -	pm_runtime_disable(&rproc->dev);
->   	put_device(&rproc->dev);
->   }
->   EXPORT_SYMBOL(rproc_free);
-> 
+diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+index 8680a0f86c5a..807694b4f41f 100644
+--- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
++++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+@@ -9,12 +9,15 @@ title: Brcmstb PCIe Host Controller Device Tree Bindings
+ maintainers:
+   - Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+ 
+-allOf:
+-  - $ref: /schemas/pci/pci-bus.yaml#
+-
+ properties:
+   compatible:
+-    const: brcm,bcm2711-pcie # The Raspberry Pi 4
++    items:
++      - enum:
++          - brcm,bcm2711-pcie # The Raspberry Pi 4
++          - brcm,bcm7211-pcie # Broadcom STB version of RPi4
++          - brcm,bcm7278-pcie # Broadcom 7278 Arm
++          - brcm,bcm7216-pcie # Broadcom 7216 Arm
++          - brcm,bcm7445-pcie # Broadcom 7445 Arm
+ 
+   reg:
+     maxItems: 1
+@@ -34,10 +37,12 @@ properties:
+       - const: msi
+ 
+   ranges:
+-    maxItems: 1
++    minItems: 1
++    maxItems: 4
+ 
+   dma-ranges:
+-    maxItems: 1
++    minItems: 1
++    maxItems: 6
+ 
+   clocks:
+     maxItems: 1
+@@ -58,8 +63,31 @@ properties:
+ 
+   aspm-no-l0s: true
+ 
++  resets:
++    description: for "brcm,bcm7216-pcie", must be a valid reset
++      phandle pointing to the RESCAL reset controller provider node.
++    $ref: "/schemas/types.yaml#/definitions/phandle"
++
++  reset-names:
++    items:
++      - const: rescal
++
++  brcm,scb-sizes:
++    description: u64 giving the 64bit PCIe memory
++      viewport size of a memory controller.  There may be up to
++      three controllers, and each size must be a power of two
++      with a size greater or equal to the amount of memory the
++      controller supports.  Note that each memory controller
++      may have two component regions -- base and extended -- so
++      this information cannot be deduced from the dma-ranges.
++    $ref: /schemas/types.yaml#/definitions/uint64-array
++    items:
++      minItems: 1
++      maxItems: 3
++
+ required:
+   - reg
++  - ranges
+   - dma-ranges
+   - "#interrupt-cells"
+   - interrupts
+@@ -68,6 +96,18 @@ required:
+   - interrupt-map
+   - msi-controller
+ 
++allOf:
++  - $ref: /schemas/pci/pci-bus.yaml#
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: brcm,bcm7216-pcie
++    then:
++      required:
++        - resets
++        - reset-names
++
+ unevaluatedProperties: false
+ 
+ examples:
+@@ -93,7 +133,9 @@ examples:
+                     msi-parent = <&pcie0>;
+                     msi-controller;
+                     ranges = <0x02000000 0x0 0xf8000000 0x6 0x00000000 0x0 0x04000000>;
+-                    dma-ranges = <0x02000000 0x0 0x00000000 0x0 0x00000000 0x0 0x80000000>;
++                    dma-ranges = <0x42000000 0x1 0x00000000 0x0 0x40000000 0x0 0x80000000>,
++                                 <0x42000000 0x1 0x80000000 0x3 0x00000000 0x0 0x80000000>;
+                     brcm,enable-ssc;
++                    brcm,scb-sizes =  <0x0000000080000000 0x0000000080000000>;
+             };
+     };
+-- 
+2.17.1
 
