@@ -2,204 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD179211143
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 18:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6578121114D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 18:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732786AbgGAQx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 12:53:59 -0400
-Received: from out28-97.mail.aliyun.com ([115.124.28.97]:55460 "EHLO
-        out28-97.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732478AbgGAQx5 (ORCPT
+        id S1732820AbgGAQyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 12:54:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732739AbgGAQyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 12:53:57 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.06444931|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0121749-0.000458275-0.987367;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03302;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.Hvx6e5p_1593622427;
-Received: from 192.168.10.205(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Hvx6e5p_1593622427)
-          by smtp.aliyun-inc.com(10.147.41.137);
-          Thu, 02 Jul 2020 00:53:48 +0800
-Subject: Re: [PATCH v3 1/2] dt-bindings: timer: Add Ingenic X1000 OST
- bindings.
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        daniel.lezcano@linaro.org, tglx@linutronix.de, robh+dt@kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-References: <20200630171553.70670-1-zhouyanjie@wanyeetech.com>
- <20200630171553.70670-2-zhouyanjie@wanyeetech.com>
- <LT6RCQ.V5ANBLLSA4OD3@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <808ce8df-6e25-8f1b-4db3-718267fe4498@wanyeetech.com>
-Date:   Thu, 2 Jul 2020 00:53:45 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
+        Wed, 1 Jul 2020 12:54:16 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3460C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 09:54:16 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id u5so11256191pfn.7
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 09:54:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EsXUdM5LAqzZIkn5/W0cNdIO5H2Xp89nIazo0CQdhNk=;
+        b=GwqLCcMAMUHg3piKQ0M1OpiifrcnYUmWU6pkjcqeA7IPO+nvcLIkmswfoCyb5lnB7G
+         nIILTLdTaOKsOt632Yaq+LLwyb08YkoB2dkZlyrzPSWuf/0FLqmNB1O0CP3iq/S6BbRu
+         ih7Mgx0A4CC6tjz80rhNSqnEtE4ojrney1TIE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EsXUdM5LAqzZIkn5/W0cNdIO5H2Xp89nIazo0CQdhNk=;
+        b=a566evr6xWC/M+vb0p1ePzsllca4Jws1054Fz5xMnqPeCoyxVy758nyv9pko8q1K3h
+         YblyZ81mfPw9P0dGSU6jaDNGHTqo1Ywo/SA1tGZghBbb5cklr6k+iwreiMIZ6CIFOhB5
+         XrXTl7R5WFSXhoKLpUReAH1Eq9v2uLTNc3TQRRo81VXUAn+qcPVh92e5Qis2CBBgNXae
+         4WW2xeLnZq1IgxoxIFRUi6gY6Ify8TFSVSLcfikIKz00OgVPbbuvZ8nQeAiBW9IbhtWl
+         hWyFo81K7dcF/0OdJwOuWxB22WWpD3Xp6AR2afjm0Fl5s3On/Y93RVQGn2RQ4JxajQIs
+         7ptQ==
+X-Gm-Message-State: AOAM531NtO9NZpfHbU8u/LxjNuxyh2UHGrlTdpq/QGKnEESfIPSgbLvP
+        AwtY2rk/wiTqhJEFdNg0jpKYBA==
+X-Google-Smtp-Source: ABdhPJyRYU3xYExtmeUyfOXkpw7VsQvHdKoQQRhKbkqyHFECmUwIhbLYFz+24TYxhxLjY5slmp/3Ww==
+X-Received: by 2002:a63:e214:: with SMTP id q20mr13297210pgh.402.1593622456365;
+        Wed, 01 Jul 2020 09:54:16 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id q1sm6907508pfk.132.2020.07.01.09.54.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Jul 2020 09:54:15 -0700 (PDT)
+Date:   Wed, 1 Jul 2020 09:54:14 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     stanimir.varbanov@linaro.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] arm64: dts: sc7180: Add OPP tables and power-domains
+ for venus
+Message-ID: <20200701165414.GB3191083@google.com>
+References: <1593603638-19296-1-git-send-email-rnayak@codeaurora.org>
+ <1593603638-19296-4-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <LT6RCQ.V5ANBLLSA4OD3@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1593603638-19296-4-git-send-email-rnayak@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Wed, Jul 01, 2020 at 05:10:38PM +0530, Rajendra Nayak wrote:
+> Add the OPP tables in order to be able to vote on the performance state
+> of a power-domain
+> 
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 35 +++++++++++++++++++++++++++++++++--
+>  1 file changed, 33 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> index ad57df2..738a741 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -2392,8 +2392,10 @@
+>  			reg = <0 0x0aa00000 0 0xff000>;
+>  			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
+>  			power-domains = <&videocc VENUS_GDSC>,
+> -					<&videocc VCODEC0_GDSC>;
+> -			power-domain-names = "venus", "vcodec0";
+> +					<&videocc VCODEC0_GDSC>,
+> +					<&rpmhpd SC7180_CX>;
+> +			power-domain-names = "venus", "vcodec0", "opp-pd";
+> +			operating-points-v2 = <&venus_opp_table>;
+>  			clocks = <&videocc VIDEO_CC_VENUS_CTL_CORE_CLK>,
+>  				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
+>  				 <&videocc VIDEO_CC_VENUS_CTL_AXI_CLK>,
+> @@ -2414,6 +2416,35 @@
+>  			video-encoder {
+>  				compatible = "venus-encoder";
+>  			};
+> +
+> +			venus_opp_table: venus-opp-table {
+> +				compatible = "operating-points-v2";
+> +
+> +				opp-200000000 {
+> +					opp-hz = /bits/ 64 <150000000>;
+> +					required-opps = <&rpmhpd_opp_low_svs>;
+> +				};
+> +
+> +				opp-320000000 {
+> +					opp-hz = /bits/ 64 <270000000>;
+> +					required-opps = <&rpmhpd_opp_svs>;
+> +				};
+> +
+> +				opp-380000000 {
+> +					opp-hz = /bits/ 64 <340000000>;
+> +					required-opps = <&rpmhpd_opp_svs_l1>;
+> +				};
+> +
+> +				opp-444000000 {
+> +					opp-hz = /bits/ 64 <434000000>;
+> +					required-opps = <&rpmhpd_opp_nom>;
+> +				};
+> +
+> +				opp-533000000 {
+> +					opp-hz = /bits/ 64 <500000000>;
+> +					required-opps = <&rpmhpd_opp_turbo>;
+> +				};
 
-在 2020/7/1 上午3:15, Paul Cercueil 写道:
-> Hi Zhou,
->
-> Le mer. 1 juil. 2020 à 1:15, 周琰杰 (Zhou Yanjie) 
-> <zhouyanjie@wanyeetech.com> a écrit :
->> Add the OST bindings for the X10000 SoC from Ingenic.
->>
->> Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
->> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->> ---
->>
->> Notes:
->>     v1->v2:
->>     No change.
->>
->>     v2->v3:
->>     Fix wrong parameters in "clocks".
->>
->>  .../devicetree/bindings/timer/ingenic,ost.yaml     | 61 
->> ++++++++++++++++++++++
->>  include/dt-bindings/clock/ingenic,ost.h            | 12 +++++
->
-> Please name them ingenic,sysost.yaml and ingenic,sysost.h, to 
-> differenciate with the OST that is in the JZ SoCs.
->
-
-Sure.
-
-
->>  2 files changed, 73 insertions(+)
->>  create mode 100644 
->> Documentation/devicetree/bindings/timer/ingenic,ost.yaml
->>  create mode 100644 include/dt-bindings/clock/ingenic,ost.h
->>
->> diff --git a/Documentation/devicetree/bindings/timer/ingenic,ost.yaml 
->> b/Documentation/devicetree/bindings/timer/ingenic,ost.yaml
->> new file mode 100644
->> index 000000000000..459dd3d161c2
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/timer/ingenic,ost.yaml
->> @@ -0,0 +1,61 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/timer/ingenic,ost.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Bindings for SYSOST in Ingenic XBurst family SoCs
->> +
->> +maintainers:
->> +  - 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->> +
->> +description:
->> +  The SYSOST in an Ingenic SoC provides one 64bit timer for clocksource
->> +  and one or more than one 32bit timers for clockevent.
->
-> "and one or more than one" -> "and one or more"
->
-
-OK, I'll change it in the next version.
-
-
->> +
->> +properties:
->> +  compatible:
->> +    oneOf:
->> +
->> +      - description: SYSOST in Ingenic XBurst family SoCs
->
-> XBurst is the name of the CPU, not a SoC family, so you would just 
-> write 'Ingenic SoCs'. But just drop the description alltogether, it 
-> does not add anything valuable.
->
-
-Sure.
-
-
->> +        enum:
->> +          - ingenic,x1000-ost
->> +          - ingenic,x2000-ost
->
-> You have "ingenic,x2000-ost" as a compatible string, but your driver 
-> (in patch [2/2]) only handles the first compatible string. Either they 
-> are different, in this case the driver should handle both, or they 
-> work the same, and in the case the "ingenic,x2000-ost" string should 
-> use "ingenic,x1000-ost" as a fallback string.
->
-
-If SMT is not turned on, X2000 can be compatible with X1000, but if SMT 
-is turned on, some additional processing is required, and now this 
-compatible string is reserved for this.
-
-Thanks and best regards!
-
-
-> Cheers,
-> -Paul
->
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +  clock-names:
->> +    const: ost
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +required:
->> +  - "#clock-cells"
->> +  - compatible
->> +  - reg
->> +  - clocks
->> +  - clock-names
->> +  - interrupts
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/clock/x1000-cgu.h>
->> +
->> +    ost: timer@12000000 {
->> +            compatible = "ingenic,x1000-ost";
->> +            reg = <0x12000000 0x3c>;
->> +
->> +            #clock-cells = <1>;
->> +
->> +            clocks = <&cgu X1000_CLK_OST>;
->> +            clock-names = "ost";
->> +
->> +            interrupt-parent = <&cpuintc>;
->> +            interrupts = <3>;
->> +        };
->> +...
->> diff --git a/include/dt-bindings/clock/ingenic,ost.h 
->> b/include/dt-bindings/clock/ingenic,ost.h
->> new file mode 100644
->> index 000000000000..9ac88e90babf
->> --- /dev/null
->> +++ b/include/dt-bindings/clock/ingenic,ost.h
->> @@ -0,0 +1,12 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * This header provides clock numbers for the ingenic,tcu DT binding.
->> + */
->> +
->> +#ifndef __DT_BINDINGS_CLOCK_INGENIC_OST_H__
->> +#define __DT_BINDINGS_CLOCK_INGENIC_OST_H__
->> +
->> +#define OST_CLK_PERCPU_TIMER    0
->> +#define OST_CLK_GLOBAL_TIMER    1
->> +
->> +#endif /* __DT_BINDINGS_CLOCK_INGENIC_OST_H__ */
->> -- 
->> 2.11.0
->>
->
+the labels of the OPP nodes don't match the specified frequencies
