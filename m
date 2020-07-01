@@ -2,186 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805892105C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0C62105AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728546AbgGAIEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 04:04:25 -0400
-Received: from mga14.intel.com ([192.55.52.115]:2413 "EHLO mga14.intel.com"
+        id S1728520AbgGAIEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 04:04:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:41924 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728258AbgGAIEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 04:04:23 -0400
-IronPort-SDR: we9/QNuDfPRQXKdQnFSNrqQgSPDig6i9mwfxU3slCcCs3xck6ZTjKAGb/kEnpuJTwCs6QPjAa7
- FI6rCFDnM+Zw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="145581813"
-X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
-   d="scan'208";a="145581813"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 01:04:12 -0700
-IronPort-SDR: UhJ3wEyfUjQQla5eUs0kp6guankjI+7N2vW+qen5gPxBb9drj8GuZUuPnOgi6qinh+7WZ7jgo9
- uZX+TNLG5zag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
-   d="scan'208";a="455010208"
-Received: from unknown (HELO local-michael-cet-test.sh.intel.com) ([10.239.159.128])
-  by orsmga005.jf.intel.com with ESMTP; 01 Jul 2020 01:04:10 -0700
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        jmattson@google.com
-Cc:     yu.c.zhang@linux.intel.com, Yang Weijiang <weijiang.yang@intel.com>
-Subject: [PATCH v13 00/11] Introduce support for guest CET feature
-Date:   Wed,  1 Jul 2020 16:04:00 +0800
-Message-Id: <20200701080411.5802-1-weijiang.yang@intel.com>
-X-Mailer: git-send-email 2.17.2
+        id S1728258AbgGAIEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 04:04:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 62B9B31B;
+        Wed,  1 Jul 2020 01:04:07 -0700 (PDT)
+Received: from [10.57.4.20] (unknown [10.57.4.20])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B2AD43F68F;
+        Wed,  1 Jul 2020 01:04:03 -0700 (PDT)
+Subject: Re: [PATCH v6 2/2] arm64/crash_core: Export TCR_EL1.T1SZ in
+ vmcoreinfo
+To:     Bhupesh Sharma <bhsharma@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Kazuhito Hagio <k-hagio@ab.jp.nec.com>,
+        Steve Capper <steve.capper@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        James Morse <james.morse@arm.com>,
+        Dave Anderson <anderson@redhat.com>, bhupesh.linux@gmail.com,
+        Will Deacon <will@kernel.org>
+References: <1589395957-24628-1-git-send-email-bhsharma@redhat.com>
+ <1589395957-24628-3-git-send-email-bhsharma@redhat.com>
+From:   Amit Kachhap <amit.kachhap@arm.com>
+Message-ID: <9b44a21d-93e0-8e5d-019c-fd360bf0504b@arm.com>
+Date:   Wed, 1 Jul 2020 13:34:00 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <1589395957-24628-3-git-send-email-bhsharma@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Control-flow Enforcement Technology (CET) provides protection against
-Return/Jump-Oriented Programming (ROP/JOP) attack. There're two CET
-sub-features: Shadow Stack (SHSTK) and Indirect Branch Tracking (IBT).
-SHSTK is to prevent ROP programming and IBT is to prevent JOP programming.
+Hi Bhupesh,
 
-Several parts in KVM have been updated to provide VM CET support, including:
-CPUID/XSAVES config, MSR pass-through, user space MSR access interface, 
-vmentry/vmexit config, nested VM etc. These patches have dependency on CET
-kernel patches for xsaves support and CET definitions, e.g., MSR and related
-feature flags.
+On 5/14/20 12:22 AM, Bhupesh Sharma wrote:
+> vabits_actual variable on arm64 indicates the actual VA space size,
+> and allows a single binary to support both 48-bit and 52-bit VA
+> spaces.
+> 
+> If the ARMv8.2-LVA optional feature is present, and we are running
+> with a 64KB page size; then it is possible to use 52-bits of address
+> space for both userspace and kernel addresses. However, any kernel
+> binary that supports 52-bit must also be able to fall back to 48-bit
+> at early boot time if the hardware feature is not present.
+> 
+> Since TCR_EL1.T1SZ indicates the size offset of the memory region
+> addressed by TTBR1_EL1 (and hence can be used for determining the
+> vabits_actual value) it makes more sense to export the same in
+> vmcoreinfo rather than vabits_actual variable, as the name of the
+> variable can change in future kernel versions, but the architectural
+> constructs like TCR_EL1.T1SZ can be used better to indicate intended
+> specific fields to user-space.
+> 
+> User-space utilities like makedumpfile and crash-utility, need to
+> read this value from vmcoreinfo for determining if a virtual
+> address lies in the linear map range.
+> 
+> While at it also add documentation for TCR_EL1.T1SZ variable being
+> added to vmcoreinfo.
+> 
+> It indicates the size offset of the memory region addressed by TTBR1_EL1
+> 
+> Cc: James Morse <james.morse@arm.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Steve Capper <steve.capper@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> Cc: Dave Anderson <anderson@redhat.com>
+> Cc: Kazuhito Hagio <k-hagio@ab.jp.nec.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: kexec@lists.infradead.org
+> Tested-by: John Donnelly <john.p.donnelly@oracle.com>
+> Signed-off-by: Bhupesh Sharma <bhsharma@redhat.com>
 
-CET kernel patches are here:
-https://lkml.kernel.org/r/20200429220732.31602-1-yu-cheng.yu@intel.com
+I tested this for both 48 and 52 VA. The dump log looks fine with the 
+crash tool link provided by you so,
 
-v13:
-- Added CET definitions as a separate patch to facilitate KVM test.
-- Disabled CET support in KVM if unrestricted_guest is turned off since
-  in this case CET related instructions/infrastructure cannot be emulated
-  well.
+Tested-by: Amit Daniel Kachhap <amit.kachhap@arm.com>
 
-v12:
-- Fixed a few issues per Sean and Paolo's review feeback.
-- Refactored patches to make them properly arranged.
-- Removed unnecessary hard-coded CET states for host/guest.
-- Added compile-time assertions for vmcs_field_to_offset_table to detect
-  mismatch of the field type and field encoding number.
-- Added a custom MSR MSR_KVM_GUEST_SSP for guest active SSP save/restore.
-- Rebased patches to 5.7-rc3.
+Also the code changes/documentation looks fine to me with a minor 
+comments below,
 
-v11:
-- Fixed a guest vmentry failure issue when guest reboots.
-- Used vm_xxx_control_{set, clear}bit() to avoid side effect, it'll
-  clear cached data instead of pure VMCS field bits.
-- Added vcpu->arch.guest_supported_xss dedidated for guest runtime mask,
-  this avoids supported_xss overwritten issue caused by an old qemu.
-- Separated vmentry/vmexit state setting with CR0/CR4 dependency check
-  to make the patch more clear.
-- Added CET VMCS states in dump_vmcs() for debugging purpose.
-- Other refactor based on testing.
-- This patch serial is built on top of below branch and CET kernel patches
-  for seeking xsaves support:
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=cpu-caps
+Reviewed-by: Amit Daniel Kachhap <amit.kachhap@arm.com>
 
-v10:
-- Refactored code per Sean's review feedback.
-- Added CET support for nested VM.
-- Removed fix-patch for CPUID(0xd,N) enumeration as this part is done
-  by Paolo and Sean.
-- This new patchset is based on Paolo's queued cpu_caps branch.
-- Modified patch per XSAVES related change.
-- Consolidated KVM unit-test patch with KVM patches.
+> ---
+>   Documentation/admin-guide/kdump/vmcoreinfo.rst | 11 +++++++++++
+>   arch/arm64/include/asm/pgtable-hwdef.h         |  1 +
+>   arch/arm64/kernel/crash_core.c                 | 10 ++++++++++
+>   3 files changed, 22 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/kdump/vmcoreinfo.rst b/Documentation/admin-guide/kdump/vmcoreinfo.rst
+> index 2a632020f809..2baad0bfb09d 100644
+> --- a/Documentation/admin-guide/kdump/vmcoreinfo.rst
+> +++ b/Documentation/admin-guide/kdump/vmcoreinfo.rst
+> @@ -404,6 +404,17 @@ KERNELPACMASK
+>   The mask to extract the Pointer Authentication Code from a kernel virtual
+>   address.
+>   
+> +TCR_EL1.T1SZ
+> +------------
+> +
+> +Indicates the size offset of the memory region addressed by TTBR1_EL1.
+> +The region size is 2^(64-T1SZ) bytes.
+> +
+> +TTBR1_EL1 is the table base address register specified by ARMv8-A
+> +architecture which is used to lookup the page-tables for the Virtual
+> +addresses in the higher VA range (refer to ARMv8 ARM document for
+> +more details).
+> +
+>   arm
+>   ===
+>   
+> diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
+> index 6bf5e650da78..a1861af97ac9 100644
+> --- a/arch/arm64/include/asm/pgtable-hwdef.h
+> +++ b/arch/arm64/include/asm/pgtable-hwdef.h
+> @@ -216,6 +216,7 @@
+>   #define TCR_TxSZ(x)		(TCR_T0SZ(x) | TCR_T1SZ(x))
+>   #define TCR_TxSZ_WIDTH		6
+>   #define TCR_T0SZ_MASK		(((UL(1) << TCR_TxSZ_WIDTH) - 1) << TCR_T0SZ_OFFSET)
+> +#define TCR_T1SZ_MASK		(((UL(1) << TCR_TxSZ_WIDTH) - 1) << TCR_T1SZ_OFFSET)
+>   
+>   #define TCR_EPD0_SHIFT		7
+>   #define TCR_EPD0_MASK		(UL(1) << TCR_EPD0_SHIFT)
+> diff --git a/arch/arm64/kernel/crash_core.c b/arch/arm64/kernel/crash_core.c
+> index 1f646b07e3e9..314391a156ee 100644
+> --- a/arch/arm64/kernel/crash_core.c
+> +++ b/arch/arm64/kernel/crash_core.c
+> @@ -7,6 +7,14 @@
+>   #include <linux/crash_core.h>
+>   #include <asm/cpufeature.h>
+>   #include <asm/memory.h>
+> +#include <asm/pgtable-hwdef.h>
 
-v9:
-- Refactored msr-check functions per Sean's feedback.
-- Fixed a few issues per Sean's suggestion.
-- Rebased patch to kernel-v5.4.
-- Moved CET CPUID feature bits and CR4.CET to last patch.
+Nit: May be you forgot to include <asm/sysreg.h> here as suggested by 
+James in v5.
 
-v8:
-- Addressed Jim and Sean's feedback on: 1) CPUID(0xD,i) enumeration. 2)
-  sanity check when configure guest CET. 3) function improvement.
-- Added more sanity check functions.
-- Set host vmexit default status so that guest won't leak CET status to
-  host when vmexit.
-- Added CR0.WP vs. CR4.CET mutual constrains.
+Cheers,
+Amit
 
-v7:
-- Rebased patch to kernel v5.3
-- Sean suggested to change CPUID(0xd, n) enumeration code as alined with
-  existing one, and I think it's better to make the fix as an independent patch 
-  since XSS MSR are being used widely on X86 platforms.
-- Check more host and guest status before configure guest CET
-  per Sean's feedback.
-- Add error-check before guest accesses CET MSRs per Sean's feedback.
-- Other minor fixes suggested by Sean.
-
-v6:
-- Rebase patch to kernel v5.2.
-- Move CPUID(0xD, n>=1) helper to a seperate patch.
-- Merge xsave size fix with other patch.
-- Other minor fixes per community feedback.
-
-v5:
-- Rebase patch to kernel v5.1.
-- Wrap CPUID(0xD, n>=1) code to a helper function.
-- Pass through MSR_IA32_PL1_SSP and MSR_IA32_PL2_SSP to Guest.
-- Add Co-developed-by expression in patch description.
-- Refine patch description.
-
-v4:
-- Add Sean's patch for loading Guest fpu state before access XSAVES
-  managed CET MSRs.
-- Melt down CET bits setting into CPUID configuration patch.
-- Add VMX interface to query Host XSS.
-- Check Host and Guest XSS support bits before set Guest XSS.
-- Make Guest SHSTK and IBT feature enabling independent.
-- Do not report CET support to Guest when Host CET feature is Disabled.
-
-v3:
-- Modified patches to make Guest CET independent to Host enabling.
-- Added patch 8 to add user space access for Guest CET MSR access.
-- Modified code comments and patch description to reflect changes.
-
-v2:
-- Re-ordered patch sequence, combined one patch.
-- Added more description for CET related VMCS fields.
-- Added Host CET capability check while enabling Guest CET loading bit.
-- Added Host CET capability check while reporting Guest CPUID(EAX=7, EXC=0).
-- Modified code in reporting Guest CPUID(EAX=D,ECX>=1), make it clearer.
-- Added Host and Guest XSS mask check while setting bits for Guest XSS.
-
-Sean Christopherson (1):
-  KVM: x86: Load guest fpu state when access MSRs managed by XSAVES
-
-Yang Weijiang (10):
-  KVM: x86: Include CET definitions for KVM test purpose
-  KVM: VMX: Introduce CET VMCS fields and flags
-  KVM: VMX: Set guest CET MSRs per KVM and host configuration
-  KVM: VMX: Configure CET settings upon guest CR0/4 changing
-  KVM: x86: Refresh CPUID once guest changes XSS bits
-  KVM: x86: Add userspace access interface for CET MSRs
-  KVM: VMX: Enable CET support for nested VM
-  KVM: VMX: Add VMCS dump and sanity check for CET states
-  KVM: x86: Add #CP support in guest exception dispatch
-  KVM: x86: Enable CET virtualization and advertise CET to userspace
-
- arch/x86/include/asm/kvm_host.h      |   4 +-
- arch/x86/include/asm/vmx.h           |   8 +
- arch/x86/include/uapi/asm/kvm.h      |   1 +
- arch/x86/include/uapi/asm/kvm_para.h |   7 +-
- arch/x86/kvm/cpuid.c                 |  28 ++-
- arch/x86/kvm/vmx/capabilities.h      |   5 +
- arch/x86/kvm/vmx/nested.c            |  34 ++++
- arch/x86/kvm/vmx/vmcs12.c            | 275 ++++++++++++++++-----------
- arch/x86/kvm/vmx/vmcs12.h            |  14 +-
- arch/x86/kvm/vmx/vmx.c               | 262 ++++++++++++++++++++++++-
- arch/x86/kvm/x86.c                   |  47 ++++-
- arch/x86/kvm/x86.h                   |   2 +-
- include/linux/kvm_host.h             |  32 ++++
- 13 files changed, 588 insertions(+), 131 deletions(-)
-
--- 
-2.17.2
-
+> +
+> +static inline u64 get_tcr_el1_t1sz(void);
+> +
+> +static inline u64 get_tcr_el1_t1sz(void)
+> +{
+> +	return (read_sysreg(tcr_el1) & TCR_T1SZ_MASK) >> TCR_T1SZ_OFFSET;
+> +}
+>   
+>   void arch_crash_save_vmcoreinfo(void)
+>   {
+> @@ -16,6 +24,8 @@ void arch_crash_save_vmcoreinfo(void)
+>   						kimage_voffset);
+>   	vmcoreinfo_append_str("NUMBER(PHYS_OFFSET)=0x%llx\n",
+>   						PHYS_OFFSET);
+> +	vmcoreinfo_append_str("NUMBER(TCR_EL1_T1SZ)=0x%llx\n",
+> +						get_tcr_el1_t1sz());
+>   	vmcoreinfo_append_str("KERNELOFFSET=%lx\n", kaslr_offset());
+>   	vmcoreinfo_append_str("NUMBER(KERNELPACMASK)=0x%llx\n",
+>   						system_supports_address_auth() ?
+> 
