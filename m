@@ -2,136 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFFB2104E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 09:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1489D2104FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 09:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728253AbgGAHXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 03:23:06 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:25100 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728215AbgGAHXD (ORCPT
+        id S1727847AbgGAH0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 03:26:35 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:20815 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728134AbgGAH0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 03:23:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1593588183; x=1625124183;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=VjgLRTFAQQXiSnYU+FqcPS5U5gonGnZE5EKr2nGUPtg=;
-  b=PA2WT8RffrGKQEJwPK/FWhtNyaexD7QNqsdwR76Ltf92icZfgA3cYa/m
-   9QcEVTE7nEXmp2J2JEsBWiVbsrFL5Rf/mX6fR9adoqSY8c6RB+tBAi+ON
-   2ZT15xNDUKDWVKTQWac4HHSCNXdF/h546KWIAfj3FXnjxrSJ8mMs/N9tt
-   Hw7Ve16wXG1YwX3yQ5Qvq0upjf5QkJk7RjOqTSr1tCq95etccA8bjZ/Yk
-   UPmfLR4UBk1IWALX2lJ1rHGPOOz4yLlt/oFgocrFmy4vmXN0CwH6d/bMI
-   s1cZvg9WKrPNrNrLtdcmn/TtTCihPUrObI/0DJjoJX3WShx+8mdpkP4zu
-   w==;
-IronPort-SDR: FCy9FZHsX/Mc3hOW+u56FTK4CIBtnlDSZXW4jABO0OLzzkKnYj/a65UooUV22/Twc4nRjf2DZ+
- xs7d4B2zdrQrlqsV7qrbBDTJmpMC9JwObgS2M8zpTQGeBELJlGCaai577K5UCj3K50l5LIEVAe
- h0BHvt0zfionf3U/n19Jm8qGeyJgLxA8H0Rr8BdlDI37FHmZVunx2NGweRKnHkGVZrKSQHDKgZ
- 3UAyGxwSnbfbOO/d6DSbYlFh6Fia+4PtJ244I8RQQCH9UDRxgwsvNtFGMnVnGyEIGC/9IB043g
- +24=
-X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
-   d="scan'208";a="80314221"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Jul 2020 00:23:01 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 1 Jul 2020 00:23:01 -0700
-Received: from soft-dev3.localdomain (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 1 Jul 2020 00:22:39 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <nikolay@cumulusnetworks.com>, <roopa@cumulusnetworks.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <jiri@mellanox.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bridge@lists.linux-foundation.org>, <UNGLinuxDriver@microchip.com>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next v2 3/3] bridge: Extend br_fill_ifinfo to return MPR status
-Date:   Wed, 1 Jul 2020 09:22:39 +0200
-Message-ID: <20200701072239.520807-4-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200701072239.520807-1-horatiu.vultur@microchip.com>
-References: <20200701072239.520807-1-horatiu.vultur@microchip.com>
+        Wed, 1 Jul 2020 03:26:33 -0400
+X-UUID: b323193e43934ad79f4ffc0df7ab6cd6-20200701
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=VL5d6lLeGopD4HIkyqvfbVptB3CsYRUzy8Dr5Sd2JJU=;
+        b=rEaeYDgcXg/lmWlg0FOoLMNem2zKEvZ7ph+/W71AQdx7g/z1n6L7rMBhcUTKbZgYIIPhcPBIqocDBDGPA2F+sN3xhMlXojwhkRz87z2Jkzhmwl9L1YmKoBK3J99Rnq5PyMtGPJDEDpAS63KhkLoYewexRh1EAFG4kkGTZIcRxk8=;
+X-UUID: b323193e43934ad79f4ffc0df7ab6cd6-20200701
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <wendell.lin@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1125695450; Wed, 01 Jul 2020 15:26:28 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 1 Jul 2020 15:26:24 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 1 Jul 2020 15:26:25 +0800
+From:   Wendell Lin <wendell.lin@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        mtk01761 <wendell.lin@mediatek.com>
+CC:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>
+Subject: [PATCH] clk: Export clk_register_composite() for mediatek's clock kernel module 
+Date:   Wed, 1 Jul 2020 15:26:20 +0800
+Message-ID: <1593588382-19049-1-git-send-email-wendell.lin@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-TM-SNTS-SMTP: 9D5D81090939DA874C6280A1A0B39A63DE2E4F3CA7B2AE57ECCE36D2AEAF2A502000:8
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch extends the function br_fill_ifinfo to return also the MRP
-status for each instance on a bridge. It also adds a new filter
-RTEXT_FILTER_MRP to return the MRP status only when this is set, not to
-interfer with the vlans. The MRP status is return only on the bridge
-interfaces.
-
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- include/uapi/linux/rtnetlink.h |  1 +
- net/bridge/br_netlink.c        | 29 ++++++++++++++++++++++++++++-
- 2 files changed, 29 insertions(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/rtnetlink.h b/include/uapi/linux/rtnetlink.h
-index 879e64950a0a2..9b814c92de123 100644
---- a/include/uapi/linux/rtnetlink.h
-+++ b/include/uapi/linux/rtnetlink.h
-@@ -778,6 +778,7 @@ enum {
- #define RTEXT_FILTER_BRVLAN	(1 << 1)
- #define RTEXT_FILTER_BRVLAN_COMPRESSED	(1 << 2)
- #define	RTEXT_FILTER_SKIP_STATS	(1 << 3)
-+#define RTEXT_FILTER_MRP	(1 << 4)
- 
- /* End of information exported to user level */
- 
-diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
-index 240e260e3461c..6ecb7c7453dcb 100644
---- a/net/bridge/br_netlink.c
-+++ b/net/bridge/br_netlink.c
-@@ -453,6 +453,32 @@ static int br_fill_ifinfo(struct sk_buff *skb,
- 		rcu_read_unlock();
- 		if (err)
- 			goto nla_put_failure;
-+
-+		nla_nest_end(skb, af);
-+	}
-+
-+	if (filter_mask & RTEXT_FILTER_MRP) {
-+		struct nlattr *af;
-+		int err;
-+
-+		/* RCU needed because of the VLAN locking rules (rcu || rtnl) */
-+		rcu_read_lock();
-+		if (!br_mrp_enabled(br) || port) {
-+			rcu_read_unlock();
-+			goto done;
-+		}
-+		af = nla_nest_start_noflag(skb, IFLA_AF_SPEC);
-+		if (!af) {
-+			rcu_read_unlock();
-+			goto nla_put_failure;
-+		}
-+
-+		err = br_mrp_fill_info(skb, br);
-+
-+		rcu_read_unlock();
-+		if (err)
-+			goto nla_put_failure;
-+
- 		nla_nest_end(skb, af);
- 	}
- 
-@@ -516,7 +542,8 @@ int br_getlink(struct sk_buff *skb, u32 pid, u32 seq,
- 	struct net_bridge_port *port = br_port_get_rtnl(dev);
- 
- 	if (!port && !(filter_mask & RTEXT_FILTER_BRVLAN) &&
--	    !(filter_mask & RTEXT_FILTER_BRVLAN_COMPRESSED))
-+	    !(filter_mask & RTEXT_FILTER_BRVLAN_COMPRESSED) &&
-+	    !(filter_mask & RTEXT_FILTER_MRP))
- 		return 0;
- 
- 	return br_fill_ifinfo(skb, port, pid, seq, RTM_NEWLINK, nlflags,
--- 
-2.27.0
+VGhpcyBzZXJpZXMgYmFzZWQgb24gNS44LXJjMQ0KVGhpcyBwYXRjaCBleHBvcnRzIGNsa19yZWdp
+c3Rlcl9jb21wb3NpdGUoKSBhbmQgY29tbW9uIEFQSXMgZnJvbQ0KTWVkaWF0ZWsgY2xvY2sgZHJp
+dmVyLiBjbGtfcmVnaXN0ZXJfY29tcG9zaXRlKCkgd2lsbCBiZSB1c2VkIGluDQptZWRpYXRlaydz
+IGNsb2NrIGtlcm5lbCBtb2R1bGUsIHNvIGV4cG9ydCBpdCB0byBHUEwgbW9kdWxlcy4NCg0KV2Vu
+ZGVsbCBMaW4gKDIpOg0KICBjbGs6IEV4cG9ydCBjbGtfcmVnaXN0ZXJfY29tcG9zaXRlDQogIGNs
+azogbWVkaWF0ZWs6IEFkZCBFWFBPUlRfU1lNQk9MIGZvciBrZXJuZWwgbW9kdWxlIHN1cHBvcnQN
+Cg0KIGRyaXZlcnMvY2xrL2Nsay1jb21wb3NpdGUuYyAgICB8ICAgIDEgKw0KIGRyaXZlcnMvY2xr
+L21lZGlhdGVrL2Nsay1tdGsuYyB8ICAgMTMgKysrKysrKysrKysrKw0KIDIgZmlsZXMgY2hhbmdl
+ZCwgMTQgaW5zZXJ0aW9ucygrKQ0K
 
