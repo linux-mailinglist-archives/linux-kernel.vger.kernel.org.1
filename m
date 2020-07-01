@@ -2,97 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5C4210C4C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 15:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C4D210C4D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 15:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731086AbgGANdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 09:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730408AbgGANdT (ORCPT
+        id S1731126AbgGANdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 09:33:24 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:35500 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731063AbgGANdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 09:33:19 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93092C08C5C1;
-        Wed,  1 Jul 2020 06:33:18 -0700 (PDT)
-Date:   Wed, 01 Jul 2020 13:33:16 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1593610396;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DxhjgNjWsMKOHdwoTjOoAQfYytoVvlcHku9/QV+ij98=;
-        b=Bby2Ud9KvnOb6QFiRZ86bNcWu4rxbOHV634POtLDtsaBvBpjf/5pZ3P3stxO9cvAqxZilO
-        acdrY1yFOv2v+k7swbJPPoRRV1kaPKpQtdBpgcUyb/kqsCiwgJgcKgzdOi3TLymu1Uj2wY
-        l+1qh+eEowunDJfiAJFoD82z+zhOF2DfieR6mPH2b5xBENjuC9P98miuHllJ2sTDO4eP0x
-        IZvQ+gzFZCiJErlWVxEUuoXVofP2X8MpJWPyOzM+1AMbzqMos2UyUeobEKrR1cfqaZWWNl
-        2NE8AXBdYnaUA3uNJNBjph1kt+iy9Bcv0uoiJ+DhIfRfSNbdx5x3A6v5na86sQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1593610396;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DxhjgNjWsMKOHdwoTjOoAQfYytoVvlcHku9/QV+ij98=;
-        b=9c36ESwTLSiCxDhIFhwG82IvmKQcK4r887viCO7zGYPxzqnJF8StmATqbL2pNwXOeuk4ZV
-        IBwI3OBvCNeUm4CA==
-From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fsgsbase] selftests/x86/fsgsbase: Add a missing memory constraint
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <432968af67259ca92d68b774a731aff468eae610.1593192140.git.luto@kernel.org>
-References: <432968af67259ca92d68b774a731aff468eae610.1593192140.git.luto@kernel.org>
+        Wed, 1 Jul 2020 09:33:23 -0400
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D7552556;
+        Wed,  1 Jul 2020 15:33:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1593610401;
+        bh=ro/PJ0uAPUTGMg/4fOvOKCnVZODkwKOfuYsBoctPuz4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V7uKOxV90LjtqTmQSx0SFlXauB1FtNa6h0tNPe/JX4+4qlS2qBhO9YC99zURkwE+I
+         XSHF9haICdyZHgEWrCDnhCDYdp7ZjYbBCP1dOvqWvOBfjhSCDMS2QSxIe3J2JKlo2T
+         X1i/S9LPu/7YdvfdgwQydYJ5sJ6joy5NsJOdyY4k=
+Date:   Wed, 1 Jul 2020 16:33:17 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
+        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 1/3] dt-bindings: phy: Add DT bindings for Xilinx
+ ZynqMP PSGTR PHY
+Message-ID: <20200701133317.GD27013@pendragon.ideasonboard.com>
+References: <20200629120054.29338-1-laurent.pinchart@ideasonboard.com>
+ <20200629120054.29338-2-laurent.pinchart@ideasonboard.com>
+ <20200629223011.GA3074548@bogus>
 MIME-Version: 1.0
-Message-ID: <159361039618.4006.2322389302819926132.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200629223011.GA3074548@bogus>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/fsgsbase branch of tip:
+Hi Rob,
 
-Commit-ID:     8e259031c67a5ea0666428edb64c89e8c6ebd18e
-Gitweb:        https://git.kernel.org/tip/8e259031c67a5ea0666428edb64c89e8c6ebd18e
-Author:        Andy Lutomirski <luto@kernel.org>
-AuthorDate:    Fri, 26 Jun 2020 10:24:28 -07:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 01 Jul 2020 15:27:20 +02:00
+On Mon, Jun 29, 2020 at 04:30:11PM -0600, Rob Herring wrote:
+> On Mon, 29 Jun 2020 15:00:52 +0300, Laurent Pinchart wrote:
+> > From: Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>
+> > 
+> > Add DT bindings for the Xilinx ZynqMP PHY. ZynqMP SoCs have a High Speed
+> > Processing System Gigabit Transceiver which provides PHY capabilities to
+> > USB, SATA, PCIE, Display Port and Ehernet SGMII controllers.
+> > 
+> > Signed-off-by: Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>
+> > Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > ---
+> > Changes since v8:
+> > 
+> > - Rebase on phy/next
+> > 
+> > Changes since v7:
+> > 
+> > - Switch to GPL-2.0-only OR BSD-2-Clause
+> > 
+> > Changes since v6:
+> > 
+> > - Fixed specification of compatible-dependent xlnx,tx-termination-fix
+> >   property
+> > - Dropped status property from example
+> > - Use 4 spaces to indent example
+> > 
+> > Changes since v5:
+> > 
+> > - Document clocks and clock-names properties
+> > - Document resets and reset-names properties
+> > - Replace subnodes with an additional entry in the PHY cells
+> > - Drop lane frequency PHY cell, replaced by reference clock phandle
+> > - Convert bindings to YAML
+> > - Reword the subject line
+> > - Drop Rob's R-b as the bindings have significantly changed
+> > - Drop resets and reset-names properties
+> > ---
+> >  .../bindings/phy/xlnx,zynqmp-psgtr.yaml       | 105 ++++++++++++++++++
+> >  include/dt-bindings/phy/phy.h                 |   1 +
+> >  2 files changed, 106 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
+> > 
+> 
+> 
+> My bot found errors running 'make dt_binding_check' on your patch:
+> 
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.example.dt.yaml: example-0: phy@fd400000:reg:0: [0, 4248829952, 0, 262144] is too long
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.example.dt.yaml: example-0: phy@fd400000:reg:1: [0, 4248633344, 0, 4096] is too long
+> 
+> 
+> See https://patchwork.ozlabs.org/patch/1319269
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure dt-schema is up to date:
+> 
+> pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+> 
+> Please check and re-submit.
 
-selftests/x86/fsgsbase: Add a missing memory constraint
+Sorry :-S I've updated the schema now. The patch has already been
+merged, so I'll submit a fix.
 
-The manual call to set_thread_area() via int $0x80 was missing any
-indication that the descriptor was a pointer, causing gcc to
-occasionally generate wrong code.  Add the missing constraint.
+-- 
+Regards,
 
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/432968af67259ca92d68b774a731aff468eae610.1593192140.git.luto@kernel.org
-
----
- tools/testing/selftests/x86/fsgsbase.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/x86/fsgsbase.c b/tools/testing/selftests/x86/fsgsbase.c
-index f47495d..9983195 100644
---- a/tools/testing/selftests/x86/fsgsbase.c
-+++ b/tools/testing/selftests/x86/fsgsbase.c
-@@ -285,7 +285,8 @@ static unsigned short load_gs(void)
- 		/* 32-bit set_thread_area */
- 		long ret;
- 		asm volatile ("int $0x80"
--			      : "=a" (ret) : "a" (243), "b" (low_desc)
-+			      : "=a" (ret), "+m" (*low_desc)
-+			      : "a" (243), "b" (low_desc)
- 			      : "r8", "r9", "r10", "r11");
- 		memcpy(&desc, low_desc, sizeof(desc));
- 		munmap(low_desc, sizeof(desc));
+Laurent Pinchart
