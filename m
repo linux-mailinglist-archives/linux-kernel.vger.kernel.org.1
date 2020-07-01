@@ -2,43 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156EC210C34
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 15:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD64210C42
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 15:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730911AbgGAN3s convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 1 Jul 2020 09:29:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60818 "EHLO mx2.suse.de"
+        id S1731114AbgGANaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 09:30:30 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:41446 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728399AbgGAN3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 09:29:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 634C8AE17;
-        Wed,  1 Jul 2020 13:29:45 +0000 (UTC)
-From:   =?utf-8?Q?Aur=C3=A9lien?= Aptel <aaptel@suse.com>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        sfrench@samba.org, corbet@lwn.net, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-doc@vger.kernel.org,
+        id S1729770AbgGANaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 09:30:30 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jqcoh-0039RW-1J; Wed, 01 Jul 2020 15:30:23 +0200
+Date:   Wed, 1 Jul 2020 15:30:23 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     Jeremy Linton <jeremy.linton@arm.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Jon <jon@solid-run.com>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        netdev@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux.cj@gmail.com, Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: CIFS
-In-Reply-To: <20200627103125.71828-1-grandmaster@al2klimov.de>
-References: <20200627103125.71828-1-grandmaster@al2klimov.de>
-Date:   Wed, 01 Jul 2020 15:29:44 +0200
-Message-ID: <87tuyrxt13.fsf@suse.com>
+Subject: Re: [net-next PATCH v2 2/3] Documentation: ACPI: DSD: Document MDIO
+ PHY
+Message-ID: <20200701133023.GG718441@lunn.ch>
+References: <20200701061233.31120-1-calvin.johnson@oss.nxp.com>
+ <20200701061233.31120-3-calvin.johnson@oss.nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200701061233.31120-3-calvin.johnson@oss.nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> +An example of this is show below::
+> +
+> +	Scope(\_SB.MCE0.PR17) // 1G
+> +	{
+> +	  Name (_DSD, Package () {
+> +	     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+> +		 Package () {
+> +		     Package (2) {"phy-channel", 1},
+> +		     Package (2) {"phy-mode", "rgmii-id"},
+> +		     Package (2) {"mdio-handle", Package (){\_SB.MDI0}}
 
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+Please include the MDIO device node in the example, to make it clearer
+how this linking works.
 
--- 
-Aurélien Aptel / SUSE Labs Samba Team
-GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg, DE
-GF: Felix Imendörffer, Mary Higgins, Sri Rasiah HRB 247165 (AG München)
+It would also be good to document "phy-mode" in this file.
+
+   Andrew
