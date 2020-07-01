@@ -2,102 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD792108B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF9A2108B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729629AbgGAJy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 05:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729278AbgGAJyZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 05:54:25 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B528DC061755
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 02:54:25 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id h5so23127011wrc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 02:54:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GCRZB6BO+WyqQHb12yXCGEbLuElRDfMYs0DsVwcbgz8=;
-        b=vWbfzuqPVrNX7v6iAfV0+OOZPHV9P2biz7CACnxJnk7O4VIzZaoZlTc9RABqNwAPjw
-         EZCgRLvRv5730sYlDzrffkU85iFRundzLySypQ6JMw1ayp4sJZTO4oka3cGHS1B4I4Gg
-         Ma3yGver6/dfDPKaPzKc2N4XDxpFnA3ktfIUBk7hixZqVBL5XJKDj1PsYPNiYb4GZOaR
-         KKalsHMvIgfis19wOCyAdTJBafUn+UqURSITCZSoRlzHZoCPNcFLl+p7XuzUKb9Ko7pZ
-         ehsUzUV4p06e5ZVOEmP2BiwZwWvKFVfH9E1TP4JkapM7Xk5xiqrIHQDy/PBQO4r/WYPq
-         gIsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GCRZB6BO+WyqQHb12yXCGEbLuElRDfMYs0DsVwcbgz8=;
-        b=eD8HMw21Ss3Ztvg4ylLoCNgB7kPFkQdlCumClM5cLj+/CZRDzHfNJjLspVvW0FeShV
-         lqh1cgVYtPFUZqNWYwYsX7lZkyCKNdywLwLbDQDruclurHulmJPrO5Sc+ioz2DrPzBQ4
-         vZtzJcNheezucpNwVB7qq9wtEia+2AFsoRLAaeqAQ9Pcv66sCN5fuIcA02c8Wdy+9BRm
-         acJhemoSw05RE59cgqiJYGGj3tStOic/YhD5W24J4M7ka44m0ZwHeh43jQTmFO+WM1sy
-         VaFURrmBcogG3A4tYYPw6JTRxd4TL/Y8cpMQNYlqqr3PfM49ZlUkeQ0Xyn26znGRJ25C
-         HMOQ==
-X-Gm-Message-State: AOAM530nwa+Lr3wsscje5y+4EQT/yHp2FjyBzaLXqmQ2h5qRHn1qco96
-        7nLM8UroQ/C/vcoIMc9fHDL1PForaaE=
-X-Google-Smtp-Source: ABdhPJzaYGU1BSMnZvI9LWba79wJ0Itb9J0+P+qZu2C5QjA7/TzGTrUri62+jPSBEKYEIg1k/24+gA==
-X-Received: by 2002:a5d:60c7:: with SMTP id x7mr24190269wrt.138.1593597264203;
-        Wed, 01 Jul 2020 02:54:24 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:54f4:a99f:ab88:bc07? ([2a01:e34:ed2f:f020:54f4:a99f:ab88:bc07])
-        by smtp.googlemail.com with ESMTPSA id n16sm6168328wmc.40.2020.07.01.02.54.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Jul 2020 02:54:23 -0700 (PDT)
-Subject: Re: [PATCH v2 1/5] thermal: core: Add helpers to browse the cdev, tz
- and governor list
-To:     Amit Kucheria <amit.kucheria@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200625144509.17918-1-daniel.lezcano@linaro.org>
- <CAP245DVy+Z9D+6=-cX4TaGFoK-e2N+mWwOvNYOe_E9Fh=7vnaA@mail.gmail.com>
- <bed1d41f81f369e7123a2eab7fde3e81a3b063aa.camel@intel.com>
- <143d954f-2ecf-c4d3-cb7d-f2ea75da8276@linaro.org>
- <766cbdeb2a0f9d9df4f68a71b4b0defd1e95e0be.camel@intel.com>
- <CAP245DUFg6UmzyZqHdpJZUzkPn-G9iQbGAPcpdjVcs75rYNNfg@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <6396d31a-ee4b-5af4-926e-e019e7b6fc84@linaro.org>
-Date:   Wed, 1 Jul 2020 11:54:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1729749AbgGAJz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 05:55:59 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2422 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729109AbgGAJz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 05:55:58 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id E005BCE4174E1060B27B;
+        Wed,  1 Jul 2020 10:55:56 +0100 (IST)
+Received: from localhost (10.52.123.12) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 1 Jul 2020
+ 10:55:56 +0100
+Date:   Wed, 1 Jul 2020 10:54:54 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     David Gow <davidgow@google.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        <linux-iio@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iio: adc: Specify IOMEM dependency for adi-axi-adc
+ driver
+Message-ID: <20200701105454.00002ca0@Huawei.com>
+In-Reply-To: <CABVgOSnOo4iauOBGpJUZ4NRihCUU-1vue8hajZTCKAcH98_Lrw@mail.gmail.com>
+References: <20200630070552.1110864-1-davidgow@google.com>
+        <20200630110654.00001d40@Huawei.com>
+        <CABVgOSnOo4iauOBGpJUZ4NRihCUU-1vue8hajZTCKAcH98_Lrw@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <CAP245DUFg6UmzyZqHdpJZUzkPn-G9iQbGAPcpdjVcs75rYNNfg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.123.12]
+X-ClientProxiedBy: lhreml741-chm.china.huawei.com (10.201.108.191) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/07/2020 11:26, Amit Kucheria wrote:
-> On Wed, Jul 1, 2020 at 1:27 PM Zhang Rui <rui.zhang@intel.com> wrote:
+On Wed, 1 Jul 2020 11:04:42 +0800
+David Gow <davidgow@google.com> wrote:
 
-[ ... ]
-
->> Then no. I don't have any objection of removing thermal_helper.c, so
->> you can just leave these functions in thermal_core.c
+> On Tue, Jun 30, 2020 at 6:07 PM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+> >
+> > On Tue, 30 Jun 2020 00:05:52 -0700
+> > David Gow <davidgow@google.com> wrote:
+> >  
+> > > The Analog Devices AXI ADC driver uses the devm_ioremap_resource
+> > > function, but does not specify a dependency on IOMEM in Kconfig. This
+> > > causes a build failure on architectures without IOMEM, for example, UML
+> > > (notably with make allyesconfig).
+> > >
+> > > Fix this by making CONFIG_ADI_AXI_ADC depend on CONFIG_IOMEM.
+> > >
+> > > Signed-off-by: David Gow <davidgow@google.com>  
+> > Hi David,
+> >
+> > Could you confirm what the build error is?  I thought the stubs added in
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1bcbfbfdeb
+> > were meant to allow us to avoid having lots of depends on IOMEM lines for the
+> > few architectures who don't support it.  
 > 
-> In that case, Daniel, please find attached a patch to move the
-> contents of thermal_helpers into thermal_core.c
+> No worries:
+> /usr/bin/ld: drivers/iio/adc/adi-axi-adc.o: in function `adi_axi_adc_probe':
+> torvalds-linux/drivers/iio/adc/adi-axi-adc.c:415: undefined reference
+> to `devm_platform_ioremap_resource'
 > 
-> Feel free to include it at the top of this series and modify as you see fit.
+> Alas, the devm_platform_ioremap_resource function isn't handled by the
+> UML stubs: it all seems to be in drivers/base/platform.c and
+> lib/devres.c, behind #ifdef HAS_IOMEM.
+> 
+> In any case, improving IOMEM support for UML (at least for the KUnit
+> test case, which is my use case) is something I'd like to do. There
+> are only three drivers[1,2] upstream at the moment which fail to build
+> as-is, though, so it seemed worth trying to fix them in the meantime.
+> That being said, I tried just getting rid of the few #ifdef HAS_IOMEMs
+> around the various devm_*_ioremap functions, and everything seems to
+> be working... So maybe that's a false dependency given the various
+> stubs (at least on UML). I used this (hideously hacky) patch:
+> 
+> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+> index c0d0a5490ac6..b6f08c88e2b6 100644
+> --- a/drivers/base/platform.c
+> +++ b/drivers/base/platform.c
+> @@ -61,7 +61,7 @@ struct resource *platform_get_resource(struct
+> platform_device *dev,
+> }
+> EXPORT_SYMBOL_GPL(platform_get_resource);
+> 
+> -#ifdef CONFIG_HAS_IOMEM
+> +#if 1//def CONFIG_HAS_IOMEM
+> /**
+>  * devm_platform_get_and_ioremap_resource - call devm_ioremap_resource() for a
+>  *                                         platform device and get resource
+> diff --git a/lib/Makefile b/lib/Makefile
+> index b1c42c10073b..35c21af33b93 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -115,7 +115,7 @@ obj-y += math/ crypto/
+> 
+> obj-$(CONFIG_GENERIC_IOMAP) += iomap.o
+> obj-$(CONFIG_GENERIC_PCI_IOMAP) += pci_iomap.o
+> -obj-$(CONFIG_HAS_IOMEM) += iomap_copy.o devres.o
+> +obj-y += iomap_copy.o devres.o
+> obj-$(CONFIG_CHECK_SIGNATURE) += check_signature.o
+> obj-$(CONFIG_DEBUG_LOCKING_API_SELFTESTS) += locking-selftest.o
+> 
+> ---
+> 
+> If this seems to work more broadly, I may try to clean it up and post
+> it for broader review.
 
-I will keep it separate for the moment until this series is accepted and
-then send a respin of this patch on top of the merged series.
+Looks like a good approach to me!
 
-Thanks
+Jonathan
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> 
+> Cheers,
+> -- David
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+
