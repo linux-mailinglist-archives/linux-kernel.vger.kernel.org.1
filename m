@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60909210656
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B79C21064F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729200AbgGAIdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 04:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
+        id S1728809AbgGAIbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 04:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728737AbgGAIb2 (ORCPT
+        with ESMTP id S1728753AbgGAIb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 04:31:28 -0400
+        Wed, 1 Jul 2020 04:31:29 -0400
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47557C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 01:31:28 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z2so621518wrp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 01:31:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5AFC03E979
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 01:31:29 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f18so14820976wrs.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 01:31:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0JG9yfk7UsIlwDFN/XvWcoL4qtnzwNOpXg0C3Lo2gcU=;
-        b=SzoFhdpLOAfa+dq6nAlH2oIjixe1LjRVlgsE9YP5IUq1LTn1Wg3758lP7ziz4wGQsA
-         lPXC/oDkOzunW/jveIUlQ0NQTvteC9Tqnvrwi4d173D8K/EWQJChGnESf7SM83C68EpX
-         whIgtkS56BqF4BgPgmxocXPxGOBH+JDiGOlGhP+jzvFiTDpnzbBbGg5VHjrdQVUm5Je2
-         0Hs+7oX3+y/FWNx9YqWczI8KijaFF6tJlzN4n3l0I/qAPdZbVRwcdNuPvWxiVKH3DTfb
-         4kbO1a8zCOs8QfoIrus2+2ZkuUsUcq736NZQibfCiOhA1wL/zs3wx75Way+YIOH2vp7o
-         FEcw==
+        bh=zQGzW5dI+CJY57UuhEAmK6g60SBrVTGRjgbtv0HdhAY=;
+        b=QTpb8B/buegH+6omxpYaoAObszOPgF7xUMlbSW0UDKpIXPfAygnrp33VIpquVvoegv
+         aCPep4Qoq3bIoi9jwJQDnYPbgoiXGWacaD/Argorz0Nekv0eUjpiao0Y3ypg52/zKql/
+         Rnn2ZXLrfM4AEzfPwjJ9sccJ29ChmQIya6PRQn0C4/W7IWGFekPoKpcBfRkHPaHrovyD
+         Z+/NmBf+8ZOk6vN15REkauAo5fuSoPCQ3LdXrYfDA2BRv0rGjWdCpXHbr9DN0hYjBzVA
+         HlbTht0DY48QbaElngIUwGOaZfswS4EL3dOS6GiK6Lav+QQcCuo6duN4owle0LQLHC/a
+         sXhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0JG9yfk7UsIlwDFN/XvWcoL4qtnzwNOpXg0C3Lo2gcU=;
-        b=jZano3WCjTYCJy+cpJy7KY4JrJULi7dccGDDWxOsRPC8pJ8gvSVb46IXY+hflCJwSY
-         RqKzqVs2LOw7TdzeRuxi7HuQZ8oU51cmVSQUJZi08UH3ShAcgrQHwUJSmY9yETOisBV8
-         MHagec1ACEyv0qXs5yLrr1PnI5Cphq26ly5pnZjEz3a3YblgLeIvmXBg62/HjCLcFDrk
-         JRIwpzhxofUWIcJT4n550BWYkiDOZbWoxx5RDAozXFq1G54748b3ezDJOEpScNsiyjXK
-         5Mngc9zmuTzv0Hjllv4woOAduqdZ+X45RB9BBhyH6hTglDRBD9JxyssalhTpW8q2hoi1
-         5oHg==
-X-Gm-Message-State: AOAM530whUc95EKdxfvx9LyHY+0o2pcUKABvCuMDMxUUlTyz00Qk5rPN
-        ipR5OXcdR+UKETRbJu8D1Rv/+A==
-X-Google-Smtp-Source: ABdhPJw61Z0MEpUm/aZ4J5rbUdsdfOg65yroMNdYQg0nttjPu2TeFqFVE9C6tX31r/UqSt7IaudK5g==
-X-Received: by 2002:adf:f452:: with SMTP id f18mr25483694wrp.78.1593592286991;
-        Wed, 01 Jul 2020 01:31:26 -0700 (PDT)
+        bh=zQGzW5dI+CJY57UuhEAmK6g60SBrVTGRjgbtv0HdhAY=;
+        b=daHeM6E2Ps9j0Cjlez+CqNqd/b/WA1sji6kXjt/VuWrcBEOvOJg9Dr6xMBIfBuIqNr
+         HOskUB34bZlXengI+r55zMmxkz7Gd5O7MAEWls1tn4YskJo2wZy9T0kA6VYtWvZbuXY+
+         pNFu22kPGLrggWRQRANK06uazCfL6ETISfMTub0GkiXhVxXMdVSMqGKNtj/uDfp0+Df2
+         lp5csYxY+7mC8WC1yothBEqbYVzxYcTFTEuGOHbNQnKjKdwArIDYF3O1F3cLA73yIPwQ
+         xITrTdhU8dKSNWaUnN+X2WnLUeQQrDCWsylqIPG1VtlXTMgBa6hTKrBoMmj/YNnLUE1U
+         vehw==
+X-Gm-Message-State: AOAM531pgA1UtmuPMNiTNecOOf7o3pLfzuB1PaUhJmmBN3IYGXTunHde
+        Ylotco5gYnh1yf5RwwxZBz8e0w==
+X-Google-Smtp-Source: ABdhPJx5r04ELeAmRfKOhnl+9IfC17CSfM9WTFiXGvrQFe/oCg5kSBRL0G1ibSvTibPuv85/+jv9Yg==
+X-Received: by 2002:adf:eec2:: with SMTP id a2mr25133148wrp.127.1593592288154;
+        Wed, 01 Jul 2020 01:31:28 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id 59sm6717816wrj.37.2020.07.01.01.31.25
+        by smtp.gmail.com with ESMTPSA id 59sm6717816wrj.37.2020.07.01.01.31.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 01:31:26 -0700 (PDT)
+        Wed, 01 Jul 2020 01:31:27 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
@@ -55,9 +55,9 @@ Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
         Michael Ruettger <michael@ibmra.de>,
         Frank Haverkamp <haver@linux.ibm.com>,
         Joerg-Stephan Vogt <jsvogt@de.ibm.com>
-Subject: [PATCH v2 02/30] misc: genwqe: card_sysfs: Demote function/file headers from kerneldoc
-Date:   Wed,  1 Jul 2020 09:30:50 +0100
-Message-Id: <20200701083118.45744-3-lee.jones@linaro.org>
+Subject: [PATCH v2 03/30] misc: genwqe: card_debugfs: Demote file header from kerneldoc
+Date:   Wed,  1 Jul 2020 09:30:51 +0100
+Message-Id: <20200701083118.45744-4-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200701083118.45744-1-lee.jones@linaro.org>
 References: <20200701083118.45744-1-lee.jones@linaro.org>
@@ -68,22 +68,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There has been no attempt to provide documentation for these function's
-arguments, so align with the remainder of the file and just treat
-them as standards function headers.
+Kerneldoc does not understand file headers.  There is therefor
+no reason for them to use the syntax.
 
 Fixes the following W=1 kernel build warnings:
 
- drivers/misc/genwqe/card_sysfs.c:32: warning: cannot understand function prototype: 'const char * const genwqe_types[] = '
- drivers/misc/genwqe/card_sysfs.c:150: warning: Function parameter or member 'dev' not described in 'curr_bitstream_show'
- drivers/misc/genwqe/card_sysfs.c:150: warning: Function parameter or member 'attr' not described in 'curr_bitstream_show'
- drivers/misc/genwqe/card_sysfs.c:150: warning: Function parameter or member 'buf' not described in 'curr_bitstream_show'
- drivers/misc/genwqe/card_sysfs.c:166: warning: Function parameter or member 'dev' not described in 'next_bitstream_show'
- drivers/misc/genwqe/card_sysfs.c:166: warning: Function parameter or member 'attr' not described in 'next_bitstream_show'
- drivers/misc/genwqe/card_sysfs.c:166: warning: Function parameter or member 'buf' not described in 'next_bitstream_show'
- drivers/misc/genwqe/card_sysfs.c:271: warning: Function parameter or member 'kobj' not described in 'genwqe_is_visible'
- drivers/misc/genwqe/card_sysfs.c:271: warning: Function parameter or member 'attr' not described in 'genwqe_is_visible'
- drivers/misc/genwqe/card_sysfs.c:271: warning: Function parameter or member 'n' not described in 'genwqe_is_visible'
+ drivers/misc/genwqe/card_debugfs.c:30: warning: Function parameter or member 's' not described in 'dbg_uidn_show'
+ drivers/misc/genwqe/card_debugfs.c:30: warning: Function parameter or member 'regs' not described in 'dbg_uidn_show'
+ drivers/misc/genwqe/card_debugfs.c:30: warning: Function parameter or member 'entries' not described in 'dbg_uidn_show'
 
 Cc: Michael Jung <mijung@gmx.net>
 Cc: Michael Ruettger <michael@ibmra.de>
@@ -91,13 +83,13 @@ Cc: Frank Haverkamp <haver@linux.ibm.com>
 Cc: Joerg-Stephan Vogt <jsvogt@de.ibm.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/genwqe/card_sysfs.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/misc/genwqe/card_debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/genwqe/card_sysfs.c b/drivers/misc/genwqe/card_sysfs.c
-index 28a3fb1533f70..b2f115602523a 100644
---- a/drivers/misc/genwqe/card_sysfs.c
-+++ b/drivers/misc/genwqe/card_sysfs.c
+diff --git a/drivers/misc/genwqe/card_debugfs.c b/drivers/misc/genwqe/card_debugfs.c
+index 1b5b82e652687..491fb4482da29 100644
+--- a/drivers/misc/genwqe/card_debugfs.c
++++ b/drivers/misc/genwqe/card_debugfs.c
 @@ -1,5 +1,5 @@
  // SPDX-License-Identifier: GPL-2.0-only
 -/**
@@ -105,33 +97,6 @@ index 28a3fb1533f70..b2f115602523a 100644
   * IBM Accelerator Family 'GenWQE'
   *
   * (C) Copyright IBM Corp. 2013
-@@ -129,7 +129,7 @@ static ssize_t base_clock_show(struct device *dev,
- }
- static DEVICE_ATTR_RO(base_clock);
- 
--/**
-+/*
-  * curr_bitstream_show() - Show the current bitstream id
-  *
-  * There is a bug in some old versions of the CPLD which selects the
-@@ -156,7 +156,7 @@ static ssize_t curr_bitstream_show(struct device *dev,
- }
- static DEVICE_ATTR_RO(curr_bitstream);
- 
--/**
-+/*
-  * next_bitstream_show() - Show the next activated bitstream
-  *
-  * IO_SLC_CFGREG_SOFTRESET: This register can only be accessed by the PF.
-@@ -260,7 +260,7 @@ static struct attribute *genwqe_normal_attributes[] = {
- 	NULL,
- };
- 
--/**
-+/*
-  * genwqe_is_visible() - Determine if sysfs attribute should be visible or not
-  *
-  * VFs have restricted mmio capabilities, so not all sysfs entries
 -- 
 2.25.1
 
