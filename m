@@ -2,132 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6059210D22
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 16:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A275210D2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 16:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731355AbgGAOHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 10:07:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:43934 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731342AbgGAOHi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 10:07:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 30C0F30E;
-        Wed,  1 Jul 2020 07:07:37 -0700 (PDT)
-Received: from localhost (unknown [10.1.198.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C614C3F73C;
-        Wed,  1 Jul 2020 07:07:36 -0700 (PDT)
-Date:   Wed, 1 Jul 2020 15:07:35 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     rjw@rjwysocki.net, catalin.marinas@arm.com, sudeep.holla@arm.com,
-        will@kernel.org, linux@armlinux.org.uk, valentin.schneider@arm.com,
-        mingo@redhat.com, peterz@infradead.org, dietmar.eggemann@arm.com,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Liviu Dudau <liviu.dudau@arm.com>
-Subject: Re: [PATCH 4/8] cpufreq,vexpress-spc: fix Frequency Invariance (FI)
- for bL switching
-Message-ID: <20200701140735.GB32736@arm.com>
-References: <20200701090751.7543-1-ionela.voinescu@arm.com>
- <20200701090751.7543-5-ionela.voinescu@arm.com>
- <20200701095414.2wjcnyhndgcedk2q@vireshk-i7>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200701095414.2wjcnyhndgcedk2q@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1731313AbgGAOJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 10:09:57 -0400
+Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:12608 "EHLO
+        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728021AbgGAOJ4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 10:09:56 -0400
+Received: from pps.filterd (m0170398.ppops.net [127.0.0.1])
+        by mx0b-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 061E42a9011115;
+        Wed, 1 Jul 2020 10:09:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id; s=smtpout1;
+ bh=G36Fg61fCQr+wCCLzQCC2YORVhnFR9rzAH3ZcF+UlyU=;
+ b=bysWkfFwsgWt+dfjsnt8t+/3rl/yz6eWRUb1/4EYMrV0YCypJXvGOIVcgbWY7xkK0yBs
+ fyDmyr+sJCEC7byRfggaXf10fl3EvBFdJVcrjvA2wxXP+RLD1qrvjz9v3Gxpo96yUe4q
+ bkdxvZfFtoxo8opFPd3VmPpkMzu4aF4N2cK24o4sqHTkuLLByLmB4YEHyHQXvodZrgwS
+ +2y8AcfYu2lWtVr2BCWUDWdoKufEwrpDCMNwJXRPwRNmN2DCdcIejm9gKvNCoKnP2NLm
+ d+InsqBKoZNAB9LacEB9+FaNHLUAbiObhopMTDvd9mCP48W+leKK6Hv5Qy/6aiL637tu bw== 
+Received: from mx0b-00154901.pphosted.com (mx0b-00154901.pphosted.com [67.231.157.37])
+        by mx0b-00154904.pphosted.com with ESMTP id 31x1b9nyfp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Jul 2020 10:09:52 -0400
+Received: from pps.filterd (m0089483.ppops.net [127.0.0.1])
+        by mx0b-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 061E9nQ1049371;
+        Wed, 1 Jul 2020 10:09:52 -0400
+Received: from mailuogwdur.emc.com (mailuogwdur-nat.lss.emc.com [128.221.224.79] (may be forged))
+        by mx0b-00154901.pphosted.com with ESMTP id 320u6191wu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 01 Jul 2020 10:09:51 -0400
+Received: from emc.com (localhost [127.0.0.1])
+        by mailuogwprd53.lss.emc.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.0) with ESMTP id 061E9cpt026875;
+        Wed, 1 Jul 2020 10:09:38 -0400
+Received: from mailapphubprd52.lss.emc.com ([mailapphubprd52.lss.emc.com [10.106.83.171]]) by mailuogwprd53.lss.emc.com with ESMTP id 061E9Iet026588 ;
+          Wed, 1 Jul 2020 10:09:19 -0400
+Received: from arwen6.xiolab.lab.emc.com (arwen6.xiolab.lab.emc.com [10.76.217.138])
+        by mailapphubprd52.lss.emc.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.0) with ESMTP id 061E9Fuf002031;
+        Wed, 1 Jul 2020 10:09:16 -0400
+From:   leonid.ravich@dell.com
+To:     dmaengine@vger.kernel.org
+Cc:     lravich@gmail.com, Leonid Ravich <Leonid.Ravich@dell.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Alexander.Barabash@dell.com" <Alexander.Barabash@dell.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dmaengine: ioat setting ioat timeout as module parameter
+Date:   Wed,  1 Jul 2020 17:08:45 +0300
+Message-Id: <20200701140849.8828-1-leonid.ravich@dell.com>
+X-Mailer: git-send-email 2.16.2
+X-Sentrion-Hostname: mailuogwprd53.lss.emc.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-01_08:2020-07-01,2020-07-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ cotscore=-2147483648 adultscore=0 malwarescore=0 phishscore=0
+ priorityscore=1501 mlxscore=0 mlxlogscore=899 suspectscore=13 bulkscore=0
+ lowpriorityscore=0 clxscore=1011 impostorscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007010102
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 bulkscore=0
+ suspectscore=13 mlxlogscore=922 spamscore=0 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007010102
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 01 Jul 2020 at 16:16:19 (+0530), Viresh Kumar wrote:
-> On 01-07-20, 10:07, Ionela Voinescu wrote:
-> > In the majority of cases, the index argument to cpufreq's target_index()
-> > is meant to identify the frequency that is requested from the hardware,
-> > according to the frequency table: policy->freq_table[index].frequency.
-> > 
-> > After successfully requesting it from the hardware, this value, together
-> > with the maximum hardware frequency (policy->cpuinfo.max_freq) are used
-> > as arguments to arch_set_freq_scale(), in order to set the task scheduler
-> > frequency scale factor. This is a normalized indication of a CPU's
-> > current performance.
-> > 
-> > But for the vexpress-spc-cpufreq driver, when big.LITTLE switching [1]
-> > is enabled, there are three issues with using the above information for
-> > setting the FI scale factor:
-> > 
-> >  - cur_freq: policy->freq_table[index].frequency is not the frequency
-> >    requested from the hardware. ve_spc_cpufreq_set_rate() will convert
-> >    from this virtual frequency to an actual frequency, which is then
-> >    requested from the hardware. For the A7 cluster, the virtual frequency
-> >    is half the actual frequency. The use of the virtual policy->freq_table
-> >    frequency results in an incorrect FI scale factor.
-> > 
-> >  - max_freq: policy->cpuinfo.max_freq does not correctly identify the
-> >    maximum frequency of the physical cluster. This value identifies the
-> >    maximum frequency achievable by the big-LITTLE pair, that is the
-> >    maximum frequency of the big CPU. But when the LITTLE CPU in the group
-> >    is used, the hardware maximum frquency passed to arch_set_freq_scale()
-> >    is incorrect.
-> > 
-> >  - missing a scale factor update: when switching clusters, the driver
-> >    recalculates the frequency of the old clock domain based on the
-> >    requests of the remaining CPUs in the domain and asks for a clock
-> >    change. But this does not result in an update in the scale factor.
-> > 
-> > Therefore, introduce a local function bLs_set_sched_freq_scale() that
-> > helps call arch_set_freq_scale() with correct information for the
-> > is_bL_switching_enabled() case, while maintaining the old, more
-> > efficient, call site of arch_set_freq_scale() for when cluster
-> > switching is disabled.
-> > 
-> > Also, because of these requirements in computing the scale factor, this
-> > driver is the only one that maintains custom support for FI, which is
-> > marked by the presence of the CPUFREQ_CUSTOM_SET_FREQ_SCALE flag.
-> > 
-> > [1] https://lwn.net/Articles/481055/
-> > 
-> > Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> > Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> > Cc: Sudeep Holla <sudeep.holla@arm.com>
-> > Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-> > Cc: Liviu Dudau <liviu.dudau@arm.com>
-> > ---
-> >  drivers/cpufreq/vexpress-spc-cpufreq.c | 23 ++++++++++++++++++++++-
-> >  1 file changed, 22 insertions(+), 1 deletion(-)
-> 
-> Is there anyone who cares for this driver and EAS ? I will just skip doing the
-> FIE thing here and mark it skipped.
-> 
+From: Leonid Ravich <Leonid.Ravich@emc.com>
 
-That is a good question. The vexpress driver is still used for TC2, but
-I don't know of any users of this bL switcher functionality that's part
-of the driver. I think there were a few people wondering recently if
-it's still used [1].
+DMA transaction time to complition  is a function of
+PCI bandwidth,transaction size and a queue depth.
+So hard coded value for timeouts might be wrong
+for some scenarios.
 
-If we disconsider the bL switcher functionality, then the vexpress
-driver itself gets in line with the other drivers supported by this
-series. Therefore there would not be a flag set needed here. Also, to
-maintain current functionality, we would not need to introduce a flag
-at all.
+Signed-off-by: Leonid Ravich <Leonid.Ravich@emc.com>
+---
+ drivers/dma/ioat/dma.c | 12 ++++++++++++
+ drivers/dma/ioat/dma.h |  2 --
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-But, the frequency invariance fix is also useful for schedutil to
-better select a frequency based on invariant utilization. So if we
-independently decide having a flag like the one introduced at 1/8 is
-useful, I would recommend to consider this patch, as it does fix some
-current functionality in the kernel (whether we can determine if it's
-used much or not).
+diff --git a/drivers/dma/ioat/dma.c b/drivers/dma/ioat/dma.c
+index 8ad0ad861c86..7621b5be5cf4 100644
+--- a/drivers/dma/ioat/dma.c
++++ b/drivers/dma/ioat/dma.c
+@@ -26,6 +26,18 @@
+ 
+ #include "../dmaengine.h"
+ 
++int complition_timeout = 200;
++module_param(complition_timeout, int, 0644);
++MODULE_PARM_DESC(complition_timeout,
++		"set ioat complition timeout [msec] (default 200 [msec])");
++int idle_timeout = 2000;
++module_param(idle_timeout, int, 0644);
++MODULE_PARM_DESC(idle_timeout,
++		"set ioat idel timeout [msec] (default 2000 [msec])");
++
++#define IDLE_TIMEOUT msecs_to_jiffies(idle_timeout)
++#define COMPLETION_TIMEOUT msecs_to_jiffies(complition_timeout)
++
+ static char *chanerr_str[] = {
+ 	"DMA Transfer Source Address Error",
+ 	"DMA Transfer Destination Address Error",
+diff --git a/drivers/dma/ioat/dma.h b/drivers/dma/ioat/dma.h
+index e6b622e1ba92..f7f31fdf14cf 100644
+--- a/drivers/dma/ioat/dma.h
++++ b/drivers/dma/ioat/dma.h
+@@ -104,8 +104,6 @@ struct ioatdma_chan {
+ 	#define IOAT_RUN 5
+ 	#define IOAT_CHAN_ACTIVE 6
+ 	struct timer_list timer;
+-	#define COMPLETION_TIMEOUT msecs_to_jiffies(100)
+-	#define IDLE_TIMEOUT msecs_to_jiffies(2000)
+ 	#define RESET_DELAY msecs_to_jiffies(100)
+ 	struct ioatdma_device *ioat_dma;
+ 	dma_addr_t completion_dma;
+-- 
+2.16.2
 
-Therefore, IMO, if it's not used any more it should be removed, but if
-it's kept it should be fixed.
-
-[1] https://lore.kernel.org/linux-arm-kernel/20200624195811.435857-8-maz@kernel.org/
-
-
-Thanks,
-Ionela.
-
-
-> -- 
-> viresh
