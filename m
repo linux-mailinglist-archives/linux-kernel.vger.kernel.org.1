@@ -2,99 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1EF2105AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA1E2105A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728561AbgGAIE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 04:04:27 -0400
-Received: from mga14.intel.com ([192.55.52.115]:2413 "EHLO mga14.intel.com"
+        id S1728486AbgGAIEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 04:04:07 -0400
+Received: from mga01.intel.com ([192.55.52.88]:10609 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728420AbgGAIEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 04:04:24 -0400
-IronPort-SDR: EQuRO9IEuwjQqllaAo0u+uUjjoZfwcgp52vqoPoVMX8oqhbrYe79sNt8mksF++NHyJgVo8EYI5
- WmnqunQQTcGw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="145581826"
+        id S1728258AbgGAIEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 04:04:06 -0400
+IronPort-SDR: sCi+dFlgKTXbB+SgwIPlYwBTizmhx6jZT0mMBVqm5OwPKYcmgS4bKTtZSi+nu/n8g1u7kOg/+o
+ b04wwCxWH4Bg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="164506902"
 X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
-   d="scan'208";a="145581826"
+   d="scan'208";a="164506902"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 01:04:14 -0700
-IronPort-SDR: mzze7toC3jy/njNgD0C5r2G7i7KN51Ncg/FUIQJ/VGZLtwgf3uyD8GtUFiz6aPiEgjP8/S09q3
- KHo7FeAbZ1zA==
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 01:04:05 -0700
+IronPort-SDR: vNezBBKcLiLMpmO1Wp6zWf3RihAcxbBrvz1FeO8XFq/J7uPqayNdJ+W9p2YIed5n20e4XPDoxN
+ zajbHTqQgeGA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
-   d="scan'208";a="455010225"
-Received: from unknown (HELO local-michael-cet-test.sh.intel.com) ([10.239.159.128])
-  by orsmga005.jf.intel.com with ESMTP; 01 Jul 2020 01:04:12 -0700
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        jmattson@google.com
-Cc:     yu.c.zhang@linux.intel.com, Yang Weijiang <weijiang.yang@intel.com>
-Subject: [PATCH v13 01/11] KVM: x86: Include CET definitions for KVM test purpose
-Date:   Wed,  1 Jul 2020 16:04:01 +0800
-Message-Id: <20200701080411.5802-2-weijiang.yang@intel.com>
-X-Mailer: git-send-email 2.17.2
-In-Reply-To: <20200701080411.5802-1-weijiang.yang@intel.com>
-References: <20200701080411.5802-1-weijiang.yang@intel.com>
+   d="scan'208";a="277694962"
+Received: from mylly.fi.intel.com (HELO [10.237.72.70]) ([10.237.72.70])
+  by orsmga003.jf.intel.com with ESMTP; 01 Jul 2020 01:04:02 -0700
+Subject: Re: [PATCH v2] HID: i2c-hid: Use block reads when possible to save
+ power
+To:     Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     aaron.ma@canonical.com, admin@kryma.net,
+        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
+        hdegoede@redhat.com, hn.chen@weidahitech.com, jikos@kernel.org,
+        kai.heng.feng@canonical.com, linux-i2c@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com,
+        wsa@kernel.org
+References: <c4373272-e656-773c-dfd2-0efc4c53c92d@linux.intel.com>
+ <20200616154951.3050-1-sultan@kerneltoast.com>
+ <37ceaf7a-3421-e305-4355-a6b40ae54843@linux.intel.com>
+ <20200629174328.GB1646@sultan-box.localdomain>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <ef949533-c614-7afb-f206-5c54d827deac@linux.intel.com>
+Date:   Wed, 1 Jul 2020 11:04:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200629174328.GB1646@sultan-box.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These definitions are added by CET kernel patch and referenced by KVM,
-if the CET KVM patches are tested without CET kernel patches, this patch
-should be included.
+On 6/29/20 8:43 PM, Sultan Alsawaf wrote:
+> Hmm, for some reason in 5.8 I get the same problem, but 5.7 is fine. Could you
+> try this on 5.7 and see if it works?
+> 
+> In the meantime I'll bisect 5.8 to see why it's causing problems for me...
+> 
+I see the same issue on top of v5.7:
 
-Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
----
- include/linux/kvm_host.h | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+[    9.330514] i2c_hid i2c-ELAN221D:00: Fetching the HID descriptor
+[    9.334761] i2c_hid i2c-ELAN221D:00: __i2c_hid_command: cmd=01 00
+[    9.335716] i2c_hid i2c-ELAN221D:00: HID Descriptor: 1e 00 00 01 31 
+02 02 00 03 00 43 00 04 00 ff 00 05 00 06 00 f3 04 1d 22 10 56 00 00 00 00
+[    9.353408] i2c_hid i2c-ELAN221D:00: entering i2c_hid_parse
+[    9.353416] i2c_hid i2c-ELAN221D:00: i2c_hid_hwreset
+[    9.353502] i2c_hid i2c-ELAN221D:00: i2c_hid_set_power
+[    9.353520] i2c_hid i2c-ELAN221D:00: __i2c_hid_command: cmd=05 00 00 08
+[    9.362304] i2c_hid i2c-ELAN221D:00: resetting...
+[    9.370585] i2c_hid i2c-ELAN221D:00: __i2c_hid_command: cmd=05 00 00 01
+[    9.389175] i2c_hid i2c-ELAN221D:00: __i2c_hid_command: waiting...
+[   10.416458] i2c_designware i2c_designware.3: controller timed out
+[   10.476853] i2c_designware i2c_designware.3: timeout in disabling adapter
+[   11.983806] [<00000000fac753ed>] i2c_dw_isr [i2c_designware_core]
+[   14.544499] i2c_hid i2c-ELAN221D:00: __i2c_hid_command: finished.
+[   14.552123] i2c_hid i2c-ELAN221D:00: failed to reset device.
+[   14.559263] i2c_hid i2c-ELAN221D:00: i2c_hid_set_power
+[   14.565822] i2c_hid i2c-ELAN221D:00: __i2c_hid_command: cmd=05 00 01 08
+[   14.600256] i2c_designware i2c_designware.3: timeout waiting for bus 
+ready
+[   14.608800] i2c_hid i2c-ELAN221D:00: failed to change power setting.
+[   15.632103] i2c_hid i2c-ELAN221D:00: i2c_hid_hwreset
+[   15.638460] i2c_hid i2c-ELAN221D:00: i2c_hid_set_power
+[   15.646422] i2c_hid i2c-ELAN221D:00: __i2c_hid_command: cmd=05 00 00 08
+...
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 01276e3d01b9..20e0fe70d3f7 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -35,6 +35,38 @@
- 
- #include <asm/kvm_host.h>
- 
-+#ifndef CONFIG_X86_INTEL_CET
-+#define XFEATURE_CET_USER   11
-+#define XFEATURE_CET_KERNEL 12
-+
-+#define XFEATURE_MASK_CET_USER         (1 << XFEATURE_CET_USER)
-+#define XFEATURE_MASK_CET_KERNEL       (1 << XFEATURE_CET_KERNEL)
-+
-+/* Control-flow Enforcement Technology MSRs */
-+#define MSR_IA32_U_CET         0x6a0 /* user mode cet setting */
-+#define MSR_IA32_S_CET         0x6a2 /* kernel mode cet setting */
-+#define MSR_IA32_PL0_SSP       0x6a4 /* kernel shstk pointer */
-+#define MSR_IA32_PL1_SSP       0x6a5 /* ring-1 shstk pointer */
-+#define MSR_IA32_PL2_SSP       0x6a6 /* ring-2 shstk pointer */
-+#define MSR_IA32_PL3_SSP       0x6a7 /* user shstk pointer */
-+#define MSR_IA32_INT_SSP_TAB   0x6a8 /* exception shstk table */
-+
-+#define X86_CR4_CET_BIT        23 /* enable Control-flow Enforcement */
-+#define X86_CR4_CET            _BITUL(X86_CR4_CET_BIT)
-+
-+#define X86_FEATURE_SHSTK      (16*32+ 7) /* Shadow Stack */
-+#define X86_FEATURE_IBT        (18*32+20) /* Indirect Branch Tracking */
-+
-+/* MSR_IA32_U_CET and MSR_IA32_S_CET bits */
-+#define MSR_IA32_CET_SHSTK_EN          0x0000000000000001ULL
-+#define MSR_IA32_CET_WRSS_EN           0x0000000000000002ULL
-+#define MSR_IA32_CET_ENDBR_EN          0x0000000000000004ULL
-+#define MSR_IA32_CET_LEG_IW_EN         0x0000000000000008ULL
-+#define MSR_IA32_CET_NO_TRACK_EN       0x0000000000000010ULL
-+#define MSR_IA32_CET_WAIT_ENDBR        0x00000000000000800UL
-+#define MSR_IA32_CET_BITMAP_MASK       0xfffffffffffff000ULL
-+#endif
-+
- #ifndef KVM_MAX_VCPU_ID
- #define KVM_MAX_VCPU_ID KVM_MAX_VCPUS
- #endif
 -- 
-2.17.2
-
+Jarkko
