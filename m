@@ -2,214 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ABC5210468
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 09:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C47210477
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 09:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbgGAHDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 03:03:45 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:7470 "EHLO pegase1.c-s.fr"
+        id S1728148AbgGAHF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 03:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726927AbgGAHDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 03:03:44 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49xXJF6R5rz9v1xr;
-        Wed,  1 Jul 2020 09:03:41 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id lJg3lFJH2Aax; Wed,  1 Jul 2020 09:03:41 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49xXJF20wwz9v1xq;
-        Wed,  1 Jul 2020 09:03:41 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C5EB48B7DE;
-        Wed,  1 Jul 2020 09:03:41 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id o-A-Qpkw4yiK; Wed,  1 Jul 2020 09:03:41 +0200 (CEST)
-Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1B87B8B75F;
-        Wed,  1 Jul 2020 09:03:41 +0200 (CEST)
-Subject: Re: [PATCH v2] powerpc/uaccess: Use flexible addressing with
- __put_user()/__get_user()
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <c2addbd9d76212242d3d8554a2f7ff849fb08b85.1587040754.git.christophe.leroy@c-s.fr>
- <7b916759-1683-b4df-0d4b-b04b3fcd9a02@csgroup.eu>
- <878sg6862r.fsf@mpe.ellerman.id.au> <875zb98i5a.fsf@mpe.ellerman.id.au>
- <311c3471-cad7-72d5-a5e6-04cf892c5e41@csgroup.eu>
- <20200630163324.GW3598@gate.crashing.org>
- <f8819fa4-94e3-4bf9-4b60-c57d2804e529@csgroup.eu>
- <20200630211817.GZ3598@gate.crashing.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <aaf5ac33-cd24-3b82-a034-2fc1d43d443f@csgroup.eu>
-Date:   Wed, 1 Jul 2020 09:05:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1727969AbgGAHF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 03:05:56 -0400
+Received: from sekiro (lfbn-mar-1-814-213.w92-150.abo.wanadoo.fr [92.150.24.213])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B255120663;
+        Wed,  1 Jul 2020 07:05:44 +0000 (UTC)
+Date:   Wed, 1 Jul 2020 09:05:35 +0200
+From:   Ludovic Desroches <ludovic.desroches@microchip.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Andrei Stefanescu <andrei.stefanescu@microchip.com>
+Subject: Re: [PATCH 05/10] gpio: gpio-sama5d2-piobu: Demote all kerneldoc
+ headers to basic comment blocks
+Message-ID: <20200701070535.stnl53wxyez6hcpt@sekiro>
+References: <20200630133345.2232932-1-lee.jones@linaro.org>
+ <20200630133345.2232932-6-lee.jones@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20200630211817.GZ3598@gate.crashing.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200630133345.2232932-6-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 30/06/2020 à 23:18, Segher Boessenkool a écrit :
-> Hi again,
+On Tue, Jun 30, 2020 at 02:33:40PM +0100, Lee Jones wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > 
-> Thanks for your work so far!
+> No attempt has been made to provide proper descriptions for each of
+> the function arguments throughout the file.  Simply demote all
+> kerneldoc headers to basic function headers.
 > 
-> On Tue, Jun 30, 2020 at 06:53:39PM +0000, Christophe Leroy wrote:
->> On 06/30/2020 04:33 PM, Segher Boessenkool wrote:
->>>>> + make -s CC=powerpc64-linux-gnu-gcc -j 160
->>>>> In file included from /linux/include/linux/uaccess.h:11:0,
->>>>>                   from /linux/include/linux/sched/task.h:11,
->>>>>                   from /linux/include/linux/sched/signal.h:9,
->>>>>                   from /linux/include/linux/rcuwait.h:6,
->>>>>                   from /linux/include/linux/percpu-rwsem.h:7,
->>>>>                   from /linux/include/linux/fs.h:33,
->>>>>                   from /linux/include/linux/huge_mm.h:8,
->>>>>                   from /linux/include/linux/mm.h:675,
->>>>>                   from /linux/arch/powerpc/kernel/signal_32.c:17:
->>>>> /linux/arch/powerpc/kernel/signal_32.c: In function
->>>>> 'save_user_regs.isra.14.constprop':
->>>>> /linux/arch/powerpc/include/asm/uaccess.h:161:2: error: 'asm' operand has
->>>>> impossible constraints
->>>>>    __asm__ __volatile__(     \
->>>>>    ^
->>>>> /linux/arch/powerpc/include/asm/uaccess.h:197:12: note: in expansion of
->>>>> macro '__put_user_asm'
->>>>>      case 4: __put_user_asm(x, ptr, retval, "stw"); break; \
->>>>>              ^
->>>>> /linux/arch/powerpc/include/asm/uaccess.h:206:2: note: in expansion of
->>>>> macro '__put_user_size_allowed'
->>>>>    __put_user_size_allowed(x, ptr, size, retval);  \
->>>>>    ^
->>>>> /linux/arch/powerpc/include/asm/uaccess.h:220:2: note: in expansion of
->>>>> macro '__put_user_size'
->>>>>    __put_user_size(__pu_val, __pu_addr, __pu_size, __pu_err); \
->>>>>    ^
->>>>> /linux/arch/powerpc/include/asm/uaccess.h:96:2: note: in expansion of
->>>>> macro '__put_user_nocheck'
->>>>>    __put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
->>>>>    ^
->>>>> /linux/arch/powerpc/kernel/signal_32.c:120:7: note: in expansion of macro
->>>>> '__put_user'
->>>>>     if (__put_user((unsigned int)gregs[i], &frame->mc_gregs[i]))
->>>>>         ^
->>>
->>> Can we see what that was after the macro jungle?  Like, the actual
->>> preprocessed code?
->>
->> Sorry for previous misunderstanding
->>
->> Here is the code:
->>
->> #define __put_user_asm(x, addr, err, op)			\
->> 	__asm__ __volatile__(					\
->> 		"1:	" op "%U2%X2 %1,%2	# put_user\n"	\
->> 		"2:\n"						\
->> 		".section .fixup,\"ax\"\n"			\
->> 		"3:	li %0,%3\n"				\
->> 		"	b 2b\n"					\
->> 		".previous\n"					\
->> 		EX_TABLE(1b, 3b)				\
->> 		: "=r" (err)					\
->> 		: "r" (x), "m<>" (*addr), "i" (-EFAULT), "0" (err))
+> Fixes the following W=1 kernel build warnings:
 > 
-> Yeah I don't see it.  I'll have to look at compiler debug dumps, but I
-> don't have any working 4.9 around, and I cannot reproduce this with
-> either older or newer compilers.
-
-I reproduced it with 4.8.5
-
+>  drivers/gpio/gpio-sama5d2-piobu.c:59: warning: Function parameter or member 'chip' not described in 'sama5d2_piobu_setup_pin'
+>  drivers/gpio/gpio-sama5d2-piobu.c:59: warning: Function parameter or member 'pin' not described in 'sama5d2_piobu_setup_pin'
+>  drivers/gpio/gpio-sama5d2-piobu.c:81: warning: Function parameter or member 'chip' not described in 'sama5d2_piobu_write_value'
+>  drivers/gpio/gpio-sama5d2-piobu.c:81: warning: Function parameter or member 'pin' not described in 'sama5d2_piobu_write_value'
+>  drivers/gpio/gpio-sama5d2-piobu.c:81: warning: Function parameter or member 'mask' not described in 'sama5d2_piobu_write_value'
+>  drivers/gpio/gpio-sama5d2-piobu.c:81: warning: Function parameter or member 'value' not described in 'sama5d2_piobu_write_value'
+>  drivers/gpio/gpio-sama5d2-piobu.c:97: warning: Function parameter or member 'chip' not described in 'sama5d2_piobu_read_value'
+>  drivers/gpio/gpio-sama5d2-piobu.c:97: warning: Function parameter or member 'pin' not described in 'sama5d2_piobu_read_value'
+>  drivers/gpio/gpio-sama5d2-piobu.c:97: warning: Function parameter or member 'mask' not described in 'sama5d2_piobu_read_value'
+>  drivers/gpio/gpio-sama5d2-piobu.c:116: warning: Function parameter or member 'chip' not described in 'sama5d2_piobu_get_direction'
+>  drivers/gpio/gpio-sama5d2-piobu.c:116: warning: Function parameter or member 'pin' not described in 'sama5d2_piobu_get_direction'
+>  drivers/gpio/gpio-sama5d2-piobu.c:131: warning: Function parameter or member 'chip' not described in 'sama5d2_piobu_direction_input'
+>  drivers/gpio/gpio-sama5d2-piobu.c:131: warning: Function parameter or member 'pin' not described in 'sama5d2_piobu_direction_input'
+>  drivers/gpio/gpio-sama5d2-piobu.c:140: warning: Function parameter or member 'chip' not described in 'sama5d2_piobu_direction_output'
+>  drivers/gpio/gpio-sama5d2-piobu.c:140: warning: Function parameter or member 'pin' not described in 'sama5d2_piobu_direction_output'
+>  drivers/gpio/gpio-sama5d2-piobu.c:140: warning: Function parameter or member 'value' not described in 'sama5d2_piobu_direction_output'
+>  drivers/gpio/gpio-sama5d2-piobu.c:154: warning: Function parameter or member 'chip' not described in 'sama5d2_piobu_get'
+>  drivers/gpio/gpio-sama5d2-piobu.c:154: warning: Function parameter or member 'pin' not described in 'sama5d2_piobu_get'
+>  drivers/gpio/gpio-sama5d2-piobu.c:174: warning: Function parameter or member 'chip' not described in 'sama5d2_piobu_set'
+>  drivers/gpio/gpio-sama5d2-piobu.c:174: warning: Function parameter or member 'pin' not described in 'sama5d2_piobu_set'
+>  drivers/gpio/gpio-sama5d2-piobu.c:174: warning: Function parameter or member 'value' not described in 'sama5d2_piobu_set'
 > 
-> It is complainig that constrain_operands just does not work *at all* on
-> this "m<>" constraint apparently, which doesn't make much sense.
+> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+> Cc: Andrei Stefanescu <andrei.stefanescu@microchip.com>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+
+Thanks.
+
+> ---
+>  drivers/gpio/gpio-sama5d2-piobu.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 > 
-
-Here is a small reproducer:
-
-#include <linux/elf.h>
-#include <linux/ptrace.h>
-#include <linux/uaccess.h>
-
-struct mcontext {
-	elf_gregset_t32		mc_gregs;
-	elf_fpregset_t		mc_fregs;
-	unsigned int		mc_pad[2];
-	elf_vrregset_t32	mc_vregs __attribute__((__aligned__(16)));
-	elf_vsrreghalf_t32      mc_vsregs __attribute__((__aligned__(16)));
-};
-
-int save_general_regs(struct pt_regs *regs, struct mcontext __user *frame)
-{
-	elf_greg_t64 *gregs = (elf_greg_t64 *)regs;
-	int i;
-
-	for (i = 0; i <= PT_RESULT; i ++) {
-		if (i == 14)
-			i = 32;
-		if (__put_user((unsigned int)gregs[i], &frame->mc_gregs[i]))
-			return -EFAULT;
-	}
-	return 0;
-}
-
-
-If you remove the "if i == 14 ..." you get no failure.
-
-Preprocessor result:
-
-int save_general_regs(struct pt_regs *regs, struct mcontext *frame)
-{
-  elf_greg_t64 *gregs = (elf_greg_t64 *)regs;
-  int i;
-
-  for (i = 0; i <= 43; i ++) {
-   if (i == 14)
-    i = 32;
-   if (({ long __pu_err; __typeof__(*((&frame->mc_gregs[i]))) *__pu_addr 
-= ((&frame->mc_gregs[i])); __typeof__(*((&frame->mc_gregs[i]))) __pu_val 
-= ((__typeof__(*(&frame->mc_gregs[i])))((unsigned int)gregs[i])); 
-__typeof__(sizeof(*(&frame->mc_gregs[i]))) __pu_size = 
-(sizeof(*(&frame->mc_gregs[i]))); if (!(((unsigned long)__pu_addr) >= 
-0x8000000000000000ul)) might_fault(); (void)0; do { 
-allow_write_to_user(__pu_addr, __pu_size); do { __pu_err = 0; switch 
-(__pu_size) { case 1: __asm__ __volatile__( "1:	" "stb" "%U2%X2 %1,%2	# 
-put_user\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	li %0,%3\n" "	b 2b\n" 
-".previous\n" ".section __ex_table,\"a\";" " " ".balign 4;" " " ".long 
-(1b) - . ;" " " ".long (3b) - . ;" " " ".previous" " " : "=r" (__pu_err) 
-: "r" (__pu_val), "m<>" (*__pu_addr), "i" (-14), "0" (__pu_err)); break; 
-case 2: __asm__ __volatile__( "1:	" "sth" "%U2%X2 %1,%2	# put_user\n" 
-"2:\n" ".section .fixup,\"ax\"\n" "3:	li %0,%3\n" "	b 2b\n" 
-".previous\n" ".section __ex_table,\"a\";" " " ".balign 4;" " " ".long 
-(1b) - . ;" " " ".long (3b) - . ;" " " ".previous" " " : "=r" (__pu_err) 
-: "r" (__pu_val), "m<>" (*__pu_addr), "i" (-14), "0" (__pu_err)); break; 
-case 4: __asm__ __volatile__( "1:	" "stw" "%U2%X2 %1,%2	# put_user\n" 
-"2:\n" ".section .fixup,\"ax\"\n" "3:	li %0,%3\n" "	b 2b\n" 
-".previous\n" ".section __ex_table,\"a\";" " " ".balign 4;" " " ".long 
-(1b) - . ;" " " ".long (3b) - . ;" " " ".previous" " " : "=r" (__pu_err) 
-: "r" (__pu_val), "m<>" (*__pu_addr), "i" (-14), "0" (__pu_err)); break; 
-case 8: __asm__ __volatile__( "1:	" "std" "%U2%X2 %1,%2	# put_user\n" 
-"2:\n" ".section .fixup,\"ax\"\n" "3:	li %0,%3\n" "	b 2b\n" 
-".previous\n" ".section __ex_table,\"a\";" " " ".balign 4;" " " ".long 
-(1b) - . ;" " " ".long (3b) - . ;" " " ".previous" " " : "=r" (__pu_err) 
-: "r" (__pu_val), "m<>" (*__pu_addr), "i" (-14), "0" (__pu_err)); break; 
-default: __put_user_bad(); } } while (0); 
-prevent_write_to_user(__pu_addr, __pu_size); } while (0); __pu_err; }))
-    return -14;
-  }
-  return 0;
-}
-
-
-Christophe
+> diff --git a/drivers/gpio/gpio-sama5d2-piobu.c b/drivers/gpio/gpio-sama5d2-piobu.c
+> index 4d47b2c411868..b7c9506581701 100644
+> --- a/drivers/gpio/gpio-sama5d2-piobu.c
+> +++ b/drivers/gpio/gpio-sama5d2-piobu.c
+> @@ -49,7 +49,7 @@ struct sama5d2_piobu {
+>         struct regmap *regmap;
+>  };
+> 
+> -/**
+> +/*
+>   * sama5d2_piobu_setup_pin() - prepares a pin for set_direction call
+>   *
+>   * Do not consider pin for tamper detection (normal and backup modes)
+> @@ -73,7 +73,7 @@ static int sama5d2_piobu_setup_pin(struct gpio_chip *chip, unsigned int pin)
+>         return regmap_update_bits(piobu->regmap, PIOBU_WKPR, mask, 0);
+>  }
+> 
+> -/**
+> +/*
+>   * sama5d2_piobu_write_value() - writes value & mask at the pin's PIOBU register
+>   */
+>  static int sama5d2_piobu_write_value(struct gpio_chip *chip, unsigned int pin,
+> @@ -88,7 +88,7 @@ static int sama5d2_piobu_write_value(struct gpio_chip *chip, unsigned int pin,
+>         return regmap_update_bits(piobu->regmap, reg, mask, value);
+>  }
+> 
+> -/**
+> +/*
+>   * sama5d2_piobu_read_value() - read the value with masking from the pin's PIOBU
+>   *                           register
+>   */
+> @@ -108,7 +108,7 @@ static int sama5d2_piobu_read_value(struct gpio_chip *chip, unsigned int pin,
+>         return val & mask;
+>  }
+> 
+> -/**
+> +/*
+>   * sama5d2_piobu_get_direction() - gpiochip get_direction
+>   */
+>  static int sama5d2_piobu_get_direction(struct gpio_chip *chip,
+> @@ -123,7 +123,7 @@ static int sama5d2_piobu_get_direction(struct gpio_chip *chip,
+>                                    GPIO_LINE_DIRECTION_OUT;
+>  }
+> 
+> -/**
+> +/*
+>   * sama5d2_piobu_direction_input() - gpiochip direction_input
+>   */
+>  static int sama5d2_piobu_direction_input(struct gpio_chip *chip,
+> @@ -132,7 +132,7 @@ static int sama5d2_piobu_direction_input(struct gpio_chip *chip,
+>         return sama5d2_piobu_write_value(chip, pin, PIOBU_DIRECTION, PIOBU_IN);
+>  }
+> 
+> -/**
+> +/*
+>   * sama5d2_piobu_direction_output() - gpiochip direction_output
+>   */
+>  static int sama5d2_piobu_direction_output(struct gpio_chip *chip,
+> @@ -147,7 +147,7 @@ static int sama5d2_piobu_direction_output(struct gpio_chip *chip,
+>                                          val);
+>  }
+> 
+> -/**
+> +/*
+>   * sama5d2_piobu_get() - gpiochip get
+>   */
+>  static int sama5d2_piobu_get(struct gpio_chip *chip, unsigned int pin)
+> @@ -166,7 +166,7 @@ static int sama5d2_piobu_get(struct gpio_chip *chip, unsigned int pin)
+>         return !!ret;
+>  }
+> 
+> -/**
+> +/*
+>   * sama5d2_piobu_set() - gpiochip set
+>   */
+>  static void sama5d2_piobu_set(struct gpio_chip *chip, unsigned int pin,
+> --
+> 2.25.1
+> 
