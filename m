@@ -2,767 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C8C2111CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 19:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B2D2111DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 19:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732738AbgGARSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 13:18:01 -0400
-Received: from out28-77.mail.aliyun.com ([115.124.28.77]:39360 "EHLO
-        out28-77.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726432AbgGARSA (ORCPT
+        id S1732753AbgGARXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 13:23:20 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:59228 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726432AbgGARXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 13:18:00 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.06436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.186896-0.00650104-0.806603;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03293;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.HvxLlsS_1593623868;
-Received: from 192.168.10.205(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.HvxLlsS_1593623868)
-          by smtp.aliyun-inc.com(10.147.44.145);
-          Thu, 02 Jul 2020 01:17:48 +0800
-Subject: Re: [PATCH v3 2/2] clocksource: Ingenic: Add support for the Ingenic
- X1000 OST.
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        daniel.lezcano@linaro.org, tglx@linutronix.de, robh+dt@kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-References: <20200630171553.70670-1-zhouyanjie@wanyeetech.com>
- <20200630171553.70670-3-zhouyanjie@wanyeetech.com>
- <OW7RCQ.MFWU5QXTLAOD2@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <4bbc48fe-9c91-45ba-cf7f-bb6f4ca6db93@wanyeetech.com>
-Date:   Thu, 2 Jul 2020 01:17:45 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
+        Wed, 1 Jul 2020 13:23:19 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jqgS1-0004UG-IT; Wed, 01 Jul 2020 11:23:13 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jqgS0-0002b1-HA; Wed, 01 Jul 2020 11:23:13 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+References: <20200625095725.GA3303921@kroah.com>
+        <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+        <20200625120725.GA3493334@kroah.com>
+        <20200625.123437.2219826613137938086.davem@davemloft.net>
+        <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+        <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+        <87y2oac50p.fsf@x220.int.ebiederm.org>
+        <87bll17ili.fsf_-_@x220.int.ebiederm.org>
+        <87imf963s6.fsf_-_@x220.int.ebiederm.org>
+        <CAHk-=wihqhksXHkcjuTrYmC-vajeRcNh3s6eeoJNxS7wp77dFQ@mail.gmail.com>
+Date:   Wed, 01 Jul 2020 12:18:38 -0500
+In-Reply-To: <CAHk-=wihqhksXHkcjuTrYmC-vajeRcNh3s6eeoJNxS7wp77dFQ@mail.gmail.com>
+        (Linus Torvalds's message of "Tue, 30 Jun 2020 09:58:47 -0700")
+Message-ID: <87ftabw3v5.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <OW7RCQ.MFWU5QXTLAOD2@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
+X-XM-SPF: eid=1jqgS0-0002b1-HA;;;mid=<87ftabw3v5.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19t9X1hgcG3oTWl30nEiWfbVh/quO6qF7U=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4935]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa08 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 599 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 13 (2.2%), b_tie_ro: 11 (1.9%), parse: 0.73
+        (0.1%), extract_message_metadata: 12 (2.0%), get_uri_detail_list: 0.79
+        (0.1%), tests_pri_-1000: 14 (2.4%), tests_pri_-950: 1.29 (0.2%),
+        tests_pri_-900: 1.22 (0.2%), tests_pri_-90: 65 (10.8%), check_bayes:
+        62 (10.4%), b_tokenize: 7 (1.2%), b_tok_get_all: 8 (1.4%),
+        b_comp_prob: 2.1 (0.4%), b_tok_touch_all: 38 (6.4%), b_finish: 1.79
+        (0.3%), tests_pri_0: 479 (80.0%), check_dkim_signature: 0.82 (0.1%),
+        check_dkim_adsp: 2.8 (0.5%), poll_dns_idle: 0.94 (0.2%), tests_pri_10:
+        2.5 (0.4%), tests_pri_500: 7 (1.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 05/15] umh: Separate the user mode driver and the user mode helper support
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-在 2020/7/1 上午3:38, Paul Cercueil 写道:
-> Hi Zhou,
->
-> Le mer. 1 juil. 2020 à 1:15, 周琰杰 (Zhou Yanjie) 
-> <zhouyanjie@wanyeetech.com> a écrit :
->> X1000 and SoCs after X1000 (such as X1500 and X1830) had a separate
->> OST, it no longer belongs to TCU. This driver will register both a
->> clocksource and a sched_clock to the system.
+> On Mon, Jun 29, 2020 at 1:05 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
 >>
->> Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
->> Co-developed-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
->> Signed-off-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
->> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->> ---
+>> This makes it clear which code is part of the core user mode
+>> helper support and which code is needed to implement user mode
+>> drivers.
 >>
->> Notes:
->>     v1->v2:
->>     Fix compile warnings.
->>     Reported-by: kernel test robot <lkp@intel.com>
->>
->>     v2->v3:
->>     No change.
->>
->>  drivers/clocksource/Kconfig          |  19 +-
->>  drivers/clocksource/Makefile         |   1 +
->>  drivers/clocksource/ingenic-sysost.c | 509 
->> +++++++++++++++++++++++++++++++++++
->>  3 files changed, 525 insertions(+), 4 deletions(-)
->>  create mode 100644 drivers/clocksource/ingenic-sysost.c
->>
->> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
->> index 91418381fcd4..172397a00f3e 100644
->> --- a/drivers/clocksource/Kconfig
->> +++ b/drivers/clocksource/Kconfig
->> @@ -686,7 +686,7 @@ config MILBEAUT_TIMER
->>        Enables the support for Milbeaut timer driver.
->>
->>  config INGENIC_TIMER
->> -    bool "Clocksource/timer using the TCU in Ingenic JZ SoCs"
->> +    bool "Clocksource/timer using the TCU in Ingenic SoCs"
+>>  kernel/umd.c             | 146 +++++++++++++++++++++++++++++++++++++++
+>>  kernel/umh.c             | 139 -------------------------------------
 >
-> This cosmetic change is unrelated to the patch, please drop it.
+> I certainly don't object to the split, but I hate the name.
 >
-
-Sure.
-
-
->>      default MACH_INGENIC
->>      depends on MIPS || COMPILE_TEST
->>      depends on COMMON_CLK
->> @@ -694,15 +694,26 @@ config INGENIC_TIMER
->>      select TIMER_OF
->>      select IRQ_DOMAIN
->>      help
->> -      Support for the timer/counter unit of the Ingenic JZ SoCs.
->> +      Support for the timer/counter unit of the Ingenic SoCs.
+> We have uml, umd and umh for user mode {linux, drivers, helper}
+> respectively.And honestly, I don't see the point in using an obscure
+> and unreadable TLA for something like this.
 >
-> Same here.
+> I really don't think it would hurt to write out even the full name
+> with "usermode_driver.c" or something like that, would it?
 >
+> Then "umd" could be continued to be used as a prefix for the helper
+> functions, by all means, but if we startv renaming files, can we do it
+> properly?
 
-Sure.
+I will take care of it.  I have to respin the patchset for a silly bug anyways.
 
-
->> +
->> +config INGENIC_SYSOST
->> +    bool "Clocksource/timer using the SYSOST in Ingenic SoCs"
->> +    default MACH_INGENIC
->> +    depends on MIPS || COMPILE_TEST
->> +    depends on COMMON_CLK
->> +    select MFD_SYSCON
->> +    select TIMER_OF
->> +    select IRQ_DOMAIN
->> +    help
->> +      This option enables support for SYSOST in Ingenic SoCs .
->>
->>  config INGENIC_OST
->> -    bool "Clocksource for Ingenic OS Timer"
->> +    bool "Clocksource for Ingenic OST"
->
-> Same here.
->
-
-OK.
-
-
->>      depends on MIPS || COMPILE_TEST
->>      depends on COMMON_CLK
->>      select MFD_SYSCON
->>      help
->> -      Support for the Operating System Timer of the Ingenic JZ SoCs.
->> +      Support for the Operating System Timer of the Ingenic SoCs.
->
-> Same here.
->
-
-Sure.
-
-
->>
->>  config MICROCHIP_PIT64B
->>      bool "Microchip PIT64B support"
->> diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
->> index bdda1a2e4097..3994e221e262 100644
->> --- a/drivers/clocksource/Makefile
->> +++ b/drivers/clocksource/Makefile
->> @@ -82,6 +82,7 @@ obj-$(CONFIG_H8300_TMR8)        += h8300_timer8.o
->>  obj-$(CONFIG_H8300_TMR16)        += h8300_timer16.o
->>  obj-$(CONFIG_H8300_TPU)            += h8300_tpu.o
->>  obj-$(CONFIG_INGENIC_OST)        += ingenic-ost.o
->> +obj-$(CONFIG_INGENIC_SYSOST)    += ingenic-sysost.o
->>  obj-$(CONFIG_INGENIC_TIMER)        += ingenic-timer.o
->>  obj-$(CONFIG_CLKSRC_ST_LPC)        += clksrc_st_lpc.o
->>  obj-$(CONFIG_X86_NUMACHIP)        += numachip.o
->> diff --git a/drivers/clocksource/ingenic-sysost.c 
->> b/drivers/clocksource/ingenic-sysost.c
->> new file mode 100644
->> index 000000000000..d3e1b7582221
->> --- /dev/null
->> +++ b/drivers/clocksource/ingenic-sysost.c
->> @@ -0,0 +1,509 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Ingenic XBurst SoCs SYSOST clocks driver
->> + * Copyright (c) 2020 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->> + */
->> +
->> +#include <linux/bitops.h>
->> +#include <linux/clk.h>
->> +#include <linux/clk-provider.h>
->> +#include <linux/clockchips.h>
->> +#include <linux/clocksource.h>
->> +#include <linux/interrupt.h>
->> +#include <linux/mfd/syscon.h>
->> +#include <linux/of_address.h>
->> +#include <linux/of_irq.h>
->> +#include <linux/sched_clock.h>
->> +#include <linux/slab.h>
->> +#include <linux/syscore_ops.h>
->> +
->> +#include <dt-bindings/clock/ingenic,ost.h>
->> +
->> +/* OST register offsets */
->> +#define OST_REG_OSTCCR            0x00
->> +#define OST_REG_OSTCR            0x08
->> +#define OST_REG_OSTFR            0x0c
->> +#define OST_REG_OSTMR            0x10
->> +#define OST_REG_OST1DFR            0x14
->> +#define OST_REG_OST1CNT            0x18
->> +#define OST_REG_OST2CNTL        0x20
->> +#define OST_REG_OSTCNT2HBUF        0x24
->> +#define OST_REG_OSTESR            0x34
->> +#define OST_REG_OSTECR            0x38
->> +
->> +/* bits within the OSTCCR register */
->> +#define OSTCCR_PRESCALE1_MASK    0x3
->> +#define OSTCCR_PRESCALE2_MASK    0xc
->> +#define OSTCCR_PRESCALE1_LSB    0
->> +#define OSTCCR_PRESCALE2_LSB    2
->> +
->> +/* bits within the OSTCR register */
->> +#define OSTCR_OST1CLR            BIT(0)
->> +#define OSTCR_OST2CLR            BIT(1)
->> +
->> +/* bits within the OSTFR register */
->> +#define OSTFR_FFLAG                BIT(0)
->> +
->> +/* bits within the OSTMR register */
->> +#define OSTMR_FMASK                BIT(0)
->> +
->> +/* bits within the OSTESR register */
->> +#define OSTESR_OST1ENS            BIT(0)
->> +#define OSTESR_OST2ENS            BIT(1)
->> +
->> +/* bits within the OSTECR register */
->> +#define OSTECR_OST1ENC            BIT(0)
->> +#define OSTECR_OST2ENC            BIT(1)
->> +
->> +enum ost_clk_parent {
->> +    OST_PARENT_EXT,
->> +};
->> +
->> +struct ingenic_soc_info {
->> +    unsigned int num_channels;
->> +};
->
-> Unless you plan to add support for other SoCs which have more than 2 
-> channels, I think you can drop this - just add a OST_NUM_CHANNELS macro.
->
-
-When X2000 turned on SMT, a total of 3 channels are required, this is 
-reserved for adding support for X2000 in the future.
-
-
->> +
->> +struct ingenic_ost_clk_info {
->> +    struct clk_init_data init_data;
->> +    u8 ostccr_reg;
->> +};
->> +
->> +struct ingenic_ost_clk {
->> +    struct clk_hw hw;
->> +    unsigned int idx;
->> +    struct ingenic_ost *ost;
->> +    const struct ingenic_ost_clk_info *info;
->> +};
->> +
->> +struct ingenic_ost {
->> +    void __iomem *base;
->> +    const struct ingenic_soc_info *soc_info;
->> +    struct clk *clk, *percpu_timer_clk, *global_timer_clk;
->> +    unsigned int percpu_timer_channel, global_timer_channel;
->> +    struct clock_event_device cevt;
->> +    struct clocksource cs;
->> +    char name[20];
->> +
->> +    struct clk_hw_onecell_data *clocks;
->> +};
->> +
->> +static struct ingenic_ost *ingenic_ost;
->> +
->> +static inline struct ingenic_ost_clk *to_ost_clk(struct clk_hw *hw)
->> +{
->> +    return container_of(hw, struct ingenic_ost_clk, hw);
->> +}
->> +
->> +static unsigned long ingenic_ost_recalc_rate(struct clk_hw *hw,
->> +        unsigned long parent_rate)
->> +{
->> +    struct ingenic_ost_clk *ost_clk = to_ost_clk(hw);
->> +    const struct ingenic_ost_clk_info *info = ost_clk->info;
->> +    unsigned int prescale;
->> +
->> +    prescale = readl(ost_clk->ost->base + info->ostccr_reg);
->> +
->> +    if (ost_clk->idx == OST_CLK_PERCPU_TIMER)
->> +        prescale = (prescale & OSTCCR_PRESCALE1_MASK) >> 
->> OSTCCR_PRESCALE1_LSB;
->> +    else if (ost_clk->idx == OST_CLK_GLOBAL_TIMER)
->> +        prescale = (prescale & OSTCCR_PRESCALE2_MASK) >> 
->> OSTCCR_PRESCALE2_LSB;
->
-> Instead of checking which clock you're manipulating here, just set a 
-> different .recalc_rate to the two clocks.
->
-
-Sure.
-
-
->> +
->> +    return parent_rate >> (prescale * 2);
->> +}
->> +
->> +static u8 ingenic_ost_get_prescale(unsigned long rate, unsigned long 
->> req_rate)
->> +{
->> +    u8 prescale;
->> +
->> +    for (prescale = 0; prescale < 2; prescale++)
->> +        if ((rate >> (prescale * 2)) <= req_rate)
->> +            return prescale;
->> +
->> +    return 2; /* /16 divider */
->> +}
->> +
->> +static long ingenic_ost_round_rate(struct clk_hw *hw, unsigned long 
->> req_rate,
->> +        unsigned long *parent_rate)
->> +{
->> +    unsigned long rate = *parent_rate;
->> +    u8 prescale;
->> +
->> +    if (req_rate > rate)
->> +        return rate;
->> +
->> +    prescale = ingenic_ost_get_prescale(rate, req_rate);
->> +
->> +    return rate >> (prescale * 2);
->> +}
->> +
->> +static int ingenic_ost_set_rate(struct clk_hw *hw, unsigned long 
->> req_rate,
->> +        unsigned long parent_rate)
->> +{
->> +    struct ingenic_ost_clk *ost_clk = to_ost_clk(hw);
->> +    const struct ingenic_ost_clk_info *info = ost_clk->info;
->> +    u8 prescale = ingenic_ost_get_prescale(parent_rate, req_rate);
->> +    int val;
->> +
->> +    if (ost_clk->idx == OST_CLK_PERCPU_TIMER) {
->> +        val = readl(ost_clk->ost->base + info->ostccr_reg);
->> +        val = (val & ~OSTCCR_PRESCALE1_MASK) | (prescale << 
->> OSTCCR_PRESCALE1_LSB);
->> +        writel(val, ost_clk->ost->base + info->ostccr_reg);
->> +    } else if (ost_clk->idx == OST_CLK_GLOBAL_TIMER) {
->> +        val = readl(ost_clk->ost->base + info->ostccr_reg);
->> +        val = (val & ~OSTCCR_PRESCALE2_MASK) | (prescale << 
->> OSTCCR_PRESCALE2_LSB);
->> +        writel(val, ost_clk->ost->base + info->ostccr_reg);
->> +    }
->
-> Same here - set a different .set_rate() callback to the two clocks.
->
-
-Sure.
-
-
->> +
->> +    return 0;
->> +}
->> +
->> +static const struct clk_ops ingenic_ost_clk_ops = {
->> +    .recalc_rate    = ingenic_ost_recalc_rate,
->> +    .round_rate    = ingenic_ost_round_rate,
->> +    .set_rate    = ingenic_ost_set_rate,
->> +};
->> +
->> +static const char * const ingenic_ost_clk_parents[] = {
->> +    [OST_PARENT_EXT]  = "ext",
->> +};
->
-> just { "ext" } will be fine, no need to specify the index, which is 
-> zero anyway. Then you can drop the ost_clock_parent enum.
->
-
-OK.
-
-
->> +
->> +#define DEF_TIMER(_name, _ostccr) { \
->> +    .init_data = { \
->> +        .name = _name, \
->> +        .parent_names = ingenic_ost_clk_parents, \
->> +        .num_parents = ARRAY_SIZE(ingenic_ost_clk_parents), \
->> +        .ops = &ingenic_ost_clk_ops, \
->> +        .flags = CLK_SET_RATE_UNGATE, \
->> +    }, \
->> +    .ostccr_reg = _ostccr, \
->> +}
->> +
->> +static const struct ingenic_ost_clk_info ingenic_ost_clk_info[] = {
->> +    [OST_CLK_PERCPU_TIMER] = DEF_TIMER("percpu timer", OST_REG_OSTCCR),
->> +    [OST_CLK_GLOBAL_TIMER] = DEF_TIMER("global timer", OST_REG_OSTCCR),
->> +};
->> +
->> +#undef DEF_TIMER
->> +
->> +static u64 notrace ingenic_ost_global_timer_read_cntl(void)
->> +{
->> +    struct ingenic_ost *ost = ingenic_ost;
->> +    unsigned int count;
->> +
->> +    count = readl(ost->base + OST_REG_OST2CNTL);
->> +
->> +    return count;
->> +}
->> +
->> +static u64 notrace ingenic_ost_clocksource_read(struct clocksource *cs)
->> +{
->> +    return ingenic_ost_global_timer_read_cntl();
->> +}
->> +
->> +static inline struct ingenic_ost *to_ingenic_ost(struct 
->> clock_event_device *evt)
->> +{
->> +    return container_of(evt, struct ingenic_ost, cevt);
->> +}
->> +
->> +static int ingenic_ost_cevt_set_state_shutdown(struct 
->> clock_event_device *evt)
->> +{
->> +    struct ingenic_ost *ost = to_ingenic_ost(evt);
->> +
->> +    writel(OSTECR_OST1ENC, ost->base + OST_REG_OSTECR);
->> +
->> +    return 0;
->> +}
->> +
->> +static int ingenic_ost_cevt_set_next(unsigned long next,
->> +                     struct clock_event_device *evt)
->> +{
->> +    struct ingenic_ost *ost = to_ingenic_ost(evt);
->> +
->> +    writel((u32)~OSTFR_FFLAG, ost->base + OST_REG_OSTFR);
->> +    writel(next, ost->base + OST_REG_OST1DFR);
->> +    writel(OSTCR_OST1CLR, ost->base + OST_REG_OSTCR);
->> +    writel(OSTESR_OST1ENS, ost->base + OST_REG_OSTESR);
->> +    writel((u32)~OSTMR_FMASK, ost->base + OST_REG_OSTMR);
->> +
->> +    return 0;
->> +}
->> +
->> +static irqreturn_t ingenic_ost_cevt_cb(int irq, void *dev_id)
->> +{
->> +    struct clock_event_device *evt = dev_id;
->> +    struct ingenic_ost *ost = to_ingenic_ost(evt);
->> +
->> +    writel(OSTECR_OST1ENC, ost->base + OST_REG_OSTECR);
->> +
->> +    if (evt->event_handler)
->> +        evt->event_handler(evt);
->> +
->> +    return IRQ_HANDLED;
->> +}
->> +
->> +static int __init ingenic_ost_register_clock(struct ingenic_ost *ost,
->> +            unsigned int idx, const struct ingenic_ost_clk_info *info,
->> +            struct clk_hw_onecell_data *clocks)
->> +{
->> +    struct ingenic_ost_clk *ost_clk;
->> +    int val, err;
->> +
->> +    ost_clk = kzalloc(sizeof(*ost_clk), GFP_KERNEL);
->> +    if (!ost_clk)
->> +        return -ENOMEM;
->> +
->> +    ost_clk->hw.init = &info->init_data;
->> +    ost_clk->idx = idx;
->> +    ost_clk->info = info;
->> +    ost_clk->ost = ost;
->> +
->> +    /* Reset clock divider */
->> +    val = readl(ost->base + info->ostccr_reg);
->> +    val &= ~(OSTCCR_PRESCALE1_MASK | OSTCCR_PRESCALE2_MASK);
->> +    writel(val, ost->base + info->ostccr_reg);
->> +
->> +    err = clk_hw_register(NULL, &ost_clk->hw);
->> +    if (err) {
->> +        kfree(ost_clk);
->> +        return err;
->> +    }
->> +
->> +    clocks->hws[idx] = &ost_clk->hw;
->> +
->> +    return 0;
->> +}
->> +
->> +static struct clk * __init ingenic_ost_get_clock(struct device_node 
->> *np, int id)
->> +{
->> +    struct of_phandle_args args;
->> +
->> +    args.np = np;
->> +    args.args_count = 1;
->> +    args.args[0] = id;
->> +
->> +    return of_clk_get_from_provider(&args);
->> +}
->> +
->> +static int __init ingenic_ost_percpu_timer_init(struct device_node *np,
->> +                     struct ingenic_ost *ost)
->> +{
->> +    unsigned int timer_virq, channel = ost->percpu_timer_channel;
->> +    unsigned long rate;
->> +    int err;
->> +
->> +    ost->percpu_timer_clk = ingenic_ost_get_clock(np, channel);
->> +    if (IS_ERR(ost->percpu_timer_clk))
->> +        return PTR_ERR(ost->percpu_timer_clk);
->> +
->> +    err = clk_prepare_enable(ost->percpu_timer_clk);
->> +    if (err)
->> +        goto err_clk_put;
->> +
->> +    rate = clk_get_rate(ost->percpu_timer_clk);
->> +    if (!rate) {
->> +        err = -EINVAL;
->> +        goto err_clk_disable;
->> +    }
->> +
->> +    timer_virq = of_irq_get(np, 0);
->> +    if (!timer_virq) {
->> +        err = -EINVAL;
->> +        goto err_clk_disable;
->> +    }
->> +
->> +    snprintf(ost->name, sizeof(ost->name), "OST percpu timer");
->> +
->> +    err = request_irq(timer_virq, ingenic_ost_cevt_cb, IRQF_TIMER,
->> +              ost->name, &ost->cevt);
->> +    if (err)
->> +        goto err_irq_dispose_mapping;
->> +
->> +    ost->cevt.cpumask = cpumask_of(smp_processor_id());
->> +    ost->cevt.features = CLOCK_EVT_FEAT_ONESHOT;
->> +    ost->cevt.name = ost->name;
->> +    ost->cevt.rating = 400;
->> +    ost->cevt.set_state_shutdown = ingenic_ost_cevt_set_state_shutdown;
->> +    ost->cevt.set_next_event = ingenic_ost_cevt_set_next;
->> +
->> +    clockevents_config_and_register(&ost->cevt, rate, 4, 0xffffffff);
->> +
->> +    return 0;
->> +
->> +err_irq_dispose_mapping:
->> +    irq_dispose_mapping(timer_virq);
->> +err_clk_disable:
->> +    clk_disable_unprepare(ost->percpu_timer_clk);
->> +err_clk_put:
->> +    clk_put(ost->percpu_timer_clk);
->> +    return err;
->> +}
->> +
->> +static int __init ingenic_ost_global_timer_init(struct device_node *np,
->> +                           struct ingenic_ost *ost)
->> +{
->> +    unsigned int channel = ost->global_timer_channel;
->> +    struct clocksource *cs = &ost->cs;
->> +    unsigned long rate;
->> +    int err;
->> +
->> +    ost->global_timer_clk = ingenic_ost_get_clock(np, channel);
->> +    if (IS_ERR(ost->global_timer_clk))
->> +        return PTR_ERR(ost->global_timer_clk);
->> +
->> +    err = clk_prepare_enable(ost->global_timer_clk);
->> +    if (err)
->> +        goto err_clk_put;
->> +
->> +    rate = clk_get_rate(ost->global_timer_clk);
->> +    if (!rate) {
->> +        err = -EINVAL;
->> +        goto err_clk_disable;
->> +    }
->> +
->> +    /* Clear counter CNT registers */
->> +    writel(OSTCR_OST2CLR, ost->base + OST_REG_OSTCR);
->> +
->> +    /* Enable OST channel */
->> +    writel(OSTESR_OST2ENS, ost->base + OST_REG_OSTESR);
->> +
->> +    cs->name = "ingenic-ost";
->> +    cs->rating = 400;
->> +    cs->flags = CLOCK_SOURCE_IS_CONTINUOUS;
->> +    cs->mask = CLOCKSOURCE_MASK(32);
->> +    cs->read = ingenic_ost_clocksource_read;
->> +
->> +    err = clocksource_register_hz(cs, rate);
->> +    if (err)
->> +        goto err_clk_disable;
->> +
->> +    return 0;
->> +
->> +err_clk_disable:
->> +    clk_disable_unprepare(ost->global_timer_clk);
->> +err_clk_put:
->> +    clk_put(ost->global_timer_clk);
->> +    return err;
->> +}
->> +
->> +static const struct ingenic_soc_info x1000_soc_info = {
->> +    .num_channels = 2,
->> +};
->> +
->> +static const struct of_device_id __maybe_unused 
->> ingenic_ost_of_match[] __initconst = {
->> +    { .compatible = "ingenic,x1000-ost", .data = &x1000_soc_info, },
->> +    { /* sentinel */ }
->> +};
->> +
->> +static int __init ingenic_ost_probe(struct device_node *np)
->> +{
->> +    const struct of_device_id *id = 
->> of_match_node(ingenic_ost_of_match, np);
->> +    struct ingenic_ost *ost;
->> +    unsigned int i;
->> +    int ret;
->> +
->> +    ost = kzalloc(sizeof(*ost), GFP_KERNEL);
->> +    if (!ost)
->> +        return -ENOMEM;
->> +
->> +    ost->base = of_iomap(np, 0);
->> +    if (IS_ERR(ost->base)) {
->> +        pr_err("%s: Failed to map OST registers\n", __func__);
->> +        ret = PTR_ERR(ost->base);
->> +        goto err_free_ost;
->> +    }
->> +
->> +    ost->clk = of_clk_get_by_name(np, "ost");
->> +    if (IS_ERR(ost->clk)) {
->> +        ret = PTR_ERR(ost->clk);
->> +        pr_crit("%s: Cannot get OST clock\n", __func__);
->> +        goto err_free_ost;
->> +    }
->> +
->> +    ret = clk_prepare_enable(ost->clk);
->> +    if (ret) {
->> +        pr_crit("%s: Unable to enable OST clock\n", __func__);
->> +        goto err_put_clk;
->> +    }
->> +
->> +    ost->soc_info = id->data;
->> +
->> +    ost->clocks = kzalloc(struct_size(ost->clocks, hws, 
->> ost->soc_info->num_channels),
->> +                  GFP_KERNEL);
->> +    if (!ost->clocks) {
->> +        ret = -ENOMEM;
->> +        goto err_clk_disable;
->> +    }
->> +
->> +    ost->clocks->num = ost->soc_info->num_channels;
->> +
->> +    for (i = 0; i < ost->clocks->num; i++) {
->> +        ret = ingenic_ost_register_clock(ost, i, 
->> &ingenic_ost_clk_info[i], ost->clocks);
->> +        if (ret) {
->> +            pr_crit("%s: Cannot register clock %d\n", __func__, i);
->> +            goto err_unregister_ost_clocks;
->> +        }
->> +    }
->> +
->> +    ret = of_clk_add_hw_provider(np, of_clk_hw_onecell_get, 
->> ost->clocks);
->> +    if (ret) {
->> +        pr_crit("%s: Cannot add OF clock provider\n", __func__);
->> +        goto err_unregister_ost_clocks;
->> +    }
->> +
->> +    ost->percpu_timer_channel = OST_CLK_PERCPU_TIMER;
->> +    ost->global_timer_channel = OST_CLK_GLOBAL_TIMER;
->
-> If that's a constant, just use the constant where 
-> 'ost->percpu_timer_channel' and 'ost->global_timer_channel' are used, 
-> I think.
->
-
-Sure.
-
-
->> +
->> +    ingenic_ost = ost;
->> +
->> +    return 0;
->> +
->> +err_unregister_ost_clocks:
->> +    for (i = 0; i < ost->clocks->num; i++)
->> +        if (ost->clocks->hws[i])
->> +            clk_hw_unregister(ost->clocks->hws[i]);
->> +    kfree(ost->clocks);
->> +err_clk_disable:
->> +    clk_disable_unprepare(ost->clk);
->> +err_put_clk:
->> +    clk_put(ost->clk);
->> +err_free_ost:
->> +    kfree(ost);
->> +    return ret;
->> +}
->> +
->> +static int __init ingenic_ost_init(struct device_node *np)
->> +{
->> +    unsigned long rate;
->> +    int ret = ingenic_ost_probe(np);
->
-> Don't call functions in variable declarations - they can be overlooked 
-> easily.
->
-
-OK
-
-
->> +
->> +    if (ret)
->> +        pr_crit("%s: Failed to initialize OST clocks: %d\n", 
->> __func__, ret);
->
-> return ret?
->
-
-I'll add it in the next version.
-
-
->> +
->> +    of_node_clear_flag(np, OF_POPULATED);
->> +
->> +    ret = ingenic_ost_global_timer_init(np, ingenic_ost);
->
-> The 'ingenic_ost' variable is just a dirty workaround for the 
-> sched_clock callback, which does not take any parameter. Avoid using 
-> it here. Make ingenic_ost_probe() return a pointer to your ingenic_ost 
-> instance (and a PTR_ERR() on error), and use that pointer for the rest.
->
-
-Sure.
-
-Thanks and best regards!
-
-
-> Cheers,
-> -Paul
->
->> +    if (ret) {
->> +        pr_crit("%s: Unable to init global timer: %x\n", __func__, 
->> ret);
->> +        goto err_free_ingenic_ost;
->> +    }
->> +
->> +    ret = ingenic_ost_percpu_timer_init(np, ingenic_ost);
->> +    if (ret)
->> +        goto err_ost_global_timer_cleanup;
->> +
->> +    /* Register the sched_clock at the end as there's no way to undo 
->> it */
->> +    rate = clk_get_rate(ingenic_ost->global_timer_clk);
->> +    sched_clock_register(ingenic_ost_global_timer_read_cntl, 32, rate);
->> +
->> +    return 0;
->> +
->> +err_ost_global_timer_cleanup:
->> +    clocksource_unregister(&ingenic_ost->cs);
->> +    clk_disable_unprepare(ingenic_ost->global_timer_clk);
->> +    clk_put(ingenic_ost->global_timer_clk);
->> +err_free_ingenic_ost:
->> +    kfree(ingenic_ost);
->> +    return ret;
->> +}
->> +
->> +TIMER_OF_DECLARE(x1000_ost,  "ingenic,x1000-ost", ingenic_ost_init);
->> -- 
->> 2.11.0
->>
->
+Eric
