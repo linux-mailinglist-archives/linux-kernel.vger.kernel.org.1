@@ -2,246 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8807B21036D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 07:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC02210374
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 07:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgGAFvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 01:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54532 "EHLO
+        id S1726947AbgGAFw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 01:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbgGAFvA (ORCPT
+        with ESMTP id S1726039AbgGAFw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 01:51:00 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5BBC03E979
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 22:51:00 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z2so213806wrp.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 22:51:00 -0700 (PDT)
+        Wed, 1 Jul 2020 01:52:26 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96C7C03E979
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 22:52:26 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id k6so15724855oij.11
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 22:52:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rrsdbtnDHSEEqCjThvhWQtIqv3m+7T/9br2G4plX4Zc=;
-        b=K2zrGl7nEOpmf6z8uDnoMX7D2tfbTThdtS0HdVEwj0ErGb9XJaqYNlHJWq+GY4HvE7
-         Kc2N9afgknGJRm+0xgb0ehJDk8TfjM5A4siUjUUHDY9iR+f1qMzGDovHrV1zb0nuzzZD
-         RPPdSNYnPQjjGkE4BH2TP6+xFPioW8MSrXKYFPHjjObcSgQziy2jRmGMTgEmsBqiBd9a
-         GZu1J0UmhtXShKz+uUxZVag9OsUw7xlwGNtoabQHXitZOK3f4o1JfWgMFqbijdJHjxNe
-         WqF/KP6C7wVH7RYdLSLIK20LD50TA7lQO8EipwM8YM7DPs7/yudJfLGCfxd7Gkz4iJgB
-         Qn9A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RsQWUhxGHI4qfc235hpMf/7Q2ttwpb29HIoPyRwKMMI=;
+        b=HrvEj8+kAfMpIVuEg8rKntHthW5PBJgjWjOHDW/5EwGtEb35gdr9WknU9/JdnzmV2q
+         pq2XxKb+EYL+6wv1yg+ZzhikjN8a+4K1MFRZaVKGwu7qKKybw6SR5dhcVAkEGeYtRU+z
+         HY72d4W/cmjwDoifgZPmGVs3gtw9GEGIBE5t9AlX5ng1gjVCvaiYxhtM6Fo6uAqdNWYW
+         Mfa/ExUkAu1cEtj8IG6szT3aHy2m3sfydr687Ek1QhhxU6WbS7aCbPDd/CTRbU10b2kO
+         BgTGwTgMfWqpfStoYJtBgGVT+y1xh2cflHTTdh6S4mBUgHreb3ZGuF66wnnVYDslqb6K
+         NBNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rrsdbtnDHSEEqCjThvhWQtIqv3m+7T/9br2G4plX4Zc=;
-        b=ieMdOkykRk8qRjsfGfH1iZt+4I5hhrII0N1/eflkDwBfQtr5IgcUBhv/36/LZpK78Z
-         ec+x2lgV2JC+QUEikG3icySBfmaNaQN0FYxoTaCccANF6UKq418UWM8AA54q0ICst7Ww
-         y9FangwLqn7VaPTwg/cRkNx8A/STF/nCf0MLO81qckS8NkA/NP+8WNMMvRRH1Iipm0Mg
-         O/+6nFF6ueNwkdVmSBhNZ3XzenoEFRYFHytIxKoCI0g1nXoZu4WznlvEnYpcO9d5A/bu
-         CmmzV3Er+b9zqfJDSIlaBaT/bIo/PHpWBUePDJT1PEUY1xXjoWyGaeLVxZmqCPXP2Fzz
-         UMLA==
-X-Gm-Message-State: AOAM532/RIWqmxRI8tRzDAb6/8qljIYO2uXoxdXFquJoX2UqfWeobwI5
-        eQRXStOmhb/DmsvxfCfcRysdhg==
-X-Google-Smtp-Source: ABdhPJwasB45K4yCXyxCNULMvHcQErc/DDp+uYqd1S+ZRpmt8sqpf2/4dPZq5GLCDaa0s2mUqlTisA==
-X-Received: by 2002:a5d:6786:: with SMTP id v6mr24674578wru.258.1593582658773;
-        Tue, 30 Jun 2020 22:50:58 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:54f4:a99f:ab88:bc07? ([2a01:e34:ed2f:f020:54f4:a99f:ab88:bc07])
-        by smtp.googlemail.com with ESMTPSA id f12sm5949218wrw.53.2020.06.30.22.50.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jun 2020 22:50:58 -0700 (PDT)
-Subject: Re: [PATCH] cpuidle: change enter_s2idle() prototype
-To:     Neal Liu <neal.liu@mediatek.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Len Brown <lenb@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com
-References: <1593421540-7397-1-git-send-email-neal.liu@mediatek.com>
- <1593421540-7397-2-git-send-email-neal.liu@mediatek.com>
- <9963896.lEaLCsxmBZ@kreacher> <1593571181.7383.5.camel@mtkswgap22>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <a65bb456-d5f4-2208-f924-0af989b8dd5f@linaro.org>
-Date:   Wed, 1 Jul 2020 07:50:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RsQWUhxGHI4qfc235hpMf/7Q2ttwpb29HIoPyRwKMMI=;
+        b=mixzmQYjR66nXRgWXJ4P2NAJepuC0oePGaIaEjA+G+752IiYKQFY9tJEs9/jLjTZtb
+         RWC18IvB3p8cXRcD62IVRf5Aax9fVcyCXbmKDgiFppiiJZ7nAxUC2F1xki1kL0m9oGUg
+         cNjS7YfgZ6QCeHEgSvmMzpZMaegawWdwaNa9ow4tVpPM4r5m74ywqpG2YqGR45z/WkxX
+         g9IO9m4TD33LUDOepCJJOzJLtv/5LfcuEjeSFDRoDPzzDoiPPF0/wVRw9CkQe4hINSoc
+         mstKZmjpMJ47JWXr7U1zhui+CLDDKJ6EeVRC2gvbgHfA1Tk2LOLKdiNR5PdCLiZm+FUx
+         bqTw==
+X-Gm-Message-State: AOAM532MvOOFkn4TL+jSoIIaitOvTPAf2cqaOPKlrGdAOehX1yEO3SeV
+        hy+uTY1uvNs2zUhIc0nGAcmd2LJ8Pv8I4fAcrJeUEw==
+X-Google-Smtp-Source: ABdhPJz7ANpdueEAdE+f31hXBrnPSYVTZC7iD2Dj5fjYx9dxzyDA682ZXvad81d0C1UdShsUEVoVgf9jCNdpgGi5WWs=
+X-Received: by 2002:a05:6808:3ab:: with SMTP id n11mr13900356oie.121.1593582745833;
+ Tue, 30 Jun 2020 22:52:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1593571181.7383.5.camel@mtkswgap22>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200701113448.3119f64f@canb.auug.org.au>
+In-Reply-To: <20200701113448.3119f64f@canb.auug.org.au>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 1 Jul 2020 07:52:14 +0200
+Message-ID: <CANpmjNMz0rtC7AnXUnZKfg+egqqQ3BKPznsWUdEqJQDLTgAaAQ@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the rcu tree with the kbuild tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/07/2020 04:39, Neal Liu wrote:
-> On Mon, 2020-06-29 at 17:17 +0200, Rafael J. Wysocki wrote:
->> On Monday, June 29, 2020 11:05:40 AM CEST Neal Liu wrote:
->>> Control Flow Integrity(CFI) is a security mechanism that disallows
->>> changes to the original control flow graph of a compiled binary,
->>> making it significantly harder to perform such attacks.
->>>
->>> init_state_node() assigns same function pointer to idle_state->enter
->>> and idle_state->enter_s2idle. This definitely causes CFI failure
->>> when calling either enter() or enter_s2idle().
->>>
->>> Align enter_s2idle() with enter() function prototype to fix CFI
->>> failure.
->>
->> That needs to be documented somewhere close to the definition of the
->> callbacks in question.
->>
->> Otherwise it is completely unclear why this is a good idea.
->>
-> 
-> The problem is, init_state_mode() assign same function callback to
-> different function pointer declarations.
-> 
-> static int init_state_node(struct cpuidle_state *idle_state,
->                            const struct of_device_id *matches,
->                            struct device_node *state_node)
-> {
-> ...
->         idle_state->enter = match_id->data;
-> ...
->         idle_state->enter_s2idle = match_id->data;
-> }
-> 
-> Function declarations:
-> 
-> struct cpuidle_state {
-> ...
->         int (*enter)    (struct cpuidle_device *dev,
->                         struct cpuidle_driver *drv,
->                         int index);
-> 
->         void (*enter_s2idle) (struct cpuidle_device *dev,
->                               struct cpuidle_driver *drv,
->                               int index);
-> };
-> 
-> In this case, either enter() or enter_s2idle() would cause CFI check
-> failed since they use same callee.
-> 
-> We try to align function prototype of enter() since it needs return
-> value for some use cases. The return value of enter_s2idle() is no need
-> currently.
+On Wed, 1 Jul 2020 at 03:34, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Today's linux-next merge of the rcu tree got a conflict in:
+>
+>   kernel/kcsan/Makefile
+>
+> between commit:
+>
+>   f7c28e224da6 ("kbuild: remove cc-option test of -fno-stack-protector")
 
-Thanks for the clarification, you may add this description along with
-the changelog.
+Is it possible that this patch drops the KCSAN portion? The patch
+"kcsan: Simplify compiler flags" does the same, but is part of a
+future pull request intended for 5.9.
 
+The KCSAN changes had been in -next for well over a week. Also, I'm
+sorry I hadn't seen your patch before, otherwise I would have noticed
+this.
 
->>> Signed-off-by: Neal Liu <neal.liu@mediatek.com>
->>> ---
->>>  drivers/acpi/processor_idle.c   |    6 ++++--
->>>  drivers/cpuidle/cpuidle-tegra.c |    8 +++++---
->>>  drivers/idle/intel_idle.c       |    6 ++++--
->>>  include/linux/cpuidle.h         |    6 +++---
->>>  4 files changed, 16 insertions(+), 10 deletions(-)
->>>
->>> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
->>> index 75534c5..6ffb6c9 100644
->>> --- a/drivers/acpi/processor_idle.c
->>> +++ b/drivers/acpi/processor_idle.c
->>> @@ -655,8 +655,8 @@ static int acpi_idle_enter(struct cpuidle_device *dev,
->>>  	return index;
->>>  }
->>>  
->>> -static void acpi_idle_enter_s2idle(struct cpuidle_device *dev,
->>> -				   struct cpuidle_driver *drv, int index)
->>> +static int acpi_idle_enter_s2idle(struct cpuidle_device *dev,
->>> +				  struct cpuidle_driver *drv, int index)
->>>  {
->>>  	struct acpi_processor_cx *cx = per_cpu(acpi_cstate[index], dev->cpu);
->>>  
->>> @@ -674,6 +674,8 @@ static void acpi_idle_enter_s2idle(struct cpuidle_device *dev,
->>>  		}
->>>  	}
->>>  	acpi_idle_do_entry(cx);
->>> +
->>> +	return 0;
->>>  }
->>>  
->>>  static int acpi_processor_setup_cpuidle_cx(struct acpi_processor *pr,
->>> diff --git a/drivers/cpuidle/cpuidle-tegra.c b/drivers/cpuidle/cpuidle-tegra.c
->>> index 1500458..a12fb14 100644
->>> --- a/drivers/cpuidle/cpuidle-tegra.c
->>> +++ b/drivers/cpuidle/cpuidle-tegra.c
->>> @@ -253,11 +253,13 @@ static int tegra_cpuidle_enter(struct cpuidle_device *dev,
->>>  	return err ? -1 : index;
->>>  }
->>>  
->>> -static void tegra114_enter_s2idle(struct cpuidle_device *dev,
->>> -				  struct cpuidle_driver *drv,
->>> -				  int index)
->>> +static int tegra114_enter_s2idle(struct cpuidle_device *dev,
->>> +				 struct cpuidle_driver *drv,
->>> +				 int index)
->>>  {
->>>  	tegra_cpuidle_enter(dev, drv, index);
->>> +
->>> +	return 0;
->>>  }
->>>  
->>>  /*
->>> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
->>> index f449584..b178da3 100644
->>> --- a/drivers/idle/intel_idle.c
->>> +++ b/drivers/idle/intel_idle.c
->>> @@ -175,13 +175,15 @@ static __cpuidle int intel_idle(struct cpuidle_device *dev,
->>>   * Invoked as a suspend-to-idle callback routine with frozen user space, frozen
->>>   * scheduler tick and suspended scheduler clock on the target CPU.
->>>   */
->>> -static __cpuidle void intel_idle_s2idle(struct cpuidle_device *dev,
->>> -					struct cpuidle_driver *drv, int index)
->>> +static __cpuidle int intel_idle_s2idle(struct cpuidle_device *dev,
->>> +				       struct cpuidle_driver *drv, int index)
->>>  {
->>>  	unsigned long eax = flg2MWAIT(drv->states[index].flags);
->>>  	unsigned long ecx = 1; /* break on interrupt flag */
->>>  
->>>  	mwait_idle_with_hints(eax, ecx);
->>> +
->>> +	return 0;
->>>  }
->>>  
->>>  /*
->>> diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
->>> index ec2ef63..bee10c0 100644
->>> --- a/include/linux/cpuidle.h
->>> +++ b/include/linux/cpuidle.h
->>> @@ -66,9 +66,9 @@ struct cpuidle_state {
->>>  	 * suspended, so it must not re-enable interrupts at any point (even
->>>  	 * temporarily) or attempt to change states of clock event devices.
->>>  	 */
->>> -	void (*enter_s2idle) (struct cpuidle_device *dev,
->>> -			      struct cpuidle_driver *drv,
->>> -			      int index);
->>> +	int (*enter_s2idle)(struct cpuidle_device *dev,
->>> +			    struct cpuidle_driver *drv,
->>> +			    int index);
->>>  };
->>>  
->>>  /* Idle State Flags */
->>> -- 
->>> 1.7.9.5
->>>
->>
->>
->>
->>
-> 
+Please see: https://lkml.kernel.org/r/20200624190236.GA6603@paulmck-ThinkPad-P72
 
+> from the kbuild tree and commits:
+>
+>   2839a232071f ("kcsan: Simplify compiler flags")
+>   61d56d7aa5ec ("kcsan: Disable branch tracing in core runtime")
+>
+> from the rcu tree.
+>
+> I fixed it up (I just used the rcu tree version) and can carry the fix
+> as necessary. This is now fixed as far as linux-next is concerned, but
+> any non trivial conflicts should be mentioned to your upstream maintainer
+> when your tree is submitted for merging.  You may also want to consider
+> cooperating with the maintainer of the conflicting tree to minimise any
+> particularly complex conflicts.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Thank you!
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Thanks,
+-- Marco
