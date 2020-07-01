@@ -2,130 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191F1210F51
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B55210F37
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732031AbgGAPad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 11:30:33 -0400
-Received: from mail-db8eur05on2067.outbound.protection.outlook.com ([40.107.20.67]:6113
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731820AbgGAPac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 11:30:32 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IwC9TTRqQ/gOfMMGaPAvLrfTMOatguwEhho++ZfPyLMJQm2Sz0s2Lk3AnzQ2Yzle1AUHQkiGczlRfgSsdFYzUYSD8+C6IBj0FmSFG5W+mHmzl2gJXS47j9JUyhzcq52nCTvnDEjaHh1u+MgFORlpKuIKm10jFS5siHyCXD1OZTQM1f+/M71G5xqyPI7VVVe/F713sUOJ4oD+PM9hN48SJYh68+1MzgKB3V8FNn4Z6ZpqGPQ+KLjMEhvR3V5ma6SfdV24cJi4ktF4uIFuY5d9A9MRqh334yKfYYUHFjfqoo9HtkqyYKYGF8Xn9FhyArdfxLeWoDcxGgD8/HorGhSOOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4oerlB0f/hTQ+AOat22RZAgZDQ6cSBmhnVxX1cmjwRQ=;
- b=bTRcSuzV4984OsEnT91tFduml8MkEzih/60kV8lDf9ipBqHzhwuyB0EbFITfcuY+x7lrKDS1XQ0eAQCPx54iLGejvG+P2jOTZFRsvVbkGQhIMTeksQWu3deEKybMvPpxBwFMslR0KbxuohgrsUls7v+fYmbmK16CnLy7zTpMvcrX89bhkRKMSk1GeIjIq/PW5XA9BMO/ui/Ovz1iRikmmVUiTfKezfSPv3M3vG9JH9KjPe/tEH36zG2RiGbyg3H9a/eGwIv/K4u0oFe2F1nQ0JCviaKfLGnfIUKDIerV9m25qFoSwXqJ1wxCoIY0nK4XSo8UwcssreWlEkkaUmITuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4oerlB0f/hTQ+AOat22RZAgZDQ6cSBmhnVxX1cmjwRQ=;
- b=rWr76HpwoKW5/gJLcvRH11PH0LbgxhZbX4I+z+duY5a0MkTtm9aHjfwwzs7+y1GcqtNKviCavftGD8diC6CWRIwOnEj0SaraZMx/i64NeF4k745NJQUo9HAfL9qTbDvwVHga1fua6BhTSiL4MlrYVW/QvVZYJqFsqBsBppUqMag=
-Received: from HE1PR0402MB3612.eurprd04.prod.outlook.com (2603:10a6:7:7f::14)
- by HE1PR04MB3129.eurprd04.prod.outlook.com (2603:10a6:7:19::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21; Wed, 1 Jul
- 2020 15:30:27 +0000
-Received: from HE1PR0402MB3612.eurprd04.prod.outlook.com
- ([fe80::d0ff:37b5:f9b5:352b]) by HE1PR0402MB3612.eurprd04.prod.outlook.com
- ([fe80::d0ff:37b5:f9b5:352b%4]) with mapi id 15.20.3131.028; Wed, 1 Jul 2020
- 15:30:27 +0000
-From:   Andy Duan <fugang.duan@nxp.com>
-To:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>
-CC:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: RE: [EXT] Re: [PATCH v4 2/2] ARM: imx6plus: enable internal routing
- of clk_enet_ref where possible
-Thread-Topic: [EXT] Re: [PATCH v4 2/2] ARM: imx6plus: enable internal routing
- of clk_enet_ref where possible
-Thread-Index: AQHWThag/tmWe004ek+eXrutuxE1fajvmZEAgAAMoQCAAAM9gIABCdjwgACVb4CAAMUk8IAACGSAgAAAgUCAAAESgIAAqXeAgAATtYA=
-Date:   Wed, 1 Jul 2020 15:30:27 +0000
-Message-ID: <HE1PR0402MB3612B2111833521E571DC207FF6C0@HE1PR0402MB3612.eurprd04.prod.outlook.com>
-References: <20200625140105.14999-1-TheSven73@gmail.com>
- <20200625140105.14999-2-TheSven73@gmail.com>
- <CAOMZO5AWiHWSLAcd=dj9dDFj8jLPAVAuoiOAJ8qKGPwRq1Q41g@mail.gmail.com>
- <CAGngYiXJy4ASTNfT+R+qzJ3wA=Wy2h6XZm+8oo09sD+Jmse02w@mail.gmail.com>
- <CAOMZO5Cr3k+oy_Sf0kL9gge7bwqkvJR8BQhY-FvxVXN00A2ARw@mail.gmail.com>
- <CAGngYiW=Pc_QjsjCv4Pc_R9OZk7nOAKm=k=b4TMbYRZ-08zKrQ@mail.gmail.com>
- <AM6PR0402MB36077C422DABCB4F2EA650A0FF6F0@AM6PR0402MB3607.eurprd04.prod.outlook.com>
- <CAGngYiV9HqxSLV=PCPg10vqVC-SaayF5wakcWs2gBbXxgcUEPQ@mail.gmail.com>
- <AM6PR0402MB3607986330B844B161E271FAFF6C0@AM6PR0402MB3607.eurprd04.prod.outlook.com>
- <CAOMZO5B-XVaZ-t2T7UBdCqqde3bJREiQhR71ET8p=9EHJ-DQbA@mail.gmail.com>
- <AM6PR0402MB360717519B42A48A754691C8FF6C0@AM6PR0402MB3607.eurprd04.prod.outlook.com>
- <CAOMZO5CZMBeSY=0sa39wJsZpaCqWeCb4-HG4jjXO5pGeW64azg@mail.gmail.com>
- <CAGngYiWV93yWY-mWM-1YcRU71iWnP=qsLSD6Z5dZkz=Zb+iqRA@mail.gmail.com>
-In-Reply-To: <CAGngYiWV93yWY-mWM-1YcRU71iWnP=qsLSD6Z5dZkz=Zb+iqRA@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.68]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: d25cddab-fa33-4fd7-a25b-08d81dd3aeae
-x-ms-traffictypediagnostic: HE1PR04MB3129:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HE1PR04MB31291DB39BE55F28F2296C35FF6C0@HE1PR04MB3129.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 04519BA941
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: uwGIgjM2fUk+0DDCZtsif08JVqmT4yfkhhB8S6GhTwSncg8d6Qx79BwBMdyUFFmJcJ0WoBqU7A8i9PeeKEeyP1Ix87cDppIF/Dbxw9Xs883NpJpfNUXQ8gQLZBdVyhkXSD6p30oP/wQdZ18xqy05NlVZo9ScP809J3Lm0eOTBTg23d7kwkrYQaj6IDs8s8BS/SQ1e38/sQVzC+nhxyNmERkL2FVla+X/sdQlwOkwHbqdTL27MgENQ76QBHSSuzC3ThamZ6hzVxJSJAeQpEL8468exuMC0WrxPwSD1x341GKW9KPGnhb9P3nHHQkCG4fvquXnfRCQml6Lq+Ll4V0xF/ZiRGitipFXcWiFsbwkE0TpXo/SuE3Ka+D4eVkZczTc
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3612.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(39860400002)(396003)(366004)(136003)(52536014)(2906002)(9686003)(26005)(7696005)(186003)(83380400001)(6506007)(71200400001)(316002)(110136005)(5660300002)(33656002)(86362001)(4326008)(8676002)(54906003)(66946007)(66476007)(478600001)(66556008)(76116006)(66446008)(8936002)(64756008)(55016002)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: V+9V/Ix29SpG5aXgJaVPn1/U20pmvgfWF0srSxg69aGZpQgBqoYTWd0wsfDypkg81HfU7RL3XwOag+M9VCQWXKeeD56HH00I+qlicMXW4eCemGhqVGYM8S61QMRMEOOcdma10w+LzzoBRGYO3SkUb5Ky0HGL5PZvWvyGOaWzSsmiwTGAyjhWD5+TwVIIVhNhHDtp+uDdByd6vOChIyZZ5COnlEOzIP7kurYq3kq5mhSGLkHJEzAJAs5bWg9zZ0qDqlPlpfUNfZUg1tKJrmeE/3BRxtUYBEdHQMnvV1w9A54yMEUQsYjmBs9l06GENWIcgLA+1PA5aPlf7uYclUmdwK1ZUvrjel8kDS5oSeLvvpexOYU+gbZmXAP1qyQ9ndXpidlVpLwCjCmnkkmlXmcVci+7VwpxDTbInLWhIwT4dohUeGv4i4HPNh6ILbntx4B46ttU7xfQS5uTDK7VYEajRTf/sZZTvOZBHOtChu4JOxfc3ZU8nHTqLl3KjvrEPrmO
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3612.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d25cddab-fa33-4fd7-a25b-08d81dd3aeae
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jul 2020 15:30:27.7611
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mtYYkqBFfg6bMM9DlHxg6UHyekXiVQlbBfM/I5TszkmKekzXqYMBfkuHxkmxMX0WPPcXNTBuRhCJqLCJssQ8XQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR04MB3129
+        id S1732010AbgGAP10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 11:27:26 -0400
+Received: from mga17.intel.com ([192.55.52.151]:54824 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731699AbgGAP1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 11:27:22 -0400
+IronPort-SDR: r2505hZMwyYnvo+d6otDj8S9O1E3fUTRWfXOt9hJ1O9KbiLelMtQgO9WM65N515FxpMWKFaZp7
+ 3o05BdHgClKA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="126699709"
+X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
+   d="scan'208";a="126699709"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 08:27:22 -0700
+IronPort-SDR: BbZkKIDrDvj0xbRPJ6cxlCEN4ZD0go3OVBPLbR2dLuv6KETThK65Qyw5a+2AtJUAU0iKxRexA9
+ jFPwHRga2sDQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
+   d="scan'208";a="295591637"
+Received: from jacob-builder.jf.intel.com ([10.7.199.155])
+  by orsmga002.jf.intel.com with ESMTP; 01 Jul 2020 08:27:22 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: [PATCH v3 0/7] iommu/vt-d: Misc tweaks and fixes for vSVA
+Date:   Wed,  1 Jul 2020 08:33:49 -0700
+Message-Id: <1593617636-79385-1-git-send-email-jacob.jun.pan@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogU3ZlbiBWYW4gQXNicm9lY2sgPHRoZXN2ZW43M0BnbWFpbC5jb20+IFNlbnQ6IFdlZG5l
-c2RheSwgSnVseSAxLCAyMDIwIDk6NTIgUE0NCj4gQW5keSwgRmFiaW8sDQo+IA0KPiBEb2VzIHRo
-ZSBmb2xsb3dpbmcgZGVzY3JpYmUgdGhlIG1haW5saW5lIHNpdHVhdGlvbj8NCj4gUGxlYXNlIGNv
-cnJlY3QgaWYgbm90Lg0KPiANCj4gMS4gaW14NiBldGhlcm5ldCByZWZfY2xrIGNhbiBiZSBnZW5l
-cmF0ZWQgaW50ZXJuYWxseSAoYnkgaW14Nikgb3INCj4gICAgZXh0ZXJuYWxseSAoYnkgUEhZIG9y
-IG9zY2lsbGF0b3Igb24gUENCKSAyLiBpZiBpbnRlcm5hbCwgZmVjJ3MgInB0cCIgY2xvY2sgaW4N
-Cj4gZGV2aWNldHJlZSBzaG91bGQgYmUNCj4gICAgPCZjbGtzIElNWDZRRExfQ0xLX0VORVRfUkVG
-Pg0KPiAzLiBpZiBleHRlcm5hbCwgZmVjJ3MgInB0cCIgY2xvY2sgc2hvdWxkIGJlIHRoYXQgZXh0
-ZXJuYWwgY2xvY2ssDQo+ICAgIHNlZSA4MTBjMGNhODc5MDk4ICgiQVJNOiBpbXg2cTogc3VwcG9y
-dCBwdHAgYW5kIHJtaWkgY2xvY2sgZnJvbSBwYWQiKQ0KPiA0LiBzYWJyZXNkIGRldmljZXRyZWUg
-ZGVzY3JpYmVzICJwdHAiIGNsb2NrIGFzIElNWDZRRExfQ0xLX0VORVRfUkVGLA0KPiAgICBhbHRo
-b3VnaCBpdCdzIGV4dGVybmFsbHkgc3VwcGxpZWQgKGJ5IFBIWSkuIFRoaXMgaXMgaW5jb3JyZWN0
-Lg0KTm8sIHB0cF9jbGsgaXMgdGhlIHNhbWUgYXMgZW5ldF9yZWYsIGl0IG1lYW5zIHB0cCBjbG9j
-ayBzb3VyY2UgZnJvbSBpbnRlcm5hbCBwbGwuDQpTbywgZm9yIGN1cnJlbnQgdXBzdHJlYW0gc3Rh
-dHVzIGZvciBpbXg2cS82ZGwvNnFwLCBwdHAgY2xvY2sgaXMgZnJvbSBpbnRlcm5hbCBwbGwsDQpy
-Z21paSBndHggY2xvY2sgaXMgZnJvbSBwaHkuIA0KDQpGb3IgNnFwLCBzb2MgYWxyZWFkeSBzdXBw
-b3J0IHRvIHJvdXRlIGludGVybmFsIHBsbCB0byByZ21paSBndHggYnkgc2V0dGluZyBncHI1Wzld
-LA0KdGhlIHBhdGNoIGZvcmNlIHRvIHVzZSBpbnRlcm5hbCBwbGwgaW5zdGVhZCBvZiBleHRlcm5h
-bCBjbGsgZnJvbSBwaHkuIEl0IGRvZXNuJ3QNCmJyZWFrIGlteDZxLzZkbC4gQnV0IGFzIEZhYmlv
-J3Mgc2FpZCwgaXQgYnJlYWsgb2xkIDZxcCBzYWJyZXNkIGR0Yi4NCg0KRGlzY3VzcyB3aXRoIEZh
-YmlvLCBhbiBleGlzdGluZyhvbGQpIGR0YiBpbiBtYWlubGluZSBoYXMgdG8gd29yayBpbiBmdXR1
-cmUga2VybmVscywNCndpdGhvdXQgdGhlIG5lZWQgb2YgYmVpbmcgdXBkYXRlZCwgc28gdG8gYWRk
-IGludGVybmFsIHBsbCBzdXBwb3J0IGZvciA2cXAgcmdtaWkgZ3R4LA0KYW5kIG5vdCB0byBicmVh
-ayA2cXAgb2xkIGR0YiwgYWRkIG5ldyBwcm9wZXJ0eSBpcyBvbmUgc29sdXRpb24uDQo=
+Hi Baolu and all,
+
+This is a series to address some of the issues we found in vSVA support.
+Most of the patches deal with exception handling, we also removed some bits
+that are not currently supported.
+
+Many thanks to Kevin Tian's review.
+
+Jacob & Yi
+
+
+Changelog:
+v3
+	- Use pr_err instead of WARN() for invalid user address range (6/7)
+	- Fix logic in PASID selective devTLB flush (3/7)
+
+v2 Address reviews from Baolu
+	- Fixed addr field in devTLB flush (5/7)
+	- Assign address for single page devTLB invalidation (4/7)
+	- Coding style tweaks
+
+
+*** SUBJECT HERE ***
+
+*** BLURB HERE ***
+
+Jacob Pan (4):
+  iommu/vt-d: Remove global page support in devTLB flush
+  iommu/vt-d: Fix PASID devTLB invalidation
+  iommu/vt-d: Warn on out-of-range invalidation address
+  iommu/vt-d: Disable multiple GPASID-dev bind
+
+Liu Yi L (3):
+  iommu/vt-d: Enforce PASID devTLB field mask
+  iommu/vt-d: Handle non-page aligned address
+  iommu/vt-d: Fix devTLB flush for vSVA
+
+ drivers/iommu/intel/dmar.c  | 24 +++++++++++++++++++-----
+ drivers/iommu/intel/iommu.c | 37 ++++++++++++++++++++++---------------
+ drivers/iommu/intel/pasid.c | 11 ++++++++++-
+ drivers/iommu/intel/svm.c   | 22 +++++++++-------------
+ include/linux/intel-iommu.h |  5 ++---
+ 5 files changed, 62 insertions(+), 37 deletions(-)
+
+-- 
+2.7.4
+
