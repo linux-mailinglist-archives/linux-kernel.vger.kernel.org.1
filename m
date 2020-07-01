@@ -2,84 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A576210984
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 12:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324C2210962
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 12:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729928AbgGAKhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 06:37:21 -0400
-Received: from onstation.org ([52.200.56.107]:45296 "EHLO onstation.org"
+        id S1730022AbgGAKbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 06:31:39 -0400
+Received: from vps.xff.cz ([195.181.215.36]:41976 "EHLO vps.xff.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729939AbgGAKhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 06:37:19 -0400
-X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Wed, 01 Jul 2020 06:37:18 EDT
-Received: from localhost (c-98-239-145-235.hsd1.wv.comcast.net [98.239.145.235])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: masneyb)
-        by onstation.org (Postfix) with ESMTPSA id 48FFB3E8F8;
-        Wed,  1 Jul 2020 10:30:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=onstation.org;
-        s=default; t=1593599442;
-        bh=AfMnHuNqEFE1eiUXfPAPZcZ71kvTA3HP878CQfPF7ts=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k/IMfhNWmQ6NBOOlZ3+aH0ZSqT5p2sLBdcXiWAFZevUiEknrJ5Ec1X/PJdCdMmIry
-         qjvlc+VNsWJUYWbD4U70mHL5/SsRJrCUsshAkVFRXdDTckyP7UUI6iRZqiriucny6T
-         F8w3FHpaKymodReo+y62bolSB++U2keyCZlQJg34=
-Date:   Wed, 1 Jul 2020 06:30:41 -0400
-From:   Brian Masney <masneyb@onstation.org>
-To:     Iskren Chernev <iskren.chernev@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        id S1729822AbgGAKbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 06:31:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
+        t=1593599488; bh=DcIwYA7UiV2HZIT74/WIK+hRV/P3BCbOenueqgwjk/o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=H6IDNyTtjqu60WUzYVWz23IzaUHz/Qq14fOs8WY9Jq439fSo8yYsgsSYlJByt0hDa
+         JlzlSPITb/Pwg1J4lrOr7bS1zBpw7PIvkgEIS9dnPlAWz4dLxPYUsC9zpzRTuCDVfs
+         y98wNsXhEPzillpUYTaWK/Af1ECW3nG9xro1dj9Y=
+From:   Ondrej Jirman <megous@megous.com>
+To:     linux-sunxi@googlegroups.com,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
+        Purism Kernel Team <kernel@puri.sm>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Icenowy Zheng <icenowy@aosc.io>
+Cc:     Ondrej Jirman <megous@megous.com>, dri-devel@lists.freedesktop.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 0/7] ARM: dts: qcom: msm8974: klte: Enable some hardware
-Message-ID: <20200701103041.GA3246@onstation.org>
-References: <20200630140912.260294-1-iskren.chernev@gmail.com>
+        linux-arm-kernel@lists.infradead.org,
+        Samuel Holland <samuel@sholland.org>,
+        Martijn Braam <martijn@brixit.nl>, Luca Weiss <luca@z3ntu.xyz>,
+        Bhushan Shah <bshah@kde.org>
+Subject: [PATCH v6 00/13] Add support for PinePhone LCD panel
+Date:   Wed,  1 Jul 2020 12:31:13 +0200
+Message-Id: <20200701103126.1512615-1-megous@megous.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200630140912.260294-1-iskren.chernev@gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Iskren,
+This patchset adds support for the LCD panel of PinePhone.
 
-On Tue, Jun 30, 2020 at 05:09:05PM +0300, Iskren Chernev wrote:
-> Enable support for various hw found on the Samsung Galaxy S5:
-> - touchkey (the two buttons around the home button)
-> - touchscreen
-> - notification led
-> - wifi
-> - external SD card
-> 
-> Please note that for working wifi the correct firmware is needed. Check [1]
-> for links and locations.
-> 
-> Also note, that to actually run a mainline kernel on the klte, you'd need
-> to apply this patch [2]. Any feedback on getting this to run on pure
-> mainline are welcome.
-> 
-> [1] https://gitlab.com/postmarketOS/pmaports/-/blob/master/firmware/firmware-samsung-klte/APKBUILD
-> [2] https://gitlab.com/postmarketOS/linux-postmarketos/-/commit/765f55b248cd3b231af8431fe2f2aeca263b4e4b
+I've tested this on PinePhone 1.0 and 1.2.
 
-Good to see more msm8974 support upstream!
+Please take a look.
 
-Regarding the second patch, that should only be needed in order to
-use the GPU on these devices. I hope that patch won't be needed once
-IOMMU support is added, which is the last major missing piece in order
-to have the GPU working upstream. I posted a RFC patch [3] in January
-but didn't get any suggestions. I suspect some kind of memory corruption
-since the board gets unstable with that patch.
+thank you and regards,
+  Ondrej Jirman
 
-If that hack patch is still needed to use the GPU once IOMMU support is
-in place, then I planned to troubleshoot it further by adding some log
-statements to various probe functions with and without that patch to see
-the probe order between the various subsystems. I suspect the issue is
-that a clock isn't ticking yet.
+Changes in v6:
+- Fixed spacing in yaml
+- Fixed wrong vccio->iovcc supply name in the bindings doc
+- I noticed that the original driver uses a delay of 20ms in the init
+  function to achieve a combined total of 120ms required from post-reset
+  to display_on. I've added a similar delay to xbd599_init, so that
+  xbd599 panel also has the right timing. (patch 9)
+- v5->v6 diff: https://megous.com/dl/tmp/v5-v6.patch
+- Added review/ack tags
+- Learned to run dt_binding_check by myself ;)
 
-[3] https://lore.kernel.org/lkml/20200109002606.35653-1-masneyb@onstation.org/T/#u
+Changes in v5:
+- rewritten on top of rocktech-jh057n00900 driver
+- rocktech-jh057n00900 renamed to st7703 (controller name)
+- converted rocktech-jh057n00900 bindings to yaml and extended for xbd599
 
-Brian
+Changes in v4:
+- use ->type from the mode instead of hardcoding (Samuel)
+- move init_sequence to ->prepare (Samuel)
+- move anti-flicker delay to ->enable, explain it (Samuel)
+- add enter_sleep after display_off (Samuel)
+- drop ->disable (move code to ->unprepare)
+- add ID bytes dumping (Linus)
+  (I can't test it since allwinner DSI driver has a broken
+   dcs_read function, and I didn't manage to fix it.)
+- document magic bytes (Linus)
+- assert reset during powerup
+- cleanup powerup timings according to the datasheet
+
+Changes in v3:
+- Panel driver renamed to the name of the LCD controller
+- Re-organize the driver slightly to more easily support more panels
+  based on the same controller.
+- Add patch to enable the touchscreen to complete the LCD support
+  on PinePhone.
+- Dropped the "DSI fix" patch (the driver seems to work for me without it)
+- Improved brightness levels handling:
+  - PinePhone 1.0 uses default levels generated by the driver
+  - On PinePhone 1.1 duty cycles < 20% lead to black screen, so
+    default levels can't be used. Martijn Braam came up with a
+    list of duty cycle values that lead to perception of linear
+    brigtness level <-> light intensity on PinePhone 1.1
+- There was some feedback on v2 about this being similar to st7701.
+  It's only similar in name. Most of the "user commands" are different,
+  so I opted to keep this in a new driver instead of creating st770x.
+  
+  Anyone who likes to check the differences, here are datasheets:
+
+  - https://megous.com/dl/tmp/ST7703_DS_v01_20160128.pdf
+  - https://megous.com/dl/tmp/ST7701.pdf
+
+Changes in v2:
+- DT Example fix.
+- DT Format fix.
+- Raised copyright info to 2020.
+- Sort panel operation functions.
+- Sort inclusion.
+
+
+-- For phone owners: --
+
+There's an open question on how to set the backlight brightness values
+on post 1.0 revision phone, since lower duty cycles (< 10-20%) lead
+to backlight being black. It would be nice if more people can test
+the various backlight levels on 1.1 and 1.2 revision with this change
+in dts:
+
+       brightness-levels = <0 1000>;
+       num-interpolated-steps = <1000>;
+
+and report at what brightness level the backlight turns on. So far it
+seems this has a wide range. Lowest useable duty cycle for me is ~7%
+on 1.2 and for Martijn ~20% on 1.1.
+
+Icenowy Zheng (2):
+  dt-bindings: vendor-prefixes: Add Xingbangda
+  arm64: dts: sun50i-a64-pinephone: Enable LCD support on PinePhone
+
+Ondrej Jirman (11):
+  dt-bindings: panel: Convert rocktech,jh057n00900 to yaml
+  dt-bindings: panel: Add compatible for Xingbangda XBD599 panel
+  drm/panel: rocktech-jh057n00900: Rename the driver to st7703
+  drm/panel: st7703: Rename functions from jh057n prefix to st7703
+  drm/panel: st7703: Prepare for supporting multiple panels
+  drm/panel: st7703: Move code specific to jh057n closer together
+  drm/panel: st7703: Move generic part of init sequence to enable
+    callback
+  drm/panel: st7703: Add support for Xingbangda XBD599
+  drm/panel: st7703: Enter sleep after display off
+  drm/panel: st7703: Assert reset prior to powering down the regulators
+  arm64: dts: sun50i-a64-pinephone: Add touchscreen support
+
+ .../display/panel/rocktech,jh057n00900.txt    |  23 -
+ .../display/panel/rocktech,jh057n00900.yaml   |  70 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ .../allwinner/sun50i-a64-pinephone-1.1.dts    |  19 +
+ .../dts/allwinner/sun50i-a64-pinephone.dtsi   |  54 ++
+ drivers/gpu/drm/panel/Kconfig                 |  26 +-
+ drivers/gpu/drm/panel/Makefile                |   2 +-
+ .../drm/panel/panel-rocktech-jh057n00900.c    | 424 -----------
+ drivers/gpu/drm/panel/panel-sitronix-st7703.c | 656 ++++++++++++++++++
+ 9 files changed, 815 insertions(+), 461 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/display/panel/rocktech,jh057n00900.txt
+ create mode 100644 Documentation/devicetree/bindings/display/panel/rocktech,jh057n00900.yaml
+ delete mode 100644 drivers/gpu/drm/panel/panel-rocktech-jh057n00900.c
+ create mode 100644 drivers/gpu/drm/panel/panel-sitronix-st7703.c
+
+-- 
+2.27.0
+
