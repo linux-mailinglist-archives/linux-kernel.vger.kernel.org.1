@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B33210630
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60909210656
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728768AbgGAIba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 04:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51372 "EHLO
+        id S1729200AbgGAIdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 04:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726972AbgGAIb1 (ORCPT
+        with ESMTP id S1728737AbgGAIb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 04:31:27 -0400
+        Wed, 1 Jul 2020 04:31:28 -0400
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36474C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 01:31:27 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id b6so22860182wrs.11
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 01:31:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47557C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 01:31:28 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z2so621518wrp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 01:31:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1tAsKayZdJ/bssiKZaLewML1qJ1Qy+lK1MBLKE8UREg=;
-        b=WGwBl4geBrc+K3kpMkjddHi8mQOXOYHez2OeMO/1nSe69kl9CFJDrogQ+X2jqtmwjz
-         QKAfGZVuXsNCsFYOQeihz/8iiePDe3OEREQ1NVZKh4QH+itVGm5OkCZh9PSDZRCmsvKH
-         BEnxBFPRYBHsfbsBYKuU3sV/078LkDChBjEnnoK33yD25YfvZDwPC1YyP7VzUVgvgj5r
-         6GHz4cEtL2PfPX6SeIctGMyHUk3qa7qVT8hDCjehmnj2tj8A+x+CojLLOYsvM2bKWSX+
-         rsYM3LiaAf74WC300Wj+XDC9h2eu7ONYOtzCm39b25+d0lezCxPuHjDjzaDLl6K7SJDB
-         TNPw==
+        bh=0JG9yfk7UsIlwDFN/XvWcoL4qtnzwNOpXg0C3Lo2gcU=;
+        b=SzoFhdpLOAfa+dq6nAlH2oIjixe1LjRVlgsE9YP5IUq1LTn1Wg3758lP7ziz4wGQsA
+         lPXC/oDkOzunW/jveIUlQ0NQTvteC9Tqnvrwi4d173D8K/EWQJChGnESf7SM83C68EpX
+         whIgtkS56BqF4BgPgmxocXPxGOBH+JDiGOlGhP+jzvFiTDpnzbBbGg5VHjrdQVUm5Je2
+         0Hs+7oX3+y/FWNx9YqWczI8KijaFF6tJlzN4n3l0I/qAPdZbVRwcdNuPvWxiVKH3DTfb
+         4kbO1a8zCOs8QfoIrus2+2ZkuUsUcq736NZQibfCiOhA1wL/zs3wx75Way+YIOH2vp7o
+         FEcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1tAsKayZdJ/bssiKZaLewML1qJ1Qy+lK1MBLKE8UREg=;
-        b=NpawZPPWy0lYLLVv+KqcundhZgEJQ4yuz0pIZsK0V6q8MNwi4LPHXCsWY9RULyEm6F
-         urRXLJjcIOZddXp3/YJURLdTXia+gTJO94tIE1ouPEtVfin5GTRtPIXLlOZSQjdPvMqZ
-         wgGP8FONBNhV6+qDk2ORP/SppY6weRn8AtpiXh+hRokMxoEQIji30iC/Zi6rsu0QtLKF
-         n7b29DReW4XMPVXfE+mbNrEZTkjOpDh4tp2A/ex20NzvyPZDQ3W9VcCIMqw4MPmTUF8H
-         cbRmh9N7+EJVdeLo6+auVd/xx2yLdC+xWXhBA2YavGrc7Ub6ozgp9Eu1tgJOg1tHrW2P
-         X14g==
-X-Gm-Message-State: AOAM531mw6yWvkRNxZa42NFTcROozRyP/m+fO0qIiUwwLpDOF3z54a2Q
-        87LqYQUoMdl0UHL4e1K548wuJVHicfo=
-X-Google-Smtp-Source: ABdhPJzSCPGS0H+xVXFPCfjt1UMAK2p08XtbfigKCI6WT1qO9h0OJb0A3m7VB8OYH9gBY3j+TOMFJw==
-X-Received: by 2002:adf:dc90:: with SMTP id r16mr26040034wrj.264.1593592285815;
-        Wed, 01 Jul 2020 01:31:25 -0700 (PDT)
+        bh=0JG9yfk7UsIlwDFN/XvWcoL4qtnzwNOpXg0C3Lo2gcU=;
+        b=jZano3WCjTYCJy+cpJy7KY4JrJULi7dccGDDWxOsRPC8pJ8gvSVb46IXY+hflCJwSY
+         RqKzqVs2LOw7TdzeRuxi7HuQZ8oU51cmVSQUJZi08UH3ShAcgrQHwUJSmY9yETOisBV8
+         MHagec1ACEyv0qXs5yLrr1PnI5Cphq26ly5pnZjEz3a3YblgLeIvmXBg62/HjCLcFDrk
+         JRIwpzhxofUWIcJT4n550BWYkiDOZbWoxx5RDAozXFq1G54748b3ezDJOEpScNsiyjXK
+         5Mngc9zmuTzv0Hjllv4woOAduqdZ+X45RB9BBhyH6hTglDRBD9JxyssalhTpW8q2hoi1
+         5oHg==
+X-Gm-Message-State: AOAM530whUc95EKdxfvx9LyHY+0o2pcUKABvCuMDMxUUlTyz00Qk5rPN
+        ipR5OXcdR+UKETRbJu8D1Rv/+A==
+X-Google-Smtp-Source: ABdhPJw61Z0MEpUm/aZ4J5rbUdsdfOg65yroMNdYQg0nttjPu2TeFqFVE9C6tX31r/UqSt7IaudK5g==
+X-Received: by 2002:adf:f452:: with SMTP id f18mr25483694wrp.78.1593592286991;
+        Wed, 01 Jul 2020 01:31:26 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id 59sm6717816wrj.37.2020.07.01.01.31.24
+        by smtp.gmail.com with ESMTPSA id 59sm6717816wrj.37.2020.07.01.01.31.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 01:31:25 -0700 (PDT)
+        Wed, 01 Jul 2020 01:31:26 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
@@ -55,9 +55,9 @@ Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
         Michael Ruettger <michael@ibmra.de>,
         Frank Haverkamp <haver@linux.ibm.com>,
         Joerg-Stephan Vogt <jsvogt@de.ibm.com>
-Subject: [PATCH v2 01/30] misc: genwqe: card_ddcb: Fix a variety of kerneldoc issues
-Date:   Wed,  1 Jul 2020 09:30:49 +0100
-Message-Id: <20200701083118.45744-2-lee.jones@linaro.org>
+Subject: [PATCH v2 02/30] misc: genwqe: card_sysfs: Demote function/file headers from kerneldoc
+Date:   Wed,  1 Jul 2020 09:30:50 +0100
+Message-Id: <20200701083118.45744-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200701083118.45744-1-lee.jones@linaro.org>
 References: <20200701083118.45744-1-lee.jones@linaro.org>
@@ -68,30 +68,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Including; demoting file header from kerneldoc to standard comment/
-header, adding a variety of missing function argument documentation,
-re-ordering of #defines i.e. not placed between kerneldoc headers
-and the functions they are documenting and re-documenting of changed/
-renamed arguments.
+There has been no attempt to provide documentation for these function's
+arguments, so align with the remainder of the file and just treat
+them as standards function headers.
 
 Fixes the following W=1 kernel build warnings:
 
- drivers/misc/genwqe/card_ddcb.c:83: warning: Function parameter or member 'queue' not described in 'queue_empty'
- drivers/misc/genwqe/card_ddcb.c:262: warning: Excess function parameter 'cd' description in 'RET_DDCB_APPENDED'
- drivers/misc/genwqe/card_ddcb.c:262: warning: Excess function parameter 'queue' description in 'RET_DDCB_APPENDED'
- drivers/misc/genwqe/card_ddcb.c:262: warning: Excess function parameter 'ddcb_no' description in 'RET_DDCB_APPENDED'
- drivers/misc/genwqe/card_ddcb.c:329: warning: Function parameter or member 'req' not described in 'copy_ddcb_results'
- drivers/misc/genwqe/card_ddcb.c:329: warning: Function parameter or member 'ddcb_no' not described in 'copy_ddcb_results'
- drivers/misc/genwqe/card_ddcb.c:364: warning: Function parameter or member 'queue' not described in 'genwqe_check_ddcb_queue'
- drivers/misc/genwqe/card_ddcb.c:565: warning: Function parameter or member 'queue' not described in 'get_next_ddcb'
- drivers/misc/genwqe/card_ddcb.c:565: warning: Function parameter or member 'num' not described in 'get_next_ddcb'
- drivers/misc/genwqe/card_ddcb.c:909: warning: Function parameter or member 'cmd' not described in '__genwqe_execute_raw_ddcb'
- drivers/misc/genwqe/card_ddcb.c:909: warning: Excess function parameter 'req' description in '__genwqe_execute_raw_ddcb'
- drivers/misc/genwqe/card_ddcb.c:972: warning: Function parameter or member 'cd' not described in 'genwqe_next_ddcb_ready'
- drivers/misc/genwqe/card_ddcb.c:1002: warning: Function parameter or member 'cd' not described in 'genwqe_ddcbs_in_flight'
- drivers/misc/genwqe/card_ddcb.c:1181: warning: Function parameter or member 'data' not described in 'genwqe_card_thread'
- drivers/misc/genwqe/card_ddcb.c:1308: warning: Function parameter or member 'cd' not described in 'queue_wake_up_all'
- drivers/misc/genwqe/card_ddcb.c:1333: warning: Function parameter or member 'cd' not described in 'genwqe_finish_queue'
+ drivers/misc/genwqe/card_sysfs.c:32: warning: cannot understand function prototype: 'const char * const genwqe_types[] = '
+ drivers/misc/genwqe/card_sysfs.c:150: warning: Function parameter or member 'dev' not described in 'curr_bitstream_show'
+ drivers/misc/genwqe/card_sysfs.c:150: warning: Function parameter or member 'attr' not described in 'curr_bitstream_show'
+ drivers/misc/genwqe/card_sysfs.c:150: warning: Function parameter or member 'buf' not described in 'curr_bitstream_show'
+ drivers/misc/genwqe/card_sysfs.c:166: warning: Function parameter or member 'dev' not described in 'next_bitstream_show'
+ drivers/misc/genwqe/card_sysfs.c:166: warning: Function parameter or member 'attr' not described in 'next_bitstream_show'
+ drivers/misc/genwqe/card_sysfs.c:166: warning: Function parameter or member 'buf' not described in 'next_bitstream_show'
+ drivers/misc/genwqe/card_sysfs.c:271: warning: Function parameter or member 'kobj' not described in 'genwqe_is_visible'
+ drivers/misc/genwqe/card_sysfs.c:271: warning: Function parameter or member 'attr' not described in 'genwqe_is_visible'
+ drivers/misc/genwqe/card_sysfs.c:271: warning: Function parameter or member 'n' not described in 'genwqe_is_visible'
 
 Cc: Michael Jung <mijung@gmx.net>
 Cc: Michael Ruettger <michael@ibmra.de>
@@ -99,13 +91,13 @@ Cc: Frank Haverkamp <haver@linux.ibm.com>
 Cc: Joerg-Stephan Vogt <jsvogt@de.ibm.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/genwqe/card_ddcb.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ drivers/misc/genwqe/card_sysfs.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/misc/genwqe/card_ddcb.c b/drivers/misc/genwqe/card_ddcb.c
-index 905106579935a..0db4000dedf20 100644
---- a/drivers/misc/genwqe/card_ddcb.c
-+++ b/drivers/misc/genwqe/card_ddcb.c
+diff --git a/drivers/misc/genwqe/card_sysfs.c b/drivers/misc/genwqe/card_sysfs.c
+index 28a3fb1533f70..b2f115602523a 100644
+--- a/drivers/misc/genwqe/card_sysfs.c
++++ b/drivers/misc/genwqe/card_sysfs.c
 @@ -1,5 +1,5 @@
  // SPDX-License-Identifier: GPL-2.0-only
 -/**
@@ -113,105 +105,33 @@ index 905106579935a..0db4000dedf20 100644
   * IBM Accelerator Family 'GenWQE'
   *
   * (C) Copyright IBM Corp. 2013
-@@ -244,10 +244,13 @@ static int ddcb_requ_finished(struct genwqe_dev *cd, struct ddcb_requ *req)
- 		(cd->card_state != GENWQE_CARD_USED);
+@@ -129,7 +129,7 @@ static ssize_t base_clock_show(struct device *dev,
  }
+ static DEVICE_ATTR_RO(base_clock);
  
-+#define RET_DDCB_APPENDED 1
-+#define RET_DDCB_TAPPED   2
- /**
-  * enqueue_ddcb() - Enqueue a DDCB
-  * @cd:         pointer to genwqe device descriptor
-  * @queue:	queue this operation should be done on
-+ * @pddcb:      pointer to ddcb structure
-  * @ddcb_no:    pointer to ddcb number being tapped
+-/**
++/*
+  * curr_bitstream_show() - Show the current bitstream id
   *
-  * Start execution of DDCB by tapping or append to queue via NEXT
-@@ -259,9 +262,6 @@ static int ddcb_requ_finished(struct genwqe_dev *cd, struct ddcb_requ *req)
-  * Return: 1 if new DDCB is appended to previous
-  *         2 if DDCB queue is tapped via register/simulation
-  */
--#define RET_DDCB_APPENDED 1
--#define RET_DDCB_TAPPED   2
--
- static int enqueue_ddcb(struct genwqe_dev *cd, struct ddcb_queue *queue,
- 			struct ddcb *pddcb, int ddcb_no)
- {
-@@ -316,6 +316,8 @@ static int enqueue_ddcb(struct genwqe_dev *cd, struct ddcb_queue *queue,
+  * There is a bug in some old versions of the CPLD which selects the
+@@ -156,7 +156,7 @@ static ssize_t curr_bitstream_show(struct device *dev,
+ }
+ static DEVICE_ATTR_RO(curr_bitstream);
  
- /**
-  * copy_ddcb_results() - Copy output state from real DDCB to request
-+ * @req:        pointer to requsted DDCB parameters
-+ * @ddcb_no:    pointer to ddcb number being tapped
+-/**
++/*
+  * next_bitstream_show() - Show the next activated bitstream
   *
-  * Copy DDCB ASV to request struct. There is no endian
-  * conversion made, since data structure in ASV is still
-@@ -356,6 +358,7 @@ static void copy_ddcb_results(struct ddcb_requ *req, int ddcb_no)
- /**
-  * genwqe_check_ddcb_queue() - Checks DDCB queue for completed work equests.
-  * @cd:         pointer to genwqe device descriptor
-+ * @queue:	queue to be checked
-  *
-  * Return: Number of DDCBs which were finished
-  */
-@@ -553,6 +556,8 @@ int __genwqe_wait_ddcb(struct genwqe_dev *cd, struct ddcb_requ *req)
- /**
-  * get_next_ddcb() - Get next available DDCB
-  * @cd:         pointer to genwqe device descriptor
-+ * @queue:      DDCB queue
-+ * @num:        internal DDCB number
-  *
-  * DDCB's content is completely cleared but presets for PRE and
-  * SEQNUM. This function must only be called when ddcb_lock is held.
-@@ -900,7 +905,7 @@ int __genwqe_enqueue_ddcb(struct genwqe_dev *cd, struct ddcb_requ *req,
- /**
-  * __genwqe_execute_raw_ddcb() - Setup and execute DDCB
-  * @cd:         pointer to genwqe device descriptor
-- * @req:        user provided DDCB request
-+ * @cmd:        user provided DDCB command
-  * @f_flags:    file mode: blocking, non-blocking
-  */
- int __genwqe_execute_raw_ddcb(struct genwqe_dev *cd,
-@@ -965,6 +970,7 @@ int __genwqe_execute_raw_ddcb(struct genwqe_dev *cd,
+  * IO_SLC_CFGREG_SOFTRESET: This register can only be accessed by the PF.
+@@ -260,7 +260,7 @@ static struct attribute *genwqe_normal_attributes[] = {
+ 	NULL,
+ };
  
- /**
-  * genwqe_next_ddcb_ready() - Figure out if the next DDCB is already finished
-+ * @cd:         pointer to genwqe device descriptor
+-/**
++/*
+  * genwqe_is_visible() - Determine if sysfs attribute should be visible or not
   *
-  * We use this as condition for our wait-queue code.
-  */
-@@ -993,6 +999,7 @@ static int genwqe_next_ddcb_ready(struct genwqe_dev *cd)
- 
- /**
-  * genwqe_ddcbs_in_flight() - Check how many DDCBs are in flight
-+ * @cd:         pointer to genwqe device descriptor
-  *
-  * Keep track on the number of DDCBs which ware currently in the
-  * queue. This is needed for statistics as well as conditon if we want
-@@ -1171,6 +1178,7 @@ static irqreturn_t genwqe_vf_isr(int irq, void *dev_id)
- 
- /**
-  * genwqe_card_thread() - Work thread for the DDCB queue
-+ * @data:         pointer to genwqe device descriptor
-  *
-  * The idea is to check if there are DDCBs in processing. If there are
-  * some finished DDCBs, we process them and wakeup the
-@@ -1299,6 +1307,7 @@ int genwqe_setup_service_layer(struct genwqe_dev *cd)
- 
- /**
-  * queue_wake_up_all() - Handles fatal error case
-+ * @cd:         pointer to genwqe device descriptor
-  *
-  * The PCI device got unusable and we have to stop all pending
-  * requests as fast as we can. The code after this must purge the
-@@ -1323,6 +1332,7 @@ static int queue_wake_up_all(struct genwqe_dev *cd)
- 
- /**
-  * genwqe_finish_queue() - Remove any genwqe devices and user-interfaces
-+ * @cd:         pointer to genwqe device descriptor
-  *
-  * Relies on the pre-condition that there are no users of the card
-  * device anymore e.g. with open file-descriptors.
+  * VFs have restricted mmio capabilities, so not all sysfs entries
 -- 
 2.25.1
 
