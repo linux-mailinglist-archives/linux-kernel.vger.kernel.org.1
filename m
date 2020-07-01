@@ -2,218 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73492210473
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 09:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ABC5210468
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 09:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728139AbgGAHFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 03:05:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727969AbgGAHFF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 03:05:05 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C98C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 00:05:04 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id e4so25678874ljn.4
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 00:05:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=dvUBuTvRieomSCqnJCq8xhXaqV0MYHK0mUXKNMYT7fg=;
-        b=ZMNg22jfuWpv9FHjsLcHmAl1n4nnGMwS8YXn4/XRsSjhkWhDqFYthlc8VwYfnobFe0
-         7NuOL1C2Q7Jqn6V/3i/diCS7/6kaFbceDtONervucpWDVCF6dbkXc00DO3C38mIHEYrE
-         /VbI83vtmfp6O43qQMuCpF1QQ5L4jxByWQF0VRuOtxy7AnsLpo/bocETdiSoIttQ7vIO
-         +ApYPvAM2bY6c/KD2nqQ4CIPLNv1na6E6h3XSCayN8ctLqIwCSwcYILnEmJM+Kgr5XtV
-         lWGRls5ON69/6fq31hnDpoVdMOATQlGRk6AA6aVGXZ1cVgiJhNQAkrH4VrYQENoEh73T
-         daog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dvUBuTvRieomSCqnJCq8xhXaqV0MYHK0mUXKNMYT7fg=;
-        b=p7dInz6sQF5HG6AZUZIBLpcYuCwqqw3U12lBO0p+T5GPyGxT7QJX93dPlmef9lF5Il
-         t7mbWzSaB9LrwRYl2gjJpAz/q5kU0CI2yBbn103aHB5vu0Z1RdA7M9nCfYCGzgC+mPKk
-         4qd0iSk4MCTPBDsNZFEhTF5s+pA/y2Wd9zzdKdMWEVUr8BvGlF1I51JXqBgvHsZcQzt8
-         FWKzEAltrZ9zRofjZQEusybP4WcWY4Nf3jC8/XR2uYTTrpLgz3S9hIqric4bGfrGH0Wm
-         b3amIs8moH6qlar8vqivwGgkTrMJC9kfMeg6j50ZWC/Z0MOjoMYaQ+C15k3cyNWbiAWc
-         xWsw==
-X-Gm-Message-State: AOAM532wr/OOB06b8t3M8lz5WWn6HefOpTSmG9HJ3/Ogcm2PJFmnzmUS
-        66VVtMfXeNUn0UQ7W2eXcJJv5tDDHIsrdAa9TOI=
-X-Google-Smtp-Source: ABdhPJwV5n0TyL60rtFVSJgv1WVFA75LA/7Y+Aomb1kRpVO700ihvwguTRmM/eSrsdaAEArhv7jw1+jQLsLPyUdQed8=
-X-Received: by 2002:a2e:8e68:: with SMTP id t8mr5916934ljk.335.1593587103306;
- Wed, 01 Jul 2020 00:05:03 -0700 (PDT)
+        id S1728008AbgGAHDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 03:03:45 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:7470 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726927AbgGAHDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 03:03:44 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49xXJF6R5rz9v1xr;
+        Wed,  1 Jul 2020 09:03:41 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id lJg3lFJH2Aax; Wed,  1 Jul 2020 09:03:41 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49xXJF20wwz9v1xq;
+        Wed,  1 Jul 2020 09:03:41 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C5EB48B7DE;
+        Wed,  1 Jul 2020 09:03:41 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id o-A-Qpkw4yiK; Wed,  1 Jul 2020 09:03:41 +0200 (CEST)
+Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1B87B8B75F;
+        Wed,  1 Jul 2020 09:03:41 +0200 (CEST)
+Subject: Re: [PATCH v2] powerpc/uaccess: Use flexible addressing with
+ __put_user()/__get_user()
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <c2addbd9d76212242d3d8554a2f7ff849fb08b85.1587040754.git.christophe.leroy@c-s.fr>
+ <7b916759-1683-b4df-0d4b-b04b3fcd9a02@csgroup.eu>
+ <878sg6862r.fsf@mpe.ellerman.id.au> <875zb98i5a.fsf@mpe.ellerman.id.au>
+ <311c3471-cad7-72d5-a5e6-04cf892c5e41@csgroup.eu>
+ <20200630163324.GW3598@gate.crashing.org>
+ <f8819fa4-94e3-4bf9-4b60-c57d2804e529@csgroup.eu>
+ <20200630211817.GZ3598@gate.crashing.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <aaf5ac33-cd24-3b82-a034-2fc1d43d443f@csgroup.eu>
+Date:   Wed, 1 Jul 2020 09:05:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <20200630005625.2405062-1-daeho43@gmail.com> <961072bb-4c8f-b01e-666d-1f5e35a8b76d@huawei.com>
-In-Reply-To: <961072bb-4c8f-b01e-666d-1f5e35a8b76d@huawei.com>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Wed, 1 Jul 2020 16:04:52 +0900
-Message-ID: <CACOAw_wQx5wjdWDX_WFebNS42t=wBuSh_k7oQ4v7abBv80SZXw@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH] f2fs: add symbolic link to kobject in sysfs
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200630211817.GZ3598@gate.crashing.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Actually, I want to keep the mount number remaining to the same
-number, even if it's re-mounted.
-Or we need to keep track of the number being increased whenever it's
-remounted. :(
 
-2020=EB=85=84 7=EC=9B=94 1=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 3:36, Ch=
-ao Yu <yuchao0@huawei.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> Hi Daeho,
->
-> On 2020/6/30 8:56, Daeho Jeong wrote:
-> > From: Daeho Jeong <daehojeong@google.com>
-> >
-> > Added a symbolic link to directory of sysfs. It will
-> > create a symbolic link such as "mount_0" and "mount_1" to
-> > each f2fs mount in the order of mounting filesystem. It will
-> > provide easy access to sysfs node even if not knowing the
-> > specific device node name like sda19 and dm-3.
->
-> Just out of curiosity, if we mount/umount as below:
->
-> mount /dev/zram0 /mnt/f2fs0
-> mount /dev/zram1 /mnt/f2fs1
-> umount /mnt/f2fs0
-> mount /dev/zram0 /mnt/f2fs0
->
-> Shouldn't sysfs structure be:
-> mount_2 -> zram0
-> mount_1 -> zram1
-> zram0
-> zram1
->
-> Then we can know zram0 is mounted after zram1?
->
-> However the result shows:
-> mount_0 -> zram0
-> mount_1 -> zram1
-> zram0
-> zram1
->
-> Thanks,
->
-> >
-> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> > ---
-> >  fs/f2fs/f2fs.h  |  4 ++++
-> >  fs/f2fs/sysfs.c | 31 +++++++++++++++++++++++++++----
-> >  2 files changed, 31 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > index 4b28fd42fdbc..7d6c5f8ce16b 100644
-> > --- a/fs/f2fs/f2fs.h
-> > +++ b/fs/f2fs/f2fs.h
-> > @@ -1419,6 +1419,8 @@ struct decompress_io_ctx {
-> >  #define MAX_COMPRESS_LOG_SIZE                8
-> >  #define MAX_COMPRESS_WINDOW_SIZE     ((PAGE_SIZE) << MAX_COMPRESS_LOG_=
-SIZE)
-> >
-> > +#define MOUNT_NAME_SIZE                      20
-> > +
-> >  struct f2fs_sb_info {
-> >       struct super_block *sb;                 /* pointer to VFS super b=
-lock */
-> >       struct proc_dir_entry *s_proc;          /* proc entry */
-> > @@ -1599,6 +1601,8 @@ struct f2fs_sb_info {
-> >       /* For sysfs suppport */
-> >       struct kobject s_kobj;
-> >       struct completion s_kobj_unregister;
-> > +     int s_mount_id;
-> > +     char s_mount_name[MOUNT_NAME_SIZE];
-> >
-> >       /* For shrinker support */
-> >       struct list_head s_list;
-> > diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-> > index ab40e1f89f23..64bbe0b3b830 100644
-> > --- a/fs/f2fs/sysfs.c
-> > +++ b/fs/f2fs/sysfs.c
-> > @@ -18,6 +18,7 @@
-> >  #include <trace/events/f2fs.h>
-> >
-> >  static struct proc_dir_entry *f2fs_proc_root;
-> > +static struct ida f2fs_mount_ida;
-> >
-> >  /* Sysfs support for f2fs */
-> >  enum {
-> > @@ -906,6 +907,9 @@ int __init f2fs_init_sysfs(void)
-> >       } else {
-> >               f2fs_proc_root =3D proc_mkdir("fs/f2fs", NULL);
-> >       }
-> > +
-> > +     ida_init(&f2fs_mount_ida);
-> > +
-> >       return ret;
-> >  }
-> >
-> > @@ -915,6 +919,7 @@ void f2fs_exit_sysfs(void)
-> >       kset_unregister(&f2fs_kset);
-> >       remove_proc_entry("fs/f2fs", NULL);
-> >       f2fs_proc_root =3D NULL;
-> > +     ida_destroy(&f2fs_mount_ida);
-> >  }
-> >
-> >  int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
-> > @@ -926,12 +931,22 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
-> >       init_completion(&sbi->s_kobj_unregister);
-> >       err =3D kobject_init_and_add(&sbi->s_kobj, &f2fs_sb_ktype, NULL,
-> >                               "%s", sb->s_id);
-> > -     if (err) {
-> > -             kobject_put(&sbi->s_kobj);
-> > -             wait_for_completion(&sbi->s_kobj_unregister);
-> > -             return err;
-> > +     if (err)
-> > +             goto err1;
-> > +
-> > +     sbi->s_mount_id =3D ida_simple_get(&f2fs_mount_ida, 0, 0, GFP_KER=
-NEL);
-> > +     if (sbi->s_mount_id < 0) {
-> > +             err =3D sbi->s_mount_id;
-> > +             goto err1;
-> >       }
-> >
-> > +     snprintf(sbi->s_mount_name, MOUNT_NAME_SIZE, "mount_%d",
-> > +                     sbi->s_mount_id);
-> > +     err =3D sysfs_create_link(&f2fs_kset.kobj, &sbi->s_kobj,
-> > +                     sbi->s_mount_name);
-> > +     if (err)
-> > +             goto err2;
-> > +
-> >       if (f2fs_proc_root)
-> >               sbi->s_proc =3D proc_mkdir(sb->s_id, f2fs_proc_root);
-> >
-> > @@ -946,6 +961,12 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
-> >                               victim_bits_seq_show, sb);
-> >       }
-> >       return 0;
-> > +err2:
-> > +     ida_simple_remove(&f2fs_mount_ida, sbi->s_mount_id);
-> > +err1:
-> > +     kobject_put(&sbi->s_kobj);
-> > +     wait_for_completion(&sbi->s_kobj_unregister);
-> > +     return err;
-> >  }
-> >
-> >  void f2fs_unregister_sysfs(struct f2fs_sb_info *sbi)
-> > @@ -957,6 +978,8 @@ void f2fs_unregister_sysfs(struct f2fs_sb_info *sbi=
-)
-> >               remove_proc_entry("victim_bits", sbi->s_proc);
-> >               remove_proc_entry(sbi->sb->s_id, f2fs_proc_root);
-> >       }
-> > +     sysfs_remove_link(&f2fs_kset.kobj, sbi->s_mount_name);
-> > +     ida_simple_remove(&f2fs_mount_ida, sbi->s_mount_id);
-> >       kobject_del(&sbi->s_kobj);
-> >       kobject_put(&sbi->s_kobj);
-> >  }
-> >
+
+Le 30/06/2020 à 23:18, Segher Boessenkool a écrit :
+> Hi again,
+> 
+> Thanks for your work so far!
+> 
+> On Tue, Jun 30, 2020 at 06:53:39PM +0000, Christophe Leroy wrote:
+>> On 06/30/2020 04:33 PM, Segher Boessenkool wrote:
+>>>>> + make -s CC=powerpc64-linux-gnu-gcc -j 160
+>>>>> In file included from /linux/include/linux/uaccess.h:11:0,
+>>>>>                   from /linux/include/linux/sched/task.h:11,
+>>>>>                   from /linux/include/linux/sched/signal.h:9,
+>>>>>                   from /linux/include/linux/rcuwait.h:6,
+>>>>>                   from /linux/include/linux/percpu-rwsem.h:7,
+>>>>>                   from /linux/include/linux/fs.h:33,
+>>>>>                   from /linux/include/linux/huge_mm.h:8,
+>>>>>                   from /linux/include/linux/mm.h:675,
+>>>>>                   from /linux/arch/powerpc/kernel/signal_32.c:17:
+>>>>> /linux/arch/powerpc/kernel/signal_32.c: In function
+>>>>> 'save_user_regs.isra.14.constprop':
+>>>>> /linux/arch/powerpc/include/asm/uaccess.h:161:2: error: 'asm' operand has
+>>>>> impossible constraints
+>>>>>    __asm__ __volatile__(     \
+>>>>>    ^
+>>>>> /linux/arch/powerpc/include/asm/uaccess.h:197:12: note: in expansion of
+>>>>> macro '__put_user_asm'
+>>>>>      case 4: __put_user_asm(x, ptr, retval, "stw"); break; \
+>>>>>              ^
+>>>>> /linux/arch/powerpc/include/asm/uaccess.h:206:2: note: in expansion of
+>>>>> macro '__put_user_size_allowed'
+>>>>>    __put_user_size_allowed(x, ptr, size, retval);  \
+>>>>>    ^
+>>>>> /linux/arch/powerpc/include/asm/uaccess.h:220:2: note: in expansion of
+>>>>> macro '__put_user_size'
+>>>>>    __put_user_size(__pu_val, __pu_addr, __pu_size, __pu_err); \
+>>>>>    ^
+>>>>> /linux/arch/powerpc/include/asm/uaccess.h:96:2: note: in expansion of
+>>>>> macro '__put_user_nocheck'
+>>>>>    __put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
+>>>>>    ^
+>>>>> /linux/arch/powerpc/kernel/signal_32.c:120:7: note: in expansion of macro
+>>>>> '__put_user'
+>>>>>     if (__put_user((unsigned int)gregs[i], &frame->mc_gregs[i]))
+>>>>>         ^
+>>>
+>>> Can we see what that was after the macro jungle?  Like, the actual
+>>> preprocessed code?
+>>
+>> Sorry for previous misunderstanding
+>>
+>> Here is the code:
+>>
+>> #define __put_user_asm(x, addr, err, op)			\
+>> 	__asm__ __volatile__(					\
+>> 		"1:	" op "%U2%X2 %1,%2	# put_user\n"	\
+>> 		"2:\n"						\
+>> 		".section .fixup,\"ax\"\n"			\
+>> 		"3:	li %0,%3\n"				\
+>> 		"	b 2b\n"					\
+>> 		".previous\n"					\
+>> 		EX_TABLE(1b, 3b)				\
+>> 		: "=r" (err)					\
+>> 		: "r" (x), "m<>" (*addr), "i" (-EFAULT), "0" (err))
+> 
+> Yeah I don't see it.  I'll have to look at compiler debug dumps, but I
+> don't have any working 4.9 around, and I cannot reproduce this with
+> either older or newer compilers.
+
+I reproduced it with 4.8.5
+
+> 
+> It is complainig that constrain_operands just does not work *at all* on
+> this "m<>" constraint apparently, which doesn't make much sense.
+> 
+
+Here is a small reproducer:
+
+#include <linux/elf.h>
+#include <linux/ptrace.h>
+#include <linux/uaccess.h>
+
+struct mcontext {
+	elf_gregset_t32		mc_gregs;
+	elf_fpregset_t		mc_fregs;
+	unsigned int		mc_pad[2];
+	elf_vrregset_t32	mc_vregs __attribute__((__aligned__(16)));
+	elf_vsrreghalf_t32      mc_vsregs __attribute__((__aligned__(16)));
+};
+
+int save_general_regs(struct pt_regs *regs, struct mcontext __user *frame)
+{
+	elf_greg_t64 *gregs = (elf_greg_t64 *)regs;
+	int i;
+
+	for (i = 0; i <= PT_RESULT; i ++) {
+		if (i == 14)
+			i = 32;
+		if (__put_user((unsigned int)gregs[i], &frame->mc_gregs[i]))
+			return -EFAULT;
+	}
+	return 0;
+}
+
+
+If you remove the "if i == 14 ..." you get no failure.
+
+Preprocessor result:
+
+int save_general_regs(struct pt_regs *regs, struct mcontext *frame)
+{
+  elf_greg_t64 *gregs = (elf_greg_t64 *)regs;
+  int i;
+
+  for (i = 0; i <= 43; i ++) {
+   if (i == 14)
+    i = 32;
+   if (({ long __pu_err; __typeof__(*((&frame->mc_gregs[i]))) *__pu_addr 
+= ((&frame->mc_gregs[i])); __typeof__(*((&frame->mc_gregs[i]))) __pu_val 
+= ((__typeof__(*(&frame->mc_gregs[i])))((unsigned int)gregs[i])); 
+__typeof__(sizeof(*(&frame->mc_gregs[i]))) __pu_size = 
+(sizeof(*(&frame->mc_gregs[i]))); if (!(((unsigned long)__pu_addr) >= 
+0x8000000000000000ul)) might_fault(); (void)0; do { 
+allow_write_to_user(__pu_addr, __pu_size); do { __pu_err = 0; switch 
+(__pu_size) { case 1: __asm__ __volatile__( "1:	" "stb" "%U2%X2 %1,%2	# 
+put_user\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	li %0,%3\n" "	b 2b\n" 
+".previous\n" ".section __ex_table,\"a\";" " " ".balign 4;" " " ".long 
+(1b) - . ;" " " ".long (3b) - . ;" " " ".previous" " " : "=r" (__pu_err) 
+: "r" (__pu_val), "m<>" (*__pu_addr), "i" (-14), "0" (__pu_err)); break; 
+case 2: __asm__ __volatile__( "1:	" "sth" "%U2%X2 %1,%2	# put_user\n" 
+"2:\n" ".section .fixup,\"ax\"\n" "3:	li %0,%3\n" "	b 2b\n" 
+".previous\n" ".section __ex_table,\"a\";" " " ".balign 4;" " " ".long 
+(1b) - . ;" " " ".long (3b) - . ;" " " ".previous" " " : "=r" (__pu_err) 
+: "r" (__pu_val), "m<>" (*__pu_addr), "i" (-14), "0" (__pu_err)); break; 
+case 4: __asm__ __volatile__( "1:	" "stw" "%U2%X2 %1,%2	# put_user\n" 
+"2:\n" ".section .fixup,\"ax\"\n" "3:	li %0,%3\n" "	b 2b\n" 
+".previous\n" ".section __ex_table,\"a\";" " " ".balign 4;" " " ".long 
+(1b) - . ;" " " ".long (3b) - . ;" " " ".previous" " " : "=r" (__pu_err) 
+: "r" (__pu_val), "m<>" (*__pu_addr), "i" (-14), "0" (__pu_err)); break; 
+case 8: __asm__ __volatile__( "1:	" "std" "%U2%X2 %1,%2	# put_user\n" 
+"2:\n" ".section .fixup,\"ax\"\n" "3:	li %0,%3\n" "	b 2b\n" 
+".previous\n" ".section __ex_table,\"a\";" " " ".balign 4;" " " ".long 
+(1b) - . ;" " " ".long (3b) - . ;" " " ".previous" " " : "=r" (__pu_err) 
+: "r" (__pu_val), "m<>" (*__pu_addr), "i" (-14), "0" (__pu_err)); break; 
+default: __put_user_bad(); } } while (0); 
+prevent_write_to_user(__pu_addr, __pu_size); } while (0); __pu_err; }))
+    return -14;
+  }
+  return 0;
+}
+
+
+Christophe
