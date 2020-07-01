@@ -2,88 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2991E210DFF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 16:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0CC210DDA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 16:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731603AbgGAOsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 10:48:33 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:35710 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726251AbgGAOsa (ORCPT
+        id S1731410AbgGAOhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 10:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730264AbgGAOhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 10:48:30 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 061EaSG0075681;
-        Wed, 1 Jul 2020 09:36:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1593614188;
-        bh=HXEl6HBvdBsKDUGBfUdgQEY4qT6CI4rtQbIO4/KXAPk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=S26mXcSQ4V0OEILlv4buTP+1pgEKq8vr/X5icZ/l8OWB+or/FwwVsoT3hVovYR6t8
-         eFdkfVk5nMEK8xBDC5d9muPjscz9A/qzJKYCgRiYcypr80Qc73RjXVwndBHBXdZLzF
-         AZLcmfPU2tAAxRitVilEH05zAkmE6iGUZABe0YOs=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 061EaSPC036063
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 1 Jul 2020 09:36:28 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 1 Jul
- 2020 09:36:28 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 1 Jul 2020 09:36:28 -0500
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 061EaOFB060819;
-        Wed, 1 Jul 2020 09:36:26 -0500
-Subject: Re: [PATCH 2/2] watchdog: rti: tweak min_hw_heartbeat_ms to match
- initial allowed window
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     Jan Kiszka <jan.kiszka@siemens.com>, <wim@linux-watchdog.org>,
-        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200624114534.1362-1-t-kristo@ti.com>
- <20200624114534.1362-3-t-kristo@ti.com>
- <289c6104-a885-d3c1-c670-a081ebaaf782@siemens.com>
- <b3849bea-2a4d-079e-e9df-8a1d6c13c0c7@ti.com>
- <25bf3ed1-5434-9b45-20ae-e1b2cfc5e5c0@roeck-us.net>
- <1d84e633-b808-d6ac-a34c-9cc4709e43f6@ti.com>
- <20200630202356.GA16412@roeck-us.net>
- <4e9c2731-bf02-1b59-298b-b7f9a0e87d10@ti.com>
- <f9ab8206-a3a2-ec6e-2c7b-92e369c0996a@roeck-us.net>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <24c1c3d3-3ab9-46a5-3eef-ad375aaa8f41@ti.com>
-Date:   Wed, 1 Jul 2020 17:36:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 1 Jul 2020 10:37:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870EBC08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 07:37:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nH8QNwrKlviELTskqf12JsWIRCsmRrJ2DNsTml5Mm7I=; b=KCwg4O7rS7cNj/rqSOCMhTBzNM
+        +yfZI+4K21q2QlZV4+M/xNZo/eHuOkwjYr1EK9Choecy9D9R7fb69hjNKSvMRpKY2vtGQEV9/ydNt
+        1rin8Pi5InBgPm4VeNYCM2G13G/UjsEpZx3v9pH/6wASi1GOwurbCgt4/+pR7rhRmHbB41UOPv4za
+        u0BuuUZkcnS4kdFCv4UdPuS5NCW9PMt+QElM9BtNLV0gUJ4FHA5Q0XAMEv0M+WVf13YjpwQUqLHv8
+        SE7DEgWx15yGq04lbusARK2mMjcJ5LHUseM3QjcJ45efEbBgwAqdfcdQtioodVXVW2pf3h+kTlCHt
+        0m4WfKZQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jqdrh-0001Fx-Sz; Wed, 01 Jul 2020 14:37:34 +0000
+Date:   Wed, 1 Jul 2020 15:37:33 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: alternative to xa_for_each?
+Message-ID: <20200701143733.GR25523@casper.infradead.org>
+References: <20200701060239.GA27121@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <f9ab8206-a3a2-ec6e-2c7b-92e369c0996a@roeck-us.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200701060239.GA27121@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/07/2020 16:34, Guenter Roeck wrote:
-> On 6/30/20 10:50 PM, Tero Kristo wrote:
-> [ ... ]
+On Wed, Jul 01, 2020 at 07:02:39AM +0100, Christoph Hellwig wrote:
+> Hi Matthew,
 > 
->> Hardware supports changing the timeout value, however it only updates this during the next window (preload values are picked once user pings the watchdog.)
->>
-> The current driver doesn't support or use that, though, since the start
-> function is only called once to start the watchdog, and not at all if
-> the watchdog is already running. So, if the bootloader sets the timeout
-> to X, and the user sets a timeout of, say, X * 4, userspace will never
-> ping the watchdog often enough. The driver will have to address that
-> to support already-running watchdogs.
+> I'm just reviewing a patch adding an xarray user, and I'm wondering
+> if we could just replace xa_for_each with a loop on
+> xa_find_after with a magic index to start from the beginning?  That
+> would always seem like more readable code than the magic looping macro.
 
-Yeah, I will modify that. I think I will just prevent changing the 
-timeout if watchdog has been enabled from boot, it is probably cleanest 
-approach. Unless I happen to come up with some sane way to change it on fly.
+The problem is that there is no index we can use for that purpose.
+xa_find_after(0) should return the entry at 1 (or higher).
+xa_find_after(ULONG_MAX) should return NULL.  The xas_ version doesn't
+have this problem because we can distinguish between "first time" and
+"subsequent time" by values in the xa_state.
 
--Tero
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+> And while we're at it:  is there an idiomatic way to get the entry with
+> the highest index?
+
+That's something I need to add.  I think I did it once but then the user
+went away.
