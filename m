@@ -2,202 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754C9211442
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 22:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B296321146A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 22:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgGAUW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 16:22:57 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:37982 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726009AbgGAUW5 (ORCPT
+        id S1726771AbgGAUZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 16:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726049AbgGAUZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 16:22:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593634976; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=9DtYIWXpuLm3hP8kFbvWXOXBuE1hHKm2i8hLKRF2Exg=;
- b=D1LrFsUJUmjhBMj5LwuCTvJLtsRu4jtLh5pLlLcLruPTGqrq5In580z1WXtrhcEpp/dn7fSY
- bDBn4/adqHotMDM1V1NINOx6jQE0/mza4Hm468h2/8Odg0sb4PqOmVLtRHrulaRpLIaYzu6B
- ty7O8aaBuUwdpcp9ualvEjn60H8=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5efcf09c6f2ee827da114fec (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 01 Jul 2020 20:22:52
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4F615C433CA; Wed,  1 Jul 2020 20:22:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 895C3C433C6;
-        Wed,  1 Jul 2020 20:22:51 +0000 (UTC)
+        Wed, 1 Jul 2020 16:25:56 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF408C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 13:25:55 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id d17so14103264ljl.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 13:25:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ksD9QkiHR08Ohmph9dxydHMFrxrcmluqn9uR39dpkfY=;
+        b=D3O/QeKOoId9j6oa3Hw9jrnKy0i1WaeBcGi9fiegINnzMRXt6ngpEAYI/VVFtM6xlj
+         Xvcm4mEza5AiPsYyfUR93FPot5Yh0vJDjuB8u2CBQfYcoiOKIrp4XZB1STOUoW1OBc/8
+         EIlisbBKdCE+vG7AcJo0OU9W6UCzrJvFid23E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ksD9QkiHR08Ohmph9dxydHMFrxrcmluqn9uR39dpkfY=;
+        b=Jeqwgf1hR7R6ytrevLl/QpOLabWFSR9qIOJJ66kyXcSsWXPvaIvWyBRByOAbfO8j0I
+         cnO0sLhorfqxR0wAruy63Hto/HXowQP59O3BW6ppTphbe7+JzE/G51tgU21dqsSapnG+
+         5m2tcl5JWWpDBDdvfMNp+k2yq591Vuw3vTl+7zJYtQEfTHq7NwsaKBUKdofJqQvgSpqH
+         GwDLk7mYiJGHJzD+7pYMNUGNE9b1HHGQBTBKsQ9fGNvs4vc8RxpVUTzwNDuMf/hXOsdl
+         tXsOOuvNgIAzLXjcIphvpXGVwtCeZ+v+0vV1nhgLy96uiPCxCzqAOrzD0EVippXW4w12
+         mBmw==
+X-Gm-Message-State: AOAM530sfsCJ9loo+2aB1Ydej1HEVp7UqBeF7GLUvjf4c22ikYN9JS6R
+        S7bYY0slZNKWURke/+ziwlnvFPEuin0=
+X-Google-Smtp-Source: ABdhPJwCG+mJzzDSE0icKufeiUpQU4pCCPLIeLijvjw3+WgzK5V8eg5NtQX2wQteEJi6RMp3N/Mg8A==
+X-Received: by 2002:a2e:8747:: with SMTP id q7mr13198125ljj.459.1593635153975;
+        Wed, 01 Jul 2020 13:25:53 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id 203sm2188363ljf.14.2020.07.01.13.25.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Jul 2020 13:25:53 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id d17so14103131ljl.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 13:25:52 -0700 (PDT)
+X-Received: by 2002:a2e:9c92:: with SMTP id x18mr9204172lji.70.1593635152418;
+ Wed, 01 Jul 2020 13:25:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 02 Jul 2020 01:52:51 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org, linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH v6 3/3] remoteproc: Add coredump debugfs entry
-In-Reply-To: <1593460933-4262-4-git-send-email-rishabhb@codeaurora.org>
-References: <1593460933-4262-1-git-send-email-rishabhb@codeaurora.org>
- <1593460933-4262-4-git-send-email-rishabhb@codeaurora.org>
-Message-ID: <483d227972b66a86b08d1abd8c396d0a@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <CAHk-=wjc-ktbOr7ZHMY8gfAmHxUK+aMdDsQjeh+BvmQwnQfN_g@mail.gmail.com>
+ <20200701184131.GI2786714@ZenIV.linux.org.uk> <CAHk-=wj_2v9m+yZioE4vOLGW1mc9SBa5+++LdeJ86aEeB5OXcw@mail.gmail.com>
+ <20200701195914.GK2786714@ZenIV.linux.org.uk>
+In-Reply-To: <20200701195914.GK2786714@ZenIV.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 1 Jul 2020 13:25:36 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj-CYhKZR8ZKQgi=VTx=o7n6dtwPXikvgkJ3SdiqRPd8A@mail.gmail.com>
+Message-ID: <CAHk-=wj-CYhKZR8ZKQgi=VTx=o7n6dtwPXikvgkJ3SdiqRPd8A@mail.gmail.com>
+Subject: Re: objtool clac/stac handling change..
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-30 01:32, Rishabh Bhatnagar wrote:
-> Add coredump debugfs entry to configure the type of dump that will
-> be collected during recovery. User can select between default or
-> inline coredump functionality. Also coredump collection can be
-> disabled through this interface.
-> This functionality can be configured differently for different
-> remote processors.
-> 
-> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  drivers/remoteproc/remoteproc_debugfs.c | 86 
-> +++++++++++++++++++++++++++++++++
->  1 file changed, 86 insertions(+)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_debugfs.c
-> b/drivers/remoteproc/remoteproc_debugfs.c
-> index 732770e..cca0a91 100644
-> --- a/drivers/remoteproc/remoteproc_debugfs.c
-> +++ b/drivers/remoteproc/remoteproc_debugfs.c
-> @@ -28,6 +28,90 @@
->  static struct dentry *rproc_dbg;
-> 
->  /*
-> + * A coredump-configuration-to-string lookup table, for exposing a
-> + * human readable configuration via debugfs. Always keep in sync with
-> + * enum rproc_coredump_mechanism
-> + */
-> +static const char * const rproc_coredump_str[] = {
-> +	[RPROC_COREDUMP_DEFAULT]	= "default",
-> +	[RPROC_COREDUMP_INLINE]	= "inline",
-> +	[RPROC_COREDUMP_DISABLED]	= "disabled",
-> +};
-> +
-> +/* Expose the current coredump configuration via debugfs */
-> +static ssize_t rproc_coredump_read(struct file *filp, char __user 
-> *userbuf,
-> +				   size_t count, loff_t *ppos)
-> +{
-> +	struct rproc *rproc = filp->private_data;
-> +	const char *buf = rproc_coredump_str[rproc->dump_conf];
+On Wed, Jul 1, 2020 at 12:59 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Wed, Jul 01, 2020 at 12:04:36PM -0700, Linus Torvalds wrote:
+> >
+> > That's actually for the access granting. Shutting the access down ends
+> > up always doing the same thing anyway..
+>
+> #define user_read_access_end            prevent_current_read_from_user
+> #define user_write_access_end           prevent_current_write_to_user
+> static inline void prevent_current_read_from_user(void)
+> {
+>         prevent_user_access(NULL, NULL, ~0UL, KUAP_CURRENT_READ);
+> }
+>
+> static inline void prevent_current_write_to_user(void)
+> {
+>         prevent_user_access(NULL, NULL, ~0UL, KUAP_CURRENT_WRITE);
+> }
+>
+> and prevent_user_access() has instances that do care about the direction...
 
-Nit: It would be nice to have a
-line feed after the string.
+Go and look closer.
 
-Tested-by: Sibi Sankar <sibis@codeaurora.org>
-Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
+There are three cases:
 
-> +
-> +	return simple_read_from_buffer(userbuf, count, ppos, buf, 
-> strlen(buf));
-> +}
-> +
-> +/*
-> + * By writing to the 'coredump' debugfs entry, we control the behavior 
-> of the
-> + * coredump mechanism dynamically. The default value of this entry is
-> "default".
-> + *
-> + * The 'coredump' debugfs entry supports these commands:
-> + *
-> + * default:	This is the default coredump mechanism. When the 
-> remoteproc
-> + *		crashes the entire coredump will be copied to a separate buffer
-> + *		and exposed to userspace.
-> + *
-> + * inline:	The coredump will not be copied to a separate buffer and 
-> the
-> + *		recovery process will have to wait until data is read by
-> + *		userspace. But this avoid usage of extra memory.
-> + *
-> + * disabled:	This will disable coredump. Recovery will proceed without
-> + *		collecting any dump.
-> + */
-> +static ssize_t rproc_coredump_write(struct file *filp,
-> +				    const char __user *user_buf, size_t count,
-> +				    loff_t *ppos)
-> +{
-> +	struct rproc *rproc = filp->private_data;
-> +	int ret, err = 0;
-> +	char buf[20];
-> +
-> +	if (count > sizeof(buf))
-> +		return -EINVAL;
-> +
-> +	ret = copy_from_user(buf, user_buf, count);
-> +	if (ret)
-> +		return -EFAULT;
-> +
-> +	/* remove end of line */
-> +	if (buf[count - 1] == '\n')
-> +		buf[count - 1] = '\0';
-> +
-> +	if (rproc->state == RPROC_CRASHED) {
-> +		dev_err(&rproc->dev, "can't change coredump configuration\n");
-> +		err = -EBUSY;
-> +		goto out;
-> +	}
-> +
-> +	if (!strncmp(buf, "disable", count)) {
-> +		rproc->dump_conf = RPROC_COREDUMP_DISABLED;
-> +	} else if (!strncmp(buf, "inline", count)) {
-> +		rproc->dump_conf = RPROC_COREDUMP_INLINE;
-> +	} else if (!strncmp(buf, "default", count)) {
-> +		rproc->dump_conf = RPROC_COREDUMP_DEFAULT;
-> +	} else {
-> +		dev_err(&rproc->dev, "Invalid coredump configuration\n");
-> +		err = -EINVAL;
-> +	}
-> +out:
-> +	return err ? err : count;
-> +}
-> +
-> +static const struct file_operations rproc_coredump_fops = {
-> +	.read = rproc_coredump_read,
-> +	.write = rproc_coredump_write,
-> +	.open = simple_open,
-> +	.llseek = generic_file_llseek,
-> +};
-> +
-> +/*
->   * Some remote processors may support dumping trace logs into a shared
->   * memory buffer. We expose this trace buffer using debugfs, so users
->   * can easily tell what's going on remotely.
-> @@ -337,6 +421,8 @@ void rproc_create_debug_dir(struct rproc *rproc)
->  			    rproc, &rproc_rsc_table_fops);
->  	debugfs_create_file("carveout_memories", 0400, rproc->dbg_dir,
->  			    rproc, &rproc_carveouts_fops);
-> +	debugfs_create_file("coredump", 0600, rproc->dbg_dir,
-> +			    rproc, &rproc_coredump_fops);
->  }
-> 
->  void __init rproc_init_debugfs(void)
+ (a) the 32-bit book3s case. It looks like it cares, but when you look
+closer, it ends up not caring about the read side, and saving the
+"which address to I allow user writes to" in current->thread.kuap
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+ (b) the nohash 32-bit case - doesn't care
+
+ (c) the 64-bit books case - doesn't care
+
+So yes, in the (a) case it does make a difference between reads and
+writes, but at least as far as I can tell, it ignores the read case,
+and has code to avoid the unnecessary "disable user writes" case when
+there was only a read enable done.
+
+Now, it's possible that I'm wrong, but the upshot of that is that even
+on powerpc, I think that if we just made the rule be that "taking a
+user exception should automatically do the 'user_access_end()' for us"
+is trivial.
+
+But I'll add the powerpc people to the list too. And the arm64 people
+too, although it looks like they still haven't actually made the
+uaccess_disable() logic visible as user_access_begin/end and the
+unsafe_xyz code, so they'd not be impacted.
+
+Christophe/Michael: the discussion is that I'd actually want to change
+the "exception on user access" case to do the user_access_end()
+automatically, so that you can write code like
+
+        if (!user_access_begin(...))
+                goto out;
+
+        unsafe_get_user(..., out);
+        unsafe_get_user(..., out);
+
+        user_access_end();
+        .. all is good, use the value we got..
+        return 0;
+
+out:
+        return -EFAULT;
+
+and use the same error label for both the "user_access_begin() failed"
+_and_ for the "oops, the access faulted".
+
+Right now the code needs to explicitly do the user_access_end()
+handling manually if one of the accesses fault.
+
+See for example fs/readdir.c, which has that
+
+     efault_end:
+             user_write_access_end();
+     efault:
+             buf->result = -EFAULT;
+             return -EFAULT;
+
+pattern of two different error targets several times. I'd like to
+avoid that user_{read_,write_,}access_end() case for the error
+handling entirely. It's extra complexity.
+
+I checked every single non-arch user, and for all of them it was just
+extra work (eg i915 driver, readdir, select, etc)
+
+The only case it wasn't an extra bother was the
+lib/strn{cpy,len}_from_user() cases, but that was because I literally
+organized the code to call a helper function be called in such a way
+that it always did the right thing.
+
+                Linus
