@@ -2,103 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78592108B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBA52108BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729714AbgGAJzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 05:55:16 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:56329 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgGAJzN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 05:55:13 -0400
-Received: from mail-lj1-f174.google.com ([209.85.208.174]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1N95Rn-1imNnT0w0F-016Ad5; Wed, 01 Jul 2020 11:55:12 +0200
-Received: by mail-lj1-f174.google.com with SMTP id f5so10294965ljj.10;
-        Wed, 01 Jul 2020 02:55:12 -0700 (PDT)
-X-Gm-Message-State: AOAM531Rcb3CJcgDBNwjFZYdohzI5r+zMlKyJ30HpTbXq1EaSh3u+m21
-        lyzuNbHLhGwnzmOoWbtoFG2JAce4p0ij+SB6YR4=
-X-Google-Smtp-Source: ABdhPJyS8gOiUO9in/jq2pHqnW+bGf1AIEllB7ZFKe+y9xZNEbqhCylIU8X1Yk27txEvSFcy3j2uZ4aJTujKQhLR8wA=
-X-Received: by 2002:a2e:894d:: with SMTP id b13mr11032483ljk.410.1593597311714;
- Wed, 01 Jul 2020 02:55:11 -0700 (PDT)
+        id S1729719AbgGAJ5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 05:57:51 -0400
+Received: from mga01.intel.com ([192.55.52.88]:20571 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729332AbgGAJ5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 05:57:50 -0400
+IronPort-SDR: 1A3Q9ey3bFzkFE2+bWsI66/08coGxjPulEDFygyy7wIeGUthqrql5woZ0NUFpLe+FqgTAHW9lf
+ DLKEMyOKdJLA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="164527274"
+X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
+   d="scan'208";a="164527274"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 02:57:49 -0700
+IronPort-SDR: eLaADTkcKhiOvG4JlSZ0Sxp3y0KdIygaZBalh8sTPTeY0Cingbus4yq/wDFE49FVZ/AkvAyNXD
+ pQ0TrId8spCw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
+   d="scan'208";a="303788511"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
+  by fmsmga004.fm.intel.com with ESMTP; 01 Jul 2020 02:57:48 -0700
+Subject: Re: 0001-Fix-CQE-task-queue-timeout.patch
+To:     chen jiangnan <chen.jiangnan@zlingsmart.com>
+Cc:     "riteshh@codeaurora.org" <riteshh@codeaurora.org>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "ulf.hansson@linaro.or" <ulf.hansson@linaro.or>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <5a7b5ad9-bb3a-4281-a065-f57f9cf71a5a.chen.jiangnan@zlingsmart.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <40cccbed-1cbf-c709-9d5b-b87e796b07e5@intel.com>
+Date:   Wed, 1 Jul 2020 12:57:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-References: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com>
- <1593410042-10598-5-git-send-email-Anson.Huang@nxp.com> <CAK8P3a2yXFbGxuSRoC5_dYBujnAtVoEMXe50V7QYjPYhqra7nA@mail.gmail.com>
- <DB3PR0402MB39160335642AFBAC4B38C511F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CAK8P3a0CcijnVxJws_kMiaOBbc4Uox40W4=-dX+BG6OeMYtFpw@mail.gmail.com>
- <DB3PR0402MB39167D9A3897C3CE327EBDDBF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CAK8P3a1cYsgJu+JCrmQw-VQyAKpyOz7fpOf3jBZ7QKc=urUFtw@mail.gmail.com>
- <DB3PR0402MB39167F7746B4B3794600FC7FF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CAA+hA=TYuSk=P4D_D0_Rv1O2AAB3UvYrNXToptPJjEsjECquUw@mail.gmail.com>
- <DB3PR0402MB3916E820EA1E9884DD0A08CFF56C0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CAK8P3a1nxtFqytyTZjte-9UJQEZWp0eKF64v=E1LpgsG8R0h9w@mail.gmail.com>
- <DB3PR0402MB3916B16516474F8D17EF9DA3F56C0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <DB3PR0402MB3916461E26540B6ACFB54AFFF56C0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-In-Reply-To: <DB3PR0402MB3916461E26540B6ACFB54AFFF56C0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 1 Jul 2020 11:54:55 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3H87w-eJhOGuRQr03W-=ONdsj_=Z6ic4nB==GpxnYsZA@mail.gmail.com>
-Message-ID: <CAK8P3a3H87w-eJhOGuRQr03W-=ONdsj_=Z6ic4nB==GpxnYsZA@mail.gmail.com>
-Subject: Re: [PATCH V3 04/10] clk: imx: Support building SCU clock driver as module
-To:     Anson Huang <anson.huang@nxp.com>
-Cc:     Dong Aisheng <dongas86@gmail.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
-        Stefan Agner <stefan.agner@toradex.com>,
-        Peng Fan <peng.fan@nxp.com>, Abel Vesa <abel.vesa@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        Andy Duan <fugang.duan@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:VLxLCkpT4Nb0DT5tw0KAjeBRj/PNiAvQuxxoResPU7lyxR+cWLg
- To2667boqkD8R5vASEWelu2uiiMyLJtjtp3kbTjhvGAg663Jbp3DgHGj9ljGxzfD+o9gG7m
- gMKCHh25WBEH+Mjay2DJkT/DK7V9nDUODzvgh/+NXWF5PKg4/jQv915jATW+26X6dRsveoT
- JHX0RDfWN4AgG64iG1Sqw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UZatkdsoxVI=:2DaiVK7LxZn8n2TX61lhtk
- +kylqdHE2vbIVGAh53Fwku9vCrGSzTxbNuoomUvNPU0xrwtLInNnud8Jh3nEkH7WAJZnqedV/
- Nhir+GicK7+qBemztW/IAEiD+gUVfk2OwJ3GBJPG6EvUk6fkwZfnsxFmhTmpmbHOXCEyqO/zB
- A8OvQkAVaHmQwWafAAxqtIs3ehl4egsrIs2kKpkNkxvl6h6/YsRV2Ouvt4KcY4sfl8L4Ehtf4
- XED+D5qlTa+XAJ7g0CfGE+x5TDmUJdaOfy/TJBoC5LpBa0Pj+slyeJBu4prb77U9685FgKIrJ
- 1SYiPbgIH5LAc3x0FZUA7vuy25CblCSI58IhPG/tMSmnzArLYc9HOo8n4PN7juePWPt7oynS6
- Qi7/mN7FFnDJV5SYwDl+L1gk7TZmwkvoH8lgnNdKAJy5kOSXZH3Ta3v+tUnDYq6Nx+K555ken
- +JsZP3ziit3FEnwuJfBYziPmliRCMn55Z0EVj6LvbUvHsPffFKs3ZnNYgv9E0/q/mo2hEBMl4
- IFzeorEgZP6r1O9gad89MjGHJQ8zXbWpIftM0bmdOvIrJXgeFYufz2vRigz8FiUZrzp409vBc
- nqAF2tyNsWPlg43vsDbQxpwnweT1hxw2STitW+OpDeS97tN5GjAFjTtrYlYuaHYv0i8xuOYhc
- uOkiuW38VdHTO1ub7bFv3vOK9BHA0iyt3KiUq8V+1uebK+7rUU90jCQP4hXXYtLnTiV7wGMCm
- zWsrXZ22iY+ACZAEzhxGy2UVUN1JU2YB4jlKaddAVzS6LXAY4l1mzP/pkNaaNotfezVM5bhV0
- H+PVdB4zzKSBQLmZsHUILLJEcGmmSEj+cZrPnNuICpJi0Zj+C4=
+In-Reply-To: <5a7b5ad9-bb3a-4281-a065-f57f9cf71a5a.chen.jiangnan@zlingsmart.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 1, 2020 at 11:40 AM Anson Huang <anson.huang@nxp.com> wrote:
-> > Subject: RE: [PATCH V3 04/10] clk: imx: Support building SCU clock driver as
-> > module
-> >
-> >
-> > Thanks, I will give another try, I will make the common clk part all linked into
-> > each platform's clock driver, then many exports can be saved.
->
-> Just tried, it works for i.MX8QXP, andcorrect one thing, other platforms
-> need more complicated change if want to support them in the same way, so I
-> plan to ONLY do this change for i.MX8QXP if it is acceptable.
+On 22/06/20 8:44 am, chen jiangnan wrote:
+> From 547e5635c04f4f9d62cbc1e3a4b4527f87c4e83b Mon Sep 17 00:00:00 2001
+> From: JiangnanChen <chen.jiangnan@zlingsmart.com>
+> Date: Mon, 22 Jun 2020 05:32:21 +0000
+> Subject: [PATCH] Fix CQE task queue timeout. CQE notifies the software that
 
-Yes, that is what I expected anyway.
+Please separate subject from commit message.
 
-      Arnd
+>  task has completed through task completion notification (TCN), but some CQE
+>  will occasionally mark the task in the pending state (via DPT). At this time,
+>  if a QBR task (such as flush cache) is followed, the entire command queue
+>  will be blocked, causing the mmc subsystem to report a timeout error, and cqe
+>  enters the recovery process.
+
+It seems like this is a workaround for broken HW, so you could create a quirk for
+this, but making use of the ->write_l host op is cleaner for cqhci.
+
+e.g. in your driver, for the broken controller set cqhci_host_ops write_l to use
+the following:
+
+static void ???_cqhci_writel(struct cqhci_host *cq_host, u32 val, int reg)
+{
+	writel_relaxed(val, cq_host->mmio + reg);
+
+	if (reg == CQHCI_TCN) {
+               u32 pend_status = cqhci_readl(cq_host, CQHCI_DPT);
+               if (val & pend_status) {
+                       pr_debug("%s: cqhci conflict: TCN: 0x%08lx DPT: 0x%08lx\n",
+                                mmc_hostname(cq_host->mmc), val, pend_status);
+                       cqhci_writel(cq_host, val & pend_status, CQHCI_TCLR);
+               }
+	}
+}
+
+> 
+> Signed-off-by: JiangnanChen <chen.jiangnan@zlingsmart.com>
+> ---
+>  drivers/mmc/host/cqhci.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/host/cqhci.c b/drivers/mmc/host/cqhci.c
+> index 75934f3c117e..b8c7f6119ac4 100644
+> --- a/drivers/mmc/host/cqhci.c
+> +++ b/drivers/mmc/host/cqhci.c
+> @@ -760,7 +760,7 @@ irqreturn_t cqhci_irq(struct mmc_host *mmc, u32 intmask, int cmd_error,
+>                       int data_error)
+>  {
+>         u32 status;
+> -       unsigned long tag = 0, comp_status;
+> +       unsigned long tag = 0, comp_status, pend_status;
+>         struct cqhci_host *cq_host = mmc->cqe_private;
+>  
+>         status = cqhci_readl(cq_host, CQHCI_IS);
+> @@ -778,6 +778,13 @@ irqreturn_t cqhci_irq(struct mmc_host *mmc, u32 intmask, int cmd_error,
+>                 pr_debug("%s: cqhci: TCN: 0x%08lx\n",
+>                          mmc_hostname(mmc), comp_status);
+>  
+> +               pend_status = cqhci_readl(cq_host, CQHCI_DPT);
+> +               if (comp_status & pend_status) {
+> +                       pr_debug("%s: cqhci conflict: TCN: 0x%08lx DPT: 0x%08lx\n",
+> +                                mmc_hostname(mmc), comp_status, pend_status);
+> +                       cqhci_writel(cq_host, comp_status & pend_status, CQHCI_TCLR);
+> +               }
+> +
+>                 spin_lock(&cq_host->lock);
+>  
+>                 for_each_set_bit(tag, &comp_status, cq_host->num_slots) {
+> -- 
+> 2.17.1
+
