@@ -2,135 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B4321083B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D8E21084B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729243AbgGAJdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 05:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbgGAJdv (ORCPT
+        id S1729540AbgGAJgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 05:36:05 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:33687 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729156AbgGAJgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 05:33:51 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0E6C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 02:33:50 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id f8so13842292ljc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 02:33:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FXVNWOucI6EFBlae54Jt5ATW+9aYYLThSen8wW5XL98=;
-        b=N+MWlv5d/FXup8ILTXoea15sJMo76qgGssVMC0+yvlLxtz7pDBS5PLLHzyAj3OG/qd
-         cnmy9y+V66jkAnPsSAYNwjs31IaaDYtbX4jAiQXT0YrAiWigSY2NxRnY+3L0tQ02cIey
-         7FlHiDGkQ96aaZ/s6KiERKxjurCUzmVnoQ2z73cMGvr3dsvJipEAlRzYRaK3phM+xTfM
-         M4HXFPPBjmOFZAxxRJfooqx7q8Lt6BNXCEi3zazHg8iTSZQc4QaBl5pst/U/p3p8xbiJ
-         m7qUo8sa+9ExT4OOLIHAhvaIgWZv+WgOUf3kqvWL6BwxS/Sd5KypFOc3tHSCKlHlvLbN
-         hEFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FXVNWOucI6EFBlae54Jt5ATW+9aYYLThSen8wW5XL98=;
-        b=UpJ9hGcatOX6YA4zEcm1Teshg/Rs2XSB39xIaQjWtsNO+36U73SJI5lNce8jxTCTnM
-         IaX+8VrlXMzBExWPpzDxHRPr7ryhy7N7Jpi3oHhbxtPkFs2/cwvErATjNBt8H9OIrzm5
-         QKWr9ygoOoTb4mQxxN+GiwvRB/T6ZL8mDbbqaExNFQQhMG5FTk4Rg2fF+M+dFetpzPe6
-         dBx8ro2QFw8KjPnMUg0j7QsAyMX6e67qCOh4wKIAcPgz/lQygRnfRUuk4Vmj6Q8l5bi+
-         tHG4OCHE30cU9dBU/Mr9JQEhJ7N/nmfV2uNlXMAL15YQ7k/CNZ3fxOXxUfV5POdxHBIu
-         XyAA==
-X-Gm-Message-State: AOAM533XL0hCXEkDJkPdSUmSIRl9JF91nQ2OGujYLiOOuNdHtIMDLpJi
-        9jXmD0JGwnvLwo3oRsGHcO+LjhtAi2c040pO0dQt2Q==
-X-Google-Smtp-Source: ABdhPJzWLRNJD27Z7gbJanMdExaMCHQCltjsFuFwRAFU8qXv/ZmPe2JLRAGFSFeyuTZDcu0xZDwmNUF3OBw1bqThA5w=
-X-Received: by 2002:a2e:3602:: with SMTP id d2mr13337944lja.152.1593596029145;
- Wed, 01 Jul 2020 02:33:49 -0700 (PDT)
+        Wed, 1 Jul 2020 05:36:03 -0400
+X-UUID: 334d10a69c5e4b4db150b328e848eb6a-20200701
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=JmH2i1K1LVRfQ5H7fZWEmVhisTSm9PDFTAU2k91Y8VA=;
+        b=pBU+7Id1echOHiDolArMMpizj6NcCPxHmoFQD7NiBDIZU9z67XfET3R9dBG8YMLVr2E9HR0k5fdlcI2VuJfXLTlZYo7h4Tj6eTXnsoIzq02s2Fj14zSHeGmxVWuaap+P+6RiaMciZLU7ivj3nJmKpykGTD9Q+FU0iYa5z05o9vQ=;
+X-UUID: 334d10a69c5e4b4db150b328e848eb6a-20200701
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1774990996; Wed, 01 Jul 2020 17:36:00 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 1 Jul 2020 17:35:50 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 1 Jul 2020 17:35:50 +0800
+From:   Yunfei Dong <yunfei.dong@mediatek.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Alexandre Courbot <acourbot@chromium.org>
+Subject: [PATCH v3, 0/2] This patchset add read-only(Ro) request for capture queue
+Date:   Wed, 1 Jul 2020 17:35:20 +0800
+Message-ID: <20200701093522.8521-1-yunfei.dong@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20200625144509.17918-1-daniel.lezcano@linaro.org>
- <20200625144509.17918-3-daniel.lezcano@linaro.org> <CAP245DUMjTQr2vKirZ+FxEYWC=VQ_k+OegxQgXcKDU8ThWuCsQ@mail.gmail.com>
- <0fe6837f-9b44-4578-23f2-3e4932d01122@linaro.org>
-In-Reply-To: <0fe6837f-9b44-4578-23f2-3e4932d01122@linaro.org>
-From:   Amit Kucheria <amit.kucheria@linaro.org>
-Date:   Wed, 1 Jul 2020 15:03:38 +0530
-Message-ID: <CAP245DUG-OsSD-_CucMMQ26HpzjJhn0emfq_go923NsDq6RqOg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] thermal: core: Remove old uapi generic netlink
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 098F809224606EF2751969BA6E6369678673A6DDE0F23228BF1043BDAABBF46B2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 1, 2020 at 2:56 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->
-> On 30/06/2020 13:47, Amit Kucheria wrote:
-> > On Thu, Jun 25, 2020 at 8:15 PM Daniel Lezcano
-> > <daniel.lezcano@linaro.org> wrote:
-> >>
-> >> In order to set the scene for the new generic netlink thermal
-> >> management and notifications, let remove the old dead code remaining
-> >
-> > s/management/management api/
-> >
-> > s/let/let's/
-> >
-> >> in the uapi headers.
-> >>
-> >> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> >> ---
-> >>  include/linux/thermal.h      |  5 -----
-> >>  include/uapi/linux/thermal.h | 12 +-----------
-> >>  2 files changed, 1 insertion(+), 16 deletions(-)
-> >>
-> >> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-> >> index faf7ad031e42..fc93a6348082 100644
-> >> --- a/include/linux/thermal.h
-> >> +++ b/include/linux/thermal.h
-> >> @@ -302,11 +302,6 @@ struct thermal_zone_params {
-> >>         int offset;
-> >>  };
-> >>
-> >> -struct thermal_genl_event {
-> >> -       u32 orig;
-> >> -       enum events event;
-> >> -};
-> >> -
-> >>  /**
-> >>   * struct thermal_zone_of_device_ops - scallbacks for handling DT based zones
-> >>   *
-> >> diff --git a/include/uapi/linux/thermal.h b/include/uapi/linux/thermal.h
-> >> index 96218378dda8..22df67ed9e9c 100644
-> >> --- a/include/uapi/linux/thermal.h
-> >> +++ b/include/uapi/linux/thermal.h
-> >> @@ -6,21 +6,12 @@
-> >>
-> >>  /* Adding event notification support elements */
-> >>  #define THERMAL_GENL_FAMILY_NAME                "thermal_event"
-> >> -#define THERMAL_GENL_VERSION                    0x01
-> >> +#define THERMAL_GENL_VERSION                    0x02
-> >
-> > This hunk should be removed since you set version back to 1 in the
-> > next patch and we don't actually intend to bump the version yet.
->
-> Well, I've been very strict here for git-bisecting.
->
-> I move to V2 because of the removal, but when adding the new genetlink
-> code, the family name changed, so we returned back to the V1 as it is a
-> new genetlink thermal brand.
+SGVsbG8sDQoNClVzZXIgZHJpdmVyIG5lZWQgdG8gZ2V0IEhEUjEwKyBpbmZvcm1hdGlvbiBmb3Ig
+ZWFjaCBjYXB0dXJlIGJ1ZmZlcjsNCkZvciBzb21lIGVuY29kZXIgY2FzZXMsIHVzZXIgZHJpdmVy
+IG5lZWQgdG8gZ2V0IGVuY29kZWQgbWVzc2FnZSBmb3INCmVhY2ggZnJhbWUuIFNvIGFkZCBzdXBw
+b3J0IHJlYWQtb25seShSbykgcmVxdWVzdCBmb3IgY2FwdHVyZSBxdWV1ZS4NCg0KVGhlcmUgaXMg
+bm8gdXBzdHJlYW0gZHJpdmVyIHRvIHVzZSB0aGlzIGZlYXR1cmUgYXQgbm93LCBidXQgd2UgYXJl
+DQpkZXZlbG9waW5nIGludGVybmFsIGRyaXZlciB0byB1c2UgaXQuIElmIGl0IGlzIHJlYWR5LCB3
+ZSB3aWxsIHRyeSB0bw0KdXBzdHJlYW0gdmRlYy92ZW5jIGRyaXZlciBiYXNlZCBvbiB0aGlzIGZl
+YXR1cmUuDQoNCj09PT09PT09PT09PT09DQpJbnRyb2R1Y3Rpb24NCj09PT09PT09PT09PT09DQoN
+ClJvIHJlcXVlc3QgbWVhbiB0aGF0IHVzZXIgZHJpdmVyIGp1c3QgY2FuIGdldCBleHQgY3RybHMs
+IHNldCBleHQgY3RybHMNCmlzIG5vdCBub3QgYWxsb3dlZC4gUm8gUmVxdWVzdCBhbHNvIGNhbiBi
+ZSB1c2VkIGluIG91dHB1dCBxdWV1ZS4NCg0KQWRkIHBhcmFtIHJvX3JlcXVlc3RzIGluIHN0cnVj
+dCB2NGwyX2N0cmxfaGFuZGxlciBtZWFuIHRoYXQgYWxsIENJRCBjdHJscw0KYmVsb25nIHRvIHRo
+aXMgY3RybCBoYW5kbGVyIGlzIHJlYWQgb25seS4gQWRkIHBhcmFtIHJvX2N0cmxfaGFuZGxlciBp
+bg0Kc3RydWN0IHY0bDJfZmggdXNlZCBmb3IgUm8gcmVxdWVzdC4NCg0KQWRkIHBhcmFtIHN1cHBv
+cnRzX3JvX3JlcXVlc3RzIGluIHN0cnVjdCB2YjJfcXVldWUgcHJlc2VudCB0aGF0IGNhcHR1cmUg
+b3INCm91dHB1dCBxdWV1ZSB1c2UgUm8gcmVxdWVzdC4NCg0KV2hlbiBzZXQvZ2V0IGV4dCBjdHJs
+cywgd2lsbCBjaGVjayB3aGV0aGVyIGN1cnJlbnQgQ0lEIGN0cmxzIGlzIHJvIGN0cmxzDQpvciBu
+b3QgdXNpbmcgZnVuY3Rpb24gdjRsMl9jaGVja19yb19leHRfY3RybHMoKS4NCg0KPT09PT09PT09
+PT09PT09PQ0KQ2hhbmdlcyBpbiB2Mw0KPT09PT09PT09PT09PT09PQ0KLWNoYW5nZSBjb3Zlci1s
+ZXR0ZXIgbWVzc2FnZQ0KLWNoYW5nZSBjb21taXQgbWVzc2FnZSBmb3IgcGF0Y2ggMDIvMDINCi1h
+ZGQgc2FuaXR5IGNoZWNrIGluIHZiMl9jb3JlX3F1ZXVlX2luaXQoKQ0KDQpZdW5mZWkgRG9uZyAo
+Mik6DQogIG1lZGlhOiB2NGwgVUFQSTogYWRkIFY0TDJfQlVGX0NBUF9TVVBQT1JUU19ST19SRVFV
+RVNUUw0KICBtZWRpYTogdjRsOiBBZGQgUm8gcmVxdWVzdCBhcGkgZm9yIGNhcHR1cmUgcXVldWUN
+Cg0KIC4uLi9tZWRpYS92NGwvdmlkaW9jLXJlcWJ1ZnMucnN0ICAgICAgICAgICAgICB8ICAgNCAr
+DQogLi4uL21lZGlhL2NvbW1vbi92aWRlb2J1ZjIvdmlkZW9idWYyLWNvcmUuYyAgIHwgICAzICsN
+CiAuLi4vbWVkaWEvY29tbW9uL3ZpZGVvYnVmMi92aWRlb2J1ZjItdjRsMi5jICAgfCAgIDcgKysN
+CiBkcml2ZXJzL21lZGlhL21jL21jLXJlcXVlc3QuYyAgICAgICAgICAgICAgICAgfCAgMTAgKy0N
+CiBkcml2ZXJzL21lZGlhL3Y0bDItY29yZS92NGwyLWN0cmxzLmMgICAgICAgICAgfCAxMDcgKysr
+KysrKysrKysrKysrLS0tDQogZHJpdmVycy9tZWRpYS92NGwyLWNvcmUvdjRsMi1pb2N0bC5jICAg
+ICAgICAgIHwgIDIyICsrKysNCiBkcml2ZXJzL21lZGlhL3Y0bDItY29yZS92NGwyLW1lbTJtZW0u
+YyAgICAgICAgfCAgMTkgKystLQ0KIGluY2x1ZGUvbWVkaWEvdjRsMi1jdHJscy5oICAgICAgICAg
+ICAgICAgICAgICB8ICAyMiArKystDQogaW5jbHVkZS9tZWRpYS92NGwyLWZoLmggICAgICAgICAg
+ICAgICAgICAgICAgIHwgICAyICsNCiBpbmNsdWRlL21lZGlhL3ZpZGVvYnVmMi1jb3JlLmggICAg
+ICAgICAgICAgICAgfCAgIDIgKw0KIGluY2x1ZGUvdWFwaS9saW51eC92aWRlb2RldjIuaCAgICAg
+ICAgICAgICAgICB8ICAgMSArDQogMTEgZmlsZXMgY2hhbmdlZCwgMTYxIGluc2VydGlvbnMoKyks
+IDM4IGRlbGV0aW9ucygtKQ0KDQo=
 
-I don't understand the move to v2 for an empty skeleton UAPI. For the
-purposes of bisection, couldn't you just remove all the v1 UAPI (w/o
-bumping to v2) and then add a new UAPI in the next patch?
-
-> The name is change because it is no longer event based but also sampling
-> and commands.
-
-In this case, just to avoid any confusion, the new UAPI could be v2
-making the transition clear in case of bisection.
-
-I'm afraid the v1->v2->v1 is a bit more confusing.
-
-/Amit
