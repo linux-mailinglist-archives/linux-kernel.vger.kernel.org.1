@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6087621014E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 03:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6E0210157
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 03:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgGABKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 21:10:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56936 "EHLO mail.kernel.org"
+        id S1726898AbgGABLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 21:11:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726123AbgGABKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 21:10:40 -0400
+        id S1726416AbgGABKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 21:10:41 -0400
 Received: from lenoir.home (lfbn-ncy-1-996-218.w90-101.abo.wanadoo.fr [90.101.73.218])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CFB420771;
-        Wed,  1 Jul 2020 01:10:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB3122078B;
+        Wed,  1 Jul 2020 01:10:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593565839;
-        bh=X8gtXEPhNZx3ZIBXS6b69iuGP95TvO4abhgwH9+3Tgc=;
+        s=default; t=1593565840;
+        bh=19J8tsc4emiNRDndGS9y59YhYSV/+kq6icXBdrUsbsM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yIVcH5G9TL/6LkQNxuZPFQ0VzmDw3uVrRubV5XDvnR7VuNot99h8HJ0XzyxWLb+dV
-         OCWm0NYL5zOvI6sEk4n+wg5+FbPUNbSIaU5yL6sOXZ8+o6EQDDqFxgd4XjVwEctESa
-         0zwcrAjKvOkjLvisF7QuHqds9FMPuIdz1urmtLIg=
+        b=sTL8XgFEQe7/0kG8z4KVurk6QrgLv3b11/JF1rn5UMU9u2haISPMGq3zLYcaDo+z7
+         EOgF8kJx7tLJEGwqofMWqsjdJ+FjxINYACcqivwXQjeJh1BmgVQMDOyQVdYYXXn0A8
+         PLzI2wyKDmoIjj1D34vpM3Rbbamxs9A0dh4XpZEY=
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -30,9 +30,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Anna-Maria Gleixner <anna-maria@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>
-Subject: [RFC PATCH 02/10] timer: Move trigger_dyntick_cpu() to enqueue_timer()
-Date:   Wed,  1 Jul 2020 03:10:22 +0200
-Message-Id: <20200701011030.14324-3-frederic@kernel.org>
+Subject: [RFC PATCH 03/10] timer: Simplify LVL_START() and calc_index()
+Date:   Wed,  1 Jul 2020 03:10:23 +0200
+Message-Id: <20200701011030.14324-4-frederic@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200701011030.14324-1-frederic@kernel.org>
 References: <20200701011030.14324-1-frederic@kernel.org>
@@ -43,92 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consolidate the code by calling trigger_dyntick_cpu() from
-enqueue_timer() instead of calling it from all its callers.
+LVL_START() makes the first index of a level to start with what would be
+the value of all bits set of the previous level.
+
+For example level 1 starts at 63 instead of 64.
+
+To cope with that, calc_index() always adds one offset for the level
+granularity to the expiry passed in parameter.
+
+Yet there is no apparent reason for such fixups so simplify the whole
+thing.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Anna-Maria Gleixner <anna-maria@linutronix.de>
 Cc: Juri Lelli <juri.lelli@redhat.com>
 ---
- kernel/time/timer.c | 46 +++++++++++++++++++--------------------------
- 1 file changed, 19 insertions(+), 27 deletions(-)
+ kernel/time/timer.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 9a838d38dbe6..4c977df3610b 100644
+index 4c977df3610b..b4838d63a016 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -529,29 +529,6 @@ static int calc_wheel_index(unsigned long expires, unsigned long clk)
- 	return idx;
- }
+@@ -158,7 +158,7 @@ EXPORT_SYMBOL(jiffies_64);
+  * The time start value for each level to select the bucket at enqueue
+  * time.
+  */
+-#define LVL_START(n)	((LVL_SIZE - 1) << (((n) - 1) * LVL_CLK_SHIFT))
++#define LVL_START(n)	(LVL_SIZE << (((n) - 1) * LVL_CLK_SHIFT))
  
--/*
-- * Enqueue the timer into the hash bucket, mark it pending in
-- * the bitmap and store the index in the timer flags.
-- */
--static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
--			  unsigned int idx)
--{
--	hlist_add_head(&timer->entry, base->vectors + idx);
--	__set_bit(idx, base->pending_map);
--	timer_set_idx(timer, idx);
--
--	trace_timer_start(timer, timer->expires, timer->flags);
--}
--
--static void
--__internal_add_timer(struct timer_base *base, struct timer_list *timer)
--{
--	unsigned int idx;
--
--	idx = calc_wheel_index(timer->expires, base->clk);
--	enqueue_timer(base, timer, idx);
--}
--
- static void
- trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer)
+ /* Size of each clock level */
+ #define LVL_BITS	6
+@@ -489,7 +489,7 @@ static inline void timer_set_idx(struct timer_list *timer, unsigned int idx)
+  */
+ static inline unsigned calc_index(unsigned expires, unsigned lvl)
  {
-@@ -596,13 +573,29 @@ trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer)
- 	wake_up_nohz_cpu(base->cpu);
+-	expires = (expires + LVL_GRAN(lvl)) >> LVL_SHIFT(lvl);
++	expires >>= LVL_SHIFT(lvl);
+ 	return LVL_OFFS(lvl) + (expires & LVL_MASK);
  }
  
--static void
--internal_add_timer(struct timer_base *base, struct timer_list *timer)
-+/*
-+ * Enqueue the timer into the hash bucket, mark it pending in
-+ * the bitmap and store the index in the timer flags.
-+ */
-+static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
-+			  unsigned int idx)
- {
--	__internal_add_timer(base, timer);
-+	hlist_add_head(&timer->entry, base->vectors + idx);
-+	__set_bit(idx, base->pending_map);
-+	timer_set_idx(timer, idx);
-+
-+	trace_timer_start(timer, timer->expires, timer->flags);
- 	trigger_dyntick_cpu(base, timer);
- }
- 
-+static void internal_add_timer(struct timer_base *base, struct timer_list *timer)
-+{
-+	unsigned int idx;
-+
-+	idx = calc_wheel_index(timer->expires, base->clk);
-+	enqueue_timer(base, timer, idx);
-+}
-+
- #ifdef CONFIG_DEBUG_OBJECTS_TIMERS
- 
- static struct debug_obj_descr timer_debug_descr;
-@@ -1059,7 +1052,6 @@ __mod_timer(struct timer_list *timer, unsigned long expires, unsigned int option
- 	 */
- 	if (idx != UINT_MAX && clk == base->clk) {
- 		enqueue_timer(base, timer, idx);
--		trigger_dyntick_cpu(base, timer);
- 	} else {
- 		internal_add_timer(base, timer);
- 	}
 -- 
 2.26.2
 
