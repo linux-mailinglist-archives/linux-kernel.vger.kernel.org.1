@@ -2,92 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC430211333
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 21:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 558B9211336
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 21:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726500AbgGATDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 15:03:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:39426 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725875AbgGATDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 15:03:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA3441FB;
-        Wed,  1 Jul 2020 12:03:14 -0700 (PDT)
-Received: from [10.57.21.32] (unknown [10.57.21.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E0A843F68F;
-        Wed,  1 Jul 2020 12:03:11 -0700 (PDT)
-Subject: Re: [PATCH v8 2/3] dt-bindings: arm-smmu: Add binding for Tegra194
- SMMU
-To:     Jon Hunter <jonathanh@nvidia.com>,
-        Krishna Reddy <vdumpa@nvidia.com>
-Cc:     "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Yu-Huan Hsu <YHsu@nvidia.com>,
-        Sachin Nikam <Snikam@nvidia.com>,
-        Pritesh Raithatha <praithatha@nvidia.com>,
-        Timo Alho <talho@nvidia.com>,
-        Bitan Biswas <bbiswas@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Bryan Huntsman <bhuntsman@nvidia.com>,
-        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>
-References: <20200630001051.12350-1-vdumpa@nvidia.com>
- <20200630001051.12350-3-vdumpa@nvidia.com>
- <3e655881-bac4-f083-44ed-cfa0a61298d0@arm.com>
- <BYAPR12MB28222D6ADEBA966AA27FA9ECB36C0@BYAPR12MB2822.namprd12.prod.outlook.com>
- <0d4f46d6-6a4e-bca0-bcf3-0e22a950e57b@nvidia.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <a9e0b213-0601-01fa-8664-e292bf7c81aa@arm.com>
-Date:   Wed, 1 Jul 2020 20:03:10 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726760AbgGATE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 15:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgGATE4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 15:04:56 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82E6C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 12:04:55 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id s16so8903746lfp.12
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 12:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LfIJEhCwwu+fefbhHCXDCs/F8dmiQuAFEN1MZjUcMz4=;
+        b=Xp5heb7W/4/4YHhd6hrXqdqlT6vB2rGBK+UHi9fgP2clCojJL2rpuiKJrMidehTB92
+         Uk7pvtmw/pRoDnZeAmUPp7WzsCo3AuslBYwFz+JT3MAB5c3PCtPlhSbYhYJBFmzQh90Z
+         glSR0lZ5wSPIUk8NeOG7Pq++Can0uDy0S3XD8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LfIJEhCwwu+fefbhHCXDCs/F8dmiQuAFEN1MZjUcMz4=;
+        b=AtWVLD3G3suz1BrPJNJMNiHmYWknEJb0PVbwKUxOChTZOpaMEwIbK366cV6GK9MhqH
+         8oF8s69+PxEUTWFg7lY0UC0BRDItrCfH1B3jHdxMAmfxTyCovqyCgFaUiVUiMwidpzTK
+         J5/lAokQN0GiPoJ5hFtXXK33WkbAhVBZ546ln7Fopt66MnMP+ybm44VHBdoyoCvkBxTx
+         H6cCMgtopX2YYfqqzfzDm4U/d606CaYFEBVXUnlsRnG3BCMyAofzemkwAtpTCfUGoBn1
+         aCVctyoqqlPi7HvOTIFimqGFnPttrBj5h8/z40BmskYWv+Yj3nYfwwzmkqw8agxRP2Kh
+         y2qw==
+X-Gm-Message-State: AOAM530rHPfCDt/9AHN/I7n73QYY8AWU8Om5BgjBUte1H0ShDdct9Uby
+        2nhyng6CKcLoQ4jBFRoZ92O5CfrD4G4=
+X-Google-Smtp-Source: ABdhPJypN18E9hVr2JA2TydS7JbnHkkxr+xJV46WW8U90cMbrlsz7U4LWKREIueycAJnB1BxYzITjg==
+X-Received: by 2002:a19:23cc:: with SMTP id j195mr15996270lfj.210.1593630293585;
+        Wed, 01 Jul 2020 12:04:53 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id v20sm2348004lfe.46.2020.07.01.12.04.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Jul 2020 12:04:52 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id h19so28514454ljg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 12:04:52 -0700 (PDT)
+X-Received: by 2002:a2e:9b42:: with SMTP id o2mr13730506ljj.102.1593630292231;
+ Wed, 01 Jul 2020 12:04:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0d4f46d6-6a4e-bca0-bcf3-0e22a950e57b@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <CAHk-=wjc-ktbOr7ZHMY8gfAmHxUK+aMdDsQjeh+BvmQwnQfN_g@mail.gmail.com>
+ <20200701184131.GI2786714@ZenIV.linux.org.uk>
+In-Reply-To: <20200701184131.GI2786714@ZenIV.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 1 Jul 2020 12:04:36 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj_2v9m+yZioE4vOLGW1mc9SBa5+++LdeJ86aEeB5OXcw@mail.gmail.com>
+Message-ID: <CAHk-=wj_2v9m+yZioE4vOLGW1mc9SBa5+++LdeJ86aEeB5OXcw@mail.gmail.com>
+Subject: Re: objtool clac/stac handling change..
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-01 19:47, Jon Hunter wrote:
-> 
-> On 01/07/2020 19:28, Krishna Reddy wrote:
->>>> +      - description: NVIDIA SoCs that use more than one "arm,mmu-500"
->>> Hmm, there must be a better way to word that to express that it only applies to the sets of SMMUs that must be programmed identically, and not any other independent MMU-500s that might also happen to be in the same SoC.
->>
->> Let me reword it to "NVIDIA SoCs that must program multiple MMU-500s identically".
->>
->>>> +        items:
->>>> +          - enum:
->>>> +              - nvdia,tegra194-smmu
->>>> +          - const: arm,mmu-500
->>
->>> Is the fallback compatible appropriate here? If software treats this as a standard MMU-500 it will only program the first instance (because the second isn't presented as a separate MMU-500) - is there any way that isn't going to blow up?
->>
->> When compatible is set to both nvidia,tegra194-smmu and arm,mmu-500, implementation override ensure that both instances are programmed. Isn't it? I am not sure I follow your comment fully.
-> 
-> The problem is, if for some reason someone had a Tegra194, but only set
-> the compatible string to 'arm,mmu-500' it would assume that it was a
-> normal arm,mmu-500 and only one instance would be programmed. We always
-> want at least 2 of the 3 instances programmed and so we should only
-> match 'nvidia,tegra194-smmu'. In fact, I think that we also need to
-> update the arm_smmu_of_match table to add 'nvidia,tegra194-smmu' with
-> the data set to &arm_mmu500.
+On Wed, Jul 1, 2020 at 11:41 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> Rather nasty for ppc; they have separate user_read_access_end() and
+> user_write_access_end().
 
-Right, the main concern is if the shiny new DT gets passed to an older 
-kernel (or other OS entirely) which doesn't know the 
-"nvdia,tegra194-smmu" compatible but would match on "arm,mmu-500" and 
-bind a standard driver thinking it's going to work OK. The user would 
-probably prefer that no driver matched and both instances were left 
-turned off, than face the fallout of only one of them being set up.
+That's actually for the access granting. Shutting the access down ends
+up always doing the same thing anyway..
 
-Robin.
+                 Linus
