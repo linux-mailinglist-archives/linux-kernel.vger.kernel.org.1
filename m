@@ -2,80 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7BE210402
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 08:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9792103F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 08:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727938AbgGAGiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 02:38:46 -0400
-Received: from mga03.intel.com ([134.134.136.65]:38242 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727876AbgGAGil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 02:38:41 -0400
-IronPort-SDR: 2BAasDwZwh1yy0VCQusiZNNbnwfimBirSNn6zfz9KQ9IIKutR0lDOYSIvjGlvew+EHYqbPASA/
- JjR+g+VG9N4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="146485969"
-X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
-   d="scan'208";a="146485969"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 23:38:40 -0700
-IronPort-SDR: Q+GiJwb4zioCvqY1lM5QnllgZFlaHnBRaIzpVdgwQmSSPudeams+Jb4Td/INg505q+k58yaMJB
- Tr9STXYMelvA==
-X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
-   d="scan'208";a="454947025"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 23:38:36 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
-        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        slawomir.blauciak@intel.com, mengdong.lin@intel.com,
-        bard.liao@intel.com
-Subject: [PATCH v2 5/5] soundwire: intel: don't free dma_data in DAI shutdown
-Date:   Wed,  1 Jul 2020 02:43:56 +0800
-Message-Id: <20200630184356.24939-6-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200630184356.24939-1-yung-chuan.liao@linux.intel.com>
-References: <20200630184356.24939-1-yung-chuan.liao@linux.intel.com>
+        id S1727051AbgGAGeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 02:34:06 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41000 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgGAGeG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 02:34:06 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id 557662A4F88
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Philippe CORNU <philippe.cornu@st.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Yannick FERTRE <yannick.fertre@st.com>,
+        Andrzej Hajda <a.hajda@samsung.com>, linux-imx@nxp.com,
+        kernel@collabora.com, linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v9 00/11] Genericize DW MIPI DSI bridge and add i.MX 6
+ driver
+In-Reply-To: <c6f10db1-7f56-a156-36a1-125e764c8c1a@baylibre.com>
+References: <20200609174959.955926-1-adrian.ratiu@collabora.com>
+ <c6f10db1-7f56-a156-36a1-125e764c8c1a@baylibre.com>
+Date:   Wed, 01 Jul 2020 09:35:27 +0300
+Message-ID: <87lfk3kaj4.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Hi Neil,
 
-Now that the DMA data is allocated/freed in set_sdw_stream(), remove
-free operations.
+On Mon, 29 Jun 2020, Neil Armstrong <narmstrong@baylibre.com> 
+wrote:
+> Hi Adrian, 
+> 
+> On 09/06/2020 19:49, Adrian Ratiu wrote: 
+>> [Re-submitting to cc dri-devel, sorry about the noise]  Hello 
+>> all,  v9 cleanly applies on top of latest next-20200609 tree. 
+>> v9 does not depend on other patches as the last binding doc has 
+>> been merged.   All feedback up to this point has been 
+>> addressed. Specific details in individual patch changelogs. 
+>> The biggest changes are the deprecation of the Synopsys DW 
+>> bridge bind() API in favor of of_drm_find_bridge() and .attach 
+>> callbacks, the addition of a TODO entry which outlines future 
+>> planned bridge driver refactorings and a reordering of some 
+>> i.MX 6 patches to appease checkpatch.   The idea behind the 
+>> TODO is to get this regmap and i.MX 6 driver merged and then do 
+>> the rest of refactorings in-tree because it's easier and the 
+>> refactorings themselves are out-of-scope of this series which 
+>> is adding i.MX 6 support and is quite big already, so please, 
+>> if there are more refactoring ideas, let's add them to the TODO 
+>> doc. :) I intend to tackle those after this series is merged to 
+>> avoid two complex inter-dependent simultaneous series. 
+> 
+> This has been around here for a long time and you seem to have 
+> addressed all the reviews. 
+> 
+>>  As always more testing is welcome especially on Rockchip and 
+>> STM SoCs. 
+> 
+> It has been tested on STM, but I'd like a feedback on RK 
+> platform before applying the bridge parts. 
+> 
+> Can the imx & stm patches be applied separately ? 
+>
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/intel.c | 7 -------
- 1 file changed, 7 deletions(-)
+Yes the IMX and STM patches can be applied separately, they just 
+both depend on the common regmap patches.
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 2e1e1088a743..7a65414e5714 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -806,14 +806,7 @@ intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- static void intel_shutdown(struct snd_pcm_substream *substream,
- 			   struct snd_soc_dai *dai)
- {
--	struct sdw_cdns_dma_data *dma;
- 
--	dma = snd_soc_dai_get_dma_data(dai, substream);
--	if (!dma)
--		return;
--
--	snd_soc_dai_set_dma_data(dai, substream, NULL);
--	kfree(dma);
- }
- 
- static int intel_pcm_set_sdw_stream(struct snd_soc_dai *dai,
--- 
-2.17.1
+The binding API removal change which directly touches RK can also 
+be applied separately, but unfortunately I do not have access to a 
+RK board with a DSI display to test it (or the bridge regmap logic 
+on RK btw...), I just "eye-balled" the RK code based on the public 
+docs and it LGTM.
 
+> Neil
+>
+>> 
+>> Big thank you to everyone who has contributed to this up to now,
+>> Adrian
+>> 
+>> Adrian Ratiu (11):
+>>   drm: bridge: dw_mipi_dsi: add initial regmap infrastructure
+>>   drm: bridge: dw_mipi_dsi: abstract register access using reg_fields
+>>   drm: bridge: dw_mipi_dsi: add dsi v1.01 support
+>>   drm: bridge: dw_mipi_dsi: remove bind/unbind API
+>>   dt-bindings: display: add i.MX6 MIPI DSI host controller doc
+>>   ARM: dts: imx6qdl: add missing mipi dsi properties
+>>   drm: imx: Add i.MX 6 MIPI DSI host platform driver
+>>   drm: stm: dw-mipi-dsi: let the bridge handle the HW version check
+>>   drm: bridge: dw-mipi-dsi: split low power cfg register into fields
+>>   drm: bridge: dw-mipi-dsi: fix bad register field offsets
+>>   Documentation: gpu: todo: Add dw-mipi-dsi consolidation plan
+>> 
+>>  .../display/imx/fsl,mipi-dsi-imx6.yaml        | 112 +++
+>>  Documentation/gpu/todo.rst                    |  25 +
+>>  arch/arm/boot/dts/imx6qdl.dtsi                |   8 +
+>>  drivers/gpu/drm/bridge/synopsys/Kconfig       |   1 +
+>>  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 713 ++++++++++++------
+>>  drivers/gpu/drm/imx/Kconfig                   |   8 +
+>>  drivers/gpu/drm/imx/Makefile                  |   1 +
+>>  drivers/gpu/drm/imx/dw_mipi_dsi-imx6.c        | 399 ++++++++++
+>>  .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   |   7 +-
+>>  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c         |  16 +-
+>>  10 files changed, 1059 insertions(+), 231 deletions(-)
+>>  create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,mipi-dsi-imx6.yaml
+>>  create mode 100644 drivers/gpu/drm/imx/dw_mipi_dsi-imx6.c
+>> 
