@@ -2,98 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CE421030D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 06:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1797210310
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 06:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbgGAEkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 00:40:20 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2038 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725272AbgGAEkT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 00:40:19 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5efc13810000>; Tue, 30 Jun 2020 21:39:29 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 30 Jun 2020 21:40:19 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 30 Jun 2020 21:40:19 -0700
-Received: from [172.20.40.91] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 1 Jul
- 2020 04:40:18 +0000
-Subject: Re: [git pull] drm for 5.8-rc1
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Ben Skeggs <bskeggs@redhat.com>
-CC:     Dave Airlie <airlied@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <CAPM=9txGww+omvateOTizZRV9_wLdAbq6uAz3DRa_S6bn1jQuQ@mail.gmail.com>
- <20200630230808.wj2xlt44vrszqfzx@box>
-X-Nvconfidentiality: public
-From:   James Jones <jajones@nvidia.com>
-Message-ID: <ef7816b4-72ee-9e0e-8cac-4d80d8343f9f@nvidia.com>
-Date:   Tue, 30 Jun 2020 21:40:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200630230808.wj2xlt44vrszqfzx@box>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593578369; bh=+EcA5Zf1+TGhpdgcqoYfsJmtAG2eWp3seOejdMxbEHA=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=AR+QzRyyjlLzFHQBKv6n2phZPIaaf/68YMPvMbEUu6ogLteDSj7Lisu6zFq+SwnY8
-         rxs5NhwgypkI+uRm4SeQp393V6l2EwDAc8Dtubi6N8OdJstp0I+dlJI7TxofaJmOk/
-         nd2iMCKA8x+9sdgAm6JhZfFaE2m+/AcD4Tc95+GALYEOi0sEBxqVuwMDgMJZNbx1Dv
-         vERu7Go6dY9frmC4VZUFcv8NOM9yf/1+BBZwpX7bcRfC8eFZPuGkswI3nKjr4PnIk9
-         4TBDQp/fG0+rn6K/1/ntmfPiG9Mxg2pcvz4tGRIrhPoURtwgSpzXeUss/CsZ2ZC07/
-         ukwjjZrOj0PAg==
+        id S1726068AbgGAEmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 00:42:37 -0400
+Received: from foss.arm.com ([217.140.110.172]:52518 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725272AbgGAEmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 00:42:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 53D6A30E;
+        Tue, 30 Jun 2020 21:42:36 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.84.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 82C893F73C;
+        Tue, 30 Jun 2020 21:42:24 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org
+Cc:     robin.murphy@arm.com,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V3] arm64/hugetlb: Reserve CMA areas for gigantic pages on 16K and 64K configs
+Date:   Wed,  1 Jul 2020 10:12:01 +0530
+Message-Id: <1593578521-24672-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This implies something is trying to use one of the old 
-DRM_FORMAT_MOD_NVIDIA_16BX2_BLOCK format modifiers with DRM-KMS without 
-first checking whether it is supported by the kernel.  I had tried to 
-force an Xorg+Mesa stack without my userspace patches to hit this error 
-when testing, but must have missed some permutation.  If the stalled 
-Mesa patches go in, this would stop happening of course, but those were 
-held up for a long time in review, and are now waiting on me to make 
-some modifications.
+Currently 'hugetlb_cma=' command line argument does not create CMA area on
+ARM64_16K_PAGES and ARM64_64K_PAGES based platforms. Instead, it just ends
+up with the following warning message. Reason being, hugetlb_cma_reserve()
+never gets called for these huge page sizes.
 
-Are you using the modesetting driver in X?  If so, with glamor I 
-presume?  What version of Mesa?  Any distro patches?  Any non-default 
-xorg.conf options that would affect modesetting, your X driver if it 
-isn't modesetting, or glamour?
+[   64.255669] hugetlb_cma: the option isn't supported by current arch
 
-Thanks,
--James
+This enables CMA areas reservation on ARM64_16K_PAGES and ARM64_64K_PAGES
+configs by defining an unified arm64_hugetlb_cma_reseve() that is wrapped
+in CONFIG_CMA. Call site for arm64_hugetlb_cma_reserve() is also protected
+as <asm/hugetlb.h> is conditionally included and hence cannot contain stub
+for the inverse config i.e !(CONFIG_HUGETLB_PAGE && CONFIG_CMA).
 
-On 6/30/20 4:08 PM, Kirill A. Shutemov wrote:
-> On Tue, Jun 02, 2020 at 04:06:32PM +1000, Dave Airlie wrote:
->> James Jones (4):
-> ...
->>        drm/nouveau/kms: Support NVIDIA format modifiers
-> 
-> This commit is the first one that breaks Xorg startup for my setup:
-> GTX 1080 + Dell UP2414Q (4K DP MST monitor).
-> 
-> I believe this is the crucial part of dmesg (full dmesg is attached):
-> 
-> [   29.997140] [drm:nouveau_framebuffer_new] Unsupported modifier: 0x300000000000014
-> [   29.997143] [drm:drm_internal_framebuffer_create] could not create framebuffer
-> [   29.997145] [drm:drm_ioctl] pid=3393, ret = -22
-> 
-> Any suggestions?
-> 
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Barry Song <song.bao.hua@hisilicon.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+Applies on 5.8-rc3.
+
+Changes in V3:
+
+- Dropped the stub, protected call site, moved the declaration to a header
+
+Changes in V2: (https://patchwork.kernel.org/patch/11630503/)
+
+- Moved arm64_hugetlb_cma_reserve() stub and declaration near call site
+
+Changes in V1: (https://patchwork.kernel.org/patch/11619839/)
+
+ arch/arm64/include/asm/hugetlb.h |  2 ++
+ arch/arm64/mm/hugetlbpage.c      | 38 ++++++++++++++++++++++++++++++++
+ arch/arm64/mm/init.c             |  4 ++--
+ 3 files changed, 42 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/include/asm/hugetlb.h b/arch/arm64/include/asm/hugetlb.h
+index 94ba0c5bced2..5abf91e3494c 100644
+--- a/arch/arm64/include/asm/hugetlb.h
++++ b/arch/arm64/include/asm/hugetlb.h
+@@ -49,6 +49,8 @@ extern void set_huge_swap_pte_at(struct mm_struct *mm, unsigned long addr,
+ 				 pte_t *ptep, pte_t pte, unsigned long sz);
+ #define set_huge_swap_pte_at set_huge_swap_pte_at
+ 
++void __init arm64_hugetlb_cma_reserve(void);
++
+ #include <asm-generic/hugetlb.h>
+ 
+ #endif /* __ASM_HUGETLB_H */
+diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
+index 0a52ce46f020..ea7fb48b8617 100644
+--- a/arch/arm64/mm/hugetlbpage.c
++++ b/arch/arm64/mm/hugetlbpage.c
+@@ -19,6 +19,44 @@
+ #include <asm/tlbflush.h>
+ #include <asm/pgalloc.h>
+ 
++/*
++ * HugeTLB Support Matrix
++ *
++ * ---------------------------------------------------
++ * | Page Size | CONT PTE |  PMD  | CONT PMD |  PUD  |
++ * ---------------------------------------------------
++ * |     4K    |   64K    |   2M  |    32M   |   1G  |
++ * |    16K    |    2M    |  32M  |     1G   |       |
++ * |    64K    |    2M    | 512M  |    16G   |       |
++ * ---------------------------------------------------
++ */
++
++/*
++ * Reserve CMA areas for the largest supported gigantic
++ * huge page when requested. Any other smaller gigantic
++ * huge pages could still be served from those areas.
++ */
++#ifdef CONFIG_CMA
++void __init arm64_hugetlb_cma_reserve(void)
++{
++	int order;
++
++#ifdef CONFIG_ARM64_4K_PAGES
++	order = PUD_SHIFT - PAGE_SHIFT;
++#else
++	order = CONT_PMD_SHIFT + PMD_SHIFT - PAGE_SHIFT;
++#endif
++	/*
++	 * HugeTLB CMA reservation is required for gigantic
++	 * huge pages which could not be allocated via the
++	 * page allocator. Just warn if there is any change
++	 * breaking this assumption.
++	 */
++	WARN_ON(order <= MAX_ORDER);
++	hugetlb_cma_reserve(order);
++}
++#endif /* CONFIG_CMA */
++
+ #ifdef CONFIG_ARCH_ENABLE_HUGEPAGE_MIGRATION
+ bool arch_hugetlb_migration_supported(struct hstate *h)
+ {
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 1e93cfc7c47a..5f5665b9b026 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -425,8 +425,8 @@ void __init bootmem_init(void)
+ 	 * initialize node_online_map that gets used in hugetlb_cma_reserve()
+ 	 * while allocating required CMA size across online nodes.
+ 	 */
+-#ifdef CONFIG_ARM64_4K_PAGES
+-	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
++#if defined(CONFIG_HUGETLB_PAGE) && defined(CONFIG_CMA)
++	arm64_hugetlb_cma_reserve();
+ #endif
+ 
+ 	/*
+-- 
+2.20.1
+
