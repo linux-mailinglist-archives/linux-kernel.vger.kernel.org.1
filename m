@@ -2,173 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA84721080D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01AA2210817
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729344AbgGAJ1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 05:27:45 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41868 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728812AbgGAJ1p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 05:27:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593595663;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=2nsia7hoWJXpo2twiK/t+26Uc4uSozlsBwnZUcpoESQ=;
-        b=R6ajc9hrEiKjX674he0RITkMENmvKbmOY97umWqv+C6vb8+q0PY/GP3MP0EKFCQS1oN11e
-        XNhbSJ7ph8JzUoXsoNJ3iTDiMUkSAWS24NrDVOG4MD4vKVa3djbhZbN1QUinhMO88c7u5h
-        rlAGCOwM0GgOpU528kc1rub/6zaUgDQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-8-fAZK4nTsPFW4gTPbDDDFQQ-1; Wed, 01 Jul 2020 05:27:40 -0400
-X-MC-Unique: fAZK4nTsPFW4gTPbDDDFQQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 89ECA107ACF4;
-        Wed,  1 Jul 2020 09:27:39 +0000 (UTC)
-Received: from [10.36.112.52] (ovpn-112-52.ams2.redhat.com [10.36.112.52])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4C22D7C1EE;
-        Wed,  1 Jul 2020 09:27:38 +0000 (UTC)
-Subject: Re: [PATCH] mm/sparse: only sub-section aligned range would be
- populated
-To:     Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc:     dan.j.williams@intel.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20200630021436.43281-1-richard.weiyang@linux.alibaba.com>
- <f1e6036c-1966-56dd-0acf-e795671c5ec4@redhat.com>
- <20200701023258.GA51545@L-31X9LVDL-1304.local>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
-Organization: Red Hat GmbH
-Message-ID: <ed889007-0363-b719-c4bc-9591f87b046c@redhat.com>
-Date:   Wed, 1 Jul 2020 11:27:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200701023258.GA51545@L-31X9LVDL-1304.local>
-Content-Type: text/plain; charset=utf-8
+        id S1729397AbgGAJ2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 05:28:53 -0400
+Received: from mail-eopbgr60082.outbound.protection.outlook.com ([40.107.6.82]:60177
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729371AbgGAJ2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 05:28:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=m/ER7j6eEqcdvY3vH2b0lbmoKQRCvuJO/0/KCx9geUt1mtGMRtA8/sUJoRMqvet7YhFKGJykYmniNcniSaEpEVrTjYf9H0+dP7XAym7+LS2P+z7BjwKoxqnG8xUSe7LoZj8Kw6Aam0mkWBwrwyzVpvVOlKkrgkIsOw1D3B9MOayzBX7vkWxHhZlNS0299dkMZw05QjT92e6jDSfGZ6evDJUabJNWC+aGQb8fnxHqe1+aZBa8sOt9NSeAtQh3+Sig732dEQM+JAxBe09FBX3RYiRn/31dE+9PWFjcf6DM9xdLnfPhzj3CnO+/0KUBph6erW0fQF0KP6bJ0MgXKp9ClQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d/GfhkDAvTTOCQOJO3iB0SE6G4y6EfkJydytxR+lj3k=;
+ b=g7Gb9iYi1/eKtq5gTlcfjUW/xpJW6SzkA3HMD1AyfFNs1mFoI7ohUTvs0F5SLhv++feyTPYE5EkHmxACVUrmhsRePC+e0G7H/XWMLwzt/kN/8ufXFRQWhhUswRRY7yZIqC9+iTKlZuxOxPqzr/ZPGO4qMTVHCULWL392Ug9WvkxldFxx4HbsR7+2Lvt+2lhyDRr3iV9fYkvyNGDLa3fLXx4UoEnnzhhcCrbPBdv6QcZHhxc5EOTxThlz1kr2Tm0cll1xGTygTGU6OBPG2sUun+GmHwMTyqPSXVjM7gBIVYRMp05pPcTQaJPkEqi2NXRhfo2rgMSqD/2uPW/U8ZyCSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d/GfhkDAvTTOCQOJO3iB0SE6G4y6EfkJydytxR+lj3k=;
+ b=hEQmtY6cQtueaUP1tF9VkgaeVRngyPbox4D4DoKg1q4sLabV89PimHQtdElRkIImw3h+/Y1HhDC1gNiAXXj77obPuoTHsemLwpeobHYbTO+YXbqn4yuVTXn4XsYOFEhHb1QaTN350o6F4vgmqRTpyQGyh/Ku8InLy98AWBXQW+s=
+Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
+ by DB6PR0401MB2534.eurprd04.prod.outlook.com (2603:10a6:4:3c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.24; Wed, 1 Jul
+ 2020 09:28:49 +0000
+Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
+ ([fe80::1dab:b68c:e028:acb3]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
+ ([fe80::1dab:b68c:e028:acb3%6]) with mapi id 15.20.3131.030; Wed, 1 Jul 2020
+ 09:28:49 +0000
+From:   Anson Huang <anson.huang@nxp.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+CC:     Dong Aisheng <dongas86@gmail.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
+        Stefan Agner <stefan.agner@toradex.com>,
+        Peng Fan <peng.fan@nxp.com>, Abel Vesa <abel.vesa@nxp.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        Andy Duan <fugang.duan@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH V3 04/10] clk: imx: Support building SCU clock driver as
+ module
+Thread-Topic: [PATCH V3 04/10] clk: imx: Support building SCU clock driver as
+ module
+Thread-Index: AQHWTdthV6wfzmMopU6pSRFnxqvg3qjvd4YAgAACQ6CAABqKgIAAAHBggAAdugCAAAKowIAA09MAgAHHMmCAABw9AIAAC3rg
+Date:   Wed, 1 Jul 2020 09:28:48 +0000
+Message-ID: <DB3PR0402MB3916B16516474F8D17EF9DA3F56C0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+References: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com>
+ <1593410042-10598-5-git-send-email-Anson.Huang@nxp.com>
+ <CAK8P3a2yXFbGxuSRoC5_dYBujnAtVoEMXe50V7QYjPYhqra7nA@mail.gmail.com>
+ <DB3PR0402MB39160335642AFBAC4B38C511F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CAK8P3a0CcijnVxJws_kMiaOBbc4Uox40W4=-dX+BG6OeMYtFpw@mail.gmail.com>
+ <DB3PR0402MB39167D9A3897C3CE327EBDDBF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CAK8P3a1cYsgJu+JCrmQw-VQyAKpyOz7fpOf3jBZ7QKc=urUFtw@mail.gmail.com>
+ <DB3PR0402MB39167F7746B4B3794600FC7FF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CAA+hA=TYuSk=P4D_D0_Rv1O2AAB3UvYrNXToptPJjEsjECquUw@mail.gmail.com>
+ <DB3PR0402MB3916E820EA1E9884DD0A08CFF56C0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CAK8P3a1nxtFqytyTZjte-9UJQEZWp0eKF64v=E1LpgsG8R0h9w@mail.gmail.com>
+In-Reply-To: <CAK8P3a1nxtFqytyTZjte-9UJQEZWp0eKF64v=E1LpgsG8R0h9w@mail.gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: arndb.de; dkim=none (message not signed)
+ header.d=none;arndb.de; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [183.192.9.232]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 3450e9ae-6bb1-491e-279f-08d81da12923
+x-ms-traffictypediagnostic: DB6PR0401MB2534:
+x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB6PR0401MB25349AACD63E72F2CD169D3BF56C0@DB6PR0401MB2534.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-forefront-prvs: 04519BA941
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: YXwvztyPu03pWRt7IVOEHeeJArWGGyMKIa0n6cbByNah8d0HeWwVnz810g6FNH6vELl0uwCSmdMbmsRQ3WLS7cMyGUpl0dzrqjzdWoDcQo4NuaASs/p/L9oBZ2bghYlQPr50xEKhgpPtvpUQPQfSpzy62mhBwhVH1IySUOGgu99g0MBLLMzNALCpjySzUVdOsKu7JnnWU/xXUpEuLyYN1qF63TdNxRy4IFVR+823SdOD1e8qOZI5T4W0LVz9BXLrBbGUweB3mnp4iuAH39LL1AYgQzzFGYMO8GHrl1qc7V4bv/ExYS4HIfTmq11469JWGK7WQQxUsCiHFIDhFxWEuw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(376002)(39860400002)(346002)(366004)(136003)(83380400001)(186003)(316002)(66946007)(6916009)(7696005)(44832011)(33656002)(86362001)(55016002)(64756008)(66446008)(66556008)(66476007)(5660300002)(52536014)(2906002)(76116006)(54906003)(9686003)(4326008)(53546011)(26005)(71200400001)(8676002)(7416002)(478600001)(8936002)(6506007)(19627235002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: wSoG52EgY1Yxo9l3LsJiz6r3M0VGT/UlyXRFEfDZeNELum5AvAlm0USDfA6k5ICnCAM/wuPgFLzdbYv+O98PVeviOVel2jE8/bQtZdSCuWwyDJtdM6zqvTYiDhQ590732MJLbBTrv2lscvoFYLE/KmZqjZzoCvAUTxJPqJBLW4g8y3JGGLDm0rB7fFFqTI5hSV2un6cDw5vYBHmwk3P+jkNM8oMN8pjSAOYRDMClAJl0cXu4QYXnYHij3HKOkRulU3hL40Lr5wzgXkTxtO24LdhYNxAt2Gq1uc4gpWImvg0hrIGbX5uILZfJyoqv6+NRdu2fnVqkFEtvUHERMKxE49gawxIsrB5Db1OsfyW1Hu3sEFyfwZ7h9o7h75/XhAO5QSzCKceUzPe3SxGJf3JoxRR4uDo2dAfl363cWtQEPkdJ47Kw5zbWlR1z1akBFXRazlh0FEXn4UY6RPRjGoJPT3kTJorTNj2oN2RycIFqBL8=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB3PR0402MB3916.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3450e9ae-6bb1-491e-279f-08d81da12923
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jul 2020 09:28:48.8316
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hSlqHRNM0+vDB+gtKeqMPiv2bnRHfuu9lCpWGG3KlT4ZOWqEEFFGERcAndbrQbFEP+oFfxX/gHjjAV1IFrvOVQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0401MB2534
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.07.20 04:32, Wei Yang wrote:
-> On Tue, Jun 30, 2020 at 02:52:35PM +0200, David Hildenbrand wrote:
->> On 30.06.20 04:14, Wei Yang wrote:
->>> There are two code path which invoke __populate_section_memmap()
->>>
->>>   * sparse_init_nid()
->>>   * sparse_add_section()
->>>
->>> For both case, we are sure the memory range is sub-section aligned.
->>>
->>>   * we pass PAGES_PER_SECTION to sparse_init_nid()
->>>   * we check range by check_pfn_span() before calling
->>>     sparse_add_section()
->>>
->>> Also, the counterpart of __populate_section_memmap(), we don't do such
->>> calculation and check since the range is checked by check_pfn_span() in
->>> __remove_pages().
->>>
->>> Clear the calculation and check to keep it simple and comply with its
->>> counterpart.
->>>
->>> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
->>> ---
->>>  mm/sparse-vmemmap.c | 16 ++--------------
->>>  1 file changed, 2 insertions(+), 14 deletions(-)
->>>
->>> diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
->>> index 0db7738d76e9..24b01ebae111 100644
->>> --- a/mm/sparse-vmemmap.c
->>> +++ b/mm/sparse-vmemmap.c
->>> @@ -247,20 +247,8 @@ int __meminit vmemmap_populate_basepages(unsigned long start,
->>>  struct page * __meminit __populate_section_memmap(unsigned long pfn,
->>>  		unsigned long nr_pages, int nid, struct vmem_altmap *altmap)
->>>  {
->>> -	unsigned long start;
->>> -	unsigned long end;
->>> -
->>> -	/*
->>> -	 * The minimum granularity of memmap extensions is
->>> -	 * PAGES_PER_SUBSECTION as allocations are tracked in the
->>> -	 * 'subsection_map' bitmap of the section.
->>> -	 */
->>> -	end = ALIGN(pfn + nr_pages, PAGES_PER_SUBSECTION);
->>> -	pfn &= PAGE_SUBSECTION_MASK;
->>> -	nr_pages = end - pfn;
->>> -
->>> -	start = (unsigned long) pfn_to_page(pfn);
->>> -	end = start + nr_pages * sizeof(struct page);
->>> +	unsigned long start = (unsigned long) pfn_to_page(pfn);
->>> +	unsigned long end = start + nr_pages * sizeof(struct page);
->>>  
->>>  	if (vmemmap_populate(start, end, nid, altmap))
->>>  		return NULL;
->>>
->>
->> Can we add a WARN_ON_ONCE to catch mis-use in the future?
->>
->> if (WARN_ON_ONCE(!IS_ALIGNED(pfn, PAGES_PER_SUBSECTION) ||
->>                 !IS_ALIGNED(nr_pages, PAGES_PER_SUBSECTION))
->> 	return NULL;
-> 
-> How about to add this into both population and depopulation?
-
-We don't have a similar wrapper for vmemmap_free().
-
--- 
-Thanks,
-
-David / dhildenb
-
+SGksIEFybmQNCg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIFYzIDA0LzEwXSBjbGs6IGlteDogU3Vw
+cG9ydCBidWlsZGluZyBTQ1UgY2xvY2sgZHJpdmVyIGFzDQo+IG1vZHVsZQ0KPiANCj4gT24gV2Vk
+LCBKdWwgMSwgMjAyMCBhdCA5OjE5IEFNIEFuc29uIEh1YW5nIDxhbnNvbi5odWFuZ0BueHAuY29t
+Pg0KPiB3cm90ZToNCj4gPiA+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggVjMgMDQvMTBdIGNsazogaW14
+OiBTdXBwb3J0IGJ1aWxkaW5nIFNDVSBjbG9jaw0KPiA+ID4gZHJpdmVyIGFzIG1vZHVsZSBPbiBU
+dWUsIEp1biAzMCwgMjAyMCBhdCA1OjE2IEFNIEFuc29uIEh1YW5nDQo+IDxhbnNvbi5odWFuZ0Bu
+eHAuY29tPiB3cm90ZToNCj4gPiA+DQo+ID4gPiBTQ1UgY2xvY2sgZHJpdmVyIGlzIGEgY29tbW9u
+IGRyaXZlciBmb3IgYWxsIFNDVSBiYXNlZCBwbGF0Zm9ybXMuDQo+ID4gPiBDdXJyZW50IGkuTVg4
+UVhQIFNDVSBjbG9jayBkcml2ZXIgd2lsbCBiZSBleHRlbmRlZCB0byBzdXBwb3J0IGFsbA0KPiA+
+ID4gZnV0dXJlIFNDVSBiYXNlZCBwbGF0Zm9ybXMuDQo+ID4gPiBTbyB0aGVvcmV0aWNhbGx5IGNs
+ay1zY3UubyBhbmQgY2xrLWlteDhxeHAubyBjYW4gYmUgY29tYmluZWQuIExQQ0cNCj4gPiA+IGlz
+IHNpbWlsYXIuDQo+ID4gPiBNYXliZSB5b3UgY2FuIGdpdmUgYSB0cnkgYXMgQXJuZCBzdWdnZXN0
+ZWQuDQo+ID4gPg0KPiA+DQo+ID4gRG8gd2UgcmVhbGx5IG5lZWQgdG8gbGluayBjbGstc2N1IGFu
+ZCBpLk1YOFFYUCBjbG9jayBkcml2ZXIgdG9nZXRoZXIganVzdCB0bw0KPiBhdm9pZCBzb21lIGV4
+cG9ydD8NCj4gDQo+IEl0IHdhcyBqdXN0IG1lYW50IHRvIGJlIGVhc2llciB0aGFuIGV4cG9ydGlu
+ZyBhIHN5bWJvbCBhbmQgZGVhbGluZyB3aXRoDQo+IG1vZHVsZSBkZXBlbmRlbmNpZXMuIElmIGl0
+J3Mgbm90IGVhc2llciwgdGhlbiBkb24ndC4NCj4gDQo+ID4gSSBtZXQgc29tZSBidWlsZCBpc3N1
+ZXMgaWYgdXNpbmcgdGhpcyBtZXRob2QsIHRoZSBpLk1YOFFYUCBtb2R1bGUNCj4gPiBidWlsZCBp
+cyBPSywgYnV0IG90aGVyIHBsYXRmb3JtcyBsaWtlDQo+IGkuTVg4TU0vaS5NWDhNTi9pLk1YOE1R
+L2kuTVg4TVANCj4gPiBjbG9jayBkcml2ZXJzIGFyZSBqdXN0IHNraXBwZWQgZm9yIGJ1aWxkLCBl
+dmVuIHRoZXNlIGkuTVg4TSBjbG9jaw0KPiA+IGNvbmZpZyBhcmUgZXhpc3RpbmcgaW4gLmNvbmZp
+ZywgYW55b25lIGtub3cgd2h5PyBMb29rcyBsaWtlIHRoZSBjaGFuZ2UgaW4NCj4gTWFrZWZpbGUg
+Zm9yIGkuTVg4UVhQIGNsb2NrIGRyaXZlciBpbnRyb2R1Y2UgdGhpcyBpc3N1ZS4NCj4gDQo+IFlv
+dSBoYXZlIGEgIjo9IiBpbnN0ZWFkIG9mICIrPSIgdHlwbywgc28gYWxsIGVhcmxpZXIgIis9IiBh
+cmUgaWdub3JlZDoNCj4gDQo+ID4gb2JqLSQoQ09ORklHX0NMS19JTVg4TU0pICs9IGNsay1pbXg4
+bW0ubw0KPiA+IG9iai0kKENPTkZJR19DTEtfSU1YOE1OKSArPSBjbGstaW14OG1uLm8NCj4gPiBv
+YmotJChDT05GSUdfQ0xLX0lNWDhNUCkgKz0gY2xrLWlteDhtcC5vDQo+ID4gb2JqLSQoQ09ORklH
+X0NMS19JTVg4TVEpICs9IGNsay1pbXg4bXEubw0KPiA+DQo+ID4gb2JqLSQoQ09ORklHX01YQ19D
+TEtfU0NVKSA6PSBjbGstaW14LXNjdS5vIGNsay1pbXgtbHBjZy1zY3Uubw0KPiANCj4gICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeXl5eXl5eXg0KDQpUaGFua3MsIEkgd2lsbCBn
+aXZlIGFub3RoZXIgdHJ5LCBJIHdpbGwgbWFrZSB0aGUgY29tbW9uIGNsayBwYXJ0IGFsbCBsaW5r
+ZWQgaW50byBlYWNoDQpwbGF0Zm9ybSdzIGNsb2NrIGRyaXZlciwgdGhlbiBtYW55IGV4cG9ydHMg
+Y2FuIGJlIHNhdmVkLg0KDQpUaGFua3MsDQpBbnNvbg0K
