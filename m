@@ -2,91 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43D521162F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 00:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B86A211635
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 00:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgGAWja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 18:39:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726404AbgGAWj3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 18:39:29 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BF4C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 15:39:29 -0700 (PDT)
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        id S1727866AbgGAWls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 18:41:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726114AbgGAWlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 18:41:47 -0400
+Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 9104E8066C;
-        Thu,  2 Jul 2020 10:39:25 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1593643165;
-        bh=XOd3RqAUK0HBEktw78iETxnsAIeZRaLFIqsEsFjCVc0=;
-        h=From:To:Cc:Subject:Date;
-        b=mUSxAdltir2ZdBOVEZrUgKtyR9UslVDksYpYoDJxlpOQz4p/Q9/ub1af8KyObSACD
-         FN/GPSjAxkdJ12Pva2Ly3rwAtffyfsB7+v7uVBm9ycnwjtvd7287s/futX/3YFlZ+B
-         msJ6Wzo+6CM/KGEmC59TEhJ2U/3TRCtCnP8KXj1bilX0a6JAMS+xTCQ0tJ1aWRmC5B
-         lfBQVeflHmVLQqF4MCl9TO4kocZfyz0ikDoIVLvzsJsbIpugEfVU82f23NzmabgvPo
-         Z0cymIBkpzr2VZSI+FYya/I6HQm9f2SyOYR9KNgJ1gYuzuu/fKBz/d1v2SM3mTQdht
-         gmtYBT2fd9g4g==
-Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5efd109d0000>; Thu, 02 Jul 2020 10:39:25 +1200
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
-        by smtp (Postfix) with ESMTP id CCCBA13EDDC;
-        Thu,  2 Jul 2020 10:39:23 +1200 (NZST)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id 4C734280081; Thu,  2 Jul 2020 10:39:25 +1200 (NZST)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     wsa@kernel.org, andriy.shevchenko@linux.intel.com
-Cc:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v2] i2c: algo-pca: Add 0x78 as SCL stuck low status
-Date:   Thu,  2 Jul 2020 10:39:11 +1200
-Message-Id: <20200701223912.30864-1-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.27.0
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED3362082F;
+        Wed,  1 Jul 2020 22:41:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593643307;
+        bh=n2vGfZSBPjybhWDA+g1S8i5WOzxKsIimFmP4WaB3i/k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=TUG0m1DmEwhAYs7l/5QTJrOhDJDby5unDa852whT5oB/UNlvATBgfsnl/26I5DcA/
+         vpv2Nom93bhpOJJw0DR+hmCK4/MgE+GNHnfgbqO005+8G7SDuA6AOtBSfyjIbvWSd3
+         yiteYTEVRnZ5ALyh3h6W2QSfOliqQVipE5abOG0s=
+Date:   Wed, 1 Jul 2020 17:41:45 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Marek Vasut <marex@denx.de>,
+        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: mxs_lradc_ts: Warning due to "0 is an invalid IRQ number"
+Message-ID: <20200701224145.GA3616172@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-x-atlnz-ls: pat
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5D7z=Eg=WYgzrpqn9VoU8HxMeBbEZiv9KLjMVD1_kRo+w@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PCA9665 datasheet says that I2CSTA =3D 78h indicates that SCL is stuc=
-k
-low, this differs to the PCA9564 which uses 90h for this indication.
-Treat either 0x78 or 0x90 as an indication that the SCL line is stuck.
+[+cc Rob, LKML for visibility & archive]
 
-Based on looking through the PCA9564 and PCA9665 datasheets this should
-be safe for both chips. The PCA9564 should not return 0x78 for any valid
-state and the PCA9665 should not return 0x90.
+On Wed, Jul 01, 2020 at 12:32:48PM -0300, Fabio Estevam wrote:
+> On Tue, Jun 16, 2020 at 8:52 PM Fabio Estevam <festevam@gmail.com> wrote:
+> > I am seeing the following warning on a imx28-evk running linux-next:
+> >
+> > [    7.625012] ------------[ cut here ]------------
+> > [    7.630111] WARNING: CPU: 0 PID: 1 at drivers/base/platform.c:317
+> > __platform_get_irq_byname+0x74/0x90
+> > [    7.639692] 0 is an invalid IRQ number
+> > [    7.643540] Modules linked in:
+> > [    7.646961] CPU: 0 PID: 1 Comm: swapper Not tainted
+> > 5.8.0-rc1-next-20200616-dirty #92
+> > [    7.654896] Hardware name: Freescale MXS (Device Tree)
+> > [    7.660434] [<c00105ec>] (unwind_backtrace) from [<c000e070>]
+> > (show_stack+0x10/0x14)
+> > [    7.668591] [<c000e070>] (show_stack) from [<c001aa90>] (__warn+0xe4/0x108)
+> > [    7.675941] [<c001aa90>] (__warn) from [<c001ab20>]
+> > (warn_slowpath_fmt+0x6c/0xb8)
+> > [    7.683575] [<c001ab20>] (warn_slowpath_fmt) from [<c0491b44>]
+> > (__platform_get_irq_byname+0x74/0x90)
+> > [    7.693101] [<c0491b44>] (__platform_get_irq_byname) from
+> > [<c0491b70>] (platform_get_irq_byname+0x10/0x48)
+> > [    7.703154] [<c0491b70>] (platform_get_irq_byname) from
+> > [<c056e234>] (mxs_lradc_ts_probe+0x190/0x384)
+> > [    7.712771] [<c056e234>] (mxs_lradc_ts_probe) from [<c0491850>]
+> > (platform_drv_probe+0x48/0x98)
+> > [    7.722806] [<c0491850>] (platform_drv_probe) from [<c048f7f0>]
+> > (really_probe+0x218/0x348)
+> > [    7.731530] [<c048f7f0>] (really_probe) from [<c048fa28>]
+> > (driver_probe_device+0x58/0xb4)
+> > [    7.740189] [<c048fa28>] (driver_probe_device) from [<c048fc2c>]
+> > (device_driver_attach+0x58/0x60)
+> > [    7.749471] [<c048fc2c>] (device_driver_attach) from [<c048fcb8>]
+> > (__driver_attach+0x84/0xc0)
+> > [    7.758394] [<c048fcb8>] (__driver_attach) from [<c048db28>]
+> > (bus_for_each_dev+0x70/0xb4)
+> > [    7.766977] [<c048db28>] (bus_for_each_dev) from [<c048eb24>]
+> > (bus_add_driver+0x154/0x1e0)
+> > [    7.775385] [<c048eb24>] (bus_add_driver) from [<c0490774>]
+> > (driver_register+0x74/0x108)
+> > [    7.783872] [<c0490774>] (driver_register) from [<c000a2fc>]
+> > (do_one_initcall+0x68/0x268)
+> > [    7.792467] [<c000a2fc>] (do_one_initcall) from [<c0a00fa0>]
+> > (kernel_init_freeable+0x160/0x1f4)
+> > [    7.801661] [<c0a00fa0>] (kernel_init_freeable) from [<c0720c58>]
+> > (kernel_init+0x8/0xf4)
+> > [    7.810165] [<c0720c58>] (kernel_init) from [<c0008510>]
+> > (ret_from_fork+0x14/0x24)
+> > [    7.818101] Exception stack(0xc748dfb0 to 0xc748dff8)
+> > [    7.823273] dfa0:                                     00000000
+> > 00000000 00000000 00000000
+> > [    7.831815] dfc0: 00000000 00000000 00000000 00000000 00000000
+> > 00000000 00000000 00000000
+> > [    7.840351] dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> > [    7.847322] irq event stamp: 273303
+> > [    7.850940] hardirqs last  enabled at (273311): [<c0066ed8>]
+> > console_unlock+0x390/0x534
+> > [    7.859314] hardirqs last disabled at (273328): [<c0066b8c>]
+> > console_unlock+0x44/0x534
+> > [    7.867605] softirqs last  enabled at (273344): [<c00097fc>]
+> > __do_softirq+0x2d4/0x450
+> > [    7.875817] softirqs last disabled at (273355): [<c001fe48>]
+> > irq_exit+0x150/0x174
+> > [    7.883472] ---[ end trace ddb222ada5cbf5cd ]---
+> > [    7.900004] input: mxs-lradc-ts as
+> > /devices/soc0/80000000.apb/80040000.apbx/80050000.lradc/mxs-lradc-ts/input/input0
+> >
+> > The touchscreen irq is defined as:
+> >
+> > enum mx28_lradc_irqs {
+> > MX28_LRADC_TS_IRQ = 0,
+> >
+> > Shouldn't we retrieve the IRQ number from the device tree instead?
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
-Changes in v2:
-- Note which status corresponds to which chip
-- Move patch commentary to commit message
+  mxs_lradc_ts_probe()
+  {
+    ...
+    irq = platform_get_irq_byname(pdev, mxs_lradc_ts_irq_names[i]);
+    if (irq < 0)
+	    return irq;
 
- drivers/i2c/algos/i2c-algo-pca.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+    virq = irq_of_parse_and_map(node, irq);
+    ...
+  }
 
-diff --git a/drivers/i2c/algos/i2c-algo-pca.c b/drivers/i2c/algos/i2c-alg=
-o-pca.c
-index 7f10312d1b88..388978775be0 100644
---- a/drivers/i2c/algos/i2c-algo-pca.c
-+++ b/drivers/i2c/algos/i2c-algo-pca.c
-@@ -314,7 +314,8 @@ static int pca_xfer(struct i2c_adapter *i2c_adap,
- 			DEB2("BUS ERROR - SDA Stuck low\n");
- 			pca_reset(adap);
- 			goto out;
--		case 0x90: /* Bus error - SCL stuck low */
-+		case 0x78: /* Bus error - SCL stuck low (PCA9665) */
-+		case 0x90: /* Bus error - SCL stuck low (PCA9564) */
- 			DEB2("BUS ERROR - SCL Stuck low\n");
- 			pca_reset(adap);
- 			goto out;
---=20
-2.27.0
+That's not right, is it?  irq_of_parse_and_map() takes an *index*, but
+we're passing an IRQ.
 
+mxs_lradc_adc_probe() also has the same pattern.
