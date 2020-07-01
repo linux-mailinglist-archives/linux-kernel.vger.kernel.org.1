@@ -2,96 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC662110E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 18:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C112110F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 18:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732459AbgGAQlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 12:41:45 -0400
-Received: from mga01.intel.com ([192.55.52.88]:59026 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732161AbgGAQlp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 12:41:45 -0400
-IronPort-SDR: oRGzju7WHe0OZGl9LaqcDDbdoUmf2ARYMJRugeFBpjYbMBw8Eu8OEx7RZConph0xxhEzlG6KCg
- /kuTKAN/Fp3Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="164667469"
-X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; 
-   d="scan'208";a="164667469"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 09:41:44 -0700
-IronPort-SDR: EoikpcP2W/7ALLzkZ2vGI5g9NRCpYQEm1C/trjn2wIx6E2LQzR+aA5EWw0+bhBo6hQ/J38cF8R
- tmrl0joXQgvg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
-   d="scan'208";a="313825910"
-Received: from spandruv-mobl3.amr.corp.intel.com ([10.254.75.215])
-  by fmsmga002.fm.intel.com with ESMTP; 01 Jul 2020 09:41:44 -0700
-Message-ID: <d3d748b28e2ff540017129c1f3291fcaa68faa21.camel@linux.intel.com>
-Subject: Re: [PATCH v2 4/5] thermal: core: genetlink support for
- events/cmd/sampling
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>
-Cc:     rkumbako@codeaurora.org, amit.kucheria@linaro.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 01 Jul 2020 09:41:44 -0700
-In-Reply-To: <8526622b-cb31-4d40-95b6-e209b3101563@linaro.org>
-References: <20200625144509.17918-1-daniel.lezcano@linaro.org>
-         <20200625144509.17918-4-daniel.lezcano@linaro.org>
-         <73150ef4ca536368f087672b917dd9773417020e.camel@intel.com>
-         <23458be6-1e5f-7397-4935-c5268b9f52a6@linaro.org>
-         <171936e84c416d7647756d9b453ef2d4475ebdc8.camel@intel.com>
-         <4c8abeb4ddff2355d9ba397f50b7844a7734c2e9.camel@linux.intel.com>
-         <8526622b-cb31-4d40-95b6-e209b3101563@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.3 (3.34.3-1.fc31) 
+        id S1732396AbgGAQpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 12:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727007AbgGAQpc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 12:45:32 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B82C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 09:45:31 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id u17so18963036qtq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 09:45:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y0XJ0Slz7kZn6xQCV03ZiEkNStp45H7CUj9hGVbrJA4=;
+        b=WOlYI1qysbjpCzlysPRaGJ4VaNr1szvkRUtaVRqNVOKRG2psRSUuDfXpJ8eIG0CcZo
+         Xt92VQ8wVt5dL8um5nFiaX7r/CE5lvDMp5vQ/ya9ObE1d3//832zRa/psutipnrPnzhl
+         JguhH+zEZNWNMvTrdoQ6HncUkyrgqu9qrpWQdkz7c2T0K7pzTswsNIGfneTQP7dv4B3S
+         ZqSEw/OQoszGHqaMzuWjuWlmT0qTFF9n55zQuqJ1MgihJVkzXnBWEpbr7Uu+FmBWr2M3
+         9Mvh9b/00KfZ0ohaH6mY3iXEaly5xPu40qKdcdI3Sg4xxnAqilubjcC/lfkHZWpZBU5r
+         zgFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y0XJ0Slz7kZn6xQCV03ZiEkNStp45H7CUj9hGVbrJA4=;
+        b=UMQTpg8Sgb/JINSDhXRAOOBcIBPUM4NCtcLwoOj+M9Aie/nPXOWSrqMkrT4x6lLset
+         pnKDe6yTlcXhvIqj2VErcnyFPncWsje470PfHxuCE2ZLN8kCdJDRmBUqDC/eXog5dn0m
+         BE6tLm4rpH60qvY81YwHMlLVypBzA+zjzeJc4zd5rDeEYxy4+k7aIsj9Z0q7GOy3s7c+
+         jLWD/r7o4qEOiLOuHy/J91FKHmfejPMr3zl6j82/RfidVKCl5qjv7HsNGKodlcdKJMSZ
+         QmDl/VKyDjC9BvI2SCTvOE+xFSSID09fA2eCqWqqILSV9q5ZCWKSt2ldkXeuBzbtPfmu
+         Cepg==
+X-Gm-Message-State: AOAM5318Vq7ity5G0AJqW0pDpP8m1udkEF95TkLj17dyx97KbJAQUw3T
+        0AIMD+elfmiXs9sPoVHGr8o=
+X-Google-Smtp-Source: ABdhPJx4ulb3eFwQXAKpSzVSL7OnSrOyLoX9VIXGKbnlc7gytKE2kz0+C4u+jDfXs4xlVAVxDca18w==
+X-Received: by 2002:ac8:4f4c:: with SMTP id i12mr7109254qtw.17.1593621930946;
+        Wed, 01 Jul 2020 09:45:30 -0700 (PDT)
+Received: from localhost.localdomain (dslb-178-011-230-214.178.011.pools.vodafone-ip.de. [178.11.230.214])
+        by smtp.gmail.com with ESMTPSA id w77sm6247489qka.34.2020.07.01.09.45.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jul 2020 09:45:30 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH] staging: rtl8712: use common ieee80211 constants
+Date:   Wed,  1 Jul 2020 18:42:13 +0200
+Message-Id: <20200701164213.4205-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-07-01 at 18:31 +0200, Daniel Lezcano wrote:
-> On 01/07/2020 17:49, Srinivas Pandruvada wrote:
-> > [...]
-> > 
-> > > Then I'd prefer we only introduce the events that are used or
-> > > will be
-> > > used soon, like the tz disable/enable, to avoid some potential
-> > > dead
-> > > code.
-> > > We can easily add more events when they are needed.
-> > > 
-> > > Srinivas, do you have plan to use the trip add/delete events?
-> > Yes and also trip modify.
-> 
-> Ok I will keep those then.
-> 
-> > Also I need to have one more event for heartbeat like event which
-> > needs
-> > confirmation from user space to hardware the user process
-> > controlling
-> > thermal is active not dead. So whenever hardware wants to check
-> > health 
-> > it will send an event, which user space should acknowledge
-> 
-> Could it be the opposite? The userspace sends periodically a message
-> to
-> tell it is alive instead of having the kernel asking the userspace?
-> 
-Kernel doesn't ask (there is no timer in the kernel). The HW/FW send
-special event for confirmation and expects reply (This is upto the
-vendors). So user space can't send randomly.
+Many defined constants in wifi.h are unused and/or available from
+<linux/ieee80211.h>, some with slightly different names. Use the
+common ones, rename where necessary and remove unused.
 
-> Is it ok if we add this in a separate series ?
-Yes.
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
+---
+ drivers/staging/rtl8712/rtl871x_ioctl_linux.c |  2 +-
+ drivers/staging/rtl8712/rtl871x_mlme.c        |  8 +--
+ drivers/staging/rtl8712/wifi.h                | 51 -------------------
+ 3 files changed, 5 insertions(+), 56 deletions(-)
 
-Thanks,
-Srinivas
-
-> 
-> 
-> 
+diff --git a/drivers/staging/rtl8712/rtl871x_ioctl_linux.c b/drivers/staging/rtl8712/rtl871x_ioctl_linux.c
+index 36c89cde525d..81482d5ae1a3 100644
+--- a/drivers/staging/rtl8712/rtl871x_ioctl_linux.c
++++ b/drivers/staging/rtl8712/rtl871x_ioctl_linux.c
+@@ -1411,7 +1411,7 @@ static int r8711_wx_get_rate(struct net_device *dev,
+ 		pht_capie = (struct rtl_ieee80211_ht_cap *)(p + 2);
+ 		memcpy(&mcs_rate, pht_capie->supp_mcs_set, 2);
+ 		bw_40MHz = (le16_to_cpu(pht_capie->cap_info) &
+-			    IEEE80211_HT_CAP_SUP_WIDTH) ? 1 : 0;
++			    IEEE80211_HT_CAP_SUP_WIDTH_20_40) ? 1 : 0;
+ 		short_GI = (le16_to_cpu(pht_capie->cap_info) &
+ 			    (IEEE80211_HT_CAP_SGI_20 |
+ 			    IEEE80211_HT_CAP_SGI_40)) ? 1 : 0;
+diff --git a/drivers/staging/rtl8712/rtl871x_mlme.c b/drivers/staging/rtl8712/rtl871x_mlme.c
+index efd75add8e35..9ee1bfac0763 100644
+--- a/drivers/staging/rtl8712/rtl871x_mlme.c
++++ b/drivers/staging/rtl8712/rtl871x_mlme.c
+@@ -1660,14 +1660,14 @@ unsigned int r8712_restructure_ht_ie(struct _adapter *padapter, u8 *in_ie,
+ 		}
+ 		out_len = *pout_len;
+ 		memset(&ht_capie, 0, sizeof(struct rtl_ieee80211_ht_cap));
+-		ht_capie.cap_info = cpu_to_le16(IEEE80211_HT_CAP_SUP_WIDTH |
++		ht_capie.cap_info = cpu_to_le16(IEEE80211_HT_CAP_SUP_WIDTH_20_40 |
+ 				    IEEE80211_HT_CAP_SGI_20 |
+ 				    IEEE80211_HT_CAP_SGI_40 |
+ 				    IEEE80211_HT_CAP_TX_STBC |
+ 				    IEEE80211_HT_CAP_MAX_AMSDU |
+ 				    IEEE80211_HT_CAP_DSSSCCK40);
+-		ht_capie.ampdu_params_info = (IEEE80211_HT_CAP_AMPDU_FACTOR &
+-				0x03) | (IEEE80211_HT_CAP_AMPDU_DENSITY & 0x00);
++		ht_capie.ampdu_params_info = (IEEE80211_HT_AMPDU_PARM_FACTOR &
++				0x03) | (IEEE80211_HT_AMPDU_PARM_DENSITY & 0x00);
+ 		r8712_set_ie(out_ie + out_len, _HT_CAPABILITY_IE_,
+ 			     sizeof(struct rtl_ieee80211_ht_cap),
+ 			     (unsigned char *)&ht_capie, pout_len);
+@@ -1705,7 +1705,7 @@ static void update_ht_cap(struct _adapter *padapter, u8 *pie, uint ie_len)
+ 	if (p && len > 0) {
+ 		pht_capie = (struct rtl_ieee80211_ht_cap *)(p + 2);
+ 		max_ampdu_sz = (pht_capie->ampdu_params_info &
+-				IEEE80211_HT_CAP_AMPDU_FACTOR);
++				IEEE80211_HT_AMPDU_PARM_FACTOR);
+ 		/* max_ampdu_sz (kbytes); */
+ 		max_ampdu_sz = 1 << (max_ampdu_sz + 3);
+ 		phtpriv->rx_ampdu_maxlen = max_ampdu_sz;
+diff --git a/drivers/staging/rtl8712/wifi.h b/drivers/staging/rtl8712/wifi.h
+index 66e0634f07ba..601d4ff607bc 100644
+--- a/drivers/staging/rtl8712/wifi.h
++++ b/drivers/staging/rtl8712/wifi.h
+@@ -437,13 +437,6 @@ static inline unsigned char *get_hdr_bssid(unsigned char *pframe)
+  *------------------------------------------------------------------------------
+  */
+ 
+-/* block-ack parameters */
+-#define IEEE80211_ADDBA_PARAM_POLICY_MASK 0x0002
+-#define IEEE80211_ADDBA_PARAM_TID_MASK 0x003C
+-#define IEEE80211_ADDBA_PARAM_BUF_SIZE_MASK 0xFFC0
+-#define IEEE80211_DELBA_PARAM_TID_MASK 0xF000
+-#define IEEE80211_DELBA_PARAM_INITIATOR_MASK 0x0800
+-
+ #define SetOrderBit(pbuf) ({ \
+ 	*(__le16 *)(pbuf) |= cpu_to_le16(_ORDER_); \
+ })
+@@ -481,49 +474,5 @@ struct ieee80211_ht_addt_info {
+ 	unsigned char		basic_set[16];
+ } __packed;
+ 
+-/* 802.11n HT capabilities masks */
+-#define IEEE80211_HT_CAP_SUP_WIDTH		0x0002
+-#define IEEE80211_HT_CAP_SM_PS			0x000C
+-#define IEEE80211_HT_CAP_GRN_FLD		0x0010
+-#define IEEE80211_HT_CAP_SGI_20			0x0020
+-#define IEEE80211_HT_CAP_SGI_40			0x0040
+-#define IEEE80211_HT_CAP_TX_STBC			0x0080
+-#define IEEE80211_HT_CAP_DELAY_BA		0x0400
+-#define IEEE80211_HT_CAP_MAX_AMSDU		0x0800
+-#define IEEE80211_HT_CAP_DSSSCCK40		0x1000
+-/* 802.11n HT capability AMPDU settings */
+-#define IEEE80211_HT_CAP_AMPDU_FACTOR		0x03
+-#define IEEE80211_HT_CAP_AMPDU_DENSITY		0x1C
+-/* 802.11n HT capability MSC set */
+-#define IEEE80211_SUPP_MCS_SET_UEQM		4
+-#define IEEE80211_HT_CAP_MAX_STREAMS		4
+-#define IEEE80211_SUPP_MCS_SET_LEN		10
+-/* maximum streams the spec allows */
+-#define IEEE80211_HT_CAP_MCS_TX_DEFINED		0x01
+-#define IEEE80211_HT_CAP_MCS_TX_RX_DIFF		0x02
+-#define IEEE80211_HT_CAP_MCS_TX_STREAMS		0x0C
+-#define IEEE80211_HT_CAP_MCS_TX_UEQM		0x10
+-/* 802.11n HT IE masks */
+-#define IEEE80211_HT_IE_CHA_SEC_OFFSET		0x03
+-#define IEEE80211_HT_IE_CHA_SEC_NONE		0x00
+-#define IEEE80211_HT_IE_CHA_SEC_ABOVE		0x01
+-#define IEEE80211_HT_IE_CHA_SEC_BELOW		0x03
+-#define IEEE80211_HT_IE_CHA_WIDTH		0x04
+-#define IEEE80211_HT_IE_HT_PROTECTION		0x0003
+-#define IEEE80211_HT_IE_NON_GF_STA_PRSNT	0x0004
+-#define IEEE80211_HT_IE_NON_HT_STA_PRSNT	0x0010
+-
+-/*
+- * A-PMDU buffer sizes
+- * According to IEEE802.11n spec size varies from 8K to 64K (in powers of 2)
+- */
+-#define IEEE80211_MIN_AMPDU_BUF 0x8
+-
+-/* Spatial Multiplexing Power Save Modes */
+-#define WLAN_HT_CAP_SM_PS_STATIC		0
+-#define WLAN_HT_CAP_SM_PS_DYNAMIC	1
+-#define WLAN_HT_CAP_SM_PS_INVALID	2
+-#define WLAN_HT_CAP_SM_PS_DISABLED	3
+-
+ #endif /* _WIFI_H_ */
+ 
+-- 
+2.27.0
 
