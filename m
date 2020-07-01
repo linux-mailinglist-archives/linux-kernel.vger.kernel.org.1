@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7EB211335
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 21:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A31211339
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 21:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbgGATEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 15:04:41 -0400
-Received: from mga14.intel.com ([192.55.52.115]:2061 "EHLO mga14.intel.com"
+        id S1726302AbgGATHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 15:07:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:39768 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725915AbgGATEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 15:04:41 -0400
-IronPort-SDR: YivStrRSMl8pcRhYApL9o/UJ4FoQjxZxrw94Qaz6UOD22z9WCH7WIW9auuidlkYUlpj5f32QLc
- 2bPsRdXOhyOQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="145770791"
-X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; 
-   d="scan'208";a="145770791"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 12:04:40 -0700
-IronPort-SDR: TmYcEGuJoZOZhWXu8giYBKcgpObZcCVPphl14dwMkc43f9cLplBsWFvwcwUfa/J0W+nVScd4+V
- GRDeLKYUlt5w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; 
-   d="scan'208";a="481404699"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.209.136.35]) ([10.209.136.35])
-  by fmsmga006.fm.intel.com with ESMTP; 01 Jul 2020 12:04:39 -0700
-Subject: Re: [PATCH v2] dmaengine: ioat setting ioat timeout as module
- parameter
-To:     leonid.ravich@dell.com, dmaengine@vger.kernel.org
-Cc:     lravich@gmail.com, Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        "Alexander.Barabash@dell.com" <Alexander.Barabash@dell.com>,
-        linux-kernel@vger.kernel.org
-References: <20200701140849.8828-1-leonid.ravich@dell.com>
- <20200701184816.29138-1-leonid.ravich@dell.com>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <5c19ef4f-21ce-04ec-0ea9-685a1885a50a@intel.com>
-Date:   Wed, 1 Jul 2020 12:04:38 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1725875AbgGATHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 15:07:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 48DFE1FB;
+        Wed,  1 Jul 2020 12:07:20 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 48AAF3F68F;
+        Wed,  1 Jul 2020 12:07:19 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, morten.rasmussen@arm.com
+Subject: [PATCH v3 0/7] sched: Instrument sched domain flags
+Date:   Wed,  1 Jul 2020 20:06:48 +0100
+Message-Id: <20200701190656.10126-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200701184816.29138-1-leonid.ravich@dell.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+I've repeatedly stared at an SD flag and asked myself "how should that be
+set up in the domain hierarchy anyway?". I figured that if we formalize our
+flags zoology a bit, we could also do some runtime assertions on them -
+this is what this series is all about.
 
-On 7/1/2020 11:48 AM, leonid.ravich@dell.com wrote:
-> From: Leonid Ravich <Leonid.Ravich@emc.com>
-> 
-> DMA transaction time to completion  is a function of
-> PCI bandwidth,transaction size and a queue depth.
-> So hard coded value for timeouts might be wrong
-> for some scenarios.
-> 
-> Signed-off-by: Leonid Ravich <Leonid.Ravich@emc.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+Patches
+=======
 
-> ---
-> Changing in v2
->    - misspelling of completion
->   drivers/dma/ioat/dma.c | 12 ++++++++++++
->   drivers/dma/ioat/dma.h |  2 --
->   2 files changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/dma/ioat/dma.c b/drivers/dma/ioat/dma.c
-> index 8ad0ad861c86..fd782aee02d9 100644
-> --- a/drivers/dma/ioat/dma.c
-> +++ b/drivers/dma/ioat/dma.c
-> @@ -26,6 +26,18 @@
->   
->   #include "../dmaengine.h"
->   
-> +int completion_timeout = 200;
-> +module_param(completion_timeout, int, 0644);
-> +MODULE_PARM_DESC(completion_timeout,
-> +		"set ioat completion timeout [msec] (default 200 [msec])");
-> +int idle_timeout = 2000;
-> +module_param(idle_timeout, int, 0644);
-> +MODULE_PARM_DESC(idle_timeout,
-> +		"set ioat idel timeout [msec] (default 2000 [msec])");
-> +
-> +#define IDLE_TIMEOUT msecs_to_jiffies(idle_timeout)
-> +#define COMPLETION_TIMEOUT msecs_to_jiffies(completion_timeout)
-> +
->   static char *chanerr_str[] = {
->   	"DMA Transfer Source Address Error",
->   	"DMA Transfer Destination Address Error",
-> diff --git a/drivers/dma/ioat/dma.h b/drivers/dma/ioat/dma.h
-> index e6b622e1ba92..f7f31fdf14cf 100644
-> --- a/drivers/dma/ioat/dma.h
-> +++ b/drivers/dma/ioat/dma.h
-> @@ -104,8 +104,6 @@ struct ioatdma_chan {
->   	#define IOAT_RUN 5
->   	#define IOAT_CHAN_ACTIVE 6
->   	struct timer_list timer;
-> -	#define COMPLETION_TIMEOUT msecs_to_jiffies(100)
-> -	#define IDLE_TIMEOUT msecs_to_jiffies(2000)
->   	#define RESET_DELAY msecs_to_jiffies(100)
->   	struct ioatdma_device *ioat_dma;
->   	dma_addr_t completion_dma;
-> 
+The idea is to associate the flags with metaflags that describes how they
+should be set in a sched domain hierarchy ("if this SD has it, all its {parents,
+children} have it") or how they behave wrt degeneration - details are in the
+comments and commit logs. 
+
+The good thing is that the debugging bits go away when CONFIG_SCHED_DEBUG isn't
+set. The bad thing is that this replaces SD_* flags definitions with some
+unsavoury macros. This is mainly because I wanted to avoid having to duplicate
+work between declaring the flags and declaring their metaflags.
+
+o Patches 1-2 set up the SD flag definition groundwork
+o Patch 3 enables the hierarchy debugging
+o Patch 4 is a derelict SD flag removal
+o Patches 5-7 tweak the SD degeneration to leverage metaflags as well (suggested
+  by Peter).
+
+  Note that this builds a compile-time mask using the single most horrendous
+  macro I have ever presented to the public eye. It might end up being much
+  better to explicitely build the mask in topology.h, but to be honest I felt
+  like I had to show that monster around out of morbid fascination.
+
+Revisions
+=========
+
+v2 -> v3
+--------
+
+o Reworded comment for SD_OVERLAP (it's about the groups, not the domains)
+
+o Added more flags to the SD degeneration mask
+o Added generation of an SD flag mask for the degeneration functions (Peter)
+
+RFC -> v2
+---------
+
+o Rebased on top of tip/sched/core
+o Aligned wording of comments between flags
+o Rectified some flag descriptions (Morten)
+o Added removal of SD_SHARE_POWERDOMAIN (Morten)
+
+Valentin Schneider (7):
+  sched/topology: Split out SD_* flags declaration to its own file
+  sched/topology: Define and assign sched_domain flag metadata
+  sched/topology: Verify SD_* flags setup when sched_debug is on
+  arm, sched/topology: Remove SD_SHARE_POWERDOMAIN
+  sched/topology: Add more flags to the SD degeneration mask
+  sched/topology: Introduce SD metaflag for flags needing > 1 groups
+  sched/topology: Use prebuilt SD flag degeneration mask
+
+ arch/arm/kernel/topology.c     |   2 +-
+ include/linux/sched/sd_flags.h | 153 +++++++++++++++++++++++++++++++++
+ include/linux/sched/topology.h |  36 +++++---
+ kernel/sched/topology.c        |  40 +++++----
+ 4 files changed, 197 insertions(+), 34 deletions(-)
+ create mode 100644 include/linux/sched/sd_flags.h
+
+--
+2.27.0
+
