@@ -2,76 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D7321113C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 18:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD179211143
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 18:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732749AbgGAQxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 12:53:47 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:35638 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732376AbgGAQxo (ORCPT
+        id S1732786AbgGAQx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 12:53:59 -0400
+Received: from out28-97.mail.aliyun.com ([115.124.28.97]:55460 "EHLO
+        out28-97.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732478AbgGAQx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 12:53:44 -0400
-Received: by mail-wr1-f66.google.com with SMTP id z2so2556407wrp.2;
-        Wed, 01 Jul 2020 09:53:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=W4aGIA2sVJUTFvh2lVc0/GV3kZcbHmAaStG8roUdCNw=;
-        b=gIrprbonIy7G7RMYu/VoAhSVIYYfOEP67ud/4mRHrbK1r4VScHIPT8STviwrB4D7f8
-         q29TzkF1sx5IWkB9esI5lATDeFyJijcIyDvhprWshxFKwURC2iKD4xP5wVpk0dla4PRw
-         tejf0L4GOs6rhCM7Prxib05+270pzwp4v+hPHAcBsixD8lMcUyE465ASvtU8SDwoLY00
-         2cqKqAqKWvwCMYB76DjH/udHBaVNT80bYX2n4MeOEzC81UJJC6m6X0vxXlLpeU7/AVFw
-         cz3o+fYlfm21GeyZZxBSZN4dkQJ+giRonaHnfoXeVEg/SOoFWtTge8ODLDt7JfD4BOlw
-         y4rA==
-X-Gm-Message-State: AOAM533/HdQz1PTMu4YMcj788w80Sy3wZWFqwHTuOYhI/vW8kC28UnHQ
-        tnEIG4rIn/NHwjLyU0sSXGE=
-X-Google-Smtp-Source: ABdhPJwDeOcChvL4k1hvA2Wrl3bOGcuv+/K+qh4jbWPUqi49VCCIXQ4o5bN2tWQsS2duRI5B5elz0g==
-X-Received: by 2002:a5d:458a:: with SMTP id p10mr27066648wrq.184.1593622421731;
-        Wed, 01 Jul 2020 09:53:41 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id n14sm8290457wro.81.2020.07.01.09.53.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 09:53:41 -0700 (PDT)
-Date:   Wed, 1 Jul 2020 16:53:39 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     t-mabelt@microsoft.com
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
-        parri.andrea@gmail.com, Andres Beltran <lkmlabelt@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] scsi: storvsc: Use vmbus_requestor to generate
- transaction IDs for VMBus hardening
-Message-ID: <20200701165339.chtxkixnkocnjw5u@liuwe-devbox-debian-v2>
-References: <20200701001221.2540-1-lkmlabelt@gmail.com>
- <20200701001221.2540-3-lkmlabelt@gmail.com>
+        Wed, 1 Jul 2020 12:53:57 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.06444931|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0121749-0.000458275-0.987367;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03302;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.Hvx6e5p_1593622427;
+Received: from 192.168.10.205(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Hvx6e5p_1593622427)
+          by smtp.aliyun-inc.com(10.147.41.137);
+          Thu, 02 Jul 2020 00:53:48 +0800
+Subject: Re: [PATCH v3 1/2] dt-bindings: timer: Add Ingenic X1000 OST
+ bindings.
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        daniel.lezcano@linaro.org, tglx@linutronix.de, robh+dt@kernel.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
+References: <20200630171553.70670-1-zhouyanjie@wanyeetech.com>
+ <20200630171553.70670-2-zhouyanjie@wanyeetech.com>
+ <LT6RCQ.V5ANBLLSA4OD3@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <808ce8df-6e25-8f1b-4db3-718267fe4498@wanyeetech.com>
+Date:   Thu, 2 Jul 2020 00:53:45 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200701001221.2540-3-lkmlabelt@gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <LT6RCQ.V5ANBLLSA4OD3@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 08:12:20PM -0400, Andres Beltran wrote:
-> Currently, pointers to guest memory are passed to Hyper-V as
-> transaction IDs in storvsc. In the face of errors or malicious
-> behavior in Hyper-V, storvsc should not expose or trust the transaction
-> IDs returned by Hyper-V to be valid guest memory addresses. Instead,
-> use small integers generated by vmbus_requestor as requests
-> (transaction) IDs.
-> 
-> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-> Cc: linux-scsi@vger.kernel.org
+Hi Paul,
 
-James and Martin, FYI I'm going to take this patch via hyperv tree
-because it depends on the first patch.
+在 2020/7/1 上午3:15, Paul Cercueil 写道:
+> Hi Zhou,
+>
+> Le mer. 1 juil. 2020 à 1:15, 周琰杰 (Zhou Yanjie) 
+> <zhouyanjie@wanyeetech.com> a écrit :
+>> Add the OST bindings for the X10000 SoC from Ingenic.
+>>
+>> Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
+>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>> ---
+>>
+>> Notes:
+>>     v1->v2:
+>>     No change.
+>>
+>>     v2->v3:
+>>     Fix wrong parameters in "clocks".
+>>
+>>  .../devicetree/bindings/timer/ingenic,ost.yaml     | 61 
+>> ++++++++++++++++++++++
+>>  include/dt-bindings/clock/ingenic,ost.h            | 12 +++++
+>
+> Please name them ingenic,sysost.yaml and ingenic,sysost.h, to 
+> differenciate with the OST that is in the JZ SoCs.
+>
 
-Wei.
+Sure.
+
+
+>>  2 files changed, 73 insertions(+)
+>>  create mode 100644 
+>> Documentation/devicetree/bindings/timer/ingenic,ost.yaml
+>>  create mode 100644 include/dt-bindings/clock/ingenic,ost.h
+>>
+>> diff --git a/Documentation/devicetree/bindings/timer/ingenic,ost.yaml 
+>> b/Documentation/devicetree/bindings/timer/ingenic,ost.yaml
+>> new file mode 100644
+>> index 000000000000..459dd3d161c2
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/timer/ingenic,ost.yaml
+>> @@ -0,0 +1,61 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/timer/ingenic,ost.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Bindings for SYSOST in Ingenic XBurst family SoCs
+>> +
+>> +maintainers:
+>> +  - 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>> +
+>> +description:
+>> +  The SYSOST in an Ingenic SoC provides one 64bit timer for clocksource
+>> +  and one or more than one 32bit timers for clockevent.
+>
+> "and one or more than one" -> "and one or more"
+>
+
+OK, I'll change it in the next version.
+
+
+>> +
+>> +properties:
+>> +  compatible:
+>> +    oneOf:
+>> +
+>> +      - description: SYSOST in Ingenic XBurst family SoCs
+>
+> XBurst is the name of the CPU, not a SoC family, so you would just 
+> write 'Ingenic SoCs'. But just drop the description alltogether, it 
+> does not add anything valuable.
+>
+
+Sure.
+
+
+>> +        enum:
+>> +          - ingenic,x1000-ost
+>> +          - ingenic,x2000-ost
+>
+> You have "ingenic,x2000-ost" as a compatible string, but your driver 
+> (in patch [2/2]) only handles the first compatible string. Either they 
+> are different, in this case the driver should handle both, or they 
+> work the same, and in the case the "ingenic,x2000-ost" string should 
+> use "ingenic,x1000-ost" as a fallback string.
+>
+
+If SMT is not turned on, X2000 can be compatible with X1000, but if SMT 
+is turned on, some additional processing is required, and now this 
+compatible string is reserved for this.
+
+Thanks and best regards!
+
+
+> Cheers,
+> -Paul
+>
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    maxItems: 1
+>> +
+>> +  clock-names:
+>> +    const: ost
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +required:
+>> +  - "#clock-cells"
+>> +  - compatible
+>> +  - reg
+>> +  - clocks
+>> +  - clock-names
+>> +  - interrupts
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/clock/x1000-cgu.h>
+>> +
+>> +    ost: timer@12000000 {
+>> +            compatible = "ingenic,x1000-ost";
+>> +            reg = <0x12000000 0x3c>;
+>> +
+>> +            #clock-cells = <1>;
+>> +
+>> +            clocks = <&cgu X1000_CLK_OST>;
+>> +            clock-names = "ost";
+>> +
+>> +            interrupt-parent = <&cpuintc>;
+>> +            interrupts = <3>;
+>> +        };
+>> +...
+>> diff --git a/include/dt-bindings/clock/ingenic,ost.h 
+>> b/include/dt-bindings/clock/ingenic,ost.h
+>> new file mode 100644
+>> index 000000000000..9ac88e90babf
+>> --- /dev/null
+>> +++ b/include/dt-bindings/clock/ingenic,ost.h
+>> @@ -0,0 +1,12 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/*
+>> + * This header provides clock numbers for the ingenic,tcu DT binding.
+>> + */
+>> +
+>> +#ifndef __DT_BINDINGS_CLOCK_INGENIC_OST_H__
+>> +#define __DT_BINDINGS_CLOCK_INGENIC_OST_H__
+>> +
+>> +#define OST_CLK_PERCPU_TIMER    0
+>> +#define OST_CLK_GLOBAL_TIMER    1
+>> +
+>> +#endif /* __DT_BINDINGS_CLOCK_INGENIC_OST_H__ */
+>> -- 
+>> 2.11.0
+>>
+>
