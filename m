@@ -2,100 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BC2210A42
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 13:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0805E210A4B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 13:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730318AbgGAL0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 07:26:01 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6793 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730159AbgGAL0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 07:26:01 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id B6201EE0AAC0EB1C54FF;
-        Wed,  1 Jul 2020 19:25:57 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Wed, 1 Jul 2020
- 19:25:50 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     <richard@nod.at>, <yi.zhang@huawei.com>
-Subject: [PATCH] ubifs: Fix a potential space leak problem while linking tmpfile
-Date:   Wed, 1 Jul 2020 19:26:43 +0800
-Message-ID: <20200701112643.726986-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S1730340AbgGAL2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 07:28:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:59770 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730159AbgGAL2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 07:28:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D39FD30E;
+        Wed,  1 Jul 2020 04:28:43 -0700 (PDT)
+Received: from [192.168.1.84] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D8313F73C;
+        Wed,  1 Jul 2020 04:28:40 -0700 (PDT)
+Subject: Re: [PATCH 03/12] KVM: arm64: Report hardware dirty status of stage2
+ PTE if coverred
+To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        liangpeng10@huawei.com, Alexios Zavras <alexios.zavras@intel.com>,
+        Mark Brown <broonie@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200616093553.27512-1-zhukeqian1@huawei.com>
+ <20200616093553.27512-4-zhukeqian1@huawei.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <a73952ac-5e81-6c05-9b21-734e25250845@arm.com>
+Date:   Wed, 1 Jul 2020 12:28:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200616093553.27512-4-zhukeqian1@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a potential space leak problem while linking tmpfile, in which
-case, inode node (with nlink=0) is valid in tnc (on flash), which leads
-to space leak. Meanwhile, the corresponding data nodes won't be released
-from tnc. For example, (A reproducer can be found in Link):
+Hi,
 
-$ mount UBIFS
-  [process A]            [process B]         [TNC]         [orphan area]
+On 16/06/2020 10:35, Keqian Zhu wrote:
+> kvm_set_pte is called to replace a target PTE with a desired one.
+> We always do this without changing the desired one, but if dirty
+> status set by hardware is coverred, let caller know it.
+> 
+> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+> ---
+>   arch/arm64/kvm/mmu.c | 36 +++++++++++++++++++++++++++++++++++-
+>   1 file changed, 35 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 5ad87bce23c0..27407153121b 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -194,11 +194,45 @@ static void clear_stage2_pmd_entry(struct kvm *kvm, pmd_t *pmd, phys_addr_t addr
+>   	put_page(virt_to_page(pmd));
+>   }
+>   
+> -static inline void kvm_set_pte(pte_t *ptep, pte_t new_pte)
+> +#ifdef CONFIG_ARM64_HW_AFDBM
+> +/**
+> + * @ret: true if dirty status set by hardware is coverred.
 
- ubifs_tmpfile                          inode_A (nlink=0)     inode_A
-                          do_commit     inode_A (nlink=0)     inode_A
-			       ↑
-      (comment: It makes sure not replay inode_A in next mount)
- ubifs_link                             inode_A (nlink=0)     inode_A
-   ubifs_delete_orphan                  inode_A (nlink=0)
-                          do_commit     inode_A (nlink=0)
-                           ---> POWERCUT <---
-   (ubifs_jnl_update)
+NIT: s/coverred/covered/, this is in several places.
 
-$ mount UBIFS
-  inode_A will neither be replayed in ubifs_replay_journal() nor
-  ubifs_mount_orphans(). inode_A (nlink=0) with its data nodes will
-  always on tnc, it occupy space but is non-visable for users.
+> + */
+> +static bool kvm_set_pte(pte_t *ptep, pte_t new_pte)
+> +{
+> +	pteval_t old_pteval, new_pteval, pteval;
+> +	bool old_logging, new_no_write;
+> +
+> +	old_logging = kvm_hw_dbm_enabled() && !pte_none(*ptep) &&
+> +		      kvm_s2pte_dbm(ptep);
+> +	new_no_write = pte_none(new_pte) || kvm_s2pte_readonly(&new_pte);
+> +
+> +	if (!old_logging || !new_no_write) {
+> +		WRITE_ONCE(*ptep, new_pte);
+> +		dsb(ishst);
+> +		return false;
+> +	}
+> +
+> +	new_pteval = pte_val(new_pte);
+> +	pteval = READ_ONCE(pte_val(*ptep));
 
-Commit ee1438ce5dc4d ("ubifs: Check link count of inodes when killing
-orphans.") handles problem in mistakenly deleting relinked tmpfile
-while replaying orphan area. Since that, tmpfile inode should always
-live in orphan area even it is linked. Fix it by reverting commit
-32fe905c17f001 ("ubifs: Fix O_TMPFILE corner case in ubifs_link()").
+This usage of *ptep looks wrong - it's read twice using READ_ONCE (once 
+in kvm_s2pte_dbm()) and once without any decoration (in the pte_none() 
+call). Which looks a bit dodgy and at the very least needs some 
+justification. AFAICT you would be better taking a local copy and using 
+that rather than reading from memory repeatedly.
 
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: <stable@vger.kernel.org>  # v5.3+
-Fixes: 32fe905c17f001 ("ubifs: Fix O_TMPFILE corner case in ubifs_link()")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=208405
----
- fs/ubifs/dir.c | 7 -------
- 1 file changed, 7 deletions(-)
+> +	do {
+> +		old_pteval = pteval;
+> +		pteval = cmpxchg_relaxed(&pte_val(*ptep), old_pteval, new_pteval);
+> +	} while (pteval != old_pteval);
+This look appears to be reinventing xchg_relaxed(). Any reason we can't 
+just use xchg_relaxed()? Also we had a dsb() after the WRITE_ONCE but 
+you are using the _relaxed variant here. What is the justification for 
+not having a barrier?
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index ef85ec167a84..9534c4bb598f 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -722,11 +722,6 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
- 		goto out_fname;
- 
- 	lock_2_inodes(dir, inode);
--
--	/* Handle O_TMPFILE corner case, it is allowed to link a O_TMPFILE. */
--	if (inode->i_nlink == 0)
--		ubifs_delete_orphan(c, inode->i_ino);
--
- 	inc_nlink(inode);
- 	ihold(inode);
- 	inode->i_ctime = current_time(inode);
-@@ -747,8 +742,6 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
- 	dir->i_size -= sz_change;
- 	dir_ui->ui_size = dir->i_size;
- 	drop_nlink(inode);
--	if (inode->i_nlink == 0)
--		ubifs_add_orphan(c, inode->i_ino);
- 	unlock_2_inodes(dir, inode);
- 	ubifs_release_budget(c, &req);
- 	iput(inode);
--- 
-2.25.4
+> +
+> +	return !kvm_s2pte_readonly(&__pte(pteval));
+> +}
+> +#else
+> +/**
+> + * @ret: true if dirty status set by hardware is coverred.
+> + */
+> +static inline bool kvm_set_pte(pte_t *ptep, pte_t new_pte)
+>   {
+>   	WRITE_ONCE(*ptep, new_pte);
+>   	dsb(ishst);
+> +	return false;
+>   }
+> +#endif /* CONFIG_ARM64_HW_AFDBM */
+
+You might be able to avoid this #ifdef by redefining old_logging as:
+
+   old_logging = IS_ENABLED(CONFIG_ARM64_HW_AFDBM) && ...
+
+I *think* the compiler should be able to kill the dead code and leave 
+you with just the above when the config symbol is off.
+
+Steve
+
+>   
+>   static inline void kvm_set_pmd(pmd_t *pmdp, pmd_t new_pmd)
+>   {
+> 
 
