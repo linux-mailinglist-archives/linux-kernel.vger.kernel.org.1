@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C822107AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 275C32107B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729499AbgGAJJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 05:09:52 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:41863 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729496AbgGAJJs (ORCPT
+        id S1729528AbgGAJKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 05:10:19 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47276 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729087AbgGAJKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 05:09:48 -0400
+        Wed, 1 Jul 2020 05:10:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593594587;
+        s=mimecast20190719; t=1593594616;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5FZNvCVnGKUBeexFie5SVEwwTiu463bRAglPRRjFWJY=;
-        b=ImqKOFuoUq28Kuyfeg1Mhl1nSgJjY1l/g+xfGOFQ8/NqsDrgV8JgEdF3uoYdgIFeAeZsU2
-        iLYADU215vq5jyKjslenFydzfHr2T1zJCLKLFYcOkpEKflEpns6EKfAJxtW0nyQJrGrDCn
-        Vvh5OlJwuT3ppA4YwVzxsQA64PpnZoM=
+        bh=QMPqqdA13OB8Wbq1cykQlNhk0fPsMbbs+lqAtCf74+Q=;
+        b=RGeBX6Lw/DtTHZuKT1L2Nur4+Vf1FDHrr76o6KauCvru2mJZn87mKaSYEQBakn4s730H4S
+        35iS3KlySliUJQXqgd0y2pYY2zu92v6n519AXUwoX36d478ZWXq7gE/c1sNVZLMIhRuSg5
+        Z6WFuMFLEs86qDcrP/t43eqD57rbGIU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-343-TD5H89abOp6-9wr6Ia7gdg-1; Wed, 01 Jul 2020 05:09:45 -0400
-X-MC-Unique: TD5H89abOp6-9wr6Ia7gdg-1
+ us-mta-237-f_I8q3zRMJ-cHIdTAEwUqQ-1; Wed, 01 Jul 2020 05:10:15 -0400
+X-MC-Unique: f_I8q3zRMJ-cHIdTAEwUqQ-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC8898018A4;
-        Wed,  1 Jul 2020 09:09:43 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0BFE2EC1A2;
+        Wed,  1 Jul 2020 09:10:13 +0000 (UTC)
 Received: from jason-ThinkPad-X1-Carbon-6th.redhat.com (ovpn-13-177.pek2.redhat.com [10.72.13.177])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AAB8E71662;
-        Wed,  1 Jul 2020 09:09:28 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B6AB871662;
+        Wed,  1 Jul 2020 09:09:44 +0000 (UTC)
 From:   Jason Wang <jasowang@redhat.com>
 To:     mst@redhat.com, virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
@@ -43,9 +43,9 @@ Cc:     rob.miller@broadcom.com, lingshan.zhu@intel.com,
         saugatm@xilinx.com, vmireyno@marvell.com,
         zhangweining@ruijie.com.cn, eli@mellanox.com,
         Jason Wang <jasowang@redhat.com>
-Subject: [PATCH 1/5] vhost-vdpa: refine ioctl pre-processing
-Date:   Wed,  1 Jul 2020 17:08:35 +0800
-Message-Id: <20200701090839.12994-2-jasowang@redhat.com>
+Subject: [PATCH 2/5] vhost: generialize backend features setting/getting
+Date:   Wed,  1 Jul 2020 17:08:36 +0800
+Message-Id: <20200701090839.12994-3-jasowang@redhat.com>
 In-Reply-To: <20200701090839.12994-1-jasowang@redhat.com>
 References: <20200701090839.12994-1-jasowang@redhat.com>
 MIME-Version: 1.0
@@ -56,38 +56,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to use 'switch' to make the codes more easier to be extended.
+Move the backend features setting/getting from net.c to vhost.c to be
+reused by vhost-vdpa.
 
 Signed-off-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/vhost/vdpa.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/vhost/net.c   | 18 ++----------------
+ drivers/vhost/vhost.c | 15 +++++++++++++++
+ drivers/vhost/vhost.h |  2 ++
+ 3 files changed, 19 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index 77a0c9fb6cc3..db4c9cb44c61 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -353,15 +353,16 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
- 	idx = array_index_nospec(idx, v->nvqs);
- 	vq = &v->vqs[idx];
+diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+index 0b509be8d7b1..d88afe3f6060 100644
+--- a/drivers/vhost/net.c
++++ b/drivers/vhost/net.c
+@@ -1622,21 +1622,6 @@ static long vhost_net_reset_owner(struct vhost_net *n)
+ 	return err;
+ }
  
--	if (cmd == VHOST_VDPA_SET_VRING_ENABLE) {
-+	switch (cmd) {
-+	case VHOST_VDPA_SET_VRING_ENABLE:
- 		if (copy_from_user(&s, argp, sizeof(s)))
- 			return -EFAULT;
- 		ops->set_vq_ready(vdpa, idx, s.num);
- 		return 0;
--	}
+-static int vhost_net_set_backend_features(struct vhost_net *n, u64 features)
+-{
+-	int i;
 -
--	if (cmd == VHOST_GET_VRING_BASE)
-+	case VHOST_GET_VRING_BASE:
- 		vq->last_avail_idx = ops->get_vq_state(v->vdpa, idx);
-+		break;
-+	}
+-	mutex_lock(&n->dev.mutex);
+-	for (i = 0; i < VHOST_NET_VQ_MAX; ++i) {
+-		mutex_lock(&n->vqs[i].vq.mutex);
+-		n->vqs[i].vq.acked_backend_features = features;
+-		mutex_unlock(&n->vqs[i].vq.mutex);
+-	}
+-	mutex_unlock(&n->dev.mutex);
+-
+-	return 0;
+-}
+-
+ static int vhost_net_set_features(struct vhost_net *n, u64 features)
+ {
+ 	size_t vhost_hlen, sock_hlen, hdr_len;
+@@ -1737,7 +1722,8 @@ static long vhost_net_ioctl(struct file *f, unsigned int ioctl,
+ 			return -EFAULT;
+ 		if (features & ~VHOST_NET_BACKEND_FEATURES)
+ 			return -EOPNOTSUPP;
+-		return vhost_net_set_backend_features(n, features);
++		vhost_set_backend_features(&n->dev, features);
++		return 0;
+ 	case VHOST_RESET_OWNER:
+ 		return vhost_net_reset_owner(n);
+ 	case VHOST_SET_OWNER:
+diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+index dc510dc2b1ef..ba61f499d420 100644
+--- a/drivers/vhost/vhost.c
++++ b/drivers/vhost/vhost.c
+@@ -2700,6 +2700,21 @@ struct vhost_msg_node *vhost_dequeue_msg(struct vhost_dev *dev,
+ }
+ EXPORT_SYMBOL_GPL(vhost_dequeue_msg);
  
- 	r = vhost_vring_ioctl(&v->vdev, cmd, argp);
- 	if (r)
++void vhost_set_backend_features(struct vhost_dev *dev, u64 features)
++{
++	struct vhost_virtqueue *vq;
++	int i;
++
++	mutex_lock(&dev->mutex);
++	for (i = 0; i < dev->nvqs; ++i) {
++		vq = dev->vqs[i];
++		mutex_lock(&vq->mutex);
++		vq->acked_backend_features = features;
++		mutex_unlock(&vq->mutex);
++	}
++	mutex_unlock(&dev->mutex);
++}
++EXPORT_SYMBOL_GPL(vhost_set_backend_features);
+ 
+ static int __init vhost_init(void)
+ {
+diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
+index 264a2a2fae97..52753aecd82a 100644
+--- a/drivers/vhost/vhost.h
++++ b/drivers/vhost/vhost.h
+@@ -223,6 +223,8 @@ void vhost_enqueue_msg(struct vhost_dev *dev,
+ 		       struct vhost_msg_node *node);
+ struct vhost_msg_node *vhost_dequeue_msg(struct vhost_dev *dev,
+ 					 struct list_head *head);
++void vhost_set_backend_features(struct vhost_dev *dev, u64 features);
++
+ __poll_t vhost_chr_poll(struct file *file, struct vhost_dev *dev,
+ 			    poll_table *wait);
+ ssize_t vhost_chr_read_iter(struct vhost_dev *dev, struct iov_iter *to,
 -- 
 2.20.1
 
