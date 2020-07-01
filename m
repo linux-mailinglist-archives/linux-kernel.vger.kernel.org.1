@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A961210F1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D31B210F50
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731964AbgGAPZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 11:25:39 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:39080 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731646AbgGAPZj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 11:25:39 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 492D920025;
-        Wed,  1 Jul 2020 17:25:34 +0200 (CEST)
-Date:   Wed, 1 Jul 2020 17:25:32 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Ondrej Jirman <megous@megous.com>
-Cc:     linux-sunxi@googlegroups.com,
-        Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
-        Purism Kernel Team <kernel@puri.sm>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Samuel Holland <samuel@sholland.org>,
-        Martijn Braam <martijn@brixit.nl>, Luca Weiss <luca@z3ntu.xyz>,
-        Bhushan Shah <bshah@kde.org>
-Subject: Re: [PATCH v6 00/13] Add support for PinePhone LCD panel
-Message-ID: <20200701152532.GA670324@ravnborg.org>
-References: <20200701103126.1512615-1-megous@megous.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200701103126.1512615-1-megous@megous.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=f+hm+t6M c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=J_fg_7IlAAAA:8 a=SxmoPjm5-5tPnGG2PkAA:9
-        a=CjuIK1q_8ugA:10 a=zGOw-GkVl6h1W4ZARoUA:22
+        id S1732116AbgGAPaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 11:30:09 -0400
+Received: from mga02.intel.com ([134.134.136.20]:63074 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731999AbgGAPaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 11:30:09 -0400
+IronPort-SDR: 9ubm55pGbFyUs6cfLcbCDI4a7kRTmEg+Khd+VlXnr2klh12OFSwt92wNl1AaryJFgd7/HPA5RZ
+ Wi6OZr6VJDOA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="134886180"
+X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
+   d="scan'208";a="134886180"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 08:29:51 -0700
+IronPort-SDR: qii2doTNGxxQ9EAUM+l5Od+zB+Fh1ps2PvsDbF1g75+lgSHfxDfTzMGjfoLJ92LYZMmPa9Lgph
+ 24hh9lQMI5QA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
+   d="scan'208";a="321789364"
+Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
+  by orsmga007.jf.intel.com with ESMTP; 01 Jul 2020 08:29:51 -0700
+Subject: [PATCH 0/3] [v2] Repair and clean up vm.zone_reclaim_mode sysctl ABI
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        ben.widawsky@intel.com, alex.shi@linux.alibaba.com,
+        dwagner@suse.de, tobin@kernel.org, cl@linux.com,
+        akpm@linux-foundation.org, ying.huang@intel.com,
+        dan.j.williams@intel.com, cai@lca.pw
+From:   Dave Hansen <dave.hansen@linux.intel.com>
+Date:   Wed, 01 Jul 2020 08:26:21 -0700
+Message-Id: <20200701152621.D520E62B@viggo.jf.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ondrej.
+A previous cleanup accidentally changed the vm.zone_reclaim_mode ABI.
 
-On Wed, Jul 01, 2020 at 12:31:13PM +0200, Ondrej Jirman wrote:
-> This patchset adds support for the LCD panel of PinePhone.
-> 
-> I've tested this on PinePhone 1.0 and 1.2.
-> 
-> Please take a look.
-> 
-> thank you and regards,
->   Ondrej Jirman
-> 
-> Changes in v6:
-> - Fixed spacing in yaml
-> - Fixed wrong vccio->iovcc supply name in the bindings doc
-> - I noticed that the original driver uses a delay of 20ms in the init
->   function to achieve a combined total of 120ms required from post-reset
->   to display_on. I've added a similar delay to xbd599_init, so that
->   xbd599 panel also has the right timing. (patch 9)
-> - v5->v6 diff: https://megous.com/dl/tmp/v5-v6.patch
-> - Added review/ack tags
-> - Learned to run dt_binding_check by myself ;)
-The patch-set does not apply clean on top of drm-misc-next - due to
-vrefresh removal.
-Please re-spin.
+This series restores the ABI and then reorganizes the code to make
+the ABI more obvious.  Since the single-patch v1[1], I've:
 
-	Sam
+ * Restored the RECLAIM_ZONE naming, comment and Documentation now
+   that the implicit checks for it are known.
+ * Move RECLAIM_* definitions to a uapi header
+ * Add a node_reclaim_enabled() helper
+
+ Documentation/admin-guide/sysctl/vm.rst |   10 +++++-----
+ include/linux/swap.h                    |    7 +++++++
+ include/uapi/linux/mempolicy.h          |    7 +++++++
+ mm/khugepaged.c                         |    2 +-
+ mm/page_alloc.c                         |    2 +-
+ mm/vmscan.c                             |    3 ---
+ 6 files changed, 21 insertions(+), 10 deletions(-)
+
+1. https://lore.kernel.org/linux-mm/20200626003459.D8E015CA@viggo.jf.intel.com/
+
+Cc: Ben Widawsky <ben.widawsky@intel.com>
+Cc: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Daniel Wagner <dwagner@suse.de>
+Cc: "Tobin C. Harding" <tobin@kernel.org>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Huang Ying <ying.huang@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Qian Cai <cai@lca.pw>
+Cc: Daniel Wagner <dwagner@suse.de>
