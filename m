@@ -2,100 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7046210D70
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 16:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E6A210D46
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 16:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731544AbgGAOS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 10:18:56 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:31499 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731528AbgGAOSt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 10:18:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593613128;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OxgbA78Isty5LjQU/goDcTyWCLKH0Y+Zl49XxrxsnYY=;
-        b=QO5yQN1po1hfOm8qbp9sHnztXYe/IGUYwj9fF0z0dYKNQBK4PkVHzxRef0DhYXmHI5VdEg
-        Mzl+U468bJF/d1w748TS/B3wz4sD4AsCXo4P79bw5VcdJK8VPLCq10YF6q6IRkX3Krm5mZ
-        ooCbxqFFqOK55tFNxVIaQQQb6RDhbaE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-270-CENe1AYBMuGvlkWzP0lwXQ-1; Wed, 01 Jul 2020 10:18:44 -0400
-X-MC-Unique: CENe1AYBMuGvlkWzP0lwXQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBE58A0BDF;
-        Wed,  1 Jul 2020 14:18:41 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-112-52.ams2.redhat.com [10.36.112.52])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6F0B05C1C5;
-        Wed,  1 Jul 2020 14:18:38 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, linux-mm@kvack.org,
-        David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Philipp Rudo <prudo@linux.ibm.com>,
-        Michael Holzheu <holzheu@linux.vnet.ibm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v2 2/2] s390/mm: don't set ARCH_KEEP_MEMBLOCK
-Date:   Wed,  1 Jul 2020 16:18:30 +0200
-Message-Id: <20200701141830.18749-3-david@redhat.com>
-In-Reply-To: <20200701141830.18749-1-david@redhat.com>
-References: <20200701141830.18749-1-david@redhat.com>
+        id S1731434AbgGAOMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 10:12:47 -0400
+Received: from mga12.intel.com ([192.55.52.136]:51645 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730307AbgGAOMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 10:12:46 -0400
+IronPort-SDR: ySQn0iArGoC10y4HqwjKHxkaj2vdgM82PMi3100zJ5gRPT+A/z5K++D928OG2HB8HAaELJmSeK
+ R5/HDiab2f2Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="126198572"
+X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
+   d="scan'208";a="126198572"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 07:12:45 -0700
+IronPort-SDR: tw+TjEMnr6PSKKEIZGIwlRnMnY+I1IPteQ9YJ/b+xboSW0wpxSK+AXL5tZVvEIqLGEWC1jcv7/
+ mq9WRPL4QW+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
+   d="scan'208";a="455118375"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga005.jf.intel.com with ESMTP; 01 Jul 2020 07:12:45 -0700
+Date:   Wed, 1 Jul 2020 07:19:20 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 6/7] iommu/vt-d: Warn on out-of-range invalidation
+ address
+Message-ID: <20200701071920.0a08f404@jacob-builder>
+In-Reply-To: <f5a2ffda-a243-ed20-63e0-50d784d3af71@linux.intel.com>
+References: <1592926996-47914-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1592926996-47914-7-git-send-email-jacob.jun.pan@linux.intel.com>
+        <d87d15fd-71d5-6735-74df-583024826ab0@linux.intel.com>
+        <20200630103459.6c99c961@jacob-builder>
+        <f5a2ffda-a243-ed20-63e0-50d784d3af71@linux.intel.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 50be63450728 ("s390/mm: Convert bootmem to memblock") mentions
-	"The original bootmem allocator is getting replaced by memblock. To
-	cover the needs of the s390 kdump implementation the physical
-	memory list is used."
+On Wed, 1 Jul 2020 09:45:40 +0800
+Lu Baolu <baolu.lu@linux.intel.com> wrote:
 
-As we can now reference "physmem" managed in the memblock allocator after
-init even without ARCH_KEEP_MEMBLOCK, and s390x does no longer need
-other memblock metadata after boot (esp., the zcore memmap device that used
-it got removed), we can stop setting ARCH_KEEP_MEMBLOCK.
+> Hi Jacob,
+> 
+> On 7/1/20 1:34 AM, Jacob Pan wrote:
+> > On Thu, 25 Jun 2020 18:10:43 +0800
+> > Lu Baolu<baolu.lu@linux.intel.com>  wrote:
+> >   
+> >> Hi,
+> >>
+> >> On 2020/6/23 23:43, Jacob Pan wrote:  
+> >>> For guest requested IOTLB invalidation, address and mask are
+> >>> provided as part of the invalidation data. VT-d HW silently
+> >>> ignores any address bits below the mask. SW shall also allow such
+> >>> case but give warning if address does not align with the mask.
+> >>> This patch relax the fault handling from error to warning and
+> >>> proceed with invalidation request with the given mask.
+> >>>
+> >>> Signed-off-by: Jacob Pan<jacob.jun.pan@linux.intel.com>
+> >>> ---
+> >>>    drivers/iommu/intel/iommu.c | 7 +++----
+> >>>    1 file changed, 3 insertions(+), 4 deletions(-)
+> >>>
+> >>> diff --git a/drivers/iommu/intel/iommu.c
+> >>> b/drivers/iommu/intel/iommu.c index 5ea5732d5ec4..50fc62413a35
+> >>> 100644 --- a/drivers/iommu/intel/iommu.c
+> >>> +++ b/drivers/iommu/intel/iommu.c
+> >>> @@ -5439,13 +5439,12 @@ intel_iommu_sva_invalidate(struct
+> >>> iommu_domain *domain, struct device *dev,
+> >>>    		switch (BIT(cache_type)) {
+> >>>    		case IOMMU_CACHE_INV_TYPE_IOTLB:
+> >>> +			/* HW will ignore LSB bits based on
+> >>> address mask */ if (inv_info->granularity == IOMMU_INV_GRANU_ADDR
+> >>> && size &&
+> >>>    			    (inv_info->addr_info.addr &
+> >>> ((BIT(VTD_PAGE_SHIFT + size)) - 1))) {
+> >>> -				pr_err_ratelimited("Address out
+> >>> of range, 0x%llx, size order %llu\n",
+> >>> -
+> >>> inv_info->addr_info.addr, size);
+> >>> -				ret = -ERANGE;
+> >>> -				goto out_unlock;
+> >>> +				WARN_ONCE(1, "Address out of
+> >>> range, 0x%llx, size order %llu\n",
+> >>> +
+> >>> inv_info->addr_info.addr, size);  
+> >> I don't think WARN_ONCE() is suitable here. It makes users think
+> >> it's a kernel bug. How about pr_warn_ratelimited()?
+> >>  
+> > I think pr_warn_ratelimited might still be too chatty. There is no
+> > functional issues, we just don't to silently ignore it. Perhaps just
+> > say:
+> > WARN_ONCE(1, "User provided address not page aligned, alignment
+> > forced") ?
+> >   
+> 
+> WARN() is normally used for reporting a kernel bug. It dumps kernel
+> trace. And the users will report bug through bugzilla.kernel.org.
+> 
+> In this case, it's actually an unexpected user input, we shouldn't
+> treat it as a kernel bug and pr_err_ratelimited() is enough?
+> 
+Sounds good. I will leave it.
 
-With this change, we no longer create memblocks for standby/hotplugged
-memory (added via add_memory()) and free up memblock metdata (except
-physmem) after boot.
+Thanks,
 
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: Philipp Rudo <prudo@linux.ibm.com>
-Cc: Michael Holzheu <holzheu@linux.vnet.ibm.com>
-Cc: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- arch/s390/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+Jacob
+> Best regards,
+> baolu
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index c7d7ede6300c5..7697a1f8e819a 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -102,7 +102,6 @@ config S390
- 	select ARCH_INLINE_WRITE_UNLOCK_BH
- 	select ARCH_INLINE_WRITE_UNLOCK_IRQ
- 	select ARCH_INLINE_WRITE_UNLOCK_IRQRESTORE
--	select ARCH_KEEP_MEMBLOCK
- 	select ARCH_STACKWALK
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_SUPPORTS_NUMA_BALANCING
--- 
-2.26.2
-
+[Jacob Pan]
