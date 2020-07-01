@@ -2,94 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D0B21097F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 12:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C003210986
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 12:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729937AbgGAKgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 06:36:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42664 "EHLO
+        id S1730036AbgGAKiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 06:38:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729180AbgGAKgv (ORCPT
+        with ESMTP id S1729180AbgGAKiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 06:36:51 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1971BC061755
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 03:36:51 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id n2so10134706edr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 03:36:50 -0700 (PDT)
+        Wed, 1 Jul 2020 06:38:12 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF3FC061755;
+        Wed,  1 Jul 2020 03:38:12 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id k5so1292816pjg.3;
+        Wed, 01 Jul 2020 03:38:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JqHfZQ5VWArlU+T9mp3tXwt7J+xQkac4XMwffN8dFDs=;
-        b=X0Hki9IXpM0FBnkfoaRIH0151N8k+5RqetQY7M8FYLOwolr3+ZhGOG7fSkTcdUC9m4
-         BtDk4QKZieZfuGnheai7HT+iFOfeqKNTwot8PcsLrgEvpoGm7qXHq3inQJ9M4kCL+Hx+
-         0AoA8G1sKASglwG1JL70kco3tUJnmIGE+UPVqpz5vaZcQcWTfqC0BikuwyM4ho0AXq9M
-         NiPBFisAQzk4DKvIe71VlghSlvZFNY/spmVdcT4HEr5MhJB6V/GwCs5UUlrpMa5A7SkD
-         G3+iWCtmufz/st/SHYtMWXBFQTT/FD7lgvPPkYLSut92357MgnPf0K3z3WqwDCYBrGo7
-         JLpQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ay25oY07NOmbixOtBMWVYmhszlZHF/YFooJn+9Ipub8=;
+        b=E3KJ5G+nJ16g2CKalAuxGYpIOXxRdvvUoZBAYhyZdpv1+IRV/XdKVlrlD/ncMJRTlM
+         DQ72k5hr87hRV6RXLAwuL0790w3F/9VpHdyKak8P3gAr4vL0bnnvRfkHCl153pcBlZlT
+         b949Mmca2xjQ1NN6hqPGbAhdfzdioAVYoI7N8sWwqjUZKIjBX++yC14jJWEJapL25zIg
+         JV+HaXJ6VCDCO46HoGxHHd3AEAaMEQgvQ19V4JAKlCR0Yl2BH0JMq5i3Xp9kRdJQllZz
+         0Qa/D+Lit+3fpJeSg7DP9T5mpOAmjziidgetbF6OK0weRP6/2PZ02EEZ9Qn96+dWXfO0
+         pY5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JqHfZQ5VWArlU+T9mp3tXwt7J+xQkac4XMwffN8dFDs=;
-        b=WOId4sohpRY4lDiH3JlTgSowlrrS65Ea7+yeOzuS/UDcCY17x4CdA4o9HXSt8j83Sr
-         CmsJh7ZnJ77LqDv7zF4mlwWSFVXjf6f9E2cUU0Ot1MyGg0J2U3eeKy/9hcDD09X5g1WK
-         MuLNAiCtEZo5GJ2/sWUQPPCwx0zmgqvZHzOPHVPbl69aateqqJS/HqS3oldnmqIZMjG7
-         YQ+ScLvo+BFyMZptdb23ZGRsZ4ZceDMyeN3xZIT7ezio69OumfXi7hGScbvN+U7LSa3q
-         rfRl6/Ovohp78bD0eXh/DnUDg0gFhzC5f6hsQV3VGNfcx/eg76mzmS3TEDpEOtQ2bo0r
-         3lzQ==
-X-Gm-Message-State: AOAM53141jJwn1D/IEDw4+1gu6H4EKKFpvjH17jVB3TeEjn481S4Hoix
-        Smw3LkIbXgqxW1rJnLmDa6eIOw==
-X-Google-Smtp-Source: ABdhPJzRjLPBCOCoyLIkq3rInZtGR4t77y8Tn/Z64rpl56TGAhPWtsmPc+u4vV1L6dE13quGB6wUiQ==
-X-Received: by 2002:aa7:db57:: with SMTP id n23mr27787087edt.235.1593599809761;
-        Wed, 01 Jul 2020 03:36:49 -0700 (PDT)
-Received: from localhost.localdomain ([37.120.9.18])
-        by smtp.gmail.com with ESMTPSA id sa10sm4357351ejb.79.2020.07.01.03.36.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 03:36:49 -0700 (PDT)
-From:   Robert Foss <robert.foss@linaro.org>
-To:     mchehab+huawei@kernel.org, davem@davemloft.net, robh@kernel.org,
-        linux-kernel@vger.kernel.org, Todor Tomov <todor.too@gmail.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Robert Foss <robert.foss@linaro.org>
-Subject: [PATCH v1] MAINTAINERS: camss: Add Robert Foss as co-maintainer
-Date:   Wed,  1 Jul 2020 12:36:37 +0200
-Message-Id: <20200701103637.343425-1-robert.foss@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ay25oY07NOmbixOtBMWVYmhszlZHF/YFooJn+9Ipub8=;
+        b=WajHG/pkmYpDNAsT10bBQ3pI2lNAxKiHh3wWYCiLwcq/FmZ0V1DTGcjK7pdcL+e5zj
+         8Fk4N/zfPEtX+eHEt++1sFAQKzOAGlhnmzJzRfcEqRKZjYx7GViCXeiY0V0VnpLHO67K
+         4Nv4wuJQzc1XMN7iKCHcMZiShhSRCp5PZvRkYcA0fNMTjXrV9ohIff/E3xCDnWt5HqQM
+         BcZyps9ciAnCkC6QYtND83TpTYVwUW8UFlaT6fT2ZmvX+v8FutRpl4PI+NGVVAZymNiD
+         /GMk9DV/UMObCJc90dOBTDIzHR/PJC0V56g91P6hxViSdLTG2X7OZbQ6fxqhImR/G6ef
+         IYeQ==
+X-Gm-Message-State: AOAM531j0eM1EdFDkTqwAqu6ZO2wRpQwX8AzGGOZ3U+2MXTxa1tMC+jT
+        j5wsWo4LK9YDqGqQp6Nn7a7ThCZfGG/jgTh3XwqOKJ7Zr9g=
+X-Google-Smtp-Source: ABdhPJy7/D67hf5+MecXjYgpK9V7/RtGhKxzUBqStKpQiE9aKsQkiguOqWHY1pYzUUFZFqZ4rfpaxiOcOPlMiEWsdRQ=
+X-Received: by 2002:a17:90a:a393:: with SMTP id x19mr490320pjp.228.1593599891781;
+ Wed, 01 Jul 2020 03:38:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200701061233.31120-1-calvin.johnson@oss.nxp.com> <20200701061233.31120-4-calvin.johnson@oss.nxp.com>
+In-Reply-To: <20200701061233.31120-4-calvin.johnson@oss.nxp.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 1 Jul 2020 13:37:58 +0300
+Message-ID: <CAHp75VdMdefZpRh5hE0pWTAYoA-VJepTCrCHD-MYZa9P_aqk6w@mail.gmail.com>
+Subject: Re: [net-next PATCH v2 3/3] net: dpaa2-mac: Add ACPI support for
+ DPAA2 MAC driver
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     Jeremy Linton <jeremy.linton@arm.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Jon <jon@solid-run.com>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        netdev <netdev@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux.cj@gmail.com, "David S. Miller" <davem@davemloft.net>,
+        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I would like to contribute some of my time to co-maintain the CAMSS
-driver. I'm currently working to extend CAMSS to new hardware platforms.
+On Wed, Jul 1, 2020 at 9:13 AM Calvin Johnson
+<calvin.johnson@oss.nxp.com> wrote:
+>
+> Modify dpaa2_mac_connect() to support ACPI along with DT.
+> Modify dpaa2_mac_get_node() to get the dpmac fwnode from either
+> DT or ACPI.
+> Replace of_get_phy_mode with fwnode_get_phy_mode to get
+> phy-mode for a dpmac_node.
+> Define and use helper function find_phy_device() to find phy_dev
+> that is later connected to mac->phylink.
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
----
+...
 
-I'd like to volunteer as co-maintainer or maintainer. Currently I don't
-know how active Todor is, but if he is inactive or indeed would like to
-hand over the full maintainership, that would also be ok with me.
+>  #include "dpaa2-eth.h"
+>  #include "dpaa2-mac.h"
 
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+> +#include <linux/acpi.h>
+> +#include <linux/platform_device.h>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 496fd4eafb68..39edadd36d24 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14140,6 +14140,7 @@ W:	https://wireless.wiki.kernel.org/en/users/Drivers/ath9k
- F:	drivers/net/wireless/ath/ath9k/
- 
- QUALCOMM CAMERA SUBSYSTEM DRIVER
-+M:	Robert Foss <robert.foss@linaro.org>
- M:	Todor Tomov <todor.too@gmail.com>
- L:	linux-media@vger.kernel.org
- S:	Maintained
+Can we put (more) generic headers atop of (more) private ones?
+
+...
+
+> +       struct fwnode_handle *fsl_mc_fwnode = dev->parent->parent->fwnode;
+
+dev_fwnode() please.
+
+> +       struct fwnode_handle *dpmacs, *dpmac = NULL;
+> +       struct device *fsl_mc = dev->parent->parent;
+
+So. something like
+       struct device *fsl_mc = dev->parent->parent;
+       struct fwnode_handle *fsl_mc_fwnode = dev_fwnode(fsl_mc);
+
+...
+
+> +               dpmacs = device_get_named_child_node(fsl_mc, "dpmacs");
+
+If you have fwnode, why to use device_* API?
+               dpmacs = fwnode_get_named_child_node(fsl_mc_fwnode, "dpmacs");
+
+> +               if (!dpmacs)
+> +                       return NULL;
+> +
+> +               while ((dpmac = fwnode_get_next_child_node(dpmacs, dpmac))) {
+> +                       err = fwnode_property_read_u32(dpmac, "reg", &id);
+> +                       if (err)
+> +                               continue;
+> +                       if (id == dpmac_id)
+> +                               return dpmac;
+> +               }
+
+...
+
+> +       } else if (is_acpi_node(fsl_mc_fwnode)) {
+
+is_acpi_device_node() ?
+
+> +               adev = acpi_find_child_device(ACPI_COMPANION(dev->parent),
+> +                                             dpmac_id, false);
+> +               if (adev)
+
+> +                       return (&adev->fwnode);
+
+No need to have parentheses. Don't we have some special macro to get
+fwnode out of ACPI device?
+
+...
+
+> +       err = fwnode_get_phy_mode(dpmac_node);
+> +       if (err > 0)
+> +               return err;
+
+Positive?! Why? What's going on here?
+
+...
+
+> +       if (is_of_node(dpmac_node))
+> +               err = phylink_of_phy_connect(mac->phylink,
+> +                                            to_of_node(dpmac_node), 0);
+> +       else if (is_acpi_node(dpmac_node)) {
+> +               phy_dev = find_phy_device(dpmac_node);
+> +               if (IS_ERR(phy_dev))
+> +                       goto err_phylink_destroy;
+> +               err = phylink_connect_phy(mac->phylink, phy_dev);
+
+Can't you rather provide phylink_fwnode_connect_phy API and drop this
+conditional tree entirely?
+
+...
+
+> +       if (is_of_node(dpmac_node))
+
+Redundant.
+
+> +               of_node_put(to_of_node(dpmac_node));
+
+Honestly, looking at this code, I think one needs a bit more time to
+get into fwnode paradigm and APIs.
+
+...
+
+> +       if (is_of_node(dpmac_node))
+
+Ditto.
+
+> +               of_node_put(to_of_node(dpmac_node));
+
 -- 
-2.25.1
-
+With Best Regards,
+Andy Shevchenko
