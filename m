@@ -2,104 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73540210F56
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DABA0210F61
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732119AbgGAPbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 11:31:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731879AbgGAPbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 11:31:38 -0400
-Received: from ziggy.cz (unknown [213.195.114.138])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAC5220760;
-        Wed,  1 Jul 2020 15:31:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593617497;
-        bh=EB2CkEeCooqWPM+FKciypi3S6C1CFpF0DGtBgv2mghk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=OWNMZ3rJ5ciZjAne86fG6PgL7snREQ8Oxp1PzRvjC7tXhtr/8lDoariL+hIXqRWlI
-         Yda13FmLkR2Juu8D5+Ev+trCwp0K/BNMiMyOTxHtmcwnYPNk0VhVYuti0hKzOM3X+F
-         k1UznWujuneMKF6uv+rNGLf7bXYmaauzozH/eBu0=
-From:   matthias.bgg@kernel.org
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>, hdegoede@redhat.com
-Cc:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Chung-Hsien Hsu <stanley.hsu@cypress.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Double Lo <double.lo@cypress.com>,
-        Frank Kao <frank.kao@cypress.com>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
-        netdev@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Saravanan Shanmugham <saravanan.shanmugham@cypress.com>,
-        brcm80211-dev-list@cypress.com, linux-kernel@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Soeren Moch <smoch@web.de>
-Subject: [PATCH] brcmfmac: expose firmware config files through modinfo
-Date:   Wed,  1 Jul 2020 17:31:23 +0200
-Message-Id: <20200701153123.25602-1-matthias.bgg@kernel.org>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1731960AbgGAPdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 11:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731645AbgGAPdc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 11:33:32 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8BFC08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 08:33:32 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id t6so11910038pgq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 08:33:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=U9tcBWqanEmcG7y4KnRT6hQjOymIY+744WxQv0Dj8Zo=;
+        b=K1hFqpY0Fmcq2Wbi/vJnWw4/HMuvHGfUuInJqu3Ga3uSw6z4rCdqHlaAlLOUwojT7r
+         qgAU4kYVt+OIY/65Ibv7i+8Bf4nZFSPnMsfMGpFUaMCURJtiG7GN2g7WCIWZL3Nv+cQD
+         CS3lKkwI4V/2nIHY0n4JaqAxwXj2MNrnu1kWV1+B0N1SJ7t4m3F6NVzqGwbsDLvH8dZ7
+         iKGcrKRQK/FZDHFlQa6Pb6c6Rzx701nSm3E2U1caDR0qVQWjyS/Z39C9D8p4lImzO9Q2
+         T/NF09gb/mY9vDwIrBlgZeHNY24isRLRkFdd3/oRXTZuwBRNDYag8IFBNOr77AzCF523
+         QiLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=U9tcBWqanEmcG7y4KnRT6hQjOymIY+744WxQv0Dj8Zo=;
+        b=E+E58iemVe2AxuGULB6G9IL4dfqqFrAJ02zf9XApBAQPgWcW9f4v9FIx64O73W/AiJ
+         FprRsg/BNrxGGS9j/1COPQhSW9vTn0NRk7UllKyd3tvBHwvTfvWEJoT4TpgkZ/bOYlTB
+         1iWqLeyyPU07DMGYRIh1kAH7KaQXOjUOi+uL4zjfJZrdLBCyU32DEVd1vla2hZ4H24Ce
+         etB9JpSu1nnAoKLgte02/1ii7KL6Ox7wJeaUtezSv0wbRJfMWOl+PUVsFsCHIQTbarF6
+         x3l4wRkwYYFTX1w0LLIJILzYRMF7cP++rKzK9izgDQraT8j9YG35NJNQ0k5iwdf1hXVq
+         88rw==
+X-Gm-Message-State: AOAM530Aj7BiHTuz/735LCYtT58VVcfbriRCMiFuSRbUm5qnlR/YbgEF
+        Mz0pTiJvPRRoQ6e5ZQQF1UYo87tH
+X-Google-Smtp-Source: ABdhPJze/rdIUGzGzRmy2i1GgLCkpJoNWrsDPUWc/0mEg5zpEaXdh/1TsueAz3luUFdpr2gRjHVLKA==
+X-Received: by 2002:a63:580c:: with SMTP id m12mr19822599pgb.446.1593617612304;
+        Wed, 01 Jul 2020 08:33:32 -0700 (PDT)
+Received: from localhost.localdomain ([61.83.141.141])
+        by smtp.gmail.com with ESMTPSA id a9sm6566763pfr.103.2020.07.01.08.33.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jul 2020 08:33:31 -0700 (PDT)
+From:   Sidong Yang <realwakka@gmail.com>
+To:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+Cc:     Sidong Yang <realwakka@gmail.com>,
+        Emil Velikov <emil.l.velikov@gmail.com>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/vkms: add wait_for_vblanks in atomic_commit_tail
+Date:   Wed,  1 Jul 2020 15:31:34 +0000
+Message-Id: <20200701153134.4187-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Brugger <mbrugger@suse.com>
+there is an error when igt test is run continuously. vkms_atomic_commit_tail()
+need to call drm_atomic_helper_wait_for_vblanks() for give up ownership of
+vblank events. without this code, next atomic commit will not enable vblank
+and raise timeout error.
 
-Apart from a firmware binary the chip needs a config file used by the
-FW. Add the config files to modinfo so that they can be read by
-userspace.
-
-Signed-off-by: Matthias Brugger <mbrugger@suse.com>
-
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
 ---
+ drivers/gpu/drm/vkms/vkms_drv.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
- .../wireless/broadcom/brcm80211/brcmfmac/sdio.c  | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-index 310d8075f5d7..ba18df6d8d94 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-@@ -624,6 +624,22 @@ BRCMF_FW_DEF(4359, "brcmfmac4359-sdio");
- BRCMF_FW_DEF(4373, "brcmfmac4373-sdio");
- BRCMF_FW_DEF(43012, "brcmfmac43012-sdio");
+diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
+index 1e8b2169d834..10b9be67a068 100644
+--- a/drivers/gpu/drm/vkms/vkms_drv.c
++++ b/drivers/gpu/drm/vkms/vkms_drv.c
+@@ -93,6 +93,8 @@ static void vkms_atomic_commit_tail(struct drm_atomic_state *old_state)
+ 		flush_work(&vkms_state->composer_work);
+ 	}
  
-+/* firmware config files */
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac4330-sdio.Prowise-PT301.txt");
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43340-sdio.meegopad-t08.txt");
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43340-sdio.pov-tab-p1006w-data.txt");
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43362-sdio.cubietech,cubietruck.txt");
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43430a0-sdio.jumper-ezpad-mini3.txt");
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43430a0-sdio.ONDA-V80 PLUS.txt");
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43430-sdio.AP6212.txt");
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43430-sdio.Hampoo-D2D3_Vi8A1.txt");
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43430-sdio.MUR1DX.txt");
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43430-sdio.raspberrypi,3-model-b.txt");
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43455-sdio.MINIX-NEO Z83-4.txt");
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43455-sdio.raspberrypi,3-model-b-plus.txt");
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43455-sdio.raspberrypi,4-model-b.txt");
-+MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac4356-pcie.gpd-win-pocket.txt");
++	drm_atomic_helper_wait_for_vblanks(dev, old_state);
 +
- static const struct brcmf_firmware_mapping brcmf_sdio_fwnames[] = {
- 	BRCMF_FW_ENTRY(BRCM_CC_43143_CHIP_ID, 0xFFFFFFFF, 43143),
- 	BRCMF_FW_ENTRY(BRCM_CC_43241_CHIP_ID, 0x0000001F, 43241B0),
+ 	drm_atomic_helper_cleanup_planes(dev, old_state);
+ }
+ 
 -- 
-2.27.0
+2.17.1
 
