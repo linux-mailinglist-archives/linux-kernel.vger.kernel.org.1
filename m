@@ -2,90 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261BC21160B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 00:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAC0211632
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 00:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgGAW3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 18:29:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725771AbgGAW3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 18:29:37 -0400
-Received: from localhost (p54b334c2.dip0.t-ipconnect.de [84.179.52.194])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFB9820780;
-        Wed,  1 Jul 2020 22:29:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593642576;
-        bh=KZ2oyRFyPGujITJfUc6nzDtoVuwWqXJ+rT2W7EPBeJE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jtNBtd3O1ER/wl3tYdOUCirx8lwRwJg2zKP8iBCqTkKP0WAOdXnVne/U0+uvHLj08
-         GaeDnO6n8smL9n5UB0IbuoRsWnFzQ6c0GYMUEO+tOGWqgr0C4MPKZNlWO0hI97PdQN
-         9V8QV/U+p81MfxGhVTYnu3eGhbezmO1aZEUkBXYI=
-Date:   Thu, 2 Jul 2020 00:29:34 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc:     "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] i2c: algo-pca: Add 0x78 as SCL stuck low status
-Message-ID: <20200701222934.GB3147@kunai>
-References: <20200621225705.21666-1-chris.packham@alliedtelesis.co.nz>
- <20200623193413.GB1203@ninjato>
- <c5bd59ec-aa1f-dd8e-fdbf-5cc2aad0b5a7@alliedtelesis.co.nz>
- <62bb6093-5f8b-8b81-805b-41624cfd83b5@alliedtelesis.co.nz>
+        id S1726939AbgGAWlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 18:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725817AbgGAWlC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 18:41:02 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C415C08C5C1;
+        Wed,  1 Jul 2020 15:41:02 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id s1so29178061ljo.0;
+        Wed, 01 Jul 2020 15:41:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bh1Ddk7qeAP9r/b4akd97joGGTOfkA4hSpHtOpj8VWM=;
+        b=NgQBNHP2cMgzhC4lpvFFiw+ODzA1BZ4LVJHCSIAmjkGo3nsvx5pXxhQloZlDaGY8AO
+         UDMwX4asZcGsRrF3SAxvMfQgQVzNX0QC4tez95ZJoaYlXmoammVEQ39tDwObQxdA9Oa4
+         18fyN4O/IL5tt9oZMz8oYV0xcrnsCRjQqnOFwg+KwSCwe/sEr5r5mpfci/veAvHqP2uX
+         sqhqEVD/7f3c8k8Ic2ZEXXd18qArjdWKf75aMXRSjtp2R0K65GFOvEQPfAAyRazqbB9i
+         UHa7J5AGZGsJSlC5wh9/gN97E5ZLVwbMqzYBVRqaqgSJ9HhjcCHn6NT7nIpmwo9EDHV2
+         sluw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bh1Ddk7qeAP9r/b4akd97joGGTOfkA4hSpHtOpj8VWM=;
+        b=oUCYNBjYnXJEeGzH8RL5fxlQ3dTvqkVzG5QiDuLSbkRcQcqmArZMJbpuPwHyAGecJ1
+         mVpkABcaLMq0XufD76Oc5ovc0751NxB3chRzTpc5jmV7mB++++HUsdP3zl/VX5X4FzgO
+         450L2c1seusZyG2ynhJ/1tfgCijqGsM32dG/ZE795tlG9JH8a4jOarSUcMNvttmO7EDj
+         BDMdvpZA1xRTDE84xykrlGVnxeccFryNeDZ9OHvFN0mFhFA0rvVsTnzM+7yPNcYpoCqT
+         STMmO0nUHUpjdfVQ5C42IodZSKr5GpIPvqBaLgeGlVs+LMZQzUou2myMA7X5orWkdamS
+         HEjQ==
+X-Gm-Message-State: AOAM53064CcGD2RpUPP7HwagV38+0fe7dK8MiS5Sx3R4BZAh4NKhzt+R
+        8OFtVP9c3D5VUVNRno5XCkU=
+X-Google-Smtp-Source: ABdhPJzVzNWS69AjRHu9Dc76JocLPh0hgx/4x0R35ePixRJQ7+dExk38h/B2aos6Wr3RPpgrCL3Y6Q==
+X-Received: by 2002:a2e:9d10:: with SMTP id t16mr14628572lji.46.1593643261075;
+        Wed, 01 Jul 2020 15:41:01 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-181-241.NA.cust.bahnhof.se. [98.128.181.241])
+        by smtp.gmail.com with ESMTPSA id t15sm2271371lji.49.2020.07.01.15.40.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jul 2020 15:41:00 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     b.zolnierkie@samsung.com
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] video: fbdev: vt8623fb: Constify static vga_regsets
+Date:   Wed,  1 Jul 2020 23:02:48 +0200
+Message-Id: <20200701210248.64893-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="LpQ9ahxlCli8rRTG"
-Content-Disposition: inline
-In-Reply-To: <62bb6093-5f8b-8b81-805b-41624cfd83b5@alliedtelesis.co.nz>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+These are not modified so make them const to allow the compiler to put
+them in read-only memory.
 
---LpQ9ahxlCli8rRTG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Before:
+   text    data     bss     dec     hex filename
+  25509    7928      64   33501    82dd drivers/video/fbdev/vt8623fb.o
 
+After:
+   text    data     bss     dec     hex filename
+  26533    6904      64   33501    82dd drivers/video/fbdev/vt8623fb.o
 
-> Any conclusion on this? I'm still suggesting that just treating 0x78
-> and 0x90 as SCL stuck for either chip is the cleanest solution. I
-> think I could do something with a fall-through that repeats the check
-> with an if which wouldn't be too ugly.
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ drivers/video/fbdev/vt8623fb.c | 36 +++++++++++++++++-----------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
-I tried as well and also came up with code which was not very readable
-while trying to be clever.
+diff --git a/drivers/video/fbdev/vt8623fb.c b/drivers/video/fbdev/vt8623fb.c
+index 7b3eef1b893f..98ff8235c9e9 100644
+--- a/drivers/video/fbdev/vt8623fb.c
++++ b/drivers/video/fbdev/vt8623fb.c
+@@ -62,24 +62,24 @@ static const struct svga_pll vt8623_pll = {2, 127, 2, 7, 0, 3,
+ 
+ /* CRT timing register sets */
+ 
+-static struct vga_regset vt8623_h_total_regs[]       = {{0x00, 0, 7}, {0x36, 3, 3}, VGA_REGSET_END};
+-static struct vga_regset vt8623_h_display_regs[]     = {{0x01, 0, 7}, VGA_REGSET_END};
+-static struct vga_regset vt8623_h_blank_start_regs[] = {{0x02, 0, 7}, VGA_REGSET_END};
+-static struct vga_regset vt8623_h_blank_end_regs[]   = {{0x03, 0, 4}, {0x05, 7, 7}, {0x33, 5, 5}, VGA_REGSET_END};
+-static struct vga_regset vt8623_h_sync_start_regs[]  = {{0x04, 0, 7}, {0x33, 4, 4}, VGA_REGSET_END};
+-static struct vga_regset vt8623_h_sync_end_regs[]    = {{0x05, 0, 4}, VGA_REGSET_END};
+-
+-static struct vga_regset vt8623_v_total_regs[]       = {{0x06, 0, 7}, {0x07, 0, 0}, {0x07, 5, 5}, {0x35, 0, 0}, VGA_REGSET_END};
+-static struct vga_regset vt8623_v_display_regs[]     = {{0x12, 0, 7}, {0x07, 1, 1}, {0x07, 6, 6}, {0x35, 2, 2}, VGA_REGSET_END};
+-static struct vga_regset vt8623_v_blank_start_regs[] = {{0x15, 0, 7}, {0x07, 3, 3}, {0x09, 5, 5}, {0x35, 3, 3}, VGA_REGSET_END};
+-static struct vga_regset vt8623_v_blank_end_regs[]   = {{0x16, 0, 7}, VGA_REGSET_END};
+-static struct vga_regset vt8623_v_sync_start_regs[]  = {{0x10, 0, 7}, {0x07, 2, 2}, {0x07, 7, 7}, {0x35, 1, 1}, VGA_REGSET_END};
+-static struct vga_regset vt8623_v_sync_end_regs[]    = {{0x11, 0, 3}, VGA_REGSET_END};
+-
+-static struct vga_regset vt8623_offset_regs[]        = {{0x13, 0, 7}, {0x35, 5, 7}, VGA_REGSET_END};
+-static struct vga_regset vt8623_line_compare_regs[]  = {{0x18, 0, 7}, {0x07, 4, 4}, {0x09, 6, 6}, {0x33, 0, 2}, {0x35, 4, 4}, VGA_REGSET_END};
+-static struct vga_regset vt8623_fetch_count_regs[]   = {{0x1C, 0, 7}, {0x1D, 0, 1}, VGA_REGSET_END};
+-static struct vga_regset vt8623_start_address_regs[] = {{0x0d, 0, 7}, {0x0c, 0, 7}, {0x34, 0, 7}, {0x48, 0, 1}, VGA_REGSET_END};
++static const struct vga_regset vt8623_h_total_regs[]       = {{0x00, 0, 7}, {0x36, 3, 3}, VGA_REGSET_END};
++static const struct vga_regset vt8623_h_display_regs[]     = {{0x01, 0, 7}, VGA_REGSET_END};
++static const struct vga_regset vt8623_h_blank_start_regs[] = {{0x02, 0, 7}, VGA_REGSET_END};
++static const struct vga_regset vt8623_h_blank_end_regs[]   = {{0x03, 0, 4}, {0x05, 7, 7}, {0x33, 5, 5}, VGA_REGSET_END};
++static const struct vga_regset vt8623_h_sync_start_regs[]  = {{0x04, 0, 7}, {0x33, 4, 4}, VGA_REGSET_END};
++static const struct vga_regset vt8623_h_sync_end_regs[]    = {{0x05, 0, 4}, VGA_REGSET_END};
++
++static const struct vga_regset vt8623_v_total_regs[]       = {{0x06, 0, 7}, {0x07, 0, 0}, {0x07, 5, 5}, {0x35, 0, 0}, VGA_REGSET_END};
++static const struct vga_regset vt8623_v_display_regs[]     = {{0x12, 0, 7}, {0x07, 1, 1}, {0x07, 6, 6}, {0x35, 2, 2}, VGA_REGSET_END};
++static const struct vga_regset vt8623_v_blank_start_regs[] = {{0x15, 0, 7}, {0x07, 3, 3}, {0x09, 5, 5}, {0x35, 3, 3}, VGA_REGSET_END};
++static const struct vga_regset vt8623_v_blank_end_regs[]   = {{0x16, 0, 7}, VGA_REGSET_END};
++static const struct vga_regset vt8623_v_sync_start_regs[]  = {{0x10, 0, 7}, {0x07, 2, 2}, {0x07, 7, 7}, {0x35, 1, 1}, VGA_REGSET_END};
++static const struct vga_regset vt8623_v_sync_end_regs[]    = {{0x11, 0, 3}, VGA_REGSET_END};
++
++static const struct vga_regset vt8623_offset_regs[]        = {{0x13, 0, 7}, {0x35, 5, 7}, VGA_REGSET_END};
++static const struct vga_regset vt8623_line_compare_regs[]  = {{0x18, 0, 7}, {0x07, 4, 4}, {0x09, 6, 6}, {0x33, 0, 2}, {0x35, 4, 4}, VGA_REGSET_END};
++static const struct vga_regset vt8623_fetch_count_regs[]   = {{0x1C, 0, 7}, {0x1D, 0, 1}, VGA_REGSET_END};
++static const struct vga_regset vt8623_start_address_regs[] = {{0x0d, 0, 7}, {0x0c, 0, 7}, {0x34, 0, 7}, {0x48, 0, 1}, VGA_REGSET_END};
+ 
+ static const struct svga_timing_regs vt8623_timing_regs     = {
+ 	vt8623_h_total_regs, vt8623_h_display_regs, vt8623_h_blank_start_regs,
+-- 
+2.27.0
 
-So, I agree. Let's keep things simple and take your original approach.
-Can you resend the patch and update the comments to reflect which code
-is for which version? And include the other paragraph in your commit
-message?
-
-Thanks!
-
-
---LpQ9ahxlCli8rRTG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl79Dk4ACgkQFA3kzBSg
-KbaPKQ/9EsYYcCCv2oiBwU9Yj15v3XfOEeZ4In5tRu3Y9BgOTmuU0cwTqV5V2ZiJ
-B4GroT7gNKSQUPzRAjImsDxwjezWfH0jaoeFC2dl4BFAgVY/hfhZlMsEaJ0xEdwL
-31ijzNVbeOoJ3x49BE2eAGqgjy5S3C6Xj2lD1oQQxoKp+ACrpZnL9RpisP2pCSlJ
-Bbc8DDjkW6XM+oZ+yr6roO8/0z4K3mjieqEHXUHZF8nYYOoKKu5SfW9TsNH6hRWY
-Z45NF7D0CoYh0dEHqRLRjjiU5tO4CV+lEl1svpEo7F0J7fyKLVFaM3vzeQU4iEkW
-jh0nflL7NimEyQDYCzUyAz9EB7k24mOAfNRTbIQpPp+oD5ZORKGsKAm/yVDXi2hL
-IzgH9wG8HUJHfEEWzh2c9GuALBFVdyp6K9QkyvH+vz5DY4cyQhRYlW+3KYuq1LVW
-2WVRLcYN3F3w4xvvWokinqxf/g+Iq2Ap6hH7B0Lmj/Z+6JC5hqTxg0Yo8Srfplqb
-lxYQN4L9FV6o6eVfop4pzgmCLVYd75QTVMULXQAiCsEOwN+FEp6pcN1AzF6/Sw/I
-CMC27qpxS0yjbCRuczCWkyEDyG/wCMdAEshU/spCe77XMLrSq+Tvabgk0hN0rDjO
-D2l+oJDroeLAxvdl9RO6YGoo+mS+cgcA6oxUf+fcwF0jF5cwp6I=
-=fRnc
------END PGP SIGNATURE-----
-
---LpQ9ahxlCli8rRTG--
