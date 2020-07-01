@@ -2,90 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A4721081A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75AD8210823
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729434AbgGAJ26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 05:28:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729371AbgGAJ26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 05:28:58 -0400
-Received: from localhost (p54b334c2.dip0.t-ipconnect.de [84.179.52.194])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3C8A20722;
-        Wed,  1 Jul 2020 09:28:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593595737;
-        bh=FSnQ2a8GUJDvhomIUsm53eTUGDIgmLPigf6cM5vfcg8=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=1gDt5ZbBIXbOA73DhArXDo5CAeqAhAuw6gbRad41B77bWC3qpD+LfNtzWHIyVzd2r
-         uSuVHB7ZI1DUC8qwfHady2THrYQn/jsfEIRM6fivtJfphoc/QlhaRVMDAQwJCBC4he
-         IJq6F4NqiXlf858nImJukIifLhjXDOxQ9w7OtQM8=
-Date:   Wed, 1 Jul 2020 11:28:54 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     robh+dt@kernel.org, mark.rutland@arm.com,
-        pierre-yves.mordret@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        fabrice.gasnier@st.com
-Subject: Re: [PATCH v2 0/4] stm32-f7: Addition of SMBus Alert / Host-notify
- features
-Message-ID: <20200701092854.GE2261@ninjato>
-References: <1593070769-9106-1-git-send-email-alain.volmat@st.com>
- <20200630160500.GA2394@kunai>
- <20200701092138.GB3457@gnbcxd0016.gnb.st.com>
+        id S1729450AbgGAJaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 05:30:03 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:52964 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726715AbgGAJaD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 05:30:03 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0619TV9b129642;
+        Wed, 1 Jul 2020 04:29:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1593595771;
+        bh=qUyJUjQt0uUssUspq0PshC38HCjt/avZKbIchaC4fbM=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=PyFbXnSvyZdtPXu9KU6It8SJcyptdUVZ72FhqiMeB4nqP+/VGkbUYzuMN9XEoPbUs
+         3d6YWFLNzzJjEX4cBu/Oby4emzoke/Fg8UlOydJbLmcXZx5a9ZpU+mS8C+9efc7+VC
+         pGjWSxZoXffTId+Cuv2AOAfeeZlgI+rNqAfuItug=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0619TVxf089571
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 1 Jul 2020 04:29:31 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 1 Jul
+ 2020 04:29:31 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 1 Jul 2020 04:29:31 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0619TLbF100084;
+        Wed, 1 Jul 2020 04:29:22 -0500
+Subject: Re: [PATCH v6 1/4] driver core: add device probe log helper
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Jernej Skrabec <jernej.skrabec@siol.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        <andy.shevchenko@gmail.com>, Mark Brown <broonie@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20200626100103.18879-1-a.hajda@samsung.com>
+ <CGME20200626100109eucas1p25331652d017cd17d21c0ae60541d1f73@eucas1p2.samsung.com>
+ <20200626100103.18879-2-a.hajda@samsung.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <5a19df1f-4712-0083-34f0-3cb1be7923e6@ti.com>
+Date:   Wed, 1 Jul 2020 12:29:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Uwl7UQhJk99r8jnw"
-Content-Disposition: inline
-In-Reply-To: <20200701092138.GB3457@gnbcxd0016.gnb.st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200626100103.18879-2-a.hajda@samsung.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---Uwl7UQhJk99r8jnw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
+On 26/06/2020 13:01, Andrzej Hajda wrote:
+> During probe every time driver gets resource it should usually check for
+> error printk some message if it is not -EPROBE_DEFER and return the error.
+> This pattern is simple but requires adding few lines after any resource
+> acquisition code, as a result it is often omitted or implemented only
+> partially.
+> dev_err_probe helps to replace such code sequences with simple call,
+> so code:
+> 	if (err != -EPROBE_DEFER)
+> 		dev_err(dev, ...);
+> 	return err;
+> becomes:
+> 	return probe_err(dev, err, ...);
+> 
+> Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
+> ---
+>   drivers/base/core.c    | 42 ++++++++++++++++++++++++++++++++++++++++++
+>   include/linux/device.h |  3 +++
+>   2 files changed, 45 insertions(+)
+> 
 
-> I've just prepared the 1st new serie with only the HostNotify bits in it.
-> (basically, the core part, the dt-bindings with the enable-host-notify, and
-> the usage within i2c-stm32f7).
+Basic version of the helper looks very good to me, thank you.
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
 
-Cool, thanks!
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 67d39a90b45c..3a827c82933f 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -3953,6 +3953,48 @@ define_dev_printk_level(_dev_info, KERN_INFO);
+>   
+>   #endif
+>   
+> +/**
+> + * dev_err_probe - probe error check and log helper
+> + * @dev: the pointer to the struct device
+> + * @err: error value to test
+> + * @fmt: printf-style format string
+> + * @...: arguments as specified in the format string
+> + *
+> + * This helper implements common pattern present in probe functions for error
+> + * checking: print debug or error message depending if the error value is
+> + * -EPROBE_DEFER and propagate error upwards.
+> + * It replaces code sequence:
+> + * 	if (err != -EPROBE_DEFER)
+> + * 		dev_err(dev, ...);
+> + * 	else
+> + * 		dev_dbg(dev, ...);
+> + * 	return err;
+> + * with
+> + * 	return dev_err_probe(dev, err, ...);
+> + *
+> + * Returns @err.
+> + *
+> + */
+> +int dev_err_probe(const struct device *dev, int err, const char *fmt, ...)
+> +{
+> +	struct va_format vaf;
+> +	va_list args;
+> +
+> +	va_start(args, fmt);
+> +	vaf.fmt = fmt;
+> +	vaf.va = &args;
+> +
+> +	if (err != -EPROBE_DEFER)
+> +		dev_err(dev, "error %d: %pV", err, &vaf);
+> +	else
+> +		dev_dbg(dev, "error %d: %pV", err, &vaf);
+> +
+> +	va_end(args);
+> +
+> +	return err;
+> +}
+> +EXPORT_SYMBOL_GPL(dev_err_probe);
+> +
+>   static inline bool fwnode_is_primary(struct fwnode_handle *fwnode)
+>   {
+>   	return fwnode && !IS_ERR(fwnode->secondary);
+> diff --git a/include/linux/device.h b/include/linux/device.h
+> index 15460a5ac024..6b2272ae9af8 100644
+> --- a/include/linux/device.h
+> +++ b/include/linux/device.h
+> @@ -964,6 +964,9 @@ void device_link_remove(void *consumer, struct device *supplier);
+>   void device_links_supplier_sync_state_pause(void);
+>   void device_links_supplier_sync_state_resume(void);
+>   
+> +extern __printf(3, 4)
+> +int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
+> +
+>   /* Create alias, so I can be autoloaded. */
+>   #define MODULE_ALIAS_CHARDEV(major,minor) \
+>   	MODULE_ALIAS("char-major-" __stringify(major) "-" __stringify(minor))
+> 
 
-> You mentioned in the other thread that you still have some more review comment
-> I believe. Is that right ? If that is so, I'll wait for those comment and
-> then push that new serie for review.
-
-Yes, for the core part. Please wait for these comments.
-
-
---Uwl7UQhJk99r8jnw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl78V1YACgkQFA3kzBSg
-KbbdKRAApTeTI+l9N3GO5hhdEtH3C/r7NIC7rj5lCU56vD4Z1/UP0QIQ9FoweiYL
-4f5BBOxcJdhK65aeXxhntHC3CBlcAKKAmhdBPY8fu/ha493odmvI4EZx3iF3TVwQ
-lVvhSJHXirwu4GNkS0cgdqWtypy1rari2fG2H0Ar5VcOn+imSu24KN4+gcs/3l/Q
-Ze+5ey5B/E4o8C2PbumRaAlYuObRRLsHY+z727s07uaEvgpCvBqmfMk+5+3/vIkA
-JCVrZ8lDzLaAy1vY3elqHFvlNaaUpMJMVLrnaCvte+Qj8fcE2aO6i/5DwAgivtYB
-z1yZbaHbOIVkgDY4PqfcZct7F6mkQXq8zjx/BNocKUeT+wKZYPwzRb6NaubuH/MB
-ukFjgQQ7Q0MS4TLdjey5GWbHG91bBjGbG1sCzMvqT6h0+Ik/UXCFZiPW0sRZ3voo
-cUQMYvD6BqawtldBkRlVtbqnhGtTCNU1FT8alH2LbesOwdKTlQzYIUxsZTHNnuwL
-CjJU2VX/AVrgE981dsE4N2YFhlmnZCJrjMFezsY6+zcWAxqb0WtQKamHuF6fbCYI
-4+Oy/1TVSGHtPf/B9kLHo+PyPDnaXofmiL7yC4HkbVVNwhjbHcV7+kbJLkEUv/hN
-1NVfAQQPJPrO0hYyJ70fjTeY9foxR3PDVy4chuB1IsLkbzKWziw=
-=szi4
------END PGP SIGNATURE-----
-
---Uwl7UQhJk99r8jnw--
+-- 
+Best regards,
+grygorii
