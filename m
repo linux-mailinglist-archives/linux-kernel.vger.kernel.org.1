@@ -2,108 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948DA210D43
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 16:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE635210D4D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 16:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731427AbgGAOM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 10:12:28 -0400
-Received: from mga04.intel.com ([192.55.52.120]:17537 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730307AbgGAOM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 10:12:27 -0400
-IronPort-SDR: Xzxg9+pywGS1QZFZdaKUQ60+pY3yuhAjqKcxpWYhpbDZKpSwgiTSPpWpT0oeoNnbH0S3uexuI8
- nnUkhHHZyxAA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="144086420"
-X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
-   d="scan'208";a="144086420"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 07:12:27 -0700
-IronPort-SDR: 2gRFfydadHrNTFFz1trRa8xVauxhWiln8rNZlIWTanAV7EKsJzX5Lcu7siDqwep6s1HHNQ3Qew
- mLi4N+CbI+ew==
-X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
-   d="scan'208";a="455118274"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.249.175.105]) ([10.249.175.105])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 07:12:24 -0700
-Subject: Re: [RFC 2/2] KVM: VMX: Enable bus lock VM exit
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Chenyi Qiang <chenyi.qiang@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20200628085341.5107-1-chenyi.qiang@intel.com>
- <20200628085341.5107-3-chenyi.qiang@intel.com>
- <878sg3bo8b.fsf@vitty.brq.redhat.com>
- <0159554d-82d5-b388-d289-a5375ca91323@intel.com>
- <87366bbe1y.fsf@vitty.brq.redhat.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <adad61e8-8252-0491-7feb-992a52c1b4f3@intel.com>
-Date:   Wed, 1 Jul 2020 22:12:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1731458AbgGAOOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 10:14:04 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55467 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728712AbgGAOOE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 10:14:04 -0400
+Received: from callcc.thunk.org (pool-96-230-252-158.bstnma.fios.verizon.net [96.230.252.158])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 061EDvRt011986
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 1 Jul 2020 10:13:58 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 0CBC14200D9; Wed,  1 Jul 2020 10:13:57 -0400 (EDT)
+Date:   Wed, 1 Jul 2020 10:13:56 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, inux-fsdevel@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-block@vger.kernel.org
+Subject: Re: Maintainers / Kernel Summit 2020 planning kick-off
+Message-ID: <20200701141356.GF5484@mit.edu>
+References: <20200515163956.GA2158595@mit.edu>
+ <CAPM=9tz3heu1-xTyYDA4huszt3LLgF87pKcifc+OCFqJv-KWdA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87366bbe1y.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPM=9tz3heu1-xTyYDA4huszt3LLgF87pKcifc+OCFqJv-KWdA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/1/2020 8:44 PM, Vitaly Kuznetsov wrote:
-> Xiaoyao Li <xiaoyao.li@intel.com> writes:
+On Wed, Jul 01, 2020 at 09:12:31AM +1000, Dave Airlie wrote:
 > 
->> On 7/1/2020 5:04 PM, Vitaly Kuznetsov wrote:
->>> Chenyi Qiang <chenyi.qiang@intel.com> writes:
->> [...]
->>>>    static const int kvm_vmx_max_exit_handlers =
->>>> @@ -6830,6 +6838,13 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
->>>>    	if (unlikely(vmx->exit_reason.failed_vmentry))
->>>>    		return EXIT_FASTPATH_NONE;
->>>>    
->>>> +	/*
->>>> +	 * check the exit_reason to see if there is a bus lock
->>>> +	 * happened in guest.
->>>> +	 */
->>>> +	if (vmx->exit_reason.bus_lock_detected)
->>>> +		handle_bus_lock(vcpu);
->>>
->>> In case the ultimate goal is to have an exit to userspace on bus lock,
->>
->> I don't think we will need an exit to userspace on bus lock. See below.
->>
->>> the two ways to reach handle_bus_lock() are very different: in case
->>> we're handling EXIT_REASON_BUS_LOCK we can easily drop to userspace by
->>> returning 0 but what are we going to do in case of
->>> exit_reason.bus_lock_detected? The 'higher priority VM exit' may require
->>> exit to userspace too. So what's the plan? Maybe we can ignore the case
->>> when we're exiting to userspace for some other reason as this is slow
->>> already and force the exit otherwise?
->>
->>> And should we actually introduce
->>> the KVM_EXIT_BUS_LOCK and a capability to enable it here?
->>>
->>
->> Introducing KVM_EXIT_BUS_LOCK maybe help nothing. No matter
->> EXIT_REASON_BUS_LOCK or exit_reason.bus_lock_detected, the bus lock has
->> already happened. Exit to userspace cannot prevent bus lock, so what
->> userspace can do is recording and counting as what this patch does in
->> vcpu->stat.bus_locks.
-> 
-> Exiting to userspace would allow to implement custom 'throttling'
-> policies to mitigate the 'noisy neighbour' problem. The simplest would
-> be to just inject some sleep time.
-> 
+> What timezone are the conferences being held in? It impacts on what I
+> can attend quite heavily :-)
 
-So you want an exit to userspace for every bus lock and leave it all to 
-userspace. Yes, it's doable.
+When you register for the Linux Plumbers Conference, there will be an
+opportunity for you to indicate your timezone preferences.  The
+current thinking is that the timing will be like many of the virtual
+conferences, which is to run it only for at most 3-4 hours a day, at
+hours when it is most, convenient for the people who have registered.
+That's for the Kernel Summit.
 
-As you said, the exit_reason.bus_lock_detected case is the tricky one. 
-We cannot do the similar to extend vcpu->run->exit_reason, this breaks 
-ABI. Maybe we can extend the vcpu->run->flags to indicate bus lock 
-detected for the other exit reason?
+For the Maintainer's Summit, due to the lack of topic proposals, we
+are probably going to end up skipping it for this year.
+
+Cheers,
+
+    	     	      	     	      	     - Ted
+
