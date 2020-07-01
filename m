@@ -2,116 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38334211413
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 22:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76C7211423
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 22:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726967AbgGAUMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 16:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
+        id S1727769AbgGAUOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 16:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726287AbgGAUMw (ORCPT
+        with ESMTP id S1726287AbgGAUOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 16:12:52 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E7BC08C5C1;
-        Wed,  1 Jul 2020 13:12:52 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x72so2033640pfc.6;
-        Wed, 01 Jul 2020 13:12:52 -0700 (PDT)
+        Wed, 1 Jul 2020 16:14:30 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0DBC08C5C1;
+        Wed,  1 Jul 2020 13:14:30 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id u185so9430780pfu.1;
+        Wed, 01 Jul 2020 13:14:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W20vV3JALPph0VU9IgzKjMWKb8lzvjhb2qzVsECrclc=;
-        b=PwUM0eTjfKWO+jB8QSaTySZ+dZS/8QftYHEPdbAVqrVd0LEVff3jx4meWpTLeCl1hE
-         5gfuTC466r8MFk2xWA4FfJFIpM7LjM+j44fTqrhdbMn3gj4nIwRghF67wpiw6IAJWLlg
-         u3zW1kF0k7Pik9gBHN1jeFzaZGaR7g3SqqOuKYwu7hOyi9sNpM0jPKOTTuEM65We+h20
-         hlpRnyC1mAAoy235GOZNMzUoErceWpALCSwVJAXmlidlStfdVLpKNKWur+HG8XNqKPAe
-         24DK2nZQ9e82HU3PRfA2VcyJn7Xw3bf+HKHz2aU0p1JFrfG3e6OJBv8onRc8MgQddgyF
-         Tptw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j3XX45xXL2ckQCryqen8G8xqi1VBzikcTk3+0I72HLY=;
+        b=Z6vdH9ZkagZcUlBeTb3Wb+OYJP8Of8UMSLBsvIZfVVMyI0fB4CvWQFbRRfqZlt3MZf
+         SysGd8bwRPRSMClVpd89Yjmkpu/idYcGibwdQlCb3teJ1lEGS3ip+L5eWB/kQoXjFqkc
+         RtIpppZrTJcASvarISUfx4CFSiyTTvVxna7HnJldj5BKcS0vySUv7MneDvF30wdQWKaA
+         ks55RgQw/cU7Ue/d9V09C/mLR+UgLf1u4HNeadUYxFkXS82SIsMOio18h9PP6upex+VJ
+         TZbQYZOg43ZGOukob8QzLfBOg6MGec1hXR521puYqEBLBREvAgZd/lj/f5uglDFi0wC2
+         ceQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W20vV3JALPph0VU9IgzKjMWKb8lzvjhb2qzVsECrclc=;
-        b=F+0vxQ12ie9nrxt1fc333Za6UtGee49X5GLW4ziHN2UWelQfpKt0TybGUWZYu0ka6f
-         XaQNpHusqOLxgtnG5F46j1NnOZl2MrjGAKd92dzYlIVs/oisWnHNsZfmQdYgcgzhKigE
-         eC7R5AunkA6up24u46QOPbznmKT6skxNfaSnmjrR33bjU7Ygcy/2qTECMKFxLHY7oO4B
-         jXrgwmdcwbq2p+CNwTyzV2dm1+iLNxuckvlM4Xujn+tnFKpxkcnS87qPcMhhnEVJ/Xml
-         rXCBvXubymGoxEbhj+9szHQWNebdrgPxQglNvN/qXLuyLICG8o80/Ebj6+7YSH4Pg7qp
-         n3iw==
-X-Gm-Message-State: AOAM532dZEGVTJ3MsUEmrNh6J9bKBA7pZDRTYJs2zOBCdsvx6zVHpO+C
-        DmQ/dGjWv0NVPm8/Va0xxjg=
-X-Google-Smtp-Source: ABdhPJxG1F06kx2wFpILNOql/nZRFFIvn7l1Is/5noNfiyyyoZFJEEWzYUymfaV0XOdlBKmiLMjgXw==
-X-Received: by 2002:a63:2104:: with SMTP id h4mr22094734pgh.427.1593634371657;
-        Wed, 01 Jul 2020 13:12:51 -0700 (PDT)
-Received: from localhost.localdomain ([2604:1380:1000:7a00::1])
-        by smtp.gmail.com with ESMTPSA id c30sm6654332pfj.213.2020.07.01.13.12.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 13:12:51 -0700 (PDT)
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        linux-clk@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH] clk: mvebu: ARMADA_AP_CPU_CLK needs to select ARMADA_AP_CP_HELPER
-Date:   Wed,  1 Jul 2020 13:11:29 -0700
-Message-Id: <20200701201128.2448427-1-natechancellor@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j3XX45xXL2ckQCryqen8G8xqi1VBzikcTk3+0I72HLY=;
+        b=QaC4tsnNQrj95psauleA8DEDEI2Ie8JTGMBwqKgiaVwnqTP52R+E/vWBtTJ9co/Gsa
+         PlJSyF3HgPS6nIG0RhHOedol4hEvtdadq0+MAjB6KBGHBTBzsZay9ai8mIdB0lF9tBBV
+         Cj3o0Eob+0qszz0hVb3n+QJzUx+LKe2VeuXB6CRHhXlBsZ3OpYFkgrGKTAufwb0xQUya
+         1YUlv2Vb0t3xkJrPik9vqHK9tfn1krWe1Ci1awii7ttugzsBCSHlIsHfJ4mYWnmLSn/B
+         ESgsjuyKN98k0jc3qMJ2t1V0XdeokDxxB1DxUDq72TsX74KqOvVofpCB3qgYUgfHB+Ut
+         I5kw==
+X-Gm-Message-State: AOAM532MFPnQj9GgP/D+i9+rC7GF2yx5b/N8pB7obIVElzBKH9o8xpSJ
+        xOoG4iXcEV60AbLVoPYr8A998ZrqCfiebMaPPrkk4A==
+X-Google-Smtp-Source: ABdhPJwTpVRP0s9Kdt9Cl+CTlfdKHbWBuJdGoK2cC7YIaeI4bE2S1sLDFWylEo6otv0/ysiPMeOeocI+Wb+m9jZ4k/w=
+X-Received: by 2002:a62:3645:: with SMTP id d66mr26487346pfa.275.1593634469910;
+ Wed, 01 Jul 2020 13:14:29 -0700 (PDT)
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+References: <20200701192936.1397152-1-masahiroy@kernel.org>
+In-Reply-To: <20200701192936.1397152-1-masahiroy@kernel.org>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Wed, 1 Jul 2020 13:14:18 -0700
+Message-ID: <CAMo8Bf+w2ikVxEJecE_DpAbBQFNhY=K1jWpg9y4uDw9jEb5=MQ@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: do not export LDFLAGS_vmlinux
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Chris Zankel <chris@zankel.net>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, Guan Xuetao <gxt@pku.edu.cn>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Michal Marek <michal.lkml@markovi.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building arm32 allmodconfig:
+On Wed, Jul 1, 2020 at 12:30 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
 
-ld.lld: error: undefined symbol: ap_cp_unique_name
->>> referenced by ap-cpu-clk.c
->>>               clk/mvebu/ap-cpu-clk.o:(ap_cpu_clock_probe) in archive drivers/built-in.a
+[...]
 
-ap_cp_unique_name is only compiled into the kernel image when
-CONFIG_ARMADA_AP_CP_HELPER is selected (as it is not user selectable).
-However, CONFIG_ARMADA_AP_CPU_CLK does not select it.
+> diff --git a/arch/xtensa/boot/boot-elf/Makefile b/arch/xtensa/boot/boot-elf/Makefile
+> index 12ae1e91cb75..c6538d3321b9 100644
+> --- a/arch/xtensa/boot/boot-elf/Makefile
+> +++ b/arch/xtensa/boot/boot-elf/Makefile
+> @@ -25,7 +25,7 @@ $(obj)/Image.o: vmlinux.bin $(OBJS)
+>                 $(OBJS) $@
+>
+>  $(obj)/../Image.elf: $(obj)/Image.o $(obj)/boot.lds
+> -       $(Q)$(LD) $(KBUILD_LDFLAGS) $(LDFLAGS_vmlinux) \
+> +       $(LD) $(KBUILD_LDFLAGS) \
 
-This has been a problem since the driver was added to the kernel but it
-was not built before commit c318ea261749 ("cpufreq: ap806: fix cpufreq
-driver needs ap cpu clk") so it was never noticed.
+Can that $(Q) be retained, please?
+The rest LGTM.
 
-Fixes: f756e362d938 ("clk: mvebu: add CPU clock driver for Armada 7K/8K")
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
----
+>                 -T $(obj)/boot.lds \
+>                 --build-id=none \
+>                 -o $@ $(obj)/Image.o
 
-I do not know who should actually take this patch since the problematic
-patch is on Viresh's cpufreq/arm/linux-next but the problem originated
-from a patch in the clk tree in 5.4. I assume all that would be needed
-is a clk maintainer's ack? Please let me know if I did something wrong.
-
-Cheers,
-Nathan
-
- drivers/clk/mvebu/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/clk/mvebu/Kconfig b/drivers/clk/mvebu/Kconfig
-index ded07b0bd0d5..557d6213783c 100644
---- a/drivers/clk/mvebu/Kconfig
-+++ b/drivers/clk/mvebu/Kconfig
-@@ -42,6 +42,7 @@ config ARMADA_AP806_SYSCON
- 
- config ARMADA_AP_CPU_CLK
- 	bool
-+	select ARMADA_AP_CP_HELPER
- 
- config ARMADA_CP110_SYSCON
- 	bool
-
-base-commit: 0363635faa1da1560d2a84e2229c3f3ab108304f
 -- 
-2.27.0
-
+Thanks.
+-- Max
