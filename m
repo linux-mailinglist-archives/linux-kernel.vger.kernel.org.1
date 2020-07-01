@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A32F211289
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 20:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD17F211292
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 20:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732513AbgGASYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 14:24:51 -0400
-Received: from mga09.intel.com ([134.134.136.24]:61636 "EHLO mga09.intel.com"
+        id S1732986AbgGASZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 14:25:12 -0400
+Received: from mga09.intel.com ([134.134.136.24]:61638 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731814AbgGASYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 14:24:48 -0400
-IronPort-SDR: V1o/jiNt/Hg2kSbpfTtvmKBs2vFMlp3wBeyiZOIhwViyTETAcZMpP+7QOUdADI7WXeIgzRPd09
- 6AZuN4C6tZow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="148218888"
+        id S1732926AbgGASYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 14:24:49 -0400
+IronPort-SDR: 9RuWfVzwd77vni6JxsVuJZOlGF/klLXCiTiQc4VFoAayBbCwLZjOv3LGIcKW5ueF5quOinZnC0
+ sIYk+W+0xuEA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="148218891"
 X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; 
-   d="scan'208";a="148218888"
+   d="scan'208";a="148218891"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 11:24:47 -0700
-IronPort-SDR: RKhoIapeEXbHUDtol/rc9p30Z59tFwBT0r+5FvQu69Zw2DYoUnpT4wNrMtSCsE/3B1DlmZYyc3
- ao3TUJ3wRblQ==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 11:24:48 -0700
+IronPort-SDR: w93MlZB3WzzjwSR0zJWhH0yf1a5S5FeqlaJI0DXEyVXkJ44VHug9r+lQTIURX1uVtCDObXKSzd
+ yLD54xgtnAJg==
 X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; 
-   d="scan'208";a="425679612"
+   d="scan'208";a="425679614"
 Received: from srnatla-mobl2.amr.corp.intel.com (HELO pbossart-mobl3.amr.corp.intel.com) ([10.254.76.199])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 11:24:47 -0700
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 11:24:48 -0700
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     tiwai@suse.de, broonie@kernel.org,
@@ -35,9 +35,9 @@ Cc:     tiwai@suse.de, broonie@kernel.org,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 07/11] ASoC: codecs: rt*: fix 'defined but not used' warning
-Date:   Wed,  1 Jul 2020 13:24:18 -0500
-Message-Id: <20200701182422.81496-8-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 08/11] ASoC: codecs: rt5659: add _maybe_unused as needed
+Date:   Wed,  1 Jul 2020 13:24:19 -0500
+Message-Id: <20200701182422.81496-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200701182422.81496-1-pierre-louis.bossart@linux.intel.com>
 References: <20200701182422.81496-1-pierre-louis.bossart@linux.intel.com>
@@ -48,109 +48,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix W=1 warning when ACPI is not defined
+Fix W=1 warning by adding __maybe_unused. Maintainers for this file
+may want to double-check if those definitions are necessary.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/rt274.c      | 2 ++
- sound/soc/codecs/rt286.c      | 2 ++
- sound/soc/codecs/rt298.c      | 2 ++
- sound/soc/codecs/rt5660.c     | 2 ++
- sound/soc/codecs/rt5677-spi.c | 2 ++
- 5 files changed, 10 insertions(+)
+ sound/soc/codecs/rt5659.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
-index cbb5e176d11a..40a28fb4fd09 100644
---- a/sound/soc/codecs/rt274.c
-+++ b/sound/soc/codecs/rt274.c
-@@ -1105,12 +1105,14 @@ static const struct i2c_device_id rt274_i2c_id[] = {
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+index 541fc6f1089b..40a954e480a5 100644
+--- a/sound/soc/codecs/rt5659.c
++++ b/sound/soc/codecs/rt5659.c
+@@ -1204,31 +1204,31 @@ static unsigned int rt5659_asrc_clk_map_values[] = {
+ 	0, 1, 2, 3, 5, 6,
  };
- MODULE_DEVICE_TABLE(i2c, rt274_i2c_id);
  
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id rt274_acpi_match[] = {
- 	{ "10EC0274", 0 },
- 	{ "INT34C2", 0 },
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, rt274_acpi_match);
-+#endif
+-static SOC_VALUE_ENUM_SINGLE_DECL(
++static __maybe_unused SOC_VALUE_ENUM_SINGLE_DECL(
+ 	rt5659_da_sto_asrc_enum, RT5659_ASRC_2, RT5659_DA_STO_T_SFT, 0x7,
+ 	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
  
- static int rt274_i2c_probe(struct i2c_client *i2c,
- 			   const struct i2c_device_id *id)
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 9593a9a27bf8..89b1c8b68004 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -1079,11 +1079,13 @@ static const struct i2c_device_id rt286_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt286_i2c_id);
+-static SOC_VALUE_ENUM_SINGLE_DECL(
++static __maybe_unused SOC_VALUE_ENUM_SINGLE_DECL(
+ 	rt5659_da_monol_asrc_enum, RT5659_ASRC_2, RT5659_DA_MONO_L_T_SFT, 0x7,
+ 	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
  
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id rt286_acpi_match[] = {
- 	{ "INT343A", 0 },
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, rt286_acpi_match);
-+#endif
+-static SOC_VALUE_ENUM_SINGLE_DECL(
++static __maybe_unused SOC_VALUE_ENUM_SINGLE_DECL(
+ 	rt5659_da_monor_asrc_enum, RT5659_ASRC_2, RT5659_DA_MONO_R_T_SFT, 0x7,
+ 	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
  
- static const struct dmi_system_id force_combo_jack_table[] = {
- 	{
-diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index 7fc7d6181630..dc0273a5a11f 100644
---- a/sound/soc/codecs/rt298.c
-+++ b/sound/soc/codecs/rt298.c
-@@ -1145,11 +1145,13 @@ static const struct i2c_device_id rt298_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt298_i2c_id);
+-static SOC_VALUE_ENUM_SINGLE_DECL(
++static __maybe_unused SOC_VALUE_ENUM_SINGLE_DECL(
+ 	rt5659_ad_sto1_asrc_enum, RT5659_ASRC_2, RT5659_AD_STO1_T_SFT, 0x7,
+ 	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
  
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id rt298_acpi_match[] = {
- 	{ "INT343A", 0 },
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, rt298_acpi_match);
-+#endif
+-static SOC_VALUE_ENUM_SINGLE_DECL(
++static __maybe_unused SOC_VALUE_ENUM_SINGLE_DECL(
+ 	rt5659_ad_sto2_asrc_enum, RT5659_ASRC_3, RT5659_AD_STO2_T_SFT, 0x7,
+ 	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
  
- static const struct dmi_system_id force_combo_jack_table[] = {
- 	{
-diff --git a/sound/soc/codecs/rt5660.c b/sound/soc/codecs/rt5660.c
-index 78371e51bc34..9e3813f7583d 100644
---- a/sound/soc/codecs/rt5660.c
-+++ b/sound/soc/codecs/rt5660.c
-@@ -1241,12 +1241,14 @@ static const struct of_device_id rt5660_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, rt5660_of_match);
+-static SOC_VALUE_ENUM_SINGLE_DECL(
++static __maybe_unused SOC_VALUE_ENUM_SINGLE_DECL(
+ 	rt5659_ad_monol_asrc_enum, RT5659_ASRC_3, RT5659_AD_MONO_L_T_SFT, 0x7,
+ 	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
  
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id rt5660_acpi_match[] = {
- 	{ "10EC5660", 0 },
- 	{ "10EC3277", 0 },
- 	{ },
- };
- MODULE_DEVICE_TABLE(acpi, rt5660_acpi_match);
-+#endif
+-static SOC_VALUE_ENUM_SINGLE_DECL(
++static __maybe_unused SOC_VALUE_ENUM_SINGLE_DECL(
+ 	rt5659_ad_monor_asrc_enum, RT5659_ASRC_3, RT5659_AD_MONO_R_T_SFT, 0x7,
+ 	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
  
- static int rt5660_parse_dt(struct rt5660_priv *rt5660, struct device *dev)
- {
-diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
-index 7bfade8b3d6e..95ac12a5cc6b 100644
---- a/sound/soc/codecs/rt5677-spi.c
-+++ b/sound/soc/codecs/rt5677-spi.c
-@@ -614,11 +614,13 @@ static int rt5677_spi_probe(struct spi_device *spi)
- 	return ret;
- }
- 
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id rt5677_spi_acpi_id[] = {
- 	{ "RT5677AA", 0 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, rt5677_spi_acpi_id);
-+#endif
- 
- static struct spi_driver rt5677_spi_driver = {
- 	.driver = {
 -- 
 2.25.1
 
