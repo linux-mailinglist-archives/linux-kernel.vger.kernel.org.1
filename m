@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2423A210643
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4EF210637
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729067AbgGAIcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 04:32:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
+        id S1728935AbgGAIb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 04:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728902AbgGAIbw (ORCPT
+        with ESMTP id S1728919AbgGAIbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 04:31:52 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F34C03E979
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 01:31:51 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id o11so22892211wrv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 01:31:51 -0700 (PDT)
+        Wed, 1 Jul 2020 04:31:53 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25002C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 01:31:53 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id r12so22823012wrj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 01:31:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yU99x7wrPL/01EJwaTy/8jjc+2wcUgkGTNBMFf55IvQ=;
-        b=Kmi45ixESDHOhqIYiUTUX5GGBbJkgWv5XCYsOTKDIZXZHXdCVyrvmprS5/DFthaPKz
-         DLJNAGYrGhCqD7ugLtTtXQDJ4U6mLA2DlOhUSYXtnTGrgV/NvWJ6ZAqSQLVB0l09Qzvp
-         tYB+SLgqS+MkEUHGgBuU92LgXm2kyHgAXkeNcGfLWQopRjM9xJHsH7hrbwNAVaWFBsDt
-         vVtWLSYwCmz0aq6f4JAALuZRSsz0C7etUPf4wF5d+wd9hRIkpO0xStsPo9WsU9DtpJDV
-         OLHF+5/Q8JXISaB4D5jc8ATX0D/1m9/9kXTy5S+z2xD9dA5r/tsU5azQnkahP3PlxgQ2
-         4I9w==
+        bh=WbXNfDHMBERrHFjsyxyOToTajDh8zV3mfokRINKpnhg=;
+        b=KyrSn/RI0csmKVqgkL/S8K4bDqPSe5oCZdF2YBP8mVEsOVestnsJxpgwutWB2JJnXy
+         jw/r28e6dk0riqHZJLTyKDao8Z5GfDi8BToomhxdjQpCPWefkid2xz4N4E2zP5sD9MfD
+         zcPqB13RgBDmZMjB0moaK13VgRJG/mLY2d7DgvTWoyKaYzfxciYUK1jxcG9sxg5U5ICi
+         em3qbqBkwawIzI7XXyc4tCjho0w3lGmzAdsPrZSt9r8OoGb7gkW5UcsHTC59ulVRTv5+
+         iD3YCOMU6wRnPRaYNLvskGmfECUhoRcyouzhAI02DohV/U7/s+NLu11I/kRX530ShMKI
+         UGCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yU99x7wrPL/01EJwaTy/8jjc+2wcUgkGTNBMFf55IvQ=;
-        b=hItZPKAtlt3lwUYPlc3blwUrUXm4M4sAboeVuLdRnujLoa42CsFRSYNl+VGl3zDyQa
-         VGXmz4OfHDpZaoGiC8rG7x1VCICm52tVexcPodYmIklve6LCHqYOxaPrUZYVoYY1KPaA
-         XNantP8gpAJ8Q03jkfKAR2C/mC8zZqSD1i79RKI/81+IUJBJQbZmV56+cGSS9j4+lZ+S
-         dEAtrlXYYsSNHRXUa5ctwUuLCDzEBXvxiVafUV0kRkklj2DzVvvHEoMCL0tLrowenbl9
-         8XvuJztx+UEFISCzocObCqNs8FsZ4GHTgCIhnLJL7PQQCq9L+j9kLRmIFNd5EsXoyZDx
-         DI8g==
-X-Gm-Message-State: AOAM530z96UVcmpUkJltmA5vObH7xMxbxgfF+lXYPd6sHoSIy9v1965K
-        yCp5W1rggU9rRGOuiUqPdedI6g==
-X-Google-Smtp-Source: ABdhPJynmQiP6zs1Abq21Wj9DPhvDQ4iPF31PBd5UVp2GyqjlPh8Z0Dg1FBfgQ/5tDja4cdbnGwemg==
-X-Received: by 2002:a5d:5642:: with SMTP id j2mr25593808wrw.19.1593592310575;
-        Wed, 01 Jul 2020 01:31:50 -0700 (PDT)
+        bh=WbXNfDHMBERrHFjsyxyOToTajDh8zV3mfokRINKpnhg=;
+        b=CsHlZFqQN4TgsRHdrIirvetRuFPw6zT+Sm9Icsh3MTP9zzfcwA9aBTAonu62r8tkWZ
+         PDFrNEdlkB/nOAYuth9rZuDu6zczsO03JzPsEWjV+KibjKdIy2XswJ7jZnvrR5RRL6S+
+         eGEZ/Jp87xa9v9ycbMtkeZhSaJvnbnUzzgmBndZQQ7jOIxY49FXwoIPcXMaYxM02IXMu
+         8IoY1PYrGKW/AtyjSDYNvohNtCDYbfmqSoheqHkcMA3BmxZjaXmukHpArZBVl+fVTfcD
+         JzbdZrRS3dtXA2Y3aXokEDGsUboqkqQ7MaSdQzUBBe76cUxVd+3WuSrr8ATIdAtnopNi
+         WLTQ==
+X-Gm-Message-State: AOAM530w0FVyDzR3v9fY8qPSvR0+DmYtKGsXFRtKeJn9Rfpgd/erPTV+
+        0OwkUQ/z1XyYTNDEboYPnjLnrw==
+X-Google-Smtp-Source: ABdhPJxVYEssl6rm+wG8SRl2HNVCOD9VVc4XtRdwIgjFKpfYBDM7iCOPLvJileB79HRYVzHneYskhw==
+X-Received: by 2002:adf:f04c:: with SMTP id t12mr23806978wro.382.1593592311771;
+        Wed, 01 Jul 2020 01:31:51 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id 59sm6717816wrj.37.2020.07.01.01.31.49
+        by smtp.gmail.com with ESMTPSA id 59sm6717816wrj.37.2020.07.01.01.31.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 01:31:49 -0700 (PDT)
+        Wed, 01 Jul 2020 01:31:51 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
         Sudeep Dutt <sudeep.dutt@intel.com>,
         Ashutosh Dixit <ashutosh.dixit@intel.com>
-Subject: [PATCH v2 23/30] misc: mic: scif: scif_dma: Fix a couple of kerneldoc issues
-Date:   Wed,  1 Jul 2020 09:31:11 +0100
-Message-Id: <20200701083118.45744-24-lee.jones@linaro.org>
+Subject: [PATCH v2 24/30] misc: mic: scif: scif_fence: Fix a bunch of different documentation issues
+Date:   Wed,  1 Jul 2020 09:31:12 +0100
+Message-Id: <20200701083118.45744-25-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200701083118.45744-1-lee.jones@linaro.org>
 References: <20200701083118.45744-1-lee.jones@linaro.org>
@@ -66,46 +66,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Firstly demote scif_rma_destroy_tcw()'s header to a standard
-comment as no attempt has been made to document any of the
-function arguments.  Secondly, provide missing description
-for 'prot' for scif_register_temp().
+Firstly add missing descriptions for every use of 'scifdev', then
+correct incorrect formatting of existing function argument descriptions
+changing to the expected format of '@.*: ', finally add missing
+description for function argument 'mark'.
 
-Fixes the following W=1 kernel build warnings:
+Fixes the following W=1 warnings:
 
- drivers/misc/mic/scif/scif_dma.c:110: warning: Function parameter or member 'mmn' not described in '__scif_rma_destroy_tcw'
- drivers/misc/mic/scif/scif_dma.c:110: warning: Function parameter or member 'start' not described in '__scif_rma_destroy_tcw'
- drivers/misc/mic/scif/scif_dma.c:110: warning: Function parameter or member 'len' not described in '__scif_rma_destroy_tcw'
- drivers/misc/mic/scif/scif_dma.c:344: warning: Function parameter or member 'prot' not described in 'scif_register_temp'
+ drivers/misc/mic/scif/scif_fence.c:19: warning: Function parameter or member 'scifdev' not described in 'scif_recv_mark'
+ drivers/misc/mic/scif/scif_fence.c:41: warning: Function parameter or member 'scifdev' not described in 'scif_recv_mark_resp'
+ drivers/misc/mic/scif/scif_fence.c:64: warning: Function parameter or member 'scifdev' not described in 'scif_recv_wait'
+ drivers/misc/mic/scif/scif_fence.c:101: warning: Function parameter or member 'scifdev' not described in 'scif_recv_wait_resp'
+ drivers/misc/mic/scif/scif_fence.c:122: warning: Function parameter or member 'scifdev' not described in 'scif_recv_sig_local'
+ drivers/misc/mic/scif/scif_fence.c:143: warning: Function parameter or member 'scifdev' not described in 'scif_recv_sig_remote'
+ drivers/misc/mic/scif/scif_fence.c:164: warning: Function parameter or member 'scifdev' not described in 'scif_recv_sig_resp'
+ drivers/misc/mic/scif/scif_fence.c:515: warning: Function parameter or member 'epd' not described in 'scif_send_fence_signal'
+ drivers/misc/mic/scif/scif_fence.c:515: warning: Function parameter or member 'roff' not described in 'scif_send_fence_signal'
+ drivers/misc/mic/scif/scif_fence.c:515: warning: Function parameter or member 'rval' not described in 'scif_send_fence_signal'
+ drivers/misc/mic/scif/scif_fence.c:515: warning: Function parameter or member 'loff' not described in 'scif_send_fence_signal'
+ drivers/misc/mic/scif/scif_fence.c:515: warning: Function parameter or member 'lval' not described in 'scif_send_fence_signal'
+ drivers/misc/mic/scif/scif_fence.c:515: warning: Function parameter or member 'flags' not described in 'scif_send_fence_signal'
 
 Cc: Sudeep Dutt <sudeep.dutt@intel.com>
 Cc: Ashutosh Dixit <ashutosh.dixit@intel.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/misc/mic/scif/scif_dma.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/misc/mic/scif/scif_fence.c | 34 ++++++++++++++++++------------
+ 1 file changed, 21 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/misc/mic/scif/scif_dma.c b/drivers/misc/mic/scif/scif_dma.c
-index c7c873409184c..401b98e5ad79a 100644
---- a/drivers/misc/mic/scif/scif_dma.c
-+++ b/drivers/misc/mic/scif/scif_dma.c
-@@ -99,7 +99,7 @@ int scif_reserve_dma_chan(struct scif_endpt *ep)
+diff --git a/drivers/misc/mic/scif/scif_fence.c b/drivers/misc/mic/scif/scif_fence.c
+index 657fd4a206565..4fedf6183951c 100644
+--- a/drivers/misc/mic/scif/scif_fence.c
++++ b/drivers/misc/mic/scif/scif_fence.c
+@@ -11,6 +11,7 @@
+ 
+ /**
+  * scif_recv_mark: Handle SCIF_MARK request
++ * @scifdev:	SCIF device
+  * @msg:	Interrupt message
+  *
+  * The peer has requested a mark.
+@@ -33,6 +34,7 @@ void scif_recv_mark(struct scif_dev *scifdev, struct scifmsg *msg)
+ 
+ /**
+  * scif_recv_mark_resp: Handle SCIF_MARK_(N)ACK messages.
++ * @scifdev:	SCIF device
+  * @msg:	Interrupt message
+  *
+  * The peer has responded to a SCIF_MARK message.
+@@ -56,6 +58,7 @@ void scif_recv_mark_resp(struct scif_dev *scifdev, struct scifmsg *msg)
+ 
+ /**
+  * scif_recv_wait: Handle SCIF_WAIT request
++ * @scifdev:	SCIF device
+  * @msg:	Interrupt message
+  *
+  * The peer has requested waiting on a fence.
+@@ -93,6 +96,7 @@ void scif_recv_wait(struct scif_dev *scifdev, struct scifmsg *msg)
+ 
+ /**
+  * scif_recv_wait_resp: Handle SCIF_WAIT_(N)ACK messages.
++ * @scifdev:	SCIF device
+  * @msg:	Interrupt message
+  *
+  * The peer has responded to a SCIF_WAIT message.
+@@ -114,6 +118,7 @@ void scif_recv_wait_resp(struct scif_dev *scifdev, struct scifmsg *msg)
+ 
+ /**
+  * scif_recv_sig_local: Handle SCIF_SIG_LOCAL request
++ * @scifdev:	SCIF device
+  * @msg:	Interrupt message
+  *
+  * The peer has requested a signal on a local offset.
+@@ -135,6 +140,7 @@ void scif_recv_sig_local(struct scif_dev *scifdev, struct scifmsg *msg)
+ 
+ /**
+  * scif_recv_sig_remote: Handle SCIF_SIGNAL_REMOTE request
++ * @scifdev:	SCIF device
+  * @msg:	Interrupt message
+  *
+  * The peer has requested a signal on a remote offset.
+@@ -156,6 +162,7 @@ void scif_recv_sig_remote(struct scif_dev *scifdev, struct scifmsg *msg)
+ 
+ /**
+  * scif_recv_sig_resp: Handle SCIF_SIG_(N)ACK messages.
++ * @scifdev:	SCIF device
+  * @msg:	Interrupt message
+  *
+  * The peer has responded to a signal request.
+@@ -280,12 +287,12 @@ static int _scif_prog_signal(scif_epd_t epd, dma_addr_t dst, u64 val)
+ 	return err;
  }
  
- #ifdef CONFIG_MMU_NOTIFIER
--/**
-+/*
-  * scif_rma_destroy_tcw:
+-/*
++/**
+  * scif_prog_signal:
+- * @epd - Endpoint Descriptor
+- * @offset - registered address to write @val to
+- * @val - Value to be written at @offset
+- * @type - Type of the window.
++ * @epd: Endpoint Descriptor
++ * @offset: registered address to write @val to
++ * @val: Value to be written at @offset
++ * @type: Type of the window.
   *
-  * This routine destroys temporary cached windows
-@@ -332,6 +332,7 @@ static bool scif_rma_tc_can_cache(struct scif_endpt *ep, size_t cur_bytes)
-  * @epd: End Point Descriptor.
-  * @addr: virtual address to/from which to copy
-  * @len: length of range to copy
-+ * @prot: read/write protection
-  * @out_offset: computed offset returned by reference.
-  * @out_window: allocated registered window returned by reference.
+  * Arrange to write a value to the registered offset after ensuring that the
+  * offset provided is indeed valid.
+@@ -501,12 +508,12 @@ static int _scif_send_fence_signal_wait(struct scif_endpt *ep,
+ 
+ /**
+  * scif_send_fence_signal:
+- * @epd - endpoint descriptor
+- * @loff - local offset
+- * @lval - local value to write to loffset
+- * @roff - remote offset
+- * @rval - remote value to write to roffset
+- * @flags - flags
++ * @epd: endpoint descriptor
++ * @loff: local offset
++ * @lval: local value to write to loffset
++ * @roff: remote offset
++ * @rval: remote value to write to roffset
++ * @flags: flags
   *
+  * Sends a remote fence signal request
+  */
+@@ -577,10 +584,11 @@ static void scif_fence_mark_cb(void *arg)
+ 	atomic_dec(&ep->rma_info.fence_refcount);
+ }
+ 
+-/*
++/**
+  * _scif_fence_mark:
++ * @epd: endpoint descriptor
++ * @mark: DMA mark to set-up
+  *
+- * @epd - endpoint descriptor
+  * Set up a mark for this endpoint and return the value of the mark.
+  */
+ int _scif_fence_mark(scif_epd_t epd, int *mark)
 -- 
 2.25.1
 
