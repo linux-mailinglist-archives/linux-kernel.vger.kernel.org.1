@@ -2,181 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AECD210E60
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AAD210E6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731748AbgGAPGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 11:06:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731343AbgGAPGX (ORCPT
+        id S1731762AbgGAPG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 11:06:59 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2178 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731750AbgGAPG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 11:06:23 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F33C08C5DB
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 08:06:22 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id x8so9127925plm.10
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 08:06:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dLJbOj3weGuPoGEm8Q6BpPocRqtRJNsyr2+B1hO3Q2k=;
-        b=Tac+073Gs4Yz9fnZoHmNM/3l3vwjU4nRfnBMpJcyd4ZxtlpOFBqM54IEqy6jgljJQh
-         1CM4An+UyXRPAMlFTPKmFSKV0SW84bNHt/vl81NZJboRBuROaByH5MU/DUKePPjkFsF0
-         jNUwWp4j+pigGNxsz2Va7Jf/P7TIrVOVBN5Kg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dLJbOj3weGuPoGEm8Q6BpPocRqtRJNsyr2+B1hO3Q2k=;
-        b=hceRzS1WE8U0WCjwtwehbz/0EKvi8+Cl7c3pRUtDSBxy1KhkLXZt07sLuX/tmcJVU6
-         +YA6NOgQf68cJyfRBzE8MQ7xjDo25Qjqzg2QDsuwfb8flW3G1MV3S4z13ff84qUSbvTc
-         31O+XeWD3HG2oBgS8TFnkhrn6nAGyxFJrDz+U7zR4oOF81921TLZ7Dgm5guOXJqBvh2d
-         7SeWedkBLuuxsKQfRT/pHrrNWcnlAENppCgB2qyepDxBbbgdiSLqztbuYek+9imvgpHU
-         D+YsOK+MUJGbtOFNt7PY/zAMHc0QCEtKCZdAtqJl3JTjokryguFnQwk2G5vOgB/YoSzB
-         zk4Q==
-X-Gm-Message-State: AOAM531J/wvrPoOFQx4TYgVMGy478kxE6g75iGKYtpGoTmhfw6PJvJhq
-        iASAem755sfS9NjCl1FiTE9ufg==
-X-Google-Smtp-Source: ABdhPJytwmuQKVsDHcQnD/m9ZVn64MGAI0QRRqQ5h+0IfFzfY/v+88L6j6n9J5wCQwK19xbs052i6A==
-X-Received: by 2002:a17:902:7b85:: with SMTP id w5mr11843135pll.22.1593615982469;
-        Wed, 01 Jul 2020 08:06:22 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id n19sm6211028pgb.0.2020.07.01.08.06.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Jul 2020 08:06:21 -0700 (PDT)
-Date:   Wed, 1 Jul 2020 08:06:19 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, agross@kernel.org,
-        bjorn.andersson@linaro.org, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] arm64: dts: sdm845: Add DSI and MDP OPP tables and
- power-domains
-Message-ID: <20200701150619.GM39073@google.com>
-References: <1593518176-24450-1-git-send-email-rnayak@codeaurora.org>
- <1593518176-24450-4-git-send-email-rnayak@codeaurora.org>
+        Wed, 1 Jul 2020 11:06:56 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 061F1TNA009042;
+        Wed, 1 Jul 2020 11:06:52 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 320s228nf8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Jul 2020 11:06:51 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 061F1sVx011191;
+        Wed, 1 Jul 2020 11:06:51 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 320s228ne6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Jul 2020 11:06:51 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 061F6nZX028548;
+        Wed, 1 Jul 2020 15:06:49 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06fra.de.ibm.com with ESMTP id 31wwcgtbxr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Jul 2020 15:06:49 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 061F6kju63963548
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 1 Jul 2020 15:06:46 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A8C0042047;
+        Wed,  1 Jul 2020 15:06:46 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C34D242042;
+        Wed,  1 Jul 2020 15:06:45 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.148.203.198])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  1 Jul 2020 15:06:45 +0000 (GMT)
+Date:   Wed, 1 Jul 2020 18:06:43 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-mm@kvack.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 1/2] mm/memblock: expose only miminal interface to
+ add/walk physmem
+Message-ID: <20200701150643.GA2999146@linux.ibm.com>
+References: <20200701141830.18749-1-david@redhat.com>
+ <20200701141830.18749-2-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1593518176-24450-4-git-send-email-rnayak@codeaurora.org>
+In-Reply-To: <20200701141830.18749-2-david@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-01_08:2020-07-01,2020-07-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ bulkscore=0 impostorscore=0 suspectscore=7 adultscore=0 lowpriorityscore=0
+ cotscore=-2147483648 spamscore=0 mlxscore=0 clxscore=1015 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007010104
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 05:26:15PM +0530, Rajendra Nayak wrote:
-> Add the OPP tables for DSI and MDP based on the perf state/clk
-> requirements, and add the power-domains property to specify the
-> scalable power domain.
+Hi David,
+
+On Wed, Jul 01, 2020 at 04:18:29PM +0200, David Hildenbrand wrote:
+> "physmem" in the memblock allocator is somewhat weird: it's not actually
+> used for allocation, it's simply information collected during boot, which
+> describes the unmodified physical memory map at boot time, without any
+> standby/hotplugged memory. It's only used on s390x and is currently the
+> only reason s390x keeps using CONFIG_ARCH_KEEP_MEMBLOCK.
 > 
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> Physmem isn't numa aware and current users don't specify any flags. Let's
+> hide it from the user, exposing only for_each_physmem(), and simplify. The
+> interface for physmem is now really minimalistic:
+> - memblock_physmem_add() to add ranges
+> - for_each_physmem() / __next_physmem_range() to walk physmem ranges
+> 
+> Don't place it into an __init section and don't discard it without
+> CONFIG_ARCH_KEEP_MEMBLOCK. As we're reusing __next_mem_range(), remove
+> the __meminit notifier to avoid section mismatch warnings once
+> CONFIG_ARCH_KEEP_MEMBLOCK is no longer used with
+> CONFIG_HAVE_MEMBLOCK_PHYS_MAP.
+> 
+> While fixing up the documentation, sneak in some related cleanups. We can
+> stop setting CONFIG_HAVE_MEMBLOCK_PHYS_MAP for s390x next.
+
+As you noted in the previous version it should have been
+CONFIG_ARCH_KEEP_MEMBLOCK ;-)
+
+> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+
 > ---
->  arch/arm64/boot/dts/qcom/sdm845.dtsi | 59 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 59 insertions(+)
+>  arch/s390/kernel/crash_dump.c |  6 ++--
+>  include/linux/memblock.h      | 28 ++++++++++++++---
+>  mm/memblock.c                 | 57 ++++++++++++++++++-----------------
+>  3 files changed, 55 insertions(+), 36 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> index 8eb5a31..b6afeb2 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> @@ -3296,6 +3296,35 @@
->  			#power-domain-cells = <1>;
->  		};
+> diff --git a/arch/s390/kernel/crash_dump.c b/arch/s390/kernel/crash_dump.c
+> index f96a5857bbfde..c42ce348103cc 100644
+> --- a/arch/s390/kernel/crash_dump.c
+> +++ b/arch/s390/kernel/crash_dump.c
+> @@ -549,8 +549,7 @@ static int get_mem_chunk_cnt(void)
+>  	int cnt = 0;
+>  	u64 idx;
 >  
-> +		dsi_opp_table: dsi-opp-table {
-> +			compatible = "operating-points-v2";
+> -	for_each_mem_range(idx, &memblock.physmem, &oldmem_type, NUMA_NO_NODE,
+> -			   MEMBLOCK_NONE, NULL, NULL, NULL)
+> +	for_each_physmem_range(idx, &oldmem_type, NULL, NULL)
+>  		cnt++;
+>  	return cnt;
+>  }
+> @@ -563,8 +562,7 @@ static void loads_init(Elf64_Phdr *phdr, u64 loads_offset)
+>  	phys_addr_t start, end;
+>  	u64 idx;
+>  
+> -	for_each_mem_range(idx, &memblock.physmem, &oldmem_type, NUMA_NO_NODE,
+> -			   MEMBLOCK_NONE, &start, &end, NULL) {
+> +	for_each_physmem_range(idx, &oldmem_type, &start, &end) {
+>  		phdr->p_filesz = end - start;
+>  		phdr->p_type = PT_LOAD;
+>  		phdr->p_offset = start;
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index 017fae833d4ae..9d925db0d3550 100644
+> --- a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -77,16 +77,12 @@ struct memblock_type {
+>   * @current_limit: physical address of the current allocation limit
+>   * @memory: usable memory regions
+>   * @reserved: reserved memory regions
+> - * @physmem: all physical memory
+>   */
+>  struct memblock {
+>  	bool bottom_up;  /* is bottom up direction? */
+>  	phys_addr_t current_limit;
+>  	struct memblock_type memory;
+>  	struct memblock_type reserved;
+> -#ifdef CONFIG_HAVE_MEMBLOCK_PHYS_MAP
+> -	struct memblock_type physmem;
+> -#endif
+>  };
+>  
+>  extern struct memblock memblock;
+> @@ -145,6 +141,30 @@ void __next_reserved_mem_region(u64 *idx, phys_addr_t *out_start,
+>  
+>  void __memblock_free_late(phys_addr_t base, phys_addr_t size);
+>  
+> +#ifdef CONFIG_HAVE_MEMBLOCK_PHYS_MAP
+> +static inline void __next_physmem_range(u64 *idx, struct memblock_type *type,
+> +					phys_addr_t *out_start,
+> +					phys_addr_t *out_end)
+> +{
+> +	extern struct memblock_type physmem;
 > +
-> +			opp-19200000 {
-> +				opp-hz = /bits/ 64 <19200000>;
-> +				required-opps = <&rpmhpd_opp_min_svs>;
-> +			};
+> +	__next_mem_range(idx, NUMA_NO_NODE, MEMBLOCK_NONE, &physmem, type,
+> +			 out_start, out_end, NULL);
+> +}
 > +
-> +			opp-180000000 {
-> +				opp-hz = /bits/ 64 <180000000>;
-> +				required-opps = <&rpmhpd_opp_low_svs>;
-> +			};
+> +/**
+> + * for_each_physmem_range - iterate through physmem areas not included in type.
+> + * @i: u64 used as loop variable
+> + * @type: ptr to memblock_type which excludes from the iteration, can be %NULL
+> + * @p_start: ptr to phys_addr_t for start address of the range, can be %NULL
+> + * @p_end: ptr to phys_addr_t for end address of the range, can be %NULL
+> + */
+> +#define for_each_physmem_range(i, type, p_start, p_end)			\
+> +	for (i = 0, __next_physmem_range(&i, type, p_start, p_end);	\
+> +	     i != (u64)ULLONG_MAX;					\
+> +	     __next_physmem_range(&i, type, p_start, p_end))
+> +#endif /* CONFIG_HAVE_MEMBLOCK_PHYS_MAP */
 > +
-> +			opp-275000000 {
-> +				opp-hz = /bits/ 64 <275000000>;
-> +				required-opps = <&rpmhpd_opp_svs>;
-> +			};
+>  /**
+>   * for_each_mem_range - iterate through memblock areas from type_a and not
+>   * included in type_b. Or just type_a if type_b is NULL.
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index 39aceafc57f66..45f198750be92 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -44,19 +44,20 @@
+>   *   in the system, for instance when the memory is restricted with
+>   *   ``mem=`` command line parameter
+>   * * ``reserved`` - describes the regions that were allocated
+> - * * ``physmap`` - describes the actual physical memory regardless of
+> - *   the possible restrictions; the ``physmap`` type is only available
+> - *   on some architectures.
+> + * * ``physmem`` - describes the actual physical memory available during
+> + *   boot regardless of the possible restrictions and memory hot(un)plug;
+> + *   the ``physmem`` type is only available on some architectures.
+>   *
+>   * Each region is represented by :c:type:`struct memblock_region` that
+>   * defines the region extents, its attributes and NUMA node id on NUMA
+>   * systems. Every memory type is described by the :c:type:`struct
+>   * memblock_type` which contains an array of memory regions along with
+> - * the allocator metadata. The memory types are nicely wrapped with
+> - * :c:type:`struct memblock`. This structure is statically initialzed
+> - * at build time. The region arrays for the "memory" and "reserved"
+> - * types are initially sized to %INIT_MEMBLOCK_REGIONS and for the
+> - * "physmap" type to %INIT_PHYSMEM_REGIONS.
+> + * the allocator metadata. The "memory" and "reserved" types are nicely
+> + * wrapped with :c:type:`struct memblock`. This structure is statically
+> + * initialized at build time. The region arrays are initially sized to
+> + * %INIT_MEMBLOCK_REGIONS for "memory" and %INIT_MEMBLOCK_RESERVED_REGIONS
+> + * for "reserved". The region array for "physmem" is initially sized to
+> + * %INIT_PHYSMEM_REGIONS.
+>   * The memblock_allow_resize() enables automatic resizing of the region
+>   * arrays during addition of new regions. This feature should be used
+>   * with care so that memory allocated for the region array will not
+> @@ -87,8 +88,8 @@
+>   * function frees all the memory to the buddy page allocator.
+>   *
+>   * Unless an architecture enables %CONFIG_ARCH_KEEP_MEMBLOCK, the
+> - * memblock data structures will be discarded after the system
+> - * initialization completes.
+> + * memblock data structures (except "physmem") will be discarded after the
+> + * system initialization completes.
+>   */
+>  
+>  #ifndef CONFIG_NEED_MULTIPLE_NODES
+> @@ -104,7 +105,7 @@ unsigned long long max_possible_pfn;
+>  static struct memblock_region memblock_memory_init_regions[INIT_MEMBLOCK_REGIONS] __initdata_memblock;
+>  static struct memblock_region memblock_reserved_init_regions[INIT_MEMBLOCK_RESERVED_REGIONS] __initdata_memblock;
+>  #ifdef CONFIG_HAVE_MEMBLOCK_PHYS_MAP
+> -static struct memblock_region memblock_physmem_init_regions[INIT_PHYSMEM_REGIONS] __initdata_memblock;
+> +static struct memblock_region memblock_physmem_init_regions[INIT_PHYSMEM_REGIONS];
+>  #endif
+>  
+>  struct memblock memblock __initdata_memblock = {
+> @@ -118,17 +119,19 @@ struct memblock memblock __initdata_memblock = {
+>  	.reserved.max		= INIT_MEMBLOCK_RESERVED_REGIONS,
+>  	.reserved.name		= "reserved",
+>  
+> -#ifdef CONFIG_HAVE_MEMBLOCK_PHYS_MAP
+> -	.physmem.regions	= memblock_physmem_init_regions,
+> -	.physmem.cnt		= 1,	/* empty dummy entry */
+> -	.physmem.max		= INIT_PHYSMEM_REGIONS,
+> -	.physmem.name		= "physmem",
+> -#endif
+> -
+>  	.bottom_up		= false,
+>  	.current_limit		= MEMBLOCK_ALLOC_ANYWHERE,
+>  };
+>  
+> +#ifdef CONFIG_HAVE_MEMBLOCK_PHYS_MAP
+> +struct memblock_type physmem = {
+> +	.regions		= memblock_physmem_init_regions,
+> +	.cnt			= 1,	/* empty dummy entry */
+> +	.max			= INIT_PHYSMEM_REGIONS,
+> +	.name			= "physmem",
+> +};
+> +#endif
 > +
-> +			opp-328580000 {
-> +				opp-hz = /bits/ 64 <328580000>;
-> +				required-opps = <&rpmhpd_opp_svs_l1>;
-> +			};
-> +
-> +			opp-358000000 {
-> +				opp-hz = /bits/ 64 <358000000>;
-> +				required-opps = <&rpmhpd_opp_nom>;
-> +			};
-> +		};
-> +
+>  int memblock_debug __initdata_memblock;
+>  static bool system_has_some_mirror __initdata_memblock = false;
+>  static int memblock_can_resize __initdata_memblock;
+> @@ -838,7 +841,7 @@ int __init_memblock memblock_physmem_add(phys_addr_t base, phys_addr_t size)
+>  	memblock_dbg("%s: [%pa-%pa] %pS\n", __func__,
+>  		     &base, &end, (void *)_RET_IP_);
+>  
+> -	return memblock_add_range(&memblock.physmem, base, size, MAX_NUMNODES, 0);
+> +	return memblock_add_range(&physmem, base, size, MAX_NUMNODES, 0);
+>  }
+>  #endif
+>  
+> @@ -1019,12 +1022,10 @@ static bool should_skip_region(struct memblock_region *m, int nid, int flags)
+>   * As both region arrays are sorted, the function advances the two indices
+>   * in lockstep and returns each intersection.
+>   */
+> -void __init_memblock __next_mem_range(u64 *idx, int nid,
+> -				      enum memblock_flags flags,
+> -				      struct memblock_type *type_a,
+> -				      struct memblock_type *type_b,
+> -				      phys_addr_t *out_start,
+> -				      phys_addr_t *out_end, int *out_nid)
+> +void __next_mem_range(u64 *idx, int nid, enum memblock_flags flags,
+> +		      struct memblock_type *type_a,
+> +		      struct memblock_type *type_b, phys_addr_t *out_start,
+> +		      phys_addr_t *out_end, int *out_nid)
+>  {
+>  	int idx_a = *idx & 0xffffffff;
+>  	int idx_b = *idx >> 32;
+> @@ -1924,7 +1925,7 @@ void __init_memblock __memblock_dump_all(void)
+>  	memblock_dump(&memblock.memory);
+>  	memblock_dump(&memblock.reserved);
+>  #ifdef CONFIG_HAVE_MEMBLOCK_PHYS_MAP
+> -	memblock_dump(&memblock.physmem);
+> +	memblock_dump(&physmem);
+>  #endif
+>  }
+>  
+> @@ -2064,8 +2065,8 @@ static int __init memblock_init_debugfs(void)
+>  	debugfs_create_file("reserved", 0444, root,
+>  			    &memblock.reserved, &memblock_debug_fops);
+>  #ifdef CONFIG_HAVE_MEMBLOCK_PHYS_MAP
+> -	debugfs_create_file("physmem", 0444, root,
+> -			    &memblock.physmem, &memblock_debug_fops);
+> +	debugfs_create_file("physmem", 0444, root, &physmem,
+> +			    &memblock_debug_fops);
+>  #endif
+>  
+>  	return 0;
+> -- 
+> 2.26.2
+> 
 
-I still don't like the shared OPP tables to be positioned inmidst of the
-device nodes, but it seems we currently don't have a better convention.
-
->  		mdss: mdss@ae00000 {
->  			compatible = "qcom,sdm845-mdss";
->  			reg = <0 0x0ae00000 0 0x1000>;
-> @@ -3340,6 +3369,8 @@
->  						  <&dispcc DISP_CC_MDSS_VSYNC_CLK>;
->  				assigned-clock-rates = <300000000>,
->  						       <19200000>;
-> +				operating-points-v2 = <&mdp_opp_table>;
-> +				power-domains = <&rpmhpd SDM845_CX>;
->  
->  				interrupt-parent = <&mdss>;
->  				interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
-> @@ -3364,6 +3395,30 @@
->  						};
->  					};
->  				};
-> +
-> +				mdp_opp_table: mdp-opp-table {
-> +					compatible = "operating-points-v2";
-> +
-> +					opp-19200000 {
-> +						opp-hz = /bits/ 64 <19200000>;
-> +						required-opps = <&rpmhpd_opp_min_svs>;
-> +					};
-> +
-> +					opp-171428571 {
-> +						opp-hz = /bits/ 64 <171428571>;
-> +						required-opps = <&rpmhpd_opp_low_svs>;
-> +					};
-> +
-> +					opp-344000000 {
-> +						opp-hz = /bits/ 64 <344000000>;
-> +						required-opps = <&rpmhpd_opp_svs_l1>;
-> +					};
-> +
-> +					opp-430000000 {
-> +						opp-hz = /bits/ 64 <430000000>;
-> +						required-opps = <&rpmhpd_opp_nom>;
-> +					};
-> +				};
->  			};
->  
->  			dsi0: dsi@ae94000 {
-> @@ -3386,6 +3441,8 @@
->  					      "core",
->  					      "iface",
->  					      "bus";
-> +				operating-points-v2 = <&dsi_opp_table>;
-> +				power-domains = <&rpmhpd SDM845_CX>;
->  
->  				phys = <&dsi0_phy>;
->  				phy-names = "dsi";
-> @@ -3450,6 +3507,8 @@
->  					      "core",
->  					      "iface",
->  					      "bus";
-> +				operating-points-v2 = <&dsi_opp_table>;
-> +				power-domains = <&rpmhpd SDM845_CX>;
->  
->  				phys = <&dsi1_phy>;
->  				phy-names = "dsi";
-
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+-- 
+Sincerely yours,
+Mike.
