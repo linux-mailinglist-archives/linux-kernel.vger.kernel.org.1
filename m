@@ -2,178 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8C3211184
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 19:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CF121118C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 19:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732564AbgGAREh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 13:04:37 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47299 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732124AbgGAREh (ORCPT
+        id S1732664AbgGARFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 13:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732571AbgGARFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 13:04:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593623075;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NiOy7ZAOZwRJYpQTDCr66D5MQt2g8hiPsepvJGe2kJ4=;
-        b=NvC6qmV+u+kDchGWDWBaKVYu+bM0WMpQVgOdE3CCzEpHY7blZ3js5zmH8wnc+/6fIqiPgv
-        mXn7CThID/cDACfRM1eZH80fZo3CAACNITKIZs6CUf6UeGglCGzZQ/xYBKHrmhEW82hqfE
-        VIyUeD9kgeDEd9UOh+aIHxEYKOvZ/cw=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-143-oRhJNQn6P5CIwgxrm82oKQ-1; Wed, 01 Jul 2020 13:04:27 -0400
-X-MC-Unique: oRhJNQn6P5CIwgxrm82oKQ-1
-Received: by mail-qk1-f197.google.com with SMTP id 204so17512085qki.20
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 10:04:27 -0700 (PDT)
+        Wed, 1 Jul 2020 13:05:36 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5FB9C08C5C1;
+        Wed,  1 Jul 2020 10:05:35 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id g75so23167200wme.5;
+        Wed, 01 Jul 2020 10:05:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6x/eshQOaZbRwbvxCznlVv+GRJKSzuX5jSo3FaCtmSU=;
+        b=bKulzeyyYunFIKmQMOT2guE7blzLGwaJ8xZl+1LMJz0phsVMJhCFr+Klw58atX7WYl
+         zIGwQ6MHSTvERrEQFMR/jT/Foaa6ApGYo+Q7SyK7ZH3dEZqQ6wO7QNbKowaoYJ2SeOgj
+         QYtPEL7XnXTfRzZ1cwpCd5qdOwrmmWBvUE0BszIHfIQqfM/wVPJqNC5B2dvzVcX6Jb2x
+         c4ymmKu1IEpaAtKJGMXncWtGOsnmQRKLH0Qypk6/tfXcvJMvBnl9wJ6QyekHVxV1YnMI
+         rtXagRsR3yFqCakOzeHczcbUMfIXrTs5j2imhlgps+oKSb7WRjdWa+ejxQbA9KipgtxJ
+         nHeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NiOy7ZAOZwRJYpQTDCr66D5MQt2g8hiPsepvJGe2kJ4=;
-        b=P113SoeoZus4xI26NzyyrbIUIJah4q8nS0Cr17YsEh10HETl304dXkQpqUSGLdCV4l
-         F/P5GfrW4+L3hyEWNCZrqV8Z9KPwGHZTq7Ueow+t9SoWxlXbsG43Nt1jfatrbp6jwnjg
-         +Tpe8LrTKULSMGsrCqiKvgZyTJ4jqM2tz7AF2+4A9/RrBvdkH/iTposVTAn/39l9zY36
-         +5aVFNnuI8fKc5L6GsH1Yk4ABJHZue30p7w240IyBKC917kLLg826rC4hDCpAuuszmtz
-         iyBqyyObUzAJHGJCRKB81z3iovgV4JQ0ldfpcBcs7jAry2sgJ68Rh8J0IQDWwcltrBIC
-         6Kyw==
-X-Gm-Message-State: AOAM532HFH7p0w5XZtf/ZXpPAp0We862x0wv3sFJKXMTrLswSm56jY/4
-        /wPkytderifcYu42tqynpaLrxhCrNFjV7xC3toI77L5mj/qKmEwureb3906s1B4cmZiG4fOhrcj
-        LV9Yz+X1zunhCEj9qCBIBq36td+0iaU5IfkKn9Zta
-X-Received: by 2002:a37:6d4:: with SMTP id 203mr25884089qkg.62.1593623067104;
-        Wed, 01 Jul 2020 10:04:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy2SUbbP+OsUxjyYRtHACYvHGVw89nPS0TjNrzdSgrgE8daRe/4deg3Lx3x6BzmbwLwLKGzVpZhckvrDz9TsIE=
-X-Received: by 2002:a37:6d4:: with SMTP id 203mr25884064qkg.62.1593623066788;
- Wed, 01 Jul 2020 10:04:26 -0700 (PDT)
+        bh=6x/eshQOaZbRwbvxCznlVv+GRJKSzuX5jSo3FaCtmSU=;
+        b=VDMQX7kGH0PLHsn9nBN3tVTc+dDd8okVXzSA0R6fasihEuEURopsEF4PL0UOGszLuN
+         WIYeZPbACZr/HWfIDpHA3KKe0A3Tv4+I2Htw7axhzVH4YcI5KvgSB3PAV7D+ylfvOVsl
+         v9JQCXhiiFliCxNSvbGZ7ef/PoAr5QpIFZ2Qm+LWpgP+jVbUhSFzVRNxC5gIAI4XKt0H
+         bTi5SWiCNeuBKY2zTYyu/s9IA2Xhpx/nW8NjNsnoiQDQtLZEmtYPK4OsxfMmvT2MgApP
+         r5vZhAZ8bbosfQEancHrz4pr+P9sQqLzI5oVw/eu3JgvfZ2ZbpDLfOssRKhGQY0mQ9Vp
+         wokA==
+X-Gm-Message-State: AOAM530I5aHyiLusNo4LmdoEYcHIZXIrQqpDKxfzzQiQ/aOpCVjZ0oAd
+        m93qkh6jAdSmTBbPUrR3bUWbeGhEJJ6LYpl9vr0=
+X-Google-Smtp-Source: ABdhPJzxshgznKeS4OzcUe9yhgpPkkzhjMItFOKqHWiAf1fbcSA6G3c357AQw5Fllq4uBWnABuvA9/6nOcmnYDmGQ7Q=
+X-Received: by 2002:a1c:dd09:: with SMTP id u9mr26470612wmg.70.1593623134431;
+ Wed, 01 Jul 2020 10:05:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAPM=9txGww+omvateOTizZRV9_wLdAbq6uAz3DRa_S6bn1jQuQ@mail.gmail.com>
- <20200630230808.wj2xlt44vrszqfzx@box> <ef7816b4-72ee-9e0e-8cac-4d80d8343f9f@nvidia.com>
- <CACO55tvT0fOMai7k7oAP1TL42YAuMwJocxk2seNgjYibs+h5oA@mail.gmail.com>
- <11e5ee1d-8b5e-2721-091e-ffbf9e1271d1@nvidia.com> <CAKMK7uEzoFyW6o1gP6xszWH7fKHrVSR32JLs73KeFfYgD=BHPQ@mail.gmail.com>
-In-Reply-To: <CAKMK7uEzoFyW6o1gP6xszWH7fKHrVSR32JLs73KeFfYgD=BHPQ@mail.gmail.com>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Wed, 1 Jul 2020 19:04:15 +0200
-Message-ID: <CACO55tu8z_Rt50QXUr+MBKV_vtxZfVgz8Cfoj2xbinbtTYM3WQ@mail.gmail.com>
-Subject: Re: [git pull] drm for 5.8-rc1
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     James Jones <jajones@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200701145905.551367-1-colin.king@canonical.com>
+In-Reply-To: <20200701145905.551367-1-colin.king@canonical.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 1 Jul 2020 13:05:23 -0400
+Message-ID: <CADnq5_PFzyvzCSkj3wHEfyu+yGavbsXuMEsiz+UD5tDeNfavuw@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: remove redundant initialization of
+ variable result
+To:     Colin King <colin.king@canonical.com>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 1, 2020 at 6:01 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+On Wed, Jul 1, 2020 at 10:59 AM Colin King <colin.king@canonical.com> wrote:
 >
-> On Wed, Jul 1, 2020 at 5:51 PM James Jones <jajones@nvidia.com> wrote:
-> >
-> > On 7/1/20 4:24 AM, Karol Herbst wrote:
-> > > On Wed, Jul 1, 2020 at 6:45 AM James Jones <jajones@nvidia.com> wrote:
-> > >>
-> > >> This implies something is trying to use one of the old
-> > >> DRM_FORMAT_MOD_NVIDIA_16BX2_BLOCK format modifiers with DRM-KMS without
-> > >> first checking whether it is supported by the kernel.  I had tried to
-> > >> force an Xorg+Mesa stack without my userspace patches to hit this error
-> > >> when testing, but must have missed some permutation.  If the stalled
-> > >> Mesa patches go in, this would stop happening of course, but those were
-> > >> held up for a long time in review, and are now waiting on me to make
-> > >> some modifications.
-> > >>
-> > >
-> > > that's completely irrelevant. If a kernel change breaks userspace,
-> > > it's a kernel bug.
-> >
-> > Agreed it is unacceptable to break userspace, but I don't think it's
-> > irrelevant.  Perhaps the musings on pending userspace patches are.
-> >
-> > My intent here was to point out it appears at first glance that
-> > something isn't behaving as expected in userspace, so fixing this would
-> > likely require some sort of work-around for broken userspace rather than
-> > straight-forward fixing of a bug in the kernel logic.  My intent was not
-> > to shift blame to something besides my code & testing for the
-> > regression, though I certainly see how it could be interpreted that way.
-> >
-> > Regardless, I'm looking in to it.
+> From: Colin Ian King <colin.king@canonical.com>
 >
+> The variable result is being initialized with a value that is never read
+> and it is being updated later with a new value.  The initialization is
+> redundant and can be removed.
+>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-I assume the MR you were talking about is
-https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/3724 ? I am
-also aware of the tegra driver being broken on my jetson nano and I am
-now curious if this MR could fix this bug as well... and sorry for the
-harsh reply, I was just a annoyed by the fact that "everything
-modifier related is just breaking things", first tegra and that nobody
-is looking into fixing it and then apparently the userspace code being
-quite broken as well :/
+Applied.  Thanks!
 
-Anyway, yeah I trust you guys on figuring out the keeping "broken"
-userspace happy from a kernel side and maybe I can help out with
-reviewing the mesa bits. I am just wondering if it could help with the
-tegra situation giving me more reasons to look into it as this would
-solve other issues I should be working on :)
+Alex
 
-> If we do need to have a kernel workaround I'm happy to help out, I've
-> done a bunch of these and occasionally it's good to get rather
-> creative :-)
+> ---
+>  drivers/gpu/drm/amd/display/dc/core/dc_link_hwss.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 >
-> Ideally we'd also push a minimal fix in userspace to all stable
-> branches and make sure distros upgrade (might need releases if some
-> distro is stuck on old horrors), so that we don't have to keep the
-> hack in place for 10+ years or so. Definitely if the hack amounts to
-> disabling modifiers on nouveau, that would be kinda sad.
-> -Daniel
+> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_hwss.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_hwss.c
+> index 1b3474aa380d..d0a23b72e604 100644
+> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link_hwss.c
+> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_hwss.c
+> @@ -151,7 +151,8 @@ bool edp_receiver_ready_T9(struct dc_link *link)
+>         unsigned int tries = 0;
+>         unsigned char sinkstatus = 0;
+>         unsigned char edpRev = 0;
+> -       enum dc_status result = DC_OK;
+> +       enum dc_status result;
+> +
+>         result = core_link_read_dpcd(link, DP_EDP_DPCD_REV, &edpRev, sizeof(edpRev));
 >
-> >
-> > Thanks,
-> > -James
-> >
-> > >> Are you using the modesetting driver in X?  If so, with glamor I
-> > >> presume?  What version of Mesa?  Any distro patches?  Any non-default
-> > >> xorg.conf options that would affect modesetting, your X driver if it
-> > >> isn't modesetting, or glamour?
-> > >>
-> > >> Thanks,
-> > >> -James
-> > >>
-> > >> On 6/30/20 4:08 PM, Kirill A. Shutemov wrote:
-> > >>> On Tue, Jun 02, 2020 at 04:06:32PM +1000, Dave Airlie wrote:
-> > >>>> James Jones (4):
-> > >>> ...
-> > >>>>         drm/nouveau/kms: Support NVIDIA format modifiers
-> > >>>
-> > >>> This commit is the first one that breaks Xorg startup for my setup:
-> > >>> GTX 1080 + Dell UP2414Q (4K DP MST monitor).
-> > >>>
-> > >>> I believe this is the crucial part of dmesg (full dmesg is attached):
-> > >>>
-> > >>> [   29.997140] [drm:nouveau_framebuffer_new] Unsupported modifier: 0x300000000000014
-> > >>> [   29.997143] [drm:drm_internal_framebuffer_create] could not create framebuffer
-> > >>> [   29.997145] [drm:drm_ioctl] pid=3393, ret = -22
-> > >>>
-> > >>> Any suggestions?
-> > >>>
-> > >> _______________________________________________
-> > >> dri-devel mailing list
-> > >> dri-devel@lists.freedesktop.org
-> > >> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > >>
-> > >
-> > > _______________________________________________
-> > > dri-devel mailing list
-> > > dri-devel@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > >
+>       /* start from eDP version 1.2, SINK_STAUS indicate the sink is ready.*/
+> @@ -177,7 +178,7 @@ bool edp_receiver_ready_T7(struct dc_link *link)
+>  {
+>         unsigned char sinkstatus = 0;
+>         unsigned char edpRev = 0;
+> -       enum dc_status result = DC_OK;
+> +       enum dc_status result;
 >
->
->
+>         /* use absolute time stamp to constrain max T7*/
+>         unsigned long long enter_timestamp = 0;
 > --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+> 2.27.0
 >
-
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
