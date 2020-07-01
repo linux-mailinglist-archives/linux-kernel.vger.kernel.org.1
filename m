@@ -2,127 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D9B210AC4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 14:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF536210ACB
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 14:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730458AbgGAMKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 08:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730161AbgGAMKm (ORCPT
+        id S1730517AbgGAMM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 08:12:58 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:43904 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730271AbgGAMMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 08:10:42 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D1DC061755
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 05:10:41 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id s9so26565081ljm.11
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 05:10:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=W0W7BV8cUI7CuBuiHY2QDrSNw3SUVEmFQilJePOeK9o=;
-        b=iSLl6gC1LJlLK+whB5oyTs+OtzYClkNiWCwVhfxSa4nWWZE9cgvKbMs0t/oSHF7iif
-         zPmUIlXcMvtxLFJp7z6fFiMvN4YJ6rUqMYVlZIaaWTQoxWOm+QMIcyZygSGx8XPiwDiR
-         gY7xx5sSSox29urVygQAwHuiedYy8Nm/IOZPe3gvE6DoqVNuSSSCWKaIaDX0E1UeGtlv
-         cXHA7O36mWAvOHACXNpQMLAryoNFB+NCZ8eFL0SuWjoGzAh8PH+d+TdXqa7F2DjxpOFN
-         DhYOuea6pLyM5G9hE2ygiZH2kw6bz1SRw7/DtQZriZ+mAUU5ileGd3gp8xq6cQ+mfVVu
-         krIA==
+        Wed, 1 Jul 2020 08:12:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593605574;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XaTa3j8pv7Vv7FPlkaiUQ9sgC3qOTtEDpxvgOBhKsTg=;
+        b=X7ViRPt9irA3Gh2IgWv7XVIAdR2s1ibdwE8OCwxWzzu+V90plHKfCYR9kLRr6jj2IJ8KRQ
+        zHT08TG9zRm0mtOCory1S/xlaArFXb9snR1A8+3nKpSupfA5ak5RRfhPqefM1IYqgVin0p
+        iLfrrAXc3KoKtSCacfJjwlyqyFenCSE=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-439-PqwOCs0AMpCX2fZTOPwQFg-1; Wed, 01 Jul 2020 08:12:48 -0400
+X-MC-Unique: PqwOCs0AMpCX2fZTOPwQFg-1
+Received: by mail-ej1-f70.google.com with SMTP id d16so8180658eje.20
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 05:12:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W0W7BV8cUI7CuBuiHY2QDrSNw3SUVEmFQilJePOeK9o=;
-        b=gk81VN2aMR/o5pqN4kGLhPcb+KKbJUAfrcfi3TWrHVCPE/Au4tu//fwyWe9H24JGQK
-         FIR0ye+o314p+MR1WQAbHaUUmtgLPsVfl1WtHEdBLbfBGeEjU4d/Wjzszmq/7D9NiN8/
-         IBgUwMLAsL1aMB0v38jZ6YiF2a0lcIPZTBv82kY3kTpNgoT769M11FoFPKyhmnz49/9P
-         Idf6wQFqJbkYvZxsTgbIjyvhdOJKD/EhbaOHOKPmvvCELwF1eO2DaRG0AIKaEjTL9tn4
-         qDyF6/obxyFPfxPeBa8IYO7o7I+YiMxoU+GOIelkiONHzdPHVnXKcelg/wEqoSsXjhTV
-         plGA==
-X-Gm-Message-State: AOAM532Ponhw/WqPxnQ4QPw9A0wfFtf+gin4RCk751seuZGm7DfU/qDr
-        //0Cm3O6lfHGEjJ3d5GS6Q9Mbs9+2CEvIlY0i3kQyA==
-X-Google-Smtp-Source: ABdhPJwlyEUVszhEWkGK9ickVjMXKxSq5+Z9Y8911VTJDuTZvkJDrAcgHU7MCWtxM5ciiTIBdB+HA0Lphjo+oygwqUU=
-X-Received: by 2002:a2e:8855:: with SMTP id z21mr8588845ljj.325.1593605440227;
- Wed, 01 Jul 2020 05:10:40 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XaTa3j8pv7Vv7FPlkaiUQ9sgC3qOTtEDpxvgOBhKsTg=;
+        b=QoRRwRbC+IfnyA1WbbMMGdi8ICAjEsRztpBspXaJsLbVbIm+V9G39RwvBauEBeZY9S
+         t/cR0MB1LLEcZnYLgVo9eZuGKInuHRSiwILvsMSXmWs7QjTo7GEcgpswyvqO9nuZarji
+         qbjYJFk/QJz9J5CtFHRSTSVl+PDhvILKv6+WF//ptzdYUGV/1NER+rvFwYxbYnhzwXoz
+         JGQZd6yuDoHn3w3u9QTEglqbiHs959EtfNguQs5bPILSsFkxXUcRE3gC1vH4luBoW0C3
+         iKpWrR8jw8OnG4vflp1xBwH4HlcnQLoKjJKMuSpIoJJ93fKPDS37CUopju0FfnOxtM98
+         OUcA==
+X-Gm-Message-State: AOAM530Jwinv1Tl7Tf5PqK+3KIG0S6oKeH6RXB323ilsoaWZOVvP955T
+        cJ2PdlF9EsjnR16rSUTicHSwDGXHgNNxgOvs2FRr0WV/c890B3CMBbwVaW0/zc8fQjSp7sn33Kv
+        QRcOsnviFOhdTwVrrbBN/yM2R
+X-Received: by 2002:aa7:d3c8:: with SMTP id o8mr21964632edr.294.1593605567580;
+        Wed, 01 Jul 2020 05:12:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJybKmn9TXwxpznNvmXkc/EDdW74VObauZauv68Wmlu4ixsBkY7JPtu25PXyzIRbA9DwPCxw9g==
+X-Received: by 2002:aa7:d3c8:: with SMTP id o8mr21964601edr.294.1593605567361;
+        Wed, 01 Jul 2020 05:12:47 -0700 (PDT)
+Received: from x1.localdomain ([2a0e:5700:4:11:334c:7e36:8d57:40cb])
+        by smtp.gmail.com with ESMTPSA id cz2sm5763973edb.82.2020.07.01.05.12.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Jul 2020 05:12:46 -0700 (PDT)
+Subject: Re: [PATCH v3] brcmfmac: Transform compatible string for FW loading
+To:     matthias.bgg@kernel.org, arend.vanspriel@broadcom.com,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     brcm80211-dev-list.pdl@broadcom.com, mbrugger@suse.com,
+        netdev@vger.kernel.org, chi-hsien.lin@cypress.com,
+        linux-wireless@vger.kernel.org, hante.meuleman@broadcom.com,
+        linux-kernel@vger.kernel.org, wright.feng@cypress.com,
+        brcm80211-dev-list@cypress.com, franky.lin@broadcom.com
+References: <20200701112201.6449-1-matthias.bgg@kernel.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <eaf0f098-c73c-10b5-2d75-b35a5fc8dbb4@redhat.com>
+Date:   Wed, 1 Jul 2020 14:12:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <20200625144509.17918-1-daniel.lezcano@linaro.org>
- <20200625144509.17918-3-daniel.lezcano@linaro.org> <CAP245DUMjTQr2vKirZ+FxEYWC=VQ_k+OegxQgXcKDU8ThWuCsQ@mail.gmail.com>
- <0fe6837f-9b44-4578-23f2-3e4932d01122@linaro.org> <CAP245DUG-OsSD-_CucMMQ26HpzjJhn0emfq_go923NsDq6RqOg@mail.gmail.com>
- <c664d247-7f9b-603f-c318-48e534aedfc9@linaro.org>
-In-Reply-To: <c664d247-7f9b-603f-c318-48e534aedfc9@linaro.org>
-From:   Amit Kucheria <amit.kucheria@linaro.org>
-Date:   Wed, 1 Jul 2020 17:40:28 +0530
-Message-ID: <CAP245DV8jT5vj7v6vybw3Eec7wGMXRwFm=Xum5i_n4sMCHHAfg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] thermal: core: Remove old uapi generic netlink
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM list <linux-pm@vger.kernel.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200701112201.6449-1-matthias.bgg@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 1, 2020 at 3:15 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->
-> On 01/07/2020 11:33, Amit Kucheria wrote:
-> > On Wed, Jul 1, 2020 at 2:56 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
-> >>
-> >> On 30/06/2020 13:47, Amit Kucheria wrote:
-> >>> On Thu, Jun 25, 2020 at 8:15 PM Daniel Lezcano
-> >>> <daniel.lezcano@linaro.org> wrote:
-> >>>>
+Hi,
 
-> >>>>  /* Adding event notification support elements */
-> >>>>  #define THERMAL_GENL_FAMILY_NAME                "thermal_event"
-> >>>> -#define THERMAL_GENL_VERSION                    0x01
-> >>>> +#define THERMAL_GENL_VERSION                    0x02
-> >>>
-> >>> This hunk should be removed since you set version back to 1 in the
-> >>> next patch and we don't actually intend to bump the version yet.
-> >>
-> >> Well, I've been very strict here for git-bisecting.
-> >>
-> >> I move to V2 because of the removal, but when adding the new genetlink
-> >> code, the family name changed, so we returned back to the V1 as it is a
-> >> new genetlink thermal brand.
-> >
-> > I don't understand the move to v2 for an empty skeleton UAPI. For the
-> > purposes of bisection, couldn't you just remove all the v1 UAPI (w/o
-> > bumping to v2) and then add a new UAPI in the next patch?
-> >
-> >> The name is change because it is no longer event based but also sampling
-> >> and commands.
-> >
-> > In this case, just to avoid any confusion, the new UAPI could be v2
-> > making the transition clear in case of bisection.
-> >
-> > I'm afraid the v1->v2->v1 is a bit more confusing.
->
-> Let me elaborate a bit:
->
-> Why there is this patch ?
-> - By removing this code first, the next patch will just contain
-> additions, I thought it would be clearer
->
-> Why increase the version here ?
-> - Code must continue to compile and as the 'thermal_event' family is now
-> different from V1, the version is changed
->
-> Why the version goes to V1 in the next patch ?
-> - The family name is changed as it is not doing event only, so it is a
-> new netlink thermal protocol and we begin at V1
->
-> So the main reason of this patch is to be very strict in the iteration
-> changes. May be it is too much, in this case I can merge this patch with
-> 4/5, the old netlink protocol removal will be lost in the addition of
-> the new protocol. I'm fine with that if you think it is simpler.
+On 7/1/20 1:22 PM, matthias.bgg@kernel.org wrote:
+> From: Matthias Brugger <mbrugger@suse.com>
+> 
+> The driver relies on the compatible string from DT to determine which
+> FW configuration file it should load. The DTS spec allows for '/' as
+> part of the compatible string. We change this to '-' so that we will
+> still be able to load the config file, even when the compatible has a
+> '/'. This fixes explicitly the firmware loading for
+> "solidrun,cubox-i/q".
+> 
+> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+> 
+> ---
+> 
+> Changes in v3:
+> - use len variable to store length of string (Hans de Goede)
+> - fix for loop to stop on first NULL-byte (Hans de Goede)
+> 
+> Changes in v2:
+> - use strscpy instead of strncpy (Hans de Goede)
+> - use strlen(tmp) + 1 for allocation (Hans de Goede, kernel test robot)
 
-Considering that there are no users of v1 currently, it feels a bit
-over engineered, IMHO.
+v3 looks good to me:
 
-Also, the new UAPI doesn't need to begin at v1. Just having it start
-at v2 will avoid this confusion, no?
+Reviewed-by: Hans deGoede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+
+> 
+>   .../wireless/broadcom/brcm80211/brcmfmac/of.c | 19 ++++++++++++++++---
+>   1 file changed, 16 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
+> index b886b56a5e5a..a7554265f95f 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
+> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
+> @@ -17,7 +17,6 @@ void brcmf_of_probe(struct device *dev, enum brcmf_bus_type bus_type,
+>   {
+>   	struct brcmfmac_sdio_pd *sdio = &settings->bus.sdio;
+>   	struct device_node *root, *np = dev->of_node;
+> -	struct property *prop;
+>   	int irq;
+>   	u32 irqf;
+>   	u32 val;
+> @@ -25,8 +24,22 @@ void brcmf_of_probe(struct device *dev, enum brcmf_bus_type bus_type,
+>   	/* Set board-type to the first string of the machine compatible prop */
+>   	root = of_find_node_by_path("/");
+>   	if (root) {
+> -		prop = of_find_property(root, "compatible", NULL);
+> -		settings->board_type = of_prop_next_string(prop, NULL);
+> +		int i, len;
+> +		char *board_type;
+> +		const char *tmp;
+> +
+> +		of_property_read_string_index(root, "compatible", 0, &tmp);
+> +
+> +		/* get rid of '/' in the compatible string to be able to find the FW */
+> +		len = strlen(tmp) + 1;
+> +		board_type = devm_kzalloc(dev, len, GFP_KERNEL);
+> +		strscpy(board_type, tmp, len);
+> +		for (i = 0; i < board_type[i]; i++) {
+> +			if (board_type[i] == '/')
+> +				board_type[i] = '-';
+> +		}
+> +		settings->board_type = board_type;
+> +
+>   		of_node_put(root);
+>   	}
+>   
+> 
+
