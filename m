@@ -2,76 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD080210E46
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0EA210E4A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731684AbgGAPCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 11:02:33 -0400
-Received: from first.geanix.com ([116.203.34.67]:51098 "EHLO first.geanix.com"
+        id S1731708AbgGAPDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 11:03:00 -0400
+Received: from mout.web.de ([212.227.15.14]:39439 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727124AbgGAPCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 11:02:31 -0400
-X-Greylist: delayed 329 seconds by postgrey-1.27 at vger.kernel.org; Wed, 01 Jul 2020 11:02:30 EDT
-Received: from localhost (unknown [193.163.1.7])
-        by first.geanix.com (Postfix) with ESMTPSA id C31832243302;
-        Wed,  1 Jul 2020 14:57:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1593615423; bh=VCNbg8KAWx3WCHakE9UqNr62DnfO64KL9n8mC4ADfdA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=bPdVAqgYWpxE6wwb4vEtZS+OtqJwEKf5eE6nTdMnUSvsDTCyw6OP0RObYaOhHB85i
-         nKSq80rAZ/3yjwYkkjg15qL1g9YYNHtaIUdR6lC7TFprTbHH5bg8TKtbqujzDv2LI6
-         i2L4jNoiYQPKCbPn1bbm9bfgyuKX2rfNWQz+HSxqVQi6Fhh8im84+f/BmG0dwAIAXy
-         RWqDLe2MjsACnEXWHwqRQWDnye53fgpVxNxHwrGBgN1o0hpl06vkbI23laZ/18u8oO
-         9inM496APTLIC180EC48nYmpMDkzYdLyYQ2UWY5PkHRiDmXiVuiuIeP9jh1KAet09I
-         35BRCZFMlMmkg==
-From:   Esben Haabendal <esben@geanix.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] uio_pdrv_genirq: Allow use with non-page-aligned memory resources
-Date:   Wed,  1 Jul 2020 16:56:59 +0200
-Message-Id: <20200701145659.3978-4-esben@geanix.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200701145659.3978-1-esben@geanix.com>
-References: <20200701145659.3978-1-esben@geanix.com>
+        id S1731253AbgGAPC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 11:02:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1593615749;
+        bh=Cm2WYyfJpneBNU01oqdRctU+sPwpZGjMjOS7VI4n9lY=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=hZDWLJWwZsh05lhflAQHSaEnD3HZ5/hBQqW2wrrKSoEkfJnRLaU8sB6JEfV//mais
+         Sr9amB3Zq5vOGU6xPa1rFFdoU+w+pLTMOYiD9YWIt5apWJHHx0hjGz6oNd5vjEv39S
+         YuRtyxtuIIYiOhb06/A72fZItENo14K0hw2GERfc=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([78.49.41.17]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1M1rTQ-1joSOj1jxI-002Gqg; Wed, 01
+ Jul 2020 17:02:29 +0200
+Subject: Re: [v2] Documentation: Coccinelle: fix typos and command example
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        Coccinelle <cocci@systeme.lip6.fr>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Julia Lawall <julia.lawall@lip6.fr>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Jonathan Corbet <corbet@lwn.net>
+References: <0616dd0c-bb86-be2b-3dc6-1c695a92c3ca@infradead.org>
+ <c2c1dec0-2bd1-b0e2-1aa4-38d0e954d5ba@web.de>
+ <efc8b0c9-db3b-3c9c-d876-897b53a9e278@infradead.org>
+ <2a3940de-6a81-1aff-8109-53c1c5a6aa1b@web.de>
+ <f2aaa91a-f935-bc2d-26f2-712576c1bbd7@infradead.org>
+ <2f80fb10-dc7f-29be-dc3e-2715f8bafc6d@web.de>
+ <dfa2ed9f-fe68-58d1-c3d0-ac436f9bee09@infradead.org>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <648d287e-3636-1858-1439-103d317f8571@web.de>
+Date:   Wed, 1 Jul 2020 17:02:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on ff3d05386fc5
+In-Reply-To: <dfa2ed9f-fe68-58d1-c3d0-ac436f9bee09@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7+jyRySieyCCbyJjeJkdusIq2b2dW6slMywwJ+x954wdz7qULvl
+ x09InOkbu2868FW21qkdGAGzgsSOwWpiJ3oGiVrAtIFwyMSRUo7mJUqdsGjcpArHGmdbwVU
+ pGzExZiyWk1FpqknSETMjJmsZ87HwxYPh6QMobU6VMbZ8iiDnvak4kO/xw2nQ8zZvjnyZ+J
+ 2p6rXwDFo3/8FIOarSKfg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:g2sTO5eyJ1c=:x75JnGT/3IdJuzP1vSdj5C
+ aob30+KndvD4DVvdvkLev2yFnolmkDvzLgvF85TDrxg5H+dAPu0QTIbwua/Ok22anywpT1z79
+ lkr1WNB62Pqo7yzdwHZtJ9+szniN0Sm/PwfOlx5iN14yTSlTi87WravazuTrFbasnwFntrZG0
+ SzkiMNub12luJ4yZDgK/m62ckaHMkH/aSA1vGBTBavc3Mw6LCSTQZ8ayh/3AHbpWesxEr8rcu
+ kBPSj8fcHsDHl29Z929XMF46yhxe0YFKPMuJel0NbeZ03V2t1e0boztfSl/UfHFymW2dSQlLR
+ i6TvLVJKutZCJlWxIjv+orFp5F4DmvwVzlM5+M5oUNxUXhYGvIGl/5PV9W+ivNmiHe+Ai7wCM
+ 3Qht8mLcOx206gxrpUXvTSuDAnEuBw9xbKqffWK/R2Z22jVqBbSNYBm/6MTKum1Z+Wh9zeBQT
+ cTu4Q3pyTOzbfZfoSo5e9djjDe9cfg1ZJyFWsxOaXoTV5H1pFjOOdG3Bubf/V2stnc0Bhe6xb
+ HS4nW80xf00KotLpgcEGQQDsdXm+AZSVn2sR13ii5WToL6K7Z61zOXcVJDMyO6GYQ/5atfkkP
+ 2drOPAzMQvDGh21lJZpBcBLJbwedayPCwPtHDJODSb071G9o19gS25AHzBdrrfDBFfrFNMMmc
+ 2xwkRjknPX9e9bANY8d1kdRQKoS/VXuxY1po6SgL0I97UJmxm5PyPwzpXDrn5oCt5I4p1KTdi
+ 9IcJ0X8GNSEuNrOE09DgiY0vMuqg3oPhNav8lNQFsQoyfz+jatm2f7VNEHQHDjJk0O5uA0XwS
+ 4gClnKJDPm4Lp59MwyQzbG81BYH0cKymUg9z6DfmgGGu4QCJbayekyf7YLcRt9l1xAQqsqukw
+ nmVQlQc2JNjgv8GH+qlBU9pGUSsLq/U3RRPKi4TJyqaSs9bKP40RdQCY4jgrz9hSE5j+xH5TM
+ fQTKw99MOKnTCc3GaHSk6npwxICZnuUUBZAVrq3LYAiVZWPssNT/jWX/hPX5UmEqBl3A3YkY0
+ rE+UblVmP1+NZE9X8KiRqR+NTlKtXtgQedlJ/CUINaW9KMd61/VMy+lZ4IhcVg3yLFAGC2NOC
+ TNueqrawtKEkKHOxrr1klx2nC9QJ0JRyHcD3QPlDqDn7KYfIDGPFItR+71jxgbzvZx98yoY9L
+ UUKcmQFG3dQh9hHz6DbglfuXfVUrCeyvU+VQZNMvhfg9zdTrvZ+IqMckaSSOA/ZIUSIeMVFAv
+ +HsLGP5yOfFM6d9I3
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to the changes made in 270579d95f82 ("uio_mf624: Align memory
-regions to page size and set correct offsets"), this will allow
-uio_pdrv_genirq devices to expose memory regions that is not page-aligned,
-requiring the users to respect the offset sysfs attribute (as implemented
-in libuio).
+>>>> How do you think about to use the following command variant
+>>>> for the adjustment of the software documentation?
+>>>>
+>>>> +    make C=3D1 CHECK=3D'scripts/coccicheck' 'path/to/file.o'
+>>>
+>>> I don't understand the reason for that change...
+>
+> IOW, your "patch" needs justification and/or explanation. It was missing=
+ that info.
 
-Signed-off-by: Esben Haabendal <esben@geanix.com>
----
- drivers/uio/uio_pdrv_genirq.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+I hope that the clarification of the presented questions can result into
+relevant information.
 
-diff --git a/drivers/uio/uio_pdrv_genirq.c b/drivers/uio/uio_pdrv_genirq.c
-index b60173bc93ce..86f75a4fe0e3 100644
---- a/drivers/uio/uio_pdrv_genirq.c
-+++ b/drivers/uio/uio_pdrv_genirq.c
-@@ -187,8 +187,10 @@ static int uio_pdrv_genirq_probe(struct platform_device *pdev)
- 		}
- 
- 		uiomem->memtype = UIO_MEM_PHYS;
--		uiomem->addr = r->start;
--		uiomem->size = resource_size(r);
-+		uiomem->addr = r->start & PAGE_MASK;
-+		uiomem->offs = r->start & ~PAGE_MASK;
-+		uiomem->size = (uiomem->offs + resource_size(r)
-+				+ PAGE_SIZE - 1) & PAGE_MASK;
- 		uiomem->name = r->name;
- 		++uiomem;
- 	}
--- 
-2.4.11
 
+>> Is our understanding still incomplete for the support of source code ch=
+ecking parameters
+>> by the make script?
+>>
+>> * Will software analysis be performed in addition to the desired compil=
+ation
+>>   of a source file (according to the selected object file)?
+>>
+>> * How do you think about to trigger only the generation of analysis res=
+ults
+>>   for a single file?
+>
+> Do I need to remove that line from the patch?
+
+I propose to adjust it another bit.
+The desired change agreement might need further communication efforts.
+
+
+> Feel free to submit patches, not just comments.
+
+Would you like to integrate any more details from the running patch review=
+?
+
+Regards,
+Markus
