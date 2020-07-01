@@ -2,325 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E192105C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9742105B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728391AbgGAIFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 04:05:36 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42738 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728633AbgGAIEh (ORCPT
+        id S1728688AbgGAIEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 04:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728409AbgGAIEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 04:04:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593590675;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kCynkoFy3XzG6kNN02gtrhqcsZ1FKd7XfZ+X5cMlfpk=;
-        b=NW28tl32Mt2lluifhm6PPpHvdvERpgfZIW39Fb9KXQQ/GBESZRPE9zpqAPFoWQVFd9MFYP
-        wJ8MmxVhmoyldhxKRVXBbIIZg7gn38VQa7hLQXoWTbWCh+AE9VzEOhr2mnyrYCT7R1zX1p
-        ShJDiFu2mOzP6o9LnJ4cQbvgRv7EALc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-277-2H4RS7wNPJ2dbCKECCFJ1g-1; Wed, 01 Jul 2020 04:04:27 -0400
-X-MC-Unique: 2H4RS7wNPJ2dbCKECCFJ1g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0411E87950B;
-        Wed,  1 Jul 2020 08:04:26 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-12-207.pek2.redhat.com [10.72.12.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 33215BEA5;
-        Wed,  1 Jul 2020 08:04:19 +0000 (UTC)
-Date:   Wed, 1 Jul 2020 16:04:16 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Prakhar Srivastava <prsriva02@gmail.com>,
-        kexec@lists.infradead.org, James Morris <jmorris@namei.org>,
-        linux-kernel@vger.kernel.org,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        linux-security-module@vger.kernel.org,
-        Eric Biederman <ebiederm@xmission.com>,
-        linux-integrity@vger.kernel.org,
-        "Serge E . Hallyn" <serge@hallyn.com>
-Subject: Re: [PATCH v2 11/11] ima: Support additional conditionals in the
- KEXEC_CMDLINE hook function
-Message-ID: <20200701080416.GC3878@dhcp-128-65.nay.redhat.com>
-References: <20200626223900.253615-1-tyhicks@linux.microsoft.com>
- <20200626223900.253615-12-tyhicks@linux.microsoft.com>
+        Wed, 1 Jul 2020 04:04:49 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA3DC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 01:04:49 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id m9so396260pfh.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 01:04:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ymhgZtaUIrmVtHlQWVVd0pisUV4Sdjq2wDsGEJHNXrk=;
+        b=qF6D3W0JWMmr2qztabi9w7e/wOeol+S2DyjKS6/y7Y4CETJCsOWH7jUDn5XhMdtDgX
+         iOWMlimcJhrR/9Gmf7gER002203RuG8z2SkCqq6gXQCnzdebl1ypzjrldAP9108dzgVd
+         1SQZWQrK8L+F5NAGgrYVViTh3p0xLDkBcKc02oo12y+pvX1uQgeLunZS195ocoLIdG6H
+         r4ZlVAcIzX5GVgb4etTqaw2FfPf+6u0s1jaULuq5vwINsm7bA7iOa7R+tPILIcLTXD6Q
+         QIjsTXWwnzLCoA7FakuFKurL/JauAlZTVAbomFoZpwQVK8gs9fw3M2WE4Asd4GF0S9at
+         oVCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=ymhgZtaUIrmVtHlQWVVd0pisUV4Sdjq2wDsGEJHNXrk=;
+        b=MAfGAJT5nuL51ZnepBJT7Dw1nQ9Orbd0Gj1gLNUVlM6mVDbq6HtaYwlJqSxQHXHrN6
+         5WVKdnhzPl5pfRSM/X063wUET6znYxHybB1HCkmj7RE8QC3TbXbTlu4Rv/zoR5VsPtSh
+         uCDWPYbcz3C3hWeAJdqfCpMvJyEoEVS0yojqgiI9MyMI3bP54q/D9OGC3KS3nNeOe4gc
+         U1i6skF+tAuYC7I0JG7CtuK4SnqqFVmUjO5QSU2lpxLcnbhXTxFhDVm9mxktWb50II42
+         YFKBSvI67UGyITIqBDUq3W2sJbQoena0uCrmxAbipLxE2MY7+jqKTtmYgHU5Fe9mgo2W
+         F3zg==
+X-Gm-Message-State: AOAM533YoP1Dh+6jJJ3LkKdlcrQfETgW1t/af29WxrjJBaLdOHrJwljb
+        hVuuht6I5RF7dsqSb4cSsTberlFD/WS2Tw==
+X-Google-Smtp-Source: ABdhPJywD3WCB84ZFmS/FulfmNmp759Tc1PPYo+lFYLH7VpN/zNgL/cJauraY0g5jW99Bs5d4YQG8Q==
+X-Received: by 2002:a63:5644:: with SMTP id g4mr17997117pgm.381.1593590687754;
+        Wed, 01 Jul 2020 01:04:47 -0700 (PDT)
+Received: from [192.168.10.94] (124-171-83-152.dyn.iinet.net.au. [124.171.83.152])
+        by smtp.gmail.com with ESMTPSA id j17sm4629523pgn.87.2020.07.01.01.04.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Jul 2020 01:04:46 -0700 (PDT)
+Subject: Re: [PATCH v2 6/6] powerpc/pseries/iommu: Avoid errors when DDW
+ starts at 0x00
+To:     Leonardo Bras <leobras.c@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Ram Pai <linuxram@us.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20200624062411.367796-1-leobras.c@gmail.com>
+ <20200624062411.367796-7-leobras.c@gmail.com>
+ <1069466fa3a373e92d9db18957674b1d9c6e9cf2.camel@gmail.com>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+Autocrypt: addr=aik@ozlabs.ru; keydata=
+ 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
+Message-ID: <76047748-9ddd-5ba3-fe4d-85c7c08bd521@ozlabs.ru>
+Date:   Wed, 1 Jul 2020 18:04:41 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200626223900.253615-12-tyhicks@linux.microsoft.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <1069466fa3a373e92d9db18957674b1d9c6e9cf2.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On 06/26/20 at 05:39pm, Tyler Hicks wrote:
-> Take the properties of the kexec kernel's inode and the current task
-> ownership into consideration when matching a KEXEC_CMDLINE operation to
-> the rules in the IMA policy. This allows for some uniformity when
-> writing IMA policy rules for KEXEC_KERNEL_CHECK, KEXEC_INITRAMFS_CHECK,
-> and KEXEC_CMDLINE operations.
+
+
+On 27/06/2020 03:46, Leonardo Bras wrote:
+> On Wed, 2020-06-24 at 03:24 -0300, Leonardo Bras wrote:
+>> As of today, enable_ddw() will return a non-null DMA address if the
+>> created DDW maps the whole partition. If the address is valid,
+>> iommu_bypass_supported_pSeriesLP() will consider iommu bypass enabled.
+>>
+>> This can cause some trouble if the DDW happens to start at 0x00.
+>>
+>> Instead if checking if the address is non-null, check directly if
+>> the DDW maps the whole partition, so it can bypass iommu.
+>>
+>> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
 > 
-> Prior to this patch, it was not possible to write a set of rules like
-> this:
+> This patch has a bug in it. I will rework it soon.
+
+I'd rather suggest this:
+
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20180725095032.2196-2-aik@ozlabs.ru/
+
+Although it does not look like you are actually going to have windows
+starting at 0. Thanks,
+
+> Please keep reviewing patches 1-5.
 > 
->  dont_measure func=KEXEC_KERNEL_CHECK obj_type=foo_t
->  dont_measure func=KEXEC_INITRAMFS_CHECK obj_type=foo_t
->  dont_measure func=KEXEC_CMDLINE obj_type=foo_t
->  measure func=KEXEC_KERNEL_CHECK
->  measure func=KEXEC_INITRAMFS_CHECK
->  measure func=KEXEC_CMDLINE
-> 
-> The inode information associated with the kernel being loaded by a
-> kexec_kernel_load(2) syscall can now be included in the decision to
-> measure or not
-> 
-> Additonally, the uid, euid, and subj_* conditionals can also now be
-> used in KEXEC_CMDLINE rules. There was no technical reason as to why
-> those conditionals weren't being considered previously other than
-> ima_match_rules() didn't have a valid inode to use so it immediately
-> bailed out for KEXEC_CMDLINE operations rather than going through the
-> full list of conditional comparisons.
-> 
-> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> Cc: Eric Biederman <ebiederm@xmission.com>
-> Cc: kexec@lists.infradead.org
-> ---
-> 
-> * v2
->   - Moved the inode parameter of process_buffer_measurement() to be the
->     first parameter so that it more closely matches process_masurement()
-> 
->  include/linux/ima.h                          |  4 ++--
->  kernel/kexec_file.c                          |  2 +-
->  security/integrity/ima/ima.h                 |  2 +-
->  security/integrity/ima/ima_api.c             |  2 +-
->  security/integrity/ima/ima_appraise.c        |  2 +-
->  security/integrity/ima/ima_asymmetric_keys.c |  2 +-
->  security/integrity/ima/ima_main.c            | 23 +++++++++++++++-----
->  security/integrity/ima/ima_policy.c          | 17 +++++----------
->  security/integrity/ima/ima_queue_keys.c      |  2 +-
->  9 files changed, 31 insertions(+), 25 deletions(-)
-> 
-> diff --git a/include/linux/ima.h b/include/linux/ima.h
-> index 9164e1534ec9..d15100de6cdd 100644
-> --- a/include/linux/ima.h
-> +++ b/include/linux/ima.h
-> @@ -25,7 +25,7 @@ extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
->  			      enum kernel_read_file_id id);
->  extern void ima_post_path_mknod(struct dentry *dentry);
->  extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
-> -extern void ima_kexec_cmdline(const void *buf, int size);
-> +extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
->  
->  #ifdef CONFIG_IMA_KEXEC
->  extern void ima_add_kexec_buffer(struct kimage *image);
-> @@ -103,7 +103,7 @@ static inline int ima_file_hash(struct file *file, char *buf, size_t buf_size)
->  	return -EOPNOTSUPP;
->  }
->  
-> -static inline void ima_kexec_cmdline(const void *buf, int size) {}
-> +static inline void ima_kexec_cmdline(int kernel_fd, const void *buf, int size) {}
->  #endif /* CONFIG_IMA */
->  
->  #ifndef CONFIG_IMA_KEXEC
-> diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-> index bb05fd52de85..07df431c1f21 100644
-> --- a/kernel/kexec_file.c
-> +++ b/kernel/kexec_file.c
-> @@ -287,7 +287,7 @@ kimage_file_prepare_segments(struct kimage *image, int kernel_fd, int initrd_fd,
->  			goto out;
->  		}
->  
-> -		ima_kexec_cmdline(image->cmdline_buf,
-> +		ima_kexec_cmdline(kernel_fd, image->cmdline_buf,
->  				  image->cmdline_buf_len - 1);
->  	}
->  
-> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-> index 59ec28f5c117..ff2bf57ff0c7 100644
-> --- a/security/integrity/ima/ima.h
-> +++ b/security/integrity/ima/ima.h
-> @@ -265,7 +265,7 @@ void ima_store_measurement(struct integrity_iint_cache *iint, struct file *file,
->  			   struct evm_ima_xattr_data *xattr_value,
->  			   int xattr_len, const struct modsig *modsig, int pcr,
->  			   struct ima_template_desc *template_desc);
-> -void process_buffer_measurement(const void *buf, int size,
-> +void process_buffer_measurement(struct inode *inode, const void *buf, int size,
->  				const char *eventname, enum ima_hooks func,
->  				int pcr, const char *keyring);
->  void ima_audit_measurement(struct integrity_iint_cache *iint,
-> diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
-> index bf22de8b7ce0..4f39fb93f278 100644
-> --- a/security/integrity/ima/ima_api.c
-> +++ b/security/integrity/ima/ima_api.c
-> @@ -162,7 +162,7 @@ void ima_add_violation(struct file *file, const unsigned char *filename,
->  
->  /**
->   * ima_get_action - appraise & measure decision based on policy.
-> - * @inode: pointer to inode to measure
-> + * @inode: pointer to the inode associated with the object being validated
->   * @cred: pointer to credentials structure to validate
->   * @secid: secid of the task being validated
->   * @mask: contains the permission mask (MAY_READ, MAY_WRITE, MAY_EXEC,
-> diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
-> index a9649b04b9f1..6c52bf7ea7f0 100644
-> --- a/security/integrity/ima/ima_appraise.c
-> +++ b/security/integrity/ima/ima_appraise.c
-> @@ -328,7 +328,7 @@ int ima_check_blacklist(struct integrity_iint_cache *iint,
->  
->  		rc = is_binary_blacklisted(digest, digestsize);
->  		if ((rc == -EPERM) && (iint->flags & IMA_MEASURE))
-> -			process_buffer_measurement(digest, digestsize,
-> +			process_buffer_measurement(NULL, digest, digestsize,
->  						   "blacklisted-hash", NONE,
->  						   pcr, NULL);
->  	}
-> diff --git a/security/integrity/ima/ima_asymmetric_keys.c b/security/integrity/ima/ima_asymmetric_keys.c
-> index aaae80c4e376..1c68c500c26f 100644
-> --- a/security/integrity/ima/ima_asymmetric_keys.c
-> +++ b/security/integrity/ima/ima_asymmetric_keys.c
-> @@ -58,7 +58,7 @@ void ima_post_key_create_or_update(struct key *keyring, struct key *key,
->  	 * if the IMA policy is configured to measure a key linked
->  	 * to the given keyring.
->  	 */
-> -	process_buffer_measurement(payload, payload_len,
-> +	process_buffer_measurement(NULL, payload, payload_len,
->  				   keyring->description, KEY_CHECK, 0,
->  				   keyring->description);
->  }
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> index 8351b2fd48e0..8a91711ca79b 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -726,6 +726,7 @@ int ima_load_data(enum kernel_load_data_id id)
->  
->  /*
->   * process_buffer_measurement - Measure the buffer to ima log.
-> + * @inode: inode associated with the object being measured (NULL for KEY_CHECK)
->   * @buf: pointer to the buffer that needs to be added to the log.
->   * @size: size of buffer(in bytes).
->   * @eventname: event name to be used for the buffer entry.
-> @@ -735,7 +736,7 @@ int ima_load_data(enum kernel_load_data_id id)
->   *
->   * Based on policy, the buffer is measured into the ima log.
->   */
-> -void process_buffer_measurement(const void *buf, int size,
-> +void process_buffer_measurement(struct inode *inode, const void *buf, int size,
->  				const char *eventname, enum ima_hooks func,
->  				int pcr, const char *keyring)
->  {
-> @@ -768,7 +769,7 @@ void process_buffer_measurement(const void *buf, int size,
->  	 */
->  	if (func) {
->  		security_task_getsecid(current, &secid);
-> -		action = ima_get_action(NULL, current_cred(), secid, 0, func,
-> +		action = ima_get_action(inode, current_cred(), secid, 0, func,
->  					&pcr, &template, keyring);
->  		if (!(action & IMA_MEASURE))
->  			return;
-> @@ -823,16 +824,26 @@ void process_buffer_measurement(const void *buf, int size,
->  
->  /**
->   * ima_kexec_cmdline - measure kexec cmdline boot args
-> + * @kernel_fd: file descriptor of the kexec kernel being loaded
->   * @buf: pointer to buffer
->   * @size: size of buffer
->   *
->   * Buffers can only be measured, not appraised.
->   */
-> -void ima_kexec_cmdline(const void *buf, int size)
-> +void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
->  {
-> -	if (buf && size != 0)
-> -		process_buffer_measurement(buf, size, "kexec-cmdline",
-> -					   KEXEC_CMDLINE, 0, NULL);
-> +	struct fd f;
-> +
-> +	if (!buf || !size)
-> +		return;
-> +
-> +	f = fdget(kernel_fd);
-> +	if (!f.file)
-> +		return;
-> +
-> +	process_buffer_measurement(file_inode(f.file), buf, size,
-> +				   "kexec-cmdline", KEXEC_CMDLINE, 0, NULL);
-> +	fdput(f);
->  }
->  
->  static int __init init_ima(void)
-> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-> index 5eb14b567a31..294323b36d06 100644
-> --- a/security/integrity/ima/ima_policy.c
-> +++ b/security/integrity/ima/ima_policy.c
-> @@ -443,13 +443,9 @@ static bool ima_match_rules(struct ima_rule_entry *rule, struct inode *inode,
->  {
->  	int i;
->  
-> -	if ((func == KEXEC_CMDLINE) || (func == KEY_CHECK)) {
-> -		if ((rule->flags & IMA_FUNC) && (rule->func == func)) {
-> -			if (func == KEY_CHECK)
-> -				return ima_match_keyring(rule, keyring, cred);
-> -			return true;
-> -		}
-> -		return false;
-> +	if (func == KEY_CHECK) {
-> +		return (rule->flags & IMA_FUNC) && (rule->func == func) &&
-> +		       ima_match_keyring(rule, keyring, cred);
->  	}
->  	if ((rule->flags & IMA_FUNC) &&
->  	    (rule->func != func && func != POST_SETATTR))
-> @@ -1007,10 +1003,9 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
->  			if (entry->action & ~(MEASURE | DONT_MEASURE))
->  				return false;
->  
-> -			if (entry->flags & ~(IMA_FUNC | IMA_PCR))
-> -				return false;
-> -
-> -			if (ima_rule_contains_lsm_cond(entry))
-> +			if (entry->flags & ~(IMA_FUNC | IMA_FSMAGIC | IMA_UID |
-> +					     IMA_FOWNER | IMA_FSUUID |
-> +					     IMA_EUID | IMA_PCR | IMA_FSNAME))
->  				return false;
->  
->  			break;
-> diff --git a/security/integrity/ima/ima_queue_keys.c b/security/integrity/ima/ima_queue_keys.c
-> index 56ce24a18b66..69a8626a35c0 100644
-> --- a/security/integrity/ima/ima_queue_keys.c
-> +++ b/security/integrity/ima/ima_queue_keys.c
-> @@ -158,7 +158,7 @@ void ima_process_queued_keys(void)
->  
->  	list_for_each_entry_safe(entry, tmp, &ima_keys, list) {
->  		if (!timer_expired)
-> -			process_buffer_measurement(entry->payload,
-> +			process_buffer_measurement(NULL, entry->payload,
->  						   entry->payload_len,
->  						   entry->keyring_name,
->  						   KEY_CHECK, 0,
-> -- 
-> 2.25.1
-> 
-> 
-> _______________________________________________
-> kexec mailing list
-> kexec@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/kexec
+> Best regards,
+> Leonardo
 > 
 
-Although I still do not understand the deep knowledge of IMA, I
-still wonder to know what is the effect to the behavior changes end user
-visible.   Does it work with a kernel built-in commandline? eg no
-cmdlien passed at all.
-
-Thanks
-Dave
-
+-- 
+Alexey
