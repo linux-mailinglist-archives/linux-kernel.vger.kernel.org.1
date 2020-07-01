@@ -2,196 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDF12105A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805892105C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728453AbgGAICZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 04:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728327AbgGAICW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 04:02:22 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E636DC061755;
-        Wed,  1 Jul 2020 01:02:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LFQ7OF0jsuzQJlmTHO++UkKHV4et9XLuC6j8VsZvEzw=; b=Oj5TZiR5u9aBfKOyg1xp1X4bhD
-        engC4zDewM2GmMUsT8iIFwB7eOoTKNDb+C27439ztCIUdVqooYpQbUUXAeN50rDUpidA07w6GcWWZ
-        9rAzrdnVmFFSGjrTxssFjHSFOlKiXEk5jYGSMpegcR1ms+EqWxttqrvoUqbzkCR5q60ZnIqBb4j8E
-        CfVMLMyEbiScLLayDkHvFR2pvCqHvFwV+Uz2AXsTOfppnxtAHOJIIMdrzjCxsr1eppRwFthuYD3Hc
-        ZJ7BVayw7nCK9Y9hEaFRKSlSHS/lEgeI7Gm6K2gFaBbiSQDarKQDqvRxM3MJGcsOQ+xqfVBDrpgTw
-        7xBhctXw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jqXhB-0005fq-Id; Wed, 01 Jul 2020 08:02:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9D9E230015A;
-        Wed,  1 Jul 2020 10:02:13 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8A1312006F895; Wed,  1 Jul 2020 10:02:13 +0200 (CEST)
-Date:   Wed, 1 Jul 2020 10:02:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [Bug, sched, 5.8-rc2]: PREEMPT kernels crashing in
- check_preempt_wakeup() running fsx on XFS
-Message-ID: <20200701080213.GF4817@hirez.programming.kicks-ass.net>
-References: <20200626004722.GF2005@dread.disaster.area>
- <20200626073345.GI4800@hirez.programming.kicks-ass.net>
- <20200626223254.GH2005@dread.disaster.area>
- <20200627183042.GK4817@hirez.programming.kicks-ass.net>
- <20200629235533.GL2005@dread.disaster.area>
- <20200630085732.GT4817@hirez.programming.kicks-ass.net>
- <20200701022646.GO2005@dread.disaster.area>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200701022646.GO2005@dread.disaster.area>
+        id S1728546AbgGAIEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 04:04:25 -0400
+Received: from mga14.intel.com ([192.55.52.115]:2413 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728258AbgGAIEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 04:04:23 -0400
+IronPort-SDR: we9/QNuDfPRQXKdQnFSNrqQgSPDig6i9mwfxU3slCcCs3xck6ZTjKAGb/kEnpuJTwCs6QPjAa7
+ FI6rCFDnM+Zw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="145581813"
+X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
+   d="scan'208";a="145581813"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 01:04:12 -0700
+IronPort-SDR: UhJ3wEyfUjQQla5eUs0kp6guankjI+7N2vW+qen5gPxBb9drj8GuZUuPnOgi6qinh+7WZ7jgo9
+ uZX+TNLG5zag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
+   d="scan'208";a="455010208"
+Received: from unknown (HELO local-michael-cet-test.sh.intel.com) ([10.239.159.128])
+  by orsmga005.jf.intel.com with ESMTP; 01 Jul 2020 01:04:10 -0700
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        jmattson@google.com
+Cc:     yu.c.zhang@linux.intel.com, Yang Weijiang <weijiang.yang@intel.com>
+Subject: [PATCH v13 00/11] Introduce support for guest CET feature
+Date:   Wed,  1 Jul 2020 16:04:00 +0800
+Message-Id: <20200701080411.5802-1-weijiang.yang@intel.com>
+X-Mailer: git-send-email 2.17.2
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 12:26:46PM +1000, Dave Chinner wrote:
+Control-flow Enforcement Technology (CET) provides protection against
+Return/Jump-Oriented Programming (ROP/JOP) attack. There're two CET
+sub-features: Shadow Stack (SHSTK) and Indirect Branch Tracking (IBT).
+SHSTK is to prevent ROP programming and IBT is to prevent JOP programming.
 
-> There's nothing like this in the scheduler code that I can find that
-> explains the expected overall ordering/serialisation mechanisms and
-> relationships used in the subsystem. Hence when I comes across
-> something that doesn't appear to make sense, there's nothign I can
-> refer to that would explain whether it is a bug or whether the
-> comment is wrong or whether I've just completely misunderstood what
-> the comment is referring to.
-> 
-> Put simply: the little details are great, but they aren't sufficient
-> by themselves to understand the relationships being maintained
-> between the various objects.
+Several parts in KVM have been updated to provide VM CET support, including:
+CPUID/XSAVES config, MSR pass-through, user space MSR access interface, 
+vmentry/vmexit config, nested VM etc. These patches have dependency on CET
+kernel patches for xsaves support and CET definitions, e.g., MSR and related
+feature flags.
 
-You're absolutely right, we lack that. As a very first draft / brain
-dump, I wrote the below, I'll try and polish it up and add to it over
-the next few days.
+CET kernel patches are here:
+https://lkml.kernel.org/r/20200429220732.31602-1-yu-cheng.yu@intel.com
 
+v13:
+- Added CET definitions as a separate patch to facilitate KVM test.
+- Disabled CET support in KVM if unrestricted_guest is turned off since
+  in this case CET related instructions/infrastructure cannot be emulated
+  well.
 
----
- kernel/sched/core.c | 80 +++++++++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 75 insertions(+), 5 deletions(-)
+v12:
+- Fixed a few issues per Sean and Paolo's review feeback.
+- Refactored patches to make them properly arranged.
+- Removed unnecessary hard-coded CET states for host/guest.
+- Added compile-time assertions for vmcs_field_to_offset_table to detect
+  mismatch of the field type and field encoding number.
+- Added a custom MSR MSR_KVM_GUEST_SSP for guest active SSP save/restore.
+- Rebased patches to 5.7-rc3.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 1d3d2d67f398..568f7ade9a09 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -77,6 +77,74 @@ __read_mostly int scheduler_running;
-  */
- int sysctl_sched_rt_runtime = 950000;
- 
-+
-+/*
-+ * Serialization rules:
-+ *
-+ * Lock order:
-+ *
-+ *   p->pi_lock
-+ *     rq->lock
-+ *       hrtimer_clock_base::cpu_base->lock
-+ *
-+ *  rq1->lock
-+ *    rq2->lock  where: &rq1 < &rq2
-+ *
-+ * Regular state:
-+ *
-+ * Normal scheduling state is serialized by rq->lock. __schedule() takes the
-+ * local CPU's rq->lock, it optionally removes the task from the runqueue and
-+ * always looks at the local rq data structures to find the most elegible task
-+ * to run next.
-+ *
-+ * Task enqueue is also under rq->lock, possibly taken from another CPU.
-+ * Wakeups from another LLC domain might use an IPI to transfer the enqueue
-+ * to the local CPU to avoid bouncing the runqueue state around.
-+ *
-+ * Task wakeup, specifically wakeups that involve migration, are horribly
-+ * complicated to avoid having to take two rq->locks.
-+ *
-+ * Special state:
-+ *
-+ * p->state    <- TASK_*
-+ * p->on_cpu   <- { 0, 1 }
-+ * p->on_rq    <- { 0, 1 = TASK_ON_RQ_QUEUED, 2 = TASK_ON_RQ_MIGRATING }
-+ * task_cpu(p) <- set_task_cpu()
-+ *
-+ * System-calls and anything external will use task_rq_lock() which acquires
-+ * both p->lock and rq->lock. As a consequence things like p->cpus_ptr are
-+ * stable while holding either lock.
-+ *
-+ * p->state is changed locklessly using set_current_state(),
-+ * __set_current_state() or set_special_state(), see their respective comments.
-+ *
-+ * p->on_cpu is set by prepare_task() and cleared by finish_task() such that it
-+ * will be set before p is scheduled-in and cleared after p is scheduled-out,
-+ * both under rq->lock. Non-zero indicates the task is 'current' on it's CPU.
-+ *
-+ * p->on_rq is set by activate_task() and cleared by deactivate_task(), under
-+ * rq->lock. Non-zero indicates the task is runnable, the special
-+ * ON_RQ_MIGRATING state is used for migration without holding both rq->locks.
-+ * It indicates task_cpu() is not stable, see *task_rq_lock().
-+ *
-+ * task_cpu(p) is changed by set_task_cpu(), the rules are intricate but basically:
-+ *
-+ *  - don't call set_task_cpu() on a blocked task
-+ *
-+ *  - for try_to_wake_up(), called under p->pi_lock
-+ *
-+ *  - for migration called under rq->lock:
-+ *    o move_queued_task()
-+ *    o __migrate_swap_task()
-+ *    o detach_task()
-+ *
-+ *  - for migration called under double_rq_lock():
-+ *    o push_rt_task() / pull_rt_task()
-+ *    o push_dl_task() / pull_dl_task()
-+ *    o dl_task_offline_migration()
-+ *
-+ */
-+
- /*
-  * __task_rq_lock - lock the rq @p resides on.
-  */
-@@ -1466,8 +1534,7 @@ static struct rq *move_queued_task(struct rq *rq, struct rq_flags *rf,
- {
- 	lockdep_assert_held(&rq->lock);
- 
--	WRITE_ONCE(p->on_rq, TASK_ON_RQ_MIGRATING);
--	dequeue_task(rq, p, DEQUEUE_NOCLOCK);
-+	deactivate_task(rq, p, DEQUEUE_NOCLOCK);
- 	set_task_cpu(p, new_cpu);
- 	rq_unlock(rq, rf);
- 
-@@ -1475,8 +1542,7 @@ static struct rq *move_queued_task(struct rq *rq, struct rq_flags *rf,
- 
- 	rq_lock(rq, rf);
- 	BUG_ON(task_cpu(p) != new_cpu);
--	enqueue_task(rq, p, 0);
--	p->on_rq = TASK_ON_RQ_QUEUED;
-+	activate_task(rq, p, 0);
- 	check_preempt_curr(rq, p, 0);
- 
- 	return rq;
-@@ -3134,8 +3200,12 @@ static inline void prepare_task(struct task_struct *next)
- 	/*
- 	 * Claim the task as running, we do this before switching to it
- 	 * such that any running task will have this set.
-+	 *
-+	 * __schedule()'s rq->lock and smp_mb__after_spin_lock() orders this
-+	 * store against prior state change of p, also see try_to_wake_up(),
-+	 * specifically smp_load_acquire(&p->on_cpu).
- 	 */
--	next->on_cpu = 1;
-+	WRITE_ONCE(next->on_cpu, 1);
- #endif
- }
- 
+v11:
+- Fixed a guest vmentry failure issue when guest reboots.
+- Used vm_xxx_control_{set, clear}bit() to avoid side effect, it'll
+  clear cached data instead of pure VMCS field bits.
+- Added vcpu->arch.guest_supported_xss dedidated for guest runtime mask,
+  this avoids supported_xss overwritten issue caused by an old qemu.
+- Separated vmentry/vmexit state setting with CR0/CR4 dependency check
+  to make the patch more clear.
+- Added CET VMCS states in dump_vmcs() for debugging purpose.
+- Other refactor based on testing.
+- This patch serial is built on top of below branch and CET kernel patches
+  for seeking xsaves support:
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=cpu-caps
+
+v10:
+- Refactored code per Sean's review feedback.
+- Added CET support for nested VM.
+- Removed fix-patch for CPUID(0xd,N) enumeration as this part is done
+  by Paolo and Sean.
+- This new patchset is based on Paolo's queued cpu_caps branch.
+- Modified patch per XSAVES related change.
+- Consolidated KVM unit-test patch with KVM patches.
+
+v9:
+- Refactored msr-check functions per Sean's feedback.
+- Fixed a few issues per Sean's suggestion.
+- Rebased patch to kernel-v5.4.
+- Moved CET CPUID feature bits and CR4.CET to last patch.
+
+v8:
+- Addressed Jim and Sean's feedback on: 1) CPUID(0xD,i) enumeration. 2)
+  sanity check when configure guest CET. 3) function improvement.
+- Added more sanity check functions.
+- Set host vmexit default status so that guest won't leak CET status to
+  host when vmexit.
+- Added CR0.WP vs. CR4.CET mutual constrains.
+
+v7:
+- Rebased patch to kernel v5.3
+- Sean suggested to change CPUID(0xd, n) enumeration code as alined with
+  existing one, and I think it's better to make the fix as an independent patch 
+  since XSS MSR are being used widely on X86 platforms.
+- Check more host and guest status before configure guest CET
+  per Sean's feedback.
+- Add error-check before guest accesses CET MSRs per Sean's feedback.
+- Other minor fixes suggested by Sean.
+
+v6:
+- Rebase patch to kernel v5.2.
+- Move CPUID(0xD, n>=1) helper to a seperate patch.
+- Merge xsave size fix with other patch.
+- Other minor fixes per community feedback.
+
+v5:
+- Rebase patch to kernel v5.1.
+- Wrap CPUID(0xD, n>=1) code to a helper function.
+- Pass through MSR_IA32_PL1_SSP and MSR_IA32_PL2_SSP to Guest.
+- Add Co-developed-by expression in patch description.
+- Refine patch description.
+
+v4:
+- Add Sean's patch for loading Guest fpu state before access XSAVES
+  managed CET MSRs.
+- Melt down CET bits setting into CPUID configuration patch.
+- Add VMX interface to query Host XSS.
+- Check Host and Guest XSS support bits before set Guest XSS.
+- Make Guest SHSTK and IBT feature enabling independent.
+- Do not report CET support to Guest when Host CET feature is Disabled.
+
+v3:
+- Modified patches to make Guest CET independent to Host enabling.
+- Added patch 8 to add user space access for Guest CET MSR access.
+- Modified code comments and patch description to reflect changes.
+
+v2:
+- Re-ordered patch sequence, combined one patch.
+- Added more description for CET related VMCS fields.
+- Added Host CET capability check while enabling Guest CET loading bit.
+- Added Host CET capability check while reporting Guest CPUID(EAX=7, EXC=0).
+- Modified code in reporting Guest CPUID(EAX=D,ECX>=1), make it clearer.
+- Added Host and Guest XSS mask check while setting bits for Guest XSS.
+
+Sean Christopherson (1):
+  KVM: x86: Load guest fpu state when access MSRs managed by XSAVES
+
+Yang Weijiang (10):
+  KVM: x86: Include CET definitions for KVM test purpose
+  KVM: VMX: Introduce CET VMCS fields and flags
+  KVM: VMX: Set guest CET MSRs per KVM and host configuration
+  KVM: VMX: Configure CET settings upon guest CR0/4 changing
+  KVM: x86: Refresh CPUID once guest changes XSS bits
+  KVM: x86: Add userspace access interface for CET MSRs
+  KVM: VMX: Enable CET support for nested VM
+  KVM: VMX: Add VMCS dump and sanity check for CET states
+  KVM: x86: Add #CP support in guest exception dispatch
+  KVM: x86: Enable CET virtualization and advertise CET to userspace
+
+ arch/x86/include/asm/kvm_host.h      |   4 +-
+ arch/x86/include/asm/vmx.h           |   8 +
+ arch/x86/include/uapi/asm/kvm.h      |   1 +
+ arch/x86/include/uapi/asm/kvm_para.h |   7 +-
+ arch/x86/kvm/cpuid.c                 |  28 ++-
+ arch/x86/kvm/vmx/capabilities.h      |   5 +
+ arch/x86/kvm/vmx/nested.c            |  34 ++++
+ arch/x86/kvm/vmx/vmcs12.c            | 275 ++++++++++++++++-----------
+ arch/x86/kvm/vmx/vmcs12.h            |  14 +-
+ arch/x86/kvm/vmx/vmx.c               | 262 ++++++++++++++++++++++++-
+ arch/x86/kvm/x86.c                   |  47 ++++-
+ arch/x86/kvm/x86.h                   |   2 +-
+ include/linux/kvm_host.h             |  32 ++++
+ 13 files changed, 588 insertions(+), 131 deletions(-)
+
+-- 
+2.17.2
+
