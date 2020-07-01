@@ -2,257 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06424210C74
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 15:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5301210C7F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 15:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731097AbgGANmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 09:42:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43912 "EHLO
+        id S1731140AbgGANpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 09:45:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbgGANmt (ORCPT
+        with ESMTP id S1731034AbgGANpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 09:42:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE24C08C5C1;
-        Wed,  1 Jul 2020 06:42:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cjaRkySnn9zjM8R5vpCGyC7siTFkzFNdHqFzmgptOqw=; b=hpwC4lGNZpBz5bv8A1ATMu3yKV
-        PLVdYtUCPUFcGewCrQR2AvKlGS9dfwNaoukHQ4hFCqr2dUYCu3JU9OJ4mpPDj4BJPFn+Z++pe4xmt
-        a6RJLbV9CwJ5NplzztqrfFyqGPk4NY26/p3ncG7cIzHppIzGihEPdECxIRCK/P82Qc3ttcziDQqXA
-        Dh+PHcP8kmL0JSaiLf3PT9xmdVPGP/B2JmWiL6A+7gIZ3vl1wRtWasiel4eoj1sG5zcUWysIFxcdr
-        NAD6gpo8PZTPz9pA++9QqG8rIV/M2RP5aCTalcHjaOZcKlz0RCcqraZiRX9owxkiOHDKW7xqxNQqq
-        9K3a4//A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jqd0f-0006rl-37; Wed, 01 Jul 2020 13:42:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 283B3302753;
-        Wed,  1 Jul 2020 15:42:44 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0FB79203CDC4F; Wed,  1 Jul 2020 15:42:44 +0200 (CEST)
-Date:   Wed, 1 Jul 2020 15:42:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [Bug, sched, 5.8-rc2]: PREEMPT kernels crashing in
- check_preempt_wakeup() running fsx on XFS
-Message-ID: <20200701134244.GG4817@hirez.programming.kicks-ass.net>
-References: <20200626004722.GF2005@dread.disaster.area>
- <20200626073345.GI4800@hirez.programming.kicks-ass.net>
- <20200626223254.GH2005@dread.disaster.area>
- <20200627183042.GK4817@hirez.programming.kicks-ass.net>
- <20200629235533.GL2005@dread.disaster.area>
- <20200630085732.GT4817@hirez.programming.kicks-ass.net>
- <20200701022646.GO2005@dread.disaster.area>
- <20200701080213.GF4817@hirez.programming.kicks-ass.net>
- <20200701110644.GT2005@dread.disaster.area>
+        Wed, 1 Jul 2020 09:45:03 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDADC08C5DB
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 06:45:03 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id d27so18413373qtg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 06:45:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CBva2wqaXiuBAspU81cFB5iwS5pTK1fm/Up07VFpyA0=;
+        b=D8NDGEVJFrBF/1L5SAm6ntpFWhRP1sZReXLJFSlhkfofKTgCUPINDpqHFgxb0iqLSf
+         JPsQaKEN4RxKXtFlYEsNspb7xf28aMALonIa7UiskxK42WoepoaOz/EzZBKdGyy/Wovh
+         baYJ08l6pebhf2W6A9MRB4C3IVvYX4QClj6hDtBLB39gjm2QCYCAk8HbybxNCwvqkaFq
+         T6+Unvvl8iMtD8Wu1TVeJ+4o+JbXOEqdp/bkz7UFHaWOOm2oS1wG1XF5vvbn69RYBgL0
+         AozYsQabDIM6fTZQDMmyLVfAl/QFV1DfSJnsODkFXfn8xH1SkSTgIdlsDDZAb2KzOnN2
+         wPBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CBva2wqaXiuBAspU81cFB5iwS5pTK1fm/Up07VFpyA0=;
+        b=EoxBVcL/xwrVN5+xJe5N78b4erAARD4K7to9HV4NQHzFQ4sIm6Zp88M4362SpAQrWv
+         MUCmRcyzKQCLAx+ZM8uLpScCPuii86M7RyLvQi25nDWTcbFOW7LFy5rHaCLEU2oBh16Q
+         GL4kp6K0LNxY6TgMYjhuQmtBGyU/CBLFGgXdM0WgzjwShLPhsKpdha/+QQRXGMq5Eg6K
+         mBxhBtu4vHSIoY8YPLPHa/f0kqhaZjkbBur3h3bCfuB0PnCNNHei55RYB2E7whY80CEh
+         572FaQd4wvDxlNa/3XsVuW9Ua9r85WKxh4A9y6Y9W9bHDhr5aiigboSgnxsZZyFNThag
+         JCig==
+X-Gm-Message-State: AOAM532GjxVAmcy1jEUCRwLNR30pKiVcODDbVBtpJEvKJcfq9pBp/cLj
+        JPF4n0H/aJPj5j3Y+QEWBlzoMQ==
+X-Google-Smtp-Source: ABdhPJzfHrQ0xxPZuwDY8lRZSrWPkCFEL5E3c1dwoMyW9k3YhRPk8dqcpMUxlcBsjEXZN4MmrFddHA==
+X-Received: by 2002:ac8:4d5d:: with SMTP id x29mr26514755qtv.358.1593611102546;
+        Wed, 01 Jul 2020 06:45:02 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id d136sm1444345qke.47.2020.07.01.06.45.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jul 2020 06:45:01 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), Georgi Djakov <georgi.djakov@linaro.org>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-pm@vger.kernel.org (open list:INTERCONNECT API),
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH 0/6] Add SM8150 and SM8250 interconnect drivers
+Date:   Wed,  1 Jul 2020 09:42:49 -0400
+Message-Id: <20200701134259.8055-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200701110644.GT2005@dread.disaster.area>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 09:06:44PM +1000, Dave Chinner wrote:
+Most of this is generated from downstream dts using a script.
 
-> > +/*
-> > + * Serialization rules:
-> > + *
-> > + * Lock order:
-> > + *
-> > + *   p->pi_lock
-> > + *     rq->lock
-> > + *       hrtimer_clock_base::cpu_base->lock
-> 
-> So these are accessed by the task_rq_lock() and rq_lock()
-> interfaces, right? And we take clock locks inside these because we
-> need to update timestamps/task clocks when tasks are first
-> scheduled?
+There are a couple things I'm not sure about:
+* When to set keepalive in DEFINE_QBCM macro (set to all false)
+* Address/size for the reg fields - the "display" nodes have the same
+  address as the non-"display" nodes. For the size I just used 0x1000.
+  reg field is unused by the upstream driver so isn't a problem functionally.
 
-That's the hrtimer_start(), which we use for bandwidth control.
-sched_clock() is lockless.
+Jonathan Marek (6):
+  dt-bindings: interconnect: Add Qualcomm SM8150 DT bindings
+  dt-bindings: interconnect: Add Qualcomm SM8250 DT bindings
+  interconnect: qcom: Add SM8150 interconnect provider driver
+  interconnect: qcom: Add SM8250 interconnect provider driver
+  arm64: dts: qcom: sm8150: add interconnect nodes
+  arm64: dts: qcom: sm8250: add interconnect nodes
 
-> What are all the rq_*pin_[un]lock() calls and how do they
-> factor into this?
+ .../bindings/interconnect/qcom,sm8150.yaml    |  86 ++
+ .../bindings/interconnect/qcom,sm8250.yaml    |  86 ++
+ arch/arm64/boot/dts/qcom/sm8150.dtsi          | 118 +++
+ arch/arm64/boot/dts/qcom/sm8250.dtsi          | 118 +++
+ drivers/interconnect/qcom/Kconfig             |  20 +
+ drivers/interconnect/qcom/Makefile            |   4 +
+ drivers/interconnect/qcom/sm8150.c            | 719 +++++++++++++++++
+ drivers/interconnect/qcom/sm8150.h            | 163 ++++
+ drivers/interconnect/qcom/sm8250.c            | 733 ++++++++++++++++++
+ drivers/interconnect/qcom/sm8250.h            | 173 +++++
+ .../dt-bindings/interconnect/qcom,sm8150.h    | 176 +++++
+ .../dt-bindings/interconnect/qcom,sm8250.h    | 186 +++++
+ 12 files changed, 2582 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sm8150.yaml
+ create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sm8250.yaml
+ create mode 100644 drivers/interconnect/qcom/sm8150.c
+ create mode 100644 drivers/interconnect/qcom/sm8150.h
+ create mode 100644 drivers/interconnect/qcom/sm8250.c
+ create mode 100644 drivers/interconnect/qcom/sm8250.h
+ create mode 100644 include/dt-bindings/interconnect/qcom,sm8150.h
+ create mode 100644 include/dt-bindings/interconnect/qcom,sm8250.h
 
-Ah, that's a lockdep annotation to ensure the rq->lock doesn't get
-unlocked by accident. We've had a bunch of races over the years where
-code accidentally unlocked rq->lock.
+-- 
+2.26.1
 
-Basically lockdep_pin_lock() allows you to 'pin' the lock and it will
-return a cookie. Any unlock of a pinned lock will generate a warning.
-lockdep_unpin_lock() requires the previously provided cookie, or again
-it will complain.
-
-Not sure where to put words on that, but I'll find something.
-
-> > + *
-> > + *  rq1->lock
-> > + *    rq2->lock  where: &rq1 < &rq2
-> > + *
-> 
-> Ok, I'm guessing this is when task migration is being performed?
-
-Yeah.
-
-> > + * Regular state:
-> > + *
-> > + * Normal scheduling state is serialized by rq->lock. __schedule() takes the
-> > + * local CPU's rq->lock, it optionally removes the task from the runqueue and
-> > + * always looks at the local rq data structures to find the most elegible task
-> > + * to run next.
-> > + *
-> > + * Task enqueue is also under rq->lock, possibly taken from another CPU.
-> > + * Wakeups from another LLC domain might use an IPI to transfer the enqueue
-> > + * to the local CPU to avoid bouncing the runqueue state around.
-> 
-> That's ttwu_queue_wakelist()?
-
-Yes, added a reference to that.
-
-> I'm a little confused as to where ttwu_remote() fits into remote
-> wakeups, though. That piece of the puzzle hasn't dropped into place
-> yet...
-
-Ah, so try_to_wake_up() is about another task/context changing our
-p->state.
-
-Assume:
-
-  for (;;) {
-	set_current_task(TASK_UNINTERRUPTIBLE)
-
-	if (COND)
-		break;
-
-	schedule();
-  }
-  __set_current_task(TASK_RUNNING);
-
-Now, suppose another CPU/IRQ/etc.. does a wakeup between
-set_current_task() and schedule(). At that point our @p is still a
-running/runnable task, ttwu_remote() deals with this case.
-
-I'll improve the ttwu_remote() comment.
-
-> > + * Task wakeup, specifically wakeups that involve migration, are horribly
-> > + * complicated to avoid having to take two rq->locks.
-> > + *
-> > + * Special state:
-> > + *
-> > + * p->state    <- TASK_*
-> > + * p->on_cpu   <- { 0, 1 }
-> > + * p->on_rq    <- { 0, 1 = TASK_ON_RQ_QUEUED, 2 = TASK_ON_RQ_MIGRATING }
-> > + * task_cpu(p) <- set_task_cpu()
-> > + *
-> > + * System-calls and anything external will use task_rq_lock() which acquires
-> > + * both p->lock and rq->lock. As a consequence things like p->cpus_ptr are
-> > + * stable while holding either lock.
-> 
-> OK. Might be worthwhile iterating the objects that have this "stable
-> with one lock, modified under both locks" structures...
-
-Agreed, that was on the todo list. I called out p->cpus_ptr because
-that's directly used in the ttwu() code, but there's more. I'll dig them
-all out.
-
-> > + *
-> > + * p->state is changed locklessly using set_current_state(),
-> > + * __set_current_state() or set_special_state(), see their respective comments.
-> 
-> /me goes code spelunking
-> 
-> Ok, so those comments talk about "using a barrier" to order p->state
-> changes against external logic to avoid wakeup races, not about how
-> they are ordered or used internally.
-
-Correct. Although we also make internal use of these memory barriers, us
-being frugal folk :-) You'll find it referenced in the ttwu() ordering
-comments, also some architectural code (switch_to()) relies on it.
-
-> But it also mentions that the barrier matches with a full barrier in
-> wake_up_state() and that calls straight into ttwu(). Ah, so that's
-> what this "CONDITION" is - it's the external wakeup checks!
->
->         /*
->          * If we are going to wake up a thread waiting for CONDITION we
->          * need to ensure that CONDITION=1 done by the caller can not be
->          * reordered with p->state check below. This pairs with mb() in
->          * set_current_state() the waiting thread does.
->          */
->         raw_spin_lock_irqsave(&p->pi_lock, flags);
->         smp_mb__after_spinlock();
->         if (!(p->state & state))
->                 goto unlock;
-> 
-> My brain now connects this straight to well known task sleep/wakeup
-> code patterns, and this bit now makes a lot more sense....
-
-Just so, I'll see if I can make the comments with
-set_current_state()/try_to_wake_up()/__schedule() more consistent with
-one another. They're all trying to describe much the same as they
-co-operate to make that sleep/wakeup pattern work.
-
-> > + * p->on_rq is set by activate_task() and cleared by deactivate_task(), under
-> > + * rq->lock. Non-zero indicates the task is runnable, the special
-> > + * ON_RQ_MIGRATING state is used for migration without holding both rq->locks.
-> > + * It indicates task_cpu() is not stable, see *task_rq_lock().
-> > + *
-> > + * task_cpu(p) is changed by set_task_cpu(), the rules are intricate but basically:
-> > + *
-> > + *  - don't call set_task_cpu() on a blocked task
-> 
-> why? It's good to document the rule, but I haven't been able to find
-> an obvious explanation of why this rule exists....
-
-Ah, I forgot if there was a techinical reason for it, but the conceptual
-reason is that if a task isn't running, it's CPU assignment is
-irrelevant, it doesn't matter what CPU you're not running on.
-
-So I created rules where we only care about the CPU assignment for
-runnable tasks. I'll add this.
-
-(it makes hotplug easier, we don't have to even care if the cpu
-assignment is even possible)
-
-> > + *
-> > + *  - for try_to_wake_up(), called under p->pi_lock
-> 
-> What's the reason for it being under different locks if it's already
-> in runnable state? i.e. the lock that needs to be held is spelled
-> out on set_task_cpu():
-> 
->         * The caller should hold either p->pi_lock or rq->lock, when changing
-> 	*a task's CPU. ->pi_lock for waking tasks, rq->lock for runnable tasks.
-> 
-> But there's no explanation there or here of why the different locks
-> need to be used or how the two different situations don't
-> overlap/contend/race because they aren't holding the same locks. So
-> while I know rule exists, I don't understand the relationship
-> or logic that the rule emerges from.
-
-There's a hint here:
-
-+ * Task wakeup, specifically wakeups that involve migration, are horribly
-+ * complicated to avoid having to take two rq->locks.
-
-So ttwu() used to first acquire the 'old' rq->lock, then do
-CPU-selection and if new-cpu != old-cpu (a fairly common case) do
-set_task_cpu(), drop the old rq->lock, acquire new rq->lock and do the
-enqueue. Or something along those lines.
-
-It was found that the initial rq->lock in case of migration added
-significantly to the rq->lock contention for a number of workloads, so
-we made things complicated...
-
-I'll go explain it better.
-
-Thanks Dave!
