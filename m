@@ -2,119 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07912210C31
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 15:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD8C210C38
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 15:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730939AbgGAN2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 09:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41232 "EHLO
+        id S1731014AbgGAN3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 09:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730743AbgGAN2K (ORCPT
+        with ESMTP id S1730727AbgGAN3r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 09:28:10 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB50C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 06:28:10 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id m8so6740468qvk.7
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 06:28:10 -0700 (PDT)
+        Wed, 1 Jul 2020 09:29:47 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27ABCC08C5DB
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 06:29:47 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x72so1580613pfc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 06:29:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :organization:user-agent:mime-version:content-transfer-encoding;
-        bh=Y/vZ0IaH6Uw3eP/ISe3M+HbULBx3TPd+u4JIT5Z3fII=;
-        b=A1rO08QkgPZhsED3RVZ+ZqDVen4OR0gzB2qMM0S8Kku4IJn6vBsKt27YiE4kHW8KFm
-         p1KAW+mE+L/3x6XxIJFQJfFntNSqKuY6n+rDDL0P061Q7FuOVf/BRnHYUCr/uVVPHtx6
-         vFQWI4Wv5ktyjLp/PCN69/7jC7WDYdaSbd0AFkuYcmiO/iIHHxaiQttsc6v3cczcywhM
-         Duze3SKjWqbuT/HdoyFmH5vRByF1YRHXen4RvRzwnmLbn7tR6w73wdZQ8UrPHDZoF/C/
-         LKtAQkekuwjXHp6AdqoGNTI09FGVRWq24j8IaK16749iCejHcuArxfqcvUZDqjYDPTl9
-         fiuw==
+        d=es-iitr-ac-in.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=YgnZaQZA95kZa9eD6Aa+cAMcR8VkfrVLM4dfgiEOVdc=;
+        b=MdZcrTH6R7MypetoKPIS7cwWYBfzncRlX/sj2B9Le2wEQOCNOg4KG6n50/jSWJEOxs
+         +7GNqsDV/bHIBjpT5cozeyY2oUgsjkE3FNWIs0FgrJsMlA/p8ztSG124NdHpDRUaNlP4
+         rzofCw55+49xl5hgBjeZujfO29hSiUs0pBiVJ6Bw/mNB9Ub3sDXwld2HN0MuTrcof4L8
+         UN5vKGx4J8XpOQrE82rZISBEb9O9xxgIX5iOPxMzhrSHQy2mBe3NYempIKDw+ge6GvdT
+         Qp+ZrmpucNycajR8CggchRLto9h0WzX7bP7YzNKNTkFVPLH70byI2LmUsnp7TcZI/H6U
+         bh5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=Y/vZ0IaH6Uw3eP/ISe3M+HbULBx3TPd+u4JIT5Z3fII=;
-        b=Gvcp6slegKCIeTnx1h30w0iACJ9UVcqRGuiPRiOwBPbz0RNhEjseziEl+/+3K056Ad
-         uJA3kPeFNkqbPsDf1Ve7PxcDt4VVNS+BPULlfdDCPv3Gj5il+VClOVNkAxw4HUblCEpG
-         ep+Oj3J2T1GApgoaXBsiifnxPnTFakoatPBPvv6uzNmOKB9l7SNqywlyYhoqOETuudEJ
-         sfTbotPXZJ6BVIwe5wjT70X7Xy0Sde8aO14Vc1yCe6QMqhtS67lic70AGsfyLUjjoZzV
-         mUjk/8J04yRbcsDpzzyWCP2xDsurIN1lh9w7mlZRU3LlphUkUAknsxD8679VLgyFAusA
-         QNBA==
-X-Gm-Message-State: AOAM532GrNoGCX+awaBEb5rdvcDQ92V7D+YpmgdJIvatlPjV0Funi3I0
-        TUfvr6Qii04HHWCCvjZAPyo=
-X-Google-Smtp-Source: ABdhPJw3huwWuQG/EdrGuTHYYm3gTieFnFjw1EBMeRiZdWUlp7fgVj5eowMXqInAwJJRpPTtZncaZA==
-X-Received: by 2002:a0c:99e1:: with SMTP id y33mr22349026qve.90.1593610089419;
-        Wed, 01 Jul 2020 06:28:09 -0700 (PDT)
-Received: from LeoBras (200-236-245-17.dynamic.desktop.com.br. [200.236.245.17])
-        by smtp.gmail.com with ESMTPSA id i8sm5333510qtr.90.2020.07.01.06.28.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=YgnZaQZA95kZa9eD6Aa+cAMcR8VkfrVLM4dfgiEOVdc=;
+        b=aJqXN5v3/Qxg1vzbEzvHcWhWfOb1OFD77kHWU66zQj8BmaukjFaWVf7iEsUwdEPXHl
+         eccIBZAxMLkhnQliVnjdkPopLmS7YFlATwMy3g/+QyeFDpseomS2cr//yS6Z7S2zZZ9Z
+         nhmTUipqcSMZpU9sZq4yifsZEAJASpEbdUv1WcUwkmjI0LGgyErir3TtEKFsCbVU+N1b
+         Yopo1gcvyoOfOJq7+qsfXas2aOBa6PxfcKib7iarhZ/AE6PlqGi3ZXI48ODBN4+aa4/F
+         ERixnlBr6up6zy7m4rq7eG7dZrOQp4SgBcUq8EHeiW6CUYhx6T6q7/eabM7/xFpeTW36
+         B5KA==
+X-Gm-Message-State: AOAM532nHcnjhXHnv6nrqctXAEsZ2E0OpKs+GSj92CPA3MfrtvmOyHYz
+        7YePLnWAF8485wGtDCKQ9mKSwg==
+X-Google-Smtp-Source: ABdhPJzj1O+Xr/fxUrf64PQVVVa1YDdBRm8l3RGZQknYVJhKvV48RBcDh7B1AvfcxXVX4n4OooNCmA==
+X-Received: by 2002:aa7:871a:: with SMTP id b26mr17825125pfo.294.1593610186566;
+        Wed, 01 Jul 2020 06:29:46 -0700 (PDT)
+Received: from kaaira-HP-Pavilion-Notebook ([103.113.213.178])
+        by smtp.gmail.com with ESMTPSA id l22sm5154330pjq.20.2020.07.01.06.29.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 06:28:08 -0700 (PDT)
-Message-ID: <01443a2f1d58a595ddff03fd14fd56f4c26171bf.camel@gmail.com>
-Subject: Re: [PATCH v2 1/6] powerpc/pseries/iommu: Create defines for
- operations in ibm,ddw-applicable
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Ram Pai <linuxram@us.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Wed, 01 Jul 2020 10:28:03 -0300
-In-Reply-To: <b0caaaa0-14c9-51de-bb92-5be8ccaa418d@ozlabs.ru>
-References: <20200624062411.367796-1-leobras.c@gmail.com>
-         <20200624062411.367796-2-leobras.c@gmail.com>
-         <b0caaaa0-14c9-51de-bb92-5be8ccaa418d@ozlabs.ru>
-Organization: IBM
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Wed, 01 Jul 2020 06:29:46 -0700 (PDT)
+From:   Kaaira Gupta <kgupta@es.iitr.ac.in>
+To:     Helen Koike <helen.koike@collabora.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        hverkuil@xs4all.nl
+Cc:     Kaaira Gupta <kgupta@es.iitr.ac.in>
+Subject: [PATCH v9 0/3] media: Add colors' order and other info over test image
+Date:   Wed,  1 Jul 2020 18:59:37 +0530
+Message-Id: <20200701132940.21257-1-kgupta@es.iitr.ac.in>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-07-01 at 18:16 +1000, Alexey Kardashevskiy wrote:
-> 
-> On 24/06/2020 16:24, Leonardo Bras wrote:
-> > Create defines to help handling ibm,ddw-applicable values, avoiding
-> > confusion about the index of given operations.
-> > 
-> > Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> > ---
-> >  arch/powerpc/platforms/pseries/iommu.c | 40 +++++++++++++++-----------
-> >  1 file changed, 23 insertions(+), 17 deletions(-)
-> > 
-> > diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
-> > index 6d47b4a3ce39..68d2aa9c71a8 100644
-> > --- a/arch/powerpc/platforms/pseries/iommu.c
-> > +++ b/arch/powerpc/platforms/pseries/iommu.c
-> > @@ -39,6 +39,11 @@
-> >  
-> >  #include "pseries.h"
-> >  
-> > +#define DDW_QUERY_PE_DMA_WIN	0
-> > +#define DDW_CREATE_PE_DMA_WIN	1
-> > +#define DDW_REMOVE_PE_DMA_WIN	2
-> > +#define DDW_APPLICABLE_SIZE	3
-> 
-> #define DDW_APPLICABLE_SIZE  (DDW_REMOVE_PE_DMA_WIN + 1)
-> 
-> thanks,
+This patchset aims to add a method to display the correct order of
+colors for a test image generated. It does so by adding a function
+which returns a string of correct order of the colors for a test
+pattern. It then adds a control in vimc which displays the string
+over test image. It also displays some other information like saturation,
+hue, contrast brightness and time since the stream started over test
+image generated by vimc.
 
-Thanks for the feedback!
-About this (and patch #2), would it be better to use enum ?
-enum {
-	DDW_QUERY_PE_DMA_WIN,
-	DDW_CREATE_PE_DMA_WIN,
-	DDW_REMOVE_PE_DMA_WIN,
+Changes since v8:
+	In patch 1:
+	- Add more details to commit message.
+	In patch 3:
+	- Formatting nits.
 
-	DDW_APPLICABLE_SIZE
-}
-IMO, it looks better than all the defines before.
+Changes since v7:
+        In patch 3:
+        - Use fallthrough; to indicate a fall through in switch-case
+        - Use enum type instead of int for osd_value
+        - Change varaible to osd_value instead of osd_mode as the enum
+          osd_mode defines the modes.
 
-What do you think?
+Changes since v6:
+        In patch 3:
+        - Use switch case instead of if()
+        - reorder declarartions.
 
-Best regards,
+Changes since v5:
+        In patch 2:
+        - Add missing EXPORT_SYMBOL_GPL()
+        In patch 3:
+        - Renamed varaibles.
+        - use u64 instead of int for getting current time in
+          nanoseconds.
+        - Use enum instead of numbers to describe the state of osd_mode
+          control in code.
+
+Changes since v4:
+        - Add another patch which changes char argument to const char
+        in function tpg_gen_text()
+        - Return const char * from function tpg_g_color_order() in patch
+          2
+        In 3rd patch:
+        - Check font in probe() instead of s_stream()
+        - Use dev_err instead of pr_err
+        - Fix errors in commit message.
+        - Base VIMC_CID_SHOW_INFO on VIVID_CID_OSD_TEXT_MODE
+
+Changes since v3:
+        In 1st patch:
+        -Improved formatting of returned string.
+
+        In 2nd patch:
+         - Add CID prefix in control name and change it to a more
+           generic name.
+         - Rename bool variable to a generic name.
+         - Disable text rendering instead of stopping stream if no
+           font found.
+         - Display more info like VIVID in VIMC.
+
+Changes since v2:
+        In 1st patch:
+        - Create a 'define' to prevent repetition of the common color
+          sequence string.
+        - Use 'fallthrough' on case statement to prevent repetition of
+          code.
+
+Changes since v1:
+        - Divided the patch into two patches.
+        - Returned NULL for patterns whose color order cannot be
+          defined. (Reported-by: kernel test robot <lkp@intel.com>)
+        - Made separate switch cases for separate test patterns
+         (Reported-by: kernel test robot <lkp@intel.com>)
+        - Renamed variables from camelcase to use '_'
+        - prefixed 'media' to the patches.
+
+Kaaira Gupta (3):
+  media: tpg: change char argument to const char
+  media: tpg: Add function to return colors' order of test image
+  media: vimc: Add a control to display info on test image
+
+ drivers/media/common/v4l2-tpg/v4l2-tpg-core.c | 40 +++++++++--
+ drivers/media/test-drivers/vimc/Kconfig       |  2 +
+ drivers/media/test-drivers/vimc/vimc-common.h |  1 +
+ drivers/media/test-drivers/vimc/vimc-core.c   | 10 +++
+ drivers/media/test-drivers/vimc/vimc-sensor.c | 71 +++++++++++++++++++
+ include/media/tpg/v4l2-tpg.h                  |  3 +-
+ 6 files changed, 119 insertions(+), 8 deletions(-)
+
+-- 
+2.17.1
 
