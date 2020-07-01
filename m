@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA0921082A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9A0210834
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729341AbgGAJbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 05:31:48 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:43292 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726715AbgGAJbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 05:31:47 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 5578593866925948708A;
-        Wed,  1 Jul 2020 17:31:45 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Wed, 1 Jul 2020
- 17:31:33 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <richard@nod.at>, <yi.zhang@huawei.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ubifs: Fix a potential space leak problem while linking tmpfile
-Date:   Wed, 1 Jul 2020 17:32:27 +0800
-Message-ID: <20200701093227.674945-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S1729474AbgGAJdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 05:33:00 -0400
+Received: from mga04.intel.com ([192.55.52.120]:58972 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729125AbgGAJc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 05:32:59 -0400
+IronPort-SDR: AAEhakG+OcgAVZ2LEtwjaOTxoonbHU4icWraLazP5hcXqQzebymBlZnb8tEzpNTiJq0M3HcoYL
+ qT/Vnwp4N6ew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="144022533"
+X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
+   d="scan'208";a="144022533"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 02:32:58 -0700
+IronPort-SDR: xPVmHT9r7rUz4ROWtBdompbiKh6cjb5Z+vG9xsw7w1ClrxwrAbTCELUz2R1TC7WyyBlPHckyT+
+ bqe9gywTZcog==
+X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
+   d="scan'208";a="455036278"
+Received: from unknown (HELO [10.239.13.99]) ([10.239.13.99])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 02:32:56 -0700
+Subject: Re: [RFC 2/2] KVM: VMX: Enable bus lock VM exit
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Chenyi Qiang <chenyi.qiang@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20200628085341.5107-1-chenyi.qiang@intel.com>
+ <20200628085341.5107-3-chenyi.qiang@intel.com>
+ <878sg3bo8b.fsf@vitty.brq.redhat.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <0159554d-82d5-b388-d289-a5375ca91323@intel.com>
+Date:   Wed, 1 Jul 2020 17:32:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+In-Reply-To: <878sg3bo8b.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a potential space leak problem while linking tmpfile, in which
-case, inode node (with nlink=0) is valid in tnc (on flash), which leads
-to space leak. Meanwhile, the corresponding data nodes won't be released
-from tnc. For example, (A reproducer can be found in Link):
+On 7/1/2020 5:04 PM, Vitaly Kuznetsov wrote:
+> Chenyi Qiang <chenyi.qiang@intel.com> writes:
+[...]
+>>   static const int kvm_vmx_max_exit_handlers =
+>> @@ -6830,6 +6838,13 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+>>   	if (unlikely(vmx->exit_reason.failed_vmentry))
+>>   		return EXIT_FASTPATH_NONE;
+>>   
+>> +	/*
+>> +	 * check the exit_reason to see if there is a bus lock
+>> +	 * happened in guest.
+>> +	 */
+>> +	if (vmx->exit_reason.bus_lock_detected)
+>> +		handle_bus_lock(vcpu);
+> 
+> In case the ultimate goal is to have an exit to userspace on bus lock,
 
-$ mount UBIFS
-  [process A]            [process B]         [TNC]         [orphan area]
+I don't think we will need an exit to userspace on bus lock. See below.
 
- ubifs_tmpfile                          inode_A (nlink=0)     inode_A
-                          do_commit     inode_A (nlink=0)     inode_A
-			       ↑
-      (comment: It makes sure not replay inode_A in next mount)
- ubifs_link                             inode_A (nlink=0)     inode_A
-   ubifs_delete_orphan                  inode_A (nlink=0)
-                          do_commit     inode_A (nlink=0)
-                           ---> POWERCUT <---
-   (ubifs_jnl_update)
+> the two ways to reach handle_bus_lock() are very different: in case
+> we're handling EXIT_REASON_BUS_LOCK we can easily drop to userspace by
+> returning 0 but what are we going to do in case of
+> exit_reason.bus_lock_detected? The 'higher priority VM exit' may require
+> exit to userspace too. So what's the plan? Maybe we can ignore the case
+> when we're exiting to userspace for some other reason as this is slow
+> already and force the exit otherwise? 
 
-$ mount UBIFS
-  inode_A will neither be replayed in ubifs_replay_journal() nor
-  ubifs_mount_orphans(). inode_A (nlink=0) with its data nodes will
-  always on tnc, it occupy space but is non-visable for users.
+> And should we actually introduce
+> the KVM_EXIT_BUS_LOCK and a capability to enable it here?
+> 
 
-Commit ee1438ce5dc4d ("ubifs: Check link count of inodes when killing
-orphans.") handles problem in mistakenly deleting relinked tmpfile
-while replaying orphan area. Since that, tmpfile inode should always
-live in orphan area even it is linked. Fix it by reverting commit
-32fe905c17f001 ("ubifs: Fix O_TMPFILE corner case in ubifs_link()").
-
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: <stable@vger.kernel.org>
-Fixes: 32fe905c17f001 ("ubifs: Fix O_TMPFILE corner case in ubifs_link()")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=208405
----
- fs/ubifs/dir.c | 7 -------
- 1 file changed, 7 deletions(-)
-
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index ef85ec167a84..9534c4bb598f 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -722,11 +722,6 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
- 		goto out_fname;
- 
- 	lock_2_inodes(dir, inode);
--
--	/* Handle O_TMPFILE corner case, it is allowed to link a O_TMPFILE. */
--	if (inode->i_nlink == 0)
--		ubifs_delete_orphan(c, inode->i_ino);
--
- 	inc_nlink(inode);
- 	ihold(inode);
- 	inode->i_ctime = current_time(inode);
-@@ -747,8 +742,6 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
- 	dir->i_size -= sz_change;
- 	dir_ui->ui_size = dir->i_size;
- 	drop_nlink(inode);
--	if (inode->i_nlink == 0)
--		ubifs_add_orphan(c, inode->i_ino);
- 	unlock_2_inodes(dir, inode);
- 	ubifs_release_budget(c, &req);
- 	iput(inode);
--- 
-2.25.4
+Introducing KVM_EXIT_BUS_LOCK maybe help nothing. No matter 
+EXIT_REASON_BUS_LOCK or exit_reason.bus_lock_detected, the bus lock has 
+already happened. Exit to userspace cannot prevent bus lock, so what 
+userspace can do is recording and counting as what this patch does in 
+vcpu->stat.bus_locks.
 
