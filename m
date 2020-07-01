@@ -2,125 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A275210D2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 16:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B01210D3D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 16:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731313AbgGAOJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 10:09:57 -0400
-Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:12608 "EHLO
-        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728021AbgGAOJ4 (ORCPT
+        id S1731420AbgGAOLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 10:11:51 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:60283 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731153AbgGAOLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 10:09:56 -0400
-Received: from pps.filterd (m0170398.ppops.net [127.0.0.1])
-        by mx0b-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 061E42a9011115;
-        Wed, 1 Jul 2020 10:09:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id; s=smtpout1;
- bh=G36Fg61fCQr+wCCLzQCC2YORVhnFR9rzAH3ZcF+UlyU=;
- b=bysWkfFwsgWt+dfjsnt8t+/3rl/yz6eWRUb1/4EYMrV0YCypJXvGOIVcgbWY7xkK0yBs
- fyDmyr+sJCEC7byRfggaXf10fl3EvBFdJVcrjvA2wxXP+RLD1qrvjz9v3Gxpo96yUe4q
- bkdxvZfFtoxo8opFPd3VmPpkMzu4aF4N2cK24o4sqHTkuLLByLmB4YEHyHQXvodZrgwS
- +2y8AcfYu2lWtVr2BCWUDWdoKufEwrpDCMNwJXRPwRNmN2DCdcIejm9gKvNCoKnP2NLm
- d+InsqBKoZNAB9LacEB9+FaNHLUAbiObhopMTDvd9mCP48W+leKK6Hv5Qy/6aiL637tu bw== 
-Received: from mx0b-00154901.pphosted.com (mx0b-00154901.pphosted.com [67.231.157.37])
-        by mx0b-00154904.pphosted.com with ESMTP id 31x1b9nyfp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Jul 2020 10:09:52 -0400
-Received: from pps.filterd (m0089483.ppops.net [127.0.0.1])
-        by mx0b-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 061E9nQ1049371;
-        Wed, 1 Jul 2020 10:09:52 -0400
-Received: from mailuogwdur.emc.com (mailuogwdur-nat.lss.emc.com [128.221.224.79] (may be forged))
-        by mx0b-00154901.pphosted.com with ESMTP id 320u6191wu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 01 Jul 2020 10:09:51 -0400
-Received: from emc.com (localhost [127.0.0.1])
-        by mailuogwprd53.lss.emc.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.0) with ESMTP id 061E9cpt026875;
-        Wed, 1 Jul 2020 10:09:38 -0400
-Received: from mailapphubprd52.lss.emc.com ([mailapphubprd52.lss.emc.com [10.106.83.171]]) by mailuogwprd53.lss.emc.com with ESMTP id 061E9Iet026588 ;
-          Wed, 1 Jul 2020 10:09:19 -0400
-Received: from arwen6.xiolab.lab.emc.com (arwen6.xiolab.lab.emc.com [10.76.217.138])
-        by mailapphubprd52.lss.emc.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.0) with ESMTP id 061E9Fuf002031;
-        Wed, 1 Jul 2020 10:09:16 -0400
-From:   leonid.ravich@dell.com
-To:     dmaengine@vger.kernel.org
-Cc:     lravich@gmail.com, Leonid Ravich <Leonid.Ravich@dell.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Alexander.Barabash@dell.com" <Alexander.Barabash@dell.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dmaengine: ioat setting ioat timeout as module parameter
-Date:   Wed,  1 Jul 2020 17:08:45 +0300
-Message-Id: <20200701140849.8828-1-leonid.ravich@dell.com>
-X-Mailer: git-send-email 2.16.2
-X-Sentrion-Hostname: mailuogwprd53.lss.emc.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-01_08:2020-07-01,2020-07-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- cotscore=-2147483648 adultscore=0 malwarescore=0 phishscore=0
- priorityscore=1501 mlxscore=0 mlxlogscore=899 suspectscore=13 bulkscore=0
- lowpriorityscore=0 clxscore=1011 impostorscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2007010102
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 bulkscore=0
- suspectscore=13 mlxlogscore=922 spamscore=0 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2007010102
+        Wed, 1 Jul 2020 10:11:50 -0400
+Received: from fsav305.sakura.ne.jp (fsav305.sakura.ne.jp [153.120.85.136])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 061E90OX093153;
+        Wed, 1 Jul 2020 23:09:00 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav305.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav305.sakura.ne.jp);
+ Wed, 01 Jul 2020 23:09:00 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav305.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 061E8xWB093138
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Wed, 1 Jul 2020 23:08:59 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: linux-next: umh: fix processed error when UMH_WAIT_PROC is used
+ seems to break linux bridge on s390x (bisected)
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christoph Hellwig <hch@infradead.org>, ast@kernel.org,
+        axboe@kernel.dk, bfields@fieldses.org,
+        bridge@lists.linux-foundation.org, chainsaw@gentoo.org,
+        christian.brauner@ubuntu.com, chuck.lever@oracle.com,
+        davem@davemloft.net, dhowells@redhat.com,
+        gregkh@linuxfoundation.org, jarkko.sakkinen@linux.intel.com,
+        jmorris@namei.org, josh@joshtriplett.org, keescook@chromium.org,
+        keyrings@vger.kernel.org, kuba@kernel.org,
+        lars.ellenberg@linbit.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-security-module@vger.kernel.org, nikolay@cumulusnetworks.com,
+        philipp.reisner@linbit.com, ravenexp@gmail.com,
+        roopa@cumulusnetworks.com, serge@hallyn.com, slyfox@gentoo.org,
+        viro@zeniv.linux.org.uk, yangtiezhu@loongson.cn,
+        netdev@vger.kernel.org, markward@linux.ibm.com,
+        linux-s390 <linux-s390@vger.kernel.org>
+References: <9e767819-9bbe-2181-521e-4d8ca28ca4f7@de.ibm.com>
+ <20200624160953.GH4332@42.do-not-panic.com>
+ <ea41e2a9-61f7-aec1-79e5-7b08b6dd5119@de.ibm.com>
+ <4e27098e-ac8d-98f0-3a9a-ea25242e24ec@de.ibm.com>
+ <4d8fbcea-a892-3453-091f-d57c03f9aa90@de.ibm.com>
+ <1263e370-7cee-24d8-b98c-117bf7c90a83@de.ibm.com>
+ <20200626025410.GJ4332@42.do-not-panic.com>
+ <20200630175704.GO13911@42.do-not-panic.com>
+ <b24d8dae-1872-ba2c-acd4-ed46c0781317@de.ibm.com>
+ <a6792135-3285-0861-014e-3db85ea251dc@i-love.sakura.ne.jp>
+ <20200701135324.GS4332@42.do-not-panic.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <8d714a23-bac4-7631-e5fc-f97c20a46083@i-love.sakura.ne.jp>
+Date:   Wed, 1 Jul 2020 23:08:57 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200701135324.GS4332@42.do-not-panic.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leonid Ravich <Leonid.Ravich@emc.com>
+On 2020/07/01 22:53, Luis Chamberlain wrote:
+>> Well, it is not br_stp_call_user() but br_stp_start() which is expecting
+>> to set sub_info->retval for both KWIFEXITED() case and KWIFSIGNALED() case.
+>> That is, sub_info->retval needs to carry raw value (i.e. without "umh: fix
+>> processed error when UMH_WAIT_PROC is used" will be the correct behavior).
+> 
+> br_stp_start() doesn't check for the raw value, it just checks for err
+> or !err. So the patch, "umh: fix processed error when UMH_WAIT_PROC is
+> used" propagates the correct error now.
 
-DMA transaction time to complition  is a function of
-PCI bandwidth,transaction size and a queue depth.
-So hard coded value for timeouts might be wrong
-for some scenarios.
-
-Signed-off-by: Leonid Ravich <Leonid.Ravich@emc.com>
----
- drivers/dma/ioat/dma.c | 12 ++++++++++++
- drivers/dma/ioat/dma.h |  2 --
- 2 files changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/dma/ioat/dma.c b/drivers/dma/ioat/dma.c
-index 8ad0ad861c86..7621b5be5cf4 100644
---- a/drivers/dma/ioat/dma.c
-+++ b/drivers/dma/ioat/dma.c
-@@ -26,6 +26,18 @@
- 
- #include "../dmaengine.h"
- 
-+int complition_timeout = 200;
-+module_param(complition_timeout, int, 0644);
-+MODULE_PARM_DESC(complition_timeout,
-+		"set ioat complition timeout [msec] (default 200 [msec])");
-+int idle_timeout = 2000;
-+module_param(idle_timeout, int, 0644);
-+MODULE_PARM_DESC(idle_timeout,
-+		"set ioat idel timeout [msec] (default 2000 [msec])");
-+
-+#define IDLE_TIMEOUT msecs_to_jiffies(idle_timeout)
-+#define COMPLETION_TIMEOUT msecs_to_jiffies(complition_timeout)
-+
- static char *chanerr_str[] = {
- 	"DMA Transfer Source Address Error",
- 	"DMA Transfer Destination Address Error",
-diff --git a/drivers/dma/ioat/dma.h b/drivers/dma/ioat/dma.h
-index e6b622e1ba92..f7f31fdf14cf 100644
---- a/drivers/dma/ioat/dma.h
-+++ b/drivers/dma/ioat/dma.h
-@@ -104,8 +104,6 @@ struct ioatdma_chan {
- 	#define IOAT_RUN 5
- 	#define IOAT_CHAN_ACTIVE 6
- 	struct timer_list timer;
--	#define COMPLETION_TIMEOUT msecs_to_jiffies(100)
--	#define IDLE_TIMEOUT msecs_to_jiffies(2000)
- 	#define RESET_DELAY msecs_to_jiffies(100)
- 	struct ioatdma_device *ioat_dma;
- 	dma_addr_t completion_dma;
--- 
-2.16.2
+No. If "/sbin/bridge-stp virbr0 start" terminated due to e.g. SIGSEGV
+(for example, by inserting "kill -SEGV $$" into right after "#!/bin/sh" line),
+br_stp_start() needs to select BR_KERNEL_STP path. We can't assume that
+/sbin/bridge-stp is always terminated by exit() syscall (and hence we can't
+ignore KWIFSIGNALED() case in call_usermodehelper_exec_sync()).
 
