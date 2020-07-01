@@ -2,63 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F7B210CEA
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 15:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248D1210CEE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 15:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731407AbgGAN5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 09:57:12 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33009 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731365AbgGAN44 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 09:56:56 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jqdEK-0003Lw-Cm; Wed, 01 Jul 2020 13:56:52 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: gspca: remove redundant initialization of variable status
-Date:   Wed,  1 Jul 2020 14:56:52 +0100
-Message-Id: <20200701135652.549979-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        id S1731414AbgGAN50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 09:57:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730958AbgGAN5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 09:57:25 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7A54206BE;
+        Wed,  1 Jul 2020 13:57:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593611845;
+        bh=K+W5r37zu3fWyvbfeBMEA4GcLF5jdRWhxkCwE6BQ/dE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NM3ILmg0fc73ZBx7JnmcK3wRb7+d4fx3yuLt2lkKizQLw+VDnfZp80Ya8QWU3xIRX
+         a6U4y/kI3B7uYgELwN/cDBtBh3/XMUwKTPsmcj2fQNyVg/5LAmpISDWyfVZBMEheAH
+         S/PYI62MshXoSVhCnKSybFBVlWgcXedVtdqgRiSw=
+Date:   Wed, 1 Jul 2020 09:57:23 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        akpm@linux-foundation.org, torvalds@linux-foundation.org
+Cc:     lwn@lwn.net, jslaby@suse.cz, gregkh@linuxfoundation.org
+Subject: Re: Linux 5.7.7
+Message-ID: <20200701135723.GA2687961@sasha-vm>
+References: <20200701134953.2688293-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200701134953.2688293-1-sashal@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Jul 01, 2020 at 09:49:52AM -0400, Sasha Levin wrote:
+>-----BEGIN PGP SIGNED MESSAGE-----
+>Hash: SHA512
+>
+>I'm announcing the release of the 5.7.7 kernel.
 
-The variable status is being initialized with a value that is never read
-and it is being updated later with a new value.  The initialization is
-redundant and can be removed.
+Please ignore this mail for 5.7.7, a new announcement will follow.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/media/usb/gspca/sn9c2028.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/usb/gspca/sn9c2028.c b/drivers/media/usb/gspca/sn9c2028.c
-index aff01b753853..dbd1d6da37f1 100644
---- a/drivers/media/usb/gspca/sn9c2028.c
-+++ b/drivers/media/usb/gspca/sn9c2028.c
-@@ -215,7 +215,7 @@ static int sd_config(struct gspca_dev *gspca_dev,
- /* this function is called at probe and resume time */
- static int sd_init(struct gspca_dev *gspca_dev)
- {
--	int status = -1;
-+	int status;
- 
- 	sn9c2028_read1(gspca_dev);
- 	sn9c2028_read1(gspca_dev);
 -- 
-2.27.0
-
+Thanks,
+Sasha
