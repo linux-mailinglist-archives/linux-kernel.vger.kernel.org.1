@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4472E21140A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 22:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38334211413
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 22:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgGAUKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 16:10:36 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:40699 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725915AbgGAUKf (ORCPT
+        id S1726967AbgGAUMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 16:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726287AbgGAUMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 16:10:35 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593634235; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=FTeCKQGXFfOKKmEYSpjvJeelLTqTHx/vRZNpqPIrxno=;
- b=lmNCM+sODYS5ou6rxotar8SIPlz7EW+nYsitQGFQAHJAj49ksNymJ7V9blwlbtUzwRZEGJ3n
- xgpWtNJSn0pdLGamYu/3SB8LrSOhtdrhobbutU5Isz87CVagfG5kPV+XbZf6wrU1mqPjXaWA
- AnP7ObbULvNm/XgBdPgBxJ1D10g=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n12.prod.us-east-1.postgun.com with SMTP id
- 5efcedb90206ad41d1a1664f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 01 Jul 2020 20:10:33
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A88D3C433CB; Wed,  1 Jul 2020 20:10:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 326B8C433C6;
-        Wed,  1 Jul 2020 20:10:32 +0000 (UTC)
+        Wed, 1 Jul 2020 16:12:52 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E7BC08C5C1;
+        Wed,  1 Jul 2020 13:12:52 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x72so2033640pfc.6;
+        Wed, 01 Jul 2020 13:12:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W20vV3JALPph0VU9IgzKjMWKb8lzvjhb2qzVsECrclc=;
+        b=PwUM0eTjfKWO+jB8QSaTySZ+dZS/8QftYHEPdbAVqrVd0LEVff3jx4meWpTLeCl1hE
+         5gfuTC466r8MFk2xWA4FfJFIpM7LjM+j44fTqrhdbMn3gj4nIwRghF67wpiw6IAJWLlg
+         u3zW1kF0k7Pik9gBHN1jeFzaZGaR7g3SqqOuKYwu7hOyi9sNpM0jPKOTTuEM65We+h20
+         hlpRnyC1mAAoy235GOZNMzUoErceWpALCSwVJAXmlidlStfdVLpKNKWur+HG8XNqKPAe
+         24DK2nZQ9e82HU3PRfA2VcyJn7Xw3bf+HKHz2aU0p1JFrfG3e6OJBv8onRc8MgQddgyF
+         Tptw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W20vV3JALPph0VU9IgzKjMWKb8lzvjhb2qzVsECrclc=;
+        b=F+0vxQ12ie9nrxt1fc333Za6UtGee49X5GLW4ziHN2UWelQfpKt0TybGUWZYu0ka6f
+         XaQNpHusqOLxgtnG5F46j1NnOZl2MrjGAKd92dzYlIVs/oisWnHNsZfmQdYgcgzhKigE
+         eC7R5AunkA6up24u46QOPbznmKT6skxNfaSnmjrR33bjU7Ygcy/2qTECMKFxLHY7oO4B
+         jXrgwmdcwbq2p+CNwTyzV2dm1+iLNxuckvlM4Xujn+tnFKpxkcnS87qPcMhhnEVJ/Xml
+         rXCBvXubymGoxEbhj+9szHQWNebdrgPxQglNvN/qXLuyLICG8o80/Ebj6+7YSH4Pg7qp
+         n3iw==
+X-Gm-Message-State: AOAM532dZEGVTJ3MsUEmrNh6J9bKBA7pZDRTYJs2zOBCdsvx6zVHpO+C
+        DmQ/dGjWv0NVPm8/Va0xxjg=
+X-Google-Smtp-Source: ABdhPJxG1F06kx2wFpILNOql/nZRFFIvn7l1Is/5noNfiyyyoZFJEEWzYUymfaV0XOdlBKmiLMjgXw==
+X-Received: by 2002:a63:2104:: with SMTP id h4mr22094734pgh.427.1593634371657;
+        Wed, 01 Jul 2020 13:12:51 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:1000:7a00::1])
+        by smtp.gmail.com with ESMTPSA id c30sm6654332pfj.213.2020.07.01.13.12.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jul 2020 13:12:51 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        linux-clk@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] clk: mvebu: ARMADA_AP_CPU_CLK needs to select ARMADA_AP_CP_HELPER
+Date:   Wed,  1 Jul 2020 13:11:29 -0700
+Message-Id: <20200701201128.2448427-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 02 Jul 2020 01:40:32 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org, linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH v6 1/3] remoteproc: Move coredump functionality to a new
- file
-In-Reply-To: <1593460933-4262-2-git-send-email-rishabhb@codeaurora.org>
-References: <1593460933-4262-1-git-send-email-rishabhb@codeaurora.org>
- <1593460933-4262-2-git-send-email-rishabhb@codeaurora.org>
-Message-ID: <1690dbd5ba65e864ed70144393b32adb@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Rishabh,
-Thanks for the patch.
+When building arm32 allmodconfig:
 
-On 2020-06-30 01:32, Rishabh Bhatnagar wrote:
-> Move all coredump functionality to an individual file. This is
-> being done so that the current functionality can be extended
-> in future patchsets.
-> 
-> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+ld.lld: error: undefined symbol: ap_cp_unique_name
+>>> referenced by ap-cpu-clk.c
+>>>               clk/mvebu/ap-cpu-clk.o:(ap_cpu_clock_probe) in archive drivers/built-in.a
 
-Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
-Tested-by: Sibi Sankar <sibis@codeaurora.org>
+ap_cp_unique_name is only compiled into the kernel image when
+CONFIG_ARMADA_AP_CP_HELPER is selected (as it is not user selectable).
+However, CONFIG_ARMADA_AP_CPU_CLK does not select it.
 
-> ---
->  drivers/remoteproc/Makefile              |   1 +
->  drivers/remoteproc/remoteproc_core.c     | 191 
-> -----------------------------
->  drivers/remoteproc/remoteproc_coredump.c | 204 
-> +++++++++++++++++++++++++++++++
->  drivers/remoteproc/remoteproc_internal.h |   4 +
->  4 files changed, 209 insertions(+), 191 deletions(-)
->  create mode 100644 drivers/remoteproc/remoteproc_coredump.c
-> 
+This has been a problem since the driver was added to the kernel but it
+was not built before commit c318ea261749 ("cpufreq: ap806: fix cpufreq
+driver needs ap cpu clk") so it was never noticed.
 
+Fixes: f756e362d938 ("clk: mvebu: add CPU clock driver for Armada 7K/8K")
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+
+I do not know who should actually take this patch since the problematic
+patch is on Viresh's cpufreq/arm/linux-next but the problem originated
+from a patch in the clk tree in 5.4. I assume all that would be needed
+is a clk maintainer's ack? Please let me know if I did something wrong.
+
+Cheers,
+Nathan
+
+ drivers/clk/mvebu/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/clk/mvebu/Kconfig b/drivers/clk/mvebu/Kconfig
+index ded07b0bd0d5..557d6213783c 100644
+--- a/drivers/clk/mvebu/Kconfig
++++ b/drivers/clk/mvebu/Kconfig
+@@ -42,6 +42,7 @@ config ARMADA_AP806_SYSCON
+ 
+ config ARMADA_AP_CPU_CLK
+ 	bool
++	select ARMADA_AP_CP_HELPER
+ 
+ config ARMADA_CP110_SYSCON
+ 	bool
+
+base-commit: 0363635faa1da1560d2a84e2229c3f3ab108304f
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+2.27.0
+
