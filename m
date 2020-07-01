@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6E0210157
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 03:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF99521014F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 03:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726898AbgGABLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 21:11:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56956 "EHLO mail.kernel.org"
+        id S1726649AbgGABKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 21:10:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726416AbgGABKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 21:10:41 -0400
+        id S1726555AbgGABKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 21:10:43 -0400
 Received: from lenoir.home (lfbn-ncy-1-996-218.w90-101.abo.wanadoo.fr [90.101.73.218])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB3122078B;
-        Wed,  1 Jul 2020 01:10:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4516520780;
+        Wed,  1 Jul 2020 01:10:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593565840;
-        bh=19J8tsc4emiNRDndGS9y59YhYSV/+kq6icXBdrUsbsM=;
+        s=default; t=1593565842;
+        bh=mr+rQe0l8XSIekeEQFmG7I8vyIFw4b1KDVO2WDIE5lc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sTL8XgFEQe7/0kG8z4KVurk6QrgLv3b11/JF1rn5UMU9u2haISPMGq3zLYcaDo+z7
-         EOgF8kJx7tLJEGwqofMWqsjdJ+FjxINYACcqivwXQjeJh1BmgVQMDOyQVdYYXXn0A8
-         PLzI2wyKDmoIjj1D34vpM3Rbbamxs9A0dh4XpZEY=
+        b=wJZDTK6GDUNZbV4QtJGgNeRrtwxFjmld8mukrjb6nZXFlYINfDhiIvYgoSwlFJCgh
+         y12cc4o2EEvmteqk9Gvm6QRBh6fq7s67WzXfketN+hfnObaCPvtJmO+StBEH/+So88
+         E6jzhF6mJDuwDsgoE8EjPiDdXqZEAjj6h5MWBDSc=
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -30,9 +30,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Anna-Maria Gleixner <anna-maria@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>
-Subject: [RFC PATCH 03/10] timer: Simplify LVL_START() and calc_index()
-Date:   Wed,  1 Jul 2020 03:10:23 +0200
-Message-Id: <20200701011030.14324-4-frederic@kernel.org>
+Subject: [RFC PATCH 04/10] timer: Optimize _next_timer_interrupt() level iteration
+Date:   Wed,  1 Jul 2020 03:10:24 +0200
+Message-Id: <20200701011030.14324-5-frederic@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200701011030.14324-1-frederic@kernel.org>
 References: <20200701011030.14324-1-frederic@kernel.org>
@@ -43,47 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LVL_START() makes the first index of a level to start with what would be
-the value of all bits set of the previous level.
+If a level has a timer that expires before we reach the next level,
+there is no need to iterate further.
 
-For example level 1 starts at 63 instead of 64.
-
-To cope with that, calc_index() always adds one offset for the level
-granularity to the expiry passed in parameter.
-
-Yet there is no apparent reason for such fixups so simplify the whole
-thing.
+The next level is reached when the 3 lower bits of the current level are
+cleared. If the next event happens before/during that, the next levels
+won't give us an earlier expiration.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Anna-Maria Gleixner <anna-maria@linutronix.de>
 Cc: Juri Lelli <juri.lelli@redhat.com>
 ---
- kernel/time/timer.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/time/timer.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 4c977df3610b..b4838d63a016 100644
+index b4838d63a016..4aa74aafdd33 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -158,7 +158,7 @@ EXPORT_SYMBOL(jiffies_64);
-  * The time start value for each level to select the bucket at enqueue
-  * time.
-  */
--#define LVL_START(n)	((LVL_SIZE - 1) << (((n) - 1) * LVL_CLK_SHIFT))
-+#define LVL_START(n)	(LVL_SIZE << (((n) - 1) * LVL_CLK_SHIFT))
+@@ -1515,6 +1515,7 @@ static unsigned long __next_timer_interrupt(struct timer_base *base)
+ 	clk = base->clk;
+ 	for (lvl = 0; lvl < LVL_DEPTH; lvl++, offset += LVL_SIZE) {
+ 		int pos = next_pending_bucket(base, offset, clk & LVL_MASK);
++		unsigned long lvl_clk = clk & LVL_CLK_MASK;
  
- /* Size of each clock level */
- #define LVL_BITS	6
-@@ -489,7 +489,7 @@ static inline void timer_set_idx(struct timer_list *timer, unsigned int idx)
-  */
- static inline unsigned calc_index(unsigned expires, unsigned lvl)
- {
--	expires = (expires + LVL_GRAN(lvl)) >> LVL_SHIFT(lvl);
-+	expires >>= LVL_SHIFT(lvl);
- 	return LVL_OFFS(lvl) + (expires & LVL_MASK);
- }
- 
+ 		if (pos >= 0) {
+ 			unsigned long tmp = clk + (unsigned long) pos;
+@@ -1522,6 +1523,13 @@ static unsigned long __next_timer_interrupt(struct timer_base *base)
+ 			tmp <<= LVL_SHIFT(lvl);
+ 			if (time_before(tmp, next))
+ 				next = tmp;
++
++			/*
++			 * If the next expiration happens before we reach
++			 * the next level, no need to check further.
++			 */
++			if (pos <= ((LVL_CLK_DIV - lvl_clk) & LVL_CLK_MASK))
++				break;
+ 		}
+ 		/*
+ 		 * Clock for the next level. If the current level clock lower
+@@ -1559,7 +1567,7 @@ static unsigned long __next_timer_interrupt(struct timer_base *base)
+ 		 * So the simple check whether the lower bits of the current
+ 		 * level are 0 or not is sufficient for all cases.
+ 		 */
+-		adj = clk & LVL_CLK_MASK ? 1 : 0;
++		adj = lvl_clk ? 1 : 0;
+ 		clk >>= LVL_CLK_SHIFT;
+ 		clk += adj;
+ 	}
 -- 
 2.26.2
 
