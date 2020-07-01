@@ -2,32 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471142107C3
+	by mail.lfdr.de (Postfix) with ESMTP id BD9772107C4
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729595AbgGAJLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 05:11:09 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:43078 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgGAJLH (ORCPT
+        id S1729604AbgGAJLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 05:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbgGAJLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 05:11:07 -0400
+        Wed, 1 Jul 2020 05:11:16 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A3CC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 02:11:15 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: eballetbo)
-        with ESMTPSA id 2DCAE2A0D02
+        with ESMTPSA id 81E282A0D02
 From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: Re: [PATCH] platform/chrome: cros_ec_rpmsg: Document missing struct
- parameters
-To:     linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, groeck@chromium.org,
-        bleung@chromium.org, dtor@chromium.org, gwendal@chromium.org
-References: <20200625170300.224906-1-enric.balletbo@collabora.com>
-Message-ID: <59fcc7cf-99de-ba6d-1391-9f4f1fcba26f@collabora.com>
-Date:   Wed, 1 Jul 2020 11:11:02 +0200
+Subject: Re: [PATCH v4 1/2] platform/chrome: cros_ec_typec: Use workqueue for
+ port update
+To:     Prashant Malani <pmalani@chromium.org>,
+        linux-kernel@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>
+References: <20200629211329.2185342-1-pmalani@chromium.org>
+Message-ID: <37673887-70a6-ed1e-b864-419e690899be@collabora.com>
+Date:   Wed, 1 Jul 2020 11:11:12 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200625170300.224906-1-enric.balletbo@collabora.com>
+In-Reply-To: <20200629211329.2185342-1-pmalani@chromium.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -36,40 +41,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gwendal,
+Hi Prashant,
 
-Thank you for your review.
+Thank you for the patch. And thanks to Guenter and Heikki for reviewing it.
 
-On 25/6/20 19:03, Enric Balletbo i Serra wrote:
-> Kerneldoc expects all kernel structure member to be documented.
+On 29/6/20 23:13, Prashant Malani wrote:
+> Use a work queue to call the port update routines, instead of doing it
+> directly in the PD notifier callback. This will prevent other drivers
+> with PD notifier callbacks from being blocked on the port update routine
+> completing.
 > 
-> Fixes the following W=1 level warnings:
-> 
->   cros_ec_rpmsg.c:49: warning: Function parameter or member 'ept' not described in 'cros_ec_rpmsg'
->   cros_ec_rpmsg.c:49: warning: Function parameter or member 'has_pending_host_event' not described in 'cros_ec_rpmsg'
->   cros_ec_rpmsg.c:49: warning: Function parameter or member 'probe_done' not described in 'cros_ec_rpmsg'
-> 
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Signed-off-by: Prashant Malani <pmalani@chromium.org>
 
-Applied for 5.9
+Applied for 5.9 both patches with the corresponding reviewed tags.
 
 > ---
 > 
->  drivers/platform/chrome/cros_ec_rpmsg.c | 3 +++
->  1 file changed, 3 insertions(+)
+> Changes in v4:
+> - Removed extra newline.
+> - Moved both variable declarations into one line.
 > 
-> diff --git a/drivers/platform/chrome/cros_ec_rpmsg.c b/drivers/platform/chrome/cros_ec_rpmsg.c
-> index ff08c3d12873a..ad0a30afd7423 100644
-> --- a/drivers/platform/chrome/cros_ec_rpmsg.c
-> +++ b/drivers/platform/chrome/cros_ec_rpmsg.c
-> @@ -38,6 +38,9 @@ struct cros_ec_rpmsg_response {
->   * @rpdev:	rpmsg device we are connected to
->   * @xfer_ack:	completion for host command transfer.
->   * @host_event_work:	Work struct for pending host event.
-> + * @ept: The rpmsg endpoint of this channel.
-> + * @has_pending_host_event: Boolean used to check if there is a pending event.
-> + * @probe_done: Flag to indicate that probe is done.
->   */
->  struct cros_ec_rpmsg {
->  	struct rpmsg_device *rpdev;
+> Changes in v3:
+> - Use new 100 character line length limit.
+> 
+> Changes in v2:
+> - No changes.
+> 
+>  drivers/platform/chrome/cros_ec_typec.c | 23 ++++++++++++++++++-----
+>  1 file changed, 18 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> index 0c041b79cbba..69c4118e280c 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -58,6 +58,7 @@ struct cros_typec_data {
+>  	/* Array of ports, indexed by port number. */
+>  	struct cros_typec_port *ports[EC_USB_PD_MAX_PORTS];
+>  	struct notifier_block nb;
+> +	struct work_struct port_work;
+>  };
+>  
+>  static int cros_typec_parse_port_props(struct typec_capability *cap,
+> @@ -619,18 +620,24 @@ static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
+>  	return 0;
+>  }
+>  
+> -static int cros_ec_typec_event(struct notifier_block *nb,
+> -			       unsigned long host_event, void *_notify)
+> +static void cros_typec_port_work(struct work_struct *work)
+>  {
+> -	struct cros_typec_data *typec = container_of(nb, struct cros_typec_data,
+> -						     nb);
+> -	int ret, i;
+> +	struct cros_typec_data *typec = container_of(work, struct cros_typec_data, port_work);
+> +	int i, ret;
+>  
+>  	for (i = 0; i < typec->num_ports; i++) {
+>  		ret = cros_typec_port_update(typec, i);
+>  		if (ret < 0)
+>  			dev_warn(typec->dev, "Update failed for port: %d\n", i);
+>  	}
+> +}
+> +
+> +static int cros_ec_typec_event(struct notifier_block *nb,
+> +			       unsigned long host_event, void *_notify)
+> +{
+> +	struct cros_typec_data *typec = container_of(nb, struct cros_typec_data, nb);
+> +
+> +	schedule_work(&typec->port_work);
+>  
+>  	return NOTIFY_OK;
+>  }
+> @@ -689,6 +696,12 @@ static int cros_typec_probe(struct platform_device *pdev)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	INIT_WORK(&typec->port_work, cros_typec_port_work);
+> +
+> +	/*
+> +	 * Safe to call port update here, since we haven't registered the
+> +	 * PD notifier yet.
+> +	 */
+>  	for (i = 0; i < typec->num_ports; i++) {
+>  		ret = cros_typec_port_update(typec, i);
+>  		if (ret < 0)
 > 
