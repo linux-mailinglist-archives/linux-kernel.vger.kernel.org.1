@@ -2,119 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC43D2101A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 03:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A52C21019B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 03:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726171AbgGABuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 21:50:07 -0400
-Received: from mga05.intel.com ([192.55.52.43]:25314 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725763AbgGABuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 21:50:07 -0400
-IronPort-SDR: Z8R1RR7l14pHRT+G/L9/3SmR/5gsKibzUIXsvpNUVP0mtwXCkNeUawjVm/xtsdsyalHUcZR09T
- dZbg/afpgjHQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="231299498"
-X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="231299498"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 18:50:06 -0700
-IronPort-SDR: P4q4STTHl8YHwzmESTyZkAcHTorHeACpmx8HN8RxpEoXVDCH+UGwm/Gnmgu6+NNvxTc3I6e5OM
- YRTDZXbcRj9A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="265268574"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Jun 2020 18:50:03 -0700
-Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Eric Auger <eric.auger@redhat.com>
-Subject: Re: [PATCH 6/7] iommu/vt-d: Warn on out-of-range invalidation address
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-References: <1592926996-47914-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1592926996-47914-7-git-send-email-jacob.jun.pan@linux.intel.com>
- <d87d15fd-71d5-6735-74df-583024826ab0@linux.intel.com>
- <20200630103459.6c99c961@jacob-builder>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <f5a2ffda-a243-ed20-63e0-50d784d3af71@linux.intel.com>
-Date:   Wed, 1 Jul 2020 09:45:40 +0800
+        id S1726015AbgGABpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 21:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725763AbgGABpu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 21:45:50 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56126C061755;
+        Tue, 30 Jun 2020 18:45:50 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id g2so12637137lfb.0;
+        Tue, 30 Jun 2020 18:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HczcFWcC6ZdwoUa650Xj9nL47iYNBcU34xhBNmcm5mQ=;
+        b=qcXawn2WKloYEsPbetf6aagiDS45tW33ipg0zz3WpddTf5mEfIPl/RMM9F4K1UD0CA
+         PyrZx3PgfMl6DntR2pNPLKuFwKF44YW5yhfETcUmTvZtwQys3Sa24F32CSHiXsXi+Zee
+         tWrAu2tOdbV5ta2vdNmYg2bItojho4xB1/WO9czIGpsBqf3dPr67OrQwMj2W6NDqaf+T
+         OCTVkIifGIabvdY9ZjZ6IRYTqrc9RJyqx1K6E8sxUmppsswEFsVxPJaC/H+INESMKHfC
+         DyoaZC3gOoMtsEaGj5hUdAxFWGcDOTyMZJlKw35i76V0XWVl52wdzqVlxci/HIjlLUj1
+         kLaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HczcFWcC6ZdwoUa650Xj9nL47iYNBcU34xhBNmcm5mQ=;
+        b=tCJHthBWYapCJWgbIXTGLHtrZhQHDP71UP95zMjd4R7M+pVbNm0ilTB4/Q92CN3W3X
+         OkVQrtXdjg6kwbHayrcGK9Qpit2GPeBoNZqzuazFNv3TREHSR8vmGYqJu7kwuG/AVdUr
+         XkrK4SoJGrtiB7+BqukQG/DF0JKYjmh2346VDOUPVVsaZWKB9qOd34OTLT8KwVxRI8XE
+         7LWYve7+/x0Kob2k5b+7Rn8/fSe9Wk84OhVjqiQKvQ3uUhVEn/QVXbhY95myNWiErfl8
+         pCX+kAXJwPSi77HwhZ+xxB0GmhFrOruZw0RMaW/IIl+nkfWfXBlgzzdLHjf7s6cxHhyN
+         uMxA==
+X-Gm-Message-State: AOAM530gOnXz0K38YYP1FeMWHza8v0TVjCiFb/uCPopTVs+/h66mtyPX
+        UHAiwpCosttXvmuebc86Bd4=
+X-Google-Smtp-Source: ABdhPJwbkW9xT3ZwoL2zmgvISkNdI5MF+tmhowtU+Y/M+Llvwp1rA3SMtcAIZ5jfUBSevSSc5oW50A==
+X-Received: by 2002:ac2:548a:: with SMTP id t10mr13826582lfk.142.1593567948716;
+        Tue, 30 Jun 2020 18:45:48 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
+        by smtp.googlemail.com with ESMTPSA id 193sm1594603lfa.90.2020.06.30.18.45.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jun 2020 18:45:47 -0700 (PDT)
+Subject: Re: [PATCH v7 31/36] staging: tegra-vde: fix common struct sg_table
+ related issues
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-arm-kernel@lists.infradead.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        devel@driverdev.osuosl.org
+References: <20200619103636.11974-1-m.szyprowski@samsung.com>
+ <CGME20200619103714eucas1p18db6efd1a380fc0bdb16174ee85036fa@eucas1p1.samsung.com>
+ <20200619103636.11974-32-m.szyprowski@samsung.com>
+ <20200621070015.0cf833ab@dimatab>
+ <559970b6-e80f-90ec-7fb0-1fab742d99de@samsung.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <60aacf07-e263-85e0-9d45-1edb8ba3b954@gmail.com>
+Date:   Wed, 1 Jul 2020 04:45:46 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200630103459.6c99c961@jacob-builder>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <559970b6-e80f-90ec-7fb0-1fab742d99de@samsung.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacob,
-
-On 7/1/20 1:34 AM, Jacob Pan wrote:
-> On Thu, 25 Jun 2020 18:10:43 +0800
-> Lu Baolu<baolu.lu@linux.intel.com>  wrote:
-> 
->> Hi,
+30.06.2020 13:07, Marek Szyprowski пишет:
+> On 21.06.2020 06:00, Dmitry Osipenko wrote:
+>> В Fri, 19 Jun 2020 12:36:31 +0200
+>> Marek Szyprowski <m.szyprowski@samsung.com> пишет:
 >>
->> On 2020/6/23 23:43, Jacob Pan wrote:
->>> For guest requested IOTLB invalidation, address and mask are
->>> provided as part of the invalidation data. VT-d HW silently ignores
->>> any address bits below the mask. SW shall also allow such case but
->>> give warning if address does not align with the mask. This patch
->>> relax the fault handling from error to warning and proceed with
->>> invalidation request with the given mask.
+>>> The Documentation/DMA-API-HOWTO.txt states that the dma_map_sg()
+>>> function returns the number of the created entries in the DMA address
+>>> space. However the subsequent calls to the
+>>> dma_sync_sg_for_{device,cpu}() and dma_unmap_sg must be called with
+>>> the original number of the entries passed to the dma_map_sg().
 >>>
->>> Signed-off-by: Jacob Pan<jacob.jun.pan@linux.intel.com>
+>>> struct sg_table is a common structure used for describing a
+>>> non-contiguous memory buffer, used commonly in the DRM and graphics
+>>> subsystems. It consists of a scatterlist with memory pages and DMA
+>>> addresses (sgl entry), as well as the number of scatterlist entries:
+>>> CPU pages (orig_nents entry) and DMA mapped pages (nents entry).
+>>>
+>>> It turned out that it was a common mistake to misuse nents and
+>>> orig_nents entries, calling DMA-mapping functions with a wrong number
+>>> of entries or ignoring the number of mapped entries returned by the
+>>> dma_map_sg() function.
+>>>
+>>> To avoid such issues, lets use a common dma-mapping wrappers operating
+>>> directly on the struct sg_table objects and use scatterlist page
+>>> iterators where possible. This, almost always, hides references to the
+>>> nents and orig_nents entries, making the code robust, easier to follow
+>>> and copy/paste safe.
+>>>
+>>> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>>> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
 >>> ---
->>>    drivers/iommu/intel/iommu.c | 7 +++----
->>>    1 file changed, 3 insertions(+), 4 deletions(-)
+>>>   drivers/staging/media/tegra-vde/iommu.c | 4 ++--
+>>>   1 file changed, 2 insertions(+), 2 deletions(-)
 >>>
->>> diff --git a/drivers/iommu/intel/iommu.c
->>> b/drivers/iommu/intel/iommu.c index 5ea5732d5ec4..50fc62413a35
->>> 100644 --- a/drivers/iommu/intel/iommu.c
->>> +++ b/drivers/iommu/intel/iommu.c
->>> @@ -5439,13 +5439,12 @@ intel_iommu_sva_invalidate(struct
->>> iommu_domain *domain, struct device *dev,
->>>    		switch (BIT(cache_type)) {
->>>    		case IOMMU_CACHE_INV_TYPE_IOTLB:
->>> +			/* HW will ignore LSB bits based on
->>> address mask */ if (inv_info->granularity == IOMMU_INV_GRANU_ADDR &&
->>>    			    size &&
->>>    			    (inv_info->addr_info.addr &
->>> ((BIT(VTD_PAGE_SHIFT + size)) - 1))) {
->>> -				pr_err_ratelimited("Address out of
->>> range, 0x%llx, size order %llu\n",
->>> -
->>> inv_info->addr_info.addr, size);
->>> -				ret = -ERANGE;
->>> -				goto out_unlock;
->>> +				WARN_ONCE(1, "Address out of
->>> range, 0x%llx, size order %llu\n",
->>> +
->>> inv_info->addr_info.addr, size);
->> I don't think WARN_ONCE() is suitable here. It makes users think it's
->> a kernel bug. How about pr_warn_ratelimited()?
->>
-> I think pr_warn_ratelimited might still be too chatty. There is no
-> functional issues, we just don't to silently ignore it. Perhaps just
-> say:
-> WARN_ONCE(1, "User provided address not page aligned, alignment forced")
-> ?
+>>> diff --git a/drivers/staging/media/tegra-vde/iommu.c
+>>> b/drivers/staging/media/tegra-vde/iommu.c index
+>>> 6af863d92123..adf8dc7ee25c 100644 ---
+>>> a/drivers/staging/media/tegra-vde/iommu.c +++
+>>> b/drivers/staging/media/tegra-vde/iommu.c @@ -36,8 +36,8 @@ int
+>>> tegra_vde_iommu_map(struct tegra_vde *vde,
+>>>   	addr = iova_dma_addr(&vde->iova, iova);
+>>>   
+>>> -	size = iommu_map_sg(vde->domain, addr, sgt->sgl, sgt->nents,
+>>> -			    IOMMU_READ | IOMMU_WRITE);
+>>> +	size = iommu_map_sgtable(vde->domain, addr, sgt,
+>>> +				 IOMMU_READ | IOMMU_WRITE);
+>>>   	if (!size) {
+>>>   		__free_iova(&vde->iova, iova);
+>>>   		return -ENXIO;
+>> Ahh, I saw the build failure report. You're changing the DMA API in
+>> this series, while DMA API isn't used by this driver, it uses IOMMU
+>> API. Hence there is no need to touch this code. Similar problem in the
+>> host1x driver patch.
 > 
+> The issue is caused by the lack of iommu_map_sgtable() stub when no 
+> IOMMU support is configured. I've posted a patch for this:
+> 
+> https://lore.kernel.org/lkml/20200630081756.18526-1-m.szyprowski@samsung.com/
+> 
+> The patch for this driver is fine, we have to wait until the above fix 
+> gets merged and then it can be applied during the next release cycle.
 
-WARN() is normally used for reporting a kernel bug. It dumps kernel
-trace. And the users will report bug through bugzilla.kernel.org.
-
-In this case, it's actually an unexpected user input, we shouldn't
-treat it as a kernel bug and pr_err_ratelimited() is enough?
-
-Best regards,
-baolu
+Thank you for the clarification!
