@@ -2,106 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47BF0210A72
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 13:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 932D7210A7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 13:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730425AbgGALlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 07:41:35 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:44800 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730330AbgGALle (ORCPT
+        id S1730462AbgGALmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 07:42:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730452AbgGALmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 07:41:34 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 79CCD2A5505;
-        Wed,  1 Jul 2020 12:41:32 +0100 (BST)
-Date:   Wed, 1 Jul 2020 13:41:28 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>,
-        narmstrong@baylibre.com, a.hajda@samsung.com,
-        laurent.pinchart@ideasonboard.com, matthias.bgg@gmail.com,
-        drinkcat@chromium.org, hsinyi@chromium.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [RESEND PATCH 3/3] drm/mediatek: mtk_dpi: Use simple encoder
-Message-ID: <20200701134128.6a967a89@collabora.com>
-In-Reply-To: <20200518173909.2259259-4-enric.balletbo@collabora.com>
-References: <20200518173909.2259259-1-enric.balletbo@collabora.com>
-        <20200518173909.2259259-4-enric.balletbo@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Wed, 1 Jul 2020 07:42:21 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B4BC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 04:42:20 -0700 (PDT)
+Received: from ramsan ([IPv6:2a02:1810:ac12:ed20:503c:ab8:1424:9638])
+        by michel.telenet-ops.be with bizsmtp
+        id xniJ2200z49uj5306niJUo; Wed, 01 Jul 2020 13:42:18 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jqb84-0006Pq-6w; Wed, 01 Jul 2020 13:42:16 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jqb84-0002EB-4V; Wed, 01 Jul 2020 13:42:16 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2 0/2] gpio: aggregator: Misc parsing improvements
+Date:   Wed,  1 Jul 2020 13:42:10 +0200
+Message-Id: <20200701114212.8520-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 May 2020 19:39:09 +0200
-Enric Balletbo i Serra <enric.balletbo@collabora.com> wrote:
+	Hi Linus, Bartosz, Andy,
 
-> The mtk_dpi driver uses an empty implementation for its encoder. Replace
-> the code with the generic simple encoder.
-> 
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> ---
-> 
->  drivers/gpu/drm/mediatek/mtk_dpi.c | 14 +++-----------
->  1 file changed, 3 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-> index baad198c69eb..80778b2aac2a 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-> @@ -20,6 +20,7 @@
->  #include <drm/drm_bridge.h>
->  #include <drm/drm_crtc.h>
->  #include <drm/drm_of.h>
-> +#include <drm/drm_simple_kms_helper.h>
->  
->  #include "mtk_dpi_regs.h"
->  #include "mtk_drm_ddp_comp.h"
-> @@ -510,15 +511,6 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *dpi,
->  	return 0;
->  }
->  
-> -static void mtk_dpi_encoder_destroy(struct drm_encoder *encoder)
-> -{
-> -	drm_encoder_cleanup(encoder);
-> -}
-> -
-> -static const struct drm_encoder_funcs mtk_dpi_encoder_funcs = {
-> -	.destroy = mtk_dpi_encoder_destroy,
-> -};
-> -
->  static int mtk_dpi_bridge_attach(struct drm_bridge *bridge,
->  				 enum drm_bridge_attach_flags flags)
->  {
-> @@ -591,8 +583,8 @@ static int mtk_dpi_bind(struct device *dev, struct device *master, void *data)
->  		return ret;
->  	}
->  
-> -	ret = drm_encoder_init(drm_dev, &dpi->encoder, &mtk_dpi_encoder_funcs,
-> -			       DRM_MODE_ENCODER_TMDS, NULL);
-> +	ret = drm_simple_encoder_init(drm_dev, &dpi->encoder,
-> +				      DRM_MODE_ENCODER_TMDS);
+This patch series contains two improvements for the parsing code in the
+GPIO Aggregator.
 
-Not related to this change, but shouldn't we have DRM_MODE_ENCODER_DPI
-here?
+The second one converts the driver to use bitmap_parselist() for parsing
+GPIO offsets and/or ranges, as suggested by Andy[1].  This should have
+no impact on the format of the configuration parameters written to the
+"new_device" virtual file in sysfs.
 
->  	if (ret) {
->  		dev_err(dev, "Failed to initialize decoder: %d\n", ret);
->  		goto err_unregister;
+Changes compared to v1:
+  - Rename mask to bitmap,
+  - Allocate bitmap dynamically.
 
+Thanks for your comments!
+
+[1] https://lore.kernel.org/r/20200520121420.GA1867563@smile.fi.intel.com
+
+Geert Uytterhoeven (2):
+  gpio: aggregator: Drop pre-initialization in get_arg()
+  gpio: aggregator: Use bitmap_parselist() for parsing GPIO offsets
+
+ drivers/gpio/gpio-aggregator.c | 63 +++++++++++++++-------------------
+ 1 file changed, 28 insertions(+), 35 deletions(-)
+
+-- 
+2.17.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
