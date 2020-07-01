@@ -2,145 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63FA210EDF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4A3210ED7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731909AbgGAPPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 11:15:43 -0400
-Received: from mout.web.de ([212.227.15.3]:37257 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727887AbgGAPPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 11:15:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1593616510;
-        bh=mYyt+czBz/JjrHxGH28ejngDa9fCpCF5RDmPyJ1eELU=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=OW2tMK5J4qQHpBTJyP+rJYtixH1M6oR1YyTXXiu0CUDu4aaXjVdSDFoet4+8WjwWy
-         O91Ou1Y6YeMbIEPS1ntHi2rnpYa6Wi1xZEA+Jq2BOL2gi2LRW0hr/inRm9BEbTjPsw
-         RDmyUHBQh2uLg+RWrFyzCdmSbenv/SnFNhAeVwqs=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([78.49.41.17]) by smtp.web.de (mrweb003
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0M3BeZ-1izWET0PMF-00svoo; Wed, 01
- Jul 2020 17:15:10 +0200
-Subject: Re: [v2] Documentation: Coccinelle: fix typos and command example
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
-        Coccinelle <cocci@systeme.lip6.fr>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Julia Lawall <julia.lawall@lip6.fr>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <0616dd0c-bb86-be2b-3dc6-1c695a92c3ca@infradead.org>
- <c2c1dec0-2bd1-b0e2-1aa4-38d0e954d5ba@web.de>
- <efc8b0c9-db3b-3c9c-d876-897b53a9e278@infradead.org>
- <2a3940de-6a81-1aff-8109-53c1c5a6aa1b@web.de>
- <f2aaa91a-f935-bc2d-26f2-712576c1bbd7@infradead.org>
- <2f80fb10-dc7f-29be-dc3e-2715f8bafc6d@web.de>
- <dfa2ed9f-fe68-58d1-c3d0-ac436f9bee09@infradead.org>
- <648d287e-3636-1858-1439-103d317f8571@web.de>
- <34065299-03cf-5b62-db37-0acc9830be72@infradead.org>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <65db3f88-1ac8-374d-e3fe-2ea0970ffd67@web.de>
-Date:   Wed, 1 Jul 2020 17:15:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1731857AbgGAPPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 11:15:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727887AbgGAPPX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 11:15:23 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0410C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 08:15:22 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id k18so12122588ybm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 08:15:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1OXCzKlm/ajG5X9F9mYOppVckbS/UtVwRERIIxYgAF0=;
+        b=gm7DKZndG5xIUYp+pckIqDJmVIxEdJ7mokqKBpWulCAJXdFJpoRETrlva80b8BWqri
+         JfzgfjH1Wfp5e4nkEu/uKtEzZtsWfbvgyKfIbpucXnVhHTqsEePdXkjcdheSmeC2udk9
+         bJcg4gANj48YwTwHPaWhoC3J8VsheYwWi0m1XwNuIGnKdeMOy0OsWOFK/w/sRiLEDHe0
+         vcdWjg8T7zs4KZFrKCnyiVRl7fRxYbIA7pWPSRoYp6i93GCrQ92p0mNitS70hGi4Q0ip
+         9iUrnQttT1sBktCWpJzmQ7Ay+LfJI4YBNXkzUaAQiHpqn5F13JgJaofExLIp+GFKGtEa
+         spTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1OXCzKlm/ajG5X9F9mYOppVckbS/UtVwRERIIxYgAF0=;
+        b=H3TZWyg9mfah5CgYiAszgnOIWHPUI2qLhDrdYzB6thyIMLgTcAoWzIQN8xhhrpW7m/
+         ehA3JZjZ8JQFIbGLV1XDwOM2z9GHSrTPdLChtGNQur/ztVdrz0fKcphrzNC49FMFQX+g
+         hYwslSx3lqKrJyP4ZVBNT8Pt/AsS0/srSf949FTfVm7yMC5H2T3WCsrWZVHIL2lDxsgS
+         oP4T0XUauYpPx+Acj22lzRaTZ8Dzw1MrSDDh7croPDEDJI0fDT7OYki+SzsTZc0tT6Ij
+         CrP5ItUBwW6IHBPK3vlV7xwcNJ3Ct1fEmhf2o3xXOQZ8eFHjJCI/r4J8eqTGtYDO8KA7
+         3PXg==
+X-Gm-Message-State: AOAM532amGjH+QZ5FpAWpVZnALfkKztSi42jfTbFqGyAnPSfZoiz4KLG
+        LjsUW5K46GG9LDZvUFwNZHq8qbJU0/2/q/a2XHli8A==
+X-Google-Smtp-Source: ABdhPJzGtgnKdXHNer1rjRzDXoB0nKorJWKbUBcfkGsR9/EkL6I8d+nQZeuowgjlrinMb8zZNxHZ/e6tbOmtSAMrAw0=
+X-Received: by 2002:a25:b7cc:: with SMTP id u12mr27806815ybj.173.1593616521698;
+ Wed, 01 Jul 2020 08:15:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <34065299-03cf-5b62-db37-0acc9830be72@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:VcD3ISfuI6H2Ya9namtRvcXvRRTENKx49V7npnVOb2NiVNmOwzt
- JUDZbhhPdfZ6E2lpzIdih75xhwXrdssEaA+WQ2IIiy6t9xRzzJ5gEbv/PdwLcmxgY9es6u1
- QIrOsnJjMOmmNeOZoI2vt9IU5vumN0azia/ey/XJETJreSQ8Zmrk+WuTmkDcYU5Ob3nJlYH
- 67uPkX6zAAXtBSOp1+3PQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7/jnl+4XCP0=:Yr7KEXWWTPyYTIK1K+PeXM
- sFHiJuiUnSi9j//yJ2e9AN2dq/trjs5Qmu1RVxLoA49XUDFHPtop/az/WZIcnRMN5uEFND0st
- NnfkacFniRpq9Fq4njkvBGZNHPbN9E3LGTXgIcccL27dBRvizC0Ac/nQhmOJgvsi0Fpg0FXio
- JF7eSqfsSTbuedj0sXyG+zkKrMgYUnXGzQfN++1QNrWaybDmPncdWkUcMWzjYrASi8zopIDZA
- NMStnrfkXTJ21PoGOUcnf29YvBXe3m9onKC1UYq5/Kav5r+DWsEgHyGK/Ajhd7FLRobj1smjG
- 6uUovyV1yWltLQAZK6xYcrL3L/xk5BX1OxNgcCilB6VYFSVXceXOd8VWnSc3MAsrzGnNt2+mF
- TDTwzw6mWyxcwbebfXF5s12ZugD4lYj5cPq2iUD0PKQqy16MOa6Y0W+F3cSxsg+z3BYwfticj
- HxrGigsyyBHteouqS0PgdoeN38O0gqEQGKW6XbqezZ7u4+sO3koSLivWD22k3u1n0tBR7sJMe
- OqpRtfGMSBfo+vlAMDZoRVZ0pKdL317RrYvqdxZUFHpfvftvCfNb8NZRKjde2NTjSKFQqdkEx
- OgIS6qNKHnLQklt7g2YRYaWmUGHuZ1s2CS1kNVn8l+dlc6NwaXxjMQaZuyQ6h+PsLQR1zMrqd
- Ivt4zdJGZ3Ee7M0laoESgKS1XMsIssu8F7QohaTV1c06nfdQ538hu38DcDprDBOW9wVfsMQNL
- ikXwou6ZlWjCc26YBB6XmnMN3bPFiKMy3zLLIBDIR40/Fv6LJg25Qi3+b0YIk4caWouSN0fdr
- 1v6M3lxwi+GGcTA2D5D6nkxHhMlSNUVobQaIt14MB0oC6fA8yilUHfTqWOuydrlcBC4aai5bz
- OzFTYncCBVuDbpYJPV63LT+34jYF8OstSYTbcN9jTB0pNrBXYu0IcKrNc/MOltpo/Oehy5eef
- AzwYO73EZLsKoz1oSWUCyOM8skkhPbdGyKMA2ahNFQRoo/7sTE00l9rNhDzevW6ZpQaVe9Bd4
- oxNbkKX9DEiVkeXHBYni17fJ4dIrZsA5bqwVg3UmqRekr2ucxJ/Sn4hL8WVTH5rFInIxVNsoW
- rb8RTla/0PPk57CCqqcR0WsPjZnXXAP57UxPjluYNwoxEtM5eZI24kYJatfm9y1yFtynvv7G5
- fh70/A6TGVY1Nsehc9f3XpY1RCYJXQKzOChQv2lH41hd5HOcwE696NvpaootkU0X7RtGrXW9O
- TExSXs3O5urgT2+hO
+References: <CANn89iLPqtJG0iESCHF+RcOjo95ukan1oSzjkPjoSJgKpO2wSQ@mail.gmail.com>
+ <20200701020211.GA6875@gondor.apana.org.au> <CANn89iKP-evuLxeLo6p_98T+FuJ-J5YaMTRG230nqj3R=43tVA@mail.gmail.com>
+ <20200701022241.GA7167@gondor.apana.org.au> <CANn89iLKZQAtpejcLHmOu3dsrGf5eyFfHc8JqoMNYisRPWQ8kQ@mail.gmail.com>
+ <20200701025843.GA7254@gondor.apana.org.au> <CANn89iKnf6=RFd-XRjPv=qaU8P-LGCBcw6JU5Ywwb16gU2iQqQ@mail.gmail.com>
+ <338284155.18826.1593605982156.JavaMail.zimbra@efficios.com>
+In-Reply-To: <338284155.18826.1593605982156.JavaMail.zimbra@efficios.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 1 Jul 2020 08:15:10 -0700
+Message-ID: <CANn89iLLuUG-6QaOzTt8UFszpOKkjKhXqDmgDMW1L5GctsqL-g@mail.gmail.com>
+Subject: Re: [regression] TCP_MD5SIG on established sockets
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Jonathan Rajotte-Julien <joraj@efficios.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> Would you like to integrate any more details from the running patch rev=
-iew?
+On Wed, Jul 1, 2020 at 5:19 AM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+
+> The approach below looks good to me, but you'll also need to annotate
+> both tcp_md5_hash_key and tcp_md5_do_add with __no_kcsan or use
+> data_race(expr) to let the concurrency sanitizer know that there is
+> a known data race which is there on purpose (triggered by memcpy in tcp_md5_do_add
+> and somewhere within crypto_ahash_update). See Documentation/dev-tools/kcsan.rst
+> for details.
+
+Sure, I can add a data_race() and let stable teams handle the
+backports without it ;)
+
 >
-> I am satisfied with the current patch.
-
-I got an other software development impression.
-
-
-> No doubt that any documentation can be improved, almost ad infinitum,
-> but I'm not trying to do that.
-
-Do we stumble on a target conflict according to a specific technical detai=
-l?
-
-How do you think about to compare source code analysis results
-from programs like =E2=80=9Csparse=E2=80=9D and =E2=80=9Cspatch=E2=80=9D (=
-by the mentioned make command)?
-
-Regards,
-Markus
+> Thanks,
+>
+> Mathieu
+>
+> >
+> > diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+> > index
+> > f111660453241692a17c881dd6dc2910a1236263..c3af8180c7049d5c4987bf5c67e4aff2ed6967c9
+> > 100644
+> > --- a/net/ipv4/tcp.c
+> > +++ b/net/ipv4/tcp.c
+> > @@ -4033,11 +4033,9 @@ EXPORT_SYMBOL(tcp_md5_hash_skb_data);
+> >
+> > int tcp_md5_hash_key(struct tcp_md5sig_pool *hp, const struct
+> > tcp_md5sig_key *key)
+> > {
+> > -       u8 keylen = key->keylen;
+> > +       u8 keylen = READ_ONCE(key->keylen); /* paired with
+> > WRITE_ONCE() in tcp_md5_do_add */
+> >        struct scatterlist sg;
+> >
+> > -       smp_rmb(); /* paired with smp_wmb() in tcp_md5_do_add() */
+> > -
+> >        sg_init_one(&sg, key->key, keylen);
+> >        ahash_request_set_crypt(hp->md5_req, &sg, NULL, keylen);
+> >        return crypto_ahash_update(hp->md5_req);
+> > diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+> > index
+> > 99916fcc15ca0be12c2c133ff40516f79e6fdf7f..0d08e0134335a21d23702e6a5c24a0f2b3c61c6f
+> > 100644
+> > --- a/net/ipv4/tcp_ipv4.c
+> > +++ b/net/ipv4/tcp_ipv4.c
+> > @@ -1114,9 +1114,13 @@ int tcp_md5_do_add(struct sock *sk, const union
+> > tcp_md5_addr *addr,
+> >                /* Pre-existing entry - just update that one. */
+> >                memcpy(key->key, newkey, newkeylen);
+> >
+> > -               smp_wmb(); /* pairs with smp_rmb() in tcp_md5_hash_key() */
+> > +               /* Pairs with READ_ONCE() in tcp_md5_hash_key().
+> > +                * Also note that a reader could catch new key->keylen value
+> > +                * but old key->key[], this is the reason we use __GFP_ZERO
+> > +                * at sock_kmalloc() time below these lines.
+> > +                */
+> > +               WRITE_ONCE(key->keylen, newkeylen);
+> >
+> > -               key->keylen = newkeylen;
+> >                return 0;
+> >        }
+> >
+> > @@ -1132,7 +1136,7 @@ int tcp_md5_do_add(struct sock *sk, const union
+> > tcp_md5_addr *addr,
+> >                rcu_assign_pointer(tp->md5sig_info, md5sig);
+> >        }
+> >
+> > -       key = sock_kmalloc(sk, sizeof(*key), gfp);
+> > +       key = sock_kmalloc(sk, sizeof(*key), gfp | __GFP_ZERO);
+> >        if (!key)
+> >                return -ENOMEM;
+> >         if (!tcp_alloc_md5sig_pool()) {
+>
+> --
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
