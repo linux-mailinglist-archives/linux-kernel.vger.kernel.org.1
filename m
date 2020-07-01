@@ -2,128 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547D82103C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 08:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B50B2103A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 08:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbgGAGRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 02:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
+        id S1726963AbgGAGJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 02:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727114AbgGAGRw (ORCPT
+        with ESMTP id S1726828AbgGAGJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 02:17:52 -0400
+        Wed, 1 Jul 2020 02:09:33 -0400
 Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4DBC03E979
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 23:17:52 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id c1so3322869pja.5
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 23:17:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE89C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 23:09:33 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id b92so10576826pjc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 23:09:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2i13HrhbdyWBz2VSMHspL7oRwZeUoksbANwTdThdMao=;
-        b=ALuNgxv+cQJPruxfz+cnpxT3S4RN+lkz0v4l0l/kc5hMgfXMduVxq5vqWrOKybDhYc
-         WzOJ+GM4PvSOtph/5j2UtMEjccmRYrvQQ1TBd4CPGX7fqWUDo/679LX9u2v0eUv+xRjF
-         AzaV1E+kkengcxnb+S60bSmF5OQbvuDTompnM=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=VEa2mK1n/Z1NoMOue5fFCZgphszoFRdqQh+jray/Ymk=;
+        b=c11lPSmAMoAEy2A529Hpm4EzH5oHccsXb3BCAdT5PUbURFnIr6mNCLnvwUhtKZaEA4
+         /nxq2gw0/An90b7CHsizv3AhdLTF13GhXeT2ux60h4Tj0VLzVty6EuVSqyPk2G04rbV6
+         RxPVHgq+jEXxWR79rfRPcaEBYFVQK3xWBMaYSZpWiQXmZ3vcplmsIcEfM9je2egvcArc
+         T79OLPGWXACcwNnR7uNPjYpNVpWT53k1iKfQ8LBfWk0ljkCHgTtmIvaJH8a4r7J9CBPO
+         njE0Yz7N9NfUmI6C3cQxxVKSU9xBX1VlSWofsrMyroVtIAPV032uL6HcSZOyaK5M/Gkh
+         4IOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2i13HrhbdyWBz2VSMHspL7oRwZeUoksbANwTdThdMao=;
-        b=l7Dmd1Fblkexfuh6d6x95gfg0Pt1pAmPfgHwq4EoOckUYePXyXvgHM0Yf8XGmfskn1
-         /5lQl55+eyWYKenvL3ERC2wRGzJdF3DCDq7YtoKuYgn8aluXpBgRm7Rb8WidLSgAaxhd
-         5N9JLwbGtoP2ADvsyhGN7GCwoGnzxbASelAKX+gbBp6rf0kOT/kTMrCwFvyF6V2DeC6n
-         sHiqG01jhWJcdMkWJtM3tGJQSNN5FkyAHje/j8s3ocqRSekfFw2xL8XFv1IrTx8J40gW
-         6mA1nuQrBtU5lm/1tGHUIlY9gx37eAu3IKj6BtmCIf4AXcwyT4wzIGKynS9gb8y6UHLc
-         75Bw==
-X-Gm-Message-State: AOAM530XLPqGC0wn5UzaZRQ3ueVQCRgQBdihrfn7NNAg8EW/J7rLEQ6t
-        qZvS3H5o8zzZDVJCcVbq8AuiEA==
-X-Google-Smtp-Source: ABdhPJyfCGZNUCJlKo9e93Dg5bf+/kiOJfc3cIkuM8zAWpJwgVfgwOguM/twEgx6a+7cOiYlDlStWQ==
-X-Received: by 2002:a17:902:6bc5:: with SMTP id m5mr21147547plt.101.1593584271768;
-        Tue, 30 Jun 2020 23:17:51 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:c809:c7d5:356d:fc3d:92ff:192e])
-        by smtp.gmail.com with ESMTPSA id n189sm4555744pfn.108.2020.06.30.23.17.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 23:17:51 -0700 (PDT)
-From:   Jagan Teki <jagan@amarulasolutions.com>
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
-Cc:     Tom Cubie <tom@radxa.com>,
-        Suniel Mahesh <sunil@amarulasolutions.com>,
-        Michael Trimarchi <michael@amarulasolutions.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        Jagan Teki <jagan@amarulasolutions.com>
-Subject: [PATCH v2 4/4] ARM: dts: rockchip: Add Radxa Rock Pi N8 initial support
-Date:   Wed,  1 Jul 2020 11:47:17 +0530
-Message-Id: <20200701061717.143753-5-jagan@amarulasolutions.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200701061717.143753-1-jagan@amarulasolutions.com>
-References: <20200701061717.143753-1-jagan@amarulasolutions.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=VEa2mK1n/Z1NoMOue5fFCZgphszoFRdqQh+jray/Ymk=;
+        b=fmbN6u9CVf9P3wHmF60f8gGcgIgQ+057ReVGE9vhyQCyYSXY7cWoyxf7qpZ1uZV2jm
+         aXKeuH3C7fn3LSBhctcsmmKQYTt8fGUbBHiYwwKwGvRwXRhxBZIWxWwreiXm2FYGPKIZ
+         EC9wyMIl/8jvQ0HcX8Rjbio9Q9koPLgLs/5iUrw1+p+UzGthjf0IvoCZcbOxmb2ZY1oR
+         FkhepORiU0vl4d4MbcN7a0RwH5jLz5hGlq/VeZ/vif46QlzxnNqrfIFGH9M3e50jF+9c
+         zbS/VpV7AtiG1plaCO/+moV6pLnU2yqgM6g1Ddx+pYcCbibSGSl/whQEEQoyuFhQXAeI
+         R3UA==
+X-Gm-Message-State: AOAM533ryPU+Yjscs43bRPU5iM9TFxwDhYPkN6d/WYKzd32rIqZysTI5
+        GKk24L7E8gsPGmnhQKj+n3rJeUIC21E=
+X-Google-Smtp-Source: ABdhPJyU2iRrphLhP03x6tIKHUe9ucsydFbuAFwrHlTHM/WJNn9tnpiYuZVjoaZYDSuRf2zpt5SVpg==
+X-Received: by 2002:a17:902:a714:: with SMTP id w20mr21265664plq.125.1593583772969;
+        Tue, 30 Jun 2020 23:09:32 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.171.42.200])
+        by smtp.gmail.com with ESMTPSA id 127sm4694073pgf.5.2020.06.30.23.09.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 30 Jun 2020 23:09:32 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     gregkh@linuxfoundation.org, jane.pnx9@gmail.com,
+        daniel.m.jordan@oracle.com, simon@nikanor.nu,
+        harshjain32@gmail.com, pakki001@umn.edu
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Bharath Vedartham <linux.bhar@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH v3 0/4] staging: kpc2000: kpc_dma: Few clean up and Convert to pin_user_pages()
+Date:   Wed,  1 Jul 2020 11:47:40 +0530
+Message-Id: <1593584264-16982-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rock Pi N8 is a Rockchip RK3288 based SBC, which has
-- VMARC RK3288 SOM (as per SMARC standard) from Vamrs.
-- Compatible carrier board from Radxa.
+This series contains few clean up, minor bug fixes and
+Convert get_user_pages() to pin_user_pages().
 
-VAMRC RK3288 SOM need to mount on top of radxa dalang
-carrier board for making Rock Pi N8 SBC.
+I'm compile tested this, but unable to run-time test,
+so any testing help is much appriciated.
 
-So, add initial support for Rock Pi N8 by including rk3288,
-rk3288 vamrc-som and raxda dalang carrier board dtsi files.
+v2:
+        Address Dan's review comments to return -ERRNO for partially
+        mapped pages and changed the other patches in series accordingly.
+        Minor update in change logs.
 
-Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
----
-Changes for v2:
-- reorder dtsi include so-that common properties will
-  visible to main dts.
+v3:
+	Address review comment to invoke the right goto level when allocation
+	failed in patch[4/4].
 
- arch/arm/boot/dts/Makefile              |  1 +
- arch/arm/boot/dts/rk3288-rock-pi-n8.dts | 17 +++++++++++++++++
- 2 files changed, 18 insertions(+)
- create mode 100644 arch/arm/boot/dts/rk3288-rock-pi-n8.dts
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Bharath Vedartham <linux.bhar@gmail.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index e8dd99201397..1d1b6ac26394 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -964,6 +964,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += \
- 	rk3288-popmetal.dtb \
- 	rk3288-r89.dtb \
- 	rk3288-rock2-square.dtb \
-+	rk3288-rock-pi-n8.dtb \
- 	rk3288-tinker.dtb \
- 	rk3288-tinker-s.dtb \
- 	rk3288-veyron-brain.dtb \
-diff --git a/arch/arm/boot/dts/rk3288-rock-pi-n8.dts b/arch/arm/boot/dts/rk3288-rock-pi-n8.dts
-new file mode 100644
-index 000000000000..b19593021713
---- /dev/null
-+++ b/arch/arm/boot/dts/rk3288-rock-pi-n8.dts
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2019 Fuzhou Rockchip Electronics Co., Ltd
-+ * Copyright (c) 2019 Vamrs Limited
-+ * Copyright (c) 2019 Amarula Solutions(India)
-+ */
-+
-+/dts-v1/;
-+#include "rk3288.dtsi"
-+#include <arm/rockchip-radxa-dalang-carrier.dtsi>
-+#include "rk3288-vmarc-som.dtsi"
-+
-+/ {
-+	model = "Radxa ROCK Pi N8";
-+	compatible = "radxa,rockpi-n8", "vamrs,rk3288-vmarc-som",
-+		     "rockchip,rk3288";
-+};
+
+Souptick Joarder (4):
+  staging: kpc2000: kpc_dma: Unpin partial pinned pages
+  staging: kpc2000: kpc_dma: Convert set_page_dirty() -->     
+    set_page_dirty_lock()
+  staging: kpc2000: kpc_dma: Convert get_user_pages() -->     
+    pin_user_pages()
+  staging: kpc2000: kpc_dma: Remove additional goto statements
+
+ drivers/staging/kpc2000/kpc_dma/fileops.c | 39 +++++++++++++++++--------------
+ 1 file changed, 21 insertions(+), 18 deletions(-)
+
 -- 
-2.25.1
+1.9.1
 
