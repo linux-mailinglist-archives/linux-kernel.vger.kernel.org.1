@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2A0210B40
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 14:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E76C210B3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 14:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730731AbgGAMro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 08:47:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34846 "EHLO
+        id S1730690AbgGAMr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 08:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730663AbgGAMrV (ORCPT
+        with ESMTP id S1730668AbgGAMrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 08:47:21 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE585C03E97A
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 05:47:20 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id l2so21602761wmf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 05:47:20 -0700 (PDT)
+        Wed, 1 Jul 2020 08:47:22 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E68C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 05:47:22 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id k6so23680673wrn.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 05:47:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wrIyNI5ZF/KUj1ZtT7jKpZfKmT6HM/rM07zicowUN5s=;
-        b=HWrA80RXIAqmo5CKdWTISZJHmseFSX+3Dyz3Ow1WhDW5QxMOYcgIY6wdeztm6ESucb
-         Bm/J9GT1TDSzZ8gPQVE/FDr23Dp5jiDD1gHJD7RDTKJMdDq6hV0aLQfzYnkwZXaJXYCx
-         lLt9OjNCVFiEVXjv0OyqtuQSXOF7Y70KV0ReaL9HJXcX0PXwm0S3VPJ/qUke3nn+sn/v
-         P3m69z3xKwOK9IuXhP/xxiNZ6+vk0Maggv/Ze/Hlwl8I6LL5mP6el3w1fNIXesCUrFye
-         1xghHvJgE8hIUQxPXccn0sFsIIKe9pKGOn/+6rzOAf4VIeyH4aoH0TZXq1f0/5uLccsl
-         36yA==
+        bh=8hbNAtKSwUso7F6/Zo5X4haYX63XDsD/59rYslLWqBM=;
+        b=HJ/om3laTlqrN4tbJ+hATe0qObMhqatwVBMmZnGQmvTJIYTLVQz8MxOl73Hvp4WjqF
+         xqUHLf7YHf1hvrtoxKkTPx5vx4baewW61qxzhFuZVeIya9axCarl7l2dViHxrkwleodH
+         dqRvX57EYA4mWlnOc3UXl84JE1fw1eqzsYGqhZglttgGNgeyeTENotbaLBbM3ZJAO6RO
+         W6wL7H1TlNKqrdzCh8F+/x99y+cE9x8koVt002NOvQeOPt78Usfk5Y/7tdSB2HeTaHRe
+         5DHEEFclRVMMEY0UmZNQW+FvRnf4tsOiigh1L7ZLqnBfpOrsVbnL6LlOLwWrq5rZCYS4
+         IJAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wrIyNI5ZF/KUj1ZtT7jKpZfKmT6HM/rM07zicowUN5s=;
-        b=cBhJoqcY6qTXJiDZlrjCxQrMTWEe65/sBSxeAM6jqwRoQAR9b7wD4UunBJzajbPwHA
-         o0qQS+GFvysJ4pmTw6qxGpXvwjUGzH+O/mKMMALWbYH4IuV9M+5JT1w/6CeJEMs1k8p2
-         DdFCFlTohMwYv9TynD8LOE8rjT5OvTGrz9eFmxbnTf7whebJ7Ex/N15yp+59C/dX9mWP
-         e8FAIWaztV4APPkDg8oXYM4I83Z/oeXhQO5s1DduVoHHD+DI4B/oy7/n9vE6Ppq6CHXE
-         hg1+CHZ3ByIC6se45TDEq6qiL58OVAqceliQDHYhXjtVIaD3z65WqN9ScIEH2xvdCiLq
-         2d0A==
-X-Gm-Message-State: AOAM532oxFVRW7iHOqmsxSzNFBd6vsc6sJl/SAlb58tq06oSp9dXCjUs
-        67G7G33mh/5GKNWtvme8dQKM8A==
-X-Google-Smtp-Source: ABdhPJxrkgYBUNiXUPxL6R2LO6yk68bXOYLtPWMdEp987Bhj7XPp0ZSAKkOf3hcOpVV/xo1vAf6y1w==
-X-Received: by 2002:a1c:3bc2:: with SMTP id i185mr26946217wma.33.1593607639564;
-        Wed, 01 Jul 2020 05:47:19 -0700 (PDT)
+        bh=8hbNAtKSwUso7F6/Zo5X4haYX63XDsD/59rYslLWqBM=;
+        b=NBA993f8mkteJMd/w1eLzKuKoljPeD0Wh6B5LljeOuDPmrEobX1Rh9/EVRbQVdSSNu
+         8xjBfMp4WmX8aqDjXntkpYqfqw72/+qxsFeQpr3Kyl5+15basqUlPFDQJqPWf/lpmMs3
+         ZAKHCUT7CYN2R0AoZ7xpLIRJObuauR1pN/SsKBDmzpmZnuYEa/2pEcDHrbIf/H++JkBC
+         +/OkarHe2FVI2oQkCie+P616KuLGhYyooal6XZosr8JNc1Gk9dSI+TpC+db4lMCstymJ
+         pHRn5wW5E3uiExGB00WWBinaj2kd/xpxFqzRYOjnrOSQRPU3DWFBmi0Cin6C9LiZR32H
+         LfIw==
+X-Gm-Message-State: AOAM5319FSHZdyiDOhk20YriTRor952M55KpY5mJMcs4TR2pdjO89aer
+        FTL3vLum8RSyx8cqu1QL57CJuA==
+X-Google-Smtp-Source: ABdhPJxaxL/KUxiM37mz4pmYxkZ8JcArmoV2r74oObuQZwBjWSDWoMwdJUFYimiGE/2fmaa9tY0rNA==
+X-Received: by 2002:a5d:6a07:: with SMTP id m7mr27094488wru.324.1593607640839;
+        Wed, 01 Jul 2020 05:47:20 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id o29sm7817862wra.5.2020.07.01.05.47.18
+        by smtp.gmail.com with ESMTPSA id o29sm7817862wra.5.2020.07.01.05.47.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 05:47:18 -0700 (PDT)
+        Wed, 01 Jul 2020 05:47:20 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     ulf.hansson@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Xiaobo Xie <X.Xie@freescale.com>,
-        Anton Vorontsov <avorontsov@ru.mvista.com>,
-        Soeren Brinkmann <soren.brinkmann@xilinx.com>
-Subject: [PATCH 11/15] mmc: host: sdhci-of-arasan: Correct formatting and provide missing function arg(s)
-Date:   Wed,  1 Jul 2020 13:46:58 +0100
-Message-Id: <20200701124702.908713-12-lee.jones@linaro.org>
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH 12/15] mmc: host: sdhci-msm: Staticify local function sdhci_msm_dump_vendor_regs()
+Date:   Wed,  1 Jul 2020 13:46:59 +0100
+Message-Id: <20200701124702.908713-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200701124702.908713-1-lee.jones@linaro.org>
 References: <20200701124702.908713-1-lee.jones@linaro.org>
@@ -71,41 +70,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kerneldoc expects arg descriptions to be in the format '@.*: '.  If either
-the '@' or the ':' is omitted then kerneldoc complains that the description
-is missing.  Add the missing ':' here and provide a new description for
-'value'.
+sdhci_msm_dump_vendor_regs() is only used via the .dump_vendor_regs()
+call-back.  It is never exported nor used externally, so it can be static.
 
-Fixes the following kernel build W=1 warnings:
+Squashes the following W=1 kernel build warning:
 
- drivers/mmc/host/sdhci-of-arasan.c:1394: warning: Function parameter or member 'host' not described in 'sdhci_arasan_update_support64b'
- drivers/mmc/host/sdhci-of-arasan.c:1394: warning: Function parameter or member 'value' not described in 'sdhci_arasan_update_support64b'
  drivers/mmc/host/sdhci-msm.c:1887:6: warning: no previous prototype for ‘sdhci_msm_dump_vendor_regs’ [-Wmissing-prototypes]
+ 1887 | void sdhci_msm_dump_vendor_regs(struct sdhci_host *host)
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Michal Simek <michal.simek@xilinx.com>
-Cc: Xiaobo Xie <X.Xie@freescale.com>
-Cc: Anton Vorontsov <avorontsov@ru.mvista.com>
-Cc: Soeren Brinkmann <soren.brinkmann@xilinx.com>
+Cc: Andy Gross <agross@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mmc/host/sdhci-of-arasan.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mmc/host/sdhci-msm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-index db9b544465cda..260e06e238f7e 100644
---- a/drivers/mmc/host/sdhci-of-arasan.c
-+++ b/drivers/mmc/host/sdhci-of-arasan.c
-@@ -1388,7 +1388,8 @@ static void sdhci_arasan_unregister_sdclk(struct device *dev)
-  * - For Keem Bay, it is required to clear this bit. Its default value is 1'b1.
-  *   Keem Bay does not support 64-bit access.
-  *
-- * @host		The sdhci_host
-+ * @host:		The sdhci_host
-+ * @value:		The value to write
-  */
- static void sdhci_arasan_update_support64b(struct sdhci_host *host, u32 value)
+diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+index b277dd7fbdb5d..0c02f8a2d11ab 100644
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -1884,7 +1884,7 @@ static void sdhci_msm_reset(struct sdhci_host *host, u8 mask)
+ #define SDHCI_MSM_DUMP(f, x...) \
+ 	pr_err("%s: " DRIVER_NAME ": " f, mmc_hostname(host->mmc), ## x)
+ 
+-void sdhci_msm_dump_vendor_regs(struct sdhci_host *host)
++static void sdhci_msm_dump_vendor_regs(struct sdhci_host *host)
  {
+ 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+ 	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
 -- 
 2.25.1
 
