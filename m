@@ -2,99 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A3A210F9F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69710210F9B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731966AbgGAPrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 11:47:35 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:59015 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731519AbgGAPre (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 11:47:34 -0400
-Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com [209.85.217.46]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 061Fl7NF003090
-        for <linux-kernel@vger.kernel.org>; Thu, 2 Jul 2020 00:47:07 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 061Fl7NF003090
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1593618428;
-        bh=DAwQW/iKms2Pd5SxjfNrAxgMBpgB3wuUDGSw/2ikg0w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WfcpXwhMfxGovAbt204Xh7ug7fFQv5h2nEgLS7kG1ZYqP0/YsTen/hhpvAC42YsNF
-         jz+Jkf8NBaON4pyr/0CG6aaDEx0v4Gz74hE02pdfCBc+zEaoAsdk2sl5QmRlSALXSW
-         NAQYS+KbYev9G5ZN/0B1IzM0gJwI2e9w/BkOtyt6jpNqjq5E1YjFDD02hq2F2cuPhF
-         N5T9/Ov8F0gBDP2IVH03iU5KcSEKdjUPu11NaCvf3rFb7K5RSCPIPbUOVVOZEzpaiT
-         l6xRv+F7T6SZxcgfen1PqssSjNW+ZOXoajNf7iWNnTY0ElkBZLBTzJSEFy32m6441L
-         +3Meic2THJV/A==
-X-Nifty-SrcIP: [209.85.217.46]
-Received: by mail-vs1-f46.google.com with SMTP id x13so8813758vsx.13
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 08:47:07 -0700 (PDT)
-X-Gm-Message-State: AOAM531NDjFfWpC5yt6IgfD9hOvFWAnZlrrurXxfzlBIBe4AB7t0tny6
-        VXmigs/De2HoRyWjZ4CI+SB5zwbFS9HIoX3C9ts=
-X-Google-Smtp-Source: ABdhPJzB1vl8xD2N6vsVCpQAw+0Y9VboCtD5BhKxqQPhn3odFuKVp7dIo0dsORdnOtk8/amr/wIne1V8Q7+nUvvXNnY=
-X-Received: by 2002:a67:22c7:: with SMTP id i190mr19510608vsi.179.1593618426679;
- Wed, 01 Jul 2020 08:47:06 -0700 (PDT)
+        id S1731677AbgGAPqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 11:46:39 -0400
+Received: from mga18.intel.com ([134.134.136.126]:54009 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726621AbgGAPqi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 11:46:38 -0400
+IronPort-SDR: ZBh2onh17iTRNMlsNcFJn3W0Boz6FF8f6o5fLZKFH/gn0teeMRrngCIOskCvsa5GK9BU8Z7S6v
+ PqPh6g3oJvfQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="134075931"
+X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
+   d="scan'208";a="134075931"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 08:46:38 -0700
+IronPort-SDR: 4wJ3hkVveuE05LUCdhTqEwJ0coWC/y+NKcaPobYnpTx/tCoKqcc6ENy7s5p+N0Ldu6EKecLe6u
+ JS4w+A05p4YA==
+X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
+   d="scan'208";a="481642725"
+Received: from sadedonx-mobl2.amr.corp.intel.com (HELO intel.com) ([10.252.134.113])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 08:46:36 -0700
+Date:   Wed, 1 Jul 2020 08:46:35 -0700
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        alex.shi@linux.alibaba.com, dwagner@suse.de, tobin@kernel.org,
+        cl@linux.com, akpm@linux-foundation.org, ying.huang@intel.com,
+        dan.j.williams@intel.com, cai@lca.pw
+Subject: Re: [PATCH 2/3] mm/vmscan: move RECLAIM* bits to uapi header
+Message-ID: <20200701154635.2dwwz2b6xbeyp2rc@intel.com>
+Mail-Followup-To: Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        alex.shi@linux.alibaba.com, dwagner@suse.de, tobin@kernel.org,
+        cl@linux.com, akpm@linux-foundation.org, ying.huang@intel.com,
+        dan.j.williams@intel.com, cai@lca.pw
+References: <20200701152621.D520E62B@viggo.jf.intel.com>
+ <20200701152624.D6FBDDA8@viggo.jf.intel.com>
 MIME-Version: 1.0
-References: <20200630142653.10375-1-pmenzel@molgen.mpg.de>
-In-Reply-To: <20200630142653.10375-1-pmenzel@molgen.mpg.de>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 2 Jul 2020 00:46:29 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ79EYXMgRC2uexXAbgA7uUa7SoMKu+00qRvqJCv5+C1Q@mail.gmail.com>
-Message-ID: <CAK7LNAQ79EYXMgRC2uexXAbgA7uUa7SoMKu+00qRvqJCv5+C1Q@mail.gmail.com>
-Subject: Re: [PATCH] .gitignore: Do not track `defconfig` from `make savedefconfig`
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200701152624.D6FBDDA8@viggo.jf.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 11:27 PM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
->
-> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> ---
->  .gitignore | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/.gitignore b/.gitignore
-> index 87b9dd8a163b..5c1a5349852b 100644
-> --- a/.gitignore
-> +++ b/.gitignore
-> @@ -142,6 +142,7 @@ x509.genkey
->  /allno.config
->  /allrandom.config
->  /allyes.config
-> +/defconfig
->
->  # Kdevelop4
->  *.kdev4
+On 20-07-01 08:26:24, Dave Hansen wrote:
+> 
+> From: Dave Hansen <dave.hansen@linux.intel.com>
+> 
+> It is currently not obvious that the RECLAIM_* bits are part of the
+> uapi since they are defined in vmscan.c.  Move them to a uapi header
+> to make it obvious.
+> 
+> This should have no functional impact.
+> 
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Ben Widawsky <ben.widawsky@intel.com>
+> Cc: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Daniel Wagner <dwagner@suse.de>
+> Cc: "Tobin C. Harding" <tobin@kernel.org>
+> Cc: Christoph Lameter <cl@linux.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Qian Cai <cai@lca.pw>
+> Cc: Daniel Wagner <dwagner@suse.de>
+> 
 > --
-> 2.27.0
->
+> 
+> Note: This is not cc'd to stable.  It does not fix any bugs.
+> ---
+> 
+>  b/include/uapi/linux/mempolicy.h |    7 +++++++
+>  b/mm/vmscan.c                    |    8 --------
+>  2 files changed, 7 insertions(+), 8 deletions(-)
+> 
+> diff -puN include/uapi/linux/mempolicy.h~mm-vmscan-move-RECLAIM-bits-to-uapi include/uapi/linux/mempolicy.h
+> --- a/include/uapi/linux/mempolicy.h~mm-vmscan-move-RECLAIM-bits-to-uapi	2020-07-01 08:22:12.502955333 -0700
+> +++ b/include/uapi/linux/mempolicy.h	2020-07-01 08:22:12.508955333 -0700
+> @@ -62,5 +62,12 @@ enum {
+>  #define MPOL_F_MOF	(1 << 3) /* this policy wants migrate on fault */
+>  #define MPOL_F_MORON	(1 << 4) /* Migrate On protnone Reference On Node */
+>  
+> +/*
+> + * These bit locations are exposed in the vm.zone_reclaim_mode sysctl
+> + * ABI.  New bits are OK, but existing bits can never change.
+> + */
+> +#define RECLAIM_ZONE  (1<<0)	/* Run shrink_inactive_list on the zone */
+> +#define RECLAIM_WRITE (1<<1)	/* Writeout pages during reclaim */
+> +#define RECLAIM_UNMAP (1<<2)	/* Unmap pages during reclaim */
 
+Have you considered turning this into an enum while moving it?
 
-all*.config files are used as Kconfig presets,
-but 'defconfig' does not belong to them.
-
-
-
-Better to update the comment line above?
-
-
-For example,
-
-   # Kconfig presets
-
--->
-
-  # Kconfig presets, savedefconfg output
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
+>  
+>  #endif /* _UAPI_LINUX_MEMPOLICY_H */
+> diff -puN mm/vmscan.c~mm-vmscan-move-RECLAIM-bits-to-uapi mm/vmscan.c
+> --- a/mm/vmscan.c~mm-vmscan-move-RECLAIM-bits-to-uapi	2020-07-01 08:22:12.504955333 -0700
+> +++ b/mm/vmscan.c	2020-07-01 08:22:12.509955333 -0700
+> @@ -4091,14 +4091,6 @@ module_init(kswapd_init)
+>  int node_reclaim_mode __read_mostly;
+>  
+>  /*
+> - * These bit locations are exposed in the vm.zone_reclaim_mode sysctl
+> - * ABI.  New bits are OK, but existing bits can never change.
+> - */
+> -#define RECLAIM_ZONE  (1<<0)	/* Run shrink_inactive_list on the zone */
+> -#define RECLAIM_WRITE (1<<1)	/* Writeout pages during reclaim */
+> -#define RECLAIM_UNMAP (1<<2)	/* Unmap pages during reclaim */
+> -
+> -/*
+>   * Priority for NODE_RECLAIM. This determines the fraction of pages
+>   * of a node considered for each zone_reclaim. 4 scans 1/16th of
+>   * a zone.
+> _
