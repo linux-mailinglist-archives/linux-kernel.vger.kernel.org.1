@@ -2,152 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E9F2103A9
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 08:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B393B2103C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 08:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbgGAGKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 02:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57468 "EHLO
+        id S1727803AbgGAGS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 02:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726287AbgGAGKA (ORCPT
+        with ESMTP id S1727113AbgGAGS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 02:10:00 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05FEC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 23:10:00 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id j19so4305159pgm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 23:10:00 -0700 (PDT)
+        Wed, 1 Jul 2020 02:18:29 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA385C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 23:18:28 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id l6so21158435qkc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 23:18:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=iJXQLBehWwPwwPoGiInoAvr+iwWO0xFUwp5XsZYJ0Wc=;
-        b=qsy1oTEzSRTnDgDlzAbsXmEbfOTK6Kgt+sy4W4NbwNJeT/VgP5zyHxXEAl7okwkCY2
-         4v9rfF40pxuxPrjHK1mS9QoJn1ALGVIAvsKF2QJmYXpMhmW3rJZ+4phopvzekJq4owgS
-         xeBvwHnrtDk1EXUjR3/UrYnmOphRxpk9ApPK2VQbF8uBMhoWNv4oMTeHbNvhMvGbp2sI
-         yKxXK3uXJeFpLmlS1zkUL9Con0gW7VAkjwFQqoPzftnGu6ZEmgeju4Lsw5HGK0y4FpPp
-         NxxoYy0pjuSTDhiDzRmmmiEmOA/FO1R5T1fzd/RhDp8R/9HOJwGPmAGdI/nHr25jiquX
-         gNkA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=mrmTZmnOtw4qO5wq5D6v7IlGV7qQRDmhjYP9i2HjtA0=;
+        b=dHI5glD50UnPuu677fam1ZaQF5rT/cKadHXJt2ZyQc3/14VxnkXNz2t2Sg8df4eFPX
+         CI2xqKfz1q6qb+dAoOWQKhztATFIruJK76kHxp9aUWFlic5V+ciQ5t/FJJ5YqJj+jRD3
+         a0pbuWGEhPALo3a9ebrMNoO2SK97IoSWEqo9PnHiagCwm7tRp+gk6ssbmwnbsc2rBPoG
+         PVm+0nxvT+OtL9MSauvJG0dyuHv2YkUdej/KxAhIcz6JEPVlHeTIdgOvm0zmia4Wjv+0
+         +Qwsw9fUOiAOLd8Q0sJzj8xjVCekLrMavcBmElNfXNcG2Ex+3TphT9bhQQTsDDxkUYIC
+         p+eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=iJXQLBehWwPwwPoGiInoAvr+iwWO0xFUwp5XsZYJ0Wc=;
-        b=DaI78eUKxGIJZgrbtSncksYGRxYj3PojAKBm8GFOr1r94yma7tLxA1G3Ia5gTzKFS5
-         1u0B0/M/VypJ7ef5nAALtiP8v7LS0hgY2/sx4bOOwrG1UcshSWNJMaLjGKYVioaEigbS
-         LVY7uc498u6rc7q04kpJeM51r4te/ENPNsy+s4ZJUKx8bhenwsZ+ySlQIl9j3DV8Mwva
-         ufTL367ph1G2wnpYPnhxIbX7boTCK2mfbzrMbZzNq9dJ7H/fEvepNosp7kn19fOuVhar
-         0bkg7IVfPJPTqKktjmq7cBHqSDAXKws1KnMEi5IH1U0sTommYODsudMrzVf2v8Jj8Stp
-         AKmA==
-X-Gm-Message-State: AOAM531NDs5qiDdUUzoKBWPQ7+B1Iw2fsv0cMVh/6+5RlMsaMBLko6sT
-        Zf7I44YHvYFJjvC+lOXuVcc=
-X-Google-Smtp-Source: ABdhPJyAWnEZKEKAJ11azWAi7WrF/Rs8eY9d2O15O3QWBbIEB9lh8c4pvA0qM811KBZO3njehbGxGA==
-X-Received: by 2002:a63:5013:: with SMTP id e19mr18445859pgb.68.1593583800326;
-        Tue, 30 Jun 2020 23:10:00 -0700 (PDT)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.171.42.200])
-        by smtp.gmail.com with ESMTPSA id 127sm4694073pgf.5.2020.06.30.23.09.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 30 Jun 2020 23:09:59 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     gregkh@linuxfoundation.org, jane.pnx9@gmail.com,
-        daniel.m.jordan@oracle.com, simon@nikanor.nu,
-        harshjain32@gmail.com, pakki001@umn.edu
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Bharath Vedartham <linux.bhar@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH v3 4/4] staging: kpc2000: kpc_dma: Remove additional goto statements
-Date:   Wed,  1 Jul 2020 11:47:44 +0530
-Message-Id: <1593584264-16982-5-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1593584264-16982-1-git-send-email-jrdr.linux@gmail.com>
-References: <1593584264-16982-1-git-send-email-jrdr.linux@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mrmTZmnOtw4qO5wq5D6v7IlGV7qQRDmhjYP9i2HjtA0=;
+        b=XSzovIXUd8vdOSQcekLqJ9zuLlwNgBJdCoFVs+9l7nZWop9xuiUlZs9nFjEyl9zoly
+         UBTN1qlubUigceoVhBc5HvmlNghS2HTZ/HLSN/7uk0D4mQty3whMdkAWj3AuDE5YhYSb
+         OkqWEpArWRtMLGfhjeKgN4nuonXHr8P9ypw2HW2IZb1f7m1A4fOq40eSZnrIR93VfR95
+         wBV4c6qp1rpuePzYLFewHYXSqWbzQ6xSe98S1zUgu2t4o/fzKrqoOaJsB0vRQg8wNl6q
+         h4Ba/TlX0ameF6SFM7GO+qXfsG50/783qiv9FrjZKdNE8c2DNNJ1gM0a09z0Avfzaedb
+         5Z4A==
+X-Gm-Message-State: AOAM530agQsWvKAYv6jM7AkMj3l9tn8pjBGaSxVIAN16tL1W/A6yh5iD
+        1kerXPxBA2v4Zd9Yq6jPGnxaEYxYnOeQnUI/E7w=
+X-Google-Smtp-Source: ABdhPJzUk20AhrOT78yKkoIsAOBFs/Y51ri5z57YlLZDocB+kim2j+V5MFNtbXx3zIvbkM852miwdQXOr7b8GwKfPlI=
+X-Received: by 2002:a37:7d86:: with SMTP id y128mr16397859qkc.343.1593584308177;
+ Tue, 30 Jun 2020 23:18:28 -0700 (PDT)
+MIME-Version: 1.0
+References: <1592371583-30672-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1592371583-30672-2-git-send-email-iamjoonsoo.kim@lge.com> <7a5c8298-a1e5-93f9-eea6-214b0732ca33@suse.cz>
+In-Reply-To: <7a5c8298-a1e5-93f9-eea6-214b0732ca33@suse.cz>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Wed, 1 Jul 2020 15:18:12 +0900
+Message-ID: <CAAmzW4P6Co3Y4KMLFps6BsZvvt2vwQ4g2bUUZCMbNy_tE40xCA@mail.gmail.com>
+Subject: Re: [PATCH v6 1/6] mm/vmscan: make active/inactive ratio as 1:1 for
+ anon lru
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As 3 goto level referring to same common code, those can be
-accomodated with a single goto level and renameing it to
-unpin_pages. Set the -ERRNO when returning partial mapped
-pages in more appropriate place.
+2020=EB=85=84 7=EC=9B=94 1=EC=9D=BC (=EC=88=98) =EC=98=A4=EC=A0=84 2:27, Vl=
+astimil Babka <vbabka@suse.cz>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On 6/17/20 7:26 AM, js1304@gmail.com wrote:
+> > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> >
+> > Current implementation of LRU management for anonymous page has some
+> > problems. Most important one is that it doesn't protect the workingset,
+> > that is, pages on the active LRU list. Although, this problem will be
+> > fixed in the following patchset, the preparation is required and
+> > this patch does it.
+> >
+> > What following patchset does is to restore workingset protection. In th=
+is
+>
+> "Restore" sounds as if the protection used to be there and then it was re=
+moved.
+> If it's the case, it should be said what commit did that. Otherwise I wou=
+ld say
+> "implement", not "restore"?
+>
+> > case, newly created or swap-in pages are started their lifetime on the
+>
+> I would rephrase it: "After the following patch, newly created or swap-in=
+ pages
+> will start their lifetime... "
+>
+> > inactive list. If inactive list is too small, there is not enough chanc=
+e
+> > to be referenced and the page cannot become the workingset.
+> >
+> > In order to provide enough chance to the newly anonymous pages, this pa=
+tch
+>
+> "In order to provide the newly anonymous pages enough chance to be refere=
+nced
+> again..."
+>
+> > makes active/inactive LRU ratio as 1:1.
+>
+> Here I would add:
+>
+> This is just a temporary measure. Later patch in the series introduces
+> workingset detection for anonymous LRU that will be used to better decide=
+ if
+> pages should start on the active and inactive list. Afterwards this patch=
+ is
+> effectively reverted.
+>
+> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> > Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-When dma_map_sg() failed, the previously allocated memory was
-not freed properly. This is corrected now.
+Thanks!
 
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Bharath Vedartham <linux.bhar@gmail.com>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/staging/kpc2000/kpc_dma/fileops.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+I will change the commit description as you suggested.
 
-diff --git a/drivers/staging/kpc2000/kpc_dma/fileops.c b/drivers/staging/kpc2000/kpc_dma/fileops.c
-index 8cd20ad..dd716edd 100644
---- a/drivers/staging/kpc2000/kpc_dma/fileops.c
-+++ b/drivers/staging/kpc2000/kpc_dma/fileops.c
-@@ -35,7 +35,7 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
- 			    unsigned long iov_base, size_t iov_len)
- {
- 	unsigned int i = 0;
--	int rv = 0;
-+	int rv = 0, nr_pages = 0;
- 	struct kpc_dma_device *ldev;
- 	struct aio_cb_data *acd;
- 	DECLARE_COMPLETION_ONSTACK(done);
-@@ -79,22 +79,27 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
- 	rv = pin_user_pages(iov_base, acd->page_count, FOLL_TOUCH | FOLL_WRITE, acd->user_pages, NULL);
- 	mmap_read_unlock(current->mm);        /*  release the semaphore */
- 	if (rv != acd->page_count) {
-+		nr_pages = rv;
-+		if (rv > 0)
-+			rv = -EFAULT;
-+
- 		dev_err(&priv->ldev->pldev->dev, "Couldn't pin_user_pages (%d)\n", rv);
--		goto err_get_user_pages;
-+		goto unpin_pages;
- 	}
-+	nr_pages = acd->page_count;
- 
- 	// Allocate and setup the sg_table (scatterlist entries)
- 	rv = sg_alloc_table_from_pages(&acd->sgt, acd->user_pages, acd->page_count, iov_base & (PAGE_SIZE - 1), iov_len, GFP_KERNEL);
- 	if (rv) {
- 		dev_err(&priv->ldev->pldev->dev, "Couldn't alloc sg_table (%d)\n", rv);
--		goto err_alloc_sg_table;
-+		goto unpin_pages;
- 	}
- 
- 	// Setup the DMA mapping for all the sg entries
- 	acd->mapped_entry_count = dma_map_sg(&ldev->pldev->dev, acd->sgt.sgl, acd->sgt.nents, ldev->dir);
- 	if (acd->mapped_entry_count <= 0) {
- 		dev_err(&priv->ldev->pldev->dev, "Couldn't dma_map_sg (%d)\n", acd->mapped_entry_count);
--		goto err_dma_map_sg;
-+		goto free_table;
- 	}
- 
- 	// Calculate how many descriptors are actually needed for this transfer.
-@@ -186,16 +191,12 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
-  err_descr_too_many:
- 	unlock_engine(ldev);
- 	dma_unmap_sg(&ldev->pldev->dev, acd->sgt.sgl, acd->sgt.nents, ldev->dir);
-+ free_table:
- 	sg_free_table(&acd->sgt);
-- err_dma_map_sg:
-- err_alloc_sg_table:
--	unpin_user_pages(acd->user_pages, acd->page_count);
- 
-- err_get_user_pages:
--	if (rv > 0) {
--		unpin_user_pages(acd->user_pages, rv);
--		rv = -EFAULT;
--	}
-+ unpin_pages:
-+	if (nr_pages > 0)
-+		unpin_user_pages(acd->user_pages, nr_pages);
- 	kfree(acd->user_pages);
-  err_alloc_userpages:
- 	kfree(acd);
--- 
-1.9.1
-
+Thanks.
