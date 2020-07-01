@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0B321130E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 20:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9EB211317
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 20:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727021AbgGASs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 14:48:57 -0400
-Received: from vps.xff.cz ([195.181.215.36]:55212 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726021AbgGASs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 14:48:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1593629334; bh=8xaksKJGj1kAyua4g1oZLoaGS1nsYn93os3VmQbhpcI=;
-        h=Date:From:To:Cc:Subject:References:X-My-GPG-KeyId:From;
-        b=Of4+LTMWpjkG2ehoruuK4JmL7d7HB7PhXFTHZ33AW5ALrUk/k1Oh5+Z+UOuyR5T/i
-         fXVYS/unoTwEOlZfbsAwP6ihWo19iEZdibHGy6qADnor1mvE9DJF8ZfdNKfV7zR+AE
-         +3+GfaRE3Shvu8Kg8V6sSvgFp/SRZ0lnPZU3Kwvw=
-Date:   Wed, 1 Jul 2020 20:48:53 +0200
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     linux-sunxi@googlegroups.com,
-        Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
-        Purism Kernel Team <kernel@puri.sm>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Samuel Holland <samuel@sholland.org>,
-        Martijn Braam <martijn@brixit.nl>, Luca Weiss <luca@z3ntu.xyz>,
-        Bhushan Shah <bshah@kde.org>
-Subject: Re: [PATCH v7 00/13] Add support for PinePhone LCD panel
-Message-ID: <20200701184853.ctrowkdtdsqnlk2f@core.my.home>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Sam Ravnborg <sam@ravnborg.org>, linux-sunxi@googlegroups.com,
-        Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
-        Purism Kernel Team <kernel@puri.sm>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Icenowy Zheng <icenowy@aosc.io>, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Samuel Holland <samuel@sholland.org>,
-        Martijn Braam <martijn@brixit.nl>, Luca Weiss <luca@z3ntu.xyz>,
-        Bhushan Shah <bshah@kde.org>
-References: <20200701162928.1638874-1-megous@megous.com>
- <20200701173018.GA1097230@ravnborg.org>
+        id S1726304AbgGASwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 14:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725812AbgGASwk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 14:52:40 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D448C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 11:52:40 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id u5so11387270pfn.7
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 11:52:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=+/n+6AxpUg9QzHb5YBIhMhs6/emUx+VgYGqTlwi4IMw=;
+        b=tKw3y28uTOBX9axPwIKFUPPmh0R0UNimy9v+qXphx9OQ+8fNirGczQwtCOYzkSUsDy
+         XfzLwndgIx1YzhgqrfZPK9CvKHaLYAi7VQ3391n5HfRKx4FHEVrnIt1yL2HuBCa19s/N
+         AeJA3vKm+9VAn/8DZ51lc7rNYGWTjrc6I16ml/wl8mJ2Sm5FHOdk4vyBoylbAm8tK12N
+         4CXJ3//34hdOlLKx1qhUOqxZjYwGv1X4is1X51aZzRRFO/XsitFrxVDcDATtCxHD65lE
+         9wczxCZw5jN9/ZRKYgD0SMLsCQhe9//H5HzOpmP3WjedI/z5/gwI8wlfL+7AowIKcUUy
+         Hoog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=+/n+6AxpUg9QzHb5YBIhMhs6/emUx+VgYGqTlwi4IMw=;
+        b=Z7IYLcHzRvFALjbGku2f6+Na+xAbQlwKe47qx4v6Ql4Lfaaq7Hq4GL/omTnD18UUZ7
+         jrZqlBOOEYquwO6hpUXyt4iDheH63VWA19B2PVB5yt1XlIeKvxEOlHnFN1S2jF44g1h4
+         gJ9x60Y7DPWEpibAssad+XCcAFcY0NhNWj6huA24mGiufJ36cZ4nrEVLrYNKSlSXaIK6
+         hoNIn0kJqboG6IhzE3P+l2RRVhBY1yyhU5i5XATsQGIZOcSmNLZEW3Bwh/VflvkW9YJ2
+         uVqNGD3lK3MK0sHPL+Z98FpAGmzjpEI7m9niMKthINYI0msf0pvLS23QUJikvR09PDDF
+         /I/g==
+X-Gm-Message-State: AOAM533xGthW9xmogUPvg4RPEcPf8EKF9SWsHUiEYZQxnQS0S9dqQUQU
+        9XPKrR0rrrbF0mJYIjJq22GEhw==
+X-Google-Smtp-Source: ABdhPJyXox+ncRoHMQBKw7ZwrumR4Fwo/GwuOgboLMouAMLOoRUv07ki2zYQREXcc1NMMx2OqJfdWw==
+X-Received: by 2002:a65:4908:: with SMTP id p8mr20783609pgs.214.1593629559668;
+        Wed, 01 Jul 2020 11:52:39 -0700 (PDT)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id u20sm6359360pfm.152.2020.07.01.11.52.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jul 2020 11:52:39 -0700 (PDT)
+Date:   Wed, 1 Jul 2020 11:52:38 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Long Li <lonuxli.64@gmail.com>
+cc:     willy@infradead.org, cl@linux.com, penberg@kernel.org,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm, slab: Check GFP_SLAB_BUG_MASK before alloc_pages
+ in kmalloc_order
+In-Reply-To: <20200701151645.GA26223@lilong>
+Message-ID: <alpine.DEB.2.23.453.2007011151280.1908531@chino.kir.corp.google.com>
+References: <20200701151645.GA26223@lilong>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200701173018.GA1097230@ravnborg.org>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Sam,
+On Wed, 1 Jul 2020, Long Li wrote:
 
-On Wed, Jul 01, 2020 at 07:30:18PM +0200, Sam Ravnborg wrote:
-> Hi Ondrej.
-> 
-> On Wed, Jul 01, 2020 at 06:29:15PM +0200, Ondrej Jirman wrote:
-> > This patchset adds support for the LCD panel of PinePhone.
-> > 
-> > I've tested this on PinePhone 1.0 and 1.2.
-> 
-> Thanks for this nive sereis.
-> Applied the first 11 patches to drm-misc-next.
-> The DTS files needs to go in via another tree.
+> diff --git a/mm/slab.c b/mm/slab.c
+> index ac7a223d9ac3..2850fe3c5fb8 100644
+> --- a/mm/slab.c
+> +++ b/mm/slab.c
+> @@ -2573,13 +2573,9 @@ static struct page *cache_grow_begin(struct kmem_cache *cachep,
+>  	 * Be lazy and only check for valid flags here,  keeping it out of the
+>  	 * critical path in kmem_cache_alloc().
+>  	 */
+> -	if (unlikely(flags & GFP_SLAB_BUG_MASK)) {
+> -		gfp_t invalid_mask = flags & GFP_SLAB_BUG_MASK;
+> -		flags &= ~GFP_SLAB_BUG_MASK;
+> -		pr_warn("Unexpected gfp: %#x (%pGg). Fixing up to gfp: %#x (%pGg). Fix your code!\n",
+> -				invalid_mask, &invalid_mask, flags, &flags);
+> -		dump_stack();
+> -	}
+> +	if (unlikely(flags & GFP_SLAB_BUG_MASK))
+> +		flags = kmalloc_invalid_flags(flags);
+> +
+>  	WARN_ON_ONCE(cachep->ctor && (flags & __GFP_ZERO));
+>  	local_flags = flags & (GFP_CONSTRAINT_MASK|GFP_RECLAIM_MASK);
+>  
 
-Thank you very much, too. :)
-
-regards,
-	o.
-
-> 	Sam
+Is this name correct?  kmalloc_invalid_flags() masks off the invalid flags 
+and returns the valid flags :)  Maybe kmalloc_check_flags()?
