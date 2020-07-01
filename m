@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241DF211288
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 20:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F8021128A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 20:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732923AbgGASYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 14:24:43 -0400
-Received: from mga11.intel.com ([192.55.52.93]:9410 "EHLO mga11.intel.com"
+        id S1732947AbgGASYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 14:24:53 -0400
+Received: from mga09.intel.com ([134.134.136.24]:61635 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730355AbgGASYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 14:24:38 -0400
-IronPort-SDR: NCySBzzWXLiAHr4rMI/WUlm1+wnYUsUUmk/vvcsWtBofPagw5ezYPBJ+Dk/DSv7ECvVLo+bkVU
- ZKYwCUfEZiJA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="144841729"
+        id S1730355AbgGASYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 14:24:47 -0400
+IronPort-SDR: mRkEHYiJkiFjQ8eJghkhF4jej/qY/oPEEvtq1q7wNapdfmF4nvcKDC7l4fYChkdOHaHvKRU4Hy
+ jiPGDYHDvQBw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="148218884"
 X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; 
-   d="scan'208";a="144841729"
+   d="scan'208";a="148218884"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 11:24:37 -0700
-IronPort-SDR: UB3QaTSuxk04et/prg4LZXBeU1HzWKvk4FbAbnzOZpw2Zklvd3ROYpZvcq1mBWzJ6nm/Q+v/t0
- jLwQzP4VgYSw==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 11:24:46 -0700
+IronPort-SDR: uNZGMcDa6uSQr0V+Q2M+Mdug7RsPQMAaWPGwA1OwhvOhGEkRJAqmwKxvXiYDp7ME9tHN2tA0CT
+ YLAyXwjYxw1A==
 X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; 
-   d="scan'208";a="425679568"
+   d="scan'208";a="425679609"
 Received: from srnatla-mobl2.amr.corp.intel.com (HELO pbossart-mobl3.amr.corp.intel.com) ([10.254.76.199])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 11:24:36 -0700
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 11:24:45 -0700
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     tiwai@suse.de, broonie@kernel.org,
@@ -33,12 +33,11 @@ Cc:     tiwai@suse.de, broonie@kernel.org,
         Liam Girdwood <lgirdwood@gmail.com>,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
-        Katsuhiro Suzuki <katsuhiro@katsuster.net>,
-        Daniel Drake <drake@endlessm.com>,
+        Steve Lee <steves.lee@maximintegrated.com>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 05/11] ASoC: codecs: es8316: fix 'defined but not used' warning
-Date:   Wed,  1 Jul 2020 13:24:16 -0500
-Message-Id: <20200701182422.81496-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 06/11] ASoC: codecs: max98390: fix 'defined but not used' warning
+Date:   Wed,  1 Jul 2020 13:24:17 -0500
+Message-Id: <20200701182422.81496-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200701182422.81496-1-pierre-louis.bossart@linux.intel.com>
 References: <20200701182422.81496-1-pierre-louis.bossart@linux.intel.com>
@@ -49,36 +48,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix W=1 warning
+Fix W=1 warning and removed unused table. In this case this a
+duplicate of
 
-sound/soc/codecs/es8316.c:842:36: warning: 'es8316_acpi_match' defined
-but not used [-Wunused-const-variable=]
-  842 | static const struct acpi_device_id es8316_acpi_match[] = {
-      |                                    ^~~~~~~~~~~~~~~~~
+static const struct of_device_id max98390_of_match[] = {
+	{ .compatible = "maxim,max98390", },
+	{}
+};
+MODULE_DEVICE_TABLE(of, max98390_of_match);
+
+already used in the rest of the code.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/es8316.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/max98390.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 36eef1fb3d18..70af35c5f727 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -839,11 +839,13 @@ static const struct of_device_id es8316_of_match[] = {
+diff --git a/sound/soc/codecs/max98390.c b/sound/soc/codecs/max98390.c
+index b345e626956d..3e8094241645 100644
+--- a/sound/soc/codecs/max98390.c
++++ b/sound/soc/codecs/max98390.c
+@@ -944,14 +944,6 @@ static const struct regmap_config max98390_regmap = {
+ 	.cache_type       = REGCACHE_RBTREE,
  };
- MODULE_DEVICE_TABLE(of, es8316_of_match);
  
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id es8316_acpi_match[] = {
- 	{"ESSX8316", 0},
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, es8316_acpi_match);
-+#endif
- 
- static struct i2c_driver es8316_i2c_driver = {
- 	.driver = {
+-#ifdef CONFIG_OF
+-static const struct of_device_id max98390_dt_ids[] = {
+-	{ .compatible = "maxim,max98390", },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(of, max98390_dt_ids);
+-#endif
+-
+ static int max98390_i2c_probe(struct i2c_client *i2c,
+ 		const struct i2c_device_id *id)
+ {
 -- 
 2.25.1
 
