@@ -2,130 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F86211526
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 23:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D6C211550
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 23:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgGAV3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 17:29:43 -0400
-Received: from mga03.intel.com ([134.134.136.65]:48390 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgGAV3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 17:29:42 -0400
-IronPort-SDR: W90kfcLQ9/9UMZ/UXYL1TPMvBbqBz7FPof1jjfe0tcWq8lcxUzeoMYQiIn6U2P+FMatgpwyknb
- iKOO6xctR39g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="146705188"
-X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; 
-   d="scan'208";a="146705188"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 14:29:42 -0700
-IronPort-SDR: fQ3cUOOR/n+NKKNiwT9HNM7ETkOvqSprQzEQ82iP30ReEfHsSinvVLm9KF2tknrR+kkR4bswcJ
- w0c1DBEqxTHA==
-X-IronPort-AV: E=Sophos;i="5.75,301,1589266800"; 
-   d="scan'208";a="455259602"
-Received: from rapyeatx-mobl3.amr.corp.intel.com (HELO [10.255.2.31]) ([10.255.2.31])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 14:29:39 -0700
-Subject: Re: [PATCH 3/3] mm/vmscan: replace implicit RECLAIM_ZONE checks with
- explicit checks
-To:     David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        alex.shi@linux.alibaba.com, dwagner@suse.de, tobin@kernel.org,
-        cl@linux.com, akpm@linux-foundation.org, ying.huang@intel.com,
-        dan.j.williams@intel.com, cai@lca.pw
-References: <20200701152621.D520E62B@viggo.jf.intel.com>
- <20200701152627.8761147E@viggo.jf.intel.com>
- <alpine.DEB.2.23.453.2007011256280.1908531@chino.kir.corp.google.com>
- <20200701200446.ki5hdgarcpmo2vuf@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <0dd57932-44cf-0c2d-e157-07a8d7324006@intel.com>
-Date:   Wed, 1 Jul 2020 14:29:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726897AbgGAVsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 17:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726114AbgGAVsF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 17:48:05 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9997C08C5C1;
+        Wed,  1 Jul 2020 14:48:04 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id s1so29053640ljo.0;
+        Wed, 01 Jul 2020 14:48:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oBWOW26zKSzSMAadEmPIB83fwLL5OeyWmw0Mib1tIJw=;
+        b=esIr4j65x6TPHvJ0te3aNtvSM4bhwpj5SGiQxOTw8nsdx+jXRUa323W+IJfGSfR51b
+         WPTGhdseD9f0DZC1PQIE0U+CjbIy+iGQ7nqKiAHRE7ChXdm4VhA95zX4/85sF/zkxnBU
+         h5v/NDt5MgyLTPKcuRuD1m/+ppkfx2lx6BrThXfanhgyCfUbusJcuTmIszEyokM9MGWc
+         3JqVzdC8a09eCWv7lbdyOHhc+L/8RC9Q9YmnAm68JYXACX9Dml5cwgKkMqXMCPNaMlG/
+         lSl8BbgBESrj3V+Ad4R1Y3XEyJ6tI5GbSyJBkSPfLt+3jR7Cau/ga8IlLnNz6EcQHuuK
+         e/5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oBWOW26zKSzSMAadEmPIB83fwLL5OeyWmw0Mib1tIJw=;
+        b=TNodiZfeTyXDvPfZ7jGZsVjxh8y0/jMCcvAVpYRYBPK1Qhsls90nZJnSqa1KPi/TVB
+         h3U360suSoEa++QMIlGUjk457fdVxdVu02SuaOvT2mqPJa8hTA3P79S1aqN6SSiejXER
+         2+YOZ15Y7TODMKxCF5CJTLklZeSh3uCQJJK9eUv02vVEJqqFj4arQzGSo8p2TO83OBIr
+         FQzLIXtPMlXqI0OH/TQUE615Le9bXBfwdhTpUbApu9fdv3SgrLqh6OTrxrQIcSB/bwlu
+         pOcMcaA5Y2tSgrSsOcY5+yyjqI/A5MOT+cUPPFLwDkdQubSG90GhJzQ/hGmi/UDbE49F
+         A/+A==
+X-Gm-Message-State: AOAM531lyy348ejxEUIOhxmXc1YLoqYF4zd/3nz6MPPK9tbO7OudMrYI
+        6d5nHY+u/e9fA7wjbB9Va64=
+X-Google-Smtp-Source: ABdhPJyAwCiKG3xVRz7NbECuI22WwQqU8OQmxLbMTzJr4YdV50UfbAYTmgi4HV4uPJV8a06uivEdTQ==
+X-Received: by 2002:a2e:968b:: with SMTP id q11mr13444603lji.300.1593640083414;
+        Wed, 01 Jul 2020 14:48:03 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-181-241.NA.cust.bahnhof.se. [98.128.181.241])
+        by smtp.gmail.com with ESMTPSA id d3sm2476812lfe.93.2020.07.01.14.48.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jul 2020 14:48:02 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Amit Shah <amit@kernel.org>, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Corey Minyard <minyard@acm.org>,
+        virtualization@lists.linux-foundation.org,
+        openipmi-developer@lists.sourceforge.net,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-crypto@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] drivers/char: Constify static variables
+Date:   Wed,  1 Jul 2020 22:09:45 +0200
+Message-Id: <20200701200950.30314-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200701200446.ki5hdgarcpmo2vuf@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/1/20 1:04 PM, Ben Widawsky wrote:
->> +static inline bool node_reclaim_enabled(void)
->> +{
->> +	/* Is any node_reclaim_mode bit set? */
->> +	return node_reclaim_mode & (RECLAIM_ZONE|RECLAIM_WRITE|RECLAIM_UNMAP);
->> +}
->> +
->>  extern void check_move_unevictable_pages(struct pagevec *pvec);
->>  
->>  extern int kswapd_run(int nid);
-> If a user writes a bit that isn't a RECLAIM_* bit to vm.zone_reclaim_mode 
-> today, it acts as though RECLAIM_ZONE is enabled: we try to reclaim in 
-> zonelist order before falling back to the next zone in the page allocator.  
-> The sysctl doesn't enforce any max value :/  I dont know if there is any 
-> such user, but this would break them if there is.
-> 
-> Should this simply be return !!node_reclaim_mode?
+Constify some static variables (mostly structs) that are not modified.
 
-You're right that there _could_ be a user-visible behavior change here.
- But, if there were a change it would be for a bit which wasn't even
-mentioned in the documentation.  Somebody would have had to look at the
-doc mentioning 1,2,4 and written an 8.  If they did that, they're asking
-for trouble because we could have defined the '8' bit to do nasty things
-like auto-demote all your memory. :)
+Rikard Falkeborn (5):
+  hwrng: bcm2835 - Constify bcm2835_rng_devtype[]
+  hwrng: nomadik - Constify nmk_rng_ids[]
+  hwrng: virtio - Constify id_table[]
+  ipmi: watchdog: Constify ident
+  virtio_console: Constify some static variables
 
-I'll mention it in the changelog, but I still think we should check the
-actual, known bits rather than check for 0.
+ drivers/char/hw_random/bcm2835-rng.c | 2 +-
+ drivers/char/hw_random/nomadik-rng.c | 2 +-
+ drivers/char/hw_random/virtio-rng.c  | 2 +-
+ drivers/char/ipmi/ipmi_watchdog.c    | 2 +-
+ drivers/char/virtio_console.c        | 8 ++++----
+ 5 files changed, 8 insertions(+), 8 deletions(-)
 
-BTW, in the hardware, they almost invariably make unused bits "reserved"
-and do mean things like #GP if someone tries to set them.  This is a
-case where the kernel probably should have done the same.  It would have
-saved us the trouble of asking these questions now.  Maybe we should
-even do that going forward.
+-- 
+2.27.0
+
