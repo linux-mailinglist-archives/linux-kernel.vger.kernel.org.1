@@ -2,103 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB2D21152E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 23:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAF621153B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 23:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726989AbgGAVep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 17:34:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40052 "EHLO mail.kernel.org"
+        id S1727964AbgGAVff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 17:35:35 -0400
+Received: from ms.lwn.net ([45.79.88.28]:57246 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgGAVeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 17:34:44 -0400
-Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
+        id S1727856AbgGAVfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 17:35:34 -0400
+Received: from lwn.net (localhost [127.0.0.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B578620772;
-        Wed,  1 Jul 2020 21:34:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593639284;
-        bh=1IXZOrZkYM9neavpCctk0wMLNeZPLPq2m53FYeI7R3Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=rF3Ewa/DKeKRd7U/VwQDI9QcjPY5MWYOBR0LJpIBp1SLRkn2QT4i7qTZTG07NxK1m
-         M8q+xoldII2dJ92U815VFStWbt9B4ALxER1mY7dMl9lJsDDNOWiGAido654S2MhuPr
-         dz5UVbYgCqY+bpKJZjkWsv7Vtv7Pagr86fKv0BjQ=
-Date:   Wed, 1 Jul 2020 16:34:42 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
-        Remi Pommarel <repk@triplefau.lt>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Xogium <contact@xogium.me>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] PCI: aardvark: Don't touch PCIe registers if no card
- connected
-Message-ID: <20200701213442.GA3662456@bjorn-Precision-5520>
+        by ms.lwn.net (Postfix) with ESMTPSA id CBFB52D3;
+        Wed,  1 Jul 2020 21:35:33 +0000 (UTC)
+Date:   Wed, 1 Jul 2020 15:35:32 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-doc@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org, dm-devel@redhat.com,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>
+Subject: Re: [willy@infradead.org: Re: [PATCH 6/6] mm: Add memalloc_nowait]
+Message-ID: <20200701153532.63d49389@lwn.net>
+In-Reply-To: <20200701041316.GA7193@casper.infradead.org>
+References: <20200701041316.GA7193@casper.infradead.org>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200701082044.4494-1-pali@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 10:20:44AM +0200, Pali Rohár wrote:
-> When there is no PCIe card connected and advk_pcie_rd_conf() or
-> advk_pcie_wr_conf() is called for PCI bus which doesn't belong to emulated
-> root bridge, the aardvark driver throws the following error message:
-> 
->   advk-pcie d0070000.pcie: config read/write timed out
-> 
-> Obviously accessing PCIe registers of disconnected card is not possible.
-> 
-> Extend check in advk_pcie_valid_device() function for validating
-> availability of PCIe bus. If PCIe link is down, then the device is marked
-> as Not Found and the driver does not try to access these registers.
-> 
-> This is just an optimization to prevent accessing PCIe registers when card
-> is disconnected. Trying to access PCIe registers of disconnected card does
-> not cause any crash, kernel just needs to wait for a timeout. So if card
-> disappear immediately after checking for PCIe link (before accessing PCIe
-> registers), it does not cause any problems.
+On Wed, 1 Jul 2020 05:13:16 +0100
+Matthew Wilcox <willy@infradead.org> wrote:
 
-Thanks, this is good.  I'd really like a short comment in the code as
-well, because this sort of link-up check tends to get copied to new
-drivers where it shouldn't be used, e.g., something like this:
+> > > -It turned out though that above approach has led to
+> > > -abuses when the restricted gfp mask is used "just in case" without a
+> > > -deeper consideration which leads to problems because an excessive use
+> > > -of GFP_NOFS/GFP_NOIO can lead to memory over-reclaim or other memory
+> > > -reclaim issues.  
+> > 
+> > I believe this is an important part because it shows that new people
+> > coming to the existing code shouldn't take it as correct and rather
+> > question it. Also having a clear indication that overuse is causing real
+> > problems that might be not immediately visible to subsystems outside of
+> > MM.  
+> 
+> It seemed to say a lot of the same things as this paragraph:
+> 
+> +You may notice that quite a few allocations in the existing code specify
+> +``GFP_NOIO`` or ``GFP_NOFS``. Historically, they were used to prevent
+> +recursion deadlocks caused by direct memory reclaim calling back into
+> +the FS or IO paths and blocking on already held resources. Since 4.12
+> +the preferred way to address this issue is to use the new scope APIs
+> +described below.
+> 
+> Since this is in core-api/ rather than vm/, I felt that discussion of
+> the problems that it causes to the mm was a bit too much detail for the
+> people who would be reading this document.  Maybe I could move that
+> information into a new Documentation/vm/reclaim.rst file?
+> 
+> Let's see if Our Grumpy Editor has time to give us his advice on this.
 
-  /*
-   * If the link goes down after we check for link-up, nothing bad
-   * happens but the config access times out.
-   */
+So I don't have time to really dig into the context here...but I can try.
 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> 
-> ---
-> Changes in V2:
-> * Update commit message, mention that this is optimization
-> ---
->  drivers/pci/controller/pci-aardvark.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-> index 90ff291c24f0..53a4cfd7d377 100644
-> --- a/drivers/pci/controller/pci-aardvark.c
-> +++ b/drivers/pci/controller/pci-aardvark.c
-> @@ -644,6 +644,9 @@ static bool advk_pcie_valid_device(struct advk_pcie *pcie, struct pci_bus *bus,
->  	if ((bus->number == pcie->root_bus_nr) && PCI_SLOT(devfn) != 0)
->  		return false;
->  
-> +	if (bus->number != pcie->root_bus_nr && !advk_pcie_link_up(pcie))
-> +		return false;
-> +
->  	return true;
->  }
->  
-> -- 
-> 2.20.1
-> 
+Certainly there needs to be enough information to get people to think
+about using those flags, even if they are copypasting other code that
+does.  I'd be inclined to err on the side of including too much
+information rather than too little.  Of course, you could make the
+reclaim.rst file, then cross-link it if the result seems better.
+
+In other words, do all of the above :)
+
+jon
