@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3B6211586
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 00:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF45211603
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 00:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727104AbgGAWBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 18:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgGAWBR (ORCPT
+        id S1727106AbgGAW3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 18:29:00 -0400
+Received: from mx0b-00190b01.pphosted.com ([67.231.157.127]:10134 "EHLO
+        mx0b-00190b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725771AbgGAW27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 18:01:17 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D91C08C5DB
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 15:01:17 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id o1so3863821plk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 15:01:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=LiKSdomB7SYoSNNtUaN0cjvxW4EegcZYhSh2BV0kHs4=;
-        b=TaNc5gLo26aH/EIR7tVKCcDNRJLBctdXo/xzCJGvaYLDPUKDRRBU4MLEjLM/BdYac8
-         fC7XEhideABk6sVrDo4/AR5n96UerdZ4sOQx1TOffi+1kg664FfCm/YoJsH6FISUnQDM
-         7e+ANL/05vYi/LdyJGNVZCzLrMY8oc3igGrbK1Yvvtp90qHo/GK9jMJfQwsAkHtmP9Nq
-         FRqwZs82SziAnAgde3r0BDCZvr+zQG3OVKkBxtUw4Cfhqk81gxQuy9dXIwNPtUsmtqRt
-         M2+x8CpF1FL6F8L99DQ9gcuB8kBLwz4sNffvO7LaM9IJORy2y1d20NYYMRj7F3ZYe8on
-         I6JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=LiKSdomB7SYoSNNtUaN0cjvxW4EegcZYhSh2BV0kHs4=;
-        b=RcvsDOpMeqVDsg5OGX2AWd38+yH+mcdKwBxe1I9gmlvT1YBBzolh7D/ZlD8TDwdTs6
-         Mg8aLejWUTtRWXdk2GhYm4wdKSVs0MB3/xwmtyI1dmQDH1mtYY8J/cjTAT+V9pYMQWq8
-         Y3lM/bXcrK8j96+jiVLFvJSs/7d/ysHtuceqRek2h+vHQbfUbGekXhuG7dwgrp+sLm69
-         j8XPmxd0RlzWZ1ZNBlvAO0mBNiaJRC/ZhKlJdmSSwAZhip/J7N2ukb1X04Zb7IV77KuF
-         bSPuiKzXG3YW2TsgPn4aZpvtXO+/A20jGGpKY88QfS7xWR5IY7GBM4kVrSzMl4dSu0im
-         uyIw==
-X-Gm-Message-State: AOAM531Uycw0QbiEsTqX1Edu+OYP1bgV+f9waW6KaNXGbyaPKTN2HeCY
-        tNvuh3i0my1QlwEptoMxZGskkiCQOlY=
-X-Google-Smtp-Source: ABdhPJz8In3fDXWpo9ag7N61J3Dc64PVECUjKJ4bfAdcKZEGlI5+yqvtAF1B235h/YKVwdjy25NVag==
-X-Received: by 2002:a17:90b:1103:: with SMTP id gi3mr29890330pjb.110.1593640876247;
-        Wed, 01 Jul 2020 15:01:16 -0700 (PDT)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id b8sm6010381pja.54.2020.07.01.15.01.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 15:01:15 -0700 (PDT)
-Date:   Wed, 1 Jul 2020 15:01:14 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Dave Hansen <dave.hansen@intel.com>
-cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        alex.shi@linux.alibaba.com, dwagner@suse.de, tobin@kernel.org,
-        cl@linux.com, akpm@linux-foundation.org, ying.huang@intel.com,
-        dan.j.williams@intel.com, cai@lca.pw
-Subject: Re: [PATCH 3/3] mm/vmscan: replace implicit RECLAIM_ZONE checks with
- explicit checks
-In-Reply-To: <0dd57932-44cf-0c2d-e157-07a8d7324006@intel.com>
-Message-ID: <alpine.DEB.2.23.453.2007011457250.1942091@chino.kir.corp.google.com>
-References: <20200701152621.D520E62B@viggo.jf.intel.com> <20200701152627.8761147E@viggo.jf.intel.com> <alpine.DEB.2.23.453.2007011256280.1908531@chino.kir.corp.google.com> <20200701200446.ki5hdgarcpmo2vuf@intel.com>
- <0dd57932-44cf-0c2d-e157-07a8d7324006@intel.com>
-User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
+        Wed, 1 Jul 2020 18:28:59 -0400
+X-Greylist: delayed 1366 seconds by postgrey-1.27 at vger.kernel.org; Wed, 01 Jul 2020 18:28:59 EDT
+Received: from pps.filterd (m0122331.ppops.net [127.0.0.1])
+        by mx0b-00190b01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 061Lrwcg006919;
+        Wed, 1 Jul 2020 23:02:09 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=P96JFBXVyHt85Gh5PYQ4Ee3kDLcMExA/cDXSyYIEwgQ=;
+ b=cMZd285DPh3zYED0z60ZKRdfyekvm88MtbIeXIs84pExvO4ArSqjkSma7y9uX8nAM8EQ
+ zb07TdkICz7taKqbss/WkMQNkCOzWNNFjGdL0xV7XVKxF5+bok7+sO/1esw8RxC/9Bb5
+ 0uYUTCb+07ILFFLj+aq2M7Wc5YucD91dPySFBP7fVbwAeWeLIkqTboJIBHzmXvgIXJ7S
+ 6Eq3rGJdpMc6Gwuge0kuWZ3el18pSod49srUs5eqyaVu7bTya2EbBJqmpfTXglDZVJie
+ +DFmyXY6HM9K7NTFWHaJLVxA9+ncxu2hQwf+WCu/GdYIdJ3LI11zvFVddpaoqTyIIe/N Zg== 
+Received: from prod-mail-ppoint5 (prod-mail-ppoint5.akamai.com [184.51.33.60] (may be forged))
+        by mx0b-00190b01.pphosted.com with ESMTP id 31wu08t74s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Jul 2020 23:02:09 +0100
+Received: from pps.filterd (prod-mail-ppoint5.akamai.com [127.0.0.1])
+        by prod-mail-ppoint5.akamai.com (8.16.0.42/8.16.0.42) with SMTP id 061M23ck007821;
+        Wed, 1 Jul 2020 15:02:08 -0700
+Received: from prod-mail-relay10.akamai.com ([172.27.118.251])
+        by prod-mail-ppoint5.akamai.com with ESMTP id 31x43aqjmg-1;
+        Wed, 01 Jul 2020 15:02:08 -0700
+Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
+        by prod-mail-relay10.akamai.com (Postfix) with ESMTP id E79A43B147;
+        Wed,  1 Jul 2020 22:02:07 +0000 (GMT)
+Subject: Re: Packet gets stuck in NOLOCK pfifo_fast qdisc
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     jonas.bonn@netrounds.com, Paolo Abeni <pabeni@redhat.com>,
+        Michael Zhivich <mzhivich@akamai.com>,
+        David Miller <davem@davemloft.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>
+References: <465a540e-5296-32e7-f6a6-79942dfe2618@netrounds.com>
+ <20200623134259.8197-1-mzhivich@akamai.com>
+ <1849b74f-163c-8cfa-baa5-f653159fefd4@akamai.com>
+ <CAM_iQpX1+dHB0kJF8gRfuDeAb9TsA9mB9H_Og8n8Hr19+EMLJA@mail.gmail.com>
+ <CAM_iQpWjQiG-zVs+e-V=8LvTFbRwgC4y4eoGERjezfAT0Fmm8g@mail.gmail.com>
+From:   Josh Hunt <johunt@akamai.com>
+Message-ID: <c4db67ab-d01f-402a-757b-cd6949e1f7f5@akamai.com>
+Date:   Wed, 1 Jul 2020 15:02:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAM_iQpWjQiG-zVs+e-V=8LvTFbRwgC4y4eoGERjezfAT0Fmm8g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-01_15:2020-07-01,2020-07-01 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
+ phishscore=0 bulkscore=0 mlxlogscore=621 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007010151
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-01_15:2020-07-01,2020-07-01 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
+ phishscore=0 mlxlogscore=574 priorityscore=1501 lowpriorityscore=0
+ clxscore=1011 malwarescore=0 cotscore=-2147483648 suspectscore=0
+ bulkscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2007010152
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Jul 2020, Dave Hansen wrote:
 
-> On 7/1/20 1:04 PM, Ben Widawsky wrote:
-> >> +static inline bool node_reclaim_enabled(void)
-> >> +{
-> >> +	/* Is any node_reclaim_mode bit set? */
-> >> +	return node_reclaim_mode & (RECLAIM_ZONE|RECLAIM_WRITE|RECLAIM_UNMAP);
-> >> +}
-> >> +
-> >>  extern void check_move_unevictable_pages(struct pagevec *pvec);
-> >>  
-> >>  extern int kswapd_run(int nid);
-> > If a user writes a bit that isn't a RECLAIM_* bit to vm.zone_reclaim_mode 
-> > today, it acts as though RECLAIM_ZONE is enabled: we try to reclaim in 
-> > zonelist order before falling back to the next zone in the page allocator.  
-> > The sysctl doesn't enforce any max value :/  I dont know if there is any 
-> > such user, but this would break them if there is.
-> > 
-> > Should this simply be return !!node_reclaim_mode?
+On 7/1/20 12:58 PM, Cong Wang wrote:
+> On Wed, Jul 1, 2020 at 9:05 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>>
+>> On Tue, Jun 30, 2020 at 2:08 PM Josh Hunt <johunt@akamai.com> wrote:
+>>> Do either of you know if there's been any development on a fix for this
+>>> issue? If not we can propose something.
+>>
+>> If you have a reproducer, I can look into this.
 > 
-> You're right that there _could_ be a user-visible behavior change here.
->  But, if there were a change it would be for a bit which wasn't even
-> mentioned in the documentation.  Somebody would have had to look at the
-> doc mentioning 1,2,4 and written an 8.  If they did that, they're asking
-> for trouble because we could have defined the '8' bit to do nasty things
-> like auto-demote all your memory. :)
+> Does the attached patch fix this bug completely?
 > 
-> I'll mention it in the changelog, but I still think we should check the
-> actual, known bits rather than check for 0.
-> 
-> BTW, in the hardware, they almost invariably make unused bits "reserved"
-> and do mean things like #GP if someone tries to set them.  This is a
-> case where the kernel probably should have done the same.  It would have
-> saved us the trouble of asking these questions now.  Maybe we should
-> even do that going forward.
+> Thanks.
 > 
 
-Maybe enforce it in a sysctl handler so the user catches any errors, which 
-would be better than silently accepting some policy that doesn't exist?
+Hey Cong
 
-RECLAIM_UNMAP and/or RECLAIM_WRITE should likely get -EINVAL if attempted 
-to be set without RECLAIM_ZONE as well: they are no-ops without 
-RECLAIM_ZONE.  This would likely have caught something wrong with commit 
-648b5cf368e0 ("mm/vmscan: remove unused RECLAIM_OFF/RECLAIM_ZONE") if it 
-would have already been in place.
+Unfortunately we don't have a reproducer that would be easy to share, 
+however your patch makes sense to me at a high-level. We will test and 
+let you know if this fixes our problem.
 
-I don't feel strongly about this, so feel free to ignore.
+Thanks!
+Josh
