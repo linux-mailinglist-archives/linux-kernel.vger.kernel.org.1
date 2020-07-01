@@ -2,85 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57CFC2101DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 04:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866642101E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 04:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgGACQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Jun 2020 22:16:58 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:47692 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726358AbgGACQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Jun 2020 22:16:37 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxz2r68fteU2dNAA--.5801S16;
-        Wed, 01 Jul 2020 10:16:31 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH v4 14/14] irqchip/xilinx-intc: Fix potential resource leak
-Date:   Wed,  1 Jul 2020 10:16:26 +0800
-Message-Id: <1593569786-11500-15-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1593569786-11500-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1593569786-11500-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxz2r68fteU2dNAA--.5801S16
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFy7Kry5CF4fZryDuw1kuFg_yoWkXrb_Cr
-        1Sgws3GrW0vr17Gw4xtr43Z3sYyFykW3Z2qF4IvF9xA39rWw1xAFsFvw4rAryFkrW0kFs3
-        C3y5Zryjyr17ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbhxYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
-        IE14v26r126s0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0
-        c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2
-        IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2
-        z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2
-        IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4U
-        McvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gr1l42xK82
-        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
-        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
-        IF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI
-        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z2
-        80aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8Gii3UUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1725937AbgGACSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Jun 2020 22:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbgGACR7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Jun 2020 22:17:59 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C4EC03E979
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 19:17:59 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id e197so7142744yba.5
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Jun 2020 19:17:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QQ3KRdyNKq0NjChcDS5Efh5/mojKWckJwK+l+KsphhM=;
+        b=fJXH5kgAaIYzB9rvTW3U8j5fmccmSA2+BZfNUdfYIAtTuU56W7Y0oFU3fczx2+skFX
+         0Jm11JvxZahtDz5DQF5DRP8qBedrTLySaMN8TKxxdRFNEz0vc3XOtEx5yOb2mWzEZrTj
+         bnneqqERieACLYgpzOV3LEI2+4or2SnpV+9bZdt+nE1Q61ZZowJ1BzVAMJdS/zn+YqE1
+         6PqJ+RDkkuB5TiDQiaK/XwClyG4Jp8BA5ss9XY9UStTr8e5p184j7g6VoNUaly9io3jX
+         MD+FViLQmQsp0CjbZNld+lhsKFPu8hRdWZaiqEOlJYgJ9dPwV4s+gaDtVzTva3vsVHPD
+         7FPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QQ3KRdyNKq0NjChcDS5Efh5/mojKWckJwK+l+KsphhM=;
+        b=L1yp95rrVayQ5lMbuUgz6tq+4eMIeFiYLOwpGI9opu20Id1MBuTdDJRQ1YxDFO4ZoE
+         uFVqOkzuIawx558PHc+UtBmG4mnVx3o9gbZE6Slc5Es5eQJQRFhJGIgZGJURPiZXEtJY
+         53AkL8JemIDbEXNgbBNe6Ad/x49/CMtDTmmd4I9tbd+9JdFrGykMb9jwOoPVMy0dKBGp
+         4oaDuBvXr1SQMOjSv9RfGDarwF7R5Nx9oNMfHYgQ3sGtd4RnPiGqb+j/ndPOGjxWKORp
+         uuZ2MexOG4XsfRTCfyNnFbjtSPJ5Hf+clpvL+yzBMuH2H7x5bbG11gM1kQgbPmSEBZrm
+         RLbQ==
+X-Gm-Message-State: AOAM532OvIHlJliRg978igNVYQJNIb+Xxky2DMlEt+cWIXYHhxLkcS3z
+        eRqmePatyAxvxizSNdZ3VYI9TVt311hlPOwctIlrMr8bHSE=
+X-Google-Smtp-Source: ABdhPJxb/7CdKcnOoMbFkhx1mIWpXPOIVNhLUOE+TiuUBaE3PllWXwaKAgIIzzFvXdXbDTh1SASNn48H5oBd2F6SqD8=
+X-Received: by 2002:a25:ca4a:: with SMTP id a71mr17561581ybg.101.1593569878306;
+ Tue, 30 Jun 2020 19:17:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <CANn89iLPqtJG0iESCHF+RcOjo95ukan1oSzjkPjoSJgKpO2wSQ@mail.gmail.com>
+ <20200701020211.GA6875@gondor.apana.org.au>
+In-Reply-To: <20200701020211.GA6875@gondor.apana.org.au>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 30 Jun 2020 19:17:46 -0700
+Message-ID: <CANn89iKP-evuLxeLo6p_98T+FuJ-J5YaMTRG230nqj3R=43tVA@mail.gmail.com>
+Subject: Re: [regression] TCP_MD5SIG on established sockets
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        David Miller <davem@davemloft.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Jonathan Rajotte-Julien <joraj@efficios.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function xilinx_intc_of_init(), system resource "irqc->root_domain"
-was not released in the error case. Thus add jump target for the completion
-of the desired exception handling.
+On Tue, Jun 30, 2020 at 7:02 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> Eric Dumazet <edumazet@google.com> wrote:
+> >
+> > diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+> > index 810cc164f795f8e1e8ca747ed5df51bb20fec8a2..ecc0e3fabce8b03bef823cbfc5c1b0a9e24df124
+> > 100644
+> > --- a/net/ipv4/tcp.c
+> > +++ b/net/ipv4/tcp.c
+> > @@ -4034,9 +4034,12 @@ EXPORT_SYMBOL(tcp_md5_hash_skb_data);
+> > int tcp_md5_hash_key(struct tcp_md5sig_pool *hp, const struct
+> > tcp_md5sig_key *key)
+> > {
+> >        struct scatterlist sg;
+> > +       u8 keylen = key->keylen;
+> >
+> > -       sg_init_one(&sg, key->key, key->keylen);
+> > -       ahash_request_set_crypt(hp->md5_req, &sg, NULL, key->keylen);
+> > +       smp_rmb(); /* paired with smp_wmb() in tcp_md5_do_add() */
+> > +
+> > +       sg_init_one(&sg, key->key, keylen);
+> > +       ahash_request_set_crypt(hp->md5_req, &sg, NULL, keylen);
+> >        return crypto_ahash_update(hp->md5_req);
+> > }
+> > EXPORT_SYMBOL(tcp_md5_hash_key);
+> > diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+> > index ad6435ba6d72ffd8caf783bb25cad7ec151d6909..99916fcc15ca0be12c2c133ff40516f79e6fdf7f
+> > 100644
+> > --- a/net/ipv4/tcp_ipv4.c
+> > +++ b/net/ipv4/tcp_ipv4.c
+> > @@ -1113,6 +1113,9 @@ int tcp_md5_do_add(struct sock *sk, const union
+> > tcp_md5_addr *addr,
+> >        if (key) {
+> >                /* Pre-existing entry - just update that one. */
+> >                memcpy(key->key, newkey, newkeylen);
+> > +
+> > +               smp_wmb(); /* pairs with smp_rmb() in tcp_md5_hash_key() */
+> > +
+> >                key->keylen = newkeylen;
+> >                return 0;
+> >        }
+>
+> This doesn't make sense.  Your smp_rmb only guarantees that you
+> see a version of key->key that's newer than keylen.  What if the
+> key got changed twice? You could still read more than what's in
+> the key (if that's what you're trying to protect against).
 
-Fixes: 9689c99e4950 ("irqchip/xilinx: Add support for parent intc")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- drivers/irqchip/irq-xilinx-intc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+The worst that can happen is a dropped packet.
 
-diff --git a/drivers/irqchip/irq-xilinx-intc.c b/drivers/irqchip/irq-xilinx-intc.c
-index 1d3d273..dcc51e0 100644
---- a/drivers/irqchip/irq-xilinx-intc.c
-+++ b/drivers/irqchip/irq-xilinx-intc.c
-@@ -241,7 +241,7 @@ static int __init xilinx_intc_of_init(struct device_node *intc,
- 		} else {
- 			pr_err("irq-xilinx: interrupts property not in DT\n");
- 			ret = -EINVAL;
--			goto error;
-+			goto error_domain_remove;
- 		}
- 	} else {
- 		primary_intc = irqc;
-@@ -250,6 +250,8 @@ static int __init xilinx_intc_of_init(struct device_node *intc,
- 
- 	return 0;
- 
-+error_domain_remove:
-+	irq_domain_remove(irqc->root_domain);
- error:
- 	iounmap(irqc->base);
- 	kfree(irqc);
--- 
-2.1.0
+Which is anyway going to happen anyway eventually if an application
+changes a TCP MD5 key on a live flow.
 
+The main issue of the prior code was the double read of key->keylen in
+tcp_md5_hash_key(), not that few bytes could change under us.
+
+I used smp_rmb() to ease backports, since old kernels had no
+READ_ONCE()/WRITE_ONCE(), but ACCESS_ONCE() instead.
