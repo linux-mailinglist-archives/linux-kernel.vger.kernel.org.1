@@ -2,102 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136E3210B3E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 14:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3ACB210B50
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 14:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730714AbgGAMrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 08:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730681AbgGAMrZ (ORCPT
+        id S1730657AbgGAMuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 08:50:35 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:61935 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730617AbgGAMuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 08:47:25 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CDCC03E979
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 05:47:25 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id a6so23670523wrm.4
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 05:47:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QnLoeRbMIPawtLY45ADcQqoBmyPKvpQnROp2LZuEcEU=;
-        b=eQGVEx2G9CgwJoaRiyytD3bAeayvmzMigNnaekh5vAFlUA245DSA0g6cw2hlGXXkTW
-         TyXV6XLQMx3AoT3HoWGV2eQt8JGbxSJYRGy6qwhA2IgBrXDA/cdo4z/50HewPsSMFm+t
-         JNWVg4jGv5mg5JOQlU238F13Xkb08XZScJTD9CM0tJUIW02s5q2Pa9EyJBJCNoOzGJiq
-         loqHBKaYCEOPdf0wmPEJH9cCl3zy09Dj/BryXCfKdY6ysjjer/LebryJb+oYNAb90VPR
-         6BCSlv5KNWiLYdSwH7TWohviN3hVdnIN4oyA3MgHfAW1epC7QosHmfSpUQCYffrkdL7P
-         10LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QnLoeRbMIPawtLY45ADcQqoBmyPKvpQnROp2LZuEcEU=;
-        b=CaF4BdlgGaCgf/8a0MsKSWKyPtoORtjlIiwxyFN62UkJQr9A1ICgCfBituukM7arvv
-         0dC8F6RZX71Shz5SdOD/CxEVaoP7XWUREugH5+KlfrTJzK3Z2b5IavlAxQ4VCcDm8y8R
-         zGZm88ga5BjzhBH6przBkBluMEyT6IibgXmBOY76OA3YInyCQcpSE+mmm3QjLwm0rg2f
-         dL/B509MYs+mM3u0tZmkk3Y+DUimIydK51FXU4Uhl2ALk5viGsUkdRLax30F/v3mpkPc
-         F8M3TGamy31w6oyQUHFdCGeY/T8zQa1hIeoYL3M3Qas/WDLj+lDdrnJ2Dmvkn0yLeqtv
-         CSqg==
-X-Gm-Message-State: AOAM532AyETqxBOre8qfs7X7WnqiRJQhbh3FJyaKtTs0T/nTG/9BnsxL
-        AWUW4wmRdL7EDrXwuQN+DczyzQ==
-X-Google-Smtp-Source: ABdhPJx5ZJux5WyOu9icq74PEEkDq20mynj0osGwxVYFvb5SgcZMFB2L8zQjL3GioB4vEN4RkmzRwA==
-X-Received: by 2002:adf:ecce:: with SMTP id s14mr26837602wro.154.1593607644283;
-        Wed, 01 Jul 2020 05:47:24 -0700 (PDT)
-Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id o29sm7817862wra.5.2020.07.01.05.47.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 05:47:23 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     ulf.hansson@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com
-Subject: [PATCH 15/15] mmc: host: sdhci-iproc: Tell the compiler that ACPI functions may not be used
-Date:   Wed,  1 Jul 2020 13:47:02 +0100
-Message-Id: <20200701124702.908713-16-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200701124702.908713-1-lee.jones@linaro.org>
-References: <20200701124702.908713-1-lee.jones@linaro.org>
+        Wed, 1 Jul 2020 08:50:35 -0400
+Received: from fsav403.sakura.ne.jp (fsav403.sakura.ne.jp [133.242.250.102])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 061CnWjI094518;
+        Wed, 1 Jul 2020 21:49:32 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav403.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav403.sakura.ne.jp);
+ Wed, 01 Jul 2020 21:49:32 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav403.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 061CnV4n094515
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Wed, 1 Jul 2020 21:49:32 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: INFO: task hung in request_key_tag
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     syzbot <syzbot+46c77dc7e98c732de754@syzkaller.appspotmail.com>,
+        dhowells@redhat.com, jarkko.sakkinen@linux.intel.com,
+        jmorris@namei.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, serge@hallyn.com,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000961dea05a95c9558@google.com>
+ <728915db-592b-997f-6970-464cc59441d7@i-love.sakura.ne.jp>
+ <20200701122030.GP4332@42.do-not-panic.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <e34e7b99-221f-661b-a299-6cdc35760545@i-love.sakura.ne.jp>
+Date:   Wed, 1 Jul 2020 21:49:29 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <20200701122030.GP4332@42.do-not-panic.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-... as is the case when !CONFIG_ACPI.
+On 2020/07/01 21:20, Luis Chamberlain wrote:
+> On Wed, Jul 01, 2020 at 07:04:15PM +0900, Tetsuo Handa wrote:
+>> I suspect commit 9e9b47d6bbe9df65 ("umh: fix processed error when UMH_WAIT_PROC is used").
+>> Maybe the change in kernel/umh.c and/or security/keys/request_key.c made by that commit is
+>> affecting call_usermodehelper_keys() == 0 case when complete_request_key() is called.
+> 
+> That patch has been dropped for now due to another reported issue
+> bisected to it and even though we have not root caused that issue [0].
+> 
+> It would be good to have a reproducer for this reported issue as well,
 
-Fixes the following W=1 kernel build warning:
+Reproducer is not available yet.
+But at least this patch is changing the behavior of
 
- mmc/host/sdhci-iproc.c:297:36: warning: ‘sdhci_iproc_acpi_ids’ defined but not used [-Wunused-const-variable=]
+  call_usermodehelper_keys() == 0 && (test_bit(KEY_FLAG_USER_CONSTRUCT, &key->flags) || key_validate(key) < 0)
 
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Ray Jui <rjui@broadcom.com>
-Cc: Scott Branden <sbranden@broadcom.com>
-Cc: bcm-kernel-feedback-list@broadcom.com
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/mmc/host/sdhci-iproc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
-index 225603148d7de..9c7d130205edd 100644
---- a/drivers/mmc/host/sdhci-iproc.c
-+++ b/drivers/mmc/host/sdhci-iproc.c
-@@ -294,7 +294,7 @@ static const struct of_device_id sdhci_iproc_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, sdhci_iproc_of_match);
- 
--static const struct acpi_device_id sdhci_iproc_acpi_ids[] = {
-+static const struct acpi_device_id __maybe_unused sdhci_iproc_acpi_ids[] = {
- 	{ .id = "BRCM5871", .driver_data = (kernel_ulong_t)&iproc_cygnus_data },
- 	{ .id = "BRCM5872", .driver_data = (kernel_ulong_t)&iproc_data },
- 	{ /* sentinel */ }
--- 
-2.25.1
+case from key_negate_and_link() to key_revoke() in complete_request_key().
+Since test_and_clear_bit(KEY_FLAG_USER_CONSTRUCT, &key->flags) might be called from
+key_reject_and_link() from key_negate_and_link(), this change might be the cause of
+this hung task report.
 
