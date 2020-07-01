@@ -2,132 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2462210467
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 09:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C537621046A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 09:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727870AbgGAHBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 03:01:36 -0400
-Received: from mail-eopbgr1310085.outbound.protection.outlook.com ([40.107.131.85]:54539
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727959AbgGAHBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 03:01:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cAOcqkdaSdkCLJKJXAYQEwz76zZVfvWyYH4w1M3w51AFOyNOuDsO1l0IM4wK2ujfWX2uaNvNzGTGchn8c071V000+X+FXuNgYuCNAJQWDuVR8wWQANRWRqFJLhPLbUHa/3PbMvo2P7AiWaYRbyQQ8TjnMwTVj+TdUWO0sXYLMKSG1NrPOCNT/bYEU77Cp4e2121TrHVfaUjNdDY6IpOZ51CbPdyGMCEwOBQbtaRMS7P45p5eQbvaO1kx3SFSZwoLHy3H8fZuaC2oT4OOFd0W7APdb1F+Agkd0K0XOHzR3PX3outTRi8Y/0xPNOe1fpfAySkYnkXLKz4Q1tgZ2BtEJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v+iiegB7SmB9uLlhXYIhizTg8WDqm5mOCBNgtxKG25Y=;
- b=OoIOVHdCPrdkyoZvqD1ZsCgA2QHVtzaZoCzVLAUAOIZs0pKUkDmBVIUpCUhzkhvcD9xL0oW4WkroA3TuaEhZYMPm0YDbB+mBJgt7q0510gojoffiRx689yB3SBWy7EUnSAnC2A8GXObLteP+IJevq3rnCCl36Fb+6LMd7fh7wqTnzmo4J7DNyxOES84yThEhoibJ/rIFSXHCyyJBg93rYxBfWbty+jr/YYdHXYvrzX+VW6glktDyC/7af91S4VLprzUMoNCayK7xh3/BDXQMm97tQsAnpuHKOs9lCluqPfdnmzYS/nykJZ98q9wrtWsp9vOZWhHr6/G4AeCkh+dRww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
+        id S1728090AbgGAHEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 03:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727981AbgGAHEX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 03:04:23 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E51C061755;
+        Wed,  1 Jul 2020 00:04:23 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id b92so10635476pjc.4;
+        Wed, 01 Jul 2020 00:04:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oppoglobal.onmicrosoft.com; s=selector1-oppoglobal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v+iiegB7SmB9uLlhXYIhizTg8WDqm5mOCBNgtxKG25Y=;
- b=G5Vmq7+b7RQaeimbtemAkZIC4vWTDf0muTRF8252D/Hb6UHjkQ+oEZHozzAzic/9WzCkChefpqEeBls/EWdZpn6E/EJehN4Mal55q0k8Z9KUWSm4IUEyNjpAORIJpA91qEHlx53+JcM2q5f5B7vlP60y1Orf2FeOJ3XB23TaJxo=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oppo.com;
-Received: from HKAPR02MB4291.apcprd02.prod.outlook.com (2603:1096:203:d3::12)
- by HK2PR02MB4033.apcprd02.prod.outlook.com (2603:1096:202:3e::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.21; Wed, 1 Jul
- 2020 07:01:30 +0000
-Received: from HKAPR02MB4291.apcprd02.prod.outlook.com
- ([fe80::d4d8:820c:6e00:69d2]) by HKAPR02MB4291.apcprd02.prod.outlook.com
- ([fe80::d4d8:820c:6e00:69d2%8]) with mapi id 15.20.3131.030; Wed, 1 Jul 2020
- 07:01:30 +0000
-From:   Peng Hao <richard.peng@oppo.com>
-To:     maz@kernel.org, catalin.marinas@arm.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Peng Hao <richard.peng@oppo.com>
-Subject: [PATCH] kvm/arm64: Correct incorrect function parameter specification
-Date:   Wed,  1 Jul 2020 03:01:12 -0400
-Message-Id: <20200701070112.384151-1-richard.peng@oppo.com>
-X-Mailer: git-send-email 2.18.4
-Content-Type: text/plain; charset="utf-8"
-X-ClientProxiedBy: SG2PR06CA0156.apcprd06.prod.outlook.com
- (2603:1096:1:1f::34) To HKAPR02MB4291.apcprd02.prod.outlook.com
- (2603:1096:203:d3::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.adc.com (58.252.5.74) by SG2PR06CA0156.apcprd06.prod.outlook.com (2603:1096:1:1f::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21 via Frontend Transport; Wed, 1 Jul 2020 07:01:29 +0000
-X-Mailer: git-send-email 2.18.4
-X-Originating-IP: [58.252.5.74]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 601a0574-40d2-4ae9-b5c6-08d81d8c94d4
-X-MS-TrafficTypeDiagnostic: HK2PR02MB4033:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HK2PR02MB4033133F6B75051378438C8EE06C0@HK2PR02MB4033.apcprd02.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-Forefront-PRVS: 04519BA941
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1g/yXVyJdWKufZVBb+MYrDWxs0gjOTNIqik3N2gQHDjhTniMIHlImn9nsapQnPr8qUDFA8PUC9vAQa8YYxxxOBs4JkKloIDoGb6+8g889gPsKVrCtFYeTkBi6FmG6oF6mVBfNRGd3BjHqWL9vl14j/dg2NUCvAgu0aNrlzPXaW8wXxhRl6RxohFmnNbeeIJbEZuzc4IzsaBEoHcZt/+p88xq/kjkNFs6bDNlq1xHu8NrTwGOLq4ISN3OV3G6XoETNmzxLWSci2i1HEXE6daUT8WMsL7j9ubRmflXuPy7gAmsaMERMl1CdVB46PDsusszV6FQWDsJtvNb70TqD2Wy3ZkELaD9INPMffT0ugVNtrAgvBM4I7l/npzY/4LbXLtIv5HcZeAtKN7VYaFR8WIUWw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HKAPR02MB4291.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(396003)(366004)(346002)(376002)(136003)(86362001)(6506007)(26005)(52116002)(6486002)(186003)(478600001)(16526019)(36756003)(66556008)(5660300002)(956004)(2616005)(66946007)(1076003)(83380400001)(8676002)(6512007)(6666004)(316002)(8936002)(107886003)(2906002)(66476007)(4326008)(1670200006)(11606004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: JF6HQBJiCTRN/d2YW8Qbplf6eqaELivka0dXXlhyXc1N9hjgLJETMXUeRSyqJnGbr87N7GtZW2zQBxjdYPYodzVZ8g54SVW2vAj5dYdHc7+SHdpeyeTmydIjO4kKX/nyK+kzozrStZErQ3bRPXZwW0R1L2G6Y1jEko1iaekJI8cAe3sYwiyX7x4fRW40msCkgSJS345MrSJ37kmUdxi/zim5UzcjaF8uxiUpp2lhsLggY4rYRNVD6XuqN7aOkd1hkprvcyRQIg6QtL+gQlzCUyc0letfT0jWQouJEDU+rqZsUUOC7BoOUV3PK7SP9i31rrPT+nJfYmsZGHExQ+kc8vpxklV9ML5MkwcX6Kay5aW+AYl4LtPcSwghyCfoPl/a94BFJdXezBaqzEe9I8lZOldyU+Nw2meliJ+ysUl/i3A+SxI0qtGF//6INvsW3EeyQ7EPI92lYL41A/+rE+DZuWQnY4f9AsqzAIxV0470zLc=
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 601a0574-40d2-4ae9-b5c6-08d81d8c94d4
-X-MS-Exchange-CrossTenant-AuthSource: HKAPR02MB4291.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2020 07:01:30.5263
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dnwxqpIZkoKEUzqgGMxTAXslPEoGtUPBDyK40195Va6VLKq2D7Im+KzEcwWiS/5naic2LvMqUfH0iY1mv28VWQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR02MB4033
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=gEzbAtWIsd1iT+azfZmBohV/AqNwaJqbCk/ZUwUKLT0=;
+        b=NnxOQGwN2fiVijkyKWMDRKyu6NhJ9XGf1RN8fCmtWJbYPFPZwt1E2v1y95ag2laVoz
+         JuRRtV/SSKcCUZ5IBPUmO4XZZOss80RdERJBx/cWm3TR/JNM8fcyzk79WbIqDxc2+8Um
+         6bAnewGJU/0QdRS1mj/C/NqEo5w4fF/ao5pT/Bfp2sMKKvlfNqt0xWNBGW4yy9TfKEQJ
+         UTMBlxfU8+DNUQ/I/lK0ONPLhCR47k9No8uQ6GRE8QF32H5caMOcNZ/GXPFSCQlPGX7p
+         vdMzvNa00shOqnPOB6rxqrSPoA6ueTsDPgqXItp09e21hATcW6yrktrPCXRbnsAO0lYZ
+         URfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=gEzbAtWIsd1iT+azfZmBohV/AqNwaJqbCk/ZUwUKLT0=;
+        b=hy4nJOd4iJFyHi0RMpOLHbQEyAon/bm5qsRvbK/EhnrSs4oK0YgXrv/WSmQidYnghV
+         GPoDtylMVM5ZhlgreT4ICW79Dj6xqAYHjA0datPYXh6ntpSICdp52sK0jb3teCM/1tbJ
+         NJ9+X0wJ4HLvvZjTr3kccteV0rapWeYg1ANU3p7sB8+LuDFxR70pRQanSnkngnFOR4bd
+         bvVhaBUCE+UD0p7bh8oJMAff0mGW1TpLbh6+yIKJ6pxK2uuaOjgBRWgc30mOvIayPah5
+         mH804Xhlq9jW07z/wmd9hCooW983vUaUc/bitwrrDps+ox7NsS99qvyV9t+fLhw9NCnT
+         4Akg==
+X-Gm-Message-State: AOAM5305EP+J5NjBuU5aJDt9JgYF/8bVhCL4F7e+O711sJNQKrrs68Md
+        Pxhye5P9M8VM6m2vxdco9tqfWd7LnMc=
+X-Google-Smtp-Source: ABdhPJx/6lPBNeVtHwsvQ63vNg3gQTw0bGryosd9ftVV+EMIb/Bl718hMVuloKtYMtKlOW9lBXxOlQ==
+X-Received: by 2002:a17:902:9042:: with SMTP id w2mr11542065plz.8.1593587062534;
+        Wed, 01 Jul 2020 00:04:22 -0700 (PDT)
+Received: from in099003062.routereb3c90.com ([106.51.138.45])
+        by smtp.gmail.com with ESMTPSA id f2sm3623201pfb.184.2020.07.01.00.04.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jul 2020 00:04:21 -0700 (PDT)
+From:   Vinay Simha BN <simhavcs@gmail.com>
+To:     narmstrong@baylibre.com, Ken-Sue.Tan@taec.toshiba.com,
+        Chris.Cheng@taec.toshiba.com, Bhushan.Patel@taec.toshiba.com
+Cc:     Vinay Simha BN <simhavcs@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v5 1/2] dt-binding: Add DSI/LVDS TC358775 bridge bindings
+Date:   Wed,  1 Jul 2020 12:33:36 +0530
+Message-Id: <20200701070344.6330-1-simhavcs@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-update_vmid() just has one parameter "vmid".The other parameter
-"kvm" is no longer used.
+This driver is tested with two panels with Apq8016-IFC6309 board
+https://www.inforcecomputing.com/products/single-board-computers-sbc/qualcomm-snapdragon-410-inforce-6309-micro-sbc
 
-Signed-off-by: Peng Hao<richard.peng@oppo.com>
+1. 1366x768@60 auo,b101xtn01 data-mapping = "jeida-24"
+2. 800x480@60 innolux,at070tn92 data-mapping = "vesa-24"
+
+Signed-off-by: Vinay Simha BN <simhavcs@gmail.com>
+
 ---
- arch/arm64/kvm/arm.c | 1 -
- 1 file changed, 1 deletion(-)
+v1:
+ Initial version wast .txt file
 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 90cb90561446..5bf9bf54b22c 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -466,7 +466,6 @@ static bool need_new_vmid_gen(struct kvm_vmid *vmid)
+v2:
+ From txt to yaml file format
 
- /**
-  * update_vmid - Update the vmid with a valid VMID for the current generat=
-ion
-- * @kvm: The guest that struct vmid belongs to
-  * @vmid: The stage-2 VMID information struct
-  */
- static void update_vmid(struct kvm_vmid *vmid)
---
-2.18.4
+v3:
+* Andrzej Hajda review comments incorporated
+  dual port lvds implemented
 
-________________________________
-OPPO
+* Laurent Pinchart review comments incorporated
+  dsi lanes property removed and it is dynamically
+  picked from the dsi ports
+  VESA/JEIDA format picked from panel-lvds dts
+---
+ .../display/bridge/toshiba,tc358775.yaml      | 204 ++++++++++++++++++
+ 1 file changed, 204 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/toshiba,tc358775.yaml
 
-=E6=9C=AC=E7=94=B5=E5=AD=90=E9=82=AE=E4=BB=B6=E5=8F=8A=E5=85=B6=E9=99=84=E4=
-=BB=B6=E5=90=AB=E6=9C=89OPPO=E5=85=AC=E5=8F=B8=E7=9A=84=E4=BF=9D=E5=AF=86=
-=E4=BF=A1=E6=81=AF=EF=BC=8C=E4=BB=85=E9=99=90=E4=BA=8E=E9=82=AE=E4=BB=B6=E6=
-=8C=87=E6=98=8E=E7=9A=84=E6=94=B6=E4=BB=B6=E4=BA=BA=E4=BD=BF=E7=94=A8=EF=BC=
-=88=E5=8C=85=E5=90=AB=E4=B8=AA=E4=BA=BA=E5=8F=8A=E7=BE=A4=E7=BB=84=EF=BC=89=
-=E3=80=82=E7=A6=81=E6=AD=A2=E4=BB=BB=E4=BD=95=E4=BA=BA=E5=9C=A8=E6=9C=AA=E7=
-=BB=8F=E6=8E=88=E6=9D=83=E7=9A=84=E6=83=85=E5=86=B5=E4=B8=8B=E4=BB=A5=E4=BB=
-=BB=E4=BD=95=E5=BD=A2=E5=BC=8F=E4=BD=BF=E7=94=A8=E3=80=82=E5=A6=82=E6=9E=9C=
-=E6=82=A8=E9=94=99=E6=94=B6=E4=BA=86=E6=9C=AC=E9=82=AE=E4=BB=B6=EF=BC=8C=E8=
-=AF=B7=E7=AB=8B=E5=8D=B3=E4=BB=A5=E7=94=B5=E5=AD=90=E9=82=AE=E4=BB=B6=E9=80=
-=9A=E7=9F=A5=E5=8F=91=E4=BB=B6=E4=BA=BA=E5=B9=B6=E5=88=A0=E9=99=A4=E6=9C=AC=
-=E9=82=AE=E4=BB=B6=E5=8F=8A=E5=85=B6=E9=99=84=E4=BB=B6=E3=80=82
+diff --git a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358775.yaml b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358775.yaml
+new file mode 100644
+index 000000000000..ec53d62d408b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358775.yaml
+@@ -0,0 +1,204 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/bridge/toshiba,tc358775.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Toshiba TC358775 DSI to LVDS bridge bindings
++
++maintainers:
++ - Vinay Simha BN <simhavcs@gmail.com>
++
++description: |
++ This binding supports DSI to LVDS bridge TC358775
++
++properties:
++  compatible:
++    const: toshiba,tc358775
++
++  reg:
++    maxItems: 1
++    description: i2c address of the bridge, 0x0f
++
++  vdd-supply:
++    maxItems: 1
++    description:  1.2V LVDS Power Supply
++
++  vddio-supply:
++    maxItems: 1
++    description: 1.8V IO Power Supply
++
++  stby-gpios:
++    maxItems: 1
++    description: Standby pin, Low active
++
++  reset-gpios:
++    maxItems: 1
++    description: Hardware reset, Low active
++
++  ports:
++    type: object
++    description:
++      A node containing input and output port nodes with endpoint definitions
++      as documented in
++      Documentation/devicetree/bindings/media/video-interfaces.txt
++    properties:
++      "#address-cells":
++        const: 1
++
++      "#size-cells":
++        const: 0
++
++      port@0:
++        type: object
++        description: |
++          DSI Input. The remote endpoint phandle should be a
++          reference to a valid mipi_dsi_host device node.
++
++      port@1:
++        type: object
++        description: |
++          Video port for LVDS output (panel or connector).
++
++      port@2:
++        type: object
++        description: |
++          Video port for Dual link LVDS output (panel or connector).
++
++    required:
++      - port@0
++      - port@1
++
++required:
++ - compatible
++ - reg
++ - vdd-supply
++ - vddio-supply
++ - stby-gpios
++ - reset-gpios
++ - ports
++
++examples:
++ - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    i2c@78b8000 {
++        /* On High speed expansion */
++        label = "HS-I2C2";
++        reg = <0x078b8000 0x500>;
++        clock-frequency = <400000>; /* fastmode operation */
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        tc_bridge: bridge@f {
++            compatible = "toshiba,tc358775";
++            reg = <0x0f>;
++
++            vdd-supply = <&pm8916_l2>;
++            vddio-supply = <&pm8916_l6>;
++
++            stby-gpios = <&msmgpio 99 GPIO_ACTIVE_LOW>;
++            reset-gpios = <&msmgpio 72 GPIO_ACTIVE_LOW>;
++
++            ports {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                port@0 {
++                    reg = <0>;
++                    d2l_in_test: endpoint {
++                        remote-endpoint = <&dsi0_out>;
++                    };
++                };
++
++                port@1 {
++                    reg = <1>;
++                    lvds_out: endpoint {
++                        remote-endpoint = <&panel_in>;
++                    };
++                };
++            };
++        };
++    };
++
++    dsi@1a98000 {
++        reg = <0x1a98000 0x25c>;
++        reg-names = "dsi_ctrl";
++
++        ports {
++            #address-cells = <1>;
++            #size-cells = <0>;
++            port@1 {
++                reg = <1>;
++                dsi0_out: endpoint {
++                    remote-endpoint = <&d2l_in_test>;
++                        data-lanes = <0 1 2 3>;
++                };
++             };
++         };
++     };
++
++ - |
++    i2c@78b8000 {
++        /* On High speed expansion */
++        label = "HS-I2C2";
++        reg = <0x078b8000 0x500>;
++        clock-frequency = <400000>; /* fastmode operation */
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        tc_bridge_dual: bridge@f {
++            compatible = "toshiba,tc358775";
++            reg = <0x0f>;
++
++            vdd-supply = <&pm8916_l2>;
++            vddio-supply = <&pm8916_l6>;
++
++            stby-gpios = <&msmgpio 99 GPIO_ACTIVE_LOW>;
++            reset-gpios = <&msmgpio 72 GPIO_ACTIVE_LOW>;
++
++            ports {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                port@0 {
++                    reg = <0>;
++                    d2l_in_dual: endpoint {
++                        remote-endpoint = <&dsi0_out_dual>;
++                    };
++                };
++
++                port@1 {
++                    reg = <1>;
++                    lvds0_out: endpoint {
++                        remote-endpoint = <&panel_in0>;
++                    };
++                };
++
++                port@2 {
++                    reg = <2>;
++                    lvds1_out: endpoint {
++                        remote-endpoint = <&panel_in1>;
++                    };
++                };
++            };
++        };
++    };
++
++    dsi@1a98000 {
++        reg = <0x1a98000 0x25c>;
++        reg-names = "dsi_ctrl";
++
++        ports {
++            #address-cells = <1>;
++            #size-cells = <0>;
++            port@1 {
++                reg = <1>;
++                dsi0_out_dual: endpoint {
++                    remote-endpoint = <&d2l_in_dual>;
++                        data-lanes = <0 1 2 3>;
++                };
++             };
++         };
++     };
++...
+-- 
+2.17.1
 
-This e-mail and its attachments contain confidential information from OPPO,=
- which is intended only for the person or entity whose address is listed ab=
-ove. Any use of the information contained herein in any way (including, but=
- not limited to, total or partial disclosure, reproduction, or disseminatio=
-n) by persons other than the intended recipient(s) is prohibited. If you re=
-ceive this e-mail in error, please notify the sender by phone or email imme=
-diately and delete it!
