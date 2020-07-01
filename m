@@ -2,55 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB3B2105BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E13DC2105B9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728761AbgGAIFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 04:05:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728559AbgGAIEy (ORCPT
+        id S1728743AbgGAIFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 04:05:07 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36298 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728630AbgGAIE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 04:04:54 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46D5C061755;
-        Wed,  1 Jul 2020 01:04:53 -0700 (PDT)
-Date:   Wed, 01 Jul 2020 08:04:51 -0000
+        Wed, 1 Jul 2020 04:04:57 -0400
+Date:   Wed, 01 Jul 2020 08:04:52 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1593590692;
+        s=2020; t=1593590693;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dI8s4+cIJXIr3ppZrNkXAQDHLyAZwlVAKlfgSA65wnI=;
-        b=DY25a8mn0Pg5hMJvjsu2zJz6qOoeYO7zHf0D57EhYxOWg7/7dScMHQTMr/040/M1P3FrL5
-        AyJ7BYearhVtOI7Cmb5elDKe2PnQyAyysqnpYkmnM3FLjig7jo1iI2HPXuZZ8h7pvH3mzJ
-        Z+WspR5NZ2sxOnZX5+2FwByQbQce3qlxGwPiJH+IYA1iPDx84XhitUOra7/BuOemCoLR8D
-        hoSgnN6c8Dumyb4ZovyB7C7wBAa1MFfyCw7c/Cqq6cV/VRV3iJEQ7JS28Ig56vQrT/CRd9
-        AdAGTNDGYuf+z4ix1Cog1kavECKv9J1qqJ1QFVERto6XbaNV4EYCuLc3PTsbmg==
+        bh=rP5Wpc2uSz2OcJ40AqJH5dzlA82IPYkFcHfCicFcDRA=;
+        b=U7vhJS9Q3pgCFZ8aLCbZK7JHjHNYJEhRKT3R37/DMZmtr/HppTXq5c/3UwcPbxSar9ILh+
+        Z5Px3WD8o16Cm9NbIbez5BYBGJtfHTCaZ2n9x0YGUQe3uIa+mjF4uuUOBHMmaSxWa7uhjF
+        rwX6EZGKhASCzvLIef5nCjC2hER9giXNEvtFdmmb1+ZWtZkTMtkEu0AiZq+ELEd0Y5Ziwa
+        nG00aAnIrcoKvdaUQicD2ReQWdFd8LRnnB34kJqQndWxiwzqH0ixzLHqKvBcqFNzq7bB+l
+        QooH3POG+jP21SFEvvhOKbjWVPLu7lFdSpYFlZLpF31etqWq3Mr3Kti6TV6Grw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1593590692;
+        s=2020e; t=1593590693;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dI8s4+cIJXIr3ppZrNkXAQDHLyAZwlVAKlfgSA65wnI=;
-        b=Moaa4emOtmLyMHEYslHaop0GLGJIOEhMSuwCVRLvQHlBDYP1diR7p/RPPicqnP3RfqPYfe
-        Rlvie/SECazeHIDA==
+        bh=rP5Wpc2uSz2OcJ40AqJH5dzlA82IPYkFcHfCicFcDRA=;
+        b=HANPVTNOXzcRpyKcWCsdiWQDWgEuGMbRbGRdt1uSsiDfDpGcapPf4i0a91usuBnHFd0+Nz
+        fbaINFp5tI+4XgAw==
 From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/entry/64/compat: Fix Xen PV SYSENTER frame setup
+Subject: [tip: x86/urgent] x86/entry: Assert that syscalls are on the right stack
 Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <947880c41ade688ff4836f665d0c9fcaa9bd1201.1593191971.git.luto@kernel.org>
-References: <947880c41ade688ff4836f665d0c9fcaa9bd1201.1593191971.git.luto@kernel.org>
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <52059e42bb0ab8551153d012d68f7be18d72ff8e.1593191971.git.luto@kernel.org>
+References: <52059e42bb0ab8551153d012d68f7be18d72ff8e.1593191971.git.luto@kernel.org>
 MIME-Version: 1.0
-Message-ID: <159359069165.4006.16569596642784099904.tip-bot2@tip-bot2>
+Message-ID: <159359069277.4006.7142366313823999075.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,75 +58,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     ffae641f57476369b4d503402b37ebe489d23395
-Gitweb:        https://git.kernel.org/tip/ffae641f57476369b4d503402b37ebe489d23395
+Commit-ID:     c9c26150e61de441ab58b25c1f64afc049ee0fee
+Gitweb:        https://git.kernel.org/tip/c9c26150e61de441ab58b25c1f64afc049ee0fee
 Author:        Andy Lutomirski <luto@kernel.org>
-AuthorDate:    Fri, 26 Jun 2020 10:21:13 -07:00
+AuthorDate:    Fri, 26 Jun 2020 10:21:11 -07:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 01 Jul 2020 10:00:26 +02:00
+CommitterDate: Wed, 01 Jul 2020 10:00:25 +02:00
 
-x86/entry/64/compat: Fix Xen PV SYSENTER frame setup
+x86/entry: Assert that syscalls are on the right stack
 
-The SYSENTER frame setup was nonsense.  It worked by accident because the
-normal code into which the Xen asm jumped (entry_SYSENTER_32/compat) threw
-away SP without touching the stack.  entry_SYSENTER_compat was recently
-modified such that it relied on having a valid stack pointer, so now the
-Xen asm needs to invoke it with a valid stack.
+Now that the entry stack is a full page, it's too easy to regress the
+system call entry code and end up on the wrong stack without noticing.
+Assert that all system calls (SYSCALL64, SYSCALL32, SYSENTER, and INT80)
+are on the right stack and have pt_regs in the right place.
 
-Fix it up like SYSCALL: use the Xen-provided frame and skip the bare
-metal prologue.
-
-Fixes: 1c3e5d3f60e2 ("x86/entry: Make entry_64_compat.S objtool clean")
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lkml.kernel.org/r/947880c41ade688ff4836f665d0c9fcaa9bd1201.1593191971.git.luto@kernel.org
+Link: https://lkml.kernel.org/r/52059e42bb0ab8551153d012d68f7be18d72ff8e.1593191971.git.luto@kernel.org
 
 ---
- arch/x86/entry/entry_64_compat.S |  1 +
- arch/x86/xen/xen-asm_64.S        | 20 ++++++++++++++++----
- 2 files changed, 17 insertions(+), 4 deletions(-)
+ arch/x86/entry/common.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
-index 7b9d815..381a6de 100644
---- a/arch/x86/entry/entry_64_compat.S
-+++ b/arch/x86/entry/entry_64_compat.S
-@@ -79,6 +79,7 @@ SYM_CODE_START(entry_SYSENTER_compat)
- 	pushfq				/* pt_regs->flags (except IF = 0) */
- 	pushq	$__USER32_CS		/* pt_regs->cs */
- 	pushq	$0			/* pt_regs->ip = 0 (placeholder) */
-+SYM_INNER_LABEL(entry_SYSENTER_compat_after_hwframe, SYM_L_GLOBAL)
- 	pushq	%rax			/* pt_regs->orig_ax */
- 	pushq	%rdi			/* pt_regs->di */
- 	pushq	%rsi			/* pt_regs->si */
-diff --git a/arch/x86/xen/xen-asm_64.S b/arch/x86/xen/xen-asm_64.S
-index 5d252aa..e1e1c7e 100644
---- a/arch/x86/xen/xen-asm_64.S
-+++ b/arch/x86/xen/xen-asm_64.S
-@@ -161,10 +161,22 @@ SYM_FUNC_END(xen_syscall32_target)
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index bd3f141..ed8ccc8 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -45,6 +45,15 @@
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/syscalls.h>
  
- /* 32-bit compat sysenter target */
- SYM_FUNC_START(xen_sysenter_target)
--	mov 0*8(%rsp), %rcx
--	mov 1*8(%rsp), %r11
--	mov 5*8(%rsp), %rsp
--	jmp entry_SYSENTER_compat
-+	/*
-+	 * NB: Xen is polite and clears TF from EFLAGS for us.  This means
-+	 * that we don't need to guard against single step exceptions here.
-+	 */
-+	popq %rcx
-+	popq %r11
++/* Check that the stack and regs on entry from user mode are sane. */
++static void check_user_regs(struct pt_regs *regs)
++{
++	if (IS_ENABLED(CONFIG_DEBUG_ENTRY)) {
++		WARN_ON_ONCE(!on_thread_stack());
++		WARN_ON_ONCE(regs != task_pt_regs(current));
++	}
++}
 +
-+	/*
-+	 * Neither Xen nor the kernel really knows what the old SS and
-+	 * CS were.  The kernel expects __USER32_DS and __USER32_CS, so
-+	 * report those values even though Xen will guess its own values.
-+	 */
-+	movq $__USER32_DS, 4*8(%rsp)
-+	movq $__USER32_CS, 1*8(%rsp)
-+
-+	jmp entry_SYSENTER_compat_after_hwframe
- SYM_FUNC_END(xen_sysenter_target)
+ #ifdef CONFIG_CONTEXT_TRACKING
+ /**
+  * enter_from_user_mode - Establish state when coming from user mode
+@@ -127,9 +136,6 @@ static long syscall_trace_enter(struct pt_regs *regs)
+ 	unsigned long ret = 0;
+ 	u32 work;
  
- #else /* !CONFIG_IA32_EMULATION */
+-	if (IS_ENABLED(CONFIG_DEBUG_ENTRY))
+-		BUG_ON(regs != task_pt_regs(current));
+-
+ 	work = READ_ONCE(ti->flags);
+ 
+ 	if (work & (_TIF_SYSCALL_TRACE | _TIF_SYSCALL_EMU)) {
+@@ -346,6 +352,8 @@ __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
+ {
+ 	struct thread_info *ti;
+ 
++	check_user_regs(regs);
++
+ 	enter_from_user_mode();
+ 	instrumentation_begin();
+ 
+@@ -409,6 +417,8 @@ static void do_syscall_32_irqs_on(struct pt_regs *regs)
+ /* Handles int $0x80 */
+ __visible noinstr void do_int80_syscall_32(struct pt_regs *regs)
+ {
++	check_user_regs(regs);
++
+ 	enter_from_user_mode();
+ 	instrumentation_begin();
+ 
+@@ -460,6 +470,8 @@ __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
+ 					vdso_image_32.sym_int80_landing_pad;
+ 	bool success;
+ 
++	check_user_regs(regs);
++
+ 	/*
+ 	 * SYSENTER loses EIP, and even SYSCALL32 needs us to skip forward
+ 	 * so that 'regs->ip -= 2' lands back on an int $0x80 instruction.
