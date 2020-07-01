@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68EF6210966
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 12:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8497521096F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 12:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730083AbgGAKb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 06:31:57 -0400
-Received: from vps.xff.cz ([195.181.215.36]:42460 "EHLO vps.xff.cz"
+        id S1730141AbgGAKcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 06:32:31 -0400
+Received: from vps.xff.cz ([195.181.215.36]:42454 "EHLO vps.xff.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729991AbgGAKbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730000AbgGAKbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 1 Jul 2020 06:31:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1593599492; bh=io8IIDWW5fH3zfZMutivNOdZXhTkjY8qZHk7MdbKacI=;
+        t=1593599492; bh=d01KMfiwzeoisglB/Cqi2m/MksDraHInx82M1f3A4AM=;
         h=From:To:Cc:Subject:Date:References:From;
-        b=gy45UMG7npGE5n3k3wmTIWyxBRnS3RNnq0zN/QhbfTZmzOZWPdJVXclVZhxc62Mfg
-         z5y2m6G1YbAGjR3ctVxjMOrpB/CG2my9Ihja8LqpIP3zJOnDb2B6YGd5EMERsJ6trQ
-         0jvtNZsoedRGwUBKixGUQ2eaYfGGyRFi9JGH+XN4=
+        b=Gifwo9IlizZraP++g7fxaRVhefFdSUYC88bZmUbpa8t/gEnzliNnDv4zJkYcB4l2r
+         MK4CTX2OzESfRq7iHZ0ZnsKJaKn7b12At5OgkiPtHqmXrIbCMsXiAzwFPMZN0R+7nO
+         +hg17nsGHYfLXNJgs1zZ+8x4C/eip0taAhEu5syE=
 From:   Ondrej Jirman <megous@megous.com>
 To:     linux-sunxi@googlegroups.com,
         Thierry Reding <thierry.reding@gmail.com>,
@@ -36,9 +36,9 @@ Cc:     Ondrej Jirman <megous@megous.com>, dri-devel@lists.freedesktop.org,
         Samuel Holland <samuel@sholland.org>,
         Martijn Braam <martijn@brixit.nl>, Luca Weiss <luca@z3ntu.xyz>,
         Bhushan Shah <bshah@kde.org>
-Subject: [PATCH v6 07/13] drm/panel: st7703: Move code specific to jh057n closer together
-Date:   Wed,  1 Jul 2020 12:31:20 +0200
-Message-Id: <20200701103126.1512615-8-megous@megous.com>
+Subject: [PATCH v6 08/13] drm/panel: st7703: Move generic part of init sequence to enable callback
+Date:   Wed,  1 Jul 2020 12:31:21 +0200
+Message-Id: <20200701103126.1512615-9-megous@megous.com>
 In-Reply-To: <20200701103126.1512615-1-megous@megous.com>
 References: <20200701103126.1512615-1-megous@megous.com>
 MIME-Version: 1.0
@@ -48,82 +48,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's better than having it spread around the driver.
+Calling sleep out and display on is a controller specific part
+of the initialization process. Move it out of the panel specific
+initialization function to the enable callback.
 
 Signed-off-by: Ondrej Jirman <megous@megous.com>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/gpu/drm/panel/panel-sitronix-st7703.c | 50 +++++++++----------
- 1 file changed, 25 insertions(+), 25 deletions(-)
+ drivers/gpu/drm/panel/panel-sitronix-st7703.c | 33 ++++++++++---------
+ 1 file changed, 18 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7703.c b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
-index 08cbc316266c..d03aab10cfef 100644
+index d03aab10cfef..cdbf7dfb4dd4 100644
 --- a/drivers/gpu/drm/panel/panel-sitronix-st7703.c
 +++ b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
-@@ -153,6 +153,31 @@ static int jh057n_init_sequence(struct st7703 *ctx)
+@@ -84,8 +84,6 @@ static inline struct st7703 *panel_to_st7703(struct drm_panel *panel)
+ static int jh057n_init_sequence(struct st7703 *ctx)
+ {
+ 	struct mipi_dsi_device *dsi = to_mipi_dsi_device(ctx->dev);
+-	struct device *dev = ctx->dev;
+-	int ret;
+ 
+ 	/*
+ 	 * Init sequence was supplied by the panel vendor. Most of the commands
+@@ -136,20 +134,7 @@ static int jh057n_init_sequence(struct st7703 *ctx)
+ 			      0x18, 0x00, 0x09, 0x0E, 0x29, 0x2D, 0x3C, 0x41,
+ 			      0x37, 0x07, 0x0B, 0x0D, 0x10, 0x11, 0x0F, 0x10,
+ 			      0x11, 0x18);
+-	msleep(20);
+-
+-	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
+-	if (ret < 0) {
+-		DRM_DEV_ERROR(dev, "Failed to exit sleep mode: %d\n", ret);
+-		return ret;
+-	}
+-	/* Panel is operational 120 msec after reset */
+-	msleep(60);
+-	ret = mipi_dsi_dcs_set_display_on(dsi);
+-	if (ret)
+-		return ret;
+ 
+-	DRM_DEV_DEBUG_DRIVER(dev, "Panel init sequence done\n");
  	return 0;
  }
  
-+static const struct drm_display_mode jh057n00900_mode = {
-+	.hdisplay    = 720,
-+	.hsync_start = 720 + 90,
-+	.hsync_end   = 720 + 90 + 20,
-+	.htotal	     = 720 + 90 + 20 + 20,
-+	.vdisplay    = 1440,
-+	.vsync_start = 1440 + 20,
-+	.vsync_end   = 1440 + 20 + 4,
-+	.vtotal	     = 1440 + 20 + 4 + 12,
-+	.vrefresh    = 60,
-+	.clock	     = 75276,
-+	.flags	     = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-+	.width_mm    = 65,
-+	.height_mm   = 130,
-+};
-+
-+struct st7703_panel_desc jh057n00900_panel_desc = {
-+	.mode = &jh057n00900_mode,
-+	.lanes = 4,
-+	.mode_flags = MIPI_DSI_MODE_VIDEO |
-+		MIPI_DSI_MODE_VIDEO_BURST | MIPI_DSI_MODE_VIDEO_SYNC_PULSE,
-+	.format = MIPI_DSI_FMT_RGB888,
-+	.init_sequence = jh057n_init_sequence,
-+};
-+
+@@ -181,6 +166,7 @@ struct st7703_panel_desc jh057n00900_panel_desc = {
  static int st7703_enable(struct drm_panel *panel)
  {
  	struct st7703 *ctx = panel_to_st7703(panel);
-@@ -226,31 +251,6 @@ static int st7703_prepare(struct drm_panel *panel)
- 	return ret;
++	struct mipi_dsi_device *dsi = to_mipi_dsi_device(ctx->dev);
+ 	int ret;
+ 
+ 	ret = ctx->desc->init_sequence(ctx);
+@@ -190,6 +176,23 @@ static int st7703_enable(struct drm_panel *panel)
+ 		return ret;
+ 	}
+ 
++	msleep(20);
++
++	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
++	if (ret < 0) {
++		DRM_DEV_ERROR(ctx->dev, "Failed to exit sleep mode: %d\n", ret);
++		return ret;
++	}
++
++	/* Panel is operational 120 msec after reset */
++	msleep(60);
++
++	ret = mipi_dsi_dcs_set_display_on(dsi);
++	if (ret)
++		return ret;
++
++	DRM_DEV_DEBUG_DRIVER(ctx->dev, "Panel init sequence done\n");
++
+ 	return 0;
  }
  
--static const struct drm_display_mode jh057n00900_mode = {
--	.hdisplay    = 720,
--	.hsync_start = 720 + 90,
--	.hsync_end   = 720 + 90 + 20,
--	.htotal	     = 720 + 90 + 20 + 20,
--	.vdisplay    = 1440,
--	.vsync_start = 1440 + 20,
--	.vsync_end   = 1440 + 20 + 4,
--	.vtotal	     = 1440 + 20 + 4 + 12,
--	.vrefresh    = 60,
--	.clock	     = 75276,
--	.flags	     = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
--	.width_mm    = 65,
--	.height_mm   = 130,
--};
--
--struct st7703_panel_desc jh057n00900_panel_desc = {
--	.mode = &jh057n00900_mode,
--	.lanes = 4,
--	.mode_flags = MIPI_DSI_MODE_VIDEO |
--		MIPI_DSI_MODE_VIDEO_BURST | MIPI_DSI_MODE_VIDEO_SYNC_PULSE,
--	.format = MIPI_DSI_FMT_RGB888,
--	.init_sequence = jh057n_init_sequence,
--};
--
- static int st7703_get_modes(struct drm_panel *panel,
- 			    struct drm_connector *connector)
- {
 -- 
 2.27.0
 
