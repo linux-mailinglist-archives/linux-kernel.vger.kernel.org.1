@@ -2,116 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510B0210F32
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB28B210F53
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731942AbgGAP1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 11:27:30 -0400
-Received: from mga17.intel.com ([192.55.52.151]:54824 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732022AbgGAP12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 11:27:28 -0400
-IronPort-SDR: nrV4yNxET3yD85Ukv1hiMfL6UornXzTUKyDABJNWAw0ApVXxwFyLSAvRq5jHm2o1YL7pJoQNee
- g4mr3bLTFOaQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="126699722"
-X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
-   d="scan'208";a="126699722"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 08:27:23 -0700
-IronPort-SDR: o3kPELFdh3tJaTgju06GQE4B3xyVAEGLqog6K3SnGHeZ0Qz4vdr0fO1PKiAf9yDUcu4NYJJNHY
- d5+1AbHcsYKQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,300,1589266800"; 
-   d="scan'208";a="295591658"
-Received: from jacob-builder.jf.intel.com ([10.7.199.155])
-  by orsmga002.jf.intel.com with ESMTP; 01 Jul 2020 08:27:22 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>
-Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH v3 7/7] iommu/vt-d: Disable multiple GPASID-dev bind
-Date:   Wed,  1 Jul 2020 08:33:56 -0700
-Message-Id: <1593617636-79385-8-git-send-email-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593617636-79385-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1593617636-79385-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        id S1732043AbgGAPbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 11:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731608AbgGAPbO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 11:31:14 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E32CC08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 08:31:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=RclAIIkZW3ZiXGcGlVoas281Hc1XxmdGe8QV2kbulsU=; b=b3oPVpuKnOK70sQ8PtkU3B/W9T
+        Ib2kMj/r72OrROoaxbDMI5rASQC/j70EMitwdCKYE+Ya7zkkbgwbjTLB4Yf3C+kV0HyScWE8EFMo7
+        5e0uUPc+cm594b8dCqGIBebLgLUDgjykt9JdO1iQj7WtqL0cGAFjFlQW5riDimJk0qi0oh0avZwrv
+        pMpTWaKVzKxsBeRivyhlsIJj9HaLt0MAzffAcubhhe+XW7FJLELmpyxXpxKznxvWYUeh1E5D16OfW
+        yUMj234NP6tMHQvQn7h20Rl5HP6tduRfJP0oI0wtp2eg+5ek10U6qUYzsjMxJazjB7kLyPUIUBtfj
+        y2ezYntg==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jqeha-0001IS-Eu; Wed, 01 Jul 2020 15:31:10 +0000
+Subject: Re: [PATCH v2 6/6] Documentation: Describe console mouse reporting
+To:     Tammo Block <tammo.block@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>
+References: <cover.1593615440.git.tammo.block@gmail.com>
+ <1a16072f2e8152e4cd3a9d733bf8bed84228e9de.1593615440.git.tammo.block@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <8986005c-9d82-c958-c902-f77175d71012@infradead.org>
+Date:   Wed, 1 Jul 2020 08:31:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <1a16072f2e8152e4cd3a9d733bf8bed84228e9de.1593615440.git.tammo.block@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the unlikely use case where multiple aux domains from the same pdev
-are attached to a single guest and then bound to a single process
-(thus same PASID) within that guest, we cannot easily support this case
-by refcounting the number of users. As there is only one SL page table
-per PASID while we have multiple aux domains thus multiple SL page tables
-for the same PASID.
+On 7/1/20 8:14 AM, Tammo Block wrote:
+> This patch adds a description of the kernel interface(s) used for vt
+> console mouse reporting and describes the protocols and bitmasks.
+> 
+> Signed-off-by: Tammo Block <tammo.block@gmail.com>
+> ---
+>  .../admin-guide/console-mouse-reporting.rst   | 88 +++++++++++++++++++
+>  Documentation/admin-guide/index.rst           |  1 +
+>  2 files changed, 89 insertions(+)
+>  create mode 100644 Documentation/admin-guide/console-mouse-reporting.rst
+> 
+> diff --git a/Documentation/admin-guide/console-mouse-reporting.rst b/Documentation/admin-guide/console-mouse-reporting.rst
+> new file mode 100644
+> index 000000000000..c75a627f27b8
+> --- /dev/null
+> +++ b/Documentation/admin-guide/console-mouse-reporting.rst
+> @@ -0,0 +1,88 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=======================
+> +Console Mouse Reporting
+> +=======================
+> +
+> +A terminal may send escape sequences to enable applications to react to mouse
+> +input. As the kernel does not know when to emit these events a mouse daemon
+> +is needed to react to mouse movements and signal the kernel accordingly. The
+> +kernel will then send an escape sequence to the application. This is called
+> +mouse reporting and several types and protocols have been developed over time.
+> +
+> +See tiocl.h, the :manpage:`ioctl_console(2)` and :manpage:`console_codes(4)`
+> +man pages and the xterm [1]_ or terminalguide [2]_ home pages for a detailed
+> +list and description of the various protocols, their bit layout as well as
+> +their limitations.
+> +
+> +Events and formats
+> +++++++++++++++++++
+> +
+> +A Linux console keeps state about two different aspects of mouse reporting,
+> +the kind of **events** to be reported and the **format** to send to userspace.
+> +
+> +A mouse daemon can check which kind of mouse events a client wants to be
+> +informed about via the TIOCLINUX ioctl, using the TIOCL_GETMOUSEREPORTING
+> +subcall. The values of the supported event classes (9, 1000, 1002, 1003) are
+> +described in tiocl.h. Based on this information the daemon is responsible
+> +for not sending data packages for unrequested events.
+> +
+> +A userspace client may request to be informed by the kernel about one of
+> +the event classes and choose one of the data formats URXVT (1005), SRG
+> +(1006) or X10/X11 (default) via console escape sequences. In general all
+> +of them encode similar information, only the escape sequences differ.
+> +
+> +See the xterm [1]_ or terminalguide [2]_ home pages for all details.
+> +
+> +Reports from kernel to userspace client
+> ++++++++++++++++++++++++++++++++++++++++
+> +
+> +The requested events are sent by the kernel to userspace encoded in an
+> +escape sequences; details depend on the chosen format. All of them use one
 
-Extra unbinding guest PASID can happen due to race between normal and
-exception cases. Termination of one aux domain may affect others unless
-we actively track and switch aux domains to ensure the validity of SL
-page tables and TLB states in the shared PASID entry.
+          sequence;
 
-Support for sharing second level PGDs across domains can reduce the
-complexity but this is not available due to the limitations on VFIO
-container architecture. We can revisit this decision once sharing PGDs
-are available.
+(this word was correct in v1)
 
-Overall, the complexity and potential glitch do not warrant this unlikely
-use case thereby removed by this patch.
+> +based pointer coordinates and a single byte to encode the button status.
+> +
+> +Short summary (we call this the SRG button format for the rest of this text):
+> +
+> + - 1,2 : Buttons, lower bits (see notes below)
+> + - 3-5 : Modifier keys (Shift, Alt and Ctrl)
+> + - 6   : Mouse movement only, no button status change
+> + - 7-8 : Buttons, upper bits (for buttons 4-15)
+> +
+> +Reports sent from daemon to kernel
+> +++++++++++++++++++++++++++++++++++
+> +
+> +A report is sent by a mouse daemon to the kernel via the TIOCLINUX ioctl,
+> +using the TIOCL_SETSEL subcall. The coordinates are encoded zero based in
+> +xs and ys, with 0,0 as the upper left corner, but see the note below.
+> +The format used by the userspace mouse daemon for button encoding is almost
+> +identical to the SRG button layout described above and is put into the sel_mode
+> +of the tiocl_selection struct. All bits masked in TIOCL_SELBUTTONMASK are
+> +unchanged compared to the SRG button format above; the remaining three are
+> +changed the following way:
+> +
+> +- 3,4  : Unused, must be zero. The kernel knows modifier key state anyway.
+> +- 5    : Always 1, identifies mouse report / TIOCL_SELMOUSEREPORT
+> +
+> +Notes
+> ++++++
+> +
+> +Button numbers are encoded like this:
+> +
+> +- 0-2  : Left, middle and right button
+> +- 3    : No button pressed / Button release
+> +- 4-15 : More buttons, e.g. 4 and 5 are scroll wheel
+> +
+> +Please note that button releases should only be reported for buttons 0-2.
+> +
+> +Also note that coordinates (xs,ys,xe,ye) are zero based for the TIOCL_SETSEL
+> +syscall but one based for the escape sequences sent by the kernel, so the
+> +kernel will increase all coordinates by one.
+> +
+> +Older kernels only used the lower 4 bits of sel_mode, effectively limiting
+> +the protocol to 3 buttons and button click only. The meaning of the 4 bits
+> +is equivalent to the SRG button layout. Note that newer kernels will ignore
+> +the upper two bits (modifier keys).
+> +
+> +.. [1] https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h2-Mouse-Tracking
+> +.. [2] https://terminalguide.namepad.de/mouse/
+> +
 
-Fixes: 56722a4398a30 ("iommu/vt-d: Add bind guest PASID support")
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Kevin Tian <kevin.tian@intel.com>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>
-Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
----
- drivers/iommu/intel/svm.c | 22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 6c87c807a0ab..d386853121a2 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -277,20 +277,16 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
- 			goto out;
- 		}
- 
-+		/*
-+		 * Do not allow multiple bindings of the same device-PASID since
-+		 * there is only one SL page tables per PASID. We may revisit
-+		 * once sharing PGD across domains are supported.
-+		 */
- 		for_each_svm_dev(sdev, svm, dev) {
--			/*
--			 * For devices with aux domains, we should allow
--			 * multiple bind calls with the same PASID and pdev.
--			 */
--			if (iommu_dev_feature_enabled(dev,
--						      IOMMU_DEV_FEAT_AUX)) {
--				sdev->users++;
--			} else {
--				dev_warn_ratelimited(dev,
--						     "Already bound with PASID %u\n",
--						     svm->pasid);
--				ret = -EBUSY;
--			}
-+			dev_warn_ratelimited(dev,
-+					     "Already bound with PASID %u\n",
-+					     svm->pasid);
-+			ret = -EBUSY;
- 			goto out;
- 		}
- 	} else {
+thanks.
 -- 
-2.7.4
+~Randy
 
