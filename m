@@ -2,217 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B865B210F3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8852210F43
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732078AbgGAP1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 11:27:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:50272 "EHLO foss.arm.com"
+        id S1732099AbgGAP2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 11:28:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732065AbgGAP1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 11:27:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0331F30E;
-        Wed,  1 Jul 2020 08:27:53 -0700 (PDT)
-Received: from localhost (unknown [10.1.198.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 99B1B3F68F;
-        Wed,  1 Jul 2020 08:27:52 -0700 (PDT)
-Date:   Wed, 1 Jul 2020 16:27:51 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     rjw@rjwysocki.net, catalin.marinas@arm.com, sudeep.holla@arm.com,
-        will@kernel.org, linux@armlinux.org.uk, valentin.schneider@arm.com,
-        mingo@redhat.com, peterz@infradead.org, dietmar.eggemann@arm.com,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/8] cpufreq: move invariance setter calls in cpufreq core
-Message-ID: <20200701152751.GA29496@arm.com>
-References: <20200701090751.7543-1-ionela.voinescu@arm.com>
- <20200701090751.7543-3-ionela.voinescu@arm.com>
- <20200701095219.gxrkowtukosnfmwp@vireshk-i7>
+        id S1731763AbgGAP2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 11:28:38 -0400
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 377BE207D0;
+        Wed,  1 Jul 2020 15:28:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593617317;
+        bh=29ys0mspEfUNFrJ+xqVcc9I7PkBYPttSt94hu5gGfi4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mJ15BEKIyDBiuFGm6yFaK2ZIqimqigXbmP5BcKC8dN49hmYK709+A9TBWU/ERnjKt
+         U4KG35RjaOLAy57hNpHH7wsqbE0kkngy+Xh4LjBNQzGCH+LZm46Fdw+e6n7tyw++tt
+         8DsB78hlmnUKSgKUaASsp8q/vgPb+xkHRSk3oz+Y=
+Received: by mail-yb1-f177.google.com with SMTP id h39so12165225ybj.3;
+        Wed, 01 Jul 2020 08:28:37 -0700 (PDT)
+X-Gm-Message-State: AOAM532tyaKxLc/XqOUzHpKBnoGwSs1+FoqlaHJryIu9t9dwFTukwaFy
+        rrjELPY1Lrx7ssOQLjmLmHAofrf/lv5NygYWwuk=
+X-Google-Smtp-Source: ABdhPJzvhYuZUviNT4v5fZwfGXgf3vI2cBdHrB8kc2Zip9YoNEd/b1BMDZz+CJbIzsyssWhLa0CkxhJ6NnQPQL57Apw=
+X-Received: by 2002:a9d:4a8f:: with SMTP id i15mr24517367otf.77.1593617315327;
+ Wed, 01 Jul 2020 08:28:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200701095219.gxrkowtukosnfmwp@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200701141731.377252388@hpe.com> <20200701141732.957084206@hpe.com>
+In-Reply-To: <20200701141732.957084206@hpe.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 1 Jul 2020 17:28:24 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXE4ZMq8bVHepPXqXEhOtXBtd9p-nAPt2e-ihbJqwB3CCQ@mail.gmail.com>
+Message-ID: <CAMj1kXE4ZMq8bVHepPXqXEhOtXBtd9p-nAPt2e-ihbJqwB3CCQ@mail.gmail.com>
+Subject: Re: [patch 12/13] Remove uv bios and efi code related to (now unused) EFI_UV1_MEMMAP
+To:     Steve Wahl <steve.wahl@hpe.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Benjamin Thiel <b.thiel@posteo.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        James Morris <jmorris@namei.org>,
+        David Howells <dhowells@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dave Young <dyoung@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Austin Kim <austindh.kim@gmail.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Russ Anderson <rja@hpe.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+On Wed, 1 Jul 2020 at 16:18, <steve.wahl@hpe.com> wrote:
+>
+> With UV1 removed, EFI_UV1_MEMMAP is not used.  Remove code used by it
+> in arch/x86/platform/uv/bios_uv.c and turn off code in
+> arch/x86/platform/efi/efi.c that referenced this code.
+>
+> Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
 
-On Wednesday 01 Jul 2020 at 16:16:19 (+0530), Viresh Kumar wrote:
-> On 01-07-20, 10:07, Ionela Voinescu wrote:
-> > From: Valentin Schneider <valentin.schneider@arm.com>
-> > 
-> > To properly scale its per-entity load-tracking signals, the task scheduler
-> > needs to be given a frequency scale factor, i.e. some image of the current
-> > frequency the CPU is running at. Currently, this scale can be computed
-> > either by using counters (APERF/MPERF on x86, AMU on arm64), or by
-> > piggy-backing on the frequency selection done by cpufreq.
-> > 
-> > For the latter, drivers have to explicitly set the scale factor
-> > themselves, despite it being purely boiler-plate code: the required
-> > information depends entirely on the kind of frequency switch callback
-> > implemented by the driver, i.e. either of: target_index(), target(),
-> > fast_switch() and setpolicy().
-> > 
-> > The fitness of those callbacks with regard to driving the Frequency
-> > Invariance Engine (FIE) is studied below:
-> > 
-> > target_index()
-> > ==============
-> > Documentation states that the chosen frequency "must be determined by
-> > freq_table[index].frequency". It isn't clear if it *has* to be that
-> > frequency, or if it can use that frequency value to do some computation
-> > that ultimately leads to a different frequency selection. All drivers
-> > go for the former, while the vexpress-spc-cpufreq has an atypical
-> > implementation.
-> > 
-> > Thefore, the hook works on the asusmption the core can use
-> > freq_table[index].frequency.
-> > 
-> > target()
-> > =======
-> > This has been flagged as deprecated since:
-> > 
-> >   commit 9c0ebcf78fde ("cpufreq: Implement light weight ->target_index() routine")
-> > 
-> > It also doesn't have that many users:
-> > 
-> >   cpufreq-nforce2.c:371:2:	.target = nforce2_target,
-> >   cppc_cpufreq.c:416:2:		.target = cppc_cpufreq_set_target,
-> >   pcc-cpufreq.c:573:2:		.target = pcc_cpufreq_target,
-> > 
-> > Should we care about drivers using this hook, we may be able to exploit
-> > cpufreq_freq_transition_{being, end}(). Otherwise, if FIE support is
-> > desired in their current state, arch_set_freq_scale() could still be
-> > called directly by the driver, while CPUFREQ_CUSTOM_SET_FREQ_SCALE
-> > could be used to mark support for it.
-> > 
-> > fast_switch()
-> > =============
-> > This callback *has* to return the frequency that was selected.
-> > 
-> > setpolicy()
-> > ===========
-> > This callback does not have any designated way of informing what was the
-> > end choice. But there are only two drivers using setpolicy(), and none
-> > of them have current FIE support:
-> > 
-> >   drivers/cpufreq/longrun.c:281:	.setpolicy	= longrun_set_policy,
-> >   drivers/cpufreq/intel_pstate.c:2215:	.setpolicy	= intel_pstate_set_policy,
-> > 
-> > The intel_pstate is known to use counter-driven frequency invariance.
-> 
-> Same for acpi-cpufreq driver as well ?
-> 
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
 
-The acpi-cpufreq driver defines target_index() and fast_switch() so it
-should go through the setting in cpufreq core. But x86 does not actually
-define arch_set_freq_scale() so when called it won't do anything (won't
-set any frequency scale factor), but rely on counters to set it through
-the arch_scale_freq_tick(). But this cpufreq functionality could
-potentially be used.
-
-> And I think we should do the freq-invariance thing for all the above categories
-> nevertheless.
-> 
-
-I'm not sure what you mean by this. You mean we should also (try to) set
-the frequency scale factor for drivers defining setpolicy() and target()?
-
-> > If FIE support is desired in their current state, arch_set_freq_scale()
-> > could still be called directly by the driver, while
-> > CPUFREQ_CUSTOM_SET_FREQ_SCALE could be used to mark support for it.
-> > 
-> > Conclusion
-> > ==========
-> > 
-> > Given that the significant majority of current FIE enabled drivers use
-> > callbacks that lend themselves to triggering the setting of the FIE scale
-> > factor in a generic way, move the invariance setter calls to cpufreq core,
-> > while filtering drivers that flag custom support using
-> > CPUFREQ_CUSTOM_SET_FREQ_SCALE.
-> > 
-> > Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> > Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> > Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-> > Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
-> >  drivers/cpufreq/cpufreq.c | 20 +++++++++++++++++---
-> >  1 file changed, 17 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> > index 0128de3603df..83b58483a39b 100644
-> > --- a/drivers/cpufreq/cpufreq.c
-> > +++ b/drivers/cpufreq/cpufreq.c
-> > @@ -2046,9 +2046,16 @@ EXPORT_SYMBOL(cpufreq_unregister_notifier);
-> >  unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
-> >  					unsigned int target_freq)
-> >  {
-> > +	unsigned int freq;
-> > +
-> >  	target_freq = clamp_val(target_freq, policy->min, policy->max);
-> > +	freq = cpufreq_driver->fast_switch(policy, target_freq);
-> > +
-> 
-> > +	if (freq && !(cpufreq_driver->flags & CPUFREQ_CUSTOM_SET_FREQ_SCALE))
-> > +		arch_set_freq_scale(policy->related_cpus, freq,
-> > +				    policy->cpuinfo.max_freq);
-> 
-> This needs to be a separate function.
-> 
-
-Yes, that would be nicer.
-
-> >  
-> > -	return cpufreq_driver->fast_switch(policy, target_freq);
-> > +	return freq;
-> >  }
-> >  EXPORT_SYMBOL_GPL(cpufreq_driver_fast_switch);
-> >  
-> > @@ -2140,7 +2147,7 @@ int __cpufreq_driver_target(struct cpufreq_policy *policy,
-> >  			    unsigned int relation)
-> >  {
-> >  	unsigned int old_target_freq = target_freq;
-> > -	int index;
-> > +	int index, retval;
-> >  
-> >  	if (cpufreq_disabled())
-> >  		return -ENODEV;
-> > @@ -2171,7 +2178,14 @@ int __cpufreq_driver_target(struct cpufreq_policy *policy,
-> >  
-> >  	index = cpufreq_frequency_table_target(policy, target_freq, relation);
-> >  
-> > -	return __target_index(policy, index);
-> > +	retval = __target_index(policy, index);
-> > +
-> > +	if (!retval && !(cpufreq_driver->flags & CPUFREQ_CUSTOM_SET_FREQ_SCALE))
-> > +		arch_set_freq_scale(policy->related_cpus,
-> > +				    policy->freq_table[index].frequency,
-> 
-> policy->cur gets updated for both target and target_index type drivers. You can
-> use that safely. It gets updated after the postchange notification.
-> 
-
-This would allow us to cover the drivers that define target() as well (not
-only target_index() and fast_switch()). Looking over the code we only take
-that path (calling cpufreq_freq_transition_end()), for 
-!CPUFREQ_ASYNC_NOTIFICATION. But again, that's only used for
-powernow-k8 which is deprecated. 
-
-I'll attempt a nice way to use this.
-
-Thank you very much for the review,
-Ionela.
-
-> > +				    policy->cpuinfo.max_freq);
-> > +
-> > +	return retval;
-> >  }
-> >  EXPORT_SYMBOL_GPL(__cpufreq_driver_target);
-> 
-> -- 
-> viresh
+> ---
+>  arch/x86/platform/efi/efi.c    |    2
+>  arch/x86/platform/uv/bios_uv.c |  159 -----------------------------------------
+>  2 files changed, 2 insertions(+), 159 deletions(-)
+>
+> --- linux.orig/arch/x86/platform/uv/bios_uv.c   2020-06-25 16:13:51.765087047 -0500
+> +++ linux/arch/x86/platform/uv/bios_uv.c        2020-06-25 16:14:29.821045358 -0500
+> @@ -30,17 +30,7 @@ static s64 __uv_bios_call(enum uv_bios_c
+>                  */
+>                 return BIOS_STATUS_UNIMPLEMENTED;
+>
+> -       /*
+> -        * If EFI_UV1_MEMMAP is set, we need to fall back to using our old EFI
+> -        * callback method, which uses efi_call() directly, with the kernel page tables:
+> -        */
+> -       if (unlikely(efi_enabled(EFI_UV1_MEMMAP))) {
+> -               kernel_fpu_begin();
+> -               ret = efi_call((void *)__va(tab->function), (u64)which, a1, a2, a3, a4, a5);
+> -               kernel_fpu_end();
+> -       } else {
+> -               ret = efi_call_virt_pointer(tab, function, (u64)which, a1, a2, a3, a4, a5);
+> -       }
+> +       ret = efi_call_virt_pointer(tab, function, (u64)which, a1, a2, a3, a4, a5);
+>
+>         return ret;
+>  }
+> @@ -209,150 +199,3 @@ int uv_bios_init(void)
+>         pr_info("UV: UVsystab: Revision:%x\n", uv_systab->revision);
+>         return 0;
+>  }
+> -
+> -static void __init early_code_mapping_set_exec(int executable)
+> -{
+> -       efi_memory_desc_t *md;
+> -
+> -       if (!(__supported_pte_mask & _PAGE_NX))
+> -               return;
+> -
+> -       /* Make EFI service code area executable */
+> -       for_each_efi_memory_desc(md) {
+> -               if (md->type == EFI_RUNTIME_SERVICES_CODE ||
+> -                   md->type == EFI_BOOT_SERVICES_CODE)
+> -                       efi_set_executable(md, executable);
+> -       }
+> -}
+> -
+> -void __init efi_uv1_memmap_phys_epilog(pgd_t *save_pgd)
+> -{
+> -       /*
+> -        * After the lock is released, the original page table is restored.
+> -        */
+> -       int pgd_idx, i;
+> -       int nr_pgds;
+> -       pgd_t *pgd;
+> -       p4d_t *p4d;
+> -       pud_t *pud;
+> -
+> -       nr_pgds = DIV_ROUND_UP((max_pfn << PAGE_SHIFT) , PGDIR_SIZE);
+> -
+> -       for (pgd_idx = 0; pgd_idx < nr_pgds; pgd_idx++) {
+> -               pgd = pgd_offset_k(pgd_idx * PGDIR_SIZE);
+> -               set_pgd(pgd_offset_k(pgd_idx * PGDIR_SIZE), save_pgd[pgd_idx]);
+> -
+> -               if (!pgd_present(*pgd))
+> -                       continue;
+> -
+> -               for (i = 0; i < PTRS_PER_P4D; i++) {
+> -                       p4d = p4d_offset(pgd,
+> -                                        pgd_idx * PGDIR_SIZE + i * P4D_SIZE);
+> -
+> -                       if (!p4d_present(*p4d))
+> -                               continue;
+> -
+> -                       pud = (pud_t *)p4d_page_vaddr(*p4d);
+> -                       pud_free(&init_mm, pud);
+> -               }
+> -
+> -               p4d = (p4d_t *)pgd_page_vaddr(*pgd);
+> -               p4d_free(&init_mm, p4d);
+> -       }
+> -
+> -       kfree(save_pgd);
+> -
+> -       __flush_tlb_all();
+> -       early_code_mapping_set_exec(0);
+> -}
+> -
+> -pgd_t * __init efi_uv1_memmap_phys_prolog(void)
+> -{
+> -       unsigned long vaddr, addr_pgd, addr_p4d, addr_pud;
+> -       pgd_t *save_pgd, *pgd_k, *pgd_efi;
+> -       p4d_t *p4d, *p4d_k, *p4d_efi;
+> -       pud_t *pud;
+> -
+> -       int pgd;
+> -       int n_pgds, i, j;
+> -
+> -       early_code_mapping_set_exec(1);
+> -
+> -       n_pgds = DIV_ROUND_UP((max_pfn << PAGE_SHIFT), PGDIR_SIZE);
+> -       save_pgd = kmalloc_array(n_pgds, sizeof(*save_pgd), GFP_KERNEL);
+> -       if (!save_pgd)
+> -               return NULL;
+> -
+> -       /*
+> -        * Build 1:1 identity mapping for UV1 memmap usage. Note that
+> -        * PAGE_OFFSET is PGDIR_SIZE aligned when KASLR is disabled, while
+> -        * it is PUD_SIZE ALIGNED with KASLR enabled. So for a given physical
+> -        * address X, the pud_index(X) != pud_index(__va(X)), we can only copy
+> -        * PUD entry of __va(X) to fill in pud entry of X to build 1:1 mapping.
+> -        * This means here we can only reuse the PMD tables of the direct mapping.
+> -        */
+> -       for (pgd = 0; pgd < n_pgds; pgd++) {
+> -               addr_pgd = (unsigned long)(pgd * PGDIR_SIZE);
+> -               vaddr = (unsigned long)__va(pgd * PGDIR_SIZE);
+> -               pgd_efi = pgd_offset_k(addr_pgd);
+> -               save_pgd[pgd] = *pgd_efi;
+> -
+> -               p4d = p4d_alloc(&init_mm, pgd_efi, addr_pgd);
+> -               if (!p4d) {
+> -                       pr_err("Failed to allocate p4d table!\n");
+> -                       goto out;
+> -               }
+> -
+> -               for (i = 0; i < PTRS_PER_P4D; i++) {
+> -                       addr_p4d = addr_pgd + i * P4D_SIZE;
+> -                       p4d_efi = p4d + p4d_index(addr_p4d);
+> -
+> -                       pud = pud_alloc(&init_mm, p4d_efi, addr_p4d);
+> -                       if (!pud) {
+> -                               pr_err("Failed to allocate pud table!\n");
+> -                               goto out;
+> -                       }
+> -
+> -                       for (j = 0; j < PTRS_PER_PUD; j++) {
+> -                               addr_pud = addr_p4d + j * PUD_SIZE;
+> -
+> -                               if (addr_pud > (max_pfn << PAGE_SHIFT))
+> -                                       break;
+> -
+> -                               vaddr = (unsigned long)__va(addr_pud);
+> -
+> -                               pgd_k = pgd_offset_k(vaddr);
+> -                               p4d_k = p4d_offset(pgd_k, vaddr);
+> -                               pud[j] = *pud_offset(p4d_k, vaddr);
+> -                       }
+> -               }
+> -               pgd_offset_k(pgd * PGDIR_SIZE)->pgd &= ~_PAGE_NX;
+> -       }
+> -
+> -       __flush_tlb_all();
+> -       return save_pgd;
+> -out:
+> -       efi_uv1_memmap_phys_epilog(save_pgd);
+> -       return NULL;
+> -}
+> -
+> -void __iomem *__init efi_ioremap(unsigned long phys_addr, unsigned long size,
+> -                                u32 type, u64 attribute)
+> -{
+> -       unsigned long last_map_pfn;
+> -
+> -       if (type == EFI_MEMORY_MAPPED_IO)
+> -               return ioremap(phys_addr, size);
+> -
+> -       last_map_pfn = init_memory_mapping(phys_addr, phys_addr + size,
+> -                                          PAGE_KERNEL);
+> -       if ((last_map_pfn << PAGE_SHIFT) < phys_addr + size) {
+> -               unsigned long top = last_map_pfn << PAGE_SHIFT;
+> -               efi_ioremap(top, size - (top - phys_addr), type, attribute);
+> -       }
+> -
+> -       if (!(attribute & EFI_MEMORY_WB))
+> -               efi_memory_uc((u64)(unsigned long)__va(phys_addr), size);
+> -
+> -       return (void __iomem *)__va(phys_addr);
+> -}
+> --- linux.orig/arch/x86/platform/efi/efi.c      2020-06-25 16:13:54.637083901 -0500
+> +++ linux/arch/x86/platform/efi/efi.c   2020-06-25 16:15:14.532996386 -0500
+> @@ -496,7 +496,7 @@ void __init efi_init(void)
+>                 efi_print_memmap();
+>  }
+>
+> -#if defined(CONFIG_X86_32) || defined(CONFIG_X86_UV)
+> +#if defined(CONFIG_X86_32)
+>
+>  void __init efi_set_executable(efi_memory_desc_t *md, bool executable)
+>  {
+>
