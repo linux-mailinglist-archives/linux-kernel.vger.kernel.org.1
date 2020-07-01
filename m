@@ -2,81 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7B22107AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00DB72107A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729505AbgGAJJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 05:09:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:47936 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729371AbgGAJJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 05:09:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A2FE01424;
-        Wed,  1 Jul 2020 02:09:49 -0700 (PDT)
-Received: from e108754-lin.cambridge.arm.com (unknown [10.1.198.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DE3533F68F;
-        Wed,  1 Jul 2020 02:09:47 -0700 (PDT)
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        catalin.marinas@arm.com, sudeep.holla@arm.com, will@kernel.org,
-        linux@armlinux.org.uk, valentin.schneider@arm.com
-Cc:     mingo@redhat.com, peterz@infradead.org, dietmar.eggemann@arm.com,
-        ionela.voinescu@arm.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] cpufreq: make schedutil the default for arm and arm64
-Date:   Wed,  1 Jul 2020 10:07:51 +0100
-Message-Id: <20200701090751.7543-9-ionela.voinescu@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200701090751.7543-1-ionela.voinescu@arm.com>
-References: <20200701090751.7543-1-ionela.voinescu@arm.com>
+        id S1729437AbgGAJJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 05:09:36 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:48563 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726255AbgGAJJd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 05:09:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593594572;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7iSWdZz1MQYnvIIt6jkhrHrV7ZLYvXqE5mMXKJ+C5ME=;
+        b=i2HM49l8NKqtDsONZi6jn7D7ZrPcD7yfQQkfgjuqLxrPAPzPycD6NT1sChd+5fZzLasNAR
+        cZIg4nrSIzHWRr0PBVdE8PrapsHmTk/ObM9dHbFYt4LRrk06pCh695N5XdnDXdHBuu/5hT
+        3zYp3US0ygLelosI7SSuyFLyCt8dHp0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-136-ft1kK71qO1OkZUKpp4aHNw-1; Wed, 01 Jul 2020 05:09:30 -0400
+X-MC-Unique: ft1kK71qO1OkZUKpp4aHNw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B4151005513;
+        Wed,  1 Jul 2020 09:09:28 +0000 (UTC)
+Received: from jason-ThinkPad-X1-Carbon-6th.redhat.com (ovpn-13-177.pek2.redhat.com [10.72.13.177])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 979BD71662;
+        Wed,  1 Jul 2020 09:08:47 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     rob.miller@broadcom.com, lingshan.zhu@intel.com,
+        eperezma@redhat.com, lulu@redhat.com, shahafs@mellanox.com,
+        hanand@xilinx.com, mhabets@solarflare.com, gdawar@xilinx.com,
+        saugatm@xilinx.com, vmireyno@marvell.com,
+        zhangweining@ruijie.com.cn, eli@mellanox.com,
+        Jason Wang <jasowang@redhat.com>
+Subject: [PATCH 0/5]
+Date:   Wed,  1 Jul 2020 17:08:34 +0800
+Message-Id: <20200701090839.12994-1-jasowang@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valentin Schneider <valentin.schneider@arm.com>
+Hi all:
 
-schedutil is already a hard-requirement for EAS, which has lead to making
-it default on arm (when CONFIG_BIG_LITTLE), see:
+This series tries to support batched IOTLB updating vhost-vdpa.
 
-  commit 8fdcca8e254a ("cpufreq: Select schedutil when using big.LITTLE")
+Currently vhost-vdpa accepts userspace mapping via IOTLB API, and it
+can only forward one mapping to IOMMU or device through IOMMU API or
+dma_map(). Though set_map() is designed to have the capability to pass
+an rbtree based mapping to vDPA device, it's still be called at least
+once for each VHOST_IOTLB_UPDATE or VHOST_IOTLB_INVALIDATE. This is
+because vhost-vdpa doesn't know the userspace start or stop then
+updating.
 
-One thing worth pointing out is that schedutil isn't only relevant for
-asymmetric CPU capacity systems; for instance, schedutil is the only
-governor that honours util-clamp performance requests. Another good example
-of this is x86 switching to using it by default in:
+So this patch introduces two flags as hints for vhost-vdpa to call
+set_map() only when userspace finish a batch of IOTLB updating.
 
-  commit a00ec3874e7d ("cpufreq: intel_pstate: Select schedutil as the default governor")
+So instead of:
 
-Arguably it should be made the default for all architectures, but it seems
-better to wait for them to also gain frequency invariance powers. Make it
-the default for arm && arm64 for now.
+1) VHOST_IOTLB_UPDATE/VHOST_IOTLB_INVALIDATE -> set_map() (s)
+2) VHOST_IOTLB_UPDATE/VHOST_IOTLB_INVALIDATE -> set_map() (s)
+...
+n) VHOST_IOTLB_UPDATE/VHOST_IOTLB_INVALIDATE -> set_map() (s)
 
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-Cc: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/cpufreq/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+With the help of hints, we do:
 
-diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
-index e91750132552..2c7171e0b001 100644
---- a/drivers/cpufreq/Kconfig
-+++ b/drivers/cpufreq/Kconfig
-@@ -37,7 +37,7 @@ config CPU_FREQ_STAT
- choice
- 	prompt "Default CPUFreq governor"
- 	default CPU_FREQ_DEFAULT_GOV_USERSPACE if ARM_SA1100_CPUFREQ || ARM_SA1110_CPUFREQ
--	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if BIG_LITTLE
-+	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if ARM64 || ARM
- 	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if X86_INTEL_PSTATE && SMP
- 	default CPU_FREQ_DEFAULT_GOV_PERFORMANCE
- 	help
+0) VHOST_IOTLB_BATCH_START
+
+1) VHOST_IOTLB_UPDATE/INVALIDATE
+...
+n) VHOST_IOTLB_UPDATE/INVALIDATE
+
+n+1) VHOST_IOTLB_BATCH_END -> set_map()
+
+One one call of set_map() to vDPA device for a batch of IOTLB
+mappings. So for the device that has its own DMA translation logic, it
+can efficiently structure the memory mapping to get best performance.
+
+Note, this only impacts the devices that want its own DMA
+translation (less times of set_map() call). For other type of devices,
+there's no changes in the behaviour.
+
+Changes from RFCV1:
+
+- tweak the comments per Michael's request
+
+Jason Wang (5):
+  vhost-vdpa: refine ioctl pre-processing
+  vhost: generialize backend features setting/getting
+  vhost-vdpa: support get/set backend features
+  vhost-vdpa: support IOTLB batching hints
+  vdpasim: support batch updating
+
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 40 +++++++++++++++++++++--
+ drivers/vhost/net.c              | 18 ++---------
+ drivers/vhost/vdpa.c             | 55 ++++++++++++++++++++++++++------
+ drivers/vhost/vhost.c            | 15 +++++++++
+ drivers/vhost/vhost.h            |  2 ++
+ include/uapi/linux/vhost.h       |  2 ++
+ include/uapi/linux/vhost_types.h | 11 +++++++
+ 7 files changed, 114 insertions(+), 29 deletions(-)
+
 -- 
-2.17.1
+2.20.1
 
