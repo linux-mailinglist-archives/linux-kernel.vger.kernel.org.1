@@ -2,145 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0E121070A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01B7210744
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729328AbgGAJAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 05:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729257AbgGAJAX (ORCPT
+        id S1729477AbgGAJCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 05:02:00 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:60583 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729463AbgGAJBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 05:00:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 259CCC03E97E;
-        Wed,  1 Jul 2020 02:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=jQY+NtFCO+7CU3/nFb1b4IXvqab2qyR+s502t/FTrN0=; b=uk7IalP7MNGMM6uU4dAQlW8WyT
-        wAAF3+qlfzX6YNhcR3wK+W1kCSwSAAIh+p6a51QmR/WkvI5iNXX6RT/rUdJ1Xa1ZGQGj78s7Yqvqv
-        apKuRzsOW0hTYSSpzgapI7XjWd8J5KsEfQ3xUFfoxf0IJVlsoz/OdGiccYlHINoaSVCTGbcgukSEb
-        eDReKFk2IXHSvZ0m2RrUUS0NHvjl0G8Haam0Ucf3tnKRRxbqUGybDQOBJMKimJ9oSqmYsG3MeDOsT
-        +mgRZL3+n+xb4vpMz97ijSIURtS2Bit7lRbBO0vSx/zQv2yJuSSYpUXX7qRfYpSCkzrXWbLSNMus7
-        gE2BAOEw==;
-Received: from [2001:4bb8:184:76e3:ea38:596b:3e9e:422a] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jqYbL-0008II-NY; Wed, 01 Jul 2020 09:00:20 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-xtensa@linux-xtensa.org,
-        drbd-dev@lists.linbit.com, linuxppc-dev@lists.ozlabs.org,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-nvme@lists.infradead.org,
-        linux-s390@vger.kernel.org
-Subject: [PATCH 20/20] block: remove direct_make_request
-Date:   Wed,  1 Jul 2020 10:59:47 +0200
-Message-Id: <20200701085947.3354405-21-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200701085947.3354405-1-hch@lst.de>
-References: <20200701085947.3354405-1-hch@lst.de>
+        Wed, 1 Jul 2020 05:01:55 -0400
+X-UUID: 2bb6ab3a34c54340a0ca1ece1198699e-20200701
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=cp0uXdfNJp8Bg/Ghio0s4ftUhM/JfzKVMysMp8sxB/8=;
+        b=f2/xqBMk1N3YM89VXuPuezYAyapB/EXopcuyJHuxUwbt2lwXwUtsDRS4xR4aX31A8/SR3u54GEq6oB1LzorCROAV17sShAhcPY+jiTBtQXNTHJAeqq9dNFSEOan/jXdRukG41grqsMA2+akRv5ZZJbeALH2xW3zd4DbOw4zaRcY=;
+X-UUID: 2bb6ab3a34c54340a0ca1ece1198699e-20200701
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        (envelope-from <eastl.lee@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1725838902; Wed, 01 Jul 2020 17:01:51 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 1 Jul 2020 17:01:47 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 1 Jul 2020 17:01:48 +0800
+Message-ID: <1593594109.26931.2.camel@mtkswgap22>
+Subject: Re: [PATCH v5 3/4] dmaengine: mediatek-cqdma: add dma mask for
+ capability
+From:   EastL <EastL.Lee@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Sean Wang <sean.wang@mediatek.com>, <vkoul@kernel.org>,
+        <robh+dt@kernel.org>, <mark.rutland@arm.com>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>
+Date:   Wed, 1 Jul 2020 17:01:49 +0800
+In-Reply-To: <54703443-fb01-5aa2-089c-5c7616404b7a@gmail.com>
+References: <1592553902-30592-1-git-send-email-EastL.Lee@mediatek.com>
+         <1592553902-30592-4-git-send-email-EastL.Lee@mediatek.com>
+         <54703443-fb01-5aa2-089c-5c7616404b7a@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that submit_bio_noacct has a decent blk-mq fast path there is no
-more need for this bypass.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- block/blk-core.c              | 28 ----------------------------
- drivers/md/dm.c               |  5 +----
- drivers/nvme/host/multipath.c |  2 +-
- include/linux/blkdev.h        |  1 -
- 4 files changed, 2 insertions(+), 34 deletions(-)
-
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 2ff166f0d24ee3..bf882b8d84450c 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -1211,34 +1211,6 @@ blk_qc_t submit_bio_noacct(struct bio *bio)
- }
- EXPORT_SYMBOL(submit_bio_noacct);
- 
--/**
-- * direct_make_request - hand a buffer directly to its device driver for I/O
-- * @bio:  The bio describing the location in memory and on the device.
-- *
-- * This function behaves like submit_bio_noacct(), but does not protect
-- * against recursion.  Must only be used if the called driver is known
-- * to be blk-mq based.
-- */
--blk_qc_t direct_make_request(struct bio *bio)
--{
--	struct gendisk *disk = bio->bi_disk;
--
--	if (WARN_ON_ONCE(!disk->queue->mq_ops)) {
--		bio_io_error(bio);
--		return BLK_QC_T_NONE;
--	}
--	if (!submit_bio_checks(bio))
--		return BLK_QC_T_NONE;
--	if (unlikely(bio_queue_enter(bio)))
--		return BLK_QC_T_NONE;
--	if (!blk_crypto_bio_prep(&bio)) {
--		blk_queue_exit(disk->queue);
--		return BLK_QC_T_NONE;
--	}
--	return blk_mq_submit_bio(bio);
--}
--EXPORT_SYMBOL_GPL(direct_make_request);
--
- /**
-  * submit_bio - submit a bio to the block device layer for I/O
-  * @bio: The &struct bio which describes the I/O
-diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-index b32b539dbace56..2cb33896198c4c 100644
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -1302,10 +1302,7 @@ static blk_qc_t __map_bio(struct dm_target_io *tio)
- 		/* the bio has been remapped so dispatch it */
- 		trace_block_bio_remap(clone->bi_disk->queue, clone,
- 				      bio_dev(io->orig_bio), sector);
--		if (md->type == DM_TYPE_NVME_BIO_BASED)
--			ret = direct_make_request(clone);
--		else
--			ret = submit_bio_noacct(clone);
-+		ret = submit_bio_noacct(clone);
- 		break;
- 	case DM_MAPIO_KILL:
- 		free_tio(tio);
-diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-index f07fa47c251d9d..a986ac52c4cc7f 100644
---- a/drivers/nvme/host/multipath.c
-+++ b/drivers/nvme/host/multipath.c
-@@ -314,7 +314,7 @@ blk_qc_t nvme_ns_head_submit_bio(struct bio *bio)
- 		trace_block_bio_remap(bio->bi_disk->queue, bio,
- 				      disk_devt(ns->head->disk),
- 				      bio->bi_iter.bi_sector);
--		ret = direct_make_request(bio);
-+		ret = submit_bio_noacct(bio);
- 	} else if (nvme_available_path(head)) {
- 		dev_warn_ratelimited(dev, "no usable path - requeuing I/O\n");
- 
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index b73cfa6a5141df..1cc913ffdbe21e 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -853,7 +853,6 @@ static inline void rq_flush_dcache_pages(struct request *rq)
- extern int blk_register_queue(struct gendisk *disk);
- extern void blk_unregister_queue(struct gendisk *disk);
- blk_qc_t submit_bio_noacct(struct bio *bio);
--extern blk_qc_t direct_make_request(struct bio *bio);
- extern void blk_rq_init(struct request_queue *q, struct request *rq);
- extern void blk_put_request(struct request *);
- extern struct request *blk_get_request(struct request_queue *, unsigned int op,
--- 
-2.26.2
+T24gRnJpLCAyMDIwLTA2LTE5IGF0IDExOjM5ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
+Og0KPiANCj4gT24gMTkvMDYvMjAyMCAxMDowNSwgRWFzdEwgd3JvdGU6DQo+ID4gVGhpcyBwYXRj
+aCBhZGQgZG1hIG1hc2sgZm9yIGNhcGFiaWxpdHkuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTog
+RWFzdEwgPEVhc3RMLkxlZUBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvZG1h
+L21lZGlhdGVrL210ay1jcWRtYS5jIHwgMTcgKysrKysrKysrKysrKysrKysNCj4gPiAgMSBmaWxl
+IGNoYW5nZWQsIDE3IGluc2VydGlvbnMoKykNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9kbWEvbWVkaWF0ZWsvbXRrLWNxZG1hLmMgYi9kcml2ZXJzL2RtYS9tZWRpYXRlay9tdGstY3Fk
+bWEuYw0KPiA+IGluZGV4IDkwNWJiY2IuLmVkMzNjNjQgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVy
+cy9kbWEvbWVkaWF0ZWsvbXRrLWNxZG1hLmMNCj4gPiArKysgYi9kcml2ZXJzL2RtYS9tZWRpYXRl
+ay9tdGstY3FkbWEuYw0KPiA+IEBAIC0xMTcsNiArMTE3LDcgQEAgc3RydWN0IG10a19jcWRtYV92
+Y2hhbiB7DQo+ID4gICAqIEBjbGs6ICAgICAgICAgICAgICAgICAgICBUaGUgY2xvY2sgdGhhdCBk
+ZXZpY2UgaW50ZXJuYWwgaXMgdXNpbmcNCj4gPiAgICogQGRtYV9yZXF1ZXN0czogICAgICAgICAg
+IFRoZSBudW1iZXIgb2YgVkNzIHRoZSBkZXZpY2Ugc3VwcG9ydHMgdG8NCj4gPiAgICogQGRtYV9j
+aGFubmVsczogICAgICAgICAgIFRoZSBudW1iZXIgb2YgUENzIHRoZSBkZXZpY2Ugc3VwcG9ydHMg
+dG8NCj4gPiArICogQGRtYV9tYXNrOiAgICAgICAgICAgICAgIEEgbWFzayBmb3IgRE1BIGNhcGFi
+aWxpdHkNCj4gPiAgICogQHZjOiAgICAgICAgICAgICAgICAgICAgIFRoZSBwb2ludGVyIHRvIGFs
+bCBhdmFpbGFibGUgVkNzDQo+ID4gICAqIEBwYzogICAgICAgICAgICAgICAgICAgICBUaGUgcG9p
+bnRlciB0byBhbGwgdGhlIHVuZGVybHlpbmcgUENzDQo+ID4gICAqLw0KPiA+IEBAIC0xMjYsNiAr
+MTI3LDcgQEAgc3RydWN0IG10a19jcWRtYV9kZXZpY2Ugew0KPiA+ICANCj4gPiAgCXUzMiBkbWFf
+cmVxdWVzdHM7DQo+ID4gIAl1MzIgZG1hX2NoYW5uZWxzOw0KPiA+ICsJdTMyIGRtYV9tYXNrOw0K
+PiA+ICAJc3RydWN0IG10a19jcWRtYV92Y2hhbiAqdmM7DQo+ID4gIAlzdHJ1Y3QgbXRrX2NxZG1h
+X3BjaGFuICoqcGM7DQo+ID4gIH07DQo+ID4gQEAgLTYwNyw2ICs2MDksMjEgQEAgc3RhdGljIGlu
+dCBtdGtfY3FkbWFfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiAgCQlj
+cWRtYS0+ZG1hX2NoYW5uZWxzID0gTVRLX0NRRE1BX05SX1BDSEFOUzsNCj4gPiAgCX0NCj4gPiAg
+DQo+ID4gKwlpZiAocGRldi0+ZGV2Lm9mX25vZGUpDQo+ID4gKwkJZXJyID0gb2ZfcHJvcGVydHlf
+cmVhZF91MzIocGRldi0+ZGV2Lm9mX25vZGUsDQo+ID4gKwkJCQkJICAgImRtYS1jaGFubmVsLW1h
+c2siLA0KPiA+ICsJCQkJCSAgICZjcWRtYS0+ZG1hX21hc2spOw0KPiA+ICsJaWYgKGVycikgew0K
+PiA+ICsJCWRldl93YXJuKCZwZGV2LT5kZXYsDQo+ID4gKwkJCSAiVXNpbmcgMCBhcyBtaXNzaW5n
+IGRtYS1jaGFubmVsLW1hc2sgcHJvcGVydHlcbiIpOw0KPiA+ICsJCWNxZG1hLT5kbWFfbWFzayA9
+IDA7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJaWYgKGRtYV9zZXRfbWFzaygmcGRldi0+ZGV2LCBE
+TUFfQklUX01BU0soY3FkbWEtPmRtYV9tYXNrKSkpIHsNCj4gPiArCQlkZXZfd2FybigmcGRldi0+
+ZGV2LCAiRE1BIHNldCBtYXNrIGZhaWxcbiIpOw0KPiANCj4gZmFpbCAtPiBmYWlsZWQNCj4gDQo+
+IFdpdGggdGhpczoNCj4gUmV2aWV3ZWQtYnk6IE1hdHRoaWFzIEJydWdnZXIgPG1hdHRoaWFzLmJn
+Z0BnbWFpbC5jb20+DQoNCk9LLg0KPiANCj4gPiArCQlyZXR1cm4gLUVJTlZBTDsNCj4gPiArCX0N
+Cj4gPiArDQo+ID4gIAljcWRtYS0+cGMgPSBkZXZtX2tjYWxsb2MoJnBkZXYtPmRldiwgY3FkbWEt
+PmRtYV9jaGFubmVscywNCj4gPiAgCQkJCSBzaXplb2YoKmNxZG1hLT5wYyksIEdGUF9LRVJORUwp
+Ow0KPiA+ICAJaWYgKCFjcWRtYS0+cGMpDQo+ID4gDQoNCg==
 
