@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7CF2105B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34A12105BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 10:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728715AbgGAIFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 04:05:02 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36280 "EHLO
+        id S1728751AbgGAIFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 04:05:30 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36284 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728651AbgGAIEy (ORCPT
+        with ESMTP id S1728645AbgGAIEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 1 Jul 2020 04:04:54 -0400
-Date:   Wed, 01 Jul 2020 08:04:50 -0000
+Date:   Wed, 01 Jul 2020 08:04:51 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1593590691;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -20,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=A1GB6lJaLBvn/Nc11IVOZHD+1vLyvMjDqyYONBSbSqs=;
-        b=HOEYjig1A6yd4rX0tXdikV6q7d7FNhoWiFjEBzrzwKW6l0T720ebhM9aHi5LPL8LQl2QDE
-        0zVfY7MhEf0fL68SCMPjyYvKjV+zQP8p3oTMnvX9ukfkSnoCr8lIP6tyPzUr9KPQi/5oej
-        DRxWYGX6PRIj4XMRI3/elZ498RJgj7ATPn7A6s4TKT5+4swUU4IzOfAFkacs2ewygwohXq
-        grkYTbu5mmNaCy/HIPci9hdB8D4VfMyrb31/VcbjdFV1Sgn9l2k1TGBk6OxvB4uYwJXJrY
-        3e3S9gQ3j7c+YYYGTMiY4WVcF69fLQotUI41ReNDZ617HOTaj5a262aak6G65w==
+        bh=IvMAvsvlOHXgIaP9uXRm4GizD/b8qi+pyRXSRNr1ifw=;
+        b=BuuC+9cVaJUDz+bA/n3jYi0FrVzY4I69SarTQ626MqpznD2z6IZSIl92CLJw45lX/+4xAo
+        yF92yRdN9IFUfsA0c3npmIA2HuHdKd9bT0Ty4cQE/NQsIKrh1ewFsG2T1JFGW+FscskWKi
+        tfHxxHnHny4/t00OsCdhRhJNMQ5MqHulRsbuwJ+r7EaFBwcmsON9zTx5EmkVkAjQIVq4HR
+        EfJamwrYg7EiwdB3pe4r9QzJEMo69+eVunA28gWJz6l31YE2lh6i9mZsZ2Qs88sAokzJGE
+        lokAOyObY6jc0a64IMx9K9I1h/22njceqF0xQDwNRxpHg+ba7YlOfX/pMCUvLg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1593590691;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,20 +33,20 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=A1GB6lJaLBvn/Nc11IVOZHD+1vLyvMjDqyYONBSbSqs=;
-        b=lA4Y4lYwTV7HJ4Qef6CokusRWiW/CXrXo9sToewPsqjAWCyltp7oV4kNLyhy7eYYCYvxEx
-        9B9nKfh88i8ru0DA==
+        bh=IvMAvsvlOHXgIaP9uXRm4GizD/b8qi+pyRXSRNr1ifw=;
+        b=QZc1N9HVDh7AbIIjn4sQZpo2XK6g9OzF+fpwQ1H7vjzxhSIVVOXiaJinENO4nHjT5Erewq
+        RZi7N6+KfU3CG6Cg==
 From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] selftests/x86/syscall_nt: Clear weird flags after each test
+Subject: [tip: x86/urgent] selftests/x86/syscall_nt: Add more flag combinations
 Cc:     Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <907bfa5a42d4475b8245e18b67a04b13ca51ffdb.1593191971.git.luto@kernel.org>
-References: <907bfa5a42d4475b8245e18b67a04b13ca51ffdb.1593191971.git.luto@kernel.org>
+In-Reply-To: <12924e2fe2c5826568b7fc9436d85ca7f5eb1743.1593191971.git.luto@kernel.org>
+References: <12924e2fe2c5826568b7fc9436d85ca7f5eb1743.1593191971.git.luto@kernel.org>
 MIME-Version: 1.0
-Message-ID: <159359069061.4006.13159564696561405198.tip-bot2@tip-bot2>
+Message-ID: <159359069113.4006.10361236382568138234.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,35 +58,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     a61fa2799ef9bf6c4f54cf7295036577cececc72
-Gitweb:        https://git.kernel.org/tip/a61fa2799ef9bf6c4f54cf7295036577cececc72
+Commit-ID:     e4ef7de160c6b12639c4fc49bcacb25b860ac76d
+Gitweb:        https://git.kernel.org/tip/e4ef7de160c6b12639c4fc49bcacb25b860ac76d
 Author:        Andy Lutomirski <luto@kernel.org>
-AuthorDate:    Fri, 26 Jun 2020 10:21:15 -07:00
+AuthorDate:    Fri, 26 Jun 2020 10:21:14 -07:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Wed, 01 Jul 2020 10:00:26 +02:00
 
-selftests/x86/syscall_nt: Clear weird flags after each test
+selftests/x86/syscall_nt: Add more flag combinations
 
-Clear the weird flags before logging to improve strace output --
-logging results while, say, TF is set does no one any favors.
+Add EFLAGS.AC to the mix.
 
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/907bfa5a42d4475b8245e18b67a04b13ca51ffdb.1593191971.git.luto@kernel.org
+Link: https://lkml.kernel.org/r/12924e2fe2c5826568b7fc9436d85ca7f5eb1743.1593191971.git.luto@kernel.org
 
 ---
- tools/testing/selftests/x86/syscall_nt.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/testing/selftests/x86/syscall_nt.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 diff --git a/tools/testing/selftests/x86/syscall_nt.c b/tools/testing/selftests/x86/syscall_nt.c
-index f060534..5fc82b9 100644
+index 02309a1..f060534 100644
 --- a/tools/testing/selftests/x86/syscall_nt.c
 +++ b/tools/testing/selftests/x86/syscall_nt.c
-@@ -59,6 +59,7 @@ static void do_it(unsigned long extraflags)
- 	set_eflags(get_eflags() | extraflags);
- 	syscall(SYS_getpid);
- 	flags = get_eflags();
-+	set_eflags(X86_EFLAGS_IF | X86_EFLAGS_FIXED);
- 	if ((flags & extraflags) == extraflags) {
- 		printf("[OK]\tThe syscall worked and flags are still set\n");
- 	} else {
+@@ -73,6 +73,12 @@ int main(void)
+ 	printf("[RUN]\tSet NT and issue a syscall\n");
+ 	do_it(X86_EFLAGS_NT);
+ 
++	printf("[RUN]\tSet AC and issue a syscall\n");
++	do_it(X86_EFLAGS_AC);
++
++	printf("[RUN]\tSet NT|AC and issue a syscall\n");
++	do_it(X86_EFLAGS_NT | X86_EFLAGS_AC);
++
+ 	/*
+ 	 * Now try it again with TF set -- TF forces returns via IRET in all
+ 	 * cases except non-ptregs-using 64-bit full fast path syscalls.
+@@ -80,8 +86,17 @@ int main(void)
+ 
+ 	sethandler(SIGTRAP, sigtrap, 0);
+ 
++	printf("[RUN]\tSet TF and issue a syscall\n");
++	do_it(X86_EFLAGS_TF);
++
+ 	printf("[RUN]\tSet NT|TF and issue a syscall\n");
+ 	do_it(X86_EFLAGS_NT | X86_EFLAGS_TF);
+ 
++	printf("[RUN]\tSet AC|TF and issue a syscall\n");
++	do_it(X86_EFLAGS_AC | X86_EFLAGS_TF);
++
++	printf("[RUN]\tSet NT|AC|TF and issue a syscall\n");
++	do_it(X86_EFLAGS_NT | X86_EFLAGS_AC | X86_EFLAGS_TF);
++
+ 	return nerrs == 0 ? 0 : 1;
+ }
