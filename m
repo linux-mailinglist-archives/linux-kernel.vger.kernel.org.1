@@ -2,93 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF87210E3C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12737210E47
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 17:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731660AbgGAPAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 11:00:16 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:45286 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726854AbgGAPAO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 11:00:14 -0400
-Received: by mail-pl1-f193.google.com with SMTP id g17so10008891plq.12;
-        Wed, 01 Jul 2020 08:00:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RN9Uob7cuR1gH1ZG/1wnY76yopcBcsRZ3UN3Pc2rBNE=;
-        b=eW5+aDbCTkpwHvG+yH7bWwtslzPQKw8o4khzZ9Jfloc72VSyCmk6aZyOPULRadI/0x
-         cEGcQhooMp+d2nDjzH2qjWr4goaiuqgUEi8cqunOvSKY3z/qZ3JQ81vwk0OAzNnSgqFz
-         jtfSsfU4ASdns3E3maqT5GMRHcKEULxE/4+hyV67PQx/JJ5154JmdKSM07yTKhAIgruw
-         l3OXCMXMQFGU2CL29zK4hDxZLsTaXZTxdTJzrC+/1EkVdZa2W2MxvXYa2RQUrUa0D94g
-         1aw+ko8sg1ybdtpcKcY1YwU+MIKIyD/PdhftsGw0ZNrTSfgRpErzfauVoZm4/D49svGv
-         Ngcg==
-X-Gm-Message-State: AOAM531/J3Jhu7+ibR9ITuLloZUEhrvRBbUq6sCci7dG9oq08nYs7iyA
-        tMzwW4TC3M50FskonXO93cY=
-X-Google-Smtp-Source: ABdhPJx6w2QyJcI4wbGNxQyPRuHfBXQ+DGZhqI0gNiEnDPbGveZWRnTA6sbUb1YjwyTIh2MDQe34pQ==
-X-Received: by 2002:a17:902:eb49:: with SMTP id i9mr21335692pli.231.1593615613150;
-        Wed, 01 Jul 2020 08:00:13 -0700 (PDT)
-Received: from sultan-book.localdomain ([89.46.114.241])
-        by smtp.gmail.com with ESMTPSA id c2sm5940117pgk.77.2020.07.01.08.00.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 08:00:12 -0700 (PDT)
-Date:   Wed, 1 Jul 2020 08:00:07 -0700
-From:   Sultan Alsawaf <sultan@kerneltoast.com>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc:     aaron.ma@canonical.com, admin@kryma.net,
-        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
-        hdegoede@redhat.com, hn.chen@weidahitech.com, jikos@kernel.org,
-        kai.heng.feng@canonical.com, linux-i2c@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com,
-        wsa@kernel.org
-Subject: Re: [PATCH v2] HID: i2c-hid: Use block reads when possible to save
- power
-Message-ID: <20200701150007.GA2141@sultan-book.localdomain>
-References: <c4373272-e656-773c-dfd2-0efc4c53c92d@linux.intel.com>
- <20200616154951.3050-1-sultan@kerneltoast.com>
- <37ceaf7a-3421-e305-4355-a6b40ae54843@linux.intel.com>
- <20200629174328.GB1646@sultan-box.localdomain>
- <ef949533-c614-7afb-f206-5c54d827deac@linux.intel.com>
+        id S1731674AbgGAPCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 11:02:32 -0400
+Received: from first.geanix.com ([116.203.34.67]:51104 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731566AbgGAPCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 11:02:31 -0400
+Received: from localhost (unknown [193.163.1.7])
+        by first.geanix.com (Postfix) with ESMTPSA id 9ADE32243294;
+        Wed,  1 Jul 2020 14:56:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1593615419; bh=gCnFMBzqMfwjPj7r0668yNWisz+NpBlEdV9Xo3xozlc=;
+        h=From:To:Cc:Subject:Date;
+        b=CS5d67gFQ/HH4lrp7Gz5aONwtD0bqiGCHysAXHJhNh/SbTF41PAEfSm/tzd7qQ3GX
+         PCgnNYoN9oJaMBqi1VdL1T+2Ja+TydwHmDKqDFXfNXJgcMT+8HQ4maQ3FMVikWoL5U
+         dYs6Sr8JocAI1p8qZLhGxRZmh4vedwhUq3mXBzL9GWGxpqJfbIlWa4irA9lULwTsgj
+         HGMz04TBewug8UCVRUaIoKeycq/YKLGYZlbvJKWkq27jeRf7o6b3pG3mmvWf5s83QL
+         knbMsmHA0MDDnFhu59ayZhfq84zQWbeZxanzcZsoo4GIXqJptMvT55KWoSMfyuvNNd
+         9qBRTBIV9s34A==
+From:   Esben Haabendal <esben@geanix.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] uio: uio_pdrv_genirq: Fixes and support for non-page-aligned memory
+Date:   Wed,  1 Jul 2020 16:56:56 +0200
+Message-Id: <20200701145659.3978-1-esben@geanix.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ef949533-c614-7afb-f206-5c54d827deac@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on ff3d05386fc5
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 11:04:01AM +0300, Jarkko Nikula wrote:
-> On 6/29/20 8:43 PM, Sultan Alsawaf wrote:
-> > Hmm, for some reason in 5.8 I get the same problem, but 5.7 is fine. Could you
-> > try this on 5.7 and see if it works?
-> > 
-> > In the meantime I'll bisect 5.8 to see why it's causing problems for me...
-> > 
-> I see the same issue on top of v5.7:
+This series inlcudes two fixes for issues when using uio_pdrv_genirq
+without device tree, and support for using uio_pdrv_genirq with
+non-page-aligned memory resources.
 
-Try reverting my "i2c: designware: Only check the first byte for SMBus block
-read length" patch and apply the following change instead:
+Esben Haabendal (3):
+  uio_pdrv_genirq: Remove warning when irq is not specified
+  uio_pdrv_genirq: fix use without device tree and no interrupt
+  uio_pdrv_genirq: Allow use with non-page-aligned memory resources
 
---- a/drivers/i2c/busses/i2c-designware-master.c
-+++ b/drivers/i2c/busses/i2c-designware-master.c
-@@ -394,10 +394,12 @@ i2c_dw_read(struct dw_i2c_dev *dev)
- 			u32 flags = msgs[dev->msg_read_idx].flags;
- 
- 			*buf = dw_readl(dev, DW_IC_DATA_CMD);
--			/* Ensure length byte is a valid value */
--			if (flags & I2C_M_RECV_LEN &&
--				*buf <= I2C_SMBUS_BLOCK_MAX && *buf > 0) {
--				len = i2c_dw_recv_len(dev, *buf);
-+			if (flags & I2C_M_RECV_LEN) {
-+				/* Ensure length byte is a valid value */
-+				if (*buf <= I2C_SMBUS_BLOCK_MAX && *buf > 0)
-+					len = i2c_dw_recv_len(dev, *buf);
-+				else
-+					len = i2c_dw_recv_len(dev, len);
- 			}
- 			buf++;
- 			dev->rx_outstanding--;
+ drivers/uio/uio_pdrv_genirq.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+-- 
+2.4.11
+
