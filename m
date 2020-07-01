@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7E121157E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 23:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB6C21157C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 23:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728039AbgGAV4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 17:56:53 -0400
-Received: from o1.b.az.sendgrid.net ([208.117.55.133]:5498 "EHLO
+        id S1727998AbgGAV4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 17:56:39 -0400
+Received: from o1.b.az.sendgrid.net ([208.117.55.133]:2544 "EHLO
         o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727813AbgGAV4W (ORCPT
+        with ESMTP id S1727856AbgGAV4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 17:56:22 -0400
+        Wed, 1 Jul 2020 17:56:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
         h=from:subject:in-reply-to:references:to:cc:content-type:
         content-transfer-encoding;
-        s=001; bh=hPL/kgQTz6wlFRy8GpHOwzP9TJx6MI3KcPavoqbKOOc=;
-        b=WSi8BJTUy3xDpcNlZN5tgfE1peEZwGWXPR8iKHe6BqAwMIL3afNAX6UTQthDkJGX9Lk7
-        WKl/9aE5gP4U4tiqW2w3Qh7W8S2yrj2ayYFlPTWGRA5muHaRKVU9zc9ahIY6WQCGfgNaT/
-        I740X3GHA6TgaYdhueZaThZOdgN1oFw+8=
-Received: by filterdrecv-p3iad2-5b55dcd864-xvj6x with SMTP id filterdrecv-p3iad2-5b55dcd864-xvj6x-20-5EFD0685-3B
-        2020-07-01 21:56:21.873945324 +0000 UTC m=+449225.981582369
+        s=001; bh=7H3DbOIR6DWUdA/y3YLDXdf//aCB9yI7dsoADDEwozU=;
+        b=Kcvik/5cXSTLA53WDTTVMGXhxNHcp5acdMhICJ2UqO8KfvhWBqBg0rqI8IKX5+iCS4Yd
+        T8oMHrbtUN5VANPskoLjqXlHz4mbcwNCTZj4vpSQWcIAX4PhBBHhMn+y8Fvf8EtEqYSREL
+        wdAVPVlIfVDOybau5IIn6pB03edoSlPWk=
+Received: by filterdrecv-p3iad2-5b55dcd864-n2v2l with SMTP id filterdrecv-p3iad2-5b55dcd864-n2v2l-20-5EFD0686-43
+        2020-07-01 21:56:22.80847321 +0000 UTC m=+449226.666074437
 Received: from bionic.localdomain (unknown)
         by ismtpd0001p1lon1.sendgrid.net (SG) with ESMTP
-        id tbZBENmMR5K2F9HM17zllg
-        Wed, 01 Jul 2020 21:56:21.586 +0000 (UTC)
+        id EUQFfvG1TEmNXhiQgqGLxw
+        Wed, 01 Jul 2020 21:56:22.550 +0000 (UTC)
 From:   Jonas Karlman <jonas@kwiboo.se>
-Subject: [PATCH 3/9] media: rkvdec: h264: Fix pic width and height in mbs
-Date:   Wed, 01 Jul 2020 21:56:21 +0000 (UTC)
-Message-Id: <20200701215616.30874-4-jonas@kwiboo.se>
+Subject: [PATCH 5/9] media: v4l2-common: Add helpers to calculate bytesperline
+ and sizeimage
+Date:   Wed, 01 Jul 2020 21:56:22 +0000 (UTC)
+Message-Id: <20200701215616.30874-6-jonas@kwiboo.se>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200701215616.30874-1-jonas@kwiboo.se>
 References: <20200701215616.30874-1-jonas@kwiboo.se>
 X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h46KlexVvyedR2tUq?=
- =?us-ascii?Q?gjVmM=2FILFuMT+pt9FyPU3oqNPS8WalWdE9qEGVv?=
- =?us-ascii?Q?QSMehNe2haUM8g4S6hR000xVYRiSvFYzX0hWotq?=
- =?us-ascii?Q?uJI4V8=2FFRknXNbAWJRYGeTNTgfs53XPoKdQfYmj?=
- =?us-ascii?Q?Oi=2FM+iZnPe9IC=2FQqBsL4MtrKiCI5fbeRtkPDps+?=
- =?us-ascii?Q?bhHvMBF3OMM9wHSqoXdcQ=3D=3D?=
+ =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h0uPT0Fcu4aS=2FJELx?=
+ =?us-ascii?Q?zmlrelv=2FRxNNGKdLUb6zfjLL5hY9lxvy0FnaZCc?=
+ =?us-ascii?Q?mavxY0dPQ+1i1s4MfBxbGo=2FrSq9p+VLgUJi7ec4?=
+ =?us-ascii?Q?lH+t2WYn=2FeUkl5btzpwnHjDHHkuMdY8T8=2FTZim1?=
+ =?us-ascii?Q?3z8bHNz+BmDC0vgHkN85K4Ei9W0DJt5WyHGia6U?=
+ =?us-ascii?Q?yrEp+t4MfJMdKp42O5c5A=3D=3D?=
 To:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
         linux-kernel@vger.kernel.org
 Cc:     Jonas Karlman <jonas@kwiboo.se>,
@@ -54,100 +55,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The width and height in mbs is currently configured based on OUTPUT buffer
-resolution, this works for frame pictures but can cause issues for field
-pictures or when frmsize step_width is changed to support 10-bit decoding.
+Add helper functions to calculate plane bytesperline and sizeimage, these
+new helpers consider block width and height when calculating plane
+bytesperline and sizeimage.
 
-When frame_mbs_only_flag is 0 the height in mbs should be height of
-the field instead of height of frame.
-
-Validate pic_width_in_mbs_minus1 and pic_height_in_map_units_minus1
-against CAPTURE buffer resolution and use these values to configure HW.
+This prepare support for new pixel formats added in next patch that make
+use of block width and height.
 
 Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
 ---
- drivers/staging/media/rkvdec/rkvdec-h264.c | 44 +++++++++++++++++++---
- 1 file changed, 39 insertions(+), 5 deletions(-)
+ drivers/media/v4l2-core/v4l2-common.c | 77 +++++++++++++--------------
+ 1 file changed, 38 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging/media/rkvdec/rkvdec-h264.c
-index f0cfed84d60d..c9aebeb8f9b3 100644
---- a/drivers/staging/media/rkvdec/rkvdec-h264.c
-+++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
-@@ -672,8 +672,8 @@ static void assemble_hw_pps(struct rkvdec_ctx *ctx,
- 		  LOG2_MAX_PIC_ORDER_CNT_LSB_MINUS4);
- 	WRITE_PPS(!!(sps->flags & V4L2_H264_SPS_FLAG_DELTA_PIC_ORDER_ALWAYS_ZERO),
- 		  DELTA_PIC_ORDER_ALWAYS_ZERO_FLAG);
--	WRITE_PPS(DIV_ROUND_UP(ctx->coded_fmt.fmt.pix_mp.width, 16), PIC_WIDTH_IN_MBS);
--	WRITE_PPS(DIV_ROUND_UP(ctx->coded_fmt.fmt.pix_mp.height, 16), PIC_HEIGHT_IN_MBS);
-+	WRITE_PPS(sps->pic_width_in_mbs_minus1 + 1, PIC_WIDTH_IN_MBS);
-+	WRITE_PPS(sps->pic_height_in_map_units_minus1 + 1, PIC_HEIGHT_IN_MBS);
- 	WRITE_PPS(!!(sps->flags & V4L2_H264_SPS_FLAG_FRAME_MBS_ONLY),
- 		  FRAME_MBS_ONLY_FLAG);
- 	WRITE_PPS(!!(sps->flags & V4L2_H264_SPS_FLAG_MB_ADAPTIVE_FRAME_FIELD),
-@@ -1058,10 +1058,33 @@ static void rkvdec_h264_stop(struct rkvdec_ctx *ctx)
- 	kfree(h264_ctx);
+diff --git a/drivers/media/v4l2-core/v4l2-common.c b/drivers/media/v4l2-core/v4l2-common.c
+index 3dc17ebe14fa..4102c373b48a 100644
+--- a/drivers/media/v4l2-core/v4l2-common.c
++++ b/drivers/media/v4l2-core/v4l2-common.c
+@@ -333,6 +333,33 @@ static inline unsigned int v4l2_format_block_height(const struct v4l2_format_inf
+ 	return info->block_h[plane];
  }
  
--static void rkvdec_h264_run_preamble(struct rkvdec_ctx *ctx,
--				     struct rkvdec_h264_run *run)
-+static int validate_sps(struct rkvdec_ctx *ctx,
-+			const struct v4l2_ctrl_h264_sps *sps)
++static inline unsigned int v4l2_format_plane_width(const struct v4l2_format_info *info, int plane,
++						   unsigned int width)
 +{
-+	unsigned int width, height;
++	unsigned int hdiv = plane ? info->hdiv : 1;
++	unsigned int bytes = DIV_ROUND_UP(width * info->bpp[plane],
++				v4l2_format_block_width(info, plane) *
++				v4l2_format_block_height(info, plane));
 +
-+	if (WARN_ON(!sps))
-+		return -EINVAL;
-+
-+	width = (sps->pic_width_in_mbs_minus1 + 1) * 16;
-+	height = (sps->pic_height_in_map_units_minus1 + 1) * 16;
-+
-+	if (width > ctx->decoded_fmt.fmt.pix_mp.width ||
-+	    height > ctx->decoded_fmt.fmt.pix_mp.height) {
-+		dev_err(ctx->dev->dev,
-+			"unexpected bitstream resolution %ux%u\n",
-+			width, height);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
++	return DIV_ROUND_UP(bytes, hdiv);
 +}
 +
-+static int rkvdec_h264_run_preamble(struct rkvdec_ctx *ctx,
-+				    struct rkvdec_h264_run *run)
++static inline unsigned int v4l2_format_plane_height(const struct v4l2_format_info *info, int plane,
++						    unsigned int height)
++{
++	unsigned int vdiv = plane ? info->vdiv : 1;
++	unsigned int lines = ALIGN(height, v4l2_format_block_height(info, plane));
++
++	return DIV_ROUND_UP(lines, vdiv);
++}
++
++static inline unsigned int v4l2_format_plane_size(const struct v4l2_format_info *info, int plane,
++						  unsigned int width, unsigned int height)
++{
++	return v4l2_format_plane_width(info, plane, width) *
++	       v4l2_format_plane_height(info, plane, height);
++}
++
+ void v4l2_apply_frmsize_constraints(u32 *width, u32 *height,
+ 				    const struct v4l2_frmsize_stepwise *frmsize)
  {
- 	struct v4l2_ctrl *ctrl;
-+	int ret;
+@@ -368,37 +395,19 @@ int v4l2_fill_pixfmt_mp(struct v4l2_pix_format_mplane *pixfmt,
  
- 	ctrl = v4l2_ctrl_find(&ctx->ctrl_hdl,
- 			      V4L2_CID_MPEG_VIDEO_H264_DECODE_PARAMS);
-@@ -1080,6 +1103,12 @@ static void rkvdec_h264_run_preamble(struct rkvdec_ctx *ctx,
- 	run->scaling_matrix = ctrl ? ctrl->p_cur.p : NULL;
+ 	if (info->mem_planes == 1) {
+ 		plane = &pixfmt->plane_fmt[0];
+-		plane->bytesperline = ALIGN(width, v4l2_format_block_width(info, 0)) * info->bpp[0];
++		plane->bytesperline = v4l2_format_plane_width(info, 0, width);
+ 		plane->sizeimage = 0;
  
- 	rkvdec_run_preamble(ctx, &run->base);
-+
-+	ret = validate_sps(ctx, run->sps);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
+-		for (i = 0; i < info->comp_planes; i++) {
+-			unsigned int hdiv = (i == 0) ? 1 : info->hdiv;
+-			unsigned int vdiv = (i == 0) ? 1 : info->vdiv;
+-			unsigned int aligned_width;
+-			unsigned int aligned_height;
+-
+-			aligned_width = ALIGN(width, v4l2_format_block_width(info, i));
+-			aligned_height = ALIGN(height, v4l2_format_block_height(info, i));
+-
+-			plane->sizeimage += info->bpp[i] *
+-				DIV_ROUND_UP(aligned_width, hdiv) *
+-				DIV_ROUND_UP(aligned_height, vdiv);
+-		}
++		for (i = 0; i < info->comp_planes; i++)
++			plane->sizeimage +=
++				v4l2_format_plane_size(info, i, width, height);
+ 	} else {
+ 		for (i = 0; i < info->comp_planes; i++) {
+-			unsigned int hdiv = (i == 0) ? 1 : info->hdiv;
+-			unsigned int vdiv = (i == 0) ? 1 : info->vdiv;
+-			unsigned int aligned_width;
+-			unsigned int aligned_height;
+-
+-			aligned_width = ALIGN(width, v4l2_format_block_width(info, i));
+-			aligned_height = ALIGN(height, v4l2_format_block_height(info, i));
+-
+ 			plane = &pixfmt->plane_fmt[i];
+ 			plane->bytesperline =
+-				info->bpp[i] * DIV_ROUND_UP(aligned_width, hdiv);
+-			plane->sizeimage =
+-				plane->bytesperline * DIV_ROUND_UP(aligned_height, vdiv);
++				v4l2_format_plane_width(info, i, width);
++			plane->sizeimage = plane->bytesperline *
++				v4l2_format_plane_height(info, i, height);
+ 		}
+ 	}
+ 	return 0;
+@@ -422,22 +431,12 @@ int v4l2_fill_pixfmt(struct v4l2_pix_format *pixfmt, u32 pixelformat,
+ 	pixfmt->width = width;
+ 	pixfmt->height = height;
+ 	pixfmt->pixelformat = pixelformat;
+-	pixfmt->bytesperline = ALIGN(width, v4l2_format_block_width(info, 0)) * info->bpp[0];
++	pixfmt->bytesperline = v4l2_format_plane_width(info, 0, width);
+ 	pixfmt->sizeimage = 0;
+ 
+-	for (i = 0; i < info->comp_planes; i++) {
+-		unsigned int hdiv = (i == 0) ? 1 : info->hdiv;
+-		unsigned int vdiv = (i == 0) ? 1 : info->vdiv;
+-		unsigned int aligned_width;
+-		unsigned int aligned_height;
+-
+-		aligned_width = ALIGN(width, v4l2_format_block_width(info, i));
+-		aligned_height = ALIGN(height, v4l2_format_block_height(info, i));
+-
+-		pixfmt->sizeimage += info->bpp[i] *
+-			DIV_ROUND_UP(aligned_width, hdiv) *
+-			DIV_ROUND_UP(aligned_height, vdiv);
+-	}
++	for (i = 0; i < info->comp_planes; i++)
++		pixfmt->sizeimage +=
++			v4l2_format_plane_size(info, i, width, height);
+ 	return 0;
  }
- 
- static int rkvdec_h264_run(struct rkvdec_ctx *ctx)
-@@ -1088,8 +1117,13 @@ static int rkvdec_h264_run(struct rkvdec_ctx *ctx)
- 	struct rkvdec_dev *rkvdec = ctx->dev;
- 	struct rkvdec_h264_ctx *h264_ctx = ctx->priv;
- 	struct rkvdec_h264_run run;
-+	int ret;
- 
--	rkvdec_h264_run_preamble(ctx, &run);
-+	ret = rkvdec_h264_run_preamble(ctx, &run);
-+	if (ret) {
-+		rkvdec_run_postamble(ctx, &run.base);
-+		return ret;
-+	}
- 
- 	/* Build the P/B{0,1} ref lists. */
- 	v4l2_h264_init_reflist_builder(&reflist_builder, run.decode_params,
+ EXPORT_SYMBOL_GPL(v4l2_fill_pixfmt);
 -- 
 2.17.1
 
