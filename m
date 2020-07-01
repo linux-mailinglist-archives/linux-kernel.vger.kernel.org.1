@@ -2,82 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDE0210DFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 16:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC831210E01
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 16:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731573AbgGAOs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 10:48:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33414 "EHLO mx2.suse.de"
+        id S1731620AbgGAOss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 10:48:48 -0400
+Received: from muru.com ([72.249.23.125]:60200 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726251AbgGAOsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 10:48:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9FCFBAEC2;
-        Wed,  1 Jul 2020 14:48:22 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 88D47DA781; Wed,  1 Jul 2020 16:48:06 +0200 (CEST)
-Date:   Wed, 1 Jul 2020 16:48:06 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        dm-devel@redhat.com, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, drbd-dev@tron.linbit.com,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] writeback: remove bdi->congested_fn
-Message-ID: <20200701144805.GC27795@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        dm-devel@redhat.com, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, drbd-dev@tron.linbit.com,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20200701090622.3354860-1-hch@lst.de>
- <20200701090622.3354860-5-hch@lst.de>
+        id S1726251AbgGAOsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 10:48:47 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 48F408063;
+        Wed,  1 Jul 2020 14:49:39 +0000 (UTC)
+Date:   Wed, 1 Jul 2020 07:48:43 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, bcousson@baylibre.com,
+        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v2] ARM: dts: am335x-pocketbeagle: set default mux for
+ gpio pins
+Message-ID: <20200701144843.GI37466@atomide.com>
+References: <20200628152442.322593-1-drew@beagleboard.org>
+ <20200629170358.GT37466@atomide.com>
+ <20200630020102.GA45128@x1>
+ <20200630182037.GF37466@atomide.com>
+ <20200630213155.GA115731@x1>
+ <20200630213423.GG37466@atomide.com>
+ <20200630214231.GA116238@x1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200701090622.3354860-5-hch@lst.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200630214231.GA116238@x1>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 11:06:22AM +0200, Christoph Hellwig wrote:
-> Except for pktdvd, the only places setting congested bits are file
-> systems that allocate their own backing_dev_info structures.  And
-> pktdvd is a deprecated driver that isn't useful in stack setup
-> either.  So remove the dead congested_fn stacking infrastructure.
+* Drew Fustini <drew@beagleboard.org> [200630 21:43]:
+> On Tue, Jun 30, 2020 at 02:34:23PM -0700, Tony Lindgren wrote:
+> > * Drew Fustini <drew@beagleboard.org> [200630 21:32]:
+> > > On Tue, Jun 30, 2020 at 11:20:37AM -0700, Tony Lindgren wrote:
+> > ...
+> > > > > > Needing to change the dts does not sound good to me.. But maybe you mean
+> > > > > > this is needed until the gpio-omap and pinctrl-single patches are merged?
+> > > > >
+> > > > > I agree that I would like for userspace to be able to do run-time
+> > > > > changes.  However, I think something would need to be added to the
+> > > > > pinconf support in pinctrl-single for that to be possible.  There are
+> > > > > bias properties but non for receiver enable.
+> > > > > 
+> > > > > Does it seem sensible to add that?
+> > > > 
+> > > > Well let's see with Linus W says. To me it seems this might be a good
+> > > > reason to allow a sysfs interface to change the pinctrl if we don't
+> > > > have it yet? With the proper gpio line naming it should be quite simple
+> > > > to use too :)
+> > > 
+> > > I think if pinctrl-single allowed mux to be set through debugfs that
+> > > could be one solution to the use case of users prototyping with a
+> > > beaglebone.  Maybe that could be acceptable?
+> > 
+> > I think this should not depend on debugfs though, it should be a
+> > generic interface.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/block/drbd/drbd_main.c   | 59 --------------------------------
->  drivers/md/bcache/request.c      | 43 -----------------------
->  drivers/md/bcache/super.c        |  1 -
->  drivers/md/dm-cache-target.c     | 19 ----------
->  drivers/md/dm-clone-target.c     | 15 --------
->  drivers/md/dm-era-target.c       | 15 --------
->  drivers/md/dm-raid.c             | 12 -------
->  drivers/md/dm-table.c            | 37 +-------------------
->  drivers/md/dm-thin.c             | 16 ---------
->  drivers/md/dm.c                  | 33 ------------------
->  drivers/md/dm.h                  |  1 -
->  drivers/md/md-linear.c           | 24 -------------
->  drivers/md/md-multipath.c        | 23 -------------
->  drivers/md/md.c                  | 23 -------------
->  drivers/md/md.h                  |  4 ---
->  drivers/md/raid0.c               | 16 ---------
->  drivers/md/raid1.c               | 31 -----------------
->  drivers/md/raid10.c              | 26 --------------
->  drivers/md/raid5.c               | 25 --------------
+> Ok, thanks.  I'm trying to imagine a solution as there no existing
+> pinctrl uAPI.  gpiod uAPI has gained some pinctrl functionality with
+> the work that Kent Gibson has been doing beyond just bias flags.
 
-For the btrfs bits
+OK. Yeah sounds like in this case toggling pinctrl receiver enable
+should happen automatically with gpio changes.
 
->  fs/btrfs/disk-io.c               | 23 -------------
+> Do you think trying to plumb this through gpio-omap is a reasonable
+> approach?
 
-Acked-by: David Sterba <dsterba@suse.com>
+I think any sysfs interface to update pinctrl settings should be
+generic to the pinctrl framework. But maybe making it work via gpio
+use would do the trick.
+
+Regards,
+
+Tony
