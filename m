@@ -2,355 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09291210870
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF1B210861
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Jul 2020 11:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729548AbgGAJly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 05:41:54 -0400
-Received: from mga03.intel.com ([134.134.136.65]:53031 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729402AbgGAJlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 05:41:53 -0400
-IronPort-SDR: 0d4T0F1VkTEL3aE4rikAgJuYiHvgFUwrq3ZU/anIv11scG0fGC0ls4mqAnjr3JFIe5Is33Tqwg
- gq7REf6qyGxQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="146523003"
-X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
-   d="scan'208";a="146523003"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 02:41:51 -0700
-IronPort-SDR: fQsraumZCzt9xmgPSBDWyeZOHhpVHdyrsV3kzRxXE0n9D8VbaKic6DcdQbWR9p06an8aOIqITz
- ffT7xzhPM+RA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
-   d="scan'208";a="386958801"
-Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
-  by fmsmga001.fm.intel.com with ESMTP; 01 Jul 2020 02:41:46 -0700
-From:   Brent Lu <brent.lu@intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Naveen Manohar <naveen.m@intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Libin Yang <libin.yang@linux.intel.com>,
-        Brent Lu <brent.lu@intel.com>,
-        Mac Chiang <mac.chiang@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Rander Wang <rander.wang@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Amery Song <chao.song@intel.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Jason Yan <yanaijie@huawei.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: Intel: bxt-da7219-max98357a: support MAX98390 speaker amp
-Date:   Wed,  1 Jul 2020 17:36:51 +0800
-Message-Id: <1593596211-28344-1-git-send-email-brent.lu@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1729263AbgGAJkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 05:40:11 -0400
+Received: from mail-eopbgr70079.outbound.protection.outlook.com ([40.107.7.79]:32173
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726353AbgGAJkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 05:40:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VGO1ej8EtWzGILxkegRAjj4lVK83NCE2b4H7h7z/WLNjn9h/7VHKL2FzdmzDes6by4ppWhnKUkFRN6YwZ5u5UyfG2iaCLYy+aB3Ah279i05DuVq4aKA7I/f/8aO10fUv3VJAdhnmZgdmLgSiAboU0zb5cpivofTqHE/ty20usMJnNGFWwzP4Itx823KG8YP7PgjsAClWxutN5qSO4Ln2JY6aKC+h5t23cwWu3+sBEv7KO/3xC1MHDHpqiUoClfl6DWUimTtIs7ohLw44kJFNT3eG7smi4Wh1qJB915pDYpzNS3vSmlxNm3JWsrmTc4GuhSw0FzJqyMVuTEkWda7kQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6b7c+w6apo+r80Mi741Mb3bP2l8gu8FlchAQlT7grMM=;
+ b=AnQlifwtrrzJnShy/WPt3UIAbGQ1Bii+sOrH2FyrgMp++2xqZuxgQThroFayARPtncPjl8dbNGs4wiw0SySanjfIQMceyRyzLp5JRqcas2Ay5uCGQkdpCHl7c9iesFOcSFi7xKZ8RsMTtzREd1kmEcPqhpwN7JMuVmILsYPN3iM4p5YxpNnP1EN9wcOdfS+wf/22ZeVLUNPRh6aFA7YMiBipQeJkkYCW+r/a0SO3gFXRG3H4IS/MbXdp8Sd81Hj1oGg6k7oB432GmNr3DkoQ+qgFH/8E0CJEIs8r1/1Z5lL+n+PJd0dNvLCM5HtyJajf+3qRcjEKi0pej7HYO3qXfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6b7c+w6apo+r80Mi741Mb3bP2l8gu8FlchAQlT7grMM=;
+ b=rVKHbKStXe/xAYK6wfsrEy35U6QVOw/soSMBOYyOEvsWWgwzFDnRWMbXX0vniDYmwSrSz+Ftj54w/67RDvdyd+ZwycO7zNOIj0xXgPqr/UjWP5feeLJNQfzNykWCFATB0YkO4fB7QEZLKE9FH3R6NlGBHr86vU1ETg3SImLqDMo=
+Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
+ by DB7PR04MB4762.eurprd04.prod.outlook.com (2603:10a6:10:16::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.24; Wed, 1 Jul
+ 2020 09:40:04 +0000
+Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
+ ([fe80::1dab:b68c:e028:acb3]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
+ ([fe80::1dab:b68c:e028:acb3%6]) with mapi id 15.20.3131.030; Wed, 1 Jul 2020
+ 09:40:04 +0000
+From:   Anson Huang <anson.huang@nxp.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+CC:     Dong Aisheng <dongas86@gmail.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
+        Stefan Agner <stefan.agner@toradex.com>,
+        Peng Fan <peng.fan@nxp.com>, Abel Vesa <abel.vesa@nxp.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        Andy Duan <fugang.duan@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH V3 04/10] clk: imx: Support building SCU clock driver as
+ module
+Thread-Topic: [PATCH V3 04/10] clk: imx: Support building SCU clock driver as
+ module
+Thread-Index: AQHWTdthV6wfzmMopU6pSRFnxqvg3qjvd4YAgAACQ6CAABqKgIAAAHBggAAdugCAAAKowIAA09MAgAHHMmCAABw9AIAAC3rggAACoRA=
+Date:   Wed, 1 Jul 2020 09:40:04 +0000
+Message-ID: <DB3PR0402MB3916461E26540B6ACFB54AFFF56C0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+References: <1593410042-10598-1-git-send-email-Anson.Huang@nxp.com>
+ <1593410042-10598-5-git-send-email-Anson.Huang@nxp.com>
+ <CAK8P3a2yXFbGxuSRoC5_dYBujnAtVoEMXe50V7QYjPYhqra7nA@mail.gmail.com>
+ <DB3PR0402MB39160335642AFBAC4B38C511F56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CAK8P3a0CcijnVxJws_kMiaOBbc4Uox40W4=-dX+BG6OeMYtFpw@mail.gmail.com>
+ <DB3PR0402MB39167D9A3897C3CE327EBDDBF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CAK8P3a1cYsgJu+JCrmQw-VQyAKpyOz7fpOf3jBZ7QKc=urUFtw@mail.gmail.com>
+ <DB3PR0402MB39167F7746B4B3794600FC7FF56E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CAA+hA=TYuSk=P4D_D0_Rv1O2AAB3UvYrNXToptPJjEsjECquUw@mail.gmail.com>
+ <DB3PR0402MB3916E820EA1E9884DD0A08CFF56C0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CAK8P3a1nxtFqytyTZjte-9UJQEZWp0eKF64v=E1LpgsG8R0h9w@mail.gmail.com>
+ <DB3PR0402MB3916B16516474F8D17EF9DA3F56C0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+In-Reply-To: <DB3PR0402MB3916B16516474F8D17EF9DA3F56C0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: arndb.de; dkim=none (message not signed)
+ header.d=none;arndb.de; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [183.192.9.232]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: b326c8c4-fdf1-495d-4a42-08d81da2bbc1
+x-ms-traffictypediagnostic: DB7PR04MB4762:
+x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB7PR04MB4762ED130719EB1C9C1557F9F56C0@DB7PR04MB4762.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 04519BA941
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: rG47DL6VqBSX5gqyBvcsVX14lQRtKAMq5Dwlgs+os+B4Ys/5BC4y25ds5OmaiBF7osk/9oSCSHfqRHwHYxCg8xUOZtHQlvjD1Xc6aN8a+zXI8fruSnohPRQi0GQUYHuzBgmyKfJQDBMji/htke7Vj5wwBdpCThhfcx28FMV/VuglIB/YEhsh9HwGmHx9t6K0xAMPg5PfqUcG6HMTV/FmoQZN7Cw7IxRYkhXCoUqgtSCzsDeNcKwLErDXkb6OPdjnyWb0sD+8lxGqzfzy458tmDuqCtkL99FBRpgk/7eEtW7yGivlMUEJZr3zPgd3zfcnphJQhlFwS5FF5yx4ZdIDkA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(366004)(39860400002)(396003)(136003)(66556008)(7696005)(64756008)(478600001)(66446008)(52536014)(8936002)(19627235002)(66476007)(33656002)(6506007)(53546011)(4326008)(5660300002)(8676002)(9686003)(6916009)(2940100002)(186003)(55016002)(44832011)(66946007)(71200400001)(26005)(86362001)(316002)(54906003)(76116006)(83380400001)(7416002)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: zeyBAXk70cVBfTOFI+A8P+/6mJ1hModpLBrL/P1bUdne62WssrRgVys5Uaa3fq3Yof7nkfsLgFEhBo7LQvRTz7hsLoUKn02Pg0DrfTV7bUFQemBtqadjBL/FDCLTJUD76rZ9hkNZEa2bWMx8mZSVC725p4tKSJFaAdQLPX+YunGPnYvMpIZ3oOyLt9JD1rb6++jOuPY61FIQ9uutN2oJ9uT2AnV/EinDAsYQFrscgu5LVk9fRdu4sDcRPbrMnOhKx5UL5MMDyYUMVVvKUgtFnnlfmebqgr4HiU9C9RGkSsNQ/AZKfwJLWrZ0w5Hee1amPBYB3rWwDSz2Xov84kMXTppfET5PajmC6AQbcqmsQpsWd19hQaBo/6V8BKrFnzGkfK4p1h3NsKNe6WnF05az7Nfo3xr9WNakYQaGs+hdxVJihcYysHOVR2/5HWHcsw/1CoRreRFzRts4475yk0g6Uxg5Vza8mYJXAdp5/TknxUQ=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB3PR0402MB3916.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b326c8c4-fdf1-495d-4a42-08d81da2bbc1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jul 2020 09:40:04.3650
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vHhIKHYGE/Y+s3I9JUjxzFXHlX1Am3j8+G49KR6QhUmewPA0kgxFCkgXTiG2icnZiOyM66/ygbK5mvmkq4D1iA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4762
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support MAX98390 speaker amplifier on cometlake platform. Driver now
-detects amplifier type in the probe function and installs corresponding
-controls and DAPM widgets/routes in the late_probe function.
-
-Signed-off-by: Brent Lu <brent.lu@intel.com>
----
- sound/soc/intel/boards/Kconfig                    |   5 +-
- sound/soc/intel/boards/bxt_da7219_max98357a.c     | 117 ++++++++++++++++++++--
- sound/soc/intel/common/soc-acpi-intel-cml-match.c |  13 +++
- 3 files changed, 127 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 3d820e1..f176df2 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -288,6 +288,7 @@ config SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
- 	tristate
- 	select SND_SOC_DA7219
- 	select SND_SOC_MAX98357A
-+	select SND_SOC_MAX98390
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
- 
-@@ -298,14 +299,14 @@ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON
- if SND_SOC_INTEL_APL
- 
- config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
--	tristate "Broxton with DA7219 and MAX98357A in I2S Mode"
-+	tristate "Broxton with DA7219 and MAX98357A/MAX98390 in I2S Mode"
- 	depends on I2C && ACPI && GPIOLIB
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
- 	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON
- 	help
- 	   This adds support for ASoC machine driver for Broxton-P platforms
--	   with DA7219 + MAX98357A I2S audio codec.
-+	   with DA7219 + MAX98357A/MAX98390 I2S audio codec.
- 	   Say Y or m if you have such a device. This is a recommended option.
- 	   If unsure select "N".
- 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index 44016c1..4d39253 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -25,9 +25,14 @@
- 
- #define BXT_DIALOG_CODEC_DAI	"da7219-hifi"
- #define BXT_MAXIM_CODEC_DAI	"HiFi"
-+#define MAX98390_DEV0_NAME	"i2c-MX98390:00"
-+#define MAX98390_DEV1_NAME	"i2c-MX98390:01"
- #define DUAL_CHANNEL		2
- #define QUAD_CHANNEL		4
- 
-+#define SPKAMP_MAX98357A	1
-+#define SPKAMP_MAX98390	2
-+
- static struct snd_soc_jack broxton_headset;
- static struct snd_soc_jack broxton_hdmi[3];
- 
-@@ -40,6 +45,7 @@ struct bxt_hdmi_pcm {
- struct bxt_card_private {
- 	struct list_head hdmi_pcm_list;
- 	bool common_hdmi_codec_drv;
-+	int spkamp;
- };
- 
- enum {
-@@ -85,13 +91,20 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- static const struct snd_kcontrol_new broxton_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
- 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+};
-+
-+static const struct snd_kcontrol_new max98357a_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Spk"),
- };
- 
-+static const struct snd_kcontrol_new max98390_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Left Spk"),
-+	SOC_DAPM_PIN_SWITCH("Right Spk"),
-+};
-+
- static const struct snd_soc_dapm_widget broxton_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
--	SND_SOC_DAPM_SPK("Spk", NULL),
- 	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
- 	SND_SOC_DAPM_SPK("HDMI1", NULL),
- 	SND_SOC_DAPM_SPK("HDMI2", NULL),
-@@ -100,14 +113,20 @@ static const struct snd_soc_dapm_widget broxton_widgets[] = {
- 			platform_clock_control,	SND_SOC_DAPM_POST_PMD|SND_SOC_DAPM_PRE_PMU),
- };
- 
-+static const struct snd_soc_dapm_widget max98357a_widgets[] = {
-+	SND_SOC_DAPM_SPK("Spk", NULL),
-+};
-+
-+static const struct snd_soc_dapm_widget max98390_widgets[] = {
-+	SND_SOC_DAPM_SPK("Left Spk", NULL),
-+	SND_SOC_DAPM_SPK("Right Spk", NULL),
-+};
-+
- static const struct snd_soc_dapm_route audio_map[] = {
- 	/* HP jack connectors - unknown if we have jack detection */
- 	{"Headphone Jack", NULL, "HPL"},
- 	{"Headphone Jack", NULL, "HPR"},
- 
--	/* speaker */
--	{"Spk", NULL, "Speaker"},
--
- 	/* other jacks */
- 	{"MIC", NULL, "Headset Mic"},
- 
-@@ -134,6 +153,17 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{ "Headset Mic", NULL, "Platform Clock" },
- };
- 
-+static const struct snd_soc_dapm_route max98357a_routes[] = {
-+	/* speaker */
-+	{"Spk", NULL, "Speaker"},
-+};
-+
-+static const struct snd_soc_dapm_route max98390_routes[] = {
-+	/* Speaker */
-+	{"Left Spk", NULL, "Left BE_OUT"},
-+	{"Right Spk", NULL, "Right BE_OUT"},
-+};
-+
- static const struct snd_soc_dapm_route broxton_map[] = {
- 	{"HiFi Playback", NULL, "ssp5 Tx"},
- 	{"ssp5 Tx", NULL, "codec0_out"},
-@@ -404,6 +434,10 @@ SND_SOC_DAILINK_DEF(ssp5_pin,
- SND_SOC_DAILINK_DEF(ssp5_codec,
- 	DAILINK_COMP_ARRAY(COMP_CODEC("MX98357A:00",
- 				      BXT_MAXIM_CODEC_DAI)));
-+SND_SOC_DAILINK_DEF(max98390_codec,
-+	DAILINK_COMP_ARRAY(
-+	/* Left */	COMP_CODEC(MAX98390_DEV0_NAME, "max98390-aif1"),
-+	/* Right */	COMP_CODEC(MAX98390_DEV1_NAME, "max98390-aif1")));
- 
- SND_SOC_DAILINK_DEF(ssp1_pin,
- 	DAILINK_COMP_ARRAY(COMP_CPU("SSP1 Pin")));
-@@ -601,15 +635,69 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 	},
- };
- 
-+static struct snd_soc_codec_conf max98390_codec_confs[] = {
-+	{
-+		.dlc = COMP_CODEC_CONF(MAX98390_DEV0_NAME),
-+		.name_prefix = "Left",
-+	},
-+	{
-+		.dlc = COMP_CODEC_CONF(MAX98390_DEV1_NAME),
-+		.name_prefix = "Right",
-+	},
-+};
-+
- #define NAME_SIZE	32
- static int bxt_card_late_probe(struct snd_soc_card *card)
- {
- 	struct bxt_card_private *ctx = snd_soc_card_get_drvdata(card);
- 	struct bxt_hdmi_pcm *pcm;
- 	struct snd_soc_component *component = NULL;
--	int err, i = 0;
-+	const struct snd_kcontrol_new *controls;
-+	const struct snd_soc_dapm_widget *widgets;
-+	const struct snd_soc_dapm_route *routes;
-+	int num_controls, num_widgets, num_routes, err, i = 0;
- 	char jack_name[NAME_SIZE];
- 
-+	switch (ctx->spkamp) {
-+	case SPKAMP_MAX98357A:
-+		controls = max98357a_controls;
-+		num_controls = ARRAY_SIZE(max98357a_controls);
-+		widgets = max98357a_widgets;
-+		num_widgets = ARRAY_SIZE(max98357a_widgets);
-+		routes = max98357a_routes;
-+		num_routes = ARRAY_SIZE(max98357a_routes);
-+		break;
-+	case SPKAMP_MAX98390:
-+		controls = max98390_controls;
-+		num_controls = ARRAY_SIZE(max98390_controls);
-+		widgets = max98390_widgets;
-+		num_widgets = ARRAY_SIZE(max98390_widgets);
-+		routes = max98390_routes;
-+		num_routes = ARRAY_SIZE(max98390_routes);
-+		break;
-+	default:
-+		dev_err(card->dev, "Invalid speaker amplifier %d\n", ctx->spkamp);
-+		break;
-+	}
-+
-+	err = snd_soc_dapm_new_controls(&card->dapm, widgets, num_widgets);
-+	if (err) {
-+		dev_err(card->dev, "Fail to new widgets\n");
-+		return err;
-+	}
-+
-+	err = snd_soc_add_card_controls(card, controls, num_controls);
-+	if (err) {
-+		dev_err(card->dev, "Fail to add controls\n");
-+		return err;
-+	}
-+
-+	err = snd_soc_dapm_add_routes(&card->dapm, routes, num_routes);
-+	if (err) {
-+		dev_err(card->dev, "Fail to add routes\n");
-+		return err;
-+	}
-+
- 	if (soc_intel_is_glk())
- 		snd_soc_dapm_add_routes(&card->dapm, gemini_map,
- 					ARRAY_SIZE(gemini_map));
-@@ -678,6 +766,11 @@ static int broxton_audio_probe(struct platform_device *pdev)
- 
- 	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
- 
-+	if (acpi_dev_present("MX98390", NULL, -1))
-+		ctx->spkamp = SPKAMP_MAX98390;
-+	else
-+		ctx->spkamp = SPKAMP_MAX98357A;
-+
- 	broxton_audio_card.dev = &pdev->dev;
- 	snd_soc_card_set_drvdata(&broxton_audio_card, ctx);
- 	if (soc_intel_is_glk()) {
-@@ -702,7 +795,13 @@ static int broxton_audio_probe(struct platform_device *pdev)
- 	} else if (soc_intel_is_cml()) {
- 		unsigned int i;
- 
--		broxton_audio_card.name = "cmlda7219max";
-+		if (ctx->spkamp == SPKAMP_MAX98390) {
-+			broxton_audio_card.name = "cml_max98390_da7219";
-+
-+			broxton_audio_card.codec_conf = max98390_codec_confs;
-+			broxton_audio_card.num_configs = ARRAY_SIZE(max98390_codec_confs);
-+		} else
-+			broxton_audio_card.name = "cmlda7219max";
- 
- 		for (i = 0; i < ARRAY_SIZE(broxton_dais); i++) {
- 			/* MAXIM_CODEC is connected to SSP1. */
-@@ -710,6 +809,11 @@ static int broxton_audio_probe(struct platform_device *pdev)
- 					BXT_MAXIM_CODEC_DAI)) {
- 				broxton_dais[i].name = "SSP1-Codec";
- 				broxton_dais[i].cpus->dai_name = "SSP1 Pin";
-+
-+				if (ctx->spkamp == SPKAMP_MAX98390) {
-+					broxton_dais[i].codecs = max98390_codec;
-+					broxton_dais[i].num_codecs = ARRAY_SIZE(max98390_codec);
-+				}
- 			}
- 			/* DIALOG_CODEC is connected to SSP0 */
- 			else if (!strcmp(broxton_dais[i].codecs->dai_name,
-@@ -759,6 +863,7 @@ MODULE_AUTHOR("Harsha Priya <harshapriya.n@intel.com>");
- MODULE_AUTHOR("Conrad Cooke <conrad.cooke@intel.com>");
- MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
- MODULE_AUTHOR("Mac Chiang <mac.chiang@intel.com>");
-+MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("platform:bxt_da7219_max98357a");
- MODULE_ALIAS("platform:glk_da7219_max98357a");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cml-match.c b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
-index cdea0c0..dee1f0f 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cml-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
-@@ -19,6 +19,11 @@ static struct snd_soc_acpi_codecs max98357a_spk_codecs = {
- 	.codecs = {"MX98357A"}
- };
- 
-+static struct snd_soc_acpi_codecs max98390_spk_codecs = {
-+	.num_codecs = 1,
-+	.codecs = {"MX98390"}
-+};
-+
- /*
-  * The order of the three entries with .id = "10EC5682" matters
-  * here, because DSDT tables expose an ACPI HID for the MAX98357A
-@@ -55,6 +60,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cml_machines[] = {
- 		.sof_fw_filename = "sof-cml.ri",
- 		.sof_tplg_filename = "sof-cml-da7219-max98357a.tplg",
- 	},
-+	{
-+		.id = "DLGS7219",
-+		.drv_name = "cml_da7219_max98357a",
-+		.machine_quirk = snd_soc_acpi_codec_list,
-+		.quirk_data = &max98390_spk_codecs,
-+		.sof_fw_filename = "sof-cml.ri",
-+		.sof_tplg_filename = "sof-cml-da7219-max98357a.tplg",
-+	},
- 	{},
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_cml_machines);
--- 
-2.7.4
-
+SGksIEFybmQNCg0KPiBTdWJqZWN0OiBSRTogW1BBVENIIFYzIDA0LzEwXSBjbGs6IGlteDogU3Vw
+cG9ydCBidWlsZGluZyBTQ1UgY2xvY2sgZHJpdmVyIGFzDQo+IG1vZHVsZQ0KPiANCj4gSGksIEFy
+bmQNCj4gDQo+ID4gU3ViamVjdDogUmU6IFtQQVRDSCBWMyAwNC8xMF0gY2xrOiBpbXg6IFN1cHBv
+cnQgYnVpbGRpbmcgU0NVIGNsb2NrDQo+ID4gZHJpdmVyIGFzIG1vZHVsZQ0KPiA+DQo+ID4gT24g
+V2VkLCBKdWwgMSwgMjAyMCBhdCA5OjE5IEFNIEFuc29uIEh1YW5nIDxhbnNvbi5odWFuZ0BueHAu
+Y29tPg0KPiA+IHdyb3RlOg0KPiA+ID4gPiBTdWJqZWN0OiBSZTogW1BBVENIIFYzIDA0LzEwXSBj
+bGs6IGlteDogU3VwcG9ydCBidWlsZGluZyBTQ1UgY2xvY2sNCj4gPiA+ID4gZHJpdmVyIGFzIG1v
+ZHVsZSBPbiBUdWUsIEp1biAzMCwgMjAyMCBhdCA1OjE2IEFNIEFuc29uIEh1YW5nDQo+ID4gPGFu
+c29uLmh1YW5nQG54cC5jb20+IHdyb3RlOg0KPiA+ID4gPg0KPiA+ID4gPiBTQ1UgY2xvY2sgZHJp
+dmVyIGlzIGEgY29tbW9uIGRyaXZlciBmb3IgYWxsIFNDVSBiYXNlZCBwbGF0Zm9ybXMuDQo+ID4g
+PiA+IEN1cnJlbnQgaS5NWDhRWFAgU0NVIGNsb2NrIGRyaXZlciB3aWxsIGJlIGV4dGVuZGVkIHRv
+IHN1cHBvcnQgYWxsDQo+ID4gPiA+IGZ1dHVyZSBTQ1UgYmFzZWQgcGxhdGZvcm1zLg0KPiA+ID4g
+PiBTbyB0aGVvcmV0aWNhbGx5IGNsay1zY3UubyBhbmQgY2xrLWlteDhxeHAubyBjYW4gYmUgY29t
+YmluZWQuIExQQ0cNCj4gPiA+ID4gaXMgc2ltaWxhci4NCj4gPiA+ID4gTWF5YmUgeW91IGNhbiBn
+aXZlIGEgdHJ5IGFzIEFybmQgc3VnZ2VzdGVkLg0KPiA+ID4gPg0KPiA+ID4NCj4gPiA+IERvIHdl
+IHJlYWxseSBuZWVkIHRvIGxpbmsgY2xrLXNjdSBhbmQgaS5NWDhRWFAgY2xvY2sgZHJpdmVyIHRv
+Z2V0aGVyDQo+ID4gPiBqdXN0IHRvDQo+ID4gYXZvaWQgc29tZSBleHBvcnQ/DQo+ID4NCj4gPiBJ
+dCB3YXMganVzdCBtZWFudCB0byBiZSBlYXNpZXIgdGhhbiBleHBvcnRpbmcgYSBzeW1ib2wgYW5k
+IGRlYWxpbmcNCj4gPiB3aXRoIG1vZHVsZSBkZXBlbmRlbmNpZXMuIElmIGl0J3Mgbm90IGVhc2ll
+ciwgdGhlbiBkb24ndC4NCj4gPg0KPiA+ID4gSSBtZXQgc29tZSBidWlsZCBpc3N1ZXMgaWYgdXNp
+bmcgdGhpcyBtZXRob2QsIHRoZSBpLk1YOFFYUCBtb2R1bGUNCj4gPiA+IGJ1aWxkIGlzIE9LLCBi
+dXQgb3RoZXIgcGxhdGZvcm1zIGxpa2UNCj4gPiBpLk1YOE1NL2kuTVg4TU4vaS5NWDhNUS9pLk1Y
+OE1QDQo+ID4gPiBjbG9jayBkcml2ZXJzIGFyZSBqdXN0IHNraXBwZWQgZm9yIGJ1aWxkLCBldmVu
+IHRoZXNlIGkuTVg4TSBjbG9jaw0KPiA+ID4gY29uZmlnIGFyZSBleGlzdGluZyBpbiAuY29uZmln
+LCBhbnlvbmUga25vdyB3aHk/IExvb2tzIGxpa2UgdGhlDQo+ID4gPiBjaGFuZ2UgaW4NCj4gPiBN
+YWtlZmlsZSBmb3IgaS5NWDhRWFAgY2xvY2sgZHJpdmVyIGludHJvZHVjZSB0aGlzIGlzc3VlLg0K
+PiA+DQo+ID4gWW91IGhhdmUgYSAiOj0iIGluc3RlYWQgb2YgIis9IiB0eXBvLCBzbyBhbGwgZWFy
+bGllciAiKz0iIGFyZSBpZ25vcmVkOg0KPiA+DQo+ID4gPiBvYmotJChDT05GSUdfQ0xLX0lNWDhN
+TSkgKz0gY2xrLWlteDhtbS5vDQo+ID4gPiBvYmotJChDT05GSUdfQ0xLX0lNWDhNTikgKz0gY2xr
+LWlteDhtbi5vDQo+ID4gPiBvYmotJChDT05GSUdfQ0xLX0lNWDhNUCkgKz0gY2xrLWlteDhtcC5v
+DQo+ID4gPiBvYmotJChDT05GSUdfQ0xLX0lNWDhNUSkgKz0gY2xrLWlteDhtcS5vDQo+ID4gPg0K
+PiA+ID4gb2JqLSQoQ09ORklHX01YQ19DTEtfU0NVKSA6PSBjbGstaW14LXNjdS5vIGNsay1pbXgt
+bHBjZy1zY3Uubw0KPiA+DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBe
+Xl5eXl5eXg0KPiANCj4gVGhhbmtzLCBJIHdpbGwgZ2l2ZSBhbm90aGVyIHRyeSwgSSB3aWxsIG1h
+a2UgdGhlIGNvbW1vbiBjbGsgcGFydCBhbGwgbGlua2VkIGludG8NCj4gZWFjaCBwbGF0Zm9ybSdz
+IGNsb2NrIGRyaXZlciwgdGhlbiBtYW55IGV4cG9ydHMgY2FuIGJlIHNhdmVkLg0KDQpKdXN0IHRy
+aWVkLCBpdCB3b3JrcyBmb3IgaS5NWDhRWFAsIGFuZGNvcnJlY3Qgb25lIHRoaW5nLCBvdGhlciBw
+bGF0Zm9ybXMNCm5lZWQgbW9yZSBjb21wbGljYXRlZCBjaGFuZ2UgaWYgd2FudCB0byBzdXBwb3J0
+IHRoZW0gaW4gdGhlIHNhbWUgd2F5LCBzbyBJDQpwbGFuIHRvIE9OTFkgZG8gdGhpcyBjaGFuZ2Ug
+Zm9yIGkuTVg4UVhQIGlmIGl0IGlzIGFjY2VwdGFibGUuDQoNClRoYW5rcywNCkFuc29uDQo=
