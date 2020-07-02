@@ -2,63 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C32211D3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 09:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C3D211D7F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 09:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728148AbgGBHoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 03:44:12 -0400
-Received: from mail1.windriver.com ([147.11.146.13]:36355 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726844AbgGBHoL (ORCPT
+        id S1728177AbgGBHul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 03:50:41 -0400
+Received: from mx2.didiglobal.com ([111.202.154.82]:5992 "HELO
+        bsf01.didichuxing.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with SMTP id S1726442AbgGBHuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 03:44:11 -0400
-Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
-        by mail1.windriver.com (8.15.2/8.15.2) with ESMTPS id 0627hsM6005513
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Thu, 2 Jul 2020 00:43:55 -0700 (PDT)
-Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
- ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 2 Jul 2020 00:43:35 -0700
-From:   <qiang.zhang@windriver.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <will@kernel.org>
+        Thu, 2 Jul 2020 03:50:40 -0400
+X-Greylist: delayed 4459 seconds by postgrey-1.27 at vger.kernel.org; Thu, 02 Jul 2020 03:50:30 EDT
+X-ASG-Debug-ID: 1593671754-0e4088066844b7e0009-xx1T2L
+Received: from mail.didiglobal.com (localhost [172.20.36.175]) by bsf01.didichuxing.com with ESMTP id whIWS6vDUo2V86ws; Thu, 02 Jul 2020 14:36:04 +0800 (CST)
+X-Barracuda-Envelope-From: zhangweiping@didiglobal.com
+Received: from 192.168.3.9 (172.22.50.20) by BJSGEXMBX03.didichuxing.com
+ (172.20.15.133) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 2 Jul
+ 2020 13:21:16 +0800
+Date:   Thu, 2 Jul 2020 13:20:43 +0800
+From:   Weiping Zhang <zhangweiping@didiglobal.com>
+To:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>
 CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH] locking/percpu-rwsem: Remove WQ_FLAG_EXCLUSIVE flags
-Date:   Wed, 1 Jul 2020 13:57:20 +0800
-Message-ID: <20200701055720.38092-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.24.1
+Subject: [RFC PATCH] proc: add support detach proccess's autogroup
+Message-ID: <20200702052039.GA2824@192.168.3.9>
+X-ASG-Orig-Subj: [RFC PATCH] proc: add support detach proccess's autogroup
+Mail-Followup-To: mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Originating-IP: [172.22.50.20]
+X-ClientProxiedBy: BJEXCAS05.didichuxing.com (172.20.36.127) To
+ BJSGEXMBX03.didichuxing.com (172.20.15.133)
+X-Barracuda-Connect: localhost[172.20.36.175]
+X-Barracuda-Start-Time: 1593671764
+X-Barracuda-URL: https://bsf01.didichuxing.com:443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at didichuxing.com
+X-Barracuda-Scan-Msg-Size: 2274
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0001 1.0000 -2.0206
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=1000.0 tests=FUZZY_VPILL
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.82922
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
+        0.00 FUZZY_VPILL            BODY: Attempt to obfuscate words in spam
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+Since setid will create a autogroup for that process, there is no
+way to detach a process from that autogroup, this patch add a new interface
+to detach a process from its autogroup. You can write anything to
+/proc/<pid>/autogroup_detach to do that.
 
-Remove WQ_FLAG_EXCLUSIVE from "wq_entry.flags", using function
-__add_wait_queue_entry_tail_exclusive substitution.
-
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+Signed-off-by: Weiping Zhang <zhangweiping@didiglobal.com>
 ---
- kernel/locking/percpu-rwsem.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/proc/base.c | 50 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
-diff --git a/kernel/locking/percpu-rwsem.c b/kernel/locking/percpu-rwsem.c
-index 8bbafe3e5203..48e1c55c2e59 100644
---- a/kernel/locking/percpu-rwsem.c
-+++ b/kernel/locking/percpu-rwsem.c
-@@ -148,8 +148,8 @@ static void percpu_rwsem_wait(struct percpu_rw_semaphore *sem, bool reader)
- 	 */
- 	wait = !__percpu_rwsem_trylock(sem, reader);
- 	if (wait) {
--		wq_entry.flags |= WQ_FLAG_EXCLUSIVE | reader * WQ_FLAG_CUSTOM;
--		__add_wait_queue_entry_tail(&sem->waiters, &wq_entry);
-+		wq_entry.flags |= reader * WQ_FLAG_CUSTOM;
-+		__add_wait_queue_entry_tail_exclusive(&sem->waiters, &wq_entry);
- 	}
- 	spin_unlock_irq(&sem->waiters.lock);
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index d86c0afc8a85..a210cab8b52d 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -1541,6 +1541,55 @@ static const struct file_operations proc_pid_sched_autogroup_operations = {
+ 	.release	= single_release,
+ };
  
++static int sched_autogroup_detach_show(struct seq_file *m, void *v)
++{
++	struct inode *inode = m->private;
++
++	seq_printf(m, "write any data to detach this task from a autogroup\n");
++
++	return 0;
++}
++
++static int sched_autogroup_detach_open(struct inode *inode, struct file *filp)
++{
++	int ret;
++
++	ret = single_open(filp, sched_autogroup_detach_show, NULL);
++	if (!ret) {
++		struct seq_file *m = filp->private_data;
++
++		m->private = inode;
++	}
++	return ret;
++}
++
++static ssize_t
++sched_autogroup_detach_write(struct file *file, const char __user *buf,
++	    size_t count, loff_t *offset)
++{
++	struct inode *inode = file_inode(file);
++	struct task_struct *p;
++	int ret;
++
++	p = get_proc_task(inode);
++	if (!p)
++		return -ESRCH;
++
++	sched_autogroup_detach(p);
++
++	put_task_struct(p);
++
++	return count;
++}
++
++static const struct file_operations proc_pid_sched_autogroup_detach_operations = {
++	.open		= sched_autogroup_detach_open,
++	.read		= seq_read,
++	.write		= sched_autogroup_detach_write,
++	.llseek		= seq_lseek,
++	.release	= single_release,
++};
++
+ #endif /* CONFIG_SCHED_AUTOGROUP */
+ 
+ #ifdef CONFIG_TIME_NS
+@@ -3161,6 +3210,7 @@ static const struct pid_entry tgid_base_stuff[] = {
+ #endif
+ #ifdef CONFIG_SCHED_AUTOGROUP
+ 	REG("autogroup",  S_IRUGO|S_IWUSR, proc_pid_sched_autogroup_operations),
++	REG("autogroup_detach",  S_IRUGO|S_IWUSR, proc_pid_sched_autogroup_detach_operations),
+ #endif
+ #ifdef CONFIG_TIME_NS
+ 	REG("timens_offsets",  S_IRUGO|S_IWUSR, proc_timens_offsets_operations),
 -- 
-2.24.1
+2.14.1
 
