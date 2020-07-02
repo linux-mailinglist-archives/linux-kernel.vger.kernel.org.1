@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F09B2118CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF4C211935
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729282AbgGBB0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:26:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57538 "EHLO mail.kernel.org"
+        id S1729523AbgGBBcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:32:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729129AbgGBB0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:26:17 -0400
+        id S1729137AbgGBB0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:26:20 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DAE920B80;
-        Thu,  2 Jul 2020 01:26:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C8C6620CC7;
+        Thu,  2 Jul 2020 01:26:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593653177;
-        bh=wcnWo37Dr2pnXfOcq1scgSOjXlwR60OTug8WMUqWXEA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=deMmeUsZMOsVYDekCxWndXSg9sBCHJ1IlGEo+DoDOCJwB/3pdSSFB8EX69d+2li5r
-         hor3SL+Etb8Rj9M/gdIlEq0CvnHX3BEDFWjj04RESnqcFtCLbz98bmVfOhGZFEtRTX
-         Vmtr8FMu8NOUmB0MmqWWDGhj+bn/IIG+X6MriC4k=
+        s=default; t=1593653179;
+        bh=Q2MQEtr+CSaJZHSeQwOckpdV+3WWIi2j7jMMtoNTEXk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=guNcNZeae5G2wQEHCflFvn1TJBwbEJWRwWO0071EkU0edSw/HHLm9wOqsIyebyZk8
+         p0x22MgovN74xojaVwNuYqjZX/6LR6IBxp6E26KHWWlqwjqYdV7nWOjBrCDrZlFXh/
+         gjHJI9K3zrh4QKzhyW8Omwi6q9OC94beEgwIG8Uw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jens Thoms Toerring <jt@toerring.de>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 01/27] regmap: fix alignment issue
-Date:   Wed,  1 Jul 2020 21:25:49 -0400
-Message-Id: <20200702012615.2701532-1-sashal@kernel.org>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 03/27] drm/tegra: hub: Do not enable orphaned window group
+Date:   Wed,  1 Jul 2020 21:25:51 -0400
+Message-Id: <20200702012615.2701532-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200702012615.2701532-1-sashal@kernel.org>
+References: <20200702012615.2701532-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -41,255 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Thoms Toerring <jt@toerring.de>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
 
-[ Upstream commit 53d860952c8215cf9ae1ea33409c8cb71ad6ad3d ]
+[ Upstream commit ef4e417eb3ec7fe657928f10ac1d2154d8a5fb38 ]
 
-The assembly and disassembly of data to be sent to or received from
-a device invoke functions regmap_format_XX() and regmap_parse_XX()
-that extract or insert data items from or into a buffer, using
-assignments. In some cases the functions are called with a buffer
-pointer with an odd address. On architectures with strict alignment
-requirements this can result in a kernel crash. The assignments
-have been replaced by functions that take alignment into account.
+Though the unconditional enable/disable code is not a final solution,
+we don't want to run into a NULL pointer situation when window group
+doesn't link to its DC parent if the DC is disabled in Device Tree.
 
-Signed-off-by: Jens Thoms Toerring <jt@toerring.de>
-Link: https://lore.kernel.org/r/20200531095300.GA27570@toerring.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+So this patch simply adds a check to make sure that window group has
+a valid parent before running into tegra_windowgroup_enable/disable.
+
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/regmap/regmap.c | 100 ++++++++++++++++-------------------
- 1 file changed, 46 insertions(+), 54 deletions(-)
+ drivers/gpu/drm/tegra/hub.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index 6c9f6988bc093..c9a5a72f843db 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -21,6 +21,7 @@
- #include <linux/delay.h>
- #include <linux/log2.h>
- #include <linux/hwspinlock.h>
-+#include <asm/unaligned.h>
+diff --git a/drivers/gpu/drm/tegra/hub.c b/drivers/gpu/drm/tegra/hub.c
+index bb97cad1eb699..b08ce1125996d 100644
+--- a/drivers/gpu/drm/tegra/hub.c
++++ b/drivers/gpu/drm/tegra/hub.c
+@@ -143,7 +143,9 @@ int tegra_display_hub_prepare(struct tegra_display_hub *hub)
+ 	for (i = 0; i < hub->soc->num_wgrps; i++) {
+ 		struct tegra_windowgroup *wgrp = &hub->wgrps[i];
  
- #define CREATE_TRACE_POINTS
- #include "trace.h"
-@@ -232,22 +233,20 @@ static void regmap_format_8(void *buf, unsigned int val, unsigned int shift)
+-		tegra_windowgroup_enable(wgrp);
++		/* Skip orphaned window group whose parent DC is disabled */
++		if (wgrp->parent)
++			tegra_windowgroup_enable(wgrp);
+ 	}
  
- static void regmap_format_16_be(void *buf, unsigned int val, unsigned int shift)
- {
--	__be16 *b = buf;
--
--	b[0] = cpu_to_be16(val << shift);
-+	put_unaligned_be16(val << shift, buf);
+ 	return 0;
+@@ -160,7 +162,9 @@ void tegra_display_hub_cleanup(struct tegra_display_hub *hub)
+ 	for (i = 0; i < hub->soc->num_wgrps; i++) {
+ 		struct tegra_windowgroup *wgrp = &hub->wgrps[i];
+ 
+-		tegra_windowgroup_disable(wgrp);
++		/* Skip orphaned window group whose parent DC is disabled */
++		if (wgrp->parent)
++			tegra_windowgroup_disable(wgrp);
+ 	}
  }
- 
- static void regmap_format_16_le(void *buf, unsigned int val, unsigned int shift)
- {
--	__le16 *b = buf;
--
--	b[0] = cpu_to_le16(val << shift);
-+	put_unaligned_le16(val << shift, buf);
- }
- 
- static void regmap_format_16_native(void *buf, unsigned int val,
- 				    unsigned int shift)
- {
--	*(u16 *)buf = val << shift;
-+	u16 v = val << shift;
-+
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- static void regmap_format_24(void *buf, unsigned int val, unsigned int shift)
-@@ -263,43 +262,39 @@ static void regmap_format_24(void *buf, unsigned int val, unsigned int shift)
- 
- static void regmap_format_32_be(void *buf, unsigned int val, unsigned int shift)
- {
--	__be32 *b = buf;
--
--	b[0] = cpu_to_be32(val << shift);
-+	put_unaligned_be32(val << shift, buf);
- }
- 
- static void regmap_format_32_le(void *buf, unsigned int val, unsigned int shift)
- {
--	__le32 *b = buf;
--
--	b[0] = cpu_to_le32(val << shift);
-+	put_unaligned_le32(val << shift, buf);
- }
- 
- static void regmap_format_32_native(void *buf, unsigned int val,
- 				    unsigned int shift)
- {
--	*(u32 *)buf = val << shift;
-+	u32 v = val << shift;
-+
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- #ifdef CONFIG_64BIT
- static void regmap_format_64_be(void *buf, unsigned int val, unsigned int shift)
- {
--	__be64 *b = buf;
--
--	b[0] = cpu_to_be64((u64)val << shift);
-+	put_unaligned_be64((u64) val << shift, buf);
- }
- 
- static void regmap_format_64_le(void *buf, unsigned int val, unsigned int shift)
- {
--	__le64 *b = buf;
--
--	b[0] = cpu_to_le64((u64)val << shift);
-+	put_unaligned_le64((u64) val << shift, buf);
- }
- 
- static void regmap_format_64_native(void *buf, unsigned int val,
- 				    unsigned int shift)
- {
--	*(u64 *)buf = (u64)val << shift;
-+	u64 v = (u64) val << shift;
-+
-+	memcpy(buf, &v, sizeof(v));
- }
- #endif
- 
-@@ -316,35 +311,34 @@ static unsigned int regmap_parse_8(const void *buf)
- 
- static unsigned int regmap_parse_16_be(const void *buf)
- {
--	const __be16 *b = buf;
--
--	return be16_to_cpu(b[0]);
-+	return get_unaligned_be16(buf);
- }
- 
- static unsigned int regmap_parse_16_le(const void *buf)
- {
--	const __le16 *b = buf;
--
--	return le16_to_cpu(b[0]);
-+	return get_unaligned_le16(buf);
- }
- 
- static void regmap_parse_16_be_inplace(void *buf)
- {
--	__be16 *b = buf;
-+	u16 v = get_unaligned_be16(buf);
- 
--	b[0] = be16_to_cpu(b[0]);
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- static void regmap_parse_16_le_inplace(void *buf)
- {
--	__le16 *b = buf;
-+	u16 v = get_unaligned_le16(buf);
- 
--	b[0] = le16_to_cpu(b[0]);
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- static unsigned int regmap_parse_16_native(const void *buf)
- {
--	return *(u16 *)buf;
-+	u16 v;
-+
-+	memcpy(&v, buf, sizeof(v));
-+	return v;
- }
- 
- static unsigned int regmap_parse_24(const void *buf)
-@@ -359,69 +353,67 @@ static unsigned int regmap_parse_24(const void *buf)
- 
- static unsigned int regmap_parse_32_be(const void *buf)
- {
--	const __be32 *b = buf;
--
--	return be32_to_cpu(b[0]);
-+	return get_unaligned_be32(buf);
- }
- 
- static unsigned int regmap_parse_32_le(const void *buf)
- {
--	const __le32 *b = buf;
--
--	return le32_to_cpu(b[0]);
-+	return get_unaligned_le32(buf);
- }
- 
- static void regmap_parse_32_be_inplace(void *buf)
- {
--	__be32 *b = buf;
-+	u32 v = get_unaligned_be32(buf);
- 
--	b[0] = be32_to_cpu(b[0]);
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- static void regmap_parse_32_le_inplace(void *buf)
- {
--	__le32 *b = buf;
-+	u32 v = get_unaligned_le32(buf);
- 
--	b[0] = le32_to_cpu(b[0]);
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- static unsigned int regmap_parse_32_native(const void *buf)
- {
--	return *(u32 *)buf;
-+	u32 v;
-+
-+	memcpy(&v, buf, sizeof(v));
-+	return v;
- }
- 
- #ifdef CONFIG_64BIT
- static unsigned int regmap_parse_64_be(const void *buf)
- {
--	const __be64 *b = buf;
--
--	return be64_to_cpu(b[0]);
-+	return get_unaligned_be64(buf);
- }
- 
- static unsigned int regmap_parse_64_le(const void *buf)
- {
--	const __le64 *b = buf;
--
--	return le64_to_cpu(b[0]);
-+	return get_unaligned_le64(buf);
- }
- 
- static void regmap_parse_64_be_inplace(void *buf)
- {
--	__be64 *b = buf;
-+	u64 v =  get_unaligned_be64(buf);
- 
--	b[0] = be64_to_cpu(b[0]);
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- static void regmap_parse_64_le_inplace(void *buf)
- {
--	__le64 *b = buf;
-+	u64 v = get_unaligned_le64(buf);
- 
--	b[0] = le64_to_cpu(b[0]);
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- static unsigned int regmap_parse_64_native(const void *buf)
- {
--	return *(u64 *)buf;
-+	u64 v;
-+
-+	memcpy(&v, buf, sizeof(v));
-+	return v;
- }
- #endif
  
 -- 
 2.25.1
