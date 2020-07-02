@@ -2,69 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7DF21182A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732C1211815
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728829AbgGBBZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:25:35 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6794 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728427AbgGBBXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:23:42 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 8754BC6A2447C86627A7;
-        Thu,  2 Jul 2020 09:23:37 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 2 Jul 2020 09:23:29 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <puck.chen@hisilicon.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <tzimmermann@suse.de>, <kraxel@redhat.com>,
-        <alexander.deucher@amd.com>, <tglx@linutronix.de>,
-        <dri-devel@lists.freedesktop.org>, <xinliang.liu@linaro.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <inuxarm@huawei.com>
-Subject: [PATCH] drm/hisilicon: Use drmm_kzalloc() instead of devm_kzalloc()
-Date:   Thu, 2 Jul 2020 09:21:54 +0800
-Message-ID: <1593652914-19639-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        id S1728720AbgGBBY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:24:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728514AbgGBBXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:23:53 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C205320936;
+        Thu,  2 Jul 2020 01:23:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593653032;
+        bh=PSzzfbTuoUNF3dRKfP49WxHtPiD1fc3IO882Ix6zJLg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=wGWSw6Ogv21+EWuPjwRsjTi8HNEziUeBQLEoxZ9yYUGf4aatkk3qBXYeKljJaulmT
+         i+/a12NP6wOztiURnLR5gNWjFz6ItQuehe7UdmmvX5GuA8p5ZH/6k/QdkY/zC0xWnc
+         jCcFquRw8L2BBQb+mowJYdBDutrbcLhCXCDhbPHU=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Chengguang Xu <cgxu519@mykernel.net>,
+        Christoph Hellwig <hch@lst.de>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        linux-block@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 46/53] block: release bip in a right way in error path
+Date:   Wed,  1 Jul 2020 21:21:55 -0400
+Message-Id: <20200702012202.2700645-46-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200702012202.2700645-1-sashal@kernel.org>
+References: <20200702012202.2700645-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-using the new API drmm_kzalloc() instead of devm_kzalloc()
+From: Chengguang Xu <cgxu519@mykernel.net>
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+[ Upstream commit 0b8eb629a700c0ef15a437758db8255f8444e76c ]
+
+Release bip using kfree() in error path when that was allocated
+by kmalloc().
+
+Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ block/bio-integrity.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-index a6fd0c2..2f20704 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-@@ -23,6 +23,7 @@
- #include <drm/drm_print.h>
- #include <drm/drm_probe_helper.h>
- #include <drm/drm_vblank.h>
-+#include <drm/drm_managed.h>
+diff --git a/block/bio-integrity.c b/block/bio-integrity.c
+index bf62c25cde8f4..1d173feb38831 100644
+--- a/block/bio-integrity.c
++++ b/block/bio-integrity.c
+@@ -24,6 +24,18 @@ void blk_flush_integrity(void)
+ 	flush_workqueue(kintegrityd_wq);
+ }
  
- #include "hibmc_drm_drv.h"
- #include "hibmc_drm_regs.h"
-@@ -267,7 +268,7 @@ static int hibmc_load(struct drm_device *dev)
- 	struct hibmc_drm_private *priv;
- 	int ret;
++void __bio_integrity_free(struct bio_set *bs, struct bio_integrity_payload *bip)
++{
++	if (bs && mempool_initialized(&bs->bio_integrity_pool)) {
++		if (bip->bip_vec)
++			bvec_free(&bs->bvec_integrity_pool, bip->bip_vec,
++				  bip->bip_slab);
++		mempool_free(bip, &bs->bio_integrity_pool);
++	} else {
++		kfree(bip);
++	}
++}
++
+ /**
+  * bio_integrity_alloc - Allocate integrity payload and attach it to bio
+  * @bio:	bio to attach integrity metadata to
+@@ -75,7 +87,7 @@ struct bio_integrity_payload *bio_integrity_alloc(struct bio *bio,
  
--	priv = devm_kzalloc(dev->dev, sizeof(*priv), GFP_KERNEL);
-+	priv = drmm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv) {
- 		DRM_ERROR("no memory to allocate for hibmc_drm_private\n");
- 		return -ENOMEM;
+ 	return bip;
+ err:
+-	mempool_free(bip, &bs->bio_integrity_pool);
++	__bio_integrity_free(bs, bip);
+ 	return ERR_PTR(-ENOMEM);
+ }
+ EXPORT_SYMBOL(bio_integrity_alloc);
+@@ -96,14 +108,7 @@ void bio_integrity_free(struct bio *bio)
+ 		kfree(page_address(bip->bip_vec->bv_page) +
+ 		      bip->bip_vec->bv_offset);
+ 
+-	if (bs && mempool_initialized(&bs->bio_integrity_pool)) {
+-		bvec_free(&bs->bvec_integrity_pool, bip->bip_vec, bip->bip_slab);
+-
+-		mempool_free(bip, &bs->bio_integrity_pool);
+-	} else {
+-		kfree(bip);
+-	}
+-
++	__bio_integrity_free(bs, bip);
+ 	bio->bi_integrity = NULL;
+ 	bio->bi_opf &= ~REQ_INTEGRITY;
+ }
 -- 
-2.7.4
+2.25.1
 
