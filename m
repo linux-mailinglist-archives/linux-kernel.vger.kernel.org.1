@@ -2,126 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0DE8212AFD
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08A4212B01
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727962AbgGBRNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 13:13:06 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:41622 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727939AbgGBRNF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 13:13:05 -0400
-Received: by mail-ed1-f68.google.com with SMTP id e22so24748166edq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 10:13:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VVnE4dgvyAySr2AFaA3khkVH7tNEvr0JK5jKeXH+JQw=;
-        b=E88RV0GJ4qfH3ZZ18t4A0aou6wY4Spn0IogKeSbet7ghWERlp3LVTR3KI66YmcbMVV
-         bBbZQ4089uwviSUww5XjCFvmRkuC+aRCvfzeiR/L84tv2hsX/bmVKEGNJDq3V6o/l+nW
-         bXMqcIIGZppAeLObyGemvQ6njzyUoeD27YTIpnViih2qMbZgtEHeF8KlbTz7SGZSnH6s
-         416pSHrwASpqBZRDy6Iq3ND7WJHAaFWeAO8FaKIwXa7/Qq8DnDdeO+X5/5dJwQgy4O7r
-         VTRe0LvQQfwe8zWmam2cHnqczl8Ky9VP2mPq8+d6W/wjoAxqEaNuijWyNi5g2Jlb2RvB
-         1yzg==
-X-Gm-Message-State: AOAM532URzdrj92TWLYVu4xwcuHBt9duhBaKTavbdwbmDT5/7hwFkf0V
-        mKA6vPLasdzwnJMYWPEHZwQ=
-X-Google-Smtp-Source: ABdhPJzsx3bO5yi0V/ckWa7Vrn10ZB0zUEKO/SIIlR9h4BC7fL/R/0EN4AXZgNcI++/I6s3g461IIw==
-X-Received: by 2002:aa7:c50e:: with SMTP id o14mr36265439edq.168.1593709983439;
-        Thu, 02 Jul 2020 10:13:03 -0700 (PDT)
-Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
-        by smtp.gmail.com with ESMTPSA id x4sm7204449eju.2.2020.07.02.10.13.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 10:13:02 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 19:13:02 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, Chris Down <chris@chrisdown.name>
-Subject: Re: BUG: Bad page state in process - page dumped because: page still
- charged to cgroup
-Message-ID: <20200702171302.GK18446@dhcp22.suse.cz>
-References: <CA+G9fYs=3UG3k-2trqQuB-gJh9D1YygkNQ4qWiHtcaRMSWTmrQ@mail.gmail.com>
- <20200701082904.GM2369@dhcp22.suse.cz>
- <20200701184552.GA61684@carbon.DHCP.thefacebook.com>
- <20200702162202.GI18446@dhcp22.suse.cz>
- <20200702163738.GA106423@carbon.dhcp.thefacebook.com>
+        id S1727870AbgGBROI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 13:14:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39914 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726671AbgGBROI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 13:14:08 -0400
+Received: from localhost.localdomain (unknown [95.146.230.158])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC32F21534;
+        Thu,  2 Jul 2020 17:14:03 +0000 (UTC)
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        Bhupesh Sharma <bhsharma@redhat.com>
+Cc:     Will Deacon <will@kernel.org>, Boris Petkov <bp@alien8.de>,
+        James Morse <james.morse@arm.com>,
+        Dave Anderson <anderson@redhat.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        bhupesh.linux@gmail.com, Ingo Molnar <mingo@kernel.org>,
+        Amit Kachhap <amit.kachhap@arm.com>,
+        Steve Capper <steve.capper@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>, linux-doc@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        scott.branden@broadcom.com, Mark Rutland <mark.rutland@arm.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Kazuhito Hagio <k-hagio@ab.jp.nec.com>,
+        John Donnelly <john.p.donnelly@oracle.com>,
+        kexec@lists.infradead.org
+Subject: Re: [PATCH v6 0/2] Append new variables to vmcoreinfo (TCR_EL1.T1SZ for arm64 and MAX_PHYSMEM_BITS for all archs)
+Date:   Thu,  2 Jul 2020 18:14:02 +0100
+Message-Id: <159370984726.27923.4874334372278158979.b4-ty@arm.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <1589395957-24628-1-git-send-email-bhsharma@redhat.com>
+References: <1589395957-24628-1-git-send-email-bhsharma@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702163738.GA106423@carbon.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 02-07-20 09:37:38, Roman Gushchin wrote:
-> On Thu, Jul 02, 2020 at 06:22:02PM +0200, Michal Hocko wrote:
-> > On Wed 01-07-20 11:45:52, Roman Gushchin wrote:
-> > [...]
-> > > >From c97afecd32c0db5e024be9ba72f43d22974f5bcd Mon Sep 17 00:00:00 2001
-> > > From: Roman Gushchin <guro@fb.com>
-> > > Date: Wed, 1 Jul 2020 11:05:32 -0700
-> > > Subject: [PATCH] mm: kmem: make memcg_kmem_enabled() irreversible
-> > > 
-> > > Historically the kernel memory accounting was an opt-in feature, which
-> > > could be enabled for individual cgroups. But now it's not true, and
-> > > it's on by default both on cgroup v1 and cgroup v2.  And as long as a
-> > > user has at least one non-root memory cgroup, the kernel memory
-> > > accounting is on. So in most setups it's either always on (if memory
-> > > cgroups are in use and kmem accounting is not disabled), either always
-> > > off (otherwise).
-> > > 
-> > > memcg_kmem_enabled() is used in many places to guard the kernel memory
-> > > accounting code. If memcg_kmem_enabled() can reverse from returning
-> > > true to returning false (as now), we can't rely on it on release paths
-> > > and have to check if it was on before.
-> > > 
-> > > If we'll make memcg_kmem_enabled() irreversible (always returning true
-> > > after returning it for the first time), it'll make the general logic
-> > > more simple and robust. It also will allow to guard some checks which
-> > > otherwise would stay unguarded.
-> > > 
-> > > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > > ---
-> > >  mm/memcontrol.c | 6 ++----
-> > >  1 file changed, 2 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index 50ae77f3985e..2d018a51c941 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -3582,7 +3582,8 @@ static int memcg_online_kmem(struct mem_cgroup *memcg)
-> > >  	objcg->memcg = memcg;
-> > >  	rcu_assign_pointer(memcg->objcg, objcg);
-> > >  
-> > > -	static_branch_inc(&memcg_kmem_enabled_key);
-> > > +	if (!memcg_kmem_enabled())
-> > > +		static_branch_inc(&memcg_kmem_enabled_key);
-> > 
-> > Wouldn't be static_branch_enable() more readable?
+On Thu, 14 May 2020 00:22:35 +0530, Bhupesh Sharma wrote:
+> Apologies for the delayed update. Its been quite some time since I
+> posted the last version (v5), but I have been really caught up in some
+> other critical issues.
 > 
-> Agree, will change, add reported-by and tested-by tags and resend.
-> Thanks!
+> Changes since v5:
+> ----------------
+> - v5 can be viewed here:
+>   http://lists.infradead.org/pipermail/kexec/2019-November/024055.html
+> - Addressed review comments from James Morse and Boris.
+> - Added Tested-by received from John on v5 patchset.
+> - Rebased against arm64 (for-next/ptr-auth) branch which has Amit's
+>   patchset for ARMv8.3-A Pointer Authentication feature vmcoreinfo
+>   applied.
+> 
+> [...]
 
-Feel free to add
-Acked-by: Michal Hocko <mhocko@suse.com>
+Applied to arm64 (for-next/vmcoreinfo), thanks!
 
-> Btw, don't we wanna to change memcg_kmem_enabled() definition
-> from static_branch_unlikely() to static_branch_likely()?
-
-Honestly, I do not know what would be the impact but considering kmem
-is enabled unless explicitly disabled these days then likely sounds more
-logical from reading POV. I do not think that early allocations until
-the first memcg is created is the case to optimize for.
-Worth a separate patch I guess.
+[1/2] crash_core, vmcoreinfo: Append 'MAX_PHYSMEM_BITS' to vmcoreinfo
+      https://git.kernel.org/arm64/c/1d50e5d0c505
+[2/2] arm64/crash_core: Export TCR_EL1.T1SZ in vmcoreinfo
+      https://git.kernel.org/arm64/c/bbdbc11804ff
 
 -- 
-Michal Hocko
-SUSE Labs
+Catalin
+
