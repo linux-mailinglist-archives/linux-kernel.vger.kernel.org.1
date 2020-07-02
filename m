@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744562126CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F3D2126B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbgGBOrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 10:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
+        id S1730103AbgGBOrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 10:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730074AbgGBOrC (ORCPT
+        with ESMTP id S1730078AbgGBOrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 10:47:02 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48812C08C5DD
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 07:47:02 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id j18so27095208wmi.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 07:47:02 -0700 (PDT)
+        Thu, 2 Jul 2020 10:47:04 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B75EEC08C5DD
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 07:47:03 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id o8so27100563wmh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 07:47:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cen7jwZ+l5/fZQV9+f4eKCsdCtb++xjGqhYwjDReG4s=;
-        b=wAQqKXwNUvkayHtIMBV6LS0l4vt72aFTjRZSPiSvZJ5C/hqTBy3STN6t0PpK9LZ9Sl
-         Lb2UEfzaiMVbpQgMEOWrkp/dkAtB7fHH/UdXXaH4Bf/pD65LBDmzIoAElaEn6uRbkhsr
-         Sq6KZ9fmigZNrcfwKtfJpaz/LqAUX/icEFbG3MXXNaTW9OxviX1QsPqnDatS1kMepeKS
-         ppuFUZVk6RIA9kGXBgwQV83qvsCFqp560ZzvnuFh2RPn028KWAA/WSY3RrZ3P7YNx2HP
-         rVxY/LyhKyYUKA1wHnrnUWETqAHP/uHelYufgGMcwMsaC+Gn9/8D884fgDtbffl5wEIf
-         Db4g==
+        bh=j3qxTGweigJBwA2Dcfmp6Oj8j3v23FLWhOhHeBcgW7I=;
+        b=UH/FEPUuaJiocBixPJWaxF19GJofrsYjNd0ZwLFDYiM8v2DNvddLqbfFEcoEIAgua9
+         bP2+NQ5D2EnmEmmOkQbHI1JvyYJ/o4zFDERtjZF/Uu9t+zeH9dUNXTfGa/pdIk4yUPVT
+         vvgPEaa1aFKNK273L+hRW9C1Ev04KveXHYXLiyNdzpToBUXws7X15l+6DSLce7p6jeiD
+         K1WSC+eCuZhhTPH1+Xzr3/PN1YghnkO1pOilzPFlhWeP9jW6k+/D1ZIAemdOPEOqmxJa
+         Sfo4YYjZUP2FR65boUwbWOUyS/gbbcgDSJusheHBjW1mniiBCNgNVkiP4pZ6pixHLMGz
+         YoDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cen7jwZ+l5/fZQV9+f4eKCsdCtb++xjGqhYwjDReG4s=;
-        b=UeL8uOwtfRZY+kkJUstISMFNEMLv1EFqcT11y20kqYoLFdSP8VsTFstsfajBVZ3fmD
-         5aXwMGOsg9iYsl1LTeNS/uQD+L3D1cM53th6Hgivlwgp5PN6a8YdhvspPKLffEDPpzeO
-         CX87r8u43vnMnYzps5dFZfD4Xno249pxBdndrmfpmsMpMVZQ2Dyl4ZxILKU8jPXsWrlw
-         8VD6W3w/S0M96GyMDd2seXZq7E1PWVsNOYyRo3+LU6PFJIfWUlBaU0hxKXWG/j08dxqk
-         X6xq01AJmdcbxRxSDy54Ha4EQc82nGwSqhmD3ce4R6r6OLcWAQp+QvxGlPvU7LQi7i9b
-         bVGw==
-X-Gm-Message-State: AOAM5321lGCbQpOKAoyTTm3toq5Uz3JStcmlFP1cFJPbqie6xIpT6jdy
-        YmECuH0xVQBmVm2ApPHVLPQ+wfs8CRc=
-X-Google-Smtp-Source: ABdhPJyKXHl2Fi+reKwJfYF/na/idnzE4RoZeL56RxRf05pfTe+1N4F2X4OdO6C8BsdOK8Y+xUFvgg==
-X-Received: by 2002:a1c:4b09:: with SMTP id y9mr18364006wma.46.1593701221058;
-        Thu, 02 Jul 2020 07:47:01 -0700 (PDT)
+        bh=j3qxTGweigJBwA2Dcfmp6Oj8j3v23FLWhOhHeBcgW7I=;
+        b=KMay9jNGRRXj4p8/hTilFi2h3qLQOMv+k/zNYJ+j8SYVgaj9Ts+AuDFJOyqq+mXGjC
+         fx2+EnbT+y+bkZRWrz//HqQu29ymuITU1A0rEDkFBOtBpCAK1TORtlFPEC3S+Ydo9ksj
+         7cYLleF3Y4IN1DvDq2kAAhqCScCvPSLU7GDTYPkynLicVrrTqq5oUi3rqHFRE9YoS4sg
+         DZr74YWV4ComsEDgjO3nI0K3WFpSW2K4OpLwx984DxuKG4tL1Atq2QTHZpCjYa3AeCV9
+         ZEcHqOgqoQiUdZQ+qx8AI2vfEFwBLtgcVK7ERZcPdzVN6HSPseJIZogFBjt10XkAPSDp
+         xI8Q==
+X-Gm-Message-State: AOAM5336kZ/HfoWJRRwAKOYg5FU8IA7J1oQgO64JA7+u9/LdbBRTdffQ
+        gdtu018+B77X0ZeZ0/RmxqNxBg==
+X-Google-Smtp-Source: ABdhPJwSKu/tDOvAvRT809W5s5eyOxbUaM/7UBHj3f8+fnH4iRC5julZ8NEXw3uo/stZQZBYv3h22Q==
+X-Received: by 2002:a1c:7402:: with SMTP id p2mr20868613wmc.117.1593701222460;
+        Thu, 02 Jul 2020 07:47:02 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id g14sm7002737wrw.83.2020.07.02.07.47.00
+        by smtp.gmail.com with ESMTPSA id g14sm7002737wrw.83.2020.07.02.07.47.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 07:47:00 -0700 (PDT)
+        Thu, 02 Jul 2020 07:47:01 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
         Chunfeng Yun <chunfeng.yun@mediatek.com>,
         linux-mediatek@lists.infradead.org
-Subject: [PATCH 24/30] usb: mtu3: mtu3_trace: Supply missing mtu3_debug.h include file
-Date:   Thu,  2 Jul 2020 15:46:19 +0100
-Message-Id: <20200702144625.2533530-25-lee.jones@linaro.org>
+Subject: [PATCH 25/30] usb: mtu3: mtu3_core: Demote obvious misuse of kerneldoc to standard comment block
+Date:   Thu,  2 Jul 2020 15:46:20 +0100
+Message-Id: <20200702144625.2533530-26-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702144625.2533530-1-lee.jones@linaro.org>
 References: <20200702144625.2533530-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the header file containing a function's prototype isn't included by
-the sourcefile containing the associated function, the build system
-complains of missing prototypes.
+No attempt has been made to document the function.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/usb/mtu3/mtu3_trace.c:13:6: warning: no previous prototype for ‘mtu3_dbg_trace’ [-Wmissing-prototypes]
- 13 | void mtu3_dbg_trace(struct device *dev, const char *fmt, ...)
- | ^~~~~~~~~~~~~~
+ drivers/usb/mtu3/mtu3_core.c:805: warning: Function parameter or member 'mtu' not described in 'mtu3_set_dma_mask'
 
 Cc: Chunfeng Yun <chunfeng.yun@mediatek.com>
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-mediatek@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/usb/mtu3/mtu3_trace.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/mtu3/mtu3_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/mtu3/mtu3_trace.c b/drivers/usb/mtu3/mtu3_trace.c
-index 155eae126e5e2..d17ddb87cdcf2 100644
---- a/drivers/usb/mtu3/mtu3_trace.c
-+++ b/drivers/usb/mtu3/mtu3_trace.c
-@@ -8,6 +8,7 @@
+diff --git a/drivers/usb/mtu3/mtu3_core.c b/drivers/usb/mtu3/mtu3_core.c
+index 9dd02160cca97..6d515eb67ea79 100644
+--- a/drivers/usb/mtu3/mtu3_core.c
++++ b/drivers/usb/mtu3/mtu3_core.c
+@@ -797,7 +797,7 @@ static void mtu3_hw_exit(struct mtu3 *mtu)
+ 	mtu3_mem_free(mtu);
+ }
+ 
+-/**
++/*
+  * we set 32-bit DMA mask by default, here check whether the controller
+  * supports 36-bit DMA or not, if it does, set 36-bit DMA mask.
   */
- 
- #define CREATE_TRACE_POINTS
-+#include "mtu3_debug.h"
- #include "mtu3_trace.h"
- 
- void mtu3_dbg_trace(struct device *dev, const char *fmt, ...)
 -- 
 2.25.1
 
