@@ -2,185 +2,435 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 145C1211A5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 04:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A95211A7E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 05:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgGBC7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 22:59:47 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41218 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726187AbgGBC7r (ORCPT
+        id S1726876AbgGBDEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 23:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726173AbgGBDEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 22:59:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593658784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QEK6R9G90/zOz77+9pwzvG2TS0PXah5aDKU36HLvoW0=;
-        b=GVKTZdZH8QWBzhPMA8WzqWQ88jZnkPum+9QaZy/DmroXnaWIpLU/QnxPAF5SdxkSELk4n7
-        OvJmdcKQx+87uJZ/q/HUWL3tIHKIVWEnNx/LZMHLZfVh9jCnq3IK6CjcV0WF/tN9ADe5Z8
-        ZI3GIG84tS1y4NP9tVRxSD9i57iVYw8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-460-6iw7E02ENVGj0BTBZ93pYQ-1; Wed, 01 Jul 2020 22:59:41 -0400
-X-MC-Unique: 6iw7E02ENVGj0BTBZ93pYQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75871107ACCD;
-        Thu,  2 Jul 2020 02:59:38 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-13-96.pek2.redhat.com [10.72.13.96])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0E86260BE1;
-        Thu,  2 Jul 2020 02:59:29 +0000 (UTC)
-Date:   Thu, 2 Jul 2020 10:59:26 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bhe@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com,
-        robh+dt@kernel.org, arnd@arndb.de, John.P.donnelly@oracle.com,
-        prabhakar.pkin@gmail.com, nsaenzjulienne@suse.de, corbet@lwn.net,
-        bhsharma@redhat.com, horms@verge.net.au, xiexiuqi@huawei.com,
-        linux-doc@vger.kernel.org, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, huawei.libin@huawei.com,
-        guohanjun@huawei.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v9 5/5] kdump: update Documentation about crashkernel on
- arm64
-Message-ID: <20200702025926.GB12277@dhcp-128-65.nay.redhat.com>
-References: <20200628083458.40066-1-chenzhou10@huawei.com>
- <20200628083458.40066-6-chenzhou10@huawei.com>
+        Wed, 1 Jul 2020 23:04:33 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6543C08C5C1;
+        Wed,  1 Jul 2020 20:04:32 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id lx13so8676380ejb.4;
+        Wed, 01 Jul 2020 20:04:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FpIuHqd5KI6HhW+opWkcagnunsZmxTBUoBCE/7zJhkA=;
+        b=iCYB/lVVT1+NqE8FFtNgxtUN5LmFUeytp9Rpw3DZeYc5LjMItcIq1ohzRm58IbVtTW
+         /hjKz+BYT/YvS4Pj3iiXrrmXgWBZSya2jDg/413SN7BJHpfm//HiiSJeOLWimYTU40mz
+         IBBvrWxz3FhcJ5yBkSKR61eRLvYdPOis8u7S9NZAXtlur/N7XqMHXXPrchxnpmffza20
+         dsn0Xap8kRJlqGbpMPakbb4YrenE1AVyDYsz4o9V/LnN52XICW4ud/m6q4cWz+eEQn5H
+         Qmtc8UyT1vds9jSZhmdUbEhxJ4jDlQv5Zrwj8uwqV2I+jBu/oYdelfjboQYeN5bX20cD
+         oTzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FpIuHqd5KI6HhW+opWkcagnunsZmxTBUoBCE/7zJhkA=;
+        b=GjSoQIcVOCtugrpVLs8uvOrckiXsr5isl5EcONXeXolrhuLHZzUqz306HcLRhac6UL
+         QRVRbNHp+FnSZgSs/NQBr64mRGDHbiYL3YVCz9NTyHd1f1rgo4qxg579dOBMCK2+Zruh
+         QJfS8zd6z5aRuQMn6rjASwu9v7WqCmqzZt10T7IrvjjFSaNjHstEzWDUowyvi6l+QJUB
+         cT0ZXmz0WTCHEUjiQVfFLmI6oKYnRF6RooJnB206F4lTxW+zWykGUqpKnUq4oS75YMol
+         rOujyFZHaHZ+k5hj41p/IeJtP9u7uFLsrdJlqe78RedKZzZOBr9bZNXHrKlxcJegMzbR
+         9kMA==
+X-Gm-Message-State: AOAM530b0GWsp4QZT62FZdouvPJ5EigztWXxyzdT15lqr9l42ER1KkYH
+        b5RJoCAlqTfy+AMysrRei7PRnanETHm6vcP2teU=
+X-Google-Smtp-Source: ABdhPJyfRvLHV/l0UeMHzlZLrAQi70tnWENql2mOJF2FUMsN98RD9JUFZZyLiW9zApryEsuPY7Vd6YLscXuu0I6PMEQ=
+X-Received: by 2002:a17:906:6d56:: with SMTP id a22mr26516414ejt.440.1593659071611;
+ Wed, 01 Jul 2020 20:04:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200628083458.40066-6-chenzhou10@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <1593656074-10092-1-git-send-email-Anson.Huang@nxp.com> <1593656074-10092-4-git-send-email-Anson.Huang@nxp.com>
+In-Reply-To: <1593656074-10092-4-git-send-email-Anson.Huang@nxp.com>
+From:   Dong Aisheng <dongas86@gmail.com>
+Date:   Thu, 2 Jul 2020 10:50:30 +0800
+Message-ID: <CAA+hA=S0G7Na0ieEpPq3aN6GN1BEHtYp9vbF9x2tjmknDSVjZw@mail.gmail.com>
+Subject: Re: [PATCH V4 3/5] clk: imx: Support building i.MX common clock
+ driver as module
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Peng Fan <peng.fan@nxp.com>, Arnd Bergmann <arnd@arndb.de>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fugang Duan <fugang.duan@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        dl-linux-imx <Linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chen,
-On 06/28/20 at 04:34pm, Chen Zhou wrote:
-> Now we support crashkernel=X,[low] on arm64, update the Documentation.
-> We could use parameters "crashkernel=X crashkernel=Y,low" to reserve
-> memory above 4G.
-> 
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> Tested-by: John Donnelly <John.p.donnelly@oracle.com>
-> Tested-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
+On Thu, Jul 2, 2020 at 10:19 AM Anson Huang <Anson.Huang@nxp.com> wrote:
+>
+> There are more and more requirements of building SoC specific drivers
+> as modules, add support for building i.MX common clock driver as module
+> to meet the requirement.
+>
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 > ---
->  Documentation/admin-guide/kdump/kdump.rst       | 13 +++++++++++--
->  Documentation/admin-guide/kernel-parameters.txt | 17 +++++++++++++++--
->  2 files changed, 26 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-> index 2da65fef2a1c..6ba294d425c9 100644
-> --- a/Documentation/admin-guide/kdump/kdump.rst
-> +++ b/Documentation/admin-guide/kdump/kdump.rst
-> @@ -299,7 +299,13 @@ Boot into System Kernel
->     "crashkernel=64M@16M" tells the system kernel to reserve 64 MB of memory
->     starting at physical address 0x01000000 (16MB) for the dump-capture kernel.
->  
-> -   On x86 and x86_64, use "crashkernel=64M@16M".
-> +   On x86 use "crashkernel=64M@16M".
+> Changes since V3:
+>         - ONLY include __setup_param() build for built-in, module build no need
+>           to have it.
+> ---
+>  drivers/clk/imx/Kconfig            |  8 ++++++--
+>  drivers/clk/imx/Makefile           | 40 +++++++++++++++++++-------------------
+>  drivers/clk/imx/clk-composite-8m.c |  2 ++
+>  drivers/clk/imx/clk-cpu.c          |  2 ++
+>  drivers/clk/imx/clk-frac-pll.c     |  2 ++
+>  drivers/clk/imx/clk-gate2.c        |  2 ++
+>  drivers/clk/imx/clk-pll14xx.c      |  5 +++++
+>  drivers/clk/imx/clk-sscg-pll.c     |  2 ++
+>  drivers/clk/imx/clk.c              | 22 +++++++++++++++------
+>  9 files changed, 57 insertions(+), 28 deletions(-)
+>
+> diff --git a/drivers/clk/imx/Kconfig b/drivers/clk/imx/Kconfig
+> index 09fc8ad..f6ddf76 100644
+> --- a/drivers/clk/imx/Kconfig
+> +++ b/drivers/clk/imx/Kconfig
+> @@ -1,8 +1,8 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  # common clock support for NXP i.MX SoC family.
+>  config MXC_CLK
+> -       bool
+> -       def_bool ARCH_MXC
+> +       tristate "IMX clock"
+> +       depends on ARCH_MXC
+>
+>  config MXC_CLK_SCU
+>         bool
+> @@ -101,24 +101,28 @@ config CLK_VF610
+>  config CLK_IMX8MM
+>         bool "IMX8MM CCM Clock Driver"
+>         depends on ARCH_MXC
+> +       select MXC_CLK
+>         help
+>             Build the driver for i.MX8MM CCM Clock Driver
+>
+>  config CLK_IMX8MN
+>         bool "IMX8MN CCM Clock Driver"
+>         depends on ARCH_MXC
+> +       select MXC_CLK
+>         help
+>             Build the driver for i.MX8MN CCM Clock Driver
+>
+>  config CLK_IMX8MP
+>         bool "IMX8MP CCM Clock Driver"
+>         depends on ARCH_MXC
+> +       select MXC_CLK
+>         help
+>             Build the driver for i.MX8MP CCM Clock Driver
+>
+>  config CLK_IMX8MQ
+>         bool "IMX8MQ CCM Clock Driver"
+>         depends on ARCH_MXC
+> +       select MXC_CLK
+>         help
+>             Build the driver for i.MX8MQ CCM Clock Driver
+>
+> diff --git a/drivers/clk/imx/Makefile b/drivers/clk/imx/Makefile
+> index 394ade7..17f5d12 100644
+> --- a/drivers/clk/imx/Makefile
+> +++ b/drivers/clk/imx/Makefile
+> @@ -1,25 +1,25 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>
+> -obj-$(CONFIG_MXC_CLK) += \
+> -       clk.o \
+> -       clk-busy.o \
+> -       clk-composite-8m.o \
+> -       clk-cpu.o \
+> -       clk-composite-7ulp.o \
+> -       clk-divider-gate.o \
+> -       clk-fixup-div.o \
+> -       clk-fixup-mux.o \
+> -       clk-frac-pll.o \
+> -       clk-gate-exclusive.o \
+> -       clk-gate2.o \
+> -       clk-pfd.o \
+> -       clk-pfdv2.o \
+> -       clk-pllv1.o \
+> -       clk-pllv2.o \
+> -       clk-pllv3.o \
+> -       clk-pllv4.o \
+> -       clk-sscg-pll.o \
+> -       clk-pll14xx.o
+> +mxc-clk-objs += clk.o
+> +mxc-clk-objs += clk-busy.o
+> +mxc-clk-objs += clk-composite-7ulp.o
+> +mxc-clk-objs += clk-composite-8m.o
+> +mxc-clk-objs += clk-cpu.o
+> +mxc-clk-objs += clk-divider-gate.o
+> +mxc-clk-objs += clk-fixup-div.o
+> +mxc-clk-objs += clk-fixup-mux.o
+> +mxc-clk-objs += clk-frac-pll.o
+> +mxc-clk-objs += clk-gate2.o
+> +mxc-clk-objs += clk-gate-exclusive.o
+> +mxc-clk-objs += clk-pfd.o
+> +mxc-clk-objs += clk-pfdv2.o
+> +mxc-clk-objs += clk-pllv1.o
+> +mxc-clk-objs += clk-pllv2.o
+> +mxc-clk-objs += clk-pllv3.o
+> +mxc-clk-objs += clk-pllv4.o
+> +mxc-clk-objs += clk-pll14xx.o
+> +mxc-clk-objs += clk-sscg-pll.o
+> +obj-$(CONFIG_MXC_CLK) += mxc-clk.o
+>
+>  obj-$(CONFIG_MXC_CLK_SCU) += \
+>         clk-scu.o \
+> diff --git a/drivers/clk/imx/clk-composite-8m.c b/drivers/clk/imx/clk-composite-8m.c
+> index d2b5af8..78fb7e5 100644
+> --- a/drivers/clk/imx/clk-composite-8m.c
+> +++ b/drivers/clk/imx/clk-composite-8m.c
+> @@ -5,6 +5,7 @@
+>
+>  #include <linux/clk-provider.h>
+>  #include <linux/errno.h>
+> +#include <linux/export.h>
+>  #include <linux/io.h>
+>  #include <linux/slab.h>
+>
+> @@ -243,3 +244,4 @@ struct clk_hw *imx8m_clk_hw_composite_flags(const char *name,
+>         kfree(mux);
+>         return ERR_CAST(hw);
+>  }
+> +EXPORT_SYMBOL_GPL(imx8m_clk_hw_composite_flags);
+> diff --git a/drivers/clk/imx/clk-cpu.c b/drivers/clk/imx/clk-cpu.c
+> index cb182be..cb6ca4c 100644
+> --- a/drivers/clk/imx/clk-cpu.c
+> +++ b/drivers/clk/imx/clk-cpu.c
+> @@ -5,6 +5,7 @@
+>
+>  #include <linux/clk.h>
+>  #include <linux/clk-provider.h>
+> +#include <linux/export.h>
+>  #include <linux/slab.h>
+>  #include "clk.h"
+>
+> @@ -104,3 +105,4 @@ struct clk_hw *imx_clk_hw_cpu(const char *name, const char *parent_name,
+>
+>         return hw;
+>  }
+> +EXPORT_SYMBOL_GPL(imx_clk_hw_cpu);
+> diff --git a/drivers/clk/imx/clk-frac-pll.c b/drivers/clk/imx/clk-frac-pll.c
+> index 101e0a3..c703056 100644
+> --- a/drivers/clk/imx/clk-frac-pll.c
+> +++ b/drivers/clk/imx/clk-frac-pll.c
+> @@ -10,6 +10,7 @@
+>
+>  #include <linux/clk-provider.h>
+>  #include <linux/err.h>
+> +#include <linux/export.h>
+>  #include <linux/io.h>
+>  #include <linux/iopoll.h>
+>  #include <linux/slab.h>
+> @@ -233,3 +234,4 @@ struct clk_hw *imx_clk_hw_frac_pll(const char *name,
+>
+>         return hw;
+>  }
+> +EXPORT_SYMBOL_GPL(imx_clk_hw_frac_pll);
+> diff --git a/drivers/clk/imx/clk-gate2.c b/drivers/clk/imx/clk-gate2.c
+> index b87ab3c..512f675 100644
+> --- a/drivers/clk/imx/clk-gate2.c
+> +++ b/drivers/clk/imx/clk-gate2.c
+> @@ -7,6 +7,7 @@
+>   */
+>
+>  #include <linux/clk-provider.h>
+> +#include <linux/export.h>
+>  #include <linux/module.h>
+>  #include <linux/slab.h>
+>  #include <linux/io.h>
+> @@ -177,3 +178,4 @@ struct clk_hw *clk_hw_register_gate2(struct device *dev, const char *name,
+>
+>         return hw;
+>  }
+> +EXPORT_SYMBOL_GPL(clk_hw_register_gate2);
+> diff --git a/drivers/clk/imx/clk-pll14xx.c b/drivers/clk/imx/clk-pll14xx.c
+> index f9eb189..f5c3e7e 100644
+> --- a/drivers/clk/imx/clk-pll14xx.c
+> +++ b/drivers/clk/imx/clk-pll14xx.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/bitops.h>
+>  #include <linux/clk-provider.h>
+>  #include <linux/err.h>
+> +#include <linux/export.h>
+>  #include <linux/io.h>
+>  #include <linux/iopoll.h>
+>  #include <linux/slab.h>
+> @@ -68,6 +69,7 @@ struct imx_pll14xx_clk imx_1443x_pll = {
+>         .rate_table = imx_pll1443x_tbl,
+>         .rate_count = ARRAY_SIZE(imx_pll1443x_tbl),
+>  };
+> +EXPORT_SYMBOL_GPL(imx_1443x_pll);
+>
+>  struct imx_pll14xx_clk imx_1443x_dram_pll = {
+>         .type = PLL_1443X,
+> @@ -75,12 +77,14 @@ struct imx_pll14xx_clk imx_1443x_dram_pll = {
+>         .rate_count = ARRAY_SIZE(imx_pll1443x_tbl),
+>         .flags = CLK_GET_RATE_NOCACHE,
+>  };
+> +EXPORT_SYMBOL_GPL(imx_1443x_dram_pll);
+>
+>  struct imx_pll14xx_clk imx_1416x_pll = {
+>         .type = PLL_1416X,
+>         .rate_table = imx_pll1416x_tbl,
+>         .rate_count = ARRAY_SIZE(imx_pll1416x_tbl),
+>  };
+> +EXPORT_SYMBOL_GPL(imx_1416x_pll);
+>
+>  static const struct imx_pll14xx_rate_table *imx_get_pll_settings(
+>                 struct clk_pll14xx *pll, unsigned long rate)
+> @@ -436,3 +440,4 @@ struct clk_hw *imx_dev_clk_hw_pll14xx(struct device *dev, const char *name,
+>
+>         return hw;
+>  }
+> +EXPORT_SYMBOL_GPL(imx_dev_clk_hw_pll14xx);
+> diff --git a/drivers/clk/imx/clk-sscg-pll.c b/drivers/clk/imx/clk-sscg-pll.c
+> index 773d8a5..9d6cdff 100644
+> --- a/drivers/clk/imx/clk-sscg-pll.c
+> +++ b/drivers/clk/imx/clk-sscg-pll.c
+> @@ -10,6 +10,7 @@
+>
+>  #include <linux/clk-provider.h>
+>  #include <linux/err.h>
+> +#include <linux/export.h>
+>  #include <linux/io.h>
+>  #include <linux/iopoll.h>
+>  #include <linux/slab.h>
+> @@ -537,3 +538,4 @@ struct clk_hw *imx_clk_hw_sscg_pll(const char *name,
+>
+>         return hw;
+>  }
+> +EXPORT_SYMBOL_GPL(imx_clk_hw_sscg_pll);
+> diff --git a/drivers/clk/imx/clk.c b/drivers/clk/imx/clk.c
+> index 87ab8db..6f2a94d 100644
+> --- a/drivers/clk/imx/clk.c
+> +++ b/drivers/clk/imx/clk.c
+> @@ -3,6 +3,7 @@
+>  #include <linux/clk-provider.h>
+>  #include <linux/err.h>
+>  #include <linux/io.h>
+> +#include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/slab.h>
+>  #include <linux/spinlock.h>
+> @@ -13,6 +14,7 @@
+>  #define CCDR_MMDC_CH1_MASK             BIT(16)
+>
+>  DEFINE_SPINLOCK(imx_ccm_lock);
+> +EXPORT_SYMBOL_GPL(imx_ccm_lock);
+>
+>  void imx_unregister_clocks(struct clk *clks[], unsigned int count)
+>  {
+> @@ -29,8 +31,9 @@ void imx_unregister_hw_clocks(struct clk_hw *hws[], unsigned int count)
+>         for (i = 0; i < count; i++)
+>                 clk_hw_unregister(hws[i]);
+>  }
+> +EXPORT_SYMBOL_GPL(imx_unregister_hw_clocks);
+>
+> -void __init imx_mmdc_mask_handshake(void __iomem *ccm_base,
+> +void imx_mmdc_mask_handshake(void __iomem *ccm_base,
+>                                     unsigned int chn)
+>  {
+>         unsigned int reg;
+> @@ -59,8 +62,9 @@ void imx_check_clk_hws(struct clk_hw *clks[], unsigned int count)
+>                         pr_err("i.MX clk %u: register failed with %ld\n",
+>                                i, PTR_ERR(clks[i]));
+>  }
+> +EXPORT_SYMBOL_GPL(imx_check_clk_hws);
+>
+> -static struct clk * __init imx_obtain_fixed_clock_from_dt(const char *name)
+> +static struct clk *imx_obtain_fixed_clock_from_dt(const char *name)
+>  {
+>         struct of_phandle_args phandle;
+>         struct clk *clk = ERR_PTR(-ENODEV);
+> @@ -80,7 +84,7 @@ static struct clk * __init imx_obtain_fixed_clock_from_dt(const char *name)
+>         return clk;
+>  }
+>
+> -struct clk * __init imx_obtain_fixed_clock(
+> +struct clk *imx_obtain_fixed_clock(
+>                         const char *name, unsigned long rate)
+>  {
+>         struct clk *clk;
+> @@ -91,7 +95,7 @@ struct clk * __init imx_obtain_fixed_clock(
+>         return clk;
+>  }
+>
+> -struct clk_hw * __init imx_obtain_fixed_clock_hw(
+> +struct clk_hw *imx_obtain_fixed_clock_hw(
+>                         const char *name, unsigned long rate)
+>  {
+>         struct clk *clk;
+> @@ -113,6 +117,7 @@ struct clk_hw * imx_obtain_fixed_clk_hw(struct device_node *np,
+>
+>         return __clk_get_hw(clk);
+>  }
+> +EXPORT_SYMBOL_GPL(imx_obtain_fixed_clk_hw);
+>
+>  /*
+>   * This fixups the register CCM_CSCMR1 write value.
+> @@ -143,16 +148,18 @@ void imx_cscmr1_fixup(u32 *val)
+>  static int imx_keep_uart_clocks;
+>  static struct clk ** const *imx_uart_clocks;
+>
+> -static int __init imx_keep_uart_clocks_param(char *str)
+> +static int __maybe_unused imx_keep_uart_clocks_param(char *str)
+>  {
+>         imx_keep_uart_clocks = 1;
+>
+>         return 0;
+>  }
+> +#ifndef MODULE
+>  __setup_param("earlycon", imx_keep_uart_earlycon,
+>               imx_keep_uart_clocks_param, 0);
+>  __setup_param("earlyprintk", imx_keep_uart_earlyprintk,
+>               imx_keep_uart_clocks_param, 0);
+
+I feel not only the __setup_param, the whole logic of keep_uart_clocks
+are not needed for Module case. Is it true?
+
+Regards
+Aisheng
+
+> +#endif
+>
+>  void imx_register_uart_clocks(struct clk ** const clks[])
+>  {
+> @@ -164,8 +171,9 @@ void imx_register_uart_clocks(struct clk ** const clks[])
+>                         clk_prepare_enable(*imx_uart_clocks[i]);
+>         }
+>  }
+> +EXPORT_SYMBOL_GPL(imx_register_uart_clocks);
+>
+> -static int __init imx_clk_disable_uart(void)
+> +static int imx_clk_disable_uart(void)
+>  {
+>         if (imx_keep_uart_clocks && imx_uart_clocks) {
+>                 int i;
+> @@ -177,3 +185,5 @@ static int __init imx_clk_disable_uart(void)
+>         return 0;
+>  }
+>  late_initcall_sync(imx_clk_disable_uart);
 > +
-> +   On x86_64, use "crashkernel=Y[@X]" to select a region under 4G first, and
-> +   fall back to reserve region above 4G when '@offset' hasn't been specified.
-
-Actually crashkernel=Y without the offset works well, I do not see why
-we need the offset, it should be some legacy thing.  So it should be
-better just use the Y without offset here, and just leave a note
-somewhere people can use [@X] offset when they really have to.
-
-> +   We can also use "crashkernel=X,high" to select a region above 4G, which
-> +   also tries to allocate at least 256M below 4G automatically and
-> +   "crashkernel=Y,low" can be used to allocate specified size low memory.
->  
->     On ppc64, use "crashkernel=128M@32M".
->  
-> @@ -316,8 +322,11 @@ Boot into System Kernel
->     kernel will automatically locate the crash kernel image within the
->     first 512MB of RAM if X is not given.
->  
-> -   On arm64, use "crashkernel=Y[@X]".  Note that the start address of
-> +   On arm64, use "crashkernel=Y[@X]". Note that the start address of
->     the kernel, X if explicitly specified, must be aligned to 2MiB (0x200000).
-> +   If crashkernel=Z,low is specified simultaneously, reserve spcified size
-> +   low memory for crash kdump kernel devices firstly and then reserve memory
-
-"devices" seems not very accurate, maybe just drop the "for crash kdump
-kernel devices" since it is clear based on the context.
-
-> +   above 4G.
->  
->  Load the Dump-capture Kernel
->  ============================
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index fb95fad81c79..335431a351c0 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -722,6 +722,9 @@
->  			[KNL, x86_64] select a region under 4G first, and
->  			fall back to reserve region above 4G when '@offset'
->  			hasn't been specified.
-> +			[KNL, arm64] If crashkernel=X,low is specified, reserve
-> +			spcified size low memory for crash kdump kernel devices
-
-Ditto.
-
-> +			firstly, and then reserve memory above 4G.
->  			See Documentation/admin-guide/kdump/kdump.rst for further details.
->  
->  	crashkernel=range1:size1[,range2:size2,...][@offset]
-> @@ -746,13 +749,23 @@
->  			requires at least 64M+32K low memory, also enough extra
->  			low memory is needed to make sure DMA buffers for 32-bit
->  			devices won't run out. Kernel would try to allocate at
-> -			at least 256M below 4G automatically.
-> +			least 256M below 4G automatically.
->  			This one let user to specify own low range under 4G
->  			for second kernel instead.
->  			0: to disable low allocation.
->  			It will be ignored when crashkernel=X,high is not used
->  			or memory reserved is below 4G.
-> -
-> +			[KNL, arm64] range under 4G.
-> +			This one let user to specify own low range under 4G
-> +			for crash dump kernel instead.
-> +			Different with x86_64, kernel allocates specified size
-
-sounds better:
-s/Different with/Be different from
-
-s/allocates/reserves
-
-> +			physical memory region only when this parameter is specified
-> +			instead of trying to allocate at least 256M below 4G
-
-s/allocate/reserve
-
-> +			automatically.
-> +			This parameter is used along with crashkernel=X when we
-
-Could change the passive sentence to below:
-"Use this parameter along with"
-
-> +			want to reserve crashkernel above 4G. If there are devices
-> +			need to use ZONE_DMA in crash dump kernel, it is also
-> +			a good choice.
->  	cryptomgr.notests
->  			[KNL] Disable crypto self-tests
->  
-> -- 
-> 2.20.1
-> 
-> 
-> _______________________________________________
-> kexec mailing list
-> kexec@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/kexec
-> 
-
-Thanks
-Dave
-
+> +MODULE_LICENSE("GPL v2");
+> --
+> 2.7.4
+>
