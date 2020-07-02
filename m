@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E11212741
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F19C21273C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730010AbgGBPC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 11:02:56 -0400
-Received: from mga18.intel.com ([134.134.136.126]:43273 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729912AbgGBPCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 11:02:53 -0400
-IronPort-SDR: 4S2xJdLjwzVAd0XXrWFKhp95KePCP12VaxeWRUeXq1CgYLLqalEC0/RI31pDqJrBzzA5EpyVwf
- nlQvAHrn00/g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134384116"
-X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="134384116"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 08:02:43 -0700
-IronPort-SDR: g9KHZtn+dpB+rln7D4IWEm3Us2IMiwL8/XfFecXINP8MXWWwUKauOb0QsNJMRNpXH3rPFpB9fO
- yvwINN8+Yj6A==
-X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="304275487"
-Received: from nchava-mobl1.amr.corp.intel.com (HELO [10.252.135.144]) ([10.252.135.144])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 08:02:42 -0700
-Subject: Re: [PATCH][next] ASoC: Intel: bxt-da7219-max98357a: return -EINVAL
- on unrecognized speaker amplifier
-To:     Colin King <colin.king@canonical.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Brent Lu <brent.lu@intel.com>,
-        alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200702114835.37889-1-colin.king@canonical.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <d79c5d6b-5bb6-3552-d1a6-bbd40f6c3081@linux.intel.com>
-Date:   Thu, 2 Jul 2020 09:40:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1729956AbgGBPBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 11:01:48 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:52132 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726032AbgGBPBq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 11:01:46 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 062EvRwS018136;
+        Thu, 2 Jul 2020 15:01:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=EovBjL/VDEJMxYfhQUs2tcfenMAKo6Sk/T/23Jbbdlc=;
+ b=YS392JwJ/K+bmWg4R2XF6a0CNZCiwJgA9p8aSAD6auJtb0SaSbKMQBCeqKYZDofftZ/3
+ NE7Mvus2/HD90se7QKJYIiJ9QhX/Ob8biOhwHlO6FD28ELUo5EkDMHLFrSQnQNoO3roN
+ nkK11EgJebSEomRiILOo2hPmwHB539A0sszif7H4qMk2LWN2bYQ+ns8SJg9Dr2G/aY4N
+ VUoZ2kW2KoQuchO1e4UGlLcwTETQ0NyNHPLUCVPGs3zzO02U75COx5S9R2wmfpxPpikx
+ BAsOu1HQloDAtl4kNakVCnXFZw98XYQUQ8Vb+aJlPGmk6u4GKfmSpbfvXn9f9QxeqlRI nw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 31ywrby6cd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 02 Jul 2020 15:01:07 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 062Ewpe0090264;
+        Thu, 2 Jul 2020 15:01:06 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 31xg19ggjs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Jul 2020 15:01:04 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 062F0xVD010335;
+        Thu, 2 Jul 2020 15:00:59 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 02 Jul 2020 15:00:58 +0000
+Date:   Thu, 2 Jul 2020 18:00:51 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Markus Elfring <Markus.Elfring@web.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH v4 02/14] irqchip/csky-apb-intc: Fix potential resource
+ leaks
+Message-ID: <20200702150051.GR2549@kadam>
+References: <1593569786-11500-1-git-send-email-yangtiezhu@loongson.cn>
+ <1593569786-11500-3-git-send-email-yangtiezhu@loongson.cn>
+ <564ffff9-6043-7191-2458-f425dd8d0c11@web.de>
+ <1a0e007a-db94-501b-4ab9-0bb479ec093b@loongson.cn>
 MIME-Version: 1.0
-In-Reply-To: <20200702114835.37889-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1a0e007a-db94-501b-4ab9-0bb479ec093b@loongson.cn>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9670 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
+ mlxlogscore=999 suspectscore=1 bulkscore=0 mlxscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007020106
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9670 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ clxscore=1011 cotscore=-2147483648 priorityscore=1501 lowpriorityscore=0
+ malwarescore=0 mlxscore=0 adultscore=0 suspectscore=1 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007020106
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/2/20 6:48 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Wed, Jul 01, 2020 at 05:35:35PM +0800, Tiezhu Yang wrote:
+> On 07/01/2020 04:40 PM, Markus Elfring wrote:
+> > > … were not released in a few error cases. …
+> > Another small wording adjustment:
+> >    … in two error cases. …
 > 
-> Currently if the ctx->spkamp is not recognized an error message is
-> reported but the code continues to set up the device with uninitialized
-> variables such as the number of widgets.  Fix this by returning -EINVAL
-> for unrecognized speaker amplifier types.
-> 
-> Addresses-Coverity: ("Uninitialized scalar variable")
-> Fixes: e1435a1feb18 ("ASoC: Intel: bxt-da7219-max98357a: support MAX98390 speaker amp")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> OK
 
-Sounds good, thanks Colin.
+A lot of people have told Marcus over and over not to comment on commit
+messages.  Greg has an automatic bot to respond to him.
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+https://lkml.org/lkml/2020/6/13/25
 
-> ---
->   sound/soc/intel/boards/bxt_da7219_max98357a.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-> index 4d39253e796b..0c0a717823c4 100644
-> --- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-> +++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-> @@ -677,7 +677,7 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
->   		break;
->   	default:
->   		dev_err(card->dev, "Invalid speaker amplifier %d\n", ctx->spkamp);
-> -		break;
-> +		return -EINVAL;
->   	}
->   
->   	err = snd_soc_dapm_new_controls(&card->dapm, widgets, num_widgets);
-> 
+Marcus ignores us when we ask him to stop.  Some new developers have
+emailed me privately that they were confused and discouraged with his
+feedback because they assumed he was a senior developer or something.
+
+regards,
+dan carpenter
+
