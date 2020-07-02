@@ -2,106 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810E1212425
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47221212449
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729049AbgGBNIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 09:08:21 -0400
-Received: from mail-eopbgr140085.outbound.protection.outlook.com ([40.107.14.85]:45318
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726289AbgGBNIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 09:08:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZHJTSQySR02rpWIihnucPPdcy60NabUypK2T33YqKolGojQhlDGDMgydD2puH0LYXX9AyPelbMMJWqR8ir+e7unG79A6bJHZti5laQaH3rgWhyfVYO41SlfJRNaIB/YBGWs+0DOF/OCBLHKeUqPTQnXMzLa4m83Anivb4/p7GalF6Bh+8cfNJHvLXnq4+fzmlr+iGprua1JSrOH1XloW5IBjZlTBAULP/8rdf6ye/YvsDJ5WkDheqSSW9jxwHXmwWCvitxSCT42wdE3vyQMknwx9a+cxL/64KXP0vC+VltA0dS4mAmGyQ3wKeiFcA0qX6kUyLL9NHBndd1NBdHivRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nMInviAA8cs4uNL2+Oy/Dp9w9d3NwX0J1zGCYu8nKoU=;
- b=AuM27LcMgcTU6fZ7QBJGQnQGuyB1kMnbWVW1a/HUNm9u9oMwZOHW7Jdp6n77d7kuAvxxVwP2Cvsgh6+sZFEbH8T5U+8nElWLo405/URZysPZtIum+4kHzxddSdpIc0DO4k//yYIBAzap08u0kM/zja+ybCpjwyGHVnKVWGiZ8OYe/ejTXi8Lta0zcZsEVDFdLXuyl9MRX9NPIHNbE/6NO0MV0FEiknhtiH1fHY+Di3YaUZOsVcMcXfRiOmUHH3LvhVZO1usvzJvjLhSVMYD1XJWwIAbfRm8ruKUnV3VCgYW2PIym7PMmYtFhjOZDDWsnvdBsxC5Mp2pPwe/0dPx7Wg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nMInviAA8cs4uNL2+Oy/Dp9w9d3NwX0J1zGCYu8nKoU=;
- b=dqkOLlTBye7GpJQXrfMNaInk7CIbrdwdpwJfJxT3BUGFu+KoiyMwvyjeR6crGmJXHY+QlPAOf6htSdNNINjpiqhne3WVdg3T37JwgyYoW3b/XZZmQQQylgVyZYaxUH6jpYqedOz5x8s11I1+2zcJvOqFsEpaKBRB9UWWnlHwAQQ=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=mellanox.com;
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
- by VI1PR0501MB2334.eurprd05.prod.outlook.com (2603:10a6:800:24::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23; Thu, 2 Jul
- 2020 13:08:16 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::848b:fcd0:efe3:189e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::848b:fcd0:efe3:189e%7]) with mapi id 15.20.3153.027; Thu, 2 Jul 2020
- 13:08:16 +0000
-Date:   Thu, 2 Jul 2020 10:08:09 -0300
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@mellanox.com>
-Subject: Re: [PATCH rdma-next 0/6] Cleanup mlx5_ib main file
-Message-ID: <20200702130809.GU23821@mellanox.com>
-References: <20200702081809.423482-1-leon@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702081809.423482-1-leon@kernel.org>
-X-ClientProxiedBy: BL0PR02CA0064.namprd02.prod.outlook.com
- (2603:10b6:207:3d::41) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
+        id S1729224AbgGBNNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 09:13:04 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:56368 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgGBNND (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 09:13:03 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jqz1O-0000rK-6O; Thu, 02 Jul 2020 07:12:58 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jqz1M-0001eL-Tx; Thu, 02 Jul 2020 07:12:58 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200625095725.GA3303921@kroah.com>
+        <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+        <20200625120725.GA3493334@kroah.com>
+        <20200625.123437.2219826613137938086.davem@davemloft.net>
+        <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+        <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+        <87y2oac50p.fsf@x220.int.ebiederm.org>
+        <87bll17ili.fsf_-_@x220.int.ebiederm.org>
+        <20200629221231.jjc2czk3ul2roxkw@ast-mbp.dhcp.thefacebook.com>
+        <87eepwzqhd.fsf@x220.int.ebiederm.org>
+        <1f4d8b7e-bcff-f950-7dac-76e3c4a65661@i-love.sakura.ne.jp>
+Date:   Thu, 02 Jul 2020 08:08:22 -0500
+In-Reply-To: <1f4d8b7e-bcff-f950-7dac-76e3c4a65661@i-love.sakura.ne.jp>
+        (Tetsuo Handa's message of "Tue, 30 Jun 2020 22:21:19 +0900")
+Message-ID: <87pn9euks9.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (193.47.165.251) by BL0PR02CA0064.namprd02.prod.outlook.com (2603:10b6:207:3d::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23 via Frontend Transport; Thu, 2 Jul 2020 13:08:16 +0000
-Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@mellanox.com>)      id 1jqywj-002rl8-4p; Thu, 02 Jul 2020 10:08:09 -0300
-X-Originating-IP: [193.47.165.251]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 4da8e0e0-972f-4253-5a9d-08d81e88fbb5
-X-MS-TrafficTypeDiagnostic: VI1PR0501MB2334:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0501MB2334089CDD6981B1813D4E63CF6D0@VI1PR0501MB2334.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-Forefront-PRVS: 0452022BE1
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Iq/IvOwWOU8zVSjr2r7dWBDOJPUk94RPyVpddFIhIHQDmFe0LeZFs2oT2rfb/AJYljmKfQ95CULOD2ZSqyBgkT7MomMPh2GhF5dAl3iiqiqyzXjekzl4PzPnVZwOMBe8hV+R66JmFm6EJdCJk8RAla6s5FT+ZRAf90FEGchhWBabUY7e2zxQMMQXOyUl+fTFDCsz0SurdV7ltEQUT14E9Hhub7ax7EibP/H6GaP1QCn1o1h+kn0WzPKn7/CnxRp719tWxfgulcVbuS2cn11RQmFwzLaNBcyo44+p9WUGYVgSazJViMZAuBMS2A9J7BYosQBoej6pUs42iR9QlN4Lpq6DumoINJSdU3VBb/2+qGA1Rq2/s4KZ26eWNcWNNGztEVL335Yt8rkApxFB9r9/vQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(39860400002)(376002)(396003)(136003)(6916009)(107886003)(8676002)(4326008)(426003)(2616005)(33656002)(54906003)(966005)(9746002)(9786002)(36756003)(8936002)(186003)(478600001)(26005)(66476007)(66556008)(5660300002)(316002)(4744005)(1076003)(2906002)(66946007)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: W99Li2/HiKNDJRMe1yiIb27puQKxSfdzG3kIwOExR0gG+ccJ7GJ1lxp11PWxGoDkIj1htuwzE6RvIwVx0v2otHN/gjz450PrRJuiuvufOU93LY//qghx0lJbeVgKtase4q1lkHc5NU9YFk/2qASg55yEgUSA8vWflFZWcAWoJnWMk+6VIu7+D25176Zb7gcJoExWiHIRYziWqZp4Zu5a/jQso4o6oEZA8HUnJZf846rcFABpPBV9LxIR1AE4FqwFKN1mSltfXpYzGshiDTGw6fLWGxYr2bbnax3V/jcwi6GB8fTLXyquBNhpLyEE9WaR9OXwTWykjKtIMkEUra1PvxuDTZiR3zl63zmBm/1ILKbdxeupe/ODUpqskbUJ+IJFNsTxdN9TIIYeGbN5KL4rUxsZ8D/fSKquKYe2DJVspAEjqdcg5/GhFrH5feRI+uHMa/mQxo5VYCcddJvqtM7In4MEal21wJv5QagpBI7Af/FtT8tLnrzrbyhjAuLmRFvo
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4da8e0e0-972f-4253-5a9d-08d81e88fbb5
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR05MB4141.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2020 13:08:16.2146
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7wA6zmfBaLbCc8vso6oPJ6ex6mjfwsG0eZnnM2GGcD4PXmzR6rAlc+AO0qQqA6eEeMAOiEyou4wmSqrs3d6kDw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0501MB2334
+Content-Type: text/plain
+X-XM-SPF: eid=1jqz1M-0001eL-Tx;;;mid=<87pn9euks9.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+kQ6VutM5mgPIKiibPM2Pbny1TfBYw3+s=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4999]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 857 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 10 (1.2%), b_tie_ro: 9 (1.1%), parse: 1.02 (0.1%),
+         extract_message_metadata: 12 (1.4%), get_uri_detail_list: 1.50 (0.2%),
+         tests_pri_-1000: 6 (0.7%), tests_pri_-950: 1.32 (0.2%),
+        tests_pri_-900: 1.04 (0.1%), tests_pri_-90: 240 (28.1%), check_bayes:
+        237 (27.7%), b_tokenize: 9 (1.1%), b_tok_get_all: 8 (1.0%),
+        b_comp_prob: 2.8 (0.3%), b_tok_touch_all: 213 (24.8%), b_finish: 1.03
+        (0.1%), tests_pri_0: 573 (66.9%), check_dkim_signature: 0.58 (0.1%),
+        check_dkim_adsp: 2.3 (0.3%), poll_dns_idle: 0.34 (0.0%), tests_pri_10:
+        2.1 (0.2%), tests_pri_500: 6 (0.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 00/15] Make the user mode driver code a better citizen
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 11:18:03AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
-> 
-> Over the years, the main.c file grew above all imagination and was >8K
-> LOC of the code. This caused to a huge burden while I started to work on
-> ib_flow allocation patches.
-> 
-> This series implements long standing "internal" wish to move flow logic
-> from the main to separate file.
-> 
-> Based on
-> https://lore.kernel.org/linux-rdma/20200630101855.368895-4-leon@kernel.org
+Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> writes:
 
-Isn't this the series you said to drop? Can this be applied
-independently?
+> On 2020/06/30 21:29, Eric W. Biederman wrote:
+>> Hmm.  The wake up happens just of tgid->wait_pidfd happens just before
+>> release_task is called so there is a race.  As it is possible to wake
+>> up and then go back to sleep before pid_has_task becomes false.
+>
+> What is the reason we want to wait until pid_has_task() becomes false?
+>
+> - wait_event(tgid->wait_pidfd, !pid_has_task(tgid, PIDTYPE_TGID));
+> + while (!wait_event_timeout(tgid->wait_pidfd, !pid_has_task(tgid, PIDTYPE_TGID), 1));
 
-Jason
+So that it is safe to call bpfilter_umh_cleanup.  The previous code
+performed the wait by having a callback in do_exit.
+
+It might be possible to call bpf_umh_cleanup early but I have not done
+that analysis.
+
+To perform the test correctly what I have right now is:
+
+bool thread_group_exited(struct pid *pid)
+{
+	struct task_struct *tsk;
+	bool exited;
+
+	rcu_read_lock();
+	tsk = pid_task(pid, PIDTYPE_PID);
+	exited = !tsk || (READ_ONCE(tsk->exit_state) && thread_group_empty(tsk));
+	rcu_read_unlock();
+
+	return exited;
+}
+
+Which is factored out of pidfd_poll.  Which means that this won't be
+something that the bpfilter code has to maintain.  That seems to be a
+fundamentally good facility to have regardless of bpfilter.
+
+I will post the whole thing in a bit once I have a chance to dot my i's
+and cross my t's.
+
+> By the way, commit 4a9d4b024a3102fc ("switch fput to task_work_add") says
+> that use of flush_delayed_fput() has to be careful. Al, is it safe to call
+> flush_delayed_fput() from blob_to_mnt() from umd_load_blob() (which might be
+> called from both kernel thread and from process context (e.g. init_module()
+> syscall by /sbin/insmod )) ?
+
+And __fput_sync needs to be even more careful.
+umd_load_blob is called in these changes without any locks held.
+
+We fundamentally AKA in any correct version of this code need to flush
+the file descriptor before we call exec or exec can not open it a
+read-only denying all writes from any other opens.
+
+The use case of flush_delayed_fput is exactly the same as that used
+when loading the initramfs.
+
+Eric
+
+
+
+
