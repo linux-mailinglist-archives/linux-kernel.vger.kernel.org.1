@@ -2,163 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A3B2124CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A6A2124D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729326AbgGBNeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 09:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729115AbgGBNeo (ORCPT
+        id S1729392AbgGBNf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 09:35:56 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:36802 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729115AbgGBNfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 09:34:44 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39B6C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 06:34:43 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id k6so28431869wrn.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 06:34:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:autocrypt:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QtUSfQwMQwE8C4rYKs7db9IZkQbmcpLVtNvyBZDb6eU=;
-        b=RDkdQXx4oF+yh9YK3sRMwAcyaTsdq8rJbD7nDeqymvDHlao2P/wnBDdWgOOobLBSQm
-         FPwurO6UeGiGfIWhi5nvTOEcGC6fbgTjdZvoZu5kFbg1eae12t142DeAS9lSfjkCZBvj
-         uuRU6/oo00Lnalgx9a4jgXEc0pXujhybHdpHTfa8ONAIqPARWkbZPTn26koP06OGnDpB
-         LNe0tXe5mYK7hahi9lYKqUSqmaGkM4aBp3AnXSFts+e0RXjbUtSaWhUfseSwQB0CTc4P
-         c2R8P1qsSuL60DD3wgs+Z9dW/r9Jlo4XodKkLwhfHeDQmO9xLxrnBkVbKs6QWPHr2iVY
-         qdyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=QtUSfQwMQwE8C4rYKs7db9IZkQbmcpLVtNvyBZDb6eU=;
-        b=JursMTLx/3AQF9xjupjs36raHagAACQAU20oYtvhbLsQg9yPOw2GZ0wD5idxogA1cR
-         5Ew1Y17MAG02HcV78VPWR+f+bwSJK9oQDH9Ll7SP0C8d+DI1FEmdbqy/qaUzsU5M4ttF
-         F/dRPB+rbrFJSGKDAth+vvOzQhDiReS0qz204UWOOJYgAWJ/KDptw3Ghk42GwXQRkjnl
-         UQsqk3xl5eoS5wsozCEGYJtRSfi5LP0LDxMeFfHs75s9YsOkUagFIn0En43kMwPEt7rX
-         b4wlJrBpDcBf9Enzqtbq2+j0oyBGGRMW4lnuigkGex6cgZnNU/d1z5HQbgJ0gT6XnEER
-         ogLQ==
-X-Gm-Message-State: AOAM532/fi+1pJsyem4Y4n5AL1keuMRgYFvFVJ0WkE+sD9ZKRlXb0spg
-        pgGXuUIbpo6vrN4tDQovM5r+6Q==
-X-Google-Smtp-Source: ABdhPJy6WbFia0yn9UID8Gm2tkkyz9fh0xvXlY5IEXYfhSB2AcUfT/i8yr5YgPrdynqAArrEq5xU+w==
-X-Received: by 2002:a5d:69cf:: with SMTP id s15mr20388776wrw.10.1593696882242;
-        Thu, 02 Jul 2020 06:34:42 -0700 (PDT)
-Received: from [10.1.2.12] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id o29sm11738592wra.5.2020.07.02.06.34.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jul 2020 06:34:41 -0700 (PDT)
-Subject: Re: [PATCH v8 1/6] drm/fourcc: Add modifier definitions for
- describing Amlogic Video Framebuffer Compression
-To:     Simon Ser <contact@emersion.fr>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "jianxin.pan@amlogic.com" <jianxin.pan@amlogic.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-amlogic@lists.infradead.org" 
-        <linux-amlogic@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20200702074759.32356-1-narmstrong@baylibre.com>
- <20200702074759.32356-2-narmstrong@baylibre.com>
- <8cBfZpkc4pHBLhihlvJMD_Hq1DEsNRcSY4Y8JaGwklMWcxiYzUMVEx7wH9f_DuCBMVUhXvOR0PcHVslILtKI2wdw79Nfih0N3VnrxfMQd08=@emersion.fr>
- <20200702131834.GZ3278063@phenom.ffwll.local>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- BSwxi7g3Mu7u5kUByanqHyA=
-Organization: Baylibre
-Message-ID: <044964ad-b927-57d7-9361-beda5c8d99a8@baylibre.com>
-Date:   Thu, 2 Jul 2020 15:34:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Thu, 2 Jul 2020 09:35:54 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 062DZhuX124114;
+        Thu, 2 Jul 2020 08:35:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1593696943;
+        bh=m+Xs68YouGDJtQh76LBIoH7uox+kqAc2jMgEWsnhBl8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=ARevGRYHXDY6YyKXqDc4N0a5KA8MVUDpPkaQN/NNgEc8p8F7MRAfB7e5IC8TMuFv0
+         /txGqFnpmsdQkiSXB4V9URM8B73zjs5vrcvWs95QaAPWXed+/NhzxPtqwCLfTlus84
+         PLCEVsm4u5x1fRa2MIJjeuf82Bvs7JikdAkPT52M=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 062DZhkD013265
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 2 Jul 2020 08:35:43 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 2 Jul
+ 2020 08:35:42 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 2 Jul 2020 08:35:42 -0500
+Received: from [10.250.233.85] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 062DZa4B082183;
+        Thu, 2 Jul 2020 08:35:36 -0500
+Subject: Re: [RFC PATCH 00/22] Enhance VHOST to enable SoC-to-SoC
+ communication
+To:     Jason Wang <jasowang@redhat.com>
+CC:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-ntb@googlegroups.com>,
+        <linux-pci@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>
+References: <20200702082143.25259-1-kishon@ti.com>
+ <20200702055026-mutt-send-email-mst@kernel.org>
+ <603970f5-3289-cd53-82a9-aa62b292c552@redhat.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <14c6cad7-9361-7fa4-e1c6-715ccc7e5f6b@ti.com>
+Date:   Thu, 2 Jul 2020 19:05:35 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200702131834.GZ3278063@phenom.ffwll.local>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <603970f5-3289-cd53-82a9-aa62b292c552@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/07/2020 15:18, Daniel Vetter wrote:
-> On Thu, Jul 02, 2020 at 09:23:11AM +0000, Simon Ser wrote:
->> On Thursday, July 2, 2020 9:47 AM, Neil Armstrong <narmstrong@baylibre.com> wrote:
->>
->>> Finally is also adds the Scatter Memory layout, meaning the header contains IOMMU
->>> references to the compressed frames content to optimize memory access
->>> and layout.
+Hi Jason,
+
+On 7/2/2020 3:40 PM, Jason Wang wrote:
+> 
+> On 2020/7/2 下午5:51, Michael S. Tsirkin wrote:
+>> On Thu, Jul 02, 2020 at 01:51:21PM +0530, Kishon Vijay Abraham I wrote:
+>>> This series enhances Linux Vhost support to enable SoC-to-SoC
+>>> communication over MMIO. This series enables rpmsg communication between
+>>> two SoCs using both PCIe RC<->EP and HOST1-NTB-HOST2
 >>>
->>> In this mode, only the header memory address is needed, thus the content
->>> memory organization is tied to the current producer execution and cannot
->>> be saved/dumped neither transferrable between Amlogic SoCs supporting this
->>> modifier.
+>>> 1) Modify vhost to use standard Linux driver model
+>>> 2) Add support in vring to access virtqueue over MMIO
+>>> 3) Add vhost client driver for rpmsg
+>>> 4) Add PCIe RC driver (uses virtio) and PCIe EP driver (uses vhost) for
+>>>     rpmsg communication between two SoCs connected to each other
+>>> 5) Add NTB Virtio driver and NTB Vhost driver for rpmsg communication
+>>>     between two SoCs connected via NTB
+>>> 6) Add configfs to configure the components
+>>>
+>>> UseCase1 :
+>>>
+>>>   VHOST RPMSG                     VIRTIO RPMSG
+>>>        +                               +
+>>>        |                               |
+>>>        |                               |
+>>>        |                               |
+>>>        |                               |
+>>> +-----v------+                 +------v-------+
+>>> |   Linux    |                 |     Linux    |
+>>> |  Endpoint  |                 | Root Complex |
+>>> |            <----------------->              |
+>>> |            |                 |              |
+>>> |    SOC1    |                 |     SOC2     |
+>>> +------------+                 +--------------+
+>>>
+>>> UseCase 2:
+>>>
+>>>       VHOST RPMSG                                      VIRTIO RPMSG
+>>>            +                                                 +
+>>>            |                                                 |
+>>>            |                                                 |
+>>>            |                                                 |
+>>>            |                                                 |
+>>>     +------v------+                                   +------v------+
+>>>     |             |                                   |             |
+>>>     |    HOST1    |                                   |    HOST2    |
+>>>     |             |                                   |             |
+>>>     +------^------+                                   +------^------+
+>>>            |                                                 |
+>>>            |                                                 |
+>>> +---------------------------------------------------------------------+
+>>> |  +------v------+                                   +------v------+  |
+>>> |  |             |                                   |             |  |
+>>> |  |     EP      |                                   |     EP      |  |
+>>> |  | CONTROLLER1 |                                   | CONTROLLER2 |  |
+>>> |  |             <----------------------------------->             |  |
+>>> |  |             |                                   |             |  |
+>>> |  |             |                                   |             |  |
+>>> |  |             |  SoC With Multiple EP Instances   |             |  |
+>>> |  |             |  (Configured using NTB Function)  |             |  |
+>>> |  +-------------+                                   +-------------+  |
+>>> +---------------------------------------------------------------------+
+>>>
+>>> Software Layering:
+>>>
+>>> The high-level SW layering should look something like below. This series
+>>> adds support only for RPMSG VHOST, however something similar should be
+>>> done for net and scsi. With that any vhost device (PCI, NTB, Platform
+>>> device, user) can use any of the vhost client driver.
+>>>
+>>>
+>>>      +----------------+  +-----------+  +------------+  +----------+
+>>>      |  RPMSG VHOST   |  | NET VHOST |  | SCSI VHOST |  |    X     |
+>>>      +-------^--------+  +-----^-----+  +-----^------+  +----^-----+
+>>>              |                 |              |              |
+>>>              |                 |              |              |
+>>>              |                 |              |              |
+>>> +-----------v-----------------v--------------v--------------v----------+
+>>> |                            VHOST CORE                                |
+>>> +--------^---------------^--------------------^------------------^-----+
+>>>           |               |                    |                  |
+>>>           |               |                    |                  |
+>>>           |               |                    |                  |
+>>> +--------v-------+  +----v------+  +----------v----------+  +----v-----+
+>>> |  PCI EPF VHOST |  | NTB VHOST |  |PLATFORM DEVICE VHOST|  |    X     |
+>>> +----------------+  +-----------+  +---------------------+  +----------+
+>>>
+>>> This was initially proposed here [1]
+>>>
+>>> [1] -> https://lore.kernel.org/r/2cf00ec4-1ed6-f66e-6897-006d1a5b6390@ti.com
 >>
->> Still not sure how to handle this one, since this breaks fundamental
->> assumptions about modifiers.
+>> I find this very interesting. A huge patchset so will take a bit
+>> to review, but I certainly plan to do that. Thanks!
 > 
-> I wonder whether we should require special allocations for these, and then
-> just outright reject mmap on these buffers. mmap on dma-buf isn't a
-> required feature.
+> 
+> Yes, it would be better if there's a git branch for us to have a look.
 
-Yes, it's the plan to reject mmap on these buffers, but it can't be explained
-in the modifiers description and it's a requirement of the producer, not the
-consumer.
+I've pushed the branch
+https://github.com/kishon/linux-wip.git vhost_rpmsg_pci_ntb_rfc
+> 
+> Btw, I'm not sure I get the big picture, but I vaguely feel some of the work is
+> duplicated with vDPA (e.g the epf transport or vhost bus).
+
+This is about connecting two different HW systems both running Linux and
+doesn't necessarily involve virtualization. So there is no guest or host as in
+virtualization but two entirely different systems connected via PCIe cable, one
+acting as guest and one as host. So one system will provide virtio
+functionality reserving memory for virtqueues and the other provides vhost
+functionality providing a way to access the virtqueues in virtio memory. One is
+source and the other is sink and there is no intermediate entity. (vhost was
+probably intermediate entity in virtualization?)
 
 > 
-> That would make sure that userspace cannot look at them.
-> 
-> Also I'm kinda suspecting that there's not unlimited amounts of this magic
-> invisible storage available anyway.
-> -Daniel
-> 
+> Have you considered to implement these through vDPA?
 
+IIUC vDPA only provides an interface to userspace and an in-kernel rpmsg driver
+or vhost net driver is not provided.
+
+The HW connection looks something like https://pasteboard.co/JfMVVHC.jpg
+(usecase2 above), all the boards run Linux. The middle board provides NTB
+functionality and board on either side provides virtio/vhost functionality and
+transfer data using rpmsg.
+
+Thanks
+Kishon
+
+> 
+> Thanks
+> 
+> 
+>>
+>>> Kishon Vijay Abraham I (22):
+>>>    vhost: Make _feature_ bits a property of vhost device
+>>>    vhost: Introduce standard Linux driver model in VHOST
+>>>    vhost: Add ops for the VHOST driver to configure VHOST device
+>>>    vringh: Add helpers to access vring in MMIO
+>>>    vhost: Add MMIO helpers for operations on vhost virtqueue
+>>>    vhost: Introduce configfs entry for configuring VHOST
+>>>    virtio_pci: Use request_threaded_irq() instead of request_irq()
+>>>    rpmsg: virtio_rpmsg_bus: Disable receive virtqueue callback when
+>>>      reading messages
+>>>    rpmsg: Introduce configfs entry for configuring rpmsg
+>>>    rpmsg: virtio_rpmsg_bus: Add Address Service Notification support
+>>>    rpmsg: virtio_rpmsg_bus: Move generic rpmsg structure to
+>>>      rpmsg_internal.h
+>>>    virtio: Add ops to allocate and free buffer
+>>>    rpmsg: virtio_rpmsg_bus: Use virtio_alloc_buffer() and
+>>>      virtio_free_buffer()
+>>>    rpmsg: Add VHOST based remote processor messaging bus
+>>>    samples/rpmsg: Setup delayed work to send message
+>>>    samples/rpmsg: Wait for address to be bound to rpdev for sending
+>>>      message
+>>>    rpmsg.txt: Add Documentation to configure rpmsg using configfs
+>>>    virtio_pci: Add VIRTIO driver for VHOST on Configurable PCIe Endpoint
+>>>      device
+>>>    PCI: endpoint: Add EP function driver to provide VHOST interface
+>>>    NTB: Add a new NTB client driver to implement VIRTIO functionality
+>>>    NTB: Add a new NTB client driver to implement VHOST functionality
+>>>    NTB: Describe the ntb_virtio and ntb_vhost client in the documentation
+>>>
+>>>   Documentation/driver-api/ntb.rst              |   11 +
+>>>   Documentation/rpmsg.txt                       |   56 +
+>>>   drivers/ntb/Kconfig                           |   18 +
+>>>   drivers/ntb/Makefile                          |    2 +
+>>>   drivers/ntb/ntb_vhost.c                       |  776 +++++++++++
+>>>   drivers/ntb/ntb_virtio.c                      |  853 ++++++++++++
+>>>   drivers/ntb/ntb_virtio.h                      |   56 +
+>>>   drivers/pci/endpoint/functions/Kconfig        |   11 +
+>>>   drivers/pci/endpoint/functions/Makefile       |    1 +
+>>>   .../pci/endpoint/functions/pci-epf-vhost.c    | 1144 ++++++++++++++++
+>>>   drivers/rpmsg/Kconfig                         |   10 +
+>>>   drivers/rpmsg/Makefile                        |    3 +-
+>>>   drivers/rpmsg/rpmsg_cfs.c                     |  394 ++++++
+>>>   drivers/rpmsg/rpmsg_core.c                    |    7 +
+>>>   drivers/rpmsg/rpmsg_internal.h                |  136 ++
+>>>   drivers/rpmsg/vhost_rpmsg_bus.c               | 1151 +++++++++++++++++
+>>>   drivers/rpmsg/virtio_rpmsg_bus.c              |  184 ++-
+>>>   drivers/vhost/Kconfig                         |    1 +
+>>>   drivers/vhost/Makefile                        |    2 +-
+>>>   drivers/vhost/net.c                           |   10 +-
+>>>   drivers/vhost/scsi.c                          |   24 +-
+>>>   drivers/vhost/test.c                          |   17 +-
+>>>   drivers/vhost/vdpa.c                          |    2 +-
+>>>   drivers/vhost/vhost.c                         |  730 ++++++++++-
+>>>   drivers/vhost/vhost_cfs.c                     |  341 +++++
+>>>   drivers/vhost/vringh.c                        |  332 +++++
+>>>   drivers/vhost/vsock.c                         |   20 +-
+>>>   drivers/virtio/Kconfig                        |    9 +
+>>>   drivers/virtio/Makefile                       |    1 +
+>>>   drivers/virtio/virtio_pci_common.c            |   25 +-
+>>>   drivers/virtio/virtio_pci_epf.c               |  670 ++++++++++
+>>>   include/linux/mod_devicetable.h               |    6 +
+>>>   include/linux/rpmsg.h                         |    6 +
+>>>   {drivers/vhost => include/linux}/vhost.h      |  132 +-
+>>>   include/linux/virtio.h                        |    3 +
+>>>   include/linux/virtio_config.h                 |   42 +
+>>>   include/linux/vringh.h                        |   46 +
+>>>   samples/rpmsg/rpmsg_client_sample.c           |   32 +-
+>>>   tools/virtio/virtio_test.c                    |    2 +-
+>>>   39 files changed, 7083 insertions(+), 183 deletions(-)
+>>>   create mode 100644 drivers/ntb/ntb_vhost.c
+>>>   create mode 100644 drivers/ntb/ntb_virtio.c
+>>>   create mode 100644 drivers/ntb/ntb_virtio.h
+>>>   create mode 100644 drivers/pci/endpoint/functions/pci-epf-vhost.c
+>>>   create mode 100644 drivers/rpmsg/rpmsg_cfs.c
+>>>   create mode 100644 drivers/rpmsg/vhost_rpmsg_bus.c
+>>>   create mode 100644 drivers/vhost/vhost_cfs.c
+>>>   create mode 100644 drivers/virtio/virtio_pci_epf.c
+>>>   rename {drivers/vhost => include/linux}/vhost.h (66%)
+>>>
+>>> -- 
+>>> 2.17.1
+>>>
+> 
