@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C623821190E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62E721190C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729247AbgGBBbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:31:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58240 "EHLO mail.kernel.org"
+        id S1729221AbgGBBbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:31:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729238AbgGBB0m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:26:42 -0400
+        id S1729261AbgGBB0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:26:44 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0451E20899;
-        Thu,  2 Jul 2020 01:26:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D19820748;
+        Thu,  2 Jul 2020 01:26:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593653201;
-        bh=u9eUkU7WO6oTjpY8bF0J93M9skjuzcFyYCYAHnayeQc=;
+        s=default; t=1593653204;
+        bh=MSXNpAEhno4g986D8o9A5a+ESTpY1tYD20T+D+8C4+w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qrrdakC3vrmHz1IwShh/tRL+tUZVVmU+LQEY9wYkSSMX6pXt5e1X1MGL9j/Oo82kX
-         q4sb0X9dIb+YGypUCHFhvMeuCRiGKuR2hJSzjLbetHnwkLYtE6QHbXiyoHZZcgh0+w
-         Ut+Fgx4ugpiihAPZ986tg4BKvvy0MklWzGJGkVo0=
+        b=qV+PrXrRji4Rblx7Oiyf8szpi2GWir0LjCpjzVI9Z88lQGZLjORkxcr/sL/pco1iE
+         wt02atfxZpTUzAkP/yTretEyajAOZxTF3ySSaqyfTwdYCpxUrRiiypJXZtV6j07ixr
+         iXmxNYl1V2qccm720UUoUjqen1hELQYHhEzUrPQM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     yu kuai <yukuai3@huawei.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 21/27] ARM: imx6: add missing put_device() call in imx6q_suspend_init()
-Date:   Wed,  1 Jul 2020 21:26:09 -0400
-Message-Id: <20200702012615.2701532-21-sashal@kernel.org>
+Cc:     Aditya Pakki <pakki001@umn.edu>, Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 23/27] usb: dwc3: pci: Fix reference count leak in dwc3_pci_resume_work
+Date:   Wed,  1 Jul 2020 21:26:11 -0400
+Message-Id: <20200702012615.2701532-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702012615.2701532-1-sashal@kernel.org>
 References: <20200702012615.2701532-1-sashal@kernel.org>
@@ -43,69 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: yu kuai <yukuai3@huawei.com>
+From: Aditya Pakki <pakki001@umn.edu>
 
-[ Upstream commit 4845446036fc9c13f43b54a65c9b757c14f5141b ]
+[ Upstream commit 2655971ad4b34e97dd921df16bb0b08db9449df7 ]
 
-if of_find_device_by_node() succeed, imx6q_suspend_init() doesn't have a
-corresponding put_device(). Thus add a jump target to fix the exception
-handling for this function implementation.
+dwc3_pci_resume_work() calls pm_runtime_get_sync() that increments
+the reference counter. In case of failure, decrement the reference
+before returning.
 
-Signed-off-by: yu kuai <yukuai3@huawei.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-imx/pm-imx6.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/usb/dwc3/dwc3-pci.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-imx/pm-imx6.c b/arch/arm/mach-imx/pm-imx6.c
-index 529f4b5bbd3a7..4bfefbec971a6 100644
---- a/arch/arm/mach-imx/pm-imx6.c
-+++ b/arch/arm/mach-imx/pm-imx6.c
-@@ -497,14 +497,14 @@ static int __init imx6q_suspend_init(const struct imx6_pm_socdata *socdata)
- 	if (!ocram_pool) {
- 		pr_warn("%s: ocram pool unavailable!\n", __func__);
- 		ret = -ENODEV;
--		goto put_node;
-+		goto put_device;
- 	}
+diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
+index b2fd505938a0c..389ec4c689c44 100644
+--- a/drivers/usb/dwc3/dwc3-pci.c
++++ b/drivers/usb/dwc3/dwc3-pci.c
+@@ -204,8 +204,10 @@ static void dwc3_pci_resume_work(struct work_struct *work)
+ 	int ret;
  
- 	ocram_base = gen_pool_alloc(ocram_pool, MX6Q_SUSPEND_OCRAM_SIZE);
- 	if (!ocram_base) {
- 		pr_warn("%s: unable to alloc ocram!\n", __func__);
- 		ret = -ENOMEM;
--		goto put_node;
-+		goto put_device;
- 	}
+ 	ret = pm_runtime_get_sync(&dwc3->dev);
+-	if (ret)
++	if (ret) {
++		pm_runtime_put_sync_autosuspend(&dwc3->dev);
+ 		return;
++	}
  
- 	ocram_pbase = gen_pool_virt_to_phys(ocram_pool, ocram_base);
-@@ -527,7 +527,7 @@ static int __init imx6q_suspend_init(const struct imx6_pm_socdata *socdata)
- 	ret = imx6_pm_get_base(&pm_info->mmdc_base, socdata->mmdc_compat);
- 	if (ret) {
- 		pr_warn("%s: failed to get mmdc base %d!\n", __func__, ret);
--		goto put_node;
-+		goto put_device;
- 	}
- 
- 	ret = imx6_pm_get_base(&pm_info->src_base, socdata->src_compat);
-@@ -574,7 +574,7 @@ static int __init imx6q_suspend_init(const struct imx6_pm_socdata *socdata)
- 		&imx6_suspend,
- 		MX6Q_SUSPEND_OCRAM_SIZE - sizeof(*pm_info));
- 
--	goto put_node;
-+	goto put_device;
- 
- pl310_cache_map_failed:
- 	iounmap(pm_info->gpc_base.vbase);
-@@ -584,6 +584,8 @@ static int __init imx6q_suspend_init(const struct imx6_pm_socdata *socdata)
- 	iounmap(pm_info->src_base.vbase);
- src_map_failed:
- 	iounmap(pm_info->mmdc_base.vbase);
-+put_device:
-+	put_device(&pdev->dev);
- put_node:
- 	of_node_put(node);
- 
+ 	pm_runtime_mark_last_busy(&dwc3->dev);
+ 	pm_runtime_put_sync_autosuspend(&dwc3->dev);
 -- 
 2.25.1
 
