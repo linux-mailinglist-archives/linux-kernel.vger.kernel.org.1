@@ -2,67 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 404892122C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A7A2122CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728824AbgGBL5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 07:57:03 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:41569 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726475AbgGBL5D (ORCPT
+        id S1728873AbgGBL7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 07:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbgGBL70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 07:57:03 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jqxpr-0006Wj-Fy; Thu, 02 Jul 2020 11:56:59 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] regulator: fix null pointer check on regmap
-Date:   Thu,  2 Jul 2020 12:56:59 +0100
-Message-Id: <20200702115659.38208-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 2 Jul 2020 07:59:26 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C71DC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 04:59:26 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id w16so779737qts.7
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 04:59:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mdEoyg5cz5gqKw5XA1ird4Jwpq42Fb0cYp9G68e5U8k=;
+        b=A4rYlUDqufFtk3BWPSKmxkjmWJniPMPBX+Azpwopdu0pJnbXDuoB1EGnDXYJyp3FUR
+         fiyUMV3zo8XvAQDWX8QIeeKZvfPHlwEMWra+sZJ3lOxF1mdPnpV+W4Ekiacq3xI0qFeI
+         LKgJt6jpqVfstXbYSqXstgvIsp35o6za3BtPdCtWUwB0InIMCIoeByhVm9n3S+ZwJiv6
+         Qeon25PCtJfOM1SLPwcvWIX1+GD0Dk6GjwrscF+1m+EUrL7y2J4a/8CmYp1YvtI+EiQX
+         K1xPMJH6YLihVypYT4LdQDEsQs3l2ivPDSeCbFZ9jGrq1XvQADo91m7nCwqcuvnxvJAb
+         fHlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mdEoyg5cz5gqKw5XA1ird4Jwpq42Fb0cYp9G68e5U8k=;
+        b=AQVwYgR5BWjdRk3COz7Da9rHJUH+PT4Qsd3ceuerZemzgON1h7LdDu+ArrPbr08wwF
+         iJY/j5YAdqwiB3+xzFSs0omK3f35l9T5sWUjZAKwSEmrk7iNPFs1XwnIs4tk4FD3SJbe
+         72Kiez0WyHWwCZbDedXwX8a4mfjh0fJmVy/VGkhbNUfEWCC4q1Z3Z9ftDp4TSCOZbp9p
+         LFr7rZ5T6FdINwQ6ryS7fLKrw+SSc6WNnRypRdN36oXdrRMarJju3MPDJHB+MQy9hXTV
+         xnjyL7h3OmNjBMWLsdHVIan0TTSCzjIu+9Z/JTBzWs6Sif4puQWtX7T0c9b9RCKYGdfq
+         XghQ==
+X-Gm-Message-State: AOAM531Z5L0WJveP63qPMn4wPNezOVidrbblY07IKidWtSB8PPNFDIB4
+        OxbOCVcSZ9xSNVzsr60CZ1pYux6lXwnkMfq1vd9811eP
+X-Google-Smtp-Source: ABdhPJxE5hLn/2Xwu5PYobN8sCXVCTbkkX2J9Tvr2Tg3TcwVzfzulqt0c7NW+md/LMSebK41q+4uZUaZXkMgr2cUG08=
+X-Received: by 2002:aed:3201:: with SMTP id y1mr30549256qtd.156.1593691165663;
+ Thu, 02 Jul 2020 04:59:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <1593678728-128358-1-git-send-email-xlpang@linux.alibaba.com>
+In-Reply-To: <1593678728-128358-1-git-send-email-xlpang@linux.alibaba.com>
+From:   Pekka Enberg <penberg@gmail.com>
+Date:   Thu, 2 Jul 2020 14:59:07 +0300
+Message-ID: <CAOJsxLErUqY=eBEaj0G3iRAY-YuyyLnxOnBLTP6SkCjhq1On2g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm/slub: Introduce two counters for the partial objects
+To:     Xunlei Pang <xlpang@linux.alibaba.com>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wen Yang <wenyang@linux.alibaba.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Roman Gushchin <guro@fb.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, Jul 2, 2020 at 11:32 AM Xunlei Pang <xlpang@linux.alibaba.com> wrote:
+> The node list_lock in count_partial() spend long time iterating
+> in case of large amount of partial page lists, which can cause
+> thunder herd effect to the list_lock contention, e.g. it cause
+> business response-time jitters when accessing "/proc/slabinfo"
+> in our production environments.
 
-The null pointer check on regmap that checks for a dev_get_regmap failure
-is currently returning -ENOENT if the regmap succeeded. Fix this by adding
-in the missing ! operator.
+Would you have any numbers to share to quantify this jitter? I have no
+objections to this approach, but I think the original design
+deliberately made reading "/proc/slabinfo" more expensive to avoid
+atomic operations in the allocation/deallocation paths. It would be
+good to understand what is the gain of this approach before we switch
+to it. Maybe even run some slab-related benchmark (not sure if there's
+something better than hackbench these days) to see if the overhead of
+this approach shows up.
 
-Addresses-Coverity: ("Dereference after null check")
-Fixes: 4fe66d5a62fb ("regulator: Add support for QCOM PMIC VBUS booster")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/regulator/qcom_usb_vbus-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> This patch introduces two counters to maintain the actual number
+> of partial objects dynamically instead of iterating the partial
+> page lists with list_lock held.
+>
+> New counters of kmem_cache_node are: pfree_objects, ptotal_objects.
+> The main operations are under list_lock in slow path, its performance
+> impact is minimal.
+>
+> Co-developed-by: Wen Yang <wenyang@linux.alibaba.com>
+> Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
+> ---
+>  mm/slab.h |  2 ++
+>  mm/slub.c | 38 +++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 39 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 7e94700..5935749 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -616,6 +616,8 @@ struct kmem_cache_node {
+>  #ifdef CONFIG_SLUB
+>         unsigned long nr_partial;
+>         struct list_head partial;
+> +       atomic_long_t pfree_objects; /* partial free objects */
+> +       atomic_long_t ptotal_objects; /* partial total objects */
 
-diff --git a/drivers/regulator/qcom_usb_vbus-regulator.c b/drivers/regulator/qcom_usb_vbus-regulator.c
-index 342d92373598..8ba947f3585f 100644
---- a/drivers/regulator/qcom_usb_vbus-regulator.c
-+++ b/drivers/regulator/qcom_usb_vbus-regulator.c
-@@ -49,7 +49,7 @@ static int qcom_usb_vbus_regulator_probe(struct platform_device *pdev)
- 	}
- 
- 	regmap = dev_get_regmap(dev->parent, NULL);
--	if (regmap) {
-+	if (!regmap) {
- 		dev_err(dev, "Failed to get regmap\n");
- 		return -ENOENT;
- 	}
--- 
-2.27.0
+You could rename these to "nr_partial_free_objs" and
+"nr_partial_total_objs" for readability.
 
+- Pekka
