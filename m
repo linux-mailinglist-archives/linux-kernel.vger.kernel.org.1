@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BA1212FED
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 01:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDCC7212FF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 01:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgGBXLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 19:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43408 "EHLO
+        id S1726924AbgGBXMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 19:12:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgGBXLL (ORCPT
+        with ESMTP id S1726460AbgGBXLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 19:11:11 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C458EC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 16:11:10 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id lx13so13132929ejb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 16:11:10 -0700 (PDT)
+        Thu, 2 Jul 2020 19:11:12 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C695EC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 16:11:11 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id e22so25745381edq.8
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 16:11:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=iQrFRXDP8rXNHQcWYNSe+JctoXgQP0kT+O7TInIWU9c=;
-        b=TOMWbjMVIn9IVlD4bOb95+46duntSSoLV3Mv7jyub3f5t7xZRuZYtqM1tZnvlTq7c4
-         o1k76FNodOrAj9t5WHLJnboL+oVusERVKKzsVYYUxjz2kqS8DgevhJBZjn5WqsEd5Odi
-         P5s0GhLQOJIZalykBXi7fbt6fT7s+Z17L21v+cpvDzEI8Z6jZSvK0ICLoQhbYFTUVFV/
-         aqDGj1vV3TZ4AU49fZNjQ2qYa/k/Z10fzXxXmnbRGqBa6Rm1KuAPK/3Xg8kUj0g+ekTU
-         6J/TIoHXgzkgnF7JNyl8eFb7PKbtp0BZ76cqsEAEaLCAqhLMWjpfvBJrgvEFDSbKZmuS
-         no6Q==
+        bh=26ZiewEHNxWX5EAuv9sa51RYGJG4O6qcJfTfVaArce0=;
+        b=iUfgFFw3mmZu0Oh9wOKE8Hvo/QYkt1zOcd7Z+9mAmho/NNHjUPdbQAtE117AwFaL99
+         dqHa7RJvu3L2gUOX6avLBtAgXAXbLZpZh+tqkOZQ66wcvmB2aS3mfPenwTy/rUQRA8rc
+         pxFhO/B9xoU5VCfz2EvqoHFwYOG+uiNfy4al+ZynLzzkiycMKaPgEpxyTJmL5hZg1SFH
+         gUEj7oUgrEOY63xTRKiTL+KchQ05EtHqVPyJ2bf6kgmJ/H+o5aHCz4yoAiBJO+qvxptp
+         XY8AoSrcij4P9miFS6CLPaSUCdU2Xv6nqQAy8d3ZoMQCB3bnj80VadAxFpim17wE8q2s
+         f4jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iQrFRXDP8rXNHQcWYNSe+JctoXgQP0kT+O7TInIWU9c=;
-        b=nk8G0Ju+A4ubQeji7QAjCrRONKzhUr1gv53ty3G4e0uJd4UMmFFlTuZQrmV6sTVY9E
-         H0PMJ54hdVF6Be2Cczzz0BgAcyBzNoleGY+LKxp4oPRS03zUs1jgjbOAYOcCanUDfhSL
-         Ky6kvkt1OEYXkP9KuF+7z8g89XzRij/cEe0OyeTNnnhgnlUGjbRdbCJdqjSKzRrrEaSN
-         FwXOP4TLPiTupksk9oG+mqiNeyIM5InnEASS6uHYfKnPwvrKYqhV85ONWWIBCEDhg92n
-         CPafk/dBNqeD9JIRwuSxKbnMr3q+kTANWBxnlbsBAHMusqG6u0DpFjyz77ql1KjmxIPz
-         9/2A==
-X-Gm-Message-State: AOAM532EEgSMB6PvrJGZgWI+mRjevrWvCek3vP0tE4jjAIdXCbRpbPGQ
-        frj0NqZ8QWdRz1ItLDjBD9+7uytN
-X-Google-Smtp-Source: ABdhPJwlo+4YWYopbw0PHWtDBiItabn2pgOPb1Y41N6EutYSdZ2SYWvnZruVlmAGv/3KS3xbXcKrCg==
-X-Received: by 2002:a17:906:3984:: with SMTP id h4mr23306251eje.254.1593731469288;
-        Thu, 02 Jul 2020 16:11:09 -0700 (PDT)
+        bh=26ZiewEHNxWX5EAuv9sa51RYGJG4O6qcJfTfVaArce0=;
+        b=chyybyh0ZODYolZbeHGA5u3BH9dps8UGGoPBSLgbQN1Qb345GnyYRbXEem4LC4VZ4+
+         axyPnBzEugBNS5jIWKmCWTsAHddlZoDZ9JnP1wYN4euPrE7D0mEa2SqkuH9Gvkzns0u0
+         765em2NvyzIwacB5jisWh6kNH/zaiXepRylQ/q6G/91R+3s1XQTPJwLy+mQQubxy2gcB
+         P1nxM/D6pbnp1oQOtpIvggwtvuL2JvPc7rnX48DFwNWAP0GiqJ8mYm8AKSG52LsJwlKh
+         mG5e1L9NuTNmLK5pHn96TvGcw3anMO8mU7NVOk2qXoa2xD/WO9qTYFT7sw8m3M+xaRbj
+         yk8g==
+X-Gm-Message-State: AOAM533BkTRWN/9KBxvaMWnGluJvp1Sx7sB0vATMEReVR25jw0JHAVMQ
+        QWOWb6xmypUEpCyKKPeKdxGRjRCs
+X-Google-Smtp-Source: ABdhPJzzDlf1sbMBRdlpW+FTsKwCqeGLxqT2y5BGSJ+uwFUETVi2riOspmcrQJaezxvioX7sUiteRA==
+X-Received: by 2002:a05:6402:228d:: with SMTP id cw13mr37891086edb.343.1593731470281;
+        Thu, 02 Jul 2020 16:11:10 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:a03f:b7f9:7600:bd38:c82d:5283:9f1])
-        by smtp.gmail.com with ESMTPSA id x9sm8214031ejw.28.2020.07.02.16.11.08
+        by smtp.gmail.com with ESMTPSA id x9sm8214031ejw.28.2020.07.02.16.11.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 16:11:08 -0700 (PDT)
+        Thu, 02 Jul 2020 16:11:09 -0700 (PDT)
 From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: [PATCH 04/15] options: make Wsparse_error less special
-Date:   Fri,  3 Jul 2020 01:10:28 +0200
-Message-Id: <20200702231039.55015-5-luc.vanoostenryck@gmail.com>
+Subject: [PATCH 05/15] options: handle_onoff_switch() can handle any flags, not only warnings
+Date:   Fri,  3 Jul 2020 01:10:29 +0200
+Message-Id: <20200702231039.55015-6-luc.vanoostenryck@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200702231039.55015-1-luc.vanoostenryck@gmail.com>
 References: <20200702231039.55015-1-luc.vanoostenryck@gmail.com>
@@ -64,47 +64,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--Wsparse-error should not be enabled with -Wsparse-all, this is
-special cased in the condition in loop handling -Wsparse-all.
-
-However, the condition already handle warnings forced to off.
-So instead of explicitly checking for &Wsparse_error, it's enough
-to force Wsparse_error off.
+So, use 'flag' instead of 'warning' for variable and function names.
 
 Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
 ---
- lib.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ lib.c | 36 ++++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
 diff --git a/lib.c b/lib.c
-index 43d55a0648ee..9acdc60fc416 100644
+index 9acdc60fc416..c27773097127 100644
 --- a/lib.c
 +++ b/lib.c
-@@ -276,7 +276,6 @@ int Winit_cstring = 0;
- int Wint_to_pointer_cast = 1;
- int Wenum_mismatch = 1;
- int Wexternal_function_has_definition = 1;
--int Wsparse_error = 0;
- int Wmemcpy_max_count = 1;
- int Wnewline_eof = 1;
- int Wnon_pointer_null = 1;
-@@ -296,6 +295,7 @@ int Wshadow = 0;
+@@ -250,10 +250,10 @@ void die(const char *fmt, ...)
+ static struct token *pre_buffer_begin = NULL;
+ static struct token *pre_buffer_end = NULL;
+ 
+-enum warning_type {
+-	WARNING_OFF,
+-	WARNING_ON,
+-	WARNING_FORCE_OFF
++enum flag_type {
++	FLAG_OFF,
++	FLAG_ON,
++	FLAG_FORCE_OFF
+ };
+ 
+ int Waddress = 0;
+@@ -295,7 +295,7 @@ int Wshadow = 0;
  int Wshift_count_negative = 1;
  int Wshift_count_overflow = 1;
  int Wsizeof_bool = 0;
-+int Wsparse_error = WARNING_FORCE_OFF;
+-int Wsparse_error = WARNING_FORCE_OFF;
++int Wsparse_error = FLAG_FORCE_OFF;
  int Wstrict_prototypes = 1;
  int Wtautological_compare = 0;
  int Wtransparent_union = 0;
-@@ -793,7 +793,7 @@ static char **handle_switch_W(char *arg, char **next)
+@@ -529,9 +529,9 @@ static int opt_##NAME(const char *arg, const char *opt, TYPE *ptr, int flag)	\
+ OPT_NUMERIC(ullong, unsigned long long, strtoull)
+ OPT_NUMERIC(uint, unsigned int, strtoul)
+ 
+-static char **handle_onoff_switch(char *arg, char **next, const struct flag warnings[])
++static char **handle_onoff_switch(char *arg, char **next, const struct flag flags[])
+ {
+-	int flag = WARNING_ON;
++	int flag = FLAG_ON;
+ 	char *p = arg + 1;
+ 	unsigned i;
+ 
+@@ -540,12 +540,12 @@ static char **handle_onoff_switch(char *arg, char **next, const struct flag warn
+ 		p += 2;
+ 		if (p[0] == '-')
+ 			p++;
+-		flag = WARNING_FORCE_OFF;
++		flag = FLAG_FORCE_OFF;
+ 	}
+ 
+-	for (i = 0; warnings[i].name; i++) {
+-		if (!strcmp(p,warnings[i].name)) {
+-			*warnings[i].flag = flag;
++	for (i = 0; flags[i].name; i++) {
++		if (!strcmp(p,flags[i].name)) {
++			*flags[i].flag = flag;
+ 			return next;
+ 		}
+ 	}
+@@ -722,7 +722,7 @@ static char **handle_switch_o(char *arg, char **next)
+ }
+ 
+ static const struct flag pflags[] = {
+-	{ "pedantic", &Wpedantic, NULL, OPT_VAL, WARNING_ON },
++	{ "pedantic", &Wpedantic, NULL, OPT_VAL, FLAG_ON },
+ 	{ }
+ };
+ 
+@@ -793,8 +793,8 @@ static char **handle_switch_W(char *arg, char **next)
  	if (!strcmp(arg, "Wsparse-all")) {
  		int i;
  		for (i = 0; warnings[i].name; i++) {
--			if (*warnings[i].flag != WARNING_FORCE_OFF && warnings[i].flag != &Wsparse_error)
-+			if (*warnings[i].flag != WARNING_FORCE_OFF)
- 				*warnings[i].flag = WARNING_ON;
+-			if (*warnings[i].flag != WARNING_FORCE_OFF)
+-				*warnings[i].flag = WARNING_ON;
++			if (*warnings[i].flag != FLAG_FORCE_OFF)
++				*warnings[i].flag = FLAG_ON;
  		}
  	}
+ 
+@@ -858,13 +858,13 @@ static char **handle_switch_d(char *arg, char **next)
+ }
+ 
+ 
+-static void handle_onoff_switch_finalize(const struct flag warnings[])
++static void handle_onoff_switch_finalize(const struct flag flags[])
+ {
+ 	unsigned i;
+ 
+-	for (i = 0; warnings[i].name; i++) {
+-		if (*warnings[i].flag == WARNING_FORCE_OFF)
+-			*warnings[i].flag = WARNING_OFF;
++	for (i = 0; flags[i].name; i++) {
++		if (*flags[i].flag == FLAG_FORCE_OFF)
++			*flags[i].flag = FLAG_OFF;
+ 	}
+ }
+ 
 -- 
 2.27.0
 
