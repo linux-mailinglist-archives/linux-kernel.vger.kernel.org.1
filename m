@@ -2,75 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD50A212386
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 14:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D38212397
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 14:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729004AbgGBMjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 08:39:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728848AbgGBMjL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 08:39:11 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7199CC08C5C1;
-        Thu,  2 Jul 2020 05:39:11 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id m22so3040632pgv.9;
-        Thu, 02 Jul 2020 05:39:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sdU4B09dAgfmv+NSF1Ehbxcb/S+UYN6iJuAJ1MQXdVA=;
-        b=mH9flt4ourtHu+2z7DKI/6vJsZ8b7eJVIKE6Ecyekaj4h2Aj8HLuOQMUGa7nJvVeQz
-         kGQTmfR+k3HhbYyEMMVKL3e8bEAjKk1TfzdC6z+4FogELJ1u+VTmBx/VDZCpheWDM4lo
-         yyDBsFA7YQKFPUyYGsGrs+InnwJ8ewyz1RqWMD5Q9sscvHnFXOZ8Yo0H8vvq+tJ7PiZ0
-         6CQEDzYML57gO3IB9Y3YUGVVJEWbNwJwDaN5o3a5RbA3p1neIu9msZjFmp4YYtYFl5Ca
-         nG3P6YRZ5fKH5zzbvDVz/koGP0/TXrmX1TdYTv2FPsENVsO7eG2KRcLXdyYpbV3MfTi2
-         OcPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sdU4B09dAgfmv+NSF1Ehbxcb/S+UYN6iJuAJ1MQXdVA=;
-        b=TOh6pxug/lSzE9UpIQR5oD620+yNWOHgonf09UMW5T1BeMeLekzlvO9cofbfNiURED
-         teQvXu9vro380EJVh5l2VHk6omwR5908mCz9JQttorm5gjd9uVfn3FjSkIA+f1aufWVD
-         mT+JUxnRYFdAH90hjyRaq1WpSi9PuG5gunIAyFJ+ueBMvl/MyfBki6aX3mlAVWzwwc3r
-         Ptn2nO7m0nWvF93LaOW4NWrkApeEm70qbTau9aI8gASmxCMB86nZuqnqrSO3wrnlItmJ
-         iVea0BfdfaDnFHEMxsdSjT0DlA8y7q0utVy5eHoZRKJjRWgyeP1kKNvVn+JZXeUqxlVV
-         nTqw==
-X-Gm-Message-State: AOAM531rzAUVJLhO1ioBYK5HwwP8IDT1Fj7pYsMSnwfsmZfzBeGvxVki
-        L6uAYBRpRZbNcxsptepJAAfzX2CgiC/OpI2Az3Q=
-X-Google-Smtp-Source: ABdhPJwWhq3hbn8G3mt+7xxjmBp6veAmQR8VNCpR5TwzEs5Ia4HtHbZzgI32UhGqFwNDqA7m+eFz/5V+/VHTstvee0Y=
-X-Received: by 2002:a62:7657:: with SMTP id r84mr27587054pfc.130.1593693550975;
- Thu, 02 Jul 2020 05:39:10 -0700 (PDT)
+        id S1729029AbgGBMm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 08:42:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728808AbgGBMmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 08:42:55 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08AA820885;
+        Thu,  2 Jul 2020 12:42:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593693774;
+        bh=5Id979Qu+TbMvFs3bdzAkBCYv828DS3FPkCk09ao5tA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NnEiOIpme/oFl0LG5LH6yJgz74OeVj3OGC7bfMvt0oxzcNXw+2nUkp3q2zvGrrPGq
+         UsSwLsIAvHHV+/6JJLtgHnigNwQNASJFS46tZVN8u14zfgkXkyxA9J5vACUSl8en8a
+         NkSQAtlPXwcKyiBMDvyEfJKL+vgGQz13nystJm24=
+Date:   Thu, 2 Jul 2020 14:42:58 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v2 5/6] devres: provide devm_krealloc()
+Message-ID: <20200702124258.GA1882489@kroah.com>
+References: <20200629065008.27620-1-brgl@bgdev.pl>
+ <20200629065008.27620-6-brgl@bgdev.pl>
 MIME-Version: 1.0
-References: <20200702121722.1121468-1-mans0n@gorani.run> <CAHp75VdSWxcAQzWryKoMfzh8xM_2ZRF6Uk+8pveGhmt=prOAVg@mail.gmail.com>
-In-Reply-To: <CAHp75VdSWxcAQzWryKoMfzh8xM_2ZRF6Uk+8pveGhmt=prOAVg@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 2 Jul 2020 15:38:54 +0300
-Message-ID: <CAHp75Vf+J2vA2c2WiGuFk8jbTkynYSF8bvab0_17xjXgKCy36Q@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] gpio: add GPO driver for PCA9570
-To:     Sungbo Eo <mans0n@gorani.run>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michael Walle <michael@walle.cc>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629065008.27620-6-brgl@bgdev.pl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 2, 2020 at 3:36 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Thu, Jul 2, 2020 at 3:18 PM Sungbo Eo <mans0n@gorani.run> wrote:
+On Mon, Jun 29, 2020 at 08:50:07AM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> Implement the managed variant of krealloc(). This function works with
+> all memory allocated by devm_kmalloc() (or devres functions using it
+> implicitly like devm_kmemdup(), devm_kstrdup() etc.).
+> 
+> Managed realloc'ed chunks can be manually released with devm_kfree().
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>  .../driver-api/driver-model/devres.rst        |  1 +
+>  drivers/base/devres.c                         | 50 +++++++++++++++++++
+>  include/linux/device.h                        |  2 +
+>  3 files changed, 53 insertions(+)
+> 
+> diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
+> index e0b58c392e4f..0a2572c3813c 100644
+> --- a/Documentation/driver-api/driver-model/devres.rst
+> +++ b/Documentation/driver-api/driver-model/devres.rst
+> @@ -352,6 +352,7 @@ MEM
+>    devm_kfree()
+>    devm_kmalloc()
+>    devm_kmalloc_array()
+> +  devm_krealloc()
+>    devm_kmemdup()
+>    devm_kstrdup()
+>    devm_kvasprintf()
+> diff --git a/drivers/base/devres.c b/drivers/base/devres.c
+> index ed615d3b9cf1..4b8870ef6a3f 100644
+> --- a/drivers/base/devres.c
+> +++ b/drivers/base/devres.c
+> @@ -837,6 +837,56 @@ void *devm_kmalloc(struct device *dev, size_t size, gfp_t gfp)
+>  }
+>  EXPORT_SYMBOL_GPL(devm_kmalloc);
+>  
+> +void *devm_krealloc(struct device *dev, void *ptr, size_t new_size, gfp_t gfp)
+> +{
+> +	struct devres *old_dr, *new_dr;
+> +	struct list_head old_head;
+> +	unsigned long flags;
+> +	void *ret = NULL;
+> +	size_t tot_size;
+> +
+> +	if (unlikely(!new_size)) {
+> +		devm_kfree(dev, ptr);
+> +		return ZERO_SIZE_PTR;
+> +	}
+> +
+> +	if (unlikely(ZERO_OR_NULL_PTR(ptr)))
+> +		return devm_kmalloc(dev, new_size, gfp);
+> +
+> +	if (WARN_ON(is_kernel_rodata((unsigned long)ptr)))
+> +		/*
+> +		 * We cannot reliably realloc a const string returned by
+> +		 * devm_kstrdup_const().
+> +		 */
+> +		return NULL;
+> +
+> +	if (!check_dr_size(new_size, &tot_size))
+> +		return NULL;
+> +
+> +	spin_lock_irqsave(&dev->devres_lock, flags);
+> +
+> +	old_dr = find_dr(dev, devm_kmalloc_release, devm_kmalloc_match, ptr);
+> +	if (WARN_ON(!old_dr))
+> +		/* Memory chunk not managed or managed by a different device. */
+> +		goto out;
+> +
+> +	old_head = old_dr->node.entry;
+> +
+> +	new_dr = krealloc(old_dr, tot_size, gfp);
+> +	if (!new_dr)
+> +		goto out;
+> +
+> +	if (new_dr != old_dr)
+> +		list_replace(&old_head, &new_dr->node.entry);
+> +
+> +	ret = new_dr->data;
+> +
+> +out:
+> +	spin_unlock_irqrestore(&dev->devres_lock, flags);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(devm_krealloc);
 
-> > +       s32 ret;
+That's a lot of logic that does not seem to match up with the krealloc()
+logic in mm/slab_common.c, are you sure we need to do all of that?
 
-And why not simple int ret; ?
+Who wants this?
 
--- 
-With Best Regards,
-Andy Shevchenko
+thanks,
+
+greg k-h
