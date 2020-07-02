@@ -2,297 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667EA2117A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C882117A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728137AbgGBBWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:22:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53018 "EHLO mail.kernel.org"
+        id S1728075AbgGBBVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:21:18 -0400
+Received: from ozlabs.org ([203.11.71.1]:49953 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726028AbgGBBWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:22:06 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726038AbgGBBVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:21:18 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1C8B2083E;
-        Thu,  2 Jul 2020 01:22:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593652925;
-        bh=eEmDcz5D+lQVVqHTUN/23pAD+joc3MzUTOTrSXN4g1I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gMwCgoLEWIWyF+1+TyEfspnnmEWgazQ/Fyd3JHhiiRv6opB8FEKKYT1QS1h1cOWiW
-         MwUH482fMsQx6JZ+JdZrWic6fj0PkkUgW1+P2e09HEHbcK69386MzI1twm4yBBM/UB
-         cDnp/QH4ZbWURYi4bp+uVCt4+PXfruYPn67bjdyg=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jens Thoms Toerring <jt@toerring.de>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.7 02/53] regmap: fix alignment issue
-Date:   Wed,  1 Jul 2020 21:21:11 -0400
-Message-Id: <20200702012202.2700645-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200702012202.2700645-1-sashal@kernel.org>
-References: <20200702012202.2700645-1-sashal@kernel.org>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49y0fg5NgRz9sRN;
+        Thu,  2 Jul 2020 11:21:15 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1593652875;
+        bh=SNDM3Ebesqm1/WP0xmTozgFdT1xUcQvv4Uv50jRwNK0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=d0d8UCbIDdHJNx3His5M9ih2D03iEW/iwIHK/FtTqNNyJ003Vm3ArnVbeviAOVEeh
+         ZUhCQga4t6I+55iWWiE7H/Tf8yCGqgyoc5CcYSZbhSmKu8O9SD7cTdvpNlDJh9rUPE
+         +I3Srhe73I2eOzcErU+8Jd4H0bzEuxwKZOpVr0v5hP7lvSURtyEQMaTCK6y9u4rZfs
+         9zdcXioMNDUb4u+ljd4cEMlM5gNEMkHBa1PhOYePeBSbRLZzAlJIYI6pdrVHST7a0n
+         u2K599FDa0SSr1jdgpxH5GRxkEpK+CEipO/yfCO4Hpnh9VUycxu2ATSRSE7LwvorNN
+         469P6VMukVANw==
+Date:   Thu, 2 Jul 2020 11:21:12 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: linux-next: build warning after merge of the block tree
+Message-ID: <20200702112112.04d3f992@canb.auug.org.au>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/m7.HGDHfzDuDAf_vqraKDJP";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Thoms Toerring <jt@toerring.de>
+--Sig_/m7.HGDHfzDuDAf_vqraKDJP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-[ Upstream commit 53d860952c8215cf9ae1ea33409c8cb71ad6ad3d ]
+Hi all,
 
-The assembly and disassembly of data to be sent to or received from
-a device invoke functions regmap_format_XX() and regmap_parse_XX()
-that extract or insert data items from or into a buffer, using
-assignments. In some cases the functions are called with a buffer
-pointer with an odd address. On architectures with strict alignment
-requirements this can result in a kernel crash. The assignments
-have been replaced by functions that take alignment into account.
+After merging the block tree, today's linux-next build (powerpc
+ppc64_defconfig) produced this warning:
 
-Signed-off-by: Jens Thoms Toerring <jt@toerring.de>
-Link: https://lore.kernel.org/r/20200531095300.GA27570@toerring.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/base/regmap/regmap.c | 100 ++++++++++++++++-------------------
- 1 file changed, 46 insertions(+), 54 deletions(-)
+drivers/md/dm.c: In function '__map_bio':
+drivers/md/dm.c:1296:24: warning: unused variable 'md' [-Wunused-variable]
+ 1296 |  struct mapped_device *md =3D io->md;
+      |                        ^~
 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index 59f911e577192..d3112665c7d08 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -17,6 +17,7 @@
- #include <linux/delay.h>
- #include <linux/log2.h>
- #include <linux/hwspinlock.h>
-+#include <asm/unaligned.h>
- 
- #define CREATE_TRACE_POINTS
- #include "trace.h"
-@@ -249,22 +250,20 @@ static void regmap_format_8(void *buf, unsigned int val, unsigned int shift)
- 
- static void regmap_format_16_be(void *buf, unsigned int val, unsigned int shift)
- {
--	__be16 *b = buf;
--
--	b[0] = cpu_to_be16(val << shift);
-+	put_unaligned_be16(val << shift, buf);
- }
- 
- static void regmap_format_16_le(void *buf, unsigned int val, unsigned int shift)
- {
--	__le16 *b = buf;
--
--	b[0] = cpu_to_le16(val << shift);
-+	put_unaligned_le16(val << shift, buf);
- }
- 
- static void regmap_format_16_native(void *buf, unsigned int val,
- 				    unsigned int shift)
- {
--	*(u16 *)buf = val << shift;
-+	u16 v = val << shift;
-+
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- static void regmap_format_24(void *buf, unsigned int val, unsigned int shift)
-@@ -280,43 +279,39 @@ static void regmap_format_24(void *buf, unsigned int val, unsigned int shift)
- 
- static void regmap_format_32_be(void *buf, unsigned int val, unsigned int shift)
- {
--	__be32 *b = buf;
--
--	b[0] = cpu_to_be32(val << shift);
-+	put_unaligned_be32(val << shift, buf);
- }
- 
- static void regmap_format_32_le(void *buf, unsigned int val, unsigned int shift)
- {
--	__le32 *b = buf;
--
--	b[0] = cpu_to_le32(val << shift);
-+	put_unaligned_le32(val << shift, buf);
- }
- 
- static void regmap_format_32_native(void *buf, unsigned int val,
- 				    unsigned int shift)
- {
--	*(u32 *)buf = val << shift;
-+	u32 v = val << shift;
-+
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- #ifdef CONFIG_64BIT
- static void regmap_format_64_be(void *buf, unsigned int val, unsigned int shift)
- {
--	__be64 *b = buf;
--
--	b[0] = cpu_to_be64((u64)val << shift);
-+	put_unaligned_be64((u64) val << shift, buf);
- }
- 
- static void regmap_format_64_le(void *buf, unsigned int val, unsigned int shift)
- {
--	__le64 *b = buf;
--
--	b[0] = cpu_to_le64((u64)val << shift);
-+	put_unaligned_le64((u64) val << shift, buf);
- }
- 
- static void regmap_format_64_native(void *buf, unsigned int val,
- 				    unsigned int shift)
- {
--	*(u64 *)buf = (u64)val << shift;
-+	u64 v = (u64) val << shift;
-+
-+	memcpy(buf, &v, sizeof(v));
- }
- #endif
- 
-@@ -333,35 +328,34 @@ static unsigned int regmap_parse_8(const void *buf)
- 
- static unsigned int regmap_parse_16_be(const void *buf)
- {
--	const __be16 *b = buf;
--
--	return be16_to_cpu(b[0]);
-+	return get_unaligned_be16(buf);
- }
- 
- static unsigned int regmap_parse_16_le(const void *buf)
- {
--	const __le16 *b = buf;
--
--	return le16_to_cpu(b[0]);
-+	return get_unaligned_le16(buf);
- }
- 
- static void regmap_parse_16_be_inplace(void *buf)
- {
--	__be16 *b = buf;
-+	u16 v = get_unaligned_be16(buf);
- 
--	b[0] = be16_to_cpu(b[0]);
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- static void regmap_parse_16_le_inplace(void *buf)
- {
--	__le16 *b = buf;
-+	u16 v = get_unaligned_le16(buf);
- 
--	b[0] = le16_to_cpu(b[0]);
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- static unsigned int regmap_parse_16_native(const void *buf)
- {
--	return *(u16 *)buf;
-+	u16 v;
-+
-+	memcpy(&v, buf, sizeof(v));
-+	return v;
- }
- 
- static unsigned int regmap_parse_24(const void *buf)
-@@ -376,69 +370,67 @@ static unsigned int regmap_parse_24(const void *buf)
- 
- static unsigned int regmap_parse_32_be(const void *buf)
- {
--	const __be32 *b = buf;
--
--	return be32_to_cpu(b[0]);
-+	return get_unaligned_be32(buf);
- }
- 
- static unsigned int regmap_parse_32_le(const void *buf)
- {
--	const __le32 *b = buf;
--
--	return le32_to_cpu(b[0]);
-+	return get_unaligned_le32(buf);
- }
- 
- static void regmap_parse_32_be_inplace(void *buf)
- {
--	__be32 *b = buf;
-+	u32 v = get_unaligned_be32(buf);
- 
--	b[0] = be32_to_cpu(b[0]);
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- static void regmap_parse_32_le_inplace(void *buf)
- {
--	__le32 *b = buf;
-+	u32 v = get_unaligned_le32(buf);
- 
--	b[0] = le32_to_cpu(b[0]);
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- static unsigned int regmap_parse_32_native(const void *buf)
- {
--	return *(u32 *)buf;
-+	u32 v;
-+
-+	memcpy(&v, buf, sizeof(v));
-+	return v;
- }
- 
- #ifdef CONFIG_64BIT
- static unsigned int regmap_parse_64_be(const void *buf)
- {
--	const __be64 *b = buf;
--
--	return be64_to_cpu(b[0]);
-+	return get_unaligned_be64(buf);
- }
- 
- static unsigned int regmap_parse_64_le(const void *buf)
- {
--	const __le64 *b = buf;
--
--	return le64_to_cpu(b[0]);
-+	return get_unaligned_le64(buf);
- }
- 
- static void regmap_parse_64_be_inplace(void *buf)
- {
--	__be64 *b = buf;
-+	u64 v =  get_unaligned_be64(buf);
- 
--	b[0] = be64_to_cpu(b[0]);
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- static void regmap_parse_64_le_inplace(void *buf)
- {
--	__le64 *b = buf;
-+	u64 v = get_unaligned_le64(buf);
- 
--	b[0] = le64_to_cpu(b[0]);
-+	memcpy(buf, &v, sizeof(v));
- }
- 
- static unsigned int regmap_parse_64_native(const void *buf)
- {
--	return *(u64 *)buf;
-+	u64 v;
-+
-+	memcpy(&v, buf, sizeof(v));
-+	return v;
- }
- #endif
- 
--- 
-2.25.1
+Introduced by commit
 
+  5a6c35f9af41 ("block: remove direct_make_request")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/m7.HGDHfzDuDAf_vqraKDJP
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl79NogACgkQAVBC80lX
+0Gws4wgAoSLcCudGe+r3OTLt9GR83BQ8imeImAWsb2xj1gav/efyaRNEiYj6F80V
+n/6KbJmzpkXg4p6u6bQsY1yRsR8w+iGy5YTFJ6lPlO+qXNkxfvAZndfw0XDCB6S8
+mSElNYSbmkD5g11s85dZtz+NdSq4yzSQHwpYruIYzNlNjxM9FOOBepGVzv7dKcsc
+sTwNzvMH/mPz+udQEsvyx4wmV96uvfGrDKMfRt1B0klgdEq8oXiDqkBqtd5TnvV1
+HHDcor2UgGtwwGMqgMfYQQd158/Xh3Dtl9Z7mox8gaXAmKlGv5cltOk5ogQ+bd/E
+RgiEiGlaSoGhu64C9In3X10+HOkvVQ==
+=yZnc
+-----END PGP SIGNATURE-----
+
+--Sig_/m7.HGDHfzDuDAf_vqraKDJP--
