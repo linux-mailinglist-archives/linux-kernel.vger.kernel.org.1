@@ -2,86 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437D4211FEA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 11:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06923211FF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 11:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgGBJbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 05:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
+        id S1728167AbgGBJck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 05:32:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725287AbgGBJbR (ORCPT
+        with ESMTP id S1727057AbgGBJck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 05:31:17 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042EBC08C5C1;
-        Thu,  2 Jul 2020 02:31:17 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gc9so5701058pjb.2;
-        Thu, 02 Jul 2020 02:31:16 -0700 (PDT)
+        Thu, 2 Jul 2020 05:32:40 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA01C08C5DD
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 02:32:39 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id y18so15600232lfh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 02:32:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sQCFiGzSC0dQIzc+FHc1PqcfHEnA/cl3jUVDZmdRB1g=;
-        b=C37eoVAss5f7k3Jv6M1iLAjeI0qjZql1L9XOz1cJU9NT4j+QdpYRAqo5uQ6Xa4HmaD
-         4h99BFUHabpORXI0pNfdVpO/p4DR5w6RgW0AO3zzuRjY4/csAAqOjlnZ5uQ8b93fR1Q2
-         pZgsuuZcBRreKuM37BSD9v5HCMhq8SPvdf18Ked0UwFkVaugq6ji2/7c301lfqXbMgTO
-         zIeh3TZwtWfVHMurUj0AvYzbREUKmDjeFQgXeQrGQny0dwjY0xdtCzURvPlRfG8iPSIS
-         UOCY8CkuNklRk5umzA7hxrh+EuM2MukAWKcNksgoH8oG1o35jUVpk8RNCgDpwHUFOtlf
-         Wr/w==
+        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xJrKLxFtP5i0UcBKdy1GE3OwCPtszmxth6t90XmZnto=;
+        b=ttsbcsBM5d2wN8N8MSUThSKYEGVc38uTg8irCxPOwLP4CvC/gHlh1tG9aCaoBfbZw4
+         IOQAX05Te7L+tizZj+ie5VK7Qd2ZjTGvTjvv7dMiqV2GaBUPod/Y4tuvkc1GwxxympXT
+         lS8buFCZstgSTqLb1RMCAp7j2dBLVMrGQ77D07mL5uAAtHxQXffy/djWidzjB/sQjuHQ
+         6+tm0tSr2tz3lk3WU+8rqPPxMxLjw4FJFJ4bvbVdjahirxkBg3+5/Pl+frfX37RvHNAq
+         UAE4kX+tqvxhEBjtfeulVqlABddC61Qsrzmm9DY4f9+UH+rs6h2gw0E8xco5BNsH9Reu
+         Ad8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sQCFiGzSC0dQIzc+FHc1PqcfHEnA/cl3jUVDZmdRB1g=;
-        b=Nwzsit+1UowUpFzFqEWzjvIOoOCwrnM6shLKvwdEDo650g0KJgNFbHaaIkOBnigXCs
-         scwwyxG3MW9FsfuT8EBtsznaJkA7PH482KUkM2iufwyOaxL5G7RuagvmPnynzdIxTQ0B
-         VlHvs7frA5lQYAQsPneju9IZubT31W+uOELZm03pdffbUuF/dArx9Ex8qVWaJIRIUWek
-         jrH3Wvn508DskmQ86AM6H/JRc7xM8lWIiUiL5Ed3eav/RGUMfoogyGHFw6xbZp4bR5lM
-         J1CQWhbUli/Y0FgLRIZ89Aow1h0p7cRGCOlH6GS1XKlc1aGprAM/RZ3Hj7tG70KWijak
-         UpeA==
-X-Gm-Message-State: AOAM5339OUZqrXMsicsRCCbQjVvPZcqQJ1e1aHfOFhJfXDKclPTEY38i
-        elFV5oh1nqGQhZyHT4Fd+CAF6AGNWYVeIR7gSMY=
-X-Google-Smtp-Source: ABdhPJwzDsePThPXr8Uly2OY7DxQ0JKn7Q0cvpe4wEjpbNZ2ZOHX85j9e962wmtLBEBC4Dq2HnM3RGnphjPRRYtcQr8=
-X-Received: by 2002:a17:90b:1b52:: with SMTP id nv18mr27289148pjb.129.1593682276453;
- Thu, 02 Jul 2020 02:31:16 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xJrKLxFtP5i0UcBKdy1GE3OwCPtszmxth6t90XmZnto=;
+        b=ckCRtCmY2ZlPLbzN0iV3WxzXFr2eWqqDtniZzilnlgWbKn2Z3U2In8OXzOpFu94UdS
+         oXuCKBz0ruh/3nwLGJf+Z7KiP7rLeCEvN7z9r/BGkMsHGeR2167AU2k6L8eyetYm0wQB
+         Swnsq7/WXjDovY75TwoI489Pm1t6FzS42sMpdLirpcgGQlQYmvXqWPYvS96XOVMq1zYl
+         GVJXzxaUXVWNB8Zu0PxCMirickoRr0R+np+rJFTeU41UwZIW9GM9Bqlzegs3W2TbXH1g
+         B1snQYQC/NyOQeWnUWhbPEOcRSDIFtCzep91t5JDqXzCgLOwLAgF/vE6V2+OAFPJbveH
+         0XtQ==
+X-Gm-Message-State: AOAM5335YiEdoAtaO0qHB0ua9iBX8Nm6u/VmGSm48f1yRL9zLpNvCfsh
+        RSuVpyfyg+b96ZAdKr28OvPUWXQoQOWQGw==
+X-Google-Smtp-Source: ABdhPJwIdcIQafdt42QlqVEBIRfGHC/lMgIxRDNqG0gS0fWBMzgvsIzfjrTdGE2q5x8myUi8sR6DeQ==
+X-Received: by 2002:a19:6a14:: with SMTP id u20mr16782739lfu.172.1593682357797;
+        Thu, 02 Jul 2020 02:32:37 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:461b:f1c2:55ed:4719:4c47:712d? ([2a00:1fa0:461b:f1c2:55ed:4719:4c47:712d])
+        by smtp.gmail.com with ESMTPSA id y12sm2767034ljh.79.2020.07.02.02.32.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Jul 2020 02:32:37 -0700 (PDT)
+Subject: Re: [PATCH v6 02/12] ata: ahci_brcm: Fix use of BCM7216 reset
+ controller
+To:     Jim Quinlan <james.quinlan@broadcom.com>,
+        linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list@broadcom.com
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
+        <linux-ide@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200701212155.37830-1-james.quinlan@broadcom.com>
+ <20200701212155.37830-3-james.quinlan@broadcom.com>
+From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <968d6802-b30e-b618-1dd5-1b1a5ba6548a@cogentembedded.com>
+Date:   Thu, 2 Jul 2020 12:32:24 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200702085520.16901-1-aaron.ma@canonical.com>
-In-Reply-To: <20200702085520.16901-1-aaron.ma@canonical.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 2 Jul 2020 12:30:59 +0300
-Message-ID: <CAHp75VeCHW=GMgyHRswsTrZ7b3TEnFh15F-5fyHcUsqXzoFS_g@mail.gmail.com>
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: not loading brightness_init
- when _BCL invalid
-To:     Aaron Ma <aaron.ma@canonical.com>
-Cc:     mapengyu@gmail.com,
-        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Thinkpad-acpi devel ML <ibm-acpi-devel@lists.sourceforge.net>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200701212155.37830-3-james.quinlan@broadcom.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 2, 2020 at 11:55 AM Aaron Ma <aaron.ma@canonical.com> wrote:
->
-> When _BCL invalid, disable thinkpad_acpi backlight brightness control.
->
-> brightness_enable is already checked at the beginning,
+Hello!
 
-> Always print notice when enabled brightness control.
+On 02.07.2020 0:21, Jim Quinlan wrote:
 
-Why?
+> From: Jim Quinlan <jquinlan@broadcom.com>
+> 
+> A reset controller "rescal" is shared between the AHCI driver and the PCIe
+> driver for the BrcmSTB 7216 chip.  Use
+> devm_reset_control_get_optional_shared control() to handle this sharing.
 
-...
+    Not "devm_reset_control_get_optional_shared() control"?
 
-> +       pr_notice("thinkpad_acpi native brightness control enabled\n");
+> 
+> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+> 
+> Fixes: 272ecd60a636 ("ata: ahci_brcm: BCM7216 reset is self de-asserting")
+> Fixes: c345ec6a50e9 ("ata: ahci_brcm: Support BCM7216 reset controller name")
+> ---
+>   drivers/ata/ahci_brcm.c | 11 +++--------
+>   1 file changed, 3 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/ata/ahci_brcm.c b/drivers/ata/ahci_brcm.c
+> index 6853dbb4131d..d6115bc04b09 100644
+> --- a/drivers/ata/ahci_brcm.c
+> +++ b/drivers/ata/ahci_brcm.c
+[...]
+> @@ -452,11 +451,10 @@ static int brcm_ahci_probe(struct platform_device *pdev)
+>   
+>   	/* Reset is optional depending on platform and named differently */
+>   	if (priv->version == BRCM_SATA_BCM7216)
+> -		reset_name = "rescal";
+> +		priv->rcdev = devm_reset_control_get_optional_shared(&pdev->dev, "rescal");
+>   	else
+> -		reset_name = "ahci";
+> +		priv->rcdev = devm_reset_control_get_optional(&pdev->dev, "ahci");
+>   
+> -	priv->rcdev = devm_reset_control_get_optional(&pdev->dev, reset_name);
+>   	if (IS_ERR(priv->rcdev))
+>   		return PTR_ERR(priv->rcdev);
+>   
+[...]
 
-'notice' level is quite high, why do we spam users with this?
-
--- 
-With Best Regards,
-Andy Shevchenko
+MBR, Sergei
