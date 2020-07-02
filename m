@@ -2,150 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06546212B73
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3BE212B7C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727923AbgGBRpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 13:45:14 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:28661 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726754AbgGBRpN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 13:45:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593711912;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2+YKOFsMFqgKEAlgmAfFeYOf9HVs9QXIdHNLGDvzQ5Y=;
-        b=Wc2BsjvR9YIfHeFGYKy6VJ+c9FdrPbeJugQ6rxA8MsKyH6cbbh1M3Rj0EbRLchneivdedU
-        fOX2IczsJ/+ajAZE5lEAWpjpFFLIFqqX8zg2RWmhyQKfShBLOCNYVoWao/6tqCn1SUY81s
-        QM/m8gyQ7BWzEGZ7BgnaItb3K9OWP4E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-Dorxu1FDMIOrZb7rmwInbg-1; Thu, 02 Jul 2020 13:45:08 -0400
-X-MC-Unique: Dorxu1FDMIOrZb7rmwInbg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 950A88015FE;
-        Thu,  2 Jul 2020 17:45:06 +0000 (UTC)
-Received: from starship.redhat.com (unknown [10.35.206.247])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D1CA4619C1;
-        Thu,  2 Jul 2020 17:44:56 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        linux-kernel@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH] kvm: x86: rewrite kvm_spec_ctrl_valid_bits
-Date:   Thu,  2 Jul 2020 20:44:55 +0300
-Message-Id: <20200702174455.282252-1-mlevitsk@redhat.com>
+        id S1727943AbgGBRsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 13:48:09 -0400
+Received: from mail-eopbgr70045.outbound.protection.outlook.com ([40.107.7.45]:19061
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726997AbgGBRsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 13:48:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Gv3Mnpskq3OEt8cbWf5QpT53IGHNFcFUplX+AfD/QAi3j0/UbIJ4XIBjV0369mHAt5ie9QrH39gVz73uQvwoNfDUF2bYWyWIuS18JoUjLSouC+tLqPX/U7GBai4/vQsLnoMtdfBtsUmrf3EHiXrEGcZ8R1s4N7G8+FUvNLqltXCy4tYknGQ7qLaCbnGPTjl9vKKG4pwdwuTlQMyxDh63hPShEAa9GItpsrxHZ29S16DxEQ6yGdZRC9SeuKkbGTGjkFDFTlTCOsy61IE+fu6IN7HYwt7hg9CG/ol1Z5qeS/JxnqJH6JVhDXnvp16dgxuNEt9ArUoZ+yFiKUM5RlWCdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hGdh+FcVEqE4DGhUiMS9vKl1jyo1XzQ/gb+eZVB/uEQ=;
+ b=KwtLw7wGj6//lAEIciIv5Z/kwOkGiDobzvd9wUhd++Qb+pBYN78mpf/Vc95aGw3/h4sLhiyp391EFKOv41VQaDt2BCg2NeCtuGTKmNrz8wTXa0n4t0spUmkoppY0T7WqZpVd+WU7PPFAa2j/7wRVJzUmu2B5tf3Tq22GnHhR+J928/FqSAbYUZ3xtqXqDubGYDtFPc+hq5S1XeBo35qRIDJ3bv40JmfGRKGE/LttzPoFmixBcL9zXf1uLLFIMQL9b4lTN3KBTraX4vpqk+sdwcWYy8WihvTZtdRXemYcFUlVPhHXSUKW+uAHe5ys6eIPuQwnip3USVgIg1SMCXCtKQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hGdh+FcVEqE4DGhUiMS9vKl1jyo1XzQ/gb+eZVB/uEQ=;
+ b=cbiVtJcHel1UlctNQuLpRF7QvhJqHS8UhNTgN5oBbuV44C3olZT2jhsiQCW2DSNDbJScMNXWjHS/Y1It4hSMLcLvxb8GtpSn06f1RTGZ8dYXIcC2Lt7GloP72v82BFtCoejIscD2yGH2NJunUsh+9Ljz8WeaxHwwwoxqaxZ/FCc=
+Authentication-Results: mellanox.com; dkim=none (message not signed)
+ header.d=none;mellanox.com; dmarc=none action=none header.from=mellanox.com;
+Received: from AM0PR05MB4290.eurprd05.prod.outlook.com (2603:10a6:208:63::16)
+ by AM0PR0502MB4052.eurprd05.prod.outlook.com (2603:10a6:208:9::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.26; Thu, 2 Jul
+ 2020 17:48:02 +0000
+Received: from AM0PR05MB4290.eurprd05.prod.outlook.com
+ ([fe80::21b3:2006:95aa:7a1f]) by AM0PR05MB4290.eurprd05.prod.outlook.com
+ ([fe80::21b3:2006:95aa:7a1f%3]) with mapi id 15.20.3153.024; Thu, 2 Jul 2020
+ 17:48:02 +0000
+Subject: Re: [PATCH net-next 5/7] devlink: Add devlink health port reporters
+ API
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vladyslav Tarasiuk <vladyslavt@mellanox.com>
+References: <1593702493-15323-1-git-send-email-moshe@mellanox.com>
+ <1593702493-15323-6-git-send-email-moshe@mellanox.com>
+ <20200702094053.50252366@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Moshe Shemesh <moshe@mellanox.com>
+Message-ID: <d7b0bf0f-6e9c-6894-c6e8-dde4c5d3c4a7@mellanox.com>
+Date:   Thu, 2 Jul 2020 20:48:00 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+In-Reply-To: <20200702094053.50252366@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: AM3PR07CA0089.eurprd07.prod.outlook.com
+ (2603:10a6:207:6::23) To AM0PR05MB4290.eurprd05.prod.outlook.com
+ (2603:10a6:208:63::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.223.0.91] (193.47.165.251) by AM3PR07CA0089.eurprd07.prod.outlook.com (2603:10a6:207:6::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.9 via Frontend Transport; Thu, 2 Jul 2020 17:48:01 +0000
+X-Originating-IP: [193.47.165.251]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e50c218b-6965-4bd9-4ee3-08d81eb0112f
+X-MS-TrafficTypeDiagnostic: AM0PR0502MB4052:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR0502MB40523CFEF43F55CF840656F3D96D0@AM0PR0502MB4052.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-Forefront-PRVS: 0452022BE1
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OTMClVUfJzP4LBEFHe8mkcQ8EnbmaKqzS99XE22KFaccRO/e2SFQ/FQfFHj3rj1vDWbIGjqU9xwH+zjVSUgg/AHcqnbiYsnNh2HZznaI/Fi9TO8LCChjDW9SWEaeWU2FEHZnA1nvI0sXO1bnNBmFB0ZtdJsfEXs/naZcLeXN4rhW2+/rasNw14eBnRp47zx0oOBQ71PAOULTbM9Y7KdVcVjNc7K8+tl8tCAgTAbYFf1xW9MNaw6SyolqAUHT+bN4MH6Jgz5anqa8Mvq5V9q5IyfbCsW1G5fU7c84CbNzcq6n5ZICYML9pQGhGr68l5OPZ5A4pQ6vxLVNM9gL0zLeuEU5xQK5wfIPJ/lWTt8ZIprJeWzIAKcGzpb44gqrXmxC
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB4290.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(39860400002)(396003)(366004)(136003)(66476007)(83380400001)(31696002)(16576012)(66946007)(6916009)(52116002)(54906003)(107886003)(4744005)(86362001)(8936002)(2906002)(316002)(8676002)(31686004)(53546011)(66556008)(956004)(4326008)(478600001)(36756003)(16526019)(186003)(26005)(6486002)(2616005)(5660300002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: jHGgoN7x6717kfmd/7c8W7RfsdwyDaG9GkV/kv4tpwlGHc0OPVRVfI09Y8K4gc3nV75qxFmVpfe+G9WuX89AFipO0U8mEmPXnWWDV8DITGx1ag1y2ZdJ7cTL7gOi5L6GfwFPs7koIMVZOvKvOMmeYTiLP8yAnAbfysOTASRr4X5MRzMC2mX5CVOx1uSzaxgI+0rUz1Eb48WeChgDmeSvk3HnKyIb7YYL9WJZDdqp27/hr1QHea5AGTMsOcfHZDLlqf9H865C7PKD67o3OTsWTRY9zn5JeizrdQyb1mN87pxKuRUwpPwREUyJbjBhiujYvyhKNvoudmckHVsl0cDojpwH2yGnx4VSqwZjhidonp+uy2FLq91AgIx95Jc/67gNPlnno5qcXco1NkZtrPkT9bQCRY6IuNT2ktkDQKYH/G8wJCpJazoJgQ6TtZL3f0rpvLxgyS31e23+YX7sgrtTbwDL4ujgh61YlivwXI8Zgstnq/UV6FH4arV/YLyFa5vT
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e50c218b-6965-4bd9-4ee3-08d81eb0112f
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR05MB4290.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2020 17:48:02.6124
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gdpg1+Db7mSpwxQYbjkRvJPtWrwvrQxpNIVfdPbiGVQcQcZ6Q50EtTj9dQUbExqE6ubz0YfD/Grotj2zdUnwDw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0502MB4052
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are few cases when this function was creating a bogus #GP condition,
-for example case when and AMD host supports STIBP but doesn't support SSBD.
 
-Follow the rules for AMD and Intel strictly instead.
+On 7/2/2020 7:40 PM, Jakub Kicinski wrote:
+> On Thu,  2 Jul 2020 18:08:11 +0300 Moshe Shemesh wrote:
+>> From: Vladyslav Tarasiuk <vladyslavt@mellanox.com>
+>>
+>> In order to use new devlink port health reporters infrastructure, add
+>> corresponding constructor and destructor functions.
+>>
+>> Signed-off-by: Vladyslav Tarasiuk <vladyslavt@mellanox.com>
+>> Reviewed-by: Moshe Shemesh <moshe@mellanox.com>
+>> Reviewed-by: Jiri Pirko <jiri@mellanox.com>
+> net/core/devlink.c:5361: warning: Function parameter or member 'port' not described in 'devlink_port_health_reporter_create'
+> net/core/devlink.c:5361: warning: Excess function parameter 'devlink_port' description in 'devlink_port_health_reporter_create'
+> net/core/devlink.c:5462: warning: Excess function parameter 'port' description in 'devlink_port_health_reporter_destroy'
 
-AMD #GP rules for IA32_SPEC_CTRL can be found here:
-https://bugzilla.kernel.org/show_bug.cgi?id=199889
 
-Fixes: 6441fa6178f5 ("KVM: x86: avoid incorrect writes to host MSR_IA32_SPEC_CTRL")
+I will resend with a fix. Thanks.
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/x86.c | 57 ++++++++++++++++++++++++++++++++++------------
- 1 file changed, 42 insertions(+), 15 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 00c88c2f34e4..a6bed4670b7f 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10670,27 +10670,54 @@ bool kvm_arch_no_poll(struct kvm_vcpu *vcpu)
- }
- EXPORT_SYMBOL_GPL(kvm_arch_no_poll);
- 
--u64 kvm_spec_ctrl_valid_bits(struct kvm_vcpu *vcpu)
-+
-+static u64 kvm_spec_ctrl_valid_bits_host(void)
-+{
-+	uint64_t bits = 0;
-+
-+	if (boot_cpu_has(X86_FEATURE_SPEC_CTRL))
-+		bits |= SPEC_CTRL_IBRS;
-+	if (boot_cpu_has(X86_FEATURE_INTEL_STIBP))
-+		bits |= SPEC_CTRL_STIBP;
-+	if (boot_cpu_has(X86_FEATURE_SPEC_CTRL_SSBD))
-+		bits |= SPEC_CTRL_SSBD;
-+
-+	if (boot_cpu_has(X86_FEATURE_AMD_IBRS) || boot_cpu_has(X86_FEATURE_AMD_STIBP))
-+		bits |= SPEC_CTRL_STIBP | SPEC_CTRL_IBRS;
-+
-+	if (boot_cpu_has(X86_FEATURE_AMD_SSBD))
-+		bits |= SPEC_CTRL_STIBP | SPEC_CTRL_IBRS | SPEC_CTRL_SSBD;
-+
-+	return bits;
-+}
-+
-+static u64 kvm_spec_ctrl_valid_bits_guest(struct kvm_vcpu *vcpu)
- {
--	uint64_t bits = SPEC_CTRL_IBRS | SPEC_CTRL_STIBP | SPEC_CTRL_SSBD;
-+	uint64_t bits = 0;
- 
--	/* The STIBP bit doesn't fault even if it's not advertised */
--	if (!guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL) &&
--	    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_IBRS))
--		bits &= ~(SPEC_CTRL_IBRS | SPEC_CTRL_STIBP);
--	if (!boot_cpu_has(X86_FEATURE_SPEC_CTRL) &&
--	    !boot_cpu_has(X86_FEATURE_AMD_IBRS))
--		bits &= ~(SPEC_CTRL_IBRS | SPEC_CTRL_STIBP);
-+	if (guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL))
-+		bits |= SPEC_CTRL_IBRS;
-+	if (guest_cpuid_has(vcpu, X86_FEATURE_INTEL_STIBP))
-+		bits |= SPEC_CTRL_STIBP;
-+	if (guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL_SSBD))
-+		bits |= SPEC_CTRL_SSBD;
- 
--	if (!guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL_SSBD) &&
--	    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_SSBD))
--		bits &= ~SPEC_CTRL_SSBD;
--	if (!boot_cpu_has(X86_FEATURE_SPEC_CTRL_SSBD) &&
--	    !boot_cpu_has(X86_FEATURE_AMD_SSBD))
--		bits &= ~SPEC_CTRL_SSBD;
-+	if (guest_cpuid_has(vcpu, X86_FEATURE_AMD_IBRS) ||
-+			guest_cpuid_has(vcpu, X86_FEATURE_AMD_STIBP))
-+		bits |= SPEC_CTRL_STIBP | SPEC_CTRL_IBRS;
-+	if (guest_cpuid_has(vcpu, X86_FEATURE_AMD_SSBD))
-+		bits |= SPEC_CTRL_STIBP | SPEC_CTRL_IBRS | SPEC_CTRL_SSBD;
- 
- 	return bits;
- }
-+
-+u64 kvm_spec_ctrl_valid_bits(struct kvm_vcpu *vcpu)
-+{
-+	return kvm_spec_ctrl_valid_bits_host() &
-+	       kvm_spec_ctrl_valid_bits_guest(vcpu);
-+}
-+
-+
- EXPORT_SYMBOL_GPL(kvm_spec_ctrl_valid_bits);
- 
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_exit);
--- 
-2.25.4
 
