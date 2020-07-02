@@ -2,160 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54013212AB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10492212AC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727065AbgGBRCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 13:02:01 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:32850 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726667AbgGBRCA (ORCPT
+        id S1727816AbgGBRED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 13:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726796AbgGBREC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 13:02:00 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: koike)
-        with ESMTPSA id 001DC2A0641
-Subject: Re: [PATCH v3 5/9] media: staging: rkisp1: remove unecessary clocks
-From:   Helen Koike <helen.koike@collabora.com>
-To:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        robh+dt@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
-        kernel@collabora.com, dafna.hirschfeld@collabora.com,
-        ezequiel@collabora.com, mark.rutland@arm.com,
-        karthik.poduval@gmail.com, jbx6244@gmail.com, kishon@ti.com,
-        tfiga@chromium.org, eddie.cai.linux@gmail.com,
-        zhengsq@rock-chips.com
-References: <20200702165410.2583375-1-helen.koike@collabora.com>
- <20200702165410.2583375-6-helen.koike@collabora.com>
-Message-ID: <c70b55a4-c33c-226b-2596-a7bbba199346@collabora.com>
-Date:   Thu, 2 Jul 2020 14:01:50 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 2 Jul 2020 13:04:02 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE5AC08C5C1;
+        Thu,  2 Jul 2020 10:04:01 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id q15so8940647uap.4;
+        Thu, 02 Jul 2020 10:04:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=W7abyQ+nO1e3zFNQVjcKFt0DBVozSRyUVCzzjyEn7XU=;
+        b=mLb/Puisrsyl9e+9wKRiHp5Tq8N9Qqi7AXkGnpjEMryA62rF5gsqxzAyij4m2HL6JK
+         tkOQpczKTmoudMKJ1io0MWq3hk5u3Z6m++a8HHvikgtlyQw/FDuVxeefDGmVs/QubBIf
+         fo07ggUC666fnwuzvOQIrj5Vbo/u7eYAdiymADO1Z1AH76x932TWNfovz0EdwpGi86Ob
+         q9CYiaxcNx77cukdGp+m33xZVBQC0Sce2Idw3UoDkHb4T4R1panpKoFR3HnbqJj7qIOq
+         ie46ml7vo9rFVOqfirf64zwiOqbpcp7WNuuN8VqETbVItChNFBDnoeAG1RFdTNPi6/yB
+         kWrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=W7abyQ+nO1e3zFNQVjcKFt0DBVozSRyUVCzzjyEn7XU=;
+        b=Oqv8ESsSq+2Ekl68e5cm5/8UiKw7ucFgonKRTqLJ84HYBCjvN5btNmvk/75dISwCyJ
+         2ztLLDPbN2G93lwnmqmOOvdepWl2sXUE0ukwPpFWlQu1nHkTivW5JvmYfwc+2H4NzFbp
+         UYmPh2eOiozTWT5oHVItof8WUw54VxUqauAtYBr1WoK2mGQp7sYHdG1jcPcbqXWlo6el
+         Oj402BkACJLrqzaZ9aH96nzXsqlt6k9UP3tuaZSroMr4gnqJRNhRwVbiFbx386xpN0dO
+         B5C2bsO7498dARHEREh272T9G9gWGKEa3Nf3OI/HPf+YdzuIcIXliAh1iC0+O8PztJjP
+         +DPg==
+X-Gm-Message-State: AOAM533dPZrqMporYCiTBnEVujeO5GI/kAb8B3J5EhB2Cthcaf3CQhh+
+        qZ8gFsfSfX3A58UdgHjgsW3yD8DSyx4nR+mvwtU=
+X-Google-Smtp-Source: ABdhPJxFGYCFDj2+ZKyRT9CJQ3VzeAHEvXOH+lMAstiCkuNZfVamKCSrktgnyH3ne9pM+ZVH+mPwjKvz6JjpBOzcvzM=
+X-Received: by 2002:ab0:7056:: with SMTP id v22mr16569896ual.67.1593709440909;
+ Thu, 02 Jul 2020 10:04:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200702165410.2583375-6-helen.koike@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200702063632.289959-1-vaibhavgupta40@gmail.com>
+ <20200702063632.289959-3-vaibhavgupta40@gmail.com> <20200702093645.13e0018a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200702093645.13e0018a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Date:   Thu, 2 Jul 2020 22:32:21 +0530
+Message-ID: <CAP+cEONGianqeie9HsVqVm6=LwKn_caF285U=vpdha0-+8B-ZA@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] qlcninc: use generic power management
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Manish Chopra <manishc@marvell.com>,
+        Rahul Verma <rahulv@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
+        Shahed Shaikh <shshaikh@marvell.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 2, 2020 at 10:06 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Thu,  2 Jul 2020 12:06:32 +0530 Vaibhav Gupta wrote:
+> > With legacy PM, drivers themselves were responsible for managing the
+> > device's power states and takes care of register states. And they use P=
+CI
+> > helper functions to do it.
+> >
+> > After upgrading to the generic structure, PCI core will take care of
+> > required tasks and drivers should do only device-specific operations.
+> >
+> > .suspend() calls __qlcnic_shutdown, which then calls qlcnic_82xx_shutdo=
+wn;
+> > .resume()  calls __qlcnic_resume,   which then calls qlcnic_82xx_resume=
+;
+> >
+> > Both ...82xx..() are define in
+> > drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c and are used only in
+> > drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c.
+> >
+> > Hence upgrade them and remove PCI function calls, like pci_save_state()=
+ and
+> > pci_enable_wake(), inside them
+> >
+> > Compile-tested only.
+> >
+> > Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+>
+> drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c: In function =E2=80=98qlcn=
+ic_82xx_shutdown=E2=80=99:
+> drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c:1652:6: warning: unused va=
+riable =E2=80=98retval=E2=80=99 [-Wunused-variable]
+>  1652 |  int retval;
+>       |      ^~~~~~
+Fixed in v2.
+Thanks!
 
-
-On 7/2/20 1:54 PM, Helen Koike wrote:
-> aclk_isp_wrap is a child of aclk_isp, and hclk_isp_wrap is a child of
-> hclk_isp, thus we can remove parents from the list, with the goal to
-> cleanup the dt-bindings and remove it from staging.
-> 
-> For reference, this is the isp clock topology:
-> 
->  xin24m
->     pll_npll
->        npll
->           clk_isp1
->           clk_isp0
->     pll_cpll
->        cpll
->           aclk_isp1
->              aclk_isp1_noc
->              hclk_isp1
->                 aclk_isp1_wrapper
->                 hclk_isp1_noc
->           aclk_isp0
->              hclk_isp1_wrapper
->              aclk_isp0_wrapper
->              aclk_isp0_noc
->              hclk_isp0
->                 hclk_isp0_wrapper
->                 hclk_isp0_noc
->  pclkin_isp1_wrapper
-> 
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> ---
-> Changes in V3:
-> - this is a new patch in the series
-> ---
->  .../bindings/media/rockchip-isp1.yaml         | 33 ++++++++++---------
->  drivers/staging/media/rkisp1/rkisp1-dev.c     |  2 --
->  2 files changed, 17 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml b/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
-> index 4d111ef2e89c7..f806820eb8153 100644
-> --- a/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
-> +++ b/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
-> @@ -24,20 +24,21 @@ properties:
->      maxItems: 1
->  
->    clocks:
-> -    items:
-> -      - description: ISP clock
-> -      - description: ISP AXI clock clock
-> -      - description: ISP AXI clock  wrapper clock
-> -      - description: ISP AHB clock clock
-> -      - description: ISP AHB wrapper clock
-> +    maxItems: 5
-> +    minItems: 3
-
-Sorry, I forgot to mentioned that, as discussed previously on https://patchwork.kernel.org/patch/11475007/ ,
-this is prepared to add rk3288 support, this is why maxItems is 5 (since rk3288 has 5 clocks).
-
-> +    description:
-> +      rk3399 isp0 clocks
-> +        ISP clock
-> +        ISP AXI wrapper clock
-> +        ISP AHB wrapper clock
->  
->    clock-names:
-> -    items:
-> -      - const: clk_isp
-> -      - const: aclk_isp
-> -      - const: aclk_isp_wrap
-> -      - const: hclk_isp
-> -      - const: hclk_isp_wrap
-> +    oneOf:
-
-Same for this "oneOf", so we can add "rk3399 isp1 clocks" and "rk3288 clocks" later.
-
-Regards,
-Helen
-
-> +      # rk3399 isp0 clocks
-> +      - items:
-> +        - const: clk_isp
-> +        - const: aclk_isp_wrap
-> +        - const: hclk_isp_wrap
->  
->    iommus:
->      maxItems: 1
-> @@ -135,11 +136,11 @@ examples:
->              reg = <0x0 0xff910000 0x0 0x4000>;
->              interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH 0>;
->              clocks = <&cru SCLK_ISP0>,
-> -                     <&cru ACLK_ISP0>, <&cru ACLK_ISP0_WRAPPER>,
-> -                     <&cru HCLK_ISP0>, <&cru HCLK_ISP0_WRAPPER>;
-> +                     <&cru ACLK_ISP0_WRAPPER>,
-> +                     <&cru HCLK_ISP0_WRAPPER>;
->              clock-names = "clk_isp",
-> -                          "aclk_isp", "aclk_isp_wrap",
-> -                          "hclk_isp", "hclk_isp_wrap";
-> +                          "aclk_isp_wrap",
-> +                          "hclk_isp_wrap";
->              iommus = <&isp0_mmu>;
->              phys = <&dphy>;
->              phy-names = "dphy";
-> diff --git a/drivers/staging/media/rkisp1/rkisp1-dev.c b/drivers/staging/media/rkisp1/rkisp1-dev.c
-> index f38801fea10d9..36f5f3b97a9b9 100644
-> --- a/drivers/staging/media/rkisp1/rkisp1-dev.c
-> +++ b/drivers/staging/media/rkisp1/rkisp1-dev.c
-> @@ -407,8 +407,6 @@ static irqreturn_t rkisp1_isr(int irq, void *ctx)
->  
->  static const char * const rk3399_isp_clks[] = {
->  	"clk_isp",
-> -	"aclk_isp",
-> -	"hclk_isp",
->  	"aclk_isp_wrap",
->  	"hclk_isp_wrap",
->  };
-> 
+--Vaibhav Gupta
